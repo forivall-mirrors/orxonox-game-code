@@ -1,0 +1,12 @@
+PROJECT (Tutorial)
+
+SET (MAIN_SRC main.cpp)
+
+ADD_EXECUTABLE (main ${MAIN_SRC})
+
+# find OGRE
+FIND_LIBRARY (OGRE_LIBS NAMES OGRE
+  PATH /usr/lib /usr/local/lib)
+IF (OGRE_LIBS)
+  TARGET_ADD_LIBRARY (main OGRE_LIBS)
+ENDIF (OGRE_LIBS)
