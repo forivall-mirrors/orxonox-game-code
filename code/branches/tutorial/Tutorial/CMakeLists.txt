@@ -1,23 +1,24 @@
-PROJECT (Tutorial)
+PROJECT(Tutorial)
 
-SET (MAIN_SRC main.cpp)
+SET(SRC_FILES src/main.cpp)
 
-ADD_EXECUTABLE (main ${MAIN_SRC})
+SET(INC_FILES src/ExampleApplication.h  src/ExampleFrameListener.h  src/ExampleLoadingBar.h)
 
-# find OGRE
-FIND_LIBRARY (OGRE_LIBS NAMES OGRE
-  PATH /usr/lib /usr/local/lib /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig)
-IF (OGRE_LIBS)
-  TARGET_ADD_LIBRARY (main OGRE_LIBS)
-  TARGET_LINK_LIBRARIES (main OGRE_LIBS)
-ENDIF (OGRE_LIBS)
+#This sets where to look for "Find*.cmake" files
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+#Performs the search and sets the variables
+FIND_PACKAGE(OGRE)
+FIND_PACKAGE(OIS)
 
-# find OIS
-FIND_LIBRARY (OIS_LIBS NAMES OIS
-  PATH /usr/lib /usr/local/lib /usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig)
-IF (OIS_LIBS)
-  ADD_LIBRARY (OIS_LIBS)
-  TARGET_LINK_LIBRARIES (main OIS_LIBS)
-ENDIF (OIS_LIBS)
+#Sets the search paths for the linking
+LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR})
+#Sets the search path for include files
+INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR})
 
-INCLUDE_DIRECTORIES (. /usr/pack/ois-1.0-sd/i686-debian-linux3.1/include /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/include)
+#Creates an executable
+ADD_EXECUTABLE(build/main ${SRC_FILES} ${INC_FILES})
+#Links the executable against Ogre
+TARGET_LINK_LIBRARIES(build/main ${OGRE_LIBRARIES} ${OIS_LIBRARIES})
+
+#Sets the install path
+INSTALL(TARGETS build/main DESTINATION bin)
