@@ -1,5 +1,18 @@
 #!/bin/bash
 
+#if [ $1 == --with-tardis ] 
+	export PKG_CONFIG_PATH=/usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig:/usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig/
+#fi
 
+COMPILER="gcc-4.2.0"
+MAIN_SRC="main.cpp"
+EXECUTABLE="main"
+LIBS="OGRE OIS"
+LD_FLAGS="`pkg-config --libs ${LIBS}`"
+CXX_FLAGS="`pkg-config --cflags ${LIBS}`"
+INCLUDES="-I."
+FLAGS="-O2 -march=prescott -pipe -g -ggdb"
 
-g++-4.2.0 `pkg-config --libs /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/OGRE.pc /usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig/OIS.pc` `pkg-config --cflags /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/OGRE.pc /usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig/OIS.pc` main.cpp -I. -O2 -march=prescott -pipe -o main -g -ggdb
+echo "${COMPILER} ${FLAGS} ${CXX_FLAGS} ${LD_FLAGS} ${INCLUDES} ${MAIN_SRC} -o ${EXECUTABLE}"
+${COMPILER} ${FLAGS} ${CXX_FLAGS} ${LD_FLAGS} ${INCLUDES} ${MAIN_SRC} -o ${EXECUTABLE}
+#g++-4.2.0 `pkg-config --libs /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/OGRE.pc /usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig/OIS.pc` `pkg-config --cflags /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/OGRE.pc /usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig/OIS.pc` main.cpp -I. -O2 -march=prescott -pipe -o main -g -ggdb
