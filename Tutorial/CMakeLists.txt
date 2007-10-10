@@ -1,6 +1,6 @@
 PROJECT (Tutorial)
 
-SET (MAIN_SRC main.cpp)
+SET (MAIN_SRC main.cpp ExampleApplication.h ExampleFrameListener.h ExampleLoadingBar.h )
 
 ADD_EXECUTABLE (main ${MAIN_SRC})
 
