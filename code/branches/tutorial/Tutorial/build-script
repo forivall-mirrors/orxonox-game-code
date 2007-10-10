@@ -1,0 +1,5 @@
+#!/bin/bash
+
+
+
+g++-4.2.0 `pkg-config --libs /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/OGRE.pc /usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig/OIS.pc` `pkg-config --cflags /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/OGRE.pc /usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig/OIS.pc` main.cpp -I. -O2 -march=prescott -pipe -o main -g -ggdb
