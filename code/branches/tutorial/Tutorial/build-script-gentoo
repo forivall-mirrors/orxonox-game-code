@@ -11,7 +11,7 @@ LIBS="OGRE OIS"
 LD_FLAGS="`pkg-config --libs ${LIBS}`"
 CXX_FLAGS="`pkg-config --cflags ${LIBS}`"
 INCLUDES="-I."
-FLAGS="-O2 -march=nocona -pipe -g -ggdb"
+FLAGS="-O2 -pipe -g -ggdb"
 
 echo "${COMPILER} ${FLAGS} ${CXX_FLAGS} ${LD_FLAGS} ${INCLUDES} ${MAIN_SRC} -o ${EXECUTABLE}"
 ${COMPILER} ${FLAGS} ${CXX_FLAGS} ${LD_FLAGS} ${INCLUDES} ${MAIN_SRC} -o ${EXECUTABLE}
