@@ -25,6 +25,7 @@ Description: Base class for all the OGRE examples
 #include "OgreConfigFile.h"
 #include "ExampleFrameListener.h"
 
+#if 0
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
 
@@ -51,6 +52,7 @@ std::string macBundlePath()
     return std::string(path);
 }
 #endif
+#endif
 
 using namespace Ogre;
 
@@ -68,11 +70,7 @@ public:
 		// Provide a nice cross platform solution for locating the configuration files
 		// On windows files are searched for in the current working directory, on OS X however
 		// you must provide the full path, the helper function macBundlePath does this for us.
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-		mResourcePath = macBundlePath() + "/Contents/Resources/";
-#else
 		mResourcePath = "";
-#endif
     }
     /// Standard destructor
     virtual ~ExampleApplication()
@@ -220,16 +218,8 @@ protected:
             {
                 typeName = i->first;
                 archName = i->second;
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-                // OS X does not set the working directory relative to the app,
-                // In order to make things portable on OS X we need to provide
-                // the loading with it's own bundle path location
-                ResourceGroupManager::getSingleton().addResourceLocation(
-                    String(macBundlePath() + "/" + archName), typeName, secName);
-#else
                 ResourceGroupManager::getSingleton().addResourceLocation(
                     archName, typeName, secName);
-#endif
             }
         }
     }
