@@ -49,7 +49,7 @@ using namespace Ogre;
 class ExampleFrameListener: public FrameListener, public WindowEventListener
 {
 protected:
-/*
+
 	void updateStats(void)
 	{
 		static String currFps = "Current FPS: ";
@@ -85,7 +85,7 @@ protected:
 		}
 		catch(...) { }
 	}
-*/
+
 public:
 	// Constructor takes a RenderWindow because it uses that to determine input context
 	ExampleFrameListener(RenderWindow* win, Camera* cam, bool bufferedKeys = false, bool bufferedMouse = false,
@@ -365,7 +365,7 @@ public:
 
 	bool frameEnded(const FrameEvent& evt)
 	{
-//		updateStats();
+		updateStats();
 		return true;
 	}
 
