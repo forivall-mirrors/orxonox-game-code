@@ -49,6 +49,7 @@ using namespace Ogre;
 class ExampleFrameListener: public FrameListener, public WindowEventListener
 {
 protected:
+/*
 	void updateStats(void)
 	{
 		static String currFps = "Current FPS: ";
@@ -82,9 +83,9 @@ protected:
 			OverlayElement* guiDbg = OverlayManager::getSingleton().getOverlayElement("Core/DebugText");
 			guiDbg->setCaption(mDebugText);
 		}
-		catch(...) { /* ignore */ }
+		catch(...) { }
 	}
-
+*/
 public:
 	// Constructor takes a RenderWindow because it uses that to determine input context
 	ExampleFrameListener(RenderWindow* win, Camera* cam, bool bufferedKeys = false, bool bufferedMouse = false,
