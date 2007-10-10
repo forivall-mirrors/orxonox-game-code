@@ -9,7 +9,7 @@ FIND_LIBRARY (OGRE_LIBS NAMES OGRE
   PATH /usr/lib /usr/local/lib /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig)
 IF (OGRE_LIBS)
   TARGET_ADD_LIBRARY (main OGRE_LIBS)
-  TARGET_LINK_LIBARIES (main OGRE_LIBS)
+  TARGET_LINK_LIBRARIES (main OGRE_LIBS)
 ENDIF (OGRE_LIBS)
 
 # find OIS
@@ -17,7 +17,7 @@ FIND_LIBRARY (OIS_LIBS NAMES OIS
   PATH /usr/lib /usr/local/lib /usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig)
 IF (OIS_LIBS)
   ADD_LIBRARY (OIS_LIBS)
-  TARGET_LINK_LIBARIES (main OIS_LIBS)
+  TARGET_LINK_LIBRARIES (main OIS_LIBS)
 ENDIF (OIS_LIBS)
 
 INCLUDE_DIRECTORIES (. /usr/pack/ois-1.0-sd/i686-debian-linux3.1/include /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/include)
