@@ -1,6 +1,6 @@
 PROJECT(Tutorial)
 
-SET(CMAKE_C_COMPILER CC="gcc-3.4 gcc-4.1.2 gcc" CXX="g++-3.4 g++-4.1.2 g++")
+SET(CMAKE_CXX_COMPILER CC="gcc-3.4.3 gcc-4.1.2 gcc" CXX="g++-3.4.3 g++-4.1.2 g++")
 
 SET(SRC_FILES src/main.cpp)
 

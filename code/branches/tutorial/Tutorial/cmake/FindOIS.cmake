@@ -24,7 +24,7 @@ IF (WIN32) #Windows
     SET(OIS_LIBRARIES debug OgreMain_d optimized OgreMain)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)
-    PKG_SEARCH_MODULE(OIS OIS /usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig/) # tardis specific hack
+    PKG_SEARCH_MODULE(OIS OIS /usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig/OIS.pc) # tardis specific hack
     SET(OIS_INCLUDE_DIR ${OIS_INCLUDE_DIRS})
     SET(OIS_LIB_DIR ${OIS_LIBDIR})
     SET(OIS_LIBRARIES ${OIS_LIBRARIES} CACHE STRING "")
