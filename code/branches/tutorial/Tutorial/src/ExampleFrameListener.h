@@ -49,7 +49,6 @@ using namespace Ogre;
 class ExampleFrameListener: public FrameListener, public WindowEventListener
 {
 protected:
-
 	void updateStats(void)
 	{
 		static String currFps = "Current FPS: ";
@@ -83,7 +82,7 @@ protected:
 			OverlayElement* guiDbg = OverlayManager::getSingleton().getOverlayElement("Core/DebugText");
 			guiDbg->setCaption(mDebugText);
 		}
-		catch(...) { }
+		catch(...) { /* ignore */ }
 	}
 
 public:
