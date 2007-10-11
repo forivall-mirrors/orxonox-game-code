@@ -1,6 +1,29 @@
 PROJECT(Tutorial)
 
-SET(CMAKE_CXX_COMPILER CC="gcc-3.4.3 gcc-4.1.2 gcc" CXX="g++-3.4.3 g++-4.1.2 g++")
+#force-set the compile on tardis machines, as default points to g++-3.3
+IF (UNIX)
+  FIND_PROGRAM(UNAME_CMD "uname"
+	PATHS "/usr/bin /bin")
+  EXECUTE_PROCESS(
+	COMMAND "${UNAME_CMD}" "-n"
+	RESULT_VARIABLE UNAME_RV
+	ERROR_VARIABLE UNAME_EV
+	OUTPUT_VARIABLE UNAME_OV)
+#MESSAGE("Print: UNAME_RV ${UNAME_RV}")
+  IF (NOT "${UNAME_RV}" STREQUAL "0")
+	MESSAGE("ERROR: Unable to find uname. System cannot be marked as
+	Tardis if needed.")
+  ENDIF (NOT "${UNAME_RV}" STREQUAL "0")
+  #STRING(REGEX MATCH "tardis" UNAME_OV "${UNAME_OV}")
+  IF ("${UNAME_OV}" MATCHES "tardis")
+    SET (IS_TARDIS "tardis")
+  ENDIF ("${UNAME_OV}" MATCHES "tardis")
+  #MESSAGE("Print: UNAME_OV ${UNAME_OV}")
+  IF (IS_TARDIS)
+  MESSAGE("System is a TARDIS: Setting Compiler to g++-3.4.3")
+  SET(CMAKE_CXX_COMPILER "g++-3.4.3")
+  ENDIF(IS_TARDIS)
+ENDIF (UNIX)
 
 SET(SRC_FILES src/main.cpp)
 
