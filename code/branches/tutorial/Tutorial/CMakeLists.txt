@@ -1,5 +1,7 @@
 PROJECT(Tutorial)
 
+CMAKE_CXX_COMPILER(CC="gcc-3.4 gcc-4.1.2 gcc" CXX="g++-3.4 g++-4.1.2 g++")
+
 SET(SRC_FILES src/main.cpp)
 
 SET(INC_FILES src/ExampleApplication.h  src/ExampleFrameListener.h  src/ExampleLoadingBar.h)
