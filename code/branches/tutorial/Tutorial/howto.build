@@ -1,5 +1,0 @@
-Plain and simple:
-
-cd build
-cmake ..
-make
