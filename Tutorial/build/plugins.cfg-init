@@ -1,8 +1,7 @@
 # Defines plugins to load
 
 # Define plugin folder
-PluginFolder=/usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/OGRE/
-# PluginsFolder=/usr/lib/OGRE
+PluginFolder=/usr/lib/OGRE
 
 # Define plugins
 #Plugin=RenderSystem_Direct3D9
