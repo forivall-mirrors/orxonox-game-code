@@ -46,6 +46,15 @@ protected:
     {
         // add tutorial code here:
         // ...
+        mSceneMgr->setAmbientLight( ColourValue( 1, 1, 1 ) );
+        Entity *ent1 = mSceneMgr->createEntity( "Robot", "robot.mesh" );
+        SceneNode *node1 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "RobotNode" );
+        node1->attachObject( ent1 );
+
+        Entity *ent2 = mSceneMgr->createEntity( "Robot2", "robot.mesh" );
+        SceneNode *node2 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "RobotNode2", Vector3( 50, 0, 0 ) );
+        node2->attachObject( ent2 );
+
 
     }
 
