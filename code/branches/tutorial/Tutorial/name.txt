@@ -1,2 +1,1 @@
-Enter your Name:
-
+Your name: Hans Muster
