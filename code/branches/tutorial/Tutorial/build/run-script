@@ -17,7 +17,8 @@ if [[ ! -f plugins.cfg ]] ; then
 	is_tardis=`uname -n | grep tardis`
 	echo "isTardis: ${is_tardis}"
 	if [[ is_tardis  ]] ; then 
-		sed -e 's:PluginFolder=/usr/lib/OGRE:PluginFolder=/usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/OGRE/:' plugins.cfg-init > plugins.cfg
+		sed -e 's:PluginFolder=/usr/lib/OGRE:PluginFolder=/usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/OGRE/:' \
+		-e 's:#Plugin=Plugin_CgProgramManager:Plugin=Plugin_CgProgramManager:' plugins.cfg-init > plugins.cfg
 	fi
 fi
 exec ./main
