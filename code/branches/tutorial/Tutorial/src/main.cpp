@@ -14,7 +14,8 @@ public:
     {
         // add tutorial code here:
         // ...
-
+            lightNode->translate(Vector3(0, -10 * evt.timeSinceLastFrame, 0));
+            
         return ExampleFrameListener::frameStarted(evt);
     }
 private:
@@ -46,7 +47,27 @@ protected:
     {
         // add tutorial code here:
         // ...
+            mSceneMgr->setAmbientLight( ColourValue( 0.3, 0.3, 0.3 ) );
+            Entity* head = mSceneMgr->createEntity("head", "ogrehead.mesh");
+            SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode", Vector3( 0, 0, 0 ) );
+            node->attachObject( head );
 
+            mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
+
+            Light *light = mSceneMgr->createLight("Light1");
+            light->setType(Light::LT_POINT);
+            light->setPosition(Vector3(0, 100, 0));
+            light->setDiffuseColour(1.0, 0.0, 0.0);
+            light->setSpecularColour(1.0, 0.0, 0.0);
+
+            BillboardSet *bbs = mSceneMgr->createBillboardSet("bb", 1);
+            bbs->createBillboard(Vector3::ZERO, ColourValue(1.0, 0.0, 0.0));
+            bbs->setMaterialName("Examples/Flare");
+
+            lightNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("LightNode", Vector3(0, 100, 0));
+            lightNode->attachObject(bbs);
+            lightNode->attachObject(light);
+            light->setPosition(0.0, 0.0, 0.0);
     }
 
     void createFrameListener(void)
