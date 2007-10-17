@@ -55,7 +55,7 @@ protected:
             SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode", Vector3( 0, 0, 0 ) );
             node->attachObject( head );
 
-            SceneNode *node2 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode2", Vector3( 50, 0, 0 ) );
+            SceneNode *node2 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode2", Vector3( 60, 0, 0 ) );
             node2->attachObject( head2 );
 
 
