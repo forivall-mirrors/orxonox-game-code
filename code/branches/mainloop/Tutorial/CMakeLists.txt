@@ -1,5 +1,8 @@
 PROJECT(Tutorial)
 
+#Create some verbose output
+SET(CMAKE_VERBOSE_MAKEFILE TRUE)
+
 #force-set the compile on tardis machines, as default points to g++-3.3
 # only run this test on a lunix/unix machine
 IF (UNIX)
