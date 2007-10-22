@@ -25,14 +25,16 @@
  *
  */
 
+// TODO: Change this to orxonox.h and include all necessary functions there
 #include "ExampleApplication.h"
 
+// TODO: Put creation of SceneNode and implementation of FrameListener into an extern file
 SceneNode *lightNode;
 
-class TutorialFrameListener : public ExampleFrameListener
+class FrameListener : public ExampleFrameListener
 {
   public:
-    TutorialFrameListener(RenderWindow* win, Camera* cam, SceneManager *sceneMgr)
+    FrameListener(RenderWindow* win, Camera* cam, SceneManager *sceneMgr)
   : ExampleFrameListener(win, cam, false, false)
     {
     }
@@ -48,10 +50,11 @@ class TutorialFrameListener : public ExampleFrameListener
   private:
 };
 
+// TODO: Make Doxygen tags work and create scene AFTER loading in an extern file
 //! This is the application class of Orxonox
 /**
   Application class. The starting point of Orxonox.
-  Loading of ressources starts in here.
+  Loading of ressources should start in here.
   ...
 */
 class Orxonox : public ExampleApplication
