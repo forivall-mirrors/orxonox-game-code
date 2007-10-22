@@ -80,18 +80,18 @@ class Orxonox : public ExampleApplication
         // add tutorial code here:
         // ...
       mSceneMgr->setAmbientLight( ColourValue( 0.3, 0.3, 0.3 ) );
-      Entity* head = mSceneMgr->createEntity("head", "ogrehead.mesh");
+      //Entity* head = mSceneMgr->createEntity("head", "ogrehead.mesh");
 
-      Entity* head2 = mSceneMgr->createEntity("head2", "ogrehead.mesh");
+      //Entity* head2 = mSceneMgr->createEntity("head2", "ogrehead.mesh");
 
       SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode", Vector3( 0, 0, 0 ) );
-      node->attachObject( head );
+      //node->attachObject( head );
 
       SceneNode *node2 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode2", Vector3( 50, 0, 0 ) );
-      node2->attachObject( head2 );
+      //node2->attachObject( head2 );
 
 
-      mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
+      //mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
 
       Light *light = mSceneMgr->createLight("Light1");
       light->setType(Light::LT_POINT);
@@ -101,7 +101,7 @@ class Orxonox : public ExampleApplication
 
       BillboardSet *bbs = mSceneMgr->createBillboardSet("bb", 1);
       bbs->createBillboard(Vector3::ZERO, ColourValue(1.0, 0.0, 0.0));
-      bbs->setMaterialName("Examples/Flare");
+      //bbs->setMaterialName("Examples/Flare");
 
       lightNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("LightNode", Vector3(0, 100, 0));
       lightNode->attachObject(bbs);
