@@ -115,7 +115,7 @@ class Orxonox : public ExampleApplication
     void createFrameListener(void)
     {
         // create frame listener
-      mFrameListener = new TutorialFrameListener(mWindow, mCamera, mSceneMgr);
+      mFrameListener = new ExampleFrameListener(mWindow, mCamera, mSceneMgr);
       mRoot->addFrameListener(mFrameListener);
     }
 };
