@@ -25,124 +25,91 @@
  *
  */
 
-// TODO: Change this to orxonox.h and include all necessary functions there
-#include "ExampleApplication.h"
+#include "tnl.h" 
+#include "tnlEventConnection.h" 
+#include "tnlNetInterface.h" 
+#include "tnlRPC.h" 
+#include <stdio.h> 
+bool gQuit = false; // a flag used when the client wants to quit. using namespace TNL; // make sure we can simply use the TNL classes. 
 
-// TODO: Put creation of SceneNode and implementation of FrameListener into an extern file
-SceneNode *lightNode;
-
-class FrameListener : public ExampleFrameListener
+class SimpleEventConnection : public EventConnection
 {
-  public:
-    FrameListener(RenderWindow* win, Camera* cam, SceneManager *sceneMgr)
-  : ExampleFrameListener(win, cam, false, false)
-    {
-    }
+    typedef EventConnection Parent;
 
-    bool frameStarted(const FrameEvent &evt)
-    {
-        // add tutorial code here:
-        // ...
-      lightNode->translate(Vector3(0, -10 * evt.timeSinceLastFrame, 0));
+public:
+    // Let the network system know this is a valid network connection.
+    TNL_DECLARE_NETCONNECTION(SimpleEventConnection);
 
-      return ExampleFrameListener::frameStarted(evt);
-    }
-  private:
+    // declare the client to server message
+    TNL_DECLARE_RPC(rpcMessageClientToServer, (const char *theMessageString));
+
+    // declare the server to client message
+    TNL_DECLARE_RPC(rpcMessageServerToClient, (const char *theMessageString));
 };
 
-// TODO: Make Doxygen tags work and create scene AFTER loading in an extern file
-//! This is the application class of Orxonox
-/**
-  Application class. The starting point of Orxonox.
-  Loading of ressources should start in here.
-  ...
-*/
-class Orxonox : public ExampleApplication
+TNL_IMPLEMENT_NETCONNECTION(SimpleEventConnection, NetClassGroupGame, true);
+
+TNL_IMPLEMENT_RPC(SimpleEventConnection, rpcMessageClientToServer, (const char *messageString), NetClassGroupGameMask, RPCGuaranteedOrdered, RPCDirClientToServer, 0)
 {
-  protected:
-  public:
-    Orxonox()
-    {
-    }
+    // display the message the client sent
+    printf("Got message from client: %s\n", messageString);
+    // send a hello world back to the client.
+    rpcMessageServerToClient("Hello, World!");
+}
 
-    ~Orxonox()
-    {
-    }
-  protected:
-    void createCamera(void)
-    {
-        // create camera
-      mCamera = mSceneMgr->createCamera("PlayerCam");
-      mCamera->setNearClipDistance(5);
-      mCamera->setPosition(Vector3(0,10,500));
-      mCamera->lookAt(Vector3(0,0,0));
-    }
-
-    void createScene(void)
-    {
-        // add tutorial code here:
-        // ...
-      mSceneMgr->setAmbientLight( ColourValue( 0.3, 0.3, 0.3 ) );
-      //Entity* head = mSceneMgr->createEntity("head", "ogrehead.mesh");
-
-      //Entity* head2 = mSceneMgr->createEntity("head2", "ogrehead.mesh");
-
-      SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode", Vector3( 0, 0, 0 ) );
-      //node->attachObject( head );
-
-      SceneNode *node2 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode2", Vector3( 50, 0, 0 ) );
-      //node2->attachObject( head2 );
-
-
-      //mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
-
-      Light *light = mSceneMgr->createLight("Light1");
-      light->setType(Light::LT_POINT);
-      light->setPosition(Vector3(0, 100, 0));
-      light->setDiffuseColour(0.5, 0.5, 0.0);
-      light->setSpecularColour(0.5, 0.5, 0.0);
-
-      BillboardSet *bbs = mSceneMgr->createBillboardSet("bb", 1);
-      bbs->createBillboard(Vector3::ZERO, ColourValue(1.0, 0.0, 0.0));
-      //bbs->setMaterialName("Examples/Flare");
-
-      lightNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("LightNode", Vector3(0, 100, 0));
-      lightNode->attachObject(bbs);
-      lightNode->attachObject(light);
-      light->setPosition(0.0, 0.0, 0.0);
-    }
-
-    void createFrameListener(void)
-    {
-        // create frame listener
-      mFrameListener = new ExampleFrameListener(mWindow, mCamera, mSceneMgr);
-      mRoot->addFrameListener(mFrameListener);
-    }
-};
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-
-INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
-#else
-
-int main(int argc, char **argv)
-#endif
+TNL_IMPLEMENT_RPC(SimpleEventConnection, rpcMessageServerToClient, (const char *messageString), NetClassGroupGameMask, RPCGuaranteedOrdered, RPCDirServerToClient, 0)
 {
-  // Create application object
-  Orxonox orxonox;
+    // display the message the server sent
+    printf("Got a message from server: %s\n", messageString);
 
-  try {
-    orxonox.go();
-  } catch( Exception& e ) {
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-#else
-    fprintf(stderr, "An exception has occurred: %s\n",
-            e.getFullDescription().c_str());
-#endif
-  }
+    // once the client has heard back from the server, it should quit.
+    gQuit = true;
+}
 
-  return 0;
+int main(int argc, const char **argv)
+{
+    if(argc != 3)
+    {
+        printf("usage: simpletnltest <-server|-client> <connectAddress>");
+        return 1;
+    }
+    bool isClient = !strcmp(argv[1], "-client");
+
+    // convert the command-line address into TNL address form
+    Address cmdAddress(argv[2]);
+
+    RefPtr<NetInterface> theNetInterface;
+    if(isClient)
+    {
+        Address bindAddress(IPProtocol, Address::Any, 0);
+
+        // create a new NetInterface bound to any interface, any port (0)
+        theNetInterface = new NetInterface(bindAddress);
+        
+        // create a new SimpleEventConnection and tell it to connect to the
+        // server at cmdAddress.
+        SimpleEventConnection *newConnection = new SimpleEventConnection;
+        newConnection->connect(theNetInterface, cmdAddress);
+
+        // post an RPC, to be executed when the connection is established
+        newConnection->rpcMessageClientToServer("Hello??");
+    }
+    else
+    {
+        // create a server net interface, bound to the cmdAddress
+        theNetInterface = new NetInterface(cmdAddress);
+
+        // notify the NetInterface that it can allow connections
+        theNetInterface->setAllowsConnections(true);
+    }
+
+    // now just loop, processing incoming packets and sending outgoing packets
+    // until the global quit flag is set.
+    while(!gQuit)
+    {
+         theNetInterface->checkIncomingPackets();
+         theNetInterface->processConnections();
+         Platform::sleep(1);
+    }
+    return 0;
 }
