@@ -1,8 +1,8 @@
 <?xml version = '1.0'?>
 <kdevelop>
   <general>
-    <author></author>
-    <email></email>
+    <author/>
+    <email/>
     <version>$VERSION$</version>
     <projectmanagement>KDevCustomProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
@@ -13,8 +13,8 @@
       <language>C</language>
     </secondaryLanguages>
     <projectname>Orxonox</projectname>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
   </general>
   <kdevcustomproject>
     <filelistdirectory>/home/scheusso/orxonox/network</filelistdirectory>
@@ -22,11 +22,11 @@
       <mainprogram>/home/scheusso/orxonox/network</mainprogram>
       <directoryradio>custom</directoryradio>
       <customdirectory>/home/scheusso/orxonox/network</customdirectory>
-      <programargs></programargs>
+      <programargs/>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
-      <globaldebugarguments></globaldebugarguments>
+      <globaldebugarguments/>
       <globalcwd>/home/scheusso/orxonox/network/bin/</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <autoinstall>false</autoinstall>
@@ -40,13 +40,13 @@
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <selectedenvironment>default</selectedenvironment>
       <environments>
         <default/>
       </environments>
       <prio>0</prio>
-      <defaulttarget></defaulttarget>
+      <defaulttarget/>
       <makeoptions>-I ./net/</makeoptions>
     </make>
     <filetypes>
@@ -68,9 +68,9 @@
     <blacklist/>
     <other>
       <prio>0</prio>
-      <otherbin></otherbin>
-      <defaulttarget></defaulttarget>
-      <otheroptions></otheroptions>
+      <otherbin/>
+      <defaulttarget/>
+      <otheroptions/>
       <selectedenvironment>default</selectedenvironment>
       <environments>
         <default/>
@@ -135,14 +135,14 @@
       <used>false</used>
       <version>3</version>
       <includestyle>3</includestyle>
-      <root>/usr/pack/qt-3.3.6-mo/i686-debian-linux3.1</root>
+      <root>/usr/qt/3</root>
       <designerintegration>EmbeddedKDevDesigner</designerintegration>
-      <qmake>/usr/pack/qt-3.3.6-mo/i686-debian-linux3.1/bin/qmake</qmake>
-      <designer>/usr/pack/qt-3.3.6-mo/i686-debian-linux3.1/bin/designer</designer>
+      <qmake>/usr/qt/3/bin/qmake</qmake>
+      <designer>/usr/qt/3/bin/designer</designer>
       <designerpluginpaths/>
     </qt>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -171,11 +171,11 @@
   </kdevfileview>
   <kdevdebugger>
     <general>
-      <gdbpath></gdbpath>
-      <dbgshell></dbgshell>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <gdbpath/>
+      <dbgshell/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
