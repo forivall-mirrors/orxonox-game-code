@@ -6,8 +6,12 @@
 #  OIS_LIB_DIR, the location of the libraries
 #  OIS_FOUND, If false, do not try to use OIS
 #
+# Created by Matt Williams to find OGRE libraries
 # Copyright © 2007, Matt Williams
-# Modified by Nicolas Schlumber
+#
+# Modified by Nicolas Schlumberger to find OIS libraries 
+# and make it run on the Tardis-Infrastucture of the ETH Zurich
+# Copyright 2007, Nicolas Schlumberger
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
 
