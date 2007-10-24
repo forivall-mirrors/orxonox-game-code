@@ -1,0 +1,11 @@
+# KDevelop Custom Project File List
+src/ExampleApplication.h
+src/ExampleFrameListener.h
+CMakeLists.txt
+cmake/FindOGRE.cmake
+cmake/FindOIS.cmake
+cmake/FindPkgConfig.cmake
+src/CMakeLists.txt
+Makefile
+src
+src/Makefile
