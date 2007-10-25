@@ -1,5 +1,8 @@
 Here our installing directions
 
-...
+requirements:
+ogre-1.4.5
+ois-1.0
+
 
 Further information about installing and running this application can be found on http://www.orxonox.net/wiki/Running
