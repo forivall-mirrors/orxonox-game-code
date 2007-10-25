@@ -31,10 +31,10 @@
 // TODO: Put creation of SceneNode and implementation of FrameListener into an extern file
 SceneNode *lightNode;
 
-class FrameListener : public ExampleFrameListener
+class OrxFrameListener : public ExampleFrameListener
 {
   public:
-    FrameListener(RenderWindow* win, Camera* cam, SceneManager *sceneMgr)
+    OrxFrameListener(RenderWindow* win, Camera* cam, SceneManager *sceneMgr)
   : ExampleFrameListener(win, cam, false, false)
     {
     }
@@ -82,15 +82,15 @@ class Orxonox : public ExampleApplication
     {
         // add tutorial code here:
         // ...
-      mSceneMgr->setAmbientLight( ColourValue( 0.3, 0.3, 0.3 ) );
+      //mSceneMgr->setAmbientLight( ColourValue( 0.3, 0.3, 0.3 ) );
       //Entity* head = mSceneMgr->createEntity("head", "ogrehead.mesh");
 
       //Entity* head2 = mSceneMgr->createEntity("head2", "ogrehead.mesh");
 
-      SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode", Vector3( 0, 0, 0 ) );
+      //ceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode", Vector3( 0, 0, 0 ) );
       //node->attachObject( head );
 
-      SceneNode *node2 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode2", Vector3( 50, 0, 0 ) );
+      //SceneNode *node2 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode2", Vector3( 50, 0, 0 ) );
       //node2->attachObject( head2 );
 
 
@@ -115,7 +115,7 @@ class Orxonox : public ExampleApplication
     void createFrameListener(void)
     {
         // create frame listener
-      mFrameListener = new ExampleFrameListener(mWindow, mCamera, mSceneMgr);
+      mFrameListener = new OrxFrameListener(mWindow, mCamera, mSceneMgr);
       mRoot->addFrameListener(mFrameListener);
     }
 };
