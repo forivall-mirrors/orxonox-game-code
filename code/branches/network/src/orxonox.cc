@@ -31,10 +31,10 @@
 // TODO: Put creation of SceneNode and implementation of FrameListener into an extern file
 SceneNode *lightNode;
 
-class FrameListener : public ExampleFrameListener
+class OrxFrameListener : public ExampleFrameListener
 {
   public:
-    FrameListener(RenderWindow* win, Camera* cam, SceneManager *sceneMgr)
+    OrxFrameListener(RenderWindow* win, Camera* cam, SceneManager *sceneMgr)
   : ExampleFrameListener(win, cam, false, false)
     {
     }
@@ -115,7 +115,7 @@ class Orxonox : public ExampleApplication
     void createFrameListener(void)
     {
         // create frame listener
-      mFrameListener = new ExampleFrameListener(mWindow, mCamera, mSceneMgr);
+      mFrameListener = new OrxFrameListener(mWindow, mCamera, mSceneMgr);
       mRoot->addFrameListener(mFrameListener);
     }
 };
