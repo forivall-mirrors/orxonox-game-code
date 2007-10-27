@@ -27,6 +27,7 @@
 
 // TODO: Change this to orxonox.h and include all necessary functions there
 #include "ExampleApplication.h"
+#include <CEGUI/CEGUI.h>
 
 // TODO: Put creation of SceneNode and implementation of FrameListener into an extern file
 SceneNode *lightNode;
