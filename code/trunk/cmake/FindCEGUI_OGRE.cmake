@@ -1,7 +1,7 @@
 # Find CEGUI_OGRE includes and library
 #
 # This module defines
-#  CEGUI_CEGUI_OGRE_INCLUDE_DIR
+#  CEGUI_OGRE_INCLUDE_DIR
 #  CEGUI_OGRE_LIBRARIES, the libraries to link against to use CEGUI_OGRE.
 #  CEGUI_OGRE_LIB_DIR, the location of the libraries
 #  CEGUI_OGRE_FOUND, If false, do not try to use CEGUI_OGRE

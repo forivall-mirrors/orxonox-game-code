@@ -24,7 +24,7 @@ IF (WIN32) #Windows
     SET(CEGUI_LIBRARIES debug OgreMain_d optimized OgreMain)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)
-    PKG_SEARCH_MODULE(CEGUI CEGUI CEGUI-OPENGL /usr/pack/cegui-0.5.0-sd/i686-debian-linux3.1/lib/pkgconfig/CEGUI.pc /usr/pack/cegui-0.5.0-sd/i686-debian-linux3.1/lib/pkgconfig/CEGUI_OPENGL.pc) # tardis specific hack
+    PKG_SEARCH_MODULE(CEGUI CEGUI /usr/pack/cegui-0.5.0-sd/i686-debian-linux3.1/lib/pkgconfig/CEGUI.pc) # tardis specific hack
     SET(CEGUI_INCLUDE_DIR ${CEGUI_INCLUDE_DIRS})
     SET(CEGUI_LIB_DIR ${CEGUI_LIBDIR})
     SET(CEGUI_LIBRARIES ${CEGUI_LIBRARIES} CACHE STRING "")
