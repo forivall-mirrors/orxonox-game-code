@@ -19,15 +19,11 @@ IF (CEGUI_LIBRARIES AND CEGUI_INCLUDE_DIR)
     SET(CEGUI_FIND_QUIETLY TRUE) # Already in cache, be silent
 ENDIF (CEGUI_LIBRARIES AND CEGUI_INCLUDE_DIR)
 
-# TODO: test wondows part.
-# windows part currently untested. (28.>Oct2007)
 IF (WIN32) #Windows
     MESSAGE(STATUS "Looking for CEGUI")
-    SET(CEGUISDK $ENV{CEGUI_HOME})
-    STRING(REGEX REPLACE "[\\]" "/" CEGUISDK "${CEGUISDK}" )
-    SET(CEGUI_INCLUDE_DIR ${CEGUISDK}/include)
-    SET(CEGUI_LIB_DIR ${CEGUISDK}/lib)
-    SET(CEGUI_LIBRARIES debug OgreMain_d optimized OgreMain)
+    SET(CEGUI_INCLUDE_DIR ../ogre/Dependencies/include/CEGUI)
+    SET(CEGUI_LIB_DIR ../ogre/Samples/Common/bin/Release/lib)
+    SET(CEGUI_LIBRARIES debug CEGUIBase optimized CEGUIBase)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)
     PKG_SEARCH_MODULE(CEGUI CEGUI /usr/pack/cegui-0.5.0-sd/i686-debian-linux3.1/lib/pkgconfig/CEGUI.pc) # tardis specific hack

@@ -19,15 +19,11 @@ IF (CEGUI_OGRE_LIBRARIES AND CEGUI_OGRE_INCLUDE_DIR)
     SET(CEGUI_OGRE_FIND_QUIETLY TRUE) # Already in cache, be silent
 ENDIF (CEGUI_OGRE_LIBRARIES AND CEGUI_OGRE_INCLUDE_DIR)
 
-## TODO: test windows part
-# windows part is currently untested. (28.Oct.2007)
 IF (WIN32) #Windows
     MESSAGE(STATUS "Looking for CEGUI_OGRE")
-    SET(CEGUI_OGRESDK $ENV{CEGUI_OGRE_HOME})
-    STRING(REGEX REPLACE "[\\]" "/" CEGUI_OGRESDK "${CEGUI_OGRESDK}" )
-    SET(CEGUI_OGRE_INCLUDE_DIR ${CEGUI_OGRESDK}/include)
-    SET(CEGUI_OGRE_LIB_DIR ${CEGUI_OGRESDK}/lib)
-    SET(CEGUI_OGRE_LIBRARIES debug OgreMain_d optimized OgreMain)
+    SET(CEGUI_OGRE_INCLUDE_DIR ../ogre/Dependencies/include/CEGUI)
+    SET(CEGUI_OGRE_LIB_DIR ../ogre/Samples/Common/bin/Release/lib)
+    SET(CEGUI_OGRE_LIBRARIES debug CEGUIBase optimized CEGUIBase)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)
     PKG_SEARCH_MODULE(CEGUI_OGRE CEGUI-OGRE /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/CEGUI_OGRE.pc) # tardis specific hack

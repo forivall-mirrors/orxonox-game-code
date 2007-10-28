@@ -19,15 +19,11 @@ IF (OIS_LIBRARIES AND OIS_INCLUDE_DIR)
     SET(OIS_FIND_QUIETLY TRUE) # Already in cache, be silent
 ENDIF (OIS_LIBRARIES AND OIS_INCLUDE_DIR)
 
-## TODO: test windows part
-# windows part is currently untested. (28.Oct.2007)
 IF (WIN32) #Windows
     MESSAGE(STATUS "Looking for OIS")
-    SET(OISSDK $ENV{OIS_HOME})
-    STRING(REGEX REPLACE "[\\]" "/" OISSDK "${OISSDK}" )
-    SET(OIS_INCLUDE_DIR ${OISSDK}/include)
-    SET(OIS_LIB_DIR ${OISSDK}/lib)
-    #SET(OIS_LIBRARIES debug OgreMain_d optimized OgreMain)
+    SET(OIS_INCLUDE_DIR ../ogre/Dependencies/include)
+    SET(OIS_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../ogre/Samples/Common/bin/Release)
+    SET(OIS_LIBRARIES debug OIS_d optimized OIS)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)
     PKG_SEARCH_MODULE(OIS OIS /usr/pack/ois-1.0-sd/i686-debian-linux3.1/lib/pkgconfig/OIS.pc) # tardis specific hack
