@@ -21,7 +21,7 @@ ENDIF (CEGUI_OGRE_LIBRARIES AND CEGUI_OGRE_INCLUDE_DIR)
 
 IF (WIN32) #Windows
     MESSAGE(STATUS "Looking for CEGUI_OGRE")
-    SET(CEGUI_OGRE_INCLUDE_DIR ../ogre/Dependencies/include/CEGUI)
+    SET(CEGUI_OGRE_INCLUDE_DIR ../ogre/Samples/Common/CEGUIRenderer/include)
     SET(CEGUI_OGRE_LIB_DIR ../ogre/Samples/Common/bin/Release/lib)
     SET(CEGUI_OGRE_LIBRARIES debug CEGUIBase optimized CEGUIBase)
 ELSE (WIN32) #Unix

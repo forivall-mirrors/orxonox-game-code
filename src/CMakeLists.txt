@@ -2,7 +2,7 @@ PROJECT(Orxonox)
 
 # create a few variables to simplify life
 SET(SRC_FILES orxonox.cc)
-SET(INC_FILES ExampleApplication.h  ExampleFrameListener.h)
+#SET(INC_FILES ExampleApplication.h  ExampleFrameListener.h)
 
 #Creates an executable
 ADD_EXECUTABLE(../bin/main ${SRC_FILES} ${INC_FILES})
