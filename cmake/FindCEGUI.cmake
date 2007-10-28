@@ -6,8 +6,12 @@
 #  CEGUI_LIB_DIR, the location of the libraries
 #  CEGUI_FOUND, If false, do not try to use CEGUI
 #
+# Created by Matt Williams to find OGRE libraries
 # Copyright © 2007, Matt Williams
-# Modified by Nicolas Schlumberger to make it work on the Tardis-Infrastucture of the ETH Zurich
+#
+# Modified by Nicolas Schlumberger to find CEGUI libraries
+# and make it run on the Tardis-Infrastucture of the ETH Zurich
+# Copyright 2007, Nicolas Schlumberger
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
 
@@ -15,6 +19,8 @@ IF (CEGUI_LIBRARIES AND CEGUI_INCLUDE_DIR)
     SET(CEGUI_FIND_QUIETLY TRUE) # Already in cache, be silent
 ENDIF (CEGUI_LIBRARIES AND CEGUI_INCLUDE_DIR)
 
+# TODO: test wondows part.
+# windows part currently untested. (28.>Oct2007)
 IF (WIN32) #Windows
     MESSAGE(STATUS "Looking for CEGUI")
     SET(CEGUISDK $ENV{CEGUI_HOME})
