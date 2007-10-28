@@ -22,8 +22,8 @@ ENDIF (CEGUI_OGRE_LIBRARIES AND CEGUI_OGRE_INCLUDE_DIR)
 IF (WIN32) #Windows
     MESSAGE(STATUS "Looking for CEGUI_OGRE")
     SET(CEGUI_OGRE_INCLUDE_DIR ../ogre/Samples/Common/CEGUIRenderer/include)
-    SET(CEGUI_OGRE_LIB_DIR ../ogre/Samples/Common/bin/Release/lib)
-    SET(CEGUI_OGRE_LIBRARIES debug CEGUIBase optimized CEGUIBase)
+    SET(CEGUI_OGRE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../ogre/Samples/Common/bin/Release/lib)
+    SET(CEGUI_OGRE_LIBRARIES debug OgreGUIRenderer_d optimized OgreGUIRenderer)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)
     PKG_SEARCH_MODULE(CEGUI_OGRE CEGUI-OGRE /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/CEGUI_OGRE.pc) # tardis specific hack
