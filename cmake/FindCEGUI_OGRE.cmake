@@ -26,7 +26,7 @@ IF (WIN32) #Windows
     SET(CEGUI_OGRE_LIBRARIES debug OgreGUIRenderer_d optimized OgreGUIRenderer)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)
-    PKG_SEARCH_MODULE(CEGUI_OGRE CEGUI-OGRE /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/CEGUI_OGRE.pc) # tardis specific hack
+    PKG_SEARCH_MODULE(CEGUI_OGRE CEGUI-OGRE /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/CEGUI-OGRE.pc) # tardis specific hack
     SET(CEGUI_OGRE_INCLUDE_DIR ${CEGUI_OGRE_INCLUDE_DIRS})
     SET(CEGUI_OGRE_LIB_DIR ${CEGUI_OGRE_LIBDIR})
     SET(CEGUI_OGRE_LIBRARIES ${CEGUI_OGRE_LIBRARIES} CACHE STRING "")
