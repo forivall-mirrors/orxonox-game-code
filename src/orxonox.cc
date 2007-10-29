@@ -206,8 +206,8 @@ class OrxApplication
       RenderWindow *win = mRoot->getAutoCreatedWindow();
 
       // CEGUI setup
-      mRenderer = new CEGUI::OgreCEGUIRenderer(win, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, mgr);
-      mSystem = new CEGUI::System(mRenderer);
+//       mRenderer = new CEGUI::OgreCEGUIRenderer(win, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, mgr);
+//       mSystem = new CEGUI::System(mRenderer);
 
       // Other CEGUI setup here.
     }
