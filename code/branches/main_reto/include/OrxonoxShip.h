@@ -5,15 +5,21 @@
 
 using namespace Ogre;
 
-class OrxonoxShip : public Entity
+class OrxonoxShip
 {
 public:
-	OrxonoxShip(const Ogre::String, Ogre::MeshPtr&);
+	OrxonoxShip(SceneManager*, SceneNode*);
 	virtual ~OrxonoxShip();
+
+	/*void setThrust(float);
+	void setSideThrust(float);*/
 
 	virtual bool initialise();
 
 protected:
+	SceneManager *mSceneMgr;
+	SceneNode *mRootNode;
+	Entity *mShip;
 };
 
 

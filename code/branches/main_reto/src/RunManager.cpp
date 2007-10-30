@@ -7,7 +7,7 @@ RunManager::RunManager(OgreControl * mOgre, bool bufferedKeys, bool bufferedMous
 mOgre(mOgre), mWindow(mOgre->getRenderWindow()),
 mTranslateVector(Vector3::ZERO), mStatsOn(true), mNumScreenShots(0),
 mMoveScale(0.0f), mRotScale(0.0f), mTimeUntilNextToggle(0), mFiltering(TFO_BILINEAR),
-mAniso(1), mSceneDetailIndex(0), mMoveSpeed(100), mRotateSpeed(36), mDebugOverlay(0),
+mAniso(1), mSceneDetailIndex(0), mMoveSpeed(300), mRotateSpeed(36), mDebugOverlay(0),
 mInputManager(0), mMouse(0), mKeyboard(0), mJoy(0)
 {
 	// create new SceneManger
@@ -17,20 +17,23 @@ mInputManager(0), mMouse(0), mKeyboard(0), mJoy(0)
 	// create various objects
 	// background scene
 	mScene = new OrxonoxScene(mSceneMgr);
+
+	// create a steerable SceneNode for the spaceship to be attached to
+	mShipNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("ShipNode", Vector3(20, 20, 20));
+
+	// spaceship
+	mShip = new OrxonoxShip(mSceneMgr, mShipNode);
+
+	// load all resources and create the entities
+	mScene->initialise();
+	mShip->initialise();
+
 	// create camera and viewport
 	createCamera();
 	createViewports();
-	mScene->initialise();
 
-	// create a steerable SceneNode for the spaceship to be attached to
-	/*mShipNode = new SteerableNode(mSceneMgr, "shipNode");
-	mShipNode->setPosition(Vector3(20, 20, 20));
-	mSceneMgr->getRootSceneNode()->addChild(mShipNode);*/
-
-	// spaceship
-	/*mShip = static_cast<OrxonoxShip*>(mSceneMgr->createEntity("ship", "ninja.mesh"));
-	mShipNode->attachObject(mShip);*/
-
+	// Set default mipmap level (NB some APIs ignore this)
+	TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
 	using namespace OIS;
 
@@ -75,12 +78,6 @@ RunManager::~RunManager()
 
 	if (mScene)
 		delete mScene;
-
-	/*if (mShipNode)
-		delete mShipNode;
-
-	if (mShip)
-		delete mShip;*/
 }
 
 
@@ -368,6 +365,7 @@ void RunManager::updateStats(void)
 void RunManager::createCamera(void)
 {
 	mCamera = mSceneMgr->createCamera("PlayerCam");
+	mShipNode->attachObject(mCamera);
 	mCamera->setNearClipDistance(5);
 	mCamera->setPosition(Vector3(0,10,500));
 	mCamera->lookAt(Vector3(0,0,0));
@@ -383,9 +381,6 @@ void RunManager::createViewports(void)
 	// Alter the camera aspect ratio to match the viewport
 	mCamera->setAspectRatio(
 		Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
-
-	// Set default mipmap level (NB some APIs ignore this)
-	TextureManager::getSingleton().setDefaultNumMipmaps(5);
 }
 
 

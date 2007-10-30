@@ -210,10 +210,6 @@
 				RelativePath="..\src\RunManager.cpp"
 				>
 			</File>
-			<File
-				RelativePath="..\src\SteerableNode.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -242,10 +238,6 @@
 			</File>
 			<File
 				RelativePath="..\include\RunManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\SteerableNode.h"
 				>
 			</File>
 		</Filter>

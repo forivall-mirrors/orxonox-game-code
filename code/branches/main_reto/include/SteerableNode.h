@@ -5,7 +5,7 @@
 
 using namespace Ogre;
 
-class SteerableNode : public SceneNode
+class SteerableNode
 {
 public:
 	SteerableNode(SceneManager*, const Ogre::String&);

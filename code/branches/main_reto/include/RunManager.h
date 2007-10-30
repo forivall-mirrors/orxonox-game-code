@@ -37,7 +37,7 @@ protected:
 
 	OrxonoxScene *mScene;
 	Camera* mCamera;
-	SteerableNode *mShipNode;
+	SceneNode *mShipNode;
 	OrxonoxShip *mShip;
 
 	Vector3 mTranslateVector;
