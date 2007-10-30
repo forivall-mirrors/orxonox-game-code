@@ -7,6 +7,8 @@
 
 #include "OgreControl.h"
 #include "OrxonoxScene.h"
+#include "OrxonoxShip.h"
+#include "SteerableNode.h"
 
 //Use this define to signify OIS will be used as a DLL
 //(so that dll import/export macros are in effect)
@@ -30,11 +32,13 @@ public:
 protected:
 	OgreControl  *mOgre;
 
-	// these objects are meant to be static in existance.
-	OrxonoxScene *mScene;
 	SceneManager *mSceneMgr;
-	Camera* mCamera;
 	RenderWindow* mWindow;
+
+	OrxonoxScene *mScene;
+	Camera* mCamera;
+	SteerableNode *mShipNode;
+	OrxonoxShip *mShip;
 
 	Vector3 mTranslateVector;
 	bool mStatsOn;

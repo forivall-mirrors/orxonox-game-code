@@ -10,15 +10,26 @@ mMoveScale(0.0f), mRotScale(0.0f), mTimeUntilNextToggle(0), mFiltering(TFO_BILIN
 mAniso(1), mSceneDetailIndex(0), mMoveSpeed(100), mRotateSpeed(36), mDebugOverlay(0),
 mInputManager(0), mMouse(0), mKeyboard(0), mJoy(0)
 {
-	// create new scene
+	// create new SceneManger
 	mSceneMgr = mOgre->getRoot()->createSceneManager(ST_GENERIC,"mScene");
-	mScene = new OrxonoxScene(mSceneMgr);
 
+
+	// create various objects
+	// background scene
+	mScene = new OrxonoxScene(mSceneMgr);
 	// create camera and viewport
 	createCamera();
 	createViewports();
-
 	mScene->initialise();
+
+	// create a steerable SceneNode for the spaceship to be attached to
+	/*mShipNode = new SteerableNode(mSceneMgr, "shipNode");
+	mShipNode->setPosition(Vector3(20, 20, 20));
+	mSceneMgr->getRootSceneNode()->addChild(mShipNode);*/
+
+	// spaceship
+	/*mShip = static_cast<OrxonoxShip*>(mSceneMgr->createEntity("ship", "ninja.mesh"));
+	mShipNode->attachObject(mShip);*/
 
 
 	using namespace OIS;
@@ -64,6 +75,12 @@ RunManager::~RunManager()
 
 	if (mScene)
 		delete mScene;
+
+	/*if (mShipNode)
+		delete mShipNode;
+
+	if (mShip)
+		delete mShip;*/
 }
 
 
