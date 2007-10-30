@@ -40,23 +40,17 @@ protected:
 	SceneNode *mShipNode;
 	OrxonoxShip *mShip;
 
-	Vector3 mTranslateVector;
 	bool mStatsOn;
 
 	std::string mDebugText;
 
 	unsigned int mNumScreenShots;
-	float mMoveScale;
-	Degree mRotScale;
 	// just to stop toggles flipping too fast
 	Real mTimeUntilNextToggle ;
-	Radian mRotX, mRotY;
 	TextureFilterOptions mFiltering;
 	int mAniso;
 
 	int mSceneDetailIndex ;
-	Real mMoveSpeed;
-	Degree mRotateSpeed;
 	Overlay* mDebugOverlay;
 
 	//OIS Input devices
@@ -91,8 +85,6 @@ protected:
 	/** OUTPUT **/
 
 	virtual void updateStats(void);
-
-	virtual void moveCamera();
 
 	virtual void showDebugOverlay(bool);
 

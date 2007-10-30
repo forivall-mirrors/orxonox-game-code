@@ -5,9 +5,9 @@
 RunManager::RunManager(OgreControl * mOgre, bool bufferedKeys, bool bufferedMouse,
 					   bool bufferedJoy ) :
 mOgre(mOgre), mWindow(mOgre->getRenderWindow()),
-mTranslateVector(Vector3::ZERO), mStatsOn(true), mNumScreenShots(0),
-mMoveScale(0.0f), mRotScale(0.0f), mTimeUntilNextToggle(0), mFiltering(TFO_BILINEAR),
-mAniso(1), mSceneDetailIndex(0), mMoveSpeed(300), mRotateSpeed(36), mDebugOverlay(0),
+mStatsOn(true), mNumScreenShots(0),
+mTimeUntilNextToggle(0), mFiltering(TFO_BILINEAR),
+mAniso(1), mSceneDetailIndex(0), mDebugOverlay(0),
 mInputManager(0), mMouse(0), mKeyboard(0), mJoy(0)
 {
 	// create new SceneManger
@@ -89,6 +89,7 @@ bool RunManager::tick(unsigned long time, float deltaTime)
 	updateStats();
 	
 	mScene->tick(time, deltaTime);
+	mShip->tick(time, deltaTime);
 
 	using namespace OIS;
 
@@ -107,24 +108,6 @@ bool RunManager::tick(unsigned long time, float deltaTime)
 		// one of the input modes is immediate, so setup what is needed for immediate movement
 		if (mTimeUntilNextToggle >= 0)
 			mTimeUntilNextToggle -= deltaTime;
-
-		// If this is the first frame, pick a speed
-		if (deltaTime == 0)
-		{
-			mMoveScale = 1;
-			mRotScale = 0.1;
-		}
-		// Otherwise scale movement units by time passed since last frame
-		else
-		{
-			// Move about 100 units per second,
-			mMoveScale = mMoveSpeed * deltaTime;
-			// Take about 10 seconds for full rotation
-			mRotScale = mRotateSpeed * deltaTime;
-		}
-		mRotX = 0;
-		mRotY = 0;
-		mTranslateVector = Ogre::Vector3::ZERO;
 	}
 
 	//Check to see which device is not buffered, and handle it
@@ -134,9 +117,6 @@ bool RunManager::tick(unsigned long time, float deltaTime)
 	if( !mMouse->buffered() )
 		if( processUnbufferedMouseInput() == false )
 			return false;
-
-	if( !mMouse->buffered() || !mKeyboard->buffered() || !buffJ )
-		moveCamera();
 
 	return true;
 }
@@ -178,29 +158,19 @@ bool RunManager::processUnbufferedKeyInput()
 {
 	using namespace OIS;
 
-	if(mKeyboard->isKeyDown(KC_A))
-		mTranslateVector.x = -mMoveScale;	// Move camera left
-
-	if(mKeyboard->isKeyDown(KC_D))
-		mTranslateVector.x = mMoveScale;	// Move camera RIGHT
+	if(mKeyboard->isKeyDown(KC_A) || mKeyboard->isKeyDown(KC_LEFT))
+		mShip->setSideThrust(1);
+	else if(mKeyboard->isKeyDown(KC_D) || mKeyboard->isKeyDown(KC_RIGHT))
+		mShip->setSideThrust(-1);
+	else
+		mShip->setSideThrust(0);
 
 	if(mKeyboard->isKeyDown(KC_UP) || mKeyboard->isKeyDown(KC_W) )
-		mTranslateVector.z = -mMoveScale;	// Move camera forward
-
-	if(mKeyboard->isKeyDown(KC_DOWN) || mKeyboard->isKeyDown(KC_S) )
-		mTranslateVector.z = mMoveScale;	// Move camera backward
-
-	if(mKeyboard->isKeyDown(KC_PGUP))
-		mTranslateVector.y = mMoveScale;	// Move camera up
-
-	if(mKeyboard->isKeyDown(KC_PGDOWN))
-		mTranslateVector.y = -mMoveScale;	// Move camera down
-
-	if(mKeyboard->isKeyDown(KC_RIGHT))
-		mCamera->yaw(-mRotScale);
-
-	if(mKeyboard->isKeyDown(KC_LEFT))
-		mCamera->yaw(mRotScale);
+		mShip->setThrust(1);
+	else if(mKeyboard->isKeyDown(KC_DOWN) || mKeyboard->isKeyDown(KC_S) )
+		mShip->setThrust(-1);
+	else
+		mShip->setThrust(0);
 
 	if( mKeyboard->isKeyDown(KC_ESCAPE) || mKeyboard->isKeyDown(KC_Q) )
 		return false;
@@ -268,8 +238,10 @@ bool RunManager::processUnbufferedKeyInput()
 
 	// Print camera details
 	if(displayCameraDetails)
-		mDebugText = "P: " + StringConverter::toString(mCamera->getDerivedPosition()) +
-		" " + "O: " + StringConverter::toString(mCamera->getDerivedOrientation());
+		mDebugText = StringConverter::toString(mShip->getThrust())
+		+ " | Speed = " + StringConverter::toString(mShip->speed);
+		// mDebugText = "P: " + StringConverter::toString(mCamera->getDerivedPosition()) +
+		// " " + "O: " + StringConverter::toString(mCamera->getDerivedOrientation());
 
 	// Return true to continue rendering
 	return true;
@@ -283,26 +255,11 @@ bool RunManager::processUnbufferedMouseInput()
 	// Rotation factors, may not be used if the second mouse button is pressed
 	// 2nd mouse button - slide, otherwise rotate
 	const MouseState &ms = mMouse->getMouseState();
-	mRotX = Degree(-ms.X.rel * 0.13);
-	mRotY = Degree(-ms.Y.rel * 0.13);
 
-	mShip->setYaw(mRotX);
-	mShip->setPitch(mRotY);
+	mShip->setYaw(Degree(-ms.X.rel * 0.13));
+	mShip->setPitch(Degree(-ms.Y.rel * 0.13));
 
 	return true;
-}
-
-
-void RunManager::moveCamera()
-{
-	// Make all the changes to the camera
-	// Note that YAW direction is around a fixed axis (freelook style) rather than a natural YAW
-	//(e.g. airplane)
-	//mCamera->yaw(mRotX);
-	//mCamera->pitch(mRotY);
-	//mCamera->moveRelative(mTranslateVector);
-
-	mShipNode->translate(mShipNode->getLocalAxes() * mTranslateVector);
 }
 
 

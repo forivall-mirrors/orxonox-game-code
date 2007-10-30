@@ -2,7 +2,7 @@
 
 
 OrxonoxShip::OrxonoxShip(SceneManager *mSceneMgr, SceneNode *mNode)
-	: mSceneMgr(mSceneMgr), mRootNode(mNode), speed(Vector3(0, 0, 0)), baseThrust(100)
+	: mSceneMgr(mSceneMgr), mRootNode(mNode), speed(Vector3(0, 0, 0)), baseThrust(100), thrust(0), sideThrust(0)
 {
 }
 
@@ -35,7 +35,7 @@ void OrxonoxShip::setThrust(const Real value)
 
 void OrxonoxShip::setSideThrust(const Real value)
 {
-	sideThrust = value;
+	sideThrust = value * baseThrust;
 }
 
 void OrxonoxShip::setYaw(const Radian value)
@@ -53,10 +53,16 @@ void OrxonoxShip::setRoll(const Radian value)
 	mRootNode->roll(value);
 }
 
+Real OrxonoxShip::getThrust()
+{
+	return thrust;
+}
+
 
 bool OrxonoxShip::tick(unsigned long time, float deltaTime)
 {
-	speed += (mRootNode->getLocalAxes() * Vector3(0, 0, 1)).normalisedCopy() * thrust * deltaTime;
+	speed += (mRootNode->getLocalAxes() * Vector3(0, 0, -1)).normalisedCopy() * thrust * deltaTime;
+	speed += (mRootNode->getLocalAxes() * Vector3(1, 0,  0)).normalisedCopy() * sideThrust * deltaTime;
 
 	mRootNode->translate(speed * deltaTime);
 

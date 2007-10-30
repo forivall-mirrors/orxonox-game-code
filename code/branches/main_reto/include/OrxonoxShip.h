@@ -8,6 +8,9 @@ using namespace Ogre;
 class OrxonoxShip
 {
 public:
+	Vector3 speed;
+	float thrust, sideThrust, baseThrust;
+
 	OrxonoxShip(SceneManager*, SceneNode*);
 	virtual ~OrxonoxShip();
 
@@ -19,6 +22,8 @@ public:
 	void setPitch(const Radian);
 	void setRoll(const Radian);
 
+	Real getThrust();
+
 	bool tick(unsigned long, float);
 
 protected:
@@ -26,8 +31,6 @@ protected:
 	SceneNode *mRootNode;
 	Entity *mShip;
 
-	Vector3 speed;
-	float thrust, sideThrust, baseThrust;
 };
 
 
