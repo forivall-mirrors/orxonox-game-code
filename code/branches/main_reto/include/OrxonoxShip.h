@@ -11,15 +11,23 @@ public:
 	OrxonoxShip(SceneManager*, SceneNode*);
 	virtual ~OrxonoxShip();
 
-	/*void setThrust(float);
-	void setSideThrust(float);*/
-
 	virtual bool initialise();
+
+	void setThrust(const Real);
+	void setSideThrust(const Real);
+	void setYaw(const Radian);
+	void setPitch(const Radian);
+	void setRoll(const Radian);
+
+	bool tick(unsigned long, float);
 
 protected:
 	SceneManager *mSceneMgr;
 	SceneNode *mRootNode;
 	Entity *mShip;
+
+	Vector3 speed;
+	float thrust, sideThrust, baseThrust;
 };
 
 

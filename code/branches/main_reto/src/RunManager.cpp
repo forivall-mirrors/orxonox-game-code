@@ -283,16 +283,11 @@ bool RunManager::processUnbufferedMouseInput()
 	// Rotation factors, may not be used if the second mouse button is pressed
 	// 2nd mouse button - slide, otherwise rotate
 	const MouseState &ms = mMouse->getMouseState();
-	if( ms.buttonDown( MB_Right ) )
-	{
-		mTranslateVector.x += ms.X.rel * 0.13;
-		mTranslateVector.y -= ms.Y.rel * 0.13;
-	}
-	else
-	{
-		mRotX = Degree(-ms.X.rel * 0.13);
-		mRotY = Degree(-ms.Y.rel * 0.13);
-	}
+	mRotX = Degree(-ms.X.rel * 0.13);
+	mRotY = Degree(-ms.Y.rel * 0.13);
+
+	mShip->setYaw(mRotX);
+	mShip->setPitch(mRotY);
 
 	return true;
 }
@@ -303,9 +298,11 @@ void RunManager::moveCamera()
 	// Make all the changes to the camera
 	// Note that YAW direction is around a fixed axis (freelook style) rather than a natural YAW
 	//(e.g. airplane)
-	mCamera->yaw(mRotX);
-	mCamera->pitch(mRotY);
-	mCamera->moveRelative(mTranslateVector);
+	//mCamera->yaw(mRotX);
+	//mCamera->pitch(mRotY);
+	//mCamera->moveRelative(mTranslateVector);
+
+	mShipNode->translate(mShipNode->getLocalAxes() * mTranslateVector);
 }
 
 

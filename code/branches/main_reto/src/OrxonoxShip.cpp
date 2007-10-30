@@ -1,7 +1,8 @@
 #include "OrxonoxShip.h"
 
 
-OrxonoxShip::OrxonoxShip(SceneManager *mSceneMgr, SceneNode *mNode) : mSceneMgr(mSceneMgr), mRootNode(mNode)
+OrxonoxShip::OrxonoxShip(SceneManager *mSceneMgr, SceneNode *mNode)
+	: mSceneMgr(mSceneMgr), mRootNode(mNode), speed(Vector3(0, 0, 0)), baseThrust(100)
 {
 }
 
@@ -18,8 +19,46 @@ bool OrxonoxShip::initialise()
 
 	// create the "space ship" (currently a fish..)
 	mShip = mSceneMgr->createEntity("Ship", "fish.mesh");
-	mRootNode->setScale(Vector3(10, 10, 10));
-	mRootNode->attachObject(mShip);
+	SceneNode *fishNode = mRootNode->createChildSceneNode("fishNode");
+	fishNode->yaw(Degree(-90));
+	fishNode->attachObject(mShip);
+	fishNode->setScale(Vector3(10, 10, 10));
+
+	return true;
+}
+
+
+void OrxonoxShip::setThrust(const Real value)
+{
+	thrust = value * baseThrust;
+}
+
+void OrxonoxShip::setSideThrust(const Real value)
+{
+	sideThrust = value;
+}
+
+void OrxonoxShip::setYaw(const Radian value)
+{
+	mRootNode->yaw(value);
+}
+
+void OrxonoxShip::setPitch(const Radian value)
+{
+	mRootNode->pitch(value);
+}
+
+void OrxonoxShip::setRoll(const Radian value)
+{
+	mRootNode->roll(value);
+}
+
+
+bool OrxonoxShip::tick(unsigned long time, float deltaTime)
+{
+	speed += (mRootNode->getLocalAxes() * Vector3(0, 0, 1)).normalisedCopy() * thrust * deltaTime;
+
+	mRootNode->translate(speed * deltaTime);
 
 	return true;
 }
