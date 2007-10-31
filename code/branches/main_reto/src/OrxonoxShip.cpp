@@ -2,7 +2,7 @@
 
 
 OrxonoxShip::OrxonoxShip(SceneManager *mSceneMgr, SceneNode *mNode)
-	: mSceneMgr(mSceneMgr), mRootNode(mNode), speed(Vector3(0, 0, 0)), baseThrust(100), thrust(0), sideThrust(0), n(0),
+	: mSceneMgr(mSceneMgr), mRootNode(mNode), speed(Vector3(0, 0, 0)), baseThrust(1000), thrust(0), sideThrust(0), n(0),
 	bulletSpeed(400)
 {
 }
@@ -76,7 +76,7 @@ Bullet* OrxonoxShip::fire()
 bool OrxonoxShip::tick(unsigned long time, float deltaTime)
 {
 	speed += (mRootNode->getLocalAxes() * Vector3(0, 0, -1)).normalisedCopy() * thrust * deltaTime;
-	speed += (mRootNode->getLocalAxes() * Vector3(1, 0,  0)).normalisedCopy() * sideThrust * deltaTime;
+	speed += (mRootNode->getLocalAxes() * Vector3(-1, 0,  0)).normalisedCopy() * sideThrust * deltaTime;
 
 	mRootNode->translate(speed * deltaTime);
 
