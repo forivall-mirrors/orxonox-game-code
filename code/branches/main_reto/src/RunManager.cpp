@@ -4,7 +4,7 @@
 // Constructor takes a RenderWindow because it uses that to determine input context
 RunManager::RunManager(OgreControl * mOgre, bool bufferedKeys, bool bufferedMouse,
 					   bool bufferedJoy ) :
-mOgre(mOgre), mWindow(mOgre->getRenderWindow()),
+mOgre(mOgre), mWindow(mOgre->getRenderWindow()), leftButtonDown(false),
 mStatsOn(true), mNumScreenShots(0),
 mTimeUntilNextToggle(0), mFiltering(TFO_BILINEAR),
 mAniso(1), mSceneDetailIndex(0), mDebugOverlay(0),
@@ -34,6 +34,11 @@ mInputManager(0), mMouse(0), mKeyboard(0), mJoy(0)
 
 	// Set default mipmap level (NB some APIs ignore this)
 	TextureManager::getSingleton().setDefaultNumMipmaps(5);
+
+	// initialise bullets list
+	mBullets = new Bullet*[10];
+	mBulletsPosition = 0;
+	mBulletsSize = 10;
 
 	using namespace OIS;
 
@@ -78,6 +83,10 @@ RunManager::~RunManager()
 
 	if (mScene)
 		delete mScene;
+
+	for (int i = 0; i < mBulletsPosition; i++)
+		delete mBullets[i];
+	delete mBullets;
 }
 
 
@@ -90,6 +99,14 @@ bool RunManager::tick(unsigned long time, float deltaTime)
 	
 	mScene->tick(time, deltaTime);
 	mShip->tick(time, deltaTime);
+
+	// update the bullet positions
+	for (int i = 0; i < mBulletsPosition; i++)
+	{
+		mBullets[i]->mNode->translate(mBullets[i]->mSpeed*deltaTime);
+		mBullets[i]->mNode->yaw(Degree(deltaTime*100));
+		mBullets[i]->mNode->roll(Degree(deltaTime*300));
+	}
 
 	using namespace OIS;
 
@@ -255,6 +272,27 @@ bool RunManager::processUnbufferedMouseInput()
 	// Rotation factors, may not be used if the second mouse button is pressed
 	// 2nd mouse button - slide, otherwise rotate
 	const MouseState &ms = mMouse->getMouseState();
+
+	if (ms.buttonDown(MB_Left) && !leftButtonDown)
+	{
+		leftButtonDown = true;
+		// fire
+		Bullet *mTempBullet = mShip->fire();
+		if (mBulletsPosition >= mBulletsSize)
+		{
+			// redimension the array
+			Bullet **mTempArray = new Bullet*[2*mBulletsSize];
+			for (int i = 0; i < mBulletsSize; i++)
+				mTempArray[i] = mBullets[i];
+			mBulletsSize *= 2;
+			delete mBullets;
+			mBullets = mTempArray;
+		}
+		mBullets[mBulletsPosition++] = mTempBullet;
+
+	}
+	else if (!ms.buttons)
+		leftButtonDown = false;
 
 	mShip->setYaw(Degree(-ms.X.rel * 0.13));
 	mShip->setPitch(Degree(-ms.Y.rel * 0.13));

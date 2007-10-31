@@ -59,6 +59,11 @@ protected:
 	OIS::Keyboard* mKeyboard;
 	OIS::JoyStick* mJoy;
 
+	bool leftButtonDown;
+	Bullet **mBullets;
+	int mBulletsSize;
+	int mBulletsPosition;
+
 	// previously elapsed render time
 	unsigned long mTime;
 

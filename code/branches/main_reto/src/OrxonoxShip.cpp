@@ -2,7 +2,8 @@
 
 
 OrxonoxShip::OrxonoxShip(SceneManager *mSceneMgr, SceneNode *mNode)
-	: mSceneMgr(mSceneMgr), mRootNode(mNode), speed(Vector3(0, 0, 0)), baseThrust(100), thrust(0), sideThrust(0)
+	: mSceneMgr(mSceneMgr), mRootNode(mNode), speed(Vector3(0, 0, 0)), baseThrust(100), thrust(0), sideThrust(0), n(0),
+	bulletSpeed(400)
 {
 }
 
@@ -18,6 +19,7 @@ bool OrxonoxShip::initialise()
 	//ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	// create the "space ship" (currently a fish..)
+	// TODO: names must be unique!
 	mShip = mSceneMgr->createEntity("Ship", "fish.mesh");
 	SceneNode *fishNode = mRootNode->createChildSceneNode("fishNode");
 	fishNode->yaw(Degree(-90));
@@ -58,6 +60,18 @@ Real OrxonoxShip::getThrust()
 	return thrust;
 }
 
+Bullet* OrxonoxShip::fire()
+{
+	// TODO: Names must be unique!
+	SceneNode *temp = mRootNode->getParentSceneNode()->createChildSceneNode("BulletNode" + StringConverter::toString(n));
+	temp->setOrientation(mRootNode->getOrientation());
+	temp->setPosition(mRootNode->getPosition());
+	temp->setScale(Vector3(1, 1, 1) * 10);
+	temp->yaw(Degree(-90));
+	return new Bullet(temp,
+		mSceneMgr->createEntity("bullet" + StringConverter::toString(n++), "Barrel.mesh"),
+		speed + (mRootNode->getLocalAxes() * Vector3(0, 0, -1)).normalisedCopy() * bulletSpeed);
+}
 
 bool OrxonoxShip::tick(unsigned long time, float deltaTime)
 {
