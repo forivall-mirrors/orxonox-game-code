@@ -28,13 +28,23 @@
 // TODO: Change this to orxonox.h and include all necessary functions there
 #include "ExampleApplication.h"
 
+#include <string>
+#include <iostream>
+
+#include "xml/xmlParser.h"
+#include "loader/LevelLoader.h"
+
+
+
+using namespace std;
+
 // TODO: Put creation of SceneNode and implementation of FrameListener into an extern file
 SceneNode *lightNode;
 
-class OrxFrameListener : public ExampleFrameListener
+class FrameListener : public ExampleFrameListener
 {
   public:
-    OrxFrameListener(RenderWindow* win, Camera* cam, SceneManager *sceneMgr)
+    FrameListener(RenderWindow* win, Camera* cam, SceneManager *sceneMgr)
   : ExampleFrameListener(win, cam, false, false)
     {
     }
@@ -80,18 +90,34 @@ class Orxonox : public ExampleApplication
 
     void createScene(void)
     {
+
+    	string levelFile = "sp_level_moonstation.oxw";
+			loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
+
+/*			
+			LightManager* lightman = new LightManager();
+			loader->loadLights(lightman);
+			CameraManager* cameraman = new CameraManager();
+			loader->loadCameras(cameraman);			    
+			ScriptManager* scriptman = new ScriptManager();
+			loader->loadScripts(scriptman);			    
+	*/		    			    
+    
+    
         // add tutorial code here:
         // ...
-      mSceneMgr->setAmbientLight( ColourValue( 0.3, 0.3, 0.3 ) );
-      //Entity* head = mSceneMgr->createEntity("head", "ogrehead.mesh");
+        
+        /*
+      mSceneMgr->setAmbientLight( ColourValue( 1, 1, 0.1 ) );
+      Entity* head = mSceneMgr->createEntity("head", "ogrehead.mesh");
 
-      //Entity* head2 = mSceneMgr->createEntity("head2", "ogrehead.mesh");
+      Entity* head2 = mSceneMgr->createEntity("head2", "ogrehead.mesh");
 
       SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode", Vector3( 0, 0, 0 ) );
-      //node->attachObject( head );
+      node->attachObject( head );
 
       SceneNode *node2 = mSceneMgr->getRootSceneNode()->createChildSceneNode( "OgreHeadNode2", Vector3( 50, 0, 0 ) );
-      //node2->attachObject( head2 );
+      node2->attachObject( head2 );
 
 
       //mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
@@ -110,12 +136,14 @@ class Orxonox : public ExampleApplication
       lightNode->attachObject(bbs);
       lightNode->attachObject(light);
       light->setPosition(0.0, 0.0, 0.0);
+      
+      */
     }
 
     void createFrameListener(void)
     {
         // create frame listener
-      mFrameListener = new OrxFrameListener(mWindow, mCamera, mSceneMgr);
+      mFrameListener = new ExampleFrameListener(mWindow, mCamera, mSceneMgr);
       mRoot->addFrameListener(mFrameListener);
     }
 };
@@ -123,26 +151,25 @@ class Orxonox : public ExampleApplication
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
-
 INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
 #else
-
 int main(int argc, char **argv)
 #endif
 {
   // Create application object
   Orxonox orxonox;
 
-  try {
+  try 
+  {
     orxonox.go();
-  } catch( Exception& e ) {
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-#else
-    fprintf(stderr, "An exception has occurred: %s\n",
-            e.getFullDescription().c_str());
-#endif
+  } 
+  catch( Exception& e ) 
+  {
+		#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+    	MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+		#else
+    	fprintf(stderr, "An exception has occurred: %s\n",e.getFullDescription().c_str());
+		#endif
   }
-
   return 0;
 }
