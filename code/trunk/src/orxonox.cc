@@ -25,10 +25,18 @@
  *
  */
 
+/**
+ @file  orxonox.cc
+ @brief Orxonox Main File
+ */
+
 #include <Ogre.h>
 #include <OIS/OIS.h>
 #include <CEGUI/CEGUI.h>
 #include <OgreCEGUIRenderer.h>
+
+#include <enet/enet.h>
+#include <enet/protocol.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
