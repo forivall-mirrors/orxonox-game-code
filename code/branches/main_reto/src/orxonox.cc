@@ -26,7 +26,7 @@
  */
 
 
-#include "Orxonox.h"
+#include "orxonox.h"
 
 
 void Orxonox::go(void)

@@ -26,47 +26,25 @@
  */
 
 
-#ifndef __OrxonoxShip__
-#define __OrxonoxShip__
+#ifndef CAMERA_MANAGER_H
+#define CAMERA_MANAGER_H
 
 #include "Ogre.h"
-#include "Bullet.h"
 
 using namespace Ogre;
 
-class OrxonoxShip
+class CameraManager
 {
 public:
-	Vector3 speed;
-	float thrust, sideThrust, baseThrust;
-	Vector3 bulletSpeed;
+	CameraManager(SceneManager*);
+	~CameraManager();
 
-	OrxonoxShip(SceneManager*, SceneNode*);
-	virtual ~OrxonoxShip();
-
-	virtual bool initialise();
-
-	void setThrust(const Real);
-	void setSideThrust(const Real);
-	void setYaw(const Radian);
-	void setPitch(const Radian);
-	void setRoll(const Radian);
-
-	Real getThrust();
-
-	Bullet* fire();
-
-	bool tick(unsigned long, Real);
-
-	SceneNode *mRootNode;
+	bool setCameraPosition(int);
 
 protected:
 	SceneManager *mSceneMgr;
-	Entity *mShip;
-
-	int n;
-
+	Camera *mCamera;
 };
 
 
-#endif
+#endif /* CAMERA_MANAGER_H */

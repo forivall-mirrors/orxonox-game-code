@@ -37,7 +37,7 @@
 * Ogre (window events).
 */
 
-#include "RunManager.h"
+#include "run_manager.h"
 
 
 /**
@@ -537,5 +537,3 @@ void RunManager::createViewports(void)
   mCamera->setAspectRatio(
     Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
 }
-
-

@@ -25,7 +25,7 @@
  *
  */
 
-#include "OrxonoxShip.h"
+#include "orxonox_ship.h"
 
 
 OrxonoxShip::OrxonoxShip(SceneManager *mSceneMgr, SceneNode *mNode)

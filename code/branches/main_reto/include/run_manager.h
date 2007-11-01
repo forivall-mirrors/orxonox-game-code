@@ -26,16 +26,16 @@
  */
 
 
-#ifndef __RunManager__
-#define __RunManager__
+#ifndef RUN_MANAGER_H
+#define RUN_MANAGER_H
 
 #include "Ogre.h"
 #include "OgreStringConverter.h"
 #include "OgreException.h"
 
-#include "OgreControl.h"
-#include "OrxonoxScene.h"
-#include "OrxonoxShip.h"
+#include "ogre_control.h"
+#include "orxonox_scene.h"
+#include "orxonox_ship.h"
 
 //Use this define to signify OIS will be used as a DLL
 //(so that dll import/export macros are in effect)
@@ -122,4 +122,4 @@ protected:
 
 };
 
-#endif
+#endif /* RUN_MANAGER_H */

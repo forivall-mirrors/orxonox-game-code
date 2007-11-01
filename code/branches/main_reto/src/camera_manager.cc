@@ -25,14 +25,20 @@
  *
  */
 
-#include "WeaponManager.h"
+#include "camera_manager.h"
 
-WeaponManager::WeaponManager(SceneManager *mSceneMgr)
+
+CameraManager::CameraManager(SceneManager *mScene) : mSceneMgr(mSceneMgr)
 {
-	
 }
 
 
-WeaponManager::~WeaponManager()
+CameraManager::~CameraManager()
 {
+}
+
+
+bool CameraManager::setCameraPosition(int n)
+{
+	return true;
 }

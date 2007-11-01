@@ -25,26 +25,14 @@
  *
  */
 
+#include "weapon_manager.h"
 
-#ifndef __CameraManager__
-#define __CameraManager__
-
-#include "Ogre.h"
-
-using namespace Ogre;
-
-class CameraManager
+WeaponManager::WeaponManager(SceneManager *mSceneMgr)
 {
-public:
-	CameraManager(SceneManager*);
-	~CameraManager();
-
-	bool setCameraPosition(int);
-
-protected:
-	SceneManager *mSceneMgr;
-	Camera *mCamera;
-};
+	
+}
 
 
-#endif
+WeaponManager::~WeaponManager()
+{
+}

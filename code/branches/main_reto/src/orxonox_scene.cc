@@ -25,7 +25,7 @@
  *
  */
 
-#include "OrxonoxScene.h"
+#include "orxonox_scene.h"
 
 
 OrxonoxScene::OrxonoxScene(SceneManager *mSceneMgr) : mSceneMgr(mSceneMgr)

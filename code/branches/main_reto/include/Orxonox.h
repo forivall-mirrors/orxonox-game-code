@@ -26,14 +26,14 @@
  */
 
 
-#ifndef __Orxonox__
-#define __Orxonox__
+#ifndef ORXONOX_H
+#define ORXONOX_H
 
 #include "Ogre.h"
 #include "OgreTimer.h"
 
-#include "OgreControl.h"
-#include "RunManager.h"
+#include "ogre_control.h"
+#include "run_manager.h"
 
 class Orxonox
 {
@@ -51,4 +51,4 @@ protected:
 
 };
 
-#endif
+#endif /* ORXONOX_H */

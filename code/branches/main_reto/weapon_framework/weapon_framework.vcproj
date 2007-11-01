@@ -183,39 +183,39 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\src\Bullet.cpp"
+				RelativePath="..\src\bullet.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CameraManager.cpp"
+				RelativePath="..\src\camera_manager.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\src\main.cpp"
+				RelativePath="..\src\main.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\src\OgreControl.cpp"
+				RelativePath="..\src\ogre_control.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\src\Orxonox.cpp"
+				RelativePath="..\src\orxonox.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\src\OrxonoxScene.cpp"
+				RelativePath="..\src\orxonox_scene.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\src\OrxonoxShip.cpp"
+				RelativePath="..\src\orxonox_ship.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\src\RunManager.cpp"
+				RelativePath="..\src\run_manager.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\src\WeaponManager.cpp"
+				RelativePath="..\src\weapon_manager.cc"
 				>
 			</File>
 		</Filter>
@@ -225,35 +225,35 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\include\Bullet.h"
+				RelativePath="..\include\bullet.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\CameraManager.h"
+				RelativePath="..\include\camera_manager.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\OgreControl.h"
+				RelativePath="..\include\ogre_control.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\Orxonox.h"
+				RelativePath="..\include\orxonox.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\OrxonoxScene.h"
+				RelativePath="..\include\orxonox_scene.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\OrxonoxShip.h"
+				RelativePath="..\include\orxonox_ship.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\RunManager.h"
+				RelativePath="..\include\run_manager.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\WeaponManager.h"
+				RelativePath="..\include\weapon_manager.h"
 				>
 			</File>
 		</Filter>

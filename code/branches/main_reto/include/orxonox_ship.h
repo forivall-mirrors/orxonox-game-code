@@ -26,41 +26,48 @@
  */
 
 
+#ifndef ORXONOX_SHIP_H
+#define ORXONOX_SHIP_H
 
-#include "Orxonox.h"
+#include "Ogre.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "bullet.h"
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
-#define WIN32_LEAN_AND_MEAN 
-#include "windows.h" 
-  INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
-#else 
-  int main(int argc, char **argv) 
-#endif 
-  {
-    try {
-      // create an orxonox aplication and run it
-      Orxonox myApp;
+using namespace Ogre;
 
-      myApp.go();
-    }
-    catch (Ogre::Exception& e) {
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
-      MessageBoxA(NULL, e.getFullDescription().c_str(),
-            "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-#else
-      std::cerr << "Exception:\n";
-      std::cerr << e.getFullDescription().c_str() << "\n";
-#endif
-      return 1;
-    }
+class OrxonoxShip
+{
+public:
+	Vector3 speed;
+	float thrust, sideThrust, baseThrust;
+	Vector3 bulletSpeed;
 
-    return 0;
-  }
+	OrxonoxShip(SceneManager*, SceneNode*);
+	virtual ~OrxonoxShip();
 
-#ifdef __cplusplus
-}
-#endif
+	virtual bool initialise();
+
+	void setThrust(const Real);
+	void setSideThrust(const Real);
+	void setYaw(const Radian);
+	void setPitch(const Radian);
+	void setRoll(const Radian);
+
+	Real getThrust();
+
+	Bullet* fire();
+
+	bool tick(unsigned long, Real);
+
+	SceneNode *mRootNode;
+
+protected:
+	SceneManager *mSceneMgr;
+	Entity *mShip;
+
+	int n;
+
+};
+
+
+#endif /* ORXONOX_SHIP_H */

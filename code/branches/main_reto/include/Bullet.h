@@ -26,8 +26,8 @@
  */
 
 
-#ifndef __Bullet__
-#define __Bullet__
+#ifndef BULLET_H
+#define BULLET_H
 
 #include "Ogre.h"
 
@@ -48,4 +48,4 @@ protected:
 };
 
 
-#endif
+#endif /* BULLET_H */

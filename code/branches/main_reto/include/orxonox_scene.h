@@ -26,8 +26,8 @@
  */
 
 
-#ifndef __DemoScene__
-#define __DemoScene__
+#ifndef ORXONOX_SCENE_H
+#define ORXONOX_SCENE_H
 
 #include "Ogre.h"
 
@@ -59,4 +59,4 @@ private:
 	// Define what is in the scene
 	virtual void createScene(void);
 };
-#endif
+#endif /* ORXONOX_SCENE_H */

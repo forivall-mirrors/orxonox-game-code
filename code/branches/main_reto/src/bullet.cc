@@ -25,7 +25,7 @@
  *
  */
 
-#include "Bullet.h"
+#include "bullet.h"
 
 
 Bullet::Bullet(SceneNode *mNode, Entity *mEntity, Vector3 mSpeed)
