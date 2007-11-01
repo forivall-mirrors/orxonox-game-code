@@ -64,6 +64,7 @@ void OrxonoxShip::setThrust(const Real value)
 	thrust = value * baseThrust;
 }
 
+
 void OrxonoxShip::setSideThrust(const Real value)
 {
 	sideThrust = value * baseThrust;
