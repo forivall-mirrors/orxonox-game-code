@@ -107,8 +107,8 @@ class OrxApplication
       mInputManager->destroyInputObject(mKeyboard);
       OIS::InputManager::destroyInputSystem(mInputManager);
 
-      delete mRenderer;
-      delete mSystem;
+//       delete mRenderer;
+//       delete mSystem;
 
       delete mListener;
       delete mRoot;
