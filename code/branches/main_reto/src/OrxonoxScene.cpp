@@ -1,3 +1,30 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ *   Author:
+ *      Reto Grieder
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 #include "OrxonoxScene.h"
 
 
@@ -25,8 +52,9 @@ bool OrxonoxScene::initialise()
 }
 
 
-/// method where you can perform resource group loading
-/// Must at least do ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+// method where you can perform resource group loading
+// Must at least do
+// ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 void OrxonoxScene::loadResources(void)
 {
 	// Initialise, parse scripts etc
@@ -43,13 +71,13 @@ void OrxonoxScene::createScene(void)
 	Entity *head = mSceneMgr->createEntity("head", "ogrehead.mesh");
 
 	//create a scene node to attach the head to
-	SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode",
-		Vector3(0,0,0));
+	SceneNode *node = mSceneMgr->getRootSceneNode()
+        ->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
 	//attach the ogre head
 	node->attachObject(head);
 
 	// set up skybox
-	mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
+	mSceneMgr->setSkyBox(true, "Examples/SceneSkyBox2");
 
 	// set up one mLight source
 	mLight = mSceneMgr->createLight("Light1");
@@ -63,8 +91,8 @@ void OrxonoxScene::createScene(void)
 	bbs->createBillboard(Vector3::ZERO, ColourValue(1.0, 1.0, 1.0));
 	bbs->setMaterialName("Examples/Flare");
 
-	lightNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("LightNode",
-		Vector3(0, 100, 0));
+	lightNode = mSceneMgr->getRootSceneNode()
+        ->createChildSceneNode("LightNode", Vector3(0, 100, 0));
 
 	lightNode->attachObject(bbs);
 	lightNode->attachObject(mLight);
@@ -81,5 +109,6 @@ void OrxonoxScene::tick(unsigned long time, float deltaTime)
 	mLight->setDiffuseColour(sin(1*t), sin(1*t + 2.09), sin(1*t + 2.09*2));
 	mLight->setSpecularColour(sin(1*t), sin(1*t + 2.09), sin(1*t + 2.09*2));
 
-	bbs->getBillboard(0)->setColour(ColourValue(sin(1*t), sin(1*t + 2.09), sin(1*t + 2.09*2)));
+	bbs->getBillboard(0)->setColour(ColourValue(sin(1*t),
+        sin(1*t + 2.09), sin(1*t + 2.09*2)));
 }

@@ -1,3 +1,30 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ *   Author:
+ *      Reto Grieder
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 #include "OgreControl.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
@@ -13,7 +40,8 @@ std::string macBundlePath()
 	CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
 	assert(mainBundleURL);
 
-	CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
+	CFStringRef cfStringRef =
+        CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
 	assert(cfStringRef);
 
 	CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
@@ -29,9 +57,10 @@ std::string macBundlePath()
 OgreControl::OgreControl()
 {
 	mRoot = 0;
-	// Provide a nice cross platform solution for locating the configuration files
-	// On windows files are searched for in the current working directory, on OS X however
-	// you must provide the full path, the helper function macBundlePath does this for us.
+	// Provide a nice cross platform solution for locating the configuration
+	// files. On windows files are searched for in the current working
+  // directory, on OS X however you must provide the full path, the helper
+  // function macBundlePath does this for us.
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 	mResourcePath = macBundlePath() + "/Contents/Resources/";
 #else
@@ -70,7 +99,8 @@ bool OgreControl::initialise(void)
 }
 
 
-/// Method which will define the source of resources (other than current folder)
+// Method which will define the source of resources
+// (other than current folder)
 void OgreControl::setupResources(void)
 {
 	// Load resource paths from config file
@@ -114,7 +144,8 @@ bool OgreControl::configure(void)
 		return false;
 
 	// user clicked OK so initialise
-	// Here we choose to let the system create a default rendering window by passing 'true'
+	// Here we choose to let the system create a default
+  // rendering window by passing 'true'
 	mWindow = mRoot->initialise(true);
 	mRoot->saveConfig();
 	return true;
