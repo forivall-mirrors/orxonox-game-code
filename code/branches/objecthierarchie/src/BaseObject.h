@@ -3,26 +3,35 @@
 
 #include "ClassHierarchy.h"
 
-//namespace orxonox
-//{
+namespace orxonox
+{
     class BaseObject
     {
         public:
             BaseObject();
             ~BaseObject();
 
-            bool isA(ClassName* className);
-            bool isChildOf(ClassName* className);
-            bool isParentOf(ClassName* className);
-            static bool getParentOf(ClassName* className);
+            inline bool isA(Identifier* identifier)
+                { this->identifier_->isA(identifier); }
+            inline bool isDirectA(Identifier* identifier)
+                { this->identifier_->isDirectA(identifier); }
+            inline bool isChildOf(Identifier* identifier)
+                { this->identifier_->isChildOf(identifier); }
+            inline bool isDirectChildOf(Identifier* identifier)
+                { this->identifier_->isDirectChildOf(identifier); }
+            inline bool isParentOf(Identifier* identifier)
+                { this->identifier_->isParentOf(identifier); }
+            inline bool isDirectParentOf(Identifier* identifier)
+                { this->identifier_->isDirectParentOf(identifier); }
 
-//            static void operator new (size_t size);
+            Identifier* identifier_;
 
-            ClassName *className;
+        protected:
+            IdentifierList* parents_; // INTERN! Don't touch this!
 
         private:
 
     };
-//}
+}
 
 #endif

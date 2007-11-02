@@ -5,78 +5,139 @@
 
 // DONE:
 // - klassenhierarchie aufbauen
+// - in listen einfügen
+// - factory
 // - klassen-identifier
+// - isA u.ä. vergleiche
 
 // TODO:
 // - durch listen iterieren
-// - isA usw vergleiche
-// - new überladen + objekt in liste eintragen
 // - searchtree für classname-strings
 
-//namespace orxonox
-//{
-    class ClassName;
-    class ClassList;
+
+namespace orxonox
+{
+    // ##### Identifier #####
+    class IdentifierList;
     class ObjectList;
     class BaseObject;
 
-    template <class T>
-    class ClassNameSingleton
+    class Identifier
     {
+        template <class T>
+        friend class ClassIdentifier;
+
         public:
-            static ClassName* getClassName(BaseObject* object, bool bIsRootClass);
-            static ClassName* getNewClassName();
-            BaseObject* create();
+//            static Identifier* registerClass(IdentifierList* parents);
+            void addObject(BaseObject* object);
+            void removeObject(BaseObject* object);
+
+            bool isA(Identifier* identifier);
+            bool isDirectA(Identifier* identifier);
+            bool isChildOf(Identifier* identifier);
+            bool isDirectChildOf(Identifier* identifier);
+            bool isParentOf(Identifier* identifier);
+            bool isDirectParentOf(Identifier* identifier);
+
+        protected:
+            Identifier();
+            void initialize(IdentifierList* identifier);
+
+            static Identifier* pointer_;
+
+            IdentifierList* directParents_;
+            IdentifierList* allParents_;
+            IdentifierList* directChildren_;
+            IdentifierList* allChildren_;
+
+            ObjectList* objects_;
+            std::string name_;
 
         private:
-            ClassNameSingleton();
-            ~ClassNameSingleton();
-            static ClassNameSingleton *pointer;
-            static ClassName *className;
+            bool bCreatedOneObject_;
     };
 
-    class ClassName
+    template <class T>
+    class ClassIdentifier : public Identifier
+    {
+//        friend class Identifier;
+
+        public:
+            static Identifier* registerClass(IdentifierList* parents);
+            static Identifier* getIdentifier();
+            static T* create();
+
+        private:
+            ClassIdentifier();
+    };
+
+    #define getStringFromClassName(ClassName) \
+        #ClassName
+
+    template <class T>
+    ClassIdentifier<T>::ClassIdentifier()
+    {
+    }
+
+    template <class T>
+    Identifier* ClassIdentifier<T>::registerClass(IdentifierList* parents)
+    {
+        if (!pointer_)
+        {
+            pointer_ = new ClassIdentifier();
+            pointer_->name_ = getStringFromClassName(T);
+            pointer_->initialize(parents);
+        }
+
+        return pointer_;
+    }
+
+    template <class T>
+    Identifier* ClassIdentifier<T>::getIdentifier()
+    {
+        if (!pointer_)
+        {
+            T* temp = new T();
+            delete temp;
+        }
+
+        return pointer_;
+    }
+
+    template <class T>
+    T* ClassIdentifier<T>::create()
+    {
+        return new T();
+    }
+
+    // ##### Identifier List #####
+    class IdentifierListElement;
+
+    class IdentifierList
     {
         public:
-            ClassName(const std::string& name, ClassNameSingleton<class T>* factory);
-            ~ClassName();
+            IdentifierList();
+            ~IdentifierList();
+            void add(Identifier* identifier);
+            void remove(Identifier* identifier);
+            bool isInList(Identifier* identifier);
 
-            std::string name;
-            ClassName *parentClass;
-            ClassList *childClasses;
-            ObjectList *objects;
-            ClassNameSingleton<class T> *factory;
+            IdentifierListElement* first_;
     };
 
-    class ClassListItem
+    class IdentifierListElement
     {
         public:
-            ClassListItem(ClassName* className);
-            ~ClassListItem();
+            IdentifierListElement(Identifier* identifier);
 
-            ClassListItem *next;
-            ClassName *className;
+            Identifier* identifier_;
+            IdentifierListElement* next_;
+            bool bDirect_;
     };
 
-    class ClassList
-    {
-        public:
-            ClassList();
-            ~ClassList();
-            void add(ClassName* className);
 
-            ClassListItem *first;
-    };
-
-    class ObjectListItem
-    {
-        public:
-            ObjectListItem(BaseObject* object);
-            ~ObjectListItem();
-
-            ObjectListItem *next;
-            BaseObject *object;
-    };
+    // ##### Object List #####
+    class ObjectListElement;
 
     class ObjectList
     {
@@ -86,39 +147,41 @@
             void add(BaseObject* object);
             void remove(BaseObject* object);
 
-            ObjectListItem *first;
+            ObjectListElement* first_;
     };
 
-    class ClassNameTree
+    class ObjectListElement
     {
         public:
-            static ClassNameTree* getSingleton();
-            BaseObject* create(ClassName* className);
-            BaseObject* create(std::string& name);
-            ClassName* getClassName(std::string& name);
-            ClassName* getClassName(std::string& name, ClassName* root);
-            ClassName* getRootClass() { return this->rootClass; }
-            void setRootClass(ClassName* className) { this->rootClass = className; }
+            ObjectListElement(BaseObject* object);
 
-        private:
-            ClassNameTree();
-            ~ClassNameTree();
-            static ClassNameTree *pointer;
-            ClassName* rootClass;
+            BaseObject* object_;
+            ObjectListElement* next_;
     };
 
 
-    #define className(ClassName) \
-        ClassNameSingleton<ClassName>::getNewClassName()
+    // ##### Macros #####
+    #define registerRootObject(ClassName) \
+        this->parents_ = new IdentifierList(); \
+        this->identifier_ = ClassIdentifier<ClassName>::registerClass(this->parents_); \
+        this->parents_->add(this->identifier_); \
+        this->identifier_->addObject(this)
 
-    #define registerObject(ClassName, bIsRootClass) \
-        this->className = ClassNameSingleton<ClassName>::getClassName(this, bIsRootClass)
+    #define registerObject(ClassName) \
+        this->identifier_->removeObject(this); \
+        this->identifier_ = ClassIdentifier<ClassName>::registerClass(this->parents_); \
+        this->parents_->add(this->identifier_); \
+        this->identifier_->addObject(this)
 
     #define unregisterObject() \
-        this->className->objects->remove(this)
+        delete this->parents_; \
+        this->identifier_->removeObject(this)
 
-    #define factory(ClassName) \
-        ClassNameTree::getSingleton()->create(ClassName)
-//}
+    #define Class(ClassName) \
+        ClassIdentifier<ClassName>::getIdentifier()
+
+    #define Factory(ClassName) \
+        ClassIdentifier<ClassName>::create()
+}
 
 #endif

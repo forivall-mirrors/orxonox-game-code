@@ -1,23 +1,14 @@
 #include "BaseObject.h"
 
-//namespace orxonox
-//{
+namespace orxonox
+{
     BaseObject::BaseObject()
     {
-//        registerObject(BaseObject, true);
+        registerRootObject(BaseObject);
     }
 
     BaseObject::~BaseObject()
     {
-//        unregisterObject();
+        unregisterObject();
     }
-/*
-    void* BaseObject::operator new (size_t size)
-    {
-        void *pMem = new char[size];
-        memset(pMem,0,size);
-
-        return pMem;
-    }
-*/
-//}
+}
