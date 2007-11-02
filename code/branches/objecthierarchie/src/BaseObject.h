@@ -24,7 +24,7 @@ namespace orxonox
             inline bool isDirectParentOf(Identifier* identifier)
                 { this->identifier_->isDirectParentOf(identifier); }
 
-            Identifier* identifier_;
+            ClassIdentifier<class BaseObject>* identifier_;
 
         protected:
             IdentifierList* parents_; // INTERN! Don't touch this!

@@ -21,6 +21,8 @@ namespace orxonox
     class IdentifierList;
     class ObjectList;
     class BaseObject;
+    template <class T>
+    class ClassIdentifier;
 
     class Identifier
     {
@@ -28,7 +30,6 @@ namespace orxonox
         friend class ClassIdentifier;
 
         public:
-//            static Identifier* registerClass(IdentifierList* parents);
             void addObject(BaseObject* object);
             void removeObject(BaseObject* object);
 
@@ -39,11 +40,9 @@ namespace orxonox
             bool isParentOf(Identifier* identifier);
             bool isDirectParentOf(Identifier* identifier);
 
-        protected:
+        private:
             Identifier();
-            void initialize(IdentifierList* identifier);
-
-            static Identifier* pointer_;
+            void initialize(IdentifierList* parents);
 
             IdentifierList* directParents_;
             IdentifierList* allParents_;
@@ -53,26 +52,29 @@ namespace orxonox
             ObjectList* objects_;
             std::string name_;
 
-        private:
             bool bCreatedOneObject_;
     };
 
     template <class T>
     class ClassIdentifier : public Identifier
     {
-//        friend class Identifier;
-
         public:
-            static Identifier* registerClass(IdentifierList* parents);
-            static Identifier* getIdentifier();
+            static ClassIdentifier<T>* registerClass(IdentifierList* parents);
+            static ClassIdentifier<T>* getIdentifier();
             static T* create();
 
         private:
             ClassIdentifier();
+
+            static ClassIdentifier<T>* pointer_;
+
     };
 
     #define getStringFromClassName(ClassName) \
         #ClassName
+
+    template <class T>
+    ClassIdentifier<T>* ClassIdentifier<T>::pointer_ = NULL;
 
     template <class T>
     ClassIdentifier<T>::ClassIdentifier()
@@ -80,7 +82,7 @@ namespace orxonox
     }
 
     template <class T>
-    Identifier* ClassIdentifier<T>::registerClass(IdentifierList* parents)
+    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(IdentifierList* parents)
     {
         if (!pointer_)
         {
@@ -93,7 +95,7 @@ namespace orxonox
     }
 
     template <class T>
-    Identifier* ClassIdentifier<T>::getIdentifier()
+    ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
         if (!pointer_)
         {

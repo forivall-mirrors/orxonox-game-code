@@ -5,7 +5,7 @@ namespace orxonox
     // ###############################
     // ###       Identifier        ###
     // ###############################
-    Identifier* Identifier::pointer_ = NULL;
+//    Identifier* Identifier::pointer_ = NULL;
 /*
     Identifier* Identifier::registerClass(IdentifierList* parents)
     {
@@ -64,11 +64,11 @@ namespace orxonox
                 if (temp1->bDirect_)
                 {
                     this->directParents_->add(temp1->identifier_);
-                    temp1->identifier_->directChildren_->add(this->pointer_);
+                    temp1->identifier_->directChildren_->add(this);
                 }
 
                 this->allParents_->add(temp1->identifier_);
-                temp1->identifier_->allChildren_->add(this->pointer_);
+                temp1->identifier_->allChildren_->add(this);
 
                 temp1 = temp1->next_;
             }
@@ -87,12 +87,12 @@ namespace orxonox
 
     bool Identifier::isA(Identifier* identifier)
     {
-        return (identifier == this->pointer_ || this->allParents_->isInList(identifier));
+        return (identifier == this || this->allParents_->isInList(identifier));
     }
 
     bool Identifier::isDirectA(Identifier* identifier)
     {
-        return (identifier == this->pointer_);
+        return (identifier == this);
     }
 
     bool Identifier::isChildOf(Identifier* identifier)
