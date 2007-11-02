@@ -35,8 +35,9 @@
 #include <CEGUI/CEGUI.h>
 #include <OgreCEGUIRenderer.h>
 
-#include <enet/enet.h>
-#include <enet/protocol.h>
+// some tests to see if enet works without includsion
+//#include <enet/enet.h>
+//#include <enet/protocol.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
