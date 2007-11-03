@@ -53,6 +53,7 @@ RunManager::RunManager(OgreControl * ogre)
       : ogre_(ogre), window_(ogre->getRenderWindow()), leftButtonDown_(false),
       statsOn_(true), screenShotCounter_(0), timeUntilNextToggle_(0),
       filtering_(TFO_BILINEAR), aniso_(1), sceneDetailIndex_(0),
+      mouseSensitivity_(0.003),
       debugOverlay_(0), inputManager_(0), mouse_(0), keyboard_(0), joystick_(0)
 {
 
@@ -79,7 +80,7 @@ RunManager::RunManager(OgreControl * ogre)
   // would be very static, never moving at all).
 
   // Construct a new spaceship and give it the node
-  playerShip_ = new OrxonoxShip(sceneMgr_, getRootSceneNode()
+  playerShip_ = new OrxonoxShip(sceneMgr_, sceneMgr_->getRootSceneNode()
     ->createChildSceneNode("ShipNode", Vector3(20, 20, 20)));
 
 
@@ -303,11 +304,18 @@ bool RunManager::processUnbufferedKeyInput()
     playerShip_->setSideThrust(0);
 
   if(keyboard_->isKeyDown(KC_UP) || keyboard_->isKeyDown(KC_W) )
-    playerShip_->setThrust(1);
+    playerShip_->setMainThrust(1);
   else if(keyboard_->isKeyDown(KC_DOWN) || keyboard_->isKeyDown(KC_S) )
-    playerShip_->setThrust(-1);
+    playerShip_->setMainThrust(-1);
   else
-    playerShip_->setThrust(0);
+    playerShip_->setMainThrust(0);
+
+  if (keyboard_->isKeyDown(KC_C))
+    playerShip_->setYThrust(1);
+  else if (keyboard_->isKeyDown(KC_SPACE))
+    playerShip_->setYThrust(-1);
+  else
+    playerShip_->setYThrust(0);
 
   if( keyboard_->isKeyDown(KC_ESCAPE) || keyboard_->isKeyDown(KC_Q) )
     return false;
@@ -350,7 +358,7 @@ bool RunManager::processUnbufferedKeyInput()
     ss << "screenshot_" << ++screenShotCounter_ << ".png";
     window_->writeContentsToFile(ss.str());
     timeUntilNextToggle_ = 0.5;
-    mDebugText = "Saved: " + ss.str();
+    debugText_ = "Saved: " + ss.str();
   }
 
   if(keyboard_->isKeyDown(KC_R) && timeUntilNextToggle_ <=0)
@@ -370,14 +378,14 @@ bool RunManager::processUnbufferedKeyInput()
     displayCameraDetails = !displayCameraDetails;
     timeUntilNextToggle_ = 0.5;
     if (!displayCameraDetails)
-      mDebugText = "";
+      debugText_ = "";
   }
 
   // Print camera details
   if(displayCameraDetails)
-    mDebugText = StringConverter::toString(playerShip_->getThrust())
-    + " | Speed = " + StringConverter::toString(playerShip_->speed);
-  // mDebugText = "P: " + StringConverter::toString(camera_
+    debugText_ = " | Speed = "
+          + StringConverter::toString(playerShip_->getSpeed());
+  // debugText_ = "P: " + StringConverter::toString(camera_
   //      ->getDerivedPosition()) + " " + "O: "
   //      + StringConverter::toString(camera_->getDerivedOrientation());
 
@@ -432,7 +440,7 @@ bool RunManager::processUnbufferedMouseInput()
   // space ship steering. This should definitely be done in the steering object
   // Simply give it the mouse movements.
   playerShip_->turnUpAndDown(Radian(ms.Y.rel * mouseSensitivity_));
-  playerShip_->turnLeftAndRight(Radian(ms.X.rel * mousSensitivity_));
+  playerShip_->turnLeftAndRight(Radian(ms.X.rel * mouseSensitivity_));
   //playerShip_->mRootNode->pitch(Degree(-ms.Y.rel * 0.13), Ogre::Node::TransformSpace::TS_LOCAL);
   //playerShip_->mRootNode->yaw(Degree(-ms.X.rel * 0.13), Ogre::Node::TransformSpace::TS_PARENT);
 
@@ -499,7 +507,7 @@ void RunManager::updateStats(void)
 
     OverlayElement* guiDbg = OverlayManager::getSingleton()
       .getOverlayElement("Core/DebugText");
-    guiDbg->setCaption(mDebugText);
+    guiDbg->setCaption(debugText_);
   }
   catch(...) { /* ignore */ }
 }
@@ -515,10 +523,10 @@ void RunManager::updateStats(void)
 void RunManager::createCamera(void)
 {
   camera_ = sceneMgr_->createCamera("PlayerCam");
-  playerShip_Node->attachObject(camera_);
+  playerShip_->getRootNode()->attachObject(camera_);
   camera_->setNearClipDistance(5);
   camera_->setPosition(Vector3(0,10,500));
-  camera_->lookAtVector3(0,0,0));
+  camera_->lookAt(Vector3(0,0,0));
 }
 
 /**

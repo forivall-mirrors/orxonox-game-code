@@ -47,24 +47,25 @@ public:
 	virtual ~OgreControl();
 
 	/** Sets up the application - returns false if the user chooses to abandon configuration. */
-	virtual bool initialise(void);
+	virtual bool initialise();
 
-	virtual Root* getRoot(void);
+	virtual Root* getRoot();
 
-	virtual RenderWindow* getRenderWindow(void);
+	virtual RenderWindow* getRenderWindow();
 
-	virtual Ogre::String getResourcePath(void);
+	virtual Ogre::String getResourcePath();
 
 protected:
-	Root         *mRoot;
-	RenderWindow *mWindow;
-	Ogre::String  mResourcePath;
-
 	/** Configures the application - returns false if the user chooses to abandon configuration. */
 	virtual bool configure(void);
 
 	/// Method which will define the source of resources (other than current folder)
 	virtual void setupResources(void);
+
+protected:
+	Root         *root_;
+	RenderWindow *window_;
+	Ogre::String  resourcePath_;
 
 };
 

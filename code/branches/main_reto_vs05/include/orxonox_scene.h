@@ -42,21 +42,24 @@ public:
 
 	virtual bool initialise();
 
-	virtual void tick(unsigned long, float);
+	virtual bool tick(unsigned long, Real);
 
-private:
-	SceneManager* mSceneMgr;
+protected:
+	/// method where you can perform resource group loading
+	virtual void loadResources();
+
+	/// Define what is in the scene
+	virtual void createScene();
+
+protected:
+	SceneManager* sceneMgr_;
 
 	//specific variables for test purposes
-	Light        *mLight;
-	SceneNode    *lightNode;
-	BillboardSet *bbs;
-	float distance, radius;
-
-	/// method where you can perform resource group loading
-	virtual void loadResources(void);
-
-	// Define what is in the scene
-	virtual void createScene(void);
+	Light        *light_;
+	SceneNode    *lightNode_;
+	BillboardSet *bbs_;
+	Real distance_;
+  Real radius_;
 };
+
 #endif /* ORXONOX_SCENE_H */

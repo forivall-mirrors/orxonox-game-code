@@ -38,16 +38,19 @@
 class Orxonox
 {
 public:
-	virtual void go(void);
+  Orxonox();
+  virtual ~Orxonox();
+	virtual void go();
 
 protected:
-	OgreControl *mOgre;
-	RunManager  *mRunMgr;
-	Timer       *mTimer;
-
 	virtual bool setup(void);
 
 	virtual void destroy(void);
+
+protected:
+	OgreControl *ogre_;
+	RunManager  *runMgr_;
+	Timer       *timer_;
 
 };
 

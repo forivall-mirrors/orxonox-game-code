@@ -51,7 +51,7 @@ using namespace Ogre;
 class RunManager : WindowEventListener
 {
 public:
-	RunManager(OgreControl*, bool = false, bool = false, bool = false);
+	RunManager(OgreControl*);
 
 	virtual ~RunManager();
 
@@ -110,6 +110,8 @@ protected:
 	OIS::Mouse*    mouse_;
 	OIS::Keyboard* keyboard_;
 	OIS::JoyStick* joystick_;
+
+  const Real mouseSensitivity_;
 
   // Bullet array
 	Bullet **bullets_;

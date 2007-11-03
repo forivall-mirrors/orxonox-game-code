@@ -25,30 +25,55 @@
  *
  */
 
+/**
+* Basic part of the game.
+* It sets up Ogre and most important of all: Orxonox is the master of the
+* main loop and therefore time itself.
+*/
+
 
 #include "orxonox.h"
 
 
+/**
+* Empty Constructor.
+*/
+Orxonox::Orxonox()
+{
+}
+
+
+/**
+* Empty Destructor.
+*/
+Orxonox::~Orxonox()
+{
+}
+
+
+/**
+* Starts and runs the game
+*/
 void Orxonox::go(void)
 {
 	if (!setup())
 		return;
 
-	mTimer = new Timer();
+	timer_ = new Timer();
 
-	unsigned long lastTime = mTimer->getMilliseconds();
+	unsigned long lastTime = timer_->getMilliseconds();
 
 	while (true)
 	{
 		//Pump messages in all registered RenderWindow windows
 		WindowEventUtilities::messagePump();
 
-		mOgre->getRoot()->renderOneFrame();
+		ogre_->getRoot()->renderOneFrame();
 
-		if (!mRunMgr->tick(mTimer->getMilliseconds(),
-            (mTimer->getMilliseconds() - lastTime) / 1000.0))
+		if (!runMgr_->tick(timer_->getMilliseconds(),
+            (timer_->getMilliseconds() - lastTime) / 1000.0))
 			break;
-		lastTime = mTimer->getMilliseconds();
+		lastTime = timer_->getMilliseconds();
 	}
 
 	// clean up
@@ -56,24 +81,31 @@ void Orxonox::go(void)
 }
 
 
+/**
+* Create render engine, render window and the Run manager.
+* @return False if failed.
+*/
 bool Orxonox::setup(void)
 {
 	// create new 3D ogre render engine
-	mOgre = new OgreControl();
-	mOgre->initialise();
+	ogre_ = new OgreControl();
+	ogre_->initialise();
 
-	mRunMgr = new RunManager(mOgre);
+	runMgr_ = new RunManager(ogre_);
 
 	return true;
 }
 
 
+/**
+* Clean everything up.
+*/
 void Orxonox::destroy()
 {
-	if (mTimer)
-		delete mTimer;
-	if (mRunMgr)
-		delete mRunMgr;
-	if (mOgre)
-		delete mOgre;
+	if (timer_)
+		delete timer_;
+	if (runMgr_)
+		delete runMgr_;
+	if (ogre_)
+		delete ogre_;
 }

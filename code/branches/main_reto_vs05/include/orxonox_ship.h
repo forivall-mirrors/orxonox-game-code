@@ -43,10 +43,14 @@ public:
 
 	virtual bool initialise();
 
-	void setThrust(const Real);
+	void setMainThrust(const Real);
 	void setSideThrust(const Real);
+  void setYThrust(const Real);
 	void turnUpAndDown(const Radian&);
 	void turnLeftAndRight(const Radian&);
+
+  SceneNode* getRootNode();
+  Vector3 getSpeed();
 
 	Bullet* fire();
 
@@ -54,19 +58,14 @@ public:
 
 protected:
 
-
-public:
-
-
 protected:
-	SceneManager *SceneMgr_;
-	SceneNode *RootNode_;
-	Entity *ShipEntity_;
+	SceneManager *sceneMgr_;
+	SceneNode *rootNode_;
+	Entity *shipEntity_;
 
-	Vector3 currentSpeed_;
-	float CurrentThrust_;
-  float CurrentSideThrust_;
-  float baseThrust_;
+	Vector3 currentSpeed_;  // relative to space
+	Vector3 currentThrust_; // relative to the ship
+  Real baseThrust_;
 	int objectCounter_;
 	Vector3 bulletSpeed_;
 
