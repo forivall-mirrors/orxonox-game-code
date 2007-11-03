@@ -25,9 +25,30 @@
  *
  */
 
+/**
+* Base class for any kind of flyable ship in Orxonox.
+* 
+* The ship offers steering methods (like left, right, etc.) and translates
+* them into movement. A ship can also hold more than one weapons (where each
+* of these can be replaced during the game). This means that a ship can have
+* many WeaponManagers but only one MunitionManager (independant object that
+* is referenced in each WeaponManager).
+* Furthermore a ship in Orxonox is responsible for its visualization, which is
+* why it receives a pointer to the SceneManager.
+*/
+
+
 #include "orxonox_ship.h"
 
 
+/**
+* Standard constructor, that only initalizes a few variables. Some of them
+* could be made static, since any new ship would be derived from the BaseShip.
+* Or even better: write config files for each ship so that manipulating
+* its properties would be even easier.
+* @param mSceneMgr The current main SceneManager
+* @param mNode The scene node which the ship will be attached to later.
+*/
 OrxonoxShip::OrxonoxShip(SceneManager *mSceneMgr, SceneNode *mNode)
 	    : mSceneMgr(mSceneMgr), mRootNode(mNode), speed(Vector3(0, 0, 0)),
       baseThrust(1000), thrust(0), sideThrust(0), n(0),
@@ -36,11 +57,21 @@ OrxonoxShip::OrxonoxShip(SceneManager *mSceneMgr, SceneNode *mNode)
 }
 
 
+/**
+* Standard destructor.
+* Doesn't have any work to do yet.
+*/
 OrxonoxShip::~OrxonoxShip()
 {
 }
 
 
+/**
+* Initialises everything.
+* Once that ResourceGroups are organised, this method loads them.
+* It might be an idea to make this function static in order for the
+* SceneManger to call the initialise method of every needed class (macros..)
+*/
 bool OrxonoxShip::initialise()
 {
 	// load all the resources needed (no resource groups yet,
@@ -48,7 +79,7 @@ bool OrxonoxShip::initialise()
 	// ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	// create the "space ship" (currently a fish..)
-	// TODO: names must be unique!
+	// TODO: names must be unique! use static variables..
 	mShip = mSceneMgr->createEntity("Ship", "fish.mesh");
 	SceneNode *fishNode = mRootNode->createChildSceneNode("fishNode");
 	fishNode->yaw(Degree(-90));
@@ -59,60 +90,83 @@ bool OrxonoxShip::initialise()
 }
 
 
+/**
+* Gets the ship to accelerate in the current direction.
+* The value should be between 0 and 1, with one beeing full thrust and 0 none.
+* @param value Acceleration between 0 and 1
+*/
 void OrxonoxShip::setThrust(const Real value)
 {
 	thrust = value * baseThrust;
 }
 
 
+/**
+* Gets the ship to accelerate sideways regarding the current direction.
+* The value should be between 0 and 1, with one beeing full thrust and 0 none.
+* @param value Acceleration between 0 and 1
+*/
 void OrxonoxShip::setSideThrust(const Real value)
 {
 	sideThrust = value * baseThrust;
 }
 
-void OrxonoxShip::setYaw(const Radian value)
+
+/**
+* Rotate the ship along with the camera up and down.
+* @param angle Pitch value.
+*/
+void OrxonoxShip::turnUpAndDown(const Radian &angle)
 {
-	mRootNode->yaw(value);
+  RootNode_->pitch(angle, Ogre::Node::TransformSpace::TS_LOCAL);
 }
 
-void OrxonoxShip::setPitch(const Radian value)
+
+/**
+* Rotate the ship along with the camera left and right.
+* @param angle Yaw value.
+*/
+void OrxonoxShip::turnLeftAndRight(const Radian &angle)
 {
-	mRootNode->pitch(value);
+  RootNode_->yaw(angle, Ogre::Node::TransformSpace::TS_PARENT);
 }
 
-void OrxonoxShip::setRoll(const Radian value)
-{
-	mRootNode->roll(value);
-}
 
-Real OrxonoxShip::getThrust()
-{
-	return thrust;
-}
-
+/**
+* Fire a bullet (Entity with SceneNode).
+* This method creates a new Entity plus a SceneNode. But be sure not make
+* the new Node a child of RootNode_!
+*/
 Bullet* OrxonoxShip::fire()
 {
 	// TODO: Names must be unique!
-	SceneNode *temp = mRootNode->getParentSceneNode()->createChildSceneNode(
-        "BulletNode" + StringConverter::toString(n));
-	temp->setOrientation(mRootNode->getOrientation());
-	temp->setPosition(mRootNode->getPosition());
+	SceneNode *temp = RootNode_->getParentSceneNode()->createChildSceneNode(
+        "BulletNode" + StringConverter::toString(objectCounter_));
+	temp->setOrientation(RootNode_->getOrientation());
+	temp->setPosition(RootNode_->getPosition());
 	temp->setScale(Vector3(1, 1, 1) * 10);
 	temp->yaw(Degree(-90));
 	return new Bullet(temp, mSceneMgr->createEntity("bullet"
-        + StringConverter::toString(n++), "Barrel.mesh"), speed
-        + (mRootNode->getLocalAxes() * Vector3(0, 0, -1)).normalisedCopy()
-        * bulletSpeed);
+        + StringConverter::toString(objectCounter_++), "Barrel.mesh"), speed
+        + (RootNode_->getOrientation() * Vector3(0, 0, -1)).normalisedCopy()
+        * bulletSpeed_);
 }
 
+
+/**
+* Standard tick() function.
+* Currently, only the speed is applied according to the thrust values.
+* @param time Absolute time.
+* @param deltaTime Relative time.
+*/
 bool OrxonoxShip::tick(unsigned long time, Real deltaTime)
 {
   Quaternion quad = mRootNode->getOrientation();
   quad.normalise();
-  speed += quad * Vector3(0, 0, -1) * thrust * deltaTime;
-	speed += quad * Vector3(-1, 0,  0) * sideThrust * deltaTime;
+  speed += quad * Vector3(0, 0, -1) * currentThrust_ * deltaTime;
+	speed += quad * Vector3(-1, 0,  0) * current_SideThrust_ * deltaTime;
 
-	mRootNode->translate(speed * deltaTime);
+	RootNode_->translate(currentSpeed_ * deltaTime);
 
 	return true;
 }

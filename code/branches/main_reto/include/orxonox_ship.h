@@ -38,10 +38,6 @@ using namespace Ogre;
 class OrxonoxShip
 {
 public:
-	Vector3 speed;
-	float thrust, sideThrust, baseThrust;
-	Vector3 bulletSpeed;
-
 	OrxonoxShip(SceneManager*, SceneNode*);
 	virtual ~OrxonoxShip();
 
@@ -49,23 +45,30 @@ public:
 
 	void setThrust(const Real);
 	void setSideThrust(const Real);
-	void setYaw(const Radian);
-	void setPitch(const Radian);
-	void setRoll(const Radian);
-
-	Real getThrust();
+	void turnUpAndDown(const Radian&);
+	void turnLeftAndRight(const Radian&);
 
 	Bullet* fire();
 
 	bool tick(unsigned long, Real);
 
-	SceneNode *mRootNode;
+protected:
+
+
+public:
+
 
 protected:
-	SceneManager *mSceneMgr;
-	Entity *mShip;
+	SceneManager *SceneMgr_;
+	SceneNode *RootNode_;
+	Entity *ShipEntity_;
 
-	int n;
+	Vector3 currentSpeed_;
+	float CurrentThrust_;
+  float CurrentSideThrust_;
+  float baseThrust_;
+	int objectCounter_;
+	Vector3 bulletSpeed_;
 
 };
 

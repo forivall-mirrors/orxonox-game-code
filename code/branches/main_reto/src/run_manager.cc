@@ -47,47 +47,48 @@
 * be done in a new method "initialize()", for whatever purpose.
 * 
 * 
-* @param mOgre The OgreControl object holding the render window and the Root
+* @param ogre_ The OgreControl object holding the render window and the Root
 */
-RunManager::RunManager(OgreControl * mOgre, bool bufferedKeys,
-                       bool bufferedMouse, bool bufferedJoy )
-                       : mOgre(mOgre), mWindow(mOgre->getRenderWindow()), leftButtonDown(false),
-                       mStatsOn(true), mNumScreenShots(0), mTimeUntilNextToggle(0),
-                       mFiltering(TFO_BILINEAR), mAniso(1), mSceneDetailIndex(0),
-                       mDebugOverlay(0), mInputManager(0), mMouse(0), mKeyboard(0), mJoy(0)
+RunManager::RunManager(OgreControl * ogre)
+      : ogre_(ogre), window_(ogre->getRenderWindow()), leftButtonDown_(false),
+      statsOn_(true), screenShotCounter_(0), timeUntilNextToggle_(0),
+      filtering_(TFO_BILINEAR), aniso_(1), sceneDetailIndex_(0),
+      debugOverlay_(0), inputManager_(0), mouse_(0), keyboard_(0), joystick_(0)
 {
 
   // SETTING UP THE SCENE
 
   // create one new SceneManger
-  mSceneMgr = mOgre->getRoot()->createSceneManager(ST_GENERIC, "mScene");
+  sceneMgr_ = ogre_->getRoot()->createSceneManager(ST_GENERIC, "backgroundScene_");
 
   // background scene (world objects, skybox, lights, etc.)
-  mScene = new OrxonoxScene(mSceneMgr);
+  backgroundScene_ = new OrxonoxScene(sceneMgr_);
 
   // PLAYER SPACESHIP
 
-  // create a steerable SceneNode (not derived!) object. The idea is that this
-  // object only receives the mouse and the keyboard input (not specifi keys,
-  // more like up, down, left, right, roll left, roll right, move down,
-  // move up). The steering class can then decide how to control the node for
-  // the spaceship. This gives a certain flexibility.
-  // It should also be considered, that this class should provide another Node
+  // Create a space ship object and its SceneNode.
+  // Some ideas about the steering: The ship should only receive events like
+  // up, down, left, right, roll left, roll right, move down, move up, etc).
+  // Multiple interpretations of these commands would make the game more
+  // but it also makes AI steering more difficult, since for every type of
+  // steering, new methods have to be written.
+  // --> clearly define how a space ship can fly (rolling?, conservation of
+  // impuls?, direct mouse sight steeering?, etc.)
+  // It should also be considered, that the ship should provide another Node
   // for a camera to be attached (otherwise the spaceship in front of the
-  // would be very static, never moving at all.
-  mShipNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("ShipNode",
-    Vector3(20, 20, 20));
+  // would be very static, never moving at all).
 
-  // Construct a new spaceship and attach it to the node
-  mShip = new OrxonoxShip(mSceneMgr, mShipNode);
+  // Construct a new spaceship and give it the node
+  playerShip_ = new OrxonoxShip(sceneMgr_, getRootSceneNode()
+    ->createChildSceneNode("ShipNode", Vector3(20, 20, 20)));
 
 
   // RESOURCE LOADING (using ResourceGroups if implemented)
 
   // load all resources and create the entities by calling the initialise()
   // methods for each object (don't initialise in the constructor!).
-  mScene->initialise();
-  mShip->initialise();
+  backgroundScene_->initialise();
+  playerShip_->initialise();
 
 
   // CAMERA AND VIEWPORT
@@ -108,16 +109,16 @@ RunManager::RunManager(OgreControl * mOgre, bool bufferedKeys,
   // BULLET LIST FOR THE TEST APPLICATION
 
   // TODO: Use STL to make life easier. But it works this way too..
-  mBullets = new Bullet*[10];
-  mBulletsPosition = 0;
-  mBulletsSize = 10;
+  bullets_ = new Bullet*[10];
+  bulletsIndex_ = 0;
+  bulletsSize_ = 10;
 
 
   // HUMAN INTERFACE
 
   using namespace OIS;
 
-  mDebugOverlay = OverlayManager::getSingleton()
+  debugOverlay_ = OverlayManager::getSingleton()
     .getByName("Core/DebugOverlay");
 
   LogManager::getSingletonPtr()->logMessage("*** Initializing OIS ***");
@@ -125,34 +126,34 @@ RunManager::RunManager(OgreControl * mOgre, bool bufferedKeys,
   size_t windowHnd = 0;
   std::ostringstream windowHndStr;
 
-  mWindow->getCustomAttribute("WINDOW", &windowHnd);
+  window_->getCustomAttribute("WINDOW", &windowHnd);
   windowHndStr << windowHnd;
   pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 
-  mInputManager = InputManager::createInputSystem( pl );
+  inputManager_ = InputManager::createInputSystem( pl );
 
   // Create all devices (We only catch joystick exceptions here,
   // as, most people have Key/Mouse)
-  mKeyboard = static_cast<Keyboard*>(mInputManager
-    ->createInputObject( OISKeyboard, bufferedKeys ));
-  mMouse = static_cast<Mouse*>(mInputManager
-    ->createInputObject( OISMouse, bufferedMouse ));
+  keyboard_ = static_cast<Keyboard*>(inputManager_
+    ->createInputObject( OISKeyboard, false ));
+  mouse_ = static_cast<Mouse*>(inputManager_
+    ->createInputObject( OISMouse, false ));
   try {
-    mJoy = static_cast<JoyStick*>(mInputManager
-      ->createInputObject( OISJoyStick, bufferedJoy ));
+    joystick_ = static_cast<JoyStick*>(inputManager_
+      ->createInputObject( OISJoyStick, false ));
   }
   catch(...) {
-    mJoy = 0;
+    joystick_ = 0;
   }
 
   //Set initial mouse clipping size
-  windowResized(mWindow);
+  windowResized(window_);
 
   showDebugOverlay(true);
 
   // REGISTER THIS OBJECT AS A WINDOW EVENT LISTENER IN OGRE
   // It will then receive events liek windowClosed, windowResized, etc.
-  WindowEventUtilities::addWindowEventListener(mWindow, this);
+  WindowEventUtilities::addWindowEventListener(window_, this);
 }
 
 /**
@@ -163,18 +164,18 @@ RunManager::RunManager(OgreControl * mOgre, bool bufferedKeys,
 RunManager::~RunManager()
 {
   //Remove ourself as a Window listener
-  WindowEventUtilities::removeWindowEventListener(mWindow, this);
-  windowClosed(mWindow);
+  WindowEventUtilities::removeWindowEventListener(window_, this);
+  windowClosed(window_);
 
-  if (mScene)
-    delete mScene;
-  if (mShip)
-    delete mShip;
+  if (backgroundScene_)
+    delete backgroundScene_;
+  if (playerShip_)
+    delete playerShip_;
 
   // clean up the bullet list
-  for (int i = 0; i < mBulletsPosition; i++)
-    delete mBullets[i];
-  delete mBullets;
+  for (int i = 0; i < bulletsIndex_; i++)
+    delete bullets_[i];
+  delete bullets_;
 }
 
 
@@ -192,53 +193,51 @@ RunManager::~RunManager()
 bool RunManager::tick(unsigned long time, float deltaTime)
 {
   // synchronize with internal class timer
-  mTime = time;
+  totalTime_ = time;
 
   // Call tick() for every object
   // This could be done by registering (needs a factory..)
-  mScene->tick(time, deltaTime);
-  mShip->tick(time, deltaTime);
+  backgroundScene_->tick(time, deltaTime);
+  playerShip_->tick(time, deltaTime);
 
 
   // Update the 'HUD'
   updateStats();
 
   // update the bullet positions
-  for (int i = 0; i < mBulletsPosition; i++)
+  for (int i = 0; i < bulletsIndex_; i++)
   {
-    mBullets[i]->mNode->translate(mBullets[i]->mSpeed*deltaTime);
-    mBullets[i]->mNode->yaw(Degree(deltaTime*100));
-    mBullets[i]->mNode->roll(Degree(deltaTime*300));
+    bullets_[i]->mNode->translate(bullets_[i]->mSpeed*deltaTime);
+    bullets_[i]->mNode->yaw(Degree(deltaTime*100));
+    bullets_[i]->mNode->roll(Degree(deltaTime*300));
   }
 
   // HUMAN INTERFACE
 
   using namespace OIS;
 
-  if(mWindow->isClosed())	return false;
+  if(window_->isClosed())	return false;
 
   //Need to capture/update each device
-  mKeyboard->capture();
-  mMouse->capture();
-  if( mJoy ) mJoy->capture();
+  keyboard_->capture();
+  mouse_->capture();
+  if( joystick_ ) joystick_->capture();
 
-  bool buffJ = (mJoy) ? mJoy->buffered() : true;
+  bool buffJ = (joystick_) ? joystick_->buffered() : true;
 
   //Check if one of the devices is not buffered
-  if( !mMouse->buffered() || !mKeyboard->buffered() || !buffJ )
+  if( !mouse_->buffered() || !keyboard_->buffered() || !buffJ )
   {
     // one of the input modes is immediate, so setup what
     // is needed for immediate movement
-    if (mTimeUntilNextToggle >= 0)
-      mTimeUntilNextToggle -= deltaTime;
+    if (timeUntilNextToggle_ >= 0)
+      timeUntilNextToggle_ -= deltaTime;
   }
 
-  //Check to see which device is not buffered, and handle it
-  if( !mKeyboard->buffered() )
-    if( processUnbufferedKeyInput() == false )
+  // handle HID devices
+  if( processUnbufferedKeyInput() == false )
       return false;
-  if( !mMouse->buffered() )
-    if( processUnbufferedMouseInput() == false )
+  if( processUnbufferedMouseInput() == false )
       return false;
 
   // keep rendering
@@ -258,7 +257,7 @@ void RunManager::windowResized(RenderWindow* rw)
   int left, top;
   rw->getMetrics(width, height, depth, left, top);
 
-  const OIS::MouseState &ms = mMouse->getMouseState();
+  const OIS::MouseState &ms = mouse_->getMouseState();
   ms.width = width;
   ms.height = height;
 }
@@ -272,16 +271,16 @@ void RunManager::windowResized(RenderWindow* rw)
 void RunManager::windowClosed(RenderWindow* rw)
 {
   //Only close for window that created OIS (the main window in these demos)
-  if( rw == mWindow )
+  if( rw == window_ )
   {
-    if( mInputManager )
+    if( inputManager_ )
     {
-      mInputManager->destroyInputObject( mMouse );
-      mInputManager->destroyInputObject( mKeyboard );
-      mInputManager->destroyInputObject( mJoy );
+      inputManager_->destroyInputObject( mouse_ );
+      inputManager_->destroyInputObject( keyboard_ );
+      inputManager_->destroyInputObject( joystick_ );
 
-      OIS::InputManager::destroyInputSystem(mInputManager);
-      mInputManager = 0;
+      OIS::InputManager::destroyInputSystem(inputManager_);
+      inputManager_ = 0;
     }
   }
 }
@@ -296,91 +295,91 @@ bool RunManager::processUnbufferedKeyInput()
 {
   using namespace OIS;
 
-  if(mKeyboard->isKeyDown(KC_A) || mKeyboard->isKeyDown(KC_LEFT))
-    mShip->setSideThrust(1);
-  else if(mKeyboard->isKeyDown(KC_D) || mKeyboard->isKeyDown(KC_RIGHT))
-    mShip->setSideThrust(-1);
+  if(keyboard_->isKeyDown(KC_A) || keyboard_->isKeyDown(KC_LEFT))
+    playerShip_->setSideThrust(1);
+  else if(keyboard_->isKeyDown(KC_D) || keyboard_->isKeyDown(KC_RIGHT))
+    playerShip_->setSideThrust(-1);
   else
-    mShip->setSideThrust(0);
+    playerShip_->setSideThrust(0);
 
-  if(mKeyboard->isKeyDown(KC_UP) || mKeyboard->isKeyDown(KC_W) )
-    mShip->setThrust(1);
-  else if(mKeyboard->isKeyDown(KC_DOWN) || mKeyboard->isKeyDown(KC_S) )
-    mShip->setThrust(-1);
+  if(keyboard_->isKeyDown(KC_UP) || keyboard_->isKeyDown(KC_W) )
+    playerShip_->setThrust(1);
+  else if(keyboard_->isKeyDown(KC_DOWN) || keyboard_->isKeyDown(KC_S) )
+    playerShip_->setThrust(-1);
   else
-    mShip->setThrust(0);
+    playerShip_->setThrust(0);
 
-  if( mKeyboard->isKeyDown(KC_ESCAPE) || mKeyboard->isKeyDown(KC_Q) )
+  if( keyboard_->isKeyDown(KC_ESCAPE) || keyboard_->isKeyDown(KC_Q) )
     return false;
 
-  if( mKeyboard->isKeyDown(KC_F) && mTimeUntilNextToggle <= 0 )
+  if( keyboard_->isKeyDown(KC_F) && timeUntilNextToggle_ <= 0 )
   {
-    mStatsOn = !mStatsOn;
-    showDebugOverlay(mStatsOn);
-    mTimeUntilNextToggle = 1;
+    statsOn_ = !statsOn_;
+    showDebugOverlay(statsOn_);
+    timeUntilNextToggle_ = 1;
   }
 
-  if( mKeyboard->isKeyDown(KC_T) && mTimeUntilNextToggle <= 0 )
+  if( keyboard_->isKeyDown(KC_T) && timeUntilNextToggle_ <= 0 )
   {
-    switch(mFiltering)
+    switch(filtering_)
     {
     case TFO_BILINEAR:
-      mFiltering = TFO_TRILINEAR;
-      mAniso = 1;
+      filtering_ = TFO_TRILINEAR;
+      aniso_ = 1;
       break;
     case TFO_TRILINEAR:
-      mFiltering = TFO_ANISOTROPIC;
-      mAniso = 8;
+      filtering_ = TFO_ANISOTROPIC;
+      aniso_ = 8;
       break;
     case TFO_ANISOTROPIC:
-      mFiltering = TFO_BILINEAR;
-      mAniso = 1;
+      filtering_ = TFO_BILINEAR;
+      aniso_ = 1;
       break;
     default: break;
     }
-    MaterialManager::getSingleton().setDefaultTextureFiltering(mFiltering);
-    MaterialManager::getSingleton().setDefaultAnisotropy(mAniso);
+    MaterialManager::getSingleton().setDefaultTextureFiltering(filtering_);
+    MaterialManager::getSingleton().setDefaultAnisotropy(aniso_);
 
-    showDebugOverlay(mStatsOn);
-    mTimeUntilNextToggle = 1;
+    showDebugOverlay(statsOn_);
+    timeUntilNextToggle_ = 1;
   }
 
-  if(mKeyboard->isKeyDown(KC_SYSRQ) && mTimeUntilNextToggle <= 0)
+  if(keyboard_->isKeyDown(KC_SYSRQ) && timeUntilNextToggle_ <= 0)
   {
     std::ostringstream ss;
-    ss << "screenshot_" << ++mNumScreenShots << ".png";
-    mWindow->writeContentsToFile(ss.str());
-    mTimeUntilNextToggle = 0.5;
+    ss << "screenshot_" << ++screenShotCounter_ << ".png";
+    window_->writeContentsToFile(ss.str());
+    timeUntilNextToggle_ = 0.5;
     mDebugText = "Saved: " + ss.str();
   }
 
-  if(mKeyboard->isKeyDown(KC_R) && mTimeUntilNextToggle <=0)
+  if(keyboard_->isKeyDown(KC_R) && timeUntilNextToggle_ <=0)
   {
-    mSceneDetailIndex = (mSceneDetailIndex+1)%3 ;
-    switch(mSceneDetailIndex) {
-        case 0 : mCamera->setPolygonMode(PM_SOLID); break;
-        case 1 : mCamera->setPolygonMode(PM_WIREFRAME); break;
-        case 2 : mCamera->setPolygonMode(PM_POINTS); break;
+    sceneDetailIndex_ = (sceneDetailIndex_+1)%3 ;
+    switch(sceneDetailIndex_) {
+        case 0 : camera_->setPolygonMode(PM_SOLID); break;
+        case 1 : camera_->setPolygonMode(PM_WIREFRAME); break;
+        case 2 : camera_->setPolygonMode(PM_POINTS); break;
     }
-    mTimeUntilNextToggle = 0.5;
+    timeUntilNextToggle_ = 0.5;
   }
 
   static bool displayCameraDetails = false;
-  if(mKeyboard->isKeyDown(KC_P) && mTimeUntilNextToggle <= 0)
+  if(keyboard_->isKeyDown(KC_P) && timeUntilNextToggle_ <= 0)
   {
     displayCameraDetails = !displayCameraDetails;
-    mTimeUntilNextToggle = 0.5;
+    timeUntilNextToggle_ = 0.5;
     if (!displayCameraDetails)
       mDebugText = "";
   }
 
   // Print camera details
   if(displayCameraDetails)
-    mDebugText = StringConverter::toString(mShip->getThrust())
-    + " | Speed = " + StringConverter::toString(mShip->speed);
-  // mDebugText = "P: " + StringConverter::toString(mCamera
+    mDebugText = StringConverter::toString(playerShip_->getThrust())
+    + " | Speed = " + StringConverter::toString(playerShip_->speed);
+  // mDebugText = "P: " + StringConverter::toString(camera_
   //      ->getDerivedPosition()) + " " + "O: "
-  //      + StringConverter::toString(mCamera->getDerivedOrientation());
+  //      + StringConverter::toString(camera_->getDerivedOrientation());
 
   // Return true to continue rendering
   return true;
@@ -398,42 +397,44 @@ bool RunManager::processUnbufferedMouseInput()
 {
   using namespace OIS;
 
-  const MouseState &ms = mMouse->getMouseState();
+  const MouseState &ms = mouse_->getMouseState();
 
   // This is a 'hack' to show some flying barrels..
   // Usually, the Bullet created by the ship should be managed
   // by the physics engine..
-  if (ms.buttonDown(MB_Left) && !leftButtonDown)
+  if (ms.buttonDown(MB_Left) && !leftButtonDown_)
   {
     // Prevent continuous fire for the moment.
-    leftButtonDown = true;
+    leftButtonDown_ = true;
     
     // let ship fire one shot with its only weapon (Barrels..)
-    Bullet *mTempBullet = mShip->fire();
+    Bullet *tempBullet = playerShip_->fire();
 
     // resize array if neccessary (double the size then)
-    if (mBulletsPosition >= mBulletsSize)
+    if (bulletsIndex_ >= bulletsSize_)
     {
       // redimension the array
-      Bullet **mTempArray = new Bullet*[2*mBulletsSize];
-      for (int i = 0; i < mBulletsSize; i++)
-        mTempArray[i] = mBullets[i];
-      mBulletsSize *= 2;
-      delete mBullets;
-      mBullets = mTempArray;
+      Bullet **tempArray = new Bullet*[2*bulletsSize_];
+      for (int i = 0; i < bulletsSize_; i++)
+        tempArray[i] = bullets_[i];
+      bulletsSize_ *= 2;
+      delete bullets_;
+      bullets_ = tempArray;
     }
 
     // add the bullet to the list
-    mBullets[mBulletsPosition++] = mTempBullet;
+    bullets_[bulletsIndex_++] = tempBullet;
 
   }
   else if (!ms.buttons)
-    leftButtonDown = false;
+    leftButtonDown_ = false;
 
   // space ship steering. This should definitely be done in the steering object
   // Simply give it the mouse movements.
-  mShip->mRootNode->pitch(Degree(-ms.Y.rel * 0.13), Ogre::Node::TransformSpace::TS_LOCAL);
-  mShip->mRootNode->yaw(Degree(-ms.X.rel * 0.13), Ogre::Node::TransformSpace::TS_PARENT);
+  playerShip_->turnUpAndDown(Radian(ms.Y.rel * mouseSensitivity_));
+  playerShip_->turnLeftAndRight(Radian(ms.X.rel * mousSensitivity_));
+  //playerShip_->mRootNode->pitch(Degree(-ms.Y.rel * 0.13), Ogre::Node::TransformSpace::TS_LOCAL);
+  //playerShip_->mRootNode->yaw(Degree(-ms.X.rel * 0.13), Ogre::Node::TransformSpace::TS_PARENT);
 
   // keep rendering
   return true;
@@ -445,12 +446,12 @@ bool RunManager::processUnbufferedMouseInput()
 */
 void RunManager::showDebugOverlay(bool show)
 {
-  if (mDebugOverlay)
+  if (debugOverlay_)
   {
     if (show)
-      mDebugOverlay->show();
+      debugOverlay_->show();
     else
-      mDebugOverlay->hide();
+      debugOverlay_->hide();
   }
 }
 
@@ -479,7 +480,7 @@ void RunManager::updateStats(void)
     OverlayElement* guiWorst = OverlayManager::getSingleton()
       .getOverlayElement("Core/WorstFps");
 
-    const RenderTarget::FrameStats& stats = mWindow->getStatistics();
+    const RenderTarget::FrameStats& stats = window_->getStatistics();
     guiAvg->setCaption(avgFps + StringConverter::toString(stats.avgFPS));
     guiCurr->setCaption(currFps + StringConverter::toString(stats.lastFPS));
     guiBest->setCaption(bestFps + StringConverter::toString(stats.bestFPS)
@@ -507,17 +508,17 @@ void RunManager::updateStats(void)
 
 /**
 * Simple camera creator.
-* mShipNode->attachObject(mCamera) should no be here! This is what the camera
+* playerShip_Node->attachObject(camera_) should no be here! This is what the camera
 * manager is for. Right now, this method should do just fine, setting the
 * cam behind the ship.
 */
 void RunManager::createCamera(void)
 {
-  mCamera = mSceneMgr->createCamera("PlayerCam");
-  mShipNode->attachObject(mCamera);
-  mCamera->setNearClipDistance(5);
-  mCamera->setPosition(Vector3(0,10,500));
-  mCamera->lookAt(Vector3(0,0,0));
+  camera_ = sceneMgr_->createCamera("PlayerCam");
+  playerShip_Node->attachObject(camera_);
+  camera_->setNearClipDistance(5);
+  camera_->setPosition(Vector3(0,10,500));
+  camera_->lookAtVector3(0,0,0));
 }
 
 /**
@@ -530,10 +531,10 @@ void RunManager::createCamera(void)
 void RunManager::createViewports(void)
 {
   // Create one viewport, entire window
-  Viewport* vp = mWindow->addViewport(mCamera);
+  Viewport* vp = window_->addViewport(camera_);
   vp->setBackgroundColour(ColourValue(0,0,0));
 
   // Alter the camera aspect ratio to match the viewport
-  mCamera->setAspectRatio(
+  camera_->setAspectRatio(
     Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
 }

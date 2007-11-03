@@ -37,6 +37,7 @@
 #include "orxonox_scene.h"
 #include "orxonox_ship.h"
 
+
 //Use this define to signify OIS will be used as a DLL
 //(so that dll import/export macros are in effect)
 #define OIS_DYNAMIC_LIB
@@ -54,46 +55,9 @@ public:
 
 	virtual ~RunManager();
 
-	virtual bool tick(unsigned long, float);
+	virtual bool tick(unsigned long, Real);
 
 protected:
-	OgreControl  *mOgre;
-
-	SceneManager *mSceneMgr;
-	RenderWindow* mWindow;
-
-	OrxonoxScene *mScene;
-	Camera* mCamera;
-	SceneNode *mShipNode;
-	OrxonoxShip *mShip;
-
-	bool mStatsOn;
-
-	std::string mDebugText;
-
-	unsigned int mNumScreenShots;
-	// just to stop toggles flipping too fast
-	Real mTimeUntilNextToggle ;
-	TextureFilterOptions mFiltering;
-	int mAniso;
-
-	int mSceneDetailIndex ;
-	Overlay* mDebugOverlay;
-
-	//OIS Input devices
-	OIS::InputManager* mInputManager;
-	OIS::Mouse*    mMouse;
-	OIS::Keyboard* mKeyboard;
-	OIS::JoyStick* mJoy;
-
-	bool leftButtonDown;
-	Bullet **mBullets;
-	int mBulletsSize;
-	int mBulletsPosition;
-
-	// previously elapsed render time
-	unsigned long mTime;
-
 	virtual void createCamera(void);
 
 	virtual void createViewports(void);
@@ -119,6 +83,41 @@ protected:
 	virtual void updateStats(void);
 
 	virtual void showDebugOverlay(bool);
+
+protected:
+	OgreControl  *ogre_;
+	SceneManager *sceneMgr_;
+	RenderWindow *window_;
+	OrxonoxScene *backgroundScene_;
+	Camera       *camera_;
+	OrxonoxShip  *playerShip_;
+
+	bool statsOn_;
+	std::string debugText_;
+
+	unsigned int screenShotCounter_;
+	// just to stop toggles flipping too fast
+	Real timeUntilNextToggle_;
+	bool leftButtonDown_;
+	TextureFilterOptions filtering_;
+	int aniso_;
+
+	int sceneDetailIndex_;
+	Overlay* debugOverlay_;
+
+	//OIS Input devices
+	OIS::InputManager* inputManager_;
+	OIS::Mouse*    mouse_;
+	OIS::Keyboard* keyboard_;
+	OIS::JoyStick* joystick_;
+
+  // Bullet array
+	Bullet **bullets_;
+	int bulletsSize_;
+	int bulletsIndex_;
+
+	// previously elapsed render time
+	unsigned long totalTime_;
 
 };
 
