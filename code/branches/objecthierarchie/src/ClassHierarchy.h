@@ -2,6 +2,7 @@
 #define _ClassHierarchy_H__
 
 #include <string>
+#include <iostream>
 
 // DONE:
 // - klassenhierarchie aufbauen
@@ -17,10 +18,25 @@
 
 namespace orxonox
 {
+    // ##### ClassHierarchy #####
+    class ClassHierarchy
+    {
+        public:
+            static ClassHierarchy* getSingleton();
+            bool isCreatingHierarchy() { return this->bCreatingHierarchy_; }
+            void createHierarchy(bool bCreatingHierarchy) { this->bCreatingHierarchy_ = bCreatingHierarchy; std::cout << "*** Switched Hierarchy-Creating-Mode to" << bCreatingHierarchy << "\n"; }
+
+        private:
+            ClassHierarchy();
+
+            static ClassHierarchy* pointer_;
+            bool bCreatingHierarchy_;
+    };
+
     // ##### Identifier #####
     class IdentifierList;
     class ObjectList;
-    class BaseObject;
+    class OrxonoxClass;
     template <class T>
     class ClassIdentifier;
 
@@ -30,8 +46,8 @@ namespace orxonox
         friend class ClassIdentifier;
 
         public:
-            void addObject(BaseObject* object);
-            void removeObject(BaseObject* object);
+            void addObject(OrxonoxClass* object);
+            void removeObject(OrxonoxClass* object);
 
             bool isA(Identifier* identifier);
             bool isDirectA(Identifier* identifier);
@@ -59,7 +75,7 @@ namespace orxonox
     class ClassIdentifier : public Identifier
     {
         public:
-            static ClassIdentifier<T>* registerClass(IdentifierList* parents);
+            static ClassIdentifier<T>* registerClass(IdentifierList* parents, std::string name, bool bRootClass);
             static ClassIdentifier<T>* getIdentifier();
             static T* create();
 
@@ -70,9 +86,6 @@ namespace orxonox
 
     };
 
-    #define getStringFromClassName(ClassName) \
-        #ClassName
-
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::pointer_ = NULL;
 
@@ -82,13 +95,22 @@ namespace orxonox
     }
 
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(IdentifierList* parents)
+    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(IdentifierList* parents, std::string name, bool bRootClass)
     {
+        std::cout << "*** Register Class in " << name << "-Singleton.\n";
         if (!pointer_)
         {
-            pointer_ = new ClassIdentifier();
-            pointer_->name_ = getStringFromClassName(T);
-            pointer_->initialize(parents);
+            std::cout << "*** Register Class in " << name << "-Singleton -> Create Singleton.\n";
+            if (parents || bRootClass)
+            {
+                pointer_ = new ClassIdentifier();
+                pointer_->name_ = name;
+                pointer_->initialize(parents);
+            }
+            else
+            {
+                pointer_ = getIdentifier();
+            }
         }
 
         return pointer_;
@@ -97,9 +119,13 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
+        std::cout << "*** Get Identifier.\n";
         if (!pointer_)
         {
+            std::cout << "*** Get Identifier -> Create Class\n";
+            ClassHierarchy::getSingleton()->createHierarchy(true);
             T* temp = new T();
+            ClassHierarchy::getSingleton()->createHierarchy(false);
             delete temp;
         }
 
@@ -146,8 +172,8 @@ namespace orxonox
         public:
             ObjectList();
             ~ObjectList();
-            void add(BaseObject* object);
-            void remove(BaseObject* object);
+            void add(OrxonoxClass* object);
+            void remove(OrxonoxClass* object);
 
             ObjectListElement* first_;
     };
@@ -155,29 +181,34 @@ namespace orxonox
     class ObjectListElement
     {
         public:
-            ObjectListElement(BaseObject* object);
+            ObjectListElement(OrxonoxClass* object);
 
-            BaseObject* object_;
+            OrxonoxClass* object_;
             ObjectListElement* next_;
     };
 
-
     // ##### Macros #####
     #define registerRootObject(ClassName) \
-        this->parents_ = new IdentifierList(); \
-        this->identifier_ = ClassIdentifier<ClassName>::registerClass(this->parents_); \
-        this->parents_->add(this->identifier_); \
-        this->identifier_->addObject(this)
+        std::cout << "*** Register Root-Object: " << #ClassName << "\n"; \
+        if (ClassHierarchy::getSingleton()->isCreatingHierarchy() && !this->getParents()) \
+            this->setParents(new IdentifierList()); \
+        if (this->getIdentifier()) \
+            this->getIdentifier()->removeObject(this); \
+        this->setIdentifier(ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, true)); \
+        if (ClassHierarchy::getSingleton()->isCreatingHierarchy() && this->getParents()) \
+            this->getParents()->add(this->getIdentifier()); \
+        this->getIdentifier()->addObject(this)
 
     #define registerObject(ClassName) \
-        this->identifier_->removeObject(this); \
-        this->identifier_ = ClassIdentifier<ClassName>::registerClass(this->parents_); \
-        this->parents_->add(this->identifier_); \
-        this->identifier_->addObject(this)
+        std::cout << "*** Register Object: " << #ClassName << "\n"; \
+        this->getIdentifier()->removeObject(this); \
+        this->setIdentifier(ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, false)); \
+        if (ClassHierarchy::getSingleton()->isCreatingHierarchy() && this->getParents()) \
+            this->getParents()->add(this->getIdentifier()); \
+        this->getIdentifier()->addObject(this)
 
     #define unregisterObject() \
-        delete this->parents_; \
-        this->identifier_->removeObject(this)
+        this->getIdentifier()->removeObject(this)
 
     #define Class(ClassName) \
         ClassIdentifier<ClassName>::getIdentifier()

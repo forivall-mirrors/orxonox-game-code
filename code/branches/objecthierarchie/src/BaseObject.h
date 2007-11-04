@@ -2,34 +2,33 @@
 #define _BaseObject_H__
 
 #include "ClassHierarchy.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
-    class BaseObject
+    class BaseObject : virtual public OrxonoxClass
     {
         public:
             BaseObject();
             ~BaseObject();
 
             inline bool isA(Identifier* identifier)
-                { this->identifier_->isA(identifier); }
+                { this->getIdentifier()->isA(identifier); }
             inline bool isDirectA(Identifier* identifier)
-                { this->identifier_->isDirectA(identifier); }
+                { this->getIdentifier()->isDirectA(identifier); }
             inline bool isChildOf(Identifier* identifier)
-                { this->identifier_->isChildOf(identifier); }
+                { this->getIdentifier()->isChildOf(identifier); }
             inline bool isDirectChildOf(Identifier* identifier)
-                { this->identifier_->isDirectChildOf(identifier); }
+                { this->getIdentifier()->isDirectChildOf(identifier); }
             inline bool isParentOf(Identifier* identifier)
-                { this->identifier_->isParentOf(identifier); }
+                { this->getIdentifier()->isParentOf(identifier); }
             inline bool isDirectParentOf(Identifier* identifier)
-                { this->identifier_->isDirectParentOf(identifier); }
+                { this->getIdentifier()->isDirectParentOf(identifier); }
 
-            ClassIdentifier<class BaseObject>* identifier_;
+//            Identifier* identifier_;
 
-        protected:
-            IdentifierList* parents_; // INTERN! Don't touch this!
-
-        private:
+//        protected:
+//            IdentifierList* parents_; // INTERN! Don't touch this!
 
     };
 }

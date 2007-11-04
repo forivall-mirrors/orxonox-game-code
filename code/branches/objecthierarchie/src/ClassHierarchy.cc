@@ -30,6 +30,7 @@ namespace orxonox
 
     void Identifier::initialize(IdentifierList* parents)
     {
+        std::cout << "*** Initialize " << this->name_ << "-Singleton.\n";
         if (parents)
         {
             this->bCreatedOneObject_ = true;
@@ -75,13 +76,15 @@ namespace orxonox
         }
     }
 
-    void Identifier::addObject(BaseObject* object)
+    void Identifier::addObject(OrxonoxClass* object)
     {
+        std::cout << "*** Added " << this->name_ << " to list.\n";
         this->objects_->add(object);
     }
 
-    void Identifier::removeObject(BaseObject* object)
+    void Identifier::removeObject(OrxonoxClass* object)
     {
+        std::cout << "*** Removed " << this->name_ << " from list.\n";
         this->objects_->remove(object);
     }
 
@@ -217,14 +220,14 @@ namespace orxonox
         }
     }
 
-    void ObjectList::add(BaseObject* object)
+    void ObjectList::add(OrxonoxClass* object)
     {
         ObjectListElement* temp = this->first_;
         this->first_ = new ObjectListElement(object);
         this->first_->next_ = temp;
     }
 
-    void ObjectList::remove(BaseObject* object)
+    void ObjectList::remove(OrxonoxClass* object)
     {
         if (!object)
             return;
@@ -258,9 +261,28 @@ namespace orxonox
     // ###############################
     // ###    ObjectListElement    ###
     // ###############################
-    ObjectListElement::ObjectListElement(BaseObject* object)
+    ObjectListElement::ObjectListElement(OrxonoxClass* object)
     {
         this->object_ = object;
         this->next_ = NULL;
+    }
+
+
+    // ###############################
+    // ###     ClassHierarchy      ###
+    // ###############################
+    ClassHierarchy* ClassHierarchy::pointer_ = NULL;
+
+    ClassHierarchy* ClassHierarchy::getSingleton()
+    {
+        if (!pointer_)
+            pointer_ = new ClassHierarchy();
+
+        return pointer_;
+    }
+
+    ClassHierarchy::ClassHierarchy()
+    {
+        this->bCreatingHierarchy_ = false;
     }
 }

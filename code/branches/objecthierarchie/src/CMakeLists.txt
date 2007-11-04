@@ -1,8 +1,8 @@
 PROJECT(Orxonox)
 
 # create a few variables to simplify life
-SET(SRC_FILES orxonox.cc BaseObject.cc ClassHierarchy.cc)
-SET(INC_FILES BaseObject.h ClassHierarchy.h)
+SET(SRC_FILES orxonox.cc ClassHierarchy.cc OrxonoxClass.cc BaseObject.cc)
+SET(INC_FILES ClassHierarchy.h OrxonoxClass.h BaseObject.h Test.h)
 
 #Creates an executable
 ADD_EXECUTABLE(../bin/main ${SRC_FILES} ${INC_FILES})

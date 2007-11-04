@@ -30,6 +30,9 @@
 #include <CEGUI/CEGUI.h>
 #include <OgreCEGUIRenderer.h>
 
+#include "BaseObject.h"
+#include "Test.h"
+
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
 
@@ -82,7 +85,7 @@ class OrxApplication
   public:
     void go()
     {
-      createRoot();
+/*      createRoot();
       defineResources();
       setupRenderSystem();
       createRenderWindow();
@@ -92,6 +95,31 @@ class OrxApplication
       setupCEGUI();
       createFrameListener();
       startRenderLoop();
+*/
+      std::cout << "Test 1\n";
+      orxonox::BaseObject* test1;
+      test1 = new orxonox::BaseObject();
+      test1 = new orxonox::BaseObject();
+      test1 = new orxonox::BaseObject();
+
+      std::cout << "Test 2\n";
+      orxonox::A1* test2;
+      test2 = new orxonox::A1();
+      test2 = new orxonox::A1();
+      test2 = new orxonox::A1();
+
+      std::cout << "Test 3\n";
+      orxonox::BaseObject* test3;
+      test3 = new orxonox::BaseObject();
+      test3 = new orxonox::BaseObject();
+      test3 = new orxonox::BaseObject();
+
+      std::cout << "Test 4\n";
+      orxonox::A3* test4;
+      test4 = new orxonox::A3();
+      test4 = new orxonox::A3();
+      test4 = new orxonox::A3();
+
     }
 
     ~OrxApplication()
