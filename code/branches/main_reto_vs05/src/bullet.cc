@@ -25,16 +25,25 @@
  *
  */
 
+#include "OgreSceneNode.h"
+#include "OgreEntity.h"
+#include "OgreVector3.h"
+
 #include "bullet.h"
 
 
-Bullet::Bullet(SceneNode *mNode, Entity *mEntity, Vector3 mSpeed)
-      : mNode(mNode), mEntity(mEntity), mSpeed(mSpeed)
-{
-	mNode->attachObject(mEntity);
-}
+namespace Orxonox {
+  using namespace Ogre;
+
+  Bullet::Bullet(SceneNode *mNode, Entity *mEntity, Vector3 mSpeed)
+        : mNode(mNode), mEntity(mEntity), mSpeed(mSpeed)
+  {
+	  mNode->attachObject(mEntity);
+  }
 
 
-Bullet::~Bullet()
-{
+  Bullet::~Bullet()
+  {
+  }
+
 }

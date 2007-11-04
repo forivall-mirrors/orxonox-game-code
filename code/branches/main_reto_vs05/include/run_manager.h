@@ -29,98 +29,94 @@
 #ifndef RUN_MANAGER_H
 #define RUN_MANAGER_H
 
-#include "Ogre.h"
-#include "OgreStringConverter.h"
-#include "OgreException.h"
+#include "OgrePrerequisites.h"
+#include "OgreWindowEventUtilities.h"
+#include "OgreTextureManager.h"
 
-#include "ogre_control.h"
-#include "orxonox_scene.h"
-#include "orxonox_ship.h"
+#include <OIS/OISPrereqs.h>
 
-
-//Use this define to signify OIS will be used as a DLL
-//(so that dll import/export macros are in effect)
-#define OIS_DYNAMIC_LIB
-#include <OIS/OIS.h>
-
-using namespace Ogre;
+#include "Orxonox_prerequisites.h"
 
 
-// let the class inherit from WindowEventListener in order for the RunMgr
-// to act as the central point of all the calcuations in Orxonox
-class RunManager : WindowEventListener
-{
-public:
-	RunManager(OgreControl*);
+namespace Orxonox {
 
-	virtual ~RunManager();
+  // let the class inherit from WindowEventListener in order for the RunMgr
+  // to act as the central point of all the calcuations in Orxonox
+  class RunManager : Ogre::WindowEventListener
+  {
+  public:
+	  RunManager(OgreControl*);
 
-	virtual bool tick(unsigned long, Real);
+	  virtual ~RunManager();
 
-protected:
-	virtual void createCamera(void);
+    virtual bool tick(unsigned long, Ogre::Real);
 
-	virtual void createViewports(void);
+  protected:
+	  virtual void createCamera(void);
 
-
-	/** EVENT HANDLING **/
-
-	//Adjust mouse clipping area
-	virtual void windowResized(RenderWindow*);
-
-	//Unattach OIS before window shutdown (very important under Linux)
-	virtual void windowClosed(RenderWindow*);
+	  virtual void createViewports(void);
 
 
-	/** INPUT PROCESSING **/
-	virtual bool processUnbufferedKeyInput();
+	  /** EVENT HANDLING **/
 
-	virtual bool processUnbufferedMouseInput();
+	  //Adjust mouse clipping area
+	  virtual void windowResized(Ogre::RenderWindow*);
+
+	  //Unattach OIS before window shutdown (very important under Linux)
+	  virtual void windowClosed(Ogre::RenderWindow*);
 
 
-	/** OUTPUT **/
+	  /** INPUT PROCESSING **/
+	  virtual bool processUnbufferedKeyInput();
 
-	virtual void updateStats(void);
+	  virtual bool processUnbufferedMouseInput();
 
-	virtual void showDebugOverlay(bool);
 
-protected:
-	OgreControl  *ogre_;
-	SceneManager *sceneMgr_;
-	RenderWindow *window_;
-	OrxonoxScene *backgroundScene_;
-	Camera       *camera_;
-	OrxonoxShip  *playerShip_;
+	  /** OUTPUT **/
 
-	bool statsOn_;
-	std::string debugText_;
+	  virtual void updateStats(void);
 
-	unsigned int screenShotCounter_;
-	// just to stop toggles flipping too fast
-	Real timeUntilNextToggle_;
-	bool leftButtonDown_;
-	TextureFilterOptions filtering_;
-	int aniso_;
+	  virtual void showDebugOverlay(bool);
 
-	int sceneDetailIndex_;
-	Overlay* debugOverlay_;
+  protected:
+	  Ogre::SceneManager *sceneMgr_;
+	  Ogre::RenderWindow *window_;
+	  Ogre::Camera       *camera_;
+	  OgreControl  *ogre_;
+	  OrxonoxScene *backgroundScene_;
+	  OrxonoxShip  *playerShip_;
 
-	//OIS Input devices
-	OIS::InputManager* inputManager_;
-	OIS::Mouse*    mouse_;
-	OIS::Keyboard* keyboard_;
-	OIS::JoyStick* joystick_;
+	  bool statsOn_;
+	  std::string debugText_;
 
-  const Real mouseSensitivity_;
+	  unsigned int screenShotCounter_;
+	  // just to stop toggles flipping too fast
+	  Ogre::Real timeUntilNextToggle_;
+	  bool leftButtonDown_;
+	  Ogre::TextureFilterOptions filtering_;
+	  int aniso_;
 
-  // Bullet array
-	Bullet **bullets_;
-	int bulletsSize_;
-	int bulletsIndex_;
+	  int sceneDetailIndex_;
+	  Ogre::Overlay* debugOverlay_;
 
-	// previously elapsed render time
-	unsigned long totalTime_;
+	  //OIS Input devices
+	  OIS::InputManager* inputManager_;
+	  OIS::Mouse*    mouse_;
+	  OIS::Keyboard* keyboard_;
+	  OIS::JoyStick* joystick_;
 
-};
+    const Ogre::Real mouseSensitivity_;
+
+    // Bullet array
+	  Bullet **bullets_;
+	  int bulletsSize_;
+	  int bulletsIndex_;
+
+	  // previously elapsed render time
+	  unsigned long totalTime_;
+
+  };
+
+}
 
 #endif /* RUN_MANAGER_H */

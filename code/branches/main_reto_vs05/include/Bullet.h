@@ -29,23 +29,30 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-#include "Ogre.h"
+#include "OgrePrerequisites.h"
 
-using namespace Ogre;
+#include "Orxonox_prerequisites.h"
 
-class Bullet
-{
-public:
-	SceneNode *mNode;
-	Entity *mEntity;
-	Vector3 mSpeed;
 
-	Bullet(SceneNode*, Entity*, Vector3);
-	~Bullet();
+namespace Orxonox {
 
-protected:
+  class Bullet
+  {
+  public:
+    Ogre::SceneNode *mNode;
+	  Ogre::Entity *mEntity;
+	  Ogre::Vector3 mSpeed;
 
-};
+  protected:
 
+  public:
+	  Bullet(Ogre::SceneNode*, Ogre::Entity*, Ogre::Vector3);
+	  ~Bullet();
+
+  protected:
+
+  };
+
+}
 
 #endif /* BULLET_H */

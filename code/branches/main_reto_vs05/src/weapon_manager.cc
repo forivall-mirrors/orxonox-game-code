@@ -25,14 +25,22 @@
  *
  */
 
+#include "OgreSceneManager.h"
+
 #include "weapon_manager.h"
 
-WeaponManager::WeaponManager(SceneManager *mSceneMgr)
-{
-	
-}
+
+namespace Orxonox {
+  using namespace Ogre;
+
+  WeaponManager::WeaponManager(SceneManager *mSceneMgr)
+  {
+  	
+  }
 
 
-WeaponManager::~WeaponManager()
-{
+  WeaponManager::~WeaponManager()
+  {
+  }
+
 }

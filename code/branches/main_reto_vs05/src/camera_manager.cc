@@ -25,20 +25,27 @@
  *
  */
 
+#include "OgreSceneManager.h"
+#include "OgreCamera.h"
+
 #include "camera_manager.h"
 
+namespace Orxonox {
+  using namespace Ogre;
 
-CameraManager::CameraManager(SceneManager *mScene) : mSceneMgr(mSceneMgr)
-{
-}
-
-
-CameraManager::~CameraManager()
-{
-}
+  CameraManager::CameraManager(SceneManager *mScene) : mSceneMgr(mSceneMgr)
+  {
+  }
 
 
-bool CameraManager::setCameraPosition(int n)
-{
-	return true;
+  CameraManager::~CameraManager()
+  {
+  }
+
+
+  bool CameraManager::setCameraPosition(int n)
+  {
+	  return true;
+  }
+
 }

@@ -29,22 +29,26 @@
 #ifndef CAMERA_MANAGER_H
 #define CAMERA_MANAGER_H
 
-#include "Ogre.h"
+#include "OgrePrerequisites.h"
 
-using namespace Ogre;
+#include "Orxonox_prerequisites.h"
 
-class CameraManager
-{
-public:
-	CameraManager(SceneManager*);
-	~CameraManager();
 
-	bool setCameraPosition(int);
+namespace Orxonox {
 
-protected:
-	SceneManager *mSceneMgr;
-	Camera *mCamera;
-};
+  class CameraManager
+  {
+  public:
+    CameraManager(Ogre::SceneManager*);
+	  ~CameraManager();
 
+	  bool setCameraPosition(int);
+
+  protected:
+	  Ogre::SceneManager *mSceneMgr;
+	  Ogre::Camera *mCamera;
+  };
+
+}
 
 #endif /* CAMERA_MANAGER_H */

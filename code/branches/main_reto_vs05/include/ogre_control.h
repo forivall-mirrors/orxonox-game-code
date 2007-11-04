@@ -29,44 +29,43 @@
 #ifndef OGRE_CONTROL_H
 #define OGRE_CONTROL_H
 
-#include "Ogre.h"
-#include "OgreConfigFile.h"
+#include "OgrePrerequisites.h"
+
+#include "Orxonox_prerequisites.h"
 
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-#include <CoreFoundation/CoreFoundation.h>
-#endif
+namespace Orxonox {
 
-using namespace Ogre;
+  class OgreControl
+  {
+  public:
+	  OgreControl();
 
-class OgreControl
-{
-public:
-	OgreControl();
+	  virtual ~OgreControl();
 
-	virtual ~OgreControl();
+	  /** Sets up the application - returns false if the user chooses to abandon configuration. */
+	  virtual bool initialise();
 
-	/** Sets up the application - returns false if the user chooses to abandon configuration. */
-	virtual bool initialise();
+    virtual Ogre::Root* getRoot();
 
-	virtual Root* getRoot();
+	  virtual Ogre::RenderWindow* getRenderWindow();
 
-	virtual RenderWindow* getRenderWindow();
+	  virtual Ogre::String getResourcePath();
 
-	virtual Ogre::String getResourcePath();
+  protected:
+	  /** Configures the application - returns false if the user chooses to abandon configuration. */
+	  virtual bool configure(void);
 
-protected:
-	/** Configures the application - returns false if the user chooses to abandon configuration. */
-	virtual bool configure(void);
+	  /// Method which will define the source of resources (other than current folder)
+	  virtual void setupResources(void);
 
-	/// Method which will define the source of resources (other than current folder)
-	virtual void setupResources(void);
+  protected:
+	  Ogre::Root         *root_;
+	  Ogre::RenderWindow *window_;
+	  Ogre::String  resourcePath_;
 
-protected:
-	Root         *root_;
-	RenderWindow *window_;
-	Ogre::String  resourcePath_;
+  };
 
-};
+}
 
 #endif /* OGRE_CONTROL_H */

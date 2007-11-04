@@ -25,43 +25,29 @@
  *
  */
 
-#include "OgrePlatform.h"
-#include "OgreException.h"
 
-#include "orxonox.h"
+#ifndef AmmunitionDump_H
+#define AmmunitionDump_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "OgrePrerequisites.h"
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
-#define WIN32_LEAN_AND_MEAN 
-#include "windows.h" 
-  INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
-#else 
-  int main(int argc, char **argv) 
-#endif 
+#include "Orxonox_prerequisites.h"
+
+
+namespace Orxonox {
+
+  class AmmunitionDump
   {
-    try {
-      // create an orxonox aplication and run it
-      Orxonox::Orxonox myApp;
+  public:
+	  AmmunitionDump();
+	  ~AmmunitionDump();
 
-      myApp.go();
-    }
-    catch (Ogre::Exception& e) {
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
-      MessageBoxA(NULL, e.getFullDescription().c_str(),
-            "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-#else
-      std::cerr << "Exception:\n";
-      std::cerr << e.getFullDescription().c_str() << "\n";
-#endif
-      return 1;
-    }
+  protected:
 
-    return 0;
-  }
+  protected:
 
-#ifdef __cplusplus
+  };
+
 }
-#endif
+
+#endif /* AmmunitionDump_H */

@@ -31,81 +31,90 @@
 * main loop and therefore time itself.
 */
 
+#include "OgreRoot.h"
+#include "OgreTimer.h"
+#include "OgreWindowEventUtilities.h"
 
+#include "ogre_control.h"
+#include "run_manager.h"
 #include "orxonox.h"
 
 
-/**
-* Empty Constructor.
-*/
-Orxonox::Orxonox()
-{
-}
+namespace Orxonox {
+
+  /**
+  * Empty Constructor.
+  */
+  Orxonox::Orxonox()
+  {
+  }
 
 
-/**
-* Empty Destructor.
-*/
-Orxonox::~Orxonox()
-{
-}
+  /**
+  * Empty Destructor.
+  */
+  Orxonox::~Orxonox()
+  {
+  }
 
 
-/**
-* Starts and runs the game
-*/
-void Orxonox::go(void)
-{
-	if (!setup())
-		return;
+  /**
+  * Starts and runs the game
+  */
+  void Orxonox::go(void)
+  {
+	  if (!setup())
+		  return;
 
-	timer_ = new Timer();
+    timer_ = new Ogre::Timer();
 
-	unsigned long lastTime = timer_->getMilliseconds();
+	  unsigned long lastTime = timer_->getMilliseconds();
 
-	while (true)
-	{
-		//Pump messages in all registered RenderWindow windows
-		WindowEventUtilities::messagePump();
+	  while (true)
+	  {
+		  //Pump messages in all registered RenderWindow windows
+      Ogre::WindowEventUtilities::messagePump();
 
-		ogre_->getRoot()->renderOneFrame();
+		  ogre_->getRoot()->renderOneFrame();
 
-		if (!runMgr_->tick(timer_->getMilliseconds(),
-            (timer_->getMilliseconds() - lastTime) / 1000.0))
-			break;
-		lastTime = timer_->getMilliseconds();
-	}
+		  if (!runMgr_->tick(timer_->getMilliseconds(),
+              (timer_->getMilliseconds() - lastTime) / 1000.0))
+			  break;
+		  lastTime = timer_->getMilliseconds();
+	  }
 
-	// clean up
-	destroy();
-}
-
-
-/**
-* Create render engine, render window and the Run manager.
-* @return False if failed.
-*/
-bool Orxonox::setup(void)
-{
-	// create new 3D ogre render engine
-	ogre_ = new OgreControl();
-	ogre_->initialise();
-
-	runMgr_ = new RunManager(ogre_);
-
-	return true;
-}
+	  // clean up
+	  destroy();
+  }
 
 
-/**
-* Clean everything up.
-*/
-void Orxonox::destroy()
-{
-	if (timer_)
-		delete timer_;
-	if (runMgr_)
-		delete runMgr_;
-	if (ogre_)
-		delete ogre_;
+  /**
+  * Create render engine, render window and the Run manager.
+  * @return False if failed.
+  */
+  bool Orxonox::setup(void)
+  {
+	  // create new 3D ogre render engine
+	  ogre_ = new OgreControl();
+	  ogre_->initialise();
+
+	  runMgr_ = new RunManager(ogre_);
+
+	  return true;
+  }
+
+
+  /**
+  * Clean everything up.
+  */
+  void Orxonox::destroy()
+  {
+	  if (timer_)
+		  delete timer_;
+	  if (runMgr_)
+		  delete runMgr_;
+	  if (ogre_)
+		  delete ogre_;
+  }
+
 }

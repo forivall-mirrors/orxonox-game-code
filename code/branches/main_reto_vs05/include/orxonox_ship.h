@@ -29,47 +29,49 @@
 #ifndef ORXONOX_SHIP_H
 #define ORXONOX_SHIP_H
 
-#include "Ogre.h"
+#include "OgrePrerequisites.h"
 
-#include "bullet.h"
+#include "Orxonox_prerequisites.h"
 
-using namespace Ogre;
 
-class OrxonoxShip
-{
-public:
-	OrxonoxShip(SceneManager*, SceneNode*);
-	virtual ~OrxonoxShip();
+namespace Orxonox {
 
-	virtual bool initialise();
+  class OrxonoxShip
+  {
+  public:
+	  OrxonoxShip(Ogre::SceneManager*, Ogre::SceneNode*);
+	  virtual ~OrxonoxShip();
 
-	void setMainThrust(const Real);
-	void setSideThrust(const Real);
-  void setYThrust(const Real);
-	void turnUpAndDown(const Radian&);
-	void turnLeftAndRight(const Radian&);
+	  virtual bool initialise();
 
-  SceneNode* getRootNode();
-  Vector3 getSpeed();
+	  void setMainThrust(const Ogre::Real);
+	  void setSideThrust(const Ogre::Real);
+    void setYThrust(const Ogre::Real);
+	  void turnUpAndDown(const Ogre::Radian&);
+	  void turnLeftAndRight(const Ogre::Radian&);
 
-	Bullet* fire();
+    Ogre::SceneNode* getRootNode();
+    Ogre::Vector3 getSpeed();
 
-	bool tick(unsigned long, Real);
+	  Bullet* fire();
 
-protected:
+	  bool tick(unsigned long, Ogre::Real);
 
-protected:
-	SceneManager *sceneMgr_;
-	SceneNode *rootNode_;
-	Entity *shipEntity_;
+  protected:
 
-	Vector3 currentSpeed_;  // relative to space
-	Vector3 currentThrust_; // relative to the ship
-  Real baseThrust_;
-	int objectCounter_;
-	Vector3 bulletSpeed_;
+  protected:
+	  Ogre::SceneManager *sceneMgr_;
+	  Ogre::SceneNode *rootNode_;
+	  Ogre::Entity *shipEntity_;
 
-};
+	  Ogre::Vector3 currentSpeed_;  // relative to space
+	  Ogre::Vector3 currentThrust_; // relative to the ship
+    Ogre::Real baseThrust_;
+	  int objectCounter_;
+	  Ogre::Vector3 bulletSpeed_;
 
+  };
+
+}
 
 #endif /* ORXONOX_SHIP_H */

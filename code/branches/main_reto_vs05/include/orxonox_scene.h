@@ -29,37 +29,42 @@
 #ifndef ORXONOX_SCENE_H
 #define ORXONOX_SCENE_H
 
-#include "Ogre.h"
+#include "OgrePrerequisites.h"
 
-using namespace Ogre;
+#include "Orxonox_prerequisites.h"
 
-class OrxonoxScene
-{
-public:
-	OrxonoxScene(SceneManager*);
 
-	virtual ~OrxonoxScene();
+namespace Orxonox {
 
-	virtual bool initialise();
+  class OrxonoxScene
+  {
+  public:
+    OrxonoxScene(Ogre::SceneManager*);
 
-	virtual bool tick(unsigned long, Real);
+	  virtual ~OrxonoxScene();
 
-protected:
-	/// method where you can perform resource group loading
-	virtual void loadResources();
+	  virtual bool initialise();
 
-	/// Define what is in the scene
-	virtual void createScene();
+	  virtual bool tick(unsigned long, Ogre::Real);
 
-protected:
-	SceneManager* sceneMgr_;
+  protected:
+	  /// method where you can perform resource group loading
+	  virtual void loadResources();
 
-	//specific variables for test purposes
-	Light        *light_;
-	SceneNode    *lightNode_;
-	BillboardSet *bbs_;
-	Real distance_;
-  Real radius_;
-};
+	  /// Define what is in the scene
+	  virtual void createScene();
+
+  protected:
+	  Ogre::SceneManager* sceneMgr_;
+
+	  //specific variables for test purposes
+	  Ogre::Light        *light_;
+	  Ogre::SceneNode    *lightNode_;
+	  Ogre::BillboardSet *bbs_;
+	  Ogre::Real distance_;
+    Ogre::Real radius_;
+  };
+
+}
 
 #endif /* ORXONOX_SCENE_H */

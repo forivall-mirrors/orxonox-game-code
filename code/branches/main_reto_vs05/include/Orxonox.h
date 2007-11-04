@@ -29,29 +29,31 @@
 #ifndef ORXONOX_H
 #define ORXONOX_H
 
-#include "Ogre.h"
-#include "OgreTimer.h"
+#include "OgrePrerequisites.h"
 
-#include "ogre_control.h"
-#include "run_manager.h"
+#include "Orxonox_prerequisites.h"
 
-class Orxonox
-{
-public:
-  Orxonox();
-  virtual ~Orxonox();
-	virtual void go();
+namespace Orxonox {
 
-protected:
-	virtual bool setup(void);
+  class Orxonox
+  {
+  public:
+    Orxonox();
+    virtual ~Orxonox();
+	  virtual void go();
 
-	virtual void destroy(void);
+  protected:
+	  virtual bool setup(void);
 
-protected:
-	OgreControl *ogre_;
-	RunManager  *runMgr_;
-	Timer       *timer_;
+	  virtual void destroy(void);
 
-};
+  protected:
+	  OgreControl *ogre_;
+	  RunManager  *runMgr_;
+	  Ogre::Timer *timer_;
+
+  };
+
+}
 
 #endif /* ORXONOX_H */

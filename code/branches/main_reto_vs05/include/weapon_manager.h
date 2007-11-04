@@ -29,19 +29,23 @@
 #ifndef WEAPON_MANAGER_H
 #define WEAPON_MANAGER_H
 
-#include "Ogre.h"
+#include "OgrePrerequisites.h"
 
-using namespace Ogre;
+#include "Orxonox_prerequisites.h"
 
-class WeaponManager
-{
-public:
-	WeaponManager(SceneManager*);
-	virtual ~WeaponManager();
 
-protected:
+namespace Orxonox {
 
-};
+  class WeaponManager
+  {
+  public:
+    WeaponManager(Ogre::SceneManager*);
+	  virtual ~WeaponManager();
 
+  protected:
+
+  };
+
+}
 
 #endif /* WEAPON_MANAGER_H */
