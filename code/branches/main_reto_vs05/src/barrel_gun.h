@@ -26,23 +26,27 @@
  */
 
 
-#ifndef AmmunitionDump_H
-#define AmmunitionDump_H
+#ifndef BARREL_GUN_H
+#define BARREL_GUN_H
 
 #include "OgrePrerequisites.h"
 
-#include "Orxonox_prerequisites.h"
+#include "orxonox_prerequisites.h"
 
 
-namespace Orxonox {
+namespace orxonox {
 
-  class AmmunitionDump
+  class BarrelGun
   {
   public:
-	  AmmunitionDump();
-	  ~AmmunitionDump();
+    BarrelGun(Ogre::SceneManager*);
+	  virtual ~BarrelGun();
 
   protected:
+
+  public:
+    Ogre::SceneManager *sceneMgr_;
+	  Ogre::Entity *weaponEntity_;
 
   protected:
 
@@ -50,4 +54,4 @@ namespace Orxonox {
 
 }
 
-#endif /* AmmunitionDump_H */
+#endif /* BARREL_GUN_H */

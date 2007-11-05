@@ -187,6 +187,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\barrel_gun.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\src\bullet.cc"
 				>
 			</File>
@@ -229,43 +233,51 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\include\ammunition_dump.h"
+				RelativePath="..\src\ammunition_dump.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\bullet.h"
+				RelativePath="..\src\barrel_gun.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\camera_manager.h"
+				RelativePath="..\src\bullet.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\ogre_control.h"
+				RelativePath="..\src\camera_manager.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\orxonox.h"
+				RelativePath="..\src\ogre_control.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\orxonox_prerequisites.h"
+				RelativePath="..\src\orxonox.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\orxonox_scene.h"
+				RelativePath="..\src\orxonox_prerequisites.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\orxonox_ship.h"
+				RelativePath="..\src\orxonox_scene.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\run_manager.h"
+				RelativePath="..\src\orxonox_ship.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\weapon_manager.h"
+				RelativePath="..\src\run_manager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\weapon.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\weapon_manager.h"
 				>
 			</File>
 		</Filter>

@@ -25,19 +25,6 @@
 */
 
 
-/**
-* RunManager is the basic control object during the game.
-* 
-* The RunManger class is designed to actually "run" the main part of the
-* game. The Idea is, that you could derive from the RunManager in order
-* to distinguish between a first person shooter or a space craft shooter.
-* RunManager loads and initialises everything in the scene (like the ship,
-* the enemies in the scene, any scripts, the physics, window events,
-* environment, HUD, etc.).
-* It also captures any input from keyboard, mous, joystick (optional) or
-* Ogre (window events).
-*/
-
 #include "Ogre.h"
 //#include "OgreRoot.h"
 //#include "OgreSceneManager.h"
@@ -68,8 +55,22 @@
 
 #include "run_manager.h"
 
-namespace Orxonox {
+namespace orxonox {
   using namespace Ogre;
+
+  /**
+  * RunManager is the basic control object during the game.
+  * 
+  * The RunManger class is designed to actually "run" the main part of the
+  * game. The Idea is, that you could derive from the RunManager in order
+  * to distinguish between a first person shooter or a space craft shooter.
+  * RunManager loads and initialises everything in the scene (like the ship,
+  * the enemies in the scene, any scripts, the physics, window events,
+  * environment, HUD, etc.).
+  * It also captures any input from keyboard, mous, joystick (optional) or
+  * Ogre (window events).
+  */
+
 
   /**
   * Contructor only needs the render window and the Root object which are both
@@ -239,9 +240,9 @@ namespace Orxonox {
     // update the bullet positions
     for (int i = 0; i < bulletsIndex_; i++)
     {
-      bullets_[i]->mNode->translate(bullets_[i]->mSpeed*deltaTime);
-      bullets_[i]->mNode->yaw(Degree(deltaTime*100));
-      bullets_[i]->mNode->roll(Degree(deltaTime*300));
+      bullets_[i]->node_->translate(bullets_[i]->speed_*deltaTime);
+      bullets_[i]->node_->yaw(Degree(deltaTime*100));
+      bullets_[i]->node_->roll(Degree(deltaTime*300));
     }
 
     // HUMAN INTERFACE

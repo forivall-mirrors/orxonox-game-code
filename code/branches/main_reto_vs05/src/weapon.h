@@ -26,46 +26,28 @@
  */
 
 
-#ifndef OGRE_CONTROL_H
-#define OGRE_CONTROL_H
+#ifndef WEAPON_H
+#define WEAPON_H
 
-#include "OgrePrerequisites.h"
+#include "OgreString.h"
 
-#include "Orxonox_prerequisites.h"
+#include "orxonox_prerequisites.h"
 
+namespace orxonox {
 
-namespace Orxonox {
-
-  class OgreControl
+  class Weapon
   {
   public:
-	  OgreControl();
+    Weapon(const Ogre::String &name, int firePower, int firingRate)
+          : name_(name), firePower_(firePower), firingRate_(firingRate) { }
+    virtual ~Weapon() { }
 
-	  virtual ~OgreControl();
-
-	  /** Sets up the application - returns false if the user chooses to abandon configuration. */
-	  virtual bool initialise();
-
-    virtual Ogre::Root* getRoot();
-
-	  virtual Ogre::RenderWindow* getRenderWindow();
-
-	  virtual Ogre::String getResourcePath();
-
-  protected:
-	  /** Configures the application - returns false if the user chooses to abandon configuration. */
-	  virtual bool configure(void);
-
-	  /// Method which will define the source of resources (other than current folder)
-	  virtual void setupResources(void);
-
-  protected:
-	  Ogre::Root         *root_;
-	  Ogre::RenderWindow *window_;
-	  Ogre::String  resourcePath_;
-
+  public:
+    Ogre::String name_;
+    int firePower_;
+    int firingRate_;
   };
 
 }
 
-#endif /* OGRE_CONTROL_H */
+#endif /* WEAPON_H */

@@ -34,8 +34,10 @@
 #include "bullet.h"
 
 #include "orxonox_ship.h"
+#include "weapon_manager.h"
 
-namespace Orxonox {
+
+namespace orxonox {
   using namespace Ogre;
 
   /**
@@ -49,8 +51,6 @@ namespace Orxonox {
   * Furthermore a ship in Orxonox is responsible for its visualization, which is
   * why it receives a pointer to the SceneManager.
   */
-
-
 
 
   /**
@@ -98,6 +98,10 @@ namespace Orxonox {
 	  fishNode->yaw(Degree(-90));
 	  fishNode->attachObject(shipEntity_);
 	  fishNode->setScale(Vector3(10, 10, 10));
+
+    // initialise weapon(s)
+    SceneNode *mainWeaponNode = rootNode_->createChildSceneNode("mainWeaponNode");
+    mainWeapon_ = new WeaponManager(sceneMgr_, mainWeaponNode, 1);
 
 	  return true;
   }

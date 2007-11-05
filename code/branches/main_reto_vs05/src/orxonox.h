@@ -26,45 +26,34 @@
  */
 
 
-#ifndef ORXONOX_SCENE_H
-#define ORXONOX_SCENE_H
+#ifndef ORXONOX_H
+#define ORXONOX_H
 
 #include "OgrePrerequisites.h"
 
-#include "Orxonox_prerequisites.h"
+#include "orxonox_prerequisites.h"
 
+namespace orxonox {
 
-namespace Orxonox {
-
-  class OrxonoxScene
+  class Orxonox
   {
   public:
-    OrxonoxScene(Ogre::SceneManager*);
-
-	  virtual ~OrxonoxScene();
-
-	  virtual bool initialise();
-
-	  virtual bool tick(unsigned long, Ogre::Real);
+    Orxonox();
+    virtual ~Orxonox();
+	  virtual void go();
 
   protected:
-	  /// method where you can perform resource group loading
-	  virtual void loadResources();
+	  virtual bool setup(void);
 
-	  /// Define what is in the scene
-	  virtual void createScene();
+	  virtual void destroy(void);
 
   protected:
-	  Ogre::SceneManager* sceneMgr_;
+	  OgreControl *ogre_;
+	  RunManager  *runMgr_;
+	  Ogre::Timer *timer_;
 
-	  //specific variables for test purposes
-	  Ogre::Light        *light_;
-	  Ogre::SceneNode    *lightNode_;
-	  Ogre::BillboardSet *bbs_;
-	  Ogre::Real distance_;
-    Ogre::Real radius_;
   };
 
 }
 
-#endif /* ORXONOX_SCENE_H */
+#endif /* ORXONOX_H */

@@ -31,23 +31,23 @@
 
 #include "OgrePrerequisites.h"
 
-#include "Orxonox_prerequisites.h"
+#include "orxonox_prerequisites.h"
 
 
-namespace Orxonox {
+namespace orxonox {
 
   class Bullet
   {
   public:
-    Ogre::SceneNode *mNode;
-	  Ogre::Entity *mEntity;
-	  Ogre::Vector3 mSpeed;
+	  Bullet(Ogre::SceneNode*, Ogre::Entity*, Ogre::Vector3);
+	  ~Bullet();
 
   protected:
 
   public:
-	  Bullet(Ogre::SceneNode*, Ogre::Entity*, Ogre::Vector3);
-	  ~Bullet();
+    Ogre::SceneNode *node_;
+	  Ogre::Entity *entity_;
+	  Ogre::Vector3 speed_;
 
   protected:
 

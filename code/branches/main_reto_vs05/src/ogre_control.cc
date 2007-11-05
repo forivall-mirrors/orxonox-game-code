@@ -38,7 +38,7 @@
 #include "ogre_control.h"
 
 
-namespace Orxonox {
+namespace orxonox {
   using namespace Ogre;
 
   /**

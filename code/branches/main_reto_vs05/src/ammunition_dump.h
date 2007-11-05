@@ -26,34 +26,28 @@
  */
 
 
-#ifndef ORXONOX_H
-#define ORXONOX_H
+#ifndef AmmunitionDump_H
+#define AmmunitionDump_H
 
 #include "OgrePrerequisites.h"
 
-#include "Orxonox_prerequisites.h"
+#include "orxonox_prerequisites.h"
 
-namespace Orxonox {
 
-  class Orxonox
+namespace orxonox {
+
+  class AmmunitionDump
   {
   public:
-    Orxonox();
-    virtual ~Orxonox();
-	  virtual void go();
+	  AmmunitionDump();
+	  ~AmmunitionDump();
 
   protected:
-	  virtual bool setup(void);
-
-	  virtual void destroy(void);
 
   protected:
-	  OgreControl *ogre_;
-	  RunManager  *runMgr_;
-	  Ogre::Timer *timer_;
 
   };
 
 }
 
-#endif /* ORXONOX_H */
+#endif /* AmmunitionDump_H */

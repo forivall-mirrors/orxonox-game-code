@@ -44,7 +44,7 @@ extern "C" {
   {
     try {
       // create an orxonox aplication and run it
-      Orxonox::Orxonox myApp;
+      orxonox::Orxonox myApp;
 
       myApp.go();
     }

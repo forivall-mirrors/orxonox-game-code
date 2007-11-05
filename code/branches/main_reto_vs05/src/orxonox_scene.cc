@@ -35,7 +35,7 @@
 
 #include "orxonox_scene.h"
 
-namespace Orxonox {
+namespace orxonox {
   using namespace Ogre;
 
   /**

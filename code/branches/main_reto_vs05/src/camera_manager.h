@@ -26,21 +26,29 @@
  */
 
 
-#ifndef ORXONOX_PREREQUISITES_H
-#define ORXONOX_PREREQUISITES_H
+#ifndef CAMERA_MANAGER_H
+#define CAMERA_MANAGER_H
 
-namespace Orxonox {
+#include "OgrePrerequisites.h"
 
-  class AmmunitionDump;
-  class Bullet;
-  class CameraManager;
-  class OgreControl;
-  class Orxonox;
-  class OrxonoxShip;
-  class OrxonoxScene;
-  class RunManager;
-  class WeaponManager;
+#include "orxonox_prerequisites.h"
+
+
+namespace orxonox {
+
+  class CameraManager
+  {
+  public:
+    CameraManager(Ogre::SceneManager*);
+	  ~CameraManager();
+
+	  bool setCameraPosition(int);
+
+  protected:
+	  Ogre::SceneManager *mSceneMgr;
+	  Ogre::Camera *mCamera;
+  };
 
 }
 
-#endif /* ORXONOX_PREREQUISITES_H */
+#endif /* CAMERA_MANAGER_H */

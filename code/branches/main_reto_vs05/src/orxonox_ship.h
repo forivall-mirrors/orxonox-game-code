@@ -31,10 +31,10 @@
 
 #include "OgrePrerequisites.h"
 
-#include "Orxonox_prerequisites.h"
+#include "orxonox_prerequisites.h"
 
 
-namespace Orxonox {
+namespace orxonox {
 
   class OrxonoxShip
   {
@@ -70,6 +70,7 @@ namespace Orxonox {
 	  int objectCounter_;
 	  Ogre::Vector3 bulletSpeed_;
 
+    WeaponManager *mainWeapon_;
   };
 
 }

@@ -25,25 +25,47 @@
  *
  */
 
-#include "OgreSceneNode.h"
-#include "OgreEntity.h"
-#include "OgreVector3.h"
 
-#include "bullet.h"
+#ifndef OGRE_CONTROL_H
+#define OGRE_CONTROL_H
+
+#include "OgrePrerequisites.h"
+
+#include "orxonox_prerequisites.h"
 
 
 namespace orxonox {
-  using namespace Ogre;
 
-  Bullet::Bullet(SceneNode *node, Entity *entity, Vector3 speed)
-    : node_(node), entity_(entity), speed_(speed)
+  class OgreControl
   {
-	  node_->attachObject(entity_);
-  }
+  public:
+	  OgreControl();
 
+	  virtual ~OgreControl();
 
-  Bullet::~Bullet()
-  {
-  }
+	  /** Sets up the application - returns false if the user chooses to abandon configuration. */
+	  virtual bool initialise();
+
+    virtual Ogre::Root* getRoot();
+
+	  virtual Ogre::RenderWindow* getRenderWindow();
+
+	  virtual Ogre::String getResourcePath();
+
+  protected:
+	  /** Configures the application - returns false if the user chooses to abandon configuration. */
+	  virtual bool configure(void);
+
+	  /// Method which will define the source of resources (other than current folder)
+	  virtual void setupResources(void);
+
+  protected:
+	  Ogre::Root         *root_;
+	  Ogre::RenderWindow *window_;
+	  Ogre::String  resourcePath_;
+
+  };
 
 }
+
+#endif /* OGRE_CONTROL_H */

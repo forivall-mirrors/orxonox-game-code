@@ -40,7 +40,7 @@
 #include "orxonox.h"
 
 
-namespace Orxonox {
+namespace orxonox {
 
   /**
   * Empty Constructor.

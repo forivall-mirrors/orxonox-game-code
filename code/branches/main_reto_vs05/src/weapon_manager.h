@@ -26,29 +26,40 @@
  */
 
 
-#ifndef CAMERA_MANAGER_H
-#define CAMERA_MANAGER_H
+#ifndef WEAPON_MANAGER_H
+#define WEAPON_MANAGER_H
 
 #include "OgrePrerequisites.h"
 
-#include "Orxonox_prerequisites.h"
+#include "orxonox_prerequisites.h"
 
 
-namespace Orxonox {
+namespace orxonox {
 
-  class CameraManager
+  class WeaponManager
   {
   public:
-    CameraManager(Ogre::SceneManager*);
-	  ~CameraManager();
+    WeaponManager(Ogre::SceneManager*, Ogre::SceneNode*, int);
+	  virtual ~WeaponManager();
 
-	  bool setCameraPosition(int);
+    bool addWeapon(const Ogre::String&);
+
+    bool static loadWeapons();
+
+    void static destroyWeapons();
 
   protected:
-	  Ogre::SceneManager *mSceneMgr;
-	  Ogre::Camera *mCamera;
+    Ogre::SceneManager *sceneMgr_;
+    Ogre::SceneNode *node_;
+
+    Weapon **slots_;
+    int slotSize_;
+    int slotIndex_;
+
+    static Weapon **weaponList_s;
+
   };
 
 }
 
-#endif /* CAMERA_MANAGER_H */
+#endif /* WEAPON_MANAGER_H */

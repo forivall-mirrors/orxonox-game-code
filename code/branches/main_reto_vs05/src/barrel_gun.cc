@@ -25,27 +25,22 @@
  *
  */
 
+#include "OgreSceneManager.h"
 
-#ifndef WEAPON_MANAGER_H
-#define WEAPON_MANAGER_H
-
-#include "OgrePrerequisites.h"
-
-#include "Orxonox_prerequisites.h"
+#include "barrel_gun.h"
 
 
-namespace Orxonox {
+namespace orxonox {
+  using namespace Ogre;
 
-  class WeaponManager
+  BarrelGun::BarrelGun(SceneManager *sceneMgr) : sceneMgr_(sceneMgr)
   {
-  public:
-    WeaponManager(Ogre::SceneManager*);
-	  virtual ~WeaponManager();
+  	
+  }
 
-  protected:
 
-  };
+  BarrelGun::~BarrelGun()
+  {
+  }
 
 }
-
-#endif /* WEAPON_MANAGER_H */

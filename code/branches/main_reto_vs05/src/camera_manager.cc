@@ -30,7 +30,7 @@
 
 #include "camera_manager.h"
 
-namespace Orxonox {
+namespace orxonox {
   using namespace Ogre;
 
   CameraManager::CameraManager(SceneManager *mScene) : mSceneMgr(mSceneMgr)

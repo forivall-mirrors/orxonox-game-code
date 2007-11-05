@@ -28,7 +28,7 @@
 #include "ammunition_dump.h"
 
 
-namespace Orxonox {
+namespace orxonox {
 
   AmmunitionDump::AmmunitionDump()
   {

@@ -35,10 +35,10 @@
 
 #include <OIS/OISPrereqs.h>
 
-#include "Orxonox_prerequisites.h"
+#include "orxonox_prerequisites.h"
 
 
-namespace Orxonox {
+namespace orxonox {
 
   // let the class inherit from WindowEventListener in order for the RunMgr
   // to act as the central point of all the calcuations in Orxonox

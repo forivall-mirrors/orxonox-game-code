@@ -25,25 +25,23 @@
  *
  */
 
-#include "OgreSceneNode.h"
-#include "OgreEntity.h"
-#include "OgreVector3.h"
 
-#include "bullet.h"
-
+#ifndef ORXONOX_PREREQUISITES_H
+#define ORXONOX_PREREQUISITES_H
 
 namespace orxonox {
-  using namespace Ogre;
 
-  Bullet::Bullet(SceneNode *node, Entity *entity, Vector3 speed)
-    : node_(node), entity_(entity), speed_(speed)
-  {
-	  node_->attachObject(entity_);
-  }
-
-
-  Bullet::~Bullet()
-  {
-  }
+  class AmmunitionDump;
+  class Bullet;
+  class CameraManager;
+  class OgreControl;
+  class Orxonox;
+  class OrxonoxShip;
+  class OrxonoxScene;
+  class RunManager;
+  class Weapon;
+  class WeaponManager;
 
 }
+
+#endif /* ORXONOX_PREREQUISITES_H */
