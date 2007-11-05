@@ -35,6 +35,13 @@
 #include <CEGUI/CEGUI.h>
 #include <OgreCEGUIRenderer.h>
 
+#include <string>
+#include <iostream>
+
+#include "xml/xmlParser.h"
+#include "loader/LevelLoader.h"
+
+
 // some tests to see if enet works without includsion
 //#include <enet/enet.h>
 //#include <enet/protocol.h>
@@ -96,6 +103,7 @@ class OrxApplication
       setupRenderSystem();
       createRenderWindow();
       initializeResourceGroups();
+      createScene();
       setupScene();
       setupInputSystem();
       setupCEGUI();
@@ -179,6 +187,13 @@ class OrxApplication
       ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
     }
 
+    void createScene(void)
+    {
+
+      string levelFile = "sp_level_moonstation.oxw";
+      loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
+    }
+    
     void setupScene()
     {
       SceneManager *mgr = mRoot->createSceneManager(ST_GENERIC, "Default SceneManager");

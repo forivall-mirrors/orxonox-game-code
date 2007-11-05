@@ -1,8 +1,9 @@
 PROJECT(Orxonox)
 
 # create a few variables to simplify life
-SET(SRC_FILES orxonox.cc)
-#SET(INC_FILES ExampleApplication.h  ExampleFrameListener.h)
+
+SET(SRC_FILES orxonox.cc loader/LevelLoader.cc xml/xmlParser.cc)
+SET(INC_FILES loader/LevelLoader.h xml/xmlParser.h)
 
 #Creates an executable
 ADD_EXECUTABLE(../bin/main ${SRC_FILES} ${INC_FILES})
