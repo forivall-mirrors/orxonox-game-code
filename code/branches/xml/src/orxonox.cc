@@ -189,9 +189,7 @@ class OrxApplication
 
     void createScene(void)
     {
-
-      string levelFile = "sp_level_moonstation.oxw";
-      loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
+      
     }
     
     void setupScene()
@@ -199,6 +197,13 @@ class OrxApplication
       SceneManager *mgr = mRoot->createSceneManager(ST_GENERIC, "Default SceneManager");
       Camera *cam = mgr->createCamera("Camera");
       Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
+
+      string levelFile = "sp_level_moonstation.oxw";
+      loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
+      
+      mgr->setAmbientLight(Ogre::ColourValue(0.3,0.3,0.9));
+      //mgr->setSkyBox(true,"Examples/SpaceSkyBox");
+
     }
 
     void setupInputSystem()
