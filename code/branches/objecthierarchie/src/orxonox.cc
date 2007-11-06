@@ -122,7 +122,7 @@ namespace orxonox
         test4 = new A3();
         test4 = new A3();
 */
-/*
+
         std::cout << "Test 5\n";
         A1* test5_01 = new A1();
         A2* test5_02 = new A2();
@@ -143,6 +143,7 @@ namespace orxonox
         A3B2C1* test5_17 = new A3B2C1();
         A3B2C2* test5_18 = new A3B2C2();
 
+/*
         OrxonoxClass* test5;
         for (int i = 0; i <= 18; i++)
         {
@@ -432,6 +433,29 @@ namespace orxonox
         std::cout << "\n";
         std::cout << "A2 parent of A2B1C1: " << Class(A2)->isParentOf(Class(A2B1C1)) << "\n";
 */
+
+        std::cout << "Test 7\n";
+        std::cout << "1\n";
+        BaseIdentifier<A1B1> test7_01;
+        test7_01 = Class(A1B1C1);
+
+        BaseIdentifier<A1B1> test7_02;
+        test7_02 = Class(A1B1);
+
+//        std::cout << Identifier(test7_02).getName() << "\n";
+
+/*
+        BaseIdentifier<A1B1> test7_03;
+        test7_03 = Class(A1);
+
+        BaseIdentifier<A1B1> test7_04;
+        test7_04 = Class(A1B2);
+
+        BaseIdentifier<A1B1> test7_05;
+        test7_05 = Class(A2);
+*/
+        std::cout << "2\n";
+
 
       }
 

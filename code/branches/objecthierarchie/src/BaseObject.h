@@ -10,7 +10,7 @@ namespace orxonox
     {
         public:
             BaseObject();
-            ~BaseObject();
+            virtual ~BaseObject();
 
             inline bool isA(Identifier* identifier)
                 { this->getIdentifier()->isA(identifier); }

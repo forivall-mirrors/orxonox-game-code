@@ -3,20 +3,20 @@
 
 #include <string>
 #include <iostream>
-#include <assert.h>
 
 // DONE AND TESTED:
-// - klassenhierarchie aufbauen
-// - isA u.a. vergleiche
-// - in listen einfügen
+// - build class hierarchy
+// - isA, isChildOf, ...
+// - insert into class-lists
+// - ClassIdentifier
 
 // IN WORK:
-// - factory
-// - klassen-identifier
+// - BaseIdentifier
+// - Factory
 
 // TO DO:
-// - durch listen iterieren
-// - searchtree für classname-strings
+// - iterate through lists
+// - searchtree for classname-strings
 
 
 namespace orxonox
@@ -58,8 +58,6 @@ namespace orxonox
         friend class BaseIdentifier;
 
         public:
-            Identifier(Identifier* identifier) {};
-            ~Identifier();
             void addObject(OrxonoxClass* object);
             void removeObject(OrxonoxClass* object);
 
@@ -78,6 +76,8 @@ namespace orxonox
 
         private:
             Identifier();
+            Identifier(const Identifier& identifier) {}
+            virtual ~Identifier();
             void initialize(IdentifierList* parents);
 
             IdentifierList* directParents_;
@@ -93,8 +93,6 @@ namespace orxonox
 
 
     // ##### ClassIdentifier #####
-    class A1;
-
     template <class T>
     class ClassIdentifier : public Identifier
     {
@@ -105,6 +103,7 @@ namespace orxonox
 
         private:
             ClassIdentifier();
+            ClassIdentifier(const ClassIdentifier<T>& identifier) {}
             ~ClassIdentifier();
 
             static ClassIdentifier<T>* pointer_;
@@ -167,6 +166,44 @@ namespace orxonox
     T* ClassIdentifier<T>::create()
     {
         return new T();
+    }
+
+
+    // ##### BaseIdentifier #####
+    template <class B>
+    class BaseIdentifier// : public Identifier
+    {
+        public:
+            BaseIdentifier();
+
+            template <class T>
+            BaseIdentifier<B>& operator= (ClassIdentifier<T>* identifier)
+            {
+                std::cout << "####### Class(" << identifier->getName() << ")->isA( Class(" << ClassIdentifier<B>::getIdentifier()->getName() << ") ) = " << identifier->isA( ClassIdentifier<B>::getIdentifier() ) << "\n";
+                if (!identifier->isA(ClassIdentifier<B>::getIdentifier()))
+                {
+                    std::cout << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<B>::getIdentifier()->getName() << "!\n";
+                    std::cout << "Error: BaseIdentifier<" << ClassIdentifier<B>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden.\n";
+                    std::cout << "Aborting...\n";
+                    abort();
+                }
+                this->identifier_ = identifier;
+                return *this;
+            }
+
+            operator Identifier()
+            {
+                return this->identifier_;
+            }
+
+        private:
+            Identifier* identifier_;
+    };
+
+    template <class B>
+    BaseIdentifier<B>::BaseIdentifier()
+    {
+        this->identifier_ = ClassIdentifier<B>::getIdentifier();
     }
 
 
