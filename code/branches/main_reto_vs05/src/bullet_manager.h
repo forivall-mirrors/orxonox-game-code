@@ -26,8 +26,8 @@
  */
 
 
-#ifndef BARREL_GUN_H
-#define BARREL_GUN_H
+#ifndef BULLET_MANAGER_H
+#define BULLET_MANAGER_H
 
 #include "OgrePrerequisites.h"
 
@@ -36,22 +36,29 @@
 
 namespace orxonox {
 
-  class BarrelGun
+  class BulletManager
   {
   public:
-    BarrelGun(Ogre::SceneManager*);
-	  virtual ~BarrelGun();
+    BulletManager(Ogre::SceneManager*);
+	  virtual ~BulletManager();
+
+    void addBullet(Bullet*);
+
+    bool tick(unsigned long, Ogre::Real);
 
   protected:
 
   public:
     Ogre::SceneManager *sceneMgr_;
-	  Ogre::Entity *weaponEntity_;
 
   protected:
+    // Bullet array
+	  Bullet **bullets_;
+	  int bulletsSize_;
+	  int bulletsIndex_;
 
   };
 
 }
 
-#endif /* BARREL_GUN_H */
+#endif /* BULLET_MANAGER_H */

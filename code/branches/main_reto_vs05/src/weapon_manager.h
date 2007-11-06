@@ -39,14 +39,45 @@ namespace orxonox {
   class WeaponManager
   {
   public:
-    WeaponManager(Ogre::SceneManager*, Ogre::SceneNode*, int);
+    enum Action {
+      NOTHING  = 0,
+      RELOAD   = 1,
+      ZOOM_IN  = 2,
+      ZOOM_OUT = 3
+    };
+
+  protected:
+    enum State {
+      IDLE = 0,
+      PRIMARY_FIRE = 1,
+      SECONDARY_FIRE = 2,
+      RELOADING = 4
+    };
+
+  public:
+    WeaponManager(Ogre::SceneManager*, Ogre::SceneNode*, BulletManager*, int);
 	  virtual ~WeaponManager();
 
     bool addWeapon(const Ogre::String&);
 
+    bool addAction(const Action);
+
+    void primaryFireRequest();
+
+    void secondaryFireRequest();
+
+    bool tick(unsigned long, Ogre::Real);
+
     bool static loadWeapons();
 
     void static destroyWeapons();
+
+  protected:
+    void primaryFire();
+
+    void secondaryFire();
+
+  public:
 
   protected:
     Ogre::SceneManager *sceneMgr_;
@@ -55,6 +86,19 @@ namespace orxonox {
     Weapon **slots_;
     int slotSize_;
     int slotIndex_;
+    int selectedWeapon_;
+
+    int bulletCounter_;
+    BulletManager *bulletManager_;
+
+    bool primaryFireRequest_;
+    bool secondaryFireRequest_;
+
+    State currentState_;
+
+    Action *actionList_;
+    int actionListReadIndex_;
+    int actionListWriteIndex_;
 
     static Weapon **weaponList_s;
 

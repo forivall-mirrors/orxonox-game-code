@@ -32,6 +32,7 @@
 #include "OgreStringConverter.h"
 
 #include "bullet.h"
+#include "bullet_manager.h"
 
 #include "orxonox_ship.h"
 #include "weapon_manager.h"
@@ -61,10 +62,11 @@ namespace orxonox {
   * @param mSceneMgr The current main SceneManager
   * @param mNode The scene node which the ship will be attached to later.
   */
-  OrxonoxShip::OrxonoxShip(SceneManager *sceneMgr, SceneNode *node)
+  OrxonoxShip::OrxonoxShip(SceneManager *sceneMgr, SceneNode *node,
+        BulletManager *bulletManager)
 	      : sceneMgr_(sceneMgr), rootNode_(node), currentSpeed_(Vector3(0, 0, 0)),
         baseThrust_(1000), currentThrust_(Vector3::ZERO),
-        objectCounter_(0), bulletSpeed_(400)
+        objectCounter_(0), bulletManager_(bulletManager)//, bulletSpeed_(400)
   {
   }
 
@@ -75,6 +77,8 @@ namespace orxonox {
   */
   OrxonoxShip::~OrxonoxShip()
   {
+    if (mainWeapon_)
+      delete mainWeapon_;
   }
 
 
@@ -100,8 +104,11 @@ namespace orxonox {
 	  fishNode->setScale(Vector3(10, 10, 10));
 
     // initialise weapon(s)
-    SceneNode *mainWeaponNode = rootNode_->createChildSceneNode("mainWeaponNode");
-    mainWeapon_ = new WeaponManager(sceneMgr_, mainWeaponNode, 1);
+    SceneNode *mainWeaponNode = rootNode_
+          ->createChildSceneNode("mainWeaponNode");
+    mainWeapon_ = new WeaponManager(sceneMgr_, mainWeaponNode,
+          bulletManager_, 1);
+    mainWeapon_->addWeapon("Barrel Gun");
 
 	  return true;
   }
@@ -109,36 +116,33 @@ namespace orxonox {
 
   /**
   * Gets the ship to accelerate in the current direction.
-  * The value should be between 0 and 1, with one beeing full thrust and 0 none.
+  * The value should be between 0 and 1, with one beeing full thrust and 0 none
   * @param value Acceleration between 0 and 1
   */
   void OrxonoxShip::setMainThrust(const Real value)
   {
-	  //currentThrust_ = value * baseThrust_;
     currentThrust_.z = value * baseThrust_;
   }
 
 
   /**
   * Gets the ship to accelerate sideways regarding the current direction.
-  * The value should be between 0 and 1, with one beeing full thrust and 0 none.
+  * The value should be between 0 and 1, with one beeing full thrust and 0 none
   * @param value Acceleration between 0 and 1
   */
   void OrxonoxShip::setSideThrust(const Real value)
   {
-	  //currentSideThrust_ = value * baseThrust_;
     currentThrust_.x = value * baseThrust_;
   }
 
 
   /**
   * Gets the ship to accelerate up and down.
-  * The value should be between 0 and 1, with one beeing full thrust and 0 none.
+  * The value should be between 0 and 1, with one beeing full thrust and 0 none
   * @param value Acceleration between 0 and 1
   */
   void OrxonoxShip::setYThrust(const Real value)
   {
-    //currentYThrust_ = value * baseThrust_;
     currentThrust_.y = value * baseThrust_;
   }
 
@@ -188,10 +192,10 @@ namespace orxonox {
   * the new Node a child of RootNode_!
   * @return Bullet containing speed and entity.
   */
-  Bullet* OrxonoxShip::fire()
+  void OrxonoxShip::fire()
   {
 	  // TODO: Names must be unique!
-	  SceneNode *temp = rootNode_->getParentSceneNode()->createChildSceneNode(
+	  /*SceneNode *temp = rootNode_->getParentSceneNode()->createChildSceneNode(
           "BulletNode" + StringConverter::toString(objectCounter_));
 	  temp->setOrientation(rootNode_->getOrientation());
 	  temp->setPosition(rootNode_->getPosition());
@@ -200,7 +204,9 @@ namespace orxonox {
 	  return new Bullet(temp, sceneMgr_->createEntity("bullet"
           + StringConverter::toString(objectCounter_++), "Barrel.mesh"), currentSpeed_
           + (rootNode_->getOrientation() * Vector3(0, 0, -1)).normalisedCopy()
-          * bulletSpeed_);
+          * bulletSpeed_);*/
+
+    mainWeapon_->primaryFireRequest();
   }
 
 
@@ -213,11 +219,11 @@ namespace orxonox {
   */
   bool OrxonoxShip::tick(unsigned long time, Real deltaTime)
   {
+    mainWeapon_->tick(time, deltaTime);
+
     Quaternion quad = rootNode_->getOrientation();
     quad.normalise();
     currentSpeed_ += quad * (Vector3(-1, -1, -1) * currentThrust_) * deltaTime;
-    //currentSpeed_ += quad * Vector3(0, 0, -1) * currentThrust_ * deltaTime;
-	  //currentSpeed_ += quad * Vector3(-1, 0,  0) * currentSideThrust_ * deltaTime;
 
 	  rootNode_->translate(currentSpeed_ * deltaTime);
 

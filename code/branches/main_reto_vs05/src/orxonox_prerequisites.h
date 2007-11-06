@@ -33,6 +33,7 @@ namespace orxonox {
 
   class AmmunitionDump;
   class Bullet;
+  class BulletManager;
   class CameraManager;
   class OgreControl;
   class Orxonox;

@@ -29,6 +29,7 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
+#include "OgrePrerequisites.h"
 #include "OgreString.h"
 
 #include "orxonox_prerequisites.h"
@@ -38,14 +39,18 @@ namespace orxonox {
   class Weapon
   {
   public:
-    Weapon(const Ogre::String &name, int firePower, int firingRate)
-          : name_(name), firePower_(firePower), firingRate_(firingRate) { }
+    Weapon(const Ogre::String &name, int firePower, int firingRate,
+      Ogre::Real bulletSpeed)
+          : name_(name), firePower_(firePower), firingRate_(firingRate),
+          bulletSpeed_(bulletSpeed) { }
+
     virtual ~Weapon() { }
 
   public:
     Ogre::String name_;
     int firePower_;
     int firingRate_;
+    Ogre::Real bulletSpeed_;
   };
 
 }

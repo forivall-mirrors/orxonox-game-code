@@ -187,11 +187,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\barrel_gun.cc"
+				RelativePath="..\src\bullet.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\src\bullet.cc"
+				RelativePath="..\src\bullet_manager.cc"
 				>
 			</File>
 			<File
@@ -237,11 +237,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\barrel_gun.h"
+				RelativePath="..\src\bullet.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\bullet.h"
+				RelativePath="..\src\bullet_manager.h"
 				>
 			</File>
 			<File

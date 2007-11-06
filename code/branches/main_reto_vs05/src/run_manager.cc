@@ -51,7 +51,9 @@
 #include "orxonox_scene.h"
 #include "orxonox_ship.h"
 #include "bullet.h"
+#include "bullet_manager.h"
 #include "camera_manager.h"
+#include "weapon_manager.h"
 
 #include "run_manager.h"
 
@@ -97,6 +99,19 @@ namespace orxonox {
     // background scene (world objects, skybox, lights, etc.)
     backgroundScene_ = new OrxonoxScene(sceneMgr_);
 
+
+    // BULLET LIST FOR THE TEST APPLICATION
+
+    // create a bullet manager
+    bulletManager_ = new BulletManager(sceneMgr_);
+    WeaponManager::loadWeapons();
+
+    // TODO: Use STL to make life easier. But it works this way too..
+    /*bullets_ = new Bullet*[10];
+    bulletsIndex_ = 0;
+    bulletsSize_ = 10;*/
+
+
     // PLAYER SPACESHIP
 
     // Create a space ship object and its SceneNode.
@@ -113,7 +128,7 @@ namespace orxonox {
 
     // Construct a new spaceship and give it the node
     playerShip_ = new OrxonoxShip(sceneMgr_, sceneMgr_->getRootSceneNode()
-      ->createChildSceneNode("ShipNode", Vector3(20, 20, 20)));
+      ->createChildSceneNode("ShipNode", Vector3(20, 20, 20)), bulletManager_);
 
 
     // RESOURCE LOADING (using ResourceGroups if implemented)
@@ -139,13 +154,6 @@ namespace orxonox {
     TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
     
-    // BULLET LIST FOR THE TEST APPLICATION
-
-    // TODO: Use STL to make life easier. But it works this way too..
-    bullets_ = new Bullet*[10];
-    bulletsIndex_ = 0;
-    bulletsSize_ = 10;
-
 
     // HUMAN INTERFACE
 
@@ -204,11 +212,15 @@ namespace orxonox {
       delete backgroundScene_;
     if (playerShip_)
       delete playerShip_;
+    if (bulletManager_)
+      delete bulletManager_;
+
+    WeaponManager::destroyWeapons();
 
     // clean up the bullet list
-    for (int i = 0; i < bulletsIndex_; i++)
+    /*for (int i = 0; i < bulletsIndex_; i++)
       delete bullets_[i];
-    delete bullets_;
+    delete bullets_;*/
   }
 
 
@@ -238,12 +250,14 @@ namespace orxonox {
     updateStats();
 
     // update the bullet positions
-    for (int i = 0; i < bulletsIndex_; i++)
+    bulletManager_->tick(time, deltaTime);
+
+    /*for (int i = 0; i < bulletsIndex_; i++)
     {
       bullets_[i]->node_->translate(bullets_[i]->speed_*deltaTime);
       bullets_[i]->node_->yaw(Degree(deltaTime*100));
       bullets_[i]->node_->roll(Degree(deltaTime*300));
-    }
+    }*/
 
     // HUMAN INTERFACE
 
@@ -446,9 +460,11 @@ namespace orxonox {
     {
       // Prevent continuous fire for the moment.
       leftButtonDown_ = true;
+
+      playerShip_->fire();
       
       // let ship fire one shot with its only weapon (Barrels..)
-      Bullet *tempBullet = playerShip_->fire();
+      /*Bullet *tempBullet = playerShip_->fire();
 
       // resize array if neccessary (double the size then)
       if (bulletsIndex_ >= bulletsSize_)
@@ -463,7 +479,7 @@ namespace orxonox {
       }
 
       // add the bullet to the list
-      bullets_[bulletsIndex_++] = tempBullet;
+      bullets_[bulletsIndex_++] = tempBullet;*/
 
     }
     else if (!ms.buttons)
