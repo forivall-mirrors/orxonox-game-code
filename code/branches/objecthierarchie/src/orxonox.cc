@@ -60,197 +60,513 @@ std::string macBundlePath()
 }
 #endif
 
-using namespace Ogre;
-
-class OrxExitListener : public FrameListener
+namespace orxonox
 {
-  public:
-    OrxExitListener(OIS::Keyboard *keyboard)
-  : mKeyboard(keyboard)
-    {
-    }
-
-    bool frameStarted(const FrameEvent& evt)
-    {
-      mKeyboard->capture();
-      return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
-    }
-
-  private:
-    OIS::Keyboard *mKeyboard;
-};
-
-class OrxApplication
-{
-  public:
-    void go()
-    {
-/*      createRoot();
-      defineResources();
-      setupRenderSystem();
-      createRenderWindow();
-      initializeResourceGroups();
-      setupScene();
-      setupInputSystem();
-      setupCEGUI();
-      createFrameListener();
-      startRenderLoop();
-*/
-      std::cout << "Test 1\n";
-      orxonox::BaseObject* test1;
-      test1 = new orxonox::BaseObject();
-      test1 = new orxonox::BaseObject();
-      test1 = new orxonox::BaseObject();
-
-      std::cout << "Test 2\n";
-      orxonox::A1* test2;
-      test2 = new orxonox::A1();
-      test2 = new orxonox::A1();
-      test2 = new orxonox::A1();
-
-      std::cout << "Test 3\n";
-      orxonox::BaseObject* test3;
-      test3 = new orxonox::BaseObject();
-      test3 = new orxonox::BaseObject();
-      test3 = new orxonox::BaseObject();
-
-      std::cout << "Test 4\n";
-      orxonox::A3* test4;
-      test4 = new orxonox::A3();
-      test4 = new orxonox::A3();
-      test4 = new orxonox::A3();
-
-    }
-
-    ~OrxApplication()
-    {
-      mInputManager->destroyInputObject(mKeyboard);
-      OIS::InputManager::destroyInputSystem(mInputManager);
-
-      delete mRenderer;
-      delete mSystem;
-
-      delete mListener;
-      delete mRoot;
-    }
-
-  private:
-    Root *mRoot;
-    OIS::Keyboard *mKeyboard;
-    OIS::Mouse *mMouse;
-    OIS::InputManager *mInputManager;
-    CEGUI::OgreCEGUIRenderer *mRenderer;
-    CEGUI::System *mSystem;
-    OrxExitListener *mListener;
-
-    void createRoot()
-    {
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-      mRoot = new Root(macBundlePath() + "/Contents/Resources/plugins.cfg");
-#else
-      mRoot = new Root();
-#endif
-    }
-
-    void defineResources()
-    {
-      String secName, typeName, archName;
-      ConfigFile cf;
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-      cf.load(macBundlePath() + "/Contents/Resources/resources.cfg");
-#else
-      cf.load("resources.cfg");
-#endif
-
-      ConfigFile::SectionIterator seci = cf.getSectionIterator();
-      while (seci.hasMoreElements())
+  class OrxExitListener : public Ogre::FrameListener
+  {
+    public:
+      OrxExitListener(OIS::Keyboard *keyboard)
+    : mKeyboard(keyboard)
       {
-        secName = seci.peekNextKey();
-        ConfigFile::SettingsMultiMap *settings = seci.getNext();
-        ConfigFile::SettingsMultiMap::iterator i;
-        for (i = settings->begin(); i != settings->end(); ++i)
+      }
+
+      bool frameStarted(const Ogre::FrameEvent& evt)
+      {
+        mKeyboard->capture();
+        return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
+      }
+
+    private:
+      OIS::Keyboard *mKeyboard;
+  };
+
+  class OrxApplication
+  {
+    public:
+      void go()
+      {
+/*
+        createRoot();
+        defineResources();
+        setupRenderSystem();
+        createRenderWindow();
+        initializeResourceGroups();
+        setupScene();
+        setupInputSystem();
+        setupCEGUI();
+        createFrameListener();
+        startRenderLoop();
+*/
+/*
+        std::cout << "Test 1\n";
+        BaseObject* test1;
+        test1 = new BaseObject();
+        test1 = new BaseObject();
+        test1 = new BaseObject();
+
+        std::cout << "Test 2\n";
+        A1* test2;
+        test2 = new A1();
+        test2 = new A1();
+        test2 = new A1();
+
+        std::cout << "Test 3\n";
+        BaseObject* test3;
+        test3 = new BaseObject();
+        test3 = new BaseObject();
+        test3 = new BaseObject();
+
+        std::cout << "Test 4\n";
+        A3* test4;
+        test4 = new A3();
+        test4 = new A3();
+        test4 = new A3();
+*/
+/*
+        std::cout << "Test 5\n";
+        A1* test5_01 = new A1();
+        A2* test5_02 = new A2();
+        A3* test5_03 = new A3();
+        A1B1* test5_04 = new A1B1();
+        A1B2* test5_05 = new A1B2();
+        A2B1* test5_06 = new A2B1();
+        A2B2* test5_07 = new A2B2();
+        A3B1* test5_08 = new A3B1();
+        A3B2* test5_09 = new A3B2();
+        A1B1C1* test5_10 = new A1B1C1();
+        A1B1C2* test5_11 = new A1B1C2();
+        A1B2C1* test5_12 = new A1B2C1();
+        A2B1C1* test5_13 = new A2B1C1();
+        A2B2C1* test5_14 = new A2B2C1();
+        A3B1C1* test5_15 = new A3B1C1();
+        A3B1C2* test5_16 = new A3B1C2();
+        A3B2C1* test5_17 = new A3B2C1();
+        A3B2C2* test5_18 = new A3B2C2();
+
+        OrxonoxClass* test5;
+        for (int i = 0; i <= 18; i++)
         {
-          typeName = i->first;
-          archName = i->second;
+          if (i == 0) test5 = test1;
+          if (i == 1) test5 = test5_01;
+          if (i == 2) test5 = test5_02;
+          if (i == 3) test5 = test5_03;
+          if (i == 4) test5 = test5_04;
+          if (i == 5) test5 = test5_05;
+          if (i == 6) test5 = test5_06;
+          if (i == 7) test5 = test5_07;
+          if (i == 8) test5 = test5_08;
+          if (i == 9) test5 = test5_09;
+          if (i == 10) test5 = test5_10;
+          if (i == 11) test5 = test5_11;
+          if (i == 12) test5 = test5_12;
+          if (i == 13) test5 = test5_13;
+          if (i == 14) test5 = test5_14;
+          if (i == 15) test5 = test5_15;
+          if (i == 16) test5 = test5_16;
+          if (i == 17) test5 = test5_17;
+          if (i == 18) test5 = test5_18;
+
+          std::cout << "\n";
+          std::cout << test5->getIdentifier()->getName() << ": directParents:  " << test5->getIdentifier()->getDirectParents()->toString() << "\n";
+          std::cout << test5->getIdentifier()->getName() << ": allParents:     " << test5->getIdentifier()->getAllParents()->toString() << "\n";
+          std::cout << test5->getIdentifier()->getName() << ": directChildren: " << test5->getIdentifier()->getDirectChildren()->toString() << "\n";
+          std::cout << test5->getIdentifier()->getName() << ": allChildren:    " << test5->getIdentifier()->getAllChildren()->toString() << "\n";
+        }
+*/
+/*
+        #define testandcout(code) \
+          std::cout << #code << " " << code << "\n"
+
+
+        std::cout << "\n";
+        std::cout << "isA(XYZ)-Test:\n";
+        std::cout << "test5_01 = A1, Erwartet: 1 0 0 1 0\n";
+        testandcout(test5_01->isA(Class(A1)));
+        testandcout(test5_01->isA(Class(A2)));
+        testandcout(test5_01->isA(Class(A1B1)));
+        testandcout(test5_01->isA(Class(BaseObject)));
+        testandcout(test5_01->isA(Class(Interface1)));
+
+        std::cout << "\n";
+        std::cout << "test5_02 = A2, Erwartet: 0 1 0 1 0\n";
+        testandcout(test5_02->isA(Class(A1)));
+        testandcout(test5_02->isA(Class(A2)));
+        testandcout(test5_02->isA(Class(A1B1)));
+        testandcout(test5_02->isA(Class(BaseObject)));
+        testandcout(test5_02->isA(Class(Interface1)));
+
+        std::cout << "\n";
+        std::cout << "test5_01 = A3, Erwartet: 0 0 0 1 1\n";
+        testandcout(test5_03->isA(Class(A1)));
+        testandcout(test5_03->isA(Class(A2)));
+        testandcout(test5_03->isA(Class(A1B1)));
+        testandcout(test5_03->isA(Class(BaseObject)));
+        testandcout(test5_03->isA(Class(Interface1)));
+
+
+        std::cout << "\n";
+        std::cout << "isDirectA(XYZ)-Test:\n";
+        std::cout << "test5_01 = A1, Erwartet: 1 0 0 0 0\n";
+        testandcout(test5_01->isDirectlyA(Class(A1)));
+        testandcout(test5_01->isDirectlyA(Class(A2)));
+        testandcout(test5_01->isDirectlyA(Class(A1B1)));
+        testandcout(test5_01->isDirectlyA(Class(BaseObject)));
+        testandcout(test5_01->isDirectlyA(Class(Interface1)));
+
+        std::cout << "\n";
+        std::cout << "test5_02 = A2, Erwartet: 0 1 0 0 0\n";
+        testandcout(test5_02->isDirectlyA(Class(A1)));
+        testandcout(test5_02->isDirectlyA(Class(A2)));
+        testandcout(test5_02->isDirectlyA(Class(A1B1)));
+        testandcout(test5_02->isDirectlyA(Class(BaseObject)));
+        testandcout(test5_02->isDirectlyA(Class(Interface1)));
+
+        std::cout << "\n";
+        std::cout << "test5_03 = A3, Erwartet: 0 0 0 0 0\n";
+        testandcout(test5_03->isDirectlyA(Class(A1)));
+        testandcout(test5_03->isDirectlyA(Class(A2)));
+        testandcout(test5_03->isDirectlyA(Class(A1B1)));
+        testandcout(test5_03->isDirectlyA(Class(BaseObject)));
+        testandcout(test5_03->isDirectlyA(Class(Interface1)));
+
+        std::cout << "\n";
+        std::cout << "isChildOf(XYZ)-Test:\n";
+        std::cout << "test5_04 = A1B1, Erwartet: 1 0 1 0 0 0 0\n";
+        testandcout(test5_04->isChildOf(Class(A1)));
+        testandcout(test5_04->isChildOf(Class(A2)));
+        testandcout(test5_04->isChildOf(Class(BaseObject)));
+        testandcout(test5_04->isChildOf(Class(Interface1)));
+        testandcout(test5_04->isChildOf(Class(Interface2)));
+        testandcout(test5_04->isChildOf(Class(A1B1C2)));
+        testandcout(test5_04->isChildOf(Class(A1B1)));
+
+        std::cout << "\n";
+        std::cout << "test5_06 = A2B1, Erwartet: 0 1 1 0 0 0 0\n";
+        testandcout(test5_06->isChildOf(Class(A1)));
+        testandcout(test5_06->isChildOf(Class(A2)));
+        testandcout(test5_06->isChildOf(Class(BaseObject)));
+        testandcout(test5_06->isChildOf(Class(Interface1)));
+        testandcout(test5_06->isChildOf(Class(Interface2)));
+        testandcout(test5_06->isChildOf(Class(A1B1C2)));
+        testandcout(test5_06->isChildOf(Class(A1B1)));
+
+        std::cout << "\n";
+        std::cout << "test5_07 = A2B2, Erwartet: 0 1 1 1 0 0\n";
+        testandcout(test5_07->isChildOf(Class(A1)));
+        testandcout(test5_07->isChildOf(Class(A2)));
+        testandcout(test5_07->isChildOf(Class(BaseObject)));
+        testandcout(test5_07->isChildOf(Class(Interface1)));
+        testandcout(test5_07->isChildOf(Class(Interface2)));
+        testandcout(test5_07->isChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_08 = A3B1, Erwartet: 0 0 1 1 0 0\n";
+        testandcout(test5_08->isChildOf(Class(A1)));
+        testandcout(test5_08->isChildOf(Class(A2)));
+        testandcout(test5_08->isChildOf(Class(BaseObject)));
+        testandcout(test5_08->isChildOf(Class(Interface1)));
+        testandcout(test5_08->isChildOf(Class(Interface2)));
+        testandcout(test5_08->isChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_09 = A3B2, Erwartet: 0 0 1 1 1 0\n";
+        testandcout(test5_09->isChildOf(Class(A1)));
+        testandcout(test5_09->isChildOf(Class(A2)));
+        testandcout(test5_09->isChildOf(Class(BaseObject)));
+        testandcout(test5_09->isChildOf(Class(Interface1)));
+        testandcout(test5_09->isChildOf(Class(Interface2)));
+        testandcout(test5_09->isChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+        std::cout << "isDirectChildOf(XYZ)-Test:\n";
+        std::cout << "test5_04 = A1B1, Erwartet: 1 0 0 0 0 0 0\n";
+        testandcout(test5_04->isDirectChildOf(Class(A1)));
+        testandcout(test5_04->isDirectChildOf(Class(A2)));
+        testandcout(test5_04->isDirectChildOf(Class(BaseObject)));
+        testandcout(test5_04->isDirectChildOf(Class(Interface1)));
+        testandcout(test5_04->isDirectChildOf(Class(Interface2)));
+        testandcout(test5_04->isDirectChildOf(Class(A1B1C2)));
+        testandcout(test5_04->isDirectChildOf(Class(A1B1)));
+
+        std::cout << "\n";
+        std::cout << "test5_06 = A2B1, Erwartet: 0 1 0 0 0 0 0\n";
+        testandcout(test5_06->isDirectChildOf(Class(A1)));
+        testandcout(test5_06->isDirectChildOf(Class(A2)));
+        testandcout(test5_06->isDirectChildOf(Class(BaseObject)));
+        testandcout(test5_06->isDirectChildOf(Class(Interface1)));
+        testandcout(test5_06->isDirectChildOf(Class(Interface2)));
+        testandcout(test5_06->isDirectChildOf(Class(A1B1C2)));
+        testandcout(test5_06->isDirectChildOf(Class(A1B1)));
+
+        std::cout << "\n";
+        std::cout << "test5_07 = A2B2, Erwartet: 0 1 0 1 0 0\n";
+        testandcout(test5_07->isDirectChildOf(Class(A1)));
+        testandcout(test5_07->isDirectChildOf(Class(A2)));
+        testandcout(test5_07->isDirectChildOf(Class(BaseObject)));
+        testandcout(test5_07->isDirectChildOf(Class(Interface1)));
+        testandcout(test5_07->isDirectChildOf(Class(Interface2)));
+        testandcout(test5_07->isDirectChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_08 = A3B1, Erwartet: 0 0 0 0 0 0\n";
+        testandcout(test5_08->isDirectChildOf(Class(A1)));
+        testandcout(test5_08->isDirectChildOf(Class(A2)));
+        testandcout(test5_08->isDirectChildOf(Class(BaseObject)));
+        testandcout(test5_08->isDirectChildOf(Class(Interface1)));
+        testandcout(test5_08->isDirectChildOf(Class(Interface2)));
+        testandcout(test5_08->isDirectChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_09 = A3B2, Erwartet: 0 0 0 0 1 0\n";
+        testandcout(test5_09->isDirectChildOf(Class(A1)));
+        testandcout(test5_09->isDirectChildOf(Class(A2)));
+        testandcout(test5_09->isDirectChildOf(Class(BaseObject)));
+        testandcout(test5_09->isDirectChildOf(Class(Interface1)));
+        testandcout(test5_09->isDirectChildOf(Class(Interface2)));
+        testandcout(test5_09->isDirectChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+        std::cout << "isParentOf(XYZ)-Test:\n";
+        std::cout << "test1 = BaseObject, Erwartet: 0 0 1 1 1 1 1\n";
+        testandcout(test1->isParentOf(Class(BaseObject)));
+        testandcout(test1->isParentOf(Class(Interface1)));
+        testandcout(test1->isParentOf(Class(A1)));
+        testandcout(test1->isParentOf(Class(A2)));
+        testandcout(test1->isParentOf(Class(A1B1)));
+        testandcout(test1->isParentOf(Class(A2B2)));
+        testandcout(test1->isParentOf(Class(A3B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_01 = A1, Erwartet: 0 0 0 0 1 0 0\n";
+        testandcout(test5_01->isParentOf(Class(BaseObject)));
+        testandcout(test5_01->isParentOf(Class(Interface1)));
+        testandcout(test5_01->isParentOf(Class(A1)));
+        testandcout(test5_01->isParentOf(Class(A2)));
+        testandcout(test5_01->isParentOf(Class(A1B1)));
+        testandcout(test5_01->isParentOf(Class(A2B2)));
+        testandcout(test5_01->isParentOf(Class(A3B1C2)));
+
+        std::cout << "\n";
+        std::cout << "Interface1, Erwartet: 0 0 0 0 0 1 1\n";
+        testandcout(Class(Interface1)->isParentOf(Class(BaseObject)));
+        testandcout(Class(Interface1)->isParentOf(Class(Interface1)));
+        testandcout(Class(Interface1)->isParentOf(Class(A1)));
+        testandcout(Class(Interface1)->isParentOf(Class(A2)));
+        testandcout(Class(Interface1)->isParentOf(Class(A1B1)));
+        testandcout(Class(Interface1)->isParentOf(Class(A2B2)));
+        testandcout(Class(Interface1)->isParentOf(Class(A3B1C2)));
+
+        std::cout << "\n";
+        std::cout << "isDirectParentOf(XYZ)-Test:\n";
+        std::cout << "test1 = BaseObject, Erwartet: 0 0 1 1 0 0 0\n";
+        testandcout(test1->isDirectParentOf(Class(BaseObject)));
+        testandcout(test1->isDirectParentOf(Class(Interface1)));
+        testandcout(test1->isDirectParentOf(Class(A1)));
+        testandcout(test1->isDirectParentOf(Class(A2)));
+        testandcout(test1->isDirectParentOf(Class(A1B1)));
+        testandcout(test1->isDirectParentOf(Class(A2B2)));
+        testandcout(test1->isDirectParentOf(Class(A3B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_01 = A1, Erwartet: 0 0 0 0 1 0 0\n";
+        testandcout(test5_01->isDirectParentOf(Class(BaseObject)));
+        testandcout(test5_01->isDirectParentOf(Class(Interface1)));
+        testandcout(test5_01->isDirectParentOf(Class(A1)));
+        testandcout(test5_01->isDirectParentOf(Class(A2)));
+        testandcout(test5_01->isDirectParentOf(Class(A1B1)));
+        testandcout(test5_01->isDirectParentOf(Class(A2B2)));
+        testandcout(test5_01->isDirectParentOf(Class(A3B1C2)));
+
+        std::cout << "\n";
+        std::cout << "Interface1, Erwartet: 0 0 0 0 0 1 0\n";
+        testandcout(Class(Interface1)->isDirectParentOf(Class(BaseObject)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(Interface1)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(A1)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(A2)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(A1B1)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(A2B2)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(A3B1C2)));
+*/
+/*
+        std::cout << "Test 6\n";
+        std::cout << "1:\n";
+        Identifier* test6_01 = Class(A1B1);
+        std::cout << "2:\n";
+        Identifier* test6_02 = Class(A1B1);
+        std::cout << "3:\n";
+        Identifier* test6_03 = Class(A1);
+        std::cout << "4:\n";
+        Identifier* test6_04 = Class(A1B1C1);
+        std::cout << "5:\n";
+        Identifier* test6_05 = Class(A1B1);
+        std::cout << "6:\n";
+        Identifier* test6_06 = Class(A1B1C1);
+*/
+/*
+        std::cout << "\n";
+        std::cout << "BaseObject: directParents:  " << Class(BaseObject)->getDirectParents()->toString() << "\n";
+        std::cout << "BaseObject: allParents:     " << Class(BaseObject)->getAllParents()->toString() << "\n";
+        std::cout << "BaseObject: directChildren: " << Class(BaseObject)->getDirectChildren()->toString() << "\n";
+        std::cout << "BaseObject: allChildren:    " << Class(BaseObject)->getAllChildren()->toString() << "\n";
+
+        std::cout << "\n";
+        std::cout << "A1: directParents:  " << Class(A1)->getDirectParents()->toString() << "\n";
+        std::cout << "A1: allParents:     " << Class(A1)->getAllParents()->toString() << "\n";
+        std::cout << "A1: directChildren: " << Class(A1)->getDirectChildren()->toString() << "\n";
+        std::cout << "A1: allChildren:    " << Class(A1)->getAllChildren()->toString() << "\n";
+
+        std::cout << "\n";
+        std::cout << "A1B1: directParents:  " << Class(A1B1)->getDirectParents()->toString() << "\n";
+        std::cout << "A1B1: allParents:     " << Class(A1B1)->getAllParents()->toString() << "\n";
+        std::cout << "A1B1: directChildren: " << Class(A1B1)->getDirectChildren()->toString() << "\n";
+        std::cout << "A1B1: allChildren:    " << Class(A1B1)->getAllChildren()->toString() << "\n";
+
+        std::cout << "\n";
+        std::cout << "A1B1C1: directParents:  " << Class(A1B1C1)->getDirectParents()->toString() << "\n";
+        std::cout << "A1B1C1: allParents:     " << Class(A1B1C1)->getAllParents()->toString() << "\n";
+        std::cout << "A1B1C1: directChildren: " << Class(A1B1C1)->getDirectChildren()->toString() << "\n";
+        std::cout << "A1B1C1: allChildren:    " << Class(A1B1C1)->getAllChildren()->toString() << "\n";
+
+        std::cout << "\n";
+        std::cout << "A3B1C1 child of A3:  " << Class(A3B1C1)->isChildOf(Class(A3)) << "\n";
+        std::cout << "\n";
+        std::cout << "A2 parent of A2B1C1: " << Class(A2)->isParentOf(Class(A2B1C1)) << "\n";
+*/
+
+      }
+
+      ~OrxApplication()
+      {
+        mInputManager->destroyInputObject(mKeyboard);
+        OIS::InputManager::destroyInputSystem(mInputManager);
+
+        delete mRenderer;
+        delete mSystem;
+
+        delete mListener;
+        delete mRoot;
+      }
+
+    private:
+      Ogre::Root *mRoot;
+      OIS::Keyboard *mKeyboard;
+      OIS::Mouse *mMouse;
+      OIS::InputManager *mInputManager;
+      CEGUI::OgreCEGUIRenderer *mRenderer;
+      CEGUI::System *mSystem;
+      OrxExitListener *mListener;
+
+      void createRoot()
+      {
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-          ResourceGroupManager::getSingleton().addResourceLocation( String(macBundlePath() + "/" + archName), typeName, secName);
+        mRoot = new Ogre::Root(macBundlePath() + "/Contents/Resources/plugins.cfg");
 #else
-          ResourceGroupManager::getSingleton().addResourceLocation( archName, typeName, secName);
+        mRoot = new Ogre::Root();
 #endif
+      }
+
+      void defineResources()
+      {
+        Ogre::String secName, typeName, archName;
+        Ogre::ConfigFile cf;
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+        cf.load(macBundlePath() + "/Contents/Resources/resources.cfg");
+#else
+        cf.load("resources.cfg");
+#endif
+
+        Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+        while (seci.hasMoreElements())
+        {
+          secName = seci.peekNextKey();
+          Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+          Ogre::ConfigFile::SettingsMultiMap::iterator i;
+          for (i = settings->begin(); i != settings->end(); ++i)
+          {
+            typeName = i->first;
+            archName = i->second;
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation( String(macBundlePath() + "/" + archName), typeName, secName);
+#else
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation( archName, typeName, secName);
+#endif
+          }
         }
       }
-    }
 
-    void setupRenderSystem()
-    {
-      if (!mRoot->restoreConfig() && !mRoot->showConfigDialog())
-        throw Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
-    }
-
-    void createRenderWindow()
-    {
-      mRoot->initialise(true, "Ogre Render Window");
-    }
-
-    void initializeResourceGroups()
-    {
-      TextureManager::getSingleton().setDefaultNumMipmaps(5);
-      ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-    }
-
-    void setupScene()
-    {
-      SceneManager *mgr = mRoot->createSceneManager(ST_GENERIC, "Default SceneManager");
-      Camera *cam = mgr->createCamera("Camera");
-      Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
-    }
-
-    void setupInputSystem()
-    {
-      size_t windowHnd = 0;
-      std::ostringstream windowHndStr;
-      OIS::ParamList pl;
-      RenderWindow *win = mRoot->getAutoCreatedWindow();
-
-      win->getCustomAttribute("WINDOW", &windowHnd);
-      windowHndStr << windowHnd;
-      pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
-      mInputManager = OIS::InputManager::createInputSystem(pl);
-
-      try
+      void setupRenderSystem()
       {
-        mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, false));
-        mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, false));
+        if (!mRoot->restoreConfig() && !mRoot->showConfigDialog())
+          throw Ogre::Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
       }
-      catch (const OIS::Exception &e)
+
+      void createRenderWindow()
       {
-        throw new Exception(42, e.eText, "OrxApplication::setupInputSystem");
+        mRoot->initialise(true, "Ogre Render Window");
       }
-    }
 
-    void setupCEGUI()
-    {
-      SceneManager *mgr = mRoot->getSceneManager("Default SceneManager");
-      RenderWindow *win = mRoot->getAutoCreatedWindow();
+      void initializeResourceGroups()
+      {
+        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+        Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+      }
 
-      // CEGUI setup
-      mRenderer = new CEGUI::OgreCEGUIRenderer(win, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, mgr);
-      mSystem = new CEGUI::System(mRenderer);
+      void setupScene()
+      {
+        Ogre::SceneManager *mgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
+        Ogre::Camera *cam = mgr->createCamera("Camera");
+        Ogre::Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
+      }
 
-      // Other CEGUI setup here.
-    }
+      void setupInputSystem()
+      {
+        size_t windowHnd = 0;
+        std::ostringstream windowHndStr;
+        OIS::ParamList pl;
+        Ogre::RenderWindow *win = mRoot->getAutoCreatedWindow();
 
-    void createFrameListener()
-    {
-      mListener = new OrxExitListener(mKeyboard);
-      mRoot->addFrameListener(mListener);
-    }
+        win->getCustomAttribute("WINDOW", &windowHnd);
+        windowHndStr << windowHnd;
+        pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
+        mInputManager = OIS::InputManager::createInputSystem(pl);
 
-    void startRenderLoop()
-    {
-      mRoot->startRendering();
-    }
-};
+        try
+        {
+          mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, false));
+          mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, false));
+        }
+        catch (const OIS::Exception &e)
+        {
+          throw new Ogre::Exception(42, e.eText, "OrxApplication::setupInputSystem");
+        }
+      }
+
+      void setupCEGUI()
+      {
+        Ogre::SceneManager *mgr = mRoot->getSceneManager("Default SceneManager");
+        Ogre::RenderWindow *win = mRoot->getAutoCreatedWindow();
+
+        // CEGUI setup
+        mRenderer = new CEGUI::OgreCEGUIRenderer(win, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, mgr);
+        mSystem = new CEGUI::System(mRenderer);
+
+        // Other CEGUI setup here.
+      }
+
+      void createFrameListener()
+      {
+        mListener = new OrxExitListener(mKeyboard);
+        mRoot->addFrameListener(mListener);
+      }
+
+      void startRenderLoop()
+      {
+        mRoot->startRendering();
+      }
+  };
+}
+
+using namespace Ogre;
 
 #if OGRE_PLATFORM == PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -263,7 +579,7 @@ class OrxApplication
 {
   try
   {
-    OrxApplication orxonox;
+    orxonox::OrxApplication orxonox;
     orxonox.go();
   }
   catch(Exception& e)
@@ -278,4 +594,3 @@ class OrxApplication
 
   return 0;
 }
-

@@ -1,4 +1,5 @@
 #include "ClassHierarchy.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -26,6 +27,16 @@ namespace orxonox
         this->directChildren_ = new IdentifierList();
         this->allChildren_ = new IdentifierList();
         this->objects_ = new ObjectList();
+    }
+
+    Identifier::~Identifier()
+    {
+        delete this->directParents_;
+        delete this->allParents_;
+        delete this->directChildren_;
+        delete this->allChildren_;
+        delete this->objects_;
+        delete &this->name_;
     }
 
     void Identifier::initialize(IdentifierList* parents)
@@ -93,7 +104,7 @@ namespace orxonox
         return (identifier == this || this->allParents_->isInList(identifier));
     }
 
-    bool Identifier::isDirectA(Identifier* identifier)
+    bool Identifier::isDirectlyA(Identifier* identifier)
     {
         return (identifier == this);
     }
@@ -189,6 +200,22 @@ namespace orxonox
         return false;
     }
 
+    std::string IdentifierList::toString()
+    {
+        IdentifierListElement* temp = this->first_;
+        std::string output = "";
+
+        while (temp)
+        {
+            output += temp->identifier_->getName();
+            output += " ";
+
+            temp = temp->next_;
+        }
+
+        return output;
+    }
+
 
     // ###############################
     // ###  IdentifierListElement  ###
@@ -198,6 +225,10 @@ namespace orxonox
         this->identifier_ = identifier;
         this->next_ = NULL;
         this->bDirect_ = true;
+    }
+
+    IdentifierListElement::~IdentifierListElement()
+    {
     }
 
 
@@ -267,6 +298,10 @@ namespace orxonox
         this->next_ = NULL;
     }
 
+    ObjectListElement::~ObjectListElement()
+    {
+    }
+
 
     // ###############################
     // ###     ClassHierarchy      ###
@@ -283,6 +318,11 @@ namespace orxonox
 
     ClassHierarchy::ClassHierarchy()
     {
-        this->bCreatingHierarchy_ = false;
+        this->hierarchyCreatingCounter_ = 0;
+    }
+
+    ClassHierarchy::~ClassHierarchy()
+    {
+      this->pointer_ = NULL;
     }
 }

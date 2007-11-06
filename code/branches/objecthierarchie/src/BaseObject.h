@@ -14,8 +14,8 @@ namespace orxonox
 
             inline bool isA(Identifier* identifier)
                 { this->getIdentifier()->isA(identifier); }
-            inline bool isDirectA(Identifier* identifier)
-                { this->getIdentifier()->isDirectA(identifier); }
+            inline bool isDirectlyA(Identifier* identifier)
+                { this->getIdentifier()->isDirectlyA(identifier); }
             inline bool isChildOf(Identifier* identifier)
                 { this->getIdentifier()->isChildOf(identifier); }
             inline bool isDirectChildOf(Identifier* identifier)

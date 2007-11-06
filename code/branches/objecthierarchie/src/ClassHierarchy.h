@@ -3,15 +3,18 @@
 
 #include <string>
 #include <iostream>
+#include <assert.h>
 
-// DONE:
+// DONE AND TESTED:
 // - klassenhierarchie aufbauen
+// - isA u.a. vergleiche
 // - in listen einfügen
+
+// IN WORK:
 // - factory
 // - klassen-identifier
-// - isA u.ä. vergleiche
 
-// TODO:
+// TO DO:
 // - durch listen iterieren
 // - searchtree für classname-strings
 
@@ -19,42 +22,59 @@
 namespace orxonox
 {
     // ##### ClassHierarchy #####
+    template <class T>
+    class ClassIdentifier;
+
     class ClassHierarchy
     {
+        template <class T>
+        friend class ClassIdentifier;
+
         public:
             static ClassHierarchy* getSingleton();
-            bool isCreatingHierarchy() { return this->bCreatingHierarchy_; }
-            void createHierarchy(bool bCreatingHierarchy) { this->bCreatingHierarchy_ = bCreatingHierarchy; std::cout << "*** Switched Hierarchy-Creating-Mode to" << bCreatingHierarchy << "\n"; }
+            bool isCreatingHierarchy() { return (this->hierarchyCreatingCounter_ > 0); }
 
         private:
             ClassHierarchy();
+            ~ClassHierarchy();
+            void startCreatingHierarchy() { this->hierarchyCreatingCounter_++; std::cout << "*** Increased Hierarchy-Creating-Counter to " << this->hierarchyCreatingCounter_ << "\n"; }
+            void stopCreatingHierarchy() { this->hierarchyCreatingCounter_--; std::cout << "*** Decreased Hierarchy-Creating-Counter to " << this->hierarchyCreatingCounter_ << "\n"; }
 
             static ClassHierarchy* pointer_;
-            bool bCreatingHierarchy_;
+            int hierarchyCreatingCounter_;
     };
 
     // ##### Identifier #####
     class IdentifierList;
     class ObjectList;
     class OrxonoxClass;
-    template <class T>
-    class ClassIdentifier;
 
     class Identifier
     {
         template <class T>
         friend class ClassIdentifier;
 
+        template <class T>
+        friend class BaseIdentifier;
+
         public:
+            Identifier(Identifier* identifier) {};
+            ~Identifier();
             void addObject(OrxonoxClass* object);
             void removeObject(OrxonoxClass* object);
 
             bool isA(Identifier* identifier);
-            bool isDirectA(Identifier* identifier);
+            bool isDirectlyA(Identifier* identifier);
             bool isChildOf(Identifier* identifier);
             bool isDirectChildOf(Identifier* identifier);
             bool isParentOf(Identifier* identifier);
             bool isDirectParentOf(Identifier* identifier);
+
+            std::string getName() { return this->name_; }
+            IdentifierList* getDirectParents() { return this->directParents_; }
+            IdentifierList* getAllParents() { return this->allParents_; }
+            IdentifierList* getDirectChildren() { return this->directChildren_; }
+            IdentifierList* getAllChildren() { return this->allChildren_; }
 
         private:
             Identifier();
@@ -71,6 +91,10 @@ namespace orxonox
             bool bCreatedOneObject_;
     };
 
+
+    // ##### ClassIdentifier #####
+    class A1;
+
     template <class T>
     class ClassIdentifier : public Identifier
     {
@@ -81,6 +105,7 @@ namespace orxonox
 
         private:
             ClassIdentifier();
+            ~ClassIdentifier();
 
             static ClassIdentifier<T>* pointer_;
 
@@ -92,6 +117,12 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>::ClassIdentifier()
     {
+    }
+
+    template <class T>
+    ClassIdentifier<T>::~ClassIdentifier()
+    {
+        this->pointer_ = NULL;
     }
 
     template <class T>
@@ -119,13 +150,13 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
-        std::cout << "*** Get Identifier.\n";
+//        std::cout << "*** Get Identifier.\n";
         if (!pointer_)
         {
             std::cout << "*** Get Identifier -> Create Class\n";
-            ClassHierarchy::getSingleton()->createHierarchy(true);
+            ClassHierarchy::getSingleton()->startCreatingHierarchy();
             T* temp = new T();
-            ClassHierarchy::getSingleton()->createHierarchy(false);
+            ClassHierarchy::getSingleton()->stopCreatingHierarchy();
             delete temp;
         }
 
@@ -138,6 +169,7 @@ namespace orxonox
         return new T();
     }
 
+
     // ##### Identifier List #####
     class IdentifierListElement;
 
@@ -149,6 +181,7 @@ namespace orxonox
             void add(Identifier* identifier);
             void remove(Identifier* identifier);
             bool isInList(Identifier* identifier);
+            std::string toString();
 
             IdentifierListElement* first_;
     };
@@ -157,6 +190,7 @@ namespace orxonox
     {
         public:
             IdentifierListElement(Identifier* identifier);
+            ~IdentifierListElement();
 
             Identifier* identifier_;
             IdentifierListElement* next_;
@@ -182,6 +216,7 @@ namespace orxonox
     {
         public:
             ObjectListElement(OrxonoxClass* object);
+            ~ObjectListElement();
 
             OrxonoxClass* object_;
             ObjectListElement* next_;
