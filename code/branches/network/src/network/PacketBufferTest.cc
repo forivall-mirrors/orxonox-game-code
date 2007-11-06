@@ -18,7 +18,7 @@ int main(int argc, char **argv[]){
   std::cout << std::endl << "queue.print()" << std::endl;
   test.print();
   while(!test.isEmpty()){
-    int i=test.pop()->data;
+    int i=test.pop().data;
     std::cout << "We popped the value " << i << std::endl;
   }
   return 0;

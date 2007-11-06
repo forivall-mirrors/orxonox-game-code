@@ -15,6 +15,12 @@
 
 #include <queue>
 #include <string>
+#include <boost/bind.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/mutex.hpp>
+
+//this is needed in order to make the packetbuffer threadsafe
+boost::mutex networkPacketBufferMutex;
 
 namespace network{
 
@@ -31,17 +37,21 @@ struct QueueItem{
 class PacketBuffer{
 public:
   PacketBuffer();
-  bool isLocked();
   bool isEmpty();
+  bool isClosed();
+  void setClosed(bool value);
+  void print();
   // pops a packet from the queue
-  PacketEnvelope *pop();
+  PacketEnvelope pop();
   // pushs a packet to the queue
   bool push(PacketEnvelope pck);
-  void print();
 private:
-  bool locked;
   QueueItem *first;
   QueueItem *last;
+  bool closed;
+  
+  //make it threadsafe
+//   boost::mutex mutex;
 };
 
 } //namespace
