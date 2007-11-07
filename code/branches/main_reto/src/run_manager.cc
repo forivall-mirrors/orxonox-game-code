@@ -50,11 +50,12 @@
 #include "ogre_control.h"
 #include "orxonox_scene.h"
 #include "orxonox_ship.h"
-#include "bullet.h"
-#include "bullet_manager.h"
 #include "camera_manager.h"
-#include "weapon_manager.h"
 #include "inertial_node.h"
+
+#include "weapon/bullet.h"
+#include "weapon/bullet_manager.h"
+#include "weapon/weapon_manager.h"
 
 #include "run_manager.h"
 
