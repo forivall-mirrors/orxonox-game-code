@@ -5,7 +5,7 @@ SET(SRC_FILES
 	orxonox.cc
 	main.cc
 	ammunition_dump.cc
-	barrel_gun..c
+	barrel_gun.cc
 	bullet.cc
 	camera_manager.cc
 	ogre_control.cc
