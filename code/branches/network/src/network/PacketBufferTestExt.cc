@@ -23,7 +23,7 @@ void write(PacketBuffer *test){
 }
 
 void read(PacketBuffer *test){
-  test->print();
+  //test->print();
   // exit if the queue is closed and empty
   while(!test->isClosed() || !test->isEmpty()){
     // only pop if the queue isn't empty

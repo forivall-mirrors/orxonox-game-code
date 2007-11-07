@@ -38,7 +38,7 @@ namespace network{
     void loop(); // thread1
     bool createListener();
     bool quitServer();
-    bool sendEvent(/*.....*/);
+    bool sendEventAll(/*.....*/);
     bool sendEvent(int clientID/*.....*/);
     void test();
     private:
