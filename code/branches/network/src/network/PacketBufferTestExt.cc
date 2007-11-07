@@ -1,20 +1,23 @@
+#include <string>
+#include <iostream>
+#include <enet/enet.h>
+#include <boost/thread/thread.hpp>
 #include "network/PacketBuffer.h"
 #include "network/PacketBuffer.cc"
-#include <boost/thread/thread.hpp>
-#include <iostream>
-#include <string>
 
 using namespace network;
 
 
 void write(PacketBuffer *test){
-  PacketEnvelope p;
+  ENetPacket *packet;
   if(test->isEmpty())
     std::cout << "empty buffer" << std::endl;
   for(int i=0; i<10; i++){
-    p.data=i*i;
-    std::cout << i << ": pushing " << p.data << std::endl;
-    test->push(p);
+    std::string temp = "packet ";
+    packet = enet_packet_create("packet", strlen("packet ")+1, 
+ENET_PACKET_FLAG_RELIABLE);
+    std::cout << i << ": pushing " << packet->data << std::endl;
+    test->push(packet);
     if(i==5)
       usleep(200000);
   }
@@ -28,8 +31,7 @@ void read(PacketBuffer *test){
   while(!test->isClosed() || !test->isEmpty()){
     // only pop if the queue isn't empty
     while(!test->isEmpty()){
-      int i=test->pop().data;
-      std::cout << "We popped the value " << i << std::endl;
+      std::cout << "We popped the value " << test->pop()->data << std::endl;
     }
   }
   return;

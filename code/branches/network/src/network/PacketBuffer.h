@@ -15,6 +15,7 @@
 
 #include <queue>
 #include <string>
+#include <enet/enet.h>
 #include <boost/bind.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/mutex.hpp>
@@ -30,7 +31,7 @@ struct PacketEnvelope{
 };
 
 struct QueueItem{
-  PacketEnvelope *packet;
+  ENetPacket *packet;
   QueueItem *next;
 };
 
@@ -42,9 +43,9 @@ public:
   void setClosed(bool value);
   void print();
   // pops a packet from the queue
-  PacketEnvelope pop();
+  ENetPacket *pop();
   // pushs a packet to the queue
-  bool push(PacketEnvelope pck);
+  bool push(ENetPacket *pck);
 private:
   QueueItem *first;
   QueueItem *last;

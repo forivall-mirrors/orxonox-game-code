@@ -12,49 +12,46 @@ PacketBuffer::PacketBuffer(){
   last=NULL;
 }
 
-bool PacketBuffer::push(PacketEnvelope pck){
+bool PacketBuffer::push(ENetPacket *pck){
   boost::mutex::scoped_lock lock(networkPacketBufferMutex);
+//   if(closed)
+//     return false;
   // also works if fifo is null (queue empty)
   // just to be sure last is really the last element
-  while(last!=NULL && last->next!=NULL)
-    last=last->next;
+  /*if(last!=NULL)
+    while(last->next!=NULL)
+      last=last->next;*/
   // first element?
   if(first==NULL){
     first=new QueueItem;
     last=first;
     last->next=NULL;
     // change this!!!!!!!
-    last->packet = new PacketEnvelope;
-    last->packet->data = pck.data;
-    last->packet->length = pck.length;
-  } else {
+    last->packet = pck;
+    } else {
     //insert a new element at the bottom
     last->next = new QueueItem;
     last=last->next;
     // initialize last->next
     last->next=NULL;
     // save the packet to the new element
-    // change this!!!!!!!!
-    last->packet = new PacketEnvelope;
-    last->packet->data = pck.data;
-    last->packet->length = pck.length;
+    last->packet = pck;
   }
   return true;
 }
 
-PacketEnvelope PacketBuffer::pop(){
+ENetPacket *PacketBuffer::pop(){
   boost::mutex::scoped_lock lock(networkPacketBufferMutex);
-  if(first!=NULL){
+  if(first!=NULL /*&& !closed*/){
     QueueItem *temp = first;
     // get packet
-    PacketEnvelope *p = first->packet;
+    ENetPacket *pck=first->packet;
     // remove first element
     first = first->next;
     delete temp;
-    return *p;
+    return pck;
   } else{
-    PacketEnvelope p = {0,0};
-    return p;
+    return NULL;
   }
 }
 
