@@ -111,7 +111,7 @@ namespace orxonox {
 	  /*Bullet **bullets_;
 	  int bulletsSize_;
 	  int bulletsIndex_;*/
-    BulletManager *bulletManager_;
+    weapon::BulletManager *bulletManager_;
 
 	  // previously elapsed render time
 	  unsigned long totalTime_;

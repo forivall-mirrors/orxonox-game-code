@@ -32,12 +32,13 @@
 
 
 namespace orxonox {
+namespace weapon {
   using namespace Ogre;
 
   BulletManager::BulletManager(SceneManager *sceneMgr) : sceneMgr_(sceneMgr),
-        bulletsIndex_(0), bulletsSize_(10)
+        bulletsIndex_(0), bulletsSize_(8)
   {
-    bullets_ = new Bullet*[10];
+    bullets_ = new Bullet*[bulletsSize_];
   }
 
 
@@ -85,4 +86,5 @@ namespace orxonox {
     return true;
   }
 
+}
 }

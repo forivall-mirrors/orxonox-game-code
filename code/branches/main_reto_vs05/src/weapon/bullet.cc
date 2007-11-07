@@ -25,40 +25,27 @@
  *
  */
 
+#include "OgreSceneNode.h"
+#include "OgreEntity.h"
+#include "OgreVector3.h"
 
-#ifndef BULLET_MANAGER_H
-#define BULLET_MANAGER_H
-
-#include "OgrePrerequisites.h"
-
-#include "orxonox_prerequisites.h"
+#include "bullet.h"
 
 
 namespace orxonox {
+namespace weapon {
+  using namespace Ogre;
 
-  class BulletManager
+  Bullet::Bullet(SceneNode *node, Entity *entity, Vector3 speed)
+    : node_(node), entity_(entity), speed_(speed)
   {
-  public:
-    BulletManager(Ogre::SceneManager*);
-	  virtual ~BulletManager();
+	  node_->attachObject(entity_);
+  }
 
-    void addBullet(Bullet*);
 
-    bool tick(unsigned long, Ogre::Real);
-
-  protected:
-
-  public:
-    Ogre::SceneManager *sceneMgr_;
-
-  protected:
-    // Bullet array
-	  Bullet **bullets_;
-	  int bulletsSize_;
-	  int bulletsIndex_;
-
-  };
+  Bullet::~Bullet()
+  {
+  }
 
 }
-
-#endif /* BULLET_MANAGER_H */
+}

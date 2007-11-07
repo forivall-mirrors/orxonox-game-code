@@ -26,8 +26,8 @@
  */
 
 
-#ifndef AmmunitionDump_H
-#define AmmunitionDump_H
+#ifndef BULLET_MANAGER_H
+#define BULLET_MANAGER_H
 
 #include "OgrePrerequisites.h"
 
@@ -35,19 +35,32 @@
 
 
 namespace orxonox {
+namespace weapon {
 
-  class AmmunitionDump
+  class BulletManager
   {
   public:
-	  AmmunitionDump();
-	  ~AmmunitionDump();
+    BulletManager(Ogre::SceneManager*);
+	  virtual ~BulletManager();
+
+    void addBullet(Bullet*);
+
+    bool tick(unsigned long, Ogre::Real);
 
   protected:
 
+  public:
+    Ogre::SceneManager *sceneMgr_;
+
   protected:
+    // Bullet array
+	  Bullet **bullets_;
+	  int bulletsSize_;
+	  int bulletsIndex_;
 
   };
 
 }
+}
 
-#endif /* AmmunitionDump_H */
+#endif /* BULLET_MANAGER_H */

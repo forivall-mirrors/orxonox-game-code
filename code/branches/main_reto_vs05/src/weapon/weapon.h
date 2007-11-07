@@ -26,33 +26,35 @@
  */
 
 
-#ifndef BULLET_H
-#define BULLET_H
+#ifndef WEAPON_H
+#define WEAPON_H
 
 #include "OgrePrerequisites.h"
+#include "OgreString.h"
 
 #include "orxonox_prerequisites.h"
 
-
 namespace orxonox {
+namespace weapon {
 
-  class Bullet
+  class Weapon
   {
   public:
-	  Bullet(Ogre::SceneNode*, Ogre::Entity*, Ogre::Vector3);
-	  ~Bullet();
+    Weapon(const Ogre::String &name, int firePower, int firingRate,
+      Ogre::Real bulletSpeed)
+          : name_(name), firePower_(firePower), firingRate_(firingRate),
+          bulletSpeed_(bulletSpeed) { }
 
-  protected:
+    virtual ~Weapon() { }
 
   public:
-    Ogre::SceneNode *node_;
-	  Ogre::Entity *entity_;
-	  Ogre::Vector3 speed_;
-
-  protected:
-
+    Ogre::String name_;
+    int firePower_;
+    int firingRate_;
+    Ogre::Real bulletSpeed_;
   };
 
 }
+}
 
-#endif /* BULLET_H */
+#endif /* WEAPON_H */

@@ -33,13 +33,15 @@
 
 #include "bullet.h"
 #include "bullet_manager.h"
+#include "inertial_node.h"
+#include "weapon_manager.h"
 
 #include "orxonox_ship.h"
-#include "weapon_manager.h"
 
 
 namespace orxonox {
   using namespace Ogre;
+  using namespace weapon;
 
   /**
   * Base class for any kind of flyable ship in Orxonox.
@@ -64,10 +66,11 @@ namespace orxonox {
   */
   OrxonoxShip::OrxonoxShip(SceneManager *sceneMgr, SceneNode *node,
         BulletManager *bulletManager)
-	      : sceneMgr_(sceneMgr), rootNode_(node), currentSpeed_(Vector3(0, 0, 0)),
+	      : sceneMgr_(sceneMgr), //currentSpeed_(Vector3(0, 0, 0)),
         baseThrust_(1000), currentThrust_(Vector3::ZERO),
         objectCounter_(0), bulletManager_(bulletManager)//, bulletSpeed_(400)
   {
+    rootNode_ = new InertialNode(node, Vector3::ZERO);
   }
 
 
@@ -79,6 +82,8 @@ namespace orxonox {
   {
     if (mainWeapon_)
       delete mainWeapon_;
+    if (rootNode_)
+      delete rootNode_;
   }
 
 
@@ -98,14 +103,13 @@ namespace orxonox {
 	  // create the "space ship" (currently a fish..)
 	  // TODO: names must be unique! use static variables..
 	  shipEntity_ = sceneMgr_->createEntity("Ship", "fish.mesh");
-	  SceneNode *fishNode = rootNode_->createChildSceneNode("fishNode");
-	  fishNode->yaw(Degree(-90));
-	  fishNode->attachObject(shipEntity_);
-	  fishNode->setScale(Vector3(10, 10, 10));
+	  InertialNode *fishNode = rootNode_->createChildNode();
+    fishNode->getSceneNode()->yaw(Degree(-90));
+	  fishNode->getSceneNode()->attachObject(shipEntity_);
+	  fishNode->getSceneNode()->setScale(Vector3(10, 10, 10));
 
     // initialise weapon(s)
-    SceneNode *mainWeaponNode = rootNode_
-          ->createChildSceneNode("mainWeaponNode");
+    InertialNode *mainWeaponNode = rootNode_->createChildNode();
     mainWeapon_ = new WeaponManager(sceneMgr_, mainWeaponNode,
           bulletManager_, 1);
     mainWeapon_->addWeapon("Barrel Gun");
@@ -153,7 +157,7 @@ namespace orxonox {
   */
   void OrxonoxShip::turnUpAndDown(const Radian &angle)
   {
-    rootNode_->pitch(-angle, Node::TS_LOCAL);
+    rootNode_->getSceneNode()->pitch(-angle, Node::TS_LOCAL);
   }
 
 
@@ -163,7 +167,7 @@ namespace orxonox {
   */
   void OrxonoxShip::turnLeftAndRight(const Radian &angle)
   {
-    rootNode_->yaw(-angle, Node::TS_PARENT);
+    rootNode_->getSceneNode()->yaw(-angle, Node::TS_PARENT);
   }
 
 
@@ -173,14 +177,14 @@ namespace orxonox {
   */
   Vector3 OrxonoxShip::getSpeed()
   {
-    return currentSpeed_;
+    return rootNode_->getSpeed();
   }
 
   /**
   * Returns the ship's root SceneNode.
   * @return The Root Node.
   */
-  SceneNode* OrxonoxShip::getRootNode()
+  InertialNode* OrxonoxShip::getRootNode()
   {
     return rootNode_;
   }
@@ -194,18 +198,6 @@ namespace orxonox {
   */
   void OrxonoxShip::fire()
   {
-	  // TODO: Names must be unique!
-	  /*SceneNode *temp = rootNode_->getParentSceneNode()->createChildSceneNode(
-          "BulletNode" + StringConverter::toString(objectCounter_));
-	  temp->setOrientation(rootNode_->getOrientation());
-	  temp->setPosition(rootNode_->getPosition());
-	  temp->setScale(Vector3(1, 1, 1) * 10);
-	  temp->yaw(Degree(-90));
-	  return new Bullet(temp, sceneMgr_->createEntity("bullet"
-          + StringConverter::toString(objectCounter_++), "Barrel.mesh"), currentSpeed_
-          + (rootNode_->getOrientation() * Vector3(0, 0, -1)).normalisedCopy()
-          * bulletSpeed_);*/
-
     mainWeapon_->primaryFireRequest();
   }
 
@@ -221,11 +213,11 @@ namespace orxonox {
   {
     mainWeapon_->tick(time, deltaTime);
 
-    Quaternion quad = rootNode_->getOrientation();
+    Quaternion quad = rootNode_->getSceneNode()->getOrientation();
     quad.normalise();
-    currentSpeed_ += quad * (Vector3(-1, -1, -1) * currentThrust_) * deltaTime;
+    rootNode_->addSpeed(quad * (Vector3(-1, -1, -1) * currentThrust_) * deltaTime);
 
-	  rootNode_->translate(currentSpeed_ * deltaTime);
+    rootNode_->getSceneNode()->translate(rootNode_->getSpeed() * deltaTime);
 
 	  return true;
   }

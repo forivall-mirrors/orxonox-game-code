@@ -25,18 +25,36 @@
  *
  */
 
-#include "ammunition_dump.h"
+
+#ifndef BULLET_H
+#define BULLET_H
+
+#include "OgrePrerequisites.h"
+
+#include "orxonox_prerequisites.h"
 
 
 namespace orxonox {
+namespace weapon {
 
-  AmmunitionDump::AmmunitionDump()
+  class Bullet
   {
-  }
+  public:
+	  Bullet(Ogre::SceneNode*, Ogre::Entity*, Ogre::Vector3);
+	  ~Bullet();
 
+  protected:
 
-  AmmunitionDump::~AmmunitionDump()
-  {
-  }
+  public:
+    Ogre::SceneNode *node_;
+	  Ogre::Entity *entity_;
+	  Ogre::Vector3 speed_;
+
+  protected:
+
+  };
 
 }
+}
+
+#endif /* BULLET_H */

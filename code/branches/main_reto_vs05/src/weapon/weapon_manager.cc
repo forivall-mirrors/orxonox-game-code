@@ -34,17 +34,19 @@
 #include "weapon.h"
 #include "bullet.h"
 #include "bullet_manager.h"
+#include "inertial_node.h"
 #include "weapon_manager.h"
 
 #define ACTION_LIST_SIZE 4
 
 
 namespace orxonox {
+namespace weapon {
   using namespace Ogre;
 
   Weapon** WeaponManager::weaponList_s = NULL;
 
-  WeaponManager::WeaponManager(SceneManager *sceneMgr, SceneNode *node,
+  WeaponManager::WeaponManager(SceneManager *sceneMgr, InertialNode *node,
         BulletManager *bulletManager, int slotSize)
         : sceneMgr_(sceneMgr), node_(node), slotSize_(slotSize), slotIndex_(0),
         bulletCounter_(0), primaryFireRequest_(false), currentState_(IDLE),
@@ -111,14 +113,19 @@ namespace orxonox {
     // TODO: add the name of the weapon manager. but for that,
     // the factory is required.
     SceneNode *temp = sceneMgr_->getRootSceneNode()->createChildSceneNode(
-          "BulletNode" + StringConverter::toString(bulletCounter_),
-          node_->getWorldPosition(), node_->getWorldOrientation());
-	  temp->setScale(Vector3(1, 1, 1) * 10);
-	  temp->yaw(Degree(-90));
+          node_->getSceneNode()->getWorldPosition(),
+          node_->getSceneNode()->getWorldOrientation());
+
     Entity* bulletEntity = sceneMgr_->createEntity("BulletEntity"
           + StringConverter::toString(bulletCounter_++), "Barrel.mesh");
-    Vector3 speed = (node_->getOrientation() * Vector3(0, 0, -1))
+
+    Vector3 speed = (temp->getOrientation() * Vector3(0, 0, -1))
           .normalisedCopy() * slots_[selectedWeapon_]->bulletSpeed_;
+    speed += node_->getWorldSpeed();
+
+	  temp->setScale(Vector3(1, 1, 1) * 10);
+	  temp->yaw(Degree(-90));
+
 	  bulletManager_->addBullet(new Bullet(temp, bulletEntity, speed));
   
     currentState_ = IDLE;
@@ -214,4 +221,5 @@ namespace orxonox {
     }
   }
 
+}
 }

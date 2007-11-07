@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include;&quot;$(OGRE_HOME)\OgreMain\include&quot;;&quot;$(OGRE_HOME)\Dependencies\include&quot;"
+				AdditionalIncludeDirectories="..\src;..\src\weapon;&quot;$(OGRE_HOME)\OgreMain\include&quot;;&quot;$(OGRE_HOME)\Dependencies\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -183,19 +183,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\src\ammunition_dump.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\src\bullet.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\src\bullet_manager.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\src\camera_manager.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\src\inertial_node.cc"
 				>
 			</File>
 			<File
@@ -222,10 +214,26 @@
 				RelativePath="..\src\run_manager.cc"
 				>
 			</File>
-			<File
-				RelativePath="..\src\weapon_manager.cc"
+			<Filter
+				Name="weapon"
 				>
-			</File>
+				<File
+					RelativePath="..\src\weapon\ammunition_dump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\weapon\bullet.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\weapon\bullet_manager.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\weapon\weapon_manager.cc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -233,19 +241,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\src\ammunition_dump.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\bullet.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\bullet_manager.h"
-				>
-			</File>
-			<File
 				RelativePath="..\src\camera_manager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\inertial_node.h"
 				>
 			</File>
 			<File
@@ -272,14 +272,30 @@
 				RelativePath="..\src\run_manager.h"
 				>
 			</File>
-			<File
-				RelativePath="..\src\weapon.h"
+			<Filter
+				Name="weapon"
 				>
-			</File>
-			<File
-				RelativePath="..\src\weapon_manager.h"
-				>
-			</File>
+				<File
+					RelativePath="..\src\weapon\ammunition_dump.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\weapon\bullet.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\weapon\bullet_manager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\weapon\weapon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\weapon\weapon_manager.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"

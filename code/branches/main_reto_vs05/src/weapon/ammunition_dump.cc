@@ -25,31 +25,20 @@
  *
  */
 
+#include "ammunition_dump.h"
 
-#ifndef ORXONOX_PREREQUISITES_H
-#define ORXONOX_PREREQUISITES_H
 
 namespace orxonox {
+namespace weapon {
 
-  class CameraManager;
-  class InertialNode;
-  class OgreControl;
-  class Orxonox;
-  class OrxonoxShip;
-  class OrxonoxScene;
-  class RunManager;
+  AmmunitionDump::AmmunitionDump()
+  {
+  }
 
 
-  namespace weapon {
-
-    class AmmunitionDump;
-    class Bullet;
-    class BulletManager;
-    class Weapon;
-    class WeaponManager;
-
+  AmmunitionDump::~AmmunitionDump()
+  {
   }
 
 }
-
-#endif /* ORXONOX_PREREQUISITES_H */
+}

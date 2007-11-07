@@ -35,6 +35,7 @@
 
 
 namespace orxonox {
+namespace weapon {
 
   class WeaponManager
   {
@@ -55,7 +56,7 @@ namespace orxonox {
     };
 
   public:
-    WeaponManager(Ogre::SceneManager*, Ogre::SceneNode*, BulletManager*, int);
+    WeaponManager(Ogre::SceneManager*, InertialNode*, BulletManager*, int);
 	  virtual ~WeaponManager();
 
     bool addWeapon(const Ogre::String&);
@@ -81,7 +82,8 @@ namespace orxonox {
 
   protected:
     Ogre::SceneManager *sceneMgr_;
-    Ogre::SceneNode *node_;
+    //Ogre::SceneNode *node_;
+    InertialNode* node_;
 
     Weapon **slots_;
     int slotSize_;
@@ -104,6 +106,7 @@ namespace orxonox {
 
   };
 
+}
 }
 
 #endif /* WEAPON_MANAGER_H */

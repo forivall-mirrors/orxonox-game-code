@@ -54,11 +54,13 @@
 #include "bullet_manager.h"
 #include "camera_manager.h"
 #include "weapon_manager.h"
+#include "inertial_node.h"
 
 #include "run_manager.h"
 
 namespace orxonox {
   using namespace Ogre;
+  using namespace weapon;
 
   /**
   * RunManager is the basic control object during the game.
@@ -571,7 +573,7 @@ namespace orxonox {
   void RunManager::createCamera(void)
   {
     camera_ = sceneMgr_->createCamera("PlayerCam");
-    playerShip_->getRootNode()->attachObject(camera_);
+    playerShip_->getRootNode()->getSceneNode()->attachObject(camera_);
     camera_->setNearClipDistance(5);
     camera_->setPosition(Vector3(0,10,500));
     camera_->lookAt(Vector3(0,0,0));

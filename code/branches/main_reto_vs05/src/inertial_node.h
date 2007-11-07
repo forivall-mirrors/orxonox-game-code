@@ -26,33 +26,52 @@
  */
 
 
-#ifndef WEAPON_H
-#define WEAPON_H
+#ifndef INERTIAL_NODE_H
+#define INERTIAL_NODE_H
 
 #include "OgrePrerequisites.h"
-#include "OgreString.h"
 
 #include "orxonox_prerequisites.h"
 
+
 namespace orxonox {
 
-  class Weapon
+  class InertialNode
   {
   public:
-    Weapon(const Ogre::String &name, int firePower, int firingRate,
-      Ogre::Real bulletSpeed)
-          : name_(name), firePower_(firePower), firingRate_(firingRate),
-          bulletSpeed_(bulletSpeed) { }
+    InertialNode(Ogre::SceneNode*, Ogre::Vector3);
+	  ~InertialNode();
 
-    virtual ~Weapon() { }
+    InertialNode* createChildNode();
+
+    InertialNode* getParentNode();
+
+    Ogre::SceneNode* getSceneNode();
+
+    Ogre::Vector3 getSpeed();
+
+    Ogre::Vector3 getWorldSpeed();
+
+    void addSpeed(Ogre::Vector3);
+
+  protected:
+    InertialNode(InertialNode*, Ogre::Vector3 speed = Ogre::Vector3::ZERO);
+    void addChild(InertialNode*);
 
   public:
-    Ogre::String name_;
-    int firePower_;
-    int firingRate_;
-    Ogre::Real bulletSpeed_;
+
+  protected:
+    InertialNode **childList_;
+    int childListSize_;
+    int childListIndex_;
+
+    Ogre::SceneNode *node_;
+	  Ogre::Vector3 speed_;
+
+    InertialNode* parentNode_;
+
   };
 
 }
 
-#endif /* WEAPON_H */
+#endif /* INERTIAL_NODE_H */
