@@ -18,7 +18,7 @@ SET(INC_FILES
 	barrel_gun.h
 	bullet.h
 	camera_manager.h
-	orgre_control.h
+	ogre_control.h
 	orxonox.h
 	orxonox_prerequisites.h
 	orxonox_scene.h
