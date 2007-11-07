@@ -4,28 +4,22 @@ PROJECT(Orxonox)
 SET(SRC_FILES
 	orxonox.cc
 	main.cc
-	ammunition_dump.cc
-	barrel_gun.cc
-	bullet.cc
 	camera_manager.cc
+	inertial_node.cc
 	ogre_control.cc
 	orxonox_scene.cc
 	orxonox_ship.cc
-	run_manager.cc
-	weapon_manager.cc)
+	run_manager.cc)
+
 SET(INC_FILES
-	ammunition_dump.h
-	barrel_gun.h
-	bullet.h
 	camera_manager.h
+	inertial_node.h
 	ogre_control.h
 	orxonox.h
 	orxonox_prerequisites.h
 	orxonox_scene.h
 	orxonox_ship.h
-	run_manager.h
-	weapon.h
-	weapon_manager.h)
+	run_manager.h)
 
 #Creates an executable
 ADD_EXECUTABLE(../bin/main ${SRC_FILES} ${INC_FILES})
