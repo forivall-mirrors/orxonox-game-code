@@ -31,16 +31,24 @@
 
 namespace orxonox {
 
-  class AmmunitionDump;
-  class Bullet;
   class CameraManager;
+  class InertialNode;
   class OgreControl;
   class Orxonox;
   class OrxonoxShip;
   class OrxonoxScene;
   class RunManager;
-  class Weapon;
-  class WeaponManager;
+
+
+  namespace weapon {
+
+    class AmmunitionDump;
+    class Bullet;
+    class BulletManager;
+    class Weapon;
+    class WeaponManager;
+
+  }
 
 }
 

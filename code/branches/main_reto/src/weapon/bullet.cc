@@ -25,57 +25,27 @@
  *
  */
 
-#include "OgreSceneManager.h"
+#include "OgreSceneNode.h"
+#include "OgreEntity.h"
+#include "OgreVector3.h"
 
-#include "weapon.h"
-#include "weapon_manager.h"
+#include "bullet.h"
 
 
 namespace orxonox {
+namespace weapon {
   using namespace Ogre;
 
-  Weapon** WeaponManager::weaponList_s = NULL;
-
-  WeaponManager::WeaponManager(SceneManager *sceneMgr, SceneNode *node,
-        int slotSize)
-        : sceneMgr_(sceneMgr), node_(node), slotSize_(slotSize), slotIndex_(0)
+  Bullet::Bullet(SceneNode *node, Entity *entity, Vector3 speed)
+    : node_(node), entity_(entity), speed_(speed)
   {
-  	slots_ = new Weapon*[slotSize];
+	  node_->attachObject(entity_);
   }
 
 
-  WeaponManager::~WeaponManager()
+  Bullet::~Bullet()
   {
-    if (slots_)
-      delete slots_;
   }
 
-
-  bool WeaponManager::addWeapon(const Ogre::String &name)
-  {
-    if (name == weaponList_s[0]->name_)
-    {
-      // this is ugly, but for the time being, it has to fit.
-      slots_[slotIndex_++] = weaponList_s[0];
-      return true;
-    }
-    else
-      return false;
-  }
-
-
-  // static
-  bool WeaponManager::loadWeapons()
-  {
-    weaponList_s[0] = new Weapon("Barrel Gun", 10, 2);
-    return true;
-  }
-
-
-  // static
-  void WeaponManager::destroyWeapons()
-  {
-    delete weaponList_s[0];
-  }
-
+}
 }

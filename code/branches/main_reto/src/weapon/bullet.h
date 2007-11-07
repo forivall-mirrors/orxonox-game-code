@@ -25,22 +25,36 @@
  *
  */
 
-#include "OgreSceneManager.h"
 
-#include "barrel_gun.h"
+#ifndef BULLET_H
+#define BULLET_H
+
+#include "OgrePrerequisites.h"
+
+#include "orxonox_prerequisites.h"
 
 
 namespace orxonox {
-  using namespace Ogre;
+namespace weapon {
 
-  BarrelGun::BarrelGun(SceneManager *sceneMgr) : sceneMgr_(sceneMgr)
+  class Bullet
   {
-  	
-  }
+  public:
+	  Bullet(Ogre::SceneNode*, Ogre::Entity*, Ogre::Vector3);
+	  ~Bullet();
 
+  protected:
 
-  BarrelGun::~BarrelGun()
-  {
-  }
+  public:
+    Ogre::SceneNode *node_;
+	  Ogre::Entity *entity_;
+	  Ogre::Vector3 speed_;
+
+  protected:
+
+  };
 
 }
+}
+
+#endif /* BULLET_H */

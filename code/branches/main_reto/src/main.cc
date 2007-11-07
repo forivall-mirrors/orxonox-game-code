@@ -43,7 +43,7 @@ extern "C" {
 #endif 
   {
     try {
-      // create an orxonox aplication and run it
+      // create an orxonox application and run it
       orxonox::Orxonox myApp;
 
       myApp.go();

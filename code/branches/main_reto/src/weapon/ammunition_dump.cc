@@ -25,30 +25,20 @@
  *
  */
 
-
-#ifndef CAMERA_MANAGER_H
-#define CAMERA_MANAGER_H
-
-#include "OgrePrerequisites.h"
-
-#include "orxonox_prerequisites.h"
+#include "ammunition_dump.h"
 
 
 namespace orxonox {
+namespace weapon {
 
-  class CameraManager
+  AmmunitionDump::AmmunitionDump()
   {
-  public:
-    CameraManager(Ogre::SceneManager*);
-	  ~CameraManager();
+  }
 
-	  bool setCameraPosition(int);
 
-  protected:
-	  Ogre::SceneManager *mSceneMgr;
-	  Ogre::Camera *mCamera;
-  };
+  AmmunitionDump::~AmmunitionDump()
+  {
+  }
 
 }
-
-#endif /* CAMERA_MANAGER_H */
+}

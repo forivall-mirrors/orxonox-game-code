@@ -26,8 +26,8 @@
  */
 
 
-#ifndef ORXONOX_SHIP_H
-#define ORXONOX_SHIP_H
+#ifndef BULLET_MANAGER_H
+#define BULLET_MANAGER_H
 
 #include "OgrePrerequisites.h"
 
@@ -35,47 +35,32 @@
 
 
 namespace orxonox {
+namespace weapon {
 
-  class OrxonoxShip
+  class BulletManager
   {
   public:
-    OrxonoxShip(Ogre::SceneManager*, Ogre::SceneNode*, weapon::BulletManager*);
-	  virtual ~OrxonoxShip();
+    BulletManager(Ogre::SceneManager*);
+	  virtual ~BulletManager();
 
-	  virtual bool initialise();
+    void addBullet(Bullet*);
 
-	  void setMainThrust(const Ogre::Real);
-	  void setSideThrust(const Ogre::Real);
-    void setYThrust(const Ogre::Real);
-	  void turnUpAndDown(const Ogre::Radian&);
-	  void turnLeftAndRight(const Ogre::Radian&);
-
-    InertialNode* getRootNode();
-    Ogre::Vector3 getSpeed();
-
-	  void fire();
-
-	  bool tick(unsigned long, Ogre::Real);
+    bool tick(unsigned long, Ogre::Real);
 
   protected:
 
+  public:
+    Ogre::SceneManager *sceneMgr_;
+
   protected:
-	  Ogre::SceneManager *sceneMgr_;
-	  //Ogre::SceneNode *rootNode_;
-    InertialNode *rootNode_;
-	  Ogre::Entity *shipEntity_;
+    // Bullet array
+	  Bullet **bullets_;
+	  int bulletsSize_;
+	  int bulletsIndex_;
 
-	  //Ogre::Vector3 currentSpeed_;  // relative to space
-	  Ogre::Vector3 currentThrust_; // relative to the ship
-    Ogre::Real baseThrust_;
-	  int objectCounter_;
-
-    weapon::BulletManager *bulletManager_;
-	  //Ogre::Vector3 bulletSpeed_;
-
-    weapon::WeaponManager *mainWeapon_;
   };
 
 }
+}
 
-#endif /* ORXONOX_SHIP_H */
+#endif /* BULLET_MANAGER_H */

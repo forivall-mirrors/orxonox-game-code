@@ -108,9 +108,10 @@ namespace orxonox {
     const Ogre::Real mouseSensitivity_;
 
     // Bullet array
-	  Bullet **bullets_;
+	  /*Bullet **bullets_;
 	  int bulletsSize_;
-	  int bulletsIndex_;
+	  int bulletsIndex_;*/
+    weapon::BulletManager *bulletManager_;
 
 	  // previously elapsed render time
 	  unsigned long totalTime_;

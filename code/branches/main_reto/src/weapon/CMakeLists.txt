@@ -28,9 +28,6 @@ SET(INC_FILES
 	weapon_manager.h)
 
 #Creates an executable
-ADD_EXECUTABLE(../bin/main ${SRC_FILES} ${INC_FILES})
+ADD_EXECUTABLE(../../bin/main ${SRC_FILES} ${INC_FILES})
 #Links the executable against OGRE and OIS
-TARGET_LINK_LIBRARIES(../bin/main ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CEGUI_LIBRARIES} ${CEGUI_OGRE_LIBRARIES})
-
-#add main source dir
-ADD_SUBDIRECTORY(weapon)
+TARGET_LINK_LIBRARIES(../../bin/main ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CEGUI_LIBRARIES} ${CEGUI_OGRE_LIBRARIES})

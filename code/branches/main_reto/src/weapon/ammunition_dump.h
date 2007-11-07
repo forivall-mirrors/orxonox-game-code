@@ -25,18 +25,31 @@
  *
  */
 
-#include "ammunition_dump.h"
+
+#ifndef AmmunitionDump_H
+#define AmmunitionDump_H
+
+#include "OgrePrerequisites.h"
+
+#include "orxonox_prerequisites.h"
 
 
 namespace orxonox {
+namespace weapon {
 
-  AmmunitionDump::AmmunitionDump()
+  class AmmunitionDump
   {
-  }
+  public:
+	  AmmunitionDump();
+	  ~AmmunitionDump();
 
+  protected:
 
-  AmmunitionDump::~AmmunitionDump()
-  {
-  }
+  protected:
+
+  };
 
 }
+}
+
+#endif /* AmmunitionDump_H */

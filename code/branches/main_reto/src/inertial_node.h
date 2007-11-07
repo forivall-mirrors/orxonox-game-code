@@ -26,8 +26,8 @@
  */
 
 
-#ifndef ORXONOX_SHIP_H
-#define ORXONOX_SHIP_H
+#ifndef INERTIAL_NODE_H
+#define INERTIAL_NODE_H
 
 #include "OgrePrerequisites.h"
 
@@ -36,46 +36,42 @@
 
 namespace orxonox {
 
-  class OrxonoxShip
+  class InertialNode
   {
   public:
-    OrxonoxShip(Ogre::SceneManager*, Ogre::SceneNode*, weapon::BulletManager*);
-	  virtual ~OrxonoxShip();
+    InertialNode(Ogre::SceneNode*, Ogre::Vector3);
+	  ~InertialNode();
 
-	  virtual bool initialise();
+    InertialNode* createChildNode();
 
-	  void setMainThrust(const Ogre::Real);
-	  void setSideThrust(const Ogre::Real);
-    void setYThrust(const Ogre::Real);
-	  void turnUpAndDown(const Ogre::Radian&);
-	  void turnLeftAndRight(const Ogre::Radian&);
+    InertialNode* getParentNode();
 
-    InertialNode* getRootNode();
+    Ogre::SceneNode* getSceneNode();
+
     Ogre::Vector3 getSpeed();
 
-	  void fire();
+    Ogre::Vector3 getWorldSpeed();
 
-	  bool tick(unsigned long, Ogre::Real);
-
-  protected:
+    void addSpeed(Ogre::Vector3);
 
   protected:
-	  Ogre::SceneManager *sceneMgr_;
-	  //Ogre::SceneNode *rootNode_;
-    InertialNode *rootNode_;
-	  Ogre::Entity *shipEntity_;
+    InertialNode(InertialNode*, Ogre::Vector3 speed = Ogre::Vector3::ZERO);
+    void addChild(InertialNode*);
 
-	  //Ogre::Vector3 currentSpeed_;  // relative to space
-	  Ogre::Vector3 currentThrust_; // relative to the ship
-    Ogre::Real baseThrust_;
-	  int objectCounter_;
+  public:
 
-    weapon::BulletManager *bulletManager_;
-	  //Ogre::Vector3 bulletSpeed_;
+  protected:
+    InertialNode **childList_;
+    int childListSize_;
+    int childListIndex_;
 
-    weapon::WeaponManager *mainWeapon_;
+    Ogre::SceneNode *node_;
+	  Ogre::Vector3 speed_;
+
+    InertialNode* parentNode_;
+
   };
 
 }
 
-#endif /* ORXONOX_SHIP_H */
+#endif /* INERTIAL_NODE_H */

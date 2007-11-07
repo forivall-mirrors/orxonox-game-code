@@ -32,13 +32,16 @@
 #include "OgreStringConverter.h"
 
 #include "bullet.h"
+#include "bullet_manager.h"
+#include "inertial_node.h"
+#include "weapon_manager.h"
 
 #include "orxonox_ship.h"
-#include "weapon_manager.h"
 
 
 namespace orxonox {
   using namespace Ogre;
+  using namespace weapon;
 
   /**
   * Base class for any kind of flyable ship in Orxonox.
@@ -61,11 +64,13 @@ namespace orxonox {
   * @param mSceneMgr The current main SceneManager
   * @param mNode The scene node which the ship will be attached to later.
   */
-  OrxonoxShip::OrxonoxShip(SceneManager *sceneMgr, SceneNode *node)
-	      : sceneMgr_(sceneMgr), rootNode_(node), currentSpeed_(Vector3(0, 0, 0)),
+  OrxonoxShip::OrxonoxShip(SceneManager *sceneMgr, SceneNode *node,
+        BulletManager *bulletManager)
+	      : sceneMgr_(sceneMgr), //currentSpeed_(Vector3(0, 0, 0)),
         baseThrust_(1000), currentThrust_(Vector3::ZERO),
-        objectCounter_(0), bulletSpeed_(400)
+        objectCounter_(0), bulletManager_(bulletManager)//, bulletSpeed_(400)
   {
+    rootNode_ = new InertialNode(node, Vector3::ZERO);
   }
 
 
@@ -75,6 +80,10 @@ namespace orxonox {
   */
   OrxonoxShip::~OrxonoxShip()
   {
+    if (mainWeapon_)
+      delete mainWeapon_;
+    if (rootNode_)
+      delete rootNode_;
   }
 
 
@@ -94,14 +103,16 @@ namespace orxonox {
 	  // create the "space ship" (currently a fish..)
 	  // TODO: names must be unique! use static variables..
 	  shipEntity_ = sceneMgr_->createEntity("Ship", "fish.mesh");
-	  SceneNode *fishNode = rootNode_->createChildSceneNode("fishNode");
-	  fishNode->yaw(Degree(-90));
-	  fishNode->attachObject(shipEntity_);
-	  fishNode->setScale(Vector3(10, 10, 10));
+	  InertialNode *fishNode = rootNode_->createChildNode();
+    fishNode->getSceneNode()->yaw(Degree(-90));
+	  fishNode->getSceneNode()->attachObject(shipEntity_);
+	  fishNode->getSceneNode()->setScale(Vector3(10, 10, 10));
 
     // initialise weapon(s)
-    SceneNode *mainWeaponNode = rootNode_->createChildSceneNode("mainWeaponNode");
-    mainWeapon_ = new WeaponManager(sceneMgr_, mainWeaponNode, 1);
+    InertialNode *mainWeaponNode = rootNode_->createChildNode();
+    mainWeapon_ = new WeaponManager(sceneMgr_, mainWeaponNode,
+          bulletManager_, 1);
+    mainWeapon_->addWeapon("Barrel Gun");
 
 	  return true;
   }
@@ -109,36 +120,33 @@ namespace orxonox {
 
   /**
   * Gets the ship to accelerate in the current direction.
-  * The value should be between 0 and 1, with one beeing full thrust and 0 none.
+  * The value should be between 0 and 1, with one beeing full thrust and 0 none
   * @param value Acceleration between 0 and 1
   */
   void OrxonoxShip::setMainThrust(const Real value)
   {
-	  //currentThrust_ = value * baseThrust_;
     currentThrust_.z = value * baseThrust_;
   }
 
 
   /**
   * Gets the ship to accelerate sideways regarding the current direction.
-  * The value should be between 0 and 1, with one beeing full thrust and 0 none.
+  * The value should be between 0 and 1, with one beeing full thrust and 0 none
   * @param value Acceleration between 0 and 1
   */
   void OrxonoxShip::setSideThrust(const Real value)
   {
-	  //currentSideThrust_ = value * baseThrust_;
     currentThrust_.x = value * baseThrust_;
   }
 
 
   /**
   * Gets the ship to accelerate up and down.
-  * The value should be between 0 and 1, with one beeing full thrust and 0 none.
+  * The value should be between 0 and 1, with one beeing full thrust and 0 none
   * @param value Acceleration between 0 and 1
   */
   void OrxonoxShip::setYThrust(const Real value)
   {
-    //currentYThrust_ = value * baseThrust_;
     currentThrust_.y = value * baseThrust_;
   }
 
@@ -149,7 +157,7 @@ namespace orxonox {
   */
   void OrxonoxShip::turnUpAndDown(const Radian &angle)
   {
-    rootNode_->pitch(-angle, Node::TS_LOCAL);
+    rootNode_->getSceneNode()->pitch(-angle, Node::TS_LOCAL);
   }
 
 
@@ -159,7 +167,7 @@ namespace orxonox {
   */
   void OrxonoxShip::turnLeftAndRight(const Radian &angle)
   {
-    rootNode_->yaw(-angle, Node::TS_PARENT);
+    rootNode_->getSceneNode()->yaw(-angle, Node::TS_PARENT);
   }
 
 
@@ -169,14 +177,14 @@ namespace orxonox {
   */
   Vector3 OrxonoxShip::getSpeed()
   {
-    return currentSpeed_;
+    return rootNode_->getSpeed();
   }
 
   /**
   * Returns the ship's root SceneNode.
   * @return The Root Node.
   */
-  SceneNode* OrxonoxShip::getRootNode()
+  InertialNode* OrxonoxShip::getRootNode()
   {
     return rootNode_;
   }
@@ -188,19 +196,9 @@ namespace orxonox {
   * the new Node a child of RootNode_!
   * @return Bullet containing speed and entity.
   */
-  Bullet* OrxonoxShip::fire()
+  void OrxonoxShip::fire()
   {
-	  // TODO: Names must be unique!
-	  SceneNode *temp = rootNode_->getParentSceneNode()->createChildSceneNode(
-          "BulletNode" + StringConverter::toString(objectCounter_));
-	  temp->setOrientation(rootNode_->getOrientation());
-	  temp->setPosition(rootNode_->getPosition());
-	  temp->setScale(Vector3(1, 1, 1) * 10);
-	  temp->yaw(Degree(-90));
-	  return new Bullet(temp, sceneMgr_->createEntity("bullet"
-          + StringConverter::toString(objectCounter_++), "Barrel.mesh"), currentSpeed_
-          + (rootNode_->getOrientation() * Vector3(0, 0, -1)).normalisedCopy()
-          * bulletSpeed_);
+    mainWeapon_->primaryFireRequest();
   }
 
 
@@ -213,13 +211,13 @@ namespace orxonox {
   */
   bool OrxonoxShip::tick(unsigned long time, Real deltaTime)
   {
-    Quaternion quad = rootNode_->getOrientation();
-    quad.normalise();
-    currentSpeed_ += quad * (Vector3(-1, -1, -1) * currentThrust_) * deltaTime;
-    //currentSpeed_ += quad * Vector3(0, 0, -1) * currentThrust_ * deltaTime;
-	  //currentSpeed_ += quad * Vector3(-1, 0,  0) * currentSideThrust_ * deltaTime;
+    mainWeapon_->tick(time, deltaTime);
 
-	  rootNode_->translate(currentSpeed_ * deltaTime);
+    Quaternion quad = rootNode_->getSceneNode()->getOrientation();
+    quad.normalise();
+    rootNode_->addSpeed(quad * (Vector3(-1, -1, -1) * currentThrust_) * deltaTime);
+
+    rootNode_->getSceneNode()->translate(rootNode_->getSpeed() * deltaTime);
 
 	  return true;
   }
