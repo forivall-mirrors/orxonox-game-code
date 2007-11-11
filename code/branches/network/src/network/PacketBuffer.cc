@@ -1,16 +1,24 @@
 // C++ PacketBuffer
-// 
+// d
 // Author Oliver Scheuss
+
+#ifndef NETWORK_PACKETBUFFER_CC
+#define NETWORK_PACKETBUFFER_CC
+
 #include <iostream>
 #include "network/PacketBuffer.h"
 
 namespace network{
-
+  
+   boost::mutex networkPacketBufferMutex;
+  
 PacketBuffer::PacketBuffer(){
   closed=false;
   first=NULL;
   last=NULL;
 }
+    //this is needed in order to make the packetbuffer threadsafe
+  
 
 bool PacketBuffer::push(ENetPacket *pck){
   boost::mutex::scoped_lock lock(networkPacketBufferMutex);
@@ -78,3 +86,5 @@ void PacketBuffer::setClosed(bool value){
 }
 
 }// namespace network
+
+#endif

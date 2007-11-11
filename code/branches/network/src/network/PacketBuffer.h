@@ -18,12 +18,10 @@
 #include <enet/enet.h>
 #include <boost/bind.hpp>
 #include <boost/thread/mutex.hpp>
-#include <boost/thread/mutex.hpp>
 
-//this is needed in order to make the packetbuffer threadsafe
-boost::mutex networkPacketBufferMutex;
 
 namespace network{
+
 
 struct PacketEnvelope{
   int length;
@@ -46,13 +44,12 @@ public:
   ENetPacket *pop();
   // pushs a packet to the queue
   bool push(ENetPacket *pck);
+  
 private:
   QueueItem *first;
   QueueItem *last;
   bool closed;
   
-  //make it threadsafe
-//   boost::mutex mutex;
 };
 
 } //namespace

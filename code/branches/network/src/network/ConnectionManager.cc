@@ -6,21 +6,23 @@
 // connection processes is provided by ...
 //
 //
-// Author:  Dumeni, Oli
+// Author:  Oliver Scheuss
 //
 
-// enet library for networking support
-#include enet/enet.h
-// boost.thread library for multithreading support
-#include boost/thread/thread.hpp
-// headerfile
 #include "network/ConnectionManager.h"
 
 namespace network{
+  
+  boost::thread_group network_threads;
+  
+  void test(){
+    return;
+  }
+  
   ConnectionManager::ConnectionManager(){
     quit=false;
     client=NULL;
-    bindAddress.host = std::ENET_HOST_ANY;
+    bindAddress.host = ENET_HOST_ANY;
     bindAddress.port = NETWORK_PORT;
   }
   
@@ -31,25 +33,81 @@ namespace network{
     bindAddress.port = NETWORK_PORT;
   }
   
-  void ConnectionManager::loop(){
-    if(!quit && !buffer.isEmpty()){
-      // to be implemented =================
-      
-    }
+  
+  ENetPacket *ConnectionManager::getPacket(){
+    if(!buffer.isEmpty())
+      return buffer.pop();
+    else
+        return NULL;
   }
   
-  bool ConnectionManager::createListener(){
-    threads.create_thread(&peerLoop);
-    return true;
+  bool ConnectionManager::queueEmpty(){
+    return buffer.isEmpty();
   }
   
-  bool ConnectionManager::quitServer(){
+  void ConnectionManager::createListener(){
+    network_threads.create_thread(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
+//     boost::thread thr(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
+    return;
+  }
+  
+  bool ConnectionManager::quitListener(){
     quit=true;
-    threads.join_all();
+    network_threads.join_all();
     return true;
   }
   
-  bool ConnectionManager::peerLoop(){
+  bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer){
+    if(client=NULL)
+      return false;
+    ClientList *temp=client;
+    while(peer->host != temp->event->peer->host){
+      temp=temp->next;
+      if(temp==NULL)
+        return false;
+    }
+    if(enet_peer_send(temp->event->peer, temp->ID, packet)!=0)
+      return false;
+    return true;
+  }
+  
+  bool ConnectionManager::addPacket(ENetPacket *packet, int ID){
+    if(client=NULL)
+      return false;
+    ClientList *temp=client;
+    while(ID != temp->ID){
+      temp=temp->next;
+      if(temp==NULL)
+        return false;
+    }
+    if(enet_peer_send(temp->event->peer, temp->ID, packet)!=0)
+      return false;
+    else
+      return true;
+  }
+  
+  bool ConnectionManager::addPacketAll(ENetPacket *packet){
+    ClientList *temp=client;
+    while(temp!=NULL){
+      if(enet_peer_send(temp->event->peer, temp->ID, packet)!=0)
+         return false;
+    }
+    return true;
+  }
+  
+  bool ConnectionManager::sendPackets(ENetEvent *event){
+    if(server==NULL)
+      return false;
+    if(enet_host_service(server, event, NETWORK_SEND_WAIT)>=0)
+      return true;
+    else 
+      return false;
+  }
+  
+  void ConnectionManager::receiverThread(){
+    // what about some error-handling here ?
+    enet_initialize();
+    atexit(enet_deinitialize);
     ENetEvent event;
     server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
     if(server==NULL)
@@ -64,13 +122,14 @@ namespace network{
       }
       switch(event.type){
         // log handling ================
-      case std::EVENT_TYPE_CONNECT:
-        addClient(event);
+        case ENET_EVENT_TYPE_CONNECT:
+        addClient(&event);
         break;
-      case std::EVENT_TYPE_RECEIVE:
-        processData(event);
+      case ENET_EVENT_TYPE_RECEIVE:
+        std::cout << event.packet->data << std::endl;
+        processData(&event);
         break;
-      case std::EVENT_TYPE_DISCONNECT:
+      case ENET_EVENT_TYPE_DISCONNECT:
         // add some error/log handling here
         clientDisconnect(event.peer);
         break;
@@ -80,14 +139,16 @@ namespace network{
     enet_host_destroy(server);
   }
   
-  ConnectionManager::processData(ENetEvent event){
-//     insert packetdecode and buffer stuff here
-    
+  bool ConnectionManager::processData(ENetEvent *event){
+    // just add packet to the buffer
+    // this can be extended with some preprocessing
+    return buffer.push(event->packet);
   }
   
-  bool ConnectionManager::clientDisconnect(ENetPeer peer){
+  bool ConnectionManager::clientDisconnect(ENetPeer *peer){
     ClientList *temp=client;
-    if(temp->event.peer==peer){
+    // do we have to remove the first item ?
+    if(temp->event->peer->host==peer->host){
       if(temp->next==NULL){
         client=NULL;
       } else{
@@ -97,26 +158,31 @@ namespace network{
       return true;
     } else {
       while(temp->next!=NULL){
-        if(temp->next->event.peer==peer){
+        if(temp->next->event->peer->host==peer->host){
+          // do a correct relink and delete the disconnected client
           ClientList *temp2=temp->next;
           temp->next=temp2->next;
           delete temp2;
           return true;
         } else
+          //otherwise keep on searching ;)
           temp=temp->next;
       }
     }
     return false;
   }
   
-  bool ConnectionManager::addClient(ENetEvent event){
+  bool ConnectionManager::addClient(ENetEvent *event){
+    
+    // first client?
     if(client==NULL){
       client =new ClientList;
       client->ID=1;
       client->next=NULL;
       client->event = event;
     } else {
-      ClienList *temp = client;
+      // otherwise add a new element to clientlist
+      ClientList *temp = client;
       int i=1;
       while(temp->next != NULL){
         temp=temp->next;
@@ -131,9 +197,5 @@ namespace network{
     return true;
   }
   
-  void ConnectionManager::test(){
-    while(!quit)
-    
-    
-  }
+  
 }
