@@ -31,10 +31,10 @@
 #include "OgreVector3.h"
 #include "OgreStringConverter.h"
 
-#include "bullet.h"
-#include "bullet_manager.h"
 #include "inertial_node.h"
-#include "weapon_manager.h"
+#include "weapon/bullet.h"
+#include "weapon/bullet_manager.h"
+#include "weapon/weapon_manager.h"
 
 #include "orxonox_ship.h"
 
