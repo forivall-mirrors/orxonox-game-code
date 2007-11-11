@@ -53,7 +53,7 @@ namespace orxonox {
     InertialNode* getRootNode();
     Ogre::Vector3 getSpeed();
 
-	  void fire();
+    weapon::WeaponManager* getMainWeapon();
 
 	  bool tick(unsigned long, Ogre::Real);
 

@@ -87,7 +87,7 @@ namespace orxonox {
   * @param ogre_ The OgreControl object holding the render window and the Root
   */
   RunManager::RunManager(OgreControl * ogre)
-        : ogre_(ogre), window_(ogre->getRenderWindow()), leftButtonDown_(false),
+        : ogre_(ogre), window_(ogre->getRenderWindow()), //leftButtonDown_(false),
         statsOn_(true), screenShotCounter_(0), timeUntilNextToggle_(0),
         filtering_(TFO_BILINEAR), aniso_(1), sceneDetailIndex_(0),
         mouseSensitivity_(0.003),
@@ -108,11 +108,6 @@ namespace orxonox {
     // create a bullet manager
     bulletManager_ = new BulletManager(sceneMgr_);
     WeaponManager::loadWeapons();
-
-    // TODO: Use STL to make life easier. But it works this way too..
-    /*bullets_ = new Bullet*[10];
-    bulletsIndex_ = 0;
-    bulletsSize_ = 10;*/
 
 
     // PLAYER SPACESHIP
@@ -219,11 +214,6 @@ namespace orxonox {
       delete bulletManager_;
 
     WeaponManager::destroyWeapons();
-
-    // clean up the bullet list
-    /*for (int i = 0; i < bulletsIndex_; i++)
-      delete bullets_[i];
-    delete bullets_;*/
   }
 
 
@@ -255,12 +245,6 @@ namespace orxonox {
     // update the bullet positions
     bulletManager_->tick(time, deltaTime);
 
-    /*for (int i = 0; i < bulletsIndex_; i++)
-    {
-      bullets_[i]->node_->translate(bullets_[i]->speed_*deltaTime);
-      bullets_[i]->node_->yaw(Degree(deltaTime*100));
-      bullets_[i]->node_->roll(Degree(deltaTime*300));
-    }*/
 
     // HUMAN INTERFACE
 
@@ -366,6 +350,9 @@ namespace orxonox {
     else
       playerShip_->setYThrust(0);
 
+    if (keyboard_->isKeyDown(KC_G))
+      playerShip_->getMainWeapon()->addAction(WeaponManager::RELOAD);
+
     if( keyboard_->isKeyDown(KC_ESCAPE) || keyboard_->isKeyDown(KC_Q) )
       return false;
 
@@ -456,44 +443,14 @@ namespace orxonox {
 
     const MouseState &ms = mouse_->getMouseState();
 
-    // This is a 'hack' to show some flying barrels..
-    // Usually, the Bullet created by the ship should be managed
-    // by the physics engine..
-    if (ms.buttonDown(MB_Left) && !leftButtonDown_)
-    {
-      // Prevent continuous fire for the moment.
-      leftButtonDown_ = true;
+    if (ms.buttonDown(MB_Left))
+      playerShip_->getMainWeapon()->primaryFireRequest();
 
-      playerShip_->fire();
-      
-      // let ship fire one shot with its only weapon (Barrels..)
-      /*Bullet *tempBullet = playerShip_->fire();
+    if (ms.buttonDown(MB_Right))
+      playerShip_->getMainWeapon()->secondaryFireRequest();
 
-      // resize array if neccessary (double the size then)
-      if (bulletsIndex_ >= bulletsSize_)
-      {
-        // redimension the array
-        Bullet **tempArray = new Bullet*[2*bulletsSize_];
-        for (int i = 0; i < bulletsSize_; i++)
-          tempArray[i] = bullets_[i];
-        bulletsSize_ *= 2;
-        delete bullets_;
-        bullets_ = tempArray;
-      }
-
-      // add the bullet to the list
-      bullets_[bulletsIndex_++] = tempBullet;*/
-
-    }
-    else if (!ms.buttons)
-      leftButtonDown_ = false;
-
-    // space ship steering. This should definitely be done in the steering object
-    // Simply give it the mouse movements.
     playerShip_->turnUpAndDown(Radian(ms.Y.rel * mouseSensitivity_));
     playerShip_->turnLeftAndRight(Radian(ms.X.rel * mouseSensitivity_));
-    //playerShip_->mRootNode->pitch(Degree(-ms.Y.rel * 0.13), Ogre::Node::TransformSpace::TS_LOCAL);
-    //playerShip_->mRootNode->yaw(Degree(-ms.X.rel * 0.13), Ogre::Node::TransformSpace::TS_PARENT);
 
     // keep rendering
     return true;

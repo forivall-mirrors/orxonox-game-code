@@ -25,11 +25,12 @@
  *
  */
 
-#include "OgreSceneManager.h"
+#include "OgreMath.h"
+#include "OgreVector3.h"
+#include "OgreQuaternion.h"
 #include "OgreSceneNode.h"
 #include "OgreEntity.h"
-#include "OgreVector3.h"
-#include "OgreStringConverter.h"
+#include "OgreSceneManager.h"
 
 #include "inertial_node.h"
 #include "weapon/bullet.h"
@@ -196,9 +197,9 @@ namespace orxonox {
   * the new Node a child of RootNode_!
   * @return Bullet containing speed and entity.
   */
-  void OrxonoxShip::fire()
+  WeaponManager* OrxonoxShip::getMainWeapon()
   {
-    mainWeapon_->primaryFireRequest();
+    return mainWeapon_;
   }
 
 

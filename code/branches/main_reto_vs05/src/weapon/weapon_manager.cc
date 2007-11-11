@@ -51,13 +51,10 @@ namespace weapon {
         : sceneMgr_(sceneMgr), node_(node), slotSize_(slotSize), slotIndex_(0),
         bulletCounter_(0), primaryFireRequest_(false), currentState_(IDLE),
         secondaryFireRequest_(false), selectedWeapon_(0),
-        bulletManager_(bulletManager),
-        actionListReadIndex_(0), actionListWriteIndex_(0)
+        bulletManager_(bulletManager), secondaryFired_(false),
+        timeSinceNextActionAdded_(0), actionAdded_(false), nextAction_(NOTHING)
   {
   	slots_ = new Weapon*[slotSize];
-    actionList_ = new Action[ACTION_LIST_SIZE];
-    for (int i = 0; i < ACTION_LIST_SIZE; i++)
-      actionList_[i] = NOTHING;
   }
 
 
@@ -65,8 +62,6 @@ namespace weapon {
   {
     if (slots_)
       delete slots_;
-    if (actionList_)
-      delete actionList_;
   }
 
 
@@ -89,10 +84,10 @@ namespace weapon {
 
   bool WeaponManager::addAction(const Action act)
   {
-    if (actionList_[actionListWriteIndex_] == NOTHING)
+    if (nextAction_ != NOTHING)
     {
-      actionList_[actionListWriteIndex_] = act;
-      actionListWriteIndex_ = (actionListWriteIndex_ + 1) % ACTION_LIST_SIZE;
+      nextAction_ = act;
+      actionAdded_ = true;
       return true;
     }
     else
@@ -108,10 +103,6 @@ namespace weapon {
 
   void WeaponManager::primaryFire()
   {
-    currentState_ = PRIMARY_FIRE;
-
-    // TODO: add the name of the weapon manager. but for that,
-    // the factory is required.
     SceneNode *temp = sceneMgr_->getRootSceneNode()->createChildSceneNode(
           node_->getSceneNode()->getWorldPosition(),
           node_->getSceneNode()->getWorldOrientation());
@@ -123,12 +114,19 @@ namespace weapon {
           .normalisedCopy() * slots_[selectedWeapon_]->bulletSpeed_;
     speed += node_->getWorldSpeed();
 
-	  temp->setScale(Vector3(1, 1, 1) * 10);
+	  temp->setScale(Vector3(1, 1, 1) * 4);
 	  temp->yaw(Degree(-90));
 
 	  bulletManager_->addBullet(new Bullet(temp, bulletEntity, speed));
-  
-    currentState_ = IDLE;
+  }
+
+
+  void WeaponManager::primaryFiring(unsigned int time)
+  {
+    if (time > 100)
+    {
+      currentState_ = IDLE;
+    }
   }
 
 
@@ -137,8 +135,31 @@ namespace weapon {
     secondaryFireRequest_ = true;
   }
 
+
   void WeaponManager::secondaryFire()
   {
+    SceneNode *temp = sceneMgr_->getRootSceneNode()->createChildSceneNode(
+          node_->getSceneNode()->getWorldPosition(),
+          node_->getSceneNode()->getWorldOrientation());
+
+    Entity* bulletEntity = sceneMgr_->createEntity("BulletEntity"
+          + StringConverter::toString(bulletCounter_++), "Barrel.mesh");
+
+    Vector3 speed = (temp->getOrientation() * Vector3(0, 0, -1))
+          .normalisedCopy() * slots_[selectedWeapon_]->bulletSpeed_*0.5;
+    speed += node_->getWorldSpeed();
+
+	  temp->setScale(Vector3(1, 1, 1) * 10);
+	  temp->yaw(Degree(-90));
+
+	  bulletManager_->addBullet(new Bullet(temp, bulletEntity, speed));
+  }
+
+
+  void WeaponManager::secondaryFiring(unsigned int time)
+  {
+    if (time > 250)
+      currentState_ = IDLE;
   }
 
 
@@ -148,51 +169,79 @@ namespace weapon {
     if (!slots_[slotIndex_])
       return true;
 
+    // process action adder
+    if (actionAdded_)
+    {
+      timeSinceNextActionAdded_ = time;
+      actionAdded_ = false;
+    }
+
     switch (currentState_)
     {
     case IDLE:
-      // first, process actions
-      if (actionList_[actionListReadIndex_] != NOTHING)
+      // first, process next action
+      if (nextAction_ != NOTHING)
       {
-        actionListReadIndex_ = (actionListReadIndex_ + 1) % ACTION_LIST_SIZE;
-        break;
-      }
+        actionStartTime_ = time;
+        switch (nextAction_)
+        {
+        case RELOAD:
+          break;
 
-      switch (actionList_[actionListReadIndex_])
+        case CHANGE_AMMO:
+          break;
+
+        case SPECIAL:
+          break;
+
+        default:
+          break;
+        }
+
+        // pay attention when multithreaded!
+        nextAction_ = NOTHING;
+      }
+      else
       {
-      case RELOAD:
-        break;
-
-      case ZOOM_IN:
-        break;
-
-      case ZOOM_OUT:
-        break;
-
-      default:
-        break;
+        // secondly, execute firing
+        if (primaryFireRequest_ && !(secondaryFired_ && secondaryFireRequest_))
+        {
+          actionStartTime_ = time;
+          currentState_ = PRIMARY_FIRE;
+          secondaryFired_ = false;
+          primaryFire();
+        }
+        else if (secondaryFireRequest_)
+        {
+          actionStartTime_ = time;
+          currentState_ = SECONDARY_FIRE;
+          secondaryFired_ = true;
+          secondaryFire();
+        }
       }
-
-      // secondly, execute firing
-      if (primaryFireRequest_)
-        primaryFire();
-      else if (secondaryFireRequest_)
-        secondaryFire();
 
       break;
 
     case PRIMARY_FIRE:
+      primaryFiring((unsigned int)(time - actionStartTime_));
       break;
 
     case SECONDARY_FIRE:
+      secondaryFiring((unsigned int)(time - actionStartTime_));
       break;
 
     case RELOADING:
+      break;
+
+    case CHANGING_AMMO:
       break;
     }
 
     primaryFireRequest_ = false;
     secondaryFireRequest_ = false;
+
+    if (time - timeSinceNextActionAdded_ > nextActionValidityPeriod_)
+      nextAction_ = NOTHING;
 
     return true;
   }
@@ -204,7 +253,7 @@ namespace weapon {
     weaponList_s = new Weapon*[5];
     for (int i = 0; i < 5; i++)
       weaponList_s[i] = NULL;
-    weaponList_s[0] = new Weapon("Barrel Gun", 10, 2, 500);
+    weaponList_s[0] = new Weapon("Barrel Gun", 10, 2, 1000);
     return true;
   }
 

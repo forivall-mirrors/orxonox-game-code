@@ -43,8 +43,8 @@ namespace weapon {
     enum Action {
       NOTHING  = 0,
       RELOAD   = 1,
-      ZOOM_IN  = 2,
-      ZOOM_OUT = 3
+      CHANGE_AMMO  = 2,
+      SPECIAL  = 3
     };
 
   protected:
@@ -52,7 +52,8 @@ namespace weapon {
       IDLE = 0,
       PRIMARY_FIRE = 1,
       SECONDARY_FIRE = 2,
-      RELOADING = 4
+      RELOADING = 3,
+      CHANGING_AMMO = 4,
     };
 
   public:
@@ -76,7 +77,11 @@ namespace weapon {
   protected:
     void primaryFire();
 
+    void primaryFiring(unsigned int);
+
     void secondaryFire();
+
+    void secondaryFiring(unsigned int);
 
   public:
 
@@ -96,11 +101,15 @@ namespace weapon {
     bool primaryFireRequest_;
     bool secondaryFireRequest_;
 
-    State currentState_;
+    unsigned long actionStartTime_;
 
-    Action *actionList_;
-    int actionListReadIndex_;
-    int actionListWriteIndex_;
+    State currentState_;
+    bool secondaryFired_;
+
+    Action nextAction_;
+    bool actionAdded_;
+    unsigned long timeSinceNextActionAdded_;
+    static const unsigned long nextActionValidityPeriod_ = 500;
 
     static Weapon **weaponList_s;
 

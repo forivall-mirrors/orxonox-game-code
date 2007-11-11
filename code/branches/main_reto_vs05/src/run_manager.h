@@ -92,7 +92,7 @@ namespace orxonox {
 	  unsigned int screenShotCounter_;
 	  // just to stop toggles flipping too fast
 	  Ogre::Real timeUntilNextToggle_;
-	  bool leftButtonDown_;
+	  //bool leftButtonDown_;
 	  Ogre::TextureFilterOptions filtering_;
 	  int aniso_;
 
