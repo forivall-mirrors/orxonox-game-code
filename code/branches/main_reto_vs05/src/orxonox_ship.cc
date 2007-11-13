@@ -35,7 +35,9 @@
 #include "inertial_node.h"
 #include "weapon/bullet.h"
 #include "weapon/bullet_manager.h"
-#include "weapon/weapon_manager.h"
+#include "weapon/weapon_station.h"
+#include "weapon/base_weapon.h"
+#include "weapon/ammunition_dump.h"
 
 #include "orxonox_ship.h"
 
@@ -67,9 +69,9 @@ namespace orxonox {
   */
   OrxonoxShip::OrxonoxShip(SceneManager *sceneMgr, SceneNode *node,
         BulletManager *bulletManager)
-	      : sceneMgr_(sceneMgr), //currentSpeed_(Vector3(0, 0, 0)),
+	      : sceneMgr_(sceneMgr),
         baseThrust_(1000), currentThrust_(Vector3::ZERO),
-        objectCounter_(0), bulletManager_(bulletManager)//, bulletSpeed_(400)
+        objectCounter_(0), bulletManager_(bulletManager)
   {
     rootNode_ = new InertialNode(node, Vector3::ZERO);
   }
@@ -83,6 +85,8 @@ namespace orxonox {
   {
     if (mainWeapon_)
       delete mainWeapon_;
+    if (railGunStation_)
+      delete railGunStation_;
     if (rootNode_)
       delete rootNode_;
   }
@@ -110,10 +114,16 @@ namespace orxonox {
 	  fishNode->getSceneNode()->setScale(Vector3(10, 10, 10));
 
     // initialise weapon(s)
+    ammoDump_ = new AmmunitionDump(420);
+    ammoDump_->store(420);
+
     InertialNode *mainWeaponNode = rootNode_->createChildNode();
-    mainWeapon_ = new WeaponManager(sceneMgr_, mainWeaponNode,
-          bulletManager_, 1);
-    mainWeapon_->addWeapon("Barrel Gun");
+    mainWeapon_ = new BaseWeapon(sceneMgr_, mainWeaponNode,
+          bulletManager_, ammoDump_);
+
+    railGunStation_ = new WeaponStation(4);
+    railGunStation_->addWeapon(mainWeapon_);
+    railGunStation_->selectWeapon(0);
 
 	  return true;
   }
@@ -197,9 +207,15 @@ namespace orxonox {
   * the new Node a child of RootNode_!
   * @return Bullet containing speed and entity.
   */
-  WeaponManager* OrxonoxShip::getMainWeapon()
+  BaseWeapon* OrxonoxShip::getMainWeapon()
   {
     return mainWeapon_;
+  }
+
+
+  int OrxonoxShip::getAmmoStock()
+  {
+    return ammoDump_->getStockSize();
   }
 
 

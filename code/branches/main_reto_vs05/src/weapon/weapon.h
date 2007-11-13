@@ -25,6 +25,7 @@
  *
  */
 
+#if 0
 
 #ifndef WEAPON_H
 #define WEAPON_H
@@ -41,9 +42,9 @@ namespace weapon {
   {
   public:
     Weapon(const Ogre::String &name, int firePower, int firingRate,
-      Ogre::Real bulletSpeed)
+      Ogre::Real bulletSpeed, int magazineSize)
           : name_(name), firePower_(firePower), firingRate_(firingRate),
-          bulletSpeed_(bulletSpeed) { }
+          bulletSpeed_(bulletSpeed), magazineSize_(magazineSize) { }
 
     virtual ~Weapon() { }
 
@@ -52,9 +53,12 @@ namespace weapon {
     int firePower_;
     int firingRate_;
     Ogre::Real bulletSpeed_;
+    int magazineSize_;
   };
 
 }
 }
 
 #endif /* WEAPON_H */
+
+#endif

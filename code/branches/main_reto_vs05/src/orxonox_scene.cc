@@ -97,7 +97,7 @@ namespace orxonox {
   */
   void OrxonoxScene::createScene()
   {
-	  sceneMgr_->setAmbientLight(ColourValue(0.3,0.3,0.3));
+	  sceneMgr_->setAmbientLight(ColourValue(0.3,0.3,0.3)*2);
 
 	  //create first entity
 	  Entity *head = sceneMgr_->createEntity("head", "ogrehead.mesh");
@@ -109,7 +109,7 @@ namespace orxonox {
 	  node->attachObject(head);
 
 	  // set up skybox
-	  sceneMgr_->setSkyBox(true, "Examples/SceneSkyBox2");
+	  sceneMgr_->setSkyBox(true, "Examples/SceneSkyBox1");
 
 	  // set up one light_ source
 	  light_ = sceneMgr_->createLight("Light1");

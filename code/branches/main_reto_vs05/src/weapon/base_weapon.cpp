@@ -25,66 +25,48 @@
  *
  */
 
-#include "OgreSceneManager.h"
-#include "OgreEntity.h"
-#include "OgreSceneNode.h"
+#include "OgreMath.h"
 #include "OgreVector3.h"
 #include "OgreStringConverter.h"
+#include "OgreSceneNode.h"
+#include "OgreEntity.h"
+#include "OgreSceneManager.h"
 
-#include "weapon.h"
 #include "bullet.h"
 #include "bullet_manager.h"
 #include "inertial_node.h"
-#include "weapon_manager.h"
+#include "ammunition_dump.h"
 
-#define ACTION_LIST_SIZE 4
+#include "base_weapon.h"
 
 
 namespace orxonox {
 namespace weapon {
   using namespace Ogre;
 
-  Weapon** WeaponManager::weaponList_s = NULL;
-
-  WeaponManager::WeaponManager(SceneManager *sceneMgr, InertialNode *node,
-        BulletManager *bulletManager, int slotSize)
-        : sceneMgr_(sceneMgr), node_(node), slotSize_(slotSize), slotIndex_(0),
+  BaseWeapon::BaseWeapon(SceneManager *sceneMgr, InertialNode *node,
+        BulletManager *bulletManager, AmmunitionDump *ammoDump)
+        : sceneMgr_(sceneMgr), node_(node),
         bulletCounter_(0), primaryFireRequest_(false), currentState_(IDLE),
-        secondaryFireRequest_(false), selectedWeapon_(0),
+        secondaryFireRequest_(false),
         bulletManager_(bulletManager), secondaryFired_(false),
-        timeSinceNextActionAdded_(0), actionAdded_(false), nextAction_(NOTHING)
+        timeSinceNextActionAdded_(0), actionAdded_(false), nextAction_(NOTHING),
+        name_("Base Weapon"), primaryFirePower_(100), secondaryFirePower_(500),
+        primaryFiringRate_(10), secondaryFiringRate_(2), primaryBulletSpeed_(1000),
+        secondaryBulletSpeed_(500), magazineSize_(25), ammoDump_(ammoDump)
   {
-  	slots_ = new Weapon*[slotSize];
+    leftAmmo_ = ammoDump_->getAmmunition(magazineSize_);
   }
 
 
-  WeaponManager::~WeaponManager()
+  BaseWeapon::~BaseWeapon()
   {
-    if (slots_)
-      delete slots_;
   }
 
 
-  bool WeaponManager::addWeapon(const Ogre::String &name)
+  bool BaseWeapon::addAction(const Action act)
   {
-    if (!weaponList_s)
-      return false;
-
-    if (name == weaponList_s[0]->name_)
-    {
-      // this is ugly, but for the time being, it has to fit.
-      selectedWeapon_ = slotIndex_;
-      slots_[slotIndex_++] = weaponList_s[0];
-      return true;
-    }
-    else
-      return false;
-  }
-
-
-  bool WeaponManager::addAction(const Action act)
-  {
-    if (nextAction_ != NOTHING)
+    if (nextAction_ == NOTHING)
     {
       nextAction_ = act;
       actionAdded_ = true;
@@ -95,14 +77,20 @@ namespace weapon {
   }
 
 
-  void WeaponManager::primaryFireRequest()
+  void BaseWeapon::primaryFireRequest()
   {
     primaryFireRequest_ = true;
   }
 
 
-  void WeaponManager::primaryFire()
+  void BaseWeapon::primaryFire()
   {
+    if (leftAmmo_ < 1)
+    {
+      currentState_ = IDLE;
+      return;
+    }
+
     SceneNode *temp = sceneMgr_->getRootSceneNode()->createChildSceneNode(
           node_->getSceneNode()->getWorldPosition(),
           node_->getSceneNode()->getWorldOrientation());
@@ -111,17 +99,19 @@ namespace weapon {
           + StringConverter::toString(bulletCounter_++), "Barrel.mesh");
 
     Vector3 speed = (temp->getOrientation() * Vector3(0, 0, -1))
-          .normalisedCopy() * slots_[selectedWeapon_]->bulletSpeed_;
+          .normalisedCopy() * primaryBulletSpeed_;
     speed += node_->getWorldSpeed();
 
 	  temp->setScale(Vector3(1, 1, 1) * 4);
 	  temp->yaw(Degree(-90));
 
 	  bulletManager_->addBullet(new Bullet(temp, bulletEntity, speed));
+
+    --leftAmmo_;
   }
 
 
-  void WeaponManager::primaryFiring(unsigned int time)
+  void BaseWeapon::primaryFiring(unsigned int time)
   {
     if (time > 100)
     {
@@ -130,14 +120,20 @@ namespace weapon {
   }
 
 
-  void WeaponManager::secondaryFireRequest()
+  void BaseWeapon::secondaryFireRequest()
   {
     secondaryFireRequest_ = true;
   }
 
 
-  void WeaponManager::secondaryFire()
+  void BaseWeapon::secondaryFire()
   {
+    if (leftAmmo_ < 5)
+    {
+      currentState_ = IDLE;
+      return;
+    }
+
     SceneNode *temp = sceneMgr_->getRootSceneNode()->createChildSceneNode(
           node_->getSceneNode()->getWorldPosition(),
           node_->getSceneNode()->getWorldOrientation());
@@ -146,29 +142,27 @@ namespace weapon {
           + StringConverter::toString(bulletCounter_++), "Barrel.mesh");
 
     Vector3 speed = (temp->getOrientation() * Vector3(0, 0, -1))
-          .normalisedCopy() * slots_[selectedWeapon_]->bulletSpeed_*0.5;
+          .normalisedCopy() * secondaryBulletSpeed_*0.5;
     speed += node_->getWorldSpeed();
 
 	  temp->setScale(Vector3(1, 1, 1) * 10);
 	  temp->yaw(Degree(-90));
 
 	  bulletManager_->addBullet(new Bullet(temp, bulletEntity, speed));
+
+    leftAmmo_ -= 5;
   }
 
 
-  void WeaponManager::secondaryFiring(unsigned int time)
+  void BaseWeapon::secondaryFiring(unsigned int time)
   {
     if (time > 250)
       currentState_ = IDLE;
   }
 
 
-  bool WeaponManager::tick(unsigned long time, Real deltaTime)
+  bool BaseWeapon::tick(unsigned long time, Real deltaTime)
   {
-    // return if no weapon has been added
-    if (!slots_[slotIndex_])
-      return true;
-
     // process action adder
     if (actionAdded_)
     {
@@ -186,6 +180,7 @@ namespace weapon {
         switch (nextAction_)
         {
         case RELOAD:
+          leftAmmo_ += ammoDump_->getAmmunition(magazineSize_ - leftAmmo_);
           break;
 
         case CHANGE_AMMO:
@@ -247,28 +242,9 @@ namespace weapon {
   }
 
 
-  // static
-  bool WeaponManager::loadWeapons()
+  int BaseWeapon::getAmmoState()
   {
-    weaponList_s = new Weapon*[5];
-    for (int i = 0; i < 5; i++)
-      weaponList_s[i] = NULL;
-    weaponList_s[0] = new Weapon("Barrel Gun", 10, 2, 1000);
-    return true;
+    return leftAmmo_;
   }
-
-
-  // static
-  void WeaponManager::destroyWeapons()
-  {
-    if (weaponList_s)
-    {
-      for (int i = 0; i < 5; i++)
-        if (weaponList_s[i])
-          delete weaponList_s[i];
-      delete weaponList_s;
-    }
-  }
-
 }
 }

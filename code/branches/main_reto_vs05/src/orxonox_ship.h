@@ -53,7 +53,9 @@ namespace orxonox {
     InertialNode* getRootNode();
     Ogre::Vector3 getSpeed();
 
-    weapon::WeaponManager* getMainWeapon();
+    weapon::BaseWeapon* getMainWeapon();
+
+    int getAmmoStock();
 
 	  bool tick(unsigned long, Ogre::Real);
 
@@ -73,7 +75,10 @@ namespace orxonox {
     weapon::BulletManager *bulletManager_;
 	  //Ogre::Vector3 bulletSpeed_;
 
-    weapon::WeaponManager *mainWeapon_;
+    weapon::BaseWeapon *mainWeapon_;
+    weapon::WeaponStation *railGunStation_;
+
+    weapon::AmmunitionDump *ammoDump_;
   };
 
 }

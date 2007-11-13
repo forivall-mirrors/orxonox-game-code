@@ -31,7 +31,8 @@
 namespace orxonox {
 namespace weapon {
 
-  AmmunitionDump::AmmunitionDump()
+  AmmunitionDump::AmmunitionDump(int capacity)
+        : stock_(0), capacity_(capacity)
   {
   }
 
@@ -40,5 +41,34 @@ namespace weapon {
   {
   }
 
+  
+  void AmmunitionDump::store(int quantity)
+  {
+    stock_ += quantity;
+    if (stock_ > capacity_)
+      stock_ = capacity_;
+  }
+
+
+  int AmmunitionDump::getAmmunition(int quantity)
+  {
+    if (stock_ >= quantity)
+    {
+      stock_ -= quantity;
+      return quantity;
+    }
+    else
+    {
+      quantity = stock_;
+      stock_ = 0;
+      return quantity;
+    }
+  }
+
+
+  int AmmunitionDump::getStockSize()
+  {
+    return stock_;
+  }
 }
 }

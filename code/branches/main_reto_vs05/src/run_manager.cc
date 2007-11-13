@@ -55,7 +55,7 @@
 
 #include "weapon/bullet.h"
 #include "weapon/bullet_manager.h"
-#include "weapon/weapon_manager.h"
+#include "weapon/base_weapon.h"
 
 #include "run_manager.h"
 
@@ -107,7 +107,6 @@ namespace orxonox {
 
     // create a bullet manager
     bulletManager_ = new BulletManager(sceneMgr_);
-    WeaponManager::loadWeapons();
 
 
     // PLAYER SPACESHIP
@@ -212,8 +211,6 @@ namespace orxonox {
       delete playerShip_;
     if (bulletManager_)
       delete bulletManager_;
-
-    WeaponManager::destroyWeapons();
   }
 
 
@@ -351,7 +348,7 @@ namespace orxonox {
       playerShip_->setYThrust(0);
 
     if (keyboard_->isKeyDown(KC_G))
-      playerShip_->getMainWeapon()->addAction(WeaponManager::RELOAD);
+      playerShip_->getMainWeapon()->addAction(BaseWeapon::RELOAD);
 
     if( keyboard_->isKeyDown(KC_ESCAPE) || keyboard_->isKeyDown(KC_Q) )
       return false;
@@ -420,7 +417,12 @@ namespace orxonox {
     // Print camera details
     if(displayCameraDetails)
       debugText_ = " | Speed = "
-            + StringConverter::toString(playerShip_->getSpeed());
+            + StringConverter::toString(playerShip_->getSpeed())
+            + " | Left Ammo = "
+            + StringConverter::toString(playerShip_
+            ->getMainWeapon()->getAmmoState())
+            + " | Ammo stock = "
+            + StringConverter::toString(playerShip_->getAmmoStock());
     // debugText_ = "P: " + StringConverter::toString(camera_
     //      ->getDerivedPosition()) + " " + "O: "
     //      + StringConverter::toString(camera_->getDerivedOrientation());

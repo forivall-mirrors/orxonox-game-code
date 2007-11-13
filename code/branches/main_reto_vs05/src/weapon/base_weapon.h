@@ -26,8 +26,8 @@
  */
 
 
-#ifndef WEAPON_MANAGER_H
-#define WEAPON_MANAGER_H
+#ifndef BASE_WEAPON_H
+#define BASE_WEAPON_H
 
 #include "OgrePrerequisites.h"
 
@@ -37,7 +37,7 @@
 namespace orxonox {
 namespace weapon {
 
-  class WeaponManager
+  class BaseWeapon
   {
   public:
     enum Action {
@@ -57,10 +57,9 @@ namespace weapon {
     };
 
   public:
-    WeaponManager(Ogre::SceneManager*, InertialNode*, BulletManager*, int);
-	  virtual ~WeaponManager();
-
-    bool addWeapon(const Ogre::String&);
+    BaseWeapon(Ogre::SceneManager*, InertialNode*, BulletManager*,
+          AmmunitionDump*);
+	  virtual ~BaseWeapon();
 
     bool addAction(const Action);
 
@@ -68,11 +67,9 @@ namespace weapon {
 
     void secondaryFireRequest();
 
+    int getAmmoState();
+
     bool tick(unsigned long, Ogre::Real);
-
-    bool static loadWeapons();
-
-    void static destroyWeapons();
 
   protected:
     void primaryFire();
@@ -90,13 +87,10 @@ namespace weapon {
     //Ogre::SceneNode *node_;
     InertialNode* node_;
 
-    Weapon **slots_;
-    int slotSize_;
-    int slotIndex_;
-    int selectedWeapon_;
-
     int bulletCounter_;
     BulletManager *bulletManager_;
+
+    AmmunitionDump *ammoDump_;
 
     bool primaryFireRequest_;
     bool secondaryFireRequest_;
@@ -111,11 +105,21 @@ namespace weapon {
     unsigned long timeSinceNextActionAdded_;
     static const unsigned long nextActionValidityPeriod_ = 500;
 
-    static Weapon **weaponList_s;
+    // weapon properties
+    int leftAmmo_;
+    Ogre::String name_;
+    int primaryFirePower_;
+    int secondaryFirePower_;
+    int primaryFiringRate_;
+    int secondaryFiringRate_;
+    Ogre::Real primaryBulletSpeed_;
+    Ogre::Real secondaryBulletSpeed_;
+
+    int magazineSize_;
 
   };
 
 }
 }
 
-#endif /* WEAPON_MANAGER_H */
+#endif /* BASE_WEAPON_H */
