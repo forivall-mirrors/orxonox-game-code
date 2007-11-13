@@ -32,6 +32,9 @@
 
 #include "BaseObject.h"
 #include "Test.h"
+#include "test1.h"
+#include "test2.h"
+#include "test3.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
@@ -122,7 +125,7 @@ namespace orxonox
         test4 = new A3();
         test4 = new A3();
 */
-
+/*
         std::cout << "Test 5\n";
         A1* test5_01 = new A1();
         A2* test5_02 = new A2();
@@ -142,7 +145,7 @@ namespace orxonox
         A3B1C2* test5_16 = new A3B1C2();
         A3B2C1* test5_17 = new A3B2C1();
         A3B2C2* test5_18 = new A3B2C2();
-
+*/
 /*
         OrxonoxClass* test5;
         for (int i = 0; i <= 18; i++)
@@ -174,11 +177,11 @@ namespace orxonox
           std::cout << test5->getIdentifier()->getName() << ": allChildren:    " << test5->getIdentifier()->getAllChildren()->toString() << "\n";
         }
 */
-/*
+
         #define testandcout(code) \
           std::cout << #code << " " << code << "\n"
 
-
+/*
         std::cout << "\n";
         std::cout << "isA(XYZ)-Test:\n";
         std::cout << "test5_01 = A1, Erwartet: 1 0 0 1 0\n";
@@ -433,7 +436,7 @@ namespace orxonox
         std::cout << "\n";
         std::cout << "A2 parent of A2B1C1: " << Class(A2)->isParentOf(Class(A2B1C1)) << "\n";
 */
-
+/*
         std::cout << "Test 7\n";
         std::cout << "1\n";
         BaseIdentifier<A1B1> test7_01;
@@ -442,9 +445,12 @@ namespace orxonox
         BaseIdentifier<A1B1> test7_02;
         test7_02 = Class(A1B1);
 
-//        std::cout << Identifier(test7_02).getName() << "\n";
-
+        std::cout << test7_01.getIdentifier()->getName() << "\n";
+        std::cout << test7_02.getIdentifier()->getName() << "\n";
+*/
 /*
+        std::cout << "2\n";
+
         BaseIdentifier<A1B1> test7_03;
         test7_03 = Class(A1);
 
@@ -454,7 +460,43 @@ namespace orxonox
         BaseIdentifier<A1B1> test7_05;
         test7_05 = Class(A2);
 */
+
+        std::cout << "Test 8\n";
+
+        std::cout << "1\n";
+        Test1* test8_01 = new Test1;
+        Test3* test8_03 = new Test3;
+        test8_03->usefullClassesIsATest(test8_01);
+
         std::cout << "2\n";
+        Test2* test8_02 = new Test2;
+        test8_03->usefullClassesIsATest(test8_02);
+
+        std::cout << "3\n";
+        test8_01->setUsefullClass1(Class(Test1));
+        test8_01->setUsefullClass1(test8_02->getIdentifier());
+        test8_01->setUsefullClass2(Class(Test2));
+        test8_01->setUsefullClassOfTypeTest3(Class(Test3));
+        test8_01->setUsefullClassOfTypeTest3(test8_03->getIdentifier());
+
+
+        testandcout(test8_01->isA(Class(Test1)));
+        testandcout(test8_01->isA(Class(Test2)));
+        testandcout(test8_01->isA(Class(Test3)));
+
+        Test2* test8_04 = new Test2;
+        testandcout(test8_02->isA(Class(Test1)));
+        testandcout(test8_02->isA(Class(Test2)));
+        testandcout(test8_02->isA(Class(Test3)));
+
+        Test3* test8_05 = new Test3;
+        testandcout(test8_03->isA(Class(Test1)));
+        testandcout(test8_03->isA(Class(Test2)));
+        testandcout(test8_03->isA(Class(Test3)));
+
+        delete test8_01;
+        delete test8_02;
+        delete test8_03;
 
 
       }

@@ -1,11 +1,11 @@
 #ifndef _OrxonoxClass_H__
 #define _OrxonoxClass_H__
 
+#include "IdentifierList.h"
+#include "Identifier.h"
+
 namespace orxonox
 {
-    class Identifier;
-    class IdentifierList;
-
     class OrxonoxClass
     {
         public:

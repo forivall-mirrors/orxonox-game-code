@@ -1,10 +1,7 @@
 #ifndef _Test_H__
 #define _Test_H__
 
-
-#include "BaseObject.h"
-#include "ClassHierarchy.h"
-#include "OrxonoxClass.h"
+#include "IdentifierIncludes.h"
 
 namespace orxonox
 {
