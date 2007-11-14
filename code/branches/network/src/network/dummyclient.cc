@@ -4,6 +4,7 @@
 // Author: Oliver Scheuss
 
 #include <iostream>
+#include <string>
 #include <enet/enet.h>
 #include "network/PacketManager.h"
 
@@ -19,7 +20,14 @@ int main(){
   enet_initialize();
   atexit(enet_deinitialize);
   
-  enet_address_set_host(&address, "127.0.0.1");
+  cout << "Enter address of the server xxx.xxx.xxx.xxx (enter for localhost)" << endl;
+  string str;
+  getline(cin, str);
+  cout << "You entered: " << str << endl;
+  if(str.compare("")==0)
+    str="127.0.0.1";
+  
+  enet_address_set_host(&address, str.c_str());
   address.port = 5555;
 
         // create client object
@@ -37,10 +45,12 @@ int main(){
   }
         // wait 5 seconds for the connection attempt to succeed
   if(enet_host_service(client, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT){
-    puts("Connection to localhost:5555 succeeded.");
+    cout << "Connection to " << str << " succeeded." << endl;
+    //puts("Connection to localhost:5555 succeeded.");
   }else{
     enet_peer_reset(peer);
-    puts("Connection to localhost:5555 failed.");
+    cout << "Connection to " << str << " failed." << endl;
+    //puts("Connection to localhost:5555 failed.");
   }
 
   for(int i=0; i<10; i++){
