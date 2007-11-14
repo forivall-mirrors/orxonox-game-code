@@ -4,7 +4,7 @@
 // Author: Oliver Scheuss
 
 #include <iostream>
-#include "enet/enet.h"
+#include <enet/enet.h>
 
 using namespace std;
 
