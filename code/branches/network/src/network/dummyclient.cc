@@ -28,7 +28,7 @@ int main(){
     str="127.0.0.1";
   
   enet_address_set_host(&address, str.c_str());
-  address.port = 23;
+  address.port = 5555;
 
         // create client object
   client = enet_host_create(NULL, 2, 0, 0);
