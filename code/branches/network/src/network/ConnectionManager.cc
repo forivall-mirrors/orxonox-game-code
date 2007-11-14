@@ -34,9 +34,9 @@ namespace network{
   }
   
   
-  ENetPacket *ConnectionManager::getPacket(){
+  ENetPacket *ConnectionManager::getPacket(ENetAddress &address){
     if(!buffer.isEmpty())
-      return buffer.pop();
+      return buffer.pop(address);
     else
         return NULL;
   }
@@ -126,7 +126,6 @@ namespace network{
         addClient(&event);
         break;
       case ENET_EVENT_TYPE_RECEIVE:
-        std::cout << event.packet->data << std::endl;
         processData(&event);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
@@ -142,7 +141,7 @@ namespace network{
   bool ConnectionManager::processData(ENetEvent *event){
     // just add packet to the buffer
     // this can be extended with some preprocessing
-    return buffer.push(event->packet);
+    return buffer.push(event);
   }
   
   bool ConnectionManager::clientDisconnect(ENetPeer *peer){

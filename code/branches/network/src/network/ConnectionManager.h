@@ -44,7 +44,7 @@ namespace network{
     public:
     ConnectionManager();
     ConnectionManager(int port, int address);
-    ENetPacket *getPacket(); // thread1
+    ENetPacket *getPacket(ENetAddress &address); // thread1
     // check wheter the packet queue is empty
     bool queueEmpty();
     // create a new listener thread

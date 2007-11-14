@@ -30,6 +30,7 @@ struct PacketEnvelope{
 
 struct QueueItem{
   ENetPacket *packet;
+  ENetAddress address;
   QueueItem *next;
 };
 
@@ -42,8 +43,9 @@ public:
   void print();
   // pops a packet from the queue
   ENetPacket *pop();
+  ENetPacket *pop(ENetAddress &address);
   // pushs a packet to the queue
-  bool push(ENetPacket *pck);
+  bool push(ENetEvent *ev);
   
 private:
   QueueItem *first;

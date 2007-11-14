@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <enet/enet.h>
+#include "network/PacketManager.h"
 
 using namespace std;
 
@@ -13,6 +14,7 @@ int main(){
   ENetAddress address;
   ENetEvent event;
   ENetPeer *peer;
+  network::PacketGenerator pck;
 
   enet_initialize();
   atexit(enet_deinitialize);
@@ -43,10 +45,10 @@ int main(){
 
   for(int i=0; i<10; i++){
         // weihnachtsmann bringt packete
-    ENetPacket *packet = enet_packet_create ("packet1234", strlen("packet1234") + 1, ENET_PACKET_FLAG_RELIABLE);
+    //ENetPacket *packet = enet_packet_create ("packet1234", strlen("packet1234") + 1, ENET_PACKET_FLAG_RELIABLE);
         // extend the packet and append the string foo to it
         // send packet to peer on channel id 0
-    enet_peer_send(peer, 1, packet);
+    enet_peer_send(peer, 1, pck.chatMessage("test"));
         // keep the timeout very small for low delay
     if(enet_host_service(client, &event, 1)==0){
       cout << "successfully sent: " << event.type << endl;

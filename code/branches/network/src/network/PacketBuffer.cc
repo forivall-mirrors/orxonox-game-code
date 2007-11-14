@@ -20,22 +20,18 @@ PacketBuffer::PacketBuffer(){
     //this is needed in order to make the packetbuffer threadsafe
   
 
-bool PacketBuffer::push(ENetPacket *pck){
+bool PacketBuffer::push(ENetEvent *ev){
   boost::mutex::scoped_lock lock(networkPacketBufferMutex);
 //   if(closed)
 //     return false;
-  // also works if fifo is null (queue empty)
-  // just to be sure last is really the last element
-  /*if(last!=NULL)
-    while(last->next!=NULL)
-      last=last->next;*/
   // first element?
   if(first==NULL){
     first=new QueueItem;
     last=first;
     last->next=NULL;
     // change this!!!!!!!
-    last->packet = pck;
+    last->packet = ev->packet;
+    last->address = ev->peer->address;
     } else {
     //insert a new element at the bottom
     last->next = new QueueItem;
@@ -43,7 +39,8 @@ bool PacketBuffer::push(ENetPacket *pck){
     // initialize last->next
     last->next=NULL;
     // save the packet to the new element
-    last->packet = pck;
+    last->packet = ev->packet;
+    last->address = ev->peer->address;
   }
   return true;
 }
@@ -63,6 +60,22 @@ ENetPacket *PacketBuffer::pop(){
   }
 }
 
+ENetPacket *PacketBuffer::pop(ENetAddress &address){
+  boost::mutex::scoped_lock lock(networkPacketBufferMutex);
+  if(first!=NULL /*&& !closed*/){
+    QueueItem *temp = first;
+    // get packet
+    ENetPacket *pck=first->packet;
+    address = first->address;
+    // remove first element
+    first = first->next;
+    delete temp;
+    return pck;
+  } else{
+    return NULL;
+  }
+}
+
 bool PacketBuffer::isEmpty(){
   return (first==NULL);
 }
@@ -70,7 +83,7 @@ bool PacketBuffer::isEmpty(){
 void PacketBuffer::print(){
   QueueItem *temp=first;
   while(temp!=NULL){
-    std::cout << temp->packet->data << std::endl;
+//    std::cout << temp->packet->data << std::endl;
     temp=temp->next;
   }
   
