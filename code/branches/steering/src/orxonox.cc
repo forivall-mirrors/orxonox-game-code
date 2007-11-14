@@ -41,6 +41,9 @@
 #include "xml/xmlParser.h"
 #include "loader/LevelLoader.h"
 
+#include "spaceship_steering.h"
+SpaceshipSteering* steering;
+
 
 // some tests to see if enet works without includsion
 //#include <enet/enet.h>
@@ -85,7 +88,43 @@ class OrxExitListener : public FrameListener
 
     bool frameStarted(const FrameEvent& evt)
     {
+      float speed = 1;
+      float rotate = 1;
       mKeyboard->capture();
+      if (mKeyboard->isKeyDown(OIS::KC_SPACE))
+        steering->moveForward(speed);
+      else
+        steering->moveForward(0);
+      if(mKeyboard->isKeyDown(OIS::KC_C))
+        steering->brake(speed);
+      else
+        steering->brake(0.1);
+      if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
+        steering->rotateUp(rotate);
+      else
+        steering->rotateUp(0);
+      if (mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
+        steering->rotateDown(rotate);
+      else
+        steering->rotateDown(0);
+      if (mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D))
+        steering->rotateRight(rotate);
+      else
+        steering->rotateRight(0);
+      if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
+        steering->rotateLeft(rotate);
+      else
+        steering->rotateLeft(0);
+      if (mKeyboard->isKeyDown(OIS::KC_E))
+        steering->loopRight(rotate);
+      else
+        steering->loopRight(0);
+      if (mKeyboard->isKeyDown(OIS::KC_Q))
+        steering->loopLeft(rotate);
+      else
+        steering->loopLeft(0);
+      steering->tick(evt.timeSinceLastFrame);
+//	scenemanager->spacehip->tick(evt.timesincelastframe);
       return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
     }
 
@@ -198,7 +237,37 @@ class OrxApplication
     {
       SceneManager *mgr = mRoot->createSceneManager(ST_GENERIC, "Default SceneManager");
       Camera *cam = mgr->createCamera("Camera");
+      cam->setPosition(Vector3(0,0,-250));
+      cam->lookAt(Vector3(0,0,0));
       Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
+
+
+      mgr->setAmbientLight(ColourValue(1,1,1));
+      Entity* head = mgr->createEntity("head", "ogrehead.mesh");
+      SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
+      node->attachObject(head);
+      node->attachObject(cam);
+      mgr->setSkyBox(true, "Examples/SceneSkyBox2");
+
+      Entity* head1 = mgr->createEntity("head1", "ogrehead.mesh");
+      SceneNode *node1 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode1", Vector3(200,0,0));
+      node1->attachObject(head1);
+      Entity* head2 = mgr->createEntity("head2", "ogrehead.mesh");
+      SceneNode *node2 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode2", Vector3(200,400,-100));
+      node2->attachObject(head2);
+      Entity* head3 = mgr->createEntity("head3", "ogrehead.mesh");
+      SceneNode *node3 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode3", Vector3(0,400,200));
+      node3->attachObject(head3);
+      Entity* head4 = mgr->createEntity("head4", "ogrehead.mesh");
+      SceneNode *node4 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode4", Vector3(-400,-200,600));
+      node4->attachObject(head4);
+      Entity* head5 = mgr->createEntity("head5", "ogrehead.mesh");
+      SceneNode *node5 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode5", Vector3(0,0,-400));
+      node5->attachObject(head5);
+
+      steering = new SpaceshipSteering(500, 200, 200, 200);
+      steering->addNode(node);
+
     }
 
     void setupInputSystem()
@@ -239,7 +308,7 @@ class OrxApplication
     void createFrameListener()
     {
       mListener = new OrxExitListener(mKeyboard);
-      mRoot->addFrameListener(mListener);
+      mRoot->addFrameListener(mListener);      
     }
 
     void startRenderLoop()
