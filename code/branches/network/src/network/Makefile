@@ -11,7 +11,7 @@ server: PacketBuffer.o ConnectionManager.o dummyserver.o PacketDecoder.o PacketG
 dummyserver.o: dummyserver.cc
 	${CC} -c dummyserver.cc -o dummyserver.o -g ${INC}
 # Compilation commands:
-ConnectionManager.o: ConnectionManager.cc
+ConnectionManager.o: ConnectionManager.cc ConnectionManager.h
 	${CC} -c ConnectionManager.cc -o ConnectionManager.o -g ${INC}
 
 PacketBuffer.o: PacketBuffer.cc
