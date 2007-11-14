@@ -36,17 +36,13 @@ private:
 		int id;
 		char press;
 	};	
-	struct chat {
-		int id;
-		const char* message;
-	};
 };
 
 class PacketDecoder
 {
 public:
 	PacketDecoder();
-	bool elaborate( ENetEvent* event );
+	bool elaborate( ENetPacket* packet, int clientId );
 private:
 	struct ack {
 		int id;
@@ -68,10 +64,10 @@ private:
 		const char* message;
 	};
 	
-	void acknowledgement( ENetPacket* event );
-	void mousem( ENetPacket* event );
-	void keystrike( ENetPacket* event );
-	void chatMessage( ENetPacket* event );
+	void acknowledgement( ENetPacket* packet );
+	void mousem( ENetPacket* packet );
+	void keystrike( ENetPacket* packet );
+	void chatMessage( ENetPacket* packet );
 	
 	//print functions
 	void printAck( ack* data );

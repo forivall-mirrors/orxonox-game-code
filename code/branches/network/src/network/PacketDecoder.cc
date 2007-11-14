@@ -7,24 +7,26 @@ using namespace network;
 
 PacketDecoder::PacketDecoder(){}
 
-bool PacketDecoder::elaborate( ENetEvent* event )
+bool PacketDecoder::elaborate( ENetPacket* packet, int clientId )
 {
-	int id = (int)*event->packet->data;
+	int client = clientId;
+	cout << "clientId: " << client << endl;
+	int id = (int)*packet->data;
 	switch( id ) {
 	case ACK:
-		acknowledgement( event->packet );
+		acknowledgement( packet );
 		return true;
 		break;
 	case MOUSE:
-		mousem( event->packet );
+		mousem( packet );
 		return true;
 		break;
 	case KEYBOARD:
-		keystrike( event->packet );
+		keystrike( packet );
 		return true;
 		break;
 	case CHAT:
-		chatMessage( event->packet );
+		chatMessage( packet );
 		return true;
 		break;
 	}
@@ -61,7 +63,7 @@ void PacketDecoder::chatMessage( ENetPacket* packet )
 	chatting->message = reserve;
 	printChat( chatting );
 }
-
+/*
 void PacketDecoder::printPeer( ENetPeer* peer )
 {
 	cout << "number of chanels:   " << peer->channelCount << endl;
@@ -72,7 +74,7 @@ void PacketDecoder::printPeer( ENetPeer* peer )
 	cout << "incomming peer id:   " << peer->incomingPeerID << endl;
 	cout << "state of peer:       " << peer->state << endl;
 }
-
+*/
 void PacketDecoder::printAck( ack* data )
 {
 	cout << "data id: " << data->id << endl;
