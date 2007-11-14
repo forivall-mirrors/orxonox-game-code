@@ -40,7 +40,7 @@
 
 #include "xml/xmlParser.h"
 #include "loader/LevelLoader.h"
-
+#include "Flocking.h"
 
 // some tests to see if enet works without includsion
 //#include <enet/enet.h>
@@ -75,22 +75,39 @@ std::string macBundlePath()
 
 using namespace Ogre;
 
+//my-stuff
+//globale definition eines Arrays welches alle nodes enthält
+Vector3 ElementLocationArray[2];
+Vector3 ElementSpeedArray[2];
+Vector3 ElementAccelerationArray[2];
+
+
+
 class OrxExitListener : public FrameListener
 {
   public:
-    OrxExitListener(OIS::Keyboard *keyboard)
+    OrxExitListener(OIS::Keyboard *keyboard, Root* root)
   : mKeyboard(keyboard)
     {
+	root_ = root;
     }
 
     bool frameStarted(const FrameEvent& evt)
     {
+      moving(evt);
       mKeyboard->capture();
       return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
+    }
+  
+    //code the movments of the nodes here
+    void moving(const FrameEvent& evt) {
+      SceneManager *mgr = root_->getSceneManager("Default SceneManager");
+      mgr->getSceneNode("HeadNode1")->yaw((Radian)10*evt.timeSinceLastFrame);
     }
 
   private:
     OIS::Keyboard *mKeyboard;
+    Root* root_;
 };
 
 class OrxApplication
@@ -198,7 +215,10 @@ class OrxApplication
     {
       SceneManager *mgr = mRoot->createSceneManager(ST_GENERIC, "Default SceneManager");
       Camera *cam = mgr->createCamera("Camera");
+      cam->setPosition(Vector3(0,0,500));
+      cam->lookAt(Vector3(0,0,0));
       Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
+      example();  //my stuff
     }
 
     void setupInputSystem()
@@ -238,7 +258,7 @@ class OrxApplication
 
     void createFrameListener()
     {
-      mListener = new OrxExitListener(mKeyboard);
+      mListener = new OrxExitListener(mKeyboard, mRoot);
       mRoot->addFrameListener(mListener);
     }
 
@@ -246,7 +266,36 @@ class OrxApplication
     {
       mRoot->startRendering();
     }
+
+    //declaration of the 3 Ogreheads
+    void example() {
+    SceneManager *mgr = mRoot->getSceneManager("Default SceneManager");
+    mgr->setAmbientLight(ColourValue(1.0,1.0,1.0));
+    Entity* ent1 = mgr->createEntity("Head1", "ogrehead.mesh");
+    Entity* ent2 = mgr->createEntity("Head2", "ogrehead.mesh");
+    Entity* ent3 = mgr->createEntity("Head3", "ogrehead.mesh");
+    SceneNode *node1 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode1", Vector3(0,0,0));
+    SceneNode *node2 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode2", Vector3(100,0,0));
+    SceneNode *node3 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode3", Vector3(-100,0,0));
+    node1->attachObject(ent1);
+    node2->attachObject(ent2);
+    node3->attachObject(ent3);
+    ElementLocationArray[0] = node1->getPosition();
+    ElementLocationArray[1] = node2->getPosition();
+    ElementLocationArray[2] = node3->getPosition();
+    ElementSpeedArray[0] = (0,0,0);
+    ElementSpeedArray[1] = (0,0,0);
+    ElementSpeedArray[2] = (0,0,0);
+    ElementAccelerationArray[0] = (0,0,0);
+    ElementAccelerationArray[1] = (0,0,0);
+    ElementAccelerationArray[2] = (0,0,0);
+    for (int i=0; i<3; i++) {
+      Element* arrayOfElements[i] = new element( ElementLocationArray[i], ElementSpeedArray[i], ElementAccelerationArray[i] );
+    }
+    }
 };
+
+
 
 #if OGRE_PLATFORM == PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
