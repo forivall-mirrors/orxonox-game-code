@@ -202,7 +202,7 @@ class OrxApplication
       loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
       
       mgr->setAmbientLight(Ogre::ColourValue(0.3,0.3,0.9));
-      //mgr->setSkyBox(true,"Examples/SpaceSkyBox");
+      mgr->setSkyBox(true,"Examples/SpaceSkyBox");
 
     }
 
