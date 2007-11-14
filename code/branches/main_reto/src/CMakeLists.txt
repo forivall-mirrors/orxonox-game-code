@@ -22,7 +22,7 @@ SET(INC_FILES
 	run_manager.h)
 
 #Creates an executable
-ADD_EXECUTABLE(../bin/main ${SRC_FILES, WPN_CC_FILES} ${INC_FILES, WPN_H_FILES})
+ADD_EXECUTABLE(../bin/main ${SRC_FILES, weapon/WPN_CC_FILES} ${INC_FILES, weapon/WPN_H_FILES})
 #Links the executable against OGRE and OIS
 TARGET_LINK_LIBRARIES(../bin/main ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CEGUI_LIBRARIES} ${CEGUI_OGRE_LIBRARIES})
 
