@@ -13,6 +13,8 @@ dummyserver.o: dummyserver.cc
 # Compilation commands:
 ConnectionManager.o: ConnectionManager.cc ConnectionManager.h
 	${CC} -c ConnectionManager.cc -o ConnectionManager.o -g ${INC}
+ClientConnection.o: ClientConnection.cc ClientConnection.h
+	${CC} -c ClientConnection.cc -o ClientConnection.o -g ${INC}
 
 PacketBuffer.o: PacketBuffer.cc
 	${CC} -c PacketBuffer.cc -o PacketBuffer.o -g ${INC}
@@ -25,5 +27,7 @@ PacketDecoder.o: PacketDecoder.cc
 clean:
 	rm -rf *.o
 
-client: PacketGenerator.o dummyclient.cc
+client_old: PacketGenerator.o dummyclient.cc
 	${CC} dummyclient.cc PacketGenerator.o -o client -lenet -g ${INC}
+client: PacketGenerator.o ClientConnection.o PacketBuffer.o dummyclient2.cc 
+	${CC} dummyclient2.cc PacketGenerator.o PacketBuffer.o ClientConnection.o -o client -lenet -lboost_thread -g ${INC}

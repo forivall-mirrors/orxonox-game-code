@@ -51,6 +51,7 @@ int main(){
     enet_peer_reset(peer);
     cout << "Connection to " << str << " failed." << endl;
     //puts("Connection to localhost:5555 failed.");
+    exit(EXIT_FAILURE);
   }
 
   for(int i=0; i<10; i++){
@@ -58,13 +59,14 @@ int main(){
     //ENetPacket *packet = enet_packet_create ("packet1234", strlen("packet1234") + 1, ENET_PACKET_FLAG_RELIABLE);
         // extend the packet and append the string foo to it
         // send packet to peer on channel id 0
-    enet_peer_send(peer, 1, pck.chatMessage("test"));
+    enet_peer_send(peer, 1, pck.chatMessage("test2"));
         // keep the timeout very small for low delay
     if(enet_host_service(client, &event, 1)==0){
       cout << "successfully sent: " << event.type << endl;
     }else{
       cout << "failed sending" << endl;
     }
+    usleep(1000000);
   }
 
         // now disconnect
