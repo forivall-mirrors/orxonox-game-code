@@ -1,23 +1,24 @@
 #include "Factory.h"
 #include "Identifier.h"
+#include "BaseObject.h"
 
 namespace orxonox
 {
-    ClassFactory* ClassFactory::pointer_ = NULL;
+    ClassFactory* ClassFactory::pointer_s = NULL;
 
-    OrxonoxClass* ClassFactory::fabricate(const std::string& name)
+    BaseObject* ClassFactory::fabricate(const std::string& name)
     {
-        if (!pointer_)
-            pointer_ = new ClassFactory;
+        if (!pointer_s)
+            pointer_s = new ClassFactory;
 
-        return pointer_->identifierMap_[name]->fabricate();
+        return pointer_s->identifierMap_[name]->fabricate();
     }
 
     void ClassFactory::add(const std::string& name, Identifier* identifier)
     {
-        if (!pointer_)
-            pointer_ = new ClassFactory;
+        if (!pointer_s)
+            pointer_s = new ClassFactory;
 
-        pointer_->identifierMap_[name] = identifier;
+        pointer_s->identifierMap_[name] = identifier;
     }
 }

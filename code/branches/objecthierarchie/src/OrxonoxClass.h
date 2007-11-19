@@ -1,8 +1,8 @@
 #ifndef _OrxonoxClass_H__
 #define _OrxonoxClass_H__
 
-#include "IdentifierList.h"
 #include "Identifier.h"
+#include "IdentifierList.h"
 
 namespace orxonox
 {

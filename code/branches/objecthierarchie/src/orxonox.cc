@@ -503,11 +503,11 @@ namespace orxonox
         std::cout << "Test 9\n";
         std::cout << "1\n";
         Identifier* test9_01 = Class(A3);
-        OrxonoxClass* test9_02 = test9_01->fabricate();
+        BaseObject* test9_02 = test9_01->fabricate();
         std::cout << test9_02->getIdentifier()->getName() << "\n";
 
         std::cout << "\n2\n";
-        OrxonoxClass* test9_03 = Class(A1B2)->fabricate();
+        BaseObject* test9_03 = Class(A1B2)->fabricate();
         std::cout << test9_03->getIdentifier()->getName() << "\n";
 
         std::cout << "\n3\n";
@@ -517,7 +517,7 @@ namespace orxonox
         std::cout << test9_05->getIdentifier()->getName() << "\n";
 
         std::cout << "\n4\n";
-        OrxonoxClass* test9_06 = Factory("A2B2");
+        BaseObject* test9_06 = Factory("A2B2");
         std::cout << test9_06->getIdentifier()->getName() << "\n";
 
         std::cout << "\n5\n";

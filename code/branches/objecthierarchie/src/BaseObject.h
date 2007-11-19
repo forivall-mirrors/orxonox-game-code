@@ -63,7 +63,6 @@ namespace orxonox
             inline bool isDirectParentOf(OrxonoxClass* object)
                 { this->getIdentifier()->isDirectParentOf(object->getIdentifier); }
 */
-
     };
 }
 

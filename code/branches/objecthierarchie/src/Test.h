@@ -9,13 +9,13 @@ namespace orxonox
     class Interface1 : virtual public OrxonoxClass
     {
         public:
-            Interface1() { registerRootObject(Interface1); }
+            Interface1() { registerAbstractRootObject(Interface1); }
     };
 
     class Interface2 : virtual public OrxonoxClass
     {
         public:
-            Interface2() { registerRootObject(Interface2); }
+            Interface2() { registerAbstractRootObject(Interface2); }
     };
 
     class A1 : public BaseObject

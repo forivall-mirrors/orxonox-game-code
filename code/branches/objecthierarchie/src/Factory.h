@@ -7,12 +7,12 @@
 namespace orxonox
 {
     class Identifier;
-    class OrxonoxClass;
+    class BaseObject;
 
     class ClassFactory
     {
         public:
-            static OrxonoxClass* fabricate(const std::string& name);
+            static BaseObject* fabricate(const std::string& name);
             static void add(const std::string& name, Identifier* identifier);
 
         private:
@@ -20,7 +20,7 @@ namespace orxonox
             ClassFactory(const ClassFactory& factory) {}
             ~ClassFactory() {}
 
-            static ClassFactory* pointer_;
+            static ClassFactory* pointer_s;
             std::map<std::string, Identifier*> identifierMap_;
     };
 }

@@ -1,14 +1,30 @@
 #ifndef _Identifier_H__
 #define _Identifier_H__
 
-#include "ClassHierarchy.h"
+#include <iostream>
+
 #include "IdentifierList.h"
 #include "ObjectList.h"
-#include "OrxonoxClass.h"
+//#include "OrxonoxClass.h"
 #include "Factory.h"
+
+// DONE AND TESTED:
+// - build class hierarchy
+// - isA, isChildOf, ...
+// - insert into class-lists
+// - ClassIdentifier
+// - BaseIdentifier
+// - Factory
+
+// IN WORK:
+
+// TO DO:
+// - iterate through lists
 
 namespace orxonox
 {
+    class BaseObject;
+
     // ##### Identifier #####
     class Identifier
     {
@@ -22,7 +38,7 @@ namespace orxonox
             void addObject(OrxonoxClass* object);
             void removeObject(OrxonoxClass* object);
 
-            virtual OrxonoxClass* fabricate() {};
+            virtual BaseObject* fabricate() {};
 
             bool isA(Identifier* identifier);
             bool isDirectlyA(Identifier* identifier);
@@ -32,10 +48,12 @@ namespace orxonox
             bool isDirectParentOf(Identifier* identifier);
 
             std::string getName() { return this->name_; }
-            IdentifierList* getDirectParents() { return this->directParents_; }
-            IdentifierList* getAllParents() { return this->allParents_; }
-            IdentifierList* getDirectChildren() { return this->directChildren_; }
-            IdentifierList* getAllChildren() { return this->allChildren_; }
+            IdentifierList* getDirectParents() { return &(this->directParents_); }
+            IdentifierList* getAllParents() { return &(this->allParents_); }
+            IdentifierList* getDirectChildren() { return &(this->directChildren_); }
+            IdentifierList* getAllChildren() { return &(this->allChildren_); }
+
+            static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
         private:
             Identifier();
@@ -43,16 +61,21 @@ namespace orxonox
             virtual ~Identifier();
             void initialize(IdentifierList* parents);
 
-            IdentifierList* directParents_;
-            IdentifierList* allParents_;
-            IdentifierList* directChildren_;
-            IdentifierList* allChildren_;
+            static void startCreatingHierarchy() { hierarchyCreatingCounter_s++; std::cout << "*** Increased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << "\n"; }
+            static void stopCreatingHierarchy() { hierarchyCreatingCounter_s--; std::cout << "*** Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << "\n"; }
 
-            ObjectList* objects_;
+            IdentifierList directParents_;
+            IdentifierList allParents_;
+            IdentifierList directChildren_;
+            IdentifierList allChildren_;
+
+            ObjectList objects_;
             std::string name_;
 
             bool bIsAbstractClass_;
             bool bCreatedOneObject_;
+
+            static int hierarchyCreatingCounter_s;
     };
 
 
@@ -63,7 +86,7 @@ namespace orxonox
         public:
             static ClassIdentifier<T>* registerClass(IdentifierList* parents, std::string name, bool bRootClass, bool bIsAbstractClass);
             static ClassIdentifier<T>* getIdentifier();
-            OrxonoxClass* fabricate();
+            BaseObject* fabricate();
             T* fabricateClass();
 
         private:
@@ -71,12 +94,12 @@ namespace orxonox
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}
             ~ClassIdentifier();
 
-            static ClassIdentifier<T>* pointer_;
+            static ClassIdentifier<T>* pointer_s;
 
     };
 
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::pointer_ = NULL;
+    ClassIdentifier<T>* ClassIdentifier<T>::pointer_s = NULL;
 
     template <class T>
     ClassIdentifier<T>::ClassIdentifier()
@@ -86,61 +109,70 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>::~ClassIdentifier()
     {
-        this->pointer_ = NULL;
+        this->pointer_s = NULL;
     }
 
     template <class T>
-    OrxonoxClass* ClassIdentifier<T>::fabricate()
+    BaseObject* ClassIdentifier<T>::fabricate()
     {
-        return this->fabricateClass();
+        return dynamic_cast<BaseObject*>(this->fabricateClass());
     }
 
     template <class T>
     T* ClassIdentifier<T>::fabricateClass()
     {
-        return new T;
+        if (!this->bIsAbstractClass_)
+        {
+            return new T;
+        }
+        else
+        {
+            std::cout << "Error: Couldn't create a new Object - Class " << this->name_ << " is abstract!\n";
+            std::cout << "Aborting...\n";
+            abort();
+        }
     }
 
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::registerClass(IdentifierList* parents, std::string name, bool bRootClass, bool bIsAbstractClass)
     {
         std::cout << "*** Register Class in " << name << "-Singleton.\n";
-        if (!pointer_)
+        if (!pointer_s)
         {
             std::cout << "*** Register Class in " << name << "-Singleton -> Create Singleton.\n";
             if (parents || bRootClass)
             {
-                pointer_ = new ClassIdentifier();
-                pointer_->name_ = name;
-                pointer_->bIsAbstractClass_ = bIsAbstractClass;
+                pointer_s = new ClassIdentifier();
+                pointer_s->name_ = name;
+                pointer_s->bIsAbstractClass_ = bIsAbstractClass;
 
-                ClassFactory::add(name, pointer_);
+                ClassFactory::add(name, pointer_s);
 
-                pointer_->initialize(parents);
+                pointer_s->initialize(parents);
             }
             else
             {
-                pointer_ = getIdentifier();
+                pointer_s = getIdentifier();
             }
         }
 
-        return pointer_;
+        return pointer_s;
     }
 
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
 //        std::cout << "*** Get Identifier.\n";
-        if (!pointer_)
+        if (!pointer_s)
         {
             std::cout << "*** Get Identifier -> Create Class\n";
-            ClassHierarchy::getSingleton()->startCreatingHierarchy();
+            Identifier::startCreatingHierarchy();
             T* temp = new T();
-            ClassHierarchy::getSingleton()->stopCreatingHierarchy();
+            Identifier::stopCreatingHierarchy();
             delete temp;
         }
 
-        return pointer_;
+        return pointer_s;
     }
 
     // ##### BaseIdentifier #####
@@ -175,7 +207,7 @@ namespace orxonox
 
             B* fabricate()
             {
-                OrxonoxClass* newObject = this->identifier_->fabricate();
+                BaseObject* newObject = this->identifier_->fabricate();
                 if (newObject)
                 {
                     return dynamic_cast<B*>(newObject);

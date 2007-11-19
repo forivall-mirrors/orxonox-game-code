@@ -1,4 +1,3 @@
-#include "ClassHierarchy.h"
 #include "OrxonoxClass.h"
 
 namespace orxonox
