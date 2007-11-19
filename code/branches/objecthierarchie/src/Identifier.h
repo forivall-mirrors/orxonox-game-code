@@ -148,7 +148,10 @@ namespace orxonox
 
                 ClassFactory::add(name, pointer_s);
 
-                pointer_s->initialize(parents);
+                if (!bRootClass)
+                    pointer_s->initialize(parents);
+                else
+                    pointer_s->initialize(NULL);
             }
             else
             {

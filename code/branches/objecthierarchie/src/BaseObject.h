@@ -49,20 +49,20 @@ namespace orxonox
                 { this->getIdentifier()->isParentOf(identifier.getIdentifier()); }
             inline bool isDirectParentOf(BaseIdentifier<class B> identifier)
                 { this->getIdentifier()->isDirectParentOf(identifier.getIdentifier()); }
-/*
+
             inline bool isA(OrxonoxClass* object)
                 { this->getIdentifier()->isA(object->getIdentifier()); }
             inline bool isDirectlyA(OrxonoxClass* object)
-                { this->getIdentifier()->isDirectlyA(object->getIdentifier); }
+                { this->getIdentifier()->isDirectlyA(object->getIdentifier()); }
             inline bool isChildOf(OrxonoxClass* object)
-                { this->getIdentifier()->isChildOf(object->getIdentifier); }
+                { this->getIdentifier()->isChildOf(object->getIdentifier()); }
             inline bool isDirectChildOf(OrxonoxClass* object)
-                { this->getIdentifier()->isDirectChildOf(object->getIdentifier); }
+                { this->getIdentifier()->isDirectChildOf(object->getIdentifier()); }
             inline bool isParentOf(OrxonoxClass* object)
-                { this->getIdentifier()->isParentOf(object->getIdentifier); }
+                { this->getIdentifier()->isParentOf(object->getIdentifier()); }
             inline bool isDirectParentOf(OrxonoxClass* object)
-                { this->getIdentifier()->isDirectParentOf(object->getIdentifier); }
-*/
+                { this->getIdentifier()->isDirectParentOf(object->getIdentifier()); }
+
     };
 }
 

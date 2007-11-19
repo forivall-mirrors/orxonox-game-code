@@ -77,14 +77,21 @@ namespace orxonox
 
     void Identifier::addObject(OrxonoxClass* object)
     {
-        std::cout << "*** Added " << this->name_ << " to list.\n";
+        std::cout << "*** Added object to " << this->name_ << "-list.\n";
         this->objects_.add(object);
     }
 
     void Identifier::removeObject(OrxonoxClass* object)
     {
-        std::cout << "*** Removed " << this->name_ << " from list.\n";
+        std::cout << "*** Removed object from " << this->name_ << "-list.\n";
         this->objects_.remove(object);
+
+        IdentifierListElement* temp = this->directParents_.first_;
+        while (temp)
+        {
+            temp->identifier_->removeObject(object);
+            temp = temp->next_;
+        }
     }
 
     bool Identifier::isA(Identifier* identifier)

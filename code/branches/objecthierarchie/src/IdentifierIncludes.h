@@ -5,43 +5,35 @@
 #include "OrxonoxClass.h"
 
 
-#define registerRootObject(ClassName) \
-    std::cout << "*** Register Root-Object: " << #ClassName << "\n"; \
+#define internRegisterRootObject(ClassName, bAbstract) \
     if (Identifier::isCreatingHierarchy() && !this->getParents()) \
         this->setParents(new IdentifierList()); \
-    if (this->getIdentifier()) \
-        this->getIdentifier()->removeObject(this); \
-    this->setIdentifier(ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, true, false)); \
+    this->setIdentifier(ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, true, bAbstract)); \
     if (Identifier::isCreatingHierarchy() && this->getParents()) \
         this->getParents()->add(this->getIdentifier()); \
     this->getIdentifier()->addObject(this)
 
-#define registerAbstractRootObject(ClassName) \
+#define registerRootObject(ClassName) \
     std::cout << "*** Register Root-Object: " << #ClassName << "\n"; \
-    if (Identifier::isCreatingHierarchy() && !this->getParents()) \
-        this->setParents(new IdentifierList()); \
-    if (this->getIdentifier()) \
-        this->getIdentifier()->removeObject(this); \
-    this->setIdentifier(ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, true, true)); \
+    internRegisterRootObject(ClassName, false)
+
+#define registerAbstractRootObject(ClassName) \
+    std::cout << "*** Register abstract Root-Object: " << #ClassName << "\n"; \
+    internRegisterRootObject(ClassName, true)
+
+#define internRegisterObject(ClassName, bAbstract) \
+    this->setIdentifier(ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, false, bAbstract)); \
     if (Identifier::isCreatingHierarchy() && this->getParents()) \
         this->getParents()->add(this->getIdentifier()); \
     this->getIdentifier()->addObject(this)
 
 #define registerObject(ClassName) \
     std::cout << "*** Register Object: " << #ClassName << "\n"; \
-    this->getIdentifier()->removeObject(this); \
-    this->setIdentifier(ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, false, false)); \
-    if (Identifier::isCreatingHierarchy() && this->getParents()) \
-        this->getParents()->add(this->getIdentifier()); \
-    this->getIdentifier()->addObject(this)
+    internRegisterObject(ClassName, false)
 
 #define registerAbstractObject(ClassName) \
-    std::cout << "*** Register Object: " << #ClassName << "\n"; \
-    this->getIdentifier()->removeObject(this); \
-    this->setIdentifier(ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, false, true)); \
-    if (Identifier::isCreatingHierarchy() && this->getParents()) \
-        this->getParents()->add(this->getIdentifier()); \
-    this->getIdentifier()->addObject(this)
+    std::cout << "*** Register abstract Object: " << #ClassName << "\n"; \
+    internRegisterObject(ClassName, true)
 
 #define unregisterObject() \
     this->getIdentifier()->removeObject(this)
