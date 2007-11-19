@@ -4,6 +4,8 @@
 
 namespace orxonox
 {
+    CreateFactory(Test3);
+
     Test3::Test3()
     {
         registerObject(Test3);

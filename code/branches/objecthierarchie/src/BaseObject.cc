@@ -2,6 +2,8 @@
 
 namespace orxonox
 {
+    CreateFactory(BaseObject);
+
     BaseObject::BaseObject()
     {
         registerRootObject(BaseObject);

@@ -1,6 +1,7 @@
 #ifndef _Test_H__
 #define _Test_H__
 
+#include "BaseObject.h"
 #include "IdentifierIncludes.h"
 
 namespace orxonox
@@ -124,6 +125,25 @@ namespace orxonox
         public:
             A3B2C2() { registerObject(A3B2C2); }
     };
+
+    CreateFactory(A1);
+    CreateFactory(A2);
+    CreateFactory(A3);
+    CreateFactory(A1B1);
+    CreateFactory(A1B2);
+    CreateFactory(A2B1);
+    CreateFactory(A2B2);
+    CreateFactory(A3B1);
+    CreateFactory(A3B2);
+    CreateFactory(A1B1C1);
+    CreateFactory(A1B1C2);
+    CreateFactory(A1B2C1);
+    CreateFactory(A2B1C1);
+    CreateFactory(A2B2C1);
+    CreateFactory(A3B1C1);
+    CreateFactory(A3B1C2);
+    CreateFactory(A3B2C1);
+    CreateFactory(A3B2C2);
 }
 
 #endif

@@ -5,6 +5,7 @@
 #include "IdentifierList.h"
 #include "ObjectList.h"
 #include "OrxonoxClass.h"
+#include "Factory.h"
 
 namespace orxonox
 {
@@ -20,6 +21,8 @@ namespace orxonox
         public:
             void addObject(OrxonoxClass* object);
             void removeObject(OrxonoxClass* object);
+
+            virtual OrxonoxClass* fabricate() {};
 
             bool isA(Identifier* identifier);
             bool isDirectlyA(Identifier* identifier);
@@ -60,6 +63,8 @@ namespace orxonox
         public:
             static ClassIdentifier<T>* registerClass(IdentifierList* parents, std::string name, bool bRootClass, bool bIsAbstractClass);
             static ClassIdentifier<T>* getIdentifier();
+            OrxonoxClass* fabricate();
+            T* fabricateClass();
 
         private:
             ClassIdentifier();
@@ -85,6 +90,18 @@ namespace orxonox
     }
 
     template <class T>
+    OrxonoxClass* ClassIdentifier<T>::fabricate()
+    {
+        return this->fabricateClass();
+    }
+
+    template <class T>
+    T* ClassIdentifier<T>::fabricateClass()
+    {
+        return new T;
+    }
+
+    template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::registerClass(IdentifierList* parents, std::string name, bool bRootClass, bool bIsAbstractClass)
     {
         std::cout << "*** Register Class in " << name << "-Singleton.\n";
@@ -96,6 +113,9 @@ namespace orxonox
                 pointer_ = new ClassIdentifier();
                 pointer_->name_ = name;
                 pointer_->bIsAbstractClass_ = bIsAbstractClass;
+
+                ClassFactory::add(name, pointer_);
+
                 pointer_->initialize(parents);
             }
             else
@@ -123,16 +143,14 @@ namespace orxonox
         return pointer_;
     }
 
-
     // ##### BaseIdentifier #####
     template <class B>
-    class BaseIdentifier// : public Identifier
+    class BaseIdentifier
     {
         public:
             BaseIdentifier();
 
-            //template <class T>
-            BaseIdentifier<B>& operator= (/*Class*/Identifier/*<T>*/* identifier)
+            BaseIdentifier<B>& operator= (Identifier* identifier)
             {
                 if (!identifier->isA(ClassIdentifier<B>::getIdentifier()))
                 {
@@ -144,6 +162,42 @@ namespace orxonox
                 this->identifier_ = identifier;
                 return *this;
             }
+
+            Identifier* operator* ()
+            {
+                return this->identifier_;
+            }
+
+            Identifier* operator-> () const
+            {
+                return this->identifier_;
+            }
+
+            B* fabricate()
+            {
+                OrxonoxClass* newObject = this->identifier_->fabricate();
+                if (newObject)
+                {
+                    return dynamic_cast<B*>(newObject);
+                }
+                else
+                {
+                    if (this->identifier_)
+                    {
+                        std::cout << "Error: Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<B>::getIdentifier()->getName() << "!\n";
+                        std::cout << "Error: Couldn't fabricate a new Object.\n";
+                        std::cout << "Aborting...\n";
+                    }
+                    else
+                    {
+                        std::cout << "Error: Couldn't fabricate a new Object - Identifier is undefined.\n";
+                        std::cout << "Aborting...\n";
+                    }
+
+                    abort();
+                }
+            }
+
             inline Identifier* getIdentifier()
                 { return this->identifier_; }
             inline bool isA(Identifier* identifier)

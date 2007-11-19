@@ -10,7 +10,7 @@ namespace orxonox
     {
         public:
             OrxonoxClass();
-            ~OrxonoxClass();
+            virtual ~OrxonoxClass();
             Identifier* getIdentifier() { return this->identifier_; }
             void setIdentifier(Identifier* identifier) { this->identifier_ = identifier; }
             IdentifierList* getParents() { return this->parents_; }

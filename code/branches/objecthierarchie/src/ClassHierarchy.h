@@ -10,13 +10,12 @@
 // - insert into class-lists
 // - ClassIdentifier
 // - BaseIdentifier
+// - Factory
 
 // IN WORK:
-// - Factory
 
 // TO DO:
 // - iterate through lists
-// - searchtree for classname-strings
 
 
 namespace orxonox
@@ -36,6 +35,7 @@ namespace orxonox
 
         private:
             ClassHierarchy();
+            ClassHierarchy(const ClassHierarchy& hierarchy);
             ~ClassHierarchy();
             void startCreatingHierarchy() { this->hierarchyCreatingCounter_++; std::cout << "*** Increased Hierarchy-Creating-Counter to " << this->hierarchyCreatingCounter_ << "\n"; }
             void stopCreatingHierarchy() { this->hierarchyCreatingCounter_--; std::cout << "*** Decreased Hierarchy-Creating-Counter to " << this->hierarchyCreatingCounter_ << "\n"; }
@@ -90,8 +90,11 @@ namespace orxonox
     #define Class(ClassName) \
         ClassIdentifier<ClassName>::getIdentifier()
 
-    #define Factory(ClassName) \
-        ClassIdentifier<ClassName>::create()
+    #define CreateFactory(ClassName) \
+        Identifier* global_##ClassName##_Identifier = ClassIdentifier<ClassName>::getIdentifier()
+
+    #define Factory(Name) \
+        ClassFactory::fabricate(Name)
 }
 
 #endif

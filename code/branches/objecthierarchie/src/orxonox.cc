@@ -30,6 +30,7 @@
 #include <CEGUI/CEGUI.h>
 #include <OgreCEGUIRenderer.h>
 
+#include "IdentifierIncludes.h"
 #include "BaseObject.h"
 #include "Test.h"
 #include "test1.h"
@@ -445,8 +446,8 @@ namespace orxonox
         BaseIdentifier<A1B1> test7_02;
         test7_02 = Class(A1B1);
 
-        std::cout << test7_01.getIdentifier()->getName() << "\n";
-        std::cout << test7_02.getIdentifier()->getName() << "\n";
+        std::cout << test7_01->getName() << "\n";
+        std::cout << test7_02->getName() << "\n";
 */
 /*
         std::cout << "2\n";
@@ -460,7 +461,7 @@ namespace orxonox
         BaseIdentifier<A1B1> test7_05;
         test7_05 = Class(A2);
 */
-
+/*
         std::cout << "Test 8\n";
 
         std::cout << "1\n";
@@ -497,7 +498,33 @@ namespace orxonox
         delete test8_01;
         delete test8_02;
         delete test8_03;
+*/
 
+        std::cout << "Test 9\n";
+        std::cout << "1\n";
+        Identifier* test9_01 = Class(A3);
+        OrxonoxClass* test9_02 = test9_01->fabricate();
+        std::cout << test9_02->getIdentifier()->getName() << "\n";
+
+        std::cout << "\n2\n";
+        OrxonoxClass* test9_03 = Class(A1B2)->fabricate();
+        std::cout << test9_03->getIdentifier()->getName() << "\n";
+
+        std::cout << "\n3\n";
+        BaseIdentifier<A1> test9_04;
+        test9_04 = Class(A1B1C1);
+        A1* test9_05 = test9_04.fabricate();
+        std::cout << test9_05->getIdentifier()->getName() << "\n";
+
+        std::cout << "\n4\n";
+        OrxonoxClass* test9_06 = Factory("A2B2");
+        std::cout << test9_06->getIdentifier()->getName() << "\n";
+
+        std::cout << "\n5\n";
+        delete test9_02;
+        delete test9_03;
+        delete test9_05;
+        delete test9_06;
 
       }
 
