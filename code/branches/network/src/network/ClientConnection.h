@@ -40,11 +40,13 @@ namespace network{
     // check wheter the packet queue is empty
     bool queueEmpty();
     // create a new listener thread
-    void createConnection();
+    bool createConnection();
     bool closeConnection();
     // add a packet to queue for the server
     bool addPacket(ENetPacket *packet);
     // send out all queued packets
+    bool sendPackets();
+    // send out all queued packets and save result in event
     bool sendPackets(ENetEvent *event);
     bool waitEstablished(int milisec);
     private:

@@ -22,7 +22,8 @@ PacketGenerator.o: PacketGenerator.cc
 	${CC} -c PacketGenerator.cc -o PacketGenerator.o -g ${INC}
 PacketDecoder.o: PacketDecoder.cc
 	${CC} -c PacketDecoder.cc -o PacketDecoder.o -g ${INC}
-
+Client.o: Client.cc
+	${CC} -c Client.cc -g ${INC}
 
 clean:
 	rm -rf *.o

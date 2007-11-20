@@ -49,10 +49,10 @@ namespace network{
     return buffer.isEmpty();
   }
   
-  void ClientConnection::createConnection(){
+  bool ClientConnection::createConnection(){
     network_threads.create_thread(boost::bind(boost::mem_fn(&ClientConnection::receiverThread), this));
-//     boost::thread thr(boost::bind(boost::mem_fn(&ClientConnection::receiverThread), this));
-    return;
+    // wait 10 seconds for the connection to be established
+    return waitEstablished(10000);
   }
   
   bool ClientConnection::closeConnection(){
@@ -76,6 +76,16 @@ namespace network{
     if(server==NULL)
       return false;
     if(enet_host_service(client, event, NETWORK_SEND_WAIT)>=0)
+      return true;
+    else 
+      return false;
+  }
+  
+  bool ClientConnection::sendPackets(){
+    ENetEvent event;
+    if(server==NULL)
+      return false;
+    if(enet_host_service(client, &event, NETWORK_SEND_WAIT)>=0)
       return true;
     else 
       return false;

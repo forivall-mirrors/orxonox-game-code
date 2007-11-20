@@ -72,7 +72,7 @@ namespace network{
   }
   
   bool ConnectionManager::addPacket(ENetPacket *packet, int ID){
-    if(client=NULL)
+    if(client==NULL)
       return false;
     ClientList *temp=client;
     while(ID != temp->ID){
