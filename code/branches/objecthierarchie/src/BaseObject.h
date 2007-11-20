@@ -63,6 +63,8 @@ namespace orxonox
             inline bool isDirectParentOf(OrxonoxClass* object)
                 { this->getIdentifier()->isDirectParentOf(object->getIdentifier()); }
 
+            std::string name_; // test
+
     };
 }
 

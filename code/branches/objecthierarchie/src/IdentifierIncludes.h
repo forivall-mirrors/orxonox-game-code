@@ -2,6 +2,7 @@
 #include "Factory.h"
 #include "IdentifierList.h"
 #include "ObjectList.h"
+#include "Iterator.h"
 #include "OrxonoxClass.h"
 
 

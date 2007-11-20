@@ -34,6 +34,9 @@ namespace orxonox
         template <class T>
         friend class BaseIdentifier;
 
+        template <class T>
+        friend class Iterator;
+
         public:
             void addObject(OrxonoxClass* object);
             void removeObject(OrxonoxClass* object);
@@ -171,8 +174,8 @@ namespace orxonox
             std::cout << "*** Get Identifier -> Create Class\n";
             Identifier::startCreatingHierarchy();
             T* temp = new T();
-            Identifier::stopCreatingHierarchy();
             delete temp;
+            Identifier::stopCreatingHierarchy();
         }
 
         return pointer_s;
@@ -185,7 +188,7 @@ namespace orxonox
         public:
             BaseIdentifier();
 
-            BaseIdentifier<B>& operator= (Identifier* identifier)
+            BaseIdentifier<B>& operator=(Identifier* identifier)
             {
                 if (!identifier->isA(ClassIdentifier<B>::getIdentifier()))
                 {
@@ -198,12 +201,12 @@ namespace orxonox
                 return *this;
             }
 
-            Identifier* operator* ()
+            Identifier* operator*()
             {
                 return this->identifier_;
             }
 
-            Identifier* operator-> () const
+            Identifier* operator->() const
             {
                 return this->identifier_;
             }

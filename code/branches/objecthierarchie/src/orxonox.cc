@@ -499,7 +499,7 @@ namespace orxonox
         delete test8_02;
         delete test8_03;
 */
-
+/*
         std::cout << "Test 9\n";
         std::cout << "1\n";
         Identifier* test9_01 = Class(A3);
@@ -525,6 +525,65 @@ namespace orxonox
         delete test9_03;
         delete test9_05;
         delete test9_06;
+*/
+        std::cout << "Test 10\n";
+        Identifier* test9_01 = Class(A1B2);
+        Identifier* test9_02 = Class(A2);
+        Identifier* test9_03 = Class(A3B1C1);
+
+
+        BaseObject* test9_04 = test9_01->fabricate();
+        BaseObject* test9_05 = test9_02->fabricate();
+        BaseObject* test9_06 = test9_03->fabricate();
+
+        BaseObject* test9_07;
+        for (int i = 0; i < 10; i++)
+            test9_07 = Factory("A1B1C1");
+
+        std::cout << "1\n";
+        int count = 0;
+        for (Iterator<BaseObject> it; it != 0; it++)
+            count++;
+        std::cout << "Anzahl BaseObjects: " << count << "\n";
+
+        count = 0;
+        for (Iterator<A1> it; it != 0; it++)
+            count++;
+        std::cout << "Anzahl A1: " << count << "\n";
+
+        count = 0;
+        for (Iterator<A1B1> it; it; it++)
+            count++;
+        std::cout << "Anzahl A1B1: " << count << "\n";
+
+        count = 0;
+        for (Iterator<A1B1C1> it; it; it++)
+            count++;
+        std::cout << "Anzahl A1B1C1: " << count << "\n";
+
+        count = 0;
+        for (Iterator<A2> it; it; it++)
+            count++;
+        std::cout << "Anzahl A2: " << count << "\n";
+
+
+        std::cout << "2\n";
+        BaseObject* test9_08;
+        for (int i = 0; i < 10; i++)
+        {
+            test9_08 = Factory("A2B1C1");
+            test9_08->name_ = "A2B1C1#";
+            test9_08->name_ += ('0' + i);
+        }
+
+        for (Iterator<A2B1C1> it; it; it++)
+            std::cout << "Name: " << it->name_ << "\n";
+
+        std::cout << "3\n";
+        for (Iterator<A2B1C1> it; it; it--)
+            std::cout << "Name: " << it->name_ << "\n";
+
+        std::cout << "4\n";
 
       }
 

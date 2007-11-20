@@ -83,8 +83,14 @@ namespace orxonox
 
     void Identifier::removeObject(OrxonoxClass* object)
     {
-        std::cout << "*** Removed object from " << this->name_ << "-list.\n";
-        this->objects_.remove(object);
+        bool bIterateForwards = !Identifier::isCreatingHierarchy();
+
+        if (bIterateForwards)
+            std::cout << "*** Removed object from " << this->name_ << "-list, iterating forwards.\n";
+        else
+            std::cout << "*** Removed object from " << this->name_ << "-list, iterating backwards.\n";
+
+        this->objects_.remove(object, bIterateForwards);
 
         IdentifierListElement* temp = this->directParents_.first_;
         while (temp)

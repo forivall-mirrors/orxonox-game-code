@@ -13,6 +13,7 @@ namespace orxonox
 
             OrxonoxClass* object_;
             ObjectListElement* next_;
+            ObjectListElement* prev_;
     };
 
     class ObjectList
@@ -21,9 +22,10 @@ namespace orxonox
             ObjectList();
             ~ObjectList();
             void add(OrxonoxClass* object);
-            void remove(OrxonoxClass* object);
+            void remove(OrxonoxClass* object, bool bIterateForwards = true);
 
             ObjectListElement* first_;
+            ObjectListElement* last_;
     };
 }
 
