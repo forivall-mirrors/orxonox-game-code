@@ -19,7 +19,9 @@ namespace orxonox
 
     void Identifier::initialize(IdentifierList* parents)
     {
+#if HIERARCHY_VERBOSE
         std::cout << "*** Initialize " << this->name_ << "-Singleton.\n";
+#endif
         if (parents)
         {
             this->bCreatedOneObject_ = true;
