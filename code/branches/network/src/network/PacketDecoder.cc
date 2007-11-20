@@ -1,3 +1,11 @@
+/*
+ * Class contains functions to determine and decode incomming packages
+ * 
+ * Autor: Dumeni Manatschal
+ * 
+*/
+
+
 #include "enet/enet.h"
 #include "PacketManager.h"
 #include <iostream>
@@ -7,6 +15,8 @@ using namespace network;
 
 PacketDecoder::PacketDecoder(){}
 
+//call this function out of an instance of PacketDecoder
+//it will determine the type id and call the right decode function
 bool PacketDecoder::elaborate( ENetPacket* packet, int clientId )
 {
 	int client = clientId;
@@ -32,6 +42,8 @@ bool PacketDecoder::elaborate( ENetPacket* packet, int clientId )
 	}
 	return false;
 }
+
+//following are the decode functions for the data of the packets
 
 void PacketDecoder::acknowledgement( ENetPacket* packet )
 {
@@ -63,18 +75,9 @@ void PacketDecoder::chatMessage( ENetPacket* packet )
 	chatting->message = reserve;
 	printChat( chatting );
 }
-/*
-void PacketDecoder::printPeer( ENetPeer* peer )
-{
-	cout << "number of chanels:   " << peer->channelCount << endl;
-	cout << "incomming bandwidth: " << peer->incomingBandwidth << endl;
-	cout << "outgoing bandwidth:  " << peer->outgoingBandwidth << endl;
-	cout << "peer id:             " << peer->sessionID << endl;
-	cout << "outgoing peer id:    " << peer->outgoingPeerID << endl;
-	cout << "incomming peer id:   " << peer->incomingPeerID << endl;
-	cout << "state of peer:       " << peer->state << endl;
-}
-*/
+
+//these are some print functions for test stuff
+
 void PacketDecoder::printAck( ack* data )
 {
 	cout << "data id: " << data->id << endl;

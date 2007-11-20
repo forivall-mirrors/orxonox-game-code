@@ -3,6 +3,7 @@
 
 #include <enet/enet.h>
 
+//enum netowk generaly used to set the type ID of a packet
 namespace network
 {
 enum packet_id {
@@ -12,15 +13,23 @@ enum packet_id {
 	CHAT
 };
 
+/*
+ * class to generate packets
+ * 
+ * Autor: Dumeni Manatschal
+ * 
+*/ 
 class PacketGenerator
 {
 public:
 	PacketGenerator();
+	//call one of this functions out of an instance of PacketGenerator to create a packet
 	ENetPacket* acknowledgement( int state, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* mousem( double x, double y, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* keystrike( char press, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* chatMessage( const char* message, int reliable = ENET_PACKET_FLAG_RELIABLE );
 private:
+	//used to set the bytes in the right order
 	struct ack {
 		int id;
 		int a;
@@ -38,10 +47,17 @@ private:
 	};	
 };
 
+/*
+ * class used to decode incoming packets
+ * 
+ * Autor: Dumeni Manatschal
+ * 
+*/
 class PacketDecoder
 {
 public:
 	PacketDecoder();
+	//call this function to decode, it calls the right decoding function below
 	bool elaborate( ENetPacket* packet, int clientId );
 private:
 	struct ack {
@@ -59,6 +75,8 @@ private:
 		int id;
 		char press;
 	};
+	//only in this class, not PacketGenerator, used as pattern to put incoming
+	//bytes inside
 	struct chat {
 		int id;
 		const char* message;
