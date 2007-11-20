@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cd bin
 if [[ !  -f main ]] ; then
 	echo "main does not exist"
 	echo "did you compile it?"
@@ -22,3 +22,4 @@ if [[ ! -f plugins.cfg ]] ; then
 	fi
 fi
 exec ./main
+cd ..
