@@ -33,10 +33,12 @@
 #include "OgreSceneManager.h"
 
 #include "inertial_node.h"
+#include "run_manager.h"
 #include "weapon/bullet.h"
 #include "weapon/bullet_manager.h"
 #include "weapon/weapon_station.h"
 #include "weapon/base_weapon.h"
+#include "weapon/barrel_gun.h"
 #include "weapon/ammunition_dump.h"
 
 #include "orxonox_ship.h"
@@ -67,11 +69,10 @@ namespace orxonox {
   * @param mSceneMgr The current main SceneManager
   * @param mNode The scene node which the ship will be attached to later.
   */
-  OrxonoxShip::OrxonoxShip(SceneManager *sceneMgr, SceneNode *node,
-        BulletManager *bulletManager)
-	      : sceneMgr_(sceneMgr),
-        baseThrust_(1000), currentThrust_(Vector3::ZERO),
-        objectCounter_(0), bulletManager_(bulletManager)
+  OrxonoxShip::OrxonoxShip(SceneNode *node)
+    : sceneMgr_(RunManager::getSingletonPtr()->getSceneManagerPtr()),
+      bulletManager_(RunManager::getSingletonPtr()->getBulletManagerPtr()),
+      baseThrust_(1000), currentThrust_(Vector3::ZERO), objectCounter_(0)
   {
     rootNode_ = new InertialNode(node, Vector3::ZERO);
   }
@@ -114,12 +115,12 @@ namespace orxonox {
 	  fishNode->getSceneNode()->setScale(Vector3(10, 10, 10));
 
     // initialise weapon(s)
-    ammoDump_ = new AmmunitionDump(420);
-    ammoDump_->store(420);
+    ammoDump_ = new AmmunitionDump();
+    ammoDump_->setDumpSize("Barrel", 1000);
+    ammoDump_->store("Barrel", 420);
 
     InertialNode *mainWeaponNode = rootNode_->createChildNode();
-    mainWeapon_ = new BaseWeapon(sceneMgr_, mainWeaponNode,
-          bulletManager_, ammoDump_);
+    mainWeapon_ = new BarrelGun(mainWeaponNode, ammoDump_);
 
     railGunStation_ = new WeaponStation(4);
     railGunStation_->addWeapon(mainWeapon_);
@@ -215,7 +216,7 @@ namespace orxonox {
 
   int OrxonoxShip::getAmmoStock()
   {
-    return ammoDump_->getStockSize();
+    return ammoDump_->getStockSize("Barrel");
   }
 
 

@@ -40,18 +40,21 @@ namespace weapon {
   class AmmunitionDump
   {
   public:
-	  AmmunitionDump(int capacity);
+    AmmunitionDump();
 	  ~AmmunitionDump();
 
-    void store(int quantiy);
+    void setDumpSize(const Ogre::String &name, int size);
 
-    int getAmmunition(int quantity);
+    int store(const Ogre::String &name, int quantiy);
 
-    int getStockSize();
+    int getAmmunition(const Ogre::String &name, int quantity);
+
+    int getStockSize(const Ogre::String &name);
 
   protected:
-    int stock_;
-    int capacity_;
+    int numberOfAmmos_;
+    int *stock_;
+    int *capacity_;
 
   protected:
 

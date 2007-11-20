@@ -26,31 +26,40 @@
  */
 
 
-#ifndef ORXONOX_PREREQUISITES_H
-#define ORXONOX_PREREQUISITES_H
+#ifndef BARREL_GUN_H
+#define BARREL_GUN_H
+
+#include "OgrePrerequisites.h"
+
+#include "orxonox_prerequisites.h"
+
 
 namespace orxonox {
+namespace weapon {
 
-  class CameraManager;
-  class InertialNode;
-  class OgreControl;
-  class Orxonox;
-  class OrxonoxShip;
-  class OrxonoxScene;
-  class RunManager;
+  class BarrelGun : public BaseWeapon
+  {
+ public:
+    BarrelGun(InertialNode*, AmmunitionDump*);
+	  virtual ~BarrelGun();
 
+    bool tick(unsigned long, Ogre::Real);
 
-  namespace weapon {
+  protected:
+    void primaryFire();
 
-    class AmmunitionDump;
-    class Bullet;
-    class BulletManager;
-    class BaseWeapon;
-    class BarrelGun;
-    class WeaponStation;
+    void primaryFiring(unsigned int);
 
-  }
+    void secondaryFire();
 
+    void secondaryFiring(unsigned int);
+
+  public:
+
+  protected:
+
+  };
+}
 }
 
-#endif /* ORXONOX_PREREQUISITES_H */
+#endif /* BARREL_GUN_H */

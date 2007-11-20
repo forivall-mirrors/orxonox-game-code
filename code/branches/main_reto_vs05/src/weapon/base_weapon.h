@@ -57,8 +57,7 @@ namespace weapon {
     };
 
   public:
-    BaseWeapon(Ogre::SceneManager*, InertialNode*, BulletManager*,
-          AmmunitionDump*);
+    BaseWeapon(InertialNode*, AmmunitionDump*);
 	  virtual ~BaseWeapon();
 
     bool addAction(const Action);
@@ -72,13 +71,13 @@ namespace weapon {
     bool tick(unsigned long, Ogre::Real);
 
   protected:
-    void primaryFire();
+    virtual void primaryFire() = 0;
 
-    void primaryFiring(unsigned int);
+    virtual void primaryFiring(unsigned int) = 0;
 
-    void secondaryFire();
+    virtual void secondaryFire() = 0;
 
-    void secondaryFiring(unsigned int);
+    virtual void secondaryFiring(unsigned int) = 0;
 
   public:
 

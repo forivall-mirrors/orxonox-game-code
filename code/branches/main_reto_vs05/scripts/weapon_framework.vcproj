@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\src;&quot;$(OGRE_HOME)\OgreMain\include&quot;;&quot;$(OGRE_HOME)\Dependencies\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -222,6 +222,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\src\weapon\barrel_gun.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\src\weapon\base_weapon.cpp"
 					>
 				</File>
@@ -235,6 +239,46 @@
 				</File>
 				<File
 					RelativePath="..\src\weapon\weapon_station.cc"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="class_hierarchy"
+				>
+				<File
+					RelativePath="..\src\class_hierarchy\BaseObject.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\ClassHierarchy.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\Identifier.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\IdentifierList.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\ObjectList.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\OrxonoxClass.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\test1.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\test2.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\test3.cc"
 					>
 				</File>
 			</Filter>
@@ -284,6 +328,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\src\weapon\barrel_gun.h"
+					>
+				</File>
+				<File
 					RelativePath="..\src\weapon\base_weapon.h"
 					>
 				</File>
@@ -301,6 +349,54 @@
 				</File>
 				<File
 					RelativePath="..\src\weapon\weapon_station.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="class_hierarchy"
+				>
+				<File
+					RelativePath="..\src\class_hierarchy\BaseObject.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\ClassHierarchy.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\Identifier.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\IdentifierIncludes.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\IdentifierList.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\ObjectList.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\OrxonoxClass.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\Test.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\test1.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\test2.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\class_hierarchy\test3.h"
 					>
 				</File>
 			</Filter>

@@ -36,6 +36,7 @@
 #include "bullet_manager.h"
 #include "inertial_node.h"
 #include "ammunition_dump.h"
+#include "run_manager.h"
 
 #include "base_weapon.h"
 
@@ -44,18 +45,16 @@ namespace orxonox {
 namespace weapon {
   using namespace Ogre;
 
-  BaseWeapon::BaseWeapon(SceneManager *sceneMgr, InertialNode *node,
-        BulletManager *bulletManager, AmmunitionDump *ammoDump)
-        : sceneMgr_(sceneMgr), node_(node),
-        bulletCounter_(0), primaryFireRequest_(false), currentState_(IDLE),
-        secondaryFireRequest_(false),
-        bulletManager_(bulletManager), secondaryFired_(false),
-        timeSinceNextActionAdded_(0), actionAdded_(false), nextAction_(NOTHING),
-        name_("Base Weapon"), primaryFirePower_(100), secondaryFirePower_(500),
-        primaryFiringRate_(10), secondaryFiringRate_(2), primaryBulletSpeed_(1000),
-        secondaryBulletSpeed_(500), magazineSize_(25), ammoDump_(ammoDump)
+  BaseWeapon::BaseWeapon(InertialNode *node, AmmunitionDump *ammoDump)
+    : sceneMgr_(RunManager::getSingletonPtr()->getSceneManagerPtr()), node_(node),
+      bulletCounter_(0), primaryFireRequest_(false), currentState_(IDLE),
+      secondaryFireRequest_(false),
+      bulletManager_(RunManager::getSingletonPtr()->getBulletManagerPtr()),
+      secondaryFired_(false),
+      timeSinceNextActionAdded_(0), actionAdded_(false), nextAction_(NOTHING),
+      ammoDump_(ammoDump)
   {
-    leftAmmo_ = ammoDump_->getAmmunition(magazineSize_);
+    leftAmmo_ = 0;
   }
 
 
@@ -83,81 +82,9 @@ namespace weapon {
   }
 
 
-  void BaseWeapon::primaryFire()
-  {
-    if (leftAmmo_ < 1)
-    {
-      currentState_ = IDLE;
-      return;
-    }
-
-    SceneNode *temp = sceneMgr_->getRootSceneNode()->createChildSceneNode(
-          node_->getSceneNode()->getWorldPosition(),
-          node_->getSceneNode()->getWorldOrientation());
-
-    Entity* bulletEntity = sceneMgr_->createEntity("BulletEntity"
-          + StringConverter::toString(bulletCounter_++), "Barrel.mesh");
-
-    Vector3 speed = (temp->getOrientation() * Vector3(0, 0, -1))
-          .normalisedCopy() * primaryBulletSpeed_;
-    speed += node_->getWorldSpeed();
-
-	  temp->setScale(Vector3(1, 1, 1) * 4);
-	  temp->yaw(Degree(-90));
-
-	  bulletManager_->addBullet(new Bullet(temp, bulletEntity, speed));
-
-    --leftAmmo_;
-  }
-
-
-  void BaseWeapon::primaryFiring(unsigned int time)
-  {
-    if (time > 100)
-    {
-      currentState_ = IDLE;
-    }
-  }
-
-
   void BaseWeapon::secondaryFireRequest()
   {
     secondaryFireRequest_ = true;
-  }
-
-
-  void BaseWeapon::secondaryFire()
-  {
-    if (leftAmmo_ < 5)
-    {
-      currentState_ = IDLE;
-      return;
-    }
-
-    SceneNode *temp = sceneMgr_->getRootSceneNode()->createChildSceneNode(
-          node_->getSceneNode()->getWorldPosition(),
-          node_->getSceneNode()->getWorldOrientation());
-
-    Entity* bulletEntity = sceneMgr_->createEntity("BulletEntity"
-          + StringConverter::toString(bulletCounter_++), "Barrel.mesh");
-
-    Vector3 speed = (temp->getOrientation() * Vector3(0, 0, -1))
-          .normalisedCopy() * secondaryBulletSpeed_*0.5;
-    speed += node_->getWorldSpeed();
-
-	  temp->setScale(Vector3(1, 1, 1) * 10);
-	  temp->yaw(Degree(-90));
-
-	  bulletManager_->addBullet(new Bullet(temp, bulletEntity, speed));
-
-    leftAmmo_ -= 5;
-  }
-
-
-  void BaseWeapon::secondaryFiring(unsigned int time)
-  {
-    if (time > 250)
-      currentState_ = IDLE;
   }
 
 
@@ -180,7 +107,7 @@ namespace weapon {
         switch (nextAction_)
         {
         case RELOAD:
-          leftAmmo_ += ammoDump_->getAmmunition(magazineSize_ - leftAmmo_);
+          leftAmmo_ += ammoDump_->getAmmunition("Barrel", magazineSize_ - leftAmmo_);
           break;
 
         case CHANGE_AMMO:

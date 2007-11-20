@@ -32,6 +32,7 @@
 #include "OgrePrerequisites.h"
 #include "OgreWindowEventUtilities.h"
 #include "OgreTextureManager.h"
+#include "OgreSingleton.h"
 
 #include <OIS/OISPrereqs.h>
 
@@ -42,41 +43,58 @@ namespace orxonox {
 
   // let the class inherit from WindowEventListener in order for the RunMgr
   // to act as the central point of all the calcuations in Orxonox
-  class RunManager : Ogre::WindowEventListener
+  class RunManager : public Ogre::WindowEventListener,
+                     public Ogre::Singleton<RunManager>
   {
   public:
-	  RunManager(OgreControl*);
+    RunManager(OgreControl*);
 
-	  virtual ~RunManager();
+    virtual ~RunManager();
+    //void initialise(OgreControl*);
 
-    virtual bool tick(unsigned long, Ogre::Real);
+    bool tick(unsigned long, Ogre::Real);
+
+    Ogre::SceneManager& getSceneManager();
+
+    Ogre::SceneManager* getSceneManagerPtr();
+
+    weapon::BulletManager* getBulletManagerPtr();
+
+    int getAmmunitionID(const Ogre::String&);
+
+    int getNumberOfAmmos();
+
+    static RunManager& getSingleton(void);
+
+    static RunManager* getSingletonPtr(void);
+
 
   protected:
-	  virtual void createCamera(void);
+	  void createCamera(void);
 
-	  virtual void createViewports(void);
+	  void createViewports(void);
 
 
 	  /** EVENT HANDLING **/
 
 	  //Adjust mouse clipping area
-	  virtual void windowResized(Ogre::RenderWindow*);
+	  void windowResized(Ogre::RenderWindow*);
 
 	  //Unattach OIS before window shutdown (very important under Linux)
-	  virtual void windowClosed(Ogre::RenderWindow*);
+	  void windowClosed(Ogre::RenderWindow*);
 
 
 	  /** INPUT PROCESSING **/
-	  virtual bool processUnbufferedKeyInput();
+	  bool processUnbufferedKeyInput();
 
-	  virtual bool processUnbufferedMouseInput();
+	  bool processUnbufferedMouseInput();
 
 
 	  /** OUTPUT **/
 
-	  virtual void updateStats(void);
+	  void updateStats(void);
 
-	  virtual void showDebugOverlay(bool);
+	  void showDebugOverlay(bool);
 
   protected:
 	  Ogre::SceneManager *sceneMgr_;

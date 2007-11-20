@@ -59,6 +59,11 @@
 
 #include "run_manager.h"
 
+namespace Ogre {
+  using namespace orxonox;
+  template<> RunManager* Singleton<RunManager>::ms_Singleton = 0;
+}
+
 namespace orxonox {
   using namespace Ogre;
   using namespace weapon;
@@ -75,6 +80,15 @@ namespace orxonox {
   * It also captures any input from keyboard, mous, joystick (optional) or
   * Ogre (window events).
   */
+
+  RunManager* RunManager::getSingletonPtr(void)
+  {
+      return ms_Singleton;
+  }
+  RunManager& RunManager::getSingleton(void)
+  {  
+      assert( ms_Singleton );  return ( *ms_Singleton );  
+  }
 
 
   /**
@@ -93,11 +107,10 @@ namespace orxonox {
         mouseSensitivity_(0.003),
         debugOverlay_(0), inputManager_(0), mouse_(0), keyboard_(0), joystick_(0)
   {
-
     // SETTING UP THE SCENE
 
     // create one new SceneManger
-    sceneMgr_ = ogre_->getRoot()->createSceneManager(ST_GENERIC, "backgroundScene_");
+    sceneMgr_ = ogre_->getRoot()->createSceneManager(ST_GENERIC, "Orxonox Scene");
 
     // background scene (world objects, skybox, lights, etc.)
     backgroundScene_ = new OrxonoxScene(sceneMgr_);
@@ -124,8 +137,8 @@ namespace orxonox {
     // would be very static, never moving at all).
 
     // Construct a new spaceship and give it the node
-    playerShip_ = new OrxonoxShip(sceneMgr_, sceneMgr_->getRootSceneNode()
-      ->createChildSceneNode("ShipNode", Vector3(20, 20, 20)), bulletManager_);
+    playerShip_ = new OrxonoxShip(sceneMgr_->getRootSceneNode()
+      ->createChildSceneNode("ShipNode", Vector3(20, 20, 20)));
 
 
     // RESOURCE LOADING (using ResourceGroups if implemented)
@@ -273,6 +286,40 @@ namespace orxonox {
 
     // keep rendering
     return true;
+  }
+
+
+  SceneManager& RunManager::getSceneManager()
+  {
+    return *sceneMgr_;
+  }
+
+  SceneManager* RunManager::getSceneManagerPtr()
+  {
+    return sceneMgr_;
+  }
+
+  BulletManager* RunManager::getBulletManagerPtr()
+  {
+    return bulletManager_;
+  }
+
+  int RunManager::getAmmunitionID(const Ogre::String &ammoName)
+  {
+    Ogre::String ammoTypes[] = { "Energy Cell", "Barrel", "Lead Shot" };
+    int ammoTypesLength = 3;
+
+    for (int i = 0; i < ammoTypesLength; i++)
+    {
+      if (ammoTypes[i] == ammoName)
+        return i;
+    }
+    return -1;
+  }
+
+  int RunManager::getNumberOfAmmos()
+  {
+    return 3;
   }
 
 

@@ -39,7 +39,7 @@ namespace orxonox {
   class OrxonoxShip
   {
   public:
-    OrxonoxShip(Ogre::SceneManager*, Ogre::SceneNode*, weapon::BulletManager*);
+    OrxonoxShip(Ogre::SceneNode*);
 	  virtual ~OrxonoxShip();
 
 	  virtual bool initialise();
