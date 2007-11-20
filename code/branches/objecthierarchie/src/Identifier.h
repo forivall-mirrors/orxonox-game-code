@@ -25,7 +25,9 @@ namespace orxonox
 {
     class BaseObject;
 
-    // ##### Identifier #####
+    // ###############################
+    // ###       Identifier        ###
+    // ###############################
     class Identifier
     {
         template <class T>
@@ -34,12 +36,8 @@ namespace orxonox
         template <class T>
         friend class BaseIdentifier;
 
-        template <class T>
-        friend class Iterator;
-
         public:
-            void addObject(OrxonoxClass* object);
-            void removeObject(OrxonoxClass* object);
+            virtual void removeObject(OrxonoxClass* object) {};
 
             virtual BaseObject* fabricate() {};
 
@@ -72,7 +70,6 @@ namespace orxonox
             IdentifierList directChildren_;
             IdentifierList allChildren_;
 
-            ObjectList objects_;
             std::string name_;
 
             bool bIsAbstractClass_;
@@ -82,15 +79,22 @@ namespace orxonox
     };
 
 
-    // ##### ClassIdentifier #####
+    // ###############################
+    // ###     ClassIdentifier     ###
+    // ###############################
     template <class T>
     class ClassIdentifier : public Identifier
     {
+        template <class U>
+        friend class Iterator;
+
         public:
             static ClassIdentifier<T>* registerClass(IdentifierList* parents, std::string name, bool bRootClass, bool bIsAbstractClass);
             static ClassIdentifier<T>* getIdentifier();
             BaseObject* fabricate();
             T* fabricateClass();
+            static void addObject(T* object);
+            void removeObject(OrxonoxClass* object);
 
         private:
             ClassIdentifier();
@@ -98,7 +102,7 @@ namespace orxonox
             ~ClassIdentifier();
 
             static ClassIdentifier<T>* pointer_s;
-
+            ObjectList<T> objects_s;
     };
 
     template <class T>
@@ -181,7 +185,37 @@ namespace orxonox
         return pointer_s;
     }
 
-    // ##### BaseIdentifier #####
+    template <class T>
+    void ClassIdentifier<T>::addObject(T* object)
+    {
+        std::cout << "*** Added object to " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
+        ClassIdentifier<T>::getIdentifier()->objects_s.add(object);
+    }
+
+    template <class T>
+    void ClassIdentifier<T>::removeObject(OrxonoxClass* object)
+    {
+        bool bIterateForwards = !Identifier::isCreatingHierarchy();
+
+        if (bIterateForwards)
+            std::cout << "*** Removed object from " << this->name_ << "-list, iterating forwards.\n";
+        else
+            std::cout << "*** Removed object from " << this->name_ << "-list, iterating backwards.\n";
+
+        this->objects_s.remove(object, bIterateForwards);
+
+        IdentifierListElement* temp = this->directParents_.first_;
+        while (temp)
+        {
+            temp->identifier_->removeObject(object);
+            temp = temp->next_;
+        }
+    }
+
+
+    // ###############################
+    // ###     BaseIdentifier      ###
+    // ###############################
     template <class B>
     class BaseIdentifier
     {

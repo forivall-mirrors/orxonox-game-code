@@ -10,20 +10,10 @@ namespace orxonox
     Identifier::Identifier()
     {
         this->bCreatedOneObject_ = false;
-//        this->directParents_ = new IdentifierList();
-//        this->allParents_ = new IdentifierList();
-//        this->directChildren_ = new IdentifierList();
-//        this->allChildren_ = new IdentifierList();
-//        this->objects_ = new ObjectList();
     }
 
     Identifier::~Identifier()
     {
-//        delete this->directParents_;
-//        delete this->allParents_;
-//        delete this->directChildren_;
-//        delete this->allChildren_;
-//        delete this->objects_;
         delete &this->name_;
     }
 
@@ -72,31 +62,6 @@ namespace orxonox
 
                 temp1 = temp1->next_;
             }
-        }
-    }
-
-    void Identifier::addObject(OrxonoxClass* object)
-    {
-        std::cout << "*** Added object to " << this->name_ << "-list.\n";
-        this->objects_.add(object);
-    }
-
-    void Identifier::removeObject(OrxonoxClass* object)
-    {
-        bool bIterateForwards = !Identifier::isCreatingHierarchy();
-
-        if (bIterateForwards)
-            std::cout << "*** Removed object from " << this->name_ << "-list, iterating forwards.\n";
-        else
-            std::cout << "*** Removed object from " << this->name_ << "-list, iterating backwards.\n";
-
-        this->objects_.remove(object, bIterateForwards);
-
-        IdentifierListElement* temp = this->directParents_.first_;
-        while (temp)
-        {
-            temp->identifier_->removeObject(object);
-            temp = temp->next_;
         }
     }
 

@@ -12,7 +12,7 @@
     this->setIdentifier(ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, true, bAbstract)); \
     if (Identifier::isCreatingHierarchy() && this->getParents()) \
         this->getParents()->add(this->getIdentifier()); \
-    this->getIdentifier()->addObject(this)
+    ClassIdentifier<ClassName>::addObject(this)
 
 #define registerRootObject(ClassName) \
     std::cout << "*** Register Root-Object: " << #ClassName << "\n"; \
@@ -26,7 +26,7 @@
     this->setIdentifier(ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, false, bAbstract)); \
     if (Identifier::isCreatingHierarchy() && this->getParents()) \
         this->getParents()->add(this->getIdentifier()); \
-    this->getIdentifier()->addObject(this)
+    ClassIdentifier<ClassName>::addObject(this)
 
 #define registerObject(ClassName) \
     std::cout << "*** Register Object: " << #ClassName << "\n"; \

@@ -527,18 +527,18 @@ namespace orxonox
         delete test9_06;
 */
         std::cout << "Test 10\n";
-        Identifier* test9_01 = Class(A1B2);
-        Identifier* test9_02 = Class(A2);
-        Identifier* test9_03 = Class(A3B1C1);
+        Identifier* test10_01 = Class(A1B2);
+        Identifier* test10_02 = Class(A2);
+        Identifier* test10_03 = Class(A3B1C1);
 
 
-        BaseObject* test9_04 = test9_01->fabricate();
-        BaseObject* test9_05 = test9_02->fabricate();
-        BaseObject* test9_06 = test9_03->fabricate();
+        BaseObject* test10_04 = test10_01->fabricate();
+        BaseObject* test10_05 = test10_02->fabricate();
+        BaseObject* test10_06 = test10_03->fabricate();
 
-        BaseObject* test9_07;
+        BaseObject* test10_07;
         for (int i = 0; i < 10; i++)
-            test9_07 = Factory("A1B1C1");
+            test10_07 = Factory("A1B1C1");
 
         std::cout << "1\n";
         int count = 0;
@@ -568,12 +568,20 @@ namespace orxonox
 
 
         std::cout << "2\n";
-        BaseObject* test9_08;
+        BaseObject* test10_08;
+        BaseObject* test10_09;
+        BaseObject* test10_10;
         for (int i = 0; i < 10; i++)
         {
-            test9_08 = Factory("A2B1C1");
-            test9_08->name_ = "A2B1C1#";
-            test9_08->name_ += ('0' + i);
+            test10_08 = Factory("A2B1C1");
+            test10_08->name_ = "A2B1C1#";
+            test10_08->name_ += ('0' + i);
+
+            if (i == 0)
+                test10_09 = test10_08;
+
+            if (i == 5)
+                test10_10 = test10_08;
         }
 
         for (Iterator<A2B1C1> it; it; it++)
@@ -584,6 +592,37 @@ namespace orxonox
             std::cout << "Name: " << it->name_ << "\n";
 
         std::cout << "4\n";
+        delete test10_08;
+
+        std::cout << "5\n";
+        for (Iterator<A2B1C1> it; it; it++)
+            std::cout << "Name: " << it->name_ << "\n";
+
+        std::cout << "6\n";
+        for (Iterator<A2B1C1> it; it; it--)
+            std::cout << "Name: " << it->name_ << "\n";
+
+        std::cout << "7\n";
+        delete test10_09;
+
+        std::cout << "8\n";
+        for (Iterator<A2B1C1> it; it; it++)
+            std::cout << "Name: " << it->name_ << "\n";
+
+        std::cout << "9\n";
+        for (Iterator<A2B1C1> it; it; it--)
+            std::cout << "Name: " << it->name_ << "\n";
+
+        std::cout << "10\n";
+        delete test10_10;
+
+        std::cout << "11\n";
+        for (Iterator<A2B1C1> it; it; it++)
+            std::cout << "Name: " << it->name_ << "\n";
+
+        std::cout << "12\n";
+        for (Iterator<A2B1C1> it; it; it--)
+            std::cout << "Name: " << it->name_ << "\n";
 
       }
 

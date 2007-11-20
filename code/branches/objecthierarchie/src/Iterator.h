@@ -9,8 +9,8 @@ namespace orxonox
         public:
             Iterator()
             {
-                this->elementForwards_ = ClassIdentifier<T>::getIdentifier()->objects_.first_;
-                this->elementBackwards_ = ClassIdentifier<T>::getIdentifier()->objects_.last_;
+                this->elementForwards_ = ClassIdentifier<T>::getIdentifier()->objects_s.first_;
+                this->elementBackwards_ = ClassIdentifier<T>::getIdentifier()->objects_s.last_;
                 this->iteratingForwards_ = true;
             }
 
@@ -50,17 +50,17 @@ namespace orxonox
             T* operator*()
             {
                 if (this->iteratingForwards_)
-                    return dynamic_cast<T*>(this->elementForwards_->object_);
+                    return /*dynamic_cast<T*>*/(this->elementForwards_->object_);
                 else
-                    return dynamic_cast<T*>(this->elementBackwards_->object_);
+                    return /*dynamic_cast<T*>*/(this->elementBackwards_->object_);
             }
 
             T* operator->() const
             {
                 if (this->iteratingForwards_)
-                    return dynamic_cast<T*>(this->elementForwards_->object_);
+                    return /*dynamic_cast<T*>*/(this->elementForwards_->object_);
                 else
-                    return dynamic_cast<T*>(this->elementBackwards_->object_);
+                    return /*dynamic_cast<T*>*/(this->elementBackwards_->object_);
 
             }
 
@@ -85,8 +85,8 @@ namespace orxonox
 
 
         private:
-            ObjectListElement* elementForwards_;
-            ObjectListElement* elementBackwards_;
+            ObjectListElement<T>* elementForwards_;
+            ObjectListElement<T>* elementBackwards_;
             bool iteratingForwards_;
     };
 }
