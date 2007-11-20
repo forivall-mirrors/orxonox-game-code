@@ -74,7 +74,10 @@ namespace orxonox
                     ObjectListElement* temp2 = temp->next_->next_;
                     delete temp->next_;
                     temp->next_ = temp2;
-                    temp2->prev_ = temp;
+                    if (temp2)
+                        temp2->prev_ = temp;
+                    else
+                        this->last_ = temp;
 
                     return;
                 }
@@ -101,7 +104,10 @@ namespace orxonox
                     ObjectListElement* temp2 = temp->prev_->prev_;
                     delete temp->prev_;
                     temp->prev_ = temp2;
-                    temp2->next_ = temp;
+                    if (temp2)
+                        temp2->next_ = temp;
+                    else
+                        this->first_ = temp;
 
                     return;
                 }
