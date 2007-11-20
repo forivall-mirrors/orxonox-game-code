@@ -26,13 +26,19 @@ namespace network{
     bindAddress.port = NETWORK_PORT;
   }
   
-  ConnectionManager::ConnectionManager(int port, int address){
+  ConnectionManager::ConnectionManager(int port, std::string address){
     quit=false;
     client=NULL;
-    bindAddress.host = address;
+    enet_address_set_host (& bindAddress, address.c_str());
     bindAddress.port = NETWORK_PORT;
   }
   
+  ConnectionManager::ConnectionManager(int port, const char *address){
+    quit=false;
+    client=NULL;
+    enet_address_set_host (& bindAddress, address);
+    bindAddress.port = NETWORK_PORT;
+  }
   
   ENetPacket *ConnectionManager::getPacket(ENetAddress &address){
     if(!buffer.isEmpty())

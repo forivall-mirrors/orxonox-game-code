@@ -4,7 +4,7 @@
 // Description: 
 //
 //
-// Author:  <>, (C) 2007
+// Author:  Oliver Scheuss, (C) 2007
 //
 // Copyright: See COPYING file that comes with this distribution
 //

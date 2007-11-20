@@ -24,6 +24,8 @@ PacketDecoder.o: PacketDecoder.cc
 	${CC} -c PacketDecoder.cc -o PacketDecoder.o -g ${INC}
 Client.o: Client.cc
 	${CC} -c Client.cc -g ${INC}
+Server.o: Server.cc
+	${CC} -c Server.cc -g ${INC}
 
 clean:
 	rm -rf *.o

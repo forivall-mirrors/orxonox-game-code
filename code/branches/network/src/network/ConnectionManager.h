@@ -13,6 +13,7 @@
 #define NETWORK_CONNECTIONMANAGER_H
 
 #include <iostream>
+#include <string>
 // enet library for networking support
 #include <enet/enet.h>
 // boost.thread library for multithreading support
@@ -43,7 +44,8 @@ namespace network{
   class ConnectionManager{
     public:
     ConnectionManager();
-    ConnectionManager(int port, int address);
+    ConnectionManager(int port, const char *address);
+    ConnectionManager(int port, std::string address);
     ENetPacket *getPacket(ENetAddress &address); // thread1
     // check wheter the packet queue is empty
     bool queueEmpty();
