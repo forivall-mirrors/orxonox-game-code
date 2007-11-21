@@ -12,8 +12,24 @@
 #ifndef NETWORKSYNCHRONISABLE_H
 #define NETWORKSYNCHRONISABLE_H
 
+#include <list>
+
 namespace network {
 
+  
+struct syncData{
+  int length;
+  int classID;
+  int objectID;
+  unsigned char *data;
+};
+
+typedef struct synchronisableVariable{
+  int size;
+  const void *var;
+}SYNCVAR;
+
+  
 /**
  * This class is the base class of all the Objects in the universe that need to be synchronised over the network
  * Every class, that inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list. Additionally it also has to provide a Constructor, that takes exactly the variables in this linked list.
@@ -21,10 +37,19 @@ namespace network {
 */
 class Synchronisable{
 public:
-    Synchronisable();
+  Synchronisable();
 
-    ~Synchronisable();
+  ~Synchronisable();
+  int objectID;
+  int classID;
+    
+  void registerVar(const void *var, int size);
+  syncData getData();
+  bool updateData(syncData vars);
+  virtual void registerAllVariables();
 
+private:
+  std::list<SYNCVAR> syncList;
 };
 
 }

@@ -99,5 +99,6 @@ void PacketDecoder::printKey( keyboard* data )
 void PacketDecoder::printChat( chat* data )
 {
 	cout << "data id: " << data->id << endl;
+	cout << "blablabla" << endl;
 	cout << "data:    " << data->message << endl;
 }

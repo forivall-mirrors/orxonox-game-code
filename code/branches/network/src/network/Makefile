@@ -26,6 +26,8 @@ Client.o: Client.cc
 	${CC} -c Client.cc -g ${INC}
 Server.o: Server.cc
 	${CC} -c Server.cc -g ${INC}
+Synchronisable.o: Synchronisable.cc
+	${CC} -c Synchronisable.cc -g ${INC}
 
 clean:
 	rm -rf *.o

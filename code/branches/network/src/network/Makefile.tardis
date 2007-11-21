@@ -1,9 +1,9 @@
 all: server client
 
-CC=g++-3.4
+CC=g++-4.1.1
 
-BOOST_INC=/usr/pack/boost-1.33.1-mo/i686-debian-linux3.1/include/
-BOOST_LIB=/usr/pack/boost-1.33.1-mo/i686-debian-linux3.1/lib/
+BOOST_INC=/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include/boost-1_34_1/
+BOOST_LIB=/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/lib/
 MAIN_INC=..
 ENET_INC=/usr/pack/enet-2007-sd/include/
 ENET_LIB=/usr/pack/enet-2007-sd/i686-debian-linux3.1/lib/
@@ -11,21 +11,25 @@ INC=-I ${BOOST_INC} -I ${MAIN_INC} -I ${ENET_INC}
 LIB=-L ${BOOST_LIB} -L ${ENET_LIB}
 
 # Link command:
-server: clean PacketBuffer.o ConnectionManager.o dummyserver.o
-	${CC} ConnectionManager.o dummyserver.o PacketBuffer.o -o server -lenet -lboost_thread-gcc-mt -g ${INC} ${LIB} -Wl,-rpath,${BOOST_LIB} -Wl,-rpath,${ENET_LIB}
+server: clean PacketBuffer.o ConnectionManager.o dummyserver.o PacketGenerator.o PacketDecoder.o
+	${CC} ConnectionManager.o dummyserver.o PacketBuffer.o PacketDecoder.o PacketGenerator.o -o server -lenet -lboost_thread-gcc41-mt -g ${INC} ${LIB} -Wl,-rpath,${BOOST_LIB} -Wl,-rpath,${ENET_LIB}
 
 dummyserver.o:
-	${CC} -c dummyserver.cc -o dummyserver.o -g ${INC} -pthread
+	${CC} -c dummyserver.cc -o dummyserver.o -g ${INC}
 # Compilation commands:
 
 ConnectionManager.o:
-	${CC} -c ConnectionManager.cc -o ConnectionManager.o -g ${INC} -pthread
+	${CC} -c ConnectionManager.cc -o ConnectionManager.o -g ${INC}
 
 PacketBuffer.o: 
-	${CC} -c PacketBuffer.cc -o PacketBuffer.o -g ${INC} -pthread
+	${CC} -c PacketBuffer.cc -o PacketBuffer.o -g ${INC}
+PacketGenerator.o: PacketGenerator.cc
+	${CC} -c PacketGenerator.cc -o PacketGenerator.o -g ${INC}
+PacketDecoder.o: PacketDecoder.cc
+	${CC} -c PacketDecoder.cc -o PacketDecoder.o -g ${INC}
 
 clean:
 	rm -rf *.o
 
-client:
-	${CC} dummyclient.cc -o client -lenet ${LIB} ${INC} -Wl,-rpath,${BOOST_LIB} -pthread
+client: dummyclient.cc PacketDecoder.o PacketGenerator.o
+	${CC} PacketGenerator.o PacketDecoder.o dummyclient.cc -o client -lenet ${LIB} ${INC} -Wl,-rpath,${BOOST_LIB}
