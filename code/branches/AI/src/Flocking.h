@@ -22,7 +22,7 @@ class Element // An element that flocks
     Vector3 acceleration;  // accelerationvector of the element
 
 
-  void element(Vector3 location_, Vector3 speed_, Vector3 acceleration_) {
+  Element(Vector3 location_, Vector3 speed_, Vector3 acceleration_) {
     acceleration = acceleration_;
     speed = speed_;
     location = location_;
@@ -35,21 +35,22 @@ class Element // An element that flocks
   }
 
 //EINF[GEN DES ELEMENTS
-  void update(/*Element übergeben*/) {
-    calculateAcceleration(/*Elementübergabe*/);  //updates the acceleration
+  void update(Element* arrayOfElements) {
+    calculateAcceleration(arrayOfElements);  //updates the acceleration
     calculateSpeed();  //updates the speed
     calculateLocation();  //updates the location
   }
 
 //EINF[GEN DES ELEMENTS
-  void calculateAcceleration(/*Element übergeben*/) {
+  void calculateAcceleration(Element* arrayOfElements) {
   //calculates the accelerationvector based on the steeringvectors of
   //separtion, alignment and cohesion.
-  acceleration = acceleration + separation() + alignment() + cohesion();
+  acceleration = acceleration + separation(arrayOfElements) + 2*alignment(arrayOfElements) + 2*cohesion(arrayOfElements);
   }
 
   void calculateSpeed() {
   speed = speed + acceleration;
+  //speed = speed.normalise();
   }
 
   void calculateLocation() {
@@ -57,18 +58,18 @@ class Element // An element that flocks
   acceleration = (0,0,0);  //set acceleration to zero for the next calculation
   }
 
-  Vector3 separation() {
+  Vector3 separation(Element* arrayOfElements) {
     Vector3 steering; //steeringvector
     int numberOfNeighbour;  //number of observed neighbours
     //go through all elements
     for(int i=1; i<3; i++) {  //just working with 3 elements at the moment
       Element actual = arrayOfElements[i];  //get the actual element
-      float distance = Element.getDistance(actual);  //get distance between this and actual
+      float distance = getDistance(actual);  //get distance between this and actual
 //DUMMY SEPERATION DETECTION DISTANCE = 25
-      if ((distance > 0) && (distance<25)) {  //do only if actual is inside detectionradius
+      if ((distance > 0) && (distance<1)) {  //do only if actual is inside detectionradius
         Vector3 inverseDistance = actual.location-location;  //calculate the distancevector heading towards this
         inverseDistance = inverseDistance.normalise(); //does this work correctly?  //normalise the distancevector
-        inverseDistance = inverseDistance/distance;  //devide distancevector by distance (the closer the bigger gets the distancevector -> steeringvector)
+        inverseDistance = inverseDistance/*/distance;*/ ;  //devide distancevector by distance (the closer the bigger gets the distancevector -> steeringvector)
         steering = steering + inverseDistance;  //add up all significant steeringvectors
         numberOfNeighbour++;  //counts the elements inside the detectionradius
       }
@@ -79,15 +80,15 @@ class Element // An element that flocks
     return steering;
   }
 
-  Vector3 alignment() {
+  Vector3 alignment(Element* arrayOfElements) {
     Vector3 steering; //steeringvector
     int numberOfNeighbour;  //number of observed neighbours
     //go through all elements
     for(int i=1; i<3; i++) {  //just working with 3 elements at the moment
       Element actual = arrayOfElements[i];  //get the actual element
-      float distance = Element.getDistance(actual);  //get distance between this and actual
+      float distance = getDistance(actual);  //get distance between this and actual
 //DUMMY ALIGNMENT DETECTION DISTANCE = 50
-      if ((distance > 0) && (distance<50)) {  //check if actual element is inside detectionradius
+      if ((distance > 0) && (distance<1000)) {  //check if actual element is inside detectionradius
         steering = steering + actual.speed;  //add up all speedvectors inside the detectionradius
         numberOfNeighbour++;  //counts the elements inside the detectionradius
       }
@@ -98,15 +99,15 @@ class Element // An element that flocks
     return steering;
   }
 
-  Vector3 cohesion() {
+  Vector3 cohesion(Element* arrayOfElements) {
     Vector3 steering; //steeringvector
     int numberOfNeighbour;  //number of observed neighbours
     //go through all elements
     for(int i=1; i<3; i++) {  //just working with 3 elements at the moment
       Element actual = arrayOfElements[i];  //get the actual element
-      float distance = Element.getDistance(actual);  //get distance between this and actual
+      float distance = getDistance(actual);  //get distance between this and actual
 // DUMMY COHESION DETECTION DISTANCE = 50
-      if ((distance > 0) && (distance<50)) {  //check if actual element is inside detectionradius
+      if ((distance > 0) && (distance<1000)) {  //check if actual element is inside detectionradius
         steering = steering + actual.location;  //add up all locations of elements inside the detectionradius
         numberOfNeighbour++;  //counts the elements inside the detectionradius
       }

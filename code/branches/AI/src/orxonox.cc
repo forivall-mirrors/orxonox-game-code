@@ -81,6 +81,7 @@ Vector3 ElementLocationArray[2];
 Vector3 ElementSpeedArray[2];
 Vector3 ElementAccelerationArray[2];
 
+Element* arrayOfElements[2];
 
 
 class OrxExitListener : public FrameListener
@@ -102,7 +103,13 @@ class OrxExitListener : public FrameListener
     //code the movments of the nodes here
     void moving(const FrameEvent& evt) {
       SceneManager *mgr = root_->getSceneManager("Default SceneManager");
-      mgr->getSceneNode("HeadNode1")->yaw((Radian)10*evt.timeSinceLastFrame);
+      arrayOfElements[0]->update(*arrayOfElements);
+      mgr->getSceneNode("HeadNode1")->translate(0.000000001*evt.timeSinceLastFrame*arrayOfElements[0]->location);
+      arrayOfElements[1]->update(*arrayOfElements);
+      mgr->getSceneNode("HeadNode2")->translate(0.000000001*evt.timeSinceLastFrame*arrayOfElements[1]->location);
+      arrayOfElements[2]->update(*arrayOfElements);
+      mgr->getSceneNode("HeadNode3")->translate(0.000000001*evt.timeSinceLastFrame*arrayOfElements[2]->location);
+      //mgr->getSceneNode("HeadNode1")->yaw((Radian)10*evt.timeSinceLastFrame);
     }
 
   private:
@@ -215,7 +222,7 @@ class OrxApplication
     {
       SceneManager *mgr = mRoot->createSceneManager(ST_GENERIC, "Default SceneManager");
       Camera *cam = mgr->createCamera("Camera");
-      cam->setPosition(Vector3(0,0,500));
+      cam->setPosition(Vector3(0,0,1000));
       cam->lookAt(Vector3(0,0,0));
       Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
       example();  //my stuff
@@ -268,18 +275,23 @@ class OrxApplication
     }
 
     //declaration of the 3 Ogreheads
+   //muss leider global sein.....
+    //Element* arrayOfElements[2];
+
     void example() {
     SceneManager *mgr = mRoot->getSceneManager("Default SceneManager");
     mgr->setAmbientLight(ColourValue(1.0,1.0,1.0));
     Entity* ent1 = mgr->createEntity("Head1", "ogrehead.mesh");
     Entity* ent2 = mgr->createEntity("Head2", "ogrehead.mesh");
     Entity* ent3 = mgr->createEntity("Head3", "ogrehead.mesh");
-    SceneNode *node1 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode1", Vector3(0,0,0));
+    SceneNode *node1 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode1", Vector3(0,100,0));
     SceneNode *node2 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode2", Vector3(100,0,0));
     SceneNode *node3 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode3", Vector3(-100,0,0));
     node1->attachObject(ent1);
     node2->attachObject(ent2);
     node3->attachObject(ent3);
+    //Camera* cam  = mgr->getCamera("Camera");
+    //node1->attachObject(cam);
     ElementLocationArray[0] = node1->getPosition();
     ElementLocationArray[1] = node2->getPosition();
     ElementLocationArray[2] = node3->getPosition();
@@ -289,9 +301,19 @@ class OrxApplication
     ElementAccelerationArray[0] = (0,0,0);
     ElementAccelerationArray[1] = (0,0,0);
     ElementAccelerationArray[2] = (0,0,0);
-    for (int i=0; i<3; i++) {
-      Element* arrayOfElements[i] = new element( ElementLocationArray[i], ElementSpeedArray[i], ElementAccelerationArray[i] );
-    }
+    arrayOfElements[0] = new Element( ElementLocationArray[0], ElementSpeedArray[0], ElementAccelerationArray[0] );
+    arrayOfElements[1] = new Element( ElementLocationArray[1], ElementSpeedArray[1], ElementAccelerationArray[1] );
+    arrayOfElements[2] = new Element( ElementLocationArray[2], ElementSpeedArray[2], ElementAccelerationArray[2] );
+
+
+
+
+   /* for (int i=0; i<3; i++) {
+      Element* arrayOfElements[i] = new Element( ElementLocationArray[i], ElementSpeedArray[i], ElementAccelerationArray[i] );
+    } */
+   /* for (int i=0; i<3; i++) {
+    arrayOfElements[i]->update(arrayOfElements);
+    }  */
     }
 };
 
