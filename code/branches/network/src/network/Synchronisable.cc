@@ -8,7 +8,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 //
-//
+
 #include "network/Synchronisable.h"
 
 namespace network {
@@ -43,10 +43,14 @@ syncData Synchronisable::getData(){
   // allocate memory
   retVal.data = (unsigned char *)malloc(totalsize);
   // copy to location
-  for(int n=0, i=syncList.begin(); n<totalsize && i!=syncList.end(); i++){
-    std::memcpy(retVal.data+n, i->size, sizeof(int));
+  //CHANGED: REMOVED DECLARATION int n=0 FROM LOOP
+  int n=0;
+  for(i=syncList.begin(); n<totalsize && i!=syncList.end(); i++){
+	//CHANGED: i->size TO (const void*)(&(i->size)) memcpy WANTS A CONST VOID* SO CONVERT INT TO CONST VOID*  
+    std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
     n+=sizeof(int);
-    std::memcpy(retVal.data+n, *(*i.var), *i.size);
+    //CHANGED: i->var TO (const void*)(&(i->var)) SINCE var IS A POINTER, NO & BEFORE i
+    std::memcpy(retVal.data+n, (const void*)(i->var), i->size);
     n+=i->size;
   }
   return retVal;
@@ -57,7 +61,8 @@ bool Synchronisable::updateData(syncData vars){
   for(i=syncList.begin(); i!=syncList.end(); i++){
     if((int)*data==i->size){
       data+=sizeof(int);
-      memcpy(i->data, data, i->size);
+      //CHANGED: THIS FROM i->var TO (void*)i->var SINCE var IS A CONST VOID* AND memcpy NEEDS A VOID* AS FIRST ARGUMENT
+      memcpy((void*)i->var, data, i->size);
       data+=i->size;
     } else
       return false; //there was some problem with registerVar
