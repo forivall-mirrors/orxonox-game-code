@@ -9,8 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef NETWORKSYNCHRONISABLE_H
-#define NETWORKSYNCHRONISABLE_H
+#ifndef NETWORK_SYNCHRONISABLE_H
+#define NETWORK_SYNCHRONISABLE_H
 
 #include <list>
 
@@ -45,11 +45,14 @@ public:
     
   void registerVar(const void *var, int size);
   syncData getData();
+  syncData getData(unsigned char *mem);
+  int getSize();
   bool updateData(syncData vars);
   virtual void registerAllVariables();
 
 private:
   std::list<SYNCVAR> syncList;
+  int datasize;
 };
 
 }

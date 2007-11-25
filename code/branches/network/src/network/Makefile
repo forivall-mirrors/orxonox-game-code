@@ -28,6 +28,8 @@ Server.o: Server.cc
 	${CC} -c Server.cc -g ${INC}
 Synchronisable.o: Synchronisable.cc
 	${CC} -c Synchronisable.cc -g ${INC}
+GameStateManager.o: GameStateManager.cc
+	${CC} -c GameStateManager.cc -g ${INC}
 
 clean:
 	rm -rf *.o

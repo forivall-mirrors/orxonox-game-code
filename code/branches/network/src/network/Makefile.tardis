@@ -27,6 +27,10 @@ PacketGenerator.o: PacketGenerator.cc
 	${CC} -c PacketGenerator.cc -o PacketGenerator.o -g ${INC}
 PacketDecoder.o: PacketDecoder.cc
 	${CC} -c PacketDecoder.cc -o PacketDecoder.o -g ${INC}
+Synchronisable.o: Synchronisable.cc
+	${CC} -c Synchronisable.cc -g ${INC}
+GameStateManager.o: GameStateManager.cc
+	${CC} -c GameStateManager.cc -g ${INC}
 
 clean:
 	rm -rf *.o
