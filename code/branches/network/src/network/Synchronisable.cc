@@ -47,7 +47,7 @@ syncData Synchronisable::getData(){
   int n=0;
   for(i=syncList.begin(); n<totalsize && i!=syncList.end(); i++){
 	//CHANGED: i->size TO (const void*)(&(i->size)) memcpy WANTS A CONST VOID* SO CONVERT INT TO CONST VOID*  
-    std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
+    std::memcpy(retVal.data+n, (const void*)(i->size), sizeof(int));
     n+=sizeof(int);
     //CHANGED: i->var TO (const void*)(&(i->var)) SINCE var IS A POINTER, NO & BEFORE i
     std::memcpy(retVal.data+n, (const void*)(i->var), i->size);
