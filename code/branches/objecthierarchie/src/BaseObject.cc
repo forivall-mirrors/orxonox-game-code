@@ -11,6 +11,5 @@ namespace orxonox
 
     BaseObject::~BaseObject()
     {
-        UnregisterObject();
     }
 }

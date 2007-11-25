@@ -43,7 +43,7 @@ namespace orxonox
         public:
             ObjectList();
             ~ObjectList();
-            void add(T* object);
+            ObjectListElement<T>* add(T* object);
             void remove(OrxonoxClass* object, bool bIterateForwards = true);
 
             ObjectListElement<T>* first_;
@@ -70,7 +70,7 @@ namespace orxonox
     }
 
     template <class T>
-    void ObjectList<T>::add(T* object)
+    ObjectListElement<T>* ObjectList<T>::add(T* object)
     {
         if (!this->last_)
         {
@@ -84,6 +84,8 @@ namespace orxonox
             this->last_->prev_ = temp;
             temp->next_ = this->last_;
         }
+
+        return this->last_;
     }
 
     template <class T>

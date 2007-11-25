@@ -1,8 +1,8 @@
 #include "Identifier.h"
 #include "Factory.h"
 #include "ClassFactory.h"
-#include "IdentifierList.h"
-#include "ObjectList.h"
+//#include "IdentifierList.h"
+//#include "ObjectList.h"
 #include "Iterator.h"
 #include "OrxonoxClass.h"
 
@@ -35,9 +35,6 @@
 #define RegisterRootObject(ClassName) \
     InternRegisterRootObject(ClassName)
 #endif
-
-#define UnregisterObject() \
-    this->getIdentifier()->removeObject(this)
 
 #define Class(ClassName) \
     ClassIdentifier<ClassName>::getIdentifier()

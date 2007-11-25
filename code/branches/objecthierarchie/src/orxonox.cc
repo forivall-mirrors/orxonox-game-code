@@ -406,8 +406,8 @@ namespace orxonox
         delete test8_01;
         delete test8_02;
         delete test8_03;
-*/
-/*
+
+
         std::cout << "Test 9\n";
         std::cout << "1\n";
         Identifier* test9_01 = Class(A3);
@@ -440,7 +440,6 @@ namespace orxonox
         Identifier* test10_02 = Class(A2);
         Identifier* test10_03 = Class(A3B1C1);
 
-
         BaseObject* test10_04 = test10_01->fabricate();
         BaseObject* test10_05 = test10_02->fabricate();
         BaseObject* test10_06 = test10_03->fabricate();
@@ -450,31 +449,17 @@ namespace orxonox
             test10_07 = ID("A1B1C1")->fabricate();
 
         std::cout << "1\n";
-        int count = 0;
-        for (Iterator<BaseObject> it; it != 0; ++it)
-            count++;
+        int count;
+        count = 0; for (Iterator<BaseObject> it; it != 0; ++it) { count++; }
         std::cout << "Anzahl BaseObjects: " << count << "\n";
-
-        count = 0;
-        for (Iterator<A1> it; it != 0; ++it)
-            count++;
+        count = 0; for (Iterator<A1> it; it != 0; ++it) { count++; }
         std::cout << "Anzahl A1: " << count << "\n";
-
-        count = 0;
-        for (Iterator<A1B1> it; it; ++it)
-            count++;
+        count = 0; for (Iterator<A1B1> it; it; ++it) { count++; }
         std::cout << "Anzahl A1B1: " << count << "\n";
-
-        count = 0;
-        for (Iterator<A1B1C1> it; it; ++it)
-            count++;
+        count = 0; for (Iterator<A1B1C1> it; it; ++it) { count++; }
         std::cout << "Anzahl A1B1C1: " << count << "\n";
-
-        count = 0;
-        for (Iterator<A2> it; it; ++it)
-            count++;
+        count = 0; for (Iterator<A2> it; it; ++it) { count++; }
         std::cout << "Anzahl A2: " << count << "\n";
-
 
         std::cout << "2\n";
         BaseObject* test10_08;
@@ -493,6 +478,17 @@ namespace orxonox
                 test10_10 = test10_08;
         }
 
+        count = 0; for (Iterator<BaseObject> it; it != 0; ++it) { count++; }
+        std::cout << "Anzahl BaseObjects: " << count << "\n";
+        count = 0; for (Iterator<A1> it; it != 0; ++it) { count++; }
+        std::cout << "Anzahl A1: " << count << "\n";
+        count = 0; for (Iterator<A1B1> it; it; ++it) { count++; }
+        std::cout << "Anzahl A1B1: " << count << "\n";
+        count = 0; for (Iterator<A1B1C1> it; it; ++it) { count++; }
+        std::cout << "Anzahl A1B1C1: " << count << "\n";
+        count = 0; for (Iterator<A2> it; it; ++it) { count++; }
+        std::cout << "Anzahl A2: " << count << "\n";
+
         for (Iterator<A2B1C1> it; it; ++it)
             std::cout << "Name: " << it->name_ << "\n";
 
@@ -502,6 +498,17 @@ namespace orxonox
 
         std::cout << "4\n";
         delete test10_08;
+
+        count = 0; for (Iterator<BaseObject> it; it != 0; ++it) { count++; }
+        std::cout << "Anzahl BaseObjects: " << count << "\n";
+        count = 0; for (Iterator<A1> it; it != 0; ++it) { count++; }
+        std::cout << "Anzahl A1: " << count << "\n";
+        count = 0; for (Iterator<A1B1> it; it; ++it) { count++; }
+        std::cout << "Anzahl A1B1: " << count << "\n";
+        count = 0; for (Iterator<A1B1C1> it; it; ++it) { count++; }
+        std::cout << "Anzahl A1B1C1: " << count << "\n";
+        count = 0; for (Iterator<A2> it; it; ++it) { count++; }
+        std::cout << "Anzahl A2: " << count << "\n";
 
         std::cout << "5\n";
         for (Iterator<A2B1C1> it; it; ++it)
@@ -514,6 +521,17 @@ namespace orxonox
         std::cout << "7\n";
         delete test10_09;
 
+        count = 0; for (Iterator<BaseObject> it; it != 0; ++it) { count++; }
+        std::cout << "Anzahl BaseObjects: " << count << "\n";
+        count = 0; for (Iterator<A1> it; it != 0; ++it) { count++; }
+        std::cout << "Anzahl A1: " << count << "\n";
+        count = 0; for (Iterator<A1B1> it; it; ++it) { count++; }
+        std::cout << "Anzahl A1B1: " << count << "\n";
+        count = 0; for (Iterator<A1B1C1> it; it; ++it) { count++; }
+        std::cout << "Anzahl A1B1C1: " << count << "\n";
+        count = 0; for (Iterator<A2> it; it; ++it) { count++; }
+        std::cout << "Anzahl A2: " << count << "\n";
+
         std::cout << "8\n";
         for (Iterator<A2B1C1> it; it; ++it)
             std::cout << "Name: " << it->name_ << "\n";
@@ -524,6 +542,17 @@ namespace orxonox
 
         std::cout << "10\n";
         delete test10_10;
+
+        count = 0; for (Iterator<BaseObject> it; it != 0; ++it) { count++; }
+        std::cout << "Anzahl BaseObjects: " << count << "\n";
+        count = 0; for (Iterator<A1> it; it != 0; ++it) { count++; }
+        std::cout << "Anzahl A1: " << count << "\n";
+        count = 0; for (Iterator<A1B1> it; it; ++it) { count++; }
+        std::cout << "Anzahl A1B1: " << count << "\n";
+        count = 0; for (Iterator<A1B1C1> it; it; ++it) { count++; }
+        std::cout << "Anzahl A1B1C1: " << count << "\n";
+        count = 0; for (Iterator<A2> it; it; ++it) { count++; }
+        std::cout << "Anzahl A2: " << count << "\n";
 
         std::cout << "11\n";
         for (Iterator<A2B1C1> it; it; ++it)

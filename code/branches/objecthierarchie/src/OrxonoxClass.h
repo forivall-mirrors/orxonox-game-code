@@ -3,6 +3,8 @@
 
 #include "Identifier.h"
 #include "IdentifierList.h"
+#include "ObjectList.h"
+#include "MetaObjectList.h"
 
 namespace orxonox
 {
@@ -11,14 +13,16 @@ namespace orxonox
         public:
             OrxonoxClass();
             virtual ~OrxonoxClass();
-            Identifier* getIdentifier() const { return this->identifier_; }
-            void setIdentifier(Identifier* identifier) { this->identifier_ = identifier; }
-            IdentifierList* getParents() const { return this->parents_; }
-            void setParents(IdentifierList* parents) { this->parents_ = parents; }
+            inline Identifier* getIdentifier() const { return this->identifier_; }
+            inline void setIdentifier(Identifier* identifier) { this->identifier_ = identifier; }
+            inline IdentifierList* getParents() const { return this->parents_; }
+            inline void setParents(IdentifierList* parents) { this->parents_ = parents; }
+            inline MetaObjectList* getMetaList() { return this->metaList_; }
 
         private:
             Identifier* identifier_;
             IdentifierList* parents_;
+            MetaObjectList* metaList_;
     };
 }
 

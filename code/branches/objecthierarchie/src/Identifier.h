@@ -7,7 +7,7 @@
 #include "ObjectList.h"
 #include "Factory.h"
 
-#define HIERARCHY_VERBOSE true
+#define HIERARCHY_VERBOSE false
 
 
 namespace orxonox
@@ -29,9 +29,6 @@ namespace orxonox
         friend class ClassFactory;
 
         public:
-            virtual void removeObject(OrxonoxClass* object) const = 0;
-            virtual void removeObjectIntern(OrxonoxClass* object, bool bIterateForwards) const = 0;
-
             inline void addFactory(BaseFactory* factory) { this->factory_ = factory; }
             BaseObject* fabricate();
 
@@ -92,8 +89,6 @@ namespace orxonox
             static ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass);
             static ClassIdentifier<T>* getIdentifier();
             static void addObject(T* object);
-            void removeObject(OrxonoxClass* object) const;
-            void removeObjectIntern(OrxonoxClass* object, bool bIterateForwards) const;
 
         private:
             ClassIdentifier();
@@ -171,35 +166,7 @@ namespace orxonox
 #if HIERARCHY_VERBOSE
         std::cout << "*** Added object to " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
 #endif
-        ClassIdentifier<T>::getIdentifier()->objects_->add(object);
-    }
-
-    template <class T>
-    void ClassIdentifier<T>::removeObject(OrxonoxClass* object) const
-    {
-        bool bIterateForwards = !Identifier::isCreatingHierarchy();
-
-        this->removeObjectIntern(object, bIterateForwards);
-
-        IdentifierListElement* temp = this->parents_.first_;
-        while (temp)
-        {
-            temp->identifier_->removeObjectIntern(object, bIterateForwards);
-            temp = temp->next_;
-        }
-    }
-
-    template <class T>
-    void ClassIdentifier<T>::removeObjectIntern(OrxonoxClass* object, bool bIterateForwards) const
-    {
-#if HIERARCHY_VERBOSE
-        if (bIterateForwards)
-            std::cout << "*** Removed object from " << this->name_ << "-list, iterating forwards.\n";
-        else
-            std::cout << "*** Removed object from " << this->name_ << "-list, iterating backwards.\n";
-#endif
-
-        this->objects_->remove(object, bIterateForwards);
+        object->getMetaList()->add(ClassIdentifier<T>::getIdentifier()->objects_, ClassIdentifier<T>::getIdentifier()->objects_->add(object));
     }
 
 
