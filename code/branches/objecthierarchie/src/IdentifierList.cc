@@ -73,7 +73,7 @@ namespace orxonox
         return false;
     }
 
-    std::string IdentifierList::toString()
+    std::string IdentifierList::toString() const
     {
         IdentifierListElement* temp = this->first_;
         std::string output = "";

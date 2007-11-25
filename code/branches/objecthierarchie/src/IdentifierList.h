@@ -26,7 +26,7 @@ namespace orxonox
             void add(const Identifier* identifier);
             void remove(const Identifier* identifier);
             bool isInList(const Identifier* identifier);
-            std::string toString();
+            std::string toString() const;
 
             IdentifierListElement* first_;
     };
