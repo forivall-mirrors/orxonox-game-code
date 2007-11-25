@@ -440,10 +440,10 @@ namespace orxonox
 /*
         std::cout << "Test 7\n";
         std::cout << "1\n";
-        BaseIdentifier<A1B1> test7_01;
+        SubclassIdentifier<A1B1> test7_01;
         test7_01 = Class(A1B1C1);
 
-        BaseIdentifier<A1B1> test7_02;
+        SubclassIdentifier<A1B1> test7_02;
         test7_02 = Class(A1B1);
 
         std::cout << test7_01->getName() << "\n";
@@ -452,13 +452,13 @@ namespace orxonox
 /*
         std::cout << "2\n";
 
-        BaseIdentifier<A1B1> test7_03;
+        SubclassIdentifier<A1B1> test7_03;
         test7_03 = Class(A1);
 
-        BaseIdentifier<A1B1> test7_04;
+        SubclassIdentifier<A1B1> test7_04;
         test7_04 = Class(A1B2);
 
-        BaseIdentifier<A1B1> test7_05;
+        SubclassIdentifier<A1B1> test7_05;
         test7_05 = Class(A2);
 */
 /*
@@ -511,7 +511,7 @@ namespace orxonox
         std::cout << test9_03->getIdentifier()->getName() << "\n";
 
         std::cout << "\n3\n";
-        BaseIdentifier<A1> test9_04;
+        SubclassIdentifier<A1> test9_04;
         test9_04 = Class(A1B1C1);
         A1* test9_05 = test9_04.fabricate();
         std::cout << test9_05->getIdentifier()->getName() << "\n";

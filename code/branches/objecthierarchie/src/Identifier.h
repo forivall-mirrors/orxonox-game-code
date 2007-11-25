@@ -23,7 +23,7 @@ namespace orxonox
         friend class ClassIdentifier;
 
         template <class T>
-        friend class BaseIdentifier;
+        friend class SubclassIdentifier;
 
         public:
             virtual void removeObject(OrxonoxClass* object) const = 0;
@@ -230,20 +230,20 @@ namespace orxonox
 
 
     // ###############################
-    // ###     BaseIdentifier      ###
+    // ###   SubclassIdentifier    ###
     // ###############################
     template <class B>
-    class BaseIdentifier
+    class SubclassIdentifier
     {
         public:
-            BaseIdentifier();
+            SubclassIdentifier();
 
-            BaseIdentifier<B>& operator=(Identifier* identifier)
+            SubclassIdentifier<B>& operator=(Identifier* identifier)
             {
                 if (!identifier->isA(ClassIdentifier<B>::getIdentifier()))
                 {
                     std::cout << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<B>::getIdentifier()->getName() << "!\n";
-                    std::cout << "Error: BaseIdentifier<" << ClassIdentifier<B>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden.\n";
+                    std::cout << "Error: SubclassIdentifier<" << ClassIdentifier<B>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden.\n";
                     std::cout << "Aborting...\n";
                     abort();
                 }
@@ -306,7 +306,7 @@ namespace orxonox
     };
 
     template <class B>
-    BaseIdentifier<B>::BaseIdentifier()
+    SubclassIdentifier<B>::SubclassIdentifier()
     {
         this->identifier_ = ClassIdentifier<B>::getIdentifier();
     }

@@ -23,7 +23,7 @@ namespace orxonox
         private:
             Identifier* usefullClass1_;
             Identifier* usefullClass2_;
-            BaseIdentifier<Test3> usefullClass3_;
+            SubclassIdentifier<Test3> usefullClass3_;
 
     };
 }

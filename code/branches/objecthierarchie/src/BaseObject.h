@@ -24,30 +24,30 @@ namespace orxonox
             inline bool isDirectParentOf(const Identifier* identifier)
                 { this->getIdentifier()->isDirectParentOf(identifier); }
 
-            inline bool isA(const BaseIdentifier<class B>* identifier)
+            inline bool isA(const SubclassIdentifier<class B>* identifier)
                 { this->getIdentifier()->isA(identifier->getIdentifier()); }
-            inline bool isDirectlyA(const BaseIdentifier<class B>* identifier)
+            inline bool isDirectlyA(const SubclassIdentifier<class B>* identifier)
                 { this->getIdentifier()->isDirectlyA(identifier->getIdentifier()); }
-            inline bool isChildOf(const BaseIdentifier<class B>* identifier)
+            inline bool isChildOf(const SubclassIdentifier<class B>* identifier)
                 { this->getIdentifier()->isChildOf(identifier->getIdentifier()); }
-            inline bool isDirectChildOf(const BaseIdentifier<class B>* identifier)
+            inline bool isDirectChildOf(const SubclassIdentifier<class B>* identifier)
                 { this->getIdentifier()->isDirectChildOf(identifier->getIdentifier()); }
-            inline bool isParentOf(const BaseIdentifier<class B>* identifier)
+            inline bool isParentOf(const SubclassIdentifier<class B>* identifier)
                 { this->getIdentifier()->isParentOf(identifier->getIdentifier()); }
-            inline bool isDirectParentOf(const BaseIdentifier<class B>* identifier)
+            inline bool isDirectParentOf(const SubclassIdentifier<class B>* identifier)
                 { this->getIdentifier()->isDirectParentOf(identifier->getIdentifier()); }
 
-            inline bool isA(const BaseIdentifier<class B> identifier)
+            inline bool isA(const SubclassIdentifier<class B> identifier)
                 { this->getIdentifier()->isA(identifier.getIdentifier()); }
-            inline bool isDirectlyA(const BaseIdentifier<class B> identifier)
+            inline bool isDirectlyA(const SubclassIdentifier<class B> identifier)
                 { this->getIdentifier()->isDirectlyA(identifier.getIdentifier()); }
-            inline bool isChildOf(const BaseIdentifier<class B> identifier)
+            inline bool isChildOf(const SubclassIdentifier<class B> identifier)
                 { this->getIdentifier()->isChildOf(identifier.getIdentifier()); }
-            inline bool isDirectChildOf(const BaseIdentifier<class B> identifier)
+            inline bool isDirectChildOf(const SubclassIdentifier<class B> identifier)
                 { this->getIdentifier()->isDirectChildOf(identifier.getIdentifier()); }
-            inline bool isParentOf(const BaseIdentifier<class B> identifier)
+            inline bool isParentOf(const SubclassIdentifier<class B> identifier)
                 { this->getIdentifier()->isParentOf(identifier.getIdentifier()); }
-            inline bool isDirectParentOf(const BaseIdentifier<class B> identifier)
+            inline bool isDirectParentOf(const SubclassIdentifier<class B> identifier)
                 { this->getIdentifier()->isDirectParentOf(identifier.getIdentifier()); }
 
             inline bool isA(const OrxonoxClass* object)
