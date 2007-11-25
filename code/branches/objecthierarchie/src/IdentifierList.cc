@@ -59,7 +59,7 @@ namespace orxonox
         }
     }
 
-    bool IdentifierList::isInList(const Identifier* identifier)
+    bool IdentifierList::isInList(const Identifier* identifier) const
     {
         IdentifierListElement* temp = this->first_;
         while (temp)

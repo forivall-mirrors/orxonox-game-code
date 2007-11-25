@@ -38,10 +38,10 @@ namespace orxonox
             bool isDirectParentOf(const Identifier* identifier) const;
 
             const std::string& getName() const { return this->name_; }
-            const IdentifierList* getDirectParents() const { return this->directParents_; }
-            const IdentifierList* getAllParents() const { return this->allParents_; }
-            const IdentifierList* getDirectChildren() const { return this->directChildren_; }
-            const IdentifierList* getAllChildren() const { return this->allChildren_; }
+            const IdentifierList& getDirectParents() const { return this->directParents_; }
+            const IdentifierList& getAllParents() const { return this->allParents_; }
+            IdentifierList& getDirectChildren() const { return *this->directChildren_; }
+            IdentifierList& getAllChildren() const { return *this->allChildren_; }
 
             static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
@@ -67,8 +67,8 @@ namespace orxonox
 #endif
             }
 
-            IdentifierList* directParents_;
-            IdentifierList* allParents_;
+            IdentifierList directParents_;
+            IdentifierList allParents_;
             IdentifierList* directChildren_;
             IdentifierList* allChildren_;
 
@@ -220,7 +220,7 @@ namespace orxonox
 
         this->objects_->remove(object, bIterateForwards);
 
-        IdentifierListElement* temp = this->directParents_->first_;
+        IdentifierListElement* temp = this->directParents_.first_;
         while (temp)
         {
             temp->identifier_->removeObject(object);

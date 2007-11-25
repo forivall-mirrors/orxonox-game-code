@@ -13,8 +13,6 @@ namespace orxonox
 
         this->directChildren_ = new IdentifierList;
         this->allChildren_ = new IdentifierList;
-        this->directParents_ = new IdentifierList;
-        this->allParents_ = new IdentifierList;
     }
 
     Identifier::~Identifier()
@@ -23,8 +21,6 @@ namespace orxonox
 
         delete this->directChildren_;
         delete this->allChildren_;
-        delete this->directParents_;
-        delete this->allParents_;
     }
 
     void Identifier::initialize(const IdentifierList* parents)
@@ -43,7 +39,7 @@ namespace orxonox
             temp1 = parents->first_;
             while (temp1)
             {
-                temp2 = temp1->identifier_->directParents_->first_;
+                temp2 = temp1->identifier_->directParents_.first_;
                 while (temp2)
                 {
                     temp3 = parents->first_;
@@ -65,12 +61,12 @@ namespace orxonox
             {
                 if (temp1->bDirect_)
                 {
-                    this->directParents_->add(temp1->identifier_);
-                    temp1->identifier_->directChildren_->add(this);
+                    this->directParents_.add(temp1->identifier_);
+                    temp1->identifier_->getDirectChildren().add(this);
                 }
 
-                this->allParents_->add(temp1->identifier_);
-                temp1->identifier_->allChildren_->add(this);
+                this->allParents_.add(temp1->identifier_);
+                temp1->identifier_->getAllChildren().add(this);
 
                 temp1 = temp1->next_;
             }
@@ -79,7 +75,7 @@ namespace orxonox
 
     bool Identifier::isA(const Identifier* identifier) const
     {
-        return (identifier == this || this->allParents_->isInList(identifier));
+        return (identifier == this || this->allParents_.isInList(identifier));
     }
 
     bool Identifier::isDirectlyA(const Identifier* identifier) const
@@ -89,12 +85,12 @@ namespace orxonox
 
     bool Identifier::isChildOf(const Identifier* identifier) const
     {
-        return this->allParents_->isInList(identifier);
+        return this->allParents_.isInList(identifier);
     }
 
     bool Identifier::isDirectChildOf(const Identifier* identifier) const
     {
-        return this->directParents_->isInList(identifier);
+        return this->directParents_.isInList(identifier);
     }
 
     bool Identifier::isParentOf(const Identifier* identifier) const
