@@ -22,14 +22,14 @@ namespace orxonox
         }
     }
 
-    void IdentifierList::add(Identifier* identifier)
+    void IdentifierList::add(const Identifier* identifier)
     {
         IdentifierListElement* temp = this->first_;
         this->first_ = new IdentifierListElement(identifier);
         this->first_->next_ = temp;
     }
 
-    void IdentifierList::remove(Identifier* identifier)
+    void IdentifierList::remove(const Identifier* identifier)
     {
         if (!identifier)
             return;
@@ -59,7 +59,7 @@ namespace orxonox
         }
     }
 
-    bool IdentifierList::isInList(Identifier* identifier)
+    bool IdentifierList::isInList(const Identifier* identifier)
     {
         IdentifierListElement* temp = this->first_;
         while (temp)
@@ -93,7 +93,7 @@ namespace orxonox
     // ###############################
     // ###  IdentifierListElement  ###
     // ###############################
-    IdentifierListElement::IdentifierListElement(Identifier* identifier)
+    IdentifierListElement::IdentifierListElement(const Identifier* identifier)
     {
         this->identifier_ = identifier;
         this->next_ = 0;

@@ -26,22 +26,22 @@ namespace orxonox
         friend class BaseIdentifier;
 
         public:
-            virtual void removeObject(OrxonoxClass* object) {};
+            virtual void removeObject(OrxonoxClass* object) const = 0;
 
-            virtual BaseObject* fabricate() {};
+            virtual BaseObject* fabricate() const = 0;
 
-            bool isA(Identifier* identifier);
-            bool isDirectlyA(Identifier* identifier);
-            bool isChildOf(Identifier* identifier);
-            bool isDirectChildOf(Identifier* identifier);
-            bool isParentOf(Identifier* identifier);
-            bool isDirectParentOf(Identifier* identifier);
+            bool isA(const Identifier* identifier) const;
+            bool isDirectlyA(const Identifier* identifier) const;
+            bool isChildOf(const Identifier* identifier) const;
+            bool isDirectChildOf(const Identifier* identifier) const;
+            bool isParentOf(const Identifier* identifier) const;
+            bool isDirectParentOf(const Identifier* identifier) const;
 
-            std::string getName() { return this->name_; }
-            IdentifierList* getDirectParents() { return &(this->directParents_); }
-            IdentifierList* getAllParents() { return &(this->allParents_); }
-            IdentifierList* getDirectChildren() { return &(this->directChildren_); }
-            IdentifierList* getAllChildren() { return &(this->allChildren_); }
+            const std::string& getName() const { return this->name_; }
+            const IdentifierList* getDirectParents() const { return this->directParents_; }
+            const IdentifierList* getAllParents() const { return this->allParents_; }
+            const IdentifierList* getDirectChildren() const { return this->directChildren_; }
+            const IdentifierList* getAllChildren() const { return this->allChildren_; }
 
             static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
@@ -49,7 +49,7 @@ namespace orxonox
             Identifier();
             Identifier(const Identifier& identifier) {}
             virtual ~Identifier();
-            void initialize(IdentifierList* parents);
+            void initialize(const IdentifierList* parents);
 
             static void startCreatingHierarchy()
             {
@@ -67,10 +67,10 @@ namespace orxonox
 #endif
             }
 
-            IdentifierList directParents_;
-            IdentifierList allParents_;
-            IdentifierList directChildren_;
-            IdentifierList allChildren_;
+            IdentifierList* directParents_;
+            IdentifierList* allParents_;
+            IdentifierList* directChildren_;
+            IdentifierList* allChildren_;
 
             std::string name_;
 
@@ -91,12 +91,12 @@ namespace orxonox
         friend class Iterator;
 
         public:
-            static ClassIdentifier<T>* registerClass(IdentifierList* parents, std::string name, bool bRootClass, bool bIsAbstractClass);
+            static ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass, bool bIsAbstractClass);
             static ClassIdentifier<T>* getIdentifier();
-            BaseObject* fabricate();
-            T* fabricateClass();
+            BaseObject* fabricate() const;
+            T* fabricateClass() const;
             static void addObject(T* object);
-            void removeObject(OrxonoxClass* object);
+            void removeObject(OrxonoxClass* object) const;
 
         private:
             ClassIdentifier();
@@ -104,7 +104,7 @@ namespace orxonox
             ~ClassIdentifier();
 
             static ClassIdentifier<T>* pointer_s;
-            ObjectList<T> objects_s;
+            ObjectList<T>* objects_;
     };
 
     template <class T>
@@ -113,22 +113,24 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>::ClassIdentifier()
     {
+        this->objects_ = new ObjectList<T>;
     }
 
     template <class T>
     ClassIdentifier<T>::~ClassIdentifier()
     {
+        delete this->objects_;
         this->pointer_s = NULL;
     }
 
     template <class T>
-    BaseObject* ClassIdentifier<T>::fabricate()
+    BaseObject* ClassIdentifier<T>::fabricate() const
     {
         return dynamic_cast<BaseObject*>(this->fabricateClass());
     }
 
     template <class T>
-    T* ClassIdentifier<T>::fabricateClass()
+    T* ClassIdentifier<T>::fabricateClass() const
     {
         if (!this->bIsAbstractClass_)
         {
@@ -143,7 +145,7 @@ namespace orxonox
     }
 
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(IdentifierList* parents, std::string name, bool bRootClass, bool bIsAbstractClass)
+    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass, bool bIsAbstractClass)
     {
 #if HIERARCHY_VERBOSE
         std::cout << "*** Register Class in " << name << "-Singleton.\n";
@@ -201,11 +203,11 @@ namespace orxonox
 #if HIERARCHY_VERBOSE
         std::cout << "*** Added object to " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
 #endif
-        ClassIdentifier<T>::getIdentifier()->objects_s.add(object);
+        ClassIdentifier<T>::getIdentifier()->objects_->add(object);
     }
 
     template <class T>
-    void ClassIdentifier<T>::removeObject(OrxonoxClass* object)
+    void ClassIdentifier<T>::removeObject(OrxonoxClass* object) const
     {
         bool bIterateForwards = !Identifier::isCreatingHierarchy();
 
@@ -216,9 +218,9 @@ namespace orxonox
             std::cout << "*** Removed object from " << this->name_ << "-list, iterating backwards.\n";
 #endif
 
-        this->objects_s.remove(object, bIterateForwards);
+        this->objects_->remove(object, bIterateForwards);
 
-        IdentifierListElement* temp = this->directParents_.first_;
+        IdentifierListElement* temp = this->directParents_->first_;
         while (temp)
         {
             temp->identifier_->removeObject(object);
@@ -284,19 +286,19 @@ namespace orxonox
                 }
             }
 
-            inline Identifier* getIdentifier()
+            inline const Identifier* getIdentifier() const
                 { return this->identifier_; }
-            inline bool isA(Identifier* identifier)
+            inline bool isA(const Identifier* identifier) const
                 { return this->identifier_->isA(identifier); }
-            inline bool isDirectlyA(Identifier* identifier)
+            inline bool isDirectlyA(const Identifier* identifier) const
                 { return this->identifier_->isDirectlyA(identifier); }
-            inline bool isChildOf(Identifier* identifier)
+            inline bool isChildOf(const Identifier* identifier) const
                 { return this->identifier_->isChildOf(identifier); }
-            inline bool isDirectChildOf(Identifier* identifier)
+            inline bool isDirectChildOf(const Identifier* identifier) const
                 { return this->identifier_->isDirectChildOf(identifier); }
-            inline bool isParentOf(Identifier* identifier)
+            inline bool isParentOf(const Identifier* identifier) const
                 { return this->identifier_->isParentOf(identifier); }
-            inline bool isDirectParentOf(Identifier* identifier)
+            inline bool isDirectParentOf(const Identifier* identifier) const
                 { return this->identifier_->isDirectParentOf(identifier); }
 
         private:

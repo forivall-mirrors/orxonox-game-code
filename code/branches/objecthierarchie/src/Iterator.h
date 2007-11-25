@@ -9,8 +9,8 @@ namespace orxonox
         public:
             Iterator()
             {
-                this->elementForwards_ = ClassIdentifier<T>::getIdentifier()->objects_s.first_;
-                this->elementBackwards_ = ClassIdentifier<T>::getIdentifier()->objects_s.last_;
+                this->elementForwards_ = ClassIdentifier<T>::getIdentifier()->objects_->first_;
+                this->elementBackwards_ = ClassIdentifier<T>::getIdentifier()->objects_->last_;
                 this->iteratingForwards_ = true;
             }
 

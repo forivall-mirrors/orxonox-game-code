@@ -10,10 +10,10 @@ namespace orxonox
     class IdentifierListElement
     {
         public:
-            IdentifierListElement(Identifier* identifier);
+            IdentifierListElement(const Identifier* identifier);
             ~IdentifierListElement();
 
-            Identifier* identifier_;
+            const Identifier* identifier_;
             IdentifierListElement* next_;
             bool bDirect_;
     };
@@ -23,9 +23,9 @@ namespace orxonox
         public:
             IdentifierList();
             ~IdentifierList();
-            void add(Identifier* identifier);
-            void remove(Identifier* identifier);
-            bool isInList(Identifier* identifier);
+            void add(const Identifier* identifier);
+            void remove(const Identifier* identifier);
+            bool isInList(const Identifier* identifier);
             std::string toString();
 
             IdentifierListElement* first_;
