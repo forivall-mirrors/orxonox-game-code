@@ -27,21 +27,18 @@ namespace orxonox
 
         public:
             virtual void removeObject(OrxonoxClass* object) const = 0;
+            virtual void removeObjectIntern(OrxonoxClass* object, bool bIterateForwards) const = 0;
 
             virtual BaseObject* fabricate() const = 0;
 
             bool isA(const Identifier* identifier) const;
             bool isDirectlyA(const Identifier* identifier) const;
             bool isChildOf(const Identifier* identifier) const;
-            bool isDirectChildOf(const Identifier* identifier) const;
             bool isParentOf(const Identifier* identifier) const;
-            bool isDirectParentOf(const Identifier* identifier) const;
 
             const std::string& getName() const { return this->name_; }
-            const IdentifierList& getDirectParents() const { return this->directParents_; }
-            const IdentifierList& getAllParents() const { return this->allParents_; }
-            IdentifierList& getDirectChildren() const { return *this->directChildren_; }
-            IdentifierList& getAllChildren() const { return *this->allChildren_; }
+            const IdentifierList& getParents() const { return this->parents_; }
+            IdentifierList& getChildren() const { return *this->children_; }
 
             static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
@@ -67,10 +64,8 @@ namespace orxonox
 #endif
             }
 
-            IdentifierList directParents_;
-            IdentifierList allParents_;
-            IdentifierList* directChildren_;
-            IdentifierList* allChildren_;
+            IdentifierList parents_;
+            IdentifierList* children_;
 
             std::string name_;
 
@@ -97,6 +92,7 @@ namespace orxonox
             T* fabricateClass() const;
             static void addObject(T* object);
             void removeObject(OrxonoxClass* object) const;
+            void removeObjectIntern(OrxonoxClass* object, bool bIterateForwards) const;
 
         private:
             ClassIdentifier();
@@ -211,6 +207,19 @@ namespace orxonox
     {
         bool bIterateForwards = !Identifier::isCreatingHierarchy();
 
+        this->removeObjectIntern(object, bIterateForwards);
+
+        IdentifierListElement* temp = this->parents_.first_;
+        while (temp)
+        {
+            temp->identifier_->removeObjectIntern(object, bIterateForwards);
+            temp = temp->next_;
+        }
+    }
+
+    template <class T>
+    void ClassIdentifier<T>::removeObjectIntern(OrxonoxClass* object, bool bIterateForwards) const
+    {
 #if HIERARCHY_VERBOSE
         if (bIterateForwards)
             std::cout << "*** Removed object from " << this->name_ << "-list, iterating forwards.\n";
@@ -219,13 +228,6 @@ namespace orxonox
 #endif
 
         this->objects_->remove(object, bIterateForwards);
-
-        IdentifierListElement* temp = this->directParents_.first_;
-        while (temp)
-        {
-            temp->identifier_->removeObject(object);
-            temp = temp->next_;
-        }
     }
 
 
@@ -294,12 +296,8 @@ namespace orxonox
                 { return this->identifier_->isDirectlyA(identifier); }
             inline bool isChildOf(const Identifier* identifier) const
                 { return this->identifier_->isChildOf(identifier); }
-            inline bool isDirectChildOf(const Identifier* identifier) const
-                { return this->identifier_->isDirectChildOf(identifier); }
             inline bool isParentOf(const Identifier* identifier) const
                 { return this->identifier_->isParentOf(identifier); }
-            inline bool isDirectParentOf(const Identifier* identifier) const
-                { return this->identifier_->isDirectParentOf(identifier); }
 
         private:
             Identifier* identifier_;

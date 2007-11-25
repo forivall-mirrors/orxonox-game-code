@@ -146,12 +146,11 @@ namespace orxonox
         A3B1C2* test5_16 = new A3B1C2();
         A3B2C1* test5_17 = new A3B2C1();
         A3B2C2* test5_18 = new A3B2C2();
-*/
-/*
+
         OrxonoxClass* test5;
         for (int i = 0; i <= 18; i++)
         {
-          if (i == 0) test5 = test1;
+          if (i == 0) test5 = new BaseObject;
           if (i == 1) test5 = test5_01;
           if (i == 2) test5 = test5_02;
           if (i == 3) test5 = test5_03;
@@ -172,10 +171,8 @@ namespace orxonox
           if (i == 18) test5 = test5_18;
 
           std::cout << "\n";
-          std::cout << test5->getIdentifier()->getName() << ": directParents:  " << test5->getIdentifier()->getDirectParents()->toString() << "\n";
-          std::cout << test5->getIdentifier()->getName() << ": allParents:     " << test5->getIdentifier()->getAllParents()->toString() << "\n";
-          std::cout << test5->getIdentifier()->getName() << ": directChildren: " << test5->getIdentifier()->getDirectChildren()->toString() << "\n";
-          std::cout << test5->getIdentifier()->getName() << ": allChildren:    " << test5->getIdentifier()->getAllChildren()->toString() << "\n";
+          std::cout << test5->getIdentifier()->getName() << ": parents:     " << test5->getIdentifier()->getParents().toString() << "\n";
+          std::cout << test5->getIdentifier()->getName() << ": children:    " << test5->getIdentifier()->getChildren().toString() << "\n";
         }
 */
 
@@ -283,54 +280,6 @@ namespace orxonox
         testandcout(test5_09->isChildOf(Class(A1B1C2)));
 
         std::cout << "\n";
-        std::cout << "isDirectChildOf(XYZ)-Test:\n";
-        std::cout << "test5_04 = A1B1, Erwartet: 1 0 0 0 0 0 0\n";
-        testandcout(test5_04->isDirectChildOf(Class(A1)));
-        testandcout(test5_04->isDirectChildOf(Class(A2)));
-        testandcout(test5_04->isDirectChildOf(Class(BaseObject)));
-        testandcout(test5_04->isDirectChildOf(Class(Interface1)));
-        testandcout(test5_04->isDirectChildOf(Class(Interface2)));
-        testandcout(test5_04->isDirectChildOf(Class(A1B1C2)));
-        testandcout(test5_04->isDirectChildOf(Class(A1B1)));
-
-        std::cout << "\n";
-        std::cout << "test5_06 = A2B1, Erwartet: 0 1 0 0 0 0 0\n";
-        testandcout(test5_06->isDirectChildOf(Class(A1)));
-        testandcout(test5_06->isDirectChildOf(Class(A2)));
-        testandcout(test5_06->isDirectChildOf(Class(BaseObject)));
-        testandcout(test5_06->isDirectChildOf(Class(Interface1)));
-        testandcout(test5_06->isDirectChildOf(Class(Interface2)));
-        testandcout(test5_06->isDirectChildOf(Class(A1B1C2)));
-        testandcout(test5_06->isDirectChildOf(Class(A1B1)));
-
-        std::cout << "\n";
-        std::cout << "test5_07 = A2B2, Erwartet: 0 1 0 1 0 0\n";
-        testandcout(test5_07->isDirectChildOf(Class(A1)));
-        testandcout(test5_07->isDirectChildOf(Class(A2)));
-        testandcout(test5_07->isDirectChildOf(Class(BaseObject)));
-        testandcout(test5_07->isDirectChildOf(Class(Interface1)));
-        testandcout(test5_07->isDirectChildOf(Class(Interface2)));
-        testandcout(test5_07->isDirectChildOf(Class(A1B1C2)));
-
-        std::cout << "\n";
-        std::cout << "test5_08 = A3B1, Erwartet: 0 0 0 0 0 0\n";
-        testandcout(test5_08->isDirectChildOf(Class(A1)));
-        testandcout(test5_08->isDirectChildOf(Class(A2)));
-        testandcout(test5_08->isDirectChildOf(Class(BaseObject)));
-        testandcout(test5_08->isDirectChildOf(Class(Interface1)));
-        testandcout(test5_08->isDirectChildOf(Class(Interface2)));
-        testandcout(test5_08->isDirectChildOf(Class(A1B1C2)));
-
-        std::cout << "\n";
-        std::cout << "test5_09 = A3B2, Erwartet: 0 0 0 0 1 0\n";
-        testandcout(test5_09->isDirectChildOf(Class(A1)));
-        testandcout(test5_09->isDirectChildOf(Class(A2)));
-        testandcout(test5_09->isDirectChildOf(Class(BaseObject)));
-        testandcout(test5_09->isDirectChildOf(Class(Interface1)));
-        testandcout(test5_09->isDirectChildOf(Class(Interface2)));
-        testandcout(test5_09->isDirectChildOf(Class(A1B1C2)));
-
-        std::cout << "\n";
         std::cout << "isParentOf(XYZ)-Test:\n";
         std::cout << "test1 = BaseObject, Erwartet: 0 0 1 1 1 1 1\n";
         testandcout(test1->isParentOf(Class(BaseObject)));
@@ -360,37 +309,6 @@ namespace orxonox
         testandcout(Class(Interface1)->isParentOf(Class(A1B1)));
         testandcout(Class(Interface1)->isParentOf(Class(A2B2)));
         testandcout(Class(Interface1)->isParentOf(Class(A3B1C2)));
-
-        std::cout << "\n";
-        std::cout << "isDirectParentOf(XYZ)-Test:\n";
-        std::cout << "test1 = BaseObject, Erwartet: 0 0 1 1 0 0 0\n";
-        testandcout(test1->isDirectParentOf(Class(BaseObject)));
-        testandcout(test1->isDirectParentOf(Class(Interface1)));
-        testandcout(test1->isDirectParentOf(Class(A1)));
-        testandcout(test1->isDirectParentOf(Class(A2)));
-        testandcout(test1->isDirectParentOf(Class(A1B1)));
-        testandcout(test1->isDirectParentOf(Class(A2B2)));
-        testandcout(test1->isDirectParentOf(Class(A3B1C2)));
-
-        std::cout << "\n";
-        std::cout << "test5_01 = A1, Erwartet: 0 0 0 0 1 0 0\n";
-        testandcout(test5_01->isDirectParentOf(Class(BaseObject)));
-        testandcout(test5_01->isDirectParentOf(Class(Interface1)));
-        testandcout(test5_01->isDirectParentOf(Class(A1)));
-        testandcout(test5_01->isDirectParentOf(Class(A2)));
-        testandcout(test5_01->isDirectParentOf(Class(A1B1)));
-        testandcout(test5_01->isDirectParentOf(Class(A2B2)));
-        testandcout(test5_01->isDirectParentOf(Class(A3B1C2)));
-
-        std::cout << "\n";
-        std::cout << "Interface1, Erwartet: 0 0 0 0 0 1 0\n";
-        testandcout(Class(Interface1)->isDirectParentOf(Class(BaseObject)));
-        testandcout(Class(Interface1)->isDirectParentOf(Class(Interface1)));
-        testandcout(Class(Interface1)->isDirectParentOf(Class(A1)));
-        testandcout(Class(Interface1)->isDirectParentOf(Class(A2)));
-        testandcout(Class(Interface1)->isDirectParentOf(Class(A1B1)));
-        testandcout(Class(Interface1)->isDirectParentOf(Class(A2B2)));
-        testandcout(Class(Interface1)->isDirectParentOf(Class(A3B1C2)));
 */
 /*
         std::cout << "Test 6\n";
@@ -406,38 +324,29 @@ namespace orxonox
         Identifier* test6_05 = Class(A1B1);
         std::cout << "6:\n";
         Identifier* test6_06 = Class(A1B1C1);
-*/
-/*
-        std::cout << "\n";
-        std::cout << "BaseObject: directParents:  " << Class(BaseObject)->getDirectParents()->toString() << "\n";
-        std::cout << "BaseObject: allParents:     " << Class(BaseObject)->getAllParents()->toString() << "\n";
-        std::cout << "BaseObject: directChildren: " << Class(BaseObject)->getDirectChildren()->toString() << "\n";
-        std::cout << "BaseObject: allChildren:    " << Class(BaseObject)->getAllChildren()->toString() << "\n";
 
         std::cout << "\n";
-        std::cout << "A1: directParents:  " << Class(A1)->getDirectParents()->toString() << "\n";
-        std::cout << "A1: allParents:     " << Class(A1)->getAllParents()->toString() << "\n";
-        std::cout << "A1: directChildren: " << Class(A1)->getDirectChildren()->toString() << "\n";
-        std::cout << "A1: allChildren:    " << Class(A1)->getAllChildren()->toString() << "\n";
+        std::cout << "BaseObject: parents:     " << Class(BaseObject)->getParents().toString() << "\n";
+        std::cout << "BaseObject: children:    " << Class(BaseObject)->getChildren().toString() << "\n";
 
         std::cout << "\n";
-        std::cout << "A1B1: directParents:  " << Class(A1B1)->getDirectParents()->toString() << "\n";
-        std::cout << "A1B1: allParents:     " << Class(A1B1)->getAllParents()->toString() << "\n";
-        std::cout << "A1B1: directChildren: " << Class(A1B1)->getDirectChildren()->toString() << "\n";
-        std::cout << "A1B1: allChildren:    " << Class(A1B1)->getAllChildren()->toString() << "\n";
+        std::cout << "A1: parents:     " << Class(A1)->getParents().toString() << "\n";
+        std::cout << "A1: children:    " << Class(A1)->getChildren().toString() << "\n";
 
         std::cout << "\n";
-        std::cout << "A1B1C1: directParents:  " << Class(A1B1C1)->getDirectParents()->toString() << "\n";
-        std::cout << "A1B1C1: allParents:     " << Class(A1B1C1)->getAllParents()->toString() << "\n";
-        std::cout << "A1B1C1: directChildren: " << Class(A1B1C1)->getDirectChildren()->toString() << "\n";
-        std::cout << "A1B1C1: allChildren:    " << Class(A1B1C1)->getAllChildren()->toString() << "\n";
+        std::cout << "A1B1: parents:     " << Class(A1B1)->getParents().toString() << "\n";
+        std::cout << "A1B1: children:    " << Class(A1B1)->getChildren().toString() << "\n";
+
+        std::cout << "\n";
+        std::cout << "A1B1C1: parents:     " << Class(A1B1C1)->getParents().toString() << "\n";
+        std::cout << "A1B1C1: children:    " << Class(A1B1C1)->getChildren().toString() << "\n";
 
         std::cout << "\n";
         std::cout << "A3B1C1 child of A3:  " << Class(A3B1C1)->isChildOf(Class(A3)) << "\n";
         std::cout << "\n";
         std::cout << "A2 parent of A2B1C1: " << Class(A2)->isParentOf(Class(A2B1C1)) << "\n";
-*/
-/*
+
+
         std::cout << "Test 7\n";
         std::cout << "1\n";
         SubclassIdentifier<A1B1> test7_01;
@@ -526,6 +435,7 @@ namespace orxonox
         delete test9_05;
         delete test9_06;
 */
+
         std::cout << "Test 10\n";
         Identifier* test10_01 = Class(A1B2);
         Identifier* test10_02 = Class(A2);
@@ -623,6 +533,7 @@ namespace orxonox
         std::cout << "12\n";
         for (Iterator<A2B1C1> it; it; --it)
             std::cout << "Name: " << it->name_ << "\n";
+
 
       }
 

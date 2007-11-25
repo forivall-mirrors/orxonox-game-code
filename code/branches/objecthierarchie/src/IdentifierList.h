@@ -15,7 +15,6 @@ namespace orxonox
 
             const Identifier* identifier_;
             IdentifierListElement* next_;
-            bool bDirect_;
     };
 
     class IdentifierList

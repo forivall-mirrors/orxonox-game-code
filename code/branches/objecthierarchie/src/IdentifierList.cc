@@ -97,7 +97,6 @@ namespace orxonox
     {
         this->identifier_ = identifier;
         this->next_ = 0;
-        this->bDirect_ = true;
     }
 
     IdentifierListElement::~IdentifierListElement()
