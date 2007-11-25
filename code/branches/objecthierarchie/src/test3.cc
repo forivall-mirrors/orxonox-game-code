@@ -8,7 +8,7 @@ namespace orxonox
 
     Test3::Test3()
     {
-        registerObject(Test3);
+        RegisterObject(Test3);
     }
 
     Test3::~Test3()

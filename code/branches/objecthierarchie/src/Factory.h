@@ -6,22 +6,34 @@
 
 namespace orxonox
 {
-    class Identifier;
     class BaseObject;
+    class Identifier;
 
-    class ClassFactory
+    // ###############################
+    // ###         Factory         ###
+    // ###############################
+    class Factory
     {
         public:
-            static BaseObject* fabricate(const std::string& name);
+            static Identifier* getIdentifier(const std::string& name);
             static void add(const std::string& name, Identifier* identifier);
 
         private:
-            ClassFactory() {}
-            ClassFactory(const ClassFactory& factory) {}
-            ~ClassFactory() {}
+            Factory() {}
+            Factory(const Factory& factory) {}
+            ~Factory() {}
 
-            static ClassFactory* pointer_s;
+            static Factory* pointer_s;
             std::map<std::string, Identifier*> identifierMap_;
+    };
+
+    // ###############################
+    // ###       BaseFactory       ###
+    // ###############################
+    class BaseFactory
+    {
+        public:
+            virtual BaseObject* fabricate() = 0;
     };
 }
 

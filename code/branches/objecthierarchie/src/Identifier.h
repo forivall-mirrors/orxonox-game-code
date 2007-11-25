@@ -7,7 +7,7 @@
 #include "ObjectList.h"
 #include "Factory.h"
 
-#define HIERARCHY_VERBOSE false
+#define HIERARCHY_VERBOSE true
 
 
 namespace orxonox
@@ -25,22 +25,26 @@ namespace orxonox
         template <class T>
         friend class SubclassIdentifier;
 
+        template <class T>
+        friend class ClassFactory;
+
         public:
             virtual void removeObject(OrxonoxClass* object) const = 0;
             virtual void removeObjectIntern(OrxonoxClass* object, bool bIterateForwards) const = 0;
 
-            virtual BaseObject* fabricate() const = 0;
+            inline void addFactory(BaseFactory* factory) { this->factory_ = factory; }
+            BaseObject* fabricate();
 
             bool isA(const Identifier* identifier) const;
             bool isDirectlyA(const Identifier* identifier) const;
             bool isChildOf(const Identifier* identifier) const;
             bool isParentOf(const Identifier* identifier) const;
 
-            const std::string& getName() const { return this->name_; }
-            const IdentifierList& getParents() const { return this->parents_; }
-            IdentifierList& getChildren() const { return *this->children_; }
+            inline const std::string& getName() const { return this->name_; }
+            inline const IdentifierList& getParents() const { return this->parents_; }
+            inline IdentifierList& getChildren() const { return *this->children_; }
 
-            static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
+            inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
         private:
             Identifier();
@@ -48,7 +52,7 @@ namespace orxonox
             virtual ~Identifier();
             void initialize(const IdentifierList* parents);
 
-            static void startCreatingHierarchy()
+            inline static void startCreatingHierarchy()
             {
                 hierarchyCreatingCounter_s++;
 #if HIERARCHY_VERBOSE
@@ -56,7 +60,7 @@ namespace orxonox
 #endif
             }
 
-            static void stopCreatingHierarchy()
+            inline static void stopCreatingHierarchy()
             {
                 hierarchyCreatingCounter_s--;
 #if HIERARCHY_VERBOSE
@@ -69,9 +73,8 @@ namespace orxonox
 
             std::string name_;
 
-            bool bIsAbstractClass_;
+            BaseFactory* factory_;
             bool bCreatedOneObject_;
-
             static int hierarchyCreatingCounter_s;
     };
 
@@ -86,10 +89,8 @@ namespace orxonox
         friend class Iterator;
 
         public:
-            static ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass, bool bIsAbstractClass);
+            static ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass);
             static ClassIdentifier<T>* getIdentifier();
-            BaseObject* fabricate() const;
-            T* fabricateClass() const;
             static void addObject(T* object);
             void removeObject(OrxonoxClass* object) const;
             void removeObjectIntern(OrxonoxClass* object, bool bIterateForwards) const;
@@ -120,28 +121,7 @@ namespace orxonox
     }
 
     template <class T>
-    BaseObject* ClassIdentifier<T>::fabricate() const
-    {
-        return dynamic_cast<BaseObject*>(this->fabricateClass());
-    }
-
-    template <class T>
-    T* ClassIdentifier<T>::fabricateClass() const
-    {
-        if (!this->bIsAbstractClass_)
-        {
-            return new T;
-        }
-        else
-        {
-            std::cout << "Error: Couldn't create a new Object - Class " << this->name_ << " is abstract!\n";
-            std::cout << "Aborting...\n";
-            abort();
-        }
-    }
-
-    template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass, bool bIsAbstractClass)
+    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass)
     {
 #if HIERARCHY_VERBOSE
         std::cout << "*** Register Class in " << name << "-Singleton.\n";
@@ -151,23 +131,21 @@ namespace orxonox
 #if HIERARCHY_VERBOSE
             std::cout << "*** Register Class in " << name << "-Singleton -> Create Singleton.\n";
 #endif
-            if (parents || bRootClass)
-            {
-                pointer_s = new ClassIdentifier();
-                pointer_s->name_ = name;
-                pointer_s->bIsAbstractClass_ = bIsAbstractClass;
+            pointer_s = new ClassIdentifier();
+        }
 
-                ClassFactory::add(name, pointer_s);
+        if (!pointer_s->bCreatedOneObject_)
+        {
+#if HIERARCHY_VERBOSE
+            std::cout << "*** Register Class in " << name << "-Singleton -> Initialize Singleton.\n";
+#endif
+            pointer_s->name_ = name;
+            Factory::add(name, pointer_s);
 
-                if (!bRootClass)
-                    pointer_s->initialize(parents);
-                else
-                    pointer_s->initialize(NULL);
-            }
+            if (bRootClass)
+                pointer_s->initialize(NULL);
             else
-            {
-                pointer_s = getIdentifier();
-            }
+                pointer_s->initialize(parents);
         }
 
         return pointer_s;
@@ -176,18 +154,12 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
-#if HIERARCHY_VERBOSE
-//        std::cout << "*** Get Identifier.\n";
-#endif
         if (!pointer_s)
         {
 #if HIERARCHY_VERBOSE
-            std::cout << "*** Get Identifier -> Create Class\n";
+            std::cout << "*** Create Singleton.\n";
 #endif
-            Identifier::startCreatingHierarchy();
-            T* temp = new T();
-            delete temp;
-            Identifier::stopCreatingHierarchy();
+            pointer_s = new ClassIdentifier();
         }
 
         return pointer_s;

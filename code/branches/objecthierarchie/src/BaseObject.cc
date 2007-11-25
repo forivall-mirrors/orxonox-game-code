@@ -6,11 +6,11 @@ namespace orxonox
 
     BaseObject::BaseObject()
     {
-        registerRootObject(BaseObject);
+        RegisterRootObject(BaseObject);
     }
 
     BaseObject::~BaseObject()
     {
-        unregisterObject();
+        UnregisterObject();
     }
 }

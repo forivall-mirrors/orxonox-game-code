@@ -10,6 +10,7 @@ namespace orxonox
     Identifier::Identifier()
     {
         this->bCreatedOneObject_ = false;
+        this->factory_ = 0;
 
         this->children_ = new IdentifierList;
     }
@@ -26,10 +27,10 @@ namespace orxonox
 #if HIERARCHY_VERBOSE
         std::cout << "*** Initialize " << this->name_ << "-Singleton.\n";
 #endif
+        this->bCreatedOneObject_ = true;
+
         if (parents)
         {
-            this->bCreatedOneObject_ = true;
-
             IdentifierListElement* temp1 = parents->first_;
             while (temp1)
             {
@@ -38,6 +39,20 @@ namespace orxonox
 
                 temp1 = temp1->next_;
             }
+        }
+    }
+
+    BaseObject* Identifier::fabricate()
+    {
+        if (this->factory_)
+        {
+            return this->factory_->fabricate();
+        }
+        else
+        {
+            std::cout << "Error: Cannot create an object of type '" << this->name_ << "'. Class is abstract.\n";
+            std::cout << "Aborting...";
+            abort();
         }
     }
 

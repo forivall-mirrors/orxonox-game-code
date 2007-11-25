@@ -8,7 +8,7 @@ namespace orxonox
 
     Test1::Test1()
     {
-        registerObject(Test1);
+        RegisterObject(Test1);
 
         this->usefullClass1_ = Class(Test1);
         this->usefullClass2_ = Class(Test2);

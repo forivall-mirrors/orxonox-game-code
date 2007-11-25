@@ -101,6 +101,10 @@ namespace orxonox
         createFrameListener();
         startRenderLoop();
 */
+
+        #define testandcout(code) \
+          std::cout << #code << " " << code << "\n"
+
 /*
         std::cout << "Test 1\n";
         BaseObject* test1;
@@ -175,10 +179,6 @@ namespace orxonox
           std::cout << test5->getIdentifier()->getName() << ": children:    " << test5->getIdentifier()->getChildren().toString() << "\n";
         }
 */
-
-        #define testandcout(code) \
-          std::cout << #code << " " << code << "\n"
-
 /*
         std::cout << "\n";
         std::cout << "isA(XYZ)-Test:\n";
@@ -204,7 +204,6 @@ namespace orxonox
         testandcout(test5_03->isA(Class(A1B1)));
         testandcout(test5_03->isA(Class(BaseObject)));
         testandcout(test5_03->isA(Class(Interface1)));
-
 
         std::cout << "\n";
         std::cout << "isDirectA(XYZ)-Test:\n";
@@ -345,8 +344,8 @@ namespace orxonox
         std::cout << "A3B1C1 child of A3:  " << Class(A3B1C1)->isChildOf(Class(A3)) << "\n";
         std::cout << "\n";
         std::cout << "A2 parent of A2B1C1: " << Class(A2)->isParentOf(Class(A2B1C1)) << "\n";
-
-
+*/
+/*
         std::cout << "Test 7\n";
         std::cout << "1\n";
         SubclassIdentifier<A1B1> test7_01;
@@ -426,7 +425,7 @@ namespace orxonox
         std::cout << test9_05->getIdentifier()->getName() << "\n";
 
         std::cout << "\n4\n";
-        BaseObject* test9_06 = Factory("A2B2");
+        BaseObject* test9_06 = ID("A2B2")->fabricate();
         std::cout << test9_06->getIdentifier()->getName() << "\n";
 
         std::cout << "\n5\n";
@@ -435,7 +434,7 @@ namespace orxonox
         delete test9_05;
         delete test9_06;
 */
-
+/*
         std::cout << "Test 10\n";
         Identifier* test10_01 = Class(A1B2);
         Identifier* test10_02 = Class(A2);
@@ -448,7 +447,7 @@ namespace orxonox
 
         BaseObject* test10_07;
         for (int i = 0; i < 10; i++)
-            test10_07 = Factory("A1B1C1");
+            test10_07 = ID("A1B1C1")->fabricate();
 
         std::cout << "1\n";
         int count = 0;
@@ -483,7 +482,7 @@ namespace orxonox
         BaseObject* test10_10;
         for (int i = 0; i < 10; i++)
         {
-            test10_08 = Factory("A2B1C1");
+            test10_08 = ID("A2B1C1")->fabricate();
             test10_08->name_ = "A2B1C1#";
             test10_08->name_ += ('0' + i);
 
@@ -533,7 +532,7 @@ namespace orxonox
         std::cout << "12\n";
         for (Iterator<A2B1C1> it; it; --it)
             std::cout << "Name: " << it->name_ << "\n";
-
+*/
 
       }
 

@@ -4,20 +4,20 @@
 
 namespace orxonox
 {
-    ClassFactory* ClassFactory::pointer_s = NULL;
+    Factory* Factory::pointer_s = NULL;
 
-    BaseObject* ClassFactory::fabricate(const std::string& name)
+    Identifier* Factory::getIdentifier(const std::string& name)
     {
         if (!pointer_s)
-            pointer_s = new ClassFactory;
+            pointer_s = new Factory;
 
-        return pointer_s->identifierMap_[name]->fabricate();
+        return pointer_s->identifierMap_[name];
     }
 
-    void ClassFactory::add(const std::string& name, Identifier* identifier)
+    void Factory::add(const std::string& name, Identifier* identifier)
     {
         if (!pointer_s)
-            pointer_s = new ClassFactory;
+            pointer_s = new Factory;
 
         pointer_s->identifierMap_[name] = identifier;
     }
