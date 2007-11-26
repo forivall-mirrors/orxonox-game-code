@@ -38,6 +38,9 @@ namespace orxonox
     // ###       ObjectList        ###
     // ###############################
     template <class T>
+    class Iterator;
+
+    template <class T>
     class ObjectList
     {
         public:
@@ -46,15 +49,28 @@ namespace orxonox
             ObjectListElement<T>* add(T* object);
             void remove(OrxonoxClass* object, bool bIterateForwards = true);
 
+            inline static Iterator<T> start()
+                { Iterator<T>(pointer_s->first_); }
+            inline static Iterator<T> end()
+                { Iterator<T>(pointer_s->last_); }
+
             ObjectListElement<T>* first_;
             ObjectListElement<T>* last_;
+
+        private:
+            static ObjectList<T>* pointer_s;
     };
+
+    template <class T>
+    ObjectList<T>* ObjectList<T>::pointer_s = 0;
 
     template <class T>
     ObjectList<T>::ObjectList()
     {
         this->first_ = 0;
         this->last_ = 0;
+
+        this->pointer_s = this;
     }
 
     template <class T>

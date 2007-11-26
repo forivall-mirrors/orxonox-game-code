@@ -9,81 +9,40 @@ namespace orxonox
         public:
             Iterator()
             {
-                this->elementForwards_ = ClassIdentifier<T>::getIdentifier()->objects_->first_;
-                this->elementBackwards_ = ClassIdentifier<T>::getIdentifier()->objects_->last_;
-                this->iteratingForwards_ = true;
+                this->element_ = 0;
             }
 
-            Iterator<T> operator++(int step)
+            Iterator(ObjectListElement<T>* element)
             {
-                Iterator<T> copy = *this;
-
-                if (step < 1)
-                    step = 1;
-
-                for (int i = 0; i < step; i++)
-                    this->elementForwards_ = this->elementForwards_->next_;
-
-                return copy;
+                this->element_ = element;
             }
 
             Iterator<T> operator++()
             {
-                this->elementForwards_ = this->elementForwards_->next_;
+                this->element_ = this->element_->next_;
                 return *this;
-            }
-
-            Iterator<T> operator--(int step)
-            {
-                Iterator<T> copy = *this;
-
-                if (this->iteratingForwards_)
-                {
-                    this->iteratingForwards_ = false;
-                }
-                else
-                {
-                    if (step < 1)
-                        step = 1;
-
-                    for (int i = 0; i < step; i++)
-                        this->elementBackwards_ = this->elementBackwards_->prev_;
-                }
             }
 
             Iterator<T> operator--()
             {
-                if (this->iteratingForwards_)
-                    this->iteratingForwards_ = false;
-                else
-                    this->elementBackwards_ = this->elementBackwards_->prev_;
-
+                this->element_ = this->element_->prev_;
                 return *this;
             }
 
             T* operator*()
             {
-                if (this->iteratingForwards_)
-                    return this->elementForwards_->object_;
-                else
-                    return this->elementBackwards_->object_;
+                return this->element_->object_;
             }
 
             T* operator->() const
             {
-                if (this->iteratingForwards_)
-                    return this->elementForwards_->object_;
-                else
-                    return this->elementBackwards_->object_;
+                return this->element_->object_;
 
             }
 
             operator bool()
             {
-                if (this->iteratingForwards_)
-                    return (this->elementForwards_ != 0);
-                else
-                    return (this->elementBackwards_->prev_ != 0);
+                return (this->element_ != 0);
             }
 
             bool operator!=(int compare)
@@ -91,17 +50,11 @@ namespace orxonox
                 if (compare != 0)
                     std::cout << "Warning: Comparing the " << ClassIdentifier<T>::getIdentifier()->getName() << "-List-Iterator with " << compare << " has no effect. Only comparison with 0 works.\n";
 
-                if (this->iteratingForwards_)
-                    return (this->elementForwards_ != 0);
-                else
-                    return (this->elementBackwards_->prev_ != 0);
+                return (this->element_ != 0);
             }
 
-
         private:
-            ObjectListElement<T>* elementForwards_;
-            ObjectListElement<T>* elementBackwards_;
-            bool iteratingForwards_;
+            ObjectListElement<T>* element_;
     };
 }
 

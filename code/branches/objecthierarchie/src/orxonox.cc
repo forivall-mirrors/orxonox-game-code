@@ -434,7 +434,7 @@ namespace orxonox
         delete test9_05;
         delete test9_06;
 */
-/*
+
         std::cout << "Test 10\n";
         Identifier* test10_01 = Class(A1B2);
         Identifier* test10_02 = Class(A2);
@@ -450,15 +450,16 @@ namespace orxonox
 
         std::cout << "1\n";
         int count;
-        count = 0; for (Iterator<BaseObject> it; it != 0; ++it) { count++; }
+
+        count = 0; for (Iterator<BaseObject> it = ObjectList<BaseObject>::start(); it != 0; ++it) { count++; }
         std::cout << "Anzahl BaseObjects: " << count << "\n";
-        count = 0; for (Iterator<A1> it; it != 0; ++it) { count++; }
+        count = 0; for (Iterator<A1> it = ObjectList<A1>::start(); it != 0; ++it) { count++; }
         std::cout << "Anzahl A1: " << count << "\n";
-        count = 0; for (Iterator<A1B1> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A1B1> it = ObjectList<A1B1>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A1B1: " << count << "\n";
-        count = 0; for (Iterator<A1B1C1> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A1B1C1> it = ObjectList<A1B1C1>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A1B1C1: " << count << "\n";
-        count = 0; for (Iterator<A2> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A2> it = ObjectList<A2>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A2: " << count << "\n";
 
         std::cout << "2\n";
@@ -478,90 +479,90 @@ namespace orxonox
                 test10_10 = test10_08;
         }
 
-        count = 0; for (Iterator<BaseObject> it; it != 0; ++it) { count++; }
+        count = 0; for (Iterator<BaseObject> it = ObjectList<BaseObject>::start(); it != 0; ++it) { count++; }
         std::cout << "Anzahl BaseObjects: " << count << "\n";
-        count = 0; for (Iterator<A1> it; it != 0; ++it) { count++; }
+        count = 0; for (Iterator<A1> it = ObjectList<A1>::start(); it != 0; ++it) { count++; }
         std::cout << "Anzahl A1: " << count << "\n";
-        count = 0; for (Iterator<A1B1> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A1B1> it = ObjectList<A1B1>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A1B1: " << count << "\n";
-        count = 0; for (Iterator<A1B1C1> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A1B1C1> it = ObjectList<A1B1C1>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A1B1C1: " << count << "\n";
-        count = 0; for (Iterator<A2> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A2> it = ObjectList<A2>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A2: " << count << "\n";
 
-        for (Iterator<A2B1C1> it; it; ++it)
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
             std::cout << "Name: " << it->name_ << "\n";
 
         std::cout << "3\n";
-        for (Iterator<A2B1C1> it; it; --it)
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
             std::cout << "Name: " << it->name_ << "\n";
 
         std::cout << "4\n";
         delete test10_08;
 
-        count = 0; for (Iterator<BaseObject> it; it != 0; ++it) { count++; }
+        count = 0; for (Iterator<BaseObject> it = ObjectList<BaseObject>::start(); it != 0; ++it) { count++; }
         std::cout << "Anzahl BaseObjects: " << count << "\n";
-        count = 0; for (Iterator<A1> it; it != 0; ++it) { count++; }
+        count = 0; for (Iterator<A1> it = ObjectList<A1>::start(); it != 0; ++it) { count++; }
         std::cout << "Anzahl A1: " << count << "\n";
-        count = 0; for (Iterator<A1B1> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A1B1> it = ObjectList<A1B1>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A1B1: " << count << "\n";
-        count = 0; for (Iterator<A1B1C1> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A1B1C1> it = ObjectList<A1B1C1>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A1B1C1: " << count << "\n";
-        count = 0; for (Iterator<A2> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A2> it = ObjectList<A2>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A2: " << count << "\n";
 
         std::cout << "5\n";
-        for (Iterator<A2B1C1> it; it; ++it)
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
             std::cout << "Name: " << it->name_ << "\n";
 
         std::cout << "6\n";
-        for (Iterator<A2B1C1> it; it; --it)
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
             std::cout << "Name: " << it->name_ << "\n";
 
         std::cout << "7\n";
         delete test10_09;
 
-        count = 0; for (Iterator<BaseObject> it; it != 0; ++it) { count++; }
+        count = 0; for (Iterator<BaseObject> it = ObjectList<BaseObject>::end(); it != 0; --it) { count++; }
         std::cout << "Anzahl BaseObjects: " << count << "\n";
-        count = 0; for (Iterator<A1> it; it != 0; ++it) { count++; }
+        count = 0; for (Iterator<A1> it = ObjectList<A1>::end(); it != 0; --it) { count++; }
         std::cout << "Anzahl A1: " << count << "\n";
-        count = 0; for (Iterator<A1B1> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A1B1> it = ObjectList<A1B1>::end(); it; --it) { count++; }
         std::cout << "Anzahl A1B1: " << count << "\n";
-        count = 0; for (Iterator<A1B1C1> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A1B1C1> it = ObjectList<A1B1C1>::end(); it; --it) { count++; }
         std::cout << "Anzahl A1B1C1: " << count << "\n";
-        count = 0; for (Iterator<A2> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A2> it = ObjectList<A2>::end(); it; --it) { count++; }
         std::cout << "Anzahl A2: " << count << "\n";
 
         std::cout << "8\n";
-        for (Iterator<A2B1C1> it; it; ++it)
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
             std::cout << "Name: " << it->name_ << "\n";
 
         std::cout << "9\n";
-        for (Iterator<A2B1C1> it; it; --it)
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
             std::cout << "Name: " << it->name_ << "\n";
 
         std::cout << "10\n";
         delete test10_10;
 
-        count = 0; for (Iterator<BaseObject> it; it != 0; ++it) { count++; }
+        count = 0; for (Iterator<BaseObject> it = ObjectList<BaseObject>::start(); it != 0; ++it) { count++; }
         std::cout << "Anzahl BaseObjects: " << count << "\n";
-        count = 0; for (Iterator<A1> it; it != 0; ++it) { count++; }
+        count = 0; for (Iterator<A1> it = ObjectList<A1>::start(); it != 0; ++it) { count++; }
         std::cout << "Anzahl A1: " << count << "\n";
-        count = 0; for (Iterator<A1B1> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A1B1> it = ObjectList<A1B1>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A1B1: " << count << "\n";
-        count = 0; for (Iterator<A1B1C1> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A1B1C1> it = ObjectList<A1B1C1>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A1B1C1: " << count << "\n";
-        count = 0; for (Iterator<A2> it; it; ++it) { count++; }
+        count = 0; for (Iterator<A2> it = ObjectList<A2>::start(); it; ++it) { count++; }
         std::cout << "Anzahl A2: " << count << "\n";
 
         std::cout << "11\n";
-        for (Iterator<A2B1C1> it; it; ++it)
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
             std::cout << "Name: " << it->name_ << "\n";
 
         std::cout << "12\n";
-        for (Iterator<A2B1C1> it; it; --it)
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
             std::cout << "Name: " << it->name_ << "\n";
-*/
+
 
       }
 

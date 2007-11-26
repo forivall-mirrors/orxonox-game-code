@@ -1,8 +1,6 @@
 #include "Identifier.h"
 #include "Factory.h"
 #include "ClassFactory.h"
-//#include "IdentifierList.h"
-//#include "ObjectList.h"
 #include "Iterator.h"
 #include "OrxonoxClass.h"
 
