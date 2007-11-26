@@ -2,7 +2,7 @@
 #define _Test_H__
 
 #include "BaseObject.h"
-#include "IdentifierIncludes.h"
+#include "../core/IdentifierIncludes.h"
 
 namespace orxonox
 {

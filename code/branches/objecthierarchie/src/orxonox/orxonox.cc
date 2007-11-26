@@ -30,12 +30,12 @@
 #include <CEGUI/CEGUI.h>
 #include <OgreCEGUIRenderer.h>
 
-#include "IdentifierIncludes.h"
-#include "BaseObject.h"
-#include "Test.h"
-#include "test1.h"
-#include "test2.h"
-#include "test3.h"
+#include "core/IdentifierIncludes.h"
+#include "objects/BaseObject.h"
+#include "objects/Test.h"
+#include "objects/test1.h"
+#include "objects/test2.h"
+#include "objects/test3.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>

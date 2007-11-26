@@ -1,6 +1,5 @@
 #include "Factory.h"
 #include "Identifier.h"
-#include "BaseObject.h"
 
 namespace orxonox
 {
