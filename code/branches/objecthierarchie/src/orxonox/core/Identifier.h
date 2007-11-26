@@ -82,9 +82,6 @@ namespace orxonox
     template <class T>
     class ClassIdentifier : public Identifier
     {
-        template <class U>
-        friend class Iterator;
-
         public:
             static ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass);
             static ClassIdentifier<T>* getIdentifier();
