@@ -50,9 +50,9 @@ namespace orxonox
             void remove(OrxonoxClass* object, bool bIterateForwards = true);
 
             inline static Iterator<T> start()
-                { Iterator<T>(pointer_s->first_); }
+                { return Iterator<T>(pointer_s->first_); }
             inline static Iterator<T> end()
-                { Iterator<T>(pointer_s->last_); }
+                { return Iterator<T>(pointer_s->last_); }
 
             ObjectListElement<T>* first_;
             ObjectListElement<T>* last_;
