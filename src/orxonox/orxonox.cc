@@ -38,8 +38,8 @@
 #include <string>
 #include <iostream>
 
-#include "xml/xmlParser.h"
-#include "loader/LevelLoader.h"
+#include "../xml/xmlParser.h"
+#include "../loader/LevelLoader.h"
 
 
 // some tests to see if enet works without includsion
@@ -193,7 +193,7 @@ class OrxApplication
       string levelFile = "sp_level_moonstation.oxw";
       loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
     }
-    
+
     void setupScene()
     {
       SceneManager *mgr = mRoot->createSceneManager(ST_GENERIC, "Default SceneManager");
