@@ -6,19 +6,19 @@
 #define NETWORK_PACKETBUFFER_CC
 
 #include <iostream>
-#include "network/PacketBuffer.h"
+#include "PacketBuffer.h"
 
 namespace network{
-  
+
    boost::mutex networkPacketBufferMutex;
-  
+
 PacketBuffer::PacketBuffer(){
   closed=false;
   first=NULL;
   last=NULL;
 }
     //this is needed in order to make the packetbuffer threadsafe
-  
+
 
 bool PacketBuffer::push(ENetEvent *ev){
   boost::mutex::scoped_lock lock(networkPacketBufferMutex);
@@ -86,7 +86,7 @@ void PacketBuffer::print(){
 //    std::cout << temp->packet->data << std::endl;
     temp=temp->next;
   }
-  
+
 }
 
 bool PacketBuffer::isClosed(){

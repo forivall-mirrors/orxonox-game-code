@@ -1,68 +1,68 @@
 //
 // C++ Interface: ConnectionManager
 //
-// Description: The Class ConnectionManager manages the servers conenctions to the clients. 
-// each connection is provided by a new process. communication between master process and 
+// Description: The Class ConnectionManager manages the servers conenctions to the clients.
+// each connection is provided by a new process. communication between master process and
 // connection processes is provided by ...
 //
 //
 // Author:  Oliver Scheuss
 //
 
-#include "network/ConnectionManager.h"
+#include "ConnectionManager.h"
 
 namespace network{
-  
+
   boost::thread_group network_threads;
-  
+
   void test(){
     return;
   }
-  
+
   ConnectionManager::ConnectionManager(){
     quit=false;
     client=NULL;
     bindAddress.host = ENET_HOST_ANY;
     bindAddress.port = NETWORK_PORT;
   }
-  
+
   ConnectionManager::ConnectionManager(int port, std::string address){
     quit=false;
     client=NULL;
     enet_address_set_host (& bindAddress, address.c_str());
     bindAddress.port = NETWORK_PORT;
   }
-  
+
   ConnectionManager::ConnectionManager(int port, const char *address){
     quit=false;
     client=NULL;
     enet_address_set_host (& bindAddress, address);
     bindAddress.port = NETWORK_PORT;
   }
-  
+
   ENetPacket *ConnectionManager::getPacket(ENetAddress &address){
     if(!buffer.isEmpty())
       return buffer.pop(address);
     else
         return NULL;
   }
-  
+
   bool ConnectionManager::queueEmpty(){
     return buffer.isEmpty();
   }
-  
+
   void ConnectionManager::createListener(){
     network_threads.create_thread(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
 //     boost::thread thr(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
     return;
   }
-  
+
   bool ConnectionManager::quitListener(){
     quit=true;
     network_threads.join_all();
     return true;
   }
-  
+
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer){
     if(client=NULL)
       return false;
@@ -76,7 +76,7 @@ namespace network{
       return false;
     return true;
   }
-  
+
   bool ConnectionManager::addPacket(ENetPacket *packet, int ID){
     if(client==NULL)
       return false;
@@ -91,7 +91,7 @@ namespace network{
     else
       return true;
   }
-  
+
   bool ConnectionManager::addPacketAll(ENetPacket *packet){
     ClientList *temp=client;
     while(temp!=NULL){
@@ -100,16 +100,16 @@ namespace network{
     }
     return true;
   }
-  
+
   bool ConnectionManager::sendPackets(ENetEvent *event){
     if(server==NULL)
       return false;
     if(enet_host_service(server, event, NETWORK_SEND_WAIT)>=0)
       return true;
-    else 
+    else
       return false;
   }
-  
+
   void ConnectionManager::receiverThread(){
     // what about some error-handling here ?
     enet_initialize();
@@ -119,7 +119,7 @@ namespace network{
     if(server==NULL)
       // add some error handling here ==========================
       quit=true;
-    
+
     while(!quit){
       if(enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT)<0){
         // we should never reach this point
@@ -143,13 +143,13 @@ namespace network{
     // if we're finishied, destroy server
     enet_host_destroy(server);
   }
-  
+
   bool ConnectionManager::processData(ENetEvent *event){
     // just add packet to the buffer
     // this can be extended with some preprocessing
     return buffer.push(event);
   }
-  
+
   bool ConnectionManager::clientDisconnect(ENetPeer *peer){
     ClientList *temp=client;
     // do we have to remove the first item ?
@@ -176,9 +176,9 @@ namespace network{
     }
     return false;
   }
-  
+
   bool ConnectionManager::addClient(ENetEvent *event){
-    
+
     // first client?
     if(client==NULL){
       client =new ClientList;
@@ -201,6 +201,6 @@ namespace network{
     }
     return true;
   }
-  
-  
+
+
 }

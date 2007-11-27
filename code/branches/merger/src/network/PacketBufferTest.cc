@@ -1,5 +1,5 @@
-#include "network/PacketBuffer.h"
-#include "network/PacketBuffer.cc"
+#include "PacketBuffer.h"
+#include "PacketBuffer.cc"
 #include <iostream>
 #include <string>
 

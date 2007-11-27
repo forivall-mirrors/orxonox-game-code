@@ -6,8 +6,8 @@
 #include <iostream>
 #include <string>
 #include <enet/enet.h>
-#include "network/PacketManager.h"
-#include "network/ClientConnection.h"
+#include "PacketManager.h"
+#include "ClientConnection.h"
 
 using namespace network;
 
@@ -24,17 +24,17 @@ int main(){
   ClientConnection client = ClientConnection(55556, str);
 
   client.createConnection();
-  
+
   if(client.waitEstablished(10000))
     std::cout << "Connection established" << std::endl;
   else
     std::cout << "Connection failed" << std::endl;
-  
+
   ENetPacket *packet;
   ENetEvent event;
-  
-  
-  
+
+
+
   for(int i=0; i<10; i++){
         // weihnachtsmann bringt packete
         // extend the packet and append the string foo to it

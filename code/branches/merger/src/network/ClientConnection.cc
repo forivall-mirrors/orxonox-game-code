@@ -1,20 +1,20 @@
 //
 // C++ Interface: ClientConnection
 //
-// Description: The Class ClientConnection manages the servers conenctions to the clients. 
-// each connection is provided by a new process. communication between master process and 
+// Description: The Class ClientConnection manages the servers conenctions to the clients.
+// each connection is provided by a new process. communication between master process and
 // connection processes is provided by ...
 //
 //
 // Author:  Oliver Scheuss
 //
 
-#include "network/ClientConnection.h"
+#include "ClientConnection.h"
 
 namespace network{
-  
+
   boost::thread_group network_threads;
-  
+
   ClientConnection::ClientConnection(int port, std::string address){
     quit=false;
     server=NULL;
@@ -22,7 +22,7 @@ namespace network{
     serverAddress.port = NETWORK_PORT;
     established=false;
   }
-  
+
   ClientConnection::ClientConnection(int port, const char *address){
     quit=false;
     server=NULL;
@@ -30,39 +30,39 @@ namespace network{
     serverAddress.port = NETWORK_PORT;
     established=false;
   }
-  
+
   bool ClientConnection::waitEstablished(int milisec){
     for(int i=0; i<=milisec && !established; i++)
       usleep(1000);
     return established;
   }
-  
-  
+
+
   ENetPacket *ClientConnection::getPacket(ENetAddress &address){
     if(!buffer.isEmpty())
       return buffer.pop(address);
     else
         return NULL;
   }
-  
+
   bool ClientConnection::queueEmpty(){
     return buffer.isEmpty();
   }
-  
+
   bool ClientConnection::createConnection(){
     network_threads.create_thread(boost::bind(boost::mem_fn(&ClientConnection::receiverThread), this));
     // wait 10 seconds for the connection to be established
     return waitEstablished(10000);
   }
-  
+
   bool ClientConnection::closeConnection(){
     quit=true;
     network_threads.join_all();
     established=false;
     return true;
   }
-  
-  
+
+
   bool ClientConnection::addPacket(ENetPacket *packet){
     if(server==NULL)
       return false;
@@ -71,26 +71,26 @@ namespace network{
     else
       return true;
   }
-  
+
   bool ClientConnection::sendPackets(ENetEvent *event){
     if(server==NULL)
       return false;
     if(enet_host_service(client, event, NETWORK_SEND_WAIT)>=0)
       return true;
-    else 
+    else
       return false;
   }
-  
+
   bool ClientConnection::sendPackets(){
     ENetEvent event;
     if(server==NULL)
       return false;
     if(enet_host_service(client, &event, NETWORK_SEND_WAIT)>=0)
       return true;
-    else 
+    else
       return false;
   }
-  
+
   void ClientConnection::receiverThread(){
     // what about some error-handling here ?
     enet_initialize();
@@ -122,13 +122,13 @@ namespace network{
       }
     }
     // now disconnect
-    
-    if(!disconnectConnection()) 
+
+    if(!disconnectConnection())
     // if disconnecting failed destroy conn.
       enet_peer_reset(server);
     return;
   }
-  
+
   bool ClientConnection::disconnectConnection(){
     ENetEvent event;
     enet_peer_disconnect(server, 0);
@@ -144,7 +144,7 @@ namespace network{
     }
     enet_peer_reset(server);
   }
-  
+
   bool ClientConnection::establishConnection(){
     ENetEvent event;
     // connect to peer
@@ -160,12 +160,12 @@ namespace network{
     else
       return false;
   }
-  
+
   bool ClientConnection::processData(ENetEvent *event){
     // just add packet to the buffer
     // this can be extended with some preprocessing
     return buffer.push(event);
   }
-  
-  
+
+
 }

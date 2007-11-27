@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 #include <enet/enet.h>
-#include "network/PacketManager.h"
+#include "PacketManager.h"
 
 using namespace std;
 
@@ -19,14 +19,14 @@ int main(){
 
   enet_initialize();
   atexit(enet_deinitialize);
-  
+
   cout << "Enter address of the server xxx.xxx.xxx.xxx (enter for localhost)" << endl;
   string str;
   getline(cin, str);
   cout << "You entered: " << str << endl;
   if(str.compare("")==0)
     str="127.0.0.1";
-  
+
   enet_address_set_host(&address, str.c_str());
   address.port = 55556;
 
@@ -86,7 +86,7 @@ int main(){
         // if disconnect failed
   enet_peer_reset(peer);
 
-  
-  
+
+
   return 0;
 }

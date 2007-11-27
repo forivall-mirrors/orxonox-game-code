@@ -1,7 +1,7 @@
 //
 // C++ Interface: Server
 //
-// Description: 
+// Description:
 //
 //
 // Author:  Oliver Scheuss, (C) 2007
@@ -15,12 +15,12 @@
 
 #include <string>
 
-#include "network/ConnectionManager.h"
-#include "network/PacketManager.h"
+#include "ConnectionManager.h"
+#include "PacketManager.h"
 
 
 namespace network{
-  
+
   /**
    * This class is the root class of the network module for a server.
    * It implements all functions necessary for a Server
@@ -30,22 +30,22 @@ namespace network{
     Server();
     Server(int port, std::string bindAddress);
     Server(int port, const char *bindAddress);
-    
+
     private:
     ConnectionManager connection;
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
   };
-  
-  
-  
-  
-  
+
+
+
+
+
 }
 
 #endif

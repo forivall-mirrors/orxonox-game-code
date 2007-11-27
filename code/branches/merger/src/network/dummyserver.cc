@@ -6,8 +6,8 @@
 
 #include <iostream>
 #include "enet/enet.h"
-#include "network/ConnectionManager.h"
-#include "network/PacketManager.h"
+#include "ConnectionManager.h"
+#include "PacketManager.h"
 
 using namespace network;
 
@@ -17,9 +17,9 @@ int main(){
   ENetPacket *packet;
   ENetEvent event;
   server.createListener();
-  
+
   PacketDecoder dec;
-  
+
   while(!quit){
     if(server.queueEmpty())
       usleep(100);

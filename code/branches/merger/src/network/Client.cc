@@ -1,7 +1,7 @@
 //
 // C++ Implementation: Client
 //
-// Description: 
+// Description:
 //
 //
 // Author:  Oliver Scheuss, (C) 2007
@@ -10,10 +10,10 @@
 //
 //
 
-#include "network/Client.h"
+#include "Client.h"
 
 namespace network{
-  
+
   /**
    * Constructor for the Client class
    * initializes the address and the port to default localhost:NETWORK_PORT
@@ -24,7 +24,7 @@ namespace network{
     //port = NETWORK_PORT;
     isConnected=false;
   }
-  
+
   /**
    * Constructor for the Client class
    * @param address the server address
@@ -35,7 +35,7 @@ namespace network{
     //this->port = port;
     isConnected=false;
   }
-  
+
   /**
    * Constructor for the Client class
    * @param address the server address
@@ -46,7 +46,7 @@ namespace network{
     //this->port = port;
     isConnected=false;
   }
-  
+
   /**
    * Establish the Connection to the Server
    * @return true/false
@@ -55,7 +55,7 @@ namespace network{
     isConnected=client_connection.createConnection();
     return isConnected;
   }
-  
+
   /**
    * closes the Connection to the Server
    * @return true/false
@@ -64,7 +64,7 @@ namespace network{
     isConnected=false;
     return client_connection.closeConnection();
   }
-  
+
   /**
    * submits a MouseAction to the server
    * @param x x Coordinate
@@ -83,7 +83,7 @@ namespace network{
     else
       return false;
   }
-  
+
   /**
    * submits a Keystrike to the server
    * @param key_code code to submit
@@ -101,7 +101,7 @@ namespace network{
     else
       return false;
   }
-  
+
   /**
    * Adds a MouseAction to the PacketQueue
    * @param x x Coordinate
@@ -115,7 +115,7 @@ namespace network{
     else
       return false;
   }
-  
+
   /**
    * Adds a Keystrike to the PacketQueue
    * @param key_code
@@ -129,14 +129,14 @@ namespace network{
     else
       return false;
   }
-  
+
   /**
    * Performs a GameState update
    */
   void Client::update(){
     // to be implemented ==================
-    
-    
+
+
   }
-  
+
 }

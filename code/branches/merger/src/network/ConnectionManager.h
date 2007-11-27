@@ -1,7 +1,7 @@
 //
 // C++ Interface: ConnectionManager
 //
-// Description: 
+// Description:
 //
 //
 // Author:  Oliver Scheuss, (C) 2007
@@ -20,8 +20,8 @@
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 // headerfile
-#include "network/ConnectionManager.h"
-#include "network/PacketBuffer.h"
+#include "ConnectionManager.h"
+#include "PacketBuffer.h"
 
 namespace network{
   //
@@ -34,13 +34,13 @@ namespace network{
 // #define ENetHost std::ENetHost
 // #define ENetAddress std::ENetAddress
 // #define ENetPeer std::ENetPeer
-  
+
   struct ClientList{
     ENetEvent *event;
     int ID;
     ClientList *next;
   };
-  
+
   class ConnectionManager{
     public:
     ConnectionManager();
@@ -78,14 +78,14 @@ namespace network{
 //     thread group
 //     boost::thread_group threads;
   };
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
 }
 
 #endif

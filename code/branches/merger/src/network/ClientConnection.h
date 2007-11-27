@@ -1,7 +1,7 @@
 //
 // C++ Interface: ClientConnection
 //
-// Description: 
+// Description:
 //
 //
 // Author:  Oliver Scheuss, (C) 2007
@@ -20,8 +20,8 @@
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 // headerfile
-#include "network/ClientConnection.h"
-#include "network/PacketBuffer.h"
+#include "ClientConnection.h"
+#include "PacketBuffer.h"
 
 namespace network{
   //
@@ -30,8 +30,8 @@ namespace network{
 #define NETWORK_WAIT_TIMEOUT 5000
 #define NETWORK_SEND_WAIT 5
 #define NETWORK_CLIENT_CHANNELS 2
-  
-  
+
+
   class ClientConnection{
     public:
     ClientConnection(int port, std::string address);
@@ -66,14 +66,14 @@ namespace network{
     // clientlist
     ENetPeer *server;
   };
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
 }
 
 #endif

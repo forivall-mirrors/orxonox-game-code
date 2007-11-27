@@ -1,7 +1,7 @@
 //
 // C++ Implementation: synchronisable
 //
-// Description: 
+// Description:
 //
 //
 // Author:  Dumeni, Oliver Scheuss, (C) 2007
@@ -9,7 +9,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "network/Synchronisable.h"
+#include "Synchronisable.h"
 
 namespace network {
 
@@ -26,7 +26,7 @@ Synchronisable::Synchronisable()
 
 Synchronisable::~Synchronisable()
 {
-  
+
 }
 
 /**
@@ -71,7 +71,7 @@ syncData Synchronisable::getData(){
   //CHANGED: REMOVED DECLARATION int n=0 FROM LOOP
   int n=0;
   for(i=syncList.begin(); n<totalsize && i!=syncList.end(); i++){
-	//CHANGED: i->size TO (const void*)(&(i->size)) memcpy WANTS A CONST VOID* SO CONVERT INT TO CONST VOID*  
+	//CHANGED: i->size TO (const void*)(&(i->size)) memcpy WANTS A CONST VOID* SO CONVERT INT TO CONST VOID*
     std::memcpy(retVal.data+n, (const void*)(i->size), sizeof(int));
     n+=sizeof(int);
     //CHANGED: i->var TO (const void*)(&(i->var)) SINCE var IS A POINTER, NO & BEFORE i
@@ -101,7 +101,7 @@ syncData Synchronisable::getData(unsigned char *mem){
   //CHANGED: REMOVED DECLARATION int n=0 FROM LOOP
   int n=0;
   for(i=syncList.begin(); n<datasize && i!=syncList.end(); i++){
-        //CHANGED: i->size TO (const void*)(&(i->size)) memcpy WANTS A CONST VOID* SO CONVERT INT TO CONST VOID*  
+        //CHANGED: i->size TO (const void*)(&(i->size)) memcpy WANTS A CONST VOID* SO CONVERT INT TO CONST VOID*
     std::memcpy(retVal.data+n, (const void*)(i->size), sizeof(int));
     n+=sizeof(int);
     //CHANGED: i->var TO (const void*)(&(i->var)) SINCE var IS A POINTER, NO & BEFORE i
