@@ -2,7 +2,7 @@ PROJECT(Orxonox)
 
 # create a few variables to simplify life
 SET( CLASS_HIERARCHY_SRC
-	BaseObjet.cc
+	BaseObject.cc
 	ClassHierarchy.cc
 	Identifier.cc
 	IdentifierList.cc

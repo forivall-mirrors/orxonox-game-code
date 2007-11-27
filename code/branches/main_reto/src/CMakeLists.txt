@@ -10,16 +10,7 @@ SET( ORXONOX_SRC
 	orxonox_scene.cc
 	orxonox_ship.cc
 	run_manager.cc
-
-	camera_manager.h
-	inertial_node.h
-	ogre_control.h
-	orxonox.h
-	orxonox_prerequisites.h
-	orxonox_scene.h
-	orxonox_ship.h
-	run_manager.h
-   )
+)
 
 #Creates an executable
 ADD_EXECUTABLE(../bin/main ${ORXONOX_SRC} )
@@ -35,5 +26,6 @@ TARGET_LINK_LIBRARIES(../bin/main
 	CLASS_HIERARCHY
 	HUD
 	${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CEGUI_LIBRARIES} ${CEGUI_OGRE_LIBRARIES}
-	)
+)
+
 #TARGET_LINK_LIBRARIES(../bin/main ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CEGUI_LIBRARIES} ${CEGUI_OGRE_LIBRARIES})

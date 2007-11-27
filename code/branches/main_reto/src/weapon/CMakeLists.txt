@@ -8,13 +8,6 @@ SET( WEAPON_SRC
 	bullet.cc
 	bullet_manager.cc
 	weapon_station.cc
-
-	ammunition_dump.h
-	barrel_gun.h
-	base_weapon.h
-	bullet.h
-	bullet_manager.h
-	weapon_station.h
-   )
+)
 
 ADD_LIBRARY(WEAPON ${WEAPON_SRC} )
