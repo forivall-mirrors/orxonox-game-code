@@ -183,10 +183,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\src\camera_manager.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\src\inertial_node.cc"
 				>
 			</File>
@@ -226,7 +222,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\src\weapon\base_weapon.cpp"
+					RelativePath="..\src\weapon\base_weapon.cc"
 					>
 				</File>
 				<File
@@ -282,16 +278,24 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="hud"
+				>
+				<File
+					RelativePath="..\src\hud\hud_overlay.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\hud\test_overlay.cc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath="..\src\camera_manager.h"
-				>
-			</File>
 			<File
 				RelativePath="..\src\inertial_node.h"
 				>
@@ -397,6 +401,18 @@
 				</File>
 				<File
 					RelativePath="..\src\class_hierarchy\test3.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="hud"
+				>
+				<File
+					RelativePath="..\src\hud\hud_overlay.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\hud\test_overlay.h"
 					>
 				</File>
 			</Filter>

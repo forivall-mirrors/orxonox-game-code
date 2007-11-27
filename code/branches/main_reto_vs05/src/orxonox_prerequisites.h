@@ -51,6 +51,14 @@ namespace orxonox {
 
   }
 
+
+  namespace hud {
+    
+    class HUDOverlay;
+    class TestOverlay;
+
+  }
+
 }
 
 #endif /* ORXONOX_PREREQUISITES_H */

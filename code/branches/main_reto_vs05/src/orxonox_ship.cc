@@ -31,6 +31,7 @@
 #include "OgreSceneNode.h"
 #include "OgreEntity.h"
 #include "OgreSceneManager.h"
+#include "OgreParticleSystem.h"
 
 #include "inertial_node.h"
 #include "run_manager.h"
@@ -125,6 +126,16 @@ namespace orxonox {
     railGunStation_ = new WeaponStation(4);
     railGunStation_->addWeapon(mainWeapon_);
     railGunStation_->selectWeapon(0);
+
+    // create some nice effects
+
+    ParticleSystem *particles = RunManager::getSingletonPtr()
+      ->getSceneManagerPtr()->createParticleSystem("asdf", "Examples/Smoke");
+
+    fishNode->getSceneNode()->attachObject(particles);
+
+
+
 
 	  return true;
   }

@@ -25,16 +25,20 @@
  *
  */
 
+//#define WITH_HIERARCHY
+
 #include "OgrePlatform.h"
 #include "OgreException.h"
 
 #include "orxonox.h"
 
+#ifdef WITH_HIERARCHY
 #include "class_hierarchy/BaseObject.h"
 #include "class_hierarchy/Test.h"
 #include "class_hierarchy/test1.h"
 #include "class_hierarchy/test2.h"
 #include "class_hierarchy/test3.h"
+#endif
 
 
 #ifdef __cplusplus
@@ -49,7 +53,7 @@ extern "C" {
   int main(int argc, char **argv) 
 #endif 
   {
-#if 1
+#ifndef WITH_HIERARCHY
     try {
       // create an orxonox application and run it
       orxonox::Orxonox myApp;

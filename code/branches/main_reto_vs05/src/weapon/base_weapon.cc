@@ -97,9 +97,28 @@ namespace weapon {
       actionAdded_ = false;
     }
 
-    switch (currentState_)
+    if (currentState_ != IDLE)
     {
-    case IDLE:
+      switch (currentState_)
+      {
+      case PRIMARY_FIRE:
+        primaryFiring((unsigned int)(time - actionStartTime_));
+        break;
+
+      case SECONDARY_FIRE:
+        secondaryFiring((unsigned int)(time - actionStartTime_));
+        break;
+
+      case RELOADING:
+        break;
+
+      case CHANGING_AMMO:
+        break;
+      }
+    }
+
+    if (currentState_ == IDLE)
+    {
       // first, process next action
       if (nextAction_ != NOTHING)
       {
@@ -141,22 +160,6 @@ namespace weapon {
           secondaryFire();
         }
       }
-
-      break;
-
-    case PRIMARY_FIRE:
-      primaryFiring((unsigned int)(time - actionStartTime_));
-      break;
-
-    case SECONDARY_FIRE:
-      secondaryFiring((unsigned int)(time - actionStartTime_));
-      break;
-
-    case RELOADING:
-      break;
-
-    case CHANGING_AMMO:
-      break;
     }
 
     primaryFireRequest_ = false;

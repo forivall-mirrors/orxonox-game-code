@@ -19,46 +19,51 @@
  *
  *
  *   Author:
- *      Reto Grieder
+ *      HUD design: Yuning Chai
+ *      Implementation: Yuning Chai
  *   Co-authors:
- *      ...
+ *      Implementation: Reto Grieder
  *
  */
 
-#if 0
 
-#ifndef WEAPON_H
-#define WEAPON_H
+#ifndef TEST_OVERLAY_H
+#define TEST_OVERLAY_H
 
 #include "OgrePrerequisites.h"
-#include "OgreString.h"
 
 #include "orxonox_prerequisites.h"
 
-namespace orxonox {
-namespace weapon {
 
-  class Weapon
+namespace orxonox {
+namespace hud {
+
+  class TestOverlay
   {
   public:
-    Weapon(const Ogre::String &name, int firePower, int firingRate,
-      Ogre::Real bulletSpeed, int magazineSize)
-          : name_(name), firePower_(firePower), firingRate_(firingRate),
-          bulletSpeed_(bulletSpeed), magazineSize_(magazineSize) { }
+    TestOverlay(Ogre::RenderWindow*);
+	  virtual ~TestOverlay();
 
-    virtual ~Weapon() { }
+    void show();
+
+    void hide();
+
+    void setDebugText(Ogre::String&);
+
+    bool tick(unsigned long, Ogre::Real);
+
+  protected:
 
   public:
-    Ogre::String name_;
-    int firePower_;
-    int firingRate_;
-    Ogre::Real bulletSpeed_;
-    int magazineSize_;
+
+  protected:
+    Ogre::Overlay *overlay_;
+    Ogre::RenderWindow *window_;
+
+    Ogre::String debugText_;
+
   };
-
 }
 }
 
-#endif /* WEAPON_H */
-
-#endif
+#endif /* TEST_OVERLAY_H */

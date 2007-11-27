@@ -19,15 +19,16 @@
  *
  *
  *   Author:
- *      Reto Grieder
+ *      HUD design: Yuning Chai
+ *      Implementation: Yuning Chai
  *   Co-authors:
- *      ...
+ *      Implementation: Reto Grieder
  *
  */
 
 
-#ifndef CAMERA_MANAGER_H
-#define CAMERA_MANAGER_H
+#ifndef HUD_OVERLAY_H
+#define HUD_OVERLAY_H
 
 #include "OgrePrerequisites.h"
 
@@ -35,20 +36,29 @@
 
 
 namespace orxonox {
+namespace hud {
 
-  class CameraManager
+  class HUDOverlay
   {
   public:
-    CameraManager(Ogre::SceneManager*);
-	  ~CameraManager();
+    HUDOverlay();
+	  virtual ~HUDOverlay();
 
-	  bool setCameraPosition(int);
+    void show();
+
+    void hide();
+
+    bool tick(unsigned long, Ogre::Real);
 
   protected:
-	  Ogre::SceneManager *mSceneMgr;
-	  Ogre::Camera *mCamera;
-  };
 
+  public:
+
+  protected:
+    Ogre::Overlay *overlay_;
+
+  };
+}
 }
 
-#endif /* CAMERA_MANAGER_H */
+#endif /* HUD_OVERLAY_H */

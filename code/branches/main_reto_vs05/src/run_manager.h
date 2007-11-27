@@ -31,8 +31,7 @@
 
 #include "OgrePrerequisites.h"
 #include "OgreWindowEventUtilities.h"
-#include "OgreTextureManager.h"
-#include "OgreSingleton.h"
+//#include "OgreTextureManager.h"
 
 #include <OIS/OISPrereqs.h>
 
@@ -43,14 +42,12 @@ namespace orxonox {
 
   // let the class inherit from WindowEventListener in order for the RunMgr
   // to act as the central point of all the calcuations in Orxonox
-  class RunManager : public Ogre::WindowEventListener,
-                     public Ogre::Singleton<RunManager>
+  class RunManager : public Ogre::WindowEventListener
   {
   public:
-    RunManager(OgreControl*);
-
     virtual ~RunManager();
-    //void initialise(OgreControl*);
+    
+    void initialise(OgreControl*);
 
     bool tick(unsigned long, Ogre::Real);
 
@@ -64,12 +61,18 @@ namespace orxonox {
 
     int getNumberOfAmmos();
 
+    static RunManager* createSingleton();
+
+    static void destroySingleton();
+
     static RunManager& getSingleton(void);
 
     static RunManager* getSingletonPtr(void);
 
 
   protected:
+    RunManager();
+
 	  void createCamera(void);
 
 	  void createViewports(void);
@@ -92,30 +95,36 @@ namespace orxonox {
 
 	  /** OUTPUT **/
 
-	  void updateStats(void);
-
 	  void showDebugOverlay(bool);
 
   protected:
+    // directly Ogre related fields
 	  Ogre::SceneManager *sceneMgr_;
 	  Ogre::RenderWindow *window_;
 	  Ogre::Camera       *camera_;
+
+
+    // self made orxonox fields
 	  OgreControl  *ogre_;
 	  OrxonoxScene *backgroundScene_;
 	  OrxonoxShip  *playerShip_;
+    hud::TestOverlay *hud_;
 
+    // Bullet manager
+    weapon::BulletManager *bulletManager_;
+
+    const Ogre::Real mouseSensitivity_;
+
+	  // previously elapsed render time
+	  unsigned long totalTime_;
+
+
+    // fields from the example framework
 	  bool statsOn_;
-	  std::string debugText_;
 
 	  unsigned int screenShotCounter_;
 	  // just to stop toggles flipping too fast
 	  Ogre::Real timeUntilNextToggle_;
-	  //bool leftButtonDown_;
-	  Ogre::TextureFilterOptions filtering_;
-	  int aniso_;
-
-	  int sceneDetailIndex_;
-	  Ogre::Overlay* debugOverlay_;
 
 	  //OIS Input devices
 	  OIS::InputManager* inputManager_;
@@ -123,16 +132,8 @@ namespace orxonox {
 	  OIS::Keyboard* keyboard_;
 	  OIS::JoyStick* joystick_;
 
-    const Ogre::Real mouseSensitivity_;
-
-    // Bullet array
-	  /*Bullet **bullets_;
-	  int bulletsSize_;
-	  int bulletsIndex_;*/
-    weapon::BulletManager *bulletManager_;
-
-	  // previously elapsed render time
-	  unsigned long totalTime_;
+    // singleton pointer
+    static RunManager *singletonPtr_s;
 
   };
 
