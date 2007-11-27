@@ -232,13 +232,14 @@ namespace orxonox {
 
 
     // Update the HUD
-    hud_->setDebugText(" | Speed = "
+    Ogre::String tempStr = " | Speed = "
       + StringConverter::toString(playerShip_->getSpeed())
       + " | Left Ammo = "
       + StringConverter::toString(playerShip_
       ->getMainWeapon()->getAmmoState())
       + " | Ammo stock = "
-      + StringConverter::toString(playerShip_->getAmmoStock()));
+      + StringConverter::toString(playerShip_->getAmmoStock());
+    hud_->setDebugText(tempStr);
 
     hud_->tick(time, deltaTime);
 
