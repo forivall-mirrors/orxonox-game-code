@@ -5,4 +5,4 @@ SET( HUD_SRC
 	hud_overlay.cc
    )
 
-#ADD_LIBRARY(HUD ${HUD_SRC} )
+ADD_LIBRARY(HUD ${HUD_SRC} )
