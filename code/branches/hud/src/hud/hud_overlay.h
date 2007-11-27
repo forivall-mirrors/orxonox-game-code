@@ -32,8 +32,6 @@
 
 #include "OgrePrerequisites.h"
 
-#include "orxonox_prerequisites.h"
-
 
 namespace orxonox {
 namespace hud {
