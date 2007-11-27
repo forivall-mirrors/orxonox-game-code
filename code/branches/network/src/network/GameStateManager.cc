@@ -21,11 +21,13 @@ GameStateManager::~GameStateManager()
 {
 }
 
-GameState GameStateManager::getSnapshot(){
+GameState GameStateManager::getSnapshot()
+{
   
 }
 
-bool GameStateManager::loadSnapshot(GameState state){
+bool GameStateManager::loadSnapshot(GameState state)
+{
   
 }
 

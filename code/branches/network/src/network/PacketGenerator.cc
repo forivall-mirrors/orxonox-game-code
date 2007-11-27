@@ -67,3 +67,15 @@ ENetPacket* PacketGenerator::chatMessage( const char* message, int reliable )
 	return packet;
 }
 
+/*### gamestate packet */
+ENetPacket* PacketGenerator::gstate( GameState* states, int reliable )
+{
+	int* gid; *gid = GAMESTATE;
+	int totalLen = sizeof( int ) + states->size;
+	unsigned char* data = (unsigned char*)malloc( totalLen );
+	memcpy( (void*)(data), (const void*)gid, sizeof( int ) );
+	memcpy( (void*)(data+sizeof( int )), (const void*)states->data, states->size );
+	ENetPacket *packet = enet_packet_create( data , totalLen, reliable );
+	
+	return packet;
+}

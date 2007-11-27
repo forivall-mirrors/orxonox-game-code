@@ -39,6 +39,10 @@ bool PacketDecoder::elaborate( ENetPacket* packet, int clientId )
 		chatMessage( packet );
 		return true;
 		break;
+	case GAMESTATE:
+		gstate( packet );
+		return true;
+		break;
 	}
 	return false;
 }
@@ -76,6 +80,14 @@ void PacketDecoder::chatMessage( ENetPacket* packet )
 	printChat( chatting );
 }
 
+void PacketDecoder::gstate( ENetPacket* packet )
+{
+	GameState* currentState = new GameState;
+	unsigned char* data = (unsigned char*)packet->data;
+	memcpy( (void*)&(currentState->size), (const void*)(data+sizeof( int )), sizeof(int) );
+	memcpy( (void*)(currentState->data), (const void*)(data+2*sizeof( int )), currentState->size );
+}
+
 //these are some print functions for test stuff
 
 void PacketDecoder::printAck( ack* data )
@@ -99,6 +111,10 @@ void PacketDecoder::printKey( keyboard* data )
 void PacketDecoder::printChat( chat* data )
 {
 	cout << "data id: " << data->id << endl;
-	cout << "blablabla" << endl;
 	cout << "data:    " << data->message << endl;
+}
+
+void PacketDecoder::printGamestate( GameState* data )
+{
+	cout << "size of gamestate: " << data->size << endl;
 }
