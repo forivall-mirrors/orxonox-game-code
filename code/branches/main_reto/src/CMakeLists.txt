@@ -2,7 +2,6 @@ PROJECT(Orxonox)
 
 # create a few variables to simplify life
 SET( ORXONOX_SRC
-	camera_manager.cc
 	inertial_node.cc
 	main.cc
 	ogre_control.cc

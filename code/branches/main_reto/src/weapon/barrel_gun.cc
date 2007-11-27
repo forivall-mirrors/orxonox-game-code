@@ -94,7 +94,7 @@ namespace weapon {
 
   void BarrelGun::primaryFiring(unsigned int time)
   {
-    if (time > 1000/primaryFiringRate_)
+    if (time > (unsigned int)1000/primaryFiringRate_)
     {
       currentState_ = IDLE;
     }
@@ -132,7 +132,7 @@ namespace weapon {
 
   void BarrelGun::secondaryFiring(unsigned int time)
   {
-    if (time > 1000/secondaryFiringRate_)
+    if (time > (unsigned int)1000/secondaryFiringRate_)
       currentState_ = IDLE;
   }
 

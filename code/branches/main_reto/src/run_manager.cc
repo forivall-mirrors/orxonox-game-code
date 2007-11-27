@@ -25,22 +25,18 @@
 */
 
 
-#include "Ogre.h"
-//#include "OgreRoot.h"
-//#include "OgreSceneManager.h"
-//#include "OgreSceneNode.h"
-//#include "OgreCamera.h"
-//#include "OgreViewport.h"
-//#include "OgreRenderWindow.h"
-//#include "OgreOverlay.h"
-//#include "OgreOverlayManager.h"
-//#include "OgreOverlayElement.h"
-//#include "OgreTextureManager.h"
-//#include "OgreMaterialManager.h"
-//#include "OgreLogManager.h"
-//#include "OgreVector3.h"
-//#include "OgreStringConverter.h"
-//#include "OgreWindowEventUtilities.h"
+#include "OgreVector3.h"
+#include "OgreStringConverter.h"
+#include "OgreRoot.h"
+#include "OgreSceneManager.h"
+#include "OgreSceneNode.h"
+#include "OgreCamera.h"
+#include "OgreViewport.h"
+#include "OgreRenderWindow.h"
+#include "OgreTextureManager.h"
+#include "OgreMaterialManager.h"
+#include "OgreLogManager.h"
+#include "OgreWindowEventUtilities.h"
 
 //Use this define to signify OIS will be used as a DLL
 //(so that dll import/export macros are in effect)
@@ -50,7 +46,6 @@
 #include "ogre_control.h"
 #include "orxonox_scene.h"
 #include "orxonox_ship.h"
-#include "camera_manager.h"
 #include "inertial_node.h"
 
 #include "weapon/bullet.h"
@@ -58,13 +53,10 @@
 #include "weapon/base_weapon.h"
 
 #include "hud/hud_overlay.h"
+#include "hud/test_overlay.h"
 
 #include "run_manager.h"
 
-namespace Ogre {
-  using namespace orxonox;
-  template<> RunManager* Singleton<RunManager>::ms_Singleton = 0;
-}
 
 namespace orxonox {
   using namespace Ogre;
@@ -84,32 +76,28 @@ namespace orxonox {
   * Ogre (window events).
   */
 
-  RunManager* RunManager::getSingletonPtr(void)
-  {
-      return ms_Singleton;
-  }
-  RunManager& RunManager::getSingleton(void)
-  {  
-      assert( ms_Singleton );  return ( *ms_Singleton );  
-  }
+
+  RunManager* RunManager::singletonPtr_s = NULL;
 
 
   /**
-  * Contructor only needs the render window and the Root object which are both
-  * the OgreControl object.
-  * Right now the constructor does all the initialisation work. This could also
-  * be done in a new method "initialize()", for whatever purpose.
-  * 
-  * 
+  * Contructor only needs the Root object.
+  */
+  RunManager::RunManager()
+        : ogre_(NULL), window_(NULL), screenShotCounter_(0),
+        timeUntilNextToggle_(0), mouseSensitivity_(0.003), inputManager_(0),
+        mouse_(0), keyboard_(0), joystick_(0), statsOn_(true)
+  {
+  }
+
+  /**
   * @param ogre_ The OgreControl object holding the render window and the Root
   */
-  RunManager::RunManager(OgreControl * ogre)
-        : ogre_(ogre), window_(ogre->getRenderWindow()), //leftButtonDown_(false),
-        statsOn_(true), screenShotCounter_(0), timeUntilNextToggle_(0),
-        filtering_(TFO_BILINEAR), aniso_(1), sceneDetailIndex_(0),
-        mouseSensitivity_(0.003),
-        debugOverlay_(0), inputManager_(0), mouse_(0), keyboard_(0), joystick_(0)
-  {
+  void RunManager::initialise(OgreControl *ogre)
+    {
+    ogre_ = ogre;
+    window_ = ogre->getRenderWindow();
+
     // SETTING UP THE SCENE
 
     // create one new SceneManger
@@ -128,16 +116,9 @@ namespace orxonox {
     // PLAYER SPACESHIP
 
     // Create a space ship object and its SceneNode.
-    // Some ideas about the steering: The ship should only receive events like
-    // up, down, left, right, roll left, roll right, move down, move up, etc).
-    // Multiple interpretations of these commands would make the game more
-    // but it also makes AI steering more difficult, since for every type of
-    // steering, new methods have to be written.
-    // --> clearly define how a space ship can fly (rolling?, conservation of
-    // impuls?, direct mouse sight steeering?, etc.)
     // It should also be considered, that the ship should provide another Node
     // for a camera to be attached (otherwise the spaceship in front of the
-    // would be very static, never moving at all).
+    // ship would be very static, never moving at all).
 
     // Construct a new spaceship and give it the node
     playerShip_ = new OrxonoxShip(sceneMgr_->getRootSceneNode()
@@ -147,38 +128,29 @@ namespace orxonox {
     // RESOURCE LOADING (using ResourceGroups if implemented)
 
     // load all resources and create the entities by calling the initialise()
-    // methods for each object (don't initialise in the constructor!).
+    // methods for each object (no constructor initialisations!).
     backgroundScene_->initialise();
     playerShip_->initialise();
 
 
     // CAMERA AND VIEWPORT
-    // TODO: create a camera manager. It should be able to change its position
-    // around the space ship (predefined states would be nice too). And it should
-    // also be able to switch between different locations (like ship, spactator,
-    // certain fixed positions (e.g. finish line, etc.)). These are just ideas.
 
     // create camera and viewport
     createCamera();
     createViewports();
 
     // create HUD
-    hud_ = new HUDOverlay();
+    hud_ = new hud::TestOverlay(window_);
     hud_->show();
 
 
     // Set default mipmap level (NB some APIs ignore this)
     TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
-    
 
     // HUMAN INTERFACE
 
-    using namespace OIS;
-
-    //debugOverlay_ = OverlayManager::getSingleton()
-    //  .getByName("Core/DebugOverlay");
-    
+    using namespace OIS;    
 
     LogManager::getSingletonPtr()->logMessage("*** Initializing OIS ***");
     ParamList pl;
@@ -232,11 +204,13 @@ namespace orxonox {
       delete playerShip_;
     if (bulletManager_)
       delete bulletManager_;
+    if (hud_)
+      delete hud_;
   }
 
 
   /**
-  * Method to compute anyting between 2 frames.
+  * Method to compute anything between 2 frames.
   * 
   * Everything that needs to be computed during the games happens right here.
   * The only exception are the listeners (which should only set variables,
@@ -257,8 +231,16 @@ namespace orxonox {
     playerShip_->tick(time, deltaTime);
 
 
-    // Update the 'HUD'
-    //updateStats();
+    // Update the HUD
+    hud_->setDebugText(" | Speed = "
+      + StringConverter::toString(playerShip_->getSpeed())
+      + " | Left Ammo = "
+      + StringConverter::toString(playerShip_
+      ->getMainWeapon()->getAmmoState())
+      + " | Ammo stock = "
+      + StringConverter::toString(playerShip_->getAmmoStock()));
+
+    hud_->tick(time, deltaTime);
 
     // update the bullet positions
     bulletManager_->tick(time, deltaTime);
@@ -411,32 +393,6 @@ namespace orxonox {
     if( keyboard_->isKeyDown(KC_F) && timeUntilNextToggle_ <= 0 )
     {
       statsOn_ = !statsOn_;
-      //showDebugOverlay(statsOn_);
-      timeUntilNextToggle_ = 1;
-    }
-
-    if( keyboard_->isKeyDown(KC_T) && timeUntilNextToggle_ <= 0 )
-    {
-      switch(filtering_)
-      {
-      case TFO_BILINEAR:
-        filtering_ = TFO_TRILINEAR;
-        aniso_ = 1;
-        break;
-      case TFO_TRILINEAR:
-        filtering_ = TFO_ANISOTROPIC;
-        aniso_ = 8;
-        break;
-      case TFO_ANISOTROPIC:
-        filtering_ = TFO_BILINEAR;
-        aniso_ = 1;
-        break;
-      default: break;
-      }
-      MaterialManager::getSingleton().setDefaultTextureFiltering(filtering_);
-      MaterialManager::getSingleton().setDefaultAnisotropy(aniso_);
-
-      //showDebugOverlay(statsOn_);
       timeUntilNextToggle_ = 1;
     }
 
@@ -446,41 +402,7 @@ namespace orxonox {
       ss << "screenshot_" << ++screenShotCounter_ << ".png";
       window_->writeContentsToFile(ss.str());
       timeUntilNextToggle_ = 0.5;
-      debugText_ = "Saved: " + ss.str();
     }
-
-    if(keyboard_->isKeyDown(KC_R) && timeUntilNextToggle_ <=0)
-    {
-      sceneDetailIndex_ = (sceneDetailIndex_+1)%3 ;
-      switch(sceneDetailIndex_) {
-          case 0 : camera_->setPolygonMode(PM_SOLID); break;
-          case 1 : camera_->setPolygonMode(PM_WIREFRAME); break;
-          case 2 : camera_->setPolygonMode(PM_POINTS); break;
-      }
-      timeUntilNextToggle_ = 0.5;
-    }
-
-    static bool displayCameraDetails = false;
-    if(keyboard_->isKeyDown(KC_P) && timeUntilNextToggle_ <= 0)
-    {
-      displayCameraDetails = !displayCameraDetails;
-      timeUntilNextToggle_ = 0.5;
-      if (!displayCameraDetails)
-        debugText_ = "";
-    }
-
-    // Print camera details
-    if(displayCameraDetails)
-      debugText_ = " | Speed = "
-            + StringConverter::toString(playerShip_->getSpeed())
-            + " | Left Ammo = "
-            + StringConverter::toString(playerShip_
-            ->getMainWeapon()->getAmmoState())
-            + " | Ammo stock = "
-            + StringConverter::toString(playerShip_->getAmmoStock());
-    // debugText_ = "P: " + StringConverter::toString(camera_
-    //      ->getDerivedPosition()) + " " + "O: "
-    //      + StringConverter::toString(camera_->getDerivedOrientation());
 
     // Return true to continue rendering
     return true;
@@ -514,77 +436,28 @@ namespace orxonox {
   }
 
   /**
-  * Show the debug overlay of desired.
+  * Show an overlay desired.
   * @param show Whether or not to show the debug overlay
   */
   void RunManager::showDebugOverlay(bool show)
   {
-    if (debugOverlay_)
+    if (hud_)
     {
       if (show)
-        debugOverlay_->show();
+        hud_->show();
       else
-        debugOverlay_->hide();
+        hud_->hide();
     }
-  }
-
-
-  /**
-  * Show stats (e.g. FPS) in the left lower corner of the screen.
-  * Copied from the ExampleFrameListener.h in the Ogre SDK
-  */
-  void RunManager::updateStats(void)
-  {
-    static String currFps = "Current FPS: ";
-    static String avgFps = "Average FPS: ";
-    static String bestFps = "Best FPS: ";
-    static String worstFps = "Worst FPS: ";
-    static String tris = "Triangle Count: ";
-    static String batches = "Batch Count: ";
-
-    // update stats when necessary
-    try {
-      OverlayElement* guiAvg = OverlayManager::getSingleton()
-        .getOverlayElement("Core/AverageFps");
-      OverlayElement* guiCurr = OverlayManager::getSingleton()
-        .getOverlayElement("Core/CurrFps");
-      OverlayElement* guiBest = OverlayManager::getSingleton()
-        .getOverlayElement("Core/BestFps");
-      OverlayElement* guiWorst = OverlayManager::getSingleton()
-        .getOverlayElement("Core/WorstFps");
-
-      const RenderTarget::FrameStats& stats = window_->getStatistics();
-      guiAvg->setCaption(avgFps + StringConverter::toString(stats.avgFPS));
-      guiCurr->setCaption(currFps + StringConverter::toString(stats.lastFPS));
-      guiBest->setCaption(bestFps + StringConverter::toString(stats.bestFPS)
-        +" "+StringConverter::toString(stats.bestFrameTime)+" ms");
-      guiWorst->setCaption(worstFps + StringConverter::toString(stats.worstFPS)
-        +" "+StringConverter::toString(stats.worstFrameTime)+" ms");
-
-      OverlayElement* guiTris = OverlayManager::getSingleton()
-        .getOverlayElement("Core/NumTris");
-      guiTris->setCaption(tris + StringConverter::toString(stats.triangleCount));
-
-      OverlayElement* guiBatches = OverlayManager::getSingleton()
-        .getOverlayElement("Core/NumBatches");
-      guiBatches->setCaption(batches
-        + StringConverter::toString(stats.batchCount));
-
-      OverlayElement* guiDbg = OverlayManager::getSingleton()
-        .getOverlayElement("Core/DebugText");
-      guiDbg->setCaption(debugText_);
-    }
-    catch(...) { /* ignore */ }
   }
 
 
   /**
   * Simple camera creator.
-  * playerShip_Node->attachObject(camera_) should no be here! This is what the camera
-  * manager is for. Right now, this method should do just fine, setting the
-  * cam behind the ship.
+  * playerShip_Node->attachObject(camera_) should not be here! This is what
+  * the camera manager is for. Right now, this method should do just fine,
+  * setting the cam behind the ship.
   */
-  void RunManager::createCamera(void)
+  void RunManager::createCamera()
   {
     camera_ = sceneMgr_->createCamera("PlayerCam");
     playerShip_->getRootNode()->getSceneNode()->attachObject(camera_);
@@ -598,7 +471,7 @@ namespace orxonox {
   * For now the viewport uses the entire render window and is based on the one
   * camera created so far.
   */
-  void RunManager::createViewports(void)
+  void RunManager::createViewports()
   {
     // Create one viewport, entire window
     Viewport* vp = window_->addViewport(camera_);
@@ -607,6 +480,32 @@ namespace orxonox {
     // Alter the camera aspect ratio to match the viewport
     camera_->setAspectRatio(
       Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
+  }
+
+
+  RunManager* RunManager::createSingleton()
+  {
+    if (singletonPtr_s)
+      return NULL;
+    singletonPtr_s = new RunManager();
+    return singletonPtr_s;
+  }
+
+  void RunManager::destroySingleton()
+  {
+    if (singletonPtr_s)
+      delete singletonPtr_s;
+  }
+
+
+  RunManager& RunManager::getSingleton()
+  {
+    return *singletonPtr_s;
+  }
+
+  RunManager* RunManager::getSingletonPtr()
+  {
+    return singletonPtr_s;
   }
 
 }

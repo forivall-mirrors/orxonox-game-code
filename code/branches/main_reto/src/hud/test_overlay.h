@@ -19,15 +19,16 @@
  *
  *
  *   Author:
- *      Reto Grieder
+ *      HUD design: Yuning Chai
+ *      Implementation: Yuning Chai
  *   Co-authors:
- *      ...
+ *      Implementation: Reto Grieder
  *
  */
 
 
-#ifndef CAMERA_MANAGER_H
-#define CAMERA_MANAGER_H
+#ifndef TEST_OVERLAY_H
+#define TEST_OVERLAY_H
 
 #include "OgrePrerequisites.h"
 
@@ -35,20 +36,34 @@
 
 
 namespace orxonox {
+namespace hud {
 
-  class CameraManager
+  class TestOverlay
   {
   public:
-    CameraManager(Ogre::SceneManager*);
-	  ~CameraManager();
+    TestOverlay(Ogre::RenderWindow*);
+	  virtual ~TestOverlay();
 
-	  bool setCameraPosition(int);
+    void show();
+
+    void hide();
+
+    void setDebugText(Ogre::String&);
+
+    bool tick(unsigned long, Ogre::Real);
 
   protected:
-	  Ogre::SceneManager *mSceneMgr;
-	  Ogre::Camera *mCamera;
-  };
 
+  public:
+
+  protected:
+    Ogre::Overlay *overlay_;
+    Ogre::RenderWindow *window_;
+
+    Ogre::String debugText_;
+
+  };
+}
 }
 
-#endif /* CAMERA_MANAGER_H */
+#endif /* TEST_OVERLAY_H */

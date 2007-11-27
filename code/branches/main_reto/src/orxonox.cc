@@ -98,7 +98,8 @@ namespace orxonox {
 	  ogre_ = new OgreControl();
 	  ogre_->initialise();
 
-	  runMgr_ = new RunManager(ogre_);
+    runMgr_ = RunManager::createSingleton();
+    runMgr_->initialise(ogre_);
 
 	  return true;
   }
@@ -112,7 +113,7 @@ namespace orxonox {
 	  if (timer_)
 		  delete timer_;
 	  if (runMgr_)
-		  delete runMgr_;
+      RunManager::destroySingleton();
 	  if (ogre_)
 		  delete ogre_;
   }

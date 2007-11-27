@@ -55,6 +55,7 @@ namespace orxonox {
   namespace hud {
     
     class HUDOverlay;
+    class TestOverlay;
 
   }
 
