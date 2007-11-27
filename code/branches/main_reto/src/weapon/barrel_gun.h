@@ -26,35 +26,40 @@
  */
 
 
-#ifndef WEAPON_H
-#define WEAPON_H
+#ifndef BARREL_GUN_H
+#define BARREL_GUN_H
 
 #include "OgrePrerequisites.h"
-#include "OgreString.h"
 
 #include "orxonox_prerequisites.h"
+
 
 namespace orxonox {
 namespace weapon {
 
-  class Weapon
+  class BarrelGun : public BaseWeapon
   {
-  public:
-    Weapon(const Ogre::String &name, int firePower, int firingRate,
-      Ogre::Real bulletSpeed)
-          : name_(name), firePower_(firePower), firingRate_(firingRate),
-          bulletSpeed_(bulletSpeed) { }
+ public:
+    BarrelGun(InertialNode*, AmmunitionDump*);
+	  virtual ~BarrelGun();
 
-    virtual ~Weapon() { }
+    bool tick(unsigned long, Ogre::Real);
+
+  protected:
+    void primaryFire();
+
+    void primaryFiring(unsigned int);
+
+    void secondaryFire();
+
+    void secondaryFiring(unsigned int);
 
   public:
-    Ogre::String name_;
-    int firePower_;
-    int firingRate_;
-    Ogre::Real bulletSpeed_;
+
+  protected:
+
   };
-
 }
 }
 
-#endif /* WEAPON_H */
+#endif /* BARREL_GUN_H */

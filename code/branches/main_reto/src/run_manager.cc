@@ -55,13 +55,21 @@
 
 #include "weapon/bullet.h"
 #include "weapon/bullet_manager.h"
-#include "weapon/weapon_manager.h"
+#include "weapon/base_weapon.h"
+
+#include "hud/hud_overlay.h"
 
 #include "run_manager.h"
+
+namespace Ogre {
+  using namespace orxonox;
+  template<> RunManager* Singleton<RunManager>::ms_Singleton = 0;
+}
 
 namespace orxonox {
   using namespace Ogre;
   using namespace weapon;
+  using namespace hud;
 
   /**
   * RunManager is the basic control object during the game.
@@ -76,6 +84,15 @@ namespace orxonox {
   * Ogre (window events).
   */
 
+  RunManager* RunManager::getSingletonPtr(void)
+  {
+      return ms_Singleton;
+  }
+  RunManager& RunManager::getSingleton(void)
+  {  
+      assert( ms_Singleton );  return ( *ms_Singleton );  
+  }
+
 
   /**
   * Contructor only needs the render window and the Root object which are both
@@ -87,17 +104,16 @@ namespace orxonox {
   * @param ogre_ The OgreControl object holding the render window and the Root
   */
   RunManager::RunManager(OgreControl * ogre)
-        : ogre_(ogre), window_(ogre->getRenderWindow()), leftButtonDown_(false),
+        : ogre_(ogre), window_(ogre->getRenderWindow()), //leftButtonDown_(false),
         statsOn_(true), screenShotCounter_(0), timeUntilNextToggle_(0),
         filtering_(TFO_BILINEAR), aniso_(1), sceneDetailIndex_(0),
         mouseSensitivity_(0.003),
         debugOverlay_(0), inputManager_(0), mouse_(0), keyboard_(0), joystick_(0)
   {
-
     // SETTING UP THE SCENE
 
     // create one new SceneManger
-    sceneMgr_ = ogre_->getRoot()->createSceneManager(ST_GENERIC, "backgroundScene_");
+    sceneMgr_ = ogre_->getRoot()->createSceneManager(ST_GENERIC, "Orxonox Scene");
 
     // background scene (world objects, skybox, lights, etc.)
     backgroundScene_ = new OrxonoxScene(sceneMgr_);
@@ -107,12 +123,6 @@ namespace orxonox {
 
     // create a bullet manager
     bulletManager_ = new BulletManager(sceneMgr_);
-    WeaponManager::loadWeapons();
-
-    // TODO: Use STL to make life easier. But it works this way too..
-    /*bullets_ = new Bullet*[10];
-    bulletsIndex_ = 0;
-    bulletsSize_ = 10;*/
 
 
     // PLAYER SPACESHIP
@@ -130,8 +140,8 @@ namespace orxonox {
     // would be very static, never moving at all).
 
     // Construct a new spaceship and give it the node
-    playerShip_ = new OrxonoxShip(sceneMgr_, sceneMgr_->getRootSceneNode()
-      ->createChildSceneNode("ShipNode", Vector3(20, 20, 20)), bulletManager_);
+    playerShip_ = new OrxonoxShip(sceneMgr_->getRootSceneNode()
+      ->createChildSceneNode("ShipNode", Vector3(20, 20, 20)));
 
 
     // RESOURCE LOADING (using ResourceGroups if implemented)
@@ -152,6 +162,10 @@ namespace orxonox {
     createCamera();
     createViewports();
 
+    // create HUD
+    hud_ = new HUDOverlay();
+    hud_->show();
+
 
     // Set default mipmap level (NB some APIs ignore this)
     TextureManager::getSingleton().setDefaultNumMipmaps(5);
@@ -162,8 +176,9 @@ namespace orxonox {
 
     using namespace OIS;
 
-    debugOverlay_ = OverlayManager::getSingleton()
-      .getByName("Core/DebugOverlay");
+    //debugOverlay_ = OverlayManager::getSingleton()
+    //  .getByName("Core/DebugOverlay");
+    
 
     LogManager::getSingletonPtr()->logMessage("*** Initializing OIS ***");
     ParamList pl;
@@ -193,7 +208,7 @@ namespace orxonox {
     //Set initial mouse clipping size
     windowResized(window_);
 
-    showDebugOverlay(true);
+    //showDebugOverlay(true);
 
     // REGISTER THIS OBJECT AS A WINDOW EVENT LISTENER IN OGRE
     // It will then receive events liek windowClosed, windowResized, etc.
@@ -217,13 +232,6 @@ namespace orxonox {
       delete playerShip_;
     if (bulletManager_)
       delete bulletManager_;
-
-    WeaponManager::destroyWeapons();
-
-    // clean up the bullet list
-    /*for (int i = 0; i < bulletsIndex_; i++)
-      delete bullets_[i];
-    delete bullets_;*/
   }
 
 
@@ -250,17 +258,11 @@ namespace orxonox {
 
 
     // Update the 'HUD'
-    updateStats();
+    //updateStats();
 
     // update the bullet positions
     bulletManager_->tick(time, deltaTime);
 
-    /*for (int i = 0; i < bulletsIndex_; i++)
-    {
-      bullets_[i]->node_->translate(bullets_[i]->speed_*deltaTime);
-      bullets_[i]->node_->yaw(Degree(deltaTime*100));
-      bullets_[i]->node_->roll(Degree(deltaTime*300));
-    }*/
 
     // HUMAN INTERFACE
 
@@ -292,6 +294,40 @@ namespace orxonox {
 
     // keep rendering
     return true;
+  }
+
+
+  SceneManager& RunManager::getSceneManager()
+  {
+    return *sceneMgr_;
+  }
+
+  SceneManager* RunManager::getSceneManagerPtr()
+  {
+    return sceneMgr_;
+  }
+
+  BulletManager* RunManager::getBulletManagerPtr()
+  {
+    return bulletManager_;
+  }
+
+  int RunManager::getAmmunitionID(const Ogre::String &ammoName)
+  {
+    Ogre::String ammoTypes[] = { "Energy Cell", "Barrel", "Lead Shot" };
+    int ammoTypesLength = 3;
+
+    for (int i = 0; i < ammoTypesLength; i++)
+    {
+      if (ammoTypes[i] == ammoName)
+        return i;
+    }
+    return -1;
+  }
+
+  int RunManager::getNumberOfAmmos()
+  {
+    return 3;
   }
 
 
@@ -366,13 +402,16 @@ namespace orxonox {
     else
       playerShip_->setYThrust(0);
 
+    if (keyboard_->isKeyDown(KC_G))
+      playerShip_->getMainWeapon()->addAction(BaseWeapon::RELOAD);
+
     if( keyboard_->isKeyDown(KC_ESCAPE) || keyboard_->isKeyDown(KC_Q) )
       return false;
 
     if( keyboard_->isKeyDown(KC_F) && timeUntilNextToggle_ <= 0 )
     {
       statsOn_ = !statsOn_;
-      showDebugOverlay(statsOn_);
+      //showDebugOverlay(statsOn_);
       timeUntilNextToggle_ = 1;
     }
 
@@ -397,7 +436,7 @@ namespace orxonox {
       MaterialManager::getSingleton().setDefaultTextureFiltering(filtering_);
       MaterialManager::getSingleton().setDefaultAnisotropy(aniso_);
 
-      showDebugOverlay(statsOn_);
+      //showDebugOverlay(statsOn_);
       timeUntilNextToggle_ = 1;
     }
 
@@ -433,7 +472,12 @@ namespace orxonox {
     // Print camera details
     if(displayCameraDetails)
       debugText_ = " | Speed = "
-            + StringConverter::toString(playerShip_->getSpeed());
+            + StringConverter::toString(playerShip_->getSpeed())
+            + " | Left Ammo = "
+            + StringConverter::toString(playerShip_
+            ->getMainWeapon()->getAmmoState())
+            + " | Ammo stock = "
+            + StringConverter::toString(playerShip_->getAmmoStock());
     // debugText_ = "P: " + StringConverter::toString(camera_
     //      ->getDerivedPosition()) + " " + "O: "
     //      + StringConverter::toString(camera_->getDerivedOrientation());
@@ -456,44 +500,14 @@ namespace orxonox {
 
     const MouseState &ms = mouse_->getMouseState();
 
-    // This is a 'hack' to show some flying barrels..
-    // Usually, the Bullet created by the ship should be managed
-    // by the physics engine..
-    if (ms.buttonDown(MB_Left) && !leftButtonDown_)
-    {
-      // Prevent continuous fire for the moment.
-      leftButtonDown_ = true;
+    if (ms.buttonDown(MB_Left))
+      playerShip_->getMainWeapon()->primaryFireRequest();
 
-      playerShip_->fire();
-      
-      // let ship fire one shot with its only weapon (Barrels..)
-      /*Bullet *tempBullet = playerShip_->fire();
+    if (ms.buttonDown(MB_Right))
+      playerShip_->getMainWeapon()->secondaryFireRequest();
 
-      // resize array if neccessary (double the size then)
-      if (bulletsIndex_ >= bulletsSize_)
-      {
-        // redimension the array
-        Bullet **tempArray = new Bullet*[2*bulletsSize_];
-        for (int i = 0; i < bulletsSize_; i++)
-          tempArray[i] = bullets_[i];
-        bulletsSize_ *= 2;
-        delete bullets_;
-        bullets_ = tempArray;
-      }
-
-      // add the bullet to the list
-      bullets_[bulletsIndex_++] = tempBullet;*/
-
-    }
-    else if (!ms.buttons)
-      leftButtonDown_ = false;
-
-    // space ship steering. This should definitely be done in the steering object
-    // Simply give it the mouse movements.
     playerShip_->turnUpAndDown(Radian(ms.Y.rel * mouseSensitivity_));
     playerShip_->turnLeftAndRight(Radian(ms.X.rel * mouseSensitivity_));
-    //playerShip_->mRootNode->pitch(Degree(-ms.Y.rel * 0.13), Ogre::Node::TransformSpace::TS_LOCAL);
-    //playerShip_->mRootNode->yaw(Degree(-ms.X.rel * 0.13), Ogre::Node::TransformSpace::TS_PARENT);
 
     // keep rendering
     return true;
@@ -564,7 +578,6 @@ namespace orxonox {
   }
 
 
-
   /**
   * Simple camera creator.
   * playerShip_Node->attachObject(camera_) should no be here! This is what the camera
@@ -582,8 +595,6 @@ namespace orxonox {
 
   /**
   * Simple viewport creator.
-  * TODO: fully understand the concept of viewports concerning orxnox.
-  * E.g. do we need splitscreen mode?
   * For now the viewport uses the entire render window and is based on the one
   * camera created so far.
   */

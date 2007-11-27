@@ -1,15 +1,20 @@
 PROJECT(Orxonox)
 
 # create a few variables to simplify life
-SET(WPN_CC_FILES
+SET( WEAPON_SRC
 	ammunition_dump.cc
+	barrel_gun.cc
+	base_weapon.cc
 	bullet.cc
 	bullet_manager.cc
-	weapon_manager.cc)
-SET(WPN_H_FILES
+	weapon_station.cc
+
 	ammunition_dump.h
+	barrel_gun.h
+	base_weapon.h
 	bullet.h
 	bullet_manager.h
-	weapon.h
-	weapon_manager.h)
+	weapon_station.h
+   )
 
+#ADD_LIBRARY(WEAPON ${WEAPON_SRC} )

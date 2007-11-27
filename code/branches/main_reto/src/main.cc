@@ -30,6 +30,13 @@
 
 #include "orxonox.h"
 
+#include "class_hierarchy/BaseObject.h"
+#include "class_hierarchy/Test.h"
+#include "class_hierarchy/test1.h"
+#include "class_hierarchy/test2.h"
+#include "class_hierarchy/test3.h"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -42,6 +49,7 @@ extern "C" {
   int main(int argc, char **argv) 
 #endif 
   {
+#if 1
     try {
       // create an orxonox application and run it
       orxonox::Orxonox myApp;
@@ -59,6 +67,51 @@ extern "C" {
       return 1;
     }
 
+#else
+#define testandcout(code) \
+    std::cout << #code << " " << code << "\n"
+
+    using namespace orxonox;
+
+    std::cout << "Test 8\n";
+
+    std::cout << "1\n";
+    Test1* test8_01 = new Test1;
+    Test1* asdf = new Test1;
+    Test3* test8_03 = new Test3;
+    test8_03->usefullClassesIsATest(test8_01);
+
+    std::cout << "2\n";
+    Test2* test8_02 = new Test2;
+    test8_03->usefullClassesIsATest(test8_02);
+
+    std::cout << "3\n";
+    test8_01->setUsefullClass1(Class(Test1));
+    test8_01->setUsefullClass1(test8_02->getIdentifier());
+    test8_01->setUsefullClass2(Class(Test2));
+    test8_01->setUsefullClassOfTypeTest3(Class(Test3));
+    test8_01->setUsefullClassOfTypeTest3(test8_03->getIdentifier());
+
+
+    testandcout(test8_01->isA(Class(Test1)));
+    testandcout(test8_01->isA(Class(Test2)));
+    testandcout(test8_01->isA(Class(Test3)));
+
+    Test2* test8_04 = new Test2;
+    testandcout(test8_02->isA(Class(Test1)));
+    testandcout(test8_02->isA(Class(Test2)));
+    testandcout(test8_02->isA(Class(Test3)));
+
+    Test3* test8_05 = new Test3;
+    testandcout(test8_03->isA(Class(Test1)));
+    testandcout(test8_03->isA(Class(Test2)));
+    testandcout(test8_03->isA(Class(Test3)));
+
+    delete test8_01;
+    delete test8_02;
+    delete test8_03;
+
+#endif
     return 0;
   }
 

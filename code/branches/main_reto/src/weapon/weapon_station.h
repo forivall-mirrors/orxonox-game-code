@@ -26,8 +26,8 @@
  */
 
 
-#ifndef AmmunitionDump_H
-#define AmmunitionDump_H
+#ifndef WEAPON_STATION_H
+#define WEAPON_STATION_H
 
 #include "OgrePrerequisites.h"
 
@@ -37,30 +37,33 @@
 namespace orxonox {
 namespace weapon {
 
-  class AmmunitionDump
+  class WeaponStation
   {
   public:
-    AmmunitionDump();
-	  ~AmmunitionDump();
+    WeaponStation(int slotSize);
+	  ~WeaponStation();
 
-    void setDumpSize(const Ogre::String &name, int size);
+    bool addWeapon(BaseWeapon*);
 
-    int store(const Ogre::String &name, int quantiy);
+    //bool removeCurrentWeapon();
 
-    int getAmmunition(const Ogre::String &name, int quantity);
-
-    int getStockSize(const Ogre::String &name);
-
-  protected:
-    int numberOfAmmos_;
-    int *stock_;
-    int *capacity_;
+    // TODO: access every weapon by name
+    BaseWeapon* selectWeapon(int slotNumber);
 
   protected:
+
+  public:
+
+  protected:
+    // slot management
+    BaseWeapon **slots_;
+    BaseWeapon **selectedSlot_;
+    int lastActiveSlotIndex_;
+    int stationSize_;
 
   };
 
 }
 }
 
-#endif /* AmmunitionDump_H */
+#endif /* WEAPON_STATION_H */

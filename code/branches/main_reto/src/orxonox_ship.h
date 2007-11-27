@@ -39,7 +39,7 @@ namespace orxonox {
   class OrxonoxShip
   {
   public:
-    OrxonoxShip(Ogre::SceneManager*, Ogre::SceneNode*, weapon::BulletManager*);
+    OrxonoxShip(Ogre::SceneNode*);
 	  virtual ~OrxonoxShip();
 
 	  virtual bool initialise();
@@ -53,7 +53,9 @@ namespace orxonox {
     InertialNode* getRootNode();
     Ogre::Vector3 getSpeed();
 
-	  void fire();
+    weapon::BaseWeapon* getMainWeapon();
+
+    int getAmmoStock();
 
 	  bool tick(unsigned long, Ogre::Real);
 
@@ -73,7 +75,10 @@ namespace orxonox {
     weapon::BulletManager *bulletManager_;
 	  //Ogre::Vector3 bulletSpeed_;
 
-    weapon::WeaponManager *mainWeapon_;
+    weapon::BaseWeapon *mainWeapon_;
+    weapon::WeaponStation *railGunStation_;
+
+    weapon::AmmunitionDump *ammoDump_;
   };
 
 }

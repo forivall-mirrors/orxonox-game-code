@@ -45,8 +45,16 @@ namespace orxonox {
     class AmmunitionDump;
     class Bullet;
     class BulletManager;
-    class Weapon;
-    class WeaponManager;
+    class BaseWeapon;
+    class BarrelGun;
+    class WeaponStation;
+
+  }
+
+
+  namespace hud {
+    
+    class HUDOverlay;
 
   }
 

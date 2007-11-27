@@ -25,16 +25,22 @@
  *
  */
 
-#include "OgreSceneManager.h"
+#include "OgreMath.h"
+#include "OgreVector3.h"
+#include "OgreQuaternion.h"
 #include "OgreSceneNode.h"
 #include "OgreEntity.h"
-#include "OgreVector3.h"
-#include "OgreStringConverter.h"
+#include "OgreSceneManager.h"
+#include "OgreParticleSystem.h"
 
 #include "inertial_node.h"
+#include "run_manager.h"
 #include "weapon/bullet.h"
 #include "weapon/bullet_manager.h"
-#include "weapon/weapon_manager.h"
+#include "weapon/weapon_station.h"
+#include "weapon/base_weapon.h"
+#include "weapon/barrel_gun.h"
+#include "weapon/ammunition_dump.h"
 
 #include "orxonox_ship.h"
 
@@ -64,11 +70,10 @@ namespace orxonox {
   * @param mSceneMgr The current main SceneManager
   * @param mNode The scene node which the ship will be attached to later.
   */
-  OrxonoxShip::OrxonoxShip(SceneManager *sceneMgr, SceneNode *node,
-        BulletManager *bulletManager)
-	      : sceneMgr_(sceneMgr), //currentSpeed_(Vector3(0, 0, 0)),
-        baseThrust_(1000), currentThrust_(Vector3::ZERO),
-        objectCounter_(0), bulletManager_(bulletManager)//, bulletSpeed_(400)
+  OrxonoxShip::OrxonoxShip(SceneNode *node)
+    : sceneMgr_(RunManager::getSingletonPtr()->getSceneManagerPtr()),
+      bulletManager_(RunManager::getSingletonPtr()->getBulletManagerPtr()),
+      baseThrust_(1000), currentThrust_(Vector3::ZERO), objectCounter_(0)
   {
     rootNode_ = new InertialNode(node, Vector3::ZERO);
   }
@@ -82,6 +87,8 @@ namespace orxonox {
   {
     if (mainWeapon_)
       delete mainWeapon_;
+    if (railGunStation_)
+      delete railGunStation_;
     if (rootNode_)
       delete rootNode_;
   }
@@ -109,10 +116,26 @@ namespace orxonox {
 	  fishNode->getSceneNode()->setScale(Vector3(10, 10, 10));
 
     // initialise weapon(s)
+    ammoDump_ = new AmmunitionDump();
+    ammoDump_->setDumpSize("Barrel", 1000);
+    ammoDump_->store("Barrel", 420);
+
     InertialNode *mainWeaponNode = rootNode_->createChildNode();
-    mainWeapon_ = new WeaponManager(sceneMgr_, mainWeaponNode,
-          bulletManager_, 1);
-    mainWeapon_->addWeapon("Barrel Gun");
+    mainWeapon_ = new BarrelGun(mainWeaponNode, ammoDump_);
+
+    railGunStation_ = new WeaponStation(4);
+    railGunStation_->addWeapon(mainWeapon_);
+    railGunStation_->selectWeapon(0);
+
+    // create some nice effects
+
+    ParticleSystem *particles = RunManager::getSingletonPtr()
+      ->getSceneManagerPtr()->createParticleSystem("asdf", "Examples/Smoke");
+
+    fishNode->getSceneNode()->attachObject(particles);
+
+
+
 
 	  return true;
   }
@@ -196,9 +219,15 @@ namespace orxonox {
   * the new Node a child of RootNode_!
   * @return Bullet containing speed and entity.
   */
-  void OrxonoxShip::fire()
+  BaseWeapon* OrxonoxShip::getMainWeapon()
   {
-    mainWeapon_->primaryFireRequest();
+    return mainWeapon_;
+  }
+
+
+  int OrxonoxShip::getAmmoStock()
+  {
+    return ammoDump_->getStockSize("Barrel");
   }
 
 
