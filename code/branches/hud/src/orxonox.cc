@@ -38,8 +38,7 @@
 #include <string>
 #include <iostream>
 
-#include "xml/xmlParser.h"
-#include "loader/LevelLoader.h"
+#include "hud/hud_overlay.h"
 
 
 // some tests to see if enet works without includsion
@@ -190,8 +189,6 @@ class OrxApplication
     void createScene(void)
     {
 
-      string levelFile = "sp_level_moonstation.oxw";
-      loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
     }
     
     void setupScene()
