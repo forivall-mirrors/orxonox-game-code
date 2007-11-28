@@ -1,0 +1,14 @@
+PROJECT(Orxonox)
+
+SET(SRC_FILES orxonox.cc spaceship_steering.cc)
+
+ADD_EXECUTABLE(../../bin/main ${SRC_FILES})
+
+TARGET_LINK_LIBRARIES(../../bin/main ${OGRE_LIBRARIES} ${OIS_LIBRARIES} loader )
+
+INCLUDE_DIRECTORIES(..)
+
+ADD_SUBDIRECTORY(core)
+ADD_SUBDIRECTORY(objects)
+ADD_SUBDIRECTORY(hud)
+ADD_SUBDIRECTORY(weapon)

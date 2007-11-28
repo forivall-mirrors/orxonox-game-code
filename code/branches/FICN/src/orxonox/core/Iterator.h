@@ -1,5 +1,5 @@
-#ifndef _Iterator_H__
-#define _Iterator_H__
+#ifndef _Iterator_H2__
+#define _Iterator_H2__
 
 namespace orxonox
 {
