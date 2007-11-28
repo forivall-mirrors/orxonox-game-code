@@ -1,9 +1,8 @@
 PROJECT(Orxonox)
 
 SET(SRC_FILES orxonox.cc)
-SET(INC_FILES)
 
-ADD_EXECUTABLE(../../bin/main ${SRC_FILES} ${INC_FILES})
+ADD_EXECUTABLE(../../bin/main ${SRC_FILES})
 
 TARGET_LINK_LIBRARIES(../../bin/main ${OGRE_LIBRARIES} ${OIS_LIBRARIES} loader )
 
