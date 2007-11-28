@@ -25,7 +25,7 @@ IF (UNIX)
   IF (NOT "${UNAME_RV}" STREQUAL "0")
 	MESSAGE("ERROR: uname terminated unclean.")
   ENDIF (NOT "${UNAME_RV}" STREQUAL "0")
-  # check wheter we are on a tardis machine
+# check wheter we are on a tardis INCLUDEmachine
   IF ("${UNAME_OV}" MATCHES "tardis")
     SET (IS_TARDIS "tardis")
   ENDIF ("${UNAME_OV}" MATCHES "tardis")
