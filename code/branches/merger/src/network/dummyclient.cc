@@ -70,8 +70,8 @@ int main(){
   }
 
         // now disconnect
-  enet_peer_disconnect (peer);
-//  enet_peer_disconnect (peer, 0);
+//   enet_peer_disconnect (peer);
+  enet_peer_disconnect (peer, 0);
         // 3 seconds timeout
   while(enet_host_service(client, &event, 3000) > 0){
     switch (event.type)

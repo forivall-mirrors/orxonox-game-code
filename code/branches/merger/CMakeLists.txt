@@ -5,6 +5,9 @@ PROJECT(Orxonox)
 #Create some verbose output
 SET(CMAKE_VERBOSE_MAKEFILE TRUE)
 
+# set eNet search path
+SET(Boost_INCLUDE_DIR "/usr/include/boost/")
+
 #force-set the compile on tardis machines, as default points to g++-3.3
 # only run this test on a lunix/unix machine
 IF (UNIX)
@@ -30,7 +33,7 @@ IF (UNIX)
   IF (IS_TARDIS)
   MESSAGE("System is a TARDIS: Setting Compiler to g++-3.4.3")
   SET(CMAKE_CXX_COMPILER "g++-3.4.3")
-
+# reset eNet serach path
   SET(Boost_INCLUDE_DIR "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include/boost-1_34_1")
   ENDIF(IS_TARDIS)
 ENDIF (UNIX)
@@ -49,7 +52,6 @@ FIND_PACKAGE(Boost)
 #Sets the search paths for the linking
 LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR} ${ENet_LIBRARY} ${Boost_LIBRARY_DIRS})
 #Sets the search path for include files
-#INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR} -I/usr/include/enet)
 INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR} ${ENet_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 
 #add main source dir
