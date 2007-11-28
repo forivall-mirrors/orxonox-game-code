@@ -76,7 +76,6 @@ std::string macBundlePath()
 }
 #endif
 
-
 using namespace Ogre;
 
 class OrxExitListener : public FrameListener, public OIS::MouseListener
@@ -310,18 +309,6 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
     }
 
 
-      void setupScene()
-      {
-// <<<<<<< .working
-//         Ogre::SceneManager *mgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
-//         Ogre::Camera *cam = mgr->createCamera("Camera");
-//         Ogre::Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
-// =======
-        mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, false));
-        mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, true));
-
-      }
-
       void setupInputSystem()
       {
         size_t windowHnd = 0;
@@ -383,7 +370,7 @@ using namespace Ogre;
 {
   try
   {
-    orxonox::OrxApplication orxonox;
+    OrxApplication orxonox;
     orxonox.go();
   }
   catch(Exception& e)

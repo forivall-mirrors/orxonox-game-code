@@ -41,6 +41,9 @@
 #include "xml/xmlParser.h"
 #include "loader/LevelLoader.h"
 
+#include "spaceship_steering.h"
+SpaceshipSteering* steering;
+
 
 // some tests to see if enet works without includsion
 //#include <enet/enet.h>
@@ -75,23 +78,100 @@ std::string macBundlePath()
 
 namespace orxonox
 {
-  class OrxExitListener : public Ogre::FrameListener
-  {
-    public:
-      OrxExitListener(OIS::Keyboard *keyboard)
-    : mKeyboard(keyboard)
-      {
+
+using namespace Ogre;
+
+class OrxExitListener : public FrameListener, public OIS::MouseListener
+{
+  public:
+    OrxExitListener(OIS::Keyboard *keyboard, OIS::Mouse *mouse)
+  : mKeyboard(keyboard), mMouse(mouse)
+    {
+      speed = 250;
+      loop = 100;
+      rotate = 10;
+      mouseX = 0;
+      mouseY = 0;
+      maxMouseX = 0;
+      minMouseX = 0;
+      moved = false;
+      steering->brakeRotate(rotate*10);
+      steering->brakeLoop(loop);
+      mMouse->setEventCallback(this);
+    }
+    bool frameStarted(const FrameEvent& evt)
+    {
+      mKeyboard->capture();
+      mMouse->capture();
+      if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
+        steering->moveForward(speed);
+      else
+        steering->moveForward(0);
+      if(mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
+        steering->brakeForward(speed);
+      else
+        steering->brakeForward(speed/10);
+      if (mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D))
+        steering->loopRight(loop);
+      else
+        steering->loopRight(0);
+      if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
+        steering->loopLeft(loop);
+      else
+        steering->loopLeft(0);
+
+      if(moved) {
+        if (mouseY<0)
+          steering->rotateUp(-mouseY*rotate);
+        if (mouseY>0)
+          steering->rotateDown(mouseY*rotate);
+        if (mouseX>0)
+          steering->rotateRight(mouseX*rotate);
+        if (mouseX<0)
+          steering->rotateLeft(-mouseX*rotate);
+        moved = false;
+      }
+      else {
+        steering->rotateUp(0);
+        steering->rotateDown(0);
+        steering->rotateRight(0);
+        steering->rotateLeft(0);
       }
 
-      bool frameStarted(const Ogre::FrameEvent& evt)
-      {
-        mKeyboard->capture();
-        return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
-      }
+      steering->tick(evt.timeSinceLastFrame);
+//	scenemanager->spacehip->tick(evt.timesincelastframe);
+      if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+        cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
+      return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
+    }
 
-    private:
-      OIS::Keyboard *mKeyboard;
-  };
+    bool mouseMoved(const OIS::MouseEvent &e)
+    {
+      mouseX = e.state.X.rel;
+      mouseY = e.state.Y.rel;
+      if(mouseX>maxMouseX) maxMouseX = mouseX;
+      if(mouseX<minMouseX) minMouseX = mouseX;
+      cout << "mouseX: " << mouseX << "\tmouseY: " << mouseY << endl;
+      moved = true;
+      return true;
+    }
+
+    bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
+    bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
+
+  private:
+    float speed;
+    float rotate;
+    float loop;
+    float mouseY;
+    float mouseX;
+    float maxMouseX;
+    float minMouseX;
+    bool moved;
+    OIS::Keyboard *mKeyboard;
+    OIS::Mouse *mMouse;
+};
+
 
   class OrxApplication
   {
@@ -173,7 +253,7 @@ namespace orxonox
       void setupRenderSystem()
       {
         if (!mRoot->restoreConfig() && !mRoot->showConfigDialog())
-          throw Ogre::Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
+          throw Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
       }
 
       void createRenderWindow()
@@ -183,23 +263,54 @@ namespace orxonox
 
       void initializeResourceGroups()
       {
-        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-        Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+        TextureManager::getSingleton().setDefaultNumMipmaps(5);
+        ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
       }
 
       void createScene(void)
       {
 
-        string levelFile = "sp_level_moonstation.oxw";
-        loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
-      }
+      string levelFile = "sp_level_moonstation.oxw";
+      loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
+    }
 
-      void setupScene()
-      {
-        Ogre::SceneManager *mgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
-        Ogre::Camera *cam = mgr->createCamera("Camera");
-        Ogre::Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
-      }
+    void setupScene()
+    {
+      SceneManager *mgr = mRoot->createSceneManager(ST_GENERIC, "Default SceneManager");
+      Camera *cam = mgr->createCamera("Camera");
+      cam->setPosition(Vector3(0,0,-250));
+      cam->lookAt(Vector3(0,0,0));
+      Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
+
+
+      mgr->setAmbientLight(ColourValue(1,1,1));
+      Entity* head = mgr->createEntity("head", "ogrehead.mesh");
+      SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
+      node->attachObject(head);
+      node->attachObject(cam);
+      mgr->setSkyBox(true, "Examples/SceneSkyBox2");
+
+      Entity* head1 = mgr->createEntity("head1", "ogrehead.mesh");
+      SceneNode *node1 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode1", Vector3(200,0,0));
+      node1->attachObject(head1);
+      Entity* head2 = mgr->createEntity("head2", "ogrehead.mesh");
+      SceneNode *node2 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode2", Vector3(200,400,-100));
+      node2->attachObject(head2);
+      Entity* head3 = mgr->createEntity("head3", "ogrehead.mesh");
+      SceneNode *node3 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode3", Vector3(0,400,200));
+      node3->attachObject(head3);
+      Entity* head4 = mgr->createEntity("head4", "ogrehead.mesh");
+      SceneNode *node4 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode4", Vector3(-400,-200,600));
+      node4->attachObject(head4);
+      Entity* head5 = mgr->createEntity("head5", "ogrehead.mesh");
+      SceneNode *node5 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode5", Vector3(0,0,-400));
+      node5->attachObject(head5);
+
+      steering = new SpaceshipSteering(500, 200, 200, 200);
+      steering->addNode(node);
+
+    }
+
 
       void setupInputSystem()
       {
@@ -236,12 +347,12 @@ namespace orxonox
         // Other CEGUI setup here.
       }
 
-      void createFrameListener()
-      {
-        mListener = new OrxExitListener(mKeyboard);
-        mRoot->addFrameListener(mListener);
-      }
 
+    void createFrameListener()
+    {
+      mListener = new OrxExitListener(mKeyboard, mMouse);
+      mRoot->addFrameListener(mListener);
+    }
       void startRenderLoop()
       {
         mRoot->startRendering();
