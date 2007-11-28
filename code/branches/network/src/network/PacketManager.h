@@ -18,7 +18,7 @@ enum packet_id {
 /*
  * class to generate packets
  * 
- * Autor: Dumeni Manatschal
+ * @autor: Dumeni Manatschal
  * 
 */ 
 class PacketGenerator
@@ -53,7 +53,7 @@ private:
 /*
  * class used to decode incoming packets
  * 
- * Autor: Dumeni Manatschal
+ * @autor: Dumeni Manatschal
  * 
 */
 class PacketDecoder
