@@ -42,7 +42,7 @@ class Synchronisable{
 public:
   Synchronisable();
 
-  ~Synchronisable();
+  virtual ~Synchronisable();
   int objectID;
   int classID;
     
@@ -54,6 +54,8 @@ public:
   virtual void registerAllVariables();
 
 private:
+  bool removeObject(Iterator<Synchronisable> it);
+  
   std::list<SYNCVAR> syncList;
   int datasize;
 };

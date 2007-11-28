@@ -89,16 +89,36 @@ bool GameStateManager::loadSnapshot(GameState state)
     
     if(it->objectID!=sync.objectID){
       // bad luck ;)
+      // delete the synchronisable (obviously seems to be deleted on the server)
+      while(it=!0 && it->objectID!=sync.objectID){
+        it=removeObject(it);
+      }
+      if(it==0){  // add the new object
+        
+      }
     } else {
       // we have our object
       if(! it->updateData(sync))
-        std::cout << "We couldn't update objectID: " << sync.objectID << "; classID: " << sync.classID << std::endl;
+        std::cout << "We couldn't update objectID: " \
+          << sync.objectID << "; classID: " << sync.classID << std::endl;
     }
+    
   }
+  
   
 }
 
-
+/**
+ * This function removes a Synchronisable out of the universe
+ * @param it iterator of the list pointing to the object
+ * @return iterator pointing to the next object in the list
+ */
+Iterator<Synchronisable> removeObject(Iterator<Synchronisable> it){
+  Iterator<Synchronisable> temp=it;
+  it++;
+  delete  temp;
+  return it;
+}
 
 
 }
