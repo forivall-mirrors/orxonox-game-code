@@ -1,0 +1,6 @@
+PROJECT(Orxonox)
+
+ADD_SUBDIRECTORY(include)
+
+TARGET_LINK_LIBRARIES(lib)
+
