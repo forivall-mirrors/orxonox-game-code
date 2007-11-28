@@ -38,8 +38,8 @@
 #include <string>
 #include <iostream>
 
-#include "../xml/xmlParser.h"
-#include "../loader/LevelLoader.h"
+#include "xml/xmlParser.h"
+#include "loader/LevelLoader.h"
 
 
 // some tests to see if enet works without includsion
