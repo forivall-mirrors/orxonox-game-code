@@ -54,65 +54,61 @@ namespace audio
 		std::cout << "Play sone ambient background sound";
 	}
 	
-ALboolean Ambient::LoadALData()
-{
-	ALenum format;
-	ALsizei size;
-	ALvoid* data;
-	ALsizei freq;
-	ALboolean loop;
-
-
-	alGenBuffers(1, &Buffer);
-
-	if(alGetError() != AL_NO_ERROR)
-		return AL_FALSE;
-
-	alutLoadWAVFile((ALbyte*)"wavdata/pirate.wav", &format, &data, &size, &freq, &loop);
-	alBufferData(Buffer, format, data, size, freq);
-	alutUnloadWAV(format, data, size, freq);
-
-	alGenSources(1, &Source);
-
-	if(alGetError() != AL_NO_ERROR)
-		return AL_FALSE;
-
-	alSourcei (Source, AL_BUFFER,   Buffer   );
-	alSourcef (Source, AL_PITCH,    1.0      );
-	alSourcef (Source, AL_GAIN,     1.0      );
-	alSourcefv(Source, AL_POSITION, SourcePos);
-	alSourcefv(Source, AL_VELOCITY, SourceVel);
-	alSourcei (Source, AL_LOOPING,  loop     );
-
-	if(alGetError() == AL_NO_ERROR)
-		return AL_TRUE;
-
-
-	return AL_FALSE;
-}	
-
-void Ambient::SetListenerValues()
-{
-	alListenerfv(AL_POSITION,    ListenerPos);
-	alListenerfv(AL_VELOCITY,    ListenerVel);
-	alListenerfv(AL_ORIENTATION, ListenerOri);
-}
-
-void Ambient::KillALData()
-{
-	alDeleteBuffers(1, &Buffer);
-	alDeleteSources(1, &Source);
-	alutExit();
-}
-
-void Ambient::play()
-{
-	alSourcePlay(Source);
-
-}
-
-
+	ALboolean Ambient::LoadALData()
+	{
+		ALenum format;
+		ALsizei size;
+		ALvoid* data;
+		ALsizei freq;
+		ALboolean loop;
 	
 	
+		alGenBuffers(1, &Buffer);
+	
+		if(alGetError() != AL_NO_ERROR)
+			return AL_FALSE;
+	
+		alutLoadWAVFile((ALbyte*)"wavdata/pirate.wav", &format, &data, &size, &freq, &loop);
+		alBufferData(Buffer, format, data, size, freq);
+		alutUnloadWAV(format, data, size, freq);
+	
+		alGenSources(1, &Source);
+	
+		if(alGetError() != AL_NO_ERROR)
+			return AL_FALSE;
+	
+		alSourcei (Source, AL_BUFFER,   Buffer   );
+		alSourcef (Source, AL_PITCH,    1.0      );
+		alSourcef (Source, AL_GAIN,     1.0      );
+		alSourcefv(Source, AL_POSITION, SourcePos);
+		alSourcefv(Source, AL_VELOCITY, SourceVel);
+		alSourcei (Source, AL_LOOPING,  loop     );
+	
+		if(alGetError() == AL_NO_ERROR)
+			return AL_TRUE;
+	
+	
+		return AL_FALSE;
+	}	
+
+	void Ambient::SetListenerValues()
+	{
+		alListenerfv(AL_POSITION,    ListenerPos);
+		alListenerfv(AL_VELOCITY,    ListenerVel);
+		alListenerfv(AL_ORIENTATION, ListenerOri);
+	}
+	
+	void Ambient::KillALData()
+	{
+		alDeleteBuffers(1, &Buffer);
+		alDeleteSources(1, &Source);
+		alutExit();
+	}
+
+	void Ambient::play()
+	{
+		alSourcePlay(Source);
+	
+	}
 }
 
