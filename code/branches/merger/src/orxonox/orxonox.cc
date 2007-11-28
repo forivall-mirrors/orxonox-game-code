@@ -327,7 +327,7 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
         try
         {
           mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, false));
-          mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, false));
+          mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, true));
         }
         catch (const OIS::Exception &e)
         {
