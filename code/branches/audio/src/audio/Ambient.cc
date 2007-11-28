@@ -31,6 +31,26 @@ namespace audio
 		 ListenerOri[4]=1;
 		 ListenerOri[5]=0;
 
+
+	// Initialize OpenAL and clear the error bit.
+
+	alutInit(NULL, 0);
+	alGetError();
+
+	// Load the wav data.
+
+	if(LoadALData() == AL_FALSE)
+	{
+	    printf("Error loading sound data.");
+		
+	}
+
+	SetListenerValues();
+
+	// Setup an exit procedure.
+
+	//atexit(KillALData);
+
 		std::cout << "Play sone ambient background sound";
 	}
 	
@@ -41,6 +61,7 @@ ALboolean Ambient::LoadALData()
 	ALvoid* data;
 	ALsizei freq;
 	ALboolean loop;
+
 
 	alGenBuffers(1, &Buffer);
 
@@ -66,8 +87,31 @@ ALboolean Ambient::LoadALData()
 	if(alGetError() == AL_NO_ERROR)
 		return AL_TRUE;
 
+
 	return AL_FALSE;
 }	
+
+void Ambient::SetListenerValues()
+{
+	alListenerfv(AL_POSITION,    ListenerPos);
+	alListenerfv(AL_VELOCITY,    ListenerVel);
+	alListenerfv(AL_ORIENTATION, ListenerOri);
+}
+
+void Ambient::KillALData()
+{
+	alDeleteBuffers(1, &Buffer);
+	alDeleteSources(1, &Source);
+	alutExit();
+}
+
+void Ambient::play()
+{
+	alSourcePlay(Source);
+
+}
+
+
 	
 	
 }

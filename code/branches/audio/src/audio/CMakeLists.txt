@@ -3,8 +3,10 @@ PROJECT(Orxonox)
 SET(SRC_FILES Ambient.cc)
 SET(INC_FILES Ambient.h)
 
-INCLUDE_DIRECTORIES(..)
 
 ADD_LIBRARY(audio ${SRC_FILES} ${INC_FILES})
 
-TARGET_LINK_LIBRARIES(../openal/lib)
+TARGET_LINK_LIBRARIES(audio alut)
+TARGET_LINK_LIBRARIES(audio openal)
+
+

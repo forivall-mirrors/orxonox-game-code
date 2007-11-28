@@ -191,6 +191,7 @@ namespace orxonox
       void createScene(void)
       {
 				audio::Ambient* bgsound = new audio::Ambient();
+				bgsound->play();
 				        
         string levelFile = "sp_level_moonstation.oxw";
         loader::LevelLoader* loader = new loader::LevelLoader(levelFile);

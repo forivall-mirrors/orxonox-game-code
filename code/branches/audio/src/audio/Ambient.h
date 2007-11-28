@@ -13,9 +13,11 @@ namespace audio
 	{
 	public:
 		Ambient();
+		void play();
 	private:
 		ALboolean LoadALData();	
-
+		void SetListenerValues();
+		void KillALData();
 
 		ALuint Buffer;
 		ALuint Source;
