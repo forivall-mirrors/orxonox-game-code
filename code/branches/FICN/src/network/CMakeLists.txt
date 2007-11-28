@@ -1,7 +1,15 @@
 PROJECT(Orxonox)
 
-SET(SRC_FILES Client.cc ConnectionManager.cc PacketBuffer.cc PacketGenerator.cc Synchronisable.cc ClientConnection.cc GameStateManager.cc PacketDecoder.cc Server.cc)
+SET( NETWORK_SRC_FILES
+	Client.cc
+	ClientConnection.cc
+	ConnectionManager.cc
+	GameStateManager.cc
+	PacketBuffer.cc
+	PacketDecoder.cc
+	PacketGenerator.cc
+	Server.cc
+	Synchronisable.cc
+)
 
-INCLUDE_DIRECTORIES(..)
-
-ADD_LIBRARY(network ${SRC_FILES} ${ENet_LIBRARY})
+ADD_LIBRARY(network ${NETWORK_SRC_FILES})

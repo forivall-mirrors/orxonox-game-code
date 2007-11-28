@@ -1,5 +1,5 @@
 
-#include "../xml/xmlParser.h"
+#include "xml/xmlParser.h"
 
 #ifndef __MODULE_LIGHT__
 #define __MODULE_LIGHT__

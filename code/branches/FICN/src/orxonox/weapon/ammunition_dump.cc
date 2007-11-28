@@ -25,7 +25,7 @@
  *
  */
 
-#include "run_manager.h"
+#include "orxonox/run_manager.h"
 
 #include "ammunition_dump.h"
 

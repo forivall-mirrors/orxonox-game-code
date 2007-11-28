@@ -2,7 +2,7 @@
 #define PACKETMANAGER_H_
 
 #include <enet/enet.h>
-#include <network/GameStateManager.h>
+#include "GameStateManager.h"
 
 //enum netowk generaly used to set the type ID of a packet
 namespace network

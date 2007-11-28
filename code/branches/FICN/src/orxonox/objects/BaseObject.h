@@ -1,7 +1,7 @@
 #ifndef _BaseObject_H__
 #define _BaseObject_H__
 
-#include "../core/IdentifierIncludes.h"
+#include "orxonox/core/IdentifierIncludes.h"
 
 namespace orxonox
 {

@@ -1,5 +1,10 @@
 PROJECT(Orxonox)
 
-SET(SRC_FILES hud_overlay.cc test_overlay.cc)
+SET( HUD_SRC_FILES
+	hud_overlay.cc
+	test_overlay.cc
+)
 
-ADD_LIBRARY(objects ${SRC_FILES})
+LINK_DIRECTORIES(.)
+
+ADD_LIBRARY(hud ${HUD_SRC_FILES})

@@ -41,13 +41,8 @@
 #include "xml/xmlParser.h"
 #include "loader/LevelLoader.h"
 
-#include "orxonox.h"
-
-#include "Flocking.h"
-
 #include "spaceship_steering.h"
 SpaceshipSteering* steering;
-
 
 
 // some tests to see if enet works without includsion

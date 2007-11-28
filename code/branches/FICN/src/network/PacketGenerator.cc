@@ -7,7 +7,7 @@
 */
 
 #include "PacketManager.h"
-#include "enet/enet.h"
+#include <enet/enet.h>
 #include <iostream>
 #include <list>
 #include <string>

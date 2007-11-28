@@ -1,5 +1,5 @@
 
-#include "../xml/xmlParser.h"
+#include "xml/xmlParser.h"
 #include "Light.h"
 
 namespace light

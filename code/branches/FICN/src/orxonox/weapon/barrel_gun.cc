@@ -32,9 +32,10 @@
 #include "OgreEntity.h"
 #include "OgreSceneManager.h"
 
+#include "orxonox/inertial_node.h"
+
 #include "bullet.h"
 #include "bullet_manager.h"
-#include "inertial_node.h"
 #include "ammunition_dump.h"
 #include "base_weapon.h"
 

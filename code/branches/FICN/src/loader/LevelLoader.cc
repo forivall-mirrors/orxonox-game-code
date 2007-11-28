@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "LevelLoader.h"
-#include "../xml/xmlParser.h"
+#include "xml/xmlParser.h"
 
 using namespace std;
 

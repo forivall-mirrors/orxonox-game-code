@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "../xml/xmlParser.h"
+#include "xml/xmlParser.h"
 #include "Light.h"
 
 #ifndef __MODULE_LIGHTMANAGER__

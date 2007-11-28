@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 
-#include "../xml/xmlParser.h"
+#include "xml/xmlParser.h"
 
 #ifndef __MODULE_LEVELLOADER__
 #define __MODULE_LEVELLOADER__
