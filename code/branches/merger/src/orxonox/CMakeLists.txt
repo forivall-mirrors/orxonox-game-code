@@ -1,6 +1,6 @@
 PROJECT(Orxonox)
 
-SET(SRC_FILES orxonox.cc)
+SET(SRC_FILES orxonox.cc spaceship_steering.cc)
 
 ADD_EXECUTABLE(../../bin/main ${SRC_FILES})
 
