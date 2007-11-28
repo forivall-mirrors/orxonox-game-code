@@ -78,58 +78,95 @@ std::string macBundlePath()
 
 using namespace Ogre;
 
-class OrxExitListener : public FrameListener
+class OrxExitListener : public FrameListener, public OIS::MouseListener
 {
   public:
-    OrxExitListener(OIS::Keyboard *keyboard)
-  : mKeyboard(keyboard)
+    OrxExitListener(OIS::Keyboard *keyboard, OIS::Mouse *mouse)
+  : mKeyboard(keyboard), mMouse(mouse)
     {
+      speed = 250;
+      loop = 100;
+      rotate = 10;
+      mouseX = 0;
+      mouseY = 0;
+      maxMouseX = 0;
+      minMouseX = 0;
+      moved = false;
+      steering->brakeRotate(rotate*10);
+      steering->brakeLoop(loop);
+      mMouse->setEventCallback(this);
     }
-
     bool frameStarted(const FrameEvent& evt)
     {
-      float speed = 1;
-      float rotate = 1;
       mKeyboard->capture();
-      if (mKeyboard->isKeyDown(OIS::KC_SPACE))
+      mMouse->capture();
+      if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
         steering->moveForward(speed);
       else
         steering->moveForward(0);
-      if(mKeyboard->isKeyDown(OIS::KC_C))
-        steering->brake(speed);
+      if(mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
+        steering->brakeForward(speed);
       else
-        steering->brake(0.1);
-      if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
-        steering->rotateUp(rotate);
-      else
-        steering->rotateUp(0);
-      if (mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
-        steering->rotateDown(rotate);
-      else
-        steering->rotateDown(0);
+        steering->brakeForward(speed/10);
       if (mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D))
-        steering->rotateRight(rotate);
-      else
-        steering->rotateRight(0);
-      if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
-        steering->rotateLeft(rotate);
-      else
-        steering->rotateLeft(0);
-      if (mKeyboard->isKeyDown(OIS::KC_E))
-        steering->loopRight(rotate);
+        steering->loopRight(loop);
       else
         steering->loopRight(0);
-      if (mKeyboard->isKeyDown(OIS::KC_Q))
-        steering->loopLeft(rotate);
+      if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
+        steering->loopLeft(loop);
       else
         steering->loopLeft(0);
+
+      if(moved) {
+        if (mouseY<0)
+          steering->rotateUp(-mouseY*rotate);
+        if (mouseY>0)
+          steering->rotateDown(mouseY*rotate);
+        if (mouseX>0)
+          steering->rotateRight(mouseX*rotate);
+        if (mouseX<0)
+          steering->rotateLeft(-mouseX*rotate);
+        moved = false;
+      }
+      else {
+        steering->rotateUp(0);
+        steering->rotateDown(0);
+        steering->rotateRight(0);
+        steering->rotateLeft(0);
+      }
+
       steering->tick(evt.timeSinceLastFrame);
 //	scenemanager->spacehip->tick(evt.timesincelastframe);
+      if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+        cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
       return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
     }
 
+    bool mouseMoved(const OIS::MouseEvent &e)
+    {
+      mouseX = e.state.X.rel;
+      mouseY = e.state.Y.rel;
+      if(mouseX>maxMouseX) maxMouseX = mouseX;
+      if(mouseX<minMouseX) minMouseX = mouseX;
+      cout << "mouseX: " << mouseX << "\tmouseY: " << mouseY << endl;
+      moved = true;
+      return true;
+    }
+
+    bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
+    bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
+
   private:
+    float speed;
+    float rotate;
+    float loop;
+    float mouseY;
+    float mouseX;
+    float maxMouseX;
+    float minMouseX;
+    bool moved;
     OIS::Keyboard *mKeyboard;
+    OIS::Mouse *mMouse;
 };
 
 class OrxApplication
@@ -285,7 +322,7 @@ class OrxApplication
       try
       {
         mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, false));
-        mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, false));
+        mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, true));
       }
       catch (const OIS::Exception &e)
       {
@@ -307,7 +344,7 @@ class OrxApplication
 
     void createFrameListener()
     {
-      mListener = new OrxExitListener(mKeyboard);
+      mListener = new OrxExitListener(mKeyboard, mMouse);
       mRoot->addFrameListener(mListener);      
     }
 
