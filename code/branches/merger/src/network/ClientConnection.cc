@@ -131,7 +131,8 @@ namespace network{
 
   bool ClientConnection::disconnectConnection(){
     ENetEvent event;
-    enet_peer_disconnect(server, 0);
+    enet_peer_disconnect(server);
+    //enet_peer_disconnect(server, 0);
     while(enet_host_service(client, &event, NETWORK_WAIT_TIMEOUT) > 0){
       switch (event.type)
       {
