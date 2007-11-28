@@ -95,7 +95,6 @@ class Element // An element that flocks
     if(numberOfNeighbour > 0) {
     *steering = *steering / (float)numberOfNeighbour;  //devide the sum of steeringvectors by the number of elements -> separation steeringvector
     }
-    // cout << *steering << endl;
     return *steering;
   }
 
@@ -115,7 +114,6 @@ class Element // An element that flocks
     if(numberOfNeighbour > 0) {
     *steering = *steering / (float)numberOfNeighbour;  //devide the sum of steeringvectors by the number of elements -> alignment steeringvector
     }
-    cout << *steering << endl;
     return *steering;
   }
 
