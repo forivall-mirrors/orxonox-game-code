@@ -53,6 +53,10 @@ void PacketDecoder::acknowledgement( ENetPacket* packet )
 {
 	ack* a = new ack;
 	*a = *(ack*)packet->data; //press pattern of ack on new data
+	
+	//clean memory
+	enet_packet_destroy( packet );
+	
 	printAck( a ); //debug info
 }
 
@@ -61,6 +65,10 @@ void PacketDecoder::mousem( ENetPacket* packet )
 	mouse* mouseMove = new mouse;
 	//copy data of packet->data to new struct
 	*mouseMove = *(mouse*)packet->data; 
+	
+	//clean memory
+	enet_packet_destroy( packet );
+	
 	printMouse( mouseMove ); //debug info
 }
 
@@ -68,7 +76,12 @@ void PacketDecoder::keystrike( ENetPacket* packet )
 {
 	keyboard* key = new keyboard;
 	*key = *(keyboard*)packet->data; //see above
+	
+	//clean memory
+	enet_packet_destroy( packet );
+	
 	printKey( key ); //debug info
+
 }
 
 void PacketDecoder::chatMessage( ENetPacket* packet )
@@ -82,7 +95,12 @@ void PacketDecoder::chatMessage( ENetPacket* packet )
 	memcpy( &reserve[0], packet->data+sizeof(int), packet->dataLength-sizeof(int) );
 	//put pointer of chatting struct to the begining of the new generated char*
 	chatting->message = reserve;
+	
+	//clean memory
+	enet_packet_destroy( packet );
+	
 	printChat( chatting ); //debug info
+	
 }
 
 void PacketDecoder::gstate( ENetPacket* packet )
@@ -99,6 +117,9 @@ void PacketDecoder::gstate( ENetPacket* packet )
 	currentState->data = (unsigned char*)(malloc( currentState->size ));
 	//copy the gamestate data
 	memcpy( (void*)(currentState->data), (const void*)(data+3*sizeof( int )), currentState->size );
+	
+	//clean memory
+	enet_packet_destroy( packet );
 }
 
 //these are some print functions for test stuff
