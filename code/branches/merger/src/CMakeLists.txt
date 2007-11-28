@@ -1,15 +1,38 @@
 PROJECT(Orxonox)
 
-# create a few variables to simplify life
-# SET(SRC_FILES orxonox/orxonox.cc loader/LevelLoader.cc xml/xmlParser.cc orxonox/core/IdentifierList.cc orxonox/core/Identifier.cc orxonox/core/MetaObjectList.cc orxonox/core/Factory.cc orxonox/core/OrxonoxClass.cc orxonox/objects/BaseObject.cc orxonox/objects/test1.cc orxonox/objects/test2.cc orxonox/objects/test3.cc)
-# SET(INC_FILES loader/LevelLoader.h xml/xmlParser.h orxonox/core/IdentifierIncludes.h orxonox/core/Identifier.h orxonox/core/Factory.h orxonox/core/ClassFactory.h orxonox/core/IdentifierList.h orxonox/core/ObjectList.h orxonox/core/MetaObjectList.h orxonox/core/Iterator.h orxonox/core/OrxonoxClass.h orxonox/objects/BaseObject.h orxonox/objects/Test.h orxonox/objects/test1.h orxonox/objects/test2.h orxonox/objects/test3.h)
-
-#Creates an executable
-# ADD_EXECUTABLE(../bin/main ${SRC_FILES} ${INC_FILES})
-#Links the executable against OGRE and OIS
-# TARGET_LINK_LIBRARIES(../bin/main ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CEGUI_LIBRARIES} ${CEGUI_OGRE_LIBRARIES})
-
 ADD_SUBDIRECTORY(orxonox)
 ADD_SUBDIRECTORY(loader)
 ADD_SUBDIRECTORY(network)
 ADD_SUBDIRECTORY(hud)
+ADD_SUBDIRECTORY(weapon)
+ADD_SUBDIRECTORY(class_hierarchy)
+
+
+# create a few variables to simplify life
+# SET( ORXONOX_SRC
+# 	inertial_node.cc
+# 	main.cc
+# 	ogre_control.cc
+# 	orxonox.cc
+# 	orxonox_scene.cc
+# 	orxonox_ship.cc
+# 	run_manager.cc
+# )
+
+#Creates an executable
+# ADD_EXECUTABLE(../bin/main ${ORXONOX_SRC} )
+
+#add weapon source dir
+
+# ADD_SUBDIRECTORY(hud)
+
+#Links the executable against OGRE and OIS
+# TARGET_LINK_LIBRARIES(../bin/main
+# 	WEAPON
+# 	CLASS_HIERARCHY
+# 	HUD
+# 	${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CEGUI_LIBRARIES} ${CEGUI_OGRE_LIBRARIES}
+# )
+
+#TARGET_LINK_LIBRARIES(../bin/main ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${CEGUI_LIBRARIES} ${CEGUI_OGRE_LIBRARIES})
+

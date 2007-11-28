@@ -19,46 +19,41 @@
  *
  *
  *   Author:
- *      HUD design: Yuning Chai
- *      Implementation: Yuning Chai
+ *      Reto Grieder
  *   Co-authors:
- *      Implementation: Reto Grieder
+ *      ...
  *
  */
 
 
-#ifndef HUD_OVERLAY_H
-#define HUD_OVERLAY_H
+#ifndef ORXONOX_H
+#define ORXONOX_H
 
 #include "OgrePrerequisites.h"
 
 #include "orxonox_prerequisites.h"
 
-
 namespace orxonox {
-namespace hud {
 
-  class HUDOverlay
+  class Orxonox
   {
   public:
-    HUDOverlay();
-	  virtual ~HUDOverlay();
-
-    void show();
-
-    void hide();
-
-    bool tick(unsigned long, Ogre::Real);
+    Orxonox();
+    virtual ~Orxonox();
+	  virtual void go();
 
   protected:
+	  virtual bool setup(void);
 
-  public:
+	  virtual void destroy(void);
 
   protected:
-    Ogre::Overlay *overlay_;
+	  OgreControl *ogre_;
+	  RunManager  *runMgr_;
+	  Ogre::Timer *timer_;
 
   };
-}
+
 }
 
-#endif /* HUD_OVERLAY_H */
+#endif /* ORXONOX_H */

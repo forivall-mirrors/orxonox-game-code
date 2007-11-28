@@ -19,16 +19,15 @@
  *
  *
  *   Author:
- *      HUD design: Yuning Chai
- *      Implementation: Yuning Chai
+ *      Reto Grieder
  *   Co-authors:
- *      Implementation: Reto Grieder
+ *      ...
  *
  */
 
 
-#ifndef HUD_OVERLAY_H
-#define HUD_OVERLAY_H
+#ifndef ORXONOX_SCENE_H
+#define ORXONOX_SCENE_H
 
 #include "OgrePrerequisites.h"
 
@@ -36,29 +35,36 @@
 
 
 namespace orxonox {
-namespace hud {
 
-  class HUDOverlay
+  class OrxonoxScene
   {
   public:
-    HUDOverlay();
-	  virtual ~HUDOverlay();
+    OrxonoxScene(Ogre::SceneManager*);
 
-    void show();
+	  virtual ~OrxonoxScene();
 
-    void hide();
+	  virtual bool initialise();
 
-    bool tick(unsigned long, Ogre::Real);
-
-  protected:
-
-  public:
+	  virtual bool tick(unsigned long, Ogre::Real);
 
   protected:
-    Ogre::Overlay *overlay_;
+	  /// method where you can perform resource group loading
+	  virtual void loadResources();
 
+	  /// Define what is in the scene
+	  virtual void createScene();
+
+  protected:
+	  Ogre::SceneManager* sceneMgr_;
+
+	  //specific variables for test purposes
+	  Ogre::Light        *light_;
+	  Ogre::SceneNode    *lightNode_;
+	  Ogre::BillboardSet *bbs_;
+	  Ogre::Real distance_;
+    Ogre::Real radius_;
   };
-}
+
 }
 
-#endif /* HUD_OVERLAY_H */
+#endif /* ORXONOX_SCENE_H */

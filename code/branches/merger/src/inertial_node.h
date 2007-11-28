@@ -19,16 +19,15 @@
  *
  *
  *   Author:
- *      HUD design: Yuning Chai
- *      Implementation: Yuning Chai
+ *      Reto Grieder
  *   Co-authors:
- *      Implementation: Reto Grieder
+ *      ...
  *
  */
 
 
-#ifndef HUD_OVERLAY_H
-#define HUD_OVERLAY_H
+#ifndef INERTIAL_NODE_H
+#define INERTIAL_NODE_H
 
 #include "OgrePrerequisites.h"
 
@@ -36,29 +35,43 @@
 
 
 namespace orxonox {
-namespace hud {
 
-  class HUDOverlay
+  class InertialNode
   {
   public:
-    HUDOverlay();
-	  virtual ~HUDOverlay();
+    InertialNode(Ogre::SceneNode*, Ogre::Vector3);
+	  ~InertialNode();
 
-    void show();
+    InertialNode* createChildNode();
 
-    void hide();
+    InertialNode* getParentNode();
 
-    bool tick(unsigned long, Ogre::Real);
+    Ogre::SceneNode* getSceneNode();
+
+    Ogre::Vector3 getSpeed();
+
+    Ogre::Vector3 getWorldSpeed();
+
+    void addSpeed(Ogre::Vector3);
 
   protected:
+    InertialNode(InertialNode*, Ogre::Vector3 speed = Ogre::Vector3::ZERO);
+    void addChild(InertialNode*);
 
   public:
 
   protected:
-    Ogre::Overlay *overlay_;
+    InertialNode **childList_;
+    int childListSize_;
+    int childListIndex_;
+
+    Ogre::SceneNode *node_;
+	  Ogre::Vector3 speed_;
+
+    InertialNode* parentNode_;
 
   };
-}
+
 }
 
-#endif /* HUD_OVERLAY_H */
+#endif /* INERTIAL_NODE_H */

@@ -19,16 +19,15 @@
  *
  *
  *   Author:
- *      HUD design: Yuning Chai
- *      Implementation: Yuning Chai
+ *      Reto Grieder
  *   Co-authors:
- *      Implementation: Reto Grieder
+ *      ...
  *
  */
 
 
-#ifndef HUD_OVERLAY_H
-#define HUD_OVERLAY_H
+#ifndef AmmunitionDump_H
+#define AmmunitionDump_H
 
 #include "OgrePrerequisites.h"
 
@@ -36,29 +35,32 @@
 
 
 namespace orxonox {
-namespace hud {
+namespace weapon {
 
-  class HUDOverlay
+  class AmmunitionDump
   {
   public:
-    HUDOverlay();
-	  virtual ~HUDOverlay();
+    AmmunitionDump();
+	  ~AmmunitionDump();
 
-    void show();
+    void setDumpSize(const Ogre::String &name, int size);
 
-    void hide();
+    int store(const Ogre::String &name, int quantiy);
 
-    bool tick(unsigned long, Ogre::Real);
+    int getAmmunition(const Ogre::String &name, int quantity);
 
-  protected:
-
-  public:
+    int getStockSize(const Ogre::String &name);
 
   protected:
-    Ogre::Overlay *overlay_;
+    int numberOfAmmos_;
+    int *stock_;
+    int *capacity_;
+
+  protected:
 
   };
+
 }
 }
 
-#endif /* HUD_OVERLAY_H */
+#endif /* AmmunitionDump_H */

@@ -19,16 +19,15 @@
  *
  *
  *   Author:
- *      HUD design: Yuning Chai
- *      Implementation: Yuning Chai
+ *      Reto Grieder
  *   Co-authors:
- *      Implementation: Reto Grieder
+ *      ...
  *
  */
 
 
-#ifndef HUD_OVERLAY_H
-#define HUD_OVERLAY_H
+#ifndef OGRE_CONTROL_H
+#define OGRE_CONTROL_H
 
 #include "OgrePrerequisites.h"
 
@@ -36,29 +35,37 @@
 
 
 namespace orxonox {
-namespace hud {
 
-  class HUDOverlay
+  class OgreControl
   {
   public:
-    HUDOverlay();
-	  virtual ~HUDOverlay();
+	  OgreControl();
 
-    void show();
+	  virtual ~OgreControl();
 
-    void hide();
+	  /** Sets up the application - returns false if the user chooses to abandon configuration. */
+	  virtual bool initialise();
 
-    bool tick(unsigned long, Ogre::Real);
+    virtual Ogre::Root* getRoot();
+
+	  virtual Ogre::RenderWindow* getRenderWindow();
+
+	  virtual Ogre::String getResourcePath();
 
   protected:
+	  /** Configures the application - returns false if the user chooses to abandon configuration. */
+	  virtual bool configure(void);
 
-  public:
+	  /// Method which will define the source of resources (other than current folder)
+	  virtual void setupResources(void);
 
   protected:
-    Ogre::Overlay *overlay_;
+	  Ogre::Root         *root_;
+	  Ogre::RenderWindow *window_;
+	  Ogre::String  resourcePath_;
 
   };
-}
+
 }
 
-#endif /* HUD_OVERLAY_H */
+#endif /* OGRE_CONTROL_H */

@@ -19,16 +19,15 @@
  *
  *
  *   Author:
- *      HUD design: Yuning Chai
- *      Implementation: Yuning Chai
+ *      Reto Grieder
  *   Co-authors:
- *      Implementation: Reto Grieder
+ *      ...
  *
  */
 
 
-#ifndef HUD_OVERLAY_H
-#define HUD_OVERLAY_H
+#ifndef WEAPON_STATION_H
+#define WEAPON_STATION_H
 
 #include "OgrePrerequisites.h"
 
@@ -36,29 +35,35 @@
 
 
 namespace orxonox {
-namespace hud {
+namespace weapon {
 
-  class HUDOverlay
+  class WeaponStation
   {
   public:
-    HUDOverlay();
-	  virtual ~HUDOverlay();
+    WeaponStation(int slotSize);
+	  ~WeaponStation();
 
-    void show();
+    bool addWeapon(BaseWeapon*);
 
-    void hide();
+    //bool removeCurrentWeapon();
 
-    bool tick(unsigned long, Ogre::Real);
+    // TODO: access every weapon by name
+    BaseWeapon* selectWeapon(int slotNumber);
 
   protected:
 
   public:
 
   protected:
-    Ogre::Overlay *overlay_;
+    // slot management
+    BaseWeapon **slots_;
+    BaseWeapon **selectedSlot_;
+    int lastActiveSlotIndex_;
+    int stationSize_;
 
   };
+
 }
 }
 
-#endif /* HUD_OVERLAY_H */
+#endif /* WEAPON_STATION_H */

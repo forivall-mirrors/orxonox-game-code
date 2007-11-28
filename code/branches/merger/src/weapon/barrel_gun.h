@@ -19,16 +19,15 @@
  *
  *
  *   Author:
- *      HUD design: Yuning Chai
- *      Implementation: Yuning Chai
+ *      Reto Grieder
  *   Co-authors:
- *      Implementation: Reto Grieder
+ *      ...
  *
  */
 
 
-#ifndef HUD_OVERLAY_H
-#define HUD_OVERLAY_H
+#ifndef BARREL_GUN_H
+#define BARREL_GUN_H
 
 #include "OgrePrerequisites.h"
 
@@ -36,29 +35,31 @@
 
 
 namespace orxonox {
-namespace hud {
+namespace weapon {
 
-  class HUDOverlay
+  class BarrelGun : public BaseWeapon
   {
-  public:
-    HUDOverlay();
-	  virtual ~HUDOverlay();
-
-    void show();
-
-    void hide();
+ public:
+    BarrelGun(InertialNode*, AmmunitionDump*);
+	  virtual ~BarrelGun();
 
     bool tick(unsigned long, Ogre::Real);
 
   protected:
+    void primaryFire();
+
+    void primaryFiring(unsigned int);
+
+    void secondaryFire();
+
+    void secondaryFiring(unsigned int);
 
   public:
 
   protected:
-    Ogre::Overlay *overlay_;
 
   };
 }
 }
 
-#endif /* HUD_OVERLAY_H */
+#endif /* BARREL_GUN_H */

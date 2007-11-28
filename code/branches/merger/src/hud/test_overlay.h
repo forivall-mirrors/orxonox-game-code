@@ -27,8 +27,8 @@
  */
 
 
-#ifndef HUD_OVERLAY_H
-#define HUD_OVERLAY_H
+#ifndef TEST_OVERLAY_H
+#define TEST_OVERLAY_H
 
 #include "OgrePrerequisites.h"
 
@@ -38,15 +38,17 @@
 namespace orxonox {
 namespace hud {
 
-  class HUDOverlay
+  class TestOverlay
   {
   public:
-    HUDOverlay();
-	  virtual ~HUDOverlay();
+    TestOverlay(Ogre::RenderWindow*);
+	  virtual ~TestOverlay();
 
     void show();
 
     void hide();
+
+    void setDebugText(Ogre::String&);
 
     bool tick(unsigned long, Ogre::Real);
 
@@ -56,9 +58,12 @@ namespace hud {
 
   protected:
     Ogre::Overlay *overlay_;
+    Ogre::RenderWindow *window_;
+
+    Ogre::String debugText_;
 
   };
 }
 }
 
-#endif /* HUD_OVERLAY_H */
+#endif /* TEST_OVERLAY_H */

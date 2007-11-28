@@ -19,46 +19,33 @@
  *
  *
  *   Author:
- *      HUD design: Yuning Chai
- *      Implementation: Yuning Chai
+ *      Reto Grieder
  *   Co-authors:
- *      Implementation: Reto Grieder
+ *      ...
  *
  */
 
+#include "OgreSceneNode.h"
+#include "OgreEntity.h"
+#include "OgreVector3.h"
 
-#ifndef HUD_OVERLAY_H
-#define HUD_OVERLAY_H
-
-#include "OgrePrerequisites.h"
-
-#include "orxonox_prerequisites.h"
+#include "bullet.h"
 
 
 namespace orxonox {
-namespace hud {
+namespace weapon {
+  using namespace Ogre;
 
-  class HUDOverlay
+  Bullet::Bullet(SceneNode *node, Entity *entity, Vector3 speed)
+    : node_(node), entity_(entity), speed_(speed)
   {
-  public:
-    HUDOverlay();
-	  virtual ~HUDOverlay();
+	  node_->attachObject(entity_);
+  }
 
-    void show();
 
-    void hide();
+  Bullet::~Bullet()
+  {
+  }
 
-    bool tick(unsigned long, Ogre::Real);
-
-  protected:
-
-  public:
-
-  protected:
-    Ogre::Overlay *overlay_;
-
-  };
 }
 }
-
-#endif /* HUD_OVERLAY_H */
