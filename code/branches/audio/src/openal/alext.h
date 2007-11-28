@@ -1,8 +1,8 @@
 #ifndef _AL_ALEXT_H
 #define _AL_ALEXT_H
 
-#include <AL/al.h>
-#include <AL/alc.h>
+#include "AL/al.h"
+#include "AL/alc.h"
 
 #ifdef __cplusplus
 extern "C" {
