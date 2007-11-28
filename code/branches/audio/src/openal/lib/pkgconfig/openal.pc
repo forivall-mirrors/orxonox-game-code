@@ -1,0 +1,12 @@
+prefix=/home/nicolape/openal/compiled
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: OpenAL
+Description:  OpenAL is a cross-platform 3D audio API.
+Requires: @requirements@
+Version: 0.0.8
+Libs: -L${libdir} -lopenal
+Cflags: -I${includedir}
+
