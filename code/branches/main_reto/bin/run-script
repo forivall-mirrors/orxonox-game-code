@@ -7,9 +7,9 @@ if [[ !  -f main ]] ; then
 	exit 1
 fi
 
-if [[ ! -f orge.cfg ]] ; then
-	cp ogre.cfg-init ogre.cfg
-fi
+#if [[ ! -f orge.cfg ]] ; then
+#	cp ogre.cfg-init ogre.cfg
+#fi
 
 # check if plugins.cfg exists, and of not create it
 # and modify 
