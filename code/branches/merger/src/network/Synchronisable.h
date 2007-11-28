@@ -13,14 +13,17 @@
 #define NETWORK_SYNCHRONISABLE_H
 
 #include <list>
+#include <iostream>
+
+#include "orxonox/core/IdentifierIncludes.h"
 
 namespace network {
 
   
 struct syncData{
   int length;
-  int classID;
   int objectID;
+  int classID;
   unsigned char *data;
 };
 
@@ -39,7 +42,7 @@ class Synchronisable{
 public:
   Synchronisable();
 
-  ~Synchronisable();
+  virtual ~Synchronisable();
   int objectID;
   int classID;
     
@@ -51,6 +54,8 @@ public:
   virtual void registerAllVariables();
 
 private:
+/*  bool removeObject(Iterator<Synchronisable> it);*/
+  
   std::list<SYNCVAR> syncList;
   int datasize;
 };

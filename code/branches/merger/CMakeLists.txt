@@ -31,8 +31,8 @@ IF (UNIX)
   ENDIF ("${UNAME_OV}" MATCHES "tardis")
   # if on tardis change compiler
   IF (IS_TARDIS)
-  MESSAGE("System is a TARDIS: Setting Compiler to g++-3.4.3")
-  SET(CMAKE_CXX_COMPILER "g++-3.4.3")
+  MESSAGE("System is a TARDIS: Setting Compiler to g++-4.1.1")
+  SET(CMAKE_CXX_COMPILER "g++-4.1.1")
 # reset eNet serach path
   SET(Boost_INCLUDE_DIR "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include/boost-1_34_1")
   ENDIF(IS_TARDIS)
@@ -41,6 +41,9 @@ ENDIF (UNIX)
 
 #This sets where to look for "Find*.cmake" files
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+# SET(BOOST_LIBDIR /usr/pack/boost-1.33.1-mo/i686-debian-linux3.1/lib/)
+# SET(BOOST_INCDIR /usr/pack/boost-1.33.1-mo/i686-debian-linux3.1/include/)
+
 #Performs the search and sets the variables
 FIND_PACKAGE(OGRE)
 FIND_PACKAGE(OIS)
@@ -51,8 +54,10 @@ FIND_PACKAGE(Boost)
 
 #Sets the search paths for the linking
 LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR} ${ENet_LIBRARY} ${Boost_LIBRARY_DIRS} core objects loader network weapon classHierarchy)
+
 #Sets the search path for include files
 INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR} ${ENet_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
+
 
 #add main source dir
 ADD_SUBDIRECTORY(src)

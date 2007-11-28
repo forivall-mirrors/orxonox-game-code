@@ -2,6 +2,7 @@
 #define PACKETMANAGER_H_
 
 #include <enet/enet.h>
+#include <network/GameStateManager.h>
 
 //enum netowk generaly used to set the type ID of a packet
 namespace network
@@ -10,13 +11,14 @@ enum packet_id {
 	ACK,
 	MOUSE,
 	KEYBOARD,
-	CHAT
+	CHAT,
+	GAMESTATE
 };
 
 /*
  * class to generate packets
  * 
- * Autor: Dumeni Manatschal
+ * @autor: Dumeni Manatschal
  * 
 */ 
 class PacketGenerator
@@ -28,6 +30,7 @@ public:
 	ENetPacket* mousem( double x, double y, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* keystrike( char press, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* chatMessage( const char* message, int reliable = ENET_PACKET_FLAG_RELIABLE );
+	ENetPacket* gstate( GameState* states, int reliable = ENET_PACKET_FLAG_RELIABLE );
 private:
 	//used to set the bytes in the right order
 	struct ack {
@@ -50,7 +53,7 @@ private:
 /*
  * class used to decode incoming packets
  * 
- * Autor: Dumeni Manatschal
+ * @autor: Dumeni Manatschal
  * 
 */
 class PacketDecoder
@@ -86,13 +89,14 @@ private:
 	void mousem( ENetPacket* packet );
 	void keystrike( ENetPacket* packet );
 	void chatMessage( ENetPacket* packet );
+	void gstate( ENetPacket* packet );
 	
 	//print functions
 	void printAck( ack* data );
 	void printMouse( mouse* data );
 	void printKey( keyboard* data );
 	void printChat( chat* data );
-	void printPeer( ENetPeer* peer );
+	void printGamestate( GameState* data );
 };
 }
 
