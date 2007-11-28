@@ -12,6 +12,8 @@
 #ifndef NETWORK_GAMESTATEMANAGER_H
 #define NETWORK_GAMESTATEMANAGER_H
 
+#include "network/Synchronisable.h"
+
 namespace network {
 
 /**
@@ -19,7 +21,8 @@ namespace network {
  * size: total size of the data in *data
  * data: pointer to the data allocated in the memory
  */
-struct GameState{
+  struct GameState{
+  int id;
   int size;
   unsigned char *data;
 };
@@ -35,7 +38,7 @@ class GameStateManager{
 public:
   GameStateManager();
   ~GameStateManager();
-  GameState getSnapshot();
+  GameState getSnapshot(int id);
   bool loadSnapshot(GameState state);
 private:
   

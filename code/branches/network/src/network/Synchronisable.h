@@ -13,14 +13,17 @@
 #define NETWORK_SYNCHRONISABLE_H
 
 #include <list>
+#include <iostream>
+
+#include "orxonox/core/IdentifierIncludes.h"
 
 namespace network {
 
   
 struct syncData{
   int length;
-  int classID;
   int objectID;
+  int classID;
   unsigned char *data;
 };
 

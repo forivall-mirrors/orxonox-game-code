@@ -36,14 +36,17 @@ ENDIF (UNIX)
 
 #This sets where to look for "Find*.cmake" files
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+SET(BOOST_LIBDIR /usr/pack/boost-1.33.1-mo/i686-debian-linux3.1/lib/)
+SET(BOOST_INCDIR /usr/pack/boost-1.33.1-mo/i686-debian-linux3.1/include/)
+
 #Performs the search and sets the variables
 FIND_PACKAGE(OGRE)
 FIND_PACKAGE(OIS)
 
 #Sets the search paths for the linking
-LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR})
+LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${BOOST_LIBDIR})
 #Sets the search path for include files
-INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR} ${BOOST_INCDIR})
 
 #add main source dir
 ADD_SUBDIRECTORY(src)
