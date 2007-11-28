@@ -2,9 +2,9 @@
 #define __CLASS_AMBIENT_H__
 
 #include <iostream>
-#include "../openal/al.h"
-#include "../openal/alc.h"
-#include "../openal/alut.h"
+#include "../../include/AL/al.h"
+#include "../../include/AL/alc.h"
+#include "../../include/AL/alut.h"
 
 
 namespace audio

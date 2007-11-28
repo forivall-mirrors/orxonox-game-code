@@ -1,5 +1,8 @@
 #include <iostream>
 #include "Ambient.h"
+#include "../../include/AL/al.h"
+#include "../../include/AL/alc.h"
+#include "../../include/AL/alut.h"
 
 namespace audio
 {
