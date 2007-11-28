@@ -77,11 +77,11 @@ using namespace Ogre;
 
 //my-stuff
 //globale definition eines Arrays welches alle nodes enthält
-Vector3 ElementLocationArray[2];
-Vector3 ElementSpeedArray[2];
-Vector3 ElementAccelerationArray[2];
+Vector3 ElementLocationArray[3];
+Vector3 ElementSpeedArray[3];
+Vector3 ElementAccelerationArray[3];
 
-Element* arrayOfElements[2];
+Element arrayOfElements[3];
 
 
 class OrxExitListener : public FrameListener
@@ -103,13 +103,20 @@ class OrxExitListener : public FrameListener
     //code the movments of the nodes here
     void moving(const FrameEvent& evt) {
       SceneManager *mgr = root_->getSceneManager("Default SceneManager");
-      arrayOfElements[0]->update(*arrayOfElements);
-      mgr->getSceneNode("HeadNode1")->translate(0.000000001*evt.timeSinceLastFrame*arrayOfElements[0]->location);
-      arrayOfElements[1]->update(*arrayOfElements);
-      mgr->getSceneNode("HeadNode2")->translate(0.000000001*evt.timeSinceLastFrame*arrayOfElements[1]->location);
-      arrayOfElements[2]->update(*arrayOfElements);
-      mgr->getSceneNode("HeadNode3")->translate(0.000000001*evt.timeSinceLastFrame*arrayOfElements[2]->location);
-      //mgr->getSceneNode("HeadNode1")->yaw((Radian)10*evt.timeSinceLastFrame);
+
+
+
+      arrayOfElements[0].update(arrayOfElements, evt);
+      arrayOfElements[1].update(arrayOfElements, evt);
+      arrayOfElements[2].update(arrayOfElements, evt);
+
+      mgr->getSceneNode("HeadNode1")->setPosition(arrayOfElements[0].location);
+      mgr->getSceneNode("HeadNode2")->setPosition(arrayOfElements[1].location);
+      mgr->getSceneNode("HeadNode3")->setPosition(arrayOfElements[2].location);
+
+
+
+    //  mgr->getSceneNode("HeadNode1")->yaw((Radian)10*evt.timeSinceLastFrame);
     }
 
   private:
@@ -290,8 +297,6 @@ class OrxApplication
     node1->attachObject(ent1);
     node2->attachObject(ent2);
     node3->attachObject(ent3);
-    //Camera* cam  = mgr->getCamera("Camera");
-    //node1->attachObject(cam);
     ElementLocationArray[0] = node1->getPosition();
     ElementLocationArray[1] = node2->getPosition();
     ElementLocationArray[2] = node3->getPosition();
@@ -301,9 +306,9 @@ class OrxApplication
     ElementAccelerationArray[0] = (0,0,0);
     ElementAccelerationArray[1] = (0,0,0);
     ElementAccelerationArray[2] = (0,0,0);
-    arrayOfElements[0] = new Element( ElementLocationArray[0], ElementSpeedArray[0], ElementAccelerationArray[0] );
-    arrayOfElements[1] = new Element( ElementLocationArray[1], ElementSpeedArray[1], ElementAccelerationArray[1] );
-    arrayOfElements[2] = new Element( ElementLocationArray[2], ElementSpeedArray[2], ElementAccelerationArray[2] );
+    arrayOfElements[0].setValues( ElementLocationArray[0], ElementSpeedArray[0], ElementAccelerationArray[0] );
+    arrayOfElements[1].setValues( ElementLocationArray[1], ElementSpeedArray[1], ElementAccelerationArray[1] );
+    arrayOfElements[2].setValues( ElementLocationArray[2], ElementSpeedArray[2], ElementAccelerationArray[2] );
 
 
 
