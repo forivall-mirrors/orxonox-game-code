@@ -6,32 +6,19 @@
 #include "../../include/AL/alc.h"
 #include "../../include/AL/alut.h"
 
+#include "AudioObject.h"
 
 namespace audio
 {
 	class Ambient
 	{
 	public:
-		Ambient();
+		Ambient(std::string audioFile);
+		~Ambient();
 		void play();
 	private:
-		ALboolean LoadALData();	
-		void SetListenerValues();
-		void KillALData();
-
-		ALuint Buffer;
-		ALuint Source;
-		ALfloat SourcePos[3];
-		ALfloat SourceVel[3];
-		ALfloat ListenerPos[3];
-		ALfloat ListenerVel[3];
-		ALfloat ListenerOri[6];
+		AudioObject* a;
 	};
-	
-	
-	
-	
-	
 }
 
 #endif

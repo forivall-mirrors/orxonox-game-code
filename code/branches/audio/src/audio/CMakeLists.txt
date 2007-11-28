@@ -1,7 +1,13 @@
 PROJECT(Orxonox)
 
-SET(SRC_FILES Ambient.cc)
-SET(INC_FILES Ambient.h)
+SET(SRC_FILES 
+	Ambient.cc
+	AudioObject.cc
+)
+SET(INC_FILES 
+	Ambient.h
+	AudioObject.h
+)
 
 
 ADD_LIBRARY(audio ${SRC_FILES} ${INC_FILES})
