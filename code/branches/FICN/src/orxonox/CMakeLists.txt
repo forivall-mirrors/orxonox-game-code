@@ -2,6 +2,9 @@ PROJECT(Orxonox)
 
 SET( ORXONOX_SRC_FILES
 	orxonox.cc
+	orxonox_scene.cc
+	orxonox_ship.cc
+	run_manager.cc
 	spaceship_steering.cc
 )
 
