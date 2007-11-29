@@ -6,4 +6,4 @@ SET( LOADER_SRC_FILES
 	../xml/xmlParser.cc
 )
 
-ADD_LIBRARY(loader ${LOADER_SRC_FILES})
+ADD_LIBRARY(loader STATIC ${LOADER_SRC_FILES})
