@@ -14,6 +14,7 @@ using namespace network;
 
 
 void write(PacketBuffer *test){
+  ENetEvent event;
   ENetPacket *packet;
   if(test->isEmpty())
     std::cout << "empty buffer" << std::endl;
@@ -22,7 +23,8 @@ void write(PacketBuffer *test){
     packet = enet_packet_create("packet", strlen("packet ")+1,
 ENET_PACKET_FLAG_RELIABLE);
     std::cout << i << ": pushing " << packet->data << std::endl;
-    test->push((ENetEvent*)packet);
+    event.packet=packet;
+    test->push(&event);
     if(i==5)
 // under windows, use Sleep(milliseconds) instead of usleep(microseconds)
 #ifdef WIN32

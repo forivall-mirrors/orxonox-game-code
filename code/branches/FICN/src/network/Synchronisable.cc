@@ -20,7 +20,7 @@ namespace network {
 Synchronisable::Synchronisable()
 {
   datasize=0;
-  //registerAllVariables();
+  registerAllVariables();
 }
 
 
