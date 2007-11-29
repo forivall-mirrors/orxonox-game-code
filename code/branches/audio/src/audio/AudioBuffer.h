@@ -18,9 +18,17 @@ namespace audio
 		~AudioBuffer();
 	private:
 		// Buffers hold sound data.
-		ALuint data;
+		ALuint buffer;
 		// Identifier
 		std::string name;
+		// True if AL was able to load data
+		ALboolean loaded;
+		
+		ALenum format;
+		ALsizei size;
+		ALvoid* data;
+		ALsizei freq;
+		ALboolean loop;
 	};
 }
 
