@@ -14,8 +14,8 @@ namespace orxonox
             Test3();
             virtual ~Test3();
 
-            bool usefullClassesIsATest(Test1* test1);
-            bool usefullClassesIsATest(Test2* test2);
+            void usefullClassesIsATest(Test1* test1);
+            void usefullClassesIsATest(Test2* test2);
     };
 }
 

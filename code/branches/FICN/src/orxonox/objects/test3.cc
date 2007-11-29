@@ -17,7 +17,7 @@ namespace orxonox
         #define testandcout(code) \
           std::cout << #code << " " << code << "\n"
 
-    bool Test3::usefullClassesIsATest(Test1* test1)
+    void Test3::usefullClassesIsATest(Test1* test1)
     {
         std::cout << "\n";
         std::cout << "Test1:\n";
@@ -32,11 +32,9 @@ namespace orxonox
         testandcout(test1->usefullClass3isA(Class(Test1)));
         testandcout(test1->usefullClass3isA(Class(Test2)));
         testandcout(test1->usefullClass3isA(Class(Test3)));
-
-        return true;
     }
 
-    bool Test3::usefullClassesIsATest(Test2* test2)
+    void Test3::usefullClassesIsATest(Test2* test2)
     {
         std::cout << "\n";
         std::cout << "Test2:\n";
@@ -51,7 +49,5 @@ namespace orxonox
         testandcout(test2->usefullClass3isA(Class(Test1)));
         testandcout(test2->usefullClass3isA(Class(Test2)));
         testandcout(test2->usefullClass3isA(Class(Test3)));
-
-        return true;
     }
 }
