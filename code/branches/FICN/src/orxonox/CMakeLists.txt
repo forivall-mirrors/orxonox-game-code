@@ -7,7 +7,7 @@ SET( ORXONOX_SRC_FILES
 
 ADD_EXECUTABLE(../../bin/main ${ORXONOX_SRC_FILES})
 
-SET_TARGET_PROPERTIES(../../bin/main LINK_FLAGS "--no-undefined" )
+SET_TARGET_PROPERTIES(../../bin/main PROPERTIES LINK_FLAGS "--no-undefined" )
 
 
 ADD_SUBDIRECTORY(core)
