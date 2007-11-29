@@ -1,5 +1,4 @@
 PROJECT(Orxonox)
-
 #set some global variables, which are use throughout the project
 
 #Create some verbose output
@@ -8,34 +7,40 @@ SET(CMAKE_VERBOSE_MAKEFILE TRUE)
 # set eNet search path
 SET(Boost_INCLUDE_DIR "/usr/include/boost/")
 
-#force-set the compile on tardis machines, as default points to g++-3.3
+# force-set the compile on tardis machines, as default points to g++-3.3
 # only run this test on a lunix/unix machine
 IF (UNIX)
+
   FIND_PROGRAM(UNAME_CMD "uname"
-	PATHS "/usr/bin /bin")
+  PATHS "/usr/bin /bin")
   IF(NOT UNAME_CMD)
-	MESSAGE("Unable to find uname. Tardis-Check cannot be done.")
+    MESSAGE("Unable to find uname. Tardis-Check cannot be done.")
   ENDIF(NOT UNAME_CMD)
+
+  # run uname -n to get nodename
   EXECUTE_PROCESS(
-	COMMAND "${UNAME_CMD}" "-n"
-	RESULT_VARIABLE UNAME_RV
-	ERROR_VARIABLE UNAME_EV
-	OUTPUT_VARIABLE UNAME_OV)
+  COMMAND "${UNAME_CMD}" "-n"
+  RESULT_VARIABLE UNAME_RV
+  ERROR_VARIABLE UNAME_EV
+  OUTPUT_VARIABLE UNAME_OV)
 
   IF (NOT "${UNAME_RV}" STREQUAL "0")
-	MESSAGE("ERROR: uname terminated unclean.")
+    MESSAGE("ERROR: uname terminated unclean.")
   ENDIF (NOT "${UNAME_RV}" STREQUAL "0")
-# check wheter we are on a tardis INCLUDEmachine
+
+  # check wheter we are on a tardis machine
   IF ("${UNAME_OV}" MATCHES "tardis")
     SET (IS_TARDIS "tardis")
   ENDIF ("${UNAME_OV}" MATCHES "tardis")
+
   # if on tardis change compiler
   IF (IS_TARDIS)
-  MESSAGE("System is a TARDIS: Setting Compiler to g++-4.1.1")
-  SET(CMAKE_CXX_COMPILER "g++-4.1.1")
-# reset eNet serach path
-  SET(Boost_INCLUDE_DIR "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include/boost-1_34_1")
+    MESSAGE("System is a TARDIS: Setting Compiler to g++-4.1.1")
+    SET(CMAKE_CXX_COMPILER "g++-4.1.1")
+    # reset eNet serach path
+    SET(Boost_INCLUDE_DIR "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include/boost-1_34_1")
   ENDIF(IS_TARDIS)
+
 ENDIF (UNIX)
 
 
@@ -75,4 +80,3 @@ INCLUDE_DIRECTORIES(
 
 #add main source dir
 ADD_SUBDIRECTORY(src)
-
