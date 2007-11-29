@@ -1,12 +1,14 @@
 PROJECT(Orxonox)
 
 SET(SRC_FILES 
-	Ambient.cc
-	AudioObject.cc
+	AudioManager.cc
+	AudioBuffer.cc
+	AudioSource.cc
 )
 SET(INC_FILES 
-	Ambient.h
-	AudioObject.h
+	AudioManager.h
+	AudioBuffer.h
+	AudioSource.h
 )
 
 

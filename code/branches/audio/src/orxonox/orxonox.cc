@@ -40,7 +40,7 @@
 
 #include "xml/xmlParser.h"
 #include "loader/LevelLoader.h"
-#include "audio/Ambient.h"
+#include "audio/AudioManager.h"
 
 
 // some tests to see if enet works without includsion
@@ -190,8 +190,8 @@ namespace orxonox
 
       void createScene(void)
       {
-		audio::Ambient* bgsound = new audio::Ambient("wavdata/pirate.wav");
-		bgsound->play();
+		audio::AudioManager* auMan = new audio::AudioManager();
+				
 				        
         string levelFile = "sp_level_moonstation.oxw";
         loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
