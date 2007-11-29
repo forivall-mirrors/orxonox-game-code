@@ -8,11 +8,6 @@
 #include <enet/enet.h>
 #include "PacketManager.h"
 
-// workaround for usleep(int) under windows
-#ifdef WIN32
-#include "winbase.h"
-#endif
-
 
 using namespace std;
 
@@ -72,12 +67,7 @@ int main(){
     }else{
       cout << "failed sending" << endl;
     }
-// under windows, use Sleep(milliseconds) instead of usleep(microseconds)
-#ifdef WIN32
-    Sleep(1000);
-#else
     usleep(1000000);
-#endif
   }
 
         // now disconnect

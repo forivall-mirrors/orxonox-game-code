@@ -11,9 +11,11 @@
 
 #include "ClientConnection.h"
 
-// workaround for usleep(int) under windows
 #ifdef WIN32
-#include "winbase.h"
+#include <windows.h>
+#define usleep(x) Sleep((x)/1000)
+#else
+#include <unistd.h>
 #endif
 
 namespace network{
@@ -38,12 +40,8 @@ namespace network{
 
   bool ClientConnection::waitEstablished(int milisec){
     for(int i=0; i<=milisec && !established; i++)
-// under windows, use Sleep(milliseconds) instead of usleep(microseconds)
-#ifdef WIN32
-      Sleep(1);
-#else
       usleep(1000);
-#endif
+
     return established;
   }
 

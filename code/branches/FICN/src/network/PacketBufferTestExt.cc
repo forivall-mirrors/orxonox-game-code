@@ -7,11 +7,6 @@
 
 using namespace network;
 
-// workaround for usleep(int) under windows
-#ifdef WIN32
-#include "winbase.h"
-#endif
-
 
 void write(PacketBuffer *test){
   ENetEvent event;
@@ -26,12 +21,7 @@ ENET_PACKET_FLAG_RELIABLE);
     event.packet=packet;
     test->push(&event);
     if(i==5)
-// under windows, use Sleep(milliseconds) instead of usleep(microseconds)
-#ifdef WIN32
-      Sleep(200);
-#else
       usleep(200000);
-#endif
   }
   test->setClosed(true);
   return;
