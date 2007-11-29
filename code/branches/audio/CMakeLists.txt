@@ -51,9 +51,9 @@ FIND_PACKAGE(Boost)
 FIND_PACKAGE(OpenAL)
 
 #Sets the search paths for the linking
-LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR} ${ENet_LIBRARY} ${OPENAL_LIB_DIR} ${Boost_LIBRARY_DIRS} core objects loader network weapon classHierarchy audio openal alut)
+LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR} ${ENet_LIBRARY} ${OPENAL_LIB_DIR} ${Boost_LIBRARY_DIRS} ${OPENAL_LIBRARY} core objects loader network weapon classHierarchy audio openal alut)
 #Sets the search path for include files
-INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR} ${ENet_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR} ${ENet_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR})
 
 #add main source dir
 ADD_SUBDIRECTORY(src)

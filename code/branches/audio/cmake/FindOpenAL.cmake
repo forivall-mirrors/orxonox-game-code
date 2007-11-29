@@ -20,6 +20,7 @@ FIND_PATH(OPENAL_INCLUDE_DIR al.h
   ~/Library/Frameworks/OpenAL.framework/Headers
   /Library/Frameworks/OpenAL.framework/Headers
   /System/Library/Frameworks/OpenAL.framework/Headers # Tiger
+  /usr/pack/openal-0.0.8-cl/include/AL # Tardis specific hack
   /usr/local/include/AL
   /usr/local/include/OpenAL
   /usr/local/include
