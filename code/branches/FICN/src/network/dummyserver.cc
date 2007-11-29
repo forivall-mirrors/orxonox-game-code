@@ -21,7 +21,6 @@ int main(){
   ConnectionManager server = ConnectionManager();
   bool quit=false;
   ENetPacket *packet;
-  ENetEvent event;
   server.createListener();
 
   PacketDecoder dec;

@@ -64,7 +64,7 @@ namespace network{
   }
 
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer){
-    if(client=NULL)
+    if(client==NULL)
       return false;
     ClientList *temp=client;
     while(peer->host != temp->event->peer->host){
@@ -137,6 +137,8 @@ namespace network{
       case ENET_EVENT_TYPE_DISCONNECT:
         // add some error/log handling here
         clientDisconnect(event.peer);
+        break;
+      case ENET_EVENT_TYPE_NONE:
         break;
       }
     }

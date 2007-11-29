@@ -122,6 +122,7 @@ namespace network{
       }
       switch(event.type){
         // log handling ================
+      case ENET_EVENT_TYPE_CONNECT:
       case ENET_EVENT_TYPE_RECEIVE:
         processData(&event);
         break;
@@ -129,6 +130,8 @@ namespace network{
         // add some error/log handling here
         // extend =====================
         break;
+      case ENET_EVENT_TYPE_NONE:
+        continue;
       }
     }
     // now disconnect
@@ -146,6 +149,8 @@ namespace network{
     while(enet_host_service(client, &event, NETWORK_WAIT_TIMEOUT) > 0){
       switch (event.type)
       {
+	case ENET_EVENT_TYPE_NONE:
+	case ENET_EVENT_TYPE_CONNECT:
         case ENET_EVENT_TYPE_RECEIVE:
           enet_packet_destroy(event.packet);
           break;
@@ -154,6 +159,7 @@ namespace network{
       }
     }
     enet_peer_reset(server);
+    return false;
   }
 
   bool ClientConnection::establishConnection(){
