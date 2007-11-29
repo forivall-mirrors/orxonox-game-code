@@ -14,18 +14,18 @@ LevelLoader::LevelLoader(string file, string dir)
 	// Load XML level file
 	dir.append("/");
 	dir.append(file);	
-  	rootNode = XMLNode::openFileHelper((const wchar_t*)dir.c_str(),(const wchar_t*)"WorldDataFile");
+  	rootNode = XMLNode::openFileHelper(dir.c_str(),"WorldDataFile");
   	// TODO: Error handling
 
 	// Assing general level infos to class variables
-  	this->name_ = (const char*)rootNode.getChildNode((const wchar_t*)"name").getText();
-  	this->description_ = (const char*)rootNode.getChildNode((const wchar_t*)"description").getText();
-  	this->image_ = (const char*)rootNode.getChildNode((const wchar_t*)"image").getText();
+  	this->name_ = rootNode.getChildNode("name").getText();
+  	this->description_ = rootNode.getChildNode("description").getText();
+  	this->image_ = rootNode.getChildNode("image").getText();
   
   	this->loadingScreen();
   
   // Assign sub-nodes
-  if (rootNode.nChildNode((const wchar_t*)"LightManager")==1)
+  if (rootNode.nChildNode("LightManager")==1)
   {
   	// Init Luightmanager...
   }

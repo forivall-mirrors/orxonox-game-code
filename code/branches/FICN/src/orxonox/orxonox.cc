@@ -270,8 +270,8 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
       void createScene(void)
       {
 
-      //string levelFile = "sp_level_moonstation.oxw";
-      //loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
+      string levelFile = "sp_level_moonstation.oxw";
+      loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
     }
 
     void setupScene()

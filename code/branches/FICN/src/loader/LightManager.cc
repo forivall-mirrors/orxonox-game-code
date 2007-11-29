@@ -13,10 +13,10 @@ namespace light
 	{
 		if (!xml.isEmpty())
 		{
-			int nLights = xml.nChildNode((const wchar_t*)"light");
+			int nLights = xml.nChildNode("light");
 			for (int i=0; i<nLights;i++)
 			{
-				Light l = *(new Light(xml.getChildNode((const wchar_t*)"light",i)));
+				Light l = *(new Light(xml.getChildNode("light",i)));
         this->elements_.insert(elements_.end(),l);
 			}
 		}		
