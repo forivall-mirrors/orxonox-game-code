@@ -7,6 +7,11 @@
 
 using namespace network;
 
+// workaround for usleep(int) under windows
+#ifdef WIN32
+#include "winbase.h"
+#endif
+
 
 void write(PacketBuffer *test){
   ENetPacket *packet;
@@ -17,9 +22,14 @@ void write(PacketBuffer *test){
     packet = enet_packet_create("packet", strlen("packet ")+1,
 ENET_PACKET_FLAG_RELIABLE);
     std::cout << i << ": pushing " << packet->data << std::endl;
-    test->push(packet);
+    test->push((ENetEvent*)packet);
     if(i==5)
+// under windows, use Sleep(milliseconds) instead of usleep(microseconds)
+#ifdef WIN32
+      Sleep(200);
+#else
       usleep(200000);
+#endif
   }
   test->setClosed(true);
   return;

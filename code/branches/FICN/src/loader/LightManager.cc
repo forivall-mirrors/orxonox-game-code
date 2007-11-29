@@ -6,18 +6,18 @@ namespace light
 {
 	LightManager::LightManager()
 	{
-		vector<Light> this->elements_ = new vector<Light>;
+    std::vector<Light> elements_ = *(new std::vector<Light>);
 	}
 	
 	void LightManager::loadParams(XMLNode xml)
 	{
 		if (!xml.isEmpty())
 		{
-			int nLights = xml.nChildNode("light");
+			int nLights = xml.nChildNode((const wchar_t*)"light");
 			for (int i=0; i<nLights;i++)
 			{
-				Light l = new Light(xml.getChildNode("light",i));
-				this->elements_.append(l);
+				Light l = *(new Light(xml.getChildNode((const wchar_t*)"light",i)));
+        this->elements_.insert(elements_.end(),l);
 			}
 		}		
 		

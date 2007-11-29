@@ -32,8 +32,8 @@
 
 #include <Ogre.h>
 #include <OIS/OIS.h>
-#include <CEGUI/CEGUI.h>
-#include <OgreCEGUIRenderer.h>
+//#include <CEGUI/CEGUI.h>
+//#include <OgreCEGUIRenderer.h>
 
 #include <string>
 #include <iostream>
@@ -208,8 +208,8 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
       OIS::Keyboard *mKeyboard;
       OIS::Mouse *mMouse;
       OIS::InputManager *mInputManager;
-      CEGUI::OgreCEGUIRenderer *mRenderer;
-      CEGUI::System *mSystem;
+      //CEGUI::OgreCEGUIRenderer *mRenderer;
+      //CEGUI::System *mSystem;
       OrxExitListener *mListener;
 
       void createRoot()
@@ -270,8 +270,8 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
       void createScene(void)
       {
 
-      string levelFile = "sp_level_moonstation.oxw";
-      loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
+      //string levelFile = "sp_level_moonstation.oxw";
+      //loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
     }
 
     void setupScene()

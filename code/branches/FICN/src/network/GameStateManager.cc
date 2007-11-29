@@ -105,7 +105,7 @@ bool GameStateManager::loadSnapshot(GameState state)
     
   }
   
-  
+  return true;
 }
 
 /**
@@ -114,7 +114,7 @@ bool GameStateManager::loadSnapshot(GameState state)
  * @return iterator pointing to the next object in the list
  */
 // orxonox::Iterator<Synchronisable> removeObject(orxonox::Iterator<Synchronisable> it){
-void removeObject(orxonox::Iterator<Synchronisable> &it){
+void GameStateManager::removeObject(orxonox::Iterator<Synchronisable> &it){
   orxonox::Iterator<Synchronisable> temp=it;
   ++it;
   delete  *temp;

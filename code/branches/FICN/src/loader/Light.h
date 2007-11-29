@@ -6,7 +6,7 @@
 
 namespace light
 {
-	class Light()
+	class Light
 	{
 	public:      
 		Light();

@@ -9,6 +9,12 @@
 #include "ConnectionManager.h"
 #include "PacketManager.h"
 
+// workaround for usleep(int) under windows
+#ifdef WIN32
+#include "winbase.h"
+#endif
+
+
 using namespace network;
 
 int main(){
@@ -22,7 +28,13 @@ int main(){
 
   while(!quit){
     if(server.queueEmpty())
+// under windows, use Sleep(milliseconds) instead of usleep(microseconds)
+// Warning: Sleep(1) is ten times longer than usleep(100)!
+#ifdef WIN32
+      Sleep(1);
+#else
       usleep(100);
+#endif
     else{
       ENetAddress addr;
       packet=server.getPacket(addr);

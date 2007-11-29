@@ -32,6 +32,8 @@ namespace orxonox
         testandcout(test1->usefullClass3isA(Class(Test1)));
         testandcout(test1->usefullClass3isA(Class(Test2)));
         testandcout(test1->usefullClass3isA(Class(Test3)));
+
+        return true;
     }
 
     bool Test3::usefullClassesIsATest(Test2* test2)
@@ -49,5 +51,7 @@ namespace orxonox
         testandcout(test2->usefullClass3isA(Class(Test1)));
         testandcout(test2->usefullClass3isA(Class(Test2)));
         testandcout(test2->usefullClass3isA(Class(Test3)));
+
+        return true;
     }
 }

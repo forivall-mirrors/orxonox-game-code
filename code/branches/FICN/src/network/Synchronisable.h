@@ -51,7 +51,7 @@ public:
   syncData getData(unsigned char *mem);
   int getSize();
   bool updateData(syncData vars);
-  virtual void registerAllVariables();
+  virtual void registerAllVariables() = 0;
 
 private:
 /*  bool removeObject(Iterator<Synchronisable> it);*/

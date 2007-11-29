@@ -8,7 +8,7 @@
 
 namespace light
 {
-	class LightManager()
+	class LightManager
 	{      
 	public:
 		LightManager();
@@ -19,7 +19,7 @@ namespace light
 		float ambient_r_;
 		float ambient_g_;
 		float ambient_b_;
-		vector<Light> elements_;
+    std::vector<Light> elements_;
 	};
 }
 

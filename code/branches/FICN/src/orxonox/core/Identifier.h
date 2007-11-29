@@ -7,7 +7,7 @@
 #include "ObjectList.h"
 #include "Factory.h"
 
-#define HIERARCHY_VERBOSE false
+#define HIERARCHY_VERBOSE 0
 
 
 namespace orxonox

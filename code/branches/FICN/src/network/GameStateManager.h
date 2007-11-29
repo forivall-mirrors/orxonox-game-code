@@ -43,7 +43,7 @@ public:
   GameState getSnapshot(int id);
   bool loadSnapshot(GameState state);
 private:
-  bool removeObject(orxonox::Iterator<Synchronisable> it);
+  void removeObject(orxonox::Iterator<Synchronisable> &it);
 
 };
 
