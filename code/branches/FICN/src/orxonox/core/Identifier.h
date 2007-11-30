@@ -7,7 +7,7 @@
 #include "ObjectList.h"
 #include "Factory.h"
 
-#define HIERARCHY_VERBOSE 0
+#define HIERARCHY_VERBOSE false
 
 
 namespace orxonox
@@ -43,6 +43,9 @@ namespace orxonox
 
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
+            inline const unsigned int getNetworkID() const { return this->classID_; }
+            void setNetworkID(unsigned int id);
+
         private:
             Identifier();
             Identifier(const Identifier& identifier) {}
@@ -73,6 +76,8 @@ namespace orxonox
             BaseFactory* factory_;
             bool bCreatedOneObject_;
             static int hierarchyCreatingCounter_s;
+            static unsigned int classIDcounter_s;
+            unsigned int classID_;
     };
 
 

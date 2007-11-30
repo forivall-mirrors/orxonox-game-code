@@ -6,6 +6,7 @@ namespace orxonox
     // ###       Identifier        ###
     // ###############################
     int Identifier::hierarchyCreatingCounter_s = 0;
+    unsigned int Identifier::classIDcounter_s = 0;
 
     Identifier::Identifier()
     {
@@ -13,6 +14,7 @@ namespace orxonox
         this->factory_ = 0;
 
         this->children_ = new IdentifierList;
+        this->classID_ = Identifier::classIDcounter_s++;
     }
 
     Identifier::~Identifier()
@@ -54,6 +56,12 @@ namespace orxonox
             std::cout << "Aborting...";
             abort();
         }
+    }
+
+    void Identifier::setNetworkID(unsigned int id)
+    {
+        Factory::changeNetworkID(this, this->classID_, id);
+        this->classID_ = id;
     }
 
     bool Identifier::isA(const Identifier* identifier) const
