@@ -6,6 +6,7 @@ SET( ORXONOX_SRC_FILES
 	orxonox_ship.cc
 	run_manager.cc
 	spaceship_steering.cc
+  inertial_node.cc
 )
 
 ADD_EXECUTABLE(../../bin/main ${ORXONOX_SRC_FILES})
