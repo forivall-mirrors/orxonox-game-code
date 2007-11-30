@@ -16,7 +16,9 @@ namespace orxonox
     {
         public:
             static Identifier* getIdentifier(const std::string& name);
+            static Identifier* getIdentifier(const unsigned int id);
             static void add(const std::string& name, Identifier* identifier);
+            static void changeNetworkID(Identifier* identifier, const unsigned int oldID, const unsigned int newID);
 
         private:
             Factory() {}
@@ -24,7 +26,8 @@ namespace orxonox
             ~Factory() {}
 
             static Factory* pointer_s;
-            std::map<std::string, Identifier*> identifierMap_;
+            std::map<std::string, Identifier*> identifierStringMap_;
+            std::map<unsigned int, Identifier*> identifierNetworkIDMap_;
     };
 
     // ###############################

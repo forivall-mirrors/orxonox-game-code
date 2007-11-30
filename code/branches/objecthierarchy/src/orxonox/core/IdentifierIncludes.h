@@ -40,5 +40,5 @@
 #define CreateFactory(ClassName) \
     bool bCreated##ClassName##Factory = ClassFactory<ClassName>::create()
 
-#define ID(Name) \
-    Factory::getIdentifier(Name)
+#define ID(NameOrID) \
+    Factory::getIdentifier(NameOrID)

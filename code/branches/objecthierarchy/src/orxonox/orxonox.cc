@@ -147,7 +147,7 @@ namespace orxonox
         test4 = new A3();
         test4 = new A3();
 */
-/*
+
         std::cout << "Test 5\n";
         A1* test5_01 = new A1();
         A2* test5_02 = new A2();
@@ -192,10 +192,32 @@ namespace orxonox
           if (i == 18) test5 = test5_18;
 
           std::cout << "\n";
-          std::cout << test5->getIdentifier()->getName() << ": parents:     " << test5->getIdentifier()->getParents().toString() << "\n";
-          std::cout << test5->getIdentifier()->getName() << ": children:    " << test5->getIdentifier()->getChildren().toString() << "\n";
+          std::cout << test5->getIdentifier()->getName() << " (" << test5->getIdentifier()->getNetworkID() << "): parents:     " << test5->getIdentifier()->getParents().toString() << "\n";
+          std::cout << test5->getIdentifier()->getName() << " (" << test5->getIdentifier()->getNetworkID() << "): children:    " << test5->getIdentifier()->getChildren().toString() << "\n";
         }
-*/
+
+        std::cout << "Class with ID 0: " << ID(0) << " " << ID(0)->getName() << "\n";
+        std::cout << "Class with ID 1: " << ID(1) << " " << ID(1)->getName() << "\n";
+        std::cout << "Class with ID 2: " << ID(2) << " " << ID(2)->getName() << "\n";
+        std::cout << "Class with ID 3: " << ID(3) << " " << ID(3)->getName() << "\n";
+        std::cout << "Class with ID 4: " << ID(4) << " " << ID(4)->getName() << "\n";
+        std::cout << "Class with ID 100: " << ID(100) << "\n";
+        std::cout << "ID of BaseObject: " << Class(BaseObject)->getNetworkID() << "\n";
+
+        std::cout << "\nChange ID of BaseObject to 100\n";
+        Class(BaseObject)->setNetworkID(100);
+        std::cout << "Class with ID 100: " << ID(100) << "\n";
+        std::cout << "Class with ID 1: " << ID(1) << "\n";
+        std::cout << "ID of BaseObject: " << Class(BaseObject)->getNetworkID() << "\n";
+
+        std::cout << "\nChange ID of BaseObject to 3\n";
+        Class(BaseObject)->setNetworkID(3);
+        std::cout << "Class with ID 100: " << ID(100) << "\n";
+        std::cout << "Class with ID 1: " << ID(1) << "\n";
+        std::cout << "Class with ID 3: " << ID(3) << "\n";
+        std::cout << "ID of BaseObject: " << Class(BaseObject)->getNetworkID() << "\n";
+        std::cout << "ID of Test1: " << Class(Test1)->getNetworkID() << "\n";
+
 /*
         std::cout << "\n";
         std::cout << "isA(XYZ)-Test:\n";
@@ -451,7 +473,7 @@ namespace orxonox
         delete test9_05;
         delete test9_06;
 */
-
+/*
         std::cout << "Test 10\n";
         Identifier* test10_01 = Class(A1B2);
         Identifier* test10_02 = Class(A2);
@@ -581,7 +603,7 @@ namespace orxonox
             std::cout << "Name: " << it->name_ << "\n";
 
         std::cout << "13\n";
-
+*/
       }
 
       ~OrxApplication()
