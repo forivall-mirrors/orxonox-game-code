@@ -258,7 +258,7 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
 
       void createRenderWindow()
       {
-        mRoot->initialise(true, "Ogre Render Window");
+        mRoot->initialise(true, "OrxonoxV2");
       }
 
       void initializeResourceGroups()
