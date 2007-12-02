@@ -9,6 +9,13 @@
 #include "ConnectionManager.h"
 #include "PacketManager.h"
 
+#ifdef WIN32
+#include <windows.h>
+#define usleep(x) Sleep((x)/1000)
+#else
+#include <unistd.h>
+#endif
+
 
 using namespace network;
 
@@ -22,7 +29,7 @@ int main(){
 
   while(!quit){
     if(server.queueEmpty())
-// Warning: usleep(100) under windows is ten times longer than with unix!
+// Warning: usleep(100) is Sleep(100/1000) = Sleep(0), which is nothing!
       usleep(100);
     else{
       ENetAddress addr;

@@ -7,7 +7,11 @@
 #include "ObjectList.h"
 #include "Factory.h"
 
+#ifdef WIN32
+#define HIERARCHY_VERBOSE 0
+#else
 #define HIERARCHY_VERBOSE false
+#endif
 
 
 namespace orxonox
