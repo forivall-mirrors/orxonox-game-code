@@ -37,6 +37,7 @@ namespace network{
     ClientConnection(int port, std::string address);
     ClientConnection(int port, const char* address);
     ENetPacket *getPacket(ENetAddress &address); // thread1
+    ENetPacket *getPacket(); // thread1
     // check wheter the packet queue is empty
     bool queueEmpty();
     // create a new listener thread

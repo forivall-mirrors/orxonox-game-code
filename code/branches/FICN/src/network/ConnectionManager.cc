@@ -109,6 +109,16 @@ namespace network{
     else
       return false;
   }
+  
+  bool ConnectionManager::sendPackets(){
+    ENetEvent event;
+    if(server==NULL)
+      return false;
+    if(enet_host_service(server, &event, NETWORK_SEND_WAIT)>=0)
+      return true;
+    else
+      return false;
+  }
 
   void ConnectionManager::receiverThread(){
     // what about some error-handling here ?
@@ -116,9 +126,11 @@ namespace network{
     atexit(enet_deinitialize);
     ENetEvent event;
     server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
-    if(server==NULL)
+    if(server==NULL){
       // add some error handling here ==========================
       quit=true;
+      return;
+    }
 
     while(!quit){
       if(enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT)<0){
@@ -142,8 +154,34 @@ namespace network{
         break;
       }
     }
+    disconnectClients();
     // if we're finishied, destroy server
     enet_host_destroy(server);
+  }
+  
+  void ConnectionManager::disconnectClients(){
+    bool disconnected=false;
+    ENetEvent event;
+    ClientList *temp=client;
+    while(temp!=NULL){
+      enet_peer_disconnect(temp->event->peer, 0);
+      while( !disconnected && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) > 0){
+        switch (event.type)
+        {
+          case ENET_EVENT_TYPE_NONE:
+          case ENET_EVENT_TYPE_CONNECT:
+          case ENET_EVENT_TYPE_RECEIVE:
+            enet_packet_destroy(event.packet);
+            break;
+          case ENET_EVENT_TYPE_DISCONNECT:
+            disconnected=true;
+            break;
+        }
+      }
+      temp = temp->next;
+      disconnected=false;
+    }
+    return;
   }
 
   bool ConnectionManager::processData(ENetEvent *event){

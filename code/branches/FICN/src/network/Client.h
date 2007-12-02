@@ -17,6 +17,7 @@
 
 #include "ClientConnection.h"
 #include "PacketManager.h"
+#include "GameStateManager.h"
 
 
 namespace network{
@@ -42,15 +43,18 @@ class Client : PacketDecoder{
   bool addMouse(double x, double y);
   bool addKeyboard(char key_code);
 
+  bool sendPackets();
+  
   void update();
 
   private:
   ClientConnection client_connection;
   PacketGenerator pck_gen;
-
-  //const char *server_address;
-  //int port;
+  GameStateManager gamestate;
   bool isConnected;
+  
+  // implement data processing functions of PacketDecoder
+  void processGamestate( GameState *data);
 };
 
 }

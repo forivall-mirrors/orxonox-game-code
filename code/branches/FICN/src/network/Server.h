@@ -17,7 +17,7 @@
 
 #include "ConnectionManager.h"
 #include "PacketManager.h"
-
+#include "enet/enet.h"
 
 namespace network{
 
@@ -30,15 +30,15 @@ namespace network{
     Server();
     Server(int port, std::string bindAddress);
     Server(int port, const char *bindAddress);
-
+    void open();
+    void close();
+    bool sendMSG(std::string msg);
+    bool sendMSG(const char *msg);
+    void tick();
     private:
     ConnectionManager connection;
-
-
-
-
-
-
+    GameStateManager gamestates;
+    PacketGenerator packet_gen;
 
   };
 

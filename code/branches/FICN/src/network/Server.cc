@@ -20,8 +20,9 @@ namespace network{
    *
    */
   Server::Server(){
-
-
+    connection = ConnectionManager();
+    gamestates = GameStateManager();
+    packet_gen = PacketGenerator();
   }
 
   /**
@@ -29,9 +30,10 @@ namespace network{
    * @param port Port to listen on
    * @param bindAddress Address to listen on
    */
-  Server::Server(int port, std::string bindAddress) : connection(port, bindAddress){
-
-
+  Server::Server(int port, std::string bindAddress){
+    connection = ConnectionManager(port, bindAddress);
+    gamestates = GameStateManager();
+    packet_gen = PacketGenerator();
   }
 
   /**
@@ -39,15 +41,50 @@ namespace network{
    * @param port Port to listen on
    * @param bindAddress Address to listen on
    */
-  Server::Server(int port, const char *bindAddress) : connection(port, bindAddress){
-
-
-
-
+  Server::Server(int port, const char *bindAddress){
+    connection = ConnectionManager(port, bindAddress);
+    gamestates = GameStateManager();
+    packet_gen = PacketGenerator();
   }
-
-
-
-
-
+  
+  /**
+   * This function opens the server by creating the listener thread
+   */
+  void Server::open(){
+    connection.createListener();
+    return;
+  }
+  
+  /**
+   * This function closes the server
+   */
+  void Server::close(){
+    connection.quitListener();
+    return;
+  }
+  
+  /**
+   * This function sends out a message to all clients
+   * @param msg message
+   * @return true/false
+   */
+  bool Server::sendMSG(std::string msg){
+    ENetPacket *packet = packet_gen.chatMessage(msg.c_str());
+    connection.addPacketAll(packet);
+    return connection.sendPackets();
+  }
+  /**
+   * This function sends out a message to all clients
+   * @param msg message
+   * @return true/false
+   */
+  bool Server::sendMSG(const char *msg){
+    ENetPacket *packet = packet_gen.chatMessage(msg);
+    connection.addPacketAll(packet);
+    return connection.sendPackets();
+  }
+  
+  void Server::tick(){
+  }
+  
 }

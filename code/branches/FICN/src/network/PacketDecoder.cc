@@ -99,7 +99,7 @@ void PacketDecoder::chatMessage( ENetPacket* packet )
 	//clean memory
 	enet_packet_destroy( packet );
 	
-	printChat( chatting ); //debug info
+	processChat( chatting ); //debug info
 	
 }
 
@@ -117,9 +117,17 @@ void PacketDecoder::gstate( ENetPacket* packet )
 	currentState->data = (unsigned char*)(malloc( currentState->size ));
 	//copy the gamestate data
 	memcpy( (void*)(currentState->data), (const void*)(data+3*sizeof( int )), currentState->size );
-	
+  
 	//clean memory
 	enet_packet_destroy( packet );
+  //run processGamestate
+  processGamestate(currentState);
+}
+
+// now the data processing functions:
+
+void PacketDecoder::processChat( chat *data){
+  printChat(data);
 }
 
 //these are some print functions for test stuff

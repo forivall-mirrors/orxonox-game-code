@@ -91,6 +91,11 @@ private:
 	void chatMessage( ENetPacket* packet );
 	void gstate( ENetPacket* packet );
 	
+  //process data
+  virtual void processGamestate(GameState *state);
+  virtual void processChat( chat *data);
+  virtual void processAck( ack *data);
+  
 	//print functions
 	void printAck( ack* data );
 	void printMouse( mouse* data );

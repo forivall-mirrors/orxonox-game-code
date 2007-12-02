@@ -53,6 +53,11 @@ namespace network{
         return NULL;
   }
 
+  ENetPacket *ClientConnection::getPacket(){
+    ENetAddress address;
+    return getPacket(address);
+  }
+  
   bool ClientConnection::queueEmpty(){
     return buffer.isEmpty();
   }
@@ -109,8 +114,10 @@ namespace network{
       // add some error handling here ==========================
       quit=true;
     //connect to the server
-    if(!establishConnection())
+    if(!establishConnection()){
       quit=true;
+      return;
+    }
     //main loop
     while(!quit){
       if(enet_host_service(client, &event, NETWORK_WAIT_TIMEOUT)<0){
@@ -125,8 +132,9 @@ namespace network{
         processData(&event);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
-        // add some error/log handling here
-        // extend =====================
+        quit=true;
+        // server closed the connection
+        return;
         break;
       case ENET_EVENT_TYPE_NONE:
         continue;
@@ -142,7 +150,6 @@ namespace network{
 
   bool ClientConnection::disconnectConnection(){
     ENetEvent event;
-//     enet_peer_disconnect(server);
     enet_peer_disconnect(server, 0);
     while(enet_host_service(client, &event, NETWORK_WAIT_TIMEOUT) > 0){
       switch (event.type)

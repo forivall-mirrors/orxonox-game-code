@@ -20,9 +20,9 @@ namespace network{
    */
   Client::Client(): client_connection(NETWORK_PORT,"127.0.0.1"){
     // set server address to localhost
-    //server_address="127.0.0.1";
-    //port = NETWORK_PORT;
     isConnected=false;
+    pck_gen = PacketGenerator();
+    gamestate = GameStateManager();
   }
 
   /**
@@ -31,9 +31,9 @@ namespace network{
    * @param port port of the application on the server
    */
   Client::Client(std::string address, int port) : client_connection(port, address){
-    //server_address=address.c_str();
-    //this->port = port;
     isConnected=false;
+    pck_gen = PacketGenerator();
+    gamestate = GameStateManager();
   }
 
   /**
@@ -42,9 +42,9 @@ namespace network{
    * @param port port of the application on the server
    */
   Client::Client(const char *address, int port) : client_connection(port, address){
-    //server_address = address;
-    //this->port = port;
     isConnected=false;
+    pck_gen = PacketGenerator();
+    gamestate = GameStateManager();
   }
 
   /**
@@ -77,11 +77,7 @@ namespace network{
     if(!client_connection.addPacket(pck_gen.mousem(x, y)))
         return false;
     // send packets
-    client_connection.sendPackets(&event);
-    if(event.type==ENET_EVENT_TYPE_NONE)
-      return true;
-    else
-      return false;
+    return client_connection.sendPackets();
   }
 
   /**
@@ -95,11 +91,7 @@ namespace network{
     if(!client_connection.addPacket(pck_gen.keystrike(key_code)))
         return false;
     // send packets
-    client_connection.sendPackets(&event);
-    if(event.type==ENET_EVENT_TYPE_NONE)
-      return true;
-    else
-      return false;
+    return client_connection.sendPackets();
   }
 
   /**
@@ -130,13 +122,35 @@ namespace network{
       return false;
   }
 
+  /** 
+   * Sends out all the packets queued by addXXX
+   */
+  bool Client::sendPackets(){
+    ENetEvent event;
+    // send packets
+    client_connection.sendPackets(&event);
+    if(event.type==ENET_EVENT_TYPE_NONE)
+      return true;
+    else
+      return false;
+  }
+  
   /**
    * Performs a GameState update
    */
   void Client::update(){
-    // to be implemented ==================
-
-
+    ENetPacket *packet;
+    // stop if the packet queue is empty
+    while(!client_connection.queueEmpty()){
+      packet = client_connection.getPacket();
+      elaborate(packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
+    }
+    return;
   }
-
+  
+  void Client::processGamestate( GameState *data){
+    gamestate.loadSnapshot( *data );
+    return;
+  }
+  
 }

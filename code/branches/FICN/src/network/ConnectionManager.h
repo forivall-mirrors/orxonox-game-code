@@ -60,12 +60,14 @@ namespace network{
     bool addPacketAll(ENetPacket *packet);
     // send out all queued packets
     bool sendPackets(ENetEvent *event);
+    bool sendPackets();
     private:
     bool clientDisconnect(ENetPeer *peer);
     bool processData(ENetEvent *event);
     bool addClient(ENetEvent *event);
     // implementation of the listener
     void receiverThread(); //thread2
+    void disconnectClients();
     //packetbuffer
     PacketBuffer buffer;
     // enet stuff

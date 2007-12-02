@@ -94,7 +94,11 @@ bool GameStateManager::loadSnapshot(GameState state)
         removeObject(it);
       }
       if(it==0){  // add the new object
-        
+        // =================== factory command to add object
+        // can we be sure the object really was added?
+        it=orxonox::ObjectList<Synchronisable>::end();
+        it->objectID=sync.objectID;
+        it->classID=sync.classID;
       }
     } else {
       // we have our object
