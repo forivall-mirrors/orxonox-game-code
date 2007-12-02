@@ -7,11 +7,14 @@
 
 namespace orxonox
 {
-    /** @brief Constructor: Sets identifier_ and parents_ to zero. */
+    /** @brief Constructor: Sets the default values. */
     OrxonoxClass::OrxonoxClass()
     {
         this->identifier_ = 0;
         this->parents_ = 0;
+
+        this->bActive_ = true;
+        this->bVisible_ = true;
     }
 
     /** @brief Destructor: Deletes, if existing, the list of the parents. */

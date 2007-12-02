@@ -473,7 +473,7 @@ namespace orxonox
         delete test9_05;
         delete test9_06;
 */
-/*
+
         std::cout << "Test 10\n";
         Identifier* test10_01 = Class(A1B2);
         Identifier* test10_02 = Class(A2);
@@ -508,8 +508,9 @@ namespace orxonox
         for (int i = 0; i < 10; i++)
         {
             test10_08 = ID("A2B1C1")->fabricate();
-            test10_08->name_ = "A2B1C1#";
-            test10_08->name_ += ('0' + i);
+            std::string objName = "A2B1C1#";
+            objName += '0' + i;
+            test10_08->setName(objName);
 
             if (i == 0)
                 test10_09 = test10_08;
@@ -530,11 +531,11 @@ namespace orxonox
         std::cout << "Anzahl A2: " << count << "\n";
 
         for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
-            std::cout << "Name: " << it->name_ << "\n";
+            std::cout << "Name: " << it->getName() << "\n";
 
         std::cout << "3\n";
         for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
-            std::cout << "Name: " << it->name_ << "\n";
+            std::cout << "Name: " << it->getName() << "\n";
 
         std::cout << "4\n";
         delete test10_08;
@@ -552,11 +553,11 @@ namespace orxonox
 
         std::cout << "5\n";
         for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
-            std::cout << "Name: " << it->name_ << "\n";
+            std::cout << "Name: " << it->getName() << "\n";
 
         std::cout << "6\n";
         for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
-            std::cout << "Name: " << it->name_ << "\n";
+            std::cout << "Name: " << it->getName() << "\n";
 
         std::cout << "7\n";
         delete test10_09;
@@ -574,11 +575,11 @@ namespace orxonox
 
         std::cout << "8\n";
         for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
-            std::cout << "Name: " << it->name_ << "\n";
+            std::cout << "Name: " << it->getName() << "\n";
 
         std::cout << "9\n";
         for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
-            std::cout << "Name: " << it->name_ << "\n";
+            std::cout << "Name: " << it->getName() << "\n";
 
         std::cout << "10\n";
         delete test10_10;
@@ -596,14 +597,14 @@ namespace orxonox
 
         std::cout << "11\n";
         for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
-            std::cout << "Name: " << it->name_ << "\n";
+            std::cout << "Name: " << it->getName() << "\n";
 
         std::cout << "12\n";
         for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
-            std::cout << "Name: " << it->name_ << "\n";
+            std::cout << "Name: " << it->getName() << "\n";
 
         std::cout << "13\n";
-*/
+
       }
 
       ~OrxApplication()
