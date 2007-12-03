@@ -121,7 +121,8 @@ void PacketDecoder::gstate( ENetPacket* packet )
 	//clean memory
 	enet_packet_destroy( packet );
   //run processGamestate
-  processGamestate(currentState);
+  //TODO: not yet implemented!
+  //processGamestate(currentState);
 }
 
 // now the data processing functions:
