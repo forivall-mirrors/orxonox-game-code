@@ -13,10 +13,29 @@ namespace orxonox
         this->usefullClass1_ = Class(Test1);
         this->usefullClass2_ = Class(Test2);
         this->usefullClass3_ = Class(Test3);
+
+        timer1.setTimer(1, true, this, &Test2::timerFunction1);
+        timer2.setTimer(5, true, this, &Test2::timerFunction2);
+        timer3.setTimer(10, false, this, &Test2::timerFunction3);
     }
 
     Test2::~Test2()
     {
+    }
+
+    void Test2::timerFunction1()
+    {
+        std::cout << "Test2: 1 Sekunde\n";
+    }
+
+    void Test2::timerFunction2()
+    {
+        std::cout << "Test2: 5 Sekunden\n";
+    }
+
+    void Test2::timerFunction3()
+    {
+        std::cout << "Test2: 10 Sekunden sind um!\n";
     }
 
     bool Test2::usefullClass1isA(Identifier* identifier)

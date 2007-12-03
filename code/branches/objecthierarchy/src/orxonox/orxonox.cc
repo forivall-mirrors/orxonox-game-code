@@ -38,16 +38,18 @@
 #include <string>
 #include <iostream>
 
-#include "../xml/xmlParser.h"
-#include "../loader/LevelLoader.h"
+//#include "../xml/xmlParser.h"
+//#include "../loader/LevelLoader.h"
 
 #include "core/IdentifierIncludes.h"
+#include "objects/Tickable.h"
+#include "objects/Timer.h"
+
 #include "objects/BaseObject.h"
 #include "objects/Test.h"
 #include "objects/test1.h"
 #include "objects/test2.h"
 #include "objects/test3.h"
-
 
 // some tests to see if enet works without includsion
 //#include <enet/enet.h>
@@ -105,7 +107,6 @@ namespace orxonox
     public:
       void go()
       {
-/*
         createRoot();
         defineResources();
         setupRenderSystem();
@@ -116,8 +117,7 @@ namespace orxonox
         setupInputSystem();
         setupCEGUI();
         createFrameListener();
-        startRenderLoop();
-*/
+
 
         #define testandcout(code) \
           std::cout << #code << " " << code << "\n"
@@ -147,7 +147,7 @@ namespace orxonox
         test4 = new A3();
         test4 = new A3();
 */
-
+/*
         std::cout << "Test 5\n";
         A1* test5_01 = new A1();
         A2* test5_02 = new A2();
@@ -217,7 +217,7 @@ namespace orxonox
         std::cout << "Class with ID 3: " << ID(3) << "\n";
         std::cout << "ID of BaseObject: " << Class(BaseObject)->getNetworkID() << "\n";
         std::cout << "ID of Test1: " << Class(Test1)->getNetworkID() << "\n";
-
+*/
 /*
         std::cout << "\n";
         std::cout << "isA(XYZ)-Test:\n";
@@ -473,7 +473,7 @@ namespace orxonox
         delete test9_05;
         delete test9_06;
 */
-
+/*
         std::cout << "Test 10\n";
         Identifier* test10_01 = Class(A1B2);
         Identifier* test10_02 = Class(A2);
@@ -604,7 +604,30 @@ namespace orxonox
             std::cout << "Name: " << it->getName() << "\n";
 
         std::cout << "13\n";
+*/
+        std::cout << "Test 11\n";
+/*
+        std::cout << "1\n";
+        count = 0; for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it) { count++; }
+        std::cout << "AnzahlTickable: " << count << "\n";
 
+        Test1* test11_1;
+        for (int i = 0; i < 3; i++)
+            test11_1 = new Test1;
+
+        count = 0; for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it) { count++; }
+        std::cout << "AnzahlTickable: " << count << "\n";
+
+        for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
+            it->tick(0);
+
+        std::cout << "2\n";
+*/
+
+        Test2* test11_2 = new Test2;
+        std::cout << "3\n";
+
+        startRenderLoop();
       }
 
       ~OrxApplication()
@@ -686,8 +709,8 @@ namespace orxonox
       void createScene(void)
       {
 
-        string levelFile = "sp_level_moonstation.oxw";
-        loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
+//        string levelFile = "sp_level_moonstation.oxw";
+//        loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
       }
 
       void setupScene()
@@ -734,6 +757,12 @@ namespace orxonox
 
       void createFrameListener()
       {
+        TickFrameListener* TickFL = new TickFrameListener();
+        mRoot->addFrameListener(TickFL);
+
+        TimerFrameListener* TimerFL = new TimerFrameListener();
+        mRoot->addFrameListener(TimerFL);
+
         mListener = new OrxExitListener(mKeyboard);
         mRoot->addFrameListener(mListener);
       }
