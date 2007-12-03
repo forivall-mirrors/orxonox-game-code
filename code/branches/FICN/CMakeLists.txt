@@ -1,10 +1,10 @@
 PROJECT(Orxonox)
-#set some global variables, which are use throughout the project
+#set some global variables, which are used throughout the project
 
 #Create some verbose output
 SET(CMAKE_VERBOSE_MAKEFILE TRUE)
 
-# set eNet search path
+# set boost search path
 SET(Boost_INCLUDE_DIR "/usr/include/boost/")
 
 # force-set the compile on tardis machines, as default points to g++-3.3
@@ -46,8 +46,6 @@ ENDIF (UNIX)
 
 #This sets where to look for "Find*.cmake" files
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-# SET(BOOST_LIBDIR /usr/pack/boost-1.33.1-mo/i686-debian-linux3.1/lib/)
-# SET(BOOST_INCDIR /usr/pack/boost-1.33.1-mo/i686-debian-linux3.1/include/)
 
 #Performs the search and sets the variables
 FIND_PACKAGE(OGRE)
@@ -57,24 +55,24 @@ FIND_PACKAGE(CEGUI_OGRE)
 FIND_PACKAGE(ENet)
 FIND_PACKAGE(Boost)
 
-#Sets the search paths for the linking
+#Sets the search paths for the linker
 LINK_DIRECTORIES(
-	${OGRE_LIB_DIR}
-	${OIS_LIB_DIR}
-	${CEGUI_LIB_DIR}
-	${CEGUI_OGRE_LIB_DIR}
-	${ENet_LIBRARY}
-	${Boost_LIBRARY_DIRS}
+  ${OGRE_LIB_DIR}
+  ${OIS_LIB_DIR}
+  ${CEGUI_LIB_DIR}
+  ${CEGUI_OGRE_LIB_DIR}
+  ${ENet_LIBRARY}
+  ${Boost_LIBRARY_DIRS}
 )
 
 #Sets the search path for include files
 INCLUDE_DIRECTORIES(
-	${OGRE_INCLUDE_DIR}
-	${OIS_INCLUDE_DIR}
-	${CEGUI_INCLUDE_DIR}
-	${CEGUI_OGRE_INCLUDE_DIR}
-	${ENet_INCLUDE_DIR}
-	${Boost_INCLUDE_DIRS}
+  ${OGRE_INCLUDE_DIR}
+  ${OIS_INCLUDE_DIR}
+  ${CEGUI_INCLUDE_DIR}
+  ${CEGUI_OGRE_INCLUDE_DIR}
+  ${ENet_INCLUDE_DIR}
+  ${Boost_INCLUDE_DIRS}
 )
 
 
