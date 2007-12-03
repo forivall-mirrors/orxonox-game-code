@@ -1,3 +1,7 @@
+# THIS FILE HAS BEEN MODIFIED TO WORK ON TARDIS
+# use with cation
+# Nicolas Schlumberger <nico AT orxonx DOT net> (C) 2007
+#
 # - Find the Boost includes and libraries.
 # The following variables are set if Boost is found.  If Boost is not
 # found, Boost_FOUND is set to false.
@@ -162,6 +166,7 @@ ENDIF(Boost_INCLUDE_DIR)
 
 # List of library suffixes to search, e.g. libboost_date_time-gcc
 SET(BOOST_SUFFIX_SEARCH
+  gcc41-mt
   gcc
   il
 )
@@ -173,7 +178,6 @@ SET(BOOST_ALL_LIBRARIES
   graph
   iostreams
   program_options
-  python
   regex
   serialization
   signals
