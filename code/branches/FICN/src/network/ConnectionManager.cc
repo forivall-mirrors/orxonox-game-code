@@ -11,10 +11,19 @@
 
 #include "ConnectionManager.h"
 
+namespace std{
+  bool operator< (ENetAddress a, ENetAddress b){
+    if(a.host <= b.host)
+      return true;
+    else
+      return false;
+  }
+}
+
 namespace network{
 
   boost::thread_group network_threads;
-
+  
   ConnectionManager::ConnectionManager(){
     quit=false;
     bindAddress.host = ENET_HOST_ANY;

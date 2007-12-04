@@ -99,8 +99,9 @@ namespace network{
    */
   void Server::processQueue(){
     ENetPacket *packet;
+    int clientID=-1;
     while(!connection.queueEmpty()){
-      packet = connection.getPacket()
+      packet = connection.getPacket(clientID);
     }
   }
   

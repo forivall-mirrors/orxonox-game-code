@@ -25,6 +25,10 @@
 #include "ConnectionManager.h"
 #include "PacketBuffer.h"
 
+namespace std{
+  bool operator<(ENetAddress a, ENetAddress b);
+}
+
 namespace network{
   //
 #define NETWORK_PORT 55556
@@ -37,7 +41,7 @@ namespace network{
     int ID;
     ClientList *next;
   };
-
+  
   class ConnectionManager{
     public:
     ConnectionManager();
