@@ -39,7 +39,9 @@ namespace network{
     ConnectionManager connection;
     GameStateManager gamestates;
     PacketGenerator packet_gen;
-
+    
+    void processQueue();
+    void updateGamestate();
   };
 
 

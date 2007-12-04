@@ -84,7 +84,30 @@ namespace network{
     return connection.sendPackets();
   }
   
+  /**
+   * Run this function once every tick
+   * calls processQueue and updateGamestate
+   */
   void Server::tick(){
+    processQueue();
+    updateGamestate();
+    return;
+  }
+  
+  /**
+   * processes all the packets waiting in the queue
+   */
+  void Server::processQueue(){
+    ENetPacket *packet;
+    while(!connection.queueEmpty()){
+      packet = connection.getPacket()
+    }
+  }
+  
+  /**
+   * takes a new snapshot of the gamestate and sends it to the clients
+   */
+  void Server::updateGamestate(){
   }
   
 }

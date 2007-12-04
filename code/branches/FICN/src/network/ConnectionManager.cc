@@ -15,27 +15,20 @@ namespace network{
 
   boost::thread_group network_threads;
 
-  void test(){
-    return;
-  }
-
   ConnectionManager::ConnectionManager(){
     quit=false;
-    client=NULL;
     bindAddress.host = ENET_HOST_ANY;
     bindAddress.port = NETWORK_PORT;
   }
 
   ConnectionManager::ConnectionManager(int port, std::string address){
     quit=false;
-    client=NULL;
     enet_address_set_host (& bindAddress, address.c_str());
     bindAddress.port = NETWORK_PORT;
   }
 
   ConnectionManager::ConnectionManager(int port, const char *address){
     quit=false;
-    client=NULL;
     enet_address_set_host (& bindAddress, address);
     bindAddress.port = NETWORK_PORT;
   }
@@ -45,6 +38,13 @@ namespace network{
       return buffer.pop(address);
     else
         return NULL;
+  }
+  
+  ENetPacket *ConnectionManager::getPacket(int &clientID){
+    ENetAddress address;
+    ENetPacket *packet=getPacket(address);
+    clientID=clientMap.find(address)->second;
+    return packet;
   }
 
   bool ConnectionManager::queueEmpty(){
@@ -64,38 +64,24 @@ namespace network{
   }
 
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer){
-    if(client==NULL)
+    if(clientVector.size()==0)
       return false;
-    ClientList *temp=client;
-    while(peer->host != temp->event->peer->host){
-      temp=temp->next;
-      if(temp==NULL)
-        return false;
-    }
-    if(enet_peer_send(temp->event->peer, temp->ID, packet)!=0)
+    if(enet_peer_send(peer, clientMap.find(peer->address)->second , packet)!=0)
       return false;
     return true;
   }
-
-  bool ConnectionManager::addPacket(ENetPacket *packet, int ID){
-    if(client==NULL)
+  
+  bool ConnectionManager::addPacket(ENetPacket *packet, int clientID){
+    if(clientVector.size()==0)
       return false;
-    ClientList *temp=client;
-    while(ID != temp->ID){
-      temp=temp->next;
-      if(temp==NULL)
-        return false;
-    }
-    if(enet_peer_send(temp->event->peer, temp->ID, packet)!=0)
+    if(enet_peer_send(&(peerMap.find(clientVector[clientID])->second), clientID, packet)!=0)
       return false;
-    else
-      return true;
+    return true;
   }
-
+  
   bool ConnectionManager::addPacketAll(ENetPacket *packet){
-    ClientList *temp=client;
-    while(temp!=NULL){
-      if(enet_peer_send(temp->event->peer, temp->ID, packet)!=0)
+    for(int i=0; i<clientVector.size(); i++){
+      if(enet_peer_send(&(peerMap.find(clientVector[i])->second), i, packet)!=0)
          return false;
     }
     return true;
@@ -162,9 +148,8 @@ namespace network{
   void ConnectionManager::disconnectClients(){
     bool disconnected=false;
     ENetEvent event;
-    ClientList *temp=client;
-    while(temp!=NULL){
-      enet_peer_disconnect(temp->event->peer, 0);
+    for(int i=0; i<clientVector.size(); i++){
+      enet_peer_disconnect(&(peerMap.find(clientVector[i])->second), 0);
       while( !disconnected && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) > 0){
         switch (event.type)
         {
@@ -178,7 +163,6 @@ namespace network{
             break;
         }
       }
-      temp = temp->next;
       disconnected=false;
     }
     return;
@@ -191,56 +175,35 @@ namespace network{
   }
 
   bool ConnectionManager::clientDisconnect(ENetPeer *peer){
-    ClientList *temp=client;
-    // do we have to remove the first item ?
-    if(temp->event->peer->host==peer->host){
-      if(temp->next==NULL){
-        client=NULL;
-      } else{
-        client=temp->next;
-      }
-      delete temp;
-      return true;
-    } else {
-      while(temp->next!=NULL){
-        if(temp->next->event->peer->host==peer->host){
-          // do a correct relink and delete the disconnected client
-          ClientList *temp2=temp->next;
-          temp->next=temp2->next;
-          delete temp2;
-          return true;
-        } else
-          //otherwise keep on searching ;)
-          temp=temp->next;
-      }
-    }
-    return false;
+    return clientDisconnect(*peer);
   }
-
-  bool ConnectionManager::addClient(ENetEvent *event){
-
-    // first client?
-    if(client==NULL){
-      client =new ClientList;
-      client->ID=1;
-      client->next=NULL;
-      client->event = event;
-    } else {
-      // otherwise add a new element to clientlist
-      ClientList *temp = client;
-      int i=1;
-      while(temp->next != NULL){
-        temp=temp->next;
-        i++;
-      }
-      temp->next=new ClientList;
-      temp=temp->next;
-      temp->ID=i+1;
-      temp->event=event;
-      temp->next=NULL;
-    }
+  
+  bool ConnectionManager::clientDisconnect(ENetPeer peer){
+    std::map<ENetAddress, int>::iterator it;
+    it=clientMap.find(peer.address);
+    clientVector.erase(clientVector.begin()+it->second);
+    clientMap.erase(it);
+    peerMap.erase(peerMap.find(peer.address));
     return true;
   }
 
-
+  bool ConnectionManager::addClient(ENetEvent *event){
+    clientVector.push_back((event->peer->address));
+    clientMap[event->peer->address]=clientVector.size()-1;
+    peerMap[event->peer->address]=*(event->peer);
+    return true;
+  }
+  
+  int ConnectionManager::getClientID(ENetPeer peer){
+    return clientMap.find(peer.address)->second;
+  }
+  
+  int ConnectionManager::getClientID(ENetAddress address){
+    return clientMap.find(address)->second;
+  }
+  
+  ENetPeer ConnectionManager::getClientPeer(int clientID){
+    return peerMap.find(clientVector[clientID])->second;
+  }
+  
 }
