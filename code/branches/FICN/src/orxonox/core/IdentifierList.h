@@ -1,22 +1,31 @@
 #ifndef _IdentifierList_H__
+/*!
+    @file IdentifierList.h
+    @brief Definition of the IdentifierList class
+
+    The IdentifierList is a single-linked list, containing Identifiers.
+    The IdentifierList is used to store parents and childs of each Identifier.
+*/
+
 #define _IdentifierList_H__
 
 #include <string>
 
 namespace orxonox
 {
-    class Identifier;
+    class Identifier; // Forward declaration
 
+    //! The list-element of the IdentifierList
     class IdentifierListElement
     {
         public:
             IdentifierListElement(const Identifier* identifier);
-            ~IdentifierListElement();
 
-            const Identifier* identifier_;
-            IdentifierListElement* next_;
+            const Identifier* identifier_;      //!< The identifier
+            IdentifierListElement* next_;       //!< The next element in the list
     };
 
+    //! The IdentifierList contains Identifiers
     class IdentifierList
     {
         public:
@@ -27,7 +36,7 @@ namespace orxonox
             bool isInList(const Identifier* identifier) const;
             std::string toString() const;
 
-            IdentifierListElement* first_;
+            IdentifierListElement* first_;      //!< The first element in the list
     };
 }
 

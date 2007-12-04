@@ -19,6 +19,11 @@ namespace orxonox
     {
     }
 
+    void Test1::tick(float dt)
+    {
+        std::cout << "Test1: " << this << "\n";
+    }
+
     bool Test1::usefullClass1isA(Identifier* identifier)
     {
         return this->usefullClass1_->isA(identifier);
