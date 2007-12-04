@@ -30,7 +30,17 @@
  @brief Orxonox Main File
  */
 
-#include <Ogre.h>
+//#include <Ogre.h>
+// 40% speed up: (instead of Ogre.h)
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
+#include <OgreRoot.h>
+#include <OgreFrameListener.h>
+#include <OgreConfigFile.h>
+#include <OgreTextureManager.h>
+#include <OgreEntity.h>
+#include <OgreRenderWindow.h>
+
 #include <OIS/OIS.h>
 //#include <CEGUI/CEGUI.h>
 //#include <OgreCEGUIRenderer.h>

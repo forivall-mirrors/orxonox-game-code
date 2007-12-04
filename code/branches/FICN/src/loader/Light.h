@@ -1,4 +1,5 @@
 
+#include "loader_platform.h"
 #include "xml/xmlParser.h"
 
 #ifndef __MODULE_LIGHT__
@@ -6,7 +7,7 @@
 
 namespace light
 {
-	class Light
+	class _LoaderExport Light
 	{
 	public:      
 		Light();

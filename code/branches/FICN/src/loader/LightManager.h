@@ -1,5 +1,6 @@
 #include <vector>
 
+#include "loader_platform.h"
 #include "xml/xmlParser.h"
 #include "Light.h"
 
@@ -8,7 +9,7 @@
 
 namespace light
 {
-	class LightManager
+	class _LoaderExport LightManager
 	{      
 	public:
 		LightManager();

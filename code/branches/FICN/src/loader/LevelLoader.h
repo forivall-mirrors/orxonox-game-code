@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 
+#include "loader_platform.h"
 #include "xml/xmlParser.h"
 
 #ifndef __MODULE_LEVELLOADER__
@@ -17,12 +18,12 @@ using namespace std;
 
 namespace loader
 {
-	class LevelLoader
+	class _LoaderExport LevelLoader
 	{
 	private:
 		
 		// XML Nodes 
-		XMLNode rootNode;  
+		XMLNode rootNode;
 		XMLNode worldNode;
 		XMLNode scriptNode;
 		XMLNode cameraNode;

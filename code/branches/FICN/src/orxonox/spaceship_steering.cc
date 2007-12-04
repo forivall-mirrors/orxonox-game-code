@@ -1,4 +1,4 @@
-#include "Ogre.h"
+#include "OgreSceneNode.h"
 #include "spaceship_steering.h"
 using namespace Ogre;
 
