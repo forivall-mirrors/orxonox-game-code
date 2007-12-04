@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-#include "../../include/AL/al.h"
-#include "../../include/AL/alc.h"
-#include "../../include/AL/alut.h"
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alut.h>
 
 namespace audio
 {

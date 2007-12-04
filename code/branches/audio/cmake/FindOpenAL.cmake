@@ -8,6 +8,7 @@
 # correspond to the ./configure --prefix=$OPENALDIR
 # used in building OpenAL.
 #
+
 # Created by Eric Wing. This was influenced by the FindSDL.cmake module.
 # On OSX, this will prefer the Framework version (if found) over others.
 # People will have to manually change the cache values of
@@ -15,28 +16,28 @@
 # Tiger will include OpenAL as part of the System.
 # But for now, we have to look around.
 # Other (Unix) systems should be able to utilize the non-framework paths.
-FIND_PATH(OPENAL_INCLUDE_DIR al.h
+FIND_PATH(OPENAL_INCLUDE_DIR AL/al.h
   $ENV{OPENALDIR}/include
   ~/Library/Frameworks/OpenAL.framework/Headers
   /Library/Frameworks/OpenAL.framework/Headers
   /System/Library/Frameworks/OpenAL.framework/Headers # Tiger
-  /usr/pack/openal-0.0.8-cl/include/AL # Tardis specific hack
-  /usr/local/include/AL
+  /usr/pack/openal-0.0.8-cl/include # Tardis specific hack
+  /usr/local/include/
   /usr/local/include/OpenAL
   /usr/local/include
-  /usr/include/AL
+  /usr/include/
   /usr/include/OpenAL
   /usr/include
-  /sw/include/AL # Fink
+  /sw/include # Fink
   /sw/include/OpenAL
   /sw/include
-  /opt/local/include/AL # DarwinPorts
+  /opt/local/include # DarwinPorts
   /opt/local/include/OpenAL
   /opt/local/include
-  /opt/csw/include/AL # Blastwave
+  /opt/csw/include # Blastwave
   /opt/csw/include/OpenAL
   /opt/csw/include
-  /opt/include/AL
+  /opt/include
   /opt/include/OpenAL
   /opt/include
   )
@@ -68,6 +69,7 @@ ELSE(${OPENAL_INCLUDE_DIR} MATCHES ".framework")
     PATHS
     $ENV{OPENALDIR}/lib
     $ENV{OPENALDIR}/libs
+		/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1/lib
     /usr/local/lib
     /usr/lib
     /sw/lib
@@ -80,6 +82,7 @@ ENDIF(${OPENAL_INCLUDE_DIR} MATCHES ".framework")
 SET(OPENAL_FOUND "NO")
 IF(OPENAL_LIBRARY)
   SET(OPENAL_FOUND "YES")
+	MESSAGE(STATUS "OpenAL was found. Libdir ${OPENAL_LIBRARY} Includedir ${OPENAL_INCLUDE_DIR}")
 ENDIF(OPENAL_LIBRARY)
 
 

@@ -32,12 +32,7 @@ namespace audio
 		ALfloat ListenerPos[3];
 		ALfloat ListenerVel[3];
 		ALfloat ListenerOri[6];
-	};
-	
-	
-	
-	
-	
+	};	
 }
 
 #endif /*AUDIOOBJECT_H_*/

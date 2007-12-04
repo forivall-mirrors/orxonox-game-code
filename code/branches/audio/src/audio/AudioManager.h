@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-#include "../../include/AL/al.h"
-#include "../../include/AL/alc.h"
-#include "../../include/AL/alut.h"
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alut.h>
 
 #include "AudioBuffer.h"
 #include "AudioSource.h"
@@ -29,7 +29,11 @@ namespace audio
 		// the listener looks at, the second is the direction
 		// upwards the listener)
 		void setOri(std::vector<float> at, std::vector<float> up);
+		// Parses given xml string
+		void loadParams();
 	private:
+
+	
 		// Vector containing all audio files
 		std::vector<AudioBuffer> buffers;
 		// Vector containing all audio sources which referer to one buffer
