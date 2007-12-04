@@ -117,7 +117,6 @@ bool GameStateManager::loadSnapshot(GameState state)
  * @param it iterator of the list pointing to the object
  * @return iterator pointing to the next object in the list
  */
-// orxonox::Iterator<Synchronisable> removeObject(orxonox::Iterator<Synchronisable> it){
 void GameStateManager::removeObject(orxonox::Iterator<Synchronisable> &it){
   orxonox::Iterator<Synchronisable> temp=it;
   ++it;
@@ -125,6 +124,57 @@ void GameStateManager::removeObject(orxonox::Iterator<Synchronisable> &it){
 //   return it;
 }
 
+GameState GameStateManager::encode(GameState a, GameState b){
+  GameState r = diff(a,b);
+  return compress(r);
+}
+
+GameState GameStateManager::decode(GameState a, GameState x){
+  GameState t = decompress(x);
+  return diff(a, t);
+}
+
+GameState GameStateManager::diff(GameState a, GameState b){
+  unsigned char *ap = a.data, *bp = b.data;
+  int of=0; // pointers offset
+  int dest_length=0;
+  if(a.size>=b.size)
+    dest_length=a.size;
+  else
+    dest_length=b.size;
+  unsigned char *dp = (unsigned char *)malloc(dest_length*sizeof(unsigned char));
+  while(of<a.size && of<b.size){
+    *(dp+of)=*(ap+of)^*(bp+of); // do the xor
+    ++of;
+  }
+  if(a.size!=b.size){ // do we have to fill up ?
+    unsigned char n=0;
+    if(a.size<b.size){
+      while(of<dest_length){
+        *(dp+of)=n^*(bp+of);
+        of++;
+      }
+    } else{
+      while(of<dest_length){
+        *(dp+of)=*(ap+of)^n;
+        of++;
+      }
+    }
+  }
+  // should be finished now
+  GameState r = {b.id, dest_length, dp};
+  return r;
+}
+
+GameState GameStateManager::compress(GameState a){
+  // to be implemented !!!!!!!!!!!!!!
+  return a;
+}
+
+GameState GameStateManager::decompress(GameState a){
+  // to be implemented !!!!!!!!!!!!!!
+  return a;
+}
 
 }
 

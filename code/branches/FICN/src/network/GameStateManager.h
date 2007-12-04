@@ -34,6 +34,14 @@ namespace network {
  * - creating snapshots of gamestates
  * - writing gamestates to universe
  * - diffing gamestates ?
+ * 
+ * EN/DECODATION:
+ * a: last Gamestate a client has received
+ * b: new Gamestate
+ * x: diffed and compressed gamestate
+ * x=(a^b)
+ * b=(a^x)
+ * diff(a,diff(a,x))=x (hope this is correct)
  * @author Oliver Scheuss
 */
 class GameStateManager{
@@ -42,9 +50,13 @@ public:
   ~GameStateManager();
   GameState getSnapshot(int id);
   bool loadSnapshot(GameState state);
+  GameState encode(GameState a, GameState b);
+  GameState decode(GameState a, GameState x);
 private:
   void removeObject(orxonox::Iterator<Synchronisable> &it);
-
+  GameState diff(GameState a, GameState b);
+  GameState compress(GameState a);
+  GameState decompress(GameState a);
 };
 
 }
