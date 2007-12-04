@@ -33,6 +33,7 @@ IF (UNIX)
   ENDIF(IS_TARDIS)
 ENDIF (UNIX)
 
+SET(CMAKE_CXX_FLAGS "-O2 -Wall -g -ggdb")
 
 #This sets where to look for "Find*.cmake" files
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)

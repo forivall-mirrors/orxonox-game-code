@@ -54,6 +54,7 @@ namespace orxonox
     {
         public:
             virtual BaseObject* fabricate() = 0;
+            virtual ~BaseFactory() {};
     };
 }
 
