@@ -46,14 +46,17 @@ public:
   ~GameStateManager();
   void update();
   GameStateCompressed popGameState(int clientID);
+  void ackGameState(int clientID, int gamestateID);
 private:
-  GameState getSnapshot(int id);
+  GameState *getSnapshot(int id);
   GameStateCompressed encode(GameState *a, GameState *b);
   GameState diff(GameState *a, GameState *b);
   GameStateCompressed compress_(GameState a);
+  bool deleteUnusedGameState(GameState *state);
   
   std::vector<GameState *> clientGameState;
-  GameState reference;
+  std::vector<GameState *> idGameState;
+  GameState *reference;
   int id;
 };
 

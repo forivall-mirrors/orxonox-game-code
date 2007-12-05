@@ -49,11 +49,11 @@ private:
         
         
 	
-	void acknowledgement( ENetPacket* packet );
-	void mousem( ENetPacket* packet );
-	void keystrike( ENetPacket* packet );
-	void chatMessage( ENetPacket* packet );
-	void gstate( ENetPacket* packet );
+    void acknowledgement( ENetPacket* packet );
+    void mousem( ENetPacket* packet );
+    void keystrike( ENetPacket* packet );
+    void chatMessage( ENetPacket* packet );
+    void gstate( ENetPacket* packet );
     void clid( ENetPacket *packet);
 	
   //process data

@@ -102,6 +102,7 @@ namespace network{
     int clientID=-1;
     while(!connection.queueEmpty()){
       packet = connection.getPacket(clientID);
+      elaborate(packet, clientID);
     }
   }
   
@@ -109,6 +110,12 @@ namespace network{
    * takes a new snapshot of the gamestate and sends it to the clients
    */
   void Server::updateGamestate(){
+    gamestates.update();
+    sendGameState();
+  }
+  
+  bool Server::sendGameState(){
+    
   }
   
   

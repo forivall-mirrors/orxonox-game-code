@@ -37,6 +37,7 @@ namespace network{
     bool sendMSG(const char *msg);
     void tick();
     private:
+    bool sendGameState();
     ConnectionManager connection;
     GameStateManager gamestates;
     PacketGenerator packet_gen;

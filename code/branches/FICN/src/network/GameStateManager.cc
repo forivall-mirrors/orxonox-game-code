@@ -23,13 +23,15 @@ GameStateManager::~GameStateManager()
 }
 
 void GameStateManager::update(){
-  reference = getSnapshot(id++);
+  reference = getSnapshot(id);
+  idGameState[id]=reference;
+  ++id;
   return;
 }
 
 GameStateCompressed GameStateManager::popGameState(int clientID){
   GameState *client = clientGameState[clientID];  
-  GameState *server = &reference;
+  GameState *server = reference;
   return encode(client, server);
 }
 
@@ -40,7 +42,7 @@ GameStateCompressed GameStateManager::popGameState(int clientID){
  * saves all the synchronisables to a flat "list".
  * @return struct of type gamestate containing the size of the whole gamestate and a pointer linking to the flat list
  */
-GameState GameStateManager::getSnapshot(int id)
+GameState *GameStateManager::getSnapshot(int id)
 {
   //the size of the gamestate
   int totalsize=0;
@@ -51,10 +53,10 @@ GameState GameStateManager::getSnapshot(int id)
   // struct for return value of Synchronisable::getData()
   syncData sync;
   
-  GameState retval; //return value
-  retval.id=id;
+  GameState *retval=new GameState; //return value
+  retval->id=id;
   // reserve a little memory and increase it later on
-  retval.data = (unsigned char*)malloc(1);
+  retval->data = (unsigned char*)malloc(1);
   
   // offset of memory functions
   int offset=0;
@@ -65,17 +67,17 @@ GameState GameStateManager::getSnapshot(int id)
     // add place for data and 3 ints (length,classid,objectid)
     totalsize+=tempsize+3*sizeof(int);
     // allocate additional space
-    retval.data = (unsigned char *)realloc((void *)retval.data, totalsize);
+    retval->data = (unsigned char *)realloc((void *)retval->data, totalsize);
     
     // run Synchronisable::getData with offset and additional place for 3 ints in between (for ids and length)
-    sync=it->getData(retval.data+offset+3*sizeof(int));
-    *(retval.data+offset)=sync.length;
-    *(retval.data+offset+sizeof(int))=sync.objectID;
-    *(retval.data+offset+2*sizeof(int))=sync.classID;
+    sync=it->getData(retval->data+offset+3*sizeof(int));
+    *(retval->data+offset)=sync.length;
+    *(retval->data+offset+sizeof(int))=sync.objectID;
+    *(retval->data+offset+2*sizeof(int))=sync.classID;
     // increase data pointer
     offset+=tempsize+3*sizeof(int);
   }
-  retval.size=totalsize;
+  retval->size=totalsize;
   return retval;
 }
 
@@ -142,7 +144,20 @@ GameStateCompressed GameStateManager::compress_(GameState a) {
   return compressedGamestate;
 }
 
+void GameStateManager::ackGameState(int clientID, int gamestateID){
+  GameState *old = clientGameState[clientID];
+  deleteUnusedGameState(old);
+  clientGameState[clientID]=idGameState[gamestateID];
+}
 
+bool GameStateManager::deleteUnusedGameState(GameState *state){
+  for(unsigned int i=0; i<clientGameState.size(); i++){
+    if(clientGameState[i]==state)
+      return false;
+  }
+  delete state;
+  return true;
+}
 
 }
 
