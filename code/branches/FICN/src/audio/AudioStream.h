@@ -6,12 +6,13 @@
 namespace audio
 {
 	#define BUFFER_SIZE (4096 * 4)
+	#define STREAM_FILES_DIR "audio/ambient"
 	
 	class AudioStream
 	{
 	    public:
 	
-	        void open(string path);
+	        void open(std::string path);
 	        void release();
 	        void display();
 	        bool playback();

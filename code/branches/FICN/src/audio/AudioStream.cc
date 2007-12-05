@@ -7,6 +7,8 @@ namespace audio
 	{
 	    int result;
 	    
+	    path = "audio/ambient/" + path + ".ogg"; 
+	    
 	    if(!(oggFile = fopen(path.c_str(), "rb")))
 	        throw std::string("Could not open Ogg file.");
 	
