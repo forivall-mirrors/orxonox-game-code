@@ -3,13 +3,16 @@
 
 namespace audio
 {
-	void AudioStream::open(std::string path)
+	AudioStream::AudioStream(std::string path)
+	{
+		this->path = path;
+		loaded = false;
+	}	
+
+	void AudioStream::open()
 	{
 	    int result;
-			loaded = false;
-	    
 
-	    path = "audio/ambient/" + path + ".ogg"; 
 	    
 	    if(!(oggFile = fopen(path.c_str(), "rb")))
 			{
@@ -52,8 +55,7 @@ namespace audio
 	
 	void AudioStream::release()
 	{
-		if (loaded)
-		{
+
 	    alSourceStop(source);
 	    empty();
 	    alDeleteSources(1, &source);
@@ -63,7 +65,7 @@ namespace audio
 	
 	    ov_clear(&oggStream);
 			loaded = false;
-		}
+		
 	}
 	
 	
@@ -154,6 +156,10 @@ namespace audio
 	        check();
 	    }
 	
+			if (active==false)
+			{
+				loaded = false;
+			}
 	    return active;
 	}
 	

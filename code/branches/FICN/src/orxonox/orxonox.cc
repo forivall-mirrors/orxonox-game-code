@@ -286,6 +286,11 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
       {
 				auMan = new audio::AudioManager();
 
+				auMan->ambientAdd("a1");
+				auMan->ambientAdd("a2");
+				auMan->ambientAdd("a3");
+				//auMan->ambientAdd("ambient1");
+				auMan->ambientStart();
 
       string levelFile = "sp_level_moonstation.oxw";
       loader::LevelLoader* loader = new loader::LevelLoader(levelFile);

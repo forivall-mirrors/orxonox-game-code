@@ -6,13 +6,12 @@
 namespace audio
 {
 	#define BUFFER_SIZE (4096 * 4)
-	#define STREAM_FILES_DIR "audio/ambient"
 	
 	class AudioStream
 	{
 	    public:
-	
-	        void open(std::string path);
+					AudioStream(std::string path);
+	        void open();
 	        void release();
 	        void display();
 	        bool playback();
@@ -29,6 +28,8 @@ namespace audio
 	
 	    private:
 	
+					std::string path;
+
 	        FILE*           oggFile;
 	        OggVorbis_File  oggStream;
 	        vorbis_info*    vorbisInfo;

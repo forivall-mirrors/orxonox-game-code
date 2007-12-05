@@ -36,10 +36,19 @@ namespace audio
 		// Update
 		void update();
 
+		void ambientAdd(std::string file);
+		void ambientStart();
+		void ambientStop();
+
 	private:
 
-		// Backgroundsound
-    AudioStream bgSound;
+		// Background sound
+    std::vector<AudioStream> bgSounds;
+		int currentBgSound;
+
+
+
+		std::string ambientPath;
 	
 		// Vector containing all audio files
 		std::vector<AudioBuffer> buffers;
