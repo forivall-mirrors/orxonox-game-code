@@ -167,16 +167,49 @@ GameState GameStateManager::diff(GameState a, GameState b){
   return r;
 }
 
-GameStateCompressed GameStateManager::compress(GameState a){
-  //to be implemented
-  GameStateCompressed b;
-  return b;
+GameStateCompressed GameStateManager::compress(GameState a) {
+  int size = a.size;
+  uLongf buffer = (uLongf)((a.size + 12)*1.01)+1;
+  unsigned char* dest = (unsigned char*)malloc( buffer );
+  int retval;
+  retval = compress( dest, &buffer, a.data, (uLong)size );  
+  
+  switch ( retval ) {
+  case Z_OK: cout << "successfully compressed" << endl; break;
+  case Z_MEM_ERROR: cout << "not enough memory available" << endl; break;
+  case Z_BUF_ERROR: cout << "not enough memory available in the buffer" << endl; break;
+  case Z_DATA_ERROR: cout << "data corrupted" << endl; break;
+  }
+  
+  GameStateCompressed compressedGamestate = new GameStateCompressed;
+  compressedGamestate.compsize = buffer;
+  compressedGamestate.normsize = size;
+  compressedGamestate.id = GAMESTATE;
+  compressedGamestate.data = dest;
+  
+  return compressedGamestate;
 }
 
 GameState GameStateManager::decompress(GameStateCompressed a){
-  // to be implemented !!!!!!!!!!!!!!
-  GameState b;
-  return b;
+  int normsize = a.normsize;
+  int compsize = a.compsize;
+  unsigned char* dest = (unsigned char*)malloc( normsize );
+  int retval;
+  retval = uncompress( dest, &normsize, a.data, compsize );
+  
+  switch ( retval ) {
+  case Z_OK: cout << "successfully compressed" << endl; break;
+  case Z_MEM_ERROR: cout << "not enough memory available" << endl; break;
+  case Z_BUF_ERROR: cout << "not enough memory available in the buffer" << endl; break;
+  case Z_DATA_ERROR: cout << "data corrupted" << endl; break;
+  }
+  
+  GameState gamestate = new GameState;
+  gamestate.id = a.id;
+  gamestate.size = normsize;
+  gamestate.data = dest;
+  
+  return gamestate;
 }
 
 }
