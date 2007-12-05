@@ -67,6 +67,8 @@ namespace network{
    */
   bool Client::sendMouse(double x, double y){
     // generate packet and add it to the queue
+    if(!isConnected)
+      return false;
     if(!client_connection.addPacket(pck_gen.mousem(x, y)))
         return false;
     // send packets
@@ -80,6 +82,8 @@ namespace network{
    */
   bool Client::sendKeyboard(char key_code){
     // generate packet and add it to queue
+    if(!isConnected)
+      return false;
     if(!client_connection.addPacket(pck_gen.keystrike(key_code)))
         return false;
     // send packets
@@ -117,6 +121,8 @@ namespace network{
    * Sends out all the packets queued by addXXX
    */
   bool Client::sendPackets(){
+    if(!isConnected)
+      return false;
     ENetEvent event;
     // send packets
     client_connection.sendPackets(&event);
@@ -141,6 +147,8 @@ namespace network{
   
   void Client::processGamestate( GameStateCompressed *data){
     gamestate.pushGameState(*data);
+    client_connection.addPacket(pck_gen.acknowledgement(data->id));
+    client_connection.sendPackets();
     return;
   }
   
@@ -150,6 +158,10 @@ namespace network{
     if(id!=NULL)
       id->setNetworkID(clid->clid);
     return;
+  }
+  
+  void Client::processChat( chat *data){
+    std::cout << "Server: " << data->message << std::endl;
   }
   
 }

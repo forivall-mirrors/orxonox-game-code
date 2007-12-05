@@ -57,7 +57,7 @@ class Client : PacketDecoder{
   // implement data processing functions of PacketDecoder
   void processGamestate( GameStateCompressed *data);
   void processClassid(classid *clid);
-
+  void processChat( chat *data);
 };
 
 }

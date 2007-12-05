@@ -114,8 +114,11 @@ namespace network{
     sendGameState();
   }
   
+  /**
+   * sends the gamestate
+   */
   bool Server::sendGameState(){
-    
+    return true;
   }
   
   

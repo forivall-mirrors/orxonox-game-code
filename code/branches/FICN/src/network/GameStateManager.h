@@ -47,6 +47,7 @@ public:
   void update();
   GameStateCompressed popGameState(int clientID);
   void ackGameState(int clientID, int gamestateID);
+  void removeClient(int clientID);
 private:
   GameState *getSnapshot(int id);
   GameStateCompressed encode(GameState *a, GameState *b);

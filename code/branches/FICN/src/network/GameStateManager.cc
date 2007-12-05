@@ -30,7 +30,7 @@ void GameStateManager::update(){
 }
 
 GameStateCompressed GameStateManager::popGameState(int clientID){
-  GameState *client = clientGameState[clientID];  
+  GameState *client = clientGameState[clientID];
   GameState *server = reference;
   return encode(client, server);
 }
@@ -157,6 +157,10 @@ bool GameStateManager::deleteUnusedGameState(GameState *state){
   }
   delete state;
   return true;
+}
+
+void GameStateManager::removeClient(int clientID){
+  clientGameState.erase(clientGameState.begin()+clientID);
 }
 
 }
