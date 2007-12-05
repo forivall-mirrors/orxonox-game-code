@@ -36,7 +36,7 @@ FIND_PATH(VORBIS_INCLUDE_DIR vorbis/codec.h
 FIND_LIBRARY(OGG_LIBRARY
   NAMES ogg
   PATHS
-	/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1/lib
+	/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
   /usr/local/lib
   /usr/lib
   /sw/lib
@@ -48,7 +48,7 @@ FIND_LIBRARY(OGG_LIBRARY
 FIND_LIBRARY(VORBIS_LIBRARY
   NAMES vorbis
   PATHS
-	/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1/lib
+	/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
   /usr/local/lib
   /usr/lib
   /sw/lib
@@ -60,7 +60,7 @@ FIND_LIBRARY(VORBIS_LIBRARY
 FIND_LIBRARY(VORBISENC_LIBRARY
   NAMES vorbisenc
   PATHS
-	/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1/lib
+	/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
   /usr/local/lib
   /usr/lib
   /sw/lib
@@ -72,7 +72,7 @@ FIND_LIBRARY(VORBISENC_LIBRARY
 FIND_LIBRARY(VORBISFILE_LIBRARY
   NAMES vorbisfile
   PATHS
-	/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1/lib
+	/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
   /usr/local/lib
   /usr/lib
   /sw/lib
