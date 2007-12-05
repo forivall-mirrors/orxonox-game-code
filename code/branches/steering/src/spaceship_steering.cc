@@ -66,6 +66,8 @@ void SpaceshipSteering::tick(float time) {
       speedRotateUpDown_ -= accelerationRotateUpDown_*time;
     if(speedRotateUpDown_ < 0)
       speedRotateUpDown_ += accelerationRotateUpDown_*time;
+    if(abs(speedRotateUpDown_)<accelerationRotateUpDown_*time)
+      speedRotateUpDown_ = 0;
   }
 
   if(rotateRight_ > 0) {
@@ -88,6 +90,8 @@ void SpaceshipSteering::tick(float time) {
       speedRotateRightLeft_ -= accelerationRotateRightLeft_*time;
     if(speedRotateRightLeft_ < 0)
       speedRotateRightLeft_ += accelerationRotateRightLeft_*time;
+    if(abs(speedRotateRightLeft_)<accelerationRotateRightLeft_*time)
+      speedRotateRightLeft_ = 0;
   }
 
   if(loopRight_ > 0) {
@@ -110,6 +114,8 @@ void SpaceshipSteering::tick(float time) {
       speedLoopRightLeft_ -= accelerationLoopRightLeft_*time;
     if(speedLoopRightLeft_ < 0)
       speedLoopRightLeft_ += accelerationLoopRightLeft_*time;
+    if(abs(speedLoopRightLeft_)<accelerationLoopRightLeft_*time)
+      speedLoopRightLeft_ = 0;
   }
 
   Vector3 transVector = Vector3::ZERO;

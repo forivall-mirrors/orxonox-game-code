@@ -84,15 +84,15 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
     OrxExitListener(OIS::Keyboard *keyboard, OIS::Mouse *mouse)
   : mKeyboard(keyboard), mMouse(mouse)
     {
-      speed = 250;
-      loop = 100;
+      speed = 2500;
       rotate = 10;
+      loop = 400;
       mouseX = 0;
       mouseY = 0;
       maxMouseX = 0;
       minMouseX = 0;
       moved = false;
-      steering->brakeRotate(rotate*10);
+      steering->brakeRotate(rotate*5);
       steering->brakeLoop(loop);
       mMouse->setEventCallback(this);
     }
@@ -116,7 +116,7 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
         steering->loopLeft(loop);
       else
         steering->loopLeft(0);
-
+/*
       if(moved) {
         if (mouseY<0)
           steering->rotateUp(-mouseY*rotate);
@@ -129,29 +129,42 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
         moved = false;
       }
       else {
-        steering->rotateUp(0);
-        steering->rotateDown(0);
-        steering->rotateRight(0);
-        steering->rotateLeft(0);
-      }
+*/
+	if(moved) {
+	  if (mouseY<0)
+	    steering->rotateUp(-mouseY*rotate);
+	  if (mouseY>0)
+	    steering->rotateDown(mouseY*rotate);
+	  if (mouseX>0)
+	    steering->rotateRight(mouseX*rotate);
+	  if (mouseX<0)
+	    steering->rotateLeft(-mouseX*rotate);
+	  moved = false;
+	}
+	else {
+	  steering->rotateUp(0);
+	  steering->rotateDown(0);
+	  steering->rotateRight(0);
+	  steering->rotateLeft(0);
+	}
 
-      steering->tick(evt.timeSinceLastFrame);
-//	scenemanager->spacehip->tick(evt.timesincelastframe);
-      if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
-        cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
-      return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
-    }
+	steering->tick(evt.timeSinceLastFrame);
+	//      scenemanager->spacehip->tick(evt.timesincelastframe);
+	if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+	  cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
+	return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
+	}
 
-    bool mouseMoved(const OIS::MouseEvent &e)
-    {
-      mouseX = e.state.X.rel;
-      mouseY = e.state.Y.rel;
-      if(mouseX>maxMouseX) maxMouseX = mouseX;
-      if(mouseX<minMouseX) minMouseX = mouseX;
-      cout << "mouseX: " << mouseX << "\tmouseY: " << mouseY << endl;
-      moved = true;
-      return true;
-    }
+	bool mouseMoved(const OIS::MouseEvent &e)
+	{
+	  mouseX = e.state.X.rel;
+	  mouseY = e.state.Y.rel;
+	  if(mouseX>maxMouseX) maxMouseX = mouseX;
+	  if(mouseX<minMouseX) minMouseX = mouseX;
+	  cout << "mouseX: " << mouseX << "\tmouseY: " << mouseY << endl;
+	  moved = true;
+	  return true;
+}
 
     bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
     bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
@@ -302,7 +315,7 @@ class OrxApplication
       SceneNode *node5 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode5", Vector3(0,0,-400));
       node5->attachObject(head5);
 
-      steering = new SpaceshipSteering(500, 200, 200, 200);
+      steering = new SpaceshipSteering(5000, 50, 50, 150);
       steering->addNode(node);
 
     }
