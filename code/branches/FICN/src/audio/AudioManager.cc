@@ -9,6 +9,8 @@ namespace audio
 		bgSound.open("ambient3");
 		bgSound.display();
 		
+		orxonox::Error("Sound loaded!");
+
 		if(!bgSound.playback())
 		{
     	std::cout << "Ogg refused to play.";

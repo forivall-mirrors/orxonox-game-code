@@ -6,6 +6,7 @@ SET( CORE_SRC_FILES
   Identifier.cc
   MetaObjectList.cc
   OrxonoxClass.cc
+  Error.cc
 )
 
 ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
