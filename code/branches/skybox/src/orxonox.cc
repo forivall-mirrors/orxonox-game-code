@@ -32,19 +32,11 @@
 
 #include <Ogre.h>
 #include <OIS/OIS.h>
-#include <CEGUI/CEGUI.h>
-#include <OgreCEGUIRenderer.h>
+//#include <CEGUI/CEGUI.h>
+//#include <OgreCEGUIRenderer.h>
 
 #include <string>
 #include <iostream>
-
-#include "xml/xmlParser.h"
-#include "loader/LevelLoader.h"
-
-
-// some tests to see if enet works without includsion
-//#include <enet/enet.h>
-//#include <enet/protocol.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
@@ -73,180 +65,175 @@ std::string macBundlePath()
 }
 #endif
 
-using namespace Ogre;
-
-class OrxExitListener : public FrameListener
+namespace orxonox
 {
-  public:
-    OrxExitListener(OIS::Keyboard *keyboard)
-  : mKeyboard(keyboard)
-    {
-    }
-
-    bool frameStarted(const FrameEvent& evt)
-    {
-      mKeyboard->capture();
-      return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
-    }
-
-  private:
-    OIS::Keyboard *mKeyboard;
-};
-
-class OrxApplication
-{
-  public:
-    void go()
-    {
-      createRoot();
-      defineResources();
-      setupRenderSystem();
-      createRenderWindow();
-      initializeResourceGroups();
-      createScene();
-      setupScene();
-      setupInputSystem();
-      setupCEGUI();
-      createFrameListener();
-      startRenderLoop();
-    }
-
-    ~OrxApplication()
-    {
-      mInputManager->destroyInputObject(mKeyboard);
-      OIS::InputManager::destroyInputSystem(mInputManager);
-
-//       delete mRenderer;
-//       delete mSystem;
-
-      delete mListener;
-      delete mRoot;
-    }
-
-  private:
-    Root *mRoot;
-    OIS::Keyboard *mKeyboard;
-    OIS::Mouse *mMouse;
-    OIS::InputManager *mInputManager;
-    CEGUI::OgreCEGUIRenderer *mRenderer;
-    CEGUI::System *mSystem;
-    OrxExitListener *mListener;
-
-    void createRoot()
-    {
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-      mRoot = new Root(macBundlePath() + "/Contents/Resources/plugins.cfg");
-#else
-      mRoot = new Root();
-#endif
-    }
-
-    void defineResources()
-    {
-      String secName, typeName, archName;
-      ConfigFile cf;
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-      cf.load(macBundlePath() + "/Contents/Resources/resources.cfg");
-#else
-      cf.load("resources.cfg");
-#endif
-
-      ConfigFile::SectionIterator seci = cf.getSectionIterator();
-      while (seci.hasMoreElements())
+  class OrxExitListener : public Ogre::FrameListener
+  {
+    public:
+      OrxExitListener(OIS::Keyboard *keyboard)
+    : mKeyboard(keyboard)
       {
-        secName = seci.peekNextKey();
-        ConfigFile::SettingsMultiMap *settings = seci.getNext();
-        ConfigFile::SettingsMultiMap::iterator i;
-        for (i = settings->begin(); i != settings->end(); ++i)
-        {
-          typeName = i->first;
-          archName = i->second;
+      }
+
+      bool frameStarted(const Ogre::FrameEvent& evt)
+      {
+        mKeyboard->capture();
+        return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
+      }
+
+    private:
+      OIS::Keyboard *mKeyboard;
+  };
+
+  class OrxApplication
+  {
+    public:
+      void go()
+      {
+        createRoot();
+        defineResources();
+        setupRenderSystem();
+        createRenderWindow();
+        initializeResourceGroups();
+        createScene();
+        setupScene();
+        setupInputSystem();
+        setupCEGUI();
+        createFrameListener();
+        startRenderLoop();
+      }
+
+      ~OrxApplication()
+      {
+        mInputManager->destroyInputObject(mKeyboard);
+        OIS::InputManager::destroyInputSystem(mInputManager);
+
+        delete mListener;
+        delete mRoot;
+      }
+
+    private:
+      Ogre::Root *mRoot;
+      OIS::Keyboard *mKeyboard;
+      OIS::Mouse *mMouse;
+      OIS::InputManager *mInputManager;
+//      CEGUI::OgreCEGUIRenderer *mRenderer;
+//      CEGUI::System *mSystem;
+      OrxExitListener *mListener;
+
+      void createRoot()
+      {
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-          ResourceGroupManager::getSingleton().addResourceLocation( String(macBundlePath() + "/" + archName), typeName, secName);
+        mRoot = new Ogre::Root(macBundlePath() + "/Contents/Resources/plugins.cfg");
 #else
-          ResourceGroupManager::getSingleton().addResourceLocation( archName, typeName, secName);
+        mRoot = new Ogre::Root();
 #endif
+      }
+
+      void defineResources()
+      {
+        Ogre::String secName, typeName, archName;
+        Ogre::ConfigFile cf;
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+        cf.load(macBundlePath() + "/Contents/Resources/resources.cfg");
+#else
+        cf.load("resources.cfg");
+#endif
+
+        Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+        while (seci.hasMoreElements())
+        {
+          secName = seci.peekNextKey();
+          Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+          Ogre::ConfigFile::SettingsMultiMap::iterator i;
+          for (i = settings->begin(); i != settings->end(); ++i)
+          {
+            typeName = i->first;
+            archName = i->second;
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation( String(macBundlePath() + "/" + archName), typeName, secName);
+#else
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation( archName, typeName, secName);
+#endif
+          }
         }
       }
-    }
 
-    void setupRenderSystem()
-    {
-      if (!mRoot->restoreConfig() && !mRoot->showConfigDialog())
-        throw Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
-    }
-
-    void createRenderWindow()
-    {
-      mRoot->initialise(true, "Ogre Render Window");
-    }
-
-    void initializeResourceGroups()
-    {
-      TextureManager::getSingleton().setDefaultNumMipmaps(5);
-      ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-    }
-
-    void createScene(void)
-    {
-
-      string levelFile = "sp_level_moonstation.oxw";
-      loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
-    }
-    
-    void setupScene()
-    {
-      SceneManager *mgr = mRoot->createSceneManager(ST_GENERIC, "Default SceneManager");
-      Camera *cam = mgr->createCamera("Camera");
-      Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
-    }
-
-    void setupInputSystem()
-    {
-      size_t windowHnd = 0;
-      std::ostringstream windowHndStr;
-      OIS::ParamList pl;
-      RenderWindow *win = mRoot->getAutoCreatedWindow();
-
-      win->getCustomAttribute("WINDOW", &windowHnd);
-      windowHndStr << windowHnd;
-      pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
-      mInputManager = OIS::InputManager::createInputSystem(pl);
-
-      try
+      void setupRenderSystem()
       {
-        mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, false));
-        mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, false));
+        if (!mRoot->restoreConfig() && !mRoot->showConfigDialog())
+          throw Ogre::Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
       }
-      catch (const OIS::Exception &e)
+
+      void createRenderWindow()
       {
-        throw new Exception(42, e.eText, "OrxApplication::setupInputSystem");
+        mRoot->initialise(true, "Ogre Render Window");
       }
-    }
 
-    void setupCEGUI()
-    {
-      SceneManager *mgr = mRoot->getSceneManager("Default SceneManager");
-      RenderWindow *win = mRoot->getAutoCreatedWindow();
+      void initializeResourceGroups()
+      {
+        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+        Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+      }
 
-      // CEGUI setup
-//       mRenderer = new CEGUI::OgreCEGUIRenderer(win, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, mgr);
-//       mSystem = new CEGUI::System(mRenderer);
+      void createScene(void)
+      {
 
-      // Other CEGUI setup here.
-    }
+      }
 
-    void createFrameListener()
-    {
-      mListener = new OrxExitListener(mKeyboard);
-      mRoot->addFrameListener(mListener);
-    }
+      void setupScene()
+      {
+        Ogre::SceneManager *mgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
+        Ogre::Camera *cam = mgr->createCamera("Camera");
+        cam->setPosition(Ogre::Vector3(0,0,-250));
+        cam->lookAt(Ogre::Vector3(0,0,0));
+        Ogre::Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
+        mgr->setSkyBox(true, "Examples/SpaceSkyBox");
+      }
 
-    void startRenderLoop()
-    {
-      mRoot->startRendering();
-    }
-};
+      void setupInputSystem()
+      {
+        size_t windowHnd = 0;
+        std::ostringstream windowHndStr;
+        OIS::ParamList pl;
+        Ogre::RenderWindow *win = mRoot->getAutoCreatedWindow();
+
+        win->getCustomAttribute("WINDOW", &windowHnd);
+        windowHndStr << windowHnd;
+        pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
+        mInputManager = OIS::InputManager::createInputSystem(pl);
+
+        try
+        {
+          mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, false));
+          mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, false));
+        }
+        catch (const OIS::Exception &e)
+        {
+          throw new Ogre::Exception(42, e.eText, "OrxApplication::setupInputSystem");
+        }
+      }
+
+      void setupCEGUI()
+      {
+        Ogre::SceneManager *mgr = mRoot->getSceneManager("Default SceneManager");
+        Ogre::RenderWindow *win = mRoot->getAutoCreatedWindow();
+      }
+
+      void createFrameListener()
+      {
+        mListener = new OrxExitListener(mKeyboard);
+        mRoot->addFrameListener(mListener);
+      }
+
+      void startRenderLoop()
+      {
+        mRoot->startRendering();
+      }
+  };
+}
+
+using namespace Ogre;
 
 #if OGRE_PLATFORM == PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -259,7 +246,7 @@ class OrxApplication
 {
   try
   {
-    OrxApplication orxonox;
+    orxonox::OrxApplication orxonox;
     orxonox.go();
   }
   catch(Exception& e)
