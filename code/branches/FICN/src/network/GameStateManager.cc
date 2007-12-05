@@ -167,7 +167,7 @@ GameState GameStateManager::diff(GameState a, GameState b){
 }
 
 GameState GameStateManager::compress(GameState a){
-  // to be implemented !!!!!!!!!!!!!!
+  a.
   return a;
 }
 

@@ -14,7 +14,7 @@ enum packet_id {
 	KEYBOARD,
 	CHAT,
 	GAMESTATE ,
-        CLASSID
+    CLASSID
 };
 
 /*
@@ -101,7 +101,7 @@ private:
 	void keystrike( ENetPacket* packet );
 	void chatMessage( ENetPacket* packet );
 	void gstate( ENetPacket* packet );
-        void clid( ENetPacket *packet);
+    void clid( ENetPacket *packet);
 	
   //process data
   //two functions are note yet implemented!
@@ -116,7 +116,7 @@ private:
 	void printKey( keyboard* data );
 	void printChat( chat* data );
 	void printGamestate( GameState* data );
-        void printClassid( classid *cid);
+    void printClassid( classid *cid);
 };
 }
 

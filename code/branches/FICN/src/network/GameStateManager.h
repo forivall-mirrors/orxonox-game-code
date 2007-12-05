@@ -30,6 +30,19 @@ namespace network {
 };
 
 /**
+ * this struct defines a gamestate:
+ * compsize is the size of the compressed data
+ * normsize is the size of the uncompressed data
+ * data are the gamestates
+ */
+  struct GameStateCompressed{
+	int id; 
+	int compsize;
+	int normsize;
+	unsigned char *data;
+  };
+
+/**
  * This Class implements a manager for gamestates:
  * - creating snapshots of gamestates
  * - writing gamestates to universe

@@ -109,22 +109,24 @@ void PacketDecoder::chatMessage( ENetPacket* packet )
 
 void PacketDecoder::gstate( ENetPacket* packet )
 {
-	GameState* currentState = new GameState;
+	GameStateCompressed* currentState = new GameStateCompressed;
 	//since it's not alowed to use void* for pointer arithmetic
 	unsigned char* data = (unsigned char*)packet->data;
-	//copy the gamestate id into the struct, which is located at second place data+sizeof( int )
+	//copy the GameStateCompressed id into the struct, which is located at second place data+sizeof( int )
 	memcpy( (void*)&(currentState->id), (const void*)(data+sizeof( int )), sizeof( int ) );
-	//copy the size of the gamestate data into the new gamestate struct, located at 3th
+	//copy the size of the GameStateCompressed compressed data into the new GameStateCompressed struct, located at 3th
 	//position of the data stream, data+2*sizeof( int )
-	memcpy( (void*)&(currentState->size), (const void*)(data+2*sizeof( int )), sizeof( int) );
+	memcpy( (void*)&(currentState->compsize), (const void*)(data+2*sizeof( int )), sizeof( int) );
+	//size of uncompressed data
+	memcpy( (void*)&(currentState->normsize), (const void*)(data+3*sizeof( int )), sizeof( int ) );
 	//since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream
 	currentState->data = (unsigned char*)(malloc( currentState->size ));
-	//copy the gamestate data
-	memcpy( (void*)(currentState->data), (const void*)(data+3*sizeof( int )), currentState->size );
+	//copy the GameStateCompressed data
+	memcpy( (void*)(currentState->data), (const void*)(data+4*sizeof( int )), currentState->compsize );
   
 	//clean memory
 	enet_packet_destroy( packet );
-  //run processGamestate
+  //run processGameStateCompressed
   //TODO: not yet implemented!
   //processGamestate(currentState);
 }
@@ -180,10 +182,10 @@ void PacketDecoder::printChat( chat* data )
 	cout << "data:    " << data->message << endl;
 }
 
-void PacketDecoder::printGamestate( GameState* data )
+void PacketDecoder::printGamestate( GameStateCompressed* data )
 {
-	cout << "id of gamestate:   " << data->id << endl;
-	cout << "size of gamestate: " << data->size << endl;
+	cout << "id of GameStateCompressed:   " << data->id << endl;
+	cout << "size of GameStateCompressed: " << data->size << endl;
 }
 
 void PacketDecoder::printClassid( classid *cid)
