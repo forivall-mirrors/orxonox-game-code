@@ -8,6 +8,7 @@ namespace audio
 	    int result;
 			loaded = false;
 	    
+
 	    path = "audio/ambient/" + path + ".ogg"; 
 	    
 	    if(!(oggFile = fopen(path.c_str(), "rb")))
