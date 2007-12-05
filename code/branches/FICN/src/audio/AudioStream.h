@@ -18,7 +18,8 @@ namespace audio
 	        bool playback();
 	        bool playing();
 	        bool update();
-	
+					inline bool isLoaded() { return loaded; }	
+
 	    protected:
 	
 	        bool stream(ALuint buffer);
@@ -32,7 +33,8 @@ namespace audio
 	        OggVorbis_File  oggStream;
 	        vorbis_info*    vorbisInfo;
 	        vorbis_comment* vorbisComment;
-	
+					bool loaded;	
+
 	        ALuint buffers[2];
 	        ALuint source;
 	        ALenum format;

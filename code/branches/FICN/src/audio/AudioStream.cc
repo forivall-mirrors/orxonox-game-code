@@ -6,18 +6,24 @@ namespace audio
 	void AudioStream::open(std::string path)
 	{
 	    int result;
+			loaded = false;
 	    
 	    path = "audio/ambient/" + path + ".ogg"; 
 	    
 	    if(!(oggFile = fopen(path.c_str(), "rb")))
-	        throw std::string("Could not open Ogg file.");
-	
+			{
+	    	orxonox::Error("Could not open Ogg file "+path);
+				return;
+			}
+
 	    if((result = ov_open(oggFile, &oggStream, NULL, 0)) < 0)
 	    {
-	        fclose(oggFile);
-	        
-	        throw std::string("Could not open Ogg stream. ") + errorString(result);
+        fclose(oggFile);	        
+	      orxonox::Error("Could not open Ogg stream. " + errorString(result));
+				return;
 	    }
+
+			loaded = true;
 	
 	    vorbisInfo = ov_info(&oggStream, -1);
 	    vorbisComment = ov_comment(&oggStream, -1);
@@ -37,7 +43,7 @@ namespace audio
 	    alSource3f(source, AL_VELOCITY,        0.0, 0.0, 0.0);
 	    alSource3f(source, AL_DIRECTION,       0.0, 0.0, 0.0);
 	    alSourcef (source, AL_ROLLOFF_FACTOR,  0.0          );
-	    alSourcei (source, AL_SOURCE_RELATIVE, AL_TRUE      );
+	    alSourcei (source, AL_SOURCE_RELATIVE, AL_FALSE      );
 	}
 	
 	
@@ -45,6 +51,8 @@ namespace audio
 	
 	void AudioStream::release()
 	{
+		if (loaded)
+		{
 	    alSourceStop(source);
 	    empty();
 	    alDeleteSources(1, &source);
@@ -53,6 +61,8 @@ namespace audio
 	    check();
 	
 	    ov_clear(&oggStream);
+			loaded = false;
+		}
 	}
 	
 	
@@ -60,6 +70,8 @@ namespace audio
 	
 	void AudioStream::display()
 	{
+		if (loaded)
+		{
 	    std::cout
 	        << "version         " << vorbisInfo->version         << "\n"
 	        << "channels        " << vorbisInfo->channels        << "\n"
@@ -74,7 +86,8 @@ namespace audio
 	    for(int i = 0; i < vorbisComment->comments; i++)
 	        std::cout << "   " << vorbisComment->user_comments[i] << "\n";
 	        
-	    std::cout << std::endl;
+	    std::cout << std::endl;	
+		}
 	}
 	
 	
@@ -82,6 +95,11 @@ namespace audio
 	
 	bool AudioStream::playback()
 	{
+		if (!loaded)
+		{
+			return false;
+		}
+
 	    if(playing())
 	        return true;
 	        
@@ -102,10 +120,13 @@ namespace audio
 	
 	bool AudioStream::playing()
 	{
+		if (!loaded)
+		{
+			return false;
+		}
+
 	    ALenum state;
-	    
 	    alGetSourcei(source, AL_SOURCE_STATE, &state);
-	    
 	    return (state == AL_PLAYING);
 	}
 	
@@ -153,7 +174,7 @@ namespace audio
 	            size += result;
 	        else
 	            if(result < 0)
-	                throw errorString(result);
+	                orxonox::Error(errorString(result));
 	            else
 	                break;
 	    }
@@ -168,8 +189,7 @@ namespace audio
 	}
 	
 	
-	
-	
+
 	void AudioStream::empty()
 	{
 	    int queued;
@@ -193,7 +213,7 @@ namespace audio
 		int error = alGetError();
 	
 		if(error != AL_NO_ERROR)
-			throw std::string("OpenAL error was raised.");
+			orxonox::Error("OpenAL error was raised.");
 	}
 	
 	

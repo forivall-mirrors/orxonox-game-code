@@ -6,14 +6,15 @@ namespace audio
 	{
  		alutInit(NULL, 0);
 
-		bgSound.open("ambient3");
+		bgSound.open("ambient1");
+
+
+
 		bgSound.display();
-		
-		orxonox::Error("Sound loaded!");
 
 		if(!bgSound.playback())
 		{
-    	std::cout << "Ogg refused to play.";
+    	orxonox::Error("Ogg refused to play.");
 		}
 	}
 		
@@ -25,14 +26,18 @@ namespace audio
 	
 	void AudioManager::update()
 	{
-		bgSound.update();
-    if(!bgSound.playing())
-    {
-        if(!bgSound.playback())
-            std::cout << "Ogg abruptly stopped.";
-        else
-            std::cout << "Ogg stream was interrupted.\n";
-    }
+		
+		if (bgSound.isLoaded())
+		{
+			bgSound.update();
+	    if(!bgSound.playing())
+	    {
+	        if(!bgSound.playback())
+	            orxonox::Error("Ogg abruptly stopped.");
+	        else
+	            orxonox::Error("Ogg stream was interrupted.");
+	    }
+		}
 	}
 	
 	void AudioManager::setPos(std::vector<float> newPosition)
