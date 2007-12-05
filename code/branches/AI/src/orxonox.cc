@@ -34,6 +34,7 @@
 #include <OIS/OIS.h>
 #include <CEGUI/CEGUI.h>
 #include <OgreCEGUIRenderer.h>
+#include <OgreMath.h>
 
 #include <string>
 #include <iostream>
@@ -41,6 +42,7 @@
 #include "xml/xmlParser.h"
 #include "loader/LevelLoader.h"
 #include "Flocking.h"
+#include "AIClass.h"
 
 // some tests to see if enet works without includsion
 //#include <enet/enet.h>
@@ -77,11 +79,13 @@ using namespace Ogre;
 
 //my-stuff
 //globale definition eines Arrays welches alle nodes enthält
-Vector3 ElementLocationArray[3];
-Vector3 ElementSpeedArray[3];
-Vector3 ElementAccelerationArray[3];
+Vector3 ElementLocationArray[9];
+Vector3 ElementSpeedArray[9];
+Vector3 ElementAccelerationArray[9];
 
-Element arrayOfElements[3];
+Element arrayOfElements[9];
+
+ // float time = 0;
 
 
 class OrxExitListener : public FrameListener
@@ -104,15 +108,49 @@ class OrxExitListener : public FrameListener
     void moving(const FrameEvent& evt) {
       SceneManager *mgr = root_->getSceneManager("Default SceneManager");
 
-
-
       arrayOfElements[0].update(arrayOfElements, evt);
       arrayOfElements[1].update(arrayOfElements, evt);
       arrayOfElements[2].update(arrayOfElements, evt);
+      arrayOfElements[3].update(arrayOfElements, evt);
+      arrayOfElements[4].update(arrayOfElements, evt);
+      arrayOfElements[5].update(arrayOfElements, evt);
+      arrayOfElements[6].update(arrayOfElements, evt);
+      arrayOfElements[7].update(arrayOfElements, evt);
+      arrayOfElements[8].update(arrayOfElements, evt);
+
+ /*   arrayOfElements[0].update(arrayOfElements, evt);
+      arrayOfElements[1].update(arrayOfElements, evt);
+      arrayOfElements[2].update(arrayOfElements, evt);
+      arrayOfElements[3].update(arrayOfElements, evt);
+      arrayOfElements[4].update(arrayOfElements, evt);   */
+
+
+      for(int i=0; i<9; i++) {
+
+         arrayOfElements[i].speed = 0.995*arrayOfElements[i].speed + arrayOfElements[i].acceleration*evt.timeSinceLastFrame;
+
+         arrayOfElements[i].location = arrayOfElements[i].location + arrayOfElements[i].speed*evt.timeSinceLastFrame;
+
+         arrayOfElements[i].acceleration  = (0,0,0);
+      }
 
       mgr->getSceneNode("HeadNode1")->setPosition(arrayOfElements[0].location);
       mgr->getSceneNode("HeadNode2")->setPosition(arrayOfElements[1].location);
       mgr->getSceneNode("HeadNode3")->setPosition(arrayOfElements[2].location);
+      mgr->getSceneNode("HeadNode4")->setPosition(arrayOfElements[3].location);
+      mgr->getSceneNode("HeadNode5")->setPosition(arrayOfElements[4].location);
+      mgr->getSceneNode("HeadNode6")->setPosition(arrayOfElements[5].location);
+      mgr->getSceneNode("HeadNode7")->setPosition(arrayOfElements[6].location);
+      mgr->getSceneNode("HeadNode8")->setPosition(arrayOfElements[7].location);
+      mgr->getSceneNode("HeadNode9")->setPosition(arrayOfElements[8].location);
+
+
+      /*
+
+      mgr->getSceneNode("HeadNode9")->setPosition(Vector3(200*cos(10*time),0,0));
+      time = time + evt.timeSinceLastFrame;
+
+     */
 
 
 
@@ -291,24 +329,87 @@ class OrxApplication
     Entity* ent1 = mgr->createEntity("Head1", "ogrehead.mesh");
     Entity* ent2 = mgr->createEntity("Head2", "ogrehead.mesh");
     Entity* ent3 = mgr->createEntity("Head3", "ogrehead.mesh");
-    SceneNode *node1 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode1", Vector3(0,100,0));
-    SceneNode *node2 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode2", Vector3(100,0,0));
-    SceneNode *node3 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode3", Vector3(-100,0,0));
+    Entity* ent4 = mgr->createEntity("Head4", "ogrehead.mesh");
+    Entity* ent5 = mgr->createEntity("Head5", "ogrehead.mesh");
+    Entity* ent6 = mgr->createEntity("Head6", "ogrehead.mesh");
+    Entity* ent7 = mgr->createEntity("Head7", "ogrehead.mesh");
+    Entity* ent8 = mgr->createEntity("Head8", "ogrehead.mesh");
+    Entity* ent9 = mgr->createEntity("Head9", "ogrehead.mesh");
+    SceneNode *node1 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode1", Vector3(100,300,100));
+    SceneNode *node2 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode2", Vector3(300,0,200));
+    SceneNode *node3 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode3", Vector3(-300,0,-100));
+    SceneNode *node4 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode4", Vector3(-100,-300,150));
+    SceneNode *node5 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode5", Vector3(150,150,-100));
+    SceneNode *node6 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode6", Vector3(150,-150,-100));
+    SceneNode *node7 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode7", Vector3(-150,-150,0));
+    SceneNode *node8 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode8", Vector3(-150,150,0));
+    SceneNode *node9 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode9", Vector3(0,0,0));  
+
+// follwing camera
+
+ //  Camera *cam = mgr->getCamera("Camera");
+ //  node1->attachObject(cam);
+
+
+
+
     node1->attachObject(ent1);
     node2->attachObject(ent2);
     node3->attachObject(ent3);
+    node4->attachObject(ent4);
+    node5->attachObject(ent5);
+    node6->attachObject(ent6);
+    node7->attachObject(ent7);
+    node8->attachObject(ent8);
+    node9->attachObject(ent9);
     ElementLocationArray[0] = node1->getPosition();
     ElementLocationArray[1] = node2->getPosition();
     ElementLocationArray[2] = node3->getPosition();
+    ElementLocationArray[3] = node4->getPosition();
+    ElementLocationArray[4] = node5->getPosition();
+    ElementLocationArray[5] = node6->getPosition();
+    ElementLocationArray[6] = node7->getPosition();
+    ElementLocationArray[7] = node8->getPosition();
+    ElementLocationArray[8] = node9->getPosition();
+/*
+ElementLocationArray[5] = node6->getPosition();
+ElementLocationArray[6] = node7->getPosition();*/
     ElementSpeedArray[0] = (0,0,0);
     ElementSpeedArray[1] = (0,0,0);
     ElementSpeedArray[2] = (0,0,0);
+    ElementSpeedArray[3] = (0,0,0);
+    ElementSpeedArray[4] = (0,0,0);
+    ElementSpeedArray[5] = (0,0,0);
+    ElementSpeedArray[6] = (0,0,0);
+    ElementSpeedArray[7] = (0,0,0);
+    ElementSpeedArray[8] = (0,0,0);
+/*
+ElementSpeedArray[5] = (0,0,0);
+ElementSpeedArray[6] = (0,0,0); */
     ElementAccelerationArray[0] = (0,0,0);
     ElementAccelerationArray[1] = (0,0,0);
     ElementAccelerationArray[2] = (0,0,0);
-    arrayOfElements[0].setValues( ElementLocationArray[0], ElementSpeedArray[0], ElementAccelerationArray[0] );
-    arrayOfElements[1].setValues( ElementLocationArray[1], ElementSpeedArray[1], ElementAccelerationArray[1] );
-    arrayOfElements[2].setValues( ElementLocationArray[2], ElementSpeedArray[2], ElementAccelerationArray[2] );
+    ElementAccelerationArray[3] = (0,0,0);
+    ElementAccelerationArray[4] = (0,0,0);
+    ElementAccelerationArray[5] = (0,0,0);
+    ElementAccelerationArray[6] = (0,0,0);
+    ElementAccelerationArray[7] = (0,0,0);
+    ElementAccelerationArray[8] = (0,0,0);
+/*
+ElementAccelerationArray[5] = (0,0,0);
+ElementAccelerationArray[6] = (0,0,0); */
+    arrayOfElements[0].setValues( ElementLocationArray[0], ElementSpeedArray[0], ElementAccelerationArray[0], true);
+    arrayOfElements[1].setValues( ElementLocationArray[1], ElementSpeedArray[1], ElementAccelerationArray[1], true);
+    arrayOfElements[2].setValues( ElementLocationArray[2], ElementSpeedArray[2], ElementAccelerationArray[2], true);
+    arrayOfElements[3].setValues( ElementLocationArray[3], ElementSpeedArray[3], ElementAccelerationArray[3], true);
+    arrayOfElements[4].setValues( ElementLocationArray[4], ElementSpeedArray[4], ElementAccelerationArray[4], true);
+    arrayOfElements[5].setValues( ElementLocationArray[5], ElementSpeedArray[5], ElementAccelerationArray[5], true);
+    arrayOfElements[6].setValues( ElementLocationArray[6], ElementSpeedArray[6], ElementAccelerationArray[6], true);
+    arrayOfElements[7].setValues( ElementLocationArray[7], ElementSpeedArray[7], ElementAccelerationArray[7], true);
+    arrayOfElements[8].setValues( ElementLocationArray[8], ElementSpeedArray[8], ElementAccelerationArray[8], false);
+/*
+arrayOfElements[5].setValues( ElementLocationArray[5], ElementSpeedArray[5], ElementAccelerationArray[5], false);
+arrayOfElements[6].setValues( ElementLocationArray[6], ElementSpeedArray[6], ElementAccelerationArray[6], false);*/
 
 
 
@@ -319,6 +420,12 @@ class OrxApplication
    /* for (int i=0; i<3; i++) {
     arrayOfElements[i]->update(arrayOfElements);
     }  */
+
+//testing AIPilot -> function steer
+  //  AIPilot temp;
+  //  Vector3 foo = temp.steer(Vector3(0,0,1));
+
+
     }
 };
 
