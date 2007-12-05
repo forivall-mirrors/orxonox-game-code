@@ -40,6 +40,9 @@
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
+#include "windows.h"
+
+
 
 // This function will locate the path to our application on OS X,
 // unlike windows you can not rely on the curent working directory
@@ -67,23 +70,10 @@ std::string macBundlePath()
 
 namespace orxonox
 {
-  class OrxExitListener : public Ogre::FrameListener
-  {
-    public:
-      OrxExitListener(OIS::Keyboard *keyboard)
-    : mKeyboard(keyboard)
-      {
-      }
+      Ogre::RenderWindow * mWindow;
+      Ogre::SceneManager *mgr;
+      int stopper = 1;
 
-      bool frameStarted(const Ogre::FrameEvent& evt)
-      {
-        mKeyboard->capture();
-        return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
-      }
-
-    private:
-      OIS::Keyboard *mKeyboard;
-  };
 
   class OrxApplication
   {
@@ -103,6 +93,12 @@ namespace orxonox
         startRenderLoop();
       }
 
+      OrxApplication()
+      {
+        OrxApplication::pointer_s = this;
+        this->x = 0;
+      }
+
       ~OrxApplication()
       {
         mInputManager->destroyInputObject(mKeyboard);
@@ -112,14 +108,6 @@ namespace orxonox
         delete mRoot;
       }
 
-    private:
-      Ogre::Root *mRoot;
-      OIS::Keyboard *mKeyboard;
-      OIS::Mouse *mMouse;
-      OIS::InputManager *mInputManager;
-//      CEGUI::OgreCEGUIRenderer *mRenderer;
-//      CEGUI::System *mSystem;
-      OrxExitListener *mListener;
 
       void createRoot()
       {
@@ -167,7 +155,7 @@ namespace orxonox
 
       void createRenderWindow()
       {
-        mRoot->initialise(true, "Ogre Render Window");
+        mWindow = mRoot->initialise(true, "Ogre Render Window");
       }
 
       void initializeResourceGroups()
@@ -183,12 +171,17 @@ namespace orxonox
 
       void setupScene()
       {
-        Ogre::SceneManager *mgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
-        Ogre::Camera *cam = mgr->createCamera("Camera");
-        cam->setPosition(Ogre::Vector3(0,0,-250));
-        cam->lookAt(Ogre::Vector3(0,0,0));
+        mgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
+        cam = mgr->createCamera("Camera");
+        cam->setPosition(Ogre::Vector3(0,0,0));
+        //cam->lookAt(Ogre::Vector3(0,0,0));
+	cam->setFOVy(Ogre::Degree(90));
         Ogre::Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
         mgr->setSkyBox(true, "Examples/SpaceSkyBox");
+
+	// camera pitch here works
+
+	
       }
 
       void setupInputSystem()
@@ -219,6 +212,95 @@ namespace orxonox
         Ogre::SceneManager *mgr = mRoot->getSceneManager("Default SceneManager");
         Ogre::RenderWindow *win = mRoot->getAutoCreatedWindow();
       }
+      
+      void screenShots()
+      {
+
+	Ogre::Radian x1 = Ogre::Radian(x);
+
+	unsigned int indice = 1;
+	char filename[30];
+	char fn[1];
+	// generate new names...
+	sprintf(filename, "SkyBox%d.png", stopper);
+	//sprintf(filename, "screenshot_%d.png", ++indice);
+	//sprintf(filename, fn, ++indice);
+	
+
+	Ogre::Radian x2 = Ogre::Radian((3.141592653589/2.0)*(stopper+1));
+
+
+	if(stopper == 1){
+		        cam->yaw(Ogre::Degree(90));
+	sprintf(filename, "SkyBox%d.png", stopper+1035);
+	mWindow->writeContentsToFile(filename);
+	
+	}
+	else if(stopper == 2){
+		        cam->yaw(Ogre::Degree(180));
+	mWindow->writeContentsToFile(filename);
+	
+	}
+	else if(stopper == 3){
+		        cam->yaw(Ogre::Degree(270));	
+	mWindow->writeContentsToFile(filename);
+
+	}
+	else if(stopper == 4){
+		        cam->yaw(Ogre::Degree(0));	
+	mWindow->writeContentsToFile(filename);
+
+	}
+
+	else if(stopper == 5){
+
+		        cam->yaw(Ogre::Degree(0));	
+	mWindow->writeContentsToFile(filename);
+
+	}
+	else if(stopper == 6){
+		        cam->yaw(Ogre::Degree(180));	
+	mWindow->writeContentsToFile(filename);
+
+	}
+
+	/*else if(stopper == 6){
+		        cam->roll(Ogre::Degree(270));	
+	}*/
+
+	//cam->pitch(Ogre::Degree(90)*stopper);
+
+	stopper+=1;
+	if(stopper >= 7)
+	stopper = 1;
+      }
+
+  class OrxExitListener : public Ogre::FrameListener
+  {
+    public:
+      OrxExitListener(OIS::Keyboard *keyboard)
+    : mKeyboard(keyboard)
+      {
+      }
+      bool frameEnded(const Ogre::FrameEvent& evt)
+	{
+		if(mKeyboard->isKeyDown(OIS::KC_RETURN) or stopper > 1){
+			OrxApplication::pointer_s->screenShots();
+		}
+
+                return true;
+	}
+      
+      bool frameStarted(const Ogre::FrameEvent& evt)
+      {
+        mKeyboard->capture();
+        return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
+      }
+
+	
+    private:
+      OIS::Keyboard *mKeyboard;
+  };
 
       void createFrameListener()
       {
@@ -230,7 +312,24 @@ namespace orxonox
       {
         mRoot->startRendering();
       }
+
+
+    private:
+      Ogre::Root *mRoot;
+      OIS::Keyboard *mKeyboard;
+      OIS::Mouse *mMouse;
+      OIS::InputManager *mInputManager;
+//      CEGUI::OgreCEGUIRenderer *mRenderer;
+//      CEGUI::System *mSystem;
+      OrxExitListener *mListener;
+      Ogre::Camera * cam;
+      double x;
+
+    public:
+      static OrxApplication* pointer_s;
   };
+
+  OrxApplication* OrxApplication::pointer_s = 0;
 }
 
 using namespace Ogre;
