@@ -148,7 +148,7 @@ namespace network{
     orxonox::Identifier *id;
     id=orxonox::ID(std::string(clid->message));
     if(id!=NULL)
-      id->setNetworkID(clid->classid);
+      id->setNetworkID(clid->clid);
     return;
   }
   

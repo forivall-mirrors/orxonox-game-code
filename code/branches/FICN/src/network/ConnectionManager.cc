@@ -89,7 +89,7 @@ namespace network{
   }
   
   bool ConnectionManager::addPacketAll(ENetPacket *packet){
-    for(int i=0; i<clientVector.size(); i++){
+    for(unsigned int i=0; i<clientVector.size(); i++){
       if(enet_peer_send(&(peerMap.find(clientVector[i])->second), i, packet)!=0)
          return false;
     }
@@ -157,7 +157,7 @@ namespace network{
   void ConnectionManager::disconnectClients(){
     bool disconnected=false;
     ENetEvent event;
-    for(int i=0; i<clientVector.size(); i++){
+    for(unsigned int i=0; i<clientVector.size(); i++){
       enet_peer_disconnect(&(peerMap.find(clientVector[i])->second), 0);
       while( !disconnected && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) > 0){
         switch (event.type)

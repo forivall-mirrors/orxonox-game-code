@@ -19,33 +19,11 @@
 #include "Synchronisable.h"
 #include "orxonox/core/IdentifierIncludes.h"
 #include "orxonox/core/Iterator.h"
-#include "PacketManager.h"
+#include "PacketTypes.h"
 
 namespace network {
 
-/**
- * This struct defines a gamestate:
- * size: total size of the data in *data
- * data: pointer to the data allocated in the memory
- */
-  struct GameState{
-  int id;
-  int size;
-  unsigned char *data;
-};
 
-/**
- * this struct defines a gamestate:
- * compsize is the size of the compressed data
- * normsize is the size of the uncompressed data
- * data are the gamestates
- */
-  struct GameStateCompressed{
-	int id; 
-	int compsize;
-	int normsize;
-	unsigned char *data;
-  };
 
 /**
  * This Class implements a manager for gamestates:

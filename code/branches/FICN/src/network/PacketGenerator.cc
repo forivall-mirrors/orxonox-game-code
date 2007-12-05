@@ -13,7 +13,6 @@
 #include <string>
 #include <cstring>
 
-using namespace std;
 using namespace network;
 
 PacketGenerator::PacketGenerator() {}
@@ -22,7 +21,7 @@ PacketGenerator::PacketGenerator() {}
 
 ENetPacket* PacketGenerator::acknowledgement( int state, int reliable )
 {
-	cout << "generating new acknowledgement" << endl;
+        std::cout << "generating new acknowledgement" << std::endl;
 	ack* ackreq = new ack;
 	ackreq->id = ACK;
 	ackreq->a = state;
@@ -34,7 +33,7 @@ ENetPacket* PacketGenerator::acknowledgement( int state, int reliable )
 /*### mouseupdates */
 ENetPacket* PacketGenerator::mousem( double x, double y, int reliable )
 {
-	cout << "generating new mouse" << endl;
+	std::cout << "generating new mouse" << std::endl;
 	mouse* mousemove = new mouse;
 	mousemove->id = MOUSE;
 	mousemove->x = x;
@@ -47,7 +46,7 @@ ENetPacket* PacketGenerator::mousem( double x, double y, int reliable )
 /*### keystrikes updates */
 ENetPacket* PacketGenerator::keystrike( char press, int reliable )
 {
-	cout << "generating new keyboard" << endl;
+	std::cout << "generating new keyboard" << std::endl;
 	keyboard* key = new keyboard;
 	key->id = KEYBOARD;
 	key->press = press;

@@ -136,7 +136,7 @@ void PacketDecoder::clid( ENetPacket *packet)
         classid* cid = new classid;
         cid->length = ((classid*)(packet->data))->length;
         cid->id = ((classid *)(packet->data))->id;
-        cid->classid = ((classid *)(packet->data))->classid;
+        cid->clid = ((classid *)(packet->data))->clid;
         cid->message = (const char *)malloc(cid->length);
         enet_packet_destroy( packet );
         processClassid(cid);
@@ -192,6 +192,6 @@ void PacketDecoder::printClassid( classid *cid)
 {
         cout << "id of classid:    " << cid->id << endl;
         cout << "size of classid:  " << cid->length << endl;
-        cout << "ID of classid:    " << cid->classid <<endl;
+        cout << "ID of classid:    " << cid->clid <<endl;
         cout << "data of classid:  " << cid->message <<endl;
 }

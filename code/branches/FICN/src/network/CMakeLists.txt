@@ -5,6 +5,7 @@ SET( NETWORK_SRC_FILES
   ClientConnection.cc
   ConnectionManager.cc
   GameStateManager.cc
+  GameStateClient.cc
   PacketBuffer.cc
   PacketDecoder.cc
   PacketGenerator.cc
