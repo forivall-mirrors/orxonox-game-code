@@ -72,7 +72,6 @@ namespace network{
    * @return true/false
    */
   bool Client::sendMouse(double x, double y){
-    ENetEvent event;
     // generate packet and add it to the queue
     if(!client_connection.addPacket(pck_gen.mousem(x, y)))
         return false;
@@ -86,7 +85,6 @@ namespace network{
    * @return true/false
    */
   bool Client::sendKeyboard(char key_code){
-    ENetEvent event;
     // generate packet and add it to queue
     if(!client_connection.addPacket(pck_gen.keystrike(key_code)))
         return false;
@@ -114,7 +112,6 @@ namespace network{
    * @return true/false
    */
   bool Client::addKeyboard(char key_code){
-    ENetEvent event;
     // generate packet and add it to queue
     if(client_connection.addPacket(pck_gen.keystrike(key_code)))
       return true;
@@ -148,7 +145,7 @@ namespace network{
     return;
   }
   
-  void Client::processGamestate( GameState *data){
+  void Client::processGamestate( GameStateCompressed *data){
     gamestate.loadSnapshot( *data );
     return;
   }

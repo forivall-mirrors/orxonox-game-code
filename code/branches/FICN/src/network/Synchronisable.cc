@@ -130,6 +130,7 @@ bool Synchronisable::updateData(syncData vars){
     } else
       return false; //there was some problem with registerVar
   }
+  return true;
 }
 
 /**

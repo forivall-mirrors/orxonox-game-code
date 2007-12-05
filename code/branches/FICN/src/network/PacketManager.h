@@ -32,7 +32,7 @@ public:
 	ENetPacket* mousem( double x, double y, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* keystrike( char press, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* chatMessage( const char* message, int reliable = ENET_PACKET_FLAG_RELIABLE );
-	ENetPacket* gstate( GameState* states, int reliable = ENET_PACKET_FLAG_RELIABLE );
+	ENetPacket* gstate( GameStateCompressed* states, int reliable = ENET_PACKET_FLAG_RELIABLE );
         ENetPacket* clid( int classid, std::string classname, int reliable = ENET_PACKET_FLAG_RELIABLE );
 private:
 	//used to set the bytes in the right order
@@ -115,7 +115,7 @@ private:
 	void printMouse( mouse* data );
 	void printKey( keyboard* data );
 	void printChat( chat* data );
-	void printGamestate( GameState* data );
+	void printGamestate( GameStateCompressed* data );
     void printClassid( classid *cid);
 };
 }

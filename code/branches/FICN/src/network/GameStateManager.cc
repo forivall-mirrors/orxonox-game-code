@@ -26,7 +26,7 @@ GameStateManager::~GameStateManager()
  * saves all the synchronisables to a flat "list".
  * @return struct of type gamestate containing the size of the whole gamestate and a pointer linking to the flat list
  */
-GameState GameStateManager::getSnapshot(int id)
+GameStateCompressed GameStateManager::getSnapshot(int id)
 {
   //the size of the gamestate
   int totalsize=0;
@@ -62,15 +62,16 @@ GameState GameStateManager::getSnapshot(int id)
     offset+=tempsize+3*sizeof(int);
   }
   retval.size=totalsize;
-  return retval;
+  return compress(retval);
 }
 
 /**
  * This function loads a Snapshort of the gamestate into the universe
  * @param state a GameState struct containing the size of the gamestate and a pointer linking to a flat list (returned by getSnapshot)
  */
-bool GameStateManager::loadSnapshot(GameState state)
+bool GameStateManager::loadSnapshot(GameStateCompressed compstate)
 {
+  GameState state = decompress(compstate);
   unsigned char *data=state.data;
   // get the start of the Synchronisable list
   orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::start();
@@ -124,12 +125,12 @@ void GameStateManager::removeObject(orxonox::Iterator<Synchronisable> &it){
 //   return it;
 }
 
-GameState GameStateManager::encode(GameState a, GameState b){
+GameStateCompressed GameStateManager::encode(GameState a, GameState b){
   GameState r = diff(a,b);
   return compress(r);
 }
 
-GameState GameStateManager::decode(GameState a, GameState x){
+GameState GameStateManager::decode(GameState a, GameStateCompressed x){
   GameState t = decompress(x);
   return diff(a, t);
 }
@@ -166,14 +167,16 @@ GameState GameStateManager::diff(GameState a, GameState b){
   return r;
 }
 
-GameState GameStateManager::compress(GameState a){
-  a.
-  return a;
+GameStateCompressed GameStateManager::compress(GameState a){
+  //to be implemented
+  GameStateCompressed b;
+  return b;
 }
 
-GameState GameStateManager::decompress(GameState a){
+GameState GameStateManager::decompress(GameStateCompressed a){
   // to be implemented !!!!!!!!!!!!!!
-  return a;
+  GameState b;
+  return b;
 }
 
 }

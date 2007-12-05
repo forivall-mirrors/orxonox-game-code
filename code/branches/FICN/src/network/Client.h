@@ -55,7 +55,7 @@ class Client : PacketDecoder{
   bool isConnected;
   
   // implement data processing functions of PacketDecoder
-  void processGamestate( GameState *data);
+  void processGamestate( GameStateCompressed *data);
   void processClassid(classid *clid);
 
 };

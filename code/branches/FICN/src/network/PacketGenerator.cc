@@ -71,8 +71,9 @@ ENetPacket* PacketGenerator::chatMessage( const char* message, int reliable )
 /*### gamestate packet */
 ENetPacket* PacketGenerator::gstate( GameStateCompressed* states, int reliable )
 {
-	int* gid; *gid = GAMESTATE; //first assign the correct enet id
-	int totalLen = 3*sizeof( int ) + states->size; //calculate the total size of the datastream memory
+	int* gid = new int; 
+        *gid = GAMESTATE; //first assign the correct enet id
+	int totalLen = 3*sizeof( int ) + states->compsize; //calculate the total size of the datastream memory
 	unsigned char* data = (unsigned char*)malloc( totalLen ); //allocate the memory for datastream
 	memcpy( (void*)(data), (const void*)gid, sizeof( int ) ); //this is the enet id
 	memcpy( (void*)(data+sizeof(int)), (const void*)&(states->id), sizeof(int) ); //the GameStateCompressed id

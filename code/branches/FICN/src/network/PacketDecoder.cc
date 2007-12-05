@@ -120,7 +120,7 @@ void PacketDecoder::gstate( ENetPacket* packet )
 	//size of uncompressed data
 	memcpy( (void*)&(currentState->normsize), (const void*)(data+3*sizeof( int )), sizeof( int ) );
 	//since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream
-	currentState->data = (unsigned char*)(malloc( currentState->size ));
+	currentState->data = (unsigned char*)(malloc( currentState->compsize ));
 	//copy the GameStateCompressed data
 	memcpy( (void*)(currentState->data), (const void*)(data+4*sizeof( int )), currentState->compsize );
   
@@ -185,7 +185,7 @@ void PacketDecoder::printChat( chat* data )
 void PacketDecoder::printGamestate( GameStateCompressed* data )
 {
 	cout << "id of GameStateCompressed:   " << data->id << endl;
-	cout << "size of GameStateCompressed: " << data->size << endl;
+	cout << "size of GameStateCompressed: " << data->compsize << endl;
 }
 
 void PacketDecoder::printClassid( classid *cid)

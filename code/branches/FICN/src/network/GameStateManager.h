@@ -61,15 +61,15 @@ class GameStateManager{
 public:
   GameStateManager();
   ~GameStateManager();
-  GameState getSnapshot(int id);
-  bool loadSnapshot(GameState state);
-  GameState encode(GameState a, GameState b);
-  GameState decode(GameState a, GameState x);
+  GameStateCompressed getSnapshot(int id);
+  bool loadSnapshot(GameStateCompressed state);
+  GameStateCompressed encode(GameState a, GameState b);
+  GameState decode(GameState a, GameStateCompressed x);
 private:
   void removeObject(orxonox::Iterator<Synchronisable> &it);
   GameState diff(GameState a, GameState b);
-  GameState compress(GameState a);
-  GameState decompress(GameState a);
+  GameStateCompressed compress(GameState a);
+  GameState decompress(GameStateCompressed a);
 };
 
 }
