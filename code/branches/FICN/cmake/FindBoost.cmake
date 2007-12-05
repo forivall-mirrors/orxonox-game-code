@@ -143,7 +143,11 @@ IF(Boost_INCLUDE_DIR)
     IF(EXISTS "${Boost_LIBRARY_DIR}/stage/lib")
       SET(Boost_LIBRARY_DIR ${Boost_LIBRARY_DIR}/stage/lib)
     ELSE(EXISTS "${Boost_LIBRARY_DIR}/stage/lib")
-      SET(Boost_LIBRARY_DIR "")
+      IF(EXISTS "${Boost_LIBRARY_DIR}/../../lib")
+        SET(Boost_LIBRARY_DIR "${Boost_LIBRARY_DIR}/../../lib")
+      ELSE(EXISTS "${Boost_LIBRARY_DIR}/../../lib")
+        SET(Boost_LIBRARY_DIR "")
+      ENDIF(EXISTS "${Boost_LIBRARY_DIR}/../../lib")
     ENDIF(EXISTS "${Boost_LIBRARY_DIR}/stage/lib")
   ENDIF(EXISTS "${Boost_LIBRARY_DIR}/lib")
 
@@ -166,6 +170,7 @@ ENDIF(Boost_INCLUDE_DIR)
 
 # List of library suffixes to search, e.g. libboost_date_time-gcc
 SET(BOOST_SUFFIX_SEARCH
+  mt
   gcc41-mt
   gcc
   il
@@ -192,6 +197,7 @@ MACRO(BOOST_FIND_LIBRARY name)
 # User can specify a particular build variant via the variables:
 #   Boost_LIB_PREFIX, Boost_LIB_SUFFIX, Boost_LIB_SUFFIX_DEBUG
 # otherwise we'll search the BOOST_SUFFIX_SEARCH list
+
   SET(BOOST_LIB_NAMES ${Boost_LIB_PREFIX}boost_${name}-${Boost_LIB_SUFFIX})
   IF(NOT Boost_LIB_SUFFIX)
     FOREACH(suffix ${BOOST_SUFFIX_SEARCH})
@@ -232,6 +238,7 @@ MACRO(BOOST_FIND_LIBRARY name)
     SET(Boost_${name}_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
     MARK_AS_ADVANCED(Boost_${name}_LIBRARY Boost_${name}_LIBRARY_DEBUG)
   ELSE(Boost_${name}_LIBRARY)
+    MESSAGE(STATUS "sdfds")
     IF(NOT Boost_FIND_QUIETLY)
       MESSAGE(STATUS "Boost ${name} library was not found.")
     ELSE(NOT Boost_FIND_QUIETLY)
