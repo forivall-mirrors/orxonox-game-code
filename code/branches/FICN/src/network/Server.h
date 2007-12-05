@@ -17,6 +17,7 @@
 
 #include "ConnectionManager.h"
 #include "PacketManager.h"
+#include "GameStateManager.h"
 #include "enet/enet.h"
 
 namespace network{

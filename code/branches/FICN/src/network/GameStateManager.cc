@@ -15,18 +15,32 @@ namespace network {
 
 GameStateManager::GameStateManager()
 {
+  id=0;
 }
 
 GameStateManager::~GameStateManager()
 {
 }
 
+void GameStateManager::update(){
+  reference = getSnapshot(id++);
+  return;
+}
+
+GameStateCompressed GameStateManager::popGameState(int clientID){
+  GameState *client = clientGameState[clientID];  
+  GameState *server = &reference;
+  return encode(client, server);
+}
+
+
+
 /**
  * This function goes through the whole list of synchronisables and 
  * saves all the synchronisables to a flat "list".
  * @return struct of type gamestate containing the size of the whole gamestate and a pointer linking to the flat list
  */
-GameStateCompressed GameStateManager::getSnapshot(int id)
+GameState GameStateManager::getSnapshot(int id)
 {
   //the size of the gamestate
   int totalsize=0;
@@ -62,95 +76,33 @@ GameStateCompressed GameStateManager::getSnapshot(int id)
     offset+=tempsize+3*sizeof(int);
   }
   retval.size=totalsize;
-  return compress(retval);
+  return retval;
 }
 
-/**
- * This function loads a Snapshort of the gamestate into the universe
- * @param state a GameState struct containing the size of the gamestate and a pointer linking to a flat list (returned by getSnapshot)
- */
-bool GameStateManager::loadSnapshot(GameStateCompressed compstate)
-{
-  GameState state = decompress(compstate);
-  unsigned char *data=state.data;
-  // get the start of the Synchronisable list
-  orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::start();
-  syncData sync;
-  // loop as long as we have some data ;)
-  while(data < state.data+state.size){
-    // prepare the syncData struct
-    sync.length = *(int *)data;
-    data+=sizeof(int);
-    sync.objectID = *(int *)data;
-    data+=sizeof(int);
-    sync.classID = *(int *)data;
-    data+=sizeof(int);
-    sync.data = data;
-    data+=sync.length;
-    
-    if(it->objectID!=sync.objectID){
-      // bad luck ;)
-      // delete the synchronisable (obviously seems to be deleted on the server)
-      while(it != 0 && it->objectID!=sync.objectID){
-        removeObject(it);
-      }
-      if(it==0){  // add the new object
-        // =================== factory command to add object
-        // can we be sure the object really was added?
-        it=orxonox::ObjectList<Synchronisable>::end();
-        it->objectID=sync.objectID;
-        it->classID=sync.classID;
-      }
-    } else {
-      // we have our object
-      if(! it->updateData(sync))
-        std::cout << "We couldn't update objectID: " \
-          << sync.objectID << "; classID: " << sync.classID << std::endl;
-    }
-    
-  }
-  
-  return true;
-}
 
-/**
- * This function removes a Synchronisable out of the universe
- * @param it iterator of the list pointing to the object
- * @return iterator pointing to the next object in the list
- */
-void GameStateManager::removeObject(orxonox::Iterator<Synchronisable> &it){
-  orxonox::Iterator<Synchronisable> temp=it;
-  ++it;
-  delete  *temp;
-//   return it;
-}
 
-GameStateCompressed GameStateManager::encode(GameState a, GameState b){
+GameStateCompressed GameStateManager::encode(GameState *a, GameState *b){
   GameState r = diff(a,b);
-  return compress(r);
+  return compress_(r);
 }
 
-GameState GameStateManager::decode(GameState a, GameStateCompressed x){
-  GameState t = decompress(x);
-  return diff(a, t);
-}
 
-GameState GameStateManager::diff(GameState a, GameState b){
-  unsigned char *ap = a.data, *bp = b.data;
+GameState GameStateManager::diff(GameState *a, GameState *b){
+  unsigned char *ap = a->data, *bp = b->data;
   int of=0; // pointers offset
   int dest_length=0;
-  if(a.size>=b.size)
-    dest_length=a.size;
+  if(a->size>=b->size)
+    dest_length=a->size;
   else
-    dest_length=b.size;
+    dest_length=b->size;
   unsigned char *dp = (unsigned char *)malloc(dest_length*sizeof(unsigned char));
-  while(of<a.size && of<b.size){
+  while(of<a->size && of<b->size){
     *(dp+of)=*(ap+of)^*(bp+of); // do the xor
     ++of;
   }
-  if(a.size!=b.size){ // do we have to fill up ?
+  if(a->size!=b->size){ // do we have to fill up ?
     unsigned char n=0;
-    if(a.size<b.size){
+    if(a->size<b->size){
       while(of<dest_length){
         *(dp+of)=n^*(bp+of);
         of++;
@@ -163,11 +115,11 @@ GameState GameStateManager::diff(GameState a, GameState b){
     }
   }
   // should be finished now
-  GameState r = {b.id, dest_length, dp};
+  GameState r = {b->id, dest_length, dp};
   return r;
 }
 
-GameStateCompressed GameStateManager::compress(GameState a) {
+GameStateCompressed GameStateManager::compress_(GameState a) {
   int size = a.size;
   uLongf buffer = (uLongf)((a.size + 12)*1.01)+1;
   unsigned char* dest = (unsigned char*)malloc( buffer );
@@ -175,13 +127,13 @@ GameStateCompressed GameStateManager::compress(GameState a) {
   retval = compress( dest, &buffer, a.data, (uLong)size );  
   
   switch ( retval ) {
-  case Z_OK: cout << "successfully compressed" << endl; break;
-  case Z_MEM_ERROR: cout << "not enough memory available" << endl; break;
-  case Z_BUF_ERROR: cout << "not enough memory available in the buffer" << endl; break;
-  case Z_DATA_ERROR: cout << "data corrupted" << endl; break;
+  case Z_OK: std::cout << "successfully compressed" << std::endl; break;
+  case Z_MEM_ERROR: std::cout << "not enough memory available" << std::endl; break;
+  case Z_BUF_ERROR: std::cout << "not enough memory available in the buffer" << std::endl; break;
+  case Z_DATA_ERROR: std::cout << "data corrupted" << std::endl; break;
   }
   
-  GameStateCompressed compressedGamestate = new GameStateCompressed;
+  GameStateCompressed compressedGamestate;
   compressedGamestate.compsize = buffer;
   compressedGamestate.normsize = size;
   compressedGamestate.id = GAMESTATE;
@@ -190,27 +142,7 @@ GameStateCompressed GameStateManager::compress(GameState a) {
   return compressedGamestate;
 }
 
-GameState GameStateManager::decompress(GameStateCompressed a){
-  int normsize = a.normsize;
-  int compsize = a.compsize;
-  unsigned char* dest = (unsigned char*)malloc( normsize );
-  int retval;
-  retval = uncompress( dest, &normsize, a.data, compsize );
-  
-  switch ( retval ) {
-  case Z_OK: cout << "successfully compressed" << endl; break;
-  case Z_MEM_ERROR: cout << "not enough memory available" << endl; break;
-  case Z_BUF_ERROR: cout << "not enough memory available in the buffer" << endl; break;
-  case Z_DATA_ERROR: cout << "data corrupted" << endl; break;
-  }
-  
-  GameState gamestate = new GameState;
-  gamestate.id = a.id;
-  gamestate.size = normsize;
-  gamestate.data = dest;
-  
-  return gamestate;
-}
+
 
 }
 

@@ -12,9 +12,14 @@
 #ifndef NETWORK_GAMESTATEMANAGER_H
 #define NETWORK_GAMESTATEMANAGER_H
 
+#include <vector>
+
+#include "zlib.h"
+
 #include "Synchronisable.h"
 #include "orxonox/core/IdentifierIncludes.h"
 #include "orxonox/core/Iterator.h"
+#include "PacketManager.h"
 
 namespace network {
 
@@ -61,15 +66,17 @@ class GameStateManager{
 public:
   GameStateManager();
   ~GameStateManager();
-  GameStateCompressed getSnapshot(int id);
-  bool loadSnapshot(GameStateCompressed state);
-  GameStateCompressed encode(GameState a, GameState b);
-  GameState decode(GameState a, GameStateCompressed x);
+  void update();
+  GameStateCompressed popGameState(int clientID);
 private:
-  void removeObject(orxonox::Iterator<Synchronisable> &it);
-  GameState diff(GameState a, GameState b);
-  GameStateCompressed compress(GameState a);
-  GameState decompress(GameStateCompressed a);
+  GameState getSnapshot(int id);
+  GameStateCompressed encode(GameState *a, GameState *b);
+  GameState diff(GameState *a, GameState *b);
+  GameStateCompressed compress_(GameState a);
+  
+  std::vector<GameState *> clientGameState;
+  GameState reference;
+  int id;
 };
 
 }

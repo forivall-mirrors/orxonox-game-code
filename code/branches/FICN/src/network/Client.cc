@@ -21,8 +21,6 @@ namespace network{
   Client::Client(): client_connection(NETWORK_PORT,"127.0.0.1"){
     // set server address to localhost
     isConnected=false;
-    pck_gen = PacketGenerator();
-    gamestate = GameStateManager();
   }
 
   /**
@@ -32,8 +30,6 @@ namespace network{
    */
   Client::Client(std::string address, int port) : client_connection(port, address){
     isConnected=false;
-    pck_gen = PacketGenerator();
-    gamestate = GameStateManager();
   }
 
   /**
@@ -43,8 +39,6 @@ namespace network{
    */
   Client::Client(const char *address, int port) : client_connection(port, address){
     isConnected=false;
-    pck_gen = PacketGenerator();
-    gamestate = GameStateManager();
   }
 
   /**
@@ -146,13 +140,16 @@ namespace network{
   }
   
   void Client::processGamestate( GameStateCompressed *data){
-    gamestate.loadSnapshot( *data );
+    gamestate.pushGameState(*data);
     return;
   }
   
   void Client::processClassid(classid *clid){
     orxonox::Identifier *id;
-    orxonox::ID(std::string(clid->message))->setNetworkID(clid->classid);
+    id=orxonox::ID(std::string(clid->message));
+    if(id!=NULL)
+      id->setNetworkID(clid->classid);
+    return;
   }
   
 }

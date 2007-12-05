@@ -17,7 +17,7 @@
 
 #include "ClientConnection.h"
 #include "PacketManager.h"
-#include "GameStateManager.h"
+#include "GameStateClient.h"
 #include "orxonox/core/IdentifierIncludes.h"
 
 
@@ -51,7 +51,7 @@ class Client : PacketDecoder{
   private:
   ClientConnection client_connection;
   PacketGenerator pck_gen;
-  GameStateManager gamestate;
+  GameStateClient gamestate;
   bool isConnected;
   
   // implement data processing functions of PacketDecoder

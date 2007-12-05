@@ -6,8 +6,8 @@
 #include "GameStateManager.h"
 
 //enum netowk generaly used to set the type ID of a packet
-namespace network
-{
+namespace network{
+  
 enum packet_id {
 	ACK,
 	MOUSE,
@@ -31,8 +31,8 @@ public:
 	ENetPacket* acknowledgement( int state, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* mousem( double x, double y, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* keystrike( char press, int reliable = ENET_PACKET_FLAG_RELIABLE );
-	ENetPacket* chatMessage( const char* message, int reliable = ENET_PACKET_FLAG_RELIABLE );
-	ENetPacket* gstate( GameStateCompressed* states, int reliable = ENET_PACKET_FLAG_RELIABLE );
+        ENetPacket* chatMessage( const char* message, int reliable = ENET_PACKET_FLAG_RELIABLE );
+        ENetPacket* gstate( GameStateCompressed *states, int reliable = ENET_PACKET_FLAG_RELIABLE );
         ENetPacket* clid( int classid, std::string classname, int reliable = ENET_PACKET_FLAG_RELIABLE );
 private:
 	//used to set the bytes in the right order
@@ -115,7 +115,7 @@ private:
 	void printMouse( mouse* data );
 	void printKey( keyboard* data );
 	void printChat( chat* data );
-	void printGamestate( GameStateCompressed* data );
+	void printGamestate( GameStateCompressed *data );
     void printClassid( classid *cid);
 };
 }
