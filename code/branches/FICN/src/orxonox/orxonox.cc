@@ -302,7 +302,7 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
 
 
       mgr->setAmbientLight(ColourValue(1,1,1));
-      Entity* head = mgr->createEntity("head", "ogrehead.mesh");
+      Entity* head = mgr->createEntity("head", "razor.mesh");
       SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
       node->attachObject(head);
       node->attachObject(cam);
