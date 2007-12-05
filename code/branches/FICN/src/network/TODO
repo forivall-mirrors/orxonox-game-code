@@ -1,0 +1,9 @@
+TODO:
+
+- change ConnectionManager clientlist
+- change gamestatemanager clientlist
+- put them together into ClientInformation
+
+- do better gamestate-update/snapshot-handling
+
+- write dummyserver and dummyclient (chat system)
