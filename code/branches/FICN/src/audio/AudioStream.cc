@@ -3,7 +3,7 @@
 
 namespace audio
 {
-	void AudioStream::open(string path)
+	void AudioStream::open(std::string path)
 	{
 	    int result;
 	    
@@ -60,7 +60,7 @@ namespace audio
 	
 	void AudioStream::display()
 	{
-	    cout
+	    std::cout
 	        << "version         " << vorbisInfo->version         << "\n"
 	        << "channels        " << vorbisInfo->channels        << "\n"
 	        << "rate (hz)       " << vorbisInfo->rate            << "\n"
@@ -72,9 +72,9 @@ namespace audio
 	        << "vendor " << vorbisComment->vendor << "\n";
 	        
 	    for(int i = 0; i < vorbisComment->comments; i++)
-	        cout << "   " << vorbisComment->user_comments[i] << "\n";
+	        std::cout << "   " << vorbisComment->user_comments[i] << "\n";
 	        
-	    cout << endl;
+	    std::cout << std::endl;
 	}
 	
 	
@@ -211,9 +211,10 @@ namespace audio
 	        case OV_EBADHEADER:
 	            return std::string("Invalid Vorbis header.");
 	        case OV_EFAULT:
-	            return string("Internal logic fault (bug or heap/stack corruption.");
+	            return std::string("Internal logic fault (bug or heap/stack corruption.");
 	        default:
 	            return std::string("Unknown Ogg error.");
 	    }
 	}
 }
+

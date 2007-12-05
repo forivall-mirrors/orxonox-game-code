@@ -5,28 +5,41 @@
 
 #include "AudioBuffer.h"
 #include "AudioSource.h"
+#include "AudioStream.h"
 
 namespace audio
 {
 	class AudioManager
 	{
 	public:
+
 		// Init audio 
 		AudioManager();
+
 		// Kill audio and set buffers, sources and memory free
 		~AudioManager();
+
 		// Set listener position
 		void setPos(std::vector<float> newPosition);
+
 		// Set listener speed
 		void setSpeed(std::vector<float> newSpeed);
+
 		// Set listener orientation (first is direction
 		// the listener looks at, the second is the direction
 		// upwards the listener)
 		void setOri(std::vector<float> at, std::vector<float> up);
+
 		// Parses given xml string
 		void loadParams();
+
+		// Update
+		void update();
+
 	private:
 
+		// Backgroundsound
+    AudioStream bgSound;
 	
 		// Vector containing all audio files
 		std::vector<AudioBuffer> buffers;

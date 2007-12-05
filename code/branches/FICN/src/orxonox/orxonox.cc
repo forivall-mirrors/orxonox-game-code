@@ -55,6 +55,7 @@
 #include "spaceship_steering.h"
 SpaceshipSteering* steering;
 
+audio::AudioManager* auMan;
 
 // some tests to see if enet works without includsion
 //#include <enet/enet.h>
@@ -112,6 +113,9 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
     }
     bool frameStarted(const FrameEvent& evt)
     {
+    
+    	auMan->update();
+    
       mKeyboard->capture();
       mMouse->capture();
       if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
@@ -280,7 +284,7 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
 
       void createScene(void)
       {
-		audio::AudioManager* auMan = new audio::AudioManager();
+				auMan = new audio::AudioManager();
 
 
       string levelFile = "sp_level_moonstation.oxw";
