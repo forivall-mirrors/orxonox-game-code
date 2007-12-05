@@ -24,6 +24,8 @@
 // headerfiles
 #include "ConnectionManager.h"
 #include "PacketBuffer.h"
+#include "PacketManager.h"
+#include "orxonox/core/IdentifierIncludes.h"
 
 namespace std{
   bool operator<(ENetAddress a, ENetAddress b);
@@ -66,8 +68,10 @@ namespace network{
     void disconnectClients();
     int getClientID(ENetPeer peer);
     int getClientID(ENetAddress address);
+    void syncClassid(int clientID);
     ENetPeer getClientPeer(int clientID);
     PacketBuffer buffer;
+    PacketGenerator packet_gen;
     
     ENetHost *server;
     ENetAddress bindAddress;

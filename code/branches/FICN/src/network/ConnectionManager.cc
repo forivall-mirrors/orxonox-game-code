@@ -197,9 +197,11 @@ namespace network{
   }
 
   bool ConnectionManager::addClient(ENetEvent *event){
+    int id=clientVector.size();
     clientVector.push_back((event->peer->address));
-    clientMap[event->peer->address]=clientVector.size()-1;
+    clientMap[event->peer->address]=id;
     peerMap[event->peer->address]=*(event->peer);
+    syncClassid(id);
     return true;
   }
   
@@ -213,6 +215,23 @@ namespace network{
   
   ENetPeer ConnectionManager::getClientPeer(int clientID){
     return peerMap.find(clientVector[clientID])->second;
+  }
+  
+  void ConnectionManager::syncClassid(int clientID){
+    int i=0;
+    std::string classname;
+    bool abort=false;
+    orxonox::Identifier *id;
+    while(!abort){
+      id = orxonox::ID(i);
+      if(id == NULL)
+        abort=true;
+      else{
+        classname = id->getName();
+        addPacket(packet_gen.clid( i, classname ),clientID);
+      }
+    }
+    sendPackets();
   }
   
 }

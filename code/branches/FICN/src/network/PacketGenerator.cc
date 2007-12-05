@@ -85,3 +85,15 @@ ENetPacket* PacketGenerator::gstate( GameState* states, int reliable )
 	
 	return packet;
 }
+
+ENetPacket* PacketGenerator::clid( int classid, std::string classname, int reliable ){
+        unsigned char* data = (unsigned char *)malloc(3*sizeof(int)+classname.length()+1);
+        *(int *)data = CLASSID;
+        *((int *)data+1) = classname.length()+1;
+        *((int *)data+2) = classid;
+        memcpy( (void *)(data+3*sizeof(int)), classname.c_str(), classname.length()+1);
+        ENetPacket *packet = enet_packet_create( data , 3*sizeof(int)+classname.length()+1, reliable );
+        return packet;
+}
+
+

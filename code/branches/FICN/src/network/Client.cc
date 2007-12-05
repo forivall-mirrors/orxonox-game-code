@@ -153,4 +153,10 @@ namespace network{
     return;
   }
   
+  void Client::processClassid(classid *clid){
+    
+    
+    
+  }
+  
 }

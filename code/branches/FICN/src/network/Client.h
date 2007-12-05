@@ -18,6 +18,7 @@
 #include "ClientConnection.h"
 #include "PacketManager.h"
 #include "GameStateManager.h"
+#include "orxonox/core/IdentifierIncludes.h"
 
 
 namespace network{
@@ -55,6 +56,8 @@ class Client : PacketDecoder{
   
   // implement data processing functions of PacketDecoder
   void processGamestate( GameState *data);
+  void processClassid(classid *clid);
+
 };
 
 }

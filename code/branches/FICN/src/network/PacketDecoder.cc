@@ -43,6 +43,10 @@ bool PacketDecoder::elaborate( ENetPacket* packet, int clientId )
 		gstate( packet );
 		return true;
 		break;
+          case CLASSID:
+                clid(packet);
+                return true;
+                break;
 	}
 	return false;
 }
@@ -125,11 +129,30 @@ void PacketDecoder::gstate( ENetPacket* packet )
   //processGamestate(currentState);
 }
 
+void PacketDecoder::clid( ENetPacket *packet)
+{
+        classid* cid = new classid;
+        cid->length = ((classid*)(packet->data))->length;
+        cid->id = ((classid *)(packet->data))->id;
+        cid->classid = ((classid *)(packet->data))->classid;
+        cid->message = (const char *)malloc(cid->length);
+        enet_packet_destroy( packet );
+        processClassid(&cid);
+}
+
+
 // now the data processing functions:
 
 void PacketDecoder::processChat( chat *data){
   printChat(data);
 }
+
+void PacketDecoder::processClassid( classid *cid){
+  printClassid(cid);
+  return;
+}
+
+
 
 //these are some print functions for test stuff
 
@@ -161,4 +184,12 @@ void PacketDecoder::printGamestate( GameState* data )
 {
 	cout << "id of gamestate:   " << data->id << endl;
 	cout << "size of gamestate: " << data->size << endl;
+}
+
+void PacketDecoder::printClassid( classid *cid)
+{
+        cout << "id of classid:    " << cid->id << endl;
+        cout << "size of classid:  " << cid->length << endl;
+        cout << "ID of classid:    " << cid->classid <<endl;
+        cout << "data of classid:  " << cid->message <<endl;
 }

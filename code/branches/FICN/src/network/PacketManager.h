@@ -1,6 +1,7 @@
 #ifndef PACKETMANAGER_H_
 #define PACKETMANAGER_H_
 
+#include <string>
 #include <enet/enet.h>
 #include "GameStateManager.h"
 
@@ -12,7 +13,8 @@ enum packet_id {
 	MOUSE,
 	KEYBOARD,
 	CHAT,
-	GAMESTATE
+	GAMESTATE ,
+        CLASSID
 };
 
 /*
@@ -31,6 +33,7 @@ public:
 	ENetPacket* keystrike( char press, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* chatMessage( const char* message, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* gstate( GameState* states, int reliable = ENET_PACKET_FLAG_RELIABLE );
+        ENetPacket* clid( int classid, std::string classname, int reliable = ENET_PACKET_FLAG_RELIABLE );
 private:
 	//used to set the bytes in the right order
 	struct ack {
@@ -84,17 +87,26 @@ private:
 		int id;
 		const char* message;
 	};
+        
+        struct classid{
+          int id;
+          int length;
+          int classid;
+          const char *message;
+        };
 	
 	void acknowledgement( ENetPacket* packet );
 	void mousem( ENetPacket* packet );
 	void keystrike( ENetPacket* packet );
 	void chatMessage( ENetPacket* packet );
 	void gstate( ENetPacket* packet );
+        void clid( ENetPacket *packet);
 	
   //process data
   //two functions are note yet implemented!
   //virtual void processGamestate(GameState *state);
   virtual void processChat( chat *data);
+  virtual void processClassid( classid *cid);
   //virtual void processAck( ack *data);
   
 	//print functions
@@ -103,6 +115,7 @@ private:
 	void printKey( keyboard* data );
 	void printChat( chat* data );
 	void printGamestate( GameState* data );
+        void printClassid( classid *cid);
 };
 }
 
