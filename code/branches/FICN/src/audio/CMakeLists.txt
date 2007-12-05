@@ -1,6 +1,7 @@
 PROJECT(Orxonox)
 
 SET(SRC_FILES 
+	AudioIncludes.h
 	AudioManager.cc
 	AudioBuffer.cc
 	AudioSource.cc
