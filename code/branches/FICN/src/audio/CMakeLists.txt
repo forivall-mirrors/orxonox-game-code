@@ -5,11 +5,13 @@ SET(SRC_FILES
 	AudioManager.cc
 	AudioBuffer.cc
 	AudioSource.cc
+	AudioStream.cc
 )
 SET(INC_FILES 
 	AudioManager.h
 	AudioBuffer.h
 	AudioSource.h
+	AudioStream.h
 )
 
 
