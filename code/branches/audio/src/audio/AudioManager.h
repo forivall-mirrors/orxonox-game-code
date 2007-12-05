@@ -1,13 +1,7 @@
 #ifndef AUDIOMANAGER_H_
 #define AUDIOMANAGER_H_
 
-#include <iostream>
-#include <string>
-#include <vector>
-
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alut.h>
+#include "AudioIncludes.h"
 
 #include "AudioBuffer.h"
 #include "AudioSource.h"
@@ -32,8 +26,6 @@ namespace audio
 		// Parses given xml string
 		void loadParams();
 	private:
-
-	
 		// Vector containing all audio files
 		std::vector<AudioBuffer> buffers;
 		// Vector containing all audio sources which referer to one buffer
