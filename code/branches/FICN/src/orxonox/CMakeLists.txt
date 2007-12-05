@@ -23,9 +23,11 @@ TARGET_LINK_LIBRARIES( ../../bin/main
   ${OGRE_LIBRARIES}
   ${OIS_LIBRARIES}
   loader
+  audio
   network
   core
   hud
   objects
   weapon
 )
+

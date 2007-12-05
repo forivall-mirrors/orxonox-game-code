@@ -5,5 +5,7 @@ INCLUDE_DIRECTORIES(.)
 ADD_SUBDIRECTORY(loader)
 ADD_SUBDIRECTORY(network)
 ADD_SUBDIRECTORY(orxonox)
+ADD_SUBDIRECTORY(class_hierarchy)
+ADD_SUBDIRECTORY(audio)
 
-# xml get handled by loader
+# xml gets handled by loader

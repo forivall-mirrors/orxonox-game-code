@@ -50,6 +50,7 @@
 
 #include "xml/xmlParser.h"
 #include "loader/LevelLoader.h"
+#include "audio/AudioManager.h"
 
 #include "spaceship_steering.h"
 SpaceshipSteering* steering;
@@ -279,10 +280,13 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
 
       void createScene(void)
       {
+		audio::AudioManager* auMan = new audio::AudioManager();
+
 
       string levelFile = "sp_level_moonstation.oxw";
       loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
     }
+
 
     void setupScene()
     {
