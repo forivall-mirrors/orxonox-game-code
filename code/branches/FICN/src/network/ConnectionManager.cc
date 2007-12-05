@@ -230,6 +230,7 @@ namespace network{
         classname = id->getName();
         addPacket(packet_gen.clid( i, classname ),clientID);
       }
+      ++i;
     }
     sendPackets();
   }

@@ -154,9 +154,8 @@ namespace network{
   }
   
   void Client::processClassid(classid *clid){
-    
-    
-    
+    orxonox::Identifier *id;
+    orxonox::ID(std::string(clid->message))->setNetworkID(clid->classid);
   }
   
 }

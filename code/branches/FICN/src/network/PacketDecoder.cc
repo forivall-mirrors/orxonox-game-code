@@ -137,7 +137,7 @@ void PacketDecoder::clid( ENetPacket *packet)
         cid->classid = ((classid *)(packet->data))->classid;
         cid->message = (const char *)malloc(cid->length);
         enet_packet_destroy( packet );
-        processClassid(&cid);
+        processClassid(cid);
 }
 
 

@@ -62,7 +62,7 @@ FIND_PACKAGE(ENet)
 FIND_PACKAGE(Boost)
 FIND_PACKAGE(OpenAL)
 FIND_PACKAGE(ALUT)
-# FIND_PACKAGE(OggVorbis)
+#FIND_PACKAGE(OggVorbis)
 
 #Sets the search paths for the linking
 LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR} ${ENet_LIBRARY} ${Boost_LIBRARY_DIRS} ${OPENAL_LIBRARY} ${ALUT_LIBRARY} core objects loader network weapon classHierarchy audio)

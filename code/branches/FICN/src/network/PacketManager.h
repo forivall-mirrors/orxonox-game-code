@@ -65,6 +65,12 @@ public:
 	PacketDecoder();
 	//call this function to decode, it calls the right decoding function below
 	bool elaborate( ENetPacket* packet, int clientId );
+        struct classid{
+          int id;
+          int length;
+          int classid;
+          const char *message;
+        };
 private:
 	struct ack {
 		int id;
@@ -88,12 +94,7 @@ private:
 		const char* message;
 	};
         
-        struct classid{
-          int id;
-          int length;
-          int classid;
-          const char *message;
-        };
+        
 	
 	void acknowledgement( ENetPacket* packet );
 	void mousem( ENetPacket* packet );
