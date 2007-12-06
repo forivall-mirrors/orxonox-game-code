@@ -3,6 +3,7 @@ PROJECT(Orxonox)
 SET( NETWORK_SRC_FILES
   Client.cc
   ClientConnection.cc
+  ClientInformation.cc
   ConnectionManager.cc
   GameStateManager.cc
   GameStateClient.cc
