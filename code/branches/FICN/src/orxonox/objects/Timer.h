@@ -1,8 +1,8 @@
 #ifndef _Timer_H__
 #define _Timer_H__
 
+#include <OgreFrameListener.h>
 #include "../core/IdentifierIncludes.h"
-#include "Ogre.h"
 
 namespace orxonox
 {

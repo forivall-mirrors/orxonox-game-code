@@ -1,8 +1,8 @@
 #ifndef _Tickable_H__
 #define _Tickable_H__
 
+#include <OgreFrameListener.h>
 #include "../core/IdentifierIncludes.h"
-#include "Ogre.h"
 
 namespace orxonox
 {
