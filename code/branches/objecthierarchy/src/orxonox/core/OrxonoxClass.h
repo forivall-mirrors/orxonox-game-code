@@ -27,6 +27,8 @@ namespace orxonox
             OrxonoxClass();
             virtual ~OrxonoxClass();
 
+            void setConfigValues() {};
+
             /** @returns the Identifier of the object */
             inline Identifier* getIdentifier() const { return this->identifier_; }
 

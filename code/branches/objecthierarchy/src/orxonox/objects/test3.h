@@ -14,8 +14,20 @@ namespace orxonox
             Test3();
             virtual ~Test3();
 
+            void setConfigValues();
+
             void usefullClassesIsATest(Test1* test1);
             void usefullClassesIsATest(Test2* test2);
+
+            void configOutput();
+
+        private:
+            int                 value_int_;
+            double              value_double_;
+            bool                value_bool_;
+            std::string         value_string_;
+            Vector3             value_vector3_;
+            ColourValue         value_colourvalue_;
     };
 }
 

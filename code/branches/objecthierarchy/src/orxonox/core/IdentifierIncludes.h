@@ -15,7 +15,16 @@
 #include "ClassFactory.h"
 #include "Iterator.h"
 #include "OrxonoxClass.h"
+#include "ConfigValueContainer.h"
 
+#include "OgreVector3.h"
+#include "OgreColourValue.h"
+
+namespace orxonox
+{
+    typedef Ogre::Vector3 Vector3;
+    typedef Ogre::ColourValue ColourValue;
+}
 
 // Intern macro, containing the common parts of RegisterObject and RegisterRootObject
 #define InternRegisterObject(ClassName, bRootClass) \
@@ -61,3 +70,13 @@
 // ID(StringOrInt) returns the Identifier with either a given name or a given NetworkID through the factory
 #define ID(StringOrInt) \
     Factory::getIdentifier(StringOrInt)
+
+// bla
+#define SetConfigValue(varname, defvalue) \
+    ConfigValueContainer* container##varname = this->getIdentifier()->getConfigValueContainer(#varname); \
+    if (!container##varname) \
+    { \
+        container##varname = new ConfigValueContainer(this->getIdentifier()->getName(), #varname, defvalue); \
+        this->getIdentifier()->setConfigValueContainer(#varname, container##varname); \
+    } \
+    this->varname = container##varname->getValue(varname)

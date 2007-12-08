@@ -24,12 +24,14 @@
 #define _Identifier_H__
 
 #include <iostream>
+#include <map>
 
 #include "IdentifierList.h"
 #include "ObjectList.h"
 #include "Factory.h"
+#include "ConfigValueContainer.h"
 
-#define HIERARCHY_VERBOSE false
+#define HIERARCHY_VERBOSE 0
 
 
 namespace orxonox
@@ -92,6 +94,12 @@ namespace orxonox
 
             void setNetworkID(unsigned int id);
 
+            inline ConfigValueContainer* getConfigValueContainer(const std::string& varname)
+                { return this->configValues_[varname]; }
+
+            inline void setConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
+                { this->configValues_[varname] = container; }
+
         private:
             Identifier();
             Identifier(const Identifier& identifier) {} // don't copy
@@ -120,16 +128,17 @@ namespace orxonox
 #endif
             }
 
-            IdentifierList parents_;                    //!< The Parents of the class the Identifier belongs to
-            IdentifierList* children_;                  //!< The Children of the class the Identifier belongs to
+            IdentifierList parents_;                                    //!< The Parents of the class the Identifier belongs to
+            IdentifierList* children_;                                  //!< The Children of the class the Identifier belongs to
 
-            std::string name_;                          //!< The name of the class the Identifier belongs to
+            std::string name_;                                          //!< The name of the class the Identifier belongs to
 
-            BaseFactory* factory_;                      //!< The Factory, able to create new objects of the given class
-            bool bCreatedOneObject_;                    //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
-            static int hierarchyCreatingCounter_s;      //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
-            static unsigned int classIDcounter_s;       //!< The number of unique Identifiers
-            unsigned int classID_;                      //!< The networkID to identify a class through the network
+            BaseFactory* factory_;                                      //!< The Factory, able to create new objects of the given class
+            bool bCreatedOneObject_;                                    //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
+            static int hierarchyCreatingCounter_s;                      //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
+            static unsigned int classIDcounter_s;                       //!< The number of unique Identifiers
+            unsigned int classID_;                                      //!< The networkID to identify a class through the network
+            std::map<std::string, ConfigValueContainer*> configValues_;
     };
 
 

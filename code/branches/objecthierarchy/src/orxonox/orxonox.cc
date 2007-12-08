@@ -622,10 +622,14 @@ namespace orxonox
             it->tick(0);
 
         std::cout << "2\n";
+        Test2* test11_2 = new Test2;
 */
 
-        Test2* test11_2 = new Test2;
         std::cout << "3\n";
+        Test3* test11_3 = new Test3;
+        test11_3->configOutput();
+
+        std::cout << "4\n";
 
         startRenderLoop();
       }
