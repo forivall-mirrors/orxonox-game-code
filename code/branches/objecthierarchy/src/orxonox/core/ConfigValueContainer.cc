@@ -2,7 +2,8 @@
 #include <string>
 #include "ConfigValueContainer.h"
 
-#define CONFIGFILEPATH "O:\\oh\\bin\\orxonox.ini"
+//#define CONFIGFILEPATH "O:\\oh\\bin\\orxonox.ini"
+#define CONFIGFILEPATH "orxonox.ini"
 
 namespace orxonox
 {
@@ -330,14 +331,14 @@ namespace orxonox
         {
             file.getline(line, 1024);
             ConfigValueContainer::configFileLines_s->push_back(line);
-            std::cout << "### ->" << line << "<- : empty: " << isEmpty(line) << " comment: " << isComment(line) << std::endl;
+//            std::cout << "### ->" << line << "<- : empty: " << isEmpty(line) << " comment: " << isComment(line) << std::endl;
         }
 
         ConfigValueContainer::configFileLines_s->pop_back();
 
         if ((ConfigValueContainer::configFileLines_s->size() > 0) && !isEmpty(*ConfigValueContainer::configFileLines_s->rbegin()))
         {
-            std::cout << "### newline added" << std::endl;
+//            std::cout << "### newline added" << std::endl;
             ConfigValueContainer::configFileLines_s->push_back("");
         }
 
