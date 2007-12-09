@@ -2,7 +2,7 @@ PROJECT(Orxonox)
 
 # create a few variables to simplify life
 SET(SRC_FILES orxonox/orxonox.cc loader/LevelLoader.cc xml/xmlParser.cc orxonox/core/IdentifierList.cc orxonox/core/Identifier.cc orxonox/core/MetaObjectList.cc orxonox/core/Factory.cc orxonox/core/OrxonoxClass.cc orxonox/core/ConfigValueContainer.cc orxonox/objects/BaseObject.cc orxonox/objects/test1.cc orxonox/objects/test2.cc orxonox/objects/test3.cc)
-SET(INC_FILES loader/LevelLoader.h xml/xmlParser.h orxonox/core/IdentifierIncludes.h orxonox/core/Identifier.h orxonox/core/Factory.h orxonox/core/ClassFactory.h orxonox/core/IdentifierList.h orxonox/core/ObjectList.h orxonox/core/MetaObjectList.h orxonox/core/Iterator.h orxonox/core/OrxonoxClass.h orxonox/core/ConfigValueContainer.h orxonox/objects/BaseObject.h orxonox/objects/Test.h orxonox/objects/test1.h orxonox/objects/test2.h orxonox/objects/test3.h orxonox/objects/Tickable.h orxonox/objects/Timer.h)
+SET(INC_FILES loader/LevelLoader.h xml/xmlParser.h orxonox/core/CoreIncludes.h orxonox/core/Identifier.h orxonox/core/Factory.h orxonox/core/ClassFactory.h orxonox/core/IdentifierList.h orxonox/core/ObjectList.h orxonox/core/MetaObjectList.h orxonox/core/Iterator.h orxonox/core/OrxonoxClass.h orxonox/core/ConfigValueContainer.h orxonox/objects/BaseObject.h orxonox/objects/Test.h orxonox/objects/test1.h orxonox/objects/test2.h orxonox/objects/test3.h orxonox/objects/Tickable.h orxonox/objects/Timer.h)
 
 #Creates an executable
 ADD_EXECUTABLE(../bin/main ${SRC_FILES} ${INC_FILES})

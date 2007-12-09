@@ -41,7 +41,7 @@
 //#include "../xml/xmlParser.h"
 //#include "../loader/LevelLoader.h"
 
-#include "core/IdentifierIncludes.h"
+#include "core/CoreIncludes.h"
 #include "objects/Tickable.h"
 #include "objects/Timer.h"
 

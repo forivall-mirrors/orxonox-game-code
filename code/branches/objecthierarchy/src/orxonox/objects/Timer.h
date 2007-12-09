@@ -1,7 +1,7 @@
 #ifndef _Timer_H__
 #define _Timer_H__
 
-#include "../core/IdentifierIncludes.h"
+#include "../core/CoreIncludes.h"
 #include "OgreFrameListener.h"
 
 namespace orxonox

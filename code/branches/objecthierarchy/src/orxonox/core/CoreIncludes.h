@@ -1,5 +1,5 @@
 /**
-    @file IDentifierIncludes.h
+    @file CoreIncludes.h
     @brief Definition of macros for the class-hierarchy and the factory.
 
     Every class needs the RegisterObject(class) macro in its constructor. If the class is an interface
