@@ -1,9 +1,19 @@
 PROJECT(Orxonox)
 
 SET( CHATCLIENT_SRC_FILES
+  ClientConnection.cc
+  Client.cc
+  PacketBuffer.cc
+  PacketDecoder.cc
+  PacketGenerator.cc
   dummyclient3.cc
 )
 SET( CHATSERVER_SRC_FILES
+  ConnectionManager.cc
+  GameStateManager.cc
+  PacketBuffer.cc
+  PacketDecoder.cc
+  PacketGenerator.cc
   dummyserver3.cc
 )
 

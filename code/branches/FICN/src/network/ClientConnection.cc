@@ -81,15 +81,14 @@ namespace network{
       return false;
     if(enet_peer_send(server, 1, packet)!=0)
       return false;
-    else
-      return true;
+    return true;
   }
 
   bool ClientConnection::sendPackets(ENetEvent *event){
     if(server==NULL)
       return false;
-    if(enet_host_service(client, event, NETWORK_SEND_WAIT)>=0)
-      return true;
+    if(enet_host_service(client, event, NETWORK_SEND_WAIT)>=0){
+      return true;}
     else
       return false;
   }
@@ -98,8 +97,8 @@ namespace network{
     ENetEvent event;
     if(server==NULL)
       return false;
-    if(enet_host_service(client, &event, NETWORK_SEND_WAIT)>=0)
-      return true;
+    if(enet_host_service(client, &event, NETWORK_SEND_WAIT)>=0){
+      return true;}
     else
       return false;
   }
@@ -129,6 +128,7 @@ namespace network{
         // log handling ================
       case ENET_EVENT_TYPE_CONNECT:
       case ENET_EVENT_TYPE_RECEIVE:
+        std::cout << "got packet" << std::endl;
         processData(&event);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:

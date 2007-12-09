@@ -99,10 +99,10 @@ namespace network{
     // generate packet and add it to queue
     if(!isConnected)
       return false;
-    if(!client_connection.addPacket(pck_gen.chatMessage( message.c_str() )));
-        return false;
+    if(client_connection.addPacket(pck_gen.chatMessage( message.c_str() )));
+      return client_connection.sendPackets();
     // send packets
-    return client_connection.sendPackets();
+    return false;
   }
 
   /**
