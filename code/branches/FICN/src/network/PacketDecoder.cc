@@ -43,10 +43,10 @@ bool PacketDecoder::elaborate( ENetPacket* packet, int clientId )
 		gstate( packet );
 		return true;
 		break;
-          case CLASSID:
-                clid(packet);
-                return true;
-                break;
+    case CLASSID:
+        clid(packet);
+        return true;
+        break;
 	}
 	return false;
 }
@@ -119,10 +119,12 @@ void PacketDecoder::gstate( ENetPacket* packet )
 	memcpy( (void*)&(currentState->compsize), (const void*)(data+2*sizeof( int )), sizeof( int) );
 	//size of uncompressed data
 	memcpy( (void*)&(currentState->normsize), (const void*)(data+3*sizeof( int )), sizeof( int ) );
+	//since the packetgenerator was changed, due to a new parameter, change this function too
+	memcpy( (void*)&(currentState->diffed), (const void*)(data+4*sizeof(int)), sizeof(bool));
 	//since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream
 	currentState->data = (unsigned char*)(malloc( currentState->compsize ));
 	//copy the GameStateCompressed data
-	memcpy( (void*)(currentState->data), (const void*)(data+4*sizeof( int )), currentState->compsize );
+	memcpy( (void*)(currentState->data), (const void*)(data+4*sizeof( int ) + sizeof(bool)), currentState->compsize );
   
 	//clean memory
 	enet_packet_destroy( packet );
