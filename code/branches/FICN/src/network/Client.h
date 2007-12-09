@@ -40,6 +40,7 @@ class Client : PacketDecoder{
 
   bool sendMouse(double x, double y);
   bool sendKeyboard(char key_code);
+  bool sendChat( std::string message );
 
   bool addMouse(double x, double y);
   bool addKeyboard(char key_code);

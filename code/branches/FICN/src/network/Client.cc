@@ -89,6 +89,21 @@ namespace network{
     // send packets
     return client_connection.sendPackets();
   }
+  
+  /**
+   * submits a chat message to the server
+   * @param message message to send
+   * @return true/false
+   */
+  bool Client::sendKeyboard( std::string message ){
+    // generate packet and add it to queue
+    if(!isConnected)
+      return false;
+    if(!client_connection.addPacket(pck_gen.chatMessage( message.c_str() )));
+        return false;
+    // send packets
+    return client_connection.sendPackets();
+  }
 
   /**
    * Adds a MouseAction to the PacketQueue
