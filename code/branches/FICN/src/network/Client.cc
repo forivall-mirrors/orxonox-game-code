@@ -95,7 +95,7 @@ namespace network{
    * @param message message to send
    * @return true/false
    */
-  bool Client::sendKeyboard( std::string message ){
+  bool Client::sendChat( std::string message ){
     // generate packet and add it to queue
     if(!isConnected)
       return false;
