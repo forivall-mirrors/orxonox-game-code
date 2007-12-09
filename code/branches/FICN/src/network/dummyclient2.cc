@@ -48,7 +48,7 @@ int main(){
     }
 //    usleep(1000000);
   }
-
+  usleep(1000000);
         // now disconnect
   if(client.closeConnection())
     std::cout << "Connection successfully closed" << std::endl;

@@ -54,9 +54,8 @@ namespace network{
   
   ENetPacket *ConnectionManager::getPacket(int &clientID){
     ENetAddress address;
-    ENetPacket *packet=getPacket(address);std::cout << "searching clientid " << head_->getID() << std::endl;
+    ENetPacket *packet=getPacket(address);
     ClientInformation *temp =head_->findClient(&address);
-    std::cout << "searching clientid " << temp << std::endl;
     clientID=temp->getID();
     return packet;
   }
@@ -140,6 +139,7 @@ namespace network{
         addClient(&event);
         break;
       case ENET_EVENT_TYPE_RECEIVE:
+        std::cout << "received data" << std::endl;
         processData(&event);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:

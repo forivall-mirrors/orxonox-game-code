@@ -36,7 +36,7 @@ void dummyserver3::processChat( chat *data, int clientId){
 }
 
 void dummyserver3::tick(){
-  Server::processQueue();
+  processQueue();
 }
 
 

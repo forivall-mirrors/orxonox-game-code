@@ -142,8 +142,12 @@ bool ClientInformation::removeClient(int clientID){
 
 bool ClientInformation::removeClient(ENetPeer *peer){
   ClientInformation *temp = this;
-  while(temp!=0 && (temp->getPeer()->address.host!=peer->address.host || temp->getPeer()->address.port!=peer->address.port))
+  while(temp!=0){
+    if(!temp->head)
+      if(temp->getPeer()->address.host==peer->address.host && temp->getPeer()->address.port==peer->address.port)
+        break;
     temp = temp->next();
+  }
   if(temp==0)
     return false;
   delete temp;
@@ -158,8 +162,11 @@ bool ClientInformation::removeClient(ENetPeer *peer){
  */
 ClientInformation *ClientInformation::findClient(int clientID, bool look_backwards){
   ClientInformation *temp = this;
-  while(temp!=0 && temp->getID()!=clientID)
+  while(temp!=0 && temp->getID()!=clientID){
+    if (temp->head)
+      continue;
     temp = temp->next();
+  }
   // returns 0 if nothing has been found
   return temp;
 }

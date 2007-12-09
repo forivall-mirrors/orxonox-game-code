@@ -25,5 +25,6 @@ int main(){
 	  std::cout << "your message: ";
 	  std::getline( std::cin, str );
 	  client.sendChat( str );
+	  std::cout << "send message" << std::endl;
   }
 }
