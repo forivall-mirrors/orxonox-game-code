@@ -46,7 +46,7 @@ int main(){
     }else{
       std::cout << "failed sending" << std::endl;
     }
-    //usleep(100000);
+    usleep(1000000);
   }
 
         // now disconnect

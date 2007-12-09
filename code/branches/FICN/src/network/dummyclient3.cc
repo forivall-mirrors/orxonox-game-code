@@ -7,7 +7,7 @@ using namespace network;
 
 int main(){
   network::PacketGenerator pck;
-  const int PORT = 55556
+  const int PORT = 55556;
   std::cout << "Enter address of the server xxx.xxx.xxx.xxx (enter for localhost)" << std::endl;
   std::string str;
   std::getline(std::cin, str);
@@ -17,13 +17,13 @@ int main(){
   
   Client client( str, PORT );
   if ( client.establishConnection() )
-	  cout << "connection established" << endl;
-  else cout << "problems establishing connection" << endl;
+	  std::cout << "connection established" << std::endl;
+  else std::cout << "problems establishing connection" << std::endl;
   
   while (true) {
 	  client.update();
-	  cout << "your message: ";
-	  getline( cin, str );
+	  std::cout << "your message: ";
+	  std::getline( std::cin, str );
 	  client.sendChat( str );
   }
 }

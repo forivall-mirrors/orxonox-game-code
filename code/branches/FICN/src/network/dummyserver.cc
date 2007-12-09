@@ -8,6 +8,7 @@
 #include <enet/enet.h>
 #include "ConnectionManager.h"
 #include "PacketManager.h"
+#include "ClientInformation.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -20,9 +21,10 @@
 using namespace network;
 
 int main(){
-  ConnectionManager server = ConnectionManager();
   bool quit=false;
   ENetPacket *packet;
+  ClientInformation clients;
+  ConnectionManager server = ConnectionManager(&clients);
   server.createListener();
 
   PacketDecoder dec;

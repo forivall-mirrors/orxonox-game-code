@@ -38,11 +38,11 @@ void dummyserver3::tick(){
   Server::processQueue();
 }
 
-int main(int argc, char *argv[]){
-  dummyserver3 server;
-  server.loop();
-  return 0;
+
 }
 
-
+int main(int argc, char **argv[]){
+  network::dummyserver3 server;
+  server.loop();
+  return 0;  
 }

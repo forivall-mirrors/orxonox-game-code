@@ -5,8 +5,8 @@ INC=-I ${MAIN_INC} -I..
 all: server client
 
 # Link command:
-server: PacketBuffer.o ConnectionManager.o dummyserver.o PacketDecoder.o PacketGenerator.o
-	${CC} PacketDecoder.o PacketGenerator.o ConnectionManager.o dummyserver.o PacketBuffer.o -o server -lenet -lboost_thread -g
+server: PacketBuffer.o ConnectionManager.o dummyserver.o PacketDecoder.o PacketGenerator.o ClientInformation.o
+	${CC} PacketDecoder.o PacketGenerator.o ClientInformation.o ConnectionManager.o dummyserver.o PacketBuffer.o -o server -lenet -lboost_thread -g
 
 dummyserver.o: dummyserver.cc
 	${CC} -c dummyserver.cc -o dummyserver.o -g ${INC}
