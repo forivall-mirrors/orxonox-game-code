@@ -30,6 +30,8 @@ Synchronisable.o: Synchronisable.cc
 	${CC} -c Synchronisable.cc -g ${INC}
 GameStateManager.o: GameStateManager.cc
 	${CC} -c GameStateManager.cc -g ${INC}
+ClientInformation.o: ClientInformation.cc
+	${CC} -c ClientInformation.cc -g ${INC}
 
 clean:
 	rm -rf *.o
@@ -38,3 +40,6 @@ client_old: PacketGenerator.o dummyclient.cc
 	${CC} dummyclient.cc PacketGenerator.o -o client -lenet -g ${INC}
 client: PacketGenerator.o ClientConnection.o PacketBuffer.o dummyclient2.cc 
 	${CC} dummyclient2.cc PacketGenerator.o PacketBuffer.o ClientConnection.o -o client -lenet -lboost_thread -g ${INC}
+
+chatserver: Server.o ConnectionManager.o PacketGenerator.o PacketDecoder.o PacketBuffer.o ClientInformation.o GameStateManager.o
+	${CC} dummyserver3.cc Server.o ConnectionManager.o PacketGenerator.o PacketBuffer.o GameStateManager.o ClientInformation.o -o chatserver -lenet -lboost_thread -g ${INC}

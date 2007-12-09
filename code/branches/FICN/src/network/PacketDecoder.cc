@@ -24,19 +24,19 @@ bool PacketDecoder::elaborate( ENetPacket* packet, int clientId )
 	int id = (int)*packet->data; //the first 4 bytes are always the enet packet id
 	switch( id ) {
 	case ACK:
-		acknowledgement( packet );
+		acknowledgement( packet, clientId );
 		return true;
 		break;
 	case MOUSE:
-		mousem( packet );
+		mousem( packet, clientId );
 		return true;
 		break;
 	case KEYBOARD:
-		keystrike( packet );
+		keystrike( packet, clientId );
 		return true;
 		break;
 	case CHAT:
-		chatMessage( packet );
+		chatMessage( packet, clientId );
 		return true;
 		break;
 	case GAMESTATE:
@@ -53,7 +53,7 @@ bool PacketDecoder::elaborate( ENetPacket* packet, int clientId )
 
 //following are the decode functions for the data of the packets
 
-void PacketDecoder::acknowledgement( ENetPacket* packet )
+void PacketDecoder::acknowledgement( ENetPacket* packet, int clientId )
 {
 	ack* a = new ack;
 	*a = *(ack*)packet->data; //press pattern of ack on new data
@@ -64,7 +64,7 @@ void PacketDecoder::acknowledgement( ENetPacket* packet )
 	printAck( a ); //debug info
 }
 
-void PacketDecoder::mousem( ENetPacket* packet )
+void PacketDecoder::mousem( ENetPacket* packet, int clientId )
 {
 	mouse* mouseMove = new mouse;
 	//copy data of packet->data to new struct
@@ -76,7 +76,7 @@ void PacketDecoder::mousem( ENetPacket* packet )
 	printMouse( mouseMove ); //debug info
 }
 
-void PacketDecoder::keystrike( ENetPacket* packet )
+void PacketDecoder::keystrike( ENetPacket* packet, int clientId )
 {
 	keyboard* key = new keyboard;
 	*key = *(keyboard*)packet->data; //see above
@@ -88,7 +88,7 @@ void PacketDecoder::keystrike( ENetPacket* packet )
 
 }
 
-void PacketDecoder::chatMessage( ENetPacket* packet )
+void PacketDecoder::chatMessage( ENetPacket* packet, int clientId )
 {
 	chat* chatting = new chat;
 	chatting->id = (int)*packet->data; //first copy id into new struct
@@ -103,7 +103,7 @@ void PacketDecoder::chatMessage( ENetPacket* packet )
 	//clean memory
 	enet_packet_destroy( packet );
 	
-	processChat( chatting ); //debug info
+	processChat( chatting, clientId ); //debug info
 	
 }
 
@@ -147,8 +147,8 @@ void PacketDecoder::clid( ENetPacket *packet)
 
 // now the data processing functions:
 
-void PacketDecoder::processChat( chat *data){
-  printChat(data);
+void PacketDecoder::processChat( chat *data, int clientId){
+  printChat(data, clientId);
 }
 
 void PacketDecoder::processClassid( classid *cid){
@@ -178,8 +178,10 @@ void PacketDecoder::printKey( keyboard* data )
 	cout << "data:    " << (char)data->press << endl;
 }
 
-void PacketDecoder::printChat( chat* data )
+void PacketDecoder::printChat( chat* data, int clientId )
 {
+  if(clientId!=CLIENTID_CLIENT)
+    cout << "client: " << clientId << endl;
 	cout << "data id: " << data->id << endl;
 	cout << "data:    " << data->message << endl;
 }

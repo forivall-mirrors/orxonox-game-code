@@ -5,6 +5,8 @@
 #include <enet/enet.h>
 #include "PacketTypes.h"
 
+#define CLIENTID_CLIENT -1
+
 //enum netowk generaly used to set the type ID of a packet
 namespace network{
   
@@ -26,9 +28,9 @@ public:
 	ENetPacket* acknowledgement( int state, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* mousem( double x, double y, int reliable = ENET_PACKET_FLAG_RELIABLE );
 	ENetPacket* keystrike( char press, int reliable = ENET_PACKET_FLAG_RELIABLE );
-    ENetPacket* chatMessage( const char* message, int reliable = ENET_PACKET_FLAG_RELIABLE );
-    ENetPacket* gstate( GameStateCompressed *states, int reliable = ENET_PACKET_FLAG_RELIABLE );
-    ENetPacket* clid( int classid, std::string classname, int reliable = ENET_PACKET_FLAG_RELIABLE );
+  ENetPacket* chatMessage( const char* message, int reliable = ENET_PACKET_FLAG_RELIABLE );
+  ENetPacket* gstate( GameStateCompressed *states, int reliable = ENET_PACKET_FLAG_RELIABLE );
+  ENetPacket* clid( int classid, std::string classname, int reliable = ENET_PACKET_FLAG_RELIABLE );
 private:
 };
 
@@ -49,17 +51,17 @@ private:
         
         
 	
-    void acknowledgement( ENetPacket* packet );
-    void mousem( ENetPacket* packet );
-    void keystrike( ENetPacket* packet );
-    void chatMessage( ENetPacket* packet );
-    void gstate( ENetPacket* packet );
-    void clid( ENetPacket *packet);
+  void acknowledgement( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
+  void mousem( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
+  void keystrike( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
+  void chatMessage( ENetPacket* packet, int clientId = CLIENTID_CLIENT);
+  void gstate( ENetPacket* packet );
+  void clid( ENetPacket *packet);
 	
   //process data
   //two functions are note yet implemented!
   //virtual void processGamestate(GameState *state);
-  virtual void processChat( chat *data);
+  virtual void processChat( chat *data, int clientId);
   virtual void processClassid( classid *cid);
   //virtual void processAck( ack *data);
   
@@ -67,9 +69,9 @@ private:
 	void printAck( ack* data );
 	void printMouse( mouse* data );
 	void printKey( keyboard* data );
-	void printChat( chat* data );
+	void printChat( chat* data, int clientId );
 	void printGamestate( GameStateCompressed *data );
-    void printClassid( classid *cid);
+  void printClassid( classid *cid);
 };
 }
 

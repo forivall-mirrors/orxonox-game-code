@@ -12,6 +12,7 @@ SET( NETWORK_SRC_FILES
   PacketGenerator.cc
   Server.cc
   Synchronisable.cc
+  dummyserver3.cc
 )
 
 ADD_LIBRARY(network SHARED ${NETWORK_SRC_FILES})

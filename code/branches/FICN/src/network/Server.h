@@ -37,14 +37,15 @@ namespace network{
     bool sendMSG(std::string msg);
     bool sendMSG(const char *msg);
     void tick();
+    protected:
+    void processQueue();
+    void updateGamestate();
     private:
     bool sendGameState();
     ConnectionManager *connection;
     GameStateManager *gamestates;
     PacketGenerator packet_gen;
     
-    void processQueue();
-    void updateGamestate();
     ClientInformation *clients;
   };
 
