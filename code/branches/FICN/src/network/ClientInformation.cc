@@ -57,10 +57,16 @@ ClientInformation::~ClientInformation()
 }
 
 ClientInformation *ClientInformation::next(){
-  return this->nexte;
+  if(this!=0)
+    return this->nexte;
+  else
+    return 0;
 }
 ClientInformation *ClientInformation::prev(){
-  return this->preve;
+  if(this!=0)
+    return this->preve;
+  else
+    return 0;
 }
 
 bool ClientInformation::setPrev(ClientInformation *prev){

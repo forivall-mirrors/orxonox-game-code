@@ -197,8 +197,9 @@ namespace network{
 
   bool ConnectionManager::addClient(ENetEvent *event){
     ClientInformation *temp = head_->insertBack(new ClientInformation);
-    temp->setID(temp->prev()->getID());
+    temp->setID(temp->prev()->getID()+1);
     temp->setPeer(event->peer);
+    std::cout << "added client id: " << temp->prev()->getID() << std::endl;
     return true;
   }
   

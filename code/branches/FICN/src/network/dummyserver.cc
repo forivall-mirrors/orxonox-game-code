@@ -32,7 +32,7 @@ int main(){
   while(!quit){
     if(server.queueEmpty())
 // Warning: usleep(100) is Sleep(100/1000) = Sleep(0), which is nothing!
-      usleep(100);
+      usleep(10000000);
     else{
       ENetAddress addr;
       packet=server.getPacket(addr);
