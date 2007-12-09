@@ -11,7 +11,7 @@ namespace orxonox
     // ###       Identifier        ###
     // ###############################
     int Identifier::hierarchyCreatingCounter_s = 0; // Set the static member variable hierarchyCreatingCounter_s to zero
-    unsigned int Identifier::classIDcounter_s = 0; // Set the static member variable classIDcounter_s to zero
+    unsigned int Identifier::classIDcounter_s = 0;  // Set the static member variable classIDcounter_s to zero
 
     /**
         @brief Constructor: No factory, no object created, new ObjectList and a unique networkID.
@@ -78,8 +78,8 @@ namespace orxonox
     }
 
     /**
-        @brief Sets the networkID to a new value and changes the entry in the Factory.
-        @param id The new networkID
+        @brief Sets the network ID to a new value and changes the entry in the Factory.
+        @param id The new network ID
     */
     void Identifier::setNetworkID(unsigned int id)
     {

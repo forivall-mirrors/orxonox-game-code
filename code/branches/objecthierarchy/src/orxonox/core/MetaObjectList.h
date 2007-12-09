@@ -3,8 +3,8 @@
     @brief Definition of the MetaObjectList class.
 
     The MetaObjectList is a single-linked list, containing all list-elements and their
-    lists wherein the object that owns the MetaObjectList is registered.
-    This allows much faster deleting of objects.
+    lists wherein the object, owning the MetaObjectList, is registered.
+    This allows much faster deletion of objects because no iteration is needed.
 */
 
 #ifndef _MetaObjectList_H__
@@ -19,7 +19,7 @@ namespace orxonox
     class BaseMetaObjectListElement
     {
         public:
-            /** @brief Defaultdestructor */
+            /** @brief Default destructor */
             virtual ~BaseMetaObjectListElement() {};
 
             BaseMetaObjectListElement* next_;       //!< The next Element in the list
@@ -82,7 +82,7 @@ namespace orxonox
     /**
         The MetaObjectList is a single-linked list, containing all list-elements and their
         lists wherein the object that owns the MetaObjectList is registered.
-        This allows much faster deleting of objects.
+        This allows much faster deletion of objects because no iteration is needed.
     */
     class MetaObjectList
     {

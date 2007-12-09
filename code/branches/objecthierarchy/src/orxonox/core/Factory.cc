@@ -23,8 +23,8 @@ namespace orxonox
     }
 
     /**
-        @returns the Identifier with a given networkID.
-        @param id The networkID of the wanted Identifier
+        @returns the Identifier with a given network ID.
+        @param id The network ID of the wanted Identifier
     */
     Identifier* Factory::getIdentifier(const unsigned int id)
     {
@@ -49,7 +49,7 @@ namespace orxonox
     }
 
     /**
-        @brief Removes the entry with the old networkID and adds a new one.
+        @brief Removes the entry with the old network ID and adds a new one.
         @param identifier The identifier to change
         @param oldID The old networkID
         @param newID The new networkID

@@ -33,7 +33,7 @@ namespace orxonox
 
     /**
         @brief Adds the ClassFactory to the Identifier of the same type and creates a new object to retrieve the parents.
-        @return True, because the compiler only allows assignments before main()
+        @return Always true (this is needed because the compiler only allows assignments before main())
     */
     template <class T>
     bool ClassFactory<T>::create()

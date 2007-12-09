@@ -100,7 +100,7 @@ namespace orxonox
     }
 
     /**
-        @returns a string, containing the names of all Identifiers in the list.
+        @returns a string, containing a list of the names of all Identifiers in the list.
     */
     std::string IdentifierList::toString() const
     {
