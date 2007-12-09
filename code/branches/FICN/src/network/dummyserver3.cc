@@ -25,8 +25,9 @@ dummyserver3::~dummyserver3(){
 
 void dummyserver3::loop(){
   open();
-  while(true)
+  while(true){
     tick();
+  }
 }
 
 void dummyserver3::processChat( chat *data, int clientId){

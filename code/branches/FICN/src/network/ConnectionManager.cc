@@ -54,8 +54,10 @@ namespace network{
   
   ENetPacket *ConnectionManager::getPacket(int &clientID){
     ENetAddress address;
-    ENetPacket *packet=getPacket(address);
-    clientID=head_->findClient(&address)->getID();
+    ENetPacket *packet=getPacket(address);std::cout << "searching clientid " << head_->getID() << std::endl;
+    ClientInformation *temp =head_->findClient(&address);
+    std::cout << "searching clientid " << temp << std::endl;
+    clientID=temp->getID();
     return packet;
   }
 

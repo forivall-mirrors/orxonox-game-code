@@ -172,8 +172,15 @@ ClientInformation *ClientInformation::findClient(int clientID, bool look_backwar
  */
 ClientInformation *ClientInformation::findClient(ENetAddress *address, bool look_backwards){
   ClientInformation *temp = this;
-  while(temp!=0 && (temp->getPeer()->address.host!=address->host || temp->getPeer()->address.port != address->port))
+  while(temp!=0){
+    if(temp->head){
+      temp = temp->next();
+      continue;
+    }
+    if(temp->getPeer()->address.host==address->host && temp->getPeer()->address.port == address->port)
+      break;
     temp = temp->next();
+  }
   // returns 0 if nothing has been found
   return temp;
 }

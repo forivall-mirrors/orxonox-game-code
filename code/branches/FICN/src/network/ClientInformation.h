@@ -13,6 +13,7 @@
 #define NETWORKCLIENTINFORMATION_H
 
 #include <enet/enet.h>
+#include <iostream> //debug
 
 #define GAMESTATEID_INITIAL -1
 

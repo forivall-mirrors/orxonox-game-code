@@ -21,7 +21,7 @@ namespace network{
    */
   Server::Server(){
     packet_gen = PacketGenerator();
-    clients = new ClientInformation();
+    clients = new ClientInformation(true);
     connection = new ConnectionManager(clients);
     gamestates = new GameStateManager(clients);
   }
@@ -108,6 +108,7 @@ namespace network{
     ENetPacket *packet;
     int clientID=-1;
     while(!connection->queueEmpty()){
+      std::cout << "Client " << clientID << " sent: " << std::endl;
       packet = connection->getPacket(clientID);
       elaborate(packet, clientID);
     }
