@@ -115,10 +115,31 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, const char* defvalue)
     {
-        // Not much to do here - just set all member-variables and check the config-file
-        this->defvalue_ = defvalue;
+        // Convert the string to a "config-file-string" with quotes
+        this->defvalue_ = "\"" + std::string(defvalue) + "\"";
+
+        // Set the default-values, then get the value-string
         this->setDefaultValues(classname, varname);
-        this->value_string_ = this->getValueString(false);
+        std::string valueString = this->getValueString(false);
+
+        // Strip the quotes
+        unsigned int pos1 = valueString.find("\"") + 1;
+        unsigned int pos2 = valueString.find("\"", pos1);
+
+        // Check if the entry was correctly quoted
+        if (pos1 < valueString.length() && pos2 < valueString.length() && !(valueString.find("\"", pos2 + 1) < valueString.length()))
+        {
+            // It was - get the string between the quotes
+            valueString = valueString.substr(pos1, pos2 - pos1);
+            this->value_string_ = valueString;
+        }
+        else
+        {
+            // It wasn't - use the default-value and restore the entry in the config-file.
+            this->value_string_ = defvalue;
+            (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
+            ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+        }
     }
 
     /**
@@ -141,35 +162,63 @@ namespace orxonox
         std::string valueString = this->getValueString();
 
         // Strip the value-string
+        bool bEntryIsCorrupt = false;
         valueString = this->getStrippedLine(valueString);
-        unsigned int pos;
-        while ((pos = valueString.find("(")) < valueString.length())
-            valueString.erase(pos, 1);
-        while ((pos = valueString.find(")")) < valueString.length())
-            valueString.erase(pos, 1);
-        while ((pos = valueString.find(",")) < valueString.length())
-            valueString.replace(pos, 1, " ");
+        unsigned int pos1, pos2, pos3;
+        pos1 = valueString.find("(");
+        if (pos1 == 0)
+            valueString.erase(pos1, 1);
+        else
+            bEntryIsCorrupt = true;
+
+        pos2 = valueString.find(")");
+        if (pos2 == valueString.length() - 1)
+            valueString.erase(pos2, 1);
+        else
+            bEntryIsCorrupt = true;
+
+        int count = 0;
+        while ((pos3 = valueString.find(",")) < valueString.length())
+        {
+            count++;
+            valueString.replace(pos3, 1, " ");
+            if (pos3 < pos1)
+                bEntryIsCorrupt = true;
+        }
+
+        if (count != 2)
+            bEntryIsCorrupt = true;
 
         // Try to convert the stripped value-string to Vector3
-        std::istringstream istream(valueString);
-        if (!(istream >> this->value_vector3_.x))
+        if (!bEntryIsCorrupt)
         {
-            // The conversion failed - use the default value and restore the entry in the config-file
-            this->value_vector3_.x = defvalue.x;
-            (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
-            ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+            std::istringstream istream(valueString);
+            if (!(istream >> this->value_vector3_.x))
+            {
+                // The conversion failed - use the default value and restore the entry in the config-file
+                this->value_vector3_.x = defvalue.x;
+                (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
+                ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+            }
+            if (!(istream >> this->value_vector3_.y))
+            {
+                // The conversion failed - use the default value and restore the entry in the config-file
+                this->value_vector3_.y = defvalue.y;
+                (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
+                ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+            }
+            if (!(istream >> this->value_vector3_.z))
+            {
+                // The conversion failed - use the default value and restore the entry in the config-file
+                this->value_vector3_.z = defvalue.z;
+                (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
+                ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+            }
         }
-        if (!(istream >> this->value_vector3_.y))
+        else
         {
             // The conversion failed - use the default value and restore the entry in the config-file
-            this->value_vector3_.y = defvalue.y;
-            (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
-            ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
-        }
-        if (!(istream >> this->value_vector3_.z))
-        {
-            // The conversion failed - use the default value and restore the entry in the config-file
-            this->value_vector3_.z = defvalue.z;
+            this->value_vector3_ = defvalue;
             (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
             ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
         }
@@ -195,42 +244,70 @@ namespace orxonox
         std::string valueString = this->getValueString();
 
         // Strip the value-string
+        bool bEntryIsCorrupt = false;
         valueString = this->getStrippedLine(valueString);
-        unsigned int pos;
-        while ((pos = valueString.find("(")) < valueString.length())
-            valueString.erase(pos, 1);
-        while ((pos = valueString.find(")")) < valueString.length())
-            valueString.erase(pos, 1);
-        while ((pos = valueString.find(",")) < valueString.length())
-            valueString.replace(pos, 1, " ");
+        unsigned int pos1, pos2, pos3;
+        pos1 = valueString.find("(");
+        if (pos1 == 0)
+            valueString.erase(pos1, 1);
+        else
+            bEntryIsCorrupt = true;
+
+        pos2 = valueString.find(")");
+        if (pos2 == valueString.length() - 1)
+            valueString.erase(pos2, 1);
+        else
+            bEntryIsCorrupt = true;
+
+        int count = 0;
+        while ((pos3 = valueString.find(",")) < valueString.length())
+        {
+            count++;
+            valueString.replace(pos3, 1, " ");
+            if (pos3 < pos1)
+                bEntryIsCorrupt = true;
+        }
+
+        if (count != 3)
+            bEntryIsCorrupt = true;
 
         // Try to convert the stripped value-string to Vector3
-        std::istringstream istream(valueString);
-        if (!(istream >> this->value_colourvalue_.r))
+        if (!bEntryIsCorrupt)
         {
-            // The conversion failed - use the default value and restore the entry in the config-file
-            this->value_colourvalue_.r = defvalue.r;
-            (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
-            ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+            std::istringstream istream(valueString);
+            if (!(istream >> this->value_colourvalue_.r))
+            {
+                // The conversion failed - use the default value and restore the entry in the config-file
+                this->value_colourvalue_.r = defvalue.r;
+                (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
+                ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+            }
+            if (!(istream >> this->value_colourvalue_.g))
+            {
+                // The conversion failed - use the default value and restore the entry in the config-file
+                this->value_colourvalue_.g = defvalue.g;
+                (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
+                ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+            }
+            if (!(istream >> this->value_colourvalue_.b))
+            {
+                // The conversion failed - use the default value and restore the entry in the config-file
+                this->value_colourvalue_.b = defvalue.b;
+                (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
+                ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+            }
+            if (!(istream >> this->value_colourvalue_.a))
+            {
+                // The conversion failed - use the default value and restore the entry in the config-file
+                this->value_colourvalue_.a = defvalue.a;
+                (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
+                ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+            }
         }
-        if (!(istream >> this->value_colourvalue_.g))
+        else
         {
             // The conversion failed - use the default value and restore the entry in the config-file
-            this->value_colourvalue_.g = defvalue.g;
-            (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
-            ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
-        }
-        if (!(istream >> this->value_colourvalue_.b))
-        {
-            // The conversion failed - use the default value and restore the entry in the config-file
-            this->value_colourvalue_.b = defvalue.b;
-            (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
-            ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
-        }
-        if (!(istream >> this->value_colourvalue_.a))
-        {
-            // The conversion failed - use the default value and restore the entry in the config-file
-            this->value_colourvalue_.a = defvalue.a;
+            this->value_colourvalue_ = defvalue;
             (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
             ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
         }
@@ -407,6 +484,8 @@ namespace orxonox
         std::string output = line;
         unsigned int pos;
         while ((pos = output.find(" ")) < output.length())
+            output.erase(pos, 1);
+        while ((pos = output.find("\t")) < output.length())
             output.erase(pos, 1);
 
         return output;
