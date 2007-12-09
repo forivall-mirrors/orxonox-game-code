@@ -22,6 +22,7 @@
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 // headerfiles
+#include "ClientInformation.h"
 #include "ConnectionManager.h"
 #include "PacketBuffer.h"
 #include "PacketManager.h"
@@ -46,9 +47,9 @@ namespace network{
   
   class ConnectionManager{
     public:
-    ConnectionManager();
-    ConnectionManager(int port, const char *address);
-    ConnectionManager(int port, std::string address);
+    ConnectionManager(ClientInformation *head);
+    ConnectionManager(int port, const char *address, ClientInformation *head);
+    ConnectionManager(int port, std::string address, ClientInformation *head);
     ENetPacket *getPacket(ENetAddress &address); // thread1
     ENetPacket *getPacket(int &clientID);
     bool queueEmpty();
@@ -59,9 +60,9 @@ namespace network{
     bool addPacketAll(ENetPacket *packet);
     bool sendPackets(ENetEvent *event);
     bool sendPackets();
-    private:
+  private:
     bool clientDisconnect(ENetPeer *peer);
-    bool clientDisconnect(ENetPeer peer);
+    //bool clientDisconnect(ENetPeer peer);
     bool processData(ENetEvent *event);
     bool addClient(ENetEvent *event);
     void receiverThread();
@@ -69,7 +70,7 @@ namespace network{
     int getClientID(ENetPeer peer);
     int getClientID(ENetAddress address);
     void syncClassid(int clientID);
-    ENetPeer getClientPeer(int clientID);
+    ENetPeer *getClientPeer(int clientID);
     PacketBuffer buffer;
     PacketGenerator packet_gen;
     
@@ -77,9 +78,7 @@ namespace network{
     ENetAddress bindAddress;
     
     bool quit; // quit-variable (communication with threads)
-    std::map<ENetAddress, int> clientMap;
-    std::map<ENetAddress, ENetPeer> peerMap;
-    std::vector<ENetAddress> clientVector;
+    ClientInformation *head_;
   };
 
 

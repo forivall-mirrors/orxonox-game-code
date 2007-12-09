@@ -24,22 +24,25 @@ namespace network{
 
   boost::thread_group network_threads;
   
-  ConnectionManager::ConnectionManager(){
+  ConnectionManager::ConnectionManager(ClientInformation *head){
     quit=false;
     bindAddress.host = ENET_HOST_ANY;
     bindAddress.port = NETWORK_PORT;
+    head_ = head;
   }
 
-  ConnectionManager::ConnectionManager(int port, std::string address){
+  ConnectionManager::ConnectionManager(int port, std::string address, ClientInformation *head){
     quit=false;
     enet_address_set_host (& bindAddress, address.c_str());
     bindAddress.port = NETWORK_PORT;
+    head_ = head;
   }
 
-  ConnectionManager::ConnectionManager(int port, const char *address){
+  ConnectionManager::ConnectionManager(int port, const char *address, ClientInformation *head){
     quit=false;
     enet_address_set_host (& bindAddress, address);
     bindAddress.port = NETWORK_PORT;
+    head_ = head;
   }
 
   ENetPacket *ConnectionManager::getPacket(ENetAddress &address){
@@ -52,7 +55,7 @@ namespace network{
   ENetPacket *ConnectionManager::getPacket(int &clientID){
     ENetAddress address;
     ENetPacket *packet=getPacket(address);
-    clientID=clientMap.find(address)->second;
+    clientID=head_->findClient(&address)->getID();
     return packet;
   }
 
@@ -73,24 +76,20 @@ namespace network{
   }
 
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer){
-    if(clientVector.size()==0)
-      return false;
-    if(enet_peer_send(peer, clientMap.find(peer->address)->second , packet)!=0)
+    if(enet_peer_send(peer, head_->findClient(&(peer->address))->getID() , packet)!=0)
       return false;
     return true;
   }
   
   bool ConnectionManager::addPacket(ENetPacket *packet, int clientID){
-    if(clientVector.size()==0)
-      return false;
-    if(enet_peer_send(&(peerMap.find(clientVector[clientID])->second), clientID, packet)!=0)
+    if(enet_peer_send(head_->findClient(clientID)->getPeer(), clientID, packet)!=0)
       return false;
     return true;
   }
   
   bool ConnectionManager::addPacketAll(ENetPacket *packet){
-    for(unsigned int i=0; i<clientVector.size(); i++){
-      if(enet_peer_send(&(peerMap.find(clientVector[i])->second), i, packet)!=0)
+    for(ClientInformation *i=head_->next(); i!=0; i=i->next()){
+      if(enet_peer_send(i->getPeer(), i->getID(), packet)!=0)
          return false;
     }
     return true;
@@ -155,24 +154,26 @@ namespace network{
   }
   
   void ConnectionManager::disconnectClients(){
-    bool disconnected=false;
     ENetEvent event;
-    for(unsigned int i=0; i<clientVector.size(); i++){
-      enet_peer_disconnect(&(peerMap.find(clientVector[i])->second), 0);
-      while( !disconnected && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) > 0){
-        switch (event.type)
-        {
-          case ENET_EVENT_TYPE_NONE:
-          case ENET_EVENT_TYPE_CONNECT:
-          case ENET_EVENT_TYPE_RECEIVE:
-            enet_packet_destroy(event.packet);
-            break;
-          case ENET_EVENT_TYPE_DISCONNECT:
-            disconnected=true;
-            break;
-        }
+    ClientInformation *temp = head_->next();
+    while(temp!=0){
+      enet_peer_disconnect(temp->getPeer(), 0);
+      temp = temp->next();
+    }
+    temp = temp->next();
+    while( temp!=0 && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) > 0){
+      switch (event.type)
+      {
+        case ENET_EVENT_TYPE_NONE:
+        case ENET_EVENT_TYPE_CONNECT:
+        case ENET_EVENT_TYPE_RECEIVE:
+          enet_packet_destroy(event.packet);
+          break;
+        case ENET_EVENT_TYPE_DISCONNECT:
+          delete head_->findClient(&(event.peer->address));
+          temp = temp->next();
+          break;
       }
-      disconnected=false;
     }
     return;
   }
@@ -183,38 +184,34 @@ namespace network{
     return buffer.push(event);
   }
 
-  bool ConnectionManager::clientDisconnect(ENetPeer *peer){
-    return clientDisconnect(*peer);
-  }
+//   bool ConnectionManager::clientDisconnect(ENetPeer *peer){
+//     return clientDisconnect(*peer);
+//   }
   
-  bool ConnectionManager::clientDisconnect(ENetPeer peer){
-    std::map<ENetAddress, int>::iterator it;
-    it=clientMap.find(peer.address);
-    clientVector.erase(clientVector.begin()+it->second);
-    clientMap.erase(it);
-    peerMap.erase(peerMap.find(peer.address));
+  
+  
+  bool ConnectionManager::clientDisconnect(ENetPeer *peer){
+    return head_->removeClient(peer);
     return true;
   }
 
   bool ConnectionManager::addClient(ENetEvent *event){
-    int id=clientVector.size();
-    clientVector.push_back((event->peer->address));
-    clientMap[event->peer->address]=id;
-    peerMap[event->peer->address]=*(event->peer);
-    syncClassid(id);
+    ClientInformation *temp = head_->insertBack(new ClientInformation);
+    temp->setID(temp->prev()->getID());
+    temp->setPeer(event->peer);
     return true;
   }
   
   int ConnectionManager::getClientID(ENetPeer peer){
-    return clientMap.find(peer.address)->second;
+    return getClientID(peer.address);
   }
   
   int ConnectionManager::getClientID(ENetAddress address){
-    return clientMap.find(address)->second;
+    return head_->findClient(&address)->getID();
   }
   
-  ENetPeer ConnectionManager::getClientPeer(int clientID){
-    return peerMap.find(clientVector[clientID])->second;
+  ENetPeer *ConnectionManager::getClientPeer(int clientID){
+    return head_->findClient(clientID)->getPeer();
   }
   
   void ConnectionManager::syncClassid(int clientID){

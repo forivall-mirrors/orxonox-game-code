@@ -19,6 +19,7 @@
 #include "PacketManager.h"
 #include "GameStateManager.h"
 #include "enet/enet.h"
+#include "ClientInformation.h"
 
 namespace network{
 
@@ -38,12 +39,13 @@ namespace network{
     void tick();
     private:
     bool sendGameState();
-    ConnectionManager connection;
-    GameStateManager gamestates;
+    ConnectionManager *connection;
+    GameStateManager *gamestates;
     PacketGenerator packet_gen;
     
     void processQueue();
     void updateGamestate();
+    ClientInformation *clients;
   };
 
 

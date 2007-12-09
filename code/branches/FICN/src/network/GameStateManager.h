@@ -12,10 +12,11 @@
 #ifndef NETWORK_GAMESTATEMANAGER_H
 #define NETWORK_GAMESTATEMANAGER_H
 
-#include <vector>
+#include <map>
 
 #include "zlib.h"
 
+#include "ClientInformation.h"
 #include "Synchronisable.h"
 #include "orxonox/core/IdentifierIncludes.h"
 #include "orxonox/core/Iterator.h"
@@ -23,7 +24,7 @@
 
 namespace network {
 
-
+#define KEEP_GAMESTATES 20
 
 /**
  * This Class implements a manager for gamestates:
@@ -42,23 +43,24 @@ namespace network {
 */
 class GameStateManager{
 public:
-  GameStateManager();
+  GameStateManager(ClientInformation *head);
   ~GameStateManager();
   void update();
   GameStateCompressed popGameState(int clientID);
   void ackGameState(int clientID, int gamestateID);
-  void removeClient(int clientID);
 private:
   GameState *getSnapshot(int id);
   GameStateCompressed encode(GameState *a, GameState *b);
+  GameStateCompressed encode(GameState *a);
   GameState diff(GameState *a, GameState *b);
-  GameStateCompressed compress_(GameState a);
-  bool deleteUnusedGameState(GameState *state);
+  GameStateCompressed compress_(GameState *a);
+  bool deleteUnusedGameState(int gamestateID);
   
-  std::vector<GameState *> clientGameState;
-  std::vector<GameState *> idGameState;
+  std::map<int, GameState*> gameStateMap; //map gsID to gamestate*
+  std::map<int, int> gameStateUsed; // save the number of clients, that use the specific gamestate
   GameState *reference;
   int id;
+  ClientInformation *head_;
 };
 
 }

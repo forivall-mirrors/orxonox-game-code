@@ -12,7 +12,10 @@ GameStateClient::~GameStateClient()
 }
 
 bool GameStateClient::pushGameState(GameStateCompressed compstate){
-  return loadSnapshot(decode(reference, compstate));
+  if(compstate.diffed)
+    return loadSnapshot(decode(reference, compstate));
+  else
+    return loadSnapshot(decode(compstate));
 }
 
 
@@ -126,6 +129,7 @@ GameState GameStateClient::decompress(GameStateCompressed a){
   gamestate.id = a.id;
   gamestate.size = normsize;
   gamestate.data = dest;
+  gamestate.diffed = a.diffed;
   
   return gamestate;
 }
@@ -134,6 +138,11 @@ GameState GameStateClient::decompress(GameStateCompressed a){
 GameState GameStateClient::decode(GameState a, GameStateCompressed x){
   GameState t = decompress(x);
   return diff(a, t);
+}
+
+GameState GameStateClient::decode(GameStateCompressed x){
+  GameState t = decompress(x);
+  return t;
 }
 
 

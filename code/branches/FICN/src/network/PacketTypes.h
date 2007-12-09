@@ -32,6 +32,8 @@ enum packet_id {
   struct GameState{
     int id;
     int size;
+    // new ---- change functions
+    bool diffed;
     unsigned char *data;
   };
 
@@ -45,6 +47,8 @@ enum packet_id {
     int id; 
     int compsize;
     int normsize;
+    // new ----- change functions
+    bool diffed;
     unsigned char *data;
   };
 

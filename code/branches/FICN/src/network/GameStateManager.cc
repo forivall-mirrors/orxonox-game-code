@@ -13,9 +13,10 @@
 
 namespace network {
 
-GameStateManager::GameStateManager()
+GameStateManager::GameStateManager(ClientInformation *head)
 {
   id=0;
+  head_=head;
 }
 
 GameStateManager::~GameStateManager()
@@ -24,15 +25,22 @@ GameStateManager::~GameStateManager()
 
 void GameStateManager::update(){
   reference = getSnapshot(id);
-  idGameState[id]=reference;
+  gameStateMap.insert(std::pair<int, GameState*>(id, reference));
+  gameStateUsed[id]=0;
   ++id;
   return;
 }
 
 GameStateCompressed GameStateManager::popGameState(int clientID){
-  GameState *client = clientGameState[clientID];
+  int gID = head_->findClient(clientID)->getGamestateID();
+  if(gID!=GAMESTATEID_INITIAL){
+    GameState *client = gameStateMap[gID];
+    GameState *server = reference;
+    return encode(client, server);
+  }
   GameState *server = reference;
-  return encode(client, server);
+  return encode(server);
+  // return an undiffed gamestate and set appropriate flags
 }
 
 
@@ -84,10 +92,15 @@ GameState *GameStateManager::getSnapshot(int id)
 
 
 GameStateCompressed GameStateManager::encode(GameState *a, GameState *b){
-  GameState r = diff(a,b);
-  return compress_(r);
+    GameState r = diff(a,b);
+  r.diffed = true;
+  return compress_(&r);
 }
 
+GameStateCompressed GameStateManager::encode(GameState *a){
+  a->diffed=false;
+  return compress_(a);
+}
 
 GameState GameStateManager::diff(GameState *a, GameState *b){
   unsigned char *ap = a->data, *bp = b->data;
@@ -121,12 +134,12 @@ GameState GameStateManager::diff(GameState *a, GameState *b){
   return r;
 }
 
-GameStateCompressed GameStateManager::compress_(GameState a) {
-  int size = a.size;
-  uLongf buffer = (uLongf)((a.size + 12)*1.01)+1;
+GameStateCompressed GameStateManager::compress_(GameState *a) {
+  int size = a->size;
+  uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
   unsigned char* dest = (unsigned char*)malloc( buffer );
   int retval;
-  retval = compress( dest, &buffer, a.data, (uLong)size );  
+  retval = compress( dest, &buffer, a->data, (uLong)size );  
   
   switch ( retval ) {
   case Z_OK: std::cout << "successfully compressed" << std::endl; break;
@@ -140,27 +153,34 @@ GameStateCompressed GameStateManager::compress_(GameState a) {
   compressedGamestate.normsize = size;
   compressedGamestate.id = GAMESTATE;
   compressedGamestate.data = dest;
+  compressedGamestate.diffed = a->diffed;
   
   return compressedGamestate;
 }
 
 void GameStateManager::ackGameState(int clientID, int gamestateID){
+  ClientInformation *temp = head_->findClient(clientID);
+  int curid = temp->getID();
+  // decrease usage of gamestate and save it
+  deleteUnusedGameState(curid);
+  //increase gamestateused
+  ++gameStateUsed.find(gamestateID)->second;
+  temp->setGamestateID(gamestateID);
+  /*
   GameState *old = clientGameState[clientID];
   deleteUnusedGameState(old);
-  clientGameState[clientID]=idGameState[gamestateID];
+  clientGameState[clientID]=idGameState[gamestateID];*/
 }
 
-bool GameStateManager::deleteUnusedGameState(GameState *state){
-  for(unsigned int i=0; i<clientGameState.size(); i++){
-    if(clientGameState[i]==state)
-      return false;
+bool GameStateManager::deleteUnusedGameState(int gamestateID){
+  int used = --(gameStateUsed.find(gamestateID)->second);
+  if(id-gamestateID>KEEP_GAMESTATES && used==0){
+    // delete gamestate
+    delete gameStateMap.find(gamestateID)->second;
+    gameStateMap.erase(gamestateID);
+    return true;
   }
-  delete state;
-  return true;
-}
-
-void GameStateManager::removeClient(int clientID){
-  clientGameState.erase(clientGameState.begin()+clientID);
+  return false;
 }
 
 }

@@ -32,6 +32,7 @@ private:
   GameState diff(GameState a, GameState b);
   GameState decompress(GameStateCompressed a);
   GameState decode(GameState a, GameStateCompressed x);
+  GameState decode(GameStateCompressed x);
   void removeObject(orxonox::Iterator<Synchronisable> &it);
   
   GameState reference;

@@ -20,9 +20,10 @@ namespace network{
    *
    */
   Server::Server(){
-    connection = ConnectionManager();
-    gamestates = GameStateManager();
     packet_gen = PacketGenerator();
+    clients = new ClientInformation();
+    connection = new ConnectionManager(clients);
+    gamestates = new GameStateManager(clients);
   }
 
   /**
@@ -31,9 +32,10 @@ namespace network{
    * @param bindAddress Address to listen on
    */
   Server::Server(int port, std::string bindAddress){
-    connection = ConnectionManager(port, bindAddress);
-    gamestates = GameStateManager();
     packet_gen = PacketGenerator();
+    clients = new ClientInformation();
+    connection = new ConnectionManager(port, bindAddress, clients);
+    gamestates = new GameStateManager(clients);
   }
 
   /**
@@ -42,16 +44,17 @@ namespace network{
    * @param bindAddress Address to listen on
    */
   Server::Server(int port, const char *bindAddress){
-    connection = ConnectionManager(port, bindAddress);
-    gamestates = GameStateManager();
     packet_gen = PacketGenerator();
+    clients = new ClientInformation();
+    connection = new ConnectionManager(port, bindAddress, clients);
+    gamestates = new GameStateManager(clients);
   }
   
   /**
    * This function opens the server by creating the listener thread
    */
   void Server::open(){
-    connection.createListener();
+    connection->createListener();
     return;
   }
   
@@ -59,7 +62,7 @@ namespace network{
    * This function closes the server
    */
   void Server::close(){
-    connection.quitListener();
+    connection->quitListener();
     return;
   }
   
@@ -70,8 +73,8 @@ namespace network{
    */
   bool Server::sendMSG(std::string msg){
     ENetPacket *packet = packet_gen.chatMessage(msg.c_str());
-    connection.addPacketAll(packet);
-    return connection.sendPackets();
+    connection->addPacketAll(packet);
+    return connection->sendPackets();
   }
   /**
    * This function sends out a message to all clients
@@ -80,8 +83,8 @@ namespace network{
    */
   bool Server::sendMSG(const char *msg){
     ENetPacket *packet = packet_gen.chatMessage(msg);
-    connection.addPacketAll(packet);
-    return connection.sendPackets();
+    connection->addPacketAll(packet);
+    return connection->sendPackets();
   }
   
   /**
@@ -100,8 +103,8 @@ namespace network{
   void Server::processQueue(){
     ENetPacket *packet;
     int clientID=-1;
-    while(!connection.queueEmpty()){
-      packet = connection.getPacket(clientID);
+    while(!connection->queueEmpty()){
+      packet = connection->getPacket(clientID);
       elaborate(packet, clientID);
     }
   }
@@ -110,7 +113,7 @@ namespace network{
    * takes a new snapshot of the gamestate and sends it to the clients
    */
   void Server::updateGamestate(){
-    gamestates.update();
+    gamestates->update();
     sendGameState();
   }
   
