@@ -1,4 +1,4 @@
-//
+//o
 // Dummy client to test ConnectionManager and PacketBuffer classes
 //
 // Author: Oliver Scheuss
