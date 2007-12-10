@@ -12,6 +12,7 @@
 
 #include "ObjectList.h"
 #include "Identifier.h"
+#include "Debug.h"
 
 namespace orxonox
 {
@@ -68,9 +69,7 @@ namespace orxonox
             this->list_->first_ = this->element_->next_; // If there is no prev_, we deleted the first object and have to update the first_ pointer of the list
 
 
-#if HIERARCHY_VERBOSE
-        std::cout << "*** Removing Object from " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
-#endif
+        COUT(4) << "*** Removing Object from " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
         delete this->element_;
     }
 

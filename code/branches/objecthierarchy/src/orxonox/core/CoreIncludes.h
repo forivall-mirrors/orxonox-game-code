@@ -16,6 +16,7 @@
 #include "Iterator.h"
 #include "OrxonoxClass.h"
 #include "ConfigValueContainer.h"
+#include "Debug.h"
 
 #include "OgreVector2.h"
 #include "OgreVector3.h"
@@ -55,27 +56,17 @@ namespace orxonox
     @brief RegisterObject - with and without debug output.
     @param ClassName The name of the class
 */
-#if HIERARCHY_VERBOSE
 #define RegisterObject(ClassName) \
-    std::cout << "*** Register Object: " << #ClassName << "\n"; \
+    COUT(4) << "*** Register Object: " << #ClassName << "\n"; \
     InternRegisterObject(ClassName, false)
-#else
-#define RegisterObject(ClassName) \
-    InternRegisterObject(ClassName, false)
-#endif
 
 /**
     @brief RegisterRootObject - with and without debug output.
     @param ClassName The name of the class
 */
-#if HIERARCHY_VERBOSE
 #define RegisterRootObject(ClassName) \
-    std::cout << "*** Register Root-Object: " << #ClassName << "\n"; \
+    COUT(4) << "*** Register Root-Object: " << #ClassName << "\n"; \
     InternRegisterRootObject(ClassName)
-#else
-#define RegisterRootObject(ClassName) \
-    InternRegisterRootObject(ClassName)
-#endif
 
 /**
     @brief Returns the Identifier of the given class.

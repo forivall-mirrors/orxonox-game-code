@@ -31,9 +31,7 @@
 #include "ObjectList.h"
 #include "Factory.h"
 #include "ConfigValueContainer.h"
-
-#define HIERARCHY_VERBOSE 0
-
+#include "Debug.h"
 
 namespace orxonox
 {
@@ -117,9 +115,7 @@ namespace orxonox
             inline static void startCreatingHierarchy()
             {
                 hierarchyCreatingCounter_s++;
-#if HIERARCHY_VERBOSE
-                std::cout << "*** Increased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << "\n";
-#endif
+                COUT(4) << "*** Increased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << "\n";
             }
 
             /**
@@ -128,9 +124,7 @@ namespace orxonox
             inline static void stopCreatingHierarchy()
             {
                 hierarchyCreatingCounter_s--;
-#if HIERARCHY_VERBOSE
-                std::cout << "*** Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << "\n";
-#endif
+                COUT(4) << "*** Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << "\n";
             }
 
             IdentifierList parents_;                                    //!< The Parents of the class the Identifier belongs to
@@ -205,16 +199,12 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass)
     {
-#if HIERARCHY_VERBOSE
-        std::cout << "*** Register Class in " << name << "-Singleton.\n";
-#endif
+        COUT(4) << "*** Register Class in " << name << "-Singleton.\n";
 
         // It's a singleton, so maybe we have to create it first
         if (!pointer_s)
         {
-#if HIERARCHY_VERBOSE
-            std::cout << "*** Register Class in " << name << "-Singleton -> Create Singleton.\n";
-#endif
+            COUT(4) << "*** Register Class in " << name << "-Singleton -> Create Singleton.\n";
             pointer_s = new ClassIdentifier();
         }
 
@@ -223,9 +213,7 @@ namespace orxonox
         {
             // If no: We have to store the informations and initialize the Identifier
 
-#if HIERARCHY_VERBOSE
-            std::cout << "*** Register Class in " << name << "-Singleton -> Initialize Singleton.\n";
-#endif
+            COUT(4) << "*** Register Class in " << name << "-Singleton -> Initialize Singleton.\n";
             pointer_s->name_ = name;
             Factory::add(name, pointer_s); // Add the Identifier to the Factory
 
@@ -246,9 +234,7 @@ namespace orxonox
     {
         if (!pointer_s)
         {
-#if HIERARCHY_VERBOSE
-            std::cout << "*** Create Singleton.\n";
-#endif
+            COUT(4) << "*** Create Singleton.\n";
             pointer_s = new ClassIdentifier();
         }
 
@@ -262,9 +248,7 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::addObject(T* object)
     {
-#if HIERARCHY_VERBOSE
-        std::cout << "*** Added object to " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
-#endif
+        COUT(4) << "*** Added object to " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
         object->getMetaList().add(ClassIdentifier<T>::getIdentifier()->objects_, ClassIdentifier<T>::getIdentifier()->objects_->add(object));
     }
 
@@ -299,9 +283,9 @@ namespace orxonox
             {
                 if (!identifier->isA(ClassIdentifier<T>::getIdentifier()))
                 {
-                    std::cout << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!\n";
-                    std::cout << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden.\n";
-                    std::cout << "Aborting...\n";
+                    COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!\n";
+                    COUT(1) << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden.\n";
+                    COUT(1) << "Aborting...\n";
                     abort();
                 }
                 this->identifier_ = identifier;
@@ -345,14 +329,14 @@ namespace orxonox
                     // Something went terribly wrong
                     if (this->identifier_)
                     {
-                        std::cout << "Error: Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!\n";
-                        std::cout << "Error: Couldn't fabricate a new Object.\n";
-                        std::cout << "Aborting...\n";
+                        COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!\n";
+                        COUT(1) << "Error: Couldn't fabricate a new Object.\n";
+                        COUT(1) << "Aborting...\n";
                     }
                     else
                     {
-                        std::cout << "Error: Couldn't fabricate a new Object - Identifier is undefined.\n";
-                        std::cout << "Aborting...\n";
+                        COUT(1) << "Error: Couldn't fabricate a new Object - Identifier is undefined.\n";
+                        COUT(1) << "Aborting...\n";
                     }
 
                     abort();

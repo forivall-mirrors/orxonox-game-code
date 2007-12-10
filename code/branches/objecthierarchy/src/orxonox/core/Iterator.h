@@ -18,6 +18,8 @@
 #ifndef _Iterator_H__
 #define _Iterator_H__
 
+#include "Debug.h"
+
 namespace orxonox
 {
     //! The iterator allows to iterate through an ObjectList of a given class.
@@ -99,7 +101,7 @@ namespace orxonox
             {
                 // Comparing with anything except zero makes no sense
                 if (compare != 0)
-                    std::cout << "Warning: Comparing the " << ClassIdentifier<T>::getIdentifier()->getName() << "-List-Iterator with " << compare << " has no effect. Only comparison with 0 works.\n";
+                    COUT(2) << "Warning: Comparing the " << ClassIdentifier<T>::getIdentifier()->getName() << "-List-Iterator with " << compare << " has no effect. Only comparison with 0 works.\n";
 
                 return (this->element_ != 0);
             }

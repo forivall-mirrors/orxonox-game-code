@@ -9,6 +9,7 @@
 #define _ClassFactory_H__
 
 #include "Identifier.h"
+#include "Debug.h"
 
 namespace orxonox
 {
@@ -43,9 +44,7 @@ namespace orxonox
 
         // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
         ClassIdentifier<T>::getIdentifier()->startCreatingHierarchy();
-#if HIERARCHY_VERBOSE
-        std::cout << "*** Create Factory -> Create Class\n";
-#endif
+        COUT(4) << "*** Create Factory -> Create Class\n";
         BaseObject* temp = ClassIdentifier<T>::getIdentifier()->fabricate();
         delete temp;
         ClassIdentifier<T>::getIdentifier()->stopCreatingHierarchy();
