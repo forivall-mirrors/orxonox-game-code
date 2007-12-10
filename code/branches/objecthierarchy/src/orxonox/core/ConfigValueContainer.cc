@@ -11,7 +11,7 @@ namespace orxonox
     bool ConfigValueContainer::readConfigFile_s = false;                 // Set the static member variable readConfigFile_s to false
 
     /**
-        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets this->value_int_.
+        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets this->value_.value_int_.
         @param classname The name of the class the variable belongs to
         @param varname The name of the variable
         @param defvalue The default-value
@@ -31,17 +31,17 @@ namespace orxonox
 
         // Try to convert the value-string to int
         std::istringstream istream(valueString);
-        if (!(istream >> this->value_int_))
+        if (!(istream >> this->value_.value_int_))
         {
             // The conversion failed - use the default value and restore the entry in the config-file
-            this->value_int_ = defvalue;
+            this->value_.value_int_ = defvalue;
             (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
             ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
         }
     }
 
     /**
-        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets this->value_double_.
+        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets this->value_.value_double_.
         @param classname The name of the class the variable belongs to
         @param varname The name of the variable
         @param defvalue The default-value
@@ -61,17 +61,17 @@ namespace orxonox
 
         // Try to convert the value-string to double
         std::istringstream istream(valueString);
-        if (!(istream >> this->value_double_))
+        if (!(istream >> this->value_.value_double_))
         {
             // The conversion failed - use the default value and restore the entry in the config-file
-            this->value_double_ = defvalue;
+            this->value_.value_double_ = defvalue;
             (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
             ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
         }
     }
 
     /**
-        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets this->value_bool_.
+        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets this->value_.value_bool_.
         @param classname The name of the class the variable belongs to
         @param varname The name of the variable
         @param defvalue The default-value
@@ -90,17 +90,17 @@ namespace orxonox
 
         // Try to parse the value-string - is it a word?
         if (valueString.find("true") < valueString.size() || valueString.find("yes") < valueString.size())
-            this->value_bool_ = true;
+            this->value_.value_bool_ = true;
         else if (valueString.find("false") < valueString.size() || valueString.find("no") < valueString.size())
-            this->value_bool_ = false;
+            this->value_.value_bool_ = false;
         else
         {
             // Its not a known word - is it a number?
             std::istringstream istream(valueString);
-            if (!(istream >> this->value_bool_))
+            if (!(istream >> this->value_.value_bool_))
             {
                 // The conversion failed - use the default value and restore the entry in the config-file
-                this->value_bool_ = defvalue;
+                this->value_.value_bool_ = defvalue;
                 (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
                 ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
             }
@@ -403,9 +403,9 @@ namespace orxonox
         this->searchConfigFileLine();
 
         // Set the values of all types to zero
-        this->value_int_ = 0;
-        this->value_double_ = 0.000000;
-        this->value_bool_ = false;
+        this->value_.value_int_ = 0;
+        this->value_.value_double_ = 0.000000;
+        this->value_.value_bool_ = false;
         this->value_string_ = "";
         this->value_vector2_ = Ogre::Vector2(0, 0);
         this->value_vector3_ = Ogre::Vector3(0, 0, 0);

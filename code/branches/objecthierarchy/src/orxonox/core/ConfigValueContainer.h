@@ -62,11 +62,11 @@ namespace orxonox
             static void writeConfigFile(const std::string& filename);
 
             /** @returns the value of the type int. @param value This is only needed to determine the right type. */
-            inline int getValue(int value)                                      { return this->value_int_; }
+            inline int getValue(int value)                                      { return this->value_.value_int_; }
             /** @returns the value of the type double. @param value This is only needed to determine the right type. */
-            inline double getValue(double value)                                { return this->value_double_; }
+            inline double getValue(double value)                                { return this->value_.value_double_; }
             /** @returns the value of the type bool. @param value This is only needed to determine the right type. */
-            inline bool getValue(bool value)                                    { return this->value_bool_; }
+            inline bool getValue(bool value)                                    { return this->value_.value_bool_; }
             /** @returns the value of the type std::string. @param value This is only needed to determine the right type. */
             inline std::string getValue(const std::string& value)               { return this->value_string_; }
             /** @returns the value of the type Vector2. @param value This is only needed to determine the right type. */
@@ -81,9 +81,13 @@ namespace orxonox
             std::string         varname_;                       //!< The name of the variable
             std::string         defvalue_;                      //!< The string of the default-variable
 
-            int                 value_int_;                     //!< The value, if the variable is of the type int
-            double              value_double_;                  //!< The value, if the variable is of the type double
-            bool                value_bool_;                    //!< The value, if the variable is of the type bool
+            union MultiType
+            {
+                int                 value_int_;                 //!< The value, if the variable is of the type int
+                double              value_double_;              //!< The value, if the variable is of the type double
+                bool                value_bool_;                //!< The value, if the variable is of the type bool
+            } value_;
+
             std::string         value_string_;                  //!< The value, if the variable is of the type string
             Ogre::Vector2       value_vector2_;                 //!< The value, if the variable is of the type Vector2
             Ogre::Vector3       value_vector3_;                 //!< The value, if the variable is of the type Vector3
