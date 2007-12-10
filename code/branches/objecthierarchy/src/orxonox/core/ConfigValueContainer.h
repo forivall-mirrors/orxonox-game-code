@@ -17,6 +17,8 @@
 
 #include <string>
 #include <list>
+
+#include "OgreVector2.h"
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
 
@@ -45,6 +47,7 @@ namespace orxonox
             ConfigValueContainer(const std::string& classname, const std::string& varname, double defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, bool defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, const char* defvalue);
+            ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector2 defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector3 defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::ColourValue defvalue);
 
@@ -66,6 +69,8 @@ namespace orxonox
             inline bool getValue(bool value)                                    { return this->value_bool_; }
             /** @returns the value of the type std::string. @param value This is only needed to determine the right type. */
             inline std::string getValue(const std::string& value)               { return this->value_string_; }
+            /** @returns the value of the type Vector2. @param value This is only needed to determine the right type. */
+            inline Ogre::Vector2 getValue(const Ogre::Vector2& value)           { return this->value_vector2_; }
             /** @returns the value of the type Vector3. @param value This is only needed to determine the right type. */
             inline Ogre::Vector3 getValue(const Ogre::Vector3& value)           { return this->value_vector3_; }
             /** @returns the value of the type Colour£Value. @param value This is only needed to determine the right type. */
@@ -80,6 +85,7 @@ namespace orxonox
             double              value_double_;                  //!< The value, if the variable is of the type double
             bool                value_bool_;                    //!< The value, if the variable is of the type bool
             std::string         value_string_;                  //!< The value, if the variable is of the type string
+            Ogre::Vector2       value_vector2_;                 //!< The value, if the variable is of the type Vector2
             Ogre::Vector3       value_vector3_;                 //!< The value, if the variable is of the type Vector3
             Ogre::ColourValue   value_colourvalue_;             //!< The value, if the variable is of the type ColourValue
 

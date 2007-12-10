@@ -17,6 +17,7 @@
 #include "OrxonoxClass.h"
 #include "ConfigValueContainer.h"
 
+#include "OgreVector2.h"
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
 
@@ -24,6 +25,7 @@
 // Some typedefs
 namespace orxonox
 {
+    typedef Ogre::Vector2 Vector2;
     typedef Ogre::Vector3 Vector3;
     typedef Ogre::ColourValue ColourValue;
 }
@@ -108,4 +110,4 @@ namespace orxonox
         container##varname = new ConfigValueContainer(this->getIdentifier()->getName(), #varname, defvalue); \
         this->getIdentifier()->setConfigValueContainer(#varname, container##varname); \
     } \
-    this->varname = container##varname->getValue(varname)
+    varname = container##varname->getValue(varname)

@@ -26,6 +26,7 @@ namespace orxonox
             double              value_double_;
             bool                value_bool_;
             std::string         value_string_;
+            Vector2             value_vector2_;
             Vector3             value_vector3_;
             ColourValue         value_colourvalue_;
     };

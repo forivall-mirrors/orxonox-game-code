@@ -143,6 +143,81 @@ namespace orxonox
     }
 
     /**
+        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets this->value_vector2_.
+        @param classname The name of the class the variable belongs to
+        @param varname The name of the variable
+        @param defvalue The default-value
+    */
+    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector2 defvalue)
+    {
+        // Try to convert the default-value from Vector2 to string
+        std::ostringstream ostream;
+        if (ostream << "(" << defvalue.x << "," << defvalue.y << ")")
+            this->defvalue_ = ostream.str();
+        else
+            this->defvalue_ = "(0,0)";
+
+        // Set the default values, then get the value-string
+        this->setDefaultValues(classname, varname);
+        std::string valueString = this->getValueString();
+
+        // Strip the value-string
+        bool bEntryIsCorrupt = false;
+        valueString = this->getStrippedLine(valueString);
+        unsigned int pos1, pos2, pos3;
+        pos1 = valueString.find("(");
+        if (pos1 == 0)
+            valueString.erase(pos1, 1);
+        else
+            bEntryIsCorrupt = true;
+
+        pos2 = valueString.find(")");
+        if (pos2 == valueString.length() - 1)
+            valueString.erase(pos2, 1);
+        else
+            bEntryIsCorrupt = true;
+
+        int count = 0;
+        while ((pos3 = valueString.find(",")) < valueString.length())
+        {
+            count++;
+            valueString.replace(pos3, 1, " ");
+            if (pos3 < pos1)
+                bEntryIsCorrupt = true;
+        }
+
+        if (count != 1)
+            bEntryIsCorrupt = true;
+
+        // Try to convert the stripped value-string to Vector2
+        if (!bEntryIsCorrupt)
+        {
+            std::istringstream istream(valueString);
+            if (!(istream >> this->value_vector2_.x))
+            {
+                // The conversion failed - use the default value and restore the entry in the config-file
+                this->value_vector2_.x = defvalue.x;
+                (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
+                ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+            }
+            if (!(istream >> this->value_vector2_.y))
+            {
+                // The conversion failed - use the default value and restore the entry in the config-file
+                this->value_vector2_.y = defvalue.y;
+                (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
+                ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+            }
+        }
+        else
+        {
+            // The conversion failed - use the default value and restore the entry in the config-file
+            this->value_vector2_ = defvalue;
+            (*this->configFileLine_) = this->varname_ + "=" + this->defvalue_;
+            ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+        }
+    }
+
+    /**
         @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets this->value_vector3_.
         @param classname The name of the class the variable belongs to
         @param varname The name of the variable
@@ -332,6 +407,7 @@ namespace orxonox
         this->value_double_ = 0.000000;
         this->value_bool_ = false;
         this->value_string_ = "";
+        this->value_vector2_ = Ogre::Vector2(0, 0);
         this->value_vector3_ = Ogre::Vector3(0, 0, 0);
         this->value_colourvalue_ = Ogre::ColourValue(0, 0, 0, 0);
     }
