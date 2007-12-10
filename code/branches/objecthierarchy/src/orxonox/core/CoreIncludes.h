@@ -80,7 +80,7 @@ namespace orxonox
     @param ClassName The name of the class
 */
 #define CreateFactory(ClassName) \
-    bool bCreated##ClassName##Factory = ClassFactory<ClassName>::create()
+    bool bCreated##ClassName##Factory = ClassFactory<ClassName>::create(#ClassName)
 
 /**
     @brief Returns the Identifier with either a given name or a given network ID through the factory.

@@ -63,8 +63,7 @@ namespace orxonox
         template <class T>
         friend class SubclassIdentifier; // Forward declaration
 
-        template <class T>
-        friend class ClassFactory; // Forward declaration
+        friend class Factory; // Forward declaration
 
         public:
             /** @brief Sets the Factory. @param facotry The factory to assign */
@@ -215,7 +214,7 @@ namespace orxonox
 
             COUT(4) << "*** Register Class in " << name << "-Singleton -> Initialize Singleton.\n";
             pointer_s->name_ = name;
-            Factory::add(name, pointer_s); // Add the Identifier to the Factory
+//            Factory::add(name, pointer_s); // Add the Identifier to the Factory
 
             if (bRootClass)
                 pointer_s->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.

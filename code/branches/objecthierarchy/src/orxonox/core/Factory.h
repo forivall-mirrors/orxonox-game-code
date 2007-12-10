@@ -35,6 +35,7 @@ namespace orxonox
             static Identifier* getIdentifier(const unsigned int id);
             static void add(const std::string& name, Identifier* identifier);
             static void changeNetworkID(Identifier* identifier, const unsigned int oldID, const unsigned int newID);
+            static void createClassHierarchy();
 
         private:
             Factory() {}                        // don't create

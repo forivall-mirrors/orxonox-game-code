@@ -118,7 +118,7 @@ namespace orxonox
         setupInputSystem();
         setupCEGUI();
         createFrameListener();
-
+        Factory::createClassHierarchy();
 
         #define testandcout(code) \
           std::cout << #code << " " << code << "\n"
