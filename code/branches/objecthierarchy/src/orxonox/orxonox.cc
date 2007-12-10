@@ -42,6 +42,7 @@
 //#include "../loader/LevelLoader.h"
 
 #include "core/CoreIncludes.h"
+#include "core/SignalHandler.h"
 #include "objects/Tickable.h"
 #include "objects/Timer.h"
 
@@ -780,28 +781,29 @@ namespace orxonox
 
 using namespace Ogre;
 
-#if OGRE_PLATFORM == PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
+//#if OGRE_PLATFORM == PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+//#define WIN32_LEAN_AND_MEAN
+//#include "windows.h"
 
-             INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
-#else
+//             INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
+//#else
              int main(int argc, char **argv)
-#endif
+//#endif
 {
   try
   {
+    SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
     orxonox::OrxApplication orxonox;
     orxonox.go();
   }
   catch(Exception& e)
   {
-#if OGRE_PLATFORM == PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    MessageBoxA(NULL, e.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-#else
+//#if OGRE_PLATFORM == PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+//    MessageBoxA(NULL, e.getFullDescription().c_str(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+//#else
     fprintf(stderr, "An exception has occurred: %s\n",
             e.getFullDescription().c_str());
-#endif
+//#endif
   }
 
   return 0;
