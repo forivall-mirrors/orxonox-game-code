@@ -100,7 +100,7 @@ void SignalHandler::sigHandler( int sig )
       break;
   }
 
-  printf( "recieved signal %s\ntry to write backtrace to file orxonox.backtrace\n", sigName.c_str() );
+  printf( "recieved signal %s\ntry to write backtrace to file orxonox.log\n", sigName.c_str() );
 
   int sigPipe[2];
   if ( pipe(sigPipe) == -1 )
