@@ -421,8 +421,6 @@ namespace orxonox
         if (!ConfigValueContainer::readConfigFile_s)
             ConfigValueContainer::readConfigFile(CONFIGFILEPATH);
 
-        // Just in case something goes wrong
-        this->configFileLine_ = 0;
 
         // The string of the section we're searching
         std::string section = "";
