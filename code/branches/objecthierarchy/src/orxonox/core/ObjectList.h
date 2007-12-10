@@ -1,6 +1,6 @@
 /*!
     @file ObjectList.h
-    @brief Definition of the ObjectList class.
+    @brief Definition and implementation of the ObjectList class.
 
     The ObjectList is a double-linked list, used by Identifiers to store all objects of a given class.
     Newly created objects are added through the RegisterObject-macro in its constructor.

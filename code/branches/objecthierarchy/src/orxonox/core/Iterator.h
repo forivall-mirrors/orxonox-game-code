@@ -1,6 +1,6 @@
 /*!
     @file Iterator.h
-    @brief Definition of the Iterator class.
+    @brief Definition and implementation of the Iterator class.
 
     The Iterator of a given class allows to iterate through an ObjectList, containing all objects of that type.
     This is the only way to access the objects stored in an ObjectList.
