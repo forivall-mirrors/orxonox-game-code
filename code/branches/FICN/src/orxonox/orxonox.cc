@@ -113,9 +113,9 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
     }
     bool frameStarted(const FrameEvent& evt)
     {
-    
+
     	auMan->update();
-    
+
       mKeyboard->capture();
       mMouse->capture();
       if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
@@ -201,7 +201,7 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
         createScene();
         setupScene();
         setupInputSystem();
-        setupCEGUI();
+//         setupCEGUI();
         createFrameListener();
         startRenderLoop();
       }
@@ -214,8 +214,8 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
 //        delete mRenderer;
 //        delete mSystem;
 
-        delete mListener;
-        delete mRoot;
+//         delete mListener;
+//         delete mRoot;
       }
 
     private:
@@ -293,7 +293,7 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
 				auMan->ambientStart();
 
       string levelFile = "sp_level_moonstation.oxw";
-      loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
+//       loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
     }
 
 
@@ -358,17 +358,17 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
         }
       }
 
-      void setupCEGUI()
-      {
-        Ogre::SceneManager *mgr = mRoot->getSceneManager("Default SceneManager");
-        Ogre::RenderWindow *win = mRoot->getAutoCreatedWindow();
+//       void setupCEGUI()
+//       {
+//         Ogre::SceneManager *mgr = mRoot->getSceneManager("Default SceneManager");
+//         Ogre::RenderWindow *win = mRoot->getAutoCreatedWindow();
 
         // CEGUI setup
 //        mRenderer = new CEGUI::OgreCEGUIRenderer(win, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, mgr);
 //        mSystem = new CEGUI::System(mRenderer);
 
         // Other CEGUI setup here.
-      }
+//       }
 
 
     void createFrameListener()

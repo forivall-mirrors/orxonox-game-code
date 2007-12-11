@@ -1,19 +1,20 @@
 PROJECT(Orxonox)
 
-SET(SRC_FILES 
+SET(SRC_FILES
 	AudioIncludes.h
 	AudioManager.cc
 	AudioBuffer.cc
 	AudioSource.cc
 	AudioStream.cc
 )
-SET(INC_FILES 
+SET(INC_FILES
 	AudioManager.h
 	AudioBuffer.h
 	AudioSource.h
 	AudioStream.h
 )
 
+INCLUDE_DIRECTORIES(..)
 
 ADD_LIBRARY(audio ${SRC_FILES} ${INC_FILES})
 
