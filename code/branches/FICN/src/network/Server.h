@@ -20,9 +20,12 @@
 #include "GameStateManager.h"
 #include "enet/enet.h"
 #include "ClientInformation.h"
+//#include "NetworkFrameListener.h"
+
 
 namespace network{
 
+  
   /**
    * This class is the root class of the network module for a server.
    * It implements all functions necessary for a Server
@@ -36,7 +39,7 @@ namespace network{
     void close();
     bool sendMSG(std::string msg);
     bool sendMSG(const char *msg);
-    void tick();
+    void tick(float time);
     protected:
     void processQueue();
     void updateGamestate();
@@ -48,8 +51,7 @@ namespace network{
     
     ClientInformation *clients;
   };
-
-
+ 
 
 
 

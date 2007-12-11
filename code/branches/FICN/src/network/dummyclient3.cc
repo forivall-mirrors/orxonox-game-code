@@ -22,7 +22,7 @@ void sender(){
   else std::cout << "problems establishing connection" << std::endl;
 
   while (true) {
-          client.update();
+          client.tick(0);
           std::cout << "your message: ";
           std::getline( std::cin, str );
           client.sendChat( str );
@@ -49,7 +49,7 @@ void listener(){
   else std::cout << "problems establishing connection" << std::endl;
 
   while (true) {
-          client.update();
+          client.tick(0);
           usleep(100);
   }
 

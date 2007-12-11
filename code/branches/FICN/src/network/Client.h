@@ -19,11 +19,15 @@
 #include "PacketManager.h"
 #include "GameStateClient.h"
 #include "orxonox/core/IdentifierIncludes.h"
+//#include "NetworkFrameListener.h"
 
 
 namespace network{
 
+
+  
 /**
+  network::Client *client;
  * The network/Client class
  * This class implements all necessary function for the network communication
  * It is the root class of the network module
@@ -47,7 +51,7 @@ class Client : PacketDecoder{
 
   bool sendPackets();
   
-  void update();
+  void tick(float time);
 
   private:
   ClientConnection client_connection;
@@ -60,6 +64,7 @@ class Client : PacketDecoder{
   void processClassid(classid *clid);
   void processChat( chat *data);
 };
+
 
 }
 

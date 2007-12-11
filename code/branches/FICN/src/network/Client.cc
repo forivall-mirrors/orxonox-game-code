@@ -150,7 +150,7 @@ namespace network{
   /**
    * Performs a GameState update
    */
-  void Client::update(){
+  void Client::tick(float time){
     ENetPacket *packet;
     // stop if the packet queue is empty
     while(!client_connection.queueEmpty()){

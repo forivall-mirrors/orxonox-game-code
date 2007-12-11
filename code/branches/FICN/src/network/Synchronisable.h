@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "orxonox/core/IdentifierIncludes.h"
+#include "orxonox/core/OrxonoxClass.h"
 
 namespace network {
 
@@ -38,7 +39,7 @@ typedef struct synchronisableVariable{
  * Every class, that inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list. Additionally it also has to provide a Constructor, that takes exactly the variables in this linked list.
  * @author Oliver Scheuss
 */
-class Synchronisable{
+class Synchronisable : public orxonox::OrxonoxClass{
 public:
   Synchronisable();
 

@@ -94,8 +94,9 @@ namespace network{
   /**
    * Run this function once every tick
    * calls processQueue and updateGamestate
+   * @param time time since last tick
    */
-  void Server::tick(){
+  void Server::tick(float time){
     processQueue();
     updateGamestate();
     return;

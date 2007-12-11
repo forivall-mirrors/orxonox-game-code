@@ -57,6 +57,11 @@ SpaceshipSteering* steering;
 
 audio::AudioManager* auMan;
 
+//network stuff
+//#include "network/Server.h"
+//#include "network/Client.h"
+#include "network/NetworkFrameListener.h"
+
 // some tests to see if enet works without includsion
 //#include <enet/enet.h>
 //#include <enet/protocol.h>
@@ -193,17 +198,19 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
     public:
       void go()
       {
-        createRoot();
-        defineResources();
-        setupRenderSystem();
-        createRenderWindow();
-        initializeResourceGroups();
-        createScene();
-        setupScene();
-        setupInputSystem();
-//         setupCEGUI();
-        createFrameListener();
-        startRenderLoop();
+        if(function==0)
+          standalone();
+        else if(function==1)
+          server();
+        else
+          client();
+      }
+      
+      OrxApplication(int func){
+        function = func;
+      }
+      OrxApplication(){
+        function = 0;
       }
 
       ~OrxApplication()
@@ -226,7 +233,55 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
       //CEGUI::OgreCEGUIRenderer *mRenderer;
       //CEGUI::System *mSystem;
       OrxExitListener *mListener;
+      int function; // 0 for standalone, 1 for server, 2 for client
 
+      void client()
+      {
+       client_g = new network::Client(); // address here
+        mRoot->addFrameListener(new network::ClientFrameListener());
+        createRoot();
+        defineResources();
+        setupRenderSystem();
+        createRenderWindow();
+        initializeResourceGroups();
+        createScene();
+        setupScene();
+        setupInputSystem();
+//        setupCEGUI();
+        createFrameListener();
+        startRenderLoop();
+      }
+      void server()
+      {
+        server_g = new network::Server(); // add some settings if wanted
+        mRoot->addFrameListener(new network::ServerFrameListener());
+        createRoot();
+        defineResources();
+        setupRenderSystem();
+        createRenderWindow();
+        initializeResourceGroups();
+        createScene();
+        setupScene();
+        //setupInputSystem();
+        //setupCEGUI();
+        //createFrameListener();
+        //startRenderLoop();
+      }
+      void standalone()
+      {
+        createRoot();
+        defineResources();
+        setupRenderSystem();
+        createRenderWindow();
+        initializeResourceGroups();
+        createScene();
+        setupScene();
+        setupInputSystem();
+        setupCEGUI();
+        createFrameListener();
+        startRenderLoop();
+      }
+      
       void createRoot()
       {
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
@@ -376,10 +431,10 @@ class OrxExitListener : public FrameListener, public OIS::MouseListener
       mListener = new OrxExitListener(mKeyboard, mMouse);
       mRoot->addFrameListener(mListener);
     }
-      void startRenderLoop()
-      {
-        mRoot->startRendering();
-      }
+    void startRenderLoop()
+    {
+      mRoot->startRendering();
+    }
   };
 }
 
@@ -396,8 +451,18 @@ using namespace Ogre;
 {
   try
   {
-    orxonox::OrxApplication orxonox;
-    orxonox.go();
+    if(argc >=2 && strcmp(argv[1], "server")==0){
+      orxonox::OrxApplication orxonox(1);
+      orxonox.go();
+    }
+    else if(argc >=2 && strcmp(argv[1], "client")==0){
+      orxonox::OrxApplication orxonox(2);
+      orxonox.go();
+    }
+    else{
+      orxonox::OrxApplication orxonox(0);
+      orxonox.go();
+    }
   }
   catch(Exception& e)
   {
