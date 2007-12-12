@@ -39,6 +39,7 @@
 #include <string>
 #include <iostream>
 
+#include "SignalHandler.h"
 #include "xml/xmlParser.h"
 #include "loader/LevelLoader.h"
 #include "Flocking.h"
