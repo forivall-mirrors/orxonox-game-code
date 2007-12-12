@@ -30,7 +30,15 @@
  @brief Orxonox Main File
  */
 
-#include <Ogre.h>
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
+#include <OgreRoot.h>
+#include <OgreFrameListener.h>
+#include <OgreConfigFile.h>
+#include <OgreTextureManager.h>
+#include <OgreEntity.h>
+#include <OgreRenderWindow.h>
+
 #include <OIS/OIS.h>
 #include <CEGUI/CEGUI.h>
 #include <OgreCEGUIRenderer.h>
@@ -45,6 +53,7 @@
 #include "core/SignalHandler.h"
 #include "objects/Tickable.h"
 #include "objects/Timer.h"
+#include "objects/WorldEntity.h"
 
 #include "objects/BaseObject.h"
 #include "objects/Test.h"
@@ -632,6 +641,17 @@ namespace orxonox
 
         std::cout << "4\n";
 
+        std::cout << "Test 12\n";
+        std::cout << "1\n";
+
+        WorldEntity* test12_1 = new WorldEntity;
+
+        std::cout << sizeof(WorldEntity) << std::endl;
+
+        std::cout << "2\n";
+
+
+
         startRenderLoop();
       }
 
@@ -720,8 +740,8 @@ namespace orxonox
 
       void setupScene()
       {
-        Ogre::SceneManager *mgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
-        Ogre::Camera *cam = mgr->createCamera("Camera");
+        WorldEntity::sceneManager_s = mRoot->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
+        Ogre::Camera *cam = WorldEntity::sceneManager_s->createCamera("Camera");
         Ogre::Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
       }
 

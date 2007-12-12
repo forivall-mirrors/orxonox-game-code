@@ -102,19 +102,19 @@ namespace orxonox
 
 
             /** @brief Sets the name of the object. @param name The name */
-            inline void setName(const std::string& name) { this->name_ = name; }
+            inline virtual void setName(const std::string& name) { this->name_ = name; }
 
             /** @returns the name of the object. */
             inline const std::string& getName() const { return this->name_; }
 
             /** @brief Sets the state of the objects activity. @param bActive True = active */
-            inline void setActive(bool bActive) { this->bActive_ = bActive; }
+            inline virtual void setActive(bool bActive) { this->bActive_ = bActive; }
 
             /** @returns the state of the objects activity. */
             inline const bool isActive() const { return this->bActive_; }
 
             /** @brief Sets the state of the objects visibility. @param bVisible True = visible */
-            inline void setVisible(bool bVisible) { this->bVisible_ = bVisible; }
+            inline virtual void setVisible(bool bVisible) { this->bVisible_ = bVisible; }
 
             /** @returns the state of the objects visibility. */
             inline const bool isVisible() const { return this->bVisible_; }

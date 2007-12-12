@@ -21,6 +21,8 @@
 #include "OgreVector2.h"
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
+#include "OgreQuaternion.h"
+#include "OgreMatrix3.h"
 
 
 // Some typedefs
@@ -29,6 +31,10 @@ namespace orxonox
     typedef Ogre::Vector2 Vector2;
     typedef Ogre::Vector3 Vector3;
     typedef Ogre::ColourValue ColourValue;
+    typedef Ogre::Radian Radian;
+    typedef Ogre::Real Real;
+    typedef Ogre::Quaternion Quaternion;
+    typedef Ogre::Matrix3 Matrix3;
 }
 
 

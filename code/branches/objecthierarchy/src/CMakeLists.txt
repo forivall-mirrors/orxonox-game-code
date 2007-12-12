@@ -13,6 +13,7 @@ SET(SRC_FILES
 	orxonox/core/ConfigValueContainer.cc
 	orxonox/core/SignalHandler.cc
 	orxonox/objects/BaseObject.cc
+	orxonox/objects/WorldEntity.cc
 	orxonox/objects/test1.cc
 	orxonox/objects/test2.cc
 	orxonox/objects/test3.cc
@@ -34,6 +35,7 @@ SET(INC_FILES
 	orxonox/core/ConfigValueContainer.h
 	orxonox/core/SignalHandler.h
 	orxonox/objects/BaseObject.h
+	orxonox/objects/WorldEntity.h
 	orxonox/objects/Test.h
 	orxonox/objects/test1.h
 	orxonox/objects/test2.h
