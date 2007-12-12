@@ -18,8 +18,8 @@
 #include "ConnectionManager.h"
 #include "PacketManager.h"
 #include "GameStateManager.h"
-#include "enet/enet.h"
 #include "ClientInformation.h"
+//#include "enet/enet.h"
 //#include "NetworkFrameListener.h"
 
 

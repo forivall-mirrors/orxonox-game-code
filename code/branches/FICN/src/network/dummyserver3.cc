@@ -1,7 +1,7 @@
 #include <iostream>
-#include "Server.h"
 #include "PacketManager.h"
-#include "PacketTypes.h"
+//#include "PacketTypes.h"
+#include "Server.h"
 
 namespace network{
   
@@ -27,6 +27,7 @@ void dummyserver3::loop(){
   open();
   while(true){
     tick();
+    usleep(100);
   }
 }
 

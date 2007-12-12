@@ -40,7 +40,6 @@ TARGET_LINK_LIBRARIES(network ${ENet_LIBRARY} ${Boost_thread_LIBRARIES})
 ADD_EXECUTABLE(chatserver ${CHATSERVER_SRC_FILES})
 TARGET_LINK_LIBRARIES( chatserver
   ${OGRE_LIBRARIES}
-  ${OIS_LIBRARIES}
   network
   core
   objects
@@ -49,7 +48,6 @@ TARGET_LINK_LIBRARIES( chatserver
 ADD_EXECUTABLE(chatclient ${CHATCLIENT_SRC_FILES})
 TARGET_LINK_LIBRARIES( chatclient
   ${OGRE_LIBRARIES}
-  ${OIS_LIBRARIES}
   network
   core
   objects
@@ -59,14 +57,12 @@ ADD_EXECUTABLE(client dummyclient2.cc)
 ADD_EXECUTABLE(server dummyserver.cc)
 TARGET_LINK_LIBRARIES( client
   ${OGRE_LIBRARIES}
-  ${OIS_LIBRARIES}
   network
   core
   objects
 )
 TARGET_LINK_LIBRARIES( server
   ${OGRE_LIBRARIES}
-  ${OIS_LIBRARIES}
   network
   core
   objects

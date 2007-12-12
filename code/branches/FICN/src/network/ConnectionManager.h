@@ -14,8 +14,6 @@
 
 #include <iostream>
 #include <string>
-#include <map>
-#include <vector>
 // enet library for networking support
 #include <enet/enet.h>
 // boost.thread library for multithreading support
@@ -23,7 +21,6 @@
 #include <boost/bind.hpp>
 // headerfiles
 #include "ClientInformation.h"
-#include "ConnectionManager.h"
 #include "PacketBuffer.h"
 #include "PacketManager.h"
 #include "orxonox/core/IdentifierIncludes.h"
