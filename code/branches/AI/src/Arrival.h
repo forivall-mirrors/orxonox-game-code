@@ -2,8 +2,8 @@
 // Arrival Class
 
 
-#ifndef Flocking_Class
-#define Flocking_Class
+#ifndef Arrival_Class
+#define Arrical_Class
 
 #include <Ogre.h>
 #include <OgreVector3.h>
@@ -58,17 +58,29 @@ class Arrival {
   }
 
   double relativeDirectApproach() {
+    // Maxspeed / accelerationForwards = time needed to break with max acceleration
+    // 2*getDistance()length/(MaxSpeed/accelerationForwards)^2 = required acceleration to arrive at the target with speed = 0
     return (accelerationForwards / (2*getDirection().length / (MaxSpeed/accelerationForwards)^2) );
   }
 
   void Approach() {
     Quaternion rotation = (0,0,0,0);
     if (relativeDirectApproach() > 1) {
-      rotation = speed.getRotationTo(getDirection());
-      // do that turn
-      
+      float length = speed.length();
+      speed = (speed+getDirection());
+      speed.normalise();
+      speed = speed*length; 
+      if (relativeDirectApproach > 4) {
+        //accelerate
+      }
+      else {
+        // speed will stay constant
+      }
+
+
     }
     else {
+
 
     }
 

@@ -1,5 +1,5 @@
-#ifndef Flocking_Class
-#define Flocking_Class
+#ifndef AI_Class
+#define AI_Class
 
 #include <Ogre.h>
 #include <OgreVector3.h>

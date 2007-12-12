@@ -43,7 +43,7 @@
 #include "xml/xmlParser.h"
 #include "loader/LevelLoader.h"
 #include "Flocking.h"
-#include "AIClass.h"
+#include "Wander.h"
 
 // some tests to see if enet works without includsion
 //#include <enet/enet.h>
@@ -85,8 +85,10 @@ Vector3 ElementSpeedArray[9];
 Vector3 ElementAccelerationArray[9];
 
 Element arrayOfElements[9];
+Wander walker;
+int counter = 0;
+int times = 0;
 
- // float time = 0;
 
 
 class OrxExitListener : public FrameListener
@@ -109,30 +111,37 @@ class OrxExitListener : public FrameListener
     void moving(const FrameEvent& evt) {
       SceneManager *mgr = root_->getSceneManager("Default SceneManager");
 
-      arrayOfElements[0].update(arrayOfElements, evt);
-      arrayOfElements[1].update(arrayOfElements, evt);
-      arrayOfElements[2].update(arrayOfElements, evt);
-      arrayOfElements[3].update(arrayOfElements, evt);
-      arrayOfElements[4].update(arrayOfElements, evt);
-      arrayOfElements[5].update(arrayOfElements, evt);
-      arrayOfElements[6].update(arrayOfElements, evt);
-      arrayOfElements[7].update(arrayOfElements, evt);
-      arrayOfElements[8].update(arrayOfElements, evt);
+/*    // RUN WANDER
 
- /*   arrayOfElements[0].update(arrayOfElements, evt);
-      arrayOfElements[1].update(arrayOfElements, evt);
-      arrayOfElements[2].update(arrayOfElements, evt);
-      arrayOfElements[3].update(arrayOfElements, evt);
-      arrayOfElements[4].update(arrayOfElements, evt);   */
+      walker.update();
+      walker.speed = walker.speed + 10*walker.acceleration*evt.timeSinceLastFrame;
+      walker.location = walker.location + 10*walker.speed*evt.timeSinceLastFrame;
+      walker.acceleration  = (0,0,0);
+      mgr->getSceneNode("HeadNode10")->setPosition(walker.location);
 
+*/   // END RUN WANDER
+
+
+
+
+     //  RUN FLOCKING
+
+      arrayOfElements[8].location = 100*Vector3(Math::Cos(Math::DegreesToRadians(counter)/10),Math::Sin(Math::DegreesToRadians(counter)/10),Math::Cos(Math::DegreesToRadians(counter+(counter-180)/2)/10));
+
+      arrayOfElements[0].update(arrayOfElements);
+      arrayOfElements[1].update(arrayOfElements);
+      arrayOfElements[2].update(arrayOfElements);
+      arrayOfElements[3].update(arrayOfElements);
+      arrayOfElements[4].update(arrayOfElements);
+      arrayOfElements[5].update(arrayOfElements);
+      arrayOfElements[6].update(arrayOfElements);
+      arrayOfElements[7].update(arrayOfElements);
+      arrayOfElements[8].update(arrayOfElements);
 
       for(int i=0; i<9; i++) {
-
-         arrayOfElements[i].speed = 0.995*arrayOfElements[i].speed + arrayOfElements[i].acceleration*evt.timeSinceLastFrame;
-
-         arrayOfElements[i].location = arrayOfElements[i].location + arrayOfElements[i].speed*evt.timeSinceLastFrame;
-
-         arrayOfElements[i].acceleration  = (0,0,0);
+        arrayOfElements[i].speed = 0.995*arrayOfElements[i].speed + arrayOfElements[i].acceleration*evt.timeSinceLastFrame;
+        arrayOfElements[i].location = arrayOfElements[i].location + arrayOfElements[i].speed*evt.timeSinceLastFrame;
+        arrayOfElements[i].acceleration  = (0,0,0);
       }
 
       mgr->getSceneNode("HeadNode1")->setPosition(arrayOfElements[0].location);
@@ -145,17 +154,11 @@ class OrxExitListener : public FrameListener
       mgr->getSceneNode("HeadNode8")->setPosition(arrayOfElements[7].location);
       mgr->getSceneNode("HeadNode9")->setPosition(arrayOfElements[8].location);
 
+      counter = counter + 1;
+      counter = counter%7200;
 
-      /*
+      // END RUN FLOCKING 
 
-      mgr->getSceneNode("HeadNode9")->setPosition(Vector3(200*cos(10*time),0,0));
-      time = time + evt.timeSinceLastFrame;
-
-     */
-
-
-
-    //  mgr->getSceneNode("HeadNode1")->yaw((Radian)10*evt.timeSinceLastFrame);
     }
 
   private:
@@ -271,7 +274,9 @@ class OrxApplication
       cam->setPosition(Vector3(0,0,1000));
       cam->lookAt(Vector3(0,0,0));
       Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
-      example();  //my stuff
+
+      //Invoke example to test AI
+      example();
     }
 
     void setupInputSystem()
@@ -320,13 +325,23 @@ class OrxApplication
       mRoot->startRendering();
     }
 
-    //declaration of the 3 Ogreheads
-   //muss leider global sein.....
-    //Element* arrayOfElements[2];
-
     void example() {
     SceneManager *mgr = mRoot->getSceneManager("Default SceneManager");
     mgr->setAmbientLight(ColourValue(1.0,1.0,1.0));
+
+/*  //TEST DATA WANDER
+
+    Entity* ent10 = mgr->createEntity("Head10", "ogrehead.mesh");
+    SceneNode *node10 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode10", Vector3(0,0,0));
+    node10->attachObject(ent10);
+    Vector3 temp;
+    temp = (0,0,0);
+    walker.setValues(node10->getPosition(),temp,temp,true);
+
+*/  //END TEST DATA WANDER
+
+
+//   TEST DATA FLOCKING
 
     Entity* ent1 = mgr->createEntity("Head1", "ogrehead.mesh");
     Entity* ent2 = mgr->createEntity("Head2", "ogrehead.mesh");
@@ -346,15 +361,7 @@ class OrxApplication
     SceneNode *node6 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode6", Vector3(150,-150,-100));
     SceneNode *node7 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode7", Vector3(-150,-150,0));
     SceneNode *node8 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode8", Vector3(-150,150,0));
-    SceneNode *node9 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode9", Vector3(0,0,0));  
-
-// follwing camera
-
- //  Camera *cam = mgr->getCamera("Camera");
- //  node1->attachObject(cam);
-
-
-
+    SceneNode *node9 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode9", Vector3(0,0,0));
 
     node1->attachObject(ent1);
     node2->attachObject(ent2);
@@ -375,9 +382,7 @@ class OrxApplication
     ElementLocationArray[6] = node7->getPosition();
     ElementLocationArray[7] = node8->getPosition();
     ElementLocationArray[8] = node9->getPosition();
-/*
-ElementLocationArray[5] = node6->getPosition();
-ElementLocationArray[6] = node7->getPosition();*/
+
     ElementSpeedArray[0] = (0,0,0);
     ElementSpeedArray[1] = (0,0,0);
     ElementSpeedArray[2] = (0,0,0);
@@ -387,9 +392,7 @@ ElementLocationArray[6] = node7->getPosition();*/
     ElementSpeedArray[6] = (0,0,0);
     ElementSpeedArray[7] = (0,0,0);
     ElementSpeedArray[8] = (0,0,0);
-/*
-ElementSpeedArray[5] = (0,0,0);
-ElementSpeedArray[6] = (0,0,0); */
+
     ElementAccelerationArray[0] = (0,0,0);
     ElementAccelerationArray[1] = (0,0,0);
     ElementAccelerationArray[2] = (0,0,0);
@@ -399,9 +402,7 @@ ElementSpeedArray[6] = (0,0,0); */
     ElementAccelerationArray[6] = (0,0,0);
     ElementAccelerationArray[7] = (0,0,0);
     ElementAccelerationArray[8] = (0,0,0);
-/*
-ElementAccelerationArray[5] = (0,0,0);
-ElementAccelerationArray[6] = (0,0,0); */
+
     arrayOfElements[0].setValues( ElementLocationArray[0], ElementSpeedArray[0], ElementAccelerationArray[0], true);
     arrayOfElements[1].setValues( ElementLocationArray[1], ElementSpeedArray[1], ElementAccelerationArray[1], true);
     arrayOfElements[2].setValues( ElementLocationArray[2], ElementSpeedArray[2], ElementAccelerationArray[2], true);
@@ -411,23 +412,8 @@ ElementAccelerationArray[6] = (0,0,0); */
     arrayOfElements[6].setValues( ElementLocationArray[6], ElementSpeedArray[6], ElementAccelerationArray[6], true);
     arrayOfElements[7].setValues( ElementLocationArray[7], ElementSpeedArray[7], ElementAccelerationArray[7], true);
     arrayOfElements[8].setValues( ElementLocationArray[8], ElementSpeedArray[8], ElementAccelerationArray[8], false);
-/*
-arrayOfElements[5].setValues( ElementLocationArray[5], ElementSpeedArray[5], ElementAccelerationArray[5], false);
-arrayOfElements[6].setValues( ElementLocationArray[6], ElementSpeedArray[6], ElementAccelerationArray[6], false);*/
 
-
-
-
-   /* for (int i=0; i<3; i++) {
-      Element* arrayOfElements[i] = new Element( ElementLocationArray[i], ElementSpeedArray[i], ElementAccelerationArray[i] );
-    } */
-   /* for (int i=0; i<3; i++) {
-    arrayOfElements[i]->update(arrayOfElements);
-    }  */
-
-//testing AIPilot -> function steer
-  //  AIPilot temp;
-  //  Vector3 foo = temp.steer(Vector3(0,0,1));
+   // END TEST DATA FLOCKING
 
 
     }
