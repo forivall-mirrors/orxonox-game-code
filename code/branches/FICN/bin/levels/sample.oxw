@@ -1,0 +1,23 @@
+<orxonoxworld name="Orxonox sample level" image="textures/menu/moonstation_512x512.jpg">
+	<description>
+		This is an orxonox sample level.
+	</description>
+
+	<loading>
+		<background color="000000" image="textures/load_screens/ambush.png" />
+		<bar top="200" left="50" width="300" height="20" image="textures/load_screens/ambush-loadbar.png" />
+	</loading>
+	
+	<audio>
+			
+	</audio>
+	
+	<world>
+
+
+	</world>
+
+	<scripts> 
+		<script file="intro.lua" />
+	</scripts>
+</orxonoxworld>

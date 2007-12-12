@@ -24,10 +24,10 @@ namespace loader
 		
 		// XML Nodes 
 		XMLNode rootNode;
+		XMLNode loadingScreenNode;
 		XMLNode worldNode;
-		XMLNode scriptNode;
-		XMLNode cameraNode;
-		XMLNode lightNode;
+		XMLNode audioNode;
+		XMLNode scriptsNode;
 		
 		// Level information
 		string name_;

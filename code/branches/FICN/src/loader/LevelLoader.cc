@@ -14,15 +14,15 @@ LevelLoader::LevelLoader(string file, string dir)
 	// Load XML level file
 	dir.append("/");
 	dir.append(file);	
-  	rootNode = XMLNode::openFileHelper(dir.c_str(),"WorldDataFile");
+  	rootNode = XMLNode::openFileHelper(dir.c_str(),"orxonoxworld");
   	// TODO: Error handling
 
 	// Assing general level infos to class variables
-  	this->name_ = rootNode.getChildNode("name").getText();
-  	this->description_ = rootNode.getChildNode("description").getText();
-  	this->image_ = rootNode.getChildNode("image").getText();
+  	//this->name_ = (std::string)rootNode.getAttribute("name").getText();
+  	//this->image_ = (std::string)rootNode.getAttribute("image").getText();
+  	//this->description_ = (std::string)rootNode.getChildNode("description").getText();
   
-  	this->loadingScreen();
+  	//this->loadingScreen();
   
   // Assign sub-nodes
   if (rootNode.nChildNode("LightManager")==1)

@@ -220,7 +220,7 @@ namespace orxonox
     ogre_->startRender();
     auMan_ = new audio::AudioManager();
     // load this file from config
-    string levelFile = "sp_level_moonstation.oxw";
+    string levelFile = "sample.oxw";
     loader_ = new loader::LevelLoader(levelFile);
     //TODO: run engine
   }
