@@ -14,9 +14,11 @@
 	</audio>
 	
 	<world>
-		<Test1>
-			sdafa sdfj askjfdskdalfj
-		</Test1>
+		
+		<Ambient colourvalue="0,0,1" />
+		
+		<Skybox src="Examples/SceneSkyBox2" />
+				
 	</world>
 
 	<scripts> 
