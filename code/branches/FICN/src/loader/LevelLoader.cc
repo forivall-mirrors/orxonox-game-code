@@ -18,17 +18,24 @@ LevelLoader::LevelLoader(string file, string dir)
   	// TODO: Error handling
 
 	// Assing general level infos to class variables
-  	//this->name_ = (std::string)rootNode.getAttribute("name").getText();
-  	//this->image_ = (std::string)rootNode.getAttribute("image").getText();
-  	//this->description_ = (std::string)rootNode.getChildNode("description").getText();
+	
+  	this->name_ = rootNode.getAttribute("name");
+  	this->image_ = rootNode.getAttribute("image");
+  	this->description_ = rootNode.getChildNode("description").getText();
   
-  	//this->loadingScreen();
+  	loadingScreenNode = rootNode.getChildNode("loading");
   
+  	if (!loadingScreenNode.isEmpty())
+  	{
+  		this->showLoadingScreen();
+  	}
+  
+  /*
   // Assign sub-nodes
   if (rootNode.nChildNode("LightManager")==1)
   {
   	// Init Luightmanager...
-  }
+  }*/
   
   /*
   
@@ -62,7 +69,7 @@ string LevelLoader::image()
 	return this->image_;
 }
 
-void LevelLoader::loadingScreen()
+void LevelLoader::showLoadingScreen()
 {
 	cout << "\n\n\nThis is Orxonox\nthe hottest 3D action shooter ever to exist\n\n\n";
 	cout << "Level: " << name() << "\nDescription:" << description() << "\nImage:"<<image()<<"\n\n\n";

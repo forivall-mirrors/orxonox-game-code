@@ -30,9 +30,9 @@ namespace loader
 		XMLNode scriptsNode;
 		
 		// Level information
-		string name_;
-		string description_;
-		string image_;
+		std::string name_;
+		std::string description_;
+		std::string image_;
 			
 	public:
 
@@ -40,7 +40,7 @@ namespace loader
 		LevelLoader(string file, string dir="levels");
 		~LevelLoader();
 		
-		void loadingScreen();
+		void showLoadingScreen();
 		
 		// Getters
 		string name();
