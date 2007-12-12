@@ -1,0 +1,10 @@
+TODO:
+
+- change ConnectionManager clientlist [done]
+- change gamestatemanager clientlist [done]
+- put them together into ClientInformation [done]
+
+- do better gamestate-update/snapshot-handling [partially done]
+- integrate ClientInformation into gamestatemanager [done]
+
+- write dummyserver and dummyclient (chat system)
