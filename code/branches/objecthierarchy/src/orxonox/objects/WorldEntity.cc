@@ -27,8 +27,12 @@ namespace orxonox
             node_ = WorldEntity::sceneManager_s->getRootSceneNode()->createChildSceneNode(this->getName());
         }
 
-        this->bStatic_ = false;
+        this->bStatic_ = true;
         this->velocity_ = Vector3(0, 0, 0);
+        this->acceleration_ = Vector3(0, 0, 0);
+        this->rotationAxis_ = Vector3(0, 1, 0);
+        this->rotationRate_ = 0;
+        this->momentum_ = 0;
     }
 
     WorldEntity::~WorldEntity()
@@ -39,7 +43,11 @@ namespace orxonox
     {
         if (!this->bStatic_)
         {
+            this->velocity_ += (dt * this->acceleration_);
             this->translate(dt * this->velocity_);
+
+            this->rotationRate_ += (dt * this->momentum_);
+            this->rotate(this->rotationAxis_, dt * this->rotationRate_);
         }
     }
 }

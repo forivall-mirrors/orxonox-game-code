@@ -32,6 +32,7 @@ namespace orxonox
     typedef Ogre::Vector3 Vector3;
     typedef Ogre::ColourValue ColourValue;
     typedef Ogre::Radian Radian;
+    typedef Ogre::Degree Degree;
     typedef Ogre::Real Real;
     typedef Ogre::Quaternion Quaternion;
     typedef Ogre::Matrix3 Matrix3;

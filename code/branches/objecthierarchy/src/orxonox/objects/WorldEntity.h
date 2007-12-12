@@ -59,6 +59,42 @@ namespace orxonox
             inline void detachAllObjects()
                 { this->node_->detachAllObjects(); }
 
+            inline void setVelocity(const Vector3& velocity)
+                { this->velocity_ = velocity; }
+            inline void setVelocity(Real x, Real y, Real z)
+                { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
+            inline const Vector3& getVelocity() const
+                { return this->velocity_; }
+
+            inline void setAcceleration(const Vector3& acceleration)
+                { this->acceleration_ = acceleration; }
+            inline void setAcceleration(Real x, Real y, Real z)
+                { this->acceleration_.x = x; this->acceleration_.y = y; this->acceleration_.z = z; }
+            inline const Vector3& getAcceleration() const
+                { return this->acceleration_; }
+
+            inline void setRotationAxis(const Vector3& axis)
+                { this->rotationAxis_ = axis; }
+            inline void setRotationAxis(Real x, Real y, Real z)
+                { this->rotationAxis_.x = x; this->rotationAxis_.y = y; this->rotationAxis_.z = z; }
+            inline const Vector3& getRotationAxis() const
+                { return this->rotationAxis_; }
+
+            inline void setRotationRate(const Radian& angle)
+                { this->rotationRate_ = angle; }
+            inline void setRotationRate(const Degree& angle)
+                { this->rotationRate_ = angle; }
+            inline const Radian& getRotationRate() const
+                { return this->rotationRate_; }
+
+            inline void setMomentum(const Radian& angle)
+                { this->momentum_ = angle; }
+            inline void setMomentum(const Degree& angle)
+                { this->momentum_ = angle; }
+            inline const Radian& getMomentum() const
+                { return this->momentum_; }
+
+
             static Ogre::SceneManager* sceneManager_s;
             static int num_s;
 
@@ -68,6 +104,10 @@ namespace orxonox
 
             bool bStatic_;
             Vector3 velocity_;
+            Vector3 acceleration_;
+            Vector3 rotationAxis_;
+            Radian rotationRate_;
+            Radian momentum_;
     };
 }
 
