@@ -12,7 +12,7 @@ class dummyserver3 : Server{
   void loop();
   private:
   void tick();
-  void processChat( chat *data, int clientId);
+  virtual void processChat( chat *data, int clientId);
   
   
   
