@@ -2,8 +2,8 @@ PROJECT(Orxonox)
 
 # create a few variables to simplify life
 
-SET(SRC_FILES orxonox.cc loader/LevelLoader.cc xml/xmlParser.cc skybox/SkyBox.cc)
-SET(INC_FILES loader/LevelLoader.h xml/xmlParser.h skybox/SkyBox.h)
+SET(SRC_FILES orxonox.cc Universe.cpp loader/LevelLoader.cc xml/xmlParser.cc skybox/SkyBox.cc)
+SET(INC_FILES Universe.h loader/LevelLoader.h xml/xmlParser.h skybox/SkyBox.h)
 
 #Creates an executable
 ADD_EXECUTABLE(../bin/main ${SRC_FILES} ${INC_FILES})

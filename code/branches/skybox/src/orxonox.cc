@@ -37,11 +37,11 @@
 
 #include <string>
 #include <iostream>
+#include "Universe.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
 #include "windows.h"
-
 
 
 // This function will locate the path to our application on OS X,
@@ -72,8 +72,7 @@ namespace orxonox
 {
       Ogre::RenderWindow * mWindow;
       Ogre::SceneManager *mgr;
-      int stopper = 1;
-
+      int stopper = 0;
 
   class OrxApplication
   {
@@ -87,6 +86,7 @@ namespace orxonox
         initializeResourceGroups();
         createScene();
         setupScene();
+	createUniverse();
         setupInputSystem();
         setupCEGUI();
         createFrameListener();
@@ -171,15 +171,29 @@ namespace orxonox
 
       void setupScene()
       {
-        mgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
-        cam = mgr->createCamera("Camera");
-        cam->setPosition(Ogre::Vector3(0,0,0));
-        //cam->lookAt(Ogre::Vector3(0,0,0));
-	cam->setFOVy(Ogre::Degree(90));
-        Ogre::Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
-        mgr->setSkyBox(true, "Examples/SpaceSkyBox");
+        	mgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
+		cam = mgr->createCamera("Camera");
+        	cam->setPosition(Ogre::Vector3(0,0,0));
+        	cam->lookAt(Ogre::Vector3(0,0,0));
+		//cam->setFOVy(Ogre::Degree(90));
+        	Ogre::Viewport *vp = mRoot->getAutoCreatedWindow()->addViewport(cam);
 
-	// camera pitch here works
+		Ogre::ColourValue fadeColour(0.0, 0.0, 0.0);
+		vp->setBackgroundColour(fadeColour);
+		mgr->setFog(Ogre::FOG_EXP, fadeColour, 0.0, 10000, 38000);
+	
+		
+        	//mgr->setSkyBox(true, "Examples/SpaceSkybox");
+		//mgr->setSkyBox(true, "MySky");
+		
+		mgr->setAmbientLight(Ogre::ColourValue(0.1, 1.0, 0.1));
+		/*Ogre::Light *light = mgrtemp->createLight(lightnames);
+		light->setType(Ogre::Light::LT_POINT);
+		light->setPosition(Ogre::Vector3(0, 0, 0));
+
+		light->setDiffuseColour(1.0, 0.0, 0.0);
+		light->setSpecularColour(1.0, 0.0, 0.0);
+		*/
 
 	
       }
@@ -216,64 +230,68 @@ namespace orxonox
       void screenShots()
       {
 
-	Ogre::Radian x1 = Ogre::Radian(x);
-
-	unsigned int indice = 1;
+	/*unsigned int indice = 1;
 	char filename[30];
 	char fn[1];
 	// generate new names...
-	sprintf(filename, "SkyBox%d.png", stopper);
 	//sprintf(filename, "screenshot_%d.png", ++indice);
 	//sprintf(filename, fn, ++indice);
+	*/
 	
-
-	Ogre::Radian x2 = Ogre::Radian((3.141592653589/2.0)*(stopper+1));
-
-
 	if(stopper == 1){
-		        cam->yaw(Ogre::Degree(90));
-	sprintf(filename, "SkyBox%d.png", stopper+1035);
-	mWindow->writeContentsToFile(filename);
-	
+	//sprintf(filename, "stevecube_FR.bmp");
+	mWindow->writeContentsToFile("MySky_FR.bmp");	
 	}
 	else if(stopper == 2){
-		        cam->yaw(Ogre::Degree(180));
-	mWindow->writeContentsToFile(filename);
-	
+	//sprintf(filename, "stevecube_LF.bmp");
+        cam->pitch(Ogre::Degree(90));
+	mWindow->writeContentsToFile("MySky_LF.bmp");
 	}
 	else if(stopper == 3){
-		        cam->yaw(Ogre::Degree(270));	
-	mWindow->writeContentsToFile(filename);
-
+	//sprintf(filename, "stevecube_BK.bmp");
+        cam->pitch(Ogre::Degree(90));
+	mWindow->writeContentsToFile("MySky_BK.bmp");
 	}
 	else if(stopper == 4){
-		        cam->yaw(Ogre::Degree(0));	
-	mWindow->writeContentsToFile(filename);
-
+	//sprintf(filename, "stevecube_RT.bmp");
+        cam->pitch(Ogre::Degree(90));
+	mWindow->writeContentsToFile("MySky_RT.bmp");
 	}
-
 	else if(stopper == 5){
-
-		        cam->yaw(Ogre::Degree(0));	
-	mWindow->writeContentsToFile(filename);
-
+	//sprintf(filename, "stevecube_UP.bmp");
+        cam->yaw(Ogre::Degree(90));
+	mWindow->writeContentsToFile("MySky_UP.bmp");
 	}
 	else if(stopper == 6){
-		        cam->yaw(Ogre::Degree(180));	
-	mWindow->writeContentsToFile(filename);
-
+        cam->yaw(Ogre::Degree(-90));
+	mWindow->writeContentsToFile("MySky_DN.bmp");
 	}
-
-	/*else if(stopper == 6){
-		        cam->roll(Ogre::Degree(270));	
-	}*/
-
-	//cam->pitch(Ogre::Degree(90)*stopper);
 
 	stopper+=1;
 	if(stopper >= 7)
 	stopper = 1;
       }
+
+
+
+
+	void createUniverse()
+	{
+
+		// UNIVERSE-CLASS
+std::cout << "1_1\n";
+		Universe::Universe myUni = Universe(77000);
+std::cout << "1_2\n";
+		myUni.createCoordinates();
+std::cout << "1_3\n";
+		myUni.createBillboards(mgr, cam, mRoot);
+std::cout << "1_4\n";
+		
+
+	}
+
+
+
 
   class OrxExitListener : public Ogre::FrameListener
   {
@@ -343,6 +361,7 @@ using namespace Ogre;
              int main(int argc, char **argv)
 #endif
 {
+      srand(time(NULL));
   try
   {
     orxonox::OrxApplication orxonox;
