@@ -61,7 +61,7 @@ private:
   //process data
   //two functions are note yet implemented!
   //virtual void processGamestate(GameState *state);
-  void processChat( chat *data, int clientId);
+  virtual void processChat( chat *data, int clientId);
   void processClassid( classid *cid);
   //virtual void processAck( ack *data);
   

@@ -30,7 +30,7 @@ namespace network{
    * This class is the root class of the network module for a server.
    * It implements all functions necessary for a Server
    */
-  class Server : PacketDecoder{
+  class Server : public PacketDecoder{
     public:
     Server();
     Server(int port, std::string bindAddress);

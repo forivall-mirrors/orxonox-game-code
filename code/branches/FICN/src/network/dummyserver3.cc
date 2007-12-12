@@ -5,14 +5,14 @@
 
 namespace network{
   
-class dummyserver3 : Server{
+class dummyserver3 : public Server{
   public:
   dummyserver3();
   ~dummyserver3();
   void loop();
   private:
   void tick();
-  virtual void processChat( chat *data, int clientId);
+  void processChat( chat *data, int clientId);
   
   
   
