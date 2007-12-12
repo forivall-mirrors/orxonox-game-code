@@ -7,4 +7,9 @@ TODO:
 - do better gamestate-update/snapshot-handling [partially done]
 - integrate ClientInformation into gamestatemanager [done]
 
-- write dummyserver and dummyclient (chat system)
+- write dummyserver and dummyclient (chat system) [done]
+
+- include GameStateClient into Client and write processGamestate (also packetdecoder (virtual))
+- create object with worldentity .....
+
+- try and error ;)

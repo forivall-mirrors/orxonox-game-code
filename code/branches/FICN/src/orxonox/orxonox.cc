@@ -268,7 +268,7 @@ namespace orxonox
     ogre_->setup();
     server_g = new network::Server(); // add some settings if wanted
     if(!ogre_->load()) die(/* unable to load */);
-    //ogre_->getRoot()->addFrameListener(new network::ServerFrameListener());
+    ogre_->getRoot()->addFrameListener(new network::ServerFrameListener());
     ogre_->startRender();
 
     createScene();
@@ -281,7 +281,7 @@ namespace orxonox
     ogre_->setup();
     client_g = new network::Client(); // address here
     if(!ogre_->load()) die(/* unable to load */);
-    //ogre_->getRoot()->addFrameListener(new network::ClientFrameListener());
+    ogre_->getRoot()->addFrameListener(new network::ClientFrameListener());
     ogre_->startRender();
 
     createScene();

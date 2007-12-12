@@ -139,7 +139,7 @@ namespace network{
         addClient(&event);
         break;
       case ENET_EVENT_TYPE_RECEIVE:
-        std::cout << "received data" << std::endl;
+        //std::cout << "received data" << std::endl;
         processData(&event);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:

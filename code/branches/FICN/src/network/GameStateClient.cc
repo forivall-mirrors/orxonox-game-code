@@ -58,12 +58,11 @@ bool GameStateClient::loadSnapshot(GameState state)
       while(it != 0 && it->objectID!=sync.objectID){
         removeObject(it);
       }
-      if(it==0){  // add the new object
-        // =================== factory command to add object
-        // can we be sure the object really was added?
+      if(it==0){
+        orxonox::BaseObject *no = ID(sync.classID)->fabricate();
+        ((Synchronisable *)no)->objectID=sync.objectID;
+        ((Synchronisable *)no)->classID=sync.classID;
         it=orxonox::ObjectList<Synchronisable>::end();
-        it->objectID=sync.objectID;
-        it->classID=sync.classID;
       }
     } else {
       // we have our object
@@ -71,7 +70,7 @@ bool GameStateClient::loadSnapshot(GameState state)
         std::cout << "We couldn't update objectID: " \
             << sync.objectID << "; classID: " << sync.classID << std::endl;
     }
-    
+    ++it;
   }
   
   return true;
