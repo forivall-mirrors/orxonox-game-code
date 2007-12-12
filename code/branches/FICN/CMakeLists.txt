@@ -41,6 +41,7 @@ IF (UNIX)
     # reset eNet serach path
     SET(Boost_INCLUDE_DIR "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include/boost-1_34_1")
   ENDIF(IS_TARDIS)
+  SET(Boost_INCLUDE_DIR "/usr/include/boost")
 
 ENDIF (UNIX)
 
