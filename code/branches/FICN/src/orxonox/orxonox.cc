@@ -336,7 +336,7 @@ namespace orxonox
   {
 	// Init audio
     auMan_ = new audio::AudioManager();
-    
+
     // load this file from config
     loader_ = new loader::LevelLoader("sample.oxw");
     loader_->loadLevel();
@@ -359,8 +359,8 @@ namespace orxonox
     cam->lookAt(Vector3(0,0,0));
     Viewport *vp = ogre_->getRoot()->getAutoCreatedWindow()->addViewport(cam);
 
-    
-    Entity* head = mgr->createEntity("ASSF", "assf.mesh");
+
+    Entity* head = mgr->createEntity("ASSF", "assf2.mesh");
     SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
     node->attachObject(head);
     node->attachObject(cam);
