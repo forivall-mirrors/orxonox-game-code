@@ -39,7 +39,7 @@ namespace orxonox
     {
         if (!this->bStatic_)
         {
-            this->translate(this->velocity_);
+            this->translate(dt * this->velocity_);
         }
     }
 }
