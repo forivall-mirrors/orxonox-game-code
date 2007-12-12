@@ -327,6 +327,7 @@ class OrxApplication
     void example() {
     SceneManager *mgr = mRoot->getSceneManager("Default SceneManager");
     mgr->setAmbientLight(ColourValue(1.0,1.0,1.0));
+
     Entity* ent1 = mgr->createEntity("Head1", "ogrehead.mesh");
     Entity* ent2 = mgr->createEntity("Head2", "ogrehead.mesh");
     Entity* ent3 = mgr->createEntity("Head3", "ogrehead.mesh");
@@ -336,6 +337,7 @@ class OrxApplication
     Entity* ent7 = mgr->createEntity("Head7", "ogrehead.mesh");
     Entity* ent8 = mgr->createEntity("Head8", "ogrehead.mesh");
     Entity* ent9 = mgr->createEntity("Head9", "ogrehead.mesh");
+
     SceneNode *node1 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode1", Vector3(100,300,100));
     SceneNode *node2 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode2", Vector3(300,0,200));
     SceneNode *node3 = mgr->getRootSceneNode()->createChildSceneNode("HeadNode3", Vector3(-300,0,-100));
@@ -363,6 +365,7 @@ class OrxApplication
     node7->attachObject(ent7);
     node8->attachObject(ent8);
     node9->attachObject(ent9);
+
     ElementLocationArray[0] = node1->getPosition();
     ElementLocationArray[1] = node2->getPosition();
     ElementLocationArray[2] = node3->getPosition();
