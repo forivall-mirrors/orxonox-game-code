@@ -14,6 +14,9 @@
 #include "ObjectList.h"
 #include "MetaObjectList.h"
 
+#include "../../tinyxml/tinyxml.h"
+
+
 namespace orxonox
 {
     //! The class all objects and interfaces of the game-logic are derived from.
@@ -87,6 +90,8 @@ namespace orxonox
 
             inline void setVisible(bool bVisible) { this->bVisible_ = bVisible; }
             inline const bool isVisible() const { return this->bVisible_; }
+
+			//virtual void loadParams(TIXMLNode n);
 
         private:
             Identifier* identifier_;        //!< The Identifier of the object

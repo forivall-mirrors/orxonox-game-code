@@ -2,8 +2,8 @@
 #include <iostream>
 
 #include "LevelLoader.h"
-//#include "xml/xmlParser.h"
 #include "tinyxml/tinyxml.h"
+#include "orxonox/core/IdentifierIncludes.h"
 
 using namespace std;
 
@@ -16,11 +16,67 @@ LevelLoader::LevelLoader(string file, string dir)
 	dir.append("/");
 	dir.append(file);	
 	
+	// Open xml file
 	TiXmlDocument doc(file);
-	bool loadOkay = doc.LoadFile();
-	if (loadOkay)
-	{
 
+	// Check if file was loaded
+	if (doc.LoadFile())
+	{
+		TiXmlHandle hDoc(&doc);
+		TiXmlHandle hRoot(0);	
+
+		TiXmlElement* pElem;
+		
+
+		// Check for root element
+		pElem = hDoc.FirstChildElement("orxonoxworld").Element();
+		if (pElem)
+		{
+			// Set root element
+			hRoot = TiXmlHandle(pElem);
+
+			// Set level description
+			pElem = hRoot.FirstChild("description").Element();
+			if (pElem)
+			{
+				description_ = pElem->GetText();	
+			}
+			
+			// Set level name
+			pElem = hRoot.Element();
+			name_ = pElem->Attribute("name");
+			image_ = pElem->Attribute("image");
+			
+			// Set loading screen
+			pElem = hRoot.FirstChild("loading").Element();
+			if (pElem)
+			{
+				// Set background
+				pElem = hRoot.FirstChild("loading").FirstChild("background").Element();
+				if (pElem)
+				{
+					loadingBackgroundColor_ = pElem->Attribute("color");
+					loadingBackgroundImage_ = pElem->Attribute("image");
+				}
+				// Set bar
+				pElem = hRoot.FirstChild("loading").FirstChild("bar").Element();
+				if (pElem)
+				{
+					loadingBarImage_ = pElem->Attribute("image");;
+					loadingBarTop_ = pElem->Attribute("top");
+					loadingBarLeft_ = pElem->Attribute("left");
+					loadingBarWidth_ = pElem->Attribute("width");
+					loadingBarHeight_ = pElem->Attribute("height");
+				}
+			}
+						
+			
+		}
+		else
+		{
+			std::string err = "Level file has no valid root node";
+			std::cout << err << std::endl;
+		}	
 	}
 	else
 	{
@@ -28,6 +84,11 @@ LevelLoader::LevelLoader(string file, string dir)
 		err.append(file); 
 		std::cout << err << std::endl;
 	}	
+	
+	
+	//orxonox::BaseObject* bla = orxonox::ID("classname")->fabricate();
+	//bla->loadParams();
+	
 	
 	/*
   	rootNode = XMLNode::openFileHelper(dir.c_str(),"orxonoxworld");

@@ -9,6 +9,8 @@
 #include <iostream>
 
 #include "loader_platform.h"
+#include "tinyxml/tinyxml.h"
+
 //#include "xml/xmlParser.h"
 
 #ifndef __MODULE_LEVELLOADER__
@@ -33,6 +35,14 @@ namespace loader
 		std::string name_;
 		std::string description_;
 		std::string image_;
+		
+		std::string loadingBackgroundColor_;
+		std::string loadingBackgroundImage_;
+		std::string loadingBarImage_;
+		std::string loadingBarTop_;
+		std::string loadingBarLeft_;
+		std::string loadingBarWidth_;
+		std::string loadingBarHeight_;
 			
 	public:
 
