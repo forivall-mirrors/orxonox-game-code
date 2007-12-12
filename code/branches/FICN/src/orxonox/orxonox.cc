@@ -55,7 +55,6 @@
 #include "objects/Timer.h"
 #include "core/Factory.h"
 
-#include "../xml/xmlParser.h"
 #include "../loader/LevelLoader.h"
 #include "../audio/AudioManager.h"
 
@@ -359,6 +358,7 @@ namespace orxonox
   void Orxonox::setupScene()
   {
     SceneManager *mgr = ogre_->getSceneManager();
+    
     Camera *cam = mgr->createCamera("Camera");
     cam->setPosition(Vector3(0,0,-250));
     cam->lookAt(Vector3(0,0,0));
@@ -369,7 +369,8 @@ namespace orxonox
     SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
     node->attachObject(head);
     node->attachObject(cam);
-    mgr->setSkyBox(true, "Examples/SceneSkyBox2");
+    
+    
 
     Entity* head1 = mgr->createEntity("head1", "ogrehead.mesh");
     SceneNode *node1 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode1", Vector3(200,0,0));

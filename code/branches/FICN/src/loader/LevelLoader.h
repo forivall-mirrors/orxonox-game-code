@@ -6,6 +6,7 @@
 */
 
 #include <string>
+#include <vector>
 #include <iostream>
 
 #include "loader_platform.h"
@@ -22,6 +23,20 @@ namespace loader
 {
 	class _LoaderExport LevelLoader
 	{
+	public:
+		// Constructors, loads the level file and some information data
+		LevelLoader(string file, string dir="levels");
+		// Destructor
+		~LevelLoader();
+		// Shows a simple loading screen
+		void showLoadingScreen();
+		// Loads all level data
+		void loadLevel();
+	
+		// Getters
+		string name();
+		string description();
+		string image();		
 	private:
 		// Level information
 		std::string name_;
@@ -35,26 +50,13 @@ namespace loader
 		std::string loadingBarWidth_;
 		std::string loadingBarHeight_;
 		
+		// Set to true if it was possible to load the level file
 		bool valid_;
 			
+		// Xml-Stuff
 		TiXmlDocument doc;
 		TiXmlElement* rootElement;	
-	public:
 
-		// Constructors
-		LevelLoader(string file, string dir="levels");
-		~LevelLoader();
-		
-		void showLoadingScreen();
-		void loadLevel();
-		
-		// Getters
-		string name();
-		string description();
-		string image();		
-		
-		// Managers 
-		
 			
 	};	
 }

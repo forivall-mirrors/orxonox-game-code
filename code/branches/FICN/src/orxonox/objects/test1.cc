@@ -71,13 +71,7 @@ namespace orxonox
     
     void Test1::loadParams(TiXmlElement* xmlElem)
     {
-    	Ogre::SceneManager* mgr = orxonox::Orxonox::getSingleton()->getSceneManager();
-    	
-    	mgr->setAmbientLight(ColourValue(1,0,0));
-    	
-    	
-    	
-    	std::cout<< xmlElem->GetText()<<std::endl;
+
     	
     	
     }

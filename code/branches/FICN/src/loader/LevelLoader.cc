@@ -1,5 +1,8 @@
-#include <string.h>
+#include <string>
+#include <vector>
 #include <iostream>
+#include <algorithm>
+#include <iterator>
 
 #include "LevelLoader.h"
 #include "tinyxml/tinyxml.h"
@@ -126,134 +129,26 @@ LevelLoader::LevelLoader(string file, string path)
 		std::cout << "Backgroundcolor: " << loadingBackgroundColor_ << "\nBackgroundimage:" << loadingBackgroundImage_ << "\n\n\n";
 	}
 	
-	
-	//orxonox::BaseObject* bla = orxonox::ID("classname")->fabricate();
-	//bla->loadParams();
-	
-	
-	/*
-  	rootNode = XMLNode::openFileHelper(dir.c_str(),"orxonoxworld");
-  	// TODO: Error handling
-
-	// Assing general level infos to class variables
-	
-  	this->name_ = rootNode.getAttribute("name");
-  	this->image_ = rootNode.getAttribute("image");
-  	this->description_ = rootNode.getChildNode("description").getText();
-  
-  	loadingScreenNode = rootNode.getChildNode("loading");
-  	if (!loadingScreenNode.isEmpty())
-  	{
-  		this->showLoadingScreen();
-  	}
-
-  	worldNode = rootNode.getChildNode("world");
-  	if (!worldNode.isEmpty())
-  	{
-  		
-  	}
-  	*/
-
-  
-  /*
-  // Assign sub-nodes
-  if (rootNode.nChildNode("LightManager")==1)
-  {
-  	// Init Luightmanager...
-  }*/
-  
-  /*
-  
-	worldNode = rootNode.getChildNode("WorldEntities");
-	scriptNode = rootNode.getChildNode("ScriptManager");
-	cameraNode = rootNode.getChildNode("CameraMan");
-	lightNode = rootNode.getChildNode("LightManager");
-*/
-
-
-
-LevelLoader::~LevelLoader()
-{
-
-
-}
-
-
-string LevelLoader::name()
-{
-	return this->name_;
-}
-
-string LevelLoader::description()
-{
-	return this->description_;
-}
-
-string LevelLoader::image()
-{
-	return this->image_;
-}
-
-
-/*
-
-
-void LevelLoader::loadWorld(WorldManager* wm)
-{
-	if (!worldNode.getChildNode("lights").isEmpty())
+	LevelLoader::~LevelLoader()
 	{
-		
-		
+
 	}
-}
-
-
-void LevelLoader::loadLights(LightManager* lm)
-{
-	if (!lightNode.getChildNode("lights").isEmpty())
-	{
-		int nLights = lightNode.getChildNode("lights").nChildNode("light");
-		for (int i=0; i<nLights;i++)
-		{
-			XMLNode t = lightNode.getChildNode("lights").getChildNode("light",i);
-			const char* diffuse = t.getAttribute("diffuse-color");
-			const char* coor = t.getAttribute("abs-coor");
-			lm->addLight(diffuse,coor);	
-		}
-	}
-	lm->setAmbient(lightNode.getChildNode("ambient").getAttribute("color"));	
-}
-
-void LevelLoader::loadCameras(CameraManager* cm)
-{
-	if (!cameraNode.getChildNode("cameras").isEmpty())
-	{
-		int nCameras = cameraNode.getChildNode("cameras").nChildNode("camera");
-		for (int i=0; i<nCameras;i++)
-		{
-			XMLNode t = cameraNode.getChildNode("cameras").getChildNode("camera",i);
-			
-			
-			cm->addCamera();
-		}
-	}
-}
-
-
-void LevelLoader::loadScripts(ScriptManager* sm)
-{
-	if (!scriptNode.getChildNode("scripts").isEmpty())
-	{
-		int nScripts = scriptNode.getChildNode("scripts").nChildNode("script");
-		for (int i=0; i<nScripts;i++)
-		{
-			XMLNode t = scriptNode.getChildNode("scripts").getChildNode("script",i);
-			sm->addScript(t.getAttribute("file"));
-		}
 	
+	
+	string LevelLoader::name()
+	{
+		return this->name_;
 	}
-}
-*/
+	
+	string LevelLoader::description()
+	{
+		return this->description_;
+	}
+	
+	string LevelLoader::image()
+	{
+		return this->image_;
+	}
 
 
 }

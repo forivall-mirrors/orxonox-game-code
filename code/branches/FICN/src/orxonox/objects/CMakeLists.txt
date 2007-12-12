@@ -6,6 +6,8 @@ SET( OBJECTS_SRC_FILES
   test1.cc
   test2.cc
   test3.cc
+  Ambient.cc
+  Skybox.cc
 )
 
 ADD_LIBRARY(objects SHARED ${OBJECTS_SRC_FILES})
