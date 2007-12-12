@@ -1,13 +1,14 @@
 /*!
     @file Identifier.h
-    @brief Definition of the Identifier, ClassIdentifier and SubclassIdentifier classes.
+    @brief Definition of the Identifier, ClassIdentifier and SubclassIdentifier classes, implementation of the ClassIdentifier and SubclassIdentifier classes.
 
     The Identifier contains all needed informations about the class it belongs to:
      - the name
      - a list with all objects
      - parents and childs
-     - the factory, if available
+     - the factory (if available)
      - the networkID that can be synchronised with the server
+     - all configurable variables (if available)
 
     Every object has a pointer to the Identifier of its class. This allows the use isA(...),
     isDirectlyA(...), isChildOf(...) and isParentOf(...).
@@ -17,20 +18,20 @@
     Every Identifier is in fact a ClassIdentifier, but they are derived from Identifier.
 
     SubclassIdentifier is a separated class, acting like an Identifier, but has a given class.
-    You can only assign Identifiers of the given class or a derivative to a SubclassIdentifier.
+    You can only assign Identifiers of exactly the given class or of a derivative to a SubclassIdentifier.
 */
 
 #ifndef _Identifier_H__
 #define _Identifier_H__
 
 #include <iostream>
+#include <map>
 
 #include "IdentifierList.h"
 #include "ObjectList.h"
 #include "Factory.h"
-
-#define HIERARCHY_VERBOSE false
-
+#include "ConfigValueContainer.h"
+#include "Debug.h"
 
 namespace orxonox
 {
@@ -45,8 +46,9 @@ namespace orxonox
          - the name
          - a list with all objects
          - parents and childs
-         - the factory, if available
+         - the factory (if available)
          - the networkID that can be synchronised with the server
+         - all configurable variables (if available)
 
         Every object has a pointer to the Identifier of its class. This allows the use isA(...),
         isDirectlyA(...), isChildOf(...) and isParentOf(...).
@@ -61,8 +63,7 @@ namespace orxonox
         template <class T>
         friend class SubclassIdentifier; // Forward declaration
 
-        template <class T>
-        friend class ClassFactory; // Forward declaration
+        friend class Factory; // Forward declaration
 
         public:
             /** @brief Sets the Factory. @param facotry The factory to assign */
@@ -84,13 +85,22 @@ namespace orxonox
             /** @returns the children of the class the Identifier belongs to. */
             inline IdentifierList& getChildren() const { return *this->children_; }
 
-            /** @returns true, if a branch of the class-hierarchy is getting created, causing all new objects to store their parents. */
+            /** @returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. */
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
-            /** @returns the NetworkID to identify a class through the network. */
+            /** @returns the network ID to identify a class through the network. */
             inline const unsigned int getNetworkID() const { return this->classID_; }
 
+            /** @brief Sets the network ID to a new value. @param id The new value */
             void setNetworkID(unsigned int id);
+
+            /** @returns the ConfigValueContainer of a variable, given by the string of its name. @param varname The name of the variable */
+            inline ConfigValueContainer* getConfigValueContainer(const std::string& varname)
+                { return this->configValues_[varname]; }
+
+            /** @brief Sets the ConfigValueContainer of a variable, given by the string of its name. @param varname The name of the variablee @param container The container */
+            inline void setConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
+                { this->configValues_[varname] = container; }
 
         private:
             Identifier();
@@ -104,9 +114,7 @@ namespace orxonox
             inline static void startCreatingHierarchy()
             {
                 hierarchyCreatingCounter_s++;
-#if HIERARCHY_VERBOSE
-                std::cout << "*** Increased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << "\n";
-#endif
+                COUT(4) << "*** Increased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << "\n";
             }
 
             /**
@@ -115,21 +123,20 @@ namespace orxonox
             inline static void stopCreatingHierarchy()
             {
                 hierarchyCreatingCounter_s--;
-#if HIERARCHY_VERBOSE
-                std::cout << "*** Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << "\n";
-#endif
+                COUT(4) << "*** Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << "\n";
             }
 
-            IdentifierList parents_;                    //!< The Parents of the class the Identifier belongs to
-            IdentifierList* children_;                  //!< The Children of the class the Identifier belongs to
+            IdentifierList parents_;                                    //!< The Parents of the class the Identifier belongs to
+            IdentifierList* children_;                                  //!< The Children of the class the Identifier belongs to
 
-            std::string name_;                          //!< The name of the class the Identifier belongs to
+            std::string name_;                                          //!< The name of the class the Identifier belongs to
 
-            BaseFactory* factory_;                      //!< The Factory, able to create new objects of the given class
-            bool bCreatedOneObject_;                    //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
-            static int hierarchyCreatingCounter_s;      //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
-            static unsigned int classIDcounter_s;       //!< The number of unique Identifiers
-            unsigned int classID_;                      //!< The networkID to identify a class through the network
+            BaseFactory* factory_;                                      //!< The Factory, able to create new objects of the given class (if available)
+            bool bCreatedOneObject_;                                    //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
+            static int hierarchyCreatingCounter_s;                      //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
+            static unsigned int classIDcounter_s;                       //!< The number of existing Identifiers
+            unsigned int classID_;                                      //!< The network ID to identify a class through the network
+            std::map<std::string, ConfigValueContainer*> configValues_; //!< A map to link the string of configurable variables with their ConfigValueContainer
     };
 
 
@@ -163,7 +170,7 @@ namespace orxonox
     ClassIdentifier<T>* ClassIdentifier<T>::pointer_s = NULL; // Set the static member variable pointer_s to zero
 
     /**
-        @brief Constructor: Create the ObjectList.
+        @brief Constructor: Creates the ObjectList.
     */
     template <class T>
     ClassIdentifier<T>::ClassIdentifier()
@@ -172,7 +179,7 @@ namespace orxonox
     }
 
     /**
-        @brief Destructor: Delete the ObjectList, set the singleton-pointer to zero.
+        @brief Destructor: Deletes the ObjectList, sets the singleton-pointer to zero.
     */
     template <class T>
     ClassIdentifier<T>::~ClassIdentifier()
@@ -185,22 +192,18 @@ namespace orxonox
         @brief Registers a class, which means that the name and the parents get stored.
         @param parents An IdentifierList, containing the Identifiers of all parents of the class
         @param name A string, containing exactly the name of the class
-        @param bRootClass True if the class is either an Interface or BaseObject itself
+        @param bRootClass True if the class is either an Interface or the BaseObject itself
         @return The ClassIdentifier itself
     */
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass)
     {
-#if HIERARCHY_VERBOSE
-        std::cout << "*** Register Class in " << name << "-Singleton.\n";
-#endif
+        COUT(4) << "*** Register Class in " << name << "-Singleton.\n";
 
         // It's a singleton, so maybe we have to create it first
         if (!pointer_s)
         {
-#if HIERARCHY_VERBOSE
-            std::cout << "*** Register Class in " << name << "-Singleton -> Create Singleton.\n";
-#endif
+            COUT(4) << "*** Register Class in " << name << "-Singleton -> Create Singleton.\n";
             pointer_s = new ClassIdentifier();
         }
 
@@ -209,11 +212,9 @@ namespace orxonox
         {
             // If no: We have to store the informations and initialize the Identifier
 
-#if HIERARCHY_VERBOSE
-            std::cout << "*** Register Class in " << name << "-Singleton -> Initialize Singleton.\n";
-#endif
+            COUT(4) << "*** Register Class in " << name << "-Singleton -> Initialize Singleton.\n";
             pointer_s->name_ = name;
-            Factory::add(name, pointer_s); // Add the Identifier to the Factory
+//            Factory::add(name, pointer_s); // Add the Identifier to the Factory
 
             if (bRootClass)
                 pointer_s->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
@@ -225,16 +226,14 @@ namespace orxonox
     }
 
     /**
-        @returns the Identifier itself
+        @returns the Identifier itself.
     */
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
         if (!pointer_s)
         {
-#if HIERARCHY_VERBOSE
-            std::cout << "*** Create Singleton.\n";
-#endif
+            COUT(4) << "*** Create Singleton.\n";
             pointer_s = new ClassIdentifier();
         }
 
@@ -248,9 +247,7 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::addObject(T* object)
     {
-#if HIERARCHY_VERBOSE
-        std::cout << "*** Added object to " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
-#endif
+        COUT(4) << "*** Added object to " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
         object->getMetaList().add(ClassIdentifier<T>::getIdentifier()->objects_, ClassIdentifier<T>::getIdentifier()->objects_->add(object));
     }
 
@@ -260,7 +257,7 @@ namespace orxonox
     // ###############################
     //! The SubclassIdentifier acts almost like an Identifier, but has some prerequisites.
     /**
-        You can only assign Identifiers that belong to a class of at least B (or derived) to a SubclassIdentifier<T>.
+        You can only assign an Identifier that belongs to a class T (or derived) to a SubclassIdentifier<T>.
         If you assign something else, the program aborts.
         Because we know the minimal type, a dynamic_cast is done, which makes it easier to create a new object.
     */
@@ -285,9 +282,9 @@ namespace orxonox
             {
                 if (!identifier->isA(ClassIdentifier<T>::getIdentifier()))
                 {
-                    std::cout << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!\n";
-                    std::cout << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden.\n";
-                    std::cout << "Aborting...\n";
+                    COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!\n";
+                    COUT(1) << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden.\n";
+                    COUT(1) << "Aborting...\n";
                     abort();
                 }
                 this->identifier_ = identifier;
@@ -313,14 +310,14 @@ namespace orxonox
             }
 
             /**
-                @brief Creates a new object of the type of the assigned identifier and dynamic_casts it to the minimal type given by the SubclassIdentifier.
+                @brief Creates a new object of the type of the assigned Identifier and dynamic_casts it to the minimal type given by T.
                 @return The new object
             */
             T* fabricate()
             {
                 BaseObject* newObject = this->identifier_->fabricate();
 
-                // Check if the creation worked
+                // Check if the creation was successful
                 if (newObject)
                 {
                     // Do a dynamic_cast, because an object of type T is much better than of type BaseObject
@@ -331,14 +328,14 @@ namespace orxonox
                     // Something went terribly wrong
                     if (this->identifier_)
                     {
-                        std::cout << "Error: Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!\n";
-                        std::cout << "Error: Couldn't fabricate a new Object.\n";
-                        std::cout << "Aborting...\n";
+                        COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!\n";
+                        COUT(1) << "Error: Couldn't fabricate a new Object.\n";
+                        COUT(1) << "Aborting...\n";
                     }
                     else
                     {
-                        std::cout << "Error: Couldn't fabricate a new Object - Identifier is undefined.\n";
-                        std::cout << "Aborting...\n";
+                        COUT(1) << "Error: Couldn't fabricate a new Object - Identifier is undefined.\n";
+                        COUT(1) << "Aborting...\n";
                     }
 
                     abort();

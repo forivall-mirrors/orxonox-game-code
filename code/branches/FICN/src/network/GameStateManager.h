@@ -18,7 +18,7 @@
 
 #include "ClientInformation.h"
 #include "Synchronisable.h"
-#include "orxonox/core/IdentifierIncludes.h"
+#include "orxonox/core/CoreIncludes.h"
 #include "orxonox/core/Iterator.h"
 #include "PacketTypes.h"
 

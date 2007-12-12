@@ -2,7 +2,7 @@
     @file Factory.h
     @brief Definition of the Factory and the BaseFactory class.
 
-    The Factory is a singleton, containing two maps to map either the name or the networkID
+    The Factory is a singleton, containing two maps to map either the name or the network ID
     of a class with the corresponding Identifier.
 
     Usage:
@@ -27,7 +27,7 @@ namespace orxonox
     // ###############################
     // ###         Factory         ###
     // ###############################
-    //! The Factory is used to map name or networkID of a class with its Identifier.
+    //! The Factory is used to map the name or the network ID of a class with its Identifier.
     class Factory
     {
         public:
@@ -35,6 +35,7 @@ namespace orxonox
             static Identifier* getIdentifier(const unsigned int id);
             static void add(const std::string& name, Identifier* identifier);
             static void changeNetworkID(Identifier* identifier, const unsigned int oldID, const unsigned int newID);
+            static void createClassHierarchy();
 
         private:
             Factory() {}                        // don't create
@@ -42,8 +43,8 @@ namespace orxonox
             ~Factory() {}                       // don't delete
 
             static Factory* pointer_s;                                          //!< The pointer to the singleton
-            std::map<std::string, Identifier*> identifierStringMap_;            //!< The map mapping string with Identifier
-            std::map<unsigned int, Identifier*> identifierNetworkIDMap_;        //!< The map mapping networkID with Identifier
+            std::map<std::string, Identifier*> identifierStringMap_;            //!< The map, mapping the name with the Identifier
+            std::map<unsigned int, Identifier*> identifierNetworkIDMap_;        //!< The map, mapping the network ID with the Identifier
     };
 
     // ###############################

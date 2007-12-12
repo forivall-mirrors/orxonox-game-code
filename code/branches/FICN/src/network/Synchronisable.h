@@ -15,7 +15,7 @@
 #include <list>
 #include <iostream>
 
-#include "orxonox/core/IdentifierIncludes.h"
+#include "orxonox/core/CoreIncludes.h"
 #include "orxonox/core/OrxonoxClass.h"
 
 namespace network {

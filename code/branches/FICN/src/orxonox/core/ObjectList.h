@@ -1,9 +1,9 @@
 /*!
     @file ObjectList.h
-    @brief Definition of the ObjectList class.
+    @brief Definition and implementation of the ObjectList class.
 
-    The ObjectList is a double-linked list, used by Identifiers to store all objects of a specific class in it.
-    Created objects are added through the RegisterObject-macro in its constructor.
+    The ObjectList is a double-linked list, used by Identifiers to store all objects of a given class.
+    Newly created objects are added through the RegisterObject-macro in its constructor.
     Use Iterator<class> to iterate through all objects of the class.
 */
 
@@ -31,7 +31,7 @@ namespace orxonox
 
     /**
         @brief Constructor: Creates the list-element with an object.
-        @param Object The object to store
+        @param object The object to store
     */
     template <class T>
     ObjectListElement<T>::ObjectListElement(T* object)
@@ -48,9 +48,9 @@ namespace orxonox
     template <class T>
     class Iterator; // Forward declaration
 
-    //! The ObjectList contains all objects of a specific class.
+    //! The ObjectList contains all objects of a given class.
     /**
-        The ObjectList is used by Identifiers to store all objects of a specific class in it.
+        The ObjectList is used by Identifiers to store all objects of a given class.
         Use Iterator<class> to iterate through all objects in the list.
     */
     template <class T>
@@ -81,7 +81,7 @@ namespace orxonox
     ObjectList<T>* ObjectList<T>::pointer_s = 0; // Set the static member variable pointer_s to zero
 
     /**
-        @brief Constructor: Sets first_ and last_ to zero and the static member variable pointer_s to _this_
+        @brief Constructor: Sets default values.
     */
     template <class T>
     ObjectList<T>::ObjectList()

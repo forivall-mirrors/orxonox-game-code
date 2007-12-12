@@ -169,7 +169,7 @@ namespace network{
   
   void Client::processClassid(classid *clid){
     orxonox::Identifier *id;
-    id=orxonox::ID(std::string(clid->message));
+    id=ID(std::string(clid->message));
     if(id!=NULL)
       id->setNetworkID(clid->clid);
     return;

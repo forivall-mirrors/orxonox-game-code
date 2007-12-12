@@ -51,6 +51,10 @@
 #include <string>
 #include <iostream>
 
+#include "objects/Tickable.h"
+#include "objects/Timer.h"
+#include "core/Factory.h"
+
 #include "../xml/xmlParser.h"
 #include "../loader/LevelLoader.h"
 #include "../audio/AudioManager.h"
@@ -254,6 +258,7 @@ namespace orxonox
     setupScene();
     setupInputSystem();
     createFrameListener();
+    Factory::createClassHierarchy();
     startRenderLoop();
   }
 
@@ -415,6 +420,12 @@ namespace orxonox
   // we actually want to do this differently...
   void Orxonox::createFrameListener()
   {
+    TickFrameListener* TickFL = new TickFrameListener();
+    ogre_->getRoot()->addFrameListener(TickFL);
+
+    TimerFrameListener* TimerFL = new TimerFrameListener();
+    ogre_->getRoot()->addFrameListener(TimerFL);
+
     frameListener_ = new OrxListener(keyboard_, mouse_, auMan_);
     ogre_->getRoot()->addFrameListener(frameListener_);
   }

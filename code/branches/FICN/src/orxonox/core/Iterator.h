@@ -1,9 +1,9 @@
 /*!
     @file Iterator.h
-    @brief Definition of the Iterator class.
+    @brief Definition and implementation of the Iterator class.
 
     The Iterator of a given class allows to iterate through an ObjectList, containing all objects of that type.
-    This is the only way to access the objects in an ObjectList.
+    This is the only way to access the objects stored in an ObjectList.
 
     Usage:
     for (Iterator<class> it = ObjectList<class>::start(); it != 0; ++it)
@@ -12,11 +12,13 @@
         class* myObject = *it;
     }
 
-    Warning: Don't delete an object directly through the iterator.
+    Warning: Don't delete objects directly through the iterator.
 */
 
 #ifndef _Iterator_H__
 #define _Iterator_H__
+
+#include "Debug.h"
 
 namespace orxonox
 {
@@ -26,7 +28,7 @@ namespace orxonox
     {
         public:
             /**
-                @brief Constructor: Sets the element whereon the iterator points to zero.
+                @brief Constructor: Sets the element, whereon the iterator points, to zero.
             */
             Iterator()
             {
@@ -34,7 +36,7 @@ namespace orxonox
             }
 
             /**
-                @brief Constructor: Sets the element whereon the iterator points to a given element.
+                @brief Constructor: Sets the element, whereon the iterator points, to a given element.
                 @param element The element to start with
             */
             Iterator(ObjectListElement<T>* element)
@@ -43,7 +45,7 @@ namespace orxonox
             }
 
             /**
-                @brief Overloading of the ++it operator: Iterator iterates to the next object in the list.
+                @brief Overloading of the ++it operator: Iterator points to the next object in the list.
                 @return The Iterator itself
             */
             Iterator<T> operator++()
@@ -53,7 +55,7 @@ namespace orxonox
             }
 
             /**
-                @brief Overloading of the --it operator: Iterator iterates to the previous object in the list.
+                @brief Overloading of the --it operator: Iterator points to the previous object in the list.
                 @return The Iterator itself
             */
             Iterator<T> operator--()
@@ -97,15 +99,15 @@ namespace orxonox
             */
             bool operator!=(int compare)
             {
-                // Comparing with something except zero makes no sense
+                // Comparing with anything except zero makes no sense
                 if (compare != 0)
-                    std::cout << "Warning: Comparing the " << ClassIdentifier<T>::getIdentifier()->getName() << "-List-Iterator with " << compare << " has no effect. Only comparison with 0 works.\n";
+                    COUT(2) << "Warning: Comparing the " << ClassIdentifier<T>::getIdentifier()->getName() << "-List-Iterator with " << compare << " has no effect. Only comparison with 0 works.\n";
 
                 return (this->element_ != 0);
             }
 
         private:
-            ObjectListElement<T>* element_;     //!< The element the Iterator points to
+            ObjectListElement<T>* element_;     //!< The element the Iterator points at
     };
 }
 

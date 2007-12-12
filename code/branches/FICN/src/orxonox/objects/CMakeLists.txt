@@ -2,6 +2,7 @@ PROJECT(Orxonox)
 
 SET( OBJECTS_SRC_FILES
   BaseObject.cc
+  WorldEntity.cc
   test1.cc
   test2.cc
   test3.cc

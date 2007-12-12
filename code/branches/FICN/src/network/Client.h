@@ -18,7 +18,7 @@
 #include "ClientConnection.h"
 #include "PacketManager.h"
 #include "GameStateClient.h"
-#include "orxonox/core/IdentifierIncludes.h"
+#include "orxonox/core/CoreIncludes.h"
 //#include "NetworkFrameListener.h"
 
 

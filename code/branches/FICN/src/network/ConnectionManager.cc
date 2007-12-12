@@ -223,7 +223,7 @@ namespace network{
     bool abort=false;
     orxonox::Identifier *id;
     while(!abort){
-      id = orxonox::ID(i);
+      id = ID(i);
       if(id == NULL)
         abort=true;
       else{

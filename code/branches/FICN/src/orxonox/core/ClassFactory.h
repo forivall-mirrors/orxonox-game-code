@@ -1,6 +1,6 @@
 /*!
     @file ClassFactory.h
-    @brief Definition of the ClassFactory class
+    @brief Definition and implementation of the ClassFactory class
 
     The ClassFactory is able to create new objects of a specific class.
 */
@@ -20,7 +20,7 @@ namespace orxonox
     class ClassFactory : public BaseFactory
     {
         public:
-            static bool create();
+            static bool create(const std::string& name);
             BaseObject* fabricate();
 
         private:
@@ -32,23 +32,14 @@ namespace orxonox
     };
 
     /**
-        @brief Adds the ClassFactory to the Identifier of the same type and creates a new object to retrieve the parents.
-        @return True, because the compiler only allows assignments before main()
+        @brief Adds the ClassFactory to the Identifier of the same type and the Identifier to the Factory.
+        @return Always true (this is needed because the compiler only allows assignments before main())
     */
     template <class T>
-    bool ClassFactory<T>::create()
+    bool ClassFactory<T>::create(const std::string& name)
     {
-        // Add the ClassFactory to the Classidentifier of type T
         ClassIdentifier<T>::getIdentifier()->addFactory(new ClassFactory<T>);
-
-        // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
-        ClassIdentifier<T>::getIdentifier()->startCreatingHierarchy();
-#if HIERARCHY_VERBOSE
-        std::cout << "*** Create Factory -> Create Class\n";
-#endif
-        BaseObject* temp = ClassIdentifier<T>::getIdentifier()->fabricate();
-        delete temp;
-        ClassIdentifier<T>::getIdentifier()->stopCreatingHierarchy();
+        Factory::add(name, ClassIdentifier<T>::getIdentifier());
 
         return true;
     }

@@ -3,8 +3,8 @@
     @brief Definition of the MetaObjectList class.
 
     The MetaObjectList is a single-linked list, containing all list-elements and their
-    lists wherein the object that owns the MetaObjectList is registered.
-    This allows much faster deleting of objects.
+    lists wherein the object, owning the MetaObjectList, is registered.
+    This allows much faster deletion of objects because no iteration is needed.
 */
 
 #ifndef _MetaObjectList_H__
@@ -12,6 +12,7 @@
 
 #include "ObjectList.h"
 #include "Identifier.h"
+#include "Debug.h"
 
 namespace orxonox
 {
@@ -19,7 +20,7 @@ namespace orxonox
     class BaseMetaObjectListElement
     {
         public:
-            /** @brief Defaultdestructor */
+            /** @brief Default destructor */
             virtual ~BaseMetaObjectListElement() {};
 
             BaseMetaObjectListElement* next_;       //!< The next Element in the list
@@ -68,9 +69,7 @@ namespace orxonox
             this->list_->first_ = this->element_->next_; // If there is no prev_, we deleted the first object and have to update the first_ pointer of the list
 
 
-#if HIERARCHY_VERBOSE
-        std::cout << "*** Removing Object from " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
-#endif
+        COUT(4) << "*** Removing Object from " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
         delete this->element_;
     }
 
@@ -82,7 +81,7 @@ namespace orxonox
     /**
         The MetaObjectList is a single-linked list, containing all list-elements and their
         lists wherein the object that owns the MetaObjectList is registered.
-        This allows much faster deleting of objects.
+        This allows much faster deletion of objects because no iteration is needed.
     */
     class MetaObjectList
     {

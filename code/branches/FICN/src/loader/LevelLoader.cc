@@ -3,7 +3,7 @@
 
 #include "LevelLoader.h"
 #include "tinyxml/tinyxml.h"
-#include "orxonox/core/IdentifierIncludes.h"
+#include "orxonox/core/CoreIncludes.h"
 #include "orxonox/core/Error.h"
 #include "orxonox/objects/BaseObject.h"
 
@@ -110,7 +110,7 @@ LevelLoader::LevelLoader(string file, string path)
 				while( tNode = worldElem->IterateChildren( tNode ) )
 				{
 					tElem = tNode->ToElement();
-					orxonox::BaseObject* obj = orxonox::ID(tElem->Value())->fabricate();
+					orxonox::BaseObject* obj = ID(tElem->Value())->fabricate();
 					obj->loadParams(tElem);
 				}			
 			}
