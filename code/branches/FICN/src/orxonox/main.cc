@@ -80,10 +80,10 @@ using namespace Ogre;
     Orxonox* orx = Orxonox::getSingleton();
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
     orx->init(argc, argv, macBundlePath());
-    orx->start();
+    //orx->start();
 #else
     orx->init(argc, argv, "");
-    orx->start();
+    //orx->start();
 #endif
 
   }

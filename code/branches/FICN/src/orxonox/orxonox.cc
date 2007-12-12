@@ -62,7 +62,7 @@ SpaceshipSteering* steering;
 //network stuff
 #include "../network/Server.h"
 #include "../network/Client.h"
-//#include "../network/NetworkFrameListener.h"
+#include "../network/NetworkFrameListener.h"
 
 // some tests to see if enet works without includsion
 //#include <enet/enet.h>
@@ -221,7 +221,7 @@ namespace orxonox
     auMan_ = new audio::AudioManager();
     // load this file from config
     string levelFile = "sample.oxw";
-    loader_ = new loader::LevelLoader(levelFile);
+    //loader_ = new loader::LevelLoader(levelFile);
     //TODO: run engine
   }
 
@@ -247,14 +247,25 @@ namespace orxonox
   {
     ogre_->setConfigPath(path);
     ogre_->setup();
-    if(!ogre_->load()) die(/* unable to load */);
+    root_ = ogre_->getRoot();
+    //if(!ogre_->load()) die(/* unable to load */);
+
+    defineResources();
+    setupRenderSystem();
+    createRenderWindow();
+    initializeResourceGroups();
+    createScene();
+    setupScene();
+    setupInputSystem();
+    createFrameListener();
+    startRenderLoop();
   }
 
   void Orxonox::serverInit(std::string path)
   {
     ogre_->setConfigPath(path);
     ogre_->setup();
-    //server_g = new network::Server(); // add some settings if wanted
+    server_g = new network::Server(); // add some settings if wanted
     if(!ogre_->load()) die(/* unable to load */);
     //ogre_->getRoot()->addFrameListener(new network::ServerFrameListener());
     ogre_->startRender();
@@ -267,7 +278,7 @@ namespace orxonox
   {
     ogre_->setConfigPath(path);
     ogre_->setup();
-    //client_g = new network::Client(); // address here
+    client_g = new network::Client(); // address here
     if(!ogre_->load()) die(/* unable to load */);
     //ogre_->getRoot()->addFrameListener(new network::ClientFrameListener());
     ogre_->startRender();
@@ -277,6 +288,52 @@ namespace orxonox
     setupInputSystem();
     createFrameListener();
     startRenderLoop();
+  }
+
+  void Orxonox::defineResources()
+  {
+    Ogre::String secName, typeName, archName;
+    Ogre::ConfigFile cf;
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+    cf.load(macBundlePath() + "/Contents/Resources/resources.cfg");
+#else
+    cf.load("resources.cfg");
+#endif
+
+    Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+    while (seci.hasMoreElements())
+    {
+      secName = seci.peekNextKey();
+      Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+      Ogre::ConfigFile::SettingsMultiMap::iterator i;
+      for (i = settings->begin(); i != settings->end(); ++i)
+      {
+        typeName = i->first;
+        archName = i->second;
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation( String(macBundlePath() + "/" + archName), typeName, secName);
+#else
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation( archName, typeName, secName);
+#endif
+      }
+    }
+  }
+
+  void Orxonox::setupRenderSystem()
+  {
+    if (!root_->restoreConfig() && !root_->showConfigDialog())
+      throw Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
+  }
+
+  void Orxonox::createRenderWindow()
+  {
+    root_->initialise(true, "OrxonoxV2");
+  }
+
+  void Orxonox::initializeResourceGroups()
+  {
+    TextureManager::getSingleton().setDefaultNumMipmaps(5);
+    ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
   }
 
   void Orxonox::createScene(void)

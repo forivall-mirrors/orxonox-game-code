@@ -38,6 +38,10 @@ namespace orxonox {
       void serverInit(std::string path);
       void clientInit(std::string path);
       void standalone(std::string path);
+      void defineResources();
+      void setupRenderSystem();
+      void createRenderWindow();
+      void initializeResourceGroups();
       void createScene(void);
       void setupScene();
       void setupInputSystem();
@@ -45,7 +49,6 @@ namespace orxonox {
       void startRenderLoop();
     private:
 
-      //static Orxonox*       singletonRef_;
       GraphicsEngine*       ogre_;      //!< our dearest graphics engine <3
       std::string           dataPath_;  //!< path to data
       loader::LevelLoader*  loader_;    //!< level loader builds the scene
@@ -55,6 +58,7 @@ namespace orxonox {
       OIS::Mouse*           mouse_;
       OIS::InputManager*    inputManager_;
       OrxListener*          frameListener_;
+      Ogre::Root*           root_;
   };
 }
 #endif /* ORXONOX_H */
