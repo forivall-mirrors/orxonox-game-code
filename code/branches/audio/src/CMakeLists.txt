@@ -1,8 +1,0 @@
-PROJECT(Orxonox)
-
-ADD_SUBDIRECTORY(orxonox)
-ADD_SUBDIRECTORY(loader)
-ADD_SUBDIRECTORY(network)
-ADD_SUBDIRECTORY(class_hierarchy)
-ADD_SUBDIRECTORY(audio)
-
