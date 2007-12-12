@@ -9,7 +9,7 @@
 #include <iostream>
 
 #include "loader_platform.h"
-#include "xml/xmlParser.h"
+//#include "xml/xmlParser.h"
 
 #ifndef __MODULE_LEVELLOADER__
 #define __MODULE_LEVELLOADER__
@@ -21,14 +21,14 @@ namespace loader
 	class _LoaderExport LevelLoader
 	{
 	private:
-		
+		/*
 		// XML Nodes 
 		XMLNode rootNode;
 		XMLNode loadingScreenNode;
 		XMLNode worldNode;
 		XMLNode audioNode;
 		XMLNode scriptsNode;
-		
+		*/
 		// Level information
 		std::string name_;
 		std::string description_;

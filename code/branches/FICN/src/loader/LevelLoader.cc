@@ -2,7 +2,8 @@
 #include <iostream>
 
 #include "LevelLoader.h"
-#include "xml/xmlParser.h"
+//#include "xml/xmlParser.h"
+#include "tinyxml/tinyxml.h"
 
 using namespace std;
 
@@ -14,6 +15,21 @@ LevelLoader::LevelLoader(string file, string dir)
 	// Load XML level file
 	dir.append("/");
 	dir.append(file);	
+	
+	TiXmlDocument doc(file);
+	bool loadOkay = doc.LoadFile();
+	if (loadOkay)
+	{
+
+	}
+	else
+	{
+		std::string err = "Could not load level file ";
+		err.append(file); 
+		std::cout << err << std::endl;
+	}	
+	
+	/*
   	rootNode = XMLNode::openFileHelper(dir.c_str(),"orxonoxworld");
   	// TODO: Error handling
 
@@ -24,11 +40,18 @@ LevelLoader::LevelLoader(string file, string dir)
   	this->description_ = rootNode.getChildNode("description").getText();
   
   	loadingScreenNode = rootNode.getChildNode("loading");
-  
   	if (!loadingScreenNode.isEmpty())
   	{
   		this->showLoadingScreen();
   	}
+
+  	worldNode = rootNode.getChildNode("world");
+  	if (!worldNode.isEmpty())
+  	{
+  		
+  	}
+  	*/
+
   
   /*
   // Assign sub-nodes
