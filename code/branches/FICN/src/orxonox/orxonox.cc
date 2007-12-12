@@ -359,8 +359,7 @@ namespace orxonox
     cam->lookAt(Vector3(0,0,0));
     Viewport *vp = ogre_->getRoot()->getAutoCreatedWindow()->addViewport(cam);
 
-
-    mgr->setAmbientLight(ColourValue(1,1,1));
+    
     Entity* head = mgr->createEntity("head", "razor.mesh");
     SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
     node->attachObject(head);
@@ -385,6 +384,7 @@ namespace orxonox
 
     steering = new SpaceshipSteering(500, 200, 200, 200);
     steering->addNode(node);
+
 
   }
 

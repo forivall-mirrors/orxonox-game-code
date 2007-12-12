@@ -2,6 +2,8 @@
 #include "test2.h"
 #include "test3.h"
 #include "../../tinyxml/tinyxml.h"
+#include "../orxonox.h"
+#include <OgreSceneManager.h>
 
 namespace orxonox
 {
@@ -69,6 +71,14 @@ namespace orxonox
     
     void Test1::loadParams(TiXmlElement* xmlElem)
     {
+    	Ogre::SceneManager* mgr = orxonox::Orxonox::getSingleton()->getSceneManager();
+    	
+    	mgr->setAmbientLight(ColourValue(1,0,0));
+    	
+    	
+    	
     	std::cout<< xmlElem->GetText()<<std::endl;
+    	
+    	
     }
 }

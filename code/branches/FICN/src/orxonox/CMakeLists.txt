@@ -17,6 +17,8 @@ SET( ORXONOX_SRC_FILES
   graphicsEngine.cc
 )
 
+ADD_LIBRARY(orxonox SHARED ${ORXONOX_SRC_FILES})
+
 ADD_EXECUTABLE(../../bin/main ${ORXONOX_SRC_FILES})
 
 SET_TARGET_PROPERTIES(../../bin/main PROPERTIES LINK_FLAGS "--no-undefined" )

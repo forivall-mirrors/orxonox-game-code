@@ -42,7 +42,7 @@ TARGET_LINK_LIBRARIES( chatserver
   ${OGRE_LIBRARIES}
   network
   core
-  objects
+  #objects
 )
 
 ADD_EXECUTABLE(chatclient ${CHATCLIENT_SRC_FILES})
@@ -50,7 +50,7 @@ TARGET_LINK_LIBRARIES( chatclient
   ${OGRE_LIBRARIES}
   network
   core
-  objects
+  #objects
 )
 
 ADD_EXECUTABLE(client dummyclient2.cc)
@@ -59,12 +59,12 @@ TARGET_LINK_LIBRARIES( client
   ${OGRE_LIBRARIES}
   network
   core
-  objects
+  #objects
 )
 TARGET_LINK_LIBRARIES( server
   ${OGRE_LIBRARIES}
   network
   core
-  objects
+  #objects
 )
 
