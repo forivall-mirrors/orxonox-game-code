@@ -1,6 +1,7 @@
 #include "test1.h"
 #include "test2.h"
 #include "test3.h"
+#include "../../tinyxml/tinyxml.h"
 
 namespace orxonox
 {
@@ -64,5 +65,10 @@ namespace orxonox
         std::cout << "Test1: usefullClass3->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << "\n";
         std::cout << "Test1: usefullClass3->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << "\n";
         this->usefullClass3_ = identifier;
+    }
+    
+    void Test1::loadParams(TiXmlElement* xmlElem)
+    {
+    	std::cout<< xmlElem->GetText()<<std::endl;
     }
 }

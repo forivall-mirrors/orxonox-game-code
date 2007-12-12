@@ -6,5 +6,6 @@ ADD_SUBDIRECTORY(loader)
 ADD_SUBDIRECTORY(network)
 ADD_SUBDIRECTORY(orxonox)
 ADD_SUBDIRECTORY(audio)
+ADD_SUBDIRECTORY(tinyxml)
 
 # xml gets handled by loader

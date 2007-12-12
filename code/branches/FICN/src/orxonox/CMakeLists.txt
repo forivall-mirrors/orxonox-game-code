@@ -31,5 +31,6 @@ TARGET_LINK_LIBRARIES( ../../bin/main
   hud
   objects
   weapon
+  xml
 )
 

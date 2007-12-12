@@ -10,6 +10,8 @@ namespace orxonox
         public:
             BaseObject();
             virtual ~BaseObject();
+			virtual void loadParams(TiXmlElement* xmlElem) {}
+            
     };
 }
 

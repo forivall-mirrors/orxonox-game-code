@@ -91,7 +91,6 @@ namespace orxonox
             inline void setVisible(bool bVisible) { this->bVisible_ = bVisible; }
             inline const bool isVisible() const { return this->bVisible_; }
 
-			//virtual void loadParams(TIXMLNode n);
 
         private:
             Identifier* identifier_;        //!< The Identifier of the object

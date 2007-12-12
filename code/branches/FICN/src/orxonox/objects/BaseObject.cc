@@ -12,4 +12,5 @@ namespace orxonox
     BaseObject::~BaseObject()
     {
     }
+    
 }

@@ -23,19 +23,10 @@ namespace loader
 	class _LoaderExport LevelLoader
 	{
 	private:
-		/*
-		// XML Nodes 
-		XMLNode rootNode;
-		XMLNode loadingScreenNode;
-		XMLNode worldNode;
-		XMLNode audioNode;
-		XMLNode scriptsNode;
-		*/
 		// Level information
 		std::string name_;
 		std::string description_;
 		std::string image_;
-		
 		std::string loadingBackgroundColor_;
 		std::string loadingBackgroundImage_;
 		std::string loadingBarImage_;
@@ -43,7 +34,11 @@ namespace loader
 		std::string loadingBarLeft_;
 		std::string loadingBarWidth_;
 		std::string loadingBarHeight_;
+		
+		bool valid_;
 			
+		TiXmlDocument doc;
+		TiXmlElement* rootElement;	
 	public:
 
 		// Constructors
@@ -51,6 +46,7 @@ namespace loader
 		~LevelLoader();
 		
 		void showLoadingScreen();
+		void loadLevel();
 		
 		// Getters
 		string name();

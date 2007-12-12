@@ -217,11 +217,7 @@ namespace orxonox
   void Orxonox::start()
   {
     //TODO: start modules
-    ogre_->startRender();
-    auMan_ = new audio::AudioManager();
-    // load this file from config
-    string levelFile = "sample.oxw";
-    //loader_ = new loader::LevelLoader(levelFile);
+
     //TODO: run engine
   }
 
@@ -338,16 +334,20 @@ namespace orxonox
 
   void Orxonox::createScene(void)
   {
+	// Init audio
     auMan_ = new audio::AudioManager();
+    
+    // load this file from config
+    loader_ = new loader::LevelLoader("sample.oxw");
+    loader_->loadLevel();
 
+	/*
     auMan_->ambientAdd("a1");
     auMan_->ambientAdd("a2");
     auMan_->ambientAdd("a3");
                                 //auMan->ambientAdd("ambient1");
     auMan_->ambientStart();
-
-    string levelFile = "sp_level_moonstation.oxw";
-//       loader::LevelLoader* loader = new loader::LevelLoader(levelFile);
+	*/
   }
 
 
