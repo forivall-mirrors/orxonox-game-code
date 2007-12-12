@@ -46,6 +46,10 @@ public:
 	PacketDecoder();
 	//call this function to decode, it calls the right decoding function below
 	bool elaborate( ENetPacket* packet, int clientId );
+protected:
+    
+  virtual void processChat( chat *data, int clientId);
+        
         
 private:
         
@@ -61,7 +65,6 @@ private:
   //process data
   //two functions are note yet implemented!
   //virtual void processGamestate(GameState *state);
-  virtual void processChat( chat *data, int clientId);
   void processClassid( classid *cid);
   //virtual void processAck( ack *data);
   
