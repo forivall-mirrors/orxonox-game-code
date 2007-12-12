@@ -442,6 +442,7 @@ arrayOfElements[6].setValues( ElementLocationArray[6], ElementSpeedArray[6], Ele
 {
   try
   {
+    SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
     OrxApplication orxonox;
     orxonox.go();
   }
