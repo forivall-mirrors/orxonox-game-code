@@ -73,9 +73,9 @@ namespace network{
    */
   bool Server::sendMSG(std::string msg){
     ENetPacket *packet = packet_gen.chatMessage(msg.c_str());
-    std::cout <<"adding packets" << std::endl;
+    //std::cout <<"adding packets" << std::endl;
     connection->addPacketAll(packet);
-    std::cout <<"added packets" << std::endl;
+    //std::cout <<"added packets" << std::endl;
     return connection->sendPackets();
   }
   /**
@@ -85,9 +85,9 @@ namespace network{
    */
   bool Server::sendMSG(const char *msg){
     ENetPacket *packet = packet_gen.chatMessage(msg);
-    std::cout <<"adding packets" << std::endl;
+    //std::cout <<"adding packets" << std::endl;
     connection->addPacketAll(packet);
-    std::cout <<"added packets" << std::endl;
+    //std::cout <<"added packets" << std::endl;
     return connection->sendPackets();
   }
   
@@ -109,7 +109,7 @@ namespace network{
     ENetPacket *packet;
     int clientID=-1;
     while(!connection->queueEmpty()){
-      std::cout << "Client " << clientID << " sent: " << std::endl;
+      //std::cout << "Client " << clientID << " sent: " << std::endl;
       packet = connection->getPacket(clientID);
       elaborate(packet, clientID);
     }
