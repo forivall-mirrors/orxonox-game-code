@@ -360,7 +360,7 @@ namespace orxonox
     Viewport *vp = ogre_->getRoot()->getAutoCreatedWindow()->addViewport(cam);
 
     
-    Entity* head = mgr->createEntity("head", "razor.mesh");
+    Entity* head = mgr->createEntity("ASSF", "assf.mesh");
     SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
     node->attachObject(head);
     node->attachObject(cam);
