@@ -360,7 +360,7 @@ namespace orxonox
     SceneManager *mgr = ogre_->getSceneManager();
     
     Camera *cam = mgr->createCamera("Camera");
-    cam->setPosition(Vector3(0,0,-250));
+    cam->setPosition(Vector3(0,0,+250));
     cam->lookAt(Vector3(0,0,0));
     Viewport *vp = ogre_->getRoot()->getAutoCreatedWindow()->addViewport(cam);
 

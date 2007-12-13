@@ -17,7 +17,7 @@
 		
 		<Ambient colourvalue="1,1,1" />
 		
-		<Skybox src="Orxonox/SampleSkyBox" />
+		<Skybox src="Orxonox/BlueStarSkyBox" />
 				
 	</world>
 
