@@ -1,3 +1,30 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      ...
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -18,11 +45,11 @@ namespace loader
 LevelLoader::LevelLoader(string file, string path)
 {
 	valid_ = false;
-	
+
 	// Load XML level file
 	path.append("/");
-	path.append(file);	
-	
+	path.append(file);
+
 	// Open xml file
 	doc.LoadFile(path);
 
@@ -30,7 +57,7 @@ LevelLoader::LevelLoader(string file, string path)
 	if (doc.LoadFile())
 	{
 		TiXmlHandle hDoc(&doc);
-		TiXmlHandle hRoot(0);		
+		TiXmlHandle hRoot(0);
 		TiXmlElement* pElem;
 
 		// Check for root element
@@ -45,24 +72,24 @@ LevelLoader::LevelLoader(string file, string path)
 			pElem = hRoot.FirstChild("description").Element();
 			if (pElem)
 			{
-				description_ = pElem->GetText();	
+				description_ = pElem->GetText();
 			}
-			
+
 			// Set level name
 			name_ = rootElement->Attribute("name");
 			image_ = rootElement->Attribute("image");
-			
+
 			valid_ = true;
 		}
 		else
 		{
 			orxonox::Error("Level file has no valid root node");
-		}	
+		}
 	}
 	else
 	{
 		orxonox::Error("Could not load level file ");
-	}	
+	}
 }
 
 	void LevelLoader::loadLevel()
@@ -73,8 +100,8 @@ LevelLoader::LevelLoader(string file, string path)
 			TiXmlElement* worldElem;
 			TiXmlElement* tElem;
 			TiXmlNode* tNode;
-			
-			
+
+
 			// Set loading screen
 			loadElem = rootElement->FirstChildElement("loading");
 			if (loadElem)
@@ -98,53 +125,53 @@ LevelLoader::LevelLoader(string file, string path)
 				}
 				showLoadingScreen();
 			}
-			
+
 			// Load audio
 			// TODO
-			
+
 			// Load scripts
 			// TODO
-			
+
 			// Load world
 			worldElem = rootElement->FirstChildElement("world");
 			if (worldElem)
-			{	
+			{
 				tNode = 0;
 				while( tNode = worldElem->IterateChildren( tNode ) )
 				{
 					tElem = tNode->ToElement();
 					orxonox::BaseObject* obj = ID(tElem->Value())->fabricate();
 					obj->loadParams(tElem);
-				}			
+				}
 			}
-			
-			std::cout << "Loading finished!\n\n\n\n\n";						
+
+			std::cout << "Loading finished!\n\n\n\n\n";
 		}
 	}
-	
+
 	void LevelLoader::showLoadingScreen()
 	{
 		std::cout << "\n\n\nThis is Orxonox\nthe hottest 3D action shooter ever to exist\n\n\n";
 		std::cout << "Level: " << name() << "\nDescription:" << description() << "\nImage:"<<image()<<"\n\n\n";
 		std::cout << "Backgroundcolor: " << loadingBackgroundColor_ << "\nBackgroundimage:" << loadingBackgroundImage_ << "\n\n\n";
 	}
-	
+
 	LevelLoader::~LevelLoader()
 	{
 
 	}
-	
-	
+
+
 	string LevelLoader::name()
 	{
 		return this->name_;
 	}
-	
+
 	string LevelLoader::description()
 	{
 		return this->description_;
 	}
-	
+
 	string LevelLoader::image()
 	{
 		return this->image_;

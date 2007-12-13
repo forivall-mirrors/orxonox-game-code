@@ -1,28 +1,29 @@
 /*
-*   ORXONOX - the hottest 3D action shooter ever to exist
-*
-*
-*   License notice:
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*
-*   Author:
-*      Reto Grieder
-*   Co-authors:
-*      ...
-*/
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Reto Grieder
+ *   Co-authors:
+ *      ...
+ *
+ */
 
 
 #include "OgreVector3.h"
@@ -65,7 +66,7 @@ namespace orxonox {
 
   /**
   * RunManager is the basic control object during the game.
-  * 
+  *
   * The RunManger class is designed to actually "run" the main part of the
   * game. The Idea is, that you could derive from the RunManager in order
   * to distinguish between a first person shooter or a space craft shooter.
@@ -150,7 +151,7 @@ namespace orxonox {
 
     // HUMAN INTERFACE
 
-    using namespace OIS;    
+    using namespace OIS;
 
     LogManager::getSingletonPtr()->logMessage("*** Initializing OIS ***");
     ParamList pl;
@@ -211,11 +212,11 @@ namespace orxonox {
 
   /**
   * Method to compute anything between 2 frames.
-  * 
+  *
   * Everything that needs to be computed during the games happens right here.
   * The only exception are the listeners (which should only set variables,
   * not actually do something).
-  * 
+  *
   * @param time Absolute play time
   * @param deltaTime Time passed since last frame
   * @return Return false to end rendering
