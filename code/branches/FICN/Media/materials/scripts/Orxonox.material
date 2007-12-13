@@ -9,7 +9,7 @@ material Orxonox/SampleSkyBox
 
 			texture_unit
 			{
-				cubic_texture stevecube.jpg separateUV
+				cubic_texture stars.jpg separateUV
 				tex_address_mode clamp
 			}
 		}
