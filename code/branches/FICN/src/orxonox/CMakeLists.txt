@@ -15,6 +15,7 @@ SET( ORXONOX_SRC_FILES
   inertial_node.cc
   main.cc
   graphicsEngine.cc
+  InputManager.cc
 )
 
 ADD_LIBRARY(orxonox SHARED ${ORXONOX_SRC_FILES})

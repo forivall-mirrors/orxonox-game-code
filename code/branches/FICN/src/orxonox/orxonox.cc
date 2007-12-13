@@ -121,16 +121,16 @@ namespace orxonox
           steering->loopLeft(0);
 
         if(moved) {
-          if (mouseY<0)
+          if (mouseY<=0)
             steering->rotateUp(-mouseY*rotate);
           if (mouseY>0)
             steering->rotateDown(mouseY*rotate);
           if (mouseX>0)
             steering->rotateRight(mouseX*rotate);
-          if (mouseX<0)
+          if (mouseX<=0)
             steering->rotateLeft(-mouseX*rotate);
-	  mouseY = 0;
-	  mouseX = 0;
+          mouseY = 0;
+          mouseX = 0;
           moved = false;
         }
         else {
@@ -360,7 +360,7 @@ namespace orxonox
   void Orxonox::setupScene()
   {
     SceneManager *mgr = ogre_->getSceneManager();
-    
+
     Camera *cam = mgr->createCamera("Camera");
     cam->setPosition(Vector3(0,0,-250));
     cam->lookAt(Vector3(0,0,0));
@@ -371,8 +371,8 @@ namespace orxonox
     SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
     node->attachObject(head);
     node->attachObject(cam);
-    
-    
+
+
 
     Entity* head1 = mgr->createEntity("head1", "ogrehead.mesh");
     SceneNode *node1 = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode1", Vector3(200,0,0));
