@@ -1,9 +1,36 @@
 /*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Dumeni Manatschal, (C) 2007
+ *   Co-authors:
+ *      ...
+ *
+ */
+
+/*
  * Class contains functions to determine and decode incomming packages
  * ->don't read this without the class PacketGenerator, since they belong together
- * 
+ *
  * Autor: Dumeni Manatschal
- * 
+ *
 */
 
 #include <enet/enet.h>
@@ -57,10 +84,10 @@ void PacketDecoder::acknowledgement( ENetPacket* packet, int clientId )
 {
 	ack* a = new ack;
 	*a = *(ack*)packet->data; //press pattern of ack on new data
-	
+
 	//clean memory
 	enet_packet_destroy( packet );
-	
+
 	printAck( a ); //debug info
 }
 
@@ -68,11 +95,11 @@ void PacketDecoder::mousem( ENetPacket* packet, int clientId )
 {
 	mouse* mouseMove = new mouse;
 	//copy data of packet->data to new struct
-	*mouseMove = *(mouse*)packet->data; 
-	
+	*mouseMove = *(mouse*)packet->data;
+
 	//clean memory
 	enet_packet_destroy( packet );
-	
+
 	printMouse( mouseMove ); //debug info
 }
 
@@ -80,10 +107,10 @@ void PacketDecoder::keystrike( ENetPacket* packet, int clientId )
 {
 	keyboard* key = new keyboard;
 	*key = *(keyboard*)packet->data; //see above
-	
+
 	//clean memory
 	enet_packet_destroy( packet );
-	
+
 	printKey( key ); //debug info
 
 }
@@ -93,18 +120,18 @@ void PacketDecoder::chatMessage( ENetPacket* packet, int clientId )
 	chat* chatting = new chat;
 	chatting->id = (int)*packet->data; //first copy id into new struct
 	//since the chat message is a char*, allocate the memory needed
-	char* reserve = new char[packet->dataLength-4]; 
+	char* reserve = new char[packet->dataLength-4];
 	//copy the transmitted bytestream into the new generated char*,
-	//note the lenght of the message is represented as "packet->dataLength-sizeof( int )" 
+	//note the lenght of the message is represented as "packet->dataLength-sizeof( int )"
 	memcpy( &reserve[0], packet->data+sizeof(int), packet->dataLength-sizeof(int) );
 	//put pointer of chatting struct to the begining of the new generated char*
 	chatting->message = reserve;
-	
+
 	//clean memory
 	enet_packet_destroy( packet );
-	
+
 	processChat( chatting, clientId ); //debug info
-	
+
 }
 
 void PacketDecoder::gstate( ENetPacket* packet )
@@ -125,7 +152,7 @@ void PacketDecoder::gstate( ENetPacket* packet )
 	currentState->data = (unsigned char*)(malloc( currentState->compsize ));
 	//copy the GameStateCompressed data
 	memcpy( (void*)(currentState->data), (const void*)(data+4*sizeof( int ) + sizeof(bool)), currentState->compsize );
-  
+
 	//clean memory
 	enet_packet_destroy( packet );
   //run processGameStateCompressed

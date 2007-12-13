@@ -1,3 +1,30 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Oliver Scheuss, (C) 2007
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 //
 // C++ Interface: ConnectionManager
 //
@@ -23,7 +50,7 @@ namespace std{
 namespace network{
 
   boost::thread_group network_threads;
-  
+
   ConnectionManager::ConnectionManager(ClientInformation *head){
     quit=false;
     bindAddress.host = ENET_HOST_ANY;
@@ -51,7 +78,7 @@ namespace network{
     else
         return NULL;
   }
-  
+
   ENetPacket *ConnectionManager::getPacket(int &clientID){
     ENetAddress address;
     ENetPacket *packet=getPacket(address);
@@ -81,13 +108,13 @@ namespace network{
       return false;
     return true;
   }
-  
+
   bool ConnectionManager::addPacket(ENetPacket *packet, int clientID){
     if(enet_peer_send(head_->findClient(clientID)->getPeer(), clientID, packet)!=0)
       return false;
     return true;
   }
-  
+
   bool ConnectionManager::addPacketAll(ENetPacket *packet){
     for(ClientInformation *i=head_->next(); i!=0; i=i->next()){
       if(enet_peer_send(i->getPeer(), i->getID(), packet)!=0)
@@ -104,7 +131,7 @@ namespace network{
     else
       return false;
   }
-  
+
   bool ConnectionManager::sendPackets(){
     ENetEvent event;
     if(server==NULL)
@@ -154,7 +181,7 @@ namespace network{
     // if we're finishied, destroy server
     enet_host_destroy(server);
   }
-  
+
   void ConnectionManager::disconnectClients(){
     ENetEvent event;
     ClientInformation *temp = head_->next();
@@ -189,9 +216,9 @@ namespace network{
 //   bool ConnectionManager::clientDisconnect(ENetPeer *peer){
 //     return clientDisconnect(*peer);
 //   }
-  
-  
-  
+
+
+
   bool ConnectionManager::clientDisconnect(ENetPeer *peer){
     return head_->removeClient(peer);
     return true;
@@ -204,19 +231,19 @@ namespace network{
     std::cout << "added client id: " << temp->prev()->getID() << std::endl;
     return true;
   }
-  
+
   int ConnectionManager::getClientID(ENetPeer peer){
     return getClientID(peer.address);
   }
-  
+
   int ConnectionManager::getClientID(ENetAddress address){
     return head_->findClient(&address)->getID();
   }
-  
+
   ENetPeer *ConnectionManager::getClientPeer(int clientID){
     return head_->findClient(clientID)->getPeer();
   }
-  
+
   void ConnectionManager::syncClassid(int clientID){
     int i=0;
     std::string classname;
@@ -234,5 +261,5 @@ namespace network{
     }
     sendPackets();
   }
-  
+
 }

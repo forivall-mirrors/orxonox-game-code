@@ -1,7 +1,34 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Oliver Scheuss, (C) 2007
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 //
 // C++ Implementation: GameStateManager
 //
-// Description: 
+// Description:
 //
 //
 // Author:  Oliver Scheuss, (C) 2007
@@ -46,7 +73,7 @@ GameStateCompressed GameStateManager::popGameState(int clientID){
 
 
 /**
- * This function goes through the whole list of synchronisables and 
+ * This function goes through the whole list of synchronisables and
  * saves all the synchronisables to a flat "list".
  * @return struct of type gamestate containing the size of the whole gamestate and a pointer linking to the flat list
  */
@@ -60,12 +87,12 @@ GameState *GameStateManager::getSnapshot(int id)
   orxonox::Iterator<Synchronisable> it;
   // struct for return value of Synchronisable::getData()
   syncData sync;
-  
+
   GameState *retval=new GameState; //return value
   retval->id=id;
   // reserve a little memory and increase it later on
   retval->data = (unsigned char*)malloc(1);
-  
+
   // offset of memory functions
   int offset=0;
   // go through all Synchronisables
@@ -76,7 +103,7 @@ GameState *GameStateManager::getSnapshot(int id)
     totalsize+=tempsize+3*sizeof(int);
     // allocate additional space
     retval->data = (unsigned char *)realloc((void *)retval->data, totalsize);
-    
+
     // run Synchronisable::getData with offset and additional place for 3 ints in between (for ids and length)
     sync=it->getData(retval->data+offset+3*sizeof(int));
     *(retval->data+offset)=sync.length;
@@ -139,22 +166,22 @@ GameStateCompressed GameStateManager::compress_(GameState *a) {
   uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
   unsigned char* dest = (unsigned char*)malloc( buffer );
   int retval;
-  retval = compress( dest, &buffer, a->data, (uLong)size );  
-  
+  retval = compress( dest, &buffer, a->data, (uLong)size );
+
   switch ( retval ) {
   case Z_OK: std::cout << "successfully compressed" << std::endl; break;
   case Z_MEM_ERROR: std::cout << "not enough memory available" << std::endl; break;
   case Z_BUF_ERROR: std::cout << "not enough memory available in the buffer" << std::endl; break;
   case Z_DATA_ERROR: std::cout << "data corrupted" << std::endl; break;
   }
-  
+
   GameStateCompressed compressedGamestate;
   compressedGamestate.compsize = buffer;
   compressedGamestate.normsize = size;
   compressedGamestate.id = GAMESTATE;
   compressedGamestate.data = dest;
   compressedGamestate.diffed = a->diffed;
-  
+
   return compressedGamestate;
 }
 

@@ -1,3 +1,30 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      ...
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 #include "GameStateClient.h"
 
 namespace network {
@@ -51,7 +78,7 @@ bool GameStateClient::loadSnapshot(GameState state)
     data+=sizeof(int);
     sync.data = data;
     data+=sync.length;
-    
+
     if(it->objectID!=sync.objectID){
       // bad luck ;)
       // delete the synchronisable (obviously seems to be deleted on the server)
@@ -72,7 +99,7 @@ bool GameStateClient::loadSnapshot(GameState state)
     }
     ++it;
   }
-  
+
   return true;
 }
 
@@ -116,20 +143,20 @@ GameState GameStateClient::decompress(GameStateCompressed a){
   int retval;
   uLongf length=normsize;
   retval = uncompress( dest, &length, a.data, (uLong)compsize );
-  
+
   switch ( retval ) {
     case Z_OK: std::cout << "successfully compressed" << std::endl; break;
     case Z_MEM_ERROR: std::cout << "not enough memory available" << std::endl; break;
     case Z_BUF_ERROR: std::cout << "not enough memory available in the buffer" << std::endl; break;
     case Z_DATA_ERROR: std::cout << "data corrupted" << std::endl; break;
   }
-  
+
   GameState gamestate;
   gamestate.id = a.id;
   gamestate.size = normsize;
   gamestate.data = dest;
   gamestate.diffed = a.diffed;
-  
+
   return gamestate;
 }
 
