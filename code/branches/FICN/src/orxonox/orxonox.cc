@@ -59,7 +59,6 @@
 #include "../audio/AudioManager.h"
 
 #include "spaceship_steering.h"
-SpaceshipSteering* steering;
 
 
 //network stuff
@@ -83,6 +82,9 @@ namespace orxonox
       OrxListener(OIS::Keyboard *keyboard, OIS::Mouse *mouse, audio::AudioManager*  auMan)
       : mKeyboard(keyboard), mMouse(mouse)
       {
+      	
+      	SpaceshipSteering* steering = orxonox::Orxonox::getSingleton()->getSteeringPointer();
+      	
         speed = 250;
         loop = 100;
         rotate = 10;
@@ -100,6 +102,8 @@ namespace orxonox
       {
 
         auMan_->update();
+
+      	SpaceshipSteering* steering = orxonox::Orxonox::getSingleton()->getSteeringPointer();
 
         mKeyboard->capture();
         mMouse->capture();
@@ -140,7 +144,10 @@ namespace orxonox
           steering->rotateLeft(0);
         }
 
-        steering->tick(evt.timeSinceLastFrame);
+  		steering->tick(evt.timeSinceLastFrame);
+  		
+  		
+  		
 //      scenemanager->spacehip->tick(evt.timesincelastframe);
         if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
           cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
@@ -347,6 +354,10 @@ namespace orxonox
     loader_ = new loader::LevelLoader("sample.oxw");
     loader_->loadLevel();
 
+
+
+
+
 	/*
     auMan_->ambientAdd("a1");
     auMan_->ambientAdd("a2");
@@ -361,12 +372,15 @@ namespace orxonox
   {
     SceneManager *mgr = ogre_->getSceneManager();
 
+	/*
     Camera *cam = mgr->createCamera("Camera");
     cam->setPosition(Vector3(0,0,-250));
     cam->lookAt(Vector3(0,0,0));
+
+
     Viewport *vp = ogre_->getRoot()->getAutoCreatedWindow()->addViewport(cam);
 
-
+/*
     Entity* head = mgr->createEntity("ASSF", "assf2.mesh");
     SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
     node->attachObject(head);
@@ -392,7 +406,7 @@ namespace orxonox
 
     steering = new SpaceshipSteering(500, 200, 200, 200);
     steering->addNode(node);
-
+    */
 
   }
 

@@ -27,11 +27,14 @@
 
 #include "Ogre.h"
 #include "spaceship_steering.h"
+#include <iostream>
 using namespace Ogre;
 
 SpaceshipSteering::SpaceshipSteering(float maxSpeedForward, float
 maxSpeedRotateUpDown, float maxSpeedRotateRightLeft, float
 maxSpeedLoopRightLeft) {
+	
+	std::cout << "Steering was loaded"; 
   moveForward_ = 0;
   rotateUp_ = 0;
   rotateDown_ = 0;

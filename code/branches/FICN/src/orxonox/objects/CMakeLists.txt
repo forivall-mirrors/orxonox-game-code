@@ -8,6 +8,10 @@ SET( OBJECTS_SRC_FILES
   test3.cc
   Ambient.cc
   Skybox.cc
+  SceneNode.cc
+  Entity.cc
+  Camera.cc
+  SpaceshipSteeringObject.cc
 )
 
 ADD_LIBRARY(objects SHARED ${OBJECTS_SRC_FILES})

@@ -3,6 +3,7 @@
 
 #include "OgrePrerequisites.h"
 
+
 class SpaceshipSteering
 {
   public:
@@ -56,5 +57,6 @@ class SpaceshipSteering
     float accelerationLoopRightLeft_;
 
 };
+
 
 #endif

@@ -15,6 +15,7 @@
 #include "graphicsEngine.h"
 #include "../loader/LevelLoader.h"
 #include "../audio/AudioManager.h"
+#include "spaceship_steering.h"
 
 
 // TODO: Orxonox should maybe derive from BaseObject
@@ -32,6 +33,8 @@ namespace orxonox {
       void die(/* some error code */);
       static Orxonox* getSingleton();
       inline SceneManager* getSceneManager() { return ogre_->getSceneManager(); };
+      inline GraphicsEngine* getOgrePointer() { return ogre_; };
+      inline SpaceshipSteering* getSteeringPointer() { return steering_; };
     private:
       Orxonox();
       virtual ~Orxonox();
@@ -53,6 +56,7 @@ namespace orxonox {
       std::string           dataPath_;  //!< path to data
       loader::LevelLoader*  loader_;    //!< level loader builds the scene
       audio::AudioManager*  auMan_;     //!< audio manager
+      SpaceshipSteering* 	steering_;
       static Orxonox*       singletonRef_;
       OIS::Keyboard*        keyboard_;
       OIS::Mouse*           mouse_;
