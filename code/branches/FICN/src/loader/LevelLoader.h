@@ -28,8 +28,6 @@ namespace loader
 		LevelLoader(string file, string dir="levels");
 		// Destructor
 		~LevelLoader();
-		// Shows a simple loading screen
-		void showLoadingScreen();
 		// Loads all level data
 		void loadLevel();
 	

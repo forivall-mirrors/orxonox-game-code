@@ -103,6 +103,8 @@ LevelLoader::LevelLoader(string file, string path)
 			TiXmlElement* tElem;
 			TiXmlNode* tNode;
 
+			Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
+ 			Ogre::Overlay* mLoadOverlay;
 
 			// Set loading screen
 			loadElem = rootElement->FirstChildElement("loading");
@@ -125,7 +127,15 @@ LevelLoader::LevelLoader(string file, string path)
 					loadingBarWidth_ = tElem->Attribute("width");
 					loadingBarHeight_ = tElem->Attribute("height");
 				}
-				showLoadingScreen();
+				
+				
+		    mLoadOverlay = (Ogre::Overlay*)omgr.getByName("Orxonox/LoadingScreenSample");
+		    mLoadOverlay->show(); 				
+
+				std::cout << "\n\n\nThis is Orxonox\nthe hottest 3D action shooter ever to exist\n\n\n";
+				std::cout << "Level: " << name() << "\nDescription:" << description() << "\nImage:"<<image()<<"\n\n\n";
+				std::cout << "Backgroundcolor: " << loadingBackgroundColor_ << "\nBackgroundimage:" << loadingBackgroundImage_ << "\n\n\n";
+							
 			}
 
 			// Load audio
@@ -146,21 +156,13 @@ LevelLoader::LevelLoader(string file, string path)
 					obj->loadParams(tElem);
 				}
 			}
-
+			
+			if (loadElem)
+			{
+				 mLoadOverlay->hide();
+			}
 			std::cout << "Loading finished!\n\n\n\n\n";
 		}
-	}
-
-	void LevelLoader::showLoadingScreen()
-	{
-		
-		Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
-    Ogre::Overlay* mLoadOverlay = (Ogre::Overlay*)omgr.getByName("Orxonox/LoadingScreenSample");
-    mLoadOverlay->show(); 
-		
-		std::cout << "\n\n\nThis is Orxonox\nthe hottest 3D action shooter ever to exist\n\n\n";
-		std::cout << "Level: " << name() << "\nDescription:" << description() << "\nImage:"<<image()<<"\n\n\n";
-		std::cout << "Backgroundcolor: " << loadingBackgroundColor_ << "\nBackgroundimage:" << loadingBackgroundImage_ << "\n\n\n";
 	}
 
 	LevelLoader::~LevelLoader()

@@ -15,21 +15,24 @@
 	
 	<world>
 		
-		<Ambient colourvalue="1,1,1" />
-		
-		<Skybox src="Orxonox/BlueStarSkyBox" />
-
 		<SceneNode name="OgreHeadNode" pos="0,0,0" />				
-
-		<Entity name="ASSF" src="assf2.mesh" node="OgreHeadNode" />
 
 		<Camera name="Camera" pos="0,0,-250" lookat="0,0,0" node="OgreHeadNode" />
 
-		<SpaceshipSteeringObject node="OgreHeadNode" forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" />
+		<Ambient colourvalue="1,1,1" />
 	
+		<Skybox src="Orxonox/BlueStarSkyBox" />
+
+		<Entity name="ASSF" src="assf2.mesh" node="OgreHeadNode" />
+
+
 
 
 	</world>
+
+<!-- Unused at the moment -->
+		<SpaceshipSteeringObject node="OgreHeadNode" forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" />
+	
 
 
 	<scripts> 
