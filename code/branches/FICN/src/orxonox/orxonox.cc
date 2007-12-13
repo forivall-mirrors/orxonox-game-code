@@ -456,13 +456,13 @@ namespace orxonox
     // this is a hack!!!
     // the call to reset the mouse clipping size should probably be somewhere
     // else, however this works for the moment.
-		unsigned int width, height, depth;
-		int left, top;
-		ogre_->getRoot()->getAutoCreatedWindow()->getMetrics(width, height, depth, left, top);
+    unsigned int width, height, depth;
+    int left, top;
+    ogre_->getRoot()->getAutoCreatedWindow()->getMetrics(width, height, depth, left, top);
 
-		const OIS::MouseState &ms = mouse_->getMouseState();
-		ms.width = width;
-		ms.height = height;
+    const OIS::MouseState &ms = mouse_->getMouseState();
+    ms.width = width;
+    ms.height = height;
 
     ogre_->getRoot()->startRendering();
   }
