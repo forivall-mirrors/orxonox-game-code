@@ -8,7 +8,7 @@ material Material/SOLID/TEX/human_assf.jpg/VertCol
 			specular 0.500000 0.500000 0.500000 12.500000
 			texture_unit
 			{
-				texture human_assf.png
+				texture human_assf.jpg
 			}
 		}
 	}
