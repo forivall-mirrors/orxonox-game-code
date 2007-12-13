@@ -26,8 +26,7 @@
 		<Camera name="Camera" pos="0,0,-250" lookat="0,0,0" node="OgreHeadNode" />
 
 		<SpaceshipSteeringObject node="OgreHeadNode" forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" />
-
-		
+	
 
 
 	</world>

@@ -79,11 +79,11 @@ namespace orxonox
   class OrxListener : public FrameListener, public OIS::MouseListener
   {
     public:
-      OrxListener(OIS::Keyboard *keyboard, OIS::Mouse *mouse, audio::AudioManager*  auMan)
+      OrxListener(OIS::Keyboard *keyboard, OIS::Mouse *mouse, audio::AudioManager*  auMan, SpaceshipSteering* steering)
       : mKeyboard(keyboard), mMouse(mouse)
       {
       	
-      	SpaceshipSteering* steering = orxonox::Orxonox::getSingleton()->getSteeringPointer();
+      	
       	
         speed = 250;
         loop = 100;
@@ -93,8 +93,13 @@ namespace orxonox
         maxMouseX = 0;
         minMouseX = 0;
         moved = false;
-        steering->brakeRotate(rotate*10);
-        steering->brakeLoop(loop);
+        
+        steering_ = steering;
+
+        steering_->brakeRotate(rotate*10);
+        steering_->brakeLoop(loop);
+    
+
         mMouse->setEventCallback(this);
         auMan_ = auMan;
       }
@@ -103,48 +108,46 @@ namespace orxonox
 
         auMan_->update();
 
-      	SpaceshipSteering* steering = orxonox::Orxonox::getSingleton()->getSteeringPointer();
-
         mKeyboard->capture();
         mMouse->capture();
         if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
-          steering->moveForward(speed);
+          steering_->moveForward(speed);
         else
-          steering->moveForward(0);
+          steering_->moveForward(0);
         if(mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
-          steering->brakeForward(speed);
+          steering_->brakeForward(speed);
         else
-          steering->brakeForward(speed/10);
+          steering_->brakeForward(speed/10);
         if (mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D))
-          steering->loopRight(loop);
+          steering_->loopRight(loop);
         else
-          steering->loopRight(0);
+          steering_->loopRight(0);
         if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
-          steering->loopLeft(loop);
+          steering_->loopLeft(loop);
         else
-          steering->loopLeft(0);
+          steering_->loopLeft(0);
 
         if(moved) {
           if (mouseY<=0)
-            steering->rotateUp(-mouseY*rotate);
+            steering_->rotateUp(-mouseY*rotate);
           if (mouseY>0)
-            steering->rotateDown(mouseY*rotate);
+            steering_->rotateDown(mouseY*rotate);
           if (mouseX>0)
-            steering->rotateRight(mouseX*rotate);
+            steering_->rotateRight(mouseX*rotate);
           if (mouseX<=0)
-            steering->rotateLeft(-mouseX*rotate);
+            steering_->rotateLeft(-mouseX*rotate);
           mouseY = 0;
           mouseX = 0;
           moved = false;
         }
         else {
-          steering->rotateUp(0);
-          steering->rotateDown(0);
-          steering->rotateRight(0);
-          steering->rotateLeft(0);
+          steering_->rotateUp(0);
+          steering_->rotateDown(0);
+          steering_->rotateRight(0);
+          steering_->rotateLeft(0);
         }
 
-  		steering->tick(evt.timeSinceLastFrame);
+  		steering_->tick(evt.timeSinceLastFrame);
   		
   		
   		
@@ -180,6 +183,7 @@ namespace orxonox
       OIS::Keyboard *mKeyboard;
       OIS::Mouse *mMouse;
       audio::AudioManager*  auMan_;
+      SpaceshipSteering* steering_;
   };
   // init static singleton reference of Orxonox
   Orxonox* Orxonox::singletonRef_ = NULL;
@@ -443,7 +447,7 @@ namespace orxonox
     TimerFrameListener* TimerFL = new TimerFrameListener();
     ogre_->getRoot()->addFrameListener(TimerFL);
 
-    frameListener_ = new OrxListener(keyboard_, mouse_, auMan_);
+    frameListener_ = new OrxListener(keyboard_, mouse_, auMan_, steering_);
     ogre_->getRoot()->addFrameListener(frameListener_);
   }
 

@@ -53,6 +53,9 @@ namespace orxonox
 			    		
     		steering->addNode(sceneNode);
     
+    
+    
+    
 	    	std::cout << "Loader: Initialized spaceship steering at node " << nodeStr << " values "<< forward << " " << rotateupdown << " "<< rotaterightleft << " "<< looprightleft << " "<< std::endl << std::endl;
     	}   	
    }
