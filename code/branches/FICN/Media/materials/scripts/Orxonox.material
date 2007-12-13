@@ -33,3 +33,20 @@ material Orxonox/BlueStarSkyBox
 		}
 	}
 }
+
+material Orxonox/LoadingScreenSample
+{
+   technique
+   {
+      pass
+      {
+         
+         depth_writing off
+
+         texture_unit
+         {
+            texture sample_loading.jpg
+         }
+      }
+   }
+} 

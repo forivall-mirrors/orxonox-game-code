@@ -31,6 +31,8 @@
 #include <algorithm>
 #include <iterator>
 
+#include <OgreOverlayManager.h>
+
 #include "LevelLoader.h"
 #include "tinyxml/tinyxml.h"
 #include "orxonox/core/CoreIncludes.h"
@@ -151,6 +153,11 @@ LevelLoader::LevelLoader(string file, string path)
 
 	void LevelLoader::showLoadingScreen()
 	{
+		
+		Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
+    Ogre::Overlay* mLoadOverlay = (Ogre::Overlay*)omgr.getByName("Orxonox/LoadingScreenSample");
+    mLoadOverlay->show(); 
+		
 		std::cout << "\n\n\nThis is Orxonox\nthe hottest 3D action shooter ever to exist\n\n\n";
 		std::cout << "Level: " << name() << "\nDescription:" << description() << "\nImage:"<<image()<<"\n\n\n";
 		std::cout << "Backgroundcolor: " << loadingBackgroundColor_ << "\nBackgroundimage:" << loadingBackgroundImage_ << "\n\n\n";
