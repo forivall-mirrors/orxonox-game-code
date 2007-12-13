@@ -129,6 +129,8 @@ namespace orxonox
             steering->rotateRight(mouseX*rotate);
           if (mouseX<0)
             steering->rotateLeft(-mouseX*rotate);
+	  mouseY = 0;
+	  mouseX = 0;
           moved = false;
         }
         else {
@@ -147,8 +149,8 @@ namespace orxonox
 
       bool mouseMoved(const OIS::MouseEvent &e)
       {
-        mouseX = e.state.X.rel;
-        mouseY = e.state.Y.rel;
+        mouseX += e.state.X.rel;
+        mouseY += e.state.Y.rel;
         if(mouseX>maxMouseX) maxMouseX = mouseX;
         if(mouseX<minMouseX) minMouseX = mouseX;
         cout << "mouseX: " << mouseX << "\tmouseY: " << mouseY << endl;
@@ -360,7 +362,7 @@ namespace orxonox
     SceneManager *mgr = ogre_->getSceneManager();
     
     Camera *cam = mgr->createCamera("Camera");
-    cam->setPosition(Vector3(0,0,+250));
+    cam->setPosition(Vector3(0,0,-250));
     cam->lookAt(Vector3(0,0,0));
     Viewport *vp = ogre_->getRoot()->getAutoCreatedWindow()->addViewport(cam);
 
@@ -433,8 +435,17 @@ namespace orxonox
 
   void Orxonox::startRenderLoop()
   {
+    // this is a hack!!!
+    // the call to reset the mouse clipping size should probably be somewhere
+    // else, however this works for the moment.
+		unsigned int width, height, depth;
+		int left, top;
+		ogre_->getRoot()->getAutoCreatedWindow()->getMetrics(width, height, depth, left, top);
+
+		const OIS::MouseState &ms = mouse_->getMouseState();
+		ms.width = width;
+		ms.height = height;
+
     ogre_->getRoot()->startRendering();
   }
 }
-
-
