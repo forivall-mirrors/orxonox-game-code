@@ -25,8 +25,14 @@
 
 		<Entity name="ASSF" src="assf2.mesh" node="OgreHeadNode" />
 
-		<SceneNode name="Ogre1" pos="5,0,0" />				
+		<SceneNode name="Ogre1" pos="0,200,0" />				
 		<Entity name="head1" src="ogrehead.mesh" node="Ogre1" />
+
+		<SceneNode name="Ogre2" pos="200,0,0" />				
+		<Entity name="head2" src="ogrehead.mesh" node="Ogre2" />
+
+		<SceneNode name="Ogre3" pos="0,0,200" />				
+		<Entity name="head3" src="ogrehead.mesh" node="Ogre3" />
 
 
 	</world>
