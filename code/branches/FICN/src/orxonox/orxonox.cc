@@ -82,9 +82,9 @@ namespace orxonox
       OrxListener(OIS::Keyboard *keyboard, OIS::Mouse *mouse, audio::AudioManager*  auMan, SpaceshipSteering* steering)
       : mKeyboard(keyboard), mMouse(mouse)
       {
-      	
-      	
-      	
+
+
+
         speed = 250;
         loop = 100;
         rotate = 10;
@@ -93,12 +93,12 @@ namespace orxonox
         maxMouseX = 0;
         minMouseX = 0;
         moved = false;
-        
+
         steering_ = steering;
 
         steering_->brakeRotate(rotate*10);
         steering_->brakeLoop(loop);
-    
+
 
         mMouse->setEventCallback(this);
         auMan_ = auMan;
@@ -148,9 +148,9 @@ namespace orxonox
         }
 
   		steering_->tick(evt.timeSinceLastFrame);
-  		
-  		
-  		
+
+
+
 //      scenemanager->spacehip->tick(evt.timesincelastframe);
         if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
           cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
