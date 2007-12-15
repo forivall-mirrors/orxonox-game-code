@@ -1,8 +1,8 @@
 === ParticleEffects ===
 
 == Files ==
-Benötigte Files: ParticleInterface.h, ParticleInterface.cc
-Benötigte Resourcen: alle particle-Scripts und das material-Script
+Benï¿½tigte Files: ParticleInterface.h, ParticleInterface.cc
+Benï¿½tigte Resourcen: alle particle-Scripts und das material-Script
 
 == Code ==
 
@@ -10,11 +10,11 @@ Benötigte Resourcen: alle particle-Scripts und das material-Script
 
 	//Definiere SceneNode particleNode mit einer geeigneten Entity z.B. Schiff
 
-	//Effekt w für die Laser
-	particle::ParticleInterface *w = new particle::ParticleInterface(mSceneMgr,"schuss","Orxonox/schuss");;
+	//Effekt w fï¿½r die Laser
+	particle::ParticleInterface *w = new particle::ParticleInterface(mSceneMgr,"schuss","Orxonox/schuss");
 
-	//Effekt e für die Triebwerke
-	particle::ParticleInterface *e = new particle::ParticleInterface(mSceneMgr,"engine","Orxonox/treibwerk");;
+	//Effekt e fï¿½r die Triebwerke
+	particle::ParticleInterface *e = new particle::ParticleInterface(mSceneMgr,"engine","Orxonox/treibwerk");
 
 	//Einstellen der Parameter
 
@@ -22,7 +22,7 @@ Benötigte Resourcen: alle particle-Scripts und das material-Script
 	w->particleSystem_->setParameter("local_space","true");
 	e->particleSystem_->setParameter("local_space","true");
 
-	//Fügt einen weiteren Laser hinzu und setzt die beiden an 
+	//Fï¿½gt einen weiteren Laser hinzu und setzt die beiden an 
 	//zwei verschiedene Positionen und setzt die Richtung richtig
 	w->newEmitter();
 	w->setDirection(Vector3(0,0,1));
@@ -34,20 +34,20 @@ Benötigte Resourcen: alle particle-Scripts und das material-Script
 	e->setDirection(Vector3(0,0,-1));
 
 
-	//Anfügen der PartikelEffekte an die SceneNode
+	//Anfï¿½gen der PartikelEffekte an die SceneNode
 	w->addToSceneNode(particleNode);
 	e->addToSceneNode(particleNode);
 
 
-== Dynamische Änderungen ==
+== Dynamische ï¿½nderungen ==
 
-	//Verändert die Geschwindigkeit der Partikel 
+	//Verï¿½ndert die Geschwindigkeit der Partikel 
 	w->setVelocity(w->getVelocity()+0.05);
 	w->setVelocity(w->getVelocity()-0.05);
 
-	//Verändert die Distanz, bis wo die Partikel zu sehen sind
+	//Verï¿½ndert die Distanz, bis wo die Partikel zu sehen sind
 	w->setDistance(w->getDistance()+0.1);
 	w->setDistance(w->getDistance()-0.1);
 
-	//Ändert von Partikel erzeugen auf gestoppt oder umgekehrt
+	//ï¿½ndert von Partikel erzeugen auf gestoppt oder umgekehrt
 	w->switchEnable();

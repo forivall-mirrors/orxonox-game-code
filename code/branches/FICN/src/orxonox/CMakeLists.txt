@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY(core)
 ADD_SUBDIRECTORY(hud)
 ADD_SUBDIRECTORY(objects)
 ADD_SUBDIRECTORY(weapon)
+ADD_SUBDIRECTORY(particle)
 
 
 SET( ORXONOX_SRC_FILES
@@ -34,5 +35,6 @@ TARGET_LINK_LIBRARIES( ../../bin/main
   objects
   weapon
   xml
+  particle
 )
 

@@ -60,6 +60,7 @@
 
 #include "spaceship_steering.h"
 
+#include "particle/ParticleInterface.h"
 
 //network stuff
 #include "../network/Server.h"
@@ -422,6 +423,14 @@ namespace orxonox
 
     steering_ = new SpaceshipSteering(500, 200, 200, 200);
     steering_->addNode(node);
+
+/*
+    particle::ParticleInterface *e = new particle::ParticleInterface(mgr,"engine","strahl");
+    e->particleSystem_->setParameter("local_space","true");
+    e->setPositionOfEmitter(0, Vector3(0,0,-10));
+    e->setDirection(Vector3(0,0,-1));*/
+//     e->addToSceneNode(node);
+
 
   }
 

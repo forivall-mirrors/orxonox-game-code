@@ -1,11 +1,11 @@
-#ifndef MODULE_ParticleInterface_H 
+#ifndef MODULE_ParticleInterface_H
 #define MODULE_ParticleInterface_H
 
-#include "ParticleInterface.h"
+// #include "ParticleInterface.h"
 #include <Ogre.h>
 #include <OIS/OIS.h>
-#include <CEGUI/CEGUI.h>
-#include <CEGUIRenderer.h>
+// #include <CEGUI/CEGUI.h>
+// #include <CEGUIRenderer.h>
 
 using namespace Ogre;
 
