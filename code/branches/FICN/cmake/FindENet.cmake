@@ -18,11 +18,13 @@ FIND_PATH(ENet_INCLUDE_DIR enet/enet.h
     /usr/include
     /usr/local/include
     /usr/pack/enet-2007-sd/include
+    ../libs/enet-1.1/include
     )
 
 FIND_LIBRARY(ENet_LIBRARY
     NAMES enet
     PATHS /usr/lib /usr/local/lib /usr/pack/enet-2007-sd/i686-debian-linux3.1/lib/
+    ../libs/enet-1.1
     )
 
 IF (ENet_INCLUDE_DIR AND ENet_LIBRARY)

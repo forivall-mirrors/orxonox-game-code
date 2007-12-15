@@ -75,6 +75,8 @@ IF(WIN32)
 # BOOST_LIB_DIAGNOSTIC will cause the auto-linking code to emit a #pragma message each time
 # a library is selected for linking.
   SET(Boost_LIB_DIAGNOSTIC_DEFINITIONS "-DBOOST_LIB_DIAGNOSTIC")
+#  SET(Boost_LIB_PREFIX "lib")
+#  SET(Boost_LIB_SUFFIX "gcc-mt-1_33_1.lib")
 ENDIF(WIN32)
 
 
@@ -108,14 +110,18 @@ SET(SUFFIX_FOR_PATH
 #
 # Look for an installation.
 #
-FIND_PATH(Boost_INCLUDE_DIR NAMES boost/config.hpp PATH_SUFFIXES ${SUFFIX_FOR_PATH} PATHS
+IF(WIN32)
+  SET(Boost_INCLUDE_DIR ../libs/boost_1_33_1)
+ELSE(WIN32)
+  FIND_PATH(Boost_INCLUDE_DIR NAMES boost/config.hpp PATH_SUFFIXES ${SUFFIX_FOR_PATH} PATHS
 
 # Look in other places.
-  ${BOOST_DIR_SEARCH}
+    ${BOOST_DIR_SEARCH}
 
 # Help the user find it if we cannot.
-  DOC "The ${BOOST_INCLUDE_PATH_DESCRIPTION}"
-)
+    DOC "The ${BOOST_INCLUDE_PATH_DESCRIPTION}"
+  )
+ENDIF(WIN32)
 
 # Assume we didn't find it.
 SET(Boost_FOUND 0)
@@ -139,6 +145,8 @@ IF(Boost_INCLUDE_DIR)
 
   IF(EXISTS "${Boost_LIBRARY_DIR}/lib")
     SET (Boost_LIBRARY_DIR ${Boost_LIBRARY_DIR}/lib)
+  ELSEIF(EXISTS "${Boost_LIBRARY_DIR}/bin/boost/libs/thread/build/boost_thread.dll/gcc/release/threading-multi")
+    SET (Boost_LIBRARY_DIR ${Boost_LIBRARY_DIR}/bin/boost/libs/thread/build/boost_thread.dll/gcc/release/threading-multi)
   ELSE(EXISTS "${Boost_LIBRARY_DIR}/lib")
     IF(EXISTS "${Boost_LIBRARY_DIR}/stage/lib")
       SET(Boost_LIBRARY_DIR ${Boost_LIBRARY_DIR}/stage/lib)
@@ -150,6 +158,7 @@ IF(Boost_INCLUDE_DIR)
       ENDIF(EXISTS "${Boost_LIBRARY_DIR}/../../lib")
     ENDIF(EXISTS "${Boost_LIBRARY_DIR}/stage/lib")
   ENDIF(EXISTS "${Boost_LIBRARY_DIR}/lib")
+
 
   IF(EXISTS "${Boost_INCLUDE_DIR}")
     SET(Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
@@ -164,6 +173,7 @@ IF(Boost_INCLUDE_DIR)
   ENDIF(Boost_LIBRARY_DIR AND EXISTS "${Boost_LIBRARY_DIR}")
 ENDIF(Boost_INCLUDE_DIR)
 
+
 #
 # Find boost libraries
 #
@@ -174,6 +184,8 @@ SET(BOOST_SUFFIX_SEARCH
   gcc41-mt
   gcc
   il
+  gcc-1_33_1
+  gcc-mt-1_33_1
 )
 
 # List of all boost libraries

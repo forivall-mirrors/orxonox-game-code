@@ -40,6 +40,7 @@ FIND_PATH(OPENAL_INCLUDE_DIR AL/al.h
   /opt/include
   /opt/include/OpenAL
   /opt/include
+  ../libs/openal-0.0.8/common/include
   )
 # I'm not sure if I should do a special casing for Apple. It is
 # unlikely that other Unix systems will find the framework path.
@@ -69,13 +70,14 @@ ELSE(${OPENAL_INCLUDE_DIR} MATCHES ".framework")
     PATHS
     $ENV{OPENALDIR}/lib
     $ENV{OPENALDIR}/libs
-		/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1/lib
+    /usr/pack/openal-0.0.8-cl/i686-debian-linux3.1/lib
     /usr/local/lib
     /usr/lib
     /sw/lib
     /opt/local/lib
     /opt/csw/lib
     /opt/lib
+    ../libs/openal-0.0.8/src/.libs
     )
 ENDIF(${OPENAL_INCLUDE_DIR} MATCHES ".framework")
 

@@ -16,6 +16,7 @@ FIND_PATH(OGG_INCLUDE_DIR ogg/ogg.h
   /opt/csw/include
   /opt/csw/include
   /opt/include
+  ../libs/libogg-1.1.3/include
   )
 
 FIND_PATH(VORBIS_INCLUDE_DIR vorbis/codec.h
@@ -27,6 +28,7 @@ FIND_PATH(VORBIS_INCLUDE_DIR vorbis/codec.h
   /opt/csw/include
   /opt/csw/include
   /opt/include
+  ../libs/libvorbis-1.2.0/include
   )
 
 #
@@ -36,49 +38,53 @@ FIND_PATH(VORBIS_INCLUDE_DIR vorbis/codec.h
 FIND_LIBRARY(OGG_LIBRARY
   NAMES ogg
   PATHS
-	/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
+  /usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
   /usr/local/lib
   /usr/lib
   /sw/lib
   /opt/local/lib
   /opt/csw/lib
   /opt/lib
+  ../libs/libogg-1.1.3/src/.libs
   )
 
 FIND_LIBRARY(VORBIS_LIBRARY
   NAMES vorbis
   PATHS
-	/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
+  /usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
   /usr/local/lib
   /usr/lib
   /sw/lib
   /opt/local/lib
   /opt/csw/lib
   /opt/lib
+  ../libs/libvorbis-1.2.0/lib/.libs
   )
 
 FIND_LIBRARY(VORBISENC_LIBRARY
   NAMES vorbisenc
   PATHS
-	/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
+  /usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
   /usr/local/lib
   /usr/lib
   /sw/lib
   /opt/local/lib
   /opt/csw/lib
   /opt/lib
+  ../libs/libvorbis-1.2.0/lib/.libs
   )
 
 FIND_LIBRARY(VORBISFILE_LIBRARY
   NAMES vorbisfile
   PATHS
-	/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
+  /usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
   /usr/local/lib
   /usr/lib
   /sw/lib
   /opt/local/lib
   /opt/csw/lib
   /opt/lib
+  ../libs/libvorbis-1.2.0/lib/.libs
   )
 
 SET(OGG_FOUND "NO")

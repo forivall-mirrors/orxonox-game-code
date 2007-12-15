@@ -39,6 +39,7 @@ FIND_PATH(ALUT_INCLUDE_DIR AL/alut.h
   /opt/include/
   /opt/include/OpenAL
   /opt/include
+  ../libs/freealut-1.1.0/include
   )
 # I'm not sure if I should do a special casing for Apple. It is
 # unlikely that other Unix systems will find the framework path.
@@ -68,13 +69,15 @@ ELSE(${ALUT_INCLUDE_DIR} MATCHES ".framework")
     PATHS
     $ENV{ALUTDIR}/lib
     $ENV{ALUTDIR}/libs
-		/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1/lib
+    /usr/pack/openal-0.0.8-cl/i686-debian-linux3.1/lib
     /usr/local/lib
     /usr/lib
     /sw/lib
     /opt/local/lib
     /opt/csw/lib
     /opt/lib
+    ../libs/freealut-1.1.0/src/.libs
+    ../libs/freealut-1.1.0/lib
     )
 ENDIF(${ALUT_INCLUDE_DIR} MATCHES ".framework")
 
