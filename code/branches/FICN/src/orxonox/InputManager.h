@@ -1,10 +1,17 @@
 #ifndef InputManager_H
 #define InputManager_H
 
+#ifdef WIN32
+#include <OIS/OISMouse.h>
+#include <OIS/OISKeyboard.h>
+#include <OIS/OISJoyStick.h>
+#include <OIS/OISInputManager.h>
+#else
 #include <OISMouse.h>
 #include <OISKeyboard.h>
 #include <OISJoyStick.h>
 #include <OISInputManager.h>
+#endif
 
 #include <OgreRenderWindow.h>
 

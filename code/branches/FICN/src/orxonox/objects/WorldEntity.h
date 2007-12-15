@@ -17,6 +17,18 @@ namespace orxonox
 
             void tick(float dt);
 
+        private:
+            Ogre::SceneNode* node_;
+            static unsigned int worldEntityCounter_s;
+
+            bool bStatic_;
+            Vector3 velocity_;
+            Vector3 acceleration_;
+            Vector3 rotationAxis_;
+            Radian rotationRate_;
+            Radian momentum_;
+
+        public:
             inline Ogre::SceneNode* getNode()
                 { return this->node_; }
 
@@ -49,6 +61,8 @@ namespace orxonox
                 { this->node_->setDirection(x, y, z, relativeTo, localDirectionVector); }
             inline void setDirection(const Vector3 &vec, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
                 { this->node_->setDirection(vec, relativeTo, localDirectionVector); }
+            inline void setOrientation(const Ogre::Quaternion quat)
+                { this->node_->setOrientation(quat); }
             inline void lookAt(const Vector3 &targetPoint, Ogre::Node::TransformSpace relativeTo, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
                 { this->node_->lookAt(targetPoint, relativeTo, localDirectionVector); }
 
@@ -95,19 +109,13 @@ namespace orxonox
                 { return this->momentum_; }
 
 
+            inline const Ogre::Quaternion& getOrientation()
+                { return this->node_->getOrientation(); }
+
+
             static Ogre::SceneManager* sceneManager_s;
             static int num_s;
 
-        private:
-            Ogre::SceneNode* node_;
-            static unsigned int worldEntityCounter_s;
-
-            bool bStatic_;
-            Vector3 velocity_;
-            Vector3 acceleration_;
-            Vector3 rotationAxis_;
-            Radian rotationRate_;
-            Radian momentum_;
     };
 }
 

@@ -3,6 +3,13 @@
 //#include "PacketTypes.h"
 #include "Server.h"
 
+#ifdef WIN32
+#include <windows.h>
+#define usleep(x) Sleep((x)/1000)
+#else
+#include <unistd.h>
+#endif
+
 namespace network{
   
 class dummyserver3 : public Server{
