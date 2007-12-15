@@ -42,6 +42,8 @@ using namespace network;
 
 PacketDecoder::PacketDecoder(){}
 
+PacketDecoder::~PacketDecoder(){}
+
 //call this function out of an instance of PacketDecoder
 //it will determine the type id and call the right decode function
 bool PacketDecoder::elaborate( ENetPacket* packet, int clientId )

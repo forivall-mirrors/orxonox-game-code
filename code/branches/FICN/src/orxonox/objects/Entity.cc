@@ -39,4 +39,5 @@ namespace orxonox
 	    	std::cout << "Loader: Created entity "<< name <<" with source " << src  << " at node " << node  << std::endl << std::endl;
     	}   	
    }
+   
 }

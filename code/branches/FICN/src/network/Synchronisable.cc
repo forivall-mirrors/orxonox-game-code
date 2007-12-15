@@ -10,6 +10,8 @@
 //
 
 #include "Synchronisable.h"
+#include "orxonox/core/CoreIncludes.h"
+
 
 namespace network {
 
@@ -19,6 +21,7 @@ namespace network {
  */
 Synchronisable::Synchronisable()
 {
+  RegisterRootObject(Synchronisable);
   static int idCounter=0;
   datasize=0;
   objectID=idCounter++;

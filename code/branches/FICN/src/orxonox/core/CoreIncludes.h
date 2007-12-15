@@ -56,7 +56,7 @@ namespace orxonox
 */
 #define InternRegisterRootObject(ClassName) \
     if (orxonox::Identifier::isCreatingHierarchy() && !this->getParents()) \
-        this->setParents(new IdentifierList()); \
+        this->setParents(new orxonox::IdentifierList()); \
     InternRegisterObject(ClassName, true)
 
 /**

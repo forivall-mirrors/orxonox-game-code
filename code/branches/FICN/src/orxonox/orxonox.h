@@ -41,6 +41,7 @@ namespace orxonox {
       void serverInit(std::string path);
       void clientInit(std::string path);
       void standalone(std::string path);
+      void playableServer(std::string path);
       void defineResources();
       void setupRenderSystem();
       void createRenderWindow();

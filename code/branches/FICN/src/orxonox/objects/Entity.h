@@ -3,6 +3,7 @@
 
 #include "BaseObject.h"
 #include "../../tinyxml/tinyxml.h"
+#include "network/Synchronisable.h"
 
 namespace orxonox
 {
@@ -16,7 +17,6 @@ namespace orxonox
             void loadParams(TiXmlElement* xmlElem);
 
         private:
-            
 
     };
 }

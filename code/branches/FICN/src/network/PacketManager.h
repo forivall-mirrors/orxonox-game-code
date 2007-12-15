@@ -44,6 +44,7 @@ class PacketDecoder
 {
 public:
 	PacketDecoder();
+  virtual ~PacketDecoder();
 	//call this function to decode, it calls the right decoding function below
 	bool elaborate( ENetPacket* packet, int clientId );
 protected:

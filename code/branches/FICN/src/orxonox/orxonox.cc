@@ -216,6 +216,7 @@ namespace orxonox
     //TODO: find config file (assuming executable directory)
     //TODO: read config file
     //TODO: give config file to Ogre
+    
     if(argc >=2 && strcmp(argv[1], "server")==0)
     {
       serverInit(path);
@@ -223,8 +224,11 @@ namespace orxonox
     else if(argc >=2 && strcmp(argv[1], "client")==0)
     {
       clientInit(path);
-    }
-    standalone(path);
+    } else if(argc >=2 && strcmp(argv[1], "presentation")==0)
+    {
+      playableServer(path);
+    } else
+      standalone(path);
   }
 
   /**
@@ -271,6 +275,34 @@ namespace orxonox
     setupInputSystem();
     createFrameListener();
     Factory::createClassHierarchy();
+    startRenderLoop();
+  }
+  
+  void Orxonox::playableServer(std::string path)
+  {
+    ogre_->setConfigPath(path);
+    ogre_->setup();
+    root_ = ogre_->getRoot();
+    defineResources();
+    setupRenderSystem();
+    createRenderWindow();
+    initializeResourceGroups();
+    createScene();
+    setupScene();
+    setupInputSystem();
+    Factory::createClassHierarchy();
+    createFrameListener();
+    try{
+    server_g = new network::Server(); // add port and bindadress
+    server_g->open(); // open server and create listener thread
+    if(ogre_ && ogre_->getRoot())
+      ogre_->getRoot()->addFrameListener(new network::ServerFrameListener()); // adds a framelistener for the server
+    std::cout << "network framelistener added" << std::endl;
+    } 
+    catch(exception &e)
+    {
+      std::cout << "There was a problem initialising the server :(" << std::endl;
+    }
     startRenderLoop();
   }
 

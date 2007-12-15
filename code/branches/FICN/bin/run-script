@@ -21,4 +21,4 @@ if [[ ! -f plugins.cfg ]] ; then
                 cp plugins.cfg-init plugins.cfg
 	fi
 fi
-exec ./main
+exec ./main $1
