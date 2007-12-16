@@ -65,10 +65,6 @@ FIND_PACKAGE(ALUT)
 FIND_PACKAGE(OggVorbis)
 FIND_PACKAGE(ZLIB)
 
-IF(WIN32)
-  SET(WINDOWS_ENET_DEPENDENCIES "ws2_32;winmm")
-ENDIF(WIN32)
-
 #Sets the search paths for the linking
 LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR} ${ENet_LIBRARY} ${Boost_LIBRARY_DIRS} ${Zlib_LIBRARY_DIR} core objects loader network weapon classHierarchy audio)
 #Sets the search path for include files

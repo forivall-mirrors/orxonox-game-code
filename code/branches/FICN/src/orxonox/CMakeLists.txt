@@ -2,7 +2,9 @@ PROJECT(Orxonox)
 
 ADD_SUBDIRECTORY(core)
 ADD_SUBDIRECTORY(hud)
-ADD_SUBDIRECTORY(objects)
+IF(NOT WIN32)
+  ADD_SUBDIRECTORY(objects)
+ENDIF(NOT WIN32)
 ADD_SUBDIRECTORY(weapon)
 ADD_SUBDIRECTORY(particle)
 
@@ -18,9 +20,27 @@ SET( ORXONOX_SRC_FILES
   graphicsEngine.cc
 )
 
-ADD_LIBRARY(orxonox SHARED ${ORXONOX_SRC_FILES})
+IF(WIN32)
+  SET( OBJECTS_SRC_FILES
+    objects/BaseObject.cc
+    objects/WorldEntity.cc
+    objects/test1.cc
+    objects/test2.cc
+    objects/test3.cc
+    objects/Ambient.cc
+    objects/Skybox.cc
+    objects/SceneNode.cc
+    objects/Entity.cc
+    objects/Camera.cc
+    objects/SpaceshipSteeringObject.cc
+  )
+ELSE(WIN32)
+  SET(LINK_OBJECTS_LIBRARY objects)
+ENDIF(WIN32)
 
-ADD_EXECUTABLE(../../bin/main ${ORXONOX_SRC_FILES})
+ADD_LIBRARY(orxonox ${ORXONOX_SRC_FILES})
+
+ADD_EXECUTABLE(../../bin/main ${ORXONOX_SRC_FILES} ${OBJECTS_SRC_FILES})
 
 SET_TARGET_PROPERTIES(../../bin/main PROPERTIES LINK_FLAGS "--no-undefined" )
 
@@ -32,7 +52,7 @@ TARGET_LINK_LIBRARIES( ../../bin/main
   network
   core
   hud
-  objects
+  ${LINK_OBJECTS_LIBRARY}
   weapon
   xml
   particle
