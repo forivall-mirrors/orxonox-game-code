@@ -36,6 +36,13 @@
 #include "PacketManager.h"
 #include "ClientConnection.h"
 
+#ifdef WIN32
+#include <windows.h>
+#define usleep(x) Sleep((x)/1000)
+#else
+#include <unistd.h>
+#endif
+
 using namespace network;
 
 int main(){

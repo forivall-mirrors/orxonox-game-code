@@ -8,6 +8,7 @@ SET( CHATCLIENT_SRC_FILES
   PacketGenerator.cc
   dummyclient3.cc
 )
+
 SET( CHATSERVER_SRC_FILES
   ConnectionManager.cc
   GameStateManager.cc
@@ -16,8 +17,6 @@ SET( CHATSERVER_SRC_FILES
   PacketGenerator.cc
   dummyserver3.cc
 )
-
-
 
 SET( NETWORK_SRC_FILES
   Client.cc
@@ -35,7 +34,7 @@ SET( NETWORK_SRC_FILES
 )
 
 ADD_LIBRARY(network SHARED ${NETWORK_SRC_FILES})
-TARGET_LINK_LIBRARIES(network ${ENet_LIBRARY} ${Boost_thread_LIBRARIES})
+TARGET_LINK_LIBRARIES(network ${Zlib_LIBRARY} ${ENet_LIBRARY} ${Boost_thread_LIBRARIES})
 
 ADD_EXECUTABLE(chatserver ${CHATSERVER_SRC_FILES})
 TARGET_LINK_LIBRARIES( chatserver
@@ -43,6 +42,9 @@ TARGET_LINK_LIBRARIES( chatserver
   network
   core
   #objects
+  ${ENet_LIBRARY}
+  ${Zlib_LIBRARY}
+  ${WINDOWS_ENET_DEPENDENCIES}
 )
 
 ADD_EXECUTABLE(chatclient ${CHATCLIENT_SRC_FILES})
@@ -51,20 +53,30 @@ TARGET_LINK_LIBRARIES( chatclient
   network
   core
   #objects
+  ${ENet_LIBRARY}
+  ${Zlib_LIBRARY}
+  ${WINDOWS_ENET_DEPENDENCIES}
 )
 
 ADD_EXECUTABLE(client dummyclient2.cc)
-ADD_EXECUTABLE(server dummyserver.cc)
 TARGET_LINK_LIBRARIES( client
   ${OGRE_LIBRARIES}
   network
   core
   #objects
+  ${ENet_LIBRARY}
+  ${Zlib_LIBRARY}
+  ${WINDOWS_ENET_DEPENDENCIES}
 )
+
+ADD_EXECUTABLE(server dummyserver.cc)
 TARGET_LINK_LIBRARIES( server
   ${OGRE_LIBRARIES}
   network
   core
   #objects
+  ${ENet_LIBRARY}
+  ${Zlib_LIBRARY}
+  ${WINDOWS_ENET_DEPENDENCIES}
 )
 
