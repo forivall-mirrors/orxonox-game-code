@@ -422,6 +422,7 @@ namespace orxonox
 
 
     SceneNode* node = (SceneNode*)mgr->getRootSceneNode()->getChild("OgreHeadNode");
+//     SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
 
 
     steering_ = new SpaceshipSteering(500, 200, 200, 200);

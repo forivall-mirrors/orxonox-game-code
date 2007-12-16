@@ -13,11 +13,13 @@
 
 	</audio>
 
+    <!-- Keep a minimum distance of >100 to the object, otherwise the camara thinks it's in the object -->
+    <!-- the value has to negative, as we want the camara behind the object -->
 	<world>
 
 		<SceneNode name="OgreHeadNode" pos="0,0,0" />
 
-		<Camera name="Camera" pos="0,0,-100" lookat="0,0,0" node="OgreHeadNode" />
+		<Camera name="Camera" pos="0,0,-150" lookat="0,0,0" node="OgreHeadNode" />
 
 		<Ambient colourvalue="1,1,1" />
 
