@@ -192,6 +192,7 @@ namespace orxonox
   Orxonox::Orxonox()
   {
     ogre_ = new GraphicsEngine();
+    dataPath_ = "";
   }
 
   /**
@@ -216,7 +217,7 @@ namespace orxonox
     std::string mode = "";
     ArgReader ar = ArgReader(argc, argv);
     ar.checkArgument("mode", mode, false);
-//     ar.checkArgument("data-path", path, true);
+    ar.checkArgument("data", this->dataPath_, false);
     if(ar.errorHandling()) die();
 
     if(mode == std::string("server"))
@@ -353,7 +354,7 @@ namespace orxonox
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
     cf.load(macBundlePath() + "/Contents/Resources/resources.cfg");
 #else
-    cf.load("resources.cfg");
+    cf.load(dataPath_ + "resources.cfg");
 #endif
 
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
@@ -377,7 +378,7 @@ namespace orxonox
 
   void Orxonox::setupRenderSystem()
   {
-    if (!root_->restoreConfig() && !root_->showConfigDialog())
+    if (/*!root_->restoreConfig() &&*/ !root_->showConfigDialog())
       throw Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
   }
 

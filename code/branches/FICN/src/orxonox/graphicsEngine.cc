@@ -112,12 +112,12 @@ namespace orxonox {
       ConfigFile::SettingsMultiMap::iterator i;
       for (i = settings->begin(); i != settings->end(); ++i)
       {
-        typeName = i->first;
-        archName = i->second;
+        typeName = i->first; // for instance "FileSystem" or "Zip"
+        archName = i->second; // name (and location) of archive
 
         ResourceGroupManager::getSingleton().addResourceLocation(
                                            String(dataPath + archName),
-            typeName, secName);
+                                           typeName, secName);
       }
     }
   }
