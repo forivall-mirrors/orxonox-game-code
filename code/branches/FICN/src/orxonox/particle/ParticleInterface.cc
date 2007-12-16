@@ -27,7 +27,7 @@
 
 #include "ParticleInterface.h"
 #include <Ogre.h>
-#include <OIS/OIS.h>
+//#include <OIS/OIS.h>
 // #include <CEGUI/CEGUI.h>
 // #include <CEGUIRenderer.h>
 

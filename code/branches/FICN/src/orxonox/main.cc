@@ -66,7 +66,53 @@ using namespace Ogre;
 }
 #endif
 
-int main(int argc, char **argv)
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
+#define WIN32_LEAN_AND_MEAN 
+#include "windows.h" 
+  INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
+  {
+    char *argv[2];
+    argv[0] = "asdfprogramName";
+    argv[1] =  strCmdLine;
+    int argc = 2;
+#else 
+  int main(int argc, char **argv) 
+  {
+#endif 
+    try {
+      SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
+      Orxonox* orx = Orxonox::getSingleton();
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+      orx->init(argc, argv, macBundlePath());
+      orx->start();
+#else
+      orx->init(argc, argv, "");
+      orx->start();
+#endif
+    }
+    catch (Ogre::Exception& e) {
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
+      MessageBoxA(NULL, e.getFullDescription().c_str(),
+            "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+#else
+      std::cerr << "Exception:\n";
+      std::cerr << e.getFullDescription().c_str() << "\n";
+#endif
+      return 1;
+    }
+    return 0;
+  }
+
+#ifdef __cplusplus
+}
+#endif
+
+
+/*int main(int argc, char **argv)
 {
   try
   {
@@ -91,3 +137,4 @@ int main(int argc, char **argv)
   return 0;
 }
 
+*/
