@@ -53,6 +53,7 @@
 
 #include "objects/Tickable.h"
 #include "objects/Timer.h"
+#include "core/ArgReader.h"
 #include "core/Factory.h"
 
 #include "../loader/LevelLoader.h"
@@ -149,8 +150,8 @@ namespace orxonox
 
 
 //      scenemanager->spacehip->tick(evt.timesincelastframe);
-        if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
-          cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
+        //if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+          //cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
         return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
       }
 
@@ -160,7 +161,7 @@ namespace orxonox
         mouseY += e.state.Y.rel;
         if(mouseX>maxMouseX) maxMouseX = mouseX;
         if(mouseX<minMouseX) minMouseX = mouseX;
-        cout << "mouseX: " << mouseX << "\tmouseY: " << mouseY << endl;
+        //cout << "mouseX: " << mouseX << "\tmouseY: " << mouseY << endl;
         moved = true;
         return true;
       }
@@ -209,20 +210,24 @@ namespace orxonox
    */
   void Orxonox::init(int argc, char **argv, std::string path)
   {
-    //TODO: initialization with command line parameters
     //TODO: find config file (assuming executable directory)
     //TODO: read config file
     //TODO: give config file to Ogre
+    std::string mode = "";
+    ArgReader ar = ArgReader(argc, argv);
+    ar.checkArgument("mode", mode, false);
+    ar.checkArgument("data-path", path, true);
+    if(ar.errorHandling()) die();
 
-    if(argc >=2 && strcmp(argv[1], "server")==0)
+    if(mode == std::string("server"))
     {
       serverInit(path);
     }
-    else if(argc >=2 && strcmp(argv[1], "client")==0)
+    else if(mode == std::string("client"))
     {
       clientInit(path);
     }
-    else if(argc >=2 && strcmp(argv[1], "presentation")==0)
+    else if(mode == std::string("presentation"))
     {
       playableServer(path);
     }
@@ -262,6 +267,7 @@ namespace orxonox
   void Orxonox::die(/* some error code */)
   {
     //TODO: destroy and destruct everything and print nice error msg
+    delete this;
   }
 
   void Orxonox::standalone(std::string path)

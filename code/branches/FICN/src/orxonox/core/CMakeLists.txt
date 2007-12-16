@@ -9,6 +9,7 @@ SET( CORE_SRC_FILES
   ConfigValueContainer.cc
   Error.cc
   SignalHandler.cc
+  ArgReader.cc
 )
 
 ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
