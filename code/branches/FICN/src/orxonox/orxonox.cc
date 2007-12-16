@@ -390,6 +390,10 @@ namespace orxonox
     ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
   }
 
+  /**
+   *
+   * @param
+   */
   void Orxonox::createScene(void)
   {
 	// Init audio
@@ -413,6 +417,9 @@ namespace orxonox
   }
 
 
+  /**
+   *
+   */
   void Orxonox::setupScene()
   {
     SceneManager *mgr = ogre_->getSceneManager();
@@ -424,14 +431,20 @@ namespace orxonox
     steering_ = new SpaceshipSteering(500, 200, 200, 200);
     steering_->addNode(node);
 
-/*
-    particle::ParticleInterface *e = new particle::ParticleInterface(mgr,"engine","strahl");
+
+    particle::ParticleInterface *e = new particle::ParticleInterface(mgr,"engine","Orxonox/strahl");
     e->particleSystem_->setParameter("local_space","true");
-    e->setPositionOfEmitter(0, Vector3(0,0,-10));
-    e->setDirection(Vector3(0,0,-1));*/
-//     e->addToSceneNode(node);
+    e->setPositionOfEmitter(0, Vector3(0,-10,200));
+    e->setDirection(Vector3(0,0,-1));
+    e->addToSceneNode(node);
 
-
+    particle::ParticleInterface *w = new particle::ParticleInterface(mgr,"schuss","Orxonox/schuss");
+    w->particleSystem_->setParameter("local_space","true");
+    w->newEmitter();
+    w->setDirection(Vector3(0,0,1));
+    w->setPositionOfEmitter(0, Vector3(10,10,0));
+    w->setPositionOfEmitter(1, Vector3(-10,10,0));
+    w->addToSceneNode(node);
   }
 
 
