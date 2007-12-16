@@ -67,10 +67,6 @@
 #include "../network/Client.h"
 #include "../network/NetworkFrameListener.h"
 
-// some tests to see if enet works without includsion
-//#include <enet/enet.h>
-//#include <enet/protocol.h>
-
 
 namespace orxonox
 {
