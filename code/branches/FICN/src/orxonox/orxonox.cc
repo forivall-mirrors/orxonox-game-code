@@ -216,7 +216,7 @@ namespace orxonox
     std::string mode = "";
     ArgReader ar = ArgReader(argc, argv);
     ar.checkArgument("mode", mode, false);
-    ar.checkArgument("data-path", path, true);
+//     ar.checkArgument("data-path", path, true);
     if(ar.errorHandling()) die();
 
     if(mode == std::string("server"))
@@ -404,10 +404,6 @@ namespace orxonox
     // load this file from config
     loader_ = new loader::LevelLoader("sample.oxw");
     loader_->loadLevel();
-
-
-
-
 
 	/*
     auMan_->ambientAdd("a1");
