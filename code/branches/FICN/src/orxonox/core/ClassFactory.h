@@ -9,6 +9,7 @@
 #define _ClassFactory_H__
 
 #include "Identifier.h"
+#include "Debug.h"
 
 namespace orxonox
 {
@@ -38,6 +39,7 @@ namespace orxonox
     template <class T>
     bool ClassFactory<T>::create(const std::string& name)
     {
+        COUT(4) << "*** Create entry for " << name << " in Factory.\n";
         ClassIdentifier<T>::getIdentifier()->addFactory(new ClassFactory<T>);
         Factory::add(name, ClassIdentifier<T>::getIdentifier());
 
