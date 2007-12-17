@@ -31,6 +31,9 @@
 #include "WorldEntity.h"
 #include "../core/CoreIncludes.h"
 #include "../orxonox.h"
+#include "../../tinyxml/tinyxml.h"
+#include "../../misc/Tokenizer.h"
+#include "../../misc/String2Number.h"
 
 namespace orxonox
 {
@@ -49,7 +52,6 @@ namespace orxonox
             std::ostringstream name;
             name << (WorldEntity::worldEntityCounter_s++);
             this->setName("WorldEntity" + name.str());
-            // don't set the node yet!
             //node_ = Orxonox::getSingleton()->getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
             std::cout << "blubbbi: " << this->getName() << " .. " << this->node_ << std::endl;
         }
@@ -78,9 +80,53 @@ namespace orxonox
             this->rotate(this->rotationAxis_, dt * this->rotationRate_);
         }
     }
-    
-    void WorldEntity::registerAllVariables(){
+
+    void WorldEntity::loadParams(TiXmlElement* xmlElem)
+    {
+        BaseObject::loadParams(xmlElem);
+
+        std::cout << "1\n";
+    	if (xmlElem->Attribute("name"))
+    	{
+        std::cout << "2\n";
+    		this->setName(xmlElem->Attribute("mesh"));
+    	}
+        std::cout << "3\n";
+    	if (xmlElem->Attribute("position"))
+    	{
+        std::cout << "4\n";
+	    	std::vector<std::string> pos = tokenize(xmlElem->Attribute("position"),",");
+	    	float x, y, z;
+    	 	String2Number<float>(x, pos[0]);
+	    	String2Number<float>(y, pos[1]);
+	    	String2Number<float>(z, pos[2]);
+	    	this->setPosition(x, y, z);
+    	}
+        std::cout << "5\n";
+    	if (xmlElem->Attribute("direction"))
+    	{
+        std::cout << "6\n";
+	    	std::vector<std::string> pos = tokenize(xmlElem->Attribute("direction"),",");
+	    	float x, y, z;
+    	 	String2Number<float>(x, pos[0]);
+	    	String2Number<float>(y, pos[1]);
+	    	String2Number<float>(z, pos[2]);
+	    	this->setDirection(x, y, z);
+    	}
+        std::cout << "7\n";
+    	if (xmlElem->Attribute("scale"))
+    	{
+        std::cout << "8\n";
+		    std::string scaleStr = xmlElem->Attribute("scale");
+		    float scale;
+		    String2Number<float>(scale, scaleStr);
+		    this->setScale(scale);
+    	}
+        std::cout << "9\n";
+    }
+
+    void WorldEntity::registerAllVariables()
+    {
       // to be implemented !
-      
     }
 }

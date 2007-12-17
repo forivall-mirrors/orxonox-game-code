@@ -8,6 +8,7 @@
 #include "OgreSceneNode.h"
 #include "Mesh.h"
 #include "network/Synchronisable.h"
+#include "tinyxml/tinyxml.h"
 
 namespace orxonox
 {
@@ -17,7 +18,8 @@ namespace orxonox
       WorldEntity();
       ~WorldEntity();
 
-      void tick(float dt);
+      virtual void tick(float dt);
+      virtual void loadParams(TiXmlElement* xmlElem);
 
       inline Ogre::SceneNode* getNode()
           { return this->node_; }
