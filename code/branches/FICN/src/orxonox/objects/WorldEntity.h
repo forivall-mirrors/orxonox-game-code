@@ -17,18 +17,6 @@ namespace orxonox
 
             void tick(float dt);
 
-        private:
-            Ogre::SceneNode* node_;
-            static unsigned int worldEntityCounter_s;
-
-            bool bStatic_;
-            Vector3 velocity_;
-            Vector3 acceleration_;
-            Vector3 rotationAxis_;
-            Radian rotationRate_;
-            Radian momentum_;
-
-        public:
             inline Ogre::SceneNode* getNode()
                 { return this->node_; }
 
@@ -113,9 +101,16 @@ namespace orxonox
                 { return this->node_->getOrientation(); }
 
 
-            static Ogre::SceneManager* sceneManager_s;
-            static int num_s;
+        private:
+            Ogre::SceneNode* node_;
+            static unsigned int worldEntityCounter_s;
 
+            bool bStatic_;
+            Vector3 velocity_;
+            Vector3 acceleration_;
+            Vector3 rotationAxis_;
+            Radian rotationRate_;
+            Radian momentum_;
     };
 }
 
