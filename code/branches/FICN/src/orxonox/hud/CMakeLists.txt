@@ -1,8 +1,7 @@
 PROJECT(Orxonox)
 
 SET( HUD_SRC_FILES
-  hud_overlay.cc
-  test_overlay.cc
+  HUD.cc
 )
 
 IF(WIN32)
