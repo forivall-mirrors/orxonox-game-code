@@ -133,12 +133,27 @@ namespace network{
    * sends the gamestate
    */
   bool Server::sendGameState(){
-    /*for(ClientInformation *temp = clients->next(); temp!=0; temp=temp->next()){
-      connection->addPacket(packet_gen.gstate(&(gamestates->popGameState(temp->getID()))),temp->getID());
+    std::cout << "starting gamestate" << std::endl;
+    ClientInformation *temp = clients;
+    bool added=false;
+    while(temp!=NULL){
+      if(temp->head){
+        temp=temp->next();
+        continue;
+      }
+      std::cout << "doing gamestate" << std::endl;
+      int id = temp->getID();
+      GameStateCompressed *gs = &(gamestates->popGameState(id));
+      std::cout << "adding gamestate" << std::endl;
+      connection->addPacket(packet_gen.gstate(gs), id);
       std::cout << "added gamestate" << std::endl;
+      added=true;
+      temp=temp->next();
     }
-    return connection->sendPackets();*/
-    return true;
+    if(added)
+      return connection->sendPackets();
+    else return false;
+    //return true;
   }
   
   
