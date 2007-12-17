@@ -133,6 +133,9 @@ namespace network{
    * sends the gamestate
    */
   bool Server::sendGameState(){
+    for(ClientInformation *temp = clients; temp!=0; temp=temp->next()){
+      connection->addPacket(packet_gen.gstate(&(gamestates->popGameState(temp->getID()))),temp->getID());
+    }
     return true;
   }
   

@@ -35,7 +35,7 @@ private:
 class ClientFrameListener : public Ogre::FrameListener{
 private:
   bool frameStarted(const Ogre::FrameEvent &evt){
-    std::cout << "framelistener" << std::endl;
+    //std::cout << "framelistener" << std::endl;
     client_g->tick(evt.timeSinceLastFrame);
     return FrameListener::frameStarted(evt);
   }

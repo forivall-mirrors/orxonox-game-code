@@ -146,6 +146,7 @@ namespace network{
     }
     //main loop
     while(!quit){
+      //std::cout << "connection loop" << std::endl;
       if(enet_host_service(client, &event, NETWORK_WAIT_TIMEOUT)<0){
         // we should never reach this point
         quit=true;
@@ -211,6 +212,7 @@ namespace network{
   }
 
   bool ClientConnection::processData(ENetEvent *event){
+    std::cout << "got packet, pushing to queue" << std::endl;
     // just add packet to the buffer
     // this can be extended with some preprocessing
     return buffer.push(event);

@@ -161,10 +161,10 @@ namespace orxonox
 //      scenemanager->spacehip->tick(evt.timesincelastframe);
         //if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
           //cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
-        if(mode_==PRESENTATION){
+        if(mode_==PRESENTATION)
 	  server_g->tick(evt.timeSinceLastFrame);
-	  std::cout << "tick server" << std::endl;
-	}
+        else if(mode_==CLIENT)
+          client_g->tick(evt.timeSinceLastFrame);
         usleep(10);
         return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
       }
