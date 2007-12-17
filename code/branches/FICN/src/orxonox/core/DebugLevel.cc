@@ -4,19 +4,28 @@
 
 namespace orxonox
 {
-    int DebugLevel::softDebugLevel_s;
-
-//    CreateFactory(DebugLevel);
+    DebugLevel* DebugLevel::pointer_s = 0;
+    bool DebugLevel::bCreatingDebugLevelObject_s = false;
 
     DebugLevel::DebugLevel()
     {
-        RegisterObject(DebugLevel);
+        RegisterRootObject(DebugLevel);
         SetConfigValue(softDebugLevel_s, 2);
     }
 
     int DebugLevel::getSoftDebugLevel()
     {
-        return DebugLevel::softDebugLevel_s;
+        if (!pointer_s && !bCreatingDebugLevelObject_s)
+        {
+            bCreatingDebugLevelObject_s = true;
+            pointer_s = new DebugLevel;
+            bCreatingDebugLevelObject_s = false;
+        }
+
+        if (bCreatingDebugLevelObject_s)
+            return 4;
+
+        return pointer_s->softDebugLevel_s;
     }
 }
 

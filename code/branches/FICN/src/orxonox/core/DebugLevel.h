@@ -12,8 +12,10 @@ namespace orxonox
             static int getSoftDebugLevel();
 
         private:
-            static int softDebugLevel_s;
-    } myDebugObject;
+            int softDebugLevel_s;
+            static DebugLevel* pointer_s;
+            static bool bCreatingDebugLevelObject_s;
+    };
 }
 
 #endif

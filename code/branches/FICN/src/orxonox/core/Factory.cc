@@ -37,6 +37,8 @@
 
 namespace orxonox
 {
+    Factory* Factory::pointer_s = 0;
+
     /**
         @returns the Identifier with a given name.
         @param name The name of the wanted Identifier
@@ -102,7 +104,11 @@ namespace orxonox
     */
     Factory* Factory::getFactoryPointer()
     {
-      static Factory theOneAndOnlyInstance = Factory();
-      return &theOneAndOnlyInstance;
+//        static Factory theOneAndOnlyInstance = Factory();
+//        return &theOneAndOnlyInstance;
+        if (!pointer_s)
+            pointer_s = new Factory();
+
+        return pointer_s;
     }
 }

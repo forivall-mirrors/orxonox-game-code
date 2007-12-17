@@ -36,15 +36,14 @@ namespace orxonox
             static void add(const std::string& name, Identifier* identifier);
             static void changeNetworkID(Identifier* identifier, const unsigned int oldID, const unsigned int newID);
             static void createClassHierarchy();
-
             static Factory* getFactoryPointer();// avoid overriding pointer_s in the static intialisation process
 
         private:
             Factory() {}                            // don't create
             Factory(const Factory& factory) {}      // don't copy
             ~Factory() {}                           // don't delete
-            static void checkPointer();
 
+            static Factory* pointer_s;
             std::map<std::string, Identifier*> identifierStringMap_;            //!< The map, mapping the name with the Identifier
             std::map<unsigned int, Identifier*> identifierNetworkIDMap_;        //!< The map, mapping the network ID with the Identifier
     };
