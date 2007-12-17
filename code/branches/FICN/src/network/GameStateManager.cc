@@ -91,7 +91,9 @@ GameState *GameStateManager::getSnapshot(int id)
   GameState *retval=new GameState; //return value
   retval->id=id++;
   // reserve a little memory and increase it later on
+  COUT(2) << "mallocing" << std::endl;
   retval->data = (unsigned char*)malloc(1);
+  COUT(2) << "malloced" << std::endl;
 
   // offset of memory functions
   int offset=0;
