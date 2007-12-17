@@ -106,6 +106,23 @@ namespace orxonox
 	    	this->setDirection(x, y, z);
     	}
 
+        if (xmlElem->Attribute("yaw") || xmlElem->Attribute("pitch") || xmlElem->Attribute("roll"))
+        {
+            float yaw = 0.0, pitch = 0.0, roll = 0.0;
+            if (xmlElem->Attribute("yaw"))
+                String2Number<float>(yaw,xmlElem->Attribute("yaw"));
+
+            if (xmlElem->Attribute("pitch"))
+                String2Number<float>(pitch,xmlElem->Attribute("pitch"));
+
+            if (xmlElem->Attribute("roll"))
+                String2Number<float>(roll,xmlElem->Attribute("roll"));
+
+            this->yaw(Degree(yaw));
+            this->pitch(Degree(pitch));
+            this->roll(Degree(roll));
+        }
+
     	if (xmlElem->Attribute("scale"))
     	{
 		    std::string scaleStr = xmlElem->Attribute("scale");
