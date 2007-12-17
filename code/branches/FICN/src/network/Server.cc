@@ -124,7 +124,9 @@ namespace network{
    */
   void Server::updateGamestate(){
     gamestates->update();
+    std::cout << "updated gamestate, sending it" << std::endl;
     sendGameState();
+    std::cout << "sent gamestate" << std::endl;
   }
   
   /**
