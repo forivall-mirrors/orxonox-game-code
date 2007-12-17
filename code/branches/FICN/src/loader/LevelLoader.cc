@@ -127,15 +127,15 @@ LevelLoader::LevelLoader(string file, string path)
 					loadingBarWidth_ = tElem->Attribute("width");
 					loadingBarHeight_ = tElem->Attribute("height");
 				}
-				
-				
+
+
 		    mLoadOverlay = (Ogre::Overlay*)omgr.getByName("Orxonox/LoadingScreenSample");
-		    mLoadOverlay->show(); 				
+		    mLoadOverlay->show();
 
 				std::cout << "\n\n\nThis is Orxonox\nthe hottest 3D action shooter ever to exist\n\n\n";
 				std::cout << "Level: " << name() << "\nDescription:" << description() << "\nImage:"<<image()<<"\n\n\n";
 				std::cout << "Backgroundcolor: " << loadingBackgroundColor_ << "\nBackgroundimage:" << loadingBackgroundImage_ << "\n\n\n";
-							
+
 			}
 
 			// Load audio
@@ -152,11 +152,19 @@ LevelLoader::LevelLoader(string file, string path)
 				while( tNode = worldElem->IterateChildren( tNode ) )
 				{
 					tElem = tNode->ToElement();
-					orxonox::BaseObject* obj = ID(tElem->Value())->fabricate();
-					obj->loadParams(tElem);
+					orxonox::Identifier* id = ID(tElem->Value());
+					if (id)
+					{
+                        orxonox::BaseObject* obj = id->fabricate();
+                        obj->loadParams(tElem);
+					}
+					else
+					{
+					    COUT(2) << "Warning: '"<< tElem->Value() <<"' is not a valid classname.\n";
+					}
 				}
 			}
-			
+
 			if (loadElem)
 			{
 				 mLoadOverlay->hide();
