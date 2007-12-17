@@ -55,6 +55,7 @@
 #include "objects/Timer.h"
 #include "core/ArgReader.h"
 #include "core/Factory.h"
+#include "core/Debug.h"
 
 #include "../loader/LevelLoader.h"
 #include "../audio/AudioManager.h"
@@ -309,11 +310,11 @@ namespace orxonox
       server_g->open(); // open server and create listener thread
       if(ogre_ && ogre_->getRoot())
         ogre_->getRoot()->addFrameListener(new network::ServerFrameListener()); // adds a framelistener for the server
-      std::cout << "network framelistener added" << std::endl;
+      COUT(3) << "Info: network framelistener added" << std::endl;
     }
     catch(exception &e)
     {
-      std::cout << "There was a problem initialising the server :(" << std::endl;
+      COUT(1) << "Error: There was a problem initialising the server :(" << std::endl;
     }
     startRenderLoop();
   }

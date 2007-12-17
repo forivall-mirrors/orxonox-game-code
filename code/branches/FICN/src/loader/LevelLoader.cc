@@ -132,9 +132,9 @@ LevelLoader::LevelLoader(string file, string path)
 		    mLoadOverlay = (Ogre::Overlay*)omgr.getByName("Orxonox/LoadingScreenSample");
 		    mLoadOverlay->show();
 
-				std::cout << "\n\n\nThis is Orxonox\nthe hottest 3D action shooter ever to exist\n\n\n";
-				std::cout << "Level: " << name() << "\nDescription:" << description() << "\nImage:"<<image()<<"\n\n\n";
-				std::cout << "Backgroundcolor: " << loadingBackgroundColor_ << "\nBackgroundimage:" << loadingBackgroundImage_ << "\n\n\n";
+				COUT(0) << "\n\n\nThis is Orxonox\nthe hottest 3D action shooter ever to exist\n\n\n";
+				COUT(0) << "Level: " << name() << "\nDescription:" << description() << "\nImage:"<<image()<<"\n\n\n";
+				COUT(4) << "Backgroundcolor: " << loadingBackgroundColor_ << "\nBackgroundimage:" << loadingBackgroundImage_ << "\n\n\n";
 
 			}
 
@@ -169,7 +169,7 @@ LevelLoader::LevelLoader(string file, string path)
 			{
 				 mLoadOverlay->hide();
 			}
-			std::cout << "Loading finished!\n\n\n\n\n";
+			COUT(0) << "Loading finished!\n\n\n\n\n";
 		}
 	}
 

@@ -26,6 +26,7 @@
  */
 
 #include "Error.h"
+#include "Debug.h"
 
 namespace orxonox
 {
@@ -41,7 +42,7 @@ namespace orxonox
 
 	Error::Error(int errorCode, std::string errorMsg)
 	{
-		std::cout << "############################ "<< std::endl
+		COUT(1) << "############################ "<< std::endl
 							<< "#         Error "<<errorCode<< "          #"<< std::endl
 							<< "############################ "<< std::endl
 							<< "An error occured in Orxonox: "<< std::endl;
@@ -57,6 +58,6 @@ namespace orxonox
 					errorMsg = "Unknown error!";
 			}
 		}
-		std::cout << errorMsg << std::endl<< std::endl;
+		COUT(1) << errorMsg << std::endl<< std::endl;
 	}
 }

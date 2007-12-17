@@ -10,6 +10,7 @@
 #include "../../tinyxml/tinyxml.h"
 #include "../../misc/Tokenizer.h"
 #include "../../misc/String2Number.h"
+#include "../core/Debug.h"
 
 #include "SpaceshipSteeringObject.h"
 
@@ -31,7 +32,7 @@ namespace orxonox
     void SpaceshipSteeringObject::loadParams(TiXmlElement* xmlElem)
     {
     	SpaceshipSteering* steering = orxonox::Orxonox::getSingleton()->getSteeringPointer();
-    	
+
     	if (xmlElem->Attribute("node") && xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
     	{
     		std::string nodeStr = xmlElem->Attribute("node");
@@ -45,18 +46,18 @@ namespace orxonox
     	 	String2Number<float>(rotateupdown, rotateupdownStr);
     	 	String2Number<float>(rotaterightleft, rotaterightleftStr);
     	 	String2Number<float>(looprightleft, looprightleftStr);
-	    
+
     		steering = new SpaceshipSteering(forward, rotateupdown, rotaterightleft, looprightleft);
-    		
+
 	    	Ogre::SceneManager* mgr = orxonox::Orxonox::getSingleton()->getSceneManager();
 		    Ogre::SceneNode* sceneNode = (Ogre::SceneNode*)mgr->getRootSceneNode()->getChild(nodeStr);
-			    		
+
     		steering->addNode(sceneNode);
-    
-    
-    
-    
-	    	std::cout << "Loader: Initialized spaceship steering at node " << nodeStr << " values "<< forward << " " << rotateupdown << " "<< rotaterightleft << " "<< looprightleft << " "<< std::endl << std::endl;
-    	}   	
+
+
+
+
+	    	COUT(4) << "Loader: Initialized spaceship steering at node " << nodeStr << " values "<< forward << " " << rotateupdown << " "<< rotaterightleft << " "<< looprightleft << " "<< std::endl << std::endl;
+    	}
    }
 }

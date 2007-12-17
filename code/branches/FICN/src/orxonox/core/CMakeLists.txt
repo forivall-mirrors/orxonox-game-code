@@ -10,6 +10,7 @@ SET( CORE_SRC_FILES
   Error.cc
   SignalHandler.cc
   ArgReader.cc
+  DebugLevel.cc
 )
 
 IF(WIN32)

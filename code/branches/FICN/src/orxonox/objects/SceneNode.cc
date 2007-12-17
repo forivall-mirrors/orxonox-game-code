@@ -5,6 +5,7 @@
 #include "../../tinyxml/tinyxml.h"
 #include "../../misc/Tokenizer.h"
 #include "../../misc/String2Number.h"
+#include "../core/Debug.h"
 
 #include "SceneNode.h"
 
@@ -24,7 +25,7 @@ namespace orxonox
     void SceneNode::loadParams(TiXmlElement* xmlElem)
     {
     	Ogre::SceneManager* mgr = orxonox::Orxonox::getSingleton()->getSceneManager();
-    	
+
     	if (xmlElem->Attribute("name") && xmlElem->Attribute("pos"))
     	{
     		std::string name = xmlElem->Attribute("name");
@@ -35,10 +36,10 @@ namespace orxonox
 	    	String2Number<float>(y, pos[1]);
 	    	String2Number<float>(z, pos[2]);
 
-    		
+
     		mgr->getRootSceneNode()->createChildSceneNode(name, Vector3(x,y,z));
-	    	
-	    	std::cout << "Loader: Created node "<< name <<" : "<<x<<" " << y << " " << z  << std::endl << std::endl;
-    	}   	
+
+	    	COUT(4) << "Loader: Created node "<< name <<" : "<<x<<" " << y << " " << z  << std::endl << std::endl;
+    	}
    }
 }

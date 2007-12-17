@@ -27,6 +27,7 @@
 
 
 #include "AudioStream.h"
+#include "../orxonox/core/Debug.h"
 
 namespace audio
 {
@@ -102,7 +103,7 @@ namespace audio
 	{
 		if (loaded)
 		{
-	    std::cout
+	    COUT(3)
 	        << "version         " << vorbisInfo->version         << "\n"
 	        << "channels        " << vorbisInfo->channels        << "\n"
 	        << "rate (hz)       " << vorbisInfo->rate            << "\n"
@@ -114,9 +115,9 @@ namespace audio
 	        << "vendor " << vorbisComment->vendor << "\n";
 
 	    for(int i = 0; i < vorbisComment->comments; i++)
-	        std::cout << "   " << vorbisComment->user_comments[i] << "\n";
+	        COUT(3) << "   " << vorbisComment->user_comments[i] << "\n";
 
-	    std::cout << std::endl;
+	    COUT(3) << std::endl;
 		}
 	}
 

@@ -34,6 +34,7 @@
 #include <OgreRoot.h>
 #include <OgreConfigFile.h>
 #include <OgreTextureManager.h>
+#include "core/Debug.h"
 
 
 namespace orxonox {
@@ -73,7 +74,7 @@ namespace orxonox {
     if(!scene_)
     {
       scene_ = root_->createSceneManager(ST_GENERIC, "Default SceneManager");
-      std::cout << "created SceneMan: " << scene_ << std::endl;
+      COUT(3) << "Info: Created SceneMan: " << scene_ << std::endl;
     }
     return scene_;
   }

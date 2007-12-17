@@ -29,6 +29,7 @@
 #include <iostream>
 #include <string>
 #include "AudioObject.h"
+#include "../orxonox/core/Debug.h"
 
 namespace audio
 {
@@ -73,7 +74,7 @@ namespace audio
 		}
 
 		SetListenerValues();
-		std::cout << "Play sone ambient background sound";
+		COUT(3) << "Info: Play sone ambient background sound";
 	}
 
 	AudioObject::~AudioObject()

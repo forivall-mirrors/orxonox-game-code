@@ -32,6 +32,7 @@
 #include "../../tinyxml/tinyxml.h"
 #include "../../misc/Tokenizer.h"
 #include "../../misc/String2Number.h"
+#include "../core/Debug.h"
 
 #include "Ambient.h"
 
@@ -63,7 +64,7 @@ namespace orxonox
 
 	    	mgr->setAmbientLight(ColourValue(r,g,b));
 
-	    	std::cout << "Loader: Set ambient light: "<<r<<" " << g << " " << b  << std::endl << std::endl;
+	    	COUT(4) << "Loader: Set ambient light: "<<r<<" " << g << " " << b  << std::endl << std::endl;
     	}
    }
 }

@@ -25,6 +25,8 @@
 
 #include <stdio.h>
 
+int getSoftDebugLevel();
+
 // DEFINE ERROR MODES
 #define ORX_NONE            0
 #define ORX_ERROR           1
@@ -37,7 +39,7 @@
 #define ORX_PRINT_DEBUG_OUTPUT 1 // <-- fix that! should be a configurable setting
 
 #define ORX_HARD_DEBUG_LEVEL ORX_DEBUG
-#define ORX_SOFT_DEBUG_LEVEL ORX_WARNING // <-- fix that! should be a configurable setting
+//#define ORX_SOFT_DEBUG_LEVEL ORX_WARNING // <-- fix that! should be a configurable setting
 
 ///////////////////////////////////////////////////
 /// PRINTF: prints with filename and linenumber ///
@@ -60,7 +62,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
    #define PRINTF1 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_ERROR) \
+    if (getSoftDebugLevel() >= ORX_ERROR) \
      printf("Error (in %s, line %d): ", __FILE__, __LINE__), PRINT_EXEC
   #else
    #define PRINTF1 if (ORX_NONE) PRINT_EXEC
@@ -68,7 +70,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_WARNING
    #define PRINTF2 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_WARNING) \
+    if (getSoftDebugLevel() >= ORX_WARNING) \
      printf("Warning (in %s, line %d): ", __FILE__, __LINE__), PRINT_EXEC
   #else
    #define PRINTF2 if (ORX_NONE) PRINT_EXEC
@@ -76,7 +78,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_INFO
    #define PRINTF3 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_INFO) \
+    if (getSoftDebugLevel() >= ORX_INFO) \
      printf("Info (in %s, line %d): ", __FILE__, __LINE__), PRINT_EXEC
   #else
    #define PRINTF3 if (ORX_NONE) PRINT_EXEC
@@ -84,7 +86,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_DEBUG
    #define PRINTF4 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_DEBUG) \
+    if (getSoftDebugLevel() >= ORX_DEBUG) \
      printf("Debug (in %s, line %d): ", __FILE__, __LINE__), PRINT_EXEC
   #else
    #define PRINTF4 if (ORX_NONE) PRINT_EXEC
@@ -92,7 +94,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_vDEBUG
    #define PRINTF5 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_vDEBUG) \
+    if (getSoftDebugLevel() >= ORX_vDEBUG) \
      printf("vDebug (in %s, line %d): ", __FILE__, __LINE__), PRINT_EXEC
   #else
    #define PRINTF5 if (ORX_NONE) PRINT_EXEC
@@ -123,7 +125,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
    #define PRINT1  \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_ERROR)  \
+    if (getSoftDebugLevel() >= ORX_ERROR)  \
      PRINT_EXEC
   #else
    #define PRINT1 if (ORX_NONE) PRINT_EXEC
@@ -131,7 +133,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_WARNING
    #define PRINT2 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_WARNING) \
+    if (getSoftDebugLevel() >= ORX_WARNING) \
      PRINT_EXEC
   #else
    #define PRINT2 if (ORX_NONE) PRINT_EXEC
@@ -139,7 +141,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_INFO
    #define PRINT3 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_INFO) \
+    if (getSoftDebugLevel() >= ORX_INFO) \
      PRINT_EXEC
   #else
    #define PRINT3 if (ORX_NONE) PRINT_EXEC
@@ -147,7 +149,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_DEBUG
    #define PRINT4 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_DEBUG) \
+    if (getSoftDebugLevel() >= ORX_DEBUG) \
      PRINT_EXEC
   #else
    #define PRINT4 if (ORX_NONE) PRINT_EXEC
@@ -155,7 +157,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_vDEBUG
    #define PRINT5 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_vDEBUG) \
+    if (getSoftDebugLevel() >= ORX_vDEBUG) \
      PRINT_EXEC
   #else
    #define PRINT5 if (ORX_NONE) PRINT_EXEC
@@ -187,7 +189,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
    #define COUT1  \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_ERROR)  \
+    if (getSoftDebugLevel() >= ORX_ERROR)  \
      COUT_EXEC
   #else
    #define COUT1 if (ORX_NONE)\
@@ -196,7 +198,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_WARNING
    #define COUT2 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_WARNING) \
+    if (getSoftDebugLevel() >= ORX_WARNING) \
      COUT_EXEC
   #else
    #define COUT2 if (ORX_NONE) \
@@ -205,7 +207,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_INFO
    #define COUT3 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_INFO) \
+    if (getSoftDebugLevel() >= ORX_INFO) \
      COUT_EXEC
   #else
    #define COUT3 if (ORX_NONE) \
@@ -214,7 +216,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_DEBUG
    #define COUT4 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_DEBUG) \
+    if (getSoftDebugLevel() >= ORX_DEBUG) \
      COUT_EXEC
   #else
    #define COUT4 if (ORX_NONE) \
@@ -223,7 +225,7 @@
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_vDEBUG
    #define COUT5 \
-    if (ORX_SOFT_DEBUG_LEVEL >= ORX_vDEBUG) \
+    if (getSoftDebugLevel() >= ORX_vDEBUG) \
      COUT_EXEC
   #else
    #define COUT5 if (ORX_NONE) \

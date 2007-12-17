@@ -13,8 +13,10 @@
    co-programmer: ...
 */
 
-#include "SignalHandler.h"
 #include <assert.h>
+
+#include "SignalHandler.h"
+#include "Debug.h"
 
 SignalHandler * SignalHandler::singletonRef = NULL;
 
@@ -100,7 +102,7 @@ void SignalHandler::sigHandler( int sig )
       break;
   }
 
-  printf( "recieved signal %s\ntry to write backtrace to file orxonox.log\n", sigName.c_str() );
+  PRINTF(0)( "recieved signal %s\ntry to write backtrace to file orxonox.log\n", sigName.c_str() );
 
   int sigPipe[2];
   if ( pipe(sigPipe) == -1 )
@@ -128,7 +130,7 @@ void SignalHandler::sigHandler( int sig )
 
     if ( someData != 0x12345678 )
     {
-      printf("something went wrong :(\n");
+      PRINTF(0)("something went wrong :(\n");
     }
 
     return;
@@ -277,7 +279,7 @@ void SignalHandler::sigHandler( int sig )
 
   if ( fwrite( bt.c_str(), 1, bt.length(), f ) != bt.length() )
   {
-    printf( ( std::string("could not write %d byte to ") + getInstance()->fileName ).c_str(), bt.length());
+    PRINTF(0)( ( std::string("could not write %d byte to ") + getInstance()->fileName ).c_str(), bt.length());
     exit(EXIT_FAILURE);
   }
 

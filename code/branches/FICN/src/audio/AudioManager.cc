@@ -26,8 +26,7 @@
  */
 
 #include "AudioManager.h"
-
-
+#include "../orxonox/core/Debug.h"
 
 namespace audio
 {
@@ -60,7 +59,7 @@ namespace audio
 			}
 			else
 			{
-				std::cout << "Started playing background sound"<<std::endl;
+				COUT(3) << "Info: Started playing background sound" << std::endl;
 			}
 		}
 
@@ -68,7 +67,7 @@ namespace audio
 
 	void AudioManager::ambientStop()
 	{
-		std::cout << "Stopped playing background sound"<<std::endl;
+		COUT(3) << "Info: Stopped playing background sound" << std::endl;
 	}
 
 	void AudioManager::ambientAdd(std::string file)
@@ -79,7 +78,7 @@ namespace audio
 		if (tmp.isLoaded())
 		{
 			bgSounds.push_back(tmp);
-			std::cout << "Added background sound "<<file<<std::endl;
+			COUT(3) << "Info: Added background sound " << file << std::endl;
 		}
 	}
 
@@ -117,7 +116,7 @@ namespace audio
 						bgSounds[currentBgSound].open();
 					}
 					bgSounds[currentBgSound].playback();
-					std::cout << "Playing next background sound "<<std::endl;
+					COUT(3) << "Info: Playing next background sound" << std::endl;
 				}
 			}
 		}
