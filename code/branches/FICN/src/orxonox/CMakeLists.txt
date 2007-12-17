@@ -5,17 +5,12 @@ ADD_SUBDIRECTORY(hud)
 IF(NOT WIN32)
   ADD_SUBDIRECTORY(objects)
 ENDIF(NOT WIN32)
-ADD_SUBDIRECTORY(weapon)
 ADD_SUBDIRECTORY(particle)
 
 
 SET( ORXONOX_SRC_FILES
   orxonox.cc
-  orxonox_scene.cc
-  orxonox_ship.cc
-  run_manager.cc
   spaceship_steering.cc
-  inertial_node.cc
   main.cc
   graphicsEngine.cc
 )
@@ -60,7 +55,6 @@ TARGET_LINK_LIBRARIES( ../../bin/main
   core
   hud
   ${LINK_OBJECTS_LIBRARY}
-  weapon
   xml
   particle
 )
