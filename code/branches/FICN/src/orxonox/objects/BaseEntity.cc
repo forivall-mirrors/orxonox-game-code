@@ -29,18 +29,14 @@ namespace orxonox
         // save params
         name_ = xmlElem->Attribute("name");
         mesh_ = xmlElem->Attribute("src");
-        std::string node = xmlElem->Attribute("node");
+        node_ = xmlElem->Attribute("node");
 
-        // get the node
-        this->setNode(Orxonox::getSingleton()->getSceneManager()->getSceneNode(node));
-
-        
         // register variables to be synchronised
         registerAllVariables();
         valid=true;
         create();
 
-	    	std::cout << "Loader: Created entity "<< name_ <<" with source " << mesh_  << " at node " << node  << std::endl << std::endl;
+	    	std::cout << "Loader: Created entity "<< name_ <<" with source " << mesh_  << " at node " << node_  << std::endl << std::endl;
     	}
    }
    
@@ -48,11 +44,14 @@ namespace orxonox
      WorldEntity::registerAllVariables();
      registerVar(&name_, name_.length()+1, network::STRING);
      registerVar(&mesh_, mesh_.length()+1, network::STRING);
+     registerVar(&node_, node_.length()+1, network::STRING);
    }
    
    bool BaseEntity::create(){
      if(!valid)
        return false;
+     // get the node
+     this->setNode(Orxonox::getSingleton()->getSceneManager()->getSceneNode(node_));
      Ogre::SceneManager* mgr = orxonox::Orxonox::getSingleton()->getSceneManager();
      
      Ogre::Entity* entity = mgr->createEntity(name_, mesh_);

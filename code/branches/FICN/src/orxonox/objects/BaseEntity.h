@@ -21,8 +21,9 @@ namespace orxonox
     // membervariables to be synchronised
       std::string name_;
       std::string mesh_;
+      std::string node_;
     // other membervariables
-      Ogre::SceneNode *sceneNode_;
+      //Ogre::SceneNode *sceneNode_;
       bool valid;
   };
 }

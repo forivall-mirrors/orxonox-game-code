@@ -76,4 +76,13 @@ namespace orxonox
 	    	COUT(4) << "Loader: Created node "<< name <<" : "<<x<<" " << y << " " << z  << std::endl << std::endl;
     	}
    }
+   
+   void SceneNode::registerAllVariables(){
+     
+   }
+   
+   bool SceneNode::create(){
+     return true;
+   }
+   
 }

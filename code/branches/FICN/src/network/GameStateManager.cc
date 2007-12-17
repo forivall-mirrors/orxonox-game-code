@@ -81,6 +81,7 @@ GameState *GameStateManager::getSnapshot(int id)
 {
   //the size of the gamestate
   int totalsize=0;
+  int memsize=1000;
   //the size of one specific synchronisable
   int tempsize=0;
   // get the start of the Synchronisable list
@@ -92,7 +93,7 @@ GameState *GameStateManager::getSnapshot(int id)
   retval->id=id++;
   // reserve a little memory and increase it later on
   COUT(2) << "mallocing" << std::endl;
-  retval->data = (unsigned char*)malloc(1);
+  retval->data = (unsigned char*)malloc(memsize);
   COUT(2) << "malloced" << std::endl;
 
   // offset of memory functions
@@ -105,7 +106,10 @@ GameState *GameStateManager::getSnapshot(int id)
     // add place for data and 3 ints (length,classid,objectid)
     totalsize+=tempsize+3*sizeof(int);
     // allocate additional space
-    retval->data = (unsigned char *)realloc((void *)retval->data, totalsize);
+    if(totalsize+tempsize>memsize){
+      retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
+      memsize+=1000;
+    }
 
     // run Synchronisable::getData with offset and additional place for 3 ints in between (for ids and length)
     sync=it->getData(retval->data+offset+3*sizeof(int));
