@@ -45,17 +45,17 @@ namespace orxonox
     {
         RegisterObject(WorldEntity);
 
-        std::cout << "10_1\n";
+        std::cout << "WE: const: 1_1\n";
         if (Orxonox::getSingleton()->getSceneManager())
         {
-        std::cout << "10_2\n";
+        std::cout << "WE: const: 1_2\n";
             std::ostringstream name;
             name << (WorldEntity::worldEntityCounter_s++);
             this->setName("WorldEntity" + name.str());
-            //node_ = Orxonox::getSingleton()->getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
-            std::cout << "blubbbi: " << this->getName() << " .. " << this->node_ << std::endl;
+            node_ = Orxonox::getSingleton()->getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
+            std::cout << "WE: const: name: " << this->getName() << ", node: " << this->node_ << std::endl;
         }
-        std::cout << "10_3\n";
+        std::cout << "WE: const: 1_3\n";
 
         this->bStatic_ = true;
         this->velocity_ = Vector3(0, 0, 0);
@@ -83,18 +83,19 @@ namespace orxonox
 
     void WorldEntity::loadParams(TiXmlElement* xmlElem)
     {
+std::cout << "### START PARSING WE" << std::endl;
         BaseObject::loadParams(xmlElem);
 
-        std::cout << "1\n";
+        std::cout << "WE: 1\n";
     	if (xmlElem->Attribute("name"))
     	{
-        std::cout << "2\n";
+        std::cout << "WE: 2\n";
     		this->setName(xmlElem->Attribute("mesh"));
     	}
-        std::cout << "3\n";
+        std::cout << "WE: 3\n";
     	if (xmlElem->Attribute("position"))
     	{
-        std::cout << "4\n";
+        std::cout << "WE: 4\n";
 	    	std::vector<std::string> pos = tokenize(xmlElem->Attribute("position"),",");
 	    	float x, y, z;
     	 	String2Number<float>(x, pos[0]);
@@ -102,10 +103,10 @@ namespace orxonox
 	    	String2Number<float>(z, pos[2]);
 	    	this->setPosition(x, y, z);
     	}
-        std::cout << "5\n";
+        std::cout << "WE: 5\n";
     	if (xmlElem->Attribute("direction"))
     	{
-        std::cout << "6\n";
+        std::cout << "WE: 6\n";
 	    	std::vector<std::string> pos = tokenize(xmlElem->Attribute("direction"),",");
 	    	float x, y, z;
     	 	String2Number<float>(x, pos[0]);
@@ -113,16 +114,17 @@ namespace orxonox
 	    	String2Number<float>(z, pos[2]);
 	    	this->setDirection(x, y, z);
     	}
-        std::cout << "7\n";
+        std::cout << "WE: 7\n";
     	if (xmlElem->Attribute("scale"))
     	{
-        std::cout << "8\n";
+        std::cout << "WE: 8\n";
 		    std::string scaleStr = xmlElem->Attribute("scale");
 		    float scale;
 		    String2Number<float>(scale, scaleStr);
 		    this->setScale(scale);
     	}
-        std::cout << "9\n";
+        std::cout << "WE: 9\n";
+std::cout << "### FINISHED PARSING WE" << std::endl;
     }
 
     void WorldEntity::registerAllVariables()
