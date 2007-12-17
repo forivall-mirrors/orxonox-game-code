@@ -1,11 +1,5 @@
-//
-//
-//      TODO: testing orxonox -flocking interface
-//            testing algorithm
 
-// ueberpruefen ob vektoren relativ richtig berechnet werden
-//
-//My Flocking Class
+//Headerfile: Flocking.h
 
 #ifndef Flocking_Class
 #define Flocking_Class
@@ -13,12 +7,12 @@
 #include <Ogre.h>
 #include <OgreVector3.h>
 
+
 #include <iostream>
 
 
 #endif
 
-using namespace std;
 using namespace Ogre;
 
 class Element // An element that flocks
@@ -28,116 +22,113 @@ class Element // An element that flocks
     Vector3 location;  // locationvector of the element
     Vector3 speed;  // speedvector of the element
     Vector3 acceleration;  // accelerationvector of the element
+    bool movable;  // movability of the element, (false) gives the possiblity that an object can`t be moved by flocking but still gets into the calculation
+    static int const SEPERATIONDISTANCE = 300;  //detectionradius of seperation
+    static int const ALIGNMENTDISTANCE = 300;  //detectionradius of alignment
+    static int const COHESIONDISTANCE = 5000;  //detectionradius of cohesion
+    static int const ANZELEMENTS = 9;  //number of elements
 
+  //default constructor
   Element() {
     acceleration = (0,0,0);
     speed = (0,0,0);
     location = (0,0,0);
+    movable = true;
   }
 
-  Element(Vector3 location_, Vector3 speed_, Vector3 acceleration_) {
+  //constructor
+  Element(Vector3 location_, Vector3 speed_, Vector3 acceleration_, bool movable_) {
     acceleration = acceleration_;
     speed = speed_;
     location = location_;
+    movable = movable_;
   }
 
-  void setValues(Vector3 location_, Vector3 speed_, Vector3 acceleration_) {
+  //function to chance values of an element
+  void setValues(Vector3 location_, Vector3 speed_, Vector3 acceleration_, bool movable_) {
     acceleration = acceleration_;
     speed = speed_;
     location = location_;
+    movable = movable_;
   }
 
   //calculates the distance between the element and an other point given by temp
   float getDistance(Element temp) {
-    Vector3 distance = temp.location-location;  //this doesn't work
+    Vector3 distance = temp.location-location;
     return distance.length();
   }
 
-//EINF[GEN DES ELEMENTS
-  void update(Element arrayOfElements[], const FrameEvent& time) {
-    calculateAcceleration(arrayOfElements);  //updates the acceleration
-    calculateSpeed(time);  //updates the speed
-    calculateLocation(time);  //updates the location
+  //updates the data of an element
+  void update(Element arrayOfElements[]) {
+    if (this->movable == true) {calculateAcceleration(arrayOfElements);} //if element is movable, calculate acceleration
   }
 
-//EINF[GEN DES ELEMENTS
+  //calculates the new acceleration of an element
   void calculateAcceleration(Element arrayOfElements[]) {
-  //calculates the accelerationvector based on the steeringvectors of
-  //separtion, alignment and cohesion.
-  acceleration = separation(arrayOfElements) + alignment(arrayOfElements) + cohesion(arrayOfElements);
+    acceleration = separation(arrayOfElements) + alignment(arrayOfElements) + cohesion(arrayOfElements);  //acceleration consisting of flocking-functions
   }
 
-  void calculateSpeed(const FrameEvent& time) {
-    speed = speed + acceleration*time.timeSinceLastFrame;
-  }
-
-  void calculateLocation(const FrameEvent& time) {
-    location = location + speed*time.timeSinceLastFrame;
-  }
-
-
+  //separation-function (keep elements separated, avoid crashs)
   Vector3 separation(Element arrayOfElements[]) {
-    Vector3* steering = new Vector3(0,0,0); //steeringvector
+    Vector3 steering = Vector3(0,0,0); //steeringvector
+    Vector3 inverseDistance = Vector3(0,0,0);  //vector pointing away from possible collisions
     int numberOfNeighbour = 0;  //number of observed neighbours
-    //go through all elements
-    for(int i=0; i<3; i++) {  //just working with 3 elements at the moment
+    float distance = 0;  // distance to the actual element
+    for(int i=0; i<ANZELEMENTS; i++) {  //go through all elements
       Element actual = arrayOfElements[i];  //get the actual element
-      float distance = getDistance(actual);  //get distance between this and actual
-//DUMMY SEPERATION DETECTION DISTANCE =100
-      if ((distance > 0) && (distance<100)) {  //do only if actual is inside detectionradius
-        Vector3 inverseDistance = actual.location-location;  //calculate the distancevector heading towards this
-        inverseDistance = inverseDistance.normalise(); //does this work correctly?  //normalise the distancevector
-        inverseDistance = inverseDistance/*/distance*/;  //devide distancevector by distance (the closer the bigger gets the distancevector -> steeringvector)
-        *steering = *steering + inverseDistance;  //add up all significant steeringvectors
+      distance = getDistance(actual);  //get distance between this and actual
+      if ((distance > 0) && (distance < SEPERATIONDISTANCE)) {  //do only if actual is inside detectionradius
+        inverseDistance = (0,0,0);
+        inverseDistance = location-actual.location;  //calculate the distancevector heading towards this
+        //adaptation of the inverseDistance to the distance
+        if ((distance < 200) && (distance >= 120)) {inverseDistance = 2*inverseDistance;}
+        if ((distance < 120) && (distance >= 80)) {inverseDistance = 5*inverseDistance;}
+        if ((distance < 80) && (distance >= 40)) {inverseDistance = 10*inverseDistance;}
+        if ((distance < 40) && (distance > 0)) {inverseDistance = 10*inverseDistance;}
+        steering = steering + inverseDistance;  //add up all significant steeringvectors
         numberOfNeighbour++;  //counts the elements inside the detectionradius
       }
     }
-    if(numberOfNeighbour > 0) {
-    *steering = *steering / (float)numberOfNeighbour;  //devide the sum of steeringvectors by the number of elements -> separation steeringvector
-    }
-    return *steering;
+    if(numberOfNeighbour > 0) { steering = steering / (float)numberOfNeighbour; }  //devide the sum of steeringvectors by the number of elements -> separation steeringvector
+    return steering;
   }
 
+  //alignment-function (lead elements to the same heading)
   Vector3 alignment(Element arrayOfElements[]) {
-    Vector3* steering = new Vector3(0,0,0); //steeringvector
+    Vector3 steering = Vector3(0,0,0); //steeringvector
     int numberOfNeighbour = 0;  //number of observed neighbours
+    float distance = 0;
     //go through all elements
-    for(int i=0; i<3; i++) {  //just working with 3 elements at the moment
+    for(int i=0; i<ANZELEMENTS; i++) {  //just working with 3 elements at the moment
       Element actual = arrayOfElements[i];  //get the actual element
       float distance = getDistance(actual);  //get distance between this and actual
-//DUMMY ALIGNMENT DETECTION DISTANCE = 1000
-      if ((distance > 0) && (distance<1000)) {  //check if actual element is inside detectionradius
-        *steering = *steering + actual.speed;  //add up all speedvectors inside the detectionradius
+      if ((distance > 0) && (distance < ALIGNMENTDISTANCE)) {  //check if actual element is inside detectionradius
+        steering = steering + actual.speed;  //add up all speedvectors inside the detectionradius
         numberOfNeighbour++;  //counts the elements inside the detectionradius
       }
     }
-    if(numberOfNeighbour > 0) {
-    *steering = *steering / (float)numberOfNeighbour;  //devide the sum of steeringvectors by the number of elements -> alignment steeringvector
-    }
-    return *steering;
+    if(numberOfNeighbour > 0) { steering = steering / (float)numberOfNeighbour; }  //devide the sum of steeringvectors by the number of elements -> alignment steeringvector
+    return steering;
   }
 
+  //cohseion-function (keep elements close to each other)
   Vector3 cohesion(Element arrayOfElements[]) {
-    Vector3* steering = new Vector3(0,0,0); //steeringvector
+    Vector3 steering = Vector3(0,0,0); //steeringvector
     int numberOfNeighbour = 0;  //number of observed neighbours
+    float distance = 0;
     //go through all elements
-    for(int i=0; i<3; i++) {  //just working with 3 elements at the moment
+    for(int i=0; i<ANZELEMENTS; i++) {  //just working with 3 elements at the moment
       Element actual = arrayOfElements[i];  //get the actual element
       float distance = getDistance(actual);  //get distance between this and actual
-// DUMMY COHESION DETECTION DISTANCE = 1000
-      if ((distance > 0) && (distance<1000)) {  //check if actual element is inside detectionradius
-        *steering = *steering + actual.location;  //add up all locations of elements inside the detectionradius
+      if ((distance > 0) && (distance < COHESIONDISTANCE)) {  //check if actual element is inside detectionradius
+        steering = steering + actual.location;  //add up all locations of elements inside the detectionradius
         numberOfNeighbour++;  //counts the elements inside the detectionradius
       }
-     }
-    if(numberOfNeighbour > 0) {
-    *steering = *steering  / (float)numberOfNeighbour;  //devide the sum steeringvector by the number of elements -> cohesion steeringvector
     }
-    return *steering;
+    if(numberOfNeighbour > 0) {
+      steering = steering  / (float)numberOfNeighbour;  //devide the sum steeringvector by the number of elements -> cohesion steeringvector
+      steering = steering - this->location;  //transform the vector for the ship
+    }
+    return steering;
   }
- 
-};
-
-
-
-//End of My Flocking Class
+};     //End of class Element
