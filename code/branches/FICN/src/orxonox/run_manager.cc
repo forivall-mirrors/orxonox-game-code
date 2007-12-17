@@ -53,8 +53,9 @@
 #include "weapon/bullet_manager.h"
 #include "weapon/base_weapon.h"
 
-#include "hud/hud_overlay.h"
-#include "hud/test_overlay.h"
+//#include "hud/hud_overlay.h"
+//#include "hud/test_overlay.h"
+#include "hud/HUD.h"
 
 #include "run_manager.h"
 
@@ -141,8 +142,10 @@ namespace orxonox {
     createViewports();
 
     // create HUD
-    hud_ = new hud::TestOverlay(window_);
-    hud_->show();
+    //hud_ = new hud::TestOverlay(window_);
+    //hud_->show();
+    /*hud_ = new hud::HUD();
+    hud_->show();*/
 
 
     // Set default mipmap level (NB some APIs ignore this)
@@ -205,8 +208,8 @@ namespace orxonox {
       delete playerShip_;
     if (bulletManager_)
       delete bulletManager_;
-    if (hud_)
-      delete hud_;
+    /*if (hud_)
+      delete hud_;*/
   }
 
 
@@ -240,9 +243,9 @@ namespace orxonox {
       ->getMainWeapon()->getAmmoState())
       + " | Ammo stock = "
       + StringConverter::toString(playerShip_->getAmmoStock());
-    hud_->setDebugText(tempStr);
+    //hud_->setDebugText(tempStr);
 
-    hud_->tick(time, deltaTime);
+    //hud_->tick(time, deltaTime);
 
     // update the bullet positions
     bulletManager_->tick(time, deltaTime);
@@ -443,13 +446,13 @@ namespace orxonox {
   */
   void RunManager::showDebugOverlay(bool show)
   {
-    if (hud_)
+    /*if (hud_)
     {
       if (show)
         hud_->show();
       else
         hud_->hide();
-    }
+    }*/
   }
 
 

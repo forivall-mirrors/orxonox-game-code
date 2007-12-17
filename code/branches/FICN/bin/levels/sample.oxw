@@ -9,7 +9,7 @@
     <bar top="200" left="50" width="300" height="20" image="textures/load_screens/ambush-loadbar.png" />
   </loading>
 
-  <audio>
+  <!-- <audio>
 		<ambient>
 			<ogg src="allgorythm-lift_up" />
 			<ogg src="allgorythm-resonance_blaster" />
@@ -17,7 +17,7 @@
 			<ogg src="task_horizon_-_menu1" />
 			<ogg src="tha_silent_partner_-_void" />
 		</ambient>
-  </audio>
+  </audio> -->
 
   <!-- Keep a minimum distance of >100 to the object, otherwise the camara thinks it's in the object -->
   <!-- the value has to negative, as we want the camara behind the object -->

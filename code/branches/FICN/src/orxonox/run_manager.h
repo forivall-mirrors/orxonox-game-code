@@ -46,7 +46,7 @@ namespace orxonox {
   {
   public:
     virtual ~RunManager();
-    
+
     void initialise(OgreControl*);
 
     bool tick(unsigned long, Ogre::Real);
@@ -108,7 +108,8 @@ namespace orxonox {
 	  OgreControl  *ogre_;
 	  OrxonoxScene *backgroundScene_;
 	  OrxonoxShip  *playerShip_;
-    hud::TestOverlay *hud_;
+    //hud::TestOverlay *hud_;
+          //hud::HUD  *hud_;
 
     // Bullet manager
     weapon::BulletManager *bulletManager_;

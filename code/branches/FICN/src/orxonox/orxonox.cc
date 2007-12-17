@@ -64,6 +64,8 @@
 
 #include "particle/ParticleInterface.h"
 
+#include "hud/HUD.h"
+
 //network stuff
 #include "../network/Server.h"
 #include "../network/Client.h"
@@ -401,7 +403,7 @@ namespace orxonox
 
   void Orxonox::setupRenderSystem()
   {
-    if (/*!root_->restoreConfig() &&*/ !root_->showConfigDialog())
+    if (!root_->restoreConfig() && !root_->showConfigDialog())
       throw Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
   }
 
@@ -429,7 +431,20 @@ namespace orxonox
     loader_ = new loader::LevelLoader("sample.oxw");
     loader_->loadLevel();
 
-    auMan_->ambientStart();
+    Overlay* hudOverlay = OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
+    hud::HUD* orxonoxHud;
+    orxonoxHud = new hud::HUD();
+    orxonoxHud->setEnergyValue(20);
+    orxonoxHud->setEnergyDistr(20,20,60);
+    hudOverlay->show();
+
+
+	/*
+    auMan_->ambientAdd("a1");
+    auMan_->ambientAdd("a2");
+    auMan_->ambientAdd("a3");
+                                //auMan->ambientAdd("ambient1");
+    auMan_->ambientStart();*/
   }
 
 

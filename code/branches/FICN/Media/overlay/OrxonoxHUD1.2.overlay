@@ -31,17 +31,17 @@ Orxonox/HUD1.2
 		height 100
 		material Orxonox/MyShip
 		
-		container Panel(Orxonox/HUD1.2/ShildLeftTop)
+		container Panel(Orxonox/HUD1.2/shieldLeftTop)
 		{
 			metrics_mode pixels
 			left -5
 			top 0
 			width 30
 			height 30
-			material Orxonox/ShildLeftTop
+			material Orxonox/shieldLeftTop
 		}
 
-		container Panel(Orxonox/HUD1.2/ShildRightTop)
+		container Panel(Orxonox/HUD1.2/shieldRightTop)
 		{
 			metrics_mode pixels
 			horz_align right
@@ -49,10 +49,10 @@ Orxonox/HUD1.2
 			top 0
 			width 30
 			height 30
-			material Orxonox/ShildRightTop
+			material Orxonox/shieldRightTop
 		}
 
-		container Panel(Orxonox/HUD1.2/ShildLeftBottom)
+		container Panel(Orxonox/HUD1.2/shieldLeftBottom)
 		{
 			metrics_mode pixels
 			vert_align bottom
@@ -60,10 +60,10 @@ Orxonox/HUD1.2
 			top -30
 			width 30
 			height 30
-			material Orxonox/ShildLeftBottom
+			material Orxonox/shieldLeftBottom
 		}
 
-		container Panel(Orxonox/HUD1.2/ShildRightBottom)
+		container Panel(Orxonox/HUD1.2/shieldRightBottom)
 		{
 			metrics_mode pixels
 			vert_align bottom
@@ -72,7 +72,7 @@ Orxonox/HUD1.2
 			top -30
 			width 30
 			height 30
-			material Orxonox/ShildRightBottom
+			material Orxonox/shieldRightBottom
 		}
 		
 	}

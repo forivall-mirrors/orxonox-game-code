@@ -1,70 +1,404 @@
-material Orxonox/StarSkyBox
+
+
+material Orxonox/Shot
 {
 	technique
 	{
 		pass
 		{
 			lighting off
-			depth_write off
+			scene_blend alpha_blend
+			depth_check off
 
 			texture_unit
 			{
-				cubic_texture stars.jpg separateUV
-				tex_address_mode clamp
+				texture shot.png
 			}
 		}
 	}
 }
 
-material Orxonox/BlueStarSkyBox
+
+material Orxonox/Red
 {
 	technique
 	{
 		pass
 		{
 			lighting off
-			depth_write off
+			depth_check off
+			scene_blend 0.5 0.5
+			ambient 0 0 0 0.5
 
 			texture_unit
 			{
-				cubic_texture bluestar.png separateUV
-				tex_address_mode clamp
+				texture OrxonoxRED.png
 			}
 		}
 	}
 }
 
-material Orxonox/StarfieldSkyBox
+
+material Orxonox/Black
 {
 	technique
 	{
 		pass
 		{
 			lighting off
-			depth_write off
+			depth_check off
+			scene_blend 0.5 0.5
+			ambient 0 0 0 0.5
 
 			texture_unit
 			{
-				cubic_texture starfield.jpg separateUV
-				tex_address_mode clamp
+				texture OrxonoxBlack.png
 			}
 		}
 	}
 }
 
-material Orxonox/LoadingScreenSample
-{
-   technique
-   {
-      pass
-      {
-         
-         depth_writing off
 
-         texture_unit
-         {
-            texture sample_loading.jpg
-         }
-      }
-   }
-} 
+material Orxonox/BackGround
+{
+	technique
+	{
+		pass
+		{
+
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+			texture_unit
+			{
+				texture backGround.png
+			}
+		}
+	}
+}
+
+material Orxonox/EnergyBackground
+{
+	technique
+	{
+		pass
+		{
+
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+			texture_unit
+			{
+				texture EnergyBackground.png
+			}
+		}
+	}
+}
+
+material Orxonox/Clock
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture clock.png
+			}
+		}
+	}
+}
+
+material Orxonox/Gun
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture gun.png
+			}
+		}
+	}
+}
+
+material Orxonox/Man
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture man.png
+			}
+		}
+	}
+}
+
+material Orxonox/MapBackGround
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture MapBackGround.png
+			}
+		}
+	}
+}
+
+material Orxonox/MyShip
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture MyShip.png
+			}
+		}
+	}
+}
+
+material Orxonox/RacketBackground
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture RacketBackground.png
+			}
+		}
+	}
+}
+
+
+material Orxonox/TargetBackground
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture TargetBackground.png
+			}
+		}
+	}
+}
+
+material Orxonox/PrimarBackground
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture PrimarBackground.png
+			}
+		}
+	}
+}
+
+material Orxonox/PrimarSample
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture PrimarSample.png
+			}
+		}
+	}
+}
+
+material Orxonox/PrimarChoice
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture PrimarChoice.png
+			}
+		}
+	}
+}
+
+material Orxonox/RedPoint
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture RedPoint.png
+			}
+		}
+	}
+}
+
+material Orxonox/EnergyDistrBackground
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture EnergyDistrBackground.png
+			}
+		}
+	}
+}
+
+material Orxonox/shieldLeftTop
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture ShieldLeftTop.png
+			}
+		}
+	}
+}
+
+material Orxonox/shieldRightTop
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture ShieldRightTop.png
+			}
+		}
+	}
+}
+
+material Orxonox/shieldLeftBottom
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture ShieldLeftBottom.png
+			}
+		}
+	}
+}
+
+material Orxonox/shieldRightBottom
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture ShieldRightBottom.png
+			}
+		}
+	}
+}
+
+material Orxonox/TimeBackground
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture TimeBackground.png
+			}
+		}
+	}
+}
+
