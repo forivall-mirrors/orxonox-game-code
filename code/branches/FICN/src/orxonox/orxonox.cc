@@ -86,12 +86,12 @@ namespace orxonox
   class OrxListener : public FrameListener, public OIS::MouseListener
   {
     public:
-      OrxListener(OIS::Keyboard *keyboard, OIS::Mouse *mouse, audio::AudioManager*  auMan, SpaceshipSteering* steering)
+      OrxListener(OIS::Keyboard *keyboard, OIS::Mouse *mouse, audio::AudioManager*  auMan, SpaceshipSteering* steering, gameMode mode)
       : mKeyboard(keyboard), mMouse(mouse)
       {
 
 
-
+        mode_=mode;
         speed = 250;
         loop = 100;
         rotate = 10;
@@ -161,6 +161,8 @@ namespace orxonox
 //      scenemanager->spacehip->tick(evt.timesincelastframe);
         //if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
           //cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
+        if(mode_==SERVER)
+	  server_g->tick(evt.timeSinceLastFrame);
         usleep(10);
         return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
       }
@@ -180,6 +182,7 @@ namespace orxonox
       bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
 
     private:
+      gameMode mode_;
       float speed;
       float rotate;
       float loop;
@@ -275,6 +278,8 @@ namespace orxonox
     Factory::createClassHierarchy();
     switch(mode_){
     case PRESENTATION:
+      //ogre_->getRoot()->addFrameListener(new network::ServerFrameListener());
+      //std::cout << "could not add framelistener" << std::endl;
       server_g->open();
       break;
     case CLIENT:
@@ -368,7 +373,6 @@ namespace orxonox
     server_g = new network::Server(); // add some settings if wanted
     if(!ogre_->load()) die(/* unable to load */);
     // add network framelistener
-    ogre_->getRoot()->addFrameListener(new network::ServerFrameListener());
   }
 
   void Orxonox::clientInit(std::string path)
@@ -535,7 +539,7 @@ namespace orxonox
     ogre_->getRoot()->addFrameListener(TimerFL);
 
     //if(mode_!=CLIENT) // just a hack ------- remove this in future
-      frameListener_ = new OrxListener(keyboard_, mouse_, auMan_, steering_);
+      frameListener_ = new OrxListener(keyboard_, mouse_, auMan_, steering_, mode_);
     ogre_->getRoot()->addFrameListener(frameListener_);
   }
 

@@ -180,7 +180,7 @@ namespace network{
   void Client::tick(float time){
     ENetPacket *packet;
     // stop if the packet queue is empty
-    while(!client_connection.queueEmpty()){
+    while(!(client_connection.queueEmpty())){
       packet = client_connection.getPacket();
       elaborate(packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
     }

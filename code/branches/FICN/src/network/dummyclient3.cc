@@ -33,7 +33,7 @@ void sender(){
           std::cout << "your message: ";
           std::getline( std::cin, str );
           client.sendChat( str );
-          std::cout << "send message" << std::endl;
+          std::cout << "sent message" << std::endl;
   }
 
 
@@ -41,7 +41,7 @@ void sender(){
 }
 
 void listener(){
-
+	
   const int PORT = 55556;
   std::cout << "Enter address of the server xxx.xxx.xxx.xxx (enter for localhost)" << std::endl;
   std::string str;

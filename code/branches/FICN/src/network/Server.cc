@@ -85,10 +85,14 @@ namespace network{
    */
   bool Server::sendMSG(const char *msg){
     ENetPacket *packet = packet_gen.chatMessage(msg);
-    //std::cout <<"adding packets" << std::endl;
+    std::cout <<"adding PPPPPackets" << std::endl;
     connection->addPacketAll(packet);
     //std::cout <<"added packets" << std::endl;
-    return connection->sendPackets();
+    if (connection->sendPackets()){
+	std::cout << "SSSSSucessfully" << std::endl;
+	return true;
+    }
+    return false;
   }
   
   /**
