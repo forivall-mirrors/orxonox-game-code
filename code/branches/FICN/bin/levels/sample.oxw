@@ -10,6 +10,13 @@
   </loading>
 
   <audio>
+		<ambient>
+			<ogg src="allgorythm-lift_up" />
+			<ogg src="allgorythm-resonance_blaster" />
+			<ogg src="luke_grey_-_hypermode" />
+			<ogg src="task_horizon_-_menu1" />
+			<ogg src="tha_silent_partner_-_void" />
+		</ambient>
   </audio>
 
   <!-- Keep a minimum distance of >100 to the object, otherwise the camara thinks it's in the object -->
