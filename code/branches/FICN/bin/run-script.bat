@@ -1,4 +1,4 @@
-cd ..\..\ogre\Samples\Common\bin\Release
-..\..\..\..\..\trunk\bin\main.exe
-cd ..\..\..\..\..\trunk\bin
+cd ..\..\libs\ogre\Samples\Common\bin\Release
+..\..\..\..\..\..\FICN\bin\main.exe
+cd ..\..\..\..\..\..\FICN\bin
 pause
