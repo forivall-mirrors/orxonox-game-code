@@ -22,6 +22,9 @@ namespace orxonox
       inline Ogre::SceneNode* getNode()
           { return this->node_; }
 
+      inline void setNode(Ogre::SceneNode* node)
+          { this->node_ = node; }
+
       inline void setPosition(const Vector3& pos)
           { this->node_->setPosition(pos); }
       inline void setPosition(Real x, Real y, Real z)

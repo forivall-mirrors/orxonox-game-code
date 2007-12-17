@@ -30,6 +30,10 @@ namespace orxonox
         name_ = xmlElem->Attribute("name");
         mesh_ = xmlElem->Attribute("src");
         std::string node = xmlElem->Attribute("node");
+
+        // get the node
+        this->setNode(Orxonox::getSingleton()->getSceneManager()->getSceneNode(node));
+
         
         // register variables to be synchronised
         registerAllVariables();
@@ -53,8 +57,8 @@ namespace orxonox
      
      Ogre::Entity* entity = mgr->createEntity(name_, mesh_);
      
-     Ogre::MovableObject *ent = (Ogre::MovableObject *)entity;
-     getNode()->attachObject(ent); // big problem here: sigsegv
+     //Ogre::MovableObject *ent = (Ogre::MovableObject *)entity;
+     getNode()->attachObject(entity); // big problem here: sigsegv
      return true;
    }
 }
