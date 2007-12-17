@@ -31,10 +31,10 @@
 
 
     <SceneNode name="ShipNode" pos="0,0,0" node="OgreHeadNode" scale="10,10,10" yaw="-90" pitch="-90" />
-    <BaseEntity name="TheShip" src="assf2.mesh" node="ShipNode" />
+    <BaseEntity name="TheShip" src="assf3.mesh" node="ShipNode" />
 
-    <Model position="200,0,500" scale="10" mesh="assf2.mesh" yaw="-90" pitch="-90" />
-    <Model position="-200,0,500" scale="10" mesh="assf2.mesh" yaw="-90" pitch="-90" />
+    <Model position="200,0,500" scale="10" mesh="assf3.mesh" yaw="-90" pitch="-90" />
+    <Model position="-200,0,500" scale="10" mesh="assf3.mesh" yaw="-90" pitch="-90" />
 
     <Model position="0,2000,0" scale="40" mesh="ast1.mesh" />
     <Model position="2000,0,0" scale="20" mesh="ast2.mesh" />
