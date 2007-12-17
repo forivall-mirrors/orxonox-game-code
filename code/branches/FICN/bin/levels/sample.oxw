@@ -37,30 +37,13 @@
     <SceneNode name="ShipNode3" pos="-200,0,500" scale="10,10,10" yaw="-90" pitch="-90" />
     <BaseEntity name="TheShip3" src="assf2.mesh" node="ShipNode3" />
 
-
-    <SceneNode name="node1" pos="0,2000,0"  scale="40,40,40" />
-    <BaseEntity name="asteroid1" src="ast1.mesh" node="node1" />
-
-    <SceneNode name="node2" pos="2000,0,0" scale="20,20,20"/>
-    <BaseEntity name="asteroid2" src="ast2.mesh" node="node2" />
-
-
-    <SceneNode name="node3" pos="0,0,2000" scale="20,20,20"/>
-    <BaseEntity name="aststeroid3" src="ast3.mesh" node="node3"/>
-
-    <SceneNode name="node4" pos="0,-2000,0" scale="20,20,20"/>
-    <BaseEntity name="asteroid4" src="ast4.mesh" node="node4" />
-
-    <SceneNode name="node5" pos="-2000,0,0" scale="20,20,20"/>
-    <BaseEntity name="asteroid5" src="ast5.mesh" node="node5" />
-
-    <SceneNode name="node6" pos="0,0,-2000" scale="20,20,20"/>
-    <BaseEntity name="asteroid6" src="ast6.mesh" node="node6" />
-
-    <SceneNode name="node7" pos="1000,1500,0"  scale="50,50,50" />
-    <Entity name="asteroid7" src="ast1.mesh" node="node7" />
-
-
+    <Model position="0,2000,0" scale="40" mesh="ast1.mesh" />
+    <Model position="2000,0,0" scale="20" mesh="ast2.mesh" />
+    <Model position="0,0,2000" scale="20" mesh="ast3.mesh" />
+    <Model position="0,-2000,0" scale="20" mesh="ast4.mesh" />
+    <Model position="-2000,0,0" scale="20" mesh="ast5.mesh" />
+    <Model position="0,0,-2000" scale="20" mesh="ast6.mesh" />
+    <Model position="1000,1500,0" scale="50" mesh="ast1.mesh" />
 
   </world>
 
