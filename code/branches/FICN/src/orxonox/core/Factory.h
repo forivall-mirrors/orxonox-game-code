@@ -37,21 +37,14 @@ namespace orxonox
             static void changeNetworkID(Identifier* identifier, const unsigned int oldID, const unsigned int newID);
             static void createClassHierarchy();
 
+            static Factory* getFactoryPointer();// avoid overriding pointer_s in the static intialisation process
+
         private:
             Factory() {}                            // don't create
             Factory(const Factory& factory) {}      // don't copy
             ~Factory() {}                           // don't delete
+            static void checkPointer();
 
-            /**
-                @brief Checks if the pointer to the only Factory-object exists and creates it, if not.
-            */
-            inline static void checkPointer()
-            {
-                if (!pointer_s)
-                    pointer_s = new Factory;
-            }
-
-            static Factory* pointer_s;                                          //!< The pointer to the singleton
             std::map<std::string, Identifier*> identifierStringMap_;            //!< The map, mapping the name with the Identifier
             std::map<unsigned int, Identifier*> identifierNetworkIDMap_;        //!< The map, mapping the network ID with the Identifier
     };

@@ -33,6 +33,8 @@
 #if defined( __WIN32__ ) || defined( _WIN32 )
   #ifdef LOADER_BUILD
     #define _LoaderExport __declspec( dllexport )
+  #elif defined(LOADER_STATIC)
+    #define _LoaderExport
   #else
     #define _LoaderExport __declspec( dllimport )
   #endif

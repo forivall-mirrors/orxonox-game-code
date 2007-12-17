@@ -37,17 +37,13 @@
 
 namespace orxonox
 {
-    Factory* Factory::pointer_s = NULL; // Set the static member variable pointer_s to zero
-
     /**
         @returns the Identifier with a given name.
         @param name The name of the wanted Identifier
     */
     Identifier* Factory::getIdentifier(const std::string& name)
     {
-        Factory::checkPointer();
-
-        return pointer_s->identifierStringMap_[name];
+        return getFactoryPointer()->identifierStringMap_[name];
     }
 
     /**
@@ -56,9 +52,7 @@ namespace orxonox
     */
     Identifier* Factory::getIdentifier(const unsigned int id)
     {
-        Factory::checkPointer();
-
-        return pointer_s->identifierNetworkIDMap_[id];
+        return getFactoryPointer()->identifierNetworkIDMap_[id];
     }
 
     /**
@@ -68,10 +62,8 @@ namespace orxonox
     */
     void Factory::add(const std::string& name, Identifier* identifier)
     {
-        Factory::checkPointer();
-
-        pointer_s->identifierStringMap_[name] = identifier;
-        pointer_s->identifierNetworkIDMap_[identifier->getNetworkID()] = identifier;
+        getFactoryPointer()->identifierStringMap_[name] = identifier;
+        getFactoryPointer()->identifierNetworkIDMap_[identifier->getNetworkID()] = identifier;
     }
 
     /**
@@ -82,10 +74,8 @@ namespace orxonox
     */
     void Factory::changeNetworkID(Identifier* identifier, const unsigned int oldID, const unsigned int newID)
     {
-        Factory::checkPointer();
-
-        pointer_s->identifierNetworkIDMap_.erase(oldID);
-        pointer_s->identifierNetworkIDMap_[newID] = identifier;
+        getFactoryPointer()->identifierNetworkIDMap_.erase(oldID);
+        getFactoryPointer()->identifierNetworkIDMap_[newID] = identifier;
     }
 
     /**
@@ -93,19 +83,26 @@ namespace orxonox
     */
     void Factory::createClassHierarchy()
     {
-        Factory::checkPointer();
-
         COUT(4) << "*** Factory -> Create class-hierarchy\n";
         std::map<std::string, Identifier*>::iterator it;
-        it = pointer_s->identifierStringMap_.begin();
-        (*pointer_s->identifierStringMap_.begin()).second->startCreatingHierarchy();
-        for (it = pointer_s->identifierStringMap_.begin(); it != pointer_s->identifierStringMap_.end(); ++it)
+        it = getFactoryPointer()->identifierStringMap_.begin();
+        (*getFactoryPointer()->identifierStringMap_.begin()).second->startCreatingHierarchy();
+        for (it = getFactoryPointer()->identifierStringMap_.begin(); it != getFactoryPointer()->identifierStringMap_.end(); ++it)
         {
             // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
             BaseObject* temp = (*it).second->fabricate();
             delete temp;
         }
-        (*pointer_s->identifierStringMap_.begin()).second->stopCreatingHierarchy();
+        (*getFactoryPointer()->identifierStringMap_.begin()).second->stopCreatingHierarchy();
         COUT(4) << "*** Factory -> Finished class-hierarchy creation\n";
+    }
+
+    /**
+        @brief blubb
+    */
+    Factory* Factory::getFactoryPointer()
+    {
+      static Factory theOneAndOnlyInstance = Factory();
+      return &theOneAndOnlyInstance;
     }
 }
