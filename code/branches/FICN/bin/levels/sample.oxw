@@ -27,16 +27,24 @@
 
 		<BaseEntity name="ASSF" src="assf2.mesh" node="OgreHeadNode" />
 
-		<SceneNode name="Ogre1" pos="0,200,0" />
-		<Entity name="head1" src="ogrehead.mesh" node="Ogre1" />
 
-		<SceneNode name="Ogre2" pos="200,0,0" />
-		<Entity name="head2" src="ogrehead.mesh" node="Ogre2" />
+    <SceneNode name="node1" pos="0,200,0" />
+    <Entity name="asteroid1" src="ast1.mesh" node="node1" />
 
-		<SceneNode name="Ogre3" pos="0,0,200" />
-		<Entity name="head3" src="ogrehead.mesh" node="Ogre3" />
+    <SceneNode name="node2" pos="200,0,0" />
+    <Entity name="asteroid2" src="ast2.mesh" node="node2" />
 
+    <SceneNode name="node3" pos="0,0,200" />
+    <Entity name="aststeroid3" src="ast3.mesh" node="node3" />
 
+    <SceneNode name="node4" pos="0,-200,0" />
+    <Entity name="asteroid4" src="ast4.mesh" node="node4" />
+
+    <SceneNode name="node5" pos="-200,0,0" />
+    <Entity name="asteroid5" src="ast5.mesh" node="node5" />
+
+    <SceneNode name="node6" pos="0,0,-200" />
+    <Entity name="asteroid6" src="ast6.mesh" node="node6" />
 	</world>
 
 <!-- Unused at the moment -->
