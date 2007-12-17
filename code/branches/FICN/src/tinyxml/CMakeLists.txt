@@ -3,10 +3,15 @@ PROJECT(Orxonox)
 INCLUDE_DIRECTORIES(.)
 
 SET (SRC_FILES
-tinystr.cc
-tinyxml.cc
-tinyxmlerror.cc
-tinyxmlparser
+  tinystr.cc
+  tinyxml.cc
+  tinyxmlerror.cc
+  tinyxmlparser
 )
 
-ADD_LIBRARY(xml SHARED ${SRC_FILES})
+IF(WIN32)
+  ADD_LIBRARY(xml ${SRC_FILES})
+ELSE(WIN32)
+  ADD_LIBRARY(xml SHARED ${SRC_FILES})
+ENDIF(WIN32)
+

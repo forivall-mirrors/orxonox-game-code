@@ -33,12 +33,17 @@ IF(WIN32)
     objects/Entity.cc
     objects/Camera.cc
     objects/SpaceshipSteeringObject.cc
+    objects/Model.cc
   )
 ELSE(WIN32)
   SET(LINK_OBJECTS_LIBRARY objects)
 ENDIF(WIN32)
 
-ADD_LIBRARY(orxonox SHARED ${ORXONOX_SRC_FILES})
+IF(WIN32)
+  ADD_LIBRARY(orxonox ${ORXONOX_SRC_FILES})
+ELSE(WIN32)
+  ADD_LIBRARY(orxonox SHARED ${ORXONOX_SRC_FILES})
+ENDIF(WIN32)
 
 ADD_EXECUTABLE(../../bin/main ${ORXONOX_SRC_FILES} ${OBJECTS_SRC_FILES})
 

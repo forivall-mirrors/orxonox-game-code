@@ -4,4 +4,8 @@ SET(SRC_FILES
   ParticleInterface.cc
 )
 
-ADD_LIBRARY(particle SHARED ${SRC_FILES})
+IF(WIN32)
+  ADD_LIBRARY(particle ${SRC_FILES})
+ELSE(WIN32)
+  ADD_LIBRARY(particle SHARED ${SRC_FILES})
+ENDIF(WIN32)

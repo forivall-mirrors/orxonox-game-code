@@ -12,6 +12,7 @@ SET( OBJECTS_SRC_FILES
   Entity.cc
   Camera.cc
   SpaceshipSteeringObject.cc
+  Model.cc
 )
 
 ADD_LIBRARY(objects SHARED ${OBJECTS_SRC_FILES})
