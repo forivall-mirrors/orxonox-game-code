@@ -6,6 +6,7 @@
 #include "../core/CoreIncludes.h"
 #include "OgreSceneManager.h"
 #include "OgreSceneNode.h"
+#include "Mesh.h"
 #include "network/Synchronisable.h"
 
 namespace orxonox
@@ -44,24 +45,40 @@ namespace orxonox
       inline void roll(const Radian &angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
           { this->node_->roll(angle, relativeTo); }
 
-
       inline void rotate(const Vector3 &axis, const Radian &angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
-          { this->node_->rotate(axis, angle, relativeTo); }
+        { this->node_->rotate(axis, angle, relativeTo); }
       inline void setDirection(Real x, Real y, Real z, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
-          { this->node_->setDirection(x, y, z, relativeTo, localDirectionVector); }
+        { this->node_->setDirection(x, y, z, relativeTo, localDirectionVector); }
       inline void setDirection(const Vector3 &vec, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
-          { this->node_->setDirection(vec, relativeTo, localDirectionVector); }
+        { this->node_->setDirection(vec, relativeTo, localDirectionVector); }
       inline void setOrientation(const Ogre::Quaternion quat)
-          { this->node_->setOrientation(quat); }
+        { this->node_->setOrientation(quat); }
       inline void lookAt(const Vector3 &targetPoint, Ogre::Node::TransformSpace relativeTo, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
-          { this->node_->lookAt(targetPoint, relativeTo, localDirectionVector); }
+        { this->node_->lookAt(targetPoint, relativeTo, localDirectionVector); }
+
+      inline void setScale(const Vector3 &scale)
+        { this->node_->setScale(scale); }
+      inline void setScale(Real x, Real y, Real z)
+        { this->node_->setScale(x, y, z); }
+      inline void setScale(Real scale)
+        { this->node_->setScale(scale, scale, scale); }
+      inline const Vector3& getScale(void) const
+        { return this->node_->getScale(); }
+      inline void scale(const Vector3 &scale)
+        { this->node_->scale(scale); }
+      inline void scale(Real x, Real y, Real z)
+        { this->node_->scale(x, y, z); }
+      inline void scale(Real scale)
+        { this->node_->scale(scale, scale, scale); }
 
       inline void attachObject(Ogre::MovableObject *obj)
-          { this->node_->attachObject(obj); }
+        { std::cout << "gux_1" << this->node_ << "\n"; this->node_->attachObject(obj); std::cout << "gux_2\n"; }
+      inline void attachObject(Mesh &mesh)
+        { std::cout << "gux_3" << this->node_ << "\n"; this->node_->attachObject((Ogre::MovableObject*)(mesh.getEntity())); std::cout << "gux_4\n"; }
       inline void detachObject(Ogre::MovableObject *obj)
-          { this->node_->detachObject(obj); }
+        { this->node_->detachObject(obj); }
       inline void detachAllObjects()
-          { this->node_->detachAllObjects(); }
+        { this->node_->detachAllObjects(); }
 
       inline void setVelocity(const Vector3& velocity)
           { this->velocity_ = velocity; }
@@ -99,10 +116,10 @@ namespace orxonox
           { return this->momentum_; }
       inline const Ogre::Quaternion& getOrientation()
           { return this->node_->getOrientation(); }
-      
+
     protected:
       void registerAllVariables();
-      
+
     private:
       Ogre::SceneNode* node_;
       static unsigned int worldEntityCounter_s;

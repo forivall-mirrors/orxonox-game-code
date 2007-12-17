@@ -42,13 +42,17 @@ namespace orxonox
     {
         RegisterObject(WorldEntity);
 
+        std::cout << "10_1\n";
         if (Orxonox::getSingleton()->getSceneManager())
         {
+        std::cout << "10_2\n";
             std::ostringstream name;
             name << (WorldEntity::worldEntityCounter_s++);
             this->setName("WorldEntity" + name.str());
             node_ = Orxonox::getSingleton()->getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
+            std::cout << "blubbbi: " << this->getName() << " .. " << this->node_ << std::endl;
         }
+        std::cout << "10_3\n";
 
         this->bStatic_ = true;
         this->velocity_ = Vector3(0, 0, 0);

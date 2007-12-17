@@ -69,6 +69,12 @@
 #include "../network/Client.h"
 #include "../network/NetworkFrameListener.h"
 
+#ifdef WIN32
+#include <windows.h>
+#define usleep(x) Sleep((x)/1000)
+#else
+#include <unistd.h>
+#endif
 
 namespace orxonox
 {
@@ -338,11 +344,11 @@ namespace orxonox
     }
     startRenderLoop();
   }
-  
+
   void Orxonox::standalone(){
-    
-    
-    
+
+
+
   }
 
   void Orxonox::serverInit(std::string path)
