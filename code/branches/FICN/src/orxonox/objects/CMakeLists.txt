@@ -15,6 +15,7 @@ SET( OBJECTS_SRC_FILES
   SpaceshipSteeringObject.cc
   Model.cc
   Mesh.cc
+  NPC.cc
 )
 
 ADD_LIBRARY(objects SHARED ${OBJECTS_SRC_FILES})
