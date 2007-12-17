@@ -58,42 +58,42 @@ void Synchronisable::registerVar(const void *var, int size, variableType t){
  * varx: size = varx_size
  * @return data containing all variables and their sizes
  */
-syncData Synchronisable::getData(){
-  std::list<synchronisableVariable>::iterator i;
-  int totalsize=0;
-  //figure out size of data to be allocated
-  for(i=syncList.begin(); i!=syncList.end(); i++){
-    // increase size (size of variable and size of size of variable ;)
-    if(i->type == STRING)
-      totalsize+=sizeof(int)+((std::string *)i->var)->length()+1;
-    else
-      totalsize+=sizeof(int)+i->size;
-  }
-  syncData retVal;
-  retVal.objectID=this->objectID;
-  retVal.classID=this->classID;
-  retVal.length=totalsize;
-  // allocate memory
-  retVal.data = (unsigned char *)malloc(totalsize);
-  // copy to location
-  //CHANGED: REMOVED DECLARATION int n=0 FROM LOOP
-  int n=0;
-  for(i=syncList.begin(); n<totalsize && i!=syncList.end(); i++){
-    std::memcpy(retVal.data+n, (const void*)(i->size), sizeof(int));
-    n+=sizeof(int);
-    switch(i->type){
-    case STRING:
-      std::memcpy(retVal.data+n, (const void *)(((std::string *)i->var)->c_str()), ((std::string *)i->var)->length()+1);
-      n+=((std::string *)i->var)->length()+1;
-      break;
-    case DATA:
-      std::memcpy(retVal.data+n, ((const void*)i->var), i->size);
-      n+=i->size;
-      break;
-    }
-  }
-  return retVal;
-}
+// syncData Synchronisable::getData(){
+//   std::list<synchronisableVariable>::iterator i;
+//   int totalsize=0;
+//   //figure out size of data to be allocated
+//   for(i=syncList.begin(); i!=syncList.end(); i++){
+//     // increase size (size of variable and size of size of variable ;)
+//     if(i->type == STRING)
+//       totalsize+=sizeof(int)+((std::string *)i->var)->length()+1;
+//     else
+//       totalsize+=sizeof(int)+i->size;
+//   }
+//   syncData retVal;
+//   retVal.objectID=this->objectID;
+//   retVal.classID=this->classID;
+//   retVal.length=totalsize;
+//   // allocate memory
+//   retVal.data = (unsigned char *)malloc(totalsize);
+//   // copy to location
+//   //CHANGED: REMOVED DECLARATION int n=0 FROM LOOP
+//   int n=0;
+//   for(i=syncList.begin(); n<totalsize && i!=syncList.end(); i++){
+//     std::memcpy(retVal.data+n, (const void*)(i->size), sizeof(int));
+//     n+=sizeof(int);
+//     switch(i->type){
+//     case STRING:
+//       std::memcpy(retVal.data+n, (const void *)(((std::string *)i->var)->c_str()), ((std::string *)i->var)->length()+1);
+//       n+=((std::string *)i->var)->length()+1;
+//       break;
+//     case DATA:
+//       std::memcpy(retVal.data+n, ((const void*)i->var), i->size);
+//       n+=i->size;
+//       break;
+//     }
+//   }
+//   return retVal;
+// }
 /**
  * This function takes all SynchronisableVariables out of the Synchronisable and saves it into a syncData struct
  * Difference to the above function:
@@ -113,10 +113,11 @@ syncData Synchronisable::getData(unsigned char *mem){
   retVal.data=mem;
   // copy to location
   int n=0;
-  for(i=syncList.begin(); n<datasize && i!=syncList.end(); i++){
+  for(i=syncList.begin(); n<datasize && i!=syncList.end(); ++i){
     //COUT(2) << "size of variable: " << i->size << std::endl;
     //COUT(2) << "size of variable: " << i->size << std::endl;
-    std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
+    //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
+    *((int *)(retVal.data+n)) = i->size;
     n+=sizeof(int);
     switch(i->type){
       case DATA:
@@ -124,7 +125,7 @@ syncData Synchronisable::getData(unsigned char *mem){
         n+=i->size;
         break;
       case STRING:
-        std::memcpy(retVal.data+n, (const void*)(((std::string *)i->var)->c_str()), ((std::string *)i->var)->length()+1);
+        std::memcpy( retVal.data+n, (const void*)( ( (std::string *) i->var)->c_str()), ( (std::string *)i->var )->length()+1);
         n+=((std::string *) i->var)->length()+1;
         break;
     }

@@ -163,6 +163,7 @@ GameState GameStateManager::diff(GameState *a, GameState *b){
 }
 
 GameStateCompressed GameStateManager::compress_(GameState *a) {
+  COUT(2) << "compressing gamestate" << std::endl;
   int size = a->size;
   uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
   unsigned char* dest = (unsigned char*)malloc( buffer );

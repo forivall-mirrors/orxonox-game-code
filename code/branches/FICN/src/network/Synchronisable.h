@@ -53,7 +53,7 @@ public:
   int classID;
     
   void registerVar(const void *var, int size, variableType t);
-  syncData getData();
+//  syncData getData();
   syncData getData(unsigned char *mem);
   int getSize();
   bool updateData(syncData vars);
