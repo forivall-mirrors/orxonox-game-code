@@ -22,7 +22,8 @@ namespace orxonox
           float x_, y_, z_;
           float sx_, sy_, sz_;
           float yaw_, pitch_, roll_;
-          std::string node_;
+          std::string name_;
+          std::string nodeName_;
 
     };
 }

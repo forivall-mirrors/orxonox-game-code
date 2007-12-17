@@ -225,33 +225,34 @@ namespace orxonox
     //TODO: read config file
     //TODO: give config file to Ogre
     std::string mode;
-    if(argc>=2)
-      mode = std::string(argv[1]);
-    else
-      mode = "";
+//     if(argc>=2)
+//       mode = std::string(argv[1]);
+//     else
+//       mode = "";
     ArgReader ar = ArgReader(argc, argv);
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", this->dataPath_, false);
+    ar.checkArgument("ip", serverIp_, false);
     if(ar.errorHandling()) die();
 
     if(mode == std::string("server"))
     {
       serverInit(path);
-      mode = SERVER;
+      mode_ = SERVER;
     }
     else if(mode == std::string("client"))
     {
       clientInit(path);
-      mode = CLIENT;
+      mode_ = CLIENT;
     }
     else if(mode == std::string("presentation"))
     {
       serverInit(path);
-      mode = PRESENTATION;
+      mode_ = PRESENTATION;
     }
     else{
       standaloneInit(path);
-      mode = STANDALONE;
+      mode_ = STANDALONE;
     }
   }
 
@@ -266,14 +267,20 @@ namespace orxonox
     createScene();
     setupScene();
     setupInputSystem();
+    if(mode_!=CLIENT){ // remove this in future ---- presentation hack
+    }
+    else
+      std::cout << "client here" << std::endl;
     createFrameListener();
     Factory::createClassHierarchy();
     switch(mode_){
     case PRESENTATION:
       server_g->open();
       break;
-    case SERVER:
     case CLIENT:
+      client_g->establishConnection();
+      break;
+    case SERVER:
     case STANDALONE:
     default:
       break;
@@ -355,6 +362,7 @@ namespace orxonox
 
   void Orxonox::serverInit(std::string path)
   {
+    COUT(2) << "initialising server" << std::endl;
     ogre_->setConfigPath(path);
     ogre_->setup();
     server_g = new network::Server(); // add some settings if wanted
@@ -365,9 +373,13 @@ namespace orxonox
 
   void Orxonox::clientInit(std::string path)
   {
+    COUT(2) << "initialising client" << std::endl;
     ogre_->setConfigPath(path);
     ogre_->setup();
-    client_g = new network::Client(); // address here
+    if(serverIp_.compare("")==0)
+      client_g = new network::Client();
+    else
+      client_g = new network::Client(serverIp_, 55556);
     if(!ogre_->load()) die(/* unable to load */);
     ogre_->getRoot()->addFrameListener(new network::ClientFrameListener());
   }
@@ -522,7 +534,8 @@ namespace orxonox
     TimerFrameListener* TimerFL = new TimerFrameListener();
     ogre_->getRoot()->addFrameListener(TimerFL);
 
-    frameListener_ = new OrxListener(keyboard_, mouse_, auMan_, steering_);
+    //if(mode_!=CLIENT) // just a hack ------- remove this in future
+      frameListener_ = new OrxListener(keyboard_, mouse_, auMan_, steering_);
     ogre_->getRoot()->addFrameListener(frameListener_);
   }
 
@@ -535,10 +548,11 @@ namespace orxonox
     int left, top;
     ogre_->getRoot()->getAutoCreatedWindow()->getMetrics(width, height, depth, left, top);
 
-    const OIS::MouseState &ms = mouse_->getMouseState();
-    ms.width = width;
-    ms.height = height;
-
+    if(mode_!=CLIENT){
+      const OIS::MouseState &ms = mouse_->getMouseState();
+      ms.width = width;
+      ms.height = height;
+    }
     ogre_->getRoot()->startRendering();
   }
 }

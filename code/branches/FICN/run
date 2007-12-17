@@ -1,4 +1,4 @@
 #!/bin/bash
 cd bin
-./run-script $1
+./run-script $1 $2 $3
 cd ..

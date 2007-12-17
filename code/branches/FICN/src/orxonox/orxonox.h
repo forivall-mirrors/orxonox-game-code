@@ -78,6 +78,7 @@ namespace orxonox {
       
       // this is used to identify the mode (server/client/...) we're in
       gameMode              mode_;
+      std::string           serverIp_;
   };
 }
 #endif /* ORXONOX_H */
