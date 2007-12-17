@@ -98,7 +98,8 @@ namespace orxonox
     }
 
     /**
-        @brief blubb
+        @brief Ensures the Factory gets created in the right moment.
+        @return The Factory.
     */
     Factory* Factory::getFactoryPointer()
     {

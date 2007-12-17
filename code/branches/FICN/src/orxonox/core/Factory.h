@@ -43,7 +43,6 @@ namespace orxonox
             Factory() {}                            // don't create
             Factory(const Factory& factory) {}      // don't copy
             ~Factory() {}                           // don't delete
-            static void checkPointer();
 
             std::map<std::string, Identifier*> identifierStringMap_;            //!< The map, mapping the name with the Identifier
             std::map<unsigned int, Identifier*> identifierNetworkIDMap_;        //!< The map, mapping the network ID with the Identifier
