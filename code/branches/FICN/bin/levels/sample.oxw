@@ -54,6 +54,11 @@
 
     <SceneNode name="node6" pos="0,0,-2000" scale="20,20,20"/>
     <Entity name="asteroid6" src="ast6.mesh" node="node6" />
+
+    <SceneNode name="node7" pos="1000,1500,0"  scale="50,50,50" />
+    <Entity name="asteroid7" src="ast1.mesh" node="node7" />
+
+
   </world>
 
   <!-- Unused at the moment -->
