@@ -75,7 +75,7 @@ namespace orxonox
     }
     
     void WorldEntity::registerAllVariables(){
-      
+      // to be implemented !
       
     }
 }

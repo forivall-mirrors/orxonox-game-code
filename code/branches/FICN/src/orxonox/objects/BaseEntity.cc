@@ -41,6 +41,7 @@ namespace orxonox
    }
    
    void BaseEntity::registerAllVariables(){
+     WorldEntity::registerAllVariables();
      registerVar(&name_, name_.length()+1, network::STRING);
      registerVar(&mesh_, mesh_.length()+1, network::STRING);
    }

@@ -90,6 +90,10 @@ bool GameStateClient::loadSnapshot(GameState state)
         ((Synchronisable *)no)->objectID=sync.objectID;
         ((Synchronisable *)no)->classID=sync.classID;
         it=orxonox::ObjectList<Synchronisable>::end();
+        // update data and create object/entity...
+        if( !(((Synchronisable *)no)->updateData(sync)) && !(((Synchronisable *)no)->create()) )
+          COUT(0) << "We couldn't create/update the object: " << sync.objectID << std::endl;
+        ++it;
       }
     } else {
       // we have our object

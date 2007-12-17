@@ -100,8 +100,10 @@ namespace orxonox
       inline const Ogre::Quaternion& getOrientation()
           { return this->node_->getOrientation(); }
       
-    private:
+    protected:
       void registerAllVariables();
+      
+    private:
       Ogre::SceneNode* node_;
       static unsigned int worldEntityCounter_s;
 
