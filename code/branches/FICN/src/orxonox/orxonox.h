@@ -22,6 +22,13 @@
 //! Orxonox singleton class
 namespace orxonox {
 
+  enum gameMode{
+    STANDALONE,
+    SERVER,
+    CLIENT,
+    PRESENTATION
+  };
+  
   class OrxListener;
 
   class Orxonox
@@ -38,10 +45,13 @@ namespace orxonox {
     private:
       Orxonox();
       virtual ~Orxonox();
+      // init functions
       void serverInit(std::string path);
       void clientInit(std::string path);
-      void standalone(std::string path);
+      void standaloneInit(std::string path);
+      // run functions
       void playableServer(std::string path);
+      void standalone();
       void defineResources();
       void setupRenderSystem();
       void createRenderWindow();
@@ -64,6 +74,9 @@ namespace orxonox {
       OIS::InputManager*    inputManager_;
       OrxListener*          frameListener_;
       Ogre::Root*           root_;
+      
+      // this is used to identify the mode (server/client/...) we're in
+      gameMode              mode_;
   };
 }
 #endif /* ORXONOX_H */

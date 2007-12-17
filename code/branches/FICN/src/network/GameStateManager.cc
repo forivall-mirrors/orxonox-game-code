@@ -89,7 +89,7 @@ GameState *GameStateManager::getSnapshot(int id)
   syncData sync;
 
   GameState *retval=new GameState; //return value
-  retval->id=id;
+  retval->id=id++;
   // reserve a little memory and increase it later on
   retval->data = (unsigned char*)malloc(1);
 
@@ -99,6 +99,7 @@ GameState *GameStateManager::getSnapshot(int id)
   for(it = orxonox::ObjectList<Synchronisable>::start(); it != 0; ++it){
     //get size of the synchronisable
     tempsize=it->getSize();
+    COUT(2) << "size of synchronisable: " << tempsize << std::endl;
     // add place for data and 3 ints (length,classid,objectid)
     totalsize+=tempsize+3*sizeof(int);
     // allocate additional space

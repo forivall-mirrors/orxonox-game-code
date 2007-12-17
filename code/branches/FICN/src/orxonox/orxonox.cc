@@ -216,7 +216,11 @@ namespace orxonox
     //TODO: find config file (assuming executable directory)
     //TODO: read config file
     //TODO: give config file to Ogre
-    std::string mode = "";
+    std::string mode;
+    if(argc>=2)
+      mode = std::string(argv[1]);
+    else
+      mode = "";
     ArgReader ar = ArgReader(argc, argv);
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", this->dataPath_, false);
@@ -225,17 +229,22 @@ namespace orxonox
     if(mode == std::string("server"))
     {
       serverInit(path);
+      mode = SERVER;
     }
     else if(mode == std::string("client"))
     {
       clientInit(path);
+      mode = CLIENT;
     }
     else if(mode == std::string("presentation"))
     {
-      playableServer(path);
+      serverInit(path);
+      mode = PRESENTATION;
     }
-    else
-      standalone(path);
+    else{
+      standaloneInit(path);
+      mode = STANDALONE;
+    }
   }
 
   /**
@@ -251,6 +260,16 @@ namespace orxonox
     setupInputSystem();
     createFrameListener();
     Factory::createClassHierarchy();
+    switch(mode_){
+    case PRESENTATION:
+      server_g->open();
+      break;
+    case SERVER:
+    case CLIENT:
+    case STANDALONE:
+    default:
+      break;
+    }
     startRenderLoop();
   }
 
@@ -273,7 +292,7 @@ namespace orxonox
     delete this;
   }
 
-  void Orxonox::standalone(std::string path)
+  void Orxonox::standaloneInit(std::string path)
   {
     ogre_->setConfigPath(path);
     ogre_->setup();
@@ -319,6 +338,12 @@ namespace orxonox
     }
     startRenderLoop();
   }
+  
+  void Orxonox::standalone(){
+    
+    
+    
+  }
 
   void Orxonox::serverInit(std::string path)
   {
@@ -326,11 +351,8 @@ namespace orxonox
     ogre_->setup();
     server_g = new network::Server(); // add some settings if wanted
     if(!ogre_->load()) die(/* unable to load */);
+    // add network framelistener
     ogre_->getRoot()->addFrameListener(new network::ServerFrameListener());
-    ogre_->startRender();
-
-    createScene();
-    setupScene();
   }
 
   void Orxonox::clientInit(std::string path)
@@ -340,13 +362,6 @@ namespace orxonox
     client_g = new network::Client(); // address here
     if(!ogre_->load()) die(/* unable to load */);
     ogre_->getRoot()->addFrameListener(new network::ClientFrameListener());
-    ogre_->startRender();
-
-    createScene();
-    setupScene();
-    setupInputSystem();
-    createFrameListener();
-    startRenderLoop();
   }
 
   void Orxonox::defineResources()

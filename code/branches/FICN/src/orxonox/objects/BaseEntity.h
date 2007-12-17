@@ -15,9 +15,9 @@ namespace orxonox
       
       void loadParams(TiXmlElement* xmlElem);
       bool create();
-    private:
+    protected:
       void registerAllVariables();
-      
+    private:
     // membervariables to be synchronised
       std::string name_;
       std::string mesh_;
