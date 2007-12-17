@@ -1,7 +1,7 @@
 //
 // C++ Interface: PacketTypes
 //
-// Description: 
+// Description:
 //
 //
 // Author:  <>, (C) 2007
@@ -24,32 +24,32 @@ enum packet_id {
 };
 
 
-/**
- * This struct defines a gamestate:
- * size: total size of the data in *data
- * data: pointer to the data allocated in the memory
- */
+  /**
+   * This struct defines a gamestate:
+   * size: total size of the data in *data
+   * data: pointer to the data allocated in the memory
+   */
   struct GameState{
     int id;
-    int size;
+    int size;                       //!< total size of data
     // new ---- change functions
     bool diffed;
-    unsigned char *data;
+    unsigned char *data;            //!< pointer to data
   };
 
-/**
- * this struct defines a gamestate:
+  /**
+   * this struct defines a gamestate:
    * compsize is the size of the compressed data
    * normsize is the size of the uncompressed data
    * data are the gamestates
- */
+   */
   struct GameStateCompressed{
-    int id; 
-    int compsize;
-    int normsize;
+    int id;
+    int compsize;                   //!< size of compressed data
+    int normsize;                   //!< size of uncompressed data
     // new ----- change functions
     bool diffed;
-    unsigned char *data;
+    unsigned char *data;            //!< gamestate data
   };
 
   struct classid{
@@ -58,8 +58,8 @@ enum packet_id {
     int clid;
     const char *message;
   };
-  
-  
+
+
   struct ack {
     int id;
     int a;

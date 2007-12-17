@@ -14,7 +14,7 @@
 * into a numeric type number (int,float,double)
 * Number in string can be decimal, hexadecimal or octal
 *
-* @autor Nicolas Perrenoud<nicolape@ee.ethz.ch>
+* @author Nicolas Perrenoud<nicolape@ee.ethz.ch>
 *
 * @example
 * float f;

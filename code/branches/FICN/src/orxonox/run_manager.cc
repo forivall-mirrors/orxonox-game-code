@@ -93,7 +93,7 @@ namespace orxonox {
   }
 
   /**
-  * @param ogre_ The OgreControl object holding the render window and the Root
+  * @param *ogre The OgreControl object holding the render window and the Root
   */
   void RunManager::initialise(OgreControl *ogre)
     {

@@ -40,15 +40,15 @@ namespace orxonox {
   {
   public:
     OrxonoxShip(Ogre::SceneNode*);
-	  virtual ~OrxonoxShip();
+    virtual ~OrxonoxShip();
 
-	  virtual bool initialise();
+    virtual bool initialise();
 
-	  void setMainThrust(const Ogre::Real);
-	  void setSideThrust(const Ogre::Real);
+    void setMainThrust(const Ogre::Real);
+    void setSideThrust(const Ogre::Real);
     void setYThrust(const Ogre::Real);
-	  void turnUpAndDown(const Ogre::Radian&);
-	  void turnLeftAndRight(const Ogre::Radian&);
+    void turnUpAndDown(const Ogre::Radian&);
+    void turnLeftAndRight(const Ogre::Radian&);
 
     InertialNode* getRootNode();
     Ogre::Vector3 getSpeed();
@@ -57,23 +57,23 @@ namespace orxonox {
 
     int getAmmoStock();
 
-	  bool tick(unsigned long, Ogre::Real);
+    bool tick(unsigned long, Ogre::Real);
 
   protected:
 
   protected:
-	  Ogre::SceneManager *sceneMgr_;
-	  //Ogre::SceneNode *rootNode_;
+    Ogre::SceneManager *sceneMgr_;
+    //Ogre::SceneNode *rootNode_;
     InertialNode *rootNode_;
-	  Ogre::Entity *shipEntity_;
+    Ogre::Entity *shipEntity_;
 
-	  //Ogre::Vector3 currentSpeed_;  // relative to space
-	  Ogre::Vector3 currentThrust_; // relative to the ship
+    //Ogre::Vector3 currentSpeed_;  // relative to space
+    Ogre::Vector3 currentThrust_; // relative to the ship
     Ogre::Real baseThrust_;
-	  int objectCounter_;
+    int objectCounter_;
 
     weapon::BulletManager *bulletManager_;
-	  //Ogre::Vector3 bulletSpeed_;
+    //Ogre::Vector3 bulletSpeed_;
 
     weapon::BaseWeapon *mainWeapon_;
     weapon::WeaponStation *railGunStation_;

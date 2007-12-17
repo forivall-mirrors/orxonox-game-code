@@ -66,7 +66,9 @@ namespace orxonox
         friend class Factory; // Forward declaration
 
         public:
-            /** @brief Sets the Factory. @param facotry The factory to assign */
+            /** @brief Sets the Factory.
+             *  @param factory The factory to assign
+             */
             inline void addFactory(BaseFactory* factory) { this->factory_ = factory; }
 
             BaseObject* fabricate();

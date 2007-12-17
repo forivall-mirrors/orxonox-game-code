@@ -653,9 +653,9 @@ namespace orxonox
     }
 
     /**
-        @param Writes the content of the list, containing all lines of the config-file, into the config-file.
-        @param filename The name of the config-file
-    */
+     *  @param Writes the content of the list, containing all lines of the config-file, into the config-file.
+     *  @param filename The name of the config-file
+     */
     void ConfigValueContainer::writeConfigFile(const std::string& filename)
     {
         // Make sure we stored the config-file in the list

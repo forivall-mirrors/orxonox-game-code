@@ -70,7 +70,7 @@ TARGET_LINK_LIBRARIES( client
   core
   #objects
   ${ENet_LIBRARY}
-  ${Zlib_LIBRARY}
+  ${ZLIB_LIBRARY}
   ${WINDOWS_ENET_DEPENDENCIES}
 )
 
@@ -81,7 +81,7 @@ TARGET_LINK_LIBRARIES( server
   core
   #objects
   ${ENet_LIBRARY}
-  ${Zlib_LIBRARY}
+  ${ZLIB_LIBRARY}
   ${WINDOWS_ENET_DEPENDENCIES}
 )
 

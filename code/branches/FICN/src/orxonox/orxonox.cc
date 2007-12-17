@@ -466,7 +466,7 @@ namespace orxonox
 /*
     particle::ParticleInterface *e = new particle::ParticleInterface(mgr,"engine","Orxonox/strahl");
     e->particleSystem_->setParameter("local_space","true");
-    e->setPositionOfEmitter(0, Vector3(0,-10,200));
+    e->setPositionOfEmitter(0, Vector3(0,-10,0));
     e->setDirection(Vector3(0,0,-1));
     e->addToSceneNode(node);
 */
@@ -479,14 +479,13 @@ namespace orxonox
     w->setPositionOfEmitter(1, Vector3(-10,10,0));
     w->addToSceneNode(node);
 
-    particle::ParticleInterface *tt = new particle::ParticleInterface(mgr,"thrusters","Orxonox/treibwerk");
+    particle::ParticleInterface *tt = new particle::ParticleInterface(mgr,"twinthruster","Orxonox/engineglow");
     tt->particleSystem_->setParameter("local_space","true");
     tt->newEmitter();
-    tt->setDirection(Vector3(0,0,1));
-    tt->setPositionOfEmitter(0, Vector3(15,0,-60));
-    tt->setPositionOfEmitter(1, Vector3(-15,0,-60));
+    tt->setDirection(Vector3(0,0,-1));
+    tt->setPositionOfEmitter(0, Vector3(20,-1,-15));
+    tt->setPositionOfEmitter(1, Vector3(-20,-1,-15));
     tt->addToSceneNode(node);
-
 
   }
 

@@ -115,6 +115,7 @@ syncData Synchronisable::getData(unsigned char *mem){
   int n=0;
   for(i=syncList.begin(); n<datasize && i!=syncList.end(); ++i){
     COUT(2) << "size of variable: " << i->size << std::endl;
+    COUT(2) << "size of variable: " << i->size << std::endl;
     //COUT(2) << "size of variable: " << i->size << std::endl;
     //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
     *((int *)(retVal.data+n)) = i->size;
