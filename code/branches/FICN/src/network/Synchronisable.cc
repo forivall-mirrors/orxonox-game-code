@@ -25,7 +25,7 @@ Synchronisable::Synchronisable()
   static int idCounter=0;
   datasize=0;
   objectID=idCounter++;
-  //registerAllVariables();
+//   registerAllVariables();
 }
 
 
@@ -40,9 +40,9 @@ Synchronisable::~Synchronisable()
  * @param var pointer to the variable
  * @param size size of the datatype the variable consists of
  */
-void Synchronisable::registerVar(const void *var, int size){
+void Synchronisable::registerVar(const void *var, int size, variableType t){
   // create temporary synch.Var struct
-  synchronisableVariable temp={size, var};
+  synchronisableVariable temp={size, var, t};
   // increase datasize
   datasize+=sizeof(int)+size;
   // push temp to syncList (at the bottom)
@@ -64,7 +64,10 @@ syncData Synchronisable::getData(){
   //figure out size of data to be allocated
   for(i=syncList.begin(); i!=syncList.end(); i++){
     // increase size (size of variable and size of size of variable ;)
-    totalsize+=sizeof(int)+i->size;
+    if(i->type == STRING)
+      totalsize+=sizeof(int)+((std::string *)i->var)->length()+1;
+    else
+      totalsize+=sizeof(int)+i->size;
   }
   syncData retVal;
   retVal.objectID=this->objectID;
@@ -76,12 +79,18 @@ syncData Synchronisable::getData(){
   //CHANGED: REMOVED DECLARATION int n=0 FROM LOOP
   int n=0;
   for(i=syncList.begin(); n<totalsize && i!=syncList.end(); i++){
-	//CHANGED: i->size TO (const void*)(&(i->size)) memcpy WANTS A CONST VOID* SO CONVERT INT TO CONST VOID*
     std::memcpy(retVal.data+n, (const void*)(i->size), sizeof(int));
     n+=sizeof(int);
-    //CHANGED: i->var TO (const void*)(&(i->var)) SINCE var IS A POINTER, NO & BEFORE i
-    std::memcpy(retVal.data+n, (const void*)(i->var), i->size);
-    n+=i->size;
+    switch(i->type){
+    case STRING:
+      std::memcpy(retVal.data+n, (const void *)(((std::string *)i->var)->c_str()), ((std::string *)i->var)->length()+1);
+      n+=((std::string *)i->var)->length()+1;
+      break;
+    case DATA:
+      std::memcpy(retVal.data+n, ((const void*)i->var), i->size);
+      n+=i->size;
+      break;
+    }
   }
   return retVal;
 }
@@ -106,12 +115,18 @@ syncData Synchronisable::getData(unsigned char *mem){
   //CHANGED: REMOVED DECLARATION int n=0 FROM LOOP
   int n=0;
   for(i=syncList.begin(); n<datasize && i!=syncList.end(); i++){
-        //CHANGED: i->size TO (const void*)(&(i->size)) memcpy WANTS A CONST VOID* SO CONVERT INT TO CONST VOID*
     std::memcpy(retVal.data+n, (const void*)(i->size), sizeof(int));
     n+=sizeof(int);
-    //CHANGED: i->var TO (const void*)(&(i->var)) SINCE var IS A POINTER, NO & BEFORE i
-    std::memcpy(retVal.data+n, (const void*)(i->var), i->size);
-    n+=i->size;
+    switch(i->type){
+      case DATA:
+        std::memcpy(retVal.data+n, (const void*)(i->var), i->size);
+        n+=i->size;
+        break;
+      case STRING:
+        std::memcpy(retVal.data+n, (const void*)(((std::string *)i->var)->c_str()), ((std::string *)i->var)->length()+1);
+        n+=((std::string *) i->var)->length()+1;
+        break;
+    }
   }
   return retVal;
 }
@@ -125,11 +140,20 @@ bool Synchronisable::updateData(syncData vars){
   unsigned char *data=vars.data;
   std::list<synchronisableVariable>::iterator i;
   for(i=syncList.begin(); i!=syncList.end(); i++){
-    if((int)*data==i->size){
-      data+=sizeof(int);
-      //CHANGED: THIS FROM i->var TO (void*)i->var SINCE var IS A CONST VOID* AND memcpy NEEDS A VOID* AS FIRST ARGUMENT
-      memcpy((void*)i->var, data, i->size);
-      data+=i->size;
+    if((int)*data==i->size || i->type==STRING){
+      switch(i->type){
+      case DATA:
+        data+=sizeof(int);
+        memcpy((void*)i->var, data, i->size);
+        data+=i->size;
+        break;
+      case STRING:
+        i->size = (int)*data;
+        data+=sizeof(int);
+        *((std::string *)i->var) = std::string((const char*)data);
+        data += i->size;
+        break;
+      }
     } else
       return false; //there was some problem with registerVar
   }
@@ -141,7 +165,19 @@ bool Synchronisable::updateData(syncData vars){
  * @return amount of bytes
  */
 int Synchronisable::getSize(){
-  return datasize;
+  int tsize=0;
+  std::list<synchronisableVariable>::iterator i;
+  for(i=syncList.begin(); i!=syncList.end(); i++){
+    switch(i->type){
+    case DATA:
+      tsize+=i->size;
+      break;
+    case STRING:
+      tsize+=((std::string *)i->var)->length()+1;
+      break;
+    }
+  }
+  return tsize;
 }
 
 }

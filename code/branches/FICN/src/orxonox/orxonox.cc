@@ -153,6 +153,7 @@ namespace orxonox
 //      scenemanager->spacehip->tick(evt.timesincelastframe);
         //if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
           //cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
+        usleep(10);
         return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
       }
 

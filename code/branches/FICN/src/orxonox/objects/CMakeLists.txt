@@ -9,6 +9,7 @@ SET( OBJECTS_SRC_FILES
   Ambient.cc
   Skybox.cc
   SceneNode.cc
+  BaseEntity.cc
   Entity.cc
   Camera.cc
   SpaceshipSteeringObject.cc

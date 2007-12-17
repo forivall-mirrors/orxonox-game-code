@@ -73,4 +73,9 @@ namespace orxonox
             this->rotate(this->rotationAxis_, dt * this->rotationRate_);
         }
     }
+    
+    void WorldEntity::registerAllVariables(){
+      
+      
+    }
 }
