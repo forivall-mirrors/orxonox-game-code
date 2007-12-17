@@ -37,32 +37,7 @@
 
 namespace orxonox
 {
-    Factory* Factory::pointer1_s;
-    Factory* Factory::pointer2_s;
-    Factory* Factory::pointer3_s;
-    Factory* Factory::pointer4_s;
-    Factory* Factory::pointer5_s = NULL; // Set the static member variable pointer5_s to zero
-
-    /**
-        @brief Checks if the pointer to the only Factory-object exists and creates it, if not.
-    */
-    void Factory::checkPointer()
-    {
-        if ((!pointer5_s) || (pointer1_s != pointer2_s) || (pointer2_s != pointer3_s) || (pointer3_s != pointer4_s) || (pointer4_s != pointer5_s))
-        {
-            std::cout << pointer1_s << std::endl;
-            std::cout << pointer2_s << std::endl;
-            std::cout << pointer3_s << std::endl;
-            std::cout << pointer4_s << std::endl;
-            std::cout << pointer5_s << std::endl;
-            pointer1_s = pointer2_s = pointer3_s = pointer4_s = pointer5_s = new Factory;
-            std::cout << pointer1_s << std::endl;
-            std::cout << pointer2_s << std::endl;
-            std::cout << pointer3_s << std::endl;
-            std::cout << pointer4_s << std::endl;
-            std::cout << pointer5_s << std::endl;
-        }
-    }
+    Factory* Factory::pointer_s = NULL; // Set the static member variable pointer_s to zero
 
     /**
         @returns the Identifier with a given name.
@@ -72,7 +47,7 @@ namespace orxonox
     {
         Factory::checkPointer();
 
-        return pointer1_s->identifierStringMap_[name];
+        return pointer_s->identifierStringMap_[name];
     }
 
     /**
@@ -83,7 +58,7 @@ namespace orxonox
     {
         Factory::checkPointer();
 
-        return pointer1_s->identifierNetworkIDMap_[id];
+        return pointer_s->identifierNetworkIDMap_[id];
     }
 
     /**
@@ -95,8 +70,8 @@ namespace orxonox
     {
         Factory::checkPointer();
 
-        pointer1_s->identifierStringMap_[name] = identifier;
-        pointer1_s->identifierNetworkIDMap_[identifier->getNetworkID()] = identifier;
+        pointer_s->identifierStringMap_[name] = identifier;
+        pointer_s->identifierNetworkIDMap_[identifier->getNetworkID()] = identifier;
     }
 
     /**
@@ -109,8 +84,8 @@ namespace orxonox
     {
         Factory::checkPointer();
 
-        pointer1_s->identifierNetworkIDMap_.erase(oldID);
-        pointer1_s->identifierNetworkIDMap_[newID] = identifier;
+        pointer_s->identifierNetworkIDMap_.erase(oldID);
+        pointer_s->identifierNetworkIDMap_[newID] = identifier;
     }
 
     /**
@@ -122,15 +97,15 @@ namespace orxonox
 
         COUT(4) << "*** Factory -> Create class-hierarchy\n";
         std::map<std::string, Identifier*>::iterator it;
-        it = pointer1_s->identifierStringMap_.begin();
-        (*pointer1_s->identifierStringMap_.begin()).second->startCreatingHierarchy();
-        for (it = pointer1_s->identifierStringMap_.begin(); it != pointer1_s->identifierStringMap_.end(); ++it)
+        it = pointer_s->identifierStringMap_.begin();
+        (*pointer_s->identifierStringMap_.begin()).second->startCreatingHierarchy();
+        for (it = pointer_s->identifierStringMap_.begin(); it != pointer_s->identifierStringMap_.end(); ++it)
         {
             // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
             BaseObject* temp = (*it).second->fabricate();
             delete temp;
         }
-        (*pointer1_s->identifierStringMap_.begin()).second->stopCreatingHierarchy();
+        (*pointer_s->identifierStringMap_.begin()).second->stopCreatingHierarchy();
         COUT(4) << "*** Factory -> Finished class-hierarchy creation\n";
     }
 }
