@@ -112,10 +112,11 @@ syncData Synchronisable::getData(unsigned char *mem){
   retVal.length=datasize;
   retVal.data=mem;
   // copy to location
-  //CHANGED: REMOVED DECLARATION int n=0 FROM LOOP
   int n=0;
   for(i=syncList.begin(); n<datasize && i!=syncList.end(); i++){
-    std::memcpy(retVal.data+n, (const void*)(i->size), sizeof(int));
+    //COUT(2) << "size of variable: " << i->size << std::endl;
+    //COUT(2) << "size of variable: " << i->size << std::endl;
+    std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
     n+=sizeof(int);
     switch(i->type){
       case DATA:
