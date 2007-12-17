@@ -23,29 +23,36 @@
   <!-- the value has to negative, as we want the camara behind the object -->
   <world>
     <SceneNode name="OgreHeadNode" pos="0,0,0" />
-    <Camera name="Camera" pos="0,0,-150" lookat="0,0,0" node="OgreHeadNode" />
+    <Camera name="Camera" pos="0,50,-150" lookat="0,20,0" node="OgreHeadNode" />
     <Ambient colourvalue="1,1,1" />
     <Skybox src="Orxonox/StarfieldSkyBox" />
 
     <SceneNode name="ShipNode" pos="0,0,0" node="OgreHeadNode" scale="10,10,10" yaw="-90" pitch="-90" />
     <BaseEntity name="TheShip" src="assf2.mesh" node="ShipNode" />
 
-    <SceneNode name="node1" pos="0,200,0" />
+    <SceneNode name="ShipNode2" pos="200,0,500" scale="10,10,10" yaw="-90" pitch="-90" />
+    <BaseEntity name="TheShip2" src="assf2.mesh" node="ShipNode2" />
+
+    <SceneNode name="ShipNode3" pos="-200,0,500" scale="10,10,10" yaw="-90" pitch="-90" />
+    <BaseEntity name="TheShip3" src="assf2.mesh" node="ShipNode3" />
+
+
+    <SceneNode name="node1" pos="0,2000,0"  scale="40,40,40" />
     <Entity name="asteroid1" src="ast1.mesh" node="node1" />
 
-    <SceneNode name="node2" pos="200,0,0" />
+    <SceneNode name="node2" pos="2000,0,0" scale="20,20,20"/>
     <Entity name="asteroid2" src="ast2.mesh" node="node2" />
 
-    <SceneNode name="node3" pos="0,0,200" />
-    <Entity name="aststeroid3" src="ast3.mesh" node="node3" />
+    <SceneNode name="node3" pos="0,0,2000" scale="20,20,20"/>
+    <Entity name="aststeroid3" src="ast3.mesh" node="node3"/>
 
-    <SceneNode name="node4" pos="0,-200,0" />
+    <SceneNode name="node4" pos="0,-2000,0" scale="20,20,20"/>
     <Entity name="asteroid4" src="ast4.mesh" node="node4" />
 
-    <SceneNode name="node5" pos="-200,0,0" />
+    <SceneNode name="node5" pos="-2000,0,0" scale="20,20,20"/>
     <Entity name="asteroid5" src="ast5.mesh" node="node5" />
 
-    <SceneNode name="node6" pos="0,0,-200" />
+    <SceneNode name="node6" pos="0,0,-2000" scale="20,20,20"/>
     <Entity name="asteroid6" src="ast6.mesh" node="node6" />
   </world>
 

@@ -42,6 +42,7 @@ namespace orxonox {
       inline SceneManager* getSceneManager() { return ogre_->getSceneManager(); };
       inline GraphicsEngine* getOgrePointer() { return ogre_; };
       inline SpaceshipSteering* getSteeringPointer() { return steering_; };
+      inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
     private:
       Orxonox();
       virtual ~Orxonox();

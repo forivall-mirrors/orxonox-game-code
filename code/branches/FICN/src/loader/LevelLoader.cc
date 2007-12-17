@@ -38,6 +38,8 @@
 #include "orxonox/core/CoreIncludes.h"
 #include "orxonox/core/Error.h"
 #include "orxonox/objects/BaseObject.h"
+#include "audio/AudioManager.h"
+#include "orxonox/orxonox.h"
 
 using namespace std;
 
@@ -99,6 +101,7 @@ LevelLoader::LevelLoader(string file, string path)
 		if (valid_)
 		{
 			TiXmlElement* loadElem;
+			TiXmlElement* audioElem;
 			TiXmlElement* worldElem;
 			TiXmlElement* tElem;
 			TiXmlNode* tNode;
@@ -139,11 +142,26 @@ LevelLoader::LevelLoader(string file, string path)
 			}
 
 			// Load audio
-			// TODO
-
-			// Load scripts
-			// TODO
-
+			audio::AudioManager* auMan = orxonox::Orxonox::getSingleton()->getAudioManagerPointer();
+			audioElem = rootElement->FirstChildElement("audio");
+			if (audioElem)
+			{
+				audioElem = audioElem->FirstChildElement("ambient");
+				if (audioElem)
+				{
+					tNode = 0;
+					while( tNode = audioElem->IterateChildren( tNode ) )
+					{
+						tElem = tNode->ToElement();
+						std::string elemVal = tElem->Value();
+						if (elemVal == "ogg")
+						{
+				    	auMan->ambientAdd(tElem->Attribute("src"));
+						}
+					}		
+				}	
+			}
+			
 			// Load world
 			worldElem = rootElement->FirstChildElement("world");
 			if (worldElem)

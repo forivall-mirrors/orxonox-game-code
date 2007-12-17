@@ -429,13 +429,7 @@ namespace orxonox
     loader_ = new loader::LevelLoader("sample.oxw");
     loader_->loadLevel();
 
-	/*
-    auMan_->ambientAdd("a1");
-    auMan_->ambientAdd("a2");
-    auMan_->ambientAdd("a3");
-                                //auMan->ambientAdd("ambient1");
     auMan_->ambientStart();
-	*/
   }
 
 
@@ -454,12 +448,13 @@ namespace orxonox
     steering_ = new SpaceshipSteering(500, 200, 200, 200);
     steering_->addNode(node);
 
-
+/*
     particle::ParticleInterface *e = new particle::ParticleInterface(mgr,"engine","Orxonox/strahl");
     e->particleSystem_->setParameter("local_space","true");
     e->setPositionOfEmitter(0, Vector3(0,-10,200));
     e->setDirection(Vector3(0,0,-1));
     e->addToSceneNode(node);
+*/
 
     particle::ParticleInterface *w = new particle::ParticleInterface(mgr,"schuss","Orxonox/schuss");
     w->particleSystem_->setParameter("local_space","true");
@@ -468,6 +463,16 @@ namespace orxonox
     w->setPositionOfEmitter(0, Vector3(10,10,0));
     w->setPositionOfEmitter(1, Vector3(-10,10,0));
     w->addToSceneNode(node);
+
+    particle::ParticleInterface *tt = new particle::ParticleInterface(mgr,"thrusters","Orxonox/treibwerk");
+    tt->particleSystem_->setParameter("local_space","true");
+    tt->newEmitter();
+    tt->setDirection(Vector3(0,0,1));
+    tt->setPositionOfEmitter(0, Vector3(15,0,-60));
+    tt->setPositionOfEmitter(1, Vector3(-15,0,-60));
+    tt->addToSceneNode(node);
+
+
   }
 
 
