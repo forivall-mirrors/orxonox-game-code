@@ -124,18 +124,20 @@ namespace network{
    */
   void Server::updateGamestate(){
     gamestates->update();
-    std::cout << "updated gamestate, sending it" << std::endl;
+    //std::cout << "updated gamestate, sending it" << std::endl;
     sendGameState();
-    std::cout << "sent gamestate" << std::endl;
+    //std::cout << "sent gamestate" << std::endl;
   }
   
   /**
    * sends the gamestate
    */
   bool Server::sendGameState(){
-    for(ClientInformation *temp = clients; temp!=0; temp=temp->next()){
+    /*for(ClientInformation *temp = clients->next(); temp!=0; temp=temp->next()){
       connection->addPacket(packet_gen.gstate(&(gamestates->popGameState(temp->getID()))),temp->getID());
+      std::cout << "added gamestate" << std::endl;
     }
+    return connection->sendPackets();*/
     return true;
   }
   
