@@ -77,9 +77,9 @@ namespace orxonox
         { this->node_->scale(scale, scale, scale); }
 
       inline void attachObject(Ogre::MovableObject *obj)
-        { std::cout << "gux_1 " << this->node_ << " " << obj << "\n"; this->node_->attachObject(obj); std::cout << "gux_2\n"; }
+        { this->node_->attachObject(obj); }
       inline void attachObject(Mesh &mesh)
-        { std::cout << "gux_3 " << this->node_ << " " << &mesh << " " << mesh.getEntity() << "\n"; this->node_->attachObject(mesh.getEntity()); std::cout << "gux_4\n"; }
+        { this->node_->attachObject(mesh.getEntity()); }
       inline void detachObject(Ogre::MovableObject *obj)
         { this->node_->detachObject(obj); }
       inline void detachAllObjects()

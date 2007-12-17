@@ -11,10 +11,14 @@ namespace orxonox
     {
         public:
             Mesh();
-            Mesh(const std::string& file);
             ~Mesh();
+            void setMesh(const std::string& file);
+
             inline Ogre::Entity* getEntity()
                 { return this->entity_; }
+
+            inline const std::string& getName() const
+                { return this->entity_->getName(); }
 
         private:
             static unsigned int meshCounter_s;
