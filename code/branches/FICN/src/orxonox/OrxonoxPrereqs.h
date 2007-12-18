@@ -73,7 +73,7 @@ namespace orxonox {
   class TimerBase;
   class TimerFrameListener;
   class WorldEntity;
-  enum gameMode;
+  //enum gameMode;
 
   // from core library
   class ArgReader;
