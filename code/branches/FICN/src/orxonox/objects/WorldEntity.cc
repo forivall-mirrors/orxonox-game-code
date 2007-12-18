@@ -45,7 +45,6 @@ namespace orxonox
     {
         RegisterObject(WorldEntity);
 
-        registerAllVariables();
         if (Orxonox::getSingleton()->getSceneManager())
         {
             std::ostringstream name;
@@ -156,6 +155,7 @@ namespace orxonox
     }
 
     bool WorldEntity::create(){
+      registerAllVariables();
       return true;
     }
     
