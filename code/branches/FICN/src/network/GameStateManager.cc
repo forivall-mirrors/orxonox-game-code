@@ -113,8 +113,13 @@ GameState *GameStateManager::getSnapshot(int id)
     totalsize+=tempsize+3*sizeof(int);
     // allocate additional space
     if(totalsize+tempsize>memsize){
-      retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
-      memsize+=1000;
+      if(tempsize<1000){
+        retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
+        memsize+=1000;
+      } else {
+        retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
+        memsize+=tempsize+1000;
+      }
     }
 
     // run Synchronisable::getData with offset and additional place for 3 ints in between (for ids and length)

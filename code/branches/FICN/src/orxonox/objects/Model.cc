@@ -14,6 +14,7 @@ namespace orxonox
     Model::Model()
     {
         RegisterObject(Model);
+        registerAllVariables();
     }
 
     Model::~Model()
@@ -26,11 +27,19 @@ namespace orxonox
 
         if (xmlElem->Attribute("mesh"))
         {
-            std::string src = xmlElem->Attribute("mesh");
-            this->mesh_.setMesh(src);
-            this->attachObject(this->mesh_.getEntity());
+            meshSrc_ = xmlElem->Attribute("mesh");
         }
+    }
+    
+    bool Model::create(){
+      this->mesh_.setMesh(meshSrc_);
+      this->attachObject(this->mesh_.getEntity());
 
-        COUT(4) << "Loader: Created model" << std::endl;
+      COUT(4) << "Loader: Created model" << std::endl;
+      return true;
+    }
+    
+    void Model::registerAllVariables(){
+      registerVar(&meshSrc_, meshSrc_.length()+1, network::STRING);
     }
 }

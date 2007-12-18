@@ -13,9 +13,12 @@ namespace orxonox
             Model();
             ~Model();
             virtual void loadParams(TiXmlElement* xmlElem);
+            bool create();
 
         private:
+            std::string meshSrc_;
             Mesh mesh_;
+            void registerAllVariables();
     };
 }
 

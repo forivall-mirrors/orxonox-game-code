@@ -25,7 +25,7 @@ Synchronisable::Synchronisable()
   static int idCounter=0;
   datasize=0;
   objectID=idCounter++;
-//   registerAllVariables();
+  //registerAllVariables();
 }
 
 

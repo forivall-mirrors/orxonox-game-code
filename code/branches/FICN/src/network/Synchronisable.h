@@ -57,8 +57,8 @@ public:
   syncData getData(unsigned char *mem);
   int getSize();
   bool updateData(syncData vars);
-  virtual void registerAllVariables()=0;
-  virtual bool create(){return true;}
+  void registerAllVariables();
+  virtual bool create()=0;
 protected:
   Synchronisable();
 private:

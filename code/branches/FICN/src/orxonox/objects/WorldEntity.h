@@ -20,7 +20,8 @@ namespace orxonox
 
       virtual void tick(float dt);
       virtual void loadParams(TiXmlElement* xmlElem);
-
+      bool create();
+      
       inline Ogre::SceneNode* getNode()
           { return this->node_; }
 
