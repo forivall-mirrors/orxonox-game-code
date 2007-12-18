@@ -77,6 +77,8 @@ namespace orxonox
             float maxMouseX;
             float minMouseX;
             bool moved;
+
+            int emitterRate_;
     };
 }
 

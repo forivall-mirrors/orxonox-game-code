@@ -120,6 +120,8 @@ namespace orxonox
         w->setPositionOfEmitter(0, Vector3(0,10,10));
         w->setPositionOfEmitter(1, Vector3(0,-10,10));
 
+        emitterRate_ = w->getRate();
+
         Ogre::SceneNode* node1 = this->getNode()->createChildSceneNode(this->getName() + "particle1");
         node1->setInheritScale(false);
         w->addToSceneNode(node1);
@@ -137,6 +139,7 @@ namespace orxonox
         tt->setDirection(Vector3(-1,0,0));
         tt->setPositionOfEmitter(0, Vector3(-15,20,-1));
         tt->setPositionOfEmitter(1, Vector3(-15,-20,-1));
+        tt->setVelocity(50);
 
         Ogre::SceneNode* node2 = this->getNode()->createChildSceneNode(this->getName() + "particle2");
         node2->setInheritScale(false);
@@ -270,9 +273,9 @@ namespace orxonox
 
         if(moveForward_ <= 0)
         {
-            accelerationForward_ = brakeForward_;
+            accelerationForward_ = -brakeForward_;
             if(speedForward_ > 0)
-                speedForward_ -= accelerationForward_*dt;
+                speedForward_ += accelerationForward_*dt;
             if(speedForward_ < 0)
                 speedForward_ = 0;
         }
@@ -378,6 +381,15 @@ namespace orxonox
         this->yaw(Degree(speedRotateUpDown_*dt), Ogre::Node::TS_LOCAL);
         this->roll(Degree(speedRotateRightLeft_*dt), Ogre::Node::TS_LOCAL);
         this->pitch(Degree(speedLoopRightLeft_*dt), Ogre::Node::TS_LOCAL);
+
+        if (accelerationForward_ > 25.0)
+        {
+          this->tt->setRate(emitterRate_);
+        }
+        else
+        {
+          this->tt->setRate(0);
+        }
 
     }
 
