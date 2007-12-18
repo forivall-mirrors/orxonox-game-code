@@ -73,7 +73,6 @@ namespace orxonox {
   class TimerBase;
   class TimerFrameListener;
   class WorldEntity;
-  //enum gameMode;
 
   // from core library
   class ArgReader;
@@ -145,8 +144,6 @@ namespace network {
   struct QueueItem;
   struct synchData;
   struct synchronisableVariable;
-  enum packet_id;
-  enum variableType;
 }
 
 namespace particle {
