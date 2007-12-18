@@ -30,7 +30,7 @@
 
 #include "WorldEntity.h"
 #include "../core/CoreIncludes.h"
-#include "../orxonox.h"
+#include "../Orxonox.h"
 #include "../../tinyxml/tinyxml.h"
 #include "../../misc/Tokenizer.h"
 #include "../../misc/String2Number.h"

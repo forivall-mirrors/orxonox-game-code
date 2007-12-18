@@ -26,7 +26,7 @@
  */
 
  /**
- @file  main.cc
+ @file  Main.cc
  @brief main file handling most of the machine specific code
   */
 
@@ -35,7 +35,7 @@
 
 
 #include "core/SignalHandler.h"
-#include "orxonox.h"
+#include "Orxonox.h"
 
 using namespace orxonox;
 using namespace Ogre;

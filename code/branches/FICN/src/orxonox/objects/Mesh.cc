@@ -1,7 +1,7 @@
 #include <sstream>
 
 #include "Mesh.h"
-#include "../orxonox.h"
+#include "../Orxonox.h"
 
 namespace orxonox
 {

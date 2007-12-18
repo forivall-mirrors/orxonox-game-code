@@ -30,7 +30,7 @@
 #include "../../tinyxml/tinyxml.h"
 #include "../../misc/String2Number.h"
 #include "../core/CoreIncludes.h"
-#include "../orxonox.h"
+#include "../Orxonox.h"
 
 #include "OgreCamera.h"
 #include <OgreRenderWindow.h>

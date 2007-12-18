@@ -67,7 +67,7 @@
 #include "core/Debug.h"
 #include "hud/HUD.h"
 
-#include "graphicsEngine.h"
+#include "GraphicsEngine.h"
 #include "Orxonox.h"
 
 

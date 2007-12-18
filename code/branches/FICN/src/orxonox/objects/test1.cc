@@ -2,7 +2,7 @@
 #include "test2.h"
 #include "test3.h"
 #include "../../tinyxml/tinyxml.h"
-#include "../orxonox.h"
+#include "../Orxonox.h"
 #include <OgreSceneManager.h>
 
 namespace orxonox

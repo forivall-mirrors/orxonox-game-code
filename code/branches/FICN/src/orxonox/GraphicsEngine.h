@@ -1,5 +1,5 @@
 /**
-  @file graphicsEngine.h
+  @file GraphicsEngine.h
   @brief Graphics Engine
   @author Benjamin Knecht <beni_at_orxonox.net>
  */

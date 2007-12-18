@@ -39,7 +39,7 @@
 #include "orxonox/core/Error.h"
 #include "orxonox/objects/BaseObject.h"
 #include "audio/AudioManager.h"
-#include "orxonox/orxonox.h"
+#include "orxonox/Orxonox.h"
 
 using namespace std;
 

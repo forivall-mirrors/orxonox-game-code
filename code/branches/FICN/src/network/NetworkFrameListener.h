@@ -17,7 +17,7 @@
 #include "Server.h"
 #include "Client.h"
 //#include <iostream>
-// #include "orxonox/orxonox.cc"
+// #include "orxonox/Orxonox.cc"
 network::Server *server_g;
 network::Client *client_g;
 
