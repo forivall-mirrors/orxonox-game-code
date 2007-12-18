@@ -152,12 +152,15 @@ LevelLoader::LevelLoader(string file, string path)
 					tNode = 0;
 					while( tNode = audioElem->IterateChildren( tNode ) )
 					{
-						tElem = tNode->ToElement();
-						std::string elemVal = tElem->Value();
-						if (elemVal == "ogg")
-						{
-				    	auMan->ambientAdd(tElem->Attribute("src"));
-						}
+            if (tNode->Type() == TiXmlNode::ELEMENT)
+            {
+						  tElem = tNode->ToElement();
+						  std::string elemVal = tElem->Value();
+						  if (elemVal == "ogg")
+						  {
+				    	  auMan->ambientAdd(tElem->Attribute("src"));
+						  }
+            }
 					}
 				}
 			}
@@ -167,19 +170,22 @@ LevelLoader::LevelLoader(string file, string path)
 			if (worldElem)
 			{
 				tNode = 0;
-				while( tNode = worldElem->IterateChildren( tNode ) )
+				while (tNode = worldElem->IterateChildren(tNode))
 				{
-					tElem = tNode->ToElement();
-					orxonox::Identifier* id = ID(tElem->Value());
-					if (id)
-					{
-                        orxonox::BaseObject* obj = id->fabricate();
-                        obj->loadParams(tElem);
-					}
-					else
-					{
-					    COUT(2) << "Warning: '"<< tElem->Value() <<"' is not a valid classname.\n";
-					}
+          if (tNode->Type() == TiXmlNode::ELEMENT)
+          {
+					  tElem = tNode->ToElement();
+					  orxonox::Identifier* id = ID(tElem->Value());
+					  if (id)
+					  {
+                          orxonox::BaseObject* obj = id->fabricate();
+                          obj->loadParams(tElem);
+					  }
+					  else
+					  {
+					      COUT(2) << "Warning: '"<< tElem->Value() <<"' is not a valid classname.\n";
+					  }
+          }
 				}
 			}
 
