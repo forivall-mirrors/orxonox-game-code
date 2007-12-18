@@ -27,13 +27,20 @@ void sender(){
   if ( client.establishConnection() )
           std::cout << "connection established" << std::endl;
   else std::cout << "problems establishing connection" << std::endl;
-
+  char message[10000];
+  char signs[] = "abcdefghijklmnopqrstuvwxy";
   while (true) {
           client.tick(0);
-          std::cout << "your message: ";
-          std::getline( std::cin, str );
-          client.sendChat( str );
-          std::cout << "sent message" << std::endl;
+	  
+          std::cout << "your message2: ";
+	  for ( int i=0; i<9999; i++ ) {
+	    message[i] = signs[0];
+ 	  }
+	  message[9999] = 'z';
+	  std::string str( message );
+	  client.sendChat( str );
+          std::cout << str << std::endl;
+	  std::cin.get(); std::cin.get();
   }
 
 

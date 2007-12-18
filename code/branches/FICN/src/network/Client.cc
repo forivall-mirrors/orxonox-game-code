@@ -182,6 +182,7 @@ namespace network{
     // stop if the packet queue is empty
     while(!(client_connection.queueEmpty())){
       packet = client_connection.getPacket();
+      //std::cout << "tick packet size " << packet->dataLength << std::endl;
       elaborate(packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
     }
     return;

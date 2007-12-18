@@ -108,9 +108,11 @@ GameState *GameStateManager::getSnapshot(int id)
     //std::cout << "gamestatemanager: in for loop" << std::endl;
     //get size of the synchronisable
     tempsize=it->getSize();
+    //std::cout << "size of temp gamestate: " << tempsize << std::endl;
     //COUT(2) << "size of synchronisable: " << tempsize << std::endl;
     // add place for data and 3 ints (length,classid,objectid)
     totalsize+=tempsize+3*sizeof(int);
+    //std::cout << "totalsize: " << totalsize << std::endl;
     // allocate additional space
     if(totalsize+tempsize>memsize){
       if(tempsize<1000){
@@ -187,7 +189,9 @@ GameStateCompressed GameStateManager::compress_(GameState *a) {
   uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
   unsigned char* dest = (unsigned char*)malloc( buffer );
   int retval;
+  //std::cout << "before ziped " << buffer << std::endl;
   retval = compress( dest, &buffer, a->data, (uLong)size );
+  //std::cout << "after ziped " << buffer << std::endl;
 
   switch ( retval ) {
   case Z_OK: std::cout << "successfully compressed" << std::endl; break;
@@ -198,7 +202,9 @@ GameStateCompressed GameStateManager::compress_(GameState *a) {
 
   GameStateCompressed compressedGamestate;
   compressedGamestate.compsize = buffer;
+  //std::cout << "compressedGamestate.compsize = buffer; " << buffer << std::endl;
   compressedGamestate.normsize = size;
+  //std::cout << "compressedGamestate.normsize = size; " << size << std::endl;
   compressedGamestate.id = a->id;
   compressedGamestate.data = dest;
   compressedGamestate.diffed = a->diffed;

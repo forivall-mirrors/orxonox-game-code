@@ -152,8 +152,10 @@ GameState GameStateClient::decompress(GameStateCompressed a){
   unsigned char* dest = (unsigned char*)malloc( bufsize );
   int retval;
   uLongf length=normsize;
+  //std::cout << "gamestateclient" << std::endl;
+  //std::cout << "normsize " << a.normsize << " compsize " << a.compsize << " " << bufsize << std::endl;
   retval = uncompress( dest, &length, a.data, (uLong)compsize );
-
+  //std::cout << "length " << length << std::endl;
   switch ( retval ) {
     case Z_OK: std::cout << "successfully decompressed" << std::endl; break;
     case Z_MEM_ERROR: std::cout << "not enough memory available" << std::endl; break;
@@ -166,7 +168,7 @@ GameState GameStateClient::decompress(GameStateCompressed a){
   gamestate.size = normsize;
   gamestate.data = dest;
   gamestate.diffed = a.diffed;
-
+  
   return gamestate;
 }
 

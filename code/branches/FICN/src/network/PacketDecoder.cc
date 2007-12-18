@@ -51,6 +51,8 @@ bool PacketDecoder::elaborate( ENetPacket* packet, int clientId )
 	int client = clientId;
 	cout << "clientId: " << client << endl; //control cout, not important, just debugging info
 	int id = (int)*packet->data; //the first 4 bytes are always the enet packet id
+	std::cout << "packet id: " << id << std::endl;
+	std::cout << "packet size inside packetdecoder: " << packet->dataLength << std::endl;
 	switch( id ) {
 	case ACK:
 		acknowledgement( packet, clientId );
@@ -144,36 +146,36 @@ void PacketDecoder::gstate( ENetPacket* packet )
 	//since it's not alowed to use void* for pointer arithmetic
 	unsigned char* data = (unsigned char*)packet->data;
 	//copy the GameStateCompressed id into the struct, which is located at second place data+sizeof( int )
-  //memcpy( (void*)&(currentState->id), (const void*)(data+sizeof( int )), sizeof( int ) );
-  currentState->id = (int)*(data+sizeof(int));
-  std::cout << "id: " << currentState->id << std::endl;
+  	//memcpy( (void*)&(currentState->id), (const void*)(data+sizeof( int )), sizeof( int ) );
+  	currentState->id = (int)*(data+sizeof(int));
+ 	 std::cout << "id: " << currentState->id << std::endl;
 	//copy the size of the GameStateCompressed compressed data into the new GameStateCompressed struct, located at 3th
 	//position of the data stream, data+2*sizeof( int )
-// 	memcpy( (void*)&(currentState->compsize), (const void*)(data+2*sizeof( int )), sizeof( int) );
-  currentState->compsize = (int)*(data+2*sizeof(int));
-  std::cout << "compsize: " << currentState->compsize << std::endl;
+	memcpy( (void*)&(currentState->compsize), (const void*)(data+2*sizeof( int )), sizeof( int) );
+  	//currentState->compsize = (int)*(data+2*sizeof(int));
+  	std::cout << "compsize: " << currentState->compsize << std::endl;
 	//size of uncompressed data
-// 	memcpy( (void*)&(currentState->normsize), (const void*)(data+3*sizeof( int )), sizeof( int ) );
-  currentState->normsize = (int)*(data+3*sizeof(int));
-  std::cout << "normsize. " << currentState->normsize << std::endl;
+	memcpy( (void*)&(currentState->normsize), (const void*)(data+3*sizeof( int )), sizeof( int ) );
+  	//currentState->normsize = (int)*(data+3*sizeof(int));
+  	std::cout << "normsize. " << currentState->normsize << std::endl;
 	//since the packetgenerator was changed, due to a new parameter, change this function too
-// 	memcpy( (void*)&(currentState->diffed), (const void*)(data+4*sizeof(int)), sizeof(bool));
-  currentState->diffed = (bool)*(data+4*sizeof(int));
-  std::cout << "diffed: " << currentState->diffed << std::endl;
+	memcpy( (void*)&(currentState->diffed), (const void*)(data+4*sizeof(int)), sizeof(bool));
+  	//currentState->diffed = (bool)*(data+4*sizeof(int));
+  	std::cout << "diffed: " << currentState->diffed << std::endl;
 	//since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream
 	currentState->data = (unsigned char*)(malloc( currentState->compsize ));
-  if(currentState->data==NULL)
-    std::cout << "memory leak" << std::endl;
+  	if(currentState->data==NULL)
+    		std::cout << "memory leak" << std::endl;
 	//copy the GameStateCompressed data
-  //std::cout << "packet size (enet): " << packet->dataLength << std::endl;
-  //std::cout << "totallen: " << 4*sizeof(int)+sizeof(bool)+currentState->compsize << std::endl;
+  	//std::cout << "packet size (enet): " << packet->dataLength << std::endl;
+  	//std::cout << "totallen: " << 4*sizeof(int)+sizeof(bool)+currentState->compsize << std::endl;
 	memcpy( (void*)(currentState->data), (const void*)(data+4*sizeof( int ) + sizeof(bool)), currentState->compsize );
 
 	//clean memory
 	enet_packet_destroy( packet );
-  //run processGameStateCompressed
-  //TODO: not yet implemented!
-  processGamestate(currentState);
+  	//run processGameStateCompressed
+  	//TODO: not yet implemented!
+  	processGamestate(currentState);
 }
 
 void PacketDecoder::clid( ENetPacket *packet)

@@ -74,10 +74,13 @@ namespace network{
 
 
   ENetPacket *ClientConnection::getPacket(ENetAddress &address){
-    if(!buffer.isEmpty())
+    if(!buffer.isEmpty()) {
+      //std::cout << "###BUFFER IS NOT EMPTY###" << std::endl;
       return buffer.pop(address);
-    else
+    }
+    else{
         return NULL;
+    }
   }
 
   ENetPacket *ClientConnection::getPacket(){

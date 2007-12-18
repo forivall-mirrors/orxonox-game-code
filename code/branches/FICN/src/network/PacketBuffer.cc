@@ -49,6 +49,7 @@ PacketBuffer::PacketBuffer(){
 
 bool PacketBuffer::push(ENetEvent *ev){
   boost::mutex::scoped_lock lock(networkPacketBufferMutex);
+  //std::cout << "event size inside packetbuffer " << ev->packet->dataLength << std::endl;
 //   if(closed)
 //     return false;
   // first element?
@@ -74,6 +75,7 @@ bool PacketBuffer::push(ENetEvent *ev){
 
 ENetPacket *PacketBuffer::pop(){
   boost::mutex::scoped_lock lock(networkPacketBufferMutex);
+  //std::cout << "packetbuffer pop" << std::endl;
   if(first!=NULL /*&& !closed*/){
     QueueItem *temp = first;
     // get packet
@@ -81,14 +83,17 @@ ENetPacket *PacketBuffer::pop(){
     // remove first element
     first = first->next;
     delete temp;
+    //std::cout << "pop size of packet " << pck->dataLength << std::endl;
     return pck;
   } else{
+    //std::cout << "nothing to return" << std::endl;
     return NULL;
   }
 }
 
 ENetPacket *PacketBuffer::pop(ENetAddress &address){
   boost::mutex::scoped_lock lock(networkPacketBufferMutex);
+  //std::cout << "packetbuffer pop(address)" << std::endl;
   if(first!=NULL /*&& !closed*/){
     QueueItem *temp = first;
     // get packet
@@ -97,6 +102,7 @@ ENetPacket *PacketBuffer::pop(ENetAddress &address){
     // remove first element
     first = first->next;
     delete temp;
+    //std::cout << "pop(address) size of packet " << pck->dataLength << std::endl;
     return pck;
   } else{
     return NULL;
