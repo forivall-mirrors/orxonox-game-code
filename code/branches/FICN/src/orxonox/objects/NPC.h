@@ -20,6 +20,7 @@ namespace orxonox {
       NPC();
       virtual ~NPC();
       void tick(float dt);
+      void update();
       void setValues(Vector3 location, Vector3 speed, Vector3 acceleration, bool movable);
 
     private:

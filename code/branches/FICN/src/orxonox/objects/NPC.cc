@@ -63,7 +63,7 @@ namespace orxonox {
   /**
    * updates the data of an element
    */
-  void NPC::tick(float dt)
+  void NPC::update()
   {
 
     // find out about this arrayOfElements
@@ -71,6 +71,15 @@ namespace orxonox {
 
     //if element is movable, calculate acceleration
     if (this->movable_ == true) calculateAcceleration(arrayOfElements);
+
+  }
+
+  /**
+   * tick this NPC
+   */
+  void NPC::tick(float dt)
+  {
+
 
   }
 
