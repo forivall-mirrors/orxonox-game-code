@@ -147,7 +147,7 @@ namespace network{
     //main loop
     while(!quit){
       //std::cout << "connection loop" << std::endl;
-      if(enet_host_service(client, &event, NETWORK_WAIT_TIMEOUT)<0){
+      if(enet_host_service(client, &event, NETWORK_CLIENT_TIMEOUT)<0){
         // we should never reach this point
         quit=true;
         // add some error handling here ========================
@@ -156,7 +156,7 @@ namespace network{
         // log handling ================
       case ENET_EVENT_TYPE_CONNECT:
       case ENET_EVENT_TYPE_RECEIVE:
-        std::cout << "got packet" << std::endl;
+        //std::cout << "got packet" << std::endl;
         processData(&event);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
@@ -179,7 +179,7 @@ namespace network{
   bool ClientConnection::disconnectConnection(){
     ENetEvent event;
     enet_peer_disconnect(server, 0);
-    while(enet_host_service(client, &event, NETWORK_WAIT_TIMEOUT) > 0){
+    while(enet_host_service(client, &event, NETWORK_CLIENT_TIMEOUT) > 0){
       switch (event.type)
       {
 	case ENET_EVENT_TYPE_NONE:
@@ -203,7 +203,7 @@ namespace network{
       // error handling
       return false;
     // handshake
-    if(enet_host_service(client, &event, NETWORK_WAIT_TIMEOUT)>0 && event.type == ENET_EVENT_TYPE_CONNECT){
+    if(enet_host_service(client, &event, NETWORK_CLIENT_TIMEOUT)>0 && event.type == ENET_EVENT_TYPE_CONNECT){
       established=true;
       return true;
     }
@@ -212,7 +212,7 @@ namespace network{
   }
 
   bool ClientConnection::processData(ENetEvent *event){
-    std::cout << "got packet, pushing to queue" << std::endl;
+    //std::cout << "got packet, pushing to queue" << std::endl;
     // just add packet to the buffer
     // this can be extended with some preprocessing
     return buffer.push(event);

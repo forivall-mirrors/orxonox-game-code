@@ -189,9 +189,9 @@ bool ClientInformation::removeClient(ENetPeer *peer){
  */
 ClientInformation *ClientInformation::findClient(int clientID, bool look_backwards){
   ClientInformation *temp = this;
+  if (temp->head)
+    temp=temp->next();
   while(temp!=0 && temp->getID()!=clientID){
-    if (temp->head)
-      continue;
     temp = temp->next();
   }
   // returns 0 if nothing has been found

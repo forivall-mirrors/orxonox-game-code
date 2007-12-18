@@ -27,7 +27,7 @@ class GameStateClient{
 public:
   GameStateClient();
   ~GameStateClient();
-  bool pushGameState(GameStateCompressed compstate);
+  bool pushGameState(GameStateCompressed *compstate);
 private:
   bool loadSnapshot(GameState state);
   GameState diff(GameState a, GameState b);

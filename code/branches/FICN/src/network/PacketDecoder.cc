@@ -87,10 +87,11 @@ void PacketDecoder::acknowledgement( ENetPacket* packet, int clientId )
 	ack* a = new ack;
 	*a = *(ack*)packet->data; //press pattern of ack on new data
 
-	//clean memory
-	enet_packet_destroy( packet );
 
-	printAck( a ); //debug info
+  processAck( a, clientId ); //debug info
+  
+  //clean memory
+  enet_packet_destroy( packet );
 }
 
 void PacketDecoder::mousem( ENetPacket* packet, int clientId )
@@ -142,24 +143,32 @@ void PacketDecoder::gstate( ENetPacket* packet )
 	//since it's not alowed to use void* for pointer arithmetic
 	unsigned char* data = (unsigned char*)packet->data;
 	//copy the GameStateCompressed id into the struct, which is located at second place data+sizeof( int )
-	memcpy( (void*)&(currentState->id), (const void*)(data+sizeof( int )), sizeof( int ) );
+  //memcpy( (void*)&(currentState->id), (const void*)(data+sizeof( int )), sizeof( int ) );
+  currentState->id = (int)*(data+sizeof(int));
 	//copy the size of the GameStateCompressed compressed data into the new GameStateCompressed struct, located at 3th
 	//position of the data stream, data+2*sizeof( int )
-	memcpy( (void*)&(currentState->compsize), (const void*)(data+2*sizeof( int )), sizeof( int) );
+// 	memcpy( (void*)&(currentState->compsize), (const void*)(data+2*sizeof( int )), sizeof( int) );
+  currentState->compsize = (int)*(data+2*sizeof(int));
 	//size of uncompressed data
-	memcpy( (void*)&(currentState->normsize), (const void*)(data+3*sizeof( int )), sizeof( int ) );
+// 	memcpy( (void*)&(currentState->normsize), (const void*)(data+3*sizeof( int )), sizeof( int ) );
+  currentState->normsize = (int)*(data+3*sizeof(int));
 	//since the packetgenerator was changed, due to a new parameter, change this function too
-	memcpy( (void*)&(currentState->diffed), (const void*)(data+4*sizeof(int)), sizeof(bool));
+// 	memcpy( (void*)&(currentState->diffed), (const void*)(data+4*sizeof(int)), sizeof(bool));
+  currentState->diffed = (bool)*(data+4*sizeof(int));
 	//since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream
 	currentState->data = (unsigned char*)(malloc( currentState->compsize ));
+  if(currentState->data==NULL)
+    std::cout << "memory leak" << std::endl;
 	//copy the GameStateCompressed data
+  //std::cout << "packet size (enet): " << packet->dataLength << std::endl;
+  //std::cout << "totallen: " << 4*sizeof(int)+sizeof(bool)+currentState->compsize << std::endl;
 	memcpy( (void*)(currentState->data), (const void*)(data+4*sizeof( int ) + sizeof(bool)), currentState->compsize );
 
 	//clean memory
 	enet_packet_destroy( packet );
   //run processGameStateCompressed
   //TODO: not yet implemented!
-  //processGamestate(currentState);
+  processGamestate(currentState);
 }
 
 void PacketDecoder::clid( ENetPacket *packet)
@@ -180,11 +189,19 @@ void PacketDecoder::processChat( chat *data, int clientId){
   printChat(data, clientId);
 }
 
+void PacketDecoder::processGamestate( GameStateCompressed *state ){
+  
+}
+
 void PacketDecoder::processClassid( classid *cid){
   printClassid(cid);
   return;
 }
 
+void PacketDecoder::processAck( ack *data, int clientID){
+  printAck(data);
+  return;
+}
 
 
 //these are some print functions for test stuff

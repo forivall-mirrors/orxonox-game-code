@@ -65,7 +65,8 @@ private:
 	
   //process data
   //two functions are note yet implemented!
-  //virtual void processGamestate(GameState *state);
+  virtual void processGamestate(GameStateCompressed *state);
+  virtual void processAck( ack *data, int clientID);
   void processClassid( classid *cid);
   //virtual void processAck( ack *data);
   

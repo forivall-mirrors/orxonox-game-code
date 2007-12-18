@@ -188,7 +188,7 @@ namespace network{
   }
 
   void Client::processGamestate( GameStateCompressed *data){
-    gamestate.pushGameState(*data);
+    gamestate.pushGameState(data);
     client_connection.addPacket(pck_gen.acknowledgement(data->id));
     client_connection.sendPackets();
     return;

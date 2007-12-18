@@ -17,6 +17,7 @@
 
 #include "ConnectionManager.h"
 #include "PacketManager.h"
+#include "PacketTypes.h"
 #include "GameStateManager.h"
 #include "ClientInformation.h"
 //#include "enet/enet.h"
@@ -45,6 +46,7 @@ namespace network{
     void updateGamestate();
     private:
     bool sendGameState();
+    void processAck( ack *data, int clientID);
     ConnectionManager *connection;
     GameStateManager *gamestates;
     PacketGenerator packet_gen;

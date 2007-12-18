@@ -199,6 +199,7 @@ namespace network{
           enet_packet_destroy(event.packet);
           break;
         case ENET_EVENT_TYPE_DISCONNECT:
+          std::cout << "disconnecting client" << std::endl;
           delete head_->findClient(&(event.peer->address));
           temp = temp->next();
           break;
@@ -226,7 +227,10 @@ namespace network{
 
   bool ConnectionManager::addClient(ENetEvent *event){
     ClientInformation *temp = head_->insertBack(new ClientInformation);
-    temp->setID(temp->prev()->getID()+1);
+    if(temp->prev()->head)
+      temp->setID(1);
+    else
+      temp->setID(temp->prev()->getID()+1);
     temp->setPeer(event->peer);
     std::cout << "added client id: " << temp->prev()->getID() << std::endl;
     return true;

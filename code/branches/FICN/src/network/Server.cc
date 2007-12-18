@@ -143,6 +143,7 @@ namespace network{
       }
       std::cout << "doing gamestate" << std::endl;
       int id = temp->getID();
+      std::cout << "server, got ID: " << id << std::endl;
       GameStateCompressed *gs = &(gamestates->popGameState(id));
       std::cout << "adding gamestate" << std::endl;
       connection->addPacket(packet_gen.gstate(gs), id);
@@ -156,5 +157,8 @@ namespace network{
     //return true;
   }
   
+  void Server::processAck( ack *data, int clientID){
+    clients->findClient(clientID)->setGamestateID(data->id);
+  }
   
 }

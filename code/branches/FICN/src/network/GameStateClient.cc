@@ -38,11 +38,11 @@ GameStateClient::~GameStateClient()
 {
 }
 
-bool GameStateClient::pushGameState(GameStateCompressed compstate){
-  if(compstate.diffed)
-    return loadSnapshot(decode(reference, compstate));
+bool GameStateClient::pushGameState(GameStateCompressed *compstate){
+  if(compstate->diffed)
+    return loadSnapshot(decode(reference, *compstate));
   else
-    return loadSnapshot(decode(compstate));
+    return loadSnapshot(decode(*compstate));
 }
 
 
@@ -64,17 +64,18 @@ void GameStateClient::removeObject(orxonox::Iterator<Synchronisable> &it){
 bool GameStateClient::loadSnapshot(GameState state)
 {
   unsigned char *data=state.data;
+  std::cout << "loadSnapshot: loading gs: " << state.id << std::endl;
   // get the start of the Synchronisable list
   orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::start();
   syncData sync;
   // loop as long as we have some data ;)
   while(data < state.data+state.size){
     // prepare the syncData struct
-    sync.length = *(int *)data;
+    sync.length = (int)*data;
     data+=sizeof(int);
-    sync.objectID = *(int *)data;
+    sync.objectID = (int)*data;
     data+=sizeof(int);
-    sync.classID = *(int *)data;
+    sync.classID = (int)*data;
     data+=sizeof(int);
     sync.data = data;
     data+=sync.length;
@@ -149,7 +150,7 @@ GameState GameStateClient::decompress(GameStateCompressed a){
   retval = uncompress( dest, &length, a.data, (uLong)compsize );
 
   switch ( retval ) {
-    case Z_OK: std::cout << "successfully compressed" << std::endl; break;
+    case Z_OK: std::cout << "successfully decompressed" << std::endl; break;
     case Z_MEM_ERROR: std::cout << "not enough memory available" << std::endl; break;
     case Z_BUF_ERROR: std::cout << "not enough memory available in the buffer" << std::endl; break;
     case Z_DATA_ERROR: std::cout << "data corrupted" << std::endl; break;

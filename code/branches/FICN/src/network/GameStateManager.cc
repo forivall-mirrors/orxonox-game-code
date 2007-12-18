@@ -60,14 +60,17 @@ void GameStateManager::update(){
 
 GameStateCompressed GameStateManager::popGameState(int clientID){
   int gID = head_->findClient(clientID)->getGamestateID();
+  std::cout << "popgamestate: sending gstate id: " << gID << std::endl;
   if(gID!=GAMESTATEID_INITIAL){
     GameState *client = gameStateMap[gID];
     GameState *server = reference;
     return encode(client, server);
+  } else {
+    GameState *server = reference;
+    head_->findClient(clientID)->setGamestateID(id);
+    return encode(server);
+    // return an undiffed gamestate and set appropriate flags
   }
-  GameState *server = reference;
-  return encode(server);
-  // return an undiffed gamestate and set appropriate flags
 }
 
 
@@ -100,6 +103,7 @@ GameState *GameStateManager::getSnapshot(int id)
   int offset=0;
   // go through all Synchronisables
   for(it = orxonox::ObjectList<Synchronisable>::start(); it != 0; ++it){
+    //std::cout << "gamestatemanager: in for loop" << std::endl;
     //get size of the synchronisable
     tempsize=it->getSize();
     //COUT(2) << "size of synchronisable: " << tempsize << std::endl;
@@ -126,8 +130,10 @@ GameState *GameStateManager::getSnapshot(int id)
 
 
 GameStateCompressed GameStateManager::encode(GameState *a, GameState *b){
-    GameState r = diff(a,b);
-  r.diffed = true;
+  //GameState r = diff(a,b);
+  //r.diffed = true;
+  GameState r = *b;
+  r.diffed = false;
   return compress_(&r);
 }
 
@@ -169,7 +175,7 @@ GameState GameStateManager::diff(GameState *a, GameState *b){
 }
 
 GameStateCompressed GameStateManager::compress_(GameState *a) {
-  COUT(2) << "compressing gamestate" << std::endl;
+  //COUT(2) << "compressing gamestate" << std::endl;
   int size = a->size;
   uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
   unsigned char* dest = (unsigned char*)malloc( buffer );
@@ -180,7 +186,7 @@ GameStateCompressed GameStateManager::compress_(GameState *a) {
   case Z_OK: std::cout << "successfully compressed" << std::endl; break;
   case Z_MEM_ERROR: std::cout << "not enough memory available" << std::endl; break;
   case Z_BUF_ERROR: std::cout << "not enough memory available in the buffer" << std::endl; break;
-  case Z_DATA_ERROR: std::cout << "data corrupted" << std::endl; break;
+  case Z_DATA_ERROR: std::cout << "decompress: data corrupted" << std::endl; break;
   }
 
   GameStateCompressed compressedGamestate;
