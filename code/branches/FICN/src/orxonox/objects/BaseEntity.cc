@@ -39,23 +39,23 @@ namespace orxonox
 	    	std::cout << "Loader: Created entity "<< name_ <<" with source " << mesh_  << " at node " << node_  << std::endl << std::endl;
     	}
    }
-   
+
    void BaseEntity::registerAllVariables(){
      WorldEntity::registerAllVariables();
      registerVar(&name_, name_.length()+1, network::STRING);
      registerVar(&mesh_, mesh_.length()+1, network::STRING);
      registerVar(&node_, node_.length()+1, network::STRING);
    }
-   
+
    bool BaseEntity::create(){
      if(!valid)
        return false;
      // get the node
      this->setNode(Orxonox::getSingleton()->getSceneManager()->getSceneNode(node_));
      Ogre::SceneManager* mgr = orxonox::Orxonox::getSingleton()->getSceneManager();
-     
+
      Ogre::Entity* entity = mgr->createEntity(name_, mesh_);
-     
+
      //Ogre::MovableObject *ent = (Ogre::MovableObject *)entity;
      getNode()->attachObject(entity); // big problem here: sigsegv
      return true;

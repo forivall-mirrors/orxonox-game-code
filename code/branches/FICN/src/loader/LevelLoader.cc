@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- *   Author: 
+ *   Author:
  *     Nicolas Perrenoud <nicolape@ee.ethz.ch>
  *   Co-authors:
  *      ...
@@ -158,10 +158,10 @@ LevelLoader::LevelLoader(string file, string path)
 						{
 				    	auMan->ambientAdd(tElem->Attribute("src"));
 						}
-					}		
-				}	
+					}
+				}
 			}
-			
+
 			// Load world
 			worldElem = rootElement->FirstChildElement("world");
 			if (worldElem)

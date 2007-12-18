@@ -29,7 +29,7 @@
     @brief Orxonox class
   */
 
-#include "graphicsEngine.h"
+#include "GraphicsEngine.h"
 
 #include <OgreRoot.h>
 #include <OgreConfigFile.h>

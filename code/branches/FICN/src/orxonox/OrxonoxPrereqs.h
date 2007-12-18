@@ -144,6 +144,7 @@ namespace network {
   struct QueueItem;
   struct synchData;
   struct synchronisableVariable;
+
 }
 
 namespace particle {

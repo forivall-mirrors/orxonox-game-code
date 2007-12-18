@@ -62,13 +62,13 @@ namespace orxonox
           nodeName_ = xmlElem->Attribute("node");
         else
           nodeName_ = "";
-        
+
         create();
 
         COUT(4) << "Loader: loaded node "<< name_ <<" : "<< x_ <<" " << y_ << " " << z_ << std::endl << std::endl;
     	}
    }
-   
+
    void SceneNode::registerAllVariables(){
      registerVar(&x_, sizeof(float), network::DATA);
      registerVar(&y_, sizeof(float), network::DATA);
@@ -82,7 +82,7 @@ namespace orxonox
      registerVar(&name_, sizeof(float), network::STRING);
      registerVar(&nodeName_, sizeof(float), network::STRING);
    }
-   
+
    bool SceneNode::create(){
      Ogre::SceneManager* mgr = orxonox::Orxonox::getSingleton()->getSceneManager();
 
@@ -99,5 +99,5 @@ namespace orxonox
      node->roll(Ogre::Degree(roll_));
      return true;
    }
-   
+
 }

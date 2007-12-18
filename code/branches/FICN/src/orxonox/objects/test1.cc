@@ -68,11 +68,11 @@ namespace orxonox
         std::cout << "Test1: usefullClass3->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << "\n";
         this->usefullClass3_ = identifier;
     }
-    
+
     void Test1::loadParams(TiXmlElement* xmlElem)
     {
 
-    	
-    	
+
+
     }
 }
