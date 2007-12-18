@@ -47,6 +47,9 @@ namespace orxonox
 
         this->setMouseEventCallback_ = false;
 
+        this->w = NULL;
+        this->tt = NULL;
+
         this->moveForward_ = 0;
         this->rotateUp_ = 0;
         this->rotateDown_ = 0;
