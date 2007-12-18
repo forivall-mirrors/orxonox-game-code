@@ -60,10 +60,6 @@
 #include "../loader/LevelLoader.h"
 #include "../audio/AudioManager.h"
 
-#include "spaceship_steering.h"
-
-#include "particle/ParticleInterface.h"
-
 #include "hud/HUD.h"
 
 //network stuff
@@ -83,121 +79,37 @@ namespace orxonox
   using namespace Ogre;
 
    // put this in seperate Class or solve the problem in another fashion
-  class OrxListener : public FrameListener, public OIS::MouseListener
+  class OrxListener : public FrameListener
   {
     public:
-      OrxListener(OIS::Keyboard *keyboard, OIS::Mouse *mouse, audio::AudioManager*  auMan, SpaceshipSteering* steering, gameMode mode)
-      : mKeyboard(keyboard), mMouse(mouse)
+      OrxListener(OIS::Keyboard *keyboard, audio::AudioManager*  auMan, gameMode mode)
       {
-
-
+        mKeyboard = keyboard;
         mode_=mode;
-        speed = 250;
-        loop = 100;
-        rotate = 10;
-        mouseX = 0;
-        mouseY = 0;
-        maxMouseX = 0;
-        minMouseX = 0;
-        moved = false;
-
-        steering_ = steering;
-
-        steering_->brakeRotate(rotate*10);
-        steering_->brakeLoop(loop);
-
-
-        mMouse->setEventCallback(this);
         auMan_ = auMan;
       }
+
       bool frameStarted(const FrameEvent& evt)
       {
-
         auMan_->update();
 
-        mKeyboard->capture();
-        mMouse->capture();
-        if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
-          steering_->moveForward(speed);
-        else
-          steering_->moveForward(0);
-        if(mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
-          steering_->brakeForward(speed);
-        else
-          steering_->brakeForward(speed/10);
-        if (mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D))
-          steering_->loopRight(loop);
-        else
-          steering_->loopRight(0);
-        if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
-          steering_->loopLeft(loop);
-        else
-          steering_->loopLeft(0);
-
-        if(moved) {
-          if (mouseY<=0)
-            steering_->rotateUp(-mouseY*rotate);
-          if (mouseY>0)
-            steering_->rotateDown(mouseY*rotate);
-          if (mouseX>0)
-            steering_->rotateRight(mouseX*rotate);
-          if (mouseX<=0)
-            steering_->rotateLeft(-mouseX*rotate);
-          mouseY = 0;
-          mouseX = 0;
-          moved = false;
-        }
-        else {
-          steering_->rotateUp(0);
-          steering_->rotateDown(0);
-          steering_->rotateRight(0);
-          steering_->rotateLeft(0);
-        }
-
-  		steering_->tick(evt.timeSinceLastFrame);
-
-
-
-//      scenemanager->spacehip->tick(evt.timesincelastframe);
-        //if(mKeyboard->isKeyDown(OIS::KC_ESCAPE))
-          //cout << "maximal MouseX: " << maxMouseX << "\tminMouseX: " << minMouseX << endl;
         if(mode_==PRESENTATION)
-	  server_g->tick(evt.timeSinceLastFrame);
+          server_g->tick(evt.timeSinceLastFrame);
         else if(mode_==CLIENT)
           client_g->tick(evt.timeSinceLastFrame);
+
         usleep(10);
+
+        mKeyboard->capture();
         return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
       }
 
-      bool mouseMoved(const OIS::MouseEvent &e)
-      {
-        mouseX += e.state.X.rel;
-        mouseY += e.state.Y.rel;
-        if(mouseX>maxMouseX) maxMouseX = mouseX;
-        if(mouseX<minMouseX) minMouseX = mouseX;
-        //cout << "mouseX: " << mouseX << "\tmouseY: " << mouseY << endl;
-        moved = true;
-        return true;
-      }
-
-      bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
-      bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
-
     private:
       gameMode mode_;
-      float speed;
-      float rotate;
-      float loop;
-      float mouseY;
-      float mouseX;
-      float maxMouseX;
-      float minMouseX;
-      bool moved;
       OIS::Keyboard *mKeyboard;
-      OIS::Mouse *mMouse;
       audio::AudioManager*  auMan_;
-      SpaceshipSteering* steering_;
   };
+
   // init static singleton reference of Orxonox
   Orxonox* Orxonox::singletonRef_ = NULL;
 
@@ -206,8 +118,16 @@ namespace orxonox
    */
   Orxonox::Orxonox()
   {
-    ogre_ = new GraphicsEngine();
-    dataPath_ = "";
+    this->ogre_ = new GraphicsEngine();
+    this->dataPath_ = "";
+    this->loader_ = 0;
+    this->auMan_ = 0;
+    this->singletonRef_ = 0;
+    this->keyboard_ = 0;
+    this->mouse_ = 0;
+    this->inputManager_ = 0;
+    this->frameListener_ = 0;
+    this->root_ = 0;
   }
 
   /**
@@ -239,7 +159,6 @@ namespace orxonox
     ar.checkArgument("data", this->dataPath_, false);
     ar.checkArgument("ip", serverIp_, false);
     if(ar.errorHandling()) die();
-
     if(mode == std::string("server"))
     {
       serverInit(path);
@@ -342,10 +261,10 @@ namespace orxonox
     setupRenderSystem();
     createRenderWindow();
     initializeResourceGroups();
-    createScene();
-    setupScene();
     setupInputSystem();
     Factory::createClassHierarchy();
+    createScene();
+    setupScene();
     createFrameListener();
     try{
       server_g = new network::Server(); // add port and bindadress
@@ -471,15 +390,12 @@ namespace orxonox
    */
   void Orxonox::setupScene()
   {
-    SceneManager *mgr = ogre_->getSceneManager();
+//    SceneManager *mgr = ogre_->getSceneManager();
 
 
-    SceneNode* node = (SceneNode*)mgr->getRootSceneNode()->getChild("OgreHeadNode");
+//    SceneNode* node = (SceneNode*)mgr->getRootSceneNode()->getChild("OgreHeadNode");
 //     SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
 
-
-    steering_ = new SpaceshipSteering(500, 200, 200, 200);
-    steering_->addNode(node);
 
 /*
     particle::ParticleInterface *e = new particle::ParticleInterface(mgr,"engine","Orxonox/strahl");
@@ -488,23 +404,6 @@ namespace orxonox
     e->setDirection(Vector3(0,0,-1));
     e->addToSceneNode(node);
 */
-
-    particle::ParticleInterface *w = new particle::ParticleInterface(mgr,"schuss","Orxonox/schuss");
-    w->particleSystem_->setParameter("local_space","true");
-    w->newEmitter();
-    w->setDirection(Vector3(0,0,1));
-    w->setPositionOfEmitter(0, Vector3(10,10,0));
-    w->setPositionOfEmitter(1, Vector3(-10,10,0));
-    w->addToSceneNode(node);
-
-    particle::ParticleInterface *tt = new particle::ParticleInterface(mgr,"twinthruster","Orxonox/engineglow");
-    tt->particleSystem_->setParameter("local_space","true");
-    tt->newEmitter();
-    tt->setDirection(Vector3(0,0,-1));
-    tt->setPositionOfEmitter(0, Vector3(20,-1,-15));
-    tt->setPositionOfEmitter(1, Vector3(-20,-1,-15));
-    tt->addToSceneNode(node);
-
   }
 
 
@@ -541,7 +440,7 @@ namespace orxonox
     ogre_->getRoot()->addFrameListener(TimerFL);
 
     //if(mode_!=CLIENT) // just a hack ------- remove this in future
-      frameListener_ = new OrxListener(keyboard_, mouse_, auMan_, steering_, mode_);
+      frameListener_ = new OrxListener(keyboard_, auMan_, mode_);
     ogre_->getRoot()->addFrameListener(frameListener_);
   }
 

@@ -27,10 +27,12 @@ IF(WIN32)
     objects/SceneNode.cc
     objects/Entity.cc
     objects/Camera.cc
-    objects/SpaceshipSteeringObject.cc
+#    objects/SpaceshipSteeringObject.cc
     objects/Model.cc
     objects/Mesh.cc
     objects/BaseEntity.cc
+    objects/SpaceShip.cc
+    objects/NPC.cc
   )
 ELSE(WIN32)
   SET(LINK_OBJECTS_LIBRARY objects)

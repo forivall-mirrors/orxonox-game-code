@@ -9,7 +9,6 @@
 
 //#include <OgreSingleton.h>
 #include <OgreSceneManager.h>
-
 #include <OIS/OIS.h>
 
 #include "graphicsEngine.h"
@@ -28,7 +27,7 @@ namespace orxonox {
     CLIENT,
     PRESENTATION
   };
-  
+
   class OrxListener;
 
   class Orxonox
@@ -41,8 +40,10 @@ namespace orxonox {
       static Orxonox* getSingleton();
       inline SceneManager* getSceneManager() { return ogre_->getSceneManager(); };
       inline GraphicsEngine* getOgrePointer() { return ogre_; };
-      inline SpaceshipSteering* getSteeringPointer() { return steering_; };
       inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
+      inline OIS::Keyboard* getKeyboard() { return this->keyboard_; }
+      inline OIS::Mouse* getMouse() { return this->mouse_; }
+
     private:
       Orxonox();
       virtual ~Orxonox();
@@ -62,20 +63,19 @@ namespace orxonox {
       void setupInputSystem();
       void createFrameListener();
       void startRenderLoop();
-    private:
 
+    private:
       GraphicsEngine*       ogre_;      //!< our dearest graphics engine <3
       std::string           dataPath_;  //!< path to data
       loader::LevelLoader*  loader_;    //!< level loader builds the scene
       audio::AudioManager*  auMan_;     //!< audio manager
-      SpaceshipSteering* 	steering_;
       static Orxonox*       singletonRef_;
       OIS::Keyboard*        keyboard_;
       OIS::Mouse*           mouse_;
       OIS::InputManager*    inputManager_;
       OrxListener*          frameListener_;
       Ogre::Root*           root_;
-      
+
       // this is used to identify the mode (server/client/...) we're in
       gameMode              mode_;
       std::string           serverIp_;

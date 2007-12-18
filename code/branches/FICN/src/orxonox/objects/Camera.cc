@@ -58,7 +58,7 @@ namespace orxonox
 
     		std::string node = xmlElem->Attribute("node");
 
-		    Ogre::SceneNode* sceneNode = (Ogre::SceneNode*)mgr->getRootSceneNode()->getChild(node);
+		    Ogre::SceneNode* sceneNode = (Ogre::SceneNode*)mgr->getRootSceneNode()->createChildSceneNode(node); //getChild(node);
 		    sceneNode->attachObject((Ogre::MovableObject*)cam);
 
 

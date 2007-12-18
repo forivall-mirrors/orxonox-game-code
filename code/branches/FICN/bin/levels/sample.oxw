@@ -23,15 +23,14 @@
 
   <!-- Keep a minimum distance of >100 to the object, otherwise the camara thinks it's in the object -->
   <!-- the value has to negative, as we want the camara behind the object -->
+<!--
+    <Camera name="Camera" pos="0,50,-150" lookat="0,20,0" node="2OgreHeadNode" />
+-->
   <world>
-    <SceneNode name="OgreHeadNode" pos="0,0,0" />
-    <Camera name="Camera" pos="0,50,-150" lookat="0,20,0" node="OgreHeadNode" />
     <Ambient colourvalue="1,1,1" />
     <Skybox src="Orxonox/StarfieldSkyBox" />
 
-
-    <SceneNode name="ShipNode" pos="0,0,0" node="OgreHeadNode" scale="10,10,10" yaw="-90" pitch="-90" />
-    <BaseEntity name="TheShip" src="assf3.mesh" node="ShipNode" />
+    <SpaceShip camera="true" position="0,0,0" scale="10" yaw="-90" pitch="-90" mesh="assf3.mesh"  forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" />
 
     <Model position="200,0,500" scale="10" mesh="assf3.mesh" yaw="-90" pitch="-90" />
     <Model position="-200,0,500" scale="10" mesh="assf3.mesh" yaw="-90" pitch="-90" />
@@ -47,7 +46,7 @@
   </world>
 
   <!-- Unused at the moment -->
-  <SpaceshipSteeringObject node="OgreHeadNode" forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" />
+<!--  <SpaceshipSteeringObject node="OgreHeadNode" forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" /> -->
 
   <scripts>
     <script file="intro.lua" />

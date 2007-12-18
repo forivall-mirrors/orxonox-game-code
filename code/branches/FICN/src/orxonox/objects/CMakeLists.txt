@@ -12,9 +12,10 @@ SET( OBJECTS_SRC_FILES
   BaseEntity.cc
   Entity.cc
   Camera.cc
-  SpaceshipSteeringObject.cc
+#  SpaceshipSteeringObject.cc
   Model.cc
   Mesh.cc
+  SpaceShip.cc
   NPC.cc
 )
 
