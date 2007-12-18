@@ -24,23 +24,23 @@ namespace orxonox
 
     void SceneNode::loadParams(TiXmlElement* xmlElem)
     {
-    	if (xmlElem->Attribute("name") && xmlElem->Attribute("pos"))
-    	{
-    		name_ = xmlElem->Attribute("name");
+      if (xmlElem->Attribute("name") && xmlElem->Attribute("pos"))
+      {
+        name_ = xmlElem->Attribute("name");
 
-	    	std::vector<std::string> pos = tokenize(xmlElem->Attribute("pos"),",");
-	    	//float x, y, z_;
-    	 	String2Number<float>(x_, pos[0]);
-	    	String2Number<float>(y_, pos[1]);
-	    	String2Number<float>(z_, pos[2]);
+        std::vector<std::string> pos = tokenize(xmlElem->Attribute("pos"),",");
+        //float x, y, z_;
+         String2Number<float>(x_, pos[0]);
+        String2Number<float>(y_, pos[1]);
+        String2Number<float>(z_, pos[2]);
 
         sx_ = 1; sy_ = 1; sz_ = 1;
         if (xmlElem->Attribute("scale"))
         {
-	    	  pos = tokenize(xmlElem->Attribute("scale"),",");
-    	 	  String2Number<float>(sx_, pos[0]);
-	    	  String2Number<float>(sy_, pos[1]);
-	    	  String2Number<float>(sz_, pos[2]);
+          pos = tokenize(xmlElem->Attribute("scale"),",");
+           String2Number<float>(sx_, pos[0]);
+          String2Number<float>(sy_, pos[1]);
+          String2Number<float>(sz_, pos[2]);
         }
         yaw_ = 0.0;
         if (xmlElem->Attribute("yaw"))
@@ -66,7 +66,7 @@ namespace orxonox
         create();
 
         COUT(4) << "Loader: loaded node "<< name_ <<" : "<< x_ <<" " << y_ << " " << z_ << std::endl << std::endl;
-    	}
+      }
    }
 
    void SceneNode::registerAllVariables(){

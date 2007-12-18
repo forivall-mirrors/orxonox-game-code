@@ -1,10 +1,13 @@
 #ifndef MODULE_HUD_H
 #define MODULE_HUD_H
 
-#include <Ogre.h>
-#include <OIS/OIS.h>
+// #include <Ogre.h>
+// #include <OIS/OIS.h>
 //#include <CEGUI/CEGUI.h>
 //#include <CEGUIRenderer.h>
+#include <OgreOverlayManager.h>
+#include <OgreOverlayElement.h>
+#include <OgreStringConverter.h>
 
 
 namespace hud

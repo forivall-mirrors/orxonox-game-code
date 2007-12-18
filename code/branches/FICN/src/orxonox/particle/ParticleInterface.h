@@ -2,10 +2,13 @@
 #define MODULE_ParticleInterface_H
 
 // #include "ParticleInterface.h"
-#include <Ogre.h>
-#include <OIS/OIS.h>
+// #include <Ogre.h>
+// #include <OIS/OIS.h>
 // #include <CEGUI/CEGUI.h>
 // #include <CEGUIRenderer.h>
+#include <OgreParticleSystem.h>
+#include <OgreParticleEmitter.h>
+#include <OgreSceneManager.h>
 
 
 namespace particle

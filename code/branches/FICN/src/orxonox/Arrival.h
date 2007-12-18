@@ -5,7 +5,7 @@
 #ifndef Arrival_Class
 #define Arrical_Class
 
-#include <Ogre.h>
+// #include <Ogre.h>
 #include <OgreVector3.h>
 
 
@@ -20,12 +20,12 @@ using namespace Ogre;
 class Arrival {
 
   public:
-    Vector3 location;  // locationvector of the element
-    Vector3 speed;  // speedvector of the element
-    Vector3 acceleration;  // accelerationvector of the element
-    Vector3 target;  //target to arrive
-    int accelerationForwards;  //from steering-interface
-    int MaxSpeed;  //from steering-interface
+    Vector3 location;           //!< locationvector of the element
+    Vector3 speed;              //!< speedvector of the element
+    Vector3 acceleration;       //!< accelerationvector of the element
+    Vector3 target;             //!< target to arrive
+    int accelerationForwards;   //!< from steering-interface
+    int MaxSpeed;               //!< from steering-interface
 
 
   Arrival() {
@@ -69,7 +69,7 @@ class Arrival {
       float length = speed.length();
       speed = (speed+getDirection());
       speed.normalise();
-      speed = speed*length; 
+      speed = speed*length;
       if (relativeDirectApproach > 4) {
         //accelerate
       }
