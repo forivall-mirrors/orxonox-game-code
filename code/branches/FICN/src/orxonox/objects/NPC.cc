@@ -28,17 +28,24 @@
 #include "NPC.h"
 #include "../core/Iterator.h"
 #include "../core/ObjectList.h"
-//#include "../Flocking.h"
 
 namespace orxonox {
 
+  CreateFactory(NPC);
+
   NPC::NPC()
   {
+    RegisterObject(NPC);
     movable_ = true;
   }
 
   NPC::~NPC()
   {
+  }
+
+  void NPC::loadParams(TiXmlElement* xmlElem)
+  {
+    Model::loadParams(xmlElem);
   }
 
   /**
@@ -54,7 +61,7 @@ namespace orxonox {
   /**
    * calculates the distance between the element and an other point given by temp
    */
-  float NPC::getDistance(NPC* temp)
+  float NPC::getDistance(WorldEntity* temp)
   {
     Vector3 distance = temp->getPosition() - this->getPosition();
     return distance.length();
@@ -66,11 +73,8 @@ namespace orxonox {
   void NPC::update()
   {
 
-    // find out about this arrayOfElements
-    NPC* arrayOfElements[ANZELEMENTS];
-
     //if element is movable, calculate acceleration
-    if (this->movable_ == true) calculateAcceleration(arrayOfElements);
+    if (this->movable_ == true) calculateAcceleration();
 
   }
 
@@ -80,33 +84,34 @@ namespace orxonox {
   void NPC::tick(float dt)
   {
 
-
+    this->setVelocity(0.995*this->getVelocity() + this->getAcceleration()*dt);
+    this->translate(this->getVelocity()*dt);
+    this->setAcceleration(Vector3(0,0,0));
   }
 
   /**
    * calculates the new acceleration of an element
    */
-  void NPC::calculateAcceleration(NPC** arrayOfElements)
+  void NPC::calculateAcceleration()
   {
     //acceleration consisting of flocking-functions
-    this->setAcceleration(separation(arrayOfElements) + alignment(arrayOfElements) + cohesion(arrayOfElements));
+    this->setAcceleration(separation() + alignment() + cohesion());
   }
 
   /**
    * separation-function (keep elements separated, avoid crashs)
    */
-  Vector3 NPC::separation(NPC** arrayOfElements)
+  Vector3 NPC::separation()
   {
     Vector3 steering = Vector3(0,0,0); //steeringvector
     Vector3 inverseDistance = Vector3(0,0,0);  //vector pointing away from possible collisions
     int numberOfNeighbour = 0;  //number of observed neighbours
     float distance = 0;  // distance to the actual element
-    for(int i=0; i<ANZELEMENTS; i++) {  //go through all elements
-      NPC* actual = arrayOfElements[i];  //get the actual element
-      distance = getDistance(actual);  //get distance between this and actual
+    for(Iterator<WorldEntity> it = ObjectList<WorldEntity>::start(); it; ++it) {  //go through all elements
+      distance = getDistance(*it);  //get distance between this and actual
       if ((distance > 0) && (distance < SEPERATIONDISTANCE)) {  //do only if actual is inside detectionradius
         inverseDistance = Vector3(0,0,0);
-        inverseDistance = this->getPosition() - actual->getPosition();  //calculate the distancevector heading towards this
+        inverseDistance = this->getPosition() - it->getPosition();  //calculate the distancevector heading towards this
         //adaptation of the inverseDistance to the distance
         if ((distance < 200) && (distance >= 120)) {inverseDistance = 2*inverseDistance;}
         if ((distance < 120) && (distance >= 80)) {inverseDistance = 5*inverseDistance;}
@@ -123,17 +128,16 @@ namespace orxonox {
   /**
    * alignment-function (lead elements to the same heading)
    */
-  Vector3 NPC::alignment(NPC** arrayOfElements)
+  Vector3 NPC::alignment()
   {
     Vector3 steering = Vector3(0,0,0); //steeringvector
     int numberOfNeighbour = 0;  //number of observed neighbours
     //float distance = 0;
     //go through all elements
-    for(int i=0; i<ANZELEMENTS; i++) {  //just working with 3 elements at the moment
-      NPC* actual = arrayOfElements[i];  //get the actual element
-      float distance = getDistance(actual);  //get distance between this and actual
+    for(Iterator<NPC> it = ObjectList<NPC>::start(); it; ++it) {  //just working with 3 elements at the moment
+      float distance = getDistance(*it);  //get distance between this and actual
       if ((distance > 0) && (distance < ALIGNMENTDISTANCE)) {  //check if actual element is inside detectionradius
-        steering = steering + actual->getVelocity();  //add up all speedvectors inside the detectionradius
+        steering = steering + it->getVelocity();  //add up all speedvectors inside the detectionradius
         numberOfNeighbour++;  //counts the elements inside the detectionradius
       }
     }
@@ -144,17 +148,16 @@ namespace orxonox {
   /**
    * cohseion-function (keep elements close to each other)
    */
-  Vector3 NPC::cohesion(NPC** arrayOfElements)
+  Vector3 NPC::cohesion()
   {
     Vector3 steering = Vector3(0,0,0); //steeringvector
     int numberOfNeighbour = 0;  //number of observed neighbours
     //float distance = 0;
     //go through all elements
-    for(int i=0; i<ANZELEMENTS; i++) {  //just working with 3 elements at the moment
-      NPC* actual = arrayOfElements[i];  //get the actual element
-      float distance = getDistance(actual);  //get distance between this and actual
+    for(Iterator<NPC> it = ObjectList<NPC>::start(); it; ++it) {  //just working with 3 elements at the moment
+      float distance = getDistance(*it);  //get distance between this and actual
       if ((distance > 0) && (distance < COHESIONDISTANCE)) {  //check if actual element is inside detectionradius
-        steering = steering + actual->getPosition();  //add up all locations of elements inside the detectionradius
+        steering = steering + it->getPosition();  //add up all locations of elements inside the detectionradius
         numberOfNeighbour++;  //counts the elements inside the detectionradius
       }
     }

@@ -32,6 +32,12 @@
 
     <SpaceShip camera="true" position="0,0,0" scale="10" yaw="-90" pitch="-90" mesh="assf3.mesh"  forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" />
 
+    <NPC position="0,100,400" scale="1" mesh="razor.mesh"/>
+    <NPC position="0,100,400" scale="1" mesh="razor.mesh"/>
+    <NPC position="0,-100,500" scale="1" mesh="razor.mesh"/>
+    <NPC position="0,-200,450" scale="1" mesh="razor.mesh"/>
+    <NPC position="100,0,400" scale="1" mesh="razor.mesh"/>
+
     <Model position="200,0,500" scale="10" mesh="assf3.mesh" yaw="-90" pitch="-90" />
     <Model position="-200,0,500" scale="10" mesh="assf3.mesh" yaw="-90" pitch="-90" />
 

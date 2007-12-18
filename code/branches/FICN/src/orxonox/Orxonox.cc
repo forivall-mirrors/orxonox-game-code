@@ -62,6 +62,7 @@
 // objects
 #include "objects/Tickable.h"
 #include "objects/Timer.h"
+#include "objects/NPC.h"
 #include "core/ArgReader.h"
 #include "core/Factory.h"
 #include "core/Debug.h"
@@ -89,6 +90,7 @@ namespace orxonox
       bool frameStarted(const FrameEvent& evt)
       {
         auMan_->update();
+        updateAI();
 
         if(mode_==PRESENTATION)
           server_g->tick(evt.timeSinceLastFrame);
@@ -99,6 +101,14 @@ namespace orxonox
 
         mKeyboard->capture();
         return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
+      }
+
+      void updateAI()
+      {
+        for(Iterator<NPC> it = ObjectList<NPC>::start(); it; ++it)
+        {
+          it->update();
+        }
       }
 
     private:

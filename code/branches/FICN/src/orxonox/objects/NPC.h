@@ -8,7 +8,6 @@
 #define MODULE_NPC_H
 
 // includes
-#include "WorldEntity.h"
 #include "Model.h"
 
 namespace orxonox {
@@ -19,16 +18,17 @@ namespace orxonox {
 
       NPC();
       virtual ~NPC();
+      virtual void loadParams(TiXmlElement* xmlElem);
       void tick(float dt);
       void update();
       void setValues(Vector3 location, Vector3 speed, Vector3 acceleration, bool movable);
 
     private:
-      float getDistance(NPC* temp);
-      void calculateAcceleration(NPC** arrayOfElements);
-      Vector3 separation(NPC** arrayOfElements);
-      Vector3 alignment(NPC** arrayOfElements);
-      Vector3 cohesion(NPC** arrayOfElements);
+      float getDistance(WorldEntity* temp);
+      void calculateAcceleration();
+      Vector3 separation();
+      Vector3 alignment();
+      Vector3 cohesion();
 
 
     private:
