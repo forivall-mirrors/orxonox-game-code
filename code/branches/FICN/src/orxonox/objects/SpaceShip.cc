@@ -106,7 +106,7 @@ namespace orxonox
         Model::loadParams(xmlElem);
 
         w = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"schuss" + this->getName(),"Orxonox/schuss");
-        w->particleSystem_->setParameter("local_space","true");
+        w->getParticleSystem()->setParameter("local_space","true");
         w->newEmitter();
 /*
         w->setDirection(Vector3(0,0,1));
@@ -124,7 +124,7 @@ namespace orxonox
 
 
         tt = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
-        tt->particleSystem_->setParameter("local_space","true");
+        tt->getParticleSystem()->setParameter("local_space","true");
         tt->newEmitter();
 /*
         tt->setDirection(Vector3(0,0,1));

@@ -17,7 +17,6 @@ namespace particle
 class ParticleInterface
 {
  public:
-	Ogre::ParticleSystem *particleSystem_;
 
 	ParticleInterface( Ogre::SceneManager *sceneManager, Ogre::String name, Ogre::String templateName );
 	~ParticleInterface( void );
@@ -39,9 +38,12 @@ class ParticleInterface
 	void setColour( Ogre::ColourValue colour );
 	void switchEnable( void );
 
+  Ogre::ParticleSystem* getParticleSystem() {return this->particleSystem_; };
+
  private:
 	Ogre::SceneNode *sceneNode_;
 	Ogre::SceneManager *sceneManager_;
+  Ogre::ParticleSystem *particleSystem_;
 	Ogre::Real distance_;
 	Ogre::Real velocity_;
 	int rate_;
