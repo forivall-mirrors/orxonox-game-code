@@ -30,43 +30,26 @@
  @brief Orxonox Main Class
  */
 
-#include "orxonox.h"
-#include "graphicsEngine.h"
-
-//#include <Ogre.h>
-// 40% speed up: (instead of Ogre.h)
-#include <OgreSceneNode.h>
-#include <OgreSceneManager.h>
+//****** OGRE ******
+#include <OgreString.h>
+#include <OgreException.h>
 #include <OgreRoot.h>
 #include <OgreFrameListener.h>
-#include <OgreConfigFile.h>
-#include <OgreTextureManager.h>
-#include <OgreEntity.h>
 #include <OgreRenderWindow.h>
+#include <OgreTextureManager.h>
+#include <OgreResourceGroupManager.h>
+#include <OgreConfigFile.h>
+#include <OgreOverlay.h>
+#include <OgreOverlayManager.h>
 
+//****** OIS *******
 #include <OIS/OIS.h>
-//#include <CEGUI/CEGUI.h>
-//#include <OgreCEGUIRenderer.h>
 
+//****** STD *******
 #include <string>
 #include <iostream>
 
-#include "objects/Tickable.h"
-#include "objects/Timer.h"
-#include "core/ArgReader.h"
-#include "core/Factory.h"
-#include "core/Debug.h"
-
-#include "../loader/LevelLoader.h"
-#include "../audio/AudioManager.h"
-
-#include "hud/HUD.h"
-
-//network stuff
-#include "../network/Server.h"
-#include "../network/Client.h"
-#include "../network/NetworkFrameListener.h"
-
+// hack for the usleep/Sleep problem
 #ifdef WIN32
 #include <windows.h>
 #define usleep(x) Sleep((x)/1000)
@@ -74,11 +57,33 @@
 #include <unistd.h>
 #endif
 
+//***** ORXONOX ****
+// loader and audio
+#include "loader/LevelLoader.h"
+#include "audio/AudioManager.h"
+
+// network
+#include "../network/Server.h"
+#include "../network/Client.h"
+#include "../network/NetworkFrameListener.h"
+
+// objects
+#include "objects/Tickable.h"
+#include "objects/Timer.h"
+#include "core/ArgReader.h"
+#include "core/Factory.h"
+#include "core/Debug.h"
+#include "hud/HUD.h"
+
+#include "graphicsEngine.h"
+#include "orxonox.h"
+
+
 namespace orxonox
 {
   using namespace Ogre;
 
-   // put this in seperate Class or solve the problem in another fashion
+   // put this in a seperate Class or solve the problem in another fashion
   class OrxListener : public FrameListener
   {
     public:
@@ -330,9 +335,9 @@ namespace orxonox
         typeName = i->first;
         archName = i->second;
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation( String(macBundlePath() + "/" + archName), typeName, secName);
+        ResourceGroupManager::getSingleton().addResourceLocation( String(macBundlePath() + "/" + archName), typeName, secName);
 #else
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation( archName, typeName, secName);
+        ResourceGroupManager::getSingleton().addResourceLocation( archName, typeName, secName);
 #endif
       }
     }
@@ -412,7 +417,7 @@ namespace orxonox
     size_t windowHnd = 0;
     std::ostringstream windowHndStr;
     OIS::ParamList pl;
-    Ogre::RenderWindow *win = ogre_->getRoot()->getAutoCreatedWindow();
+    RenderWindow *win = ogre_->getRoot()->getAutoCreatedWindow();
 
     win->getCustomAttribute("WINDOW", &windowHnd);
     windowHndStr << windowHnd;

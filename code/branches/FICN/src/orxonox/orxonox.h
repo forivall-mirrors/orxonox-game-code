@@ -7,7 +7,7 @@
 #ifndef ORXONOX_H
 #define ORXONOX_H
 
-//#include <OgreSingleton.h>
+#include <OgrePrerequisites.h>
 #include <OgreSceneManager.h>
 #include <OIS/OIS.h>
 
@@ -38,7 +38,7 @@ namespace orxonox {
       // not sure if this should be private
       void die(/* some error code */);
       static Orxonox* getSingleton();
-      inline SceneManager* getSceneManager() { return ogre_->getSceneManager(); };
+      inline Ogre::SceneManager* getSceneManager() { return ogre_->getSceneManager(); };
       inline GraphicsEngine* getOgrePointer() { return ogre_; };
       inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
       inline OIS::Keyboard* getKeyboard() { return this->keyboard_; }

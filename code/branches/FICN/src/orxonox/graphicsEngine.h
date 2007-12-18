@@ -13,7 +13,6 @@
 
 namespace orxonox {
 
-  using namespace Ogre;
 /**
    * graphics engine manager class
  */
@@ -26,7 +25,7 @@ namespace orxonox {
       void setup();
       bool load();
       void loadRessourceLocations(std::string path);
-      SceneManager* getSceneManager();
+      Ogre::SceneManager* getSceneManager();
       void startRender();
 
       virtual ~GraphicsEngine();

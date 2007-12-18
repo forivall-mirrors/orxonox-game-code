@@ -7,7 +7,6 @@
 // #include <CEGUI/CEGUI.h>
 // #include <CEGUIRenderer.h>
 
-using namespace Ogre;
 
 namespace particle
 {
@@ -15,35 +14,35 @@ namespace particle
 class ParticleInterface
 {
  public:
-	ParticleSystem *particleSystem_;
+	Ogre::ParticleSystem *particleSystem_;
 
-	ParticleInterface( SceneManager *sceneManager, String name, String templateName );
+	ParticleInterface( Ogre::SceneManager *sceneManager, Ogre::String name, Ogre::String templateName );
 	~ParticleInterface( void );
-	void addToSceneNode( SceneNode* sceneNode );
+	void addToSceneNode( Ogre::SceneNode* sceneNode );
 	void dettachFromSceneNode( void );
-	ParticleEmitter* getEmitter ( int emitterNr );
+	Ogre::ParticleEmitter* getEmitter ( int emitterNr );
 	void newEmitter ( void );
-	void setPositionOfEmitter ( int emitterNr, Vector3 position );
-	Vector3 getPositionOfEmitter ( int emitterNr );
-	void setDirection ( Vector3 direction );
-	Vector3 getDirection ( void );
-	Real getVelocity();
-	void setVelocity( Real v );
+	void setPositionOfEmitter ( int emitterNr, Ogre::Vector3 position );
+	Ogre::Vector3 getPositionOfEmitter ( int emitterNr );
+	void setDirection ( Ogre::Vector3 direction );
+	Ogre::Vector3 getDirection ( void );
+	Ogre::Real getVelocity();
+	void setVelocity( Ogre::Real v );
 	int getRate();
 	void setRate( int r );
-	Real getDistance();
-	void setDistance( Real d );
-	ColourValue getColour( void );
-	void setColour( ColourValue colour );
+	Ogre::Real getDistance();
+	void setDistance( Ogre::Real d );
+	Ogre::ColourValue getColour( void );
+	void setColour( Ogre::ColourValue colour );
 	void switchEnable( void );
 
  private:
-	SceneNode *sceneNode_;
-	SceneManager *sceneManager_;
-	Real distance_;
-	Real velocity_;
+	Ogre::SceneNode *sceneNode_;
+	Ogre::SceneManager *sceneManager_;
+	Ogre::Real distance_;
+	Ogre::Real velocity_;
 	int rate_;
-	ColourValue colour_;
+	Ogre::ColourValue colour_;
 	int numberOfEmitters_;
 
 	void standardizeEmitters();

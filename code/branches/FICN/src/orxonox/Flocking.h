@@ -13,15 +13,14 @@
 
 #endif
 
-using namespace Ogre;
 
 class Element // An element that flocks
 {
 
   public:
-    Vector3 location;  // locationvector of the element
-    Vector3 speed;  // speedvector of the element
-    Vector3 acceleration;  // accelerationvector of the element
+    Ogre::Vector3 location;  // locationvector of the element
+    Ogre::Vector3 speed;  // speedvector of the element
+    Ogre::Vector3 acceleration;  // accelerationvector of the element
     bool movable;  // movability of the element, (false) gives the possiblity that an object can`t be moved by flocking but still gets into the calculation
     static int const SEPERATIONDISTANCE = 300;  //detectionradius of seperation
     static int const ALIGNMENTDISTANCE = 300;  //detectionradius of alignment
@@ -37,7 +36,7 @@ class Element // An element that flocks
   }
 
   //constructor
-  Element(Vector3 location_, Vector3 speed_, Vector3 acceleration_, bool movable_) {
+  Element(Ogre::Vector3 location_, Ogre::Vector3 speed_, Ogre::Vector3 acceleration_, bool movable_) {
     acceleration = acceleration_;
     speed = speed_;
     location = location_;
@@ -45,7 +44,7 @@ class Element // An element that flocks
   }
 
   //function to chance values of an element
-  void setValues(Vector3 location_, Vector3 speed_, Vector3 acceleration_, bool movable_) {
+  void setValues(Ogre::Vector3 location_, Ogre::Vector3 speed_, Ogre::Vector3 acceleration_, bool movable_) {
     acceleration = acceleration_;
     speed = speed_;
     location = location_;
@@ -54,7 +53,7 @@ class Element // An element that flocks
 
   //calculates the distance between the element and an other point given by temp
   float getDistance(Element temp) {
-    Vector3 distance = temp.location-location;
+    Ogre::Vector3 distance = temp.location-location;
     return distance.length();
   }
 
@@ -69,7 +68,8 @@ class Element // An element that flocks
   }
 
   //separation-function (keep elements separated, avoid crashs)
-  Vector3 separation(Element arrayOfElements[]) {
+  Ogre::Vector3 separation(Element arrayOfElements[]) {
+    using namespace Ogre;
     Vector3 steering = Vector3(0,0,0); //steeringvector
     Vector3 inverseDistance = Vector3(0,0,0);  //vector pointing away from possible collisions
     int numberOfNeighbour = 0;  //number of observed neighbours
@@ -94,7 +94,8 @@ class Element // An element that flocks
   }
 
   //alignment-function (lead elements to the same heading)
-  Vector3 alignment(Element arrayOfElements[]) {
+  Ogre::Vector3 alignment(Element arrayOfElements[]) {
+    using namespace Ogre;
     Vector3 steering = Vector3(0,0,0); //steeringvector
     int numberOfNeighbour = 0;  //number of observed neighbours
     float distance = 0;
@@ -112,7 +113,8 @@ class Element // An element that flocks
   }
 
   //cohseion-function (keep elements close to each other)
-  Vector3 cohesion(Element arrayOfElements[]) {
+  Ogre::Vector3 cohesion(Element arrayOfElements[]) {
+    using namespace Ogre;
     Vector3 steering = Vector3(0,0,0); //steeringvector
     int numberOfNeighbour = 0;  //number of observed neighbours
     float distance = 0;

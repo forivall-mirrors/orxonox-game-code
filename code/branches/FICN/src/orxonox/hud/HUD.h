@@ -6,7 +6,6 @@
 //#include <CEGUI/CEGUI.h>
 //#include <CEGUIRenderer.h>
 
-using namespace Ogre;
 
 namespace hud
 {
@@ -16,22 +15,22 @@ class HUD
 
   private:
 
-	OverlayElement* timeText_;
-	OverlayElement* targetWindowNameText_;
-	OverlayElement* targetWindowStatusText_;
-	OverlayElement* targetWindowDistanceText_;
-	OverlayElement* targetWindowHitRatingText_;
-	OverlayElement* energyLength_;
-	OverlayElement* shieldLeftTop_;
-	OverlayElement* shieldRightTop_;
-	OverlayElement* shieldLeftBottom_;
-	OverlayElement* shieldRightBottom_;
-	OverlayElement* rocketNum1_;
-	OverlayElement* rocketNum2_;
-	OverlayElement* rocketNum3_;
-	OverlayElement* rocketNum4_;
-	OverlayElement* energyDistrPoint_;
-	OverlayElement* primarChoice_;
+    Ogre::OverlayElement* timeText_;
+	Ogre::OverlayElement* targetWindowNameText_;
+	Ogre::OverlayElement* targetWindowStatusText_;
+	Ogre::OverlayElement* targetWindowDistanceText_;
+	Ogre::OverlayElement* targetWindowHitRatingText_;
+	Ogre::OverlayElement* energyLength_;
+	Ogre::OverlayElement* shieldLeftTop_;
+	Ogre::OverlayElement* shieldRightTop_;
+	Ogre::OverlayElement* shieldLeftBottom_;
+	Ogre::OverlayElement* shieldRightBottom_;
+	Ogre::OverlayElement* rocketNum1_;
+	Ogre::OverlayElement* rocketNum2_;
+	Ogre::OverlayElement* rocketNum3_;
+	Ogre::OverlayElement* rocketNum4_;
+	Ogre::OverlayElement* energyDistrPoint_;
+	Ogre::OverlayElement* primarChoice_;
 
 
 
@@ -40,8 +39,8 @@ class HUD
 	int timeMin_;
 	int timeSec_;
 
-	String targetWindowName_;
-	String targetWindowStatus_;
+	Ogre::String targetWindowName_;
+	Ogre::String targetWindowStatus_;
 	int targetWindowDistance_;
 	int targetWindowHitRating_;
 
@@ -77,8 +76,8 @@ class HUD
 	void init( void );
 
 	void setTime(int i, int j);
-	void setTargetWindowName(String i);
-	void setTargetWindowStatus(String i);
+	void setTargetWindowName(Ogre::String i);
+	void setTargetWindowStatus(Ogre::String i);
 	void setTargetWindowDistance(int i);
 	void setTargetWindowHitRating(int i);
 	void setEnergyValue(int i);
