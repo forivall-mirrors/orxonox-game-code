@@ -81,30 +81,30 @@ namespace orxonox
     {
         BaseObject::loadParams(xmlElem);
 
-    	if (xmlElem->Attribute("name"))
-    	{
-    		this->setName(xmlElem->Attribute("mesh"));
-    	}
+        if (xmlElem->Attribute("name"))
+        {
+            this->setName(xmlElem->Attribute("mesh"));
+        }
 
-    	if (xmlElem->Attribute("position"))
-    	{
-	    	std::vector<std::string> pos = tokenize(xmlElem->Attribute("position"),",");
-	    	float x, y, z;
-    	 	String2Number<float>(x, pos[0]);
-	    	String2Number<float>(y, pos[1]);
-	    	String2Number<float>(z, pos[2]);
-	    	this->setPosition(x, y, z);
-    	}
+        if (xmlElem->Attribute("position"))
+        {
+            std::vector<std::string> pos = tokenize(xmlElem->Attribute("position"),",");
+            float x, y, z;
+            String2Number<float>(x, pos[0]);
+            String2Number<float>(y, pos[1]);
+            String2Number<float>(z, pos[2]);
+            this->setPosition(x, y, z);
+        }
 
-    	if (xmlElem->Attribute("direction"))
-    	{
-	    	std::vector<std::string> pos = tokenize(xmlElem->Attribute("direction"),",");
-	    	float x, y, z;
-    	 	String2Number<float>(x, pos[0]);
-	    	String2Number<float>(y, pos[1]);
-	    	String2Number<float>(z, pos[2]);
-	    	this->setDirection(x, y, z);
-    	}
+        if (xmlElem->Attribute("direction"))
+        {
+            std::vector<std::string> pos = tokenize(xmlElem->Attribute("direction"),",");
+            float x, y, z;
+            String2Number<float>(x, pos[0]);
+            String2Number<float>(y, pos[1]);
+            String2Number<float>(z, pos[2]);
+            this->setDirection(x, y, z);
+        }
 
         if (xmlElem->Attribute("yaw") || xmlElem->Attribute("pitch") || xmlElem->Attribute("roll"))
         {
@@ -123,13 +123,33 @@ namespace orxonox
             this->roll(Degree(roll));
         }
 
-    	if (xmlElem->Attribute("scale"))
-    	{
-		    std::string scaleStr = xmlElem->Attribute("scale");
-		    float scale;
-		    String2Number<float>(scale, scaleStr);
-		    this->setScale(scale);
-    	}
+        if (xmlElem->Attribute("scale"))
+        {
+            std::string scaleStr = xmlElem->Attribute("scale");
+            float scale;
+            String2Number<float>(scale, scaleStr);
+            this->setScale(scale);
+        }
+
+        if (xmlElem->Attribute("rotationAxis"))
+        {
+            std::vector<std::string> pos = tokenize(xmlElem->Attribute("rotationAxis"),",");
+            float x, y, z;
+            String2Number<float>(x, pos[0]);
+            String2Number<float>(y, pos[1]);
+            String2Number<float>(z, pos[2]);
+            this->setRotationAxis(x, y, z);
+        }
+
+        if (xmlElem->Attribute("rotationRate"))
+        {
+            float rotationRate;
+            String2Number<float>(rotationRate, xmlElem->Attribute("rotationRate"));
+            this->setRotationRate(Degree(rotationRate));
+            if (rotationRate != 0)
+                this->setStatic(false);
+        }
+
     }
 
     void WorldEntity::registerAllVariables()

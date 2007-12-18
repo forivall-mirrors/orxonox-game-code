@@ -122,6 +122,11 @@ namespace orxonox
       inline const Ogre::Quaternion& getOrientation()
           { return this->node_->getOrientation(); }
 
+      inline void setStatic(bool bStatic)
+          { this->bStatic_ = bStatic; }
+      inline bool isStatic()
+          { return this->bStatic_; }
+
     protected:
       void registerAllVariables();
 

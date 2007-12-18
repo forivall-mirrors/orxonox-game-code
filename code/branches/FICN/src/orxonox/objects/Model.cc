@@ -24,11 +24,11 @@ namespace orxonox
     {
         WorldEntity::loadParams(xmlElem);
 
-    	if (xmlElem->Attribute("mesh"))
-    	{
-    		std::string src = xmlElem->Attribute("mesh");
-    		this->mesh_.setMesh(src);
-		    this->attachObject(this->mesh_.getEntity());
+        if (xmlElem->Attribute("mesh"))
+        {
+            std::string src = xmlElem->Attribute("mesh");
+            this->mesh_.setMesh(src);
+            this->attachObject(this->mesh_.getEntity());
         }
 
         COUT(4) << "Loader: Created model" << std::endl;

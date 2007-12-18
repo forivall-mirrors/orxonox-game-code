@@ -122,6 +122,38 @@ extern "C" {
       orx->init(argc, argv, macBundlePath());
       orx->start();
 #else
+/*
+for (int i = 0; i < 500; i++)
+{
+int x = rand() % 40000 - 20000;
+int y = rand() % 40000 - 20000;
+int z = rand() % 40000 - 20000;
+
+int scale = rand() % 100 + 20;
+
+int version = rand() % 6 + 1;
+
+float rotx = float(rand()) / RAND_MAX;
+float roty = float(rand()) / RAND_MAX;
+float rotz = float(rand()) / RAND_MAX;
+
+int axis = rand() % 3 + 1;
+
+if (axis == 1)
+  rotx = 0;
+if (axis == 2)
+  roty = 0;
+if (axis == 3)
+  rotz = 0;
+
+int rotation = rand() % 40 + 10;
+
+//    <Model position="1000,1500,0" scale="50" mesh="ast1.mesh" rotationAxis="0,1.25,0" rotationRate="70" />
+std::cout << "    <Model position=\"" << x << "," << y << "," << z << "\" scale=\"" << scale << "\" mesh=\"ast" << version << ".mesh\" rotationAxis=\"" << rotx << "," << roty << "," << rotz << "\" rotationRate=\"" << rotation << "\" />" << std::endl;
+
+
+}
+*/
       orx->init(argc, argv, "");
       orx->start();
 #endif
