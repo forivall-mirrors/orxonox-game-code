@@ -49,14 +49,6 @@
 #include <string>
 #include <iostream>
 
-// hack for the usleep/Sleep problem
-#ifdef WIN32
-#include <windows.h>
-#define usleep(x) Sleep((x)/1000)
-#else
-#include <unistd.h>
-#endif
-
 //***** ORXONOX ****
 // loader and audio
 #include "loader/LevelLoader.h"

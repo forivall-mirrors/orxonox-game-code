@@ -8,13 +8,9 @@
 #define ORXONOX_H
 
 #include <OgrePrerequisites.h>
-#include <OgreSceneManager.h>
-#include <OIS/OIS.h>
+#include <OIS/OISPrereqs.h>
 
-#include "graphicsEngine.h"
-#include "../loader/LevelLoader.h"
-#include "../audio/AudioManager.h"
-#include "spaceship_steering.h"
+#include "OrxonoxPrereq.h"
 
 
 // TODO: Orxonox should maybe derive from BaseObject
