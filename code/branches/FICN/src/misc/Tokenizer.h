@@ -16,7 +16,7 @@
 
 inline std::vector<std::string> tokenize(const std::string& str, const std::string& delimiters = ",")
 {
-	vector<std::string> tokens;
+  std::vector<std::string> tokens;
 
   // Skip delimiters at beginning.
   std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);

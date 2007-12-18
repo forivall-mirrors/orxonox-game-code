@@ -9,10 +9,10 @@ ADD_SUBDIRECTORY(particle)
 
 
 SET( ORXONOX_SRC_FILES
-  orxonox.cc
-  spaceship_steering.cc
-  main.cc
-  graphicsEngine.cc
+  Orxonox.cc
+  SpaceshipSteering.cc
+  Main.cc
+  GraphicsEngine.cc
 )
 
 IF(WIN32)

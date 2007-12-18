@@ -14,7 +14,7 @@
 
 #include "SpaceshipSteeringObject.h"
 
-#include "../spaceship_steering.h"
+#include "../SpaceshipSteering.h"
 
 namespace orxonox
 {
