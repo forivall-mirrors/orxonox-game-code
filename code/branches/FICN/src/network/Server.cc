@@ -142,12 +142,13 @@ namespace network{
         continue;
       }
       std::cout << "doing gamestate" << std::endl;
-      int id = temp->getID();
-      std::cout << "server, got ID: " << id << std::endl;
-      GameStateCompressed *gs = &(gamestates->popGameState(id));
-      std::cout << "adding gamestate" << std::endl;
-      connection->addPacket(packet_gen.gstate(gs), id);
-      std::cout << "added gamestate" << std::endl;
+      int gid = temp->getGamestateID();
+      int cid = temp->getID();
+      std::cout << "server, got acked ID: " << gid << std::endl;
+      GameStateCompressed *gs = &(gamestates->popGameState(cid));
+      //std::cout << "adding gamestate" << std::endl;
+      connection->addPacket(packet_gen.gstate(gs), cid);
+      //std::cout << "added gamestate" << std::endl;
       added=true;
       temp=temp->next();
     }
@@ -158,7 +159,7 @@ namespace network{
   }
   
   void Server::processAck( ack *data, int clientID){
-    clients->findClient(clientID)->setGamestateID(data->id);
+    clients->findClient(clientID)->setGamestateID(data->a);
   }
   
 }

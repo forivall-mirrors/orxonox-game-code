@@ -60,14 +60,15 @@ void GameStateManager::update(){
 
 GameStateCompressed GameStateManager::popGameState(int clientID){
   int gID = head_->findClient(clientID)->getGamestateID();
-  std::cout << "popgamestate: sending gstate id: " << gID << std::endl;
+  std::cout << "popgamestate: sending gstate id: " << id << "diffed from: " << gID << std::endl;
   if(gID!=GAMESTATEID_INITIAL){
     GameState *client = gameStateMap[gID];
     GameState *server = reference;
+    //head_->findClient(clientID)->setGamestateID(id);
     return encode(client, server);
   } else {
     GameState *server = reference;
-    head_->findClient(clientID)->setGamestateID(id);
+    //head_->findClient(clientID)->setGamestateID(id);
     return encode(server);
     // return an undiffed gamestate and set appropriate flags
   }
@@ -94,6 +95,7 @@ GameState *GameStateManager::getSnapshot(int id)
 
   GameState *retval=new GameState; //return value
   retval->id=id++;
+  std::cout << "producing gamestate with id: " << retval->id << std::endl;
   // reserve a little memory and increase it later on
   //COUT(2) << "mallocing" << std::endl;
   retval->data = (unsigned char*)malloc(memsize);
@@ -192,7 +194,7 @@ GameStateCompressed GameStateManager::compress_(GameState *a) {
   GameStateCompressed compressedGamestate;
   compressedGamestate.compsize = buffer;
   compressedGamestate.normsize = size;
-  compressedGamestate.id = GAMESTATE;
+  compressedGamestate.id = a->id;
   compressedGamestate.data = dest;
   compressedGamestate.diffed = a->diffed;
 

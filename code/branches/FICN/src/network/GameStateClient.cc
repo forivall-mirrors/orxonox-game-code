@@ -144,7 +144,12 @@ GameState GameStateClient::diff(GameState a, GameState b){
 GameState GameStateClient::decompress(GameStateCompressed a){
   int normsize = a.normsize;
   int compsize = a.compsize;
-  unsigned char* dest = (unsigned char*)malloc( normsize );
+  int bufsize;
+  if(normsize < compsize)
+    bufsize = compsize;
+  else
+    bufsize = normsize;
+  unsigned char* dest = (unsigned char*)malloc( bufsize );
   int retval;
   uLongf length=normsize;
   retval = uncompress( dest, &length, a.data, (uLong)compsize );

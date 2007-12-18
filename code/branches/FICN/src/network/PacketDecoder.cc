@@ -88,6 +88,7 @@ void PacketDecoder::acknowledgement( ENetPacket* packet, int clientId )
 	*a = *(ack*)packet->data; //press pattern of ack on new data
 
 
+  std::cout << "got ack id: " << a->id << std::endl;
   processAck( a, clientId ); //debug info
   
   //clean memory
@@ -145,16 +146,20 @@ void PacketDecoder::gstate( ENetPacket* packet )
 	//copy the GameStateCompressed id into the struct, which is located at second place data+sizeof( int )
   //memcpy( (void*)&(currentState->id), (const void*)(data+sizeof( int )), sizeof( int ) );
   currentState->id = (int)*(data+sizeof(int));
+  std::cout << "id: " << currentState->id << std::endl;
 	//copy the size of the GameStateCompressed compressed data into the new GameStateCompressed struct, located at 3th
 	//position of the data stream, data+2*sizeof( int )
 // 	memcpy( (void*)&(currentState->compsize), (const void*)(data+2*sizeof( int )), sizeof( int) );
   currentState->compsize = (int)*(data+2*sizeof(int));
+  std::cout << "compsize: " << currentState->compsize << std::endl;
 	//size of uncompressed data
 // 	memcpy( (void*)&(currentState->normsize), (const void*)(data+3*sizeof( int )), sizeof( int ) );
   currentState->normsize = (int)*(data+3*sizeof(int));
+  std::cout << "normsize. " << currentState->normsize << std::endl;
 	//since the packetgenerator was changed, due to a new parameter, change this function too
 // 	memcpy( (void*)&(currentState->diffed), (const void*)(data+4*sizeof(int)), sizeof(bool));
   currentState->diffed = (bool)*(data+4*sizeof(int));
+  std::cout << "diffed: " << currentState->diffed << std::endl;
 	//since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream
 	currentState->data = (unsigned char*)(malloc( currentState->compsize ));
   if(currentState->data==NULL)

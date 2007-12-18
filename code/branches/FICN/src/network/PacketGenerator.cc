@@ -48,7 +48,7 @@ PacketGenerator::PacketGenerator() {}
 
 ENetPacket* PacketGenerator::acknowledgement( int state, int reliable )
 {
-    std::cout << "generating new acknowledgement" << std::endl;
+    std::cout << "generating new acknowledgement, id: " << state << std::endl;
 	ack* ackreq = new ack;
 	ackreq->id = ACK;
 	ackreq->a = state;

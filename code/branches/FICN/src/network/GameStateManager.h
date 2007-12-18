@@ -48,6 +48,7 @@ public:
   void update();
   GameStateCompressed popGameState(int clientID);
   void ackGameState(int clientID, int gamestateID);
+  int id;
 private:
   GameState *getSnapshot(int id);
   GameStateCompressed encode(GameState *a, GameState *b);
@@ -59,7 +60,6 @@ private:
   std::map<int, GameState*> gameStateMap; //map gsID to gamestate*
   std::map<int, int> gameStateUsed; // save the number of clients, that use the specific gamestate
   GameState *reference;
-  int id;
   ClientInformation *head_;
 };
 
