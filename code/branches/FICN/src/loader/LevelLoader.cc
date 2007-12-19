@@ -144,6 +144,7 @@ LevelLoader::LevelLoader(string file, string path)
 			// Load audio
 			audio::AudioManager* auMan = orxonox::Orxonox::getSingleton()->getAudioManagerPointer();
 			audioElem = rootElement->FirstChildElement("audio");
+
 			if (audioElem)
 			{
 				audioElem = audioElem->FirstChildElement("ambient");
@@ -154,14 +155,18 @@ LevelLoader::LevelLoader(string file, string path)
 					{
             if (tNode->Type() == TiXmlNode::ELEMENT)
             {
+
 						  tElem = tNode->ToElement();
 						  std::string elemVal = tElem->Value();
 						  if (elemVal == "ogg")
 						  {
+				COUT(0) << "Adding sound "<< tElem->Attribute("src") << "\n\n\n";
+
 				    	  auMan->ambientAdd(tElem->Attribute("src"));
 						  }
             }
 					}
+					auMan->ambientStart();
 				}
 			}
 
@@ -193,6 +198,8 @@ LevelLoader::LevelLoader(string file, string path)
 			{
 				 mLoadOverlay->hide();
 			}
+			
+			
 			COUT(0) << "Loading finished!\n\n\n\n\n";
 		}
 	}
