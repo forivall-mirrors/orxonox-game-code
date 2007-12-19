@@ -3,7 +3,7 @@
     @brief Definition of the Tickable interface.
 
     The Tickable interface provides a tick(dt) function, that gets called every frame.
-    float dt is the time since the last frame.
+    float dt is the time since the last frame in seconds.
 
     Attention:
     Classes derived from a Tickable that want to have a tick(dt) function on their part, MUST call the
@@ -26,7 +26,7 @@ namespace orxonox
         public:
             /**
                 @brief Gets called every frame.
-                @param dt The time since the last frame
+                @param dt The time since the last frame in seconds
             */
             virtual void tick(float dt) = 0;
 

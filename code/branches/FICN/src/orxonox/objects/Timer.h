@@ -11,7 +11,7 @@
             public:
                 ClassName();
                 void functionName();
-                Timer myTimer;
+                Timer<ClassName> myTimer;
         };
 
     source.cc:
