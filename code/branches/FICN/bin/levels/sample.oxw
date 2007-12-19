@@ -40,8 +40,8 @@
     <NPC position="0,-200,450" scale="1" mesh="razor.mesh"/>
     <NPC position="100,0,400" scale="1" mesh="razor.mesh"/>
 
-    <Model position="200,0,500" scale="10" mesh="assf3.mesh" yaw="-90" pitch="-90" />
-    <Model position="-200,0,500" scale="10" mesh="assf3.mesh" yaw="-90" pitch="-90" />
+    <Model position="200,0,500" scale="10" mesh="starship.mesh" yaw="-90" pitch="-90" />
+    <Model position="-200,0,500" scale="10" mesh="drone.mesh" yaw="-90" pitch="-90" />
 
     <Model position="-16779,42,11043" scale="95" mesh="ast2.mesh" rotationAxis="0.281711,0.152518,0" rotationRate="27" />
     <Model position="12893,-1583,-17939" scale="48" mesh="ast1.mesh" rotationAxis="0.0597998,0.923364,0" rotationRate="36" />
