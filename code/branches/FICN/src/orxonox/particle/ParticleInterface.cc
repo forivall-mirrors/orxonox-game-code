@@ -25,6 +25,11 @@
  *
  */
 
+/**
+ * @file ParticleInterface.cc
+ * @brief class to control praticle effects
+ */
+
 #include "ParticleInterface.h"
 // #include <OgreParticleSystem.h>
 // #include <Ogre.h>
@@ -69,23 +74,6 @@ namespace particle {
 
   }
 
-  void ParticleInterface::addToSceneNode( SceneNode* sceneNode )
-  {
-    sceneNode_ = sceneNode;
-    sceneNode_->attachObject(particleSystem_);
-  }
-
-  void ParticleInterface::detachFromSceneNode ( void )
-  {
-    sceneNode_->detachObject(particleSystem_);
-    sceneNode_ = NULL;
-  }
-
-  Real ParticleInterface::getVelocity()
-  {
-    return velocity_;
-  }
-
   void ParticleInterface::setVelocity(Real v)
   {
     velocity_ = v;
@@ -93,10 +81,6 @@ namespace particle {
     particleSystem_->setSpeedFactor(v);
   }
 
-  int ParticleInterface::getRate()
-  {
-    return rate_;
-  }
   void ParticleInterface::setRate(int r)
   {
     rate_ = r;
@@ -106,11 +90,6 @@ namespace particle {
     }
   }
 
-  Real ParticleInterface::getDistance()
-  {
-    return distance_;
-  }
-
   void ParticleInterface::setDistance(Real d)
   {
     distance_ = d;
@@ -118,10 +97,6 @@ namespace particle {
     for (int i=0; i<numberOfEmitters_; i++) {
       particleSystem_->getEmitter(i)->setTimeToLive(distance_);
     }
-  }
-  ColourValue ParticleInterface::getColour()
-  {
-    return colour_;
   }
 
   void ParticleInterface::setColour(ColourValue colour)
@@ -146,11 +121,7 @@ namespace particle {
     particleSystem_->getEmitter(0)->copyParametersTo( particleSystem_->getEmitter(numberOfEmitters_-1) );
   }
 
-  void ParticleInterface::setPositionOfEmitter ( int emitterNr, Vector3 position )
-  {
-    particleSystem_->getEmitter(emitterNr)->setPosition(position);
-  }
-
+ // TODO check if this really works
   Vector3 ParticleInterface::getPositionOfEmitter ( int emitterNr )
   {
     return particleSystem_->getEmitter(0)->getPosition();
@@ -161,12 +132,6 @@ namespace particle {
     for(int i=0; i<numberOfEmitters_; i++) {
       particleSystem_->getEmitter(i)->setDirection(direction);
     }
-  }
-
-
-  Vector3 ParticleInterface::getDirection ( void )
-  {
-    return particleSystem_->getEmitter(0)->getDirection();
   }
 
   void ParticleInterface::switchEnable(){
