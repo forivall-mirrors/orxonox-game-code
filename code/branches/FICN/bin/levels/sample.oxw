@@ -25,12 +25,13 @@
   <!-- the value has to negative, as we want the camara behind the object -->
 <!--
     <Camera name="Camera" pos="0,50,-150" lookat="0,20,0" node="2OgreHeadNode" />
+    <SpaceShip camera="true" position="0,0,0" scale="10" yaw="-90" pitch="-90" mesh="assf3.mesh"  forward="250" rotateupdown="100" rotaterightleft="100" looprightleft="100" />
 -->
   <world>
     <Ambient colourvalue="1,1,1" />
     <Skybox src="Orxonox/StarfieldSkyBox" />
 
-    <SpaceShip camera="true" position="0,0,0" scale="10" yaw="-90" pitch="-90" mesh="assf3.mesh"  forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" />
+    <SpaceShip camera="true" position="0,0,0" scale="10" yaw="-90" pitch="-90" mesh="assf3.mesh" maxSpeed="500" maxSideAndBackSpeed="50" maxRotation="1.0" transAcc="200" rotAcc="3.0" transDamp="75" rotDamp="1.0" />
 
     <NPC position="0,100,400" scale="1" mesh="razor.mesh"/>
     <NPC position="0,100,400" scale="1" mesh="razor.mesh"/>
