@@ -54,7 +54,7 @@ namespace orxonox {
     primaryFiringRate_ = 1.0/7.0;
     secondaryFiringRate_ = 1.0/2.0;
     primaryBulletSpeed_ = 800;
-    secondaryBulletSpeed_ = 300;
+    secondaryBulletSpeed_ = 500;
     magazineSize_ = 25;
   }
 
@@ -83,8 +83,8 @@ namespace orxonox {
           .normalisedCopy() * primaryBulletSpeed_;
     speed += getVelocity();
 
-	  temp->setScale(Vector3(1, 1, 1) * 2);
-	  temp->yaw(Degree(-90));
+	  temp->setScale(Vector3(1, 1, 1) * 1.5);
+    temp->roll(Degree(90));
 
     Bullet* bullet = new Bullet();
     bullet->setNode(temp);
@@ -125,8 +125,8 @@ namespace orxonox {
           .normalisedCopy() * secondaryBulletSpeed_*0.5;
     speed += getVelocity();
 
-	  temp->setScale(Vector3(1, 1, 1) * 4);
-	  temp->yaw(Degree(-90));
+	  temp->setScale(Vector3(1, 1, 1) * 3);
+	  temp->roll(Degree(90));
 
     Bullet* bullet = new Bullet();
     bullet->setNode(temp);

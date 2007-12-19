@@ -80,8 +80,8 @@ namespace orxonox {
     for (int i = 0; i < bulletsIndex_; i++)
     {
       bullets_[i]->getNode()->translate(bullets_[i]->getVelocity()*dt);
-      bullets_[i]->getNode()->yaw(Degree(dt*100));
-      bullets_[i]->getNode()->roll(Degree(dt*300));
+      //bullets_[i]->getNode()->yaw(Degree(dt*100));
+      //bullets_[i]->getNode()->roll(Degree(dt*300));
     }
   }
 
