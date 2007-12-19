@@ -42,7 +42,10 @@ namespace orxonox
         private:
             bool bInvertMouse_;
             bool setMouseEventCallback_;
-            bool bMousePressed_;
+            bool bLMousePressed_;
+            bool bRMousePressed_;
+
+            Ogre::SceneNode* camNode_;
 
             particle::ParticleInterface *tt_;
 

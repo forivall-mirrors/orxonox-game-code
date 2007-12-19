@@ -48,7 +48,10 @@ namespace orxonox
         SetConfigValue(reloadTime_, 0.1);
 
         this->setMouseEventCallback_ = false;
-        this->bMousePressed_ = false;
+        this->bLMousePressed_ = false;
+        this->bRMousePressed_ = false;
+
+        this->camNode_ = 0;
 
         this->tt_ = 0;
         this->redNode_ = 0;
@@ -139,9 +142,9 @@ namespace orxonox
         this->redBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
         this->greenBillboard_.setBillboardSet("Examples/Flare", ColourValue(0.0, 1.0, 0.0), 1);
 
-        this->redNode_ = this->getNode()->createChildSceneNode(this->getName() + "red", Vector3(0.1, 4.6, -0.3));
+        this->redNode_ = this->getNode()->createChildSceneNode(this->getName() + "red", Vector3(0.3, 4.7, -0.3));
         this->redNode_->setInheritScale(false);
-        this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(0.1, -4.6, -0.3));
+        this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(0.3, -4.7, -0.3));
         this->greenNode_->setInheritScale(false);
 
         this->redNode_->attachObject(this->redBillboard_.getBillboardSet());
@@ -170,7 +173,7 @@ namespace orxonox
     	if (xmlElem->Attribute("camera"))
     	{
             Ogre::Camera *cam = Orxonox::getSingleton()->getSceneManager()->createCamera("ShipCam");
-            Ogre::SceneNode *node = this->getNode()->createChildSceneNode("CamNode");
+            this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
 /*
 //            node->setInheritOrientation(false);
             cam->setPosition(Vector3(0,50,-150));
@@ -183,7 +186,7 @@ namespace orxonox
             cam->lookAt(Vector3(0,0,20));
             cam->roll(Degree(-90));
 
-            node->attachObject(cam);
+            this->camNode_->attachObject(cam);
             Orxonox::getSingleton()->getOgrePointer()->getRoot()->getAutoCreatedWindow()->addViewport(cam);
     	}
     }
@@ -202,19 +205,36 @@ namespace orxonox
 
         this->moved = true;
 
+        if (this->bRMousePressed_)
+        {
+            this->camNode_->roll(Degree(-e.state.X.rel * 0.10));
+            this->camNode_->yaw(Degree(e.state.Y.rel * 0.10));
+        }
+
         return true;
     }
 
     bool SpaceShip::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
     {
-        this->bMousePressed_ = true;
+        if (id == OIS::MB_Left)
+            this->bLMousePressed_ = true;
+        else if (id == OIS::MB_Right)
+            this->bRMousePressed_ = true;
 
         return true;
     }
 
     bool SpaceShip::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
     {
-        this->bMousePressed_ = false;
+        if (id == OIS::MB_Left)
+            this->bLMousePressed_ = false;
+        else if (id == OIS::MB_Right)
+        {
+            this->bRMousePressed_ = false;
+            this->camNode_->resetOrientation();
+        }
+
+        return true;
     }
 
     void SpaceShip::tick(float dt)
@@ -244,7 +264,7 @@ namespace orxonox
         else
             this->timeToReload_ = 0;
 
-        if (this->bMousePressed_ && this->timeToReload_ <= 0)
+        if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
             Projectile* proj = new Projectile(this);
             this->timeToReload_ = this->reloadTime_;

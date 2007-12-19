@@ -23,6 +23,7 @@ namespace orxonox
             this->setStatic(false);
             this->setOrientation(this->owner_->getOrientation());
             this->setPosition(this->owner_->getPosition());
+            this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
             this->setVelocity(Vector3(1, 0, 0) * this->speed_);
         }
 
