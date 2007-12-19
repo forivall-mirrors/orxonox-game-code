@@ -27,6 +27,7 @@ SET( OBJECTS_SRC_FILES
   weapon_system/bullet_manager.cc
   weapon_system/weapon_station.cc
   Explosion.cc
+  Fighter.cc
 )
 
 ADD_LIBRARY(objects SHARED ${OBJECTS_SRC_FILES})
