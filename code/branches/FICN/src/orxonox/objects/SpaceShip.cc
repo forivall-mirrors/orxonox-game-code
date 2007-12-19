@@ -45,7 +45,7 @@ namespace orxonox
         RegisterObject(SpaceShip);
 
         SetConfigValue(bInvertMouse_, true);
-        SetConfigValue(reloadTime_, 0.1);
+        SetConfigValue(reloadTime_, 0.125);
 
         this->setMouseEventCallback_ = false;
         this->bLMousePressed_ = false;

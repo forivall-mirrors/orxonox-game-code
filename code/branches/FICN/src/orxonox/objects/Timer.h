@@ -135,7 +135,7 @@ namespace orxonox
             bool frameStarted(const Ogre::FrameEvent &evt)
             {
                 // Iterate through all Timers
-                for (Iterator<TimerBase> it = ObjectList<TimerBase>::start(); it; ++it)
+                for (Iterator<TimerBase> it = ObjectList<TimerBase>::start(); it; )
                 {
                     if (it->isActive())
                     {
@@ -150,9 +150,13 @@ namespace orxonox
                             else
                                 it->stopTimer(); // Stop the timer if we don't want to loop
 
-                            it->run();
+                            (it++)->run();
                         }
+                        else
+                            ++it;
                     }
+                    else
+                        ++it;
                 }
 
                 return FrameListener::frameStarted(evt);

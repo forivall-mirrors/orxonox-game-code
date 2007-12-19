@@ -17,7 +17,7 @@ namespace orxonox
   {
     public:
       WorldEntity();
-      ~WorldEntity();
+      virtual ~WorldEntity();
 
       virtual void tick(float dt);
       virtual void loadParams(TiXmlElement* xmlElem);

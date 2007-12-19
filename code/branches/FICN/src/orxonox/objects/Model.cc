@@ -30,7 +30,7 @@ namespace orxonox
         }
         create();
     }
-    
+
     bool Model::create(){
       if(meshSrc_.compare("")!=0){
         this->mesh_.setMesh(meshSrc_);
@@ -40,7 +40,7 @@ namespace orxonox
       registerAllVariables();
       return true;
     }
-    
+
     void Model::registerAllVariables(){
       registerVar(&meshSrc_, meshSrc_.length()+1, network::STRING);
     }

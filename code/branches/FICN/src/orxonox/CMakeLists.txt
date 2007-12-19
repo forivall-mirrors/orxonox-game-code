@@ -42,6 +42,7 @@ IF(WIN32)
     objects/weapon_system/bullet.cc
     objects/weapon_system/bullet_manager.cc
     objects/weapon_system/weapon_station.cc
+    objects/Explosion.cc
   )
 ELSE(WIN32)
   SET(LINK_OBJECTS_LIBRARY objects)

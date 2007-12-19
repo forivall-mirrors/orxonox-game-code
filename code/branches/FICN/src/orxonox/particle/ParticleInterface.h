@@ -21,7 +21,7 @@ class ParticleInterface
 	ParticleInterface( Ogre::SceneManager *sceneManager, Ogre::String name, Ogre::String templateName );
 	~ParticleInterface( void );
 	void addToSceneNode( Ogre::SceneNode* sceneNode );
-	void dettachFromSceneNode( void );
+	void detachFromSceneNode( void );
 	Ogre::ParticleEmitter* getEmitter ( int emitterNr );
 	void newEmitter ( void );
 	void setPositionOfEmitter ( int emitterNr, Ogre::Vector3 position );

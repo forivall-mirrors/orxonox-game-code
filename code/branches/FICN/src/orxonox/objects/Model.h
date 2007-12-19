@@ -11,7 +11,7 @@ namespace orxonox
     {
         public:
             Model();
-            ~Model();
+            virtual ~Model();
             virtual void loadParams(TiXmlElement* xmlElem);
             bool create();
 

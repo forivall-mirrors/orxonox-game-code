@@ -1,5 +1,7 @@
 #include "Projectile.h"
 #include "../core/CoreIncludes.h"
+#include "Explosion.h"
+#include "Model.h"
 
 namespace orxonox
 {
@@ -32,6 +34,27 @@ namespace orxonox
 
     Projectile::~Projectile()
     {
+    }
+
+    void Projectile::tick(float dt)
+    {
+        WorldEntity::tick(dt);
+
+        float radius;
+        for (Iterator<Model> it = ObjectList<Model>::start(); it; ++it)
+        {
+            if ((*it) != this->owner_)
+            {
+                radius = it->getScale().x * 3.0;
+
+                if (this->getPosition().squaredDistance(it->getPosition()) <= (radius*radius))
+                {
+                    Explosion* eplosion = new Explosion(this);
+                    delete this;
+                    return;
+                }
+            }
+        }
     }
 
     void Projectile::destroyObject()

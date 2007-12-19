@@ -45,8 +45,8 @@ namespace orxonox
             bool frameStarted(const Ogre::FrameEvent &evt)
             {
                 // Iterate through all Tickables and call their tick(dt) function
-                for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
-                    it->tick(evt.timeSinceLastFrame);
+                for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
+                    (it++)->tick(evt.timeSinceLastFrame);
 
                 return FrameListener::frameStarted(evt);
             }

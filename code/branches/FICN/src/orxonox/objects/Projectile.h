@@ -12,8 +12,9 @@ namespace orxonox
     {
         public:
             Projectile(SpaceShip* owner = 0);
-            ~Projectile();
+            virtual ~Projectile();
             void destroyObject();
+            virtual void tick(float dt);
 
         private:
             SpaceShip* owner_;

@@ -55,6 +55,17 @@ namespace orxonox
             }
 
             /**
+                @brief Overloading of the it++ operator: Iterator points to the next object in the list.
+                @return The Iterator itself
+            */
+            Iterator<T> operator++(int i)
+            {
+                Iterator<T> copy = *this;
+                this->element_ = this->element_->next_;
+                return copy;
+            }
+
+            /**
                 @brief Overloading of the --it operator: Iterator points to the previous object in the list.
                 @return The Iterator itself
             */
@@ -62,6 +73,17 @@ namespace orxonox
             {
                 this->element_ = this->element_->prev_;
                 return *this;
+            }
+
+            /**
+                @brief Overloading of the it-- operator: Iterator points to the previous object in the list.
+                @return The Iterator itself
+            */
+            Iterator<T> operator--(int i)
+            {
+                Iterator<T> copy = *this;
+                this->element_ = this->element_->prev_;
+                return copy;
             }
 
             /**
