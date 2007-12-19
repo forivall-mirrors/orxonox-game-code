@@ -39,13 +39,7 @@ namespace particle {
 
   ParticleInterface::~ParticleInterface(void)
   {
-std::cout << "blubiblub_1\n";
     sceneManager_->destroyParticleSystem(particleSystem_);
-std::cout << "blubiblub_2\n";
-
-//    delete sceneNode_;
-//    delete particleSystem_;
-//    delete sceneManager_;
   }
 
   ParticleInterface::ParticleInterface( SceneManager *sceneManager, String name, String templateName )

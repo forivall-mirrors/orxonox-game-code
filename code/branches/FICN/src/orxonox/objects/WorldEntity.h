@@ -132,16 +132,16 @@ namespace orxonox
     protected:
       void registerAllVariables();
 
-    private:
-      Ogre::SceneNode* node_;
-      static unsigned int worldEntityCounter_s;
-
-      bool bStatic_;
       Vector3 velocity_;
       Vector3 acceleration_;
       Vector3 rotationAxis_;
       Radian rotationRate_;
       Radian momentum_;
+
+    private:
+      static unsigned int worldEntityCounter_s;
+      Ogre::SceneNode* node_;
+      bool bStatic_;
   };
 }
 

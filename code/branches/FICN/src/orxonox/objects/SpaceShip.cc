@@ -44,12 +44,14 @@ namespace orxonox
     {
         RegisterObject(SpaceShip);
 
-        SetConfigValue(bInvertMouse_, true);
+        SetConfigValue(bInvertYAxis_, false);
         SetConfigValue(reloadTime_, 0.125);
 
         this->setMouseEventCallback_ = false;
         this->bLMousePressed_ = false;
         this->bRMousePressed_ = false;
+        this->mouseX_ = 0;
+        this->mouseY_ = 0;
 
         this->camNode_ = 0;
 
@@ -60,6 +62,22 @@ namespace orxonox
 
         this->timeToReload_ = 0;
 
+        this->maxSpeed_ = 0;
+        this->maxSideAndBackSpeed_ = 0;
+        this->maxRotation_ = 0;
+        this->translationAcceleration_ = 0;
+        this->rotationAcceleration_ = 0;
+        this->translationDamping_ = 0;
+        this->rotationDamping_ = 0;
+
+        this->maxRotationRadian_ = 0;
+        this->rotationAccelerationRadian_ = 0;
+        this->rotationDampingRadian_ = 0;
+        this->zeroRadian_ = Radian(0);
+
+        this->setRotationAxis(1, 0, 0);
+        this->setStatic(false);
+/*
         this->moveForward_ = 0;
         this->rotateUp_ = 0;
         this->rotateDown_ = 0;
@@ -94,22 +112,14 @@ namespace orxonox
 
         this->brakeRotate(rotate*10);
         this->brakeLoop(loop);
-
+*/
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
 
     SpaceShip::~SpaceShip()
     {
-        if (tt_)
-            delete tt_;
-    }
-
-    void SpaceShip::setMaxSpeedValues(float maxSpeedForward, float maxSpeedRotateUpDown, float maxSpeedRotateRightLeft, float maxSpeedLoopRightLeft)
-    {
-        this->maxSpeedForward_ = maxSpeedForward;
-        this->maxSpeedRotateUpDown_ = maxSpeedRotateUpDown;
-        this->maxSpeedRotateRightLeft_ = maxSpeedRotateRightLeft;
-        this->maxSpeedLoopRightLeft_ = maxSpeedLoopRightLeft;
+        if (this->tt_)
+            delete this->tt_;
     }
 
     void SpaceShip::loadParams(TiXmlElement* xmlElem)
@@ -118,18 +128,18 @@ namespace orxonox
 
 
         // START CREATING THRUSTER
-        tt_ = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
-        tt_->getParticleSystem()->setParameter("local_space","true");
-        tt_->newEmitter();
+        this->tt_ = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
+        this->tt_->getParticleSystem()->setParameter("local_space","true");
+        this->tt_->newEmitter();
 /*
-        tt_->setDirection(Vector3(0,0,1));
-        tt_->setPositionOfEmitter(0, Vector3(20,-1,-15));
-        tt_->setPositionOfEmitter(1, Vector3(-20,-1,-15));
+        this->tt_->setDirection(Vector3(0,0,1));
+        this->tt_->setPositionOfEmitter(0, Vector3(20,-1,-15));
+        this->tt_->setPositionOfEmitter(1, Vector3(-20,-1,-15));
 */
-        tt_->setDirection(Vector3(-1,0,0));
-        tt_->setPositionOfEmitter(0, Vector3(-15,20,-1));
-        tt_->setPositionOfEmitter(1, Vector3(-15,-20,-1));
-        tt_->setVelocity(50);
+        this->tt_->setDirection(Vector3(-1,0,0));
+        this->tt_->setPositionOfEmitter(0, Vector3(-15,20,-1));
+        this->tt_->setPositionOfEmitter(1, Vector3(-15,-20,-1));
+        this->tt_->setVelocity(50);
 
         emitterRate_ = tt_->getRate();
 
@@ -155,6 +165,7 @@ namespace orxonox
         // END CREATING BLINKING LIGHTS
 
 
+/*
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
         {
             std::string forwardStr = xmlElem->Attribute("forward");
@@ -168,6 +179,32 @@ namespace orxonox
             String2Number<float>(this->maxSpeedLoopRightLeft_, looprightleftStr);
 
             COUT(4) << "Loader: Initialized spaceship steering with values " << maxSpeedForward_ << " " << maxSpeedRotateUpDown_ << " " << maxSpeedRotateRightLeft_ << " " << maxSpeedLoopRightLeft_ << " " << std::endl;
+    	}
+*/
+        if (xmlElem->Attribute("maxSpeed") && xmlElem->Attribute("maxSideAndBackSpeed") && xmlElem->Attribute("maxRotation") && xmlElem->Attribute("transAcc") && xmlElem->Attribute("rotAcc") && xmlElem->Attribute("transDamp") && xmlElem->Attribute("rotDamp"))
+        {
+
+            std::string msStr = xmlElem->Attribute("maxSpeed");
+            std::string msabsStr = xmlElem->Attribute("maxSideAndBackSpeed");
+            std::string mrStr = xmlElem->Attribute("maxRotation");
+            std::string taStr = xmlElem->Attribute("transAcc");
+            std::string raStr = xmlElem->Attribute("rotAcc");
+            std::string tdStr = xmlElem->Attribute("transDamp");
+            std::string rdStr = xmlElem->Attribute("rotDamp");
+
+            String2Number<float>(this->maxSpeed_, msStr);
+            String2Number<float>(this->maxSideAndBackSpeed_, msabsStr);
+            String2Number<float>(this->maxRotation_, mrStr);
+            String2Number<float>(this->translationAcceleration_, taStr);
+            String2Number<float>(this->rotationAcceleration_, raStr);
+            String2Number<float>(this->translationDamping_, tdStr);
+            String2Number<float>(this->rotationDamping_, rdStr);
+
+            this->maxRotationRadian_ = Radian(this->maxRotation_);
+            this->rotationAccelerationRadian_ = Radian(this->rotationAcceleration_);
+            this->rotationDampingRadian_ = Radian(this->rotationDamping_);
+
+            COUT(4) << "Loader: Initialized SpaceShip" << std::endl;
     	}
 
     	if (xmlElem->Attribute("camera"))
@@ -191,8 +228,17 @@ namespace orxonox
     	}
     }
 
+    int sgn(float x)
+    {
+        if (x >= 0)
+            return 1;
+        else
+            return -1;
+    }
+
     bool SpaceShip::mouseMoved(const OIS::MouseEvent &e)
     {
+/*
         this->mouseX += e.state.X.rel;
         if (this->bInvertMouse_)
             this->mouseY += e.state.Y.rel;
@@ -204,11 +250,47 @@ namespace orxonox
 //        cout << "mouseX: " << mouseX << "\tmouseY: " << mouseY << endl;
 
         this->moved = true;
-
+*/
         if (this->bRMousePressed_)
         {
             this->camNode_->roll(Degree(-e.state.X.rel * 0.10));
             this->camNode_->yaw(Degree(e.state.Y.rel * 0.10));
+        }
+        else
+        {
+            float minDimension = e.state.height;
+            if (e.state.width < minDimension)
+                minDimension = e.state.width;
+
+            this->mouseX_ += e.state.X.rel;
+            if (this->mouseX_ < -minDimension)
+                this->mouseX_ = -minDimension;
+            if (this->mouseX_ > minDimension)
+                this->mouseX_ = minDimension;
+
+            this->mouseY_ += e.state.Y.rel;
+            if (this->mouseY_ < -minDimension)
+                this->mouseY_ = -minDimension;
+            if (this->mouseY_ > minDimension)
+                this->mouseY_ = minDimension;
+
+            float xRotation = this->mouseX_ / minDimension;
+            xRotation = xRotation*xRotation * sgn(xRotation);
+            xRotation *= -this->rotationAcceleration_;
+            if (xRotation > this->maxRotation_)
+                xRotation = this->maxRotation_;
+            if (xRotation < -this->maxRotation_)
+                xRotation = -this->maxRotation_;
+            this->mouseXRotation_ = Radian(xRotation);
+
+            float yRotation = this->mouseY_ / minDimension;
+            yRotation = yRotation*yRotation * sgn(yRotation);
+            yRotation *= this->rotationAcceleration_;
+            if (yRotation > this->maxRotation_)
+                yRotation = this->maxRotation_;
+            if (yRotation < -this->maxRotation_)
+                yRotation = -this->maxRotation_;
+            this->mouseYRotation_ = Radian(yRotation);
         }
 
         return true;
@@ -248,8 +330,6 @@ namespace orxonox
             }
         }
 
-        WorldEntity::tick(dt);
-
         if (this->redNode_ && this->greenNode_)
         {
             this->blinkTime_ += dt;
@@ -276,6 +356,107 @@ namespace orxonox
         mKeyboard->capture();
         mMouse->capture();
 
+
+        // #####################################
+        // ############# STEERING ##############
+        // #####################################
+
+        if (this->velocity_.x > this->maxSpeed_)
+            this->velocity_.x = this->maxSpeed_;
+        if (this->velocity_.x < -this->maxSideAndBackSpeed_)
+            this->velocity_.x = -this->maxSideAndBackSpeed_;
+        if (this->velocity_.y > this->maxSideAndBackSpeed_)
+            this->velocity_.y = this->maxSideAndBackSpeed_;
+        if (this->velocity_.y < -this->maxSideAndBackSpeed_)
+            this->velocity_.y = -this->maxSideAndBackSpeed_;
+        if (this->rotationRate_ > this->maxRotationRadian_)
+            this->rotationRate_ = this->maxRotationRadian_;
+        if (this->rotationRate_ < -this->maxRotationRadian_)
+            this->rotationRate_ = -this->maxRotationRadian_;
+
+        if (this->acceleration_.x == 0)
+        {
+            if (this->velocity_.x > 0)
+            {
+                this->velocity_.x -= (this->translationDamping_ * dt);
+                if (this->velocity_.x < 0)
+                    this->velocity_.x = 0;
+            }
+            else if (this->velocity_.x < 0)
+            {
+                this->velocity_.x += (this->translationDamping_ * dt);
+                if (this->velocity_.x > 0)
+                    this->velocity_.x = 0;
+            }
+        }
+
+        if (this->acceleration_.y == 0)
+        {
+            if (this->velocity_.y > 0)
+            {
+                this->velocity_.y -= (this->translationDamping_ * dt);
+                if (this->velocity_.y < 0)
+                    this->velocity_.y = 0;
+            }
+            else if (this->velocity_.y < 0)
+            {
+                this->velocity_.y += (this->translationDamping_ * dt);
+                if (this->velocity_.y > 0)
+                    this->velocity_.y = 0;
+            }
+        }
+
+        if (this->momentum_ == this->zeroRadian_)
+        {
+            if (this->rotationRate_ > this->zeroRadian_)
+            {
+                this->rotationRate_ -= (this->rotationDampingRadian_ * dt);
+                if (this->rotationRate_ < this->zeroRadian_)
+                    this->rotationRate_ = 0;
+            }
+            else if (this->rotationRate_ < this->zeroRadian_)
+            {
+                this->rotationRate_ += (this->rotationDampingRadian_ * dt);
+                if (this->rotationRate_ > this->zeroRadian_)
+                    this->rotationRate_ = 0;
+            }
+        }
+
+        if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
+            this->acceleration_.x = this->translationAcceleration_;
+        else if(mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
+            this->acceleration_.x = -this->translationAcceleration_;
+        else
+            this->acceleration_.x = 0;
+
+        if (mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D))
+            this->acceleration_.y = -this->translationAcceleration_;
+        else if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
+            this->acceleration_.y = this->translationAcceleration_;
+        else
+            this->acceleration_.y = 0;
+
+        if (mKeyboard->isKeyDown(OIS::KC_DELETE) || mKeyboard->isKeyDown(OIS::KC_Q))
+            this->momentum_ = Radian(-this->rotationAccelerationRadian_);
+        else if (mKeyboard->isKeyDown(OIS::KC_PGDOWN) || mKeyboard->isKeyDown(OIS::KC_E))
+            this->momentum_ = Radian(this->rotationAccelerationRadian_);
+        else
+            this->momentum_ = 0;
+
+        WorldEntity::tick(dt);
+
+        this->roll(this->mouseXRotation_ * dt);
+        if (this->bInvertYAxis_)
+            this->yaw(Radian(-this->mouseYRotation_ * dt));
+        else
+            this->yaw(Radian(this->mouseYRotation_ * dt));
+
+        if (this->acceleration_.x > 0)
+            this->tt_->setRate(emitterRate_);
+        else
+            this->tt_->setRate(0);
+
+/*
         if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
             this->moveForward(speed);
         else
@@ -310,15 +491,15 @@ namespace orxonox
             mouseY = 0;
             mouseX = 0;
             moved = false;
-        }
-        else
+        }*/
+/*        else
         {
             this->rotateUp(0);
             this->rotateDown(0);
             this->rotateRight(0);
             this->rotateLeft(0);
-        }
-
+        }*/
+/*
         if(moveForward_ > 0)
         {
             accelerationForward_ = moveForward_;
@@ -425,6 +606,7 @@ namespace orxonox
         }
 
         Vector3 transVector = Vector3::ZERO;
+*/
 /*
         transVector.z = 1;
         this->translate(transVector*speedForward_*dt, Ogre::Node::TS_LOCAL);
@@ -432,24 +614,15 @@ namespace orxonox
         this->yaw(Degree(speedRotateRightLeft_*dt), Ogre::Node::TS_LOCAL);
         this->roll(Degree(speedLoopRightLeft_*dt), Ogre::Node::TS_LOCAL);
 */
-
+/*
         transVector.x = 1;
         this->translate(transVector*speedForward_*dt, Ogre::Node::TS_LOCAL);
         this->yaw(Degree(speedRotateUpDown_*dt), Ogre::Node::TS_LOCAL);
         this->roll(Degree(speedRotateRightLeft_*dt), Ogre::Node::TS_LOCAL);
         this->pitch(Degree(speedLoopRightLeft_*dt), Ogre::Node::TS_LOCAL);
-
-        if (accelerationForward_ > 25.0)
-        {
-            this->tt_->setRate(emitterRate_);
-        }
-        else
-        {
-            this->tt_->setRate(0);
-        }
-
+*/
     }
-
+/*
     void SpaceShip::moveForward(float moveForward) {
         moveForward_ = moveForward;
     }
@@ -505,4 +678,5 @@ namespace orxonox
     void SpaceShip::maxSpeedLoopRightLeft(float maxSpeedLoopRightLeft) {
         maxSpeedLoopRightLeft_ = maxSpeedLoopRightLeft;
     }
+*/
 }

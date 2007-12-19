@@ -18,8 +18,8 @@ namespace orxonox
             SpaceShip();
             ~SpaceShip();
             virtual void loadParams(TiXmlElement* xmlElem);
-            void setMaxSpeedValues(float maxSpeedForward, float maxSpeedRotateUpDown, float maxSpeedRotateRightLeft, float maxSpeedLoopRightLeft);
             virtual void tick(float dt);
+/*
             void moveForward(float moveForward);
             void rotateUp(float rotateUp);
             void rotateDown(float rotateDown);
@@ -34,20 +34,21 @@ namespace orxonox
             void maxSpeedRotateUpDown(float maxSpeedRotateUpDown);
             void maxSpeedRotateRightLeft(float maxSpeedRotateRightLeft);
             void maxSpeedLoopRightLeft(float maxSpeedLoopRightLeft);
+*/
             bool mouseMoved(const OIS::MouseEvent &e);
             bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
             bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
 
         private:
-            bool bInvertMouse_;
+            bool bInvertYAxis_;
             bool setMouseEventCallback_;
             bool bLMousePressed_;
             bool bRMousePressed_;
 
             Ogre::SceneNode* camNode_;
 
-            particle::ParticleInterface *tt_;
+            particle::ParticleInterface* tt_;
 
             BillboardSet redBillboard_;
             BillboardSet greenBillboard_;
@@ -58,6 +59,25 @@ namespace orxonox
             float timeToReload_;
             float reloadTime_;
 
+            float maxSideAndBackSpeed_;
+            float maxSpeed_;
+            float maxRotation_;
+            float translationAcceleration_;
+            float rotationAcceleration_;
+            float translationDamping_;
+            float rotationDamping_;
+
+            Radian maxRotationRadian_;
+            Radian rotationAccelerationRadian_;
+            Radian rotationDampingRadian_;
+            Radian zeroRadian_;
+            Radian mouseXRotation_;
+            Radian mouseYRotation_;
+
+            float mouseX_;
+            float mouseY_;
+
+/*
             float moveForward_;
             float rotateUp_;
             float rotateDown_;
@@ -92,7 +112,7 @@ namespace orxonox
             float maxMouseX;
             float minMouseX;
             bool moved;
-
+*/
             int emitterRate_;
     };
 }
