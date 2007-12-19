@@ -22,7 +22,7 @@ namespace orxonox
       virtual void tick(float dt);
       virtual void loadParams(TiXmlElement* xmlElem);
       bool create();
-      
+
       inline Ogre::SceneNode* getNode()
           { return this->node_; }
 
@@ -52,14 +52,16 @@ namespace orxonox
       inline void roll(const Radian &angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
           { this->node_->roll(angle, relativeTo); }
 
+      inline const Ogre::Quaternion& getOrientation()
+        { return this->node_->getOrientation(); }
+      inline void setOrientation(const Ogre::Quaternion& quat)
+        { this->node_->setOrientation(quat); }
       inline void rotate(const Vector3 &axis, const Radian &angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
         { this->node_->rotate(axis, angle, relativeTo); }
       inline void setDirection(Real x, Real y, Real z, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
         { this->node_->setDirection(x, y, z, relativeTo, localDirectionVector); }
       inline void setDirection(const Vector3 &vec, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
         { this->node_->setDirection(vec, relativeTo, localDirectionVector); }
-      inline void setOrientation(const Ogre::Quaternion quat)
-        { this->node_->setOrientation(quat); }
       inline void lookAt(const Vector3 &targetPoint, Ogre::Node::TransformSpace relativeTo, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
         { this->node_->lookAt(targetPoint, relativeTo, localDirectionVector); }
 
@@ -121,8 +123,6 @@ namespace orxonox
           { this->momentum_ = angle; }
       inline const Radian& getMomentum() const
           { return this->momentum_; }
-      inline const Ogre::Quaternion& getOrientation()
-          { return this->node_->getOrientation(); }
 
       inline void setStatic(bool bStatic)
           { this->bStatic_ = bStatic; }

@@ -74,7 +74,7 @@ namespace orxonox
         if (!this->bStatic_)
         {
             this->velocity_ += (dt * this->acceleration_);
-            this->translate(dt * this->velocity_);
+            this->translate(dt * this->velocity_, Ogre::Node::TS_LOCAL);
 
             this->rotationRate_ += (dt * this->momentum_);
             this->rotate(this->rotationAxis_, dt * this->rotationRate_);
@@ -150,14 +150,14 @@ namespace orxonox
         }
 
         create();
-        
+
     }
 
     bool WorldEntity::create(){
       registerAllVariables();
       return true;
     }
-    
+
     void WorldEntity::registerAllVariables()
     {
       // register coordinates

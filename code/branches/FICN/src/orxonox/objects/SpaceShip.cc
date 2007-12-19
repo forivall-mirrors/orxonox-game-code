@@ -26,6 +26,7 @@
  */
 
 #include "SpaceShip.h"
+#include "Projectile.h"
 
 #include "../../tinyxml/tinyxml.h"
 #include "../../misc/String2Number.h"
@@ -44,13 +45,17 @@ namespace orxonox
         RegisterObject(SpaceShip);
 
         SetConfigValue(bInvertMouse_, true);
+        SetConfigValue(reloadTime_, 0.1);
 
         this->setMouseEventCallback_ = false;
+        this->bMousePressed_ = false;
 
         this->tt_ = 0;
         this->redNode_ = 0;
         this->greenNode_ = 0;
         this->blinkTime_ = 0;
+
+        this->timeToReload_ = 0;
 
         this->moveForward_ = 0;
         this->rotateUp_ = 0;
@@ -200,6 +205,18 @@ namespace orxonox
         return true;
     }
 
+    bool SpaceShip::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+    {
+        this->bMousePressed_ = true;
+
+        return true;
+    }
+
+    bool SpaceShip::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+    {
+        this->bMousePressed_ = false;
+    }
+
     void SpaceShip::tick(float dt)
     {
         if (!this->setMouseEventCallback_)
@@ -220,6 +237,17 @@ namespace orxonox
             float greenScale = 0.15 - 0.15 * sin(this->blinkTime_ * 10.0);
             this->redNode_->setScale(redScale, redScale, redScale);
             this->greenNode_->setScale(greenScale, greenScale, greenScale);
+        }
+
+        if (this->timeToReload_ > 0)
+            this->timeToReload_ -= dt;
+        else
+            this->timeToReload_ = 0;
+
+        if (this->bMousePressed_ && this->timeToReload_ <= 0)
+        {
+            Projectile* proj = new Projectile(this);
+            this->timeToReload_ = this->reloadTime_;
         }
 
         OIS::Keyboard* mKeyboard = Orxonox::getSingleton()->getKeyboard();

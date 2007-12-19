@@ -35,6 +35,13 @@ IF(WIN32)
     objects/NPC.cc
     objects/BillboardSet.cc
     objects/Light.cc
+    objects/Projectile.cc
+    objects/weapon_system/ammunition_dump.cc
+    objects/weapon_system/barrel_gun.cc
+    objects/weapon_system/base_weapon.cc
+    objects/weapon_system/bullet.cc
+    objects/weapon_system/bullet_manager.cc
+    objects/weapon_system/weapon_station.cc
   )
 ELSE(WIN32)
   SET(LINK_OBJECTS_LIBRARY objects)

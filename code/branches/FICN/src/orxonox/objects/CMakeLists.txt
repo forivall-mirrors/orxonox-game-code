@@ -19,6 +19,7 @@ SET( OBJECTS_SRC_FILES
   NPC.cc
   BillboardSet.cc
   Light.cc
+  Projectile.cc
   weapon_system/ammunition_dump.cc
   weapon_system/barrel_gun.cc
   weapon_system/base_weapon.cc

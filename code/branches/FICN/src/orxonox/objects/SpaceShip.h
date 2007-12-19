@@ -35,13 +35,14 @@ namespace orxonox
             void maxSpeedRotateRightLeft(float maxSpeedRotateRightLeft);
             void maxSpeedLoopRightLeft(float maxSpeedLoopRightLeft);
             bool mouseMoved(const OIS::MouseEvent &e);
-            bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
-            bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
+            bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+            bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
 
         private:
             bool bInvertMouse_;
             bool setMouseEventCallback_;
+            bool bMousePressed_;
 
             particle::ParticleInterface *tt_;
 
@@ -50,6 +51,9 @@ namespace orxonox
             Ogre::SceneNode* redNode_;
             Ogre::SceneNode* greenNode_;
             float blinkTime_;
+
+            float timeToReload_;
+            float reloadTime_;
 
             float moveForward_;
             float rotateUp_;
