@@ -46,7 +46,7 @@ namespace orxonox
     {
         RegisterObject(Fighter);
 
-        SetConfigValue(bInvertMouse_, true);
+        SetConfigValue(bInvertMouse_, false);
 
         this->setMouseEventCallback_ = false;
 
@@ -202,9 +202,9 @@ namespace orxonox
     bool Fighter::mouseMoved(const OIS::MouseEvent &e)
     {
         this->mouseX += e.state.X.rel;
-        if (this->bInvertMouse_)
-            this->mouseY += e.state.Y.rel;
-        else
+        //if (this->bInvertMouse_)
+            //this->mouseY += e.state.Y.rel;
+        //else
             this->mouseY -= e.state.Y.rel;
 
 //        if(mouseX>maxMouseX) maxMouseX = mouseX;
