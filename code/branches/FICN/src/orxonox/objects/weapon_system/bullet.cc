@@ -19,46 +19,30 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-/*!
-    @file BaseObject.cc
-    @brief Implementation of the BaseObject class.
-*/
+#include "OgreSceneNode.h"
+#include "OgreEntity.h"
+#include "OgreVector3.h"
 
-#include "BaseObject.h"
+#include "bullet.h"
 
-namespace orxonox
-{
-    CreateFactory(BaseObject);
 
-    /**
-        @brief Constructor: Registers the object in the BaseObject-list.
-    */
-    BaseObject::BaseObject()
-    {
-        RegisterRootObject(BaseObject);
-    }
+namespace orxonox {
+  using namespace Ogre;
 
-    /**
-        @brief Destructor
-    */
-    BaseObject::~BaseObject()
-    {
-    }
+  CreateFactory(Bullet);
 
-    /**
-        @brief load general xml paramters
-    */
-    void BaseObject::loadParams(TiXmlElement* xmlElem)
-    {
-        if (xmlElem->Attribute("name"))
-        {
-            this->setName(xmlElem->Attribute("mesh"));
-        }
-    }
+  Bullet::Bullet()
+  {
+    RegisterObject(Bullet);
+  }
+
+  Bullet::~Bullet()
+  {
+  }
 }

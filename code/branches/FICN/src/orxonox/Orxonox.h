@@ -35,11 +35,12 @@ namespace orxonox {
       // not sure if this should be private
       void die(/* some error code */);
       static Orxonox* getSingleton();
-      inline Ogre::SceneManager* getSceneManager() { return ogre_->getSceneManager(); };
-      inline GraphicsEngine* getOgrePointer() { return ogre_; };
+      inline Ogre::SceneManager* getSceneManager()         { return ogre_->getSceneManager(); };
+      inline GraphicsEngine* getOgrePointer()              { return ogre_; };
       inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
-      inline OIS::Keyboard* getKeyboard() { return this->keyboard_; }
-      inline OIS::Mouse* getMouse() { return this->mouse_; }
+      inline OIS::Keyboard* getKeyboard()                  { return this->keyboard_; }
+      inline OIS::Mouse* getMouse()                        { return this->mouse_; }
+      inline BulletManager* getBulletMgr()                 { return this->bulletMgr_; }
 
     private:
       Orxonox();
@@ -66,6 +67,7 @@ namespace orxonox {
       std::string           dataPath_;  //!< path to data
       loader::LevelLoader*  loader_;    //!< level loader builds the scene
       audio::AudioManager*  auMan_;     //!< audio manager
+      BulletManager*        bulletMgr_; //!< Keeps track of the thrown bullets
       static Orxonox*       singletonRef_;
       OIS::Keyboard*        keyboard_;
       OIS::Mouse*           mouse_;

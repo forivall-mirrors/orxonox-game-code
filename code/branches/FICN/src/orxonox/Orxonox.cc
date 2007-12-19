@@ -67,6 +67,7 @@
 #include "core/Factory.h"
 #include "core/Debug.h"
 #include "hud/HUD.h"
+#include "objects/weapon_system/bullet_manager.h"
 
 #include "GraphicsEngine.h"
 #include "Orxonox.h"
@@ -165,6 +166,7 @@ namespace orxonox
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", this->dataPath_, false);
     ar.checkArgument("ip", serverIp_, false);
+    //mode = "presentation";
     if(ar.errorHandling()) die();
     if(mode == std::string("server"))
     {
@@ -371,6 +373,8 @@ namespace orxonox
 	// Init audio
     auMan_ = new audio::AudioManager();
 
+    bulletMgr_ = new BulletManager();
+
     // load this file from config
     loader_ = new loader::LevelLoader("sample.oxw");
     loader_->loadLevel();
@@ -381,7 +385,6 @@ namespace orxonox
     orxonoxHud->setEnergyValue(20);
     orxonoxHud->setEnergyDistr(20,20,60);
     hudOverlay->show();
-
 
 	/*
     auMan_->ambientAdd("a1");

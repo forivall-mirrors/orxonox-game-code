@@ -2,7 +2,7 @@
 #define _OBJECT_ENTITY_H__
 
 #include "WorldEntity.h"
-#include "../../tinyxml/tinyxml.h"
+#include <tinyxml/tinyxml.h>
 
 namespace orxonox
 {

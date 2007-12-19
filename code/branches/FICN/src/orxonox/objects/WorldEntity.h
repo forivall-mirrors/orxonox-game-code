@@ -1,14 +1,15 @@
 #ifndef _WorldEntity_H__
 #define _WorldEntity_H__
 
-#include "BaseObject.h"
-#include "Tickable.h"
-#include "../core/CoreIncludes.h"
-#include "OgreSceneManager.h"
-#include "OgreSceneNode.h"
-#include "Mesh.h"
+#include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
+
 #include "network/Synchronisable.h"
 #include "tinyxml/tinyxml.h"
+#include "../core/CoreIncludes.h"
+#include "BaseObject.h"
+#include "Tickable.h"
+#include "Mesh.h"
 
 namespace orxonox
 {

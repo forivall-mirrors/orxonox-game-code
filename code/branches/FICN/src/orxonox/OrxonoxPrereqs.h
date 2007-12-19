@@ -101,6 +101,13 @@ namespace orxonox {
   class OrxonoxClass;
   template <class T>
   class SubclassIdentifier;
+
+  class AmmunitionDump;
+  class Bullet;
+  class BulletManager;
+  class BaseWeapon;
+  class BarrelGun;
+  class WeaponStation;
 }
 
 namespace audio {

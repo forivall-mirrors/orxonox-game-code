@@ -85,11 +85,6 @@ namespace orxonox
     {
         BaseObject::loadParams(xmlElem);
 
-        if (xmlElem->Attribute("name"))
-        {
-            this->setName(xmlElem->Attribute("mesh"));
-        }
-
         if (xmlElem->Attribute("position"))
         {
             std::vector<std::string> pos = tokenize(xmlElem->Attribute("position"),",");
