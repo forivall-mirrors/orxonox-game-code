@@ -47,8 +47,10 @@ namespace orxonox
 
         this->setMouseEventCallback_ = false;
 
-        this->w = NULL;
-        this->tt = NULL;
+        this->tt_ = 0;
+        this->redNode_ = 0;
+        this->greenNode_ = 0;
+        this->blinkTime_ = 0;
 
         this->moveForward_ = 0;
         this->rotateUp_ = 0;
@@ -90,10 +92,8 @@ namespace orxonox
 
     SpaceShip::~SpaceShip()
     {
-        if (w)
-            delete w;
-        if (tt)
-            delete tt;
+        if (tt_)
+            delete tt_;
     }
 
     void SpaceShip::setMaxSpeedValues(float maxSpeedForward, float maxSpeedRotateUpDown, float maxSpeedRotateRightLeft, float maxSpeedLoopRightLeft)
@@ -108,43 +108,43 @@ namespace orxonox
     {
         Model::loadParams(xmlElem);
 
-        w = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"schuss" + this->getName(),"Orxonox/schuss");
-        w->getParticleSystem()->setParameter("local_space","true");
-        w->newEmitter();
+
+        // START CREATING THRUSTER
+        tt_ = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
+        tt_->getParticleSystem()->setParameter("local_space","true");
+        tt_->newEmitter();
 /*
-        w->setDirection(Vector3(0,0,1));
-        w->setPositionOfEmitter(0, Vector3(10,10,0));
-        w->setPositionOfEmitter(1, Vector3(-10,10,0));
+        tt_->setDirection(Vector3(0,0,1));
+        tt_->setPositionOfEmitter(0, Vector3(20,-1,-15));
+        tt_->setPositionOfEmitter(1, Vector3(-20,-1,-15));
 */
-        w->setDirection(Vector3(1,0,0));
-        w->setPositionOfEmitter(0, Vector3(0,10,10));
-        w->setPositionOfEmitter(1, Vector3(0,-10,10));
+        tt_->setDirection(Vector3(-1,0,0));
+        tt_->setPositionOfEmitter(0, Vector3(-15,20,-1));
+        tt_->setPositionOfEmitter(1, Vector3(-15,-20,-1));
+        tt_->setVelocity(50);
 
-        emitterRate_ = w->getRate();
-
-        Ogre::SceneNode* node1 = this->getNode()->createChildSceneNode(this->getName() + "particle1");
-        node1->setInheritScale(false);
-        w->addToSceneNode(node1);
-
-
-
-        tt = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
-        tt->getParticleSystem()->setParameter("local_space","true");
-        tt->newEmitter();
-/*
-        tt->setDirection(Vector3(0,0,1));
-        tt->setPositionOfEmitter(0, Vector3(20,-1,-15));
-        tt->setPositionOfEmitter(1, Vector3(-20,-1,-15));
-*/
-        tt->setDirection(Vector3(-1,0,0));
-        tt->setPositionOfEmitter(0, Vector3(-15,20,-1));
-        tt->setPositionOfEmitter(1, Vector3(-15,-20,-1));
-        tt->setVelocity(50);
+        emitterRate_ = tt_->getRate();
 
         Ogre::SceneNode* node2 = this->getNode()->createChildSceneNode(this->getName() + "particle2");
         node2->setInheritScale(false);
-        tt->addToSceneNode(node2);
+        tt_->addToSceneNode(node2);
+        // END CREATING THRUSTER
 
+        // START CREATING BLINKING LIGHTS
+        this->redBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
+        this->greenBillboard_.setBillboardSet("Examples/Flare", ColourValue(0.0, 1.0, 0.0), 1);
+
+        this->redNode_ = this->getNode()->createChildSceneNode(this->getName() + "red", Vector3(0.1, 4.6, -0.3));
+        this->redNode_->setInheritScale(false);
+        this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(0.1, -4.6, -0.3));
+        this->greenNode_->setInheritScale(false);
+
+        this->redNode_->attachObject(this->redBillboard_.getBillboardSet());
+        this->redNode_->setScale(0.3, 0.3, 0.3);
+
+        this->greenNode_->attachObject(this->greenBillboard_.getBillboardSet());
+        this->greenNode_->setScale(0.3, 0.3, 0.3);
+        // END CREATING BLINKING LIGHTS
 
 
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
@@ -212,6 +212,15 @@ namespace orxonox
         }
 
         WorldEntity::tick(dt);
+
+        if (this->redNode_ && this->greenNode_)
+        {
+            this->blinkTime_ += dt;
+            float redScale = 0.15 + 0.15 * sin(this->blinkTime_ * 10.0);
+            float greenScale = 0.15 - 0.15 * sin(this->blinkTime_ * 10.0);
+            this->redNode_->setScale(redScale, redScale, redScale);
+            this->greenNode_->setScale(greenScale, greenScale, greenScale);
+        }
 
         OIS::Keyboard* mKeyboard = Orxonox::getSingleton()->getKeyboard();
         OIS::Mouse* mMouse = Orxonox::getSingleton()->getMouse();
@@ -384,11 +393,11 @@ namespace orxonox
 
         if (accelerationForward_ > 25.0)
         {
-          this->tt->setRate(emitterRate_);
+            this->tt_->setRate(emitterRate_);
         }
         else
         {
-          this->tt->setRate(0);
+            this->tt_->setRate(0);
         }
 
     }

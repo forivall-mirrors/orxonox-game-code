@@ -50,7 +50,11 @@ namespace orxonox
             std::ostringstream name;
             name << (WorldEntity::worldEntityCounter_s++);
             this->setName("WorldEntity" + name.str());
-            node_ = Orxonox::getSingleton()->getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
+            this->node_ = Orxonox::getSingleton()->getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
+        }
+        else
+        {
+            this->node_ = 0;
         }
 
         this->bStatic_ = true;

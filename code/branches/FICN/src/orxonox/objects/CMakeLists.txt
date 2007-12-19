@@ -17,6 +17,8 @@ SET( OBJECTS_SRC_FILES
   Mesh.cc
   SpaceShip.cc
   NPC.cc
+  BillboardSet.cc
+  Light.cc
 )
 
 ADD_LIBRARY(objects SHARED ${OBJECTS_SRC_FILES})

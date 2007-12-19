@@ -33,6 +33,8 @@ IF(WIN32)
     objects/BaseEntity.cc
     objects/SpaceShip.cc
     objects/NPC.cc
+    objects/BillboardSet.cc
+    objects/Light.cc
   )
 ELSE(WIN32)
   SET(LINK_OBJECTS_LIBRARY objects)

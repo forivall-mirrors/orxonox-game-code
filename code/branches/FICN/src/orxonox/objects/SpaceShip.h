@@ -4,6 +4,9 @@
 #include <OIS/OIS.h>
 
 #include "Model.h"
+#include "BillboardSet.h"
+#include "OgreSceneNode.h"
+
 #include "../../tinyxml/tinyxml.h"
 #include "../particle/ParticleInterface.h"
 
@@ -40,8 +43,13 @@ namespace orxonox
             bool bInvertMouse_;
             bool setMouseEventCallback_;
 
-            particle::ParticleInterface *w;
-            particle::ParticleInterface *tt;
+            particle::ParticleInterface *tt_;
+
+            BillboardSet redBillboard_;
+            BillboardSet greenBillboard_;
+            Ogre::SceneNode* redNode_;
+            Ogre::SceneNode* greenNode_;
+            float blinkTime_;
 
             float moveForward_;
             float rotateUp_;

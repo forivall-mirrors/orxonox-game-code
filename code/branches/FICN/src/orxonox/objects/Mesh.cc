@@ -16,7 +16,7 @@ namespace orxonox
     {
         std::ostringstream name;
         name << (Mesh::meshCounter_s++);
-        this->entity_ = Orxonox::getSingleton()->getSceneManager()->createEntity("Mesh" + name.str() + "gugus", file);
+        this->entity_ = Orxonox::getSingleton()->getSceneManager()->createEntity("Mesh" + name.str(), file);
     }
 
     Mesh::~Mesh()
