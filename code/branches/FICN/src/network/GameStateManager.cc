@@ -125,7 +125,7 @@ GameState *GameStateManager::getSnapshot(int id)
     }
 
     // run Synchronisable::getData with offset and additional place for 3 ints in between (for ids and length)
-    sync=it->getData(retval->data+offset+3*sizeof(int));
+    sync=it->getData((retval->data)+offset+3*sizeof(int));
     *(retval->data+offset)=sync.length;
     *(retval->data+offset+sizeof(int))=sync.objectID;
     *(retval->data+offset+2*sizeof(int))=sync.classID;

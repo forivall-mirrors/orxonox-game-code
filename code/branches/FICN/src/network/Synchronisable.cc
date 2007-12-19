@@ -109,18 +109,18 @@ syncData Synchronisable::getData(unsigned char *mem){
   syncData retVal;
   retVal.objectID=this->objectID;
   retVal.classID=this->classID;
-  retVal.length=datasize;
+  retVal.length=getSize();
   retVal.data=mem;
   // copy to location
   int n=0;
   for(i=syncList.begin(); n<datasize && i!=syncList.end(); ++i){
     //COUT(2) << "size of variable: " << i->size << std::endl;
     //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
-    *((int *)(retVal.data+n)) = i->size;
+    memcpy( (void *)(retVal.data+n), (const void*)&(i->size), sizeof(int) );
     n+=sizeof(int);
     switch(i->type){
       case DATA:
-        std::memcpy(retVal.data+n, (const void*)(i->var), i->size);
+        std::memcpy( (void *)(retVal.data+n), (const void*)(i->var), i->size);
         n+=i->size;
         break;
       case STRING:
@@ -171,9 +171,11 @@ int Synchronisable::getSize(){
   for(i=syncList.begin(); i!=syncList.end(); i++){
     switch(i->type){
     case DATA:
+      tsize+=sizeof(int);
       tsize+=i->size;
       break;
     case STRING:
+      tsize+=sizeof(int);
       tsize+=((std::string *)i->var)->length()+1;
       break;
     }
