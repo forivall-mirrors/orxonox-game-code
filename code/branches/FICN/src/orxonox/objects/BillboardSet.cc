@@ -19,12 +19,10 @@ namespace orxonox
         this->billboardSet_ = Orxonox::getSingleton()->getSceneManager()->createBillboardSet("Billboard" + name.str(), count);
         this->billboardSet_->createBillboard(position, colour);
         this->billboardSet_->setMaterialName(file);
-        std::cout << "########### created billboard set" << std::endl;
     }
 
     BillboardSet::~BillboardSet()
     {
-        std::cout << "########### deleted billboard set" << std::endl;
         if (this->billboardSet_)
             Orxonox::getSingleton()->getSceneManager()->destroyBillboardSet(this->billboardSet_);
     }
