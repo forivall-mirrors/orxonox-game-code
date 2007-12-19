@@ -232,7 +232,9 @@ namespace network{
     else
       temp->setID(temp->prev()->getID()+1);
     temp->setPeer(event->peer);
-    std::cout << "added client id: " << temp->prev()->getID() << std::endl;
+    std::cout << "added client id: " << temp->getID() << std::endl;
+    syncClassid(temp->getID());
+    temp->setSynched(true);
     return true;
   }
 
@@ -255,8 +257,15 @@ namespace network{
     orxonox::Identifier *id;
     while(!abort){
       id = ID(i);
-      if(id == NULL)
-        abort=true;
+      std::cout << "syncid: " << i << ", ID(id): " << id << std::endl;
+      if(id == NULL){
+        if(i!=0)
+          abort=true;
+        else{
+          ++i;
+          continue;
+        }
+      }
       else{
         classname = id->getName();
         addPacket(packet_gen.clid( i, classname ),clientID);

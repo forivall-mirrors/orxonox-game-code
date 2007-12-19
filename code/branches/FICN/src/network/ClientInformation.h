@@ -47,6 +47,10 @@ public:
   bool removeClient(ENetPeer *peer);
   ClientInformation *findClient(int clientID, bool look_backwards=false);
   ClientInformation *findClient(ENetAddress *address, bool look_backwards=false);
+  
+  void setSynched(bool s);
+  bool getSynched();
+  
   bool head;
   
 private:
@@ -56,6 +60,7 @@ private:
   ENetPeer *peer_;
   int clientID_;
   int gamestateID_;
+  bool synched_;
 };
 
 }

@@ -127,6 +127,7 @@ ENetPacket* PacketGenerator::gstate( GameStateCompressed* states, int reliable )
 
 ENetPacket* PacketGenerator::clid( int classid, std::string classname, int reliable ){
         unsigned char* data = (unsigned char *)malloc(3*sizeof(int)+classname.length()+1);
+        std::cout << "classid: " << classid << ", name: " << classname << std::endl;
         *(int *)data = CLASSID;
         *((int *)data+1) = classname.length()+1;
         *((int *)data+2) = classid;

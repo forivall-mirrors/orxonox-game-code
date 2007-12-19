@@ -46,6 +46,7 @@ ClientInformation::ClientInformation()
   preve=0;
   nexte=0;
   this->head=false;
+  synched_=false;
 }
 
 ClientInformation::ClientInformation(bool head)
@@ -54,6 +55,7 @@ ClientInformation::ClientInformation(bool head)
   preve=0;
   nexte=0;
   this->head=head;
+  synched_=false;
 }
 //
 
@@ -217,6 +219,13 @@ ClientInformation *ClientInformation::findClient(ENetAddress *address, bool look
   }
   // returns 0 if nothing has been found
   return temp;
+}
+
+void ClientInformation::setSynched(bool s){
+  synched_=s;
+}
+bool ClientInformation::getSynched(){
+  return synched_;
 }
 
 }

@@ -141,6 +141,11 @@ namespace network{
         temp=temp->next();
         continue;
       }
+      if( !(temp->getSynched()) ){
+        std::cout << "not sending gamestate" << std::endl;
+        temp=temp->next();
+        continue;
+      }
       std::cout << "doing gamestate" << std::endl;
       int gid = temp->getGamestateID();
       int cid = temp->getID();

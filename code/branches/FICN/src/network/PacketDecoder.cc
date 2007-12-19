@@ -185,6 +185,9 @@ void PacketDecoder::clid( ENetPacket *packet)
         cid->id = ((classid *)(packet->data))->id;
         cid->clid = ((classid *)(packet->data))->clid;
         cid->message = (const char *)malloc(cid->length);
+        void *data  = (void *)cid->message;
+        memcpy(data, (const void*)(packet->data+3*sizeof(int)), cid->length);
+        std::cout << "classid: " << cid->clid << ", name: " << cid->message << std::endl;
         enet_packet_destroy( packet );
         processClassid(cid);
 }

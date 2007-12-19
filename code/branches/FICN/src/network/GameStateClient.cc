@@ -87,6 +87,7 @@ bool GameStateClient::loadSnapshot(GameState state)
         removeObject(it);
       }
       if(it==0){
+        std::cout << "classid: " << sync.classID << ", name: " << ID(sync.classID)->getName() << std::endl;
         orxonox::BaseObject *no = ID(sync.classID)->fabricate();
         ((Synchronisable *)no)->objectID=sync.objectID;
         ((Synchronisable *)no)->classID=sync.classID;
