@@ -54,6 +54,8 @@ namespace orxonox
         this->tt = NULL;
         this->ammoDump_ = NULL;
         this->mainWeapon_ = NULL;
+        this->rightButtonPressed_ = false;
+        this->leftButtonPressed_ = false;
 
         this->moveForward_ = 0;
         this->rotateUp_ = 0;
@@ -113,6 +115,7 @@ namespace orxonox
     {
         Model::loadParams(xmlElem);
 
+#if 0
         w = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"schuss" + this->getName(),"Orxonox/schuss");
         w->getParticleSystem()->setParameter("local_space","true");
         w->newEmitter();
@@ -130,8 +133,7 @@ namespace orxonox
         Ogre::SceneNode* node1 = this->getNode()->createChildSceneNode(this->getName() + "particle1");
         node1->setInheritScale(false);
         w->addToSceneNode(node1);
-
-
+#endif
 
         tt = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         tt->getParticleSystem()->setParameter("local_space","true");
@@ -150,7 +152,6 @@ namespace orxonox
         node2->setInheritScale(false);
         tt->addToSceneNode(node2);
 
-
         // add weapon
 
         ammoDump_ = new AmmunitionDump();
@@ -159,6 +160,8 @@ namespace orxonox
 
         mainWeapon_ = new BarrelGun();
         mainWeapon_->setAmmoDump(ammoDump_);
+        Orxonox::getSingleton()->getSceneManager()->getRootSceneNode()->removeChild(mainWeapon_->getNode());
+        getNode()->addChild(mainWeapon_->getNode());
 
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
         {
@@ -215,7 +218,23 @@ namespace orxonox
 
     bool Fighter::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id )
     {
+      if (id == OIS::MB_Left)
+      {
+        this->leftButtonPressed_ = true;
+      }
+      else if (id == OIS::MB_Right)
+        this->rightButtonPressed_ = true;
+      return true;
+    }
 
+    bool Fighter::mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id )
+    {
+      if (id == OIS::MB_Left)
+      {
+        this->leftButtonPressed_ = false;
+      }
+      else if (id == OIS::MB_Right)
+        this->rightButtonPressed_ = false;
       return true;
     }
 
@@ -238,6 +257,11 @@ namespace orxonox
         mKeyboard->capture();
         mMouse->capture();
 
+        if (leftButtonPressed_)
+            mainWeapon_->primaryFireRequest();
+        if (rightButtonPressed_)
+            mainWeapon_->secondaryFireRequest();
+
         if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
             this->moveForward(speed);
         else
@@ -255,6 +279,11 @@ namespace orxonox
 
         if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
             this->loopLeft(loop);
+        else
+            this->loopLeft(0);
+
+        if (mKeyboard->isKeyDown(OIS::KC_G))
+            this->mainWeapon_->addAction(BaseWeapon::RELOAD);
         else
             this->loopLeft(0);
 

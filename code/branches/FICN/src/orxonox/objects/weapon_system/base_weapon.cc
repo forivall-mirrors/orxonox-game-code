@@ -46,6 +46,8 @@ namespace orxonox {
   
   CreateFactory(BaseWeapon);
 
+  float BaseWeapon::nextActionValidityPeriod_ = 0.5;
+
   BaseWeapon::BaseWeapon()
     : sceneMgr_(Orxonox::getSingleton()->getSceneManager()),
       bulletCounter_(0), primaryFireRequest_(false), currentState_(IDLE),
@@ -104,11 +106,11 @@ namespace orxonox {
       switch (currentState_)
       {
       case PRIMARY_FIRE:
-        primaryFiring((unsigned int)(totalTime_ - actionStartTime_));
+        primaryFiring(totalTime_ - actionStartTime_);
         break;
 
       case SECONDARY_FIRE:
-        secondaryFiring((unsigned int)(totalTime_ - actionStartTime_));
+        secondaryFiring(totalTime_ - actionStartTime_);
         break;
 
       case RELOADING:

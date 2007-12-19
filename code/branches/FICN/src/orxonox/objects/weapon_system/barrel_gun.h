@@ -48,11 +48,11 @@ namespace orxonox {
   protected:
     void primaryFire();
 
-    void primaryFiring(unsigned int);
+    void primaryFiring(float);
 
     void secondaryFire();
 
-    void secondaryFiring(unsigned int);
+    void secondaryFiring(float);
 
   public:
 

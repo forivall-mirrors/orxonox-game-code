@@ -51,10 +51,10 @@ namespace orxonox {
 
     primaryFirePower_ = 100;
     secondaryFirePower_ = 500;
-    primaryFiringRate_ = 10;
-    secondaryFiringRate_ = 2;
-    primaryBulletSpeed_ = 1000;
-    secondaryBulletSpeed_ = 500;
+    primaryFiringRate_ = 1.0/7.0;
+    secondaryFiringRate_ = 1.0/2.0;
+    primaryBulletSpeed_ = 800;
+    secondaryBulletSpeed_ = 300;
     magazineSize_ = 25;
   }
 
@@ -79,11 +79,11 @@ namespace orxonox {
     Ogre::Entity* bulletEntity = sceneMgr_->createEntity("BulletEntity"
           + StringConverter::toString(bulletCounter_++), "Barrel.mesh");
 
-    Vector3 speed = (temp->getOrientation() * Vector3(0, 0, -1))
+    Vector3 speed = (temp->getOrientation() * Vector3(1, 0, 0))
           .normalisedCopy() * primaryBulletSpeed_;
     speed += getVelocity();
 
-	  temp->setScale(Vector3(1, 1, 1) * 4);
+	  temp->setScale(Vector3(1, 1, 1) * 2);
 	  temp->yaw(Degree(-90));
 
     Bullet* bullet = new Bullet();
@@ -96,9 +96,9 @@ namespace orxonox {
   }
 
 
-  void BarrelGun::primaryFiring(unsigned int time)
+  void BarrelGun::primaryFiring(float time)
   {
-    if (time > (unsigned int)1000/primaryFiringRate_)
+    if (time > primaryFiringRate_)
     {
       currentState_ = IDLE;
     }
@@ -121,11 +121,11 @@ namespace orxonox {
     Ogre::Entity* bulletEntity = sceneMgr_->createEntity("BulletEntity"
           + StringConverter::toString(bulletCounter_++), "Barrel.mesh");
 
-    Vector3 speed = (temp->getOrientation() * Vector3(0, 0, -1))
+    Vector3 speed = (temp->getOrientation() * Vector3(1, 0, 0))
           .normalisedCopy() * secondaryBulletSpeed_*0.5;
     speed += getVelocity();
 
-	  temp->setScale(Vector3(1, 1, 1) * 10);
+	  temp->setScale(Vector3(1, 1, 1) * 4);
 	  temp->yaw(Degree(-90));
 
     Bullet* bullet = new Bullet();
@@ -139,9 +139,9 @@ namespace orxonox {
   }
 
 
-  void BarrelGun::secondaryFiring(unsigned int time)
+  void BarrelGun::secondaryFiring(float time)
   {
-    if (time > (unsigned int)1000/secondaryFiringRate_)
+    if (time > secondaryFiringRate_)
       currentState_ = IDLE;
   }
 

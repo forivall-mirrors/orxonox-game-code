@@ -77,11 +77,11 @@ namespace orxonox {
   protected:
     virtual void primaryFire() { };
 
-    virtual void primaryFiring(unsigned int) { };
+    virtual void primaryFiring(float) { };
 
     virtual void secondaryFire() { };
 
-    virtual void secondaryFiring(unsigned int) { };
+    virtual void secondaryFiring(float) { };
 
     inline void registerAllVariables() { }//Model::registerAllVariables(); }
 
@@ -99,22 +99,22 @@ namespace orxonox {
     bool secondaryFireRequest_;
 
     float totalTime_;
-    unsigned long actionStartTime_;
+    float actionStartTime_;
 
     State currentState_;
     bool secondaryFired_;
 
     Action nextAction_;
     bool actionAdded_;
-    unsigned long timeSinceNextActionAdded_;
-    static const unsigned long nextActionValidityPeriod_ = 500;
+    float timeSinceNextActionAdded_;
+    static float nextActionValidityPeriod_;
 
     // weapon properties
     int leftAmmo_;
-    int primaryFirePower_;
-    int secondaryFirePower_;
-    int primaryFiringRate_;
-    int secondaryFiringRate_;
+    float primaryFirePower_;
+    float secondaryFirePower_;
+    float primaryFiringRate_;
+    float secondaryFiringRate_;
     Ogre::Real primaryBulletSpeed_;
     Ogre::Real secondaryBulletSpeed_;
 

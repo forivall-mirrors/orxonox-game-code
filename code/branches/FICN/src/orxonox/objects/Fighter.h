@@ -36,7 +36,7 @@ namespace orxonox
             void maxSpeedLoopRightLeft(float maxSpeedLoopRightLeft);
             bool mouseMoved(const OIS::MouseEvent &e);
             bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);// { return true; }
-            bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
+            bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);// { return true; }
 
 
         private:
@@ -48,6 +48,9 @@ namespace orxonox
 
             AmmunitionDump* ammoDump_;
             BarrelGun* mainWeapon_;
+
+            bool leftButtonPressed_;
+            bool rightButtonPressed_;
 
             float moveForward_;
             float rotateUp_;
