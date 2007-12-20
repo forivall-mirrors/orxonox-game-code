@@ -176,6 +176,7 @@ LevelLoader::LevelLoader(string file, string path)
       if (worldElem)
       {
         tNode = 0;
+        //FIXME something is wrong, probably missing ==
         while (tNode = worldElem->IterateChildren(tNode))
         {
           if (tNode->Type() == TiXmlNode::ELEMENT)

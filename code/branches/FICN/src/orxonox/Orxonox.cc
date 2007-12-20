@@ -422,8 +422,13 @@ namespace orxonox
     size_t windowHnd = 0;
     std::ostringstream windowHndStr;
     OIS::ParamList pl;
-    RenderWindow *win = ogre_->getRoot()->getAutoCreatedWindow();
 
+    // fixes auto repeat problem
+    #if defined OIS_LINUX_PLATFORM
+    pl.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+    #endif
+
+    RenderWindow *win = ogre_->getRoot()->getAutoCreatedWindow();
     win->getCustomAttribute("WINDOW", &windowHnd);
     windowHndStr << windowHnd;
     pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));

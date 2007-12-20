@@ -73,7 +73,7 @@ namespace orxonox
             inline Ogre::Vector2 getValue(const Ogre::Vector2& value)           { return this->value_vector2_; }
             /** @returns the value of the type Vector3. @param value This is only needed to determine the right type. */
             inline Ogre::Vector3 getValue(const Ogre::Vector3& value)           { return this->value_vector3_; }
-            /** @returns the value of the type Colour£Value. @param value This is only needed to determine the right type. */
+            /** @returns the value of the type Colourï¿½Value. @param value This is only needed to determine the right type. */
             inline Ogre::ColourValue getValue(const Ogre::ColourValue& value)   { return this->value_colourvalue_; }
 
         private:

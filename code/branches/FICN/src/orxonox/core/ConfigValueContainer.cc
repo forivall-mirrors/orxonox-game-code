@@ -26,7 +26,7 @@
  */
 
 #include <fstream>
-#include <string>
+// #include <string>
 #include "ConfigValueContainer.h"
 
 //#define CONFIGFILEPATH "O:\\oh\\bin\\orxonox.ini"
