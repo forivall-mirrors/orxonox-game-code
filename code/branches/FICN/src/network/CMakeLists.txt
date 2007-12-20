@@ -41,6 +41,7 @@ ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(network ${ZLIB_LIBRARY} ${ENet_LIBRARY} ${Boost_thread_LIBRARIES})
 
+# chatserver for testing purposes
 ADD_EXECUTABLE(chatserver ${CHATSERVER_SRC_FILES})
 TARGET_LINK_LIBRARIES( chatserver
   ${OGRE_LIBRARIES}
@@ -52,6 +53,7 @@ TARGET_LINK_LIBRARIES( chatserver
   ${WINDOWS_ENET_DEPENDENCIES}
 )
 
+# chatclient for testing purpose
 ADD_EXECUTABLE(chatclient ${CHATCLIENT_SRC_FILES})
 TARGET_LINK_LIBRARIES( chatclient
   ${OGRE_LIBRARIES}
@@ -63,6 +65,7 @@ TARGET_LINK_LIBRARIES( chatclient
   ${WINDOWS_ENET_DEPENDENCIES}
 )
 
+# client for testing purpose
 ADD_EXECUTABLE(client dummyclient2.cc)
 TARGET_LINK_LIBRARIES( client
   ${OGRE_LIBRARIES}
@@ -74,6 +77,7 @@ TARGET_LINK_LIBRARIES( client
   ${WINDOWS_ENET_DEPENDENCIES}
 )
 
+# server for testing purpose
 ADD_EXECUTABLE(server dummyserver.cc)
 TARGET_LINK_LIBRARIES( server
   ${OGRE_LIBRARIES}

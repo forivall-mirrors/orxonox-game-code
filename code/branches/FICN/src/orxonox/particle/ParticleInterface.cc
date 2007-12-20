@@ -42,11 +42,6 @@ using namespace Ogre;
 
 namespace particle {
 
-  ParticleInterface::~ParticleInterface(void)
-  {
-    sceneManager_->destroyParticleSystem(particleSystem_);
-  }
-
   ParticleInterface::ParticleInterface( SceneManager *sceneManager, String name, String templateName )
   {
     sceneManager_ = sceneManager;
@@ -61,6 +56,11 @@ namespace particle {
     //Anzahl der Emitter
     numberOfEmitters_ = particleSystem_->getNumEmitters();
     standardizeEmitters();
+  }
+
+  ParticleInterface::~ParticleInterface(void)
+  {
+    sceneManager_->destroyParticleSystem(particleSystem_);
   }
 
   void ParticleInterface::standardizeEmitters(void)
@@ -94,7 +94,7 @@ namespace particle {
   {
     distance_ = d;
     //partikel anpassen
-    for (int i=0; i<numberOfEmitters_; i++) {
+    for (int i=0; i < numberOfEmitters_; i++) {
       particleSystem_->getEmitter(i)->setTimeToLive(distance_);
     }
   }
@@ -103,22 +103,22 @@ namespace particle {
   {
     colour_ = colour;
     //partikel anpassen
-    for (int i=0; i<numberOfEmitters_; i++) {
+    for (int i=0; i < numberOfEmitters_; i++) {
       particleSystem_->getEmitter(i)->setColour(colour_);
     }
   }
 
   ParticleEmitter* ParticleInterface::getEmitter( int emitterNr )
   {
-    if (!(emitterNr<numberOfEmitters_)) return NULL;
+    if ( (emitterNr >= numberOfEmitters_) || (emitterNr < 0) ) return NULL;
     return particleSystem_->getEmitter(emitterNr);
   }
 
-  void ParticleInterface::newEmitter ( void )
+  void ParticleInterface::newEmitter ()
   {
     particleSystem_->addEmitter(particleSystem_->getEmitter(0)->getType());
-    numberOfEmitters_=numberOfEmitters_+1;
-    particleSystem_->getEmitter(0)->copyParametersTo( particleSystem_->getEmitter(numberOfEmitters_-1) );
+    particleSystem_->getEmitter(0)->copyParametersTo( particleSystem_->getEmitter(numberOfEmitters_) );
+    numberOfEmitters_++;
   }
 
  // TODO check if this really works

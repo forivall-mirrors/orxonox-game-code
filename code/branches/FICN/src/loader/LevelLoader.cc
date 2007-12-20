@@ -25,16 +25,16 @@
  *
  */
 
-#include <string>
-#include <vector>
-#include <iostream>
+// #include <string>
+// #include <vector>
+// #include <iostream>
 #include <algorithm>
 #include <iterator>
 
 #include <OgreOverlayManager.h>
 
 #include "LevelLoader.h"
-#include "tinyxml/tinyxml.h"
+// #include "tinyxml/tinyxml.h"
 #include "orxonox/core/CoreIncludes.h"
 #include "orxonox/core/Error.h"
 #include "orxonox/objects/BaseObject.h"
@@ -151,6 +151,7 @@ LevelLoader::LevelLoader(string file, string path)
 				if (audioElem)
 				{
 					tNode = 0;
+          //FIXME something is worng, probably ==
 					while( tNode = audioElem->IterateChildren( tNode ) )
 					{
             if (tNode->Type() == TiXmlNode::ELEMENT)
@@ -198,8 +199,8 @@ LevelLoader::LevelLoader(string file, string path)
 			{
 				 mLoadOverlay->hide();
 			}
-			
-			
+
+
 			COUT(0) << "Loading finished!\n\n\n\n\n";
 		}
 	}
@@ -209,21 +210,6 @@ LevelLoader::LevelLoader(string file, string path)
 
 	}
 
-
-	string LevelLoader::name()
-	{
-		return this->name_;
-	}
-
-	string LevelLoader::description()
-	{
-		return this->description_;
-	}
-
-	string LevelLoader::image()
-	{
-		return this->image_;
-	}
 
 
 }

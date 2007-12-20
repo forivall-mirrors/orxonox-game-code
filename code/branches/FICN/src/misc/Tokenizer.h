@@ -5,14 +5,14 @@
 #include <iostream>
 
 /**
-* String tokenizer
-*
-* Splits a given string into several smaller strings
-* using a delmiter (default is the comma).
-* Returns the result as a vector<string> object
-*
-* @author Nicolas Perrenoud<nicolape@ee.ethz.ch>
-*/
+ * String tokenizer
+ *
+ * Splits a given string into several smaller strings
+ * using a delmiter (default is the comma).
+ * Returns the result as a vector<string> object
+ *
+ * @author Nicolas Perrenoud<nicolape@ee.ethz.ch>
+ */
 
 inline std::vector<std::string> tokenize(const std::string& str, const std::string& delimiters = ",")
 {
