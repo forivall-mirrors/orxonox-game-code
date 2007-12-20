@@ -164,6 +164,22 @@ namespace orxonox
         this->greenNode_->setScale(0.3, 0.3, 0.3);
         // END CREATING BLINKING LIGHTS
 
+        // START of testing crosshair
+        this->crosshairNear_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
+        this->crosshairFar_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
+
+        this->chNearNode_ = this->getNode()->createChildSceneNode(this->getName() + "near", Vector3(50.0, 0.0, 0.0));
+        this->chNearNode_->setInheritScale(false);
+        this->chFarNode_ = this->getNode()->createChildSceneNode(this->getName() + "far", Vector3(200.0, 0.0, 0.0));
+        this->chFarNode_->setInheritScale(false);
+
+        this->chNearNode_->attachObject(this->crosshairNear_.getBillboardSet());
+        this->chNearNode_->setScale(0.2, 0.2, 0.2);
+
+        this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
+        this->chFarNode_->setScale(0.4, 0.4, 0.4);
+
+        // END of testing crosshair
 
 /*
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))

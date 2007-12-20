@@ -56,6 +56,11 @@ namespace orxonox
             Ogre::SceneNode* greenNode_;
             float blinkTime_;
 
+            BillboardSet crosshairNear_;
+            BillboardSet crosshairFar_;
+            Ogre::SceneNode* chNearNode_;
+            Ogre::SceneNode* chFarNode_;
+
             float timeToReload_;
             float reloadTime_;
 
