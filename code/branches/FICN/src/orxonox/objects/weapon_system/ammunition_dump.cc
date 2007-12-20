@@ -105,7 +105,8 @@ namespace orxonox {
   int AmmunitionDump::getStockSize(const Ogre::String &name)
   {
     int id = Orxonox::getSingleton()->getBulletMgr()->getAmmunitionID(name);
-    if (id = -1)
+    // FIXME changed = to ==, check if correct
+    if (id == -1)
       return -1;
     return stock_[id];
   }

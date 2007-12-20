@@ -346,6 +346,7 @@ namespace orxonox
 
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
+            // FIXME, unused var; try recycling of projectiles
             Projectile* proj = new Projectile(this);
             this->timeToReload_ = this->reloadTime_;
         }

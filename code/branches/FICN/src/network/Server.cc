@@ -49,7 +49,7 @@ namespace network{
     connection = new ConnectionManager(port, bindAddress, clients);
     gamestates = new GameStateManager(clients);
   }
-  
+
   /**
    * This function opens the server by creating the listener thread
    */
@@ -57,7 +57,7 @@ namespace network{
     connection->createListener();
     return;
   }
-  
+
   /**
    * This function closes the server
    */
@@ -65,7 +65,7 @@ namespace network{
     connection->quitListener();
     return;
   }
-  
+
   /**
    * This function sends out a message to all clients
    * @param msg message
@@ -94,7 +94,7 @@ namespace network{
     }
     return false;
   }
-  
+
   /**
    * Run this function once every tick
    * calls processQueue and updateGamestate
@@ -105,7 +105,7 @@ namespace network{
     updateGamestate();
     return;
   }
-  
+
   /**
    * processes all the packets waiting in the queue
    */
@@ -118,7 +118,7 @@ namespace network{
       elaborate(packet, clientID);
     }
   }
-  
+
   /**
    * takes a new snapshot of the gamestate and sends it to the clients
    */
@@ -128,7 +128,7 @@ namespace network{
     sendGameState();
     //std::cout << "sent gamestate" << std::endl;
   }
-  
+
   /**
    * sends the gamestate
    */
@@ -150,7 +150,7 @@ namespace network{
       int gid = temp->getGamestateID();
       int cid = temp->getID();
       std::cout << "server, got acked ID: " << gid << std::endl;
-      GameStateCompressed *gs = &(gamestates->popGameState(cid));
+      GameStateCompressed *gs = &(gamestates->popGameState(cid)); // FIXME: taking address of temporary, check if correct
       //std::cout << "adding gamestate" << std::endl;
       connection->addPacket(packet_gen.gstate(gs), cid);
       //std::cout << "added gamestate" << std::endl;
@@ -162,9 +162,9 @@ namespace network{
     else return false;
     //return true;
   }
-  
+
   void Server::processAck( ack *data, int clientID){
     clients->findClient(clientID)->setGamestateID(data->a);
   }
-  
+
 }

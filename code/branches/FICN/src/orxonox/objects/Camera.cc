@@ -61,7 +61,7 @@ namespace orxonox
         Ogre::SceneNode* sceneNode = (Ogre::SceneNode*)mgr->getRootSceneNode()->createChildSceneNode(node); //getChild(node);
         sceneNode->attachObject((Ogre::MovableObject*)cam);
 
-
+        // FIXME: unused var
         Ogre::Viewport* vp = orxonox::Orxonox::getSingleton()->getOgrePointer()->getRoot()->getAutoCreatedWindow()->addViewport(cam);
 
 

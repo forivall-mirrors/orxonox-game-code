@@ -37,8 +37,10 @@ namespace audio
 		if(alGetError() != AL_NO_ERROR)
 			loaded=AL_FALSE;
 
+    //FIXME deprecated
 		alutLoadWAVFile((ALbyte*)fileName.c_str(), &format, &data, &size, &freq, &loop);
 		alBufferData(buffer, format, data, size, freq);
+    //FIXME deprecated
 		alutUnloadWAV(format, data, size, freq);
 
 		// Do another error check and return.

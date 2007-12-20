@@ -64,7 +64,7 @@ int main(){
   else
     std::cout << "Connection failed" << std::endl;
 
-  ENetPacket *packet;
+  ENetPacket *packet;  //FIXME: unused var!
   ENetEvent event;
 
 

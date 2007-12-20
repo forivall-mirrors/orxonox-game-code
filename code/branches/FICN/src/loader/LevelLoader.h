@@ -36,7 +36,7 @@ namespace loader
     inline string description() {return description_; };
     inline string image() {return image_; };
   private:
-    // Level information
+    //! Level information
     std::string name_;
     std::string description_;
     std::string image_;
@@ -48,7 +48,7 @@ namespace loader
     std::string loadingBarWidth_;
     std::string loadingBarHeight_;
 
-    // Set to true if it was possible to load the level file
+    //! Set to true if it was possible to load the level file
     bool valid_;
 
     // Xml-Stuff

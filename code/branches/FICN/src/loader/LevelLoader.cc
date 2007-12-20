@@ -107,7 +107,7 @@ LevelLoader::LevelLoader(string file, string path)
 			TiXmlNode* tNode;
 
 			Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
- 			Ogre::Overlay* mLoadOverlay;
+			Ogre::Overlay* mLoadOverlay; // FIXME: mey be uninitialized
 
 			// Set loading screen
 			loadElem = rootElement->FirstChildElement("loading");
@@ -151,7 +151,7 @@ LevelLoader::LevelLoader(string file, string path)
 				if (audioElem)
 				{
 					tNode = 0;
-          //FIXME something is worng, probably ==
+          //FIXME something is wrong, probably missing ==
 					while( tNode = audioElem->IterateChildren( tNode ) )
 					{
             if (tNode->Type() == TiXmlNode::ELEMENT)

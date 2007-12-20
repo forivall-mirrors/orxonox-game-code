@@ -177,6 +177,7 @@ namespace hud {
     rocketNum3_ = OverlayManager::getSingleton().getOverlayElement("Orxonox/HUD1.2/RocketNum3");
     rocketNum4_ = OverlayManager::getSingleton().getOverlayElement("Orxonox/HUD1.2/RocketNum4");
 
+    // FIXME: unused vars!
     float energyDistrPixelX_ = 100;
     float energyDistrPixelY_ = 86;
     energyDistrPoint_ = OverlayManager::getSingleton().getOverlayElement("Orxonox/HUD1.2/EnergyDistrPoint");
