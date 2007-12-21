@@ -93,9 +93,9 @@ namespace orxonox
         auMan_->update();
         updateAI();
 
-        if(mode_==PRESENTATION)
+        if(mode_ == PRESENTATION)
           server_g->tick(evt.timeSinceLastFrame);
-        else if(mode_==CLIENT)
+        else if(mode_ == CLIENT)
           client_g->tick(evt.timeSinceLastFrame);
 
         usleep(10);
@@ -276,8 +276,8 @@ namespace orxonox
     setupScene();
     createFrameListener();
     try{
-      server_g = new network::Server(); // add port and bindadress
-      server_g->open(); // open server and create listener thread
+      server_g = new network::Server(); //!< add port and bindadress
+      server_g->open(); //!< open server and create listener thread
       if(ogre_ && ogre_->getRoot())
         ogre_->getRoot()->addFrameListener(new network::ServerFrameListener()); // adds a framelistener for the server
       COUT(3) << "Info: network framelistener added" << std::endl;
@@ -300,9 +300,9 @@ namespace orxonox
     COUT(2) << "initialising server" << std::endl;
     ogre_->setConfigPath(path);
     ogre_->setup();
-    server_g = new network::Server(); // add some settings if wanted
+    server_g = new network::Server(); // FIXME add some settings if wanted
     if(!ogre_->load()) die(/* unable to load */);
-    // add network framelistener
+    // FIXME add network framelistener
   }
 
   void Orxonox::clientInit(std::string path)
@@ -425,7 +425,7 @@ namespace orxonox
 
     // fixes auto repeat problem
     #if defined OIS_LINUX_PLATFORM
-    pl.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+      pl.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
     #endif
 
     RenderWindow *win = ogre_->getRoot()->getAutoCreatedWindow();
@@ -445,7 +445,7 @@ namespace orxonox
     }
   }
 
-  // we actually want to do this differently...
+  // FIXME we actually want to do this differently...
   void Orxonox::createFrameListener()
   {
     TickFrameListener* TickFL = new TickFrameListener();
@@ -454,13 +454,14 @@ namespace orxonox
     TimerFrameListener* TimerFL = new TimerFrameListener();
     ogre_->getRoot()->addFrameListener(TimerFL);
 
-    //if(mode_!=CLIENT) // just a hack ------- remove this in future
+    //if(mode_!=CLIENT) // FIXME just a hack ------- remove this in future
       frameListener_ = new OrxListener(keyboard_, auMan_, mode_);
     ogre_->getRoot()->addFrameListener(frameListener_);
   }
 
   void Orxonox::startRenderLoop()
   {
+    // FIXME
     // this is a hack!!!
     // the call to reset the mouse clipping size should probably be somewhere
     // else, however this works for the moment.
