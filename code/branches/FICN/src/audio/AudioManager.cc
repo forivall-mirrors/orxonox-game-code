@@ -50,7 +50,8 @@ namespace audio
 
 	void AudioManager::ambientStart()
 	{
-		currentBgSound = 0;
+// 		currentBgSound = 0;
+    currentBgSound = rand() % bgSounds.size();
 		if (bgSounds.size() > 0)
 		{
 			if(!bgSounds[currentBgSound].playback())

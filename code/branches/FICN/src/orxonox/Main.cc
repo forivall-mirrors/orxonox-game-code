@@ -116,6 +116,7 @@ extern "C" {
   {
 #endif
     try {
+      srand(time(0));  //initaialize RNG; TODO check if it works on win
       SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
       Orxonox* orx = Orxonox::getSingleton();
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
