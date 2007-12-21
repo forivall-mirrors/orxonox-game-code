@@ -234,9 +234,9 @@ namespace orxonox
             cam->roll(Degree(0));
 */
 
-            cam->setPosition(Vector3(-150,0,50));
+            cam->setPosition(Vector3(-200,0,35));
 //            cam->setPosition(Vector3(0,-350,0));
-            cam->lookAt(Vector3(0,0,20));
+            cam->lookAt(Vector3(0,0,35));
             cam->roll(Degree(-90));
 
             this->camNode_->attachObject(cam);
