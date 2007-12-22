@@ -23,9 +23,14 @@ namespace orxonox
 
         private:
             int                 value_int_;
+            unsigned int        value_uint_;
+            char                value_char_;
+            unsigned char       value_uchar_;
+            float               value_float_;
             double              value_double_;
             bool                value_bool_;
             std::string         value_string_;
+            const char*         value_constchar_;
             Vector2             value_vector2_;
             Vector3             value_vector3_;
             ColourValue         value_colourvalue_;

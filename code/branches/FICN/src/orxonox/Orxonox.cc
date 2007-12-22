@@ -197,6 +197,7 @@ namespace orxonox
     //TODO: start modules
     ogre_->startRender();
     //TODO: run engine
+    Factory::createClassHierarchy();
     createScene();
     setupScene();
     setupInputSystem();
@@ -205,7 +206,6 @@ namespace orxonox
     else
       std::cout << "client here" << std::endl;
     createFrameListener();
-    Factory::createClassHierarchy();
     switch(mode_){
     case PRESENTATION:
       //ogre_->getRoot()->addFrameListener(new network::ServerFrameListener());

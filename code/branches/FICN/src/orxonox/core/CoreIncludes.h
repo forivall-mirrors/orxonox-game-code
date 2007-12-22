@@ -105,7 +105,7 @@ namespace orxonox
     orxonox::ConfigValueContainer* container##varname = this->getIdentifier()->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(this->getIdentifier()->getName(), #varname, defvalue); \
+        container##varname = new orxonox::ConfigValueContainer(this->getIdentifier()->getName(), #varname, varname = defvalue); \
         this->getIdentifier()->setConfigValueContainer(#varname, container##varname); \
     } \
     varname = container##varname->getValue(varname)
