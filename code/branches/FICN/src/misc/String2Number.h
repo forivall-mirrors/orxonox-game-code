@@ -79,14 +79,9 @@ const std::string& number2String(T variable)
 template <typename T>
 const std::string& number2String(T variable, const std::string& fallbackString)
 {
-    std::cout << "N2Sa: " << variable << std::endl;
-
     std::ostringstream oss;
     if (oss << variable)
-    {
-    std::cout << "N2Sb: " << oss.str() << std::endl;
         return *(new std::string(oss.str()));
-    }
 
     return fallbackString;
 }
@@ -123,13 +118,9 @@ bool string2Number(T& variable, const std::string& valueString)
 template <typename T>
 bool string2Number(T& variable, const std::string& valueString, T fallbackValue)
 {
-    std::cout << "S2Na: " << valueString << std::endl;
     std::istringstream iss(valueString);
     if (iss >> variable)
-    {
-    std::cout << "S2Nb: " << variable << std::endl;
         return true;
-    }
 
     variable = fallbackValue;
     return false;
