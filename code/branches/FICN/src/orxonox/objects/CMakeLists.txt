@@ -20,12 +20,12 @@ SET( OBJECTS_SRC_FILES
   BillboardSet.cc
   Light.cc
   Projectile.cc
-  weapon_system/ammunition_dump.cc
-  weapon_system/barrel_gun.cc
-  weapon_system/base_weapon.cc
-  weapon_system/bullet.cc
-  weapon_system/bullet_manager.cc
-  weapon_system/weapon_station.cc
+  weapon_system/AmmunitionDump.cc
+  weapon_system/BarrelGun.cc
+  weapon_system/BaseWeapon.cc
+  weapon_system/Bullet.cc
+  weapon_system/BulletManager.cc
+  weapon_system/WeaponStation.cc
   Explosion.cc
   Fighter.cc
 )

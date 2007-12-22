@@ -38,7 +38,7 @@ IF(WIN32)
     objects/Projectile.cc
     objects/weapon_system/AmmunitionDump.cc
     objects/weapon_system/BarrelGun.cc
-    objects/weapon_system/BaseMeapon.cc
+    objects/weapon_system/BaseWeapon.cc
     objects/weapon_system/Bullet.cc
     objects/weapon_system/BulletManager.cc
     objects/weapon_system/WeaponStation.cc
