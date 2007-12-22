@@ -1,0 +1,97 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network", "network.vcproj", "{35575B59-E1AE-40E8-89C4-2862B5B09B68}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{271715F3-5B90-4110-A552-70C788084A86} = {271715F3-5B90-4110-A552-70C788084A86}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "core", "core.vcproj", "{271715F3-5B90-4110-A552-70C788084A86}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BeniXonox", "benixonox.vcproj", "{0B6C5CFD-F91B-432A-80A3-2610F61E060B}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{35575B59-E1AE-40E8-89C4-2862B5B09B68} = {35575B59-E1AE-40E8-89C4-2862B5B09B68}
+		{E283910F-F911-40FB-A09D-D025CA821912} = {E283910F-F911-40FB-A09D-D025CA821912}
+		{4733BD1A-E04C-458D-8BFB-5010250EA497} = {4733BD1A-E04C-458D-8BFB-5010250EA497}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Weapon", "weapon.vcproj", "{ED1E93A7-5DB2-4417-B684-A8FDD61FB567}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Audio", "audio.vcproj", "{4733BD1A-E04C-458D-8BFB-5010250EA497}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{271715F3-5B90-4110-A552-70C788084A86} = {271715F3-5B90-4110-A552-70C788084A86}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TinyXML", "tiny_xml.vcproj", "{2240ECD7-2F48-4431-8E1B-25466A384CCC}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "loader", "loader.vcproj", "{E283910F-F911-40FB-A09D-D025CA821912}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{2240ECD7-2F48-4431-8E1B-25466A384CCC} = {2240ECD7-2F48-4431-8E1B-25466A384CCC}
+		{271715F3-5B90-4110-A552-70C788084A86} = {271715F3-5B90-4110-A552-70C788084A86}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35575B59-E1AE-40E8-89C4-2862B5B09B68}.Debug|Win32.ActiveCfg = Debug|Win32
+		{35575B59-E1AE-40E8-89C4-2862B5B09B68}.Debug|Win32.Build.0 = Debug|Win32
+		{35575B59-E1AE-40E8-89C4-2862B5B09B68}.Release|Win32.ActiveCfg = Release|Win32
+		{35575B59-E1AE-40E8-89C4-2862B5B09B68}.Release|Win32.Build.0 = Release|Win32
+		{271715F3-5B90-4110-A552-70C788084A86}.Debug|Win32.ActiveCfg = Debug|Win32
+		{271715F3-5B90-4110-A552-70C788084A86}.Debug|Win32.Build.0 = Debug|Win32
+		{271715F3-5B90-4110-A552-70C788084A86}.Release|Win32.ActiveCfg = Release|Win32
+		{271715F3-5B90-4110-A552-70C788084A86}.Release|Win32.Build.0 = Release|Win32
+		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Debug|Win32.Build.0 = Debug|Win32
+		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Release|Win32.ActiveCfg = Release|Win32
+		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Release|Win32.Build.0 = Release|Win32
+		{ED1E93A7-5DB2-4417-B684-A8FDD61FB567}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ED1E93A7-5DB2-4417-B684-A8FDD61FB567}.Release|Win32.ActiveCfg = Release|Win32
+		{4733BD1A-E04C-458D-8BFB-5010250EA497}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4733BD1A-E04C-458D-8BFB-5010250EA497}.Debug|Win32.Build.0 = Debug|Win32
+		{4733BD1A-E04C-458D-8BFB-5010250EA497}.Release|Win32.ActiveCfg = Release|Win32
+		{4733BD1A-E04C-458D-8BFB-5010250EA497}.Release|Win32.Build.0 = Release|Win32
+		{2240ECD7-2F48-4431-8E1B-25466A384CCC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2240ECD7-2F48-4431-8E1B-25466A384CCC}.Debug|Win32.Build.0 = Debug|Win32
+		{2240ECD7-2F48-4431-8E1B-25466A384CCC}.Release|Win32.ActiveCfg = Release|Win32
+		{2240ECD7-2F48-4431-8E1B-25466A384CCC}.Release|Win32.Build.0 = Release|Win32
+		{E283910F-F911-40FB-A09D-D025CA821912}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E283910F-F911-40FB-A09D-D025CA821912}.Debug|Win32.Build.0 = Debug|Win32
+		{E283910F-F911-40FB-A09D-D025CA821912}.Release|Win32.ActiveCfg = Release|Win32
+		{E283910F-F911-40FB-A09D-D025CA821912}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
