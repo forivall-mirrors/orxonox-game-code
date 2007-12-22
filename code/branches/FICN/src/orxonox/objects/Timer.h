@@ -191,4 +191,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Timer_H__ */

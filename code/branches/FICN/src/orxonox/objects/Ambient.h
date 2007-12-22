@@ -1,5 +1,5 @@
-#ifndef _OBJECT_AMBIENT_H__
-#define _OBJECT_AMBIENT_H__
+#ifndef _Ambient_H__
+#define _Ambient_H__
 
 #include "BaseObject.h"
 #include "../../tinyxml/tinyxml.h"
@@ -21,4 +21,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Ambient_H__ */

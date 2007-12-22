@@ -8,9 +8,9 @@ SET( OBJECTS_SRC_FILES
   test3.cc
   Ambient.cc
   Skybox.cc
-  SceneNode.cc
+#  SceneNode.cc
   BaseEntity.cc
-  Entity.cc
+#  Entity.cc
   Camera.cc
 #  SpaceshipSteeringObject.cc
   Model.cc
@@ -18,7 +18,7 @@ SET( OBJECTS_SRC_FILES
   SpaceShip.cc
   NPC.cc
   BillboardSet.cc
-  Light.cc
+#  Light.cc
   Projectile.cc
   weapon_system/AmmunitionDump.cc
   weapon_system/BarrelGun.cc

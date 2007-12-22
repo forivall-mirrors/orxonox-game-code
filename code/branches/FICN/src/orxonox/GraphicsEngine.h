@@ -4,8 +4,8 @@
   @author Benjamin Knecht <beni_at_orxonox.net>
  */
 
-#ifndef GRAPHICS_ENGINE_H
-#define GRAPHICS_ENGINE_H
+#ifndef _GraphicsEngine_H__
+#define _GraphicsEngine_H__
 
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
@@ -39,5 +39,4 @@ namespace orxonox {
 
 }
 
-#endif
-
+#endif /* _GraphicsEngine_H__ */

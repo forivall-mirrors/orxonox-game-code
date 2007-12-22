@@ -1,5 +1,5 @@
-#ifndef AUDIOSOURCE_H_
-#define AUDIOSOURCE_H_
+#ifndef _AudioSource_H__
+#define _AudioSource_H__
 
 #include "AudioIncludes.h"
 
@@ -15,4 +15,4 @@ namespace audio
 	};
 }
 
-#endif /*AUDIOSOURCE_H_*/
+#endif /* _AudioSource_H__ */

@@ -108,4 +108,4 @@ namespace orxonox
     }
 }
 
-#endif
+#endif /* _MetaObjectList_H__ */

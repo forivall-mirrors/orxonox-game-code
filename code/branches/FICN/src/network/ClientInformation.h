@@ -9,8 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef NETWORKCLIENTINFORMATION_H
-#define NETWORKCLIENTINFORMATION_H
+#ifndef _ClientInformation_H__
+#define _ClientInformation_H__
 
 #include <enet/enet.h>
 #include <iostream> //debug
@@ -65,4 +65,4 @@ private:
 
 }
 
-#endif
+#endif /* _ClientInformation_H__ */

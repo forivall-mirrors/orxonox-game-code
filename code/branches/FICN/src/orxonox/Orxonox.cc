@@ -48,6 +48,7 @@
 //****** STD *******
 #include <string>
 #include <iostream>
+#include <exception>
 
 //***** ORXONOX ****
 // loader and audio
@@ -282,7 +283,7 @@ namespace orxonox
         ogre_->getRoot()->addFrameListener(new network::ServerFrameListener()); // adds a framelistener for the server
       COUT(3) << "Info: network framelistener added" << std::endl;
     }
-    catch(exception &e)
+    catch(std::exception &e)
     {
       COUT(1) << "Error: There was a problem initialising the server :(" << std::endl;
     }

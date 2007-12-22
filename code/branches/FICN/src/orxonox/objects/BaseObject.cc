@@ -58,7 +58,7 @@ namespace orxonox
     {
         if (xmlElem->Attribute("name"))
         {
-            this->setName(xmlElem->Attribute("mesh"));
+            this->setName(xmlElem->Attribute("name"));
         }
     }
 }

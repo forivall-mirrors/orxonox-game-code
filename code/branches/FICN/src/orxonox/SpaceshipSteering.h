@@ -1,5 +1,5 @@
-#ifndef SPACESHIP_STEERING_H
-#define SPACESHIP_STEERING_H
+#ifndef _SpaceShipSteering_H__
+#define _SpaceShipSteering_H__
 
 #include "OgrePrerequisites.h"
 
@@ -59,4 +59,4 @@ class SpaceshipSteering
 };
 
 
-#endif
+#endif /* _SpaceShipSteering_H__ */

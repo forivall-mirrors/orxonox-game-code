@@ -26,8 +26,8 @@
  */
 
 
-#ifndef LOADER_PLATFORM_H
-#define LOADER_PLATFORM_H
+#ifndef _LoaderPlatform_H__
+#define _LoaderPlatform_H__
 
 
 #if defined( __WIN32__ ) || defined( _WIN32 )
@@ -43,4 +43,4 @@
 #endif
 
 
-#endif /* LOADER_PLATFORM_H */
+#endif /* _LoaderPlatform_H__ */

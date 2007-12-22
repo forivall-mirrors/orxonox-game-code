@@ -30,8 +30,8 @@
  @brief Contains all the necessary forward declarations for all classes, structs and enums.
  */
 
-#ifndef ORXONOX_PREREQ_H
-#define ORXONOX_PREREQ_H
+#ifndef _OrxonoxPrereqs_H__
+#define _OrxonoxPrereqs_H__
 
 // hack for the usleep/Sleep problem
 #ifdef WIN32
@@ -158,4 +158,4 @@ namespace particle {
   class ParticleInterface;
 }
 
-#endif /* ORXONOX_PREREQ_H */
+#endif /* _OrxonoxPrereqs_H__ */

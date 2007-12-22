@@ -1,5 +1,5 @@
-#ifndef _OBJECT_SKYBOX_H__
-#define _OBJECT_SKYBOX_H__
+#ifndef _Skybox_H__
+#define _Skybox_H__
 
 #include "BaseObject.h"
 #include "../../tinyxml/tinyxml.h"
@@ -21,4 +21,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Skybox_H__ */

@@ -91,4 +91,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Fighter_H__ */

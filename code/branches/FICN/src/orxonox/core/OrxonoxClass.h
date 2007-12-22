@@ -130,4 +130,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _OrxonoxClass_H__ */

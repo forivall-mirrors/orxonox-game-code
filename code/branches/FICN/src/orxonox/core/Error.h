@@ -1,5 +1,5 @@
-#ifndef __ERROR_CLASS__
-#define __ERROR_CLASS__
+#ifndef _Error_H__
+#define _Error_H__
 
 #include <iostream>
 #include <string>
@@ -17,4 +17,4 @@ namespace orxonox
 	};
 }
 
-#endif
+#endif /* _Error_H__ */

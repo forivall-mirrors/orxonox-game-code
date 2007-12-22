@@ -122,4 +122,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _SpaceShip_H__ */

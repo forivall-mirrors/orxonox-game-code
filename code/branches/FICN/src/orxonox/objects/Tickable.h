@@ -80,4 +80,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Tickable_H__ */

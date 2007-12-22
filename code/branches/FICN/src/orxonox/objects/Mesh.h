@@ -1,9 +1,9 @@
+#ifndef _Mesh_H__
+#define _Mesh_H__
+
 #include <string>
 
 #include "OgreEntity.h"
-
-#ifndef _Mesh_H__
-#define _Mesh_H__
 
 namespace orxonox
 {
@@ -26,4 +26,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Mesh_H__ */

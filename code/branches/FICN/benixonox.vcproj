@@ -224,10 +224,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\orxonox\objects\BaseEntity.cc"
-					>
-				</File>
-				<File
 					RelativePath=".\src\orxonox\objects\BaseObject.cc"
 					>
 				</File>
@@ -240,19 +236,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\orxonox\objects\Entity.cc"
-					>
-				</File>
-				<File
 					RelativePath=".\src\orxonox\objects\Explosion.cc"
 					>
 				</File>
 				<File
 					RelativePath=".\src\orxonox\objects\Fighter.cc"
-					>
-				</File>
-				<File
-					RelativePath=".\src\orxonox\objects\Light.cc"
 					>
 				</File>
 				<File
@@ -272,27 +260,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\orxonox\objects\SceneNode.cc"
-					>
-				</File>
-				<File
 					RelativePath=".\src\orxonox\objects\Skybox.cc"
 					>
 				</File>
 				<File
 					RelativePath=".\src\orxonox\objects\SpaceShip.cc"
-					>
-				</File>
-				<File
-					RelativePath=".\src\orxonox\objects\test1.cc"
-					>
-				</File>
-				<File
-					RelativePath=".\src\orxonox\objects\test2.cc"
-					>
-				</File>
-				<File
-					RelativePath=".\src\orxonox\objects\test3.cc"
 					>
 				</File>
 				<File
@@ -390,10 +362,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\orxonox\objects\BaseEntity.h"
-					>
-				</File>
-				<File
 					RelativePath=".\src\orxonox\objects\BaseObject.h"
 					>
 				</File>
@@ -406,19 +374,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\orxonox\objects\Entity.h"
-					>
-				</File>
-				<File
 					RelativePath=".\src\orxonox\objects\Explosion.h"
 					>
 				</File>
 				<File
 					RelativePath=".\src\orxonox\objects\Fighter.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\orxonox\objects\Light.h"
 					>
 				</File>
 				<File
@@ -435,10 +395,6 @@
 				</File>
 				<File
 					RelativePath=".\src\orxonox\objects\Projectile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\orxonox\objects\SceneNode.h"
 					>
 				</File>
 				<File

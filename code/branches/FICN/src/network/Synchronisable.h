@@ -9,8 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef NETWORK_SYNCHRONISABLE_H
-#define NETWORK_SYNCHRONISABLE_H
+#ifndef _Synchronisable_H__
+#define _Synchronisable_H__
 
 #include <list>
 #include <iostream>
@@ -70,4 +70,4 @@ private:
 
 }
 
-#endif
+#endif /* _Synchronisable_H__ */

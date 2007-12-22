@@ -60,4 +60,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Factory_H__ */

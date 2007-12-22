@@ -94,4 +94,4 @@ namespace orxonox
     }
 }
 
-#endif
+#endif /* _ClassFactory_H__ */

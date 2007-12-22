@@ -18,4 +18,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _DebugLevel_H__ */

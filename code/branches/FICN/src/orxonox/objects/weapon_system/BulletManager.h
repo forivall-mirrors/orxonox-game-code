@@ -26,8 +26,8 @@
  */
 
 
-#ifndef BULLET_MANAGER_H
-#define BULLET_MANAGER_H
+#ifndef _BulletManager_H__
+#define _BulletManager_H__
 
 #include <OgrePrerequisites.h>
 
@@ -66,4 +66,4 @@ namespace orxonox {
   };
 }
 
-#endif /* BULLET_MANAGER_H */
+#endif /* _BulletManager_H__ */

@@ -40,4 +40,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _IdentifierList_H__ */

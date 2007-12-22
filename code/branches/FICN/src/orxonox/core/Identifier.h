@@ -369,4 +369,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Identifier_H__ */

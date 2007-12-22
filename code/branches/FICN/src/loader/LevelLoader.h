@@ -5,6 +5,9 @@
 * @author Nicolas Perrenoud <nicolape@ee.ethz.ch>
 */
 
+#ifndef _LevelLoader_H__
+#define _LevelLoader_H__
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -14,10 +17,6 @@
 
 //#include "xml/xmlParser.h"
 
-#ifndef __MODULE_LEVELLOADER__
-#define __MODULE_LEVELLOADER__
-
-using namespace std;
 
 namespace loader
 {
@@ -25,16 +24,16 @@ namespace loader
   {
   public:
     // Constructors, loads the level file and some information data
-    LevelLoader(string file, string dir="levels");
+    LevelLoader(std::string file, std::string dir="levels");
     // Destructor
     ~LevelLoader();
     // Loads all level data
     void loadLevel();
 
     // Getters
-    inline string name() {return name_; };
-    inline string description() {return description_; };
-    inline string image() {return image_; };
+    inline std::string name() {return name_; };
+    inline std::string description() {return description_; };
+    inline std::string image() {return image_; };
   private:
     //! Level information
     std::string name_;
@@ -55,7 +54,7 @@ namespace loader
     TiXmlDocument doc;
     TiXmlElement* rootElement;
 
-
   };
 }
-#endif
+
+#endif /* _LevelLoader_H__ */

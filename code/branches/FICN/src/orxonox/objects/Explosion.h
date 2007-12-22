@@ -21,4 +21,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Explosion_H__ */

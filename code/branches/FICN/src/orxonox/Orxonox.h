@@ -4,8 +4,8 @@
  @author Benjamin Knecht <beni_at_orxonox.net>
  */
 
-#ifndef ORXONOX_H
-#define ORXONOX_H
+#ifndef _Orxonox_H__
+#define _Orxonox_H__
 
 #include <OgrePrerequisites.h>
 #include <OIS/OISPrereqs.h>
@@ -80,4 +80,4 @@ namespace orxonox {
       std::string           serverIp_;
   };
 }
-#endif /* ORXONOX_H */
+#endif /* _Orxonox_H__ */

@@ -22,4 +22,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Model_H__ */

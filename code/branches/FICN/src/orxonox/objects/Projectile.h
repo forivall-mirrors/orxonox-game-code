@@ -25,4 +25,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Projectile_H__ */

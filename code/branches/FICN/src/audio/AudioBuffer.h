@@ -1,5 +1,5 @@
-#ifndef AUDIOBUFFER_H_
-#define AUDIOBUFFER_H_
+#ifndef _AudioBuffer_H__
+#define _AudioBuffer_H__
 
 #include "AudioIncludes.h"
 
@@ -26,4 +26,4 @@ namespace audio
 	};
 }
 
-#endif /*AUDIOBUFFER_H_*/
+#endif /* _AudioBuffer_H__ */

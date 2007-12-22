@@ -26,8 +26,8 @@
  */
 
 
-#ifndef BARREL_GUN_H
-#define BARREL_GUN_H
+#ifndef _BarrelGun_H__
+#define _BarrelGun_H__
 
 #include <OgrePrerequisites.h>
 
@@ -61,4 +61,4 @@ namespace orxonox {
   };
 }
 
-#endif /* BARREL_GUN_H */
+#endif /* _BarrelGun_H__ */

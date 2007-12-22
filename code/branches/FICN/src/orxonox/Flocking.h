@@ -1,8 +1,8 @@
 
 //Headerfile: Flocking.h
 
-#ifndef Flocking_Class
-#define Flocking_Class
+#ifndef _Flocking_H__
+#define _Flocking_H__
 
 // #include <Ogre.h>
 #include <OgreVector3.h>
@@ -10,8 +10,6 @@
 
 #include <iostream>
 
-
-#endif
 
 
 class Element // An element that flocks
@@ -141,3 +139,5 @@ class Element // An element that flocks
     return steering;
   }
 };     //End of class Element
+
+#endif /* _Flocking_H__*/

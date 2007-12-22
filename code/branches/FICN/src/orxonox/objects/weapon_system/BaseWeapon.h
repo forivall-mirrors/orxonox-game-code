@@ -26,8 +26,8 @@
  */
 
 
-#ifndef BASE_WEAPON_H
-#define BASE_WEAPON_H
+#ifndef _BaseWeapon_H__
+#define _BaseWeapon_H__
 
 #include <OgrePrerequisites.h>
 
@@ -123,4 +123,4 @@ namespace orxonox {
   };
 }
 
-#endif /* BASE_WEAPON_H */
+#endif /* _BaseWeapon_H__ */

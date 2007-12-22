@@ -10,8 +10,8 @@
 //
 //
 
-#ifndef NETWORK_PACKETTYPES_H
-#define NETWORK_PACKETTYPES_H
+#ifndef _PacketTypes_H__
+#define _PacketTypes_H__
 
 namespace network{
 enum packet_id {
@@ -84,4 +84,4 @@ enum packet_id {
 
 }
 
-#endif
+#endif /* _PacketTypes_H__ */

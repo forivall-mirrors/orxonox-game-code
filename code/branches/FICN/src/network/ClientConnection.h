@@ -9,8 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef NETWORK_CLIENTCONNECTION_H
-#define NETWORK_CLIENTCONNECTION_H
+#ifndef _ClientConnection_H__
+#define _ClientConnection_H__
 
 #include <iostream>
 #include <string>
@@ -77,4 +77,4 @@ namespace network{
 
 }
 
-#endif
+#endif /* _ClientConnection_H__ */

@@ -4,8 +4,8 @@
   @author Benjamin Knecht <beni_at_orxonox.net>
  */
 
-#ifndef MODULE_NPC_H
-#define MODULE_NPC_H
+#ifndef _NPC_H__
+#define _NPC_H__
 
 // includes
 #include "Model.h"
@@ -42,4 +42,4 @@ namespace orxonox {
   };
 
 }
-#endif
+#endif /* _NPC_H__ */

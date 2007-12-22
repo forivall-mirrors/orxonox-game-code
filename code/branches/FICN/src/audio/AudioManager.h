@@ -1,5 +1,5 @@
-#ifndef AUDIOMANAGER_H_
-#define AUDIOMANAGER_H_
+#ifndef _AudioManager_H__
+#define _AudioManager_H__
 
 #include "AudioIncludes.h"
 
@@ -64,4 +64,4 @@ namespace audio
 	};	
 }
 
-#endif /*AUDIOMANAGER_H_*/
+#endif /* _AudioManager_H__ */

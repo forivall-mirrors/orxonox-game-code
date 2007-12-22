@@ -26,8 +26,8 @@
  */
 
 
-#ifndef AmmunitionDump_H
-#define AmmunitionDump_H
+#ifndef _AmmunitionDump_H__
+#define _AmmunitionDump_H__
 
 #include <OgrePrerequisites.h>
 
@@ -65,4 +65,4 @@ namespace orxonox {
   };
 }
 
-#endif /* AmmunitionDump_H */
+#endif /* _AmmunitionDump_H__ */

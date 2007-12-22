@@ -23,4 +23,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _BaseObject_H__ */

@@ -1,5 +1,5 @@
-#ifndef InputManager_H
-#define InputManager_H
+#ifndef _InputManager_H__
+#define _InputManager_H__
 
 #ifdef WIN32
 #include <OIS/OISMouse.h>
@@ -88,4 +88,4 @@ class InputManager : public OIS::KeyListener, public OIS::MouseListener, public 
 
     static InputManager *mInputManager;
 };
-#endif
+#endif /* _InputManager_H__ */

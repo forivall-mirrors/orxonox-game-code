@@ -26,8 +26,8 @@
  */
 
 
-#ifndef BULLET_H
-#define BULLET_H
+#ifndef _Bullet_H__
+#define _Bullet_H__
 
 #include <OgrePrerequisites.h>
 
@@ -48,4 +48,4 @@ namespace orxonox {
  };
 }
 
-#endif /* BULLET_H */
+#endif /* _Bullet_H__ */

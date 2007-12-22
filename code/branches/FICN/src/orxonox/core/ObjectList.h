@@ -263,4 +263,4 @@ namespace orxonox
     */
 }
 
-#endif
+#endif /* _ObjectList_H__ */

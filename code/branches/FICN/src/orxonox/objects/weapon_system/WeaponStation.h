@@ -26,8 +26,8 @@
  */
 
 
-#ifndef WEAPON_STATION_H
-#define WEAPON_STATION_H
+#ifndef _WeaponStation_H__
+#define _WeaponStation_H__
 
 #include <OgrePrerequisites.h>
 
@@ -62,4 +62,4 @@ namespace orxonox {
   };
 }
 
-#endif /* WEAPON_STATION_H */
+#endif /* _WeaponStation_H__ */

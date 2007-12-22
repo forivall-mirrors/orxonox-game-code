@@ -10,8 +10,8 @@
 //
 //
 
-#ifndef NETWORKFRAMELISTENER_H
-#define NETWORKFRAMELISTENER_H
+#ifndef _NetworkFrameListener_H__
+#define _NetworkFrameListener_H__
 
 #include "OgreFrameListener.h"
 #include "Server.h"
@@ -46,4 +46,4 @@ private:
 
 }
 
-#endif
+#endif /* _NetworkFrameListener_H__ */

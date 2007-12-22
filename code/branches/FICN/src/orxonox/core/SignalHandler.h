@@ -71,4 +71,3 @@ class SignalHandler
 #endif
 
 #endif /* _SignalHandler_H__ */
-

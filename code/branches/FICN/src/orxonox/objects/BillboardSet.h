@@ -1,9 +1,9 @@
+#ifndef _BillboardSet_H__
+#define _BillboardSet_H__
+
 #include <string>
 
 #include "OgreBillboardSet.h"
-
-#ifndef _BillboardSet_H__
-#define _BillboardSet_H__
 
 namespace orxonox
 {
@@ -26,4 +26,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _BillboardSet_H__ */

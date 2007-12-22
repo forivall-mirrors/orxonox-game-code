@@ -1,5 +1,5 @@
-#ifndef __ogg_h__
-#define __ogg_h__
+#ifndef _AudioStream_H__
+#define _AudioStream_H__
 
 #include "AudioIncludes.h"
 
@@ -42,4 +42,4 @@ namespace audio
 	};
 }
 
-#endif // __ogg_h__
+#endif /* _AudioStream_H__ */

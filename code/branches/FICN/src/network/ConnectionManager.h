@@ -9,8 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef NETWORK_CONNECTIONMANAGER_H
-#define NETWORK_CONNECTIONMANAGER_H
+#ifndef _ConnectionManager_H__
+#define _ConnectionManager_H__
 
 #include <iostream>
 #include <string>
@@ -87,4 +87,4 @@ namespace network{
 
 }
 
-#endif
+#endif /* _ConnectionManager_H__ */

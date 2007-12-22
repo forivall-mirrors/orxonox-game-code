@@ -10,8 +10,8 @@
 //
 //
 
-#ifndef NETWORK_SERVER_H
-#define NETWORK_SERVER_H
+#ifndef _Server_H__
+#define _Server_H__
 
 #include <string>
 
@@ -59,4 +59,4 @@ namespace network{
 
 }
 
-#endif
+#endif /* _Server_H__ */

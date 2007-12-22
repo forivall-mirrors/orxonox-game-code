@@ -9,8 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef NETWORK_GAMESTATECLIENT_H
-#define NETWORK_GAMESTATECLIENT_H
+#ifndef _GameStateClient_H__
+#define _GameStateClient_H__
 
 #include "zlib.h"
 #include "Synchronisable.h"
@@ -41,4 +41,4 @@ private:
 
 }
 
-#endif
+#endif /* _GameStateClient_H__ */

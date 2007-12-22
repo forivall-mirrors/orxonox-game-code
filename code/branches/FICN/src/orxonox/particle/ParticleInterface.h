@@ -1,5 +1,5 @@
-#ifndef MODULE_ParticleInterface_H
-#define MODULE_ParticleInterface_H
+#ifndef _ParticleInterface_H__
+#define _ParticleInterface_H__
 
 // #include "ParticleInterface.h"
 // #include <Ogre.h>
@@ -63,4 +63,4 @@ class ParticleInterface
 };
 
 }
-#endif
+#endif /* _ParticleInterface_H__ */

@@ -4,8 +4,8 @@
  @author Benjamin Knecht <beni_at_orxonox.net>
  */
 
-#ifndef __ARGREADER_CLASS__
-#define __ARGREADER_CLASS__
+#ifndef _ArgReader_H__
+#define _ArgReader_H__
 
 #include <string>
 
@@ -30,4 +30,4 @@ namespace orxonox {
   };
 
 }
-#endif
+#endif /* _ArgReader_H__ */

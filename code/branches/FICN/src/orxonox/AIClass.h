@@ -1,5 +1,5 @@
-#ifndef AI_Class
-#define AI_Class
+#ifndef _AIClass_H__
+#define _AIClass_H__
 
 #include <Ogre.h>
 #include <OgreVector3.h>
@@ -7,9 +7,7 @@
 
 #include <iostream>
 
-
-#endif
-
+// FIXME: using namespace xy; in header files is a very bad idea..
 using namespace std;
 using namespace Ogre;
 
@@ -97,3 +95,5 @@ class AICommander : public  AIFleetCommander {
 
 
 };
+
+#endif /* _AIClass_H__ */

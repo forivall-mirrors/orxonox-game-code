@@ -1,5 +1,5 @@
-#ifndef _OBJECT_CAMERA_H__
-#define _OBJECT_CAMERA_H__
+#ifndef _Camera_H__
+#define _Camera_H__
 
 #include "BaseObject.h"
 #include "../../tinyxml/tinyxml.h"
@@ -21,4 +21,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Camera_H__ */

@@ -134,4 +134,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _ConfigValueContainer_H__ */

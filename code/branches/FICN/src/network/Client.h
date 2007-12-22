@@ -10,8 +10,8 @@
 //
 //
 
-#ifndef NETWORK_CLIENT_H
-#define NETWORK_CLIENT_H
+#ifndef _Client_H__
+#define _Client_H__
 
 #include <string>
 
@@ -68,4 +68,4 @@ class Client : PacketDecoder{
 
 }
 
-#endif
+#endif /* _Client_H__ */

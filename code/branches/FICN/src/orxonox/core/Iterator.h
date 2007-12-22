@@ -160,4 +160,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Iterator_H__ */

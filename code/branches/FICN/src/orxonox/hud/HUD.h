@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef MODULE_HUD_H
-#define MODULE_HUD_H
+#ifndef _HUD_H__
+#define _HUD_H__
 
 #include <OgrePrerequisites.h>
 
@@ -107,4 +107,4 @@ namespace hud {
   };
 }
 
-#endif
+#endif /* _HUD_H__ */

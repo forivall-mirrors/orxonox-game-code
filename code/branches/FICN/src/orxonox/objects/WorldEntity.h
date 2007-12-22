@@ -145,4 +145,4 @@ namespace orxonox
   };
 }
 
-#endif
+#endif /* _WorldEntity_H__ */

@@ -10,8 +10,8 @@
 //
 //
 
-#ifndef NETWORK_PACKETBUFFER_H 
-#define NETWORK_PACKETBUFFER_H
+#ifndef _PacketBuffer_H__ 
+#define _PacketBuffer_H__
 
 #include <queue>
 #include <string>
@@ -55,4 +55,4 @@ private:
 };
 
 } //namespace
-#endif /* NETWORK_PACKETBUFFER_H */
+#endif /* _PacketBuffer_H__ */

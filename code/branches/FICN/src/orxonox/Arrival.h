@@ -2,8 +2,8 @@
 // Arrival Class
 
 
-#ifndef Arrival_Class
-#define Arrical_Class
+#ifndef _Arrival_H__
+#define _Arrival_H__
 
 // #include <Ogre.h>
 #include <OgreVector3.h>
@@ -11,9 +11,7 @@
 
 #include <iostream>
 
-
-#endif
-
+// FIXME: using namspace xy; in header files is a bad idea
 using namespace std;
 using namespace Ogre;
 
@@ -86,3 +84,5 @@ class Arrival {
 
   }
 }
+
+#endif /* _Arrival_H__ */

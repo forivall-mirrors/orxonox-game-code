@@ -27,12 +27,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BeniXonox", "benixonox.vcpr
 		{4733BD1A-E04C-458D-8BFB-5010250EA497} = {4733BD1A-E04C-458D-8BFB-5010250EA497}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Weapon", "weapon.vcproj", "{ED1E93A7-5DB2-4417-B684-A8FDD61FB567}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Audio", "audio.vcproj", "{4733BD1A-E04C-458D-8BFB-5010250EA497}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
@@ -76,8 +70,6 @@ Global
 		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Debug|Win32.Build.0 = Debug|Win32
 		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Release|Win32.ActiveCfg = Release|Win32
 		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Release|Win32.Build.0 = Release|Win32
-		{ED1E93A7-5DB2-4417-B684-A8FDD61FB567}.Debug|Win32.ActiveCfg = Debug|Win32
-		{ED1E93A7-5DB2-4417-B684-A8FDD61FB567}.Release|Win32.ActiveCfg = Release|Win32
 		{4733BD1A-E04C-458D-8BFB-5010250EA497}.Debug|Win32.ActiveCfg = Debug|Win32
 		{4733BD1A-E04C-458D-8BFB-5010250EA497}.Debug|Win32.Build.0 = Debug|Win32
 		{4733BD1A-E04C-458D-8BFB-5010250EA497}.Release|Win32.ActiveCfg = Release|Win32

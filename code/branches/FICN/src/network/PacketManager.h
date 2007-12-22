@@ -1,5 +1,5 @@
-#ifndef PACKETMANAGER_H_
-#define PACKETMANAGER_H_
+#ifndef _PacketManager_H__
+#define _PacketManager_H__
 
 #include <string>
 #include <enet/enet.h>
@@ -80,4 +80,4 @@ private:
 };
 }
 
-#endif /*PACKETMANAGER_H_*/
+#endif /* _PacketManager_H__ */

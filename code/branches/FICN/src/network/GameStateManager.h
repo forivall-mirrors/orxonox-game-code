@@ -9,8 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef NETWORK_GAMESTATEMANAGER_H
-#define NETWORK_GAMESTATEMANAGER_H
+#ifndef _GameStateManager_H__
+#define _GameStateManager_H__
 
 #include <map>
 
@@ -65,4 +65,4 @@ private:
 
 }
 
-#endif
+#endif /* _GameStateManager_H__ */
