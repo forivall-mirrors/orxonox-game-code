@@ -32,12 +32,12 @@
 #include "OgreEntity.h"
 #include "OgreSceneManager.h"
 
-#include "bullet.h"
-#include "bullet_manager.h"
-#include "ammunition_dump.h"
-#include "base_weapon.h"
+#include "Bullet.h"
+#include "BulletManager.h"
+#include "AmmunitionDump.h"
+#include "BaseWeapon.h"
 
-#include "barrel_gun.h"
+#include "BarrelGun.h"
 
 
 namespace orxonox {

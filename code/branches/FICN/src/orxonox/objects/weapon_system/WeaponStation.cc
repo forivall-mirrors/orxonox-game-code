@@ -32,9 +32,9 @@
 #include "OgreEntity.h"
 #include "OgreSceneManager.h"
 
-#include "base_weapon.h"
+#include "BaseWeapon.h"
 
-#include "weapon_station.h"
+#include "WeaponStation.h"
 
 
 namespace orxonox {

@@ -31,8 +31,8 @@
 #include "../../misc/String2Number.h"
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
-#include "weapon_system/ammunition_dump.h"
-#include "weapon_system/barrel_gun.h"
+#include "weapon_system/AmmunitionDump.h"
+#include "weapon_system/BarrelGun.h"
 
 #include "OgreCamera.h"
 #include <OgreRenderWindow.h>

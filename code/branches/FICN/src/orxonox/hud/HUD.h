@@ -1,92 +1,110 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Yuning Chai
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 #ifndef MODULE_HUD_H
 #define MODULE_HUD_H
 
-// #include <Ogre.h>
-// #include <OIS/OIS.h>
-//#include <CEGUI/CEGUI.h>
-//#include <CEGUIRenderer.h>
-#include <OgreOverlayManager.h>
-#include <OgreOverlayElement.h>
-#include <OgreStringConverter.h>
+#include <OgrePrerequisites.h>
+
+//#include "../OrxonoxPrereqs.h"
 
 
-namespace hud
-{
-
-class HUD
-{
-
+namespace hud {
+  class HUD {
   private:
+    Ogre::OverlayElement* timeText_;
+    Ogre::OverlayElement* targetWindowNameText_;
+    Ogre::OverlayElement* targetWindowStatusText_;
+    Ogre::OverlayElement* targetWindowDistanceText_;
+    Ogre::OverlayElement* targetWindowHitRatingText_;
+    Ogre::OverlayElement* energyLength_;
+    Ogre::OverlayElement* shieldLeftTop_;
+    Ogre::OverlayElement* shieldRightTop_;
+    Ogre::OverlayElement* shieldLeftBottom_;
+    Ogre::OverlayElement* shieldRightBottom_;
+    Ogre::OverlayElement* rocketNum1_;
+    Ogre::OverlayElement* rocketNum2_;
+    Ogre::OverlayElement* rocketNum3_;
+    Ogre::OverlayElement* rocketNum4_;
+    Ogre::OverlayElement* energyDistrPoint_;
+    Ogre::OverlayElement* primarChoice_;
 
-  Ogre::OverlayElement* timeText_;
-  Ogre::OverlayElement* targetWindowNameText_;
-  Ogre::OverlayElement* targetWindowStatusText_;
-  Ogre::OverlayElement* targetWindowDistanceText_;
-  Ogre::OverlayElement* targetWindowHitRatingText_;
-  Ogre::OverlayElement* energyLength_;
-  Ogre::OverlayElement* shieldLeftTop_;
-  Ogre::OverlayElement* shieldRightTop_;
-  Ogre::OverlayElement* shieldLeftBottom_;
-  Ogre::OverlayElement* shieldRightBottom_;
-  Ogre::OverlayElement* rocketNum1_;
-  Ogre::OverlayElement* rocketNum2_;
-  Ogre::OverlayElement* rocketNum3_;
-  Ogre::OverlayElement* rocketNum4_;
-  Ogre::OverlayElement* energyDistrPoint_;
-  Ogre::OverlayElement* primarChoice_;
+    int timeMin_;
+    int timeSec_;
 
-  int timeMin_;
-  int timeSec_;
+    Ogre::String targetWindowName_;
+    Ogre::String targetWindowStatus_;
+    int targetWindowDistance_;
+    int targetWindowHitRating_;
 
-  Ogre::String targetWindowName_;
-  Ogre::String targetWindowStatus_;
-  int targetWindowDistance_;
-  int targetWindowHitRating_;
+    int energyValue_;
 
-  int energyValue_;
+    bool shieldLeftTopValue_;
+    bool shieldRightTopValue_;
+    bool shieldLeftBottomValue_;
+    bool shieldRightBottomValue_;
 
-  bool shieldLeftTopValue_;
-  bool shieldRightTopValue_;
-  bool shieldLeftBottomValue_;
-  bool shieldRightBottomValue_;
+    int rocket1_;
+    int rocket2_;
+    int rocket3_;
+    int rocket4_;
 
-  int rocket1_;
-  int rocket2_;
-  int rocket3_;
-  int rocket4_;
+    float energyDistrShield_;
+    float energyDistrEngine_;
+    float energyDistrLaser_;
 
-  float energyDistrShield_;
-  float energyDistrEngine_;
-  float energyDistrLaser_;
+    float energyDistrPixelX_;
+    float energyDistrPixelY_;
 
-  float energyDistrPixelX_;
-  float energyDistrPixelY_;
-
-  int primarValue_;
+    int primarValue_;
 
   public:
-  HUD( void );
-  ~HUD( void );
-  void init( void );
+    HUD( void );
+    ~HUD( void );
+    void init( void );
 
-  void setTime(int i, int j);
-  void setTargetWindowName(Ogre::String i);
-  void setTargetWindowStatus(Ogre::String i);
-  void setTargetWindowDistance(int i);
-  void setTargetWindowHitRating(int i);
-  void setEnergyValue(int i);
-  void setShieldLeftTopValue(bool i);
-  void setShieldRightTopValue(bool i);
-  void setShieldLeftBottomValue(bool i);
-  void setShieldRightBottomValue(bool i);
-  void setRocket1(int i);
-  void setRocket2(int i);
-  void setRocket3(int i);
-  void setRocket4(int i);
-  void setEnergyDistr(float s, float e, float l);
-  void setPrimar(int i);
+    void setTime(int i, int j);
+    void setTargetWindowName(Ogre::String i);
+    void setTargetWindowStatus(Ogre::String i);
+    void setTargetWindowDistance(int i);
+    void setTargetWindowHitRating(int i);
+    void setEnergyValue(int i);
+    void setShieldLeftTopValue(bool i);
+    void setShieldRightTopValue(bool i);
+    void setShieldLeftBottomValue(bool i);
+    void setShieldRightBottomValue(bool i);
+    void setRocket1(int i);
+    void setRocket2(int i);
+    void setRocket3(int i);
+    void setRocket4(int i);
+    void setEnergyDistr(float s, float e, float l);
+    void setPrimar(int i);
 
-};
-
+  };
 }
+
 #endif

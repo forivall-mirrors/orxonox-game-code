@@ -82,7 +82,7 @@ namespace orxonox {
     int argpos = checkOption(option) + 1;
     if(argpos != 0)
     {
-      floating = atof(arguments_[argpos]);
+      floating = (float)atof(arguments_[argpos]);
     }
     else
     {

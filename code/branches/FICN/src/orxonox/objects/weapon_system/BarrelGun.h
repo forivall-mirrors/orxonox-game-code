@@ -26,21 +26,39 @@
  */
 
 
-#ifndef WEAPON_PLATFORM_H
-#define WEAPON_PLATFORM_H
+#ifndef BARREL_GUN_H
+#define BARREL_GUN_H
+
+#include <OgrePrerequisites.h>
+
+#include "orxonox/OrxonoxPrereqs.h"
+
+#include "BaseWeapon.h"
 
 
-#if defined( __WIN32__ ) || defined( _WIN32 )
-  #ifdef WEAPON_BUILD
-    #define _WeaponExport __declspec( dllexport )
-  #elif defined(WEAPON_STATIC)
-    #define _WeaponExport
-  #else
-    #define _WeaponExport __declspec( dllimport )
-  #endif
-#else
-  #define _WeaponExport
-#endif
+namespace orxonox {
+  class BarrelGun : public BaseWeapon
+  {
+ public:
+    BarrelGun();
+	  virtual ~BarrelGun();
 
+    //virtual void tick(float dt);
 
-#endif /* WEAPON_PLATFORM_H */
+  protected:
+    void primaryFire();
+
+    void primaryFiring(float);
+
+    void secondaryFire();
+
+    void secondaryFiring(float);
+
+  public:
+
+  protected:
+
+  };
+}
+
+#endif /* BARREL_GUN_H */

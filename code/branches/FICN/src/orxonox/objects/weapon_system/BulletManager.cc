@@ -27,8 +27,8 @@
 
 #include "OgreSceneNode.h"
 
-#include "bullet_manager.h"
-#include "bullet.h"
+#include "BulletManager.h"
+#include "Bullet.h"
 
 
 namespace orxonox {

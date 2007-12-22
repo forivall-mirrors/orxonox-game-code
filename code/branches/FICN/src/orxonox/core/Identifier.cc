@@ -99,6 +99,7 @@ namespace orxonox
             COUT(1) << "Error: Cannot create an object of type '" << this->name_ << "'. Class is abstract.\n";
             COUT(1) << "Aborting...";
             abort();
+            return NULL;
         }
     }
 

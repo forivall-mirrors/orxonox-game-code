@@ -26,10 +26,10 @@
  */
 
 #include "orxonox/Orxonox.h"
-#include "bullet_manager.h"
+#include "BulletManager.h"
 #include "tinyxml/tinyxml.h"
 
-#include "ammunition_dump.h"
+#include "AmmunitionDump.h"
 
 
 namespace orxonox {

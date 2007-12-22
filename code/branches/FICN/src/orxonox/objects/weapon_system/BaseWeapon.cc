@@ -34,17 +34,17 @@
 
 #include "../../Orxonox.h"
 
-#include "bullet.h"
-#include "bullet_manager.h"
-#include "ammunition_dump.h"
+#include "Bullet.h"
+#include "BulletManager.h"
+#include "AmmunitionDump.h"
 
-#include "base_weapon.h"
+#include "BaseWeapon.h"
 
 
 namespace orxonox {
   using namespace Ogre;
   
-  CreateFactory(BaseWeapon);
+  //CreateFactory(BaseWeapon);
 
   float BaseWeapon::nextActionValidityPeriod_ = 0.5;
 
