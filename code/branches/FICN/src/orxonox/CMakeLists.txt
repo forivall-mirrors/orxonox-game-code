@@ -24,17 +24,13 @@ IF(WIN32)
     objects/test3.cc
     objects/Ambient.cc
     objects/Skybox.cc
-#    objects/SceneNode.cc
-#    objects/Entity.cc
     objects/Camera.cc
 #    objects/SpaceshipSteeringObject.cc
     objects/Model.cc
     objects/Mesh.cc
-#    objects/BaseEntity.cc
     objects/SpaceShip.cc
     objects/NPC.cc
     objects/BillboardSet.cc
-#    objects/Light.cc
     objects/Projectile.cc
     objects/weapon_system/AmmunitionDump.cc
     objects/weapon_system/BarrelGun.cc
