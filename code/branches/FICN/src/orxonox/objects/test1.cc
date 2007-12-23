@@ -51,7 +51,7 @@ namespace orxonox
 
     void Test1::tick(float dt)
     {
-        std::cout << "Test1: " << this << "\n";
+        std::cout << "Test1: " << this << std::endl;
     }
 
     bool Test1::usefullClass1isA(Identifier* identifier)
@@ -71,28 +71,28 @@ namespace orxonox
 
     void Test1::setUsefullClass1(Identifier* identifier)
     {
-        std::cout << "\n";
-        std::cout << "Test1: usefullClass1->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << "\n";
-        std::cout << "Test1: usefullClass1->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << "\n";
-        std::cout << "Test1: usefullClass1->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << "\n";
+        std::cout << std::endl;
+        std::cout << "Test1: usefullClass1->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << std::endl;
+        std::cout << "Test1: usefullClass1->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << std::endl;
+        std::cout << "Test1: usefullClass1->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << std::endl;
         this->usefullClass1_ = identifier;
     }
 
     void Test1::setUsefullClass2(Identifier* identifier)
     {
-        std::cout << "\n";
-        std::cout << "Test1: usefullClass2->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << "\n";
-        std::cout << "Test1: usefullClass2->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << "\n";
-        std::cout << "Test1: usefullClass2->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << "\n";
+        std::cout << std::endl;
+        std::cout << "Test1: usefullClass2->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << std::endl;
+        std::cout << "Test1: usefullClass2->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << std::endl;
+        std::cout << "Test1: usefullClass2->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << std::endl;
         this->usefullClass2_ = identifier;
     }
 
     void Test1::setUsefullClassOfTypeTest3(Identifier* identifier)
     {
-        std::cout << "\n";
-        std::cout << "Test1: usefullClass3->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << "\n";
-        std::cout << "Test1: usefullClass3->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << "\n";
-        std::cout << "Test1: usefullClass3->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << "\n";
+        std::cout << std::endl;
+        std::cout << "Test1: usefullClass3->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << std::endl;
+        std::cout << "Test1: usefullClass3->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << std::endl;
+        std::cout << "Test1: usefullClass3->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << std::endl;
         this->usefullClass3_ = identifier;
     }
 

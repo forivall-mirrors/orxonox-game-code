@@ -135,9 +135,10 @@ LevelLoader::LevelLoader(string file, string path)
         mLoadOverlay = (Ogre::Overlay*)omgr.getByName("Orxonox/LoadingScreenSample");
         mLoadOverlay->show();
 
-        COUT(0) << "\n\n\nThis is Orxonox\nthe hottest 3D action shooter ever to exist\n\n\n";
-        COUT(0) << "Level: " << name() << "\nDescription:" << description() << "\nImage:"<<image()<<"\n\n\n";
-        COUT(4) << "Backgroundcolor: " << loadingBackgroundColor_ << "\nBackgroundimage:" << loadingBackgroundImage_ << "\n\n\n";
+        COUT(0) << "This is Orxonox" << std::endl;
+        COUT(0) << "the hottest 3D action shooter ever to exist" << std::endl;
+        COUT(0) << "Level: " << name() << std::endl << "Description:" << description() << std::endl << "Image:" << image() << std::endl;
+        COUT(4) << "Backgroundcolor: " << loadingBackgroundColor_ << std::endl << "Backgroundimage:" << loadingBackgroundImage_ << std::endl;
 
       }
 
@@ -161,7 +162,7 @@ LevelLoader::LevelLoader(string file, string path)
               std::string elemVal = tElem->Value();
               if (elemVal == "ogg")
               {
-        COUT(0) << "Adding sound "<< tElem->Attribute("src") << "\n\n\n";
+                COUT(3) << "Adding sound "<< tElem->Attribute("src") << std::endl;
 
                 auMan->ambientAdd(tElem->Attribute("src"));
               }
@@ -185,12 +186,12 @@ LevelLoader::LevelLoader(string file, string path)
             orxonox::Identifier* id = ID(tElem->Value());
             if (id)
             {
-                          orxonox::BaseObject* obj = id->fabricate();
-                          obj->loadParams(tElem);
+              orxonox::BaseObject* obj = id->fabricate();
+              obj->loadParams(tElem);
             }
             else
             {
-                COUT(2) << "Warning: '"<< tElem->Value() <<"' is not a valid classname.\n";
+                COUT(2) << "Warning: '"<< tElem->Value() <<"' is not a valid classname." << std::endl;
             }
           }
         }
@@ -202,7 +203,7 @@ LevelLoader::LevelLoader(string file, string path)
       }
 
 
-      COUT(0) << "Loading finished!\n\n\n\n\n";
+      COUT(0) << "Loading finished!" << std::endl << std::endl;
     }
   }
 

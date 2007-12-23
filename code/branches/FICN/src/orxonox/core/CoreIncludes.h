@@ -94,7 +94,7 @@ namespace orxonox
     @param ClassName The name of the class
 */
 #define RegisterObject(ClassName) \
-    COUT(4) << "*** Register Object: " << #ClassName << "\n"; \
+    COUT(4) << "*** Register Object: " << #ClassName << std::endl; \
     InternRegisterObject(ClassName, false)
 
 /**
@@ -102,7 +102,7 @@ namespace orxonox
     @param ClassName The name of the class
 */
 #define RegisterRootObject(ClassName) \
-    COUT(4) << "*** Register Root-Object: " << #ClassName << "\n"; \
+    COUT(4) << "*** Register Root-Object: " << #ClassName << std::endl; \
     InternRegisterRootObject(ClassName)
 
 /**

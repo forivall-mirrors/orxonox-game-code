@@ -69,7 +69,7 @@ namespace orxonox
             this->list_->first_ = this->element_->next_; // If there is no prev_, we deleted the first object and have to update the first_ pointer of the list
 
 
-        COUT(4) << "*** Removing Object from " << ClassIdentifier<T>::getIdentifier()->getName() << "-list.\n";
+        COUT(4) << "*** Removing Object from " << ClassIdentifier<T>::getIdentifier()->getName() << "-list." << std::endl;
         delete this->element_;
     }
 

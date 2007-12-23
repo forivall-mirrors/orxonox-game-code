@@ -150,7 +150,7 @@ namespace orxonox
             {
                 // Comparing with anything except zero makes no sense
                 if (compare != 0)
-                    COUT(2) << "Warning: Comparing the " << ClassIdentifier<T>::getIdentifier()->getName() << "-List-Iterator with " << compare << " has no effect. Only comparison with 0 works.\n";
+                    COUT(2) << "Warning: Comparing the " << ClassIdentifier<T>::getIdentifier()->getName() << "-List-Iterator with " << compare << " has no effect. Only comparison with 0 works." << std::endl;
 
                 return (this->element_ != 0);
             }

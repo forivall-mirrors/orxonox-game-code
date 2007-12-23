@@ -83,7 +83,7 @@ namespace orxonox
     */
     void Factory::createClassHierarchy()
     {
-        COUT(3) << "*** Factory -> Create class-hierarchy\n";
+        COUT(3) << "*** Factory -> Create class-hierarchy" << std::endl;
         std::map<std::string, Identifier*>::iterator it;
         it = getFactoryPointer()->identifierStringMap_.begin();
         (*getFactoryPointer()->identifierStringMap_.begin()).second->startCreatingHierarchy();
@@ -94,7 +94,7 @@ namespace orxonox
             delete temp;
         }
         (*getFactoryPointer()->identifierStringMap_.begin()).second->stopCreatingHierarchy();
-        COUT(3) << "*** Factory -> Finished class-hierarchy creation\n";
+        COUT(3) << "*** Factory -> Finished class-hierarchy creation" << std::endl;
     }
 
     /**

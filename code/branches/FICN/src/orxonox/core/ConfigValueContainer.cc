@@ -56,8 +56,6 @@ namespace orxonox
         std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
         if (!string2Number(this->value_.value_int_, valueString, defvalue))     // Try to convert the string to a value
             this->setConfigFileEntyToDefault();                                 // The conversion failed
-
-        std::cout << "CVC: int: " << this->value_.value_int_ << std::endl;
     }
 
     /**
@@ -79,8 +77,6 @@ namespace orxonox
         std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
         if (!string2Number(this->value_.value_uint_, valueString, defvalue))    // Try to convert the string to a value
             this->setConfigFileEntyToDefault();                                 // The conversion failed
-
-        std::cout << "CVC: uint: " << this->value_.value_uint_ << std::endl;
     }
 
     /**

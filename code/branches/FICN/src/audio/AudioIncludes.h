@@ -11,4 +11,3 @@
 #include <vorbis/vorbisfile.h>
 
 #include "../orxonox/core/Error.h"
-

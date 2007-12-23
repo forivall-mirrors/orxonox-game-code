@@ -77,20 +77,20 @@ namespace orxonox
     }
 
     #define testandcout(code) \
-      std::cout << #code << " " << code << "\n"
+      std::cout << #code << " " << code << std::endl
 
     void Test3::usefullClassesIsATest(Test1* test1)
     {
-        std::cout << "\n";
-        std::cout << "Test1:\n";
+        std::cout << std::endl;
+        std::cout << "Test1:" << std::endl;
         testandcout(test1->usefullClass1isA(Class(Test1)));
         testandcout(test1->usefullClass1isA(Class(Test2)));
         testandcout(test1->usefullClass1isA(Class(Test3)));
-        std::cout << "\n";
+        std::cout << std::endl;
         testandcout(test1->usefullClass2isA(Class(Test1)));
         testandcout(test1->usefullClass2isA(Class(Test2)));
         testandcout(test1->usefullClass2isA(Class(Test3)));
-        std::cout << "\n";
+        std::cout << std::endl;
         testandcout(test1->usefullClass3isA(Class(Test1)));
         testandcout(test1->usefullClass3isA(Class(Test2)));
         testandcout(test1->usefullClass3isA(Class(Test3)));
@@ -98,16 +98,16 @@ namespace orxonox
 
     void Test3::usefullClassesIsATest(Test2* test2)
     {
-        std::cout << "\n";
-        std::cout << "Test2:\n";
+        std::cout << std::endl;
+        std::cout << "Test2:" << std::endl;
         testandcout(test2->usefullClass1isA(Class(Test1)));
         testandcout(test2->usefullClass1isA(Class(Test2)));
         testandcout(test2->usefullClass1isA(Class(Test3)));
-        std::cout << "\n";
+        std::cout << std::endl;
         testandcout(test2->usefullClass2isA(Class(Test1)));
         testandcout(test2->usefullClass2isA(Class(Test2)));
         testandcout(test2->usefullClass2isA(Class(Test3)));
-        std::cout << "\n";
+        std::cout << std::endl;
         testandcout(test2->usefullClass3isA(Class(Test1)));
         testandcout(test2->usefullClass3isA(Class(Test2)));
         testandcout(test2->usefullClass3isA(Class(Test3)));

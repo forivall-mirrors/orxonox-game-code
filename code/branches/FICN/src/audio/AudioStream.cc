@@ -104,18 +104,18 @@ namespace audio
 		if (loaded)
 		{
 	    COUT(3)
-	        << "version         " << vorbisInfo->version         << "\n"
-	        << "channels        " << vorbisInfo->channels        << "\n"
-	        << "rate (hz)       " << vorbisInfo->rate            << "\n"
-	        << "bitrate upper   " << vorbisInfo->bitrate_upper   << "\n"
-	        << "bitrate nominal " << vorbisInfo->bitrate_nominal << "\n"
-	        << "bitrate lower   " << vorbisInfo->bitrate_lower   << "\n"
-	        << "bitrate window  " << vorbisInfo->bitrate_window  << "\n"
-	        << "\n"
-	        << "vendor " << vorbisComment->vendor << "\n";
+	        << "version         " << vorbisInfo->version         << std::endl
+	        << "channels        " << vorbisInfo->channels        << std::endl
+	        << "rate (hz)       " << vorbisInfo->rate            << std::endl
+	        << "bitrate upper   " << vorbisInfo->bitrate_upper   << std::endl
+	        << "bitrate nominal " << vorbisInfo->bitrate_nominal << std::endl
+	        << "bitrate lower   " << vorbisInfo->bitrate_lower   << std::endl
+	        << "bitrate window  " << vorbisInfo->bitrate_window  << std::endl
+	        << std::endl
+	        << "vendor " << vorbisComment->vendor << std::endl;
 
 	    for(int i = 0; i < vorbisComment->comments; i++)
-	        COUT(3) << "   " << vorbisComment->user_comments[i] << "\n";
+	        COUT(3) << "   " << vorbisComment->user_comments[i] << std::endl;
 
 	    COUT(3) << std::endl;
 		}

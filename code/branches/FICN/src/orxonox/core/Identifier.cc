@@ -67,7 +67,7 @@ namespace orxonox
     */
     void Identifier::initialize(const IdentifierList* parents)
     {
-        COUT(4) << "*** Initialize " << this->name_ << "-Singleton.\n";
+        COUT(4) << "*** Initialize " << this->name_ << "-Singleton." << std::endl;
         this->bCreatedOneObject_ = true;
 
         if (parents)
@@ -96,8 +96,8 @@ namespace orxonox
         else
         {
             // Abstract classes don't have a factory and therefore can't create new objects
-            COUT(1) << "Error: Cannot create an object of type '" << this->name_ << "'. Class is abstract.\n";
-            COUT(1) << "Aborting...";
+            COUT(1) << "Error: Cannot create an object of type '" << this->name_ << "'. Class is abstract." << std::endl;
+            COUT(1) << "Aborting..." << std::endl;
             abort();
             return NULL;
         }

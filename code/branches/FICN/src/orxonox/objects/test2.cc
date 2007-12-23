@@ -52,17 +52,17 @@ namespace orxonox
 
     void Test2::timerFunction1()
     {
-        std::cout << "Test2: 1 Sekunde\n";
+        std::cout << "Test2: 1 Sekunde" << std::endl;
     }
 
     void Test2::timerFunction2()
     {
-        std::cout << "Test2: 5 Sekunden\n";
+        std::cout << "Test2: 5 Sekunden" << std::endl;
     }
 
     void Test2::timerFunction3()
     {
-        std::cout << "Test2: 10 Sekunden sind um!\n";
+        std::cout << "Test2: 10 Sekunden sind um!" << std::endl;
     }
 
     bool Test2::usefullClass1isA(Identifier* identifier)
@@ -82,28 +82,28 @@ namespace orxonox
 
     void Test2::setUsefullClass1(Identifier* identifier)
     {
-        std::cout << "\n";
-        std::cout << "Test2: usefullClass1->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << "\n";
-        std::cout << "Test2: usefullClass1->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << "\n";
-        std::cout << "Test2: usefullClass1->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << "\n";
+        std::cout << std::endl;
+        std::cout << "Test2: usefullClass1->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << std::endl;
+        std::cout << "Test2: usefullClass1->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << std::endl;
+        std::cout << "Test2: usefullClass1->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << std::endl;
         this->usefullClass1_ = identifier;
     }
 
     void Test2::setUsefullClass2(Identifier* identifier)
     {
-        std::cout << "\n";
-        std::cout << "Test2: usefullClass2->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << "\n";
-        std::cout << "Test2: usefullClass2->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << "\n";
-        std::cout << "Test2: usefullClass2->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << "\n";
+        std::cout << std::endl;
+        std::cout << "Test2: usefullClass2->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << std::endl;
+        std::cout << "Test2: usefullClass2->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << std::endl;
+        std::cout << "Test2: usefullClass2->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << std::endl;
         this->usefullClass2_ = identifier;
     }
 
     void Test2::setUsefullClassOfTypeTest3(Identifier* identifier)
     {
-        std::cout << "\n";
-        std::cout << "Test2: usefullClass3->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << "\n";
-        std::cout << "Test2: usefullClass3->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << "\n";
-        std::cout << "Test2: usefullClass3->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << "\n";
+        std::cout << std::endl;
+        std::cout << "Test2: usefullClass3->isA(Class(Test1)): " << identifier->isA(Class(Test1)) << std::endl;
+        std::cout << "Test2: usefullClass3->isA(Class(Test2)): " << identifier->isA(Class(Test2)) << std::endl;
+        std::cout << "Test2: usefullClass3->isA(Class(Test3)): " << identifier->isA(Class(Test3)) << std::endl;
         this->usefullClass3_ = identifier;
     }
 }
