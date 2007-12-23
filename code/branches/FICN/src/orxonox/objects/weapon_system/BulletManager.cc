@@ -36,7 +36,7 @@ namespace orxonox {
 
   CreateFactory(BulletManager);
 
-  BulletManager::BulletManager() : bulletsIndex_(0), bulletsSize_(8)
+  BulletManager::BulletManager() : bulletsSize_(8), bulletsIndex_(0)
   {
     RegisterObject(BulletManager);
     bullets_ = new Bullet*[bulletsSize_];

@@ -46,16 +46,19 @@ namespace orxonox {
   
   //CreateFactory(BaseWeapon);
 
-  float BaseWeapon::nextActionValidityPeriod_ = 0.5;
+  float BaseWeapon::nextActionValidityPeriod_s = 0.5;
 
   BaseWeapon::BaseWeapon()
     : sceneMgr_(Orxonox::getSingleton()->getSceneManager()),
-      bulletCounter_(0), primaryFireRequest_(false), currentState_(IDLE),
-      secondaryFireRequest_(false),
+      bulletCounter_(0),
       bulletManager_(Orxonox::getSingleton()->getBulletMgr()),
-      secondaryFired_(false),
-      timeSinceNextActionAdded_(0), actionAdded_(false), nextAction_(NOTHING),
-      ammoDump_(NULL), totalTime_(0.0), leftAmmo_(0)
+      ammoDump_(NULL),
+      primaryFireRequest_(false), secondaryFireRequest_(false),
+      totalTime_(0.0f), actionStartTime_(0.0f),
+      currentState_(IDLE), secondaryFired_(false),
+      nextAction_(NOTHING), actionAdded_(false),
+      timeSinceNextActionAdded_(0.0f),
+      leftAmmo_(0)
   {
     RegisterObject(BaseWeapon);
   }
@@ -101,24 +104,24 @@ namespace orxonox {
       actionAdded_ = false;
     }
 
-    if (currentState_ != IDLE)
+    switch (currentState_)
     {
-      switch (currentState_)
-      {
-      case PRIMARY_FIRE:
-        primaryFiring(totalTime_ - actionStartTime_);
-        break;
+    case IDLE:
+      break;
 
-      case SECONDARY_FIRE:
-        secondaryFiring(totalTime_ - actionStartTime_);
-        break;
+    case PRIMARY_FIRE:
+      primaryFiring(totalTime_ - actionStartTime_);
+      break;
 
-      case RELOADING:
-        break;
+    case SECONDARY_FIRE:
+      secondaryFiring(totalTime_ - actionStartTime_);
+      break;
 
-      case CHANGING_AMMO:
-        break;
-      }
+    case RELOADING:
+      break;
+
+    case CHANGING_AMMO:
+      break;
     }
 
     if (currentState_ == IDLE)
@@ -169,7 +172,7 @@ namespace orxonox {
     primaryFireRequest_ = false;
     secondaryFireRequest_ = false;
 
-    if (totalTime_ - timeSinceNextActionAdded_ > nextActionValidityPeriod_)
+    if (totalTime_ - timeSinceNextActionAdded_ > nextActionValidityPeriod_s)
       nextAction_ = NOTHING;
   }
 

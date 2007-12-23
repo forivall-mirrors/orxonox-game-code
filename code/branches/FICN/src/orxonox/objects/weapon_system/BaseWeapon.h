@@ -107,7 +107,7 @@ namespace orxonox {
     Action nextAction_;
     bool actionAdded_;
     float timeSinceNextActionAdded_;
-    static float nextActionValidityPeriod_;
+    static float nextActionValidityPeriod_s;
 
     // weapon properties
     int leftAmmo_;

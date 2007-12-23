@@ -41,8 +41,8 @@ namespace orxonox {
   using namespace Ogre;
 
   WeaponStation::WeaponStation(int stationSize)
-        : stationSize_(stationSize), lastActiveSlotIndex_(-1),
-        slots_(new BaseWeapon*[stationSize])
+        : slots_(new BaseWeapon*[stationSize]),
+          lastActiveSlotIndex_(-1), stationSize_(stationSize)
   {
   	//slots_ = new BaseWeapon*[stationSize];
   }
@@ -58,7 +58,7 @@ namespace orxonox {
 
   bool WeaponStation::addWeapon(BaseWeapon *weapon)
   {
-    if (lastActiveSlotIndex_ = stationSize_ - 1)
+    if (lastActiveSlotIndex_ == stationSize_ - 1)
       return false;
 
     // this is ugly, but for the time being, it has to fit.
