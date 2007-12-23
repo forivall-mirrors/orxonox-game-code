@@ -63,7 +63,12 @@ namespace orxonox {
 #else
     root_ = new Root(NULL, configPath_ + "ogre.cfg", configPath_ + "Ogre.log");
 #endif*/
-    root_ = new Root();
+#if defined(_DEBUG) && defined(WIN32)
+    std::string plugin_filename = "plugins_d.cfg";
+#else
+    std::string plugin_filename = "plugins.cfg";
+#endif
+    root_ = new Root(plugin_filename);
   }
 
   /**
