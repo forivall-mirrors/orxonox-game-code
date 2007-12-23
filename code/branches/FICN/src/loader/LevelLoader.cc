@@ -199,6 +199,7 @@ LevelLoader::LevelLoader(string file, string path)
 
       if (loadElem)
       {
+        // FIXME: check for potential initialisation of mLoadOverlay
          mLoadOverlay->hide();
       }
 

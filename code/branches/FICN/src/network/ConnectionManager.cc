@@ -222,7 +222,6 @@ namespace network{
 
   bool ConnectionManager::clientDisconnect(ENetPeer *peer){
     return head_->removeClient(peer);
-    return true;
   }
 
   bool ConnectionManager::addClient(ENetEvent *event){
