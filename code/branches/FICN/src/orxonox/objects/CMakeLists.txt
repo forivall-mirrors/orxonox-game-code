@@ -8,6 +8,7 @@ SET( OBJECTS_SRC_FILES
   Explosion.cc
   Fighter.cc
   Mesh.cc
+  Light.cc
   Model.cc
   NPC.cc
   Projectile.cc

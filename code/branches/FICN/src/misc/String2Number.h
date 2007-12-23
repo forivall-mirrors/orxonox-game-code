@@ -1,5 +1,5 @@
-#ifndef __STRING2NUMBER_H__
-#define __STRING2NUMBER_H__
+#ifndef _String2Number_H__
+#define _String2Number_H__
 
 #include <string>
 #include <sstream>
@@ -126,4 +126,4 @@ bool string2Number(T& variable, const std::string& valueString, T fallbackValue)
     return false;
 }
 
-#endif
+#endif /* _String2Number_H__ */

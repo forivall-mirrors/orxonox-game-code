@@ -28,6 +28,7 @@ IF(WIN32)
 #    objects/SpaceshipSteeringObject.cc
     objects/Model.cc
     objects/Mesh.cc
+    objects/Light.cc
     objects/SpaceShip.cc
     objects/NPC.cc
     objects/BillboardSet.cc

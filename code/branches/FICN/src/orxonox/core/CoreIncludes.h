@@ -25,6 +25,9 @@
  *
  */
 
+#ifndef _CoreIncludes_H__
+#define _CoreIncludes_H__
+
 /**
     @file CoreIncludes.h
     @brief Definition of macros and typedefs.
@@ -136,3 +139,5 @@ namespace orxonox
         this->getIdentifier()->setConfigValueContainer(#varname, container##varname); \
     } \
     varname = container##varname->getValue(varname)
+
+#endif /* _CoreIncludes_H__ */

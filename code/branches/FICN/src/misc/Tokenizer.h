@@ -1,5 +1,5 @@
-#ifndef __TOKEINZER_H__
-#define __TOKEINZER_H__
+#ifndef _Tokenizer_H__
+#define _Tokenizer_H__
 
 #include <string>
 #include <iostream>
@@ -36,4 +36,4 @@ inline std::vector<std::string> tokenize(const std::string& str, const std::stri
 }
 
 
-#endif
+#endif /* _Tokenizer_H__ */
