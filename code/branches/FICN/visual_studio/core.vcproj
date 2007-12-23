@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="core"
+	Name="Core"
 	ProjectGUID="{271715F3-5B90-4110-A552-70C788084A86}"
 	RootNamespace="FICN"
 	Keyword="Win32Proj"
@@ -17,9 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)\bin"
-			IntermediateDirectory="obj\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
+			InheritedPropertySheets=".\base_properties_debug.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -39,17 +38,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="src"
-				PreprocessorDefinitions="__WIN32__;WIN32;_DEBUG;_WINDOWS;BOOST_ALL_DYN_LINK"
-				GeneratePreprocessedFile="0"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				AdditionalIncludeDirectories=""
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -62,8 +51,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				IgnoreAllDefaultLibraries="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -83,9 +70,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)\bin"
-			IntermediateDirectory="obj\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
+			InheritedPropertySheets=".\base_properties_release.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -106,13 +92,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="src;$(OGRE_HOME)\OgreMain\include;$(OGRE_HOME)\Dependencies\include; $(ENET_HOME)\include;$(BOOST_HOME)"
-				PreprocessorDefinitions="__WIN32__;WIN32;NDEBUG;_WINDOWS;BOOST_ALL_DYN_LINK"
-				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				AdditionalIncludeDirectories=""
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -152,43 +132,43 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\orxonox\core\ArgReader.cc"
+				RelativePath="..\src\orxonox\core\ArgReader.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\ConfigValueContainer.cc"
+				RelativePath="..\src\orxonox\core\ConfigValueContainer.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\DebugLevel.cc"
+				RelativePath="..\src\orxonox\core\DebugLevel.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\Error.cc"
+				RelativePath="..\src\orxonox\core\Error.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\Factory.cc"
+				RelativePath="..\src\orxonox\core\Factory.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\Identifier.cc"
+				RelativePath="..\src\orxonox\core\Identifier.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\IdentifierList.cc"
+				RelativePath="..\src\orxonox\core\IdentifierList.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\MetaObjectList.cc"
+				RelativePath="..\src\orxonox\core\MetaObjectList.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\OrxonoxClass.cc"
+				RelativePath="..\src\orxonox\core\OrxonoxClass.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\SignalHandler.cc"
+				RelativePath="..\src\orxonox\core\SignalHandler.cc"
 				>
 			</File>
 		</Filter>
@@ -198,63 +178,63 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\orxonox\core\ArgReader.h"
+				RelativePath="..\src\orxonox\core\ArgReader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\ClassFactory.h"
+				RelativePath="..\src\orxonox\core\ClassFactory.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\ConfigValueContainer.h"
+				RelativePath="..\src\orxonox\core\ConfigValueContainer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\CoreIncludes.h"
+				RelativePath="..\src\orxonox\core\CoreIncludes.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\Debug.h"
+				RelativePath="..\src\orxonox\core\Debug.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\DebugLevel.h"
+				RelativePath="..\src\orxonox\core\DebugLevel.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\Error.h"
+				RelativePath="..\src\orxonox\core\Error.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\Factory.h"
+				RelativePath="..\src\orxonox\core\Factory.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\Identifier.h"
+				RelativePath="..\src\orxonox\core\Identifier.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\IdentifierList.h"
+				RelativePath="..\src\orxonox\core\IdentifierList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\Iterator.h"
+				RelativePath="..\src\orxonox\core\Iterator.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\MetaObjectList.h"
+				RelativePath="..\src\orxonox\core\MetaObjectList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\ObjectList.h"
+				RelativePath="..\src\orxonox\core\ObjectList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\OrxonoxClass.h"
+				RelativePath="..\src\orxonox\core\OrxonoxClass.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\orxonox\core\SignalHandler.h"
+				RelativePath="..\src\orxonox\core\SignalHandler.h"
 				>
 			</File>
 		</Filter>

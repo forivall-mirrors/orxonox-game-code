@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="TinyXML"
-	ProjectGUID="{2240ECD7-2F48-4431-8E1B-25466A384CCC}"
+	Name="Loader"
+	ProjectGUID="{E283910F-F911-40FB-A09D-D025CA821912}"
 	RootNamespace="FICN"
 	Keyword="Win32Proj"
 	>
@@ -17,9 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)\bin"
-			IntermediateDirectory="obj\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
+			InheritedPropertySheets=".\base_properties_debug.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -39,16 +38,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="src;$(OGRE_HOME)\OgreMain\include;$(OGRE_HOME)\Dependencies\include; $(ENET_HOME)\include;$(BOOST_HOME)"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				AdditionalIncludeDirectories=""
+				PreprocessorDefinitions="LOADER_STATIC"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -61,7 +52,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -81,9 +71,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)\bin"
-			IntermediateDirectory="obj\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
+			InheritedPropertySheets=".\base_properties_release.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -104,13 +93,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="src;$(OGRE_HOME)\OgreMain\include;$(OGRE_HOME)\Dependencies\include; $(ENET_HOME)\include;$(BOOST_HOME)"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
-				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				AdditionalIncludeDirectories=""
+				PreprocessorDefinitions="LOADER_STATIC"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -150,19 +134,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\tinyxml\tinystr.cc"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tinyxml\tinyxml.cc"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tinyxml\tinyxmlerror.cc"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tinyxml\tinyxmlparser.cc"
+				RelativePath="..\src\loader\LevelLoader.cc"
 				>
 			</File>
 		</Filter>
@@ -172,11 +144,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\tinyxml\tinystr.h"
+				RelativePath="..\src\loader\LevelLoader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tinyxml\tinyxml.h"
+				RelativePath="..\src\loader\LoaderPlatform.h"
 				>
 			</File>
 		</Filter>

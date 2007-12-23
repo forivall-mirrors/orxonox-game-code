@@ -12,7 +12,7 @@
 #include <vector>
 #include <iostream>
 
-#include "loader_platform.h"
+#include "LoaderPlatform.h"
 #include "tinyxml/tinyxml.h"
 
 //#include "xml/xmlParser.h"
