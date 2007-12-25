@@ -25,9 +25,6 @@
  *
  */
 
-#ifndef _CoreIncludes_H__
-#define _CoreIncludes_H__
-
 /**
     @file CoreIncludes.h
     @brief Definition of macros and typedefs.
@@ -38,6 +35,11 @@
     To allow the object being created through the factory, use the CreateFactory(class) macro outside
     the of the class implementation, so it gets executed before main().
 */
+
+#ifndef _CoreIncludes_H__
+#define _CoreIncludes_H__
+
+#include "CorePrereqs.h"
 
 // All needed header-files
 #include "Identifier.h"

@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="LOADER_STATIC"
+				PreprocessorDefinitions="LOADER_STATIC_BUILD"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -94,7 +94,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="LOADER_STATIC"
+				PreprocessorDefinitions="LOADER_STATIC_BUILD"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -148,7 +148,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\loader\LoaderPlatform.h"
+				RelativePath="..\src\loader\LoaderPrereqs.h"
 				>
 			</File>
 		</Filter>

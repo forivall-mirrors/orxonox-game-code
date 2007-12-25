@@ -37,10 +37,10 @@
 #ifndef _ObjectList_H__
 #define _ObjectList_H__
 
+#include "CorePrereqs.h"
+
 namespace orxonox
 {
-    class OrxonoxClass; // Forward declaration
-
     // ###############################
     // ###    ObjectListElement    ###
     // ###############################
@@ -72,9 +72,6 @@ namespace orxonox
     // ###############################
     // ###       ObjectList        ###
     // ###############################
-    template <class T>
-    class Iterator; // Forward declaration
-
     //! The ObjectList contains all objects of a given class.
     /**
         The ObjectList is used by Identifiers to store all objects of a given class.

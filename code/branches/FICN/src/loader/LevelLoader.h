@@ -9,14 +9,12 @@
 #define _LevelLoader_H__
 
 #include <string>
-#include <vector>
-#include <iostream>
 
-#include "LoaderPlatform.h"
+#include "LoaderPrereqs.h"
 #include "tinyxml/tinyxml.h"
 
-//#include "xml/xmlParser.h"
-
+class TiXmlDocument;   // Forward declaration
+class TiXmlElement;    // Forward declaration
 
 namespace loader
 {
@@ -24,9 +22,9 @@ namespace loader
   {
   public:
     // Constructors, loads the level file and some information data
-    LevelLoader(std::string file, std::string dir="levels");
+    LevelLoader(std::string file, std::string dir = "levels");
     // Destructor
-    ~LevelLoader();
+    virtual ~LevelLoader();
     // Loads all level data
     void loadLevel();
 
@@ -51,9 +49,8 @@ namespace loader
     bool valid_;
 
     // Xml-Stuff
-    TiXmlDocument doc;
-    TiXmlElement* rootElement;
-
+    TiXmlDocument doc_;
+    TiXmlElement *rootElement_;
   };
 }
 

@@ -1,3 +1,30 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Fabian 'x3n' Landau
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 /*!
     @file Factory.h
     @brief Definition of the Factory and the BaseFactory class.
@@ -19,16 +46,17 @@
 #include <map>
 #include <string>
 
+#include "CorePrereqs.h"
+
 namespace orxonox
 {
     class BaseObject; // Forward declaration
-    class Identifier; // Forward declaration
 
     // ###############################
     // ###         Factory         ###
     // ###############################
     //! The Factory is used to map the name or the network ID of a class with its Identifier.
-    class Factory
+    class _CoreExport Factory
     {
         public:
             static Identifier* getIdentifier(const std::string& name);
@@ -52,7 +80,7 @@ namespace orxonox
     // ###       BaseFactory       ###
     // ###############################
     //! Base-class of ClassFactory. Has to be defined separate because of circular dependencies.
-    class BaseFactory
+    class _CoreExport BaseFactory
     {
         public:
             virtual BaseObject* fabricate() = 0;

@@ -26,8 +26,8 @@
  */
 
 #include "CoreIncludes.h"
-#include "DebugLevel.h"
 #include "Debug.h"
+#include "DebugLevel.h"
 
 namespace orxonox
 {

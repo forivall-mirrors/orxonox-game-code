@@ -1,3 +1,30 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Fabian 'x3n' Landau
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 /*!
     @file Identifier.h
     @brief Definition of the Identifier, ClassIdentifier and SubclassIdentifier classes, implementation of the ClassIdentifier and SubclassIdentifier classes.
@@ -24,14 +51,19 @@
 #ifndef _Identifier_H__
 #define _Identifier_H__
 
-#include <iostream>
+#include <string>
 #include <map>
 
-#include "IdentifierList.h"
+#include "CorePrereqs.h"
+
 #include "ObjectList.h"
+#include "IdentifierList.h"
 #include "Factory.h"
-#include "ConfigValueContainer.h"
 #include "Debug.h"
+// These two files would actually be need, but they would produce
+// circular dependencies. Anyway, it does compile without them
+//#include "OrxonoxClass.h"
+//#include "MetaObjectList.h"
 
 namespace orxonox
 {
@@ -55,7 +87,7 @@ namespace orxonox
 
         You can't directly create an Identifier, it's just the base-class for ClassIdentifier.
     */
-    class Identifier
+    class _CoreExport Identifier
     {
         template <class T>
         friend class ClassIdentifier; // Forward declaration

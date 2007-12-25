@@ -36,8 +36,11 @@
 #define _Debug_H__
 
 #include <stdio.h>
+#include <iostream>
 
-int getSoftDebugLevel();
+#include "CorePrereqs.h"
+
+extern "C" _CoreExport int getSoftDebugLevel();
 
 // DEFINE ERROR MODES
 #define ORX_NONE            0

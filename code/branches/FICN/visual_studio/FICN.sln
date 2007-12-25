@@ -6,6 +6,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Network", "network.vcproj",
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{271715F3-5B90-4110-A552-70C788084A86} = {271715F3-5B90-4110-A552-70C788084A86}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "core.vcproj", "{271715F3-5B90-4110-A552-70C788084A86}"
 	ProjectSection(WebsiteProperties) = preProject
@@ -36,6 +39,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader", "loader.vcproj", "
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{2240ECD7-2F48-4431-8E1B-25466A384CCC} = {2240ECD7-2F48-4431-8E1B-25466A384CCC}
+		{271715F3-5B90-4110-A552-70C788084A86} = {271715F3-5B90-4110-A552-70C788084A86}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TinyXML", "tinyxml.vcproj", "{2240ECD7-2F48-4431-8E1B-25466A384CCC}"

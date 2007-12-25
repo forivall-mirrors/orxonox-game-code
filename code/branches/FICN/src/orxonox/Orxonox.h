@@ -11,6 +11,7 @@
 #include <OIS/OISPrereqs.h>
 
 #include "OrxonoxPrereqs.h"
+#include "loader/LoaderPrereqs.h"
 #include "GraphicsEngine.h"
 
 
@@ -24,8 +25,6 @@ namespace orxonox {
     CLIENT,
     PRESENTATION
   };
-
-  class OrxListener;
 
   class Orxonox
   {

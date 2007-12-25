@@ -1,100 +1,95 @@
 /*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *     Nicolas Perrenoud <nicolape@ee.ethz.ch>
- *   Co-authors:
- *      ...
- *
- */
+*   ORXONOX - the hottest 3D action shooter ever to exist
+*
+*
+*   License notice:
+*
+*   This program is free software; you can redistribute it and/or
+*   modify it under the terms of the GNU General Public License
+*   as published by the Free Software Foundation; either version 2
+*   of the License, or (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*
+*   Author:
+*     Nicolas Perrenoud <nicolape@ee.ethz.ch>
+*   Co-authors:
+*      ...
+*
+*/
 
-// #include <string>
-// #include <vector>
-// #include <iostream>
-#include <algorithm>
-#include <iterator>
-
+#include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 
-#include "LevelLoader.h"
-// #include "tinyxml/tinyxml.h"
-#include "orxonox/core/CoreIncludes.h"
 #include "orxonox/core/Error.h"
-#include "orxonox/objects/BaseObject.h"
+#include "orxonox/core/Debug.h"
+#include "orxonox/core/CoreIncludes.h"
+
 #include "audio/AudioManager.h"
+#include "orxonox/objects/BaseObject.h"
 #include "orxonox/Orxonox.h"
 
-using namespace std;
+#include "LevelLoader.h"
 
 namespace loader
 {
 
-LevelLoader::LevelLoader(string file, string path)
-{
-  valid_ = false;
-
-  // Load XML level file
-  path.append("/");
-  path.append(file);
-
-  // Open xml file
-  doc.LoadFile(path);
-
-  // Check if file was loaded
-  if (doc.LoadFile())
+  LevelLoader::LevelLoader(std::string file, std::string path)
   {
-    TiXmlHandle hDoc(&doc);
-    TiXmlHandle hRoot(0);
-    TiXmlElement* pElem;
+    valid_ = false;
 
-    // Check for root element
-    pElem = hDoc.FirstChildElement("orxonoxworld").Element();
-    if (pElem)
+    // Load XML level file
+    path.append("/");
+    path.append(file);
+
+    // Open xml file
+    doc_.LoadFile(path);
+
+    // Check if file was loaded
+    if (doc_.LoadFile())
     {
-      // Set root element
-      hRoot = TiXmlHandle(pElem);
-      rootElement = hRoot.Element();
+      TiXmlHandle hDoc(&doc_);
+      TiXmlHandle hRoot(0);
+      TiXmlElement* pElem;
 
-      // Set level description
-      pElem = hRoot.FirstChild("description").Element();
+      // Check for root element
+      pElem = hDoc.FirstChildElement("orxonoxworld").Element();
       if (pElem)
       {
-        description_ = pElem->GetText();
+        // Set root element
+        hRoot = TiXmlHandle(pElem);
+        rootElement_ = hRoot.Element();
+
+        // Set level description
+        pElem = hRoot.FirstChild("description").Element();
+        if (pElem)
+        {
+          description_ = pElem->GetText();
+        }
+
+        // Set level name
+        name_ = rootElement_->Attribute("name");
+        image_ = rootElement_->Attribute("image");
+
+        valid_ = true;
       }
-
-      // Set level name
-      name_ = rootElement->Attribute("name");
-      image_ = rootElement->Attribute("image");
-
-      valid_ = true;
+      else
+      {
+        orxonox::Error("Level file has no valid root node");
+      }
     }
     else
     {
-      orxonox::Error("Level file has no valid root node");
+      orxonox::Error("Could not load level file ");
     }
   }
-  else
-  {
-    orxonox::Error("Could not load level file ");
-  }
-}
 
   void LevelLoader::loadLevel()
   {
@@ -110,7 +105,7 @@ LevelLoader::LevelLoader(string file, string path)
       Ogre::Overlay* mLoadOverlay; // FIXME: mey be uninitialized
 
       // Set loading screen
-      loadElem = rootElement->FirstChildElement("loading");
+      loadElem = rootElement_->FirstChildElement("loading");
       if (loadElem)
       {
         // Set background
@@ -144,7 +139,7 @@ LevelLoader::LevelLoader(string file, string path)
 
       // Load audio
       audio::AudioManager* auMan = orxonox::Orxonox::getSingleton()->getAudioManagerPointer();
-      audioElem = rootElement->FirstChildElement("audio");
+      audioElem = rootElement_->FirstChildElement("audio");
 
       if (audioElem)
       {
@@ -173,7 +168,7 @@ LevelLoader::LevelLoader(string file, string path)
       }
 
       // Load world
-      worldElem = rootElement->FirstChildElement("world");
+      worldElem = rootElement_->FirstChildElement("world");
       if (worldElem)
       {
         tNode = 0;
@@ -191,7 +186,7 @@ LevelLoader::LevelLoader(string file, string path)
             }
             else
             {
-                COUT(2) << "Warning: '"<< tElem->Value() <<"' is not a valid classname." << std::endl;
+              COUT(2) << "Warning: '"<< tElem->Value() <<"' is not a valid classname." << std::endl;
             }
           }
         }
@@ -200,7 +195,7 @@ LevelLoader::LevelLoader(string file, string path)
       if (loadElem)
       {
         // FIXME: check for potential initialisation of mLoadOverlay
-         mLoadOverlay->hide();
+        mLoadOverlay->hide();
       }
 
 
@@ -213,7 +208,4 @@ LevelLoader::LevelLoader(string file, string path)
 
   }
 
-
-
 }
-

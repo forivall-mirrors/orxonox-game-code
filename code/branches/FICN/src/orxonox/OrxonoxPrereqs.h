@@ -19,42 +19,31 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder, (C) 2007
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
 /**
- @file  OrxonoxPrereq.cc
- @brief Contains all the necessary forward declarations for all classes, structs and enums.
+ @file  OrxonoxPrereq.h
+ @brief Contains all the necessary forward declarations for all classes and structs.
  */
 
 #ifndef _OrxonoxPrereqs_H__
 #define _OrxonoxPrereqs_H__
 
-// hack for the usleep/Sleep problem
-#ifdef WIN32
-#include <windows.h>
-#define usleep(x) Sleep((x)/1000)
-#else
-#include <unistd.h>
-#endif
+#include "OrxonoxPlatform.h"
 
 // classes that have not yet been put into a namespace
 class InputManager;
-class SignalHandler;
 class SpaceShipSteering;
-template <class T>
-class String2Number;
 
 namespace orxonox {
   class Ambient;
   class BaseEntity;
   class BaseObject;
   class Camera;
-  template <class T>
-  class ClassFactory;
   class Entity;
   class GraphicsEngine;
   class Mesh;
@@ -74,34 +63,6 @@ namespace orxonox {
   class TimerFrameListener;
   class WorldEntity;
 
-  // from core library
-  class ArgReader;
-  class BaseFactory;
-  class BaseMetaObjectListElement;
-  template <class T>
-  class ClassFactory;
-  template <class T>
-  class ClassIdentifier;
-  class ConfigValueContainer;
-  class DebugLevel;
-  class Error;
-  class Factory;
-  class Identifier;
-  class IdentifierList;
-  class IdentifierListElement;
-  template <class T>
-  class Iterator;
-  class MetaObjectList;
-  template <class T>
-  class MetaObjectListElement;
-  template <class T>
-  class ObjectList;
-  template <class T>
-  class ObjectListElement;
-  class OrxonoxClass;
-  template <class T>
-  class SubclassIdentifier;
-
   class AmmunitionDump;
   class Bullet;
   class BulletManager;
@@ -119,10 +80,6 @@ namespace audio {
 
 namespace hud {
   class HUD;
-}
-
-namespace loader {
-  class LevelLoader;
 }
 
 namespace network {

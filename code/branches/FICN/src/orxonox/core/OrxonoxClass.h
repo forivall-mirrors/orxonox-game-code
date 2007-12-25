@@ -1,3 +1,30 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Fabian 'x3n' Landau
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 /*!
     @file OrxonoxClass.h
     @brief Definition of the OrxonoxClass Class.
@@ -9,10 +36,12 @@
 #ifndef _OrxonoxClass_H__
 #define _OrxonoxClass_H__
 
-#include "Identifier.h"
-#include "IdentifierList.h"
-#include "ObjectList.h"
+#include <string>
+
+#include "CorePrereqs.h"
+
 #include "MetaObjectList.h"
+#include "Identifier.h"
 
 namespace orxonox
 {
@@ -21,7 +50,7 @@ namespace orxonox
         The BaseObject and Interaces are derived with 'virtual public OrxonoxClass' from OrxonoxClass.
         OrxonoxClass is needed to create the class-hierarchy at startup and to store the Identifier and the MetaObjectList.
     */
-    class OrxonoxClass
+    class _CoreExport OrxonoxClass
     {
         public:
             OrxonoxClass();

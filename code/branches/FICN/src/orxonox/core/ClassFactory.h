@@ -35,6 +35,11 @@
 #ifndef _ClassFactory_H__
 #define _ClassFactory_H__
 
+#include <string>
+
+#include "CorePrereqs.h"
+
+#include "Factory.h"
 #include "Identifier.h"
 #include "Debug.h"
 

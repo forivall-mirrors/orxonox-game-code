@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="LOADER_STATIC"
+				PreprocessorDefinitions="LOADER_STATIC_BUILD"
 				PrecompiledHeaderThrough=""
 			/>
 			<Tool
@@ -108,7 +108,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="LOADER_STATIC"
+				PreprocessorDefinitions="LOADER_STATIC_BUILD"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -330,6 +330,10 @@
 			</File>
 			<File
 				RelativePath="..\src\orxonox\Orxonox.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\orxonox\OrxonoxPlatform.h"
 				>
 			</File>
 			<File

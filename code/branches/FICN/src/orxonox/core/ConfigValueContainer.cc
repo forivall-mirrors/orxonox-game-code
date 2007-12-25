@@ -26,9 +26,10 @@
  */
 
 #include <fstream>
-#include "ConfigValueContainer.h"
+
 #include "../../misc/Tokenizer.h"
 #include "../../misc/String2Number.h"
+#include "ConfigValueContainer.h"
 
 #define CONFIGFILEPATH "orxonox.ini"
 
