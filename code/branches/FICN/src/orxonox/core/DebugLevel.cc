@@ -25,37 +25,52 @@
  *
  */
 
+/*!
+    @file DebugLevel.cc
+    @brief Implementation of the DebugLevel class.
+*/
+
 #include "CoreIncludes.h"
 #include "Debug.h"
 #include "DebugLevel.h"
 
 namespace orxonox
 {
-    DebugLevel* DebugLevel::pointer_s = 0;
-    bool DebugLevel::bCreatingDebugLevelObject_s = false;
+    DebugLevel* DebugLevel::pointer_s = 0;                // Set the static member variable pointer_s to zero
+    bool DebugLevel::bCreatingDebugLevelObject_s = false; // Set the static member variable bCreatingDebugLevelObject_s to false
 
+    /**
+        @brief Constructor: Registers the object and sets the debug level.
+    */
     DebugLevel::DebugLevel()
     {
         RegisterRootObject(DebugLevel);
         SetConfigValue(softDebugLevel_s, 2);
     }
 
+    /**
+        @returns a pointer to the only existing instance of this class.
+    */
     int DebugLevel::getSoftDebugLevel()
     {
         if (!pointer_s && !bCreatingDebugLevelObject_s)
         {
+            // We need the bCreatingDebugLevelObject_s variable to avoid an infinite recursion:
+            // Creating the object produces debug output and debug output needs the object.
             bCreatingDebugLevelObject_s = true;
             pointer_s = new DebugLevel;
             bCreatingDebugLevelObject_s = false;
         }
-
-        if (bCreatingDebugLevelObject_s)
+        else if (bCreatingDebugLevelObject_s)
             return 4;
 
         return pointer_s->softDebugLevel_s;
     }
 }
 
+/**
+    @returns the soft debug level, stored in the only existing instance of the DebugLevel class, configured in the config-file.
+*/
 int getSoftDebugLevel()
 {
     return orxonox::DebugLevel::getSoftDebugLevel();

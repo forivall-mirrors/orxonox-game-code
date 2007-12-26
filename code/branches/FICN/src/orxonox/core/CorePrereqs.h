@@ -60,7 +60,8 @@
 //-----------------------------------------------------------------------
 class SignalHandler;
 
-namespace orxonox {
+namespace orxonox
+{
   class ArgReader;
   class BaseFactory;
   class BaseMetaObjectListElement;
@@ -85,6 +86,7 @@ namespace orxonox {
   template <class T>
   class ObjectListElement;
   class OrxonoxClass;
+  class OutputHandler;
   template <class T>
   class SubclassIdentifier;
 }

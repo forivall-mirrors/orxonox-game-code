@@ -25,6 +25,14 @@
  *
  */
 
+/*!
+    @file DebugLevel.h
+    @brief Definition of the DebugLevel class.
+
+    The DebugLevel class is a singleton, only used to configure the amount of debug
+    output (see Debug.h) into the console and the log-file (see OutputHandler.h).
+*/
+
 #ifndef _DebugLevel_H__
 #define _DebugLevel_H__
 
@@ -34,16 +42,20 @@
 
 namespace orxonox
 {
+    //! The DebugLevel class is a singleton, only used to configure the amount of debug output.
     class _CoreExport DebugLevel : public OrxonoxClass
     {
         public:
-            DebugLevel();
             static int getSoftDebugLevel();
 
         private:
-            int softDebugLevel_s;
-            static DebugLevel* pointer_s;
-            static bool bCreatingDebugLevelObject_s;
+            DebugLevel();                       // don't create
+            DebugLevel(const DebugLevel& dl) {} // don't copy
+            ~DebugLevel() {}                    // don't delete
+
+            int softDebugLevel_s;                       //!< The output level
+            static DebugLevel* pointer_s;               //!< A pointer to the only existing instance of this class
+            static bool bCreatingDebugLevelObject_s;    //!< True if the only instance is being created (this is needed to avoid recurstion - creating the object produces debug output, debug output needs the object)
     };
 }
 

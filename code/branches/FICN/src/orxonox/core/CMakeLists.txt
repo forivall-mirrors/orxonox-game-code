@@ -11,10 +11,11 @@ SET( CORE_SRC_FILES
   SignalHandler.cc
   ArgReader.cc
   DebugLevel.cc
+  OutputHandler.cc
 )
 
 IF(WIN32)
-  ADD_LIBRARY(core ${CORE_SRC_FILES})
+  ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
 ELSE(WIN32)
   ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
 ENDIF(WIN32)

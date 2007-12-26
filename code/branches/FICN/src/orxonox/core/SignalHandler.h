@@ -85,7 +85,7 @@ class SignalHandler
     std::string fileName;
 };
 
-#else /* if defined __WIN32__ */
+#else /* #ifndef __WIN32__ */
 
 class _CoreExport SignalHandler
 {
@@ -98,6 +98,6 @@ class _CoreExport SignalHandler
  private:
     static SignalHandler * singletonRef;
 };
-#endif
+#endif /* #ifndef __WIN32__ */
 
 #endif /* _SignalHandler_H__ */

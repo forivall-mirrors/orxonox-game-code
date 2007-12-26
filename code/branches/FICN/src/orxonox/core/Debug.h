@@ -36,7 +36,7 @@
 #define _Debug_H__
 
 #include <stdio.h>
-#include <iostream>
+#include "OutputHandler.h"
 
 #include "CorePrereqs.h"
 
@@ -67,7 +67,8 @@ extern "C" _CoreExport int getSoftDebugLevel();
 #define PRINTFORX_vDEBUG  PRINTF5
 
 #define PRINT_EXEC  printf
-#define COUT_EXEC   std::cout
+//#define COUT_EXEC   std::cout
+#define COUT_EXEC   orxonox::OutputHandler::getOutStream()
 
 #ifndef PRINTF
  #if ORX_PRINT_DEBUG_OUTPUT
