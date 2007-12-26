@@ -43,7 +43,7 @@
 namespace orxonox
 {
     //! The DebugLevel class is a singleton, only used to configure the amount of debug output.
-    class _CoreExport DebugLevel : public OrxonoxClass
+    class _CoreExport DebugLevel
     {
         public:
             static int getSoftDebugLevel();
@@ -53,7 +53,8 @@ namespace orxonox
             DebugLevel(const DebugLevel& dl) {} // don't copy
             ~DebugLevel() {}                    // don't delete
 
-            int softDebugLevel_;                //!< The output level
+            int softDebugLevel_;                            //!< The debug level
+            ConfigValueContainer* softDebugLevelContainer_; //!< The config value container for the debug level
     };
 }
 

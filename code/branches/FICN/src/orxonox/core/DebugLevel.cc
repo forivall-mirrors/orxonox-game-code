@@ -41,9 +41,8 @@ namespace orxonox
     */
     DebugLevel::DebugLevel()
     {
-        this->softDebugLevel_ = 4;   // accounts for the recursive call when creating the object
-        RegisterRootObject(DebugLevel);
-        SetConfigValue(softDebugLevel_, 2);
+        this->softDebugLevelContainer_ = new ConfigValueContainer(std::string("DebugLevel"), std::string("softDebugLevel_"), this->softDebugLevel_ = 2);
+        this->softDebugLevel_ = this->softDebugLevelContainer_->getValue(this->softDebugLevel_);
     }
 
     /**
