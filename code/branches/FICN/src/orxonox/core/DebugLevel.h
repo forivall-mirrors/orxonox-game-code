@@ -44,12 +44,7 @@ namespace orxonox
     class _CoreExport DebugLevel
     {
         public:
-            static inline int getSoftDebugLevel()
-            {
-                static DebugLevel theOneAndOnlyInstance = DebugLevel();
-                return theOneAndOnlyInstance.softDebugLevel_;
-            }
-
+            static int getSoftDebugLevel();
         private:
             DebugLevel();                       // don't create
             DebugLevel(const DebugLevel& dl) {} // don't copy

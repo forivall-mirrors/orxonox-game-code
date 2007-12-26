@@ -44,6 +44,16 @@ namespace orxonox
         this->softDebugLevelContainer_ = new ConfigValueContainer(std::string("DebugLevel"), std::string("softDebugLevel_"), this->softDebugLevel_ = 2);
         this->softDebugLevel_ = this->softDebugLevelContainer_->getValue(this->softDebugLevel_);
     }
+
+    /**
+        @brief Static function that holds the singleton.
+    */
+    int DebugLevel::getSoftDebugLevel()
+    {
+        static DebugLevel theOneAndOnlyInstance = DebugLevel();
+        return theOneAndOnlyInstance.softDebugLevel_;
+    }
+
 }
 
 /**
