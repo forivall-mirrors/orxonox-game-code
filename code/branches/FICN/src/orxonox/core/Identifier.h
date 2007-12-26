@@ -193,30 +193,30 @@ namespace orxonox
             static void addObject(T* object);
 
             /** @returns the Identifier itself (createIdentifier() has to be called first). */
-            inline static ClassIdentifier<T>* getIdentifier() { return pointer_s; }
+            inline static ClassIdentifier<T>* getIdentifier()
+            {
+                static ClassIdentifier<T> theOneAndOnlyInstance = ClassIdentifier<T>();
+
+                return &theOneAndOnlyInstance;
+            }
 
         private:
-            ClassIdentifier(const std::string& name);
+            ClassIdentifier();
             ClassIdentifier(const ClassIdentifier<T>& identifier) {} // don't copy
             ~ClassIdentifier();
 
-            static ClassIdentifier<T>* pointer_s;       //!< A pointer to the singleton-object
+            //static ClassIdentifier<T>* pointer_s;       //!< A pointer to the singleton-object
             ObjectList<T>* objects_;                    //!< The ObjectList, containing all objects of type T
     };
-
-    template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::pointer_s;
 
     /**
         @brief Constructor: Creates the ObjectList.
         @param name The name of the Class
     */
     template <class T>
-    ClassIdentifier<T>::ClassIdentifier(const std::string& name)
+    ClassIdentifier<T>::ClassIdentifier()
     {
         this->objects_ = new ObjectList<T>;
-        this->name_ = name;
-        this->identifierMap_s[name] = this;
     }
 
     /**
@@ -226,7 +226,6 @@ namespace orxonox
     ClassIdentifier<T>::~ClassIdentifier()
     {
         delete this->objects_;
-        this->pointer_s = NULL;
     }
 
     /**
@@ -245,17 +244,17 @@ namespace orxonox
         ClassIdentifier<T>::createIdentifier(name);
 
         // Check if at least one object of the given type was created
-        if (!pointer_s->bCreatedOneObject_)
+        if (!getIdentifier()->bCreatedOneObject_)
         {
             // If no: We have to store the informations and initialize the Identifier
             COUT(4) << "*** Register Class in " << name << "-Singleton -> Initialize Singleton." << std::endl;
             if (bRootClass)
-                pointer_s->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
+                getIdentifier()->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
             else
-                pointer_s->initialize(parents);
+                getIdentifier()->initialize(parents);
         }
 
-        return pointer_s;
+        return getIdentifier();
     }
 
     /**
@@ -265,14 +264,14 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::createIdentifier(const std::string& name)
     {
-        static bool bFirstCeateIdentifierFunctionCall = true;
-        static ClassIdentifier<T> classIdentifierObject = ClassIdentifier<T>(name);
+        static bool bIdentifierCreated = false;
 
-        if (bFirstCeateIdentifierFunctionCall)
+        if (!bIdentifierCreated)
         {
+            getIdentifier()->name_ = name;
+            getIdentifier()->identifierMap_s[name] = getIdentifier();
             COUT(4) << "*** Create Identifier Singleton for " << name << "." << std::endl;
-            pointer_s = &classIdentifierObject;
-            bFirstCeateIdentifierFunctionCall = false;
+            bIdentifierCreated = true;
         }
     }
 
