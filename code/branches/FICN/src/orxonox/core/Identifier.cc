@@ -54,11 +54,10 @@ namespace orxonox
     }
 
     /**
-        @brief Destructor: Deletes the name and the IdentifierList containing the children.
+        @brief Destructor: Deletes the IdentifierList containing the children.
     */
     Identifier::~Identifier()
     {
-        delete &this->name_;
         delete this->children_;
     }
 
