@@ -39,6 +39,7 @@ namespace orxonox
     // ###############################
     int Identifier::hierarchyCreatingCounter_s = 0; // Set the static member variable hierarchyCreatingCounter_s to zero
     unsigned int Identifier::classIDcounter_s = 0;  // Set the static member variable classIDcounter_s to zero
+    std::map<std::string, Identifier*> Identifier::identifierMap_s;
 
     /**
         @brief Constructor: No factory, no object created, new ObjectList and a unique networkID.

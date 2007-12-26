@@ -171,6 +171,7 @@ namespace orxonox
             static unsigned int classIDcounter_s;                       //!< The number of existing Identifiers
             unsigned int classID_;                                      //!< The network ID to identify a class through the network
             std::map<std::string, ConfigValueContainer*> configValues_; //!< A map to link the string of configurable variables with their ConfigValueContainer
+            static std::map<std::string, Identifier*> identifierMap_s;  //!< A map, containing all existing ClassIdentifiers
     };
 
 
@@ -188,11 +189,14 @@ namespace orxonox
     {
         public:
             static ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass);
-            static ClassIdentifier<T>* getIdentifier();
+            static void createIdentifier(const std::string& name);
             static void addObject(T* object);
 
+            /** @returns the Identifier itself (createIdentifier() has to be called first). */
+            inline static ClassIdentifier<T>* getIdentifier() { return pointer_s; }
+
         private:
-            ClassIdentifier();
+            ClassIdentifier(const std::string& name);
             ClassIdentifier(const ClassIdentifier<T>& identifier) {} // don't copy
             ~ClassIdentifier();
 
@@ -205,11 +209,14 @@ namespace orxonox
 
     /**
         @brief Constructor: Creates the ObjectList.
+        @param name The name of the Class
     */
     template <class T>
-    ClassIdentifier<T>::ClassIdentifier()
+    ClassIdentifier<T>::ClassIdentifier(const std::string& name)
     {
         this->objects_ = new ObjectList<T>;
+        this->name_ = name;
+        this->identifierMap_s[name] = this;
     }
 
     /**
@@ -235,11 +242,7 @@ namespace orxonox
         COUT(4) << "*** Register Class in " << name << "-Singleton." << std::endl;
 
         // It's a singleton, so maybe we have to create it first
-        if (!pointer_s)
-        {
-            COUT(4) << "*** Register Class in " << name << "-Singleton -> Create Singleton." << std::endl;
-            pointer_s = new ClassIdentifier();
-        }
+        ClassIdentifier<T>::createIdentifier(name);
 
         // Check if at least one object of the given type was created
         if (!pointer_s->bCreatedOneObject_)
@@ -257,18 +260,21 @@ namespace orxonox
     }
 
     /**
-        @returns the Identifier itself.
+        @brief Creates the only instance of this class for the template class T.
+        @param name The name of the Class
     */
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
+    void ClassIdentifier<T>::createIdentifier(const std::string& name)
     {
-        if (!pointer_s)
-        {
-            COUT(4) << "*** Create Singleton." << std::endl;
-            pointer_s = new ClassIdentifier();
-        }
+        static bool bFirstCeateIdentifierFunctionCall = true;
+        static ClassIdentifier<T> classIdentifierObject = ClassIdentifier<T>(name);
 
-        return pointer_s;
+        if (bFirstCeateIdentifierFunctionCall)
+        {
+            COUT(4) << "*** Create Identifier Singleton for " << name << "." << std::endl;
+            pointer_s = &classIdentifierObject;
+            bFirstCeateIdentifierFunctionCall = false;
+        }
     }
 
     /**
