@@ -38,15 +38,17 @@
 
 #include "CorePrereqs.h"
 
-#include "OrxonoxClass.h"
-
 namespace orxonox
 {
     //! The DebugLevel class is a singleton, only used to configure the amount of debug output.
     class _CoreExport DebugLevel
     {
         public:
-            static int getSoftDebugLevel();
+            static inline int getSoftDebugLevel()
+            {
+                static DebugLevel theOneAndOnlyInstance = DebugLevel();
+                return theOneAndOnlyInstance.softDebugLevel_;
+            }
 
         private:
             DebugLevel();                       // don't create

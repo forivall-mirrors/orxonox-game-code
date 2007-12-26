@@ -30,7 +30,7 @@
     @brief Implementation of the DebugLevel class.
 */
 
-#include "CoreIncludes.h"
+#include "ConfigValueContainer.h"
 #include "Debug.h"
 #include "DebugLevel.h"
 
@@ -43,15 +43,6 @@ namespace orxonox
     {
         this->softDebugLevelContainer_ = new ConfigValueContainer(std::string("DebugLevel"), std::string("softDebugLevel_"), this->softDebugLevel_ = 2);
         this->softDebugLevel_ = this->softDebugLevelContainer_->getValue(this->softDebugLevel_);
-    }
-
-    /**
-        @returns a pointer to the only existing instance of this class.
-    */
-    int DebugLevel::getSoftDebugLevel()
-    {
-        static DebugLevel theOneAndOnlyInstance = DebugLevel();
-        return theOneAndOnlyInstance.softDebugLevel_;
     }
 }
 
