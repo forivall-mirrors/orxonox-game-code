@@ -108,15 +108,15 @@ namespace orxonox
         this->logfile_.flush();
         return *this;
     }
+/*
+    _CoreExport OutputHandler& operator<<(OutputHandler& out, char c);
+    _CoreExport OutputHandler& operator<<(OutputHandler& out, signed char c);
+    _CoreExport OutputHandler& operator<<(OutputHandler& out, unsigned char c);
 
-    OutputHandler& operator<<(OutputHandler& out, char c);
-    OutputHandler& operator<<(OutputHandler& out, signed char c);
-    OutputHandler& operator<<(OutputHandler& out, unsigned char c);
-
-    OutputHandler& operator<<(OutputHandler& out, const char* s);
-    OutputHandler& operator<<(OutputHandler& out, const signed char* s);
-    OutputHandler& operator<<(OutputHandler& out, const unsigned char* s);
-
+    _CoreExport OutputHandler& operator<<(OutputHandler& out, const char* s);
+    _CoreExport OutputHandler& operator<<(OutputHandler& out, const signed char* s);
+    _CoreExport OutputHandler& operator<<(OutputHandler& out, const unsigned char* s);
+*/
     /**
         @brief Overloading of the non-member << operator to redirect the output of classes with self defined '<< to std::ostream' operators to the console and the logfile.
         @param out The OutputHandler itself
@@ -131,6 +131,7 @@ namespace orxonox
         out.getLogfile().flush();
         return out;
     }
+
 }
 
 #endif /* _OutputHandler_H__ */

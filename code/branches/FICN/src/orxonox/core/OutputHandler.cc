@@ -115,77 +115,77 @@ namespace orxonox
         @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
         @param output The value that should be shown in the console
         @return A reference to the OutputHandler itself
-    */
+    *//*
     OutputHandler& operator<<(OutputHandler& out, char c)
     {
         std::cout << c;
         out.getLogfile() << c;
         out.getLogfile().flush();
         return out;
-    }
+    }*/
 
     /**
         @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
         @param output The value that should be shown in the console
         @return A reference to the OutputHandler itself
-    */
+    *//*
     OutputHandler& operator<<(OutputHandler& out, signed char c)
     {
         std::cout << c;
         out.getLogfile() << c;
         out.getLogfile().flush();
         return out;
-    }
+    }*/
 
     /**
         @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
         @param output The value that should be shown in the console
         @return A reference to the OutputHandler itself
-    */
+    *//*
     OutputHandler& operator<<(OutputHandler& out, unsigned char c)
     {
         std::cout << c;
         out.getLogfile() << c;
         out.getLogfile().flush();
         return out;
-    }
+    }*/
 
     /**
         @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
         @param output The value that should be shown in the console
         @return A reference to the OutputHandler itself
-    */
+    *//*
     OutputHandler& operator<<(OutputHandler& out, const char* s)
     {
         std::cout << s;
         out.getLogfile() << s;
         out.getLogfile().flush();
         return out;
-    }
+    }*/
 
     /**
         @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
         @param output The value that should be shown in the console
         @return A reference to the OutputHandler itself
-    */
+    *//*
     OutputHandler& operator<<(OutputHandler& out, const signed char* s)
     {
         std::cout << s;
         out.getLogfile() << s;
         out.getLogfile().flush();
         return out;
-    }
+    }*/
 
     /**
         @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
         @param output The value that should be shown in the console
         @return A reference to the OutputHandler itself
-    */
+    *//*
     OutputHandler& operator<<(OutputHandler& out, const unsigned char* s)
     {
         std::cout << s;
         out.getLogfile() << s;
         out.getLogfile().flush();
         return out;
-    }
+    }*/
  }
