@@ -205,7 +205,7 @@ namespace orxonox
     };
 
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::pointer_s = NULL; // Set the static member variable pointer_s to zero
+    ClassIdentifier<T>* ClassIdentifier<T>::pointer_s;
 
     /**
         @brief Constructor: Creates the ObjectList.
@@ -249,7 +249,6 @@ namespace orxonox
         {
             // If no: We have to store the informations and initialize the Identifier
             COUT(4) << "*** Register Class in " << name << "-Singleton -> Initialize Singleton." << std::endl;
-            pointer_s->name_ = name;
             if (bRootClass)
                 pointer_s->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
             else
