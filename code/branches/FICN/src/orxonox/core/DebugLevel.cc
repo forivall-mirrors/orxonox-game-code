@@ -36,16 +36,14 @@
 
 namespace orxonox
 {
-    DebugLevel* DebugLevel::pointer_s = 0;                // Set the static member variable pointer_s to zero
-    bool DebugLevel::bCreatingDebugLevelObject_s = false; // Set the static member variable bCreatingDebugLevelObject_s to false
-
     /**
         @brief Constructor: Registers the object and sets the debug level.
     */
     DebugLevel::DebugLevel()
     {
+        this->softDebugLevel_ = 4;   // accounts for the recursive call when creating the object
         RegisterRootObject(DebugLevel);
-        SetConfigValue(softDebugLevel_s, 2);
+        SetConfigValue(softDebugLevel_, 2);
     }
 
     /**
@@ -53,18 +51,8 @@ namespace orxonox
     */
     int DebugLevel::getSoftDebugLevel()
     {
-        if (!pointer_s && !bCreatingDebugLevelObject_s)
-        {
-            // We need the bCreatingDebugLevelObject_s variable to avoid an infinite recursion:
-            // Creating the object produces debug output and debug output needs the object.
-            bCreatingDebugLevelObject_s = true;
-            pointer_s = new DebugLevel;
-            bCreatingDebugLevelObject_s = false;
-        }
-        else if (bCreatingDebugLevelObject_s)
-            return 4;
-
-        return pointer_s->softDebugLevel_s;
+        static DebugLevel theOneAndOnlyInstance = DebugLevel();
+        return theOneAndOnlyInstance.softDebugLevel_;
     }
 }
 

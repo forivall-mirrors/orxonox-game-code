@@ -53,9 +53,7 @@ namespace orxonox
             DebugLevel(const DebugLevel& dl) {} // don't copy
             ~DebugLevel() {}                    // don't delete
 
-            int softDebugLevel_s;                       //!< The output level
-            static DebugLevel* pointer_s;               //!< A pointer to the only existing instance of this class
-            static bool bCreatingDebugLevelObject_s;    //!< True if the only instance is being created (this is needed to avoid recurstion - creating the object produces debug output, debug output needs the object)
+            int softDebugLevel_;                //!< The output level
     };
 }
 

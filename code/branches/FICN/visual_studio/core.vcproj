@@ -190,6 +190,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\orxonox\core\OutputHandler.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\src\orxonox\core\SignalHandler.cc"
 				>
 			</File>
@@ -257,6 +261,10 @@
 			</File>
 			<File
 				RelativePath="..\src\orxonox\core\OrxonoxClass.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\orxonox\core\OutputHandler.h"
 				>
 			</File>
 			<File
