@@ -17,6 +17,7 @@ namespace orxonox
         public:
             SpaceShip();
             ~SpaceShip();
+            void setConfigValues();
             virtual void loadParams(TiXmlElement* xmlElem);
             virtual void tick(float dt);
 /*

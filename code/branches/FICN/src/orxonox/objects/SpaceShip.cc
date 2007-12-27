@@ -44,8 +44,7 @@ namespace orxonox
     {
         RegisterObject(SpaceShip);
 
-        SetConfigValue(bInvertYAxis_, false);
-        SetConfigValue(reloadTime_, 0.125);
+        this->setConfigValues();
 
         this->setMouseEventCallback_ = false;
         this->bLMousePressed_ = false;
@@ -120,6 +119,12 @@ namespace orxonox
     {
         if (this->tt_)
             delete this->tt_;
+    }
+
+    void SpaceShip::setConfigValues()
+    {
+        SetConfigValue(bInvertYAxis_, false);
+        SetConfigValue(reloadTime_, 0.125);
     }
 
     void SpaceShip::loadParams(TiXmlElement* xmlElem)
@@ -362,8 +367,7 @@ namespace orxonox
 
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
-            // FIXME, unused var; try recycling of projectiles
-            Projectile* proj = new Projectile(this);
+            new Projectile(this);
             this->timeToReload_ = this->reloadTime_;
         }
 

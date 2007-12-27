@@ -46,7 +46,7 @@ namespace orxonox
     {
         RegisterObject(Fighter);
 
-        SetConfigValue(bInvertMouse_, false);
+        this->setConfigValues();
 
         this->setMouseEventCallback_ = false;
 
@@ -101,6 +101,11 @@ namespace orxonox
             delete w;
         if (tt)
             delete tt;
+    }
+
+    void Fighter::setConfigValues()
+    {
+        SetConfigValue(bInvertMouse_, false);
     }
 
     void Fighter::setMaxSpeedValues(float maxSpeedForward, float maxSpeedRotateUpDown, float maxSpeedRotateRightLeft, float maxSpeedLoopRightLeft)

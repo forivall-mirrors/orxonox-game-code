@@ -37,13 +37,13 @@ namespace orxonox
     /** @brief Constructor: Sets the default values. */
     OrxonoxClass::OrxonoxClass()
     {
+        this->setConfigValues();
+
         this->identifier_ = 0;
         this->parents_ = 0;
 
         this->bActive_ = true;
         this->bVisible_ = true;
-
-        this->setConfigValues();
     }
 
     /** @brief Destructor: Deletes, if existing, the list of the parents. */

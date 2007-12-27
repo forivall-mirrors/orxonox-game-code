@@ -38,10 +38,9 @@ namespace orxonox
     {
         RegisterObject(Projectile);
 
-        this->owner_ = owner;
+        this->setConfigValues();
 
-        SetConfigValue(lifetime_, 10.0);
-        SetConfigValue(speed_, 2000.0);
+        this->owner_ = owner;
 
         this->billboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
         this->attachObject(this->billboard_.getBillboardSet());
@@ -63,6 +62,12 @@ namespace orxonox
     {
     }
 
+    void Projectile::setConfigValues()
+    {
+        SetConfigValue(lifetime_, 10.0);
+        SetConfigValue(speed_, 2000.0);
+    }
+
     void Projectile::tick(float dt)
     {
         WorldEntity::tick(dt);
@@ -76,7 +81,7 @@ namespace orxonox
 
                 if (this->getPosition().squaredDistance(it->getPosition()) <= (radius*radius))
                 {
-                    Explosion* explosion = new Explosion(this);
+                    new Explosion(this);
                     delete this;
                     return;
                 }

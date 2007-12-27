@@ -17,6 +17,7 @@ namespace orxonox
         public:
             Fighter();
             ~Fighter();
+            void setConfigValues();
             virtual void loadParams(TiXmlElement* xmlElem);
             void setMaxSpeedValues(float maxSpeedForward, float maxSpeedRotateUpDown, float maxSpeedRotateRightLeft, float maxSpeedLoopRightLeft);
             virtual void tick(float dt);
