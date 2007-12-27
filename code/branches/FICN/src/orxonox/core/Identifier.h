@@ -136,6 +136,8 @@ namespace orxonox
             inline void setConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
                 { this->configValues_[varname] = container; }
 
+            std::map<std::string, Identifier*>& getIdentifierMap();
+
         private:
             Identifier();
             Identifier(const Identifier& identifier) {} // don't copy
@@ -171,7 +173,6 @@ namespace orxonox
             static unsigned int classIDcounter_s;                       //!< The number of existing Identifiers
             unsigned int classID_;                                      //!< The network ID to identify a class through the network
             std::map<std::string, ConfigValueContainer*> configValues_; //!< A map to link the string of configurable variables with their ConfigValueContainer
-            static std::map<std::string, Identifier*> identifierMap_s;  //!< A map, containing all existing ClassIdentifiers
     };
 
 
@@ -281,7 +282,7 @@ namespace orxonox
         if (!this->bSetName_)
         {
             this->name_ = name;
-            this->identifierMap_s[name] = this;
+            this->getIdentifierMap().insert(std::pair<std::string, Identifier*>(name, this));
             this->bSetName_ = true;
         }
     }
