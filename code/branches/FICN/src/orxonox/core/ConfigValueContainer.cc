@@ -48,12 +48,12 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = Int;
 
-        this->defvalueString_ = number2String(defvalue, "0");                   // Try to convert the default-value to a string
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
+        this->defvalueString_ = number2String(defvalue, "0");                       // Try to convert the default-value to a string
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
-        if (!string2Number(this->value_.value_int_, valueString, defvalue))     // Try to convert the string to a value
-            this->setConfigFileEntyToDefault();                                 // The conversion failed
+        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
@@ -69,12 +69,12 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = uInt;
 
-        this->defvalueString_ = number2String(defvalue, "0");                   // Try to convert the default-value to a string
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
+        this->defvalueString_ = number2String(defvalue, "0");                       // Try to convert the default-value to a string
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
-        if (!string2Number(this->value_.value_uint_, valueString, defvalue))    // Try to convert the string to a value
-            this->setConfigFileEntyToDefault();                                 // The conversion failed
+        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
@@ -90,13 +90,12 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = Char;
 
-        this->defvalueString_ = number2String((int)defvalue, "0");              // Try to convert the default-value to a string
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
+        this->defvalueString_ = number2String((int)defvalue, "0");                  // Try to convert the default-value to a string
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
-        // I used value_int_ instead of value_char_ to avoid number <-> char confusion in the config-file
-        if (!string2Number(this->value_.value_int_, valueString, (int)defvalue))// Try to convert the string to a value
-            this->setConfigFileEntyToDefault();                                 // The conversion failed
+        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
@@ -112,13 +111,12 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = uChar;
 
-        this->defvalueString_ = number2String((unsigned int)defvalue, "0");     // Try to convert the default-value to a string
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
+        this->defvalueString_ = number2String((unsigned int)defvalue, "0");         // Try to convert the default-value to a string
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
-        // I used value_uint_ instead of value_uchar_ to avoid number <-> char confusion in the config-file
-        if (!string2Number(this->value_.value_uint_, valueString, (unsigned int)defvalue)) // Try to convert the string to a value
-            this->setConfigFileEntyToDefault();                                 // The conversion failed
+        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
@@ -134,12 +132,12 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = Float;
 
-        this->defvalueString_ = number2String(defvalue, "0.000000");            // Try to convert the default-value to a string
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
+        this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
-        if (!string2Number(this->value_.value_float_, valueString, defvalue))   // Try to convert the string to a value
-            this->setConfigFileEntyToDefault();                                 // The conversion failed
+        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
@@ -155,12 +153,33 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = Double;
 
-        this->defvalueString_ = number2String(defvalue, "0.000000");            // Try to convert the default-value to a string
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
+        this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
-        if (!string2Number(this->value_.value_double_, valueString, defvalue))  // Try to convert the string to a value
-            this->setConfigFileEntyToDefault();                                 // The conversion failed
+        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
+    }
+
+    /**
+        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets the intern value variable.
+        @param value This is only needed to determine the right type.
+        @param classname The name of the class the variable belongs to
+        @param varname The name of the variable
+        @param defvalue The default-value
+    */
+    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, long double defvalue)
+    {
+        this->classname_ = classname;
+        this->varname_ = varname;
+        this->type_ = LongDouble;
+
+        this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
+
+        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
@@ -182,28 +201,10 @@ namespace orxonox
         else
             this->defvalueString_ = "false";
 
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
-
-        std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
-
-        // Try to parse the value-string - is it a word?
-        if (valueString.find("true") < valueString.size()
-         || valueString.find("True") < valueString.size()
-         || valueString.find("yes") < valueString.size()
-         || valueString.find("Yes") < valueString.size())
-            this->value_.value_bool_ = true;
-        else if (valueString.find("false") < valueString.size()
-              || valueString.find("False") < valueString.size()
-              || valueString.find("no") < valueString.size()
-              || valueString.find("No") < valueString.size())
-            this->value_.value_bool_ = false;
-        else
-        {
-            // Its not a known word - is it a number?
-            std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
-            if (!string2Number(this->value_.value_bool_, valueString, defvalue))    // Try to convert the string to a value
-                this->setConfigFileEntyToDefault();                                 // The conversion failed
-        }
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
+        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
@@ -219,28 +220,11 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = String;
 
-        this->defvalueString_ = "\"" + defvalue + "\"";                         // Convert the string to a "config-file-string" with quotes
-
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
-        std::string valueString = this->parseValueString(false);                // Parses the value string from the config-file-entry
-
-        // Strip the quotes
-        unsigned int pos1 = valueString.find("\"") + 1;
-        unsigned int pos2 = valueString.find("\"", pos1);
-
-        // Check if the entry was correctly quoted
-        if (pos1 < valueString.length() && pos2 < valueString.length() && !(valueString.find("\"", pos2 + 1) < valueString.length()))
-        {
-            // It was - get the string between the quotes
-            valueString = valueString.substr(pos1, pos2 - pos1);
-            this->value_string_ = valueString;
-        }
-        else
-        {
-            // It wasn't - use the default-value and restore the entry in the config-file.
-            this->value_string_ = defvalue;
-            this->setConfigFileEntyToDefault();
-        }
+        this->defvalueString_ = "\"" + defvalue + "\"";                             // Convert the string to a "config-file-string" with quotes
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
+        std::string valueString = this->parseValueString(false);                    // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
@@ -256,28 +240,11 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = ConstChar;
 
-        this->defvalueString_ = "\"" + std::string(defvalue) + "\"";            // Convert the string to a "config-file-string" with quotes
-
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
-        std::string valueString = this->parseValueString(false);                // Parses the value string from the config-file-entry
-
-        // Strip the quotes
-        unsigned int pos1 = valueString.find("\"") + 1;
-        unsigned int pos2 = valueString.find("\"", pos1);
-
-        // Check if the entry was correctly quoted
-        if (pos1 < valueString.length() && pos2 < valueString.length() && !(valueString.find("\"", pos2 + 1) < valueString.length()))
-        {
-            // It was - get the string between the quotes
-            valueString = valueString.substr(pos1, pos2 - pos1);
-            this->value_string_ = valueString;
-        }
-        else
-        {
-            // It wasn't - use the default-value and restore the entry in the config-file.
-            this->value_string_ = defvalue;
-            this->setConfigFileEntyToDefault();
-        }
+        this->defvalueString_ = "\"" + std::string(defvalue) + "\"";                // Convert the string to a "config-file-string" with quotes
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
+        std::string valueString = this->parseValueString(false);                    // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
@@ -300,28 +267,10 @@ namespace orxonox
         else
             this->defvalueString_ = "(0,0)";
 
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
-        std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
-
-        // Strip the value-string
-        unsigned int pos1 = valueString.find("(") + 1;
-        unsigned int pos2 = valueString.find(")", pos1);
-
-        // Try to convert the stripped value-string to Vector2
-        if (pos1 < valueString.length() && pos2 < valueString.length() && pos1 < pos2)
-        {
-            valueString = valueString.substr(pos1, pos2 - pos1);
-            std::vector<std::string> tokens = tokenize(valueString, ",");
-            if (!string2Number(this->value_vector2_.x, tokens[0], defvalue.x))
-                this->setConfigFileEntyToDefault();
-            if (!string2Number(this->value_vector2_.y, tokens[1], defvalue.y))
-                this->setConfigFileEntyToDefault();
-        }
-        else
-        {
-            this->value_vector2_ = defvalue;
-            this->setConfigFileEntyToDefault();
-        }
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
+        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
@@ -344,30 +293,10 @@ namespace orxonox
         else
             this->defvalueString_ = "(0,0,0)";
 
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
-        std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
-
-        // Strip the value-string
-        unsigned int pos1 = valueString.find("(") + 1;
-        unsigned int pos2 = valueString.find(")", pos1);
-
-        // Try to convert the stripped value-string to Vector3
-        if (pos1 < valueString.length() && pos2 < valueString.length() && pos1 < pos2)
-        {
-            valueString = valueString.substr(pos1, pos2 - pos1);
-            std::vector<std::string> tokens = tokenize(valueString, ",");
-            if (!string2Number(this->value_vector3_.x, tokens[0], defvalue.x))
-                this->setConfigFileEntyToDefault();
-            if (!string2Number(this->value_vector3_.y, tokens[1], defvalue.y))
-                this->setConfigFileEntyToDefault();
-            if (!string2Number(this->value_vector3_.z, tokens[2], defvalue.z))
-                this->setConfigFileEntyToDefault();
-        }
-        else
-        {
-            this->value_vector3_ = defvalue;
-            this->setConfigFileEntyToDefault();
-        }
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
+        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
@@ -390,43 +319,339 @@ namespace orxonox
         else
             this->defvalueString_ = "(0,0,0,0)";
 
-        this->searchConfigFileLine();                                           // Search the entry in the config-file
-        std::string valueString = this->parseValueString();                     // Parses the value string from the config-file-entry
-
-        // Strip the value-string
-        unsigned int pos1 = valueString.find("(") + 1;
-        unsigned int pos2 = valueString.find(")", pos1);
-
-        // Try to convert the stripped value-string to Vector3
-        if (pos1 < valueString.length() && pos2 < valueString.length() && pos1 < pos2)
-        {
-            valueString = valueString.substr(pos1, pos2 - pos1);
-            std::vector<std::string> tokens = tokenize(valueString, ",");
-            if (!string2Number(this->value_colourvalue_.r, tokens[0], defvalue.r))
-                this->setConfigFileEntyToDefault();
-            if (!string2Number(this->value_colourvalue_.g, tokens[1], defvalue.g))
-                this->setConfigFileEntyToDefault();
-            if (!string2Number(this->value_colourvalue_.b, tokens[2], defvalue.b))
-                this->setConfigFileEntyToDefault();
-            if (!string2Number(this->value_colourvalue_.a, tokens[3], defvalue.a))
-                this->setConfigFileEntyToDefault();
-        }
-        else
-        {
-            this->value_colourvalue_ = defvalue;
-            this->setConfigFileEntyToDefault();
-        }
+        this->searchConfigFileLine();                                               // Search the entry in the config-file
+        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
+            this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
-        @brief Sets the corresponding enty in the config-file back to the default value.
+        @brief Parses a given std::string into a value of the type of the associated variable and assigns it.
+        @param input The string to convert
+        @return True if the string was successfully parsed
     */
-    void ConfigValueContainer::setConfigFileEntyToDefault()
+    bool ConfigValueContainer::parseSting(const std::string& input)
+    {
+        if (this->type_ == ConfigValueContainer::Int)
+            return this->parseSting(input, this->value_.value_int_);
+        else if (this->type_ == ConfigValueContainer::uInt)
+            return this->parseSting(input, this->value_.value_uint_);
+        else if (this->type_ == ConfigValueContainer::Char)
+            return this->parseSting(input, this->value_.value_char_);
+        else if (this->type_ == ConfigValueContainer::uChar)
+            return this->parseSting(input, this->value_.value_uchar_);
+        else if (this->type_ == ConfigValueContainer::Float)
+            return this->parseSting(input, this->value_.value_float_);
+        else if (this->type_ == ConfigValueContainer::Double)
+            return this->parseSting(input, this->value_.value_double_);
+        else if (this->type_ == ConfigValueContainer::LongDouble)
+            return this->parseSting(input, this->value_.value_long_double_);
+        else if (this->type_ == ConfigValueContainer::Bool)
+            return this->parseSting(input, this->value_.value_bool_);
+        else if (this->type_ == ConfigValueContainer::String)
+            return this->parseSting(input, this->value_string_);
+        else if (this->type_ == ConfigValueContainer::ConstChar)
+            return this->parseSting(input, this->value_string_);
+        else if (this->type_ == ConfigValueContainer::Vector2)
+            return this->parseSting(input, this->value_vector2_);
+        else if (this->type_ == ConfigValueContainer::Vector3)
+            return this->parseSting(input, this->value_vector3_);
+        else if (this->type_ == ConfigValueContainer::ColourValue)
+            return this->parseSting(input, this->value_colourvalue_);
+
+        return false;
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type int and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, int defvalue)
+    {
+        return string2Number(this->value_.value_int_, input, defvalue);
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type unsigned int and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, unsigned int defvalue)
+    {
+        return string2Number(this->value_.value_uint_, input, defvalue);
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type char and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, char defvalue)
+    {
+        // I used value_int_ instead of value_char_ to avoid number <-> char confusion in the config-file
+        return string2Number(this->value_.value_int_, input, (int)defvalue);
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type unsigned char and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, unsigned char defvalue)
+    {
+        // I used value_uint_ instead of value_uchar_ to avoid number <-> char confusion in the config-file
+        return string2Number(this->value_.value_uint_, input, (unsigned int)defvalue);
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type float and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, float defvalue)
+    {
+        return string2Number(this->value_.value_float_, input, defvalue);
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type double and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, double defvalue)
+    {
+        return string2Number(this->value_.value_double_, input, defvalue);
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type long double and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, long double defvalue)
+    {
+        return string2Number(this->value_.value_long_double_, input, defvalue);
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type bool and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, bool defvalue)
+    {
+        // Try to parse the value-string - is it a word?
+        if (input.find("true") < input.size()
+         || input.find("True") < input.size()
+         || input.find("yes") < input.size()
+         || input.find("Yes") < input.size())
+            this->value_.value_bool_ = true;
+        else if (input.find("false") < input.size()
+              || input.find("False") < input.size()
+              || input.find("no") < input.size()
+              || input.find("No") < input.size())
+            this->value_.value_bool_ = false;
+        else
+        {
+            // Its not a known word - is it a number?
+            return string2Number(this->value_.value_bool_, input, defvalue);
+        }
+
+        return true;
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type std::string and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, const std::string& defvalue)
+    {
+        // Strip the quotes
+        unsigned int pos1 = input.find("\"") + 1;
+        unsigned int pos2 = input.find("\"", pos1);
+
+        // Check if the entry was correctly quoted
+        if (pos1 < input.length() && pos2 < input.length() && !(input.find("\"", pos2 + 1) < input.length()))
+        {
+            // It was - get the string between the quotes
+            this->value_string_ = input.substr(pos1, pos2 - pos1);
+            return true;
+        }
+
+        // It wasn't - use the default-value and restore the entry in the config-file.
+        this->value_string_ = defvalue;
+        return false;
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type const char* and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, const char* defvalue)
+    {
+        // Strip the quotes
+        unsigned int pos1 = input.find("\"") + 1;
+        unsigned int pos2 = input.find("\"", pos1);
+
+        // Check if the entry was correctly quoted
+        if (pos1 < input.length() && pos2 < input.length() && !(input.find("\"", pos2 + 1) < input.length()))
+        {
+            // It was - get the string between the quotes
+            this->value_string_ = input.substr(pos1, pos2 - pos1);
+            return true;
+        }
+
+        // It wasn't - use the default-value and restore the entry in the config-file.
+        this->value_string_ = defvalue;
+        return false;
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type Ogre::Vector2 and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, const Ogre::Vector2& defvalue)
+    {
+        // Strip the value-string
+        unsigned int pos1 = input.find("(") + 1;
+        unsigned int pos2 = input.find(")", pos1);
+
+        // Try to convert the stripped value-string to Vector2
+        if (pos1 < input.length() && pos2 < input.length() && pos1 < pos2)
+        {
+            std::vector<std::string> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
+            if (!string2Number(this->value_vector2_.x, tokens[0], defvalue.x))
+            {
+                this->value_vector2_ = defvalue;
+                return false;
+            }
+            if (!string2Number(this->value_vector2_.y, tokens[1], defvalue.y))
+            {
+                this->value_vector2_ = defvalue;
+                return false;
+            }
+
+            return true;
+        }
+
+        this->value_vector2_ = defvalue;
+        return false;
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type Ogre::Vector3 and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, const Ogre::Vector3& defvalue)
+    {
+        // Strip the value-string
+        unsigned int pos1 = input.find("(") + 1;
+        unsigned int pos2 = input.find(")", pos1);
+
+        // Try to convert the stripped value-string to Vector3
+        if (pos1 < input.length() && pos2 < input.length() && pos1 < pos2)
+        {
+            std::vector<std::string> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
+            if (!string2Number(this->value_vector3_.x, tokens[0], defvalue.x))
+            {
+                this->value_vector3_ = defvalue;
+                return false;
+            }
+            if (!string2Number(this->value_vector3_.y, tokens[1], defvalue.y))
+            {
+                this->value_vector3_ = defvalue;
+                return false;
+            }
+            if (!string2Number(this->value_vector3_.z, tokens[2], defvalue.z))
+            {
+                this->value_vector3_ = defvalue;
+                return false;
+            }
+
+            return true;
+        }
+
+        this->value_vector3_ = defvalue;
+        return false;
+    }
+
+    /**
+        @brief Parses a given std::string into a value of the type Ogre::ColourValue and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @param input The string to convert
+        @param defvalue The default-value
+        @return True if the string was successfully parsed
+    */
+    bool ConfigValueContainer::parseSting(const std::string& input, const Ogre::ColourValue& defvalue)
+    {
+        // Strip the value-string
+        unsigned int pos1 = input.find("(") + 1;
+        unsigned int pos2 = input.find(")", pos1);
+
+        // Try to convert the stripped value-string to Vector3
+        if (pos1 < input.length() && pos2 < input.length() && pos1 < pos2)
+        {
+            std::vector<std::string> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
+            if (!string2Number(this->value_colourvalue_.r, tokens[0], defvalue.r))
+            {
+                this->value_colourvalue_ = defvalue;
+                return false;
+            }
+            if (!string2Number(this->value_colourvalue_.g, tokens[1], defvalue.g))
+            {
+                this->value_colourvalue_ = defvalue;
+                return false;
+            }
+            if (!string2Number(this->value_colourvalue_.b, tokens[2], defvalue.b))
+            {
+                this->value_colourvalue_ = defvalue;
+                return false;
+            }
+            if (!string2Number(this->value_colourvalue_.a, tokens[3], defvalue.a))
+            {
+                this->value_colourvalue_ = defvalue;
+                return false;
+            }
+
+            return true;
+        }
+
+        this->value_colourvalue_ = defvalue;
+        return false;
+    }
+
+    /**
+        @brief Sets the corresponding entry in the config-file back to the default value.
+    */
+    void ConfigValueContainer::resetConfigFileEntry()
     {
         (*this->configFileLine_) = this->varname_ + "=" + this->defvalueString_;
         ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
     }
 
+    /**
+        @brief Sets the value of the variable back to the default value.
+    */
+    void ConfigValueContainer::resetConfigValue()
+    {
+        parseSting(this->defvalueString_);
+    }
 
     /**
         @brief Searches the corresponding entry in the config-file and creates it, if there is no entry.

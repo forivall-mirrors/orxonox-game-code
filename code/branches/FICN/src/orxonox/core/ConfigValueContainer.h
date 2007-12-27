@@ -72,30 +72,36 @@ namespace orxonox
     class _CoreExport ConfigValueContainer
     {
         public:
+            enum VariableType
+            {
+                Int,
+                uInt,
+                Char,
+                uChar,
+                Float,
+                Double,
+                LongDouble,
+                Bool,
+                ConstChar,
+                String,
+                Vector2,
+                Vector3,
+                ColourValue
+            };
+
             ConfigValueContainer(const std::string& classname, const std::string& varname, int defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, unsigned int defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, char defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, unsigned char defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, float defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, double defvalue);
+            ConfigValueContainer(const std::string& classname, const std::string& varname, long double defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, bool defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, const std::string& defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, const char* defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector2 defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector3 defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::ColourValue defvalue);
-
-            static std::list<std::string>& getConfigFileLines();
-            static bool finishedReadingConfigFile(bool finished = false);
-            void setConfigFileEntyToDefault();
-            void searchConfigFileLine();
-            std::string parseValueString(bool bStripped = true);
-
-            static std::string getStrippedLine(const std::string& line);
-            static bool isEmpty(const std::string& line);
-            static bool isComment(const std::string& line);
-            static void readConfigFile(const std::string& filename);
-            static void writeConfigFile(const std::string& filename);
 
             /** @returns the value. @param value This is only needed to determine the right type. */
             inline int getValue(int value)                                      { return this->value_.value_int_; }
@@ -110,6 +116,8 @@ namespace orxonox
             /** @returns the value. @param value This is only needed to determine the right type. */
             inline double getValue(double value)                                { return this->value_.value_double_; }
             /** @returns the value. @param value This is only needed to determine the right type. */
+            inline double getValue(long double value)                           { return this->value_.value_long_double_; }
+            /** @returns the value. @param value This is only needed to determine the right type. */
             inline bool getValue(bool value)                                    { return this->value_.value_bool_; }
             /** @returns the value. @param value This is only needed to determine the right type. */
             inline const std::string& getValue(const std::string& value)        { return this->value_string_; }
@@ -122,7 +130,36 @@ namespace orxonox
             /** @returns the value. @param value This is only needed to determine the right type. */
             inline Ogre::ColourValue getValue(const Ogre::ColourValue& value)   { return this->value_colourvalue_; }
 
+            bool parseSting(const std::string& input);
+            void resetConfigFileEntry();
+            void resetConfigValue();
+
         private:
+            bool parseSting(const std::string& input, int defvalue);
+            bool parseSting(const std::string& input, unsigned int defvalue);
+            bool parseSting(const std::string& input, char defvalue);
+            bool parseSting(const std::string& input, unsigned char defvalue);
+            bool parseSting(const std::string& input, float defvalue);
+            bool parseSting(const std::string& input, double defvalue);
+            bool parseSting(const std::string& input, long double defvalue);
+            bool parseSting(const std::string& input, bool defvalue);
+            bool parseSting(const std::string& input, const std::string& defvalue);
+            bool parseSting(const std::string& input, const char* defvalue);
+            bool parseSting(const std::string& input, const Ogre::Vector2& defvalue);
+            bool parseSting(const std::string& input, const Ogre::Vector3& defvalue);
+            bool parseSting(const std::string& input, const Ogre::ColourValue& defvalue);
+
+            static std::list<std::string>& getConfigFileLines();
+            static bool finishedReadingConfigFile(bool finished = false);
+            void searchConfigFileLine();
+            std::string parseValueString(bool bStripped = true);
+
+            static std::string getStrippedLine(const std::string& line);
+            static bool isEmpty(const std::string& line);
+            static bool isComment(const std::string& line);
+            static void readConfigFile(const std::string& filename);
+            static void writeConfigFile(const std::string& filename);
+
             std::string         classname_;                     //!< The name of the class the variable belongs to
             std::string         varname_;                       //!< The name of the variable
             std::string         defvalueString_;                //!< The string of the default-variable
@@ -135,6 +172,7 @@ namespace orxonox
                 unsigned char       value_uchar_;               //!< The value, if the variable is of the type unsigned char
                 float               value_float_;               //!< The value, if the variable is of the type float
                 double              value_double_;              //!< The value, if the variable is of the type double
+                long double         value_long_double_;         //!< The value, if the variable is of the type long double
                 bool                value_bool_;                //!< The value, if the variable is of the type bool
             } value_;                                           //!< The value of the variable
 
@@ -145,21 +183,7 @@ namespace orxonox
 
             std::list<std::string>::iterator configFileLine_;   //!< An iterator, pointing to the entry of the variable in the config-file
 
-            enum VariableType
-            {
-                Int,
-                uInt,
-                Char,
-                uChar,
-                Float,
-                Double,
-                Bool,
-                ConstChar,
-                String,
-                Vector2,
-                Vector3,
-                ColourValue
-            } type_;                                            //!< The type of the variable
+            VariableType type_;                                 //!< The type of the variable
     };
 }
 
