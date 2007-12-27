@@ -81,28 +81,26 @@ namespace orxonox
     class ObjectList
     {
         public:
-            ObjectList();
-            ~ObjectList();
+            static ObjectList<T>* getList();
+
             ObjectListElement<T>* add(T* object);
 //            void remove(OrxonoxClass* object, bool bIterateForwards = true);
 
             /** @returns the first element in the list */
             inline static Iterator<T> start()
-                { return Iterator<T>(pointer_s->first_); }
+                { return Iterator<T>(getList()->first_); }
 
             /** @returns the last element in the list */
             inline static Iterator<T> end()
-                { return Iterator<T>(pointer_s->last_); }
+                { return Iterator<T>(getList()->last_); }
 
             ObjectListElement<T>* first_;       //!< The first element in the list
             ObjectListElement<T>* last_;        //!< The last element in the list
 
         private:
-            static ObjectList<T>* pointer_s;    //!< A static pointer to the last created list (different for all T)
+            ObjectList();
+            ~ObjectList();
     };
-
-    template <class T>
-    ObjectList<T>* ObjectList<T>::pointer_s = 0; // Set the static member variable pointer_s to zero
 
     /**
         @brief Constructor: Sets default values.
@@ -112,10 +110,6 @@ namespace orxonox
     {
         this->first_ = 0;
         this->last_ = 0;
-
-        // ObjectLists are only created by Identifiers and therefore only one ObjectList of each T will exist.
-        // Thats why pointer_s is in fact a pointer to the only ObjectList for a type, which makes it almost a singleton.
-        this->pointer_s = this;
     }
 
     /**
@@ -131,6 +125,16 @@ namespace orxonox
             delete this->first_;
             this->first_ = temp;
         }
+    }
+
+    /**
+        @returns a pointer to the only existing instance for the given class T.
+    */
+    template <class T>
+    ObjectList<T>* ObjectList<T>::getList()
+    {
+        static ObjectList<T> theOnlyObjectListObjectForClassT = ObjectList<T>();
+        return &theOnlyObjectListObjectForClassT;
     }
 
     /**

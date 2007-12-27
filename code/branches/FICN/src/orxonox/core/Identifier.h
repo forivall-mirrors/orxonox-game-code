@@ -136,7 +136,7 @@ namespace orxonox
             inline void setConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
                 { this->configValues_[varname] = container; }
 
-            std::map<std::string, Identifier*>& getIdentifierMap();
+            static std::map<std::string, Identifier*>& getIdentifierMap();
 
         private:
             Identifier();
@@ -170,7 +170,6 @@ namespace orxonox
             BaseFactory* factory_;                                      //!< The Factory, able to create new objects of the given class (if available)
             bool bCreatedOneObject_;                                    //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
             static int hierarchyCreatingCounter_s;                      //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
-            static unsigned int classIDcounter_s;                       //!< The number of existing Identifiers
             unsigned int classID_;                                      //!< The network ID to identify a class through the network
             std::map<std::string, ConfigValueContainer*> configValues_; //!< A map to link the string of configurable variables with their ConfigValueContainer
     };
@@ -196,8 +195,8 @@ namespace orxonox
 
         private:
             ClassIdentifier();
-            ClassIdentifier(const ClassIdentifier<T>& identifier) {} // don't copy
-            ~ClassIdentifier();
+            ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
+            ~ClassIdentifier() {}                                       // don't delete
 
             ObjectList<T>* objects_;    //!< The ObjectList, containing all objects of type T
             bool bSetName_;             //!< True if the name is set
@@ -210,17 +209,8 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>::ClassIdentifier()
     {
-        this->objects_ = new ObjectList<T>;
+        this->objects_ = ObjectList<T>::getList();
         this->bSetName_ = false;
-    }
-
-    /**
-        @brief Destructor: Deletes the ObjectList, sets the singleton-pointer to zero.
-    */
-    template <class T>
-    ClassIdentifier<T>::~ClassIdentifier()
-    {
-        delete this->objects_;
     }
 
     /**

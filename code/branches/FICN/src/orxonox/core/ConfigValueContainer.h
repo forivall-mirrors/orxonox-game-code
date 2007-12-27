@@ -85,6 +85,8 @@ namespace orxonox
             ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector3 defvalue);
             ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::ColourValue defvalue);
 
+            static std::list<std::string>& getConfigFileLines();
+            static bool finishedReadingConfigFile(bool finished = false);
             void setConfigFileEntyToDefault();
             void searchConfigFileLine();
             std::string parseValueString(bool bStripped = true);
@@ -142,8 +144,6 @@ namespace orxonox
             Ogre::ColourValue   value_colourvalue_;             //!< The value, if the variable is of the type ColourValue
 
             std::list<std::string>::iterator configFileLine_;   //!< An iterator, pointing to the entry of the variable in the config-file
-            static std::list<std::string>* configFileLines_s;   //!< A list, containing all entrys in the config-file
-            static bool readConfigFile_s;                       //!< True if the config-file is read and stored in the list
 
             enum VariableType
             {

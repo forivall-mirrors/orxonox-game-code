@@ -37,8 +37,7 @@ namespace orxonox
     // ###############################
     // ###       Identifier        ###
     // ###############################
-    int Identifier::hierarchyCreatingCounter_s = 0; // Set the static member variable hierarchyCreatingCounter_s to zero
-    unsigned int Identifier::classIDcounter_s = 0;  // Set the static member variable classIDcounter_s to zero
+    int Identifier::hierarchyCreatingCounter_s = 0; // Set the static member variable hierarchyCreatingCounter_s to zero (this static member variable is ok: it's used in main(), not before)
 
     /**
         @brief Constructor: No factory, no object created, new ObjectList and a unique networkID.
@@ -49,7 +48,10 @@ namespace orxonox
         this->factory_ = 0;
 
         this->children_ = new IdentifierList;
-        this->classID_ = Identifier::classIDcounter_s++;
+
+        // Use a static variable because the classID gets created before main() and that's why we should avoid static member variables
+        static unsigned int classIDcounter_s = 0;
+        this->classID_ = classIDcounter_s++;
     }
 
     /**

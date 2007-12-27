@@ -103,7 +103,7 @@ namespace orxonox
     */
     Factory* Factory::getFactoryPointer()
     {
-      static Factory theOneAndOnlyInstance = Factory();
-      return &theOneAndOnlyInstance;
+      static Factory theOneAndOnlyFactoryInstance = Factory();
+      return &theOneAndOnlyFactoryInstance;
     }
 }

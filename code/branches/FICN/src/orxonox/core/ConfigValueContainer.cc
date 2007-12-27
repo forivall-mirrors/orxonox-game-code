@@ -35,9 +35,6 @@
 
 namespace orxonox
 {
-    std::list<std::string>* ConfigValueContainer::configFileLines_s = 0; // Set the static member variable configFileLines_s to zero
-    bool ConfigValueContainer::readConfigFile_s = false;                 // Set the static member variable readConfigFile_s to false
-
     /**
         @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets the intern value variable.
         @param value This is only needed to determine the right type.
@@ -437,7 +434,7 @@ namespace orxonox
     void ConfigValueContainer::searchConfigFileLine()
     {
         // Read the file if needed
-        if (!ConfigValueContainer::readConfigFile_s)
+        if (!ConfigValueContainer::finishedReadingConfigFile())
             ConfigValueContainer::readConfigFile(CONFIGFILEPATH);
 
         // The string of the section we're searching
@@ -449,7 +446,7 @@ namespace orxonox
         // Iterate through all config-file-lines
         bool success = false;
         std::list<std::string>::iterator it1;
-        for(it1 = ConfigValueContainer::configFileLines_s->begin(); it1 != ConfigValueContainer::configFileLines_s->end(); ++it1)
+        for(it1 = ConfigValueContainer::getConfigFileLines().begin(); it1 != ConfigValueContainer::getConfigFileLines().end(); ++it1)
         {
             // Don't try to parse comments
             if (this->isComment(*it1))
@@ -463,7 +460,7 @@ namespace orxonox
 
                 // Iterate through all lines in the section
                 std::list<std::string>::iterator it2;
-                for(it2 = ++it1; it2 != ConfigValueContainer::configFileLines_s->end(); ++it2)
+                for(it2 = ++it1; it2 != ConfigValueContainer::getConfigFileLines().end(); ++it2)
                 {
                     // Don't try to parse comments
                     if (this->isComment(*it2))
@@ -494,7 +491,7 @@ namespace orxonox
                     if ((open < (*it2).length()) && (close < (*it2).length()) && (open < close))
                     {
                         // The next section startet, so our line isn't yet in the file - now we add it and safe the file
-                        this->configFileLine_ = this->configFileLines_s->insert(positionToPutNewLineAt, this->varname_ + "=" + this->defvalueString_);
+                        this->configFileLine_ = this->getConfigFileLines().insert(positionToPutNewLineAt, this->varname_ + "=" + this->defvalueString_);
                         ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
                         success = true;
                         break;
@@ -514,7 +511,7 @@ namespace orxonox
                 if (!success)
                 {
                     // Looks like we found the right section, but the file ended without containing our variable - so we add it and safe the file
-                    this->configFileLine_ = this->configFileLines_s->insert(positionToPutNewLineAt, this->varname_ + "=" + this->defvalueString_);
+                    this->configFileLine_ = this->getConfigFileLines().insert(positionToPutNewLineAt, this->varname_ + "=" + this->defvalueString_);
                     ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
                     success = true;
                 }
@@ -526,11 +523,11 @@ namespace orxonox
         if (!success)
         {
             // We obviously didn't found the right section, so we'll create it
-            this->configFileLines_s->push_back("[" + this->classname_ + "]");                   // Create the section
-            this->configFileLines_s->push_back(this->varname_ + "=" + this->defvalueString_);   // Create the line
-            this->configFileLine_ = --this->configFileLines_s->end();                           // Set the pointer to the last element
+            this->getConfigFileLines().push_back("[" + this->classname_ + "]");                   // Create the section
+            this->getConfigFileLines().push_back(this->varname_ + "=" + this->defvalueString_);   // Create the line
+            this->configFileLine_ = --this->getConfigFileLines().end();                           // Set the pointer to the last element
             success = true;
-            this->configFileLines_s->push_back("");                                             // Add an empty line - this is needed for the algorithm in the searchConfigFileLine-function
+            this->getConfigFileLines().push_back("");                                             // Add an empty line - this is needed for the algorithm in the searchConfigFileLine-function
             ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);                              // Save the changed config-file
         }
     }
@@ -600,16 +597,38 @@ namespace orxonox
     }
 
     /**
+        @returns a list, containing all entrys in the config-file.
+    */
+    std::list<std::string>& ConfigValueContainer::getConfigFileLines()
+    {
+        // This is done to avoid problems while executing this code before main()
+        static std::list<std::string> configFileLinesStaticReference = std::list<std::string>();
+        return configFileLinesStaticReference;
+    }
+
+    /**
+        @brief Returns true if the ConfigFile is read and stored into the ConfigFile-lines-list.
+        @param finished This is used to change the state
+        @return True if the ConfigFile is read and stored into the ConfigFile-lines-list
+    */
+    bool ConfigValueContainer::finishedReadingConfigFile(bool finished)
+    {
+        // This is done to avoid problems while executing this code before main()
+        static bool finishedReadingConfigFileStaticVariable = false;
+
+        if (finished)
+            finishedReadingConfigFileStaticVariable = true;
+
+        return finishedReadingConfigFileStaticVariable;
+    }
+
+    /**
         @brief Reads the config-file and stores the lines in a list.
         @param filename The name of the config-file
     */
     void ConfigValueContainer::readConfigFile(const std::string& filename)
     {
-        ConfigValueContainer::readConfigFile_s = true;
-
-        // Create the list if needed
-        if (!ConfigValueContainer::configFileLines_s)
-            ConfigValueContainer::configFileLines_s = new std::list<std::string>;
+        ConfigValueContainer::finishedReadingConfigFile(true);
 
         // This creates the file if it's not existing
         std::ofstream createFile;
@@ -626,19 +645,19 @@ namespace orxonox
         while (file.good() && !file.eof())
         {
             file.getline(line, 1024);
-            ConfigValueContainer::configFileLines_s->push_back(line);
+            ConfigValueContainer::getConfigFileLines().push_back(line);
 //            std::cout << "### ->" << line << "<- : empty: " << isEmpty(line) << " comment: " << isComment(line) << std::endl;
         }
 
         // The last line is useless
-        ConfigValueContainer::configFileLines_s->pop_back();
+        ConfigValueContainer::getConfigFileLines().pop_back();
 
         // Add an empty line to the end of the file if needed
         // this is needed for the algorithm in the searchConfigFileLine-function
-        if ((ConfigValueContainer::configFileLines_s->size() > 0) && !isEmpty(*ConfigValueContainer::configFileLines_s->rbegin()))
+        if ((ConfigValueContainer::getConfigFileLines().size() > 0) && !isEmpty(*ConfigValueContainer::getConfigFileLines().rbegin()))
         {
 //            std::cout << "### newline added" << std::endl;
-            ConfigValueContainer::configFileLines_s->push_back("");
+            ConfigValueContainer::getConfigFileLines().push_back("");
         }
 
         file.close();
@@ -651,7 +670,7 @@ namespace orxonox
     void ConfigValueContainer::writeConfigFile(const std::string& filename)
     {
         // Make sure we stored the config-file in the list
-        if (!ConfigValueContainer::readConfigFile_s)
+        if (!ConfigValueContainer::finishedReadingConfigFile())
             ConfigValueContainer::readConfigFile(filename);
 
         // Open the file
@@ -660,7 +679,7 @@ namespace orxonox
 
         // Iterate through the list an write the lines into the file
         std::list<std::string>::iterator it;
-        for(it = ConfigValueContainer::configFileLines_s->begin(); it != ConfigValueContainer::configFileLines_s->end(); ++it)
+        for(it = ConfigValueContainer::getConfigFileLines().begin(); it != ConfigValueContainer::getConfigFileLines().end(); ++it)
         {
             file << (*it) << std::endl;
         }
