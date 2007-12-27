@@ -204,7 +204,6 @@ namespace orxonox
 
     /**
         @brief Constructor: Creates the ObjectList.
-        @param name The name of the Class
     */
     template <class T>
     ClassIdentifier<T>::ClassIdentifier()
@@ -243,7 +242,6 @@ namespace orxonox
 
     /**
         @brief Creates the only instance of this class for the template class T.
-        @param name The name of the Class
         @return The Identifier itself
     */
     template <class T>
