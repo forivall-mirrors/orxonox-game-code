@@ -37,17 +37,17 @@ namespace audio
 		if(alGetError() != AL_NO_ERROR)
 			loaded=AL_FALSE;
 
-    //FIXME deprecated
-		alutLoadWAVFile((ALbyte*)fileName.c_str(), &format, &data, &size, &freq, &loop);
+    //FIXME deprecated; seems unneeded
+// 		alutLoadWAVFile((ALbyte*)fileName.c_str(), &format, &data, &size, &freq, &loop);
 		alBufferData(buffer, format, data, size, freq);
-    //FIXME deprecated
-		alutUnloadWAV(format, data, size, freq);
+    //FIXME deprecated; seems unneeded
+// 		alutUnloadWAV(format, data, size, freq);
 
 		// Do another error check and return.
 		if(alGetError() != AL_NO_ERROR)
 			loaded=AL_FALSE;
-
-		loaded=AL_TRUE;
+    else
+		  loaded=AL_TRUE;
 	}
 
 	AudioBuffer::~AudioBuffer()

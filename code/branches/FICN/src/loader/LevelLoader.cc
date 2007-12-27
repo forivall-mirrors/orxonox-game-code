@@ -102,7 +102,7 @@ namespace loader
       TiXmlNode* tNode;
 
       Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
-      Ogre::Overlay* mLoadOverlay; // FIXME: mey be uninitialized
+      Ogre::Overlay* mLoadOverlay; // FIXME: may be uninitialized
 
       // Set loading screen
       loadElem = rootElement_->FirstChildElement("loading");
