@@ -30,7 +30,7 @@
     @brief Implementation of the DebugLevel class.
 */
 
-#include "ConfigValueContainer.h"
+#include "CoreIncludes.h"
 #include "Debug.h"
 #include "DebugLevel.h"
 
@@ -38,11 +38,21 @@ namespace orxonox
 {
     /**
         @brief Constructor: Registers the object and sets the debug level.
+        @param A reference to a global variable, used to avoid an infinite recursion in getSoftDebugLevel()
     */
-    DebugLevel::DebugLevel()
+    DebugLevel::DebugLevel(bool& bReturnSoftDebugLevel)
     {
-        this->softDebugLevelContainer_ = new ConfigValueContainer(std::string("DebugLevel"), std::string("softDebugLevel_"), this->softDebugLevel_ = 2);
-        this->softDebugLevel_ = this->softDebugLevelContainer_->getValue(this->softDebugLevel_);
+        RegisterRootObject(DebugLevel);
+        this->setConfigValues();
+        bReturnSoftDebugLevel = true;
+    }
+
+    /**
+        @brief Function to collect the SetConfigValue-macro calls.
+    */
+    void DebugLevel::setConfigValues()
+    {
+        SetConfigValue(softDebugLevel_, 2);
     }
 
     /**
@@ -50,10 +60,25 @@ namespace orxonox
     */
     int DebugLevel::getSoftDebugLevel()
     {
-        static DebugLevel theOneAndOnlyInstance = DebugLevel();
-        return theOneAndOnlyInstance.softDebugLevel_;
-    }
+        static bool bCreatingSoftDebugLevelObject = true;   // Static variable - used to enhance the performance
+        static bool bReturnSoftDebugLevel = false;          // Static variable - used to avoid an infinite recursion
+        static DebugLevel* theOnlyDebugLevelObject = 0;     // Static variable - will contain a pointer to the only instance of the DebugLevel class
 
+        // If bReturnSoftDebugLevel is true, the instance of DebugLevel was created (it's set to true at the end of the constructor, call by reference)
+        if (bReturnSoftDebugLevel)
+            return theOnlyDebugLevelObject->softDebugLevel_;
+
+        // If bCreatingSoftDebugLevelObject is true, we're just about to create an instance of the DebugLevel class
+        if (bCreatingSoftDebugLevelObject)
+        {
+            bCreatingSoftDebugLevelObject = false;
+            theOnlyDebugLevelObject = new DebugLevel(bReturnSoftDebugLevel);
+            return theOnlyDebugLevelObject->softDebugLevel_;
+        }
+
+        // Return a constant value while we're creating the object
+        return 4;
+    }
 }
 
 /**

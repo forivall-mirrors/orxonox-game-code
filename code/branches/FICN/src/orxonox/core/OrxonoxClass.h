@@ -56,6 +56,7 @@ namespace orxonox
             OrxonoxClass();
             virtual ~OrxonoxClass();
 
+            /** @brief Function to collect the SetConfigValue-macro calls. */
             void setConfigValues() {};
 
             /** @returns the Identifier of the object */

@@ -42,6 +42,8 @@ namespace orxonox
 
         this->bActive_ = true;
         this->bVisible_ = true;
+
+        this->setConfigValues();
     }
 
     /** @brief Destructor: Deletes, if existing, the list of the parents. */
