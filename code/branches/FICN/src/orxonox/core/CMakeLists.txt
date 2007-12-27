@@ -12,6 +12,7 @@ SET( CORE_SRC_FILES
   ArgReader.cc
   DebugLevel.cc
   OutputHandler.cc
+  Language.cc
 )
 
 IF(WIN32)

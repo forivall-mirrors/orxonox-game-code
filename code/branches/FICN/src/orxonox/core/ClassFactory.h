@@ -59,7 +59,7 @@ namespace orxonox
         private:
             ClassFactory() {}                               // Don't create
             ClassFactory(const ClassFactory& factory) {}    // Don't copy
-            ~ClassFactory() {}                              // Don't delete
+            virtual ~ClassFactory() {}                      // Don't delete
 
             static T* createNewObject();
     };

@@ -143,7 +143,7 @@ namespace orxonox
     varname = container##varname->getValue(varname)
 
 /**
-    @brief Sets the variable back to the previously defined default-value.
+    @brief Sets the variable and the config-file entry back to the previously defined default-value.
     @param varname The name of the variable
 */
 #define ResetConfigValue(varname) \
@@ -151,7 +151,7 @@ namespace orxonox
     if (container##varname##reset) \
     { \
         container##varname##reset->resetConfigValue(); \
-        varname = container##varname->getValue(varname); \
+        varname = container##varname##reset->getValue(varname); \
     } \
     else \
         COUT(2) << "Warning: Couldn't reset variable " << #varname << ", corresponding container doesn't exist." << std::endl

@@ -52,7 +52,7 @@ namespace orxonox
         private:
             explicit DebugLevel(bool& bReturnSoftDebugLevel);
             DebugLevel(const DebugLevel& dl) {} // don't copy
-            ~DebugLevel() {}                    // don't delete
+            virtual ~DebugLevel() {}            // don't delete
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console

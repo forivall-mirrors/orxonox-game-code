@@ -64,7 +64,7 @@ namespace orxonox
     {
         public:
             MetaObjectListElement(ObjectList<T>* list, ObjectListElement<T>* element);
-            ~MetaObjectListElement();
+            virtual ~MetaObjectListElement();
 
             ObjectListElement<T>* element_;         //!< The list element, containing the object
             ObjectList<T>* list_;                   //!< The list, containing the element

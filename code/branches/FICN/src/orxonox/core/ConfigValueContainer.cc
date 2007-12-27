@@ -646,11 +646,12 @@ namespace orxonox
     }
 
     /**
-        @brief Sets the value of the variable back to the default value.
+        @brief Sets the value of the variable back to the default value and resets the config-file entry.
     */
     void ConfigValueContainer::resetConfigValue()
     {
-        parseSting(this->defvalueString_);
+        this->parseSting(this->defvalueString_);
+        this->resetConfigFileEntry();
     }
 
     /**
@@ -853,8 +854,6 @@ namespace orxonox
     */
     void ConfigValueContainer::readConfigFile(const std::string& filename)
     {
-        ConfigValueContainer::finishedReadingConfigFile(true);
-
         // This creates the file if it's not existing
         std::ofstream createFile;
         createFile.open(filename.c_str(), std::fstream::app);
@@ -863,6 +862,12 @@ namespace orxonox
         // Open the file
         std::ifstream file;
         file.open(filename.c_str(), std::fstream::in);
+
+        if (!file.is_open())
+        {
+            COUT(1) << "Error: Couldn't open config-file " << filename << " to read the config values!" << std::endl;
+            return;
+        }
 
         char line[1024];
 
@@ -886,6 +891,8 @@ namespace orxonox
         }
 
         file.close();
+
+        ConfigValueContainer::finishedReadingConfigFile(true);
     }
 
     /**
@@ -902,9 +909,15 @@ namespace orxonox
         std::ofstream file;
         file.open(filename.c_str(), std::fstream::out);
 
+        if (!file.is_open())
+        {
+            COUT(1) << "Error: Couldn't open config-file " << filename << " to write the config values!" << std::endl;
+            return;
+        }
+
         // Iterate through the list an write the lines into the file
         std::list<std::string>::iterator it;
-        for(it = ConfigValueContainer::getConfigFileLines().begin(); it != ConfigValueContainer::getConfigFileLines().end(); ++it)
+        for (it = ConfigValueContainer::getConfigFileLines().begin(); it != ConfigValueContainer::getConfigFileLines().end(); ++it)
         {
             file << (*it) << std::endl;
         }

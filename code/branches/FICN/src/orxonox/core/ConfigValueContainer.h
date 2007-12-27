@@ -134,6 +134,10 @@ namespace orxonox
             void resetConfigFileEntry();
             void resetConfigValue();
 
+            static std::string getStrippedLine(const std::string& line);
+            static bool isEmpty(const std::string& line);
+            static bool isComment(const std::string& line);
+
         private:
             bool parseSting(const std::string& input, int defvalue);
             bool parseSting(const std::string& input, unsigned int defvalue);
@@ -154,9 +158,6 @@ namespace orxonox
             void searchConfigFileLine();
             std::string parseValueString(bool bStripped = true);
 
-            static std::string getStrippedLine(const std::string& line);
-            static bool isEmpty(const std::string& line);
-            static bool isComment(const std::string& line);
             static void readConfigFile(const std::string& filename);
             static void writeConfigFile(const std::string& filename);
 
