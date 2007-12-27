@@ -67,8 +67,8 @@ extern "C" _CoreExport int getSoftDebugLevel();
 #define PRINTFORX_vDEBUG  PRINTF5
 
 #define PRINT_EXEC  printf
-//#define COUT_EXEC   std::cout
-#define COUT_EXEC   orxonox::OutputHandler::getOutStream()
+#define COUT_EXEC(x) \
+  orxonox::OutputHandler::getOutStream().setOutputLevel(x)
 
 #ifndef PRINTF
  #if ORX_PRINT_DEBUG_OUTPUT
@@ -206,55 +206,55 @@ extern "C" _CoreExport int getSoftDebugLevel();
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
    #define COUT1  \
     if (getSoftDebugLevel() >= ORX_ERROR)  \
-     COUT_EXEC
+     COUT_EXEC(1)
   #else
    #define COUT1 if (ORX_NONE)\
-    COUT_EXEC
+    COUT_EXEC(1)
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_WARNING
    #define COUT2 \
     if (getSoftDebugLevel() >= ORX_WARNING) \
-     COUT_EXEC
+     COUT_EXEC(2)
   #else
    #define COUT2 if (ORX_NONE) \
-    COUT_EXEC
+    COUT_EXEC(2)
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_INFO
    #define COUT3 \
     if (getSoftDebugLevel() >= ORX_INFO) \
-     COUT_EXEC
+     COUT_EXEC(3)
   #else
    #define COUT3 if (ORX_NONE) \
-    COUT_EXEC
+    COUT_EXEC(3)
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_DEBUG
    #define COUT4 \
     if (getSoftDebugLevel() >= ORX_DEBUG) \
-     COUT_EXEC
+     COUT_EXEC(4)
   #else
    #define COUT4 if (ORX_NONE) \
-    COUT_EXEC
+    COUT_EXEC(4)
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_vDEBUG
    #define COUT5 \
     if (getSoftDebugLevel() >= ORX_vDEBUG) \
-     COUT_EXEC
+     COUT_EXEC(5)
   #else
    #define COUT5 if (ORX_NONE) \
-    COUT_EXEC
+    COUT_EXEC(5)
   #endif
 
  #else /* if ORX_PRINT_DEBUG_OUTPUT */
   #define COUT(x) if (ORX_NONE) \
-   COUT_EXEC
+   COUT_EXEC(5)
  #endif /* if ORX_PRINT_DEBUG_OUTPUT */
 
  #define COUT0 \
-  COUT_EXEC
+  COUT_EXEC(0)
 #endif /* ifndef COUT */
 
 #endif /* _Debug_H__ */

@@ -30,7 +30,7 @@
     @brief Definition of the DebugLevel class.
 
     The DebugLevel class is a singleton, only used to configure the amount of debug
-    output (see Debug.h) into the console and the log-file (see OutputHandler.h).
+    output (see Debug.h) into the console and the logfile (see OutputHandler.h).
 */
 
 #ifndef _DebugLevel_H__
@@ -38,6 +38,7 @@
 
 #include "CorePrereqs.h"
 #include "OrxonoxClass.h"
+#include "OutputHandler.h"
 
 namespace orxonox
 {
@@ -45,7 +46,7 @@ namespace orxonox
     class _CoreExport DebugLevel : public OrxonoxClass
     {
         public:
-            static int getSoftDebugLevel();
+            static int getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
             void setConfigValues();
 
         private:
@@ -54,6 +55,9 @@ namespace orxonox
             ~DebugLevel() {}                    // don't delete
 
             int softDebugLevel_;                            //!< The debug level
+            int softDebugLevelConsole_;                     //!< The debug level for the console
+            int softDebugLevelLogfile_;                     //!< The debug level for the logfile
+            int softDebugLevelShell_;                       //!< The debug level for the ingame shell
             ConfigValueContainer* softDebugLevelContainer_; //!< The config value container for the debug level
     };
 }

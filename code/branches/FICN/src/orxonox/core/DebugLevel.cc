@@ -31,7 +31,6 @@
 */
 
 #include "CoreIncludes.h"
-#include "Debug.h"
 #include "DebugLevel.h"
 
 namespace orxonox
@@ -52,13 +51,22 @@ namespace orxonox
     */
     void DebugLevel::setConfigValues()
     {
-        SetConfigValue(softDebugLevel_, 2);
+        SetConfigValue(softDebugLevelConsole_, 3);
+        SetConfigValue(softDebugLevelLogfile_, 3);
+        SetConfigValue(softDebugLevelShell_, 1);
+
+        // softDebugLevel_ is the maximum of the 3 variables
+        this->softDebugLevel_ = this->softDebugLevelConsole_;
+        if (this->softDebugLevelLogfile_ > this->softDebugLevel_)
+            this->softDebugLevel_ = this->softDebugLevelLogfile_;
+        if (this->softDebugLevelShell_ > this->softDebugLevel_)
+            this->softDebugLevel_ = this->softDebugLevelShell_;
     }
 
     /**
         @brief Static function that holds the singleton.
     */
-    int DebugLevel::getSoftDebugLevel()
+    int DebugLevel::getSoftDebugLevel(OutputHandler::OutputDevice device)
     {
         static bool bCreatingSoftDebugLevelObject = true;   // Static variable - used to enhance the performance
         static bool bReturnSoftDebugLevel = false;          // Static variable - used to avoid an infinite recursion
@@ -66,14 +74,23 @@ namespace orxonox
 
         // If bReturnSoftDebugLevel is true, the instance of DebugLevel was created (it's set to true at the end of the constructor, call by reference)
         if (bReturnSoftDebugLevel)
-            return theOnlyDebugLevelObject->softDebugLevel_;
+        {
+            if (device == OutputHandler::LD_All)
+                return theOnlyDebugLevelObject->softDebugLevel_;
+            else if (device == OutputHandler::LD_Console)
+                return theOnlyDebugLevelObject->softDebugLevelConsole_;
+            else if (device == OutputHandler::LD_Logfile)
+                return theOnlyDebugLevelObject->softDebugLevelLogfile_;
+            else if (device == OutputHandler::LD_Shell)
+                return theOnlyDebugLevelObject->softDebugLevelShell_;
+        }
 
         // If bCreatingSoftDebugLevelObject is true, we're just about to create an instance of the DebugLevel class
         if (bCreatingSoftDebugLevelObject)
         {
             bCreatingSoftDebugLevelObject = false;
             theOnlyDebugLevelObject = new DebugLevel(bReturnSoftDebugLevel);
-            return theOnlyDebugLevelObject->softDebugLevel_;
+            return getSoftDebugLevel(device);
         }
 
         // Return a constant value while we're creating the object

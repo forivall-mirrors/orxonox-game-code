@@ -48,10 +48,29 @@ namespace orxonox
     class _CoreExport OutputHandler
     {
         public:
+            enum OutputDevice
+            {
+                LD_All,
+                LD_Console,
+                LD_Logfile,
+                LD_Shell
+            };
+
             static OutputHandler& getOutStream();
 
             /** @returns a reference to the logfile. */
-            inline std::ofstream& getLogfile() { return this->logfile_; }
+            inline std::ofstream& getLogfile()
+                { return this->logfile_; }
+
+            /** @brief Sets the level of the incoming output. @param level The level of the incoming output @return The OutputHandler itself */
+            inline OutputHandler& setOutputLevel(int level)
+                { this->outputLevel_ = level; return *this; }
+
+            /** @returns the level of the incoming output. */
+            inline int getOutputLevel() const
+                { return this->outputLevel_; }
+
+            static int getSoftDebugLevel(OutputHandler::OutputDevice device);
 
             template <class T>
             OutputHandler& output(const T& output);
@@ -93,6 +112,7 @@ namespace orxonox
             ~OutputHandler();
             std::ofstream logfile_;     //!< The logfile where the output is logged
             std::string logfilename_;   //!< The name of the logfile
+            int outputLevel_;           //!< The level of the incoming output
     };
 
     /**
@@ -103,20 +123,18 @@ namespace orxonox
     template<class T>
     OutputHandler& OutputHandler::output(const T& output)
     {
-        std::cout << output;
-        this->logfile_ << output;
-        this->logfile_.flush();
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
+            std::cout << output;
+
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
+        {
+            this->logfile_ << output;
+            this->logfile_.flush();
+        }
+
         return *this;
     }
-/*
-    _CoreExport OutputHandler& operator<<(OutputHandler& out, char c);
-    _CoreExport OutputHandler& operator<<(OutputHandler& out, signed char c);
-    _CoreExport OutputHandler& operator<<(OutputHandler& out, unsigned char c);
 
-    _CoreExport OutputHandler& operator<<(OutputHandler& out, const char* s);
-    _CoreExport OutputHandler& operator<<(OutputHandler& out, const signed char* s);
-    _CoreExport OutputHandler& operator<<(OutputHandler& out, const unsigned char* s);
-*/
     /**
         @brief Overloading of the non-member << operator to redirect the output of classes with self defined '<< to std::ostream' operators to the console and the logfile.
         @param out The OutputHandler itself
@@ -126,9 +144,15 @@ namespace orxonox
     template<class T>
     OutputHandler& operator<<(OutputHandler& out, const T& output)
     {
-        std::cout << output;
-        out.getLogfile() << output;
-        out.getLogfile().flush();
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Console) >= out.getOutputLevel())
+            std::cout << output;
+
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Logfile) >= out.getOutputLevel())
+        {
+            out.getLogfile() << output;
+            out.getLogfile().flush();
+        }
+
         return out;
     }
 

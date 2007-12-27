@@ -26,6 +26,7 @@
  */
 
 #include "OutputHandler.h"
+#include "DebugLevel.h"
 
 namespace orxonox
 {
@@ -60,15 +61,31 @@ namespace orxonox
     }
 
     /**
+        @brief Returns the soft debug level for a given output device.
+        @param device The output device
+        @return The debug level
+    */
+    int OutputHandler::getSoftDebugLevel(OutputHandler::OutputDevice device)
+    {
+        return DebugLevel::getSoftDebugLevel(device);
+    }
+
+    /**
         @brief Overloaded << operator, redirects the output to the console and the logfile.
         @param sb The streambuffer that should be shown in the console
         @return A reference to the OutputHandler itself
     */
     OutputHandler& OutputHandler::operator<<(std::streambuf* sb)
     {
-        std::cout << sb;
-        this->logfile_ << sb;
-        this->logfile_.flush();
+        if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
+            std::cout << sb;
+
+        if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
+        {
+            this->logfile_ << sb;
+            this->logfile_.flush();
+        }
+
         return *this;
     }
 
@@ -79,9 +96,15 @@ namespace orxonox
     */
     OutputHandler& OutputHandler::operator<<(std::ostream& (*manipulator)(std::ostream&))
     {
-        manipulator(std::cout);
-        manipulator(this->logfile_);
-        this->logfile_.flush();
+        if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
+            manipulator(std::cout);
+
+        if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
+        {
+            manipulator(this->logfile_);
+            this->logfile_.flush();
+        }
+
         return *this;
     }
 
@@ -92,9 +115,15 @@ namespace orxonox
     */
     OutputHandler& OutputHandler::operator<<(std::ios& (*manipulator)(std::ios&))
     {
-        manipulator(std::cout);
-        manipulator(this->logfile_);
-        this->logfile_.flush();
+        if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
+            manipulator(std::cout);
+
+        if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
+        {
+            manipulator(this->logfile_);
+            this->logfile_.flush();
+        }
+
         return *this;
     }
 
@@ -105,87 +134,15 @@ namespace orxonox
     */
     OutputHandler& OutputHandler::operator<<(std::ios_base& (*manipulator)(std::ios_base&))
     {
-        manipulator(std::cout);
-        manipulator(this->logfile_);
-        this->logfile_.flush();
+        if (getSoftDebugLevel(OutputHandler::LD_Console) >= this->outputLevel_)
+            manipulator(std::cout);
+
+        if (getSoftDebugLevel(OutputHandler::LD_Logfile) >= this->outputLevel_)
+        {
+            manipulator(this->logfile_);
+            this->logfile_.flush();
+        }
+
         return *this;
     }
-
-    /**
-        @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
-        @param output The value that should be shown in the console
-        @return A reference to the OutputHandler itself
-    *//*
-    OutputHandler& operator<<(OutputHandler& out, char c)
-    {
-        std::cout << c;
-        out.getLogfile() << c;
-        out.getLogfile().flush();
-        return out;
-    }*/
-
-    /**
-        @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
-        @param output The value that should be shown in the console
-        @return A reference to the OutputHandler itself
-    *//*
-    OutputHandler& operator<<(OutputHandler& out, signed char c)
-    {
-        std::cout << c;
-        out.getLogfile() << c;
-        out.getLogfile().flush();
-        return out;
-    }*/
-
-    /**
-        @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
-        @param output The value that should be shown in the console
-        @return A reference to the OutputHandler itself
-    *//*
-    OutputHandler& operator<<(OutputHandler& out, unsigned char c)
-    {
-        std::cout << c;
-        out.getLogfile() << c;
-        out.getLogfile().flush();
-        return out;
-    }*/
-
-    /**
-        @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
-        @param output The value that should be shown in the console
-        @return A reference to the OutputHandler itself
-    *//*
-    OutputHandler& operator<<(OutputHandler& out, const char* s)
-    {
-        std::cout << s;
-        out.getLogfile() << s;
-        out.getLogfile().flush();
-        return out;
-    }*/
-
-    /**
-        @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
-        @param output The value that should be shown in the console
-        @return A reference to the OutputHandler itself
-    *//*
-    OutputHandler& operator<<(OutputHandler& out, const signed char* s)
-    {
-        std::cout << s;
-        out.getLogfile() << s;
-        out.getLogfile().flush();
-        return out;
-    }*/
-
-    /**
-        @brief Overloaded non-member << operator, redirects the output to the console and the logfile.
-        @param output The value that should be shown in the console
-        @return A reference to the OutputHandler itself
-    *//*
-    OutputHandler& operator<<(OutputHandler& out, const unsigned char* s)
-    {
-        std::cout << s;
-        out.getLogfile() << s;
-        out.getLogfile().flush();
-        return out;
-    }*/
- }
+}
