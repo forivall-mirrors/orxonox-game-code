@@ -64,8 +64,8 @@ namespace orxonox
 
     void Projectile::setConfigValues()
     {
-        SetConfigValue(lifetime_, 10.0);
-        SetConfigValue(speed_, 2000.0);
+        SetConfigValue(lifetime_, 10.0).description("The time in seconds a projectile stays alive");
+        SetConfigValue(speed_, 2000.0).description("The speed of a projectile in units per second");
     }
 
     void Projectile::tick(float dt)

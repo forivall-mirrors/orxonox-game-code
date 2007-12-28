@@ -123,8 +123,8 @@ namespace orxonox
 
     void SpaceShip::setConfigValues()
     {
-        SetConfigValue(bInvertYAxis_, false);
-        SetConfigValue(reloadTime_, 0.125);
+        SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
+        SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
     }
 
     void SpaceShip::loadParams(TiXmlElement* xmlElem)

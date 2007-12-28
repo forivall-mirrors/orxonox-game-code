@@ -105,7 +105,7 @@ namespace orxonox
 
     void Fighter::setConfigValues()
     {
-        SetConfigValue(bInvertMouse_, false);
+        SetConfigValue(bInvertMouse_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
     }
 
     void Fighter::setMaxSpeedValues(float maxSpeedForward, float maxSpeedRotateUpDown, float maxSpeedRotateRightLeft, float maxSpeedLoopRightLeft)

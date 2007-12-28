@@ -51,9 +51,9 @@ namespace orxonox
     */
     void DebugLevel::setConfigValues()
     {
-        SetConfigValue(softDebugLevelConsole_, 3);
-        SetConfigValue(softDebugLevelLogfile_, 3);
-        SetConfigValue(softDebugLevelShell_, 1);
+        SetConfigValue(softDebugLevelConsole_, 3).description("The maximal level of debug output shown in the console");
+        SetConfigValue(softDebugLevelLogfile_, 3).description("The maximal level of debug output shown in the logfile");
+        SetConfigValue(softDebugLevelShell_, 1).description("The maximal level of debug output shown in the ingame shell");
 
         // softDebugLevel_ is the maximum of the 3 variables
         this->softDebugLevel_ = this->softDebugLevelConsole_;
