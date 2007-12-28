@@ -30,8 +30,7 @@
 #include <OgreSceneManager.h>
 
 #include "../Orxonox.h"
-#include "misc/Vector3.h"
-#include "misc/ColourValue.h"
+#include "misc/Math.h"
 
 #include "BillboardSet.h"
 

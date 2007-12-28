@@ -29,7 +29,7 @@
 #include <OgreSceneNode.h>
 
 #include "core/Debug.h"
-#include "misc/Vector3.h"
+#include "misc/Math.h"
 #include "SpaceshipSteering.h"
 
 namespace orxonox

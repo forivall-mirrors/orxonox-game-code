@@ -7,7 +7,7 @@
 
 #include "../OrxonoxPrereqs.h"
 
-#include "misc/ColourValue.h"
+#include "misc/Math.h"
 
 namespace orxonox
 {

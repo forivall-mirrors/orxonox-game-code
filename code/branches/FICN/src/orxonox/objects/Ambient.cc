@@ -33,7 +33,7 @@
 #include "tinyxml/tinyxml.h"
 #include "misc/Tokenizer.h"
 #include "misc/String2Number.h"
-#include "misc/ColourValue.h"
+#include "misc/Math.h"
 #include "../core/Debug.h"
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"

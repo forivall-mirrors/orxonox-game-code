@@ -14,8 +14,7 @@
 
 #include "../OrxonoxPrereqs.h"
 
-#include "misc/Vector3.h"
-#include "misc/ColourValue.h"
+#include "misc/Math.h"
 
 
 namespace orxonox

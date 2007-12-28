@@ -30,7 +30,7 @@
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
 
-#include "misc/Vector3.h"
+#include "misc/Math.h"
 #include "Bullet.h"
 #include "BulletManager.h"
 #include "AmmunitionDump.h"

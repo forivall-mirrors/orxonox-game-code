@@ -6,9 +6,7 @@
 
 #include "../OrxonoxPrereqs.h"
 
-#include "misc/Vector3.h"
-#include "misc/Matrix3.h"
-#include "misc/Quaternion.h"
+#include "misc/Math.h"
 #include "network/Synchronisable.h"
 #include "tinyxml/tinyxml.h"
 #include "../core/CoreIncludes.h"

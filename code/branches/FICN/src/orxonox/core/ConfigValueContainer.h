@@ -47,11 +47,7 @@
 
 #include "CorePrereqs.h"
 
-#include "misc/Vector2.h"
-#include "misc/Vector3.h"
-#include "misc/Matrix3.h"
-#include "misc/Quaternion.h"
-#include "misc/ColourValue.h"
+#include "misc/Math.h"
 #include "Language.h"
 
 namespace orxonox
