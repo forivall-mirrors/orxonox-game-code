@@ -27,11 +27,11 @@
 
 
 #include "AudioStream.h"
-#include "orxonox/core/Debug.h"
+#include "../orxonox/core/Debug.h"
 
 namespace audio
 {
-	AudioStream::AudioStream(orxonox::String path)
+	AudioStream::AudioStream(String path)
 	{
 		this->path = path;
 		loaded = false;
@@ -39,26 +39,21 @@ namespace audio
 
 	void AudioStream::open()
 	{
-	    //int result;
-      errno_t result;
+	    int result;
 
 
-	    if(fopen_s(&oggFile, path.c_str(), "rb"))
+	    if(!(oggFile = fopen(path.c_str(), "rb")))
 			{
 	    	orxonox::Error("Could not open Ogg file "+path);
 				return;
 			}
-      else
-      {
-        COUT(4) << "Opened Ogg file" << path << std::endl;
-      }
 
-	    /*if((result = ov_open(oggFile, &oggStream, NULL, 0)) < 0)
+	    if((result = ov_open(oggFile, &oggStream, NULL, 0)) < 0)
 	    {
         fclose(oggFile);
 	      orxonox::Error("Could not open Ogg stream. " + errorString(result));
 				return;
-	    }*/
+	    }
 
 			loaded = true;
 
@@ -258,22 +253,22 @@ namespace audio
 
 
 
-	orxonox::String AudioStream::errorString(int code)
+	String AudioStream::errorString(int code)
 	{
 	    switch(code)
 	    {
 	        case OV_EREAD:
-	            return orxonox::String("Read from media.");
+	            return String("Read from media.");
 	        case OV_ENOTVORBIS:
-	            return orxonox::String("Not Vorbis data.");
+	            return String("Not Vorbis data.");
 	        case OV_EVERSION:
-	            return orxonox::String("Vorbis version mismatch.");
+	            return String("Vorbis version mismatch.");
 	        case OV_EBADHEADER:
-	            return orxonox::String("Invalid Vorbis header.");
+	            return String("Invalid Vorbis header.");
 	        case OV_EFAULT:
-	            return orxonox::String("Internal logic fault (bug or heap/stack corruption.");
+	            return String("Internal logic fault (bug or heap/stack corruption.");
 	        default:
-	            return orxonox::String("Unknown Ogg error.");
+	            return String("Unknown Ogg error.");
 	    }
 	}
 }
