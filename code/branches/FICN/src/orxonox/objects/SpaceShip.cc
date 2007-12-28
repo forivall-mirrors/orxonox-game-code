@@ -35,6 +35,7 @@
 
 #include "tinyxml/tinyxml.h"
 #include "misc/String2Number.h"
+#include "misc/Math.h"
 #include "../core/CoreIncludes.h"
 #include "../core/Debug.h"
 #include "../Orxonox.h"

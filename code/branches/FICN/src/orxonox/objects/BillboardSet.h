@@ -8,7 +8,6 @@
 #include "../OrxonoxPrereqs.h"
 
 #include "../core/CoreIncludes.h"
-#include "misc/ColourValue.h"
 #include "misc/Math.h"
 
 namespace orxonox

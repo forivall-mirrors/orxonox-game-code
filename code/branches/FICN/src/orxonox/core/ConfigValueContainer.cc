@@ -47,7 +47,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = Int;
+        this->type_ = VT_Int;
 
         this->defvalueString_ = number2String(defvalue, "0");                       // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
@@ -69,7 +69,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = uInt;
+        this->type_ = VT_uInt;
 
         this->defvalueString_ = number2String(defvalue, "0");                       // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
@@ -91,7 +91,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = Char;
+        this->type_ = VT_Char;
 
         this->defvalueString_ = number2String((int)defvalue, "0");                  // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
@@ -113,7 +113,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = uChar;
+        this->type_ = VT_uChar;
 
         this->defvalueString_ = number2String((unsigned int)defvalue, "0");         // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
@@ -135,7 +135,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = Float;
+        this->type_ = VT_Float;
 
         this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
@@ -157,7 +157,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = Double;
+        this->type_ = VT_Double;
 
         this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
@@ -179,7 +179,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = LongDouble;
+        this->type_ = VT_LongDouble;
 
         this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
@@ -201,7 +201,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = Bool;
+        this->type_ = VT_Bool;
 
         // Convert the default-value from bool to string
         if (defvalue)
@@ -227,7 +227,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = _String;
+        this->type_ = VT_String;
 
         this->defvalueString_ = "\"" + defvalue + "\"";                             // Convert the string to a "config-file-string" with quotes
         this->searchConfigFileLine();                                               // Search the entry in the config-file
@@ -248,7 +248,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = ConstChar;
+        this->type_ = VT_ConstChar;
 
         this->defvalueString_ = "\"" + std::string(defvalue) + "\"";                // Convert the string to a "config-file-string" with quotes
         this->searchConfigFileLine();                                               // Search the entry in the config-file
@@ -269,7 +269,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = _Vector2;
+        this->type_ = VT_Vector2;
 
         // Try to convert the default-value from Vector2 to string
         std::ostringstream ostream;
@@ -296,7 +296,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = _Vector3;
+        this->type_ = VT_Vector3;
 
         // Try to convert the default-value from Vector3 to string
         std::ostringstream ostream;
@@ -323,7 +323,7 @@ namespace orxonox
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = _ColourValue;
+        this->type_ = VT_ColourValue;
 
         // Try to convert the default-value from ColourValue to string
         std::ostringstream ostream;
@@ -345,38 +345,38 @@ namespace orxonox
     */
     bool ConfigValueContainer::parseSting(const std::string& input)
     {
-        if (this->type_ == ConfigValueContainer::Int)
+        if (this->type_ == ConfigValueContainer::VT_Int)
             return this->parseSting(input, this->value_.value_int_);
-        else if (this->type_ == ConfigValueContainer::uInt)
+        else if (this->type_ == ConfigValueContainer::VT_uInt)
             return this->parseSting(input, this->value_.value_uint_);
-        else if (this->type_ == ConfigValueContainer::Char)
+        else if (this->type_ == ConfigValueContainer::VT_Char)
             return this->parseSting(input, this->value_.value_char_);
-        else if (this->type_ == ConfigValueContainer::uChar)
+        else if (this->type_ == ConfigValueContainer::VT_uChar)
             return this->parseSting(input, this->value_.value_uchar_);
-        else if (this->type_ == ConfigValueContainer::Float)
+        else if (this->type_ == ConfigValueContainer::VT_Float)
             return this->parseSting(input, this->value_.value_float_);
-        else if (this->type_ == ConfigValueContainer::Double)
+        else if (this->type_ == ConfigValueContainer::VT_Double)
             return this->parseSting(input, this->value_.value_double_);
-        else if (this->type_ == ConfigValueContainer::LongDouble)
+        else if (this->type_ == ConfigValueContainer::VT_LongDouble)
             return this->parseSting(input, this->value_.value_long_double_);
-        else if (this->type_ == ConfigValueContainer::Bool)
+        else if (this->type_ == ConfigValueContainer::VT_Bool)
             return this->parseSting(input, this->value_.value_bool_);
-        else if (this->type_ == ConfigValueContainer::_String)
+        else if (this->type_ == ConfigValueContainer::VT_String)
             return this->parseSting(input, this->value_string_);
-        else if (this->type_ == ConfigValueContainer::ConstChar)
+        else if (this->type_ == ConfigValueContainer::VT_ConstChar)
             return this->parseSting(input, this->value_string_);
-        else if (this->type_ == ConfigValueContainer::_Vector2)
+        else if (this->type_ == ConfigValueContainer::VT_Vector2)
             return this->parseSting(input, this->value_vector2_);
-        else if (this->type_ == ConfigValueContainer::_Vector3)
+        else if (this->type_ == ConfigValueContainer::VT_Vector3)
             return this->parseSting(input, this->value_vector3_);
-        else if (this->type_ == ConfigValueContainer::_ColourValue)
+        else if (this->type_ == ConfigValueContainer::VT_ColourValue)
             return this->parseSting(input, this->value_colourvalue_);
 
         return false;
     }
 
     /**
-        @brief Parses a given String into a value of the type int and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type int and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -387,7 +387,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type unsigned int and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type unsigned int and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -398,7 +398,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type char and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type char and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -410,7 +410,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type unsigned char and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type unsigned char and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -422,7 +422,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type float and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type float and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -433,7 +433,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type double and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type double and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -444,7 +444,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type long double and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type long double and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -455,7 +455,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type bool and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type bool and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -483,7 +483,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type String and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type std::string and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -508,7 +508,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type const char* and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type const char* and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -533,7 +533,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type _Vector2 and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type _Vector2 and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -567,7 +567,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type Vector3 and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type Vector3 and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
@@ -606,7 +606,7 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given String into a value of the type ColourValue and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given std::string into a value of the type ColourValue and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed

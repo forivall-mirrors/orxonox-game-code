@@ -64,11 +64,11 @@ namespace orxonox {
       void startRenderLoop();
 
     private:
-      GraphicsEngine*       ogre_;      //!< our dearest graphics engine <3
-      std::string           dataPath_;  //!< path to data
-      loader::LevelLoader*  loader_;    //!< level loader builds the scene
-      audio::AudioManager*  auMan_;     //!< audio manager
-      BulletManager*        bulletMgr_; //!< Keeps track of the thrown bullets
+      GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
+      std::string           dataPath_;      //!< path to data
+      loader::LevelLoader*  loader_;        //!< level loader builds the scene
+      audio::AudioManager*  auMan_;         //!< audio manager
+      BulletManager*        bulletMgr_;     //!< Keeps track of the thrown bullets
       static Orxonox*       singletonRef_;
       OIS::Keyboard*        keyboard_;
       OIS::Mouse*           mouse_;

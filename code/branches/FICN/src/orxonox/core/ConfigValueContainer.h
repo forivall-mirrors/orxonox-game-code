@@ -73,19 +73,19 @@ namespace orxonox
         public:
             enum VariableType
             {
-                Int,
-                uInt,
-                Char,
-                uChar,
-                Float,
-                Double,
-                LongDouble,
-                Bool,
-                ConstChar,
-                _String,
-                _Vector2,
-                _Vector3,
-                _ColourValue
+                VT_Int,
+                VT_uInt,
+                VT_Char,
+                VT_uChar,
+                VT_Float,
+                VT_Double,
+                VT_LongDouble,
+                VT_Bool,
+                VT_ConstChar,
+                VT_String,
+                VT_Vector2,
+                VT_Vector3,
+                VT_ColourValue
             };
 
             ConfigValueContainer(const std::string& classname, const std::string& varname, int defvalue);
@@ -179,9 +179,9 @@ namespace orxonox
             } value_;                                           //!< The value of the variable
 
             std::string         value_string_;                  //!< The value, if the variable is of the type string
-            Vector2       value_vector2_;                 //!< The value, if the variable is of the type Vector2
-            Vector3       value_vector3_;                 //!< The value, if the variable is of the type Vector3
-            ColourValue   value_colourvalue_;             //!< The value, if the variable is of the type ColourValue
+            Vector2             value_vector2_;                 //!< The value, if the variable is of the type Vector2
+            Vector3             value_vector3_;                 //!< The value, if the variable is of the type Vector3
+            ColourValue         value_colourvalue_;             //!< The value, if the variable is of the type ColourValue
 
             std::list<std::string>::iterator configFileLine_;   //!< An iterator, pointing to the entry of the variable in the config-file
 
