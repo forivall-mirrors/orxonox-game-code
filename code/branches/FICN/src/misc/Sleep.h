@@ -1,7 +1,7 @@
 // hack for the usleep/Sleep problem
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 #  include <windows.h>
 #  define usleep(x) Sleep((x)/1000)
-#elif ORXONOX_PLATFORM == ORXONOX_PLATFORM_LINUX
+#else
 #  include <unistd.h>
 #endif
