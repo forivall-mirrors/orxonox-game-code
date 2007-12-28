@@ -78,6 +78,8 @@ namespace orxonox
   class IdentifierListElement;
   template <class T>
   class Iterator;
+  class Language;
+  class LanguageEntry;
   class MetaObjectList;
   template <class T>
   class MetaObjectListElement;

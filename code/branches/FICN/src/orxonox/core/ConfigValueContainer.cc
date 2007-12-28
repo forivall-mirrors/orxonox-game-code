@@ -44,6 +44,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, int defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = Int;
@@ -65,6 +66,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, unsigned int defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = uInt;
@@ -86,6 +88,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, char defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = Char;
@@ -107,6 +110,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, unsigned char defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = uChar;
@@ -128,6 +132,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, float defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = Float;
@@ -149,6 +154,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, double defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = Double;
@@ -170,6 +176,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, long double defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = LongDouble;
@@ -191,6 +198,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, bool defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = Bool;
@@ -216,6 +224,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, const std::string& defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = String;
@@ -236,6 +245,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, const char* defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = ConstChar;
@@ -256,6 +266,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector2 defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = Vector2;
@@ -282,6 +293,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector3 defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = Vector3;
@@ -308,6 +320,7 @@ namespace orxonox
     */
     ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::ColourValue defvalue)
     {
+        this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = ColourValue;
@@ -896,9 +909,9 @@ namespace orxonox
     }
 
     /**
-     *  @param Writes the content of the list, containing all lines of the config-file, into the config-file.
-     *  @param filename The name of the config-file
-     */
+        @brief Writes the content of the list, containing all lines of the config-file, into the config-file.
+        @param filename The name of the config-file
+    */
     void ConfigValueContainer::writeConfigFile(const std::string& filename)
     {
         // Make sure we stored the config-file in the list
@@ -923,5 +936,19 @@ namespace orxonox
         }
 
         file.close();
+    }
+
+    /**
+        @brief Adds a description to the config-value.
+        @param description The description
+    */
+    void ConfigValueContainer::description(const std::string& description)
+    {
+        if (!this->bAddedDescription_)
+        {
+            this->description_ = std::string("ConfigValueDescription::" + this->classname_ + "::" + this->varname_);
+            Language::getLanguage().addEntry(description_, description);
+            this->bAddedDescription_ = true;
+        }
     }
 }

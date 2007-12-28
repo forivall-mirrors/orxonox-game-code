@@ -50,6 +50,7 @@
 #include "OgreVector2.h"
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
+#include "Language.h"
 
 namespace orxonox
 {
@@ -104,31 +105,33 @@ namespace orxonox
             ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::ColourValue defvalue);
 
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline int getValue(int value)                                      { return this->value_.value_int_; }
+            inline ConfigValueContainer& getValue(int& value)                           { value = this->value_.value_int_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline unsigned int getValue(unsigned int value)                    { return this->value_.value_uint_; }
+            inline ConfigValueContainer& getValue(unsigned int& value)                  { value = this->value_.value_uint_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline char getValue(char value)                                    { return this->value_.value_char_; }
+            inline ConfigValueContainer& getValue(char& value)                          { value = this->value_.value_char_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline unsigned char getValue(unsigned char value)                  { return this->value_.value_uchar_; }
+            inline ConfigValueContainer& getValue(unsigned char& value)                 { value = this->value_.value_uchar_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline float getValue(float value)                                  { return this->value_.value_float_; }
+            inline ConfigValueContainer& getValue(float& value)                         { value = this->value_.value_float_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline double getValue(double value)                                { return this->value_.value_double_; }
+            inline ConfigValueContainer& getValue(double& value)                        { value = this->value_.value_double_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline double getValue(long double value)                           { return this->value_.value_long_double_; }
+            inline ConfigValueContainer& getValue(long double& value)                   { value = this->value_.value_long_double_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline bool getValue(bool value)                                    { return this->value_.value_bool_; }
+            inline ConfigValueContainer& getValue(bool& value)                          { value = this->value_.value_bool_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline const std::string& getValue(const std::string& value)        { return this->value_string_; }
+            inline ConfigValueContainer& getValue(std::string& value)                   { value = this->value_string_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline const char* getValue(const char* value)                      { return this->value_string_.c_str(); }
+            inline ConfigValueContainer& getValue(const char* value)                    { value = this->value_string_.c_str(); return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline Ogre::Vector2 getValue(const Ogre::Vector2& value)           { return this->value_vector2_; }
+            inline ConfigValueContainer& getValue(Ogre::Vector2& value)                 { value = this->value_vector2_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline Ogre::Vector3 getValue(const Ogre::Vector3& value)           { return this->value_vector3_; }
+            inline ConfigValueContainer& getValue(Ogre::Vector3& value)                 { value = this->value_vector3_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline Ogre::ColourValue getValue(const Ogre::ColourValue& value)   { return this->value_colourvalue_; }
+            inline ConfigValueContainer& getValue(Ogre::ColourValue& value)             { value = this->value_colourvalue_; return *this; }
+
+            void description(const std::string& description);
 
             bool parseSting(const std::string& input);
             void resetConfigFileEntry();
@@ -185,6 +188,8 @@ namespace orxonox
             std::list<std::string>::iterator configFileLine_;   //!< An iterator, pointing to the entry of the variable in the config-file
 
             VariableType type_;                                 //!< The type of the variable
+            bool bAddedDescription_;                            //!< True if a description was added
+            LanguageEntryName description_;                     //!< The description
     };
 }
 
