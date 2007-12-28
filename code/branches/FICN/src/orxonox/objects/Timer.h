@@ -57,8 +57,11 @@
 #ifndef _Timer_H__
 #define _Timer_H__
 
+#include <OgreFrameListener.h>
+
+#include "../OrxonoxPrereqs.h"
+
 #include "../core/CoreIncludes.h"
-#include "OgreFrameListener.h"
 
 namespace orxonox
 {

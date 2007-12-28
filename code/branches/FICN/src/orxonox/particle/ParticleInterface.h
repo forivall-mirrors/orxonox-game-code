@@ -10,57 +10,64 @@
 #include <OgreParticleEmitter.h>
 #include <OgreSceneManager.h>
 
+#include "../OrxonoxPrereqs.h"
 
-namespace particle
+#include "misc/Vector3.h"
+#include "misc/String.h"
+#include "misc/ColourValue.h"
+
+
+namespace orxonox
 {
 
-class ParticleInterface
-{
- public:
+  class ParticleInterface
+  {
+  public:
 
-  ParticleInterface( Ogre::SceneManager *sceneManager, Ogre::String name, Ogre::String templateName );
-  ~ParticleInterface( void );
+    ParticleInterface( Ogre::SceneManager *sceneManager, String name, String templateName );
+    ~ParticleInterface( void );
 
-  void inline addToSceneNode( Ogre::SceneNode* sceneNode ) { sceneNode_ = sceneNode; sceneNode_->attachObject(particleSystem_);};
-  void inline detachFromSceneNode( void ) { sceneNode_->detachObject(particleSystem_); sceneNode_ = NULL;};
+    void inline addToSceneNode( Ogre::SceneNode* sceneNode ) { sceneNode_ = sceneNode; sceneNode_->attachObject(particleSystem_);};
+    void inline detachFromSceneNode( void ) { sceneNode_->detachObject(particleSystem_); sceneNode_ = NULL;};
 
-  Ogre::ParticleEmitter* getEmitter ( int emitterNr );
-  void newEmitter ( void );
+    Ogre::ParticleEmitter* getEmitter ( int emitterNr );
+    void newEmitter ( void );
 
-  Ogre::Vector3 getPositionOfEmitter ( int emitterNr );
-  inline void setPositionOfEmitter ( int emitterNr, Ogre::Vector3 position ) { particleSystem_->getEmitter(emitterNr)->setPosition(position); };
+    Vector3 getPositionOfEmitter ( int emitterNr );
+    inline void setPositionOfEmitter ( int emitterNr, Vector3 position ) { particleSystem_->getEmitter(emitterNr)->setPosition(position); };
 
-  inline Ogre::Vector3 getDirection ( void ) { return particleSystem_->getEmitter(0)->getDirection(); };
-  void setDirection ( Ogre::Vector3 direction );
+    inline Vector3 getDirection ( void ) { return particleSystem_->getEmitter(0)->getDirection(); };
+    void setDirection ( Vector3 direction );
 
-  inline Ogre::Real getVelocity() {return velocity_; };
-  void setVelocity( Ogre::Real v );
+    inline Real getVelocity() {return velocity_; };
+    void setVelocity( Real v );
 
-  inline int getRate() { return rate_; };
-  void setRate( int r );
+    inline int getRate() { return rate_; };
+    void setRate( int r );
 
-  inline Ogre::Real getDistance() { return distance_; };
-  void setDistance( Ogre::Real d );
+    inline Real getDistance() { return distance_; };
+    void setDistance( Real d );
 
-  inline Ogre::ColourValue getColour( void ) {return colour_;};
-  void setColour( Ogre::ColourValue colour );
+    inline ColourValue getColour( void ) {return colour_;};
+    void setColour( ColourValue colour );
 
-  void switchEnable();
+    void switchEnable();
 
-  inline Ogre::ParticleSystem* getParticleSystem() { return this->particleSystem_; };
+    inline Ogre::ParticleSystem* getParticleSystem() { return this->particleSystem_; };
 
- private:
-  Ogre::SceneNode *sceneNode_;
-  Ogre::SceneManager *sceneManager_;
-  Ogre::ParticleSystem *particleSystem_;
-  Ogre::Real distance_;
-  Ogre::Real velocity_;
-  int rate_;
-  Ogre::ColourValue colour_;
-  int numberOfEmitters_;
+  private:
+    Ogre::SceneNode *sceneNode_;
+    Ogre::SceneManager *sceneManager_;
+    Ogre::ParticleSystem *particleSystem_;
+    Real distance_;
+    Real velocity_;
+    int rate_;
+    ColourValue colour_;
+    int numberOfEmitters_;
 
-  void standardizeEmitters();
-};
+    void standardizeEmitters();
+  };
 
 }
+
 #endif /* _ParticleInterface_H__ */

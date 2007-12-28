@@ -1,13 +1,16 @@
 #ifndef _Projectile_H__
 #define _Projectile_H__
 
+#include "../OrxonoxPrereqs.h"
+
 #include "WorldEntity.h"
 #include "BillboardSet.h"
-#include "SpaceShip.h"
 #include "Timer.h"
 
 namespace orxonox
 {
+    class SpaceShip; // Forward declaration
+
     class Projectile : public WorldEntity
     {
         public:

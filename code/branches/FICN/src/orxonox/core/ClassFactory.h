@@ -35,10 +35,9 @@
 #ifndef _ClassFactory_H__
 #define _ClassFactory_H__
 
-#include <string>
-
 #include "CorePrereqs.h"
 
+#include "misc/String.h"
 #include "Factory.h"
 #include "Identifier.h"
 #include "Debug.h"
@@ -53,7 +52,7 @@ namespace orxonox
     class ClassFactory : public BaseFactory
     {
         public:
-            static bool create(const std::string& name);
+            static bool create(const String& name);
             BaseObject* fabricate();
 
         private:
@@ -69,7 +68,7 @@ namespace orxonox
         @return Always true (this is needed because the compiler only allows assignments before main())
     */
     template <class T>
-    bool ClassFactory<T>::create(const std::string& name)
+    bool ClassFactory<T>::create(const String& name)
     {
         COUT(4) << "*** Create entry for " << name << " in Factory." << std::endl;
         ClassIdentifier<T>::getIdentifier()->addFactory(new ClassFactory<T>);

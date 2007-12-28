@@ -25,14 +25,18 @@
  *
  */
 
-#include <OgreSceneManager.h>
-#include <string>
+#include <vector>
 
-#include "../Orxonox.h"
-#include "../../tinyxml/tinyxml.h"
-#include "../../misc/Tokenizer.h"
-#include "../../misc/String2Number.h"
+#include <OgreSceneManager.h>
+
+#include "tinyxml/tinyxml.h"
+#include "misc/Tokenizer.h"
+#include "misc/String2Number.h"
+#include "misc/ColourValue.h"
+#include "misc/String.h"
 #include "../core/Debug.h"
+#include "../core/CoreIncludes.h"
+#include "../Orxonox.h"
 
 #include "Ambient.h"
 
@@ -56,7 +60,7 @@ namespace orxonox
     	if (xmlElem->Attribute("colourvalue"))
     	{
 
-	    	std::vector<std::string> colourvalues = tokenize(xmlElem->Attribute("colourvalue"),",");
+	    	std::vector<String> colourvalues = tokenize(xmlElem->Attribute("colourvalue"),",");
 	    	float r, g, b;
     	 	String2Number<float>(r, colourvalues[0]);
 	    	String2Number<float>(g, colourvalues[1]);

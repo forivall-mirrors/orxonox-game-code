@@ -1,14 +1,13 @@
 #ifndef _Fighter_H__
 #define _Fighter_H__
 
+#include <OIS/OIS.h>
+
 #include "../OrxonoxPrereqs.h"
 
-#include <OIS/OIS.h>
-#include <string.h>
-
 #include "Model.h"
-#include "../../tinyxml/tinyxml.h"
-#include "../particle/ParticleInterface.h"
+
+class TiXmlElement; // Forward declaration
 
 namespace orxonox
 {
@@ -44,8 +43,8 @@ namespace orxonox
             bool bInvertMouse_;
             bool setMouseEventCallback_;
 
-            particle::ParticleInterface *w;
-            particle::ParticleInterface *tt;
+            ParticleInterface *w;
+            ParticleInterface *tt;
 
             AmmunitionDump* ammoDump_;
             BarrelGun* mainWeapon_;

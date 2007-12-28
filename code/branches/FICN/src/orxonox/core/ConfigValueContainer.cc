@@ -27,8 +27,8 @@
 
 #include <fstream>
 
-#include "../../misc/Tokenizer.h"
-#include "../../misc/String2Number.h"
+#include "misc/Tokenizer.h"
+#include "misc/String2Number.h"
 #include "ConfigValueContainer.h"
 
 #define CONFIGFILEPATH "orxonox.ini"
@@ -42,7 +42,7 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, int defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, int defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
@@ -52,7 +52,7 @@ namespace orxonox
         this->defvalueString_ = number2String(defvalue, "0");                       // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -64,7 +64,7 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, unsigned int defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, unsigned int defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
@@ -74,7 +74,7 @@ namespace orxonox
         this->defvalueString_ = number2String(defvalue, "0");                       // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -86,7 +86,7 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, char defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, char defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
@@ -96,7 +96,7 @@ namespace orxonox
         this->defvalueString_ = number2String((int)defvalue, "0");                  // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -108,7 +108,7 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, unsigned char defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, unsigned char defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
@@ -118,7 +118,7 @@ namespace orxonox
         this->defvalueString_ = number2String((unsigned int)defvalue, "0");         // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -130,7 +130,7 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, float defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, float defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
@@ -140,7 +140,7 @@ namespace orxonox
         this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -152,7 +152,7 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, double defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, double defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
@@ -162,7 +162,7 @@ namespace orxonox
         this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -174,7 +174,7 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, long double defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, long double defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
@@ -184,7 +184,7 @@ namespace orxonox
         this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -196,7 +196,7 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, bool defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, bool defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
@@ -210,7 +210,7 @@ namespace orxonox
             this->defvalueString_ = "false";
 
         this->searchConfigFileLine();                                               // Search the entry in the config-file
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -222,16 +222,16 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, const std::string& defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, const String& defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = String;
+        this->type_ = _String;
 
         this->defvalueString_ = "\"" + defvalue + "\"";                             // Convert the string to a "config-file-string" with quotes
         this->searchConfigFileLine();                                               // Search the entry in the config-file
-        std::string valueString = this->parseValueString(false);                    // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString(false);                    // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -243,16 +243,16 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, const char* defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, const char* defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
         this->type_ = ConstChar;
 
-        this->defvalueString_ = "\"" + std::string(defvalue) + "\"";                // Convert the string to a "config-file-string" with quotes
+        this->defvalueString_ = "\"" + String(defvalue) + "\"";                // Convert the string to a "config-file-string" with quotes
         this->searchConfigFileLine();                                               // Search the entry in the config-file
-        std::string valueString = this->parseValueString(false);                    // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString(false);                    // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -264,12 +264,12 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector2 defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, Vector2 defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = Vector2;
+        this->type_ = _Vector2;
 
         // Try to convert the default-value from Vector2 to string
         std::ostringstream ostream;
@@ -279,7 +279,7 @@ namespace orxonox
             this->defvalueString_ = "(0,0)";
 
         this->searchConfigFileLine();                                               // Search the entry in the config-file
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -291,12 +291,12 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector3 defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, Vector3 defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = Vector3;
+        this->type_ = _Vector3;
 
         // Try to convert the default-value from Vector3 to string
         std::ostringstream ostream;
@@ -306,7 +306,7 @@ namespace orxonox
             this->defvalueString_ = "(0,0,0)";
 
         this->searchConfigFileLine();                                               // Search the entry in the config-file
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -318,12 +318,12 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::ColourValue defvalue)
+    ConfigValueContainer::ConfigValueContainer(const String& classname, const String& varname, ColourValue defvalue)
     {
         this->bAddedDescription_ = false;
         this->classname_ = classname;
         this->varname_ = varname;
-        this->type_ = ColourValue;
+        this->type_ = _ColourValue;
 
         // Try to convert the default-value from ColourValue to string
         std::ostringstream ostream;
@@ -333,17 +333,17 @@ namespace orxonox
             this->defvalueString_ = "(0,0,0,0)";
 
         this->searchConfigFileLine();                                               // Search the entry in the config-file
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        String valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
         if (!this->parseSting(valueString, defvalue))                               // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
 
     /**
-        @brief Parses a given std::string into a value of the type of the associated variable and assigns it.
+        @brief Parses a given String into a value of the type of the associated variable and assigns it.
         @param input The string to convert
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input)
+    bool ConfigValueContainer::parseSting(const String& input)
     {
         if (this->type_ == ConfigValueContainer::Int)
             return this->parseSting(input, this->value_.value_int_);
@@ -361,106 +361,106 @@ namespace orxonox
             return this->parseSting(input, this->value_.value_long_double_);
         else if (this->type_ == ConfigValueContainer::Bool)
             return this->parseSting(input, this->value_.value_bool_);
-        else if (this->type_ == ConfigValueContainer::String)
+        else if (this->type_ == ConfigValueContainer::_String)
             return this->parseSting(input, this->value_string_);
         else if (this->type_ == ConfigValueContainer::ConstChar)
             return this->parseSting(input, this->value_string_);
-        else if (this->type_ == ConfigValueContainer::Vector2)
+        else if (this->type_ == ConfigValueContainer::_Vector2)
             return this->parseSting(input, this->value_vector2_);
-        else if (this->type_ == ConfigValueContainer::Vector3)
+        else if (this->type_ == ConfigValueContainer::_Vector3)
             return this->parseSting(input, this->value_vector3_);
-        else if (this->type_ == ConfigValueContainer::ColourValue)
+        else if (this->type_ == ConfigValueContainer::_ColourValue)
             return this->parseSting(input, this->value_colourvalue_);
 
         return false;
     }
 
     /**
-        @brief Parses a given std::string into a value of the type int and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type int and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, int defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, int defvalue)
     {
         return string2Number(this->value_.value_int_, input, defvalue);
     }
 
     /**
-        @brief Parses a given std::string into a value of the type unsigned int and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type unsigned int and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, unsigned int defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, unsigned int defvalue)
     {
         return string2Number(this->value_.value_uint_, input, defvalue);
     }
 
     /**
-        @brief Parses a given std::string into a value of the type char and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type char and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, char defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, char defvalue)
     {
         // I used value_int_ instead of value_char_ to avoid number <-> char confusion in the config-file
         return string2Number(this->value_.value_int_, input, (int)defvalue);
     }
 
     /**
-        @brief Parses a given std::string into a value of the type unsigned char and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type unsigned char and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, unsigned char defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, unsigned char defvalue)
     {
         // I used value_uint_ instead of value_uchar_ to avoid number <-> char confusion in the config-file
         return string2Number(this->value_.value_uint_, input, (unsigned int)defvalue);
     }
 
     /**
-        @brief Parses a given std::string into a value of the type float and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type float and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, float defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, float defvalue)
     {
         return string2Number(this->value_.value_float_, input, defvalue);
     }
 
     /**
-        @brief Parses a given std::string into a value of the type double and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type double and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, double defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, double defvalue)
     {
         return string2Number(this->value_.value_double_, input, defvalue);
     }
 
     /**
-        @brief Parses a given std::string into a value of the type long double and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type long double and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, long double defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, long double defvalue)
     {
         return string2Number(this->value_.value_long_double_, input, defvalue);
     }
 
     /**
-        @brief Parses a given std::string into a value of the type bool and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type bool and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, bool defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, bool defvalue)
     {
         // Try to parse the value-string - is it a word?
         if (input.find("true") < input.size()
@@ -483,12 +483,12 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given std::string into a value of the type std::string and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type String and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, const std::string& defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, const String& defvalue)
     {
         // Strip the quotes
         unsigned int pos1 = input.find("\"") + 1;
@@ -508,12 +508,12 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given std::string into a value of the type const char* and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type const char* and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, const char* defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, const char* defvalue)
     {
         // Strip the quotes
         unsigned int pos1 = input.find("\"") + 1;
@@ -533,12 +533,12 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given std::string into a value of the type Ogre::Vector2 and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type _Vector2 and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, const Ogre::Vector2& defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, const Vector2& defvalue)
     {
         // Strip the value-string
         unsigned int pos1 = input.find("(") + 1;
@@ -547,7 +547,7 @@ namespace orxonox
         // Try to convert the stripped value-string to Vector2
         if (pos1 < input.length() && pos2 < input.length() && pos1 < pos2)
         {
-            std::vector<std::string> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
+            std::vector<String> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
             if (!string2Number(this->value_vector2_.x, tokens[0], defvalue.x))
             {
                 this->value_vector2_ = defvalue;
@@ -567,12 +567,12 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given std::string into a value of the type Ogre::Vector3 and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type Vector3 and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, const Ogre::Vector3& defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, const Vector3& defvalue)
     {
         // Strip the value-string
         unsigned int pos1 = input.find("(") + 1;
@@ -581,7 +581,7 @@ namespace orxonox
         // Try to convert the stripped value-string to Vector3
         if (pos1 < input.length() && pos2 < input.length() && pos1 < pos2)
         {
-            std::vector<std::string> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
+            std::vector<String> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
             if (!string2Number(this->value_vector3_.x, tokens[0], defvalue.x))
             {
                 this->value_vector3_ = defvalue;
@@ -606,12 +606,12 @@ namespace orxonox
     }
 
     /**
-        @brief Parses a given std::string into a value of the type Ogre::ColourValue and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
+        @brief Parses a given String into a value of the type ColourValue and assigns it to the right variable. If the conversion failed, the default-value gets assigned.
         @param input The string to convert
         @param defvalue The default-value
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseSting(const std::string& input, const Ogre::ColourValue& defvalue)
+    bool ConfigValueContainer::parseSting(const String& input, const ColourValue& defvalue)
     {
         // Strip the value-string
         unsigned int pos1 = input.find("(") + 1;
@@ -620,7 +620,7 @@ namespace orxonox
         // Try to convert the stripped value-string to Vector3
         if (pos1 < input.length() && pos2 < input.length() && pos1 < pos2)
         {
-            std::vector<std::string> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
+            std::vector<String> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
             if (!string2Number(this->value_colourvalue_.r, tokens[0], defvalue.r))
             {
                 this->value_colourvalue_ = defvalue;
@@ -677,14 +677,14 @@ namespace orxonox
             ConfigValueContainer::readConfigFile(CONFIGFILEPATH);
 
         // The string of the section we're searching
-        std::string section = "";
+        String section = "";
         section.append("[");
         section.append(this->classname_);
         section.append("]");
 
         // Iterate through all config-file-lines
         bool success = false;
-        std::list<std::string>::iterator it1;
+        std::list<String>::iterator it1;
         for(it1 = ConfigValueContainer::getConfigFileLines().begin(); it1 != ConfigValueContainer::getConfigFileLines().end(); ++it1)
         {
             // Don't try to parse comments
@@ -695,10 +695,10 @@ namespace orxonox
             {
                 // We found the right section
                 bool bLineIsEmpty = false;
-                std::list<std::string>::iterator positionToPutNewLineAt;
+                std::list<String>::iterator positionToPutNewLineAt;
 
                 // Iterate through all lines in the section
-                std::list<std::string>::iterator it2;
+                std::list<String>::iterator it2;
                 for(it2 = ++it1; it2 != ConfigValueContainer::getConfigFileLines().end(); ++it2)
                 {
                     // Don't try to parse comments
@@ -776,10 +776,10 @@ namespace orxonox
         @param line The line to check
         @return True = it's a comment
     */
-    bool ConfigValueContainer::isComment(const std::string& line)
+    bool ConfigValueContainer::isComment(const String& line)
     {
         // Strip the line, whitespaces are disturbing
-        std::string teststring = getStrippedLine(line);
+        String teststring = getStrippedLine(line);
 
         // There are four possible comment-symbols:
         //  1) #comment in script-language style
@@ -797,7 +797,7 @@ namespace orxonox
         @param line The line to check
         @return True = it's empty
     */
-    bool ConfigValueContainer::isEmpty(const std::string& line)
+    bool ConfigValueContainer::isEmpty(const String& line)
     {
         return getStrippedLine(line) == "";
     }
@@ -807,9 +807,9 @@ namespace orxonox
         @param line The line to strip
         @return The stripped line
     */
-    std::string ConfigValueContainer::getStrippedLine(const std::string& line)
+    String ConfigValueContainer::getStrippedLine(const String& line)
     {
-        std::string output = line;
+        String output = line;
         unsigned int pos;
         while ((pos = output.find(" ")) < output.length())
             output.erase(pos, 1);
@@ -824,9 +824,9 @@ namespace orxonox
         @param bStripped True = strip the value-string
         @return The value-string
     */
-    std::string ConfigValueContainer::parseValueString(bool bStripped)
+    String ConfigValueContainer::parseValueString(bool bStripped)
     {
-        std::string output;
+        String output;
         if (bStripped)
             output = this->getStrippedLine(*this->configFileLine_);
         else
@@ -838,10 +838,10 @@ namespace orxonox
     /**
         @returns a list, containing all entrys in the config-file.
     */
-    std::list<std::string>& ConfigValueContainer::getConfigFileLines()
+    std::list<String>& ConfigValueContainer::getConfigFileLines()
     {
         // This is done to avoid problems while executing this code before main()
-        static std::list<std::string> configFileLinesStaticReference = std::list<std::string>();
+        static std::list<String> configFileLinesStaticReference = std::list<String>();
         return configFileLinesStaticReference;
     }
 
@@ -865,7 +865,7 @@ namespace orxonox
         @brief Reads the config-file and stores the lines in a list.
         @param filename The name of the config-file
     */
-    void ConfigValueContainer::readConfigFile(const std::string& filename)
+    void ConfigValueContainer::readConfigFile(const String& filename)
     {
         // This creates the file if it's not existing
         std::ofstream createFile;
@@ -912,7 +912,7 @@ namespace orxonox
         @brief Writes the content of the list, containing all lines of the config-file, into the config-file.
         @param filename The name of the config-file
     */
-    void ConfigValueContainer::writeConfigFile(const std::string& filename)
+    void ConfigValueContainer::writeConfigFile(const String& filename)
     {
         // Make sure we stored the config-file in the list
         if (!ConfigValueContainer::finishedReadingConfigFile())
@@ -929,7 +929,7 @@ namespace orxonox
         }
 
         // Iterate through the list an write the lines into the file
-        std::list<std::string>::iterator it;
+        std::list<String>::iterator it;
         for (it = ConfigValueContainer::getConfigFileLines().begin(); it != ConfigValueContainer::getConfigFileLines().end(); ++it)
         {
             file << (*it) << std::endl;
@@ -942,11 +942,11 @@ namespace orxonox
         @brief Adds a description to the config-value.
         @param description The description
     */
-    void ConfigValueContainer::description(const std::string& description)
+    void ConfigValueContainer::description(const String& description)
     {
         if (!this->bAddedDescription_)
         {
-            this->description_ = std::string("ConfigValueDescription::" + this->classname_ + "::" + this->varname_);
+            this->description_ = String("ConfigValueDescription::" + this->classname_ + "::" + this->varname_);
             Language::getLanguage().addEntry(description_, description);
             this->bAddedDescription_ = true;
         }

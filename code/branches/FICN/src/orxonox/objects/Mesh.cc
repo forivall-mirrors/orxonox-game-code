@@ -27,8 +27,11 @@
 
 #include <sstream>
 
-#include "Mesh.h"
+#include <OgreSceneManager.h>
+
 #include "../Orxonox.h"
+
+#include "Mesh.h"
 
 namespace orxonox
 {
@@ -39,7 +42,7 @@ namespace orxonox
         this->entity_ = 0;
     }
 
-    void Mesh::setMesh(const std::string& file)
+    void Mesh::setMesh(const String& file)
     {
         std::ostringstream name;
         name << (Mesh::meshCounter_s++);

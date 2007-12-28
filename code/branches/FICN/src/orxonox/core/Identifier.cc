@@ -117,9 +117,9 @@ namespace orxonox
     /**
         @returns a reference to the Identifier map, containing all Identifiers.
     */
-    std::map<std::string, Identifier*>& Identifier::getIdentifierMap()
+    std::map<String, Identifier*>& Identifier::getIdentifierMap()
     {
-        static std::map<std::string, Identifier*> identifierMapStaticReference = std::map<std::string, Identifier*>();
+        static std::map<String, Identifier*> identifierMapStaticReference = std::map<String, Identifier*>();
         return identifierMapStaticReference;
     }
 

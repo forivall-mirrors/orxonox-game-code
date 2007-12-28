@@ -1,40 +1,44 @@
 /*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      Yuning Chai
- *   Co-authors:
- *      ...
- *
- */
+*   ORXONOX - the hottest 3D action shooter ever to exist
+*
+*
+*   License notice:
+*
+*   This program is free software; you can redistribute it and/or
+*   modify it under the terms of the GNU General Public License
+*   as published by the Free Software Foundation; either version 2
+*   of the License, or (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*
+*   Author:
+*      Yuning Chai
+*   Co-authors:
+*      ...
+*
+*/
 
 #ifndef _HUD_H__
 #define _HUD_H__
 
 #include <OgrePrerequisites.h>
 
-//#include "../OrxonoxPrereqs.h"
+#include "../OrxonoxPrereqs.h"
+
+#include "misc/String.h"
 
 
-namespace hud {
-  class HUD {
+namespace orxonox
+{
+  class HUD
+  {
   private:
     Ogre::OverlayElement* timeText_;
     Ogre::OverlayElement* targetWindowNameText_;
@@ -56,8 +60,8 @@ namespace hud {
     int timeMin_;
     int timeSec_;
 
-    Ogre::String targetWindowName_;
-    Ogre::String targetWindowStatus_;
+    String targetWindowName_;
+    String targetWindowStatus_;
     int targetWindowDistance_;
     int targetWindowHitRating_;
 
@@ -88,8 +92,8 @@ namespace hud {
     void init( void );
 
     void setTime(int i, int j);
-    void setTargetWindowName(Ogre::String i);
-    void setTargetWindowStatus(Ogre::String i);
+    void setTargetWindowName(String i);
+    void setTargetWindowStatus(String i);
     void setTargetWindowDistance(int i);
     void setTargetWindowHitRating(int i);
     void setEnergyValue(int i);

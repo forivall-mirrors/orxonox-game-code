@@ -1,9 +1,11 @@
 #ifndef _Mesh_H__
 #define _Mesh_H__
 
-#include <string>
+#include <OgreEntity.h>
 
-#include "OgreEntity.h"
+#include "../OrxonoxPrereqs.h"
+
+#include "misc/String.h"
 
 namespace orxonox
 {
@@ -12,12 +14,12 @@ namespace orxonox
         public:
             Mesh();
             ~Mesh();
-            void setMesh(const std::string& file);
+            void setMesh(const String& file);
 
             inline Ogre::Entity* getEntity()
                 { return this->entity_; }
 
-            inline const std::string& getName() const
+            inline const String& getName() const
                 { return this->entity_->getName(); }
 
         private:

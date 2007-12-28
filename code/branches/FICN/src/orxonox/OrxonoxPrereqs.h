@@ -39,6 +39,20 @@
 class InputManager;
 class SpaceShipSteering;
 
+// TinyXML
+class TiXmlString;
+class TiXmlOutStream;
+class TiXmlNode;
+class TiXmlHandle;
+class TiXmlDocument;
+class TiXmlElement;
+class TiXmlComment;
+class TiXmlUnknown;
+class TiXmlAttribute;
+class TiXmlText;
+class TiXmlDeclaration;
+class TiXmlParsingData;
+
 namespace orxonox {
   class Ambient;
   class BaseEntity;
@@ -69,6 +83,9 @@ namespace orxonox {
   class BaseWeapon;
   class BarrelGun;
   class WeaponStation;
+
+  class ParticleInterface;
+  class HUD;
 }
 
 namespace audio {
@@ -76,10 +93,6 @@ namespace audio {
   class AudioManager;
   class AudioSource;
   class AudioStream;
-}
-
-namespace hud {
-  class HUD;
 }
 
 namespace network {
@@ -109,10 +122,6 @@ namespace network {
   struct synchData;
   struct synchronisableVariable;
 
-}
-
-namespace particle {
-  class ParticleInterface;
 }
 
 #endif /* _OrxonoxPrereqs_H__ */

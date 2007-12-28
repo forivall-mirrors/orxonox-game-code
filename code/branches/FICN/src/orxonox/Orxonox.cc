@@ -31,7 +31,6 @@
  */
 
 //****** OGRE ******
-#include <OgreString.h>
 #include <OgreException.h>
 #include <OgreRoot.h>
 #include <OgreFrameListener.h>
@@ -46,11 +45,13 @@
 #include <OIS/OIS.h>
 
 //****** STD *******
-#include <string>
 #include <iostream>
 #include <exception>
 
 //***** ORXONOX ****
+//misc
+#include "misc/Sleep.h"
+
 // loader and audio
 #include "loader/LevelLoader.h"
 #include "audio/AudioManager.h"
@@ -76,10 +77,8 @@
 
 namespace orxonox
 {
-  using namespace Ogre;
-
    // put this in a seperate Class or solve the problem in another fashion
-  class OrxListener : public FrameListener
+  class OrxListener : public Ogre::FrameListener
   {
     public:
       OrxListener(OIS::Keyboard *keyboard, audio::AudioManager*  auMan, gameMode mode)
@@ -89,7 +88,7 @@ namespace orxonox
         auMan_ = auMan;
       }
 
-      bool frameStarted(const FrameEvent& evt)
+      bool frameStarted(const Ogre::FrameEvent& evt)
       {
         auMan_->update();
         updateAI();
@@ -153,14 +152,14 @@ namespace orxonox
    * @param argv list of arguments
    * @param path path to config (in home dir or something)
    */
-  void Orxonox::init(int argc, char **argv, std::string path)
+  void Orxonox::init(int argc, char **argv, String path)
   {
     //TODO: find config file (assuming executable directory)
     //TODO: read config file
     //TODO: give config file to Ogre
-    std::string mode;
+    String mode;
 //     if(argc>=2)
-//       mode = std::string(argv[1]);
+//       mode = String(argv[1]);
 //     else
 //       mode = "";
     ArgReader ar = ArgReader(argc, argv);
@@ -169,17 +168,17 @@ namespace orxonox
     ar.checkArgument("ip", serverIp_, false);
     //mode = "presentation";
     if(ar.errorHandling()) die();
-    if(mode == std::string("server"))
+    if(mode == String("server"))
     {
       serverInit(path);
       mode_ = SERVER;
     }
-    else if(mode == std::string("client"))
+    else if(mode == String("client"))
     {
       clientInit(path);
       mode_ = CLIENT;
     }
-    else if(mode == std::string("presentation"))
+    else if(mode == String("presentation"))
     {
       serverInit(path);
       mode_ = PRESENTATION;
@@ -243,7 +242,7 @@ namespace orxonox
     delete this;
   }
 
-  void Orxonox::standaloneInit(std::string path)
+  void Orxonox::standaloneInit(String path)
   {
     ogre_->setConfigPath(path);
     ogre_->setup();
@@ -262,7 +261,7 @@ namespace orxonox
     startRenderLoop();*/
   }
 
-  void Orxonox::playableServer(std::string path)
+  void Orxonox::playableServer(String path)
   {
     ogre_->setConfigPath(path);
     ogre_->setup();
@@ -296,7 +295,7 @@ namespace orxonox
 
   }
 
-  void Orxonox::serverInit(std::string path)
+  void Orxonox::serverInit(String path)
   {
     COUT(2) << "initialising server" << std::endl;
     ogre_->setConfigPath(path);
@@ -306,7 +305,7 @@ namespace orxonox
     // FIXME add network framelistener
   }
 
-  void Orxonox::clientInit(std::string path)
+  void Orxonox::clientInit(String path)
   {
     COUT(2) << "initialising client" << std::endl;
     ogre_->setConfigPath(path);
@@ -321,7 +320,7 @@ namespace orxonox
 
   void Orxonox::defineResources()
   {
-    Ogre::String secName, typeName, archName;
+    String secName, typeName, archName;
     Ogre::ConfigFile cf;
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
     cf.load(macBundlePath() + "/Contents/Resources/resources.cfg");
@@ -340,9 +339,9 @@ namespace orxonox
         typeName = i->first;
         archName = i->second;
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-        ResourceGroupManager::getSingleton().addResourceLocation( String(macBundlePath() + "/" + archName), typeName, secName);
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation( String(macBundlePath() + "/" + archName), typeName, secName);
 #else
-        ResourceGroupManager::getSingleton().addResourceLocation( archName, typeName, secName);
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation( archName, typeName, secName);
 #endif
       }
     }
@@ -351,7 +350,7 @@ namespace orxonox
   void Orxonox::setupRenderSystem()
   {
     if (!root_->restoreConfig() && !root_->showConfigDialog())
-      throw Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
+      throw Ogre::Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
   }
 
   void Orxonox::createRenderWindow()
@@ -361,8 +360,8 @@ namespace orxonox
 
   void Orxonox::initializeResourceGroups()
   {
-    TextureManager::getSingleton().setDefaultNumMipmaps(5);
-    ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
   }
 
   /**
@@ -380,9 +379,9 @@ namespace orxonox
     loader_ = new loader::LevelLoader("sample.oxw");
     loader_->loadLevel();
 
-    Overlay* hudOverlay = OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    hud::HUD* orxonoxHud;
-    orxonoxHud = new hud::HUD();
+    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
+    HUD* orxonoxHud;
+    orxonoxHud = new HUD();
     orxonoxHud->setEnergyValue(20);
     orxonoxHud->setEnergyDistr(20,20,60);
     hudOverlay->show();
@@ -426,13 +425,13 @@ namespace orxonox
 
     // fixes auto repeat problem
     #if defined OIS_LINUX_PLATFORM
-      pl.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+      pl.insert(std::make_pair(String("XAutoRepeatOn"), String("true")));
     #endif
 
-    RenderWindow *win = ogre_->getRoot()->getAutoCreatedWindow();
+      Ogre::RenderWindow *win = ogre_->getRoot()->getAutoCreatedWindow();
     win->getCustomAttribute("WINDOW", &windowHnd);
     windowHndStr << windowHnd;
-    pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
+    pl.insert(std::make_pair(String("WINDOW"), windowHndStr.str()));
     inputManager_ = OIS::InputManager::createInputSystem(pl);
 
     try

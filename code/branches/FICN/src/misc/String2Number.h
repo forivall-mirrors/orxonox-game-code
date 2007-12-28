@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "../orxonox/core/Debug.h"
+#include "orxonox/core/Debug.h"
 
 /**
  * String to number conversion

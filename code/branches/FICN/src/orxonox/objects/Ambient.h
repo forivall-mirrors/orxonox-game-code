@@ -1,8 +1,9 @@
 #ifndef _Ambient_H__
 #define _Ambient_H__
 
+#include "../OrxonoxPrereqs.h"
+
 #include "BaseObject.h"
-#include "../../tinyxml/tinyxml.h"
 
 namespace orxonox
 {

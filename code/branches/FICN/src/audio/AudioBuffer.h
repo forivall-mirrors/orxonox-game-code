@@ -8,13 +8,13 @@ namespace audio
 	class AudioBuffer
 	{
 	public:
-		AudioBuffer(std::string fileName);
+		AudioBuffer(orxonox::String fileName);
 		~AudioBuffer();
 	private:
 		// Buffers hold sound data.
 		ALuint buffer;
 		// Identifier
-		std::string name;
+		orxonox::String name;
 		// True if AL was able to load data
 		ALboolean loaded;
 		

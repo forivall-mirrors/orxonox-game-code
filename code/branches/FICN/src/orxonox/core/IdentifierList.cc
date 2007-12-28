@@ -30,8 +30,8 @@
     @brief Implementation of the IdentifierList class.
 */
 
-#include "IdentifierList.h"
 #include "Identifier.h"
+#include "IdentifierList.h"
 
 namespace orxonox
 {
@@ -129,10 +129,10 @@ namespace orxonox
     /**
         @returns a string, containing a list of the names of all Identifiers in the list.
     */
-    std::string IdentifierList::toString() const
+    String IdentifierList::toString() const
     {
         IdentifierListElement* temp = this->first_;
-        std::string output = "";
+        String output = "";
 
         while (temp)
         {

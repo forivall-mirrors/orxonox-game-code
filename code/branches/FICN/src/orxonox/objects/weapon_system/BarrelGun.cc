@@ -25,13 +25,12 @@
  *
  */
 
-#include "OgreMath.h"
-#include "OgreVector3.h"
-#include "OgreStringConverter.h"
-#include "OgreSceneNode.h"
-#include "OgreEntity.h"
-#include "OgreSceneManager.h"
+#include <OgreStringConverter.h>
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
+#include <OgreSceneManager.h>
 
+#include "misc/Vector3.h"
 #include "Bullet.h"
 #include "BulletManager.h"
 #include "AmmunitionDump.h"
@@ -41,8 +40,6 @@
 
 
 namespace orxonox {
-  using namespace Ogre;
-
   CreateFactory(BarrelGun);
 
   BarrelGun::BarrelGun()
@@ -77,7 +74,7 @@ namespace orxonox {
           getNode()->getWorldOrientation());
 
     Ogre::Entity* bulletEntity = sceneMgr_->createEntity("BulletEntity"
-          + StringConverter::toString(bulletCounter_++), "Barrel.mesh");
+      + Ogre::StringConverter::toString(bulletCounter_++), "Barrel.mesh");
 
     Vector3 speed = (temp->getOrientation() * Vector3(1, 0, 0))
           .normalisedCopy() * primaryBulletSpeed_;
@@ -105,7 +102,6 @@ namespace orxonox {
   }
 
 
-
   void BarrelGun::secondaryFire()
   {
     if (leftAmmo_ < 5)
@@ -119,7 +115,7 @@ namespace orxonox {
           getNode()->getWorldOrientation());
 
     Ogre::Entity* bulletEntity = sceneMgr_->createEntity("BulletEntity"
-          + StringConverter::toString(bulletCounter_++), "Barrel.mesh");
+      + Ogre::StringConverter::toString(bulletCounter_++), "Barrel.mesh");
 
     Vector3 speed = (temp->getOrientation() * Vector3(1, 0, 0))
           .normalisedCopy() * secondaryBulletSpeed_*0.5;

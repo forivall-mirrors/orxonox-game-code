@@ -219,7 +219,11 @@ typedef unsigned int uint32;
 typedef unsigned short uint16;
 typedef unsigned char uint8;
 
-}
+#ifdef ORXONOX_DOUBLE_PRECISION
+typedef double Real;
+#else
+typedef float Real;
+#endif
 
 
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
@@ -269,14 +273,6 @@ typedef unsigned char uint8;
 
 #endif
 
-
-// hack for the usleep/Sleep problem
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
-#  include <windows.h>
-#  define usleep(x) Sleep((x)/1000)
-#elif ORXONOX_PLATFORM == ORXONOX_PLATFORM_LINUX
-#  include <unistd.h>
-#endif
-
+} /* namespace orxonox */
 
 #endif /* _OrxonoxPlatform_H__ */

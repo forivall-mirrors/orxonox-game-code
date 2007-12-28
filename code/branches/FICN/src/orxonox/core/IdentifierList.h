@@ -36,9 +36,9 @@
 #ifndef _IdentifierList_H__
 #define _IdentifierList_H__
 
-#include <string>
-
 #include "CorePrereqs.h"
+
+#include "misc/String.h"
 
 namespace orxonox
 {
@@ -61,7 +61,7 @@ namespace orxonox
             void add(const Identifier* identifier);
             void remove(const Identifier* identifier);
             bool isInList(const Identifier* identifier) const;
-            std::string toString() const;
+            String toString() const;
 
             IdentifierListElement* first_;      //!< The first element in the list
     };

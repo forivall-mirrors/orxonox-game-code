@@ -37,6 +37,7 @@
 #define _DebugLevel_H__
 
 #include "CorePrereqs.h"
+
 #include "OrxonoxClass.h"
 #include "OutputHandler.h"
 

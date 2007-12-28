@@ -25,16 +25,9 @@
  *
  */
 
-#include "OgreSceneNode.h"
-#include "OgreEntity.h"
-#include "OgreVector3.h"
-
 #include "Bullet.h"
 
-
 namespace orxonox {
-  using namespace Ogre;
-
   CreateFactory(Bullet);
 
   Bullet::Bullet()

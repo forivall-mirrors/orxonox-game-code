@@ -51,11 +51,11 @@
 #ifndef _Identifier_H__
 #define _Identifier_H__
 
-#include <string>
 #include <map>
 
 #include "CorePrereqs.h"
 
+#include "misc/String.h"
 #include "ObjectList.h"
 #include "IdentifierList.h"
 #include "Factory.h"
@@ -111,7 +111,7 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier) const;
 
             /** @returns the name of the class the Identifier belongs to. */
-            inline const std::string& getName() const { return this->name_; }
+            inline const String& getName() const { return this->name_; }
 
             /** @returns the parents of the class the Identifier belongs to. */
             inline const IdentifierList& getParents() const { return this->parents_; }
@@ -129,14 +129,14 @@ namespace orxonox
             void setNetworkID(unsigned int id);
 
             /** @returns the ConfigValueContainer of a variable, given by the string of its name. @param varname The name of the variable */
-            inline ConfigValueContainer* getConfigValueContainer(const std::string& varname)
+            inline ConfigValueContainer* getConfigValueContainer(const String& varname)
                 { return this->configValues_[varname]; }
 
             /** @brief Sets the ConfigValueContainer of a variable, given by the string of its name. @param varname The name of the variablee @param container The container */
-            inline void setConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
+            inline void setConfigValueContainer(const String& varname, ConfigValueContainer* container)
                 { this->configValues_[varname] = container; }
 
-            static std::map<std::string, Identifier*>& getIdentifierMap();
+            static std::map<String, Identifier*>& getIdentifierMap();
 
         private:
             Identifier();
@@ -165,13 +165,13 @@ namespace orxonox
             IdentifierList parents_;                                    //!< The Parents of the class the Identifier belongs to
             IdentifierList* children_;                                  //!< The Children of the class the Identifier belongs to
 
-            std::string name_;                                          //!< The name of the class the Identifier belongs to
+            String name_;                                          //!< The name of the class the Identifier belongs to
 
             BaseFactory* factory_;                                      //!< The Factory, able to create new objects of the given class (if available)
             bool bCreatedOneObject_;                                    //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
             static int hierarchyCreatingCounter_s;                      //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
             unsigned int classID_;                                      //!< The network ID to identify a class through the network
-            std::map<std::string, ConfigValueContainer*> configValues_; //!< A map to link the string of configurable variables with their ConfigValueContainer
+            std::map<String, ConfigValueContainer*> configValues_; //!< A map to link the string of configurable variables with their ConfigValueContainer
     };
 
 
@@ -188,10 +188,10 @@ namespace orxonox
     class ClassIdentifier : public Identifier
     {
         public:
-            static ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass);
+            static ClassIdentifier<T>* registerClass(const IdentifierList* parents, const String& name, bool bRootClass);
             static void addObject(T* object);
             static ClassIdentifier<T>* getIdentifier();
-            void setName(const std::string& name);
+            void setName(const String& name);
 
         private:
             ClassIdentifier();
@@ -220,7 +220,7 @@ namespace orxonox
         @return The ClassIdentifier itself
     */
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass)
+    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(const IdentifierList* parents, const String& name, bool bRootClass)
     {
         COUT(4) << "*** Register Class in " << name << "-Singleton." << std::endl;
 
@@ -264,13 +264,13 @@ namespace orxonox
         @param name The name
     */
     template <class T>
-    void ClassIdentifier<T>::setName(const std::string& name)
+    void ClassIdentifier<T>::setName(const String& name)
     {
         // Make sure we didn't already set the name, to avoid duplicate entries in the Identifier map
         if (!this->bSetName_)
         {
             this->name_ = name;
-            this->getIdentifierMap().insert(std::pair<std::string, Identifier*>(name, this));
+            this->getIdentifierMap().insert(std::pair<String, Identifier*>(name, this));
             this->bSetName_ = true;
         }
     }

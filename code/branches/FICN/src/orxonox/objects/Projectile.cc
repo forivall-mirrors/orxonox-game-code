@@ -25,10 +25,12 @@
  *
  */
 
-#include "Projectile.h"
 #include "../core/CoreIncludes.h"
+#include "SpaceShip.h"
 #include "Explosion.h"
 #include "Model.h"
+
+#include "Projectile.h"
 
 namespace orxonox
 {

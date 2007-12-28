@@ -1,8 +1,11 @@
 #ifndef _Skybox_H__
 #define _Skybox_H__
 
+#include "../OrxonoxPrereqs.h"
+
 #include "BaseObject.h"
-#include "../../tinyxml/tinyxml.h"
+
+class TiXmlElement; // Forward declaration
 
 namespace orxonox
 {

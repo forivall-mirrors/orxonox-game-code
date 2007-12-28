@@ -1,17 +1,20 @@
 #ifndef _SpaceShip_H__
 #define _SpaceShip_H__
 
-#include <OIS/OIS.h>
+#include <OgrePrerequisites.h>
+#include <OIS/OISMouse.h>
+
+#include "../OrxonoxPrereqs.h"
 
 #include "Model.h"
 #include "BillboardSet.h"
-#include "OgreSceneNode.h"
 
-#include "../../tinyxml/tinyxml.h"
-#include "../particle/ParticleInterface.h"
+class TiXmlElement;          // Forward declaration
 
 namespace orxonox
 {
+    class ParticleInterface; // Forward declaration
+
     class SpaceShip : public Model, public OIS::MouseListener
     {
         public:
@@ -49,7 +52,7 @@ namespace orxonox
 
             Ogre::SceneNode* camNode_;
 
-            particle::ParticleInterface* tt_;
+            ParticleInterface* tt_;
 
             BillboardSet redBillboard_;
             BillboardSet greenBillboard_;

@@ -41,7 +41,7 @@
 namespace loader
 {
 
-  LevelLoader::LevelLoader(std::string file, std::string path)
+  LevelLoader::LevelLoader(orxonox::String file, orxonox::String path)
   {
     valid_ = false;
 
@@ -154,7 +154,7 @@ namespace loader
             {
 
               tElem = tNode->ToElement();
-              std::string elemVal = tElem->Value();
+              orxonox::String elemVal = tElem->Value();
               if (elemVal == "ogg")
               {
                 COUT(3) << "Adding sound "<< tElem->Attribute("src") << std::endl;

@@ -31,10 +31,11 @@
 
 #include <OgrePrerequisites.h>
 
-#include "orxonox/OrxonoxPrereqs.h"
+#include "../../OrxonoxPrereqs.h"
 
 #include "network/Synchronisable.h"
 //#include "../core/CoreIncludes.h"
+#include "misc/String.h"
 #include "../BaseObject.h"
 
 
@@ -45,13 +46,13 @@ namespace orxonox {
     AmmunitionDump();
 	  ~AmmunitionDump();
 
-    void setDumpSize(const Ogre::String &name, int size);
+    void setDumpSize(const String &name, int size);
 
-    int store(const Ogre::String &name, int quantiy);
+    int store(const String &name, int quantiy);
 
-    int getAmmunition(const Ogre::String &name, int quantity);
+    int getAmmunition(const String &name, int quantity);
 
-    int getStockSize(const Ogre::String &name);
+    int getStockSize(const String &name);
 
     virtual void loadParams(TiXmlElement* xmlElem) { BaseObject::loadParams(xmlElem); };
 

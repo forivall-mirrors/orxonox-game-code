@@ -25,15 +25,15 @@
  *
  */
 
-#include <string>
 #include <sstream>
 
-#include "WorldEntity.h"
+#include "tinyxml/tinyxml.h"
+#include "misc/Tokenizer.h"
+#include "misc/String2Number.h"
+#include "misc/String.h"
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
-#include "../../tinyxml/tinyxml.h"
-#include "../../misc/Tokenizer.h"
-#include "../../misc/String2Number.h"
+#include "WorldEntity.h"
 
 namespace orxonox
 {
@@ -87,7 +87,7 @@ namespace orxonox
 
         if (xmlElem->Attribute("position"))
         {
-            std::vector<std::string> pos = tokenize(xmlElem->Attribute("position"),",");
+            std::vector<String> pos = tokenize(xmlElem->Attribute("position"),",");
             float x, y, z;
             String2Number<float>(x, pos[0]);
             String2Number<float>(y, pos[1]);
@@ -97,7 +97,7 @@ namespace orxonox
 
         if (xmlElem->Attribute("direction"))
         {
-            std::vector<std::string> pos = tokenize(xmlElem->Attribute("direction"),",");
+            std::vector<String> pos = tokenize(xmlElem->Attribute("direction"),",");
             float x, y, z;
             String2Number<float>(x, pos[0]);
             String2Number<float>(y, pos[1]);
@@ -124,7 +124,7 @@ namespace orxonox
 
         if (xmlElem->Attribute("scale"))
         {
-            std::string scaleStr = xmlElem->Attribute("scale");
+            String scaleStr = xmlElem->Attribute("scale");
             float scale;
             String2Number<float>(scale, scaleStr);
             this->setScale(scale);
@@ -132,7 +132,7 @@ namespace orxonox
 
         if (xmlElem->Attribute("rotationAxis"))
         {
-            std::vector<std::string> pos = tokenize(xmlElem->Attribute("rotationAxis"),",");
+            std::vector<String> pos = tokenize(xmlElem->Attribute("rotationAxis"),",");
             float x, y, z;
             String2Number<float>(x, pos[0]);
             String2Number<float>(y, pos[1]);

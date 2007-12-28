@@ -1,8 +1,9 @@
 #ifndef _Camera_H__
 #define _Camera_H__
 
+#include "../OrxonoxPrereqs.h"
+
 #include "BaseObject.h"
-#include "../../tinyxml/tinyxml.h"
 
 namespace orxonox
 {

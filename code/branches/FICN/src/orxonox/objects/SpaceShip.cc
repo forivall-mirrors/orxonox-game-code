@@ -25,16 +25,22 @@
  *
  */
 
-#include "SpaceShip.h"
+#include <OIS/OIS.h>
+#include <OgreCamera.h>
+#include <OgreRenderWindow.h>
+#include <OgreParticleSystem.h>
+#include <OgreSceneNode.h>
+
+#include "tinyxml/tinyxml.h"
+#include "misc/String2Number.h"
+#include "misc/String.h"
+#include "../core/CoreIncludes.h"
+#include "../core/Debug.h"
+#include "../Orxonox.h"
+#include "../particle/ParticleInterface.h"
 #include "Projectile.h"
 
-#include "../../tinyxml/tinyxml.h"
-#include "../../misc/String2Number.h"
-#include "../core/CoreIncludes.h"
-#include "../Orxonox.h"
-
-#include "OgreCamera.h"
-#include <OgreRenderWindow.h>
+#include "SpaceShip.h"
 
 namespace orxonox
 {
@@ -133,7 +139,7 @@ namespace orxonox
 
 
         // START CREATING THRUSTER
-        this->tt_ = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
+        this->tt_ = new ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         this->tt_->getParticleSystem()->setParameter("local_space","true");
         this->tt_->newEmitter();
 /*
@@ -189,10 +195,10 @@ namespace orxonox
 /*
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
         {
-            std::string forwardStr = xmlElem->Attribute("forward");
-            std::string rotateupdownStr = xmlElem->Attribute("rotateupdown");
-            std::string rotaterightleftStr = xmlElem->Attribute("rotaterightleft");
-            std::string looprightleftStr = xmlElem->Attribute("looprightleft");
+            String forwardStr = xmlElem->Attribute("forward");
+            String rotateupdownStr = xmlElem->Attribute("rotateupdown");
+            String rotaterightleftStr = xmlElem->Attribute("rotaterightleft");
+            String looprightleftStr = xmlElem->Attribute("looprightleft");
 
             String2Number<float>(this->maxSpeedForward_, forwardStr);
             String2Number<float>(this->maxSpeedRotateUpDown_, rotateupdownStr);
@@ -205,13 +211,13 @@ namespace orxonox
         if (xmlElem->Attribute("maxSpeed") && xmlElem->Attribute("maxSideAndBackSpeed") && xmlElem->Attribute("maxRotation") && xmlElem->Attribute("transAcc") && xmlElem->Attribute("rotAcc") && xmlElem->Attribute("transDamp") && xmlElem->Attribute("rotDamp"))
         {
 
-            std::string msStr = xmlElem->Attribute("maxSpeed");
-            std::string msabsStr = xmlElem->Attribute("maxSideAndBackSpeed");
-            std::string mrStr = xmlElem->Attribute("maxRotation");
-            std::string taStr = xmlElem->Attribute("transAcc");
-            std::string raStr = xmlElem->Attribute("rotAcc");
-            std::string tdStr = xmlElem->Attribute("transDamp");
-            std::string rdStr = xmlElem->Attribute("rotDamp");
+            String msStr = xmlElem->Attribute("maxSpeed");
+            String msabsStr = xmlElem->Attribute("maxSideAndBackSpeed");
+            String mrStr = xmlElem->Attribute("maxRotation");
+            String taStr = xmlElem->Attribute("transAcc");
+            String raStr = xmlElem->Attribute("rotAcc");
+            String tdStr = xmlElem->Attribute("transDamp");
+            String rdStr = xmlElem->Attribute("rotDamp");
 
             String2Number<float>(this->maxSpeed_, msStr);
             String2Number<float>(this->maxSideAndBackSpeed_, msabsStr);

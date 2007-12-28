@@ -33,7 +33,7 @@
 #ifndef _CorePrereqs_H__
 #define _CorePrereqs_H__
 
-#include "../OrxonoxPlatform.h"
+#include "orxonox/OrxonoxPlatform.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings

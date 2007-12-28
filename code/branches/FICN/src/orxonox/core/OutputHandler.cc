@@ -25,8 +25,8 @@
  *
  */
 
-#include "OutputHandler.h"
 #include "DebugLevel.h"
+#include "OutputHandler.h"
 
 namespace orxonox
 {
@@ -34,7 +34,7 @@ namespace orxonox
         @brief Constructor: Opens the logfile and writes the first line.
         @param logfilename The name of the logfile
     */
-    OutputHandler::OutputHandler(const std::string& logfilename)
+    OutputHandler::OutputHandler(const String& logfilename)
     {
         this->logfilename_ = logfilename;
         this->logfile_.open(this->logfilename_.c_str(), std::fstream::out);

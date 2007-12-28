@@ -36,9 +36,10 @@
 #define _Debug_H__
 
 #include <stdio.h>
-#include "OutputHandler.h"
 
 #include "CorePrereqs.h"
+
+#include "OutputHandler.h"
 
 extern "C" _CoreExport int getSoftDebugLevel();
 

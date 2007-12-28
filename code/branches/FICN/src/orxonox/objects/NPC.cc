@@ -25,9 +25,8 @@
  *
  */
 
+#include "../core/CoreIncludes.h"
 #include "NPC.h"
-#include "../core/Iterator.h"
-#include "../core/ObjectList.h"
 
 namespace orxonox {
 

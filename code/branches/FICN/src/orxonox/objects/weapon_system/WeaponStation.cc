@@ -25,21 +25,11 @@
  *
  */
 
-#include "OgreMath.h"
-#include "OgreVector3.h"
-#include "OgreStringConverter.h"
-#include "OgreSceneNode.h"
-#include "OgreEntity.h"
-#include "OgreSceneManager.h"
-
 #include "BaseWeapon.h"
-
 #include "WeaponStation.h"
 
 
 namespace orxonox {
-  using namespace Ogre;
-
   WeaponStation::WeaponStation(int stationSize)
         : slots_(new BaseWeapon*[stationSize]),
           lastActiveSlotIndex_(-1), stationSize_(stationSize)

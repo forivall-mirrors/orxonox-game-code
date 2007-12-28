@@ -42,14 +42,16 @@
 #ifndef _ConfigValueContainer_H__
 #define _ConfigValueContainer_H__
 
-#include <string>
 #include <list>
 
 #include "CorePrereqs.h"
 
-#include "OgreVector2.h"
-#include "OgreVector3.h"
-#include "OgreColourValue.h"
+#include "misc/Vector2.h"
+#include "misc/Vector3.h"
+#include "misc/Matrix3.h"
+#include "misc/Quaternion.h"
+#include "misc/String.h"
+#include "misc/ColourValue.h"
 #include "Language.h"
 
 namespace orxonox
@@ -84,25 +86,25 @@ namespace orxonox
                 LongDouble,
                 Bool,
                 ConstChar,
-                String,
-                Vector2,
-                Vector3,
-                ColourValue
+                _String,
+                _Vector2,
+                _Vector3,
+                _ColourValue
             };
 
-            ConfigValueContainer(const std::string& classname, const std::string& varname, int defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, unsigned int defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, char defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, unsigned char defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, float defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, double defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, long double defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, bool defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, const std::string& defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, const char* defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector2 defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::Vector3 defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, Ogre::ColourValue defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, int defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, unsigned int defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, char defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, unsigned char defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, float defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, double defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, long double defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, bool defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, const String& defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, const char* defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, Vector2 defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, Vector3 defvalue);
+            ConfigValueContainer(const String& classname, const String& varname, ColourValue defvalue);
 
             /** @returns the value. @param value This is only needed to determine the right type. */
             inline ConfigValueContainer& getValue(int& value)                           { value = this->value_.value_int_; return *this; }
@@ -121,52 +123,52 @@ namespace orxonox
             /** @returns the value. @param value This is only needed to determine the right type. */
             inline ConfigValueContainer& getValue(bool& value)                          { value = this->value_.value_bool_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(std::string& value)                   { value = this->value_string_; return *this; }
+            inline ConfigValueContainer& getValue(String& value)                   { value = this->value_string_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
             inline ConfigValueContainer& getValue(const char* value)                    { value = this->value_string_.c_str(); return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(Ogre::Vector2& value)                 { value = this->value_vector2_; return *this; }
+            inline ConfigValueContainer& getValue(Vector2& value)                 { value = this->value_vector2_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(Ogre::Vector3& value)                 { value = this->value_vector3_; return *this; }
+            inline ConfigValueContainer& getValue(Vector3& value)                 { value = this->value_vector3_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(Ogre::ColourValue& value)             { value = this->value_colourvalue_; return *this; }
+            inline ConfigValueContainer& getValue(ColourValue& value)             { value = this->value_colourvalue_; return *this; }
 
-            void description(const std::string& description);
+            void description(const String& description);
 
-            bool parseSting(const std::string& input);
+            bool parseSting(const String& input);
             void resetConfigFileEntry();
             void resetConfigValue();
 
-            static std::string getStrippedLine(const std::string& line);
-            static bool isEmpty(const std::string& line);
-            static bool isComment(const std::string& line);
+            static String getStrippedLine(const String& line);
+            static bool isEmpty(const String& line);
+            static bool isComment(const String& line);
 
         private:
-            bool parseSting(const std::string& input, int defvalue);
-            bool parseSting(const std::string& input, unsigned int defvalue);
-            bool parseSting(const std::string& input, char defvalue);
-            bool parseSting(const std::string& input, unsigned char defvalue);
-            bool parseSting(const std::string& input, float defvalue);
-            bool parseSting(const std::string& input, double defvalue);
-            bool parseSting(const std::string& input, long double defvalue);
-            bool parseSting(const std::string& input, bool defvalue);
-            bool parseSting(const std::string& input, const std::string& defvalue);
-            bool parseSting(const std::string& input, const char* defvalue);
-            bool parseSting(const std::string& input, const Ogre::Vector2& defvalue);
-            bool parseSting(const std::string& input, const Ogre::Vector3& defvalue);
-            bool parseSting(const std::string& input, const Ogre::ColourValue& defvalue);
+            bool parseSting(const String& input, int defvalue);
+            bool parseSting(const String& input, unsigned int defvalue);
+            bool parseSting(const String& input, char defvalue);
+            bool parseSting(const String& input, unsigned char defvalue);
+            bool parseSting(const String& input, float defvalue);
+            bool parseSting(const String& input, double defvalue);
+            bool parseSting(const String& input, long double defvalue);
+            bool parseSting(const String& input, bool defvalue);
+            bool parseSting(const String& input, const String& defvalue);
+            bool parseSting(const String& input, const char* defvalue);
+            bool parseSting(const String& input, const Vector2& defvalue);
+            bool parseSting(const String& input, const Vector3& defvalue);
+            bool parseSting(const String& input, const ColourValue& defvalue);
 
-            static std::list<std::string>& getConfigFileLines();
+            static std::list<String>& getConfigFileLines();
             static bool finishedReadingConfigFile(bool finished = false);
             void searchConfigFileLine();
-            std::string parseValueString(bool bStripped = true);
+            String parseValueString(bool bStripped = true);
 
-            static void readConfigFile(const std::string& filename);
-            static void writeConfigFile(const std::string& filename);
+            static void readConfigFile(const String& filename);
+            static void writeConfigFile(const String& filename);
 
-            std::string         classname_;                     //!< The name of the class the variable belongs to
-            std::string         varname_;                       //!< The name of the variable
-            std::string         defvalueString_;                //!< The string of the default-variable
+            String         classname_;                     //!< The name of the class the variable belongs to
+            String         varname_;                       //!< The name of the variable
+            String         defvalueString_;                //!< The string of the default-variable
 
             union MultiType
             {
@@ -180,12 +182,12 @@ namespace orxonox
                 bool                value_bool_;                //!< The value, if the variable is of the type bool
             } value_;                                           //!< The value of the variable
 
-            std::string         value_string_;                  //!< The value, if the variable is of the type string
-            Ogre::Vector2       value_vector2_;                 //!< The value, if the variable is of the type Vector2
-            Ogre::Vector3       value_vector3_;                 //!< The value, if the variable is of the type Vector3
-            Ogre::ColourValue   value_colourvalue_;             //!< The value, if the variable is of the type ColourValue
+            String         value_string_;                  //!< The value, if the variable is of the type string
+            Vector2       value_vector2_;                 //!< The value, if the variable is of the type Vector2
+            Vector3       value_vector3_;                 //!< The value, if the variable is of the type Vector3
+            ColourValue   value_colourvalue_;             //!< The value, if the variable is of the type ColourValue
 
-            std::list<std::string>::iterator configFileLine_;   //!< An iterator, pointing to the entry of the variable in the config-file
+            std::list<String>::iterator configFileLine_;   //!< An iterator, pointing to the entry of the variable in the config-file
 
             VariableType type_;                                 //!< The type of the variable
             bool bAddedDescription_;                            //!< True if a description was added

@@ -25,15 +25,13 @@
  *
  */
 
-#include "OgreMath.h"
-#include "OgreVector3.h"
-#include "OgreStringConverter.h"
-#include "OgreSceneNode.h"
-#include "OgreEntity.h"
-#include "OgreSceneManager.h"
+#include <OgreStringConverter.h>
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
+#include <OgreSceneManager.h>
 
+#include "misc/Vector3.h"
 #include "../../Orxonox.h"
-
 #include "Bullet.h"
 #include "BulletManager.h"
 #include "AmmunitionDump.h"
@@ -42,10 +40,6 @@
 
 
 namespace orxonox {
-  using namespace Ogre;
-  
-  //CreateFactory(BaseWeapon);
-
   float BaseWeapon::nextActionValidityPeriod_s = 0.5;
 
   BaseWeapon::BaseWeapon()

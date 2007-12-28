@@ -3,12 +3,13 @@
 
 #include "OgrePrerequisites.h"
 
-
-class SpaceshipSteering
+namespace orxonox
 {
+  class SpaceshipSteering
+  {
   public:
     SpaceshipSteering(float maxSpeedForward, float maxSpeedRotateUpDown,
-    float maxSpeedRotateRightLeft, float maxSpeedLoopRightLeft);
+      float maxSpeedRotateRightLeft, float maxSpeedLoopRightLeft);
     void tick(float time);
     void moveForward(float moveForward);
     void rotateUp(float rotateUp);
@@ -56,7 +57,8 @@ class SpaceshipSteering
     float accelerationRotateRightLeft_;
     float accelerationLoopRightLeft_;
 
-};
+  };
+}
 
 
 #endif /* _SpaceShipSteering_H__ */

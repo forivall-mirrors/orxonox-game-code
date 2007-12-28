@@ -4,6 +4,11 @@
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 
+#include "../OrxonoxPrereqs.h"
+
+#include "misc/Vector3.h"
+#include "misc/Matrix3.h"
+#include "misc/Quaternion.h"
 #include "network/Synchronisable.h"
 #include "tinyxml/tinyxml.h"
 #include "../core/CoreIncludes.h"

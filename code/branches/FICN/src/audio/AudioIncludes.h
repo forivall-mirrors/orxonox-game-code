@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include <AL/al.h>
@@ -10,4 +9,5 @@
 #include <vorbis/vorbisenc.h>
 #include <vorbis/vorbisfile.h>
 
-#include "../orxonox/core/Error.h"
+#include "orxonox/core/Error.h"
+#include "misc/String.h"

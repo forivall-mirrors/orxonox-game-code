@@ -26,7 +26,7 @@
  */
 
 #include "AudioManager.h"
-#include "../orxonox/core/Debug.h"
+#include "orxonox/core/Debug.h"
 
 namespace audio
 {
@@ -71,9 +71,9 @@ namespace audio
 		COUT(3) << "Info: Stopped playing background sound" << std::endl;
 	}
 
-	void AudioManager::ambientAdd(std::string file)
+	void AudioManager::ambientAdd(orxonox::String file)
 	{
-    std::string path = ambientPath + "/" + file + ".ogg";
+    orxonox::String path = ambientPath + "/" + file + ".ogg";
 		AudioStream tmp(path);
 		tmp.open();
 		if (tmp.isLoaded())

@@ -10,6 +10,8 @@
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 
+#include "misc/String.h"
+
 
 namespace orxonox {
 
@@ -19,20 +21,20 @@ namespace orxonox {
   class GraphicsEngine {
     public:
       GraphicsEngine();
-      inline void setConfigPath(std::string path) { this->configPath_ = path; };
+      inline void setConfigPath(String path) { this->configPath_ = path; };
       // find a better way for this
       inline Ogre::Root* getRoot() { return root_; };
       void setup();
       bool load();
-      void loadRessourceLocations(std::string path);
+      void loadRessourceLocations(String path);
       Ogre::SceneManager* getSceneManager();
       void startRender();
 
       virtual ~GraphicsEngine();
     private:
       Ogre::Root*         root_;        //!< Ogre's root
-      std::string         configPath_;  //!< path to config file
-      std::string         dataPath_;    //!< path to data file
+      String         configPath_;  //!< path to config file
+      String         dataPath_;    //!< path to data file
       Ogre::SceneManager* scene_;       //!< scene manager of the game
 
   };

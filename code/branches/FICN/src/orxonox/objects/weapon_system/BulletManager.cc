@@ -25,15 +25,11 @@
  *
  */
 
-#include "OgreSceneNode.h"
-
 #include "BulletManager.h"
 #include "Bullet.h"
 
 
 namespace orxonox {
-  using namespace Ogre;
-
   CreateFactory(BulletManager);
 
   BulletManager::BulletManager() : bulletsSize_(8), bulletsIndex_(0)
@@ -85,9 +81,9 @@ namespace orxonox {
     }
   }
 
-  int BulletManager::getAmmunitionID(const Ogre::String &ammoName)
+  int BulletManager::getAmmunitionID(const String &ammoName)
   {
-    Ogre::String ammoTypes[] = { "Energy Cell", "Barrel", "Lead Shot" };
+    String ammoTypes[] = { "Energy Cell", "Barrel", "Lead Shot" };
     int ammoTypesLength = 3;
 
     for (int i = 0; i < ammoTypesLength; i++)

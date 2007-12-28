@@ -7,8 +7,11 @@
 #ifndef _NPC_H__
 #define _NPC_H__
 
-// includes
+#include "../OrxonoxPrereqs.h"
+
 #include "Model.h"
+
+class TiXmlElement; // Forward declaration
 
 namespace orxonox {
 

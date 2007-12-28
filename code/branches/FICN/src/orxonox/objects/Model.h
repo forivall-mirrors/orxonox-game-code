@@ -1,12 +1,16 @@
 #ifndef _Model_H__
 #define _Model_H__
 
+#include "../OrxonoxPrereqs.h"
+
 #include "WorldEntity.h"
 #include "Mesh.h"
-#include "../../tinyxml/tinyxml.h"
+
+class TiXmlElement; // Forward declaration
 
 namespace orxonox
 {
+
     class Model : public WorldEntity
     {
         public:
@@ -16,7 +20,7 @@ namespace orxonox
             bool create();
 
         private:
-            std::string meshSrc_;
+            String meshSrc_;
             Mesh mesh_;
             void registerAllVariables();
     };

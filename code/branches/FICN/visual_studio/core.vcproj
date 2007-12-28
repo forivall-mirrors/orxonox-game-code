@@ -53,6 +53,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="OgreMain_d.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -182,6 +183,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\orxonox\core\Language.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\src\orxonox\core\MetaObjectList.cc"
 				>
 			</File>
@@ -209,6 +214,10 @@
 			</File>
 			<File
 				RelativePath="..\src\orxonox\core\ClassFactory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\orxonox\core\ColourValue.h"
 				>
 			</File>
 			<File
@@ -252,6 +261,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\orxonox\core\Language.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\orxonox\core\MetaObjectList.h"
 				>
 			</File>
@@ -271,12 +284,6 @@
 				RelativePath="..\src\orxonox\core\SignalHandler.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
 		</Filter>
 	</Files>
 	<Globals>

@@ -31,7 +31,7 @@
 
 #include <OgrePrerequisites.h>
 
-#include "orxonox/OrxonoxPrereqs.h"
+#include "../../OrxonoxPrereqs.h"
 
 #include "../Model.h"
 
@@ -115,8 +115,8 @@ namespace orxonox {
     float secondaryFirePower_;
     float primaryFiringRate_;
     float secondaryFiringRate_;
-    Ogre::Real primaryBulletSpeed_;
-    Ogre::Real secondaryBulletSpeed_;
+    Real primaryBulletSpeed_;
+    Real secondaryBulletSpeed_;
 
     int magazineSize_;
 

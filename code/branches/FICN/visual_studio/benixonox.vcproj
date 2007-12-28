@@ -176,34 +176,12 @@
 				RelativePath="..\src\orxonox\Orxonox.cc"
 				>
 			</File>
-			<File
-				RelativePath="..\src\orxonox\SpaceshipSteering.cc"
-				>
-			</File>
 			<Filter
 				Name="hud"
 				>
 				<File
 					RelativePath="..\src\orxonox\hud\HUD.cc"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
@@ -309,18 +287,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\src\orxonox\AIClass.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\orxonox\Arrival.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\orxonox\Flocking.h"
-				>
-			</File>
-			<File
 				RelativePath="..\src\orxonox\GraphicsEngine.h"
 				>
 			</File>
@@ -338,10 +304,6 @@
 			</File>
 			<File
 				RelativePath="..\src\orxonox\OrxonoxPrereqs.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\orxonox\SpaceshipSteering.h"
 				>
 			</File>
 			<Filter
@@ -460,11 +422,47 @@
 				Name="misc"
 				>
 				<File
+					RelativePath="..\src\misc\ColourValue.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\misc\Math.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\misc\Matrix3.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\misc\Quaternion.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\misc\Sleep.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\misc\String.h"
+					>
+				</File>
+				<File
 					RelativePath="..\src\misc\String2Number.h"
 					>
 				</File>
 				<File
 					RelativePath="..\src\misc\Tokenizer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\misc\Vector2.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\misc\Vector3.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\misc\Vector4.h"
 					>
 				</File>
 			</Filter>
@@ -475,7 +473,51 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath="..\bin\media.cfg"
+				>
+			</File>
+			<File
+				RelativePath="..\bin\ogre.cfg"
+				>
+			</File>
+			<File
+				RelativePath="..\bin\Ogre.log"
+				>
+			</File>
+			<File
+				RelativePath="..\bin\orxonox.ini"
+				>
+			</File>
+			<File
+				RelativePath="..\bin\orxonox.log"
+				>
+			</File>
+			<File
+				RelativePath="..\bin\plugins.cfg"
+				>
+			</File>
+			<File
+				RelativePath="..\bin\plugins_d.cfg"
+				>
+			</File>
+			<File
+				RelativePath="..\bin\quake3settings.cfg"
+				>
+			</File>
+			<File
+				RelativePath="..\bin\resources.cfg"
+				>
+			</File>
+			<File
 				RelativePath="..\bin\levels\sample.oxw"
+				>
+			</File>
+			<File
+				RelativePath="..\bin\translation_default.lang"
+				>
+			</File>
+			<File
+				RelativePath="..\bin\translation_german.lang"
 				>
 			</File>
 		</Filter>

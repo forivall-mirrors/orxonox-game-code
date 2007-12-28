@@ -25,18 +25,21 @@
  *
  */
 
-#include "Fighter.h"
+#include <OgreCamera.h>
+#include <OgreRenderWindow.h>
+#include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
 
-#include "../../tinyxml/tinyxml.h"
-#include "../../misc/String2Number.h"
+#include "tinyxml/tinyxml.h"
+#include "misc/String2Number.h"
+#include "misc/String.h"
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
+#include "../particle/ParticleInterface.h"
 #include "weapon_system/AmmunitionDump.h"
 #include "weapon_system/BarrelGun.h"
 
-#include "OgreCamera.h"
-#include <OgreRenderWindow.h>
-#include <string>
+#include "Fighter.h"
 
 namespace orxonox
 {
@@ -140,7 +143,7 @@ namespace orxonox
         w->addToSceneNode(node1);
 #endif
 
-        tt = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
+        tt = new ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         tt->getParticleSystem()->setParameter("local_space","true");
         tt->newEmitter();
 /*
@@ -170,10 +173,10 @@ namespace orxonox
 
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
         {
-            std::string forwardStr = xmlElem->Attribute("forward");
-            std::string rotateupdownStr = xmlElem->Attribute("rotateupdown");
-            std::string rotaterightleftStr = xmlElem->Attribute("rotaterightleft");
-            std::string looprightleftStr = xmlElem->Attribute("looprightleft");
+            String forwardStr = xmlElem->Attribute("forward");
+            String rotateupdownStr = xmlElem->Attribute("rotateupdown");
+            String rotaterightleftStr = xmlElem->Attribute("rotaterightleft");
+            String looprightleftStr = xmlElem->Attribute("looprightleft");
 
             String2Number<float>(this->maxSpeedForward_, forwardStr);
             String2Number<float>(this->maxSpeedRotateUpDown_, rotateupdownStr);

@@ -1,9 +1,14 @@
 #ifndef _BillboardSet_H__
 #define _BillboardSet_H__
 
-#include <string>
+#include <OgreBillboardSet.h>
 
-#include "OgreBillboardSet.h"
+#include "../OrxonoxPrereqs.h"
+
+#include "misc/String.h"
+#include "../core/CoreIncludes.h"
+#include "misc/ColourValue.h"
+#include "misc/Vector3.h"
 
 namespace orxonox
 {
@@ -12,12 +17,12 @@ namespace orxonox
         public:
             BillboardSet();
             ~BillboardSet();
-            void setBillboardSet(const std::string& file, const Ogre::ColourValue& colour = Ogre::ColourValue(1.0, 1.0, 1.0), int count = 1, const Ogre::Vector3& position = Ogre::Vector3::ZERO);
+            void setBillboardSet(const String& file, const ColourValue& colour = ColourValue(1.0, 1.0, 1.0), int count = 1, const Vector3& position = Vector3::ZERO);
 
             inline Ogre::BillboardSet* getBillboardSet()
                 { return this->billboardSet_; }
 
-            inline const std::string& getName() const
+            inline const String& getName() const
                 { return this->billboardSet_->getName(); }
 
         private:

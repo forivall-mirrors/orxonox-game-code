@@ -1,7 +1,10 @@
 #include <sstream>
 
-#include "Light.h"
+#include <OgreSceneManager.h>
+
 #include "../Orxonox.h"
+
+#include "Light.h"
 
 namespace orxonox
 {
@@ -12,7 +15,7 @@ namespace orxonox
         this->light_ = 0;
     }
 
-    void Light::setLight(Ogre::Light::LightTypes type, const Ogre::ColourValue& diffuse, const Ogre::ColourValue& specular)
+    void Light::setLight(Ogre::Light::LightTypes type, const ColourValue& diffuse, const ColourValue& specular)
     {
         std::ostringstream name;
         name << (Light::lightCounter_s++);

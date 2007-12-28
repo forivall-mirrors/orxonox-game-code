@@ -28,33 +28,33 @@
 #ifndef _Language_H__
 #define _Language_H__
 
-#include <string>
 #include <map>
 
 #include "CorePrereqs.h"
 
+#include "misc/String.h"
 #include "OrxonoxClass.h"
 
 namespace orxonox
 {
-    typedef std::string LanguageEntryName;
+    typedef String LanguageEntryName;
 
     class _CoreExport LanguageEntry : public OrxonoxClass
     {
         public:
-            explicit LanguageEntry(const std::string& fallbackEntry);
-            void setTranslation(const std::string& translation);
-            void setDefault(const std::string& fallbackEntry);
+            explicit LanguageEntry(const String& fallbackEntry);
+            void setTranslation(const String& translation);
+            void setDefault(const String& fallbackEntry);
 
-            inline const std::string& getTranslation()
+            inline const String& getTranslation()
                 { return this->translatedEntry_; }
 
-            inline const std::string& getDefault()
+            inline const String& getDefault()
                 { return this->fallbackEntry_; }
 
         private:
-            std::string fallbackEntry_;
-            std::string translatedEntry_;
+            String fallbackEntry_;
+            String translatedEntry_;
     };
 
     class _CoreExport Language : public OrxonoxClass
@@ -62,8 +62,8 @@ namespace orxonox
         public:
             static Language& getLanguage();
             void setConfigValues();
-            void addEntry(const LanguageEntryName& name, const std::string& entry);
-            const std::string& getTranslation(const LanguageEntryName& name) const;
+            void addEntry(const LanguageEntryName& name, const String& entry);
+            const String& getTranslation(const LanguageEntryName& name) const;
 
         private:
             Language();
@@ -73,13 +73,13 @@ namespace orxonox
             void readDefaultLanguageFile();
             void readTranslatedLanguageFile();
             void writeDefaultLanguageFile() const;
-            static const std::string getFileName(const std::string& language);
-            void createEntry(const LanguageEntryName& name, const std::string& entry);
+            static const String getFileName(const String& language);
+            void createEntry(const LanguageEntryName& name, const String& entry);
 
-            std::string language_;
-            std::string defaultLanguage_;
-            std::string defaultTranslation_;
-            std::map<std::string, LanguageEntry*> languageEntries_;
+            String language_;
+            String defaultLanguage_;
+            String defaultTranslation_;
+            std::map<String, LanguageEntry*> languageEntries_;
     };
 }
 

@@ -44,7 +44,7 @@ namespace orxonox {
     errorStr_ = "";
   }
 
-  void ArgReader::checkArgument(std::string option, std::string &string, bool must)
+  void ArgReader::checkArgument(String option, String &string, bool must)
   {
     int argpos = checkOption(option) + 1;
     if(argpos != 0)
@@ -61,7 +61,7 @@ namespace orxonox {
 
   }
 
-  void ArgReader::checkArgument(std::string option, int &integer, bool must)
+  void ArgReader::checkArgument(String option, int &integer, bool must)
   {
     int argpos = checkOption(option) + 1;
     if(argpos != 0)
@@ -77,7 +77,7 @@ namespace orxonox {
     }
   }
 
-  void ArgReader::checkArgument(std::string option, float &floating, bool must)
+  void ArgReader::checkArgument(String option, float &floating, bool must)
   {
     int argpos = checkOption(option) + 1;
     if(argpos != 0)
@@ -93,7 +93,7 @@ namespace orxonox {
     }
   }
 
-  int ArgReader::checkOption(std::string option)
+  int ArgReader::checkOption(String option)
   {
     for(int i = 1; i < counter_; i++)
     {

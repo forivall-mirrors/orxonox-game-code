@@ -44,9 +44,10 @@
 #define _Factory_H__
 
 #include <map>
-#include <string>
 
 #include "CorePrereqs.h"
+
+#include "misc/String.h"
 
 namespace orxonox
 {
@@ -59,20 +60,20 @@ namespace orxonox
     class _CoreExport Factory
     {
         public:
-            static Identifier* getIdentifier(const std::string& name);
+            static Identifier* getIdentifier(const String& name);
             static Identifier* getIdentifier(const unsigned int id);
-            static void add(const std::string& name, Identifier* identifier);
+            static void add(const String& name, Identifier* identifier);
             static void changeNetworkID(Identifier* identifier, const unsigned int oldID, const unsigned int newID);
             static void createClassHierarchy();
 
-            static Factory* getFactoryPointer();// avoid overriding pointer_s in the static intialisation process
+            static Factory* getFactoryPointer();    // avoid overriding order problem in the static intialisation process
 
         private:
             Factory() {}                            // don't create
             Factory(const Factory& factory) {}      // don't copy
             ~Factory() {}                           // don't delete
 
-            std::map<std::string, Identifier*> identifierStringMap_;            //!< The map, mapping the name with the Identifier
+            std::map<String, Identifier*> identifierStringMap_;            //!< The map, mapping the name with the Identifier
             std::map<unsigned int, Identifier*> identifierNetworkIDMap_;        //!< The map, mapping the network ID with the Identifier
     };
 

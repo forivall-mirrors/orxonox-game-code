@@ -1,21 +1,16 @@
 #ifndef _AIClass_H__
 #define _AIClass_H__
 
-#include <Ogre.h>
-#include <OgreVector3.h>
-#include <OgreMath.h>
+#include "misc/Vector3.h"
 
-#include <iostream>
-
-// FIXME: using namespace xy; in header files is a very bad idea..
-using namespace std;
-using namespace Ogre;
-
-class AIPilot {
+namespace orxonox
+{
+  class AIPilot
+  {
 
 
-  /*
-  TASKS:                                                                         Requirements:
+    /*
+    TASKS:                                                                         Requirements:
 
     - Change actual Speed to required Speed                                          - Speed as Vector3 , spaceship(?) -> pilot attached to it or vice versa (?)
     - Open fire, if allowed                                                          - Status of the fleet commander -> allowed to fire , fly etc.
@@ -24,35 +19,34 @@ class AIPilot {
 
 
 
-  */
+    */
 
   public:
     Vector3 speed;
 
 
 
-  //default constructor
-  AIPilot() {
-     speed = (1,0,0);
-  }
+    //default constructor
+    AIPilot() {
+      speed = (1,0,0);
+    }
 
-  Vector3 steer(Vector3 reqSpeed) {
-    Quaternion sRotation = speed.getRotationTo(reqSpeed);
-    Radian rollarc = sRotation.getRoll();
-    Radian pitcharc = sRotation.getPitch();
-    Radian yawarc = sRotation.getYaw();
-    return Vector3((float)rollarc.valueRadians(), (float)pitcharc.valueRadians(), (float)yawarc.valueRadians());
-  }
-
-
-
-};
-
-class AIFleetCommander : public  AIPilot {
+    Vector3 steer(Vector3 reqSpeed) {
+      Quaternion sRotation = speed.getRotationTo(reqSpeed);
+      Radian rollarc = sRotation.getRoll();
+      Radian pitcharc = sRotation.getPitch();
+      Radian yawarc = sRotation.getYaw();
+      return Vector3((float)rollarc.valueRadians(), (float)pitcharc.valueRadians(), (float)yawarc.valueRadians());
+    }
 
 
-  /*
-  TASKS:                                                                       Requirements:
+  };
+
+  class AIFleetCommander : public  AIPilot {
+
+
+    /*
+    TASKS:                                                                       Requirements:
 
     - Same tasks as AI_Pilot (only if shipcontrol)                                   - Same as AI_Pilot
     - Calculate required Speed for any ship in Fleet                                 - Knows all calculation functions
@@ -60,40 +54,42 @@ class AIFleetCommander : public  AIPilot {
 
 
 
-  */
+    */
 
   public:
 
 
-  //default constructor
-  AIFleetCommander() {
+    //default constructor
+    AIFleetCommander() {
 
-  }
-
-
-
-};
-
-class AICommander : public  AIFleetCommander {
+    }
 
 
-  /*
-  TASKS:                                                                     Requirements:
+
+  };
+
+  class AICommander : public  AIFleetCommander
+  {
+
+
+    /*
+    TASKS:                                                                     Requirements:
 
     - Decide on general tactics                                                      - List of general fleet status + all possible information on enemies
     - Save and load tactical data (?)                                                - files with tactical data, e.g. success of strategy etc.
 
 
 
-  */
+    */
 
-  //default constructor
-  AICommander() {
+    //default constructor
+    AICommander() {
 
-  }
+    }
 
 
+  };
 
-};
+}
 
 #endif /* _AIClass_H__ */

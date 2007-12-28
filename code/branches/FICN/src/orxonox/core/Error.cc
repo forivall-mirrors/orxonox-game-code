@@ -25,8 +25,8 @@
  *
  */
 
-#include "Error.h"
 #include "Debug.h"
+#include "Error.h"
 
 namespace orxonox
 {
@@ -35,12 +35,12 @@ namespace orxonox
 		Error(0,"");
 	}
 
-	Error::Error(std::string errorMsg, int errorCode)
+	Error::Error(String errorMsg, int errorCode)
 	{
 		Error(errorCode, errorMsg);
 	}
 
-	Error::Error(int errorCode, std::string errorMsg)
+	Error::Error(int errorCode, String errorMsg)
 	{
 		COUT(1) << "############################ "<< std::endl
 							<< "#         Error "<<errorCode<< "          #"<< std::endl

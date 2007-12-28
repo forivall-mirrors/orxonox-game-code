@@ -36,11 +36,11 @@
 #ifndef _OutputHandler_H__
 #define _OutputHandler_H__
 
-#include "CorePrereqs.h"
-
 #include <iostream>
 #include <fstream>
-#include <string>
+
+#include "misc/String.h"
+#include "CorePrereqs.h"
 
 namespace orxonox
 {
@@ -107,11 +107,11 @@ namespace orxonox
             OutputHandler& operator<<(std::ios_base& (*manipulator)(std::ios_base&));
 
         private:
-            explicit OutputHandler(const std::string& logfilename);
+            explicit OutputHandler(const String& logfilename);
             OutputHandler(const OutputHandler& oh) {}; // don't copy
             virtual ~OutputHandler();
             std::ofstream logfile_;     //!< The logfile where the output is logged
-            std::string logfilename_;   //!< The name of the logfile
+            String logfilename_;   //!< The name of the logfile
             int outputLevel_;           //!< The level of the incoming output
     };
 

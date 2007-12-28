@@ -27,11 +27,11 @@
 
 
 #include "AudioStream.h"
-#include "../orxonox/core/Debug.h"
+#include "orxonox/core/Debug.h"
 
 namespace audio
 {
-	AudioStream::AudioStream(std::string path)
+	AudioStream::AudioStream(orxonox::String path)
 	{
 		this->path = path;
 		loaded = false;
@@ -39,21 +39,26 @@ namespace audio
 
 	void AudioStream::open()
 	{
-	    int result;
+	    //int result;
+      errno_t result;
 
 
-	    if(!(oggFile = fopen(path.c_str(), "rb")))
+	    if(fopen_s(&oggFile, path.c_str(), "rb"))
 			{
 	    	orxonox::Error("Could not open Ogg file "+path);
 				return;
 			}
+      else
+      {
+        COUT(4) << "Opened Ogg file" << path << std::endl;
+      }
 
-	    if((result = ov_open(oggFile, &oggStream, NULL, 0)) < 0)
+	    /*if((result = ov_open(oggFile, &oggStream, NULL, 0)) < 0)
 	    {
         fclose(oggFile);
 	      orxonox::Error("Could not open Ogg stream. " + errorString(result));
 				return;
-	    }
+	    }*/
 
 			loaded = true;
 
@@ -253,22 +258,22 @@ namespace audio
 
 
 
-	std::string AudioStream::errorString(int code)
+	orxonox::String AudioStream::errorString(int code)
 	{
 	    switch(code)
 	    {
 	        case OV_EREAD:
-	            return std::string("Read from media.");
+	            return orxonox::String("Read from media.");
 	        case OV_ENOTVORBIS:
-	            return std::string("Not Vorbis data.");
+	            return orxonox::String("Not Vorbis data.");
 	        case OV_EVERSION:
-	            return std::string("Vorbis version mismatch.");
+	            return orxonox::String("Vorbis version mismatch.");
 	        case OV_EBADHEADER:
-	            return std::string("Invalid Vorbis header.");
+	            return orxonox::String("Invalid Vorbis header.");
 	        case OV_EFAULT:
-	            return std::string("Internal logic fault (bug or heap/stack corruption.");
+	            return orxonox::String("Internal logic fault (bug or heap/stack corruption.");
 	        default:
-	            return std::string("Unknown Ogg error.");
+	            return orxonox::String("Unknown Ogg error.");
 	    }
 	}
 }

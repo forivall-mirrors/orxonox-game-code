@@ -22,10 +22,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Orxonox", "benixonox.vcproj
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
-		{4733BD1A-E04C-458D-8BFB-5010250EA497} = {4733BD1A-E04C-458D-8BFB-5010250EA497}
-		{271715F3-5B90-4110-A552-70C788084A86} = {271715F3-5B90-4110-A552-70C788084A86}
-		{2240ECD7-2F48-4431-8E1B-25466A384CCC} = {2240ECD7-2F48-4431-8E1B-25466A384CCC}
 		{35575B59-E1AE-40E8-89C4-2862B5B09B68} = {35575B59-E1AE-40E8-89C4-2862B5B09B68}
+		{2240ECD7-2F48-4431-8E1B-25466A384CCC} = {2240ECD7-2F48-4431-8E1B-25466A384CCC}
+		{271715F3-5B90-4110-A552-70C788084A86} = {271715F3-5B90-4110-A552-70C788084A86}
+		{4733BD1A-E04C-458D-8BFB-5010250EA497} = {4733BD1A-E04C-458D-8BFB-5010250EA497}
 		{E283910F-F911-40FB-A09D-D025CA821912} = {E283910F-F911-40FB-A09D-D025CA821912}
 	EndProjectSection
 EndProject
@@ -41,14 +41,23 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader", "loader.vcproj", "
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
-		{2240ECD7-2F48-4431-8E1B-25466A384CCC} = {2240ECD7-2F48-4431-8E1B-25466A384CCC}
 		{271715F3-5B90-4110-A552-70C788084A86} = {271715F3-5B90-4110-A552-70C788084A86}
+		{2240ECD7-2F48-4431-8E1B-25466A384CCC} = {2240ECD7-2F48-4431-8E1B-25466A384CCC}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TinyXML", "tinyxml.vcproj", "{2240ECD7-2F48-4431-8E1B-25466A384CCC}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestProj", "testproj.vcproj", "{97B226C5-8FD9-4A1E-B50B-5CBF79CF46F5}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{271715F3-5B90-4110-A552-70C788084A86} = {271715F3-5B90-4110-A552-70C788084A86}
 	EndProjectSection
 EndProject
 Global
@@ -81,6 +90,8 @@ Global
 		{2240ECD7-2F48-4431-8E1B-25466A384CCC}.Debug|Win32.Build.0 = Debug|Win32
 		{2240ECD7-2F48-4431-8E1B-25466A384CCC}.Release|Win32.ActiveCfg = Release|Win32
 		{2240ECD7-2F48-4431-8E1B-25466A384CCC}.Release|Win32.Build.0 = Release|Win32
+		{97B226C5-8FD9-4A1E-B50B-5CBF79CF46F5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{97B226C5-8FD9-4A1E-B50B-5CBF79CF46F5}.Release|Win32.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

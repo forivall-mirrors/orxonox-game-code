@@ -31,11 +31,12 @@
 
 #include <OgrePrerequisites.h>
 
-#include "orxonox/OrxonoxPrereqs.h"
+#include "../../OrxonoxPrereqs.h"
 
 #include "network/Synchronisable.h"
 #include "tinyxml/tinyxml.h"
 //#include "../core/CoreIncludes.h"
+#include "misc/String.h"
 #include "../BaseObject.h"
 #include "../Tickable.h"
 
@@ -48,7 +49,7 @@ namespace orxonox {
 
     void addBullet(Bullet*);
 
-    int getAmmunitionID(const Ogre::String&);
+    int getAmmunitionID(const String&);
 
     int getNumberOfAmmos();
 

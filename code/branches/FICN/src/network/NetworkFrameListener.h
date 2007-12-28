@@ -13,7 +13,8 @@
 #ifndef _NetworkFrameListener_H__
 #define _NetworkFrameListener_H__
 
-#include "OgreFrameListener.h"
+#include <OgreFrameListener.h>
+
 #include "Server.h"
 #include "Client.h"
 //#include <iostream>

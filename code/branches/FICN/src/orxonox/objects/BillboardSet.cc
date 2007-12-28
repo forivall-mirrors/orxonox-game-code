@@ -27,8 +27,13 @@
 
 #include <sstream>
 
-#include "BillboardSet.h"
+#include <OgreSceneManager.h>
+
 #include "../Orxonox.h"
+#include "misc/Vector3.h"
+#include "misc/ColourValue.h"
+
+#include "BillboardSet.h"
 
 namespace orxonox
 {
@@ -39,7 +44,7 @@ namespace orxonox
         this->billboardSet_ = 0;
     }
 
-    void BillboardSet::setBillboardSet(const std::string& file, const Ogre::ColourValue& colour, int count, const Ogre::Vector3& position)
+    void BillboardSet::setBillboardSet(const String& file, const ColourValue& colour, int count, const Vector3& position)
     {
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);

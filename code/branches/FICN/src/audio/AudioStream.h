@@ -10,7 +10,7 @@ namespace audio
   class AudioStream
   {
     public:
-      AudioStream(std::string path);
+      AudioStream(orxonox::String path);
       void open();
       void release();
       void display();
@@ -23,10 +23,10 @@ namespace audio
       bool stream(ALuint buffer);
       void empty();
       void check();
-      std::string errorString(int code);
+      orxonox::String errorString(int code);
 
     private:
-      std::string path;
+      orxonox::String path;
 
       FILE*           oggFile;
       OggVorbis_File  oggStream;

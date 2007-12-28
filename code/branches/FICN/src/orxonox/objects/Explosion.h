@@ -1,7 +1,8 @@
 #ifndef _Explosion_H__
 #define _Explosion_H__
 
-#include "../particle/ParticleInterface.h"
+#include "../OrxonoxPrereqs.h"
+
 #include "WorldEntity.h"
 #include "Timer.h"
 
@@ -17,7 +18,7 @@ namespace orxonox
         private:
             Timer<Explosion> destroyTimer_;
             float lifetime_;
-            particle::ParticleInterface* particle_;
+            ParticleInterface* particle_;
     };
 }
 
