@@ -58,13 +58,13 @@ class String2Number
     std::string output = number2String(f);
 */
 template <typename T>
-const std::string& number2String(T variable)
+const std::string number2String(T variable)
 {
     std::ostringstream oss;
     if (oss << variable)
-        return *(new std::string(oss.str()));
+        return std::string(oss.str());
 
-    return *(new std::string(""));
+    return std::string("");
 }
 
 /**
@@ -77,11 +77,11 @@ const std::string& number2String(T variable)
     std::string output = number2String(f, "0.000000");
 */
 template <typename T>
-const std::string& number2String(T variable, const std::string& fallbackString)
+const std::string number2String(T variable, const std::string& fallbackString)
 {
     std::ostringstream oss;
     if (oss << variable)
-        return *(new std::string(oss.str()));
+        return std::string(oss.str());
 
     return fallbackString;
 }
