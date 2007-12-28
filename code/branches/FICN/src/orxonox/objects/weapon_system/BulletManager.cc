@@ -81,9 +81,9 @@ namespace orxonox {
     }
   }
 
-  int BulletManager::getAmmunitionID(const String &ammoName)
+  int BulletManager::getAmmunitionID(const std::string &ammoName)
   {
-    String ammoTypes[] = { "Energy Cell", "Barrel", "Lead Shot" };
+    std::string ammoTypes[] = { "Energy Cell", "Barrel", "Lead Shot" };
     int ammoTypesLength = 3;
 
     for (int i = 0; i < ammoTypesLength; i++)

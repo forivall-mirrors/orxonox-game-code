@@ -152,14 +152,14 @@ namespace orxonox
    * @param argv list of arguments
    * @param path path to config (in home dir or something)
    */
-  void Orxonox::init(int argc, char **argv, String path)
+  void Orxonox::init(int argc, char **argv, std::string path)
   {
     //TODO: find config file (assuming executable directory)
     //TODO: read config file
     //TODO: give config file to Ogre
-    String mode;
+    std::string mode;
 //     if(argc>=2)
-//       mode = String(argv[1]);
+//       mode = std::string(argv[1]);
 //     else
 //       mode = "";
     ArgReader ar = ArgReader(argc, argv);
@@ -168,17 +168,17 @@ namespace orxonox
     ar.checkArgument("ip", serverIp_, false);
     //mode = "presentation";
     if(ar.errorHandling()) die();
-    if(mode == String("server"))
+    if(mode == std::string("server"))
     {
       serverInit(path);
       mode_ = SERVER;
     }
-    else if(mode == String("client"))
+    else if(mode == std::string("client"))
     {
       clientInit(path);
       mode_ = CLIENT;
     }
-    else if(mode == String("presentation"))
+    else if(mode == std::string("presentation"))
     {
       serverInit(path);
       mode_ = PRESENTATION;
@@ -242,7 +242,7 @@ namespace orxonox
     delete this;
   }
 
-  void Orxonox::standaloneInit(String path)
+  void Orxonox::standaloneInit(std::string path)
   {
     ogre_->setConfigPath(path);
     ogre_->setup();
@@ -261,7 +261,7 @@ namespace orxonox
     startRenderLoop();*/
   }
 
-  void Orxonox::playableServer(String path)
+  void Orxonox::playableServer(std::string path)
   {
     ogre_->setConfigPath(path);
     ogre_->setup();
@@ -295,7 +295,7 @@ namespace orxonox
 
   }
 
-  void Orxonox::serverInit(String path)
+  void Orxonox::serverInit(std::string path)
   {
     COUT(2) << "initialising server" << std::endl;
     ogre_->setConfigPath(path);
@@ -305,7 +305,7 @@ namespace orxonox
     // FIXME add network framelistener
   }
 
-  void Orxonox::clientInit(String path)
+  void Orxonox::clientInit(std::string path)
   {
     COUT(2) << "initialising client" << std::endl;
     ogre_->setConfigPath(path);
@@ -320,7 +320,7 @@ namespace orxonox
 
   void Orxonox::defineResources()
   {
-    String secName, typeName, archName;
+    std::string secName, typeName, archName;
     Ogre::ConfigFile cf;
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
     cf.load(macBundlePath() + "/Contents/Resources/resources.cfg");
@@ -339,7 +339,7 @@ namespace orxonox
         typeName = i->first;
         archName = i->second;
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation( String(macBundlePath() + "/" + archName), typeName, secName);
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation( std::string(macBundlePath() + "/" + archName), typeName, secName);
 #else
         Ogre::ResourceGroupManager::getSingleton().addResourceLocation( archName, typeName, secName);
 #endif
@@ -425,13 +425,13 @@ namespace orxonox
 
     // fixes auto repeat problem
     #if defined OIS_LINUX_PLATFORM
-      pl.insert(std::make_pair(String("XAutoRepeatOn"), String("true")));
+      pl.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
     #endif
 
       Ogre::RenderWindow *win = ogre_->getRoot()->getAutoCreatedWindow();
     win->getCustomAttribute("WINDOW", &windowHnd);
     windowHndStr << windowHnd;
-    pl.insert(std::make_pair(String("WINDOW"), windowHndStr.str()));
+    pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
     inputManager_ = OIS::InputManager::createInputSystem(pl);
 
     try

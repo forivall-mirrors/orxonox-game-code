@@ -29,6 +29,8 @@
 #ifndef _BulletManager_H__
 #define _BulletManager_H__
 
+#include <string>
+
 #include <OgrePrerequisites.h>
 
 #include "../../OrxonoxPrereqs.h"
@@ -36,7 +38,6 @@
 #include "network/Synchronisable.h"
 #include "tinyxml/tinyxml.h"
 //#include "../core/CoreIncludes.h"
-#include "misc/String.h"
 #include "../BaseObject.h"
 #include "../Tickable.h"
 
@@ -49,7 +50,7 @@ namespace orxonox {
 
     void addBullet(Bullet*);
 
-    int getAmmunitionID(const String&);
+    int getAmmunitionID(const std::string&);
 
     int getNumberOfAmmos();
 

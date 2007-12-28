@@ -29,7 +29,7 @@
 
 namespace audio
 {
-	AudioBuffer::AudioBuffer(orxonox::String fileName)
+	AudioBuffer::AudioBuffer(std::string fileName)
 	{
 		// Load wav data into buffers.
 		alGenBuffers(1, &buffer);

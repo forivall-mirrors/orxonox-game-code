@@ -35,12 +35,12 @@ namespace orxonox
 		Error(0,"");
 	}
 
-	Error::Error(String errorMsg, int errorCode)
+	Error::Error(std::string errorMsg, int errorCode)
 	{
 		Error(errorCode, errorMsg);
 	}
 
-	Error::Error(int errorCode, String errorMsg)
+	Error::Error(int errorCode, std::string errorMsg)
 	{
 		COUT(1) << "############################ "<< std::endl
 							<< "#         Error "<<errorCode<< "          #"<< std::endl

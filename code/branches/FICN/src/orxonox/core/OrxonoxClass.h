@@ -36,9 +36,9 @@
 #ifndef _OrxonoxClass_H__
 #define _OrxonoxClass_H__
 
-#include "CorePrereqs.h"
+#include <string>
 
-#include "misc/String.h"
+#include "CorePrereqs.h"
 #include "MetaObjectList.h"
 #include "Identifier.h"
 
@@ -131,10 +131,10 @@ namespace orxonox
 
 
             /** @brief Sets the name of the object. @param name The name */
-            inline virtual void setName(const String& name) { this->name_ = name; }
+            inline virtual void setName(const std::string& name) { this->name_ = name; }
 
             /** @returns the name of the object. */
-            inline const String& getName() const { return this->name_; }
+            inline const std::string& getName() const { return this->name_; }
 
             /** @brief Sets the state of the objects activity. @param bActive True = active */
             inline virtual void setActive(bool bActive) { this->bActive_ = bActive; }
@@ -153,7 +153,7 @@ namespace orxonox
             IdentifierList* parents_;       //!< List of all parents of the object
             MetaObjectList metaList_;       //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
 
-            String name_;              //!< The name of the object
+            std::string name_;              //!< The name of the object
             bool bActive_;                  //!< True = the object is active
             bool bVisible_;                 //!< True = the object is visible
     };

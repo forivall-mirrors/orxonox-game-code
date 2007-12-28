@@ -25,6 +25,8 @@
  *
  */
 
+#include <string>
+
 #include <OgreCamera.h>
 #include <OgreRenderWindow.h>
 #include <OgreSceneManager.h>
@@ -32,7 +34,6 @@
 
 #include "tinyxml/tinyxml.h"
 #include "misc/String2Number.h"
-#include "misc/String.h"
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
 #include "../particle/ParticleInterface.h"
@@ -173,10 +174,10 @@ namespace orxonox
 
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
         {
-            String forwardStr = xmlElem->Attribute("forward");
-            String rotateupdownStr = xmlElem->Attribute("rotateupdown");
-            String rotaterightleftStr = xmlElem->Attribute("rotaterightleft");
-            String looprightleftStr = xmlElem->Attribute("looprightleft");
+            std::string forwardStr = xmlElem->Attribute("forward");
+            std::string rotateupdownStr = xmlElem->Attribute("rotateupdown");
+            std::string rotaterightleftStr = xmlElem->Attribute("rotaterightleft");
+            std::string looprightleftStr = xmlElem->Attribute("looprightleft");
 
             String2Number<float>(this->maxSpeedForward_, forwardStr);
             String2Number<float>(this->maxSpeedRotateUpDown_, rotateupdownStr);

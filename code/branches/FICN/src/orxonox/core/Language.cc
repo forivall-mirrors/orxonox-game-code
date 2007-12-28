@@ -35,7 +35,7 @@ namespace orxonox
     // ###############################
     // ###      LanguageEntry      ###
     // ###############################
-    LanguageEntry::LanguageEntry(const String& fallbackEntry)
+    LanguageEntry::LanguageEntry(const std::string& fallbackEntry)
     {
         RegisterRootObject(LanguageEntry);
 
@@ -43,7 +43,7 @@ namespace orxonox
         this->translatedEntry_ = fallbackEntry;
     }
 
-    void LanguageEntry::setTranslation(const String& translation)
+    void LanguageEntry::setTranslation(const std::string& translation)
     {
         if (translation.compare("") != 0)
             this->translatedEntry_ = translation;
@@ -51,7 +51,7 @@ namespace orxonox
             this->translatedEntry_ = this->fallbackEntry_;
     }
 
-    void LanguageEntry::setDefault(const String& fallbackEntry)
+    void LanguageEntry::setDefault(const std::string& fallbackEntry)
     {
         if (this->translatedEntry_.compare(this->fallbackEntry_) == 0)
             this->translatedEntry_ = fallbackEntry;
@@ -84,7 +84,7 @@ namespace orxonox
         return theOnlyLanguageObject;
     }
 
-    void Language::createEntry(const LanguageEntryName& name, const String& entry)
+    void Language::createEntry(const LanguageEntryName& name, const std::string& entry)
     {
         if (!this->languageEntries_[name])
         {
@@ -98,9 +98,9 @@ namespace orxonox
         }
     }
 
-    void Language::addEntry(const LanguageEntryName& name, const String& entry)
+    void Language::addEntry(const LanguageEntryName& name, const std::string& entry)
     {
-        std::map<String, LanguageEntry*>::const_iterator it = this->languageEntries_.find(name);
+        std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.find(name);
         if (!it->second)
             this->createEntry(name, entry);
         else if (it->second->getDefault().compare(entry) == 0)
@@ -111,9 +111,9 @@ namespace orxonox
         this->writeDefaultLanguageFile();
     }
 
-    const String& Language::getTranslation(const LanguageEntryName& name) const
+    const std::string& Language::getTranslation(const LanguageEntryName& name) const
     {
-        std::map<String, LanguageEntry*>::const_iterator it = this->languageEntries_.find(name);
+        std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.find(name);
         if (it->second)
             return it->second->getTranslation();
         else
@@ -123,9 +123,9 @@ namespace orxonox
         }
     }
 
-    const String Language::getFileName(const String& language)
+    const std::string Language::getFileName(const std::string& language)
     {
-        return String("translation_" + language + ".lang");
+        return std::string("translation_" + language + ".lang");
     }
 
     void Language::readDefaultLanguageFile()
@@ -153,7 +153,7 @@ namespace orxonox
         while (file.good() && !file.eof())
         {
             file.getline(line, 1024);
-            String lineString = String(line);
+            std::string lineString = std::string(line);
             if (lineString.compare("") != 0)
             {
                 unsigned int pos = lineString.find('=');
@@ -189,13 +189,13 @@ namespace orxonox
         while (file.good() && !file.eof())
         {
             file.getline(line, 1024);
-            String lineString = String(line);
+            std::string lineString = std::string(line);
             if (lineString.compare("") != 0)
             {
                 unsigned int pos = lineString.find('=');
                 if (pos < lineString.size() && lineString.size() >= 3)
                 {
-                    std::map<String, LanguageEntry*>::const_iterator it = this->languageEntries_.find(lineString.substr(0, pos));
+                    std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.find(lineString.substr(0, pos));
                     if (it->second)
                         it->second->setTranslation(lineString.substr(pos + 1));
                     else

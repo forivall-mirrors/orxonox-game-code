@@ -176,6 +176,10 @@
 				RelativePath="..\src\orxonox\Orxonox.cc"
 				>
 			</File>
+			<File
+				RelativePath="..\src\orxonox\SpaceshipSteering.cc"
+				>
+			</File>
 			<Filter
 				Name="hud"
 				>
@@ -304,6 +308,10 @@
 			</File>
 			<File
 				RelativePath="..\src\orxonox\OrxonoxPrereqs.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\orxonox\SpaceshipSteering.h"
 				>
 			</File>
 			<Filter

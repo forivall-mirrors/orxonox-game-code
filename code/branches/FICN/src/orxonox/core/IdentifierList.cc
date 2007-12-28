@@ -129,10 +129,10 @@ namespace orxonox
     /**
         @returns a string, containing a list of the names of all Identifiers in the list.
     */
-    String IdentifierList::toString() const
+    std::string IdentifierList::toString() const
     {
         IdentifierListElement* temp = this->first_;
-        String output = "";
+        std::string output = "";
 
         while (temp)
         {

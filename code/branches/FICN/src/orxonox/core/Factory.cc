@@ -41,7 +41,7 @@ namespace orxonox
         @returns the Identifier with a given name.
         @param name The name of the wanted Identifier
     */
-    Identifier* Factory::getIdentifier(const String& name)
+    Identifier* Factory::getIdentifier(const std::string& name)
     {
         return getFactoryPointer()->identifierStringMap_[name];
     }
@@ -60,7 +60,7 @@ namespace orxonox
         @param name The name of the identifier
         @param identifier The identifier to add
     */
-    void Factory::add(const String& name, Identifier* identifier)
+    void Factory::add(const std::string& name, Identifier* identifier)
     {
         getFactoryPointer()->identifierStringMap_[name] = identifier;
         getFactoryPointer()->identifierNetworkIDMap_[identifier->getNetworkID()] = identifier;
@@ -84,7 +84,7 @@ namespace orxonox
     void Factory::createClassHierarchy()
     {
         COUT(3) << "*** Factory -> Create class-hierarchy" << std::endl;
-        std::map<String, Identifier*>::iterator it;
+        std::map<std::string, Identifier*>::iterator it;
         it = getFactoryPointer()->identifierStringMap_.begin();
         (*getFactoryPointer()->identifierStringMap_.begin()).second->startCreatingHierarchy();
         for (it = getFactoryPointer()->identifierStringMap_.begin(); it != getFactoryPointer()->identifierStringMap_.end(); ++it)

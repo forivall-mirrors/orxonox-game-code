@@ -25,14 +25,14 @@
  *
  */
 
+#include <string>
 
 #include "AudioStream.h"
-#include "misc/String.h"
 #include "../orxonox/core/Debug.h"
 
 namespace audio
 {
-  AudioStream::AudioStream(orxonox::String path)
+  AudioStream::AudioStream(std::string path)
 	{
 		this->path = path;
 		loaded = false;
@@ -254,22 +254,22 @@ namespace audio
 
 
 
-	orxonox::String AudioStream::errorString(int code)
+	std::string AudioStream::errorString(int code)
 	{
 	    switch(code)
 	    {
 	        case OV_EREAD:
-	            return orxonox::String("Read from media.");
+	            return std::string("Read from media.");
 	        case OV_ENOTVORBIS:
-	            return orxonox::String("Not Vorbis data.");
+	            return std::string("Not Vorbis data.");
 	        case OV_EVERSION:
-	            return orxonox::String("Vorbis version mismatch.");
+	            return std::string("Vorbis version mismatch.");
 	        case OV_EBADHEADER:
-	            return orxonox::String("Invalid Vorbis header.");
+	            return std::string("Invalid Vorbis header.");
 	        case OV_EFAULT:
-	            return orxonox::String("Internal logic fault (bug or heap/stack corruption.");
+	            return std::string("Internal logic fault (bug or heap/stack corruption.");
 	        default:
-	            return orxonox::String("Unknown Ogg error.");
+	            return std::string("Unknown Ogg error.");
 	    }
 	}
 }

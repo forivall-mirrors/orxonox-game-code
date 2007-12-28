@@ -1,6 +1,8 @@
 #ifndef _ParticleInterface_H__
 #define _ParticleInterface_H__
 
+#include <string>
+
 // #include "ParticleInterface.h"
 // #include <Ogre.h>
 // #include <OIS/OIS.h>
@@ -13,7 +15,6 @@
 #include "../OrxonoxPrereqs.h"
 
 #include "misc/Vector3.h"
-#include "misc/String.h"
 #include "misc/ColourValue.h"
 
 
@@ -24,7 +25,7 @@ namespace orxonox
   {
   public:
 
-    ParticleInterface( Ogre::SceneManager *sceneManager, String name, String templateName );
+    ParticleInterface( Ogre::SceneManager *sceneManager, std::string name, std::string templateName );
     ~ParticleInterface( void );
 
     void inline addToSceneNode( Ogre::SceneNode* sceneNode ) { sceneNode_ = sceneNode; sceneNode_->attachObject(particleSystem_);};

@@ -79,12 +79,12 @@ namespace orxonox
     timeText_->setCaption(StringConverter::toString(timeMin_) + ":" + StringConverter::toString(timeSec_));
   }
 
-  void HUD::setTargetWindowName(String i){
+  void HUD::setTargetWindowName(std::string i){
     targetWindowName_=i;
     targetWindowNameText_->setCaption( targetWindowName_ );
   }
 
-  void HUD::setTargetWindowStatus(String i){
+  void HUD::setTargetWindowStatus(std::string i){
     targetWindowStatus_=i;
     targetWindowStatusText_->setCaption( targetWindowStatus_ );
   }

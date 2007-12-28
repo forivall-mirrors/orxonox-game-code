@@ -36,7 +36,7 @@ namespace audio
 		// Update
 		void update();
 
-		void ambientAdd(orxonox::String file);
+		void ambientAdd(std::string file);
 		void ambientStart();
 		void ambientStop();
 
@@ -48,7 +48,7 @@ namespace audio
 
 
 
-		orxonox::String ambientPath;
+		std::string ambientPath;
 	
 		// Vector containing all audio files
 		std::vector<AudioBuffer> buffers;

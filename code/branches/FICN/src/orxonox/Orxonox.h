@@ -7,13 +7,13 @@
 #ifndef _Orxonox_H__
 #define _Orxonox_H__
 
+#include <string>
+
 #include <OgrePrerequisites.h>
 #include <OIS/OISPrereqs.h>
 
 #include "OrxonoxPrereqs.h"
 #include "loader/LoaderPrereqs.h"
-
-#include "misc/String.h"
 #include "GraphicsEngine.h"
 
 
@@ -31,7 +31,7 @@ namespace orxonox {
   class Orxonox
   {
     public:
-      void init(int argc, char **argv, String path);
+      void init(int argc, char **argv, std::string path);
       void start();
       // not sure if this should be private
       void die(/* some error code */);
@@ -47,11 +47,11 @@ namespace orxonox {
       Orxonox();
       virtual ~Orxonox();
       // init functions
-      void serverInit(String path);
-      void clientInit(String path);
-      void standaloneInit(String path);
+      void serverInit(std::string path);
+      void clientInit(std::string path);
+      void standaloneInit(std::string path);
       // run functions
-      void playableServer(String path);
+      void playableServer(std::string path);
       void standalone();
       void defineResources();
       void setupRenderSystem();
@@ -65,7 +65,7 @@ namespace orxonox {
 
     private:
       GraphicsEngine*       ogre_;      //!< our dearest graphics engine <3
-      String           dataPath_;  //!< path to data
+      std::string           dataPath_;  //!< path to data
       loader::LevelLoader*  loader_;    //!< level loader builds the scene
       audio::AudioManager*  auMan_;     //!< audio manager
       BulletManager*        bulletMgr_; //!< Keeps track of the thrown bullets
@@ -78,7 +78,7 @@ namespace orxonox {
 
       // this is used to identify the mode (server/client/...) we're in
       gameMode              mode_;
-      String           serverIp_;
+      std::string           serverIp_;
   };
 }
 #endif /* _Orxonox_H__ */

@@ -42,7 +42,7 @@ namespace orxonox
         this->entity_ = 0;
     }
 
-    void Mesh::setMesh(const String& file)
+    void Mesh::setMesh(const std::string& file)
     {
         std::ostringstream name;
         name << (Mesh::meshCounter_s++);

@@ -1,11 +1,12 @@
 #ifndef _Light_H__
 #define _Light_H__
 
+#include <string>
+
 #include <OgreLight.h>
 
 #include "../OrxonoxPrereqs.h"
 
-#include "misc/String.h"
 #include "misc/ColourValue.h"
 
 namespace orxonox
@@ -20,7 +21,7 @@ namespace orxonox
             inline Ogre::Light* getLight()
                 { return this->light_; }
 
-            inline const String& getName() const
+            inline const std::string& getName() const
                 { return this->light_->getName(); }
 
         private:

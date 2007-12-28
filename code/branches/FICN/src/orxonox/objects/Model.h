@@ -20,7 +20,7 @@ namespace orxonox
             bool create();
 
         private:
-            String meshSrc_;
+            std::string meshSrc_;
             Mesh mesh_;
             void registerAllVariables();
     };

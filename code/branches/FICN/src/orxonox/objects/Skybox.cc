@@ -25,12 +25,13 @@
  *
  */
 
+#include <string>
+
 #include <OgreSceneManager.h>
 
 #include "tinyxml/tinyxml.h"
 //#include "misc/Tokenizer.h"
 //#include "misc/String2Number.h"
-#include "misc/String.h"
 #include "../Orxonox.h"
 #include "../core/CoreIncludes.h"
 #include "../core/Debug.h"
@@ -56,7 +57,7 @@ namespace orxonox
 
     	if (xmlElem->Attribute("src"))
     	{
-    		String skyboxSrc = xmlElem->Attribute("src");
+    		std::string skyboxSrc = xmlElem->Attribute("src");
 	    	mgr->setSkyBox(true, skyboxSrc);
 
 	    	COUT(4) << "Loader: Set skybox: "<< skyboxSrc << std::endl << std::endl;

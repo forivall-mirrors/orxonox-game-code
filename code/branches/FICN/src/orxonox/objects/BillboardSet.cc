@@ -44,7 +44,7 @@ namespace orxonox
         this->billboardSet_ = 0;
     }
 
-    void BillboardSet::setBillboardSet(const String& file, const ColourValue& colour, int count, const Vector3& position)
+    void BillboardSet::setBillboardSet(const std::string& file, const ColourValue& colour, int count, const Vector3& position)
     {
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);

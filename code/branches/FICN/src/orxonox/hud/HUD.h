@@ -28,11 +28,11 @@
 #ifndef _HUD_H__
 #define _HUD_H__
 
+#include <string>
+
 #include <OgrePrerequisites.h>
 
 #include "../OrxonoxPrereqs.h"
-
-#include "misc/String.h"
 
 
 namespace orxonox
@@ -60,8 +60,8 @@ namespace orxonox
     int timeMin_;
     int timeSec_;
 
-    String targetWindowName_;
-    String targetWindowStatus_;
+    std::string targetWindowName_;
+    std::string targetWindowStatus_;
     int targetWindowDistance_;
     int targetWindowHitRating_;
 
@@ -92,8 +92,8 @@ namespace orxonox
     void init( void );
 
     void setTime(int i, int j);
-    void setTargetWindowName(String i);
-    void setTargetWindowStatus(String i);
+    void setTargetWindowName(std::string i);
+    void setTargetWindowStatus(std::string i);
     void setTargetWindowDistance(int i);
     void setTargetWindowHitRating(int i);
     void setEnergyValue(int i);

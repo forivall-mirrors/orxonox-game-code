@@ -42,7 +42,7 @@
 namespace orxonox {
   using namespace Ogre;
 
-  ParticleInterface::ParticleInterface( SceneManager *sceneManager, String name, String templateName )
+  ParticleInterface::ParticleInterface( SceneManager *sceneManager, std::string name, std::string templateName )
   {
     sceneManager_ = sceneManager;
     particleSystem_ = sceneManager->createParticleSystem(name, templateName);

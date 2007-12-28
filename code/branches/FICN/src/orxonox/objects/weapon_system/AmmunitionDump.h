@@ -29,13 +29,14 @@
 #ifndef _AmmunitionDump_H__
 #define _AmmunitionDump_H__
 
+#include <string>
+
 #include <OgrePrerequisites.h>
 
 #include "../../OrxonoxPrereqs.h"
 
 #include "network/Synchronisable.h"
 //#include "../core/CoreIncludes.h"
-#include "misc/String.h"
 #include "../BaseObject.h"
 
 
@@ -46,13 +47,13 @@ namespace orxonox {
     AmmunitionDump();
 	  ~AmmunitionDump();
 
-    void setDumpSize(const String &name, int size);
+    void setDumpSize(const std::string &name, int size);
 
-    int store(const String &name, int quantiy);
+    int store(const std::string &name, int quantiy);
 
-    int getAmmunition(const String &name, int quantity);
+    int getAmmunition(const std::string &name, int quantity);
 
-    int getStockSize(const String &name);
+    int getStockSize(const std::string &name);
 
     virtual void loadParams(TiXmlElement* xmlElem) { BaseObject::loadParams(xmlElem); };
 

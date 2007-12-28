@@ -28,9 +28,9 @@
 #ifndef _Error_H__
 #define _Error_H__
 
-#include "CorePrereqs.h"
+#include <string>
 
-#include "misc/String.h"
+#include "CorePrereqs.h"
 
 namespace orxonox
 {
@@ -38,8 +38,8 @@ namespace orxonox
 	{
 	public:
 		Error();
-		Error(String errorMsg, int errorCode = 0);
-		Error(int errorCode, String errorMsg = "");
+		Error(std::string errorMsg, int errorCode = 0);
+		Error(int errorCode, std::string errorMsg = "");
 	private:
 
 	};

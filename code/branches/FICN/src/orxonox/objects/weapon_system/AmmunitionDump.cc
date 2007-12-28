@@ -58,7 +58,7 @@ namespace orxonox {
       delete capacity_;
   }
 
-  void AmmunitionDump::setDumpSize(const String &name, int size)
+  void AmmunitionDump::setDumpSize(const std::string &name, int size)
   {
     if (size < 0)
       return;
@@ -69,7 +69,7 @@ namespace orxonox {
   }
 
 
-  int AmmunitionDump::store(const String &name, int quantity)
+  int AmmunitionDump::store(const std::string &name, int quantity)
   {
     int id = Orxonox::getSingleton()->getBulletMgr()->getAmmunitionID(name);
     if (id == -1)
@@ -86,7 +86,7 @@ namespace orxonox {
   }
 
 
-  int AmmunitionDump::getAmmunition(const String &name, int quantity)
+  int AmmunitionDump::getAmmunition(const std::string &name, int quantity)
   {
     int id = Orxonox::getSingleton()->getBulletMgr()->getAmmunitionID(name);
     if (id == -1)
@@ -102,7 +102,7 @@ namespace orxonox {
   }
 
 
-  int AmmunitionDump::getStockSize(const String &name)
+  int AmmunitionDump::getStockSize(const std::string &name)
   {
     int id = Orxonox::getSingleton()->getBulletMgr()->getAmmunitionID(name);
     // FIXME changed = to ==, check if correct
