@@ -52,7 +52,7 @@ class Convert
         bool success = Convert::ToString(output, f);
     */
     template <typename T>
-    static bool Convert::ToString(std::string& output, T input)
+    static bool ToString(std::string& output, T input)
     {
         std::ostringstream oss;
         if (oss << input)
@@ -77,7 +77,7 @@ class Convert
         bool success = Convert::ToString(output, f, "0.000000");
     */
     template <typename T>
-    static bool Convert::ToString(std::string& output, T input, const std::string& fallbackString)
+    static bool ToString(std::string& output, T input, const std::string& fallbackString)
     {
         if (Convert::ToString(output, input))
             return true;
@@ -98,7 +98,7 @@ class Convert
         bool success = string2Number(f, input);
     */
     template <typename T>
-    static bool Convert::FromString(T& output, const std::string& input)
+    static bool FromString(T& output, const std::string& input)
     {
         std::istringstream iss(input);
         if (iss >> output)
@@ -120,7 +120,7 @@ class Convert
         bool success = string2Number(f, input, 0.000000);
     */
     template <typename T>
-    static bool Convert::FromString(T& output, const std::string& input, T fallbackValue)
+    static bool FromString(T& output, const std::string& input, T fallbackValue)
     {
         if (Convert::FromString(output, input))
             return true;
