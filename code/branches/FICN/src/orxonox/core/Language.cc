@@ -68,19 +68,25 @@ namespace orxonox
         this->defaultLanguage_ = "default";
         this->defaultTranslation_ = "ERROR: LANGUAGE ENTRY DOESN'T EXIST!";
         this->readDefaultLanguageFile();
-
-        this->setConfigValues();
     }
 
     void Language::setConfigValues()
     {
-        SetConfigValue(language_, this->defaultLanguage_);
+        SetConfigValue(language_, this->defaultLanguage_).description("The language of the ingame text");
         this->readTranslatedLanguageFile();
     }
 
     Language& Language::getLanguage()
     {
         static Language theOnlyLanguageObject = Language();
+        static bool bCreatingTheOnlyLanguageObject = true;
+
+        if (bCreatingTheOnlyLanguageObject)
+        {
+            bCreatingTheOnlyLanguageObject = false;
+            theOnlyLanguageObject.setConfigValues();
+        }
+
         return theOnlyLanguageObject;
     }
 
