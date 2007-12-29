@@ -356,7 +356,7 @@ namespace orxonox
                 if (newObject)
                 {
                     // Do a dynamic_cast, because an object of type T is much better than of type BaseObject
-                    return dynamic_cast<T*>(newObject);
+                    return (T*)(newObject);
                 }
                 else
                 {
