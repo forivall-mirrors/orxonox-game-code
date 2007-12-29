@@ -73,6 +73,7 @@ namespace orxonox
         private:
             std::string fallbackEntry_;                             //!< The default entry: Used, if no translation is available or no language configured
             std::string translatedEntry_;                           //!< The translated entry in the configured language
+            bool bTranslationSet_;                                  //!< True if the translation was set
     };
 
     //! The Language class manges the language files and entries and stores the LanguageEntry objects in a map.
@@ -93,7 +94,7 @@ namespace orxonox
             void readTranslatedLanguageFile();
             void writeDefaultLanguageFile() const;
             static const std::string getFileName(const std::string& language);
-            void createEntry(const LanguageEntryName& name, const std::string& entry);
+            LanguageEntry* createEntry(const LanguageEntryName& name, const std::string& entry);
 
             std::string language_;                                  //!< The configured language
             std::string defaultLanguage_;                           //!< The default language

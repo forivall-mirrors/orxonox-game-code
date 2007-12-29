@@ -947,8 +947,10 @@ namespace orxonox
         if (!this->bAddedDescription_)
         {
             this->description_ = std::string("ConfigValueDescription::" + this->classname_ + "::" + this->varname_);
-            Language::getLanguage().addEntry(description_, description);
+            Language::getLanguage().addEntry(this->description_, description);
             this->bAddedDescription_ = true;
+            COUT(4) << "Added description " << this->description_ << std::endl;
+            COUT(4) << "Translation is: " << Language::getLanguage().getTranslation(this->description_) << std::endl;
         }
     }
 }

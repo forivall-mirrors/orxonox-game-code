@@ -50,6 +50,7 @@ namespace orxonox
 
         this->fallbackEntry_ = fallbackEntry;
         this->translatedEntry_ = fallbackEntry; // Set the translation to the fallback entry, for the case that no translation gets assigned
+        this->bTranslationSet_ = false;
     }
 
     /**
@@ -60,7 +61,10 @@ namespace orxonox
     {
         // Check if the translation is more than just an empty string
         if (translation.compare("") != 0)
+        {
             this->translatedEntry_ = translation;
+            this->bTranslationSet_ = true;
+        }
         else
             this->translatedEntry_ = this->fallbackEntry_;
     }
@@ -72,7 +76,7 @@ namespace orxonox
     void LanguageEntry::setDefault(const std::string& fallbackEntry)
     {
         // If the default entry changes and the translation wasn't set yet, use the new default entry as translation
-        if (this->translatedEntry_.compare(this->fallbackEntry_) == 0)
+        if (!this->bTranslationSet_)
             this->translatedEntry_ = fallbackEntry;
 
         this->fallbackEntry_ = fallbackEntry;
@@ -130,20 +134,23 @@ namespace orxonox
         @brief Creates a new LanguageEntry with a given name and a given default entry.
         @param name The name of the entry
         @param entry The default entry
+        @return The created LanguageEntry object
     */
-    void Language::createEntry(const LanguageEntryName& name, const std::string& entry)
+    LanguageEntry* Language::createEntry(const LanguageEntryName& name, const std::string& entry)
     {
+        std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.find(name);
+
         // Make sure we don't create a duplicate entry
-        if (!this->languageEntries_[name])
+        if (!it->second)
         {
             LanguageEntry* newEntry = new LanguageEntry(entry);
             newEntry->setName(name);
             this->languageEntries_[name] = newEntry;
+            return newEntry;
         }
-        else
-        {
-            COUT(2) << "Warning: Language entry " << name << " is duplicate in " << getFileName(this->defaultLanguage_) << "!" << std::endl;
-        }
+
+        COUT(2) << "Warning: Language entry " << name << " is duplicate in " << getFileName(this->defaultLanguage_) << "!" << std::endl;
+        return it->second;
     }
 
     /**
@@ -289,7 +296,7 @@ namespace orxonox
                     if (it->second)
                         it->second->setTranslation(lineString.substr(pos + 1));
                     else
-                        COUT(2) << "Warning: Unknown language entry \"" << lineString.substr(0, pos) << "\" in " << getFileName(this->language_) << std::endl;
+                        this->createEntry(lineString.substr(0, pos), this->defaultTranslation_)->setTranslation(lineString.substr(pos + 1));
                 }
                 else
                     COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFileName(this->language_) << std::endl;
