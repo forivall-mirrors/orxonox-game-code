@@ -28,7 +28,7 @@
 #include <fstream>
 
 #include "misc/Tokenizer.h"
-#include "misc/String2Number.h"
+#include "misc/Convert.h"
 #include "ConfigValueContainer.h"
 
 #define CONFIGFILEPATH "orxonox.ini"
@@ -49,7 +49,7 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = VT_Int;
 
-        this->defvalueString_ = number2String(defvalue, "0");                       // Try to convert the default-value to a string
+        Convert::ToString(this->defvalueString_, defvalue, "0");                    // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
         std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
@@ -71,7 +71,7 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = VT_uInt;
 
-        this->defvalueString_ = number2String(defvalue, "0");                       // Try to convert the default-value to a string
+        Convert::ToString(this->defvalueString_, defvalue, "0");                    // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
         std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
@@ -93,7 +93,7 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = VT_Char;
 
-        this->defvalueString_ = number2String((int)defvalue, "0");                  // Try to convert the default-value to a string
+        Convert::ToString(this->defvalueString_, (int)defvalue, "0");               // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
         std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
@@ -115,7 +115,7 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = VT_uChar;
 
-        this->defvalueString_ = number2String((unsigned int)defvalue, "0");         // Try to convert the default-value to a string
+        Convert::ToString(this->defvalueString_, (unsigned int)defvalue, "0");      // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
         std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
@@ -137,7 +137,7 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = VT_Float;
 
-        this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
+        Convert::ToString(this->defvalueString_, defvalue, "0.000000");             // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
         std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
@@ -159,7 +159,7 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = VT_Double;
 
-        this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
+        Convert::ToString(this->defvalueString_, defvalue, "0.000000");             // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
         std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
@@ -181,7 +181,7 @@ namespace orxonox
         this->varname_ = varname;
         this->type_ = VT_LongDouble;
 
-        this->defvalueString_ = number2String(defvalue, "0.000000");                // Try to convert the default-value to a string
+        Convert::ToString(this->defvalueString_, defvalue, "0.000000");             // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
         std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
@@ -383,7 +383,7 @@ namespace orxonox
     */
     bool ConfigValueContainer::parseSting(const std::string& input, int defvalue)
     {
-        return string2Number(this->value_.value_int_, input, defvalue);
+        return Convert::FromString(this->value_.value_int_, input, defvalue);
     }
 
     /**
@@ -394,7 +394,7 @@ namespace orxonox
     */
     bool ConfigValueContainer::parseSting(const std::string& input, unsigned int defvalue)
     {
-        return string2Number(this->value_.value_uint_, input, defvalue);
+        return Convert::FromString(this->value_.value_uint_, input, defvalue);
     }
 
     /**
@@ -406,7 +406,7 @@ namespace orxonox
     bool ConfigValueContainer::parseSting(const std::string& input, char defvalue)
     {
         // I used value_int_ instead of value_char_ to avoid number <-> char confusion in the config-file
-        return string2Number(this->value_.value_int_, input, (int)defvalue);
+        return Convert::FromString(this->value_.value_int_, input, (int)defvalue);
     }
 
     /**
@@ -418,7 +418,7 @@ namespace orxonox
     bool ConfigValueContainer::parseSting(const std::string& input, unsigned char defvalue)
     {
         // I used value_uint_ instead of value_uchar_ to avoid number <-> char confusion in the config-file
-        return string2Number(this->value_.value_uint_, input, (unsigned int)defvalue);
+        return Convert::FromString(this->value_.value_uint_, input, (unsigned int)defvalue);
     }
 
     /**
@@ -429,7 +429,7 @@ namespace orxonox
     */
     bool ConfigValueContainer::parseSting(const std::string& input, float defvalue)
     {
-        return string2Number(this->value_.value_float_, input, defvalue);
+        return Convert::FromString(this->value_.value_float_, input, defvalue);
     }
 
     /**
@@ -440,7 +440,7 @@ namespace orxonox
     */
     bool ConfigValueContainer::parseSting(const std::string& input, double defvalue)
     {
-        return string2Number(this->value_.value_double_, input, defvalue);
+        return Convert::FromString(this->value_.value_double_, input, defvalue);
     }
 
     /**
@@ -451,7 +451,7 @@ namespace orxonox
     */
     bool ConfigValueContainer::parseSting(const std::string& input, long double defvalue)
     {
-        return string2Number(this->value_.value_long_double_, input, defvalue);
+        return Convert::FromString(this->value_.value_long_double_, input, defvalue);
     }
 
     /**
@@ -476,7 +476,7 @@ namespace orxonox
         else
         {
             // Its not a known word - is it a number?
-            return string2Number(this->value_.value_bool_, input, defvalue);
+            return Convert::FromString(this->value_.value_bool_, input, defvalue);
         }
 
         return true;
@@ -548,12 +548,12 @@ namespace orxonox
         if (pos1 < input.length() && pos2 < input.length() && pos1 < pos2)
         {
             std::vector<std::string> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
-            if (!string2Number(this->value_vector2_.x, tokens[0], defvalue.x))
+            if (!Convert::FromString(this->value_vector2_.x, tokens[0], defvalue.x))
             {
                 this->value_vector2_ = defvalue;
                 return false;
             }
-            if (!string2Number(this->value_vector2_.y, tokens[1], defvalue.y))
+            if (!Convert::FromString(this->value_vector2_.y, tokens[1], defvalue.y))
             {
                 this->value_vector2_ = defvalue;
                 return false;
@@ -582,17 +582,17 @@ namespace orxonox
         if (pos1 < input.length() && pos2 < input.length() && pos1 < pos2)
         {
             std::vector<std::string> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
-            if (!string2Number(this->value_vector3_.x, tokens[0], defvalue.x))
+            if (!Convert::FromString(this->value_vector3_.x, tokens[0], defvalue.x))
             {
                 this->value_vector3_ = defvalue;
                 return false;
             }
-            if (!string2Number(this->value_vector3_.y, tokens[1], defvalue.y))
+            if (!Convert::FromString(this->value_vector3_.y, tokens[1], defvalue.y))
             {
                 this->value_vector3_ = defvalue;
                 return false;
             }
-            if (!string2Number(this->value_vector3_.z, tokens[2], defvalue.z))
+            if (!Convert::FromString(this->value_vector3_.z, tokens[2], defvalue.z))
             {
                 this->value_vector3_ = defvalue;
                 return false;
@@ -621,22 +621,22 @@ namespace orxonox
         if (pos1 < input.length() && pos2 < input.length() && pos1 < pos2)
         {
             std::vector<std::string> tokens = tokenize(input.substr(pos1, pos2 - pos1), ",");
-            if (!string2Number(this->value_colourvalue_.r, tokens[0], defvalue.r))
+            if (!Convert::FromString(this->value_colourvalue_.r, tokens[0], defvalue.r))
             {
                 this->value_colourvalue_ = defvalue;
                 return false;
             }
-            if (!string2Number(this->value_colourvalue_.g, tokens[1], defvalue.g))
+            if (!Convert::FromString(this->value_colourvalue_.g, tokens[1], defvalue.g))
             {
                 this->value_colourvalue_ = defvalue;
                 return false;
             }
-            if (!string2Number(this->value_colourvalue_.b, tokens[2], defvalue.b))
+            if (!Convert::FromString(this->value_colourvalue_.b, tokens[2], defvalue.b))
             {
                 this->value_colourvalue_ = defvalue;
                 return false;
             }
-            if (!string2Number(this->value_colourvalue_.a, tokens[3], defvalue.a))
+            if (!Convert::FromString(this->value_colourvalue_.a, tokens[3], defvalue.a))
             {
                 this->value_colourvalue_ = defvalue;
                 return false;
