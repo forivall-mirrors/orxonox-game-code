@@ -26,6 +26,7 @@ IF(WIN32)
     objects/Skybox.cc
     objects/Camera.cc
 #    objects/SpaceshipSteeringObject.cc
+    objects/Fighter.cc
     objects/Model.cc
     objects/Mesh.cc
     objects/Light.cc
