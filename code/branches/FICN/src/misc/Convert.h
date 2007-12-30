@@ -19,10 +19,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Benjamin Grauer
  *   Co-authors:
- *      ...
- *
+ *      Fabian 'x3n' Landau
  */
 
 /*!
@@ -36,98 +35,69 @@
 #include <string>
 #include <sstream>
 
-//! The Convert class has some static member functions to convert strings to values and values to strings.
-class Convert
+
+// DEFAULT CLASS
+template <typename FromType, typename ToType>
+class Converter
 {
-  public:
-    /**
-        @brief Converts a value of any type to a string.
-        @param output The string to write the result in
-        @param input The variable to convert
-        @return True if the conversion succeded
-
-        @example
-        float f = 3.14;
-        std::string output;
-        bool success = Convert::ToString(output, f);
-    */
-    template <typename T>
-    static bool ToString(std::string* output, T input)
-    {
-        std::ostringstream oss;
-        if (oss << input)
-        {
-            (*output) = oss.str();
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-        @brief Converts a value of any type to a string and assigns a defaultvalue if the conversion fails.
-        @param output The string to write the result in
-        @param input The variable to convert
-        @param fallbackString The assigned string if the conversion fails.
-        @return True if the conversion succeeded
-
-        @example
-        float f = 3.14;
-        std::string output;
-        bool success = Convert::ToString(output, f, "0.000000");
-    */
-    template <typename T>
-    static bool ToString(std::string* output, T input, const std::string& fallbackString)
-    {
-        if (Convert::ToString(output, input))
-            return true;
-
-        (*output) = fallbackString;
-        return false;
-    }
-
-    /**
-        @brief Converts a string to a value of any type.
-        @param output The variable to assign the result to
-        @param input The string to convert
-        @return True if the conversion succeeded
-
-        @example
-        std::string input = "3.14";
-        float f;
-        bool success = string2Number(f, input);
-    */
-    template <typename T>
-    static bool FromString(T* output, const std::string& input)
-    {
-        std::istringstream iss(input);
-        if (iss >> (*output))
-            return true;
-
-        return false;
-    }
-
-    /**
-        @brief Converts a string to a value of any type.
-        @param output The variable to assign the result to
-        @param input The string to convert
-        @param fallbackValue The assigned value if the conversion fails
-        @return True if the conversion succeeded
-
-        @example
-        std::string input = "3.14";
-        float f;
-        bool success = string2Number(f, input, 0.000000);
-    */
-    template <typename T>
-    static bool FromString(T* output, const std::string& input, T fallbackValue)
-    {
-        if (Convert::FromString(output, input))
-            return true;
-
-        (*output) = fallbackValue;
-        return false;
-    }
+ public:
+  bool operator()(ToType* output, const FromType& input) const
+  {
+    return false;
+  }
 };
+
+// PARTIAL SPECIALIZATION TO CONVERT TO STRINGS
+template<typename FromType>
+class Converter<FromType, std::string>
+{
+ public:
+  bool operator()(std::string* output, const FromType& input) const
+  {
+    std::ostringstream oss;
+    if (oss << input)
+    {
+      (*output) = oss.str();
+      return true;
+    }
+    else
+      return false;
+  }
+};
+
+// PARTIAL SPECIALIZATION TO CONVERT FROM STRING
+template<typename ToType>
+class Converter<std::string, ToType>
+{
+ public:
+  bool operator()(ToType* output, const std::string& input) const
+  {
+    std::istringstream iss(input);
+    if (iss >> (*output))
+      return true;
+    else
+      return false;
+  }
+};
+
+// FUNCTION SO WE DO NOT HAVE TO TELL THE COMPILER ABOUT THE TYPE
+template<typename FromType, typename ToType>
+static bool ConvertValue(ToType* output, const FromType& input)
+{
+  Converter<FromType, ToType> converter;
+  return converter(output, input);
+}
+
+// THE SAME, BUT WITH DEFAULT VALUE
+template<typename FromType, typename ToType>
+static bool ConvertValue(ToType* output, const FromType& input, const ToType& fallback)
+{
+  Converter<FromType, ToType> converter;
+  if (converter(output, input))
+    return true;
+
+  (*output) = fallback;
+  return false;
+}
 
 #endif /* _Convert_H__ */

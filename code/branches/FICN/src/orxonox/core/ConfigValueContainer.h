@@ -123,11 +123,11 @@ namespace orxonox
             /** @returns the value. @param value This is only needed to determine the right type. */
             inline ConfigValueContainer& getValue(const char* value)                    { value = this->value_string_.c_str(); return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(Vector2& value)                 { value = this->value_vector2_; return *this; }
+            inline ConfigValueContainer& getValue(Vector2& value)                       { value = this->value_vector2_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(Vector3& value)                 { value = this->value_vector3_; return *this; }
+            inline ConfigValueContainer& getValue(Vector3& value)                       { value = this->value_vector3_; return *this; }
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(ColourValue& value)             { value = this->value_colourvalue_; return *this; }
+            inline ConfigValueContainer& getValue(ColourValue& value)                   { value = this->value_colourvalue_; return *this; }
 
             void description(const std::string& description);
 
