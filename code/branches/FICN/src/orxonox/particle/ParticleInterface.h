@@ -27,33 +27,42 @@ namespace orxonox
     ParticleInterface( Ogre::SceneManager *sceneManager, std::string name, std::string templateName );
     ~ParticleInterface( void );
 
-    void inline addToSceneNode( Ogre::SceneNode* sceneNode ) { sceneNode_ = sceneNode; sceneNode_->attachObject(particleSystem_);};
-    void inline detachFromSceneNode( void ) { sceneNode_->detachObject(particleSystem_); sceneNode_ = NULL;};
+    inline void addToSceneNode( Ogre::SceneNode* sceneNode )
+        { sceneNode_ = sceneNode; sceneNode_->attachObject(particleSystem_);};
+    inline void detachFromSceneNode( void )
+        { sceneNode_->detachObject(particleSystem_); sceneNode_ = NULL;};
 
     Ogre::ParticleEmitter* getEmitter ( int emitterNr );
     void newEmitter ( void );
 
     Vector3 getPositionOfEmitter ( int emitterNr );
-    inline void setPositionOfEmitter ( int emitterNr, Vector3 position ) { particleSystem_->getEmitter(emitterNr)->setPosition(position); };
+    inline void setPositionOfEmitter ( int emitterNr, Vector3 position )
+        { particleSystem_->getEmitter(emitterNr)->setPosition(position); };
 
-    inline Vector3 getDirection ( void ) { return particleSystem_->getEmitter(0)->getDirection(); };
+    inline Vector3 getDirection ( void )
+        { return particleSystem_->getEmitter(0)->getDirection(); };
     void setDirection ( Vector3 direction );
 
-    inline Real getVelocity() {return velocity_; };
+    inline Real getVelocity()
+        {return velocity_; };
     void setVelocity( Real v );
 
-    inline int getRate() { return rate_; };
+    inline int getRate()
+      { return rate_; };
     void setRate( int r );
 
-    inline Real getDistance() { return distance_; };
+    inline Real getDistance()
+        { return distance_; };
     void setDistance( Real d );
 
-    inline ColourValue getColour( void ) {return colour_;};
+    inline ColourValue getColour( void )
+        {return colour_;};
     void setColour( ColourValue colour );
 
     void switchEnable();
 
-    inline Ogre::ParticleSystem* getParticleSystem() { return this->particleSystem_; };
+    inline Ogre::ParticleSystem* getParticleSystem()
+        { return this->particleSystem_; };
 
   private:
     Ogre::SceneNode *sceneNode_;

@@ -62,11 +62,17 @@ namespace orxonox
             void setTranslation(const std::string& translation);
             void setDefault(const std::string& fallbackEntry);
 
-            /** @brief Returns the translated entry in the configured language. @return The translated entry */
+            /**
+              @brief Returns the translated entry in the configured language.
+              @return The translated entry
+            */
             inline const std::string& getTranslation()
                 { return this->translatedEntry_; }
 
-            /** @brief Returns the default entry. @return The default entry */
+            /**
+              @brief Returns the default entry.
+              @return The default entry
+            */
             inline const std::string& getDefault()
                 { return this->fallbackEntry_; }
 

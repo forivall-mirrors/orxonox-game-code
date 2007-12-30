@@ -3,5 +3,5 @@ ConfigValueDescription::DebugLevel::softDebugLevelLogfile_=Der maximale Output-L
 ConfigValueDescription::DebugLevel::softDebugLevelShell_=Der maximale Output-Level, der in der ingame-Shell angezeigt wird
 ConfigValueDescription::Projectile::lifetime_=Die die das Projektil am Leben bleibt in Sekunden
 ConfigValueDescription::Projectile::speed_=Die Geschwindigkeit des Projektils in Units pro Sekunde
-ConfigValueDescription::SpaceShip::bInvertYAxis_=Falls dies true ist, verh‰lt sich die Maus wie ein Joystick (Maus hoch = Schiff runter)
+ConfigValueDescription::SpaceShip::bInvertYAxis_=Falls dies true ist, verh√§lt sich die Maus wie ein Joystick (Maus hoch = Schiff runter)
 ConfigValueDescription::SpaceShip::reloadTime_=Die Nachladezeit der Waffe in Sekunden

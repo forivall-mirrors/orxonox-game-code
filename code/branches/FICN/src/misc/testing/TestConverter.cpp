@@ -3,7 +3,7 @@
 
 int main(int argc, char** argv)
 {
-  int input = 5;
+  int input = rand();
   std::string sub;
   int output = 0;
 

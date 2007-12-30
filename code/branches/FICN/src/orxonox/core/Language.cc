@@ -141,7 +141,7 @@ namespace orxonox
         std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.find(name);
 
         // Make sure we don't create a duplicate entry
-        if (!it->second)
+        if (it == this->languageEntries_.end())
         {
             LanguageEntry* newEntry = new LanguageEntry(entry);
             newEntry->setName(name);
@@ -160,8 +160,9 @@ namespace orxonox
     */
     void Language::addEntry(const LanguageEntryName& name, const std::string& entry)
     {
+        COUT(5) << "Called addEntry with\n  name: " << name << "\n  entry: " <<  entry << std::endl;
         std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.find(name);
-        if (!it->second)
+        if (it == this->languageEntries_.end())
         {
             // The entry isn't available yet, meaning it's new, so create it
             this->createEntry(name, entry);
@@ -179,6 +180,7 @@ namespace orxonox
 
         // Write the default language file because either a new entry was created or an existing entry has changed
         this->writeDefaultLanguageFile();
+
     }
 
     /**
@@ -189,7 +191,7 @@ namespace orxonox
     const std::string& Language::getTranslation(const LanguageEntryName& name) const
     {
         std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.find(name);
-        if (it->second)
+        if (it != this->languageEntries_.end())
             return it->second->getTranslation();
         else
         {
@@ -293,7 +295,7 @@ namespace orxonox
                     std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.find(lineString.substr(0, pos));
 
                     // Check if the entry exists
-                    if (it->second)
+                    if (it != this->languageEntries_.end())
                         it->second->setTranslation(lineString.substr(pos + 1));
                     else
                         this->createEntry(lineString.substr(0, pos), this->defaultTranslation_)->setTranslation(lineString.substr(pos + 1));

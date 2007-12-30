@@ -1,4 +1,3 @@
-
 PROJECT(Orxonox)
 #set some global variables, which are used throughout the project
 
@@ -55,7 +54,6 @@ SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
 #SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O2 -Wall -g -ggdb")
 SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O2 -Wall -g -ggdb")
 SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
-
 
 
 #This sets where to look for "Find*.cmake" files

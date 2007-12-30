@@ -66,7 +66,7 @@ namespace orxonox {
   void ParticleInterface::standardizeEmitters(void)
   {
     //Abgleichen der anderen Emitter an die Variabeln
-    for (int i=1; i<numberOfEmitters_; i++) {
+    for (int i=1; i < numberOfEmitters_; i++) {
       particleSystem_->getEmitter(i)->setColour( colour_ );
       particleSystem_->getEmitter(i)->setTimeToLive( distance_ );
       particleSystem_->getEmitter(i)->setEmissionRate( rate_ );
@@ -129,14 +129,14 @@ namespace orxonox {
 
   void ParticleInterface::setDirection ( Vector3 direction )
   {
-    for(int i=0; i<numberOfEmitters_; i++) {
+    for(int i=0; i < numberOfEmitters_; i++) {
       particleSystem_->getEmitter(i)->setDirection(direction);
     }
   }
 
   void ParticleInterface::switchEnable(){
     bool enable=(!(particleSystem_->getEmitter(0)->getEnabled()));
-    for(int i=0; i<numberOfEmitters_; i++) {
+    for(int i=0; i < numberOfEmitters_; i++) {
       particleSystem_->getEmitter(i)->setEnabled(enable);
     }
   }

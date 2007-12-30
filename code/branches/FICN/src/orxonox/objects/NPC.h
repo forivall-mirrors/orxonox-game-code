@@ -41,7 +41,7 @@ namespace orxonox {
       static int const SEPERATIONDISTANCE = 300;  //detectionradius of seperation
       static int const ALIGNMENTDISTANCE = 300;  //detectionradius of alignment
       static int const COHESIONDISTANCE = 5000;  //detectionradius of cohesion
-      static int const ANZELEMENTS = 9;  //number of elements
+      static int const NUMELEMENTS = 9;  //number of elements
   };
 
 }

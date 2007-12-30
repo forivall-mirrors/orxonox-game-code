@@ -26,7 +26,7 @@
  */
 
 /**
- @file  OrxonoxPrereq.cc
+ @file  OrxonoxPrereq.h
  @brief Contains all the necessary forward declarations for all classes, structs and enums.
  */
 
