@@ -37,11 +37,11 @@ IF (UNIX)
 
   # check wheter we are on a tardis machine
   IF ("${UNAME_OV}" MATCHES "tardis")
-    SET (IS_TARDIS "tardis")
+    SET (IS_TARDIS ON)
   ENDIF ("${UNAME_OV}" MATCHES "tardis")
 
   # if on tardis change compiler
-  IF (IS_TARDIS)
+  IF(IS_TARDIS)
     MESSAGE("System is a TARDIS: Setting Compiler to g++-4.1.1")
     SET(CMAKE_CXX_COMPILER "g++-4.1.1")
     # reset eNet serach path
@@ -55,16 +55,15 @@ SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
 SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O2 -Wall -g -ggdb")
 SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
 
-
 #This sets where to look for "Find*.cmake" files
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 #Performs the search and sets the variables
 FIND_PACKAGE(OGRE)
 FIND_PACKAGE(OIS)
-FIND_PACKAGE(CEGUI)
-FIND_PACKAGE(CEGUI_OGRE)
+# FIND_PACKAGE(CEGUI)
+# FIND_PACKAGE(CEGUI_OGRE)
 FIND_PACKAGE(ENet)
-FIND_PACKAGE(Boost)
+FIND_PACKAGE(Boost REQUIRED thread)
 FIND_PACKAGE(OpenAL)
 FIND_PACKAGE(ALUT)
 FIND_PACKAGE(OggVorbis)

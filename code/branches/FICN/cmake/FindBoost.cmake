@@ -1,4 +1,4 @@
-# THIS FILE HAS BEEN MODIFIED TO WORK ON TARDIS
+# THIS FILE HAS BEEN MODIFIED TO WORK ON THE TARDIS INFRASTURUCTURE of THE ETH.
 # use with cation
 # Nicolas Schlumberger <nico AT orxonx DOT net> (C) 2007
 #
@@ -277,6 +277,7 @@ IF(Boost_LIBRARY_DIRS)
     BOOST_FIND_LIBRARY(${library})
     IF(Boost_${library}_FOUND)
       SET(Boost_LIBRARIES ${Boost_LIBRARIES} ${Boost_${library}_LIBRARIES})
+      MESSAGE(STATUS "Found BoostLibrary: ${library}")
     ENDIF(Boost_${library}_FOUND)
   ENDFOREACH(library)
 ENDIF(Boost_LIBRARY_DIRS)
