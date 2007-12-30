@@ -91,6 +91,10 @@ namespace orxonox
             inline static Iterator<T> start()
                 { return Iterator<T>(getList()->first_); }
 
+            /** @returns the first element in the list */
+            inline static Iterator<T> begin()
+                { return Iterator<T>(getList()->first_); }
+
             /** @returns the last element in the list */
             inline static Iterator<T> end()
                 { return Iterator<T>(getList()->last_); }

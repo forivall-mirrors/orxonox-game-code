@@ -31,6 +31,7 @@
 */
 
 #include "Identifier.h"
+#include "Factory.h"
 
 namespace orxonox
 {

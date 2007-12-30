@@ -47,6 +47,9 @@ namespace orxonox
     //! The DebugLevel class is a singleton, only used to configure the amount of debug output.
     class _CoreExport DebugLevel : public OrxonoxClass
     {
+        template <class T>
+        friend class ClassIdentifier; // forward declaration because of the private destructor
+
         public:
             static int getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
             void setConfigValues();

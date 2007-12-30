@@ -59,16 +59,13 @@
 
 #include "ObjectList.h"
 #include "IdentifierList.h"
-#include "Factory.h"
 #include "Debug.h"
-// These two files would actually be need, but they would produce
-// circular dependencies. Anyway, it does compile without them
-// #include "OrxonoxClass.h"
-// #include "MetaObjectList.h"
+#include "Iterator.h"
 
 namespace orxonox
 {
-    class BaseObject; // Forward declaration
+    class BaseFactory; // Forward declaration
+    class BaseObject;  // Forward declaration
 
     // ###############################
     // ###       Identifier        ###
@@ -99,17 +96,19 @@ namespace orxonox
         friend class Factory; // Forward declaration
 
         public:
-            /** @brief Sets the Factory.
-             *  @param factory The factory to assign
-             */
+            /** @brief Sets the Factory. @param factory The factory to assign */
             inline void addFactory(BaseFactory* factory) { this->factory_ = factory; }
 
             BaseObject* fabricate();
-
             bool isA(const Identifier* identifier) const;
             bool isDirectlyA(const Identifier* identifier) const;
             bool isChildOf(const Identifier* identifier) const;
             bool isParentOf(const Identifier* identifier) const;
+
+            static std::map<std::string, Identifier*>& getIdentifierMap();
+
+            /** @brief Removes all objects of the corresponding class. */
+            virtual void removeObjects() const = 0;
 
             /** @returns the name of the class the Identifier belongs to. */
             inline const std::string& getName() const { return this->name_; }
@@ -136,8 +135,6 @@ namespace orxonox
             /** @brief Sets the ConfigValueContainer of a variable, given by the string of its name. @param varname The name of the variablee @param container The container */
             inline void setConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
                 { this->configValues_[varname] = container; }
-
-            static std::map<std::string, Identifier*>& getIdentifierMap();
 
         private:
             Identifier();
@@ -192,6 +189,7 @@ namespace orxonox
             static ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass);
             static void addObject(T* object);
             static ClassIdentifier<T>* getIdentifier();
+            void removeObjects() const;
             void setName(const std::string& name);
 
         private:
@@ -287,6 +285,15 @@ namespace orxonox
         object->getMetaList().add(ClassIdentifier<T>::getIdentifier()->objects_, ClassIdentifier<T>::getIdentifier()->objects_->add(object));
     }
 
+    /**
+        @brief Removes all objects of the corresponding class.
+    */
+    template <class T>
+    void ClassIdentifier<T>::removeObjects() const
+    {
+        for (Iterator<T> it = ObjectList<T>::start(); it;)
+            delete *(it++);
+    }
 
     // ###############################
     // ###   SubclassIdentifier    ###

@@ -87,6 +87,9 @@ namespace orxonox
     //! The Language class manges the language files and entries and stores the LanguageEntry objects in a map.
     class _CoreExport Language : public OrxonoxClass
     {
+        template <class T>
+        friend class ClassIdentifier; // forward declaration because of the private destructor
+
         public:
             static Language& getLanguage();
             void setConfigValues();
