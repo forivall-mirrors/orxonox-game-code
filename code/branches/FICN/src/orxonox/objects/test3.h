@@ -1,7 +1,7 @@
 #ifndef _Test3_H__
 #define _Test3_H__
 
-#include "BaseObject.h"
+#include "orxonox/core/BaseObject.h"
 
 namespace orxonox
 {

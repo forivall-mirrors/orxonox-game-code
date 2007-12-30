@@ -1,7 +1,7 @@
 #ifndef _Test2_H__
 #define _Test2_H__
 
-#include "BaseObject.h"
+#include "orxonox/core/BaseObject.h"
 #include "Timer.h"
 
 namespace orxonox

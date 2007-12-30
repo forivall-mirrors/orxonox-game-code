@@ -1,7 +1,7 @@
 #ifndef _Test1_H__
 #define _Test1_H__
 
-#include "BaseObject.h"
+#include "orxonox/core/BaseObject.h"
 #include "Tickable.h"
 #include "test3.h"
 #include "../../tinyxml/tinyxml.h"
