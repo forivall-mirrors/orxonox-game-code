@@ -12,13 +12,15 @@
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 
+#include "OrxonoxPrereqs.h"
+
 
 namespace orxonox {
 
 /**
    * graphics engine manager class
  */
-  class GraphicsEngine {
+  class _OrxonoxExport GraphicsEngine {
     public:
       GraphicsEngine();
       inline void setConfigPath(std::string path) { this->configPath_ = path; };

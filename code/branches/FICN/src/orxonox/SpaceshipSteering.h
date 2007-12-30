@@ -1,11 +1,13 @@
 #ifndef _SpaceShipSteering_H__
 #define _SpaceShipSteering_H__
 
-#include "OgrePrerequisites.h"
+#include <OgrePrerequisites.h>
+
+#include "OrxonoxPrereqs.h"
 
 namespace orxonox
 {
-  class SpaceshipSteering
+  class _OrxonoxExport SpaceshipSteering
   {
   public:
     SpaceshipSteering(float maxSpeedForward, float maxSpeedRotateUpDown,

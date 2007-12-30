@@ -81,6 +81,8 @@ namespace orxonox
             std::string translatedEntry_;                           //!< The translated entry in the configured language
             bool bTranslationSet_;                                  //!< True if the translation was set
     };
+    template class _CoreExport orxonox::ClassIdentifier<LanguageEntry>;
+    template class _CoreExport orxonox::ObjectList<LanguageEntry>;
 
     //! The Language class manges the language files and entries and stores the LanguageEntry objects in a map.
     class _CoreExport Language : public OrxonoxClass
@@ -107,6 +109,8 @@ namespace orxonox
             std::string defaultTranslation_;                        //!< The returned string, if an entry unavailable entry is requested
             std::map<std::string, LanguageEntry*> languageEntries_; //!< A map to store all LanguageEntry objects and their name
     };
+    template class _CoreExport orxonox::ClassIdentifier<Language>;
+    template class _CoreExport orxonox::ObjectList<Language>;
 }
 
 #endif /* _Language_H__ */

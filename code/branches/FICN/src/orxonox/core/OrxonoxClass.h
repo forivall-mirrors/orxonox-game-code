@@ -40,7 +40,7 @@
 
 #include "CorePrereqs.h"
 #include "MetaObjectList.h"
-#include "Identifier.h"
+#include "Iterator.h"
 
 namespace orxonox
 {
@@ -157,6 +157,8 @@ namespace orxonox
             bool bActive_;                  //!< True = the object is active
             bool bVisible_;                 //!< True = the object is visible
     };
+    template class _CoreExport orxonox::ClassIdentifier<OrxonoxClass>;
+    template class _CoreExport orxonox::ObjectList<OrxonoxClass>;
 }
 
 #endif /* _OrxonoxClass_H__ */

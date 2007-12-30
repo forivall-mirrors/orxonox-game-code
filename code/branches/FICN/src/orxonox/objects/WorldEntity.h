@@ -16,7 +16,7 @@
 
 namespace orxonox
 {
-  class WorldEntity : public BaseObject, public Tickable, public network::Synchronisable
+  class _OrxonoxExport WorldEntity : public BaseObject, public Tickable, public network::Synchronisable
   {
     public:
       WorldEntity();
@@ -146,6 +146,7 @@ namespace orxonox
       Ogre::SceneNode* node_;
       bool bStatic_;
   };
+  ExportClass(WorldEntity, Orxonox);
 }
 
 #endif /* _WorldEntity_H__ */

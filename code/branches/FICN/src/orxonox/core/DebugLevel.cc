@@ -30,7 +30,6 @@
     @brief Implementation of the DebugLevel class.
 */
 
-#include "CoreIncludes.h"
 #include "DebugLevel.h"
 
 namespace orxonox

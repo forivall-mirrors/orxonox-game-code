@@ -31,7 +31,6 @@
 */
 
 #include "tinyxml/tinyxml.h"
-#include "../core/CoreIncludes.h"
 
 #include "BaseObject.h"
 

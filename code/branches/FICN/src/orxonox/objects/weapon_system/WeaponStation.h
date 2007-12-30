@@ -35,7 +35,7 @@
 
 
 namespace orxonox {
-  class WeaponStation
+  class _OrxonoxExport WeaponStation
   {
   public:
     WeaponStation(int slotSize);

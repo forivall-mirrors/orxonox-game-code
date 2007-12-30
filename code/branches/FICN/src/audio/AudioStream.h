@@ -3,11 +3,13 @@
 
 #include "AudioIncludes.h"
 
+#include "AudioPrereqs.h"
+
 namespace audio
 {
   #define BUFFER_SIZE (4096 * 4)
 
-  class AudioStream
+  class _AudioExport AudioStream
   {
     public:
       AudioStream(std::string path);

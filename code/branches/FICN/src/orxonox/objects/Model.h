@@ -11,7 +11,7 @@ class TiXmlElement; // Forward declaration
 namespace orxonox
 {
 
-    class Model : public WorldEntity
+    class _OrxonoxExport Model : public WorldEntity
     {
         public:
             Model();
@@ -24,6 +24,7 @@ namespace orxonox
             Mesh mesh_;
             void registerAllVariables();
     };
+    ExportClass(Model, Orxonox);
 }
 
 #endif /* _Model_H__ */

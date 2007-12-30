@@ -37,12 +37,12 @@
 
 #include "network/Synchronisable.h"
 #include "tinyxml/tinyxml.h"
-//#include "../core/CoreIncludes.h"
+#include "../../core/CoreIncludes.h"
 #include "../BaseObject.h"
 #include "../Tickable.h"
 
 namespace orxonox {
-  class BulletManager : public BaseObject, public network::Synchronisable, public Tickable
+  class _OrxonoxExport BulletManager : public BaseObject, public network::Synchronisable, public Tickable
   {
   public:
     BulletManager();
@@ -66,6 +66,7 @@ namespace orxonox {
 	  int bulletsSize_;
 	  int bulletsIndex_;
   };
+  ExportClass(BulletManager, Orxonox);
 }
 
 #endif /* _BulletManager_H__ */

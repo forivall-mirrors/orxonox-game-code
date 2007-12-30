@@ -3,9 +3,11 @@
 
 #include "AudioIncludes.h"
 
+#include "AudioPrereqs.h"
+
 namespace audio
 {
-	class AudioSource
+	class _AudioExport AudioSource
 	{
 	public:
 		AudioSource();

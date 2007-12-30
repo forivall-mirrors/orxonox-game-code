@@ -11,7 +11,7 @@
 
 namespace orxonox
 {
-    class Light
+    class _OrxonoxExport Light
     {
         public:
             Light();

@@ -115,24 +115,6 @@ namespace orxonox {
 // Windows Settings
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
 
-// If we're not including this from a client build, specify that the stuff
-// should get exported. Otherwise, import it.
-#	 if defined( ORXONOX_STATIC_LIB )
-     // don't use exports/imports when building statically
-#    define _OrxonoxExport
-#    define _OrxonoxPrivate
-#  else
-#    if defined( ORXONOX_NONCLIENT_BUILD )
-#      define _OrxonoxExport __declspec( dllexport )
-#    else
-#      if defined( __MINGW32__ )
-#        define _OrxonoxExport
-#      else
-#       	define _OrxonoxExport __declspec( dllimport )
-#      endif
-#    endif
-#    define _OrxonoxPrivate
-#  endif
 // Win32 compilers use _DEBUG for specifying debug builds.
 #  ifdef _DEBUG
 #    define ORXONOX_DEBUG_MODE 1
@@ -161,14 +143,6 @@ namespace orxonox {
 // Linux/Apple Settings
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_LINUX || ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
 
-// Enable GCC symbol visibility
-#  if defined( ORXONOX_GCC_VISIBILITY )
-#    define _OrxonoxExport  __attribute__ ((visibility("default")))
-#    define _OrxonoxPrivate __attribute__ ((visibility("hidden")))
-#  else
-#    define _OrxonoxExport
-#    define _OrxonoxPrivate
-#  endif
 
 // A quick define to overcome different names for the same function
 #  define stricmp strcasecmp

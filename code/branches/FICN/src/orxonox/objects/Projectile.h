@@ -11,7 +11,7 @@ namespace orxonox
 {
     class SpaceShip; // Forward declaration
 
-    class Projectile : public WorldEntity
+    class _OrxonoxExport Projectile : public WorldEntity
     {
         public:
             Projectile(SpaceShip* owner = 0);
@@ -27,6 +27,7 @@ namespace orxonox
             float lifetime_;
             Timer<Projectile> destroyTimer_;
     };
+    ExportClass(Projectile, Orxonox);
 }
 
 #endif /* _Projectile_H__ */

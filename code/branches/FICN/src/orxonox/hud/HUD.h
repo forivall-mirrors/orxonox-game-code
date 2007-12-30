@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-  class HUD
+  class _OrxonoxExport HUD
   {
   private:
     Ogre::OverlayElement* timeText_;

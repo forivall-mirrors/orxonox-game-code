@@ -37,7 +37,7 @@
 
 
 namespace orxonox {
-  class BaseWeapon : public Model
+  class _OrxonoxExport BaseWeapon : public Model
   {
   public:
     enum Action {
@@ -121,6 +121,7 @@ namespace orxonox {
     int magazineSize_;
 
   };
+  ExportAbstractClass(BaseWeapon, Orxonox);
 }
 
 #endif /* _BaseWeapon_H__ */

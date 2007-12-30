@@ -35,6 +35,29 @@
 
 #include "OrxonoxPlatform.h"
 
+//-----------------------------------------------------------------------
+// Shared library settings
+//-----------------------------------------------------------------------
+#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( ORXONOX_STATIC_BUILD )
+#  ifdef ORXONOX_SHARED_BUILD
+#    define _OrxonoxExport __declspec(dllexport)
+#  else
+#    if defined( __MINGW32__ )
+#      define _OrxonoxExport
+#    else
+#      define _OrxonoxExport __declspec(dllimport)
+#    endif
+#  endif
+#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _OrxonoxExport  __attribute__ ((visibility("default")))
+#else
+#  define _OrxonoxExport
+#endif
+
+//-----------------------------------------------------------------------
+// Forward declarations
+//-----------------------------------------------------------------------
+
 // classes that have not yet been put into a namespace
 class InputManager;
 class SpaceShipSteering;
@@ -55,20 +78,16 @@ class TiXmlParsingData;
 
 namespace orxonox {
   class Ambient;
-  class BaseEntity;
   class BaseObject;
   class Camera;
-  class Entity;
   class GraphicsEngine;
   class Mesh;
   class Model;
   class NPC;
   class OrxListener;
   class Orxonox;
-  class SceneNode;
   class Skybox;
   class SpaceShip;
-  class SpaceshipSteeringObject;
   class Tickable;
   class TickFrameListener;
   template <class T>

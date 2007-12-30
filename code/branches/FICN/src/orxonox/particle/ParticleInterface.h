@@ -20,7 +20,7 @@
 namespace orxonox
 {
 
-  class ParticleInterface
+  class _OrxonoxExport ParticleInterface
   {
   public:
 

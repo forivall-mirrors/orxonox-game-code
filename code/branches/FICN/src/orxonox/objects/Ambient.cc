@@ -42,6 +42,9 @@
 
 namespace orxonox
 {
+    // create a template instantiations
+    //template class _OrxonoxExport ClassIdentifier<Ambient>;
+
     CreateFactory(Ambient);
 
     Ambient::Ambient()

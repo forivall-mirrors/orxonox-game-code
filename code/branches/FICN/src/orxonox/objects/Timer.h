@@ -66,7 +66,7 @@
 namespace orxonox
 {
     //! TimerBase is the parent of the Timer class.
-    class TimerBase : public OrxonoxClass
+    class _OrxonoxExport TimerBase : public OrxonoxClass
     {
         friend class TimerFrameListener;
 
@@ -103,6 +103,7 @@ namespace orxonox
 
             float time_;        //!< Internal variable, counting the time till the next function-call
     };
+    ExportAbstractClass(TimerBase, Orxonox);
 
     //! The Timer is a callback-object, calling a given function after a given time-interval.
     template <class T = BaseObject>
@@ -156,6 +157,7 @@ namespace orxonox
             void (T::*timerFunction_)();
             T* object_;
     };
+    ExportAbstractClass(Timer<BaseObject>, Orxonox);
 
     //! The TimerFrameListener manages all Timers in the game.
     class TimerFrameListener : public Ogre::FrameListener

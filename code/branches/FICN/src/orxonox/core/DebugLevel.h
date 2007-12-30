@@ -40,6 +40,7 @@
 
 #include "OrxonoxClass.h"
 #include "OutputHandler.h"
+#include "CoreIncludes.h"
 
 namespace orxonox
 {
@@ -61,6 +62,7 @@ namespace orxonox
             int softDebugLevelShell_;                       //!< The debug level for the ingame shell
             ConfigValueContainer* softDebugLevelContainer_; //!< The config value container for the debug level
     };
+    ExportAbstractClass(DebugLevel, Core);
 }
 
 #endif /* _DebugLevel_H__ */

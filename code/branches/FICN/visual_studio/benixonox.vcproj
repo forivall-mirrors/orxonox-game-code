@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="LOADER_STATIC_BUILD"
+				PreprocessorDefinitions="ORXONOX_SHARED_BUILD"
 				PrecompiledHeaderThrough=""
 			/>
 			<Tool
@@ -53,7 +53,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib OIS_d.lib libogg_d.lib libvorbis_d.lib libvorbisfile_d.lib alut_d.lib zlibd.lib enet_d.lib EFX-Util.lib OpenAL32.lib"
+				AdditionalDependencies="OgreMain_d.lib OIS_d.lib zlibd.lib enet_d.lib"
 				AdditionalLibraryDirectories=""
 				IgnoreDefaultLibraryNames="/NODEFAULTLIB:MSVCRT"
 				EntryPointSymbol=""
@@ -108,7 +108,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="LOADER_STATIC_BUILD"
+				PreprocessorDefinitions="LOADER_STATIC_BUILD; ORXONOX_SHARED_BUILD"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

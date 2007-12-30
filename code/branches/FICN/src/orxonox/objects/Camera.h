@@ -7,7 +7,7 @@
 
 namespace orxonox
 {
-    class Camera : public BaseObject
+    class _OrxonoxExport Camera : public BaseObject
     {
         public:
             Camera();
@@ -20,6 +20,7 @@ namespace orxonox
             
 
     };
+    ExportClass(Camera, Orxonox);
 }
 
 #endif /* _Camera_H__ */

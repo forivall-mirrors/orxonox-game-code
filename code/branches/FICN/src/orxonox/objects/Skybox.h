@@ -9,7 +9,7 @@ class TiXmlElement; // Forward declaration
 
 namespace orxonox
 {
-    class Skybox : public BaseObject
+    class _OrxonoxExport Skybox : public BaseObject
     {
         public:
             Skybox();
@@ -22,6 +22,7 @@ namespace orxonox
             
 
     };
+    ExportClass(Skybox, Orxonox);
 }
 
 #endif /* _Skybox_H__ */

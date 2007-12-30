@@ -9,19 +9,21 @@
 #define _BaseObject_H__
 
 #include "../OrxonoxPrereqs.h"
+#include "../core/CorePrereqs.h"
 
-#include "../core/OrxonoxClass.h"
+#include "../core/CoreIncludes.h"
 
 namespace orxonox
 {
     //! The BaseObject is the parent of all classes representing an instance in the game.
-    class BaseObject : virtual public OrxonoxClass
+    class _OrxonoxExport BaseObject : virtual public OrxonoxClass
     {
         public:
             BaseObject();
             virtual ~BaseObject();
             virtual void loadParams(TiXmlElement* xmlElem);
     };
+    ExportClass(BaseObject, Orxonox);
 }
 
 #endif /* _BaseObject_H__ */

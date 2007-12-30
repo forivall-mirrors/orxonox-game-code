@@ -9,7 +9,7 @@
 
 namespace orxonox
 {
-    class Mesh
+    class _OrxonoxExport Mesh
     {
         public:
             Mesh();

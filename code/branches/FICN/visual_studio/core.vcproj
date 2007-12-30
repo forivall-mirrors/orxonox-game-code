@@ -217,10 +217,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\orxonox\core\ColourValue.h"
-				>
-			</File>
-			<File
 				RelativePath="..\src\orxonox\core\ConfigValueContainer.h"
 				>
 			</File>

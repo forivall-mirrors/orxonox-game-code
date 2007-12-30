@@ -7,7 +7,7 @@
 
 namespace orxonox
 {
-    class Ambient : public BaseObject
+    class _OrxonoxExport Ambient : public BaseObject
     {
         public:
             Ambient();
@@ -20,6 +20,7 @@ namespace orxonox
             
 
     };
+    ExportClass(Ambient, Orxonox);
 }
 
 #endif /* _Ambient_H__ */

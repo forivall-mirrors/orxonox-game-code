@@ -15,7 +15,7 @@ namespace orxonox
 {
     class ParticleInterface; // Forward declaration
 
-    class SpaceShip : public Model, public OIS::MouseListener
+    class _OrxonoxExport SpaceShip : public Model, public OIS::MouseListener
     {
         public:
             SpaceShip();
@@ -42,6 +42,10 @@ namespace orxonox
             bool mouseMoved(const OIS::MouseEvent &e);
             bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
             bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+
+            void doNothing() {
+            int a = 0;
+            }
 
 
         private:
@@ -124,6 +128,7 @@ namespace orxonox
 */
             int emitterRate_;
     };
+    ExportClass(SpaceShip, Orxonox);
 }
 
 #endif /* _SpaceShip_H__ */

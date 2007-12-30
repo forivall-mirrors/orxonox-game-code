@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			ConfigurationType="4"
+			ConfigurationType="2"
 			InheritedPropertySheets=".\base_properties_debug.vsprops"
 			CharacterSet="1"
 			>
@@ -39,6 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
+				PreprocessorDefinitions="AUDIO_SHARED_BUILD"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -50,11 +51,15 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				AdditionalLibraryDirectories=""
+				Name="VCLinkerTool"
+				AdditionalDependencies="libvorbisfile_d.lib alut_d.lib  OpenAL32.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -64,6 +69,12 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -165,6 +176,10 @@
 			</File>
 			<File
 				RelativePath="..\src\audio\AudioManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\audio\AudioPrereqs.h"
 				>
 			</File>
 			<File

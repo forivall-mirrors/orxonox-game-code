@@ -3,9 +3,11 @@
 
 #include "AudioIncludes.h"
 
+#include "AudioPrereqs.h"
+
 namespace audio
 {
-	class AudioBuffer
+	class _AudioExport AudioBuffer
 	{
 	public:
 		AudioBuffer(std::string fileName);

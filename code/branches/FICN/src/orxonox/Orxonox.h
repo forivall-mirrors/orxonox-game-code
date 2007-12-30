@@ -14,6 +14,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include "loader/LoaderPrereqs.h"
+
 #include "GraphicsEngine.h"
 
 
@@ -28,7 +29,7 @@ namespace orxonox {
     PRESENTATION
   };
 
-  class Orxonox
+  class _OrxonoxExport Orxonox
   {
     public:
       void init(int argc, char **argv, std::string path);

@@ -15,7 +15,9 @@
 
 #include <OgreRenderWindow.h>
 
-class InputManager : public OIS::KeyListener, public OIS::MouseListener, public OIS::JoyStickListener {
+#include "OrxonoxPrereqs.h"
+
+class _OrxonoxExport InputManager : public OIS::KeyListener, public OIS::MouseListener, public OIS::JoyStickListener {
   public:
     virtual ~InputManager( void );
 

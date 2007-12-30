@@ -12,7 +12,7 @@
 
 namespace orxonox
 {
-    class BillboardSet
+    class _OrxonoxExport BillboardSet
     {
         public:
             BillboardSet();

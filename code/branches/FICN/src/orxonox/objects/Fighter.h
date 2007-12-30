@@ -11,7 +11,7 @@ class TiXmlElement; // Forward declaration
 
 namespace orxonox
 {
-    class Fighter : public Model, public OIS::MouseListener
+    class _OrxonoxExport Fighter : public Model, public OIS::MouseListener
     {
         public:
             Fighter();
@@ -89,6 +89,7 @@ namespace orxonox
 
             int emitterRate_;
     };
+    ExportClass(Fighter, Orxonox);
 }
 
 #endif /* _Fighter_H__ */

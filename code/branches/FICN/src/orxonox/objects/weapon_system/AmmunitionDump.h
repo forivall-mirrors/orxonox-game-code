@@ -41,7 +41,7 @@
 
 
 namespace orxonox {
-  class AmmunitionDump : public BaseObject, public network::Synchronisable
+  class _OrxonoxExport AmmunitionDump : public BaseObject, public network::Synchronisable
   {
   public:
     AmmunitionDump();
@@ -65,6 +65,7 @@ namespace orxonox {
     int *stock_;
     int *capacity_;
   };
+  ExportClass(AmmunitionDump, Orxonox);
 }
 
 #endif /* _AmmunitionDump_H__ */

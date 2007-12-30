@@ -37,7 +37,7 @@
 
 
 namespace orxonox {
-  class BarrelGun : public BaseWeapon
+  class _OrxonoxExport BarrelGun : public BaseWeapon
   {
  public:
     BarrelGun();
@@ -59,6 +59,7 @@ namespace orxonox {
   protected:
 
   };
+  ExportClass(BarrelGun, Orxonox);
 }
 
 #endif /* _BarrelGun_H__ */

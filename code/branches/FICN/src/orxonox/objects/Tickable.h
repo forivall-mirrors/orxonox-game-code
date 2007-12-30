@@ -51,7 +51,7 @@ namespace orxonox
     class TickFrameListener; // Forward declaration
 
     //! The Tickable interface provides a tick(dt) function, that gets called every frame.
-    class Tickable : virtual public OrxonoxClass
+    class _OrxonoxExport Tickable : virtual public OrxonoxClass
     {
         public:
             /**
@@ -66,9 +66,10 @@ namespace orxonox
             */
             Tickable() { RegisterRootObject(Tickable); }
     };
+    ExportAbstractClass(Tickable, Orxonox);
 
     //! The TickFrameListener calls the tick(dt) function of all Tickables every frame.
-    class TickFrameListener : public Ogre::FrameListener
+    class _OrxonoxExport TickFrameListener : public Ogre::FrameListener
     {
         private:
             /** @brief Gets called before a frame gets rendered. */

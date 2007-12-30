@@ -36,7 +36,7 @@
 #include "../Model.h"
 
 namespace orxonox {
-  class Bullet : public Model
+  class _OrxonoxExport Bullet : public Model
   {
   public:
 	  Bullet();
@@ -46,6 +46,7 @@ namespace orxonox {
 
     inline virtual void loadParams(TiXmlElement* xmlElem) { Model::loadParams(xmlElem); };
  };
+  ExportClass(Bullet, Orxonox);
 }
 
 #endif /* _Bullet_H__ */

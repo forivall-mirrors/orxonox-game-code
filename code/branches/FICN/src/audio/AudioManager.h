@@ -3,13 +3,15 @@
 
 #include "AudioIncludes.h"
 
+#include "AudioPrereqs.h"
+
 #include "AudioBuffer.h"
 #include "AudioSource.h"
 #include "AudioStream.h"
 
 namespace audio
 {
-	class AudioManager
+	class _AudioExport AudioManager
 	{
 	public:
 

@@ -8,7 +8,7 @@
 
 namespace orxonox
 {
-    class Explosion : public WorldEntity
+    class _OrxonoxExport Explosion : public WorldEntity
     {
         public:
             Explosion(WorldEntity* owner = 0);
@@ -20,6 +20,7 @@ namespace orxonox
             float lifetime_;
             ParticleInterface* particle_;
     };
+    ExportClass(Explosion, Orxonox);
 }
 
 #endif /* _Explosion_H__ */
