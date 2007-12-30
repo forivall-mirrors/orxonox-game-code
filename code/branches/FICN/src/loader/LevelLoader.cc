@@ -50,7 +50,7 @@ namespace loader
     path.append(file);
 
     // Open xml file
-    doc_.LoadFile(path);
+    doc_.LoadFile(path.c_str());
 
     // Check if file was loaded
     if (doc_.LoadFile())

@@ -23,7 +23,7 @@ distribution.
 */
 
 /*
- * THIS FILE WAS ALTERED BY Tyge L�vset, 7. April 2005.
+ * THIS FILE WAS ALTERED BY Tyge L�vset, 7. April 2005.
  */
 
 
@@ -32,11 +32,11 @@ distribution.
 #include "tinystr.h"
 
 // Error value for find primitive
-const TiXmlString::size_type TiXmlString::npos = static_cast< size_type >(-1);
+const TiXmlString::size_type TiXmlString::npos = static_cast< TiXmlString::size_type >(-1);
+
 
 // Null rep.
-//FIXME: missing braces around initializer for ‘char [1]’
-TiXmlString::Rep TiXmlString::nullrep_ = { 0, 0, '\0' };
+TiXmlString::Rep TiXmlString::nullrep_ = { 0, 0, { '\0' } };
 
 
 void TiXmlString::reserve (size_type cap)
