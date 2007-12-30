@@ -23,7 +23,7 @@ namespace orxonox
             virtual ~BaseObject();
             virtual void loadParams(TiXmlElement* xmlElem);
     };
-    ExportClass(BaseObject, Orxonox);
+    //ExportClass(BaseObject, Orxonox);
 }
 
 #endif /* _BaseObject_H__ */
