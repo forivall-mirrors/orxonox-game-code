@@ -15,7 +15,7 @@
 #include "zlib.h"
 #include "Synchronisable.h"
 #include "orxonox/core/CoreIncludes.h"
-#include "orxonox/objects/BaseObject.h"
+#include "orxonox/core/BaseObject.h"
 #include "GameStateManager.h"
 
 namespace network {

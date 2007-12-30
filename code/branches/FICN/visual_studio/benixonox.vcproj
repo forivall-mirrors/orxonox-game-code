@@ -196,10 +196,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\src\orxonox\objects\BaseObject.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\src\orxonox\objects\BillboardSet.cc"
 					>
 				</File>
@@ -327,10 +323,6 @@
 				>
 				<File
 					RelativePath="..\src\orxonox\objects\Ambient.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\orxonox\objects\BaseObject.h"
 					>
 				</File>
 				<File

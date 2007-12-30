@@ -2,7 +2,6 @@ PROJECT(Orxonox)
 
 SET( OBJECTS_SRC_FILES
   Ambient.cc
-  BaseObject.cc
   BillboardSet.cc
   Camera.cc
   Explosion.cc

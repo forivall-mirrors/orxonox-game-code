@@ -1,6 +1,7 @@
 PROJECT(Orxonox)
 
 SET( CORE_SRC_FILES
+  BaseObject.cc
   Factory.cc
   IdentifierList.cc
   Identifier.cc

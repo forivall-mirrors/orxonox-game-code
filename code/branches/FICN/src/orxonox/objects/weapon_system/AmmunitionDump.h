@@ -37,7 +37,7 @@
 
 #include "network/Synchronisable.h"
 //#include "../core/CoreIncludes.h"
-#include "../BaseObject.h"
+#include "orxonox/core/BaseObject.h"
 
 
 namespace orxonox {

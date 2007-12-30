@@ -161,6 +161,10 @@
 				RelativePath="..\src\tinyxml\tinyxml.h"
 				>
 			</File>
+			<File
+				RelativePath="..\src\tinyxml\TinyXMLPrereqs.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

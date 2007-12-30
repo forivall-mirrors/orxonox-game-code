@@ -32,7 +32,7 @@
 
 #include "Identifier.h"
 #include "Debug.h"
-#include "../objects/BaseObject.h"
+#include "BaseObject.h"
 #include "Factory.h"
 
 namespace orxonox

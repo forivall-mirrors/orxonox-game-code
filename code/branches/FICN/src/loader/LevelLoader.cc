@@ -33,7 +33,7 @@
 #include "orxonox/core/CoreIncludes.h"
 
 #include "audio/AudioManager.h"
-#include "orxonox/objects/BaseObject.h"
+#include "orxonox/core/BaseObject.h"
 #include "orxonox/Orxonox.h"
 
 #include "LevelLoader.h"

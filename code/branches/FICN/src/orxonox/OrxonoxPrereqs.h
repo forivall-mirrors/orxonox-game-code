@@ -62,20 +62,6 @@
 class InputManager;
 class SpaceShipSteering;
 
-// TinyXML
-class TiXmlString;
-class TiXmlOutStream;
-class TiXmlNode;
-class TiXmlHandle;
-class TiXmlDocument;
-class TiXmlElement;
-class TiXmlComment;
-class TiXmlUnknown;
-class TiXmlAttribute;
-class TiXmlText;
-class TiXmlDeclaration;
-class TiXmlParsingData;
-
 namespace orxonox {
   class Ambient;
   class BaseObject;

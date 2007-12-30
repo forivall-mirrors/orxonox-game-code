@@ -17,7 +17,6 @@ SET( ORXONOX_SRC_FILES
 
 IF(WIN32)
   SET( OBJECTS_SRC_FILES
-    objects/BaseObject.cc
     objects/WorldEntity.cc
     objects/test1.cc
     objects/test2.cc

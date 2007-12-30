@@ -159,6 +159,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\orxonox\core\BaseObject.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\src\orxonox\core\ConfigValueContainer.cc"
 				>
 			</File>
@@ -210,6 +214,10 @@
 			>
 			<File
 				RelativePath="..\src\orxonox\core\ArgReader.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\orxonox\core\BaseObject.h"
 				>
 			</File>
 			<File

@@ -38,7 +38,7 @@
 #include "network/Synchronisable.h"
 #include "tinyxml/tinyxml.h"
 #include "../../core/CoreIncludes.h"
-#include "../BaseObject.h"
+#include "orxonox/core/BaseObject.h"
 #include "../Tickable.h"
 
 namespace orxonox {
