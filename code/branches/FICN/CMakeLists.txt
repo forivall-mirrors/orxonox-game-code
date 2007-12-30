@@ -3,8 +3,10 @@ PROJECT(Orxonox)
 
 OPTION(TESTING_ENABLED "Do you want to enable Testing")
 IF (TESTING_ENABLED)
-ENABLE_TESTING()
+  ENABLE_TESTING()
 ENDIF(TESTING_ENABLED)
+
+OPTION(NETWORK_TESTING_ENABLED "Do you want to build network testing tools: i.e. chatclient chatserver and alike")
 
 #Create some verbose output
 SET(CMAKE_VERBOSE_MAKEFILE TRUE)
@@ -49,9 +51,7 @@ IF (UNIX)
 ENDIF (UNIX)
 
 # pipe $FLAGS to the compiler, and add some local flags. force -O2!
-#SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
 SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
-#SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O2 -Wall -g -ggdb")
 SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O2 -Wall -g -ggdb")
 SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
 

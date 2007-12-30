@@ -44,7 +44,7 @@ namespace orxonox
             bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
             void doNothing() {
-            int a = 0;
+            int a = 0;    //FIXME unused var
             }
 
 

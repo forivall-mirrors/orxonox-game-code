@@ -1,7 +1,7 @@
 //
 // C++ Interface: GameStateClient
 //
-// Description: 
+// Description:
 //
 //
 // Author:  <>, (C) 2007
@@ -20,9 +20,6 @@
 
 namespace network {
 
-/**
-	@author 
-*/
 class GameStateClient{
 public:
   GameStateClient();
@@ -35,7 +32,7 @@ private:
   GameState decode(GameState a, GameStateCompressed x);
   GameState decode(GameStateCompressed x);
   void removeObject(orxonox::Iterator<Synchronisable> &it);
-  
+
   GameState reference;
 };
 

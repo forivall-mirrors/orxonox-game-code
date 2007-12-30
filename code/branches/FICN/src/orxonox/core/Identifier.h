@@ -63,8 +63,8 @@
 #include "Debug.h"
 // These two files would actually be need, but they would produce
 // circular dependencies. Anyway, it does compile without them
-//#include "OrxonoxClass.h"
-//#include "MetaObjectList.h"
+// #include "OrxonoxClass.h"
+// #include "MetaObjectList.h"
 
 namespace orxonox
 {

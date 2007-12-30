@@ -1,23 +1,5 @@
 PROJECT(Orxonox)
 
-SET( CHATCLIENT_SRC_FILES
-  ClientConnection.cc
-  Client.cc
-  PacketBuffer.cc
-  PacketDecoder.cc
-  PacketGenerator.cc
-  dummyclient3.cc
-)
-
-SET( CHATSERVER_SRC_FILES
-  ConnectionManager.cc
-  GameStateManager.cc
-  PacketBuffer.cc
-  PacketDecoder.cc
-  PacketGenerator.cc
-  dummyserver3.cc
-)
-
 SET( NETWORK_SRC_FILES
   Client.cc
   ClientConnection.cc
@@ -41,51 +23,71 @@ ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(network ${ZLIB_LIBRARY} ${ENet_LIBRARY} ${Boost_thread_LIBRARIES})
 
-# chatserver for testing purposes
-ADD_EXECUTABLE(chatserver ${CHATSERVER_SRC_FILES})
-TARGET_LINK_LIBRARIES( chatserver
-  ${OGRE_LIBRARIES}
-  network
-  core
-  #objects
-  ${ENet_LIBRARY}
-  ${ZLIB_LIBRARY}
-  ${WINDOWS_ENET_DEPENDENCIES}
-)
+# build those parts only on request.
+IF(NETWORK_TESTING_ENABLED)
+  SET( CHATCLIENT_SRC_FILES
+    ClientConnection.cc
+    Client.cc
+    PacketBuffer.cc
+    PacketDecoder.cc
+    PacketGenerator.cc
+    dummyclient3.cc
+  )
 
-# chatclient for testing purpose
-ADD_EXECUTABLE(chatclient ${CHATCLIENT_SRC_FILES})
-TARGET_LINK_LIBRARIES( chatclient
-  ${OGRE_LIBRARIES}
-  network
-  core
-  #objects
-  ${ENet_LIBRARY}
-  ${ZLIB_LIBRARY}
-  ${WINDOWS_ENET_DEPENDENCIES}
-)
+  SET( CHATSERVER_SRC_FILES
+    ConnectionManager.cc
+    GameStateManager.cc
+    PacketBuffer.cc
+    PacketDecoder.cc
+    PacketGenerator.cc
+    dummyserver3.cc
+  )
 
-# client for testing purpose
-ADD_EXECUTABLE(client dummyclient2.cc)
-TARGET_LINK_LIBRARIES( client
-  ${OGRE_LIBRARIES}
-  network
-  core
-  #objects
-  ${ENet_LIBRARY}
-  ${ZLIB_LIBRARY}
-  ${WINDOWS_ENET_DEPENDENCIES}
-)
+  # chatserver for testing purposes
+  ADD_EXECUTABLE(chatserver ${CHATSERVER_SRC_FILES})
+  TARGET_LINK_LIBRARIES( chatserver
+    ${OGRE_LIBRARIES}
+    network
+    core
+    #objects
+    ${ENet_LIBRARY}
+    ${ZLIB_LIBRARY}
+    ${WINDOWS_ENET_DEPENDENCIES}
+  )
 
-# server for testing purpose
-ADD_EXECUTABLE(server dummyserver.cc)
-TARGET_LINK_LIBRARIES( server
-  ${OGRE_LIBRARIES}
-  network
-  core
-  #objects
-  ${ENet_LIBRARY}
-  ${ZLIB_LIBRARY}
-  ${WINDOWS_ENET_DEPENDENCIES}
-)
+  # chatclient for testing purpose
+  ADD_EXECUTABLE(chatclient ${CHATCLIENT_SRC_FILES})
+  TARGET_LINK_LIBRARIES( chatclient
+    ${OGRE_LIBRARIES}
+    network
+    core
+    #objects
+    ${ENet_LIBRARY}
+    ${ZLIB_LIBRARY}
+    ${WINDOWS_ENET_DEPENDENCIES}
+  )
 
+  # client for testing purpose
+  ADD_EXECUTABLE(client dummyclient2.cc)
+  TARGET_LINK_LIBRARIES( client
+    ${OGRE_LIBRARIES}
+    network
+    core
+    #objects
+    ${ENet_LIBRARY}
+    ${ZLIB_LIBRARY}
+    ${WINDOWS_ENET_DEPENDENCIES}
+  )
+
+  # server for testing purpose
+  ADD_EXECUTABLE(server dummyserver.cc)
+  TARGET_LINK_LIBRARIES( server
+    ${OGRE_LIBRARIES}
+    network
+    core
+    #objects
+    ${ENet_LIBRARY}
+    ${ZLIB_LIBRARY}
+    ${WINDOWS_ENET_DEPENDENCIES}
+  )
+ENDIF(NETWORK_TESTING_ENABLED)
