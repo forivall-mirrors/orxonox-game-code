@@ -2,6 +2,11 @@
 PROJECT(Orxonox)
 #set some global variables, which are used throughout the project
 
+OPTION(TESTING_ENABLED "Do you want to enable Testing")
+IF (TESTING_ENABLED)
+ENABLE_TESTING()
+ENDIF(TESTING_ENABLED)
+
 #Create some verbose output
 SET(CMAKE_VERBOSE_MAKEFILE TRUE)
 
