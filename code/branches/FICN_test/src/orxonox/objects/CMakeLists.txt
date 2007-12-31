@@ -1,6 +1,6 @@
 PROJECT(Orxonox)
 
-INCLUDE_DIRECTORIES(../tools)
+ADD_SUBDIRECTORY(weapon)
 
 SET( OBJECTS_SRC_FILES
   Ambient.cc
@@ -17,18 +17,15 @@ SET( OBJECTS_SRC_FILES
   test1.cc
   test2.cc
   test3.cc
-  weapon_system/AmmunitionDump.cc
-  weapon_system/BarrelGun.cc
-  weapon_system/BaseWeapon.cc
-  weapon_system/Bullet.cc
-  weapon_system/BulletManager.cc
-  weapon_system/WeaponStation.cc
+  ${WEAPON_SRC_FILES}
 )
 
-ADD_LIBRARY(objects SHARED ${OBJECTS_SRC_FILES})
+IF (NOT WIN32)
+  ADD_LIBRARY(objects SHARED ${OBJECTS_SRC_FILES})
 
-TARGET_LINK_LIBRARIES( objects
-  util
-  orxonox
-  tools
-)
+  TARGET_LINK_LIBRARIES( objects
+    util
+    orxonox
+    tools
+  )
+ENDIF (NOT WIN32)

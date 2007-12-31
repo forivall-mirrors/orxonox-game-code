@@ -11,7 +11,7 @@
 
 
 
- <audio>
+ <!--audio>
 		<ambient>
 			<ogg src="allgorythm-lift_up" />
 			<ogg src="allgorythm-resonance_blaster" />
@@ -19,7 +19,7 @@
 			<ogg src="task_horizon_-_menu1" />
 			<ogg src="tha_silent_partner_-_void" />
 		</ambient>
-  </audio>
+  </audio-->
 
   <!-- Keep a minimum distance of >100 to the object, otherwise the camara thinks it's in the object -->
   <!-- the value has to negative, as we want the camara behind the object -->
@@ -29,7 +29,7 @@
 -->
   <world>
     <Ambient colourvalue="1,1,1" />
-    <Skybox src="Orxonox/StarfieldSkyBox" />
+    <Skybox src="Orxonox/StarSkyBox" />
 
     <!--Fighter camera="true" position="0,0,0" scale="10" yaw="-90" pitch="-90" mesh="assf3.mesh"  forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" /-->
     <SpaceShip camera="true" position="0,0,0" scale="10" yaw="-90" pitch="-90" mesh="assf3.mesh" maxSpeed="500" maxSideAndBackSpeed="50" maxRotation="1.0" transAcc="200" rotAcc="3.0" transDamp="75" rotDamp="1.0" />
