@@ -8,7 +8,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\src&quot;;&quot;$(OGRE_HOME)\Dependencies\include&quot;;&quot;$(OGRE_HOME)\OgreMain\include&quot;;&quot;$(ORXONOX_HOME)\dependencies\include&quot;"
+		AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\src&quot;;&quot;$(SolutionDir)\..\src\orxonox&quot;;&quot;$(OGRE_HOME)\Dependencies\include&quot;;&quot;$(OGRE_HOME)\OgreMain\include&quot;;&quot;$(ORXONOX_HOME)\dependencies\include&quot;"
 		PreprocessorDefinitions="WIN32;__WIN32__;_WIN32;BOOST_ALL_DYN_LINK"
 		WarningLevel="3"
 		Detect64BitPortabilityProblems="true"

@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib OIS.lib libogg.lib libvorbis.lib libvorbisfile.lib alut.lib zlib.lib enet.lib EFX-Util.lib OpenAL32.lib"
+				AdditionalDependencies="OgreMain.lib OIS.lib zlib.lib enet.lib"
 				AdditionalLibraryDirectories=""
 				IgnoreDefaultLibraryNames="/NODEFAULTLIB:MSVCRT"
 				EntryPointSymbol=""
