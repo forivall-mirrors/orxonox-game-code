@@ -63,7 +63,7 @@
 
 // objects
 #include "objects/Tickable.h"
-#include "objects/Timer.h"
+#include "tools/Timer.h"
 #include "objects/NPC.h"
 #include "core/ArgReader.h"
 #include "core/Factory.h"

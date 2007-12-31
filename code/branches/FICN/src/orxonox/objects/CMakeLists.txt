@@ -1,5 +1,7 @@
 PROJECT(Orxonox)
 
+INCLUDE_DIRECTORIES(../tools)
+
 SET( OBJECTS_SRC_FILES
   Ambient.cc
   BillboardSet.cc

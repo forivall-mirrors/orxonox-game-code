@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY(core)
 ADD_SUBDIRECTORY(hud)
 IF(NOT WIN32)
   ADD_SUBDIRECTORY(objects)
+  ADD_SUBDIRECTORY(tools)
 ENDIF(NOT WIN32)
 ADD_SUBDIRECTORY(particle)
 
@@ -16,6 +17,8 @@ SET( ORXONOX_SRC_FILES
 )
 
 IF(WIN32)
+  INCLUDE_DIRECTORIES(tools)
+
   SET( OBJECTS_SRC_FILES
     objects/WorldEntity.cc
     objects/test1.cc
@@ -27,11 +30,8 @@ IF(WIN32)
 #    objects/SpaceshipSteeringObject.cc
     objects/Fighter.cc
     objects/Model.cc
-    objects/Mesh.cc
-    objects/Light.cc
     objects/SpaceShip.cc
     objects/NPC.cc
-    objects/BillboardSet.cc
     objects/Projectile.cc
     objects/weapon_system/AmmunitionDump.cc
     objects/weapon_system/BarrelGun.cc
@@ -40,9 +40,13 @@ IF(WIN32)
     objects/weapon_system/BulletManager.cc
     objects/weapon_system/WeaponStation.cc
     objects/Explosion.cc
+    tools/BillboardSet.cc
+    tools/Light.cc
+    tools/Mesh.cc
   )
 ELSE(WIN32)
   SET(LINK_OBJECTS_LIBRARY objects)
+  SET(LINK_OBJECTS_LIBRARY tools)
 ENDIF(WIN32)
 
 IF(WIN32)
