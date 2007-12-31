@@ -36,6 +36,7 @@
 
 #include "util/Sleep.h"
 #include "PacketManager.h"
+#include "PacketTypes.h"
 #include "ClientConnection.h"
 
 using namespace network;

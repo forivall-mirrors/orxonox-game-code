@@ -3,6 +3,7 @@
 
 #include "util/Sleep.h"
 #include "PacketManager.h"
+#include "PacketTypes.h"
 #include "Client.h"
 
 using namespace network;

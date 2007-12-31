@@ -36,6 +36,7 @@
 
 #include "util/Sleep.h"
 #include "PacketManager.h"
+#include "PacketTypes.h"
 
 using namespace std;
 
