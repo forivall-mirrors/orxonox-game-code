@@ -65,7 +65,8 @@ namespace network
     std::list<SYNCVAR> syncList;
     int datasize;
   };
-  ExportAbstractClass(network::Synchronisable, Network);
+  template class _NetworkExport orxonox::ClassIdentifier<Synchronisable>;
+  template class _NetworkExport orxonox::ObjectList<Synchronisable>;
 
 }
 
