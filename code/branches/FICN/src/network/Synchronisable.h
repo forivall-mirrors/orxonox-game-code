@@ -65,7 +65,7 @@ namespace network
     std::list<SYNCVAR> syncList;
     int datasize;
   };
-  ExportAbstractClass(Synchronisable, Network);
+  ExportAbstractClass(network::Synchronisable, Network);
 
 }
 
