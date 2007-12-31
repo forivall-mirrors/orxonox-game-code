@@ -30,7 +30,7 @@
 #include <OgreSceneNode.h>
 
 #include "../core/CoreIncludes.h"
-#include "misc/Math.h"
+#include "util/Math.h"
 #include "../Orxonox.h"
 #include "../particle/ParticleInterface.h"
 

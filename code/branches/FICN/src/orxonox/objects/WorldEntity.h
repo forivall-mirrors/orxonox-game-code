@@ -6,9 +6,9 @@
 
 #include "../OrxonoxPrereqs.h"
 
-#include "misc/Math.h"
+#include "util/Math.h"
 #include "network/Synchronisable.h"
-#include "tinyxml/tinyxml.h"
+#include "util/tinyxml/tinyxml.h"
 #include "../core/CoreIncludes.h"
 #include "orxonox/core/BaseObject.h"
 #include "Tickable.h"

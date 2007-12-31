@@ -30,7 +30,7 @@
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
 
-#include "misc/Math.h"
+#include "util/Math.h"
 #include "../../Orxonox.h"
 #include "Bullet.h"
 #include "BulletManager.h"

@@ -5,8 +5,7 @@
 #ifndef _Arrival_H__
 #define _Arrival_H__
 
-#include "misc/Vector3.h"
-#include "misc/Quaternion.h"
+#include "util/Math.h"
 
 namespace orxonox
 {

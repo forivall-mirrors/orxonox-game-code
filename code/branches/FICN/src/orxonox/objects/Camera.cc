@@ -6,10 +6,10 @@
 #include <OgreRenderWindow.h>
 #include <OgreViewport.h>
 
-#include "tinyxml/tinyxml.h"
-#include "misc/Tokenizer.h"
-#include "misc/String2Number.h"
-#include "misc/Math.h"
+#include "util/tinyxml/tinyxml.h"
+#include "util/Tokenizer.h"
+#include "util/String2Number.h"
+#include "util/Math.h"
 #include "../core/Debug.h"
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"

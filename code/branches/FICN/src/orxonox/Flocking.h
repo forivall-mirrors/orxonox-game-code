@@ -4,7 +4,7 @@
 #ifndef _Flocking_H__
 #define _Flocking_H__
 
-#include "misc/Vector3.h"
+#include "util/Math.h"
 
 namespace orxonox
 {

@@ -47,7 +47,7 @@
 
 #include "CorePrereqs.h"
 
-#include "misc/Math.h"
+#include "util/Math.h"
 #include "Language.h"
 
 namespace orxonox

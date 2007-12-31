@@ -9,7 +9,7 @@
 #define _BaseObject_H__
 
 #include "CorePrereqs.h"
-#include "tinyxml/TinyXMLPrereqs.h"
+#include "util/tinyxml/TinyXMLPrereqs.h"
 
 #include "CoreIncludes.h"
 

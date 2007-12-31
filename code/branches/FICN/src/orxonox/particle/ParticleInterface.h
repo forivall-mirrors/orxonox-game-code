@@ -14,7 +14,7 @@
 
 #include "../OrxonoxPrereqs.h"
 
-#include "misc/Math.h"
+#include "util/Math.h"
 
 
 namespace orxonox

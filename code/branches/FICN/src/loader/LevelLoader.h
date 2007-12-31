@@ -11,7 +11,7 @@
 #include <string>
 
 #include "LoaderPrereqs.h"
-#include "tinyxml/tinyxml.h"
+#include "util/tinyxml/tinyxml.h"
 
 class TiXmlDocument;   // Forward declaration
 class TiXmlElement;    // Forward declaration

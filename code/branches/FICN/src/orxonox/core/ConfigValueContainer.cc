@@ -27,8 +27,8 @@
 
 #include <fstream>
 
-#include "misc/Tokenizer.h"
-#include "misc/Convert.h"
+#include "util/Tokenizer.h"
+#include "util/Convert.h"
 #include "ConfigValueContainer.h"
 
 #define CONFIGFILEPATH "orxonox.ini"

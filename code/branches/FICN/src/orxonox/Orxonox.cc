@@ -50,7 +50,7 @@
 
 //***** ORXONOX ****
 //misc
-#include "misc/Sleep.h"
+#include "util/Sleep.h"
 
 // loader and audio
 #include "loader/LevelLoader.h"

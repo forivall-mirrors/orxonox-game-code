@@ -1,7 +1,7 @@
 #ifndef _AIClass_H__
 #define _AIClass_H__
 
-#include "misc/Vector3.h"
+#include "util/Vector3.h"
 
 namespace orxonox
 {

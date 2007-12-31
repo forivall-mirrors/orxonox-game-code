@@ -28,9 +28,9 @@
 #include <string>
 #include <sstream>
 
-#include "tinyxml/tinyxml.h"
-#include "misc/Tokenizer.h"
-#include "misc/String2Number.h"
+#include "util/tinyxml/tinyxml.h"
+#include "util/Tokenizer.h"
+#include "util/String2Number.h"
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
 #include "WorldEntity.h"

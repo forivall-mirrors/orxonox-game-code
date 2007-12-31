@@ -27,7 +27,7 @@
 
 #include "orxonox/Orxonox.h"
 #include "BulletManager.h"
-#include "tinyxml/tinyxml.h"
+#include "util/tinyxml/tinyxml.h"
 
 #include "AmmunitionDump.h"
 

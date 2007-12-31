@@ -4,7 +4,7 @@
 #include "orxonox/core/BaseObject.h"
 #include "Tickable.h"
 #include "test3.h"
-#include "../../tinyxml/tinyxml.h"
+#include "util/tinyxml/tinyxml.h"
 
 namespace orxonox
 {
@@ -22,7 +22,7 @@ namespace orxonox
             void setUsefullClass1(Identifier* identifier);
             void setUsefullClass2(Identifier* identifier);
             void setUsefullClassOfTypeTest3(Identifier* identifier);
-            
+
             void loadParams(TiXmlElement* xmlElem);
 
         private:

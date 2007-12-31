@@ -34,9 +34,9 @@
 
 #include "../Orxonox.h"
 #include "../GraphicsEngine.h"
-#include "../../tinyxml/tinyxml.h"
-#include "../../misc/Tokenizer.h"
-#include "../../misc/String2Number.h"
+#include "util/tinyxml/tinyxml.h"
+#include "util/Tokenizer.h"
+#include "util/String2Number.h"
 #include "../core/Debug.h"
 
 #include "SpaceshipSteeringObject.h"

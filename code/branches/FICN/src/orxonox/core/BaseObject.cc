@@ -30,7 +30,7 @@
     @brief Implementation of the BaseObject class.
 */
 
-#include "tinyxml/tinyxml.h"
+#include "util/tinyxml/tinyxml.h"
 
 #include "BaseObject.h"
 

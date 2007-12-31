@@ -32,8 +32,8 @@
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 
-#include "tinyxml/tinyxml.h"
-#include "misc/String2Number.h"
+#include "util/tinyxml/tinyxml.h"
+#include "util/String2Number.h"
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
 #include "../particle/ParticleInterface.h"

@@ -2,7 +2,7 @@
 #define _OBJECT_SPACESHIPSTEERING_H__
 
 #include "BaseObject.h"
-#include "../../tinyxml/tinyxml.h"
+#include "util/tinyxml/tinyxml.h"
 
 namespace orxonox
 {
@@ -12,11 +12,11 @@ namespace orxonox
             SpaceshipSteeringObject();
             virtual ~SpaceshipSteeringObject();
 
-            
+
             void loadParams(TiXmlElement* xmlElem);
 
         private:
-            
+
 
     };
 }

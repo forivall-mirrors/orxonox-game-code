@@ -30,7 +30,7 @@
 #include <OgreSceneManager.h>
 
 #include "../Orxonox.h"
-#include "misc/Math.h"
+#include "util/Math.h"
 
 #include "BillboardSet.h"
 
