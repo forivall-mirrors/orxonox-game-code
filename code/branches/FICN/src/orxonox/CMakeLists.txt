@@ -45,6 +45,7 @@ IF(WIN32)
   )
 ELSE(WIN32)
   SET(LINK_OBJECTS_LIBRARY objects)
+  SET(LINK_TOOLS_LIBRARY tools)
 ENDIF(WIN32)
 
 IF(WIN32)
@@ -66,8 +67,8 @@ TARGET_LINK_LIBRARIES( ../../bin/main
   core
   hud
   ${LINK_OBJECTS_LIBRARY}
+  ${LINK_TOOLS_LIBRARY}
   util
   particle
-  tools
 )
 
