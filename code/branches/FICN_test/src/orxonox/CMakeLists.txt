@@ -32,17 +32,17 @@ SET( ORXONOX_SRC_FILES
   objects/weapon/WeaponStation.cc
 )
 
-ADD_EXECUTABLE(${Orxonox_BINARY_DIR}/main ${ORXONOX_SRC_FILES} )
+ADD_EXECUTABLE( main ${ORXONOX_SRC_FILES} )
 
-SET_TARGET_PROPERTIES( ${Orxonox_BINARY_DIR}/main PROPERTIES LINK_FLAGS "--no-undefined" )
+SET_TARGET_PROPERTIES( main PROPERTIES LINK_FLAGS "--no-undefined" )
 
-TARGET_LINK_LIBRARIES( ${Orxonox_BINARY_DIR}/main
+TARGET_LINK_LIBRARIES( main
   ${OGRE_LIBRARIES}
   ${OIS_LIBRARIES}
-  ${Orxonox_BINARY_DIR}/util
-  ${Orxonox_BINARY_DIR}/core
-  ${Orxonox_BINARY_DIR}/audio
-  ${Orxonox_BINARY_DIR}/network
-  ${Orxonox_BINARY_DIR}/loader
+  util
+  core
+  audio
+  network
+  loader
 )
 
