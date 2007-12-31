@@ -23,7 +23,7 @@ IF (UNIX)
   FIND_PROGRAM(UNAME_CMD "uname"
   PATHS "/usr/bin /bin")
   IF(NOT UNAME_CMD)
-    MESSAGE("Unable to find uname. Tardis-Check cannot be done.")
+    MESSAGE(ERROR "Unable to find uname. Tardis-Check cannot be done.")
   ENDIF(NOT UNAME_CMD)
 
   # run uname -n to get nodename
@@ -34,7 +34,7 @@ IF (UNIX)
   OUTPUT_VARIABLE UNAME_OV)
 
   IF (NOT "${UNAME_RV}" STREQUAL "0")
-    MESSAGE("ERROR: uname terminated unclean.")
+    MESSAGE(ERROR "ERROR: uname terminated unclean.")
   ENDIF (NOT "${UNAME_RV}" STREQUAL "0")
 
   # check wheter we are on a tardis machine
