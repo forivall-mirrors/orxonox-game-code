@@ -1,5 +1,7 @@
 PROJECT(Orxonox)
 #set some global variables, which are used throughout the project
+SET( Orxonox_BINARY_DIR ${Orxonox_SOURCE_DIR}/bin)
+SET( Orxonox_SOURCE_DIR ${Orxonox_SOURCE_DIR}/src)
 
 OPTION(TESTING_ENABLED "Do you want to enable Testing")
 IF (TESTING_ENABLED)
@@ -73,6 +75,8 @@ FIND_PACKAGE(ZLIB)
 LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR} ${ENet_LIBRARY} ${Boost_LIBRARY_DIRS} ${Zlib_LIBRARY_DIR} core objects loader network weapon classHierarchy audio)
 #Sets the search path for include files
 INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR} ${ENet_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${ALUT_INCLUDE_DIR} ${VORBIS_INCLUDE_DIR} ${OGG_INCLUDE_DIR})
+
+#Set the execution directory
 
 #add main source dir
 ADD_SUBDIRECTORY(src)

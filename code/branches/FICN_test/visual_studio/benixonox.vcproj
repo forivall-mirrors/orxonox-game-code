@@ -228,6 +228,18 @@
 					>
 				</File>
 				<File
+					RelativePath="..\src\orxonox\objects\test1.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\test2.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\test3.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\src\orxonox\objects\WorldEntity.cc"
 					>
 				</File>
@@ -359,6 +371,22 @@
 				</File>
 				<File
 					RelativePath="..\src\orxonox\objects\SpaceShip.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\Test.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\test1.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\test2.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\test3.h"
 					>
 				</File>
 				<File

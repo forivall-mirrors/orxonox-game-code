@@ -1,5 +1,3 @@
-PROJECT(Orxonox)
-
 SET( NETWORK_SRC_FILES
   Client.cc
   ClientConnection.cc
@@ -16,12 +14,18 @@ SET( NETWORK_SRC_FILES
 )
 
 IF(WIN32)
-  ADD_LIBRARY(network ${NETWORK_SRC_FILES})
+  ADD_LIBRARY(${Orxonox_BINARY_DIR}/network ${NETWORK_SRC_FILES})
 ELSE(WIN32)
-  ADD_LIBRARY(network SHARED ${NETWORK_SRC_FILES})
+  ADD_LIBRARY(${Orxonox_BINARY_DIR}/network SHARED ${NETWORK_SRC_FILES})
 ENDIF(WIN32)
+SET_TARGET_PROPERTIES( network PROPERTIES LINK_FLAGS "--no-undefined" )
 
-TARGET_LINK_LIBRARIES(network ${ZLIB_LIBRARY} ${ENet_LIBRARY} ${Boost_thread_LIBRARIES})
+TARGET_LINK_LIBRARIES( network
+  ${ZLIB_LIBRARY}
+  ${ENet_LIBRARY}
+  ${Boost_thread_LIBRARIES}
+  core
+)
 
 # build those parts only on request.
 IF(NETWORK_TESTING_ENABLED)
