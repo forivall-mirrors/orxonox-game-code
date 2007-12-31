@@ -12,5 +12,5 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES( loader
-  xml
+  util
 )

@@ -64,7 +64,7 @@ TARGET_LINK_LIBRARIES( ../../bin/main
   core
   hud
   ${LINK_OBJECTS_LIBRARY}
-  xml
+  util
   particle
 )
 

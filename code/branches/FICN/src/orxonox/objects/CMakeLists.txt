@@ -29,6 +29,6 @@ SET( OBJECTS_SRC_FILES
 ADD_LIBRARY(objects SHARED ${OBJECTS_SRC_FILES})
 
 TARGET_LINK_LIBRARIES( objects
-  xml
+  util
   orxonox
 )
