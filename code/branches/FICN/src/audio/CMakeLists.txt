@@ -1,5 +1,4 @@
 SET ( AUDIO_SRC_FILES
-  AudioIncludes.h
   AudioManager.cc
   AudioBuffer.cc
   AudioSource.cc
@@ -7,7 +6,7 @@ SET ( AUDIO_SRC_FILES
 )
 
 IF (WIN32)
-  ADD_LIBRARY( audio ${AUDIO_SRC_FILES } )
+  ADD_LIBRARY( audio ${AUDIO_SRC_FILES} )
 ELSE (WIN32)
   ADD_LIBRARY( audio SHARED ${AUDIO_SRC_FILES})
 ENDIF (WIN32)
