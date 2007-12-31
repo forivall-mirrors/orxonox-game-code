@@ -1,7 +1,9 @@
 PROJECT(Orxonox)
 #set some global variables, which are used throughout the project
-SET( Orxonox_BINARY_DIR ${Orxonox_SOURCE_DIR}/bin)
-SET( Orxonox_SOURCE_DIR ${Orxonox_SOURCE_DIR}/src)
+#SET( Orxonox_BINARY_DIR ${Orxonox_SOURCE_DIR}/bin)
+#SET( Orxonox_SOURCE_DIR ${Orxonox_SOURCE_DIR}/src)
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin/lib)
 
 OPTION(TESTING_ENABLED "Do you want to enable Testing")
 IF (TESTING_ENABLED)
