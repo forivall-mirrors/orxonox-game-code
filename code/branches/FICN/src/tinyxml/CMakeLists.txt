@@ -6,7 +6,8 @@ SET (SRC_FILES
   tinystr.cc
   tinyxml.cc
   tinyxmlerror.cc
-  tinyxmlparser
+  tinyxmlparser.cc
+  ticpp.cc
 )
 
 IF(WIN32)
