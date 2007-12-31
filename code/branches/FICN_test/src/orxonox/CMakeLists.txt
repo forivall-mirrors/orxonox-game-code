@@ -5,7 +5,7 @@ SET( ORXONOX_SRC_FILES
   Main.cc
   Orxonox.cc
   SpaceshipSteering.cc
-  hud/Hud.cc
+  hud/HUD.cc
   particle/ParticleInterface.cc
   tools/BillboardSet.cc
   tools/Light.cc
@@ -16,7 +16,7 @@ SET( ORXONOX_SRC_FILES
   objects/Fighter.cc
   objects/Model.cc
   objects/NPC.cc
-  ojbects/Projectile.cc
+  objects/Projectile.cc
   objects/Skybox.cc
   objects/SpaceShip.cc
 # objects/SpaceshipSteeringObject.cc
@@ -28,7 +28,7 @@ SET( ORXONOX_SRC_FILES
   objects/weapon/BarrelGun.cc
   objects/weapon/BaseWeapon.cc
   objects/weapon/Bullet.cc
-  objects/weapon/BulleManager.cc
+  objects/weapon/BulletManager.cc
   objects/weapon/WeaponStation.cc
 )
 
