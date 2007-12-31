@@ -1,19 +1,9 @@
 PROJECT(Orxonox)
 
-ADD_SUBDIRECTORY(tinyxml)
-
-SET (UTIL_SRC_FILES
-  substring.cc
-  ${TINYXML_SRC_FILES}
+SET (TINYXML_SRC_FILES
+  ticpp.cc
+  tinystr.cc
+  tinyxml.cc
+  tinyxmlerror.cc
+  tinyxmlparser.cc
 )
-
-IF(WIN32)
-  ADD_LIBRARY(util ${UTIL_SRC_FILES})
-ELSE(WIN32)
-  ADD_LIBRARY(util SHARED ${UTIL_SRC_FILES})
-ENDIF(WIN32)
-
-
-IF(TESTING_ENABLED)
-ADD_SUBDIRECTORY(testing)
-ENDIF(TESTING_ENABLED)
