@@ -4,12 +4,9 @@ INCLUDE_DIRECTORIES(../tools)
 
 SET( OBJECTS_SRC_FILES
   Ambient.cc
-  BillboardSet.cc
   Camera.cc
   Explosion.cc
   Fighter.cc
-  Mesh.cc
-  Light.cc
   Model.cc
   NPC.cc
   Projectile.cc
