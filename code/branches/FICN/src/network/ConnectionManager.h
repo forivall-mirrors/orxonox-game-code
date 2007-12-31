@@ -12,25 +12,21 @@
 #ifndef _ConnectionManager_H__
 #define _ConnectionManager_H__
 
-#include <iostream>
 #include <string>
 // enet library for networking support
 #include <enet/enet.h>
-// boost.thread library for multithreading support
-#include <boost/thread/thread.hpp>
-#include <boost/bind.hpp>
-// headerfiles
-#include "ClientInformation.h"
+
+#include "NetworkPrereqs.h"
 #include "PacketBuffer.h"
 #include "PacketManager.h"
-#include "core/CoreIncludes.h"
 
-namespace std{
+namespace std
+{
   bool operator<(ENetAddress a, ENetAddress b);
 }
 
-namespace network{
-  //
+namespace network
+{
 #define NETWORK_PORT 55556
 #define NETWORK_MAX_CONNECTIONS 50
 #define NETWORK_WAIT_TIMEOUT 5000
@@ -41,9 +37,9 @@ namespace network{
     int ID;
     ClientList *next;
   };
-  
+
   class ConnectionManager{
-    public:
+  public:
     ConnectionManager(ClientInformation *head);
     ConnectionManager(int port, const char *address, ClientInformation *head);
     ConnectionManager(int port, std::string address, ClientInformation *head);
@@ -70,10 +66,10 @@ namespace network{
     ENetPeer *getClientPeer(int clientID);
     PacketBuffer buffer;
     PacketGenerator packet_gen;
-    
+
     ENetHost *server;
     ENetAddress bindAddress;
-    
+
     bool quit; // quit-variable (communication with threads)
     ClientInformation *head_;
   };

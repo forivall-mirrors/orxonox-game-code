@@ -26,7 +26,7 @@
  */
 
 /**
- @file  OrxonoxPrereq.cc
+ @file  AudioPrereqs.h
  @brief Contains all the necessary forward declarations for all classes, structs and enums.
  */
 
@@ -58,8 +58,12 @@
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
-namespace loader {
-  class LevelAudio;
+namespace audio
+{
+  class AudioBuffer;
+  class AudioManager;
+  class AudioSource;
+  class AudioStream;
 }
 
 #endif /* _AudioPrereqs_H__ */

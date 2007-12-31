@@ -15,24 +15,17 @@
 
 #include <string>
 
-#include "ConnectionManager.h"
 #include "PacketManager.h"
-#include "PacketTypes.h"
-#include "GameStateManager.h"
-#include "ClientInformation.h"
-//#include "enet/enet.h"
-//#include "NetworkFrameListener.h"
+#include "NetworkPrereqs.h"
 
-
-namespace network{
-
-  
+namespace network
+{
   /**
-   * This class is the root class of the network module for a server.
-   * It implements all functions necessary for a Server
-   */
-  class Server : public PacketDecoder{
-    public:
+  * This class is the root class of the network module for a server.
+  * It implements all functions necessary for a Server
+  */
+  class _NetworkExport Server : public PacketDecoder{
+  public:
     Server();
     Server(int port, std::string bindAddress);
     Server(int port, const char *bindAddress);
@@ -41,19 +34,19 @@ namespace network{
     bool sendMSG(std::string msg);
     bool sendMSG(const char *msg);
     void tick(float time);
-    protected:
+  protected:
     void processQueue();
     void updateGamestate();
-    private:
+  private:
     bool sendGameState();
     void processAck( ack *data, int clientID);
     ConnectionManager *connection;
     GameStateManager *gamestates;
     PacketGenerator packet_gen;
-    
+
     ClientInformation *clients;
   };
- 
+
 
 
 

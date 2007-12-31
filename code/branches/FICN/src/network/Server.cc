@@ -10,16 +10,23 @@
 //
 //
 
+#include <iostream>
 
+#include "ConnectionManager.h"
+#include "PacketTypes.h"
+#include "GameStateManager.h"
+#include "ClientInformation.h"
+//#include "NetworkFrameListener.h"
 #include "Server.h"
 
-namespace network{
 
+namespace network
+{
   /**
-   * Constructor for default values (bindaddress is set to ENET_HOST_ANY
-   *
-   */
-  Server::Server(){
+  * Constructor for default values (bindaddress is set to ENET_HOST_ANY
+  *
+  */
+  Server::Server() {
     packet_gen = PacketGenerator();
     clients = new ClientInformation(true);
     connection = new ConnectionManager(clients);
@@ -27,11 +34,11 @@ namespace network{
   }
 
   /**
-   * Constructor
-   * @param port Port to listen on
-   * @param bindAddress Address to listen on
-   */
-  Server::Server(int port, std::string bindAddress){
+  * Constructor
+  * @param port Port to listen on
+  * @param bindAddress Address to listen on
+  */
+  Server::Server(int port, std::string bindAddress) {
     packet_gen = PacketGenerator();
     clients = new ClientInformation();
     connection = new ConnectionManager(port, bindAddress, clients);
@@ -39,11 +46,11 @@ namespace network{
   }
 
   /**
-   * Constructor
-   * @param port Port to listen on
-   * @param bindAddress Address to listen on
-   */
-  Server::Server(int port, const char *bindAddress){
+  * Constructor
+  * @param port Port to listen on
+  * @param bindAddress Address to listen on
+  */
+  Server::Server(int port, const char *bindAddress) {
     packet_gen = PacketGenerator();
     clients = new ClientInformation();
     connection = new ConnectionManager(port, bindAddress, clients);
@@ -51,65 +58,66 @@ namespace network{
   }
 
   /**
-   * This function opens the server by creating the listener thread
-   */
-  void Server::open(){
+  * This function opens the server by creating the listener thread
+  */
+  void Server::open() {
     connection->createListener();
     return;
   }
 
   /**
-   * This function closes the server
-   */
-  void Server::close(){
+  * This function closes the server
+  */
+  void Server::close() {
     connection->quitListener();
     return;
   }
 
   /**
-   * This function sends out a message to all clients
-   * @param msg message
-   * @return true/false
-   */
-  bool Server::sendMSG(std::string msg){
+  * This function sends out a message to all clients
+  * @param msg message
+  * @return true/false
+  */
+  bool Server::sendMSG(std::string msg) {
     ENetPacket *packet = packet_gen.chatMessage(msg.c_str());
     //std::cout <<"adding packets" << std::endl;
     connection->addPacketAll(packet);
     //std::cout <<"added packets" << std::endl;
     return connection->sendPackets();
   }
+
   /**
-   * This function sends out a message to all clients
-   * @param msg message
-   * @return true/false
-   */
-  bool Server::sendMSG(const char *msg){
+  * This function sends out a message to all clients
+  * @param msg message
+  * @return true/false
+  */
+  bool Server::sendMSG(const char *msg) {
     ENetPacket *packet = packet_gen.chatMessage(msg);
     std::cout <<"adding Packets" << std::endl;
     connection->addPacketAll(packet);
     //std::cout <<"added packets" << std::endl;
     if (connection->sendPackets()){
-	std::cout << "Sucessfully" << std::endl;
-	return true;
+      std::cout << "Sucessfully" << std::endl;
+      return true;
     }
     return false;
   }
 
   /**
-   * Run this function once every tick
-   * calls processQueue and updateGamestate
-   * @param time time since last tick
-   */
-  void Server::tick(float time){
+  * Run this function once every tick
+  * calls processQueue and updateGamestate
+  * @param time time since last tick
+  */
+  void Server::tick(float time) {
     processQueue();
     updateGamestate();
     return;
   }
 
   /**
-   * processes all the packets waiting in the queue
-   */
-  void Server::processQueue(){
+  * processes all the packets waiting in the queue
+  */
+  void Server::processQueue() {
     ENetPacket *packet;
     int clientID=-1;
     while(!connection->queueEmpty()){
@@ -120,9 +128,9 @@ namespace network{
   }
 
   /**
-   * takes a new snapshot of the gamestate and sends it to the clients
-   */
-  void Server::updateGamestate(){
+  * takes a new snapshot of the gamestate and sends it to the clients
+  */
+  void Server::updateGamestate() {
     gamestates->update();
     //std::cout << "updated gamestate, sending it" << std::endl;
     sendGameState();
@@ -130,9 +138,9 @@ namespace network{
   }
 
   /**
-   * sends the gamestate
-   */
-  bool Server::sendGameState(){
+  * sends the gamestate
+  */
+  bool Server::sendGameState() {
     std::cout << "starting gamestate" << std::endl;
     ClientInformation *temp = clients;
     bool added=false;
@@ -159,11 +167,11 @@ namespace network{
     }
     if(added)
       return connection->sendPackets();
-    else return false;
-    //return true;
+    else
+      return false;
   }
 
-  void Server::processAck( ack *data, int clientID){
+  void Server::processAck( ack *data, int clientID) {
     clients->findClient(clientID)->setGamestateID(data->a);
   }
 

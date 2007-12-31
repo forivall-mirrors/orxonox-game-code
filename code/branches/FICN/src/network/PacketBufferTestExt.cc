@@ -1,46 +1,40 @@
 /*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      ...
- *   Co-authors:
- *      ...
- *
- */
+*   ORXONOX - the hottest 3D action shooter ever to exist
+*
+*
+*   License notice:
+*
+*   This program is free software; you can redistribute it and/or
+*   modify it under the terms of the GNU General Public License
+*   as published by the Free Software Foundation; either version 2
+*   of the License, or (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*
+*   Author:
+*      ...
+*   Co-authors:
+*      ...
+*
+*/
 
 #include <string>
 #include <iostream>
 #include <enet/enet.h>
 #include <boost/thread/thread.hpp>
+
+#include "util/Sleep.h"
 #include "PacketBuffer.h"
 #include "PacketBuffer.cc"
 
-#ifdef WIN32
-#include <windows.h>
-#define usleep(x) Sleep((x)/1000)
-#else
-#include <unistd.h>
-#endif
-
 using namespace network;
-
 
 void write(PacketBuffer *test){
   ENetEvent event;
@@ -50,7 +44,7 @@ void write(PacketBuffer *test){
   for(int i=0; i<10; i++){
     std::string temp = "packet ";
     packet = enet_packet_create("packet", strlen("packet ")+1,
-ENET_PACKET_FLAG_RELIABLE);
+      ENET_PACKET_FLAG_RELIABLE);
     std::cout << i << ": pushing " << packet->data << std::endl;
     event.packet=packet;
     test->push(&event);

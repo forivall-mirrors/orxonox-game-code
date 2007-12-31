@@ -26,72 +26,65 @@
  */
 
 /**
- @file  OrxonoxPrereqs.h
- @brief Contains all the necessary forward declarations for all classes and structs.
+ @file  NetworkPrereqs.h
+ @brief Contains all the necessary forward declarations for all classes, structs and enums.
  */
 
-#ifndef _OrxonoxPrereqs_H__
-#define _OrxonoxPrereqs_H__
+#ifndef _NetworkPrereqs_H__
+#define _NetworkPrereqs_H__
 
-#include "OrxonoxPlatform.h"
+#include "orxonox/OrxonoxPlatform.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
-#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( ORXONOX_STATIC_BUILD )
-#  ifdef ORXONOX_SHARED_BUILD
-#    define _OrxonoxExport __declspec(dllexport)
+#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( NETWORK_STATIC_BUILD )
+#  ifdef NETWORK_SHARED_BUILD
+#    define _NetworkExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
-#      define _OrxonoxExport
+#      define _NetworkExport
 #    else
-#      define _OrxonoxExport __declspec(dllimport)
+#      define _NetworkExport __declspec(dllimport)
 #    endif
 #  endif
 #elif defined ( ORXONOX_GCC_VISIBILITY )
-#  define _OrxonoxExport  __attribute__ ((visibility("default")))
+#  define _NetworkExport  __attribute__ ((visibility("default")))
 #else
-#  define _OrxonoxExport
+#  define _NetworkExport
 #endif
+
 
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
-
-// classes that have not yet been put into a namespace
-class InputManager;
-class SpaceShipSteering;
-
-namespace orxonox {
-  class Ambient;
-  class BaseObject;
-  class Camera;
-  class GraphicsEngine;
-  class Mesh;
-  class Model;
-  class NPC;
-  class OrxListener;
-  class Orxonox;
-  class Skybox;
-  class SpaceShip;
-  class Tickable;
-  class TickFrameListener;
-  template <class T>
-  class Timer;
-  class TimerBase;
-  class TimerFrameListener;
-  class WorldEntity;
-
-  class AmmunitionDump;
-  class Bullet;
-  class BulletManager;
-  class BaseWeapon;
-  class BarrelGun;
-  class WeaponStation;
-
-  class ParticleInterface;
-  class HUD;
+namespace network
+{
+  class Client;
+  class ClientConnection;
+  class ClientFrameListener;
+  class ClientInformation;
+  class ConnectionManager;
+  class GameStateClient;
+  class GameStateManager;
+  class PacketBuffer;
+  class PacketDecoder;
+  class PacketGenerator;
+  class Server;
+  class ServerFrameListener;
+  class Synchronisable;
+  struct ack;
+  struct chat;
+  struct classid;
+  struct ClientList;
+  struct GameState;
+  struct GameStateCompressed;
+  struct keyboard;
+  struct mouse;
+  struct PacketEnvelope;
+  struct QueueItem;
+  struct synchData;
+  struct synchronisableVariable;
 }
 
-
-#endif /* _OrxonoxPrereqs_H__ */
+#endif /* _NetworkPrereqs_H__ */

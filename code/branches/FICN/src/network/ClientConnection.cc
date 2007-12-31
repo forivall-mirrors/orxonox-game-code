@@ -1,29 +1,29 @@
 /*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      Oliver Scheuss, (C) 2007
- *   Co-authors:
- *      ...
- *
- */
+*   ORXONOX - the hottest 3D action shooter ever to exist
+*
+*
+*   License notice:
+*
+*   This program is free software; you can redistribute it and/or
+*   modify it under the terms of the GNU General Public License
+*   as published by the Free Software Foundation; either version 2
+*   of the License, or (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*
+*   Author:
+*      Oliver Scheuss, (C) 2007
+*   Co-authors:
+*      ...
+*
+*/
 
 //
 // C++ Interface: ClientConnection
@@ -36,15 +36,19 @@
 // Author:  Oliver Scheuss
 //
 
-#include "ClientConnection.h"
+#include <iostream>
+// boost.thread library for multithreading support
+#include <boost/thread/thread.hpp>
+#include <boost/bind.hpp>
 
 #include "util/Sleep.h"
+#include "ClientConnection.h"
 
-namespace network{
-
+namespace network
+{
   static boost::thread_group network_threads;
 
-  ClientConnection::ClientConnection(int port, std::string address){
+  ClientConnection::ClientConnection(int port, std::string address) {
     quit=false;
     server=NULL;
     enet_address_set_host(&serverAddress, address.c_str());
@@ -52,7 +56,7 @@ namespace network{
     established=false;
   }
 
-  ClientConnection::ClientConnection(int port, const char *address){
+  ClientConnection::ClientConnection(int port, const char *address) {
     quit=false;
     server=NULL;
     enet_address_set_host(&serverAddress, address);
@@ -60,7 +64,7 @@ namespace network{
     established=false;
   }
 
-  bool ClientConnection::waitEstablished(int milisec){
+  bool ClientConnection::waitEstablished(int milisec) {
     for(int i=0; i<=milisec && !established; i++)
       usleep(1000);
 
@@ -68,32 +72,32 @@ namespace network{
   }
 
 
-  ENetPacket *ClientConnection::getPacket(ENetAddress &address){
+  ENetPacket *ClientConnection::getPacket(ENetAddress &address) {
     if(!buffer.isEmpty()) {
       //std::cout << "###BUFFER IS NOT EMPTY###" << std::endl;
       return buffer.pop(address);
     }
     else{
-        return NULL;
+      return NULL;
     }
   }
 
-  ENetPacket *ClientConnection::getPacket(){
+  ENetPacket *ClientConnection::getPacket() {
     ENetAddress address;
     return getPacket(address);
   }
 
-  bool ClientConnection::queueEmpty(){
+  bool ClientConnection::queueEmpty() {
     return buffer.isEmpty();
   }
 
-  bool ClientConnection::createConnection(){
+  bool ClientConnection::createConnection() {
     network_threads.create_thread(boost::bind(boost::mem_fn(&ClientConnection::receiverThread), this));
     // wait 10 seconds for the connection to be established
     return waitEstablished(10000);
   }
 
-  bool ClientConnection::closeConnection(){
+  bool ClientConnection::closeConnection() {
     quit=true;
     network_threads.join_all();
     established=false;
@@ -101,7 +105,7 @@ namespace network{
   }
 
 
-  bool ClientConnection::addPacket(ENetPacket *packet){
+  bool ClientConnection::addPacket(ENetPacket *packet) {
     if(server==NULL)
       return false;
     if(enet_peer_send(server, 1, packet)!=0)
@@ -109,7 +113,7 @@ namespace network{
     return true;
   }
 
-  bool ClientConnection::sendPackets(ENetEvent *event){
+  bool ClientConnection::sendPackets(ENetEvent *event) {
     if(server==NULL)
       return false;
     if(enet_host_service(client, event, NETWORK_SEND_WAIT)>=0){
@@ -118,7 +122,7 @@ namespace network{
       return false;
   }
 
-  bool ClientConnection::sendPackets(){
+  bool ClientConnection::sendPackets() {
     ENetEvent event;
     if(server==NULL)
       return false;
@@ -128,7 +132,7 @@ namespace network{
       return false;
   }
 
-  void ClientConnection::receiverThread(){
+  void ClientConnection::receiverThread() {
     // what about some error-handling here ?
     enet_initialize();
     atexit(enet_deinitialize);
@@ -169,31 +173,31 @@ namespace network{
     // now disconnect
 
     if(!disconnectConnection())
-    // if disconnecting failed destroy conn.
+      // if disconnecting failed destroy conn.
       enet_peer_reset(server);
     return;
   }
 
-  bool ClientConnection::disconnectConnection(){
+  bool ClientConnection::disconnectConnection() {
     ENetEvent event;
     enet_peer_disconnect(server, 0);
     while(enet_host_service(client, &event, NETWORK_CLIENT_TIMEOUT) > 0){
       switch (event.type)
       {
-	case ENET_EVENT_TYPE_NONE:
-	case ENET_EVENT_TYPE_CONNECT:
-        case ENET_EVENT_TYPE_RECEIVE:
-          enet_packet_destroy(event.packet);
-          break;
-        case ENET_EVENT_TYPE_DISCONNECT:
-          return true;
+      case ENET_EVENT_TYPE_NONE:
+      case ENET_EVENT_TYPE_CONNECT:
+      case ENET_EVENT_TYPE_RECEIVE:
+        enet_packet_destroy(event.packet);
+        break;
+      case ENET_EVENT_TYPE_DISCONNECT:
+        return true;
       }
     }
     enet_peer_reset(server);
     return false;
   }
 
-  bool ClientConnection::establishConnection(){
+  bool ClientConnection::establishConnection() {
     ENetEvent event;
     // connect to peer
     server = enet_host_connect(client, &serverAddress, NETWORK_CLIENT_CHANNELS);
@@ -209,12 +213,11 @@ namespace network{
       return false;
   }
 
-  bool ClientConnection::processData(ENetEvent *event){
+  bool ClientConnection::processData(ENetEvent *event) {
     //std::cout << "got packet, pushing to queue" << std::endl;
     // just add packet to the buffer
     // this can be extended with some preprocessing
     return buffer.push(event);
   }
-
 
 }

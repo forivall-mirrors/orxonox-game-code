@@ -13,22 +13,25 @@
 #ifndef _PacketTypes_H__
 #define _PacketTypes_H__
 
-namespace network{
-enum packet_id {
-  ACK,
-  MOUSE,
-  KEYBOARD,
-  CHAT,
-  GAMESTATE ,
-  CLASSID
-};
+#include "NetworkPrereqs.h"
+
+namespace network
+{
+  enum packet_id {
+    ACK,
+    MOUSE,
+    KEYBOARD,
+    CHAT,
+    GAMESTATE ,
+    CLASSID
+  };
 
 
   /**
-   * This struct defines a gamestate:
-   * size: total size of the data in *data
-   * data: pointer to the data allocated in the memory
-   */
+  * This struct defines a gamestate:
+  * size: total size of the data in *data
+  * data: pointer to the data allocated in the memory
+  */
   struct GameState{
     int id;
     int size;                       //!< total size of data
@@ -38,11 +41,11 @@ enum packet_id {
   };
 
   /**
-   * this struct defines a gamestate:
-   * compsize is the size of the compressed data
-   * normsize is the size of the uncompressed data
-   * data are the gamestates
-   */
+  * this struct defines a gamestate:
+  * compsize is the size of the compressed data
+  * normsize is the size of the uncompressed data
+  * data are the gamestates
+  */
   struct GameStateCompressed{
     int id;
     int compsize;                   //!< size of compressed data
@@ -75,8 +78,8 @@ enum packet_id {
     int id;
     char press;
   };
-	//only in this class, not PacketGenerator, used as pattern to put incoming
-	//bytes inside
+  //only in this class, not PacketGenerator, used as pattern to put incoming
+  //bytes inside
   struct chat {
     int id;
     const char* message;

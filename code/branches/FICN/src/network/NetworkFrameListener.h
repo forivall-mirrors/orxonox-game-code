@@ -15,32 +15,31 @@
 
 #include <OgreFrameListener.h>
 
+#include "NetworkPrereqs.h"
 #include "Server.h"
 #include "Client.h"
-//#include <iostream>
-// #include "orxonox/Orxonox.cc"
+
 network::Server *server_g;
 network::Client *client_g;
 
-namespace network{
+namespace network
+{
+  class ServerFrameListener : public Ogre::FrameListener{
+  private:
+    bool frameStarted(const Ogre::FrameEvent &evt){
+      server_g->tick(evt.timeSinceLastFrame);
+      return FrameListener::frameStarted(evt);
+    }
+  };
 
-
-class ServerFrameListener : public Ogre::FrameListener{
-private:
-  bool frameStarted(const Ogre::FrameEvent &evt){
-    server_g->tick(evt.timeSinceLastFrame);
-    return FrameListener::frameStarted(evt);
-  }
-};
-
-class ClientFrameListener : public Ogre::FrameListener{
-private:
-  bool frameStarted(const Ogre::FrameEvent &evt){
-    //std::cout << "framelistener" << std::endl;
-    client_g->tick(evt.timeSinceLastFrame);
-    return FrameListener::frameStarted(evt);
-  }
-};
+  class ClientFrameListener : public Ogre::FrameListener{
+  private:
+    bool frameStarted(const Ogre::FrameEvent &evt){
+      //std::cout << "framelistener" << std::endl;
+      client_g->tick(evt.timeSinceLastFrame);
+      return FrameListener::frameStarted(evt);
+    }
+  };
 
 
 

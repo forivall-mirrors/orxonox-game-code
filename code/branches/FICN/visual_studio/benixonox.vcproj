@@ -53,7 +53,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib OIS_d.lib zlibd.lib enet_d.lib"
+				AdditionalDependencies="OgreMain_d.lib OIS_d.lib"
 				AdditionalLibraryDirectories=""
 				IgnoreDefaultLibraryNames="/NODEFAULTLIB:MSVCRT"
 				EntryPointSymbol=""
@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib OIS.lib zlib.lib enet.lib"
+				AdditionalDependencies="OgreMain.lib OIS.lib"
 				AdditionalLibraryDirectories=""
 				IgnoreDefaultLibraryNames="/NODEFAULTLIB:MSVCRT"
 				EntryPointSymbol=""
@@ -226,6 +226,26 @@
 				<File
 					RelativePath="..\src\orxonox\objects\SpaceShip.cc"
 					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\SpaceshipSteeringObject.cc"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\src\orxonox\objects\test1.cc"
@@ -371,6 +391,10 @@
 				</File>
 				<File
 					RelativePath="..\src\orxonox\objects\SpaceShip.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\SpaceshipSteeringObject.h"
 					>
 				</File>
 				<File

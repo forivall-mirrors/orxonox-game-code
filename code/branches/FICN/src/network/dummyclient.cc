@@ -1,29 +1,29 @@
 /*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      Oliver Scheuss, (C) 2007
- *   Co-authors:
- *      ...
- *
- */
+*   ORXONOX - the hottest 3D action shooter ever to exist
+*
+*
+*   License notice:
+*
+*   This program is free software; you can redistribute it and/or
+*   modify it under the terms of the GNU General Public License
+*   as published by the Free Software Foundation; either version 2
+*   of the License, or (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*
+*   Author:
+*      Oliver Scheuss, (C) 2007
+*   Co-authors:
+*      ...
+*
+*/
 
 //o
 // Dummy client to test ConnectionManager and PacketBuffer classes
@@ -33,15 +33,9 @@
 #include <iostream>
 #include <string>
 #include <enet/enet.h>
+
+#include "util/Sleep.h"
 #include "PacketManager.h"
-
-#ifdef WIN32
-#include <windows.h>
-#define usleep(x) Sleep((x)/1000)
-#else
-#include <unistd.h>
-#endif
-
 
 using namespace std;
 
@@ -65,20 +59,20 @@ int main(){
   enet_address_set_host(&address, str.c_str());
   address.port = 55556;
 
-        // create client object
+  // create client object
   client = enet_host_create(NULL, 2, 0, 0);
 
   if(client==NULL){
     fprintf(stderr, "An error occured");
     exit(EXIT_FAILURE);
   }
-        // connect peer
+  // connect peer
   peer = enet_host_connect(client, &address, 2);
   if(peer==NULL){
     fprintf(stderr, "Peer establishing error");
     exit(EXIT_FAILURE);
   }
-        // wait 5 seconds for the connection attempt to succeed
+  // wait 5 seconds for the connection attempt to succeed
   if(enet_host_service(client, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT){
     cout << "Connection to " << str << " succeeded." << endl;
     //puts("Connection to localhost:5555 succeeded.");
@@ -90,12 +84,12 @@ int main(){
   }
 
   for(int i=0; i<10; i++){
-        // weihnachtsmann bringt packete
+    // weihnachtsmann bringt packete
     //ENetPacket *packet = enet_packet_create ("packet1234", strlen("packet1234") + 1, ENET_PACKET_FLAG_RELIABLE);
-        // extend the packet and append the string foo to it
-        // send packet to peer on channel id 0
+    // extend the packet and append the string foo to it
+    // send packet to peer on channel id 0
     enet_peer_send(peer, 1, pck.chatMessage("test2"));
-        // keep the timeout very small for low delay
+    // keep the timeout very small for low delay
     if(enet_host_service(client, &event, 1)==0){
       cout << "successfully sent: " << event.type << endl;
     }else{
@@ -104,22 +98,22 @@ int main(){
     usleep(1000000);
   }
 
-        // now disconnect
-//   enet_peer_disconnect (peer);
+  // now disconnect
+  //   enet_peer_disconnect (peer);
   enet_peer_disconnect (peer, 0);
-        // 3 seconds timeout
+  // 3 seconds timeout
   while(enet_host_service(client, &event, 3000) > 0){
     switch (event.type)
     {
-      case ENET_EVENT_TYPE_RECEIVE:
-        enet_packet_destroy(event.packet);
-        break;
-      case ENET_EVENT_TYPE_DISCONNECT:
-        puts("Disconnection succeeded.");
-        return 0;
+    case ENET_EVENT_TYPE_RECEIVE:
+      enet_packet_destroy(event.packet);
+      break;
+    case ENET_EVENT_TYPE_DISCONNECT:
+      puts("Disconnection succeeded.");
+      return 0;
     }
   }
-        // if disconnect failed
+  // if disconnect failed
   enet_peer_reset(peer);
 
 

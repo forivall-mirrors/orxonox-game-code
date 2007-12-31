@@ -1,29 +1,29 @@
 /*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      Oliver Scheuss, (C) 2007
- *   Co-authors:
- *      ...
- *
- */
+*   ORXONOX - the hottest 3D action shooter ever to exist
+*
+*
+*   License notice:
+*
+*   This program is free software; you can redistribute it and/or
+*   modify it under the terms of the GNU General Public License
+*   as published by the Free Software Foundation; either version 2
+*   of the License, or (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*
+*   Author:
+*      Oliver Scheuss, (C) 2007
+*   Co-authors:
+*      ...
+*
+*/
 
 //
 // C++ Implementation: Client
@@ -37,91 +37,92 @@
 //
 //
 
+#include "core/CoreIncludes.h"
 #include "Client.h"
 
-namespace network{
-
+namespace network
+{
   /**
-   * Constructor for the Client class
-   * initializes the address and the port to default localhost:NETWORK_PORT
-   */
+  * Constructor for the Client class
+  * initializes the address and the port to default localhost:NETWORK_PORT
+  */
   Client::Client(): client_connection(NETWORK_PORT,"127.0.0.1"){
     // set server address to localhost
     isConnected=false;
   }
 
   /**
-   * Constructor for the Client class
-   * @param address the server address
-   * @param port port of the application on the server
-   */
+  * Constructor for the Client class
+  * @param address the server address
+  * @param port port of the application on the server
+  */
   Client::Client(std::string address, int port) : client_connection(port, address){
     isConnected=false;
   }
 
   /**
-   * Constructor for the Client class
-   * @param address the server address
-   * @param port port of the application on the server
-   */
+  * Constructor for the Client class
+  * @param address the server address
+  * @param port port of the application on the server
+  */
   Client::Client(const char *address, int port) : client_connection(port, address){
     isConnected=false;
   }
 
   /**
-   * Establish the Connection to the Server
-   * @return true/false
-   */
+  * Establish the Connection to the Server
+  * @return true/false
+  */
   bool Client::establishConnection(){
     isConnected=client_connection.createConnection();
     return isConnected;
   }
 
   /**
-   * closes the Connection to the Server
-   * @return true/false
-   */
+  * closes the Connection to the Server
+  * @return true/false
+  */
   bool Client::closeConnection(){
     isConnected=false;
     return client_connection.closeConnection();
   }
 
   /**
-   * submits a MouseAction to the server
-   * @param x x Coordinate
-   * @param y y Coordinate
-   * @return true/false
-   */
+  * submits a MouseAction to the server
+  * @param x x Coordinate
+  * @param y y Coordinate
+  * @return true/false
+  */
   bool Client::sendMouse(double x, double y){
     // generate packet and add it to the queue
     if(!isConnected)
       return false;
     if(!client_connection.addPacket(pck_gen.mousem(x, y)))
-        return false;
+      return false;
     // send packets
     return client_connection.sendPackets();
   }
 
   /**
-   * submits a Keystrike to the server
-   * @param key_code code to submit
-   * @return true/false
-   */
+  * submits a Keystrike to the server
+  * @param key_code code to submit
+  * @return true/false
+  */
   bool Client::sendKeyboard(char key_code){
     // generate packet and add it to queue
     if(!isConnected)
       return false;
     if(!client_connection.addPacket(pck_gen.keystrike(key_code)))
-        return false;
+      return false;
     // send packets
     return client_connection.sendPackets();
   }
 
   /**
-   * submits a chat message to the server
-   * @param message message to send
-   * @return true/false
-   */
+  * submits a chat message to the server
+  * @param message message to send
+  * @return true/false
+  */
   bool Client::sendChat( std::string message ){
     // generate packet and add it to queue
     if(!isConnected)
@@ -133,11 +134,11 @@ namespace network{
   }
 
   /**
-   * Adds a MouseAction to the PacketQueue
-   * @param x x Coordinate
-   * @param y y Coordinate
-   * @return true/false
-   */
+  * Adds a MouseAction to the PacketQueue
+  * @param x x Coordinate
+  * @param y y Coordinate
+  * @return true/false
+  */
   bool Client::addMouse(double x, double y){
     // generate packet and add it to the queue
     if(client_connection.addPacket(pck_gen.mousem(x, y)))
@@ -147,10 +148,10 @@ namespace network{
   }
 
   /**
-   * Adds a Keystrike to the PacketQueue
-   * @param key_code
-   * @return true/false
-   */
+  * Adds a Keystrike to the PacketQueue
+  * @param key_code
+  * @return true/false
+  */
   bool Client::addKeyboard(char key_code){
     // generate packet and add it to queue
     if(client_connection.addPacket(pck_gen.keystrike(key_code)))
@@ -160,8 +161,8 @@ namespace network{
   }
 
   /**
-   * Sends out all the packets queued by addXXX
-   */
+  * Sends out all the packets queued by addXXX
+  */
   bool Client::sendPackets(){
     if(!isConnected)
       return false;
@@ -175,8 +176,8 @@ namespace network{
   }
 
   /**
-   * Performs a GameState update
-   */
+  * Performs a GameState update
+  */
   void Client::tick(float time){
     ENetPacket *packet;
     // stop if the packet queue is empty
