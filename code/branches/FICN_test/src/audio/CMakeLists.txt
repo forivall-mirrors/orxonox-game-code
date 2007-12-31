@@ -1,4 +1,4 @@
-SET (SRC_FILES
+SET ( AUDIO_SRC_FILES
   AudioIncludes.h
   AudioManager.cc
   AudioBuffer.cc
@@ -6,7 +6,12 @@ SET (SRC_FILES
   AudioStream.cc
 )
 
-ADD_LIBRARY( audio SHARED ${SRC_FILES})
+IF (WIN32)
+  ADD_LIBRARY( audio ${AUDIO_SRC_FILES } )
+ELSE (WIN32)
+  ADD_LIBRARY( audio SHARED ${AUDIO_SRC_FILES})
+ENDIF (WIN32)
+
 SET_TARGET_PROPERTIES( audio PROPERTIES LINK_FLAGS "--no-undefined" )
 
 TARGET_LINK_LIBRARIES( audio
