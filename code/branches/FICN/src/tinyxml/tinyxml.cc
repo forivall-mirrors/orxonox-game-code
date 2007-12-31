@@ -21,6 +21,7 @@ must not be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source
 distribution.
 */
+#include "tinyxml.h"
 
 #include <ctype.h>
 
@@ -28,8 +29,6 @@ distribution.
 #include <sstream>
 #include <iostream>
 #endif
-
-#include "tinyxml.h"
 
 
 bool TiXmlBase::condenseWhiteSpace = true;
@@ -1466,6 +1465,80 @@ TiXmlNode* TiXmlDeclaration::Clone() const
 	return clone;
 }
 
+TiXmlStylesheetReference::TiXmlStylesheetReference( const char * _type,
+													const char * _href )
+	: TiXmlNode( TiXmlNode::STYLESHEETREFERENCE )
+{
+	type = _type;
+	href = _href;
+}
+
+
+#ifdef TIXML_USE_STL
+TiXmlStylesheetReference::TiXmlStylesheetReference(	const std::string& _type,
+													const std::string& _href )
+	: TiXmlNode( TiXmlNode::STYLESHEETREFERENCE )
+{
+	type = _type;
+	href = _href;
+}
+#endif
+
+
+TiXmlStylesheetReference::TiXmlStylesheetReference( const TiXmlStylesheetReference& copy )
+	: TiXmlNode( TiXmlNode::STYLESHEETREFERENCE )
+{
+	copy.CopyTo( this );
+}
+
+
+void TiXmlStylesheetReference::operator=( const TiXmlStylesheetReference& copy )
+{
+	Clear();
+	copy.CopyTo( this );
+}
+
+
+void TiXmlStylesheetReference::Print( FILE* cfile, int /*depth*/, TIXML_STRING* str ) const
+{
+	if ( cfile ) fprintf( cfile, "<?xml-stylesheet " );
+	if ( str )	 (*str) += "<?xml-stylesheet ";
+
+	if ( !type.empty() ) {
+		if ( cfile ) fprintf (cfile, "type=\"%s\" ", type.c_str ());
+		if ( str ) { (*str) += "type=\""; (*str) += type; (*str) += "\" "; }
+	}
+	if ( !href.empty() ) {
+		if ( cfile ) fprintf (cfile, "href=\"%s\" ", href.c_str ());
+		if ( str ) { (*str) += "href=\""; (*str) += href; (*str) += "\" "; }
+	}
+	if ( cfile ) fprintf (cfile, "?>");
+	if ( str )	 (*str) += "?>";
+}
+
+void TiXmlStylesheetReference::CopyTo( TiXmlStylesheetReference* target ) const
+{
+	TiXmlNode::CopyTo( target );
+
+	target->type = type;
+	target->href = href;
+}
+
+bool TiXmlStylesheetReference::Accept( TiXmlVisitor* visitor ) const
+{
+	return visitor->Visit( *this );
+}
+
+TiXmlNode* TiXmlStylesheetReference::Clone() const
+{
+	TiXmlStylesheetReference* clone = new TiXmlStylesheetReference();
+
+	if ( !clone )
+		return 0;
+
+	CopyTo( clone );
+	return clone;
+}
 
 void TiXmlUnknown::Print( FILE* cfile, int depth ) const
 {
