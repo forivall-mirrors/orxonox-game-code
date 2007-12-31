@@ -53,6 +53,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="OgreMain_d.lib Orxonox_d.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				AdditionalLibraryDirectories="$(OutDir)"
 			/>
 			<Tool

@@ -103,7 +103,7 @@ namespace orxonox
         speedRotateUpDown_ -= accelerationRotateUpDown_*time;
       if(speedRotateUpDown_ < 0)
         speedRotateUpDown_ += accelerationRotateUpDown_*time;
-      if(abs(speedRotateUpDown_)<accelerationRotateUpDown_*time)
+      if(fabsf(speedRotateUpDown_)<accelerationRotateUpDown_*time)
         speedRotateUpDown_ = 0;
     }
 
@@ -127,7 +127,7 @@ namespace orxonox
         speedRotateRightLeft_ -= accelerationRotateRightLeft_*time;
       if(speedRotateRightLeft_ < 0)
         speedRotateRightLeft_ += accelerationRotateRightLeft_*time;
-      if(abs(speedRotateRightLeft_)<accelerationRotateRightLeft_*time)
+      if(fabsf(speedRotateRightLeft_)<accelerationRotateRightLeft_*time)
         speedRotateRightLeft_ = 0;
     }
 
@@ -151,7 +151,7 @@ namespace orxonox
         speedLoopRightLeft_ -= accelerationLoopRightLeft_*time;
       if(speedLoopRightLeft_ < 0)
         speedLoopRightLeft_ += accelerationLoopRightLeft_*time;
-      if(abs(speedLoopRightLeft_)<accelerationLoopRightLeft_*time)
+      if(fabsf(speedLoopRightLeft_)<accelerationLoopRightLeft_*time)
         speedLoopRightLeft_ = 0;
     }
 

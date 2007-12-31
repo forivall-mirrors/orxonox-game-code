@@ -1,26 +1,20 @@
 PROJECT(Orxonox)
 
-PROJECT(Orxonox)
+AUX_SOURCE_DIRECTORY(tinyxml TINYXML_SRC_FILES)
 
-INCLUDE_DIRECTORIES(tinyxml)
-
-SET (SRC_FILES
-  tinyxml/tinystr.cc
-  tinyxml/tinyxml.cc
-  tinyxml/tinyxmlerror.cc
-  tinyxml/tinyxmlparser.cc
-  tinyxml/ticpp.cc
+SET (UTIL_SRC_FILES
+  ${TINYXML_SRC_FILES}
   substring.cc
 )
 
 IF(WIN32)
-  ADD_LIBRARY(util ${SRC_FILES})
+  ADD_LIBRARY( util ${UTIL_SRC_FILES} )
 ELSE(WIN32)
-  ADD_LIBRARY(util SHARED ${SRC_FILES})
+  ADD_LIBRARY( util SHARED ${UTIL_SRC_FILES} )
 ENDIF(WIN32)
-
+SET_TARGET_PROPERTIES( util PROPERTIES LINK_FLAGS "--no-undefined" )
 
 
 IF(TESTING_ENABLED)
-ADD_SUBDIRECTORY(testing)
+  ADD_SUBDIRECTORY(testing)
 ENDIF(TESTING_ENABLED)

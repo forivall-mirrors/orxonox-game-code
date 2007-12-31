@@ -196,10 +196,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\src\orxonox\objects\BillboardSet.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\src\orxonox\objects\Camera.cc"
 					>
 				</File>
@@ -209,14 +205,6 @@
 				</File>
 				<File
 					RelativePath="..\src\orxonox\objects\Fighter.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\src\orxonox\objects\Light.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\src\orxonox\objects\Mesh.cc"
 					>
 				</File>
 				<File
@@ -240,34 +228,46 @@
 					>
 				</File>
 				<File
+					RelativePath="..\src\orxonox\objects\test1.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\test2.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\test3.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\src\orxonox\objects\WorldEntity.cc"
 					>
 				</File>
 				<Filter
-					Name="weapon_system"
+					Name="weapon"
 					>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\AmmunitionDump.cc"
+						RelativePath="..\src\orxonox\objects\weapon\AmmunitionDump.cc"
 						>
 					</File>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\BarrelGun.cc"
+						RelativePath="..\src\orxonox\objects\weapon\BarrelGun.cc"
 						>
 					</File>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\BaseWeapon.cc"
+						RelativePath="..\src\orxonox\objects\weapon\BaseWeapon.cc"
 						>
 					</File>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\Bullet.cc"
+						RelativePath="..\src\orxonox\objects\weapon\Bullet.cc"
 						>
 					</File>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\BulletManager.cc"
+						RelativePath="..\src\orxonox\objects\weapon\BulletManager.cc"
 						>
 					</File>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\WeaponStation.cc"
+						RelativePath="..\src\orxonox\objects\weapon\WeaponStation.cc"
 						>
 					</File>
 				</Filter>
@@ -277,6 +277,22 @@
 				>
 				<File
 					RelativePath="..\src\orxonox\particle\ParticleInterface.cc"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="tools"
+				>
+				<File
+					RelativePath="..\src\orxonox\tools\BillboardSet.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\tools\Light.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\tools\Mesh.cc"
 					>
 				</File>
 			</Filter>
@@ -326,10 +342,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\src\orxonox\objects\BillboardSet.h"
-					>
-				</File>
-				<File
 					RelativePath="..\src\orxonox\objects\Camera.h"
 					>
 				</File>
@@ -339,14 +351,6 @@
 				</File>
 				<File
 					RelativePath="..\src\orxonox\objects\Fighter.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\orxonox\objects\Light.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\orxonox\objects\Mesh.h"
 					>
 				</File>
 				<File
@@ -370,11 +374,23 @@
 					>
 				</File>
 				<File
-					RelativePath="..\src\orxonox\objects\Tickable.h"
+					RelativePath="..\src\orxonox\objects\Test.h"
 					>
 				</File>
 				<File
-					RelativePath="..\src\orxonox\objects\Timer.h"
+					RelativePath="..\src\orxonox\objects\test1.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\test2.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\test3.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\orxonox\objects\Tickable.h"
 					>
 				</File>
 				<File
@@ -382,30 +398,30 @@
 					>
 				</File>
 				<Filter
-					Name="weapon_system"
+					Name="weapon"
 					>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\AmmunitionDump.h"
+						RelativePath="..\src\orxonox\objects\weapon\AmmunitionDump.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\BarrelGun.h"
+						RelativePath="..\src\orxonox\objects\weapon\BarrelGun.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\BaseWeapon.h"
+						RelativePath="..\src\orxonox\objects\weapon\BaseWeapon.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\Bullet.h"
+						RelativePath="..\src\orxonox\objects\weapon\Bullet.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\BulletManager.h"
+						RelativePath="..\src\orxonox\objects\weapon\BulletManager.h"
 						>
 					</File>
 					<File
-						RelativePath="..\src\orxonox\objects\weapon_system\WeaponStation.h"
+						RelativePath="..\src\orxonox\objects\weapon\WeaponStation.h"
 						>
 					</File>
 				</Filter>
@@ -419,46 +435,22 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="misc"
+				Name="tools"
 				>
 				<File
-					RelativePath="..\src\misc\ColourValue.h"
+					RelativePath="..\src\orxonox\tools\BillboardSet.h"
 					>
 				</File>
 				<File
-					RelativePath="..\src\misc\Math.h"
+					RelativePath="..\src\orxonox\tools\Light.h"
 					>
 				</File>
 				<File
-					RelativePath="..\src\misc\Matrix3.h"
+					RelativePath="..\src\orxonox\tools\Mesh.h"
 					>
 				</File>
 				<File
-					RelativePath="..\src\misc\Quaternion.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\misc\Sleep.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\misc\String2Number.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\misc\Tokenizer.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\misc\Vector2.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\misc\Vector3.h"
-					>
-				</File>
-				<File
-					RelativePath="..\src\misc\Vector4.h"
+					RelativePath="..\src\orxonox\tools\Timer.h"
 					>
 				</File>
 			</Filter>

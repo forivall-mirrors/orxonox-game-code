@@ -4,7 +4,7 @@
 #include "../OrxonoxPrereqs.h"
 
 #include "WorldEntity.h"
-#include "Mesh.h"
+#include "../tools/Mesh.h"
 
 class TiXmlElement; // Forward declaration
 

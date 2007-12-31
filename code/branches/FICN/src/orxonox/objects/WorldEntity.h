@@ -12,7 +12,7 @@
 #include "../core/CoreIncludes.h"
 #include "orxonox/core/BaseObject.h"
 #include "Tickable.h"
-#include "Mesh.h"
+#include "../tools/Mesh.h"
 
 namespace orxonox
 {

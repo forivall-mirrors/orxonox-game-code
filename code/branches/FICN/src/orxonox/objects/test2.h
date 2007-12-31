@@ -2,7 +2,7 @@
 #define _Test2_H__
 
 #include "orxonox/core/BaseObject.h"
-#include "Timer.h"
+#include "../tools/Timer.h"
 
 namespace orxonox
 {

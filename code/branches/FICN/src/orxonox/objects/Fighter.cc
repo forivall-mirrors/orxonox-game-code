@@ -37,8 +37,8 @@
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
 #include "../particle/ParticleInterface.h"
-#include "weapon_system/AmmunitionDump.h"
-#include "weapon_system/BarrelGun.h"
+#include "weapon/AmmunitionDump.h"
+#include "weapon/BarrelGun.h"
 
 #include "Fighter.h"
 

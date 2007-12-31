@@ -210,7 +210,10 @@ typedef float Real;
 //#   pragma warning (disable : 4503)
 
 // disable: "conversion from 'double' to 'float', possible loss of data
-//#   pragma warning (disable : 4244)
+#   pragma warning (disable : 4244)
+
+// disable: "conversion from 'size_t' to 'unsigned int', possible loss of data
+#   pragma warning (disable : 4267)
 
 // disable: "truncation from 'double' to 'float'
 //#   pragma warning (disable : 4305)

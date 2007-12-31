@@ -4,8 +4,8 @@
 #include "../OrxonoxPrereqs.h"
 
 #include "WorldEntity.h"
-#include "BillboardSet.h"
-#include "Timer.h"
+#include "../tools/BillboardSet.h"
+#include "../tools/Timer.h"
 
 namespace orxonox
 {

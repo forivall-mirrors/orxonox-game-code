@@ -1,5 +1,7 @@
 PROJECT(Orxonox)
 #set some global variables, which are used throughout the project
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin/lib)
 
 OPTION(TESTING_ENABLED "Do you want to enable Testing")
 IF (TESTING_ENABLED)
@@ -21,7 +23,7 @@ IF (UNIX)
   FIND_PROGRAM(UNAME_CMD "uname"
   PATHS "/usr/bin /bin")
   IF(NOT UNAME_CMD)
-    MESSAGE("Unable to find uname. Tardis-Check cannot be done.")
+    MESSAGE(ERROR "Unable to find uname. Tardis-Check cannot be done.")
   ENDIF(NOT UNAME_CMD)
 
   # run uname -n to get nodename
@@ -32,7 +34,7 @@ IF (UNIX)
   OUTPUT_VARIABLE UNAME_OV)
 
   IF (NOT "${UNAME_RV}" STREQUAL "0")
-    MESSAGE("ERROR: uname terminated unclean.")
+    MESSAGE(ERROR "ERROR: uname terminated unclean.")
   ENDIF (NOT "${UNAME_RV}" STREQUAL "0")
 
   # check wheter we are on a tardis machine
@@ -44,7 +46,7 @@ IF (UNIX)
   IF(IS_TARDIS)
     MESSAGE("System is a TARDIS: Setting Compiler to g++-4.1.1")
     SET(CMAKE_CXX_COMPILER "g++-4.1.1")
-    # reset eNet serach path
+    # reset Boost serach path
     SET(Boost_INCLUDE_DIR "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include")
   ENDIF(IS_TARDIS)
 
@@ -73,6 +75,8 @@ FIND_PACKAGE(ZLIB)
 LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR} ${ENet_LIBRARY} ${Boost_LIBRARY_DIRS} ${Zlib_LIBRARY_DIR} core objects loader network weapon classHierarchy audio)
 #Sets the search path for include files
 INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR} ${ENet_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${ALUT_INCLUDE_DIR} ${VORBIS_INCLUDE_DIR} ${OGG_INCLUDE_DIR})
+
+#Set the execution directory
 
 #add main source dir
 ADD_SUBDIRECTORY(src)

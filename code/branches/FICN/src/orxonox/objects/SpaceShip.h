@@ -7,7 +7,7 @@
 #include "../OrxonoxPrereqs.h"
 
 #include "Model.h"
-#include "BillboardSet.h"
+#include "../tools/BillboardSet.h"
 
 class TiXmlElement;          // Forward declaration
 
