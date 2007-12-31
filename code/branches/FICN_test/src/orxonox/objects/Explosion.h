@@ -4,7 +4,7 @@
 #include "../OrxonoxPrereqs.h"
 
 #include "WorldEntity.h"
-#include "Timer.h"
+#include "../tools/Timer.h"
 
 namespace orxonox
 {

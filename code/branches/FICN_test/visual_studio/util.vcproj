@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="TinyXML"
+	Name="Util"
 	ProjectGUID="{2240ECD7-2F48-4431-8E1B-25466A384CCC}"
 	RootNamespace="FICN"
 	Keyword="Win32Proj"
@@ -132,21 +132,33 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\src\tinyxml\tinystr.cc"
+				RelativePath="..\src\util\substring.cc"
 				>
 			</File>
-			<File
-				RelativePath="..\src\tinyxml\tinyxml.cc"
+			<Filter
+				Name="tinyxml"
 				>
-			</File>
-			<File
-				RelativePath="..\src\tinyxml\tinyxmlerror.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\src\tinyxml\tinyxmlparser.cc"
-				>
-			</File>
+				<File
+					RelativePath="..\src\util\tinyxml\ticpp.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\util\tinyxml\tinystr.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\util\tinyxml\tinyxml.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\util\tinyxml\tinyxmlerror.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\src\util\tinyxml\tinyxmlparser.cc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -154,17 +166,53 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\src\tinyxml\tinystr.h"
+				RelativePath="..\src\util\Convert.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\tinyxml\tinyxml.h"
+				RelativePath="..\src\util\Math.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\tinyxml\TinyXMLPrereqs.h"
+				RelativePath="..\src\util\Sleep.h"
 				>
 			</File>
+			<File
+				RelativePath="..\src\util\String2Number.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\util\substring.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\util\Tokenizer.h"
+				>
+			</File>
+			<Filter
+				Name="tinyxml"
+				>
+				<File
+					RelativePath="..\src\util\tinyxml\ticpp.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\util\tinyxml\ticpprc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\util\tinyxml\tinystr.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\util\tinyxml\tinyxml.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\util\tinyxml\TinyXMLPrereqs.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

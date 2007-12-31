@@ -69,7 +69,7 @@
 #include "core/Factory.h"
 #include "core/Debug.h"
 #include "hud/HUD.h"
-#include "objects/weapon_system/BulletManager.h"
+#include "objects/weapon/BulletManager.h"
 #include "GraphicsEngine.h"
 
 #include "Orxonox.h"
