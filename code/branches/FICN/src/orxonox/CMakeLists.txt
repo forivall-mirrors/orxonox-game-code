@@ -8,6 +8,7 @@ IF(NOT WIN32)
 ENDIF(NOT WIN32)
 ADD_SUBDIRECTORY(particle)
 
+INCLUDE_DIRECTORIES(tools)
 
 SET( ORXONOX_SRC_FILES
   Orxonox.cc
@@ -17,8 +18,6 @@ SET( ORXONOX_SRC_FILES
 )
 
 IF(WIN32)
-  INCLUDE_DIRECTORIES(tools)
-
   SET( OBJECTS_SRC_FILES
     objects/WorldEntity.cc
     objects/test1.cc
@@ -46,7 +45,6 @@ IF(WIN32)
   )
 ELSE(WIN32)
   SET(LINK_OBJECTS_LIBRARY objects)
-  SET(LINK_OBJECTS_LIBRARY tools)
 ENDIF(WIN32)
 
 IF(WIN32)
@@ -70,5 +68,6 @@ TARGET_LINK_LIBRARIES( ../../bin/main
   ${LINK_OBJECTS_LIBRARY}
   util
   particle
+  tools
 )
 
