@@ -18,13 +18,13 @@ IF(WIN32)
 ELSE(WIN32)
   ADD_LIBRARY(${Orxonox_BINARY_DIR}/network SHARED ${NETWORK_SRC_FILES})
 ENDIF(WIN32)
-SET_TARGET_PROPERTIES( network PROPERTIES LINK_FLAGS "--no-undefined" )
+SET_TARGET_PROPERTIES( ${Orxonox_BINARY_DIR}/network PROPERTIES LINK_FLAGS "--no-undefined" )
 
-TARGET_LINK_LIBRARIES( network
+TARGET_LINK_LIBRARIES( ${Orxonox_BINARY_DIR}/network
   ${ZLIB_LIBRARY}
   ${ENet_LIBRARY}
   ${Boost_thread_LIBRARIES}
-  core
+  ${Orxonox_BINARY_DIR}/core
 )
 
 # build those parts only on request.
