@@ -1,4 +1,4 @@
 title Orxonox
 path lib;%path%
-main.exe
+orxonox.exe
 pause

@@ -23,7 +23,7 @@
 #include "ClientInformation.h"
 #include "PacketBuffer.h"
 #include "PacketManager.h"
-#include "orxonox/core/CoreIncludes.h"
+#include "core/CoreIncludes.h"
 
 namespace std{
   bool operator<(ENetAddress a, ENetAddress b);

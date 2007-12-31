@@ -3,7 +3,7 @@
 
 #include "../OrxonoxPrereqs.h"
 
-#include "orxonox/core/BaseObject.h"
+#include "core/BaseObject.h"
 
 class TiXmlElement; // Forward declaration
 

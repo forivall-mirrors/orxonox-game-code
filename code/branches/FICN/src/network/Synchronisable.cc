@@ -10,7 +10,7 @@
 //
 
 #include "Synchronisable.h"
-#include "orxonox/core/CoreIncludes.h"
+#include "core/CoreIncludes.h"
 
 
 namespace network {

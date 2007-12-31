@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [[ !  -f main ]] ; then
-	echo "main does not exist"
+if [[ !  -f orxonox ]] ; then
+	echo "orxonox does not exist"
 	echo "did you compile it?"
 
 	exit 1
@@ -21,4 +21,4 @@ if [[ ! -f plugins.cfg ]] ; then
                 cp plugins.cfg-init plugins.cfg
 	fi
 fi
-exec ./main $@
+exec ./orxonox $@

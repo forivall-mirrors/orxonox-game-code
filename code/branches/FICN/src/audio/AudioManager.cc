@@ -26,7 +26,7 @@
  */
 
 #include "AudioManager.h"
-#include "orxonox/core/Debug.h"
+#include "core/Debug.h"
 
 namespace audio
 {

@@ -16,8 +16,8 @@
 #include <iostream>
 #include <string>
 
-#include "orxonox/core/CoreIncludes.h"
-#include "orxonox/core/OrxonoxClass.h"
+#include "core/CoreIncludes.h"
+#include "core/OrxonoxClass.h"
 
 namespace network {
 

@@ -28,7 +28,7 @@
 #ifndef _Test_H__
 #define _Test_H__
 
-#include "orxonox/core/BaseObject.h"
+#include "core/BaseObject.h"
 #include "../core/CoreIncludes.h"
 
 namespace orxonox

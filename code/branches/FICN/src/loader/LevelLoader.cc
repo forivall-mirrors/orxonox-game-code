@@ -28,12 +28,12 @@
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 
-#include "orxonox/core/Error.h"
-#include "orxonox/core/Debug.h"
-#include "orxonox/core/CoreIncludes.h"
+#include "core/Error.h"
+#include "core/Debug.h"
+#include "core/CoreIncludes.h"
 
 #include "audio/AudioManager.h"
-#include "orxonox/core/BaseObject.h"
+#include "core/BaseObject.h"
 #include "orxonox/Orxonox.h"
 
 #include "LevelLoader.h"
