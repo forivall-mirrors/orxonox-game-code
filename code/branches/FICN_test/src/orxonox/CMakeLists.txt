@@ -1,5 +1,3 @@
-ADD_SUBDIRECTORY(core)
-
 SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   Main.cc

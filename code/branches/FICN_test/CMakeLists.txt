@@ -48,7 +48,7 @@ IF (UNIX)
   IF(IS_TARDIS)
     MESSAGE("System is a TARDIS: Setting Compiler to g++-4.1.1")
     SET(CMAKE_CXX_COMPILER "g++-4.1.1")
-    # reset eNet serach path
+    # reset Boost serach path
     SET(Boost_INCLUDE_DIR "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include")
   ENDIF(IS_TARDIS)
 
