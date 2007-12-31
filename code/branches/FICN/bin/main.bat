@@ -1,4 +1,4 @@
 title Orxonox
-path O:\FICN_test\bin\lib;%path%
+path lib;%path%
 main.exe
 pause
