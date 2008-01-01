@@ -135,7 +135,8 @@ namespace network
       }
     }
     // should be finished now
-    GameState r = {b.id, dest_length, dp};
+    // FIXME: is it true or false now? (struct has changed, producing warnings)
+    GameState r = {b.id, dest_length, true, dp};
     return r;
   }
 

@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="ORXONOX_SHARED_BUILD"
+				PreprocessorDefinitions="ORXONOX_SHARED_BUILD; LOADER_STATIC_BUILD"
 				PrecompiledHeaderThrough=""
 			/>
 			<Tool
@@ -108,7 +108,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="LOADER_STATIC_BUILD; ORXONOX_SHARED_BUILD"
+				PreprocessorDefinitions="ORXONOX_SHARED_BUILD; LOADER_STATIC_BUILD"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -316,6 +316,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="loader"
+				>
+				<File
+					RelativePath="..\src\loader\LevelLoader.cc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -475,6 +483,18 @@
 				</File>
 				<File
 					RelativePath="..\src\orxonox\tools\Timer.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="loader"
+				>
+				<File
+					RelativePath="..\src\loader\LevelLoader.h"
+					>
+				</File>
+				<File
+					RelativePath="..\src\loader\LoaderPrereqs.h"
 					>
 				</File>
 			</Filter>

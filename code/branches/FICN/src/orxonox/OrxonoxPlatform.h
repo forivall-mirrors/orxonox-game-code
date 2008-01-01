@@ -210,17 +210,17 @@ typedef float Real;
 //#   pragma warning (disable : 4503)
 
 // disable: "conversion from 'double' to 'float', possible loss of data
-#   pragma warning (disable : 4244)
+//#   pragma warning (disable : 4244)
 
 // disable: "conversion from 'size_t' to 'unsigned int', possible loss of data
-#   pragma warning (disable : 4267)
+//#   pragma warning (disable : 4267)
 
 // disable: "truncation from 'double' to 'float'
 //#   pragma warning (disable : 4305)
 
 // disable: "<type> needs to have dll-interface to be used by clients'
 // Happens on STL member variables which are not public therefore is ok
-#   pragma warning (disable : 4251)
+//#   pragma warning (disable : 4251)
 
 // disable: "non dll-interface class used as base for dll-interface class"
 // Happens when deriving from Singleton because bug in compiler ignores

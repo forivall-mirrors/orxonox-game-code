@@ -35,6 +35,11 @@
 
 #include "orxonox/OrxonoxPlatform.h"
 
+// Compile loader directly in orxonox executable, if on Visual Studio platform
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && defined(ORXONOX_SHARED_BUILD)
+#  define LOADER_SHARED_BUILD
+#endif
+
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
