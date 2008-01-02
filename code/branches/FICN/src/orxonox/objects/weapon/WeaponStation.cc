@@ -25,7 +25,7 @@
  *
  */
 
-#include "StableHeaders.h"
+#include "OrxonoxStableHeaders.h"
 
 #include "BaseWeapon.h"
 #include "WeaponStation.h"

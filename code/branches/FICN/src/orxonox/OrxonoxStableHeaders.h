@@ -26,12 +26,12 @@
  */
 
 /**
- @file  StableHeaders.h
+ @file  OrxonoxStableHeaders.h
  @brief Contains the bigger (or smaller) header files in order to precompile them with MSVC
  */
 
-#ifndef _StableHeaders_H__
-#define _StableHeaders_H__
+#ifndef _OrxonoxStableHeaders_H__
+#define _OrxonoxStableHeaders_H__
 
 #include "OrxonoxPlatform.h"
 
@@ -39,7 +39,8 @@
 
 // including std headers here is useless since they're already precompiled
 
-//#include <Ogre.h> // not including the entire Ogre.h doesn't exceed the heap
+// not including the entire Ogre.h doesn't exceed the default heap size for pch
+//#include <Ogre.h>
 #include <OgreBillboardSet.h>
 #include <OgreCamera.h>
 #include <OgreConfigFile.h>
@@ -65,59 +66,57 @@
 #include <OIS/OIS.h>
 
 /**
-* Some of the not so stable header file.
-* But since the project isn't large yet, these spare time after all.
+* Some of the not so stable header files.
+* But it's not very useful to include them anyway..
 **/
 
-#include "audio/AudioManager.h"
+//#include "audio/AudioManager.h"
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
-#include "core/ArgReader.h"
-#include "core/Debug.h"
+//#include "core/ArgReader.h"
 #include "core/Error.h"
 
 #include "network/Synchronisable.h"
-#include "network/Server.h"
-#include "network/Client.h"
+//#include "network/Server.h"
+//#include "network/Client.h"
 
 #include "util/Math.h"
 #include "util/Convert.h"
 #include "util/Sleep.h"
 #include "util/String2Number.h"
-#include "util/substring.h"
 #include "util/Tokenizer.h"
 #include "util/tinyxml/ticpp.h"
 #include "util/tinyxml/tinyxml.h"
 
-#include "hud/HUD.h"
-#include "loader/LevelLoader.h"
-#include "objects/weapon/AmmunitionDump.h"
-#include "objects/weapon/BarrelGun.h"
-#include "objects/weapon/Bullet.h"
-#include "objects/weapon/BulletManager.h"
-#include "objects/weapon/WeaponStation.h"
-#include "objects/Ambient.h"
-#include "objects/Camera.h"
-#include "objects/Explosion.h"
-#include "objects/Fighter.h"
+//#include "hud/HUD.h"
+//#include "loader/LevelLoader.h"
+//#include "objects/weapon/AmmunitionDump.h"
+//#include "objects/weapon/BarrelGun.h"
+//#include "objects/weapon/Bullet.h"
+//#include "objects/weapon/BulletManager.h"
+//#include "objects/weapon/WeaponStation.h"
+//#include "objects/Ambient.h"
+//#include "objects/Camera.h"
+//#include "objects/Explosion.h"
+//#include "objects/Fighter.h"
 #include "objects/Model.h"
-#include "objects/NPC.h"
-#include "objects/Projectile.h"
-#include "objects/Skybox.h"
-#include "objects/SpaceShipSteeringObject.h"
+//#include "objects/NPC.h"
+//#include "objects/Projectile.h"
+//#include "objects/Skybox.h"
+//#include "objects/SpaceShipSteeringObject.h"
 #include "objects/Tickable.h"
 #include "objects/WorldEntity.h"
-#include "particle/ParticleInterface.h"
-#include "tools/BillboardSet.h"
-#include "tools/Light.h"
-#include "tools/Mesh.h"
-#include "tools/Timer.h"
-#include "GraphicsEngine.h"
-#include "InputManager.h"
-#include "Orxonox.h"
-#include "SpaceshipSteering.h"
+//#include "particle/ParticleInterface.h"
+//#include "tools/BillboardSet.h"
+//#include "tools/Light.h"
+//#include "tools/Mesh.h"
+//#include "tools/Timer.h"
+//#include "GraphicsEngine.h"
+//#include "InputManager.h"
+//#include "Orxonox.h"
+//#include "SpaceshipSteering.h"
 
 #endif
 
-#endif /* _StableHeaders_H__ */
+#endif /* _OrxonoxStableHeaders_H__ */

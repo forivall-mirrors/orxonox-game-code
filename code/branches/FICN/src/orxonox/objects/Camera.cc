@@ -1,5 +1,5 @@
 
-#include "StableHeaders.h"
+#include "OrxonoxStableHeaders.h"
 
 #include <string>
 

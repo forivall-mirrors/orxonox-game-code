@@ -25,7 +25,7 @@
  *
  */
 
-#include "StableHeaders.h"
+#include "OrxonoxStableHeaders.h"
 
 #include <OgreStringConverter.h>
 #include <OgreSceneNode.h>

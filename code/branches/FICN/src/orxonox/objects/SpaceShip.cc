@@ -25,7 +25,7 @@
  *
  */
 
-#include "StableHeaders.h"
+#include "OrxonoxStableHeaders.h"
 
 #include <string>
 
@@ -135,6 +135,7 @@ namespace orxonox
     {
         SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
         SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
+        SetConfigValue(testvector_, Vector3()).description("asdfblah");
     }
 
     void SpaceShip::loadParams(TiXmlElement* xmlElem)

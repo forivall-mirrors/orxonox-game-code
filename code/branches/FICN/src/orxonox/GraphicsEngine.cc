@@ -29,7 +29,7 @@
     @brief Orxonox class
   */
 
-#include "StableHeaders.h"
+#include "OrxonoxStableHeaders.h"
 
 #include "GraphicsEngine.h"
 

@@ -25,7 +25,7 @@
  *
  */
 
-#include "StableHeaders.h"
+#include "OrxonoxStableHeaders.h"
 
 #include "util/tinyxml/tinyxml.h"
 #include "util/Tokenizer.h"

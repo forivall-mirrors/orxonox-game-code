@@ -30,7 +30,7 @@
  @brief main file handling most of the machine specific code
   */
 
-#include "StableHeaders.h"
+#include "OrxonoxStableHeaders.h"
 
 #include <OgrePlatform.h>
 #include <OgreException.h>
@@ -85,16 +85,17 @@ extern "C" {
     char* cmd = strCmdLine;
     int argc = 2;
     int i;
+    int j;
     for(i = 0; cmd[i] != NULL; i++)
     {
       if(cmd[i] == ' ') argc++;
     }
     char **argv = new char*[argc];
-    for (int j = 0; j < argc; j++)
+    for (j = 0; j < argc; j++)
     {
       argv[j] = new char[i];
     }
-    int j = 1;
+    j = 1;
     int k = 0;
     for(int i = 0; cmd[i] != NULL; i++)
     {

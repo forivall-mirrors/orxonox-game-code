@@ -30,6 +30,7 @@ namespace orxonox
 
 
         private:
+            Vector3 testvector_;
             bool bInvertYAxis_;
             bool setMouseEventCallback_;
             bool bLMousePressed_;

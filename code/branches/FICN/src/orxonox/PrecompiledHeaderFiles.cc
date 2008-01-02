@@ -30,4 +30,4 @@
  @brief This file actually generates the precompiled header file
  */
 
-#include "StableHeaders.h"
+#include "OrxonoxStableHeaders.h"

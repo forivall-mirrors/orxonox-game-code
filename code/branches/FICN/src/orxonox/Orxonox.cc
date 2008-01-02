@@ -31,7 +31,7 @@
  */
 
 // Precompiled Headers
-#include "StableHeaders.h"
+#include "OrxonoxStableHeaders.h"
 
 //****** OGRE ******
 #include <OgreException.h>
