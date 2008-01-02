@@ -1,3 +1,5 @@
+#include "StableHeaders.h"
+
 #include "InputManager.h"
 
 InputManager *InputManager::mInputManager;

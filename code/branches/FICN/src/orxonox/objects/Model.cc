@@ -25,6 +25,8 @@
  *
  */
 
+#include "StableHeaders.h"
+
 #include "util/tinyxml/tinyxml.h"
 #include "util/Tokenizer.h"
 #include "util/String2Number.h"

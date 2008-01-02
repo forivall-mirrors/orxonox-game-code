@@ -30,6 +30,8 @@
  @brief main file handling most of the machine specific code
   */
 
+#include "StableHeaders.h"
+
 #include <OgrePlatform.h>
 #include <OgreException.h>
 

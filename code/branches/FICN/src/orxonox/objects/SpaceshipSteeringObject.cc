@@ -25,6 +25,8 @@
  *
  */
 
+#include "StableHeaders.h"
+
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 #include <OgreRoot.h>

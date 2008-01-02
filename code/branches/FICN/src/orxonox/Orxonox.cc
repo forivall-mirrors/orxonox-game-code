@@ -30,6 +30,9 @@
  @brief Orxonox Main Class
  */
 
+// Precompiled Headers
+#include "StableHeaders.h"
+
 //****** OGRE ******
 #include <OgreException.h>
 #include <OgreRoot.h>

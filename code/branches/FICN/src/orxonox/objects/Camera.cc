@@ -1,3 +1,6 @@
+
+#include "StableHeaders.h"
+
 #include <string>
 
 #include <OgreSceneManager.h>

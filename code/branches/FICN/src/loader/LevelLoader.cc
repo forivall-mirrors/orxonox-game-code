@@ -25,6 +25,8 @@
 *
 */
 
+#include "StableHeaders.h"
+
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 

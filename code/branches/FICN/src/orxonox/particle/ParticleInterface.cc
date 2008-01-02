@@ -30,6 +30,8 @@
 * @brief class to control praticle effects
 */
 
+#include "StableHeaders.h"
+
 #include "ParticleInterface.h"
 // #include <OgreParticleSystem.h>
 // #include <Ogre.h>

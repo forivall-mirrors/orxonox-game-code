@@ -25,6 +25,8 @@
  *
  */
 
+#include "StableHeaders.h"
+
 #include <OgreParticleSystem.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>

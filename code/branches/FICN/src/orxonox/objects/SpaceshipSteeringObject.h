@@ -1,7 +1,7 @@
 #ifndef _OBJECT_SPACESHIPSTEERING_H__
 #define _OBJECT_SPACESHIPSTEERING_H__
 
-#include "BaseObject.h"
+#include "core/BaseObject.h"
 #include "util/tinyxml/tinyxml.h"
 
 namespace orxonox

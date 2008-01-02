@@ -25,6 +25,8 @@
  *
  */
 
+#include "StableHeaders.h"
+
 #include <string>
 
 #include <OgreCamera.h>

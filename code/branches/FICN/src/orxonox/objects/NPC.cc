@@ -25,6 +25,8 @@
  *
  */
 
+#include "StableHeaders.h"
+
 #include "../core/CoreIncludes.h"
 #include "NPC.h"
 

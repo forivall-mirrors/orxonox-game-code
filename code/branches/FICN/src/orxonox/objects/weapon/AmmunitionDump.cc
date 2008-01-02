@@ -25,6 +25,8 @@
  *
  */
 
+#include "StableHeaders.h"
+
 #include "orxonox/Orxonox.h"
 #include "BulletManager.h"
 #include "util/tinyxml/tinyxml.h"

@@ -25,6 +25,8 @@
  *
  */
 
+#include "StableHeaders.h"
+
 #include <sstream>
 
 #include <OgreSceneManager.h>

@@ -25,6 +25,8 @@
  *
  */
 
+#include "StableHeaders.h"
+
 #include "Bullet.h"
 
 namespace orxonox {

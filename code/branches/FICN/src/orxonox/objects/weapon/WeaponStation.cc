@@ -25,6 +25,8 @@
  *
  */
 
+#include "StableHeaders.h"
+
 #include "BaseWeapon.h"
 #include "WeaponStation.h"
 
