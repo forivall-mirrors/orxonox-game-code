@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="base_properties_debug"
-	InheritedPropertySheets=".\base_properties.vsprops"
+	InheritedPropertySheets="$(SolutionDir)base_properties.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
@@ -16,11 +16,11 @@
 	/>
 	<Tool
 		Name="VCLibrarianTool"
-		OutputFile="$(OutDir)\$(ProjectName)_d.lib"
+		OutputFile="$(LibDir)$(ProjectName)_d.lib"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		OutputFile="$(OutDir)\$(ProjectName)_d.exe"
+		OutputFile="$(OutDir)$(ProjectName)_d.dll"
 		LinkIncremental="2"
 		GenerateDebugInformation="true"
 	/>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
-	Name="Audio"
-	ProjectGUID="{4733BD1A-E04C-458D-8BFB-5010250EA497}"
+	Version="9.00"
+	Name="loader"
+	ProjectGUID="{E283910F-F911-40FB-A09D-D025CA821912}"
 	RootNamespace="FICN"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -18,7 +19,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\base_properties_debug.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -39,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="AUDIO_SHARED_BUILD"
+				PreprocessorDefinitions="LOADER_SHARED_BUILD"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -52,8 +53,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libvorbisfile_d.lib alut_d.lib  OpenAL32.lib"
-				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
+				AdditionalDependencies="OgreMain_d.lib"
+				AdditionalLibraryDirectories="$(OutDir)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -74,16 +75,13 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets=".\base_properties_release.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -105,7 +103,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="AUDIO_SHARED_BUILD"
+				PreprocessorDefinitions="LOADER_SHARED_BUILD"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -118,7 +116,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libvorbisfile.lib alut.lib  OpenAL32.lib"
+				AdditionalDependencies="OgreMain.lib"
+				AdditionalLibraryDirectories="$(OutDir)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -139,9 +138,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -155,39 +151,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\src\audio\_AudioObject.cc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\src\audio\AudioBuffer.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\src\audio\AudioManager.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\src\audio\AudioSource.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\src\audio\AudioStream.cc"
+				RelativePath="..\..\src\loader\LevelLoader.cc"
 				>
 			</File>
 		</Filter>
@@ -197,27 +161,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\src\audio\AudioBuffer.h"
+				RelativePath="..\..\src\loader\LevelLoader.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\audio\AudioIncludes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\audio\AudioManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\audio\AudioPrereqs.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\audio\AudioSource.h"
-				>
-			</File>
-			<File
-				RelativePath="..\src\audio\AudioStream.h"
+				RelativePath="..\..\src\loader\LoaderPrereqs.h"
 				>
 			</File>
 		</Filter>

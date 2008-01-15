@@ -3,27 +3,39 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="base_properties"
-	OutputDirectory="$(SolutionDir)\..\bin"
-	IntermediateDirectory="$(SolutionDir)\obj\$(ProjectName)\$(ConfigurationName)"
+	OutputDirectory="$(RootDir)bin\"
+	IntermediateDirectory="$(SolutionDir)obj\$(SolutionName)\$(ProjectName)\$(ConfigurationName)\"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\src&quot;;&quot;$(SolutionDir)\..\src\orxonox&quot;;&quot;$(OGRE_HOME)\Dependencies\include&quot;;&quot;$(OGRE_HOME)\OgreMain\include&quot;;&quot;$(ORXONOX_HOME)\dependencies\include&quot;"
+		AdditionalIncludeDirectories="&quot;$(RootDir)src&quot;;&quot;$(RootDir)src\orxonox&quot;;&quot;$(RootDir)dependencies\include&quot;"
 		PreprocessorDefinitions="WIN32;__WIN32__;_WIN32;BOOST_ALL_DYN_LINK"
 		WarningLevel="3"
-		Detect64BitPortabilityProblems="true"
 		DebugInformationFormat="3"
 		DisableSpecificWarnings="4267; 4244; 4251"
 	/>
 	<Tool
 		Name="VCLibrarianTool"
-		AdditionalLibraryDirectories="&quot;$(OGRE_HOME)\lib&quot;;&quot;$(OGRE_HOME)\dependencies\lib\$(ConfigurationName)&quot;;&quot;$(ORXONOX_HOME)\dependencies\lib&quot;"
+		OutputFile="$(LibDir)$(ProjectName).lib"
+		AdditionalLibraryDirectories="$(RootDir)dependencies\lib"
 		IgnoreAllDefaultLibraries="true"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalLibraryDirectories="&quot;$(OGRE_HOME)\lib&quot;;&quot;$(OGRE_HOME)\dependencies\lib\$(ConfigurationName)&quot;;&quot;$(ORXONOX_HOME)\dependencies\lib&quot;"
+		OutputFile="$(OutDir)$(ProjectName).dll"
+		AdditionalLibraryDirectories="$(RootDir)dependencies\lib"
 		SubSystem="2"
+		RandomizedBaseAddress="1"
+		DataExecutionPrevention="0"
+		ImportLibrary="$(RootDir)lib\$(TargetName).lib"
 		TargetMachine="1"
+	/>
+	<UserMacro
+		Name="RootDir"
+		Value="$(SolutionDir)..\"
+	/>
+	<UserMacro
+		Name="LibDir"
+		Value="$(RootDir)lib\"
 	/>
 </VisualStudioPropertySheet>

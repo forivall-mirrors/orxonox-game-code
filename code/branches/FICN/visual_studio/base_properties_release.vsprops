@@ -16,7 +16,7 @@
 	<Tool
 		Name="VCLinkerTool"
 		LinkIncremental="1"
-		GenerateDebugInformation="true"
+		GenerateDebugInformation="false"
 		OptimizeReferences="2"
 		EnableCOMDATFolding="2"
 	/>
