@@ -15,13 +15,16 @@
 		DebugInformationFormat="4"
 	/>
 	<Tool
-		Name="VCLibrarianTool"
-		OutputFile="$(LibDir)$(ProjectName)_d.lib"
-	/>
-	<Tool
 		Name="VCLinkerTool"
-		OutputFile="$(OutDir)$(ProjectName)_d.dll"
 		LinkIncremental="2"
 		GenerateDebugInformation="true"
+	/>
+	<UserMacro
+		Name="CS"
+		Value="_d"
+	/>
+	<UserMacro
+		Name="CSS"
+		Value="$(CS)"
 	/>
 </VisualStudioPropertySheet>

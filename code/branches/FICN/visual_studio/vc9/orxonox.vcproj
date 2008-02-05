@@ -110,7 +110,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm200"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="ORXONOX_NO_EXPORTS;ORXONOX_SHARED_BUILD; LOADER_STATIC_BUILD"
+				PreprocessorDefinitions="ORXONOX_NO_EXPORTS;ORXONOX_SHARED_BUILD;LOADER_STATIC_BUILD"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="OrxonoxStableHeaders.h"
 			/>

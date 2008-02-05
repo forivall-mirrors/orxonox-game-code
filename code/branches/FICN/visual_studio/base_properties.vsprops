@@ -3,39 +3,43 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="base_properties"
-	OutputDirectory="$(RootDir)bin\"
-	IntermediateDirectory="$(SolutionDir)obj\$(SolutionName)\$(ProjectName)\$(ConfigurationName)\"
+	InheritedPropertySheets=".\directory_properties.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="&quot;$(RootDir)src&quot;;&quot;$(RootDir)src\orxonox&quot;;&quot;$(RootDir)dependencies\include&quot;"
+		AdditionalIncludeDirectories="&quot;$(RootDir)src&quot;;&quot;$(RootDir)src\orxonox&quot;;&quot;$(DependencyDir)include&quot;"
 		PreprocessorDefinitions="WIN32;__WIN32__;_WIN32;BOOST_ALL_DYN_LINK"
 		WarningLevel="3"
-		DebugInformationFormat="3"
 		DisableSpecificWarnings="4267; 4244; 4251"
 	/>
 	<Tool
 		Name="VCLibrarianTool"
-		OutputFile="$(LibDir)$(ProjectName).lib"
+		OutputFile="$(LibOutDir)$(ProjectName)$(CS).lib"
 		AdditionalLibraryDirectories="$(RootDir)dependencies\lib"
 		IgnoreAllDefaultLibraries="true"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		OutputFile="$(OutDir)$(ProjectName).dll"
-		AdditionalLibraryDirectories="$(RootDir)dependencies\lib"
+		OutputFile="$(OutDir)$(ProjectName)$(CS).dll"
+		AdditionalLibraryDirectories="$(DependencyDir)lib"
 		SubSystem="2"
-		RandomizedBaseAddress="1"
-		DataExecutionPrevention="0"
-		ImportLibrary="$(RootDir)lib\$(TargetName).lib"
+		ImportLibrary="$(LibOutDir)$(TargetName).lib"
 		TargetMachine="1"
 	/>
 	<UserMacro
-		Name="RootDir"
-		Value="$(SolutionDir)..\"
+		Name="LibOutDir"
+		Value="$(RootDir)lib\"
 	/>
 	<UserMacro
-		Name="LibDir"
-		Value="$(RootDir)lib\"
+		Name="DependencyDir"
+		Value="$(RootDir)dependencies\"
+	/>
+	<UserMacro
+		Name="CS"
+		Value=""
+	/>
+	<UserMacro
+		Name="CSS"
+		Value="$(CS)"
 	/>
 </VisualStudioPropertySheet>

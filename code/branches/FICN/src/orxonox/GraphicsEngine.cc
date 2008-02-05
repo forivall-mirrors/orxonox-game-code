@@ -31,12 +31,12 @@
 
 #include "OrxonoxStableHeaders.h"
 
-#include "GraphicsEngine.h"
-
 #include <OgreRoot.h>
 #include <OgreConfigFile.h>
 #include <OgreTextureManager.h>
+
 #include "core/Debug.h"
+#include "GraphicsEngine.h"
 
 
 namespace orxonox {

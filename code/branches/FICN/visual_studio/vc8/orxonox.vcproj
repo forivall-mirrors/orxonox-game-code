@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\orxonox_properties.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -39,10 +39,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm200"
-				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="ORXONOX_SHARED_BUILD; LOADER_STATIC_BUILD"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="OrxonoxStableHeaders.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -55,10 +51,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib OIS_d.lib"
-				OutputFile="$(OutDir)$(ProjectName)_d.exe"
-				AdditionalLibraryDirectories=""
-				IgnoreDefaultLibraryNames="/NODEFAULTLIB:MSVCRT"
 				EntryPointSymbol=""
 			/>
 			<Tool
@@ -89,7 +81,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\orxonox_properties.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -111,10 +103,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm200"
-				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="ORXONOX_SHARED_BUILD; LOADER_STATIC_BUILD"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="OrxonoxStableHeaders.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -127,10 +115,134 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib OIS.lib"
-				OutputFile="$(OutDir)$(ProjectName).exe"
-				AdditionalLibraryDirectories=""
-				IgnoreDefaultLibraryNames="/NODEFAULTLIB:MSVCRT"
+				EntryPointSymbol=""
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release_SSE|Win32"
+			ConfigurationType="1"
+			InheritedPropertySheets="..\base_properties_release_sse.vsprops;..\orxonox_properties.vsprops"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm200"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				EntryPointSymbol=""
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release_SSE2|Win32"
+			ConfigurationType="1"
+			InheritedPropertySheets="..\base_properties_release_sse2.vsprops;..\orxonox_properties.vsprops"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm200"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
 				EntryPointSymbol=""
 			/>
 			<Tool
@@ -202,6 +314,22 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_SSE|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_SSE2|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\SpaceshipSteering.cc"
@@ -216,6 +344,22 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_SSE|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_SSE2|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -289,6 +433,22 @@
 							Name="VCCLCompilerTool"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_SSE|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_SSE2|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\test1.cc"
@@ -304,6 +464,24 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_SSE|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_SSE2|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -333,6 +511,24 @@
 							UsePrecompiledHeader="0"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_SSE|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_SSE2|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\test3.cc"
@@ -348,6 +544,24 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_SSE|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_SSE2|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool

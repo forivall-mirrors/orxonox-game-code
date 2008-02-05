@@ -33,7 +33,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orxonox", "vc9\orxonox.vcpr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util", "vc9\util.vcproj", "{2240ECD7-2F48-4431-8E1B-25466A384CCC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testproj", "vc9\test_proj.vcproj", "{97B226C5-8FD9-4A1E-B50B-5CBF79CF46F5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_proj", "vc9\test_proj.vcproj", "{97B226C5-8FD9-4A1E-B50B-5CBF79CF46F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

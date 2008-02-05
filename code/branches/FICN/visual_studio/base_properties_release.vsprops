@@ -16,8 +16,16 @@
 	<Tool
 		Name="VCLinkerTool"
 		LinkIncremental="1"
-		GenerateDebugInformation="false"
+		GenerateDebugInformation="true"
 		OptimizeReferences="2"
 		EnableCOMDATFolding="2"
+	/>
+	<UserMacro
+		Name="CS"
+		Value=""
+	/>
+	<UserMacro
+		Name="CSS"
+		Value="$(CS)"
 	/>
 </VisualStudioPropertySheet>
