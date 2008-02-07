@@ -21,8 +21,8 @@ ENDIF (CEGUI_LIBRARIES AND CEGUI_INCLUDE_DIR)
 
 IF (WIN32) #Windows
     MESSAGE(STATUS "Looking for CEGUI")
-    SET(CEGUI_INCLUDE_DIR ../ogre/Dependencies/include/CEGUI)
-    SET(CEGUI_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../ogre/Samples/Common/bin/Release/lib)
+    SET(CEGUI_INCLUDE_DIR ../libs/ogre/Dependencies/include/CEGUI)
+    SET(CEGUI_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libs/ogre/Samples/Common/bin/Release/lib)
     SET(CEGUI_LIBRARIES debug CEGUIBase_d optimized CEGUIBase)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)

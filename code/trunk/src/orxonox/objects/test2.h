@@ -1,7 +1,8 @@
 #ifndef _Test2_H__
 #define _Test2_H__
 
-#include "BaseObject.h"
+#include "core/BaseObject.h"
+#include "../tools/Timer.h"
 
 namespace orxonox
 {
@@ -20,11 +21,18 @@ namespace orxonox
             void setUsefullClass2(Identifier* identifier);
             void setUsefullClassOfTypeTest3(Identifier* identifier);
 
+            void timerFunction1();
+            void timerFunction2();
+            void timerFunction3();
+
         private:
             Identifier* usefullClass1_;
             Identifier* usefullClass2_;
             SubclassIdentifier<Test3> usefullClass3_;
 
+            Timer<Test2> timer1;
+            Timer<Test2> timer2;
+            Timer<Test2> timer3;
     };
 }
 

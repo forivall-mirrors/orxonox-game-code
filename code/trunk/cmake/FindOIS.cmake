@@ -21,8 +21,8 @@ ENDIF (OIS_LIBRARIES AND OIS_INCLUDE_DIR)
 
 IF (WIN32) #Windows
     MESSAGE(STATUS "Looking for OIS")
-    SET(OIS_INCLUDE_DIR ../ogre/Dependencies/include)
-    SET(OIS_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../ogre/Samples/Common/bin/Release)
+    SET(OIS_INCLUDE_DIR ../libs/ogre/Dependencies/include)
+    SET(OIS_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libs/ogre/Samples/Common/bin/Release)
     SET(OIS_LIBRARIES debug OIS_d optimized OIS)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)
