@@ -1,133 +1,213 @@
-#include <string.h>
-#include <iostream>
+/*
+*   ORXONOX - the hottest 3D action shooter ever to exist
+*
+*
+*   License notice:
+*
+*   This program is free software; you can redistribute it and/or
+*   modify it under the terms of the GNU General Public License
+*   as published by the Free Software Foundation; either version 2
+*   of the License, or (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*
+*   Author:
+*     Nicolas Perrenoud <nicolape@ee.ethz.ch>
+*   Co-authors:
+*      ...
+*
+*/
+
+#include "OrxonoxStableHeaders.h"
+
+#include <OgreOverlay.h>
+#include <OgreOverlayManager.h>
+
+#include "core/Error.h"
+#include "core/Debug.h"
+#include "core/CoreIncludes.h"
+
+#include "audio/AudioManager.h"
+#include "core/BaseObject.h"
+#include "orxonox/Orxonox.h"
 
 #include "LevelLoader.h"
-#include "../xml/xmlParser.h"
-
-using namespace std;
 
 namespace loader
 {
 
-LevelLoader::LevelLoader(string file, string dir)
-{
-	// Load XML level file
-	dir.append("/");
-	dir.append(file);	
-  	rootNode = XMLNode::openFileHelper(dir.c_str(),"WorldDataFile");
-  	// TODO: Error handling
-
-	// Assing general level infos to class variables
-  	this->name_ = rootNode.getChildNode("name").getText();
-  	this->description_ = rootNode.getChildNode("description").getText();
-  	this->image_ = rootNode.getChildNode("image").getText();
-  
-  	this->loadingScreen();
-  
-  // Assign sub-nodes
-  if (rootNode.nChildNode("LightManager")==1)
+  LevelLoader::LevelLoader(std::string file, std::string path)
   {
-  	// Init Luightmanager...
+    valid_ = false;
+
+    // Load XML level file
+    path.append("/");
+    path.append(file);
+
+    // Open xml file
+    doc_.LoadFile(path.c_str());
+
+    // Check if file was loaded
+    if (doc_.LoadFile())
+    {
+      TiXmlHandle hDoc(&doc_);
+      TiXmlHandle hRoot(0);
+      TiXmlElement* pElem;
+
+      // Check for root element
+      pElem = hDoc.FirstChildElement("orxonoxworld").Element();
+      if (pElem)
+      {
+        // Set root element
+        hRoot = TiXmlHandle(pElem);
+        rootElement_ = hRoot.Element();
+
+        // Set level description
+        pElem = hRoot.FirstChild("description").Element();
+        if (pElem)
+        {
+          description_ = pElem->GetText();
+        }
+
+        // Set level name
+        name_ = rootElement_->Attribute("name");
+        image_ = rootElement_->Attribute("image");
+
+        valid_ = true;
+      }
+      else
+      {
+        orxonox::Error("Level file has no valid root node");
+      }
+    }
+    else
+    {
+      orxonox::Error("Could not load level file ");
+    }
   }
-  
-  /*
-  
-	worldNode = rootNode.getChildNode("WorldEntities");
-	scriptNode = rootNode.getChildNode("ScriptManager");
-	cameraNode = rootNode.getChildNode("CameraMan");
-	lightNode = rootNode.getChildNode("LightManager");
-*/
+
+  void LevelLoader::loadLevel()
+  {
+    if (valid_)
+    {
+      TiXmlElement* loadElem;
+      TiXmlElement* audioElem;
+      TiXmlElement* worldElem;
+      TiXmlElement* tElem;
+      TiXmlNode* tNode;
+
+      Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
+      Ogre::Overlay* mLoadOverlay; // FIXME: may be uninitialized
+
+      // Set loading screen
+      loadElem = rootElement_->FirstChildElement("loading");
+      if (loadElem)
+      {
+        // Set background
+        tElem = loadElem->FirstChildElement("background");
+        if (tElem)
+        {
+          loadingBackgroundColor_ = tElem->Attribute("color");
+          loadingBackgroundImage_ = tElem->Attribute("image");
+        }
+        // Set bar
+        tElem = loadElem->FirstChildElement("bar");
+        if (tElem)
+        {
+          loadingBarImage_ = tElem->Attribute("image");;
+          loadingBarTop_ = tElem->Attribute("top");
+          loadingBarLeft_ = tElem->Attribute("left");
+          loadingBarWidth_ = tElem->Attribute("width");
+          loadingBarHeight_ = tElem->Attribute("height");
+        }
+
+
+        mLoadOverlay = (Ogre::Overlay*)omgr.getByName("Orxonox/LoadingScreenSample");
+        mLoadOverlay->show();
+
+        COUT(0) << "This is Orxonox" << std::endl;
+        COUT(0) << "the hottest 3D action shooter ever to exist" << std::endl;
+        COUT(0) << "Level: " << name() << std::endl << "Description:" << description() << std::endl << "Image:" << image() << std::endl;
+        COUT(4) << "Backgroundcolor: " << loadingBackgroundColor_ << std::endl << "Backgroundimage:" << loadingBackgroundImage_ << std::endl;
+
+      }
+
+      // Load audio
+      audio::AudioManager* auMan = orxonox::Orxonox::getSingleton()->getAudioManagerPointer();
+      audioElem = rootElement_->FirstChildElement("audio");
+
+      if (audioElem)
+      {
+        audioElem = audioElem->FirstChildElement("ambient");
+        if (audioElem)
+        {
+          tNode = 0;
+          //FIXME something is wrong, probably missing ==
+          while( tNode = audioElem->IterateChildren( tNode ) )
+          {
+            if (tNode->Type() == TiXmlNode::ELEMENT)
+            {
+
+              tElem = tNode->ToElement();
+              std::string elemVal = tElem->Value();
+              if (elemVal == "ogg")
+              {
+                COUT(3) << "Adding sound "<< tElem->Attribute("src") << std::endl;
+
+                auMan->ambientAdd(tElem->Attribute("src"));
+              }
+            }
+          }
+          auMan->ambientStart();
+        }
+      }
+
+      // Load world
+      worldElem = rootElement_->FirstChildElement("world");
+      if (worldElem)
+      {
+        tNode = 0;
+        //FIXME something is wrong, probably missing ==
+        while (tNode = worldElem->IterateChildren(tNode))
+        {
+          if (tNode->Type() == TiXmlNode::ELEMENT)
+          {
+            tElem = tNode->ToElement();
+            orxonox::Identifier* id = ID(tElem->Value());
+            if (id)
+            {
+              orxonox::BaseObject* obj = id->fabricate();
+              obj->loadParams(tElem);
+            }
+            else
+            {
+              COUT(2) << "Warning: '"<< tElem->Value() <<"' is not a valid classname." << std::endl;
+            }
+          }
+        }
+      }
+
+      if (loadElem)
+      {
+        // FIXME: check for potential initialisation of mLoadOverlay
+        mLoadOverlay->hide();
+      }
+
+
+      COUT(0) << "Loading finished!" << std::endl << std::endl;
+    }
+  }
+
+  LevelLoader::~LevelLoader()
+  {
+
+  }
 
 }
-
-LevelLoader::~LevelLoader()
-{
-
-
-}
-
-
-string LevelLoader::name()
-{
-	return this->name_;
-}
-
-string LevelLoader::description()
-{
-	return this->description_;
-}
-
-string LevelLoader::image()
-{
-	return this->image_;
-}
-
-void LevelLoader::loadingScreen()
-{
-	cout << "\n\n\nThis is Orxonox\nthe hottest 3D action shooter ever to exist\n\n\n";
-	cout << "Level: " << name() << "\nDescription:" << description() << "\nImage:"<<image()<<"\n\n\n";
-}
-
-/*
-
-
-void LevelLoader::loadWorld(WorldManager* wm)
-{
-	if (!worldNode.getChildNode("lights").isEmpty())
-	{
-		
-		
-	}
-}
-
-
-void LevelLoader::loadLights(LightManager* lm)
-{
-	if (!lightNode.getChildNode("lights").isEmpty())
-	{
-		int nLights = lightNode.getChildNode("lights").nChildNode("light");
-		for (int i=0; i<nLights;i++)
-		{
-			XMLNode t = lightNode.getChildNode("lights").getChildNode("light",i);
-			const char* diffuse = t.getAttribute("diffuse-color");
-			const char* coor = t.getAttribute("abs-coor");
-			lm->addLight(diffuse,coor);	
-		}
-	}
-	lm->setAmbient(lightNode.getChildNode("ambient").getAttribute("color"));	
-}
-
-void LevelLoader::loadCameras(CameraManager* cm)
-{
-	if (!cameraNode.getChildNode("cameras").isEmpty())
-	{
-		int nCameras = cameraNode.getChildNode("cameras").nChildNode("camera");
-		for (int i=0; i<nCameras;i++)
-		{
-			XMLNode t = cameraNode.getChildNode("cameras").getChildNode("camera",i);
-			
-			
-			cm->addCamera();
-		}
-	}
-}
-
-
-void LevelLoader::loadScripts(ScriptManager* sm)
-{
-	if (!scriptNode.getChildNode("scripts").isEmpty())
-	{
-		int nScripts = scriptNode.getChildNode("scripts").nChildNode("script");
-		for (int i=0; i<nScripts;i++)
-		{
-			XMLNode t = scriptNode.getChildNode("scripts").getChildNode("script",i);
-			sm->addScript(t.getAttribute("file"));
-		}
-	
-	}
-}
-*/
-
-
-}
-

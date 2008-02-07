@@ -17,8 +17,8 @@ ENDIF (OGRE_LIBRARIES AND OGRE_INCLUDE_DIR)
 
 IF (WIN32) #Windows
     MESSAGE(STATUS "Looking for OGRE")
-    SET(OGRE_INCLUDE_DIR ../ogre/OgreMain/include)
-    SET(OGRE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../ogre/Samples/Common/bin/Release)
+    SET(OGRE_INCLUDE_DIR ../libs/ogre/OgreMain/include)
+    SET(OGRE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libs/ogre/Samples/Common/bin/Release)
     SET(OGRE_LIBRARIES debug OgreMain_d optimized OgreMain)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)

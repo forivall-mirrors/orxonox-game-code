@@ -1,54 +1,57 @@
 /**
 * Orxonox - www.orxonox.net
 * Level Loader class
-* 
+*
 * @author Nicolas Perrenoud <nicolape@ee.ethz.ch>
 */
 
+#ifndef _LevelLoader_H__
+#define _LevelLoader_H__
+
 #include <string>
-#include <iostream>
 
-#include "../xml/xmlParser.h"
+#include "LoaderPrereqs.h"
+#include "util/tinyxml/tinyxml.h"
 
-#ifndef __MODULE_LEVELLOADER__
-#define __MODULE_LEVELLOADER__
-
-using namespace std;
+class TiXmlDocument;   // Forward declaration
+class TiXmlElement;    // Forward declaration
 
 namespace loader
 {
-	class LevelLoader
-	{
-	private:
-		
-		// XML Nodes 
-		XMLNode rootNode;  
-		XMLNode worldNode;
-		XMLNode scriptNode;
-		XMLNode cameraNode;
-		XMLNode lightNode;
-		
-		// Level information
-		string name_;
-		string description_;
-		string image_;
-			
-	public:
+  class _LoaderExport LevelLoader
+  {
+  public:
+    // Constructors, loads the level file and some information data
+    LevelLoader(std::string file, std::string dir = "levels");
+    // Destructor
+    virtual ~LevelLoader();
+    // Loads all level data
+    void loadLevel();
 
-		// Constructors
-		LevelLoader(string file, string dir="levels");
-		~LevelLoader();
-		
-		void loadingScreen();
-		
-		// Getters
-		string name();
-		string description();
-		string image();		
-		
-		// Managers 
-		
-			
-	};	
+    // Getters
+    inline std::string name() {return name_; };
+    inline std::string description() {return description_; };
+    inline std::string image() {return image_; };
+  private:
+    //! Level information
+    std::string name_;
+    std::string description_;
+    std::string image_;
+    std::string loadingBackgroundColor_;
+    std::string loadingBackgroundImage_;
+    std::string loadingBarImage_;
+    std::string loadingBarTop_;
+    std::string loadingBarLeft_;
+    std::string loadingBarWidth_;
+    std::string loadingBarHeight_;
+
+    //! Set to true if it was possible to load the level file
+    bool valid_;
+
+    // Xml-Stuff
+    TiXmlDocument doc_;
+    TiXmlElement *rootElement_;
+  };
 }
-#endif
+
+#endif /* _LevelLoader_H__ */

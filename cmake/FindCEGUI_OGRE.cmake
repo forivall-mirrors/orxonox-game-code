@@ -21,8 +21,8 @@ ENDIF (CEGUI_OGRE_LIBRARIES AND CEGUI_OGRE_INCLUDE_DIR)
 
 IF (WIN32) #Windows
     MESSAGE(STATUS "Looking for CEGUI_OGRE")
-    SET(CEGUI_OGRE_INCLUDE_DIR ../ogre/Samples/Common/CEGUIRenderer/include)
-    SET(CEGUI_OGRE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../ogre/Samples/Common/bin/Release/lib)
+    SET(CEGUI_OGRE_INCLUDE_DIR ../libs/ogre/Samples/Common/CEGUIRenderer/include)
+    SET(CEGUI_OGRE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libs/ogre/Samples/Common/bin/Release/lib)
     SET(CEGUI_OGRE_LIBRARIES debug OgreGUIRenderer_d optimized OgreGUIRenderer)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)
