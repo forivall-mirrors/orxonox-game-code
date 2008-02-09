@@ -21,77 +21,51 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Fabian 'x3n' Landau
  *
  */
 
 /**
- @file  CorePrereq.h
+ @file  UtilPrereq.h
  @brief Contains all the necessary forward declarations for all classes, structs and enums.
  */
 
-#ifndef _CorePrereqs_H__
-#define _CorePrereqs_H__
+#ifndef _UtilPrereqs_H__
+#define _UtilPrereqs_H__
 
 #include "orxonox/OrxonoxPlatform.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
 //-----------------------------------------------------------------------
-#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( CORE_STATIC_BUILD )
-#  ifdef CORE_SHARED_BUILD
-#    define _CoreExport __declspec(dllexport)
+#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( UTIL_STATIC_BUILD )
+#  ifdef UTIL_SHARED_BUILD
+#    define _UtilExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
-#      define _CoreExport
+#      define _UtilExport
 #    else
-#      define _CoreExport __declspec(dllimport)
+#      define _UtilExport __declspec(dllimport)
 #    endif
 #  endif
 #elif defined ( ORXONOX_GCC_VISIBILITY )
-#  define _CoreExport  __attribute__ ((visibility("default")))
+#  define _UtilExport  __attribute__ ((visibility("default")))
 #else
-#  define _CoreExport
+#  define _UtilExport
 #endif
 
 
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
-class SignalHandler;
+class Convert;
+template <typename FromType, typename ToType>
+class Converter;
+class MultiTypePrimitive;
+class MultiTypeString;
+class MultiTypeMath;
+template <class T>
+class String2Number;
+class SubString;
 
-namespace orxonox
-{
-  class ArgReader;
-  class BaseFactory;
-  class BaseMetaObjectListElement;
-  template <class T>
-  class ClassFactory;
-  template <class T>
-  class ClassIdentifier;
-  class ConfigValueContainer;
-  class DebugLevel;
-  class Error;
-  class Factory;
-  class Identifier;
-  class IdentifierList;
-  class IdentifierListElement;
-  template <class T>
-  class Iterator;
-  class Language;
-  class LanguageEntry;
-  class Loader;
-  class MetaObjectList;
-  template <class T>
-  class MetaObjectListElement;
-  template <class T>
-  class ObjectList;
-  template <class T>
-  class ObjectListElement;
-  class OrxonoxClass;
-  class OutputHandler;
-  template <class T>
-  class SubclassIdentifier;
-}
-
-#endif /* _CorePrereqs_H__ */
+#endif /* _UtilPrereqs_H__ */

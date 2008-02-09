@@ -35,10 +35,11 @@
 #include <string>
 #include <sstream>
 
+#include "UtilPrereqs.h"
 
 // DEFAULT CLASS
 template <typename FromType, typename ToType>
-class Converter
+class _UtilExport Converter
 {
  public:
   bool operator()(ToType* output, const FromType& input) const
@@ -49,7 +50,7 @@ class Converter
 
 // PARTIAL SPECIALIZATION TO CONVERT TO STRINGS
 template<typename FromType>
-class Converter<FromType, std::string>
+class _UtilExport Converter<FromType, std::string>
 {
  public:
   bool operator()(std::string* output, const FromType& input) const
@@ -67,7 +68,7 @@ class Converter<FromType, std::string>
 
 // PARTIAL SPECIALIZATION TO CONVERT FROM STRING
 template<typename ToType>
-class Converter<std::string, ToType>
+class _UtilExport Converter<std::string, ToType>
 {
  public:
   bool operator()(ToType* output, const std::string& input) const
@@ -82,7 +83,7 @@ class Converter<std::string, ToType>
 
 // FUNCTION SO WE DO NOT HAVE TO TELL THE COMPILER ABOUT THE TYPE
 template<typename FromType, typename ToType>
-static bool ConvertValue(ToType* output, const FromType& input)
+static _UtilExport bool ConvertValue(ToType* output, const FromType& input)
 {
   Converter<FromType, ToType> converter;
   return converter(output, input);
@@ -90,7 +91,7 @@ static bool ConvertValue(ToType* output, const FromType& input)
 
 // THE SAME, BUT WITH DEFAULT VALUE
 template<typename FromType, typename ToType>
-static bool ConvertValue(ToType* output, const FromType& input, const ToType& fallback)
+static _UtilExport bool ConvertValue(ToType* output, const FromType& input, const ToType& fallback)
 {
   Converter<FromType, ToType> converter;
   if (converter(output, input))

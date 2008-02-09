@@ -48,6 +48,7 @@
 #include "CorePrereqs.h"
 
 #include "util/Math.h"
+#include "util/MultiTypeMath.h"
 #include "Language.h"
 
 namespace orxonox
@@ -71,67 +72,36 @@ namespace orxonox
     class _CoreExport ConfigValueContainer
     {
         public:
-            enum VariableType
-            {
-                VT_Int,
-                VT_uInt,
-                VT_Char,
-                VT_uChar,
-                VT_Float,
-                VT_Double,
-                VT_LongDouble,
-                VT_Bool,
-                VT_ConstChar,
-                VT_String,
-                VT_Vector2,
-                VT_Vector3,
-                VT_ColourValue
-            };
-
-            ConfigValueContainer(const std::string& classname, const std::string& varname, int defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, unsigned int defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, char defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, unsigned char defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, float defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, double defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, long double defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, bool defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, const std::string& defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, const char* defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, Vector2 defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, Vector3 defvalue);
-            ConfigValueContainer(const std::string& classname, const std::string& varname, ColourValue defvalue);
+            ConfigValueContainer(const std::string& classname, const std::string& varname, MultiTypeMath defvalue);
 
             /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(int& value)                           { value = this->value_.value_int_; return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(unsigned int& value)                  { value = this->value_.value_uint_; return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(char& value)                          { value = this->value_.value_char_; return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(unsigned char& value)                 { value = this->value_.value_uchar_; return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(float& value)                         { value = this->value_.value_float_; return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(double& value)                        { value = this->value_.value_double_; return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(long double& value)                   { value = this->value_.value_long_double_; return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(bool& value)                          { value = this->value_.value_bool_; return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(std::string& value)                   { value = this->value_string_; return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(const char* value)                    { value = this->value_string_.c_str(); return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(Vector2& value)                       { value = this->value_vector2_; return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(Vector3& value)                       { value = this->value_vector3_; return *this; }
-            /** @returns the value. @param value This is only needed to determine the right type. */
-            inline ConfigValueContainer& getValue(ColourValue& value)                   { value = this->value_colourvalue_; return *this; }
+/*            template <typename T>
+            inline ConfigValueContainer& getValue(T& value)                           { this->value_.getValue(value); return *this; }
+*/
+            inline ConfigValueContainer& getValue(int* value)            { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(unsigned int* value)   { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(char* value)           { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(unsigned char* value)  { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(short* value)          { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(unsigned short* value) { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(long* value)           { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(unsigned long* value)  { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(float* value)          { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(double* value)         { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(long double* value)    { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(bool* value)           { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(std::string* value)    { ((MultiTypeString)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(Vector2* value)        { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(Vector3* value)        { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(ColourValue* value)    { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(Quaternion* value)     { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(Radian* value)         { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(Degree* value)         { this->value_.getValue(value); return *this; }
 
             void description(const std::string& description);
 
-            bool parseSting(const std::string& input);
+            bool parseString(const std::string& input, MultiTypeMath& defvalue = MT_null);
+            bool valueToString(std::string* output, MultiTypeMath& input);
             void resetConfigFileEntry();
             void resetConfigValue();
 
@@ -140,19 +110,26 @@ namespace orxonox
             static bool isComment(const std::string& line);
 
         private:
-            bool parseSting(const std::string& input, int defvalue);
-            bool parseSting(const std::string& input, unsigned int defvalue);
-            bool parseSting(const std::string& input, char defvalue);
-            bool parseSting(const std::string& input, unsigned char defvalue);
-            bool parseSting(const std::string& input, float defvalue);
-            bool parseSting(const std::string& input, double defvalue);
-            bool parseSting(const std::string& input, long double defvalue);
-            bool parseSting(const std::string& input, bool defvalue);
-            bool parseSting(const std::string& input, const std::string& defvalue);
-            bool parseSting(const std::string& input, const char* defvalue);
-            bool parseSting(const std::string& input, const Vector2& defvalue);
-            bool parseSting(const std::string& input, const Vector3& defvalue);
-            bool parseSting(const std::string& input, const ColourValue& defvalue);
+            bool parseString(const std::string& input, int defvalue);
+            bool parseString(const std::string& input, unsigned int defvalue);
+            bool parseString(const std::string& input, char defvalue);
+            bool parseString(const std::string& input, unsigned char defvalue);
+            bool parseString(const std::string& input, short defvalue);
+            bool parseString(const std::string& input, unsigned short defvalue);
+            bool parseString(const std::string& input, long defvalue);
+            bool parseString(const std::string& input, unsigned long defvalue);
+            bool parseString(const std::string& input, float defvalue);
+            bool parseString(const std::string& input, double defvalue);
+            bool parseString(const std::string& input, long double defvalue);
+            bool parseString(const std::string& input, bool defvalue);
+            bool parseString(const std::string& input, const std::string& defvalue);
+            bool parseString(const std::string& input, const char* defvalue);
+            bool parseString(const std::string& input, const Vector2& defvalue);
+            bool parseString(const std::string& input, const Vector3& defvalue);
+            bool parseString(const std::string& input, const ColourValue& defvalue);
+            bool parseString(const std::string& input, const Quaternion& defvalue);
+            bool parseString(const std::string& input, const Radian& defvalue);
+            bool parseString(const std::string& input, const Degree& defvalue);
 
             static std::list<std::string>& getConfigFileLines();
             static bool finishedReadingConfigFile(bool finished = false);
@@ -166,26 +143,10 @@ namespace orxonox
             std::string         varname_;                       //!< The name of the variable
             std::string         defvalueString_;                //!< The string of the default-variable
 
-            union MultiType
-            {
-                int                 value_int_;                 //!< The value, if the variable is of the type int
-                unsigned int        value_uint_;                //!< The value, if the variable is of the type unsigned int
-                char                value_char_;                //!< The value, if the variable is of the type char
-                unsigned char       value_uchar_;               //!< The value, if the variable is of the type unsigned char
-                float               value_float_;               //!< The value, if the variable is of the type float
-                double              value_double_;              //!< The value, if the variable is of the type double
-                long double         value_long_double_;         //!< The value, if the variable is of the type long double
-                bool                value_bool_;                //!< The value, if the variable is of the type bool
-            } value_;                                           //!< The value of the variable
-
-            std::string         value_string_;                  //!< The value, if the variable is of the type string
-            Vector2             value_vector2_;                 //!< The value, if the variable is of the type Vector2
-            Vector3             value_vector3_;                 //!< The value, if the variable is of the type Vector3
-            ColourValue         value_colourvalue_;             //!< The value, if the variable is of the type ColourValue
+            MultiTypeMath       value_;                         //!< The value
 
             std::list<std::string>::iterator configFileLine_;   //!< An iterator, pointing to the entry of the variable in the config-file
 
-            VariableType type_;                                 //!< The type of the variable
             bool bAddedDescription_;                            //!< True if a description was added
             LanguageEntryName description_;                     //!< The description
     };

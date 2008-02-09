@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "core/Debug.h"
+#include "UtilPrereqs.h"
 
 /**
  * String to number conversion
@@ -22,7 +23,7 @@
  */
 
 template <class T>
-class String2Number
+class _UtilExport String2Number
 {
   private:
   bool success_;

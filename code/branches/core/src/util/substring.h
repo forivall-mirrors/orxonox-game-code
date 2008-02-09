@@ -58,13 +58,14 @@
 #include <vector>
 #include <string>
 
+#include "UtilPrereqs.h"
 
 //! A class that can load one string and split it in multipe ones
 /**
  * SubString is a very Powerfull way to create a SubSet from a String
  * It can be used, to Split strings append them and join them again.
  */
-class SubString
+class _UtilExport SubString
 {
 public:
   //! An enumerator for the State the Parser is in

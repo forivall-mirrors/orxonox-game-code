@@ -138,7 +138,7 @@
         container##varname = new orxonox::ConfigValueContainer(this->getIdentifier()->getName(), #varname, varname = defvalue); \
         this->getIdentifier()->setConfigValueContainer(#varname, container##varname); \
     } \
-    container##varname->getValue(varname)
+    container##varname->getValue(&varname)
 
 /**
     @brief Sets the variable and the config-file entry back to the previously defined default-value.
@@ -149,7 +149,7 @@
     if (container##varname##reset) \
     { \
         container##varname##reset->resetConfigValue(); \
-        container##varname##reset->getValue(varname); \
+        container##varname##reset->getValue(&varname); \
     } \
     else \
         COUT(2) << "Warning: Couldn't reset variable " << #varname << ", corresponding container doesn't exist." << std::endl

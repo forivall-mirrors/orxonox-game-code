@@ -46,7 +46,7 @@ namespace orxonox
 {
     //! The class all objects and interfaces of the game-logic (not the engine) are derived from.
     /**
-        The BaseObject and Interaces are derived with 'virtual public OrxonoxClass' from OrxonoxClass.
+        The BaseObject and Interfaces are derived with 'virtual public OrxonoxClass' from OrxonoxClass.
         OrxonoxClass is needed to create the class-hierarchy at startup and to store the Identifier and the MetaObjectList.
     */
     class _CoreExport OrxonoxClass
