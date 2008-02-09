@@ -12,4 +12,5 @@ SET_TARGET_PROPERTIES( loader PROPERTIES LINK_FLAGS "--no-undefined" )
 
 TARGET_LINK_LIBRARIES( loader
   util
+  core
 )

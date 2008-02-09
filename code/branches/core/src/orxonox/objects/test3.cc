@@ -50,7 +50,7 @@ namespace orxonox
         SetConfigValue(value_double_, 1);
         SetConfigValue(value_bool_, 1);
         SetConfigValue(value_string_, "This is a test");
-        SetConfigValue(value_constchar_, "This is another test");
+//        SetConfigValue(value_constchar_, "This is another test");
         SetConfigValue(value_vector2_, Vector2(101, 202));
         SetConfigValue(value_vector3_, Vector3(13, 26, 39));
         SetConfigValue(value_colourvalue_, ColourValue(1.0, 0.5, 0.25, 0.887));

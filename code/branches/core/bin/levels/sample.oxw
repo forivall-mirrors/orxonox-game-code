@@ -10,7 +10,7 @@
   </loading>
 
 
-
+<!--
  <audio>
 		<ambient>
 			<ogg src="allgorythm-lift_up" />
@@ -20,7 +20,7 @@
 			<ogg src="tha_silent_partner_-_void" />
 		</ambient>
   </audio>
-
+-->
   <!-- Keep a minimum distance of >100 to the object, otherwise the camara thinks it's in the object -->
   <!-- the value has to negative, as we want the camara behind the object -->
 <!--

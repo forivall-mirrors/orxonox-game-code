@@ -34,7 +34,7 @@
 #include "core/Debug.h"
 #include "core/CoreIncludes.h"
 
-#include "audio/AudioManager.h"
+//#include "audio/AudioManager.h"
 #include "core/BaseObject.h"
 #include "orxonox/Orxonox.h"
 
@@ -98,7 +98,7 @@ namespace loader
     if (valid_)
     {
       TiXmlElement* loadElem;
-      TiXmlElement* audioElem;
+//      TiXmlElement* audioElem;
       TiXmlElement* worldElem;
       TiXmlElement* tElem;
       TiXmlNode* tNode;
@@ -138,7 +138,7 @@ namespace loader
         COUT(4) << "Backgroundcolor: " << loadingBackgroundColor_ << std::endl << "Backgroundimage:" << loadingBackgroundImage_ << std::endl;
 
       }
-
+/*
       // Load audio
       audio::AudioManager* auMan = orxonox::Orxonox::getSingleton()->getAudioManagerPointer();
       audioElem = rootElement_->FirstChildElement("audio");
@@ -168,7 +168,7 @@ namespace loader
           auMan->ambientStart();
         }
       }
-
+*/
       // Load world
       worldElem = rootElement_->FirstChildElement("world");
       if (worldElem)

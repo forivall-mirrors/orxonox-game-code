@@ -16,7 +16,7 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport WorldEntity : public BaseObject, public Tickable, public network::Synchronisable
+  class _OrxonoxExport WorldEntity : public BaseObject, public Tickable//, public network::Synchronisable
   {
     public:
       WorldEntity();

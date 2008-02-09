@@ -162,7 +162,7 @@ namespace orxonox
 
     void WorldEntity::registerAllVariables()
     {
-      // register coordinates
+/*      // register coordinates
       registerVar( (void*) &(this->getPosition().x), sizeof(this->getPosition().x), network::DATA);
       registerVar( (void*) &(this->getPosition().y), sizeof(this->getPosition().y), network::DATA);
       registerVar( (void*) &(this->getPosition().z), sizeof(this->getPosition().z), network::DATA);
@@ -170,7 +170,7 @@ namespace orxonox
       registerVar( (void*) &(this->getOrientation().w), sizeof(this->getOrientation().w), network::DATA);
       registerVar( (void*) &(this->getOrientation().x), sizeof(this->getOrientation().x), network::DATA);
       registerVar( (void*) &(this->getOrientation().y), sizeof(this->getOrientation().y), network::DATA);
-      registerVar( (void*) &(this->getOrientation().z), sizeof(this->getOrientation().z), network::DATA);
+      registerVar( (void*) &(this->getOrientation().z), sizeof(this->getOrientation().z), network::DATA);*/
       // not needed at the moment, because we don't have prediction yet
       /*// register velocity_
       registerVar( (void*) &(this->getVelocity().x), sizeof(this->getVelocity().x), network::DATA);

@@ -70,6 +70,6 @@ namespace orxonox
     }
 
     void Model::registerAllVariables(){
-      registerVar(&meshSrc_, meshSrc_.length() + 1, network::STRING);
+//      registerVar(&meshSrc_, meshSrc_.length() + 1, network::STRING);
     }
 }
