@@ -100,7 +100,7 @@ namespace orxonox
 
             void description(const std::string& description);
 
-            bool parseString(const std::string& input, MultiTypeMath& defvalue = MT_null);
+            bool parseString(const std::string& input, MultiTypeMath& defvalue = MultiTypeMath(MT_null));
             bool valueToString(std::string* output, MultiTypeMath& input);
             void resetConfigFileEntry();
             void resetConfigValue();
