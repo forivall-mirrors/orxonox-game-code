@@ -36,7 +36,7 @@ MultiTypeString::MultiTypeString(MultiType type) : MultiTypePrimitive(type)
         this->string_ = std::string("");
 }
 
-MultiTypeString::MultiTypeString(const MultiTypeString& mts)
+MultiTypeString::MultiTypeString(const MultiTypeString& mts) : MultiTypePrimitive(mts)
 {
     this->type_ = mts.type_;
     this->value_ = mts.value_;

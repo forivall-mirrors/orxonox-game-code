@@ -230,7 +230,7 @@ namespace orxonox
     {
         int temp;
         bool success = ConvertValue(&temp, input, defvalue);
-        ((MultiTypePrimitive)this->value_).setValue(temp);
+        this->value_.setValue(temp);
         return success;
     }
 
@@ -244,7 +244,7 @@ namespace orxonox
     {
         unsigned int temp;
         bool success = ConvertValue(&temp, input, defvalue);
-        ((MultiTypePrimitive)this->value_).setValue(temp);
+        this->value_.setValue(temp);
         return success;
     }
 
@@ -259,7 +259,7 @@ namespace orxonox
         // I used value_int_ instead of value_char_ to avoid number <-> char confusion in the config-file
         int temp;
         bool success = ConvertValue(&temp, input, (int)defvalue);
-        ((MultiTypePrimitive)this->value_).setValue((char)temp);
+        this->value_.setValue((char)temp);
         return success;
     }
 
@@ -274,7 +274,7 @@ namespace orxonox
         // I used value_uint_ instead of value_uchar_ to avoid number <-> char confusion in the config-file
         unsigned int temp;
         bool success = ConvertValue(&temp, input, (unsigned int)defvalue);
-        ((MultiTypePrimitive)this->value_).setValue((unsigned char)temp);
+        this->value_.setValue((unsigned char)temp);
         return success;
     }
 
@@ -288,7 +288,7 @@ namespace orxonox
     {
         short temp;
         bool success = ConvertValue(&temp, input, defvalue);
-        ((MultiTypePrimitive)this->value_).setValue(temp);
+        this->value_.setValue(temp);
         return success;
     }
 
@@ -302,7 +302,7 @@ namespace orxonox
     {
         unsigned short temp;
         bool success = ConvertValue(&temp, input, defvalue);
-        ((MultiTypePrimitive)this->value_).setValue(temp);
+        this->value_.setValue(temp);
         return success;
     }
 
@@ -316,7 +316,7 @@ namespace orxonox
     {
         long temp;
         bool success = ConvertValue(&temp, input, defvalue);
-        ((MultiTypePrimitive)this->value_).setValue(temp);
+        this->value_.setValue(temp);
         return success;
     }
 
@@ -330,7 +330,7 @@ namespace orxonox
     {
         unsigned long temp;
         bool success = ConvertValue(&temp, input, defvalue);
-        ((MultiTypePrimitive)this->value_).setValue(temp);
+        this->value_.setValue(temp);
         return success;
     }
 
@@ -344,7 +344,7 @@ namespace orxonox
     {
         float temp;
         bool success = ConvertValue(&temp, input, defvalue);
-        ((MultiTypePrimitive)this->value_).setValue(temp);
+        this->value_.setValue(temp);
         return success;
     }
 
@@ -358,7 +358,7 @@ namespace orxonox
     {
         double temp;
         bool success = ConvertValue(&temp, input, defvalue);
-        ((MultiTypePrimitive)this->value_).setValue(temp);
+        this->value_.setValue(temp);
         return success;
     }
 
@@ -372,7 +372,7 @@ namespace orxonox
     {
         long double temp;
         bool success = ConvertValue(&temp, input, defvalue);
-        ((MultiTypePrimitive)this->value_).setValue(temp);
+        this->value_.setValue(temp);
         return success;
     }
 
@@ -389,18 +389,18 @@ namespace orxonox
          || input.find("True") < input.size()
          || input.find("yes") < input.size()
          || input.find("Yes") < input.size())
-            ((MultiTypePrimitive)this->value_).setValue(true);
+            this->value_.setValue(true);
         else if (input.find("false") < input.size()
               || input.find("False") < input.size()
               || input.find("no") < input.size()
               || input.find("No") < input.size())
-            ((MultiTypePrimitive)this->value_).setValue(false);
+            this->value_.setValue(false);
         else
         {
             // Its not a known word - is it a number?
             bool temp;
             bool success = ConvertValue(&temp, input, defvalue);
-            ((MultiTypePrimitive)this->value_).setValue(temp);
+            this->value_.setValue(temp);
             return success;
         }
 

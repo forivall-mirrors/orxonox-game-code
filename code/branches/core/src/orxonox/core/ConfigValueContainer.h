@@ -78,19 +78,19 @@ namespace orxonox
 /*            template <typename T>
             inline ConfigValueContainer& getValue(T& value)                           { this->value_.getValue(value); return *this; }
 */
-            inline ConfigValueContainer& getValue(int* value)            { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(unsigned int* value)   { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(char* value)           { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(unsigned char* value)  { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(short* value)          { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(unsigned short* value) { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(long* value)           { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(unsigned long* value)  { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(float* value)          { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(double* value)         { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(long double* value)    { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(bool* value)           { ((MultiTypePrimitive)this->value_).getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(std::string* value)    { ((MultiTypeString)this->value_).getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(int* value)            { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(unsigned int* value)   { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(char* value)           { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(unsigned char* value)  { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(short* value)          { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(unsigned short* value) { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(long* value)           { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(unsigned long* value)  { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(float* value)          { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(double* value)         { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(long double* value)    { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(bool* value)           { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(std::string* value)    { this->value_.getValue(value); return *this; }
             inline ConfigValueContainer& getValue(Vector2* value)        { this->value_.getValue(value); return *this; }
             inline ConfigValueContainer& getValue(Vector3* value)        { this->value_.getValue(value); return *this; }
             inline ConfigValueContainer& getValue(ColourValue* value)    { this->value_.getValue(value); return *this; }

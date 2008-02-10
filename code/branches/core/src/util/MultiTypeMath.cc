@@ -44,7 +44,7 @@ MultiTypeMath::MultiTypeMath(MultiType type) : MultiTypeString(type)
         this->degree_ = orxonox::Degree(0);
 }
 
-MultiTypeMath::MultiTypeMath(const MultiTypeMath& mtm)
+MultiTypeMath::MultiTypeMath(const MultiTypeMath& mtm) : MultiTypeString(mtm)
 {
     this->type_ = mtm.type_;
     this->value_ = mtm.value_;

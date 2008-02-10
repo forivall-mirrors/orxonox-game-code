@@ -39,40 +39,45 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
 {
     public:
         MultiTypeString(MultiType      type = MT_null);
-        MultiTypeString(int            value) : MultiTypePrimitive(value) {}
-        MultiTypeString(unsigned int   value) : MultiTypePrimitive(value) {}
-        MultiTypeString(char           value) : MultiTypePrimitive(value) {}
-        MultiTypeString(unsigned char  value) : MultiTypePrimitive(value) {}
-        MultiTypeString(short          value) : MultiTypePrimitive(value) {}
-        MultiTypeString(unsigned short value) : MultiTypePrimitive(value) {}
-        MultiTypeString(long           value) : MultiTypePrimitive(value) {}
-        MultiTypeString(unsigned long  value) : MultiTypePrimitive(value) {}
-        MultiTypeString(float          value) : MultiTypePrimitive(value) {}
-        MultiTypeString(double         value) : MultiTypePrimitive(value) {}
-        MultiTypeString(long double    value) : MultiTypePrimitive(value) {}
-        MultiTypeString(bool           value) : MultiTypePrimitive(value) {}
-        MultiTypeString(const char*        value) { this->setValue(value); }
-        MultiTypeString(const std::string& value) { this->setValue(value); }
+        inline MultiTypeString(int            value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(unsigned int   value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(char           value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(unsigned char  value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(short          value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(unsigned short value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(long           value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(unsigned long  value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(float          value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(double         value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(long double    value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(bool           value) : MultiTypePrimitive(value) {}
+        inline MultiTypeString(const char*        value) { this->setValue(value); }
+        inline MultiTypeString(const std::string& value) { this->setValue(value); }
         MultiTypeString(const MultiTypeString& mtp);
 
-        MultiTypeString& operator=(const char*        value) { this->setValue(value); return *this; }
-        MultiTypeString& operator=(const std::string& value) { this->setValue(value); return *this; }
+        using MultiTypePrimitive::operator=;
+        inline MultiTypeString& operator=(const char*        value) { this->setValue(value); return *this; }
+        inline MultiTypeString& operator=(const std::string& value) { this->setValue(value); return *this; }
         MultiTypeString& operator=(const MultiTypeString& mtp);
 
-        bool operator==(const char*        value) const { return (this->string_ == std::string(value)); }
-        bool operator==(const std::string& value) const { return (this->string_ == value); }
+        using MultiTypePrimitive::operator==;
+        inline bool operator==(const char*        value) const { return (this->string_ == std::string(value)); }
+        inline bool operator==(const std::string& value) const { return (this->string_ == value); }
         bool operator==(const MultiTypeString& mtp) const;
 
-        bool operator!=(const char*        value) const { return (this->string_ != std::string(value)); }
-        bool operator!=(const std::string& value) const { return (this->string_ != value); }
+        using MultiTypePrimitive::operator!=;
+        inline bool operator!=(const char*        value) const { return (this->string_ != std::string(value)); }
+        inline bool operator!=(const std::string& value) const { return (this->string_ != value); }
         bool operator!=(const MultiTypeString& mtp) const;
 
+        using MultiTypePrimitive::setValue;
         inline void setValue(const char*        value) { this->type_ = MT_string; this->string_ = std::string(value); }
         inline void setValue(const std::string& value) { this->type_ = MT_string; this->string_ = value; }
         void setValue(const MultiTypeString& mtp);
 
         inline std::string& getString() { return this->string_; }
 
+        using MultiTypePrimitive::getValue;
         inline void getValue(std::string* variable) const { (*variable) = std::string(this->string_); }
 
     protected:

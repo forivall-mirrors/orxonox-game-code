@@ -37,60 +37,60 @@ class _UtilExport MultiTypePrimitive
 {
     public:
         MultiTypePrimitive(MultiType      type = MT_null);
-        MultiTypePrimitive(int            value) { this->setValue(value); }
-        MultiTypePrimitive(unsigned int   value) { this->setValue(value); }
-        MultiTypePrimitive(char           value) { this->setValue(value); }
-        MultiTypePrimitive(unsigned char  value) { this->setValue(value); }
-        MultiTypePrimitive(short          value) { this->setValue(value); }
-        MultiTypePrimitive(unsigned short value) { this->setValue(value); }
-        MultiTypePrimitive(long           value) { this->setValue(value); }
-        MultiTypePrimitive(unsigned long  value) { this->setValue(value); }
-        MultiTypePrimitive(float          value) { this->setValue(value); }
-        MultiTypePrimitive(double         value) { this->setValue(value); }
-        MultiTypePrimitive(long double    value) { this->setValue(value); }
-        MultiTypePrimitive(bool           value) { this->setValue(value); }
+        inline MultiTypePrimitive(int            value) { this->setValue(value); }
+        inline MultiTypePrimitive(unsigned int   value) { this->setValue(value); }
+        inline MultiTypePrimitive(char           value) { this->setValue(value); }
+        inline MultiTypePrimitive(unsigned char  value) { this->setValue(value); }
+        inline MultiTypePrimitive(short          value) { this->setValue(value); }
+        inline MultiTypePrimitive(unsigned short value) { this->setValue(value); }
+        inline MultiTypePrimitive(long           value) { this->setValue(value); }
+        inline MultiTypePrimitive(unsigned long  value) { this->setValue(value); }
+        inline MultiTypePrimitive(float          value) { this->setValue(value); }
+        inline MultiTypePrimitive(double         value) { this->setValue(value); }
+        inline MultiTypePrimitive(long double    value) { this->setValue(value); }
+        inline MultiTypePrimitive(bool           value) { this->setValue(value); }
         MultiTypePrimitive(const MultiTypePrimitive& mtp);
 
-        MultiTypePrimitive& operator=(int            value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(unsigned int   value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(char           value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(unsigned char  value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(short          value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(unsigned short value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(long           value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(unsigned long  value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(float          value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(double         value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(long double    value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(bool           value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(int            value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(unsigned int   value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(char           value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(unsigned char  value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(short          value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(unsigned short value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(long           value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(unsigned long  value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(float          value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(double         value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(long double    value) { this->setValue(value); return *this; }
+        inline MultiTypePrimitive& operator=(bool           value) { this->setValue(value); return *this; }
         MultiTypePrimitive& operator=(const MultiTypePrimitive& mtp);
 
-        bool operator==(int            value) const { return (this->value_.int_        == value); }
-        bool operator==(unsigned int   value) const { return (this->value_.uint_       == value); }
-        bool operator==(char           value) const { return (this->value_.char_       == value); }
-        bool operator==(unsigned char  value) const { return (this->value_.uchar_      == value); }
-        bool operator==(short          value) const { return (this->value_.short_      == value); }
-        bool operator==(unsigned short value) const { return (this->value_.ushort_     == value); }
-        bool operator==(long           value) const { return (this->value_.long_       == value); }
-        bool operator==(unsigned long  value) const { return (this->value_.ulong_      == value); }
-        bool operator==(float          value) const { return (this->value_.float_      == value); }
-        bool operator==(double         value) const { return (this->value_.double_     == value); }
-        bool operator==(long double    value) const { return (this->value_.longdouble_ == value); }
-        bool operator==(bool           value) const { return (this->value_.bool_       == value); }
+        inline bool operator==(int            value) const { return (this->value_.int_        == value); }
+        inline bool operator==(unsigned int   value) const { return (this->value_.uint_       == value); }
+        inline bool operator==(char           value) const { return (this->value_.char_       == value); }
+        inline bool operator==(unsigned char  value) const { return (this->value_.uchar_      == value); }
+        inline bool operator==(short          value) const { return (this->value_.short_      == value); }
+        inline bool operator==(unsigned short value) const { return (this->value_.ushort_     == value); }
+        inline bool operator==(long           value) const { return (this->value_.long_       == value); }
+        inline bool operator==(unsigned long  value) const { return (this->value_.ulong_      == value); }
+        inline bool operator==(float          value) const { return (this->value_.float_      == value); }
+        inline bool operator==(double         value) const { return (this->value_.double_     == value); }
+        inline bool operator==(long double    value) const { return (this->value_.longdouble_ == value); }
+        inline bool operator==(bool           value) const { return (this->value_.bool_       == value); }
         bool operator==(const MultiTypePrimitive& mtp) const;
 
-        bool operator!=(int            value) const { return (this->value_.int_        != value); }
-        bool operator!=(unsigned int   value) const { return (this->value_.uint_       != value); }
-        bool operator!=(char           value) const { return (this->value_.char_       != value); }
-        bool operator!=(unsigned char  value) const { return (this->value_.uchar_      != value); }
-        bool operator!=(short          value) const { return (this->value_.short_      != value); }
-        bool operator!=(unsigned short value) const { return (this->value_.ushort_     != value); }
-        bool operator!=(long           value) const { return (this->value_.long_       != value); }
-        bool operator!=(unsigned long  value) const { return (this->value_.ulong_      != value); }
-        bool operator!=(float          value) const { return (this->value_.float_      != value); }
-        bool operator!=(double         value) const { return (this->value_.double_     != value); }
-        bool operator!=(long double    value) const { return (this->value_.longdouble_ != value); }
-        bool operator!=(bool           value) const { return (this->value_.bool_       != value); }
+        inline bool operator!=(int            value) const { return (this->value_.int_        != value); }
+        inline bool operator!=(unsigned int   value) const { return (this->value_.uint_       != value); }
+        inline bool operator!=(char           value) const { return (this->value_.char_       != value); }
+        inline bool operator!=(unsigned char  value) const { return (this->value_.uchar_      != value); }
+        inline bool operator!=(short          value) const { return (this->value_.short_      != value); }
+        inline bool operator!=(unsigned short value) const { return (this->value_.ushort_     != value); }
+        inline bool operator!=(long           value) const { return (this->value_.long_       != value); }
+        inline bool operator!=(unsigned long  value) const { return (this->value_.ulong_      != value); }
+        inline bool operator!=(float          value) const { return (this->value_.float_      != value); }
+        inline bool operator!=(double         value) const { return (this->value_.double_     != value); }
+        inline bool operator!=(long double    value) const { return (this->value_.longdouble_ != value); }
+        inline bool operator!=(bool           value) const { return (this->value_.bool_       != value); }
         bool operator!=(const MultiTypePrimitive& mtp) const;
 
         inline void setValue(int            value) { this->type_ = MT_int;        this->value_.int_        = value; }
