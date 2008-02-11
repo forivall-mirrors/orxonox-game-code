@@ -80,8 +80,6 @@ namespace orxonox
   class Iterator;
   class Language;
   class LanguageEntry;
-  class Level;
-  class Loader;
   class MetaObjectList;
   template <class T>
   class MetaObjectListElement;

@@ -12,8 +12,6 @@ SET( CORE_SRC_FILES
   DebugLevel.cc
   OutputHandler.cc
   Language.cc
-  Loader.cc
-  Level.cc
 )
 
 ADD_LIBRARY( core SHARED ${CORE_SRC_FILES})
