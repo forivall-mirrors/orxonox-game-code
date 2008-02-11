@@ -144,3 +144,33 @@ void MultiTypePrimitive::setValue(const MultiTypePrimitive& mtp)
     this->type_ = mtp.type_;
     this->value_ = mtp.value_;
 }
+
+std::ostream& operator<<(std::ostream& out, const MultiTypePrimitive& mtp)
+{
+    if (mtp.isA(MT_int))
+        out << mtp.getInt();
+    else if (mtp.isA(MT_uint))
+        out << mtp.getUnsignedInt();
+    else if (mtp.isA(MT_char))
+        out << mtp.getChar();
+    else if (mtp.isA(MT_uchar))
+        out << mtp.getUnsignedChar();
+    else if (mtp.isA(MT_short))
+        out << mtp.getShort();
+    else if (mtp.isA(MT_ushort))
+        out << mtp.getUnsignedShort();
+    else if (mtp.isA(MT_long))
+        out << mtp.getLong();
+    else if (mtp.isA(MT_ulong))
+        out << mtp.getUnsignedLong();
+    else if (mtp.isA(MT_float))
+        out << mtp.getFloat();
+    else if (mtp.isA(MT_double))
+        out << mtp.getDouble();
+    else if (mtp.isA(MT_longdouble))
+        out << mtp.getLongDouble();
+    else if (mtp.isA(MT_bool))
+        out << mtp.getBool();
+
+    return out;
+}

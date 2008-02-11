@@ -91,6 +91,7 @@ namespace orxonox
             inline ConfigValueContainer& getValue(long double* value)    { this->value_.getValue(value); return *this; }
             inline ConfigValueContainer& getValue(bool* value)           { this->value_.getValue(value); return *this; }
             inline ConfigValueContainer& getValue(std::string* value)    { this->value_.getValue(value); return *this; }
+            inline ConfigValueContainer& getValue(const char** value)    { this->value_.getValue(value); return *this; }
             inline ConfigValueContainer& getValue(Vector2* value)        { this->value_.getValue(value); return *this; }
             inline ConfigValueContainer& getValue(Vector3* value)        { this->value_.getValue(value); return *this; }
             inline ConfigValueContainer& getValue(ColourValue* value)    { this->value_.getValue(value); return *this; }

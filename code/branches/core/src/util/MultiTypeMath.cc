@@ -104,3 +104,23 @@ void MultiTypeMath::setValue(const MultiTypeMath& mtm)
     this->type_ = mtm.type_;
     this->value_ = mtm.value_;
 }
+
+std::ostream& operator<<(std::ostream& out, MultiTypeMath& mtm)
+{
+    if (mtm.isA(MT_vector2))
+        out << mtm.getVector2();
+    else if (mtm.isA(MT_vector3))
+        out << mtm.getVector3();
+    else if (mtm.isA(MT_colourvalue))
+        out << mtm.getColourValue();
+    else if (mtm.isA(MT_quaternion))
+        out << mtm.getQuaternion();
+    else if (mtm.isA(MT_radian))
+        out << mtm.getRadian();
+    else if (mtm.isA(MT_degree))
+        out << mtm.getDegree();
+    else
+        out << ((MultiTypeString)mtm);
+
+    return out;
+}

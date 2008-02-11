@@ -120,4 +120,6 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         orxonox::Degree       degree_;
 };
 
+std::ostream& operator<<(std::ostream& out, MultiTypeMath& mtm);
+
 #endif /* _MultiTypeMath_H__ */

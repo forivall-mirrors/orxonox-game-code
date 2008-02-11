@@ -75,13 +75,17 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         inline void setValue(const std::string& value) { this->type_ = MT_string; this->string_ = value; }
         void setValue(const MultiTypeString& mtp);
 
-        inline std::string& getString() { return this->string_; }
+        inline std::string& getString()    { return this->string_; }
+        inline const char*  getConstChar() { return this->string_.c_str(); }
 
         using MultiTypePrimitive::getValue;
-        inline void getValue(std::string* variable) const { (*variable) = std::string(this->string_); }
+        inline void getValue(std::string* variable) const { (*variable) = this->string_; }
+        inline void getValue(const char** variable) const { (*variable) = this->string_.c_str(); }
 
     protected:
         std::string string_;
 };
+
+std::ostream& operator<<(std::ostream& out, MultiTypeString& mts);
 
 #endif /* _MultiTypeString_H__ */

@@ -51,7 +51,7 @@ namespace orxonox
         this->valueToString(&this->defvalueString_, defvalue);                      // Try to convert the default-value to a string
         this->searchConfigFileLine();                                               // Search the entry in the config-file
 
-        std::string valueString = this->parseValueString();                         // Parses the value string from the config-file-entry
+        std::string valueString = this->parseValueString(!(defvalue.isA(MT_string) || defvalue.isA(MT_constchar)));     // Parses the value string from the config-file-entry
         if (!this->parseString(valueString, defvalue))                              // Try to convert the string to a value
             this->resetConfigFileEntry();                                           // The conversion failed
     }
@@ -64,29 +64,29 @@ namespace orxonox
     */
     bool ConfigValueContainer::valueToString(std::string* output, MultiTypeMath& input)
     {
-        if (this->value_.getType() == MT_int)
+        if (input.getType() == MT_int)
             return ConvertValue(output, input.getInt(), std::string("0"));
-        else if (this->value_.getType() == MT_uint)
+        else if (input.getType() == MT_uint)
             return ConvertValue(output, input.getUnsignedInt(), std::string("0"));
-        else if (this->value_.getType() == MT_char)
-            return ConvertValue(output, input.getChar(), std::string("0"));
-        else if (this->value_.getType() == MT_uchar)
-            return ConvertValue(output, input.getUnsignedChar(), std::string("0"));
-        else if (this->value_.getType() == MT_short)
+        else if (input.getType() == MT_char)
+            return ConvertValue(output, (int)input.getChar(), std::string("0"));
+        else if (input.getType() == MT_uchar)
+            return ConvertValue(output, (unsigned int)input.getUnsignedChar(), std::string("0"));
+        else if (input.getType() == MT_short)
             return ConvertValue(output, input.getShort(), std::string("0"));
-        else if (this->value_.getType() == MT_ushort)
+        else if (input.getType() == MT_ushort)
             return ConvertValue(output, input.getUnsignedShort(), std::string("0"));
-        else if (this->value_.getType() == MT_long)
+        else if (input.getType() == MT_long)
             return ConvertValue(output, input.getLong(), std::string("0"));
-        else if (this->value_.getType() == MT_ulong)
+        else if (input.getType() == MT_ulong)
             return ConvertValue(output, input.getUnsignedLong(), std::string("0"));
-        else if (this->value_.getType() == MT_float)
+        else if (input.getType() == MT_float)
             return ConvertValue(output, input.getFloat(), std::string("0.000000"));
-        else if (this->value_.getType() == MT_double)
+        else if (input.getType() == MT_double)
             return ConvertValue(output, input.getDouble(), std::string("0.000000"));
-        else if (this->value_.getType() == MT_longdouble)
+        else if (input.getType() == MT_longdouble)
             return ConvertValue(output, input.getChar(), std::string("0.000000"));
-        else if (this->value_.getType() == MT_bool)
+        else if (input.getType() == MT_bool)
         {
             if (input.getBool())
                 (*output) = "true";
@@ -95,17 +95,17 @@ namespace orxonox
 
             return true;
         }
-        else if (this->value_.getType() == MT_constchar)
+        else if (input.getType() == MT_constchar)
         {
             (*output) = "\"" + input.getString() + "\"";
             return true;
         }
-        else if (this->value_.getType() == MT_string)
+        else if (input.getType() == MT_string)
         {
             (*output) = "\"" + input.getString() + "\"";
             return true;
         }
-        else if (this->value_.getType() == MT_vector2)
+        else if (input.getType() == MT_vector2)
         {
             std::ostringstream ostream;
             if (ostream << "(" << input.getVector2().x << "," << input.getVector2().y << ")")
@@ -119,7 +119,7 @@ namespace orxonox
                 return false;
             }
         }
-        else if (this->value_.getType() == MT_vector3)
+        else if (input.getType() == MT_vector3)
         {
             std::ostringstream ostream;
             if (ostream << "(" << input.getVector3().x << "," << input.getVector3().y << "," << input.getVector3().z << ")")
@@ -133,7 +133,7 @@ namespace orxonox
                 return false;
             }
         }
-        else if (this->value_.getType() == MT_colourvalue)
+        else if (input.getType() == MT_colourvalue)
         {
             std::ostringstream ostream;
             if (ostream << "(" << input.getColourValue().r << "," << input.getColourValue().g << "," << input.getColourValue().b << "," << input.getColourValue().a << ")")
@@ -147,7 +147,7 @@ namespace orxonox
                 return false;
             }
         }
-        else if (this->value_.getType() == MT_quaternion)
+        else if (input.getType() == MT_quaternion)
         {
             std::ostringstream ostream;
             if (ostream << "(" << input.getQuaternion().w << "," << input.getQuaternion().x << "," << input.getQuaternion().y << "," << input.getQuaternion().z << ")")
@@ -161,9 +161,9 @@ namespace orxonox
                 return false;
             }
         }
-        else if (this->value_.getType() == MT_radian)
+        else if (input.getType() == MT_radian)
             return ConvertValue(output, input.getRadian(), std::string("0.000000"));
-        else if (this->value_.getType() == MT_degree)
+        else if (input.getType() == MT_degree)
             return ConvertValue(output, input.getDegree(), std::string("0.000000"));
 
         return false;
@@ -176,45 +176,45 @@ namespace orxonox
     */
     bool ConfigValueContainer::parseString(const std::string& input, MultiTypeMath& defvalue)
     {
-        if (this->value_.getType() == MT_int)
+        if (defvalue.getType() == MT_int)
             return this->parseString(input, defvalue.getInt());
-        else if (this->value_.getType() == MT_uint)
+        else if (defvalue.getType() == MT_uint)
             return this->parseString(input, defvalue.getUnsignedInt());
-        else if (this->value_.getType() == MT_char)
+        else if (defvalue.getType() == MT_char)
             return this->parseString(input, defvalue.getChar());
-        else if (this->value_.getType() == MT_uchar)
+        else if (defvalue.getType() == MT_uchar)
             return this->parseString(input, defvalue.getUnsignedChar());
-        else if (this->value_.getType() == MT_short)
+        else if (defvalue.getType() == MT_short)
             return this->parseString(input, defvalue.getShort());
-        else if (this->value_.getType() == MT_ushort)
+        else if (defvalue.getType() == MT_ushort)
             return this->parseString(input, defvalue.getUnsignedShort());
-        else if (this->value_.getType() == MT_long)
+        else if (defvalue.getType() == MT_long)
             return this->parseString(input, defvalue.getLong());
-        else if (this->value_.getType() == MT_ulong)
+        else if (defvalue.getType() == MT_ulong)
             return this->parseString(input, defvalue.getUnsignedLong());
-        else if (this->value_.getType() == MT_float)
+        else if (defvalue.getType() == MT_float)
             return this->parseString(input, defvalue.getFloat());
-        else if (this->value_.getType() == MT_double)
+        else if (defvalue.getType() == MT_double)
             return this->parseString(input, defvalue.getDouble());
-        else if (this->value_.getType() == MT_longdouble)
+        else if (defvalue.getType() == MT_longdouble)
             return this->parseString(input, defvalue.getLongDouble());
-        else if (this->value_.getType() == MT_bool)
+        else if (defvalue.getType() == MT_bool)
             return this->parseString(input, defvalue.getBool());
-        else if (this->value_.getType() == MT_constchar)
+        else if (defvalue.getType() == MT_constchar)
             return this->parseString(input, defvalue.getString());
-        else if (this->value_.getType() == MT_string)
+        else if (defvalue.getType() == MT_string)
             return this->parseString(input, defvalue.getString());
-        else if (this->value_.getType() == MT_vector2)
+        else if (defvalue.getType() == MT_vector2)
             return this->parseString(input, defvalue.getVector2());
-        else if (this->value_.getType() == MT_vector3)
+        else if (defvalue.getType() == MT_vector3)
             return this->parseString(input, defvalue.getVector3());
-        else if (this->value_.getType() == MT_colourvalue)
+        else if (defvalue.getType() == MT_colourvalue)
             return this->parseString(input, defvalue.getColourValue());
-        else if (this->value_.getType() == MT_quaternion)
+        else if (defvalue.getType() == MT_quaternion)
             return this->parseString(input, defvalue.getQuaternion());
-        else if (this->value_.getType() == MT_radian)
+        else if (defvalue.getType() == MT_radian)
             return this->parseString(input, defvalue.getRadian());
-        else if (this->value_.getType() == MT_degree)
+        else if (defvalue.getType() == MT_degree)
             return this->parseString(input, defvalue.getDegree());
 
         return false;

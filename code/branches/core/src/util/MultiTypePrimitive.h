@@ -29,6 +29,8 @@
 #ifndef _MultiTypePrimitive_H__
 #define _MultiTypePrimitive_H__
 
+#include <ostream>
+
 #include "UtilPrereqs.h"
 
 #include "MultiType.h"
@@ -140,5 +142,7 @@ class _UtilExport MultiTypePrimitive
         MultiTypeValue  value_;
         MultiType       type_;
 };
+
+std::ostream& operator<<(std::ostream& out, const MultiTypePrimitive& mtp);
 
 #endif /* _MultiTypePrimitive_H__ */

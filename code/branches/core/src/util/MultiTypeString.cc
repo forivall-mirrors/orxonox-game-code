@@ -80,3 +80,15 @@ void MultiTypeString::setValue(const MultiTypeString& mts)
     this->type_ = mts.type_;
     this->value_ = mts.value_;
 }
+
+std::ostream& operator<<(std::ostream& out, MultiTypeString& mts)
+{
+    if (mts.isA(MT_constchar))
+        out << mts.getConstChar();
+    else if (mts.isA(MT_string))
+        out << mts.getString();
+    else
+        out << ((MultiTypePrimitive)mts);
+
+    return out;
+}
