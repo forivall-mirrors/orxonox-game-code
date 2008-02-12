@@ -924,8 +924,6 @@ namespace orxonox
         std::cout << std::endl;
         std::cout << "Mask 1 ^ Mask 2:\n";
         TestClassTreeMask(test13_10);
-        test13_10 = test13_10;
-        TestClassTreeMask(test13_10);
 
         std::cout << "8\n";
 
@@ -961,6 +959,11 @@ namespace orxonox
         std::cout << "Mask 1 + Mask 2 with += operator + original of mask 2 from before:\n";
         TestClassTreeMask(test13_11);
         TestClassTreeMask(test13_13);
+
+        test13_1 = test13_1;
+        std::cout << std::endl;
+        std::cout << "Mask 1 assigned with = operator to itself:\n";
+        TestClassTreeMask(test13_1);
 
         std::cout << "9\n";
 

@@ -277,20 +277,28 @@ namespace orxonox
 
     void ClassTreeMask::clean(ClassTreeMaskNode* node)
     {
+//std::cout << "4_1: " << node->getClass()->getName() << ": " << node->isIncluded() << "\n";
         for (std::list<ClassTreeMaskNode*>::iterator it = node->subnodes_.begin(); it != node->subnodes_.end(); )
         {
+//std::cout << "4_2: " << (*it)->getClass()->getName() << ": " << (*it)->isIncluded() << "\n";
+            this->clean(*it);
+//std::cout << "4_3\n";
             if ((*it)->isIncluded() == node->isIncluded())
             {
+//std::cout << "4_4\n";
                 node->subnodes_.insert(node->subnodes_.end(), (*it)->subnodes_.begin(), (*it)->subnodes_.end());
                 (*it)->subnodes_.clear();
                 node->subnodes_.erase(it);
                 it = node->subnodes_.begin();
+//std::cout << "4_5\n";
             }
             else
             {
+//std::cout << "4_6\n";
                 ++it;
             }
         }
+//std::cout << "4_7\n";
     }
 
     ClassTreeMask& ClassTreeMask::operator=(const ClassTreeMask& other)
