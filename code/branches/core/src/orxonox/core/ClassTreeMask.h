@@ -29,6 +29,7 @@
 #define _ClassTreeMask_H__
 
 #include <list>
+#include <stack>
 
 #include "CorePrereqs.h"
 
@@ -37,6 +38,7 @@ namespace orxonox
     class ClassTreeMaskNode
     {
         friend class ClassTreeMask;
+        friend class ClassTreeMaskIterator;
 
         public:
             ClassTreeMaskNode(const Identifier* subclass, bool bIncluded = true);
@@ -59,6 +61,23 @@ namespace orxonox
             std::list<ClassTreeMaskNode*> subnodes_;
     };
 
+    class ClassTreeMaskIterator
+    {
+        public:
+            ClassTreeMaskIterator(ClassTreeMaskNode* node);
+            ~ClassTreeMaskIterator();
+
+            ClassTreeMaskIterator& operator++();
+            ClassTreeMaskNode* operator*() const;
+            ClassTreeMaskNode* operator->() const;
+            operator bool();
+            bool operator==(ClassTreeMaskNode* compare);
+            bool operator!=(ClassTreeMaskNode* compare);
+
+        private:
+            std::stack<std::pair<std::list<ClassTreeMaskNode*>::iterator, std::list<ClassTreeMaskNode*>::iterator> > nodes_;
+    };
+
     class ClassTreeMask
     {
         public:
@@ -69,13 +88,25 @@ namespace orxonox
             void exclude(const Identifier* subclass);
             void add(const Identifier* subclass, bool bInclude);
             void reset();
+            void clean();
 
-            bool isIncluded(const Identifier* subclass);
-            bool isExcluded(const Identifier* subclass);
+            bool isIncluded(const Identifier* subclass) const;
+            bool isExcluded(const Identifier* subclass) const;
+
+            ClassTreeMask operator+(const ClassTreeMask& other) const;
+            ClassTreeMask operator*(const ClassTreeMask& other) const;
+            ClassTreeMask operator!() const;
+            ClassTreeMask operator-(const ClassTreeMask& other) const;
+
+            ClassTreeMask operator&(const ClassTreeMask& other) const;
+            ClassTreeMask operator|(const ClassTreeMask& other) const;
+            ClassTreeMask operator^(const ClassTreeMask& other) const;
+            ClassTreeMask operator~() const;
 
         private:
             void add(ClassTreeMaskNode* node, const Identifier* subclass, bool bInclude);
-            bool isIncluded(ClassTreeMaskNode* node, const Identifier* subclass);
+            bool isIncluded(ClassTreeMaskNode* node, const Identifier* subclass) const;
+            void clean(ClassTreeMaskNode* node);
 
             ClassTreeMaskNode* root_;
     };

@@ -83,6 +83,74 @@ namespace orxonox
 
 
     // ###############################
+    // ###  ClassTreeMaskIterator  ###
+    // ###############################
+    ClassTreeMaskIterator::ClassTreeMaskIterator(ClassTreeMaskNode* node)
+    {
+        std::list<ClassTreeMaskNode*> templist;
+        std::list<ClassTreeMaskNode*>::iterator tempiterator = templist.insert(templist.end(), node);
+        this->nodes_.push(std::pair<std::list<ClassTreeMaskNode*>::iterator, std::list<ClassTreeMaskNode*>::iterator>(tempiterator, templist.end()));
+    }
+
+    ClassTreeMaskIterator::~ClassTreeMaskIterator()
+    {
+    }
+
+    ClassTreeMaskIterator& ClassTreeMaskIterator::operator++()
+    {
+        if ((*this->nodes_.top().first)->subnodes_.begin() != (*this->nodes_.top().first)->subnodes_.end())
+            this->nodes_.push(std::pair<std::list<ClassTreeMaskNode*>::iterator, std::list<ClassTreeMaskNode*>::iterator>((*this->nodes_.top().first)->subnodes_.begin(), (*this->nodes_.top().first)->subnodes_.end()));
+        else
+        {
+            do
+            {
+                ++this->nodes_.top().first;
+                if (this->nodes_.top().first == this->nodes_.top().second)
+                {
+                    this->nodes_.pop();
+                    continue;
+                }
+
+                break;
+            } while (!this->nodes_.empty());
+        }
+
+        return *this;
+    }
+
+    ClassTreeMaskNode* ClassTreeMaskIterator::operator*() const
+    {
+        return (*this->nodes_.top().first);
+    }
+
+    ClassTreeMaskNode* ClassTreeMaskIterator::operator->() const
+    {
+        return (*this->nodes_.top().first);
+    }
+
+    ClassTreeMaskIterator::operator bool()
+    {
+        return (!this->nodes_.empty());
+    }
+
+    bool ClassTreeMaskIterator::operator==(ClassTreeMaskNode* compare)
+    {
+        if (!this->nodes_.empty())
+            return ((*this->nodes_.top().first) == compare);
+        else
+            return (compare == 0);
+    }
+
+    bool ClassTreeMaskIterator::operator!=(ClassTreeMaskNode* compare)
+    {
+        if (!this->nodes_.empty())
+            return ((*this->nodes_.top().first) != compare);
+        else
+            return (compare != 0);
+    }
+
+
+    // ###############################
     // ###      ClassTreeMask      ###
     // ###############################
     ClassTreeMask::ClassTreeMask()
@@ -161,12 +229,12 @@ namespace orxonox
         this->root_ = new ClassTreeMaskNode(ClassIdentifier<BaseObject>::getIdentifier(), true);
     }
 
-    bool ClassTreeMask::isIncluded(const Identifier* subclass)
+    bool ClassTreeMask::isIncluded(const Identifier* subclass) const
     {
         return this->isIncluded(this->root_, subclass);
     }
 
-    bool ClassTreeMask::isIncluded(ClassTreeMaskNode* node, const Identifier* subclass)
+    bool ClassTreeMask::isIncluded(ClassTreeMaskNode* node, const Identifier* subclass) const
     {
         // Check if the searched subclass is of the same type as the class in the current node or a derivative
         if (subclass->isA(node->getClass()))
@@ -190,8 +258,116 @@ namespace orxonox
         }
     }
 
-    bool ClassTreeMask::isExcluded(const Identifier* subclass)
+    bool ClassTreeMask::isExcluded(const Identifier* subclass) const
     {
         return (!this->isIncluded(subclass));
+    }
+
+    void ClassTreeMask::clean()
+    {
+        this->clean(this->root_);
+    }
+
+    void ClassTreeMask::clean(ClassTreeMaskNode* node)
+    {
+        for (std::list<ClassTreeMaskNode*>::iterator it = node->subnodes_.begin(); it != node->subnodes_.end(); )
+        {
+            if ((*it)->isIncluded() == node->isIncluded())
+            {
+                node->subnodes_.insert(node->subnodes_.end(), (*it)->subnodes_.begin(), (*it)->subnodes_.end());
+                (*it)->subnodes_.clear();
+                node->subnodes_.erase(it++);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+
+    ClassTreeMask ClassTreeMask::operator+(const ClassTreeMask& other) const
+    {
+        ClassTreeMask newmask;
+        for (ClassTreeMaskIterator it = this->root_; it; ++it)
+        {
+            const Identifier* subclass = it->getClass();
+            newmask.add(subclass, this->isIncluded(subclass) or other.isIncluded(subclass));
+        }
+        for (ClassTreeMaskIterator it = other.root_; it; ++it)
+        {
+            const Identifier* subclass = it->getClass();
+            newmask.add(subclass, this->isIncluded(subclass) or other.isIncluded(subclass));
+        }
+        newmask.clean();
+
+        return newmask;
+    }
+
+    ClassTreeMask ClassTreeMask::operator*(const ClassTreeMask& other) const
+    {
+        ClassTreeMask newmask;
+        for (ClassTreeMaskIterator it = this->root_; it; ++it)
+        {
+            const Identifier* subclass = it->getClass();
+            newmask.add(subclass, this->isIncluded(subclass) and other.isIncluded(subclass));
+        }
+        for (ClassTreeMaskIterator it = other.root_; it; ++it)
+        {
+            const Identifier* subclass = it->getClass();
+            newmask.add(subclass, this->isIncluded(subclass) and other.isIncluded(subclass));
+        }
+        newmask.clean();
+
+        return newmask;
+    }
+
+    ClassTreeMask ClassTreeMask::operator!() const
+    {
+        ClassTreeMask newmask;
+        for (ClassTreeMaskIterator it = this->root_; it; ++it)
+        {
+            const Identifier* subclass = it->getClass();
+            newmask.add(subclass, !this->isIncluded(subclass));
+        }
+
+        return newmask;
+    }
+
+    ClassTreeMask ClassTreeMask::operator-(const ClassTreeMask& other) const
+    {
+        return ((*this) * (!other));
+    }
+
+    ClassTreeMask ClassTreeMask::operator&(const ClassTreeMask& other) const
+    {
+        return ((*this) * other);
+    }
+
+    ClassTreeMask ClassTreeMask::operator|(const ClassTreeMask& other) const
+    {
+        return ((*this) + other);
+    }
+
+    ClassTreeMask ClassTreeMask::operator^(const ClassTreeMask& other) const
+    {
+        ClassTreeMask newmask;
+        for (ClassTreeMaskIterator it = this->root_; it; ++it)
+        {
+            const Identifier* subclass = it->getClass();
+            newmask.add(subclass, this->isIncluded(subclass) xor other.isIncluded(subclass));
+        }
+        for (ClassTreeMaskIterator it = other.root_; it; ++it)
+        {
+            const Identifier* subclass = it->getClass();
+            newmask.add(subclass, this->isIncluded(subclass) xor other.isIncluded(subclass));
+        }
+        newmask.clean();
+
+        return newmask;
+    }
+
+    ClassTreeMask ClassTreeMask::operator~() const
+    {
+        return (!(*this));
     }
 }
