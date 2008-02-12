@@ -205,12 +205,12 @@ namespace orxonox
   void Orxonox::start()
   {
     //TODO: start modules
-    ogre_->startRender();
+//    ogre_->startRender();
     //TODO: run engine
     Factory::createClassHierarchy();
-    createScene();
-    setupScene();
-    setupInputSystem();
+//    createScene();
+//    setupScene();
+//    setupInputSystem();
     if(mode_!=CLIENT){ // remove this in future ---- presentation hack
     }
     else
@@ -828,9 +828,7 @@ namespace orxonox
         test13_2.include(Class(A3B2));
         test13_2.exclude(Class(A3B2C2));
 
-//        TestClassTreeMask(test13_1);
-std::cout << "1_0: " << ClassIdentifier<BaseObject>::getIdentifier() << std::endl;
-
+        TestClassTreeMask(test13_1);
         TestClassTreeMask(test13_2);
 
         std::cout << "2\n";

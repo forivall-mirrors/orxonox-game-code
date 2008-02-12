@@ -116,15 +116,6 @@ namespace orxonox
     }
 
     /**
-        @returns a reference to the Identifier map, containing all Identifiers.
-    *//*
-    std::map<std::string, Identifier*>& Identifier::getIdentifierMap()
-    {
-        static std::map<std::string, Identifier*> identifierMapStaticReference = std::map<std::string, Identifier*>();
-        return identifierMapStaticReference;
-    }*/
-
-    /**
         @returns true, if the Identifier is at least of the given type.
         @param identifier The identifier to compare with
     */

@@ -105,8 +105,6 @@ namespace orxonox
             bool isChildOf(const Identifier* identifier) const;
             bool isParentOf(const Identifier* identifier) const;
 
-//            static std::map<std::string, Identifier*>& getIdentifierMap();
-
             /** @brief Removes all objects of the corresponding class. */
             virtual void removeObjects() const = 0;
 
@@ -191,7 +189,6 @@ namespace orxonox
         public:
             ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass);
             void addObject(T* object);
-//            static ClassIdentifier<T>* getIdentifier();
             void removeObjects() const;
             void setName(const std::string& name);
 
@@ -243,36 +240,15 @@ namespace orxonox
     }
 
     /**
-        @brief Creates the only instance of this class for the template class T.
-        @return The Identifier itself
-    *//*
-    template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
-    {
-        static ClassIdentifier<T> theOneAndOnlyInstance = ClassIdentifier<T>();
-        static bool bIdentifierCreated = false;
-
-        if (!bIdentifierCreated)
-        {
-            COUT(4) << "*** Create Identifier Singleton." << std::endl;
-            bIdentifierCreated = true;
-        }
-
-        return &theOneAndOnlyInstance;
-    }
-*/
-    /**
         @brief Sets the name of the class.
         @param name The name
     */
     template <class T>
     void ClassIdentifier<T>::setName(const std::string& name)
     {
-//        // Make sure we didn't already set the name, to avoid duplicate entries in the Identifier map
         if (!this->bSetName_)
         {
             this->name_ = name;
-//            this->getIdentifierMap().insert(std::pair<std::string, Identifier*>(name, this));
             this->bSetName_ = true;
         }
     }

@@ -51,7 +51,6 @@ namespace orxonox
             ~ClassManager() {}                                       // don't delete
 
             bool bInitialized_;
-//            std::string name_;
             ClassIdentifier<T>* identifier_;
     };
 
@@ -64,6 +63,10 @@ namespace orxonox
         this->bInitialized_ = false;
     }
 
+    /**
+        @brief Returns the one and only instance of this class for the template parameter T.
+        @return The instance
+    */
     template <class T>
     ClassManager<T>* ClassManager<T>::getSingleton()
     {
