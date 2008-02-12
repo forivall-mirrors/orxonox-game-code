@@ -75,6 +75,7 @@
 //#include "objects/weapon/BulletManager.h"
 #include "GraphicsEngine.h"
 
+#include "core/ClassTreeMask.h"
 #include "objects/WorldEntity.h"
 #include "core/BaseObject.h"
 #include "objects/Test.h"
@@ -716,8 +717,8 @@ namespace orxonox
 
         std::cout << "13\n";
 */
-        std::cout << "Test 11\n";
 /*
+        std::cout << "Test 11\n";
         std::cout << "1\n";
         count = 0; for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it) { count++; }
         std::cout << "AnzahlTickable: " << count << "\n";
@@ -735,12 +736,13 @@ namespace orxonox
         std::cout << "2\n";
         Test2* test11_2 = new Test2;
 */
-
+/*
         std::cout << "3\n";
         Test3* test11_3 = new Test3;
         test11_3->configOutput();
 
         std::cout << "4\n";
+*/
 /*
         std::cout << "Test 12\n";
         std::cout << "1\n";
@@ -751,6 +753,89 @@ namespace orxonox
 
         std::cout << "2\n";
 */
+        std::cout << "Test 13\n";
+
+        #define BoolToYesNo(bool) \
+            if (bool) \
+                std::cout << "yes "; \
+            else \
+                std::cout << "no  "
+
+        #define TestClassTreeMask(mask) \
+            std::cout << "========== ClassTreeMask-Test ===========" << std::endl; \
+            std::cout << "                 "; \
+            BoolToYesNo(mask.isIncluded(Class(BaseObject))); \
+            std::cout << std::endl; \
+            \
+            std::cout << "     "; \
+            BoolToYesNo(mask.isIncluded(Class(A1))); \
+            std::cout << "        "; \
+            BoolToYesNo(mask.isIncluded(Class(A2))); \
+            std::cout << "           "; \
+            BoolToYesNo(mask.isIncluded(Class(A3))); \
+            std::cout << std::endl; \
+            \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A1B1))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A1B2))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A2B1))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A2B2))); \
+            std::cout << "    "; \
+            BoolToYesNo(mask.isIncluded(Class(A3B1))); \
+            std::cout << "    "; \
+            BoolToYesNo(mask.isIncluded(Class(A3B2))); \
+            std::cout << std::endl; \
+            \
+            BoolToYesNo(mask.isIncluded(Class(A1B1C1))); \
+            BoolToYesNo(mask.isIncluded(Class(A1B1C2))); \
+            BoolToYesNo(mask.isIncluded(Class(A1B2C1))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A2B1C1))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A2B2C1))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A3B1C1))); \
+            BoolToYesNo(mask.isIncluded(Class(A3B1C2))); \
+            BoolToYesNo(mask.isIncluded(Class(A3B2C1))); \
+            BoolToYesNo(mask.isIncluded(Class(A3B2C2))); \
+            std::cout << std::endl; \
+            std::cout << "=========================================" << std::endl
+
+        std::cout << "1\n";
+
+        ClassTreeMask test13_1;
+//        test13_1.include(Class(BaseObject));
+        test13_1.exclude(Class(A1B1));
+        test13_1.exclude(Class(A2));
+        test13_1.include(Class(A2B2));
+        test13_1.exclude(Class(A2B2C1));
+        test13_1.exclude(Class(A3B1));
+        test13_1.include(Class(A3B1C2));
+        test13_1.exclude(Class(A3B2C1));
+        test13_1.exclude(Class(A3B2C2));
+
+        ClassTreeMask test13_2;
+        test13_2.exclude(Class(BaseObject));
+        test13_2.include(Class(A1));
+        test13_2.exclude(Class(A1B2));
+        test13_2.exclude(Class(A1B1C2));
+        test13_2.include(Class(A2));
+        test13_2.exclude(Class(A2B2));
+        test13_2.include(Class(A3B1));
+        test13_2.include(Class(A3B2));
+        test13_2.exclude(Class(A3B2C2));
+
+//        TestClassTreeMask(test13_1);
+std::cout << "1_0: " << ClassIdentifier<BaseObject>::getIdentifier() << std::endl;
+
+        TestClassTreeMask(test13_2);
+
+        std::cout << "2\n";
+
+        std::cout << "3\n";
 
 //    startRenderLoop();
   }

@@ -236,23 +236,32 @@ namespace orxonox
 
     bool ClassTreeMask::isIncluded(ClassTreeMaskNode* node, const Identifier* subclass) const
     {
+std::cout << "1_0: " << ClassIdentifier<BaseObject>::getIdentifier() << std::endl;
+std::cout << "1_1: " << subclass->getName() << " (" << subclass << ") / " << node->getClass()->getName() << " (" << node->getClass() << ")" << std::endl;
         // Check if the searched subclass is of the same type as the class in the current node or a derivative
         if (subclass->isA(node->getClass()))
         {
+std::cout << "1_2\n";
             // Check for the special case
             if (subclass == node->getClass())
+            {
+std::cout << "1_3\n";
                 return node->isIncluded();
+            }
 
+std::cout << "1_4\n";
             // Go through the list of subnodes and look for a node containing the searched subclass
             for (std::list<ClassTreeMaskNode*>::iterator it = node->subnodes_.begin(); it != node->subnodes_.end(); ++it)
                 if (subclass->isA((*it)->getClass()))
                     return isIncluded(*it, subclass);
 
+std::cout << "1_5\n";
             // There is no subnode containing our class -> the rule of the current node takes in effect
             return node->isIncluded();
         }
         else
         {
+std::cout << "1_6\n";
             // The class is not included in the mask: return false
             return false;
         }
