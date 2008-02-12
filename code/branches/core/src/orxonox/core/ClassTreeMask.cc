@@ -87,9 +87,8 @@ namespace orxonox
     // ###############################
     ClassTreeMaskIterator::ClassTreeMaskIterator(ClassTreeMaskNode* node)
     {
-        std::list<ClassTreeMaskNode*> templist;
-        std::list<ClassTreeMaskNode*>::iterator tempiterator = templist.insert(templist.end(), node);
-        this->nodes_.push(std::pair<std::list<ClassTreeMaskNode*>::iterator, std::list<ClassTreeMaskNode*>::iterator>(tempiterator, templist.end()));
+        std::list<ClassTreeMaskNode*>::iterator it = this->rootlist_.insert(this->rootlist_.end(), node);
+        this->nodes_.push(std::pair<std::list<ClassTreeMaskNode*>::iterator, std::list<ClassTreeMaskNode*>::iterator>(it, this->rootlist_.end()));
     }
 
     ClassTreeMaskIterator::~ClassTreeMaskIterator()
@@ -156,6 +155,13 @@ namespace orxonox
     ClassTreeMask::ClassTreeMask()
     {
         this->root_ = new ClassTreeMaskNode(ClassManager<BaseObject>::getIdentifier("BaseObject"), true);
+    }
+
+    ClassTreeMask::ClassTreeMask(const ClassTreeMask& other)
+    {
+        this->root_ = new ClassTreeMaskNode(ClassManager<BaseObject>::getIdentifier("BaseObject"), true);
+        for (ClassTreeMaskIterator it = other.root_; it; ++it)
+            this->add(it->getClass(), it->isIncluded());
     }
 
     ClassTreeMask::~ClassTreeMask()
@@ -240,27 +246,20 @@ namespace orxonox
         // Check if the searched subclass is of the same type as the class in the current node or a derivative
         if (subclass->isA(node->getClass()))
         {
-//std::cout << "1_2\n";
             // Check for the special case
             if (subclass == node->getClass())
-            {
-//std::cout << "1_3\n";
                 return node->isIncluded();
-            }
 
-//std::cout << "1_4\n";
             // Go through the list of subnodes and look for a node containing the searched subclass
             for (std::list<ClassTreeMaskNode*>::iterator it = node->subnodes_.begin(); it != node->subnodes_.end(); ++it)
                 if (subclass->isA((*it)->getClass()))
                     return isIncluded(*it, subclass);
 
-//std::cout << "1_5\n";
             // There is no subnode containing our class -> the rule of the current node takes in effect
             return node->isIncluded();
         }
         else
         {
-//std::cout << "1_6\n";
             // The class is not included in the mask: return false
             return false;
         }
@@ -284,13 +283,36 @@ namespace orxonox
             {
                 node->subnodes_.insert(node->subnodes_.end(), (*it)->subnodes_.begin(), (*it)->subnodes_.end());
                 (*it)->subnodes_.clear();
-                node->subnodes_.erase(it++);
+                node->subnodes_.erase(it);
+                it = node->subnodes_.begin();
             }
             else
             {
                 ++it;
             }
         }
+    }
+
+    ClassTreeMask& ClassTreeMask::operator=(const ClassTreeMask& other)
+    {
+        ClassTreeMask temp(other);
+
+        this->reset();
+
+        for (ClassTreeMaskIterator it = temp.root_; it; ++it)
+            this->add(it->getClass(), it->isIncluded());
+
+        return (*this);
+    }
+
+    ClassTreeMask& ClassTreeMask::operator+()
+    {
+        return (*this);
+    }
+
+    ClassTreeMask ClassTreeMask::operator-() const
+    {
+        return (!(*this));
     }
 
     ClassTreeMask ClassTreeMask::operator+(const ClassTreeMask& other) const
@@ -329,6 +351,11 @@ namespace orxonox
         return newmask;
     }
 
+    ClassTreeMask ClassTreeMask::operator-(const ClassTreeMask& other) const
+    {
+        return ((*this) * (!other));
+    }
+
     ClassTreeMask ClassTreeMask::operator!() const
     {
         ClassTreeMask newmask;
@@ -337,13 +364,25 @@ namespace orxonox
             const Identifier* subclass = it->getClass();
             newmask.add(subclass, !this->isIncluded(subclass));
         }
-
         return newmask;
     }
 
-    ClassTreeMask ClassTreeMask::operator-(const ClassTreeMask& other) const
+    ClassTreeMask& ClassTreeMask::operator+=(const ClassTreeMask& other)
     {
-        return ((*this) * (!other));
+        (*this) = (*this) + other;
+        return (*this);
+    }
+
+    ClassTreeMask& ClassTreeMask::operator*=(const ClassTreeMask& other)
+    {
+        (*this) = (*this) * other;
+        return (*this);
+    }
+
+    ClassTreeMask& ClassTreeMask::operator-=(const ClassTreeMask& other)
+    {
+        (*this) = (*this) - other;
+        return (*this);
     }
 
     ClassTreeMask ClassTreeMask::operator&(const ClassTreeMask& other) const
@@ -377,5 +416,38 @@ namespace orxonox
     ClassTreeMask ClassTreeMask::operator~() const
     {
         return (!(*this));
+    }
+
+    ClassTreeMask& ClassTreeMask::operator&=(const ClassTreeMask& other)
+    {
+        (*this) = (*this) & other;
+        return (*this);
+    }
+
+    ClassTreeMask& ClassTreeMask::operator|=(const ClassTreeMask& other)
+    {
+        (*this) = (*this) | other;
+        return (*this);
+    }
+
+    ClassTreeMask& ClassTreeMask::operator^=(const ClassTreeMask& other)
+    {
+        (*this) = (*this) ^ other;
+        return (*this);
+    }
+
+    std::ostream& operator<<(std::ostream& out, const ClassTreeMask& mask)
+    {
+        for (ClassTreeMaskIterator it = mask.root_; it; ++it)
+        {
+            if (it->isIncluded())
+                out << "+";
+            else
+                out << "-";
+
+            out << it->getClass()->getName() << " ";
+        }
+
+        return out;
     }
 }

@@ -76,12 +76,14 @@ namespace orxonox
 
         private:
             std::stack<std::pair<std::list<ClassTreeMaskNode*>::iterator, std::list<ClassTreeMaskNode*>::iterator> > nodes_;
+            std::list<ClassTreeMaskNode*> rootlist_;
     };
 
     class ClassTreeMask
     {
         public:
             ClassTreeMask();
+            ClassTreeMask(const ClassTreeMask& other);
             ~ClassTreeMask();
 
             void include(const Identifier* subclass);
@@ -93,15 +95,30 @@ namespace orxonox
             bool isIncluded(const Identifier* subclass) const;
             bool isExcluded(const Identifier* subclass) const;
 
+            ClassTreeMask& operator=(const ClassTreeMask& other);
+
+            ClassTreeMask& operator+();
+            ClassTreeMask operator-() const;
+
             ClassTreeMask operator+(const ClassTreeMask& other) const;
             ClassTreeMask operator*(const ClassTreeMask& other) const;
-            ClassTreeMask operator!() const;
             ClassTreeMask operator-(const ClassTreeMask& other) const;
+            ClassTreeMask operator!() const;
+
+            ClassTreeMask& operator+=(const ClassTreeMask& other);
+            ClassTreeMask& operator*=(const ClassTreeMask& other);
+            ClassTreeMask& operator-=(const ClassTreeMask& other);
 
             ClassTreeMask operator&(const ClassTreeMask& other) const;
             ClassTreeMask operator|(const ClassTreeMask& other) const;
             ClassTreeMask operator^(const ClassTreeMask& other) const;
             ClassTreeMask operator~() const;
+
+            ClassTreeMask& operator&=(const ClassTreeMask& other);
+            ClassTreeMask& operator|=(const ClassTreeMask& other);
+            ClassTreeMask& operator^=(const ClassTreeMask& other);
+
+            friend std::ostream& operator<<(std::ostream& out, const ClassTreeMask& mask);
 
         private:
             void add(ClassTreeMaskNode* node, const Identifier* subclass, bool bInclude);

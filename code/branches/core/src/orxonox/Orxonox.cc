@@ -763,6 +763,7 @@ namespace orxonox
 
         #define TestClassTreeMask(mask) \
             std::cout << "========== ClassTreeMask-Test ===========" << std::endl; \
+            std::cout << mask << std::endl << std::endl; \
             std::cout << "                 "; \
             BoolToYesNo(mask.isIncluded(Class(BaseObject))); \
             std::cout << std::endl; \
@@ -807,7 +808,6 @@ namespace orxonox
         std::cout << "1\n";
 
         ClassTreeMask test13_1;
-//        test13_1.include(Class(BaseObject));
         test13_1.exclude(Class(A1B1));
         test13_1.exclude(Class(A2));
         test13_1.include(Class(A2B2));
@@ -816,6 +816,8 @@ namespace orxonox
         test13_1.include(Class(A3B1C2));
         test13_1.exclude(Class(A3B2C1));
         test13_1.exclude(Class(A3B2C2));
+        std::cout << "Mask 1:\n";
+        TestClassTreeMask(test13_1);
 
         ClassTreeMask test13_2;
         test13_2.exclude(Class(BaseObject));
@@ -827,13 +829,140 @@ namespace orxonox
         test13_2.include(Class(A3B1));
         test13_2.include(Class(A3B2));
         test13_2.exclude(Class(A3B2C2));
-
-        TestClassTreeMask(test13_1);
+        std::cout << std::endl;
+        std::cout << "Mask 2:\n";
         TestClassTreeMask(test13_2);
+
+        ClassTreeMask test13_3;
+        test13_3.include(Class(A1));
+        test13_3.exclude(Class(A1B2));
+        test13_3.exclude(Class(A1B1C2));
+        test13_3.include(Class(A2));
+        test13_3.exclude(Class(A2B2));
+        test13_3.include(Class(A3B1));
+        test13_3.include(Class(A3B2));
+        test13_3.exclude(Class(A3B2C2));
+        std::cout << std::endl;
+        std::cout << "Mask 2 without excluded BaseObject:\n";
+        TestClassTreeMask(test13_3);
+        test13_3.exclude(Class(BaseObject));
+        std::cout << std::endl;
+        std::cout << "Mask 2 with BaseObject excluded afterwards:\n";
+        TestClassTreeMask(test13_3);
+
+        ClassTreeMask test13_3_2;
+        test13_3_2.include(Class(A1));
+        test13_3_2.exclude(Class(A1B2));
+        test13_3_2.exclude(Class(A1B1C2));
+        test13_3_2.include(Class(A2));
+        test13_3_2.exclude(Class(A2B2));
+        test13_3_2.include(Class(A3B1));
+        test13_3_2.include(Class(A3B2));
+        test13_3_2.exclude(Class(A3B2C2));
+        test13_3_2.clean();
+        test13_3_2.exclude(Class(BaseObject));
+        std::cout << std::endl;
+        std::cout << "Mask 2 with BaseObject excluded afterwards, but cleaned before:\n";
+        TestClassTreeMask(test13_3_2);
+        test13_3_2.include(Class(BaseObject));
+        std::cout << std::endl;
+        std::cout << "Mask 2 from before, but BaseObject re-included without cleaning:\n";
+        TestClassTreeMask(test13_3_2);
+
+        ClassTreeMask test13_4;
+        test13_4.include(Class(A3B2));
+        test13_4.exclude(Class(A1B1C2));
+        test13_4.include(Class(A3B1));
+        test13_4.exclude(Class(A3B2C2));
+        test13_4.exclude(Class(BaseObject));
+        test13_4.include(Class(A2));
+        test13_4.exclude(Class(A1B2));
+        test13_4.exclude(Class(A2B2));
+        test13_4.include(Class(A1));
+        std::cout << std::endl;
+        std::cout << "Mask 2 created in random order:\n";
+        TestClassTreeMask(test13_4);
 
         std::cout << "2\n";
 
+        ClassTreeMask test13_5 = test13_1;
+        std::cout << std::endl;
+        std::cout << "Mask 1 assigned to a new ClassTestMask:\n";
+        TestClassTreeMask(test13_5);
+
         std::cout << "3\n";
+
+        ClassTreeMask test13_6 = !test13_1;
+        std::cout << std::endl;
+        std::cout << "Mask 1 inverted:\n";
+        TestClassTreeMask(test13_6);
+
+        std::cout << "4\n";
+
+        ClassTreeMask test13_7 = test13_1 + test13_2;
+        std::cout << std::endl;
+        std::cout << "Mask 1 + Mask 2:\n";
+        TestClassTreeMask(test13_7);
+
+        std::cout << "5\n";
+
+        ClassTreeMask test13_8 = test13_1 * test13_2;
+        std::cout << std::endl;
+        std::cout << "Mask 1 * Mask 2:\n";
+        TestClassTreeMask(test13_8);
+
+        std::cout << "6\n";
+
+        ClassTreeMask test13_9 = test13_1 - test13_2;
+        std::cout << std::endl;
+        std::cout << "Mask 1 - Mask 2:\n";
+        TestClassTreeMask(test13_9);
+
+        std::cout << "7\n";
+
+        ClassTreeMask test13_10 = test13_1 ^ test13_2;
+        std::cout << std::endl;
+        std::cout << "Mask 1 ^ Mask 2:\n";
+        TestClassTreeMask(test13_10);
+        test13_10 = test13_10;
+        TestClassTreeMask(test13_10);
+
+        std::cout << "8\n";
+
+        std::cout << std::endl;
+        ClassTreeMask test13_11(test13_1);
+        std::cout << std::endl;
+        std::cout << "Mask 1 assigned with copyconstructor + original mask 1:\n";
+        TestClassTreeMask(test13_11);
+        TestClassTreeMask(test13_1);
+
+        ClassTreeMask test13_12(!test13_11);
+        std::cout << std::endl;
+        std::cout << "Mask 1 inverted assigned with copyconstructor + the original from before:\n";
+        TestClassTreeMask(test13_12);
+        TestClassTreeMask(test13_11);
+
+        ClassTreeMask test13_13;
+        test13_13 = test13_2;
+        std::cout << std::endl;
+        std::cout << "Mask 2 assigned with = operator + original mask 2:\n";
+        TestClassTreeMask(test13_13);
+        TestClassTreeMask(test13_2);
+
+        ClassTreeMask test13_14 = test13_11 + test13_13;
+        std::cout << std::endl;
+        std::cout << "Mask 1 + Mask 2 assigned with copyconstructor + originals from before:\n";
+        TestClassTreeMask(test13_14);
+        TestClassTreeMask(test13_11);
+        TestClassTreeMask(test13_13);
+
+        test13_11 += test13_13;
+        std::cout << std::endl;
+        std::cout << "Mask 1 + Mask 2 with += operator + original of mask 2 from before:\n";
+        TestClassTreeMask(test13_11);
+        TestClassTreeMask(test13_13);
+
+        std::cout << "9\n";
 
 //    startRenderLoop();
   }
