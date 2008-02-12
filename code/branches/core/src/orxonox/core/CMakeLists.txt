@@ -13,6 +13,7 @@ SET( CORE_SRC_FILES
   OutputHandler.cc
   Language.cc
   ClassTreeMask.cc
+  IdentifierDistributor.cc
 )
 
 ADD_LIBRARY( core SHARED ${CORE_SRC_FILES})

@@ -43,6 +43,7 @@
 
 // All needed header-files
 #include "Identifier.h"
+#include "ClassManager.h"
 #include "Factory.h"
 #include "ClassFactory.h"
 #include "Iterator.h"
@@ -56,10 +57,10 @@
     @param bRootClass True if the class is directly derived from OrxonoxClass
 */
 #define InternRegisterObject(ClassName, bRootClass) \
-    this->setIdentifier(orxonox::ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, bRootClass)); \
+    this->setIdentifier(orxonox::ClassManager<ClassName>::getIdentifier(#ClassName)->registerClass(this->getParents(), #ClassName, bRootClass)); \
     if (orxonox::Identifier::isCreatingHierarchy() && this->getParents()) \
         this->getParents()->add(this->getIdentifier()); \
-    orxonox::ClassIdentifier<ClassName>::addObject(this)
+    orxonox::ClassManager<ClassName>::getIdentifier(#ClassName)->addObject(this)
 
 /**
     @brief Intern macro, containing the specific part of RegisterRootObject.
@@ -110,7 +111,7 @@
     @param ClassName The name of the class
 */
 #define Class(ClassName) \
-    ClassIdentifier<ClassName>::getIdentifier()
+    ClassManager<ClassName>::getIdentifier(#ClassName)
 
 /**
     @brief Creates the entry in the Factory.

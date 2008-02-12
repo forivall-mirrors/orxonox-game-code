@@ -88,12 +88,12 @@ namespace orxonox
     class _CoreExport Identifier
     {
         template <class T>
-        friend class ClassIdentifier; // Forward declaration
+        friend class ClassIdentifier;
 
         template <class T>
-        friend class SubclassIdentifier; // Forward declaration
+        friend class SubclassIdentifier;
 
-        friend class Factory; // Forward declaration
+        friend class Factory;
 
         public:
             /** @brief Sets the Factory. @param factory The factory to assign */
@@ -105,7 +105,7 @@ namespace orxonox
             bool isChildOf(const Identifier* identifier) const;
             bool isParentOf(const Identifier* identifier) const;
 
-            static std::map<std::string, Identifier*>& getIdentifierMap();
+//            static std::map<std::string, Identifier*>& getIdentifierMap();
 
             /** @brief Removes all objects of the corresponding class. */
             virtual void removeObjects() const = 0;
@@ -185,10 +185,13 @@ namespace orxonox
     template <class T>
     class ClassIdentifier : public Identifier
     {
+        template <class TT>
+        friend class ClassManager;
+
         public:
-            static ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass);
-            static void addObject(T* object);
-            static ClassIdentifier<T>* getIdentifier();
+            ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass);
+            void addObject(T* object);
+//            static ClassIdentifier<T>* getIdentifier();
             void removeObjects() const;
             void setName(const std::string& name);
 
@@ -224,25 +227,25 @@ namespace orxonox
         COUT(4) << "*** Register Class in " << name << "-Singleton." << std::endl;
 
         // Check if at least one object of the given type was created
-        if (!getIdentifier()->bCreatedOneObject_)
+        if (!this->bCreatedOneObject_)
         {
             // If no: We have to store the informations and initialize the Identifier
-            getIdentifier()->setName(name);
+            this->setName(name);
 
             COUT(4) << "*** Register Class in " << name << "-Singleton -> Initialize Singleton." << std::endl;
             if (bRootClass)
-                getIdentifier()->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
+                this->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
             else
-                getIdentifier()->initialize(parents);
+                this->initialize(parents);
         }
 
-        return getIdentifier();
+        return this;
     }
 
     /**
         @brief Creates the only instance of this class for the template class T.
         @return The Identifier itself
-    */
+    *//*
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
@@ -257,7 +260,7 @@ namespace orxonox
 
         return &theOneAndOnlyInstance;
     }
-
+*/
     /**
         @brief Sets the name of the class.
         @param name The name
@@ -265,11 +268,11 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::setName(const std::string& name)
     {
-        // Make sure we didn't already set the name, to avoid duplicate entries in the Identifier map
+//        // Make sure we didn't already set the name, to avoid duplicate entries in the Identifier map
         if (!this->bSetName_)
         {
             this->name_ = name;
-            this->getIdentifierMap().insert(std::pair<std::string, Identifier*>(name, this));
+//            this->getIdentifierMap().insert(std::pair<std::string, Identifier*>(name, this));
             this->bSetName_ = true;
         }
     }
@@ -281,8 +284,8 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::addObject(T* object)
     {
-        COUT(4) << "*** Added object to " << ClassIdentifier<T>::getIdentifier()->getName() << "-list." << std::endl;
-        object->getMetaList().add(ClassIdentifier<T>::getIdentifier()->objects_, ClassIdentifier<T>::getIdentifier()->objects_->add(object));
+        COUT(4) << "*** Added object to " << this->getName() << "-list." << std::endl;
+        object->getMetaList().add(this->objects_, this->objects_->add(object));
     }
 
     /**
@@ -313,7 +316,11 @@ namespace orxonox
             */
             SubclassIdentifier()
             {
-                this->identifier_ = ClassIdentifier<T>::getIdentifier();
+                T* temp = new T;
+                this->subclassIdentifier_ = temp->getIdentifier();
+                delete temp;
+
+                this->identifier_ = this->subclassIdentifier_;
             }
 
             /**
@@ -323,10 +330,10 @@ namespace orxonox
             */
             SubclassIdentifier<T>& operator=(Identifier* identifier)
             {
-                if (!identifier->isA(ClassIdentifier<T>::getIdentifier()))
+                if (!identifier->isA(this->subclassIdentifier_))
                 {
-                    COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!" << std::endl;
-                    COUT(1) << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
+                    COUT(1) << "Error: Class " << identifier->getName() << " is not a " << this->subclassIdentifier_->getName() << "!" << std::endl;
+                    COUT(1) << "Error: SubclassIdentifier<" << this->subclassIdentifier_->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
                     COUT(1) << "Aborting..." << std::endl;
                     abort();
                 }
@@ -371,7 +378,7 @@ namespace orxonox
                     // Something went terribly wrong
                     if (this->identifier_)
                     {
-                        COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!" << std::endl;
+                        COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << this->subclassIdentifier_->getName() << "!" << std::endl;
                         COUT(1) << "Error: Couldn't fabricate a new Object." << std::endl;
                         COUT(1) << "Aborting..." << std::endl;
                     }
@@ -406,7 +413,8 @@ namespace orxonox
                 { return this->identifier_->isParentOf(identifier); }
 
         private:
-            Identifier* identifier_;        //!< The assigned identifier
+            Identifier* identifier_;            //!< The assigned identifier
+            Identifier* subclassIdentifier_;    //!< The identifier of the subclass
     };
 }
 

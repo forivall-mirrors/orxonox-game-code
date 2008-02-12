@@ -72,8 +72,8 @@ namespace orxonox
     bool ClassFactory<T>::create(const std::string& name)
     {
         COUT(4) << "*** Create entry for " << name << " in Factory." << std::endl;
-        ClassIdentifier<T>::getIdentifier()->addFactory(new ClassFactory<T>);
-        Factory::add(name, ClassIdentifier<T>::getIdentifier());
+        ClassManager<T>::getIdentifier(name)->addFactory(new ClassFactory<T>);
+        Factory::add(name, ClassManager<T>::getIdentifier(name));
 
         return true;
     }

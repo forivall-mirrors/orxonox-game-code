@@ -149,13 +149,9 @@ namespace orxonox
                 @param compare The integer (must be zero, everything else makes no sense).
                 @return True if the iterator points to an existing object.
             */
-            bool operator!=(int compare)
+            bool operator!=(ObjectListElement<T>* compare)
             {
-                // Comparing with anything except zero makes no sense
-                if (compare != 0)
-                    COUT(2) << "Warning: Comparing the " << ClassIdentifier<T>::getIdentifier()->getName() << "-List-Iterator with " << compare << " has no effect. Only comparison with 0 works." << std::endl;
-
-                return (this->element_ != 0);
+                return (this->element_ != compare);
             }
 
         private:

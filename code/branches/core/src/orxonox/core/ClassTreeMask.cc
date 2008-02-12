@@ -155,7 +155,7 @@ namespace orxonox
     // ###############################
     ClassTreeMask::ClassTreeMask()
     {
-        this->root_ = new ClassTreeMaskNode(ClassIdentifier<BaseObject>::getIdentifier(), true);
+        this->root_ = new ClassTreeMaskNode(ClassManager<BaseObject>::getIdentifier("BaseObject"), true);
     }
 
     ClassTreeMask::~ClassTreeMask()
@@ -226,7 +226,7 @@ namespace orxonox
     void ClassTreeMask::reset()
     {
         delete this->root_;
-        this->root_ = new ClassTreeMaskNode(ClassIdentifier<BaseObject>::getIdentifier(), true);
+        this->root_ = new ClassTreeMaskNode(ClassManager<BaseObject>::getIdentifier("BaseObject"), true);
     }
 
     bool ClassTreeMask::isIncluded(const Identifier* subclass) const
@@ -236,7 +236,6 @@ namespace orxonox
 
     bool ClassTreeMask::isIncluded(ClassTreeMaskNode* node, const Identifier* subclass) const
     {
-std::cout << "1_0: " << ClassIdentifier<BaseObject>::getIdentifier() << std::endl;
 std::cout << "1_1: " << subclass->getName() << " (" << subclass << ") / " << node->getClass()->getName() << " (" << node->getClass() << ")" << std::endl;
         // Check if the searched subclass is of the same type as the class in the current node or a derivative
         if (subclass->isA(node->getClass()))

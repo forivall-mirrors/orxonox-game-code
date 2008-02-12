@@ -69,11 +69,14 @@ namespace orxonox
   class ClassFactory;
   template <class T>
   class ClassIdentifier;
+  template <class T>
+  class ClassManager;
   class ConfigValueContainer;
   class DebugLevel;
   class Error;
   class Factory;
   class Identifier;
+  class IdentifierDistributor;
   class IdentifierList;
   class IdentifierListElement;
   template <class T>
