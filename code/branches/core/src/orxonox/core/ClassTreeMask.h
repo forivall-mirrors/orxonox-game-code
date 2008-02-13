@@ -25,6 +25,43 @@
  *
  */
 
+/*!
+    @file ClassTreeMask.h
+    @brief Definition of the ClassTreeMask, ClassTreeMaskNode and ClassTreeMaskIterator classes.
+
+    ClassTreeMask is a class to define a mask of the class-tree beginning with BaseObject.
+    You can include or exclude classes by calling the corresponding functions with the
+    Identifier of the class.
+
+    You can work with a ClassTreeMask in the sense of the set theory, meaning that you can create
+    unions, intersections, complements and differences by using overloaded operators.
+
+    The ClassTreeMask is internally represented by a tree. The nodes in the tree are
+    ClassTreeMaskNodes, containing the rule (included or excluded) for this class and all
+    subclasses and a list of all subnodes. To minimize the size, the tree contains only
+    nodes changing the mask. By adding new rules, the tree gets reordered dynamically.
+
+    You can manually add useless rules and they stay in the tree. That way you can add rules in
+    any order without changing information of the resulting mask. Example: A new mask includes all
+    classes. Now you explicitly include a subclass. This seems to be useless. But if you exclude a
+    baseclass of the formerly included subclass, the subclass stays included. You could create the
+    same mask by first excluding the baseclass and then including the subclass. You can drop
+    useless rules from the tree by calling clean().
+
+    Because of the complicated shape of the internal tree, there is an iterator to iterate
+    through all ClassTreeMaskNodes of a mask. It starts with the BaseObject and moves on to
+    the first subclass until it reaches a leaf of the tree. Then the iterator moves one step
+    back and iterates to the second subclass. If there are no more subclasses, it steps another
+    step back, and so on.
+
+    Example: A and B are childs of BaseObject, A1 and A2 are childs of A, B1 and B2 are childs of B.
+    The ClassTreeMaskIterator would move trough the tree in the following order:
+    BaseObject, A, A1, A2, B, B1, B2.
+
+    Note that the iterator doesn't move trough the whole class-tree, but only through the
+    internal tree of the mask, containing the minimal needed set of nodes to describe the mask.
+*/
+
 #ifndef _ClassTreeMask_H__
 #define _ClassTreeMask_H__
 
@@ -35,6 +72,15 @@
 
 namespace orxonox
 {
+    // ###############################
+    // ###    ClassTreeMaskNode    ###
+    // ###############################
+    //! The ClassTreeMaskNode is a node in the internal tree of the ClassTreeMask, containing the rules of the mask.
+    /**
+        The ClassTreeMaskNode is used to store the rule (included or excluded) for a given
+        class (described by the corresponding Identifier). The nodes are used in the internal
+        tree of ClassTreeMask. To build a tree, they store a list of all subnodes.
+    */
     class ClassTreeMaskNode
     {
         friend class ClassTreeMask;
@@ -56,11 +102,23 @@ namespace orxonox
             const Identifier* getClass() const;
 
         private:
-            const Identifier* subclass_;
-            bool bIncluded_;
-            std::list<ClassTreeMaskNode*> subnodes_;
+            const Identifier* subclass_;                //!< The Identifier of the subclass the rule refers to
+            bool bIncluded_;                            //!< The rule: included or excluded
+            std::list<ClassTreeMaskNode*> subnodes_;    //!< A list containing all subnodes in the tree
     };
 
+
+    // ###############################
+    // ###  ClassTreeMaskIterator  ###
+    // ###############################
+    //! The ClassTreeMaskIterator moves through all ClassTreeMaskNodes of the internal tree of a ClassTreeMask, containing the rules.
+    /**
+        Because of the complicated shape of the internal rule-tree of ClassTreeMask, an
+        iterator is used to move through all nodes of the tree. It starts with the BaseObject
+        and moves on to the first subclass until it reaches a leaf of the tree. Then the
+        iterator moves one step back and iterates to the second subclass. If there are no more
+        subclasses, it steps another step back, and so on.
+    */
     class ClassTreeMaskIterator
     {
         public:
@@ -75,10 +133,23 @@ namespace orxonox
             bool operator!=(ClassTreeMaskNode* compare);
 
         private:
-            std::stack<std::pair<std::list<ClassTreeMaskNode*>::iterator, std::list<ClassTreeMaskNode*>::iterator> > nodes_;
-            std::list<ClassTreeMaskNode*> rootlist_;
+            std::stack<std::pair<std::list<ClassTreeMaskNode*>::iterator, std::list<ClassTreeMaskNode*>::iterator> > nodes_;    //!< A stack to store list-iterators
+            std::list<ClassTreeMaskNode*> rootlist_;                                                                            //!< A list for internal use (it only stores the root-node)
     };
 
+
+    // ###############################
+    // ###      ClassTreeMask      ###
+    // ###############################
+    //! The ClassTreeMask is a set of rules, containing the information for each class whether it's included or not.
+    /**
+        With a ClassTreeMask, you can include or exclude subtrees of the class-tree, starting
+        with a given subclass, described by the corresponding Identifier. To minimize the size
+        of the mask, the mask saves only relevant rules. But you are allowed to manually add
+        rules that don't change the information of the mask. This way you can create the same
+        mask by adding the same rules in a different way without changing the information. If
+        you want to drop useless rules, call the clean() function.
+    */
     class ClassTreeMask
     {
         public:
@@ -125,7 +196,7 @@ namespace orxonox
             bool isIncluded(ClassTreeMaskNode* node, const Identifier* subclass) const;
             void clean(ClassTreeMaskNode* node);
 
-            ClassTreeMaskNode* root_;
+            ClassTreeMaskNode* root_;   //!< The root-node of the internal rule-tree, usually BaseObject
     };
 }
 

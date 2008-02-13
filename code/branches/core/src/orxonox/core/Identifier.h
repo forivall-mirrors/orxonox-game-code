@@ -179,6 +179,12 @@ namespace orxonox
         ClassIdentifier is a Singleton, which means that only one object of a given type T exists.
         This makes it possible to store informations about a class, sharing them with all
         objects of that class without defining static variables in every class.
+
+        To be really sure that not more than exactly one object exists (even with libraries),
+        ClassIdentifiers are only created by IdentifierDistributor.
+
+        You can access the ClassIdentifiers created by IdentifierDistributor through the
+        ClassManager singletons.
     */
     template <class T>
     class ClassIdentifier : public Identifier

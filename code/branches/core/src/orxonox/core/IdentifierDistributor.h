@@ -25,6 +25,15 @@
  *
  */
 
+/*!
+    @file IdentifierDistributor.h
+    @brief Definition of the IdentifierDistributor class
+
+    The IdentifierDistributor makes sure that only one instance of ClassIdentifier for each
+    template parameter T exists. All Identifiers are stored in a map with their name.
+    IdentifierDistributor is a singleton class, it can't be created or deleted directly.
+*/
+
 #ifndef _IdentifierDistributor_H__
 #define _IdentifierDistributor_H__
 
@@ -34,17 +43,18 @@
 
 namespace orxonox
 {
+    //! The Identifier Distributor stores all Identifiers and makes sure there are no ambiguities.
     class IdentifierDistributor
     {
         public:
             static Identifier* getIdentifier(const std::string& name, Identifier* proposal);
 
         private:
-            IdentifierDistributor() {};
-            IdentifierDistributor(const IdentifierDistributor& distributor) {}
-            ~IdentifierDistributor() {}
+            IdentifierDistributor() {};                                         // Don't create
+            IdentifierDistributor(const IdentifierDistributor& distributor) {}  // Don't copy
+            ~IdentifierDistributor() {}                                         // Don't delete
 
-            std::map<std::string, Identifier*> identifiers_;
+            std::map<std::string, Identifier*> identifiers_;    //!< The map to store all Identifiers.
     };
 }
 
