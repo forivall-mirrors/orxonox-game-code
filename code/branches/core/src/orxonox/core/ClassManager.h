@@ -133,7 +133,7 @@ namespace orxonox
     {
         static std::string unknownClassName = std::string("unknown");
 
-        if (ClassManager<T>::getSingleton()->bInitialized)
+        if (ClassManager<T>::getSingleton()->bInitialized_)
             return ClassManager<T>::getSingleton()->identifier_->getName();
         else
             return unknownClassName;

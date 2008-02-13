@@ -298,11 +298,30 @@ namespace orxonox
             */
             SubclassIdentifier()
             {
-                T* temp = new T;
-                this->subclassIdentifier_ = temp->getIdentifier();
-                delete temp;
+                std::string name = ClassManager<T>::getName();
+
+                if (name != "unknown")
+                    this->subclassIdentifier_ = ClassManager<T>::getIdentifier(name);
+                else
+                    this->subclassIdentifier_ = 0;
 
                 this->identifier_ = this->subclassIdentifier_;
+            }
+
+            /**
+                @brief Copyconstructor: Assigns the given Identifier.
+                @param identifier The Identifier
+            */
+            SubclassIdentifier(Identifier* identifier)
+            {
+                std::string name = ClassManager<T>::getName();
+
+                if (name != "unknown")
+                    this->subclassIdentifier_ = ClassManager<T>::getIdentifier(name);
+                else
+                    this->subclassIdentifier_ = 0;
+
+                this->identifier_ = identifier;
             }
 
             /**
