@@ -146,7 +146,7 @@ namespace orxonox
             inline static void startCreatingHierarchy()
             {
                 hierarchyCreatingCounter_s++;
-                COUT(4) << "*** Increased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
+                COUT(4) << "*** Identifier: Increased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
             /**
@@ -155,7 +155,7 @@ namespace orxonox
             inline static void stopCreatingHierarchy()
             {
                 hierarchyCreatingCounter_s--;
-                COUT(4) << "*** Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
+                COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
             IdentifierList parents_;                                    //!< The Parents of the class the Identifier belongs to
@@ -227,7 +227,7 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass)
     {
-        COUT(4) << "*** Register Class in " << name << "-Singleton." << std::endl;
+        COUT(4) << "*** ClassIdentifier: Register Class in " << name << "-Singleton." << std::endl;
 
         // Check if at least one object of the given type was created
         if (!this->bCreatedOneObject_)
@@ -235,7 +235,7 @@ namespace orxonox
             // If no: We have to store the informations and initialize the Identifier
             this->setName(name);
 
-            COUT(4) << "*** Register Class in " << name << "-Singleton -> Initialize Singleton." << std::endl;
+            COUT(4) << "*** ClassIdentifier: Register Class in " << name << "-Singleton -> Initialize Singleton." << std::endl;
             if (bRootClass)
                 this->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
             else
@@ -266,7 +266,7 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::addObject(T* object)
     {
-        COUT(4) << "*** Added object to " << this->getName() << "-list." << std::endl;
+        COUT(4) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
         object->getMetaList().add(this->objects_, this->objects_->add(object));
     }
 
@@ -298,14 +298,7 @@ namespace orxonox
             */
             SubclassIdentifier()
             {
-                std::string name = ClassManager<T>::getName();
-
-                if (name != "unknown")
-                    this->subclassIdentifier_ = ClassManager<T>::getIdentifier(name);
-                else
-                    this->subclassIdentifier_ = 0;
-
-                this->identifier_ = this->subclassIdentifier_;
+                this->identifier_ = ClassManager<T>::getIdentifier();
             }
 
             /**
@@ -314,13 +307,6 @@ namespace orxonox
             */
             SubclassIdentifier(Identifier* identifier)
             {
-                std::string name = ClassManager<T>::getName();
-
-                if (name != "unknown")
-                    this->subclassIdentifier_ = ClassManager<T>::getIdentifier(name);
-                else
-                    this->subclassIdentifier_ = 0;
-
                 this->identifier_ = identifier;
             }
 
@@ -331,10 +317,11 @@ namespace orxonox
             */
             SubclassIdentifier<T>& operator=(Identifier* identifier)
             {
-                if (!identifier->isA(this->subclassIdentifier_))
+                if (!identifier->isA(ClassManager<T>::getIdentifier()))
                 {
-                    COUT(1) << "Error: Class " << identifier->getName() << " is not a " << this->subclassIdentifier_->getName() << "!" << std::endl;
-                    COUT(1) << "Error: SubclassIdentifier<" << this->subclassIdentifier_->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
+                    COUT(1) << "An error occurred in SubclassIdentifier:" << std::endl;
+                    COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassManager<T>::getIdentifier()->getName() << "!" << std::endl;
+                    COUT(1) << "Error: SubclassIdentifier<" << ClassManager<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
                     COUT(1) << "Aborting..." << std::endl;
                     abort();
                 }
@@ -379,12 +366,14 @@ namespace orxonox
                     // Something went terribly wrong
                     if (this->identifier_)
                     {
-                        COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << this->subclassIdentifier_->getName() << "!" << std::endl;
+                        COUT(1) << "An error occurred in SubclassIdentifier:" << std::endl;
+                        COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << ClassManager<T>::getIdentifier()->getName() << "!" << std::endl;
                         COUT(1) << "Error: Couldn't fabricate a new Object." << std::endl;
                         COUT(1) << "Aborting..." << std::endl;
                     }
                     else
                     {
+                        COUT(1) << "An error occurred in SubclassIdentifier:" << std::endl;
                         COUT(1) << "Error: Couldn't fabricate a new Object - Identifier is undefined." << std::endl;
                         COUT(1) << "Aborting..." << std::endl;
                     }
@@ -415,7 +404,6 @@ namespace orxonox
 
         private:
             Identifier* identifier_;            //!< The assigned identifier
-            Identifier* subclassIdentifier_;    //!< The identifier of the subclass
     };
 }
 

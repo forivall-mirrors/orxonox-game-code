@@ -869,6 +869,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
+            COUT(1) << "An error occurred in ConfigValueContainer:" << std::endl;
             COUT(1) << "Error: Couldn't open config-file " << filename << " to read the config values!" << std::endl;
             return;
         }
@@ -915,6 +916,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
+            COUT(1) << "An error occurred in ConfigValueContainer:" << std::endl;
             COUT(1) << "Error: Couldn't open config-file " << filename << " to write the config values!" << std::endl;
             return;
         }

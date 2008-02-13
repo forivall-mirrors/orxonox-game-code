@@ -57,10 +57,10 @@
     @param bRootClass True if the class is directly derived from OrxonoxClass
 */
 #define InternRegisterObject(ClassName, bRootClass) \
-    this->setIdentifier(orxonox::ClassManager<ClassName>::getIdentifier(#ClassName)->registerClass(this->getParents(), #ClassName, bRootClass)); \
+    this->setIdentifier(orxonox::ClassManager<ClassName>::getIdentifier()->registerClass(this->getParents(), #ClassName, bRootClass)); \
     if (orxonox::Identifier::isCreatingHierarchy() && this->getParents()) \
         this->getParents()->add(this->getIdentifier()); \
-    orxonox::ClassManager<ClassName>::getIdentifier(#ClassName)->addObject(this)
+    orxonox::ClassManager<ClassName>::getIdentifier()->addObject(this)
 
 /**
     @brief Intern macro, containing the specific part of RegisterRootObject.
@@ -111,7 +111,7 @@
     @param ClassName The name of the class
 */
 #define Class(ClassName) \
-    ClassManager<ClassName>::getIdentifier(#ClassName)
+    ClassManager<ClassName>::getIdentifier()
 
 /**
     @brief Creates the entry in the Factory.

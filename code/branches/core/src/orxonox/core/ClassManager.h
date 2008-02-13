@@ -62,7 +62,7 @@ namespace orxonox
     {
         public:
             static ClassManager<T>* getSingleton();
-            static ClassIdentifier<T>* getIdentifier(const std::string& name);
+            static ClassIdentifier<T>* getIdentifier();
             static const std::string& getName();
 
         private:
@@ -95,17 +95,20 @@ namespace orxonox
     }
 
     /**
-        @brief Creates the only instance of this class for the template class T and retrieves a unique Identifier.
+        @brief Creates the only instance of this class for the template class T and retrieves a unique Identifier for the given name.
         @return The unique Identifier
     */
     template <class T>
-    ClassIdentifier<T>* ClassManager<T>::getIdentifier(const std::string& name)
+    ClassIdentifier<T>* ClassManager<T>::getIdentifier()
     {
         // Check if the ClassManager is already initialized
         if (!ClassManager<T>::getSingleton()->bInitialized_)
         {
+            // Get the name of the class
+            std::string name = typeid(T).name();
+
             // It's not -> retrieve the ClassIdentifier through IdentifierDistributor
-            COUT(4) << "*** Create Identifier Singleton." << std::endl;
+            COUT(4) << "*** ClassManager: Request Identifier Singleton for " << name << "." << std::endl;
 
             // First create a ClassIdentifier in case there's no instance existing yet
             ClassIdentifier<T>* temp = new ClassIdentifier<T>();
@@ -115,7 +118,16 @@ namespace orxonox
 
             // If the retrieved Identifier differs from our proposal, we don't need the proposal any more
             if (temp != ClassManager<T>::getSingleton()->identifier_)
+            {
+                COUT(4) << "*** ClassManager: Requested Identifier for " << name << " was already existing and got assigned." << std::endl;
+
+                // Delete the unnecessary proposal
                 delete temp;
+            }
+            else
+            {
+                COUT(4) << "*** ClassManager: Requested Identifier for " << name << " was not yet existing and got created." << std::endl;
+            }
 
             ClassManager<T>::getSingleton()->bInitialized_ = true;
         }

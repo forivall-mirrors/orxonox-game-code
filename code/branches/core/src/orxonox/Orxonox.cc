@@ -753,6 +753,7 @@ namespace orxonox
 
         std::cout << "2\n";
 */
+
         std::cout << "Test 13\n";
 
         #define BoolToYesNo(bool) \
@@ -832,7 +833,7 @@ namespace orxonox
         std::cout << std::endl;
         std::cout << "Mask 2:\n";
         TestClassTreeMask(test13_2);
-
+/*
         ClassTreeMask test13_3;
         test13_3.include(Class(A1));
         test13_3.exclude(Class(A1B2));
@@ -966,6 +967,28 @@ namespace orxonox
         TestClassTreeMask(test13_1);
 
         std::cout << "9\n";
+*/
+
+        std::cout << "Test 14\n";
+        std::cout << "1\n";
+
+        SubclassIdentifier<A1> test14_1;
+        test14_1 = Class(A1B1C1);
+        std::cout << test14_1.getIdentifier()->getName() << std::endl;
+
+        SubclassIdentifier<A1> test14_2 = Class(A1B1C2);
+        std::cout << test14_2.getIdentifier()->getName() << std::endl;
+
+        SubclassIdentifier<Interface1> test14_3;
+        test14_3 = Class(A2B2C1);
+        std::cout << test14_3.getIdentifier()->getName() << std::endl;
+
+        SubclassIdentifier<A1B2> test14_4;
+        test14_4 = Class(A1B2C1);
+        std::cout << test14_4.getIdentifier()->getName() << std::endl;
+
+        SubclassIdentifier<BaseObject> test14_5 = Class(Test1);
+        std::cout << test14_5.getIdentifier()->getName() << std::endl;
 
 //    startRenderLoop();
   }

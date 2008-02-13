@@ -73,6 +73,7 @@ namespace orxonox
     {
         public:
             A1B2() { RegisterObject(A1B2); }
+            virtual void test() = 0;
     };
 
     class A2B1 : public A2
@@ -115,6 +116,7 @@ namespace orxonox
     {
         public:
             A1B2C1() { RegisterObject(A1B2C1); }
+            void test() { std::cout << "test!\n"; }
     };
 
     class A2B1C1 : public A2B1, Interface2
@@ -157,7 +159,7 @@ namespace orxonox
     CreateFactory(A2);
     CreateFactory(A3);
     CreateFactory(A1B1);
-    CreateFactory(A1B2);
+//    CreateFactory(A1B2);
     CreateFactory(A2B1);
     CreateFactory(A2B2);
     CreateFactory(A3B1);

@@ -160,7 +160,7 @@ namespace orxonox
     */
     void Language::addEntry(const LanguageEntryName& name, const std::string& entry)
     {
-        COUT(5) << "Called addEntry with\n  name: " << name << "\n  entry: " <<  entry << std::endl;
+        COUT(5) << "Language: Called addEntry with\n  name: " << name << "\n  entry: " <<  entry << std::endl;
         std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.find(name);
         if (it == this->languageEntries_.end())
         {
@@ -196,7 +196,7 @@ namespace orxonox
         else
         {
             // Uh, oh, an undefined entry was requested: return the default string
-            COUT(2) << "Error: Language entry \"" << name << "\" not found!" << std::endl;
+            COUT(2) << "Warning: Language entry \"" << name << "\" not found!" << std::endl;
             return this->defaultTranslation_;
         }
     }
@@ -229,6 +229,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
+            COUT(1) << "An error occurred in Language:" << std::endl;
             COUT(1) << "Error: Couldn't open file " << getFileName(this->defaultLanguage_) << " to read the default language entries!" << std::endl;
             return;
         }
@@ -270,6 +271,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
+            COUT(1) << "An error occurred in Language:" << std::endl;
             COUT(1) << "Error: Couldn't open file " << getFileName(this->language_) << " to read the translated language entries!" << std::endl;
             ResetConfigValue(language_);
             COUT(3) << "Info: Reset language to " << this->defaultLanguage_ << "." << std::endl;
@@ -313,7 +315,7 @@ namespace orxonox
     */
     void Language::writeDefaultLanguageFile() const
     {
-        COUT(4) << "Write default language file." << std::endl;
+        COUT(4) << "Language: Write default language file." << std::endl;
 
         // Open the file
         std::ofstream file;
@@ -321,6 +323,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
+            COUT(1) << "An error occurred in Language:" << std::endl;
             COUT(1) << "Error: Couldn't open file " << getFileName(this->defaultLanguage_) << " to write the default language entries!" << std::endl;
             return;
         }
