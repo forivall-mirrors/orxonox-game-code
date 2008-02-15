@@ -59,7 +59,6 @@
 #include "CorePrereqs.h"
 
 #include "ObjectList.h"
-//#include "IdentifierList.h"
 #include "Debug.h"
 #include "Iterator.h"
 
@@ -115,8 +114,17 @@ namespace orxonox
             /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
             inline const std::list<const Identifier*>& getParents() const { return this->parents_; }
 
-//            /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
-//            inline const std::list<const Identifier*>& getChildren() const { return (*this->children_); }
+            /** @brief Returns the begin-iterator of the parents-list. @return The begin-iterator */
+            inline std::list<const Identifier*>::const_iterator getParentsBegin() const { return this->parents_.begin(); }
+
+            /** @brief Returns the end-iterator of the parents-list. @return The end-iterator */
+            inline std::list<const Identifier*>::const_iterator getParentsEnd() const { return this->parents_.end(); }
+
+            /** @brief Returns the begin-iterator of the children-list. @return The begin-iterator */
+            inline std::list<const Identifier*>::const_iterator getChildrenBegin() const { return this->children_->begin(); }
+
+            /** @brief Returns the end-iterator of the children-list. @return The end-iterator */
+            inline std::list<const Identifier*>::const_iterator getChildrenEnd() const { return this->children_->end(); }
 
             /** @brief Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. @return The status of the class-hierarchy creation */
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
@@ -167,8 +175,6 @@ namespace orxonox
 
             static bool identifierIsInList(const Identifier* identifier, const std::list<const Identifier*>& list);
 
-//            IdentifierList parents_;                                    //!< The Parents of the class the Identifier belongs to
-//            IdentifierList* children_;                                  //!< The Children of the class the Identifier belongs to
             std::list<const Identifier*> parents_;                      //!< The Parents of the class the Identifier belongs to
             std::list<const Identifier*>* children_;                    //!< The Children of the class the Identifier belongs to
 
