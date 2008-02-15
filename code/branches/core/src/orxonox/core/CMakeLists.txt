@@ -1,10 +1,10 @@
 SET( CORE_SRC_FILES
+  OrxonoxClass.cc
   BaseObject.cc
   Factory.cc
-  IdentifierList.cc
   Identifier.cc
+  IdentifierDistributor.cc
   MetaObjectList.cc
-  OrxonoxClass.cc
   ConfigValueContainer.cc
   Error.cc
   SignalHandler.cc
@@ -13,7 +13,7 @@ SET( CORE_SRC_FILES
   OutputHandler.cc
   Language.cc
   ClassTreeMask.cc
-  IdentifierDistributor.cc
+#  Level.cc
 )
 
 ADD_LIBRARY( core SHARED ${CORE_SRC_FILES})

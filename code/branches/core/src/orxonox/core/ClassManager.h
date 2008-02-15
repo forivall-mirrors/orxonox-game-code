@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file ClassManager.h
     @brief Definition and Implementation of the ClassManager template.
 

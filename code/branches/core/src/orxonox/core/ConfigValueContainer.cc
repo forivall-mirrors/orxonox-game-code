@@ -25,6 +25,11 @@
  *
  */
 
+/**
+    @file ConfigValueContainer.cc
+    @brief Implementation of the ConfigValueContainer class.
+*/
+
 #include <fstream>
 
 #include "ConfigValueContainer.h"
@@ -827,7 +832,8 @@ namespace orxonox
     }
 
     /**
-        @returns a list, containing all entrys in the config-file.
+        @brief Rreturns a list, containing all entrys in the config-file.
+        @return The list
     */
     std::list<std::string>& ConfigValueContainer::getConfigFileLines()
     {

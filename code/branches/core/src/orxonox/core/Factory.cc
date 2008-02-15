@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file Factory.cc
     @brief Implementation of the Factory class.
 */
@@ -38,8 +38,9 @@
 namespace orxonox
 {
     /**
-        @returns the Identifier with a given name.
+        @brief Returns the Identifier with a given name.
         @param name The name of the wanted Identifier
+        @return The Identifier
     */
     Identifier* Factory::getIdentifier(const std::string& name)
     {
@@ -47,8 +48,9 @@ namespace orxonox
     }
 
     /**
-        @returns the Identifier with a given network ID.
+        @brief Returns the Identifier with a given network ID.
         @param id The network ID of the wanted Identifier
+        @return The Identifier
     */
     Identifier* Factory::getIdentifier(const unsigned int id)
     {

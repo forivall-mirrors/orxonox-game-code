@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file Language.cc
     @brief Implementation of the Language and the LanguageEntry class.
 */

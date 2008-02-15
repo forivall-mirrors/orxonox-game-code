@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file ClassTreeMask.cc
     @brief Implementation of the ClassTreeMask, ClassTreeMaskNode and ClassTreeMaskIterator classes.
 */
@@ -293,7 +293,14 @@ namespace orxonox
     */
     void ClassTreeMask::add(const Identifier* subclass, bool bInclude)
     {
-        this->add(this->root_, subclass, bInclude);
+        if (subclass->isA(this->root_->getClass()))
+            this->add(this->root_, subclass, bInclude);
+        else
+        {
+
+        }
+
+        this->clean();
     }
 
     /**

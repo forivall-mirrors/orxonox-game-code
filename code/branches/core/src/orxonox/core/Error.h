@@ -25,6 +25,11 @@
  *
  */
 
+/**
+    @file Error.h
+    @brief Definition of the Error class.
+*/
+
 #ifndef _Error_H__
 #define _Error_H__
 

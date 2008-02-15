@@ -25,9 +25,10 @@
  *
  */
 
-/*!
- * @file SignalHandler.h
- */
+/**
+    @file SignalHandler.h
+    @brief Definition of the SignalHandler class.
+*/
 
 #ifndef _SignalHandler_H__
 #define _SignalHandler_H__

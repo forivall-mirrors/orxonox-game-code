@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file DebugLevel.h
     @brief Definition of the DebugLevel class.
 

@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file MetaObjectList.h
     @brief Definition of the MetaObjectList class.
 

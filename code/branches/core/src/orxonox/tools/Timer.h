@@ -93,7 +93,7 @@ namespace orxonox
             inline void pauseTimer() { this->bActive_ = false; }
             /** @brief Unpauses the Timer - continues with the given state. */
             inline void unpauseTimer() { this->bActive_ = true; }
-            /** @returns true if the Timer is active (= not stoped, not paused). */
+            /** @brief Returns true if the Timer is active (= not stoped, not paused). @return True = Time is active */
             inline bool isActive() const { return this->bActive_; }
 
         protected:

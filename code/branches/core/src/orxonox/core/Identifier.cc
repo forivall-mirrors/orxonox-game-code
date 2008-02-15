@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file Identifier.cc
     @brief Implementation of the Identifier class.
 */
@@ -48,7 +48,7 @@ namespace orxonox
         this->bCreatedOneObject_ = false;
         this->factory_ = 0;
 
-        this->children_ = new IdentifierList;
+        this->children_ = new std::list<const Identifier*>();
 
         // Use a static variable because the classID gets created before main() and that's why we should avoid static member variables
         static unsigned int classIDcounter_s = 0;
@@ -56,7 +56,7 @@ namespace orxonox
     }
 
     /**
-        @brief Destructor: Deletes the IdentifierList containing the children.
+        @brief Destructor: Deletes the list containing the children.
     */
     Identifier::~Identifier()
     {
@@ -64,23 +64,23 @@ namespace orxonox
     }
 
     /**
-        @brief Initializes the Identifier with an IdentifierList containing all parents of the class the Identifier belongs to.
-        @param parents The IdentifierList containing all parents
+        @brief Initializes the Identifier with a list containing all parents of the class the Identifier belongs to.
+        @param parents A list containing all parents
     */
-    void Identifier::initialize(const IdentifierList* parents)
+    void Identifier::initialize(std::list<const Identifier*>* parents)
     {
         COUT(4) << "*** Identifier: Initialize " << this->name_ << "-Singleton." << std::endl;
         this->bCreatedOneObject_ = true;
 
         if (parents)
         {
-            IdentifierListElement* temp1 = parents->first_;
-            while (temp1)
+            std::list<const Identifier*>::iterator temp1 = parents->begin();
+            while (temp1 != parents->end())
             {
-                this->parents_.add(temp1->identifier_);
-                temp1->identifier_->getChildren().add(this); // We're a child of our parents
+                this->parents_.insert(this->parents_.end(), *temp1);
+                (*temp1)->getChildren().insert((*temp1)->getChildren().end(), this); // We're a child of our parents
 
-                temp1 = temp1->next_;
+                ++temp1;
             }
         }
     }
@@ -117,16 +117,16 @@ namespace orxonox
     }
 
     /**
-        @returns true, if the Identifier is at least of the given type.
+        @brief Returns true, if the Identifier is at least of the given type.
         @param identifier The identifier to compare with
     */
     bool Identifier::isA(const Identifier* identifier) const
     {
-        return (identifier == this || this->parents_.isInList(identifier));
+        return (identifier == this || this->identifierIsInList(identifier, this->parents_));
     }
 
     /**
-        @returns true, if the Identifier is exactly of the given type.
+        @brief Returns true, if the Identifier is exactly of the given type.
         @param identifier The identifier to compare with
     */
     bool Identifier::isDirectlyA(const Identifier* identifier) const
@@ -135,20 +135,35 @@ namespace orxonox
     }
 
     /**
-        @returns true, if the assigned identifier is a child of the given identifier.
+        @brief Returns true, if the assigned identifier is a child of the given identifier.
         @param identifier The identifier to compare with
     */
     bool Identifier::isChildOf(const Identifier* identifier) const
     {
-        return this->parents_.isInList(identifier);
+        return this->identifierIsInList(identifier, this->parents_);
     }
 
     /**
-        @returns true, if the assigned identifier is a parent of the given identifier.
+        @brief Returns true, if the assigned identifier is a parent of the given identifier.
         @param identifier The identifier to compare with
     */
     bool Identifier::isParentOf(const Identifier* identifier) const
     {
-        return this->children_->isInList(identifier);
+        return this->identifierIsInList(identifier, *this->children_);
+    }
+
+    /**
+        @brief Searches for a given identifier in a list and returns whether the identifier is in the list or not.
+        @param identifier The identifier to look for
+        @param list The list
+        @return True = the identifier is in the list
+    */
+    bool Identifier::identifierIsInList(const Identifier* identifier, const std::list<const Identifier*>& list)
+    {
+        for (std::list<const Identifier*>::const_iterator it = list.begin(); it != list.end(); ++it)
+            if (identifier == (*it))
+                return true;
+
+        return false;
     }
 }

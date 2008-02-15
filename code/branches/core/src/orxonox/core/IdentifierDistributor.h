@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file IdentifierDistributor.h
     @brief Definition of the IdentifierDistributor class
 
@@ -44,7 +44,7 @@
 namespace orxonox
 {
     //! The Identifier Distributor stores all Identifiers and makes sure there are no ambiguities.
-    class IdentifierDistributor
+    class _CoreExport IdentifierDistributor
     {
         public:
             static Identifier* getIdentifier(const std::string& name, Identifier* proposal);

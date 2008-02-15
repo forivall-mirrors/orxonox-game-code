@@ -19,13 +19,13 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-/*!
+/**
     @file BaseObject.cc
     @brief Implementation of the BaseObject class.
 */

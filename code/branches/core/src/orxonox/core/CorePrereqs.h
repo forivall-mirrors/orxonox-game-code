@@ -26,9 +26,9 @@
  */
 
 /**
- @file  CorePrereq.h
- @brief Contains all the necessary forward declarations for all classes, structs and enums.
- */
+    @file  CorePrereq.h
+    @brief Contains all the necessary forward declarations for all classes, structs and enums.
+*/
 
 #ifndef _CorePrereqs_H__
 #define _CorePrereqs_H__
@@ -71,18 +71,22 @@ namespace orxonox
   class ClassIdentifier;
   template <class T>
   class ClassManager;
+  class ClassTreeMask;
+  class ClassTreeMaskIterator;
+  class ClassTreeMaskNode;
   class ConfigValueContainer;
   class DebugLevel;
   class Error;
   class Factory;
   class Identifier;
   class IdentifierDistributor;
-  class IdentifierList;
-  class IdentifierListElement;
+//  class IdentifierList;
+//  class IdentifierListElement;
   template <class T>
   class Iterator;
   class Language;
   class LanguageEntry;
+  class Level;
   class MetaObjectList;
   template <class T>
   class MetaObjectListElement;

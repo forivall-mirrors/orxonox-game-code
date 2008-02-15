@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file ClassTreeMask.h
     @brief Definition of the ClassTreeMask, ClassTreeMaskNode and ClassTreeMaskIterator classes.
 
@@ -81,7 +81,7 @@ namespace orxonox
         class (described by the corresponding Identifier). The nodes are used in the internal
         tree of ClassTreeMask. To build a tree, they store a list of all subnodes.
     */
-    class ClassTreeMaskNode
+    class _CoreExport ClassTreeMaskNode
     {
         friend class ClassTreeMask;
         friend class ClassTreeMaskIterator;
@@ -119,7 +119,7 @@ namespace orxonox
         iterator moves one step back and iterates to the second subclass. If there are no more
         subclasses, it steps another step back, and so on.
     */
-    class ClassTreeMaskIterator
+    class _CoreExport ClassTreeMaskIterator
     {
         public:
             ClassTreeMaskIterator(ClassTreeMaskNode* node);
@@ -150,7 +150,7 @@ namespace orxonox
         mask by adding the same rules in a different way without changing the information. If
         you want to drop useless rules, call the clean() function.
     */
-    class ClassTreeMask
+    class _CoreExport ClassTreeMask
     {
         public:
             ClassTreeMask();

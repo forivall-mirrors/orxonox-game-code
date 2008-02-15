@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file ClassFactory.h
     @brief Definition and implementation of the ClassFactory class
 

@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file DebugLevel.cc
     @brief Implementation of the DebugLevel class.
 */
@@ -98,7 +98,8 @@ namespace orxonox
 }
 
 /**
-    @returns the soft debug level, stored in the only existing instance of the DebugLevel class, configured in the config-file.
+    @brief Returns the soft debug level, stored in the only existing instance of the DebugLevel class, configured in the config-file.
+    @return The soft debug level
 */
 int getSoftDebugLevel()
 {

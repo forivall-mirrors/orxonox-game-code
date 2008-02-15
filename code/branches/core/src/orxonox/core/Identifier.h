@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file Identifier.h
     @brief Definition of the Identifier, ClassIdentifier and SubclassIdentifier classes, implementation of the ClassIdentifier and SubclassIdentifier classes.
 
@@ -51,6 +51,7 @@
 #ifndef _Identifier_H__
 #define _Identifier_H__
 
+#include <list>
 #include <map>
 #include <string>
 #include <utility>
@@ -58,7 +59,7 @@
 #include "CorePrereqs.h"
 
 #include "ObjectList.h"
-#include "IdentifierList.h"
+//#include "IdentifierList.h"
 #include "Debug.h"
 #include "Iterator.h"
 
@@ -108,25 +109,25 @@ namespace orxonox
             /** @brief Removes all objects of the corresponding class. */
             virtual void removeObjects() const = 0;
 
-            /** @returns the name of the class the Identifier belongs to. */
+            /** @brief Returns the name of the class the Identifier belongs to. @return The name */
             inline const std::string& getName() const { return this->name_; }
 
-            /** @returns the parents of the class the Identifier belongs to. */
-            inline const IdentifierList& getParents() const { return this->parents_; }
+            /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
+            inline const std::list<const Identifier*>& getParents() const { return this->parents_; }
 
-            /** @returns the children of the class the Identifier belongs to. */
-            inline IdentifierList& getChildren() const { return *this->children_; }
+//            /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
+//            inline const std::list<const Identifier*>& getChildren() const { return (*this->children_); }
 
-            /** @returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. */
+            /** @brief Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. @return The status of the class-hierarchy creation */
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
-            /** @returns the network ID to identify a class through the network. */
+            /** @brief Returns the network ID to identify a class through the network. @return the network ID */
             inline const unsigned int getNetworkID() const { return this->classID_; }
 
             /** @brief Sets the network ID to a new value. @param id The new value */
             void setNetworkID(unsigned int id);
 
-            /** @returns the ConfigValueContainer of a variable, given by the string of its name. @param varname The name of the variable */
+            /** @brief Returns the ConfigValueContainer of a variable, given by the string of its name. @param varname The name of the variable @return The ConfigValueContainer */
             inline ConfigValueContainer* getConfigValueContainer(const std::string& varname)
                 { return this->configValues_[varname]; }
 
@@ -138,7 +139,13 @@ namespace orxonox
             Identifier();
             Identifier(const Identifier& identifier) {} // don't copy
             virtual ~Identifier();
-            void initialize(const IdentifierList* parents);
+            void initialize(std::list<const Identifier*>* parents);
+
+            /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
+            inline std::list<const Identifier*>& getParents() { return this->parents_; }
+
+            /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
+            inline std::list<const Identifier*>& getChildren() const { return (*this->children_); }
 
             /**
                 @brief Increases the hierarchyCreatingCounter_s variable, causing all new objects to store their parents.
@@ -158,8 +165,12 @@ namespace orxonox
                 COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
-            IdentifierList parents_;                                    //!< The Parents of the class the Identifier belongs to
-            IdentifierList* children_;                                  //!< The Children of the class the Identifier belongs to
+            static bool identifierIsInList(const Identifier* identifier, const std::list<const Identifier*>& list);
+
+//            IdentifierList parents_;                                    //!< The Parents of the class the Identifier belongs to
+//            IdentifierList* children_;                                  //!< The Children of the class the Identifier belongs to
+            std::list<const Identifier*> parents_;                      //!< The Parents of the class the Identifier belongs to
+            std::list<const Identifier*>* children_;                    //!< The Children of the class the Identifier belongs to
 
             std::string name_;                                          //!< The name of the class the Identifier belongs to
 
@@ -193,7 +204,7 @@ namespace orxonox
         friend class ClassManager;
 
         public:
-            ClassIdentifier<T>* registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass);
+            ClassIdentifier<T>* registerClass(std::list<const Identifier*>* parents, const std::string& name, bool bRootClass);
             void addObject(T* object);
             void removeObjects() const;
             void setName(const std::string& name);
@@ -219,13 +230,13 @@ namespace orxonox
 
     /**
         @brief Registers a class, which means that the name and the parents get stored.
-        @param parents An IdentifierList, containing the Identifiers of all parents of the class
+        @param parents A list, containing the Identifiers of all parents of the class
         @param name A string, containing exactly the name of the class
         @param bRootClass True if the class is either an Interface or the BaseObject itself
         @return The ClassIdentifier itself
     */
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(const IdentifierList* parents, const std::string& name, bool bRootClass)
+    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(std::list<const Identifier*>* parents, const std::string& name, bool bRootClass)
     {
         COUT(4) << "*** ClassIdentifier: Register Class in " << name << "-Singleton." << std::endl;
 
@@ -382,23 +393,23 @@ namespace orxonox
                 }
             }
 
-            /** @returns the assigned identifier. */
+            /** @brief Returns the assigned identifier. @return The identifier */
             inline const Identifier* getIdentifier() const
                 { return this->identifier_; }
 
-            /** @returns true, if the assigned identifier is at least of the given type. @param identifier The identifier to compare with */
+            /** @brief Returns true, if the assigned identifier is at least of the given type. @param identifier The identifier to compare with */
             inline bool isA(const Identifier* identifier) const
                 { return this->identifier_->isA(identifier); }
 
-            /** @returns true, if the assigned identifier is exactly of the given type. @param identifier The identifier to compare with */
+            /** @brief Returns true, if the assigned identifier is exactly of the given type. @param identifier The identifier to compare with */
             inline bool isDirectlyA(const Identifier* identifier) const
                 { return this->identifier_->isDirectlyA(identifier); }
 
-            /** @returns true, if the assigned identifier is a child of the given identifier. @param identifier The identifier to compare with */
+            /** @brief Returns true, if the assigned identifier is a child of the given identifier. @param identifier The identifier to compare with */
             inline bool isChildOf(const Identifier* identifier) const
                 { return this->identifier_->isChildOf(identifier); }
 
-            /** @returns true, if the assigned identifier is a parent of the given identifier. @param identifier The identifier to compare with */
+            /** @brief Returns true, if the assigned identifier is a parent of the given identifier. @param identifier The identifier to compare with */
             inline bool isParentOf(const Identifier* identifier) const
                 { return this->identifier_->isParentOf(identifier); }
 

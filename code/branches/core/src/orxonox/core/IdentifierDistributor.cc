@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file IdentifierDistributor.cc
     @brief Implementation of the IdentifierDistributor class.
 */

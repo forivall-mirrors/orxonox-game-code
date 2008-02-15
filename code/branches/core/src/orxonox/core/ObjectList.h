@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file ObjectList.h
     @brief Definition and implementation of the ObjectList class.
 
@@ -87,15 +87,15 @@ namespace orxonox
             ObjectListElement<T>* add(T* object);
 //            void remove(OrxonoxClass* object, bool bIterateForwards = true);
 
-            /** @returns the first element in the list */
+            /** @brief Returns the first element in the list. @return The first element */
             inline static Iterator<T> start()
                 { return Iterator<T>(getList()->first_); }
 
-            /** @returns the first element in the list */
+            /** @brief Returns the first element in the list. @return The first element */
             inline static Iterator<T> begin()
                 { return Iterator<T>(getList()->first_); }
 
-            /** @returns the last element in the list */
+            /** @brief Returns the last element in the list. @return The last element */
             inline static Iterator<T> end()
                 { return Iterator<T>(getList()->last_); }
 
@@ -133,7 +133,7 @@ namespace orxonox
     }
 
     /**
-        @returns a pointer to the only existing instance for the given class T.
+        @brief Returns a pointer to the only existing instance for the given class T. @return The instance
     */
     template <class T>
     ObjectList<T>* ObjectList<T>::getList()

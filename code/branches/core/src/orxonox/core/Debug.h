@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
  * @file Debug.h
  * @brief Handles the output for different verbose-modes.
  *

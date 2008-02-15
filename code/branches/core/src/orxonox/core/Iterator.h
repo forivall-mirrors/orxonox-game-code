@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file Iterator.h
     @brief Definition and implementation of the Iterator class.
 

@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file ConfigValueContainer.h
     @brief Definition of the ConfigValueContainer class.
 
@@ -74,7 +74,7 @@ namespace orxonox
         public:
             ConfigValueContainer(const std::string& classname, const std::string& varname, MultiTypeMath defvalue);
 
-            /** @returns the value. @param value This is only needed to determine the right type. */
+            /** @brief Returns the configured value. @param value This is only needed to determine the right type. @return The value */
 /*            template <typename T>
             inline ConfigValueContainer& getValue(T& value)                           { this->value_.getValue(value); return *this; }
 */

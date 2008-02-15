@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file MetaObjectList.cc
     @brief Implementation of the MetaObjectList class.
 */

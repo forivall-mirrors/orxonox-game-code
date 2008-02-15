@@ -51,6 +51,8 @@
 #include "ConfigValueContainer.h"
 #include "Debug.h"
 
+
+// All needed macros
 /**
     @brief Intern macro, containing the common parts of RegisterObject and RegisterRootObject.
     @param ClassName The name of the class
@@ -59,7 +61,7 @@
 #define InternRegisterObject(ClassName, bRootClass) \
     this->setIdentifier(orxonox::ClassManager<ClassName>::getIdentifier()->registerClass(this->getParents(), #ClassName, bRootClass)); \
     if (orxonox::Identifier::isCreatingHierarchy() && this->getParents()) \
-        this->getParents()->add(this->getIdentifier()); \
+        this->getParents()->insert(this->getParents()->end(), this->getIdentifier()); \
     orxonox::ClassManager<ClassName>::getIdentifier()->addObject(this)
 
 /**
@@ -68,7 +70,7 @@
 */
 #define InternRegisterRootObject(ClassName) \
     if (orxonox::Identifier::isCreatingHierarchy() && !this->getParents()) \
-        this->setParents(new orxonox::IdentifierList()); \
+        this->createParents(); \
     InternRegisterObject(ClassName, true)
 
 /**

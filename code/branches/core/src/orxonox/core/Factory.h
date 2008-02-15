@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file Factory.h
     @brief Definition of the Factory and the BaseFactory class.
 

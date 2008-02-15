@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file Language.h
     @brief Definition of the Language and the LanguageEntry class.
 
