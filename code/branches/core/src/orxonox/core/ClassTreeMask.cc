@@ -61,6 +61,7 @@ namespace orxonox
 
     /**
         @brief Sets the rule for the node to "included".
+        @param overwrite True = overwrite previously added rules for inheriting classes
     */
     void ClassTreeMaskNode::include(bool overwrite)
     {
@@ -69,6 +70,7 @@ namespace orxonox
 
     /**
         @brief Sets the rule for the node to "excluded".
+        @param overwrite True = overwrite previously added rules for inheriting classes
     */
     void ClassTreeMaskNode::exclude(bool overwrite)
     {
@@ -78,6 +80,7 @@ namespace orxonox
     /**
         @brief Sets the rule for the node to a given value and erases all following rules.
         @param bIncluded The rule: included (true) or excluded (false)
+        @param overwrite True = overwrite previously added rules for inheriting classes
     */
     void ClassTreeMaskNode::setIncluded(bool bIncluded, bool overwrite)
     {
@@ -286,6 +289,8 @@ namespace orxonox
     /**
         @brief Adds a new "include" rule for a given subclass to the mask.
         @param subclass The subclass
+        @param overwrite True = overwrite previously added rules for inheriting classes
+        @param clean True = clean the tree after adding the new rule
     */
     void ClassTreeMask::include(const Identifier* subclass, bool overwrite, bool clean)
     {
@@ -295,6 +300,8 @@ namespace orxonox
     /**
         @brief Adds a new "exclude" rule for a given subclass to the mask.
         @param subclass The subclass
+        @param overwrite True = overwrite previously added rules for inheriting classes
+        @param clean True = clean the tree after adding the new rule
     */
     void ClassTreeMask::exclude(const Identifier* subclass, bool overwrite, bool clean)
     {
@@ -305,6 +312,8 @@ namespace orxonox
         @brief Adds a new rule for a given subclass to the mask.
         @param subclass The subclass
         @param bInclude The rule: include (true) or exclude (false)
+        @param overwrite True = overwrite previously added rules for inheriting classes
+        @param clean True = clean the tree after adding the new rule
     */
     void ClassTreeMask::add(const Identifier* subclass, bool bInclude, bool overwrite, bool clean)
     {
@@ -333,6 +342,7 @@ namespace orxonox
         @param node The node
         @param subclass The subclass
         @param bInclude The rule: include (true) or exclude (false)
+        @param overwrite True = overwrite previously added rules for inheriting classes
     */
     void ClassTreeMask::add(ClassTreeMaskNode* node, const Identifier* subclass, bool bInclude, bool overwrite)
     {
@@ -381,6 +391,40 @@ namespace orxonox
             // Finally add the new node as a subnode to the current node
             node->addSubnode(newnode);
         }
+    }
+
+    /**
+        @brief Adds a new "include" rule for a single subclass. The new rule doesn't change the mask for inheriting classes.
+        @param subclass The subclass
+        @param clean True = clean the tree after adding the new rule
+    */
+    void ClassTreeMask::includeSingle(const Identifier* subclass, bool clean)
+    {
+        this->addSingle(subclass, true, clean);
+    }
+
+    /**
+        @brief Adds a new "exclude" rule for a single subclass. The new rule doesn't change the mask for inheriting classes.
+        @param subclass The subclass
+        @param clean True = clean the tree after adding the new rule
+    */
+    void ClassTreeMask::excludeSingle(const Identifier* subclass, bool clean)
+    {
+        this->addSingle(subclass, false, clean);
+    }
+
+    /**
+        @brief Adds a new rule for a single subclass. The new rule doesn't change the mask for inheriting classes.
+        @param bInclude The rule: include (true) or exclude (false)
+        @param subclass The subclass
+        @param clean True = clean the tree after adding the new rule
+    */
+    void ClassTreeMask::addSingle(const Identifier* subclass, bool bInclude, bool clean)
+    {
+        for (std::list<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
+            this->add(*it, this->isIncluded(*it), false, false);
+
+        this->add(subclass, bInclude, false, clean);
     }
 
     /**

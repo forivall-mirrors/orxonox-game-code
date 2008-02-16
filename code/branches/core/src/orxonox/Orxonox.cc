@@ -1087,6 +1087,28 @@ namespace orxonox
 
         std::cout << "12\n";
 
+        ClassTreeMask test13_21;
+        test13_21.excludeSingle(Class(A2));
+        std::cout << std::endl;
+        std::cout << "Mask with single-excluded A2:\n";
+        TestClassTreeMask(test13_21);
+
+        test13_21.exclude(Class(A2));
+        std::cout << std::endl;
+        std::cout << "Mask with excluded A2:\n";
+        TestClassTreeMask(test13_21);
+
+        test13_21.includeSingle(Class(A2));
+        std::cout << std::endl;
+        std::cout << "Previous mask with single-included A2:\n";
+        TestClassTreeMask(test13_21);
+
+        test13_21.includeSingle(Class(A2), false);
+        std::cout << std::endl;
+        std::cout << "Previous mask with single-included A2 without clean:\n";
+        TestClassTreeMask(test13_21);
+
+        std::cout << "13\n";
 /*
         std::cout << "Test 14\n";
         std::cout << "1\n";

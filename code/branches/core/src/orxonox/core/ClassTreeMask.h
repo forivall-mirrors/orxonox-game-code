@@ -165,6 +165,11 @@ namespace orxonox
             void include(const Identifier* subclass, bool overwrite = true, bool clean = true);
             void exclude(const Identifier* subclass, bool overwrite = true, bool clean = true);
             void add(const Identifier* subclass, bool bInclude, bool overwrite = true, bool clean = true);
+
+            void includeSingle(const Identifier* subclass, bool clean = true);
+            void excludeSingle(const Identifier* subclass, bool clean = true);
+            void addSingle(const Identifier* subclass, bool bInclude, bool clean = true);
+
             void reset();
             void clean();
 
