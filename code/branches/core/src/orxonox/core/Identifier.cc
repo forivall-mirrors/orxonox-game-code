@@ -30,6 +30,8 @@
     @brief Implementation of the Identifier class.
 */
 
+#include <ostream>
+
 #include "Identifier.h"
 #include "Factory.h"
 
@@ -49,6 +51,7 @@ namespace orxonox
         this->factory_ = 0;
 
         this->children_ = new std::list<const Identifier*>();
+        this->directChildren_ = new std::list<const Identifier*>();
 
         // Use a static variable because the classID gets created before main() and that's why we should avoid static member variables
         static unsigned int classIDcounter_s = 0;
@@ -61,6 +64,7 @@ namespace orxonox
     Identifier::~Identifier()
     {
         delete this->children_;
+        delete this->directChildren_;
     }
 
     /**
@@ -74,13 +78,36 @@ namespace orxonox
 
         if (parents)
         {
-            std::list<const Identifier*>::iterator temp1 = parents->begin();
-            while (temp1 != parents->end())
-            {
-                this->parents_.insert(this->parents_.end(), *temp1);
-                (*temp1)->getChildren().insert((*temp1)->getChildren().end(), this); // We're a child of our parents
+            this->parents_ = (*parents);
+            this->directParents_ = (*parents);
 
-                ++temp1;
+            // Iterate through all parents
+            for (std::list<const Identifier*>::iterator it = parents->begin(); it != parents->end(); ++it)
+            {
+                // Tell the parent we're one of it's children
+                (*it)->getChildrenIntern().insert((*it)->getChildrenIntern().end(), this);
+
+                // Erase all parents of our parent from our direct-parent-list
+                for (std::list<const Identifier*>::const_iterator it1 = (*it)->getParents().begin(); it1 != (*it)->getParents().end(); ++it1)
+                {
+                    // Search for the parent's parent in our direct-parent-list
+                    for (std::list<const Identifier*>::iterator it2 = this->directParents_.begin(); it2 != this->directParents_.end(); ++it2)
+                    {
+                        if ((*it1) == (*it2))
+                        {
+                            // We've found a non-direct parent in our list: Erase it
+                            this->directParents_.erase(it2);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Now iterate through all direct parents
+            for (std::list<const Identifier*>::iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
+            {
+                // Tell the parent we're one of it's direct children
+                (*it)->getDirectChildrenIntern().insert((*it)->getDirectChildrenIntern().end(), this);
             }
         }
     }
@@ -97,9 +124,8 @@ namespace orxonox
         }
         else
         {
-            // Abstract classes don't have a factory and therefore can't create new objects
             COUT(1) << "An error occurred in Identifier:" << std::endl;
-            COUT(1) << "Error: Cannot create an object of type '" << this->name_ << "'. Class is abstract." << std::endl;
+            COUT(1) << "Error: Cannot fabricate an object of type '" << this->name_ << "'. Class has no factory." << std::endl;
             COUT(1) << "Aborting..." << std::endl;
             abort();
             return NULL;
@@ -129,7 +155,7 @@ namespace orxonox
         @brief Returns true, if the Identifier is exactly of the given type.
         @param identifier The identifier to compare with
     */
-    bool Identifier::isDirectlyA(const Identifier* identifier) const
+    bool Identifier::isExactlyA(const Identifier* identifier) const
     {
         return (identifier == this);
     }
@@ -144,12 +170,30 @@ namespace orxonox
     }
 
     /**
+        @brief Returns true, if the assigned identifier is a direct child of the given identifier.
+        @param identifier The identifier to compare with
+    */
+    bool Identifier::isDirectChildOf(const Identifier* identifier) const
+    {
+        return this->identifierIsInList(identifier, this->directParents_);
+    }
+
+    /**
         @brief Returns true, if the assigned identifier is a parent of the given identifier.
         @param identifier The identifier to compare with
     */
     bool Identifier::isParentOf(const Identifier* identifier) const
     {
         return this->identifierIsInList(identifier, *this->children_);
+    }
+
+    /**
+        @brief Returns true, if the assigned identifier is a direct parent of the given identifier.
+        @param identifier The identifier to compare with
+    */
+    bool Identifier::isDirectParentOf(const Identifier* identifier) const
+    {
+        return this->identifierIsInList(identifier, *this->directChildren_);
     }
 
     /**
@@ -165,5 +209,13 @@ namespace orxonox
                 return true;
 
         return false;
+    }
+
+    std::ostream& operator<<(std::ostream& out, const std::list<const Identifier*>& list)
+    {
+        for (std::list<const Identifier*>::const_iterator it = list.begin(); it != list.end(); ++it)
+            out << (*it)->getName() << " ";
+
+        return out;
     }
 }

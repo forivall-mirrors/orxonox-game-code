@@ -33,20 +33,24 @@
     You can include or exclude classes by calling the corresponding functions with the
     Identifier of the class.
 
-    You can work with a ClassTreeMask in the sense of the set theory, meaning that you can create
+    You can work with a ClassTreeMask in the sense of the set-theory, meaning that you can create
     unions, intersections, complements and differences by using overloaded operators.
+
+
 
     The ClassTreeMask is internally represented by a tree. The nodes in the tree are
     ClassTreeMaskNodes, containing the rule (included or excluded) for this class and all
     subclasses and a list of all subnodes. To minimize the size, the tree contains only
     nodes changing the mask. By adding new rules, the tree gets reordered dynamically.
 
-    You can manually add useless rules and they stay in the tree. That way you can add rules in
-    any order without changing information of the resulting mask. Example: A new mask includes all
-    classes. Now you explicitly include a subclass. This seems to be useless. But if you exclude a
-    baseclass of the formerly included subclass, the subclass stays included. You could create the
-    same mask by first excluding the baseclass and then including the subclass. You can drop
-    useless rules from the tree by calling clean().
+    Adding a new rule overwrites all rules assigned to inherited classes. Use overwrite = false
+    if you don't like this feature. Useless rules that don't change the information of the mask
+    aren't saved in the internal tree. Use clean = false if you wan't to save them.
+
+    With overwrite = false and clean = false it doesn't matter in which way you create the mask.
+    You can manually drop useless rules from the tree by calling clean().
+
+
 
     Because of the complicated shape of the internal tree, there is an iterator to iterate
     through all ClassTreeMaskNodes of a mask. It starts with the BaseObject and moves on to
@@ -90,9 +94,9 @@ namespace orxonox
             ClassTreeMaskNode(const Identifier* subclass, bool bIncluded = true);
             ~ClassTreeMaskNode();
 
-            void include();
-            void exclude();
-            void setIncluded(bool bIncluded);
+            void include(bool overwrite = true);
+            void exclude(bool overwrite = true);
+            void setIncluded(bool bIncluded, bool overwrite = true);
 
             void addSubnode(ClassTreeMaskNode* subnode);
 
@@ -102,6 +106,8 @@ namespace orxonox
             const Identifier* getClass() const;
 
         private:
+            void deleteAllSubnodes();
+
             const Identifier* subclass_;                //!< The Identifier of the subclass the rule refers to
             bool bIncluded_;                            //!< The rule: included or excluded
             std::list<ClassTreeMaskNode*> subnodes_;    //!< A list containing all subnodes in the tree
@@ -145,10 +151,9 @@ namespace orxonox
     /**
         With a ClassTreeMask, you can include or exclude subtrees of the class-tree, starting
         with a given subclass, described by the corresponding Identifier. To minimize the size
-        of the mask, the mask saves only relevant rules. But you are allowed to manually add
-        rules that don't change the information of the mask. This way you can create the same
-        mask by adding the same rules in a different way without changing the information. If
-        you want to drop useless rules, call the clean() function.
+        of the mask, the mask saves only relevant rules. But you can manually add rules that
+        don't change the information of the mask by using clean = false. If you want to drop
+        useless rules, call the clean() function.
     */
     class _CoreExport ClassTreeMask
     {
@@ -157,9 +162,9 @@ namespace orxonox
             ClassTreeMask(const ClassTreeMask& other);
             ~ClassTreeMask();
 
-            void include(const Identifier* subclass);
-            void exclude(const Identifier* subclass);
-            void add(const Identifier* subclass, bool bInclude);
+            void include(const Identifier* subclass, bool overwrite = true, bool clean = true);
+            void exclude(const Identifier* subclass, bool overwrite = true, bool clean = true);
+            void add(const Identifier* subclass, bool bInclude, bool overwrite = true, bool clean = true);
             void reset();
             void clean();
 
@@ -192,9 +197,10 @@ namespace orxonox
             friend std::ostream& operator<<(std::ostream& out, const ClassTreeMask& mask);
 
         private:
-            void add(ClassTreeMaskNode* node, const Identifier* subclass, bool bInclude);
+            void add(ClassTreeMaskNode* node, const Identifier* subclass, bool bInclude, bool overwrite = true);
             bool isIncluded(ClassTreeMaskNode* node, const Identifier* subclass) const;
             void clean(ClassTreeMaskNode* node);
+            bool nodeExists(const Identifier* subclass);
 
             ClassTreeMaskNode* root_;   //!< The root-node of the internal rule-tree, usually BaseObject
     };

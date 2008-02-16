@@ -56,32 +56,34 @@ namespace orxonox
     ClassTreeMaskNode::~ClassTreeMaskNode()
     {
         // Go through the list of all subnodes and delete them
-        for (std::list<ClassTreeMaskNode*>::iterator it = this->subnodes_.begin(); it != this->subnodes_.end(); )
-            delete (*(it++));
+        this->deleteAllSubnodes();
     }
 
     /**
         @brief Sets the rule for the node to "included".
     */
-    void ClassTreeMaskNode::include()
+    void ClassTreeMaskNode::include(bool overwrite)
     {
-        this->bIncluded_ = true;
+        this->setIncluded(true, overwrite);
     }
 
     /**
         @brief Sets the rule for the node to "excluded".
     */
-    void ClassTreeMaskNode::exclude()
+    void ClassTreeMaskNode::exclude(bool overwrite)
     {
-        this->bIncluded_ = false;
+        this->setIncluded(false, overwrite);
     }
 
     /**
-        @brief Sets the rule for the node to a given value.
+        @brief Sets the rule for the node to a given value and erases all following rules.
         @param bIncluded The rule: included (true) or excluded (false)
     */
-    void ClassTreeMaskNode::setIncluded(bool bIncluded)
+    void ClassTreeMaskNode::setIncluded(bool bIncluded, bool overwrite)
     {
+        if (overwrite)
+            this->deleteAllSubnodes();
+
         this->bIncluded_ = bIncluded;
     }
 
@@ -119,6 +121,19 @@ namespace orxonox
     const Identifier* ClassTreeMaskNode::getClass() const
     {
         return this->subclass_;
+    }
+
+    /**
+        @brief Deletes all subnodes of this node.
+    */
+    void ClassTreeMaskNode::deleteAllSubnodes()
+    {
+        // Go through the list of all subnodes and delete them
+        for (std::list<ClassTreeMaskNode*>::iterator it = this->subnodes_.begin(); it != this->subnodes_.end(); )
+            delete (*(it++));
+
+        // Clear the list
+        this->subnodes_.clear();
     }
 
 
@@ -257,7 +272,7 @@ namespace orxonox
     {
         this->root_ = new ClassTreeMaskNode(ClassManager<BaseObject>::getIdentifier(), true);
         for (ClassTreeMaskIterator it = other.root_; it; ++it)
-            this->add(it->getClass(), it->isIncluded());
+            this->add(it->getClass(), it->isIncluded(), false);
     }
 
     /**
@@ -272,18 +287,18 @@ namespace orxonox
         @brief Adds a new "include" rule for a given subclass to the mask.
         @param subclass The subclass
     */
-    void ClassTreeMask::include(const Identifier* subclass)
+    void ClassTreeMask::include(const Identifier* subclass, bool overwrite, bool clean)
     {
-        this->add(subclass, true);
+        this->add(subclass, true, overwrite, clean);
     }
 
     /**
         @brief Adds a new "exclude" rule for a given subclass to the mask.
         @param subclass The subclass
     */
-    void ClassTreeMask::exclude(const Identifier* subclass)
+    void ClassTreeMask::exclude(const Identifier* subclass, bool overwrite, bool clean)
     {
-        this->add(subclass, false);
+        this->add(subclass, false, overwrite, clean);
     }
 
     /**
@@ -291,16 +306,26 @@ namespace orxonox
         @param subclass The subclass
         @param bInclude The rule: include (true) or exclude (false)
     */
-    void ClassTreeMask::add(const Identifier* subclass, bool bInclude)
+    void ClassTreeMask::add(const Identifier* subclass, bool bInclude, bool overwrite, bool clean)
     {
+        // Check if the given subclass is a child of our root-class
         if (subclass->isA(this->root_->getClass()))
-            this->add(this->root_, subclass, bInclude);
+        {
+            // Yes it is: Just add the rule to the three
+            this->add(this->root_, subclass, bInclude, overwrite);
+        }
         else
         {
-
+            // No it's not: Search for classes inheriting from the given class and add the rules for them
+            for (std::list<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
+                if ((*it)->isA(this->root_->getClass()))
+                    if (overwrite || (!this->nodeExists(*it))) // If we don't want to overwrite, only add nodes that don't already exist
+                        this->add(this->root_, *it, bInclude, overwrite);
         }
 
-        this->clean();
+        // Clean the rule-tree
+        if (clean)
+            this->clean();
     }
 
     /**
@@ -309,16 +334,16 @@ namespace orxonox
         @param subclass The subclass
         @param bInclude The rule: include (true) or exclude (false)
     */
-    void ClassTreeMask::add(ClassTreeMaskNode* node, const Identifier* subclass, bool bInclude)
+    void ClassTreeMask::add(ClassTreeMaskNode* node, const Identifier* subclass, bool bInclude, bool overwrite)
     {
         // Check if the current node contains exactly the subclass we want to add
         if (subclass == node->getClass())
         {
             // We're at the right place, just change the mask and return
-            node->setIncluded(bInclude);
+            node->setIncluded(bInclude, overwrite);
             return;
         }
-        else
+        else if (subclass->isA(node->getClass()))
         {
             // Search for an already existing node, containing the subclass we want to add
             for (std::list<ClassTreeMaskNode*>::iterator it = node->subnodes_.begin(); it != node->subnodes_.end(); ++it)
@@ -326,7 +351,7 @@ namespace orxonox
                 if (subclass->isA((*it)->getClass()))
                 {
                     // We've found an existing node -> delegate the work with a recursive function-call and return
-                    this->add(*it, subclass, bInclude);
+                    this->add(*it, subclass, bInclude, overwrite);
                     return;
                 }
             }
@@ -334,13 +359,17 @@ namespace orxonox
             // There is no existing node satisfying our needs -> we create a new node
             ClassTreeMaskNode* newnode = new ClassTreeMaskNode(subclass, bInclude);
 
-            // Search for nodes that should actually be subnodes of our new node
+            // Search for nodes that should actually be subnodes of our new node and erase them
             for (std::list<ClassTreeMaskNode*>::iterator it = node->subnodes_.begin(); it != node->subnodes_.end(); )
             {
                 if ((*it)->getClass()->isChildOf(subclass))
                 {
-                    // We've found a subnode: add it to the new node an erase it from the current node
-                    newnode->addSubnode(*it);
+                    // We've found a subnode: add it to the new node and erase it from the current node
+                    if (!overwrite)
+                        newnode->addSubnode(*it);
+                    else
+                        delete (*it);
+
                     node->subnodes_.erase(it++);
                 }
                 else
@@ -452,6 +481,20 @@ namespace orxonox
     }
 
     /**
+        @brief Checks if a node for the given subclass exists.
+        @param subclass The Identifier of the subclass
+        @return True = the node exists
+    */
+    bool ClassTreeMask::nodeExists(const Identifier* subclass)
+    {
+        for (ClassTreeMaskIterator it = this->root_; it; ++it)
+            if ((*it)->getClass() == subclass)
+                return true;
+
+        return false;
+    }
+
+    /**
         @brief Assignment operator: Adds all rules of the other mask.
         @param other The other mask
         @return A reference to the mask itself
@@ -466,7 +509,7 @@ namespace orxonox
 
         // Copy all rules from the other mask
         for (ClassTreeMaskIterator it = temp.root_; it; ++it)
-            this->add(it->getClass(), it->isIncluded());
+            this->add(it->getClass(), it->isIncluded(), false, false);
 
         // Return a reference to the mask itself
         return (*this);
@@ -504,14 +547,14 @@ namespace orxonox
         for (ClassTreeMaskIterator it = this->root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) or other.isIncluded(subclass));
+            newmask.add(subclass, this->isIncluded(subclass) or other.isIncluded(subclass), false, false);
         }
 
         // Add all nodes from the second mask, calculate the rule with the or-operation
         for (ClassTreeMaskIterator it = other.root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) or other.isIncluded(subclass));
+            newmask.add(subclass, this->isIncluded(subclass) or other.isIncluded(subclass), false, false);
         }
 
         // Drop all redundant rules
@@ -535,14 +578,14 @@ namespace orxonox
         for (ClassTreeMaskIterator it = this->root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) and other.isIncluded(subclass));
+            newmask.add(subclass, this->isIncluded(subclass) and other.isIncluded(subclass), false, false);
         }
 
         // Add all nodes from the second mask, calculate the rule with the and-operation
         for (ClassTreeMaskIterator it = other.root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) and other.isIncluded(subclass));
+            newmask.add(subclass, this->isIncluded(subclass) and other.isIncluded(subclass), false, false);
         }
 
         // Drop all redundant rules
@@ -575,7 +618,7 @@ namespace orxonox
         for (ClassTreeMaskIterator it = this->root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, !this->isIncluded(subclass));
+            newmask.add(subclass, !this->isIncluded(subclass), false, false);
         }
 
         // Return the new mask
@@ -649,14 +692,14 @@ namespace orxonox
         for (ClassTreeMaskIterator it = this->root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) xor other.isIncluded(subclass));
+            newmask.add(subclass, this->isIncluded(subclass) xor other.isIncluded(subclass), false, false);
         }
 
         // Add all nodes from the second mask, calculate the rule with the xor-operation
         for (ClassTreeMaskIterator it = other.root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) xor other.isIncluded(subclass));
+            newmask.add(subclass, this->isIncluded(subclass) xor other.isIncluded(subclass), false, false);
         }
 
         // Drop all redundant rules

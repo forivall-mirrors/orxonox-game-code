@@ -108,4 +108,22 @@ namespace orxonox
       static Factory theOneAndOnlyFactoryInstance = Factory();
       return &theOneAndOnlyFactoryInstance;
     }
+
+    /**
+        @brief Returns the begin-iterator of the factory-map.
+        @return The begin-iterator
+    */
+    std::map<std::string, Identifier*>::const_iterator Factory::getFactoryBegin()
+    {
+        return Factory::getFactoryPointer()->identifierStringMap_.begin();
+    }
+
+    /**
+        @brief Returns the end-iterator of the factory-map.
+        @return The end-iterator
+    */
+    std::map<std::string, Identifier*>::const_iterator Factory::getFactoryEnd()
+    {
+        return Factory::getFactoryPointer()->identifierStringMap_.end();
+    }
 }

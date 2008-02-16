@@ -71,9 +71,6 @@ namespace orxonox
             /** @brief Creates the parents-list. */
             inline void createParents() { this->parents_ = new std::list<const Identifier*>(); }
 
-//            /** @brief Sets the Parents of the object. Used by the RegisterObject-macro. */
-//            inline void setParents(std::list<const Identifier*>* parents) { this->parents_ = parents; }
-
             /** @brief Returns the MetaObjectList of the object, containing a link to all ObjectLists and ObjectListElements the object is registered in. @return The list */
             inline MetaObjectList& getMetaList() { return this->metaList_; }
 
@@ -82,56 +79,80 @@ namespace orxonox
             inline bool isA(const Identifier* identifier)
                 { return this->getIdentifier()->isA(identifier); }
             /** @brief Returns true if the objects class is exactly of the given type. */
-            inline bool isDirectlyA(const Identifier* identifier)
-                { return this->getIdentifier()->isDirectlyA(identifier); }
+            inline bool isExactlyA(const Identifier* identifier)
+                { return this->getIdentifier()->isExactlyA(identifier); }
             /** @brief Returns true if the objects class is a child of the given type. */
             inline bool isChildOf(const Identifier* identifier)
                 { return this->getIdentifier()->isChildOf(identifier); }
+            /** @brief Returns true if the objects class is a direct child of the given type. */
+            inline bool isDirectChildOf(const Identifier* identifier)
+                { return this->getIdentifier()->isDirectChildOf(identifier); }
             /** @brief Returns true if the objects class is a parent of the given type. */
             inline bool isParentOf(const Identifier* identifier)
                 { return this->getIdentifier()->isParentOf(identifier); }
+            /** @brief Returns true if the objects class is a direct parent of the given type. */
+            inline bool isDirectParentOf(const Identifier* identifier)
+                { return this->getIdentifier()->isDirectParentOf(identifier); }
 
 
             /** @brief Returns true if the objects class is of the given type or a derivative. */
             inline bool isA(const SubclassIdentifier<class B>* identifier)
                 { return this->getIdentifier()->isA(identifier->getIdentifier()); }
             /** @brief Returns true if the objects class is exactly of the given type. */
-            inline bool isDirectlyA(const SubclassIdentifier<class B>* identifier)
-                { return this->getIdentifier()->isDirectlyA(identifier->getIdentifier()); }
+            inline bool isExactlyA(const SubclassIdentifier<class B>* identifier)
+                { return this->getIdentifier()->isExactlyA(identifier->getIdentifier()); }
             /** @brief Returns true if the objects class is a child of the given type. */
             inline bool isChildOf(const SubclassIdentifier<class B>* identifier)
                 { return this->getIdentifier()->isChildOf(identifier->getIdentifier()); }
+            /** @brief Returns true if the objects class is a direct child of the given type. */
+            inline bool isDirectChildOf(const SubclassIdentifier<class B>* identifier)
+                { return this->getIdentifier()->isDirectChildOf(identifier->getIdentifier()); }
             /** @brief Returns true if the objects class is a parent of the given type. */
             inline bool isParentOf(const SubclassIdentifier<class B>* identifier)
                 { return this->getIdentifier()->isParentOf(identifier->getIdentifier()); }
+            /** @brief Returns true if the objects class is a direct parent of the given type. */
+            inline bool isDirectParentOf(const SubclassIdentifier<class B>* identifier)
+                { return this->getIdentifier()->isDirectParentOf(identifier->getIdentifier()); }
 
 
             /** @brief Returns true if the objects class is of the given type or a derivative. */
             inline bool isA(const SubclassIdentifier<class B> identifier)
                 { return this->getIdentifier()->isA(identifier.getIdentifier()); }
             /** @brief Returns true if the objects class is exactly of the given type. */
-            inline bool isDirectlyA(const SubclassIdentifier<class B> identifier)
-                { return this->getIdentifier()->isDirectlyA(identifier.getIdentifier()); }
+            inline bool isExactlyA(const SubclassIdentifier<class B> identifier)
+                { return this->getIdentifier()->isExactlyA(identifier.getIdentifier()); }
             /** @brief Returns true if the objects class is a child of the given type. */
             inline bool isChildOf(const SubclassIdentifier<class B> identifier)
                 { return this->getIdentifier()->isChildOf(identifier.getIdentifier()); }
+            /** @brief Returns true if the objects class is a direct child of the given type. */
+            inline bool isDirectChildOf(const SubclassIdentifier<class B> identifier)
+                { return this->getIdentifier()->isDirectChildOf(identifier.getIdentifier()); }
             /** @brief Returns true if the objects class is a parent of the given type. */
             inline bool isParentOf(const SubclassIdentifier<class B> identifier)
                 { return this->getIdentifier()->isParentOf(identifier.getIdentifier()); }
+            /** @brief Returns true if the objects class is a direct parent of the given type. */
+            inline bool isDirectParentOf(const SubclassIdentifier<class B> identifier)
+                { return this->getIdentifier()->isDirectParentOf(identifier.getIdentifier()); }
 
 
             /** @brief Returns true if the objects class is of the given type or a derivative. */
             inline bool isA(const OrxonoxClass* object)
                 { return this->getIdentifier()->isA(object->getIdentifier()); }
             /** @brief Returns true if the objects class is exactly of the given type. */
-            inline bool isDirectlyA(const OrxonoxClass* object)
-                { return this->getIdentifier()->isDirectlyA(object->getIdentifier()); }
+            inline bool isExactlyA(const OrxonoxClass* object)
+                { return this->getIdentifier()->isExactlyA(object->getIdentifier()); }
             /** @brief Returns true if the objects class is a child of the given type. */
             inline bool isChildOf(const OrxonoxClass* object)
                 { return this->getIdentifier()->isChildOf(object->getIdentifier()); }
+            /** @brief Returns true if the objects class is a direct child of the given type. */
+            inline bool isDirectChildOf(const OrxonoxClass* object)
+                { return this->getIdentifier()->isDirectChildOf(object->getIdentifier()); }
             /** @brief Returns true if the objects class is a parent of the given type. */
             inline bool isParentOf(const OrxonoxClass* object)
                 { return this->getIdentifier()->isParentOf(object->getIdentifier()); }
+            /** @brief Returns true if the objects class is a direct child of the given type. */
+            inline bool isDirectParentOf(const OrxonoxClass* object)
+                { return this->getIdentifier()->isDirectParentOf(object->getIdentifier()); }
 
 
             /** @brief Sets the name of the object. @param name The name */
