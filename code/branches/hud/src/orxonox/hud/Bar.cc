@@ -33,7 +33,7 @@
 
 #include "Bar.h"
 
-namespace hud
+namespace orxonox
 {
   using namespace Ogre;
 

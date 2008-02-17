@@ -38,12 +38,13 @@
 
 
 
-namespace hud
+// namespace hud
+namespace orxonox
 {
   class Bar : public Ogre::OverlayElement
   {
   private:
-    float percentage_;
+    double percentage_;
     bool horz_;
     Ogre::ColourValue color_;
 

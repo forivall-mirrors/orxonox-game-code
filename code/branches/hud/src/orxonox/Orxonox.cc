@@ -397,14 +397,14 @@ namespace orxonox
 
     Ogre::Overlay* hudOverlay = overlayManager.create("orxonoxsuperoverlay");
 
-    hud::Bar* newBar = static_cast<hud::Bar*>(overlayManager.createOverlayElement("Panel", "Bar"));
+    Bar* newBar = static_cast<Bar*>(overlayManager.createOverlayElement("Panel", "Bar"));
     newBar->setLeft(0);
     newBar->setTop(0);
     newBar->setWidth(10);
     newBar->setHeight(10);
     newBar->setMaterialName("Orxonox/Red");
     newBar->setMetricsMode(Ogre::GMM_PIXELS);
-    newBar->setPercentage(0.8);
+    newBar->setPercentage((Ogre::Real)0.8);
     newBar->show();
 
 
