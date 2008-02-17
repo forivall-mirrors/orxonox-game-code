@@ -49,6 +49,12 @@ namespace orxonox
             BaseObject();
             virtual ~BaseObject();
             virtual void loadParams(TiXmlElement* xmlElem);
+
+            /** @brief Returns a pointer to the level that loaded this object. @return The level */
+            inline const Level* getLevel() const { return this->level_; }
+
+        private:
+            const Level* level_;                        //!< The level that loaded this object
     };
     ExportClass(BaseObject, Core);
 }

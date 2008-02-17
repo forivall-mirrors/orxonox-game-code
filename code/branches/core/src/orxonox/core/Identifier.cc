@@ -124,7 +124,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "An error occurred in Identifier:" << std::endl;
+            COUT(1) << "An error occurred in Identifier.cc:" << std::endl;
             COUT(1) << "Error: Cannot fabricate an object of type '" << this->name_ << "'. Class has no factory." << std::endl;
             COUT(1) << "Aborting..." << std::endl;
             abort();

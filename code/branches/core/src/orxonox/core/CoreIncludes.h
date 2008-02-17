@@ -78,7 +78,7 @@
     @param ClassName The name of the class
 */
 #define RegisterObject(ClassName) \
-    COUT(4) << "*** Register Object: " << #ClassName << std::endl; \
+    COUT(5) << "*** Register Object: " << #ClassName << std::endl; \
     InternRegisterObject(ClassName, false)
 
 /**
@@ -86,7 +86,7 @@
     @param ClassName The name of the class
 */
 #define RegisterRootObject(ClassName) \
-    COUT(4) << "*** Register Root-Object: " << #ClassName << std::endl; \
+    COUT(5) << "*** Register Root-Object: " << #ClassName << std::endl; \
     InternRegisterRootObject(ClassName)
 
 /**

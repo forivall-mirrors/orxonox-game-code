@@ -25,44 +25,30 @@
  *
  */
 
-/**
-    @file BaseObject.cc
-    @brief Implementation of the BaseObject class.
-*/
+#ifndef _Level_H__
+#define _Level_H__
 
-#include "util/tinyxml/tinyxml.h"
+#include <string>
 
-#include "BaseObject.h"
+#include "CorePrereqs.h"
 
 namespace orxonox
 {
-    CreateFactory(BaseObject);
-
-    /**
-        @brief Constructor: Registers the object in the BaseObject-list.
-    */
-    BaseObject::BaseObject()
+    class _CoreExport Level
     {
-        RegisterRootObject(BaseObject);
+        public:
+            Level(const std::string& file) : file_(file) {}
+            Level(const std::string& file, const ClassTreeMask& mask) : file_(file), mask_(mask) {};
 
-        this->level_ = 0;
-    }
+            const std::string& getFile() const { return this->file_; }
+            const ClassTreeMask& getMask() const { return this->mask_; }
 
-    /**
-        @brief Destructor
-    */
-    BaseObject::~BaseObject()
-    {
-    }
+            void setMask(const ClassTreeMask& mask) { this->mask_ = mask; }
 
-    /**
-        @brief load general xml paramters
-    */
-    void BaseObject::loadParams(TiXmlElement* xmlElem)
-    {
-        if (xmlElem->Attribute("name"))
-        {
-            this->setName(xmlElem->Attribute("name"));
-        }
-    }
+        private:
+            std::string file_;
+            ClassTreeMask mask_;
+    };
 }
+
+#endif

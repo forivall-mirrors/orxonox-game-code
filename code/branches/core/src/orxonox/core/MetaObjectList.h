@@ -98,7 +98,7 @@ namespace orxonox
             this->list_->first_ = this->element_->next_; // If there is no prev_, we deleted the first object and have to update the first_ pointer of the list
 
 
-        COUT(4) << "*** MetaObjectList: Removing Object from " << this->element_->object_->getIdentifier()->getName() << "-list." << std::endl;
+        COUT(5) << "*** MetaObjectList: Removing Object from " << this->element_->object_->getIdentifier()->getName() << "-list." << std::endl;
         delete this->element_;
     }
 

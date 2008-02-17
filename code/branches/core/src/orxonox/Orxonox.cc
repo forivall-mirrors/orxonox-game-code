@@ -83,6 +83,7 @@
 #include "objects/test1.h"
 #include "objects/test2.h"
 #include "objects/test3.h"
+#include "core/Loader.h"
 
 #include "Orxonox.h"
 
@@ -848,7 +849,7 @@ namespace orxonox
 
         std::cout << "2\n";
 */
-
+/*
         std::cout << "Test 13\n";
 
         #define BoolToYesNo(bool) \
@@ -1109,6 +1110,7 @@ namespace orxonox
         TestClassTreeMask(test13_21);
 
         std::cout << "13\n";
+*/
 /*
         std::cout << "Test 14\n";
         std::cout << "1\n";
@@ -1133,6 +1135,15 @@ namespace orxonox
 
         std::cout << "2\n";
 */
+
+        std::cout << "Test 15\n";
+        std::cout << "1\n";
+
+        Level* test15_1 = new Level("levels/sample.oxw");
+        Loader::open(test15_1);
+
+        std::cout << "2\n";
+
 //    startRenderLoop();
   }
 

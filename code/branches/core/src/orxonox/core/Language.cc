@@ -229,7 +229,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "An error occurred in Language:" << std::endl;
+            COUT(1) << "An error occurred in Language.cc:" << std::endl;
             COUT(1) << "Error: Couldn't open file " << getFileName(this->defaultLanguage_) << " to read the default language entries!" << std::endl;
             return;
         }
@@ -271,7 +271,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "An error occurred in Language:" << std::endl;
+            COUT(1) << "An error occurred in Language.cc:" << std::endl;
             COUT(1) << "Error: Couldn't open file " << getFileName(this->language_) << " to read the translated language entries!" << std::endl;
             ResetConfigValue(language_);
             COUT(3) << "Info: Reset language to " << this->defaultLanguage_ << "." << std::endl;
@@ -323,7 +323,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "An error occurred in Language:" << std::endl;
+            COUT(1) << "An error occurred in Language.cc:" << std::endl;
             COUT(1) << "Error: Couldn't open file " << getFileName(this->defaultLanguage_) << " to write the default language entries!" << std::endl;
             return;
         }

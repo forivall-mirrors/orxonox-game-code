@@ -265,7 +265,7 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::registerClass(std::list<const Identifier*>* parents, const std::string& name, bool bRootClass)
     {
-        COUT(4) << "*** ClassIdentifier: Register Class in " << name << "-Singleton." << std::endl;
+        COUT(5) << "*** ClassIdentifier: Register Class in " << name << "-Singleton." << std::endl;
 
         // Check if at least one object of the given type was created
         if (!this->bCreatedOneObject_)
@@ -304,7 +304,7 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::addObject(T* object)
     {
-        COUT(4) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
+        COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
         object->getMetaList().add(this->objects_, this->objects_->add(object));
     }
 
@@ -358,7 +358,7 @@ namespace orxonox
             {
                 if (!identifier->isA(ClassManager<T>::getIdentifier()))
                 {
-                    COUT(1) << "An error occurred in SubclassIdentifier:" << std::endl;
+                    COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
                     COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassManager<T>::getIdentifier()->getName() << "!" << std::endl;
                     COUT(1) << "Error: SubclassIdentifier<" << ClassManager<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
                     COUT(1) << "Aborting..." << std::endl;
@@ -405,14 +405,14 @@ namespace orxonox
                     // Something went terribly wrong
                     if (this->identifier_)
                     {
-                        COUT(1) << "An error occurred in SubclassIdentifier:" << std::endl;
+                        COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
                         COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << ClassManager<T>::getIdentifier()->getName() << "!" << std::endl;
                         COUT(1) << "Error: Couldn't fabricate a new Object." << std::endl;
                         COUT(1) << "Aborting..." << std::endl;
                     }
                     else
                     {
-                        COUT(1) << "An error occurred in SubclassIdentifier:" << std::endl;
+                        COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
                         COUT(1) << "Error: Couldn't fabricate a new Object - Identifier is undefined." << std::endl;
                         COUT(1) << "Aborting..." << std::endl;
                     }

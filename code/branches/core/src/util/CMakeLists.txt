@@ -3,13 +3,13 @@ PROJECT(Orxonox)
 AUX_SOURCE_DIRECTORY(tinyxml TINYXML_SRC_FILES)
 
 SET (UTIL_SRC_FILES
-  ${TINYXML_SRC_FILES}
   Math.cc
   String.cc
   substring.cc
   MultiTypePrimitive.cc
   MultiTypeString.cc
   MultiTypeMath.cc
+  ${TINYXML_SRC_FILES}
 )
 
 ADD_LIBRARY( util SHARED ${UTIL_SRC_FILES} )

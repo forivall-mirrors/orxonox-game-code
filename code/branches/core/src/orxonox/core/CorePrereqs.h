@@ -80,13 +80,12 @@ namespace orxonox
   class Factory;
   class Identifier;
   class IdentifierDistributor;
-//  class IdentifierList;
-//  class IdentifierListElement;
   template <class T>
   class Iterator;
   class Language;
   class LanguageEntry;
   class Level;
+  class Loader;
   class MetaObjectList;
   template <class T>
   class MetaObjectListElement;
