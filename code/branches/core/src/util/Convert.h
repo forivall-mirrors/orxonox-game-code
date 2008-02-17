@@ -36,49 +36,50 @@
 #include <sstream>
 
 #include "UtilPrereqs.h"
+#include "Math.h"
 
 // DEFAULT CLASS
 template <typename FromType, typename ToType>
 class _UtilExport Converter
 {
- public:
-  bool operator()(ToType* output, const FromType& input) const
-  {
-    return false;
-  }
+  public:
+    bool operator()(ToType* output, const FromType& input) const
+    {
+      return false;
+    }
 };
 
 // PARTIAL SPECIALIZATION TO CONVERT TO STRINGS
 template<typename FromType>
 class _UtilExport Converter<FromType, std::string>
 {
- public:
-  bool operator()(std::string* output, const FromType& input) const
-  {
-    std::ostringstream oss;
-    if (oss << input)
+  public:
+    bool operator()(std::string* output, const FromType& input) const
     {
-      (*output) = oss.str();
-      return true;
+      std::ostringstream oss;
+      if (oss << input)
+      {
+        (*output) = oss.str();
+        return true;
+      }
+      else
+        return false;
     }
-    else
-      return false;
-  }
 };
 
 // PARTIAL SPECIALIZATION TO CONVERT FROM STRING
 template<typename ToType>
 class _UtilExport Converter<std::string, ToType>
 {
- public:
-  bool operator()(ToType* output, const std::string& input) const
-  {
-    std::istringstream iss(input);
-    if (iss >> (*output))
-      return true;
-    else
-      return false;
-  }
+  public:
+    bool operator()(ToType* output, const std::string& input) const
+    {
+      std::istringstream iss(input);
+      if (iss >> (*output))
+        return true;
+      else
+        return false;
+    }
 };
 
 // FUNCTION SO WE DO NOT HAVE TO TELL THE COMPILER ABOUT THE TYPE
@@ -100,5 +101,98 @@ static _UtilExport bool ConvertValue(ToType* output, const FromType& input, cons
   (*output) = fallback;
   return false;
 }
+
+
+
+// MORE SPECIALISATIONS
+// Vector2 to std::string
+template <>
+class _UtilExport Converter<orxonox::Vector2, std::string>
+{
+  public:
+    bool operator()(std::string* output, const orxonox::Vector2& input) const
+    {
+      std::ostringstream ostream;
+      if (ostream << input.x << "," << input.y)
+      {
+        (*output) = ostream.str();
+        return true;
+      }
+
+      return false;
+    }
+};
+
+// Vector3 to std::string
+template <>
+class _UtilExport Converter<orxonox::Vector3, std::string>
+{
+  public:
+    bool operator()(std::string* output, const orxonox::Vector3& input) const
+    {
+      std::ostringstream ostream;
+      if (ostream << input.x << "," << input.y << "," << input.z)
+      {
+        (*output) = ostream.str();
+        return true;
+      }
+
+      return false;
+    }
+};
+
+// Vector4 to std::string
+template <>
+class _UtilExport Converter<orxonox::Vector4, std::string>
+{
+  public:
+    bool operator()(std::string* output, const orxonox::Vector4& input) const
+    {
+      std::ostringstream ostream;
+      if (ostream << input.x << "," << input.y << "," << input.z << "," << input.w)
+      {
+        (*output) = ostream.str();
+        return true;
+      }
+
+      return false;
+    }
+};
+
+// Quaternion to std::string
+template <>
+class _UtilExport Converter<orxonox::Quaternion, std::string>
+{
+  public:
+    bool operator()(std::string* output, const orxonox::Quaternion& input) const
+    {
+      std::ostringstream ostream;
+      if (ostream << input.w << "," << input.x << "," << input.y << "," << input.z)
+      {
+        (*output) = ostream.str();
+        return true;
+      }
+
+      return false;
+    }
+};
+
+// ColourValue to std::string
+template <>
+class _UtilExport Converter<orxonox::ColourValue, std::string>
+{
+  public:
+    bool operator()(std::string* output, const orxonox::ColourValue& input) const
+    {
+      std::ostringstream ostream;
+      if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
+      {
+        (*output) = ostream.str();
+        return true;
+      }
+
+      return false;
+    }
+};
 
 #endif /* _Convert_H__ */
