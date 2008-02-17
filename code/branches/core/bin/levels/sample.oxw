@@ -50,8 +50,6 @@
     <Model position="-200,1000,500" scale="10" mesh="hoover_turbine.mesh" yaw="-90" pitch="-90" />
 
 
-
-
     <Model position="-16779,42,11043" scale="95" mesh="ast2.mesh" rotationAxis="0.281711,0.152518,0" rotationRate="27" />
     <Model position="12893,-1583,-17939" scale="48" mesh="ast1.mesh" rotationAxis="0.0597998,0.923364,0" rotationRate="36" />
     <Model position="-2107,259,-19814" scale="29" mesh="ast4.mesh" rotationAxis="0.298639,0.96907,0" rotationRate="32" />
