@@ -36,12 +36,12 @@
 namespace hud
 {
   using namespace Ogre;
-    
+
   Bar::Bar(void){}
-  
+
   Bar::~Bar(void){}
-  
-  
+
+
 /*  void Bar::setPercentage(Ogre::Real percentage){
     percentage_=percentage;
     if(horz_){setWidth(int(percentage_* maxLength_));}
@@ -56,13 +56,11 @@ namespace hud
 
 
 
-  
+
   void Bar::setColor(ColourValue color){
     color_=color;
     setColour(color);
   }
-	  
-	
 
 
-
+}

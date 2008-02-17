@@ -91,6 +91,7 @@ namespace orxonox {
 
   class ParticleInterface;
   class HUD;
+  class Bar;
 }
 
 
