@@ -35,6 +35,7 @@
 #include "ConfigValueContainer.h"
 #include "util/Tokenizer.h"
 #include "util/Convert.h"
+#include "Language.h"
 
 #define CONFIGFILEPATH "orxonox.ini"
 
@@ -949,5 +950,14 @@ namespace orxonox
             Language::getLanguage().addEntry(this->description_, description);
             this->bAddedDescription_ = true;
         }
+    }
+
+    /**
+        @brief Returns the description of the config-value.
+        @return The description
+    */
+    std::string ConfigValueContainer::getDescription() const
+    {
+        return Language::getLanguage().getTranslation(this->description_);
     }
 }

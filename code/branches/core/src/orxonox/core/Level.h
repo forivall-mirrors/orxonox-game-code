@@ -51,4 +51,4 @@ namespace orxonox
     };
 }
 
-#endif
+#endif /* _Level_H__ */

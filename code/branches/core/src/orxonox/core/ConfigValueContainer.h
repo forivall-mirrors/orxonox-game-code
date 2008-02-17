@@ -49,7 +49,6 @@
 
 #include "util/Math.h"
 #include "util/MultiTypeMath.h"
-#include "Language.h"
 
 namespace orxonox
 {
@@ -100,6 +99,7 @@ namespace orxonox
             inline ConfigValueContainer& getValue(Degree* value)         { this->value_.getValue(value); return *this; }
 
             void description(const std::string& description);
+            std::string getDescription() const;
 
             bool parseString(const std::string& input, MultiTypeMath& defvalue);
             bool valueToString(std::string* output, MultiTypeMath& input);

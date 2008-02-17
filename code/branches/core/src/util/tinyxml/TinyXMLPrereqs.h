@@ -72,4 +72,15 @@ class TiXmlText;
 class TiXmlDeclaration;
 class TiXmlParsingData;
 
+namespace ticpp
+{
+    class Document;
+    class Element;
+    class Declaration;
+    class StylesheetReference;
+    class Text;
+    class Comment;
+    class Attribute;
+}
+
 #endif /* _TinyXMLPrereqs_H__ */

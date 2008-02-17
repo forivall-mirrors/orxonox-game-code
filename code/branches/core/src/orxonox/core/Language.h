@@ -52,8 +52,9 @@
 
 namespace orxonox
 {
-    typedef std::string LanguageEntryName;
-
+    // ###############################
+    // ###      LanguageEntry      ###
+    // ###############################
     //! The LanguageEntry class stores the default- and the translated string of a given entry in the language file.
     class _CoreExport LanguageEntry : public OrxonoxClass
     {
@@ -84,6 +85,10 @@ namespace orxonox
     template class _CoreExport orxonox::ClassIdentifier<LanguageEntry>;
     template class _CoreExport orxonox::ObjectList<LanguageEntry>;
 
+
+    // ###############################
+    // ###         Language        ###
+    // ###############################
     //! The Language class manges the language files and entries and stores the LanguageEntry objects in a map.
     class _CoreExport Language : public OrxonoxClass
     {

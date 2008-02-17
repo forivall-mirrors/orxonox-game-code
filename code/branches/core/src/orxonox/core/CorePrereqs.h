@@ -33,6 +33,8 @@
 #ifndef _CorePrereqs_H__
 #define _CorePrereqs_H__
 
+#include <string>
+
 #include "orxonox/OrxonoxPlatform.h"
 
 //-----------------------------------------------------------------------
@@ -62,6 +64,8 @@ class SignalHandler;
 
 namespace orxonox
 {
+  typedef std::string LanguageEntryName;
+
   class ArgReader;
   class BaseFactory;
   class BaseMetaObjectListElement;

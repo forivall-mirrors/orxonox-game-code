@@ -36,7 +36,7 @@
 #define _BaseObject_H__
 
 #include "CorePrereqs.h"
-#include "util/tinyxml/TinyXMLPrereqs.h"
+#include "util/XMLIncludes.h"
 
 #include "CoreIncludes.h"
 
@@ -49,6 +49,7 @@ namespace orxonox
             BaseObject();
             virtual ~BaseObject();
             virtual void loadParams(TiXmlElement* xmlElem);
+            virtual Element& XMLPort(Element& xmlelement, bool loading);
 
             /** @brief Returns a pointer to the level that loaded this object. @return The level */
             inline const Level* getLevel() const { return this->level_; }
