@@ -32,6 +32,7 @@
 #include <OgreStringConverter.h>
 
 #include "HUD.h"
+#include "Bar.h"
 
 
 namespace orxonox

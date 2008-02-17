@@ -42,6 +42,7 @@
 #include <OgreResourceGroupManager.h>
 #include <OgreConfigFile.h>
 #include <OgreOverlay.h>
+#include <OgreOverlayContainer.h>
 #include <OgreOverlayManager.h>
 
 //****** OIS *******
@@ -72,6 +73,7 @@
 #include "core/Factory.h"
 #include "core/Debug.h"
 #include "hud/HUD.h"
+#include "hud/Bar.h"
 #include "objects/weapon/BulletManager.h"
 #include "GraphicsEngine.h"
 
@@ -381,12 +383,48 @@ namespace orxonox
     loader_ = new loader::LevelLoader("sample.oxw");
     loader_->loadLevel();
 
-    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    HUD* orxonoxHud;
-    orxonoxHud = new HUD();
-    orxonoxHud->setEnergyValue(20);
-    orxonoxHud->setEnergyDistr(20,20,60);
+//    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
+ //   Ogre::OverlayContainer* cont = Ogre::OverlayManager::createOverlayElement("Orxonox/HUD1.2/MyShip", "Orxonox/HUD1.2/shieldLeftTop", false);
+ //   Ogre::OverlayContainer* cont =  Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2/MapBackGround");
+
+//    hud::Bar* newBar = Ogre::OverlayManager::createOverlayElement("Element", "ElementName");
+//new hud::Bar(1,true,Ogre::ColourValue::Black,"Orxonox/hi");
+ //   cont->addChild(newBar-> element_);
+//   hud::Bar* newBar = Ogre::OverlayManager::createOverlayElement("orxonox/bar", "orxonox/newbar", false);
+
+
+    Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+
+    Ogre::Overlay* hudOverlay = overlayManager.create("orxonoxsuperoverlay");
+
+    hud::Bar* newBar = static_cast<hud::Bar*>(overlayManager.createOverlayElement("Panel", "Bar"));
+    newBar->setLeft(0);
+    newBar->setTop(0);
+    newBar->setWidth(10);
+    newBar->setHeight(10);
+    newBar->setMaterialName("Orxonox/Red");
+    newBar->setMetricsMode(Ogre::GMM_PIXELS);
+    newBar->setPercentage(0.8);
+    newBar->show();
+
+
+    Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*> (overlayManager.createOverlayElement("Panel", "PanelName"));
+    panel->setLeft(10);
+    panel->setTop(10);
+    panel->setWidth(100);
+    panel->setHeight(100);
+    panel->setMetricsMode(Ogre::GMM_PIXELS);
+    panel->show();
+
+    hudOverlay->add2D(panel);
+    panel->addChild(newBar);
+
+ //   HUD* orxonoxHud;
+ //   orxonoxHud = new HUD();
+ //   orxonoxHud->setEnergyValue(20);
+ //   orxonoxHud->setEnergyDistr(20,20,60);
     hudOverlay->show();
+
 
 	/*
     auMan_->ambientAdd("a1");

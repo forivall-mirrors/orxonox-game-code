@@ -6,7 +6,7 @@
 #  OGRE_LIB_DIR, the location of the libraries
 #  OGRE_FOUND, If false, do not try to use OGRE
 #
-# Copyright © 2007, Matt Williams
+# Copyright ï¿½ 2007, Matt Williams
 # Modified by Nicolas Schlumberger to make it work on the Tardis-Infrastucture of the ETH Zurich
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
@@ -17,12 +17,12 @@ ENDIF (OGRE_LIBRARIES AND OGRE_INCLUDE_DIR)
 
 IF (WIN32) #Windows
     MESSAGE(STATUS "Looking for OGRE")
-    SET(OGRE_INCLUDE_DIR ../libs/ogre/OgreMain/include)
-    SET(OGRE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../libs/ogre/Samples/Common/bin/Release)
+    SET(OGRE_INCLUDE_DIR /usr/include/OGRE ../libs/ogre/OgreMain/include)
+    SET(OGRE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/usr/include/OGRE ${CMAKE_CURRENT_SOURCE_DIR}/../libs/ogre/Samples/Common/bin/Release)
     SET(OGRE_LIBRARIES debug OgreMain_d optimized OgreMain)
 ELSE (WIN32) #Unix
     FIND_PACKAGE(PkgConfig)
-    PKG_SEARCH_MODULE(OGRE OGRE /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/OGRE.pc) # tardis specific hack
+    PKG_SEARCH_MODULE(OGRE OGRE /usr/include/OGRE /usr/pack/ogre-1.4.5-sd/i686-debian-linux3.1/lib/pkgconfig/OGRE.pc) # tardis specific hack
     SET(OGRE_INCLUDE_DIR ${OGRE_INCLUDE_DIRS})
     SET(OGRE_LIB_DIR ${OGRE_LIBDIR})
     SET(OGRE_LIBRARIES ${OGRE_LIBRARIES} CACHE STRING "")
