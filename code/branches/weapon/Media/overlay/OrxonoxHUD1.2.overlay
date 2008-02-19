@@ -1,0 +1,456 @@
+Orxonox/HUD1.2
+{
+	zorder 500
+	// Stats block
+
+
+	
+
+
+
+	container Panel(Orxonox/HUD1.2/MapBackGround)
+	{
+		metrics_mode pixels
+		vert_align bottom
+		horz_align center
+		left -75
+		top -160
+		width 150
+		height 150
+		material Orxonox/MapBackGround
+	}
+
+	container Panel(Orxonox/HUD1.2/MyShip)
+	{
+		metrics_mode pixels
+		vert_align bottom
+		horz_align center
+		left 100
+		top -140
+		width 100
+		height 100
+		material Orxonox/MyShip
+		
+		container Panel(Orxonox/HUD1.2/shieldLeftTop)
+		{
+			metrics_mode pixels
+			left -5
+			top 0
+			width 30
+			height 30
+			material Orxonox/shieldLeftTop
+		}
+
+		container Panel(Orxonox/HUD1.2/shieldRightTop)
+		{
+			metrics_mode pixels
+			horz_align right
+			left -30
+			top 0
+			width 30
+			height 30
+			material Orxonox/shieldRightTop
+		}
+
+		container Panel(Orxonox/HUD1.2/shieldLeftBottom)
+		{
+			metrics_mode pixels
+			vert_align bottom
+			left -5
+			top -30
+			width 30
+			height 30
+			material Orxonox/shieldLeftBottom
+		}
+
+		container Panel(Orxonox/HUD1.2/shieldRightBottom)
+		{
+			metrics_mode pixels
+			vert_align bottom
+			horz_align right
+			left -30
+			top -30
+			width 30
+			height 30
+			material Orxonox/shieldRightBottom
+		}
+		
+	}
+
+
+	container Panel(Orxonox/HUD1.2/PrimarBackground)
+	{
+		metrics_mode pixels
+		vert_align bottom
+		horz_align right
+		left -180
+		top -180
+		width 150
+		height 50
+		material Orxonox/PrimarBackground
+
+		container Panel(Orxonox/HUD1.2/PrimarSample1)
+		{
+			metrics_mode pixels
+			left 0
+			top 0
+			width 50
+			height 50
+			material Orxonox/PrimarSample
+		}
+
+		container Panel(Orxonox/HUD1.2/PrimarSample2)
+		{
+			metrics_mode pixels
+			left 50
+			top 0
+			width 50
+			height 50
+			material Orxonox/PrimarSample
+		}
+
+		container Panel(Orxonox/HUD1.2/PrimarSample3)
+		{
+			metrics_mode pixels
+			left 100
+			top 0
+			width 50
+			height 50
+			material Orxonox/PrimarSample
+		}
+
+		container Panel(Orxonox/HUD1.2/PrimarChoice)
+		{
+			metrics_mode pixels
+			left 2
+			top 2
+			width 48
+			height 46
+			material Orxonox/PrimarChoice
+		}
+
+
+
+
+	}
+	
+	container Panel(Orxonox/HUD1.2/RacketBackground)
+	{
+		metrics_mode pixels
+		vert_align bottom
+		horz_align right
+		left -180
+		top -130
+		width 150
+		height 100
+		material Orxonox/RacketBackground
+
+		element TextArea(Orxonox/HUD1.2/Rocket1)
+		{
+			metrics_mode pixels
+			left 10
+			top 7
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 25
+			caption Rocket1
+			colour_top 0 1 0 
+		}	
+
+		element TextArea(Orxonox/HUD1.2/Rocket2)
+		{
+			metrics_mode pixels
+			left 10
+			top 29
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 25
+			caption Rocket2
+			colour_top 0 1 0 
+		}	
+
+		element TextArea(Orxonox/HUD1.2/Rocket3)
+		{
+			metrics_mode pixels
+			left 10
+			top 51
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 25
+			caption Rocket3
+			colour_top 0 1 0 
+		}
+	
+		element TextArea(Orxonox/HUD1.2/Rocket4)
+		{
+			metrics_mode pixels
+			left 10
+			top 74
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 25
+			caption Rocket4
+			colour_top 0 1 0 
+		}
+
+
+		element TextArea(Orxonox/HUD1.2/RocketNum1)
+		{
+			metrics_mode pixels
+			horz_align right
+			left -30
+			top 7
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 25
+			caption 20
+			colour_top 0 1 0 
+		}	
+
+		element TextArea(Orxonox/HUD1.2/RocketNum2)
+		{
+			metrics_mode pixels
+			horz_align right
+			left -30
+			top 29
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 25
+			caption 99
+			colour_top 0 1 0 
+		}	
+
+		element TextArea(Orxonox/HUD1.2/RocketNum3)
+		{
+			metrics_mode pixels
+			horz_align right
+			left -30
+			top 51
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 25
+			caption 01
+			colour_top 0 1 0 
+		}
+	
+		element TextArea(Orxonox/HUD1.2/RocketNum4)
+		{
+			metrics_mode pixels
+			horz_align right
+			left -30
+			top 74
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 25
+			caption 55
+			colour_top 0 1 0 
+		}	
+	
+		
+	
+
+
+	}
+
+
+	container Panel(Orxonox/HUD1.2/Energy)
+	{
+		metrics_mode pixels
+		vert_align top
+		horz_align center
+		left -100
+		top 20
+		width 200
+		height 20
+
+		container Panel(Orxonox/HUD1.2/EnergyBackground)
+		{
+			metrics_mode pixels
+			width 200
+			height 20
+			material Orxonox/EnergyBackground
+		}
+		
+		element TextArea(Orxonox/HUD1.2/EnergyText)
+		{
+			metrics_mode pixels
+			horz_align center
+			left -20
+			top 2
+			width 200
+			height 20
+			font_name BlueHighway
+			char_height 20
+			caption Energy
+			colour_top 1 1 0 
+		}
+	}
+
+	container Panel(Orxonox/HUD1.2/TargetWindow)
+	{
+		metrics_mode pixels
+		vert_align bottom
+		horz_align left
+		left 40
+		top -130
+		width 150
+		height 100
+		material Orxonox/TargetBackground
+
+		element TextArea(Orxonox/HUD1.2/TargetWindow/Name)
+		{
+			metrics_mode pixels
+			left 20
+			top 5
+			width 200
+			height 20
+			font_name BlueHighway
+			char_height 25
+			caption Moesonator
+			colour_top 0 1 0 
+		}
+
+		element TextArea(Orxonox/HUD1.2/TargetWindow/Distance)
+		{
+			metrics_mode pixels
+			left 9
+			top 35
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 20
+			caption Distance
+			colour_top 0 1 0 
+		}
+
+		element TextArea(Orxonox/HUD1.2/TargetWindow/Status)
+		{
+			metrics_mode pixels
+			left 7
+			top 55
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 20
+			caption Status
+			colour_top 0 1 0 
+		}
+
+		element TextArea(Orxonox/HUD1.2/TargetWindow/HitRating)
+		{
+			metrics_mode pixels
+			left 7
+			top 75
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 20
+			caption Hit Rating
+			colour_top 0 1 0 
+		}
+
+		element TextArea(Orxonox/HUD1.2/TargetWindow/DistanceText)
+		{
+			metrics_mode pixels
+			horz_align right
+			left -50
+			top 35
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 20
+			caption 50km
+			colour_top 0 1 0 
+		}
+
+		element TextArea(Orxonox/HUD1.2/TargetWindow/StatusText)
+		{
+			metrics_mode pixels
+			horz_align right
+			left -50
+			top 55
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 20
+			caption huhu
+			colour_top 0 1 0 
+		}
+
+		element TextArea(Orxonox/HUD1.2/TargetWindow/HitRatingText)
+		{
+			metrics_mode pixels
+			horz_align right
+			left -50
+			top 75
+			width 150
+			height 20
+			font_name BlueHighway
+			char_height 20
+			caption 50%
+			colour_top 0 1 0 
+		}
+
+
+
+	}
+
+
+
+
+	container Panel(Orxonox/HUD1.2/EnergyDistrWindow)
+	{
+		metrics_mode pixels
+		vert_align bottom
+		horz_align right
+		left -150
+		top -300
+		width 100
+		height 86
+		material Orxonox/EnergyDistrBackground
+
+		container Panel(Orxonox/HUD1.2/EnergyDistrPoint)
+		{
+			metrics_mode pixels
+			left 40
+			top 36
+			width 7
+			height 7
+			material Orxonox/RedPoint
+		}
+	}
+
+	container Panel(Orxonox/HUD1.2/Time)
+	{
+		metrics_mode pixels
+		vert_align top
+		horz_align left
+		left 30
+		top 10
+		width 60
+		height 30
+
+		
+		element TextArea(Orxonox/HUD1.2/Time/Text)
+		{
+			metrics_mode pixels
+			horz_align left
+			left 10
+			top 5
+			width 100
+			height 20
+			font_name BlueHighway
+			char_height 25
+			caption 99:99
+			colour_top 0 1 0 
+		}
+
+}
