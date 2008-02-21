@@ -4,9 +4,9 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = Orxonox
-PROJECT_NUMBER         = $VERSION$
+PROJECT_NUMBER         = 0.1.0 Arcturus
 OUTPUT_DIRECTORY       =
-CREATE_SUBDIRS         = NO
+CREATE_SUBDIRS         = YES
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = YES
@@ -42,7 +42,7 @@ SUBGROUPING            = YES
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
-EXTRACT_ALL            = NO
+EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = NO
 EXTRACT_LOCAL_CLASSES  = YES
