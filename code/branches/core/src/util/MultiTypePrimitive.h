@@ -53,6 +53,7 @@ class _UtilExport MultiTypePrimitive
         inline MultiTypePrimitive(bool           value) { this->setValue(value); }
         MultiTypePrimitive(const MultiTypePrimitive& mtp);
 
+        inline MultiTypePrimitive& operator=(MultiType      value) { this->type_ = MT_null; return *this; }
         inline MultiTypePrimitive& operator=(int            value) { this->setValue(value); return *this; }
         inline MultiTypePrimitive& operator=(unsigned int   value) { this->setValue(value); return *this; }
         inline MultiTypePrimitive& operator=(char           value) { this->setValue(value); return *this; }
@@ -94,6 +95,19 @@ class _UtilExport MultiTypePrimitive
         inline bool operator!=(long double    value) const { return (this->value_.longdouble_ != value); }
         inline bool operator!=(bool           value) const { return (this->value_.bool_       != value); }
         bool operator!=(const MultiTypePrimitive& mtp) const;
+
+        inline operator int()            const { return this->value_.int_;        }
+        inline operator unsigned int()   const { return this->value_.uint_;       }
+        inline operator char()           const { return this->value_.char_;       }
+        inline operator unsigned char()  const { return this->value_.uchar_;      }
+        inline operator short()          const { return this->value_.short_;      }
+        inline operator unsigned short() const { return this->value_.ushort_;     }
+        inline operator long()           const { return this->value_.long_;       }
+        inline operator unsigned long()  const { return this->value_.ulong_;      }
+        inline operator float ()         const { return this->value_.float_;      }
+        inline operator double ()        const { return this->value_.double_;     }
+        inline operator long double()    const { return this->value_.longdouble_; }
+        inline operator bool()           const { return this->value_.bool_;       }
 
         inline void setValue(int            value) { this->type_ = MT_int;        this->value_.int_        = value; }
         inline void setValue(unsigned int   value) { this->type_ = MT_uint;       this->value_.uint_       = value; }

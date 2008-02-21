@@ -62,24 +62,27 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
 
         using MultiTypePrimitive::operator==;
         inline bool operator==(const char*        value) const { return (this->string_ == std::string(value)); }
-        inline bool operator==(const std::string& value) const { return (this->string_ == value); }
+        inline bool operator==(const std::string& value) const { return (this->string_ == value);              }
         bool operator==(const MultiTypeString& mtp) const;
 
         using MultiTypePrimitive::operator!=;
         inline bool operator!=(const char*        value) const { return (this->string_ != std::string(value)); }
-        inline bool operator!=(const std::string& value) const { return (this->string_ != value); }
+        inline bool operator!=(const std::string& value) const { return (this->string_ != value);              }
         bool operator!=(const MultiTypeString& mtp) const;
+
+        inline operator std::string() const { return this->string_;         }
+        inline operator const char*() const { return this->string_.c_str(); }
 
         using MultiTypePrimitive::setValue;
         inline void setValue(const char*        value) { this->type_ = MT_string; this->string_ = std::string(value); }
-        inline void setValue(const std::string& value) { this->type_ = MT_string; this->string_ = value; }
+        inline void setValue(const std::string& value) { this->type_ = MT_string; this->string_ = value;              }
         void setValue(const MultiTypeString& mtp);
 
-        inline std::string& getString()    { return this->string_; }
+        inline std::string& getString()    { return this->string_;         }
         inline const char*  getConstChar() { return this->string_.c_str(); }
 
         using MultiTypePrimitive::getValue;
-        inline void getValue(std::string* variable) const { (*variable) = this->string_; }
+        inline void getValue(std::string* variable) const { (*variable) = this->string_;         }
         inline void getValue(const char** variable) const { (*variable) = this->string_.c_str(); }
 
     protected:

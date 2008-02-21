@@ -87,6 +87,13 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         inline bool operator!=(const orxonox::Degree&      value) const { return (this->degree_      != value); }
         bool operator!=(const MultiTypeMath& mtm) const;
 
+        inline operator orxonox::Vector2()     const { return this->vector2_;     }
+        inline operator orxonox::Vector3()     const { return this->vector3_;     }
+        inline operator orxonox::ColourValue() const { return this->colourvalue_; }
+        inline operator orxonox::Quaternion()  const { return this->quaternion_;  }
+        inline operator orxonox::Radian()      const { return this->radian_;      }
+        inline operator orxonox::Degree()      const { return this->degree_;      }
+
         using MultiTypeString::setValue;
         inline void setValue(const orxonox::Vector2&     value) { this->type_ = MT_vector2;     this->vector2_     = value; }
         inline void setValue(const orxonox::Vector3&     value) { this->type_ = MT_vector3;     this->vector3_     = value; }
