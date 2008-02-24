@@ -33,7 +33,7 @@
 //
  */
 
-#include "substring.h"
+#include "SubString.h"
 
 /**
  * @brief default constructor
