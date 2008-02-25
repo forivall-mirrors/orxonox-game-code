@@ -75,6 +75,15 @@ namespace orxonox
             }
 
             /**
+                @brief Assigns an element to the iterator.
+                @param element The element
+            */
+            Iterator<T> operator=(ObjectListElement<T>* element)
+            {
+                this->element_ = element;
+            }
+
+            /**
                 @brief Overloading of the ++it operator: Iterator points to the next object in the list.
                 @return The Iterator itself
             */
