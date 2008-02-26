@@ -149,7 +149,7 @@ namespace orxonox
             std::list<std::string>::iterator configFileLine_;   //!< An iterator, pointing to the entry of the variable in the config-file
 
             bool bAddedDescription_;                            //!< True if a description was added
-            LanguageEntryName description_;                     //!< The description
+            LanguageEntryLabel description_;                    //!< The description
     };
 }
 

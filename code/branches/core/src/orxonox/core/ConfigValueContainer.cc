@@ -958,6 +958,6 @@ namespace orxonox
     */
     std::string ConfigValueContainer::getDescription() const
     {
-        return Language::getLanguage().getTranslation(this->description_);
+        return Language::getLanguage().getLocalisation(this->description_);
     }
 }

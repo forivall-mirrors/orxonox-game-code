@@ -64,7 +64,7 @@ class SignalHandler;
 
 namespace orxonox
 {
-  typedef std::string LanguageEntryName;
+  typedef std::string LanguageEntryLabel;
 
   class ArgReader;
   class BaseFactory;
