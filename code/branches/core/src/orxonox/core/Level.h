@@ -43,8 +43,6 @@ namespace orxonox
             const std::string& getFile() const { return this->file_; }
             const ClassTreeMask& getMask() const { return this->mask_; }
 
-            void setMask(const ClassTreeMask& mask) { this->mask_ = mask; }
-
         private:
             std::string file_;
             ClassTreeMask mask_;
