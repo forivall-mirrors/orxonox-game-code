@@ -1,0 +1,15 @@
+TODO:
+
+- change ConnectionManager clientlist [done]
+- change gamestatemanager clientlist [done]
+- put them together into ClientInformation [done]
+
+- do better gamestate-update/snapshot-handling [partially done]
+- integrate ClientInformation into gamestatemanager [done]
+
+- write dummyserver and dummyclient (chat system) [done]
+
+- include GameStateClient into Client and write processGamestate (also packetdecoder (virtual))
+- create object with worldentity .....
+
+- try and error ;)
