@@ -121,4 +121,10 @@ namespace orxonox
     template class _CoreExport orxonox::ObjectList<Language>;
 }
 
+#define AddLanguageEntry(label, fallbackstring) \
+    orxonox::Language::getLanguage().addEntry(label, fallbackstring)
+
+#define GetLocalisation(label) \
+    orxonox::Language::getLanguage().getLocalisation(label)
+
 #endif /* _Language_H__ */

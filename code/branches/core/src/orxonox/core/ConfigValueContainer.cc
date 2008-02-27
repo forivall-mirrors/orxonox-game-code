@@ -947,7 +947,7 @@ namespace orxonox
         if (!this->bAddedDescription_)
         {
             this->description_ = std::string("ConfigValueDescription::" + this->classname_ + "::" + this->varname_);
-            Language::getLanguage().addEntry(this->description_, description);
+            AddLanguageEntry(this->description_, description);
             this->bAddedDescription_ = true;
         }
     }
@@ -958,6 +958,6 @@ namespace orxonox
     */
     std::string ConfigValueContainer::getDescription() const
     {
-        return Language::getLanguage().getLocalisation(this->description_);
+        return GetLocalisation(this->description_);
     }
 }
