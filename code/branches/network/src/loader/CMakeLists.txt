@@ -1,0 +1,16 @@
+SET( LOADER_SRC_FILES
+  LevelLoader.cc
+)
+
+IF (WIN32)
+  ADD_LIBRARY( loader ${LOADER_SRC_FILES} )
+ELSE (WIN32)
+  ADD_LIBRARY( loader SHARED ${LOADER_SRC_FILES})
+ENDIF (WIN32)
+
+SET_TARGET_PROPERTIES( loader PROPERTIES LINK_FLAGS "--no-undefined" )
+
+TARGET_LINK_LIBRARIES( loader
+  util
+  core
+)
