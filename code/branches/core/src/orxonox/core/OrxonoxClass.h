@@ -182,8 +182,6 @@ namespace orxonox
             bool bActive_;                              //!< True = the object is active
             bool bVisible_;                             //!< True = the object is visible
     };
-    template class _CoreExport orxonox::ClassIdentifier<OrxonoxClass>;
-    template class _CoreExport orxonox::ObjectList<OrxonoxClass>;
 }
 
 #endif /* _OrxonoxClass_H__ */

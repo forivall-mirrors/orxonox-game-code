@@ -15,14 +15,13 @@ namespace orxonox
             Skybox();
             virtual ~Skybox();
 
-            
+
             void loadParams(TiXmlElement* xmlElem);
 
         private:
-            
+
 
     };
-    ExportClass(Skybox, Orxonox);
 }
 
 #endif /* _Skybox_H__ */

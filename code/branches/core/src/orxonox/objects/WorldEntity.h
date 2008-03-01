@@ -146,7 +146,6 @@ namespace orxonox
       Ogre::SceneNode* node_;
       bool bStatic_;
   };
-  ExportClass(WorldEntity, Orxonox);
 }
 
 #endif /* _WorldEntity_H__ */

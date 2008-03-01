@@ -65,7 +65,6 @@ namespace orxonox {
     int *stock_;
     int *capacity_;
   };
-  ExportClass(AmmunitionDump, Orxonox);
 }
 
 #endif /* _AmmunitionDump_H__ */

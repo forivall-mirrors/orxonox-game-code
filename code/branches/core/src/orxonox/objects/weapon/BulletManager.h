@@ -66,7 +66,6 @@ namespace orxonox {
 	  int bulletsSize_;
 	  int bulletsIndex_;
   };
-  ExportClass(BulletManager, Orxonox);
 }
 
 #endif /* _BulletManager_H__ */

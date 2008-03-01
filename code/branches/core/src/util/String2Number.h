@@ -23,7 +23,7 @@
  */
 
 template <class T>
-class _UtilExport String2Number
+class String2Number
 {
   private:
   bool success_;

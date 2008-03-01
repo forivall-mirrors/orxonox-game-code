@@ -13,14 +13,13 @@ namespace orxonox
             Ambient();
             virtual ~Ambient();
 
-            
+
             void loadParams(TiXmlElement* xmlElem);
 
         private:
-            
+
 
     };
-    ExportClass(Ambient, Orxonox);
 }
 
 #endif /* _Ambient_H__ */

@@ -57,7 +57,6 @@ namespace orxonox
         private:
             const Level* level_;                        //!< The level that loaded this object
     };
-    ExportClass(BaseObject, Core);
 }
 
 #endif /* _BaseObject_H__ */

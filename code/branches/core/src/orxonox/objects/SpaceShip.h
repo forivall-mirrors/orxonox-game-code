@@ -74,7 +74,6 @@ namespace orxonox
 
             int emitterRate_;
     };
-    ExportClass(SpaceShip, Orxonox);
 }
 
 #endif /* _SpaceShip_H__ */

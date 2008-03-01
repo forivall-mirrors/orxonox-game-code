@@ -82,8 +82,6 @@ namespace orxonox
             std::string localisedEntry_;                            //!< The localised entry in the configured language
             bool bLocalisationSet_;                                 //!< True if the translation was set
     };
-    template class _CoreExport orxonox::ClassIdentifier<LanguageEntry>;
-    template class _CoreExport orxonox::ObjectList<LanguageEntry>;
 
 
     // ###############################
@@ -117,8 +115,6 @@ namespace orxonox
             std::string defaultLocalisation_;                       //!< The returned string, if an entry unavailable entry is requested
             std::map<std::string, LanguageEntry*> languageEntries_; //!< A map to store all LanguageEntry objects and their labels
     };
-    template class _CoreExport orxonox::ClassIdentifier<Language>;
-    template class _CoreExport orxonox::ObjectList<Language>;
 }
 
 #define AddLanguageEntry(label, fallbackstring) \

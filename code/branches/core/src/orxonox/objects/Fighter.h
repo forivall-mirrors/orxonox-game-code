@@ -89,7 +89,6 @@ namespace orxonox
 
             int emitterRate_;
     };
-    ExportClass(Fighter, Orxonox);
 }
 
 #endif /* _Fighter_H__ */

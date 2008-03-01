@@ -90,25 +90,6 @@
     InternRegisterRootObject(ClassName)
 
 /**
-    @brief Exports the necessary templates in order to make them available to all libraries.
-    @param ClassName The name of the Class
-    @param LibraryName The name of the Library
-*/
-#define ExportClass(ClassName, LibraryName) \
-    template class _##LibraryName##Export orxonox::ClassIdentifier<ClassName>; \
-    template class _##LibraryName##Export orxonox::ObjectList<ClassName>; \
-    template class _##LibraryName##Export orxonox::ClassFactory<ClassName>
-
-/**
-    @brief Exports the necessary templates in order to make them available to all libraries.
-    @param ClassName The name of the Class
-    @param LibraryName The name of the Library
-*/
-#define ExportAbstractClass(ClassName, LibraryName) \
-    template class _##LibraryName##Export orxonox::ClassIdentifier<ClassName>; \
-    template class _##LibraryName##Export orxonox::ObjectList<ClassName>
-
-/**
     @brief Returns the Identifier of the given class.
     @param ClassName The name of the class
 */

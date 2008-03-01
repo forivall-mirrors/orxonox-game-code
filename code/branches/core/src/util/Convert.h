@@ -40,7 +40,7 @@
 
 // DEFAULT CLASS
 template <typename FromType, typename ToType>
-class _UtilExport Converter
+class Converter
 {
   public:
     bool operator()(ToType* output, const FromType& input) const
@@ -51,7 +51,7 @@ class _UtilExport Converter
 
 // PARTIAL SPECIALIZATION TO CONVERT TO STRINGS
 template<typename FromType>
-class _UtilExport Converter<FromType, std::string>
+class Converter<FromType, std::string>
 {
   public:
     bool operator()(std::string* output, const FromType& input) const
@@ -69,7 +69,7 @@ class _UtilExport Converter<FromType, std::string>
 
 // PARTIAL SPECIALIZATION TO CONVERT FROM STRING
 template<typename ToType>
-class _UtilExport Converter<std::string, ToType>
+class Converter<std::string, ToType>
 {
   public:
     bool operator()(ToType* output, const std::string& input) const
@@ -84,7 +84,7 @@ class _UtilExport Converter<std::string, ToType>
 
 // FUNCTION SO WE DO NOT HAVE TO TELL THE COMPILER ABOUT THE TYPE
 template<typename FromType, typename ToType>
-static _UtilExport bool ConvertValue(ToType* output, const FromType& input)
+static bool ConvertValue(ToType* output, const FromType& input)
 {
   Converter<FromType, ToType> converter;
   return converter(output, input);
@@ -92,7 +92,7 @@ static _UtilExport bool ConvertValue(ToType* output, const FromType& input)
 
 // THE SAME, BUT WITH DEFAULT VALUE
 template<typename FromType, typename ToType>
-static _UtilExport bool ConvertValue(ToType* output, const FromType& input, const ToType& fallback)
+static bool ConvertValue(ToType* output, const FromType& input, const ToType& fallback)
 {
   Converter<FromType, ToType> converter;
   if (converter(output, input))
@@ -107,7 +107,7 @@ static _UtilExport bool ConvertValue(ToType* output, const FromType& input, cons
 // MORE SPECIALISATIONS
 // Vector2 to std::string
 template <>
-class _UtilExport Converter<orxonox::Vector2, std::string>
+class Converter<orxonox::Vector2, std::string>
 {
   public:
     bool operator()(std::string* output, const orxonox::Vector2& input) const
@@ -125,7 +125,7 @@ class _UtilExport Converter<orxonox::Vector2, std::string>
 
 // Vector3 to std::string
 template <>
-class _UtilExport Converter<orxonox::Vector3, std::string>
+class Converter<orxonox::Vector3, std::string>
 {
   public:
     bool operator()(std::string* output, const orxonox::Vector3& input) const
@@ -143,7 +143,7 @@ class _UtilExport Converter<orxonox::Vector3, std::string>
 
 // Vector4 to std::string
 template <>
-class _UtilExport Converter<orxonox::Vector4, std::string>
+class Converter<orxonox::Vector4, std::string>
 {
   public:
     bool operator()(std::string* output, const orxonox::Vector4& input) const
@@ -161,7 +161,7 @@ class _UtilExport Converter<orxonox::Vector4, std::string>
 
 // Quaternion to std::string
 template <>
-class _UtilExport Converter<orxonox::Quaternion, std::string>
+class Converter<orxonox::Quaternion, std::string>
 {
   public:
     bool operator()(std::string* output, const orxonox::Quaternion& input) const
@@ -179,7 +179,7 @@ class _UtilExport Converter<orxonox::Quaternion, std::string>
 
 // ColourValue to std::string
 template <>
-class _UtilExport Converter<orxonox::ColourValue, std::string>
+class Converter<orxonox::ColourValue, std::string>
 {
   public:
     bool operator()(std::string* output, const orxonox::ColourValue& input) const

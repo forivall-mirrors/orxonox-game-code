@@ -1,7 +1,7 @@
 //
 // C++ Interface: synchronisable
 //
-// Description: 
+// Description:
 //
 //
 // Author:  Oliver Scheuss, (C) 2007
@@ -65,13 +65,6 @@ namespace network
     std::list<SYNCVAR> syncList;
     int datasize;
   };
-
-}
-
-namespace orxonox
-{
-  template class _NetworkExport ClassIdentifier<network::Synchronisable>;
-  template class _NetworkExport ObjectList<network::Synchronisable>;
 }
 
 #endif /* _Synchronisable_H__ */

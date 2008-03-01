@@ -58,25 +58,25 @@ _UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Degree& d
 _UtilExport std::istream& operator>>(std::istream& in, orxonox::Degree& degree);
 
 template <typename T>
-inline _UtilExport T sgn(T x)
+inline T sgn(T x)
 {
     return (x >= 0) ? 1 : -1;
 }
 
 template <typename T>
-inline _UtilExport T min(T a, T b)
+inline T min(T a, T b)
 {
     return (a <= b) ? a : b;
 }
 
 template <typename T>
-inline _UtilExport T max(T a, T b)
+inline T max(T a, T b)
 {
     return (a >= b) ? a : b;
 }
 
 template <typename T>
-inline _UtilExport T clamp(T x, T min, T max)
+inline T clamp(T x, T min, T max)
 {
     if (x < min)
         return min;
@@ -88,44 +88,44 @@ inline _UtilExport T clamp(T x, T min, T max)
 }
 
 template <typename T>
-inline _UtilExport T square(T x)
+inline T square(T x)
 {
     return x*x;
 }
 
 template <typename T>
-inline _UtilExport T cube(T x)
+inline T cube(T x)
 {
     return x*x*x;
 }
 
 template <typename T>
-inline _UtilExport int floor(T x)
+inline int floor(T x)
 {
     return (int)(x);
 }
 
 template <typename T>
-inline _UtilExport int ceil(T x)
+inline int ceil(T x)
 {
     int temp = floor(x);
     return (temp != x) ? (temp + 1) : temp;
 }
 
 template <typename T>
-inline _UtilExport int round(T x)
+inline int round(T x)
 {
     return (int)(x + 0.5);
 }
 
 template <typename T>
-_UtilExport T interpolate(float time, const T& start, const T& end)
+T interpolate(float time, const T& start, const T& end)
 {
     return time * (end - start) + start;
 }
 
 template <typename T>
-_UtilExport T interpolateSmooth(float time, const T& start, const T& end)
+T interpolateSmooth(float time, const T& start, const T& end)
 {
     return (-2 * (end - start) * cube(time)) + (3 * (end - start) * square(time)) + start;
 }

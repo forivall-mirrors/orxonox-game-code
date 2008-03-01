@@ -24,7 +24,6 @@ namespace orxonox
             Mesh mesh_;
             void registerAllVariables();
     };
-    ExportClass(Model, Orxonox);
 }
 
 #endif /* _Model_H__ */

@@ -66,7 +66,6 @@ namespace orxonox
             */
             Tickable() { RegisterRootObject(Tickable); }
     };
-    ExportAbstractClass(Tickable, Orxonox);
 
     //! The TickFrameListener calls the tick(dt) function of all Tickables every frame.
     class _OrxonoxExport TickFrameListener : public Ogre::FrameListener
