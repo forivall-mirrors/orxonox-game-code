@@ -6,7 +6,7 @@
 PROJECT_NAME           = Orxonox
 PROJECT_NUMBER         = 0.1.0 Arcturus
 OUTPUT_DIRECTORY       =
-CREATE_SUBDIRS         = YES
+CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = YES
@@ -277,4 +277,4 @@ DOT_CLEANUP            = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to the search engine
 #---------------------------------------------------------------------------
-SEARCHENGINE           = NO
+SEARCHENGINE           = YES
