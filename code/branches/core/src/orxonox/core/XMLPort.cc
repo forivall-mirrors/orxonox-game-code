@@ -25,29 +25,31 @@
  *
  */
 
-/**
-    @file OrxonoxClass.cc
-    @brief Implementation of the OrxonoxClass Class.
-*/
-
-#include "OrxonoxClass.h"
+#include "XMLPort.h"
+#include "Language.h"
 
 namespace orxonox
 {
-    /** @brief Constructor: Sets the default values. */
-    OrxonoxClass::OrxonoxClass()
+    XMLPortParamContainer::XMLPortParamContainer()
     {
-        this->setConfigValues();
-
-        this->identifier_ = 0;
-        this->parents_ = 0;
+        this->bAddedDescription_ = false;
+        this->bAddedDefaultValues_ = false;
     }
 
-    /** @brief Destructor: Deletes, if existing, the list of the parents. */
-    OrxonoxClass::~OrxonoxClass()
+    XMLPortParamContainer& XMLPortParamContainer::description(const std::string description)
     {
-        // parents_ exists only if isCreatingHierarchy() of the associated Identifier returned true while creating the class
-        if (this->parents_)
-            delete this->parents_;
+        if (!this->bAddedDescription_)
+        {
+            this->description_ = std::string("XMLPortParamContainer::" + this->classname_ + "::" + this->paramname_);
+            AddLanguageEntry(this->description_, description);
+            this->bAddedDescription_ = true;
+        }
+
+        return (*this);
+    }
+
+    const std::string& XMLPortParamContainer::getDescription()
+    {
+        return GetLocalisation(this->description_);
     }
 }

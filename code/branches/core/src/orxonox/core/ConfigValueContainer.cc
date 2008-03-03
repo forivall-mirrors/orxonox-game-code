@@ -956,7 +956,7 @@ namespace orxonox
         @brief Returns the description of the config-value.
         @return The description
     */
-    std::string ConfigValueContainer::getDescription() const
+    const std::string& ConfigValueContainer::getDescription() const
     {
         return GetLocalisation(this->description_);
     }

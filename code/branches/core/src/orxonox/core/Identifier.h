@@ -61,6 +61,7 @@
 #include "ObjectList.h"
 #include "Debug.h"
 #include "Iterator.h"
+//#include "XMLPort.h"
 
 namespace orxonox
 {
@@ -150,13 +151,11 @@ namespace orxonox
             /** @brief Sets the network ID to a new value. @param id The new value */
             void setNetworkID(unsigned int id);
 
-            /** @brief Returns the ConfigValueContainer of a variable, given by the string of its name. @param varname The name of the variable @return The ConfigValueContainer */
-            inline ConfigValueContainer* getConfigValueContainer(const std::string& varname)
-                { return this->configValues_[varname]; }
+            ConfigValueContainer* getConfigValueContainer(const std::string& varname);
+            void addConfigValueContainer(const std::string& varname, ConfigValueContainer* container);
 
-            /** @brief Sets the ConfigValueContainer of a variable, given by the string of its name. @param varname The name of the variablee @param container The container */
-            inline void setConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
-                { this->configValues_[varname] = container; }
+            virtual XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname) = 0;
+            virtual void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container) = 0;
 
             static bool identifierIsInList(const Identifier* identifier, const std::list<const Identifier*>& list);
 
@@ -235,6 +234,9 @@ namespace orxonox
             void setName(const std::string& name);
             inline const ObjectList<T>* getObjects() const { return this->objects_; }
 
+            XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
+            void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
+
         private:
             ClassIdentifier();
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
@@ -242,6 +244,7 @@ namespace orxonox
 
             ObjectList<T>* objects_;    //!< The ObjectList, containing all objects of type T
             bool bSetName_;             //!< True if the name is set
+            std::map<std::string, XMLPortClassParamContainer<T>*> xmlportParamContainers_;
     };
 
     /**
@@ -316,6 +319,22 @@ namespace orxonox
     {
         for (Iterator<T> it = this->objects_->start(); it;)
             delete *(it++);
+    }
+
+    template <class T>
+    XMLPortParamContainer* ClassIdentifier<T>::getXMLPortParamContainer(const std::string& paramname)
+    {
+        typename std::map<std::string, XMLPortClassParamContainer<T>*>::const_iterator it = xmlportParamContainers_.find(paramname);
+        if (it != xmlportParamContainers_.end())
+            return (XMLPortParamContainer*)((*it).second);
+        else
+            return 0;
+    }
+
+    template <class T>
+    void ClassIdentifier<T>::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
+    {
+        this->xmlportParamContainers_[paramname] = (XMLPortClassParamContainer<T>*)container;
     }
 
 

@@ -14,6 +14,8 @@ SET( CORE_SRC_FILES
   Language.cc
   ClassTreeMask.cc
   Loader.cc
+  Executor.cc
+  XMLPort.cc
 )
 
 ADD_LIBRARY( core SHARED ${CORE_SRC_FILES})

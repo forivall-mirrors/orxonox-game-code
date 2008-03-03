@@ -144,7 +144,7 @@ namespace orxonox
         if (it == this->languageEntries_.end())
         {
             LanguageEntry* newEntry = new LanguageEntry(entry);
-            newEntry->setName(label);
+            newEntry->setLabel(label);
             this->languageEntries_[label] = newEntry;
             return newEntry;
         }
@@ -331,7 +331,7 @@ namespace orxonox
         // Iterate through the list an write the lines into the file
         for (Iterator<LanguageEntry> it = ObjectList<LanguageEntry>::start(); it; ++it)
         {
-            file << it->getName() << "=" << it->getDefault() << std::endl;
+            file << it->getLabel() << "=" << it->getDefault() << std::endl;
         }
 
         file.close();

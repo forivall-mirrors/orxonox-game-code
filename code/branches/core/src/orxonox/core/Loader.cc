@@ -120,6 +120,7 @@ namespace orxonox
                 {
                     COUT(4) << "  fabricating " << child->Value() << "..." << std::endl;
                     BaseObject* newObject = identifier->fabricate();
+                    newObject->XMLPort(*child, true);
                 }
                 else
                 {

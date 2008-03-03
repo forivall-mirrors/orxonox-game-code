@@ -1,0 +1,113 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Fabian 'x3n' Landau
+ *   Co-authors:
+ *      ...
+ *
+ */
+
+#ifndef _XMLPort_H__
+#define _XMLPort_H__
+
+#include "util/XMLIncludes.h"
+#include "util/MultiTypeMath.h"
+#include "Functor.h"
+
+#include "CorePrereqs.h"
+
+
+#define XMLPortParam(classname, paramname, loadfunction, savefunction, xmlelement, loading) \
+    orxonox::XMLPortClassParamContainer<classname>* xmlcontainer##loadfunction##savefunction = (orxonox::XMLPortClassParamContainer<classname>*)(this->getIdentifier()->getXMLPortParamContainer(paramname)); \
+    if (!xmlcontainer##loadfunction##savefunction) \
+    { \
+        xmlcontainer##loadfunction##savefunction = new orxonox::XMLPortClassParamContainer<classname>(this->getIdentifier()->getName(), std::string(paramname), createFunctor(&classname::loadfunction), createFunctor(&classname::savefunction)); \
+        this->getIdentifier()->addXMLPortParamContainer(paramname, xmlcontainer##loadfunction##savefunction); \
+    } \
+    xmlcontainer##loadfunction##savefunction->port(this, xmlelement, loading)
+
+
+namespace orxonox
+{
+    class _CoreExport XMLPortParamContainer
+    {
+        public:
+            XMLPortParamContainer();
+
+            inline const std::string& getName() const
+                { return this->paramname_; }
+
+            XMLPortParamContainer& description(const std::string description);
+            const std::string& getDescription();
+
+            XMLPortParamContainer& defaultValues(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null)
+            {
+                this->defaultValues_[0] = param1;
+                this->defaultValues_[1] = param2;
+                this->defaultValues_[2] = param3;
+                this->defaultValues_[3] = param4;
+                this->defaultValues_[4] = param5;
+
+                return (*this);
+            }
+
+        protected:
+            std::string classname_;
+            std::string paramname_;
+            MultiTypeMath defaultValues_[5];
+
+        private:
+            LanguageEntryLabel description_;
+            bool bAddedDescription_;
+            bool bAddedDefaultValues_;
+    };
+
+    template <class T>
+    class XMLPortClassParamContainer : public XMLPortParamContainer
+    {
+        public:
+            XMLPortClassParamContainer(const std::string classname, const std::string paramname, FunctorMember<T>* loadfunction, FunctorMember<T>* savefunction)
+            {
+                this->classname_ = classname;
+                this->paramname_ = paramname;
+                this->loadfunction_ = loadfunction;
+                this->savefunction_ = savefunction;
+            }
+
+            XMLPortParamContainer& port(T* object, Element& xmlelement, bool loading)
+            {
+                if (loading)
+                {
+                }
+                else
+                {
+                }
+
+                return (*this);
+            }
+
+        private:
+            FunctorMember<T>* loadfunction_;
+            FunctorMember<T>* savefunction_;
+    };
+}
+
+#endif /* _XMLPort_H__ */

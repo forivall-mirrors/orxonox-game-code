@@ -81,6 +81,7 @@ namespace orxonox
   class ConfigValueContainer;
   class DebugLevel;
   class Error;
+  class Executor;
   class Factory;
   class Identifier;
   class IdentifierDistributor;
@@ -101,6 +102,9 @@ namespace orxonox
   class OutputHandler;
   template <class T>
   class SubclassIdentifier;
+  class XMLPortParamContainer;
+  template <class T>
+  class XMLPortClassParamContainer;
 }
 
 #endif /* _CorePrereqs_H__ */

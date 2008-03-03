@@ -120,7 +120,7 @@
     if (!container##varname) \
     { \
         container##varname = new orxonox::ConfigValueContainer(this->getIdentifier()->getName(), #varname, varname = defvalue); \
-        this->getIdentifier()->setConfigValueContainer(#varname, container##varname); \
+        this->getIdentifier()->addConfigValueContainer(#varname, container##varname); \
     } \
     container##varname->getValue(&varname)
 

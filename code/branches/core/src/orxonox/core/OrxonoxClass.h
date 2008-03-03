@@ -154,33 +154,10 @@ namespace orxonox
             inline bool isDirectParentOf(const OrxonoxClass* object)
                 { return this->getIdentifier()->isDirectParentOf(object->getIdentifier()); }
 
-
-            /** @brief Sets the name of the object. @param name The name */
-            inline virtual void setName(const std::string& name) { this->name_ = name; }
-
-            /** @brief Returns the name of the object. @return The name */
-            inline const std::string& getName() const { return this->name_; }
-
-            /** @brief Sets the state of the objects activity. @param bActive True = active */
-            inline virtual void setActive(bool bActive) { this->bActive_ = bActive; }
-
-            /** @brief Returns the state of the objects activity. @return The state of the activity */
-            inline const bool isActive() const { return this->bActive_; }
-
-            /** @brief Sets the state of the objects visibility. @param bVisible True = visible */
-            inline virtual void setVisible(bool bVisible) { this->bVisible_ = bVisible; }
-
-            /** @brief Returns the state of the objects visibility. @return The state of the visibility */
-            inline const bool isVisible() const { return this->bVisible_; }
-
         private:
             Identifier* identifier_;                    //!< The Identifier of the object
             std::list<const Identifier*>* parents_;     //!< List of all parents of the object
             MetaObjectList metaList_;                   //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
-
-            std::string name_;                          //!< The name of the object
-            bool bActive_;                              //!< True = the object is active
-            bool bVisible_;                             //!< True = the object is visible
     };
 }
 

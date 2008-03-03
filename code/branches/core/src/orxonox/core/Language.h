@@ -50,6 +50,14 @@
 #include "CorePrereqs.h"
 #include "OrxonoxClass.h"
 
+
+#define AddLanguageEntry(label, fallbackstring) \
+    orxonox::Language::getLanguage().addEntry(label, fallbackstring)
+
+#define GetLocalisation(label) \
+    orxonox::Language::getLanguage().getLocalisation(label)
+
+
 namespace orxonox
 {
     // ###############################
@@ -77,10 +85,25 @@ namespace orxonox
             inline const std::string& getDefault()
                 { return this->fallbackEntry_; }
 
+            /**
+                @brief Sets the label of this entry.
+                @param label The label
+            */
+            inline void setLabel(const LanguageEntryLabel& label)
+                { this->label_ = label; }
+
+            /**
+                @brief Returns the label of this entry.
+                @return The label
+            */
+            inline const LanguageEntryLabel& getLabel() const
+                { return this->label_; }
+
         private:
-            std::string fallbackEntry_;                             //!< The default entry: Used, if no translation is available or no language configured
-            std::string localisedEntry_;                            //!< The localised entry in the configured language
-            bool bLocalisationSet_;                                 //!< True if the translation was set
+            LanguageEntryLabel label_;              //!< The label of the entry
+            std::string fallbackEntry_;             //!< The default entry: Used, if no translation is available or no language configured
+            std::string localisedEntry_;            //!< The localised entry in the configured language
+            bool bLocalisationSet_;                 //!< True if the translation was set
     };
 
 
@@ -116,11 +139,5 @@ namespace orxonox
             std::map<std::string, LanguageEntry*> languageEntries_; //!< A map to store all LanguageEntry objects and their labels
     };
 }
-
-#define AddLanguageEntry(label, fallbackstring) \
-    orxonox::Language::getLanguage().addEntry(label, fallbackstring)
-
-#define GetLocalisation(label) \
-    orxonox::Language::getLanguage().getLocalisation(label)
 
 #endif /* _Language_H__ */

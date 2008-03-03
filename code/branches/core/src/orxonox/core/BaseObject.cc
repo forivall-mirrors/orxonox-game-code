@@ -33,6 +33,7 @@
 #include "util/tinyxml/tinyxml.h"
 
 #include "BaseObject.h"
+#include "XMLPort.h"
 
 namespace orxonox
 {
@@ -45,6 +46,8 @@ namespace orxonox
     {
         RegisterRootObject(BaseObject);
 
+        this->bActive_ = true;
+        this->bVisible_ = true;
         this->level_ = 0;
     }
 
@@ -74,7 +77,7 @@ namespace orxonox
     */
     Element& BaseObject::XMLPort(Element& xmlelement, bool loading)
     {
-//        XMLPortParam(BaseObject, "name", setName, getName, xmlelement, loading);
+        XMLPortParam(BaseObject, "name", setName, getName, xmlelement, loading);
 
         return xmlelement;
     }

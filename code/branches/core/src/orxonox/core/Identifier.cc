@@ -197,6 +197,30 @@ namespace orxonox
     }
 
     /**
+        @brief Returns the ConfigValueContainer of a variable, given by the string of its name.
+        @param varname The name of the variable
+        @return The ConfigValueContainer
+    */
+    ConfigValueContainer* Identifier::getConfigValueContainer(const std::string& varname)
+    {
+        std::map<std::string, ConfigValueContainer*>::const_iterator it = configValues_.find(varname);
+        if (it != configValues_.end())
+            return ((*it).second);
+        else
+            return 0;
+    }
+
+    /**
+        @brief Adds the ConfigValueContainer of a variable, given by the string of its name.
+        @param varname The name of the variablee
+        @param container The container
+    */
+    void Identifier::addConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
+    {
+        this->configValues_[varname] = container;
+    }
+
+    /**
         @brief Searches for a given identifier in a list and returns whether the identifier is in the list or not.
         @param identifier The identifier to look for
         @param list The list
