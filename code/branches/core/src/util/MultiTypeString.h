@@ -52,7 +52,7 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         inline MultiTypeString(long double    value) : MultiTypePrimitive(value) {}
         inline MultiTypeString(bool           value) : MultiTypePrimitive(value) {}
         inline MultiTypeString(const char*        value)   { this->setValue(value); }
-        inline MultiTypeString(const std::string& value)   { this->setValue(value); std::cout << "4_1: Created MultiTypeString with value " << value << " and type " << this->getType() << std::endl; }
+        inline MultiTypeString(const std::string& value)   { this->setValue(value); }
         inline MultiTypeString(const MultiTypeString& mts) { this->setValue(mts);   }
 
         using MultiTypePrimitive::operator=;

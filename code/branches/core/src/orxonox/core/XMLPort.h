@@ -107,24 +107,18 @@ namespace orxonox
             {
                 if (loading)
                 {
-std::cout << "3_1: load param " << this->paramname_ << std::endl;
                     std::string attribute = xmlelement.GetAttribute(this->paramname_);
-std::cout << "3_2: attribute " << attribute << std::endl;
                     if (attribute.size() > 0)
                     {
                         SubString tokens(attribute, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
-std::cout << "3_3: tokens: " << tokens.size() << " params: " << this->loadfunction_->getParamCount() << std::endl;
                         if ((unsigned int)tokens.size() >= (unsigned int)this->loadfunction_->getParamCount())
                         {
                             if (this->loadfunction_->getParamCount() == 1)
                             {
-std::cout << "3_4 start: load with whole attribute as input" << std::endl;
                                 (*this->loadfunction_)(object, MultiTypeMath(attribute));
-std::cout << "3_5 end" << std::endl;
                             }
                             else
                             {
-std::cout << "3_4: load with tokens as input" << std::endl;
                                 MultiTypeMath param1, param2, param3, param4, param5;
                                 if (tokens.size() >= 1) param1 = tokens[0];
                                 if (tokens.size() >= 2) param1 = tokens[1];

@@ -31,7 +31,6 @@
 
 MultiTypePrimitive::MultiTypePrimitive(MultiType type)
 {
-std::cout << "4_5: Created MultiTypePrimitive with type " << type << std::endl;
     this->type_ = type;
 
     if (type == MT_int)
@@ -190,7 +189,6 @@ MultiTypePrimitive::operator bool() const
 
 void MultiTypePrimitive::setValue(const MultiTypePrimitive& mtp)
 {
-    std::cout << "4_3: setValue in MultiTypePrimitive with other Multitype as parameter: " << mtp << std::endl;
     this->type_ = mtp.type_;
     this->value_ = mtp.value_;
 }

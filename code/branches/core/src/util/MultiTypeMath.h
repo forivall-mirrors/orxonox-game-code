@@ -96,7 +96,7 @@ class _UtilExport MultiTypeMath : public MultiTypeString
 
         using MultiTypeString::setValue;
         inline void setValue(const orxonox::Vector2&     value) { this->type_ = MT_vector2;     this->vector2_     = value; }
-        inline void setValue(const orxonox::Vector3&     value) { std::cout << "4_4: setValue Vector3: " << value << std::endl; this->type_ = MT_vector3;     this->vector3_     = value; }
+        inline void setValue(const orxonox::Vector3&     value) { this->type_ = MT_vector3;     this->vector3_     = value; }
         inline void setValue(const orxonox::ColourValue& value) { this->type_ = MT_colourvalue; this->colourvalue_ = value; }
         inline void setValue(const orxonox::Quaternion&  value) { this->type_ = MT_quaternion;  this->quaternion_  = value; }
         inline void setValue(const orxonox::Radian&      value) { this->type_ = MT_radian;      this->radian_      = value; }

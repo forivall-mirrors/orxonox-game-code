@@ -94,25 +94,6 @@ MultiTypeMath::operator orxonox::Vector2() const
 
 MultiTypeMath::operator orxonox::Vector3() const
 {
-std::cout << "4_2: Convert MultiTypeMath to Vector3:" << std::endl;
-std::cout << "     MultiTypeMath has type " << this->getType() << std::endl;
-std::cout << MT_vector3 << std::endl;
-std::cout << MT_string << std::endl;
-std::cout << MT_vector2 << std::endl;
-std::cout << MT_int << std::endl;
-std::cout << MT_uint << std::endl;
-std::cout << MT_null << std::endl;
-if (this->type_ == MT_vector3)
-{
-    std::cout << "     MultiTypeMath contains already a Vector3" << std::endl;
-    std::cout << "     Returnvalue is " << this->vector3_ << std::endl;
-}
-else
-{
-    std::cout << "     MultiTypeMath doesn't contain a Vector3" << std::endl;
-    std::cout << "     Returnvalue is " << ConvertValueAndReturn<MultiTypeMath, orxonox::Vector3>(*this) << std::endl;
-    std::cout << "     Returnvalue was " << ConvertValueAndReturn<MultiTypePrimitive, orxonox::Vector3>(*this) << std::endl;
-}
     return (this->type_ == MT_vector3) ? this->vector3_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Vector3>(*this);
 }
 
