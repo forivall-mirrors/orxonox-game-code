@@ -31,8 +31,8 @@
 #include "Identifier.h"
 #include "Iterator.h"
 #include "Debug.h"
+#include "CoreIncludes.h"
 
-//#define TIXML_USE_TICPP
 #include "util/tinyxml/ticpp.h"
 
 namespace orxonox

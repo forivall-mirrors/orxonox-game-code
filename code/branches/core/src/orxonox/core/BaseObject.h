@@ -38,7 +38,7 @@
 #include "CorePrereqs.h"
 #include "util/XMLIncludes.h"
 
-#include "CoreIncludes.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {

@@ -28,9 +28,7 @@
 #include "test1.h"
 #include "test2.h"
 #include "test3.h"
-#include "util/tinyxml/tinyxml.h"
-#include "../Orxonox.h"
-#include <OgreSceneManager.h>
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {

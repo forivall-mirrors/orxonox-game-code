@@ -15,7 +15,6 @@
 #include <list>
 
 #include "NetworkPrereqs.h"
-#include "core/CoreIncludes.h"
 
 namespace network
 {

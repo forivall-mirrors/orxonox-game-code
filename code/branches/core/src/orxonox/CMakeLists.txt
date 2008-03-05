@@ -2,12 +2,14 @@ SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   Main.cc
   Orxonox.cc
+  objects/Tickable.cc
 #  SpaceshipSteering.cc
 #  hud/HUD.cc
 #  particle/ParticleInterface.cc
 #  tools/BillboardSet.cc
 #  tools/Light.cc
   tools/Mesh.cc
+  tools/Timer.cc
 #  objects/Ambient.cc
 #  objects/Camera.cc
 #  objects/Explosion.cc

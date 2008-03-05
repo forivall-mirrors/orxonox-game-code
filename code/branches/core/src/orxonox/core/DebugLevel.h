@@ -40,7 +40,6 @@
 
 #include "OrxonoxClass.h"
 #include "OutputHandler.h"
-#include "CoreIncludes.h"
 
 namespace orxonox
 {

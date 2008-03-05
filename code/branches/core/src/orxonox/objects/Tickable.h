@@ -44,8 +44,6 @@
 
 #include "../OrxonoxPrereqs.h"
 
-#include "../core/CoreIncludes.h"
-
 namespace orxonox
 {
     class TickFrameListener; // Forward declaration
@@ -61,10 +59,7 @@ namespace orxonox
             virtual void tick(float dt) = 0;
 
         protected:
-            /**
-                @brief Constructor: Registers the object in the Tickable-list
-            */
-            Tickable() { RegisterRootObject(Tickable); }
+            Tickable();
     };
 
     //! The TickFrameListener calls the tick(dt) function of all Tickables every frame.

@@ -58,10 +58,7 @@
 #define _Timer_H__
 
 #include <OgreFrameListener.h>
-
 #include "../OrxonoxPrereqs.h"
-
-#include "../core/CoreIncludes.h"
 
 namespace orxonox
 {
@@ -71,17 +68,7 @@ namespace orxonox
         friend class TimerFrameListener;
 
         public:
-            /** @brief Constructor: Sets the default-values. */
-            TimerBase()
-            {
-                RegisterRootObject(TimerBase);
-
-                this->interval_ = 0;
-                this->bLoop_ = false;
-                this->bActive_ = false;
-
-                this->time_ = 0;
-            }
+            TimerBase();
 
             virtual void run() const = 0;
 

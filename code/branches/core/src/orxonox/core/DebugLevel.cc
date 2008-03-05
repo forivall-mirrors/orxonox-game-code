@@ -31,6 +31,7 @@
 */
 
 #include "DebugLevel.h"
+#include "CoreIncludes.h"
 
 namespace orxonox
 {

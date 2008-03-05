@@ -53,6 +53,7 @@
 
 //***** ORXONOX ****
 //misc
+#include "core/CoreIncludes.h"
 #include "util/Sleep.h"
 
 // loader and audio

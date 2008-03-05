@@ -36,7 +36,6 @@
 #include "../../OrxonoxPrereqs.h"
 
 #include "network/Synchronisable.h"
-//#include "../core/CoreIncludes.h"
 #include "core/BaseObject.h"
 
 
