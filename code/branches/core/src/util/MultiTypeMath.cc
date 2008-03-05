@@ -119,8 +119,6 @@ MultiTypeMath::operator orxonox::Degree() const
 
 void MultiTypeMath::setValue(const MultiTypeMath& mtm)
 {
-    std::cout << "4_3: setValue in MultiTypeMath with other Multitype as parameter: " << mtm << std::endl;
-
     MultiTypeString::setValue(mtm);
     this->vector2_ = mtm.vector2_;
     this->vector3_ = mtm.vector3_;
