@@ -27,6 +27,7 @@
  */
 
 #include "MultiTypeString.h"
+#include "Convert.h"
 
 MultiTypeString::MultiTypeString(MultiType type) : MultiTypePrimitive(type)
 {
@@ -75,10 +76,42 @@ bool MultiTypeString::operator!=(const MultiTypeString& mts) const
     return true;
 }
 
+MultiTypeString::operator std::string() const
+{
+    return (this->type_ == MT_string) ? this->string_ : ConvertValueAndReturn<MultiTypePrimitive, std::string>(*this);
+}
+
+MultiTypeString::operator const char*() const
+{
+    return (this->type_ == MT_constchar) ? this->string_.c_str() : ConvertValueAndReturn<MultiTypePrimitive, const char*>(*this);
+}
+
 void MultiTypeString::setValue(const MultiTypeString& mts)
 {
     this->type_ = mts.type_;
     this->value_ = mts.value_;
+}
+
+std::string MultiTypeString::toString() const
+{
+    if (this->type_ == MT_constchar)
+        return this->string_;
+    else if (this->type_ == MT_string)
+        return this->string_;
+    else
+        return MultiTypePrimitive::toString();
+}
+
+bool MultiTypeString::fromString(const std::string value)
+{
+    if (this->type_ == MT_constchar)
+        this->string_ = value;
+    else if (this->type_ == MT_string)
+        this->string_ = value;
+    else
+        return MultiTypePrimitive::fromString(value);
+
+    return true;
 }
 
 std::ostream& operator<<(std::ostream& out, MultiTypeString& mts)

@@ -37,6 +37,9 @@
 
 #include "UtilPrereqs.h"
 #include "Math.h"
+#include "SubString.h"
+#include "MultiTypeMath.h"
+
 
 // DEFAULT CLASS
 template <typename FromType, typename ToType>
@@ -102,9 +105,195 @@ static bool ConvertValue(ToType* output, const FromType& input, const ToType& fa
   return false;
 }
 
+// THE SAME LIKE BEFORE, BUT NEEDS NO POINTER TO THE OUTPUT
+template<typename FromType, typename ToType>
+static ToType ConvertValueAndReturn(const FromType& input)
+{
+  ToType output;
+  ConvertValue(&output, input);
+  return output;
+}
+
+// THE SAME, BUT WITH DEFAULT VALUE
+template<typename FromType, typename ToType>
+static ToType ConvertValueAndReturn(const FromType& input, const FromType& fallback)
+{
+  ToType output;
+  ConvertValue(&output, input, fallback);
+  return output;
+}
+
+//////////////////////////
+// MORE SPECIALISATIONS //
+//////////////////////////
+
+// STRING TO STRING
+template<>
+class Converter<std::string, std::string>
+{
+  public:
+    bool operator()(std::string* output, const std::string& input) const
+    {
+        (*output) = std::string(input);
+        return true;
+    }
+};
+
+////////////////
+// MULTITYPES //
+////////////////
+
+// PARTIAL SPECIALIZATION TO CONVERT FROM MULTITYPEPRIMITIVE
+template<typename ToType>
+class Converter<MultiTypePrimitive, ToType>
+{
+  public:
+    bool operator()(ToType* output, const MultiTypePrimitive& input) const
+    {
+      if (input.getType() == MT_int)
+        return ConvertValue(output, input.getInt());
+      else if (input.getType() == MT_uint)
+        return ConvertValue(output, input.getUnsignedInt());
+      else if (input.getType() == MT_char)
+        return ConvertValue(output, input.getChar());
+      else if (input.getType() == MT_uchar)
+        return ConvertValue(output, input.getUnsignedChar());
+      else if (input.getType() == MT_short)
+        return ConvertValue(output, input.getShort());
+      else if (input.getType() == MT_ushort)
+        return ConvertValue(output, input.getUnsignedShort());
+      else if (input.getType() == MT_long)
+        return ConvertValue(output, input.getLong());
+      else if (input.getType() == MT_ulong)
+        return ConvertValue(output, input.getUnsignedLong());
+      else if (input.getType() == MT_float)
+        return ConvertValue(output, input.getFloat());
+      else if (input.getType() == MT_double)
+        return ConvertValue(output, input.getDouble());
+      else if (input.getType() == MT_longdouble)
+        return ConvertValue(output, input.getLongDouble());
+      else if (input.getType() == MT_bool)
+        return ConvertValue(output, input.getBool());
+      else
+        return false;
+    }
+};
+template<>
+class Converter<MultiTypePrimitive, std::string>
+{
+  public:
+    bool operator()(std::string* output, const MultiTypePrimitive& input) const
+    {
+      if (input.getType() == MT_int)
+        return ConvertValue(output, input.getInt());
+      else if (input.getType() == MT_uint)
+        return ConvertValue(output, input.getUnsignedInt());
+      else if (input.getType() == MT_char)
+        return ConvertValue(output, input.getChar());
+      else if (input.getType() == MT_uchar)
+        return ConvertValue(output, input.getUnsignedChar());
+      else if (input.getType() == MT_short)
+        return ConvertValue(output, input.getShort());
+      else if (input.getType() == MT_ushort)
+        return ConvertValue(output, input.getUnsignedShort());
+      else if (input.getType() == MT_long)
+        return ConvertValue(output, input.getLong());
+      else if (input.getType() == MT_ulong)
+        return ConvertValue(output, input.getUnsignedLong());
+      else if (input.getType() == MT_float)
+        return ConvertValue(output, input.getFloat());
+      else if (input.getType() == MT_double)
+        return ConvertValue(output, input.getDouble());
+      else if (input.getType() == MT_longdouble)
+        return ConvertValue(output, input.getLongDouble());
+      else if (input.getType() == MT_bool)
+        return ConvertValue(output, input.getBool());
+      else
+        return false;
+    }
+};
+
+// PARTIAL SPECIALIZATION TO CONVERT FROM MULTITYPESTRING
+template<typename ToType>
+class Converter<MultiTypeString, ToType>
+{
+  public:
+    bool operator()(ToType* output, const MultiTypeString& input) const
+    {
+      if (input.getType() == MT_constchar)
+        return ConvertValue(output, input.getConstChar());
+      else if (input.getType() == MT_string)
+        return ConvertValue(output, input.getString());
+      else
+        return false;
+    }
+};
+template<>
+class Converter<MultiTypeString, std::string>
+{
+  public:
+    bool operator()(std::string* output, const MultiTypeString& input) const
+    {
+      if (input.getType() == MT_constchar)
+        return ConvertValue(output, input.getConstChar());
+      else if (input.getType() == MT_string)
+        return ConvertValue(output, input.getString());
+      else
+        return false;
+    }
+};
+
+// PARTIAL SPECIALIZATION TO CONVERT FROM MULTITYPEMATH
+template<typename ToType>
+class Converter<MultiTypeMath, ToType>
+{
+  public:
+    bool operator()(ToType* output, const MultiTypeMath& input) const
+    {
+      if (input.getType() == MT_vector2)
+        return ConvertValue(output, input.getVector2());
+      else if (input.getType() == MT_vector3)
+        return ConvertValue(output, input.getVector3());
+      else if (input.getType() == MT_quaternion)
+        return ConvertValue(output, input.getQuaternion());
+      else if (input.getType() == MT_colourvalue)
+        return ConvertValue(output, input.getColourValue());
+      else if (input.getType() == MT_radian)
+        return ConvertValue(output, input.getRadian());
+      else if (input.getType() == MT_degree)
+        return ConvertValue(output, input.getDegree());
+      else
+        return false;
+    }
+};
+template<>
+class Converter<MultiTypeMath, std::string>
+{
+  public:
+    bool operator()(std::string* output, const MultiTypeMath& input) const
+    {
+      if (input.getType() == MT_vector2)
+        return ConvertValue(output, input.getVector2());
+      else if (input.getType() == MT_vector3)
+        return ConvertValue(output, input.getVector3());
+      else if (input.getType() == MT_quaternion)
+        return ConvertValue(output, input.getQuaternion());
+      else if (input.getType() == MT_colourvalue)
+        return ConvertValue(output, input.getColourValue());
+      else if (input.getType() == MT_radian)
+        return ConvertValue(output, input.getRadian());
+      else if (input.getType() == MT_degree)
+        return ConvertValue(output, input.getDegree());
+      else
+        return false;
+    }
+};
 
 
-// MORE SPECIALISATIONS
+////////////////////
+// MATH TO STRING //
+////////////////////
+
 // Vector2 to std::string
 template <>
 class Converter<orxonox::Vector2, std::string>
@@ -188,6 +377,140 @@ class Converter<orxonox::ColourValue, std::string>
       if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
       {
         (*output) = ostream.str();
+        return true;
+      }
+
+      return false;
+    }
+};
+
+
+////////////////////
+// STRING TO MATH //
+////////////////////
+
+// std::string to Vector2
+template <>
+class Converter<std::string, orxonox::Vector2>
+{
+  public:
+    bool operator()(orxonox::Vector2* output, const std::string& input) const
+    {
+      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+
+      if (tokens.size() >= 2)
+      {
+        if (!ConvertValue(&(output->x), tokens[0]))
+          return false;
+        if (!ConvertValue(&(output->y), tokens[1]))
+          return false;
+
+        return true;
+      }
+
+      return false;
+    }
+};
+
+// std::string to Vector3
+template <>
+class Converter<std::string, orxonox::Vector3>
+{
+  public:
+    bool operator()(orxonox::Vector3* output, const std::string& input) const
+    {
+      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+
+      if (tokens.size() >= 3)
+      {
+        if (!ConvertValue(&(output->x), tokens[0]))
+          return false;
+        if (!ConvertValue(&(output->y), tokens[1]))
+          return false;
+        if (!ConvertValue(&(output->z), tokens[2]))
+          return false;
+
+        return true;
+      }
+
+      return false;
+    }
+};
+
+// std::string to Vector4
+template <>
+class Converter<std::string, orxonox::Vector4>
+{
+  public:
+    bool operator()(orxonox::Vector4* output, const std::string& input) const
+    {
+      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+
+      if (tokens.size() >= 4)
+      {
+        if (!ConvertValue(&(output->x), tokens[0]))
+          return false;
+        if (!ConvertValue(&(output->y), tokens[1]))
+          return false;
+        if (!ConvertValue(&(output->z), tokens[2]))
+          return false;
+        if (!ConvertValue(&(output->w), tokens[3]))
+          return false;
+
+        return true;
+      }
+
+      return false;
+    }
+};
+
+// std::string to Quaternion
+template <>
+class Converter<std::string, orxonox::Quaternion>
+{
+  public:
+    bool operator()(orxonox::Quaternion* output, const std::string& input) const
+    {
+      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+
+      if (tokens.size() >= 4)
+      {
+        if (!ConvertValue(&(output->w), tokens[0]))
+          return false;
+        if (!ConvertValue(&(output->x), tokens[1]))
+          return false;
+        if (!ConvertValue(&(output->y), tokens[2]))
+          return false;
+        if (!ConvertValue(&(output->z), tokens[3]))
+          return false;
+
+        return true;
+      }
+
+      return false;
+    }
+};
+
+// std::string to ColourValue
+template <>
+class Converter<std::string, orxonox::ColourValue>
+{
+  public:
+    bool operator()(orxonox::ColourValue* output, const std::string& input) const
+    {
+      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+
+      if (tokens.size() >= 4)
+      {
+        if (!ConvertValue(&(output->r), tokens[0]))
+          return false;
+        if (!ConvertValue(&(output->g), tokens[1]))
+          return false;
+        if (!ConvertValue(&(output->b), tokens[2]))
+          return false;
+        if (!ConvertValue(&(output->a), tokens[3]))
+          return false;
+
         return true;
       }
 

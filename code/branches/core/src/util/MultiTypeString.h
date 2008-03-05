@@ -70,20 +70,26 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         inline bool operator!=(const std::string& value) const { return (this->string_ != value);              }
         bool operator!=(const MultiTypeString& mtp) const;
 
-        inline operator std::string() const { return this->string_;         }
-        inline operator const char*() const { return this->string_.c_str(); }
+        operator std::string() const;
+        operator const char*() const;
 
         using MultiTypePrimitive::setValue;
         inline void setValue(const char*        value) { this->type_ = MT_string; this->string_ = std::string(value); }
         inline void setValue(const std::string& value) { this->type_ = MT_string; this->string_ = value;              }
         void setValue(const MultiTypeString& mtp);
 
-        inline std::string& getString()    { return this->string_;         }
-        inline const char*  getConstChar() { return this->string_.c_str(); }
+        inline const std::string getString() const { return this->string_;         }
+        inline const char*  getConstChar()   const { return this->string_.c_str(); }
+
+        inline const std::string& getString() { return this->string_;         }
+        inline const char*  getConstChar()    { return this->string_.c_str(); }
 
         using MultiTypePrimitive::getValue;
         inline void getValue(std::string* variable) const { (*variable) = this->string_;         }
         inline void getValue(const char** variable) const { (*variable) = this->string_.c_str(); }
+
+        std::string toString() const;
+        bool fromString(const std::string value);
 
     protected:
         std::string string_;

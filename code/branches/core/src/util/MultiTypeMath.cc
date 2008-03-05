@@ -27,6 +27,7 @@
  */
 
 #include "MultiTypeMath.h"
+#include "Convert.h"
 
 MultiTypeMath::MultiTypeMath(MultiType type) : MultiTypeString(type)
 {
@@ -99,10 +100,80 @@ bool MultiTypeMath::operator!=(const MultiTypeMath& mtm) const
     return true;
 }
 
+MultiTypeMath::operator orxonox::Vector2() const
+{
+    return (this->type_ == MT_vector2) ? this->vector2_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::Vector2>(*this);
+}
+
+MultiTypeMath::operator orxonox::Vector3() const
+{
+    return (this->type_ == MT_vector3) ? this->vector3_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::Vector3>(*this);
+}
+
+MultiTypeMath::operator orxonox::Quaternion() const
+{
+    return (this->type_ == MT_quaternion) ? this->quaternion_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::Quaternion>(*this);
+}
+
+MultiTypeMath::operator orxonox::ColourValue() const
+{
+    return (this->type_ == MT_colourvalue) ? this->colourvalue_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::ColourValue>(*this);
+}
+
+MultiTypeMath::operator orxonox::Radian() const
+{
+    return (this->type_ == MT_radian) ? this->radian_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::Radian>(*this);
+}
+
+MultiTypeMath::operator orxonox::Degree() const
+{
+    return (this->type_ == MT_degree) ? this->degree_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::Degree>(*this);
+}
+
 void MultiTypeMath::setValue(const MultiTypeMath& mtm)
 {
     this->type_ = mtm.type_;
     this->value_ = mtm.value_;
+}
+
+std::string MultiTypeMath::toString() const
+{
+    std::string output;
+
+    if (this->type_ == MT_vector2)
+        ConvertValue(&output, this->vector2_);
+    else if (this->type_ == MT_vector3)
+        ConvertValue(&output, this->vector3_);
+    else if (this->type_ == MT_colourvalue)
+        ConvertValue(&output, this->colourvalue_);
+    else if (this->type_ == MT_quaternion)
+        ConvertValue(&output, this->quaternion_);
+    else if (this->type_ == MT_radian)
+        ConvertValue(&output, this->radian_);
+    else if (this->type_ == MT_degree)
+        ConvertValue(&output, this->degree_);
+    else
+        return MultiTypeString::toString();
+
+    return output;
+}
+
+bool MultiTypeMath::fromString(const std::string value)
+{
+    if (this->type_ == MT_vector2)
+        return ConvertValue(&this->vector2_, value, orxonox::Vector2(0, 0));
+    else if (this->type_ == MT_vector3)
+        return ConvertValue(&this->vector3_, value, orxonox::Vector3(0, 0, 0));
+    else if (this->type_ == MT_colourvalue)
+        return ConvertValue(&this->colourvalue_, value, orxonox::ColourValue(0, 0, 0, 0));
+    else if (this->type_ == MT_quaternion)
+        return ConvertValue(&this->quaternion_, value, orxonox::Quaternion(1, 0, 0, 0));
+    else if (this->type_ == MT_radian)
+        return ConvertValue(&this->radian_, value, orxonox::Radian(0));
+    else if (this->type_ == MT_degree)
+        return ConvertValue(&this->degree_, value, orxonox::Degree(0));
+    else
+        return MultiTypeString::fromString(value);
 }
 
 std::ostream& operator<<(std::ostream& out, MultiTypeMath& mtm)

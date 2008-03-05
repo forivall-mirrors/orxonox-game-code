@@ -87,12 +87,12 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         inline bool operator!=(const orxonox::Degree&      value) const { return (this->degree_      != value); }
         bool operator!=(const MultiTypeMath& mtm) const;
 
-        inline operator orxonox::Vector2()     const { return this->vector2_;     }
-        inline operator orxonox::Vector3()     const { return this->vector3_;     }
-        inline operator orxonox::ColourValue() const { return this->colourvalue_; }
-        inline operator orxonox::Quaternion()  const { return this->quaternion_;  }
-        inline operator orxonox::Radian()      const { return this->radian_;      }
-        inline operator orxonox::Degree()      const { return this->degree_;      }
+        operator orxonox::Vector2()     const;
+        operator orxonox::Vector3()     const;
+        operator orxonox::ColourValue() const;
+        operator orxonox::Quaternion()  const;
+        operator orxonox::Radian()      const;
+        operator orxonox::Degree()      const;
 
         using MultiTypeString::setValue;
         inline void setValue(const orxonox::Vector2&     value) { this->type_ = MT_vector2;     this->vector2_     = value; }
@@ -102,6 +102,13 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         inline void setValue(const orxonox::Radian&      value) { this->type_ = MT_radian;      this->radian_      = value; }
         inline void setValue(const orxonox::Degree&      value) { this->type_ = MT_degree;      this->degree_      = value; }
         void setValue(const MultiTypeMath& mtm);
+
+        inline orxonox::Vector2     getVector2()     const { return this->vector2_;     }
+        inline orxonox::Vector3     getVector3()     const { return this->vector3_;     }
+        inline orxonox::ColourValue getColourValue() const { return this->colourvalue_; }
+        inline orxonox::Quaternion  getQuaternion()  const { return this->quaternion_;  }
+        inline orxonox::Radian      getRadian()      const { return this->radian_;      }
+        inline orxonox::Degree      getDegree()      const { return this->degree_;      }
 
         inline orxonox::Vector2&     getVector2()     { return this->vector2_;     }
         inline orxonox::Vector3&     getVector3()     { return this->vector3_;     }
@@ -117,6 +124,9 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         inline void getValue(orxonox::Quaternion*  variable) const { (*variable) = orxonox::Quaternion  (this->quaternion_);  }
         inline void getValue(orxonox::Radian*      variable) const { (*variable) = orxonox::Radian      (this->radian_);      }
         inline void getValue(orxonox::Degree*      variable) const { (*variable) = orxonox::Degree      (this->degree_);      }
+
+        std::string toString() const;
+        bool fromString(const std::string value);
 
     protected:
         orxonox::Vector2      vector2_;

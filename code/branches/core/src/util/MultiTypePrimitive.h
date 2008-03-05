@@ -96,18 +96,18 @@ class _UtilExport MultiTypePrimitive
         inline bool operator!=(bool           value) const { return (this->value_.bool_       != value); }
         bool operator!=(const MultiTypePrimitive& mtp) const;
 
-        inline operator int()            const { return this->value_.int_;        }
-        inline operator unsigned int()   const { return this->value_.uint_;       }
-        inline operator char()           const { return this->value_.char_;       }
-        inline operator unsigned char()  const { return this->value_.uchar_;      }
-        inline operator short()          const { return this->value_.short_;      }
-        inline operator unsigned short() const { return this->value_.ushort_;     }
-        inline operator long()           const { return this->value_.long_;       }
-        inline operator unsigned long()  const { return this->value_.ulong_;      }
-        inline operator float ()         const { return this->value_.float_;      }
-        inline operator double ()        const { return this->value_.double_;     }
-        inline operator long double()    const { return this->value_.longdouble_; }
-        inline operator bool()           const { return this->value_.bool_;       }
+        operator int()            const;
+        operator unsigned int()   const;
+        operator char()           const;
+        operator unsigned char()  const;
+        operator short()          const;
+        operator unsigned short() const;
+        operator long()           const;
+        operator unsigned long()  const;
+        operator float ()         const;
+        operator double ()        const;
+        operator long double()    const;
+        operator bool()           const;
 
         inline void setValue(int            value) { this->type_ = MT_int;        this->value_.int_        = value; }
         inline void setValue(unsigned int   value) { this->type_ = MT_uint;       this->value_.uint_       = value; }
@@ -136,6 +136,19 @@ class _UtilExport MultiTypePrimitive
         inline long double    getLongDouble()    const { return this->value_.longdouble_; }
         inline bool           getBool()          const { return this->value_.bool_;       }
 
+        inline int&            getInt()           { return this->value_.int_;        }
+        inline unsigned int&   getUnsignedInt()   { return this->value_.uint_;       }
+        inline char&           getChar()          { return this->value_.char_;       }
+        inline unsigned char&  getUnsignedChar()  { return this->value_.uchar_;      }
+        inline short&          getShort()         { return this->value_.short_;      }
+        inline unsigned short& getUnsignedShort() { return this->value_.ushort_;     }
+        inline long&           getLong()          { return this->value_.long_;       }
+        inline unsigned long&  getUnsignedLong()  { return this->value_.ulong_;      }
+        inline float&          getFloat()         { return this->value_.float_;      }
+        inline double&         getDouble()        { return this->value_.double_;     }
+        inline long double&    getLongDouble()    { return this->value_.longdouble_; }
+        inline bool&           getBool()          { return this->value_.bool_;       }
+
         inline void getValue(int*            variable) const { (*variable) = this->value_.int_;        }
         inline void getValue(unsigned int*   variable) const { (*variable) = this->value_.uint_;       }
         inline void getValue(char*           variable) const { (*variable) = this->value_.char_;       }
@@ -151,6 +164,9 @@ class _UtilExport MultiTypePrimitive
 
         inline MultiType getType()           const { return this->type_; }
         inline bool      isA(MultiType type) const { return (this->type_ == type); }
+
+        std::string toString() const;
+        bool fromString(const std::string value);
 
     protected:
         MultiTypeValue  value_;
