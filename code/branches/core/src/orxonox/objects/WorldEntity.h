@@ -56,6 +56,13 @@ namespace orxonox
             inline void roll(const Radian &angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
                 { this->node_->roll(angle, relativeTo); }
 
+            inline void setYaw(const Degree &angle)
+                { this->node_->yaw(angle, Ogre::Node::TS_LOCAL); }
+            inline void setPitch(const Degree &angle)
+                { this->node_->pitch(angle, Ogre::Node::TS_LOCAL); }
+            inline void setRoll(const Degree &angle)
+                { this->node_->roll(angle, Ogre::Node::TS_LOCAL); }
+
             inline const Ogre::Quaternion& getOrientation()
               { return this->node_->getOrientation(); }
             inline void setOrientation(const Ogre::Quaternion& quat)
@@ -74,6 +81,8 @@ namespace orxonox
             inline void setScale(Real x, Real y, Real z)
               { this->node_->setScale(x, y, z); }
             inline void setScale(Real scale)
+              { this->node_->setScale(scale, scale, scale); }
+            inline void setTotalScale(Real scale)
               { this->node_->setScale(scale, scale, scale); }
             inline const Vector3& getScale(void) const
               { return this->node_->getScale(); }

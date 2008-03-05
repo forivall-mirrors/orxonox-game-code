@@ -78,8 +78,9 @@ namespace orxonox
     */
     Element& BaseObject::XMLPort(Element& xmlelement, bool loading)
     {
+        std::cout << "1_1: " << this->getName() << std::endl;
         XMLPortParam(BaseObject, "name", setName, getName, xmlelement, loading);
-
+std::cout << "1_2: " << this->getName() << std::endl;
         return xmlelement;
     }
 }

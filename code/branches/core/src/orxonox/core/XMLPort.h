@@ -47,6 +47,14 @@
     } \
     xmlcontainer##loadfunction##savefunction->port(this, xmlelement, loading)
 
+#define XMLPortParamLoadOnly(classname, paramname, loadfunction, xmlelement, loading) \
+    orxonox::XMLPortClassParamContainer<classname>* xmlcontainer##loadfunction##savefunction = (orxonox::XMLPortClassParamContainer<classname>*)(this->getIdentifier()->getXMLPortParamContainer(paramname)); \
+    if (!xmlcontainer##loadfunction##savefunction) \
+    { \
+        xmlcontainer##loadfunction##savefunction = new orxonox::XMLPortClassParamContainer<classname>(this->getIdentifier()->getName(), std::string(paramname), createFunctor(&classname::loadfunction), 0); \
+        this->getIdentifier()->addXMLPortParamContainer(paramname, xmlcontainer##loadfunction##savefunction); \
+    } \
+    xmlcontainer##loadfunction##savefunction->port(this, xmlelement, loading)
 
 namespace orxonox
 {
@@ -99,20 +107,33 @@ namespace orxonox
             {
                 if (loading)
                 {
+std::cout << "3_1: load param " << this->paramname_ << std::endl;
                     std::string attribute = xmlelement.GetAttribute(this->paramname_);
+std::cout << "3_2: attribute " << attribute << std::endl;
                     if (attribute.size() > 0)
                     {
                         SubString tokens(attribute, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+std::cout << "3_3: tokens: " << tokens.size() << " params: " << this->loadfunction_->getParamCount() << std::endl;
                         if ((unsigned int)tokens.size() >= (unsigned int)this->loadfunction_->getParamCount())
                         {
-                            MultiTypeMath param1, param2, param3, param4, param5;
-                            if (tokens.size() >= 1) param1 = tokens[0];
-                            if (tokens.size() >= 2) param1 = tokens[1];
-                            if (tokens.size() >= 3) param1 = tokens[2];
-                            if (tokens.size() >= 4) param1 = tokens[3];
-                            if (tokens.size() >= 5) param1 = tokens[4];
+                            if (this->loadfunction_->getParamCount() == 1)
+                            {
+std::cout << "3_4 start: load with whole attribute as input" << std::endl;
+                                (*this->loadfunction_)(object, MultiTypeMath(attribute));
+std::cout << "3_5 end" << std::endl;
+                            }
+                            else
+                            {
+std::cout << "3_4: load with tokens as input" << std::endl;
+                                MultiTypeMath param1, param2, param3, param4, param5;
+                                if (tokens.size() >= 1) param1 = tokens[0];
+                                if (tokens.size() >= 2) param1 = tokens[1];
+                                if (tokens.size() >= 3) param1 = tokens[2];
+                                if (tokens.size() >= 4) param1 = tokens[3];
+                                if (tokens.size() >= 5) param1 = tokens[4];
 
-                            (*this->loadfunction_)(object, param1, param2, param3, param4, param5);
+                                (*this->loadfunction_)(object, param1, param2, param3, param4, param5);
+                            }
                         }
                         else
                         {
@@ -122,7 +143,10 @@ namespace orxonox
                 }
                 else
                 {
-//                    xmlelement.SetAttribute(this->paramname_, "...");
+                    if (this->savefunction_)
+                    {
+//                        xmlelement.SetAttribute(this->paramname_, "...");
+                    }
                 }
 
                 return (*this);

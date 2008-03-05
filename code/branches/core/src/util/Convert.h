@@ -396,7 +396,7 @@ class Converter<std::string, orxonox::Vector2>
   public:
     bool operator()(orxonox::Vector2* output, const std::string& input) const
     {
-      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '\0', '\0', '\0');
 
       if (tokens.size() >= 2)
       {
@@ -419,7 +419,7 @@ class Converter<std::string, orxonox::Vector3>
   public:
     bool operator()(orxonox::Vector3* output, const std::string& input) const
     {
-      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '\0', '\0', '\0');
 
       if (tokens.size() >= 3)
       {
@@ -444,7 +444,7 @@ class Converter<std::string, orxonox::Vector4>
   public:
     bool operator()(orxonox::Vector4* output, const std::string& input) const
     {
-      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '\0', '\0', '\0');
 
       if (tokens.size() >= 4)
       {
@@ -471,7 +471,7 @@ class Converter<std::string, orxonox::Quaternion>
   public:
     bool operator()(orxonox::Quaternion* output, const std::string& input) const
     {
-      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '\0', '\0', '\0');
 
       if (tokens.size() >= 4)
       {
@@ -498,7 +498,7 @@ class Converter<std::string, orxonox::ColourValue>
   public:
     bool operator()(orxonox::ColourValue* output, const std::string& input) const
     {
-      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+      SubString tokens(input, ",", SubString::WhiteSpaces, false, '\\', '"', '\0', '\0', '\0');
 
       if (tokens.size() >= 4)
       {

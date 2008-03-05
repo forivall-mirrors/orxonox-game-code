@@ -51,7 +51,7 @@ class _UtilExport MultiTypePrimitive
         inline MultiTypePrimitive(double         value) { this->setValue(value); }
         inline MultiTypePrimitive(long double    value) { this->setValue(value); }
         inline MultiTypePrimitive(bool           value) { this->setValue(value); }
-        MultiTypePrimitive(const MultiTypePrimitive& mtp);
+        inline MultiTypePrimitive(const MultiTypePrimitive& mtp) { this->setValue(mtp); }
 
         inline MultiTypePrimitive& operator=(MultiType      value) { this->type_ = MT_null; return *this; }
         inline MultiTypePrimitive& operator=(int            value) { this->setValue(value); return *this; }
@@ -66,7 +66,7 @@ class _UtilExport MultiTypePrimitive
         inline MultiTypePrimitive& operator=(double         value) { this->setValue(value); return *this; }
         inline MultiTypePrimitive& operator=(long double    value) { this->setValue(value); return *this; }
         inline MultiTypePrimitive& operator=(bool           value) { this->setValue(value); return *this; }
-        MultiTypePrimitive& operator=(const MultiTypePrimitive& mtp);
+        inline MultiTypePrimitive& operator=(const MultiTypePrimitive& mtp) { this->setValue(mtp); return *this; }
 
         inline bool operator==(int            value) const { return (this->value_.int_        == value); }
         inline bool operator==(unsigned int   value) const { return (this->value_.uint_       == value); }

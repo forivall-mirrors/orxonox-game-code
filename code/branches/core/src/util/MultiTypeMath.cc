@@ -45,19 +45,6 @@ MultiTypeMath::MultiTypeMath(MultiType type) : MultiTypeString(type)
         this->degree_ = orxonox::Degree(0);
 }
 
-MultiTypeMath::MultiTypeMath(const MultiTypeMath& mtm) : MultiTypeString(mtm)
-{
-    this->type_ = mtm.type_;
-    this->value_ = mtm.value_;
-}
-
-MultiTypeMath& MultiTypeMath::operator=(const MultiTypeMath& mtm)
-{
-    this->type_ = mtm.type_;
-    this->value_ = mtm.value_;
-    return *this;
-}
-
 bool MultiTypeMath::operator==(const MultiTypeMath& mtm) const
 {
     if (!MultiTypeString::operator==(mtm) && this->type_ == mtm.type_)
@@ -102,38 +89,64 @@ bool MultiTypeMath::operator!=(const MultiTypeMath& mtm) const
 
 MultiTypeMath::operator orxonox::Vector2() const
 {
-    return (this->type_ == MT_vector2) ? this->vector2_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::Vector2>(*this);
+    return (this->type_ == MT_vector2) ? this->vector2_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Vector2>(*this);
 }
 
 MultiTypeMath::operator orxonox::Vector3() const
 {
-    return (this->type_ == MT_vector3) ? this->vector3_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::Vector3>(*this);
+std::cout << "4_2: Convert MultiTypeMath to Vector3:" << std::endl;
+std::cout << "     MultiTypeMath has type " << this->getType() << std::endl;
+std::cout << MT_vector3 << std::endl;
+std::cout << MT_string << std::endl;
+std::cout << MT_vector2 << std::endl;
+std::cout << MT_int << std::endl;
+std::cout << MT_uint << std::endl;
+std::cout << MT_null << std::endl;
+if (this->type_ == MT_vector3)
+{
+    std::cout << "     MultiTypeMath contains already a Vector3" << std::endl;
+    std::cout << "     Returnvalue is " << this->vector3_ << std::endl;
+}
+else
+{
+    std::cout << "     MultiTypeMath doesn't contain a Vector3" << std::endl;
+    std::cout << "     Returnvalue is " << ConvertValueAndReturn<MultiTypeMath, orxonox::Vector3>(*this) << std::endl;
+    std::cout << "     Returnvalue was " << ConvertValueAndReturn<MultiTypePrimitive, orxonox::Vector3>(*this) << std::endl;
+}
+    return (this->type_ == MT_vector3) ? this->vector3_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Vector3>(*this);
 }
 
 MultiTypeMath::operator orxonox::Quaternion() const
 {
-    return (this->type_ == MT_quaternion) ? this->quaternion_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::Quaternion>(*this);
+    return (this->type_ == MT_quaternion) ? this->quaternion_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Quaternion>(*this);
 }
 
 MultiTypeMath::operator orxonox::ColourValue() const
 {
-    return (this->type_ == MT_colourvalue) ? this->colourvalue_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::ColourValue>(*this);
+    return (this->type_ == MT_colourvalue) ? this->colourvalue_ : ConvertValueAndReturn<MultiTypeMath, orxonox::ColourValue>(*this);
 }
 
 MultiTypeMath::operator orxonox::Radian() const
 {
-    return (this->type_ == MT_radian) ? this->radian_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::Radian>(*this);
+    return (this->type_ == MT_radian) ? this->radian_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Radian>(*this);
 }
 
 MultiTypeMath::operator orxonox::Degree() const
 {
-    return (this->type_ == MT_degree) ? this->degree_ : ConvertValueAndReturn<MultiTypePrimitive, orxonox::Degree>(*this);
+    return (this->type_ == MT_degree) ? this->degree_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Degree>(*this);
 }
 
 void MultiTypeMath::setValue(const MultiTypeMath& mtm)
 {
-    this->type_ = mtm.type_;
-    this->value_ = mtm.value_;
+    std::cout << "4_3: setValue in MultiTypeMath with other Multitype as parameter: " << mtm << std::endl;
+
+    MultiTypeString::setValue(mtm);
+    this->vector2_ = mtm.vector2_;
+    this->vector3_ = mtm.vector3_;
+    this->quaternion_ = mtm.quaternion_;
+    this->colourvalue_ = mtm.colourvalue_;
+    this->radian_ = mtm.radian_;
+    this->degree_ = mtm.degree_;
 }
 
 std::string MultiTypeMath::toString() const

@@ -171,10 +171,10 @@ std::cout << "2_1: " << this->getPosition() << std::endl;
 
         XMLPortParam(WorldEntity, "position", setPosition, getPosition, xmlelement, loading);
 //        XMLPortParam(WorldEntity, "direction", setDirection, getDirection, xmlelement, loading);
-//        XMLPortParam(WorldEntity, "yaw", yaw, getYaw, xmlelement, loading);
-//        XMLPortParam(WorldEntity, "pitch", pitch, getPitch, xmlelement, loading);
-//        XMLPortParam(WorldEntity, "roll", roll, getRoll, xmlelement, loading);
-        XMLPortParam(WorldEntity, "scale", setScale, getScale, xmlelement, loading);
+        XMLPortParamLoadOnly(WorldEntity, "yaw", setYaw, xmlelement, loading);
+        XMLPortParamLoadOnly(WorldEntity, "pitch", setPitch, xmlelement, loading);
+        XMLPortParamLoadOnly(WorldEntity, "roll", setRoll, xmlelement, loading);
+        XMLPortParam(WorldEntity, "scale", setTotalScale, getScale, xmlelement, loading);
         XMLPortParam(WorldEntity, "rotationAxis", setRotationAxis, getRotationAxis, xmlelement, loading);
         XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, loading);
 std::cout << "2_2: " << this->getPosition() << std::endl;

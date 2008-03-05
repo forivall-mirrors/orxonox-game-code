@@ -37,19 +37,6 @@ MultiTypeString::MultiTypeString(MultiType type) : MultiTypePrimitive(type)
         this->string_ = std::string("");
 }
 
-MultiTypeString::MultiTypeString(const MultiTypeString& mts) : MultiTypePrimitive(mts)
-{
-    this->type_ = mts.type_;
-    this->value_ = mts.value_;
-}
-
-MultiTypeString& MultiTypeString::operator=(const MultiTypeString& mts)
-{
-    this->type_ = mts.type_;
-    this->value_ = mts.value_;
-    return *this;
-}
-
 bool MultiTypeString::operator==(const MultiTypeString& mts) const
 {
     if (!MultiTypePrimitive::operator==(mts) && this->type_ == mts.type_)
@@ -78,18 +65,18 @@ bool MultiTypeString::operator!=(const MultiTypeString& mts) const
 
 MultiTypeString::operator std::string() const
 {
-    return (this->type_ == MT_string) ? this->string_ : ConvertValueAndReturn<MultiTypePrimitive, std::string>(*this);
+    return (this->type_ == MT_string) ? this->string_ : ConvertValueAndReturn<MultiTypeString, std::string>(*this);
 }
 
 MultiTypeString::operator const char*() const
 {
-    return (this->type_ == MT_constchar) ? this->string_.c_str() : ConvertValueAndReturn<MultiTypePrimitive, const char*>(*this);
+    return ((this->type_ == MT_constchar) ? this->string_ : ConvertValueAndReturn<MultiTypeString, std::string>(*this)).c_str();
 }
 
 void MultiTypeString::setValue(const MultiTypeString& mts)
 {
-    this->type_ = mts.type_;
-    this->value_ = mts.value_;
+    MultiTypePrimitive::setValue(mts);
+    this->string_ = mts.string_;
 }
 
 std::string MultiTypeString::toString() const
