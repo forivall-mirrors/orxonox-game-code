@@ -30,7 +30,7 @@
 
 #include "util/XMLIncludes.h"
 #include "util/MultiTypeMath.h"
-#include "util/TinyXML/ticpp.h"
+#include "util/tinyxml/ticpp.h"
 #include "util/SubString.h"
 #include "Functor.h"
 #include "Debug.h"
