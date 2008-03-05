@@ -36,6 +36,7 @@
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
 #include "WorldEntity.h"
+#include "core/XMLPort.h"
 
 namespace orxonox
 {
@@ -85,8 +86,9 @@ namespace orxonox
 
     void WorldEntity::loadParams(TiXmlElement* xmlElem)
     {
-        BaseObject::loadParams(xmlElem);
 
+        BaseObject::loadParams(xmlElem);
+/*
         if (xmlElem->Attribute("position"))
         {
             std::vector<std::string> pos = tokenize(xmlElem->Attribute("position"),",");
@@ -152,7 +154,32 @@ namespace orxonox
         }
 
         create();
+*/
+    }
 
+
+    /**
+        @brief XML loading and saving.
+        @param xmlelement The XML-element
+        @param loading Loading (true) or saving (false)
+        @return The XML-element
+    */
+    Element& WorldEntity::XMLPort(Element& xmlelement, bool loading)
+    {
+std::cout << "2_1: " << this->getPosition() << std::endl;
+        BaseObject::XMLPort(xmlelement, loading);
+
+        XMLPortParam(WorldEntity, "position", setPosition, getPosition, xmlelement, loading);
+//        XMLPortParam(WorldEntity, "direction", setDirection, getDirection, xmlelement, loading);
+//        XMLPortParam(WorldEntity, "yaw", yaw, getYaw, xmlelement, loading);
+//        XMLPortParam(WorldEntity, "pitch", pitch, getPitch, xmlelement, loading);
+//        XMLPortParam(WorldEntity, "roll", roll, getRoll, xmlelement, loading);
+        XMLPortParam(WorldEntity, "scale", setScale, getScale, xmlelement, loading);
+        XMLPortParam(WorldEntity, "rotationAxis", setRotationAxis, getRotationAxis, xmlelement, loading);
+        XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, loading);
+std::cout << "2_2: " << this->getPosition() << std::endl;
+
+        return xmlelement;
     }
 
     bool WorldEntity::create(){

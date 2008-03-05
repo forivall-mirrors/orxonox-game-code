@@ -30,7 +30,10 @@
 
 #include "util/XMLIncludes.h"
 #include "util/MultiTypeMath.h"
+#include "util/TinyXML/ticpp.h"
+#include "util/SubString.h"
 #include "Functor.h"
+#include "Debug.h"
 
 #include "CorePrereqs.h"
 
@@ -96,9 +99,30 @@ namespace orxonox
             {
                 if (loading)
                 {
+                    std::string attribute = xmlelement.GetAttribute(this->paramname_);
+                    if (attribute.size() > 0)
+                    {
+                        SubString tokens(attribute, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+                        if ((unsigned int)tokens.size() >= (unsigned int)this->loadfunction_->getParamCount())
+                        {
+                            MultiTypeMath param1, param2, param3, param4, param5;
+                            if (tokens.size() >= 1) param1 = tokens[0];
+                            if (tokens.size() >= 2) param1 = tokens[1];
+                            if (tokens.size() >= 3) param1 = tokens[2];
+                            if (tokens.size() >= 4) param1 = tokens[3];
+                            if (tokens.size() >= 5) param1 = tokens[4];
+
+                            (*this->loadfunction_)(object, param1, param2, param3, param4, param5);
+                        }
+                        else
+                        {
+                            COUT(2) << "  Warning: Parameter \"" << this->paramname_ << "\" in \"" << this->classname_ << "\" (objectname: " << object->getName() << ") is incomplete and couln't be loaded." << std::endl;
+                        }
+                    }
                 }
                 else
                 {
+//                    xmlelement.SetAttribute(this->paramname_, "...");
                 }
 
                 return (*this);
