@@ -27,6 +27,9 @@ namespace orxonox
             virtual Element& XMLPort(Element& xmlelement, bool loading);
             bool create();
 
+            void attachWorldEntity(WorldEntity* entity);
+            const WorldEntity* getAttachedWorldEntity(unsigned int index);
+
             inline Ogre::SceneNode* getNode()
                 { return this->node_; }
 
@@ -155,6 +158,7 @@ namespace orxonox
             static unsigned int worldEntityCounter_s;
             Ogre::SceneNode* node_;
             bool bStatic_;
+            std::vector<WorldEntity*> attachedWorldEntities_;
     };
 }
 

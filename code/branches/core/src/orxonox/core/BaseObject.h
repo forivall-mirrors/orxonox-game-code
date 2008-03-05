@@ -76,12 +76,19 @@ namespace orxonox
             inline void setLevel(const Level* level) { this->level_ = level; }
             /** @brief Returns a pointer to the level that loaded this object. @return The level */
             inline const Level* getLevel() const { return this->level_; }
+            const std::string& getLevelfile() const;
+
+            /** @brief Sets the indentation of the debug output in the Loader. @param indentation The indentation */
+            inline void setLoaderIndentation(const std::string& indentation) { this->loaderIndentation_ = indentation; }
+            /** @brief Returns the indentation of the debug output in the Loader. @return The indentation */
+            inline const std::string& getLoaderIndentation() const { return this->loaderIndentation_; }
 
         private:
             std::string name_;                          //!< The name of the object
             bool bActive_;                              //!< True = the object is active
             bool bVisible_;                             //!< True = the object is visible
             const Level* level_;                        //!< The level that loaded this object
+            std::string loaderIndentation_;             //!< Indentation of the debug output in the Loader
     };
 }
 

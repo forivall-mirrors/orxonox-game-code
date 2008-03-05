@@ -61,7 +61,6 @@
 #include "ObjectList.h"
 #include "Debug.h"
 #include "Iterator.h"
-//#include "XMLPort.h"
 
 namespace orxonox
 {
@@ -157,6 +156,9 @@ namespace orxonox
             virtual XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname) = 0;
             virtual void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container) = 0;
 
+            virtual XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname) = 0;
+            virtual void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container) = 0;
+
             static bool identifierIsInList(const Identifier* identifier, const std::list<const Identifier*>& list);
 
         private:
@@ -237,6 +239,9 @@ namespace orxonox
             XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
             void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
 
+            XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
+            void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
+
         private:
             ClassIdentifier();
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
@@ -245,6 +250,7 @@ namespace orxonox
             ObjectList<T>* objects_;    //!< The ObjectList, containing all objects of type T
             bool bSetName_;             //!< True if the name is set
             std::map<std::string, XMLPortClassParamContainer<T>*> xmlportParamContainers_;
+            std::map<std::string, XMLPortClassObjectContainer<T, class O>*> xmlportObjectContainers_;
     };
 
     /**
@@ -335,6 +341,22 @@ namespace orxonox
     void ClassIdentifier<T>::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
     {
         this->xmlportParamContainers_[paramname] = (XMLPortClassParamContainer<T>*)container;
+    }
+
+    template <class T>
+    XMLPortObjectContainer* ClassIdentifier<T>::getXMLPortObjectContainer(const std::string& sectionname)
+    {
+        typename std::map<std::string, XMLPortClassObjectContainer<T, class O>*>::const_iterator it = xmlportObjectContainers_.find(sectionname);
+        if (it != xmlportObjectContainers_.end())
+            return (XMLPortObjectContainer*)((*it).second);
+        else
+            return 0;
+    }
+
+    template <class T>
+    void ClassIdentifier<T>::addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container)
+    {
+        this->xmlportObjectContainers_[sectionname] = (XMLPortClassObjectContainer<T, class O>*)container;
     }
 
 

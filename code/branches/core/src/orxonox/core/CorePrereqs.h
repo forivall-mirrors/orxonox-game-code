@@ -102,9 +102,12 @@ namespace orxonox
   class OutputHandler;
   template <class T>
   class SubclassIdentifier;
-  class XMLPortParamContainer;
+  template <class T, class O>
+  class XMLPortClassObjectContainer;
   template <class T>
   class XMLPortClassParamContainer;
+  class XMLPortObjectContainer;
+  class XMLPortParamContainer;
 }
 
 #endif /* _CorePrereqs_H__ */

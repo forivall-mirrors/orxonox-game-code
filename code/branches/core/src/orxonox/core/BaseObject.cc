@@ -35,6 +35,7 @@
 #include "core/CoreIncludes.h"
 #include "BaseObject.h"
 #include "XMLPort.h"
+#include "Level.h"
 
 namespace orxonox
 {
@@ -78,9 +79,17 @@ namespace orxonox
     */
     Element& BaseObject::XMLPort(Element& xmlelement, bool loading)
     {
-        std::cout << "1_1: " << this->getName() << std::endl;
         XMLPortParam(BaseObject, "name", setName, getName, xmlelement, loading);
-std::cout << "1_2: " << this->getName() << std::endl;
+
         return xmlelement;
+    }
+
+    /**
+        @brief Returns the levelfile that loaded this object.
+        @return The levelfile
+    */
+    const std::string& BaseObject::getLevelfile() const
+    {
+        return this->level_->getFile();
     }
 }

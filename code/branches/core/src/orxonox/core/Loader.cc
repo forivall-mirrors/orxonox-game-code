@@ -38,6 +38,7 @@
 namespace orxonox
 {
     std::vector<std::pair<const Level*, ClassTreeMask> > Loader::levels_s;
+    ClassTreeMask Loader::currentMask_s;
 
     bool Loader::open(const Level* level, const ClassTreeMask& mask)
     {
@@ -103,28 +104,34 @@ namespace orxonox
 
     bool Loader::load(const Level* level, const ClassTreeMask& mask)
     {
-        ClassTreeMask loadmask = level->getMask() * mask;
+        Loader::currentMask_s = level->getMask() * mask;
 
         try
         {
             COUT(0) << "Start loading " << level->getFile() << "..." << std::endl;
-            COUT(3) << "Mask: " << loadmask << std::endl;
+            COUT(3) << "Mask: " << Loader::currentMask_s << std::endl;
 
             ticpp::Document xmlfile(level->getFile());
             xmlfile.LoadFile();
 
-            for ( ticpp::Iterator< ticpp::Element > child = xmlfile.FirstChildElement(); child != child.end(); child++ )
+            for ( ticpp::Iterator<ticpp::Element> child = xmlfile.FirstChildElement(false); child != child.end(); child++ )
             {
                 Identifier* identifier = ID(child->Value());
                 if (identifier)
                 {
-                    COUT(4) << "  fabricating " << child->Value() << "..." << std::endl;
-                    BaseObject* newObject = identifier->fabricate();
-                    newObject->XMLPort(*child, true);
+                    if (Loader::currentMask_s.isIncluded(identifier))
+                    {
+                        COUT(4) << "  fabricating " << child->Value() << "..." << std::endl;
+                        BaseObject* newObject = identifier->fabricate();
+                        newObject->setLoaderIndentation("    ");
+                        newObject->setLevel(level);
+                        newObject->XMLPort(*child, true);
+                        COUT(5) << "  ...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
+                    }
                 }
                 else
                 {
-                    COUT(2) << "  Warning: '"<< child->Value() <<"' is not a valid classname." << std::endl;
+                    COUT(2) << "  Warning: '" << child->Value() << "' is not a valid classname." << std::endl;
                 }
             }
 
@@ -134,6 +141,7 @@ namespace orxonox
         }
         catch(ticpp::Exception& ex)
         {
+            COUT(1) << std::endl;
             COUT(1) << "An error occurred in Loader.cc while loading " << level->getFile() << ":" << std::endl;
             COUT(1) << ex.what() << std::endl;
             COUT(1) << "Loading aborted." << std::endl;

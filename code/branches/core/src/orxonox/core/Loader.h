@@ -55,6 +55,8 @@ namespace orxonox
             static void unload(const Level* level, const ClassTreeMask& mask = ClassTreeMask());
             static bool reload(const Level* level, const ClassTreeMask& mask = ClassTreeMask());
 
+            static ClassTreeMask currentMask_s;
+
         private:
             static std::vector<std::pair<const Level*, ClassTreeMask> > levels_s;
     };

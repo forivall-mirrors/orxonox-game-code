@@ -35,7 +35,15 @@
 <NPC position="100,0,400" scale="1" mesh="razor.mesh"/>
 
 <Model name="starship" position="(200,0,500)" scale="10" mesh="starship.mesh" yaw="-90" pitch="-90" />
-<Model name="drone" position="-200,0,500" scale="10" mesh="drone.mesh" yaw="-90" pitch="-90" />
+<Model name="drone" position="-200,0,500" scale="10" mesh="drone.mesh" yaw="-90" pitch="-90">
+  <attached>
+    <Model name="drone2" position="200,-100,-500" scale="10" mesh="drone.mesh" yaw="-90" pitch="-90">
+      <attached>
+        <Model name="starship2" position="(500,200,-500)" scale="10" mesh="starship.mesh" yaw="-90" pitch="-90" />
+      </attached>
+    </Model>
+  </attached>
+</Model>
 <!--
 <Model position="-200,1000,500" scale="10" mesh="hoover_body.mesh" yaw="-90" pitch="-90" />
 <Model position="-200,1000,500" scale="10" mesh="hoover_gear0.mesh" yaw="-90" pitch="-90" />
@@ -50,5 +58,6 @@
 -->
 <!-- Unused at the moment -->
 <!--  <SpaceshipSteeringObject node="OgreHeadNode" forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" /> -->
-
+<!--
 <script file="intro.lua" />
+-->

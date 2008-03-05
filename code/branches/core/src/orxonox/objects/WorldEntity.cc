@@ -166,7 +166,6 @@ namespace orxonox
     */
     Element& WorldEntity::XMLPort(Element& xmlelement, bool loading)
     {
-std::cout << "2_1: " << this->getPosition() << std::endl;
         BaseObject::XMLPort(xmlelement, loading);
 
         XMLPortParam(WorldEntity, "position", setPosition, getPosition, xmlelement, loading);
@@ -177,7 +176,8 @@ std::cout << "2_1: " << this->getPosition() << std::endl;
         XMLPortParam(WorldEntity, "scale", setTotalScale, getScale, xmlelement, loading);
         XMLPortParam(WorldEntity, "rotationAxis", setRotationAxis, getRotationAxis, xmlelement, loading);
         XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, loading);
-std::cout << "2_2: " << this->getPosition() << std::endl;
+
+        XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, loading);
 
         return xmlelement;
     }
@@ -208,5 +208,18 @@ std::cout << "2_2: " << this->getPosition() << std::endl;
       registerVar( (void*) &(this->getRotationAxis().x), sizeof(this->getRotationAxis().x), network::DATA);
       registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA);
       registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA);*/
+    }
+
+    void WorldEntity::attachWorldEntity(WorldEntity* entity)
+    {
+        this->attachedWorldEntities_.push_back(entity);
+    }
+
+    const WorldEntity* WorldEntity::getAttachedWorldEntity(unsigned int index)
+    {
+        if (index < this->attachedWorldEntities_.size())
+            return this->attachedWorldEntities_[index];
+        else
+            return 0;
     }
 }

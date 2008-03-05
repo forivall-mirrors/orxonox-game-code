@@ -54,7 +54,7 @@ extern "C" _CoreExport int getSoftDebugLevel();
 //definitions
 #define ORX_PRINT_DEBUG_OUTPUT 1 // <-- fix that! should be a configurable setting
 
-#define ORX_HARD_DEBUG_LEVEL ORX_DEBUG
+#define ORX_HARD_DEBUG_LEVEL ORX_vDEBUG
 //#define ORX_SOFT_DEBUG_LEVEL ORX_WARNING // <-- fix that! should be a configurable setting
 
 ///////////////////////////////////////////////////
