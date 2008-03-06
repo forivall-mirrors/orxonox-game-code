@@ -26,10 +26,15 @@ namespace orxonox {
   enum gameMode{
     STANDALONE,
     SERVER,
-    CLIENT,
-    PRESENTATION
+    CLIENT
   };
 
+  union OrxListener{
+    OrxListenerClient *client;
+    OrxListenerServer *server;
+    OrxListenerStandalone *standalone;
+  };
+  
   class _OrxonoxExport Orxonox
   {
     public:
@@ -49,6 +54,9 @@ namespace orxonox {
       Orxonox();
       virtual ~Orxonox();
       // init functions
+      void startStandalone();
+      void startServer();
+      void startClient();
       void serverInit(std::string path);
       void clientInit(std::string path);
       void standaloneInit(std::string path);
@@ -75,7 +83,7 @@ namespace orxonox {
       OIS::Keyboard*        keyboard_;
       OIS::Mouse*           mouse_;
       OIS::InputManager*    inputManager_;
-      OrxListener*          frameListener_;
+      OrxListener          frameListener_;
       Ogre::Root*           root_;
 
       // this is used to identify the mode (server/client/...) we're in

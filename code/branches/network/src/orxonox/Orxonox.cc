@@ -79,14 +79,16 @@
 
 namespace orxonox
 {
-   // put this in a seperate Class or solve the problem in another fashion
-  class OrxListener : public Ogre::FrameListener
+  
+  
+  
+  // put this in a seperate Class or solve the problem in another fashion
+  class OrxListenerStandalone : public Ogre::FrameListener
   {
     public:
-      OrxListener(OIS::Keyboard *keyboard, audio::AudioManager*  auMan, gameMode mode)
+      OrxListenerStandalone(OIS::Keyboard *keyboard, audio::AudioManager*  auMan)
       {
         mKeyboard = keyboard;
-        mode_=mode;
         auMan_ = auMan;
       }
 
@@ -95,10 +97,6 @@ namespace orxonox
         auMan_->update();
         updateAI();
 
-        if(mode_ == PRESENTATION)
-          server_g->tick(evt.timeSinceLastFrame);
-        else if(mode_ == CLIENT)
-          client_g->tick(evt.timeSinceLastFrame);
 
         usleep(10);
 
@@ -115,11 +113,72 @@ namespace orxonox
       }
 
     private:
-      gameMode mode_;
       OIS::Keyboard *mKeyboard;
       audio::AudioManager*  auMan_;
   };
+  
+  class OrxListenerServer : public Ogre::FrameListener
+  {
+    public:
+      OrxListenerServer(){}
 
+      bool frameStarted(const Ogre::FrameEvent& evt)
+      {
+        updateAI();
+
+        server_g->tick(evt.timeSinceLastFrame);
+        usleep(10);
+
+        return true;
+      }
+
+      void updateAI()
+      {
+        for(Iterator<NPC> it = ObjectList<NPC>::start(); it; ++it)
+        {
+          it->update();
+        }
+      }
+
+    private:
+  };
+  
+  
+  class OrxListenerClient : public Ogre::FrameListener
+  {
+    public:
+      OrxListenerClient(OIS::Keyboard *keyboard, audio::AudioManager*  auMan)
+      {
+        mKeyboard = keyboard;
+        auMan_ = auMan;
+      }
+
+      bool frameStarted(const Ogre::FrameEvent& evt)
+      {
+        auMan_->update();
+        updateAI();
+
+        client_g->tick(evt.timeSinceLastFrame);
+
+        usleep(10);
+
+        mKeyboard->capture();
+        return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
+      }
+
+      void updateAI()
+      {
+        for(Iterator<NPC> it = ObjectList<NPC>::start(); it; ++it)
+        {
+          it->update();
+        }
+      }
+
+    private:
+      OIS::Keyboard *mKeyboard;
+      audio::AudioManager*  auMan_;
+  };
+    
   // init static singleton reference of Orxonox
   Orxonox* Orxonox::singletonRef_ = NULL;
 
@@ -136,7 +195,7 @@ namespace orxonox
     this->keyboard_ = 0;
     this->mouse_ = 0;
     this->inputManager_ = 0;
-    this->frameListener_ = 0;
+    this->frameListener_.client = 0;
     this->root_ = 0;
   }
 
@@ -180,11 +239,6 @@ namespace orxonox
       clientInit(path);
       mode_ = CLIENT;
     }
-    else if(mode == std::string("presentation"))
-    {
-      serverInit(path);
-      mode_ = PRESENTATION;
-    }
     else{
       standaloneInit(path);
       mode_ = STANDALONE;
@@ -192,9 +246,66 @@ namespace orxonox
   }
 
   /**
-   * start modules
+   * calls the appropriate start function
    */
   void Orxonox::start()
+  {
+    switch (mode_){
+      case CLIENT:
+        startClient();
+        break;
+      case SERVER:
+        startServer();
+        break;
+      case STANDALONE:
+      default:
+        startStandalone();
+        break;
+    }
+  }
+
+  /**
+   * start server modules
+   */
+  void Orxonox::startServer()
+  {
+    //TODO: start modules
+    //ogre_->startRender();
+    //TODO: run engine
+    Factory::createClassHierarchy();
+    createScene();
+    setupScene();
+    //setupInputSystem();
+    COUT(4) << "************** Server here *************" << std::endl;
+    createFrameListener();
+    
+    //TODO make a server framelistener caller 
+    // startRenderLoop();
+  }
+  
+  /**
+   * start client modules
+   */
+  void Orxonox::startClient()
+  {
+    //TODO: start modules
+    ogre_->startRender();
+    //TODO: run engine
+    Factory::createClassHierarchy();
+    createScene();
+    setupInputSystem();
+    
+    COUT(4) << "************** Client here *************" << std::endl;
+    createFrameListener();
+    client_g->establishConnection();
+    // TODO : server-client initialization
+    startRenderLoop();
+  }
+  
+  /**
+   * start standalone modules
+   */
+  void Orxonox::startStandalone()
   {
     //TODO: start modules
     ogre_->startRender();
@@ -209,22 +320,17 @@ namespace orxonox
       std::cout << "client here" << std::endl;
     createFrameListener();
     switch(mode_){
-    case PRESENTATION:
-      //ogre_->getRoot()->addFrameListener(new network::ServerFrameListener());
-      //std::cout << "could not add framelistener" << std::endl;
-      server_g->open();
-      break;
-    case CLIENT:
-      client_g->establishConnection();
-      break;
-    case SERVER:
-    case STANDALONE:
-    default:
-      break;
+      case CLIENT:
+        client_g->establishConnection();
+        break;
+      case SERVER:
+      case STANDALONE:
+      default:
+        break;
     }
     startRenderLoop();
   }
-
+  
   /**
    * @return singleton object
    */
@@ -378,8 +484,10 @@ namespace orxonox
     bulletMgr_ = new BulletManager();
 
     // load this file from config
-    loader_ = new loader::LevelLoader("sample.oxw");
-    loader_->loadLevel();
+    if(mode_==STANDALONE){
+      loader_ = new loader::LevelLoader("sample.oxw");
+      loader_->loadLevel();
+    }
 
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
     HUD* orxonoxHud;
@@ -457,8 +565,17 @@ namespace orxonox
     ogre_->getRoot()->addFrameListener(TimerFL);
 
     //if(mode_!=CLIENT) // FIXME just a hack ------- remove this in future
-      frameListener_ = new OrxListener(keyboard_, auMan_, mode_);
-    ogre_->getRoot()->addFrameListener(frameListener_);
+      if(mode_==CLIENT){
+        frameListener_.client = new OrxListenerClient(keyboard_, auMan_);
+        ogre_->getRoot()->addFrameListener(frameListener_.client);
+      }else if(mode_==SERVER){
+        frameListener_.server = new OrxListenerServer();
+        ogre_->getRoot()->addFrameListener(frameListener_.server);
+      }else{
+        frameListener_.standalone = new OrxListenerStandalone(keyboard_, auMan_);
+        ogre_->getRoot()->addFrameListener(frameListener_.standalone);
+      }
+    
   }
 
   void Orxonox::startRenderLoop()
@@ -478,4 +595,6 @@ namespace orxonox
     }
     ogre_->getRoot()->startRendering();
   }
+  
 }
+

@@ -60,14 +60,14 @@ namespace network
   * This function loads a Snapshort of the gamestate into the universe
   * @param state a GameState struct containing the size of the gamestate and a pointer linking to a flat list (returned by getSnapshot)
   */
-  bool GameStateClient::loadSnapshot(GameState state) {
-    unsigned char *data=state.data;
-    std::cout << "loadSnapshot: loading gs: " << state.id << std::endl;
+  bool GameStateClient::loadSnapshot(GameState *state) {
+    unsigned char *data=state->data;
+    COUT(4) << "loadSnapshot: loading gs: " << state->id << std::endl;
     // get the start of the Synchronisable list
     orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::start();
     syncData sync;
     // loop as long as we have some data ;)
-    while(data < state.data+state.size){
+    while(data < state->data+state->size){
       // prepare the syncData struct
       sync.length = (int)*data;
       data+=sizeof(int);
@@ -81,24 +81,24 @@ namespace network
       if(it->objectID!=sync.objectID){
         // bad luck ;)
         // delete the synchronisable (obviously seems to be deleted on the server)
-        while(it != 0 && it->objectID!=sync.objectID){
+        while(it && it->objectID!=sync.objectID){
           removeObject(it);
         }
-        if(it==0){
-          std::cout << "classid: " << sync.classID << ", name: " << ID(sync.classID)->getName() << std::endl;
+        if(!it){
+          COUT(4) << "classid: " << sync.classID << ", name: " << ID(sync.classID)->getName() << std::endl;
           Synchronisable *no = (Synchronisable*)(ID(sync.classID)->fabricate());
           no->objectID=sync.objectID;
           no->classID=sync.classID;
           it=orxonox::ObjectList<Synchronisable>::end();
           // update data and create object/entity...
           if( !no->updateData(sync) && !no->create() )
-            COUT(0) << "We couldn't create/update the object: " << sync.objectID << std::endl;
+            COUT(2) << "We couldn't create/update the object: " << sync.objectID << std::endl;
           ++it;
         }
       } else {
         // we have our object
         if(! it->updateData(sync))
-          std::cout << "We couldn't update objectID: " \
+          COUT(2) << "We couldn't update objectID: " \
           << sync.objectID << "; classID: " << sync.classID << std::endl;
       }
       ++it;
@@ -107,7 +107,7 @@ namespace network
     return true;
   }
 
-  GameState GameStateClient::diff(GameState a, GameState b) {
+  GameState *GameStateClient::diff(GameState a, GameState b) {
     unsigned char *ap = a.data, *bp = b.data;
     int of=0; // pointers offset
     int dest_length=0;
@@ -136,11 +136,15 @@ namespace network
     }
     // should be finished now
     // FIXME: is it true or false now? (struct has changed, producing warnings)
-    GameState r = {b.id, dest_length, true, dp};
+    GameState *r = new GameState;
+    r->id = b.id;
+    r->size = dest_length;
+    r->diffed = true;
+    r->data = dp;
     return r;
   }
 
-  GameState GameStateClient::decompress(GameStateCompressed a) {
+  GameState *GameStateClient::decompress(GameStateCompressed a) {
     int normsize = a.normsize;
     int compsize = a.compsize;
     int bufsize;
@@ -156,29 +160,44 @@ namespace network
     retval = uncompress( dest, &length, a.data, (uLong)compsize );
     //std::cout << "length " << length << std::endl;
     switch ( retval ) {
-      case Z_OK: std::cout << "successfully decompressed" << std::endl; break;
-      case Z_MEM_ERROR: std::cout << "not enough memory available" << std::endl; break;
-      case Z_BUF_ERROR: std::cout << "not enough memory available in the buffer" << std::endl; break;
-      case Z_DATA_ERROR: std::cout << "data corrupted" << std::endl; break;
+      case Z_OK:
+        COUT(3) << "successfully decompressed" << std::endl; break;
+      case Z_MEM_ERROR: 
+        COUT(1) << "not enough memory available" << std::endl;
+        return NULL;
+      case Z_BUF_ERROR: 
+        COUT(2) << "not enough memory available in the buffer" << std::endl;
+        return NULL;
+      case Z_DATA_ERROR: 
+        COUT(2) << "data corrupted" << std::endl;
+        return NULL;
     }
 
-    GameState gamestate;
-    gamestate.id = a.id;
-    gamestate.size = normsize;
-    gamestate.data = dest;
-    gamestate.diffed = a.diffed;
+    GameState *gamestate = new GameState;
+    gamestate->id = a.id;
+    gamestate->size = normsize;
+    gamestate->data = dest;
+    gamestate->diffed = a.diffed;
 
+    free(a.data);
+    
     return gamestate;
   }
 
-  GameState GameStateClient::decode(GameState a, GameStateCompressed x) {
-    GameState t = decompress(x);
-    return diff(a, t);
+  GameState *GameStateClient::decode(GameState a, GameStateCompressed x) {
+    GameState *t = decompress(x);
+    if(t==NULL)
+      return NULL;
+    else
+      return diff(a, *t);
   }
 
-  GameState GameStateClient::decode(GameStateCompressed x) {
-    GameState t = decompress(x);
-    return t;
+  GameState *GameStateClient::decode(GameStateCompressed x) {
+    GameState *t = decompress(x);
+    if(t==NULL)
+      return NULL;
+    else
+      return t;
   }
 
 }

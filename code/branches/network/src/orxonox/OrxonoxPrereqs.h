@@ -70,7 +70,9 @@ namespace orxonox {
   class Mesh;
   class Model;
   class NPC;
-  class OrxListener;
+  class OrxListenerServer;
+  class OrxListenerClient;
+  class OrxListenerStandalone;
   class Orxonox;
   class Skybox;
   class SpaceShip;
