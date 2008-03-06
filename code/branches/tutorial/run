@@ -2,3 +2,4 @@
 cd bin
 ./run-script $@
 cd ..
+
