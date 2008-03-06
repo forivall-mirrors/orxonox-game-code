@@ -30,7 +30,8 @@ namespace orxonox
 
 
         private:
-            Vector3 testvector_;
+            std::string projectileName_;
+
             bool bInvertYAxis_;
             bool setMouseEventCallback_;
             bool bLMousePressed_;

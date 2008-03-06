@@ -316,6 +316,11 @@ namespace orxonox
                 this->identifier_ = ClassIdentifier<T>::getIdentifier();
             }
 
+            SubclassIdentifier(Identifier* identifier)
+            {
+                this->identifier_ = identifier;
+            }
+
             /**
                 @brief Overloading of the = operator: assigns the identifier and checks its type.
                 @param identifier The Identifier to assign

@@ -14,16 +14,19 @@ namespace orxonox
     class _OrxonoxExport Projectile : public WorldEntity
     {
         public:
-            Projectile(SpaceShip* owner = 0);
+            Projectile();
             virtual ~Projectile();
             void setConfigValues();
             void destroyObject();
             virtual void tick(float dt);
+            void setOwner(SpaceShip* owner = 0);
+
+        protected:
+            BillboardSet billboard_;
+            float speed_;
 
         private:
             SpaceShip* owner_;
-            BillboardSet billboard_;
-            float speed_;
             float lifetime_;
             Timer<Projectile> destroyTimer_;
     };

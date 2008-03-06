@@ -86,42 +86,7 @@ namespace orxonox
 
         this->setRotationAxis(1, 0, 0);
         this->setStatic(false);
-/*
-        this->moveForward_ = 0;
-        this->rotateUp_ = 0;
-        this->rotateDown_ = 0;
-        this->rotateRight_ = 0;
-        this->rotateLeft_ = 0;
-        this->loopRight_ = 0;
-        this->loopLeft_ = 0;
-        this->brakeForward_ = 0;
-        this->brakeRotate_ = 0;
-        this->brakeLoop_ = 0;
-        this->speedForward_ = 0;
-        this->speedRotateUpDown_ = 0;
-        this->speedRotateRightLeft_ = 0;
-        this->speedLoopRightLeft_ = 0;
-        this->maxSpeedForward_ = 0;
-        this->maxSpeedRotateUpDown_ = 0;
-        this->maxSpeedRotateRightLeft_ = 0;
-        this->maxSpeedLoopRightLeft_ = 0;
-        this->accelerationForward_ = 0;
-        this->accelerationRotateUpDown_ = 0;
-        this->accelerationRotateRightLeft_ = 0;
-        this->accelerationLoopRightLeft_ = 0;
 
-        this->speed = 250;
-        this->loop = 100;
-        this->rotate = 10;
-        this->mouseX = 0;
-        this->mouseY = 0;
-        this->maxMouseX = 0;
-        this->minMouseX = 0;
-        this->moved = false;
-
-        this->brakeRotate(rotate*10);
-        this->brakeLoop(loop);
-*/
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
 
@@ -135,23 +100,18 @@ namespace orxonox
     {
         SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
         SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
-        SetConfigValue(testvector_, Vector3()).description("asdfblah");
+        SetConfigValue(projectileName_, "Projectile").description("Projectile of the ship-weapon.");
     }
 
     void SpaceShip::loadParams(TiXmlElement* xmlElem)
     {
         Model::loadParams(xmlElem);
 
-
         // START CREATING THRUSTER
         this->tt_ = new ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         this->tt_->getParticleSystem()->setParameter("local_space","true");
         this->tt_->newEmitter();
-/*
-        this->tt_->setDirection(Vector3(0,0,1));
-        this->tt_->setPositionOfEmitter(0, Vector3(20,-1,-15));
-        this->tt_->setPositionOfEmitter(1, Vector3(-20,-1,-15));
-*/
+
         this->tt_->setDirection(Vector3(-1,0,0));
         this->tt_->setPositionOfEmitter(0, Vector3(-15,20,-1));
         this->tt_->setPositionOfEmitter(1, Vector3(-15,-20,-1));
@@ -197,22 +157,6 @@ namespace orxonox
 
         // END of testing crosshair
 
-/*
-        if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
-        {
-            std::string forwardStr = xmlElem->Attribute("forward");
-            std::string rotateupdownStr = xmlElem->Attribute("rotateupdown");
-            std::string rotaterightleftStr = xmlElem->Attribute("rotaterightleft");
-            std::string looprightleftStr = xmlElem->Attribute("looprightleft");
-
-            String2Number<float>(this->maxSpeedForward_, forwardStr);
-            String2Number<float>(this->maxSpeedRotateUpDown_, rotateupdownStr);
-            String2Number<float>(this->maxSpeedRotateRightLeft_, rotaterightleftStr);
-            String2Number<float>(this->maxSpeedLoopRightLeft_, looprightleftStr);
-
-            COUT(4) << "Loader: Initialized spaceship steering with values " << maxSpeedForward_ << " " << maxSpeedRotateUpDown_ << " " << maxSpeedRotateRightLeft_ << " " << maxSpeedLoopRightLeft_ << " " << std::endl;
-    	}
-*/
         if (xmlElem->Attribute("maxSpeed") && xmlElem->Attribute("maxSideAndBackSpeed") && xmlElem->Attribute("maxRotation") && xmlElem->Attribute("transAcc") && xmlElem->Attribute("rotAcc") && xmlElem->Attribute("transDamp") && xmlElem->Attribute("rotDamp"))
         {
 
@@ -243,15 +187,8 @@ namespace orxonox
     	{
             Ogre::Camera *cam = Orxonox::getSingleton()->getSceneManager()->createCamera("ShipCam");
             this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
-/*
-//            node->setInheritOrientation(false);
-            cam->setPosition(Vector3(0,50,-150));
-            cam->lookAt(Vector3(0,20,0));
-            cam->roll(Degree(0));
-*/
 
             cam->setPosition(Vector3(-200,0,35));
-//            cam->setPosition(Vector3(0,-350,0));
             cam->lookAt(Vector3(0,0,35));
             cam->roll(Degree(-90));
 
@@ -270,19 +207,6 @@ namespace orxonox
 
     bool SpaceShip::mouseMoved(const OIS::MouseEvent &e)
     {
-/*
-        this->mouseX += e.state.X.rel;
-        if (this->bInvertMouse_)
-            this->mouseY += e.state.Y.rel;
-        else
-            this->mouseY -= e.state.Y.rel;
-
-//        if(mouseX>maxMouseX) maxMouseX = mouseX;
-//        if(mouseX<minMouseX) minMouseX = mouseX;
-//        cout << "mouseX: " << mouseX << "\tmouseY: " << mouseY << endl;
-
-        this->moved = true;
-*/
         if (this->bRMousePressed_)
         {
             this->camNode_->roll(Degree(-e.state.X.rel * 0.10));
@@ -378,7 +302,10 @@ namespace orxonox
 
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
-            new Projectile(this);
+            SubclassIdentifier<Projectile> projectile = ID(this->projectileName_);
+            Projectile* newProjectile = projectile.fabricate();
+            newProjectile->setOwner(this);
+
             this->timeToReload_ = this->reloadTime_;
         }
 
@@ -487,228 +414,5 @@ namespace orxonox
             this->tt_->setRate(emitterRate_);
         else
             this->tt_->setRate(0);
-
-/*
-        if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
-            this->moveForward(speed);
-        else
-            this->moveForward(0);
-
-        if(mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
-            this->brakeForward(speed);
-        else
-            this->brakeForward(speed/10);
-
-        if (mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D))
-            this->loopRight(loop);
-        else
-            this->loopRight(0);
-
-        if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
-            this->loopLeft(loop);
-        else
-            this->loopLeft(0);
-
-        if(moved)
-        {
-            if (mouseY<=0)
-                this->rotateUp(-mouseY*rotate);
-            if (mouseY>0)
-                this->rotateDown(mouseY*rotate);
-            if (mouseX>0)
-                this->rotateRight(mouseX*rotate);
-            if (mouseX<=0)
-                this->rotateLeft(-mouseX*rotate);
-
-            mouseY = 0;
-            mouseX = 0;
-            moved = false;
-        }*/
-/*        else
-        {
-            this->rotateUp(0);
-            this->rotateDown(0);
-            this->rotateRight(0);
-            this->rotateLeft(0);
-        }*/
-/*
-        if(moveForward_ > 0)
-        {
-            accelerationForward_ = moveForward_;
-            if(speedForward_ < maxSpeedForward_)
-                speedForward_ += accelerationForward_*dt;
-            if(speedForward_ > maxSpeedForward_)
-                speedForward_ = maxSpeedForward_;
-        }
-
-        if(moveForward_ <= 0)
-        {
-            accelerationForward_ = -brakeForward_;
-            if(speedForward_ > 0)
-                speedForward_ += accelerationForward_*dt;
-            if(speedForward_ < 0)
-                speedForward_ = 0;
-        }
-
-        if(rotateUp_ > 0)
-        {
-            accelerationRotateUpDown_ = rotateUp_;
-            if(speedRotateUpDown_ < maxSpeedRotateUpDown_)
-                speedRotateUpDown_ += accelerationRotateUpDown_*dt;
-            if(speedRotateUpDown_ > maxSpeedRotateUpDown_)
-            speedRotateUpDown_ = maxSpeedRotateUpDown_;
-        }
-
-        if(rotateDown_ > 0)
-        {
-            accelerationRotateUpDown_ = rotateDown_;
-            if(speedRotateUpDown_ > -maxSpeedRotateUpDown_)
-                speedRotateUpDown_ -= accelerationRotateUpDown_*dt;
-            if(speedRotateUpDown_ < -maxSpeedRotateUpDown_)
-                speedRotateUpDown_ = -maxSpeedRotateUpDown_;
-        }
-
-        if(rotateUp_ == 0 && rotateDown_ == 0)
-        {
-            accelerationRotateUpDown_ = brakeRotate_;
-            if(speedRotateUpDown_ > 0)
-                speedRotateUpDown_ -= accelerationRotateUpDown_*dt;
-            if(speedRotateUpDown_ < 0)
-                speedRotateUpDown_ += accelerationRotateUpDown_*dt;
-            if(fabs(speedRotateUpDown_) < accelerationRotateUpDown_*dt)
-                speedRotateUpDown_ = 0;
-        }
-
-        if(rotateRight_ > 0)
-        {
-            accelerationRotateRightLeft_ = rotateRight_;
-            if(speedRotateRightLeft_ > -maxSpeedRotateRightLeft_)
-                speedRotateRightLeft_ -= accelerationRotateRightLeft_*dt;
-            if(speedRotateRightLeft_ < -maxSpeedRotateRightLeft_)
-                speedRotateRightLeft_ = -maxSpeedRotateRightLeft_;
-        }
-
-        if(rotateLeft_ > 0)
-        {
-            accelerationRotateRightLeft_ = rotateLeft_;
-            if(speedRotateRightLeft_ < maxSpeedRotateRightLeft_)
-                speedRotateRightLeft_ += accelerationRotateRightLeft_*dt;
-            if(speedRotateRightLeft_ > maxSpeedRotateRightLeft_)
-                speedRotateRightLeft_ = maxSpeedRotateRightLeft_;
-        }
-
-        if(rotateRight_ == 0 && rotateLeft_ == 0)
-        {
-            accelerationRotateRightLeft_ = brakeRotate_;
-            if(speedRotateRightLeft_ > 0)
-                speedRotateRightLeft_ -= accelerationRotateRightLeft_*dt;
-            if(speedRotateRightLeft_ < 0)
-                speedRotateRightLeft_ += accelerationRotateRightLeft_*dt;
-            if(fabs(speedRotateRightLeft_) < accelerationRotateRightLeft_*dt)
-                speedRotateRightLeft_ = 0;
-        }
-
-        if(loopRight_ > 0)
-        {
-            accelerationLoopRightLeft_ = loopRight_;
-            if(speedLoopRightLeft_ < maxSpeedLoopRightLeft_)
-                speedLoopRightLeft_ += accelerationLoopRightLeft_*dt;
-            if(speedLoopRightLeft_ > maxSpeedLoopRightLeft_)
-                speedLoopRightLeft_ = maxSpeedLoopRightLeft_;
-        }
-
-        if(loopLeft_ > 0)
-        {
-            accelerationLoopRightLeft_ = loopLeft_;
-            if(speedLoopRightLeft_ > -maxSpeedLoopRightLeft_)
-                speedLoopRightLeft_ -= accelerationLoopRightLeft_*dt;
-            if(speedLoopRightLeft_ < -maxSpeedLoopRightLeft_)
-                speedLoopRightLeft_ = -maxSpeedLoopRightLeft_;
-        }
-
-        if(loopLeft_ == 0 && loopRight_ == 0)
-        {
-            accelerationLoopRightLeft_ = brakeLoop_;
-            if(speedLoopRightLeft_ > 0)
-                speedLoopRightLeft_ -= accelerationLoopRightLeft_*dt;
-            if(speedLoopRightLeft_ < 0)
-                speedLoopRightLeft_ += accelerationLoopRightLeft_*dt;
-            if(fabs(speedLoopRightLeft_) < accelerationLoopRightLeft_*dt)
-                speedLoopRightLeft_ = 0;
-        }
-
-        Vector3 transVector = Vector3::ZERO;
-*/
-/*
-        transVector.z = 1;
-        this->translate(transVector*speedForward_*dt, Ogre::Node::TS_LOCAL);
-        this->pitch(Degree(speedRotateUpDown_*dt), Ogre::Node::TS_LOCAL);
-        this->yaw(Degree(speedRotateRightLeft_*dt), Ogre::Node::TS_LOCAL);
-        this->roll(Degree(speedLoopRightLeft_*dt), Ogre::Node::TS_LOCAL);
-*/
-/*
-        transVector.x = 1;
-        this->translate(transVector*speedForward_*dt, Ogre::Node::TS_LOCAL);
-        this->yaw(Degree(speedRotateUpDown_*dt), Ogre::Node::TS_LOCAL);
-        this->roll(Degree(speedRotateRightLeft_*dt), Ogre::Node::TS_LOCAL);
-        this->pitch(Degree(speedLoopRightLeft_*dt), Ogre::Node::TS_LOCAL);
-*/
     }
-/*
-    void SpaceShip::moveForward(float moveForward) {
-        moveForward_ = moveForward;
-    }
-
-    void SpaceShip::rotateUp(float rotateUp) {
-        rotateUp_ = rotateUp;
-    }
-
-    void SpaceShip::rotateDown(float rotateDown) {
-        rotateDown_ = rotateDown;
-    }
-
-    void SpaceShip::rotateLeft(float rotateLeft) {
-        rotateLeft_ = rotateLeft;
-    }
-
-    void SpaceShip::rotateRight(float rotateRight) {
-        rotateRight_ = rotateRight;
-    }
-
-    void SpaceShip::loopLeft(float loopLeft) {
-        loopLeft_ = loopLeft;
-    }
-
-    void SpaceShip::loopRight(float loopRight) {
-        loopRight_ = loopRight;
-    }
-
-    void SpaceShip::brakeForward(float brakeForward) {
-        brakeForward_ = brakeForward;
-    }
-
-    void SpaceShip::brakeRotate(float brakeRotate) {
-        brakeRotate_ = brakeRotate;
-    }
-
-    void SpaceShip::brakeLoop(float brakeLoop) {
-        brakeLoop_ = brakeLoop;
-    }
-
-    void SpaceShip::maxSpeedForward(float maxSpeedForward) {
-        maxSpeedForward_ = maxSpeedForward;
-    }
-
-    void SpaceShip::maxSpeedRotateUpDown(float maxSpeedRotateUpDown) {
-        maxSpeedRotateUpDown_ = maxSpeedRotateUpDown;
-    }
-
-    void SpaceShip::maxSpeedRotateRightLeft(float maxSpeedRotateRightLeft) {
-        maxSpeedRotateRightLeft_ = maxSpeedRotateRightLeft;
-    }
-
-    void SpaceShip::maxSpeedLoopRightLeft(float maxSpeedLoopRightLeft) {
-        maxSpeedLoopRightLeft_ = maxSpeedLoopRightLeft;
-    }
-*/
 }

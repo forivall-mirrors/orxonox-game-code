@@ -38,17 +38,26 @@ namespace orxonox
 {
     CreateFactory(Projectile);
 
-    Projectile::Projectile(SpaceShip* owner)
+    Projectile::Projectile()
     {
         RegisterObject(Projectile);
 
         this->setConfigValues();
 
-        this->owner_ = owner;
-
         this->billboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
         this->attachObject(this->billboard_.getBillboardSet());
         this->scale(0.5);
+
+        this->destroyTimer_.setTimer(this->lifetime_, false, this, &Projectile::destroyObject);
+    }
+
+    Projectile::~Projectile()
+    {
+    }
+
+    void Projectile::setOwner(SpaceShip* owner)
+    {
+        this->owner_ = owner;
 
         if (this->owner_)
         {
@@ -58,12 +67,6 @@ namespace orxonox
             this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
             this->setVelocity(Vector3(1, 0, 0) * this->speed_);
         }
-
-        this->destroyTimer_.setTimer(this->lifetime_, false, this, &Projectile::destroyObject);
-    }
-
-    Projectile::~Projectile()
-    {
     }
 
     void Projectile::setConfigValues()
