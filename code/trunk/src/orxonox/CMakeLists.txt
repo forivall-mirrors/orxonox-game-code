@@ -2,12 +2,14 @@ SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   Main.cc
   Orxonox.cc
+  objects/Tickable.cc
   SpaceshipSteering.cc
   hud/HUD.cc
   particle/ParticleInterface.cc
   tools/BillboardSet.cc
   tools/Light.cc
   tools/Mesh.cc
+  tools/Timer.cc
   objects/Ambient.cc
   objects/Camera.cc
   objects/Explosion.cc
@@ -17,10 +19,10 @@ SET( ORXONOX_SRC_FILES
   objects/Projectile.cc
   objects/Skybox.cc
   objects/SpaceShip.cc
-# objects/SpaceshipSteeringObject.cc
-# objects/test1.cc
-# objects/test2.cc
-# objects/test3.cc
+#  objects/SpaceshipSteeringObject.cc
+#  objects/test1.cc
+#  objects/test2.cc
+#  objects/test3.cc
   objects/WorldEntity.cc
   objects/weapon/AmmunitionDump.cc
   objects/weapon/BarrelGun.cc
@@ -41,6 +43,6 @@ TARGET_LINK_LIBRARIES( orxonox
   core
   audio
   network
-  loader
+#  loader
 )
 

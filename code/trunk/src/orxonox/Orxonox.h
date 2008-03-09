@@ -13,7 +13,7 @@
 #include <OIS/OISPrereqs.h>
 
 #include "OrxonoxPrereqs.h"
-#include "loader/LoaderPrereqs.h"
+//#include "loader/LoaderPrereqs.h"
 #include "audio/AudioPrereqs.h"
 
 #include "GraphicsEngine.h"
@@ -68,7 +68,7 @@ namespace orxonox {
     private:
       GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
       std::string           dataPath_;      //!< path to data
-      loader::LevelLoader*  loader_;        //!< level loader builds the scene
+//      loader::LevelLoader*  loader_;        //!< level loader builds the scene
       audio::AudioManager*  auMan_;         //!< audio manager
       BulletManager*        bulletMgr_;     //!< Keeps track of the thrown bullets
       static Orxonox*       singletonRef_;

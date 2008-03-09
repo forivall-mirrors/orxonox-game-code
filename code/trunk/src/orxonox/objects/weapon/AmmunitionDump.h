@@ -36,7 +36,6 @@
 #include "../../OrxonoxPrereqs.h"
 
 #include "network/Synchronisable.h"
-//#include "../core/CoreIncludes.h"
 #include "core/BaseObject.h"
 
 
@@ -65,7 +64,6 @@ namespace orxonox {
     int *stock_;
     int *capacity_;
   };
-  ExportClass(AmmunitionDump, Orxonox);
 }
 
 #endif /* _AmmunitionDump_H__ */

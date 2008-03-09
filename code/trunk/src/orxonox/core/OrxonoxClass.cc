@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file OrxonoxClass.cc
     @brief Implementation of the OrxonoxClass Class.
 */
@@ -41,9 +41,6 @@ namespace orxonox
 
         this->identifier_ = 0;
         this->parents_ = 0;
-
-        this->bActive_ = true;
-        this->bVisible_ = true;
     }
 
     /** @brief Destructor: Deletes, if existing, the list of the parents. */

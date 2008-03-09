@@ -6,8 +6,6 @@
 #include <OgreBillboardSet.h>
 
 #include "../OrxonoxPrereqs.h"
-
-#include "../core/CoreIncludes.h"
 #include "util/Math.h"
 
 namespace orxonox

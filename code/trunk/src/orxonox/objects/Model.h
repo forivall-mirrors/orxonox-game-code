@@ -17,6 +17,8 @@ namespace orxonox
             Model();
             virtual ~Model();
             virtual void loadParams(TiXmlElement* xmlElem);
+            virtual void XMLPort(Element& xmlelement, bool loading);
+            void setMesh(const std::string& meshname);
             bool create();
 
         private:
@@ -24,7 +26,6 @@ namespace orxonox
             Mesh mesh_;
             void registerAllVariables();
     };
-    ExportClass(Model, Orxonox);
 }
 
 #endif /* _Model_H__ */

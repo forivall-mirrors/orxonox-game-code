@@ -1,16 +1,4 @@
-<?xml version="1.0"?>
-<orxonoxworld name="Orxonox sample level" image="textures/menu/moonstation_512x512.jpg">
-  <description>
-    This is an orxonox sample level.
-  </description>
-
-  <loading>
-    <background color="000000" image="textures/load_screens/ambush.png" />
-    <bar top="200" left="50" width="300" height="20" image="textures/load_screens/ambush-loadbar.png" />
-  </loading>
-
-
-
+<!--
  <audio>
 		<ambient>
 			<ogg src="allgorythm-lift_up" />
@@ -20,35 +8,36 @@
 			<ogg src="tha_silent_partner_-_void" />
 		</ambient>
   </audio>
-
-  <!-- Keep a minimum distance of >100 to the object, otherwise the camara thinks it's in the object -->
-  <!-- the value has to negative, as we want the camara behind the object -->
-<!--
-    <Camera name="Camera" pos="0,50,-150" lookat="0,20,0" node="2OgreHeadNode" />
-    <SpaceShip camera="true" position="0,0,0" scale="10" yaw="-90" pitch="-90" mesh="assf3.mesh"  forward="250" rotateupdown="100" rotaterightleft="100" looprightleft="100" />
 -->
-  <world>
-    <Ambient colourvalue="1,1,1" />
-    <Skybox src="Orxonox/StarSkyBox" />
 
-    <!--Fighter camera="true" position="0,0,0" scale="10" yaw="-90" pitch="-90" mesh="assf3.mesh"  forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" /-->
-    <SpaceShip camera="true" position="0,0,0" scale="10" yaw="-90" pitch="-90" mesh="assf3.mesh" maxSpeed="500" maxSideAndBackSpeed="50" maxRotation="1.0" transAcc="200" rotAcc="3.0" transDamp="75" rotDamp="1.0" />
+<Ambient colourvalue="1,1,1" />
+<Skybox src="Orxonox/StarSkyBox" />
 
-    <NPC position="0,100,400" scale="1" mesh="razor.mesh"/>
-    <NPC position="0,100,400" scale="1" mesh="razor.mesh"/>
-    <NPC position="0,-100,500" scale="1" mesh="razor.mesh"/>
-    <NPC position="0,-200,450" scale="1" mesh="razor.mesh"/>
-    <NPC position="100,0,400" scale="1" mesh="razor.mesh"/>
-<!--
-    <Model position="200,0,500" scale="10" mesh="starship.mesh" yaw="-90" pitch="-90" />
-    <Model position="-200,0,500" scale="10" mesh="drone.mesh" yaw="-90" pitch="-90" />
--->
-    <Model position="-200,1000,500" scale="10" mesh="hoover_body.mesh" yaw="-90" pitch="-90" />
-    <Model position="-200,1000,500" scale="10" mesh="hoover_gear0.mesh" yaw="-90" pitch="-90" />
-    <Model position="-200,1000,500" scale="10" mesh="hoover_gear1.mesh" yaw="-90" pitch="-90" />
-    <Model position="-200,1000,500" scale="10" mesh="hoover_gear2.mesh" yaw="-90" pitch="-90" />
-    <Model position="-200,1000,500" scale="10" mesh="hoover_turbine.mesh" yaw="-90" pitch="-90" />
+<!--Fighter camera="true" position="0,0,0" scale="10" yawpitchroll="-90,-90,0" mesh="assf3.mesh"  forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" /-->
+<SpaceShip camera="true" position="0,0,0" scale="10" yawpitchroll="-90,-90,0" mesh="assf5.mesh" maxSpeed="500" maxSideAndBackSpeed="50" maxRotation="1.0" transAcc="200" rotAcc="3.0" transDamp="75" rotDamp="1.0" />
 
+<NPC position="0,100,400" scale="1" mesh="razor.mesh"/>
+<NPC position="0,100,400" scale="1" mesh="razor.mesh"/>
+<NPC position="0,-100,500" scale="1" mesh="razor.mesh"/>
+<NPC position="0,-200,450" scale="1" mesh="razor.mesh"/>
+<NPC position="100,0,400" scale="1" mesh="razor.mesh"/>
+
+<Model name="starship" position="200,0,500" scale="10" mesh="starship.mesh" yawpitchroll="-90,-90,0" />
+<Model name="drone" position="-200,0,500" scale="10" mesh="drone.mesh" yawpitchroll="-90,-90,0">
+  <attached>
+    <Model name="drone2" position="200,-100,-500" scale="10" mesh="drone.mesh" yawpitchroll="-90,-90,0">
+      <attached>
+        <Model name="starship2" position="500,200,-500" scale="10" mesh="starship.mesh" yawpitchroll="-90,-90,0" />
+      </attached>
+    </Model>
+  </attached>
+</Model>
+
+<Model position="-200,1000,500" scale="10" mesh="hoover_body.mesh" yawpitchroll="-90,-90,0" />
+<Model position="-200,1000,500" scale="10" mesh="hoover_gear0.mesh" yawpitchroll="-90,-90,0" />
+<Model position="-200,1000,500" scale="10" mesh="hoover_gear1.mesh" yawpitchroll="-90,-90,0" />
+<Model position="-200,1000,500" scale="10" mesh="hoover_gear2.mesh" yawpitchroll="-90,-90,0" />
+<Model position="-200,1000,500" scale="10" mesh="hoover_turbine.mesh" yawpitchroll="-90,-90,0" />
 
     <Model position="-16779,42,11043" scale="95" mesh="ast2.mesh" rotationAxis="0.281711,0.152518,0" rotationRate="27" />
     <Model position="12893,-1583,-17939" scale="48" mesh="ast1.mesh" rotationAxis="0.0597998,0.923364,0" rotationRate="36" />
@@ -277,14 +266,3 @@
     <Model position="1991,-11949,-15733" scale="68" mesh="ast1.mesh" rotationAxis="0,0.390655,0.623811" rotationRate="41" />
     <Model position="-6787,1792,287" scale="71" mesh="ast6.mesh" rotationAxis="0.161019,0.130015,0" rotationRate="36" />
     <Model position="-7223,-13574,-11873" scale="24" mesh="ast4.mesh" rotationAxis="0.792203,0,0.177188" rotationRate="38" />
-
-
-  </world>
-
-  <!-- Unused at the moment -->
-<!--  <SpaceshipSteeringObject node="OgreHeadNode" forward="500" rotateupdown="200" rotaterightleft="200" looprightleft="200" /> -->
-
-  <scripts>
-    <script file="intro.lua" />
-  </scripts>
-</orxonoxworld>

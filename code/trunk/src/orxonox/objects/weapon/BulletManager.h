@@ -37,7 +37,6 @@
 
 #include "network/Synchronisable.h"
 #include "util/tinyxml/tinyxml.h"
-#include "../../core/CoreIncludes.h"
 #include "core/BaseObject.h"
 #include "../Tickable.h"
 
@@ -66,7 +65,6 @@ namespace orxonox {
 	  int bulletsSize_;
 	  int bulletsIndex_;
   };
-  ExportClass(BulletManager, Orxonox);
 }
 
 #endif /* _BulletManager_H__ */

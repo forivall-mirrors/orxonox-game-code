@@ -19,20 +19,23 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-/*!
+/**
     @file BaseObject.cc
     @brief Implementation of the BaseObject class.
 */
 
 #include "util/tinyxml/tinyxml.h"
 
+#include "core/CoreIncludes.h"
 #include "BaseObject.h"
+#include "XMLPort.h"
+#include "Level.h"
 
 namespace orxonox
 {
@@ -44,6 +47,10 @@ namespace orxonox
     BaseObject::BaseObject()
     {
         RegisterRootObject(BaseObject);
+
+        this->bActive_ = true;
+        this->bVisible_ = true;
+        this->level_ = 0;
     }
 
     /**
@@ -62,5 +69,25 @@ namespace orxonox
         {
             this->setName(xmlElem->Attribute("name"));
         }
+    }
+
+    /**
+        @brief XML loading and saving.
+        @param xmlelement The XML-element
+        @param loading Loading (true) or saving (false)
+        @return The XML-element
+    */
+    void BaseObject::XMLPort(Element& xmlelement, bool loading)
+    {
+        XMLPortParam(BaseObject, "name", setName, getName, xmlelement, loading);
+    }
+
+    /**
+        @brief Returns the levelfile that loaded this object.
+        @return The levelfile
+    */
+    const std::string& BaseObject::getLevelfile() const
+    {
+        return this->level_->getFile();
     }
 }

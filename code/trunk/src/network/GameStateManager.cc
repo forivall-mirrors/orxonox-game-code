@@ -108,7 +108,7 @@ namespace network
     // offset of memory functions
     int offset=0;
     // go through all Synchronisables
-    for(it = orxonox::ObjectList<Synchronisable>::start(); it != 0; ++it){
+    for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
       //std::cout << "gamestatemanager: in for loop" << std::endl;
       //get size of the synchronisable
       tempsize=it->getSize();

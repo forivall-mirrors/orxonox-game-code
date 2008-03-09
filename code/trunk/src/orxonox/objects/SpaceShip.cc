@@ -43,6 +43,7 @@
 #include "../Orxonox.h"
 #include "../particle/ParticleInterface.h"
 #include "Projectile.h"
+#include "core/XMLPort.h"
 
 #include "SpaceShip.h"
 
@@ -122,6 +123,8 @@ namespace orxonox
         this->brakeRotate(rotate*10);
         this->brakeLoop(loop);
 */
+        this->init();
+
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
 
@@ -131,18 +134,8 @@ namespace orxonox
             delete this->tt_;
     }
 
-    void SpaceShip::setConfigValues()
+    void SpaceShip::init()
     {
-        SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
-        SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
-        SetConfigValue(testvector_, Vector3()).description("asdfblah");
-    }
-
-    void SpaceShip::loadParams(TiXmlElement* xmlElem)
-    {
-        Model::loadParams(xmlElem);
-
-
         // START CREATING THRUSTER
         this->tt_ = new ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         this->tt_->getParticleSystem()->setParameter("local_space","true");
@@ -196,7 +189,18 @@ namespace orxonox
         this->chFarNode_->setScale(0.4, 0.4, 0.4);
 
         // END of testing crosshair
+    }
 
+    void SpaceShip::setConfigValues()
+    {
+        SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
+        SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
+        SetConfigValue(testvector_, Vector3()).description("asdfblah");
+    }
+
+    void SpaceShip::loadParams(TiXmlElement* xmlElem)
+    {
+        Model::loadParams(xmlElem);
 /*
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
         {
@@ -241,23 +245,63 @@ namespace orxonox
 
     	if (xmlElem->Attribute("camera"))
     	{
-            Ogre::Camera *cam = Orxonox::getSingleton()->getSceneManager()->createCamera("ShipCam");
-            this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
+    	    this->setCamera();
+    	}
+    }
+
+    void SpaceShip::setCamera(const std::string& camera)
+    {
+        Ogre::Camera *cam = Orxonox::getSingleton()->getSceneManager()->createCamera("ShipCam");
+        this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
 /*
-//            node->setInheritOrientation(false);
-            cam->setPosition(Vector3(0,50,-150));
-            cam->lookAt(Vector3(0,20,0));
-            cam->roll(Degree(0));
+//        node->setInheritOrientation(false);
+        cam->setPosition(Vector3(0,50,-150));
+        cam->lookAt(Vector3(0,20,0));
+        cam->roll(Degree(0));
 */
 
-            cam->setPosition(Vector3(-200,0,35));
-//            cam->setPosition(Vector3(0,-350,0));
-            cam->lookAt(Vector3(0,0,35));
-            cam->roll(Degree(-90));
+        cam->setPosition(Vector3(-200,0,35));
+//        cam->setPosition(Vector3(0,-350,0));
+        cam->lookAt(Vector3(0,0,35));
+        cam->roll(Degree(-90));
 
-            this->camNode_->attachObject(cam);
-            Orxonox::getSingleton()->getOgrePointer()->getRoot()->getAutoCreatedWindow()->addViewport(cam);
-    	}
+        this->camNode_->attachObject(cam);
+        Orxonox::getSingleton()->getOgrePointer()->getRoot()->getAutoCreatedWindow()->addViewport(cam);
+    }
+
+    void SpaceShip::setMaxSpeed(float value)
+    { this->maxSpeed_ = value; }
+    void SpaceShip::setMaxSideAndBackSpeed(float value)
+    { this->maxSideAndBackSpeed_ = value; }
+    void SpaceShip::setMaxRotation(float value)
+    { this->maxRotation_ = value; this->maxRotationRadian_ = Radian(value); }
+    void SpaceShip::setTransAcc(float value)
+    { this->translationAcceleration_ = value; }
+    void SpaceShip::setRotAcc(float value)
+    { this->rotationAcceleration_ = value; this->rotationAccelerationRadian_ = Radian(value); }
+    void SpaceShip::setTransDamp(float value)
+    { this->translationDamping_ = value; }
+    void SpaceShip::setRotDamp(float value)
+    { this->rotationDamping_ = value; this->rotationDampingRadian_ = Radian(value); }
+
+    /**
+        @brief XML loading and saving.
+        @param xmlelement The XML-element
+        @param loading Loading (true) or saving (false)
+        @return The XML-element
+    */
+    void SpaceShip::XMLPort(Element& xmlelement, bool loading)
+    {
+        Model::XMLPort(xmlelement, loading);
+
+        XMLPortParamLoadOnly(SpaceShip, "camera", setCamera, xmlelement, loading);
+        XMLPortParamLoadOnly(SpaceShip, "maxSpeed", setMaxSpeed, xmlelement, loading);
+        XMLPortParamLoadOnly(SpaceShip, "maxSideAndBackSpeed", setMaxSideAndBackSpeed, xmlelement, loading);
+        XMLPortParamLoadOnly(SpaceShip, "maxRotation", setMaxRotation, xmlelement, loading);
+        XMLPortParamLoadOnly(SpaceShip, "transAcc", setTransAcc, xmlelement, loading);
+        XMLPortParamLoadOnly(SpaceShip, "rotAcc", setRotAcc, xmlelement, loading);
+        XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, loading);
+        XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, loading);
     }
 
     int sgn(float x)

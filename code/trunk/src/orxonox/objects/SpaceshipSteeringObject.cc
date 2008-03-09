@@ -39,8 +39,7 @@
 #include "util/tinyxml/tinyxml.h"
 #include "util/Tokenizer.h"
 #include "util/String2Number.h"
-#include "../core/Debug.h"
-
+#include "core/CoreIncludes.h"
 #include "SpaceshipSteeringObject.h"
 
 #include "../SpaceshipSteering.h"

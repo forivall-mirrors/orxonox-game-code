@@ -43,6 +43,7 @@
 
 // All needed header-files
 #include "Identifier.h"
+#include "ClassManager.h"
 #include "Factory.h"
 #include "ClassFactory.h"
 #include "Iterator.h"
@@ -50,16 +51,18 @@
 #include "ConfigValueContainer.h"
 #include "Debug.h"
 
+
+// All needed macros
 /**
     @brief Intern macro, containing the common parts of RegisterObject and RegisterRootObject.
     @param ClassName The name of the class
     @param bRootClass True if the class is directly derived from OrxonoxClass
 */
 #define InternRegisterObject(ClassName, bRootClass) \
-    this->setIdentifier(orxonox::ClassIdentifier<ClassName>::registerClass(this->getParents(), #ClassName, bRootClass)); \
+    this->setIdentifier(orxonox::ClassManager<ClassName>::getIdentifier()->registerClass(this->getParents(), #ClassName, bRootClass)); \
     if (orxonox::Identifier::isCreatingHierarchy() && this->getParents()) \
-        this->getParents()->add(this->getIdentifier()); \
-    orxonox::ClassIdentifier<ClassName>::addObject(this)
+        this->getParents()->insert(this->getParents()->end(), this->getIdentifier()); \
+    orxonox::ClassManager<ClassName>::getIdentifier()->addObject(this)
 
 /**
     @brief Intern macro, containing the specific part of RegisterRootObject.
@@ -67,7 +70,7 @@
 */
 #define InternRegisterRootObject(ClassName) \
     if (orxonox::Identifier::isCreatingHierarchy() && !this->getParents()) \
-        this->setParents(new orxonox::IdentifierList()); \
+        this->createParents(); \
     InternRegisterObject(ClassName, true)
 
 /**
@@ -75,7 +78,7 @@
     @param ClassName The name of the class
 */
 #define RegisterObject(ClassName) \
-    COUT(4) << "*** Register Object: " << #ClassName << std::endl; \
+    COUT(5) << "*** Register Object: " << #ClassName << std::endl; \
     InternRegisterObject(ClassName, false)
 
 /**
@@ -83,34 +86,15 @@
     @param ClassName The name of the class
 */
 #define RegisterRootObject(ClassName) \
-    COUT(4) << "*** Register Root-Object: " << #ClassName << std::endl; \
+    COUT(5) << "*** Register Root-Object: " << #ClassName << std::endl; \
     InternRegisterRootObject(ClassName)
-
-/**
-    @brief Exports the necessary templates in order to make them available to all libraries.
-    @param ClassName The name of the Class
-    @param LibraryName The name of the Library
-*/
-#define ExportClass(ClassName, LibraryName) \
-    template class _##LibraryName##Export orxonox::ClassIdentifier<ClassName>; \
-    template class _##LibraryName##Export orxonox::ObjectList<ClassName>; \
-    template class _##LibraryName##Export orxonox::ClassFactory<ClassName>
-
-/**
-    @brief Exports the necessary templates in order to make them available to all libraries.
-    @param ClassName The name of the Class
-    @param LibraryName The name of the Library
-*/
-#define ExportAbstractClass(ClassName, LibraryName) \
-    template class _##LibraryName##Export orxonox::ClassIdentifier<ClassName>; \
-    template class _##LibraryName##Export orxonox::ObjectList<ClassName>
 
 /**
     @brief Returns the Identifier of the given class.
     @param ClassName The name of the class
 */
 #define Class(ClassName) \
-    ClassIdentifier<ClassName>::getIdentifier()
+    ClassManager<ClassName>::getIdentifier()
 
 /**
     @brief Creates the entry in the Factory.
@@ -136,9 +120,9 @@
     if (!container##varname) \
     { \
         container##varname = new orxonox::ConfigValueContainer(this->getIdentifier()->getName(), #varname, varname = defvalue); \
-        this->getIdentifier()->setConfigValueContainer(#varname, container##varname); \
+        this->getIdentifier()->addConfigValueContainer(#varname, container##varname); \
     } \
-    container##varname->getValue(varname)
+    container##varname->getValue(&varname)
 
 /**
     @brief Sets the variable and the config-file entry back to the previously defined default-value.
@@ -149,7 +133,7 @@
     if (container##varname##reset) \
     { \
         container##varname##reset->resetConfigValue(); \
-        container##varname##reset->getValue(varname); \
+        container##varname##reset->getValue(&varname); \
     } \
     else \
         COUT(2) << "Warning: Couldn't reset variable " << #varname << ", corresponding container doesn't exist." << std::endl

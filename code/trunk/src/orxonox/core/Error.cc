@@ -25,6 +25,11 @@
  *
  */
 
+/**
+    @file Error.cc
+    @brief Implementation of the Error class.
+*/
+
 #include "Debug.h"
 #include "Error.h"
 

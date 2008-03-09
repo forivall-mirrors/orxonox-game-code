@@ -13,14 +13,13 @@ namespace orxonox
             Camera();
             virtual ~Camera();
 
-            
+
             void loadParams(TiXmlElement* xmlElem);
 
         private:
-            
+
 
     };
-    ExportClass(Camera, Orxonox);
 }
 
 #endif /* _Camera_H__ */
