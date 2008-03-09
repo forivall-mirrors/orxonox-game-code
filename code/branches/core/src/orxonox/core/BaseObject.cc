@@ -77,11 +77,9 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    Element& BaseObject::XMLPort(Element& xmlelement, bool loading)
+    void BaseObject::XMLPort(Element& xmlelement, bool loading)
     {
         XMLPortParam(BaseObject, "name", setName, getName, xmlelement, loading);
-
-        return xmlelement;
     }
 
     /**

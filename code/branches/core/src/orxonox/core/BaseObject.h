@@ -49,7 +49,7 @@ namespace orxonox
             BaseObject();
             virtual ~BaseObject();
             virtual void loadParams(TiXmlElement* xmlElem);
-            virtual Element& XMLPort(Element& xmlelement, bool loading);
+            virtual void XMLPort(Element& xmlelement, bool loading);
 
             /** @brief Sets the name of the object. @param name The name */
             inline void setName(const std::string& name) { this->name_ = name; this->changedName(); }

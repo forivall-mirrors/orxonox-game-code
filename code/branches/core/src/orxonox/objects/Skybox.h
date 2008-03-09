@@ -16,7 +16,7 @@ namespace orxonox
             virtual ~Skybox();
 
             void loadParams(TiXmlElement* xmlElem);
-            virtual Element& XMLPort(Element& xmlelement, bool loading);
+            virtual void XMLPort(Element& xmlelement, bool loading);
             void setSkybox(const std::string& skyboxname);
 
         private:

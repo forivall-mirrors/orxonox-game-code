@@ -290,7 +290,7 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    Element& SpaceShip::XMLPort(Element& xmlelement, bool loading)
+    void SpaceShip::XMLPort(Element& xmlelement, bool loading)
     {
         Model::XMLPort(xmlelement, loading);
 
@@ -302,8 +302,6 @@ namespace orxonox
         XMLPortParamLoadOnly(SpaceShip, "rotAcc", setRotAcc, xmlelement, loading);
         XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, loading);
         XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, loading);
-
-        return xmlelement;
     }
 
     int sgn(float x)

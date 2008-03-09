@@ -66,15 +66,13 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    Element& Model::XMLPort(Element& xmlelement, bool loading)
+    void Model::XMLPort(Element& xmlelement, bool loading)
     {
         WorldEntity::XMLPort(xmlelement, loading);
 
         XMLPortParamLoadOnly(Model, "mesh", setMesh, xmlelement, loading);
 
         create();
-
-        return xmlelement;
     }
 
     void Model::setMesh(const std::string& meshname)

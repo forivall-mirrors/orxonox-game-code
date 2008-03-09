@@ -84,12 +84,10 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    Element& Ambient::XMLPort(Element& xmlelement, bool loading)
+    void Ambient::XMLPort(Element& xmlelement, bool loading)
     {
         BaseObject::XMLPort(xmlelement, loading);
 
         XMLPortParamLoadOnly(Ambient, "colourvalue", setAmbientLight, xmlelement, loading);
-
-        return xmlelement;
     }
 }

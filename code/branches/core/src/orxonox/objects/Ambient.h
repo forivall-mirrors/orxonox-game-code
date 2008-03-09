@@ -14,7 +14,7 @@ namespace orxonox
             virtual ~Ambient();
 
             void loadParams(TiXmlElement* xmlElem);
-            virtual Element& XMLPort(Element& xmlelement, bool loading);
+            virtual void XMLPort(Element& xmlelement, bool loading);
             void setAmbientLight(const ColourValue& colour);
 
         private:

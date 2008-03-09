@@ -170,7 +170,7 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    Element& WorldEntity::XMLPort(Element& xmlelement, bool loading)
+    void WorldEntity::XMLPort(Element& xmlelement, bool loading)
     {
         BaseObject::XMLPort(xmlelement, loading);
 
@@ -182,8 +182,6 @@ namespace orxonox
         XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, loading);
 
         XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, loading);
-
-        return xmlelement;
     }
 
     bool WorldEntity::create(){
