@@ -51,7 +51,7 @@
 #ifndef _Identifier_H__
 #define _Identifier_H__
 
-#include <list>
+#include <set>
 #include <map>
 #include <string>
 #include <utility>
@@ -114,32 +114,32 @@ namespace orxonox
             inline const std::string& getName() const { return this->name_; }
 
             /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
-            inline const std::list<const Identifier*>& getParents() const { return this->parents_; }
+            inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
             /** @brief Returns the begin-iterator of the parents-list. @return The begin-iterator */
-            inline std::list<const Identifier*>::const_iterator getParentsBegin() const { return this->parents_.begin(); }
+            inline std::set<const Identifier*>::const_iterator getParentsBegin() const { return this->parents_.begin(); }
             /** @brief Returns the end-iterator of the parents-list. @return The end-iterator */
-            inline std::list<const Identifier*>::const_iterator getParentsEnd() const { return this->parents_.end(); }
+            inline std::set<const Identifier*>::const_iterator getParentsEnd() const { return this->parents_.end(); }
 
             /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
-            inline const std::list<const Identifier*>& getChildren() const { return (*this->children_); }
+            inline const std::set<const Identifier*>& getChildren() const { return (*this->children_); }
             /** @brief Returns the begin-iterator of the children-list. @return The begin-iterator */
-            inline std::list<const Identifier*>::const_iterator getChildrenBegin() const { return this->children_->begin(); }
+            inline std::set<const Identifier*>::const_iterator getChildrenBegin() const { return this->children_->begin(); }
             /** @brief Returns the end-iterator of the children-list. @return The end-iterator */
-            inline std::list<const Identifier*>::const_iterator getChildrenEnd() const { return this->children_->end(); }
+            inline std::set<const Identifier*>::const_iterator getChildrenEnd() const { return this->children_->end(); }
 
             /** @brief Returns the direct parents of the class the Identifier belongs to. @return The list of all direct parents */
-            inline const std::list<const Identifier*>& getDirectParents() const { return this->directParents_; }
+            inline const std::set<const Identifier*>& getDirectParents() const { return this->directParents_; }
             /** @brief Returns the begin-iterator of the direct-parents-list. @return The begin-iterator */
-            inline std::list<const Identifier*>::const_iterator getDirectParentsBegin() const { return this->directParents_.begin(); }
+            inline std::set<const Identifier*>::const_iterator getDirectParentsBegin() const { return this->directParents_.begin(); }
             /** @brief Returns the end-iterator of the direct-parents-list. @return The end-iterator */
-            inline std::list<const Identifier*>::const_iterator getDirectParentsEnd() const { return this->directParents_.end(); }
+            inline std::set<const Identifier*>::const_iterator getDirectParentsEnd() const { return this->directParents_.end(); }
 
             /** @brief Returns the direct children the class the Identifier belongs to. @return The list of all direct children */
-            inline const std::list<const Identifier*>& getDirectChildren() const { return (*this->directChildren_); }
+            inline const std::set<const Identifier*>& getDirectChildren() const { return (*this->directChildren_); }
             /** @brief Returns the begin-iterator of the direct-children-list. @return The begin-iterator */
-            inline std::list<const Identifier*>::const_iterator getDirectChildrenBegin() const { return this->directChildren_->begin(); }
+            inline std::set<const Identifier*>::const_iterator getDirectChildrenBegin() const { return this->directChildren_->begin(); }
             /** @brief Returns the end-iterator of the direct-children-list. @return The end-iterator */
-            inline std::list<const Identifier*>::const_iterator getDirectChildrenEnd() const { return this->directChildren_->end(); }
+            inline std::set<const Identifier*>::const_iterator getDirectChildrenEnd() const { return this->directChildren_->end(); }
 
             /** @brief Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. @return The status of the class-hierarchy creation */
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
@@ -159,18 +159,16 @@ namespace orxonox
             virtual XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname) = 0;
             virtual void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container) = 0;
 
-            static bool identifierIsInList(const Identifier* identifier, const std::list<const Identifier*>& list);
-
         private:
             Identifier();
             Identifier(const Identifier& identifier) {} // don't copy
             virtual ~Identifier();
-            void initialize(std::list<const Identifier*>* parents);
+            void initialize(std::set<const Identifier*>* parents);
 
             /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
-            inline std::list<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
+            inline std::set<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
             /** @brief Returns the direct children of the class the Identifier belongs to. @return The list of all direct children */
-            inline std::list<const Identifier*>& getDirectChildrenIntern() const { return (*this->directChildren_); }
+            inline std::set<const Identifier*>& getDirectChildrenIntern() const { return (*this->directChildren_); }
 
             /**
                 @brief Increases the hierarchyCreatingCounter_s variable, causing all new objects to store their parents.
@@ -190,11 +188,11 @@ namespace orxonox
                 COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
-            std::list<const Identifier*> parents_;                      //!< The parents of the class the Identifier belongs to
-            std::list<const Identifier*>* children_;                    //!< The children of the class the Identifier belongs to
+            std::set<const Identifier*> parents_;                      //!< The parents of the class the Identifier belongs to
+            std::set<const Identifier*>* children_;                    //!< The children of the class the Identifier belongs to
 
-            std::list<const Identifier*> directParents_;                //!< The direct parents of the class the Identifier belongs to
-            std::list<const Identifier*>* directChildren_;              //!< The direct children of the class the Identifier belongs to
+            std::set<const Identifier*> directParents_;                //!< The direct parents of the class the Identifier belongs to
+            std::set<const Identifier*>* directChildren_;              //!< The direct children of the class the Identifier belongs to
 
             std::string name_;                                          //!< The name of the class the Identifier belongs to
 
@@ -205,7 +203,7 @@ namespace orxonox
             std::map<std::string, ConfigValueContainer*> configValues_; //!< A map to link the string of configurable variables with their ConfigValueContainer
     };
 
-    std::ostream& operator<<(std::ostream& out, const std::list<const Identifier*>& list);
+    std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list);
 
 
     // ###############################
@@ -230,7 +228,7 @@ namespace orxonox
         friend class ClassManager;
 
         public:
-            ClassIdentifier<T>* registerClass(std::list<const Identifier*>* parents, const std::string& name, bool bRootClass);
+            ClassIdentifier<T>* registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass);
             void addObject(T* object);
             void removeObjects() const;
             void setName(const std::string& name);
@@ -272,7 +270,7 @@ namespace orxonox
         @return The ClassIdentifier itself
     */
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(std::list<const Identifier*>* parents, const std::string& name, bool bRootClass)
+    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass)
     {
         COUT(5) << "*** ClassIdentifier: Register Class in " << name << "-Singleton." << std::endl;
 

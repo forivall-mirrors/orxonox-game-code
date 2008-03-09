@@ -326,7 +326,7 @@ namespace orxonox
         else
         {
             // No it's not: Search for classes inheriting from the given class and add the rules for them
-            for (std::list<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
+            for (std::set<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
                 if ((*it)->isA(this->root_->getClass()))
                     if (overwrite || (!this->nodeExists(*it))) // If we don't want to overwrite, only add nodes that don't already exist
                         this->add(this->root_, *it, bInclude, overwrite);
@@ -421,7 +421,7 @@ namespace orxonox
     */
     void ClassTreeMask::addSingle(const Identifier* subclass, bool bInclude, bool clean)
     {
-        for (std::list<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
+        for (std::set<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
             this->add(*it, this->isIncluded(*it), false, false);
 
         this->add(subclass, bInclude, false, clean);

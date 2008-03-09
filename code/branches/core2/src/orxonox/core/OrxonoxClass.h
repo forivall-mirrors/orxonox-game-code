@@ -36,7 +36,7 @@
 #ifndef _OrxonoxClass_H__
 #define _OrxonoxClass_H__
 
-#include <list>
+#include <set>
 #include <string>
 
 #include "CorePrereqs.h"
@@ -66,10 +66,10 @@ namespace orxonox
             inline void setIdentifier(Identifier* identifier) { this->identifier_ = identifier; }
 
             /** @brief Returns the list of all parents of the object. @return The list */
-            inline std::list<const Identifier*>* getParents() const { return this->parents_; }
+            inline std::set<const Identifier*>* getParents() const { return this->parents_; }
 
             /** @brief Creates the parents-list. */
-            inline void createParents() { this->parents_ = new std::list<const Identifier*>(); }
+            inline void createParents() { this->parents_ = new std::set<const Identifier*>(); }
 
             /** @brief Returns the MetaObjectList of the object, containing a link to all ObjectLists and ObjectListElements the object is registered in. @return The list */
             inline MetaObjectList& getMetaList() { return this->metaList_; }
@@ -156,7 +156,7 @@ namespace orxonox
 
         private:
             Identifier* identifier_;                    //!< The Identifier of the object
-            std::list<const Identifier*>* parents_;     //!< List of all parents of the object
+            std::set<const Identifier*>* parents_;     //!< List of all parents of the object
             MetaObjectList metaList_;                   //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
     };
 }
