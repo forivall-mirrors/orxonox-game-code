@@ -76,6 +76,15 @@
 //#include "objects/weapon/BulletManager.h"
 #include "GraphicsEngine.h"
 
+#include "core/ClassTreeMask.h"
+#include "objects/WorldEntity.h"
+#include "core/DebugLevel.h"
+#include "core/BaseObject.h"
+#include "objects/Test.h"
+#include "objects/test1.h"
+#include "objects/test2.h"
+#include "objects/test3.h"
+
 #include "Orxonox.h"
 
 namespace orxonox
@@ -223,6 +232,919 @@ namespace orxonox
     default:
       break;
     }
+
+        #define testandcout(code) \
+          std::cout << #code << " " << code << "\n"
+/*
+        std::cout << "Test 1\n";
+        BaseObject* test1;
+        test1 = new BaseObject();
+        test1 = new BaseObject();
+        test1 = new BaseObject();
+
+        std::cout << "Test 2\n";
+        A1* test2;
+        test2 = new A1();
+        test2 = new A1();
+        test2 = new A1();
+
+        std::cout << "Test 3\n";
+        BaseObject* test3;
+        test3 = new BaseObject();
+        test3 = new BaseObject();
+        test3 = new BaseObject();
+
+        std::cout << "Test 4\n";
+        A3* test4;
+        test4 = new A3();
+        test4 = new A3();
+        test4 = new A3();
+
+
+        std::cout << "Test 5\n";
+        A1* test5_01 = new A1();
+        A2* test5_02 = new A2();
+        A3* test5_03 = new A3();
+        A1B1* test5_04 = new A1B1();
+        A1B2* test5_05 = new A1B2();
+        A2B1* test5_06 = new A2B1();
+        A2B2* test5_07 = new A2B2();
+        A3B1* test5_08 = new A3B1();
+        A3B2* test5_09 = new A3B2();
+        A1B1C1* test5_10 = new A1B1C1();
+        A1B1C2* test5_11 = new A1B1C2();
+        A1B2C1* test5_12 = new A1B2C1();
+        A2B1C1* test5_13 = new A2B1C1();
+        A2B2C1* test5_14 = new A2B2C1();
+        A3B1C1* test5_15 = new A3B1C1();
+        A3B1C2* test5_16 = new A3B1C2();
+        A3B2C1* test5_17 = new A3B2C1();
+        A3B2C2* test5_18 = new A3B2C2();
+*/
+/*
+        OrxonoxClass* test5 = 0;
+        for (int i = 0; i <= 18; i++)
+        {
+          if (i == 0) test5 = new BaseObject;
+          if (i == 1) test5 = test5_01;
+          if (i == 2) test5 = test5_02;
+          if (i == 3) test5 = test5_03;
+          if (i == 4) test5 = test5_04;
+          if (i == 5) test5 = test5_05;
+          if (i == 6) test5 = test5_06;
+          if (i == 7) test5 = test5_07;
+          if (i == 8) test5 = test5_08;
+          if (i == 9) test5 = test5_09;
+          if (i == 10) test5 = test5_10;
+          if (i == 11) test5 = test5_11;
+          if (i == 12) test5 = test5_12;
+          if (i == 13) test5 = test5_13;
+          if (i == 14) test5 = test5_14;
+          if (i == 15) test5 = test5_15;
+          if (i == 16) test5 = test5_16;
+          if (i == 17) test5 = test5_17;
+          if (i == 18) test5 = test5_18;
+
+          std::cout << "\n";
+          std::cout << test5->getIdentifier()->getName() << " (" << test5->getIdentifier()->getNetworkID() << "): parents:         " << test5->getIdentifier()->getParents() << "\n";
+          std::cout << test5->getIdentifier()->getName() << " (" << test5->getIdentifier()->getNetworkID() << "): children:        " << test5->getIdentifier()->getChildren() << "\n";
+          std::cout << test5->getIdentifier()->getName() << " (" << test5->getIdentifier()->getNetworkID() << "): direct parents:  " << test5->getIdentifier()->getDirectParents() << "\n";
+          std::cout << test5->getIdentifier()->getName() << " (" << test5->getIdentifier()->getNetworkID() << "): direct children: " << test5->getIdentifier()->getDirectChildren() << "\n";
+        }
+*/
+/*
+        for (std::map<std::string, Identifier*>::const_iterator it = Factory::getFactoryBegin(); it != Factory::getFactoryEnd(); ++it)
+            std::cout << "Class with ID " << (*it).second->getNetworkID() << ": " << ID((*it).second->getNetworkID()) << " / " << ID((*it).second->getNetworkID())->getName() << std::endl;
+
+        std::cout << "Class with ID 100: " << ID(100) << "\n";
+        std::cout << "ID of BaseObject: " << Class(BaseObject)->getNetworkID() << "\n";
+
+        std::cout << "\nChange ID of BaseObject to 100\n";
+        Class(BaseObject)->setNetworkID(100);
+        std::cout << "Class with ID 100: " << ID(100) << "\n";
+        std::cout << "Class with ID 1: " << ID(1) << "\n";
+        std::cout << "ID of BaseObject: " << Class(BaseObject)->getNetworkID() << "\n";
+
+        std::cout << "\nChange ID of BaseObject to 3\n";
+        Class(BaseObject)->setNetworkID(3);
+        std::cout << "Class with ID 100: " << ID(100) << "\n";
+        std::cout << "Class with ID 1: " << ID(1) << "\n";
+        std::cout << "Class with ID 3: " << ID(3) << "\n";
+        std::cout << "ID of BaseObject: " << Class(BaseObject)->getNetworkID() << "\n";
+        std::cout << "ID of Test1: " << Class(Test1)->getNetworkID() << "\n";
+*/
+/*
+        std::cout << "\n";
+        std::cout << "isA(XYZ)-Test:\n";
+        std::cout << "test5_01 = A1, Erwartet: 1 0 0 1 0\n";
+        testandcout(test5_01->isA(Class(A1)));
+        testandcout(test5_01->isA(Class(A2)));
+        testandcout(test5_01->isA(Class(A1B1)));
+        testandcout(test5_01->isA(Class(BaseObject)));
+        testandcout(test5_01->isA(Class(Interface1)));
+
+        std::cout << "\n";
+        std::cout << "test5_02 = A2, Erwartet: 0 1 0 1 0\n";
+        testandcout(test5_02->isA(Class(A1)));
+        testandcout(test5_02->isA(Class(A2)));
+        testandcout(test5_02->isA(Class(A1B1)));
+        testandcout(test5_02->isA(Class(BaseObject)));
+        testandcout(test5_02->isA(Class(Interface1)));
+
+        std::cout << "\n";
+        std::cout << "test5_01 = A3, Erwartet: 0 0 0 1 1\n";
+        testandcout(test5_03->isA(Class(A1)));
+        testandcout(test5_03->isA(Class(A2)));
+        testandcout(test5_03->isA(Class(A1B1)));
+        testandcout(test5_03->isA(Class(BaseObject)));
+        testandcout(test5_03->isA(Class(Interface1)));
+
+        std::cout << "\n";
+        std::cout << "isDirectA(XYZ)-Test:\n";
+        std::cout << "test5_01 = A1, Erwartet: 1 0 0 0 0\n";
+        testandcout(test5_01->isExactlyA(Class(A1)));
+        testandcout(test5_01->isExactlyA(Class(A2)));
+        testandcout(test5_01->isExactlyA(Class(A1B1)));
+        testandcout(test5_01->isExactlyA(Class(BaseObject)));
+        testandcout(test5_01->isExactlyA(Class(Interface1)));
+
+        std::cout << "\n";
+        std::cout << "test5_02 = A2, Erwartet: 0 1 0 0 0\n";
+        testandcout(test5_02->isExactlyA(Class(A1)));
+        testandcout(test5_02->isExactlyA(Class(A2)));
+        testandcout(test5_02->isExactlyA(Class(A1B1)));
+        testandcout(test5_02->isExactlyA(Class(BaseObject)));
+        testandcout(test5_02->isExactlyA(Class(Interface1)));
+
+        std::cout << "\n";
+        std::cout << "test5_03 = A3, Erwartet: 0 0 0 0 0\n";
+        testandcout(test5_03->isExactlyA(Class(A1)));
+        testandcout(test5_03->isExactlyA(Class(A2)));
+        testandcout(test5_03->isExactlyA(Class(A1B1)));
+        testandcout(test5_03->isExactlyA(Class(BaseObject)));
+        testandcout(test5_03->isExactlyA(Class(Interface1)));
+
+        std::cout << "\n";
+        std::cout << "isChildOf(XYZ)-Test:\n";
+        std::cout << "test5_04 = A1B1, Erwartet: 1 0 1 0 0 0 0\n";
+        testandcout(test5_04->isChildOf(Class(A1)));
+        testandcout(test5_04->isChildOf(Class(A2)));
+        testandcout(test5_04->isChildOf(Class(BaseObject)));
+        testandcout(test5_04->isChildOf(Class(Interface1)));
+        testandcout(test5_04->isChildOf(Class(Interface2)));
+        testandcout(test5_04->isChildOf(Class(A1B1C2)));
+        testandcout(test5_04->isChildOf(Class(A1B1)));
+
+        std::cout << "\n";
+        std::cout << "test5_06 = A2B1, Erwartet: 0 1 1 0 0 0 0\n";
+        testandcout(test5_06->isChildOf(Class(A1)));
+        testandcout(test5_06->isChildOf(Class(A2)));
+        testandcout(test5_06->isChildOf(Class(BaseObject)));
+        testandcout(test5_06->isChildOf(Class(Interface1)));
+        testandcout(test5_06->isChildOf(Class(Interface2)));
+        testandcout(test5_06->isChildOf(Class(A1B1C2)));
+        testandcout(test5_06->isChildOf(Class(A1B1)));
+
+        std::cout << "\n";
+        std::cout << "test5_07 = A2B2, Erwartet: 0 1 1 1 0 0\n";
+        testandcout(test5_07->isChildOf(Class(A1)));
+        testandcout(test5_07->isChildOf(Class(A2)));
+        testandcout(test5_07->isChildOf(Class(BaseObject)));
+        testandcout(test5_07->isChildOf(Class(Interface1)));
+        testandcout(test5_07->isChildOf(Class(Interface2)));
+        testandcout(test5_07->isChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_08 = A3B1, Erwartet: 0 0 1 1 0 0\n";
+        testandcout(test5_08->isChildOf(Class(A1)));
+        testandcout(test5_08->isChildOf(Class(A2)));
+        testandcout(test5_08->isChildOf(Class(BaseObject)));
+        testandcout(test5_08->isChildOf(Class(Interface1)));
+        testandcout(test5_08->isChildOf(Class(Interface2)));
+        testandcout(test5_08->isChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_09 = A3B2, Erwartet: 0 0 1 1 1 0\n";
+        testandcout(test5_09->isChildOf(Class(A1)));
+        testandcout(test5_09->isChildOf(Class(A2)));
+        testandcout(test5_09->isChildOf(Class(BaseObject)));
+        testandcout(test5_09->isChildOf(Class(Interface1)));
+        testandcout(test5_09->isChildOf(Class(Interface2)));
+        testandcout(test5_09->isChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+        std::cout << "isDirectChildOf(XYZ)-Test:\n";
+        std::cout << "test5_04 = A1B1, Erwartet: 1 0 0 0 0 0 0\n";
+        testandcout(test5_04->isDirectChildOf(Class(A1)));
+        testandcout(test5_04->isDirectChildOf(Class(A2)));
+        testandcout(test5_04->isDirectChildOf(Class(BaseObject)));
+        testandcout(test5_04->isDirectChildOf(Class(Interface1)));
+        testandcout(test5_04->isDirectChildOf(Class(Interface2)));
+        testandcout(test5_04->isDirectChildOf(Class(A1B1C2)));
+        testandcout(test5_04->isDirectChildOf(Class(A1B1)));
+
+        std::cout << "\n";
+        std::cout << "test5_06 = A2B1, Erwartet: 0 1 0 0 0 0 0\n";
+        testandcout(test5_06->isDirectChildOf(Class(A1)));
+        testandcout(test5_06->isDirectChildOf(Class(A2)));
+        testandcout(test5_06->isDirectChildOf(Class(BaseObject)));
+        testandcout(test5_06->isDirectChildOf(Class(Interface1)));
+        testandcout(test5_06->isDirectChildOf(Class(Interface2)));
+        testandcout(test5_06->isDirectChildOf(Class(A1B1C2)));
+        testandcout(test5_06->isDirectChildOf(Class(A1B1)));
+
+        std::cout << "\n";
+        std::cout << "test5_07 = A2B2, Erwartet: 0 1 0 1 0 0\n";
+        testandcout(test5_07->isDirectChildOf(Class(A1)));
+        testandcout(test5_07->isDirectChildOf(Class(A2)));
+        testandcout(test5_07->isDirectChildOf(Class(BaseObject)));
+        testandcout(test5_07->isDirectChildOf(Class(Interface1)));
+        testandcout(test5_07->isDirectChildOf(Class(Interface2)));
+        testandcout(test5_07->isDirectChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_08 = A3B1, Erwartet: 0 0 0 0 0 0\n";
+        testandcout(test5_08->isDirectChildOf(Class(A1)));
+        testandcout(test5_08->isDirectChildOf(Class(A2)));
+        testandcout(test5_08->isDirectChildOf(Class(BaseObject)));
+        testandcout(test5_08->isDirectChildOf(Class(Interface1)));
+        testandcout(test5_08->isDirectChildOf(Class(Interface2)));
+        testandcout(test5_08->isDirectChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_09 = A3B2, Erwartet: 0 0 0 0 1 0\n";
+        testandcout(test5_09->isDirectChildOf(Class(A1)));
+        testandcout(test5_09->isDirectChildOf(Class(A2)));
+        testandcout(test5_09->isDirectChildOf(Class(BaseObject)));
+        testandcout(test5_09->isDirectChildOf(Class(Interface1)));
+        testandcout(test5_09->isDirectChildOf(Class(Interface2)));
+        testandcout(test5_09->isDirectChildOf(Class(A1B1C2)));
+
+        std::cout << "\n";
+
+        std::cout << "isParentOf(XYZ)-Test:\n";
+        std::cout << "test1 = BaseObject, Erwartet: 0 0 1 1 1 1 1\n";
+        testandcout(test1->isParentOf(Class(BaseObject)));
+        testandcout(test1->isParentOf(Class(Interface1)));
+        testandcout(test1->isParentOf(Class(A1)));
+        testandcout(test1->isParentOf(Class(A2)));
+        testandcout(test1->isParentOf(Class(A1B1)));
+        testandcout(test1->isParentOf(Class(A2B2)));
+        testandcout(test1->isParentOf(Class(A3B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_01 = A1, Erwartet: 0 0 0 0 1 0 0\n";
+        testandcout(test5_01->isParentOf(Class(BaseObject)));
+        testandcout(test5_01->isParentOf(Class(Interface1)));
+        testandcout(test5_01->isParentOf(Class(A1)));
+        testandcout(test5_01->isParentOf(Class(A2)));
+        testandcout(test5_01->isParentOf(Class(A1B1)));
+        testandcout(test5_01->isParentOf(Class(A2B2)));
+        testandcout(test5_01->isParentOf(Class(A3B1C2)));
+
+        std::cout << "\n";
+        std::cout << "Interface1, Erwartet: 0 0 0 0 0 1 1\n";
+        testandcout(Class(Interface1)->isParentOf(Class(BaseObject)));
+        testandcout(Class(Interface1)->isParentOf(Class(Interface1)));
+        testandcout(Class(Interface1)->isParentOf(Class(A1)));
+        testandcout(Class(Interface1)->isParentOf(Class(A2)));
+        testandcout(Class(Interface1)->isParentOf(Class(A1B1)));
+        testandcout(Class(Interface1)->isParentOf(Class(A2B2)));
+        testandcout(Class(Interface1)->isParentOf(Class(A3B1C2)));
+
+        std::cout << "\n";
+        std::cout << "isDirectParentOf(XYZ)-Test:\n";
+        std::cout << "test1 = BaseObject, Erwartet: 0 0 1 1 0 0 0\n";
+        testandcout(test1->isDirectParentOf(Class(BaseObject)));
+        testandcout(test1->isDirectParentOf(Class(Interface1)));
+        testandcout(test1->isDirectParentOf(Class(A1)));
+        testandcout(test1->isDirectParentOf(Class(A2)));
+        testandcout(test1->isDirectParentOf(Class(A1B1)));
+        testandcout(test1->isDirectParentOf(Class(A2B2)));
+        testandcout(test1->isDirectParentOf(Class(A3B1C2)));
+
+        std::cout << "\n";
+        std::cout << "test5_01 = A1, Erwartet: 0 0 0 0 1 0 0\n";
+        testandcout(test5_01->isDirectParentOf(Class(BaseObject)));
+        testandcout(test5_01->isDirectParentOf(Class(Interface1)));
+        testandcout(test5_01->isDirectParentOf(Class(A1)));
+        testandcout(test5_01->isDirectParentOf(Class(A2)));
+        testandcout(test5_01->isDirectParentOf(Class(A1B1)));
+        testandcout(test5_01->isDirectParentOf(Class(A2B2)));
+        testandcout(test5_01->isDirectParentOf(Class(A3B1C2)));
+
+        std::cout << "\n";
+        std::cout << "Interface1, Erwartet: 0 0 0 0 0 1 0\n";
+        testandcout(Class(Interface1)->isDirectParentOf(Class(BaseObject)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(Interface1)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(A1)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(A2)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(A1B1)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(A2B2)));
+        testandcout(Class(Interface1)->isDirectParentOf(Class(A3B1C2)));
+*/
+/*
+        std::cout << "Test 6\n";
+        std::cout << "1\n";
+        Identifier* test6_01 = Class(A1B1);
+        std::cout << "2\n";
+        Identifier* test6_02 = Class(A1B1);
+        std::cout << "3\n";
+        Identifier* test6_03 = Class(A1);
+        std::cout << "4\n";
+        Identifier* test6_04 = Class(A1B1C1);
+        std::cout << "5\n";
+        Identifier* test6_05 = Class(A1B1);
+        std::cout << "6\n";
+        Identifier* test6_06 = Class(A1B1C1);
+
+        std::cout << "7\n";
+
+        std::cout << "\n";
+        std::cout << "BaseObject: parents:         " << Class(BaseObject)->getParents() << "\n";
+        std::cout << "BaseObject: children:        " << Class(BaseObject)->getChildren() << "\n";
+        std::cout << "BaseObject: direct parents:  " << Class(BaseObject)->getDirectParents() << "\n";
+        std::cout << "BaseObject: direct children: " << Class(BaseObject)->getDirectChildren() << "\n";
+
+        std::cout << "\n";
+        std::cout << "A1: parents:                 " << Class(A1)->getParents() << "\n";
+        std::cout << "A1: children:                " << Class(A1)->getChildren() << "\n";
+        std::cout << "A1: direct parents:          " << Class(A1)->getDirectParents() << "\n";
+        std::cout << "A1: direct children:         " << Class(A1)->getDirectChildren() << "\n";
+
+        std::cout << "\n";
+        std::cout << "A1B1: parents:               " << Class(A1B1)->getParents() << "\n";
+        std::cout << "A1B1: children:              " << Class(A1B1)->getChildren() << "\n";
+        std::cout << "A1B1: direct parents:        " << Class(A1B1)->getDirectParents() << "\n";
+        std::cout << "A1B1: direct children:       " << Class(A1B1)->getDirectChildren() << "\n";
+
+        std::cout << "\n";
+        std::cout << "A1B1C1: parents:             " << Class(A1B1C1)->getParents() << "\n";
+        std::cout << "A1B1C1: children:            " << Class(A1B1C1)->getChildren() << "\n";
+        std::cout << "A1B1C1: direct parents:      " << Class(A1B1C1)->getDirectParents() << "\n";
+        std::cout << "A1B1C1: direct children:     " << Class(A1B1C1)->getDirectChildren() << "\n";
+
+        std::cout << "\n";
+        std::cout << "A3B1C1 child of A3:      " << Class(A3B1C1)->isChildOf(Class(A3)) << "\n";
+        std::cout << "\n";
+        std::cout << "A2 parent of A2B1C1:     " << Class(A2)->isParentOf(Class(A2B1C1)) << "\n";
+
+        std::cout << "8\n";
+*/
+/*
+        std::cout << "Test 7\n";
+        std::cout << "1\n";
+        SubclassIdentifier<A1B1> test7_01;
+        test7_01 = Class(A1B1C1);
+
+        SubclassIdentifier<A1B1> test7_02;
+        test7_02 = Class(A1B1);
+
+        std::cout << test7_01->getName() << "\n";
+        std::cout << test7_02->getName() << "\n";
+*/
+/*
+// ## WARNING - CRASH! ##
+        std::cout << "2\n";
+
+        SubclassIdentifier<A1B1> test7_03;
+        test7_03 = Class(A1);
+
+        SubclassIdentifier<A1B1> test7_04;
+        test7_04 = Class(A1B2);
+
+        SubclassIdentifier<A1B1> test7_05;
+        test7_05 = Class(A2);
+// ## END WARNING - CRASH! ##
+*/
+/*
+        std::cout << "Test 8\n";
+
+        std::cout << "1\n";
+        Test1* test8_01 = new Test1;
+        Test3* test8_03 = new Test3;
+        test8_03->usefullClassesIsATest(test8_01);
+
+        std::cout << "2\n";
+        Test2* test8_02 = new Test2;
+        test8_03->usefullClassesIsATest(test8_02);
+
+        std::cout << "3\n";
+        test8_01->setUsefullClass1(Class(Test1));
+        test8_01->setUsefullClass1(test8_02->getIdentifier());
+        test8_01->setUsefullClass2(Class(Test2));
+        test8_01->setUsefullClassOfTypeTest3(Class(Test3));
+        test8_01->setUsefullClassOfTypeTest3(test8_03->getIdentifier());
+
+
+        testandcout(test8_01->isA(Class(Test1)));
+        testandcout(test8_01->isA(Class(Test2)));
+        testandcout(test8_01->isA(Class(Test3)));
+
+        Test2* test8_04 = new Test2;
+        testandcout(test8_02->isA(Class(Test1)));
+        testandcout(test8_02->isA(Class(Test2)));
+        testandcout(test8_02->isA(Class(Test3)));
+
+        Test3* test8_05 = new Test3;
+        testandcout(test8_03->isA(Class(Test1)));
+        testandcout(test8_03->isA(Class(Test2)));
+        testandcout(test8_03->isA(Class(Test3)));
+
+        delete test8_01;
+        delete test8_02;
+        delete test8_03;
+*/
+/*
+        std::cout << "Test 9\n";
+        std::cout << "1\n";
+        Identifier* test9_01 = Class(A3);
+        BaseObject* test9_02 = test9_01->fabricate();
+        std::cout << test9_02->getIdentifier()->getName() << "\n";
+
+        std::cout << "\n2\n";
+        BaseObject* test9_03 = Class(A1B2)->fabricate();
+        std::cout << test9_03->getIdentifier()->getName() << "\n";
+
+        std::cout << "\n3\n";
+        SubclassIdentifier<A1> test9_04;
+        test9_04 = Class(A1B1C1);
+        A1* test9_05 = test9_04.fabricate();
+        std::cout << test9_05->getIdentifier()->getName() << "\n";
+
+        std::cout << "\n4\n";
+        BaseObject* test9_06 = ID("A2B2")->fabricate();
+        std::cout << test9_06->getIdentifier()->getName() << "\n";
+
+        std::cout << "\n5\n";
+        delete test9_02;
+        delete test9_03;
+        delete test9_05;
+        delete test9_06;
+*/
+/*
+        std::cout << "Test 10\n";
+        Identifier* test10_01 = Class(A1B2);
+        Identifier* test10_02 = Class(A2);
+        Identifier* test10_03 = Class(A3B1C1);
+
+        BaseObject* test10_04 = test10_01->fabricate();
+        BaseObject* test10_05 = test10_02->fabricate();
+        BaseObject* test10_06 = test10_03->fabricate();
+
+        BaseObject* test10_07;
+        for (int i = 0; i < 10; i++)
+            test10_07 = ID("A1B1C1")->fabricate();
+
+        std::cout << "1\n";
+        int count;
+
+        count = 0; for (Iterator<BaseObject> it = ObjectList<BaseObject>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl BaseObjects: " << count << "\n";
+        count = 0; for (Iterator<A1> it = ObjectList<A1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1: " << count << "\n";
+        count = 0; for (Iterator<A1B1> it = ObjectList<A1B1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1B1: " << count << "\n";
+        count = 0; for (Iterator<A1B1C1> it = ObjectList<A1B1C1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1B1C1: " << count << "\n";
+        count = 0; for (Iterator<A2> it = ObjectList<A2>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A2: " << count << "\n";
+
+        std::cout << "2\n";
+        BaseObject* test10_08;
+        BaseObject* test10_09 = 0;
+        BaseObject* test10_10 = 0;
+        for (int i = 0; i < 10; i++)
+        {
+            test10_08 = ID("A2B1C1")->fabricate();
+            std::string objName = "A2B1C1#";
+            objName += '0' + i;
+            test10_08->setName(objName);
+
+            if (i == 0)
+                test10_09 = test10_08;
+
+            if (i == 5)
+                test10_10 = test10_08;
+        }
+
+        count = 0; for (Iterator<BaseObject> it = ObjectList<BaseObject>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl BaseObjects: " << count << "\n";
+        count = 0; for (Iterator<A1> it = ObjectList<A1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1: " << count << "\n";
+        count = 0; for (Iterator<A1B1> it = ObjectList<A1B1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1B1: " << count << "\n";
+        count = 0; for (Iterator<A1B1C1> it = ObjectList<A1B1C1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1B1C1: " << count << "\n";
+        count = 0; for (Iterator<A2> it = ObjectList<A2>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A2: " << count << "\n";
+
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
+            std::cout << "Name: " << it->getName() << "\n";
+
+        std::cout << "3\n";
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
+            std::cout << "Name: " << it->getName() << "\n";
+
+        std::cout << "4\n";
+        delete test10_08;
+
+        count = 0; for (Iterator<BaseObject> it = ObjectList<BaseObject>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl BaseObjects: " << count << "\n";
+        count = 0; for (Iterator<A1> it = ObjectList<A1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1: " << count << "\n";
+        count = 0; for (Iterator<A1B1> it = ObjectList<A1B1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1B1: " << count << "\n";
+        count = 0; for (Iterator<A1B1C1> it = ObjectList<A1B1C1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1B1C1: " << count << "\n";
+        count = 0; for (Iterator<A2> it = ObjectList<A2>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A2: " << count << "\n";
+
+        std::cout << "5\n";
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
+            std::cout << "Name: " << it->getName() << "\n";
+
+        std::cout << "6\n";
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
+            std::cout << "Name: " << it->getName() << "\n";
+
+        std::cout << "7\n";
+        delete test10_09;
+
+        count = 0; for (Iterator<BaseObject> it = ObjectList<BaseObject>::end(); it; --it) { count++; }
+        std::cout << "Anzahl BaseObjects: " << count << "\n";
+        count = 0; for (Iterator<A1> it = ObjectList<A1>::end(); it; --it) { count++; }
+        std::cout << "Anzahl A1: " << count << "\n";
+        count = 0; for (Iterator<A1B1> it = ObjectList<A1B1>::end(); it; --it) { count++; }
+        std::cout << "Anzahl A1B1: " << count << "\n";
+        count = 0; for (Iterator<A1B1C1> it = ObjectList<A1B1C1>::end(); it; --it) { count++; }
+        std::cout << "Anzahl A1B1C1: " << count << "\n";
+        count = 0; for (Iterator<A2> it = ObjectList<A2>::end(); it; --it) { count++; }
+        std::cout << "Anzahl A2: " << count << "\n";
+
+        std::cout << "8\n";
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
+            std::cout << "Name: " << it->getName() << "\n";
+
+        std::cout << "9\n";
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
+            std::cout << "Name: " << it->getName() << "\n";
+
+        std::cout << "10\n";
+        delete test10_10;
+
+        count = 0; for (Iterator<BaseObject> it = ObjectList<BaseObject>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl BaseObjects: " << count << "\n";
+        count = 0; for (Iterator<A1> it = ObjectList<A1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1: " << count << "\n";
+        count = 0; for (Iterator<A1B1> it = ObjectList<A1B1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1B1: " << count << "\n";
+        count = 0; for (Iterator<A1B1C1> it = ObjectList<A1B1C1>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A1B1C1: " << count << "\n";
+        count = 0; for (Iterator<A2> it = ObjectList<A2>::start(); it; ++it) { count++; }
+        std::cout << "Anzahl A2: " << count << "\n";
+
+        std::cout << "11\n";
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::start(); it; ++it)
+            std::cout << "Name: " << it->getName() << "\n";
+
+        std::cout << "12\n";
+        for (Iterator<A2B1C1> it = ObjectList<A2B1C1>::end(); it; --it)
+            std::cout << "Name: " << it->getName() << "\n";
+
+        std::cout << "13\n";
+*/
+/*
+        std::cout << "Test 11\n";
+        std::cout << "1\n";
+        int count2 = 0; for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it) { count2++; }
+        std::cout << "AnzahlTickable: " << count2 << "\n";
+
+        Test1* test11_1;
+        for (int i = 0; i < 3; i++)
+            test11_1 = new Test1;
+
+        count2 = 0; for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it) { count2++; }
+        std::cout << "AnzahlTickable: " << count2 << "\n";
+
+        for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
+            it->tick(0);
+
+        std::cout << "2\n";
+        Test2* test11_2 = new Test2;
+
+
+        std::cout << "3\n";
+        Test3* test11_3 = new Test3;
+        test11_3->configOutput();
+
+        std::cout << "4\n";
+*/
+/*
+        std::cout << "Test 12\n";
+        std::cout << "1\n";
+
+        WorldEntity* test12_1 = new WorldEntity;
+
+        std::cout << sizeof(WorldEntity) << std::endl;
+
+        std::cout << "2\n";
+*/
+/*
+        std::cout << "Test 13\n";
+
+        #define BoolToYesNo(bool) \
+            if (bool) \
+                std::cout << "yes "; \
+            else \
+                std::cout << "no  "
+
+        #define TestClassTreeMask(mask) \
+            std::cout << "========== ClassTreeMask-Test ===========" << std::endl; \
+            std::cout << mask << std::endl << std::endl; \
+            std::cout << "                 "; \
+            BoolToYesNo(mask.isIncluded(Class(BaseObject))); \
+            std::cout << std::endl; \
+            \
+            std::cout << "     "; \
+            BoolToYesNo(mask.isIncluded(Class(A1))); \
+            std::cout << "        "; \
+            BoolToYesNo(mask.isIncluded(Class(A2))); \
+            std::cout << "           "; \
+            BoolToYesNo(mask.isIncluded(Class(A3))); \
+            std::cout << std::endl; \
+            \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A1B1))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A1B2))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A2B1))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A2B2))); \
+            std::cout << "    "; \
+            BoolToYesNo(mask.isIncluded(Class(A3B1))); \
+            std::cout << "    "; \
+            BoolToYesNo(mask.isIncluded(Class(A3B2))); \
+            std::cout << std::endl; \
+            \
+            BoolToYesNo(mask.isIncluded(Class(A1B1C1))); \
+            BoolToYesNo(mask.isIncluded(Class(A1B1C2))); \
+            BoolToYesNo(mask.isIncluded(Class(A1B2C1))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A2B1C1))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A2B2C1))); \
+            std::cout << "  "; \
+            BoolToYesNo(mask.isIncluded(Class(A3B1C1))); \
+            BoolToYesNo(mask.isIncluded(Class(A3B1C2))); \
+            BoolToYesNo(mask.isIncluded(Class(A3B2C1))); \
+            BoolToYesNo(mask.isIncluded(Class(A3B2C2))); \
+            std::cout << std::endl; \
+            std::cout << "=========================================" << std::endl
+
+        std::cout << "1\n";
+
+        ClassTreeMask test13_1;
+        test13_1.exclude(Class(A1B1));
+        test13_1.exclude(Class(A2));
+        test13_1.include(Class(A2B2));
+        test13_1.exclude(Class(A2B2C1));
+        test13_1.exclude(Class(A3B1));
+        test13_1.include(Class(A3B1C2));
+        test13_1.exclude(Class(A3B2C1));
+        test13_1.exclude(Class(A3B2C2));
+        std::cout << "Mask 1:\n";
+        TestClassTreeMask(test13_1);
+
+        ClassTreeMask test13_2;
+        test13_2.exclude(Class(BaseObject));
+        test13_2.include(Class(A1));
+        test13_2.exclude(Class(A1B2));
+        test13_2.exclude(Class(A1B1C2));
+        test13_2.include(Class(A2));
+        test13_2.exclude(Class(A2B2));
+        test13_2.include(Class(A3B1));
+        test13_2.include(Class(A3B2));
+        test13_2.exclude(Class(A3B2C2));
+        std::cout << std::endl;
+        std::cout << "Mask 2:\n";
+        TestClassTreeMask(test13_2);
+
+        std::cout << "2\n";
+
+        ClassTreeMask test13_3;
+        test13_3.include(Class(A1), true, false);
+        test13_3.exclude(Class(A1B2), true, false);
+        test13_3.exclude(Class(A1B1C2), true, false);
+        test13_3.include(Class(A2), true, false);
+        test13_3.exclude(Class(A2B2), true, false);
+        test13_3.include(Class(A3B1), true, false);
+        test13_3.include(Class(A3B2), true, false);
+        test13_3.exclude(Class(A3B2C2), true, false);
+        std::cout << std::endl;
+        std::cout << "Mask 2 without excluded BaseObject:\n";
+        TestClassTreeMask(test13_3);
+        test13_3.exclude(Class(BaseObject), false, false);
+        std::cout << std::endl;
+        std::cout << "Mask 2 with BaseObject excluded afterwards without overwrite:\n";
+        TestClassTreeMask(test13_3);
+        test13_3.exclude(Class(BaseObject), true);
+        std::cout << std::endl;
+        std::cout << "Mask 2 with BaseObject excluded afterwards with overwrite:\n";
+        TestClassTreeMask(test13_3);
+
+        ClassTreeMask test13_4;
+        test13_4.include(Class(A3B2));
+        test13_4.exclude(Class(A1B1C2));
+        test13_4.include(Class(A3B1));
+        test13_4.exclude(Class(A3B2C2));
+        test13_4.exclude(Class(BaseObject));
+        test13_4.include(Class(A2));
+        test13_4.exclude(Class(A1B2));
+        test13_4.exclude(Class(A2B2));
+        test13_4.include(Class(A1));
+        std::cout << std::endl;
+        std::cout << "Mask 2 created in random order with overwrite and clean:\n";
+        TestClassTreeMask(test13_4);
+
+        ClassTreeMask test13_4_2;
+        test13_4_2.include(Class(A3B2), false, false);
+        test13_4_2.exclude(Class(A1B1C2), false, false);
+        test13_4_2.include(Class(A3B1), false, false);
+        test13_4_2.exclude(Class(A3B2C2), false, false);
+        test13_4_2.exclude(Class(BaseObject), false, false);
+        test13_4_2.include(Class(A2), false, false);
+        test13_4_2.exclude(Class(A1B2), false, false);
+        test13_4_2.exclude(Class(A2B2), false, false);
+        test13_4_2.include(Class(A1), false, false);
+        std::cout << std::endl;
+        std::cout << "Mask 2 created in random order without overwrite and without clean:\n";
+        TestClassTreeMask(test13_4_2);
+
+        std::cout << "3\n";
+
+        ClassTreeMask test13_6 = !test13_1;
+        std::cout << std::endl;
+        std::cout << "Mask 1 inverted:\n";
+        TestClassTreeMask(test13_6);
+
+        std::cout << "4\n";
+
+        ClassTreeMask test13_7 = test13_1 + test13_2;
+        std::cout << std::endl;
+        std::cout << "Mask 1 + Mask 2:\n";
+        TestClassTreeMask(test13_7);
+
+        std::cout << "5\n";
+
+        ClassTreeMask test13_8 = test13_1 * test13_2;
+        std::cout << std::endl;
+        std::cout << "Mask 1 * Mask 2:\n";
+        TestClassTreeMask(test13_8);
+
+        std::cout << "6\n";
+
+        ClassTreeMask test13_9 = test13_1 - test13_2;
+        std::cout << std::endl;
+        std::cout << "Mask 1 - Mask 2:\n";
+        TestClassTreeMask(test13_9);
+
+        std::cout << "7\n";
+
+        ClassTreeMask test13_10 = test13_1 ^ test13_2;
+        std::cout << std::endl;
+        std::cout << "Mask 1 ^ Mask 2:\n";
+        TestClassTreeMask(test13_10);
+
+        std::cout << "8\n";
+
+        ClassTreeMask test13_12(!test13_1);
+        std::cout << std::endl;
+        std::cout << "Mask 1 inverted assigned with copyconstructor + the original from before:\n";
+        TestClassTreeMask(test13_12);
+        TestClassTreeMask(test13_1);
+
+
+        ClassTreeMask test13_13 = test13_1 + test13_2;
+        std::cout << std::endl;
+        std::cout << "Mask 1 + Mask 2 assigned with copyconstructor + originals from before:\n";
+        TestClassTreeMask(test13_13);
+        TestClassTreeMask(test13_1);
+        TestClassTreeMask(test13_2);
+
+        ClassTreeMask test13_14 = test13_1;
+        test13_14 += test13_2;
+        std::cout << std::endl;
+        std::cout << "Mask 1 + Mask 2 with += operator + original of mask 2 from before:\n";
+        TestClassTreeMask(test13_14);
+        TestClassTreeMask(test13_2);
+
+        test13_1 = test13_1;
+        std::cout << std::endl;
+        std::cout << "Mask 1 assigned with = operator to itself:\n";
+        TestClassTreeMask(test13_1);
+
+        std::cout << "9\n";
+
+        ClassTreeMask test13_15;
+        test13_15.exclude(Class(Interface1));
+        std::cout << std::endl;
+        std::cout << "Mask with excluded Interface 1:\n";
+        TestClassTreeMask(test13_15);
+
+        ClassTreeMask test13_16 = test13_1;
+        test13_16.exclude(Class(Interface1));
+        std::cout << std::endl;
+        std::cout << "Mask 1 with excluded Interface 1 (overwrite):\n";
+        TestClassTreeMask(test13_16);
+
+        ClassTreeMask test13_17 = test13_1;
+        test13_17.exclude(Class(Interface1), false);
+        std::cout << std::endl;
+        std::cout << "Mask 1 with excluded Interface 1 (without overwrite):\n";
+        TestClassTreeMask(test13_17);
+
+        ClassTreeMask test13_18 = test13_2;
+        test13_18.exclude(Class(Interface1), false);
+        std::cout << std::endl;
+        std::cout << "Mask 2 with excluded Interface 1 (without overwrite):\n";
+        TestClassTreeMask(test13_18);
+
+        std::cout << "10\n";
+
+        ClassTreeMask test13_19;
+        test13_19.exclude(Class(Test1));
+        std::cout << std::endl;
+        std::cout << "Mask with excluded Test1:\n";
+        TestClassTreeMask(test13_19);
+
+        std::cout << "11\n";
+
+        ClassTreeMask test13_20;
+        test13_20.exclude(Class(DebugLevel));
+        std::cout << std::endl;
+        std::cout << "Mask with excluded DebugLevel:\n";
+        TestClassTreeMask(test13_20);
+
+        std::cout << "12\n";
+
+        ClassTreeMask test13_21;
+        test13_21.excludeSingle(Class(A2));
+        std::cout << std::endl;
+        std::cout << "Mask with single-excluded A2:\n";
+        TestClassTreeMask(test13_21);
+
+        test13_21.exclude(Class(A2));
+        std::cout << std::endl;
+        std::cout << "Mask with excluded A2:\n";
+        TestClassTreeMask(test13_21);
+
+        test13_21.includeSingle(Class(A2));
+        std::cout << std::endl;
+        std::cout << "Previous mask with single-included A2:\n";
+        TestClassTreeMask(test13_21);
+
+        test13_21.includeSingle(Class(A2), false);
+        std::cout << std::endl;
+        std::cout << "Previous mask with single-included A2 without clean:\n";
+        TestClassTreeMask(test13_21);
+
+        std::cout << "13\n";
+*/
+/*
+        std::cout << "Test 14\n";
+        std::cout << "1\n";
+
+        SubclassIdentifier<A1> test14_1;
+        test14_1 = Class(A1B1C1);
+        std::cout << test14_1.getIdentifier()->getName() << std::endl;
+
+        SubclassIdentifier<A1> test14_2 = Class(A1B1C2);
+        std::cout << test14_2.getIdentifier()->getName() << std::endl;
+
+        SubclassIdentifier<Interface1> test14_3;
+        test14_3 = Class(A2B2C1);
+        std::cout << test14_3.getIdentifier()->getName() << std::endl;
+
+        SubclassIdentifier<A1B2> test14_4;
+        test14_4 = Class(A1B2C1);
+        std::cout << test14_4.getIdentifier()->getName() << std::endl;
+
+        SubclassIdentifier<BaseObject> test14_5 = Class(Test1);
+        std::cout << test14_5.getIdentifier()->getName() << std::endl;
+
+        std::cout << "2\n";
+*/
+/*
+        std::cout << "Test 15\n";
+        std::cout << "1\n";
+
+        Level* test15_1 = new Level("levels/sample.oxw");
+        Loader::open(test15_1);
+
+        std::cout << "2\n";
+*/
     startRenderLoop();
   }
 
