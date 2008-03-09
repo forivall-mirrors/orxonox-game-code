@@ -5,20 +5,20 @@ SET( ORXONOX_SRC_FILES
   objects/Tickable.cc
 #  SpaceshipSteering.cc
 #  hud/HUD.cc
-#  particle/ParticleInterface.cc
-#  tools/BillboardSet.cc
+  particle/ParticleInterface.cc
+  tools/BillboardSet.cc
 #  tools/Light.cc
   tools/Mesh.cc
   tools/Timer.cc
-#  objects/Ambient.cc
+  objects/Ambient.cc
 #  objects/Camera.cc
-#  objects/Explosion.cc
+  objects/Explosion.cc
 #  objects/Fighter.cc
   objects/Model.cc
 #  objects/NPC.cc
-#  objects/Projectile.cc
-#  objects/Skybox.cc
-#  objects/SpaceShip.cc
+  objects/Projectile.cc
+  objects/Skybox.cc
+  objects/SpaceShip.cc
 #  objects/SpaceshipSteeringObject.cc
   objects/test1.cc
   objects/test2.cc

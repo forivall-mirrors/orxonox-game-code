@@ -157,6 +157,12 @@ namespace orxonox
 */
     }
 
+    void WorldEntity::setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll)
+    {
+        this->yaw(yaw);
+        this->pitch(pitch);
+        this->roll(roll);
+    }
 
     /**
         @brief XML loading and saving.
@@ -168,13 +174,11 @@ namespace orxonox
     {
         BaseObject::XMLPort(xmlelement, loading);
 
-        XMLPortParam(WorldEntity, "position", setPosition, getPosition, xmlelement, loading);
-//        XMLPortParam(WorldEntity, "direction", setDirection, getDirection, xmlelement, loading);
-        XMLPortParamLoadOnly(WorldEntity, "yaw", setYaw, xmlelement, loading);
-        XMLPortParamLoadOnly(WorldEntity, "pitch", setPitch, xmlelement, loading);
-        XMLPortParamLoadOnly(WorldEntity, "roll", setRoll, xmlelement, loading);
+        XMLPortParam(WorldEntity, "position", setPositionLoader2, getPosition, xmlelement, loading);
+        XMLPortParamLoadOnly(WorldEntity, "direction", setDirectionLoader, xmlelement, loading);
+        XMLPortParamLoadOnly(WorldEntity, "yawpitchroll", setYawPitchRoll, xmlelement, loading);
         XMLPortParam(WorldEntity, "scale", setTotalScale, getScale, xmlelement, loading);
-        XMLPortParam(WorldEntity, "rotationAxis", setRotationAxis, getRotationAxis, xmlelement, loading);
+        XMLPortParam(WorldEntity, "rotationAxis", setRotationAxisLoader, getRotationAxis, xmlelement, loading);
         XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, loading);
 
         XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, loading);

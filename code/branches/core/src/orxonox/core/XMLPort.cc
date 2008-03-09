@@ -27,6 +27,7 @@
 
 #include "XMLPort.h"
 #include "Language.h"
+#include "Loader.h"
 
 namespace orxonox
 {
@@ -80,5 +81,10 @@ namespace orxonox
     const std::string& XMLPortObjectContainer::getDescription()
     {
         return GetLocalisation(this->description_);
+    }
+
+    bool XMLPortObjectContainer::identifierIsIncludedInLoaderMask(const Identifier* identifier)
+    {
+        return Loader::currentMask_s.isIncluded(identifier);
     }
 }

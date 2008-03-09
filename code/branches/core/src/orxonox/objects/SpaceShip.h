@@ -20,9 +20,20 @@ namespace orxonox
         public:
             SpaceShip();
             ~SpaceShip();
+            void init();
             void setConfigValues();
             virtual void loadParams(TiXmlElement* xmlElem);
+            virtual Element& XMLPort(Element& xmlelement, bool loading);
             virtual void tick(float dt);
+
+            void setCamera(const std::string& camera = "");
+            void setMaxSpeed(float value);
+            void setMaxSideAndBackSpeed(float value);
+            void setMaxRotation(float value);
+            void setTransAcc(float value);
+            void setRotAcc(float value);
+            void setTransDamp(float value);
+            void setRotDamp(float value);
 
             bool mouseMoved(const OIS::MouseEvent &e);
             bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);

@@ -128,64 +128,29 @@ bool MultiTypePrimitive::operator!=(const MultiTypePrimitive& mtp) const
 }
 
 MultiTypePrimitive::operator int() const
-{
-    return (this->type_ == MT_int) ? this->value_.int_ : ConvertValueAndReturn<MultiTypePrimitive, int>(*this);
-}
-
+{ return (this->type_ == MT_int) ? this->value_.int_ : ConvertValueAndReturn<MultiTypePrimitive, int>(*this); }
 MultiTypePrimitive::operator unsigned int() const
-{
-    return (this->type_ == MT_uint) ? this->value_.uint_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned int>(*this);
-}
-
+{ return (this->type_ == MT_uint) ? this->value_.uint_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned int>(*this); }
 MultiTypePrimitive::operator char() const
-{
-    return (this->type_ == MT_char) ? this->value_.char_ : ConvertValueAndReturn<MultiTypePrimitive, char>(*this);
-}
-
+{ return (this->type_ == MT_char) ? this->value_.char_ : ConvertValueAndReturn<MultiTypePrimitive, char>(*this); }
 MultiTypePrimitive::operator unsigned char() const
-{
-    return (this->type_ == MT_uchar) ? this->value_.uchar_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned char>(*this);
-}
-
+{ return (this->type_ == MT_uchar) ? this->value_.uchar_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned char>(*this); }
 MultiTypePrimitive::operator short() const
-{
-    return (this->type_ == MT_short) ? this->value_.short_ : ConvertValueAndReturn<MultiTypePrimitive, short>(*this);
-}
-
+{ return (this->type_ == MT_short) ? this->value_.short_ : ConvertValueAndReturn<MultiTypePrimitive, short>(*this); }
 MultiTypePrimitive::operator unsigned short() const
-{
-    return (this->type_ == MT_ushort) ? this->value_.ushort_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned short>(*this);
-}
-
+{ return (this->type_ == MT_ushort) ? this->value_.ushort_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned short>(*this); }
 MultiTypePrimitive::operator long() const
-{
-    return (this->type_ == MT_long) ? this->value_.long_ : ConvertValueAndReturn<MultiTypePrimitive, long>(*this);
-}
-
+{ return (this->type_ == MT_long) ? this->value_.long_ : ConvertValueAndReturn<MultiTypePrimitive, long>(*this); }
 MultiTypePrimitive::operator unsigned long() const
-{
-    return (this->type_ == MT_ulong) ? this->value_.ulong_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned long>(*this);
-}
-
+{ return (this->type_ == MT_ulong) ? this->value_.ulong_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned long>(*this); }
 MultiTypePrimitive::operator float() const
-{
-    return (this->type_ == MT_float) ? this->value_.float_ : ConvertValueAndReturn<MultiTypePrimitive, float>(*this);
-}
-
+{ return (this->type_ == MT_float) ? this->value_.float_ : ConvertValueAndReturn<MultiTypePrimitive, float>(*this); }
 MultiTypePrimitive::operator double() const
-{
-    return (this->type_ == MT_double) ? this->value_.double_ : ConvertValueAndReturn<MultiTypePrimitive, double>(*this);
-}
-
+{ return (this->type_ == MT_double) ? this->value_.double_ : ConvertValueAndReturn<MultiTypePrimitive, double>(*this); }
 MultiTypePrimitive::operator long double() const
-{
-    return (this->type_ == MT_longdouble) ? this->value_.longdouble_ : ConvertValueAndReturn<MultiTypePrimitive, long double>(*this);
-}
-
+{ return (this->type_ == MT_longdouble) ? this->value_.longdouble_ : ConvertValueAndReturn<MultiTypePrimitive, long double>(*this); }
 MultiTypePrimitive::operator bool() const
-{
-    return (this->type_ == MT_bool) ? this->value_.bool_ : ConvertValueAndReturn<MultiTypePrimitive, bool>(*this);
-}
+{ return (this->type_ == MT_bool) ? this->value_.bool_ : ConvertValueAndReturn<MultiTypePrimitive, bool>(*this); }
 
 void MultiTypePrimitive::setValue(const MultiTypePrimitive& mtp)
 {
@@ -257,30 +222,6 @@ bool MultiTypePrimitive::fromString(const std::string value)
 
 std::ostream& operator<<(std::ostream& out, const MultiTypePrimitive& mtp)
 {
-    if (mtp.isA(MT_int))
-        out << mtp.getInt();
-    else if (mtp.isA(MT_uint))
-        out << mtp.getUnsignedInt();
-    else if (mtp.isA(MT_char))
-        out << mtp.getChar();
-    else if (mtp.isA(MT_uchar))
-        out << mtp.getUnsignedChar();
-    else if (mtp.isA(MT_short))
-        out << mtp.getShort();
-    else if (mtp.isA(MT_ushort))
-        out << mtp.getUnsignedShort();
-    else if (mtp.isA(MT_long))
-        out << mtp.getLong();
-    else if (mtp.isA(MT_ulong))
-        out << mtp.getUnsignedLong();
-    else if (mtp.isA(MT_float))
-        out << mtp.getFloat();
-    else if (mtp.isA(MT_double))
-        out << mtp.getDouble();
-    else if (mtp.isA(MT_longdouble))
-        out << mtp.getLongDouble();
-    else if (mtp.isA(MT_bool))
-        out << mtp.getBool();
-
+    out << mtp.toString();
     return out;
 }

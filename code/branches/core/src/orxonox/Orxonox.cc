@@ -208,12 +208,12 @@ namespace orxonox
   void Orxonox::start()
   {
     //TODO: start modules
-//    ogre_->startRender();
+    ogre_->startRender();
     //TODO: run engine
     Factory::createClassHierarchy();
-//    createScene();
-//    setupScene();
-//    setupInputSystem();
+    createScene();
+    setupScene();
+    setupInputSystem();
     if(mode_!=CLIENT){ // remove this in future ---- presentation hack
     }
     else
@@ -1145,7 +1145,7 @@ namespace orxonox
 
         std::cout << "2\n";
 
-//    startRenderLoop();
+    startRenderLoop();
   }
 
   /**

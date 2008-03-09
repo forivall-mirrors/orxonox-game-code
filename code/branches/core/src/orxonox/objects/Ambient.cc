@@ -39,6 +39,7 @@
 #include "../core/Debug.h"
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
+#include "core/XMLPort.h"
 
 #include "Ambient.h"
 
@@ -57,8 +58,6 @@ namespace orxonox
 
     void Ambient::loadParams(TiXmlElement* xmlElem)
     {
-    	Ogre::SceneManager* mgr = orxonox::Orxonox::getSingleton()->getSceneManager();
-
     	if (xmlElem->Attribute("colourvalue"))
     	{
 
@@ -68,9 +67,29 @@ namespace orxonox
 	    	String2Number<float>(g, colourvalues[1]);
 	    	String2Number<float>(b, colourvalues[2]);
 
-	    	mgr->setAmbientLight(ColourValue(r,g,b));
+	    	this->setAmbientLight(ColourValue(r, g, b));
 
 	    	COUT(4) << "Loader: Set ambient light: "<<r<<" " << g << " " << b  << std::endl << std::endl;
     	}
    }
+
+   void Ambient::setAmbientLight(const ColourValue& colour)
+   {
+    	Orxonox::getSingleton()->getSceneManager()->setAmbientLight(colour);
+   }
+
+    /**
+        @brief XML loading and saving.
+        @param xmlelement The XML-element
+        @param loading Loading (true) or saving (false)
+        @return The XML-element
+    */
+    Element& Ambient::XMLPort(Element& xmlelement, bool loading)
+    {
+        BaseObject::XMLPort(xmlelement, loading);
+
+        XMLPortParamLoadOnly(Ambient, "colourvalue", setAmbientLight, xmlelement, loading);
+
+        return xmlelement;
+    }
 }

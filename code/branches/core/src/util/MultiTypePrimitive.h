@@ -52,6 +52,7 @@ class _UtilExport MultiTypePrimitive
         inline MultiTypePrimitive(long double    value) { this->setValue(value); }
         inline MultiTypePrimitive(bool           value) { this->setValue(value); }
         inline MultiTypePrimitive(const MultiTypePrimitive& mtp) { this->setValue(mtp); }
+        virtual inline ~MultiTypePrimitive() {}
 
         inline MultiTypePrimitive& operator=(MultiType      value) { this->type_ = MT_null; return *this; }
         inline MultiTypePrimitive& operator=(int            value) { this->setValue(value); return *this; }
@@ -96,18 +97,18 @@ class _UtilExport MultiTypePrimitive
         inline bool operator!=(bool           value) const { return (this->value_.bool_       != value); }
         bool operator!=(const MultiTypePrimitive& mtp) const;
 
-        operator int()            const;
-        operator unsigned int()   const;
-        operator char()           const;
-        operator unsigned char()  const;
-        operator short()          const;
-        operator unsigned short() const;
-        operator long()           const;
-        operator unsigned long()  const;
-        operator float ()         const;
-        operator double ()        const;
-        operator long double()    const;
-        operator bool()           const;
+        virtual operator int()            const;
+        virtual operator unsigned int()   const;
+        virtual operator char()           const;
+        virtual operator unsigned char()  const;
+        virtual operator short()          const;
+        virtual operator unsigned short() const;
+        virtual operator long()           const;
+        virtual operator unsigned long()  const;
+        virtual operator float ()         const;
+        virtual operator double ()        const;
+        virtual operator long double()    const;
+        virtual operator bool()           const;
 
         inline void setValue(int            value) { this->type_ = MT_int;        this->value_.int_        = value; }
         inline void setValue(unsigned int   value) { this->type_ = MT_uint;       this->value_.uint_       = value; }
@@ -165,8 +166,8 @@ class _UtilExport MultiTypePrimitive
         inline MultiType getType()           const { return this->type_; }
         inline bool      isA(MultiType type) const { return (this->type_ == type); }
 
-        std::string toString() const;
-        bool fromString(const std::string value);
+        virtual std::string toString() const;
+        virtual bool fromString(const std::string value);
 
     protected:
         MultiTypeValue  value_;

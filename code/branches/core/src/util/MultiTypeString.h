@@ -54,6 +54,7 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         inline MultiTypeString(const char*        value)   { this->setValue(value); }
         inline MultiTypeString(const std::string& value)   { this->setValue(value); }
         inline MultiTypeString(const MultiTypeString& mts) { this->setValue(mts);   }
+        virtual inline ~MultiTypeString() {}
 
         using MultiTypePrimitive::operator=;
         inline MultiTypeString& operator=(const char*        value)   { this->setValue(value); return *this; }
@@ -70,8 +71,20 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         inline bool operator!=(const std::string& value) const { return (this->string_ != value);              }
         bool operator!=(const MultiTypeString& mts) const;
 
-        operator std::string() const;
-        operator const char*() const;
+        virtual operator int()            const;
+        virtual operator unsigned int()   const;
+        virtual operator char()           const;
+        virtual operator unsigned char()  const;
+        virtual operator short()          const;
+        virtual operator unsigned short() const;
+        virtual operator long()           const;
+        virtual operator unsigned long()  const;
+        virtual operator float ()         const;
+        virtual operator double ()        const;
+        virtual operator long double()    const;
+        virtual operator bool()           const;
+        virtual operator std::string()    const;
+        virtual operator const char*()    const;
 
         using MultiTypePrimitive::setValue;
         inline void setValue(const char*        value) { this->type_ = MT_string; this->string_ = std::string(value); }
@@ -88,8 +101,8 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         inline void getValue(std::string* variable) const { (*variable) = this->string_;         }
         inline void getValue(const char** variable) const { (*variable) = this->string_.c_str(); }
 
-        std::string toString() const;
-        bool fromString(const std::string value);
+        virtual std::string toString() const;
+        virtual bool fromString(const std::string value);
 
     protected:
         std::string string_;

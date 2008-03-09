@@ -38,8 +38,12 @@ namespace orxonox
 
             inline void setPosition(const Vector3& pos)
                 { this->node_->setPosition(pos); }
-//            inline void setPosition(Real x, Real y, Real z)
-//                { this->node_->setPosition(x, y, z); }
+            inline void setPositionLoader1(const Vector3& pos)
+                { this->node_->setPosition(pos); }
+            inline void setPositionLoader2(Real x, Real y, Real z)
+                { this->node_->setPosition(x, y, z); }
+            inline void setPosition(Real x, Real y, Real z)
+                { this->node_->setPosition(x, y, z); }
             inline const Vector3& getPosition() const
                 { return this->node_->getPosition(); }
 
@@ -58,6 +62,7 @@ namespace orxonox
                 { this->node_->pitch(angle, relativeTo); }
             inline void roll(const Radian &angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
                 { this->node_->roll(angle, relativeTo); }
+            void setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll);
 
             inline void setYaw(const Degree &angle)
                 { this->node_->yaw(angle, Ogre::Node::TS_LOCAL); }
@@ -72,6 +77,8 @@ namespace orxonox
               { this->node_->setOrientation(quat); }
             inline void rotate(const Vector3 &axis, const Radian &angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
               { this->node_->rotate(axis, angle, relativeTo); }
+            inline void setDirectionLoader(Real x, Real y, Real z)
+              { this->setDirection(x, y, z); }
             inline void setDirection(Real x, Real y, Real z, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
               { this->node_->setDirection(x, y, z, relativeTo, localDirectionVector); }
             inline void setDirection(const Vector3 &vec, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
@@ -119,17 +126,19 @@ namespace orxonox
             inline const Vector3& getAcceleration() const
                 { return this->acceleration_; }
 
+            inline void setRotationAxisLoader(const Vector3& axis)
+                { this->rotationAxis_ = axis; }
             inline void setRotationAxis(const Vector3& axis)
                 { this->rotationAxis_ = axis; }
-//            inline void setRotationAxis(Real x, Real y, Real z)
-//                { this->rotationAxis_.x = x; this->rotationAxis_.y = y; this->rotationAxis_.z = z; }
+            inline void setRotationAxis(Real x, Real y, Real z)
+                { this->rotationAxis_.x = x; this->rotationAxis_.y = y; this->rotationAxis_.z = z; }
             inline const Vector3& getRotationAxis() const
                 { return this->rotationAxis_; }
 
 //            inline void setRotationRate(const Radian& angle)
 //                { this->rotationRate_ = angle; }
             inline void setRotationRate(const Degree& angle)
-                { this->rotationRate_ = angle; }
+                { this->rotationRate_ = angle; this->setStatic(angle == Degree(0)); }
             inline const Radian& getRotationRate() const
                 { return this->rotationRate_; }
 

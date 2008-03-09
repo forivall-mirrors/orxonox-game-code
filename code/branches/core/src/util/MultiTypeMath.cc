@@ -87,35 +87,46 @@ bool MultiTypeMath::operator!=(const MultiTypeMath& mtm) const
     return true;
 }
 
+MultiTypeMath::operator int() const
+{ return (this->type_ == MT_int) ? this->value_.int_ : ConvertValueAndReturn<MultiTypeMath, int>(*this); }
+MultiTypeMath::operator unsigned int() const
+{ return (this->type_ == MT_uint) ? this->value_.uint_ : ConvertValueAndReturn<MultiTypeMath, unsigned int>(*this); }
+MultiTypeMath::operator char() const
+{ return (this->type_ == MT_char) ? this->value_.char_ : ConvertValueAndReturn<MultiTypeMath, char>(*this); }
+MultiTypeMath::operator unsigned char() const
+{ return (this->type_ == MT_uchar) ? this->value_.uchar_ : ConvertValueAndReturn<MultiTypeMath, unsigned char>(*this); }
+MultiTypeMath::operator short() const
+{ return (this->type_ == MT_short) ? this->value_.short_ : ConvertValueAndReturn<MultiTypeMath, short>(*this); }
+MultiTypeMath::operator unsigned short() const
+{ return (this->type_ == MT_ushort) ? this->value_.ushort_ : ConvertValueAndReturn<MultiTypeMath, unsigned short>(*this); }
+MultiTypeMath::operator long() const
+{ return (this->type_ == MT_long) ? this->value_.long_ : ConvertValueAndReturn<MultiTypeMath, long>(*this); }
+MultiTypeMath::operator unsigned long() const
+{ return (this->type_ == MT_ulong) ? this->value_.ulong_ : ConvertValueAndReturn<MultiTypeMath, unsigned long>(*this); }
+MultiTypeMath::operator float() const
+{ return (this->type_ == MT_float) ? this->value_.float_ : ConvertValueAndReturn<MultiTypeMath, float>(*this); }
+MultiTypeMath::operator double() const
+{ return (this->type_ == MT_double) ? this->value_.double_ : ConvertValueAndReturn<MultiTypeMath, double>(*this); }
+MultiTypeMath::operator long double() const
+{ return (this->type_ == MT_longdouble) ? this->value_.longdouble_ : ConvertValueAndReturn<MultiTypeMath, long double>(*this); }
+MultiTypeMath::operator bool() const
+{ return (this->type_ == MT_bool) ? this->value_.bool_ : ConvertValueAndReturn<MultiTypeMath, bool>(*this); }
+MultiTypeMath::operator std::string() const
+{ return (this->type_ == MT_string) ? this->string_ : ConvertValueAndReturn<MultiTypeMath, std::string>(*this); }
+MultiTypeMath::operator const char*() const
+{ return ((this->type_ == MT_constchar) ? this->string_ : ConvertValueAndReturn<MultiTypeMath, std::string>(*this)).c_str(); }
 MultiTypeMath::operator orxonox::Vector2() const
-{
-    return (this->type_ == MT_vector2) ? this->vector2_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Vector2>(*this);
-}
-
+{ return (this->type_ == MT_vector2) ? this->vector2_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Vector2>(*this); }
 MultiTypeMath::operator orxonox::Vector3() const
-{
-    return (this->type_ == MT_vector3) ? this->vector3_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Vector3>(*this);
-}
-
+{ return (this->type_ == MT_vector3) ? this->vector3_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Vector3>(*this); }
 MultiTypeMath::operator orxonox::Quaternion() const
-{
-    return (this->type_ == MT_quaternion) ? this->quaternion_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Quaternion>(*this);
-}
-
+{ return (this->type_ == MT_quaternion) ? this->quaternion_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Quaternion>(*this); }
 MultiTypeMath::operator orxonox::ColourValue() const
-{
-    return (this->type_ == MT_colourvalue) ? this->colourvalue_ : ConvertValueAndReturn<MultiTypeMath, orxonox::ColourValue>(*this);
-}
-
+{ return (this->type_ == MT_colourvalue) ? this->colourvalue_ : ConvertValueAndReturn<MultiTypeMath, orxonox::ColourValue>(*this); }
 MultiTypeMath::operator orxonox::Radian() const
-{
-    return (this->type_ == MT_radian) ? this->radian_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Radian>(*this);
-}
-
+{ return (this->type_ == MT_radian) ? this->radian_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Radian>(*this); }
 MultiTypeMath::operator orxonox::Degree() const
-{
-    return (this->type_ == MT_degree) ? this->degree_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Degree>(*this);
-}
+{ return (this->type_ == MT_degree) ? this->degree_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Degree>(*this); }
 
 void MultiTypeMath::setValue(const MultiTypeMath& mtm)
 {
@@ -170,20 +181,6 @@ bool MultiTypeMath::fromString(const std::string value)
 
 std::ostream& operator<<(std::ostream& out, MultiTypeMath& mtm)
 {
-    if (mtm.isA(MT_vector2))
-        out << mtm.getVector2();
-    else if (mtm.isA(MT_vector3))
-        out << mtm.getVector3();
-    else if (mtm.isA(MT_colourvalue))
-        out << mtm.getColourValue();
-    else if (mtm.isA(MT_quaternion))
-        out << mtm.getQuaternion();
-    else if (mtm.isA(MT_radian))
-        out << mtm.getRadian();
-    else if (mtm.isA(MT_degree))
-        out << mtm.getDegree();
-    else
-        out << ((MultiTypeString)mtm);
-
+    out << mtm.toString();
     return out;
 }

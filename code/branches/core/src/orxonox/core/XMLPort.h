@@ -36,7 +36,6 @@
 #include "Debug.h"
 #include "CoreIncludes.h"
 #include "BaseObject.h"
-#include "Loader.h"
 
 #include "CorePrereqs.h"
 
@@ -141,14 +140,14 @@ namespace orxonox
                                 else
                                 {
                                     COUT(5) << tokens.size() << " parameter (using MultiTypeMath)." << std::endl;
-                                    MultiTypeMath param1, param2, param3, param4, param5;
+                                    MultiTypeMath param1 = MT_null, param2 = MT_null, param3 = MT_null, param4 = MT_null, param5 = MT_null;
                                     if (tokens.size() >= 1) param1 = tokens[0];
-                                    if (tokens.size() >= 2) param1 = tokens[1];
-                                    if (tokens.size() >= 3) param1 = tokens[2];
-                                    if (tokens.size() >= 4) param1 = tokens[3];
-                                    if (tokens.size() >= 5) param1 = tokens[4];
+                                    if (tokens.size() >= 2) param2 = tokens[1];
+                                    if (tokens.size() >= 3) param3 = tokens[2];
+                                    if (tokens.size() >= 4) param4 = tokens[3];
+                                    if (tokens.size() >= 5) param5 = tokens[4];
                                     COUT(5) << object->getLoaderIndentation() << "  " << attribute << std::endl;
-                                    COUT(5) << object->getLoaderIndentation() << "  " << tokens[0] << " -> " << param1 << ", " << tokens[1] << " -> " << param2 << ", " << tokens[2] << " -> " << param3 << ", " << tokens[3] << " -> " << param4 << ", " << tokens[4] << " -> " << param5 << std::endl;
+                                    COUT(5) << object->getLoaderIndentation() << "  " << param1 << ", " << param2 << ", " << param3 << ", " << param4 << ", " << param5 << std::endl;
 
                                     (*this->loadfunction_)(object, param1, param2, param3, param4, param5);
                                 }
@@ -196,6 +195,7 @@ namespace orxonox
 
             XMLPortObjectContainer& description(const std::string description);
             const std::string& getDescription();
+            static bool identifierIsIncludedInLoaderMask(const Identifier* identifier);
 
         protected:
             std::string classname_;
@@ -235,7 +235,7 @@ namespace orxonox
                                 {
                                     if (identifier->isA(Class(O)))
                                     {
-                                        if (Loader::currentMask_s.isIncluded(identifier))
+                                        if (this->identifierIsIncludedInLoaderMask(identifier))
                                         {
                                             COUT(4) << object->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
                                             O* newObject = (O*)identifier->fabricate();
