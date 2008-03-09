@@ -14,7 +14,7 @@
 
 #include "OrxonoxPrereqs.h"
 //#include "loader/LoaderPrereqs.h"
-#include "audio/AudioPrereqs.h"
+//#include "audio/AudioPrereqs.h"
 
 #include "GraphicsEngine.h"
 
@@ -40,10 +40,10 @@ namespace orxonox {
       static Orxonox* getSingleton();
       inline Ogre::SceneManager* getSceneManager()         { return ogre_->getSceneManager(); };
       inline GraphicsEngine* getOgrePointer()              { return ogre_; };
-      inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
+//      inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
       inline OIS::Keyboard* getKeyboard()                  { return this->keyboard_; }
       inline OIS::Mouse* getMouse()                        { return this->mouse_; }
-      inline BulletManager* getBulletMgr()                 { return this->bulletMgr_; }
+//      inline BulletManager* getBulletMgr()                 { return this->bulletMgr_; }
 
     private:
       Orxonox();
@@ -69,8 +69,8 @@ namespace orxonox {
       GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
       std::string           dataPath_;      //!< path to data
 //      loader::LevelLoader*  loader_;        //!< level loader builds the scene
-      audio::AudioManager*  auMan_;         //!< audio manager
-      BulletManager*        bulletMgr_;     //!< Keeps track of the thrown bullets
+//      audio::AudioManager*  auMan_;         //!< audio manager
+//      BulletManager*        bulletMgr_;     //!< Keeps track of the thrown bullets
       static Orxonox*       singletonRef_;
       OIS::Keyboard*        keyboard_;
       OIS::Mouse*           mouse_;

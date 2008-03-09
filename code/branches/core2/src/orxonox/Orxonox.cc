@@ -57,23 +57,23 @@
 
 // loader and audio
 //#include "loader/LevelLoader.h"
-#include "audio/AudioManager.h"
+//#include "audio/AudioManager.h"
 
 // network
-#include "network/Server.h"
-#include "network/Client.h"
-#include "network/NetworkFrameListener.h"
+//#include "network/Server.h"
+//#include "network/Client.h"
+//#include "network/NetworkFrameListener.h"
 
 // objects
 #include "objects/Tickable.h"
 #include "tools/Timer.h"
-#include "objects/NPC.h"
+//#include "objects/NPC.h"
 #include "core/ArgReader.h"
 #include "core/Factory.h"
 #include "core/Debug.h"
 #include "core/Loader.h"
-#include "hud/HUD.h"
-#include "objects/weapon/BulletManager.h"
+//#include "hud/HUD.h"
+//#include "objects/weapon/BulletManager.h"
 #include "GraphicsEngine.h"
 
 #include "Orxonox.h"
@@ -84,29 +84,29 @@ namespace orxonox
   class OrxListener : public Ogre::FrameListener
   {
     public:
-      OrxListener(OIS::Keyboard *keyboard, audio::AudioManager*  auMan, gameMode mode)
+      OrxListener(OIS::Keyboard *keyboard/*, audio::AudioManager*  auMan*/, gameMode mode)
       {
         mKeyboard = keyboard;
         mode_=mode;
-        auMan_ = auMan;
+//        auMan_ = auMan;
       }
 
       bool frameStarted(const Ogre::FrameEvent& evt)
       {
-        auMan_->update();
-        updateAI();
+//        auMan_->update();
+//        updateAI();
 
-        if(mode_ == PRESENTATION)
-          server_g->tick(evt.timeSinceLastFrame);
-        else if(mode_ == CLIENT)
-          client_g->tick(evt.timeSinceLastFrame);
+//        if(mode_ == PRESENTATION)
+//          server_g->tick(evt.timeSinceLastFrame);
+//        else if(mode_ == CLIENT)
+//          client_g->tick(evt.timeSinceLastFrame);
 
         usleep(10);
 
         mKeyboard->capture();
         return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
       }
-
+/*
       void updateAI()
       {
         for(Iterator<NPC> it = ObjectList<NPC>::start(); it; ++it)
@@ -114,11 +114,11 @@ namespace orxonox
           it->update();
         }
       }
-
+*/
     private:
       gameMode mode_;
       OIS::Keyboard *mKeyboard;
-      audio::AudioManager*  auMan_;
+//      audio::AudioManager*  auMan_;
   };
 
   // init static singleton reference of Orxonox
@@ -132,7 +132,7 @@ namespace orxonox
     this->ogre_ = new GraphicsEngine();
     this->dataPath_ = "";
 //    this->loader_ = 0;
-    this->auMan_ = 0;
+//    this->auMan_ = 0;
     this->singletonRef_ = 0;
     this->keyboard_ = 0;
     this->mouse_ = 0;
@@ -213,10 +213,10 @@ namespace orxonox
     case PRESENTATION:
       //ogre_->getRoot()->addFrameListener(new network::ServerFrameListener());
       //std::cout << "could not add framelistener" << std::endl;
-      server_g->open();
+//      server_g->open();
       break;
     case CLIENT:
-      client_g->establishConnection();
+//      client_g->establishConnection();
       break;
     case SERVER:
     case STANDALONE:
@@ -279,10 +279,10 @@ namespace orxonox
     setupScene();
     createFrameListener();
     try{
-      server_g = new network::Server(); //!< add port and bindadress
-      server_g->open(); //!< open server and create listener thread
-      if(ogre_ && ogre_->getRoot())
-        ogre_->getRoot()->addFrameListener(new network::ServerFrameListener()); // adds a framelistener for the server
+//      server_g = new network::Server(); //!< add port and bindadress
+//      server_g->open(); //!< open server and create listener thread
+//      if(ogre_ && ogre_->getRoot())
+//        ogre_->getRoot()->addFrameListener(new network::ServerFrameListener()); // adds a framelistener for the server
       COUT(3) << "Info: network framelistener added" << std::endl;
     }
     catch(...)
@@ -303,7 +303,7 @@ namespace orxonox
     COUT(2) << "initialising server" << std::endl;
     ogre_->setConfigPath(path);
     ogre_->setup();
-    server_g = new network::Server(); // FIXME add some settings if wanted
+//    server_g = new network::Server(); // FIXME add some settings if wanted
     if(!ogre_->load()) die(/* unable to load */);
     // FIXME add network framelistener
   }
@@ -313,12 +313,12 @@ namespace orxonox
     COUT(2) << "initialising client" << std::endl;
     ogre_->setConfigPath(path);
     ogre_->setup();
-    if(serverIp_.compare("")==0)
-      client_g = new network::Client();
-    else
-      client_g = new network::Client(serverIp_, 55556);
+//    if(serverIp_.compare("")==0)
+//      client_g = new network::Client();
+//    else
+//      client_g = new network::Client(serverIp_, 55556);
     if(!ogre_->load()) die(/* unable to load */);
-    ogre_->getRoot()->addFrameListener(new network::ClientFrameListener());
+//    ogre_->getRoot()->addFrameListener(new network::ClientFrameListener());
   }
 
   void Orxonox::defineResources()
@@ -374,9 +374,9 @@ namespace orxonox
   void Orxonox::createScene(void)
   {
 	// Init audio
-    auMan_ = new audio::AudioManager();
+//    auMan_ = new audio::AudioManager();
 
-    bulletMgr_ = new BulletManager();
+//    bulletMgr_ = new BulletManager();
 
     // load this file from config
 //    loader_ = new loader::LevelLoader("sample.oxw");
@@ -384,12 +384,12 @@ namespace orxonox
     Level* startlevel = new Level("levels/sample.oxw");
     Loader::open(startlevel);
 
-    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    HUD* orxonoxHud;
-    orxonoxHud = new HUD();
-    orxonoxHud->setEnergyValue(20);
-    orxonoxHud->setEnergyDistr(20,20,60);
-    hudOverlay->show();
+//    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
+//    HUD* orxonoxHud;
+//    orxonoxHud = new HUD();
+//    orxonoxHud->setEnergyValue(20);
+//    orxonoxHud->setEnergyDistr(20,20,60);
+//    hudOverlay->show();
 
 	/*
     auMan_->ambientAdd("a1");
@@ -460,7 +460,7 @@ namespace orxonox
     ogre_->getRoot()->addFrameListener(TimerFL);
 
     //if(mode_!=CLIENT) // FIXME just a hack ------- remove this in future
-      frameListener_ = new OrxListener(keyboard_, auMan_, mode_);
+      frameListener_ = new OrxListener(keyboard_/*, auMan_*/, mode_);
     ogre_->getRoot()->addFrameListener(frameListener_);
   }
 

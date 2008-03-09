@@ -3,33 +3,33 @@ SET( ORXONOX_SRC_FILES
   Main.cc
   Orxonox.cc
   objects/Tickable.cc
-  SpaceshipSteering.cc
-  hud/HUD.cc
+#  SpaceshipSteering.cc
+#  hud/HUD.cc
   particle/ParticleInterface.cc
   tools/BillboardSet.cc
-  tools/Light.cc
+#  tools/Light.cc
   tools/Mesh.cc
   tools/Timer.cc
   objects/Ambient.cc
-  objects/Camera.cc
+#  objects/Camera.cc
   objects/Explosion.cc
-  objects/Fighter.cc
+#  objects/Fighter.cc
   objects/Model.cc
-  objects/NPC.cc
+#  objects/NPC.cc
   objects/Projectile.cc
   objects/Skybox.cc
   objects/SpaceShip.cc
 #  objects/SpaceshipSteeringObject.cc
-#  objects/test1.cc
-#  objects/test2.cc
-#  objects/test3.cc
+  objects/test1.cc
+  objects/test2.cc
+  objects/test3.cc
   objects/WorldEntity.cc
-  objects/weapon/AmmunitionDump.cc
-  objects/weapon/BarrelGun.cc
-  objects/weapon/BaseWeapon.cc
-  objects/weapon/Bullet.cc
-  objects/weapon/BulletManager.cc
-  objects/weapon/WeaponStation.cc
+#  objects/weapon/AmmunitionDump.cc
+#  objects/weapon/BarrelGun.cc
+#  objects/weapon/BaseWeapon.cc
+#  objects/weapon/Bullet.cc
+#  objects/weapon/BulletManager.cc
+#  objects/weapon/WeaponStation.cc
 )
 
 ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
@@ -41,8 +41,8 @@ TARGET_LINK_LIBRARIES( orxonox
   ${OIS_LIBRARIES}
   util
   core
-  audio
-  network
+#  audio
+#  network
 #  loader
 )
 
