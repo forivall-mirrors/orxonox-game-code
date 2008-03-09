@@ -37,6 +37,7 @@
 #include "BulletManager.h"
 #include "AmmunitionDump.h"
 #include "BaseWeapon.h"
+#include "core/CoreIncludes.h"
 
 #include "BarrelGun.h"
 

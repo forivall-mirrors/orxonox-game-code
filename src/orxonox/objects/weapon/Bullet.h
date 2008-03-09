@@ -46,7 +46,6 @@ namespace orxonox {
 
     inline virtual void loadParams(TiXmlElement* xmlElem) { Model::loadParams(xmlElem); };
  };
-  ExportClass(Bullet, Orxonox);
 }
 
 #endif /* _Bullet_H__ */

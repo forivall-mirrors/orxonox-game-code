@@ -22,15 +22,17 @@
  *      Christian Meyer
  *   Co-authors:
  *      Benjamin Grauer
+ *      Fabian 'x3n' Landau
  *
-//
+
 //  splitLine
 //  STL string tokenizer
 //
 //  Created by Clemens Wacha.
 //  Version 1.0
 //  Copyright (c) 2005 Clemens Wacha. All rights reserved.
-//
+
+ * Extended by Fabian 'x3n' Landau with the SL_PARENTHESES mode.
  */
 
  /*!
@@ -58,13 +60,14 @@
 #include <vector>
 #include <string>
 
+#include "UtilPrereqs.h"
 
 //! A class that can load one string and split it in multipe ones
 /**
  * SubString is a very Powerfull way to create a SubSet from a String
  * It can be used, to Split strings append them and join them again.
  */
-class SubString
+class _UtilExport SubString
 {
 public:
   //! An enumerator for the State the Parser is in
@@ -74,6 +77,8 @@ public:
     SL_SAFEMODE,          //!< In safe mode (between "" mostly).
     SL_SAFEESCAPE,        //!< In safe mode with the internal escape character, that escapes even the savemode character.
     SL_COMMENT,           //!< In Comment mode.
+    SL_PARENTHESES,       //!< Between parentheses (usually '(' and ')')
+    SL_PARENTHESESESCAPE, //!< Between parentheses with the internal escape character, that escapes even the closing paranthesis character.
   } SPLIT_LINE_STATE;
 
 
@@ -82,7 +87,7 @@ public:
   SubString(const std::string& string, char delimiter = ',');
   SubString(const std::string& string,
             const std::string& delimiters, const std::string& delimiterNeighbours = "", bool emptyEntries=false,
-            char escapeChar ='\\', char safemode_char = '"', char comment_char = '\0');
+            char escapeChar ='\\', char safemode_char = '"', char openparenthesis_char = '(', char closeparenthesis_char = ')', char comment_char = '\0');
   SubString(unsigned int argc, const char** argv);
   /** @brief create a Substring as a copy of another one. @param subString the SubString to copy. */
   SubString(const SubString& subString) { *this = subString; };
@@ -105,7 +110,7 @@ public:
   unsigned int split(const std::string& string = "", char delimiter = ',');
   unsigned int split(const std::string& string,
                      const std::string& delimiters, const std::string& delimiterNeighbours = "", bool emptyEntries = false,
-                     char escapeChar ='\\', char safemode_char = '"', char comment_char = '\0');
+                     char escapeChar ='\\', char safemode_char = '"', char openparenthesis_char = '(', char closeparenthesis_char = ')', char comment_char = '\0');
   std::string join(const std::string& delimiter = " ") const;
   ////////////////////////////////////////
 
@@ -137,6 +142,8 @@ public:
                                     bool emptyEntries = false,
                                     char escape_char = '\\',
                                     char safemode_char = '"',
+                                    char openparenthesis_char = '(',
+                                    char closeparenthesis_char = ')',
                                     char comment_char = '\0',
                                     SPLIT_LINE_STATE start_state = SL_NORMAL);
   // debugging.

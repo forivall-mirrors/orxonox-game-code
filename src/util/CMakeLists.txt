@@ -3,18 +3,22 @@ PROJECT(Orxonox)
 AUX_SOURCE_DIRECTORY(tinyxml TINYXML_SRC_FILES)
 
 SET (UTIL_SRC_FILES
+  Math.cc
+  String.cc
+  SubString.cc
+  MultiTypePrimitive.cc
+  MultiTypeString.cc
+  MultiTypeMath.cc
   ${TINYXML_SRC_FILES}
-  substring.cc
 )
 
-IF(WIN32)
-  ADD_LIBRARY( util ${UTIL_SRC_FILES} )
-ELSE(WIN32)
-  ADD_LIBRARY( util SHARED ${UTIL_SRC_FILES} )
-ENDIF(WIN32)
+ADD_LIBRARY( util SHARED ${UTIL_SRC_FILES} )
 SET_TARGET_PROPERTIES( util PROPERTIES LINK_FLAGS "--no-undefined" )
-
 
 IF(TESTING_ENABLED)
   ADD_SUBDIRECTORY(testing)
 ENDIF(TESTING_ENABLED)
+
+TARGET_LINK_LIBRARIES( util
+  ${OGRE_LIBRARIES}
+)

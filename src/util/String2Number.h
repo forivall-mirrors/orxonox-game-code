@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "core/Debug.h"
+#include "UtilPrereqs.h"
 
 /**
  * String to number conversion

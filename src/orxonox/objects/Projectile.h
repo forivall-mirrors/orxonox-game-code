@@ -27,7 +27,6 @@ namespace orxonox
             float lifetime_;
             Timer<Projectile> destroyTimer_;
     };
-    ExportClass(Projectile, Orxonox);
 }
 
 #endif /* _Projectile_H__ */

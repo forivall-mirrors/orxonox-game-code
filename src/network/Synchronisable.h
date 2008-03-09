@@ -1,7 +1,7 @@
 //
 // C++ Interface: synchronisable
 //
-// Description: 
+// Description:
 //
 //
 // Author:  Oliver Scheuss, (C) 2007
@@ -15,7 +15,7 @@
 #include <list>
 
 #include "NetworkPrereqs.h"
-#include "core/CoreIncludes.h"
+#include "core/OrxonoxClass.h"
 
 namespace network
 {
@@ -46,7 +46,7 @@ namespace network
   class _NetworkExport Synchronisable : virtual public orxonox::OrxonoxClass{
   public:
 
-    virtual ~Synchronisable();
+      virtual ~Synchronisable();
     int objectID;
     int classID;
 
@@ -65,13 +65,6 @@ namespace network
     std::list<SYNCVAR> syncList;
     int datasize;
   };
-
-}
-
-namespace orxonox
-{
-  template class _NetworkExport ClassIdentifier<network::Synchronisable>;
-  template class _NetworkExport ObjectList<network::Synchronisable>;
 }
 
 #endif /* _Synchronisable_H__ */

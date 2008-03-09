@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file OutputHandler.h
     @brief Definition of the OutputHandler class.
 
@@ -58,7 +58,7 @@ namespace orxonox
 
             static OutputHandler& getOutStream();
 
-            /** @returns a reference to the logfile. */
+            /** @brief Returns a reference to the logfile. @return The logfile */
             inline std::ofstream& getLogfile()
                 { return this->logfile_; }
 
@@ -66,7 +66,7 @@ namespace orxonox
             inline OutputHandler& setOutputLevel(int level)
                 { this->outputLevel_ = level; return *this; }
 
-            /** @returns the level of the incoming output. */
+            /** @brief Returns the level of the incoming output. @return The level */
             inline int getOutputLevel() const
                 { return this->outputLevel_; }
 

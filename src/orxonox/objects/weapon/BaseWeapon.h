@@ -121,7 +121,6 @@ namespace orxonox {
     int magazineSize_;
 
   };
-  ExportAbstractClass(BaseWeapon, Orxonox);
 }
 
 #endif /* _BaseWeapon_H__ */

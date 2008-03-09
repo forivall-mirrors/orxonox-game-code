@@ -25,20 +25,20 @@
  *
  */
 
-/*!
+/**
     @file Language.h
     @brief Definition of the Language and the LanguageEntry class.
 
-    The Language class is used, to get a translation of a string in the configured language.
-    The string is identified by another string, the name of the entry.
+    The Language class is used, to get a localisation of a string in the configured language.
+    The string is identified by another string, the label of the entry.
     If the translation in the configured language isn't available, the default entry, defined in the code, is used.
 
     Usage:
      - Set the entry with the default string:
-       Language::getLanguage()->addEntry("name of the entry", "the string to translate");
+       Language::getLanguage()->addEntry("label of the entry", "the string to translate");
 
-     - Get the translation of the entry in the configured language:
-       std::cout << Language::getLanguage()->getTranslation("name of the entry") << std::endl;
+     - Get the localisation of the entry in the configured language:
+       std::cout << Language::getLanguage()->getLocalisation("name of the entry") << std::endl;
 */
 
 #ifndef _Language_H__
@@ -50,24 +50,33 @@
 #include "CorePrereqs.h"
 #include "OrxonoxClass.h"
 
+
+#define AddLanguageEntry(label, fallbackstring) \
+    orxonox::Language::getLanguage().addEntry(label, fallbackstring)
+
+#define GetLocalisation(label) \
+    orxonox::Language::getLanguage().getLocalisation(label)
+
+
 namespace orxonox
 {
-    typedef std::string LanguageEntryName;
-
+    // ###############################
+    // ###      LanguageEntry      ###
+    // ###############################
     //! The LanguageEntry class stores the default- and the translated string of a given entry in the language file.
     class _CoreExport LanguageEntry : public OrxonoxClass
     {
         public:
             explicit LanguageEntry(const std::string& fallbackEntry);
-            void setTranslation(const std::string& translation);
+            void setLocalisation(const std::string& localisation);
             void setDefault(const std::string& fallbackEntry);
 
             /**
-              @brief Returns the translated entry in the configured language.
+              @brief Returns the localised entry in the configured language.
               @return The translated entry
             */
-            inline const std::string& getTranslation()
-                { return this->translatedEntry_; }
+            inline const std::string& getLocalisation()
+                { return this->localisedEntry_; }
 
             /**
               @brief Returns the default entry.
@@ -76,14 +85,31 @@ namespace orxonox
             inline const std::string& getDefault()
                 { return this->fallbackEntry_; }
 
-        private:
-            std::string fallbackEntry_;                             //!< The default entry: Used, if no translation is available or no language configured
-            std::string translatedEntry_;                           //!< The translated entry in the configured language
-            bool bTranslationSet_;                                  //!< True if the translation was set
-    };
-    template class _CoreExport orxonox::ClassIdentifier<LanguageEntry>;
-    template class _CoreExport orxonox::ObjectList<LanguageEntry>;
+            /**
+                @brief Sets the label of this entry.
+                @param label The label
+            */
+            inline void setLabel(const LanguageEntryLabel& label)
+                { this->label_ = label; }
 
+            /**
+                @brief Returns the label of this entry.
+                @return The label
+            */
+            inline const LanguageEntryLabel& getLabel() const
+                { return this->label_; }
+
+        private:
+            LanguageEntryLabel label_;              //!< The label of the entry
+            std::string fallbackEntry_;             //!< The default entry: Used, if no translation is available or no language configured
+            std::string localisedEntry_;            //!< The localised entry in the configured language
+            bool bLocalisationSet_;                 //!< True if the translation was set
+    };
+
+
+    // ###############################
+    // ###         Language        ###
+    // ###############################
     //! The Language class manges the language files and entries and stores the LanguageEntry objects in a map.
     class _CoreExport Language : public OrxonoxClass
     {
@@ -93,8 +119,8 @@ namespace orxonox
         public:
             static Language& getLanguage();
             void setConfigValues();
-            void addEntry(const LanguageEntryName& name, const std::string& entry);
-            const std::string& getTranslation(const LanguageEntryName& name) const;
+            void addEntry(const LanguageEntryLabel& label, const std::string& entry);
+            const std::string& getLocalisation(const LanguageEntryLabel& label) const;
 
         private:
             Language();
@@ -105,15 +131,13 @@ namespace orxonox
             void readTranslatedLanguageFile();
             void writeDefaultLanguageFile() const;
             static const std::string getFileName(const std::string& language);
-            LanguageEntry* createEntry(const LanguageEntryName& name, const std::string& entry);
+            LanguageEntry* createEntry(const LanguageEntryLabel& label, const std::string& entry);
 
             std::string language_;                                  //!< The configured language
             std::string defaultLanguage_;                           //!< The default language
-            std::string defaultTranslation_;                        //!< The returned string, if an entry unavailable entry is requested
-            std::map<std::string, LanguageEntry*> languageEntries_; //!< A map to store all LanguageEntry objects and their name
+            std::string defaultLocalisation_;                       //!< The returned string, if an entry unavailable entry is requested
+            std::map<std::string, LanguageEntry*> languageEntries_; //!< A map to store all LanguageEntry objects and their labels
     };
-    template class _CoreExport orxonox::ClassIdentifier<Language>;
-    template class _CoreExport orxonox::ObjectList<Language>;
 }
 
 #endif /* _Language_H__ */

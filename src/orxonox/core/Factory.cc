@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file Factory.cc
     @brief Implementation of the Factory class.
 */
@@ -38,8 +38,9 @@
 namespace orxonox
 {
     /**
-        @returns the Identifier with a given name.
+        @brief Returns the Identifier with a given name.
         @param name The name of the wanted Identifier
+        @return The Identifier
     */
     Identifier* Factory::getIdentifier(const std::string& name)
     {
@@ -47,8 +48,9 @@ namespace orxonox
     }
 
     /**
-        @returns the Identifier with a given network ID.
+        @brief Returns the Identifier with a given network ID.
         @param id The network ID of the wanted Identifier
+        @return The Identifier
     */
     Identifier* Factory::getIdentifier(const unsigned int id)
     {
@@ -83,7 +85,7 @@ namespace orxonox
     */
     void Factory::createClassHierarchy()
     {
-        COUT(3) << "*** Factory -> Create class-hierarchy" << std::endl;
+        COUT(3) << "*** Factory: Create class-hierarchy" << std::endl;
         std::map<std::string, Identifier*>::iterator it;
         it = getFactoryPointer()->identifierStringMap_.begin();
         (*getFactoryPointer()->identifierStringMap_.begin()).second->startCreatingHierarchy();
@@ -94,7 +96,7 @@ namespace orxonox
             delete temp;
         }
         (*getFactoryPointer()->identifierStringMap_.begin()).second->stopCreatingHierarchy();
-        COUT(3) << "*** Factory -> Finished class-hierarchy creation" << std::endl;
+        COUT(3) << "*** Factory: Finished class-hierarchy creation" << std::endl;
     }
 
     /**
@@ -105,5 +107,23 @@ namespace orxonox
     {
       static Factory theOneAndOnlyFactoryInstance = Factory();
       return &theOneAndOnlyFactoryInstance;
+    }
+
+    /**
+        @brief Returns the begin-iterator of the factory-map.
+        @return The begin-iterator
+    */
+    std::map<std::string, Identifier*>::const_iterator Factory::getFactoryBegin()
+    {
+        return Factory::getFactoryPointer()->identifierStringMap_.begin();
+    }
+
+    /**
+        @brief Returns the end-iterator of the factory-map.
+        @return The end-iterator
+    */
+    std::map<std::string, Identifier*>::const_iterator Factory::getFactoryEnd()
+    {
+        return Factory::getFactoryPointer()->identifierStringMap_.end();
     }
 }

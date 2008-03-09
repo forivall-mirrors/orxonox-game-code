@@ -25,6 +25,11 @@
  *
  */
 
+/**
+    @file SignalHandler.cc
+    @brief Implementation of the SignalHandler class.
+*/
+
 #include <assert.h>
 
 #include "Debug.h"

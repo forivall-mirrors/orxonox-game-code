@@ -43,7 +43,5 @@ namespace orxonox {
       static int const COHESIONDISTANCE = 5000;  //detectionradius of cohesion
       static int const NUMELEMENTS = 9;  //number of elements
   };
-  ExportClass(NPC, Orxonox);
-
 }
 #endif /* _NPC_H__ */

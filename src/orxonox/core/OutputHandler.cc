@@ -25,6 +25,11 @@
  *
  */
 
+/**
+    @file OutputHandler.cc
+    @brief Implementation of the OutputHandler class.
+*/
+
 #include "DebugLevel.h"
 #include "OutputHandler.h"
 
@@ -52,7 +57,8 @@ namespace orxonox
     }
 
     /**
-        @returns a reference to the only existing instance of the OutputHandler class.
+        @brief Returns a reference to the only existing instance of the OutputHandler class.
+        @return The instance
     */
     OutputHandler& OutputHandler::getOutStream()
     {

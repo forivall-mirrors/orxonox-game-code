@@ -29,7 +29,6 @@
 #define _Test_H__
 
 #include "core/BaseObject.h"
-#include "../core/CoreIncludes.h"
 
 namespace orxonox
 {
@@ -73,6 +72,7 @@ namespace orxonox
     {
         public:
             A1B2() { RegisterObject(A1B2); }
+//            virtual void test() = 0;
     };
 
     class A2B1 : public A2
@@ -115,6 +115,7 @@ namespace orxonox
     {
         public:
             A1B2C1() { RegisterObject(A1B2C1); }
+//            void test() { std::cout << "test!\n"; }
     };
 
     class A2B1C1 : public A2B1, Interface2

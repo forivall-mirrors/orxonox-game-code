@@ -20,7 +20,6 @@ namespace orxonox
             float lifetime_;
             ParticleInterface* particle_;
     };
-    ExportClass(Explosion, Orxonox);
 }
 
 #endif /* _Explosion_H__ */

@@ -33,7 +33,7 @@
 //
  */
 
-#include "substring.h"
+#include "SubString.h"
 
 /**
  * @brief default constructor
@@ -44,7 +44,7 @@ SubString::SubString()
 
 /**
  * @brief create a SubString from
- * @param string the String to Spilit
+ * @param string the String to Split
  * @param delimiter the Character at which to split string (delimiter)
  */
 SubString::SubString(const std::string& string, char delimiter)
@@ -65,9 +65,9 @@ SubString::SubString(const std::string& string, char delimiter)
  */
 SubString::SubString(const std::string& string,
                      const std::string& delimiters, const std::string& delimiterNeighbours, bool emptyEntries,
-                     char escapeChar, char safemode_char, char comment_char)
+                     char escapeChar, char safemode_char, char openparenthesis_char, char closeparenthesis_char, char comment_char)
 {
-  SubString::splitLine(this->strings, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, safemode_char, comment_char);
+  SubString::splitLine(this->strings, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, safemode_char, openparenthesis_char, closeparenthesis_char, comment_char);
 }
 
 /**
@@ -222,10 +222,10 @@ unsigned int SubString::split(const std::string& string, char splitter)
  */
 unsigned int SubString::split(const std::string& string,
                               const std::string& delimiters, const std::string& delimiterNeighbours, bool emptyEntries,
-                              char escapeChar,char safemode_char, char comment_char)
+                              char escapeChar, char safemode_char, char openparenthesis_char, char closeparenthesis_char, char comment_char)
 {
   this->strings.clear();
-  SubString::splitLine(this->strings, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, safemode_char, comment_char);
+  SubString::splitLine(this->strings, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, safemode_char, openparenthesis_char, closeparenthesis_char, comment_char);
   return this->strings.size();
 }
 
@@ -307,6 +307,8 @@ SubString::splitLine(std::vector<std::string>& ret,
                      bool emptyEntries,
                      char escape_char,
                      char safemode_char,
+                     char openparenthesis_char,
+                     char closeparenthesis_char,
                      char comment_char,
                      SPLIT_LINE_STATE start_state)
 {
@@ -334,6 +336,10 @@ SubString::splitLine(std::vector<std::string>& ret,
         else if(line[i] == safemode_char)
         {
           state = SL_SAFEMODE;
+        }
+        else if(line[i] == openparenthesis_char)
+        {
+          state = SL_PARENTHESES;
         }
         else if(line[i] == comment_char)
         {
@@ -416,6 +422,34 @@ SubString::splitLine(std::vector<std::string>& ret,
         else if(line[i] == '?') token += '\?';
         else token += line[i];  // EAT
         state = SL_SAFEMODE;
+        break;
+
+      case SL_PARENTHESES:
+        if(line[i] == closeparenthesis_char)
+        {
+          state = SL_NORMAL;
+        }
+        else if(line[i] == escape_char)
+        {
+          state = SL_PARENTHESESESCAPE;
+        }
+        else
+        {
+          token += line[i];       // EAT
+        }
+        break;
+
+      case SL_PARENTHESESESCAPE:
+        if(line[i] == 'n') token += '\n';
+        else if(line[i] == 't') token += '\t';
+        else if(line[i] == 'v') token += '\v';
+        else if(line[i] == 'b') token += '\b';
+        else if(line[i] == 'r') token += '\r';
+        else if(line[i] == 'f') token += '\f';
+        else if(line[i] == 'a') token += '\a';
+        else if(line[i] == '?') token += '\?';
+        else token += line[i];  // EAT
+        state = SL_PARENTHESES;
         break;
 
       case SL_COMMENT:

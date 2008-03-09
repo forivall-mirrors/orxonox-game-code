@@ -2,6 +2,7 @@
 #define _Test3_H__
 
 #include "core/BaseObject.h"
+#include "util/Math.h"
 
 namespace orxonox
 {

@@ -37,6 +37,7 @@
 #include "../Orxonox.h"
 #include "../core/CoreIncludes.h"
 #include "../core/Debug.h"
+#include "core/XMLPort.h"
 
 #include "Skybox.h"
 
@@ -55,14 +56,30 @@ namespace orxonox
 
     void Skybox::loadParams(TiXmlElement* xmlElem)
     {
-    	Ogre::SceneManager* mgr = orxonox::Orxonox::getSingleton()->getSceneManager();
-
     	if (xmlElem->Attribute("src"))
     	{
     		std::string skyboxSrc = xmlElem->Attribute("src");
-	    	mgr->setSkyBox(true, skyboxSrc);
+	    	this->setSkybox(skyboxSrc);
 
 	    	COUT(4) << "Loader: Set skybox: "<< skyboxSrc << std::endl << std::endl;
     	}
    }
+
+   void Skybox::setSkybox(const std::string& skyboxname)
+   {
+    	Orxonox::getSingleton()->getSceneManager()->setSkyBox(true, skyboxname);
+   }
+
+    /**
+        @brief XML loading and saving.
+        @param xmlelement The XML-element
+        @param loading Loading (true) or saving (false)
+        @return The XML-element
+    */
+    void Skybox::XMLPort(Element& xmlelement, bool loading)
+    {
+        BaseObject::XMLPort(xmlelement, loading);
+
+        XMLPortParamLoadOnly(Skybox, "src", setSkybox, xmlelement, loading);
+    }
 }

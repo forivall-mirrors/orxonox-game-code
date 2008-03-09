@@ -13,14 +13,14 @@ namespace orxonox
             Ambient();
             virtual ~Ambient();
 
-            
             void loadParams(TiXmlElement* xmlElem);
+            virtual void XMLPort(Element& xmlelement, bool loading);
+            void setAmbientLight(const ColourValue& colour);
 
         private:
-            
+
 
     };
-    ExportClass(Ambient, Orxonox);
 }
 
 #endif /* _Ambient_H__ */

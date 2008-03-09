@@ -58,10 +58,7 @@
 #define _Timer_H__
 
 #include <OgreFrameListener.h>
-
 #include "../OrxonoxPrereqs.h"
-
-#include "../core/CoreIncludes.h"
 
 namespace orxonox
 {
@@ -71,17 +68,7 @@ namespace orxonox
         friend class TimerFrameListener;
 
         public:
-            /** @brief Constructor: Sets the default-values. */
-            TimerBase()
-            {
-                RegisterRootObject(TimerBase);
-
-                this->interval_ = 0;
-                this->bLoop_ = false;
-                this->bActive_ = false;
-
-                this->time_ = 0;
-            }
+            TimerBase();
 
             virtual void run() const = 0;
 
@@ -93,7 +80,7 @@ namespace orxonox
             inline void pauseTimer() { this->bActive_ = false; }
             /** @brief Unpauses the Timer - continues with the given state. */
             inline void unpauseTimer() { this->bActive_ = true; }
-            /** @returns true if the Timer is active (= not stoped, not paused). */
+            /** @brief Returns true if the Timer is active (= not stoped, not paused). @return True = Time is active */
             inline bool isActive() const { return this->bActive_; }
 
         protected:
@@ -103,7 +90,6 @@ namespace orxonox
 
             float time_;        //!< Internal variable, counting the time till the next function-call
     };
-    ExportAbstractClass(TimerBase, Orxonox);
 
     //! The Timer is a callback-object, calling a given function after a given time-interval.
     template <class T = BaseObject>
@@ -157,7 +143,6 @@ namespace orxonox
             void (T::*timerFunction_)();
             T* object_;
     };
-    ExportAbstractClass(Timer<BaseObject>, Orxonox);
 
     //! The TimerFrameListener manages all Timers in the game.
     class TimerFrameListener : public Ogre::FrameListener

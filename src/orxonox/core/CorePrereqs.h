@@ -26,12 +26,14 @@
  */
 
 /**
- @file  OrxonoxPrereq.h
- @brief Contains all the necessary forward declarations for all classes, structs and enums.
- */
+    @file  CorePrereq.h
+    @brief Contains all the necessary forward declarations for all classes, structs and enums.
+*/
 
 #ifndef _CorePrereqs_H__
 #define _CorePrereqs_H__
+
+#include <string>
 
 #include "orxonox/OrxonoxPlatform.h"
 
@@ -62,6 +64,8 @@ class SignalHandler;
 
 namespace orxonox
 {
+  typedef std::string LanguageEntryLabel;
+
   class ArgReader;
   class BaseFactory;
   class BaseMetaObjectListElement;
@@ -69,17 +73,23 @@ namespace orxonox
   class ClassFactory;
   template <class T>
   class ClassIdentifier;
+  template <class T>
+  class ClassManager;
+  class ClassTreeMask;
+  class ClassTreeMaskIterator;
+  class ClassTreeMaskNode;
   class ConfigValueContainer;
   class DebugLevel;
   class Error;
+  class Executor;
   class Factory;
   class Identifier;
-  class IdentifierList;
-  class IdentifierListElement;
+  class IdentifierDistributor;
   template <class T>
   class Iterator;
   class Language;
   class LanguageEntry;
+  class Level;
   class Loader;
   class MetaObjectList;
   template <class T>
@@ -92,6 +102,12 @@ namespace orxonox
   class OutputHandler;
   template <class T>
   class SubclassIdentifier;
+  template <class T, class O>
+  class XMLPortClassObjectContainer;
+  template <class T>
+  class XMLPortClassParamContainer;
+  class XMLPortObjectContainer;
+  class XMLPortParamContainer;
 }
 
 #endif /* _CorePrereqs_H__ */

@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include "Synchronisable.h"
+#include "core/CoreIncludes.h"
 
 namespace network
 {

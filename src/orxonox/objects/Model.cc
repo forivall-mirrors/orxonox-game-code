@@ -32,6 +32,7 @@
 #include "util/String2Number.h"
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
+#include "core/XMLPort.h"
 
 #include "Model.h"
 
@@ -59,6 +60,26 @@ namespace orxonox
         create();
     }
 
+    /**
+        @brief XML loading and saving.
+        @param xmlelement The XML-element
+        @param loading Loading (true) or saving (false)
+        @return The XML-element
+    */
+    void Model::XMLPort(Element& xmlelement, bool loading)
+    {
+        WorldEntity::XMLPort(xmlelement, loading);
+
+        XMLPortParamLoadOnly(Model, "mesh", setMesh, xmlelement, loading);
+
+        create();
+    }
+
+    void Model::setMesh(const std::string& meshname)
+    {
+        this->meshSrc_ = meshname;
+    }
+
     bool Model::create(){
       if(meshSrc_.compare("")!=0){
         this->mesh_.setMesh(meshSrc_);
@@ -70,6 +91,6 @@ namespace orxonox
     }
 
     void Model::registerAllVariables(){
-      registerVar(&meshSrc_, meshSrc_.length() + 1, network::STRING);
+//      registerVar(&meshSrc_, meshSrc_.length() + 1, network::STRING);
     }
 }

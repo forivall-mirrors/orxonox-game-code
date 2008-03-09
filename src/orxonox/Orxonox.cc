@@ -56,7 +56,7 @@
 #include "util/Sleep.h"
 
 // loader and audio
-#include "loader/LevelLoader.h"
+//#include "loader/LevelLoader.h"
 #include "audio/AudioManager.h"
 
 // network
@@ -71,6 +71,7 @@
 #include "core/ArgReader.h"
 #include "core/Factory.h"
 #include "core/Debug.h"
+#include "core/Loader.h"
 #include "hud/HUD.h"
 #include "objects/weapon/BulletManager.h"
 #include "GraphicsEngine.h"
@@ -130,7 +131,7 @@ namespace orxonox
   {
     this->ogre_ = new GraphicsEngine();
     this->dataPath_ = "";
-    this->loader_ = 0;
+//    this->loader_ = 0;
     this->auMan_ = 0;
     this->singletonRef_ = 0;
     this->keyboard_ = 0;
@@ -378,8 +379,10 @@ namespace orxonox
     bulletMgr_ = new BulletManager();
 
     // load this file from config
-    loader_ = new loader::LevelLoader("sample.oxw");
-    loader_->loadLevel();
+//    loader_ = new loader::LevelLoader("sample.oxw");
+//    loader_->loadLevel();
+    Level* startlevel = new Level("levels/sample.oxw");
+    Loader::open(startlevel);
 
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
     HUD* orxonoxHud;

@@ -43,8 +43,7 @@
 #include <OgreFrameListener.h>
 
 #include "../OrxonoxPrereqs.h"
-
-#include "../core/CoreIncludes.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -61,12 +60,8 @@ namespace orxonox
             virtual void tick(float dt) = 0;
 
         protected:
-            /**
-                @brief Constructor: Registers the object in the Tickable-list
-            */
-            Tickable() { RegisterRootObject(Tickable); }
+            Tickable();
     };
-    ExportAbstractClass(Tickable, Orxonox);
 
     //! The TickFrameListener calls the tick(dt) function of all Tickables every frame.
     class _OrxonoxExport TickFrameListener : public Ogre::FrameListener

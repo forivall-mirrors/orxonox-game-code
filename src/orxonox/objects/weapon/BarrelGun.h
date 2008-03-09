@@ -59,7 +59,6 @@ namespace orxonox {
   protected:
 
   };
-  ExportClass(BarrelGun, Orxonox);
 }
 
 #endif /* _BarrelGun_H__ */

@@ -36,6 +36,7 @@
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
 #include "WorldEntity.h"
+#include "core/XMLPort.h"
 
 namespace orxonox
 {
@@ -85,8 +86,9 @@ namespace orxonox
 
     void WorldEntity::loadParams(TiXmlElement* xmlElem)
     {
-        BaseObject::loadParams(xmlElem);
 
+        BaseObject::loadParams(xmlElem);
+/*
         if (xmlElem->Attribute("position"))
         {
             std::vector<std::string> pos = tokenize(xmlElem->Attribute("position"),",");
@@ -152,7 +154,34 @@ namespace orxonox
         }
 
         create();
+*/
+    }
 
+    void WorldEntity::setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll)
+    {
+        this->yaw(yaw);
+        this->pitch(pitch);
+        this->roll(roll);
+    }
+
+    /**
+        @brief XML loading and saving.
+        @param xmlelement The XML-element
+        @param loading Loading (true) or saving (false)
+        @return The XML-element
+    */
+    void WorldEntity::XMLPort(Element& xmlelement, bool loading)
+    {
+        BaseObject::XMLPort(xmlelement, loading);
+
+        XMLPortParam(WorldEntity, "position", setPositionLoader2, getPosition, xmlelement, loading);
+        XMLPortParamLoadOnly(WorldEntity, "direction", setDirectionLoader, xmlelement, loading);
+        XMLPortParamLoadOnly(WorldEntity, "yawpitchroll", setYawPitchRoll, xmlelement, loading);
+        XMLPortParam(WorldEntity, "scale", setTotalScale, getScale, xmlelement, loading);
+        XMLPortParam(WorldEntity, "rotationAxis", setRotationAxisLoader, getRotationAxis, xmlelement, loading);
+        XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, loading);
+
+        XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, loading);
     }
 
     bool WorldEntity::create(){
@@ -162,7 +191,7 @@ namespace orxonox
 
     void WorldEntity::registerAllVariables()
     {
-      // register coordinates
+/*      // register coordinates
       registerVar( (void*) &(this->getPosition().x), sizeof(this->getPosition().x), network::DATA);
       registerVar( (void*) &(this->getPosition().y), sizeof(this->getPosition().y), network::DATA);
       registerVar( (void*) &(this->getPosition().z), sizeof(this->getPosition().z), network::DATA);
@@ -170,7 +199,7 @@ namespace orxonox
       registerVar( (void*) &(this->getOrientation().w), sizeof(this->getOrientation().w), network::DATA);
       registerVar( (void*) &(this->getOrientation().x), sizeof(this->getOrientation().x), network::DATA);
       registerVar( (void*) &(this->getOrientation().y), sizeof(this->getOrientation().y), network::DATA);
-      registerVar( (void*) &(this->getOrientation().z), sizeof(this->getOrientation().z), network::DATA);
+      registerVar( (void*) &(this->getOrientation().z), sizeof(this->getOrientation().z), network::DATA);*/
       // not needed at the moment, because we don't have prediction yet
       /*// register velocity_
       registerVar( (void*) &(this->getVelocity().x), sizeof(this->getVelocity().x), network::DATA);
@@ -181,5 +210,18 @@ namespace orxonox
       registerVar( (void*) &(this->getRotationAxis().x), sizeof(this->getRotationAxis().x), network::DATA);
       registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA);
       registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA);*/
+    }
+
+    void WorldEntity::attachWorldEntity(WorldEntity* entity)
+    {
+        this->attachedWorldEntities_.push_back(entity);
+    }
+
+    const WorldEntity* WorldEntity::getAttachedWorldEntity(unsigned int index)
+    {
+        if (index < this->attachedWorldEntities_.size())
+            return this->attachedWorldEntities_[index];
+        else
+            return 0;
     }
 }

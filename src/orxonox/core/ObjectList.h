@@ -25,7 +25,7 @@
  *
  */
 
-/*!
+/**
     @file ObjectList.h
     @brief Definition and implementation of the ObjectList class.
 
@@ -39,6 +39,7 @@
 
 #include "CorePrereqs.h"
 #include "Iterator.h"
+#include "ClassManager.h"
 
 namespace orxonox
 {
@@ -82,29 +83,26 @@ namespace orxonox
     class ObjectList
     {
         public:
-            static ObjectList<T>* getList();
+            ObjectList();
+            ~ObjectList();
 
             ObjectListElement<T>* add(T* object);
 //            void remove(OrxonoxClass* object, bool bIterateForwards = true);
 
-            /** @returns the first element in the list */
+            /** @brief Returns the first element in the list. @return The first element */
             inline static Iterator<T> start()
-                { return Iterator<T>(getList()->first_); }
+                { return Iterator<T>(ClassManager<T>::getIdentifier()->getObjects()->first_); }
 
-            /** @returns the first element in the list */
+            /** @brief Returns the first element in the list. @return The first element */
             inline static Iterator<T> begin()
-                { return Iterator<T>(getList()->first_); }
+                { return Iterator<T>(ClassManager<T>::getIdentifier()->getObjects()->first_); }
 
-            /** @returns the last element in the list */
+            /** @brief Returns the last element in the list. @return The last element */
             inline static Iterator<T> end()
-                { return Iterator<T>(getList()->last_); }
+                { return Iterator<T>(ClassManager<T>::getIdentifier()->getObjects()->last_); }
 
             ObjectListElement<T>* first_;       //!< The first element in the list
             ObjectListElement<T>* last_;        //!< The last element in the list
-
-        private:
-            ObjectList();
-            ~ObjectList();
     };
 
     /**
@@ -130,16 +128,6 @@ namespace orxonox
             delete this->first_;
             this->first_ = temp;
         }
-    }
-
-    /**
-        @returns a pointer to the only existing instance for the given class T.
-    */
-    template <class T>
-    ObjectList<T>* ObjectList<T>::getList()
-    {
-        static ObjectList<T> theOnlyObjectListObjectForClassT = ObjectList<T>();
-        return &theOnlyObjectListObjectForClassT;
     }
 
     /**

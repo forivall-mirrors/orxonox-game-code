@@ -29,6 +29,7 @@
 
 #include "BulletManager.h"
 #include "Bullet.h"
+#include "core/CoreIncludes.h"
 
 
 namespace orxonox {
