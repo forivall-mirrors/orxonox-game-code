@@ -210,7 +210,7 @@ namespace orxonox
     class XMLPortClassObjectContainer : public XMLPortObjectContainer
     {
         public:
-            XMLPortClassObjectContainer(const std::string classname, const std::string sectionname, void (T::*loadfunction)(O*), const O* (T::*savefunction)(unsigned int))
+            XMLPortClassObjectContainer(const std::string classname, const std::string sectionname, void (T::*loadfunction)(O*), const O* (T::*savefunction)(unsigned int) const)
             {
                 this->classname_ = classname;
                 this->sectionname_ = sectionname;
@@ -224,11 +224,15 @@ namespace orxonox
                 {
                     try
                     {
-                        Element* xmlsubelement = xmlelement.FirstChildElement(this->sectionname_, false);
+                        Element* xmlsubelement;
+                        if (this->sectionname_ != "")
+                            xmlsubelement = xmlelement.FirstChildElement(this->sectionname_, false);
+                        else
+                            xmlsubelement = &xmlelement;
 
                         if (xmlsubelement)
                         {
-                            for ( ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++ )
+                            for (ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++)
                             {
                                 Identifier* identifier = ID(child->Value());
                                 if (identifier)
@@ -275,7 +279,7 @@ namespace orxonox
 
         private:
             void     (T::*loadfunction_)(O*);
-            const O* (T::*savefunction_)(unsigned int);
+            const O* (T::*savefunction_)(unsigned int) const;
     };
 }
 

@@ -28,7 +28,7 @@ namespace orxonox
             bool create();
 
             void attachWorldEntity(WorldEntity* entity);
-            const WorldEntity* getAttachedWorldEntity(unsigned int index);
+            const WorldEntity* getAttachedWorldEntity(unsigned int index) const;
 
             inline Ogre::SceneNode* getNode()
                 { return this->node_; }

@@ -114,7 +114,7 @@ namespace orxonox
             ticpp::Document xmlfile(level->getFile());
             xmlfile.LoadFile();
 
-            for ( ticpp::Iterator<ticpp::Element> child = xmlfile.FirstChildElement(false); child != child.end(); child++ )
+            for (ticpp::Iterator<ticpp::Element> child = xmlfile.FirstChildElement(false); child != child.end(); child++)
             {
                 Identifier* identifier = ID(child->Value());
                 if (identifier)

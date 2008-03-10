@@ -217,7 +217,7 @@ namespace orxonox
         this->attachedWorldEntities_.push_back(entity);
     }
 
-    const WorldEntity* WorldEntity::getAttachedWorldEntity(unsigned int index)
+    const WorldEntity* WorldEntity::getAttachedWorldEntity(unsigned int index) const
     {
         if (index < this->attachedWorldEntities_.size())
             return this->attachedWorldEntities_[index];
