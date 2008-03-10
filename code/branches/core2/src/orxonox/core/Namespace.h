@@ -50,6 +50,7 @@ namespace orxonox
 
         private:
             std::list<Namespace*> namespaces_;
+            Namespace* representingNamespace_;
     };
 }
 

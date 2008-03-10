@@ -32,6 +32,7 @@
 #include "Iterator.h"
 #include "Debug.h"
 #include "CoreIncludes.h"
+#include "Namespace.h"
 
 #include "util/tinyxml/ticpp.h"
 
@@ -119,7 +120,7 @@ namespace orxonox
                 Identifier* identifier = ID(child->Value());
                 if (identifier)
                 {
-                    if (Loader::currentMask_s.isIncluded(identifier))
+                    if (identifier->isA(Class(Namespace)) || Loader::currentMask_s.isIncluded(identifier))
                     {
                         COUT(4) << "  fabricating " << child->Value() << "..." << std::endl;
                         BaseObject* newObject = identifier->fabricate();

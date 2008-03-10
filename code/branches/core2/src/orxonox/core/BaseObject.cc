@@ -51,6 +51,7 @@ namespace orxonox
         this->bActive_ = true;
         this->bVisible_ = true;
         this->level_ = 0;
+        this->namespace_ = 0;
     }
 
     /**

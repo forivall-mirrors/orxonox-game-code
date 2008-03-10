@@ -36,6 +36,8 @@ namespace orxonox
     Namespace::Namespace()
     {
         RegisterObject(Namespace);
+
+        this->representingNamespace_ = 0;
     }
 
     Namespace::~Namespace()
@@ -52,7 +54,7 @@ namespace orxonox
     {
         BaseObject::XMLPort(xmlelement, loading);
 
-        XMLPortObject(Namespace, BaseObject, "", loadObjects, saveObjects, xmlelement, loading);
+        XMLPortObject(Namespace, BaseObject, "", loadObjects, saveObjects, xmlelement, loading, true);
     }
 
     void Namespace::loadObjects(BaseObject* object)
