@@ -58,11 +58,11 @@
     } \
     xmlcontainer##loadfunction##savefunction->port(this, xmlelement, loading)
 
-#define XMLPortObject(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, loading, bApplyLoaderMask) \
+#define XMLPortObject(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, loading, bApplyLoaderMask, bLoadBefore) \
     orxonox::XMLPortClassObjectContainer<classname, objectclass>* xmlcontainer##loadfunction##savefunction = (orxonox::XMLPortClassObjectContainer<classname, objectclass>*)(this->getIdentifier()->getXMLPortObjectContainer(sectionname)); \
     if (!xmlcontainer##loadfunction##savefunction) \
     { \
-        xmlcontainer##loadfunction##savefunction = new orxonox::XMLPortClassObjectContainer<classname, objectclass>(this->getIdentifier()->getName(), std::string(sectionname), &classname::loadfunction, &classname::savefunction, bApplyLoaderMask); \
+        xmlcontainer##loadfunction##savefunction = new orxonox::XMLPortClassObjectContainer<classname, objectclass>(this->getIdentifier()->getName(), std::string(sectionname), &classname::loadfunction, &classname::savefunction, bApplyLoaderMask, bLoadBefore); \
         this->getIdentifier()->addXMLPortObjectContainer(sectionname, xmlcontainer##loadfunction##savefunction); \
     } \
     xmlcontainer##loadfunction##savefunction->port(this, xmlelement, loading)
@@ -201,6 +201,7 @@ namespace orxonox
             std::string classname_;
             std::string sectionname_;
             bool bApplyLoaderMask_;
+            bool bLoadBefore_;
 
         private:
             LanguageEntryLabel description_;
@@ -211,13 +212,14 @@ namespace orxonox
     class XMLPortClassObjectContainer : public XMLPortObjectContainer
     {
         public:
-            XMLPortClassObjectContainer(const std::string classname, const std::string sectionname, void (T::*loadfunction)(O*), const O* (T::*savefunction)(unsigned int) const, bool bApplyLoaderMask)
+            XMLPortClassObjectContainer(const std::string classname, const std::string sectionname, void (T::*loadfunction)(O*), const O* (T::*savefunction)(unsigned int) const, bool bApplyLoaderMask, bool bLoadBefore)
             {
                 this->classname_ = classname;
                 this->sectionname_ = sectionname;
                 this->loadfunction_ = loadfunction;
                 this->savefunction_ = savefunction;
                 this->bApplyLoaderMask_ = bApplyLoaderMask;
+                this->bLoadBefore_ = bLoadBefore;
             }
 
             XMLPortObjectContainer& port(T* object, Element& xmlelement, bool loading)
@@ -247,9 +249,13 @@ namespace orxonox
                                             O* newObject = (O*)identifier->fabricate();
                                             newObject->setLoaderIndentation(object->getLoaderIndentation() + "  ");
                                             newObject->setLevel(object->getLevel());
-                                            newObject->XMLPort(*child, true);
+                                            newObject->setNamespace(object->getNamespace());
+                                            if (this->bLoadBefore_)
+                                                newObject->XMLPort(*child, true);
                                             COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->classname_ << " (objectname " << object->getName() << ")" << std::endl;
                                             (*object.*this->loadfunction_)(newObject);
+                                            if (!this->bLoadBefore_)
+                                                newObject->XMLPort(*child, true);
                                             COUT(5) << "  ...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
                                         }
                                     }

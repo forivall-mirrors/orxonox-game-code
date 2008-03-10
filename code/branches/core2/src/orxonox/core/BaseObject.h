@@ -78,7 +78,7 @@ namespace orxonox
             inline const Level* getLevel() const { return this->level_; }
             const std::string& getLevelfile() const;
 
-            inline void setNamespace(Namespace* ns) { this->namespace_ = ns; }
+            virtual inline void setNamespace(Namespace* ns) { this->namespace_ = ns; }
             inline Namespace* getNamespace() const { return this->namespace_; }
 
             /** @brief Sets the indentation of the debug output in the Loader. @param indentation The indentation */

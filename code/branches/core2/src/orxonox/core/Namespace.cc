@@ -37,7 +37,7 @@ namespace orxonox
     {
         RegisterObject(Namespace);
 
-        this->representingNamespace_ = 0;
+        this->representingNamespace_ = this;
     }
 
     Namespace::~Namespace()
@@ -54,12 +54,30 @@ namespace orxonox
     {
         BaseObject::XMLPort(xmlelement, loading);
 
-        XMLPortObject(Namespace, BaseObject, "", loadObjects, saveObjects, xmlelement, loading, true);
+        XMLPortObject(Namespace, BaseObject, "", loadObjects, saveObjects, xmlelement, loading, true, false);
     }
 
     void Namespace::loadObjects(BaseObject* object)
     {
-        object->setNamespace(this);
+        object->setNamespace(this->representingNamespace_);
+
+        if (object->isA(Class(Namespace)))
+            this->addSubnamespace((Namespace*)object);
+    }
+
+    void Namespace::addSubnamespace(Namespace* ns)
+    {
+        std::string name = ns->getName().substr(ns->getName().find("::"
+
+        if (!this->hasSubnamespace(ns->getName()))
+            this->namespaces_[ns->getName()] = ns;
+        else
+            ns->representingNamespace_ = object;
+    }
+
+    bool Namespace::hasSubnamespace(const std::string& name) const
+    {
+        return (this->namespaces_.find(name) != this->namespaces_.end());
     }
 
     const BaseObject* Namespace::saveObjects(unsigned int index) const

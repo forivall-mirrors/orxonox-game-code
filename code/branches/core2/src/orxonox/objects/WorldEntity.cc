@@ -181,7 +181,7 @@ namespace orxonox
         XMLPortParam(WorldEntity, "rotationAxis", setRotationAxisLoader, getRotationAxis, xmlelement, loading);
         XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, loading);
 
-        XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, loading, false);
+        XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, loading, false, true);
     }
 
     bool WorldEntity::create(){

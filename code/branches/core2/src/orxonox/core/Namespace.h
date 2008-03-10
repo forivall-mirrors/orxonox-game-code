@@ -28,7 +28,7 @@
 #ifndef _Namespace_H__
 #define _Namespace_H__
 
-#include <list>
+#include <map>
 
 #include "BaseObject.h"
 #include "util/XMLIncludes.h"
@@ -48,8 +48,11 @@ namespace orxonox
             void loadObjects(BaseObject* object);
             const BaseObject* saveObjects(unsigned int index) const;
 
+            void addSubnamespace(Namespace* ns);
+            bool hasSubnamespace(const std::string& name) const;
+
         private:
-            std::list<Namespace*> namespaces_;
+            std::map<std::string, Namespace*> namespaces_;
             Namespace* representingNamespace_;
     };
 }
