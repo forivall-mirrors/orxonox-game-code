@@ -19,6 +19,7 @@
 #include "NetworkPrereqs.h"
 #include "PacketBuffer.h"
 #include "PacketManager.h"
+#include "map"
 
 namespace std
 {
@@ -72,15 +73,15 @@ namespace network
 
     bool quit; // quit-variable (communication with threads)
     ClientInformation *head_;
+    
+    //functions to map what object every clients uses
+    std::map<int, std::string> clientsShip;
+    void regClientsObjectID( int clientID, std::string objectID );
+    std::string getClientsShipID( int clientID );
+    int getObjectsClientID( std::string objectID );
+    void deleteClientIDReg( int clientID );
+    void deleteObjectIDReg( std::string objectID );
   };
-
-
-
-
-
-
-
-
 }
 
 #endif /* _ConnectionManager_H__ */
