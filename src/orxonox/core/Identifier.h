@@ -205,7 +205,7 @@ namespace orxonox
             std::map<std::string, ConfigValueContainer*> configValues_; //!< A map to link the string of configurable variables with their ConfigValueContainer
     };
 
-    std::ostream& operator<<(std::ostream& out, const std::list<const Identifier*>& list);
+    _CoreExport std::ostream& operator<<(std::ostream& out, const std::list<const Identifier*>& list);
 
 
     // ###############################

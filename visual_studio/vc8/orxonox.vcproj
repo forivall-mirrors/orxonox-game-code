@@ -571,6 +571,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\Tickable.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\WorldEntity.cc"
 					>
 				</File>
@@ -624,6 +628,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\Mesh.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\tools\Timer.cc"
 					>
 				</File>
 			</Filter>
