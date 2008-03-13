@@ -42,7 +42,7 @@ namespace network
     GameStateManager(ClientInformation *head);
     ~GameStateManager();
     void update();
-    GameStateCompressed popGameState(int clientID);
+    GameStateCompressed *popGameState(int clientID);
     void ackGameState(int clientID, int gamestateID);
     int id;
   private:

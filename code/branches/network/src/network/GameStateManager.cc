@@ -64,18 +64,18 @@ namespace network
     return;
   }
 
-  GameStateCompressed GameStateManager::popGameState(int clientID) {
+  GameStateCompressed *GameStateManager::popGameState(int clientID) {
     int gID = head_->findClient(clientID)->getGamestateID();
     COUT(4) << "popgamestate: sending gstate id: " << id << "diffed from: " << gID << std::endl;
     if(gID!=GAMESTATEID_INITIAL){
       GameState *client = gameStateMap[gID];
       GameState *server = reference;
       //head_->findClient(clientID)->setGamestateID(id);
-      return *encode(client, server);
+      return encode(client, server);
     } else {
       GameState *server = reference;
       //head_->findClient(clientID)->setGamestateID(id);
-      return *encode(server);
+      return encode(server);
       // return an undiffed gamestate and set appropriate flags
     }
   }

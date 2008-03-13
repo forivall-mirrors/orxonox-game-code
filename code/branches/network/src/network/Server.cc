@@ -133,7 +133,8 @@ namespace network
   void Server::updateGamestate() {
     gamestates->update();
     //std::cout << "updated gamestate, sending it" << std::endl;
-    sendGameState();
+    if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
+      sendGameState();
     //std::cout << "sent gamestate" << std::endl;
   }
 
@@ -141,7 +142,7 @@ namespace network
   * sends the gamestate
   */
   bool Server::sendGameState() {
-    std::cout << "starting gamestate" << std::endl;
+    COUT(5) << "starting sendGameState" << std::endl;
     ClientInformation *temp = clients;
     bool added=false;
     while(temp!=NULL){
@@ -158,7 +159,11 @@ namespace network
       int gid = temp->getGamestateID();
       int cid = temp->getID();
       std::cout << "server, got acked ID: " << gid << std::endl;
-      GameStateCompressed *gs = &(gamestates->popGameState(cid)); // FIXME: taking address of temporary, check if correct
+      GameStateCompressed *gs = gamestates->popGameState(cid);
+      if(gs==NULL){
+        COUT(2) << "could not generate gamestate" << std::endl;
+        return false;
+      }
       //std::cout << "adding gamestate" << std::endl;
       connection->addPacket(packet_gen.gstate(gs), cid);
       //std::cout << "added gamestate" << std::endl;
@@ -167,8 +172,8 @@ namespace network
     }
     if(added)
       return connection->sendPackets();
-    else
-      return false;
+    COUT(2) << "could not send packets (containing i.e. gamestates)" << std::endl;
+    return false;
   }
 
   void Server::processAck( ack *data, int clientID) {
