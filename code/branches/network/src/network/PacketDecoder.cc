@@ -37,6 +37,7 @@
 
 #include "PacketTypes.h"
 #include "PacketManager.h"
+#include "orxonox/core/Debug.h"
 
 namespace network
 {

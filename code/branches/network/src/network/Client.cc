@@ -183,7 +183,7 @@ namespace network
     // stop if the packet queue is empty
     while(!(client_connection.queueEmpty())){
       packet = client_connection.getPacket();
-      //std::cout << "tick packet size " << packet->dataLength << std::endl;
+      COUT(5) << "tick gamestate packet size " << packet->dataLength << std::endl;
       elaborate(packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
     }
     return;
@@ -191,7 +191,7 @@ namespace network
 
   void Client::processGamestate( GameStateCompressed *data){
     gamestate.pushGameState(data);
-    std::cout << "received gamestate id: " << data->id << std::endl;
+    COUT(5) << "received gamestate id: " << data->id << std::endl;
     client_connection.addPacket(pck_gen.acknowledgement(data->id));
     client_connection.sendPackets();
     return;
@@ -206,7 +206,7 @@ namespace network
   }
 
   void Client::processChat( chat *data){
-    std::cout << "Server: " << data->message << std::endl;
+    COUT(0) << "Server: " << data->message << std::endl;
   }
 
 }

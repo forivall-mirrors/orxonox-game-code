@@ -71,11 +71,11 @@ namespace network
       GameState *client = gameStateMap[gID];
       GameState *server = reference;
       //head_->findClient(clientID)->setGamestateID(id);
-      return encode(client, server);
+      return *encode(client, server);
     } else {
       GameState *server = reference;
       //head_->findClient(clientID)->setGamestateID(id);
-      return encode(server);
+      return *encode(server);
       // return an undiffed gamestate and set appropriate flags
     }
   }
@@ -141,20 +141,20 @@ namespace network
     return retval;
   }
 
-  GameStateCompressed GameStateManager::encode(GameState *a, GameState *b) {
+  GameStateCompressed *GameStateManager::encode(GameState *a, GameState *b) {
     //GameState r = diff(a,b);
     //r.diffed = true;
-    GameState r = *b;
-    r.diffed = false;
-    return compress_(&r);
+    GameState *r = b;
+    r->diffed = false;
+    return compress_(r);
   }
 
-  GameStateCompressed GameStateManager::encode(GameState *a) {
+  GameStateCompressed *GameStateManager::encode(GameState *a) {
     a->diffed=false;
     return compress_(a);
   }
 
-  GameState GameStateManager::diff(GameState *a, GameState *b) {
+  GameState *GameStateManager::diff(GameState *a, GameState *b) {
     unsigned char *ap = a->data, *bp = b->data;
     int of=0; // pointers offset
     int dest_length=0;
@@ -181,13 +181,16 @@ namespace network
         }
       }
     }
-    // should be finished now
-    // FIXME: is it true or false now? (struct has changed, producing warnings)
-    GameState r = {b->id, dest_length, true, dp};
+    
+    GameState *r = new GameState;
+    r->id = b->id;
+    r->size = dest_length;
+    r->diffed = true;
+    r->data = dp;
     return r;
   }
 
-  GameStateCompressed GameStateManager::compress_(GameState *a) {
+  GameStateCompressed *GameStateManager::compress_(GameState *a) {
     COUT(5) << "compressing gamestate" << std::endl;
     int size = a->size;
     uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
@@ -198,20 +201,23 @@ namespace network
     //std::cout << "after ziped " << buffer << std::endl;
 
     switch ( retval ) {
-      case Z_OK: std::cout << "successfully compressed" << std::endl; break;
-      case Z_MEM_ERROR: std::cout << "not enough memory available" << std::endl; break;
-      case Z_BUF_ERROR: std::cout << "not enough memory available in the buffer" << std::endl; break;
-      case Z_DATA_ERROR: std::cout << "decompress: data corrupted" << std::endl; break;
+      case Z_OK: COUT(5) << "successfully compressed" << std::endl; break;
+      case Z_MEM_ERROR: COUT(1) << "not enough memory available in gamestate.compress" << std::endl; 
+      return NULL;
+      case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer in gamestate.compress" << std::endl;
+      return NULL;
+      case Z_DATA_ERROR: COUT(2) << "decompress: data corrupted in gamestate.compress" << std::endl;
+      return NULL;
     }
 
-    GameStateCompressed compressedGamestate;
-    compressedGamestate.compsize = buffer;
+    GameStateCompressed *compressedGamestate = new GameStateCompressed;
+    compressedGamestate->compsize = buffer;
 //     std::cout << "compressedGamestate.compsize = buffer; " << buffer << std::endl;
-    compressedGamestate.normsize = size;
+    compressedGamestate->normsize = size;
 //     std::cout << "compressedGamestate.normsize = size; " << size << std::endl;
-    compressedGamestate.id = a->id;
-    compressedGamestate.data = dest;
-    compressedGamestate.diffed = a->diffed;
+    compressedGamestate->id = a->id;
+    compressedGamestate->data = dest;
+    compressedGamestate->diffed = a->diffed;
 
     return compressedGamestate;
   }
