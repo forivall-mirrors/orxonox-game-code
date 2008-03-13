@@ -250,6 +250,16 @@ typedef float Real;
 
 #endif
 
+
+// Create a logical xor operator
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#  define XOR ^
+#elif ORXONOX_COMPILER == ORXONOX_COMPILER_GCC
+#  define XOR xor
+#else
+#  define XOR ^
+#endif
+
 } /* namespace orxonox */
 
 #endif /* _OrxonoxPlatform_H__ */

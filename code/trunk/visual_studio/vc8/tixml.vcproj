@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="util"
-	ProjectGUID="{2240ECD7-2F48-4431-8E1B-25466A384CCC}"
+	Name="tixml"
+	ProjectGUID="{F101C2F0-1CB9-4A57-827B-6C399A99B28F}"
 	RootNamespace="FICN"
 	Keyword="Win32Proj"
 	>
@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\util_properties.vsprops"
 			CharacterSet="1"
 			>
@@ -49,13 +49,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -67,18 +64,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\util_properties.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -111,13 +102,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -129,18 +117,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release_SSE|Win32"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			InheritedPropertySheets="..\base_properties_release_sse.vsprops;..\util_properties.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -173,13 +155,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -191,18 +170,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release_SSE2|Win32"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			InheritedPropertySheets="..\base_properties_release_sse2.vsprops;..\util_properties.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -235,13 +208,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -251,12 +221,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -272,27 +236,23 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\util\Math.cc"
+				RelativePath="..\..\src\util\tinyxml\ticpp.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiTypeMath.cc"
+				RelativePath="..\..\src\util\tinyxml\tinystr.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiTypePrimitive.cc"
+				RelativePath="..\..\src\util\tinyxml\tinyxml.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiTypeString.cc"
+				RelativePath="..\..\src\util\tinyxml\tinyxmlerror.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\String.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\substring.cc"
+				RelativePath="..\..\src\util\tinyxml\tinyxmlparser.cc"
 				>
 			</File>
 		</Filter>
@@ -302,55 +262,23 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\src\util\Convert.h"
+				RelativePath="..\..\src\util\tinyxml\ticpp.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\Math.h"
+				RelativePath="..\..\src\util\tinyxml\ticpprc.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiType.h"
+				RelativePath="..\..\src\util\tinyxml\tinystr.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiTypeMath.h"
+				RelativePath="..\..\src\util\tinyxml\tinyxml.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiTypePrimitive.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\MultiTypeString.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\Sleep.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\String.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\String2Number.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\substring.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\Tokenizer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\UtilPrereqs.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\XMLIncludes.h"
+				RelativePath="..\..\src\util\tinyxml\TinyXMLPrereqs.h"
 				>
 			</File>
 		</Filter>

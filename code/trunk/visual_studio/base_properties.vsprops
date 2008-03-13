@@ -10,7 +10,7 @@
 		AdditionalIncludeDirectories="&quot;$(RootDir)src&quot;;&quot;$(RootDir)src\orxonox&quot;;&quot;$(DependencyDir)include&quot;"
 		PreprocessorDefinitions="WIN32;__WIN32__;_WIN32;BOOST_ALL_DYN_LINK"
 		WarningLevel="3"
-		DisableSpecificWarnings="4267; 4244; 4251"
+		DisableSpecificWarnings="4267; 4244; 4251;4522"
 	/>
 	<Tool
 		Name="VCLibrarianTool"

@@ -280,6 +280,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\core\ClassTreeMask.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\core\ConfigValueContainer.cc"
 				>
 			</File>
@@ -292,6 +296,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\core\Executor.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\core\Factory.cc"
 				>
 			</File>
@@ -300,11 +308,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\IdentifierList.cc"
+				RelativePath="..\..\src\orxonox\core\IdentifierDistributor.cc"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\core\Language.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\Loader.cc"
 				>
 			</File>
 			<File
@@ -323,6 +335,10 @@
 				RelativePath="..\..\src\orxonox\core\SignalHandler.cc"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\XMLPort.cc"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -339,6 +355,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\core\ClassFactory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\ClassManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\ClassTreeMask.h"
 				>
 			</File>
 			<File
@@ -366,7 +390,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\core\Executor.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\core\Factory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\Functor.h"
 				>
 			</File>
 			<File
@@ -374,7 +406,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\IdentifierList.h"
+				RelativePath="..\..\src\orxonox\core\IdentifierDistributor.h"
 				>
 			</File>
 			<File
@@ -383,6 +415,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\core\Language.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\Level.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\Loader.h"
 				>
 			</File>
 			<File
@@ -403,6 +443,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\core\SignalHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\XMLPort.h"
 				>
 			</File>
 		</Filter>
