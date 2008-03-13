@@ -1,0 +1,39 @@
+material SOLID/TEX/hoover_turbine.png
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture hoover_turbine.png
+			}
+		}
+	}
+}
+material SOLID/TEX/hoover_gear.png
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture hoover_gear.png
+			}
+		}
+	}
+}
+material SOLID/TEX/hoover_body.png
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture hoover_body.png
+			}
+		}
+	}
+}

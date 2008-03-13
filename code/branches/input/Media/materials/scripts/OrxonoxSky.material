@@ -1,0 +1,70 @@
+material Orxonox/StarSkyBox
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture stars.jpg separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material Orxonox/BlueStarSkyBox
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture bluestar.png separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material Orxonox/StarfieldSkyBox
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture starfield.jpg separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material Orxonox/LoadingScreenSample
+{
+   technique
+   {
+      pass
+      {
+         
+         depth_writing off
+
+         texture_unit
+         {
+            texture sample_loading.jpg
+         }
+      }
+   }
+} 
