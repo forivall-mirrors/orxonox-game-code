@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="base_properties_release_sse2"
+	InheritedPropertySheets=".\base_properties_release.vsprops"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		EnableEnhancedInstructionSet="2"
+	/>
+	<UserMacro
+		Name="CS"
+		Value="_sse2"
+	/>
+	<UserMacro
+		Name="CSS"
+		Value=""
+	/>
+</VisualStudioPropertySheet>
