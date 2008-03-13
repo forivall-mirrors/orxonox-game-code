@@ -50,12 +50,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orxonox", "vc8\orxonox.vcpr
 		{271715F3-5B90-4110-A552-70C788084A86} = {271715F3-5B90-4110-A552-70C788084A86}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_proj", "vc8\test_proj.vcproj", "{97B226C5-8FD9-4A1E-B50B-5CBF79CF46F5}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util", "vc8\util.vcproj", "{2240ECD7-2F48-4431-8E1B-25466A384CCC}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
@@ -106,10 +100,6 @@ Global
 		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Release_SSE2|Win32.Build.0 = Release_SSE2|Win32
 		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Release|Win32.ActiveCfg = Release|Win32
 		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Release|Win32.Build.0 = Release|Win32
-		{97B226C5-8FD9-4A1E-B50B-5CBF79CF46F5}.Debug|Win32.ActiveCfg = Debug|Win32
-		{97B226C5-8FD9-4A1E-B50B-5CBF79CF46F5}.Release_SSE|Win32.ActiveCfg = Release_SSE|Win32
-		{97B226C5-8FD9-4A1E-B50B-5CBF79CF46F5}.Release_SSE2|Win32.ActiveCfg = Release_SSE2|Win32
-		{97B226C5-8FD9-4A1E-B50B-5CBF79CF46F5}.Release|Win32.ActiveCfg = Release|Win32
 		{2240ECD7-2F48-4431-8E1B-25466A384CCC}.Debug|Win32.ActiveCfg = Debug|Win32
 		{2240ECD7-2F48-4431-8E1B-25466A384CCC}.Debug|Win32.Build.0 = Debug|Win32
 		{2240ECD7-2F48-4431-8E1B-25466A384CCC}.Release_SSE|Win32.ActiveCfg = Release_SSE|Win32
