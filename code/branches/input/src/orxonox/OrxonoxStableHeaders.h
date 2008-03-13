@@ -86,6 +86,13 @@
 #include "util/Sleep.h"
 #include "util/String2Number.h"
 #include "util/Tokenizer.h"
+#include "util/Multitype.h"
+#include "util/MultiTypeMath.h"
+#include "util/MultiTypePrimitive.h"
+#include "util/MultiTypeString.h"
+#include "util/substring.h"
+#include "util/XMLIncludes.h"
+
 #include "util/tinyxml/ticpp.h"
 #include "util/tinyxml/tinyxml.h"
 

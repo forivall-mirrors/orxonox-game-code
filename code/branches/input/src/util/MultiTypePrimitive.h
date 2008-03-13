@@ -174,6 +174,6 @@ class _UtilExport MultiTypePrimitive
         MultiType       type_;
 };
 
-std::ostream& operator<<(std::ostream& out, const MultiTypePrimitive& mtp);
+_UtilExport std::ostream& operator<<(std::ostream& out, const MultiTypePrimitive& mtp);
 
 #endif /* _MultiTypePrimitive_H__ */
