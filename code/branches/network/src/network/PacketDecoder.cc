@@ -53,8 +53,8 @@ namespace network
     int client = clientId;
     cout << "clientId: " << client << endl; //control cout, not important, just debugging info
     int id = (int)*packet->data; //the first 4 bytes are always the enet packet id
-    std::cout << "packet id: " << id << std::endl;
-    std::cout << "packet size inside packetdecoder: " << packet->dataLength << std::endl;
+    COUT(5) << "packet id: " << id << std::endl;
+//     COUT(5) << "packet size inside packetdecoder: " << packet->dataLength << std::endl;
     switch( id ) {
   case ACK:
     acknowledgement( packet, clientId );
@@ -92,7 +92,7 @@ namespace network
     *a = *(ack*)packet->data; //press pattern of ack on new data
 
 
-    std::cout << "got ack id: " << a->id << std::endl;
+    COUT(5) << "got ack id: " << a->id << std::endl;
     processAck( a, clientId ); //debug info
 
     //clean memory
@@ -149,24 +149,24 @@ namespace network
     //copy the GameStateCompressed id into the struct, which is located at second place data+sizeof( int )
     //memcpy( (void*)&(currentState->id), (const void*)(data+sizeof( int )), sizeof( int ) );
     currentState->id = (int)*(data+sizeof(int));
-    std::cout << "id: " << currentState->id << std::endl;
+//     std::cout << "id: " << currentState->id << std::endl;
     //copy the size of the GameStateCompressed compressed data into the new GameStateCompressed struct, located at 3th
     //position of the data stream, data+2*sizeof( int )
-    memcpy( (void*)&(currentState->compsize), (const void*)(data+2*sizeof( int )), sizeof( int) );
+//     memcpy( (void*)&(currentState->compsize), (const void*)(data+2*sizeof( int )), sizeof( int) );
     //currentState->compsize = (int)*(data+2*sizeof(int));
-    std::cout << "compsize: " << currentState->compsize << std::endl;
+//     std::cout << "compsize: " << currentState->compsize << std::endl;
     //size of uncompressed data
     memcpy( (void*)&(currentState->normsize), (const void*)(data+3*sizeof( int )), sizeof( int ) );
     //currentState->normsize = (int)*(data+3*sizeof(int));
-    std::cout << "normsize. " << currentState->normsize << std::endl;
+//     std::cout << "normsize. " << currentState->normsize << std::endl;
     //since the packetgenerator was changed, due to a new parameter, change this function too
     memcpy( (void*)&(currentState->diffed), (const void*)(data+4*sizeof(int)), sizeof(bool));
     //currentState->diffed = (bool)*(data+4*sizeof(int));
-    std::cout << "diffed: " << currentState->diffed << std::endl;
+//     std::cout << "diffed: " << currentState->diffed << std::endl;
     //since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream
     currentState->data = (unsigned char*)(malloc( currentState->compsize ));
     if(currentState->data==NULL)
-      std::cout << "memory leak" << std::endl;
+      COUT(2) << "Gamestatepacket-decoder: memory leak" << std::endl;
     //copy the GameStateCompressed data
     //std::cout << "packet size (enet): " << packet->dataLength << std::endl;
     //std::cout << "totallen: " << 4*sizeof(int)+sizeof(bool)+currentState->compsize << std::endl;
@@ -174,8 +174,6 @@ namespace network
 
     //clean memory
     enet_packet_destroy( packet );
-    //run processGameStateCompressed
-    //TODO: not yet implemented!
     processGamestate(currentState);
   }
 
@@ -188,7 +186,7 @@ namespace network
     cid->message = (const char *)malloc(cid->length);
     void *data  = (void *)cid->message;
     memcpy(data, (const void*)(packet->data+3*sizeof(int)), cid->length);
-    std::cout << "classid: " << cid->clid << ", name: " << cid->message << std::endl;
+    COUT(4) << "classid: " << cid->clid << ", name: " << cid->message << std::endl;
     enet_packet_destroy( packet );
     processClassid(cid);
   }
@@ -222,42 +220,42 @@ namespace network
 
   void PacketDecoder::printAck( ack* data )
   {
-    cout << "data id: " << data->id << endl;
-    cout << "data:    " << data->a << endl;
+    COUT(5) << "data id: " << data->id << endl;
+    COUT(5) << "data:    " << data->a << endl;
   }
 
   void PacketDecoder::printMouse( mouse* data )
   {
-    cout << "data id: " << data->id << endl;
-    cout << "data:    " << data->x << " " << data->y << endl;
+    COUT(5) << "data id: " << data->id << endl;
+    COUT(5) << "data:    " << data->x << " " << data->y << endl;
   }
 
   void PacketDecoder::printKey( keyboard* data )
   {
-    cout << "data id: " << data->id << endl;
-    cout << "data:    " << (char)data->press << endl;
+    COUT(5) << "data id: " << data->id << endl;
+    COUT(5) << "data:    " << (char)data->press << endl;
   }
 
   void PacketDecoder::printChat( chat* data, int clientId )
   {
     if(clientId!=CLIENTID_CLIENT)
-      cout << "client: " << clientId << endl;
-    cout << "data id: " << data->id << endl;
-    cout << "data:    " << data->message << endl;
+      COUT(5) << "client: " << clientId << endl;
+    COUT(5) << "data id: " << data->id << endl;
+    COUT(5) << "data:    " << data->message << endl;
   }
 
   void PacketDecoder::printGamestate( GameStateCompressed* data )
   {
-    cout << "id of GameStateCompressed:   " << data->id << endl;
-    cout << "size of GameStateCompressed: " << data->compsize << endl;
+    COUT(5) << "id of GameStateCompressed:   " << data->id << endl;
+    COUT(5) << "size of GameStateCompressed: " << data->compsize << endl;
   }
 
   void PacketDecoder::printClassid( classid *cid)
   {
-    cout << "id of classid:    " << cid->id << endl;
-    cout << "size of classid:  " << cid->length << endl;
-    cout << "ID of classid:    " << cid->clid <<endl;
-    cout << "data of classid:  " << cid->message <<endl;
+    COUT(5) << "id of classid:    " << cid->id << endl;
+    COUT(5) << "size of classid:  " << cid->length << endl;
+    COUT(5) << "ID of classid:    " << cid->clid <<endl;
+    COUT(5) << "data of classid:  " << cid->message <<endl;
   }
 
 }

@@ -66,7 +66,7 @@ namespace network
 
   GameStateCompressed GameStateManager::popGameState(int clientID) {
     int gID = head_->findClient(clientID)->getGamestateID();
-    std::cout << "popgamestate: sending gstate id: " << id << "diffed from: " << gID << std::endl;
+    COUT(4) << "popgamestate: sending gstate id: " << id << "diffed from: " << gID << std::endl;
     if(gID!=GAMESTATEID_INITIAL){
       GameState *client = gameStateMap[gID];
       GameState *server = reference;
@@ -99,11 +99,11 @@ namespace network
 
     GameState *retval=new GameState; //return value
     retval->id=id++;
-    std::cout << "producing gamestate with id: " << retval->id << std::endl;
+    COUT(4) << "producing gamestate with id: " << retval->id << std::endl;
     // reserve a little memory and increase it later on
-    //COUT(2) << "mallocing" << std::endl;
+    COUT(5) << "mallocing" << std::endl;
     retval->data = (unsigned char*)malloc(memsize);
-    //COUT(2) << "malloced" << std::endl;
+    COUT(5) << "malloced" << std::endl;
 
     // offset of memory functions
     int offset=0;
@@ -112,7 +112,7 @@ namespace network
       //std::cout << "gamestatemanager: in for loop" << std::endl;
       //get size of the synchronisable
       tempsize=it->getSize();
-      //std::cout << "size of temp gamestate: " << tempsize << std::endl;
+//       COUT(5) << "size of temp gamestate: " << tempsize << std::endl;
       //COUT(2) << "size of synchronisable: " << tempsize << std::endl;
       // add place for data and 3 ints (length,classid,objectid)
       totalsize+=tempsize+3*sizeof(int);
@@ -136,6 +136,7 @@ namespace network
       // increase data pointer
       offset+=tempsize+3*sizeof(int);
     }
+    COUT(5) << "Gamestate size: " << totalsize << std::endl;
     retval->size=totalsize;
     return retval;
   }
@@ -187,7 +188,7 @@ namespace network
   }
 
   GameStateCompressed GameStateManager::compress_(GameState *a) {
-    //COUT(2) << "compressing gamestate" << std::endl;
+    COUT(5) << "compressing gamestate" << std::endl;
     int size = a->size;
     uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
     unsigned char* dest = (unsigned char*)malloc( buffer );
@@ -205,9 +206,9 @@ namespace network
 
     GameStateCompressed compressedGamestate;
     compressedGamestate.compsize = buffer;
-    //std::cout << "compressedGamestate.compsize = buffer; " << buffer << std::endl;
+//     std::cout << "compressedGamestate.compsize = buffer; " << buffer << std::endl;
     compressedGamestate.normsize = size;
-    //std::cout << "compressedGamestate.normsize = size; " << size << std::endl;
+//     std::cout << "compressedGamestate.normsize = size; " << size << std::endl;
     compressedGamestate.id = a->id;
     compressedGamestate.data = dest;
     compressedGamestate.diffed = a->diffed;
