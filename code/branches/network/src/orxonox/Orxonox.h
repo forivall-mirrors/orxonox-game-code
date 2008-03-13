@@ -24,10 +24,9 @@
 namespace orxonox {
 
   enum gameMode{
-    STANDALONE,
     SERVER,
     CLIENT,
-    PRESENTATION
+    STANDALONE
   };
 
   class _OrxonoxExport Orxonox
@@ -53,8 +52,9 @@ namespace orxonox {
       void clientInit(std::string path);
       void standaloneInit(std::string path);
       // run functions
-      void playableServer(std::string path);
-      void standalone();
+      void serverStart();
+      void clientStart();
+      void standaloneStart();
       void defineResources();
       void setupRenderSystem();
       void createRenderWindow();

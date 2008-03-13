@@ -280,4 +280,35 @@ namespace network
     sendPackets();
   }
 
+  
+  
+  void ConnectionManager::addClientsObjectID( int clientID, int objectID ) {
+    COUT(4) << "ship of client: " << clientID << ": " << objectID << " mapped" << std::endl;
+    clientsShip.insert( std::make_pair( clientID, objectID ) );
+  }
+
+  int ConnectionManager::getClientsShipID( int clientID ) {
+    return clientsShip[clientID];
+  }
+
+  int ConnectionManager::getObjectsClientID( int objectID ) {
+    std::map<int, int>::iterator iter = clientsShip.begin();
+    while( iter != clientsShip.end() ) {
+      if( iter->second == objectID ) return iter->first;
+    }
+    return -99;
+  }
+
+  void ConnectionManager::deleteClientIDReg( int clientID ) {
+    clientsShip.erase( clientID );
+  }
+
+  void ConnectionManager::deleteObjectIDReg( int objectID ) {
+    std::map<int, int>::iterator iter = clientsShip.begin();
+    while( iter != clientsShip.end() ) {
+      if( iter->second == objectID ) break; 
+    }
+    clientsShip.erase( iter->first );
+  }
+  
 }

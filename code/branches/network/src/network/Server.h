@@ -15,8 +15,12 @@
 
 #include <string>
 
+#include "orxonox/objects/Tickable.h"
+
 #include "PacketManager.h"
 #include "NetworkPrereqs.h"
+
+
 
 namespace network
 {
@@ -24,7 +28,7 @@ namespace network
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
   */
-  class _NetworkExport Server : public PacketDecoder{
+  class _NetworkExport Server : public PacketDecoder, public orxonox::Tickable{
   public:
     Server();
     Server(int port, std::string bindAddress);

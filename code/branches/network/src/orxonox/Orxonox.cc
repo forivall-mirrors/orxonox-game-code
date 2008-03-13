@@ -62,7 +62,10 @@
 // network
 #include "network/Server.h"
 #include "network/Client.h"
-#include "network/NetworkFrameListener.h"
+#include "network/NetworkPrereqs.h"
+network::Client *client_g;
+network::Server *server_g;
+
 
 // objects
 #include "objects/Tickable.h"
@@ -96,10 +99,10 @@ namespace orxonox
         auMan_->update();
         updateAI();
 
-        if(mode_ == PRESENTATION)
-          server_g->tick(evt.timeSinceLastFrame);
-        else if(mode_ == CLIENT)
-          client_g->tick(evt.timeSinceLastFrame);
+//         if(mode_ == SERVER)
+//           server_g->tick(evt.timeSinceLastFrame);
+//         else if(mode_ == CLIENT)
+//           client_g->tick(evt.timeSinceLastFrame);
 
         usleep(10);
 
@@ -161,42 +164,52 @@ namespace orxonox
     //TODO: read config file
     //TODO: give config file to Ogre
     std::string mode;
-//     if(argc>=2)
-//       mode = std::string(argv[1]);
-//     else
-//       mode = "";
+    
+    
     ArgReader ar = ArgReader(argc, argv);
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", this->dataPath_, false);
     ar.checkArgument("ip", serverIp_, false);
-    //mode = "presentation";
     if(ar.errorHandling()) die();
-    if(mode == std::string("server"))
+    if(mode == std::string("client"))
     {
-      serverInit(path);
-      mode_ = SERVER;
-    }
-    else if(mode == std::string("client"))
-    {
-      clientInit(path);
       mode_ = CLIENT;
+      clientInit(path);
     }
-    else if(mode == std::string("presentation"))
-    {
+    else if(mode== std::string("server")){
+      mode_ = SERVER;
       serverInit(path);
-      mode_ = PRESENTATION;
     }
     else{
-      standaloneInit(path);
       mode_ = STANDALONE;
+      standaloneInit(path);
     }
   }
 
+  
   /**
    * start modules
    */
   void Orxonox::start()
   {
+    switch(mode_){
+    case CLIENT:
+      clientStart();
+      break;
+    case SERVER:
+      serverStart();
+      break;
+    default:
+      standaloneStart();
+    }
+  }
+  
+  void Orxonox::clientStart(){
+    
+    
+  }
+  
+  void Orxonox::serverStart(){
     //TODO: start modules
     ogre_->startRender();
     //TODO: run engine
@@ -204,25 +217,24 @@ namespace orxonox
     createScene();
     setupScene();
     setupInputSystem();
-    if(mode_!=CLIENT){ // remove this in future ---- presentation hack
-    }
-    else
-      std::cout << "client here" << std::endl;
+    
     createFrameListener();
-    switch(mode_){
-    case PRESENTATION:
-      //ogre_->getRoot()->addFrameListener(new network::ServerFrameListener());
-      //std::cout << "could not add framelistener" << std::endl;
-      server_g->open();
-      break;
-    case CLIENT:
-      client_g->establishConnection();
-      break;
-    case SERVER:
-    case STANDALONE:
-    default:
-      break;
-    }
+    server_g->open();
+    
+    startRenderLoop();
+  }
+  
+  void Orxonox::standaloneStart(){
+    //TODO: start modules
+    ogre_->startRender();
+    //TODO: run engine
+    Factory::createClassHierarchy();
+    createScene();
+    setupScene();
+    setupInputSystem();
+    
+    createFrameListener();
+    
     startRenderLoop();
   }
 
@@ -245,80 +257,40 @@ namespace orxonox
     delete this;
   }
 
-  void Orxonox::standaloneInit(std::string path)
-  {
-    ogre_->setConfigPath(path);
-    ogre_->setup();
-    root_ = ogre_->getRoot();
-    if(!ogre_->load()) die(/* unable to load */);
-
-    //defineResources();
-    //setupRenderSystem();
-    //createRenderWindow();
-    //initializeResourceGroups();
-    /*createScene();
-    setupScene();
-    setupInputSystem();
-    createFrameListener();
-    Factory::createClassHierarchy();
-    startRenderLoop();*/
-  }
-
-  void Orxonox::playableServer(std::string path)
-  {
-    ogre_->setConfigPath(path);
-    ogre_->setup();
-    root_ = ogre_->getRoot();
-    defineResources();
-    setupRenderSystem();
-    createRenderWindow();
-    initializeResourceGroups();
-    setupInputSystem();
-    Factory::createClassHierarchy();
-    createScene();
-    setupScene();
-    createFrameListener();
-    try{
-      server_g = new network::Server(); //!< add port and bindadress
-      server_g->open(); //!< open server and create listener thread
-      if(ogre_ && ogre_->getRoot())
-        ogre_->getRoot()->addFrameListener(new network::ServerFrameListener()); // adds a framelistener for the server
-      COUT(3) << "Info: network framelistener added" << std::endl;
-    }
-    catch(...)
-    {
-      COUT(1) << "Error: There was a problem initialising the server :(" << std::endl;
-    }
-    startRenderLoop();
-  }
-
-  void Orxonox::standalone(){
-
-
-
-  }
 
   void Orxonox::serverInit(std::string path)
   {
     COUT(2) << "initialising server" << std::endl;
+    
     ogre_->setConfigPath(path);
     ogre_->setup();
-    server_g = new network::Server(); // FIXME add some settings if wanted
+    root_ = ogre_->getRoot();
     if(!ogre_->load()) die(/* unable to load */);
-    // FIXME add network framelistener
+    
+    server_g = new network::Server();
   }
 
   void Orxonox::clientInit(std::string path)
   {
-    COUT(2) << "initialising client" << std::endl;
+    COUT(2) << "initialising client" << std::endl;\
+    
     ogre_->setConfigPath(path);
     ogre_->setup();
     if(serverIp_.compare("")==0)
       client_g = new network::Client();
     else
-      client_g = new network::Client(serverIp_, 55556);
+      client_g = new network::Client(serverIp_, NETWORK_PORT);
     if(!ogre_->load()) die(/* unable to load */);
-    ogre_->getRoot()->addFrameListener(new network::ClientFrameListener());
+  }
+  
+  void Orxonox::standaloneInit(std::string path)
+  {
+    COUT(2) << "initialising standalone mode" << std::endl;
+    
+    ogre_->setConfigPath(path);
+    ogre_->setup();
+    root_ = ogre_->getRoot();
+    if(!ogre_->load()) die(/* unable to load */);
   }
 
   void Orxonox::defineResources()
