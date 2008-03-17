@@ -41,22 +41,26 @@
 
 
 #define XMLPortParam(classname, paramname, loadfunction, savefunction, xmlelement, loading) \
-    orxonox::XMLPortClassParamContainer<classname>* xmlcontainer##loadfunction##savefunction = (orxonox::XMLPortClassParamContainer<classname>*)(this->getIdentifier()->getXMLPortParamContainer(paramname)); \
-    if (!xmlcontainer##loadfunction##savefunction) \
-    { \
-        xmlcontainer##loadfunction##savefunction = new orxonox::XMLPortClassParamContainer<classname>(this->getIdentifier()->getName(), std::string(paramname), createFunctor(&classname::loadfunction), createFunctor(&classname::savefunction)); \
-        this->getIdentifier()->addXMLPortParamContainer(paramname, xmlcontainer##loadfunction##savefunction); \
-    } \
-    xmlcontainer##loadfunction##savefunction->port(this, xmlelement, loading)
+    XMLPortParamGeneric(classname, paramname, xmlcontainer##loadfunction##savefunction, createFunctor(&classname::loadfunction), createFunctor(&classname::savefunction), xmlelement, loading)
+#define XMLPortParam_Template(classname, paramname, loadtemplate, loadfunction, savetemplate, savefunction, xmlelement, loading) \
+    XMLPortParamGeneric(classname, paramname, xmlcontainer##loadfunction##savefunction, createFunctor loadtemplate (&classname::loadfunction), createFunctor savetemplate (&classname::savefunction), xmlelement, loading)
+
 
 #define XMLPortParamLoadOnly(classname, paramname, loadfunction, xmlelement, loading) \
-    orxonox::XMLPortClassParamContainer<classname>* xmlcontainer##loadfunction##savefunction = (orxonox::XMLPortClassParamContainer<classname>*)(this->getIdentifier()->getXMLPortParamContainer(paramname)); \
-    if (!xmlcontainer##loadfunction##savefunction) \
+    XMLPortParamGeneric(classname, paramname, xmlcontainer##loadfunction##0, createFunctor(&classname::loadfunction), 0, xmlelement, loading)
+#define XMLPortParamLoadOnly_Template(classname, paramname, loadtemplate, loadfunction, xmlelement, loading) \
+    XMLPortParamGeneric(classname, paramname, xmlcontainer##loadfunction##0, createFunctor loadtemplate (&classname::loadfunction), 0, xmlelement, loading)
+
+
+#define XMLPortParamGeneric(classname, paramname, containername, loadfunctor, savefunctor, xmlelement, loading) \
+    orxonox::XMLPortClassParamContainer<classname>* containername = (orxonox::XMLPortClassParamContainer<classname>*)(this->getIdentifier()->getXMLPortParamContainer(paramname)); \
+    if (!containername) \
     { \
-        xmlcontainer##loadfunction##savefunction = new orxonox::XMLPortClassParamContainer<classname>(this->getIdentifier()->getName(), std::string(paramname), createFunctor(&classname::loadfunction), 0); \
-        this->getIdentifier()->addXMLPortParamContainer(paramname, xmlcontainer##loadfunction##savefunction); \
+        containername = new orxonox::XMLPortClassParamContainer<classname>(this->getIdentifier()->getName(), std::string(paramname), loadfunctor, savefunctor); \
+        this->getIdentifier()->addXMLPortParamContainer(paramname, containername); \
     } \
-    xmlcontainer##loadfunction##savefunction->port(this, xmlelement, loading)
+    containername->port(this, xmlelement, loading)
+
 
 #define XMLPortObject(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, loading, bApplyLoaderMask, bLoadBefore) \
     orxonox::XMLPortClassObjectContainer<classname, objectclass>* xmlcontainer##loadfunction##savefunction = (orxonox::XMLPortClassObjectContainer<classname, objectclass>*)(this->getIdentifier()->getXMLPortObjectContainer(sectionname)); \

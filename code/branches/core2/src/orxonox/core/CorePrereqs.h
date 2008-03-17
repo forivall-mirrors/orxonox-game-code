@@ -95,6 +95,7 @@ namespace orxonox
   template <class T>
   class MetaObjectListElement;
   class Namespace;
+  class NamespaceNode;
   template <class T>
   class ObjectList;
   template <class T>
