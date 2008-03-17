@@ -114,27 +114,17 @@ namespace orxonox
 
             ticpp::Document xmlfile(level->getFile());
             xmlfile.LoadFile();
+            ticpp::Element rootElement;
+            rootElement.SetAttribute("name", "rootNamespace");
 
             for (ticpp::Iterator<ticpp::Element> child = xmlfile.FirstChildElement(false); child != child.end(); child++)
-            {
-                Identifier* identifier = ID(child->Value());
-                if (identifier)
-                {
-                    if (identifier->isA(Class(Namespace)) || Loader::currentMask_s.isIncluded(identifier))
-                    {
-                        COUT(4) << "  fabricating " << child->Value() << "..." << std::endl;
-                        BaseObject* newObject = identifier->fabricate();
-                        newObject->setLoaderIndentation("    ");
-                        newObject->setLevel(level);
-                        newObject->XMLPort(*child, true);
-                        COUT(5) << "  ...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
-                    }
-                }
-                else
-                {
-                    COUT(2) << "  Warning: '" << child->Value() << "' is not a valid classname." << std::endl;
-                }
-            }
+                rootElement.InsertEndChild(*child);
+
+            Namespace* rootNamespace = new Namespace();
+            rootNamespace->setLoaderIndentation("    ");
+            rootNamespace->setLevel(level);
+            rootNamespace->deleteNamespaceNodesAfterDestruction(true);
+            rootNamespace->XMLPort(rootElement, true);
 
             COUT(0) << "Finished loading " << level->getFile() << "." << std::endl;
 

@@ -560,6 +560,39 @@ namespace orxonox
     }
 
     /**
+        @brief Compares the mask with another mask and returns true if they represent the same logic.
+        @param other The other mask
+        @return True if both masks represent the same logic
+    */
+    bool ClassTreeMask::operator==(const ClassTreeMask& other) const
+    {
+        ClassTreeMask temp1 = other;
+        ClassTreeMask temp2 = (*this);
+
+        temp1.clean();
+        temp2.clean();
+
+        ClassTreeMaskIterator it1 = temp1.root_;
+        ClassTreeMaskIterator it2 = temp2.root_;
+
+        for ( ; it1 && it2; ++it1, ++it2)
+            if (it1->getClass() != it2->getClass())
+                return false;
+
+        return true;
+    }
+
+    /**
+        @brief Compares the mask with another mask and returns true if they represent different logics.
+        @param other The other mask
+        @return True if the masks represent different logics
+    */
+    bool ClassTreeMask::operator!=(const ClassTreeMask& other) const
+    {
+        return (!((*this) == other));
+    }
+
+    /**
         @brief Prefix operator + does nothing.
         @return A reference to the mask itself
     */

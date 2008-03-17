@@ -178,6 +178,9 @@ namespace orxonox
 
             ClassTreeMask& operator=(const ClassTreeMask& other);
 
+            bool operator==(const ClassTreeMask& other) const;
+            bool operator!=(const ClassTreeMask& other) const;
+
             ClassTreeMask& operator+();
             ClassTreeMask operator-() const;
 
