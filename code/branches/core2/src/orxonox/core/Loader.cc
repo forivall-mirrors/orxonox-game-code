@@ -120,6 +120,7 @@ namespace orxonox
             for (ticpp::Iterator<ticpp::Element> child = xmlfile.FirstChildElement(false); child != child.end(); child++)
                 rootElement.InsertEndChild(*child);
 
+            COUT(4) << "  creating root-namespace..." << std::endl;
             Namespace* rootNamespace = new Namespace();
             rootNamespace->setLoaderIndentation("    ");
             rootNamespace->setLevel(level);
