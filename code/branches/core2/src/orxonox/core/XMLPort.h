@@ -260,7 +260,7 @@ namespace orxonox
                                             (*object.*this->loadfunction_)(newObject);
                                             if (!this->bLoadBefore_)
                                                 newObject->XMLPort(*child, true);
-                                            COUT(5) << "  ...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
+                                            COUT(5) << object->getLoaderIndentation() << "...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
                                         }
                                     }
                                     else
