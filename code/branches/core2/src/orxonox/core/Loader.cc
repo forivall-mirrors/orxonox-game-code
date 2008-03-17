@@ -115,7 +115,7 @@ namespace orxonox
             ticpp::Document xmlfile(level->getFile());
             xmlfile.LoadFile();
             ticpp::Element rootElement;
-            rootElement.SetAttribute("name", "rootNamespace");
+            rootElement.SetAttribute("name", "root");
 
             for (ticpp::Iterator<ticpp::Element> child = xmlfile.FirstChildElement(false); child != child.end(); child++)
                 rootElement.InsertEndChild(*child);
@@ -123,6 +123,7 @@ namespace orxonox
             Namespace* rootNamespace = new Namespace();
             rootNamespace->setLoaderIndentation("    ");
             rootNamespace->setLevel(level);
+            rootNamespace->setNamespace(rootNamespace);
             rootNamespace->deleteNamespaceNodesAfterDestruction(true);
             rootNamespace->XMLPort(rootElement, true);
 
