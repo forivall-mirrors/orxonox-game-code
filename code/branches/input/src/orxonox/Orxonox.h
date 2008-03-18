@@ -8,6 +8,7 @@
 #define _Orxonox_H__
 
 #include <string>
+#include <deque>
 
 #include <OgrePrerequisites.h>
 #include <OIS/OISPrereqs.h>
@@ -64,6 +65,9 @@ namespace orxonox {
       void setupInputSystem();
       void createFrameListener();
       void startRenderLoop();
+      void mainLoop();
+      void updateTimers(float);
+      float calculateEventTime(unsigned long, std::deque<unsigned long>&);
 
     private:
       GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
@@ -77,6 +81,10 @@ namespace orxonox {
       OIS::InputManager*    inputManager_;
       OrxListener*          frameListener_;
       Ogre::Root*           root_;
+      // TODO: make this a config-value by creating a config class for orxonox
+      float                 frameSmoothingTime_;
+      // little hack to actually show something dynamic in the HUD
+      HUD*                  orxonoxHUD_;
 
       // this is used to identify the mode (server/client/...) we're in
       gameMode              mode_;

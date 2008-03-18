@@ -32,7 +32,7 @@
 	/>
 	<UserMacro
 		Name="DependencyDir"
-		Value="$(RootDir)dependencies\"
+		Value="D:\orxonox\dependencies\orxonox\"
 	/>
 	<UserMacro
 		Name="CS"

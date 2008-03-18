@@ -34,7 +34,7 @@
 
     Attention:
     Classes derived from a Tickable that want to have a tick(dt) function on their part, MUST call the
-    parent::tick(dt) function explicit in their implementation of tick(dt) because it's a virtual function.
+    parent::tick(dt) function explicitly in their implementation of tick(dt) because it's a virtual function.
 */
 
 #ifndef _Tickable_H__
@@ -47,7 +47,7 @@
 
 namespace orxonox
 {
-    class TickFrameListener; // Forward declaration
+    //class TickFrameListener; // Forward declaration
 
     //! The Tickable interface provides a tick(dt) function, that gets called every frame.
     class _OrxonoxExport Tickable : virtual public OrxonoxClass
@@ -63,6 +63,7 @@ namespace orxonox
             Tickable();
     };
 
+#if 0
     //! The TickFrameListener calls the tick(dt) function of all Tickables every frame.
     class _OrxonoxExport TickFrameListener : public Ogre::FrameListener
     {
@@ -77,6 +78,7 @@ namespace orxonox
                 return FrameListener::frameStarted(evt);
             }
     };
+#endif
 }
 
 #endif /* _Tickable_H__ */

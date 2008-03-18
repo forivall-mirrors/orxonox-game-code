@@ -65,7 +65,8 @@ namespace orxonox
     //! TimerBase is the parent of the Timer class.
     class _OrxonoxExport TimerBase : public OrxonoxClass
     {
-        friend class TimerFrameListener;
+        //friend class TimerFrameListener;
+        friend class Orxonox;
 
         public:
             TimerBase();
@@ -144,6 +145,7 @@ namespace orxonox
             T* object_;
     };
 
+#if 0
     //! The TimerFrameListener manages all Timers in the game.
     class TimerFrameListener : public Ogre::FrameListener
     {
@@ -179,6 +181,7 @@ namespace orxonox
                 return FrameListener::frameStarted(evt);
             }
     };
+#endif
 }
 
 #endif /* _Timer_H__ */

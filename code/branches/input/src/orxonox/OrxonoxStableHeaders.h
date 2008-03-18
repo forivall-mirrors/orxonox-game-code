@@ -72,10 +72,12 @@
 
 //#include "audio/AudioManager.h"
 
-//#include "core/CoreIncludes.h"
+#include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
 //#include "core/ArgReader.h"
 #include "core/Error.h"
+#include "core/Loader.h"
+#include "core/XMLPort.h"
 
 #include "network/Synchronisable.h"
 //#include "network/Server.h"
