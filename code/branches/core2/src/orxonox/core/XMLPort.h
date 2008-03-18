@@ -255,8 +255,14 @@ namespace orxonox
                                             newObject->setLevel(object->getLevel());
                                             newObject->setNamespace(object->getNamespace());
                                             if (this->bLoadBefore_)
+                                            {
                                                 newObject->XMLPort(*child, true);
-                                            COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->classname_ << " (objectname " << object->getName() << ")" << std::endl;
+                                                COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->classname_ << " (objectname " << object->getName() << ")" << std::endl;
+                                            }
+                                            else
+                                            {
+                                                COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->classname_ << " (objectname " << object->getName() << ")" << std::endl;
+                                            }
                                             (*object.*this->loadfunction_)(newObject);
                                             if (!this->bLoadBefore_)
                                                 newObject->XMLPort(*child, true);

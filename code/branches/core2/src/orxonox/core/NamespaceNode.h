@@ -52,6 +52,9 @@ namespace orxonox
 
             bool includes(const NamespaceNode*) const;
 
+            std::string toString() const;
+            std::string toString(const std::string& indentation) const;
+
         private:
             std::string name_;
             NamespaceNode* parent_;

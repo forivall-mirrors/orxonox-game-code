@@ -48,21 +48,32 @@ namespace orxonox
     {
         std::set<NamespaceNode*> nodes;
 
-        if (name == "")
+        if ((name.size() == 0) || (name == ""))
         {
             nodes.insert(this);
         }
         else
         {
             unsigned int pos = name.find("::");
-            std::string firstPart = name.substr(0, pos);
-            std::string secondPart = name.substr(pos + 2, std::string::npos);
+            std::string firstPart = name;
+            std::string secondPart;
+
+            if (pos != std::string::npos)
+            {
+                firstPart = name.substr(0, pos);
+                secondPart = name.substr(pos + 2, std::string::npos);
+            }
 
             if (firstPart == "..")
             {
                 if (this->bRoot_)
                 {
                     COUT(2) << "Warning: Can't go to enclosing namespace with '..' operator in namespace " << this->name_ << ", namespace is root." << std::endl;
+                    nodes = this->getNodeRelative(secondPart);
+                }
+                else if (!this->parent_)
+                {
+                    COUT(2) << "Warning: Can't go to enclosing namespace with '..' operator in namespace " << this->name_ << ", no parent namespace set." << std::endl;
                     nodes = this->getNodeRelative(secondPart);
                 }
                 else
@@ -77,19 +88,33 @@ namespace orxonox
                     it = this->subnodes_.insert(this->subnodes_.begin(), std::pair<std::string, NamespaceNode*>(firstPart, new NamespaceNode(firstPart, this)));
 
                 if ((*it).second->isHidden())
+                {
                     COUT(2) << "Warning: Subnamespace '" << firstPart << "' in namespace '" << this->name_ << "' is hidden and can't be accessed." << std::endl;
+                    nodes.insert(this);
+                }
                 else
+                {
                     nodes = (*it).second->getNodeRelative(secondPart);
+                }
             }
             else
             {
+                bool bFoundMatchingNamespace = false;
+
                 for (std::map<std::string, NamespaceNode*>::iterator it = this->subnodes_.begin(); it != this->subnodes_.end(); ++it)
                 {
                     if ((*it).first.find(firstPart) == ((*it).first.size() - firstPart.size()))
                     {
                         std::set<NamespaceNode*> temp2 = (*it).second->getNodeRelative(secondPart);
                         nodes.insert(temp2.begin(), temp2.end());
+                        bFoundMatchingNamespace = true;
                     }
+                }
+
+                if (!bFoundMatchingNamespace)
+                {
+                    COUT(2) << "Warning: No file included with name '" << firstPart.substr(1, std::string::npos) << "' at this part of the level file, using parent namespace instead." << std::endl;
+                    nodes = this->getNodeRelative(secondPart);
                 }
             }
         }
@@ -111,5 +136,38 @@ namespace orxonox
         }
 
         return false;
+    }
+
+    std::string NamespaceNode::toString() const
+    {
+        std::string output = this->name_;
+
+        if (this->subnodes_.size() > 0)
+        {
+            output += " (";
+
+            int i = 0;
+            for (std::map<std::string, NamespaceNode*>::const_iterator it = this->subnodes_.begin(); it != this->subnodes_.end(); i++, ++it)
+            {
+                if (i > 0)
+                    output += ", ";
+
+                output += (*it).second->toString();
+            }
+
+            output += ")";
+        }
+
+        return output;
+    }
+
+    std::string NamespaceNode::toString(const std::string& indentation) const
+    {
+        std::string output = (indentation + this->name_ + "\n");
+
+        for (std::map<std::string, NamespaceNode*>::const_iterator it = this->subnodes_.begin(); it != this->subnodes_.end(); ++it)
+            output += (*it).second->toString(indentation + "  ");
+
+        return output;
     }
 }

@@ -1,3 +1,28 @@
+<Namespace name="test" />
+<Namespace name="blub" />
+<Namespace name="rofl" />
+
+<Namespace name="ns1">
+  <Namespace name="ns11">
+    <Namespace name="ns111">
+    </Namespace>
+    <Namespace name="ns112">
+    </Namespace>
+  </Namespace>
+  <Namespace name="ns12">
+    <Namespace name="ns121">
+    </Namespace>
+    <Namespace name="ns122">
+    </Namespace>
+  </Namespace>
+</Namespace>
+
+<Namespace name="ns1::ns12::ns121">
+  <Namespace name="ns1211">
+  </Namespace>
+</Namespace>
+<Namespace name="ns1::ns12::ns122::ns1221" />
+
 <!--
  <audio>
 		<ambient>
@@ -22,16 +47,18 @@
 <NPC position="0,-200,450" scale="1" mesh="razor.mesh"/>
 <NPC position="100,0,400" scale="1" mesh="razor.mesh"/>
 
-<Model name="starship" position="200,0,500" scale="10" mesh="starship.mesh" yawpitchroll="-90,-90,0" />
-<Model name="drone" position="-200,0,500" scale="10" mesh="drone.mesh" yawpitchroll="-90,-90,0">
-  <attached>
-    <Model name="drone2" position="200,-100,-500" scale="10" mesh="drone.mesh" yawpitchroll="-90,-90,0">
-      <attached>
-        <Model name="starship2" position="500,200,-500" scale="10" mesh="starship.mesh" yawpitchroll="-90,-90,0" />
-      </attached>
-    </Model>
-  </attached>
-</Model>
+<Namespace name="starshipanddrone">
+  <Model name="starship" position="200,0,500" scale="10" mesh="starship.mesh" yawpitchroll="-90,-90,0" />
+  <Model name="drone" position="-200,0,500" scale="10" mesh="drone.mesh" yawpitchroll="-90,-90,0">
+    <attached>
+      <Model name="drone2" position="200,-100,-500" scale="10" mesh="drone.mesh" yawpitchroll="-90,-90,0">
+        <attached>
+          <Model name="starship2" position="500,200,-500" scale="10" mesh="starship.mesh" yawpitchroll="-90,-90,0" />
+        </attached>
+      </Model>
+    </attached>
+  </Model>
+</Namespace>
 
 <Model position="-200,1000,500" scale="10" mesh="hoover_body.mesh" yawpitchroll="-90,-90,0" />
 <Model position="-200,1000,500" scale="10" mesh="hoover_gear0.mesh" yawpitchroll="-90,-90,0" />
@@ -39,12 +66,60 @@
 <Model position="-200,1000,500" scale="10" mesh="hoover_gear2.mesh" yawpitchroll="-90,-90,0" />
 <Model position="-200,1000,500" scale="10" mesh="hoover_turbine.mesh" yawpitchroll="-90,-90,0" />
 
+<Namespace name="test" />
+<Namespace name="blub">
+</Namespace>
+<Namespace name="rofl">
+  <Namespace name="lol">
+  </Namespace>
+</Namespace>
+
+<Namespace name="ns1">
+  <Namespace name="ns11">
+    <Namespace name="ns111">
+      <Namespace name="ns1111">
+      </Namespace>
+    </Namespace>
+  </Namespace>
+  <Namespace name="ns13">
+  </Namespace>
+</Namespace>
+
+<Namespace name="ns1 ns2">
+  <Namespace name="abc" />
+</Namespace>
+
+<Namespace name="ns1::ns11 ns1::ns12 ns1::ns12::ns121">
+  <Namespace name="muhahaha" />
+</Namespace>
+
+<Namespace name="test">
+  <Namespace name="test" />
+</Namespace>
+
+<Namespace name="ns1::ns13">
+  <Namespace name="..::ns14" />
+  <Namespace name="..::..::ns3" />
+</Namespace>
+
+<Namespace name="AAA::BBB::..::CCC::..::DDD::..::BBB::BBBBBB::..::BBBBBBBBBBBBBBBBBBB::..::..::EEE" />
+
+<Namespace name="..::justatest" />
+
+<Namespace name="@file.oxw::anothertest" />
+
+<Namespace name="justonemoretest::@file.oxw::gagagaga" />
+
+<Namespace name="AAA::BBB, AAA::CCC; AAA::DDD,AAA::EEE">
+  <Namespace name="hax" />
+</Namespace>
+
     <Model position="-16779,42,11043" scale="95" mesh="ast2.mesh" rotationAxis="0.281711,0.152518,0" rotationRate="27" />
     <Model position="12893,-1583,-17939" scale="48" mesh="ast1.mesh" rotationAxis="0.0597998,0.923364,0" rotationRate="36" />
     <Model position="-2107,259,-19814" scale="29" mesh="ast4.mesh" rotationAxis="0.298639,0.96907,0" rotationRate="32" />
     <Model position="-9583,-2284,-19904" scale="33" mesh="ast5.mesh" rotationAxis="0,0.675659,0.0196445" rotationRate="44" />
     <Model position="-19597,-15494,3163" scale="37" mesh="ast5.mesh" rotationAxis="0.477996,0,0.048639" rotationRate="23" />
-    <Model position="-182,6442,-4496" scale="25" mesh="ast5.mesh" rotationAxis="0.142225,0,0.154393" rotationRate="37" />
+    <!--Model position="-182,6442,-4496" scale="25" mesh="ast5.mesh" rotationAxis="0.142225,0,0.154393" rotationRate="37" />
     <Model position="1004,-19639,-13744" scale="21" mesh="ast1.mesh" rotationAxis="0.974865,0.299775,0" rotationRate="29" />
     <Model position="-13204,-10191,-1555" scale="31" mesh="ast1.mesh" rotationAxis="0.41675,0,0.385001" rotationRate="42" />
     <Model position="-1843,12203,2346" scale="81" mesh="ast5.mesh" rotationAxis="0.221171,0,0.331917" rotationRate="41" />
@@ -265,4 +340,4 @@
     <Model position="17142,15709,-8725" scale="57" mesh="ast5.mesh" rotationAxis="0,0.561188,0.300935" rotationRate="36" />
     <Model position="1991,-11949,-15733" scale="68" mesh="ast1.mesh" rotationAxis="0,0.390655,0.623811" rotationRate="41" />
     <Model position="-6787,1792,287" scale="71" mesh="ast6.mesh" rotationAxis="0.161019,0.130015,0" rotationRate="36" />
-    <Model position="-7223,-13574,-11873" scale="24" mesh="ast4.mesh" rotationAxis="0.792203,0,0.177188" rotationRate="38" />
+    <Model position="-7223,-13574,-11873" scale="24" mesh="ast4.mesh" rotationAxis="0.792203,0,0.177188" rotationRate="38" /-->
