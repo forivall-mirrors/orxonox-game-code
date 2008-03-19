@@ -43,7 +43,7 @@ namespace orxonox
             Namespace();
             virtual ~Namespace();
 
-            virtual void XMLPort(Element& xmlelement, bool loading);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void loadObjects(BaseObject* object);
             const BaseObject* saveObjects(unsigned int index) const;

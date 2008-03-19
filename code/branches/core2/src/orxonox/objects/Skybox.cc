@@ -76,10 +76,10 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    void Skybox::XMLPort(Element& xmlelement, bool loading)
+    void Skybox::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlelement, loading);
+        BaseObject::XMLPort(xmlelement, mode);
 
-        XMLPortParamLoadOnly(Skybox, "src", setSkybox, xmlelement, loading);
+        XMLPortParamLoadOnly(Skybox, "src", setSkybox, xmlelement, mode);
     }
 }

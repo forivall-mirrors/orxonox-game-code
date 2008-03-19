@@ -23,7 +23,7 @@ namespace orxonox
             void init();
             void setConfigValues();
             virtual void loadParams(TiXmlElement* xmlElem);
-            virtual void XMLPort(Element& xmlelement, bool loading);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
             void setCamera(const std::string& camera = "");

@@ -17,7 +17,7 @@ namespace orxonox
             Model();
             virtual ~Model();
             virtual void loadParams(TiXmlElement* xmlElem);
-            virtual void XMLPort(Element& xmlelement, bool loading);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void setMesh(const std::string& meshname);
             bool create();
 

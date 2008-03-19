@@ -74,6 +74,19 @@
 
 namespace orxonox
 {
+
+#ifndef _XMLPort_Mode__
+#define _XMLPort_Mode__
+    namespace XMLPort
+    {
+        enum Mode
+        {
+            LoadObject,
+            SaveObject
+        };
+    }
+#endif
+
     // ###############################
     // ###  XMLPortParamContainer  ###
     // ###############################
@@ -122,9 +135,9 @@ namespace orxonox
                 this->savefunction_ = savefunction;
             }
 
-            XMLPortParamContainer& port(T* object, Element& xmlelement, bool loading)
+            XMLPortParamContainer& port(T* object, Element& xmlelement, XMLPort::Mode mode)
             {
-                if (loading)
+                if (mode == XMLPort::LoadObject)
                 {
                     try
                     {
@@ -226,9 +239,9 @@ namespace orxonox
                 this->bLoadBefore_ = bLoadBefore;
             }
 
-            XMLPortObjectContainer& port(T* object, Element& xmlelement, bool loading)
+            XMLPortObjectContainer& port(T* object, Element& xmlelement, XMLPort::Mode mode)
             {
-                if (loading)
+                if (mode == XMLPort::LoadObject)
                 {
                     try
                     {
@@ -256,7 +269,7 @@ namespace orxonox
                                             newObject->setNamespace(object->getNamespace());
                                             if (this->bLoadBefore_)
                                             {
-                                                newObject->XMLPort(*child, true);
+                                                newObject->XMLPort(*child, XMLPort::LoadObject);
                                                 COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->classname_ << " (objectname " << object->getName() << ")" << std::endl;
                                             }
                                             else
@@ -265,7 +278,7 @@ namespace orxonox
                                             }
                                             (*object.*this->loadfunction_)(newObject);
                                             if (!this->bLoadBefore_)
-                                                newObject->XMLPort(*child, true);
+                                                newObject->XMLPort(*child, XMLPort::LoadObject);
                                             COUT(5) << object->getLoaderIndentation() << "...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
                                         }
                                     }

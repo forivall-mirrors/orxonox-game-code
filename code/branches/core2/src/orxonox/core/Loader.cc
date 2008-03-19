@@ -128,7 +128,7 @@ namespace orxonox
             rootNamespace->setLevel(level);
             rootNamespace->setNamespace(rootNamespace);
             rootNamespace->setRoot(true);
-            rootNamespace->XMLPort(rootElement, true);
+            rootNamespace->XMLPort(rootElement, XMLPort::LoadObject);
 
             COUT(0) << "Finished loading " << level->getFile() << "." << std::endl;
 

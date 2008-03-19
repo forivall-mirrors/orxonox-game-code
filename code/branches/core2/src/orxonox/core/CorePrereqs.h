@@ -64,6 +64,18 @@ class SignalHandler;
 
 namespace orxonox
 {
+#ifndef _XMLPort_Mode__
+#define _XMLPort_Mode__
+  namespace XMLPort
+  {
+    enum Mode
+    {
+      LoadObject,
+      SaveObject
+    };
+  }
+#endif
+
   typedef std::string LanguageEntryLabel;
 
   class ArgReader;

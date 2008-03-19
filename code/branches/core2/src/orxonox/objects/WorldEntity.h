@@ -24,7 +24,7 @@ namespace orxonox
 
             virtual void tick(float dt);
             virtual void loadParams(TiXmlElement* xmlElem);
-            virtual void XMLPort(Element& xmlelement, bool loading);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             bool create();
 
             void attachWorldEntity(WorldEntity* entity);
