@@ -64,7 +64,7 @@ namespace network
     //two functions are note yet implemented!
     virtual void processGamestate(GameStateCompressed *state);
     virtual void processAck( ack *data, int clientID);
-    void processClassid( classid *cid);
+    virtual void processClassid( classid *cid);
     //virtual void processAck( ack *data);
 
     //print functions

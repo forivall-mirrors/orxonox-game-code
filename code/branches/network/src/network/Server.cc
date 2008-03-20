@@ -133,7 +133,7 @@ namespace network
   void Server::updateGamestate() {
     gamestates->update();
     //std::cout << "updated gamestate, sending it" << std::endl;
-    if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
+    //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
       sendGameState();
     //std::cout << "sent gamestate" << std::endl;
   }
@@ -151,14 +151,14 @@ namespace network
         continue;
       }
       if( !(temp->getSynched()) ){
-        std::cout << "not sending gamestate" << std::endl;
+        COUT(5) << "not sending gamestate" << std::endl;
         temp=temp->next();
         continue;
       }
-      std::cout << "doing gamestate" << std::endl;
+      COUT(5) << "doing gamestate gamestate preparation" << std::endl;
       int gid = temp->getGamestateID();
       int cid = temp->getID();
-      std::cout << "server, got acked ID: " << gid << std::endl;
+      COUT(5) << "server, got acked (gamestate) ID: " << gid << std::endl;
       GameStateCompressed *gs = gamestates->popGameState(cid);
       if(gs==NULL){
         COUT(2) << "could not generate gamestate" << std::endl;
@@ -172,7 +172,7 @@ namespace network
     }
     if(added)
       return connection->sendPackets();
-    COUT(2) << "could not send packets (containing i.e. gamestates)" << std::endl;
+    COUT(5) << "had no gamestates to send" << std::endl;
     return false;
   }
 
