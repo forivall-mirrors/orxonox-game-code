@@ -205,8 +205,25 @@ namespace orxonox
   }
   
   void Orxonox::clientStart(){
+    ogre_->startRender();
+    Factory::createClassHierarchy();
     
     
+    auMan_ = new audio::AudioManager();
+
+    bulletMgr_ = new BulletManager();
+    
+    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
+    HUD* orxonoxHud;
+    orxonoxHud = new HUD();
+    orxonoxHud->setEnergyValue(20);
+    orxonoxHud->setEnergyDistr(20,20,60);
+    hudOverlay->show();
+    
+    client_g->establishConnection();
+    client_g->tick(0);
+    
+    startRenderLoop();
   }
   
   void Orxonox::serverStart(){
