@@ -106,8 +106,11 @@ namespace orxonox
 
         usleep(10);
 
+        if(mode_!=CLIENT){
         mKeyboard->capture();
         return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
+        }else
+          return true;
       }
 
       void updateAI()
@@ -224,7 +227,7 @@ namespace orxonox
     client_g->tick(0);
     
     
-    setupInputSystem();
+    //setupInputSystem();
     
     createFrameListener();
     
