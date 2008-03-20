@@ -39,10 +39,15 @@ namespace network
   }
 
   bool GameStateClient::pushGameState(GameStateCompressed *compstate) {
+    GameState *gs;
     if(compstate->diffed)
-      return loadSnapshot(decode(reference, compstate));
+      gs = decode(reference, compstate);
     else
-      return loadSnapshot(decode(compstate));
+      gs = decode(compstate);
+    if(gs)
+      return loadSnapshot(gs);
+    COUT(4) << "could not use gamestate sent by server" << std::endl;
+    return false;
   }
 
   /**
