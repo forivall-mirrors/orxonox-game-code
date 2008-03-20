@@ -1,9 +1,0 @@
-FILE(REMOVE
-"../../bin/lib/libaudio.pdb"
-"../../bin/lib/libaudio.a"
-"../../bin/lib/libaudio.so"
-"CMakeFiles/audio.dir/AudioManager.o"
-"CMakeFiles/audio.dir/AudioBuffer.o"
-"CMakeFiles/audio.dir/AudioSource.o"
-"CMakeFiles/audio.dir/AudioStream.o"
-)
