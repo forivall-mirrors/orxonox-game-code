@@ -154,6 +154,7 @@ namespace network
     //copy the GameStateCompressed id into the struct, which is located at second place data+sizeof( int )
     //memcpy( (void*)&(currentState->id), (const void*)(data+sizeof( int )), sizeof( int ) );
     currentState->id = *((int *)packet->data+sizeof(int));
+    memcpy( (void*)&(currentState->id), (const void*)(packet->data+1*sizeof( int )), sizeof( int) );
     COUT(5) << "decoder: received gs id: " << currentState->id << std::endl;
 //     std::cout << "id: " << currentState->id << std::endl;
     //copy the size of the GameStateCompressed compressed data into the new GameStateCompressed struct, located at 3th
