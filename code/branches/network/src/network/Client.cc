@@ -190,9 +190,10 @@ namespace network
   }
 
   void Client::processGamestate( GameStateCompressed *data){
-    gamestate.pushGameState(data);
+    int id = data->id;
     COUT(5) << "received gamestate id: " << data->id << std::endl;
-    client_connection.addPacket(pck_gen.acknowledgement(data->id));
+    gamestate.pushGameState(data);
+    client_connection.addPacket(pck_gen.acknowledgement(id));
     client_connection.sendPackets();
     return;
   }
