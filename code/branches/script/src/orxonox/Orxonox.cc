@@ -250,7 +250,7 @@ namespace orxonox
     ogre_->setConfigPath(path);
     ogre_->setup();
     root_ = ogre_->getRoot();
-    if(!ogre_->load()) die(/* unable to load */);
+    if(!ogre_->load(this->dataPath_)) die(/* unable to load */);
 
     //defineResources();
     //setupRenderSystem();
@@ -269,10 +269,10 @@ namespace orxonox
     ogre_->setConfigPath(path);
     ogre_->setup();
     root_ = ogre_->getRoot();
-    defineResources();
-    setupRenderSystem();
+    ogre_->load(this->dataPath_);
+    /*setupRenderSystem();
     createRenderWindow();
-    initializeResourceGroups();
+    initializeResourceGroups();*/
     setupInputSystem();
     Factory::createClassHierarchy();
     createScene();
@@ -304,7 +304,7 @@ namespace orxonox
     ogre_->setConfigPath(path);
     ogre_->setup();
     server_g = new network::Server(); // FIXME add some settings if wanted
-    if(!ogre_->load()) die(/* unable to load */);
+    if(!ogre_->load(this->dataPath_)) die(/* unable to load */);
     // FIXME add network framelistener
   }
 
@@ -317,10 +317,10 @@ namespace orxonox
       client_g = new network::Client();
     else
       client_g = new network::Client(serverIp_, 55556);
-    if(!ogre_->load()) die(/* unable to load */);
+    if(!ogre_->load(this->dataPath_)) die(/* unable to load */);
     ogre_->getRoot()->addFrameListener(new network::ClientFrameListener());
   }
-
+/*
   void Orxonox::defineResources()
   {
     std::string secName, typeName, archName;
@@ -348,14 +348,14 @@ namespace orxonox
 #endif
       }
     }
-  }
-
+  }*/
+/*
   void Orxonox::setupRenderSystem()
   {
     if (!root_->restoreConfig() && !root_->showConfigDialog())
       throw Ogre::Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
-  }
-
+  }*/
+/*
   void Orxonox::createRenderWindow()
   {
     root_->initialise(true, "OrxonoxV2");
@@ -365,7 +365,7 @@ namespace orxonox
   {
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-  }
+  }*/
 
   /**
    *

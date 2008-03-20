@@ -55,10 +55,9 @@ namespace orxonox {
       // run functions
       void playableServer(std::string path);
       void standalone();
-      void defineResources();
-      void setupRenderSystem();
-      void createRenderWindow();
-      void initializeResourceGroups();
+      //void setupRenderSystem();
+      //void createRenderWindow();
+      //void initializeResourceGroups();
       void createScene(void);
       void setupScene();
       void setupInputSystem();
