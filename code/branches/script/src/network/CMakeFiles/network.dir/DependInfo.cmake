@@ -1,0 +1,30 @@
+# The set of files whose dependency integrity should be checked:
+SET(CMAKE_DEPENDS_LANGUAGES
+  "CXX"
+  )
+SET(CMAKE_DEPENDS_CHECK_CXX
+  "/home/piranha/orxonox/trunk/src/network/ClientConnection.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/ClientConnection.o"
+  "/home/piranha/orxonox/trunk/src/network/Client.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/Client.o"
+  "/home/piranha/orxonox/trunk/src/network/ClientInformation.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/ClientInformation.o"
+  "/home/piranha/orxonox/trunk/src/network/dummyserver3.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/dummyserver3.o"
+  "/home/piranha/orxonox/trunk/src/network/Synchronisable.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/Synchronisable.o"
+  "/home/piranha/orxonox/trunk/src/network/Server.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/Server.o"
+  "/home/piranha/orxonox/trunk/src/network/PacketGenerator.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/PacketGenerator.o"
+  "/home/piranha/orxonox/trunk/src/network/PacketDecoder.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/PacketDecoder.o"
+  "/home/piranha/orxonox/trunk/src/network/PacketBuffer.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/PacketBuffer.o"
+  "/home/piranha/orxonox/trunk/src/network/GameStateClient.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/GameStateClient.o"
+  "/home/piranha/orxonox/trunk/src/network/GameStateManager.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/GameStateManager.o"
+  "/home/piranha/orxonox/trunk/src/network/ConnectionManager.cc"
+  "/home/piranha/orxonox/trunk/src/network/CMakeFiles/network.dir/ConnectionManager.o"
+  )
