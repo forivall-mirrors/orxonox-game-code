@@ -223,6 +223,11 @@ namespace orxonox
     client_g->establishConnection();
     client_g->tick(0);
     
+    
+    setupInputSystem();
+    
+    createFrameListener();
+    
     startRenderLoop();
   }
   
