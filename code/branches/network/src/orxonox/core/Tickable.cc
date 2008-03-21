@@ -28,46 +28,15 @@
 #include "OrxonoxStableHeaders.h"
 
 #include "core/CoreIncludes.h"
-#include "Timer.h"
+#include "Tickable.h"
 
 namespace orxonox
 {
     /**
-        @brief Constructor: Sets the default-values.
+        @brief Constructor: Registers the object in the Tickable-list
     */
-    TimerBase::TimerBase()
+    Tickable::Tickable()
     {
-        RegisterRootObject(TimerBase);
-
-        this->interval_ = 0;
-        this->bLoop_ = false;
-        this->bActive_ = false;
-
-        this->time_ = 0;
+        RegisterRootObject(Tickable);
     }
-
-    /**
-        @brief Updates the timer before the frames are rendered.
-    */
-    void TimerBase::tick(float dt)
-    {
-        if (this->bActive_)
-        {
-            // If active: Decrease the timer by the duration of the last frame
-            this->time_ -= dt;
-
-            if (this->time_ <= 0)
-            {
-                // It's time to call the function
-                if (this->bLoop_)
-                    // Q: Why '+=' and not '='? A: Think about it. It's more accurate like that. Seriously.
-                    this->time_ += this->interval_;
-                else
-                    this->stopTimer(); // Stop the timer if we don't want to loop
-
-                this->run();
-            }
-        }
-    }
-
 }

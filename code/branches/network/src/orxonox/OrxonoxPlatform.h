@@ -209,7 +209,11 @@ typedef float Real;
 // This warns about truncation to 255 characters in debug/browse info
 //#   pragma warning (disable : 4503)
 
-// disable: "conversion from 'double' to 'float', possible loss of data
+// disable: conversion from 'double' to 'float', possible loss of data
+// disable: conversion from 'ogg_int64_t' to 'long', possible loss of data
+// This has been dealt with in base_properties of the solution since the
+// warning primarily occurs in library header files (which are mostly
+// included before OrxonoxPlatform.h is)
 //#   pragma warning (disable : 4244)
 
 // disable: "conversion from 'size_t' to 'unsigned int', possible loss of data
@@ -220,7 +224,14 @@ typedef float Real;
 
 // disable: "<type> needs to have dll-interface to be used by clients'
 // Happens on STL member variables which are not public therefore is ok
+// This has been dealt with in base_properties of the solution since the
+// warning primarily occurs in library header files (which are mostly
+// included before OrxonoxPlatform.h is)
 //#   pragma warning (disable : 4251)
+
+// disable: 'MultiTypeString' : multiple assignment operators specified
+// Used in MultiType and works fine so far
+#   pragma warning (disable : 4522)
 
 // disable: "non dll-interface class used as base for dll-interface class"
 // Happens when deriving from Singleton because bug in compiler ignores
@@ -248,6 +259,12 @@ typedef float Real;
 // ORXONOX_MUTEX_CONDITIONAL when no threading enabled
 //#   pragma warning (disable : 201)
 
+#endif
+
+
+// Define the english written operators like and, or, xor
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#  include <iso646.h>
 #endif
 
 } /* namespace orxonox */

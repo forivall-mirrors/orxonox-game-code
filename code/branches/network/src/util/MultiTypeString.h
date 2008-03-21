@@ -108,6 +108,6 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         std::string string_;
 };
 
-std::ostream& operator<<(std::ostream& out, MultiTypeString& mts);
+_UtilExport std::ostream& operator<<(std::ostream& out, MultiTypeString& mts);
 
 #endif /* _MultiTypeString_H__ */

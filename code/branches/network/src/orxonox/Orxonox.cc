@@ -43,6 +43,8 @@
 #include <OgreConfigFile.h>
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
+#include <OgreTimer.h>
+#include <OgreWindowEventUtilities.h>
 
 //****** OIS *******
 #include <OIS/OIS.h>
@@ -55,8 +57,7 @@
 //misc
 #include "util/Sleep.h"
 
-// loader and audio
-//#include "loader/LevelLoader.h"
+// audio
 #include "audio/AudioManager.h"
 
 // network
@@ -68,13 +69,13 @@ network::Server *server_g;
 
 
 // objects
-#include "objects/Tickable.h"
 #include "tools/Timer.h"
-#include "objects/NPC.h"
+#include "tools/OrxListener.h"
 #include "core/ArgReader.h"
-#include "core/Factory.h"
 #include "core/Debug.h"
+#include "core/Factory.h"
 #include "core/Loader.h"
+#include "core/Tickable.h"
 #include "hud/HUD.h"
 #include "objects/weapon/BulletManager.h"
 #include "GraphicsEngine.h"
@@ -83,51 +84,7 @@ network::Server *server_g;
 
 namespace orxonox
 {
-   // put this in a seperate Class or solve the problem in another fashion
-  class OrxListener : public Ogre::FrameListener
-  {
-    public:
-      OrxListener(OIS::Keyboard *keyboard, audio::AudioManager*  auMan, gameMode mode)
-      {
-        mKeyboard = keyboard;
-        mode_=mode;
-        auMan_ = auMan;
-      }
-
-      bool frameStarted(const Ogre::FrameEvent& evt)
-      {
-        auMan_->update();
-        updateAI();
-
-//         if(mode_ == SERVER)
-//           server_g->tick(evt.timeSinceLastFrame);
-//         else if(mode_ == CLIENT)
-//           client_g->tick(evt.timeSinceLastFrame);
-
-        usleep(10);
-
-        if(mode_!=CLIENT){
-        mKeyboard->capture();
-        return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
-        }else
-          return true;
-      }
-
-      void updateAI()
-      {
-        for(Iterator<NPC> it = ObjectList<NPC>::start(); it; ++it)
-        {
-          it->update();
-        }
-      }
-
-    private:
-      gameMode mode_;
-      OIS::Keyboard *mKeyboard;
-      audio::AudioManager*  auMan_;
-  };
-
-  // init static singleton reference of Orxonox
+  /// init static singleton reference of Orxonox
   Orxonox* Orxonox::singletonRef_ = NULL;
 
   /**
@@ -137,7 +94,6 @@ namespace orxonox
   {
     this->ogre_ = new GraphicsEngine();
     this->dataPath_ = "";
-//    this->loader_ = 0;
     this->auMan_ = 0;
     this->singletonRef_ = 0;
     this->keyboard_ = 0;
@@ -145,6 +101,9 @@ namespace orxonox
     this->inputManager_ = 0;
     this->frameListener_ = 0;
     this->root_ = 0;
+    // turn frame smoothing on by setting a value different from 0
+    this->frameSmoothingTime_ = 0.0f;
+    this->bAbort_ = false;
   }
 
   /**
@@ -158,7 +117,7 @@ namespace orxonox
   /**
    * initialization of Orxonox object
    * @param argc argument counter
-   * @param argv list of arguments
+   * @param argv list of argumenst
    * @param path path to config (in home dir or something)
    */
   void Orxonox::init(int argc, char **argv, std::string path)
@@ -282,6 +241,14 @@ namespace orxonox
     delete this;
   }
 
+  /**
+    Asks the mainloop nicely to abort.
+  */
+  void Orxonox::abortRequest()
+  {
+    bAbort_ = true;
+  }
+
 
   void Orxonox::serverInit(std::string path)
   {
@@ -364,10 +331,6 @@ namespace orxonox
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
   }
 
-  /**
-   *
-   * @param
-   */
   void Orxonox::createScene(void)
   {
 	// Init audio
@@ -382,10 +345,10 @@ namespace orxonox
     Loader::open(startlevel);
 
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    HUD* orxonoxHud;
-    orxonoxHud = new HUD();
-    orxonoxHud->setEnergyValue(20);
-    orxonoxHud->setEnergyDistr(20,20,60);
+    //HUD* orxonoxHud;
+    orxonoxHUD_ = new HUD();
+    orxonoxHUD_->setEnergyValue(20);
+    orxonoxHUD_->setEnergyDistr(20,20,60);
     hudOverlay->show();
 
 	/*
@@ -397,9 +360,6 @@ namespace orxonox
   }
 
 
-  /**
-   *
-   */
   void Orxonox::setupScene()
   {
 //    SceneManager *mgr = ogre_->getSceneManager();
@@ -450,15 +410,7 @@ namespace orxonox
   // FIXME we actually want to do this differently...
   void Orxonox::createFrameListener()
   {
-    TickFrameListener* TickFL = new TickFrameListener();
-    ogre_->getRoot()->addFrameListener(TickFL);
-
-    TimerFrameListener* TimerFL = new TimerFrameListener();
-    ogre_->getRoot()->addFrameListener(TimerFL);
-
-    //if(mode_!=CLIENT) // FIXME just a hack ------- remove this in future
-      frameListener_ = new OrxListener(keyboard_, auMan_, mode_);
-    ogre_->getRoot()->addFrameListener(frameListener_);
+    frameListener_ = new OrxListener(keyboard_, auMan_, mode_);
   }
 
   void Orxonox::startRenderLoop()
@@ -476,6 +428,113 @@ namespace orxonox
       ms.width = width;
       ms.height = height;
     }
-    ogre_->getRoot()->startRendering();
+    mainLoop();
+  }
+
+  /**
+    Main loop of the orxonox game.
+    This is a new solution, using the ogre engine instead of beeing used by it.
+    An alternative solution would be to simply use the timer of the Root object,
+    but that implies using Ogre in any case. There would be no way to test
+    our code without the help of the root object.
+    There's even a chance that we can dispose of the root object entirely
+    in server mode.
+    About the loop: The design is almost exactly like the one in ogre, so that
+    if any part of ogre registers a framelisteners, it will still behave
+    correctly. Furthermore I have taken over the time smoothing feature from
+    ogre. If turned on (see orxonox constructor), it will calculate the dt_n by
+    means of the recent most dt_n-1, dt_n-2, etc.
+  */
+  void Orxonox::mainLoop()
+  {
+    // use the ogre timer class to measure time.
+    Ogre::Timer *timer = new Ogre::Timer();
+    timer->reset();
+
+    // Contains the times of recently fired events
+    std::deque<unsigned long> eventTimes[3];
+    // Clear event times
+    for (int i = 0; i < 3; ++i)
+      eventTimes[i].clear();
+
+	  while (!bAbort_)
+	  {
+		  // Pump messages in all registered RenderWindows
+      Ogre::WindowEventUtilities::messagePump();
+
+      // get current time
+      unsigned long now = timer->getMilliseconds();
+
+      // create an event to pass to the frameStarted method in ogre
+      Ogre::FrameEvent evt;
+      evt.timeSinceLastEvent = calculateEventTime(now, eventTimes[0]);
+      evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
+
+      // show the current time in the HUD
+      orxonoxHUD_->setTime((int)now, 0);
+
+      // don't forget to call _fireFrameStarted in ogre to make sure
+      // everything goes smoothly
+      if (!ogre_->getRoot()->_fireFrameStarted(evt))
+        break;
+
+      // Iterate through all Tickables and call their tick(dt) function
+      for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
+        (it++)->tick((float)evt.timeSinceLastFrame);
+
+      if (mode_ != SERVER)
+      {
+        // only render in non-server mode
+        ogre_->getRoot()->_updateAllRenderTargets();
+      }
+
+      // get current time
+      now = timer->getMilliseconds();
+
+      // create an event to pass to the frameEnded method in ogre
+      evt.timeSinceLastEvent = calculateEventTime(now, eventTimes[0]);
+      evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[2]);
+
+      // again, just to be sure ogre works fine
+      if (!ogre_->getRoot()->_fireFrameEnded(evt))
+        break;
+	  }
+  }
+
+  /**
+    Method for calculating the average time between recently fired events.
+    Code directly taken from OgreRoot.cc
+    @param now The current time in ms.
+    @param type The type of event to be considered.
+  */
+  float Orxonox::calculateEventTime(unsigned long now, std::deque<unsigned long> &times)
+  {
+    // Calculate the average time passed between events of the given type
+    // during the last mFrameSmoothingTime seconds.
+
+    times.push_back(now);
+
+    if(times.size() == 1)
+      return 0;
+
+    // Times up to mFrameSmoothingTime seconds old should be kept
+    unsigned long discardThreshold =
+      static_cast<unsigned long>(frameSmoothingTime_ * 1000.0f);
+
+    // Find the oldest time to keep
+    std::deque<unsigned long>::iterator it = times.begin(),
+      end = times.end()-2; // We need at least two times
+    while(it != end)
+    {
+      if (now - *it > discardThreshold)
+        ++it;
+      else
+        break;
+    }
+
+    // Remove old times
+    times.erase(times.begin(), it);
+
+    return (float)(times.back() - times.front()) / ((times.size()-1) * 1000);
   }
 }

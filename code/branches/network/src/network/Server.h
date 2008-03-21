@@ -15,7 +15,7 @@
 
 #include <string>
 
-#include "orxonox/objects/Tickable.h"
+#include "core/Tickable.h"
 
 #include "PacketManager.h"
 #include "NetworkPrereqs.h"

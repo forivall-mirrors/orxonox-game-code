@@ -11,7 +11,7 @@
 #include "network/Synchronisable.h"
 //#include "util/tinyxml/tinyxml.h"
 #include "core/BaseObject.h"
-#include "Tickable.h"
+#include "core/Tickable.h"
 #include "../tools/Mesh.h"
 
 namespace orxonox

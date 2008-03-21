@@ -286,6 +286,14 @@
 			<File
 				RelativePath="..\..\src\orxonox\InputManager.cc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\Main.cc"
@@ -626,12 +634,12 @@
 					RelativePath="..\..\src\orxonox\tools\Mesh.cc"
 					>
 				</File>
-			</Filter>
-			<Filter
-				Name="loader"
-				>
 				<File
-					RelativePath="..\..\src\loader\LevelLoader.cc"
+					RelativePath="..\..\src\orxonox\tools\OrxListener.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\tools\Timer.cc"
 					>
 				</File>
 			</Filter>
@@ -737,10 +745,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Tickable.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\WorldEntity.h"
 					>
 				</File>
@@ -797,19 +801,11 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\tools\OrxListener.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\tools\Timer.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="loader"
-				>
-				<File
-					RelativePath="..\..\src\loader\LevelLoader.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\loader\LoaderPrereqs.h"
 					>
 				</File>
 			</Filter>

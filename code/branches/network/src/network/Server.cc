@@ -12,6 +12,7 @@
 
 #include <iostream>
 
+#include "util/Sleep.h"
 #include "ConnectionManager.h"
 #include "PacketTypes.h"
 #include "GameStateManager.h"
@@ -111,6 +112,7 @@ namespace network
   void Server::tick(float time) {
     processQueue();
     updateGamestate();
+
     sleep(1); // TODO remove
     return;
   }

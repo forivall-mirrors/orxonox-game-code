@@ -72,10 +72,13 @@
 
 //#include "audio/AudioManager.h"
 
-//#include "core/CoreIncludes.h"
+#include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
 //#include "core/ArgReader.h"
 #include "core/Error.h"
+#include "core/Loader.h"
+#include "core/XMLPort.h"
+#include "core/Tickable.h"
 
 #include "network/Synchronisable.h"
 //#include "network/Server.h"
@@ -86,6 +89,13 @@
 #include "util/Sleep.h"
 #include "util/String2Number.h"
 #include "util/Tokenizer.h"
+#include "util/Multitype.h"
+#include "util/MultiTypeMath.h"
+#include "util/MultiTypePrimitive.h"
+#include "util/MultiTypeString.h"
+#include "util/substring.h"
+#include "util/XMLIncludes.h"
+
 #include "util/tinyxml/ticpp.h"
 #include "util/tinyxml/tinyxml.h"
 
@@ -105,7 +115,6 @@
 //#include "objects/Projectile.h"
 //#include "objects/Skybox.h"
 //#include "objects/SpaceShipSteeringObject.h"
-#include "objects/Tickable.h"
 #include "objects/WorldEntity.h"
 //#include "particle/ParticleInterface.h"
 //#include "tools/BillboardSet.h"
