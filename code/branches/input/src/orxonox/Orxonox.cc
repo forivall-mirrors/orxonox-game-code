@@ -57,8 +57,7 @@
 //misc
 #include "util/Sleep.h"
 
-// loader and audio
-//#include "loader/LevelLoader.h"
+// audio
 #include "audio/AudioManager.h"
 
 // network
@@ -69,7 +68,7 @@
 // objects
 #include "objects/Tickable.h"
 #include "tools/Timer.h"
-#include "objects/NPC.h"
+#include "tools/OrxListener.h"
 #include "core/ArgReader.h"
 #include "core/Factory.h"
 #include "core/Debug.h"
@@ -82,48 +81,7 @@
 
 namespace orxonox
 {
-   // put this in a seperate Class or solve the problem in another fashion
-  class OrxListener : public Ogre::FrameListener
-  {
-    public:
-      OrxListener(OIS::Keyboard *keyboard, audio::AudioManager*  auMan, gameMode mode)
-      {
-        mKeyboard = keyboard;
-        mode_=mode;
-        auMan_ = auMan;
-      }
-
-      bool frameStarted(const Ogre::FrameEvent& evt)
-      {
-        auMan_->update();
-        updateAI();
-
-        if(mode_ == PRESENTATION)
-          server_g->tick(evt.timeSinceLastFrame);
-        else if(mode_ == CLIENT)
-          client_g->tick(evt.timeSinceLastFrame);
-
-        usleep(10);
-
-        mKeyboard->capture();
-        return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
-      }
-
-      void updateAI()
-      {
-        for(Iterator<NPC> it = ObjectList<NPC>::start(); it; ++it)
-        {
-          it->update();
-        }
-      }
-
-    private:
-      gameMode mode_;
-      OIS::Keyboard *mKeyboard;
-      audio::AudioManager*  auMan_;
-  };
-
-  // init static singleton reference of Orxonox
+  /// init static singleton reference of Orxonox
   Orxonox* Orxonox::singletonRef_ = NULL;
 
   /**
@@ -133,7 +91,6 @@ namespace orxonox
   {
     this->ogre_ = new GraphicsEngine();
     this->dataPath_ = "";
-//    this->loader_ = 0;
     this->auMan_ = 0;
     this->singletonRef_ = 0;
     this->keyboard_ = 0;
@@ -142,7 +99,7 @@ namespace orxonox
     this->frameListener_ = 0;
     this->root_ = 0;
     // turn frame smoothing on by setting a value different from 0
-    this->frameSmoothingTime_ = 0.1f;
+    this->frameSmoothingTime_ = 0.0f;
   }
 
   /**
@@ -156,7 +113,7 @@ namespace orxonox
   /**
    * initialization of Orxonox object
    * @param argc argument counter
-   * @param argv list of arguments
+   * @param argv list of argumenst
    * @param path path to config (in home dir or something)
    */
   void Orxonox::init(int argc, char **argv, std::string path)
@@ -173,7 +130,6 @@ namespace orxonox
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", this->dataPath_, false);
     ar.checkArgument("ip", serverIp_, false);
-    //mode = "presentation";
     if(ar.errorHandling()) die();
     if(mode == std::string("server"))
     {
@@ -450,15 +406,7 @@ namespace orxonox
   // FIXME we actually want to do this differently...
   void Orxonox::createFrameListener()
   {
-    //TickFrameListener* TickFL = new TickFrameListener();
-    //ogre_->getRoot()->addFrameListener(TickFL);
-
-    //TimerFrameListener* TimerFL = new TimerFrameListener();
-    //ogre_->getRoot()->addFrameListener(TimerFL);
-
-    //if(mode_!=CLIENT) // FIXME just a hack ------- remove this in future
-      frameListener_ = new OrxListener(keyboard_, auMan_, mode_);
-    ogre_->getRoot()->addFrameListener(frameListener_);
+    frameListener_ = new OrxListener(auMan_, mode_);
   }
 
   void Orxonox::startRenderLoop()
@@ -476,7 +424,6 @@ namespace orxonox
       ms.width = width;
       ms.height = height;
     }
-    //ogre_->getRoot()->startRendering();
     mainLoop();
   }
 
@@ -508,7 +455,7 @@ namespace orxonox
 
 	  while (true)
 	  {
-		  //Pump messages in all registered RenderWindows
+		  // Pump messages in all registered RenderWindows
       Ogre::WindowEventUtilities::messagePump();
 
       // get current time
@@ -531,9 +478,6 @@ namespace orxonox
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
         (it++)->tick((float)evt.timeSinceLastFrame);
 
-      // Update the timers
-      updateTimers((float)evt.timeSinceLastFrame);
-
       if (mode_ != SERVER)
       {
         // only render in non-server mode
@@ -553,40 +497,6 @@ namespace orxonox
 	  }
   }
 
-  /**
-    Timer updater function.
-    Updates all timers with the current dt.
-    Timers have been tested since their displacement.
-    @param dt The delta time
-  */
-  void Orxonox::updateTimers(float dt)
-  {
-    // Iterate through all Timers
-    for (Iterator<TimerBase> it = ObjectList<TimerBase>::start(); it; )
-    {
-      if (it->isActive())
-      {
-        // If active: Decrease the timer by the duration of the last frame
-        it->time_ -= dt;
-
-        if (it->time_ <= 0)
-        {
-          // It's time to call the function
-          if (it->bLoop_)
-            it->time_ += it->interval_; // Q: Why '+=' and not '='? A: Think about it. It's more accurate like that. Seriously.
-          else
-            it->stopTimer(); // Stop the timer if we don't want to loop
-
-          (it++)->run();
-        }
-        else
-        ++it;
-      }
-      else
-      ++it;
-    }
-
-  }
   /**
     Method for calculating the average time between recently fired events.
     Code directly taken from OgreRoot.cc

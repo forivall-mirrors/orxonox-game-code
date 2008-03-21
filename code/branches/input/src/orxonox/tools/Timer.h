@@ -57,17 +57,14 @@
 #ifndef _Timer_H__
 #define _Timer_H__
 
-#include <OgreFrameListener.h>
 #include "../OrxonoxPrereqs.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
     //! TimerBase is the parent of the Timer class.
-    class _OrxonoxExport TimerBase : public OrxonoxClass
+    class _OrxonoxExport TimerBase : public Tickable
     {
-        //friend class TimerFrameListener;
-        friend class Orxonox;
-
         public:
             TimerBase();
 
@@ -83,6 +80,8 @@ namespace orxonox
             inline void unpauseTimer() { this->bActive_ = true; }
             /** @brief Returns true if the Timer is active (= not stoped, not paused). @return True = Time is active */
             inline bool isActive() const { return this->bActive_; }
+
+            void tick(float dt);
 
         protected:
             float interval_;    //!< The time-interval in seconds
@@ -145,43 +144,6 @@ namespace orxonox
             T* object_;
     };
 
-#if 0
-    //! The TimerFrameListener manages all Timers in the game.
-    class TimerFrameListener : public Ogre::FrameListener
-    {
-        private:
-            /** @brief Gets called before a frame gets rendered. */
-            bool frameStarted(const Ogre::FrameEvent &evt)
-            {
-                // Iterate through all Timers
-                for (Iterator<TimerBase> it = ObjectList<TimerBase>::start(); it; )
-                {
-                    if (it->isActive())
-                    {
-                        // If active: Decrease the timer by the duration of the last frame
-                        it->time_ -= evt.timeSinceLastFrame;
-
-                        if (it->time_ <= 0)
-                        {
-                            // It's time to call the function
-                            if (it->bLoop_)
-                                it->time_ += it->interval_; // Q: Why '+=' and not '='? A: Think about it. It's more accurate like that. Seriously.
-                            else
-                                it->stopTimer(); // Stop the timer if we don't want to loop
-
-                            (it++)->run();
-                        }
-                        else
-                            ++it;
-                    }
-                    else
-                        ++it;
-                }
-
-                return FrameListener::frameStarted(evt);
-            }
-    };
-#endif
 }
 
 #endif /* _Timer_H__ */

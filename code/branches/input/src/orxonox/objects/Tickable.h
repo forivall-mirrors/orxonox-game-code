@@ -40,8 +40,6 @@
 #ifndef _Tickable_H__
 #define _Tickable_H__
 
-#include <OgreFrameListener.h>
-
 #include "../OrxonoxPrereqs.h"
 #include "core/OrxonoxClass.h"
 
@@ -63,22 +61,6 @@ namespace orxonox
             Tickable();
     };
 
-#if 0
-    //! The TickFrameListener calls the tick(dt) function of all Tickables every frame.
-    class _OrxonoxExport TickFrameListener : public Ogre::FrameListener
-    {
-        private:
-            /** @brief Gets called before a frame gets rendered. */
-            bool frameStarted(const Ogre::FrameEvent &evt)
-            {
-                // Iterate through all Tickables and call their tick(dt) function
-                for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
-                    (it++)->tick(evt.timeSinceLastFrame);
-
-                return FrameListener::frameStarted(evt);
-            }
-    };
-#endif
 }
 
 #endif /* _Tickable_H__ */
