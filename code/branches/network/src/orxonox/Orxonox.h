@@ -14,7 +14,6 @@
 #include <OIS/OISPrereqs.h>
 
 #include "OrxonoxPrereqs.h"
-//#include "loader/LoaderPrereqs.h"
 #include "audio/AudioPrereqs.h"
 
 #include "GraphicsEngine.h"

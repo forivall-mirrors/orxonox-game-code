@@ -25,8 +25,6 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
-
 #include "core/CoreIncludes.h"
 #include "Tickable.h"
 

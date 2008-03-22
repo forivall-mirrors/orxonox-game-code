@@ -15,9 +15,9 @@
 
 #include <string>
 
-#include "core/Tickable.h"
-
 #include "NetworkPrereqs.h"
+
+#include "core/Tickable.h"
 #include "ClientConnection.h"
 #include "PacketManager.h"
 #include "GameStateClient.h"

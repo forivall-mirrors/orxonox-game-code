@@ -284,6 +284,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\InputHandler.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\InputManager.cc"
 				>
 				<FileConfiguration
@@ -651,6 +655,10 @@
 			>
 			<File
 				RelativePath="..\..\src\orxonox\GraphicsEngine.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\InputHandler.h"
 				>
 			</File>
 			<File

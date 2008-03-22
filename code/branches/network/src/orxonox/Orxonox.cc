@@ -63,7 +63,6 @@
 // network
 #include "network/Server.h"
 #include "network/Client.h"
-#include "network/NetworkPrereqs.h"
 network::Client *client_g;
 network::Server *server_g;
 
@@ -78,7 +77,6 @@ network::Server *server_g;
 #include "core/Tickable.h"
 #include "hud/HUD.h"
 #include "objects/weapon/BulletManager.h"
-#include "GraphicsEngine.h"
 
 #include "Orxonox.h"
 
@@ -433,7 +431,7 @@ namespace orxonox
 
   /**
     Main loop of the orxonox game.
-    This is a new solution, using the ogre engine instead of beeing used by it.
+    This is a new solution, using the ogre engine instead of being used by it.
     An alternative solution would be to simply use the timer of the Root object,
     but that implies using Ogre in any case. There would be no way to test
     our code without the help of the root object.

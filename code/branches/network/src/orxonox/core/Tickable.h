@@ -40,7 +40,7 @@
 #ifndef _Tickable_H__
 #define _Tickable_H__
 
-#include "../OrxonoxPrereqs.h"
+#include "CorePrereqs.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox

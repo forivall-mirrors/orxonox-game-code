@@ -15,10 +15,10 @@
 
 #include <string>
 
-#include "core/Tickable.h"
-
-#include "PacketManager.h"
 #include "NetworkPrereqs.h"
+
+#include "core/Tickable.h"
+#include "PacketManager.h"
 
 
 
