@@ -83,7 +83,7 @@ namespace audio
 		}
 	}
 
-	void AudioManager::update()
+	void AudioManager::tick(float dt)
 	{
 		if (bgSounds.size() > 0)
 		{

@@ -41,8 +41,8 @@ namespace orxonox {
       inline Ogre::SceneManager* getSceneManager()         { return ogre_->getSceneManager(); };
       inline GraphicsEngine* getOgrePointer()              { return ogre_; };
       inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
-      inline OIS::Keyboard* getKeyboard()                  { return this->keyboard_; }
-      inline OIS::Mouse* getMouse()                        { return this->mouse_; }
+      //inline OIS::Keyboard* getKeyboard()                  { return this->keyboard_; }
+      //inline OIS::Mouse* getMouse()                        { return this->mouse_; }
       inline BulletManager* getBulletMgr()                 { return this->bulletMgr_; }
 
     private:
@@ -63,9 +63,7 @@ namespace orxonox {
       void createScene(void);
       void setupScene();
       void setupInputSystem();
-      void createFrameListener();
       void startRenderLoop();
-      void mainLoop();
       void updateTimers(float);
       float calculateEventTime(unsigned long, std::deque<unsigned long>&);
 
@@ -76,9 +74,10 @@ namespace orxonox {
       audio::AudioManager*  auMan_;         //!< audio manager
       BulletManager*        bulletMgr_;     //!< Keeps track of the thrown bullets
       static Orxonox*       singletonRef_;
-      OIS::Keyboard*        keyboard_;
-      OIS::Mouse*           mouse_;
-      OIS::InputManager*    inputManager_;
+      InputHandler*         inputHandler_;
+      //OIS::Keyboard*        keyboard_;
+      //OIS::Mouse*           mouse_;
+      //OIS::InputManager*    inputManager_;
       OrxListener*          frameListener_;
       Ogre::Root*           root_;
       // TODO: make this a config-value by creating a config class for orxonox

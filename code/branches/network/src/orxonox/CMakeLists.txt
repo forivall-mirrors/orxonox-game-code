@@ -1,9 +1,9 @@
 SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
+  InputHandler.cc
   Main.cc
   Orxonox.cc
-  objects/Tickable.cc
-  SpaceshipSteering.cc
+#  SpaceshipSteering.cc
   hud/HUD.cc
   particle/ParticleInterface.cc
   tools/BillboardSet.cc

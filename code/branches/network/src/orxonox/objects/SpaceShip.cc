@@ -38,10 +38,11 @@
 #include "util/tinyxml/tinyxml.h"
 #include "util/String2Number.h"
 #include "util/Math.h"
-#include "../core/CoreIncludes.h"
-#include "../core/Debug.h"
-#include "../Orxonox.h"
-#include "../particle/ParticleInterface.h"
+#include "core/CoreIncludes.h"
+#include "core/Debug.h"
+#include "Orxonox.h"
+#include "InputHandler.h"
+#include "particle/ParticleInterface.h"
 #include "Projectile.h"
 #include "core/XMLPort.h"
 
@@ -399,9 +400,9 @@ namespace orxonox
     {
         if (!this->setMouseEventCallback_)
         {
-            if (Orxonox::getSingleton()->getMouse())
+            if (InputHandler::getSingleton()->getMouse())
             {
-                Orxonox::getSingleton()->getMouse()->setEventCallback(this);
+                InputHandler::getSingleton()->getMouse()->setEventCallback(this);
                 this->setMouseEventCallback_ = true;
             }
         }
@@ -426,8 +427,8 @@ namespace orxonox
             this->timeToReload_ = this->reloadTime_;
         }
 
-        OIS::Keyboard* mKeyboard = Orxonox::getSingleton()->getKeyboard();
-        OIS::Mouse* mMouse = Orxonox::getSingleton()->getMouse();
+        OIS::Keyboard* mKeyboard = InputHandler::getSingleton()->getKeyboard();
+        OIS::Mouse* mMouse = InputHandler::getSingleton()->getMouse();
 
         mKeyboard->capture();
         mMouse->capture();

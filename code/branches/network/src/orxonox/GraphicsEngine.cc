@@ -34,6 +34,7 @@
 #include <OgreRoot.h>
 #include <OgreConfigFile.h>
 #include <OgreTextureManager.h>
+#include <OgreRenderWindow.h>
 
 #include "core/Debug.h"
 #include "GraphicsEngine.h"
@@ -48,7 +49,9 @@ namespace orxonox {
     // set to standard values
     this->configPath_ = "";
     this->dataPath_ = "";
-    scene_ = NULL;
+    this->root_ = 0;
+    this->scene_ = 0;
+    this->renderWindow_ = 0;
   }
 
 
@@ -97,6 +100,7 @@ namespace orxonox {
   void GraphicsEngine::startRender()
   {
     root_->initialise(true, "OrxonoxV2");
+    this->renderWindow_ = root_->getAutoCreatedWindow();
     TextureManager::getSingleton().setDefaultNumMipmaps(5);
     ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
   }
@@ -130,5 +134,50 @@ namespace orxonox {
     }
   }
 
+  /**
+    Returns the window handle of the render window.
+    At least the InputHandler uses this to create the OIS::InputManager
+    @return The window handle of the render window
+  */
+  size_t GraphicsEngine::getWindowHandle()
+  {
+    if (this->renderWindow_)
+    {
+      Ogre::RenderWindow *renderWindow = this->root_->getAutoCreatedWindow();
+      size_t windowHnd = 0;
+      renderWindow->getCustomAttribute("WINDOW", &windowHnd);
+      return windowHnd;
+    }
+    else
+      return 0;
+  }
+
+  /**
+    Get the width of the current render window
+    @return The width of the current render window
+  */
+  int GraphicsEngine::getWindowWidth() const
+  {
+    if (this->renderWindow_)
+    {
+      return this->renderWindow_->getWidth();
+    }
+    else
+      return 0;
+  }
+
+  /**
+    Get the height of the current render window
+    @return The height of the current render window
+  */
+  int GraphicsEngine::getWindowHeight() const
+  {
+    if (this->renderWindow_)
+    {
+      return this->renderWindow_->getHeight();
+    }
+    else
+      return 0;
+  }
 
 }

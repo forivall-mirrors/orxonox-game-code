@@ -66,10 +66,8 @@
 network::Client *client_g;
 network::Server *server_g;
 
-
 // objects
 #include "tools/Timer.h"
-#include "tools/OrxListener.h"
 #include "core/ArgReader.h"
 #include "core/Debug.h"
 #include "core/Factory.h"
@@ -77,6 +75,8 @@ network::Server *server_g;
 #include "core/Tickable.h"
 #include "hud/HUD.h"
 #include "objects/weapon/BulletManager.h"
+
+#include "InputHandler.h"
 
 #include "Orxonox.h"
 
@@ -94,9 +94,10 @@ namespace orxonox
     this->dataPath_ = "";
     this->auMan_ = 0;
     this->singletonRef_ = 0;
-    this->keyboard_ = 0;
-    this->mouse_ = 0;
-    this->inputManager_ = 0;
+    //this->keyboard_ = 0;
+    //this->mouse_ = 0;
+    //this->inputManager_ = 0;
+    this->inputHandler_ = 0;
     this->frameListener_ = 0;
     this->root_ = 0;
     // turn frame smoothing on by setting a value different from 0
@@ -186,8 +187,6 @@ namespace orxonox
     
     //setupInputSystem();
     
-    createFrameListener();
-    
     startRenderLoop();
   }
   
@@ -200,7 +199,6 @@ namespace orxonox
     setupScene();
     setupInputSystem();
     
-    createFrameListener();
     server_g->open();
     
     startRenderLoop();
@@ -214,8 +212,6 @@ namespace orxonox
     createScene();
     setupScene();
     setupInputSystem();
-    
-    createFrameListener();
     
     startRenderLoop();
   }
@@ -379,7 +375,11 @@ namespace orxonox
 
   void Orxonox::setupInputSystem()
   {
-    size_t windowHnd = 0;
+    inputHandler_ = InputHandler::getSingleton();
+    inputHandler_->initialise(ogre_->getWindowHandle(),
+          ogre_->getWindowWidth(), ogre_->getWindowHeight());
+
+    /*size_t windowHnd = 0;
     std::ostringstream windowHndStr;
     OIS::ParamList pl;
 
@@ -402,31 +402,7 @@ namespace orxonox
     catch (const OIS::Exception &e)
     {
       throw new Ogre::Exception(42, e.eText, "OrxApplication::setupInputSystem");
-    }
-  }
-
-  // FIXME we actually want to do this differently...
-  void Orxonox::createFrameListener()
-  {
-    frameListener_ = new OrxListener(keyboard_, auMan_, mode_);
-  }
-
-  void Orxonox::startRenderLoop()
-  {
-    // FIXME
-    // this is a hack!!!
-    // the call to reset the mouse clipping size should probably be somewhere
-    // else, however this works for the moment.
-    unsigned int width, height, depth;
-    int left, top;
-    ogre_->getRoot()->getAutoCreatedWindow()->getMetrics(width, height, depth, left, top);
-
-    if(mode_!=CLIENT){
-      const OIS::MouseState &ms = mouse_->getMouseState();
-      ms.width = width;
-      ms.height = height;
-    }
-    mainLoop();
+    }*/
   }
 
   /**
@@ -443,7 +419,7 @@ namespace orxonox
     ogre. If turned on (see orxonox constructor), it will calculate the dt_n by
     means of the recent most dt_n-1, dt_n-2, etc.
   */
-  void Orxonox::mainLoop()
+  void Orxonox::startRenderLoop()
   {
     // use the ogre timer class to measure time.
     Ogre::Timer *timer = new Ogre::Timer();

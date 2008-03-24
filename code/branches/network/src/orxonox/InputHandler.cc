@@ -21,7 +21,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Some guy writing the example code from Ogre
  *
  */
 
@@ -33,30 +33,66 @@
 
 #include "OrxonoxStableHeaders.h"
 
-#include <OgreRenderWindow.h>
-
+#include "Orxonox.h"
 #include "InputHandler.h"
 
 namespace orxonox
 {
   //using namespace OIS;
 
+  /**
+    @brief Constructor only resets the pointer values to 0.
+  */
   InputHandler::InputHandler()
   {
-    RegisterObject(InputHandler);
+    /*if (orxonox::Identifier::isCreatingHierarchy() && !this->getParents())
+        this->createParents();
+    this->setIdentifier(orxonox::ClassManager<InputHandler>::getIdentifier()->registerClass(this->getParents(), "InputHandler", true));
+    if (orxonox::Identifier::isCreatingHierarchy() && this->getParents())
+        this->getParents()->insert(this->getParents()->end(), this->getIdentifier());
+    orxonox::ClassManager<InputHandler>::getIdentifier()->addObject(this);*/
+
+    //RegisterObject(InputHandler);
+
+    this->mouse_       = 0;
+    this->keyboard_    = 0;
+    this->inputSystem_ = 0;
+
+    //this->setConfigValues();
   }
 
-  void InputHandler::initialise(Ogre::RenderWindow *renderWindow)
+  void InputHandler::setConfigValues()
+  {
+    //SetConfigValue(codeFire_, 4).description("test value");
+
+    ConfigValueContainer *containercodeFire_ = new ConfigValueContainer("asdfblah", "codeFire_", 4);
+    containercodeFire_->getValue(&codeFire_).description("test");
+    //containercodeFire_->
+  }
+
+  /**
+    @brief The one instance of the InputHandler is stored in this function.
+    @return The pointer to the only instance of the InputHandler
+  */
+  InputHandler* InputHandler::getSingleton()
+  {
+    static InputHandler theOnlyInstance;
+    return &theOnlyInstance;
+  }
+
+  /**
+    @brief Creates the OIS::InputMananger, the keyboard and the mouse
+    @param windowHnd The window handle of the render window
+    @param windowWidth The width of the render window
+    @param windowHeight The height of the render window
+  */
+  void InputHandler::initialise(size_t windowHnd, int windowWidth, int windowHeight)
   {
     if (!inputSystem_)
     {
       // Setup basic variables
       OIS::ParamList paramList;
-      size_t windowHnd = 0;
       std::ostringstream windowHndStr;
-
-      // Get window handle
-      renderWindow->getCustomAttribute("WINDOW", &windowHnd);
 
       // Fill parameter list
       windowHndStr << (unsigned int)windowHnd;
@@ -66,35 +102,28 @@ namespace orxonox
       inputSystem_ = OIS::InputManager::createInputSystem(paramList);
 
       // If possible create a buffered keyboard
-      // (note: if below line doesn't compile, try:  if (inputSystem_->getNumberOfDevices(OIS::OISKeyboard) > 0) {
       if (inputSystem_->numKeyboards() > 0)
       {
-        //if (inputSystem_->getNumberOfDevices(OIS::OISKeyboard) > 0)
-        //{
         keyboard_ = static_cast<OIS::Keyboard*>(inputSystem_->createInputObject(OIS::OISKeyboard, true));
         keyboard_->setEventCallback(this);
       }
 
       // If possible create a buffered mouse
-      // (note: if below line doesn't compile, try:  if (inputSystem_->getNumberOfDevices(OIS::OISMouse) > 0) {
       if (inputSystem_->numMice() > 0 )
       {
-        //if (inputSystem_->getNumberOfDevices(OIS::OISMouse) > 0)
-        //{
         mouse_ = static_cast<OIS::Mouse*>(inputSystem_->createInputObject(OIS::OISMouse, true));
         mouse_->setEventCallback(this);
 
-        // Get window size
-        unsigned int width, height, depth;
-        int left, top;
-        renderWindow->getMetrics(width, height, depth, left, top);
-
         // Set mouse region
-        this->setWindowExtents(width, height);
+        this->setWindowExtents(windowWidth, windowHeight);
       }
     }
   }
 
+  /**
+    @brief Updates the InputHandler
+    @param dt Delta time
+  */
   void InputHandler::tick(float dt)
   {
     // capture all the input. That calls the event handlers.
@@ -109,6 +138,12 @@ namespace orxonox
     }
   }
 
+  /**
+    @brief Adjusts the mouse window metrics.
+    This method has to be called every time the size of the window changes.
+    @param width The new width of the render window
+    @param height the new height of the render window
+  */
   void InputHandler::setWindowExtents(int width, int height)
   {
     // Set mouse region (if window resizes, we should alter this to reflect as well)
@@ -117,26 +152,50 @@ namespace orxonox
     mouseState.height = height;
   }
 
+  /**
+    @brief Event handler for the keyPressed Event.
+    @param e Event information
+  */
   bool InputHandler::keyPressed(const OIS::KeyEvent &e)
   {
+    if (e.key == OIS::KC_ESCAPE)
+      Orxonox::getSingleton()->abortRequest();
     return true;
   }
 
+  /**
+    @brief Event handler for the keyReleased Event.
+    @param e Event information
+  */
   bool InputHandler::keyReleased(const OIS::KeyEvent &e)
   {
     return true;
   }
 
+  /**
+    @brief Event handler for the mouseMoved Event.
+    @param e Event information
+  */
   bool InputHandler::mouseMoved(const OIS::MouseEvent &e)
   {
     return true;
   }
 
+  /**
+    @brief Event handler for the mousePressed Event.
+    @param e Event information
+    @param id The ID of the mouse button
+  */
   bool InputHandler::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
     return true;
   }
 
+  /**
+    @brief Event handler for the mouseReleased Event.
+    @param e Event information
+    @param id The ID of the mouse button
+  */
   bool InputHandler::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
     return true;

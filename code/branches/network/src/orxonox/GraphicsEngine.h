@@ -32,12 +32,18 @@ namespace orxonox {
       Ogre::SceneManager* getSceneManager();
       void startRender();
 
+      // several window properties
+      size_t getWindowHandle();
+      int getWindowWidth() const;
+      int getWindowHeight() const;
+
       virtual ~GraphicsEngine();
     private:
       Ogre::Root*         root_;        //!< Ogre's root
       std::string         configPath_;  //!< path to config file
       std::string         dataPath_;    //!< path to data file
       Ogre::SceneManager* scene_;       //!< scene manager of the game
+      Ogre::RenderWindow* renderWindow_;//!< the current render window
 
   };
 

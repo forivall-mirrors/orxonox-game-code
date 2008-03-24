@@ -639,10 +639,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\tools\OrxListener.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\tools\Timer.cc"
 					>
 				</File>
@@ -806,10 +802,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\Mesh.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\tools\OrxListener.h"
 					>
 				</File>
 				<File
