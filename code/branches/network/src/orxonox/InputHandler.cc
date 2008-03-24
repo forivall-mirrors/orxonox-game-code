@@ -33,8 +33,6 @@
 
 #include "OrxonoxStableHeaders.h"
 
-#include <OIS/OIS.h>
-
 #include "core/CoreIncludes.h"
 #include "Orxonox.h"
 #include "InputHandler.h"

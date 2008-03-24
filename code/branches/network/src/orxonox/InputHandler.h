@@ -34,7 +34,7 @@
 #ifndef _InputHandler_H__
 #define _InputHandler_H__
 
-#include <OIS/OISPrereqs.h>
+#include <OIS/OIS.h>
 
 #include "OrxonoxPrereqs.h"
 //#include "core/OrxonoxClass.h"
