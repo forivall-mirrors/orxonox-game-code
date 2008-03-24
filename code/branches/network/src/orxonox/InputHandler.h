@@ -35,8 +35,6 @@
 #define _InputHandler_H__
 
 #include <OIS/OISPrereqs.h>
-#include <OIS/OISMouse.h>
-#include <OIS/OISKeyboard.h>
 
 #include "OrxonoxPrereqs.h"
 //#include "core/OrxonoxClass.h"
