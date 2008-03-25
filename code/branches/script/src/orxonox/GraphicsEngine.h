@@ -41,7 +41,7 @@ namespace orxonox {
       std::string         configPath_;  //!< path to config file
       std::string         dataPath_;    //!< path to data file
       Ogre::SceneManager* scene_;       //!< scene manager of the game
-      bool               bOverwritePath_; //!< overwrites path
+      //bool               bOverwritePath_; //!< overwrites path
 
   };
 
