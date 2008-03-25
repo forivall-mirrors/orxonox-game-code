@@ -36,7 +36,6 @@
 //****** OGRE ******
 #include <OgreException.h>
 #include <OgreRoot.h>
-#include <OgreFrameListener.h>
 #include <OgreRenderWindow.h>
 #include <OgreTextureManager.h>
 #include <OgreResourceGroupManager.h>
@@ -372,37 +371,15 @@ namespace orxonox
 */
   }
 
-
+  /**
+    @brief Calls the InputHandler which sets up the input devices.
+    The render window width and height are used to set up the mouse movement.
+  */
   void Orxonox::setupInputSystem()
   {
     inputHandler_ = InputHandler::getSingleton();
     inputHandler_->initialise(ogre_->getWindowHandle(),
           ogre_->getWindowWidth(), ogre_->getWindowHeight());
-
-    /*size_t windowHnd = 0;
-    std::ostringstream windowHndStr;
-    OIS::ParamList pl;
-
-    // fixes auto repeat problem
-    #if defined OIS_LINUX_PLATFORM
-      pl.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
-    #endif
-
-      Ogre::RenderWindow *win = ogre_->getRoot()->getAutoCreatedWindow();
-    win->getCustomAttribute("WINDOW", &windowHnd);
-    windowHndStr << windowHnd;
-    pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
-    inputManager_ = OIS::InputManager::createInputSystem(pl);
-
-    try
-    {
-      keyboard_ = static_cast<OIS::Keyboard*>(inputManager_->createInputObject(OIS::OISKeyboard, false));
-      mouse_ = static_cast<OIS::Mouse*>(inputManager_->createInputObject(OIS::OISMouse, true));
-    }
-    catch (const OIS::Exception &e)
-    {
-      throw new Ogre::Exception(42, e.eText, "OrxApplication::setupInputSystem");
-    }*/
   }
 
   /**
@@ -510,5 +487,11 @@ namespace orxonox
     times.erase(times.begin(), it);
 
     return (float)(times.back() - times.front()) / ((times.size()-1) * 1000);
+  }
+
+  void Orxonox::eventOccured(InputEvent &evt)
+  {
+    if (evt.id == 1)
+      this->abortRequest();
   }
 }

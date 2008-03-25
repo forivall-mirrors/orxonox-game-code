@@ -1,6 +1,7 @@
 SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   InputHandler.cc
+  InputEventListener.cc
   Main.cc
   Orxonox.cc
 #  SpaceshipSteering.cc

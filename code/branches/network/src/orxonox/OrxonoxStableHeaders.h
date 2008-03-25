@@ -45,27 +45,37 @@
 #  define WIN32_LEAN_AND_MEAN
 #endif
 //#include <Ogre.h>
-//#include <OgreBillboardSet.h>
-//#include <OgreCamera.h>
-//#include <OgreConfigFile.h>
+#include <OgreBillboardSet.h>
+#include <OgreCamera.h>
+#include <OgreColourValue.h>
+#include <OgreConfigFile.h>
 #include <OgreEntity.h>
 #include <OgreException.h>
-//#include <OgreFrameListener.h>
+#include <OgreFrameListener.h>
 #include <OgreLight.h>
-//#include <OgreOverlay.h>
-//#include <OgreOverlayElement.h>
-//#include <OgreOverlayManager.h>
+#include <OgreMath.h>
+#include <OgreMatrix3.h>
+#include <OgreOverlay.h>
+#include <OgreOverlayElement.h>
+#include <OgreOverlayManager.h>
 #include <OgreParticleEmitter.h>
 #include <OgreParticleSystem.h>
 #include <OgrePlatform.h>
 #include <OgrePrerequisites.h>
-//#include <OgreRenderWindow.h>
-//#include <OgreRoot.h>
+#include <OgreQuaternion.h>
+#include <OgreResourceGroupManager.h>
+#include <OgreRenderWindow.h>
+#include <OgreRoot.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 #include <OgreStringConverter.h>
-//#include <OgreTextureManager.h>
-//#include <OgreViewport.h>
+#include <OgreTextureManager.h>
+#include <OgreTimer.h>
+#include <OgreVector2.h>
+#include <OgreVector3.h>
+#include <OgreVector3.h>
+#include <OgreViewport.h>
+#include <OgreWindowEventUtilities.h>
 
 #include <OIS/OIS.h>
 

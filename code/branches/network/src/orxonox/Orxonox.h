@@ -17,6 +17,7 @@
 #include "audio/AudioPrereqs.h"
 
 #include "GraphicsEngine.h"
+#include "InputEventListener.h"
 
 
 // TODO: Orxonox should maybe derive from BaseObject
@@ -29,7 +30,7 @@ namespace orxonox {
     STANDALONE
   };
 
-  class _OrxonoxExport Orxonox
+  class _OrxonoxExport Orxonox : public InputEventListener
   {
     public:
       void init(int argc, char **argv, std::string path);
@@ -66,6 +67,8 @@ namespace orxonox {
       void startRenderLoop();
       void updateTimers(float);
       float calculateEventTime(unsigned long, std::deque<unsigned long>&);
+
+      void eventOccured(InputEvent &evt);
 
     private:
       GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3

@@ -35,54 +35,35 @@
 
 #include "core/CoreIncludes.h"
 #include "Orxonox.h"
+#include "InputEventListener.h"
 #include "InputHandler.h"
 
 namespace orxonox
 {
-  //using namespace OIS;
-
   /**
     @brief Constructor only resets the pointer values to 0.
   */
   InputHandler::InputHandler()
   {
-    /*if (orxonox::Identifier::isCreatingHierarchy() && !this->getParents())
-        this->createParents();
-    this->setIdentifier(orxonox::ClassManager<InputHandler>::getIdentifier()->registerClass(this->getParents(), "InputHandler", true));
-    if (orxonox::Identifier::isCreatingHierarchy() && this->getParents())
-        this->getParents()->insert(this->getParents()->end(), this->getIdentifier());
-    orxonox::ClassManager<InputHandler>::getIdentifier()->addObject(this);*/
-
     //RegisterObject(InputHandler);
-
     this->mouse_       = 0;
     this->keyboard_    = 0;
     this->inputSystem_ = 0;
-
-    //this->setConfigValues();
-  }
-
-  void InputHandler::setConfigValues()
-  {
-    //SetConfigValue(codeFire_, 4).description("test value");
-
-    ConfigValueContainer *containercodeFire_ = new ConfigValueContainer("asdfblah", "codeFire_", 4);
-    containercodeFire_->getValue(&codeFire_).description("test");
-    //containercodeFire_->
   }
 
   /**
     @brief The one instance of the InputHandler is stored in this function.
     @return The pointer to the only instance of the InputHandler
   */
-  InputHandler* InputHandler::getSingleton()
+  InputHandler *InputHandler::getSingleton()
   {
     static InputHandler theOnlyInstance;
     return &theOnlyInstance;
   }
 
   /**
-    @brief Creates the OIS::InputMananger, the keyboard and the mouse
+    @brief Creates the OIS::InputMananger, the keyboard and the mouse and
+           assigns the key bindings.
     @param windowHnd The window handle of the render window
     @param windowWidth The width of the render window
     @param windowHeight The height of the render window
@@ -119,6 +100,14 @@ namespace orxonox
         this->setWindowExtents(windowWidth, windowHeight);
       }
     }
+
+    // load the key bindings
+    InputEvent empty = {0, false, 0, 0, 0};
+    for (int i = 0; i < this->numberOfKeys_; i++)
+      this->bindingsKeyPressed_[i] = empty;
+
+    //assign 'abort' to the escape key
+    this->bindingsKeyPressed_[(int)OIS::KC_ESCAPE].id = 1;
   }
 
   /**
@@ -129,14 +118,10 @@ namespace orxonox
   {
     // capture all the input. That calls the event handlers.
     if (mouse_)
-    {
       mouse_->capture();
-    }
 
     if (keyboard_)
-    {
       keyboard_->capture();
-    }
   }
 
   /**
@@ -154,13 +139,27 @@ namespace orxonox
   }
 
   /**
+    @brief Calls all the objects from classes that derive from InputEventListener.
+    @param evt The input event that occured.
+  */
+  inline void InputHandler::callListeners(orxonox::InputEvent &evt)
+  {
+    for (Iterator<InputEventListener> it = ObjectList<InputEventListener>::start(); it; )
+    {
+      if (it->bActive_)
+        (it++)->eventOccured(evt);
+      else
+        it++;
+    }
+  }
+
+  /**
     @brief Event handler for the keyPressed Event.
     @param e Event information
   */
   bool InputHandler::keyPressed(const OIS::KeyEvent &e)
   {
-    if (e.key == OIS::KC_ESCAPE)
-      Orxonox::getSingleton()->abortRequest();
+    callListeners(this->bindingsKeyPressed_[(int)e.key]);
     return true;
   }
 
