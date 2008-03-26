@@ -128,13 +128,16 @@ namespace orxonox
   */
   void InputHandler::destroy()
   {
-    if (!this->inputSystem_)
-    {
-      this->inputSystem_->destroyInputObject(this->mouse_);
-      this->inputSystem_->destroyInputObject(this->keyboard_);
+    if (this->mouse_)
+      this->inputSystem_->destroyInputObject(mouse_);
+    if (this->keyboard_)
+      this->inputSystem_->destroyInputObject(keyboard_);
+    if (this->inputSystem_)
       OIS::InputManager::destroyInputSystem(this->inputSystem_);
-    }
 
+    this->mouse_         = 0;
+    this->keyboard_      = 0;
+    this->inputSystem_   = 0;
     this->uninitialized_ = true;
   }
 

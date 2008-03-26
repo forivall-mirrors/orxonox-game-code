@@ -45,6 +45,9 @@
 //#include <iostream>
 //#include <exception>
 #include <deque>
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 //***** ORXONOX ****
 //misc
@@ -96,13 +99,13 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // keep in mind: the order of deletion is very important!
-
     if (this->bulletMgr_)
       delete this->bulletMgr_;
     if (this->orxonoxHUD_)
       delete this->orxonoxHUD_;
     Loader::close();
-    this->inputHandler_->destroy();
+    // do not destroy the InputHandler since this is a singleton too
+    // and might have been deleted already (after return 0; in main())
     if (this->auMan_)
       delete this->auMan_;
     if (this->timer_)
