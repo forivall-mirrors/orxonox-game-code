@@ -60,8 +60,9 @@ namespace orxonox
   private:
     // don't mess with a Singleton
     InputHandler ();
-    InputHandler (const InputHandler&) { }
-    ~InputHandler() { }
+    InputHandler (const InputHandler&);
+    InputHandler& operator=(const InputHandler& instance);
+    ~InputHandler();
 
     void callListeners(InputEvent &evt);
 
@@ -75,6 +76,12 @@ namespace orxonox
     OIS::InputManager *inputSystem_;    //!< OIS input manager
     OIS::Keyboard     *keyboard_;       //!< OIS mouse
     OIS::Mouse        *mouse_;          //!< OIS keyboard
+
+    /**
+      @bref Tells whether initialise has been called successfully
+      Also true if destroy() has been called.
+    */
+    bool uninitialized_;
 
     //! denotes the maximum number of different keys there are in OIS.
     //! 256 should be ok since the highest number in the enum is 237.

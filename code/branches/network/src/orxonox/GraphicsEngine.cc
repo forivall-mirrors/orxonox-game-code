@@ -32,6 +32,7 @@
 #include "OrxonoxStableHeaders.h"
 
 #include <OgreRoot.h>
+#include <OgreException.h>
 #include <OgreConfigFile.h>
 #include <OgreTextureManager.h>
 #include <OgreRenderWindow.h>
@@ -60,6 +61,8 @@ namespace orxonox {
 
   GraphicsEngine::~GraphicsEngine()
   {
+    if (!this->root_)
+      delete this->root_;
   }
 
   void GraphicsEngine::setConfigValues()
@@ -77,7 +80,7 @@ namespace orxonox {
 #else
     root_ = new Root(NULL, configPath_ + "ogre.cfg", configPath_ + "Ogre.log");
 #endif*/
-#if defined(_DEBUG) && defined(WIN32)
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && defined(_DEBUG)
     std::string plugin_filename = "plugins_d.cfg";
 #else
     std::string plugin_filename = "plugins.cfg";
@@ -109,10 +112,9 @@ namespace orxonox {
     return true;
   }
 
-  void GraphicsEngine::startRender()
+  void GraphicsEngine::initialise()
   {
-    root_->initialise(true, "OrxonoxV2");
-    this->renderWindow_ = root_->getAutoCreatedWindow();
+    this->renderWindow_ = root_->initialise(true, "OrxonoxV2");
     TextureManager::getSingleton().setDefaultNumMipmaps(5);
     //TODO: Do NOT load all the groups, why are we doing that? And do we really do that? initialise != load...
     ResourceGroupManager::getSingleton().initialiseAllResourceGroups();

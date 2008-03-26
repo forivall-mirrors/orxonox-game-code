@@ -207,7 +207,7 @@ namespace orxonox
             cam->roll(Degree(-90));
 
             node->attachObject(cam);
-            Orxonox::getSingleton()->getOgrePointer()->getRoot()->getAutoCreatedWindow()->addViewport(cam);
+            Orxonox::getSingleton()->getOgrePointer()->getRenderWindow()->addViewport(cam);
     	}
     }
 

@@ -43,12 +43,19 @@ namespace orxonox
   /**
     @brief Constructor only resets the pointer values to 0.
   */
-  InputHandler::InputHandler()
+  InputHandler::InputHandler() :
+      mouse_(0), keyboard_(0), inputSystem_(0),
+      uninitialized_(true)
   {
     //RegisterObject(InputHandler);
-    this->mouse_       = 0;
-    this->keyboard_    = 0;
-    this->inputSystem_ = 0;
+  }
+
+  /**
+    @brief Destructor only called at the end of the program
+  */
+  InputHandler::~InputHandler()
+  {
+    this->destroy();
   }
 
   /**
@@ -70,7 +77,7 @@ namespace orxonox
   */
   void InputHandler::initialise(size_t windowHnd, int windowWidth, int windowHeight)
   {
-    if (!inputSystem_)
+    if (this->uninitialized_ || !this->inputSystem_)
     {
       // Setup basic variables
       OIS::ParamList paramList;
@@ -103,6 +110,8 @@ namespace orxonox
         // Set mouse region
         this->setWindowExtents(windowWidth, windowHeight);
       }
+
+      uninitialized_ = false;
     }
 
     // load the key bindings
@@ -119,11 +128,14 @@ namespace orxonox
   */
   void InputHandler::destroy()
   {
-    this->inputSystem_->destroyInputObject(this->mouse_);
-    this->inputSystem_->destroyInputObject(this->keyboard_);
-    OIS::InputManager::destroyInputSystem(this->inputSystem_);
+    if (!this->inputSystem_)
+    {
+      this->inputSystem_->destroyInputObject(this->mouse_);
+      this->inputSystem_->destroyInputObject(this->keyboard_);
+      OIS::InputManager::destroyInputSystem(this->inputSystem_);
+    }
 
-    //TODO: If the InputHandler has been destroyed, how does it know?
+    this->uninitialized_ = true;
   }
 
   /**

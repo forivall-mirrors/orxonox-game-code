@@ -41,7 +41,7 @@ namespace audio
 
 	AudioManager::~AudioManager()
 	{
-		for (unsigned int i=0;i<=bgSounds.size();i++)
+		for (unsigned int i=0;i<bgSounds.size();i++)
 		{
 			bgSounds[i].release();
 		}

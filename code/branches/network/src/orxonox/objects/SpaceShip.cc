@@ -285,7 +285,7 @@ namespace orxonox
         cam->roll(Degree(-90));
 
         this->camNode_->attachObject(cam);
-        Orxonox::getSingleton()->getOgrePointer()->getRoot()->getAutoCreatedWindow()->addViewport(cam);
+        Orxonox::getSingleton()->getOgrePointer()->getRenderWindow()->addViewport(cam);
     }
 
     void SpaceShip::setMaxSpeed(float value)
