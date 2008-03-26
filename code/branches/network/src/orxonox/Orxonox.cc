@@ -97,6 +97,7 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // nothing to delete as for now
+    inputHandler_->destroy();
   }
 
   /**

@@ -48,6 +48,7 @@ namespace orxonox
     //friend ClassIdentifier<InputHandler>;
   public:
     void initialise(size_t windowHnd, int windowWidth, int windowHeight);
+    void destroy();
     void tick(float dt);
     void setWindowExtents(int width, int height);
 

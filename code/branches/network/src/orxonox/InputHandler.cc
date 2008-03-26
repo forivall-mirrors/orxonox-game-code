@@ -80,6 +80,10 @@ namespace orxonox
       windowHndStr << (unsigned int)windowHnd;
       paramList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 
+#if defined OIS_LINUX_PLATFORM
+      paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+#endif
+
       // Create inputsystem
       inputSystem_ = OIS::InputManager::createInputSystem(paramList);
 
@@ -108,6 +112,18 @@ namespace orxonox
 
     //assign 'abort' to the escape key
     this->bindingsKeyPressed_[(int)OIS::KC_ESCAPE].id = 1;
+  }
+
+  /**
+    @brief Destroys all the created input devices.
+  */
+  void InputHandler::destroy()
+  {
+    this->inputSystem_->destroyInputObject(this->mouse_);
+    this->inputSystem_->destroyInputObject(this->keyboard_);
+    OIS::InputManager::destroyInputSystem(this->inputSystem_);
+
+    //TODO: If the InputHandler has been destroyed, how does it know?
   }
 
   /**
