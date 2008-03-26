@@ -87,6 +87,10 @@ bool MultiTypeMath::operator!=(const MultiTypeMath& mtm) const
     return true;
 }
 
+MultiTypeMath::operator orxonox::BaseObject*() const
+{ return (this->type_ == MT_void) ? (orxonox::BaseObject*)this->value_.void_ : (orxonox::BaseObject*)ConvertValueAndReturn<MultiTypeMath, void*>(*this); }
+MultiTypeMath::operator void*() const
+{ return (this->type_ == MT_void) ? this->value_.void_ : ConvertValueAndReturn<MultiTypeMath, void*>(*this); }
 MultiTypeMath::operator int() const
 { return (this->type_ == MT_int) ? this->value_.int_ : ConvertValueAndReturn<MultiTypeMath, int>(*this); }
 MultiTypeMath::operator unsigned int() const
@@ -117,6 +121,8 @@ MultiTypeMath::operator const char*() const
 { return ((this->type_ == MT_constchar) ? this->string_ : ConvertValueAndReturn<MultiTypeMath, std::string>(*this)).c_str(); }
 MultiTypeMath::operator orxonox::Vector2() const
 { return (this->type_ == MT_vector2) ? this->vector2_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Vector2>(*this); }
+MultiTypeMath::operator orxonox::Element() const
+{ return (this->type_ == MT_xmlelement) ? this->xmlelement_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Element>(*this); }
 MultiTypeMath::operator orxonox::Vector3() const
 { return (this->type_ == MT_vector3) ? this->vector3_ : ConvertValueAndReturn<MultiTypeMath, orxonox::Vector3>(*this); }
 MultiTypeMath::operator orxonox::Quaternion() const

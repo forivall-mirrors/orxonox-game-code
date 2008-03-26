@@ -45,6 +45,8 @@ bool MultiTypeString::operator==(const MultiTypeString& mts) const
             return (this->string_ == mts.string_);
         else if (this->type_ == MT_string)
             return (this->string_ == mts.string_);
+        else if (this->type_ == MT_xmlelement)
+            return (&this->xmlelement_ == &mts.xmlelement_);
     }
 
     return false;
@@ -58,11 +60,17 @@ bool MultiTypeString::operator!=(const MultiTypeString& mts) const
             return (this->string_ != mts.string_);
         else if (this->type_ == MT_string)
             return (this->string_ != mts.string_);
+        else if (this->type_ == MT_xmlelement)
+            return (&this->xmlelement_ != &mts.xmlelement_);
     }
 
     return true;
 }
 
+MultiTypeString::operator orxonox::BaseObject*() const
+{ return (this->type_ == MT_void) ? (orxonox::BaseObject*)this->value_.void_ : (orxonox::BaseObject*)ConvertValueAndReturn<MultiTypeString, void*>(*this); }
+MultiTypeString::operator void*() const
+{ return (this->type_ == MT_void) ? this->value_.void_ : ConvertValueAndReturn<MultiTypeString, void*>(*this); }
 MultiTypeString::operator int() const
 { return (this->type_ == MT_int) ? this->value_.int_ : ConvertValueAndReturn<MultiTypeString, int>(*this); }
 MultiTypeString::operator unsigned int() const
@@ -91,6 +99,8 @@ MultiTypeString::operator std::string() const
 { return (this->type_ == MT_string) ? this->string_ : ConvertValueAndReturn<MultiTypeString, std::string>(*this); }
 MultiTypeString::operator const char*() const
 { return ((this->type_ == MT_constchar) ? this->string_ : ConvertValueAndReturn<MultiTypeString, std::string>(*this)).c_str(); }
+MultiTypeString::operator orxonox::Element() const
+{ return (this->type_ == MT_xmlelement) ? this->xmlelement_ : ConvertValueAndReturn<MultiTypeString, orxonox::Element>(*this); }
 
 void MultiTypeString::setValue(const MultiTypeString& mts)
 {
@@ -100,12 +110,18 @@ void MultiTypeString::setValue(const MultiTypeString& mts)
 
 std::string MultiTypeString::toString() const
 {
+    std::string output;
+
     if (this->type_ == MT_constchar)
         return this->string_;
     else if (this->type_ == MT_string)
         return this->string_;
+    else if (this->type_ == MT_xmlelement)
+        ConvertValue(&output, this->xmlelement_);
     else
         return MultiTypePrimitive::toString();
+
+    return output;
 }
 
 bool MultiTypeString::fromString(const std::string value)
@@ -114,6 +130,8 @@ bool MultiTypeString::fromString(const std::string value)
         this->string_ = value;
     else if (this->type_ == MT_string)
         this->string_ = value;
+    else if (this->type_ == MT_xmlelement)
+        return ConvertValue(&this->xmlelement_, value, orxonox::Element());
     else
         return MultiTypePrimitive::fromString(value);
 

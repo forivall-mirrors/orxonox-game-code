@@ -163,16 +163,6 @@ class FunctorMember : public Functor
 
 
 
-#define MAKE_COMMA(x) MAKE_COMMA##x
-#define MAKE_COMMA0
-#define MAKE_COMMA1 ,
-#define MAKE_COMMA2 ,
-#define MAKE_COMMA3 ,
-#define MAKE_COMMA4 ,
-#define MAKE_COMMA5 ,
-
-
-
 #define FUNCTOR_TEMPLATE(ismember, returnvalue, numparams) FUNCTOR_TEMPLATE##ismember##returnvalue##numparams
 #define FUNCTOR_TEMPLATE000
 #define FUNCTOR_TEMPLATE001 template <class P1>

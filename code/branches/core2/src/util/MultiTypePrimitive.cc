@@ -33,7 +33,9 @@ MultiTypePrimitive::MultiTypePrimitive(MultiType type)
 {
     this->type_ = type;
 
-    if (type == MT_int)
+    if (type == MT_void)
+        this->value_.void_ = 0;
+    else if (type == MT_int)
         this->value_.int_ = 0;
     else if (type == MT_uint)
         this->value_.uint_ = 0;
@@ -58,14 +60,16 @@ MultiTypePrimitive::MultiTypePrimitive(MultiType type)
     else if (type == MT_bool)
         this->value_.bool_ = false;
     else
-        this->value_.int_ = 0;
+        this->value_.void_ = 0;
 }
 
 bool MultiTypePrimitive::operator==(const MultiTypePrimitive& mtp) const
 {
     if (this->type_ == mtp.type_)
     {
-        if (this->type_ == MT_int)
+        if (this->type_ == MT_void)
+            return (this->value_.void_ == mtp.value_.void_);
+        else if (this->type_ == MT_int)
             return (this->value_.int_ == mtp.value_.int_);
         else if (this->type_ == MT_uint)
             return (this->value_.uint_ == mtp.value_.uint_);
@@ -98,7 +102,9 @@ bool MultiTypePrimitive::operator!=(const MultiTypePrimitive& mtp) const
 {
     if (this->type_ == mtp.type_)
     {
-        if (this->type_ == MT_int)
+        if (this->type_ == MT_void)
+            return (this->value_.void_ != mtp.value_.void_);
+        else if (this->type_ == MT_int)
             return (this->value_.int_ != mtp.value_.int_);
         else if (this->type_ == MT_uint)
             return (this->value_.uint_ != mtp.value_.uint_);
@@ -127,6 +133,10 @@ bool MultiTypePrimitive::operator!=(const MultiTypePrimitive& mtp) const
     return true;
 }
 
+MultiTypePrimitive::operator orxonox::BaseObject*() const
+{ return (this->type_ == MT_void) ? (orxonox::BaseObject*)this->value_.void_ : (orxonox::BaseObject*)ConvertValueAndReturn<MultiTypePrimitive, void*>(*this); }
+MultiTypePrimitive::operator void*() const
+{ return (this->type_ == MT_void) ? this->value_.void_ : ConvertValueAndReturn<MultiTypePrimitive, void*>(*this); }
 MultiTypePrimitive::operator int() const
 { return (this->type_ == MT_int) ? this->value_.int_ : ConvertValueAndReturn<MultiTypePrimitive, int>(*this); }
 MultiTypePrimitive::operator unsigned int() const
@@ -162,7 +172,9 @@ std::string MultiTypePrimitive::toString() const
 {
     std::string output;
 
-    if (this->type_ == MT_int)
+    if (this->type_ == MT_void)
+        ConvertValue(&output, this->value_.void_);
+    else if (this->type_ == MT_int)
         ConvertValue(&output, this->value_.int_);
     else if (this->type_ == MT_uint)
         ConvertValue(&output, this->value_.uint_);
@@ -192,7 +204,9 @@ std::string MultiTypePrimitive::toString() const
 
 bool MultiTypePrimitive::fromString(const std::string value)
 {
-    if (this->type_ == MT_int)
+    if (this->type_ == MT_void)
+        return ConvertValue(&this->value_.void_, value, (void*)0);
+    else if (this->type_ == MT_int)
         return ConvertValue(&this->value_.int_, value, (int)0);
     else if (this->type_ == MT_uint)
         return ConvertValue(&this->value_.uint_, value, (unsigned int)0);

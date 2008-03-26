@@ -40,7 +40,6 @@
 #include "SubString.h"
 #include "MultiTypeMath.h"
 
-
 // DEFAULT CLASS
 template <typename FromType, typename ToType>
 class Converter
@@ -150,7 +149,9 @@ class Converter<MultiTypePrimitive, ToType>
   public:
     bool operator()(ToType* output, const MultiTypePrimitive& input) const
     {
-      if (input.getType() == MT_int)
+      if (input.getType() == MT_void)
+        return ConvertValue(output, input.getVoid());
+      else if (input.getType() == MT_int)
         return ConvertValue(output, input.getInt());
       else if (input.getType() == MT_uint)
         return ConvertValue(output, input.getUnsignedInt());
@@ -184,7 +185,9 @@ class Converter<MultiTypePrimitive, std::string>
   public:
     bool operator()(std::string* output, const MultiTypePrimitive& input) const
     {
-      if (input.getType() == MT_int)
+      if (input.getType() == MT_void)
+        return ConvertValue(output, input.getVoid());
+      else if (input.getType() == MT_int)
         return ConvertValue(output, input.getInt());
       else if (input.getType() == MT_uint)
         return ConvertValue(output, input.getUnsignedInt());
@@ -224,6 +227,8 @@ class Converter<MultiTypeString, ToType>
         return ConvertValue(output, input.getConstChar());
       else if (input.getType() == MT_string)
         return ConvertValue(output, input.getString());
+      else if (input.getType() == MT_xmlelement)
+        return ConvertValue(output, input.getXMLElement());
       else
         return ConvertValue(output, (MultiTypePrimitive)input);
     }
@@ -238,6 +243,8 @@ class Converter<MultiTypeString, std::string>
         return ConvertValue(output, input.getConstChar());
       else if (input.getType() == MT_string)
         return ConvertValue(output, input.getString());
+      else if (input.getType() == MT_xmlelement)
+        return ConvertValue(output, input.getXMLElement());
       else
         return ConvertValue(output, (MultiTypePrimitive)input);
     }
@@ -532,5 +539,44 @@ class Converter<std::string, orxonox::ColourValue>
       return false;
     }
 };
+
+
+////////////////
+// XMLElement //
+////////////////
+
+// orxonox::Element to std::string
+template <>
+class Converter<orxonox::Element, std::string>
+{
+  public:
+    bool operator()(std::string* output, const orxonox::Element& input) const
+    {
+      std::ostringstream ostream;
+      if (ostream << input)
+      {
+        (*output) = ostream.str();
+        return true;
+      }
+
+      return false;
+    }
+};
+
+// std::string to orxonox::Element
+template <>
+class Converter<std::string, orxonox::Element>
+{
+  public:
+    bool operator()(orxonox::Element* output, const std::string& input) const
+    {
+      std::istringstream istream(input);
+      if (istream >> (*output))
+        return true;
+
+      return false;
+    }
+};
+
 
 #endif /* _Convert_H__ */
