@@ -34,28 +34,22 @@
 #include "OrxonoxStableHeaders.h"
 
 //****** OGRE ******
-#include <OgreException.h>
+//#include <OgreException.h>
 #include <OgreFrameListener.h>
 #include <OgreRoot.h>
-#include <OgreRenderWindow.h>
-#include <OgreTextureManager.h>
-#include <OgreResourceGroupManager.h>
-#include <OgreConfigFile.h>
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 #include <OgreTimer.h>
 #include <OgreWindowEventUtilities.h>
 
-//****** OIS *******
-#include <OIS/OIS.h>
-
 //****** STD *******
-#include <iostream>
-#include <exception>
+//#include <iostream>
+//#include <exception>
+#include <deque>
 
 //***** ORXONOX ****
 //misc
-#include "util/Sleep.h"
+//#include "util/Sleep.h"
 
 // audio
 #include "audio/AudioManager.h"
@@ -67,13 +61,13 @@ network::Client *client_g;
 network::Server *server_g;
 
 // objects
-#include "tools/Timer.h"
 #include "core/ArgReader.h"
 #include "core/Debug.h"
 #include "core/Factory.h"
 #include "core/Loader.h"
 #include "core/Tickable.h"
 #include "hud/HUD.h"
+#include "tools/Timer.h"
 #include "objects/weapon/BulletManager.h"
 
 #include "InputHandler.h"
@@ -82,9 +76,6 @@ network::Server *server_g;
 
 namespace orxonox
 {
-  /// init static singleton reference of Orxonox
-  Orxonox* Orxonox::singletonRef_ = NULL;
-
   /**
    * create a new instance of Orxonox
    */
@@ -93,14 +84,9 @@ namespace orxonox
     this->ogre_ = new GraphicsEngine();
     this->dataPath_ = "";
     this->auMan_ = 0;
-    this->singletonRef_ = 0;
-    //this->keyboard_ = 0;
-    //this->mouse_ = 0;
-    //this->inputManager_ = 0;
     this->inputHandler_ = 0;
-    this->frameListener_ = 0;
     this->root_ = 0;
-    // turn frame smoothing on by setting a value different from 0
+    // turn on frame smoothing by setting a value different from 0
     this->frameSmoothingTime_ = 0.0f;
     this->bAbort_ = false;
   }
@@ -125,8 +111,7 @@ namespace orxonox
     //TODO: read config file
     //TODO: give config file to Ogre
     std::string mode;
-    
-    
+
     ArgReader ar = ArgReader(argc, argv);
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", this->dataPath_, false);
@@ -196,7 +181,6 @@ namespace orxonox
     //TODO: run engine
     Factory::createClassHierarchy();
     createScene();
-    setupScene();
     setupInputSystem();
     
     server_g->open();
@@ -210,7 +194,6 @@ namespace orxonox
     //TODO: run engine
     Factory::createClassHierarchy();
     createScene();
-    setupScene();
     setupInputSystem();
     
     startRenderLoop();
@@ -221,9 +204,8 @@ namespace orxonox
    */
   Orxonox* Orxonox::getSingleton()
   {
-    if (!singletonRef_)
-      singletonRef_ = new Orxonox();
-    return singletonRef_;
+    static Orxonox theOnlyInstance;
+    return &theOnlyInstance;
   }
 
   /**
@@ -251,7 +233,7 @@ namespace orxonox
     ogre_->setConfigPath(path);
     ogre_->setup();
     root_ = ogre_->getRoot();
-    if(!ogre_->load()) die(/* unable to load */);
+    if(!ogre_->load(this->dataPath_)) die(/* unable to load */);
     
     server_g = new network::Server();
   }
@@ -266,7 +248,7 @@ namespace orxonox
       client_g = new network::Client();
     else
       client_g = new network::Client(serverIp_, NETWORK_PORT);
-    if(!ogre_->load()) die(/* unable to load */);
+    if(!ogre_->load(this->dataPath_)) die(/* unable to load */);
   }
   
   void Orxonox::standaloneInit(std::string path)
@@ -276,70 +258,21 @@ namespace orxonox
     ogre_->setConfigPath(path);
     ogre_->setup();
     root_ = ogre_->getRoot();
-    if(!ogre_->load()) die(/* unable to load */);
-  }
-
-  void Orxonox::defineResources()
-  {
-    std::string secName, typeName, archName;
-    Ogre::ConfigFile cf;
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-    cf.load(macBundlePath() + "/Contents/Resources/resources.cfg");
-#else
-    cf.load(dataPath_ + "resources.cfg");
-#endif
-
-    Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-    while (seci.hasMoreElements())
-    {
-      secName = seci.peekNextKey();
-      Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
-      Ogre::ConfigFile::SettingsMultiMap::iterator i;
-      for (i = settings->begin(); i != settings->end(); ++i)
-      {
-        typeName = i->first;
-        archName = i->second;
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation( std::string(macBundlePath() + "/" + archName), typeName, secName);
-#else
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation( archName, typeName, secName);
-#endif
-      }
-    }
-  }
-
-  void Orxonox::setupRenderSystem()
-  {
-    if (!root_->restoreConfig() && !root_->showConfigDialog())
-      throw Ogre::Exception(52, "User canceled the config dialog!", "OrxApplication::setupRenderSystem()");
-  }
-
-  void Orxonox::createRenderWindow()
-  {
-    root_->initialise(true, "OrxonoxV2");
-  }
-
-  void Orxonox::initializeResourceGroups()
-  {
-    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+    if(!ogre_->load(this->dataPath_)) die(/* unable to load */);
   }
 
   void Orxonox::createScene(void)
   {
-	// Init audio
+	  // Init audio
     auMan_ = new audio::AudioManager();
 
     bulletMgr_ = new BulletManager();
 
     // load this file from config
-//    loader_ = new loader::LevelLoader("sample.oxw");
-//    loader_->loadLevel();
     Level* startlevel = new Level("levels/sample.oxw");
     Loader::open(startlevel);
 
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    //HUD* orxonoxHud;
     orxonoxHUD_ = new HUD();
     orxonoxHUD_->setEnergyValue(20);
     orxonoxHUD_->setEnergyDistr(20,20,60);
@@ -349,27 +282,8 @@ namespace orxonox
     auMan_->ambientAdd("a1");
     auMan_->ambientAdd("a2");
     auMan_->ambientAdd("a3");
-                                //auMan->ambientAdd("ambient1");
+    //auMan->ambientAdd("ambient1");
     auMan_->ambientStart();*/
-  }
-
-
-  void Orxonox::setupScene()
-  {
-//    SceneManager *mgr = ogre_->getSceneManager();
-
-
-//    SceneNode* node = (SceneNode*)mgr->getRootSceneNode()->getChild("OgreHeadNode");
-//     SceneNode *node = mgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode", Vector3(0,0,0));
-
-
-/*
-    particle::ParticleInterface *e = new particle::ParticleInterface(mgr,"engine","Orxonox/strahl");
-    e->particleSystem_->setParameter("local_space","true");
-    e->setPositionOfEmitter(0, Vector3(0,-10,0));
-    e->setDirection(Vector3(0,0,-1));
-    e->addToSceneNode(node);
-*/
   }
 
   /**

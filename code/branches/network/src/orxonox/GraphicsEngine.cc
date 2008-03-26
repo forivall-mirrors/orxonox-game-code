@@ -36,6 +36,7 @@
 #include <OgreTextureManager.h>
 #include <OgreRenderWindow.h>
 
+#include "core/CoreIncludes.h"
 #include "core/Debug.h"
 #include "GraphicsEngine.h"
 
@@ -46,9 +47,11 @@ namespace orxonox {
 
   GraphicsEngine::GraphicsEngine()
   {
+    RegisterObject(GraphicsEngine);
+    //this->bOverwritePath_ = false;
+    this->setConfigValues();
     // set to standard values
     this->configPath_ = "";
-    this->dataPath_ = "";
     this->root_ = 0;
     this->scene_ = 0;
     this->renderWindow_ = 0;
@@ -57,6 +60,12 @@ namespace orxonox {
 
   GraphicsEngine::~GraphicsEngine()
   {
+  }
+
+  void GraphicsEngine::setConfigValues()
+  {
+    SetConfigValue(dataPath_, dataPath_).description("relative path to media data");
+
   }
 
   void GraphicsEngine::setup()
@@ -89,8 +98,11 @@ namespace orxonox {
     return scene_;
   }
 
-  bool GraphicsEngine::load()
+  bool GraphicsEngine::load(std::string dataPath)
   {
+    // temporary overwrite of dataPath, change ini file for permanent change
+    if( dataPath != "" )
+      dataPath_ = dataPath;
     loadRessourceLocations(this->dataPath_);
     if (!root_->restoreConfig() && !root_->showConfigDialog())
       return false;
@@ -102,6 +114,7 @@ namespace orxonox {
     root_->initialise(true, "OrxonoxV2");
     this->renderWindow_ = root_->getAutoCreatedWindow();
     TextureManager::getSingleton().setDefaultNumMipmaps(5);
+    //TODO: Do NOT load all the groups, why are we doing that? And do we really do that? initialise != load...
     ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
   }
 

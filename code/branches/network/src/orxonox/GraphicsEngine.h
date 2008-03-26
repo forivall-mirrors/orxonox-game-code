@@ -13,6 +13,7 @@
 #include <OgreSceneManager.h>
 
 #include "OrxonoxPrereqs.h"
+#include "core/BaseObject.h"
 
 
 namespace orxonox {
@@ -20,14 +21,16 @@ namespace orxonox {
 /**
    * graphics engine manager class
  */
-  class _OrxonoxExport GraphicsEngine {
+  class _OrxonoxExport GraphicsEngine : public BaseObject
+  {
     public:
       GraphicsEngine();
       inline void setConfigPath(std::string path) { this->configPath_ = path; };
       // find a better way for this
       inline Ogre::Root* getRoot() { return root_; };
+      void setConfigValues();
       void setup();
-      bool load();
+      bool load(std::string path);
       void loadRessourceLocations(std::string path);
       Ogre::SceneManager* getSceneManager();
       void startRender();
@@ -44,6 +47,7 @@ namespace orxonox {
       std::string         dataPath_;    //!< path to data file
       Ogre::SceneManager* scene_;       //!< scene manager of the game
       Ogre::RenderWindow* renderWindow_;//!< the current render window
+      //bool               bOverwritePath_; //!< overwrites path
 
   };
 
