@@ -55,6 +55,7 @@ namespace orxonox
     SpaceShip::SpaceShip()
     {
         RegisterObject(SpaceShip);
+        this->registerAllVariables();
 
         this->setConfigValues();
 
@@ -124,8 +125,9 @@ namespace orxonox
         this->brakeRotate(rotate*10);
         this->brakeLoop(loop);
 */
-        this->init();
+//         this->create();
 
+        
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
 
@@ -135,6 +137,21 @@ namespace orxonox
             delete this->tt_;
     }
 
+    bool SpaceShip::create(){
+      if(Model::create())
+        this->init();
+      else
+        return false;
+      return true;
+    }
+    
+    void SpaceShip::registerAllVariables(){
+      Model::registerAllVariables();
+      
+      
+      
+    }
+    
     void SpaceShip::init()
     {
         // START CREATING THRUSTER
@@ -202,6 +219,7 @@ namespace orxonox
     void SpaceShip::loadParams(TiXmlElement* xmlElem)
     {
         Model::loadParams(xmlElem);
+        this->create();
 /*
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
         {

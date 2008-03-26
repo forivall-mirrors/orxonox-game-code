@@ -44,6 +44,7 @@ namespace orxonox {
       capacity_(new int[numberOfAmmos_])
   {
     RegisterObject(AmmunitionDump);
+    registerAllVariables();
 
     for (int i = 0; i < numberOfAmmos_; i++)
     {
@@ -112,5 +113,15 @@ namespace orxonox {
     if (id == -1)
       return -1;
     return stock_[id];
+  }
+  
+  void AmmunitionDump::registerAllVariables(){
+    registerVar( &numberOfAmmos_, sizeof(int), network::DATA);
+    
+    for (int i = 0; i < numberOfAmmos_; i++)
+    {
+      registerVar(&stock_[i], sizeof(int), network::DATA);
+      registerVar(&capacity_[i], sizeof(int), network::DATA);
+    }
   }
 }

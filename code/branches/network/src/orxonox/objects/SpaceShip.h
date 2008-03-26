@@ -20,6 +20,8 @@ namespace orxonox
         public:
             SpaceShip();
             ~SpaceShip();
+            bool create();
+            void registerAllVariables();
             void init();
             void setConfigValues();
             virtual void loadParams(TiXmlElement* xmlElem);

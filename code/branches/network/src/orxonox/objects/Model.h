@@ -21,10 +21,12 @@ namespace orxonox
             void setMesh(const std::string& meshname);
             bool create();
 
+        protected:
+            void registerAllVariables();
+            
         private:
             std::string meshSrc_;
             Mesh mesh_;
-            void registerAllVariables();
     };
 }
 

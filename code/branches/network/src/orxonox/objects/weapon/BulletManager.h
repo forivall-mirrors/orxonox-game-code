@@ -59,6 +59,7 @@ namespace orxonox {
 
   protected:
     inline bool create() { return true; }
+    void registerAllVariables();
 
     // Bullet array
 	  Bullet **bullets_;
