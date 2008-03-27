@@ -8,7 +8,6 @@ SET( CORE_SRC_FILES
   ConfigValueContainer.cc
   Error.cc
   SignalHandler.cc
-  ArgReader.cc
   DebugLevel.cc
   OutputHandler.cc
   Language.cc

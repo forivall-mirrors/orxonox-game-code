@@ -3,6 +3,7 @@ PROJECT(Orxonox)
 AUX_SOURCE_DIRECTORY(tinyxml TINYXML_SRC_FILES)
 
 SET (UTIL_SRC_FILES
+  ArgReader.cc
   Math.cc
   String.cc
   SubString.cc

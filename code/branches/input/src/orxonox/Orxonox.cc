@@ -49,6 +49,7 @@
 //***** ORXONOX ****
 //misc
 //#include "util/Sleep.h"
+#include "util/ArgReader.h"
 
 // audio
 #include "audio/AudioManager.h"
@@ -60,7 +61,6 @@ network::Client *client_g;
 network::Server *server_g;
 
 // objects
-#include "core/ArgReader.h"
 #include "core/Debug.h"
 #include "core/Factory.h"
 #include "core/Loader.h"
@@ -173,7 +173,7 @@ namespace orxonox
     //TODO: give config file to Ogre
     std::string mode;
 
-    ArgReader ar = ArgReader(argc, argv);
+    ArgReader ar(argc, argv);
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", this->dataPath_, false);
     ar.checkArgument("ip", serverIp_, false);

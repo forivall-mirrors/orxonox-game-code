@@ -26,9 +26,9 @@
  */
 
 /**
- @file  AudioPrereqs.h
- @brief Contains all the necessary forward declarations for all classes, structs and enums.
- */
+  @file
+  @brief Contains all the necessary forward declarations for all classes and structs.
+*/
 
 #ifndef _AudioPrereqs_H__
 #define _AudioPrereqs_H__
