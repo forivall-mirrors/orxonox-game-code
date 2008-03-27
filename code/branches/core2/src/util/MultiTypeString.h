@@ -78,7 +78,6 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         inline bool operator!=(const orxonox::Element& value) const { return (&this->xmlelement_ != &value);             }
         bool operator!=(const MultiTypeString& mts) const;
 
-        virtual operator orxonox::BaseObject*() const;
         virtual operator void*()                const;
         virtual operator int()                  const;
         virtual operator unsigned int()         const;

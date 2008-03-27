@@ -80,7 +80,7 @@ namespace orxonox
             }
             else
             {
-                COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given." << std::endl;
+                COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << temp << ")." << std::endl;
                 return false;
             }
         }
@@ -92,7 +92,7 @@ namespace orxonox
             {
                 if (!this->bAddedDefaultValue_[i])
                 {
-                    COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given." << std::endl;
+                    COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input:" << params << ")." << std::endl;
                     return false;
                 }
             }
@@ -150,7 +150,7 @@ namespace orxonox
         return this->name_;
     }
 
-    void Executor::description(const std::string& description)
+    void Executor::setDescription(const std::string& description)
     {
         if (!this->bAddedDescription_)
         {
@@ -165,7 +165,7 @@ namespace orxonox
         return GetLocalisation(this->description_);
     }
 
-    void Executor::descriptionParam(int param, const std::string& description)
+    void Executor::setDescriptionParam(int param, const std::string& description)
     {
         if (param >= 0 && param < MAX_FUNCTOR_ARGUMENTS)
         {
@@ -190,7 +190,7 @@ namespace orxonox
         return this->descriptionParam_[0];
     }
 
-    void Executor::descriptionReturnvalue(const std::string& description)
+    void Executor::setDescriptionReturnvalue(const std::string& description)
     {
         if (!this->bAddedDescriptionReturnvalue_)
         {
@@ -255,12 +255,21 @@ namespace orxonox
         this->bAddedDefaultValue_[4] = true;
     }
 
-    void Executor::setDefaultValue(int index, const MultiTypeMath& param)
+    void Executor::setDefaultValue(unsigned int index, const MultiTypeMath& param)
     {
         if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
         {
             this->defaultValue_[index] = param;
             this->bAddedDefaultValue_[index] = true;
         }
+    }
+
+    bool Executor::allDefaultValuesSet() const
+    {
+        for (unsigned int i = 0; i < this->functor_->getParamCount(); i++)
+            if (!this->bAddedDefaultValue_[i])
+                return false;
+
+        return true;
     }
 }

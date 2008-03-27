@@ -104,7 +104,9 @@ class _UtilExport MultiTypePrimitive
         inline bool operator!=(bool           value) const { return (this->value_.bool_       != value); }
         bool operator!=(const MultiTypePrimitive& mtp) const;
 
-        virtual operator orxonox::BaseObject*()    const;
+        template <class T>
+        operator T*()                     const
+        { return ((T*)this->value_.void_); }
         virtual operator void*()          const;
         virtual operator int()            const;
         virtual operator unsigned int()   const;

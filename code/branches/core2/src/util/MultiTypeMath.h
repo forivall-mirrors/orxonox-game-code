@@ -90,7 +90,6 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         inline bool operator!=(const orxonox::Degree&      value) const { return (this->degree_      != value); }
         bool operator!=(const MultiTypeMath& mtm) const;
 
-        virtual operator orxonox::BaseObject*()          const;
         virtual operator void*()                const;
         virtual operator int()                  const;
         virtual operator unsigned int()         const;

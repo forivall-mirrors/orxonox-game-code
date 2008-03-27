@@ -87,8 +87,6 @@ bool MultiTypeMath::operator!=(const MultiTypeMath& mtm) const
     return true;
 }
 
-MultiTypeMath::operator orxonox::BaseObject*() const
-{ return (this->type_ == MT_void) ? (orxonox::BaseObject*)this->value_.void_ : (orxonox::BaseObject*)ConvertValueAndReturn<MultiTypeMath, void*>(*this); }
 MultiTypeMath::operator void*() const
 { return (this->type_ == MT_void) ? this->value_.void_ : ConvertValueAndReturn<MultiTypeMath, void*>(*this); }
 MultiTypeMath::operator int() const

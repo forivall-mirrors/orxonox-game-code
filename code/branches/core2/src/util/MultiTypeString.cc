@@ -64,8 +64,6 @@ bool MultiTypeString::operator!=(const MultiTypeString& mts) const
     return true;
 }
 
-MultiTypeString::operator orxonox::BaseObject*() const
-{ return (this->type_ == MT_void) ? (orxonox::BaseObject*)this->value_.void_ : (orxonox::BaseObject*)ConvertValueAndReturn<MultiTypeString, void*>(*this); }
 MultiTypeString::operator void*() const
 { return (this->type_ == MT_void) ? this->value_.void_ : ConvertValueAndReturn<MultiTypeString, void*>(*this); }
 MultiTypeString::operator int() const

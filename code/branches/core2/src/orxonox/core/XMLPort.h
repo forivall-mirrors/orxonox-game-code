@@ -32,7 +32,7 @@
 #include "util/MultiTypeMath.h"
 #include "util/tinyxml/ticpp.h"
 #include "util/SubString.h"
-#include "Functor.h"
+#include "Executor.h"
 #include "Debug.h"
 #include "CoreIncludes.h"
 #include "BaseObject.h"
@@ -40,36 +40,39 @@
 #include "CorePrereqs.h"
 
 
-#define XMLPortParam(classname, paramname, loadfunction, savefunction, xmlelement, loading) \
-    XMLPortParamGeneric(classname, paramname, xmlcontainer##loadfunction##savefunction, createFunctor(&classname::loadfunction), createFunctor(&classname::savefunction), xmlelement, loading)
-#define XMLPortParam_Template(classname, paramname, loadtemplate, loadfunction, savetemplate, savefunction, xmlelement, loading) \
-    XMLPortParamGeneric(classname, paramname, xmlcontainer##loadfunction##savefunction, createFunctor loadtemplate (&classname::loadfunction), createFunctor savetemplate (&classname::savefunction), xmlelement, loading)
+#define XMLPortParam(classname, paramname, loadfunction, savefunction, xmlelement, mode) \
+    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, paramname, createExecutor(createFunctor(&classname::loadfunction), #loadfunction), createExecutor(createFunctor(&classname::savefunction), #savefunction), xmlelement, mode)
+#define XMLPortParam_Template(classname, paramname, loadtemplate, loadfunction, savetemplate, savefunction, xmlelement, mode) \
+    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, paramname, createExecutor(createFunctor loadtemplate (&classname::loadfunction), #loadfunction), createExecutor(createFunctor savetemplate (&classname::savefunction), #savefunction), xmlelement, mode)
 
+#define XMLPortParamLoadOnly(classname, paramname, loadfunction, xmlelement, mode) \
+    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, paramname, createExecutor(createFunctor(&classname::loadfunction), #loadfunction), 0, xmlelement, mode)
+#define XMLPortParamLoadOnly_Template(classname, paramname, loadtemplate, loadfunction, xmlelement, mode) \
+    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, paramname, createExecutor(createFunctor loadtemplate (&classname::loadfunction), #loadfunction), 0, xmlelement, mode)
 
-#define XMLPortParamLoadOnly(classname, paramname, loadfunction, xmlelement, loading) \
-    XMLPortParamGeneric(classname, paramname, xmlcontainer##loadfunction##0, createFunctor(&classname::loadfunction), 0, xmlelement, loading)
-#define XMLPortParamLoadOnly_Template(classname, paramname, loadtemplate, loadfunction, xmlelement, loading) \
-    XMLPortParamGeneric(classname, paramname, xmlcontainer##loadfunction##0, createFunctor loadtemplate (&classname::loadfunction), 0, xmlelement, loading)
-
-
-#define XMLPortParamGeneric(classname, paramname, containername, loadfunctor, savefunctor, xmlelement, loading) \
+#define XMLPortParamGeneric(containername, classname, paramname, loadexecutor, saveexecutor, xmlelement, mode) \
     orxonox::XMLPortClassParamContainer<classname>* containername = (orxonox::XMLPortClassParamContainer<classname>*)(this->getIdentifier()->getXMLPortParamContainer(paramname)); \
     if (!containername) \
     { \
-        containername = new orxonox::XMLPortClassParamContainer<classname>(this->getIdentifier()->getName(), std::string(paramname), loadfunctor, savefunctor); \
+        containername = new orxonox::XMLPortClassParamContainer<classname>(std::string(paramname), loadexecutor, saveexecutor); \
         this->getIdentifier()->addXMLPortParamContainer(paramname, containername); \
     } \
-    containername->port(this, xmlelement, loading)
+    containername->port(this, xmlelement, mode)
 
 
-#define XMLPortObject(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, loading, bApplyLoaderMask, bLoadBefore) \
-    orxonox::XMLPortClassObjectContainer<classname, objectclass>* xmlcontainer##loadfunction##savefunction = (orxonox::XMLPortClassObjectContainer<classname, objectclass>*)(this->getIdentifier()->getXMLPortObjectContainer(sectionname)); \
-    if (!xmlcontainer##loadfunction##savefunction) \
+#define XMLPortObject(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore) \
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, createExecutor(createFunctor(&classname::loadfunction), #loadfunction), createExecutor(createFunctor(&classname::savefunction), #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
+#define XMLPortObject_Template(classname, objectclass, sectionname, loadtemplate, loadfunction, savetemplate, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore) \
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, createExecutor(createFunctor loadtemplate (&classname::loadfunction), #loadfunction), createExecutor(createFunctor savetemplate (&classname::savefunction), #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
+
+#define XMLPortObjectGeneric(containername, classname, objectclass, sectionname, loadexecutor, saveexecutor, xmlelement, mode, bApplyLoaderMask, bLoadBefore) \
+    orxonox::XMLPortClassObjectContainer<classname, objectclass>* containername = (orxonox::XMLPortClassObjectContainer<classname, objectclass>*)(this->getIdentifier()->getXMLPortObjectContainer(sectionname)); \
+    if (!containername) \
     { \
-        xmlcontainer##loadfunction##savefunction = new orxonox::XMLPortClassObjectContainer<classname, objectclass>(this->getIdentifier()->getName(), std::string(sectionname), &classname::loadfunction, &classname::savefunction, bApplyLoaderMask, bLoadBefore); \
-        this->getIdentifier()->addXMLPortObjectContainer(sectionname, xmlcontainer##loadfunction##savefunction); \
+        containername = new orxonox::XMLPortClassObjectContainer<classname, objectclass>(std::string(sectionname), loadexecutor, saveexecutor, bApplyLoaderMask, bLoadBefore); \
+        this->getIdentifier()->addXMLPortObjectContainer(sectionname, containername); \
     } \
-    xmlcontainer##loadfunction##savefunction->port(this, xmlelement, loading)
+    containername->port(this, xmlelement, mode)
 
 
 namespace orxonox
@@ -92,87 +95,91 @@ namespace orxonox
     // ###############################
     class _CoreExport XMLPortParamContainer
     {
+        enum ParseResult
+        {
+            PR_not_started,
+            PR_finished,
+            PR_waiting_for_default_values
+        };
+
         public:
-            XMLPortParamContainer();
+            XMLPortParamContainer()
+                { this->parseResult_ = PR_not_started; }
+            virtual ~XMLPortParamContainer() {}
 
             inline const std::string& getName() const
                 { return this->paramname_; }
 
-            XMLPortParamContainer& description(const std::string description);
-            const std::string& getDescription();
+            virtual XMLPortParamContainer& description(const std::string description) = 0;
+            virtual const std::string& getDescription() = 0;
+
+            virtual XMLPortParamContainer& defaultValue(unsigned int index, const MultiTypeMath& param) = 0;
+            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1) = 0;
+            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2) = 0;
+            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3) = 0;
+            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4) = 0;
+            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5) = 0;
 
         protected:
-            std::string classname_;
             std::string paramname_;
+            ParseResult parseResult_;
 
-        private:
-            LanguageEntryLabel description_;
-            bool bAddedDescription_;
-            bool bAddedDefaultValues_;
     };
 
     template <class T>
     class XMLPortClassParamContainer : public XMLPortParamContainer
     {
+        struct ParseParams
+        {
+            T* object;
+            Element* xmlelement;
+            XMLPort::Mode mode;
+        };
+
         public:
-            XMLPortClassParamContainer(const std::string classname, const std::string paramname, FunctorMember<T>* loadfunction, FunctorMember<T>* savefunction)
+            XMLPortClassParamContainer(const std::string paramname, ExecutorMember<T>* loadexecutor, ExecutorMember<T>* saveexecutor)
             {
-                this->classname_ = classname;
                 this->paramname_ = paramname;
-                this->loadfunction_ = loadfunction;
-                this->savefunction_ = savefunction;
+                this->loadexecutor_ = loadexecutor;
+                this->saveexecutor_ = saveexecutor;
+
+                this->setDefaultValue_[0] = false;
+                this->setDefaultValue_[1] = false;
+                this->setDefaultValue_[2] = false;
+                this->setDefaultValue_[3] = false;
+                this->setDefaultValue_[4] = false;
             }
 
             XMLPortParamContainer& port(T* object, Element& xmlelement, XMLPort::Mode mode)
             {
+                this->parseParams_.object = object;
+                this->parseParams_.xmlelement = &xmlelement;
+                this->parseParams_.mode = mode;
+
                 if (mode == XMLPort::LoadObject)
                 {
                     try
                     {
                         std::string attribute = xmlelement.GetAttribute(this->paramname_);
-                        if (attribute.size() > 0)
+                        if ((attribute.size() > 0) || (this->loadexecutor_->allDefaultValuesSet()))
                         {
-                            SubString tokens(attribute, ",", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
-                            if ((unsigned int)tokens.size() >= (unsigned int)this->loadfunction_->getParamCount())
-                            {
-                                COUT(5) << object->getLoaderIndentation() << "Loading parameter " << this->paramname_ << " in " << this->classname_ << " (objectname " << object->getName() << ") with ";
-                                if (this->loadfunction_->getParamCount() == 1)
-                                {
-                                    COUT(5) << "1 parameter (using whole string):" << std::endl;
-                                    COUT(5) << object->getLoaderIndentation() << "  " << attribute << std::endl;
-                                    (*this->loadfunction_)(object, MultiTypeMath(attribute));
-                                }
-                                else
-                                {
-                                    COUT(5) << tokens.size() << " parameter (using MultiTypeMath)." << std::endl;
-                                    MultiTypeMath param1 = MT_null, param2 = MT_null, param3 = MT_null, param4 = MT_null, param5 = MT_null;
-                                    if (tokens.size() >= 1) param1 = tokens[0];
-                                    if (tokens.size() >= 2) param2 = tokens[1];
-                                    if (tokens.size() >= 3) param3 = tokens[2];
-                                    if (tokens.size() >= 4) param4 = tokens[3];
-                                    if (tokens.size() >= 5) param5 = tokens[4];
-                                    COUT(5) << object->getLoaderIndentation() << "  " << attribute << std::endl;
-                                    COUT(5) << object->getLoaderIndentation() << "  " << param1 << ", " << param2 << ", " << param3 << ", " << param4 << ", " << param5 << std::endl;
-
-                                    (*this->loadfunction_)(object, param1, param2, param3, param4, param5);
-                                }
-                            }
+                            COUT(5) << object->getLoaderIndentation() << "Loading parameter " << this->paramname_ << " in " << object->getIdentifier()->getName() << " (objectname " << object->getName() << ")." << std::endl << object->getLoaderIndentation();
+                            if (this->loadexecutor_->parse(object, attribute, ","))
+                                this->parseResult_ = PR_finished;
                             else
-                            {
-                                COUT(2) << object->getLoaderIndentation() << "Warning: Parameter \"" << this->paramname_ << "\" in \"" << this->classname_ << "\" (objectname: " << object->getName() << ") is incomplete and couln't be loaded." << std::endl;
-                            }
+                                this->parseResult_ = PR_waiting_for_default_values;
                         }
                     }
                     catch(ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << this->classname_ << "' (objectname: " << object->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << object->getIdentifier()->getName() << "' (objectname: " << object->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
                 else
                 {
-                    if (this->savefunction_)
+                    if (this->saveexecutor_)
                     {
 //                        xmlelement.SetAttribute(this->paramname_, "...");
                     }
@@ -181,9 +188,94 @@ namespace orxonox
                 return (*this);
             }
 
+            XMLPortParamContainer& port(const ParseParams& parseParams)
+            {
+                return this->port(parseParams.object, *parseParams.xmlelement, parseParams.mode);
+            }
+
+            XMLPortParamContainer& portIfWaitingForDefaultValues(const ParseResult& result, const ParseParams& params)
+            {
+                if (result == PR_waiting_for_default_values)
+                    return this->port(params);
+                else
+                    return (*this);
+            }
+
+            virtual XMLPortParamContainer& description(const std::string description)
+                { this->loadexecutor_->setDescription(description); return (*this); }
+            virtual const std::string& getDescription()
+                { return this->loadexecutor_->getDescription(); }
+
+            virtual XMLPortParamContainer& defaultValue(unsigned int index, const MultiTypeMath& param)
+            {
+                if (!this->setDefaultValue_[index])
+                {
+                    this->setDefaultValue_[index] = true;
+                    this->loadexecutor_->setDefaultValue(index, param);
+                }
+                return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
+            }
+            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1)
+            {
+                if (!this->setDefaultValue_[0])
+                {
+                    this->setDefaultValue_[0] = true;
+                    this->loadexecutor_->setDefaultValues(param1);
+                }
+                return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
+            }
+            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2)
+            {
+                if ((!this->setDefaultValue_[0]) || (!this->setDefaultValue_[1]))
+                {
+                    this->setDefaultValue_[0] = true;
+                    this->setDefaultValue_[1] = true;
+                    this->loadexecutor_->setDefaultValues(param1, param2);
+                }
+                return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
+            }
+            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3)
+            {
+                if ((!this->setDefaultValue_[0]) || (!this->setDefaultValue_[1]) || (!this->setDefaultValue_[2]))
+                {
+                    this->setDefaultValue_[0] = true;
+                    this->setDefaultValue_[1] = true;
+                    this->setDefaultValue_[3] = true;
+                    this->loadexecutor_->setDefaultValues(param1, param2, param3);
+                }
+                return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
+            }
+            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4)
+            {
+                if ((!this->setDefaultValue_[0]) || (!this->setDefaultValue_[1]) || (!this->setDefaultValue_[2]) || (!this->setDefaultValue_[3]))
+                {
+                    this->setDefaultValue_[0] = true;
+                    this->setDefaultValue_[1] = true;
+                    this->setDefaultValue_[3] = true;
+                    this->setDefaultValue_[4] = true;
+                    this->loadexecutor_->setDefaultValues(param1, param2, param3, param4);
+                }
+                return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
+            }
+            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5)
+            {
+                if ((!this->setDefaultValue_[0]) || (!this->setDefaultValue_[1]) || (!this->setDefaultValue_[2]) || (!this->setDefaultValue_[3]) || (!this->setDefaultValue_[4]))
+                {
+                    this->setDefaultValue_[0] = true;
+                    this->setDefaultValue_[1] = true;
+                    this->setDefaultValue_[3] = true;
+                    this->setDefaultValue_[4] = true;
+                    this->setDefaultValue_[5] = true;
+                    this->loadexecutor_->setDefaultValues(param1, param2, param3, param4, param5);
+                }
+                return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
+            }
+
         private:
-            FunctorMember<T>* loadfunction_;
-            FunctorMember<T>* savefunction_;
+            ExecutorMember<T>* loadexecutor_;
+            ExecutorMember<T>* saveexecutor_;
+            ParseParams parseParams_;
+            bool setDefaultValue_[5];
     };
 
 
@@ -193,36 +285,33 @@ namespace orxonox
     class _CoreExport XMLPortObjectContainer
     {
         public:
-            XMLPortObjectContainer();
+            XMLPortObjectContainer()
+                { this->bApplyLoaderMask_ = false; }
+            virtual ~XMLPortObjectContainer() {}
 
             inline const std::string& getName() const
                 { return this->sectionname_; }
 
-            XMLPortObjectContainer& description(const std::string description);
-            const std::string& getDescription();
+            virtual XMLPortObjectContainer& description(const std::string description) = 0;
+            virtual const std::string& getDescription() = 0;
+
             bool identifierIsIncludedInLoaderMask(const Identifier* identifier);
 
         protected:
-            std::string classname_;
             std::string sectionname_;
             bool bApplyLoaderMask_;
             bool bLoadBefore_;
-
-        private:
-            LanguageEntryLabel description_;
-            bool bAddedDescription_;
     };
 
     template <class T, class O>
     class XMLPortClassObjectContainer : public XMLPortObjectContainer
     {
         public:
-            XMLPortClassObjectContainer(const std::string classname, const std::string sectionname, void (T::*loadfunction)(O*), const O* (T::*savefunction)(unsigned int) const, bool bApplyLoaderMask, bool bLoadBefore)
+            XMLPortClassObjectContainer(const std::string sectionname, ExecutorMember<T>* loadexecutor, ExecutorMember<T>* saveexecutor, bool bApplyLoaderMask, bool bLoadBefore)
             {
-                this->classname_ = classname;
                 this->sectionname_ = sectionname;
-                this->loadfunction_ = loadfunction;
-                this->savefunction_ = savefunction;
+                this->loadexecutor_ = loadexecutor;
+                this->saveexecutor_ = saveexecutor;
                 this->bApplyLoaderMask_ = bApplyLoaderMask;
                 this->bLoadBefore_ = bLoadBefore;
             }
@@ -251,22 +340,28 @@ namespace orxonox
                                         if (this->identifierIsIncludedInLoaderMask(identifier))
                                         {
                                             COUT(4) << object->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
+
                                             O* newObject = (O*)identifier->fabricate();
                                             newObject->setLoaderIndentation(object->getLoaderIndentation() + "  ");
                                             newObject->setLevel(object->getLevel());
                                             newObject->setNamespace(object->getNamespace());
+
                                             if (this->bLoadBefore_)
                                             {
                                                 newObject->XMLPort(*child, XMLPort::LoadObject);
-                                                COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->classname_ << " (objectname " << object->getName() << ")" << std::endl;
+                                                COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << object->getIdentifier()->getName() << " (objectname " << object->getName() << ")" << std::endl;
                                             }
                                             else
                                             {
-                                                COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->classname_ << " (objectname " << object->getName() << ")" << std::endl;
+                                                COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << object->getIdentifier()->getName() << " (objectname " << object->getName() << ")" << std::endl;
                                             }
-                                            (*object.*this->loadfunction_)(newObject);
+
+                                            COUT(5) << object->getLoaderIndentation();
+                                            (*this->loadexecutor_)(object, newObject);
+
                                             if (!this->bLoadBefore_)
                                                 newObject->XMLPort(*child, XMLPort::LoadObject);
+
                                             COUT(5) << object->getLoaderIndentation() << "...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
                                         }
                                     }
@@ -285,7 +380,7 @@ namespace orxonox
                     catch(ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << Class(O)->getName() << "' in '" << this->sectionname_ << "' of '" << this->classname_ << "' (objectname: " << object->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << Class(O)->getName() << "' in '" << this->sectionname_ << "' of '" << object->getIdentifier()->getName() << "' (objectname: " << object->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
@@ -296,9 +391,14 @@ namespace orxonox
                 return (*this);
             }
 
+            virtual XMLPortObjectContainer& description(const std::string description)
+                { this->loadexecutor_->setDescription(description); return (*this); }
+            virtual const std::string& getDescription()
+                { return this->loadexecutor_->getDescription(); }
+
         private:
-            void     (T::*loadfunction_)(O*);
-            const O* (T::*savefunction_)(unsigned int) const;
+            ExecutorMember<T>* loadexecutor_;
+            ExecutorMember<T>* saveexecutor_;
     };
 }
 

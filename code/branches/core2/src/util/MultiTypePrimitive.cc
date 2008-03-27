@@ -133,8 +133,6 @@ bool MultiTypePrimitive::operator!=(const MultiTypePrimitive& mtp) const
     return true;
 }
 
-MultiTypePrimitive::operator orxonox::BaseObject*() const
-{ return (this->type_ == MT_void) ? (orxonox::BaseObject*)this->value_.void_ : (orxonox::BaseObject*)ConvertValueAndReturn<MultiTypePrimitive, void*>(*this); }
 MultiTypePrimitive::operator void*() const
 { return (this->type_ == MT_void) ? this->value_.void_ : ConvertValueAndReturn<MultiTypePrimitive, void*>(*this); }
 MultiTypePrimitive::operator int() const

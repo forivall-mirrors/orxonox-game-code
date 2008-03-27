@@ -61,13 +61,13 @@ namespace orxonox
             void setName(const std::string name);
             const std::string& getName() const;
 
-            void description(const std::string& description);
+            void setDescription(const std::string& description);
             const std::string& getDescription() const;
 
-            void descriptionParam(int param, const std::string& description);
+            void setDescriptionParam(int param, const std::string& description);
             const std::string& getDescriptionParam(int param) const;
 
-            void descriptionReturnvalue(const std::string& description);
+            void setDescriptionReturnvalue(const std::string& description);
             const std::string& getDescriptionReturnvalue(int param) const;
 
             inline int getParamCount() const
@@ -88,14 +88,17 @@ namespace orxonox
             void setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3);
             void setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4);
             void setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5);
-            void setDefaultValue(int index, const MultiTypeMath& param);
+            void setDefaultValue(unsigned int index, const MultiTypeMath& param);
+
+            bool allDefaultValuesSet() const;
 
         protected:
             Functor* functor_;
+            std::string name_;
+            MultiTypeMath defaultValue_[MAX_FUNCTOR_ARGUMENTS];
+            bool bAddedDefaultValue_[MAX_FUNCTOR_ARGUMENTS];
 
         private:
-            std::string name_;
-
             LanguageEntryLabel description_;
             LanguageEntryLabel descriptionReturnvalue_;
             LanguageEntryLabel descriptionParam_[MAX_FUNCTOR_ARGUMENTS];
@@ -103,9 +106,6 @@ namespace orxonox
             bool bAddedDescription_;
             bool bAddedDescriptionReturnvalue_;
             bool bAddedDescriptionParam_[MAX_FUNCTOR_ARGUMENTS];
-
-            MultiTypeMath defaultValue_[MAX_FUNCTOR_ARGUMENTS];
-            bool bAddedDefaultValue_[MAX_FUNCTOR_ARGUMENTS];
     };
 
     class _CoreExport ExecutorStatic : public Executor
@@ -154,7 +154,7 @@ namespace orxonox
             inline void setObject(const T* object) const
                 { ((FunctorMember<T>*)this->functor_)->setObject(object); }
 
-            bool parse(T* object, const std::string& params, const std::string& delimiter) const
+            bool parse(T* object, const std::string& params, const std::string& delimiter = " ") const
             {
                 unsigned int paramCount = this->functor_->getParamCount();
 
@@ -178,7 +178,7 @@ namespace orxonox
                     }
                     else
                     {
-                        COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given." << std::endl;
+                        COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << temp << ")." << std::endl;
                         return false;
                     }
                 }
@@ -190,7 +190,7 @@ namespace orxonox
                     {
                         if (!this->bAddedDefaultValue_[i])
                         {
-                            COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given." << std::endl;
+                            COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input:" << params << ")." << std::endl;
                             return false;
                         }
                     }
@@ -238,7 +238,7 @@ namespace orxonox
                 return true;
             }
 
-            bool parse(const T* object, const std::string& params, const std::string& delimiter) const
+            bool parse(const T* object, const std::string& params, const std::string& delimiter = " ") const
             {
                 unsigned int paramCount = this->functor_->getParamCount();
 
@@ -262,7 +262,7 @@ namespace orxonox
                     }
                     else
                     {
-                        COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given." << std::endl;
+                        COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << temp << ")." << std::endl;
                         return false;
                     }
                 }
@@ -274,7 +274,7 @@ namespace orxonox
                     {
                         if (!this->bAddedDefaultValue_[i])
                         {
-                            COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given." << std::endl;
+                            COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input:" << params << ")." << std::endl;
                             return false;
                         }
                     }
@@ -322,6 +322,22 @@ namespace orxonox
                 return true;
             }
     };
+
+    inline Executor* createExecutor(Functor* functor, const std::string& name = "")
+    {
+        return new Executor(functor, name);
+    }
+
+    template <class T>
+    inline ExecutorMember<T>* createExecutor(FunctorMember<T>* functor, const std::string& name = "")
+    {
+        return new ExecutorMember<T>(functor, name);
+    }
+
+    inline ExecutorStatic* createExecutor(FunctorStatic* functor, const std::string& name = "")
+    {
+        return new ExecutorStatic(functor, name);
+    }
 }
 
 #endif /* _Executor_H__ */

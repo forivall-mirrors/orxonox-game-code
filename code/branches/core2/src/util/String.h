@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef _String_H__
-#define _String_H__
+#ifndef _Util_String_H__
+#define _Util_String_H__
 
 #include <string>
 #include <sstream>
@@ -143,4 +143,4 @@ class _UtilExport Convert
         }
 };
 
-#endif /* _String_H__ */
+#endif /* _Util_String_H__ */
