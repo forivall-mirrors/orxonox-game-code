@@ -31,8 +31,9 @@
 
 #include "CorePrereqs.h"
 #include "Functor.h"
+#include "Debug.h"
 #include "util/SubString.h"
-
+#include "util/String.h"
 
 namespace orxonox
 {
@@ -159,25 +160,63 @@ namespace orxonox
 
                 if (paramCount == 0)
                 {
+                    COUT(5) << "Calling Executor " << this->name_ << " through parser without parameters." << std::endl;
                     (*((FunctorMember<T>*)this->functor_))(object);
                 }
                 else if (paramCount == 1)
                 {
-                    (*((FunctorMember<T>*)this->functor_))(object, MultiTypeMath(params));
+                    std::string temp = getStripped(params);
+                    if ((temp != "") && (temp.size() != 0))
+                    {
+                        COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using whole string: " << params << std::endl;
+                        (*((FunctorMember<T>*)this->functor_))(object, MultiTypeMath(params));
+                    }
+                    else if (this->bAddedDefaultValue_[0])
+                    {
+                        COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using default value: " << this->defaultValue_[0] << std::endl;
+                        (*((FunctorMember<T>*)this->functor_))(object, this->defaultValue_[0]);
+                    }
+                    else
+                    {
+                        COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given." << std::endl;
+                        return false;
+                    }
                 }
                 else
                 {
                     SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
 
                     for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)
+                    {
                         if (!this->bAddedDefaultValue_[i])
+                        {
+                            COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given." << std::endl;
                             return false;
+                        }
+                    }
 
                     MultiTypeMath param[paramCount];
+                    COUT(5) << "Calling Executor " << this->name_ << " through parser with " << paramCount << " parameters, using " << tokens.size() << " tokens (";
                     for (unsigned int i = 0; i < tokens.size(); i++)
+                    {
                         param[i] = tokens[i];
+                        if (i != 0)
+                        {
+                            COUT(5) << ", ";
+                        }
+                        COUT(5) << tokens[i];
+                    }
+                    COUT(5) << ") and " << (paramCount - tokens.size()) << " default values (";
                     for (unsigned int i = tokens.size(); i < paramCount; i++)
+                    {
                         param[i] = this->defaultValue_[i];
+                        if (i != 0)
+                        {
+                            COUT(5) << ", ";
+                        }
+                        COUT(5) << this->defaultValue_[i];
+                    }
+                    COUT(5) << ")." << std::endl;
 
                     switch(paramCount)
                     {
@@ -205,25 +244,63 @@ namespace orxonox
 
                 if (paramCount == 0)
                 {
+                    COUT(5) << "Calling Executor " << this->name_ << " through parser without parameters." << std::endl;
                     (*((FunctorMember<T>*)this->functor_))(object);
                 }
                 else if (paramCount == 1)
                 {
-                    (*((FunctorMember<T>*)this->functor_))(object, MultiTypeMath(params));
+                    std::string temp = getStripped(params);
+                    if ((temp != "") && (temp.size() != 0))
+                    {
+                        COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using whole string: " << params << std::endl;
+                        (*((FunctorMember<T>*)this->functor_))(object, MultiTypeMath(params));
+                    }
+                    else if (this->bAddedDefaultValue_[0])
+                    {
+                        COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using default value: " << this->defaultValue_[0] << std::endl;
+                        (*((FunctorMember<T>*)this->functor_))(object, this->defaultValue_[0]);
+                    }
+                    else
+                    {
+                        COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given." << std::endl;
+                        return false;
+                    }
                 }
                 else
                 {
                     SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
 
                     for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)
+                    {
                         if (!this->bAddedDefaultValue_[i])
+                        {
+                            COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given." << std::endl;
                             return false;
+                        }
+                    }
 
                     MultiTypeMath param[paramCount];
+                    COUT(5) << "Calling Executor " << this->name_ << " through parser with " << paramCount << " parameters, using " << tokens.size() << " tokens (";
                     for (unsigned int i = 0; i < tokens.size(); i++)
+                    {
                         param[i] = tokens[i];
+                        if (i != 0)
+                        {
+                            COUT(5) << ", ";
+                        }
+                        COUT(5) << tokens[i];
+                    }
+                    COUT(5) << ") and " << (paramCount - tokens.size()) << " default values (";
                     for (unsigned int i = tokens.size(); i < paramCount; i++)
+                    {
                         param[i] = this->defaultValue_[i];
+                        if (i != 0)
+                        {
+                            COUT(5) << ", ";
+                        }
+                        COUT(5) << this->defaultValue_[i];
+                    }
+                    COUT(5) << ")." << std::endl;
 
                     switch(paramCount)
                     {
