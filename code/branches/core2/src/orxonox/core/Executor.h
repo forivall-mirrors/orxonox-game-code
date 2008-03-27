@@ -35,6 +35,100 @@
 #include "util/SubString.h"
 #include "util/String.h"
 
+
+#define EXECUTOR_PARSE_FUNCTORCALL(mode) EXECUTOR_PARSE_FUNCTORCALL##mode
+#define EXECUTOR_PARSE_FUNCTORCALLnormal (*this->functor_)
+#define EXECUTOR_PARSE_FUNCTORCALLobject (*((FunctorMember<T>*)this->functor_))
+
+#define EXECUTOR_PARSE_OBJECT(mode, comma) EXECUTOR_PARSE_OBJECT##mode##comma
+#define EXECUTOR_PARSE_OBJECTnormal0
+#define EXECUTOR_PARSE_OBJECTnormal1
+#define EXECUTOR_PARSE_OBJECTobject0 object
+#define EXECUTOR_PARSE_OBJECTobject1 object,
+
+#define EXECUTOR_PARSE(mode) \
+    unsigned int paramCount = this->functor_->getParamCount(); \
+    \
+    if (paramCount == 0) \
+    { \
+        COUT(5) << "Calling Executor " << this->name_ << " through parser without parameters." << std::endl; \
+        EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 0)); \
+    } \
+    else if (paramCount == 1) \
+    { \
+        std::string temp = getStripped(params); \
+        if ((temp != "") && (temp.size() != 0)) \
+        { \
+            COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using whole string: " << params << std::endl; \
+            EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) MultiTypeMath(params)); \
+        } \
+        else if (this->bAddedDefaultValue_[0]) \
+        { \
+            COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using default value: " << this->defaultValue_[0] << std::endl; \
+            EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) this->defaultValue_[0]); \
+        } \
+        else \
+        { \
+            COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << temp << ")." << std::endl; \
+            return false; \
+        } \
+    } \
+    else \
+    { \
+        SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0'); \
+    \
+        for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++) \
+        { \
+            if (!this->bAddedDefaultValue_[i]) \
+            { \
+                COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input:" << params << ")." << std::endl; \
+                return false; \
+            } \
+        } \
+    \
+        MultiTypeMath param[paramCount]; \
+        COUT(5) << "Calling Executor " << this->name_ << " through parser with " << paramCount << " parameters, using " << tokens.size() << " tokens ("; \
+        for (unsigned int i = 0; i < tokens.size(); i++) \
+        { \
+            param[i] = tokens[i]; \
+            if (i != 0) \
+            { \
+                COUT(5) << ", "; \
+            } \
+            COUT(5) << tokens[i]; \
+        } \
+        COUT(5) << ") and " << (paramCount - tokens.size()) << " default values ("; \
+        for (unsigned int i = tokens.size(); i < paramCount; i++) \
+        { \
+            param[i] = this->defaultValue_[i]; \
+            if (i != 0) \
+            { \
+                COUT(5) << ", "; \
+            } \
+            COUT(5) << this->defaultValue_[i]; \
+        } \
+        COUT(5) << ")." << std::endl; \
+    \
+        switch(paramCount) \
+        { \
+            case 2: \
+                EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) param[0], param[1]); \
+                break; \
+            case 3: \
+                EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) param[0], param[1], param[2]); \
+                break; \
+            case 4: \
+                EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) param[0], param[1], param[2], param[3]); \
+                break; \
+            case 5: \
+                EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) param[0], param[1], param[2], param[3], param[4]); \
+                break; \
+        } \
+    } \
+    \
+    return true
+
+
 namespace orxonox
 {
     class _CoreExport Executor
@@ -156,170 +250,12 @@ namespace orxonox
 
             bool parse(T* object, const std::string& params, const std::string& delimiter = " ") const
             {
-                unsigned int paramCount = this->functor_->getParamCount();
-
-                if (paramCount == 0)
-                {
-                    COUT(5) << "Calling Executor " << this->name_ << " through parser without parameters." << std::endl;
-                    (*((FunctorMember<T>*)this->functor_))(object);
-                }
-                else if (paramCount == 1)
-                {
-                    std::string temp = getStripped(params);
-                    if ((temp != "") && (temp.size() != 0))
-                    {
-                        COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using whole string: " << params << std::endl;
-                        (*((FunctorMember<T>*)this->functor_))(object, MultiTypeMath(params));
-                    }
-                    else if (this->bAddedDefaultValue_[0])
-                    {
-                        COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using default value: " << this->defaultValue_[0] << std::endl;
-                        (*((FunctorMember<T>*)this->functor_))(object, this->defaultValue_[0]);
-                    }
-                    else
-                    {
-                        COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << temp << ")." << std::endl;
-                        return false;
-                    }
-                }
-                else
-                {
-                    SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
-
-                    for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)
-                    {
-                        if (!this->bAddedDefaultValue_[i])
-                        {
-                            COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input:" << params << ")." << std::endl;
-                            return false;
-                        }
-                    }
-
-                    MultiTypeMath param[paramCount];
-                    COUT(5) << "Calling Executor " << this->name_ << " through parser with " << paramCount << " parameters, using " << tokens.size() << " tokens (";
-                    for (unsigned int i = 0; i < tokens.size(); i++)
-                    {
-                        param[i] = tokens[i];
-                        if (i != 0)
-                        {
-                            COUT(5) << ", ";
-                        }
-                        COUT(5) << tokens[i];
-                    }
-                    COUT(5) << ") and " << (paramCount - tokens.size()) << " default values (";
-                    for (unsigned int i = tokens.size(); i < paramCount; i++)
-                    {
-                        param[i] = this->defaultValue_[i];
-                        if (i != 0)
-                        {
-                            COUT(5) << ", ";
-                        }
-                        COUT(5) << this->defaultValue_[i];
-                    }
-                    COUT(5) << ")." << std::endl;
-
-                    switch(paramCount)
-                    {
-                        case 2:
-                            (*((FunctorMember<T>*)this->functor_))(object, param[0], param[1]);
-                            break;
-                        case 3:
-                            (*((FunctorMember<T>*)this->functor_))(object, param[0], param[1], param[2]);
-                            break;
-                        case 4:
-                            (*((FunctorMember<T>*)this->functor_))(object, param[0], param[1], param[2], param[3]);
-                            break;
-                        case 5:
-                            (*((FunctorMember<T>*)this->functor_))(object, param[0], param[1], param[2], param[3], param[4]);
-                            break;
-                    }
-                }
-
-                return true;
+                EXECUTOR_PARSE(object);
             }
 
             bool parse(const T* object, const std::string& params, const std::string& delimiter = " ") const
             {
-                unsigned int paramCount = this->functor_->getParamCount();
-
-                if (paramCount == 0)
-                {
-                    COUT(5) << "Calling Executor " << this->name_ << " through parser without parameters." << std::endl;
-                    (*((FunctorMember<T>*)this->functor_))(object);
-                }
-                else if (paramCount == 1)
-                {
-                    std::string temp = getStripped(params);
-                    if ((temp != "") && (temp.size() != 0))
-                    {
-                        COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using whole string: " << params << std::endl;
-                        (*((FunctorMember<T>*)this->functor_))(object, MultiTypeMath(params));
-                    }
-                    else if (this->bAddedDefaultValue_[0])
-                    {
-                        COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using default value: " << this->defaultValue_[0] << std::endl;
-                        (*((FunctorMember<T>*)this->functor_))(object, this->defaultValue_[0]);
-                    }
-                    else
-                    {
-                        COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << temp << ")." << std::endl;
-                        return false;
-                    }
-                }
-                else
-                {
-                    SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
-
-                    for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)
-                    {
-                        if (!this->bAddedDefaultValue_[i])
-                        {
-                            COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input:" << params << ")." << std::endl;
-                            return false;
-                        }
-                    }
-
-                    MultiTypeMath param[paramCount];
-                    COUT(5) << "Calling Executor " << this->name_ << " through parser with " << paramCount << " parameters, using " << tokens.size() << " tokens (";
-                    for (unsigned int i = 0; i < tokens.size(); i++)
-                    {
-                        param[i] = tokens[i];
-                        if (i != 0)
-                        {
-                            COUT(5) << ", ";
-                        }
-                        COUT(5) << tokens[i];
-                    }
-                    COUT(5) << ") and " << (paramCount - tokens.size()) << " default values (";
-                    for (unsigned int i = tokens.size(); i < paramCount; i++)
-                    {
-                        param[i] = this->defaultValue_[i];
-                        if (i != 0)
-                        {
-                            COUT(5) << ", ";
-                        }
-                        COUT(5) << this->defaultValue_[i];
-                    }
-                    COUT(5) << ")." << std::endl;
-
-                    switch(paramCount)
-                    {
-                        case 2:
-                            (*((FunctorMember<T>*)this->functor_))(object, param[0], param[1]);
-                            break;
-                        case 3:
-                            (*((FunctorMember<T>*)this->functor_))(object, param[0], param[1], param[2]);
-                            break;
-                        case 4:
-                            (*((FunctorMember<T>*)this->functor_))(object, param[0], param[1], param[2], param[3]);
-                            break;
-                        case 5:
-                            (*((FunctorMember<T>*)this->functor_))(object, param[0], param[1], param[2], param[3], param[4]);
-                            break;
-                    }
-                }
-
-                return true;
+                EXECUTOR_PARSE(object);
             }
     };
 
