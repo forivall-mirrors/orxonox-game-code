@@ -43,6 +43,7 @@ namespace orxonox {
       inline BulletManager*       getBulletMgr()           { return this->bulletMgr_; }
 
       static Orxonox* getSingleton();
+      static void destroy();
 
    private:
       // don't mess with singletons
@@ -85,6 +86,8 @@ namespace orxonox {
       // this is used to identify the mode (server/client/...) we're in
       gameMode              mode_;
       std::string           serverIp_;
+
+      static Orxonox *singletonRef_s;
   };
 }
 #endif /* _Orxonox_H__ */

@@ -42,20 +42,27 @@
 
 namespace orxonox
 {
+  /**
+    @brief Captures and distributes mouse and keyboard input.
+    It resolves the key bindings to InputEvents which can be heard by
+    implementing the InputEventListener interface.
+  */
   class _OrxonoxExport InputHandler
         : public Tickable, public OIS::KeyListener, public OIS::MouseListener
   {
-    //friend ClassIdentifier<InputHandler>;
+    //friend class ClassIdentifier<InputHandler>;
   public:
-    void initialise(size_t windowHnd, int windowWidth, int windowHeight);
-    void destroy();
+    bool initialise(size_t windowHnd, int windowWidth, int windowHeight);
+    void destroyDevices();
     void tick(float dt);
     void setWindowExtents(int width, int height);
 
+    // Temporary solutions. Will be removed soon!
     OIS::Mouse    *getMouse()    { return this->mouse_   ; }
     OIS::Keyboard *getKeyboard() { return this->keyboard_; }
 
     static InputHandler* getSingleton();
+    static void destroy();
 
   private:
     // don't mess with a Singleton
@@ -77,28 +84,24 @@ namespace orxonox
     OIS::Keyboard     *keyboard_;       //!< OIS mouse
     OIS::Mouse        *mouse_;          //!< OIS keyboard
 
-    /**
-      @bref Tells whether initialise has been called successfully
-      Also true if destroy() has been called.
-    */
-    bool uninitialized_;
-
-    //! denotes the maximum number of different keys there are in OIS.
-    //! 256 should be ok since the highest number in the enum is 237.
+    /** denotes the maximum number of different keys there are in OIS.
+        256 should be ok since the highest number in the enum is 237. */
     static const int numberOfKeys_ = 256;
     //! Array of input events for every pressed key
     InputEvent bindingsKeyPressed_[numberOfKeys_];
     //! Array of input events for every released key
     InputEvent bindingsKeyReleased_[numberOfKeys_];
 
-    //! denotes the maximum number of different buttons there are in OIS.
-    //! 16 should be ok since the highest number in the enum is 7.
+    /** denotes the maximum number of different buttons there are in OIS.
+        16 should be ok since the highest number in the enum is 7. */
     static const int numberOfButtons_ = 16;
     //! Array of input events for every pressed key
     InputEvent bindingsButtonPressed_[numberOfButtons_];
     //! Array of input events for every released key
     InputEvent bindingsButtonReleased_[numberOfButtons_];
 
+    //! Pointer to the instance of the singleton
+    static InputHandler *singletonRef_s;
   };
 }
 

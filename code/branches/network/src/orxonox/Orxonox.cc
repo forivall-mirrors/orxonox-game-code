@@ -45,9 +45,6 @@
 //#include <iostream>
 //#include <exception>
 #include <deque>
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
 
 //***** ORXONOX ****
 //misc
@@ -79,11 +76,17 @@ network::Server *server_g;
 namespace orxonox
 {
   /**
+    @brief Reference to the only instance of the class.
+  */
+  Orxonox *Orxonox::singletonRef_s = 0;
+
+  /**
    * create a new instance of Orxonox
    */
   Orxonox::Orxonox()
   {
     this->ogre_ = new GraphicsEngine();
+    this->timer_ = 0;
     this->dataPath_ = "";
     this->auMan_ = 0;
     this->inputHandler_ = 0;
@@ -104,8 +107,7 @@ namespace orxonox
     if (this->orxonoxHUD_)
       delete this->orxonoxHUD_;
     Loader::close();
-    // do not destroy the InputHandler since this is a singleton too
-    // and might have been deleted already (after return 0; in main())
+    InputHandler::destroy();
     if (this->auMan_)
       delete this->auMan_;
     if (this->timer_)
@@ -141,8 +143,21 @@ namespace orxonox
    */
   Orxonox* Orxonox::getSingleton()
   {
-    static Orxonox theOnlyInstance;
-    return &theOnlyInstance;
+    if (!singletonRef_s)
+      singletonRef_s = new Orxonox();
+    return singletonRef_s;
+    //static Orxonox theOnlyInstance;
+    //return &theOnlyInstance;
+  }
+
+  /**
+    @brief Destroys the Orxonox singleton.
+  */
+  void Orxonox::destroy()
+  {
+    if (singletonRef_s)
+      delete singletonRef_s;
+    singletonRef_s = 0;
   }
 
   /**
@@ -312,8 +327,9 @@ namespace orxonox
   void Orxonox::setupInputSystem()
   {
     inputHandler_ = InputHandler::getSingleton();
-    inputHandler_->initialise(ogre_->getWindowHandle(),
-          ogre_->getWindowWidth(), ogre_->getWindowHeight());
+    if (!inputHandler_->initialise(ogre_->getWindowHandle(),
+          ogre_->getWindowWidth(), ogre_->getWindowHeight()))
+      abortImmediate();
   }
 
   /**

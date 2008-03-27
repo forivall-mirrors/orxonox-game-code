@@ -21,7 +21,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      Some guy writing the example code from Ogre
+ *      ...
  *
  */
 
@@ -34,6 +34,7 @@
 #include "OrxonoxStableHeaders.h"
 
 #include "core/CoreIncludes.h"
+#include "core/Debug.h"
 #include "Orxonox.h"
 #include "InputEventListener.h"
 #include "InputHandler.h"
@@ -41,11 +42,15 @@
 namespace orxonox
 {
   /**
+    @brief The reference to the singleton
+  */
+  InputHandler* InputHandler::singletonRef_s = 0;
+
+  /**
     @brief Constructor only resets the pointer values to 0.
   */
   InputHandler::InputHandler() :
-      mouse_(0), keyboard_(0), inputSystem_(0),
-      uninitialized_(true)
+      mouse_(0), keyboard_(0), inputSystem_(0)
   {
     //RegisterObject(InputHandler);
   }
@@ -55,7 +60,6 @@ namespace orxonox
   */
   InputHandler::~InputHandler()
   {
-    this->destroy();
   }
 
   /**
@@ -64,8 +68,11 @@ namespace orxonox
   */
   InputHandler *InputHandler::getSingleton()
   {
-    static InputHandler theOnlyInstance;
-    return &theOnlyInstance;
+    if (!singletonRef_s)
+      singletonRef_s = new InputHandler();
+    return singletonRef_s;
+    //static InputHandler theOnlyInstance;
+    //return &theOnlyInstance;
   }
 
   /**
@@ -75,9 +82,9 @@ namespace orxonox
     @param windowWidth The width of the render window
     @param windowHeight The height of the render window
   */
-  void InputHandler::initialise(size_t windowHnd, int windowWidth, int windowHeight)
+  bool InputHandler::initialise(size_t windowHnd, int windowWidth, int windowHeight)
   {
-    if (this->uninitialized_ || !this->inputSystem_)
+    if (!this->inputSystem_)
     {
       // Setup basic variables
       OIS::ParamList paramList;
@@ -91,29 +98,45 @@ namespace orxonox
       paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
 #endif
 
-      // Create inputsystem
-      inputSystem_ = OIS::InputManager::createInputSystem(paramList);
-
-      // If possible create a buffered keyboard
-      if (inputSystem_->numKeyboards() > 0)
+      try
       {
-        keyboard_ = static_cast<OIS::Keyboard*>(inputSystem_->createInputObject(OIS::OISKeyboard, true));
-        keyboard_->setEventCallback(this);
-      }
+        // Create inputsystem
+        inputSystem_ = OIS::InputManager::createInputSystem(paramList);
+        //if (getSoftDebugLevel() >= ORX_DEBUG)
+        //  orxonox::OutputHandler::getOutStream().setOutputLevel(4) << "asdfblah" << std::endl;
+        COUT(ORX_DEBUG) << "*** InputHandler: Created OIS input system" << std::endl;
 
-      // If possible create a buffered mouse
-      if (inputSystem_->numMice() > 0 )
+        // If possible create a buffered keyboard
+        if (inputSystem_->numKeyboards() > 0)
+        {
+          keyboard_ = static_cast<OIS::Keyboard*>(inputSystem_->createInputObject(OIS::OISKeyboard, true));
+          keyboard_->setEventCallback(this);
+          COUT(ORX_DEBUG) << "*** InputHandler: Created OIS mouse" << std::endl;
+        }
+
+        // If possible create a buffered mouse
+        if (inputSystem_->numMice() > 0 )
+        {
+          mouse_ = static_cast<OIS::Mouse*>(inputSystem_->createInputObject(OIS::OISMouse, true));
+          mouse_->setEventCallback(this);
+          COUT(ORX_DEBUG) << "*** InputHandler: Created OIS keyboard" << std::endl;
+
+          // Set mouse region
+          this->setWindowExtents(windowWidth, windowHeight);
+        }
+      }
+      catch (OIS::Exception ex)
       {
-        mouse_ = static_cast<OIS::Mouse*>(inputSystem_->createInputObject(OIS::OISMouse, true));
-        mouse_->setEventCallback(this);
-
-        // Set mouse region
-        this->setWindowExtents(windowWidth, windowHeight);
+        // something went wrong with the initialisation
+        COUT(ORX_ERROR) << "Error: Failed creating an input system. Message: \"" << ex.eText << "\"" << std::endl;
+        this->inputSystem_ = 0;
+        return false;
       }
-
-      uninitialized_ = false;
     }
 
+    COUT(ORX_DEBUG) << "*** InputHandler: Loading key bindings..." << std::endl;
+    // temporary solution: create event list
+    //InputEvent[] list = this->createEventList();
     // load the key bindings
     InputEvent empty = {0, false, 0, 0, 0};
     for (int i = 0; i < this->numberOfKeys_; i++)
@@ -121,13 +144,17 @@ namespace orxonox
 
     //assign 'abort' to the escape key
     this->bindingsKeyPressed_[(int)OIS::KC_ESCAPE].id = 1;
+    COUT(ORX_DEBUG) << "*** InputHandler: Loading done." << std::endl;
+
+    return true;
   }
 
   /**
     @brief Destroys all the created input devices.
   */
-  void InputHandler::destroy()
+  void InputHandler::destroyDevices()
   {
+    COUT(ORX_DEBUG) << "*** InputHandler: Destroying InputHandler..." << std::endl;
     if (this->mouse_)
       this->inputSystem_->destroyInputObject(mouse_);
     if (this->keyboard_)
@@ -138,7 +165,17 @@ namespace orxonox
     this->mouse_         = 0;
     this->keyboard_      = 0;
     this->inputSystem_   = 0;
-    this->uninitialized_ = true;
+    COUT(ORX_DEBUG) << "*** InputHandler: Destroying done." << std::endl;
+  }
+
+  /**
+    @brief Destroys the singleton.
+  */
+  void InputHandler::destroy()
+  {
+    if (singletonRef_s)
+      delete singletonRef_s;
+    singletonRef_s = 0;
   }
 
   /**
