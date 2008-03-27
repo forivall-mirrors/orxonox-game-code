@@ -122,7 +122,7 @@ namespace orxonox
       catch (OIS::Exception ex)
       {
         // something went wrong with the initialisation
-        COUT(ORX_ERROR) << "Error: Failed creating an input system. Message: \"" << ex.eText << "\"" << std::endl;
+        COUT(ORX_ERROR) << "Error: Failed creating an input system/keyboard/mouse. Message: \"" << ex.eText << "\"" << std::endl;
         this->inputSystem_ = 0;
         return false;
       }

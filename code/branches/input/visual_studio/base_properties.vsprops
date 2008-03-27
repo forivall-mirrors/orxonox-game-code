@@ -22,7 +22,7 @@
 		Name="VCLinkerTool"
 		OutputFile="$(OutDir)$(ProjectName)$(CS).dll"
 		AdditionalLibraryDirectories="$(DependencyDir)lib"
-		SubSystem="2"
+		SubSystem="1"
 		ImportLibrary="$(LibOutDir)$(TargetName).lib"
 		TargetMachine="1"
 	/>
@@ -32,7 +32,7 @@
 	/>
 	<UserMacro
 		Name="DependencyDir"
-		Value="D:\orxonox\dependencies\orxonox\"
+		Value="$(RootDir)..\dependencies\"
 	/>
 	<UserMacro
 		Name="CS"
