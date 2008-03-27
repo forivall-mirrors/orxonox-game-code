@@ -38,15 +38,69 @@ namespace orxonox
         this->name_ = name;
         this->bAddedDescription_ = false;
         this->bAddedDescriptionReturnvalue_ = false;
+
         this->bAddedDescriptionParam_[0] = false;
         this->bAddedDescriptionParam_[1] = false;
         this->bAddedDescriptionParam_[2] = false;
         this->bAddedDescriptionParam_[3] = false;
         this->bAddedDescriptionParam_[4] = false;
+
+        this->bAddedDefaultValue_[0] = false;
+        this->bAddedDefaultValue_[1] = false;
+        this->bAddedDefaultValue_[2] = false;
+        this->bAddedDefaultValue_[3] = false;
+        this->bAddedDefaultValue_[4] = false;
     }
 
     Executor::~Executor()
     {
+        delete this->functor_;
+    }
+
+    bool Executor::parse(const std::string& params, const std::string& delimiter) const
+    {
+        unsigned int paramCount = this->functor_->getParamCount();
+
+        if (paramCount == 0)
+        {
+            (*this->functor_)();
+        }
+        else if (paramCount == 1)
+        {
+            (*this->functor_)(MultiTypeMath(params));
+        }
+        else
+        {
+            SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+
+            for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)
+                if (!this->bAddedDefaultValue_[i])
+                    return false;
+
+            MultiTypeMath param[paramCount];
+            for (unsigned int i = 0; i < tokens.size(); i++)
+                param[i] = tokens[i];
+            for (unsigned int i = tokens.size(); i < paramCount; i++)
+                param[i] = this->defaultValue_[i];
+
+            switch(paramCount)
+            {
+                case 2:
+                    (*this->functor_)(param[0], param[1]);
+                    break;
+                case 3:
+                    (*this->functor_)(param[0], param[1], param[2]);
+                    break;
+                case 4:
+                    (*this->functor_)(param[0], param[1], param[2], param[3]);
+                    break;
+                case 5:
+                    (*this->functor_)(param[0], param[1], param[2], param[3], param[4]);
+                    break;
+            }
+        }
+
+        return true;
     }
 
     void Executor::setName(const std::string name)
@@ -76,7 +130,7 @@ namespace orxonox
 
     void Executor::descriptionParam(int param, const std::string& description)
     {
-        if (param > 0 && param <= 5)
+        if (param >= 0 && param < MAX_FUNCTOR_ARGUMENTS)
         {
             if (!this->bAddedDescriptionParam_[param])
             {
@@ -93,10 +147,8 @@ namespace orxonox
 
     const std::string& Executor::getDescriptionParam(int param) const
     {
-        if (param > 0 && param <= 5)
-        {
+        if (param >= 0 && param < MAX_FUNCTOR_ARGUMENTS)
             return GetLocalisation(this->descriptionParam_[param]);
-        }
 
         return this->descriptionParam_[0];
     }
@@ -114,5 +166,64 @@ namespace orxonox
     const std::string& Executor::getDescriptionReturnvalue(int param) const
     {
         return GetLocalisation(this->descriptionReturnvalue_);
+    }
+
+    void Executor::setDefaultValues(const MultiTypeMath& param1)
+    {
+        this->defaultValue_[0] = param1;
+        this->bAddedDefaultValue_[0] = true;
+    }
+
+    void Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2)
+    {
+        this->defaultValue_[0] = param1;
+        this->bAddedDefaultValue_[0] = true;
+        this->defaultValue_[1] = param2;
+        this->bAddedDefaultValue_[1] = true;
+    }
+
+    void Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3)
+    {
+        this->defaultValue_[0] = param1;
+        this->bAddedDefaultValue_[0] = true;
+        this->defaultValue_[1] = param2;
+        this->bAddedDefaultValue_[1] = true;
+        this->defaultValue_[2] = param3;
+        this->bAddedDefaultValue_[2] = true;
+    }
+
+    void Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4)
+    {
+        this->defaultValue_[0] = param1;
+        this->bAddedDefaultValue_[0] = true;
+        this->defaultValue_[1] = param2;
+        this->bAddedDefaultValue_[1] = true;
+        this->defaultValue_[2] = param3;
+        this->bAddedDefaultValue_[2] = true;
+        this->defaultValue_[3] = param4;
+        this->bAddedDefaultValue_[3] = true;
+    }
+
+    void Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5)
+    {
+        this->defaultValue_[0] = param1;
+        this->bAddedDefaultValue_[0] = true;
+        this->defaultValue_[1] = param2;
+        this->bAddedDefaultValue_[1] = true;
+        this->defaultValue_[2] = param3;
+        this->bAddedDefaultValue_[2] = true;
+        this->defaultValue_[3] = param4;
+        this->bAddedDefaultValue_[3] = true;
+        this->defaultValue_[4] = param5;
+        this->bAddedDefaultValue_[4] = true;
+    }
+
+    void Executor::setDefaultValue(int index, const MultiTypeMath& param)
+    {
+        if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+        {
+            this->defaultValue_[index] = param;
+            this->bAddedDefaultValue_[index] = true;
+        }
     }
 }

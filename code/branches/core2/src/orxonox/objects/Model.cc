@@ -80,14 +80,16 @@ namespace orxonox
         this->meshSrc_ = meshname;
     }
 
-    bool Model::create(){
-      if(meshSrc_.compare("")!=0){
-        this->mesh_.setMesh(meshSrc_);
-        this->attachObject(this->mesh_.getEntity());
-        COUT(4) << "Loader: Created model" << std::endl;
-      }
-      registerAllVariables();
-      return true;
+    bool Model::create()
+    {
+        if ((this->meshSrc_ != "") && (this->meshSrc_.size() > 0))
+        {
+            this->mesh_.setMesh(meshSrc_);
+            this->attachObject(this->mesh_.getEntity());
+            COUT(4) << "Loader: Created model" << std::endl;
+        }
+        registerAllVariables();
+        return true;
     }
 
     void Model::registerAllVariables(){

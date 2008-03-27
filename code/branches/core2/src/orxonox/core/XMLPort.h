@@ -101,21 +101,9 @@ namespace orxonox
             XMLPortParamContainer& description(const std::string description);
             const std::string& getDescription();
 
-            XMLPortParamContainer& defaultValues(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null)
-            {
-                this->defaultValues_[0] = param1;
-                this->defaultValues_[1] = param2;
-                this->defaultValues_[2] = param3;
-                this->defaultValues_[3] = param4;
-                this->defaultValues_[4] = param5;
-
-                return (*this);
-            }
-
         protected:
             std::string classname_;
             std::string paramname_;
-            MultiTypeMath defaultValues_[5];
 
         private:
             LanguageEntryLabel description_;
@@ -246,7 +234,7 @@ namespace orxonox
                     try
                     {
                         Element* xmlsubelement;
-                        if (this->sectionname_ != "")
+                        if ((this->sectionname_ != "") && (this->sectionname_.size() > 0))
                             xmlsubelement = xmlelement.FirstChildElement(this->sectionname_, false);
                         else
                             xmlsubelement = &xmlelement;

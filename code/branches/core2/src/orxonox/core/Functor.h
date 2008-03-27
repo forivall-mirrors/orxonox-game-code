@@ -34,6 +34,7 @@
 
 #include "CorePrereqs.h"
 
+#define MAX_FUNCTOR_ARGUMENTS 5
 
 enum FunctionType
 {
@@ -79,7 +80,7 @@ class _CoreExport Functor
 
         virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
 
-        inline int getParamCount() const { return this->numParams_; }
+        inline unsigned int getParamCount() const { return this->numParams_; }
         inline bool hasReturnvalue() const { return this->hasReturnValue_; }
         inline FunctionType getType() const { return this->type_; }
         inline MultiTypeMath getReturnvalue() const { return this->returnedValue_; }
@@ -88,13 +89,13 @@ class _CoreExport Functor
         std::string getTypenameReturnvalue() const { return this->typeReturnvalue_; }
 
     protected:
-        int numParams_;
+        unsigned int numParams_;
         bool hasReturnValue_;
         FunctionType type_;
         MultiTypeMath returnedValue_;
 
         std::string typeReturnvalue_;
-        std::string typeParam_[5];
+        std::string typeParam_[MAX_FUNCTOR_ARGUMENTS];
 };
 
 class _CoreExport FunctorStatic : public Functor

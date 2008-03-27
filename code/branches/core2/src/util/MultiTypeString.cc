@@ -31,10 +31,7 @@
 
 MultiTypeString::MultiTypeString(MultiType type) : MultiTypePrimitive(type)
 {
-    if (type == MT_constchar)
-        this->string_ = std::string("");
-    else if (type == MT_string)
-        this->string_ = std::string("");
+    // Nothing to do for string and xml-element
 }
 
 bool MultiTypeString::operator==(const MultiTypeString& mts) const

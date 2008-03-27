@@ -540,43 +540,4 @@ class Converter<std::string, orxonox::ColourValue>
     }
 };
 
-
-////////////////
-// XMLElement //
-////////////////
-
-// orxonox::Element to std::string
-template <>
-class Converter<orxonox::Element, std::string>
-{
-  public:
-    bool operator()(std::string* output, const orxonox::Element& input) const
-    {
-      std::ostringstream ostream;
-      if (ostream << input)
-      {
-        (*output) = ostream.str();
-        return true;
-      }
-
-      return false;
-    }
-};
-
-// std::string to orxonox::Element
-template <>
-class Converter<std::string, orxonox::Element>
-{
-  public:
-    bool operator()(orxonox::Element* output, const std::string& input) const
-    {
-      std::istringstream istream(input);
-      if (istream >> (*output))
-        return true;
-
-      return false;
-    }
-};
-
-
 #endif /* _Convert_H__ */

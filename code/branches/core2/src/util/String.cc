@@ -82,7 +82,8 @@ bool isComment(const std::string& str)
 */
 bool isEmpty(const std::string& str)
 {
-    return getStripped(str) == "";
+    std::string temp = getStripped(str);
+    return ((temp == "") || (temp.size() == 0));
 }
 
 /**

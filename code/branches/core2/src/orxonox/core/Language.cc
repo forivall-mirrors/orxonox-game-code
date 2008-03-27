@@ -60,7 +60,7 @@ namespace orxonox
     void LanguageEntry::setLocalisation(const std::string& localisation)
     {
         // Check if the translation is more than just an empty string
-        if (localisation.compare("") != 0)
+        if ((localisation != "") && (localisation.size() > 0))
         {
             this->localisedEntry_ = localisation;
             this->bLocalisationSet_ = true;
@@ -243,7 +243,7 @@ namespace orxonox
             std::string lineString = std::string(line);
 
             // Check if the line is empty
-            if (lineString.compare("") != 0)
+            if ((lineString != "") && (lineString.size() > 0))
             {
                 unsigned int pos = lineString.find('=');
 
@@ -287,7 +287,7 @@ namespace orxonox
             std::string lineString = std::string(line);
 
             // Check if the line is empty
-            if (lineString.compare("") != 0)
+            if ((lineString != "") && (lineString.size() > 0))
             {
                 unsigned int pos = lineString.find('=');
 
