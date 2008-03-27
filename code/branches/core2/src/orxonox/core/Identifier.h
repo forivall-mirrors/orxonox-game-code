@@ -272,14 +272,12 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass)
     {
-        COUT(5) << "*** ClassIdentifier: Register Class in " << name << "-Singleton." << std::endl;
+        this->setName(name);
 
         // Check if at least one object of the given type was created
-        if (!this->bCreatedOneObject_)
+        if (!this->bCreatedOneObject_ && Identifier::isCreatingHierarchy())
         {
             // If no: We have to store the informations and initialize the Identifier
-            this->setName(name);
-
             COUT(4) << "*** ClassIdentifier: Register Class in " << name << "-Singleton -> Initialize Singleton." << std::endl;
             if (bRootClass)
                 this->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
