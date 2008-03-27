@@ -10,6 +10,7 @@
 #include <string>
 
 #include <OgrePrerequisites.h>
+#include <OgreLog.h>
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 
@@ -22,7 +23,7 @@ namespace orxonox {
 /**
    * graphics engine manager class
  */
-  class _OrxonoxExport GraphicsEngine : public OrxonoxClass
+  class _OrxonoxExport GraphicsEngine : public OrxonoxClass, public Ogre::LogListener
   {
     public:
       GraphicsEngine();
@@ -53,12 +54,20 @@ namespace orxonox {
       virtual ~GraphicsEngine();
 
     private:
+      //! Method called by the LogListener from Ogre
+      void messageLogged(const std::string& message, Ogre::LogMessageLevel lml,
+                         bool maskDebug, const std::string &logName);
+
       Ogre::Root*         root_;        //!< Ogre's root
       std::string         configPath_;  //!< path to config file
       std::string         dataPath_;    //!< path to data file
       Ogre::SceneManager* scene_;       //!< scene manager of the game
       Ogre::RenderWindow* renderWindow_;//!< the current render window
       //bool               bOverwritePath_; //!< overwrites path
+      std::string         ogreLogfile_; //!< log file name for Ogre log messages
+      int ogreLogLevelTrivial_;         //!< Corresponding Orxonx debug level for LL_TRIVIAL
+      int ogreLogLevelNormal_;          //!< Corresponding Orxonx debug level for LL_NORMAL
+      int ogreLogLevelCritical_;        //!< Corresponding Orxonx debug level for LL_CRITICAL
 
   };
 
