@@ -31,6 +31,7 @@ SET( ORXONOX_SRC_FILES
   objects/weapon/Bullet.cc
   objects/weapon/BulletManager.cc
   objects/weapon/WeaponStation.cc
+  script/Script.cc
 )
 
 ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
@@ -40,6 +41,7 @@ SET_TARGET_PROPERTIES( orxonox PROPERTIES LINK_FLAGS "--no-undefined" )
 TARGET_LINK_LIBRARIES( orxonox
   ${OGRE_LIBRARIES}
   ${OIS_LIBRARIES}
+  ${Lua_LIBRARIES}
   util
   core
   audio

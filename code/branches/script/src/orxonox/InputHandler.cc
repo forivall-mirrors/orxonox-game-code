@@ -107,23 +107,23 @@ namespace orxonox
         COUT(ORX_DEBUG) << "*** InputHandler: Created OIS input system" << std::endl;
 
         // If possible create a buffered keyboard
-        if (inputSystem_->numKeyboards() > 0)
-        {
+        /*if (inputSystem_->getNumberOfDevices(OIS::OISKeyboard) > 0)
+        {*/
           keyboard_ = static_cast<OIS::Keyboard*>(inputSystem_->createInputObject(OIS::OISKeyboard, true));
           keyboard_->setEventCallback(this);
           COUT(ORX_DEBUG) << "*** InputHandler: Created OIS mouse" << std::endl;
-        }
+        //}
 
         // If possible create a buffered mouse
-        if (inputSystem_->numMice() > 0 )
-        {
+        /*if (inputSystem_->numMice() > 0 )
+        {*/
           mouse_ = static_cast<OIS::Mouse*>(inputSystem_->createInputObject(OIS::OISMouse, true));
           mouse_->setEventCallback(this);
           COUT(ORX_DEBUG) << "*** InputHandler: Created OIS keyboard" << std::endl;
 
           // Set mouse region
           this->setWindowExtents(windowWidth, windowHeight);
-        }
+        //}
       }
       catch (OIS::Exception ex)
       {
