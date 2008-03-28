@@ -31,10 +31,12 @@
 
 namespace orxonox
 {
-    Executor::Executor(Functor* functor, const std::string& name)
+    Executor::Executor(Functor* functor, const std::string& name, AccessLevel::Level level)
     {
         this->functor_ = functor;
         this->name_ = name;
+        this->accessLevel_ = level;
+
         this->bAddedDescription_ = false;
         this->bAddedDescriptionReturnvalue_ = false;
 
@@ -59,16 +61,6 @@ namespace orxonox
     bool Executor::parse(const std::string& params, const std::string& delimiter) const
     {
         EXECUTOR_PARSE(normal);
-    }
-
-    void Executor::setName(const std::string name)
-    {
-        this->name_ = name;
-    }
-
-    const std::string& Executor::getName() const
-    {
-        return this->name_;
     }
 
     void Executor::setDescription(const std::string& description)

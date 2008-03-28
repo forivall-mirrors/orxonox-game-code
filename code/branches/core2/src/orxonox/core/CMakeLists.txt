@@ -18,6 +18,7 @@ SET( CORE_SRC_FILES
   XMLPort.cc
   Namespace.cc
   NamespaceNode.cc
+  CommandExecutor.cc
 )
 
 ADD_LIBRARY( core SHARED ${CORE_SRC_FILES})

@@ -101,7 +101,7 @@ namespace orxonox
             void description(const std::string& description);
             const std::string& getDescription() const;
 
-            bool parseString(const std::string& input, MultiTypeMath& defvalue);
+            bool parseString(const std::string& input, const MultiTypeMath& defvalue = MT_null);
             bool valueToString(std::string* output, MultiTypeMath& input);
             void resetConfigFileEntry();
             void resetConfigValue();
@@ -109,6 +109,9 @@ namespace orxonox
             static std::string getStrippedLine(const std::string& line);
             static bool isEmpty(const std::string& line);
             static bool isComment(const std::string& line);
+
+            inline std::string getTypename() const
+                { return this->value_.getTypename(); }
 
         private:
             bool parseString(const std::string& input, int defvalue);

@@ -58,6 +58,10 @@ namespace orxonox
 
             static OutputHandler& getOutStream();
 
+            /** @brief Puts some text on the outstream. @param text The text */
+            static inline void log(const std::string& text)
+                { OutputHandler::getOutStream().output(text); }
+
             /** @brief Returns a reference to the logfile. @return The logfile */
             inline std::ofstream& getLogfile()
                 { return this->logfile_; }

@@ -35,12 +35,17 @@ namespace orxonox
             void setTransDamp(float value);
             void setRotDamp(float value);
 
+            static void setMaxSpeedTest(float value)
+                { SpaceShip::instance_s->setMaxSpeed(value); }
+
             bool mouseMoved(const OIS::MouseEvent &e);
             bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
             bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
 
         private:
+            static SpaceShip* instance_s;
+
             Vector3 testvector_;
             bool bInvertYAxis_;
             bool setMouseEventCallback_;

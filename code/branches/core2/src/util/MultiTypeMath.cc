@@ -143,6 +143,24 @@ void MultiTypeMath::setValue(const MultiTypeMath& mtm)
     this->degree_ = mtm.degree_;
 }
 
+std::string MultiTypeMath::getTypename() const
+{
+    if (this->type_ == MT_vector2)
+        return "Vector2";
+    else if (this->type_ == MT_vector3)
+        return "Vector3";
+    else if (this->type_ == MT_colourvalue)
+        return "ColourValue";
+    else if (this->type_ == MT_quaternion)
+        return "Quaternion";
+    else if (this->type_ == MT_radian)
+        return "Radian";
+    else if (this->type_ == MT_degree)
+        return "Degree";
+    else
+        return MultiTypeString::getTypename();
+}
+
 std::string MultiTypeMath::toString() const
 {
     std::string output;

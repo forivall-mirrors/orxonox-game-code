@@ -34,6 +34,8 @@
 
 #include "Identifier.h"
 #include "Factory.h"
+#include "Executor.h"
+#include "CommandExecutor.h"
 
 namespace orxonox
 {
@@ -49,6 +51,9 @@ namespace orxonox
     {
         this->bCreatedOneObject_ = false;
         this->factory_ = 0;
+
+        this->bHasConfigValues_ = false;
+        this->bHasConsoleCommands_ = false;
 
         this->children_ = new std::set<const Identifier*>();
         this->directChildren_ = new std::set<const Identifier*>();
@@ -197,6 +202,38 @@ namespace orxonox
     }
 
     /**
+        @brief Returns the map that stores all Identifiers.
+        @return The map
+    */
+    std::map<std::string, Identifier*>& Identifier::getIdentifierMapIntern()
+    {
+        static std::map<std::string, Identifier*> identifierMap;
+        return identifierMap;
+    }
+
+    /**
+        @brief Returns the map that stores all Identifiers.
+        @return The map
+    */
+    std::map<std::string, Identifier*>& Identifier::getLowercaseIdentifierMapIntern()
+    {
+        static std::map<std::string, Identifier*> lowercaseIdentifierMap;
+        return lowercaseIdentifierMap;
+    }
+
+    /**
+        @brief Adds the ConfigValueContainer of a variable, given by the string of its name.
+        @param varname The name of the variablee
+        @param container The container
+    */
+    void Identifier::addConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
+    {
+        this->bHasConfigValues_ = true;
+        this->configValues_[varname] = container;
+        this->configValues_LC_[getLowercase(varname)] = container;
+    }
+
+    /**
         @brief Returns the ConfigValueContainer of a variable, given by the string of its name.
         @param varname The name of the variable
         @return The ConfigValueContainer
@@ -211,15 +248,71 @@ namespace orxonox
     }
 
     /**
-        @brief Adds the ConfigValueContainer of a variable, given by the string of its name.
-        @param varname The name of the variablee
-        @param container The container
+        @brief Returns the ConfigValueContainer of a variable, given by the string of its name in lowercase.
+        @param varname The name of the variable in lowercase
+        @return The ConfigValueContainer
     */
-    void Identifier::addConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
+    ConfigValueContainer* Identifier::getLowercaseConfigValueContainer(const std::string& varname)
     {
-        this->configValues_[varname] = container;
+        std::map<std::string, ConfigValueContainer*>::const_iterator it = configValues_LC_.find(varname);
+        if (it != configValues_LC_.end())
+            return ((*it).second);
+        else
+            return 0;
     }
 
+    /**
+        @brief Adds a new console command of this class.
+        @param executor The executor of the command
+        @param bCreateShortcut If this is true a shortcut gets created so you don't have to add the classname to access this command
+        @return The executor of the command
+    */
+    ExecutorStatic& Identifier::addConsoleCommand(ExecutorStatic* executor, bool bCreateShortcut)
+    {
+        this->bHasConsoleCommands_ = true;
+        this->consoleCommands_[executor->getName()] = executor;
+        this->consoleCommands_LC_[getLowercase(executor->getName())] = executor;
+
+        if (bCreateShortcut)
+            CommandExecutor::addConsoleCommandShortcut(executor);
+
+        return (*executor);
+    }
+
+    /**
+        @brief Returns the executor of a console command with given name.
+        @brief name The name of the requested console command
+        @return The executor of the requested console command
+    */
+    ExecutorStatic* Identifier::getConsoleCommand(const std::string& name) const
+    {
+        std::map<std::string, ExecutorStatic*>::const_iterator it = this->consoleCommands_.find(name);
+        if (it != this->consoleCommands_.end())
+            return (*it).second;
+        else
+            return 0;
+    }
+
+    /**
+        @brief Returns the executor of a console command with given name in lowercase.
+        @brief name The name of the requested console command in lowercae
+        @return The executor of the requested console command
+    */
+    ExecutorStatic* Identifier::getLowercaseConsoleCommand(const std::string& name) const
+    {
+        std::map<std::string, ExecutorStatic*>::const_iterator it = this->consoleCommands_LC_.find(name);
+        if (it != this->consoleCommands_LC_.end())
+            return (*it).second;
+        else
+            return 0;
+    }
+
+    /**
+        @brief Lists the names of all Identifiers in a std::set<const Identifier*>.
+        @param out The outstream
+        @param list The list (or set) of Identifiers
+        @return The outstream
+    */
     std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list)
     {
         for (std::set<const Identifier*>::const_iterator it = list.begin(); it != list.end(); ++it)

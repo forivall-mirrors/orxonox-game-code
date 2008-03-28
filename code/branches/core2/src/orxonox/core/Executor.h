@@ -128,13 +128,25 @@
     \
     return true
 
+namespace AccessLevel
+{
+    enum Level
+    {
+        None,
+        User,
+        Admin,
+        Offline,
+        Debug,
+        Disabled
+    };
+}
 
 namespace orxonox
 {
     class _CoreExport Executor
     {
         public:
-            Executor(Functor* functor, const std::string& name = "");
+            Executor(Functor* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None);
             virtual ~Executor();
 
             inline void operator()() const
@@ -152,9 +164,6 @@ namespace orxonox
 
             bool parse(const std::string& params, const std::string& delimiter = " ") const;
 
-            void setName(const std::string name);
-            const std::string& getName() const;
-
             void setDescription(const std::string& description);
             const std::string& getDescription() const;
 
@@ -164,7 +173,7 @@ namespace orxonox
             void setDescriptionReturnvalue(const std::string& description);
             const std::string& getDescriptionReturnvalue(int param) const;
 
-            inline int getParamCount() const
+            inline unsigned int getParamCount() const
                 { return this->functor_->getParamCount(); }
             inline bool hasReturnvalue() const
                 { return this->functor_->hasReturnvalue(); }
@@ -172,10 +181,20 @@ namespace orxonox
                 { return this->functor_->getType(); }
             inline MultiTypeMath getReturnvalue() const
                 { return this->functor_->getReturnvalue(); }
-            inline std::string getTypenameParam(int param) const
+            inline std::string getTypenameParam(unsigned int param) const
                 { return this->functor_->getTypenameParam(param); }
             inline std::string getTypenameReturnvalue() const
                 { return this->functor_->getTypenameReturnvalue(); }
+
+            inline void setName(const std::string name)
+                { this->name_ = name; }
+            inline const std::string& getName() const
+                { return this->name_; }
+
+            inline void setAccessLevel(AccessLevel::Level level)
+                { this->accessLevel_ = level; }
+            inline AccessLevel::Level getAccessLevel() const
+                { return this->accessLevel_; }
 
             void setDefaultValues(const MultiTypeMath& param1);
             void setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2);
@@ -185,6 +204,13 @@ namespace orxonox
             void setDefaultValue(unsigned int index, const MultiTypeMath& param);
 
             bool allDefaultValuesSet() const;
+            inline bool defaultValueSet(unsigned int index) const
+            {
+                if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+                    return this->bAddedDefaultValue_[index];
+
+                return false;
+            }
 
         protected:
             Functor* functor_;
@@ -200,12 +226,14 @@ namespace orxonox
             bool bAddedDescription_;
             bool bAddedDescriptionReturnvalue_;
             bool bAddedDescriptionParam_[MAX_FUNCTOR_ARGUMENTS];
+
+            AccessLevel::Level accessLevel_;
     };
 
     class _CoreExport ExecutorStatic : public Executor
     {
         public:
-            ExecutorStatic(FunctorStatic* functor, const std::string& name = "") : Executor(functor, name) {}
+            ExecutorStatic(FunctorStatic* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None) : Executor(functor, name, level) {}
             virtual ~ExecutorStatic() {}
     };
 
@@ -213,7 +241,7 @@ namespace orxonox
     class ExecutorMember : public Executor
     {
         public:
-            ExecutorMember(FunctorMember<T>* functor, const std::string& name = "") : Executor(functor, name) {}
+            ExecutorMember(FunctorMember<T>* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None) : Executor(functor, name, level) {}
             virtual ~ExecutorMember() {}
 
             inline void operator()(T* object) const
@@ -259,20 +287,20 @@ namespace orxonox
             }
     };
 
-    inline Executor* createExecutor(Functor* functor, const std::string& name = "")
+    inline Executor* createExecutor(Functor* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None)
     {
-        return new Executor(functor, name);
+        return new Executor(functor, name, level);
     }
 
     template <class T>
-    inline ExecutorMember<T>* createExecutor(FunctorMember<T>* functor, const std::string& name = "")
+    inline ExecutorMember<T>* createExecutor(FunctorMember<T>* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None)
     {
-        return new ExecutorMember<T>(functor, name);
+        return new ExecutorMember<T>(functor, name, level);
     }
 
-    inline ExecutorStatic* createExecutor(FunctorStatic* functor, const std::string& name = "")
+    inline ExecutorStatic* createExecutor(FunctorStatic* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None)
     {
-        return new ExecutorStatic(functor, name);
+        return new ExecutorStatic(functor, name, level);
     }
 }
 

@@ -25,6 +25,8 @@
  *
  */
 
+#include <cctype>
+
 #include "String.h"
 
 /**
@@ -115,11 +117,10 @@ bool isNumeric(const std::string& str)
 */
 void lowercase(std::string* str)
 {
-    static unsigned const char difference_between_A_and_a = 'A' - 'a';
-
-    for (std::string::iterator it = (*str).begin(); it != (*str).end(); ++it)
-        if ((*it) >= 'A' && (*it) <= 'Z')
-            (*it) -= difference_between_A_and_a;
+    for (unsigned int i = 0; i < str->size(); ++i)
+    {
+        (*str)[i] = tolower((*str)[i]);
+    }
 }
 
 /**
@@ -140,11 +141,10 @@ std::string getLowercase(const std::string& str)
 */
 void uppercase(std::string* str)
 {
-    static unsigned const char difference_between_A_and_a = 'A' - 'a';
-
-    for (std::string::iterator it = (*str).begin(); it != (*str).end(); ++it)
-        if ((*it) >= 'a' && (*it) <= 'z')
-            (*it) += difference_between_A_and_a;
+    for (unsigned int i = 0; i < str->size(); ++i)
+    {
+        (*str)[i] = toupper((*str)[i]);
+    }
 }
 
 /**

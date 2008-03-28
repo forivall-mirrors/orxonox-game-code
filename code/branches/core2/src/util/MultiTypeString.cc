@@ -103,6 +103,18 @@ void MultiTypeString::setValue(const MultiTypeString& mts)
     this->string_ = mts.string_;
 }
 
+std::string MultiTypeString::getTypename() const
+{
+    if (this->type_ == MT_constchar)
+        return "string";
+    else if (this->type_ == MT_string)
+        return "string";
+    else if (this->type_ == MT_xmlelement)
+        return "XML-element";
+    else
+        return MultiTypePrimitive::getTypename();
+}
+
 std::string MultiTypeString::toString() const
 {
     std::string output;

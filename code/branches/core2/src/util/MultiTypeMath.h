@@ -144,6 +144,8 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         inline void getValue(orxonox::Radian*      variable) const { (*variable) = orxonox::Radian      (this->radian_);      }
         inline void getValue(orxonox::Degree*      variable) const { (*variable) = orxonox::Degree      (this->degree_);      }
 
+        virtual std::string getTypename() const;
+
         virtual std::string toString() const;
         virtual bool fromString(const std::string value);
 

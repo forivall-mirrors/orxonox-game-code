@@ -166,6 +166,38 @@ void MultiTypePrimitive::setValue(const MultiTypePrimitive& mtp)
     this->value_ = mtp.value_;
 }
 
+std::string MultiTypePrimitive::getTypename() const
+{
+    if (this->type_ == MT_void)
+        return "pointer";
+    else if (this->type_ == MT_int)
+        return "int";
+    else if (this->type_ == MT_uint)
+        return "unsigned int";
+    else if (this->type_ == MT_char)
+        return "char";
+    else if (this->type_ == MT_uchar)
+        return "unsigned char";
+    else if (this->type_ == MT_short)
+        return "short";
+    else if (this->type_ == MT_ushort)
+        return "unsigned short";
+    else if (this->type_ == MT_long)
+        return "long";
+    else if (this->type_ == MT_ulong)
+        return "unsigned long";
+    else if (this->type_ == MT_float)
+        return "float";
+    else if (this->type_ == MT_double)
+        return "double";
+    else if (this->type_ == MT_longdouble)
+        return "long double";
+    else if (this->type_ == MT_bool)
+        return "bool";
+    else
+        return "unknown";
+}
+
 std::string MultiTypePrimitive::toString() const
 {
     std::string output;

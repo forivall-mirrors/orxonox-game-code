@@ -40,16 +40,22 @@
 #include "../core/CoreIncludes.h"
 #include "../Orxonox.h"
 #include "core/XMLPort.h"
+#include "core/ConsoleCommand.h"
 
 #include "Ambient.h"
 
 namespace orxonox
 {
+    ConsoleCommand(Ambient, setAmbientLightTest, AccessLevel::Offline, false);
+
     CreateFactory(Ambient);
+
+    Ambient* Ambient::instance_s;
 
     Ambient::Ambient()
     {
         RegisterObject(Ambient);
+        Ambient::instance_s = this;
     }
 
     Ambient::~Ambient()

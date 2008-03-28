@@ -41,14 +41,14 @@
 
 
 #define XMLPortParam(classname, paramname, loadfunction, savefunction, xmlelement, mode) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, paramname, createExecutor(createFunctor(&classname::loadfunction), #loadfunction), createExecutor(createFunctor(&classname::savefunction), #savefunction), xmlelement, mode)
+    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, paramname, orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), #savefunction), xmlelement, mode)
 #define XMLPortParam_Template(classname, paramname, loadtemplate, loadfunction, savetemplate, savefunction, xmlelement, mode) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, paramname, createExecutor(createFunctor loadtemplate (&classname::loadfunction), #loadfunction), createExecutor(createFunctor savetemplate (&classname::savefunction), #savefunction), xmlelement, mode)
+    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, paramname, orxonox::createExecutor(orxonox::createFunctor loadtemplate (&classname::loadfunction), #loadfunction), orxonox::createExecutor(orxonox::createFunctor savetemplate (&classname::savefunction), #savefunction), xmlelement, mode)
 
 #define XMLPortParamLoadOnly(classname, paramname, loadfunction, xmlelement, mode) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, paramname, createExecutor(createFunctor(&classname::loadfunction), #loadfunction), 0, xmlelement, mode)
+    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, paramname, orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), #loadfunction), 0, xmlelement, mode)
 #define XMLPortParamLoadOnly_Template(classname, paramname, loadtemplate, loadfunction, xmlelement, mode) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, paramname, createExecutor(createFunctor loadtemplate (&classname::loadfunction), #loadfunction), 0, xmlelement, mode)
+    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, paramname, orxonox::createExecutor(orxonox::createFunctor loadtemplate (&classname::loadfunction), #loadfunction), 0, xmlelement, mode)
 
 #define XMLPortParamGeneric(containername, classname, paramname, loadexecutor, saveexecutor, xmlelement, mode) \
     orxonox::XMLPortClassParamContainer<classname>* containername = (orxonox::XMLPortClassParamContainer<classname>*)(this->getIdentifier()->getXMLPortParamContainer(paramname)); \
@@ -61,9 +61,9 @@
 
 
 #define XMLPortObject(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore) \
-    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, createExecutor(createFunctor(&classname::loadfunction), #loadfunction), createExecutor(createFunctor(&classname::savefunction), #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
 #define XMLPortObject_Template(classname, objectclass, sectionname, loadtemplate, loadfunction, savetemplate, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore) \
-    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, createExecutor(createFunctor loadtemplate (&classname::loadfunction), #loadfunction), createExecutor(createFunctor savetemplate (&classname::savefunction), #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor loadtemplate (&classname::loadfunction), #loadfunction), orxonox::createExecutor(orxonox::createFunctor savetemplate (&classname::savefunction), #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
 
 #define XMLPortObjectGeneric(containername, classname, objectclass, sectionname, loadexecutor, saveexecutor, xmlelement, mode, bApplyLoaderMask, bLoadBefore) \
     orxonox::XMLPortClassObjectContainer<classname, objectclass>* containername = (orxonox::XMLPortClassObjectContainer<classname, objectclass>*)(this->getIdentifier()->getXMLPortObjectContainer(sectionname)); \
@@ -142,12 +142,6 @@ namespace orxonox
                 this->paramname_ = paramname;
                 this->loadexecutor_ = loadexecutor;
                 this->saveexecutor_ = saveexecutor;
-
-                this->setDefaultValue_[0] = false;
-                this->setDefaultValue_[1] = false;
-                this->setDefaultValue_[2] = false;
-                this->setDefaultValue_[3] = false;
-                this->setDefaultValue_[4] = false;
             }
 
             XMLPortParamContainer& port(T* object, Element& xmlelement, XMLPort::Mode mode)
@@ -208,66 +202,38 @@ namespace orxonox
 
             virtual XMLPortParamContainer& defaultValue(unsigned int index, const MultiTypeMath& param)
             {
-                if (!this->setDefaultValue_[index])
-                {
-                    this->setDefaultValue_[index] = true;
+                if (!this->loadexecutor_->defaultValueSet(index))
                     this->loadexecutor_->setDefaultValue(index, param);
-                }
                 return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
             }
             virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1)
             {
-                if (!this->setDefaultValue_[0])
-                {
-                    this->setDefaultValue_[0] = true;
+                if (!this->loadexecutor_->defaultValueSet(0))
                     this->loadexecutor_->setDefaultValues(param1);
-                }
                 return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
             }
             virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2)
             {
-                if ((!this->setDefaultValue_[0]) || (!this->setDefaultValue_[1]))
-                {
-                    this->setDefaultValue_[0] = true;
-                    this->setDefaultValue_[1] = true;
+                if ((!this->loadexecutor_->defaultValueSet(0)) || (!this->loadexecutor_->defaultValueSet(1)))
                     this->loadexecutor_->setDefaultValues(param1, param2);
-                }
                 return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
             }
             virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3)
             {
-                if ((!this->setDefaultValue_[0]) || (!this->setDefaultValue_[1]) || (!this->setDefaultValue_[2]))
-                {
-                    this->setDefaultValue_[0] = true;
-                    this->setDefaultValue_[1] = true;
-                    this->setDefaultValue_[3] = true;
+                if ((!this->loadexecutor_->defaultValueSet(0)) || (!this->loadexecutor_->defaultValueSet(1)) || (!this->loadexecutor_->defaultValueSet(2)))
                     this->loadexecutor_->setDefaultValues(param1, param2, param3);
-                }
                 return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
             }
             virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4)
             {
-                if ((!this->setDefaultValue_[0]) || (!this->setDefaultValue_[1]) || (!this->setDefaultValue_[2]) || (!this->setDefaultValue_[3]))
-                {
-                    this->setDefaultValue_[0] = true;
-                    this->setDefaultValue_[1] = true;
-                    this->setDefaultValue_[3] = true;
-                    this->setDefaultValue_[4] = true;
+                if ((!this->loadexecutor_->defaultValueSet(0)) || (!this->loadexecutor_->defaultValueSet(1)) || (!this->loadexecutor_->defaultValueSet(2)) || (!this->loadexecutor_->defaultValueSet(3)))
                     this->loadexecutor_->setDefaultValues(param1, param2, param3, param4);
-                }
                 return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
             }
             virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5)
             {
-                if ((!this->setDefaultValue_[0]) || (!this->setDefaultValue_[1]) || (!this->setDefaultValue_[2]) || (!this->setDefaultValue_[3]) || (!this->setDefaultValue_[4]))
-                {
-                    this->setDefaultValue_[0] = true;
-                    this->setDefaultValue_[1] = true;
-                    this->setDefaultValue_[3] = true;
-                    this->setDefaultValue_[4] = true;
-                    this->setDefaultValue_[5] = true;
+                if ((!this->loadexecutor_->defaultValueSet(0)) || (!this->loadexecutor_->defaultValueSet(1)) || (!this->loadexecutor_->defaultValueSet(2)) || (!this->loadexecutor_->defaultValueSet(3)) || (!this->loadexecutor_->defaultValueSet(4)))
                     this->loadexecutor_->setDefaultValues(param1, param2, param3, param4, param5);
-                }
                 return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
             }
 
@@ -275,7 +241,6 @@ namespace orxonox
             ExecutorMember<T>* loadexecutor_;
             ExecutorMember<T>* saveexecutor_;
             ParseParams parseParams_;
-            bool setDefaultValue_[5];
     };
 
 

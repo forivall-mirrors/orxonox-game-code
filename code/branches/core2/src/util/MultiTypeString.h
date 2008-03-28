@@ -114,6 +114,8 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         inline void getValue(const char**      variable) const { (*variable) = this->string_.c_str(); }
         inline void getValue(orxonox::Element* variable) const { (*variable) = this->xmlelement_;     }
 
+        virtual std::string getTypename() const;
+
         virtual std::string toString() const;
         virtual bool fromString(const std::string value);
 

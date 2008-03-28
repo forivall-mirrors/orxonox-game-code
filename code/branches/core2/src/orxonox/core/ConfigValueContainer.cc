@@ -180,7 +180,7 @@ namespace orxonox
         @param input The string to convert
         @return True if the string was successfully parsed
     */
-    bool ConfigValueContainer::parseString(const std::string& input, MultiTypeMath& defvalue)
+    bool ConfigValueContainer::parseString(const std::string& input, const MultiTypeMath& defvalue)
     {
         if (defvalue.getType() == MT_int)
             return this->parseString(input, defvalue.getInt());

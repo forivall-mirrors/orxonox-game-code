@@ -180,6 +180,8 @@ class _UtilExport MultiTypePrimitive
         inline MultiType getType()           const { return this->type_; }
         inline bool      isA(MultiType type) const { return (this->type_ == type); }
 
+        virtual std::string getTypename() const;
+
         virtual std::string toString() const;
         virtual bool fromString(const std::string value);
 

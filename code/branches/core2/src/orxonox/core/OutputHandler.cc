@@ -32,9 +32,12 @@
 
 #include "DebugLevel.h"
 #include "OutputHandler.h"
+#include "ConsoleCommand.h"
 
 namespace orxonox
 {
+    ConsoleCommandShortcutGeneric(log, createExecutor(createFunctor(&OutputHandler::log), "log", AccessLevel::None));
+
     /**
         @brief Constructor: Opens the logfile and writes the first line.
         @param logfilename The name of the logfile

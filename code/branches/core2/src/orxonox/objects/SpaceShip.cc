@@ -44,16 +44,23 @@
 #include "../particle/ParticleInterface.h"
 #include "Projectile.h"
 #include "core/XMLPort.h"
+#include "core/ConsoleCommand.h"
 
 #include "SpaceShip.h"
 
 namespace orxonox
 {
+    ConsoleCommand(SpaceShip, setMaxSpeedTest, AccessLevel::Debug, false);
+
     CreateFactory(SpaceShip);
+
+    SpaceShip* SpaceShip::instance_s;
 
     SpaceShip::SpaceShip()
     {
         RegisterObject(SpaceShip);
+
+        SpaceShip::instance_s = this;
 
         this->setConfigValues();
 

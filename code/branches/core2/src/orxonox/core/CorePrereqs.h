@@ -90,11 +90,19 @@ namespace orxonox
   class ClassTreeMask;
   class ClassTreeMaskIterator;
   class ClassTreeMaskNode;
+  class CommandExecutor;
   class ConfigValueContainer;
   class DebugLevel;
   class Error;
   class Executor;
+  template <class T>
+  class ExecutorMember;
+  class ExecutorStatic;
   class Factory;
+  class Functor;
+  template <class T>
+  class FunctorMember;
+  class FunctorStatic;
   class Identifier;
   class IdentifierDistributor;
   template <class T>
