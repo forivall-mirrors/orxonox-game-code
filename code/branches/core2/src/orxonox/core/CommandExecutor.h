@@ -106,6 +106,8 @@ namespace orxonox
             static std::string dump(const ExecutorStatic* executor);
             static std::string dump(const ConfigValueContainer* container);
 
+            static std::string getCommonBegin(const std::list<const std::string*>& list);
+
             static Identifier* getIdentifierOfPossibleFunctionClass(const std::string& name);
             static ExecutorStatic* getExecutorOfPossibleShortcut(const std::string& name);
             static ExecutorStatic* getExecutorOfPossibleFunction(const std::string& name, Identifier* identifier);

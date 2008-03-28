@@ -108,6 +108,8 @@ namespace orxonox
         if (CommandExecutor::lastProcessedCommand_s != command)
             CommandExecutor::parse(command);
 
+        CommandExecutor::tokens_s.split(command, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+
         switch (CommandExecutor::state_s)
         {
             case CS_Empty:
@@ -165,33 +167,55 @@ namespace orxonox
         if (CommandExecutor::lastProcessedCommand_s != command)
             CommandExecutor::parse(command);
 
+        CommandExecutor::tokens_s.split(command, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+
+        std::list<const std::string*> temp;
+        if (CommandExecutor::state_s == CS_Empty)
+        {
+            temp.insert(temp.end(), CommandExecutor::listOfPossibleShortcuts_s.begin(), CommandExecutor::listOfPossibleShortcuts_s.end());
+            temp.insert(temp.end(), CommandExecutor::listOfPossibleFunctionClasses_s.begin(), CommandExecutor::listOfPossibleFunctionClasses_s.end());
+        }
+
         switch (CommandExecutor::state_s)
         {
             case CS_Empty:
+                return (CommandExecutor::tokens_s.subSet(0, CommandExecutor::tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(temp));
                 break;
             case CS_FunctionClass_Or_Shortcut_Or_Keyword:
                 break;
             case CS_Shortcut_Params:
+                if (command[command.size() - 1] != ' ')
+                    return (command + " ");
                 break;
             case CS_Shortcut_Finished:
                 break;
             case CS_Function:
+                return (CommandExecutor::tokens_s.subSet(0, CommandExecutor::tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::listOfPossibleFunctions_s));
                 break;
             case CS_Function_Params:
+                if (command[command.size() - 1] != ' ')
+                    return (command + " ");
                 break;
             case CS_Function_Finished:
                 break;
             case CS_ConfigValueClass:
+                return (CommandExecutor::tokens_s.subSet(0, CommandExecutor::tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::listOfPossibleConfigValueClasses_s));
                 break;
             case CS_ConfigValue:
+                return (CommandExecutor::tokens_s.subSet(0, CommandExecutor::tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::listOfPossibleConfigValues_s));
                 break;
             case CS_ConfigValueType:
+                if (command[command.size() - 1] != ' ')
+                    return (command + " ");
                 break;
             case CS_ConfigValueFinished:
                 break;
             case CS_KeybindKey:
+                return (CommandExecutor::tokens_s.subSet(0, CommandExecutor::tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::listOfPossibleKeys_s));
                 break;
             case CS_KeybindCommand:
+                if (command[command.size() - 1] != ' ')
+                    return (command + " ");
                 break;
             case CS_KeybindFinished:
                 break;
@@ -206,6 +230,8 @@ namespace orxonox
     {
         if (CommandExecutor::lastProcessedCommand_s != command)
             CommandExecutor::parse(command);
+
+        CommandExecutor::tokens_s.split(command, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
 
         switch (CommandExecutor::state_s)
         {
@@ -847,5 +873,46 @@ namespace orxonox
     std::string CommandExecutor::dump(const ConfigValueContainer* container)
     {
         return container->getTypename();
+    }
+
+    std::string CommandExecutor::getCommonBegin(const std::list<const std::string*>& list)
+    {
+        if (list.size() == 0)
+        {
+            return "";
+        }
+        else if (list.size() == 1)
+        {
+            return ((**list.begin()) + " ");
+        }
+        else
+        {
+            std::string output = "";
+            for (unsigned int i = 0; true; i++)
+            {
+                char temp = 0;
+                for (std::list<const std::string*>::const_iterator it = list.begin(); it != list.end(); ++it)
+                {
+                    if ((**it).size() > i)
+                    {
+                        if (it == list.begin())
+                        {
+                            temp = (**it)[i];
+                        }
+                        else
+                        {
+                            if (temp != (**it)[i])
+                                return output;
+                        }
+                    }
+                    else
+                    {
+                        return output;
+                    }
+                }
+                output += temp;
+            }
+            return output;
+        }
     }
 }
