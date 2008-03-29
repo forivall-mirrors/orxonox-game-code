@@ -90,6 +90,7 @@ namespace orxonox
   class ClassTreeMask;
   class ClassTreeMaskIterator;
   class ClassTreeMaskNode;
+  class CommandEvaluation;
   class CommandExecutor;
   class ConfigValueContainer;
   class DebugLevel;
@@ -105,6 +106,8 @@ namespace orxonox
   class FunctorStatic;
   class Identifier;
   class IdentifierDistributor;
+  class InputBuffer;
+  class InputBufferListener;
   template <class T>
   class Iterator;
   class Language;
@@ -122,6 +125,7 @@ namespace orxonox
   class ObjectListElement;
   class OrxonoxClass;
   class OutputHandler;
+  class Shell;
   template <class T>
   class SubclassIdentifier;
   template <class T, class O>
