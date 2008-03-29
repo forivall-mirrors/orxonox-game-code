@@ -84,6 +84,10 @@ namespace orxonox
             static inline std::map<std::string, ExecutorStatic*>::const_iterator getLowercaseConsoleCommandShortcutMapEnd() { return CommandExecutor::getInstance().consoleCommandShortcuts_LC_s.end(); }
 
         private:
+            CommandExecutor() {}
+            CommandExecutor(const CommandExecutor& other) {}
+            ~CommandExecutor() {}
+
             static CommandExecutor& getInstance();
 
             static void parse(const std::string& command, bool bInitialize = true);
