@@ -70,18 +70,18 @@ namespace orxonox
             static ExecutorStatic* getLowercaseConsoleCommandShortcut(const std::string& name);
 
             /** @brief Returns the map that stores all console commands. @return The const_iterator */
-            static inline const std::map<std::string, ExecutorStatic*>& getConsoleCommandShortcutMap() { return CommandExecutor::getInstance().consoleCommandShortcuts_s; }
+            static inline const std::map<std::string, ExecutorStatic*>& getConsoleCommandShortcutMap() { return CommandExecutor::getInstance().consoleCommandShortcuts_; }
             /** @brief Returns a const_iterator to the beginning of the map that stores all console commands. @return The const_iterator */
-            static inline std::map<std::string, ExecutorStatic*>::const_iterator getConsoleCommandShortcutMapBegin() { return CommandExecutor::getInstance().consoleCommandShortcuts_s.begin(); }
+            static inline std::map<std::string, ExecutorStatic*>::const_iterator getConsoleCommandShortcutMapBegin() { return CommandExecutor::getInstance().consoleCommandShortcuts_.begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all console commands. @return The const_iterator */
-            static inline std::map<std::string, ExecutorStatic*>::const_iterator getConsoleCommandShortcutMapEnd() { return CommandExecutor::getInstance().consoleCommandShortcuts_s.end(); }
+            static inline std::map<std::string, ExecutorStatic*>::const_iterator getConsoleCommandShortcutMapEnd() { return CommandExecutor::getInstance().consoleCommandShortcuts_.end(); }
 
             /** @brief Returns the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            static inline const std::map<std::string, ExecutorStatic*>& getLowercaseConsoleCommandShortcutMap() { return CommandExecutor::getInstance().consoleCommandShortcuts_LC_s; }
+            static inline const std::map<std::string, ExecutorStatic*>& getLowercaseConsoleCommandShortcutMap() { return CommandExecutor::getInstance().consoleCommandShortcuts_LC_; }
             /** @brief Returns a const_iterator to the beginning of the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            static inline std::map<std::string, ExecutorStatic*>::const_iterator getLowercaseConsoleCommandShortcutMapBegin() { return CommandExecutor::getInstance().consoleCommandShortcuts_LC_s.begin(); }
+            static inline std::map<std::string, ExecutorStatic*>::const_iterator getLowercaseConsoleCommandShortcutMapBegin() { return CommandExecutor::getInstance().consoleCommandShortcuts_LC_.begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            static inline std::map<std::string, ExecutorStatic*>::const_iterator getLowercaseConsoleCommandShortcutMapEnd() { return CommandExecutor::getInstance().consoleCommandShortcuts_LC_s.end(); }
+            static inline std::map<std::string, ExecutorStatic*>::const_iterator getLowercaseConsoleCommandShortcutMapEnd() { return CommandExecutor::getInstance().consoleCommandShortcuts_LC_.end(); }
 
         private:
             CommandExecutor() {}
@@ -122,27 +122,27 @@ namespace orxonox
             static ConfigValueContainer* getContainerOfPossibleConfigValue(const std::string& name, Identifier* identifier);
             static ConfigValueContainer* getContainerOfPossibleKey(const std::string& name);
 
-            std::string lastProcessedCommand_s;
-            SubString tokens_s;
-            std::list<const std::string*> listOfPossibleFunctionClasses_s;
-            std::list<const std::string*> listOfPossibleShortcuts_s;
-            std::list<const std::string*> listOfPossibleFunctions_s;
-            std::list<const std::string*> listOfPossibleConfigValueClasses_s;
-            std::list<const std::string*> listOfPossibleConfigValues_s;
-            std::list<const std::string*> listOfPossibleKeys_s;
+            std::string lastProcessedCommand_;
+            SubString tokens_;
+            std::list<const std::string*> listOfPossibleFunctionClasses_;
+            std::list<const std::string*> listOfPossibleShortcuts_;
+            std::list<const std::string*> listOfPossibleFunctions_;
+            std::list<const std::string*> listOfPossibleConfigValueClasses_;
+            std::list<const std::string*> listOfPossibleConfigValues_;
+            std::list<const std::string*> listOfPossibleKeys_;
 
-            Identifier* functionclass_s;
-            Identifier* configvalueclass_s;
-            ExecutorStatic* shortcut_s;
-            ExecutorStatic* function_s;
-            ConfigValueContainer* configvalue_s;
-            ConfigValueContainer* key_s;
+            Identifier* functionclass_;
+            Identifier* configvalueclass_;
+            ExecutorStatic* shortcut_;
+            ExecutorStatic* function_;
+            ConfigValueContainer* configvalue_;
+            ConfigValueContainer* key_;
 
-            std::string errorMessage_s;
-            CommandState state_s;
+            std::string errorMessage_;
+            CommandState state_;
 
-            std::map<std::string, ExecutorStatic*> consoleCommandShortcuts_s;
-            std::map<std::string, ExecutorStatic*> consoleCommandShortcuts_LC_s;
+            std::map<std::string, ExecutorStatic*> consoleCommandShortcuts_;
+            std::map<std::string, ExecutorStatic*> consoleCommandShortcuts_LC_;
     };
 }
 
