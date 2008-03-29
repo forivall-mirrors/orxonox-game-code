@@ -58,11 +58,22 @@ namespace orxonox
         CS_Error
     };
 
+    enum KeybindMode {}; // temporary
+
+    ///////////////////////
+    // CommandEvaluation //
+    ///////////////////////
     class _CoreExport CommandEvaluation
     {
         public:
+            KeybindMode getKeybindMode();
+            void setAdditionalParameter(const std::string& param);
+            bool isValid() const;
+
             std::string processedCommand_;
             SubString tokens_;
+            std::string additionalParameter_;
+
             std::list<const std::string*> listOfPossibleFunctionClasses_;
             std::list<const std::string*> listOfPossibleShortcuts_;
             std::list<const std::string*> listOfPossibleFunctions_;
@@ -81,6 +92,9 @@ namespace orxonox
             CommandState state_;
     };
 
+    /////////////////////
+    // CommandExecutor //
+    /////////////////////
     class _CoreExport CommandExecutor
     {
         public:
@@ -93,7 +107,7 @@ namespace orxonox
             static std::string hint(const std::string& command);
             static std::string hint(const CommandEvaluation& evaluation);
 
-            static const CommandEvaluation& evaluate(const std::string& command);
+            static CommandEvaluation evaluate(const std::string& command);
 
             static bool addConsoleCommandShortcut(ExecutorStatic* executor);
             static ExecutorStatic* getConsoleCommandShortcut(const std::string& name);
@@ -122,7 +136,7 @@ namespace orxonox
             static CommandEvaluation& getEvaluation();
 
             static void parse(const std::string& command, bool bInitialize = true);
-            static void initialize();
+            static void initialize(const std::string& command);
 
             static bool argumentsGiven(unsigned int num);
             static unsigned int argumentsGiven();

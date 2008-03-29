@@ -44,6 +44,69 @@ namespace orxonox
     ConsoleCommandShortcutGeneric(keyword2, createExecutor((FunctorStatic*)0, "tset", AccessLevel::User));
     ConsoleCommandShortcutGeneric(keyword3, createExecutor((FunctorStatic*)0, "bind", AccessLevel::User));
 
+
+    ///////////////////////
+    // CommandEvaluation //
+    ///////////////////////
+    KeybindMode CommandEvaluation::getKeybindMode()
+    {
+        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
+        {
+//            if (this->shortcut_ != 0)
+//                return this->shortcut_->getKeybindMode();
+        }
+        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
+        {
+//            if (this->function_ != 0)
+//                return this->function_->getKeybindMode();
+        }
+        else if (this->state_ == CS_ConfigValueType || this->state_ == CS_ConfigValueFinished)
+        {
+//            return KeybindMode::onPress;
+        }
+        else if (this->state_ == CS_KeybindCommand || this->state_ == CS_KeybindFinished)
+        {
+//            return KeybindMode::onPress;
+        }
+        else
+        {
+//            return KeybindMode::onPress;
+        }
+    }
+
+    void CommandEvaluation::setAdditionalParameter(const std::string& param)
+    {
+        this->additionalParameter_ = param;
+    }
+
+    bool CommandEvaluation::isValid() const
+    {
+        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
+        {
+            return (this->shortcut_ != 0);
+        }
+        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
+        {
+            return ((this->functionclass_ != 0) && (this->function_ != 0));
+        }
+        else if (this->state_ == CS_ConfigValueType || this->state_ == CS_ConfigValueFinished)
+        {
+            return ((this->configvalueclass_ != 0) && (this->configvalue_ != 0));
+        }
+        else if (this->state_ == CS_KeybindCommand || this->state_ == CS_KeybindFinished)
+        {
+            return (this->key_ != 0);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    /////////////////////
+    // CommandExecutor //
+    /////////////////////
     CommandExecutor& CommandExecutor::getInstance()
     {
         static CommandExecutor instance;
@@ -110,39 +173,45 @@ namespace orxonox
             case CS_FunctionClass_Or_Shortcut_Or_Keyword:
                 break;
             case CS_Shortcut_Params:
-                // not enough parameters
+                // not enough parameters but lets hope there are some additional parameters
+                if (evaluation.shortcut_ != 0)
+                    return evaluation.shortcut_->parse(tokens.subSet(1).join() + " " + evaluation.additionalParameter_);
                 break;
             case CS_Shortcut_Finished:
                 // call the shortcut
                 if (evaluation.shortcut_ != 0)
-                    return evaluation.shortcut_->parse(tokens.subSet(1).join());
+                    return evaluation.shortcut_->parse(tokens.subSet(1).join() + " " + evaluation.additionalParameter_);
                 break;
             case CS_Function:
                 break;
             case CS_Function_Params:
-                // not enough parameters
+                // not enough parameters but lets hope there are some additional parameters
+                if (evaluation.function_ != 0)
+                    return evaluation.function_->parse(tokens.subSet(2).join() + " " + evaluation.additionalParameter_);
                 break;
             case CS_Function_Finished:
                 // call the shortcut
                 if (evaluation.function_ != 0)
-                    return evaluation.function_->parse(tokens.subSet(2).join());
+                    return evaluation.function_->parse(tokens.subSet(2).join() + " " + evaluation.additionalParameter_);
                 break;
             case CS_ConfigValueClass:
                 break;
             case CS_ConfigValue:
                 break;
             case CS_ConfigValueType:
-                // not enough parameters
+                // not enough parameters but lets hope there are some additional parameters
+                if (evaluation.configvalue_ != 0)
+                    return evaluation.configvalue_->parseString(tokens.subSet(3).join() + " " + evaluation.additionalParameter_);
                 break;
             case CS_ConfigValueFinished:
                 // set the config value
                 if (evaluation.configvalue_ != 0)
-                    return evaluation.configvalue_->parseString(tokens.subSet(3).join());
+                    return evaluation.configvalue_->parseString(tokens.subSet(3).join() + " " + evaluation.additionalParameter_);
                 break;
             case CS_KeybindKey:
                 break;
             case CS_KeybindCommand:
-                // not enough parameters
+                // not enough parameters but lets hope there are some additional parameters
                 break;
             case CS_KeybindFinished:
                 // set the keybind
@@ -295,7 +364,7 @@ namespace orxonox
         return "";
     }
 
-    const CommandEvaluation& CommandExecutor::evaluate(const std::string& command)
+    CommandEvaluation CommandExecutor::evaluate(const std::string& command)
     {
         CommandExecutor::parse(command, true);
         return CommandExecutor::getEvaluation();
@@ -307,7 +376,7 @@ namespace orxonox
         CommandExecutor::getEvaluation().processedCommand_ = command;
 
         if (bInitialize)
-            CommandExecutor::initialize();
+            CommandExecutor::initialize(command);
 
         switch (CommandExecutor::getEvaluation().state_)
         {
@@ -653,8 +722,11 @@ namespace orxonox
         }
     }
 
-    void CommandExecutor::initialize()
+    void CommandExecutor::initialize(const std::string& command)
     {
+        CommandExecutor::getEvaluation().processedCommand_ = command;
+        CommandExecutor::getEvaluation().additionalParameter_ = "";
+
         CommandExecutor::getEvaluation().listOfPossibleFunctionClasses_.clear();
         CommandExecutor::getEvaluation().listOfPossibleShortcuts_.clear();
         CommandExecutor::getEvaluation().listOfPossibleFunctions_.clear();
