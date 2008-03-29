@@ -19,6 +19,7 @@ SET( CORE_SRC_FILES
   Namespace.cc
   NamespaceNode.cc
   CommandExecutor.cc
+  InputBuffer.cc
 )
 
 ADD_LIBRARY( core SHARED ${CORE_SRC_FILES})

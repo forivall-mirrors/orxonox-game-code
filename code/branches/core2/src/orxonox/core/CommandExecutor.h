@@ -33,6 +33,7 @@
 #include <list>
 
 #include "util/SubString.h"
+#include "util/MultiTypeMath.h"
 #include "CorePrereqs.h"
 
 #define COMMAND_EXECUTOR_CURSOR '$'
@@ -41,6 +42,7 @@ namespace orxonox
 {
     enum CommandState
     {
+        CS_Uninitialized,
         CS_Empty,
         CS_FunctionClass_Or_Shortcut_Or_Keyword,
         CS_Shortcut_Params,
@@ -66,6 +68,8 @@ namespace orxonox
     class _CoreExport CommandEvaluation
     {
         public:
+            CommandEvaluation();
+
             KeybindMode getKeybindMode();
             void setAdditionalParameter(const std::string& param);
             bool isValid() const;

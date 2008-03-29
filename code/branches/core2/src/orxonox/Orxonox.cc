@@ -85,10 +85,48 @@
 #include "objects/test2.h"
 #include "objects/test3.h"
 
+#include "core/CommandExecutor.h"
+#include "core/InputBuffer.h"
+
 #include "Orxonox.h"
 
 namespace orxonox
 {
+    class Testlistener : public InputBufferListener
+    {
+        public:
+            Testlistener(InputBuffer* ib) : ib_(ib) {}
+            void listen() const
+            {
+                std::cout << "> -->" << this->ib_->get() << "<--" << std::endl;
+            }
+            void execute() const
+            {
+std::cout << "### EXECUTE!" << std::endl;
+                CommandExecutor::execute(this->ib_->get());
+                this->ib_->clear();
+            }
+            void hintandcomplete() const
+            {
+std::cout << "### HINT!" << std::endl;
+                std::cout << CommandExecutor::hint(this->ib_->get()) << std::endl;
+                this->ib_->set(CommandExecutor::complete(this->ib_->get()));
+            }
+            void clear() const
+            {
+std::cout << "### CLEAR!" << std::endl;
+                this->ib_->clear();
+            }
+            void removeLast() const
+            {
+std::cout << "### REMOVELAST!" << std::endl;
+                this->ib_->removeLast();
+            }
+
+        private:
+            InputBuffer* ib_;
+    };
+
    // put this in a seperate Class or solve the problem in another fashion
   class OrxListener : public Ogre::FrameListener
   {
@@ -1145,6 +1183,14 @@ namespace orxonox
 
         std::cout << "2\n";
 */
+        InputBuffer* ib = new InputBuffer(this->getKeyboard());
+        Testlistener* testlistener = new Testlistener(ib);
+        ib->registerListener(testlistener, &Testlistener::listen, true);
+        ib->registerListener(testlistener, &Testlistener::execute, '\r', false);
+        ib->registerListener(testlistener, &Testlistener::hintandcomplete, '\t', true);
+        ib->registerListener(testlistener, &Testlistener::clear, '§', true);
+        ib->registerListener(testlistener, &Testlistener::removeLast, '\b', true);
+
     startRenderLoop();
   }
 
@@ -1363,7 +1409,7 @@ namespace orxonox
 
     try
     {
-      keyboard_ = static_cast<OIS::Keyboard*>(inputManager_->createInputObject(OIS::OISKeyboard, false));
+      keyboard_ = static_cast<OIS::Keyboard*>(inputManager_->createInputObject(OIS::OISKeyboard, true));
       mouse_ = static_cast<OIS::Mouse*>(inputManager_->createInputObject(OIS::OISMouse, true));
     }
     catch (const OIS::Exception &e)

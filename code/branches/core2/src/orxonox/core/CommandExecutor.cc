@@ -48,6 +48,22 @@ namespace orxonox
     ///////////////////////
     // CommandEvaluation //
     ///////////////////////
+    CommandEvaluation::CommandEvaluation()
+    {
+        this->processedCommand_ = "";
+        this->additionalParameter_ = "";
+
+        this->functionclass_ = 0;
+        this->configvalueclass_ = 0;
+        this->shortcut_ = 0;
+        this->function_ = 0;
+        this->configvalue_ = 0;
+        this->key_ = 0;
+
+        this->errorMessage_ = "";
+        this->state_ = CS_Uninitialized;
+    }
+
     KeybindMode CommandEvaluation::getKeybindMode()
     {
         if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
@@ -155,7 +171,7 @@ namespace orxonox
 
     bool CommandExecutor::execute(const std::string& command)
     {
-        if (CommandExecutor::getEvaluation().processedCommand_ != command)
+        if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
             CommandExecutor::parse(command);
 
         return CommandExecutor::execute(CommandExecutor::getEvaluation());
@@ -168,6 +184,8 @@ namespace orxonox
 
         switch (evaluation.state_)
         {
+            case CS_Uninitialized:
+                break;
             case CS_Empty:
                 break;
             case CS_FunctionClass_Or_Shortcut_Or_Keyword:
@@ -226,7 +244,7 @@ namespace orxonox
 
     std::string CommandExecutor::complete(const std::string& command)
     {
-        if (CommandExecutor::getEvaluation().processedCommand_ != command)
+        if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
             CommandExecutor::parse(command);
 
         return CommandExecutor::complete(CommandExecutor::getEvaluation());
@@ -245,8 +263,10 @@ namespace orxonox
 
         switch (evaluation.state_)
         {
+            case CS_Uninitialized:
+                break;
             case CS_Empty:
-                return (tokens.subSet(0, tokens.size() - 1).join() + " " + CommandExecutor::getCommonBegin(temp));
+                return (CommandExecutor::getCommonBegin(temp));
                 break;
             case CS_FunctionClass_Or_Shortcut_Or_Keyword:
                 break;
@@ -257,7 +277,8 @@ namespace orxonox
             case CS_Shortcut_Finished:
                 break;
             case CS_Function:
-                return (tokens.subSet(0, tokens.size() - 1).join() + " " + CommandExecutor::getCommonBegin(evaluation.listOfPossibleFunctions_));
+                if (tokens.size() >= 1)
+                    return tokens[0] + " " + CommandExecutor::getCommonBegin(evaluation.listOfPossibleFunctions_);
                 break;
             case CS_Function_Params:
                 if ((evaluation.processedCommand_.size() >= 1) && (evaluation.processedCommand_[evaluation.processedCommand_.size() - 1] != ' '))
@@ -266,10 +287,12 @@ namespace orxonox
             case CS_Function_Finished:
                 break;
             case CS_ConfigValueClass:
-                return (tokens.subSet(0, tokens.size() - 1).join() + " " + CommandExecutor::getCommonBegin(evaluation.listOfPossibleConfigValueClasses_));
+                if (tokens.size() >= 1)
+                    return tokens[0] + " " + CommandExecutor::getCommonBegin(evaluation.listOfPossibleConfigValueClasses_);
                 break;
             case CS_ConfigValue:
-                return (tokens.subSet(0, tokens.size() - 1).join() + " " + CommandExecutor::getCommonBegin(evaluation.listOfPossibleConfigValues_));
+                if (tokens.size() >= 2)
+                    return tokens[0] + " " + tokens[1] + " " + CommandExecutor::getCommonBegin(evaluation.listOfPossibleConfigValues_);
                 break;
             case CS_ConfigValueType:
                 if ((evaluation.processedCommand_.size() >= 1) && (evaluation.processedCommand_[evaluation.processedCommand_.size() - 1] != ' '))
@@ -278,7 +301,8 @@ namespace orxonox
             case CS_ConfigValueFinished:
                 break;
             case CS_KeybindKey:
-                return (tokens.subSet(0, tokens.size() - 1).join() + " " + CommandExecutor::getCommonBegin(evaluation.listOfPossibleKeys_));
+                if (tokens.size() >= 1)
+                    return tokens[0] + " " + CommandExecutor::getCommonBegin(evaluation.listOfPossibleKeys_);
                 break;
             case CS_KeybindCommand:
                 if ((evaluation.processedCommand_.size() >= 1) && (evaluation.processedCommand_[evaluation.processedCommand_.size() - 1] != ' '))
@@ -295,7 +319,7 @@ namespace orxonox
 
     std::string CommandExecutor::hint(const std::string& command)
     {
-        if (CommandExecutor::getEvaluation().processedCommand_ != command)
+        if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
             CommandExecutor::parse(command);
 
         return CommandExecutor::hint(CommandExecutor::getEvaluation());
@@ -307,6 +331,8 @@ namespace orxonox
 
         switch (evaluation.state_)
         {
+            case CS_Uninitialized:
+                break;
             case CS_Empty:
                 return (CommandExecutor::dump(evaluation.listOfPossibleShortcuts_) + "\n" + CommandExecutor::dump(evaluation.listOfPossibleFunctionClasses_));
                 break;
@@ -357,7 +383,7 @@ namespace orxonox
                     return CommandExecutor::dump(evaluation.key_);
                 break;
             case CS_Error:
-                return "Error";
+                return CommandExecutor::getEvaluation().errorMessage_;
                 break;
         }
 
@@ -380,6 +406,9 @@ namespace orxonox
 
         switch (CommandExecutor::getEvaluation().state_)
         {
+            case CS_Uninitialized:
+                // Impossible
+                break;
             case CS_Empty:
                 if (CommandExecutor::argumentsGiven() == 0)
                 {
@@ -634,7 +663,7 @@ namespace orxonox
                         if (CommandExecutor::getEvaluation().tokens_.size() >= 3)
                         {
                             CommandExecutor::getEvaluation().configvalue_ = CommandExecutor::getContainerOfPossibleConfigValue(CommandExecutor::getToken(2), CommandExecutor::getEvaluation().configvalueclass_);
-                            if (CommandExecutor::getEvaluation().configvalueclass_ != 0)
+                            if (CommandExecutor::getEvaluation().configvalue_ != 0)
                             {
                                 // There is a perfect match: Add a whitespace and continue parsing
                                 CommandExecutor::getEvaluation().state_ = CS_ConfigValueType;
@@ -790,7 +819,7 @@ namespace orxonox
         {
             if ((*it).second->hasConsoleCommands())
             {
-                if ((*it).first.find(getLowercase(fragment)) == 0)
+                if ((*it).first.find(getLowercase(fragment)) == 0 || fragment == "")
                 {
                     CommandExecutor::getEvaluation().listOfPossibleFunctionClasses_.push_back(&(*it).first);
                 }
@@ -804,7 +833,7 @@ namespace orxonox
     {
         for (std::map<std::string, ExecutorStatic*>::const_iterator it = CommandExecutor::getLowercaseConsoleCommandShortcutMapBegin(); it != CommandExecutor::getLowercaseConsoleCommandShortcutMapEnd(); ++it)
         {
-            if ((*it).first.find(getLowercase(fragment)) == 0)
+            if ((*it).first.find(getLowercase(fragment)) == 0 || fragment == "")
             {
                 CommandExecutor::getEvaluation().listOfPossibleShortcuts_.push_back(&(*it).first);
             }
@@ -817,7 +846,7 @@ namespace orxonox
     {
         for (std::map<std::string, ExecutorStatic*>::const_iterator it = identifier->getLowercaseConsoleCommandMapBegin(); it != identifier->getLowercaseConsoleCommandMapEnd(); ++it)
         {
-            if ((*it).first.find(getLowercase(fragment)) == 0)
+            if ((*it).first.find(getLowercase(fragment)) == 0 || fragment == "")
             {
                 CommandExecutor::getEvaluation().listOfPossibleFunctions_.push_back(&(*it).first);
             }
@@ -832,7 +861,7 @@ namespace orxonox
         {
             if ((*it).second->hasConfigValues())
             {
-                if ((*it).first.find(getLowercase(fragment)) == 0)
+                if ((*it).first.find(getLowercase(fragment)) == 0 || fragment == "")
                 {
                     CommandExecutor::getEvaluation().listOfPossibleConfigValueClasses_.push_back(&(*it).first);
                 }
@@ -846,7 +875,7 @@ namespace orxonox
     {
         for (std::map<std::string, ConfigValueContainer*>::const_iterator it = identifier->getLowercaseConfigValueMapBegin(); it != identifier->getLowercaseConfigValueMapEnd(); ++it)
         {
-            if ((*it).first.find(getLowercase(fragment)) == 0)
+            if ((*it).first.find(getLowercase(fragment)) == 0 || fragment == "")
             {
                 CommandExecutor::getEvaluation().listOfPossibleConfigValues_.push_back(&(*it).first);
             }
@@ -907,7 +936,9 @@ namespace orxonox
     {
         std::map<std::string, ConfigValueContainer*>::const_iterator it = identifier->getLowercaseConfigValueMap().find(getLowercase(name));
         if (it != identifier->getLowercaseConfigValueMapEnd())
+        {
             return (*it).second;
+        }
 
         return 0;
     }

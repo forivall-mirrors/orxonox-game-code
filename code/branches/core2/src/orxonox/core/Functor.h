@@ -51,7 +51,13 @@ namespace orxonox
 
 #define CreateTypeToStringTemplate(type) \
     template <> \
-    inline std::string typeToString<type>() { return #type; }
+    inline std::string typeToString<type>() { return #type; } \
+    template <> \
+    inline std::string typeToString<type&>() { return #type; } \
+    template <> \
+    inline std::string typeToString<const type>() { return #type; } \
+    template <> \
+    inline std::string typeToString<const type&>() { return #type; }
 
     CreateTypeToStringTemplate(int);
     CreateTypeToStringTemplate(unsigned int);
@@ -65,14 +71,21 @@ namespace orxonox
     CreateTypeToStringTemplate(double);
     CreateTypeToStringTemplate(long double);
     CreateTypeToStringTemplate(bool);
-    CreateTypeToStringTemplate(std::string);
-    CreateTypeToStringTemplate(orxonox::Vector2);
-    CreateTypeToStringTemplate(orxonox::Vector3);
-    CreateTypeToStringTemplate(orxonox::Quaternion);
-    CreateTypeToStringTemplate(orxonox::ColourValue);
-    CreateTypeToStringTemplate(orxonox::Radian);
-    CreateTypeToStringTemplate(orxonox::Degree);
+    CreateTypeToStringTemplate(Vector2);
+    CreateTypeToStringTemplate(Vector3);
+    CreateTypeToStringTemplate(Quaternion);
+    CreateTypeToStringTemplate(ColourValue);
+    CreateTypeToStringTemplate(Radian);
+    CreateTypeToStringTemplate(Degree);
 
+    template <> \
+    inline std::string typeToString<std::string>() { return "string"; } \
+    template <> \
+    inline std::string typeToString<std::string&>() { return "string"; } \
+    template <> \
+    inline std::string typeToString<const std::string>() { return "string"; } \
+    template <> \
+    inline std::string typeToString<const std::string&>() { return "string"; }
 
     class _CoreExport Functor
     {
@@ -87,7 +100,7 @@ namespace orxonox
             inline FunctionType getType() const { return this->type_; }
             inline MultiTypeMath getReturnvalue() const { return this->returnedValue_; }
 
-            std::string getTypenameParam(unsigned int param) const { return (param > 0 && param <= 5) ? this->typeParam_[param-1] : ""; }
+            std::string getTypenameParam(unsigned int param) const { return (param >= 0 && param < 5) ? this->typeParam_[param] : ""; }
             std::string getTypenameReturnvalue() const { return this->typeReturnvalue_; }
 
         protected:
