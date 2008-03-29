@@ -7,7 +7,9 @@
 #ifndef _Script_H__
 #define _Script_H__
 
-#include <lua.h>
+extern "C" {
+#include "lua.h"
+}
 
 namespace orxonox
 {

@@ -18,18 +18,32 @@ FIND_PATH(Lua_INCLUDE_DIR lua.h
 	/usr/include/lua5.1
 	/usr/local/include/lua5.1)
 
-FIND_PATH(Lua_INCLUDE_DIR lauxlib.h
-	/usr/include/lua5.1
-	/usr/local/include/lua5.1)
-
-FIND_PATH(Lua_INCLUDE_DIR lualib.h
-	/usr/include/lua5.1
-	/usr/local/include/lua5.1)
-
-FIND_LIBRARY(Lua_LIBRARIES lua5.1 PATH
+FIND_LIBRARY(Lua_LIBRARIES lua5.1
 	/usr/lib
 	/usr/local/lib)
 
+ADD_DEFINITIONS(-DLUA_VERSION=51)
+
+IF (NOT Lua_LIBRARIES AND Lua_INCLUDE_DIR)
+FIND_PATH(Lua_INCLUDE_DIR lua.h
+	/usr/include/lua50
+	/usr/local/include/lua50
+	/usr/pack/lua-5.0.3-sd/include/)
+
+FIND_LIBRARY(Lua_LIBRARIES lua50
+	/usr/lib
+	/usr/local/lib
+	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib/)
+
+FIND_LIBRARY(Lua_LIBRARY lualib50
+	/usr/lib
+	/usr/local/lib
+	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib/)
+
+SET(Lua_LIBRARIES ${Lua_LIBRARIES} ${Lua_LIBRARY})
+ADD_DEFINITIONS(-DLUA_VERSION=50)
+
+ENDIF (NOT Lua_LIBRARIES AND Lua_INCLUDE_DIR)
 
 IF (Lua_INCLUDE_DIR AND Lua_LIBRARIES)
     SET(Lua_FOUND TRUE)

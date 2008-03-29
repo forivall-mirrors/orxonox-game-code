@@ -26,9 +26,10 @@
  */
 
 #include "Script.h"
-//#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
+extern "C" {
+#include "lualib.h"
+#include "lauxlib.h"
+}
 
 
 namespace orxonox
@@ -36,8 +37,16 @@ namespace orxonox
   Script::Script()
   {
     state_ = lua_open();
-
+#if Lua_VERSION == 51
     luaL_openlibs(state_);
+#else
+    luaopen_base(state_);
+    luaopen_table(state_);
+    luaopen_io(state_);
+    luaopen_string(state_);
+    luaopen_math(state_);
+    luaopen_debug(state_);
+#endif
   }
 
   Script::~Script()
