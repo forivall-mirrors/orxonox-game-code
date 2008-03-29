@@ -28,7 +28,6 @@
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
 #include "util/String.h"
-#include "util/SubString.h"
 #include "Identifier.h"
 #include "Language.h"
 #include "Debug.h"
@@ -45,33 +44,16 @@ namespace orxonox
     ConsoleCommandShortcutGeneric(keyword2, createExecutor((FunctorStatic*)0, "tset", AccessLevel::User));
     ConsoleCommandShortcutGeneric(keyword3, createExecutor((FunctorStatic*)0, "bind", AccessLevel::User));
 
-    SubString CommandExecutor::tokens_s;
-    std::string CommandExecutor::lastProcessedCommand_s;
-
-    std::list<const std::string*> CommandExecutor::listOfPossibleFunctionClasses_s;
-    std::list<const std::string*> CommandExecutor::listOfPossibleShortcuts_s;
-    std::list<const std::string*> CommandExecutor::listOfPossibleFunctions_s;
-    std::list<const std::string*> CommandExecutor::listOfPossibleConfigValueClasses_s;
-    std::list<const std::string*> CommandExecutor::listOfPossibleConfigValues_s;
-    std::list<const std::string*> CommandExecutor::listOfPossibleKeys_s;
-
-    Identifier* CommandExecutor::functionclass_s;
-    Identifier* CommandExecutor::configvalueclass_s;
-    ExecutorStatic* CommandExecutor::shortcut_s;
-    ExecutorStatic* CommandExecutor::function_s;
-    ConfigValueContainer* CommandExecutor::configvalue_s;
-    ConfigValueContainer* CommandExecutor::key_s;
-
-    std::string CommandExecutor::errorMessage_s;
-    CommandExecutor::CommandState CommandExecutor::state_s;
-
-    std::map<std::string, ExecutorStatic*> CommandExecutor::consoleCommandShortcuts_s;
-    std::map<std::string, ExecutorStatic*> CommandExecutor::consoleCommandShortcuts_LC_s;
+    CommandExecutor& CommandExecutor::getInstance()
+    {
+        static CommandExecutor instance;
+        return instance;
+    }
 
     bool CommandExecutor::addConsoleCommandShortcut(ExecutorStatic* executor)
     {
-        CommandExecutor::consoleCommandShortcuts_s[executor->getName()] = executor;
-        CommandExecutor::consoleCommandShortcuts_LC_s[getLowercase(executor->getName())] = executor;
+        CommandExecutor::getInstance().consoleCommandShortcuts_s[executor->getName()] = executor;
+        CommandExecutor::getInstance().consoleCommandShortcuts_LC_s[getLowercase(executor->getName())] = executor;
         return true;
     }
 
@@ -82,8 +64,8 @@ namespace orxonox
     */
     ExecutorStatic* CommandExecutor::getConsoleCommandShortcut(const std::string& name)
     {
-        std::map<std::string, ExecutorStatic*>::const_iterator it = CommandExecutor::consoleCommandShortcuts_s.find(name);
-        if (it != CommandExecutor::consoleCommandShortcuts_s.end())
+        std::map<std::string, ExecutorStatic*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_s.find(name);
+        if (it != CommandExecutor::getInstance().consoleCommandShortcuts_s.end())
             return (*it).second;
         else
             return 0;
@@ -96,8 +78,8 @@ namespace orxonox
     */
     ExecutorStatic* CommandExecutor::getLowercaseConsoleCommandShortcut(const std::string& name)
     {
-        std::map<std::string, ExecutorStatic*>::const_iterator it = CommandExecutor::consoleCommandShortcuts_LC_s.find(name);
-        if (it != CommandExecutor::consoleCommandShortcuts_LC_s.end())
+        std::map<std::string, ExecutorStatic*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_LC_s.find(name);
+        if (it != CommandExecutor::getInstance().consoleCommandShortcuts_LC_s.end())
             return (*it).second;
         else
             return 0;
@@ -105,12 +87,12 @@ namespace orxonox
 
     bool CommandExecutor::execute(const std::string& command)
     {
-        if (CommandExecutor::lastProcessedCommand_s != command)
+        if (CommandExecutor::getInstance().lastProcessedCommand_s != command)
             CommandExecutor::parse(command);
 
-        CommandExecutor::tokens_s.split(command, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+        CommandExecutor::getInstance().tokens_s.split(command, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
 
-        switch (CommandExecutor::state_s)
+        switch (CommandExecutor::getInstance().state_s)
         {
             case CS_Empty:
                 break;
@@ -121,8 +103,8 @@ namespace orxonox
                 break;
             case CS_Shortcut_Finished:
                 // call the shortcut
-                if (CommandExecutor::shortcut_s != 0)
-                    return CommandExecutor::shortcut_s->parse(CommandExecutor::tokens_s.subSet(1).join());
+                if (CommandExecutor::getInstance().shortcut_s != 0)
+                    return CommandExecutor::getInstance().shortcut_s->parse(CommandExecutor::getInstance().tokens_s.subSet(1).join());
                 break;
             case CS_Function:
                 break;
@@ -131,8 +113,8 @@ namespace orxonox
                 break;
             case CS_Function_Finished:
                 // call the shortcut
-                if (CommandExecutor::function_s != 0)
-                    return CommandExecutor::function_s->parse(CommandExecutor::tokens_s.subSet(2).join());
+                if (CommandExecutor::getInstance().function_s != 0)
+                    return CommandExecutor::getInstance().function_s->parse(CommandExecutor::getInstance().tokens_s.subSet(2).join());
                 break;
             case CS_ConfigValueClass:
                 break;
@@ -143,8 +125,8 @@ namespace orxonox
                 break;
             case CS_ConfigValueFinished:
                 // set the config value
-                if (CommandExecutor::configvalue_s != 0)
-                    return CommandExecutor::configvalue_s->parseString(CommandExecutor::tokens_s.subSet(3).join());
+                if (CommandExecutor::getInstance().configvalue_s != 0)
+                    return CommandExecutor::getInstance().configvalue_s->parseString(CommandExecutor::getInstance().tokens_s.subSet(3).join());
                 break;
             case CS_KeybindKey:
                 break;
@@ -164,22 +146,22 @@ namespace orxonox
 
     std::string CommandExecutor::complete(const std::string& command)
     {
-        if (CommandExecutor::lastProcessedCommand_s != command)
+        if (CommandExecutor::getInstance().lastProcessedCommand_s != command)
             CommandExecutor::parse(command);
 
-        CommandExecutor::tokens_s.split(command, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+        CommandExecutor::getInstance().tokens_s.split(command, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
 
         std::list<const std::string*> temp;
-        if (CommandExecutor::state_s == CS_Empty)
+        if (CommandExecutor::getInstance().state_s == CS_Empty)
         {
-            temp.insert(temp.end(), CommandExecutor::listOfPossibleShortcuts_s.begin(), CommandExecutor::listOfPossibleShortcuts_s.end());
-            temp.insert(temp.end(), CommandExecutor::listOfPossibleFunctionClasses_s.begin(), CommandExecutor::listOfPossibleFunctionClasses_s.end());
+            temp.insert(temp.end(), CommandExecutor::getInstance().listOfPossibleShortcuts_s.begin(), CommandExecutor::getInstance().listOfPossibleShortcuts_s.end());
+            temp.insert(temp.end(), CommandExecutor::getInstance().listOfPossibleFunctionClasses_s.begin(), CommandExecutor::getInstance().listOfPossibleFunctionClasses_s.end());
         }
 
-        switch (CommandExecutor::state_s)
+        switch (CommandExecutor::getInstance().state_s)
         {
             case CS_Empty:
-                return (CommandExecutor::tokens_s.subSet(0, CommandExecutor::tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(temp));
+                return (CommandExecutor::getInstance().tokens_s.subSet(0, CommandExecutor::getInstance().tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(temp));
                 break;
             case CS_FunctionClass_Or_Shortcut_Or_Keyword:
                 break;
@@ -190,7 +172,7 @@ namespace orxonox
             case CS_Shortcut_Finished:
                 break;
             case CS_Function:
-                return (CommandExecutor::tokens_s.subSet(0, CommandExecutor::tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::listOfPossibleFunctions_s));
+                return (CommandExecutor::getInstance().tokens_s.subSet(0, CommandExecutor::getInstance().tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::getInstance().listOfPossibleFunctions_s));
                 break;
             case CS_Function_Params:
                 if (command[command.size() - 1] != ' ')
@@ -199,10 +181,10 @@ namespace orxonox
             case CS_Function_Finished:
                 break;
             case CS_ConfigValueClass:
-                return (CommandExecutor::tokens_s.subSet(0, CommandExecutor::tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::listOfPossibleConfigValueClasses_s));
+                return (CommandExecutor::getInstance().tokens_s.subSet(0, CommandExecutor::getInstance().tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::getInstance().listOfPossibleConfigValueClasses_s));
                 break;
             case CS_ConfigValue:
-                return (CommandExecutor::tokens_s.subSet(0, CommandExecutor::tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::listOfPossibleConfigValues_s));
+                return (CommandExecutor::getInstance().tokens_s.subSet(0, CommandExecutor::getInstance().tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::getInstance().listOfPossibleConfigValues_s));
                 break;
             case CS_ConfigValueType:
                 if (command[command.size() - 1] != ' ')
@@ -211,7 +193,7 @@ namespace orxonox
             case CS_ConfigValueFinished:
                 break;
             case CS_KeybindKey:
-                return (CommandExecutor::tokens_s.subSet(0, CommandExecutor::tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::listOfPossibleKeys_s));
+                return (CommandExecutor::getInstance().tokens_s.subSet(0, CommandExecutor::getInstance().tokens_s.size() - 1).join() + " " + CommandExecutor::getCommonBegin(CommandExecutor::getInstance().listOfPossibleKeys_s));
                 break;
             case CS_KeybindCommand:
                 if (command[command.size() - 1] != ' ')
@@ -223,58 +205,66 @@ namespace orxonox
                 break;
         }
 
-        return CommandExecutor::lastProcessedCommand_s;
+        return CommandExecutor::getInstance().lastProcessedCommand_s;
     }
 
     std::string CommandExecutor::hint(const std::string& command)
     {
-        if (CommandExecutor::lastProcessedCommand_s != command)
+        if (CommandExecutor::getInstance().lastProcessedCommand_s != command)
             CommandExecutor::parse(command);
 
-        CommandExecutor::tokens_s.split(command, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+        CommandExecutor::getInstance().tokens_s.split(command, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
 
-        switch (CommandExecutor::state_s)
+        switch (CommandExecutor::getInstance().state_s)
         {
             case CS_Empty:
-                return (CommandExecutor::dump(CommandExecutor::listOfPossibleShortcuts_s) + "\n" + CommandExecutor::dump(CommandExecutor::listOfPossibleFunctionClasses_s));
+                return (CommandExecutor::dump(CommandExecutor::getInstance().listOfPossibleShortcuts_s) + "\n" + CommandExecutor::dump(CommandExecutor::getInstance().listOfPossibleFunctionClasses_s));
                 break;
             case CS_FunctionClass_Or_Shortcut_Or_Keyword:
                 break;
             case CS_Shortcut_Params:
-                if (CommandExecutor::shortcut_s != 0)
-                    return CommandExecutor::dump(CommandExecutor::shortcut_s);
+                if (CommandExecutor::getInstance().shortcut_s != 0)
+                    return CommandExecutor::dump(CommandExecutor::getInstance().shortcut_s);
                 break;
             case CS_Shortcut_Finished:
+                if (CommandExecutor::getInstance().shortcut_s != 0)
+                    return CommandExecutor::dump(CommandExecutor::getInstance().shortcut_s);
                 break;
             case CS_Function:
-                return CommandExecutor::dump(CommandExecutor::listOfPossibleFunctions_s);
+                return CommandExecutor::dump(CommandExecutor::getInstance().listOfPossibleFunctions_s);
                 break;
             case CS_Function_Params:
-                if (CommandExecutor::function_s != 0)
-                    return CommandExecutor::dump(CommandExecutor::function_s);
+                if (CommandExecutor::getInstance().function_s != 0)
+                    return CommandExecutor::dump(CommandExecutor::getInstance().function_s);
                 break;
             case CS_Function_Finished:
+                if (CommandExecutor::getInstance().function_s != 0)
+                    return CommandExecutor::dump(CommandExecutor::getInstance().function_s);
                 break;
             case CS_ConfigValueClass:
-                return CommandExecutor::dump(CommandExecutor::listOfPossibleConfigValueClasses_s);
+                return CommandExecutor::dump(CommandExecutor::getInstance().listOfPossibleConfigValueClasses_s);
                 break;
             case CS_ConfigValue:
-                return CommandExecutor::dump(CommandExecutor::listOfPossibleConfigValues_s);
+                return CommandExecutor::dump(CommandExecutor::getInstance().listOfPossibleConfigValues_s);
                 break;
             case CS_ConfigValueType:
-                if (CommandExecutor::configvalue_s != 0)
-                    CommandExecutor::dump(CommandExecutor::configvalue_s);
+                if (CommandExecutor::getInstance().configvalue_s != 0)
+                    return CommandExecutor::dump(CommandExecutor::getInstance().configvalue_s);
                 break;
             case CS_ConfigValueFinished:
+                if (CommandExecutor::getInstance().configvalue_s != 0)
+                    return CommandExecutor::dump(CommandExecutor::getInstance().configvalue_s);
                 break;
             case CS_KeybindKey:
-                return CommandExecutor::dump(CommandExecutor::listOfPossibleKeys_s);
+                return CommandExecutor::dump(CommandExecutor::getInstance().listOfPossibleKeys_s);
                 break;
             case CS_KeybindCommand:
-                if (CommandExecutor::key_s != 0)
-                    CommandExecutor::dump(CommandExecutor::key_s);
+                if (CommandExecutor::getInstance().key_s != 0)
+                    return CommandExecutor::dump(CommandExecutor::getInstance().key_s);
                 break;
             case CS_KeybindFinished:
+                if (CommandExecutor::getInstance().key_s != 0)
+                    return CommandExecutor::dump(CommandExecutor::getInstance().key_s);
                 break;
             case CS_Error:
                 return "Error";
@@ -286,27 +276,27 @@ namespace orxonox
 
     void CommandExecutor::parse(const std::string& command, bool bInitialize)
     {
-        CommandExecutor::tokens_s.split((command + CommandExecutor::cursor_s), " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
-        CommandExecutor::lastProcessedCommand_s = command;
+        CommandExecutor::getInstance().tokens_s.split((command + COMMAND_EXECUTOR_CURSOR), " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+        CommandExecutor::getInstance().lastProcessedCommand_s = command;
 
         if (bInitialize)
             CommandExecutor::initialize();
 
-        switch (CommandExecutor::state_s)
+        switch (CommandExecutor::getInstance().state_s)
         {
             case CS_Empty:
                 if (CommandExecutor::argumentsGiven() == 0)
                 {
                     // We want a hint for the first token
                     // Check if there is already a perfect match
-                    CommandExecutor::functionclass_s = CommandExecutor::getIdentifierOfPossibleFunctionClass(CommandExecutor::getToken(0));
-                    CommandExecutor::shortcut_s = CommandExecutor::getExecutorOfPossibleShortcut(CommandExecutor::getToken(0));
+                    CommandExecutor::getInstance().functionclass_s = CommandExecutor::getIdentifierOfPossibleFunctionClass(CommandExecutor::getToken(0));
+                    CommandExecutor::getInstance().shortcut_s = CommandExecutor::getExecutorOfPossibleShortcut(CommandExecutor::getToken(0));
 
-                    if ((CommandExecutor::functionclass_s != 0) || (CommandExecutor::shortcut_s != 0))
+                    if ((CommandExecutor::getInstance().functionclass_s != 0) || (CommandExecutor::getInstance().shortcut_s != 0))
                     {
                         // Yes, there is a class or a shortcut with the searched name
                         // Add a whitespace and continue parsing
-                        CommandExecutor::state_s = CS_FunctionClass_Or_Shortcut_Or_Keyword;
+                        CommandExecutor::getInstance().state_s = CS_FunctionClass_Or_Shortcut_Or_Keyword;
                         CommandExecutor::parse(command + " ", false);
                         return;
                     }
@@ -314,13 +304,12 @@ namespace orxonox
                     // No perfect match: Create the lists of all possible classes and shortcuts and return
                     CommandExecutor::createListOfPossibleFunctionClasses(CommandExecutor::getToken(0));
                     CommandExecutor::createListOfPossibleShortcuts(CommandExecutor::getToken(0));
-                    CommandExecutor::state_s = CS_Empty;
                     return;
                 }
                 else
                 {
                     // There is at least one argument: Check if it's a shortcut, a classname or a special keyword
-                    CommandExecutor::state_s = CS_FunctionClass_Or_Shortcut_Or_Keyword;
+                    CommandExecutor::getInstance().state_s = CS_FunctionClass_Or_Shortcut_Or_Keyword;
                     CommandExecutor::parse(command, false);
                     return;
                 }
@@ -331,91 +320,91 @@ namespace orxonox
                     if ((CommandExecutor::getToken(0) == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE) || (CommandExecutor::getToken(0) == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY))
                     {
                         // We want to set a config value
-                        CommandExecutor::state_s = CS_ConfigValueClass;
+                        CommandExecutor::getInstance().state_s = CS_ConfigValueClass;
                         CommandExecutor::parse(command, false);
                         return;
                     }
                     else if (CommandExecutor::getToken(0) == COMMAND_EXECUTOR_KEYWORD_SET_KEYBIND)
                     {
                         // We want to set a keybinding
-                        CommandExecutor::state_s = CS_KeybindKey;
+                        CommandExecutor::getInstance().state_s = CS_KeybindKey;
                         CommandExecutor::parse(command, false);
                         return;
                     }
 
-                    if (CommandExecutor::functionclass_s == 0)
-                        CommandExecutor::functionclass_s = CommandExecutor::getIdentifierOfPossibleFunctionClass(CommandExecutor::getToken(0));
-                    if (CommandExecutor::shortcut_s == 0)
-                        CommandExecutor::shortcut_s = CommandExecutor::getExecutorOfPossibleShortcut(CommandExecutor::getToken(0));
+                    if (CommandExecutor::getInstance().functionclass_s == 0)
+                        CommandExecutor::getInstance().functionclass_s = CommandExecutor::getIdentifierOfPossibleFunctionClass(CommandExecutor::getToken(0));
+                    if (CommandExecutor::getInstance().shortcut_s == 0)
+                        CommandExecutor::getInstance().shortcut_s = CommandExecutor::getExecutorOfPossibleShortcut(CommandExecutor::getToken(0));
 
-                    if ((CommandExecutor::functionclass_s == 0) && (CommandExecutor::shortcut_s == 0))
+                    if ((CommandExecutor::getInstance().functionclass_s == 0) && (CommandExecutor::getInstance().shortcut_s == 0))
                     {
                         // Argument 1 seems to be wrong
                         AddLanguageEntry("CommandExecutor::NoSuchCommandOrClassName", "No such command or classname");
-                        CommandExecutor::errorMessage_s = (CommandExecutor::getToken(0) + ": " + GetLocalisation("CommandExecutor::NoSuchCommandOrClassName"));
-                        CommandExecutor::state_s = CS_Error;
+                        CommandExecutor::getInstance().errorMessage_s = (CommandExecutor::getToken(0) + ": " + GetLocalisation("CommandExecutor::NoSuchCommandOrClassName"));
+                        CommandExecutor::getInstance().state_s = CS_Error;
                         return;
                     }
-                    else if (CommandExecutor::shortcut_s != 0)
+                    else if (CommandExecutor::getInstance().shortcut_s != 0)
                     {
                         // Argument 1 is a shortcut: Return the needed parameter types
-                        CommandExecutor::state_s = CS_Shortcut_Params;
+                        CommandExecutor::getInstance().state_s = CS_Shortcut_Params;
                         CommandExecutor::parse(command, false);
                         return;
                     }
                     else
                     {
                         // Argument 1 is a classname: Return the possible functions
-                        CommandExecutor::state_s = CS_Function;
+                        CommandExecutor::getInstance().state_s = CS_Function;
                         CommandExecutor::parse(command, false);
                         return;
                     }
                 }
                 else
                 {
-                    CommandExecutor::state_s = CS_Error;
+                    CommandExecutor::getInstance().state_s = CS_Error;
                     return;
                 }
                 break;
             case CS_Shortcut_Params:
-                if (CommandExecutor::shortcut_s != 0)
+                if (CommandExecutor::getInstance().shortcut_s != 0)
                 {
                     // Valid command
                     // Check if there are enough parameters
-                    if (CommandExecutor::enoughParametersGiven(1, CommandExecutor::shortcut_s))
+                    if (CommandExecutor::enoughParametersGiven(1, CommandExecutor::getInstance().shortcut_s))
                     {
-                        CommandExecutor::state_s = CS_Shortcut_Finished;
+                        CommandExecutor::getInstance().state_s = CS_Shortcut_Finished;
                         return;
                     }
                 }
                 else
                 {
                     // Something is wrong
-                    CommandExecutor::state_s = CS_Error;
+                    CommandExecutor::getInstance().state_s = CS_Error;
                     return;
                 }
                 break;
             case CS_Function:
-                if (CommandExecutor::functionclass_s != 0)
+                if (CommandExecutor::getInstance().functionclass_s != 0)
                 {
                     // We have a valid classname
                     // Check if there is a second argument
                     if (CommandExecutor::argumentsGiven() >= 2)
                     {
                         // There is a second argument: Check if it's a valid functionname
-                        CommandExecutor::function_s = CommandExecutor::getExecutorOfPossibleFunction(CommandExecutor::getToken(1), CommandExecutor::functionclass_s);
-                        if (CommandExecutor::function_s == 0)
+                        CommandExecutor::getInstance().function_s = CommandExecutor::getExecutorOfPossibleFunction(CommandExecutor::getToken(1), CommandExecutor::getInstance().functionclass_s);
+                        if (CommandExecutor::getInstance().function_s == 0)
                         {
                             // Argument 2 seems to be wrong
                             AddLanguageEntry("CommandExecutor::NoSuchFunctionnameIn", "No such functionname in");
-                            CommandExecutor::errorMessage_s = (CommandExecutor::getToken(1) + ": " + GetLocalisation("CommandExecutor::NoSuchFunctionnameIn") + " " + CommandExecutor::functionclass_s->getName());
-                            CommandExecutor::state_s = CS_Error;
+                            CommandExecutor::getInstance().errorMessage_s = (CommandExecutor::getToken(1) + ": " + GetLocalisation("CommandExecutor::NoSuchFunctionnameIn") + " " + CommandExecutor::getInstance().functionclass_s->getName());
+                            CommandExecutor::getInstance().state_s = CS_Error;
                             return;
                         }
                         else
                         {
                             // Argument 2 seems to be a valid functionname: Get the parameters
-                            CommandExecutor::state_s = CS_Function_Params;
+                            CommandExecutor::getInstance().state_s = CS_Function_Params;
                             CommandExecutor::parse(command, false);
                             return;
                         }
@@ -424,45 +413,44 @@ namespace orxonox
                     {
                         // There is no finished second argument
                         // Check if there's already a perfect match
-                        if (CommandExecutor::tokens_s.size() >= 2)
+                        if (CommandExecutor::getInstance().tokens_s.size() >= 2)
                         {
-                            CommandExecutor::function_s = CommandExecutor::getExecutorOfPossibleFunction(CommandExecutor::getToken(1), CommandExecutor::functionclass_s);
-                            if (CommandExecutor::function_s != 0)
+                            CommandExecutor::getInstance().function_s = CommandExecutor::getExecutorOfPossibleFunction(CommandExecutor::getToken(1), CommandExecutor::getInstance().functionclass_s);
+                            if (CommandExecutor::getInstance().function_s != 0)
                             {
                                 // There is a perfect match: Add a whitespace and continue parsing
-                                CommandExecutor::state_s = CS_Function_Params;
+                                CommandExecutor::getInstance().state_s = CS_Function_Params;
                                 CommandExecutor::parse(command + " ", false);
                                 return;
                             }
                         }
 
                         // No perfect match: Create the list of all possible functions and return
-                        CommandExecutor::createListOfPossibleFunctions(CommandExecutor::getToken(1), CommandExecutor::functionclass_s);
-                        CommandExecutor::state_s = CS_Function;
+                        CommandExecutor::createListOfPossibleFunctions(CommandExecutor::getToken(1), CommandExecutor::getInstance().functionclass_s);
                         return;
                     }
                 }
                 else
                 {
-                    CommandExecutor::state_s = CS_Error;
+                    CommandExecutor::getInstance().state_s = CS_Error;
                     return;
                 }
                 break;
             case CS_Function_Params:
-                if ((CommandExecutor::functionclass_s != 0) && (CommandExecutor::function_s != 0))
+                if ((CommandExecutor::getInstance().functionclass_s != 0) && (CommandExecutor::getInstance().function_s != 0))
                 {
                     // Valid command
                     // Check if there are enough parameters
-                    if (CommandExecutor::enoughParametersGiven(2, CommandExecutor::function_s))
+                    if (CommandExecutor::enoughParametersGiven(2, CommandExecutor::getInstance().function_s))
                     {
-                        CommandExecutor::state_s = CS_Function_Finished;
+                        CommandExecutor::getInstance().state_s = CS_Function_Finished;
                         return;
                     }
                 }
                 else
                 {
                     // Something is wrong
-                    CommandExecutor::state_s = CS_Error;
+                    CommandExecutor::getInstance().state_s = CS_Error;
                     return;
                 }
                 break;
@@ -474,19 +462,19 @@ namespace orxonox
                     if (CommandExecutor::argumentsGiven() >= 2)
                     {
                         // There is a second argument: Check if it's a valid classname
-                        CommandExecutor::configvalueclass_s = CommandExecutor::getIdentifierOfPossibleConfigValueClass(CommandExecutor::getToken(1));
-                        if (CommandExecutor::configvalueclass_s == 0)
+                        CommandExecutor::getInstance().configvalueclass_s = CommandExecutor::getIdentifierOfPossibleConfigValueClass(CommandExecutor::getToken(1));
+                        if (CommandExecutor::getInstance().configvalueclass_s == 0)
                         {
                             // Argument 2 seems to be wrong
                             AddLanguageEntry("CommandExecutor::NoSuchClassWithConfigValues", "No such class with config values");
-                            CommandExecutor::errorMessage_s = (CommandExecutor::getToken(1) + ": " + GetLocalisation("CommandExecutor::NoSuchClassWithConfigValues"));
-                            CommandExecutor::state_s = CS_Error;
+                            CommandExecutor::getInstance().errorMessage_s = (CommandExecutor::getToken(1) + ": " + GetLocalisation("CommandExecutor::NoSuchClassWithConfigValues"));
+                            CommandExecutor::getInstance().state_s = CS_Error;
                             return;
                         }
                         else
                         {
                             // Argument 2 seems to be a valid classname: Search for possible config values
-                            CommandExecutor::state_s = CS_ConfigValue;
+                            CommandExecutor::getInstance().state_s = CS_ConfigValue;
                             CommandExecutor::parse(command, false);
                             return;
                         }
@@ -495,13 +483,13 @@ namespace orxonox
                     {
                         // There's no finished second argument
                         // Check if there's already a perfect match
-                        if (CommandExecutor::tokens_s.size() >= 2)
+                        if (CommandExecutor::getInstance().tokens_s.size() >= 2)
                         {
-                            CommandExecutor::configvalueclass_s = CommandExecutor::getIdentifierOfPossibleConfigValueClass(CommandExecutor::getToken(1));
-                            if (CommandExecutor::configvalueclass_s != 0)
+                            CommandExecutor::getInstance().configvalueclass_s = CommandExecutor::getIdentifierOfPossibleConfigValueClass(CommandExecutor::getToken(1));
+                            if (CommandExecutor::getInstance().configvalueclass_s != 0)
                             {
                                 // There is a perfect match: Add a whitespace and continue parsing
-                                CommandExecutor::state_s = CS_ConfigValue;
+                                CommandExecutor::getInstance().state_s = CS_ConfigValue;
                                 CommandExecutor::parse(command + " ", false);
                                 return;
                             }
@@ -509,37 +497,36 @@ namespace orxonox
 
                         // No perfect match: Create the list of all possible classnames and return
                         CommandExecutor::createListOfPossibleConfigValueClasses(CommandExecutor::getToken(1));
-                        CommandExecutor::state_s = CS_ConfigValueClass;
                         return;
                     }
                 }
                 else
                 {
                     // Something is wrong
-                    CommandExecutor::state_s = CS_Error;
+                    CommandExecutor::getInstance().state_s = CS_Error;
                     return;
                 }
                 break;
             case CS_ConfigValue:
-                if (((CommandExecutor::getToken(0) == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE) || (CommandExecutor::getToken(0) == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY)) && (CommandExecutor::configvalueclass_s != 0))
+                if (((CommandExecutor::getToken(0) == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE) || (CommandExecutor::getToken(0) == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY)) && (CommandExecutor::getInstance().configvalueclass_s != 0))
                 {
                     // Check if there is a third argument
                     if (CommandExecutor::argumentsGiven() >= 3)
                     {
                         // There is a third argument: Check if it's a valid config value
-                        CommandExecutor::configvalue_s = CommandExecutor::getContainerOfPossibleConfigValue(CommandExecutor::getToken(2), CommandExecutor::configvalueclass_s);
-                        if (CommandExecutor::configvalue_s == 0)
+                        CommandExecutor::getInstance().configvalue_s = CommandExecutor::getContainerOfPossibleConfigValue(CommandExecutor::getToken(2), CommandExecutor::getInstance().configvalueclass_s);
+                        if (CommandExecutor::getInstance().configvalue_s == 0)
                         {
                             // Argument 3 seems to be wrong
                             AddLanguageEntry("CommandExecutor::NoSuchConfigValueIn", "No such config value in");
-                            CommandExecutor::errorMessage_s = (CommandExecutor::getToken(2) + ": " + GetLocalisation("CommandExecutor::NoSuchConfigValueIn") + " " + CommandExecutor::configvalueclass_s->getName());
-                            CommandExecutor::state_s = CS_Error;
+                            CommandExecutor::getInstance().errorMessage_s = (CommandExecutor::getToken(2) + ": " + GetLocalisation("CommandExecutor::NoSuchConfigValueIn") + " " + CommandExecutor::getInstance().configvalueclass_s->getName());
+                            CommandExecutor::getInstance().state_s = CS_Error;
                             return;
                         }
                         else
                         {
                             // Argument 3 seems to be a valid config value: Get the type
-                            CommandExecutor::state_s = CS_ConfigValueType;
+                            CommandExecutor::getInstance().state_s = CS_ConfigValueType;
                             CommandExecutor::parse(command, false);
                             return;
                         }
@@ -548,46 +535,45 @@ namespace orxonox
                     {
                         // There is no finished third argument
                         // Check if there's already a perfect match
-                        if (CommandExecutor::tokens_s.size() >= 3)
+                        if (CommandExecutor::getInstance().tokens_s.size() >= 3)
                         {
-                            CommandExecutor::configvalue_s = CommandExecutor::getContainerOfPossibleConfigValue(CommandExecutor::getToken(2), CommandExecutor::configvalueclass_s);
-                            if (CommandExecutor::configvalueclass_s != 0)
+                            CommandExecutor::getInstance().configvalue_s = CommandExecutor::getContainerOfPossibleConfigValue(CommandExecutor::getToken(2), CommandExecutor::getInstance().configvalueclass_s);
+                            if (CommandExecutor::getInstance().configvalueclass_s != 0)
                             {
                                 // There is a perfect match: Add a whitespace and continue parsing
-                                CommandExecutor::state_s = CS_ConfigValueType;
+                                CommandExecutor::getInstance().state_s = CS_ConfigValueType;
                                 CommandExecutor::parse(command + " ", false);
                                 return;
                             }
                         }
 
                         // No perfect match: Create the list of all possible config values
-                        CommandExecutor::createListOfPossibleConfigValues(CommandExecutor::getToken(2), CommandExecutor::configvalueclass_s);
-                        CommandExecutor::state_s = CS_ConfigValueType;
+                        CommandExecutor::createListOfPossibleConfigValues(CommandExecutor::getToken(2), CommandExecutor::getInstance().configvalueclass_s);
                         return;
                     }
                 }
                 else
                 {
                     // Something is wrong
-                    CommandExecutor::state_s = CS_Error;
+                    CommandExecutor::getInstance().state_s = CS_Error;
                     return;
                 }
                 break;
             case CS_ConfigValueType:
-                if (((CommandExecutor::getToken(0) == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE) || (CommandExecutor::getToken(0) == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY)) && (CommandExecutor::configvalueclass_s != 0) && (CommandExecutor::configvalue_s != 0))
+                if (((CommandExecutor::getToken(0) == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE) || (CommandExecutor::getToken(0) == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY)) && (CommandExecutor::getInstance().configvalueclass_s != 0) && (CommandExecutor::getInstance().configvalue_s != 0))
                 {
                     // Valid command
                     // Check if there are enough parameters
-                    if (CommandExecutor::tokens_s.size() >= 4)
+                    if (CommandExecutor::getInstance().tokens_s.size() >= 4)
                     {
-                        CommandExecutor::state_s = CS_ConfigValueFinished;
+                        CommandExecutor::getInstance().state_s = CS_ConfigValueFinished;
                         return;
                     }
                 }
                 else
                 {
                     // Something is wrong
-                    CommandExecutor::state_s = CS_Error;
+                    CommandExecutor::getInstance().state_s = CS_Error;
                     return;
                 }
                 break;
@@ -599,7 +585,7 @@ namespace orxonox
                 else
                 {
                     // Something is wrong
-                    CommandExecutor::state_s = CS_Error;
+                    CommandExecutor::getInstance().state_s = CS_Error;
                     return;
                 }
                 break;
@@ -608,9 +594,9 @@ namespace orxonox
                 {
                     // Valid command
                     // Check if there are enough parameters
-                    if (CommandExecutor::tokens_s.size() >= 3)
+                    if (CommandExecutor::getInstance().tokens_s.size() >= 3)
                     {
-                        CommandExecutor::state_s = CS_KeybindFinished;
+                        CommandExecutor::getInstance().state_s = CS_KeybindFinished;
                         return;
                     }
 
@@ -618,7 +604,7 @@ namespace orxonox
                 else
                 {
                     // Something is wrong
-                    CommandExecutor::state_s = CS_Error;
+                    CommandExecutor::getInstance().state_s = CS_Error;
                     return;
                 }
                 break;
@@ -642,46 +628,46 @@ namespace orxonox
 
     void CommandExecutor::initialize()
     {
-        CommandExecutor::listOfPossibleFunctionClasses_s.clear();
-        CommandExecutor::listOfPossibleShortcuts_s.clear();
-        CommandExecutor::listOfPossibleFunctions_s.clear();
-        CommandExecutor::listOfPossibleConfigValueClasses_s.clear();
-        CommandExecutor::listOfPossibleConfigValues_s.clear();
-        CommandExecutor::listOfPossibleKeys_s.clear();
+        CommandExecutor::getInstance().listOfPossibleFunctionClasses_s.clear();
+        CommandExecutor::getInstance().listOfPossibleShortcuts_s.clear();
+        CommandExecutor::getInstance().listOfPossibleFunctions_s.clear();
+        CommandExecutor::getInstance().listOfPossibleConfigValueClasses_s.clear();
+        CommandExecutor::getInstance().listOfPossibleConfigValues_s.clear();
+        CommandExecutor::getInstance().listOfPossibleKeys_s.clear();
 
-        CommandExecutor::functionclass_s = 0;
-        CommandExecutor::configvalueclass_s = 0;
-        CommandExecutor::shortcut_s = 0;
-        CommandExecutor::function_s = 0;
-        CommandExecutor::configvalue_s = 0;
-        CommandExecutor::key_s = 0;
+        CommandExecutor::getInstance().functionclass_s = 0;
+        CommandExecutor::getInstance().configvalueclass_s = 0;
+        CommandExecutor::getInstance().shortcut_s = 0;
+        CommandExecutor::getInstance().function_s = 0;
+        CommandExecutor::getInstance().configvalue_s = 0;
+        CommandExecutor::getInstance().key_s = 0;
 
-        CommandExecutor::errorMessage_s = "";
-        CommandExecutor::state_s = CS_Empty;
+        CommandExecutor::getInstance().errorMessage_s = "";
+        CommandExecutor::getInstance().state_s = CS_Empty;
     }
 
     bool CommandExecutor::argumentsGiven(unsigned int num)
     {
         // Because we added a cursor we have +1 arguments
         // There are num arguments given if there are at least num arguments + one cursor
-        return (CommandExecutor::tokens_s.size() >= (num + 1));
+        return (CommandExecutor::getInstance().tokens_s.size() >= (num + 1));
     }
 
     unsigned int CommandExecutor::argumentsGiven()
     {
         // Because we added a cursor we have +1 arguments
-        if (CommandExecutor::tokens_s.size() >= 1)
-            return (CommandExecutor::tokens_s.size() - 1);
+        if (CommandExecutor::getInstance().tokens_s.size() >= 1)
+            return (CommandExecutor::getInstance().tokens_s.size() - 1);
         else
             return 0;
     }
 
     std::string CommandExecutor::getToken(unsigned int index)
     {
-        if ((index >= 0) && (index < (CommandExecutor::tokens_s.size() - 1)))
-            return CommandExecutor::tokens_s[index];
-        else if (index == (CommandExecutor::tokens_s.size() - 1))
-            return CommandExecutor::tokens_s[index].substr(0, CommandExecutor::tokens_s[index].size() - 1);
+        if ((index >= 0) && (index < (CommandExecutor::getInstance().tokens_s.size() - 1)))
+            return CommandExecutor::getInstance().tokens_s[index];
+        else if (index == (CommandExecutor::getInstance().tokens_s.size() - 1))
+            return CommandExecutor::getInstance().tokens_s[index].substr(0, CommandExecutor::getInstance().tokens_s[index].size() - 1);
         else
             return "";
     }
@@ -696,7 +682,7 @@ namespace orxonox
             else
                 break;
         }
-        return (CommandExecutor::tokens_s.size() >= neededParams);
+        return (CommandExecutor::getInstance().tokens_s.size() >= neededParams);
     }
 
     void CommandExecutor::createListOfPossibleFunctionClasses(const std::string& fragment)
@@ -707,12 +693,12 @@ namespace orxonox
             {
                 if ((*it).first.find(getLowercase(fragment)) == 0)
                 {
-                    CommandExecutor::listOfPossibleFunctionClasses_s.push_back(&(*it).first);
+                    CommandExecutor::getInstance().listOfPossibleFunctionClasses_s.push_back(&(*it).first);
                 }
             }
         }
 
-        CommandExecutor::listOfPossibleFunctionClasses_s.sort(CommandExecutor::compareStringsInList);
+        CommandExecutor::getInstance().listOfPossibleFunctionClasses_s.sort(CommandExecutor::compareStringsInList);
     }
 
     void CommandExecutor::createListOfPossibleShortcuts(const std::string& fragment)
@@ -721,11 +707,11 @@ namespace orxonox
         {
             if ((*it).first.find(getLowercase(fragment)) == 0)
             {
-                CommandExecutor::listOfPossibleShortcuts_s.push_back(&(*it).first);
+                CommandExecutor::getInstance().listOfPossibleShortcuts_s.push_back(&(*it).first);
             }
         }
 
-        CommandExecutor::listOfPossibleShortcuts_s.sort(CommandExecutor::compareStringsInList);
+        CommandExecutor::getInstance().listOfPossibleShortcuts_s.sort(CommandExecutor::compareStringsInList);
     }
 
     void CommandExecutor::createListOfPossibleFunctions(const std::string& fragment, Identifier* identifier)
@@ -734,11 +720,11 @@ namespace orxonox
         {
             if ((*it).first.find(getLowercase(fragment)) == 0)
             {
-                CommandExecutor::listOfPossibleFunctions_s.push_back(&(*it).first);
+                CommandExecutor::getInstance().listOfPossibleFunctions_s.push_back(&(*it).first);
             }
         }
 
-        CommandExecutor::listOfPossibleFunctions_s.sort(CommandExecutor::compareStringsInList);
+        CommandExecutor::getInstance().listOfPossibleFunctions_s.sort(CommandExecutor::compareStringsInList);
     }
 
     void CommandExecutor::createListOfPossibleConfigValueClasses(const std::string& fragment)
@@ -749,12 +735,12 @@ namespace orxonox
             {
                 if ((*it).first.find(getLowercase(fragment)) == 0)
                 {
-                    CommandExecutor::listOfPossibleConfigValueClasses_s.push_back(&(*it).first);
+                    CommandExecutor::getInstance().listOfPossibleConfigValueClasses_s.push_back(&(*it).first);
                 }
             }
         }
 
-        CommandExecutor::listOfPossibleConfigValueClasses_s.sort(CommandExecutor::compareStringsInList);
+        CommandExecutor::getInstance().listOfPossibleConfigValueClasses_s.sort(CommandExecutor::compareStringsInList);
     }
 
     void CommandExecutor::createListOfPossibleConfigValues(const std::string& fragment, Identifier* identifier)
@@ -763,18 +749,18 @@ namespace orxonox
         {
             if ((*it).first.find(getLowercase(fragment)) == 0)
             {
-                CommandExecutor::listOfPossibleConfigValues_s.push_back(&(*it).first);
+                CommandExecutor::getInstance().listOfPossibleConfigValues_s.push_back(&(*it).first);
             }
         }
 
-        CommandExecutor::listOfPossibleConfigValues_s.sort(CommandExecutor::compareStringsInList);
+        CommandExecutor::getInstance().listOfPossibleConfigValues_s.sort(CommandExecutor::compareStringsInList);
     }
 
     void CommandExecutor::createListOfPossibleKeys(const std::string& fragment)
     {
         // todo
 
-        CommandExecutor::listOfPossibleKeys_s.sort(CommandExecutor::compareStringsInList);
+        CommandExecutor::getInstance().listOfPossibleKeys_s.sort(CommandExecutor::compareStringsInList);
     }
 
     bool CommandExecutor::compareStringsInList(const std::string* first, const std::string* second)

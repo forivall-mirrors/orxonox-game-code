@@ -39,14 +39,14 @@
     ConsoleCommandGeneric(classname##function##consolecommand__, classname, orxonox::createExecutor(orxonox::createFunctor(&classname::function), #function, accesslevel), bCreateShortcut)
 
 #define ConsoleCommandGeneric(fakevariable, classname, executor, bCreateShortcut) \
-//    Executor& fakevariable = ClassManager<classname>::getIdentifier()->addConsoleCommand((ExecutorStatic*)executor, bCreateShortcut)
+    Executor& fakevariable = ClassManager<classname>::getIdentifier()->addConsoleCommand((ExecutorStatic*)executor, bCreateShortcut)
 
 
 #define ConsoleCommandShortcut(function, accesslevel) \
     ConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createExecutor(orxonox::createFunctor(&classname::function), #function, accesslevel))
 
 #define ConsoleCommandShortcutGeneric(fakevariable, executor) \
-//    bool fakevariable = CommandExecutor::addConsoleCommandShortcut((ExecutorStatic*)executor)
+    bool fakevariable = CommandExecutor::addConsoleCommandShortcut((ExecutorStatic*)executor)
 
 
 #endif /* _ConsoleCommand_H__ */

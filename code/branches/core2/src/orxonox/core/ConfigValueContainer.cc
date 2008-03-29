@@ -920,6 +920,8 @@ namespace orxonox
         // Open the file
         std::ofstream file;
         file.open(filename.c_str(), std::fstream::out);
+        file.setf(std::ios::fixed, std::ios::floatfield);
+        file.precision(6);
 
         if (!file.is_open())
         {
