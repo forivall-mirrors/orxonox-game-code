@@ -28,6 +28,7 @@
 #include <iostream>
 
 #include "InputBuffer.h"
+#include "util/Clipboard.h"
 
 namespace orxonox
 {
@@ -129,6 +130,40 @@ namespace orxonox
             this->setActivated(!this->isActivated());
             this->clear();
             return true;
+        }
+
+        if (this->keyboard_->isModifierDown(OIS::Keyboard::Ctrl))
+        {
+            if (e.key == OIS::KC_V)
+            {
+                this->append(fromClipboard());
+                return true;
+            }
+            else if (e.key == OIS::KC_C)
+            {
+                toClipboard(this->buffer_);
+                return true;
+            }
+            else if (e.key == OIS::KC_X)
+            {
+                toClipboard(this->buffer_);
+                this->clear();
+                return true;
+            }
+        }
+        else if (this->keyboard_->isModifierDown(OIS::Keyboard::Shift))
+        {
+            if (e.key == OIS::KC_INSERT)
+            {
+                this->append(fromClipboard());
+                return true;
+            }
+            else if (e.key == OIS::KC_DELETE)
+            {
+                toClipboard(this->buffer_);
+                this->clear();
+                return true;
+            }
         }
 
         if (this->bActivated_)
