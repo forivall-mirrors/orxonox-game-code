@@ -547,7 +547,7 @@ class Converter<std::string, orxonox::ColourValue>
   template<typename FromType> \
   static ToType ConvertValueAndReturn(const FromType& input) \
   { \
-    ToType output; \
+    ToType output = 0; \
     ConvertValue(&output, input); \
     return output; \
   }
