@@ -115,9 +115,9 @@ static ToType ConvertValueAndReturn(const FromType& input)
 
 // THE SAME, BUT WITH DEFAULT VALUE
 template<typename FromType, typename ToType>
-static ToType ConvertValueAndReturn(const FromType& input, const FromType& fallback)
+static ToType ConvertValueAndReturn(const FromType& input, const ToType& fallback)
 {
-  ToType output;
+  ToType output = fallback;
   ConvertValue(&output, input, fallback);
   return output;
 }
@@ -539,31 +539,5 @@ class Converter<std::string, orxonox::ColourValue>
       return false;
     }
 };
-
-////////////////////////////////////////////
-// Some specializations to avoid warnings //
-////////////////////////////////////////////
-#define CONVERT_VALUE_AND_RETURN_SPECIALIZATION(ToType) \
-  template<typename FromType> \
-  static ToType ConvertValueAndReturn(const FromType& input) \
-  { \
-    ToType output = 0; \
-    ConvertValue(&output, input); \
-    return output; \
-  }
-
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(void*)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(int)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(unsigned int)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(char)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(unsigned char)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(short)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(unsigned short)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(long)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(unsigned long)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(float)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(double)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(long double)
-CONVERT_VALUE_AND_RETURN_SPECIALIZATION(bool)
 
 #endif /* _Convert_H__ */
