@@ -108,7 +108,7 @@ static bool ConvertValue(ToType* output, const FromType& input, const ToType& fa
 template<typename FromType, typename ToType>
 static ToType ConvertValueAndReturn(const FromType& input)
 {
-  ToType output;
+  ToType output = ToType();
   ConvertValue(&output, input);
   return output;
 }
