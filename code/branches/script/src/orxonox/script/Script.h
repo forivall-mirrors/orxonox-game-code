@@ -11,6 +11,9 @@ extern "C" {
 #include "lua.h"
 }
 
+#include <list>
+#include <string>
+
 namespace orxonox
 {
 
@@ -19,9 +22,16 @@ namespace orxonox
     Script();
     ~Script();
 
+    void loadFile(std::string filename);
+    void xmlToLua();
+
     inline lua_State* getLuaState() { return state_; };
 
     private:
+
+      //std::list<std::string>& getLevelFileLines();
+
+      std::list<std::string> fileLines_;
       lua_State* state_;
 
   };
