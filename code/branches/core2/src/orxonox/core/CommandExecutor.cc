@@ -90,11 +90,6 @@ namespace orxonox
         }
     }
 
-    void CommandEvaluation::setAdditionalParameter(const std::string& param)
-    {
-        this->additionalParameter_ = param;
-    }
-
     bool CommandEvaluation::isValid() const
     {
         if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
@@ -197,7 +192,7 @@ namespace orxonox
                 if (evaluation.shortcut_ != 0)
                 {
                     if (tokens.size() >= 2)
-                        return evaluation.shortcut_->parse(tokens.subSet(1).join() + " " + evaluation.additionalParameter_);
+                        return evaluation.shortcut_->parse(tokens.subSet(1).join() + evaluation.getAdditionalParameter());
                     else
                         return evaluation.shortcut_->parse(evaluation.additionalParameter_);
                 }
@@ -211,7 +206,7 @@ namespace orxonox
                 if (evaluation.function_ != 0)
                 {
                     if (tokens.size() >= 3)
-                        return evaluation.function_->parse(tokens.subSet(2).join() + " " + evaluation.additionalParameter_);
+                        return evaluation.function_->parse(tokens.subSet(2).join() + evaluation.getAdditionalParameter());
                     else
                         return evaluation.function_->parse(evaluation.additionalParameter_);
                 }
@@ -229,14 +224,14 @@ namespace orxonox
                     if ((tokens.size() >= 1) && (tokens[0] == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE))
                     {
                         if (tokens.size() >= 4)
-                            return evaluation.configvalue_->set(tokens.subSet(3).join() + " " + evaluation.additionalParameter_);
+                            return evaluation.configvalue_->set(tokens.subSet(3).join() + evaluation.getAdditionalParameter());
                         else
                             return evaluation.configvalue_->set(evaluation.additionalParameter_);
                     }
                     else if ((tokens.size() >= 1) && (tokens[0] == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY))
                     {
                         if (tokens.size() >= 4)
-                            return evaluation.configvalue_->tset(tokens.subSet(3).join() + " " + evaluation.additionalParameter_);
+                            return evaluation.configvalue_->tset(tokens.subSet(3).join() + evaluation.getAdditionalParameter());
                         else
                             return evaluation.configvalue_->tset(evaluation.additionalParameter_);
                     }
@@ -444,6 +439,43 @@ namespace orxonox
                     // No perfect match: Create the lists of all possible classes and shortcuts and return
                     CommandExecutor::createListOfPossibleFunctionClasses(CommandExecutor::getToken(0));
                     CommandExecutor::createListOfPossibleShortcuts(CommandExecutor::getToken(0));
+
+                    // Check if there's only one possiblility
+                    if ((CommandExecutor::getEvaluation().listOfPossibleFunctionClasses_.size() == 1) && (CommandExecutor::getEvaluation().listOfPossibleShortcuts_.size() == 0))
+                    {
+                        // There's only one possible class
+                        CommandExecutor::getEvaluation().state_ = CS_Function;
+                        CommandExecutor::getEvaluation().functionclass_ = CommandExecutor::getIdentifierOfPossibleFunctionClass(**CommandExecutor::getEvaluation().listOfPossibleFunctionClasses_.begin());
+                        CommandExecutor::parse(**CommandExecutor::getEvaluation().listOfPossibleFunctionClasses_.begin() + " ", false);
+                        return;
+                    }
+                    else if ((CommandExecutor::getEvaluation().listOfPossibleFunctionClasses_.size() == 0) && (CommandExecutor::getEvaluation().listOfPossibleShortcuts_.size() == 1))
+                    {
+                        if ((**CommandExecutor::getEvaluation().listOfPossibleShortcuts_.begin() != COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE)
+                         && (**CommandExecutor::getEvaluation().listOfPossibleShortcuts_.begin() != COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY)
+                         && (**CommandExecutor::getEvaluation().listOfPossibleShortcuts_.begin() != COMMAND_EXECUTOR_KEYWORD_SET_KEYBIND))
+                        {
+                            // There's only one possible shortcut
+                            CommandExecutor::getEvaluation().state_ = CS_Shortcut_Params;
+                            CommandExecutor::getEvaluation().shortcut_ = CommandExecutor::getExecutorOfPossibleShortcut(**CommandExecutor::getEvaluation().listOfPossibleShortcuts_.begin());
+                        }
+                        else if ((**CommandExecutor::getEvaluation().listOfPossibleShortcuts_.begin() == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE)
+                              || (**CommandExecutor::getEvaluation().listOfPossibleShortcuts_.begin() == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY))
+                        {
+                            // It's the 'set' or 'tset' keyword
+                            CommandExecutor::getEvaluation().state_ = CS_ConfigValueClass;
+                        }
+                        else if (**CommandExecutor::getEvaluation().listOfPossibleShortcuts_.begin() != COMMAND_EXECUTOR_KEYWORD_SET_KEYBIND)
+                        {
+                            // It's the 'bind' keyword
+                            CommandExecutor::getEvaluation().state_ = CS_KeybindKey;
+                        }
+
+                        CommandExecutor::parse(**CommandExecutor::getEvaluation().listOfPossibleShortcuts_.begin() + " ", false);
+                        return;
+                    }
+
+                    // It's ambiguous
                     return;
                 }
                 else
@@ -567,6 +599,18 @@ namespace orxonox
 
                         // No perfect match: Create the list of all possible functions and return
                         CommandExecutor::createListOfPossibleFunctions(CommandExecutor::getToken(1), CommandExecutor::getEvaluation().functionclass_);
+
+                        // Check if there's only one possiblility
+                        if (CommandExecutor::getEvaluation().listOfPossibleFunctions_.size() == 1)
+                        {
+                            // There's only one possible function
+                            CommandExecutor::getEvaluation().state_ = CS_Function_Params;
+                            CommandExecutor::getEvaluation().function_ = CommandExecutor::getExecutorOfPossibleFunction(**CommandExecutor::getEvaluation().listOfPossibleFunctions_.begin(), CommandExecutor::getEvaluation().functionclass_);
+                            CommandExecutor::parse(CommandExecutor::getToken(0) + " " + **CommandExecutor::getEvaluation().listOfPossibleFunctions_.begin() + " ", false);
+                            return;
+                        }
+
+                        // It's ambiguous
                         return;
                     }
                 }
@@ -637,6 +681,18 @@ namespace orxonox
 
                         // No perfect match: Create the list of all possible classnames and return
                         CommandExecutor::createListOfPossibleConfigValueClasses(CommandExecutor::getToken(1));
+
+                        // Check if there's only one possiblility
+                        if (CommandExecutor::getEvaluation().listOfPossibleConfigValueClasses_.size() == 1)
+                        {
+                            // There's only one possible classname
+                            CommandExecutor::getEvaluation().state_ = CS_ConfigValue;
+                            CommandExecutor::getEvaluation().configvalueclass_ = CommandExecutor::getIdentifierOfPossibleConfigValueClass(**CommandExecutor::getEvaluation().listOfPossibleConfigValueClasses_.begin());
+                            CommandExecutor::parse(CommandExecutor::getToken(0) + " " + **CommandExecutor::getEvaluation().listOfPossibleConfigValueClasses_.begin() + " ", false);
+                            return;
+                        }
+
+                        // It's ambiguous
                         return;
                     }
                 }
@@ -689,6 +745,18 @@ namespace orxonox
 
                         // No perfect match: Create the list of all possible config values
                         CommandExecutor::createListOfPossibleConfigValues(CommandExecutor::getToken(2), CommandExecutor::getEvaluation().configvalueclass_);
+
+                        // Check if there's only one possiblility
+                        if (CommandExecutor::getEvaluation().listOfPossibleConfigValues_.size() == 1)
+                        {
+                            // There's only one possible config value
+                            CommandExecutor::getEvaluation().state_ = CS_ConfigValueType;
+                            CommandExecutor::getEvaluation().configvalue_ = CommandExecutor::getContainerOfPossibleConfigValue(**CommandExecutor::getEvaluation().listOfPossibleConfigValues_.begin(), CommandExecutor::getEvaluation().configvalueclass_);
+                            CommandExecutor::parse(CommandExecutor::getToken(0) + " " + CommandExecutor::getToken(1) + " " + **CommandExecutor::getEvaluation().listOfPossibleConfigValues_.begin() + " ", false);
+                            return;
+                        }
+
+                        // It's ambiguous
                         return;
                     }
                 }

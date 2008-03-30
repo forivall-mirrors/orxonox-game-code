@@ -73,8 +73,12 @@ namespace orxonox
             CommandEvaluation();
 
             KeybindMode getKeybindMode();
-            void setAdditionalParameter(const std::string& param);
             bool isValid() const;
+
+            inline void setAdditionalParameter(const std::string& param)
+                { this->additionalParameter_ = param; }
+            inline std::string getAdditionalParameter() const
+                { return (this->additionalParameter_ != "") ? (" " + this->additionalParameter_) : ""; }
 
         private:
             std::string processedCommand_;
