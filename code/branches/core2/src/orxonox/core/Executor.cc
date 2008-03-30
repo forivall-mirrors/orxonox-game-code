@@ -63,7 +63,7 @@ namespace orxonox
         EXECUTOR_PARSE(normal);
     }
 
-    void Executor::setDescription(const std::string& description)
+    Executor& Executor::setDescription(const std::string& description)
     {
         if (!this->bAddedDescription_)
         {
@@ -71,6 +71,7 @@ namespace orxonox
             AddLanguageEntry(this->description_, description);
             this->bAddedDescription_ = true;
         }
+        return (*this);
     }
 
     const std::string& Executor::getDescription() const
@@ -78,7 +79,7 @@ namespace orxonox
         return GetLocalisation(this->description_);
     }
 
-    void Executor::setDescriptionParam(int param, const std::string& description)
+    Executor& Executor::setDescriptionParam(int param, const std::string& description)
     {
         if (param >= 0 && param < MAX_FUNCTOR_ARGUMENTS)
         {
@@ -86,13 +87,14 @@ namespace orxonox
             {
                 std::string paramnumber;
                 if (!Convert::ToString(&paramnumber, param))
-                    return;
+                    return (*this);
 
                 this->descriptionParam_[param] = std::string("ExecutorDescription::" + this->name_ + "::param" + paramnumber);
                 AddLanguageEntry(this->descriptionParam_[param], description);
                 this->bAddedDescriptionParam_[param] = true;
             }
         }
+        return (*this);
     }
 
     const std::string& Executor::getDescriptionParam(int param) const
@@ -103,7 +105,7 @@ namespace orxonox
         return this->descriptionParam_[0];
     }
 
-    void Executor::setDescriptionReturnvalue(const std::string& description)
+    Executor& Executor::setDescriptionReturnvalue(const std::string& description)
     {
         if (!this->bAddedDescriptionReturnvalue_)
         {
@@ -111,6 +113,7 @@ namespace orxonox
             AddLanguageEntry(this->descriptionReturnvalue_, description);
             this->bAddedDescriptionReturnvalue_ = true;
         }
+        return (*this);
     }
 
     const std::string& Executor::getDescriptionReturnvalue(int param) const
@@ -118,21 +121,25 @@ namespace orxonox
         return GetLocalisation(this->descriptionReturnvalue_);
     }
 
-    void Executor::setDefaultValues(const MultiTypeMath& param1)
+    Executor& Executor::setDefaultValues(const MultiTypeMath& param1)
     {
         this->defaultValue_[0] = param1;
         this->bAddedDefaultValue_[0] = true;
+
+        return (*this);
     }
 
-    void Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2)
+    Executor& Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2)
     {
         this->defaultValue_[0] = param1;
         this->bAddedDefaultValue_[0] = true;
         this->defaultValue_[1] = param2;
         this->bAddedDefaultValue_[1] = true;
+
+        return (*this);
     }
 
-    void Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3)
+    Executor& Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3)
     {
         this->defaultValue_[0] = param1;
         this->bAddedDefaultValue_[0] = true;
@@ -140,9 +147,11 @@ namespace orxonox
         this->bAddedDefaultValue_[1] = true;
         this->defaultValue_[2] = param3;
         this->bAddedDefaultValue_[2] = true;
+
+        return (*this);
     }
 
-    void Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4)
+    Executor& Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4)
     {
         this->defaultValue_[0] = param1;
         this->bAddedDefaultValue_[0] = true;
@@ -152,9 +161,11 @@ namespace orxonox
         this->bAddedDefaultValue_[2] = true;
         this->defaultValue_[3] = param4;
         this->bAddedDefaultValue_[3] = true;
+
+        return (*this);
     }
 
-    void Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5)
+    Executor& Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5)
     {
         this->defaultValue_[0] = param1;
         this->bAddedDefaultValue_[0] = true;
@@ -166,15 +177,18 @@ namespace orxonox
         this->bAddedDefaultValue_[3] = true;
         this->defaultValue_[4] = param5;
         this->bAddedDefaultValue_[4] = true;
+
+        return (*this);
     }
 
-    void Executor::setDefaultValue(unsigned int index, const MultiTypeMath& param)
+    Executor& Executor::setDefaultValue(unsigned int index, const MultiTypeMath& param)
     {
         if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
         {
             this->defaultValue_[index] = param;
             this->bAddedDefaultValue_[index] = true;
         }
+        return (*this);
     }
 
     bool Executor::allDefaultValuesSet() const

@@ -46,7 +46,7 @@
 
 namespace orxonox
 {
-    ConsoleCommand(Ambient, setAmbientLightTest, AccessLevel::Offline, false);
+    ConsoleCommand(Ambient, setAmbientLightTest, AccessLevel::Offline, false).setDefaultValues(ColourValue(1, 1, 1, 1));
 
     CreateFactory(Ambient);
 

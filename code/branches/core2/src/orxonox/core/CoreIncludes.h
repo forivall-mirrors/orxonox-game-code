@@ -119,7 +119,7 @@
     orxonox::ConfigValueContainer* container##varname = this->getIdentifier()->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(this->getIdentifier()->getName(), #varname, varname = defvalue); \
+        container##varname = new orxonox::ConfigValueContainer(this->getIdentifier(), #varname, varname = defvalue); \
         this->getIdentifier()->addConfigValueContainer(#varname, container##varname); \
     } \
     container##varname->getValue(&varname)
@@ -132,7 +132,7 @@
     orxonox::ConfigValueContainer* container##varname##reset = this->getIdentifier()->getConfigValueContainer(#varname); \
     if (container##varname##reset) \
     { \
-        container##varname##reset->resetConfigValue(); \
+        container##varname##reset->reset(); \
         container##varname##reset->getValue(&varname); \
     } \
     else \

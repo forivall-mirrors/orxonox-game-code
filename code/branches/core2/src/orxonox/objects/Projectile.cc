@@ -70,6 +70,8 @@ namespace orxonox
     {
         SetConfigValue(lifetime_, 10.0).description("The time in seconds a projectile stays alive");
         SetConfigValue(speed_, 2000.0).description("The speed of a projectile in units per second");
+
+        this->setVelocity(Vector3(1, 0, 0) * this->speed_);
     }
 
     void Projectile::tick(float dt)

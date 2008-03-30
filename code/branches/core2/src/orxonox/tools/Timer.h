@@ -82,6 +82,10 @@ namespace orxonox
             inline void unpauseTimer() { this->bActive_ = true; }
             /** @brief Returns true if the Timer is active (= not stoped, not paused). @return True = Time is active */
             inline bool isActive() const { return this->bActive_; }
+            /** @brief Gives the Timer some extra time. @param time The amount of extra time in seconds */
+            inline void addTime(float time) { this->time_ += time; }
+            /** @brief Decreases the remaining time of the Timer. @param time The amount of time to remove */
+            inline void removeTime(float time) { this->time_ -= time; }
 
         protected:
             float interval_;    //!< The time-interval in seconds

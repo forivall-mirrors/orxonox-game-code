@@ -164,13 +164,13 @@ namespace orxonox
 
             bool parse(const std::string& params, const std::string& delimiter = " ") const;
 
-            void setDescription(const std::string& description);
+            Executor& setDescription(const std::string& description);
             const std::string& getDescription() const;
 
-            void setDescriptionParam(int param, const std::string& description);
+            Executor& setDescriptionParam(int param, const std::string& description);
             const std::string& getDescriptionParam(int param) const;
 
-            void setDescriptionReturnvalue(const std::string& description);
+            Executor& setDescriptionReturnvalue(const std::string& description);
             const std::string& getDescriptionReturnvalue(int param) const;
 
             inline unsigned int getParamCount() const
@@ -196,12 +196,20 @@ namespace orxonox
             inline AccessLevel::Level getAccessLevel() const
                 { return this->accessLevel_; }
 
-            void setDefaultValues(const MultiTypeMath& param1);
-            void setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2);
-            void setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3);
-            void setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4);
-            void setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5);
-            void setDefaultValue(unsigned int index, const MultiTypeMath& param);
+            Executor& setDefaultValues(const MultiTypeMath& param1);
+            Executor& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2);
+            Executor& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3);
+            Executor& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4);
+            Executor& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5);
+            Executor& setDefaultValue(unsigned int index, const MultiTypeMath& param);
+
+            inline MultiTypeMath getDefaultValue(unsigned int index) const
+            {
+                if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+                    return this->defaultValue_[index];
+
+                return MT_null;
+            }
 
             bool allDefaultValuesSet() const;
             inline bool defaultValueSet(unsigned int index) const

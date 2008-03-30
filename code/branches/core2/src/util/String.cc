@@ -71,8 +71,16 @@ bool isComment(const std::string& str)
     //  2) %comment in matlab style
     //  3) ;comment in unreal tournament config-file style
     //  4) //comment in code style
-    if (teststring[0] == '#' || teststring[0] == '%' || teststring[0] == ';' || (teststring[0] == '/' && teststring[0] == '/'))
-        return true;
+    if (teststring.size() >= 2)
+    {
+        if (teststring[0] == '#' || teststring[0] == '%' || teststring[0] == ';' || (teststring[0] == '/' && teststring[1] == '/'))
+            return true;
+    }
+    else if (teststring.size() == 1)
+    {
+        if (teststring[0] == '#' || teststring[0] == '%' || teststring[0] == ';')
+            return true;
+    }
 
     return false;
 }

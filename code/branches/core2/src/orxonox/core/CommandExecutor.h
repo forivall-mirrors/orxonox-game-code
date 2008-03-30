@@ -67,6 +67,8 @@ namespace orxonox
     ///////////////////////
     class _CoreExport CommandEvaluation
     {
+        friend class CommandExecutor;
+
         public:
             CommandEvaluation();
 
@@ -74,6 +76,7 @@ namespace orxonox
             void setAdditionalParameter(const std::string& param);
             bool isValid() const;
 
+        private:
             std::string processedCommand_;
             SubString tokens_;
             std::string additionalParameter_;

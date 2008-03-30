@@ -108,6 +108,10 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier) const;
             bool isDirectParentOf(const Identifier* identifier) const;
 
+            virtual const ObjectList<BaseObject>* getObjectList() const = 0;
+
+            virtual void updateConfigValues() const = 0;
+
             /** @brief Removes all objects of the corresponding class. */
             virtual void removeObjects() const = 0;
 
@@ -303,7 +307,12 @@ namespace orxonox
             void addObject(T* object);
             void removeObjects() const;
             void setName(const std::string& name);
+            /** @brief Returns the list of all existing objects of this class. @return The list */
             inline const ObjectList<T>* getObjects() const { return this->objects_; }
+            /** @brief Returns a list of all existing objects of this class. @return The list */
+            inline const ObjectList<BaseObject>* getObjectList() const { return (ObjectList<BaseObject>*)this->objects_; }
+
+            void updateConfigValues() const;
 
             XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
             void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
@@ -394,6 +403,16 @@ namespace orxonox
     {
         for (Iterator<T> it = this->objects_->start(); it;)
             delete *(it++);
+    }
+
+    /**
+        @brief Updates the config-values of all existing objects of this class by calling their setConfigValues() function.
+    */
+    template <class T>
+    void ClassIdentifier<T>::updateConfigValues() const
+    {
+        for (Iterator<T> it = this->objects_->start(); it; ++it)
+            ((T*)*it)->setConfigValues();
     }
 
     /**

@@ -191,46 +191,61 @@ namespace orxonox
             case CS_FunctionClass_Or_Shortcut_Or_Keyword:
                 break;
             case CS_Shortcut_Params:
-                // not enough parameters but lets hope there are some additional parameters
-                if (evaluation.shortcut_ != 0)
-                    return evaluation.shortcut_->parse(tokens.subSet(1).join() + " " + evaluation.additionalParameter_);
-                break;
+                // not enough parameters but lets hope there are some additional parameters and go on
             case CS_Shortcut_Finished:
                 // call the shortcut
                 if (evaluation.shortcut_ != 0)
-                    return evaluation.shortcut_->parse(tokens.subSet(1).join() + " " + evaluation.additionalParameter_);
+                {
+                    if (tokens.size() >= 2)
+                        return evaluation.shortcut_->parse(tokens.subSet(1).join() + " " + evaluation.additionalParameter_);
+                    else
+                        return evaluation.shortcut_->parse(evaluation.additionalParameter_);
+                }
                 break;
             case CS_Function:
                 break;
             case CS_Function_Params:
-                // not enough parameters but lets hope there are some additional parameters
-                if (evaluation.function_ != 0)
-                    return evaluation.function_->parse(tokens.subSet(2).join() + " " + evaluation.additionalParameter_);
-                break;
+                // not enough parameters but lets hope there are some additional parameters and go on
             case CS_Function_Finished:
                 // call the shortcut
                 if (evaluation.function_ != 0)
-                    return evaluation.function_->parse(tokens.subSet(2).join() + " " + evaluation.additionalParameter_);
+                {
+                    if (tokens.size() >= 3)
+                        return evaluation.function_->parse(tokens.subSet(2).join() + " " + evaluation.additionalParameter_);
+                    else
+                        return evaluation.function_->parse(evaluation.additionalParameter_);
+                }
                 break;
             case CS_ConfigValueClass:
                 break;
             case CS_ConfigValue:
                 break;
             case CS_ConfigValueType:
-                // not enough parameters but lets hope there are some additional parameters
-                if (evaluation.configvalue_ != 0)
-                    return evaluation.configvalue_->parseString(tokens.subSet(3).join() + " " + evaluation.additionalParameter_);
-                break;
+                // not enough parameters but lets hope there are some additional parameters and go on
             case CS_ConfigValueFinished:
                 // set the config value
                 if (evaluation.configvalue_ != 0)
-                    return evaluation.configvalue_->parseString(tokens.subSet(3).join() + " " + evaluation.additionalParameter_);
+                {
+                    if ((tokens.size() >= 1) && (tokens[0] == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE))
+                    {
+                        if (tokens.size() >= 4)
+                            return evaluation.configvalue_->set(tokens.subSet(3).join() + " " + evaluation.additionalParameter_);
+                        else
+                            return evaluation.configvalue_->set(evaluation.additionalParameter_);
+                    }
+                    else if ((tokens.size() >= 1) && (tokens[0] == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY))
+                    {
+                        if (tokens.size() >= 4)
+                            return evaluation.configvalue_->tset(tokens.subSet(3).join() + " " + evaluation.additionalParameter_);
+                        else
+                            return evaluation.configvalue_->tset(evaluation.additionalParameter_);
+                    }
+                }
                 break;
             case CS_KeybindKey:
                 break;
             case CS_KeybindCommand:
-                // not enough parameters but lets hope there are some additional parameters
-                break;
+                // not enough parameters but lets hope there are some additional parameters and go on
             case CS_KeybindFinished:
                 // set the keybind
                 // ...todo
@@ -979,7 +994,7 @@ namespace orxonox
             output += executor->getTypenameParam(i);
 
             if (executor->defaultValueSet(i))
-                output += "]";
+                output += "=" + executor->getDefaultValue(i).toString() + "]";
             else
                 output += "}";
         }
@@ -988,7 +1003,8 @@ namespace orxonox
 
     std::string CommandExecutor::dump(const ConfigValueContainer* container)
     {
-        return container->getTypename();
+        AddLanguageEntry("CommandExecutor::oldvalue", "old value");
+        return "{" + container->getTypename() + "} (" + GetLocalisation("CommandExecutor::oldvalue") + ": " + container->toString() + ")";
     }
 
     std::string CommandExecutor::getCommonBegin(const std::list<const std::string*>& list)
