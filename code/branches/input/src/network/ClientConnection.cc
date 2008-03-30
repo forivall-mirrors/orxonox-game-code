@@ -21,7 +21,7 @@
 *   Author:
 *      Oliver Scheuss, (C) 2007
 *   Co-authors:
-*      ...asdf
+*      ...
 *
 */
 
