@@ -28,6 +28,7 @@
 
 #include "Executor.h"
 #include "Language.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
@@ -61,6 +62,54 @@ namespace orxonox
     bool Executor::parse(const std::string& params, const std::string& delimiter) const
     {
         EXECUTOR_PARSE(normal);
+    }
+
+    bool Executor::evaluate(const std::string& params, MultiTypeMath param[5], const std::string& delimiter) const
+    {
+        unsigned int paramCount = this->functor_->getParamCount();
+
+        if (paramCount == 1)
+        {
+            // only one param: check if there are params given, otherwise try to use default values
+            std::string temp = getStripped(params);
+            if ((temp != "") && (temp.size() != 0))
+            {
+                param[0] = params;
+                this->functor_->evaluateParam(0, param[0]);
+                return true;
+            }
+            else if (this->bAddedDefaultValue_[0])
+            {
+                param[0] = this->defaultValue_[0];
+                this->functor_->evaluateParam(0, param[0]);
+                return true;
+            }
+            return false;
+        }
+        else
+        {
+            // more than one param
+            SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+
+            // if there are not enough params given, check if there are default values
+            for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)
+                if (!this->bAddedDefaultValue_[i])
+                    return false;
+
+            // assign all given arguments to the multitypes
+            for (unsigned int i = 0; i < min(tokens.size(), (unsigned int)MAX_FUNCTOR_ARGUMENTS); i++)
+                param[i] = tokens[i];
+
+            // fill the remaining multitypes with default values
+            for (unsigned int i = tokens.size(); i < min(paramCount, (unsigned int)MAX_FUNCTOR_ARGUMENTS); i++)
+                param[i] = this->defaultValue_[i];
+
+            // evaluate the param types through the functor
+            for (unsigned int i = 0; i < min(paramCount, (unsigned int)MAX_FUNCTOR_ARGUMENTS); i++)
+                this->functor_->evaluateParam(i, param[i]);
+
+            return true;
+        }
     }
 
     Executor& Executor::setDescription(const std::string& description)

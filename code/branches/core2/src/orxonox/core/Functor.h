@@ -103,6 +103,8 @@ namespace orxonox
             std::string getTypenameParam(unsigned int param) const { return (param >= 0 && param < 5) ? this->typeParam_[param] : ""; }
             std::string getTypenameReturnvalue() const { return this->typeReturnvalue_; }
 
+            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const = 0;
+
         protected:
             unsigned int numParams_;
             bool hasReturnValue_;
@@ -277,6 +279,31 @@ namespace orxonox
 
 
 
+#define FUNCTOR_EVALUATE_PARAM(numparams) FUNCTOR_EVALUATE_PARAM##numparams
+#define FUNCTOR_EVALUATE_PARAM0
+#define FUNCTOR_EVALUATE_PARAM1 \
+    if (index == 0) param = (P1)param
+#define FUNCTOR_EVALUATE_PARAM2 \
+    if (index == 0) param = (P1)param; \
+    else if (index == 1) param = (P2)param
+#define FUNCTOR_EVALUATE_PARAM3 \
+    if (index == 0) param = (P1)param; \
+    else if (index == 1) param = (P2)param; \
+    else if (index == 2) param = (P3)param
+#define FUNCTOR_EVALUATE_PARAM4 \
+    if (index == 0) param = (P1)param; \
+    else if (index == 1) param = (P2)param; \
+    else if (index == 2) param = (P3)param; \
+    else if (index == 3) param = (P4)param
+#define FUNCTOR_EVALUATE_PARAM5 \
+    if (index == 0) param = (P1)param; \
+    else if (index == 1) param = (P2)param; \
+    else if (index == 2) param = (P3)param; \
+    else if (index == 3) param = (P4)param; \
+    else if (index == 4) param = (P5)param
+
+
+
 
 
 #define CREATE_STATIC_FUNCTOR(returnvalue, numparams) \
@@ -298,6 +325,11 @@ namespace orxonox
             void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
+            } \
+    \
+            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const \
+            { \
+                FUNCTOR_EVALUATE_PARAM(numparams); \
             } \
     \
         private: \
@@ -339,6 +371,11 @@ namespace orxonox
                 COUT(1) << "Error: Function is not const." << std::endl; \
             } \
     \
+            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const \
+            { \
+                FUNCTOR_EVALUATE_PARAM(numparams); \
+            } \
+    \
         private: \
             FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer_)(FUNCTOR_FUNCTION_PARAMS(numparams)); \
     }; \
@@ -364,6 +401,11 @@ namespace orxonox
             void operator()(const T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*object.*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
+            } \
+    \
+            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const \
+            { \
+                FUNCTOR_EVALUATE_PARAM(numparams); \
             } \
     \
         private: \

@@ -76,9 +76,14 @@ namespace orxonox
             bool isValid() const;
 
             inline void setAdditionalParameter(const std::string& param)
-                { this->additionalParameter_ = param; }
+                { this->additionalParameter_ = param; this->bEvaluatedParams_ = false; }
             inline std::string getAdditionalParameter() const
                 { return (this->additionalParameter_ != "") ? (" " + this->additionalParameter_) : ""; }
+
+            void setEvaluatedParameter(unsigned int index, MultiTypeMath param);
+            MultiTypeMath getEvaluatedParameter(unsigned int index) const;
+
+            void evaluateParams();
 
         private:
             std::string processedCommand_;
@@ -101,6 +106,10 @@ namespace orxonox
 
             std::string errorMessage_;
             CommandState state_;
+
+            bool bEvaluatedParams_;
+            MultiTypeMath param_[5];
+            ExecutorStatic* evaluatedExecutor_;
     };
 
     /////////////////////

@@ -88,7 +88,7 @@
     \
         MultiTypeMath param[paramCount]; \
         COUT(5) << "Calling Executor " << this->name_ << " through parser with " << paramCount << " parameters, using " << tokens.size() << " tokens ("; \
-        for (unsigned int i = 0; i < tokens.size(); i++) \
+        for (unsigned int i = 0; i < tokens.size() && i < MAX_FUNCTOR_ARGUMENTS; i++) \
         { \
             param[i] = tokens[i]; \
             if (i != 0) \
@@ -163,6 +163,8 @@ namespace orxonox
                 { (*this->functor_)(param1, param2, param3, param4, param5); }
 
             bool parse(const std::string& params, const std::string& delimiter = " ") const;
+
+            bool evaluate(const std::string& params, MultiTypeMath param[5], const std::string& delimiter = " ") const;
 
             Executor& setDescription(const std::string& description);
             const std::string& getDescription() const;

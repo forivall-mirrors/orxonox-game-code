@@ -62,6 +62,9 @@ namespace orxonox
 
         this->errorMessage_ = "";
         this->state_ = CS_Uninitialized;
+
+        this->bEvaluatedParams_ = false;
+        this->evaluatedExecutor_ = 0;
     }
 
     KeybindMode CommandEvaluation::getKeybindMode()
@@ -112,6 +115,52 @@ namespace orxonox
         {
             return false;
         }
+    }
+
+    void CommandEvaluation::evaluateParams()
+    {
+        this->bEvaluatedParams_ = false;
+        this->evaluatedExecutor_ = 0;
+
+        for (unsigned int i = 0; i < MAX_FUNCTOR_ARGUMENTS; i++)
+            this->param_[i] = MT_null;
+
+        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
+        {
+            if (this->shortcut_ != 0)
+            {
+                if (this->shortcut_->evaluate(this->processedCommand_ + this->getAdditionalParameter(), this->param_, " "))
+                {
+                    this->bEvaluatedParams_ = true;
+                    this->evaluatedExecutor_ = this->shortcut_;
+                }
+            }
+        }
+        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
+        {
+            if (this->function_ != 0)
+            {
+                if (this->function_->evaluate(this->processedCommand_ + this->getAdditionalParameter(), this->param_, " "))
+                {
+                    this->bEvaluatedParams_ = true;
+                    this->evaluatedExecutor_ = this->function_;
+                }
+            }
+        }
+    }
+
+    void CommandEvaluation::setEvaluatedParameter(unsigned int index, MultiTypeMath param)
+    {
+        if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+            this->param_[index] = param;
+    }
+
+    MultiTypeMath CommandEvaluation::getEvaluatedParameter(unsigned int index) const
+    {
+        if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+            return this->param_[index];
+
+        return MT_null;
     }
 
 
@@ -176,6 +225,11 @@ namespace orxonox
     bool CommandExecutor::execute(const CommandEvaluation& evaluation)
     {
         SubString tokens(evaluation.processedCommand_, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+
+        if (evaluation.bEvaluatedParams_ && evaluation.evaluatedExecutor_ != 0)
+        {
+            (*evaluation.evaluatedExecutor_)(evaluation.param_[0], evaluation.param_[1], evaluation.param_[2], evaluation.param_[3], evaluation.param_[4]);
+        }
 
         switch (evaluation.state_)
         {
@@ -403,6 +457,7 @@ namespace orxonox
     CommandEvaluation CommandExecutor::evaluate(const std::string& command)
     {
         CommandExecutor::parse(command, true);
+        CommandExecutor::getEvaluation().evaluateParams();
         return CommandExecutor::getEvaluation();
     }
 
