@@ -23,6 +23,8 @@
  *   Co-authors:
  *      ...
  *
+ *   Windows version inspired by "Copy Text To Clipboard" by Laszlo Szathmary, 2007
+ *      http://www.loria.fr/~szathmar/off/projects/C/CopyTextToClipboard/index.php
  */
 
 #include "Clipboard.h"
@@ -32,41 +34,57 @@
 
     bool toClipboard(std::string text)
     {
-        if (OpenClipboard(0))
+        try
         {
-            EmptyClipboard();
-            HGLOBAL clipbuffer = GlobalAlloc(GMEM_DDESHARE, text.size() + 1);
-            char* buffer = (char*)GlobalLock(clipbuffer);
-            strcpy(buffer, text.c_str());
-            GlobalUnlock(clipbuffer);
-            SetClipboardData(CF_TEXT, clipbuffer);
-            CloseClipboard();
+            if (OpenClipboard(0))
+            {
+                EmptyClipboard();
+                HGLOBAL clipbuffer = GlobalAlloc(GMEM_DDESHARE, text.size() + 1);
+                char* buffer = (char*)GlobalLock(clipbuffer);
+                strcpy(buffer, text.c_str());
+                GlobalUnlock(clipbuffer);
+                SetClipboardData(CF_TEXT, clipbuffer);
+                CloseClipboard();
 
-            return true;
+                return true;
+            }
+        }
+        catch (...)
+        {
         }
         return false;
     }
 
     std::string fromClipboard()
     {
-        if (OpenClipboard(0))
+        try
         {
-            HANDLE hData = GetClipboardData(CF_TEXT);
-            std::string output = (char*)GlobalLock(hData);
-            GlobalUnlock(hData);
-            CloseClipboard();
+            if (OpenClipboard(0))
+            {
+                HANDLE hData = GetClipboardData(CF_TEXT);
+                std::string output = (char*)GlobalLock(hData);
+                GlobalUnlock(hData);
+                CloseClipboard();
 
-            return output;
+                return output;
+            }
+        }
+        catch (...)
+        {
         }
         return "";
     }
 #else
+    std::string clipboard = "";
+
     bool toClipboard(std::string text)
     {
-        return false;
+        clipboard = text;
+        return true;
     }
+
     std::string fromClipboard()
     {
-        return "";
+        return clipboard;
     }
 #endif
