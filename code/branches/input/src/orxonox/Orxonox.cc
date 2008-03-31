@@ -107,7 +107,7 @@ namespace orxonox
     if (this->orxonoxHUD_)
       delete this->orxonoxHUD_;
     Loader::close();
-    InputHandler::destroy();
+    InputHandler::destroySingleton();
     if (this->auMan_)
       delete this->auMan_;
     if (this->timer_)
@@ -153,7 +153,7 @@ namespace orxonox
   /**
     @brief Destroys the Orxonox singleton.
   */
-  void Orxonox::destroy()
+  void Orxonox::destroySingleton()
   {
     if (singletonRef_s)
       delete singletonRef_s;

@@ -5,8 +5,6 @@
 
 #include "core/BaseObject.h"
 
-class TiXmlElement; // Forward declaration
-
 namespace orxonox
 {
     class _OrxonoxExport Skybox : public BaseObject

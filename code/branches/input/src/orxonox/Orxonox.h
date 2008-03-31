@@ -43,7 +43,7 @@ namespace orxonox {
       inline BulletManager*       getBulletMgr()           { return this->bulletMgr_; }
 
       static Orxonox* getSingleton();
-      static void destroy();
+      static void destroySingleton();
 
    private:
       // don't mess with singletons

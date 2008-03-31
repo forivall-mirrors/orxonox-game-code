@@ -27,7 +27,7 @@ namespace orxonox {
   {
     public:
       GraphicsEngine();
-      inline void setConfigPath(std::string path) { this->configPath_ = path; };
+      void setConfigPath(std::string path) { this->configPath_ = path; };
       // find a better way for this
       //inline Ogre::Root* getRoot() { return root_; };
       void setConfigValues();

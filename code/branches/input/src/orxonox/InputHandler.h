@@ -62,7 +62,7 @@ namespace orxonox
     OIS::Keyboard *getKeyboard() { return this->keyboard_; }
 
     static InputHandler* getSingleton();
-    static void destroy();
+    static void destroySingleton();
 
   private:
     // don't mess with a Singleton

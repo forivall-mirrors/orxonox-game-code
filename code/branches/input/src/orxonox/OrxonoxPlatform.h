@@ -269,4 +269,7 @@ typedef float Real;
 
 } /* namespace orxonox */
 
+// include visual leak detector to search for memory links
+// #include <vld.h>
+
 #endif /* _OrxonoxPlatform_H__ */

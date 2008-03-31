@@ -165,7 +165,7 @@ namespace orxonox
   /**
     @brief Destroys the singleton.
   */
-  void InputHandler::destroy()
+  void InputHandler::destroySingleton()
   {
     if (singletonRef_s)
       delete singletonRef_s;
@@ -178,6 +178,7 @@ namespace orxonox
   */
   void InputHandler::tick(float dt)
   {
+    //this->mouse_->setEventCallback(this);
     // capture all the input. That calls the event handlers.
     if (mouse_)
       mouse_->capture();
@@ -250,6 +251,7 @@ namespace orxonox
   */
   bool InputHandler::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
+    COUT(1) << "asdf" << std::endl;
     return true;
   }
 

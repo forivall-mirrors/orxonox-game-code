@@ -62,8 +62,15 @@ namespace orxonox {
 
   GraphicsEngine::~GraphicsEngine()
   {
-    if (!this->root_)
+    if (this->root_)
       delete this->root_;
+    // delete the ogre log and the logManager (sine we have created it).
+    if (LogManager::getSingletonPtr() != 0)
+    {
+      LogManager::getSingleton().getDefaultLog()->removeListener(this);
+      LogManager::getSingleton().destroyLog(LogManager::getSingleton().getDefaultLog());
+      delete LogManager::getSingletonPtr();
+    }
   }
 
   void GraphicsEngine::setConfigValues()

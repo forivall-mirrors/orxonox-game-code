@@ -7,8 +7,6 @@
 
 #include "Model.h"
 
-class TiXmlElement; // Forward declaration
-
 namespace orxonox
 {
     class _OrxonoxExport Fighter : public Model, public OIS::MouseListener
