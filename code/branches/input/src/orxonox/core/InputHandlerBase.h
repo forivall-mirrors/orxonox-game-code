@@ -27,26 +27,22 @@
 
 /**
  @file
- @brief InputEvent Structure declaration
+ @brief InputHandlerBuffer class declaration
  */
 
-#ifndef _InputEvent_H__
-#define _InputEvent_H__
+#ifndef _InputHandlerBase_H__
+#define _InputHandlerBase_H__
 
-#include "OrxonoxPrereqs.h"
+#include "CorePrereqs.h"
 
 namespace orxonox
 {
   /**
-    @brief Interface that any class can use to get key independent input.
+    @brief
   */
-  struct InputEvent
+  class InputHandlerBase
   {
-    unsigned char id;      //!< Event ID
-    bool bStarted;         //!< Tells whether the Event started or ended (e.g. firing started)
-    int data1, data2;      //!< Two additional integer datafields, for instance for the mouse moved event
-    void* dataRef;         //!< Additional pointer to any further data
   };
 }
 
-#endif /* _InputEvent_H__ */
+#endif /* _InputHandlerBase_H__ */

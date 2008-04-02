@@ -308,6 +308,26 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\core\InputEventListener.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputHandler.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputHandlerBuffer.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputHandlerGame.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputHandlerGUI.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\core\Language.cc"
 				>
 			</File>
@@ -403,6 +423,30 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\core\IdentifierDistributor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputEvent.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputEventListener.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputHandlerBuffer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputHandlerGame.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputHandlerGUI.h"
 				>
 			</File>
 			<File

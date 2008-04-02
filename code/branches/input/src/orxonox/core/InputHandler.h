@@ -36,21 +36,33 @@
 
 #include <OIS/OIS.h>
 
-#include "OrxonoxPrereqs.h"
+#include "CorePrereqs.h"
 #include "core/Tickable.h"
 #include "InputEvent.h"
 
 namespace orxonox
 {
   /**
+    @brief Designates the way input is handled currently.
+    IM_GUI:      All the OIS input events are passed to CEGUI
+    IM_KEYBOARD: Only keyboard input is captured and passed to the InputBuffer
+    IM_INGAME:   Normal game mode. Key bindings and mouse are active.
+  */
+  enum InputMode
+  {
+    IM_GUI      = 0;
+    IM_KEYBOARD = 1;
+    IM_INGAME   = 2;
+  };
+
+  /**
     @brief Captures and distributes mouse and keyboard input.
     It resolves the key bindings to InputEvents which can be heard by
     implementing the InputEventListener interface.
   */
-  class _OrxonoxExport InputHandler
+  class _CoreExport InputHandler
         : public Tickable, public OIS::KeyListener, public OIS::MouseListener
   {
-    //friend class ClassIdentifier<InputHandler>;
   public:
     bool initialise(size_t windowHnd, int windowWidth, int windowHeight);
     void destroyDevices();

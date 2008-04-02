@@ -31,11 +31,8 @@
         coming from OIS.
  */
 
-#include "OrxonoxStableHeaders.h"
-
 #include "core/CoreIncludes.h"
 #include "core/Debug.h"
-#include "Orxonox.h"
 #include "InputEventListener.h"
 #include "InputHandler.h"
 
@@ -52,7 +49,6 @@ namespace orxonox
   InputHandler::InputHandler() :
       mouse_(0), keyboard_(0), inputSystem_(0)
   {
-    //RegisterObject(InputHandler);
   }
 
   /**
@@ -60,6 +56,7 @@ namespace orxonox
   */
   InputHandler::~InputHandler()
   {
+    this->destroyDevices();
   }
 
   /**
@@ -71,8 +68,6 @@ namespace orxonox
     if (!singletonRef_s)
       singletonRef_s = new InputHandler();
     return singletonRef_s;
-    //static InputHandler theOnlyInstance;
-    //return &theOnlyInstance;
   }
 
   /**
@@ -102,8 +97,6 @@ namespace orxonox
       {
         // Create inputsystem
         inputSystem_ = OIS::InputManager::createInputSystem(paramList);
-        //if (getSoftDebugLevel() >= ORX_DEBUG)
-        //  orxonox::OutputHandler::getOutStream().setOutputLevel(4) << "asdfblah" << std::endl;
         COUT(ORX_DEBUG) << "*** InputHandler: Created OIS input system" << std::endl;
 
         // create a keyboard. If none are available the exception is caught.
@@ -129,8 +122,6 @@ namespace orxonox
     }
 
     COUT(ORX_DEBUG) << "*** InputHandler: Loading key bindings..." << std::endl;
-    // temporary solution: create event list
-    //InputEvent[] list = this->createEventList();
     // load the key bindings
     InputEvent empty = {0, false, 0, 0, 0};
     for (int i = 0; i < this->numberOfKeys_; i++)
