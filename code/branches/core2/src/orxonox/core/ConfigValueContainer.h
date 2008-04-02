@@ -78,6 +78,9 @@ namespace orxonox
             inline ConfigValueContainer& getValue(T* value)
                 { this->value_.getValue(value); return *this; }
 
+            inline const std::string& getName()
+                { return this->varname_; }
+
             void description(const std::string& description);
             const std::string& getDescription() const;
 

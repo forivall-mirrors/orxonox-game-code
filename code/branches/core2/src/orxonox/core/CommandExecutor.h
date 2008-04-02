@@ -36,7 +36,7 @@
 #include "util/MultiTypeMath.h"
 #include "CorePrereqs.h"
 
-#define COMMAND_EXECUTOR_CURSOR '$'
+#define COMMAND_EXECUTOR_CURSOR "$"
 
 namespace orxonox
 {
@@ -90,12 +90,12 @@ namespace orxonox
             SubString tokens_;
             std::string additionalParameter_;
 
-            std::list<const std::string*> listOfPossibleFunctionClasses_;
-            std::list<const std::string*> listOfPossibleShortcuts_;
-            std::list<const std::string*> listOfPossibleFunctions_;
-            std::list<const std::string*> listOfPossibleConfigValueClasses_;
-            std::list<const std::string*> listOfPossibleConfigValues_;
-            std::list<const std::string*> listOfPossibleKeys_;
+            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleFunctionClasses_;
+            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleShortcuts_;
+            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleFunctions_;
+            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleConfigValueClasses_;
+            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleConfigValues_;
+            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleKeys_;
 
             Identifier* functionclass_;
             Identifier* configvalueclass_;
@@ -172,13 +172,13 @@ namespace orxonox
             static void createListOfPossibleConfigValues(const std::string& fragment, Identifier* identifier);
             static void createListOfPossibleKeys(const std::string& fragment);
 
-            static bool compareStringsInList(const std::string* first, const std::string* second);
+            static bool compareStringsInList(const std::pair<const std::string*, const std::string*>& first, const std::pair<const std::string*, const std::string*>& second);
 
-            static std::string dump(const std::list<const std::string*>& list);
+            static std::string dump(const std::list<std::pair<const std::string*, const std::string*> >& list);
             static std::string dump(const ExecutorStatic* executor);
             static std::string dump(const ConfigValueContainer* container);
 
-            static std::string getCommonBegin(const std::list<const std::string*>& list);
+            static std::string getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list);
 
             static Identifier* getIdentifierOfPossibleFunctionClass(const std::string& name);
             static ExecutorStatic* getExecutorOfPossibleShortcut(const std::string& name);

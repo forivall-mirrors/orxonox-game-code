@@ -98,28 +98,26 @@ namespace orxonox
             Testlistener(InputBuffer* ib) : ib_(ib) {}
             void listen() const
             {
-                std::cout << "> -->" << this->ib_->get() << "<--" << std::endl;
+                std::cout << "> " << this->ib_->get() << std::endl;
             }
             void execute() const
             {
-std::cout << "### EXECUTE!" << std::endl;
-                CommandExecutor::execute(this->ib_->get());
+                std::cout << ">> " << this->ib_->get() << std::endl;
+                if (!CommandExecutor::execute(this->ib_->get()))
+                    std::cout << "Error" << std::endl;
                 this->ib_->clear();
             }
             void hintandcomplete() const
             {
-std::cout << "### HINT!" << std::endl;
                 std::cout << CommandExecutor::hint(this->ib_->get()) << std::endl;
                 this->ib_->set(CommandExecutor::complete(this->ib_->get()));
             }
             void clear() const
             {
-std::cout << "### CLEAR!" << std::endl;
                 this->ib_->clear();
             }
             void removeLast() const
             {
-std::cout << "### REMOVELAST!" << std::endl;
                 this->ib_->removeLast();
             }
 

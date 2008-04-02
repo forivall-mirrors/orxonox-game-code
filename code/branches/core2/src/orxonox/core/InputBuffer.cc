@@ -56,9 +56,8 @@ namespace orxonox
 */
     void InputBuffer::set(const std::string& input)
     {
-        this->clear();
+        this->buffer_ = "";
         this->append(input);
-        this->updated();
     }
 
     void InputBuffer::append(const std::string& input)
