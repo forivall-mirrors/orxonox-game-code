@@ -316,15 +316,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\InputHandlerBuffer.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\core\InputHandlerGame.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\core\InputHandlerGUI.cc"
+				RelativePath="..\..\src\orxonox\core\InputManager.cc"
 				>
 			</File>
 			<File
@@ -438,15 +430,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\InputHandlerBuffer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\core\InputHandlerGame.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\core\InputHandlerGUI.h"
+				RelativePath="..\..\src\orxonox\core\InputManager.h"
 				>
 			</File>
 			<File

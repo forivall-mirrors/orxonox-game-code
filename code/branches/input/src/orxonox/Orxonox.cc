@@ -69,7 +69,7 @@ network::Server *server_g;
 #include "tools/Timer.h"
 #include "objects/weapon/BulletManager.h"
 
-#include "InputHandler.h"
+#include "core/InputManager.h"
 
 #include "Orxonox.h"
 
@@ -107,7 +107,7 @@ namespace orxonox
     if (this->orxonoxHUD_)
       delete this->orxonoxHUD_;
     Loader::close();
-    InputHandler::destroySingleton();
+    InputManager::destroySingleton();
     if (this->auMan_)
       delete this->auMan_;
     if (this->timer_)
@@ -326,7 +326,7 @@ namespace orxonox
   */
   void Orxonox::setupInputSystem()
   {
-    inputHandler_ = InputHandler::getSingleton();
+    inputHandler_ = InputManager::getSingleton();
     if (!inputHandler_->initialise(ogre_->getWindowHandle(),
           ogre_->getWindowWidth(), ogre_->getWindowHeight()))
       abortImmediate();

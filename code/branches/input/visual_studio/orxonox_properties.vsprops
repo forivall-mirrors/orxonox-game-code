@@ -7,7 +7,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		PreprocessorDefinitions="ORXONOX_SHARED_BUILD; LOADER_STATIC_BUILD"
+		PreprocessorDefinitions="ORXONOX_SHARED_BUILD"
 		UsePrecompiledHeader="2"
 		PrecompiledHeaderThrough="OrxonoxStableHeaders.h"
 	/>

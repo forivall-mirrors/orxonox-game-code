@@ -45,7 +45,7 @@ namespace orxonox
   */
   class _CoreExport InputEventListener : virtual public OrxonoxClass
   {
-    friend class InputHandler;
+    friend class InputManager;
   public:
     InputEventListener();
     virtual ~InputEventListener();

@@ -16,7 +16,7 @@
 #include "audio/AudioPrereqs.h"
 
 #include "GraphicsEngine.h"
-#include "InputEventListener.h"
+#include "core/InputEventListener.h"
 
 
 // TODO: Orxonox should maybe derive from BaseObject
@@ -74,7 +74,7 @@ namespace orxonox {
       std::string           dataPath_;      //!< path to data
       audio::AudioManager*  auMan_;         //!< audio manager
       BulletManager*        bulletMgr_;     //!< Keeps track of the thrown bullets
-      InputHandler*         inputHandler_;  //!< Handles input with key bindings
+      InputManager*         inputHandler_;  //!< Handles input with key bindings
       Ogre::Root*           root_;          //!< Holy grail of Ogre
       Ogre::Timer*          timer_;         //!< Main loop timer
       // TODO: make this a config-value by creating a config class for orxonox

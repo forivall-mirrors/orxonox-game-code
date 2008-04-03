@@ -27,8 +27,7 @@
 
 /**
  @file
- @brief Implementation of a little Input handler that distributes everything
-        coming from OIS.
+ @brief Different implementations of input processing.
  */
 
 #ifndef _InputHandler_H__
@@ -37,84 +36,50 @@
 #include <OIS/OIS.h>
 
 #include "CorePrereqs.h"
-#include "core/Tickable.h"
-#include "InputEvent.h"
 
 namespace orxonox
 {
   /**
-    @brief Designates the way input is handled currently.
-    IM_GUI:      All the OIS input events are passed to CEGUI
-    IM_KEYBOARD: Only keyboard input is captured and passed to the InputBuffer
-    IM_INGAME:   Normal game mode. Key bindings and mouse are active.
+    @brief Captures mouse and keyboard input and distributes it to the
+    GUI.
   */
-  enum InputMode
-  {
-    IM_GUI      = 0;
-    IM_KEYBOARD = 1;
-    IM_INGAME   = 2;
-  };
-
-  /**
-    @brief Captures and distributes mouse and keyboard input.
-    It resolves the key bindings to InputEvents which can be heard by
-    implementing the InputEventListener interface.
-  */
-  class _CoreExport InputHandler
-        : public Tickable, public OIS::KeyListener, public OIS::MouseListener
+  class _CoreExport InputHandlerGUI
+        : public OIS::KeyListener, public OIS::MouseListener
   {
   public:
-    bool initialise(size_t windowHnd, int windowWidth, int windowHeight);
-    void destroyDevices();
-    void tick(float dt);
-    void setWindowExtents(int width, int height);
-
-    // Temporary solutions. Will be removed soon!
-    OIS::Mouse    *getMouse()    { return this->mouse_   ; }
-    OIS::Keyboard *getKeyboard() { return this->keyboard_; }
-
-    static InputHandler* getSingleton();
-    static void destroySingleton();
+    InputHandlerGUI ();
+    ~InputHandlerGUI();
 
   private:
-    // don't mess with a Singleton
-    InputHandler ();
-    InputHandler (const InputHandler&);
-    InputHandler& operator=(const InputHandler& instance);
-    ~InputHandler();
-
-    void callListeners(InputEvent &evt);
-
     // input events
 		bool mousePressed (const OIS::MouseEvent &arg, OIS::MouseButtonID id);
 		bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
     bool mouseMoved   (const OIS::MouseEvent &arg);
 		bool keyPressed   (const OIS::KeyEvent   &arg);
 		bool keyReleased  (const OIS::KeyEvent   &arg);
-
-    OIS::InputManager *inputSystem_;    //!< OIS input manager
-    OIS::Keyboard     *keyboard_;       //!< OIS mouse
-    OIS::Mouse        *mouse_;          //!< OIS keyboard
-
-    /** denotes the maximum number of different keys there are in OIS.
-        256 should be ok since the highest number in the enum is 237. */
-    static const int numberOfKeys_ = 256;
-    //! Array of input events for every pressed key
-    InputEvent bindingsKeyPressed_[numberOfKeys_];
-    //! Array of input events for every released key
-    InputEvent bindingsKeyReleased_[numberOfKeys_];
-
-    /** denotes the maximum number of different buttons there are in OIS.
-        16 should be ok since the highest number in the enum is 7. */
-    static const int numberOfButtons_ = 16;
-    //! Array of input events for every pressed key
-    InputEvent bindingsButtonPressed_[numberOfButtons_];
-    //! Array of input events for every released key
-    InputEvent bindingsButtonReleased_[numberOfButtons_];
-
-    //! Pointer to the instance of the singleton
-    static InputHandler *singletonRef_s;
   };
+
+
+  /**
+    @brief Captures mouse and keyboard input while in the actual game mode.
+    Manages the key bindings.
+  */
+  class _CoreExport InputHandlerGame
+        : public OIS::KeyListener, public OIS::MouseListener
+  {
+  public:
+    InputHandlerGame ();
+    ~InputHandlerGame();
+
+  private:
+    // input events
+		bool mousePressed (const OIS::MouseEvent &arg, OIS::MouseButtonID id);
+		bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
+    bool mouseMoved   (const OIS::MouseEvent &arg);
+		bool keyPressed   (const OIS::KeyEvent   &arg);
+		bool keyReleased  (const OIS::KeyEvent   &arg);
+  };
+
 }
 
 #endif /* _InputHandler_H__ */

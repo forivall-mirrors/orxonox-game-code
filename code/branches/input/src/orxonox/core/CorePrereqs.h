@@ -35,7 +35,7 @@
 
 #include <string>
 
-#include "orxonox/OrxonoxPlatform.h"
+#include "OrxonoxPlatform.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
@@ -85,6 +85,9 @@ namespace orxonox
   class Factory;
   class Identifier;
   class IdentifierDistributor;
+  class InputHandlerGame;
+  class InputHandlerGUI;
+  class InputManager;
   template <class T>
   class Iterator;
   class Language;

@@ -284,14 +284,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\InputEventListener.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\InputHandler.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\orxonox\Main.cc"
 				>
 			</File>
@@ -451,18 +443,6 @@
 			>
 			<File
 				RelativePath="..\..\src\orxonox\GraphicsEngine.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\InputEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\InputEventListener.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\InputHandler.h"
 				>
 			</File>
 			<File

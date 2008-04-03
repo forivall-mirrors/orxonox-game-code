@@ -60,9 +60,6 @@
 
 namespace orxonox {
   class GraphicsEngine;
-  struct InputEvent;
-  class InputEventListener;
-  class InputHandler;
   class Orxonox;
 
   // objects
