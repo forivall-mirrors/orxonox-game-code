@@ -22,6 +22,7 @@ namespace orxonox
             
             bool create();
             void registerAllVariables();
+            void setSkyboxSrc(std::string src);
 
         private:
             std::string skyboxSrc_;

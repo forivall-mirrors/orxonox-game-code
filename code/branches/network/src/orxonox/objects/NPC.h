@@ -25,6 +25,8 @@ namespace orxonox {
       void tick(float dt);
       void update();
       void setValues(Vector3 location, Vector3 speed, Vector3 acceleration, bool movable);
+      void registerAllVariables();
+      bool create();
 
     private:
       float getDistance(WorldEntity* temp);

@@ -4,10 +4,11 @@
 #include "../OrxonoxPrereqs.h"
 
 #include "core/BaseObject.h"
+#include "network/Synchronisable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Ambient : public BaseObject
+    class _OrxonoxExport Ambient : public BaseObject, network::Synchronisable
     {
         public:
             Ambient();
@@ -16,9 +17,11 @@ namespace orxonox
             void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, bool loading);
             void setAmbientLight(const ColourValue& colour);
+            bool create();
+            void registerAllVariables();
 
         private:
-
+            ColourValue ambientLight_;
 
     };
 }
