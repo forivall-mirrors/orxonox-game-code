@@ -139,16 +139,15 @@ namespace orxonox
         // START CREATING THRUSTER
         this->tt_ = new ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         this->tt_->getParticleSystem()->setParameter("local_space","true");
-        this->tt_->newEmitter();        this->tt_->newEmitter();
+        this->tt_->newEmitter();
 /*
         this->tt_->setDirection(Vector3(0,0,1));
         this->tt_->setPositionOfEmitter(0, Vector3(20,-1,-15));
         this->tt_->setPositionOfEmitter(1, Vector3(-20,-1,-15));
 */
         this->tt_->setDirection(Vector3(-1,0,0));
-        this->tt_->setPositionOfEmitter(0, Vector3(-35,31,-3));
-        this->tt_->setPositionOfEmitter(1, Vector3(-35,-31,-3));
-        this->tt_->setPositionOfEmitter(2, Vector3(-48,0,20));
+        this->tt_->setPositionOfEmitter(0, Vector3(-15,20,-1));
+        this->tt_->setPositionOfEmitter(1, Vector3(-15,-20,-1));
         this->tt_->setVelocity(50);
 
         emitterRate_ = tt_->getRate();
@@ -162,9 +161,9 @@ namespace orxonox
         this->redBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
         this->greenBillboard_.setBillboardSet("Examples/Flare", ColourValue(0.0, 1.0, 0.0), 1);
 
-        this->redNode_ = this->getNode()->createChildSceneNode(this->getName() + "red", Vector3(-0.9, 3.3, -0.4));
+        this->redNode_ = this->getNode()->createChildSceneNode(this->getName() + "red", Vector3(0.3, 4.7, -0.3));
         this->redNode_->setInheritScale(false);
-        this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(-0.9, -3.3, -0.4));
+        this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(0.3, -4.7, -0.3));
         this->greenNode_->setInheritScale(false);
 
         this->redNode_->attachObject(this->redBillboard_.getBillboardSet());
