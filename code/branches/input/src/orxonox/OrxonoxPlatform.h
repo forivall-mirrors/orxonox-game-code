@@ -231,7 +231,7 @@ typedef float Real;
 
 // disable: 'MultiTypeString' : multiple assignment operators specified
 // Used in MultiType and works fine so far
-#   pragma warning (disable : 4522)
+//#   pragma warning (disable : 4522)
 
 // disable: "non dll-interface class used as base for dll-interface class"
 // Happens when deriving from Singleton because bug in compiler ignores

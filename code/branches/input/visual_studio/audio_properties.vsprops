@@ -8,6 +8,7 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		PreprocessorDefinitions="AUDIO_SHARED_BUILD"
+		DisableSpecificWarnings="4244"
 	/>
 	<Tool
 		Name="VCLinkerTool"

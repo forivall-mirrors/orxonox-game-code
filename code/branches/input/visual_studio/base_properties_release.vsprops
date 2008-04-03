@@ -26,6 +26,6 @@
 	/>
 	<UserMacro
 		Name="CSS"
-		Value="$(CS)"
+		Value=""
 	/>
 </VisualStudioPropertySheet>
