@@ -25,7 +25,44 @@
 *
 */
 
+
 #ifndef _HUD_H__
+#define _HUD_H__
+
+#include <string.h>
+#include <OgreOverlayElement.h>
+#include <OgreTextAreaOverlayElement.h>
+#include <OgrePrerequisites.h>
+#include "../OrxonoxPrereqs.h"
+
+#include "Bar.h"
+
+
+namespace orxonox
+{
+  class _OrxonoxExport HUD
+  {
+  private:
+
+  public:
+    HUD(int zoom);
+    ~HUD();
+
+    Bar* energyCounter;
+  };
+}	
+
+
+
+
+
+
+
+
+
+#endif _HUD_H_
+
+/*#ifndef _HUD_H__
 #define _HUD_H__
 
 #include <string>

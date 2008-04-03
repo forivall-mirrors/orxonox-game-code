@@ -29,31 +29,58 @@
 #ifndef _BAR_H__
 #define _BAR_H__
 
-#include <string>
-#include <OgreColourValue.h>
-#include <OgreOverlayElement.h>
-#include <OgrePrerequisites.h>
 #include <string.h>
+#include <OgreOverlayElement.h>
+#include <OgreTextAreaOverlayElement.h>
+#include <OgrePrerequisites.h>
 #include "../OrxonoxPrereqs.h"
 
 
 
-// namespace hud
 namespace orxonox
 {
-  class Bar : public Ogre::OverlayElement
+  class _OrxonoxExport Bar
   {
   private:
-    double percentage_;
-    bool horz_;
-    Ogre::ColourValue color_;
+    int percentage_;
+    int dir_;	
+    int left_;
+    int top_;
+    int width_;
+    int height_;
+	
+  public:
+    static const int LEFT = 0;
+    static const int UP = 1;
+    static const int RIGHT = 2;
+    static const int DOWN = 3;
 
+    static const int RED = 0;
+    static const int YELLOW = 1;
+    static const int GREEN = 2;
+
+    Ogre::OverlayElement* element;
+
+    Bar(Ogre::Real left, Ogre::Real top, Ogre::Real width, Ogre::Real height,
+        int dir, int colour, std::string name);
+    ~Bar(void);
+    void reset(int percentage);
+    void setColour(int colour);
+    void show();
+    void hide();
+    
+  };
+
+
+  class _OrxonoxExport SmartBar : public Bar
+  {
+  private:
 
   public:
-    Bar(void);
-    ~Bar(void);
-    void setPercentage(Ogre::Real percentage);
-    void setColor(Ogre::ColourValue color);
+    SmartBar(Ogre::Real left, Ogre::Real top, Ogre::Real width, Ogre::Real height,
+        int dir, std::string name);
+    ~SmartBar(void);
+    void reset(int percentage);
   };
 }
 
