@@ -51,6 +51,7 @@
 //****** STD *******
 #include <iostream>
 #include <exception>
+#include <string.h>
 
 //***** ORXONOX ****
 //misc
@@ -391,39 +392,118 @@ namespace orxonox
 //new hud::Bar(1,true,Ogre::ColourValue::Black,"Orxonox/hi");
  //   cont->addChild(newBar-> element_);
 //   hud::Bar* newBar = Ogre::OverlayManager::createOverlayElement("orxonox/bar", "orxonox/newbar", false);
+  
 
+//    Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
 
-    Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+//    Ogre::Overlay* hudOverlay = overlayManager.create("orxonoxsuperoverlay"); 
 
-    Ogre::Overlay* hudOverlay = overlayManager.create("orxonoxsuperoverlay");
-
-    Bar* newBar = static_cast<Bar*>(overlayManager.createOverlayElement("Panel", "Bar"));
+/*    Bar* newBar = static_cast<Bar*>(overlayManager.createOverlayElement("Panel", "Bar"));
     newBar->setLeft(0);
     newBar->setTop(0);
-    newBar->setWidth(10);
+    newBar->setWidth(100);
     newBar->setHeight(10);
     newBar->setMaterialName("Orxonox/Red");
-    newBar->setMetricsMode(Ogre::GMM_PIXELS);
-    newBar->setPercentage((Ogre::Real)0.8);
+    newBar->setMetricsMode(Ogre::GMM_PIXELS);	
+    newBar->setPercentage(0.5);
     newBar->show();
+   
+*/
+/*
+    Bar* newBar;
+    newBar = new Bar(0,0,100,10,Bar::LEFT, Bar::RED,"hallo");
+    newBar->reset(50);
 
+    Bar* newBar2;
+    newBar2 = new Bar(0,20,100,10,Bar::UP,Bar::GREEN,"hallo2");
+    newBar2->reset(50);
 
-    Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*> (overlayManager.createOverlayElement("Panel", "PanelName"));
+    Bar* newBar3;
+    newBar3 = new Bar(0,40,100,10,Bar::RIGHT,Bar::RED,"hallo3");
+    newBar3->reset(50);
+
+    Bar* newBar4;
+    newBar4 = new Bar(0,60,100,10,Bar::DOWN,Bar::YELLOW,"hallo4");
+    newBar4->reset(50);
+    newBar4->hide();
+    newBar4->show();
+
+    SmartBar* newBar5;
+    newBar5 = new SmartBar(0,80,100,10,Bar::DOWN,"hallo5");
+
+    SmartBar* newBar6;
+    newBar6 = new SmartBar(50,80,100,10,Bar::DOWN,"hallo6");
+
+    newBar5->reset(56);
+
+   
+*/
+/*
+    Ogre::OverlayElement* element = overlayManager.createOverlayElement("Panel",s);
+    element->setLeft(0);
+    element->setTop(0);
+    element->setWidth(100);
+    element->setHeight(10);
+    element->setMaterialName("Orxonox/Red");
+    element->setMetricsMode(Ogre::GMM_PIXELS);
+*/
+/*    Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*> (overlayManager.createOverlayElement("Panel", "PanelName"));
     panel->setLeft(10);
     panel->setTop(10);
     panel->setWidth(100);
     panel->setHeight(100);
-    panel->setMetricsMode(Ogre::GMM_PIXELS);
+    panel->setMetricsMode(Ogre::GMM_PIXELS);	
     panel->show();
 
-    hudOverlay->add2D(panel);
-    panel->addChild(newBar);
 
- //   HUD* orxonoxHud;
- //   orxonoxHud = new HUD();
- //   orxonoxHud->setEnergyValue(20);
- //   orxonoxHud->setEnergyDistr(20,20,60);
-    hudOverlay->show();
+    if(dynamic_cast<Ogre::TextAreaOverlayElement*> (overlayManager.createOverlayElement("TextArea", "hallo7"))!= NULL ){panel->addChild(newBar5->element);}
+
+    Ogre::TextAreaOverlayElement* newEle = dynamic_cast<Ogre::TextAreaOverlayElement*> (overlayManager.createOverlayElement("TextArea", "hallo8"));
+    newEle->setColour(Ogre::ColourValue::Blue);
+    newEle->setCaption("hallo");
+    newEle->setPosition(0,0);
+    newEle->setDimensions(0,0);
+    newEle->setHorizontalAlignment(Ogre::GHA_LEFT);
+//    newEle->setMaterialName("Orxonox/Red");
+    newEle->setCharHeight(18);
+    newEle->setFontName("BlueHighway");
+//    newEle->setMetricsMode(Ogre::GMM_PIXELS);	
+
+
+    Ogre::OverlayElement* newEle2 =Ogre:: OverlayManager::getSingleton().getOverlayElement("Orxonox/HUD1.2/RocketNum1");
+    newEle2->setColour(Ogre::ColourValue::Red);
+    newEle2->setCaption("hallo");
+    newEle2->setPosition(-50,0);
+    newEle2->setDimensions(0,0);
+//    newEle->setMaterialName("Orxonox/Red");
+//    newEle2->setCharHeight(18);
+//    newEle2->setFontName("BlueHighway");
+//    newEle2->setMetricsMode(Ogre::GMM_PIXELS);
+
+
+    panel->addChild(newEle2);
+
+*/
+
+   
+//    hudOverlay->add2D(panel);
+/*    panel->addChild(newBar->element);
+    panel->addChild(newBar2->element);
+    panel->addChild(newBar3->element);
+    panel->addChild(newBar4->element);
+    panel->addChild(newBar5->element);
+    panel->addChild(newBar6->element);
+*///    panel->addChild(newEle);
+
+    
+
+//    HUD2* orxonoxHud;
+//    orxonoxHud = new HUD2();
+//    orxonoxHud->setEnergyValue(20);
+//    orxonoxHud->setEnergyDistr(20,20,60);
+//    hudOverlay->show();
+
+    HUD* orxonoxHUD = new HUD(1);
 
 
 	/*
