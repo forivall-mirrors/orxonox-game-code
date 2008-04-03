@@ -71,6 +71,7 @@ namespace orxonox
           this->node_ = 0;
         }
     }
+    
 
     WorldEntity::~WorldEntity()
     {
@@ -161,6 +162,7 @@ namespace orxonox
         create();
 */
     }
+    
 
     void WorldEntity::setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll)
     {

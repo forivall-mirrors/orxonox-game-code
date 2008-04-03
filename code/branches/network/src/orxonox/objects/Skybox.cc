@@ -48,6 +48,7 @@ namespace orxonox
     Skybox::Skybox()
     {
         RegisterObject(Skybox);
+        registerAllVariables();
     }
 
     Skybox::~Skybox()
@@ -58,10 +59,10 @@ namespace orxonox
     {
     	if (xmlElem->Attribute("src"))
     	{
-    		std::string skyboxSrc = xmlElem->Attribute("src");
-	    	this->setSkybox(skyboxSrc);
+    		skyboxSrc_ = xmlElem->Attribute("src");
+        this->create();
 
-	    	COUT(4) << "Loader: Set skybox: "<< skyboxSrc << std::endl << std::endl;
+	    	COUT(4) << "Loader: Set skybox: "<< skyboxSrc_ << std::endl << std::endl;
     	}
    }
 
@@ -82,4 +83,14 @@ namespace orxonox
 
         XMLPortParamLoadOnly(Skybox, "src", setSkybox, xmlelement, loading);
     }
+    
+    bool Skybox::create(){
+      this->setSkybox(skyboxSrc_);
+      return true;
+    }
+    
+    void Skybox::registerAllVariables(){
+      registerVar(&skyboxSrc_, skyboxSrc_.length()+1 ,network::STRING);
+    }
+    
 }

@@ -83,7 +83,8 @@ namespace orxonox
     }
 
     bool Model::create(){
-      WorldEntity::create();
+      if(!WorldEntity::create())
+        return false;
       if(meshSrc_.compare("")!=0){
         this->mesh_.setMesh(meshSrc_);
         this->attachObject(this->mesh_.getEntity());

@@ -4,12 +4,13 @@
 #include "../OrxonoxPrereqs.h"
 
 #include "core/BaseObject.h"
+#include "network/Synchronisable.h"
 
 class TiXmlElement; // Forward declaration
 
 namespace orxonox
 {
-    class _OrxonoxExport Skybox : public BaseObject
+    class _OrxonoxExport Skybox : public BaseObject, public network::Synchronisable
     {
         public:
             Skybox();
@@ -18,8 +19,12 @@ namespace orxonox
             void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, bool loading);
             void setSkybox(const std::string& skyboxname);
+            
+            bool create();
+            void registerAllVariables();
 
         private:
+            std::string skyboxSrc_;
 
 
     };

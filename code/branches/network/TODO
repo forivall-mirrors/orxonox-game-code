@@ -1,0 +1,7 @@
+TODO:
+
+network:
+	-handle variables of Spaceship (registerAllVariables)
+	-make NPC class synchronisable
+	-make Ambient class synchronisable
+	-make Skybox class synchronisable ----- mostly done
