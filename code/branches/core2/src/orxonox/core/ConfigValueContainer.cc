@@ -82,7 +82,8 @@ namespace orxonox
     bool ConfigValueContainer::tset(const std::string& input)
     {
         bool success = this->parse(input);
-        this->identifier_->updateConfigValues();
+        if (this->identifier_)
+            this->identifier_->updateConfigValues();
         return success;
     }
 
