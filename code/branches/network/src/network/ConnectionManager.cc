@@ -207,7 +207,7 @@ namespace network
         enet_packet_destroy(event.packet);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
-        std::cout << "disconnecting client" << std::endl;
+        COUT(4) << "disconnecting client" << std::endl;
         delete head_->findClient(&(event.peer->address));
         temp = temp->next();
         break;
@@ -227,6 +227,7 @@ namespace network
   //}
 
   bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
+    COUT(4) << "removing client from list" << std::endl;
     return head_->removeClient(peer);
   }
 

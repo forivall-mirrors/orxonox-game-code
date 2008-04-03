@@ -373,7 +373,7 @@ namespace orxonox
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
 
       // show the current time in the HUD
-      orxonoxHUD_->setTime((int)now, 0);
+      //orxonoxHUD_->setTime((int)now, 0);
 
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
