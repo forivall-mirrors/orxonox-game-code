@@ -38,6 +38,43 @@ material Orxonox/Red
 	}
 }
 
+material Orxonox/Yellow
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_check off
+			scene_blend 0.5 0.5
+			ambient 0 0 0 0.5
+
+			texture_unit
+			{
+				texture OrxonoxYELLOW.png
+			}
+		}
+	}
+}
+
+material Orxonox/Green
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_check off
+			scene_blend 0.5 0.5
+			ambient 0 0 0 0.5
+
+			texture_unit
+			{
+				texture OrxonoxGREEN.png
+			}
+		}
+	}
+}
 
 material Orxonox/Black
 {
