@@ -41,6 +41,10 @@ namespace network
   public:
     GameStateManager(ClientInformation *head);
     ~GameStateManager();
+    //#### ADDED FOR TESTING PURPOSE ####
+    GameStateCompressed* testCompress( GameState* g );
+    GameState* testDiff( GameState* a, GameState* b );
+    //#### END TESTING PURPOSE ####
     void update();
     GameStateCompressed *popGameState(int clientID);
     void ackGameState(int clientID, int gamestateID);

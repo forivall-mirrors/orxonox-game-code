@@ -279,7 +279,7 @@ namespace orxonox
     setupInputSystem();
     
     server_g->open();
-    
+
     startRenderLoop();
   }
   

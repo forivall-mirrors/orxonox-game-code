@@ -22,6 +22,10 @@ namespace network
   public:
     GameStateClient();
     ~GameStateClient();
+    //#### ADDED FOR TESTING PURPOSE ####
+    GameState* testDecompress( GameStateCompressed* gc );
+    GameState* testUndiff( GameState* g_old, GameState* g_diffed );
+    //#### END TESTING PURPOSE ####
     bool pushGameState(GameStateCompressed *compstate);
   private:
     bool loadSnapshot(GameState *state);

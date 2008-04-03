@@ -139,8 +139,20 @@ namespace network
     }
     COUT(5) << "Gamestate size: " << totalsize << std::endl;
     retval->size=totalsize;
+    //#### bugfix
+    retval->diffed = false;
     return retval;
   }
+
+  //##### ADDED FOR TESTING PURPOSE #####
+  GameStateCompressed* GameStateManager::testCompress( GameState* g ) {
+    return compress_( g );
+  }
+
+  GameState* GameStateManager::testDiff( GameState* a, GameState* b ) {
+    return diff( a, b );
+  }
+  //##### END TESTING PURPOSE #####
 
   GameStateCompressed *GameStateManager::encode(GameState *a, GameState *b) {
     //GameState r = diff(a,b);

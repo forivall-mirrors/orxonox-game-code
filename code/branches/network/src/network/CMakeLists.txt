@@ -10,7 +10,6 @@ SET( NETWORK_SRC_FILES
   PacketGenerator.cc
   Server.cc
   Synchronisable.cc
-  dummyserver3.cc
 )
 
 IF(WIN32)
@@ -30,6 +29,32 @@ TARGET_LINK_LIBRARIES( network
 
 # build those parts only on request.
 IF(NETWORK_TESTING_ENABLED)
+  ##### test for gamestate stuff #####
+  SET( TEST_SRC_FILES
+    ConnectionManager.cc
+    GameStateManager.cc
+    PacketBuffer.cc    PacketDecoder.cc
+    PacketGenerator.cc
+    ClientConnection.cc
+    ClientInformation.cc
+    diffTest.cc
+    GameStateClient.cc
+    Server.cc
+    Client.cc  
+    Synchronisable.cc  
+  )
+
+  ADD_EXECUTABLE(networktest ${TEST_SRC_FILES})
+  TARGET_LINK_LIBRARIES( networktest
+    ${OGRE_LIBRARIES}
+    network
+    ${ENet_LIBRARY}
+    ${ZLIB_LIBRARY}
+    ${WINDOWS_ENET_DEPENDENCIES}
+  )
+  ##### end test for gamestate stuff #####
+ENDIF(NETWORK_TESTING_ENABLED)
+IF(BLABLA)
   SET( CHATCLIENT_SRC_FILES
     ClientConnection.cc
     Client.cc
@@ -95,4 +120,5 @@ IF(NETWORK_TESTING_ENABLED)
     ${ZLIB_LIBRARY}
     ${WINDOWS_ENET_DEPENDENCIES}
   )
-ENDIF(NETWORK_TESTING_ENABLED)
+ENDIF(BLABLA)
+

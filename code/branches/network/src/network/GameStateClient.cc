@@ -150,6 +150,16 @@ namespace network
     return r;
   }
 
+  //##### ADDED FOR TESTING PURPOSE #####
+  GameState* GameStateClient::testDecompress( GameStateCompressed* gc ) {
+    return decompress( gc );
+  }
+  
+  GameState* GameStateClient::testUndiff( GameState* g_old, GameState* g_diffed ) {
+    return undiff( g_old, g_diffed );
+  }
+  //##### ADDED FOR TESTING PURPOSE #####
+
   GameState *GameStateClient::decompress(GameStateCompressed *a) {
     int normsize = a->normsize;
     int compsize = a->compsize;
