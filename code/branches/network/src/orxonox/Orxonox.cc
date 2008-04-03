@@ -383,7 +383,7 @@ namespace orxonox
       // everything goes smoothly
       ogre_->frameStarted(evt);
 
-      if (mode_ != SERVER)
+      //if (mode_ != SERVER)
         ogre_->renderOneFrame(); // only render in non-server mode
 
       // get current time
