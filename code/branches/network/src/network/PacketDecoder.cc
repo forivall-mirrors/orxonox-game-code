@@ -164,10 +164,11 @@ namespace network
 //     std::cout << "compsize: " << currentState->compsize << std::endl;
     //size of uncompressed data
     memcpy( (void*)&(currentState->normsize), (const void*)(packet->data+3*sizeof( int )), sizeof( int ) );
+    memcpy( (void*)&(currentState->base_id), (const void*)(packet->data+4*sizeof( int )), sizeof( int ) );
     //currentState->normsize = (int)*(data+3*sizeof(int));
 //     std::cout << "normsize. " << currentState->normsize << std::endl;
     //since the packetgenerator was changed, due to a new parameter, change this function too
-    memcpy( (void*)&(currentState->diffed), (const void*)(packet->data+4*sizeof(int)), sizeof(bool));
+    memcpy( (void*)&(currentState->diffed), (const void*)(packet->data+5*sizeof(int)), sizeof(bool));
     //currentState->diffed = (bool)*(data+4*sizeof(int));
 //     std::cout << "diffed: " << currentState->diffed << std::endl;
     //since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream

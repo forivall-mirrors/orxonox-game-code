@@ -131,9 +131,12 @@ namespace network
 
       // run Synchronisable::getData with offset and additional place for 3 ints in between (for ids and length)
       sync=it->getData((retval->data)+offset+3*sizeof(int));
-      *(retval->data+offset)=sync.length;
-      *(retval->data+offset+sizeof(int))=sync.objectID;
-      *(retval->data+offset+2*sizeof(int))=sync.classID;
+      memcpy(retval->data+offset, (void *)&sync.length, sizeof(int));
+      //*(retval->data+offset)=sync.length;
+      memcpy(retval->data+offset+sizeof(int), (void *)&sync.objectID, sizeof(int));
+      //*(retval->data+offset+sizeof(int))=sync.objectID;
+      memcpy(retval->data+offset+2*sizeof(int), (void *)&sync.classID, sizeof(int));
+      //*(retval->data+offset+2*sizeof(int))=sync.classID;
       // increase data pointer
       offset+=tempsize+3*sizeof(int);
     }
@@ -199,6 +202,7 @@ namespace network
     r->id = b->id;
     r->size = dest_length;
     r->diffed = true;
+    r->base_id = a->id;
     r->data = dp;
     return r;
   }
@@ -231,6 +235,7 @@ namespace network
     compressedGamestate->id = a->id;
     compressedGamestate->data = dest;
     compressedGamestate->diffed = a->diffed;
+    compressedGamestate->base_id = a->base_id;
 
     return compressedGamestate;
   }
