@@ -187,6 +187,10 @@
 				Name="hud"
 				>
 				<File
+					RelativePath="..\..\src\orxonox\hud\Bar.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\hud\HUD.cc"
 					>
 				</File>
@@ -321,7 +325,23 @@
 				Name="hud"
 				>
 				<File
+					RelativePath="..\..\src\orxonox\hud\Bar.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\BarV1.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\hud\HUD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\HUDV2.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\Radar.h"
 					>
 				</File>
 			</Filter>

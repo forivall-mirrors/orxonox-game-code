@@ -254,12 +254,12 @@ namespace orxonox
 
     bulletMgr_ = new BulletManager();
     
-    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    HUD* orxonoxHud;
-    orxonoxHud = new HUD();
-    orxonoxHud->setEnergyValue(20);
-    orxonoxHud->setEnergyDistr(20,20,60);
-    hudOverlay->show();
+    //Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
+    //HUD* orxonoxHud;
+    orxonoxHUD_ = new HUD(1);
+    //orxonoxHud->setEnergyValue(20);
+    //orxonoxHud->setEnergyDistr(20,20,60);
+    //hudOverlay->show();
     
     client_g->establishConnection();
     client_g->tick(0);
@@ -305,11 +305,11 @@ namespace orxonox
     Level* startlevel = new Level("levels/sample.oxw");
     Loader::open(startlevel);
 
-    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    orxonoxHUD_ = new HUD();
-    orxonoxHUD_->setEnergyValue(20);
-    orxonoxHUD_->setEnergyDistr(20,20,60);
-    hudOverlay->show();
+    //Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
+    orxonoxHUD_ = new HUD(1);
+    //orxonoxHUD_->setEnergyValue(20);
+    //orxonoxHUD_->setEnergyDistr(20,20,60);
+    //hudOverlay->show();
 
 	/*
     auMan_->ambientAdd("a1");
@@ -373,7 +373,9 @@ namespace orxonox
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
 
       // show the current time in the HUD
-      orxonoxHUD_->setTime((int)now, 0);
+      //orxonoxHUD_->setTime((int)now, 0);
+      orxonoxHUD_->energyCounter->reset(20);
+
 
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )

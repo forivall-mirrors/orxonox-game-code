@@ -25,14 +25,64 @@
 *
 */
 
+
 #include "OrxonoxStableHeaders.h"
+#include <OgreOverlay.h>
+#include <OgreOverlayContainer.h>
+#include <OgreOverlayManager.h>
+
+#include "HUD.h"
+#include "Bar.h"
+
+
+namespace orxonox
+{
+  using namespace Ogre;
+
+
+
+
+
+  HUD::HUD(int zoom){
+
+    Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+
+    energyCounter = new Bar(0,0,100,20,Bar::LEFT,Bar::YELLOW,"Orxonox/HUD/energyCounterPanel/energyCounter");
+
+    Ogre::OverlayContainer* energyCounterPanel = static_cast<Ogre::OverlayContainer*>(overlayManager.createOverlayElement("Panel", "Orxonox/HUD/energyCounterPanel"));
+    energyCounterPanel->setLeft(-50);
+    energyCounterPanel->setTop(10);
+    energyCounterPanel->setWidth(100);
+    energyCounterPanel->setHeight(20);
+    energyCounterPanel->setHorizontalAlignment(Ogre::GHA_CENTER);
+    energyCounterPanel->setMetricsMode(Ogre::GMM_PIXELS);	
+    energyCounterPanel->show();
+    energyCounterPanel->addChild(energyCounter->element);
+
+    Ogre::Overlay* orxonoxOverlay = overlayManager.create("Orxonox/HUD"); 
+    orxonoxOverlay->add2D(energyCounterPanel);
+    orxonoxOverlay->show();
+  }
+
+  HUD::~HUD(void){}
+
+
+
+}
+
+
+
+
+
+
+/*#include "OrxonoxStableHeaders.h"
 
 #include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
 #include <OgreStringConverter.h>
 
 #include "HUD.h"
-
+#include "Bar.h"
 
 namespace orxonox
 {
@@ -49,7 +99,7 @@ namespace orxonox
     setTargetWindowStatus("Dead");
     setTargetWindowDistance(30);
 
-    setEnergyValue(60.0);
+    setEnergyValue(60);
 
     setShieldLeftTopValue(true);
     setShieldRightTopValue(false);
@@ -67,6 +117,7 @@ namespace orxonox
 
     energyDistrPixelX_ = 100;
     energyDistrPixelY_ = 86;
+
 
   }
 
@@ -216,3 +267,4 @@ namespace orxonox
   }
 
 }
+*/

@@ -4,6 +4,7 @@ SET( ORXONOX_SRC_FILES
   Orxonox.cc
 #  SpaceshipSteering.cc
   hud/HUD.cc
+  hud/Bar.cc
   particle/ParticleInterface.cc
   tools/BillboardSet.cc
   tools/Light.cc
@@ -44,4 +45,5 @@ TARGET_LINK_LIBRARIES( orxonox
   network
 #  loader
 )
+
 
