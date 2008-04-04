@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="network_properties"
+	InheritedPropertySheets=".\directory_properties.vsprops"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		PreprocessorDefinitions="NETWORK_SHARED_BUILD;WIN32_LEAN_AND_MEAN"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalDependencies="enet$(CSS).lib zlib$(CSS).lib"
+		IgnoreDefaultLibraryNames="LIBCMT;LIBCMTD"
+	/>
+</VisualStudioPropertySheet>
