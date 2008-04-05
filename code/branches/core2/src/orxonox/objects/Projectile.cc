@@ -27,7 +27,9 @@
 
 #include "OrxonoxStableHeaders.h"
 
-#include "../core/CoreIncludes.h"
+#include "core/CoreIncludes.h"
+#include "core/Executor.h"
+
 #include "SpaceShip.h"
 #include "Explosion.h"
 #include "Model.h"
@@ -59,7 +61,7 @@ namespace orxonox
             this->setVelocity(Vector3(1, 0, 0) * this->speed_);
         }
 
-        this->destroyTimer_.setTimer(this->lifetime_, false, this, &Projectile::destroyObject);
+        this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
     }
 
     Projectile::~Projectile()
