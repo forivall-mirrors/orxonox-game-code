@@ -71,7 +71,7 @@ FIND_PACKAGE(ALUT)
 FIND_PACKAGE(OggVorbis)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(Lua)
-FIND_PACKAGE(ToLua)
+#FIND_PACKAGE(ToLua)
 
 #Sets the search paths for the linking
 LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR} ${ENet_LIBRARY} ${Boost_LIBRARY_DIRS} ${Zlib_LIBRARY_DIR} ${Lua_LIBRARIES} core objects loader network weapon classHierarchy audio)
