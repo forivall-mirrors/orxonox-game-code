@@ -42,8 +42,11 @@
     Executor& fakevariable = ClassManager<classname>::getIdentifier()->addConsoleCommand((ExecutorStatic*)executor, bCreateShortcut)
 
 
-#define ConsoleCommandShortcut(function, accesslevel) \
+#define ConsoleCommandShortcut(classname, function, accesslevel) \
     ConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createExecutor(orxonox::createFunctor(&classname::function), #function, accesslevel))
+
+#define ConsoleCommandShortcutExtern(function, accesslevel) \
+    ConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createExecutor(orxonox::createFunctor(&function), #function, accesslevel))
 
 #define ConsoleCommandShortcutGeneric(fakevariable, executor) \
     bool fakevariable = CommandExecutor::addConsoleCommandShortcut((ExecutorStatic*)executor)

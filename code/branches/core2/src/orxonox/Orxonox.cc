@@ -85,6 +85,7 @@
 #include "objects/test2.h"
 #include "objects/test3.h"
 
+#include "core/ConsoleCommand.h"
 #include "core/CommandExecutor.h"
 #include "core/InputBuffer.h"
 
@@ -92,6 +93,8 @@
 
 namespace orxonox
 {
+    ConsoleCommandShortcut(Orxonox, exit, AccessLevel::None);
+
     class Testlistener : public InputBufferListener
     {
         public:
@@ -149,7 +152,7 @@ namespace orxonox
         usleep(10);
 
         mKeyboard->capture();
-        return !mKeyboard->isKeyDown(OIS::KC_ESCAPE);
+        return (!mKeyboard->isKeyDown(OIS::KC_ESCAPE) && !Orxonox::getSingleton()->shouldExit());
       }
 /*
       void updateAI()
@@ -184,6 +187,7 @@ namespace orxonox
     this->inputManager_ = 0;
     this->frameListener_ = 0;
     this->root_ = 0;
+    this->bExit_ = false;
   }
 
   /**

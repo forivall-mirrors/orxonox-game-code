@@ -60,6 +60,8 @@ namespace orxonox
         CS_Error
     };
 
+    void exec(const std::string& filename);
+
     enum KeybindMode {}; // temporary
 
     ///////////////////////

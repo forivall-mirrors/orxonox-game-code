@@ -44,6 +44,42 @@ namespace orxonox
     ConsoleCommandShortcutGeneric(keyword2, createExecutor((FunctorStatic*)0, "tset", AccessLevel::User));
     ConsoleCommandShortcutGeneric(keyword3, createExecutor((FunctorStatic*)0, "bind", AccessLevel::User));
 
+    ConsoleCommandShortcutExtern(exec, AccessLevel::None);
+
+    void exec(const std::string& filename)
+    {
+        static std::set<std::string> executingFiles;
+
+        std::set<std::string>::const_iterator it = executingFiles.find(filename);
+        if (it != executingFiles.end())
+        {
+            COUT(1) << "Error: Recurring exec command in \"" << filename << "\". Stopped execution." << std::endl;
+            return;
+        }
+
+        // Open the file
+        std::ifstream file;
+        file.open(filename.c_str(), std::fstream::in);
+
+        if (!file.is_open())
+        {
+            COUT(1) << "Error: Couldn't execute file \"" << filename << "\"." << std::endl;
+            return;
+        }
+
+        executingFiles.insert(filename);
+
+        // Iterate through the file and put the lines into the CommandExecutor
+        char line[1024];
+        while (file.good() && !file.eof())
+        {
+            file.getline(line, 1024);
+            CommandExecutor::execute(line);
+        }
+
+        executingFiles.erase(filename);
+    }
+
 
     ///////////////////////
     // CommandEvaluation //

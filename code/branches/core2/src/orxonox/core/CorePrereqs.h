@@ -92,6 +92,12 @@ namespace orxonox
   class ClassTreeMaskNode;
   class CommandEvaluation;
   class CommandExecutor;
+  class ConfigFile;
+  class ConfigFileEntry;
+  class ConfigFileEntryComment;
+  class ConfigFileEntryValue;
+  class ConfigFileManager;
+  class ConfigFileSection;
   class ConfigValueContainer;
   class DebugLevel;
   class Error;

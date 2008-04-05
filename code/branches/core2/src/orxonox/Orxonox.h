@@ -44,6 +44,8 @@ namespace orxonox {
       inline OIS::Keyboard* getKeyboard()                  { return this->keyboard_; }
       inline OIS::Mouse* getMouse()                        { return this->mouse_; }
 //      inline BulletManager* getBulletMgr()                 { return this->bulletMgr_; }
+      static inline void exit()                            { Orxonox::getSingleton()->bExit_ = true; }
+      inline bool shouldExit()                             { return this->bExit_; }
 
     private:
       Orxonox();
@@ -77,6 +79,7 @@ namespace orxonox {
       OIS::InputManager*    inputManager_;
       OrxListener*          frameListener_;
       Ogre::Root*           root_;
+      bool                  bExit_;
 
       // this is used to identify the mode (server/client/...) we're in
       gameMode              mode_;
