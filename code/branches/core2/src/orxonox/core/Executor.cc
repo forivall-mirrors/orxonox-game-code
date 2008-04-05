@@ -89,7 +89,7 @@ namespace orxonox
         else
         {
             // more than one param
-            SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+            SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0');
 
             // if there are not enough params given, check if there are default values
             for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)

@@ -61,6 +61,11 @@ namespace orxonox
     };
 
     void exec(const std::string& filename);
+    std::string echo(const std::string& text);
+
+    void write(const std::string& filename, const std::string& text);
+    void append(const std::string& filename, const std::string& text);
+    std::string read(const std::string& filename);
 
     enum KeybindMode {}; // temporary
 
@@ -86,6 +91,8 @@ namespace orxonox
             MultiTypeMath getEvaluatedParameter(unsigned int index) const;
 
             void evaluateParams();
+
+            MultiTypeMath getReturnvalue() const;
 
         private:
             std::string processedCommand_;

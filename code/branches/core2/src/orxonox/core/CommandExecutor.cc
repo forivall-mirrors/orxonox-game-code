@@ -45,6 +45,11 @@ namespace orxonox
     ConsoleCommandShortcutGeneric(keyword3, createExecutor((FunctorStatic*)0, "bind", AccessLevel::User));
 
     ConsoleCommandShortcutExtern(exec, AccessLevel::None);
+    ConsoleCommandShortcutExtern(echo, AccessLevel::None);
+
+    ConsoleCommandShortcutExtern(read, AccessLevel::None);
+    ConsoleCommandShortcutExtern(append, AccessLevel::None);
+    ConsoleCommandShortcutExtern(write, AccessLevel::None);
 
     void exec(const std::string& filename)
     {
@@ -78,6 +83,67 @@ namespace orxonox
         }
 
         executingFiles.erase(filename);
+        file.close();
+    }
+
+    std::string echo(const std::string& text)
+    {
+        return text;
+    }
+
+    void write(const std::string& filename, const std::string& text)
+    {
+        std::ofstream file;
+        file.open(filename.c_str(), std::fstream::out);
+
+        if (!file.is_open())
+        {
+            COUT(1) << "Error: Couldn't write to file \"" << filename << "\"." << std::endl;
+            return;
+        }
+
+        file << text << std::endl;
+        file.close();
+    }
+
+    void append(const std::string& filename, const std::string& text)
+    {
+        std::ofstream file;
+        file.open(filename.c_str(), std::fstream::app);
+
+        if (!file.is_open())
+        {
+            COUT(1) << "Error: Couldn't append to file \"" << filename << "\"." << std::endl;
+            return;
+        }
+
+        file << text << std::endl;
+        file.close();
+    }
+
+    std::string read(const std::string& filename)
+    {
+        std::ifstream file;
+        file.open(filename.c_str(), std::fstream::in);
+
+        if (!file.is_open())
+        {
+            COUT(1) << "Error: Couldn't read from file \"" << filename << "\"." << std::endl;
+            return "";
+        }
+
+        std::string output = "";
+        char line[1024];
+        while (file.good() && !file.eof())
+        {
+            file.getline(line, 1024);
+            output += line;
+            output += "\n";
+        }
+
+        file.close();
+
+        return output;
     }
 
 
@@ -199,6 +265,22 @@ namespace orxonox
         return MT_null;
     }
 
+    MultiTypeMath CommandEvaluation::getReturnvalue() const
+    {
+        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
+        {
+            if (this->shortcut_)
+                return this->shortcut_->getReturnvalue();
+        }
+        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
+        {
+            if (this->function_)
+                return this->function_->getReturnvalue();
+        }
+
+        return MT_null;
+    }
+
 
     /////////////////////
     // CommandExecutor //
@@ -251,8 +333,57 @@ namespace orxonox
 
     bool CommandExecutor::execute(const std::string& command)
     {
-        if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
-            CommandExecutor::parse(command);
+        std::string strippedCommand = getStrippedEnclosingQuotes(command);
+
+        SubString tokensIO(strippedCommand, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
+        if (tokensIO.size() >= 2)
+        {
+            if (tokensIO[tokensIO.size() - 2] == ">")
+            {
+                bool success = CommandExecutor::execute(tokensIO.subSet(0, tokensIO.size() - 2).join());
+                write(tokensIO[tokensIO.size() - 1], CommandExecutor::getEvaluation().getReturnvalue());
+                return success;
+            }
+            else if (tokensIO[tokensIO.size() - 2] == "<")
+            {
+                std::string input = read(tokensIO[tokensIO.size() - 1]);
+                if (input == "" || input.size() == 0)
+                    return CommandExecutor::execute(tokensIO.subSet(0, tokensIO.size() - 2).join());
+                else
+                    return CommandExecutor::execute(tokensIO.subSet(0, tokensIO.size() - 2).join() + " " + input);
+            }
+        }
+
+
+        SubString tokensPipeline(strippedCommand, "|", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
+        if (tokensPipeline.size() > 1)
+        {
+            bool success = true;
+            std::string returnValue = "";
+            for (int i = tokensPipeline.size() - 1; i >= 0; i--)
+            {
+                if (returnValue == "" || returnValue.size() == 0)
+                {
+                    //CommandEvaluation evaluation = CommandExecutor::evaluate(tokens[i]);
+                    if (!CommandExecutor::execute(tokensPipeline[i]))
+                        success = false;
+                }
+                else
+                {
+                    //CommandEvaluation evaluation = CommandExecutor::evaluate(tokens[i] + " " + returnValue);
+                    if (!CommandExecutor::execute(tokensPipeline[i] + " " + returnValue))
+                        success = false;
+                }
+
+                //CommandExecutor::execute(evaluation);
+                //returnValue = evaluation.getReturnvalue();
+                returnValue = CommandExecutor::getEvaluation().getReturnvalue().toString();
+            }
+            return success;
+        }
+
+        if ((CommandExecutor::getEvaluation().processedCommand_ != strippedCommand) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
+            CommandExecutor::parse(strippedCommand);
 
         return CommandExecutor::execute(CommandExecutor::getEvaluation());
     }
@@ -260,7 +391,7 @@ namespace orxonox
 
     bool CommandExecutor::execute(const CommandEvaluation& evaluation)
     {
-        SubString tokens(evaluation.processedCommand_, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+        SubString tokens(evaluation.processedCommand_, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
 
         if (evaluation.bEvaluatedParams_ && evaluation.evaluatedExecutor_)
         {
@@ -352,7 +483,7 @@ namespace orxonox
 
     std::string CommandExecutor::complete(const CommandEvaluation& evaluation)
     {
-        SubString tokens(evaluation.processedCommand_, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+        SubString tokens(evaluation.processedCommand_, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
 
         std::list<std::pair<const std::string*, const std::string*> > temp;
         if (evaluation.state_ == CS_Empty)
@@ -443,7 +574,7 @@ namespace orxonox
 
     std::string CommandExecutor::hint(const CommandEvaluation& evaluation)
     {
-        SubString tokens(evaluation.processedCommand_, " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+        SubString tokens(evaluation.processedCommand_, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
 
         switch (evaluation.state_)
         {
@@ -515,7 +646,7 @@ namespace orxonox
 
     void CommandExecutor::parse(const std::string& command, bool bInitialize)
     {
-        CommandExecutor::getEvaluation().tokens_.split((command + COMMAND_EXECUTOR_CURSOR), " ", SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0');
+        CommandExecutor::getEvaluation().tokens_.split((command + COMMAND_EXECUTOR_CURSOR), " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
         CommandExecutor::getEvaluation().processedCommand_ = command;
 
         if (bInitialize)

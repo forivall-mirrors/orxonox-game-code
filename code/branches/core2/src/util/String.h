@@ -36,6 +36,9 @@
 _UtilExport void        strip(std::string* str);
 _UtilExport std::string getStripped(const std::string& str);
 
+_UtilExport void        stripEnclosingQuotes(std::string* str);
+_UtilExport std::string getStrippedEnclosingQuotes(const std::string& str);
+
 _UtilExport bool        isEmpty(const std::string& str);
 _UtilExport bool        isComment(const std::string& str);
 _UtilExport bool        isNumeric(const std::string& str);

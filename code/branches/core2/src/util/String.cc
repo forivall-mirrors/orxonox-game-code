@@ -55,6 +55,55 @@ std::string getStripped(const std::string& str)
 }
 
 /**
+    @brief Removes enclosing quotes if available.
+    @brief str The string to strip
+*/
+void stripEnclosingQuotes(std::string* str)
+{
+    unsigned int start = std::string::npos;
+    unsigned int end = 0;
+
+    for (unsigned int pos = 0; (pos < (*str).size()) && (pos < std::string::npos); pos++)
+    {
+        if ((*str)[pos] == '"')
+        {
+            start = pos;
+            break;
+        }
+
+        if (((*str)[pos] != ' ') && ((*str)[pos] != '\t') && ((*str)[pos] != '\n'))
+            return;
+    }
+
+    for (unsigned int pos = (*str).size() - 1; pos < std::string::npos; pos--)
+    {
+        if ((*str)[pos] == '"')
+        {
+            end = pos;
+            break;
+        }
+
+        if (((*str)[pos] != ' ') && ((*str)[pos] != '\t') && ((*str)[pos] != '\n'))
+            return;
+    }
+
+    if ((start != std::string::npos) && (end != 0))
+        (*str) = (*str).substr(start + 1, end - start - 1);
+}
+
+/**
+    @brief Returns a copy of the string with removed enclosing quotes (if available).
+    @brief str The string to strip
+    @return The striped copy of the string
+*/
+std::string getStrippedEnclosingQuotes(const std::string& str)
+{
+    std::string output = std::string(str);
+    stripEnclosingQuotes(&output);
+    return output;
+}
+
+/**
     @brief Determines if a string in is a comment.
     @param str The string to check
     @return True = it's a comment

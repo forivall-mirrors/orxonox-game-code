@@ -406,7 +406,7 @@ class Converter<std::string, orxonox::Vector2>
       unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
       if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
-      SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', '"', '\0', '\0', '\0');
+      SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
 
       if (tokens.size() >= 2)
       {
@@ -432,7 +432,7 @@ class Converter<std::string, orxonox::Vector3>
       unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
       if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
-      SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', '"', '\0', '\0', '\0');
+      SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
 
       if (tokens.size() >= 3)
       {
@@ -460,7 +460,7 @@ class Converter<std::string, orxonox::Vector4>
       unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
       if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
-      SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', '"', '\0', '\0', '\0');
+      SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
 
       if (tokens.size() >= 4)
       {
@@ -490,7 +490,7 @@ class Converter<std::string, orxonox::Quaternion>
       unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
       if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
-      SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', '"', '\0', '\0', '\0');
+      SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
 
       if (tokens.size() >= 4)
       {
@@ -520,7 +520,7 @@ class Converter<std::string, orxonox::ColourValue>
       unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
       if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
-      SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', '"', '\0', '\0', '\0');
+      SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
 
       if (tokens.size() >= 4)
       {

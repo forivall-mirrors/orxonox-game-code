@@ -75,8 +75,8 @@
     } \
     else \
     { \
-        SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', '"', '(', ')', '\0'); \
-    \
+        SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0'); \
+        \
         for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++) \
         { \
             if (!this->bAddedDefaultValue_[i]) \
@@ -85,8 +85,8 @@
                 return false; \
             } \
         } \
-    \
-        MultiTypeMath param[paramCount]; \
+        \
+        MultiTypeMath param[MAX_FUNCTOR_ARGUMENTS]; \
         COUT(5) << "Calling Executor " << this->name_ << " through parser with " << paramCount << " parameters, using " << tokens.size() << " tokens ("; \
         for (unsigned int i = 0; i < tokens.size() && i < MAX_FUNCTOR_ARGUMENTS; i++) \
         { \
@@ -108,7 +108,10 @@
             COUT(5) << this->defaultValue_[i]; \
         } \
         COUT(5) << ")." << std::endl; \
-    \
+        \
+        if ((tokens.size() > paramCount) && (this->functor_->getTypenameParam(paramCount - 1) == "string")) \
+            param[paramCount - 1] = tokens.subSet(paramCount - 1).join(); \
+        \
         switch(paramCount) \
         { \
             case 2: \

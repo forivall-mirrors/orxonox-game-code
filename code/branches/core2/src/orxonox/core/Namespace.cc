@@ -71,7 +71,7 @@ namespace orxonox
             name.replace(pos, 1, " ");
         while ((pos = name.find('\t')) != std::string::npos)
             name.replace(pos, 1, " ");
-        SubString tokens(name, " ", "", false, '\\', '"', '\0', '\0', '\0');
+        SubString tokens(name, " ", "", false, '\\', true, '"', true, '\0', '\0', true, '\0');
         if (this->bRoot_)
         {
             this->representingNamespaces_.insert(new NamespaceNode(this->getName()));
