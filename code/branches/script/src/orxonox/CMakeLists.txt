@@ -32,6 +32,7 @@ SET( ORXONOX_SRC_FILES
   objects/weapon/BulletManager.cc
   objects/weapon/WeaponStation.cc
   script/Script.cc
+  script/tolua_script.cc
 )
 
 ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
@@ -42,6 +43,7 @@ TARGET_LINK_LIBRARIES( orxonox
   ${OGRE_LIBRARIES}
   ${OIS_LIBRARIES}
   ${Lua_LIBRARIES}
+  ${ToLua_LIBRARIES}
   util
   core
   audio
