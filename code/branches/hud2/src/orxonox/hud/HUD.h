@@ -33,14 +33,16 @@
 #include <OgreOverlayElement.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePrerequisites.h>
-#include "../OrxonoxPrereqs.h"
 
+#include "OrxonoxPrereqs.h"
+
+#include "core/Tickable.h"
 #include "Bar.h"
 
 
 namespace orxonox
 {
-  class _OrxonoxExport HUD
+  class _OrxonoxExport HUD : Tickable
   {
   private:
 
@@ -48,7 +50,10 @@ namespace orxonox
     HUD(int zoom);
     ~HUD();
 
+    virtual void tick(float);
+
     Bar* energyCounter;
+    Ogre::SceneNode* ogreNode_;
   };
 }	
 

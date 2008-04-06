@@ -194,6 +194,10 @@
 					RelativePath="..\..\src\orxonox\hud\HUD.cc"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\TestElement.cc"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="objects"
@@ -342,6 +346,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\hud\Radar.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\TestElement.h"
 					>
 				</File>
 			</Filter>

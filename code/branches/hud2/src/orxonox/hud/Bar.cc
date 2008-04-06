@@ -25,6 +25,8 @@
 *
 */
 
+#include "OrxonoxStableHeaders.h"
+
 #include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
 #include <OgreTextAreaOverlayElement.h>
@@ -93,7 +95,7 @@ namespace orxonox
   void Bar::hide(){element->hide();}
 
   SmartBar::SmartBar(Ogre::Real left, Ogre::Real top, Ogre::Real width, Ogre::Real height,
-        int dir, std::string name) : Bar::Bar(left, top, width, height, dir, Bar::YELLOW, name){
+        int dir, std::string name) : Bar(left, top, width, height, dir, Bar::YELLOW, name){
   }
 
   SmartBar::~SmartBar(void){}

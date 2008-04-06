@@ -30,9 +30,13 @@
 #include <OgreOverlay.h>
 #include <OgreOverlayContainer.h>
 #include <OgreOverlayManager.h>
+#include <OgreSceneNode.h>
 
 #include "HUD.h"
 #include "Bar.h"
+#include "TestElement.h"
+// ugly hack
+#include "Orxonox.h"
 
 
 namespace orxonox
@@ -59,9 +63,34 @@ namespace orxonox
     energyCounterPanel->show();
     energyCounterPanel->addChild(energyCounter->element);
 
+    TestOverlayElementFactory *factory = new TestOverlayElementFactory();
+    overlayManager.addOverlayElementFactory(factory);
+    Ogre::OverlayElement* testElement = overlayManager.createOverlayElementFromFactory("Test", "testElement");
+
     Ogre::Overlay* orxonoxOverlay = overlayManager.create("Orxonox/HUD"); 
     orxonoxOverlay->add2D(energyCounterPanel);
+
+    // important: don't use SceneManager to create the node! but register the creator scene manager.
+    ogreNode_ = new Ogre::SceneNode(Orxonox::getSingleton()->getSceneManager(), "hudNoedely");
+    
+    ogreNode_->setPosition(80,-60,-200);
+    ogreNode_->setScale(0.4,0.4,0.4);
+    // ugly hack, but I haven't figured out yet how we could change this, since we really need the
+    // scene manager..
+    ogreNode_->attachObject(Orxonox::getSingleton()->getSceneManager()->createEntity("head", "ogrehead.mesh"));
+    orxonoxOverlay->add3D(ogreNode_);
+
     orxonoxOverlay->show();
+  }
+
+  void HUD::tick(float dt)
+  {
+    if (this->ogreNode_)
+    {
+      this->ogreNode_->roll(Ogre::Degree(dt*200),Ogre::Node::TS_LOCAL);
+      this->ogreNode_->yaw(Ogre::Degree(dt*200),Ogre::Node::TS_LOCAL);      
+      this->ogreNode_->pitch(Ogre::Degree(dt*200),Ogre::Node::TS_LOCAL);      
+    }
   }
 
   HUD::~HUD(void){}
