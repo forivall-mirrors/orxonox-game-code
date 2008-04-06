@@ -17,6 +17,7 @@ SET( CORE_SRC_FILES
   Executor.cc
   XMLPort.cc
   Tickable.cc
+  Script.cc
 )
 
 ADD_LIBRARY( core SHARED ${CORE_SRC_FILES})
@@ -24,4 +25,5 @@ SET_TARGET_PROPERTIES( core PROPERTIES LINK_FLAGS "--no-undefined" )
 
 TARGET_LINK_LIBRARIES( core
   util
+  ${Lua_LIBRARIES}
 )

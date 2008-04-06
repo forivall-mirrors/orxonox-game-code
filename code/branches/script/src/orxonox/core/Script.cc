@@ -38,49 +38,21 @@ extern "C" {
 }
 
 #include "tolua++.h"
-#include "tolua_script.h"
+#include "toluabind.h"
 
 namespace orxonox
 {
 
-  lua_State* Script::luaState_ = lua_open();
-  //lua_State* Script::luaState_ = NULL;
-  std::string Script::fileString_ = "";
-
   Script::Script()
   {
-  }
-
-  Script::~Script()
-  {
-
-  }
-
-  /**
-      @brief Initializes a lua state
-      @param state_ the pointer of the lua_state to initialise
-  */
-  void Script::init(lua_State *state_)
-  {
-    tolua_script_open(state_);
-
-    /*
-#if LUA_VERSION_NUM == 501
-    luaL_openlibs(state_);
-#else
-    luaopen_base(state_);
-    luaopen_table(state_);
-    luaopen_io(state_);
-    luaopen_string(state_);
-    luaopen_math(state_);
-    luaopen_debug(state_);
-#endif
-    */
+    luaState_ = lua_open();
+    luaSource_ = "";
+    tolua_something_open(luaState_);
   }
 
   void Script::luaPrint(std::string str)
   {
-    fileString_ = str;
+    output_ = str;
   }
 
   /**
@@ -99,24 +71,25 @@ namespace orxonox
     }
 
     char line[1024];
+    std::string levelString = "";
 
     while (file.good() && !file.eof())
     {
       file.getline(line, 1024);
-      fileString_ += line;
+      levelString += line;
     }
 
     file.close();
     //std::string output;
 
-    if (luaTags) fileString_ = replaceLuaTags(Script::fileString_);
+    if (luaTags) luaSource_ = replaceLuaTags(levelString);
   }
 
   void Script::run()
   {
     int error = 0;
     std::string init = "local scr = orxonox.Script:new()\n";
-    init += fileString_;
+    init += luaSource_;
     error = luaL_loadstring(luaState_, init.c_str());
     if (error == 0)
       error = lua_pcall(luaState_, 0, 0, 0);

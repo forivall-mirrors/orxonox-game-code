@@ -31,12 +31,12 @@ ENDIF (NOT Lua_INCLUDE_DIR)
 MESSAGE(STATUS ${Lua_INCLUDE_DIR})
 
 IF (NOT Lua_LIBRARIES)
-FIND_LIBRARY(Lua_LIBRARIES lua50 liblua
+FIND_LIBRARY(Lua_LIBRARIES lua50 lua
 	/usr/lib
 	/usr/local/lib
 	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib/)
 
-FIND_LIBRARY(Lua_LIBRARY lualib50 liblualib
+FIND_LIBRARY(Lua_LIBRARY lualib50 lualib
 	/usr/lib
 	/usr/local/lib
 	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib/)

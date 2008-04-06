@@ -32,7 +32,7 @@
 #include "Iterator.h"
 #include "Debug.h"
 #include "CoreIncludes.h"
-#include "../script/Script.h"
+#include "Script.h"
 
 #include "util/tinyxml/ticpp.h"
 
@@ -109,9 +109,10 @@ namespace orxonox
 
         // let Lua work this out:
         //Script* lua;
-        Script::loadFile(level->getFile(), true);
+        /*Script::loadFile(level->getFile(), true);
         Script::init(Script::getLuaState());
-        Script::run();
+        Script::run();*/
+        Script* lua = Script::getInstance();
 
         try
         {
@@ -123,7 +124,7 @@ namespace orxonox
             //ticpp::Element myelement(*Script::getFileString());
             ticpp::Document xmlfile;
             //xmlfile.ToDocument();
-            xmlfile.Parse(*Script::getFileString(), true);
+            xmlfile.Parse(lua->getLuaOutput(), true);
 
             for ( ticpp::Iterator<ticpp::Element> child = xmlfile.FirstChildElement(false); child != child.end(); child++ )
             {
