@@ -49,6 +49,10 @@ namespace orxonox
 {
     class TickFrameListener; // Forward declaration
 
+    void slomo(float factor);
+    void setTimeFactor(float factor = 1.0);
+    float getTimeFactor();
+
     //! The Tickable interface provides a tick(dt) function, that gets called every frame.
     class _OrxonoxExport Tickable : virtual public OrxonoxClass
     {
@@ -70,9 +74,10 @@ namespace orxonox
             /** @brief Gets called before a frame gets rendered. */
             bool frameStarted(const Ogre::FrameEvent &evt)
             {
+                float dt = evt.timeSinceLastFrame * getTimeFactor();
                 // Iterate through all Tickables and call their tick(dt) function
                 for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
-                    (it++)->tick(evt.timeSinceLastFrame);
+                    (it++)->tick(dt);
 
                 return FrameListener::frameStarted(evt);
             }

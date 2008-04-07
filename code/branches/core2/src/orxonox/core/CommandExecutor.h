@@ -138,7 +138,7 @@ namespace orxonox
 
             static CommandEvaluation evaluate(const std::string& command);
 
-            static bool addConsoleCommandShortcut(ExecutorStatic* executor);
+            static Executor& addConsoleCommandShortcut(ExecutorStatic* executor);
             static ExecutorStatic* getConsoleCommandShortcut(const std::string& name);
             static ExecutorStatic* getLowercaseConsoleCommandShortcut(const std::string& name);
 

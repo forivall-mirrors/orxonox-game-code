@@ -53,7 +53,6 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         inline MultiTypeMath(bool           value) : MultiTypeString(value) {}
         inline MultiTypeMath(const char*             value) : MultiTypeString(value) {}
         inline MultiTypeMath(const std::string&      value) : MultiTypeString(value) {}
-        inline MultiTypeMath(const orxonox::Element& value) : MultiTypeString(value) {}
         inline MultiTypeMath(const orxonox::Vector2&     value) { this->setValue(value); }
         inline MultiTypeMath(const orxonox::Vector3&     value) { this->setValue(value); }
         inline MultiTypeMath(const orxonox::ColourValue& value) { this->setValue(value); }
@@ -105,7 +104,6 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         virtual operator bool()                 const;
         virtual operator std::string()          const;
         virtual operator const char*()          const;
-        virtual operator orxonox::Element()     const;
         virtual operator orxonox::Vector2()     const;
         virtual operator orxonox::Vector3()     const;
         virtual operator orxonox::ColourValue() const;

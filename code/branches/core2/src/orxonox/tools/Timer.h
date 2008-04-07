@@ -62,6 +62,7 @@
 #include <OgreFrameListener.h>
 #include "OrxonoxPrereqs.h"
 #include "core/CorePrereqs.h"
+#include "../objects/Tickable.h"
 
 namespace orxonox
 {
@@ -199,13 +200,14 @@ namespace orxonox
             /** @brief Gets called before a frame gets rendered. */
             bool frameStarted(const Ogre::FrameEvent &evt)
             {
+                float dt = evt.timeSinceLastFrame * getTimeFactor();
                 // Iterate through all Timers
                 for (Iterator<TimerBase> it = ObjectList<TimerBase>::start(); it; )
                 {
                     if (it->isActive())
                     {
                         // If active: Decrease the timer by the duration of the last frame
-                        it->time_ -= evt.timeSinceLastFrame;
+                        it->time_ -= dt;
 
                         if (it->time_ <= 0)
                         {

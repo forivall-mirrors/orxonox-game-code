@@ -49,7 +49,7 @@
     ConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createExecutor(orxonox::createFunctor(&function), #function, accesslevel))
 
 #define ConsoleCommandShortcutGeneric(fakevariable, executor) \
-    bool fakevariable = CommandExecutor::addConsoleCommandShortcut((ExecutorStatic*)executor)
+    Executor& fakevariable = CommandExecutor::addConsoleCommandShortcut((ExecutorStatic*)executor)
 
 
 #endif /* _ConsoleCommand_H__ */

@@ -134,31 +134,31 @@ bool MultiTypePrimitive::operator!=(const MultiTypePrimitive& mtp) const
 }
 
 MultiTypePrimitive::operator void*() const
-{ return (this->type_ == MT_void) ? this->value_.void_ : ConvertValueAndReturn<MultiTypePrimitive, void*>(*this, 0); }
+{ return (this->type_ == MT_void) ? this->value_.void_ : getConvertedValue<MultiTypePrimitive, void*>(*this, 0); }
 MultiTypePrimitive::operator int() const
-{ return (this->type_ == MT_int) ? this->value_.int_ : ConvertValueAndReturn<MultiTypePrimitive, int>(*this, 0); }
+{ return (this->type_ == MT_int) ? this->value_.int_ : getConvertedValue<MultiTypePrimitive, int>(*this, 0); }
 MultiTypePrimitive::operator unsigned int() const
-{ return (this->type_ == MT_uint) ? this->value_.uint_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned int>(*this, 0); }
+{ return (this->type_ == MT_uint) ? this->value_.uint_ : getConvertedValue<MultiTypePrimitive, unsigned int>(*this, 0); }
 MultiTypePrimitive::operator char() const
-{ return (this->type_ == MT_char) ? this->value_.char_ : ConvertValueAndReturn<MultiTypePrimitive, char>(*this, 0); }
+{ return (this->type_ == MT_char) ? this->value_.char_ : getConvertedValue<MultiTypePrimitive, char>(*this, 0); }
 MultiTypePrimitive::operator unsigned char() const
-{ return (this->type_ == MT_uchar) ? this->value_.uchar_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned char>(*this, 0); }
+{ return (this->type_ == MT_uchar) ? this->value_.uchar_ : getConvertedValue<MultiTypePrimitive, unsigned char>(*this, 0); }
 MultiTypePrimitive::operator short() const
-{ return (this->type_ == MT_short) ? this->value_.short_ : ConvertValueAndReturn<MultiTypePrimitive, short>(*this, 0); }
+{ return (this->type_ == MT_short) ? this->value_.short_ : getConvertedValue<MultiTypePrimitive, short>(*this, 0); }
 MultiTypePrimitive::operator unsigned short() const
-{ return (this->type_ == MT_ushort) ? this->value_.ushort_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned short>(*this, 0); }
+{ return (this->type_ == MT_ushort) ? this->value_.ushort_ : getConvertedValue<MultiTypePrimitive, unsigned short>(*this, 0); }
 MultiTypePrimitive::operator long() const
-{ return (this->type_ == MT_long) ? this->value_.long_ : ConvertValueAndReturn<MultiTypePrimitive, long>(*this, 0); }
+{ return (this->type_ == MT_long) ? this->value_.long_ : getConvertedValue<MultiTypePrimitive, long>(*this, 0); }
 MultiTypePrimitive::operator unsigned long() const
-{ return (this->type_ == MT_ulong) ? this->value_.ulong_ : ConvertValueAndReturn<MultiTypePrimitive, unsigned long>(*this, 0); }
+{ return (this->type_ == MT_ulong) ? this->value_.ulong_ : getConvertedValue<MultiTypePrimitive, unsigned long>(*this, 0); }
 MultiTypePrimitive::operator float() const
-{ return (this->type_ == MT_float) ? this->value_.float_ : ConvertValueAndReturn<MultiTypePrimitive, float>(*this, 0); }
+{ return (this->type_ == MT_float) ? this->value_.float_ : getConvertedValue<MultiTypePrimitive, float>(*this, 0); }
 MultiTypePrimitive::operator double() const
-{ return (this->type_ == MT_double) ? this->value_.double_ : ConvertValueAndReturn<MultiTypePrimitive, double>(*this, 0); }
+{ return (this->type_ == MT_double) ? this->value_.double_ : getConvertedValue<MultiTypePrimitive, double>(*this, 0); }
 MultiTypePrimitive::operator long double() const
-{ return (this->type_ == MT_longdouble) ? this->value_.longdouble_ : ConvertValueAndReturn<MultiTypePrimitive, long double>(*this, 0); }
+{ return (this->type_ == MT_longdouble) ? this->value_.longdouble_ : getConvertedValue<MultiTypePrimitive, long double>(*this, 0); }
 MultiTypePrimitive::operator bool() const
-{ return (this->type_ == MT_bool) ? this->value_.bool_ : ConvertValueAndReturn<MultiTypePrimitive, bool>(*this, 0); }
+{ return (this->type_ == MT_bool) ? this->value_.bool_ : getConvertedValue<MultiTypePrimitive, bool>(*this, 0); }
 
 void MultiTypePrimitive::setValue(const MultiTypePrimitive& mtp)
 {

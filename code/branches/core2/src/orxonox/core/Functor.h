@@ -324,7 +324,11 @@ namespace orxonox
     \
             void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) \
             { \
+                std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" << std::endl; \
+                std::cout << param1 << std::endl; \
+                std::cout << this->getTypenameParam(0) << std::endl; \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
+                std::cout << "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" << std::endl; \
             } \
     \
             virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const \

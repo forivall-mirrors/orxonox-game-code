@@ -32,8 +32,6 @@
 #include <string>
 #include <iostream>
 #include "UtilPrereqs.h"
-#include "XMLIncludes.h"
-#include "tinyxml/ticpp.h"
 
 #include "MultiTypePrimitive.h"
 
@@ -56,26 +54,22 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         inline MultiTypeString(bool           value) : MultiTypePrimitive(value) {}
         inline MultiTypeString(const char*           value)   { this->setValue(value); }
         inline MultiTypeString(const std::string&    value)   { this->setValue(value); }
-        inline MultiTypeString(const orxonox::Element& value) { this->setValue(value); }
         inline MultiTypeString(const MultiTypeString& mts)    { this->setValue(mts);   }
         virtual inline ~MultiTypeString() {}
 
         using MultiTypePrimitive::operator=;
         inline MultiTypeString& operator=(const char*             value)   { this->setValue(value); return *this; }
         inline MultiTypeString& operator=(const std::string&      value)   { this->setValue(value); return *this; }
-        inline MultiTypeString& operator=(const orxonox::Element& value)   { this->setValue(value); return *this; }
         inline MultiTypeString& operator=(const MultiTypeString& mts)      { this->setValue(mts);   return *this; }
 
         using MultiTypePrimitive::operator==;
         inline bool operator==(const char*             value) const { return (this->string_      == std::string(value)); }
         inline bool operator==(const std::string&      value) const { return (this->string_      == value);              }
-        inline bool operator==(const orxonox::Element& value) const { return (&this->xmlelement_ == &value);             }
         bool operator==(const MultiTypeString& mts) const;
 
         using MultiTypePrimitive::operator!=;
         inline bool operator!=(const char*             value) const { return (this->string_      != std::string(value)); }
         inline bool operator!=(const std::string&      value) const { return (this->string_      != value);              }
-        inline bool operator!=(const orxonox::Element& value) const { return (&this->xmlelement_ != &value);             }
         bool operator!=(const MultiTypeString& mts) const;
 
         virtual operator void*()                const;
@@ -93,26 +87,21 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         virtual operator bool()                 const;
         virtual operator std::string()          const;
         virtual operator const char*()          const;
-        virtual operator orxonox::Element()     const;
 
         using MultiTypePrimitive::setValue;
         inline void setValue(const char*             value) { this->type_ = MT_string;     this->string_     = std::string(value); }
         inline void setValue(const std::string&      value) { this->type_ = MT_string;     this->string_     = value;              }
-        inline void setValue(const orxonox::Element& value) { this->type_ = MT_xmlelement; this->xmlelement_ = value;              }
         void setValue(const MultiTypeString& mts);
 
         inline std::string getString()          const { return this->string_;         }
         inline const char*  getConstChar()      const { return this->string_.c_str(); }
-        inline orxonox::Element getXMLElement() const { return this->xmlelement_;     }
 
         inline std::string& getString()          { return this->string_;         }
         inline const char*  getConstChar()       { return this->string_.c_str(); }
-        inline orxonox::Element& getXMLElement() { return this->xmlelement_;     }
 
         using MultiTypePrimitive::getValue;
         inline void getValue(std::string*      variable) const { (*variable) = this->string_;         }
         inline void getValue(const char**      variable) const { (*variable) = this->string_.c_str(); }
-        inline void getValue(orxonox::Element* variable) const { (*variable) = this->xmlelement_;     }
 
         virtual std::string getTypename() const;
 
@@ -121,7 +110,6 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
 
     protected:
         std::string      string_;
-        orxonox::Element xmlelement_;
 };
 
 std::ostream& operator<<(std::ostream& out, MultiTypeString& mts);

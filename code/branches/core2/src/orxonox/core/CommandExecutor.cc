@@ -296,11 +296,11 @@ namespace orxonox
         return CommandExecutor::getInstance().evaluation_;
     }
 
-    bool CommandExecutor::addConsoleCommandShortcut(ExecutorStatic* executor)
+    Executor& CommandExecutor::addConsoleCommandShortcut(ExecutorStatic* executor)
     {
         CommandExecutor::getInstance().consoleCommandShortcuts_[executor->getName()] = executor;
         CommandExecutor::getInstance().consoleCommandShortcuts_LC_[getLowercase(executor->getName())] = executor;
-        return true;
+        return (*executor);
     }
 
     /**
