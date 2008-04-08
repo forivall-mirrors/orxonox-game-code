@@ -34,7 +34,7 @@
 
 #include "HUD.h"
 #include "Bar.h"
-#include "TestElement.h"
+#include "Factories.h"
 // ugly hack
 #include "Orxonox.h"
 
@@ -51,7 +51,7 @@ namespace orxonox
 
     Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
 
-    energyCounter = new Bar(0,0,100,20,Bar::LEFT,Bar::YELLOW,"Orxonox/HUD/energyCounterPanel/energyCounter");
+//    energyCounter = new Bar(0,0,100,20,Bar::LEFT,Bar::YELLOW,"Orxonox/HUD/energyCounterPanel/energyCounter");
 
     Ogre::OverlayContainer* energyCounterPanel = static_cast<Ogre::OverlayContainer*>(overlayManager.createOverlayElement("Panel", "Orxonox/HUD/energyCounterPanel"));
     energyCounterPanel->setLeft(-50);
@@ -61,11 +61,15 @@ namespace orxonox
     energyCounterPanel->setHorizontalAlignment(Ogre::GHA_CENTER);
     energyCounterPanel->setMetricsMode(Ogre::GMM_PIXELS);	
     energyCounterPanel->show();
-    energyCounterPanel->addChild(energyCounter->element);
+//    energyCounterPanel->addChild(energyCounter->element);
 
-    TestOverlayElementFactory *factory = new TestOverlayElementFactory();
+    BarOverlayElementFactory *factory = new BarOverlayElementFactory();
     overlayManager.addOverlayElementFactory(factory);
-    Ogre::OverlayElement* testElement = overlayManager.createOverlayElementFromFactory("Test", "testElement");
+    Ogre::OverlayElement* BarElement = overlayManager.createOverlayElementFromFactory("Bar", "BarElement");
+
+
+
+
 
     Ogre::Overlay* orxonoxOverlay = overlayManager.create("Orxonox/HUD"); 
     orxonoxOverlay->add2D(energyCounterPanel);

@@ -374,7 +374,7 @@ namespace orxonox
 
       // show the current time in the HUD
       //orxonoxHUD_->setTime((int)now, 0);
-      orxonoxHUD_->energyCounter->reset(20);
+//      orxonoxHUD_->energyCounter->reset(20);
 
 
       // Iterate through all Tickables and call their tick(dt) function

@@ -25,44 +25,47 @@
 *
 */
 
+#ifndef _FACTORIES_H__
+#define _FACTORIES_H__
 
-#ifndef _BAR_H__
-#define _BAR_H__
 
-#include <string>
-#include <OgreColourValue.h>
 #include <OgreOverlayElement.h>
 #include <OgrePrerequisites.h>
-#include <string.h>
-#include "../OrxonoxPrereqs.h"
+#include <OgreOverlayElementFactory.h>
+
+#include "Bar.h"
 
 
+namespace orxonox{
 
-namespace orxonox
-{
-  class Bar : public Ogre::OverlayElement
-  {
-  private:
-    float percentage_;
-    bool dir_;
-    Ogre::ColourValue color_;
-	
-	
+  class _OrxonoxExport BarOverlayElementFactory : public Ogre::OverlayElementFactory{
   public:
-
-    Bar(const Ogre::String& name);
-//    virtual ~Bar();
-
-
-
-
-/*    Bar(const Ogre::String& s);
-    ~Bar(void);
-    void setPercentage(float percentage);
-    void setColor(Ogre::ColourValue color);
-*/  };
+    Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
+      return new Bar(instanceName);
+    }
+    const Ogre::String& getTypeName(void) const{
+      static Ogre::String name = "Bar";
+      return name;
+    }
+  };
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #endif
-
-
