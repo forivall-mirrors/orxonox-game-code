@@ -164,14 +164,14 @@ std::string MultiTypeMath::toString() const
     std::string output;
 
     if (this->type_ == MT_vector2)
-        ConvertValue(&output, this->vector2_, CP_FromType);
+        ConvertValue(&output, this->vector2_);
     else if (this->type_ == MT_vector3)
-        ConvertValue(&output, this->vector3_, CP_FromType);
+        ConvertValue(&output, this->vector3_);
     else if (this->type_ == MT_colourvalue)
     { std::cout << "3_1\n";
-        ConvertValue(&output, this->colourvalue_, CP_FromType);}
+        ConvertValue(&output, this->colourvalue_);}
     else if (this->type_ == MT_quaternion)
-        ConvertValue(&output, this->quaternion_, CP_FromType);
+        ConvertValue(&output, this->quaternion_);
     else if (this->type_ == MT_radian)
         ConvertValue(&output, this->radian_);
     else if (this->type_ == MT_degree)
@@ -185,14 +185,14 @@ std::string MultiTypeMath::toString() const
 bool MultiTypeMath::fromString(const std::string value)
 {
     if (this->type_ == MT_vector2)
-        return ConvertValue(&this->vector2_, value, orxonox::Vector2(0, 0), CP_FromType);
+        return ConvertValue(&this->vector2_, value, orxonox::Vector2(0, 0));
     else if (this->type_ == MT_vector3)
-        return ConvertValue(&this->vector3_, value, orxonox::Vector3(0, 0, 0), CP_FromType);
+        return ConvertValue(&this->vector3_, value, orxonox::Vector3(0, 0, 0));
     else if (this->type_ == MT_colourvalue)
     { std::cout << "4_1\n";
-        return ConvertValue(&this->colourvalue_, value, orxonox::ColourValue(0, 0, 0, 0), CP_FromType); }
+        return ConvertValue(&this->colourvalue_, value, orxonox::ColourValue(0, 0, 0, 0)); }
     else if (this->type_ == MT_quaternion)
-        return ConvertValue(&this->quaternion_, value, orxonox::Quaternion(1, 0, 0, 0), CP_FromType);
+        return ConvertValue(&this->quaternion_, value, orxonox::Quaternion(1, 0, 0, 0));
     else if (this->type_ == MT_radian)
         return ConvertValue(&this->radian_, value, orxonox::Radian(0));
     else if (this->type_ == MT_degree)
