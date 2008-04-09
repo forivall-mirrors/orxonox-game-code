@@ -43,7 +43,7 @@
 
 
 //////////
-// Main //
+// MAIN //
 //////////
 
 // Enum to declare the wanted conversion preference in case of equal type-levels
@@ -195,6 +195,10 @@ static bool convertValue(ToType* output, const FromType& input, ConversionPrefer
 }
 
 
+//////////////////////
+// HELPER FUNCTIONS //
+//////////////////////
+
 // Helper function: Calls convertValue with and without default value and returns true if the conversion was successful
 template<class FromType, class ToType>
 static bool ConvertValue(ToType* output, const FromType& input, ConversionPreference preference = CP_PreferToType)
@@ -227,12 +231,13 @@ static ToType getConvertedValue(const FromType& input, const ToType& fallback, C
     return output;
 }
 
+
 /////////////////////
-// SPECIALISATIONS //
+// SPECIALIZATIONS //
 /////////////////////
 
 /////////////
-// Samples //
+// SAMPLES //
 /////////////
 /*
 // convert everything to xyz
@@ -264,7 +269,7 @@ struct ConverterSpecialized<abc, xyz, _Explicit_>
 */
 
 ////////////
-// String //
+// STRING //
 ////////////
 
 // convert to string
