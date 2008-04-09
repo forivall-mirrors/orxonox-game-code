@@ -32,6 +32,11 @@
 
 namespace network
 {
+  struct GameStateItem{
+    GameState *state;
+    int id;
+  };
+  
   GameStateClient::GameStateClient() {
   }
 
@@ -40,8 +45,20 @@ namespace network
 
   bool GameStateClient::pushGameState(GameStateCompressed *compstate) {
     GameState *gs;
-    if(compstate->diffed)
-      gs = decode(reference, compstate);
+    if(compstate->diffed){
+      while(compstate->base_id > gameStateList.front()->id){
+        // clean up old gamestates
+        free(gameStateList.front()->data);
+        // TODO: critical section
+        delete gameStateList.front();
+        gameStateList.pop();
+      }
+      if(compstate->base_id!=gameStateList.front()->id){
+        COUT(4) << "pushGameState: no reference found to diff" << std::endl;
+        return false;
+      }
+      gs = decode(gameStateList.front(), compstate);
+    }
     else
       gs = decode(compstate);
     if(gs)
@@ -196,11 +213,13 @@ namespace network
 
   GameState *GameStateClient::decode(GameState *a, GameStateCompressed *x) {
     GameState *t = decompress(x);
+    gameStateList.push(t);
     return undiff(a, t);
   }
 
   GameState *GameStateClient::decode(GameStateCompressed *x) {
     GameState *t = decompress(x);
+    gameStateList.push(t);
     return t;
   }
 

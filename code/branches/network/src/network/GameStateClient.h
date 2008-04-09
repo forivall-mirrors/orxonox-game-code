@@ -12,8 +12,10 @@
 #ifndef _GameStateClient_H__
 #define _GameStateClient_H__
 
+#include <queue>
+
 #include "NetworkPrereqs.h"
-#include "GameStateManager.h"
+#include "PacketTypes.h"
 
 namespace network
 {
@@ -35,7 +37,8 @@ namespace network
     GameState *decode(GameStateCompressed *x);
     void removeObject(orxonox::Iterator<Synchronisable> &it);
 
-    GameState *reference;
+    GameState     *reference;
+    std::queue<GameState *> gameStateList;
   };
 
 }

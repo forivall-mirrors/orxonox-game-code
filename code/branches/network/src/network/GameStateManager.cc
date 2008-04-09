@@ -64,6 +64,31 @@ namespace network
     ++id;
     return;
   }
+  
+  void GameStateManager::cleanup(){
+    /*unsigned int min_id=-1;
+    int temp_id=0;
+    ClientInformation *temp = head_;
+    while(temp){
+      if(temp->head)
+        continue;
+      temp_id=temp->getID();
+      if(temp_id<min_id)
+        min_id=temp_id;
+      temp=temp->next();
+    }*/ // probably not very efficient
+    
+    std::map<int,int>::iterator it = gameStateUsed.begin();
+    while(it!=gameStateUsed.end()){
+      if( (*it).second <= 0 ){
+        free(gameStateMap[(*it).first]->data);
+        delete gameStateMap[(*it).first];
+        gameStateMap.erase((*it).first);
+        gameStateUsed.erase(it++);
+      }else
+        it++;
+    }
+  }
 
   GameStateCompressed *GameStateManager::popGameState(int clientID) {
     int gID = head_->findClient(clientID)->getGamestateID();
