@@ -5,6 +5,7 @@ SET( CORE_SRC_FILES
   Identifier.cc
   IdentifierDistributor.cc
   MetaObjectList.cc
+  ConfigFileManager.cc
   ConfigValueContainer.cc
   Error.cc
   SignalHandler.cc

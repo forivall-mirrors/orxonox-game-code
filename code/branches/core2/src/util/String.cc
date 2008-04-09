@@ -55,6 +55,33 @@ std::string getStripped(const std::string& str)
 }
 
 /**
+    @brief Returns a copy of a string without trailing whitespaces.
+    @param str The string
+    @return The modified copy
+*/
+std::string removeTrailingWhitespaces(const std::string& str)
+{
+}
+
+/**
+    @brief Returns true if the string contains something like '..."between quotes"...'
+    @param The string
+    @return True if there is something between quotes
+*/
+bool hasStringBetweenQuotes(const std::string& str)
+{
+}
+
+/**
+    @brief If the string contains something like '..."between quotes"...' then 'between quotes' gets returned (without quotes).
+    @param The string
+    @param The string between the quotes
+*/
+std::string getStringBetweenQuotes(const std::string& str)
+{
+}
+
+/**
     @brief Removes enclosing quotes if available.
     @brief str The string to strip
 */
@@ -217,10 +244,10 @@ std::string getUppercase(const std::string& str)
 }
 
 /**
- * @brief compares two strings without ignoring the case
- * @param s1 first string
- * @param s2 second string
- */
+    @brief compares two strings without ignoring the case
+    @param s1 first string
+    @param s2 second string
+*/
 int nocaseCmp(const std::string& s1, const std::string& s2)
 {
     std::string::const_iterator it1=s1.begin();
@@ -245,11 +272,11 @@ int nocaseCmp(const std::string& s1, const std::string& s2)
 
 
 /**
- * @brief compares two strings without ignoring the case
- * @param s1 first string
- * @param s2 second string
- * @param len how far from the beginning to start.
- */
+    @brief compares two strings without ignoring the case
+    @param s1 first string
+    @param s2 second string
+    @param len how far from the beginning to start.
+*/
 int nocaseCmp(const std::string& s1, const std::string& s2, unsigned int len)
 {
     if (len == 0)
@@ -268,4 +295,38 @@ int nocaseCmp(const std::string& s1, const std::string& s2, unsigned int len)
         ++it2;
     }
     return 0;
+}
+
+/**
+    @brief Returns true if the string contains a comment, introduced by #, %, ; or //.
+    @param str The string
+    @return True if the string contains a comment
+*/
+bool hasComment(const std::string& str)
+{
+    return (getCommentPosition(str) != std::string::npos);
+}
+
+/**
+    @brief If the string contains a comment, the comment gets returned (including the comment symbol), an empty string otherwise.
+    @param str The string
+    @return The comment
+*/
+std::string getComment(const std::string& str)
+{
+    return str.substr(getCommentPosition(str));
+}
+
+/**
+    @brief If the string contains a comment, the position of the comment-symbol gets returned, std::string::npos otherwise.
+    @param str The string
+    @return The position
+*/
+unsigned int getCommentPosition(const std::string& str)
+{
+    for (unsigned int i = 0; i < str.size(); i++)
+        if (isComment(str.substr(i)))
+            return i;
+
+    return std::string::npos;
 }
