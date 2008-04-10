@@ -38,6 +38,7 @@ namespace orxonox {
   BulletManager::BulletManager() : bulletsSize_(8), bulletsIndex_(0)
   {
     RegisterObject(BulletManager);
+    registerAllVariables();
     bullets_ = new Bullet*[bulletsSize_];
   }
 
@@ -102,4 +103,11 @@ namespace orxonox {
     return 3;
   }
 
+  void BulletManager::registerAllVariables(){
+    registerVar(&bulletsSize_, sizeof(int), network::DATA);
+    registerVar(&bulletsIndex_, sizeof(int), network::DATA);
+    // TODO we got a problem here:
+    // there is no possibility (so far) to synchronise pointers to objects
+  }
+  
 }

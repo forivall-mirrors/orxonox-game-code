@@ -67,6 +67,9 @@ namespace orxonox {
   class BaseObject;
   class Camera;
   class GraphicsEngine;
+  struct InputEvent;
+  class InputEventListener;
+  class InputHandler;
   class Mesh;
   class Model;
   class NPC;

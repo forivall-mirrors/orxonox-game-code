@@ -40,14 +40,21 @@
 // including std headers here is useless since they're already precompiled
 
 // not including the entire Ogre.h doesn't exceed the default heap size for pch
+#ifndef WIN32_LEAN_AND_MEAN
+// prevent Ogre from including winsock.h that messes with winsock2.h from enet
+#  define WIN32_LEAN_AND_MEAN
+#endif
 //#include <Ogre.h>
 #include <OgreBillboardSet.h>
 #include <OgreCamera.h>
+#include <OgreColourValue.h>
 #include <OgreConfigFile.h>
 #include <OgreEntity.h>
 #include <OgreException.h>
 #include <OgreFrameListener.h>
 #include <OgreLight.h>
+#include <OgreMath.h>
+#include <OgreMatrix3.h>
 #include <OgreOverlay.h>
 #include <OgreOverlayElement.h>
 #include <OgreOverlayManager.h>
@@ -55,27 +62,34 @@
 #include <OgreParticleSystem.h>
 #include <OgrePlatform.h>
 #include <OgrePrerequisites.h>
+#include <OgreQuaternion.h>
+#include <OgreResourceGroupManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 #include <OgreStringConverter.h>
 #include <OgreTextureManager.h>
+#include <OgreTimer.h>
+#include <OgreVector2.h>
+#include <OgreVector3.h>
+#include <OgreVector3.h>
 #include <OgreViewport.h>
+#include <OgreWindowEventUtilities.h>
 
 #include <OIS/OIS.h>
 
 /**
 * Some of the not so stable header files.
-* But it's not very useful to include them anyway..
+* It's not very useful to include them anyway..
 **/
 
-//#include "audio/AudioManager.h"
-
-//#include "core/CoreIncludes.h"
+#include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
-//#include "core/ArgReader.h"
+#include "core/Tickable.h"
 #include "core/Error.h"
+#include "core/Loader.h"
+#include "core/XMLPort.h"
 
 #include "network/Synchronisable.h"
 //#include "network/Server.h"
@@ -96,33 +110,8 @@
 #include "util/tinyxml/ticpp.h"
 #include "util/tinyxml/tinyxml.h"
 
-//#include "hud/HUD.h"
-//#include "loader/LevelLoader.h"
-//#include "objects/weapon/AmmunitionDump.h"
-//#include "objects/weapon/BarrelGun.h"
-//#include "objects/weapon/Bullet.h"
-//#include "objects/weapon/BulletManager.h"
-//#include "objects/weapon/WeaponStation.h"
-//#include "objects/Ambient.h"
-//#include "objects/Camera.h"
-//#include "objects/Explosion.h"
-//#include "objects/Fighter.h"
 #include "objects/Model.h"
-//#include "objects/NPC.h"
-//#include "objects/Projectile.h"
-//#include "objects/Skybox.h"
-//#include "objects/SpaceShipSteeringObject.h"
-#include "objects/Tickable.h"
 #include "objects/WorldEntity.h"
-//#include "particle/ParticleInterface.h"
-//#include "tools/BillboardSet.h"
-//#include "tools/Light.h"
-//#include "tools/Mesh.h"
-//#include "tools/Timer.h"
-//#include "GraphicsEngine.h"
-//#include "InputManager.h"
-//#include "Orxonox.h"
-//#include "SpaceshipSteering.h"
 
 #endif
 

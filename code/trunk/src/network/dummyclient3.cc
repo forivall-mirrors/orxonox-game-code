@@ -12,17 +12,17 @@ void sender(){
 
   network::PacketGenerator pck;
   const int PORT = 55556;
-  std::cout << "Enter address of the server xxx.xxx.xxx.xxx (enter for localhost)" << std::endl;
+  COUT(0) << "Enter address of the server xxx.xxx.xxx.xxx (enter for localhost)" << std::endl;
   std::string str;
   std::getline(std::cin, str);
-  std::cout << "You entered: " << str << std::endl;
+  COUT(3) << "You entered: " << str << std::endl;
   if(str.compare("")==0)
     str="127.0.0.1";
 
   Client client( str, PORT );
   if ( client.establishConnection() )
-    std::cout << "connection established" << std::endl;
-  else std::cout << "problems establishing connection" << std::endl;
+    COUT(3) << "connection established" << std::endl;
+  else COUT(0) << "problems establishing connection" << std::endl;
   char message[10000];
   char signs[] = "abcdefghijklmnopqrstuvwxy";
   while (true) {

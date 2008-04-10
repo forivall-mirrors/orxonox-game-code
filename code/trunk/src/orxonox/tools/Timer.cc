@@ -45,4 +45,29 @@ namespace orxonox
 
         this->time_ = 0;
     }
+
+    /**
+        @brief Updates the timer before the frames are rendered.
+    */
+    void TimerBase::tick(float dt)
+    {
+        if (this->bActive_)
+        {
+            // If active: Decrease the timer by the duration of the last frame
+            this->time_ -= dt;
+
+            if (this->time_ <= 0)
+            {
+                // It's time to call the function
+                if (this->bLoop_)
+                    // Q: Why '+=' and not '='? A: Think about it. It's more accurate like that. Seriously.
+                    this->time_ += this->interval_;
+                else
+                    this->stopTimer(); // Stop the timer if we don't want to loop
+
+                this->run();
+            }
+        }
+    }
+
 }

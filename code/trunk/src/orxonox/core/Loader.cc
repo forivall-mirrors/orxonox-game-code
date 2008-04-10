@@ -32,6 +32,7 @@
 #include "Iterator.h"
 #include "Debug.h"
 #include "CoreIncludes.h"
+#include "Script.h"
 
 #include "util/tinyxml/ticpp.h"
 
@@ -106,13 +107,26 @@ namespace orxonox
     {
         Loader::currentMask_s = level->getMask() * mask;
 
+        // let Lua work this out:
+        //Script* lua;
+        /*Script::loadFile(level->getFile(), true);
+        Script::init(Script::getLuaState());
+        Script::run();*/
+        Script* lua = Script::getInstance();
+        lua->loadFile(level->getFile(), true);
+        lua->run();
+
         try
         {
             COUT(0) << "Start loading " << level->getFile() << "..." << std::endl;
             COUT(3) << "Mask: " << Loader::currentMask_s << std::endl;
 
-            ticpp::Document xmlfile(level->getFile());
-            xmlfile.LoadFile();
+            //ticpp::Document xmlfile(level->getFile());
+            //xmlfile.LoadFile();
+            //ticpp::Element myelement(*Script::getFileString());
+            ticpp::Document xmlfile;
+            //xmlfile.ToDocument();
+            xmlfile.Parse(lua->getLuaOutput(), true);
 
             for ( ticpp::Iterator<ticpp::Element> child = xmlfile.FirstChildElement(false); child != child.end(); child++ )
             {

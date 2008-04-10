@@ -256,28 +256,54 @@ namespace network
   }
 
   void ConnectionManager::syncClassid(int clientID) {
-    int i=0;
+    unsigned int network_id=0;
     std::string classname;
-    bool abort=false;
     orxonox::Identifier *id;
-    while(!abort){
-      id = ID(i);
-      std::cout << "syncid: " << i << ", ID(id): " << id << std::endl;
-      if(id == NULL){
-        if(i!=0)
-          abort=true;
-        else{
-          ++i;
-          continue;
-        }
-      }
-      else{
-        classname = id->getName();
-        addPacket(packet_gen.clid( i, classname ),clientID);
-      }
-      ++i;
+    std::map<std::string, orxonox::Identifier*>::const_iterator it = orxonox::Factory::getFactoryBegin();
+    while(it != orxonox::Factory::getFactoryEnd()){
+      id = (*it).second;
+      if(id == NULL)
+        continue;
+      classname = id->getName();
+      network_id = id->getNetworkID();
+      COUT(4) << "network_id: " << network_id << ", classname: " << classname << std::endl;
+      
+      addPacket(packet_gen.clid( (int)network_id, classname ), clientID);
+      
+      ++it;
     }
     sendPackets();
   }
 
+  
+  
+  void ConnectionManager::addClientsObjectID( int clientID, int objectID ) {
+    COUT(4) << "ship of client: " << clientID << ": " << objectID << " mapped" << std::endl;
+    clientsShip.insert( std::make_pair( clientID, objectID ) );
+  }
+
+  int ConnectionManager::getClientsShipID( int clientID ) {
+    return clientsShip[clientID];
+  }
+
+  int ConnectionManager::getObjectsClientID( int objectID ) {
+    std::map<int, int>::iterator iter = clientsShip.begin();
+    while( iter != clientsShip.end() ) {
+      if( iter->second == objectID ) return iter->first;
+    }
+    return -99;
+  }
+
+  void ConnectionManager::deleteClientIDReg( int clientID ) {
+    clientsShip.erase( clientID );
+  }
+
+  void ConnectionManager::deleteObjectIDReg( int objectID ) {
+    std::map<int, int>::iterator iter = clientsShip.begin();
+    while( iter != clientsShip.end() ) {
+      if( iter->second == objectID ) break; 
+    }
+    clientsShip.erase( iter->first );
+  }
+  
 }

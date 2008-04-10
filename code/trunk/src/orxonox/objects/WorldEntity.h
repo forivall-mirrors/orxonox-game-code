@@ -11,12 +11,12 @@
 #include "network/Synchronisable.h"
 //#include "util/tinyxml/tinyxml.h"
 #include "core/BaseObject.h"
-#include "Tickable.h"
+#include "core/Tickable.h"
 #include "../tools/Mesh.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport WorldEntity : public BaseObject, public Tickable//, public network::Synchronisable
+    class _OrxonoxExport WorldEntity : public BaseObject, public Tickable, public network::Synchronisable
     {
         public:
             WorldEntity();
@@ -25,7 +25,7 @@ namespace orxonox
             virtual void tick(float dt);
             virtual void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, bool loading);
-            bool create();
+            inline bool create(){ return true; }
 
             void attachWorldEntity(WorldEntity* entity);
             const WorldEntity* getAttachedWorldEntity(unsigned int index);

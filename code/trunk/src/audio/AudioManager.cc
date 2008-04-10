@@ -41,7 +41,7 @@ namespace audio
 
 	AudioManager::~AudioManager()
 	{
-		for (unsigned int i=0;i<=bgSounds.size();i++)
+		for (unsigned int i=0;i<bgSounds.size();i++)
 		{
 			bgSounds[i].release();
 		}
@@ -83,7 +83,7 @@ namespace audio
 		}
 	}
 
-	void AudioManager::update()
+	void AudioManager::tick(float dt)
 	{
 		if (bgSounds.size() > 0)
 		{

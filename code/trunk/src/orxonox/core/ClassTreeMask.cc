@@ -591,14 +591,14 @@ namespace orxonox
         for (ClassTreeMaskIterator it = this->root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) || other.isIncluded(subclass), false, false);
+            newmask.add(subclass, this->isIncluded(subclass) or other.isIncluded(subclass), false, false);
         }
 
         // Add all nodes from the second mask, calculate the rule with the or-operation
         for (ClassTreeMaskIterator it = other.root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) || other.isIncluded(subclass), false, false);
+            newmask.add(subclass, this->isIncluded(subclass) or other.isIncluded(subclass), false, false);
         }
 
         // Drop all redundant rules
@@ -622,14 +622,14 @@ namespace orxonox
         for (ClassTreeMaskIterator it = this->root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) && other.isIncluded(subclass), false, false);
+            newmask.add(subclass, this->isIncluded(subclass) and other.isIncluded(subclass), false, false);
         }
 
         // Add all nodes from the second mask, calculate the rule with the and-operation
         for (ClassTreeMaskIterator it = other.root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) && other.isIncluded(subclass), false, false);
+            newmask.add(subclass, this->isIncluded(subclass) and other.isIncluded(subclass), false, false);
         }
 
         // Drop all redundant rules
@@ -736,14 +736,14 @@ namespace orxonox
         for (ClassTreeMaskIterator it = this->root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) XOR other.isIncluded(subclass), false, false);
+            newmask.add(subclass, this->isIncluded(subclass) xor other.isIncluded(subclass), false, false);
         }
 
         // Add all nodes from the second mask, calculate the rule with the xor-operation
         for (ClassTreeMaskIterator it = other.root_; it; ++it)
         {
             const Identifier* subclass = it->getClass();
-            newmask.add(subclass, this->isIncluded(subclass) XOR other.isIncluded(subclass), false, false);
+            newmask.add(subclass, this->isIncluded(subclass) xor other.isIncluded(subclass), false, false);
         }
 
         // Drop all redundant rules

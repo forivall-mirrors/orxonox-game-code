@@ -3,6 +3,8 @@
 
 #include "AudioIncludes.h"
 
+#include "core/Tickable.h"
+
 #include "AudioPrereqs.h"
 
 #include "AudioBuffer.h"
@@ -11,7 +13,7 @@
 
 namespace audio
 {
-	class _AudioExport AudioManager
+  class _AudioExport AudioManager : public orxonox::Tickable
 	{
 	public:
 
@@ -36,7 +38,7 @@ namespace audio
 		void loadParams();
 
 		// Update
-		void update();
+		void tick(float dt);
 
 		void ambientAdd(std::string file);
 		void ambientStart();

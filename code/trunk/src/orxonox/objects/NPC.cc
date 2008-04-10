@@ -84,7 +84,7 @@ namespace orxonox {
    */
   void NPC::tick(float dt)
   {
-
+    update();
     this->setVelocity(0.995*this->getVelocity() + this->getAcceleration()*dt);
     this->translate(this->getVelocity()*dt);
     this->setAcceleration(Vector3(0,0,0));
