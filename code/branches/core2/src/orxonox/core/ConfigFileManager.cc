@@ -37,7 +37,6 @@
 namespace orxonox
 {
     ConsoleCommandShortcutExtern(reloadConfig, AccessLevel::None);
-    ConsoleCommandShortcutExtern(saveConfig, AccessLevel::None);
     ConsoleCommandShortcutExtern(cleanConfig, AccessLevel::None);
     ConsoleCommandShortcutExtern(loadSettings, AccessLevel::None);
     ConsoleCommandShortcutExtern(loadKeybindings, AccessLevel::None);
@@ -47,11 +46,6 @@ namespace orxonox
         ConfigFileManager::getSingleton()->load();
     }
 
-    void saveConfig()
-    {
-        ConfigFileManager::getSingleton()->save();
-    }
-
     void cleanConfig()
     {
         ConfigFileManager::getSingleton()->clean();
@@ -59,7 +53,7 @@ namespace orxonox
 
     void loadSettings(const std::string& filename)
     {
-        ConfigFileManager::getSingleton()->setFile(CFT_Settings, filename);
+        ConfigFileManager::getSingleton()->setFile(CFT_Settings, filename, false);
     }
 
     void loadKeybindings(const std::string& filename)
@@ -144,12 +138,15 @@ namespace orxonox
             delete (*(it++));
     }
 
-    void ConfigFile::load()
+    void ConfigFile::load(bool bCreateIfNotExisting)
     {
-        // This creates the file if it's not existing
-        std::ofstream createFile;
-        createFile.open(this->filename_.c_str(), std::fstream::app);
-        createFile.close();
+        if (bCreateIfNotExisting)
+        {
+            // This creates the default config file if it's not existing
+            std::ofstream createFile;
+            createFile.open(this->filename_.c_str(), std::fstream::app);
+            createFile.close();
+        }
 
         // Open the file
         std::ifstream file;
@@ -288,6 +285,41 @@ namespace orxonox
 
     void ConfigFile::clean()
     {
+        for (std::list<ConfigFileSection*>::iterator it1 = this->sections_.begin(); it1 != this->sections_.end(); )
+        {
+            std::map<std::string, Identifier*>::const_iterator it2 = Identifier::getIdentifierMap().find((*it1)->getName());
+            if (it2 != Identifier::getIdentifierMapEnd() && (*it2).second->hasConfigValues())
+            {
+                // The section exists, delete comment
+                (*it1)->setComment("");
+                for (std::list<ConfigFileEntry*>::iterator it3 = (*it1)->entries_.begin(); it3 != (*it1)->entries_.end(); )
+                {
+                    std::map<std::string, ConfigValueContainer*>::const_iterator it4 = (*it2).second->getConfigValueMap().find((*it3)->getName());
+                    if (it4 != (*it2).second->getConfigValueMapEnd())
+                    {
+                        // The config-value exists, delete comment
+                        (*it3)->setComment("");
+                        ++it3;
+                    }
+                    else
+                    {
+                        // The config-value doesn't exist
+                        delete (*it3);
+                        (*it1)->entries_.erase(it3++);
+                    }
+                }
+                ++it1;
+            }
+            else
+            {
+                // The section doesn't exist
+                delete (*it1);
+                this->sections_.erase(it1++);
+            }
+        }
+
+        // Save the file
+        this->save();
     }
 
     ConfigFileSection* ConfigFile::getSection(const std::string& section)
@@ -342,7 +374,7 @@ namespace orxonox
         return (&instance);
     }
 
-    void ConfigFileManager::setFile(ConfigFileType type, const std::string& filename)
+    void ConfigFileManager::setFile(ConfigFileType type, const std::string& filename, bool bCreateIfNotExisting)
     {
         std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.find(type);
         if (it != this->configFiles_.end())
@@ -350,13 +382,13 @@ namespace orxonox
                 delete (*it).second;
 
         this->configFiles_[type] = new ConfigFile(this->getFilePath(filename));
-        this->load(type);
+        this->load(type, bCreateIfNotExisting);
     }
 
-    void ConfigFileManager::load()
+    void ConfigFileManager::load(bool bCreateIfNotExisting)
     {
         for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
-            (*it).second->load();
+            (*it).second->load(bCreateIfNotExisting);
 
         this->updateConfigValues();
     }
@@ -373,9 +405,9 @@ namespace orxonox
             this->clean((*it).first);
     }
 
-    void ConfigFileManager::load(ConfigFileType type)
+    void ConfigFileManager::load(ConfigFileType type, bool bCreateIfNotExisting)
     {
-        this->getFile(type)->load();
+        this->getFile(type)->load(bCreateIfNotExisting);
         this->updateConfigValues(type);
     }
 

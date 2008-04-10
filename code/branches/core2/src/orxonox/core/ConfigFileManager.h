@@ -64,6 +64,7 @@ namespace orxonox
             virtual void setValue(const std::string& value) = 0;
             virtual const std::string& getValue() const = 0;
             virtual const std::string& getName() const = 0;
+            virtual void setComment(const std::string& comment) = 0;
             virtual unsigned int getIndex() const { return 0; }
             virtual std::string getFileEntry() const = 0;
     };
@@ -80,6 +81,9 @@ namespace orxonox
 
             inline virtual const std::string& getName() const
                 { return this->name_; }
+
+            inline virtual void setComment(const std::string& comment)
+                { this->additionalComment_ = comment; }
 
             inline virtual void setValue(const std::string& value)
                 { this->value_ = value; }
@@ -132,6 +136,9 @@ namespace orxonox
             inline virtual const std::string& getName() const
                 { return this->comment_; }
 
+            inline virtual void setComment(const std::string& comment)
+                { this->comment_ = comment; }
+
             inline virtual void setValue(const std::string& value)
                 {}
             inline virtual const std::string& getValue() const
@@ -158,6 +165,9 @@ namespace orxonox
 
             inline const std::string& getName() const
                 { return this->name_; }
+
+            inline void setComment(const std::string& comment)
+                { this->additionalComment_ = comment; }
 
             inline void setValue(const std::string& name, const std::string& value)
                 { this->getEntry(name, value)->setValue(value); }
@@ -203,7 +213,7 @@ namespace orxonox
             inline ConfigFile(const std::string& filename) : filename_(filename), bUpdated_(false) {}
             ~ConfigFile();
 
-            void load();
+            void load(bool bCreateIfNotExisting = true);
             void save() const;
             void clean();
 
@@ -235,13 +245,13 @@ namespace orxonox
         public:
             static ConfigFileManager* getSingleton();
 
-            void setFile(ConfigFileType type, const std::string& filename);
+            void setFile(ConfigFileType type, const std::string& filename, bool bCreateIfNotExisting = true);
 
-            void load();
+            void load(bool bCreateIfNotExisting = true);
             void save();
             void clean();
 
-            void load(ConfigFileType type);
+            void load(ConfigFileType type, bool bCreateIfNotExisting = true);
             void save(ConfigFileType type);
             void clean(ConfigFileType type);
 
