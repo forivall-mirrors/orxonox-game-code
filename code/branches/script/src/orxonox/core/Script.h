@@ -20,7 +20,7 @@ namespace orxonox // tolua_export
   class Script // tolua_export
   { // tolua_export
     public:
-      inline static Script* getInstance() { if (!Script::singletonRef) Script::singletonRef = new Script(); return Script::singletonRef; }
+      inline static Script* getInstance() { if (!Script::singletonRef) Script::singletonRef = new Script(); return Script::singletonRef; } // tolua_export
       inline ~Script() { Script::singletonRef = NULL; };
 
     void loadFile(std::string filename, bool luaTags);

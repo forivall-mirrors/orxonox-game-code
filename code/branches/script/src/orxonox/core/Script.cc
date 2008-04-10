@@ -38,21 +38,25 @@ extern "C" {
 }
 
 #include "tolua++.h"
-#include "toluabind.h"
+#include "../../util/tolua/tolua_bind.h"
 
 namespace orxonox
 {
+  Script* Script::singletonRef = NULL;
 
   Script::Script()
   {
     luaState_ = lua_open();
     luaSource_ = "";
-    tolua_something_open(luaState_);
+    luaL_openlibs(luaState_);
+    tolua_orxonox_open(luaState_);
+    output_;
   }
 
   void Script::luaPrint(std::string str)
   {
-    output_ = str;
+    output_ += str;
+    COUT(0) << "Lua_output!:" << std::endl << str << std::endl << "***" << std::endl;
   }
 
   /**
@@ -77,18 +81,20 @@ namespace orxonox
     {
       file.getline(line, 1024);
       levelString += line;
+      levelString += "\n";
     }
 
     file.close();
     //std::string output;
 
     if (luaTags) luaSource_ = replaceLuaTags(levelString);
+    COUT(0) << "ParsedSourceCode: " << luaSource_ << std::endl;
   }
 
   void Script::run()
   {
     int error = 0;
-    std::string init = "local scr = orxonox.Script:new()\n";
+    std::string init = "local scr = orxonox.Script:getInstance()\nprint = function(s)\nscr:luaPrint(s)\nend\n";
     init += luaSource_;
     error = luaL_loadstring(luaState_, init.c_str());
     if (error == 0)
@@ -134,14 +140,21 @@ namespace orxonox
     // erase all tags from the map that are between two quotes
     {
       std::map<unsigned int, bool>::iterator it = luaTags.begin();
+      std::map<unsigned int, bool>::iterator it2 = it;
       bool bBetweenQuotes = false;
+      bool bBetweenTags = false;
       unsigned int pos = 0;
       while ((pos = getNextQuote(text, pos)) != std::string::npos)
       {
-        while ((it != luaTags.end()) && ((*it).first < pos))
+        while ((it != luaTags.end()) && (it->first < pos))
         {
-          if (bBetweenQuotes)
-            luaTags.erase(it++);
+          if (bBetweenQuotes) {
+            it2++;
+            if(it->second && !(it2->second) && it2->first < pos)
+              it = ++it2;
+            else
+              luaTags.erase(it++);
+          }
           else
             ++it;
         }
@@ -232,7 +245,7 @@ namespace orxonox
           for(unsigned int i = 0; i < equalSignCounter; i++) {
             equalSigns += "=";
           }
-          output += "scr:luaPrint([" + equalSigns + "[" + temp + "]" + equalSigns +"])\n";
+          output += "print([" + equalSigns + "[" + temp + "]" + equalSigns +"])";
           start = end + 5;
         }
         else
