@@ -92,9 +92,13 @@ namespace network
   }
 
   GameStateCompressed *GameStateManager::popGameState(int clientID) {
+    //why are we searching the same client's gamestate id as we searched in
+    //Server::sendGameState?
     int gID = head_->findClient(clientID)->getGamestateID();
-    COUT(4) << "popgamestate: sending gstate id: " << id << "diffed from: " << gID << std::endl;
-    if(gID!=GAMESTATEID_INITIAL){
+    COUT(4) << "G.St.Man: popgamestate: sending gstate_id: " << id << " diffed from: " << gID << " (not diffed yet)" << std::endl;
+    
+    //chose wheather the next gamestate is the first or not
+    if(gID != GAMESTATEID_INITIAL){
       GameState *client = gameStateMap[gID];
       GameState *server = reference;
       //head_->findClient(clientID)->setGamestateID(id);
@@ -114,6 +118,7 @@ namespace network
   */
   GameState *GameStateManager::getSnapshot(int id)
   {
+    //std::cout << "begin getSnapshot" << std::endl;
     //the size of the gamestate
     int totalsize=0;
     int memsize=1000;
@@ -126,33 +131,38 @@ namespace network
 
     GameState *retval=new GameState; //return value
     retval->id=id++;
-    COUT(4) << "producing gamestate with id: " << retval->id << std::endl;
+    COUT(4) << "G.ST.Man: producing gamestate with id: " << retval->id << std::endl;
     // reserve a little memory and increase it later on
-    COUT(5) << "mallocing" << std::endl;
+    COUT(5) << "G.ST.Man: mallocing: " << memsize << std::endl;
     retval->data = (unsigned char*)malloc(memsize);
-    COUT(5) << "malloced" << std::endl;
+    COUT(5) << "G.ST.Man: malloced: " << memsize << std::endl;
 
     // offset of memory functions
     int offset=0;
     // go through all Synchronisables
     for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
+      //std::cout << "begin inner loop" << std::endl;
       //std::cout << "gamestatemanager: in for loop" << std::endl;
       //get size of the synchronisable
       tempsize=it->getSize();
-//       COUT(5) << "size of temp gamestate: " << tempsize << std::endl;
+      //COUT(5) << "size of temp gamestate: " << tempsize << std::endl;
       //COUT(2) << "size of synchronisable: " << tempsize << std::endl;
       // add place for data and 3 ints (length,classid,objectid)
       totalsize+=tempsize+3*sizeof(int);
       //std::cout << "totalsize: " << totalsize << std::endl;
+      //COUT(5) << "G.St.Man: current totalsize=" << totalsize << std::endl;
+      //COUT(5) << "G.St.Man: current it->classID=" << it->classID << " it->objectID=" << it->objectID << std::endl;
       // allocate additional space
-      if(totalsize+tempsize>memsize){
-        if(tempsize<1000){
+      if((totalsize+tempsize) > memsize){
+        COUT(5) << "G.St.Man: need additional memory" << std::endl;
+        if(tempsize < 1000){
           retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
           memsize+=1000;
         } else {
           retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
           memsize+=tempsize+1000;
         }
+        COUT(5) << "G.St.Man: additional space allocation finished" << std::endl;
       }
 
       // run Synchronisable::getData with offset and additional place for 3 ints in between (for ids and length)
@@ -165,11 +175,13 @@ namespace network
       //*(retval->data+offset+2*sizeof(int))=sync.classID;
       // increase data pointer
       offset+=tempsize+3*sizeof(int);
+      //std::cout << "end inner loop" << std::endl;
     }
-    COUT(5) << "Gamestate size: " << totalsize << std::endl;
     retval->size=totalsize;
     //#### bugfix
     retval->diffed = false;
+    //std::cout << "end snapShot" << std::endl;
+    COUT(5) << "G.ST.Man: Gamestate size: " << totalsize << std::endl;
     return retval;
   }
 
@@ -184,6 +196,7 @@ namespace network
   //##### END TESTING PURPOSE #####
 
   GameStateCompressed *GameStateManager::encode(GameState *a, GameState *b) {
+    COUT(5) << "G.St.Man: this will be a DIFFED gamestate" << std::endl;
     //GameState r = diff(a,b);
     //r.diffed = true;
     GameState *r = b;
@@ -192,6 +205,7 @@ namespace network
   }
 
   GameStateCompressed *GameStateManager::encode(GameState *a) {
+    COUT(5) << "G.St.Man: this will be a not diffed gamestate" << std::endl;
     a->diffed=false;
     return compress_(a);
   }
@@ -234,7 +248,7 @@ namespace network
   }
 
   GameStateCompressed *GameStateManager::compress_(GameState *a) {
-    COUT(5) << "compressing gamestate" << std::endl;
+    COUT(5) << "G.St.Man: compressing gamestate" << std::endl;
     int size = a->size;
     uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
     unsigned char* dest = (unsigned char*)malloc( buffer );
@@ -244,12 +258,12 @@ namespace network
     //std::cout << "after ziped " << buffer << std::endl;
 
     switch ( retval ) {
-      case Z_OK: COUT(5) << "successfully compressed" << std::endl; break;
-      case Z_MEM_ERROR: COUT(1) << "not enough memory available in gamestate.compress" << std::endl; 
+      case Z_OK: COUT(5) << "G.St.Man: compress: successfully compressed" << std::endl; break;
+      case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl; 
       return NULL;
-      case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer in gamestate.compress" << std::endl;
+      case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl;
       return NULL;
-      case Z_DATA_ERROR: COUT(2) << "decompress: data corrupted in gamestate.compress" << std::endl;
+      case Z_DATA_ERROR: COUT(2) << "G.St.Man: compress: data corrupted in gamestate.compress" << std::endl;
       return NULL;
     }
 
@@ -262,7 +276,7 @@ namespace network
     compressedGamestate->data = dest;
     compressedGamestate->diffed = a->diffed;
     compressedGamestate->base_id = a->base_id;
-
+    COUT(5) << "G.St.Man: saved compressed data in GameStateCompressed" << std::endl;
     return compressedGamestate;
   }
 

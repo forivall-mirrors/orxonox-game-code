@@ -46,7 +46,7 @@ namespace network
   class _NetworkExport Synchronisable : virtual public orxonox::OrxonoxClass{
   public:
 
-      virtual ~Synchronisable();
+    virtual ~Synchronisable();
     int objectID;
     int classID;
 

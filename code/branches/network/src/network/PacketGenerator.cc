@@ -49,7 +49,7 @@ namespace network
 
   ENetPacket* PacketGenerator::acknowledgement( int state, int reliable )
   {
-    COUT(4) << "generating new acknowledgement, id: " << state << std::endl;
+    COUT(4) << "PacketGenerator: generating new acknowledgement, id: " << state << std::endl;
     ack* ackreq = new ack;
     ackreq->id = ACK;
     ackreq->a = state;
@@ -62,7 +62,7 @@ namespace network
   /*### mouseupdates */
   ENetPacket* PacketGenerator::mousem( double x, double y, int reliable )
   {
-    COUT(4) << "generating new mouse" << std::endl;
+    COUT(4) << "PacketGenerator: generating new mouse" << std::endl;
     mouse* mousemove = new mouse;
     mousemove->id = MOUSE;
     mousemove->x = x;
@@ -76,7 +76,7 @@ namespace network
   /*### keystrikes updates */
   ENetPacket* PacketGenerator::keystrike( char press, int reliable )
   {
-    COUT(4) << "generating new keyboard" << std::endl;
+    COUT(4) << "PacketGenerator: generating new keyboard" << std::endl;
     keyboard* key = new keyboard;
     key->id = KEYBOARD;
     key->press = press;
@@ -125,7 +125,7 @@ namespace network
   ENetPacket* PacketGenerator::clid( int classid, std::string classname, int reliable )
   {
     unsigned char* data = (unsigned char *)malloc(3*sizeof(int)+classname.length()+1);
-    std::cout << "classid: " << classid << ", name: " << classname << std::endl;
+    std::cout << "PacketGenerator: classid: " << classid << ", name: " << classname << std::endl;
     *(int *)data = CLASSID;
     *((int *)data+1) = classname.length()+1;
     *((int *)data+2) = classid;

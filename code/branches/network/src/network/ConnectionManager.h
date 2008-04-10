@@ -54,6 +54,28 @@ namespace network
     bool addPacketAll(ENetPacket *packet);
     bool sendPackets(ENetEvent *event);
     bool sendPackets();
+
+    //##### for testing purpose only #####
+    ConnectionManager();
+    std::map<int, int> testGetClientsShip() { 
+      return clientsShip; 
+    }
+    void testAddClientsShipID( int clientID, int objectID ) {
+      addClientsObjectID( clientID, objectID );
+    }
+    int testGetClientsShipID( int clientID ) { 
+      return getClientsShipID( clientID ); 
+    }
+    int testGetObjectsClientID( int objectID ) {
+       return getObjectsClientID( objectID );
+    }
+    void testDeleteClientsIDReg( int clientID ) { 
+      deleteClientIDReg( clientID );
+    }
+    void testDeleteObjectIDReg( int objectID ) {
+      deleteObjectIDReg( objectID );
+    }
+    //##### for testing purpose only #####
   private:
     bool clientDisconnect(ENetPeer *peer);
     //bool clientDisconnect(ENetPeer peer);
@@ -81,14 +103,8 @@ namespace network
     int getObjectsClientID( int objectID );
     void deleteClientIDReg( int clientID );
     void deleteObjectIDReg( int objectID );
+    int getNumberOfClients();
   };
-
-
-
-
-
-
-
 
 }
 

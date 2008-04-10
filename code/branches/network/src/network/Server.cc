@@ -94,11 +94,11 @@ namespace network
   */
   bool Server::sendMSG(const char *msg) {
     ENetPacket *packet = packet_gen.chatMessage(msg);
-    std::cout <<"adding Packets" << std::endl;
+    COUT(4) <<"Server: adding Packets" << std::endl;
     connection->addPacketAll(packet);
     //std::cout <<"added packets" << std::endl;
     if (connection->sendPackets()){
-      std::cout << "Sucessfully" << std::endl;
+      COUT(4) << "Server: Sucessfully" << std::endl;
       return true;
     }
     return false;
@@ -125,8 +125,11 @@ namespace network
     int clientID=-1;
     while(!connection->queueEmpty()){
       //std::cout << "Client " << clientID << " sent: " << std::endl;
+      //clientID here is a reference to grab clientID from ClientInformation
       packet = connection->getPacket(clientID);
-      elaborate(packet, clientID);
+      //if statement to catch case that packetbuffer is empty
+      if( !elaborate(packet, clientID) ) 
+        COUT(4) << "Server: PacketBuffer empty" << std::endl;
     }
   }
 
@@ -135,9 +138,11 @@ namespace network
   */
   void Server::updateGamestate() {
     gamestates->update();
+    COUT(4) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
     //std::cout << "updated gamestate, sending it" << std::endl;
     //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
-      sendGameState();
+    sendGameState();
+    COUT(4) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
     //std::cout << "sent gamestate" << std::endl;
   }
 
@@ -145,42 +150,47 @@ namespace network
   * sends the gamestate
   */
   bool Server::sendGameState() {
-    COUT(5) << "starting sendGameState" << std::endl;
+    COUT(5) << "Server: starting function sendGameState" << std::endl;
     ClientInformation *temp = clients;
     bool added=false;
-    while(temp!=NULL){
+    while(temp != NULL){
       if(temp->head){
         temp=temp->next();
+        //think this works without continue
         continue;
       }
       if( !(temp->getSynched()) ){
-        COUT(5) << "not sending gamestate" << std::endl;
+        COUT(5) << "Server: not sending gamestate" << std::endl;
         temp=temp->next();
+        //think this works without continue
         continue;
       }
-      COUT(5) << "doing gamestate gamestate preparation" << std::endl;
-      int gid = temp->getGamestateID();
-      int cid = temp->getID();
-      COUT(5) << "server, got acked (gamestate) ID: " << gid << std::endl;
+      COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
+      int gid = temp->getGamestateID(); //get gamestate id
+      int cid = temp->getID(); //get client id
+      COUT(5) << "Server: got acked (gamestate) ID from clientlist: " << gid << std::endl;
       GameStateCompressed *gs = gamestates->popGameState(cid);
       if(gs==NULL){
-        COUT(2) << "could not generate gamestate" << std::endl;
+        COUT(2) << "Server: could not generate gamestate (NULL from compress)" << std::endl;
         return false;
       }
       //std::cout << "adding gamestate" << std::endl;
-      connection->addPacket(packet_gen.gstate(gs), cid);
+      if ( !(connection->addPacket(packet_gen.gstate(gs), cid)) )
+        COUT(4) << "Server: packet with client id (cid): " << cid << " not sended" << std::endl; 
       //std::cout << "added gamestate" << std::endl;
       added=true;
       temp=temp->next();
     }
-    if(added)
+    if(added) {
+      //std::cout << "send gamestates from server.cc in sendGameState" << std::endl;
       return connection->sendPackets();
-    COUT(5) << "had no gamestates to send" << std::endl;
+    }
+    COUT(5) << "Server: had no gamestates to send" << std::endl;
     return false;
   }
 
   void Server::processAck( ack *data, int clientID) {
-    COUT(5) << "processing ack from client: " << clientID << "; ack-id: " << data->id << std::endl;
+    COUT(5) << "Server: processing ack from client: " << clientID << "; ack-id: " << data->id << std::endl;
     clients->findClient(clientID)->setGamestateID(data->a);
   }
 

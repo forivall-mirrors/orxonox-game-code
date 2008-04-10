@@ -51,10 +51,15 @@ namespace network
   bool PacketDecoder::elaborate( ENetPacket* packet, int clientId )
   {
     int client = clientId;
-    COUT(5) << "clientId: " << client << std::endl; //control cout, not important, just debugging info
+    COUT(5) << "PacketDecoder: clientId: " << client << std::endl; //control cout, not important, just debugging info
     int id = (int)*packet->data; //the first 4 bytes are always the enet packet id
-    COUT(5) << "packet id: " << id << std::endl;
-//     COUT(5) << "packet size inside packetdecoder: " << packet->dataLength << std::endl;
+    COUT(5) << "PacketDecoder: packet id: " << id << std::endl;
+    //COUT(5) << "packet size inside packetdecoder: " << packet->dataLength << std::endl;
+
+    if ( packet == NULL ) {
+      COUT(4) << "PacketDecoder: no packets->packetbuffer queue is empty" << std::endl;
+      return false;
+    }
     switch( id ) {
   case ACK:
     acknowledgement( packet, clientId );
@@ -92,7 +97,7 @@ namespace network
     *a = *(ack*)packet->data; //press pattern of ack on new data
 
 
-    COUT(5) << "got ack id: " << a->id << std::endl;
+    COUT(5) << "PacketDecoder: got ack id: " << a->id << std::endl;
     processAck( a, clientId ); //debug info
 
     //clean memory
@@ -146,7 +151,7 @@ namespace network
     GameStateCompressed* currentState = NULL;
     currentState = new GameStateCompressed;
     if(currentState == NULL){
-      COUT(3) << "could not generate new GameStateCompressed" << std::endl;
+      COUT(3) << "PacketDecoder: could not generate new GameStateCompressed" << std::endl;
       return;
     }
     //since it's not alowed to use void* for pointer arithmetic
@@ -155,7 +160,7 @@ namespace network
     //memcpy( (void*)&(currentState->id), (const void*)(data+sizeof( int )), sizeof( int ) );
     //currentState->id = *((int *)packet->data+sizeof(int));
     memcpy( (void*)&(currentState->id), (const void*)(packet->data+1*sizeof( int )), sizeof( int) );
-    COUT(5) << "decoder: received gs id: " << currentState->id << std::endl;
+    COUT(5) << "PacketDecoder: received gs id: " << currentState->id << std::endl;
 //     std::cout << "id: " << currentState->id << std::endl;
     //copy the size of the GameStateCompressed compressed data into the new GameStateCompressed struct, located at 3th
     //position of the data stream, data+2*sizeof( int )
@@ -173,10 +178,10 @@ namespace network
 //     std::cout << "diffed: " << currentState->diffed << std::endl;
     //since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream
     if(currentState->compsize==0)
-      COUT(2) << "compsize is 0" << std::endl;
+      COUT(2) << "PacketDecoder: compsize is 0" << std::endl;
     currentState->data = (unsigned char*)(malloc( currentState->compsize ));
     if(currentState->data==NULL)
-      COUT(2) << "Gamestatepacket-decoder: memory leak" << std::endl;
+      COUT(2) << "PacketDecoder: Gamestatepacket-decoder: memory leak" << std::endl;
     //copy the GameStateCompressed data
     //std::cout << "packet size (enet): " << packet->dataLength << std::endl;
     //std::cout << "totallen: " << 4*sizeof(int)+sizeof(bool)+currentState->compsize << std::endl;
@@ -196,7 +201,7 @@ namespace network
     cid->message = (const char *)malloc(cid->length);
     void *data  = (void *)cid->message;
     memcpy(data, (const void*)(packet->data+3*sizeof(int)), cid->length);
-    COUT(4) << "classid: " << cid->clid << ", name: " << cid->message << std::endl;
+    COUT(4) << "PacketDecoder: classid: " << cid->clid << ", name: " << cid->message << std::endl;
     enet_packet_destroy( packet );
     processClassid(cid);
   }

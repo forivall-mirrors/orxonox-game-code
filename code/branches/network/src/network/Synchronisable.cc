@@ -43,7 +43,7 @@ namespace network
     synchronisableVariable temp={size, var, t};
     // increase datasize
     datasize+=sizeof(int)+size;
-    // push temp to syncList (at the bottom)
+    //std::cout << "push temp to syncList (at the bottom) " << datasize << std::endl;
     syncList.push_back(temp);
   }
 
@@ -103,7 +103,8 @@ namespace network
   * @return data containing all variables and their sizes
   */
   syncData Synchronisable::getData(unsigned char *mem){
-    std::list<synchronisableVariable>::iterator i;
+    //std::cout << "inside getData" << std::endl;
+    std::list<SYNCVAR>::iterator i;
     syncData retVal;
     retVal.objectID=this->objectID;
     retVal.classID=this->classID;
@@ -112,7 +113,6 @@ namespace network
     // copy to location
     int n=0;
     for(i=syncList.begin(); n<datasize && i!=syncList.end(); ++i){
-      //COUT(2) << "size of variable: " << i->size << std::endl;
       //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
       memcpy( (void *)(retVal.data+n), (const void*)&(i->size), sizeof(int) );
       n+=sizeof(int);
@@ -165,17 +165,17 @@ namespace network
   */
   int Synchronisable::getSize(){
     int tsize=0;
-    std::list<synchronisableVariable>::iterator i;
+    std::list<SYNCVAR>::iterator i;
     for(i=syncList.begin(); i!=syncList.end(); i++){
       switch(i->type){
-    case DATA:
-      tsize+=sizeof(int);
-      tsize+=i->size;
-      break;
-    case STRING:
-      tsize+=sizeof(int);
-      tsize+=((std::string *)i->var)->length()+1;
-      break;
+      case DATA:
+        tsize+=sizeof(int);
+        tsize+=i->size;
+        break;
+      case STRING:
+        tsize+=sizeof(int);
+        tsize+=((std::string *)i->var)->length()+1;
+        break;
       }
     }
     return tsize;

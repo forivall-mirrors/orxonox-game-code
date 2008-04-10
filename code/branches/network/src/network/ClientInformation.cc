@@ -188,13 +188,14 @@ namespace network
   * This function goes forward through the list and looks for an element with clientID
   * This function should only be applied to the head of the list
   * @param clientID id to look for
-  * @return pointer to the element in the list or 0 if the search was unsuccessfull
+  * @return pointer to the last element in the list or 0 if the search was unsuccessfull
   */
   ClientInformation *ClientInformation::findClient(int clientID, bool look_backwards) {
     ClientInformation *temp = this;
     if (temp->head)
       temp=temp->next();
-    while(temp!=0 && temp->getID()!=clientID){
+    //bugfix: temp to temp->next(), get last elem if not found, not segflt
+    while(temp->next()!=0 && temp->getID()!=clientID){
       temp = temp->next();
     }
     // returns 0 if nothing has been found
@@ -209,7 +210,8 @@ namespace network
   */
   ClientInformation *ClientInformation::findClient(ENetAddress *address, bool look_backwards) {
     ClientInformation *temp = this;
-    while(temp!=0){
+    //bugfix: temp to temp->next(), get last elem if not found, not segflt
+    while(temp->next()!=0){
       if(temp->head){
         temp = temp->next();
         continue;

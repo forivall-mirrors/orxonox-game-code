@@ -108,7 +108,7 @@ namespace network
         
         
         if(!it){
-          COUT(5) << "classid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
+          COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
           Synchronisable *no = (Synchronisable*)(ID((unsigned int) sync.classID)->fabricate());
           no->objectID=sync.objectID;
           no->classID=sync.classID;
@@ -196,7 +196,7 @@ namespace network
       case Z_OK: COUT(4) << "successfully decompressed" << std::endl; break;
       case Z_MEM_ERROR: COUT(1) << "not enough memory available" << std::endl; return NULL;
       case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer" << std::endl; return NULL;
-      case Z_DATA_ERROR: COUT(2) << "data corrupted" << std::endl; return NULL;
+      case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return NULL;
     }
 
     GameState *gamestate = new GameState;
