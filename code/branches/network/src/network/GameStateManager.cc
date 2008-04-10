@@ -58,6 +58,7 @@ namespace network
   }
 
   void GameStateManager::update(){
+    cleanup();
     reference = getSnapshot(id);
     gameStateMap.insert(std::pair<int, GameState*>(id, reference));
     gameStateUsed[id]=0;
@@ -85,8 +86,8 @@ namespace network
         delete gameStateMap[(*it).first];
         gameStateMap.erase((*it).first);
         gameStateUsed.erase(it++);
-      }else
-        it++;
+      }else  //as soon as we got a used gamestate break here because we could use newer gamestates in future
+        break;
     }
   }
 
