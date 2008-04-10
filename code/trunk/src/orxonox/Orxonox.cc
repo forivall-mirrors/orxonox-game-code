@@ -347,16 +347,20 @@ namespace orxonox
   */
   void Orxonox::startRenderLoop()
   {
+    // Contains the times of recently fired events
+    // eventTimes[4] is the list for the times required for the fps counter
+    std::deque<unsigned long> eventTimes[4];
+    // Clear event times
+    for (int i = 0; i < 4; ++i)
+      eventTimes[i].clear();
+    // fill the fps time list with zeros
+    for (int i = 0; i < 20; i++)
+      eventTimes[3].push_back(0);
+
     // use the ogre timer class to measure time.
     if (!timer_)
       timer_ = new Ogre::Timer();
     timer_->reset();
-
-    // Contains the times of recently fired events
-    std::deque<unsigned long> eventTimes[3];
-    // Clear event times
-    for (int i = 0; i < 3; ++i)
-      eventTimes[i].clear();
 
 	  while (!bAbort_)
 	  {
@@ -365,6 +369,8 @@ namespace orxonox
 
       // get current time
       unsigned long now = timer_->getMilliseconds();
+      eventTimes[3].push_back(now);
+      eventTimes[3].erase(eventTimes[3].begin());
 
       // create an event to pass to the frameStarted method in ogre
       Ogre::FrameEvent evt;
@@ -373,6 +379,8 @@ namespace orxonox
 
       // show the current time in the HUD
       orxonoxHUD_->setTime((int)now, 0);
+      if (eventTimes[3].back() - eventTimes[3].front() != 0)
+        orxonoxHUD_->setRocket1((int)(20000.0f/(eventTimes[3].back() - eventTimes[3].front())));
 
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
@@ -382,8 +390,9 @@ namespace orxonox
       // everything goes smoothly
       ogre_->frameStarted(evt);
 
-      if (mode_ != SERVER)
-        ogre_->renderOneFrame(); // only render in non-server mode
+      // server still renders at the moment
+      //if (mode_ != SERVER)
+      ogre_->renderOneFrame(); // only render in non-server mode
 
       // get current time
       now = timer_->getMilliseconds();
@@ -406,20 +415,21 @@ namespace orxonox
   float Orxonox::calculateEventTime(unsigned long now, std::deque<unsigned long> &times)
   {
     // Calculate the average time passed between events of the given type
-    // during the last mFrameSmoothingTime seconds.
+    // during the last frameSmoothingTime_ seconds.
 
     times.push_back(now);
 
     if(times.size() == 1)
       return 0;
 
-    // Times up to mFrameSmoothingTime seconds old should be kept
-    unsigned long discardThreshold =
-      static_cast<unsigned long>(frameSmoothingTime_ * 1000.0f);
+    // Times up to frameSmoothingTime_ seconds old should be kept
+    unsigned long discardThreshold = (unsigned long)frameSmoothingTime_ * 1000.0f;
 
     // Find the oldest time to keep
-    std::deque<unsigned long>::iterator it = times.begin(),
-      end = times.end()-2; // We need at least two times
+    std::deque<unsigned long>::iterator it  = times.begin();
+    // We need at least two times
+    std::deque<unsigned long>::iterator end = times.end() - 2;
+
     while(it != end)
     {
       if (now - *it > discardThreshold)
@@ -431,7 +441,7 @@ namespace orxonox
     // Remove old times
     times.erase(times.begin(), it);
 
-    return (float)(times.back() - times.front()) / ((times.size()-1) * 1000);
+    return (float)(times.back() - times.front()) / ((times.size() - 1) * 1000);
   }
 
   /**
