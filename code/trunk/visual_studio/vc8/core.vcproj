@@ -138,130 +138,6 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
-		<Configuration
-			Name="Release_SSE|Win32"
-			ConfigurationType="2"
-			InheritedPropertySheets="..\base_properties_release_sse.vsprops;..\core_properties.vsprops"
-			CharacterSet="1"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release_SSE2|Win32"
-			ConfigurationType="2"
-			InheritedPropertySheets="..\base_properties_release_sse2.vsprops;..\core_properties.vsprops"
-			CharacterSet="1"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -271,10 +147,6 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<File
-				RelativePath="..\..\src\orxonox\core\ArgReader.cc"
-				>
-			</File>
 			<File
 				RelativePath="..\..\src\orxonox\core\BaseObject.cc"
 				>
@@ -312,6 +184,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\core\InputEventListener.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputHandler.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputManager.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\core\Language.cc"
 				>
 			</File>
@@ -332,6 +216,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\core\Script.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\core\SignalHandler.cc"
 				>
 			</File>
@@ -349,10 +237,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath="..\..\src\orxonox\core\ArgReader.h"
-				>
-			</File>
 			<File
 				RelativePath="..\..\src\orxonox\core\BaseObject.h"
 				>
@@ -414,6 +298,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\core\InputEvent.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputEventListener.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\InputManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\core\Iterator.h"
 				>
 			</File>
@@ -443,6 +343,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\core\OutputHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\Script.h"
 				>
 			</File>
 			<File

@@ -26,9 +26,9 @@
  */
 
 /**
- @file  NetworkPrereqs.h
- @brief Contains all the necessary forward declarations for all classes, structs and enums.
- */
+  @file
+  @brief Contains all the necessary forward declarations for all classes and structs.
+*/
 
 #ifndef _NetworkPrereqs_H__
 #define _NetworkPrereqs_H__
@@ -83,7 +83,7 @@ namespace network
   struct mouse;
   struct PacketEnvelope;
   struct QueueItem;
-  struct synchData;
+  struct syncData;
   struct synchronisableVariable;
 }
 

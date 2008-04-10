@@ -83,7 +83,7 @@ int main(int argc, char **argv)
 #endif
 
     orx->start();
-    orx->destroy();
+    orx->destroySingleton();
   }
   catch (std::exception &ex)
   {

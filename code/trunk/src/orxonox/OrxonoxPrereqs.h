@@ -26,9 +26,9 @@
  */
 
 /**
- @file  OrxonoxPrereqs.h
- @brief Contains all the necessary forward declarations for all classes and structs.
- */
+  @file
+  @brief Contains all the necessary forward declarations for all classes and structs.
+*/
 
 #ifndef _OrxonoxPrereqs_H__
 #define _OrxonoxPrereqs_H__
@@ -58,31 +58,20 @@
 // Forward declarations
 //-----------------------------------------------------------------------
 
-// classes that have not yet been put into a namespace
-class InputManager;
-class SpaceShipSteering;
-
 namespace orxonox {
-  class Ambient;
-  class BaseObject;
-  class Camera;
   class GraphicsEngine;
-  struct InputEvent;
-  class InputEventListener;
-  class InputHandler;
-  class Mesh;
+  class Orxonox;
+
+  // objects
+  class Ambient;
+  class Camera;
+  class Explosion;
+  class Fighter;
   class Model;
   class NPC;
-  class OrxListener;
-  class Orxonox;
+  class Projectile;
   class Skybox;
   class SpaceShip;
-  class Tickable;
-  class TickFrameListener;
-  template <class T>
-  class Timer;
-  class TimerBase;
-  class TimerFrameListener;
   class WorldEntity;
 
   class AmmunitionDump;
@@ -92,7 +81,18 @@ namespace orxonox {
   class BarrelGun;
   class WeaponStation;
 
+  // tools
+  class BillboardSet;
+  class Light;
+  class Mesh;
+  template <class T>
+  class Timer;
+  class TimerBase;
+
+  // particle
   class ParticleInterface;
+
+  // hud
   class HUD;
 }
 

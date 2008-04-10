@@ -21,33 +21,32 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      Some guy writing the example code from Ogre
+ *      ...
  *
  */
 
 /**
  @file
- @brief Core relevant parts of InputEventListener
+ @brief InputEvent Structure declaration
  */
 
-#include "OrxonoxStableHeaders.h"
+#ifndef _InputEvent_H__
+#define _InputEvent_H__
 
-#include "core/CoreIncludes.h"
-#include "InputEventListener.h"
+#include "CorePrereqs.h"
 
 namespace orxonox
 {
   /**
-    @brief standard constructor
+    @brief Interface that any class can use to get key independent input.
   */
-  InputEventListener::InputEventListener()
+  struct InputEvent
   {
-    RegisterRootObject(InputEventListener);
-    this->bActive_ = true;
-  }
-
-  InputEventListener::~InputEventListener()
-  {
-  }
-
+    unsigned char id;      //!< Event ID
+    bool bStarted;         //!< Tells whether the Event started or ended (e.g. firing started)
+    int data1, data2;      //!< Two additional integer datafields, for instance for the mouse moved event
+    void* dataRef;         //!< Additional pointer to any further data
+  };
 }
+
+#endif /* _InputEvent_H__ */

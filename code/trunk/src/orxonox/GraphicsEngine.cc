@@ -34,6 +34,7 @@
 #include <OgreRoot.h>
 #include <OgreException.h>
 #include <OgreConfigFile.h>
+#include <OgreLogManager.h>
 #include <OgreTextureManager.h>
 #include <OgreRenderWindow.h>
 
@@ -61,16 +62,29 @@ namespace orxonox {
 
   GraphicsEngine::~GraphicsEngine()
   {
-    if (!this->root_)
+    if (this->root_)
       delete this->root_;
+    // delete the ogre log and the logManager (sine we have created it).
+    if (LogManager::getSingletonPtr() != 0)
+    {
+      LogManager::getSingleton().getDefaultLog()->removeListener(this);
+      LogManager::getSingleton().destroyLog(LogManager::getSingleton().getDefaultLog());
+      delete LogManager::getSingletonPtr();
+    }
   }
 
   void GraphicsEngine::setConfigValues()
   {
-    SetConfigValue(dataPath_, dataPath_).description("relative path to media data");
-
+    SetConfigValue(dataPath_, "../../media/").description("relative path to media data");
+    SetConfigValue(ogreLogfile_, "ogre.log").description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
+    SetConfigValue(ogreLogLevelTrivial_ , 5).description("relative path to media data");
+    SetConfigValue(ogreLogLevelNormal_  , 4).description("relative path to media data");
+    SetConfigValue(ogreLogLevelCritical_, 2).description("relative path to media data");
   }
 
+  /**
+    @brief Creates the Ogre Root object and sets up the ogre log.
+  */
   void GraphicsEngine::setup()
   {
     //TODO: Check if file exists (maybe not here)
@@ -85,6 +99,25 @@ namespace orxonox {
 #else
     std::string plugin_filename = "plugins.cfg";
 #endif
+
+    // create a logManager
+    LogManager *logger;
+		if(LogManager::getSingletonPtr() == 0)
+			logger = new LogManager();
+    else
+      logger = LogManager::getSingletonPtr();
+
+    // create our own log that we can listen to
+    Log *myLog;
+    if (this->ogreLogfile_ == "")
+      myLog = logger->createLog("ogre.log", true, false, true);
+    else
+      myLog = logger->createLog(this->ogreLogfile_, true, false, false);
+
+    myLog->setLogDetail(LL_BOREME);
+    myLog->addListener(this);
+
+    // Root will detect that we've already created a Log
     root_ = new Root(plugin_filename);
   }
 
@@ -105,7 +138,7 @@ namespace orxonox {
   {
     // temporary overwrite of dataPath, change ini file for permanent change
     if( dataPath != "" )
-      dataPath_ = dataPath;
+      dataPath_ = dataPath + "/";
     loadRessourceLocations(this->dataPath_);
     if (!root_->restoreConfig() && !root_->showConfigDialog())
       return false;
@@ -195,4 +228,34 @@ namespace orxonox {
       return 0;
   }
 
+  /**
+    @brief Method called by the LogListener interface from Ogre.
+    We use it to capture Ogre log messages and handle it ourselves.
+    @param message The message to be logged
+    @param lml The message level the log is using
+    @param maskDebug If we are printing to the console or not
+    @param logName the name of this log (so you can have several listeners
+                   for different logs, and identify them)
+  */
+  void GraphicsEngine::messageLogged(const std::string& message,
+    LogMessageLevel lml, bool maskDebug, const std::string &logName)
+  {
+    int orxonoxLevel;
+    switch (lml)
+    {
+      case LML_TRIVIAL:
+        orxonoxLevel = this->ogreLogLevelTrivial_;
+        break;
+      case LML_NORMAL:
+        orxonoxLevel = this->ogreLogLevelNormal_;
+        break;
+      case LML_CRITICAL:
+        orxonoxLevel = this->ogreLogLevelCritical_;
+        break;
+      default:
+        orxonoxLevel = 0;
+    }
+    OutputHandler::getOutStream().setOutputLevel(orxonoxLevel)
+        << "*** Ogre: " << message << std::endl;
+  }
 }

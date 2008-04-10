@@ -11,6 +11,6 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CS).lib"
+		AdditionalDependencies="OgreMain$(CS).lib OIS$(CSS).lib lua$(CS).lib"
 	/>
 </VisualStudioPropertySheet>

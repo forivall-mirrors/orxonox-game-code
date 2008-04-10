@@ -49,6 +49,7 @@
 //***** ORXONOX ****
 //misc
 //#include "util/Sleep.h"
+#include "util/ArgReader.h"
 
 // audio
 #include "audio/AudioManager.h"
@@ -60,7 +61,6 @@ network::Client *client_g;
 network::Server *server_g;
 
 // objects
-#include "core/ArgReader.h"
 #include "core/Debug.h"
 #include "core/Factory.h"
 #include "core/Loader.h"
@@ -69,7 +69,7 @@ network::Server *server_g;
 #include "tools/Timer.h"
 #include "objects/weapon/BulletManager.h"
 
-#include "InputHandler.h"
+#include "core/InputManager.h"
 
 #include "Orxonox.h"
 
@@ -107,7 +107,7 @@ namespace orxonox
     if (this->orxonoxHUD_)
       delete this->orxonoxHUD_;
     Loader::close();
-    InputHandler::destroy();
+    InputManager::destroySingleton();
     if (this->auMan_)
       delete this->auMan_;
     if (this->timer_)
@@ -146,14 +146,12 @@ namespace orxonox
     if (!singletonRef_s)
       singletonRef_s = new Orxonox();
     return singletonRef_s;
-    //static Orxonox theOnlyInstance;
-    //return &theOnlyInstance;
   }
 
   /**
     @brief Destroys the Orxonox singleton.
   */
-  void Orxonox::destroy()
+  void Orxonox::destroySingleton()
   {
     if (singletonRef_s)
       delete singletonRef_s;
@@ -173,7 +171,7 @@ namespace orxonox
     //TODO: give config file to Ogre
     std::string mode;
 
-    ArgReader ar = ArgReader(argc, argv);
+    ArgReader ar(argc, argv);
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", this->dataPath_, false);
     ar.checkArgument("ip", serverIp_, false);
@@ -326,10 +324,11 @@ namespace orxonox
   */
   void Orxonox::setupInputSystem()
   {
-    inputHandler_ = InputHandler::getSingleton();
+    inputHandler_ = InputManager::getSingleton();
     if (!inputHandler_->initialise(ogre_->getWindowHandle(),
           ogre_->getWindowWidth(), ogre_->getWindowHeight()))
       abortImmediate();
+    inputHandler_->setInputMode(IM_INGAME);
   }
 
   /**

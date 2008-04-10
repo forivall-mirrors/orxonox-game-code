@@ -6,8 +6,6 @@
 #include "WorldEntity.h"
 #include "../tools/Mesh.h"
 
-class TiXmlElement; // Forward declaration
-
 namespace orxonox
 {
 
