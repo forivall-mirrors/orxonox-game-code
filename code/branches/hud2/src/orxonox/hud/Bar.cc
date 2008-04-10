@@ -27,19 +27,37 @@
 
 #include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
+#include <OgreOverlayContainer.h>
+#include <OgrePanelOverlayElement.h>
 #include <OgreStringConverter.h>
 #include <OgreColourValue.h>
 #include <string.h>
 
-#include "BarV1.h"
+#include "Bar.h"
 
 namespace orxonox
 {
   using namespace Ogre;
 
-    Bar::Bar(const String& name):Ogre::OverlayElement(name){}
+//    typeName_s = "Bar";
+
+    Bar::Bar(const String& name):Ogre::PanelOverlayElement(name){
+    }
 
 
+    Bar::~Bar(){}
+
+//    const Ogre::String& Bar::getTypeName() const { return typeName_s;}
+
+
+
+    void Bar::initialise(){
+	PanelOverlayElement::initialise();
+	setDimensions(100,100);
+	setPosition(10,10);
+	setMaterialName("Orxonox/Green");
+	setMetricsMode(Ogre::GMM_PIXELS);
+    }
 
 
 

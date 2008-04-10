@@ -65,7 +65,7 @@ namespace orxonox
 
 
 
-#endif _HUD_H_
+#endif
 
 /*#ifndef _HUD_H__
 #define _HUD_H__

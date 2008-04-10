@@ -31,7 +31,10 @@
 
 #include <string>
 #include <OgreColourValue.h>
+#include <OgrePanelOverlayElement.h>
+#include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
+#include <OgreOverlayContainer.h>
 #include <OgrePrerequisites.h>
 #include <string.h>
 #include "../OrxonoxPrereqs.h"
@@ -40,17 +43,24 @@
 
 namespace orxonox
 {
-  class Bar : public Ogre::OverlayElement
+  class _OrxonoxExport Bar : public Ogre::PanelOverlayElement
   {
   private:
     float percentage_;
     bool dir_;
     Ogre::ColourValue color_;
 	
+    static Ogre::String& typeName_s;
 	
   public:
 
     Bar(const Ogre::String& name);
+
+    virtual void initialise();
+
+    virtual ~Bar();
+    
+//    virtual const Ogre::String& getTypeName() const;
 //    virtual ~Bar();
 
 

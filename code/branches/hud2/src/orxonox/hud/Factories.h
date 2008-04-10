@@ -53,19 +53,4 @@ namespace orxonox{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #endif

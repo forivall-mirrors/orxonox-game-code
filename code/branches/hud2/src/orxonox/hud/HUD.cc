@@ -31,6 +31,7 @@
 #include <OgreOverlayContainer.h>
 #include <OgreOverlayManager.h>
 #include <OgreSceneNode.h>
+#include <OgreEntity.h>
 
 #include "HUD.h"
 #include "Bar.h"
@@ -67,9 +68,7 @@ namespace orxonox
     overlayManager.addOverlayElementFactory(factory);
     Ogre::OverlayElement* BarElement = overlayManager.createOverlayElementFromFactory("Bar", "BarElement");
 
-
-
-
+    energyCounterPanel->addChild(BarElement);
 
     Ogre::Overlay* orxonoxOverlay = overlayManager.create("Orxonox/HUD"); 
     orxonoxOverlay->add2D(energyCounterPanel);
@@ -92,8 +91,8 @@ namespace orxonox
     if (this->ogreNode_)
     {
       this->ogreNode_->roll(Ogre::Degree(dt*200),Ogre::Node::TS_LOCAL);
-      this->ogreNode_->yaw(Ogre::Degree(dt*200),Ogre::Node::TS_LOCAL);      
-      this->ogreNode_->pitch(Ogre::Degree(dt*200),Ogre::Node::TS_LOCAL);      
+      this->ogreNode_->yaw(Ogre::Degree(dt*200),Ogre::Node::TS_LOCAL); 
+      this->ogreNode_->pitch(Ogre::Degree(dt*200),Ogre::Node::TS_LOCAL);
     }
   }
 
