@@ -416,7 +416,7 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
-        if (!this->setMouseEventCallback_)
+      if (InputManager::getSingleton()->getMouse()->getEventCallback() != this)
         {
             if (InputManager::getSingleton()->getMouse())
             {
@@ -447,9 +447,6 @@ namespace orxonox
 
         OIS::Keyboard* mKeyboard = InputManager::getSingleton()->getKeyboard();
         OIS::Mouse* mMouse = InputManager::getSingleton()->getMouse();
-
-        mKeyboard->capture();
-        mMouse->capture();
 
 
         // #####################################

@@ -146,8 +146,6 @@ namespace orxonox
     if (!singletonRef_s)
       singletonRef_s = new Orxonox();
     return singletonRef_s;
-    //static Orxonox theOnlyInstance;
-    //return &theOnlyInstance;
   }
 
   /**
@@ -330,6 +328,7 @@ namespace orxonox
     if (!inputHandler_->initialise(ogre_->getWindowHandle(),
           ogre_->getWindowWidth(), ogre_->getWindowHeight()))
       abortImmediate();
+    inputHandler_->setInputMode(IM_INGAME);
   }
 
   /**

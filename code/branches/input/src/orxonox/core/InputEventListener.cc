@@ -21,7 +21,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      Some guy writing the example code from Ogre
+ *      ...
  *
  */
 

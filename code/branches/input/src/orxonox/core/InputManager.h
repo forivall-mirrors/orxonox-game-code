@@ -53,6 +53,7 @@ namespace orxonox
     IM_GUI      = 0,
     IM_KEYBOARD = 1,
     IM_INGAME   = 2,
+    IM_UNINIT   = 3,
   };
 
   /**
@@ -61,13 +62,15 @@ namespace orxonox
     implementing the InputEventListener interface.
   */
   class _CoreExport InputManager
-        : public Tickable, public OIS::KeyListener, public OIS::MouseListener
+        : public Tickable
   {
   public:
     bool initialise(size_t windowHnd, int windowWidth, int windowHeight);
     void destroyDevices();
     void tick(float dt);
     void setWindowExtents(int width, int height);
+    void setInputMode(InputMode mode);
+    InputMode getInputMode();
 
     // Temporary solutions. Will be removed soon!
     OIS::Mouse    *getMouse()    { return this->mouse_   ; }
@@ -83,34 +86,16 @@ namespace orxonox
     InputManager& operator=(const InputManager& instance);
     ~InputManager();
 
-    void callListeners(InputEvent &evt);
-
-    // input events
-		bool mousePressed (const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-		bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-    bool mouseMoved   (const OIS::MouseEvent &arg);
-		bool keyPressed   (const OIS::KeyEvent   &arg);
-		bool keyReleased  (const OIS::KeyEvent   &arg);
-
     OIS::InputManager *inputSystem_;    //!< OIS input manager
     OIS::Keyboard     *keyboard_;       //!< OIS mouse
     OIS::Mouse        *mouse_;          //!< OIS keyboard
 
-    /** denotes the maximum number of different keys there are in OIS.
-        256 should be ok since the highest number in the enum is 237. */
-    static const int numberOfKeys_ = 256;
-    //! Array of input events for every pressed key
-    InputEvent bindingsKeyPressed_[numberOfKeys_];
-    //! Array of input events for every released key
-    InputEvent bindingsKeyReleased_[numberOfKeys_];
-
-    /** denotes the maximum number of different buttons there are in OIS.
-        16 should be ok since the highest number in the enum is 7. */
-    static const int numberOfButtons_ = 16;
-    //! Array of input events for every pressed key
-    InputEvent bindingsButtonPressed_[numberOfButtons_];
-    //! Array of input events for every released key
-    InputEvent bindingsButtonReleased_[numberOfButtons_];
+    InputMode          currentMode_;    //!< Input mode currently used
+    InputMode          setMode_;        //!< Input mode that has been set lately
+    InputHandlerGUI   *handlerGUI_;     //!< Handles the input if in GUI mode
+    // FIXME: insert the InputBuffer once merged with core2
+    InputHandlerGUI   *handlerBuffer_;  //!< Handles the input if in Buffer mode
+    InputHandlerGame  *handlerGame_;    //!< Handles the input if in Game mode
 
     //! Pointer to the instance of the singleton
     static InputManager *singletonRef_s;

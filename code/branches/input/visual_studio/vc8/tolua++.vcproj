@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tixml"
-	ProjectGUID="{F101C2F0-1CB9-4A57-827B-6C399A99B28F}"
+	Name="tolua++"
+	ProjectGUID="{35E36A06-0A5C-4A0D-9AB6-5A05EAA87626}"
 	RootNamespace="FICN"
 	Keyword="Win32Proj"
 	>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\tixml_properties.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\tolua++_properties.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -130,23 +130,31 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\util\tinyxml\ticpp.cc"
+				RelativePath="..\..\src\util\tolua++\tolua.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\tinyxml\tinystr.cc"
+				RelativePath="..\..\src\util\tolua++\tolua_event.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\tinyxml\tinyxml.cc"
+				RelativePath="..\..\src\util\tolua++\tolua_is.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\tinyxml\tinyxmlerror.cc"
+				RelativePath="..\..\src\util\tolua++\tolua_map.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\tinyxml\tinyxmlparser.cc"
+				RelativePath="..\..\src\util\tolua++\tolua_push.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\tolua++\tolua_to.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\tolua++\toluabind.c"
 				>
 			</File>
 		</Filter>
@@ -156,19 +164,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\src\util\tinyxml\ticpp.h"
+				RelativePath="..\..\src\util\tolua++\tolua_event.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\tinyxml\ticpprc.h"
+				RelativePath="..\..\src\util\tolua++\toluabind.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\tinyxml\tinystr.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\tinyxml\tinyxml.h"
+				RelativePath="..\..\src\util\tolua++\toluabind_default.h"
 				>
 			</File>
 		</Filter>

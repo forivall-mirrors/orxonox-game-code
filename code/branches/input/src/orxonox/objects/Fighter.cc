@@ -266,8 +266,8 @@ namespace orxonox
         OIS::Keyboard* mKeyboard = InputManager::getSingleton()->getKeyboard();
         OIS::Mouse* mMouse = InputManager::getSingleton()->getMouse();
 
-        mKeyboard->capture();
-        mMouse->capture();
+        //mKeyboard->capture();
+        //mMouse->capture();
 
         if (leftButtonPressed_)
             mainWeapon_->primaryFireRequest();

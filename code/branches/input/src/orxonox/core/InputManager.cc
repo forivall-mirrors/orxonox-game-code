@@ -34,6 +34,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Debug.h"
 #include "InputEventListener.h"
+#include "InputHandler.h"
 #include "InputManager.h"
 
 namespace orxonox
@@ -47,7 +48,9 @@ namespace orxonox
     @brief Constructor only resets the pointer values to 0.
   */
   InputManager::InputManager() :
-      mouse_(0), keyboard_(0), inputSystem_(0)
+      mouse_(0), keyboard_(0), inputSystem_(0),
+      currentMode_(IM_UNINIT), setMode_(IM_UNINIT),
+      handlerGUI_(0), handlerGame_(0), handlerBuffer_(0)
   {
   }
 
@@ -101,12 +104,10 @@ namespace orxonox
 
         // create a keyboard. If none are available the exception is caught.
         keyboard_ = static_cast<OIS::Keyboard*>(inputSystem_->createInputObject(OIS::OISKeyboard, true));
-        keyboard_->setEventCallback(this);
         COUT(ORX_DEBUG) << "*** InputManager: Created OIS mouse" << std::endl;
 
         // create a mouse. If none are available the exception is caught.
         mouse_ = static_cast<OIS::Mouse*>(inputSystem_->createInputObject(OIS::OISMouse, true));
-        mouse_->setEventCallback(this);
         COUT(ORX_DEBUG) << "*** InputManager: Created OIS keyboard" << std::endl;
 
         // Set mouse region
@@ -121,7 +122,12 @@ namespace orxonox
       }
     }
 
-    COUT(ORX_DEBUG) << "*** InputManager: Loading key bindings..." << std::endl;
+    // create the handlers
+    this->handlerGUI_ = new InputHandlerGUI();
+    this->handlerGame_ = new InputHandlerGame();
+    this->handlerGame_->loadBindings();
+
+    /*COUT(ORX_DEBUG) << "*** InputManager: Loading key bindings..." << std::endl;
     // load the key bindings
     InputEvent empty = {0, false, 0, 0, 0};
     for (int i = 0; i < this->numberOfKeys_; i++)
@@ -129,7 +135,7 @@ namespace orxonox
 
     //assign 'abort' to the escape key
     this->bindingsKeyPressed_[(int)OIS::KC_ESCAPE].id = 1;
-    COUT(ORX_DEBUG) << "*** InputManager: Loading done." << std::endl;
+    COUT(ORX_DEBUG) << "*** InputManager: Loading done." << std::endl;*/
 
     return true;
   }
@@ -169,7 +175,31 @@ namespace orxonox
   */
   void InputManager::tick(float dt)
   {
-    //this->mouse_->setEventCallback(this);
+    // reset the game if it has changed
+    if (this->currentMode_ != this->setMode_)
+    {
+      switch (this->setMode_)
+      {
+      case IM_GUI:
+        this->mouse_->setEventCallback(this->handlerGUI_);
+        this->keyboard_->setEventCallback(this->handlerGUI_);
+        break;
+      case IM_INGAME:
+        this->mouse_->setEventCallback(this->handlerGame_);
+        this->keyboard_->setEventCallback(this->handlerGame_);
+        break;
+      case IM_KEYBOARD:
+        this->mouse_->setEventCallback(this->handlerGame_);
+        this->keyboard_->setEventCallback(this->handlerBuffer_);
+        break;
+      case IM_UNINIT:
+        this->mouse_->setEventCallback(0);
+        this->keyboard_->setEventCallback(0);
+        break;
+      }
+      this->currentMode_ = this->setMode_;
+    }
+
     // capture all the input. That calls the event handlers.
     if (mouse_)
       mouse_->capture();
@@ -193,67 +223,22 @@ namespace orxonox
   }
 
   /**
-    @brief Calls all the objects from classes that derive from InputEventListener.
-    @param evt The input event that occured.
+    @brief Sets the input mode to either GUI, inGame or Buffer
+    @param mode The new input mode
+    @remark Only has an affect if the mode actually changes
   */
-  inline void InputManager::callListeners(orxonox::InputEvent &evt)
+  void InputManager::setInputMode(InputMode mode)
   {
-    for (Iterator<InputEventListener> it = ObjectList<InputEventListener>::start(); it; )
-    {
-      if (it->bActive_)
-        (it++)->eventOccured(evt);
-      else
-        it++;
-    }
+    this->setMode_ = mode;
   }
 
   /**
-    @brief Event handler for the keyPressed Event.
-    @param e Event information
+    @brief Returns the current input handling method
+    @return The current input mode.
   */
-  bool InputManager::keyPressed(const OIS::KeyEvent &e)
+  InputMode InputManager::getInputMode()
   {
-    callListeners(this->bindingsKeyPressed_[(int)e.key]);
-    return true;
-  }
-
-  /**
-    @brief Event handler for the keyReleased Event.
-    @param e Event information
-  */
-  bool InputManager::keyReleased(const OIS::KeyEvent &e)
-  {
-    return true;
-  }
-
-  /**
-    @brief Event handler for the mouseMoved Event.
-    @param e Event information
-  */
-  bool InputManager::mouseMoved(const OIS::MouseEvent &e)
-  {
-    return true;
-  }
-
-  /**
-    @brief Event handler for the mousePressed Event.
-    @param e Event information
-    @param id The ID of the mouse button
-  */
-  bool InputManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-  {
-    COUT(1) << "asdf" << std::endl;
-    return true;
-  }
-
-  /**
-    @brief Event handler for the mouseReleased Event.
-    @param e Event information
-    @param id The ID of the mouse button
-  */
-  bool InputManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-  {
-    return true;
+    return this->currentMode_;
   }
 
 }

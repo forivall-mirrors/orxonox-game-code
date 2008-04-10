@@ -27,39 +27,21 @@
 
 /**
  @file
- @brief Different implementations of input processing.
+ @brief Different definitions of input processing.
  */
 
 #ifndef _InputHandler_H__
 #define _InputHandler_H__
 
+#include <string>
+
 #include <OIS/OIS.h>
 
 #include "CorePrereqs.h"
+#include "InputEvent.h"
 
 namespace orxonox
 {
-  /**
-    @brief Captures mouse and keyboard input and distributes it to the
-    GUI.
-  */
-  class _CoreExport InputHandlerGUI
-        : public OIS::KeyListener, public OIS::MouseListener
-  {
-  public:
-    InputHandlerGUI ();
-    ~InputHandlerGUI();
-
-  private:
-    // input events
-		bool mousePressed (const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-		bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-    bool mouseMoved   (const OIS::MouseEvent &arg);
-		bool keyPressed   (const OIS::KeyEvent   &arg);
-		bool keyReleased  (const OIS::KeyEvent   &arg);
-  };
-
-
   /**
     @brief Captures mouse and keyboard input while in the actual game mode.
     Manages the key bindings.
@@ -70,6 +52,49 @@ namespace orxonox
   public:
     InputHandlerGame ();
     ~InputHandlerGame();
+
+    bool loadBindings();
+
+  private:
+    // input events
+		bool mousePressed (const OIS::MouseEvent &arg, OIS::MouseButtonID id);
+		bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
+    bool mouseMoved   (const OIS::MouseEvent &arg);
+		bool keyPressed   (const OIS::KeyEvent   &arg);
+		bool keyReleased  (const OIS::KeyEvent   &arg);
+
+    // temporary hack
+    void callListeners(InputEvent &evt);
+
+    /** denotes the maximum number of different keys there are in OIS.
+        256 should be ok since the highest number in the enum is 237. */
+    static const int numberOfKeys_s = 256;
+    //! Array of input events for every pressed key
+    std::string bindingsKeyPressed_[numberOfKeys_s];
+    //! Array of input events for every released key
+    std::string bindingsKeyReleased_[numberOfKeys_s];
+
+    /** denotes the maximum number of different buttons there are in OIS.
+        16 should be ok since the highest number in the enum is 7. */
+    static const int numberOfButtons_s = 16;
+    //! Array of input events for every pressed key
+    std::string bindingsButtonPressed_[numberOfButtons_s];
+    //! Array of input events for every released key
+    std::string bindingsButtonReleased_[numberOfButtons_s];
+
+  };
+
+
+  /**
+    @brief Captures mouse and keyboard input and distributes it to the
+    GUI.
+  */
+  class _CoreExport InputHandlerGUI
+        : public OIS::KeyListener, public OIS::MouseListener
+  {
+  public:
+    InputHandlerGUI ();
+    ~InputHandlerGUI();
 
   private:
     // input events

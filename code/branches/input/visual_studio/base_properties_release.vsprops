@@ -11,7 +11,7 @@
 		WholeProgramOptimization="true"
 		PreprocessorDefinitions="NDEBUG"
 		RuntimeLibrary="2"
-		DebugInformationFormat="0"
+		DebugInformationFormat="3"
 	/>
 	<Tool
 		Name="VCLinkerTool"

@@ -75,8 +75,8 @@ namespace orxonox {
 
   void GraphicsEngine::setConfigValues()
   {
-    SetConfigValue(dataPath_, dataPath_).description("relative path to media data");
-    SetConfigValue(ogreLogfile_, "ogre.log").description("Logfile for messages from Ogre. Use to \"\" to suppress log file creation.");
+    SetConfigValue(dataPath_, "../../media/").description("relative path to media data");
+    SetConfigValue(ogreLogfile_, "ogre.log").description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
     SetConfigValue(ogreLogLevelTrivial_ , 5).description("relative path to media data");
     SetConfigValue(ogreLogLevelNormal_  , 4).description("relative path to media data");
     SetConfigValue(ogreLogLevelCritical_, 2).description("relative path to media data");
@@ -138,7 +138,7 @@ namespace orxonox {
   {
     // temporary overwrite of dataPath, change ini file for permanent change
     if( dataPath != "" )
-      dataPath_ = dataPath;
+      dataPath_ = dataPath + "/";
     loadRessourceLocations(this->dataPath_);
     if (!root_->restoreConfig() && !root_->showConfigDialog())
       return false;

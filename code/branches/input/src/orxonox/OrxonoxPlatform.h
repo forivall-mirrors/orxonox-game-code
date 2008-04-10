@@ -189,9 +189,10 @@ namespace orxonox {
 #endif
 
 // Integer formats of fixed bit width
-typedef unsigned int uint32;
+// FIXME: consider 64 bit platforms!
+/*typedef unsigned int uint32;
 typedef unsigned short uint16;
-typedef unsigned char uint8;
+typedef unsigned char uint8;*/
 
 #ifdef ORXONOX_DOUBLE_PRECISION
 typedef double Real;
