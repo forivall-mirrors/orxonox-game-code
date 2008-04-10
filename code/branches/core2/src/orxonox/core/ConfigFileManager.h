@@ -210,12 +210,12 @@ namespace orxonox
             inline void setValue(const std::string& section, const std::string& name, const std::string& value)
                 { this->getSection(section)->setValue(name, value); this->save(); }
             inline const std::string& getValue(const std::string& section, const std::string& name, const std::string& fallback)
-                { return this->getSection(section)->getValue(name, fallback); this->saveIfUpdated(); }
+                { const std::string& output = this->getSection(section)->getValue(name, fallback); this->saveIfUpdated(); return output; }
 
             inline void setValue(const std::string& section, const std::string& name, unsigned int index, const std::string& value)
                 { this->getSection(section)->setValue(name, index, value); this->save(); }
             inline const std::string& getValue(const std::string& section, const std::string& name, unsigned int index, const std::string& fallback)
-                { return this->getSection(section)->getValue(name, index, fallback); this->saveIfUpdated(); }
+                { const std::string& output = this->getSection(section)->getValue(name, index, fallback); this->saveIfUpdated(); return output; }
 
         private:
             ConfigFileSection* getSection(const std::string& section);

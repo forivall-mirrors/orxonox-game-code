@@ -103,9 +103,9 @@ namespace orxonox
     std::string ConfigFileSection::getFileEntry() const
     {
         if (this->additionalComment_ == "" || this->additionalComment_.size() == 0)
-            return (this->name_);
+            return ("[" + this->name_ + "]");
         else
-            return (this->name_ + " " + this->additionalComment_);
+            return ("[" + this->name_ + "] " + this->additionalComment_);
     }
 
     std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, const std::string& fallback)
@@ -182,9 +182,9 @@ namespace orxonox
                     // New section
                     std::string comment = temp.substr(pos2 + 1);
                     if (isComment(comment))
-                        newsection = new ConfigFileSection(line.substr(pos1, pos2 - pos1 + 1), comment);
+                        newsection = new ConfigFileSection(line.substr(pos1 + 1, pos2 - pos1 - 1), comment);
                     else
-                        newsection = new ConfigFileSection(line.substr(pos1, pos2 - pos1 + 1));
+                        newsection = new ConfigFileSection(line.substr(pos1 + 1, pos2 - pos1 - 1));
                     this->sections_.insert(this->sections_.end(), newsection);
                     continue;
                 }
