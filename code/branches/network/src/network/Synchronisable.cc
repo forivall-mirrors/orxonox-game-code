@@ -147,7 +147,7 @@ namespace network
         data+=i->size;
         break;
       case STRING:
-        i->size = (int)*data;
+        i->size = *(int *)data;
         data+=sizeof(int);
         *((std::string *)i->var) = std::string((const char*)data);
         data += i->size;
