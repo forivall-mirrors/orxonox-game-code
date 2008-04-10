@@ -66,19 +66,14 @@ namespace network
     return;
   }
   
+  
+  /**
+   * this function is used to keep the memory usage low
+   * it tries to delete all the unused gamestates
+   * 
+   * 
+   */
   void GameStateManager::cleanup(){
-    /*unsigned int min_id=-1;
-    int temp_id=0;
-    ClientInformation *temp = head_;
-    while(temp){
-      if(temp->head)
-        continue;
-      temp_id=temp->getID();
-      if(temp_id<min_id)
-        min_id=temp_id;
-      temp=temp->next();
-    }*/ // probably not very efficient
-    
     std::map<int,int>::iterator it = gameStateUsed.begin();
     while(it!=gameStateUsed.end()){
       if( (*it).second <= 0 ){
