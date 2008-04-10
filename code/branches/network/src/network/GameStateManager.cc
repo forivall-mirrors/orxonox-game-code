@@ -196,13 +196,28 @@ namespace network
     //r.diffed = true;
     GameState *r = b;
     r->diffed = false;
-    return compress_(r);
+    //return compress_(r);
+    GameStateCompressed *g = new GameStateCompressed;
+    g->base_id = b->base_id;
+    g->id = b->id;
+    g->diffed = b->diffed;
+    g->data = b->data;
+    g->normsize = b->size;
+    g->compsize = b->size;
+    return g;
   }
 
   GameStateCompressed *GameStateManager::encode(GameState *a) {
     COUT(5) << "G.St.Man: this will be a not diffed gamestate" << std::endl;
     a->diffed=false;
-    return compress_(a);
+    GameStateCompressed *g = new GameStateCompressed;
+    g->base_id = a->base_id;
+    g->id = a->id;
+    g->diffed = a->diffed;
+    g->data = a->data;
+    g->normsize = a->size;
+    g->compsize = a->size;
+    return g;
   }
 
   GameState *GameStateManager::diff(GameState *a, GameState *b) {

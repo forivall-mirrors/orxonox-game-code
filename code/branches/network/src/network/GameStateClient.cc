@@ -213,13 +213,20 @@ namespace network
   }
 
   GameState *GameStateClient::decode(GameState *a, GameStateCompressed *x) {
-    GameState *t = decompress(x);
+    GameState *t = decode(x);
     gameStateList.push(t);
-    return undiff(a, t);
+    //return undiff(a, t);
+    return t;
   }
 
   GameState *GameStateClient::decode(GameStateCompressed *x) {
-    GameState *t = decompress(x);
+    //GameState *t = decompress(x);
+    GameState *t = new GameState;
+    t->base_id = x->base_id;
+    t->id = x->id;
+    t->diffed = x->diffed;
+    t->data = x->data;
+    t->size = x->normsize;
     gameStateList.push(t);
     return t;
   }
