@@ -139,7 +139,7 @@ namespace network
     unsigned char *data=vars.data;
     std::list<synchronisableVariable>::iterator i;
     for(i=syncList.begin(); i!=syncList.end(); i++){
-      if((int)*data==i->size || i->type==STRING){
+      if(*(int *)data==i->size || i->type==STRING){
         switch(i->type){
       case DATA:
         data+=sizeof(int);
