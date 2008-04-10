@@ -68,7 +68,7 @@ namespace orxonox {
   void ParticleInterface::standardizeEmitters(void)
   {
     //Abgleichen der anderen Emitter an die Variabeln
-    for (int i=0; i < numberOfEmitters_; i++) {
+    for (int i=1; i < numberOfEmitters_; i++) {
       particleSystem_->getEmitter(i)->setColour( colour_ );
       particleSystem_->getEmitter(i)->setTimeToLive( distance_ );
       particleSystem_->getEmitter(i)->setEmissionRate( rate_ );
@@ -83,7 +83,7 @@ namespace orxonox {
     particleSystem_->setSpeedFactor(v);
   }
 
-  void ParticleInterface::setRate(float r)
+  void ParticleInterface::setRate(int r)
   {
     rate_ = r;
     //partikel anpassen
@@ -126,7 +126,7 @@ namespace orxonox {
   // TODO check if this really works
   Vector3 ParticleInterface::getPositionOfEmitter ( int emitterNr )
   {
-    return particleSystem_->getEmitter(emitterNr)->getPosition();
+    return particleSystem_->getEmitter(0)->getPosition();
   }
 
   void ParticleInterface::setDirection ( Vector3 direction )

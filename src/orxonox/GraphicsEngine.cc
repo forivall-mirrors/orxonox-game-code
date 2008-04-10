@@ -32,9 +32,12 @@
 #include "OrxonoxStableHeaders.h"
 
 #include <OgreRoot.h>
+#include <OgreException.h>
 #include <OgreConfigFile.h>
 #include <OgreTextureManager.h>
+#include <OgreRenderWindow.h>
 
+#include "core/CoreIncludes.h"
 #include "core/Debug.h"
 #include "GraphicsEngine.h"
 
@@ -45,15 +48,27 @@ namespace orxonox {
 
   GraphicsEngine::GraphicsEngine()
   {
+    RegisterObject(GraphicsEngine);
+    //this->bOverwritePath_ = false;
+    this->setConfigValues();
     // set to standard values
     this->configPath_ = "";
-    this->dataPath_ = "";
-    scene_ = NULL;
+    this->root_ = 0;
+    this->scene_ = 0;
+    this->renderWindow_ = 0;
   }
 
 
   GraphicsEngine::~GraphicsEngine()
   {
+    if (!this->root_)
+      delete this->root_;
+  }
+
+  void GraphicsEngine::setConfigValues()
+  {
+    SetConfigValue(dataPath_, dataPath_).description("relative path to media data");
+
   }
 
   void GraphicsEngine::setup()
@@ -65,7 +80,7 @@ namespace orxonox {
 #else
     root_ = new Root(NULL, configPath_ + "ogre.cfg", configPath_ + "Ogre.log");
 #endif*/
-#if defined(_DEBUG) && defined(WIN32)
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && defined(_DEBUG)
     std::string plugin_filename = "plugins_d.cfg";
 #else
     std::string plugin_filename = "plugins.cfg";
@@ -86,18 +101,22 @@ namespace orxonox {
     return scene_;
   }
 
-  bool GraphicsEngine::load()
+  bool GraphicsEngine::load(std::string dataPath)
   {
+    // temporary overwrite of dataPath, change ini file for permanent change
+    if( dataPath != "" )
+      dataPath_ = dataPath;
     loadRessourceLocations(this->dataPath_);
     if (!root_->restoreConfig() && !root_->showConfigDialog())
       return false;
     return true;
   }
 
-  void GraphicsEngine::startRender()
+  void GraphicsEngine::initialise()
   {
-    root_->initialise(true, "OrxonoxV2");
+    this->renderWindow_ = root_->initialise(true, "OrxonoxV2");
     TextureManager::getSingleton().setDefaultNumMipmaps(5);
+    //TODO: Do NOT load all the groups, why are we doing that? And do we really do that? initialise != load...
     ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
   }
 
@@ -130,5 +149,50 @@ namespace orxonox {
     }
   }
 
+  /**
+    Returns the window handle of the render window.
+    At least the InputHandler uses this to create the OIS::InputManager
+    @return The window handle of the render window
+  */
+  size_t GraphicsEngine::getWindowHandle()
+  {
+    if (this->renderWindow_)
+    {
+      Ogre::RenderWindow *renderWindow = this->root_->getAutoCreatedWindow();
+      size_t windowHnd = 0;
+      renderWindow->getCustomAttribute("WINDOW", &windowHnd);
+      return windowHnd;
+    }
+    else
+      return 0;
+  }
+
+  /**
+    Get the width of the current render window
+    @return The width of the current render window
+  */
+  int GraphicsEngine::getWindowWidth() const
+  {
+    if (this->renderWindow_)
+    {
+      return this->renderWindow_->getWidth();
+    }
+    else
+      return 0;
+  }
+
+  /**
+    Get the height of the current render window
+    @return The height of the current render window
+  */
+  int GraphicsEngine::getWindowHeight() const
+  {
+    if (this->renderWindow_)
+    {
+      return this->renderWindow_->getHeight();
+    }
+    else
+      return 0;
+  }
 
 }

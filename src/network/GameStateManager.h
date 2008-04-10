@@ -42,15 +42,15 @@ namespace network
     GameStateManager(ClientInformation *head);
     ~GameStateManager();
     void update();
-    GameStateCompressed popGameState(int clientID);
+    GameStateCompressed *popGameState(int clientID);
     void ackGameState(int clientID, int gamestateID);
     int id;
   private:
     GameState *getSnapshot(int id);
-    GameStateCompressed encode(GameState *a, GameState *b);
-    GameStateCompressed encode(GameState *a);
-    GameState diff(GameState *a, GameState *b);
-    GameStateCompressed compress_(GameState *a);
+    GameStateCompressed *encode(GameState *a, GameState *b);
+    GameStateCompressed *encode(GameState *a);
+    GameState *diff(GameState *a, GameState *b);
+    GameStateCompressed *compress_(GameState *a);
     bool deleteUnusedGameState(int gamestateID);
 
     std::map<int, GameState*> gameStateMap; //map gsID to gamestate*

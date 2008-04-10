@@ -16,10 +16,13 @@
 #include <string>
 
 #include "NetworkPrereqs.h"
+
+#include "core/Tickable.h"
 #include "ClientConnection.h"
 #include "PacketManager.h"
 #include "GameStateClient.h"
 //#include "NetworkFrameListener.h"
+
 
 
 namespace network
@@ -31,7 +34,7 @@ namespace network
   * It is the root class of the network module
   *
   */
-  class _NetworkExport Client : PacketDecoder{
+  class _NetworkExport Client : PacketDecoder, public orxonox::Tickable{
   public:
     Client();
     Client(std::string address, int port);

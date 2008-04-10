@@ -55,7 +55,7 @@ namespace network
     syncData getData(unsigned char *mem);
     int getSize();
     bool updateData(syncData vars);
-    void registerAllVariables();
+    virtual void registerAllVariables()=0;
     virtual bool create()=0;
   protected:
     Synchronisable();

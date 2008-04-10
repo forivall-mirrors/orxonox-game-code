@@ -47,9 +47,9 @@ namespace orxonox
         {return velocity_; };
     void setVelocity( Real v );
 
-    inline float getRate()
+    inline int getRate()
       { return rate_; };
-    void setRate( float r );
+    void setRate( int r );
 
     inline Real getDistance()
         { return distance_; };
@@ -70,7 +70,7 @@ namespace orxonox
     Ogre::ParticleSystem *particleSystem_;
     Real distance_;
     Real velocity_;
-    float rate_;
+    int rate_;
     ColourValue colour_;
     int numberOfEmitters_;
 

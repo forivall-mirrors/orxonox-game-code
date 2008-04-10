@@ -42,6 +42,7 @@
 #include <boost/bind.hpp>
 
 #include "util/Sleep.h"
+#include "orxonox/core/Debug.h"
 #include "ClientConnection.h"
 
 namespace network
@@ -158,7 +159,7 @@ namespace network
         // log handling ================
       case ENET_EVENT_TYPE_CONNECT:
       case ENET_EVENT_TYPE_RECEIVE:
-        //std::cout << "got packet" << std::endl;
+        COUT(5) << "receiver-Thread: got new packet" << std::endl;
         processData(&event);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
@@ -214,7 +215,7 @@ namespace network
   }
 
   bool ClientConnection::processData(ENetEvent *event) {
-    //std::cout << "got packet, pushing to queue" << std::endl;
+    COUT(5) << "got packet, pushing to queue" << std::endl;
     // just add packet to the buffer
     // this can be extended with some preprocessing
     return buffer.push(event);

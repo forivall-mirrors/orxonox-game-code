@@ -5,7 +5,6 @@
 
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
-#include <OgreRoot.h>
 #include <OgreRenderWindow.h>
 #include <OgreViewport.h>
 
@@ -68,7 +67,7 @@ namespace orxonox
         sceneNode->attachObject((Ogre::MovableObject*)cam);
 
         // FIXME: unused var
-        Ogre::Viewport* vp = orxonox::Orxonox::getSingleton()->getOgrePointer()->getRoot()->getAutoCreatedWindow()->addViewport(cam);
+        Ogre::Viewport* vp = orxonox::Orxonox::getSingleton()->getOgrePointer()->getRenderWindow()->addViewport(cam);
 
 
         COUT(4) << "Loader: Created camera "<< name  << std::endl << std::endl;

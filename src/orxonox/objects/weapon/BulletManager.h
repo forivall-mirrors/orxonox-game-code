@@ -38,7 +38,7 @@
 #include "network/Synchronisable.h"
 #include "util/tinyxml/tinyxml.h"
 #include "core/BaseObject.h"
-#include "../Tickable.h"
+#include "core/Tickable.h"
 
 namespace orxonox {
   class _OrxonoxExport BulletManager : public BaseObject, public network::Synchronisable, public Tickable
@@ -59,6 +59,7 @@ namespace orxonox {
 
   protected:
     inline bool create() { return true; }
+    void registerAllVariables();
 
     // Bullet array
 	  Bullet **bullets_;

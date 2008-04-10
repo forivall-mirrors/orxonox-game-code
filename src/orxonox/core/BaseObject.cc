@@ -26,7 +26,7 @@
  */
 
 /**
-    @file BaseObject.cc
+    @file
     @brief Implementation of the BaseObject class.
 */
 

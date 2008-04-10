@@ -43,6 +43,7 @@ namespace orxonox
     Model::Model()
     {
         RegisterObject(Model);
+        registerAllVariables();
     }
 
     Model::~Model()
@@ -62,7 +63,8 @@ namespace orxonox
 
     /**
         @brief XML loading and saving.
-        @param xmlelement The XML-element
+    @p
+    aram xmlelement The XML-element
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
@@ -81,16 +83,17 @@ namespace orxonox
     }
 
     bool Model::create(){
+      WorldEntity::create();
       if(meshSrc_.compare("")!=0){
         this->mesh_.setMesh(meshSrc_);
         this->attachObject(this->mesh_.getEntity());
         COUT(4) << "Loader: Created model" << std::endl;
       }
-      registerAllVariables();
       return true;
     }
 
     void Model::registerAllVariables(){
-//      registerVar(&meshSrc_, meshSrc_.length() + 1, network::STRING);
+      WorldEntity::registerAllVariables();
+      registerVar(&meshSrc_, meshSrc_.length() + 1, network::STRING);
     }
 }

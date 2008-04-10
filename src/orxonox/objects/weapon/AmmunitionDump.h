@@ -59,6 +59,7 @@ namespace orxonox {
 
   protected:
     inline bool create() { return true; }
+    void registerAllVariables();
 
     int numberOfAmmos_;
     int *stock_;

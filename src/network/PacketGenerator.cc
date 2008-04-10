@@ -49,7 +49,7 @@ namespace network
 
   ENetPacket* PacketGenerator::acknowledgement( int state, int reliable )
   {
-    std::cout << "generating new acknowledgement, id: " << state << std::endl;
+    COUT(4) << "generating new acknowledgement, id: " << state << std::endl;
     ack* ackreq = new ack;
     ackreq->id = ACK;
     ackreq->a = state;
@@ -62,7 +62,7 @@ namespace network
   /*### mouseupdates */
   ENetPacket* PacketGenerator::mousem( double x, double y, int reliable )
   {
-    std::cout << "generating new mouse" << std::endl;
+    COUT(4) << "generating new mouse" << std::endl;
     mouse* mousemove = new mouse;
     mousemove->id = MOUSE;
     mousemove->x = x;
@@ -76,7 +76,7 @@ namespace network
   /*### keystrikes updates */
   ENetPacket* PacketGenerator::keystrike( char press, int reliable )
   {
-    std::cout << "generating new keyboard" << std::endl;
+    COUT(4) << "generating new keyboard" << std::endl;
     keyboard* key = new keyboard;
     key->id = KEYBOARD;
     key->press = press;

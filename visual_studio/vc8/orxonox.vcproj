@@ -284,8 +284,24 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\InputEventListener.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\InputHandler.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\InputManager.cc"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\Main.cc"
@@ -571,10 +587,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Tickable.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\WorldEntity.cc"
 					>
 				</File>
@@ -635,14 +647,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="loader"
-				>
-				<File
-					RelativePath="..\..\src\loader\LevelLoader.cc"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -651,6 +655,18 @@
 			>
 			<File
 				RelativePath="..\..\src\orxonox\GraphicsEngine.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\InputEvent.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\InputEventListener.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\InputHandler.h"
 				>
 			</File>
 			<File
@@ -745,10 +761,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Tickable.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\WorldEntity.h"
 					>
 				</File>
@@ -806,18 +818,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\Timer.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="loader"
-				>
-				<File
-					RelativePath="..\..\src\loader\LevelLoader.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\loader\LoaderPrereqs.h"
 					>
 				</File>
 			</Filter>

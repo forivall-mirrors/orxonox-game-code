@@ -26,7 +26,7 @@
  */
 
 /**
- @file  PrecompiledHeaderFiles.cc
+ @file
  @brief This file actually generates the precompiled header file
  */
 

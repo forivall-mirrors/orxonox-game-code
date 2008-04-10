@@ -13,6 +13,7 @@
 #define _ConnectionManager_H__
 
 #include <string>
+#include <map>
 // enet library for networking support
 #include <enet/enet.h>
 
@@ -72,6 +73,14 @@ namespace network
 
     bool quit; // quit-variable (communication with threads)
     ClientInformation *head_;
+    
+    //functions to map what object every clients uses
+    std::map<int, int> clientsShip;
+    void addClientsObjectID( int clientID, int objectID );
+    int getClientsShipID( int clientID );
+    int getObjectsClientID( int objectID );
+    void deleteClientIDReg( int clientID );
+    void deleteObjectIDReg( int objectID );
   };
 
 

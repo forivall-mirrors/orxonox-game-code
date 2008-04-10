@@ -38,10 +38,11 @@
 #include "util/tinyxml/tinyxml.h"
 #include "util/String2Number.h"
 #include "util/Math.h"
-#include "../core/CoreIncludes.h"
-#include "../core/Debug.h"
-#include "../Orxonox.h"
-#include "../particle/ParticleInterface.h"
+#include "core/CoreIncludes.h"
+#include "core/Debug.h"
+#include "Orxonox.h"
+#include "InputHandler.h"
+#include "particle/ParticleInterface.h"
 #include "Projectile.h"
 #include "core/XMLPort.h"
 
@@ -54,6 +55,7 @@ namespace orxonox
     SpaceShip::SpaceShip()
     {
         RegisterObject(SpaceShip);
+        this->registerAllVariables();
 
         this->setConfigValues();
 
@@ -123,8 +125,9 @@ namespace orxonox
         this->brakeRotate(rotate*10);
         this->brakeLoop(loop);
 */
-        this->init();
+//         this->create();
 
+        
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
 
@@ -134,6 +137,21 @@ namespace orxonox
             delete this->tt_;
     }
 
+    bool SpaceShip::create(){
+      if(Model::create())
+        this->init();
+      else
+        return false;
+      return true;
+    }
+    
+    void SpaceShip::registerAllVariables(){
+      Model::registerAllVariables();
+      
+      
+      
+    }
+    
     void SpaceShip::init()
     {
         // START CREATING THRUSTER
@@ -201,6 +219,7 @@ namespace orxonox
     void SpaceShip::loadParams(TiXmlElement* xmlElem)
     {
         Model::loadParams(xmlElem);
+        this->create();
 /*
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
         {
@@ -266,7 +285,7 @@ namespace orxonox
         cam->roll(Degree(-90));
 
         this->camNode_->attachObject(cam);
-        Orxonox::getSingleton()->getOgrePointer()->getRoot()->getAutoCreatedWindow()->addViewport(cam);
+        Orxonox::getSingleton()->getOgrePointer()->getRenderWindow()->addViewport(cam);
     }
 
     void SpaceShip::setMaxSpeed(float value)
@@ -399,9 +418,9 @@ namespace orxonox
     {
         if (!this->setMouseEventCallback_)
         {
-            if (Orxonox::getSingleton()->getMouse())
+            if (InputHandler::getSingleton()->getMouse())
             {
-                Orxonox::getSingleton()->getMouse()->setEventCallback(this);
+                InputHandler::getSingleton()->getMouse()->setEventCallback(this);
                 this->setMouseEventCallback_ = true;
             }
         }
@@ -426,8 +445,8 @@ namespace orxonox
             this->timeToReload_ = this->reloadTime_;
         }
 
-        OIS::Keyboard* mKeyboard = Orxonox::getSingleton()->getKeyboard();
-        OIS::Mouse* mMouse = Orxonox::getSingleton()->getMouse();
+        OIS::Keyboard* mKeyboard = InputHandler::getSingleton()->getKeyboard();
+        OIS::Mouse* mMouse = InputHandler::getSingleton()->getMouse();
 
         mKeyboard->capture();
         mMouse->capture();

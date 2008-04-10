@@ -24,14 +24,14 @@ namespace network
     ~GameStateClient();
     bool pushGameState(GameStateCompressed *compstate);
   private:
-    bool loadSnapshot(GameState state);
-    GameState diff(GameState a, GameState b);
-    GameState decompress(GameStateCompressed a);
-    GameState decode(GameState a, GameStateCompressed x);
-    GameState decode(GameStateCompressed x);
+    bool loadSnapshot(GameState *state);
+    GameState *undiff(GameState *a, GameState *b);
+    GameState *decompress(GameStateCompressed *a);
+    GameState *decode(GameState *a, GameStateCompressed *x);
+    GameState *decode(GameStateCompressed *x);
     void removeObject(orxonox::Iterator<Synchronisable> &it);
 
-    GameState reference;
+    GameState *reference;
   };
 
 }
