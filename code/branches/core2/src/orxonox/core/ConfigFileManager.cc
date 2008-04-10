@@ -26,6 +26,7 @@
  */
 
 #include "ConfigFileManager.h"
+#include "ConfigValueContainer.h"
 #include "ConsoleCommand.h"
 #include "Identifier.h"
 #include "util/Convert.h"
@@ -400,8 +401,15 @@ namespace orxonox
         if (type == CFT_Settings)
         {
             for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getIdentifierMapBegin(); it != Identifier::getIdentifierMapEnd(); ++it)
+            {
                 if ((*it).second->hasConfigValues() /* && (*it).second != ClassManager<KeyBinder>::getIdentifier()*/)
+                {
+                    for (std::map<std::string, ConfigValueContainer*>::const_iterator it2 = (*it).second->getConfigValueMapBegin(); it2 != (*it).second->getConfigValueMapEnd(); ++it2)
+                        (*it2).second->update();
+
                     (*it).second->updateConfigValues();
+                }
+            }
         }
         else if (type == CFT_Keybindings)
         {
