@@ -34,10 +34,7 @@
 
 #include "ConfigValueContainer.h"
 #include "Language.h"
-#include "Iterator.h"
-#include "BaseObject.h"
 
-#define CONFIGFILEPATH "orxonox.ini"
 
 namespace orxonox
 {
@@ -48,18 +45,17 @@ namespace orxonox
         @param varname The name of the variable
         @param defvalue The default-value
     */
-    ConfigValueContainer::ConfigValueContainer(Identifier* identifier, const std::string& varname, MultiTypeMath defvalue)
+    ConfigValueContainer::ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, MultiTypeMath defvalue)
     {
-        this->bAddedDescription_ = false;
+        this->type_ = type;
         this->identifier_ = identifier;
+        this->sectionname_ = identifier->getName();
         this->varname_ = varname;
 
-        this->defvalueString_ = defvalue.toString();                                // Convert the default-value to a string
-        this->searchLineInConfigFile();                                             // Search the entry in the config-file
+        this->bAddedDescription_ = false;
 
-        std::string valueString = this->parseValueStringFromConfigFile(!(defvalue.isA(MT_string) || defvalue.isA(MT_constchar)));     // Parses the value string from the config-file-entry
-        if (!this->parse(valueString, defvalue))                                    // Try to convert the string to a value
-            this->resetLineInConfigFile();                                            // The conversion failed
+        this->defvalueString_ = defvalue.toString();
+        this->update();
     }
 
     /**
@@ -93,6 +89,17 @@ namespace orxonox
     bool ConfigValueContainer::reset()
     {
         return this->set(this->defvalueString_);
+    }
+
+    /**
+        @brief Retrieves the configured value from the currently loaded config-file.
+    */
+    void ConfigValueContainer::update()
+    {
+std::cout << "AAA1: " << this->value_ << std::endl;
+std::cout << "    : " << ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, this->defvalueString_) << std::endl;
+        this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, this->defvalueString_));
+std::cout << "AAA2: " << this->value_ << std::endl;
     }
 
     /**
@@ -137,8 +144,7 @@ namespace orxonox
     */
     void ConfigValueContainer::setLineInConfigFile(const std::string& input)
     {
-        (*this->configFileLine_) = this->varname_ + "=" + input;
-        ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
+        ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, input);
     }
 
     /**
@@ -146,231 +152,7 @@ namespace orxonox
     */
     void ConfigValueContainer::resetLineInConfigFile()
     {
-        this->setLineInConfigFile(this->defvalueString_);
-    }
-
-    /**
-        @brief Searches the corresponding entry in the config-file and creates it, if there is no entry.
-    */
-    void ConfigValueContainer::searchLineInConfigFile()
-    {
-        // Read the file if needed
-        if (!ConfigValueContainer::finishedReadingConfigFile())
-            ConfigValueContainer::readConfigFile(CONFIGFILEPATH);
-
-        // The string of the section we're searching
-        std::string section = "";
-        section.append("[");
-        section.append(this->identifier_->getName());
-        section.append("]");
-
-        // Iterate through all config-file-lines
-        bool success = false;
-        std::list<std::string>::iterator it1;
-        for(it1 = ConfigValueContainer::getConfigFileLines().begin(); it1 != ConfigValueContainer::getConfigFileLines().end(); ++it1)
-        {
-            // Don't try to parse comments
-            if (isComment(*it1))
-                continue;
-
-            if ((*it1).find(section) < (*it1).length())
-            {
-                // We found the right section
-                bool bLineIsEmpty = false;
-                std::list<std::string>::iterator positionToPutNewLineAt;
-
-                // Iterate through all lines in the section
-                std::list<std::string>::iterator it2;
-                for(it2 = ++it1; it2 != ConfigValueContainer::getConfigFileLines().end(); ++it2)
-                {
-                    // Don't try to parse comments
-                    if (isComment(*it2))
-                        continue;
-
-                    // This if-else block is used to write a new line right after the last line of the
-                    // section but in front of the following empty lines before the next section.
-                    // (So this helps to keep a nice formatting with empty-lines between sections in the config-file)
-                    if (isEmpty(*it2))
-                    {
-                        if (!bLineIsEmpty)
-                        {
-                            bLineIsEmpty = true;
-                            positionToPutNewLineAt = it2;
-                        }
-                    }
-                    else
-                    {
-                        if (!bLineIsEmpty)
-                            positionToPutNewLineAt = it2;
-
-                        bLineIsEmpty = false;
-                    }
-
-                    // Look out for the beginning of the next section
-                    unsigned int open = (*it2).find("[");
-                    unsigned int close = (*it2).find("]");
-                    if ((open < (*it2).length()) && (close < (*it2).length()) && (open < close))
-                    {
-                        // The next section startet, so our line isn't yet in the file - now we add it and safe the file
-                        this->configFileLine_ = this->getConfigFileLines().insert(positionToPutNewLineAt, this->varname_ + "=" + this->defvalueString_);
-                        ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
-                        success = true;
-                        break;
-                    }
-
-                    // Look out for the variable-name
-                    if ((*it2).find(this->varname_) < (*it2).length())
-                    {
-                        // We found the right line - safe it and return
-                        this->configFileLine_ = it2;
-                        success = true;
-                        break;
-                    }
-                }
-
-                // Check if we succeeded
-                if (!success)
-                {
-                    // Looks like we found the right section, but the file ended without containing our variable - so we add it and safe the file
-                    this->configFileLine_ = this->getConfigFileLines().insert(positionToPutNewLineAt, this->varname_ + "=" + this->defvalueString_);
-                    ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);
-                    success = true;
-                }
-                break;
-            }
-        }
-
-        // Check if we succeeded
-        if (!success)
-        {
-            // We obviously didn't found the right section, so we'll create it
-            this->getConfigFileLines().push_back("[" + this->identifier_->getName() + "]");                   // Create the section
-            this->getConfigFileLines().push_back(this->varname_ + "=" + this->defvalueString_);   // Create the line
-            this->configFileLine_ = --this->getConfigFileLines().end();                           // Set the pointer to the last element
-            success = true;
-            this->getConfigFileLines().push_back("");                                             // Add an empty line - this is needed for the algorithm in the searchLineInConfigFile-function
-            ConfigValueContainer::writeConfigFile(CONFIGFILEPATH);                                // Save the changed config-file
-        }
-    }
-
-    /**
-        @brief Returns the part in the corresponding config-file-entry of the container that defines the value.
-        @param bStripped True = strip the value-string
-        @return The value-string
-    */
-    std::string ConfigValueContainer::parseValueStringFromConfigFile(bool bStripped)
-    {
-        std::string output;
-        if (bStripped)
-            output = getStripped(*this->configFileLine_);
-        else
-            output = *this->configFileLine_;
-
-        return output.substr(output.find("=") + 1);
-    }
-
-    /**
-        @brief Rreturns a list, containing all entrys in the config-file.
-        @return The list
-    */
-    std::list<std::string>& ConfigValueContainer::getConfigFileLines()
-    {
-        // This is done to avoid problems while executing this code before main()
-        static std::list<std::string> configFileLinesStaticReference = std::list<std::string>();
-        return configFileLinesStaticReference;
-    }
-
-    /**
-        @brief Returns true if the ConfigFile is read and stored into the ConfigFile-lines-list.
-        @param finished This is used to change the state
-        @return True if the ConfigFile is read and stored into the ConfigFile-lines-list
-    */
-    bool ConfigValueContainer::finishedReadingConfigFile(bool finished)
-    {
-        // This is done to avoid problems while executing this code before main()
-        static bool finishedReadingConfigFileStaticVariable = false;
-
-        if (finished)
-            finishedReadingConfigFileStaticVariable = true;
-
-        return finishedReadingConfigFileStaticVariable;
-    }
-
-    /**
-        @brief Reads the config-file and stores the lines in a list.
-        @param filename The name of the config-file
-    */
-    void ConfigValueContainer::readConfigFile(const std::string& filename)
-    {
-        // This creates the file if it's not existing
-        std::ofstream createFile;
-        createFile.open(filename.c_str(), std::fstream::app);
-        createFile.close();
-
-        // Open the file
-        std::ifstream file;
-        file.open(filename.c_str(), std::fstream::in);
-
-        if (!file.is_open())
-        {
-            COUT(1) << "An error occurred in ConfigValueContainer.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open config-file " << filename << " to read the config values!" << std::endl;
-            return;
-        }
-
-        char line[1024];
-
-        // Iterate through the file and add the lines into the list
-        while (file.good() && !file.eof())
-        {
-            file.getline(line, 1024);
-            ConfigValueContainer::getConfigFileLines().push_back(line);
-        }
-
-        // The last line is useless
-        ConfigValueContainer::getConfigFileLines().pop_back();
-
-        // Add an empty line to the end of the file if needed
-        // this is needed for the algorithm in the searchLineInConfigFile-function
-        if ((ConfigValueContainer::getConfigFileLines().size() > 0) && !isEmpty(*ConfigValueContainer::getConfigFileLines().rbegin()))
-            ConfigValueContainer::getConfigFileLines().push_back("");
-
-        file.close();
-
-        ConfigValueContainer::finishedReadingConfigFile(true);
-    }
-
-    /**
-        @brief Writes the content of the list, containing all lines of the config-file, into the config-file.
-        @param filename The name of the config-file
-    */
-    void ConfigValueContainer::writeConfigFile(const std::string& filename)
-    {
-        // Make sure we stored the config-file in the list
-        if (!ConfigValueContainer::finishedReadingConfigFile())
-            ConfigValueContainer::readConfigFile(filename);
-
-        // Open the file
-        std::ofstream file;
-        file.open(filename.c_str(), std::fstream::out);
-        file.setf(std::ios::fixed, std::ios::floatfield);
-        file.precision(6);
-
-        if (!file.is_open())
-        {
-            COUT(1) << "An error occurred in ConfigValueContainer.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open config-file " << filename << " to write the config values!" << std::endl;
-            return;
-        }
-
-        // Iterate through the list an write the lines into the file
-        std::list<std::string>::iterator it;
-        for (it = ConfigValueContainer::getConfigFileLines().begin(); it != ConfigValueContainer::getConfigFileLines().end(); ++it)
-        {
-            file << (*it) << std::endl;
-        }
-
-        file.close();
+        this->setLineInConfigFile(this->value_.toString());
     }
 
     /**

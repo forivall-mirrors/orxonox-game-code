@@ -49,6 +49,7 @@
 
 #include "util/Math.h"
 #include "util/MultiTypeMath.h"
+#include "ConfigFileManager.h"
 
 namespace orxonox
 {
@@ -71,7 +72,7 @@ namespace orxonox
     class _CoreExport ConfigValueContainer
     {
         public:
-            ConfigValueContainer(Identifier* identifier, const std::string& varname, MultiTypeMath defvalue);
+            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, MultiTypeMath defvalue);
 
             /** @brief Returns the configured value. @param value This is only needed to determine the right type. @return The value */
             template <typename T>
@@ -87,6 +88,7 @@ namespace orxonox
             bool set(const std::string& input);
             bool tset(const std::string& input);
             bool reset();
+            void update();
 
             /** @brief Converts the config-value to a string. @return The string */
             inline std::string toString() const
@@ -96,21 +98,15 @@ namespace orxonox
                 { return this->value_.getTypename(); }
 
         private:
-            static void readConfigFile(const std::string& filename);
-            static void writeConfigFile(const std::string& filename);
-            static std::list<std::string>& getConfigFileLines();
-            static bool finishedReadingConfigFile(bool finished = false);
-
             bool parse(const std::string& input);
             bool parse(const std::string& input, const MultiTypeMath& defvalue);
 
             void setLineInConfigFile(const std::string& input);
             void resetLineInConfigFile();
-            void searchLineInConfigFile();
 
-            std::string parseValueStringFromConfigFile(bool bStripped = true);
-
-            Identifier*         identifier_;                    //!< The name of the class the variable belongs to
+            ConfigFileType      type_;                          //!< The type of the corresponding config-file
+            Identifier*         identifier_;                    //!< The identifier of the class
+            std::string         sectionname_;                   //!< The name of the class the variable belongs to
             std::string         varname_;                       //!< The name of the variable
             std::string         defvalueString_;                //!< The string of the default-variable
 

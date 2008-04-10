@@ -107,6 +107,7 @@ namespace orxonox
         SetConfigValue(language_, this->defaultLanguage_).description("The language of the ingame text");
 
         // Read the translation file after the language was configured
+std::cout << "asdfasdfkjsfkdjaslfkjsaflkjsdfkl\n";
         this->readTranslatedLanguageFile();
     }
 

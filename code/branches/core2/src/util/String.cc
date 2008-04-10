@@ -61,6 +61,36 @@ std::string getStripped(const std::string& str)
 */
 std::string removeTrailingWhitespaces(const std::string& str)
 {
+    unsigned int pos1 = 0;
+    unsigned int pos2 = str.size() - 1;
+    for (; pos1 < str.size() && (str[pos1] == ' ' || str[pos1] == '\t' || str[pos1] == '\n'); pos1++);
+    for (; pos2 >= 0         && (str[pos2] == ' ' || str[pos2] == '\t' || str[pos2] == '\n'); pos2--);
+    return str.substr(pos1, pos2 - pos1 + 1);
+}
+
+/**
+    @brief Returns the position of the next quote in the string, starting with start.
+    @param str The string
+    @param start The startposition
+    @return The position of the next quote (std::string::npos if there is no next quote)
+*/
+unsigned int getNextQuote(const std::string& str, unsigned int start)
+{
+    unsigned int quote = start - 1;
+
+    while ((quote = str.find('\"', quote + 1)) != std::string::npos)
+    {
+        unsigned int backslash = quote;
+        unsigned int numbackslashes = 0;
+        for (; backslash > 0; backslash--, numbackslashes++)
+            if (str[backslash - 1] != '\\')
+                break;
+
+        if (numbackslashes % 2 == 0)
+            break;
+    }
+
+    return quote;
 }
 
 /**
@@ -70,6 +100,9 @@ std::string removeTrailingWhitespaces(const std::string& str)
 */
 bool hasStringBetweenQuotes(const std::string& str)
 {
+    unsigned int pos1 = getNextQuote(str, 0);
+    unsigned int pos2 = getNextQuote(str, pos1 + 1);
+    return (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1 + 1);
 }
 
 /**
@@ -79,6 +112,12 @@ bool hasStringBetweenQuotes(const std::string& str)
 */
 std::string getStringBetweenQuotes(const std::string& str)
 {
+    unsigned int pos1 = getNextQuote(str, 0);
+    unsigned int pos2 = getNextQuote(str, pos1 + 1);
+    if (pos1 != std::string::npos && pos2 != std::string::npos)
+        return str.substr(pos1, pos2 - pos1 + 1);
+    else
+        return "";
 }
 
 /**

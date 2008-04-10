@@ -88,6 +88,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/CommandExecutor.h"
 #include "core/InputBuffer.h"
+#include "core/ConfigFileManager.h"
 
 #include "Orxonox.h"
 
@@ -249,6 +250,7 @@ namespace orxonox
     //TODO: start modules
     ogre_->startRender();
     //TODO: run engine
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
     createScene();
     setupScene();
@@ -1230,6 +1232,7 @@ namespace orxonox
     setupScene();
     setupInputSystem();
     createFrameListener();
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
     startRenderLoop();*/
   }
@@ -1244,6 +1247,7 @@ namespace orxonox
     createRenderWindow();
     initializeResourceGroups();
     setupInputSystem();
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
     createScene();
     setupScene();

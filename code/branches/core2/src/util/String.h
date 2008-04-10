@@ -38,6 +38,8 @@ _UtilExport std::string  getStripped(const std::string& str);
 
 _UtilExport std::string  removeTrailingWhitespaces(const std::string& str);
 
+_UtilExport unsigned int getNextQuote(const std::string& str, unsigned int start);
+
 _UtilExport bool         hasStringBetweenQuotes(const std::string& str);
 _UtilExport std::string  getStringBetweenQuotes(const std::string& str);
 

@@ -49,6 +49,7 @@
 #include "Iterator.h"
 #include "OrxonoxClass.h"
 #include "ConfigValueContainer.h"
+#include "ConfigFileManager.h"
 #include "Debug.h"
 
 
@@ -119,7 +120,7 @@
     orxonox::ConfigValueContainer* container##varname = this->getIdentifier()->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(this->getIdentifier(), #varname, varname = defvalue); \
+        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, this->getIdentifier(), #varname, varname = defvalue); \
         this->getIdentifier()->addConfigValueContainer(#varname, container##varname); \
     } \
     container##varname->getValue(&varname)
@@ -137,5 +138,18 @@
     } \
     else \
         COUT(2) << "Warning: Couldn't reset variable " << #varname << ", corresponding container doesn't exist." << std::endl
+
+/**
+    @brief Assigns the command, defined in the keybind-file, to the key-variable (or an empty string, if there is no entry in the file).
+    @param varname The name of the key-variable
+*/
+#define SetKeybind(keyname) \
+    orxonox::ConfigValueContainer* container##keyname = this->getIdentifier()->getConfigValueContainer(#keyname); \
+    if (!container##keyname) \
+    { \
+        container##keyname = new orxonox::ConfigValueContainer(CFT_Keybindings, this->getIdentifier(), #keyname, keyname = ""); \
+        this->getIdentifier()->addConfigValueContainer(#keyname, container##keyname); \
+    } \
+    container##keyname->getValue(&varname)
 
 #endif /* _CoreIncludes_H__ */

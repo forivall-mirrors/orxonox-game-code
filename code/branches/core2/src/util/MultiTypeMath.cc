@@ -168,8 +168,7 @@ std::string MultiTypeMath::toString() const
     else if (this->type_ == MT_vector3)
         ConvertValue(&output, this->vector3_);
     else if (this->type_ == MT_colourvalue)
-    { std::cout << "3_1\n";
-        ConvertValue(&output, this->colourvalue_);}
+        ConvertValue(&output, this->colourvalue_);
     else if (this->type_ == MT_quaternion)
         ConvertValue(&output, this->quaternion_);
     else if (this->type_ == MT_radian)
@@ -189,8 +188,7 @@ bool MultiTypeMath::fromString(const std::string value)
     else if (this->type_ == MT_vector3)
         return ConvertValue(&this->vector3_, value, orxonox::Vector3(0, 0, 0));
     else if (this->type_ == MT_colourvalue)
-    { std::cout << "4_1\n";
-        return ConvertValue(&this->colourvalue_, value, orxonox::ColourValue(0, 0, 0, 0)); }
+        return ConvertValue(&this->colourvalue_, value, orxonox::ColourValue(0, 0, 0, 0));
     else if (this->type_ == MT_quaternion)
         return ConvertValue(&this->quaternion_, value, orxonox::Quaternion(1, 0, 0, 0));
     else if (this->type_ == MT_radian)
