@@ -52,6 +52,7 @@ namespace orxonox
         this->sectionname_ = identifier->getName();
         this->varname_ = varname;
 
+        this->value_ = defvalue;
         this->bAddedDescription_ = false;
 
         this->defvalueString_ = defvalue.toString();
@@ -96,10 +97,7 @@ namespace orxonox
     */
     void ConfigValueContainer::update()
     {
-std::cout << "AAA1: " << this->value_ << std::endl;
-std::cout << "    : " << ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, this->defvalueString_) << std::endl;
         this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, this->defvalueString_));
-std::cout << "AAA2: " << this->value_ << std::endl;
     }
 
     /**

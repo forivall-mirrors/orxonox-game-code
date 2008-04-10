@@ -110,7 +110,6 @@ namespace orxonox
 
     std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, const std::string& fallback)
     {
-std::cout << "a33333333333333333333333333\n";
         for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
             if ((*it)->getName() == name)
                 return it;
@@ -122,7 +121,6 @@ std::cout << "a33333333333333333333333333\n";
 
     std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, unsigned int index, const std::string& fallback)
     {
-std::cout << "b3333333333333333333333333\n";
         for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
             if (((*it)->getName() == name) && ((*it)->getIndex() == index))
                 return it;
@@ -196,19 +194,16 @@ std::cout << "b3333333333333333333333333\n";
             {
                 if (isComment(line))
                 {
-std::cout << "1_7\n";
                     // New comment
                     newsection->getEntries().insert(newsection->getEntries().end(), new ConfigFileEntryComment(removeTrailingWhitespaces(line)));
                     continue;
                 }
                 else
                 {
-std::cout << "1_8\n";
                     unsigned int pos1 = line.find('=');
 
                     if (pos1 != std::string::npos && pos1 > 0)
                     {
-std::cout << "1_9\n";
                         // New entry
                         unsigned int pos2 = line.find('[');
                         unsigned int pos3 = line.find(']');
@@ -219,51 +214,37 @@ std::cout << "1_9\n";
                         std::string betweenQuotes = getStringBetweenQuotes(value);
                         if (value.size() > 0 && value[0] == '"' && betweenQuotes != "" && betweenQuotes.size() > 0)
                         {
-std::cout << "1_10\n";
                             value = betweenQuotes;
                             if (line.size() > pos1 + 1 + betweenQuotes.size() + 2)
                                 comment = removeTrailingWhitespaces(getComment(line.substr(pos1 + 1 + betweenQuotes.size() + 2)));
                         }
                         else
                         {
-std::cout << "1_11\n";
                             unsigned int pos4 = getCommentPosition(line);
-std::cout << "a\n";
-std::cout << line << std::endl;
-std::cout << line.substr(pos1 + 1, pos4 - pos1 - 1) << std::endl;
                             value = removeTrailingWhitespaces(line.substr(pos1 + 1, pos4 - pos1 - 1));
-std::cout << value << std::endl;
-std::cout << "b\n";
                             if (pos4 != std::string::npos)
                                 comment = removeTrailingWhitespaces(line.substr(pos4));
-std::cout << comment << std::endl;
-std::cout << "c\n";
                         }
 
-std::cout << "1_12\n";
                         if (pos2 != std::string::npos && pos3 != std::string::npos && pos3 > pos2 + 1)
                         {
-std::cout << "1_13\n";
                             // There might be an array index
                             unsigned int index = 0;
                             if (ConvertValue(&index, line.substr(pos2 + 1, pos3 - pos2 - 1)))
                             {
                                 // New array
                                 newsection->getEntries().insert(newsection->getEntries().end(), new ConfigFileEntryArrayValue(getStripped(line.substr(0, pos2)), index, value, comment));
-std::cout << "1_14\n";
                                 continue;
                             }
                         }
 
                         // New value
                         newsection->getEntries().insert(newsection->getEntries().end(), new ConfigFileEntryValue(getStripped(line.substr(0, pos1)), value, comment));
-std::cout << "1_15\n";
                         continue;
                     }
                 }
             }
         }
-std::cout << "1_16\n";
 
         file.close();
 
@@ -271,7 +252,6 @@ std::cout << "1_16\n";
 
         // Save the file in case something changed (like stripped whitespaces)
         this->save();
-std::cout << "1_17\n";
     }
 
     void ConfigFile::save() const
@@ -311,7 +291,6 @@ std::cout << "1_17\n";
 
     ConfigFileSection* ConfigFile::getSection(const std::string& section)
     {
-std::cout << "22222222222222222222\n";
         for (std::list<ConfigFileSection*>::iterator it = this->sections_.begin(); it != this->sections_.end(); ++it)
             if ((*it)->getName() == section)
                 return (*it);
@@ -432,7 +411,6 @@ std::cout << "22222222222222222222\n";
 
     ConfigFile* ConfigFileManager::getFile(ConfigFileType type)
     {
-std::cout << "111111111111111111\n";
         std::map<ConfigFileType, ConfigFile*>::iterator it = this->configFiles_.find(type);
         if (it != this->configFiles_.end())
             return (*it).second;

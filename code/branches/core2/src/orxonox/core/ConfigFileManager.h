@@ -75,7 +75,7 @@ namespace orxonox
     class _CoreExport ConfigFileEntryValue : public ConfigFileEntry
     {
         public:
-            inline ConfigFileEntryValue(const std::string& name, const std::string& value = "", const std::string& additionalComment = "") : name_(name), value_(value), additionalComment_(additionalComment), bString_(false) { std::cout << "************* " << value << std::endl; }
+            inline ConfigFileEntryValue(const std::string& name, const std::string& value = "", const std::string& additionalComment = "") : name_(name), value_(value), additionalComment_(additionalComment), bString_(false) {}
             inline virtual ~ConfigFileEntryValue() {}
 
             inline virtual const std::string& getName() const

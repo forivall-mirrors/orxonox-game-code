@@ -94,7 +94,7 @@ namespace orxonox
         }
 
         // Return a constant value while we're creating the object
-        return 4;
+        return 2;
     }
 }
 
