@@ -276,7 +276,8 @@ namespace network
     compressedGamestate->data = dest;
     compressedGamestate->diffed = a->diffed;
     compressedGamestate->base_id = a->base_id;
-    COUT(5) << "G.St.Man: saved compressed data in GameStateCompressed" << std::endl;
+    COUT(5) << "G.St.Man: saved compressed data in GameStateCompressed:" << std::endl;
+    COUT(4) << "G.St.Man: compressedGamestate: id: " << compressedGamestate->id << " base_id: " << compressedGamestate->base_id << " normsize: " << compressedGamestate->normsize << " compsize: " << compressedGamestate->compsize << " diffed: " << compressedGamestate->diffed << std::endl;
     return compressedGamestate;
   }
 
