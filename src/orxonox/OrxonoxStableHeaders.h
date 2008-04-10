@@ -39,11 +39,11 @@
 
 // including std headers here is useless since they're already precompiled
 
-// not including the entire Ogre.h doesn't exceed the default heap size for pch
 #ifndef WIN32_LEAN_AND_MEAN
 // prevent Ogre from including winsock.h that messes with winsock2.h from enet
 #  define WIN32_LEAN_AND_MEAN
 #endif
+// not including the entire Ogre.h doesn't exceed the default heap size for pch
 //#include <Ogre.h>
 #include <OgreBillboardSet.h>
 #include <OgreCamera.h>

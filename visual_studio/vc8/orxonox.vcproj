@@ -142,134 +142,6 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
-		<Configuration
-			Name="Release_SSE|Win32"
-			ConfigurationType="1"
-			InheritedPropertySheets="..\base_properties_release_sse.vsprops;..\orxonox_properties.vsprops"
-			CharacterSet="1"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/Zm200"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				EntryPointSymbol=""
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release_SSE2|Win32"
-			ConfigurationType="1"
-			InheritedPropertySheets="..\base_properties_release_sse2.vsprops;..\orxonox_properties.vsprops"
-			CharacterSet="1"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/Zm200"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				EntryPointSymbol=""
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -282,26 +154,6 @@
 			<File
 				RelativePath="..\..\src\orxonox\GraphicsEngine.cc"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\InputEventListener.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\InputHandler.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\InputManager.cc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\Main.cc"
@@ -328,58 +180,6 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release_SSE|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release_SSE2|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\SpaceshipSteering.cc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release_SSE|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release_SSE2|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
 			</File>
@@ -429,162 +229,6 @@
 				<File
 					RelativePath="..\..\src\orxonox\objects\SpaceShip.cc"
 					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\SpaceshipSteeringObject.cc"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_SSE|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_SSE2|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\test1.cc"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_SSE|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_SSE2|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\test2.cc"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_SSE|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_SSE2|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\test3.cc"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_SSE|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release_SSE2|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\WorldEntity.cc"
@@ -658,22 +302,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\InputEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\InputEventListener.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\InputHandler.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\InputManager.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\orxonox\Orxonox.h"
 				>
 			</File>
@@ -687,10 +315,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\OrxonoxStableHeaders.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\SpaceshipSteering.h"
 				>
 			</File>
 			<Filter
@@ -738,26 +362,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\SpaceShip.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\SpaceshipSteeringObject.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\Test.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\test1.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\test2.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\test3.h"
 					>
 				</File>
 				<File
@@ -827,70 +431,6 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath="..\..\bin\media.cfg"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\ogre.cfg"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\ogre.cfg-init"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\Ogre.log"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\orxonox.bat"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\orxonox.ini"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\orxonox.log"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\orxonox_d.bat"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\plugins.cfg"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\plugins.cfg-init"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\plugins_d.cfg"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\quake3settings.cfg"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\resources.cfg"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\run-script"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\translation_default.lang"
-				>
-			</File>
-			<File
-				RelativePath="..\..\bin\translation_german.lang"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

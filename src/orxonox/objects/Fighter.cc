@@ -38,7 +38,7 @@
 #include "util/String2Number.h"
 #include "core/CoreIncludes.h"
 #include "Orxonox.h"
-#include "InputHandler.h"
+#include "core/InputManager.h"
 #include "particle/ParticleInterface.h"
 #include "weapon/AmmunitionDump.h"
 #include "weapon/BarrelGun.h"
@@ -254,20 +254,20 @@ namespace orxonox
     {
         if (!this->setMouseEventCallback_)
         {
-            if (InputHandler::getSingleton()->getMouse())
+            if (InputManager::getSingleton()->getMouse())
             {
-                InputHandler::getSingleton()->getMouse()->setEventCallback(this);
+                InputManager::getSingleton()->getMouse()->setEventCallback(this);
                 this->setMouseEventCallback_ = true;
             }
         }
 
         WorldEntity::tick(dt);
 
-        OIS::Keyboard* mKeyboard = InputHandler::getSingleton()->getKeyboard();
-        OIS::Mouse* mMouse = InputHandler::getSingleton()->getMouse();
+        OIS::Keyboard* mKeyboard = InputManager::getSingleton()->getKeyboard();
+        OIS::Mouse* mMouse = InputManager::getSingleton()->getMouse();
 
-        mKeyboard->capture();
-        mMouse->capture();
+        //mKeyboard->capture();
+        //mMouse->capture();
 
         if (leftButtonPressed_)
             mainWeapon_->primaryFireRequest();

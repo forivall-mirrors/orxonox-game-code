@@ -31,48 +31,46 @@
         coming from OIS.
  */
 
-#include "OrxonoxStableHeaders.h"
-
 #include "core/CoreIncludes.h"
 #include "core/Debug.h"
-#include "Orxonox.h"
 #include "InputEventListener.h"
 #include "InputHandler.h"
+#include "InputManager.h"
 
 namespace orxonox
 {
   /**
     @brief The reference to the singleton
   */
-  InputHandler* InputHandler::singletonRef_s = 0;
+  InputManager* InputManager::singletonRef_s = 0;
 
   /**
     @brief Constructor only resets the pointer values to 0.
   */
-  InputHandler::InputHandler() :
-      mouse_(0), keyboard_(0), inputSystem_(0)
+  InputManager::InputManager() :
+      mouse_(0), keyboard_(0), inputSystem_(0),
+      currentMode_(IM_UNINIT), setMode_(IM_UNINIT),
+      handlerGUI_(0), handlerGame_(0), handlerBuffer_(0)
   {
-    //RegisterObject(InputHandler);
   }
 
   /**
     @brief Destructor only called at the end of the program
   */
-  InputHandler::~InputHandler()
+  InputManager::~InputManager()
   {
+    this->destroyDevices();
   }
 
   /**
-    @brief The one instance of the InputHandler is stored in this function.
-    @return The pointer to the only instance of the InputHandler
+    @brief The one instance of the InputManager is stored in this function.
+    @return The pointer to the only instance of the InputManager
   */
-  InputHandler *InputHandler::getSingleton()
+  InputManager *InputManager::getSingleton()
   {
     if (!singletonRef_s)
-      singletonRef_s = new InputHandler();
+      singletonRef_s = new InputManager();
     return singletonRef_s;
-    //static InputHandler theOnlyInstance;
-    //return &theOnlyInstance;
   }
 
   /**
@@ -82,7 +80,7 @@ namespace orxonox
     @param windowWidth The width of the render window
     @param windowHeight The height of the render window
   */
-  bool InputHandler::initialise(size_t windowHnd, int windowWidth, int windowHeight)
+  bool InputManager::initialise(size_t windowHnd, int windowWidth, int windowHeight)
   {
     if (!this->inputSystem_)
     {
@@ -102,41 +100,34 @@ namespace orxonox
       {
         // Create inputsystem
         inputSystem_ = OIS::InputManager::createInputSystem(paramList);
-        //if (getSoftDebugLevel() >= ORX_DEBUG)
-        //  orxonox::OutputHandler::getOutStream().setOutputLevel(4) << "asdfblah" << std::endl;
-        COUT(ORX_DEBUG) << "*** InputHandler: Created OIS input system" << std::endl;
+        COUT(ORX_DEBUG) << "*** InputManager: Created OIS input system" << std::endl;
 
-        // If possible create a buffered keyboard
-        /*if (inputSystem_->getNumberOfDevices(OIS::OISKeyboard) > 0)
-        {*/
-          keyboard_ = static_cast<OIS::Keyboard*>(inputSystem_->createInputObject(OIS::OISKeyboard, true));
-          keyboard_->setEventCallback(this);
-          COUT(ORX_DEBUG) << "*** InputHandler: Created OIS mouse" << std::endl;
-        //}
+        // create a keyboard. If none are available the exception is caught.
+        keyboard_ = static_cast<OIS::Keyboard*>(inputSystem_->createInputObject(OIS::OISKeyboard, true));
+        COUT(ORX_DEBUG) << "*** InputManager: Created OIS mouse" << std::endl;
 
-        // If possible create a buffered mouse
-        /*if (inputSystem_->numMice() > 0 )
-        {*/
-          mouse_ = static_cast<OIS::Mouse*>(inputSystem_->createInputObject(OIS::OISMouse, true));
-          mouse_->setEventCallback(this);
-          COUT(ORX_DEBUG) << "*** InputHandler: Created OIS keyboard" << std::endl;
+        // create a mouse. If none are available the exception is caught.
+        mouse_ = static_cast<OIS::Mouse*>(inputSystem_->createInputObject(OIS::OISMouse, true));
+        COUT(ORX_DEBUG) << "*** InputManager: Created OIS keyboard" << std::endl;
 
-          // Set mouse region
-          this->setWindowExtents(windowWidth, windowHeight);
-        //}
+        // Set mouse region
+        this->setWindowExtents(windowWidth, windowHeight);
       }
       catch (OIS::Exception ex)
       {
         // something went wrong with the initialisation
-        COUT(ORX_ERROR) << "Error: Failed creating an input system. Message: \"" << ex.eText << "\"" << std::endl;
+        COUT(ORX_ERROR) << "Error: Failed creating an input system/keyboard/mouse. Message: \"" << ex.eText << "\"" << std::endl;
         this->inputSystem_ = 0;
         return false;
       }
     }
 
-    COUT(ORX_DEBUG) << "*** InputHandler: Loading key bindings..." << std::endl;
-    // temporary solution: create event list
-    //InputEvent[] list = this->createEventList();
+    // create the handlers
+    this->handlerGUI_ = new InputHandlerGUI();
+    this->handlerGame_ = new InputHandlerGame();
+    this->handlerGame_->loadBindings();
+
+    /*COUT(ORX_DEBUG) << "*** InputManager: Loading key bindings..." << std::endl;
     // load the key bindings
     InputEvent empty = {0, false, 0, 0, 0};
     for (int i = 0; i < this->numberOfKeys_; i++)
@@ -144,7 +135,7 @@ namespace orxonox
 
     //assign 'abort' to the escape key
     this->bindingsKeyPressed_[(int)OIS::KC_ESCAPE].id = 1;
-    COUT(ORX_DEBUG) << "*** InputHandler: Loading done." << std::endl;
+    COUT(ORX_DEBUG) << "*** InputManager: Loading done." << std::endl;*/
 
     return true;
   }
@@ -152,9 +143,9 @@ namespace orxonox
   /**
     @brief Destroys all the created input devices.
   */
-  void InputHandler::destroyDevices()
+  void InputManager::destroyDevices()
   {
-    COUT(ORX_DEBUG) << "*** InputHandler: Destroying InputHandler..." << std::endl;
+    COUT(ORX_DEBUG) << "*** InputManager: Destroying InputManager..." << std::endl;
     if (this->mouse_)
       this->inputSystem_->destroyInputObject(mouse_);
     if (this->keyboard_)
@@ -165,13 +156,13 @@ namespace orxonox
     this->mouse_         = 0;
     this->keyboard_      = 0;
     this->inputSystem_   = 0;
-    COUT(ORX_DEBUG) << "*** InputHandler: Destroying done." << std::endl;
+    COUT(ORX_DEBUG) << "*** InputManager: Destroying done." << std::endl;
   }
 
   /**
     @brief Destroys the singleton.
   */
-  void InputHandler::destroy()
+  void InputManager::destroySingleton()
   {
     if (singletonRef_s)
       delete singletonRef_s;
@@ -179,11 +170,36 @@ namespace orxonox
   }
 
   /**
-    @brief Updates the InputHandler
+    @brief Updates the InputManager
     @param dt Delta time
   */
-  void InputHandler::tick(float dt)
+  void InputManager::tick(float dt)
   {
+    // reset the game if it has changed
+    if (this->currentMode_ != this->setMode_)
+    {
+      switch (this->setMode_)
+      {
+      case IM_GUI:
+        this->mouse_->setEventCallback(this->handlerGUI_);
+        this->keyboard_->setEventCallback(this->handlerGUI_);
+        break;
+      case IM_INGAME:
+        this->mouse_->setEventCallback(this->handlerGame_);
+        this->keyboard_->setEventCallback(this->handlerGame_);
+        break;
+      case IM_KEYBOARD:
+        this->mouse_->setEventCallback(this->handlerGame_);
+        this->keyboard_->setEventCallback(this->handlerBuffer_);
+        break;
+      case IM_UNINIT:
+        this->mouse_->setEventCallback(0);
+        this->keyboard_->setEventCallback(0);
+        break;
+      }
+      this->currentMode_ = this->setMode_;
+    }
+
     // capture all the input. That calls the event handlers.
     if (mouse_)
       mouse_->capture();
@@ -198,7 +214,7 @@ namespace orxonox
     @param width The new width of the render window
     @param height the new height of the render window
   */
-  void InputHandler::setWindowExtents(int width, int height)
+  void InputManager::setWindowExtents(int width, int height)
   {
     // Set mouse region (if window resizes, we should alter this to reflect as well)
     const OIS::MouseState &mouseState = mouse_->getMouseState();
@@ -207,66 +223,22 @@ namespace orxonox
   }
 
   /**
-    @brief Calls all the objects from classes that derive from InputEventListener.
-    @param evt The input event that occured.
+    @brief Sets the input mode to either GUI, inGame or Buffer
+    @param mode The new input mode
+    @remark Only has an affect if the mode actually changes
   */
-  inline void InputHandler::callListeners(orxonox::InputEvent &evt)
+  void InputManager::setInputMode(InputMode mode)
   {
-    for (Iterator<InputEventListener> it = ObjectList<InputEventListener>::start(); it; )
-    {
-      if (it->bActive_)
-        (it++)->eventOccured(evt);
-      else
-        it++;
-    }
+    this->setMode_ = mode;
   }
 
   /**
-    @brief Event handler for the keyPressed Event.
-    @param e Event information
+    @brief Returns the current input handling method
+    @return The current input mode.
   */
-  bool InputHandler::keyPressed(const OIS::KeyEvent &e)
+  InputMode InputManager::getInputMode()
   {
-    callListeners(this->bindingsKeyPressed_[(int)e.key]);
-    return true;
-  }
-
-  /**
-    @brief Event handler for the keyReleased Event.
-    @param e Event information
-  */
-  bool InputHandler::keyReleased(const OIS::KeyEvent &e)
-  {
-    return true;
-  }
-
-  /**
-    @brief Event handler for the mouseMoved Event.
-    @param e Event information
-  */
-  bool InputHandler::mouseMoved(const OIS::MouseEvent &e)
-  {
-    return true;
-  }
-
-  /**
-    @brief Event handler for the mousePressed Event.
-    @param e Event information
-    @param id The ID of the mouse button
-  */
-  bool InputHandler::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-  {
-    return true;
-  }
-
-  /**
-    @brief Event handler for the mouseReleased Event.
-    @param e Event information
-    @param id The ID of the mouse button
-  */
-  bool InputHandler::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-  {
-    return true;
+    return this->currentMode_;
   }
 
 }

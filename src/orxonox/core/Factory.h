@@ -50,8 +50,6 @@
 
 namespace orxonox
 {
-    class BaseObject; // Forward declaration
-
     // ###############################
     // ###         Factory         ###
     // ###############################

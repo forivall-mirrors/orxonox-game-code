@@ -32,7 +32,7 @@
     The Identifier contains all needed informations about the class it belongs to:
      - the name
      - a list with all objects
-     - parents and childs
+     - parents and children
      - the factory (if available)
      - the networkID that can be synchronised with the server
      - all configurable variables (if available)
@@ -64,9 +64,6 @@
 
 namespace orxonox
 {
-    class BaseFactory; // Forward declaration
-    class BaseObject;  // Forward declaration
-
     // ###############################
     // ###       Identifier        ###
     // ###############################

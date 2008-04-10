@@ -41,7 +41,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Debug.h"
 #include "Orxonox.h"
-#include "InputHandler.h"
+#include "core/InputManager.h"
 #include "particle/ParticleInterface.h"
 #include "Projectile.h"
 #include "core/XMLPort.h"
@@ -416,11 +416,11 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
-        if (!this->setMouseEventCallback_)
+      if (InputManager::getSingleton()->getMouse()->getEventCallback() != this)
         {
-            if (InputHandler::getSingleton()->getMouse())
+            if (InputManager::getSingleton()->getMouse())
             {
-                InputHandler::getSingleton()->getMouse()->setEventCallback(this);
+                InputManager::getSingleton()->getMouse()->setEventCallback(this);
                 this->setMouseEventCallback_ = true;
             }
         }
@@ -445,11 +445,8 @@ namespace orxonox
             this->timeToReload_ = this->reloadTime_;
         }
 
-        OIS::Keyboard* mKeyboard = InputHandler::getSingleton()->getKeyboard();
-        OIS::Mouse* mMouse = InputHandler::getSingleton()->getMouse();
-
-        mKeyboard->capture();
-        mMouse->capture();
+        OIS::Keyboard* mKeyboard = InputManager::getSingleton()->getKeyboard();
+        OIS::Mouse* mMouse = InputManager::getSingleton()->getMouse();
 
 
         // #####################################

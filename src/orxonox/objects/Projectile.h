@@ -9,8 +9,6 @@
 
 namespace orxonox
 {
-    class SpaceShip; // Forward declaration
-
     class _OrxonoxExport Projectile : public WorldEntity
     {
         public:

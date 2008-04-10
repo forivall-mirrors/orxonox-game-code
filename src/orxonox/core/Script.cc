@@ -37,8 +37,8 @@ extern "C" {
 #include "lauxlib.h"
 }
 
-#include "tolua++.h"
-#include "../../util/tolua/tolua_bind.h"
+#include "util/tolua/tolua++.h"
+#include "util/tolua/tolua_bind.h"
 
 namespace orxonox
 {
@@ -56,7 +56,7 @@ namespace orxonox
   void Script::luaPrint(std::string str)
   {
     output_ += str;
-    COUT(0) << "Lua_output!:" << std::endl << str << std::endl << "***" << std::endl;
+    COUT(4) << "Lua_output!:" << std::endl << str << std::endl << "***" << std::endl;
   }
 
   /**
@@ -88,7 +88,7 @@ namespace orxonox
     //std::string output;
 
     if (luaTags) luaSource_ = replaceLuaTags(levelString);
-    COUT(0) << "ParsedSourceCode: " << luaSource_ << std::endl;
+    COUT(4) << "ParsedSourceCode: " << luaSource_ << std::endl;
   }
 
   void Script::run()
@@ -99,7 +99,7 @@ namespace orxonox
     error = luaL_loadstring(luaState_, init.c_str());
     if (error == 0)
       error = lua_pcall(luaState_, 0, 0, 0);
-    if (error != 0) COUT(0) << "Error in Lua-script: " << lua_tostring(luaState_, -1) << std::endl;
+    if (error != 0) COUT(2) << "Error in Lua-script: " << lua_tostring(luaState_, -1) << std::endl;
   }
 
 

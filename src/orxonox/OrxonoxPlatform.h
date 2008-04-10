@@ -189,9 +189,10 @@ namespace orxonox {
 #endif
 
 // Integer formats of fixed bit width
-typedef unsigned int uint32;
+// FIXME: consider 64 bit platforms!
+/*typedef unsigned int uint32;
 typedef unsigned short uint16;
-typedef unsigned char uint8;
+typedef unsigned char uint8;*/
 
 #ifdef ORXONOX_DOUBLE_PRECISION
 typedef double Real;
@@ -231,7 +232,7 @@ typedef float Real;
 
 // disable: 'MultiTypeString' : multiple assignment operators specified
 // Used in MultiType and works fine so far
-#   pragma warning (disable : 4522)
+//#   pragma warning (disable : 4522)
 
 // disable: "non dll-interface class used as base for dll-interface class"
 // Happens when deriving from Singleton because bug in compiler ignores
@@ -268,5 +269,8 @@ typedef float Real;
 #endif
 
 } /* namespace orxonox */
+
+// include visual leak detector to search for memory links
+//#include <vld.h>
 
 #endif /* _OrxonoxPlatform_H__ */

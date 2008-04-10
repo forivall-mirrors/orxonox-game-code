@@ -26,9 +26,9 @@
  */
 
 /**
- @file  UtilPrereq.h
- @brief Contains all the necessary forward declarations for all classes, structs and enums.
- */
+  @file
+  @brief Contains all the necessary forward declarations for all classes and structs.
+*/
 
 #ifndef _UtilPrereqs_H__
 #define _UtilPrereqs_H__
@@ -58,6 +58,7 @@
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
+class ArgReader;
 class Convert;
 template <typename FromType, typename ToType>
 class Converter;

@@ -27,34 +27,25 @@
 
 /**
  @file
- @brief InputEventListener Interface declaration
+ @brief Core relevant parts of InputEventListener
  */
 
-#ifndef _InputEventListener_H__
-#define _InputEventListener_H__
-
-#include "OrxonoxPrereqs.h"
-
-#include "core/OrxonoxClass.h"
-#include "InputEvent.h"
+#include "core/CoreIncludes.h"
+#include "InputEventListener.h"
 
 namespace orxonox
 {
   /**
-    @brief Interface that any class can use to get key independent input.
+    @brief standard constructor
   */
-  class _OrxonoxExport InputEventListener : virtual public OrxonoxClass
+  InputEventListener::InputEventListener()
   {
-    friend class InputHandler;
-  public:
-    InputEventListener();
-    virtual ~InputEventListener();
-    /** Method is called every time an Input event occurs && bActive */
-    virtual void eventOccured(InputEvent &evt) = 0;
+    RegisterRootObject(InputEventListener);
+    this->bActive_ = true;
+  }
 
-  private:
-    bool bActive_;
-  };
+  InputEventListener::~InputEventListener()
+  {
+  }
+
 }
-
-#endif /* _InputEventListener_H__ */

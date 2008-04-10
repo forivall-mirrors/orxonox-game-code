@@ -26,8 +26,8 @@
  */
 
 /**
-    @file  CorePrereq.h
-    @brief Contains all the necessary forward declarations for all classes, structs and enums.
+  @file
+  @brief Contains all the necessary forward declarations for all classes and structs.
 */
 
 #ifndef _CorePrereqs_H__
@@ -35,7 +35,7 @@
 
 #include <string>
 
-#include "orxonox/OrxonoxPlatform.h"
+#include "OrxonoxPlatform.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings
@@ -66,9 +66,9 @@ namespace orxonox
 {
   typedef std::string LanguageEntryLabel;
 
-  class ArgReader;
   class BaseFactory;
   class BaseMetaObjectListElement;
+  class BaseObject;
   template <class T>
   class ClassFactory;
   template <class T>
@@ -85,6 +85,9 @@ namespace orxonox
   class Factory;
   class Identifier;
   class IdentifierDistributor;
+  class InputHandlerGame;
+  class InputHandlerGUI;
+  class InputManager;
   template <class T>
   class Iterator;
   class Language;
@@ -102,6 +105,7 @@ namespace orxonox
   class OutputHandler;
   template <class T>
   class SubclassIdentifier;
+  class Tickable;
   template <class T, class O>
   class XMLPortClassObjectContainer;
   template <class T>

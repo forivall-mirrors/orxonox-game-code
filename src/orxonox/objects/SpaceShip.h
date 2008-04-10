@@ -9,12 +9,8 @@
 #include "Model.h"
 #include "../tools/BillboardSet.h"
 
-class TiXmlElement;          // Forward declaration
-
 namespace orxonox
 {
-    class ParticleInterface; // Forward declaration
-
     class _OrxonoxExport SpaceShip : public Model, public OIS::MouseListener
     {
         public:

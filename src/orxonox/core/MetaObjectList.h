@@ -112,7 +112,7 @@ namespace orxonox
         lists wherein the object that owns the MetaObjectList is registered.
         This allows much faster deletion of objects because no iteration is needed.
     */
-    class MetaObjectList
+    class _CoreExport MetaObjectList
     {
         public:
             MetaObjectList();

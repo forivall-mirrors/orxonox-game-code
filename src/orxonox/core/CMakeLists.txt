@@ -4,11 +4,12 @@ SET( CORE_SRC_FILES
   Factory.cc
   Identifier.cc
   IdentifierDistributor.cc
+  InputHandler.cc
+  InputManager.cc
   MetaObjectList.cc
   ConfigValueContainer.cc
   Error.cc
   SignalHandler.cc
-  ArgReader.cc
   DebugLevel.cc
   OutputHandler.cc
   Language.cc

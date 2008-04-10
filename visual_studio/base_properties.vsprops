@@ -8,9 +8,9 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalIncludeDirectories="&quot;$(RootDir)src&quot;;&quot;$(RootDir)src\orxonox&quot;;&quot;$(DependencyDir)include&quot;"
-		PreprocessorDefinitions="WIN32;__WIN32__;_WIN32;BOOST_ALL_DYN_LINK"
+		PreprocessorDefinitions="WIN32;__WIN32__;_WIN32;BOOST_ALL_DYN_LINK;OIS_DYNAMIC_LIB; ZLIB_WINAPI"
 		WarningLevel="3"
-		DisableSpecificWarnings="4244;4251"
+		DisableSpecificWarnings="4522;4251"
 	/>
 	<Tool
 		Name="VCLibrarianTool"
@@ -22,7 +22,7 @@
 		Name="VCLinkerTool"
 		OutputFile="$(OutDir)$(ProjectName)$(CS).dll"
 		AdditionalLibraryDirectories="$(DependencyDir)lib"
-		SubSystem="2"
+		SubSystem="1"
 		ImportLibrary="$(LibOutDir)$(TargetName).lib"
 		TargetMachine="1"
 	/>
@@ -32,7 +32,7 @@
 	/>
 	<UserMacro
 		Name="DependencyDir"
-		Value="D:\orxonox\dependencies\orxonox\"
+		Value="$(RootDir)..\dependencies\"
 	/>
 	<UserMacro
 		Name="CS"
@@ -40,6 +40,6 @@
 	/>
 	<UserMacro
 		Name="CSS"
-		Value="$(CS)"
+		Value=""
 	/>
 </VisualStudioPropertySheet>

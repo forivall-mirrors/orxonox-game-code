@@ -45,8 +45,6 @@
 
 namespace orxonox
 {
-    //class TickFrameListener; // Forward declaration
-
     //! The Tickable interface provides a tick(dt) function, that gets called every frame.
     class _CoreExport Tickable : virtual public OrxonoxClass
     {
