@@ -26,23 +26,28 @@ IF (NOT Lua_INCLUDE_DIR)
 FIND_PATH(Lua_INCLUDE_DIR lua.h
 	/usr/include/lua50
 	/usr/local/include/lua50
-	/usr/pack/lua-5.0.3-sd/include/)
+	/usr/pack/lua-5.0.3-sd/include)
 ENDIF (NOT Lua_INCLUDE_DIR)
-MESSAGE(STATUS ${Lua_INCLUDE_DIR})
 
 IF (NOT Lua_LIBRARIES)
-FIND_LIBRARY(Lua_LIBRARIES lua50 lua
+FIND_LIBRARY(Lua_LIBRARIES lua50
 	/usr/lib
-	/usr/local/lib
-	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib/)
+	/usr/local/lib)
 
-FIND_LIBRARY(Lua_LIBRARY lualib50 lualib
+FIND_LIBRARY(Lua_LIBRARY lualib50
 	/usr/lib
-	/usr/local/lib
-	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib/)
+	/usr/local/lib)
 
-MESSAGE(STATUS ${Lua_LIBRARY})
-MESSAGE(STATUS ${Lua_LIBRARIES})
+SET(Lua_LIBRARIES ${Lua_LIBRARIES} ${Lua_LIBRARY})
+
+ENDIF (NOT Lua_LIBRARIES)
+
+IF (NOT Lua_LIBRARIES)
+FIND_LIBRARY(Lua_LIBRARIES lua
+	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib)
+
+FIND_LIBRARY(Lua_LIBRARY lualib
+	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib)
 
 SET(Lua_LIBRARIES ${Lua_LIBRARIES} ${Lua_LIBRARY})
 

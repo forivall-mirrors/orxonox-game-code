@@ -29,6 +29,10 @@ namespace orxonox // tolua_export
     void run();
     void luaPrint(std::string str); // tolua_export
 
+#if LUA_VERSION_NUM != 501
+    inline const char * lua_Chunkreader(lua_State *L, void *data, size_t *size) { return NULL;};
+#endif
+
     inline lua_State* getLuaState() { return luaState_; };
     inline std::string getLuaOutput() { return output_; };
     //inline std::string* getFileString() { return &fileString_; };
