@@ -48,7 +48,16 @@ namespace orxonox
   {
     luaState_ = lua_open();
     luaSource_ = "";
+#if LUA_VERSION_NUM == 501
     luaL_openlibs(luaState_);
+#else
+    luaopen_base(luaState_);
+    luaopen_string(luaState_);
+    luaopen_table(luaState_);
+    luaopen_math(luaState_);
+    luaopen_io(luaState_);
+    luaopen_debug(luaState_);
+#endif
     tolua_orxonox_open(luaState_);
     output_;
   }
@@ -96,12 +105,15 @@ namespace orxonox
     int error = 0;
     std::string init = "local scr = orxonox.Script:getInstance()\nprint = function(s)\nscr:luaPrint(s)\nend\n";
     init += luaSource_;
+#if LUA_VERSION_NUM == 501
     error = luaL_loadstring(luaState_, init.c_str());
+#else
+    error = lua_load(luaState_, &orxonox::Script::lua_Chunkreader, init.c_str(), "init");
+#endif
     if (error == 0)
       error = lua_pcall(luaState_, 0, 0, 0);
     if (error != 0) COUT(2) << "Error in Lua-script: " << lua_tostring(luaState_, -1) << std::endl;
   }
-
 
   unsigned int Script::getNextQuote(const std::string& text, unsigned int start)
   {
@@ -142,7 +154,6 @@ namespace orxonox
       std::map<unsigned int, bool>::iterator it = luaTags.begin();
       std::map<unsigned int, bool>::iterator it2 = it;
       bool bBetweenQuotes = false;
-      bool bBetweenTags = false;
       unsigned int pos = 0;
       while ((pos = getNextQuote(text, pos)) != std::string::npos)
       {
