@@ -78,8 +78,8 @@
 
 #include "core/ClassTreeMask.h"
 #include "objects/WorldEntity.h"
-#include "core/DebugLevel.h"
 #include "core/BaseObject.h"
+#include "core/CoreSettings.h"
 #include "objects/Test.h"
 #include "objects/test1.h"
 #include "objects/test2.h"
@@ -1124,9 +1124,9 @@ namespace orxonox
         std::cout << "11\n";
 
         ClassTreeMask test13_20;
-        test13_20.exclude(Class(DebugLevel));
+        test13_20.exclude(Class(CoreSettings));
         std::cout << std::endl;
-        std::cout << "Mask with excluded DebugLevel:\n";
+        std::cout << "Mask with excluded CoreSettings:\n";
         TestClassTreeMask(test13_20);
 
         std::cout << "12\n";

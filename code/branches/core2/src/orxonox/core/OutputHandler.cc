@@ -30,7 +30,7 @@
     @brief Implementation of the OutputHandler class.
 */
 
-#include "DebugLevel.h"
+#include "CoreSettings.h"
 #include "OutputHandler.h"
 #include "ConsoleCommand.h"
 
@@ -76,7 +76,7 @@ namespace orxonox
     */
     int OutputHandler::getSoftDebugLevel(OutputHandler::OutputDevice device)
     {
-        return DebugLevel::getSoftDebugLevel(device);
+        return CoreSettings::getSoftDebugLevel(device);
     }
 
     /**

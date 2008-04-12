@@ -99,7 +99,7 @@ namespace orxonox
   class ConfigFileManager;
   class ConfigFileSection;
   class ConfigValueContainer;
-  class DebugLevel;
+  class CoreSettings;
   class Error;
   class Executor;
   template <class T>

@@ -10,7 +10,7 @@ SET( CORE_SRC_FILES
   Error.cc
   SignalHandler.cc
   ArgReader.cc
-  DebugLevel.cc
+  CoreSettings.cc
   OutputHandler.cc
   Language.cc
   ClassTreeMask.cc

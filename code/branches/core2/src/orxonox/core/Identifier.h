@@ -112,9 +112,6 @@ namespace orxonox
 
             virtual void updateConfigValues() const = 0;
 
-            /** @brief Removes all objects of the corresponding class. */
-            virtual void removeObjects() const = 0;
-
             /** @brief Returns the name of the class the Identifier belongs to. @return The name */
             inline const std::string& getName() const { return this->name_; }
 
@@ -305,7 +302,6 @@ namespace orxonox
         public:
             ClassIdentifier<T>* registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass);
             void addObject(T* object);
-            void removeObjects() const;
             void setName(const std::string& name);
             /** @brief Returns the list of all existing objects of this class. @return The list */
             inline const ObjectList<T>* getObjects() const { return this->objects_; }
@@ -393,16 +389,6 @@ namespace orxonox
     {
         COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
         object->getMetaList().add(this->objects_, this->objects_->add(object));
-    }
-
-    /**
-        @brief Removes all objects of the corresponding class.
-    */
-    template <class T>
-    void ClassIdentifier<T>::removeObjects() const
-    {
-        for (Iterator<T> it = this->objects_->start(); it;)
-            delete *(it++);
     }
 
     /**

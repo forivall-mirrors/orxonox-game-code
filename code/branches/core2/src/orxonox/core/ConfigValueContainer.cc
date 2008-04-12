@@ -34,6 +34,7 @@
 
 #include "ConfigValueContainer.h"
 #include "Language.h"
+#include "Identifier.h"
 #include "util/SubString.h"
 #include "util/Convert.h"
 
