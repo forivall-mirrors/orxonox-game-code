@@ -82,7 +82,24 @@
     } \
     else \
     { \
-        COUT(2) << "Warning: Couldn't reset variable " << #varname << ", corresponding container doesn't exist." << std::endl; \
+        COUT(2) << "Warning: Couldn't reset config-value '" << #varname << "', corresponding container doesn't exist." << std::endl; \
+    }
+
+/**
+    @brief Modifies a config-value by using a modifier and some arguments.
+    @param varname The name of the config-value
+    @param modifier The name of the modifier: set, tset, add, remove, reset, update
+*/
+#define ModifyConfigValue(varname, modifier, ...) \
+    orxonox::ConfigValueContainer* container##varname##modify##modifier = this->getIdentifier()->getConfigValueContainer(#varname); \
+    if (container##varname##modify##modifier) \
+    { \
+        container##varname##modify##modifier->modifier(__VA_ARGS__); \
+        container##varname##modify##modifier->getValue(&varname); \
+    } \
+    else \
+    { \
+        COUT(2) << "Warning: Couln't modify config-value '" << #varname << "', corresponding container doesn't exist." << std::endl; \
     }
 
 /**

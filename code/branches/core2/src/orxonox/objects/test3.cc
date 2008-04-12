@@ -86,6 +86,14 @@ namespace orxonox
         std::cout << "vector<string>:  " << i << ": " << this->vector_string_[i] << std::endl;
         for (unsigned int i = 0; i < this->vector_vector3_.size(); i++)
         std::cout << "vector<vector3>: " << i << ": " << this->vector_vector3_[i] << std::endl;
+
+        ModifyConfigValue(value_int_, tset, "100");
+        std::cout << std::endl;
+        std::cout << "int:             " << this->value_int_ << std::endl;
+
+        ModifyConfigValue(value_int_, update);
+        std::cout << std::endl;
+        std::cout << "int:             " << this->value_int_ << std::endl;
     }
 
     #define testandcout(code) \
