@@ -66,7 +66,7 @@ namespace orxonox
   {
   public:
     bool initialise(size_t windowHnd, int windowWidth, int windowHeight);
-    void destroyDevices();
+    void destroy();
     void tick(float dt);
     void setWindowExtents(int width, int height);
     void setInputMode(InputMode mode);
@@ -76,14 +76,13 @@ namespace orxonox
     OIS::Mouse    *getMouse()    { return this->mouse_   ; }
     OIS::Keyboard *getKeyboard() { return this->keyboard_; }
 
-    static InputManager* getSingleton();
-    static void destroySingleton();
+    static InputManager& getSingleton();
+    static InputManager* getSingletonPtr() { return &getSingleton(); }
 
   private:
     // don't mess with a Singleton
     InputManager ();
     InputManager (const InputManager&);
-    InputManager& operator=(const InputManager& instance);
     ~InputManager();
 
     OIS::InputManager *inputSystem_;    //!< OIS input manager
@@ -98,7 +97,7 @@ namespace orxonox
     InputHandlerGame  *handlerGame_;    //!< Handles the input if in Game mode
 
     //! Pointer to the instance of the singleton
-    static InputManager *singletonRef_s;
+    //static InputManager *singletonRef_s;
   };
 }
 

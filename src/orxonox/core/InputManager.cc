@@ -42,7 +42,7 @@ namespace orxonox
   /**
     @brief The reference to the singleton
   */
-  InputManager* InputManager::singletonRef_s = 0;
+  //InputManager* InputManager::singletonRef_s = 0;
 
   /**
     @brief Constructor only resets the pointer values to 0.
@@ -59,18 +59,17 @@ namespace orxonox
   */
   InputManager::~InputManager()
   {
-    this->destroyDevices();
+    this->destroy();
   }
 
   /**
     @brief The one instance of the InputManager is stored in this function.
-    @return The pointer to the only instance of the InputManager
+    @return A reference to the only instance of the InputManager
   */
-  InputManager *InputManager::getSingleton()
+  InputManager& InputManager::getSingleton()
   {
-    if (!singletonRef_s)
-      singletonRef_s = new InputManager();
-    return singletonRef_s;
+    static InputManager theOnlyInstance;
+    return theOnlyInstance;
   }
 
   /**
@@ -141,11 +140,11 @@ namespace orxonox
   }
 
   /**
-    @brief Destroys all the created input devices.
+    @brief Destroys all the created input devices and handlers.
   */
-  void InputManager::destroyDevices()
+  void InputManager::destroy()
   {
-    COUT(ORX_DEBUG) << "*** InputManager: Destroying InputManager..." << std::endl;
+    COUT(ORX_DEBUG) << "*** InputManager: Destroying ..." << std::endl;
     if (this->mouse_)
       this->inputSystem_->destroyInputObject(mouse_);
     if (this->keyboard_)
@@ -156,17 +155,19 @@ namespace orxonox
     this->mouse_         = 0;
     this->keyboard_      = 0;
     this->inputSystem_   = 0;
-    COUT(ORX_DEBUG) << "*** InputManager: Destroying done." << std::endl;
-  }
 
-  /**
-    @brief Destroys the singleton.
-  */
-  void InputManager::destroySingleton()
-  {
-    if (singletonRef_s)
-      delete singletonRef_s;
-    singletonRef_s = 0;
+    if (this->handlerBuffer_)
+      delete this->handlerBuffer_;
+    if (this->handlerGame_)
+      delete this->handlerGame_;
+    if (this->handlerGUI_)
+      delete this->handlerGUI_;
+
+    this->handlerBuffer_ = 0;
+    this->handlerGame_   = 0;
+    this->handlerGUI_    = 0;
+
+    COUT(ORX_DEBUG) << "*** InputManager: Destroying done." << std::endl;
   }
 
   /**
