@@ -416,11 +416,11 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
-      if (InputManager::getSingleton()->getMouse()->getEventCallback() != this)
+      if (InputManager::getSingleton().getMouse()->getEventCallback() != this)
         {
-            if (InputManager::getSingleton()->getMouse())
+            if (InputManager::getSingleton().getMouse())
             {
-                InputManager::getSingleton()->getMouse()->setEventCallback(this);
+                InputManager::getSingleton().getMouse()->setEventCallback(this);
                 this->setMouseEventCallback_ = true;
             }
         }
@@ -445,8 +445,8 @@ namespace orxonox
             this->timeToReload_ = this->reloadTime_;
         }
 
-        OIS::Keyboard* mKeyboard = InputManager::getSingleton()->getKeyboard();
-        OIS::Mouse* mMouse = InputManager::getSingleton()->getMouse();
+        OIS::Keyboard* mKeyboard = InputManager::getSingleton().getKeyboard();
+        OIS::Mouse* mMouse = InputManager::getSingleton().getMouse();
 
 
         // #####################################

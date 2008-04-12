@@ -112,7 +112,7 @@ namespace orxonox
     if (this->orxonoxHUD_)
       delete this->orxonoxHUD_;
     Loader::close();
-    InputManager::destroySingleton();
+    InputManager::getSingleton().destroy();
     if (this->auMan_)
       delete this->auMan_;
     if (this->timer_)
@@ -328,7 +328,7 @@ namespace orxonox
   */
   void Orxonox::setupInputSystem()
   {
-    inputHandler_ = InputManager::getSingleton();
+    inputHandler_ = &InputManager::getSingleton();
     if (!inputHandler_->initialise(ogre_->getWindowHandle(),
           ogre_->getWindowWidth(), ogre_->getWindowHeight()))
       abortImmediate();

@@ -24,6 +24,7 @@
  *      Reto Grieder
  *
  */
+
  /**
     @file orxonox.cc
     @brief Orxonox class
