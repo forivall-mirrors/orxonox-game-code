@@ -29,6 +29,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
+#include "core/ConfigValueIncludes.h"
 
 #include "SpaceShip.h"
 #include "Explosion.h"

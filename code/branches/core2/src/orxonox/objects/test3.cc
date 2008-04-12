@@ -29,6 +29,7 @@
 #include "test2.h"
 #include "test3.h"
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 
 namespace orxonox
 {
@@ -55,6 +56,9 @@ namespace orxonox
         SetConfigValue(value_vector2_, Vector2(101, 202));
         SetConfigValue(value_vector3_, Vector3(13, 26, 39));
         SetConfigValue(value_colourvalue_, ColourValue(1.0, 0.5, 0.25, 0.887));
+        SetConfigValueVector(vector_int_, std::vector<int>(1, 13));
+        SetConfigValueVector(vector_string_, std::vector<std::string>(3, "nothing"));
+        SetConfigValueVector(vector_vector3_, std::vector<Vector3>(1, Vector3(3, 2, 1)));
     }
 
     Test3::~Test3()
@@ -63,18 +67,25 @@ namespace orxonox
 
     void Test3::configOutput()
     {
-        std::cout << "int:         " << this->value_int_ << std::endl;
-        std::cout << "uint:        " << this->value_uint_ << std::endl;
-        std::cout << "char:        " << (int)this->value_char_ << std::endl;
-        std::cout << "uchar:       " << (int)this->value_uchar_ << std::endl;
-        std::cout << "float:       " << this->value_float_ << std::endl;
-        std::cout << "double:      " << this->value_double_ << std::endl;
-        std::cout << "bool:        " << this->value_bool_ << std::endl;
-        std::cout << "string:      " << this->value_string_ << std::endl;
-        std::cout << "constchar:   " << this->value_constchar_ << std::endl;
-        std::cout << "vector2:     " << this->value_vector2_ << std::endl;
-        std::cout << "vector3:     " << this->value_vector3_ << std::endl;
-        std::cout << "colourvalue: " << this->value_colourvalue_ << std::endl;
+        std::cout << "int:             " << this->value_int_ << std::endl;
+        std::cout << "uint:            " << this->value_uint_ << std::endl;
+        std::cout << "char:            " << (int)this->value_char_ << std::endl;
+        std::cout << "uchar:           " << (int)this->value_uchar_ << std::endl;
+        std::cout << "float:           " << this->value_float_ << std::endl;
+        std::cout << "double:          " << this->value_double_ << std::endl;
+        std::cout << "bool:            " << this->value_bool_ << std::endl;
+        std::cout << "string:         >" << this->value_string_ << "<" << std::endl;
+        std::cout << "constchar:      >" << this->value_constchar_ << "<" << std::endl;
+        std::cout << "vector2:         " << this->value_vector2_ << std::endl;
+        std::cout << "vector3:         " << this->value_vector3_ << std::endl;
+        std::cout << "colourvalue:     " << this->value_colourvalue_ << std::endl;
+        std::cout << std::endl;
+        for (unsigned int i = 0; i < this->vector_int_.size(); i++)
+        std::cout << "vector<int>:     " << i << ": " << this->vector_int_[i] << std::endl;
+        for (unsigned int i = 0; i < this->vector_string_.size(); i++)
+        std::cout << "vector<string>:  " << i << ": " << this->vector_string_[i] << std::endl;
+        for (unsigned int i = 0; i < this->vector_vector3_.size(); i++)
+        std::cout << "vector<vector3>: " << i << ": " << this->vector_vector3_[i] << std::endl;
     }
 
     #define testandcout(code) \

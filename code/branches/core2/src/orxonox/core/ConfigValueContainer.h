@@ -42,8 +42,8 @@
 #ifndef _ConfigValueContainer_H__
 #define _ConfigValueContainer_H__
 
-#include <list>
 #include <string>
+#include <vector>
 
 #include "CorePrereqs.h"
 
@@ -72,19 +72,34 @@ namespace orxonox
     class _CoreExport ConfigValueContainer
     {
         public:
-            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, MultiTypeMath defvalue);
+            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const MultiTypeMath& defvalue);
+            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const std::vector<MultiTypeMath>& defvalue);
 
             /** @brief Returns the configured value. @param value This is only needed to determine the right type. @return The value */
             template <typename T>
             inline ConfigValueContainer& getValue(T* value)
                 { this->value_.getValue(value); return *this; }
+            template <typename T>
+            inline ConfigValueContainer& getValue(std::vector<T>* value)
+            {
+                value->clear();
+                for (unsigned int i = 0; i < this->valueVector_.size(); i++)
+                    value->push_back(this->valueVector_[i]);
+                return *this;
+            }
 
-            inline const std::string& getName()
+            inline const std::string& getName() const
                 { return this->varname_; }
+            inline bool isVector() const
+                { return this->bIsVector_; }
+            inline unsigned int getVectorSize() const
+                { return this->valueVector_.size(); }
 
             void description(const std::string& description);
             const std::string& getDescription() const;
 
+            bool add(const std::string& input);
+            bool remove(unsigned int index);
             bool set(const std::string& input);
             bool tset(const std::string& input);
             bool reset();
@@ -101,21 +116,25 @@ namespace orxonox
             bool parse(const std::string& input);
             bool parse(const std::string& input, const MultiTypeMath& defvalue);
 
-            void setLineInConfigFile(const std::string& input);
-            void resetLineInConfigFile();
+            bool set(unsigned int index, const std::string& input);
+            bool tset(unsigned int index, const std::string& input);
+            bool parse(unsigned int index, const std::string& input);
+            bool parse(unsigned int index, const std::string& input, const MultiTypeMath& defvalue);
 
-            ConfigFileType      type_;                          //!< The type of the corresponding config-file
-            Identifier*         identifier_;                    //!< The identifier of the class
-            std::string         sectionname_;                   //!< The name of the class the variable belongs to
-            std::string         varname_;                       //!< The name of the variable
-            std::string         defvalueString_;                //!< The string of the default-variable
+            bool                       bIsVector_;                  //!< True if the container contains a std::vector
 
-            MultiTypeMath       value_;                         //!< The value
+            ConfigFileType             type_;                       //!< The type of the corresponding config-file
+            Identifier*                identifier_;                 //!< The identifier of the class
+            std::string                sectionname_;                //!< The name of the class the variable belongs to
+            std::string                varname_;                    //!< The name of the variable
+            std::string                defvalueString_;             //!< The string of the default-value
+            std::vector<std::string>   defvalueStringVector_;       //!< A vector, containg the strings of the default-values in case we're storing a vector
 
-            std::list<std::string>::iterator configFileLine_;   //!< An iterator, pointing to the entry of the variable in the config-file
+            MultiTypeMath              value_;                      //!< The value
+            std::vector<MultiTypeMath> valueVector_;                //!< A vector, containg the values in case we're storing a vector
 
-            bool bAddedDescription_;                            //!< True if a description was added
-            LanguageEntryLabel description_;                    //!< The description
+            bool                       bAddedDescription_;          //!< True if a description was added
+            LanguageEntryLabel         description_;                //!< The description
     };
 }
 

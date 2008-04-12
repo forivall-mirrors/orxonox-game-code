@@ -28,6 +28,7 @@
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
 #include "util/String.h"
+#include "util/Convert.h"
 #include "Identifier.h"
 #include "Language.h"
 #include "Debug.h"
@@ -1312,7 +1313,10 @@ namespace orxonox
     std::string CommandExecutor::dump(const ConfigValueContainer* container)
     {
         AddLanguageEntry("CommandExecutor::oldvalue", "old value");
-        return "{" + container->getTypename() + "} (" + GetLocalisation("CommandExecutor::oldvalue") + ": " + container->toString() + ")";
+        if (!container->isVector())
+            return ("{" + container->getTypename() + "} (" + GetLocalisation("CommandExecutor::oldvalue") + ": " + container->toString() + ")");
+        else
+            return ("(vector<" + container->getTypename() + ">) (size: " + getConvertedValue<unsigned int, std::string>(container->getVectorSize()) + ")");
     }
 
     std::string CommandExecutor::getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list)

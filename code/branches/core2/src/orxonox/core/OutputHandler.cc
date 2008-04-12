@@ -46,7 +46,7 @@ namespace orxonox
     {
         this->logfilename_ = logfilename;
         this->logfile_.open(this->logfilename_.c_str(), std::fstream::out);
-        this->logfile_ << "Started log" << std::endl;
+        this->logfile_ << "Started log at yyyy/mm/dd hh:mm:ss" << std::endl;
         this->logfile_.flush();
     }
 

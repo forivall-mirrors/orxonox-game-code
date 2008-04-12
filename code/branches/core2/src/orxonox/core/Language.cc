@@ -34,6 +34,7 @@
 
 #include "CoreIncludes.h"
 #include "Language.h"
+#include "ConfigValueIncludes.h"
 
 namespace orxonox
 {

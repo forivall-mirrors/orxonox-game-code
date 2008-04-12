@@ -106,13 +106,13 @@ namespace orxonox
 
 
     ///////////////////////////////
-    // ConfigFileEntryArrayValue //
+    // ConfigFileEntryVectorValue //
     ///////////////////////////////
-    class _CoreExport ConfigFileEntryArrayValue : public ConfigFileEntryValue
+    class _CoreExport ConfigFileEntryVectorValue : public ConfigFileEntryValue
     {
         public:
-            inline ConfigFileEntryArrayValue(const std::string& name, unsigned int index, const std::string& value = "", const std::string& additionalComment = "") : ConfigFileEntryValue(name, value, additionalComment), index_(index) {}
-            inline virtual ~ConfigFileEntryArrayValue() {}
+            inline ConfigFileEntryVectorValue(const std::string& name, unsigned int index, const std::string& value = "", const std::string& additionalComment = "") : ConfigFileEntryValue(name, value, additionalComment), index_(index) {}
+            inline virtual ~ConfigFileEntryVectorValue() {}
 
             inline virtual unsigned int getIndex() const
                 { return this->index_; }
@@ -179,6 +179,9 @@ namespace orxonox
             inline const std::string& getValue(const std::string& name, unsigned int index, const std::string& fallback)
                 { return this->getEntry(name, index, fallback)->getValue(); }
 
+            void deleteVectorEntries(const std::string& name, unsigned int startindex = 0);
+            unsigned int getVectorSize(const std::string& name);
+
             std::string getFileEntry() const;
 
         private:
@@ -215,7 +218,7 @@ namespace orxonox
 
             void load(bool bCreateIfNotExisting = true);
             void save() const;
-            void clean();
+            void clean(bool bCleanComments = false);
 
             inline void setValue(const std::string& section, const std::string& name, const std::string& value)
                 { this->getSection(section)->setValue(name, value); this->save(); }
@@ -226,6 +229,11 @@ namespace orxonox
                 { this->getSection(section)->setValue(name, index, value); this->save(); }
             inline const std::string& getValue(const std::string& section, const std::string& name, unsigned int index, const std::string& fallback)
                 { const std::string& output = this->getSection(section)->getValue(name, index, fallback); this->saveIfUpdated(); return output; }
+
+            inline void deleteVectorEntries(const std::string& section, const std::string& name, unsigned int startindex = 0)
+                { this->getSection(section)->deleteVectorEntries(name, startindex); }
+            inline unsigned int getVectorSize(const std::string& section, const std::string& name)
+                { return this->getSection(section)->getVectorSize(name); }
 
         private:
             ConfigFileSection* getSection(const std::string& section);
@@ -249,11 +257,11 @@ namespace orxonox
 
             void load(bool bCreateIfNotExisting = true);
             void save();
-            void clean();
+            void clean(bool bCleanComments = false);
 
             void load(ConfigFileType type, bool bCreateIfNotExisting = true);
             void save(ConfigFileType type);
-            void clean(ConfigFileType type);
+            void clean(ConfigFileType type, bool bCleanComments = false);
 
             inline void setValue(ConfigFileType type, const std::string& section, const std::string& name, const std::string& value)
                 { this->getFile(type)->setValue(section, name, value); }
@@ -264,6 +272,11 @@ namespace orxonox
                 { this->getFile(type)->setValue(section, name, index, value); }
             inline const std::string& getValue(ConfigFileType type, const std::string& section, const std::string& name, unsigned int index, const std::string& fallback)
                 { return this->getFile(type)->getValue(section, name, index, fallback); }
+
+            inline void deleteVectorEntries(ConfigFileType type, const std::string& section, const std::string& name, unsigned int startindex = 0)
+                { this->getFile(type)->deleteVectorEntries(section, name, startindex); }
+            inline unsigned int getVectorSize(ConfigFileType type, const std::string& section, const std::string& name)
+                { return this->getFile(type)->getVectorSize(section, name); }
 
             void updateConfigValues() const;
             void updateConfigValues(ConfigFileType type) const;

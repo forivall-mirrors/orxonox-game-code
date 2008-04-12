@@ -36,7 +36,8 @@
 
 #include "util/tinyxml/tinyxml.h"
 #include "util/String2Number.h"
-#include "../core/CoreIncludes.h"
+#include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "../Orxonox.h"
 #include "../particle/ParticleInterface.h"
 #include "weapon/AmmunitionDump.h"

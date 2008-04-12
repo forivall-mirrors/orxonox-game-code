@@ -1195,6 +1195,9 @@ namespace orxonox
         ib->registerListener(testlistener, &Testlistener::clear, '§', true);
         ib->registerListener(testlistener, &Testlistener::removeLast, '\b', true);
 
+        Test3* test16_1 = new Test3;
+        test16_1->configOutput();
+
     startRenderLoop();
   }
 

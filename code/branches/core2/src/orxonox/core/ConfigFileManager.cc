@@ -48,7 +48,7 @@ namespace orxonox
 
     void cleanConfig()
     {
-        ConfigFileManager::getSingleton()->clean();
+        ConfigFileManager::getSingleton()->clean(false);
     }
 
     void loadSettings(const std::string& filename)
@@ -75,14 +75,14 @@ namespace orxonox
 
 
     ///////////////////////////////
-    // ConfigFileEntryArrayValue //
+    // ConfigFileEntryVectorValue //
     ///////////////////////////////
-    std::string ConfigFileEntryArrayValue::getFileEntry() const
+    std::string ConfigFileEntryVectorValue::getFileEntry() const
     {
         if (this->additionalComment_ == "" || this->additionalComment_.size() == 0)
-            return (this->name_ + "[" + getConvertedValue<unsigned int, std::string>(this->index_, 0) + "]" + "=" + this->value_);
+            return (this->name_ + "[" + getConvertedValue<unsigned int, std::string>(this->index_, "0") + "]" + "=" + this->value_);
         else
-            return (this->name_ + "[" + getConvertedValue<unsigned int, std::string>(this->index_, 0) + "]=" + this->value_ + " " + this->additionalComment_);
+            return (this->name_ + "[" + getConvertedValue<unsigned int, std::string>(this->index_, "0") + "]=" + this->value_ + " " + this->additionalComment_);
     }
 
 
@@ -93,6 +93,32 @@ namespace orxonox
     {
         for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); )
             delete (*(it++));
+    }
+
+    void ConfigFileSection::deleteVectorEntries(const std::string& name, unsigned int startindex)
+    {
+        for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); )
+        {
+            if (((*it)->getName() == name) && ((*it)->getIndex() >= startindex))
+            {
+                delete (*it);
+                this->entries_.erase(it++);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+
+    unsigned int ConfigFileSection::getVectorSize(const std::string& name)
+    {
+        unsigned int size = 0;
+        for (std::list<ConfigFileEntry*>::const_iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
+            if ((*it)->getName() == name)
+                if ((*it)->getIndex() > size)
+                    size = (*it)->getIndex();
+        return (size + 1);
     }
 
     std::string ConfigFileSection::getFileEntry() const
@@ -123,9 +149,9 @@ namespace orxonox
         this->bUpdated_ = true;
 
         if (index == 0)
-            return this->entries_.insert(this->entries_.end(), (ConfigFileEntry*)(new ConfigFileEntryArrayValue(name, index, fallback)));
+            return this->entries_.insert(this->entries_.end(), (ConfigFileEntry*)(new ConfigFileEntryVectorValue(name, index, fallback)));
         else
-            return this->entries_.insert(this->getEntryIterator(name, index - 1), (ConfigFileEntry*)(new ConfigFileEntryArrayValue(name, index, fallback)));
+            return this->entries_.insert(++this->getEntryIterator(name, index - 1), (ConfigFileEntry*)(new ConfigFileEntryVectorValue(name, index, fallback)));
     }
 
 
@@ -172,13 +198,14 @@ namespace orxonox
             std::string temp = getStripped(line);
             if (!isEmpty(temp) && !isComment(temp))
             {
-                unsigned int pos1 = line.find('[');
-                unsigned int pos2 = line.find(']');
+                unsigned int   pos1 = temp.find('[');
+                if (pos1 == 0) pos1 = line.find('['); else pos1 = std::string::npos;
+                unsigned int   pos2 = line.find(']');
 
                 if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1 + 1)
                 {
                     // New section
-                    std::string comment = temp.substr(pos2 + 1);
+                    std::string comment = line.substr(pos2 + 1);
                     if (isComment(comment))
                         newsection = new ConfigFileSection(line.substr(pos1 + 1, pos2 - pos1 - 1), comment);
                     else
@@ -231,7 +258,9 @@ namespace orxonox
                             if (ConvertValue(&index, line.substr(pos2 + 1, pos3 - pos2 - 1)))
                             {
                                 // New array
-                                newsection->getEntries().insert(newsection->getEntries().end(), new ConfigFileEntryArrayValue(getStripped(line.substr(0, pos2)), index, value, comment));
+                                std::list<ConfigFileEntry*>::iterator it = newsection->getEntryIterator(getStripped(line.substr(0, pos2)), index, value);
+                                (*it)->setValue(value);
+                                (*it)->setComment(comment);
                                 continue;
                             }
                         }
@@ -283,7 +312,7 @@ namespace orxonox
         COUT(4) << "Saved config file \"" << this->filename_ << "\"." << std::endl;
     }
 
-    void ConfigFile::clean()
+    void ConfigFile::clean(bool bCleanComments)
     {
         for (std::list<ConfigFileSection*>::iterator it1 = this->sections_.begin(); it1 != this->sections_.end(); )
         {
@@ -291,14 +320,16 @@ namespace orxonox
             if (it2 != Identifier::getIdentifierMapEnd() && (*it2).second->hasConfigValues())
             {
                 // The section exists, delete comment
-                (*it1)->setComment("");
+                if (bCleanComments)
+                    (*it1)->setComment("");
                 for (std::list<ConfigFileEntry*>::iterator it3 = (*it1)->entries_.begin(); it3 != (*it1)->entries_.end(); )
                 {
                     std::map<std::string, ConfigValueContainer*>::const_iterator it4 = (*it2).second->getConfigValueMap().find((*it3)->getName());
                     if (it4 != (*it2).second->getConfigValueMapEnd())
                     {
                         // The config-value exists, delete comment
-                        (*it3)->setComment("");
+                        if (bCleanComments)
+                            (*it3)->setComment("");
                         ++it3;
                     }
                     else
@@ -330,7 +361,7 @@ namespace orxonox
 
         this->bUpdated_ = true;
 
-        return (*this->sections_.insert(this->sections_.begin(), new ConfigFileSection(section)));
+        return (*this->sections_.insert(this->sections_.end(), new ConfigFileSection(section)));
     }
 
     void ConfigFile::saveIfUpdated()
@@ -399,10 +430,10 @@ namespace orxonox
             (*it).second->save();
     }
 
-    void ConfigFileManager::clean()
+    void ConfigFileManager::clean(bool bCleanComments)
     {
         for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
-            this->clean((*it).first);
+            this->clean((*it).first, bCleanComments);
     }
 
     void ConfigFileManager::load(ConfigFileType type, bool bCreateIfNotExisting)
@@ -416,10 +447,9 @@ namespace orxonox
         this->getFile(type)->save();
     }
 
-    void ConfigFileManager::clean(ConfigFileType type)
+    void ConfigFileManager::clean(ConfigFileType type, bool bCleanComments)
     {
-        this->getFile(type)->clean();
-        this->getFile(type)->save();
+        this->getFile(type)->clean(bCleanComments);
     }
 
     void ConfigFileManager::updateConfigValues() const
