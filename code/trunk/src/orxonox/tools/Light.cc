@@ -4,7 +4,7 @@
 
 #include <OgreSceneManager.h>
 
-#include "../Orxonox.h"
+#include "GraphicsEngine.h"
 
 #include "Light.h"
 
@@ -21,7 +21,7 @@ namespace orxonox
     {
         std::ostringstream name;
         name << (Light::lightCounter_s++);
-        this->light_ = Orxonox::getSingleton()->getSceneManager()->createLight("Light" + name.str());
+        this->light_ = GraphicsEngine::getSingleton().getSceneManager()->createLight("Light" + name.str());
         this->light_->setType(type);
         this->light_->setDiffuseColour(diffuse);
         this->light_->setSpecularColour(specular);
@@ -30,6 +30,6 @@ namespace orxonox
     Light::~Light()
     {
         if (this->light_)
-            Orxonox::getSingleton()->getSceneManager()->destroyLight(this->light_);
+            GraphicsEngine::getSingleton().getSceneManager()->destroyLight(this->light_);
     }
 }

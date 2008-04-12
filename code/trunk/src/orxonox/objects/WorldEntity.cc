@@ -33,8 +33,8 @@
 #include "util/tinyxml/tinyxml.h"
 #include "util/Tokenizer.h"
 #include "util/String2Number.h"
-#include "../core/CoreIncludes.h"
-#include "../Orxonox.h"
+#include "core/CoreIncludes.h"
+#include "GraphicsEngine.h"
 #include "WorldEntity.h"
 #include "core/XMLPort.h"
 
@@ -57,12 +57,12 @@ namespace orxonox
         this->rotationRate_ = 0;
         this->momentum_ = 0;
         
-        if (Orxonox::getSingleton()->getSceneManager())
+        if (GraphicsEngine::getSingleton().getSceneManager())
         {
           std::ostringstream name;
           name << (WorldEntity::worldEntityCounter_s++);
           this->setName("WorldEntity" + name.str());
-          this->node_ = Orxonox::getSingleton()->getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
+          this->node_ = GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
         
           registerAllVariables();
         }

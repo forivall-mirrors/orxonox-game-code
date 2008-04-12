@@ -31,10 +31,10 @@
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 
-#include "../core/CoreIncludes.h"
+#include "core/CoreIncludes.h"
 #include "util/Math.h"
-#include "../Orxonox.h"
-#include "../particle/ParticleInterface.h"
+#include "GraphicsEngine.h"
+#include "particle/ParticleInterface.h"
 
 #include "Explosion.h"
 
@@ -55,7 +55,7 @@ namespace orxonox
 
             Vector3 position = owner->getNode()->getWorldPosition();
 
-            this->particle_ = new ParticleInterface(Orxonox::getSingleton()->getSceneManager(), "explosion" + this->getName(), "Orxonox/treibwerk");
+            this->particle_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(), "explosion" + this->getName(), "Orxonox/treibwerk");
             this->particle_->getParticleSystem()->setParameter("local_space", "true");
             this->particle_->newEmitter();
             this->particle_->setPositionOfEmitter(0, Vector3::ZERO);

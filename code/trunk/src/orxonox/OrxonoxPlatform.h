@@ -21,12 +21,12 @@
  *   Author:
  *      An unknown man from the Ogre development crew
  *   Co-authors:
- *      Reto Grieder (OGRE --> ORXONOX)
+ *      Reto Grieder
  *
  */
 
 /**
- @file  OrxonoxPlatform.h
+ @file
  @brief Various constants for compiler, architecture and platform. It's a mere
         copy of the file found in the Ogre source code (OgrePlatform.h).
  */
@@ -107,9 +107,10 @@ namespace orxonox {
 // For generating compiler warnings - should work on any compiler
 // As a side note, if you start your message with 'Warning: ', the MSVC
 // IDE actually does catch a warning :)
-#define ORXONOX_QUOTE_INPLACE(x) # x
-#define ORXONOX_QUOTE(x) ORXONOX_QUOTE_INPLACE(x)
-#define ORXONOX_WARN( x )  message( __FILE__ "(" QUOTE( __LINE__ ) ") : " x "\n" )
+// FIXME: Try this on linux box. Doesn't work with msvc
+//#define ORXONOX_QUOTE_INPLACE(x) # x
+//#define ORXONOX_QUOTE(x) ORXONOX_QUOTE_INPLACE(x)
+//#define ORXONOX_WARN( x )  message( __FILE__ "(" QUOTE( __LINE__ ) ") : " x "\n" )
 
 //----------------------------------------------------------------------------
 // Windows Settings
@@ -136,7 +137,7 @@ namespace orxonox {
 #    define ORXONOX_UNICODE_SUPPORT 1
 #  endif
 
-#endif
+#endif /* Platform Win32 */
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
@@ -170,7 +171,7 @@ namespace orxonox {
 // Perhaps disable in old versions of gcc if necessary
 #  define ORXONOX_UNICODE_SUPPORT 1
 
-#endif
+#endif /* Patform Linux/Apple */
 
 //For apple, we always have a custom config.h file
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
@@ -190,9 +191,9 @@ namespace orxonox {
 
 // Integer formats of fixed bit width
 // FIXME: consider 64 bit platforms!
-/*typedef unsigned int uint32;
-typedef unsigned short uint16;
-typedef unsigned char uint8;*/
+//typedef unsigned int uint32;
+//typedef unsigned short uint16;
+//typedef unsigned char uint8;
 
 #ifdef ORXONOX_DOUBLE_PRECISION
 typedef double Real;
@@ -260,17 +261,15 @@ typedef float Real;
 // ORXONOX_MUTEX_CONDITIONAL when no threading enabled
 //#   pragma warning (disable : 201)
 
-#endif
-
 
 // Define the english written operators like and, or, xor
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
-#  include <iso646.h>
-#endif
+#include <iso646.h>
+
+#endif /* ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC */
+
+// include visual leak detector to search for memory leaks
+//#include <vld.h>
 
 } /* namespace orxonox */
-
-// include visual leak detector to search for memory links
-//#include <vld.h>
 
 #endif /* _OrxonoxPlatform_H__ */

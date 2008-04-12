@@ -33,7 +33,7 @@
 #include <OgreSceneManager.h>
 
 #include "util/Math.h"
-#include "../../Orxonox.h"
+#include "Orxonox.h"
 #include "Bullet.h"
 #include "BulletManager.h"
 #include "AmmunitionDump.h"
@@ -46,7 +46,7 @@ namespace orxonox {
   float BaseWeapon::nextActionValidityPeriod_s = 0.5;
 
   BaseWeapon::BaseWeapon()
-    : sceneMgr_(Orxonox::getSingleton()->getSceneManager()),
+    : sceneMgr_(GraphicsEngine::getSingleton().getSceneManager()),
       bulletCounter_(0),
       bulletManager_(Orxonox::getSingleton()->getBulletMgr()),
       ammoDump_(NULL),

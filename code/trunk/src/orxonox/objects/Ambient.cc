@@ -36,9 +36,9 @@
 #include "util/Tokenizer.h"
 #include "util/String2Number.h"
 #include "util/Math.h"
-#include "../core/Debug.h"
-#include "../core/CoreIncludes.h"
-#include "../Orxonox.h"
+#include "core/Debug.h"
+#include "core/CoreIncludes.h"
+#include "GraphicsEngine.h"
 #include "core/XMLPort.h"
 
 #include "Ambient.h"
@@ -75,7 +75,7 @@ namespace orxonox
 
    void Ambient::setAmbientLight(const ColourValue& colour)
    {
-    	Orxonox::getSingleton()->getSceneManager()->setAmbientLight(colour);
+    	GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(colour);
    }
 
     /**

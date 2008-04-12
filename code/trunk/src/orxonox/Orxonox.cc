@@ -26,30 +26,38 @@
  */
 
 /**
- @file  Orxonox.cc
+ @file
  @brief Orxonox Main Class
  */
 
 // Precompiled Headers
 #include "OrxonoxStableHeaders.h"
 
-//****** OGRE ******
-//#include <OgreException.h>
-#include <OgreFrameListener.h>
-#include <OgreOverlay.h>
-#include <OgreOverlayManager.h>
-#include <OgreTimer.h>
-#include <OgreWindowEventUtilities.h>
-
 //****** STD *******
 //#include <iostream>
 //#include <exception>
 #include <deque>
 
+//****** OGRE ******
+//#include <OgreException.h>
+#include <OgreFrameListener.h>
+#include <OgreOverlay.h>
+#include <OgreOverlayManager.h>
+#include <OgreRoot.h>
+#include <OgreTimer.h>
+#include <OgreWindowEventUtilities.h>
+
 //***** ORXONOX ****
-//misc
+// util
 //#include "util/Sleep.h"
 #include "util/ArgReader.h"
+
+// core
+#include "core/Debug.h"
+#include "core/Factory.h"
+#include "core/Loader.h"
+#include "core/Tickable.h"
+#include "core/InputManager.h"
 
 // audio
 #include "audio/AudioManager.h"
@@ -57,21 +65,18 @@
 // network
 #include "network/Server.h"
 #include "network/Client.h"
-network::Client *client_g;
-network::Server *server_g;
 
-// objects
-#include "core/Debug.h"
-#include "core/Factory.h"
-#include "core/Loader.h"
-#include "core/Tickable.h"
-#include "hud/HUD.h"
+// objects and tools
 #include "tools/Timer.h"
-#include "objects/weapon/BulletManager.h"
-
-#include "core/InputManager.h"
+#include "hud/HUD.h"
+//#include "objects/weapon/BulletManager.h"
 
 #include "Orxonox.h"
+
+// FIXME: is this really file scope?
+// globals for the server or client
+network::Client *client_g;
+network::Server *server_g;
 
 namespace orxonox
 {
@@ -85,7 +90,7 @@ namespace orxonox
    */
   Orxonox::Orxonox()
   {
-    this->ogre_ = new GraphicsEngine();
+    this->ogre_ = &GraphicsEngine::getSingleton();
     this->timer_ = 0;
     this->dataPath_ = "";
     this->auMan_ = 0;
@@ -102,8 +107,8 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // keep in mind: the order of deletion is very important!
-    if (this->bulletMgr_)
-      delete this->bulletMgr_;
+//    if (this->bulletMgr_)
+//      delete this->bulletMgr_;
     if (this->orxonoxHUD_)
       delete this->orxonoxHUD_;
     Loader::close();
@@ -112,8 +117,7 @@ namespace orxonox
       delete this->auMan_;
     if (this->timer_)
       delete this->timer_;
-    if (this->ogre_)
-      delete this->ogre_;
+    GraphicsEngine::getSingleton().destroy();
 
     if (client_g)
       delete client_g;
@@ -250,7 +254,7 @@ namespace orxonox
     
     auMan_ = new audio::AudioManager();
 
-    bulletMgr_ = new BulletManager();
+    //bulletMgr_ = new BulletManager();
     
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
     HUD* orxonoxHud;
@@ -297,7 +301,7 @@ namespace orxonox
 	  // Init audio
     auMan_ = new audio::AudioManager();
 
-    bulletMgr_ = new BulletManager();
+    //bulletMgr_ = new BulletManager();
 
     // load this file from config
     Level* startlevel = new Level("levels/sample.oxw");
@@ -341,12 +345,19 @@ namespace orxonox
     in server mode.
     About the loop: The design is almost exactly like the one in ogre, so that
     if any part of ogre registers a framelisteners, it will still behave
-    correctly. Furthermore I have taken over the time smoothing feature from
-    ogre. If turned on (see orxonox constructor), it will calculate the dt_n by
-    means of the recent most dt_n-1, dt_n-2, etc.
+    correctly. Furthermore the time smoothing feature from ogre has been
+    implemented too. If turned on (see orxonox constructor), it will calculate
+    the dt_n by means of the recent most dt_n-1, dt_n-2, etc.
   */
   void Orxonox::startRenderLoop()
   {
+    // first check whether ogre root object has been created
+    if (Ogre::Root::getSingletonPtr() == 0)
+    {
+      COUT(2) << "Error: Could not start rendering. No Ogre root object found" << std::endl;
+      return;
+    }
+
     // Contains the times of recently fired events
     // eventTimes[4] is the list for the times required for the fps counter
     std::deque<unsigned long> eventTimes[4];
@@ -388,11 +399,11 @@ namespace orxonox
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
-      ogre_->frameStarted(evt);
+      Ogre::Root::getSingleton()._fireFrameStarted(evt);
 
       // server still renders at the moment
       //if (mode_ != SERVER)
-      ogre_->renderOneFrame(); // only render in non-server mode
+      Ogre::Root::getSingleton()._updateAllRenderTargets(); // only render in non-server mode
 
       // get current time
       now = timer_->getMilliseconds();
@@ -402,7 +413,7 @@ namespace orxonox
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[2]);
 
       // again, just to be sure ogre works fine
-      ogre_->frameEnded(evt);
+      Ogre::Root::getSingleton()._fireFrameEnded(evt);
 	  }
   }
 
