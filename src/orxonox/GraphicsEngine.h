@@ -11,8 +11,6 @@
 
 #include <OgrePrerequisites.h>
 #include <OgreLog.h>
-#include <OgreRoot.h>
-#include <OgreSceneManager.h>
 
 #include "OrxonoxPrereqs.h"
 #include "core/OrxonoxClass.h"
@@ -20,22 +18,21 @@
 
 namespace orxonox {
 
-/**
-   * graphics engine manager class
- */
+  /**
+    @brief Graphics engine manager class
+  */
   class _OrxonoxExport GraphicsEngine : public OrxonoxClass, public Ogre::LogListener
   {
+    friend class ClassIdentifier<GraphicsEngine>;
     public:
-      GraphicsEngine();
       void setConfigPath(std::string path) { this->configPath_ = path; };
-      // find a better way for this
-      //inline Ogre::Root* getRoot() { return root_; };
       void setConfigValues();
       void setup();
       bool load(std::string path);
       void loadRessourceLocations(std::string path);
       Ogre::SceneManager* getSceneManager();
       void initialise();
+      void destroy();
 
       // several window properties
       Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
@@ -43,27 +40,24 @@ namespace orxonox {
       int getWindowWidth() const;
       int getWindowHeight() const;
 
-      // Ogre Root access for Orxonox
-      void frameStarted(Ogre::FrameEvent &evt)
-      { if (root_) root_->_fireFrameStarted(evt); }
-      void frameEnded  (Ogre::FrameEvent &evt)
-      { if (root_) root_->_fireFrameEnded(evt);   }
-      void renderOneFrame()
-      { if (root_) root_->_updateAllRenderTargets(); }
-
-      virtual ~GraphicsEngine();
+      static GraphicsEngine& getSingleton();
 
     private:
+      // don't mess with singletons
+      GraphicsEngine();
+      GraphicsEngine(GraphicsEngine&) { }
+      ~GraphicsEngine();
+
       //! Method called by the LogListener from Ogre
-      void messageLogged(const std::string& message, Ogre::LogMessageLevel lml,
-                         bool maskDebug, const std::string &logName);
+      void messageLogged(const std::string&, Ogre::LogMessageLevel,
+                         bool, const std::string&);
 
       Ogre::Root*         root_;        //!< Ogre's root
-      std::string         configPath_;  //!< path to config file
-      std::string         dataPath_;    //!< path to data file
       Ogre::SceneManager* scene_;       //!< scene manager of the game
       Ogre::RenderWindow* renderWindow_;//!< the current render window
       //bool               bOverwritePath_; //!< overwrites path
+      std::string         configPath_;  //!< path to config file
+      std::string         dataPath_;    //!< path to data file
       std::string         ogreLogfile_; //!< log file name for Ogre log messages
       int ogreLogLevelTrivial_;         //!< Corresponding Orxonx debug level for LL_TRIVIAL
       int ogreLogLevelNormal_;          //!< Corresponding Orxonx debug level for LL_NORMAL

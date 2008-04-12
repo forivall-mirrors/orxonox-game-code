@@ -207,10 +207,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Fighter.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\Model.cc"
 					>
 				</File>
@@ -240,26 +236,74 @@
 					<File
 						RelativePath="..\..\src\orxonox\objects\weapon\AmmunitionDump.cc"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\weapon\BarrelGun.cc"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\weapon\BaseWeapon.cc"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\weapon\Bullet.cc"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\weapon\BulletManager.cc"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\weapon\WeaponStation.cc"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 				</Filter>
 			</Filter>
@@ -338,10 +382,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\Explosion.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\Fighter.h"
 					>
 				</File>
 				<File

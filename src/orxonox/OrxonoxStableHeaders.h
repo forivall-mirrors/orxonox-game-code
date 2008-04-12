@@ -113,6 +113,6 @@
 #include "objects/Model.h"
 #include "objects/WorldEntity.h"
 
-#endif
+#endif /* Compiler MSVC */
 
 #endif /* _OrxonoxStableHeaders_H__ */

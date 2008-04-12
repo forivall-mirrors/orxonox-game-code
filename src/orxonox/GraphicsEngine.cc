@@ -21,7 +21,7 @@
  *   Author:
  *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
  /**
@@ -40,6 +40,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/Debug.h"
+
 #include "GraphicsEngine.h"
 
 
@@ -47,6 +48,19 @@ namespace orxonox {
 
   using namespace Ogre;
 
+  /**
+    @brief Returns the singleton instance and creates it the first time.
+    @return The only instance of GraphicsEngine.
+  */
+  GraphicsEngine& GraphicsEngine::getSingleton()
+  {
+    static GraphicsEngine theOnlyInstance;
+    return theOnlyInstance;
+  }
+
+  /**
+    @brief Only use constructor to initialise variables and pointers!
+  */
   GraphicsEngine::GraphicsEngine()
   {
     RegisterObject(GraphicsEngine);
@@ -57,29 +71,46 @@ namespace orxonox {
     this->root_ = 0;
     this->scene_ = 0;
     this->renderWindow_ = 0;
+    COUT(4) << "*** GraphicsEngine: Constructed" << std::endl;
   }
 
-
+  /**
+    @brief Called after main() --> call destroyObjects()!
+  */
   GraphicsEngine::~GraphicsEngine()
   {
+    this->destroy();
+  }
+
+  /**
+    @brief Destroys all the internal objects. Call this method when you
+           normally would call the destructor.
+  */
+  void GraphicsEngine::destroy()
+  {
+    COUT(4) << "*** GraphicsEngine: Destroying objects..." << std::endl;
     if (this->root_)
       delete this->root_;
-    // delete the ogre log and the logManager (sine we have created it).
+    this->root_ = 0;
+    this->scene_ = 0;
+    this->renderWindow_ = 0;
+    // delete the ogre log and the logManager (since we have created it).
     if (LogManager::getSingletonPtr() != 0)
     {
       LogManager::getSingleton().getDefaultLog()->removeListener(this);
       LogManager::getSingleton().destroyLog(LogManager::getSingleton().getDefaultLog());
       delete LogManager::getSingletonPtr();
     }
+    COUT(4) << "*** GraphicsEngine: Destroying objects done" << std::endl;
   }
 
   void GraphicsEngine::setConfigValues()
   {
     SetConfigValue(dataPath_, "../../media/").description("relative path to media data");
     SetConfigValue(ogreLogfile_, "ogre.log").description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
-    SetConfigValue(ogreLogLevelTrivial_ , 5).description("relative path to media data");
-    SetConfigValue(ogreLogLevelNormal_  , 4).description("relative path to media data");
-    SetConfigValue(ogreLogLevelCritical_, 2).description("relative path to media data");
+    SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
+    SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
+    SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
   }
 
   /**
@@ -106,6 +137,7 @@ namespace orxonox {
 			logger = new LogManager();
     else
       logger = LogManager::getSingletonPtr();
+    COUT(4) << "*** GraphicsEngine: Ogre LogManager created/assigned" << std::endl;
 
     // create our own log that we can listen to
     Log *myLog;
@@ -113,12 +145,15 @@ namespace orxonox {
       myLog = logger->createLog("ogre.log", true, false, true);
     else
       myLog = logger->createLog(this->ogreLogfile_, true, false, false);
+    COUT(4) << "*** GraphicsEngine: Ogre Log created" << std::endl;
 
     myLog->setLogDetail(LL_BOREME);
     myLog->addListener(this);
 
     // Root will detect that we've already created a Log
+    COUT(4) << "*** GraphicsEngine: Creating Ogre Root..." << std::endl;
     root_ = new Root(plugin_filename);
+    COUT(4) << "*** GraphicsEngine: Creating Ogre Root done" << std::endl;
   }
 
   /**
@@ -191,9 +226,8 @@ namespace orxonox {
   {
     if (this->renderWindow_)
     {
-      Ogre::RenderWindow *renderWindow = this->root_->getAutoCreatedWindow();
       size_t windowHnd = 0;
-      renderWindow->getCustomAttribute("WINDOW", &windowHnd);
+      this->renderWindow_->getCustomAttribute("WINDOW", &windowHnd);
       return windowHnd;
     }
     else
@@ -207,9 +241,7 @@ namespace orxonox {
   int GraphicsEngine::getWindowWidth() const
   {
     if (this->renderWindow_)
-    {
       return this->renderWindow_->getWidth();
-    }
     else
       return 0;
   }
@@ -221,9 +253,7 @@ namespace orxonox {
   int GraphicsEngine::getWindowHeight() const
   {
     if (this->renderWindow_)
-    {
       return this->renderWindow_->getHeight();
-    }
     else
       return 0;
   }

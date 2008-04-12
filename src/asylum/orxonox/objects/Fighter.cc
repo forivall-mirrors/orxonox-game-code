@@ -37,7 +37,7 @@
 #include "util/tinyxml/tinyxml.h"
 #include "util/String2Number.h"
 #include "core/CoreIncludes.h"
-#include "Orxonox.h"
+#include "GraphicsEngine.h"
 #include "core/InputManager.h"
 #include "particle/ParticleInterface.h"
 #include "weapon/AmmunitionDump.h"
@@ -128,7 +128,7 @@ namespace orxonox
         Model::loadParams(xmlElem);
 
 #if 0
-        w = new particle::ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"schuss" + this->getName(),"Orxonox/schuss");
+        w = new particle::ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"schuss" + this->getName(),"Orxonox/schuss");
         w->getParticleSystem()->setParameter("local_space","true");
         w->newEmitter();
 /*
@@ -147,7 +147,7 @@ namespace orxonox
         w->addToSceneNode(node1);
 #endif
 
-        tt = new ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
+        tt = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         tt->getParticleSystem()->setParameter("local_space","true");
         tt->newEmitter();
 /*
@@ -172,7 +172,7 @@ namespace orxonox
 
         mainWeapon_ = new BarrelGun();
         mainWeapon_->setAmmoDump(ammoDump_);
-        Orxonox::getSingleton()->getSceneManager()->getRootSceneNode()->removeChild(mainWeapon_->getNode());
+        GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(mainWeapon_->getNode());
         getNode()->addChild(mainWeapon_->getNode());
 
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
@@ -192,7 +192,7 @@ namespace orxonox
 
     	if (xmlElem->Attribute("camera"))
     	{
-            Ogre::Camera *cam = Orxonox::getSingleton()->getSceneManager()->createCamera("ShipCam");
+            Ogre::Camera *cam = GraphicsEngine::getSingleton().getSceneManager()->createCamera("ShipCam");
             Ogre::SceneNode *node = this->getNode()->createChildSceneNode("CamNode");
 /*
 //            node->setInheritOrientation(false);
@@ -207,7 +207,7 @@ namespace orxonox
             cam->roll(Degree(-90));
 
             node->attachObject(cam);
-            Orxonox::getSingleton()->getOgrePointer()->getRenderWindow()->addViewport(cam);
+            GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam);
     	}
     }
 

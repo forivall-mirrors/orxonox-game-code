@@ -34,9 +34,9 @@
 #include "util/tinyxml/tinyxml.h"
 //#include "util/Tokenizer.h"
 //#include "util/String2Number.h"
-#include "../Orxonox.h"
-#include "../core/CoreIncludes.h"
-#include "../core/Debug.h"
+#include "GraphicsEngine.h"
+#include "core/CoreIncludes.h"
+#include "core/Debug.h"
 #include "core/XMLPort.h"
 
 #include "Skybox.h"
@@ -67,7 +67,7 @@ namespace orxonox
 
    void Skybox::setSkybox(const std::string& skyboxname)
    {
-    	Orxonox::getSingleton()->getSceneManager()->setSkyBox(true, skyboxname);
+    	GraphicsEngine::getSingleton().getSceneManager()->setSkyBox(true, skyboxname);
    }
 
     /**

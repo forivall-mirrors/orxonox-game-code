@@ -12,10 +12,9 @@
 #include "util/Tokenizer.h"
 #include "util/String2Number.h"
 #include "util/Math.h"
-#include "../core/Debug.h"
-#include "../core/CoreIncludes.h"
-#include "../Orxonox.h"
-#include "../GraphicsEngine.h"
+#include "core/Debug.h"
+#include "core/CoreIncludes.h"
+#include "GraphicsEngine.h"
 
 #include "Camera.h"
 
@@ -34,7 +33,7 @@ namespace orxonox
 
     void Camera::loadParams(TiXmlElement* xmlElem)
     {
-      Ogre::SceneManager* mgr = orxonox::Orxonox::getSingleton()->getSceneManager();
+      Ogre::SceneManager* mgr = GraphicsEngine::getSingleton().getSceneManager();
 
       if (xmlElem->Attribute("name") && xmlElem->Attribute("pos") && xmlElem->Attribute("lookat") && xmlElem->Attribute("node"))
       {
@@ -67,7 +66,7 @@ namespace orxonox
         sceneNode->attachObject((Ogre::MovableObject*)cam);
 
         // FIXME: unused var
-        Ogre::Viewport* vp = orxonox::Orxonox::getSingleton()->getOgrePointer()->getRenderWindow()->addViewport(cam);
+        Ogre::Viewport* vp = GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam);
 
 
         COUT(4) << "Loader: Created camera "<< name  << std::endl << std::endl;

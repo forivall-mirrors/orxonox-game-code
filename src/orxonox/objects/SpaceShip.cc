@@ -40,7 +40,7 @@
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/Debug.h"
-#include "Orxonox.h"
+#include "GraphicsEngine.h"
 #include "core/InputManager.h"
 #include "particle/ParticleInterface.h"
 #include "Projectile.h"
@@ -155,7 +155,7 @@ namespace orxonox
     void SpaceShip::init()
     {
         // START CREATING THRUSTER
-        this->tt_ = new ParticleInterface(Orxonox::getSingleton()->getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
+        this->tt_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         this->tt_->getParticleSystem()->setParameter("local_space","true");
         this->tt_->newEmitter();
 /*
@@ -270,7 +270,7 @@ namespace orxonox
 
     void SpaceShip::setCamera(const std::string& camera)
     {
-        Ogre::Camera *cam = Orxonox::getSingleton()->getSceneManager()->createCamera("ShipCam");
+        Ogre::Camera *cam = GraphicsEngine::getSingleton().getSceneManager()->createCamera("ShipCam");
         this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
 /*
 //        node->setInheritOrientation(false);
@@ -285,7 +285,7 @@ namespace orxonox
         cam->roll(Degree(-90));
 
         this->camNode_->attachObject(cam);
-        Orxonox::getSingleton()->getOgrePointer()->getRenderWindow()->addViewport(cam);
+        GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam);
     }
 
     void SpaceShip::setMaxSpeed(float value)

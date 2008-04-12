@@ -31,7 +31,7 @@
 
 #include <OgreSceneManager.h>
 
-#include "../Orxonox.h"
+#include "GraphicsEngine.h"
 #include "util/Math.h"
 
 #include "BillboardSet.h"
@@ -49,7 +49,7 @@ namespace orxonox
     {
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = Orxonox::getSingleton()->getSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_ = GraphicsEngine::getSingleton().getSceneManager()->createBillboardSet("Billboard" + name.str(), count);
         this->billboardSet_->createBillboard(position, colour);
         this->billboardSet_->setMaterialName(file);
     }
@@ -57,6 +57,6 @@ namespace orxonox
     BillboardSet::~BillboardSet()
     {
         if (this->billboardSet_)
-            Orxonox::getSingleton()->getSceneManager()->destroyBillboardSet(this->billboardSet_);
+            GraphicsEngine::getSingleton().getSceneManager()->destroyBillboardSet(this->billboardSet_);
     }
 }

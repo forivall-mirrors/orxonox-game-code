@@ -10,7 +10,6 @@
 #include <string>
 
 #include <OgrePrerequisites.h>
-//#include <OIS/OISPrereqs.h>
 
 #include "OrxonoxPrereqs.h"
 #include "audio/AudioPrereqs.h"
@@ -19,8 +18,6 @@
 #include "core/InputEventListener.h"
 
 
-// TODO: Orxonox should maybe derive from BaseObject
-//! Orxonox singleton class
 namespace orxonox {
 
   enum gameMode{
@@ -29,6 +26,7 @@ namespace orxonox {
     STANDALONE
   };
 
+  //! Orxonox singleton class
   class _OrxonoxExport Orxonox : public InputEventListener
   {
     public:
@@ -37,10 +35,7 @@ namespace orxonox {
       // not sure if this should be private
       void abortImmediate(/* some error code */);
       void abortRequest();
-      inline Ogre::SceneManager*  getSceneManager()        { return ogre_->getSceneManager(); };
-      inline GraphicsEngine*      getOgrePointer()         { return ogre_; };
       inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
-      inline BulletManager*       getBulletMgr()           { return this->bulletMgr_; }
 
       static Orxonox* getSingleton();
       static void destroySingleton();
@@ -73,13 +68,10 @@ namespace orxonox {
       GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
       std::string           dataPath_;      //!< path to data
       audio::AudioManager*  auMan_;         //!< audio manager
-      BulletManager*        bulletMgr_;     //!< Keeps track of the thrown bullets
       InputManager*         inputHandler_;  //!< Handles input with key bindings
-      Ogre::Root*           root_;          //!< Holy grail of Ogre
       Ogre::Timer*          timer_;         //!< Main loop timer
       // TODO: make this a config-value by creating a config class for orxonox
       float                 frameSmoothingTime_;
-      // little hack to actually show something dynamic in the HUD
       HUD*                  orxonoxHUD_;
       bool                  bAbort_;        //!< aborts the render loop if true
 

@@ -12,7 +12,7 @@ SET( ORXONOX_SRC_FILES
   objects/Ambient.cc
   objects/Camera.cc
   objects/Explosion.cc
-  objects/Fighter.cc
+#  objects/Fighter.cc
   objects/Model.cc
   objects/NPC.cc
   objects/Projectile.cc
@@ -23,12 +23,12 @@ SET( ORXONOX_SRC_FILES
 #  objects/test2.cc
 #  objects/test3.cc
   objects/WorldEntity.cc
-  objects/weapon/AmmunitionDump.cc
-  objects/weapon/BarrelGun.cc
-  objects/weapon/BaseWeapon.cc
-  objects/weapon/Bullet.cc
-  objects/weapon/BulletManager.cc
-  objects/weapon/WeaponStation.cc
+#  objects/weapon/AmmunitionDump.cc
+#  objects/weapon/BarrelGun.cc
+#  objects/weapon/BaseWeapon.cc
+#  objects/weapon/Bullet.cc
+#  objects/weapon/BulletManager.cc
+#  objects/weapon/WeaponStation.cc
 )
 
 ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
