@@ -152,9 +152,13 @@ namespace orxonox
             if (!success || index < 0 || index > MAX_VECTOR_INDEX)
             {
                 if (!success)
+                {
                     COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is a vector." << std::endl;
+                }
                 else
+                {
                     COUT(1) << "Error: Invalid vector-index." << std::endl;
+                }
                 return false;
             }
 
@@ -274,7 +278,17 @@ namespace orxonox
                 success = ConvertValue(&index, token[0]);
 
             if (!success || index < 0 || index > MAX_VECTOR_INDEX)
+            {
+                if (!success)
+                {
+                    COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is a vector." << std::endl;
+                }
+                else
+                {
+                    COUT(1) << "Error: Invalid vector-index." << std::endl;
+                }
                 return false;
+            }
 
             if (token.size() >= 2)
                 return this->parse(index, token.subSet(1).join());

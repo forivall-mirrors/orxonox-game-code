@@ -252,7 +252,9 @@ namespace orxonox
                 if (pos > 0 && pos < (lineString.size() - 1) && lineString.size() >= 3)
                     this->createEntry(lineString.substr(0, pos), lineString.substr(pos + 1));
                 else
+                {
                     COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFileName(this->defaultLanguage_) << std::endl;
+                }
             }
         }
 
@@ -304,7 +306,9 @@ namespace orxonox
                         this->createEntry(lineString.substr(0, pos), this->defaultLocalisation_)->setLocalisation(lineString.substr(pos + 1));
                 }
                 else
+                {
                     COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFileName(this->language_) << std::endl;
+                }
             }
         }
 

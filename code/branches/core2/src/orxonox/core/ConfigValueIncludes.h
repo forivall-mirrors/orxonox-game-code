@@ -81,7 +81,9 @@
         container##varname##reset->getValue(&varname); \
     } \
     else \
-        COUT(2) << "Warning: Couldn't reset variable " << #varname << ", corresponding container doesn't exist." << std::endl
+    { \
+        COUT(2) << "Warning: Couldn't reset variable " << #varname << ", corresponding container doesn't exist." << std::endl; \
+    }
 
 /**
     @brief Assigns the command, defined in the keybind-file, to the key-variable (or an empty string, if there is no entry in the file).
