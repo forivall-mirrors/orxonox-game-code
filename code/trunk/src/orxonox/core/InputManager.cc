@@ -48,9 +48,9 @@ namespace orxonox
     @brief Constructor only resets the pointer values to 0.
   */
   InputManager::InputManager() :
-      mouse_(0), keyboard_(0), inputSystem_(0),
+      inputSystem_(0), keyboard_(0), mouse_(0),
       currentMode_(IM_UNINIT), setMode_(IM_UNINIT),
-      handlerGUI_(0), handlerGame_(0), handlerBuffer_(0)
+      handlerGUI_(0), handlerBuffer_(0), handlerGame_(0)
   {
   }
 

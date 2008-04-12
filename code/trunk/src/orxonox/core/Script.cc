@@ -59,7 +59,7 @@ namespace orxonox
     luaopen_debug(luaState_);
 #endif
     tolua_orxonox_open(luaState_);
-    output_;
+    output_ = "";
   }
 
   void Script::luaPrint(std::string str)
