@@ -434,7 +434,7 @@ namespace orxonox
       return 0;
 
     // Times up to frameSmoothingTime_ seconds old should be kept
-    unsigned long discardThreshold = (unsigned long)frameSmoothingTime_ * 1000.0f;
+    unsigned long discardThreshold = (unsigned long)(frameSmoothingTime_ * 1000.0f);
 
     // Find the oldest time to keep
     std::deque<unsigned long>::iterator it  = times.begin();
