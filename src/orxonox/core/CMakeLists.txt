@@ -20,6 +20,7 @@ SET( CORE_SRC_FILES
   XMLPort.cc
   Tickable.cc
   Script.cc
+  ToLuaBind.cc
 )
 
 ADD_LIBRARY( core SHARED ${CORE_SRC_FILES})

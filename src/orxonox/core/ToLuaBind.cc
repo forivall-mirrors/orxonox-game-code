@@ -8,12 +8,12 @@
 #endif
 #include "string.h"
 
-#include "tolua++.h"
+#include "util/tolua/tolua++.h"
 
 /* Exported function */
 TOLUA_API int  tolua_orxonox_open (lua_State* tolua_S);
 
-#include "../Script.h"
+#include "Script.h"
 
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)

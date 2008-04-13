@@ -228,6 +228,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\core\ToLuaBind.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\core\XMLPort.cc"
 				>
 			</File>
@@ -355,6 +359,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\core\Tickable.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\core\ToLuaBind.h"
 				>
 			</File>
 			<File
