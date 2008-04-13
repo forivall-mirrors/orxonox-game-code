@@ -26,7 +26,7 @@
  */
 
 #include <cctype>
-
+#include <iostream>
 #include "String.h"
 
 /**
@@ -94,6 +94,30 @@ unsigned int getNextQuote(const std::string& str, unsigned int start)
 }
 
 /**
+    @brief Returns true if pos is between two quotes.
+    @param str The string
+    @param pos The position to check
+    @return True if pos is between two quotes
+*/
+bool isBetweenQuotes(const std::string& str, unsigned int pos)
+{
+    if (pos == std::string::npos)
+        return false;
+
+    unsigned int quotecount = 0;
+    unsigned int quote = 0;
+    while ((quote = getNextQuote(str, quote)) < pos)
+    {
+        quotecount++;
+    }
+
+    if (quote == std::string::npos)
+        return false;
+
+    return ((quotecount % 2) == 1);
+}
+
+/**
     @brief Returns true if the string contains something like '..."between quotes"...'
     @param The string
     @return True if there is something between quotes
@@ -123,50 +147,41 @@ std::string getStringBetweenQuotes(const std::string& str)
 /**
     @brief Removes enclosing quotes if available.
     @brief str The string to strip
+    @return The string with removed quotes
 */
-void stripEnclosingQuotes(std::string* str)
+std::string stripEnclosingQuotes(const std::string& str)
 {
     unsigned int start = std::string::npos;
     unsigned int end = 0;
 
-    for (unsigned int pos = 0; (pos < (*str).size()) && (pos < std::string::npos); pos++)
+    for (unsigned int pos = 0; (pos < str.size()) && (pos < std::string::npos); pos++)
     {
-        if ((*str)[pos] == '"')
+        if (str[pos] == '"')
         {
             start = pos;
             break;
         }
 
-        if (((*str)[pos] != ' ') && ((*str)[pos] != '\t') && ((*str)[pos] != '\n'))
-            return;
+        if ((str[pos] != ' ') && (str[pos] != '\t') && (str[pos] != '\n'))
+            return str;
     }
 
-    for (unsigned int pos = (*str).size() - 1; pos < std::string::npos; pos--)
+    for (unsigned int pos = str.size() - 1; pos < std::string::npos; pos--)
     {
-        if ((*str)[pos] == '"')
+        if (str[pos] == '"')
         {
             end = pos;
             break;
         }
 
-        if (((*str)[pos] != ' ') && ((*str)[pos] != '\t') && ((*str)[pos] != '\n'))
-            return;
+        if ((str[pos] != ' ') && (str[pos] != '\t') && (str[pos] != '\n'))
+            return str;
     }
 
     if ((start != std::string::npos) && (end != 0))
-        (*str) = (*str).substr(start + 1, end - start - 1);
-}
-
-/**
-    @brief Returns a copy of the string with removed enclosing quotes (if available).
-    @brief str The string to strip
-    @return The striped copy of the string
-*/
-std::string getStrippedEnclosingQuotes(const std::string& str)
-{
-    std::string output = std::string(str);
-    stripEnclosingQuotes(&output);
-    return output;
+        return str.substr(start + 1, end - start - 1);
+    else
+        return str;
 }
 
 /**
@@ -232,6 +247,53 @@ bool isNumeric(const std::string& str)
     }
 
     return true;
+}
+
+std::string addSlashes(const std::string& str)
+{
+    std::string output = str;
+
+    for (unsigned int pos = 0; (pos = output.find('\\', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\\\"); }
+    for (unsigned int pos = 0; (pos = output.find('\n', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\n"); }
+    for (unsigned int pos = 0; (pos = output.find('\t', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\t"); }
+    for (unsigned int pos = 0; (pos = output.find('\v', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\v"); }
+    for (unsigned int pos = 0; (pos = output.find('\b', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\b"); }
+    for (unsigned int pos = 0; (pos = output.find('\r', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\r"); }
+    for (unsigned int pos = 0; (pos = output.find('\f', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\f"); }
+    for (unsigned int pos = 0; (pos = output.find('\a', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\a"); }
+    for (unsigned int pos = 0; (pos = output.find('"', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\\""); }
+    for (unsigned int pos = 0; (pos = output.find('\0', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\0"); }
+
+    return output;
+}
+
+std::string removeSlashes(const std::string& str)
+{
+    if (str.size() == 0)
+        return str;
+
+    std::string output = "";
+    for (unsigned int pos = 0; pos < str.size() - 1; )
+    {
+        if (str[pos] == '\\')
+        {
+            if (str[pos + 1] == '\\') { output += '\\'; pos += 2; continue; }
+            else if (str[pos + 1] == 'n') { output += '\n'; pos += 2; continue; }
+            else if (str[pos + 1] == 't') { output += '\t'; pos += 2; continue; }
+            else if (str[pos + 1] == 'v') { output += '\v'; pos += 2; continue; }
+            else if (str[pos + 1] == 'b') { output += '\b'; pos += 2; continue; }
+            else if (str[pos + 1] == 'r') { output += '\r'; pos += 2; continue; }
+            else if (str[pos + 1] == 'f') { output += '\f'; pos += 2; continue; }
+            else if (str[pos + 1] == 'a') { output += '\a'; pos += 2; continue; }
+            else if (str[pos + 1] == '"') { output += '"'; pos += 2; continue; }
+            else if (str[pos + 1] == '0') { output += '\0'; pos += 2; continue; }
+        }
+        output += str[pos];
+        pos++;
+    }
+    output += str[str.size() - 1];
+
+    return output;
 }
 
 /**
@@ -363,7 +425,18 @@ std::string getComment(const std::string& str)
 */
 unsigned int getCommentPosition(const std::string& str)
 {
-    for (unsigned int i = 0; i < str.size(); i++)
+    return getNextCommentPosition(str, 0);
+}
+
+/**
+    @brief Returns the position of the next comment-symbol, starting with start.
+    @param str The string
+    @param start The startposition
+    @return The position
+*/
+unsigned int getNextCommentPosition(const std::string& str, unsigned int start)
+{
+    for (unsigned int i = start; i < str.size(); i++)
         if (isComment(str.substr(i)))
             return i;
 

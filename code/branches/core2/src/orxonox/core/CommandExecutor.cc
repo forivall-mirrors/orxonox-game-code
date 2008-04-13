@@ -334,7 +334,7 @@ namespace orxonox
 
     bool CommandExecutor::execute(const std::string& command)
     {
-        std::string strippedCommand = getStrippedEnclosingQuotes(command);
+        std::string strippedCommand = stripEnclosingQuotes(command);
 
         SubString tokensIO(strippedCommand, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
         if (tokensIO.size() >= 2)

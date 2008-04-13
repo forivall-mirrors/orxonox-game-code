@@ -83,7 +83,7 @@ namespace orxonox
         for (unsigned int i = 0; i < this->vector_int_.size(); i++)
         std::cout << "vector<int>:     " << i << ": " << this->vector_int_[i] << std::endl;
         for (unsigned int i = 0; i < this->vector_string_.size(); i++)
-        std::cout << "vector<string>:  " << i << ": " << this->vector_string_[i] << std::endl;
+        std::cout << "vector<string>:  " << i << ":>" << this->vector_string_[i] << "<" << std::endl;
         for (unsigned int i = 0; i < this->vector_vector3_.size(); i++)
         std::cout << "vector<vector3>: " << i << ": " << this->vector_vector3_[i] << std::endl;
 

@@ -65,6 +65,23 @@ namespace orxonox
     //////////////////////////
     // ConfigFileEntryValue //
     //////////////////////////
+
+    void ConfigFileEntryValue::setValue(const std::string& value)
+    {
+        if (!this->bString_)
+            this->value_ = value;
+        else
+            this->value_ = "\"" + addSlashes(value) + "\"";
+    }
+
+    std::string ConfigFileEntryValue::getValue() const
+    {
+        if (!this->bString_)
+            return this->value_;
+        else
+            return removeSlashes(stripEnclosingQuotes(this->value_));
+    }
+
     std::string ConfigFileEntryValue::getFileEntry() const
     {
         if (this->additionalComment_ == "" || this->additionalComment_.size() == 0)
@@ -129,29 +146,39 @@ namespace orxonox
             return ("[" + this->name_ + "] " + this->additionalComment_);
     }
 
-    std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, const std::string& fallback)
+    std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, const std::string& fallback, bool bString)
     {
         for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
+        {
             if ((*it)->getName() == name)
+            {
+                (*it)->setString(bString);
                 return it;
+            }
+        }
 
         this->bUpdated_ = true;
 
-        return this->entries_.insert(this->entries_.end(), (ConfigFileEntry*)(new ConfigFileEntryValue(name, fallback)));
+        return this->entries_.insert(this->entries_.end(), (ConfigFileEntry*)(new ConfigFileEntryValue(name, fallback, bString)));
     }
 
-    std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, unsigned int index, const std::string& fallback)
+    std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
     {
         for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
+        {
             if (((*it)->getName() == name) && ((*it)->getIndex() == index))
+            {
+                (*it)->setString(bString);
                 return it;
+            }
+        }
 
         this->bUpdated_ = true;
 
         if (index == 0)
-            return this->entries_.insert(this->entries_.end(), (ConfigFileEntry*)(new ConfigFileEntryVectorValue(name, index, fallback)));
+            return this->entries_.insert(this->entries_.end(), (ConfigFileEntry*)(new ConfigFileEntryVectorValue(name, index, fallback, bString)));
         else
-            return this->entries_.insert(++this->getEntryIterator(name, index - 1), (ConfigFileEntry*)(new ConfigFileEntryVectorValue(name, index, fallback)));
+            return this->entries_.insert(++this->getEntryIterator(name, index - 1, "", bString), (ConfigFileEntry*)(new ConfigFileEntryVectorValue(name, index, fallback, bString)));
     }
 
 
@@ -232,23 +259,20 @@ namespace orxonox
                         // New entry
                         unsigned int pos2 = line.find('[');
                         unsigned int pos3 = line.find(']');
-
-                        std::string value = removeTrailingWhitespaces(line.substr(pos1 + 1));
-                        std::string comment = "";
-
-                        std::string betweenQuotes = getStringBetweenQuotes(value);
-                        if (value.size() > 0 && value[0] == '"' && betweenQuotes != "" && betweenQuotes.size() > 0)
+                        unsigned int commentposition = getNextCommentPosition(line, pos1 + 1);
+                        while (isBetweenQuotes(line, commentposition))
                         {
-                            value = betweenQuotes;
-                            if (line.size() > pos1 + 1 + betweenQuotes.size() + 2)
-                                comment = removeTrailingWhitespaces(getComment(line.substr(pos1 + 1 + betweenQuotes.size() + 2)));
+                            commentposition = getNextCommentPosition(line, commentposition + 1);
+                        }
+                        std::string value = "", comment = "";
+                        if (commentposition == std::string::npos)
+                        {
+                            value = removeTrailingWhitespaces(line.substr(pos1 + 1));
                         }
                         else
                         {
-                            unsigned int pos4 = getCommentPosition(line);
-                            value = removeTrailingWhitespaces(line.substr(pos1 + 1, pos4 - pos1 - 1));
-                            if (pos4 != std::string::npos)
-                                comment = removeTrailingWhitespaces(line.substr(pos4));
+                            value = removeTrailingWhitespaces(line.substr(pos1 + 1, commentposition - pos1 - 1));
+                            comment = removeTrailingWhitespaces(line.substr(commentposition));
                         }
 
                         if (pos2 != std::string::npos && pos3 != std::string::npos && pos3 > pos2 + 1)
@@ -258,7 +282,7 @@ namespace orxonox
                             if (ConvertValue(&index, line.substr(pos2 + 1, pos3 - pos2 - 1)))
                             {
                                 // New array
-                                std::list<ConfigFileEntry*>::iterator it = newsection->getEntryIterator(getStripped(line.substr(0, pos2)), index, value);
+                                std::list<ConfigFileEntry*>::iterator it = newsection->getEntryIterator(getStripped(line.substr(0, pos2)), index, value, false);
                                 (*it)->setValue(value);
                                 (*it)->setComment(comment);
                                 continue;
@@ -266,7 +290,7 @@ namespace orxonox
                         }
 
                         // New value
-                        newsection->getEntries().insert(newsection->getEntries().end(), new ConfigFileEntryValue(getStripped(line.substr(0, pos1)), value, comment));
+                        newsection->getEntries().insert(newsection->getEntries().end(), new ConfigFileEntryValue(getStripped(line.substr(0, pos1)), value, false, comment));
                         continue;
                     }
                 }

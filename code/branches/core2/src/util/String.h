@@ -39,16 +39,19 @@ _UtilExport std::string  getStripped(const std::string& str);
 _UtilExport std::string  removeTrailingWhitespaces(const std::string& str);
 
 _UtilExport unsigned int getNextQuote(const std::string& str, unsigned int start);
+_UtilExport bool         isBetweenQuotes(const std::string& str, unsigned int pos);
 
 _UtilExport bool         hasStringBetweenQuotes(const std::string& str);
 _UtilExport std::string  getStringBetweenQuotes(const std::string& str);
 
-_UtilExport void         stripEnclosingQuotes(std::string* str);
-_UtilExport std::string  getStrippedEnclosingQuotes(const std::string& str);
+_UtilExport std::string  stripEnclosingQuotes(const std::string& str);
 
 _UtilExport bool         isEmpty(const std::string& str);
 _UtilExport bool         isComment(const std::string& str);
 _UtilExport bool         isNumeric(const std::string& str);
+
+_UtilExport std::string  addSlashes(const std::string& str);
+_UtilExport std::string  removeSlashes(const std::string& str);
 
 _UtilExport void         lowercase(std::string* str);
 _UtilExport std::string  getLowercase(const std::string& str);
@@ -62,6 +65,7 @@ _UtilExport int          nocaseCmp(const std::string& s1, const std::string& s2,
 _UtilExport bool         hasComment(const std::string& str);
 _UtilExport std::string  getComment(const std::string& str);
 _UtilExport unsigned int getCommentPosition(const std::string& str);
+_UtilExport unsigned int getNextCommentPosition(const std::string& str, unsigned int start = 0);
 
 //! The Convert class has some static member functions to convert strings to values and values to strings.
 class _UtilExport Convert
