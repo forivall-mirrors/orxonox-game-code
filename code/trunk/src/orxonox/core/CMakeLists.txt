@@ -1,7 +1,4 @@
-AUX_SOURCE_DIRECTORY(tolua TOLUA_SRC_FILES)
-
 SET( CORE_SRC_FILES
-  ${TOLUA_SRC_FILES}
   OrxonoxClass.cc
   BaseObject.cc
   Factory.cc
