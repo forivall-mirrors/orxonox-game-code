@@ -7,8 +7,10 @@
 #ifndef _Script_H__
 #define _Script_H__
 
+#include "CorePrereqs.h"
+
 extern "C" {
-#include "lua.h"
+#include <lua.h>
 }
 
 #include <list>
@@ -17,7 +19,7 @@ extern "C" {
 namespace orxonox // tolua_export
 { // tolua_export
 
-  class Script // tolua_export
+  class _CoreExport Script // tolua_export
   { // tolua_export
     public:
       inline static Script* getInstance() { if (!Script::singletonRef) Script::singletonRef = new Script(); return Script::singletonRef; } // tolua_export

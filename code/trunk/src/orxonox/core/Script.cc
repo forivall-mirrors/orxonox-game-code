@@ -33,12 +33,12 @@
 #include "CoreIncludes.h"
 
 extern "C" {
-#include "lualib.h"
-#include "lauxlib.h"
+#include <lualib.h>
+#include <lauxlib.h>
 }
 
-#include "tolua/tolua++.h"
-#include "tolua/tolua_bind.h"
+#include "util/tolua/tolua++.h"
+#include "ToLuaBind.h"
 
 namespace orxonox
 {
