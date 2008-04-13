@@ -71,7 +71,7 @@ namespace orxonox
         if (!this->bString_)
             this->value_ = value;
         else
-            this->value_ = "\"" + addSlashes(value) + "\"";
+            this->value_ = "\"" + addSlashes(stripEnclosingQuotes(value)) + "\"";
     }
 
     std::string ConfigFileEntryValue::getValue() const

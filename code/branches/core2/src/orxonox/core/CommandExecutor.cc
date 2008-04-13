@@ -414,9 +414,9 @@ namespace orxonox
                 if (evaluation.shortcut_)
                 {
                     if (tokens.size() >= 2)
-                        return evaluation.shortcut_->parse(tokens.subSet(1).join() + evaluation.getAdditionalParameter());
+                        return evaluation.shortcut_->parse(removeSlashes(tokens.subSet(1).join() + evaluation.getAdditionalParameter()));
                     else
-                        return evaluation.shortcut_->parse(evaluation.additionalParameter_);
+                        return evaluation.shortcut_->parse(removeSlashes(evaluation.additionalParameter_));
                 }
                 break;
             case CS_Function:
@@ -428,9 +428,9 @@ namespace orxonox
                 if (evaluation.function_)
                 {
                     if (tokens.size() >= 3)
-                        return evaluation.function_->parse(tokens.subSet(2).join() + evaluation.getAdditionalParameter());
+                        return evaluation.function_->parse(removeSlashes(tokens.subSet(2).join() + evaluation.getAdditionalParameter()));
                     else
-                        return evaluation.function_->parse(evaluation.additionalParameter_);
+                        return evaluation.function_->parse(removeSlashes(evaluation.additionalParameter_));
                 }
                 break;
             case CS_ConfigValueClass:
@@ -446,16 +446,16 @@ namespace orxonox
                     if ((tokens.size() >= 1) && (tokens[0] == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE))
                     {
                         if (tokens.size() >= 4)
-                            return evaluation.configvalue_->set(tokens.subSet(3).join() + evaluation.getAdditionalParameter());
+                            return evaluation.configvalue_->set(removeSlashes(tokens.subSet(3).join() + evaluation.getAdditionalParameter()));
                         else
-                            return evaluation.configvalue_->set(evaluation.additionalParameter_);
+                            return evaluation.configvalue_->set(removeSlashes(evaluation.additionalParameter_));
                     }
                     else if ((tokens.size() >= 1) && (tokens[0] == COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY))
                     {
                         if (tokens.size() >= 4)
-                            return evaluation.configvalue_->tset(tokens.subSet(3).join() + evaluation.getAdditionalParameter());
+                            return evaluation.configvalue_->tset(removeSlashes(tokens.subSet(3).join() + evaluation.getAdditionalParameter()));
                         else
-                            return evaluation.configvalue_->tset(evaluation.additionalParameter_);
+                            return evaluation.configvalue_->tset(removeSlashes(evaluation.additionalParameter_));
                     }
                 }
                 break;

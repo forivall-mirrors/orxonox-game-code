@@ -253,16 +253,16 @@ std::string addSlashes(const std::string& str)
 {
     std::string output = str;
 
-    for (unsigned int pos = 0; (pos = output.find('\\', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\\\"); }
-    for (unsigned int pos = 0; (pos = output.find('\n', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\n"); }
-    for (unsigned int pos = 0; (pos = output.find('\t', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\t"); }
-    for (unsigned int pos = 0; (pos = output.find('\v', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\v"); }
-    for (unsigned int pos = 0; (pos = output.find('\b', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\b"); }
-    for (unsigned int pos = 0; (pos = output.find('\r', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\r"); }
-    for (unsigned int pos = 0; (pos = output.find('\f', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\f"); }
-    for (unsigned int pos = 0; (pos = output.find('\a', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\a"); }
-    for (unsigned int pos = 0; (pos = output.find('"', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\\""); }
-    for (unsigned int pos = 0; (pos = output.find('\0', pos)) < std::string::npos; pos += 2) { output.replace(pos, 2, "\\0"); }
+    for (unsigned int pos = 0; (pos = output.find('\\', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\\\"); }
+    for (unsigned int pos = 0; (pos = output.find('\n', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\n"); }
+    for (unsigned int pos = 0; (pos = output.find('\t', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\t"); }
+    for (unsigned int pos = 0; (pos = output.find('\v', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\v"); }
+    for (unsigned int pos = 0; (pos = output.find('\b', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\b"); }
+    for (unsigned int pos = 0; (pos = output.find('\r', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\r"); }
+    for (unsigned int pos = 0; (pos = output.find('\f', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\f"); }
+    for (unsigned int pos = 0; (pos = output.find('\a', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\a"); }
+    for (unsigned int pos = 0; (pos = output.find('"', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\\""); }
+    for (unsigned int pos = 0; (pos = output.find('\0', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\0"); }
 
     return output;
 }
@@ -290,8 +290,9 @@ std::string removeSlashes(const std::string& str)
         }
         output += str[pos];
         pos++;
+        if (pos == str.size() - 1)
+            output += str[pos];
     }
-    output += str[str.size() - 1];
 
     return output;
 }
