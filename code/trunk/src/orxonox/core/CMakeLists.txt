@@ -30,7 +30,6 @@ SET_TARGET_PROPERTIES( core PROPERTIES LINK_FLAGS "--no-undefined" )
 
 TARGET_LINK_LIBRARIES( core
   util
-
   ${Lua_LIBRARIES}
   ${OIS_LIBRARIES}
 )

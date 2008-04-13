@@ -108,7 +108,7 @@ namespace orxonox
 #if LUA_VERSION_NUM == 501
     error = luaL_loadstring(luaState_, init.c_str());
 #else
-    error = lua_load(luaState_, &orxonox::Script::lua_Chunkreader, init.c_str(), "init");
+    error = lua_load(luaState_, &orxonox::Script::lua_Chunkreader, (void*)init.c_str(), "init");
 #endif
     if (error == 0)
       error = lua_pcall(luaState_, 0, 0, 0);
