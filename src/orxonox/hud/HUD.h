@@ -28,11 +28,11 @@
 #ifndef _HUD_H__
 #define _HUD_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <string>
 
 #include <OgrePrerequisites.h>
-
-#include "../OrxonoxPrereqs.h"
 
 
 namespace orxonox

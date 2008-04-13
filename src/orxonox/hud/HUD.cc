@@ -26,12 +26,11 @@
 */
 
 #include "OrxonoxStableHeaders.h"
+#include "HUD.h"
 
 #include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
 #include <OgreStringConverter.h>
-
-#include "HUD.h"
 
 
 namespace orxonox

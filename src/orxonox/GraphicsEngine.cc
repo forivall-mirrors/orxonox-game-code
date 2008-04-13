@@ -31,6 +31,7 @@
   */
 
 #include "OrxonoxStableHeaders.h"
+#include "GraphicsEngine.h"
 
 #include <OgreRoot.h>
 #include <OgreException.h>
@@ -41,8 +42,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/Debug.h"
-
-#include "GraphicsEngine.h"
 
 
 namespace orxonox {

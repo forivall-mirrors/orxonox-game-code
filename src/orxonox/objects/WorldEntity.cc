@@ -26,6 +26,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "WorldEntity.h"
 
 #include <string>
 #include <sstream>
@@ -35,7 +36,6 @@
 #include "util/String2Number.h"
 #include "core/CoreIncludes.h"
 #include "GraphicsEngine.h"
-#include "WorldEntity.h"
 #include "core/XMLPort.h"
 
 namespace orxonox

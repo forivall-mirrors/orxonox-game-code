@@ -26,6 +26,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "BaseWeapon.h"
 
 #include <OgreStringConverter.h>
 #include <OgreSceneNode.h>
@@ -38,8 +39,6 @@
 #include "BulletManager.h"
 #include "AmmunitionDump.h"
 #include "core/CoreIncludes.h"
-
-#include "BaseWeapon.h"
 
 
 namespace orxonox {

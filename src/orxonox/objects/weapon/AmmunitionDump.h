@@ -29,11 +29,11 @@
 #ifndef _AmmunitionDump_H__
 #define _AmmunitionDump_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <string>
 
 #include <OgrePrerequisites.h>
-
-#include "../../OrxonoxPrereqs.h"
 
 #include "network/Synchronisable.h"
 #include "core/BaseObject.h"

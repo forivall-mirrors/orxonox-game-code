@@ -26,9 +26,9 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "WeaponStation.h"
 
 #include "BaseWeapon.h"
-#include "WeaponStation.h"
 
 
 namespace orxonox {

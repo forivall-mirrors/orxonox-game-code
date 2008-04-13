@@ -26,6 +26,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "Model.h"
 
 #include "util/tinyxml/tinyxml.h"
 #include "util/Tokenizer.h"
@@ -33,8 +34,6 @@
 #include "core/CoreIncludes.h"
 #include "GraphicsEngine.h"
 #include "core/XMLPort.h"
-
-#include "Model.h"
 
 namespace orxonox
 {

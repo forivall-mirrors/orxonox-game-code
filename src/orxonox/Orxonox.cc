@@ -32,6 +32,7 @@
 
 // Precompiled Headers
 #include "OrxonoxStableHeaders.h"
+#include "Orxonox.h"
 
 //****** STD *******
 //#include <iostream>
@@ -70,8 +71,6 @@
 #include "tools/Timer.h"
 #include "hud/HUD.h"
 //#include "objects/weapon/BulletManager.h"
-
-#include "Orxonox.h"
 
 // FIXME: is this really file scope?
 // globals for the server or client

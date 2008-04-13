@@ -26,9 +26,10 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "Bullet.h"
+
 #include "core/CoreIncludes.h"
 
-#include "Bullet.h"
 
 namespace orxonox {
   CreateFactory(Bullet);

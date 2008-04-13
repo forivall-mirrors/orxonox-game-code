@@ -26,6 +26,10 @@
  */
 
 #include "AudioManager.h"
+
+#include <AL/alut.h>
+
+#include "core/Error.h"
 #include "core/Debug.h"
 
 namespace audio
