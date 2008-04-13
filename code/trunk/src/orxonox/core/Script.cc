@@ -30,15 +30,15 @@
 #include <fstream>
 #include <map>
 
-#include "../core/CoreIncludes.h"
+#include "CoreIncludes.h"
 
 extern "C" {
 #include "lualib.h"
 #include "lauxlib.h"
 }
 
-#include "util/tolua/tolua++.h"
-#include "util/tolua/tolua_bind.h"
+#include "tolua/tolua++.h"
+#include "tolua/tolua_bind.h"
 
 namespace orxonox
 {
