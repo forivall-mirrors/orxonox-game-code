@@ -94,7 +94,7 @@ namespace orxonox {
 #endif
 
     // create a logManager
-    LogManager *logger;
+    /*LogManager *logger;
 		if(LogManager::getSingletonPtr() == 0)
 			logger = new LogManager();
     else
@@ -108,7 +108,7 @@ namespace orxonox {
       myLog = logger->createLog(this->ogreLogfile_, true, false, false);
 
     myLog->setLogDetail(LL_BOREME);
-    myLog->addListener(this);
+    myLog->addListener(this);*/
 
     // Root will detect that we've already created a Log
     root_ = new Root(plugin_filename);
