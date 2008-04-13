@@ -26,6 +26,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "Ambient.h"
 
 #include <vector>
 #include <string>
@@ -40,8 +41,6 @@
 #include "core/CoreIncludes.h"
 #include "GraphicsEngine.h"
 #include "core/XMLPort.h"
-
-#include "Ambient.h"
 
 namespace orxonox
 {

@@ -26,6 +26,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "Explosion.h"
 
 #include <OgreParticleSystem.h>
 #include <OgreSceneManager.h>
@@ -35,8 +36,6 @@
 #include "util/Math.h"
 #include "GraphicsEngine.h"
 #include "particle/ParticleInterface.h"
-
-#include "Explosion.h"
 
 namespace orxonox
 {

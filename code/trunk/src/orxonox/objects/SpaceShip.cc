@@ -26,6 +26,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "SpaceShip.h"
 
 #include <string>
 
@@ -45,8 +46,6 @@
 #include "particle/ParticleInterface.h"
 #include "Projectile.h"
 #include "core/XMLPort.h"
-
-#include "SpaceShip.h"
 
 namespace orxonox
 {

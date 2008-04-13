@@ -29,9 +29,9 @@
 #ifndef _BarrelGun_H__
 #define _BarrelGun_H__
 
-#include <OgrePrerequisites.h>
+#include "OrxonoxPrereqs.h"
 
-#include "../../OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
 
 #include "BaseWeapon.h"
 

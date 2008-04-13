@@ -26,14 +26,13 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "Mesh.h"
 
 #include <sstream>
 
 #include <OgreSceneManager.h>
 
 #include "GraphicsEngine.h"
-
-#include "Mesh.h"
 
 namespace orxonox
 {

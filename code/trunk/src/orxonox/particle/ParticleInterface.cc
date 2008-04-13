@@ -31,8 +31,8 @@
 */
 
 #include "OrxonoxStableHeaders.h"
-
 #include "ParticleInterface.h"
+
 // #include <OgreParticleSystem.h>
 // #include <Ogre.h>
 // #include <OIS/OIS.h>

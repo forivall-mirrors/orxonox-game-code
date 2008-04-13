@@ -34,12 +34,13 @@
 #ifndef _GraphicsEngine_H__
 #define _GraphicsEngine_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <string>
 
 #include <OgrePrerequisites.h>
 #include <OgreLog.h>
 
-#include "OrxonoxPrereqs.h"
 #include "core/OrxonoxClass.h"
 
 

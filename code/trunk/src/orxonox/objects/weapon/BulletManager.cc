@@ -26,8 +26,8 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-
 #include "BulletManager.h"
+
 #include "Bullet.h"
 #include "core/CoreIncludes.h"
 

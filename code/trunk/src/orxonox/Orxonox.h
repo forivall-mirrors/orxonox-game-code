@@ -7,11 +7,11 @@
 #ifndef _Orxonox_H__
 #define _Orxonox_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <string>
 
 #include <OgrePrerequisites.h>
-
-#include "OrxonoxPrereqs.h"
 #include "audio/AudioPrereqs.h"
 
 #include "GraphicsEngine.h"

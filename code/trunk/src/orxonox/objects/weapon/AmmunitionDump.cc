@@ -26,13 +26,12 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "AmmunitionDump.h"
 
 #include "orxonox/Orxonox.h"
 #include "BulletManager.h"
 #include "util/tinyxml/tinyxml.h"
 #include "core/CoreIncludes.h"
-
-#include "AmmunitionDump.h"
 
 
 namespace orxonox {

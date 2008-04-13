@@ -29,9 +29,9 @@
 #ifndef _BaseWeapon_H__
 #define _BaseWeapon_H__
 
-#include <OgrePrerequisites.h>
+#include "OrxonoxPrereqs.h"
 
-#include "../../OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
 
 #include "../Model.h"
 

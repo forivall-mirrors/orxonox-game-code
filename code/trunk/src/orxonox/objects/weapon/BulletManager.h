@@ -29,11 +29,11 @@
 #ifndef _BulletManager_H__
 #define _BulletManager_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <string>
 
 #include <OgrePrerequisites.h>
-
-#include "../../OrxonoxPrereqs.h"
 
 #include "network/Synchronisable.h"
 #include "util/tinyxml/tinyxml.h"

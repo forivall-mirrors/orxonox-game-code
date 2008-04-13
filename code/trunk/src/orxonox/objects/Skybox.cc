@@ -26,6 +26,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "Skybox.h"
 
 #include <string>
 
@@ -38,8 +39,6 @@
 #include "core/CoreIncludes.h"
 #include "core/Debug.h"
 #include "core/XMLPort.h"
-
-#include "Skybox.h"
 
 namespace orxonox
 {

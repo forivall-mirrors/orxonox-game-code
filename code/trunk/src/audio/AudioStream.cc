@@ -19,16 +19,15 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Nicolas Perrenoud <nicolape@ee.ethz.ch>
  *   Co-authors:
  *      ...
  *
  */
-
-#include <string>
-
 #include "AudioStream.h"
-#include "../orxonox/core/Debug.h"
+
+#include "core/Debug.h"
+#include "core/Error.h"
 
 namespace audio
 {

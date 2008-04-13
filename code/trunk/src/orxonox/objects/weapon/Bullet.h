@@ -29,9 +29,9 @@
 #ifndef _Bullet_H__
 #define _Bullet_H__
 
-#include <OgrePrerequisites.h>
+#include "OrxonoxPrereqs.h"
 
-#include "../../OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
 
 #include "../Model.h"
 

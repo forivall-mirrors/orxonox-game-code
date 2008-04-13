@@ -31,7 +31,7 @@
 
 #include <OgrePrerequisites.h>
 
-#include "../../OrxonoxPrereqs.h"
+#include "OrxonoxPrereqs.h"
 
 
 namespace orxonox {

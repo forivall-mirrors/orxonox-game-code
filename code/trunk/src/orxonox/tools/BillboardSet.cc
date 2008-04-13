@@ -26,6 +26,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "BillboardSet.h"
 
 #include <sstream>
 
@@ -33,8 +34,6 @@
 
 #include "GraphicsEngine.h"
 #include "util/Math.h"
-
-#include "BillboardSet.h"
 
 namespace orxonox
 {

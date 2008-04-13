@@ -26,9 +26,9 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "Timer.h"
 
 #include "core/CoreIncludes.h"
-#include "Timer.h"
 
 namespace orxonox
 {
