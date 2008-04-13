@@ -132,7 +132,7 @@ namespace orxonox {
 #endif
 
     // create a logManager
-    LogManager *logger;
+    /*LogManager *logger;
 		if(LogManager::getSingletonPtr() == 0)
 			logger = new LogManager();
     else
@@ -148,7 +148,7 @@ namespace orxonox {
     COUT(4) << "*** GraphicsEngine: Ogre Log created" << std::endl;
 
     myLog->setLogDetail(LL_BOREME);
-    myLog->addListener(this);
+    myLog->addListener(this);*/
 
     // Root will detect that we've already created a Log
     COUT(4) << "*** GraphicsEngine: Creating Ogre Root..." << std::endl;
