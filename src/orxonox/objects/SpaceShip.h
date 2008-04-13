@@ -81,7 +81,7 @@ namespace orxonox
             float mouseX_;
             float mouseY_;
 
-            int emitterRate_;
+            float emitterRate_;
     };
 }
 

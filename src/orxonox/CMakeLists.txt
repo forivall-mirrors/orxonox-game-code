@@ -37,7 +37,6 @@ SET_TARGET_PROPERTIES( orxonox PROPERTIES LINK_FLAGS "--no-undefined" )
 
 TARGET_LINK_LIBRARIES( orxonox
   ${OGRE_LIBRARIES}
-  ${OIS_LIBRARIES}
   util
   core
   audio

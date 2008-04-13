@@ -1,4 +1,7 @@
+AUX_SOURCE_DIRECTORY(tolua TOLUA_SRC_FILES)
+
 SET( CORE_SRC_FILES
+  ${TOLUA_SRC_FILES}
   OrxonoxClass.cc
   BaseObject.cc
   Factory.cc
@@ -6,6 +9,7 @@ SET( CORE_SRC_FILES
   IdentifierDistributor.cc
   InputHandler.cc
   InputManager.cc
+  InputEventListener.cc
   MetaObjectList.cc
   ConfigValueContainer.cc
   Error.cc
@@ -26,5 +30,7 @@ SET_TARGET_PROPERTIES( core PROPERTIES LINK_FLAGS "--no-undefined" )
 
 TARGET_LINK_LIBRARIES( core
   util
+
   ${Lua_LIBRARIES}
+  ${OIS_LIBRARIES}
 )

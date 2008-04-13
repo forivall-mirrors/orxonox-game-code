@@ -16,11 +16,13 @@ ENDIF (Lua_LIBRARIES AND Lua_INCLUDE_DIR)
 
 FIND_PATH(Lua_INCLUDE_DIR lua.h
 	/usr/include/lua5.1
-	/usr/local/include/lua5.1)
+	/usr/local/include/lua5.1
+	../libs/lua-5.1.3/src)
 
 FIND_LIBRARY(Lua_LIBRARIES lua5.1
 	/usr/lib
-	/usr/local/lib)
+	/usr/local/lib
+	../libs/lua-5.1.3/lib)
 
 IF (NOT Lua_INCLUDE_DIR)
 FIND_PATH(Lua_INCLUDE_DIR lua.h
