@@ -1,29 +1,30 @@
 /*
-*   ORXONOX - the hottest 3D action shooter ever to exist
-*
-*
-*   License notice:
-*
-*   This program is free software; you can redistribute it and/or
-*   modify it under the terms of the GNU General Public License
-*   as published by the Free Software Foundation; either version 2
-*   of the License, or (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program; if not, write to the Free Software
-*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*
-*   Author:
-*      Oliver Scheuss, (C) 2007
-*   Co-authors:
-*      ...
-*
-*/
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Oliver Scheuss, (C) 2007
+ *   Co-authors:
+ *      ...
+ *
+ */
 
 //
 // C++ Interface: ConnectionManager
@@ -267,16 +268,16 @@ namespace network
       classname = id->getName();
       network_id = id->getNetworkID();
       COUT(4) << "network_id: " << network_id << ", classname: " << classname << std::endl;
-      
+
       addPacket(packet_gen.clid( (int)network_id, classname ), clientID);
-      
+
       ++it;
     }
     sendPackets();
   }
 
-  
-  
+
+
   void ConnectionManager::addClientsObjectID( int clientID, int objectID ) {
     COUT(4) << "ship of client: " << clientID << ": " << objectID << " mapped" << std::endl;
     clientsShip.insert( std::make_pair( clientID, objectID ) );
@@ -301,9 +302,9 @@ namespace network
   void ConnectionManager::deleteObjectIDReg( int objectID ) {
     std::map<int, int>::iterator iter = clientsShip.begin();
     while( iter != clientsShip.end() ) {
-      if( iter->second == objectID ) break; 
+      if( iter->second == objectID ) break;
     }
     clientsShip.erase( iter->first );
   }
-  
+
 }

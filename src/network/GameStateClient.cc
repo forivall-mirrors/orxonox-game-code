@@ -1,29 +1,31 @@
 /*
-*   ORXONOX - the hottest 3D action shooter ever to exist
-*
-*
-*   License notice:
-*
-*   This program is free software; you can redistribute it and/or
-*   modify it under the terms of the GNU General Public License
-*   as published by the Free Software Foundation; either version 2
-*   of the License, or (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program; if not, write to the Free Software
-*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*
-*   Author:
-*      ...
-*   Co-authors:
-*      ...
-*
-*/
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      ...
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 #include <zlib.h>
 
 #include "core/CoreIncludes.h"
@@ -88,8 +90,8 @@ namespace network
         // delete the synchronisable (obviously seems to be deleted on the server)
         while(it && it->objectID!=sync.objectID)
           removeObject(it);
-        
-        
+
+
         if(!it){
           COUT(5) << "classid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
           Synchronisable *no = (Synchronisable*)(ID((unsigned int) sync.classID)->fabricate());
@@ -177,7 +179,7 @@ namespace network
     gamestate->size = normsize;
     gamestate->data = dest;
     gamestate->diffed = a->diffed;
-    
+
     delete a->data; //delete compressed data
     delete a; //we do not need the old (struct) gamestate anymore
 

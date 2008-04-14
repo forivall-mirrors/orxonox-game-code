@@ -1,5 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -19,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Nicolas Perrenoud <nicolape@ee.ethz.ch>
+ *      Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
  *   Co-authors:
  *      ...
  *
@@ -44,7 +45,7 @@ namespace audio
 	{
 	public:
 
-		// Init audio 
+		// Init audio
 		AudioManager();
 
 		// Kill audio and set buffers, sources and memory free
@@ -80,19 +81,19 @@ namespace audio
 
 
 		std::string ambientPath;
-	
+
 		// Vector containing all audio files
 		std::vector<AudioBuffer> buffers;
 		// Vector containing all audio sources which referer to one buffer
 		std::vector<AudioSource> sources;
-		// The ambient background sound 	
+		// The ambient background sound
 		AudioSource ambient;
-		
+
 		std::vector<float> listenerPosition;
 		std::vector<float> listenerSpeed;
 		std::vector<float> listenerAt;
-		std::vector<float> listenerup;		
-	};	
+		std::vector<float> listenerup;
+	};
 }
 
 #endif /* _AudioManager_H__ */

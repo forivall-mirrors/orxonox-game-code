@@ -1,5 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -257,7 +258,7 @@ typedef float Real;
 // will ever be actually removed from VC anyway, it would break too much code.
 //#	pragma warning( disable: 4996)
 
-// disable: "conditional expression constant", always occurs on 
+// disable: "conditional expression constant", always occurs on
 // ORXONOX_MUTEX_CONDITIONAL when no threading enabled
 //#   pragma warning (disable : 201)
 

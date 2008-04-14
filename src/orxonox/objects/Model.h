@@ -1,5 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -48,7 +49,7 @@ namespace orxonox
 
         protected:
             void registerAllVariables();
-            
+
         private:
             std::string meshSrc_;
             Mesh mesh_;
