@@ -31,9 +31,9 @@
  @brief Argument Reader
  */
 
-#include <iostream>
-
 #include "ArgReader.h"
+
+#include <iostream>
 
 ArgReader::ArgReader(int argc, char** argv)
 {

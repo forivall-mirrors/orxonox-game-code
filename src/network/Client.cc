@@ -38,8 +38,8 @@
 //
 //
 
-#include "core/CoreIncludes.h"
 #include "Client.h"
+#include "core/CoreIncludes.h"
 
 namespace network
 {

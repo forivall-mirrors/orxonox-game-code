@@ -37,8 +37,8 @@
 #define _BaseObject_H__
 
 #include "CorePrereqs.h"
-#include "util/XMLIncludes.h"
 
+#include "util/XMLIncludes.h"
 #include "OrxonoxClass.h"
 
 namespace orxonox

@@ -31,9 +31,10 @@
     @brief Implementation of the Language and the LanguageEntry classes.
 */
 
+#include "Language.h"
+
 #include <fstream>
 
-#include "Language.h"
 #include "CoreSettings.h"
 
 namespace orxonox

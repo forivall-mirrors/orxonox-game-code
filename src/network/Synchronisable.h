@@ -40,9 +40,9 @@
 #ifndef _Synchronisable_H__
 #define _Synchronisable_H__
 
-#include <list>
-
 #include "NetworkPrereqs.h"
+
+#include <list>
 #include "core/OrxonoxClass.h"
 
 namespace network

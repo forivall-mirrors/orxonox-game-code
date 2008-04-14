@@ -70,10 +70,10 @@
 #ifndef _ClassTreeMask_H__
 #define _ClassTreeMask_H__
 
+#include "CorePrereqs.h"
+
 #include <list>
 #include <stack>
-
-#include "CorePrereqs.h"
 
 namespace orxonox
 {

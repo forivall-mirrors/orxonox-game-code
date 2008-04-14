@@ -44,10 +44,10 @@
 #ifndef _Factory_H__
 #define _Factory_H__
 
+#include "CorePrereqs.h"
+
 #include <map>
 #include <string>
-
-#include "CorePrereqs.h"
 
 namespace orxonox
 {

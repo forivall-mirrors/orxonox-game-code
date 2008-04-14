@@ -37,11 +37,11 @@
 #ifndef _OutputHandler_H__
 #define _OutputHandler_H__
 
+#include "CorePrereqs.h"
+
 #include <iostream>
 #include <fstream>
 #include <string>
-
-#include "CorePrereqs.h"
 
 namespace orxonox
 {

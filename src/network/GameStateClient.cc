@@ -26,11 +26,12 @@
  *
  */
 
+#include "GameStateClient.h"
+
 #include <zlib.h>
 
 #include "core/CoreIncludes.h"
 #include "Synchronisable.h"
-#include "GameStateClient.h"
 
 namespace network
 {

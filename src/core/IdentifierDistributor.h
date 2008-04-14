@@ -38,9 +38,9 @@
 #ifndef _IdentifierDistributor_H__
 #define _IdentifierDistributor_H__
 
-#include <map>
-
 #include "CorePrereqs.h"
+
+#include <map>
 
 namespace orxonox
 {

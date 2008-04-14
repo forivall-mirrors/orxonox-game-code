@@ -29,14 +29,14 @@
 #ifndef _ConfigFileManager_H__
 #define _ConfigFileManager_H__
 
+#include "CorePrereqs.h"
+
 #include <iostream>
 #include <string>
 #include <list>
 #include <map>
 
 #include "util/Math.h"
-
-#include "CorePrereqs.h"
 
 #define DEFAULT_CONFIG_FILE "default.ini"
 

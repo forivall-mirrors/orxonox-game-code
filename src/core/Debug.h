@@ -36,9 +36,9 @@
 #ifndef _Debug_H__
 #define _Debug_H__
 
-#include <stdio.h>
-
 #include "CorePrereqs.h"
+
+#include <stdio.h>
 
 #include "OutputHandler.h"
 

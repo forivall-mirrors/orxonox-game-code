@@ -31,10 +31,9 @@
     @brief Implementation of the BaseObject class.
 */
 
-#include "util/tinyxml/tinyxml.h"
-
-#include "core/CoreIncludes.h"
 #include "BaseObject.h"
+#include "util/tinyxml/tinyxml.h"
+#include "CoreIncludes.h"
 #include "XMLPort.h"
 #include "Level.h"
 

@@ -34,10 +34,11 @@
 *
 */
 
-#include <iostream>
-
 #include "PacketTypes.h"
 #include "PacketManager.h"
+
+#include <iostream>
+
 #include "core/Debug.h"
 
 namespace network

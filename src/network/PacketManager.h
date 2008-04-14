@@ -29,12 +29,12 @@
 #ifndef _PacketManager_H__
 #define _PacketManager_H__
 
+#include "NetworkPrereqs.h"
+
 #include <string>
 #include <enet/enet.h>
 
 #include "core/CoreIncludes.h"
-
-#include "NetworkPrereqs.h"
 
 #define CLIENTID_CLIENT -1
 

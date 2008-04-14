@@ -31,8 +31,8 @@
  @brief Core relevant parts of InputEventListener
  */
 
-#include "core/CoreIncludes.h"
 #include "InputEventListener.h"
+#include "CoreIncludes.h"
 
 namespace orxonox
 {

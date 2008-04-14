@@ -45,10 +45,10 @@
 #ifndef _Language_H__
 #define _Language_H__
 
+#include "CorePrereqs.h"
+
 #include <map>
 #include <string>
-
-#include "CorePrereqs.h"
 
 
 #define AddLanguageEntry(label, fallbackstring) \

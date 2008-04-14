@@ -31,10 +31,11 @@
 #define _Executor_H__
 
 #include "CorePrereqs.h"
-#include "Functor.h"
-#include "Debug.h"
+
 #include "util/SubString.h"
 #include "util/String.h"
+#include "Functor.h"
+#include "Debug.h"
 
 
 #define EXECUTOR_PARSE_FUNCTORCALL(mode) EXECUTOR_PARSE_FUNCTORCALL##mode

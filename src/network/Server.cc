@@ -38,6 +38,8 @@
 //
 //
 
+#include "Server.h"
+
 #include <iostream>
 
 #include "ConnectionManager.h"
@@ -46,7 +48,6 @@
 #include "ClientInformation.h"
 //#include "NetworkFrameListener.h"
 #include "util/Sleep.h"
-#include "Server.h"
 
 
 namespace network

@@ -447,7 +447,10 @@ namespace orxonox
 
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
-        (it++)->tick((float)evt.timeSinceLastFrame * this->timefactor_);
+      {
+        (it)->tick((float)evt.timeSinceLastFrame * this->timefactor_);
+         it++;
+     }
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly

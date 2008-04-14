@@ -37,10 +37,11 @@
 #ifndef _OrxonoxClass_H__
 #define _OrxonoxClass_H__
 
+#include "CorePrereqs.h"
+
 #include <set>
 #include <string>
 
-#include "CorePrereqs.h"
 #include "MetaObjectList.h"
 #include "Iterator.h"
 

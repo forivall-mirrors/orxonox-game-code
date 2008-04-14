@@ -40,6 +40,8 @@
 #ifndef _CoreIncludes_H__
 #define _CoreIncludes_H__
 
+#include "CorePrereqs.h"
+
 #include "Identifier.h"
 #include "ClassManager.h"
 #include "Factory.h"

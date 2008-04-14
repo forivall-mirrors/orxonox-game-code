@@ -34,6 +34,8 @@
 #ifndef _ConfigValueIncludes_H__
 #define _ConfigValueIncludes_H__
 
+#include "CorePrereqs.h"
+
 #include "Identifier.h"
 #include "ConfigValueContainer.h"
 #include "ConfigFileManager.h"

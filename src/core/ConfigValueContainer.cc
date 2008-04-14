@@ -31,13 +31,14 @@
     @brief Implementation of the ConfigValueContainer class.
 */
 
+#include "ConfigValueContainer.h"
+
 #include <fstream>
 
-#include "ConfigValueContainer.h"
-#include "Language.h"
-#include "Identifier.h"
 #include "util/SubString.h"
 #include "util/Convert.h"
+#include "Language.h"
+#include "Identifier.h"
 
 #define MAX_VECTOR_INDEX 255 // to avoid up to 4*10^9 vector entries in the config file after accidentally using a wrong argument
 

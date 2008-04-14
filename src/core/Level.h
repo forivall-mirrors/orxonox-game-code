@@ -29,9 +29,10 @@
 #ifndef _Level_H__
 #define _Level_H__
 
+#include "CorePrereqs.h"
+
 #include <string>
 
-#include "CorePrereqs.h"
 #include "ClassTreeMask.h"
 
 namespace orxonox

@@ -34,10 +34,10 @@
 #ifndef _SignalHandler_H__
 #define _SignalHandler_H__
 
+#include "CorePrereqs.h"
+
 #include <list>
 #include <string>
-
-#include "CorePrereqs.h"
 
 typedef int (*SignalCallback)( void * someData );
 

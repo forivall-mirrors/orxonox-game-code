@@ -29,6 +29,8 @@
 #ifndef _ConsoleCommand_H__
 #define _ConsoleCommand_H__
 
+#include "CorePrereqs.h"
+
 #include "Executor.h"
 #include "ClassManager.h"
 #include "Identifier.h"

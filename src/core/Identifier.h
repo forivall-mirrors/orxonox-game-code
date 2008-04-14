@@ -52,12 +52,12 @@
 #ifndef _Identifier_H__
 #define _Identifier_H__
 
+#include "CorePrereqs.h"
+
 #include <set>
 #include <map>
 #include <string>
 #include <utility>
-
-#include "CorePrereqs.h"
 
 #include "ObjectList.h"
 #include "Debug.h"

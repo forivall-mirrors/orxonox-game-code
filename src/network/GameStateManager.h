@@ -40,9 +40,10 @@
 #ifndef _GameStateManager_H__
 #define _GameStateManager_H__
 
+#include "NetworkPrereqs.h"
+
 #include <map>
 
-#include "NetworkPrereqs.h"
 #include "PacketTypes.h"
 
 namespace network

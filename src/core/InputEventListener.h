@@ -36,7 +36,7 @@
 
 #include "CorePrereqs.h"
 
-#include "core/OrxonoxClass.h"
+#include "OrxonoxClass.h"
 #include "InputEvent.h"
 
 namespace orxonox

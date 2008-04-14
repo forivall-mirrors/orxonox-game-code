@@ -37,6 +37,8 @@
 // Author:  Oliver Scheuss
 //
 
+#include "ClientConnection.h"
+
 #include <iostream>
 // boost.thread library for multithreading support
 #include <boost/thread/thread.hpp>
@@ -44,7 +46,6 @@
 
 #include "util/Sleep.h"
 #include "core/Debug.h"
-#include "ClientConnection.h"
 
 namespace network
 {

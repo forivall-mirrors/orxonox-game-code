@@ -34,7 +34,7 @@
 #ifndef _UtilPrereqs_H__
 #define _UtilPrereqs_H__
 
-#include "orxonox/OrxonoxPlatform.h"
+#include "OrxonoxPlatform.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings

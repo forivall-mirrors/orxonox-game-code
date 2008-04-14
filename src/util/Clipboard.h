@@ -29,9 +29,9 @@
 #ifndef _Clipboard_H__
 #define _Clipboard_H__
 
-#include <string>
-
 #include "UtilPrereqs.h"
+
+#include <string>
 
 
 _UtilExport bool toClipboard(std::string text);

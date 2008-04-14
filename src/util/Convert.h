@@ -34,10 +34,11 @@
 #ifndef _Convert_H__
 #define _Convert_H__
 
+#include "UtilPrereqs.h"
+
 #include <string>
 #include <sstream>
 
-#include "UtilPrereqs.h"
 #include "Math.h"
 #include "SubString.h"
 #include "MultiTypeMath.h"

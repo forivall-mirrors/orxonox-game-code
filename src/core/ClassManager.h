@@ -42,12 +42,12 @@
 #ifndef _ClassManager_H__
 #define _ClassManager_H__
 
+#include "CorePrereqs.h"
+
 #include <string>
 
 #include "Identifier.h"
 #include "IdentifierDistributor.h"
-
-#include "CorePrereqs.h"
 
 namespace orxonox
 {

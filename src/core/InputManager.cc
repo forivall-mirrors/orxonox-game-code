@@ -32,11 +32,11 @@
         coming from OIS.
  */
 
-#include "core/CoreIncludes.h"
-#include "core/Debug.h"
+#include "InputManager.h"
+#include "CoreIncludes.h"
+#include "Debug.h"
 #include "InputEventListener.h"
 #include "InputHandler.h"
-#include "InputManager.h"
 
 namespace orxonox
 {

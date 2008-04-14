@@ -41,6 +41,7 @@
 #define _GameStateClient_H__
 
 #include "NetworkPrereqs.h"
+#include "core/CorePrereqs.h"
 #include "GameStateManager.h"
 
 namespace network

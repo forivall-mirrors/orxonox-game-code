@@ -31,9 +31,10 @@
     @brief Implementation of the Identifier class.
 */
 
+#include "Identifier.h"
+
 #include <ostream>
 
-#include "Identifier.h"
 #include "Factory.h"
 #include "Executor.h"
 #include "CommandExecutor.h"

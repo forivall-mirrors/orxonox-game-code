@@ -29,10 +29,10 @@
 #ifndef _Util_String_H__
 #define _Util_String_H__
 
+#include "UtilPrereqs.h"
+
 #include <string>
 #include <sstream>
-
-#include "UtilPrereqs.h"
 
 _UtilExport void         strip(std::string* str);
 _UtilExport std::string  getStripped(const std::string& str);

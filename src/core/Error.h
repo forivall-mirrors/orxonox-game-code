@@ -34,9 +34,9 @@
 #ifndef _Error_H__
 #define _Error_H__
 
-#include <string>
-
 #include "CorePrereqs.h"
+
+#include <string>
 
 namespace orxonox
 {

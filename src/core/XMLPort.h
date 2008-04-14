@@ -29,6 +29,8 @@
 #ifndef _XMLPort_H__
 #define _XMLPort_H__
 
+#include "CorePrereqs.h"
+
 #include "util/XMLIncludes.h"
 #include "util/MultiTypeMath.h"
 #include "util/tinyxml/ticpp.h"
@@ -36,8 +38,6 @@
 #include "Debug.h"
 #include "CoreIncludes.h"
 #include "BaseObject.h"
-
-#include "CorePrereqs.h"
 
 
 #define XMLPortParam(classname, paramname, loadfunction, savefunction, xmlelement, mode) \

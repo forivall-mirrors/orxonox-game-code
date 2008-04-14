@@ -31,10 +31,10 @@
     @brief Implementation of the Factory class.
 */
 
+#include "Factory.h"
 #include "Identifier.h"
 #include "Debug.h"
 #include "BaseObject.h"
-#include "Factory.h"
 
 namespace orxonox
 {
