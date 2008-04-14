@@ -172,7 +172,7 @@ namespace orxonox
     */
     bool Identifier::isChildOf(const Identifier* identifier) const
     {
-        return (this->parents_.find(identifier) != this->children_->end());
+        return (this->parents_.find(identifier) != this->parents_.end());
     }
 
     /**
@@ -181,7 +181,7 @@ namespace orxonox
     */
     bool Identifier::isDirectChildOf(const Identifier* identifier) const
     {
-        return (this->directParents_.find(identifier) != this->children_->end());
+        return (this->directParents_.find(identifier) != this->directParents_.end());
     }
 
     /**
@@ -199,7 +199,7 @@ namespace orxonox
     */
     bool Identifier::isDirectParentOf(const Identifier* identifier) const
     {
-        return (this->directChildren_->find(identifier) != this->children_->end());
+        return (this->directChildren_->find(identifier) != this->directChildren_->end());
     }
 
     /**
