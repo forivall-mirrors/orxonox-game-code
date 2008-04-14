@@ -26,11 +26,12 @@
  *
  */
 
+#include "InputBuffer.h"
+
 #include <iostream>
 
-#include "InputBuffer.h"
-#include "InputManager.h"
 #include "util/Clipboard.h"
+#include "InputManager.h"
 
 namespace orxonox
 {

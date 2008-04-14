@@ -42,7 +42,8 @@
 #define _Tickable_H__
 
 #include "CorePrereqs.h"
-#include "core/OrxonoxClass.h"
+
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {

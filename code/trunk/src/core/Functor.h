@@ -30,10 +30,10 @@
 #ifndef _Functor_H__
 #define _Functor_H__
 
+#include "CorePrereqs.h"
+
 #include "util/MultiTypeMath.h"
 #include "Debug.h"
-
-#include "CorePrereqs.h"
 
 #define MAX_FUNCTOR_ARGUMENTS 5
 

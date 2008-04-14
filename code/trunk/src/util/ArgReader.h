@@ -35,9 +35,9 @@
 #ifndef _ArgReader_H__
 #define _ArgReader_H__
 
-#include <string>
-
 #include "UtilPrereqs.h"
+
+#include <string>
 
 class _UtilExport ArgReader
 {

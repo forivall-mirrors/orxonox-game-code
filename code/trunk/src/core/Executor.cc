@@ -28,8 +28,8 @@
  */
 
 #include "Executor.h"
-#include "Language.h"
 #include "util/Math.h"
+#include "Language.h"
 
 namespace orxonox
 {

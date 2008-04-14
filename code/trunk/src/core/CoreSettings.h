@@ -37,10 +37,10 @@
 #ifndef _CoreSettings_H__
 #define _CoreSettings_H__
 
+#include "CorePrereqs.h"
+
 #include "OrxonoxClass.h"
 #include "OutputHandler.h"
-
-#include "CorePrereqs.h"
 
 namespace orxonox
 {

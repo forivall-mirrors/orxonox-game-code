@@ -29,12 +29,12 @@
 #ifndef _Loader_H__
 #define _Loader_H__
 
+#include "CorePrereqs.h"
+
 #include <vector>
 
 #include "ClassTreeMask.h"
 #include "Level.h"
-
-#include "CorePrereqs.h"
 
 namespace orxonox
 {

@@ -30,9 +30,10 @@
 #ifndef _MultiTypeString_H__
 #define _MultiTypeString_H__
 
+#include "UtilPrereqs.h"
+
 #include <string>
 #include <iostream>
-#include "UtilPrereqs.h"
 
 #include "MultiTypePrimitive.h"
 

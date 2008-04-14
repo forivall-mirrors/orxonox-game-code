@@ -29,12 +29,13 @@
 #ifndef _String2Number_H__
 #define _String2Number_H__
 
+#include "UtilPrereqs.h"
+
 #include <string>
 #include <sstream>
 #include <iostream>
 
 #include "core/Debug.h"
-#include "UtilPrereqs.h"
 
 /**
  * String to number conversion

@@ -27,10 +27,10 @@
  */
 
 #include "Namespace.h"
+#include "NamespaceNode.h"
 #include "CoreIncludes.h"
 #include "XMLPort.h"
 #include "util/SubString.h"
-#include "NamespaceNode.h"
 
 namespace orxonox
 {

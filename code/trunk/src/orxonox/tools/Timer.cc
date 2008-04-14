@@ -27,11 +27,12 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "Timer.h"
+
 #include "core/Executor.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/CommandExecutor.h"
-#include "Timer.h"
 
 namespace orxonox
 {

@@ -29,6 +29,8 @@
 #ifndef _InputBuffer_H__
 #define _InputBuffer_H__
 
+#include "CorePrereqs.h"
+
 #include <string>
 #include <list>
 
@@ -37,8 +39,6 @@
 #else
 #include <OISKeyboard.h>
 #endif
-
-#include "CorePrereqs.h"
 
 namespace orxonox
 {

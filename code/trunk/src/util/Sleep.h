@@ -31,7 +31,7 @@
  @brief Macros for using sleep() and usleep() under windows
  */
 
-#include "OrxonoxPlatform.h"
+#include "UtilPrereqs.h"
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
 #  include <windows.h>

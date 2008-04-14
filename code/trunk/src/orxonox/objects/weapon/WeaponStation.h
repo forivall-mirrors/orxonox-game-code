@@ -30,9 +30,9 @@
 #ifndef _WeaponStation_H__
 #define _WeaponStation_H__
 
-#include <OgrePrerequisites.h>
-
 #include "OrxonoxPrereqs.h"
+
+#include <OgrePrerequisites.h>
 
 
 namespace orxonox {

@@ -41,9 +41,9 @@
 #ifndef _Server_H__
 #define _Server_H__
 
-#include <string>
-
 #include "NetworkPrereqs.h"
+
+#include <string>
 
 #include "core/Tickable.h"
 #include "PacketManager.h"

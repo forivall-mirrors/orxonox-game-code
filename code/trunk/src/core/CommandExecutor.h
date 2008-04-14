@@ -29,13 +29,14 @@
 #ifndef _CommandExecutor_H__
 #define _CommandExecutor_H__
 
+#include "CorePrereqs.h"
+
 #include <string>
 #include <map>
 #include <list>
 
 #include "util/SubString.h"
 #include "util/MultiTypeMath.h"
-#include "CorePrereqs.h"
 
 #define COMMAND_EXECUTOR_CURSOR "$"
 

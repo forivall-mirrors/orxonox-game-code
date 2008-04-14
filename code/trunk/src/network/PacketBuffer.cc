@@ -30,13 +30,13 @@
 // d
 // Author Oliver Scheuss
 
+#include "PacketBuffer.h"
+
 #include <iostream>
 #include <queue>
 #include <string>
 #include <boost/bind.hpp>
 #include <boost/thread/mutex.hpp>
-
-#include "PacketBuffer.h"
 
 namespace network
 {

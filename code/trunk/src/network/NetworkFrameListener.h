@@ -41,9 +41,10 @@
 #ifndef _NetworkFrameListener_H__
 #define _NetworkFrameListener_H__
 
+#include "NetworkPrereqs.h"
+
 #include <OgreFrameListener.h>
 
-#include "NetworkPrereqs.h"
 #include "Server.h"
 #include "Client.h"
 

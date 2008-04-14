@@ -38,10 +38,11 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
+#include "Synchronisable.h"
+
 #include <string>
 #include <iostream>
 
-#include "Synchronisable.h"
 #include "core/CoreIncludes.h"
 
 namespace network

@@ -38,9 +38,9 @@
 //
 //
 
-#include <iostream> //debug
-
 #include "ClientInformation.h"
+
+#include <iostream> //debug
 
 namespace network
 {

@@ -31,11 +31,11 @@
  @brief Implementation of the different input handlers.
  */
 
+#include "InputHandler.h"
 #include "Debug.h"
 #include "util/Convert.h"
 #include "InputEventListener.h"
 #include "InputEvent.h"
-#include "InputHandler.h"
 
 namespace orxonox
 {

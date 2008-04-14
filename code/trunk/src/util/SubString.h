@@ -58,10 +58,10 @@
 #ifndef __SUBSTRING_H__
 #define __SUBSTRING_H__
 
+#include "UtilPrereqs.h"
+
 #include <vector>
 #include <string>
-
-#include "UtilPrereqs.h"
 
 //! A class that can load one string and split it in multipe ones
 /**

@@ -40,12 +40,13 @@
 #ifndef _ConnectionManager_H__
 #define _ConnectionManager_H__
 
+#include "NetworkPrereqs.h"
+
 #include <string>
 #include <map>
 // enet library for networking support
 #include <enet/enet.h>
 
-#include "NetworkPrereqs.h"
 #include "PacketBuffer.h"
 #include "PacketManager.h"
 

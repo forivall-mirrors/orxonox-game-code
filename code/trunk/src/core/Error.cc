@@ -31,8 +31,8 @@
     @brief Implementation of the Error class.
 */
 
-#include "Debug.h"
 #include "Error.h"
+#include "Debug.h"
 
 namespace orxonox
 {

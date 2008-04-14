@@ -43,10 +43,10 @@
 #ifndef _ConfigValueContainer_H__
 #define _ConfigValueContainer_H__
 
+#include "CorePrereqs.h"
+
 #include <string>
 #include <vector>
-
-#include "CorePrereqs.h"
 
 #include "util/Math.h"
 #include "util/MultiTypeMath.h"

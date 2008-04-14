@@ -38,15 +38,15 @@
 //
 //
 
+#include "GameStateManager.h"
+
 #include <utility>
 #include <iostream>
 #include <zlib.h>
 
 #include "core/CoreIncludes.h"
-
 #include "ClientInformation.h"
 #include "Synchronisable.h"
-#include "GameStateManager.h"
 
 namespace network
 {

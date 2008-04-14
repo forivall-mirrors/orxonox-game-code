@@ -29,12 +29,12 @@
 #ifndef _Namespace_H__
 #define _Namespace_H__
 
+#include "CorePrereqs.h"
+
 #include <map>
 
-#include "BaseObject.h"
 #include "util/XMLIncludes.h"
-
-#include "CorePrereqs.h"
+#include "BaseObject.h"
 
 namespace orxonox
 {

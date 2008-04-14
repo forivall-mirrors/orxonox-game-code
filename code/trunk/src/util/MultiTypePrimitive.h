@@ -30,9 +30,9 @@
 #ifndef _MultiTypePrimitive_H__
 #define _MultiTypePrimitive_H__
 
-#include <ostream>
-
 #include "UtilPrereqs.h"
+
+#include <ostream>
 
 #include "MultiType.h"
 

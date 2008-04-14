@@ -31,10 +31,11 @@
     @brief Implementation of the SignalHandler class.
 */
 
+#include "SignalHandler.h"
+
 #include <assert.h>
 
 #include "Debug.h"
-#include "SignalHandler.h"
 
 SignalHandler * SignalHandler::singletonRef = NULL;
 

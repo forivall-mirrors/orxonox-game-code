@@ -29,11 +29,11 @@
 #ifndef _NamespaceNode_H__
 #define _NamespaceNode_H__
 
+#include "CorePrereqs.h"
+
 #include <map>
 #include <set>
 #include <string>
-
-#include "CorePrereqs.h"
 
 namespace orxonox
 {

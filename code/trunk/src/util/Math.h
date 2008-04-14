@@ -29,9 +29,9 @@
 #ifndef _Util_Math_H__
 #define _Util_Math_H__
 
-#include <ostream>
-
 #include "UtilPrereqs.h"
+
+#include <ostream>
 
 #include <OgreMath.h>
 #include <OgreVector2.h>

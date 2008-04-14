@@ -34,11 +34,11 @@
 #ifndef _InputHandler_H__
 #define _InputHandler_H__
 
-#include <string>
+#include "CorePrereqs.h"
 
+#include <string>
 #include <OIS/OIS.h>
 
-#include "CorePrereqs.h"
 #include "InputEvent.h"
 
 namespace orxonox

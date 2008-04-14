@@ -34,13 +34,14 @@
 *
 */
 
+#include "PacketManager.h"
+#include "PacketTypes.h"
+
 #include <iostream>
 #include <list>
 #include <string>
 #include <cstring>
 
-#include "PacketTypes.h"
-#include "PacketManager.h"
 
 namespace network
 {

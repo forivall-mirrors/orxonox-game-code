@@ -26,9 +26,10 @@
  *
  */
 
+#include "String.h"
+
 #include <cctype>
 #include <iostream>
-#include "String.h"
 
 /**
     @brief Removes all whitespaces from a string.

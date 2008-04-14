@@ -39,6 +39,7 @@
 #define _ObjectList_H__
 
 #include "CorePrereqs.h"
+
 #include "Iterator.h"
 #include "ClassManager.h"
 

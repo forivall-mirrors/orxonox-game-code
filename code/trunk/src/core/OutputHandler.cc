@@ -31,8 +31,8 @@
     @brief Implementation of the OutputHandler class.
 */
 
-#include "CoreSettings.h"
 #include "OutputHandler.h"
+#include "CoreSettings.h"
 #include "ConsoleCommand.h"
 
 namespace orxonox

@@ -40,9 +40,9 @@
 #ifndef _ClientInformation_H__
 #define _ClientInformation_H__
 
-#include <enet/enet.h>
-
 #include "NetworkPrereqs.h"
+
+#include <enet/enet.h>
 
 #define GAMESTATEID_INITIAL -1
 

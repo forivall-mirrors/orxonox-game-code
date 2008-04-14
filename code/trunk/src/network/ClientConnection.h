@@ -40,10 +40,11 @@
 #ifndef _ClientConnection_H__
 #define _ClientConnection_H__
 
+#include "NetworkPrereqs.h"
+
 #include <string>
 #include <enet/enet.h>
 
-#include "NetworkPrereqs.h"
 #include "PacketBuffer.h"
 
 namespace network

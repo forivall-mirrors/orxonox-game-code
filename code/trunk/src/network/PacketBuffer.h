@@ -41,9 +41,9 @@
 #ifndef _PacketBuffer_H__
 #define _PacketBuffer_H__
 
-#include <enet/enet.h>
-
 #include "NetworkPrereqs.h"
+
+#include <enet/enet.h>
 
 namespace network
 {

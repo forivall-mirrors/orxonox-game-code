@@ -41,9 +41,9 @@
 #ifndef _Client_H__
 #define _Client_H__
 
-#include <string>
-
 #include "NetworkPrereqs.h"
+
+#include <string>
 
 #include "core/Tickable.h"
 #include "ClientConnection.h"
