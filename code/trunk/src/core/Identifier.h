@@ -224,7 +224,7 @@ namespace orxonox
 
         private:
             Identifier();
-            Identifier(const Identifier& identifier) {} // don't copy
+            Identifier(const Identifier& identifier); // don't copy
             virtual ~Identifier();
             void initialize(std::set<const Identifier*>* parents);
 

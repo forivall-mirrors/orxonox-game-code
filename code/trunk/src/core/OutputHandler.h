@@ -113,7 +113,7 @@ namespace orxonox
 
         private:
             explicit OutputHandler(const std::string& logfilename);
-            OutputHandler(const OutputHandler& oh) {}; // don't copy
+            OutputHandler(const OutputHandler& oh);  // don't copy
             virtual ~OutputHandler();
             std::ofstream logfile_;     //!< The logfile where the output is logged
             std::string logfilename_;   //!< The name of the logfile

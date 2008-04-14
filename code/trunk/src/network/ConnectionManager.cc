@@ -113,20 +113,20 @@ namespace network
   }
 
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer) {
-    if(enet_peer_send(peer, head_->findClient(&(peer->address))->getID() , packet)!=0)
+    if(enet_peer_send(peer, (enet_uint8)head_->findClient(&(peer->address))->getID() , packet)!=0)
       return false;
     return true;
   }
 
   bool ConnectionManager::addPacket(ENetPacket *packet, int clientID) {
-    if(enet_peer_send(head_->findClient(clientID)->getPeer(), clientID, packet)!=0)
+    if(enet_peer_send(head_->findClient(clientID)->getPeer(), (enet_uint8)clientID, packet)!=0)
       return false;
     return true;
   }
 
   bool ConnectionManager::addPacketAll(ENetPacket *packet) {
     for(ClientInformation *i=head_->next(); i!=0; i=i->next()){
-      if(enet_peer_send(i->getPeer(), i->getID(), packet)!=0)
+      if(enet_peer_send(i->getPeer(), (enet_uint8)i->getID(), packet)!=0)
         return false;
     }
     return true;

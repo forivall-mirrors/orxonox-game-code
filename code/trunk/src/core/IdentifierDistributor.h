@@ -52,7 +52,7 @@ namespace orxonox
 
         private:
             IdentifierDistributor() {};                                         // Don't create
-            IdentifierDistributor(const IdentifierDistributor& distributor) {}  // Don't copy
+            IdentifierDistributor(const IdentifierDistributor& distributor);    // Don't copy
             ~IdentifierDistributor() {}                                         // Don't delete
 
             std::map<std::string, Identifier*> identifiers_;    //!< The map to store all Identifiers.

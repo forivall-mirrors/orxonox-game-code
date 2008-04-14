@@ -43,6 +43,12 @@
 #include "SubString.h"
 #include "MultiTypeMath.h"
 
+// disable annoying warning about forcing value to boolean
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#pragma warning(push)
+#pragma warning(disable:4100 4800)
+#endif
+
 
 //////////
 // MAIN //
@@ -618,5 +624,9 @@ struct ConverterSpecialized<std::string, orxonox::ColourValue, _Explicit_>
         return false;
     }
 };
+
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#pragma warning(pop)
+#endif
 
 #endif /* _Convert_H__ */

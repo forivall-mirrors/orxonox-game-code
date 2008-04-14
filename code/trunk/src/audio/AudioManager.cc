@@ -30,6 +30,9 @@
 
 #include <AL/alut.h>
 
+#include "AudioBuffer.h"
+#include "AudioSource.h"
+#include "AudioStream.h"
 #include "core/Error.h"
 #include "core/Debug.h"
 
@@ -48,7 +51,7 @@ namespace audio
 	{
 		for (unsigned int i=0;i<bgSounds.size();i++)
 		{
-			bgSounds[i].release();
+			bgSounds[i]->release();
 		}
 		alutExit();
 	}
@@ -59,7 +62,7 @@ namespace audio
     currentBgSound = rand() % bgSounds.size();
 		if (bgSounds.size() > 0)
 		{
-			if(!bgSounds[currentBgSound].playback())
+			if(!bgSounds[currentBgSound]->playback())
 			{
     		orxonox::Error("Ogg refused to play.");
 			}
@@ -79,9 +82,9 @@ namespace audio
 	void AudioManager::ambientAdd(std::string file)
 	{
     std::string path = ambientPath + "/" + file + ".ogg";
-		AudioStream tmp(path);
-		tmp.open();
-		if (tmp.isLoaded())
+		AudioStream* tmp = new AudioStream(path);
+		tmp->open();
+		if (tmp->isLoaded())
 		{
 			bgSounds.push_back(tmp);
 			COUT(3) << "Info: Added background sound " << file << std::endl;
@@ -92,12 +95,12 @@ namespace audio
 	{
 		if (bgSounds.size() > 0)
 		{
-			if (bgSounds[currentBgSound].isLoaded())
+			if (bgSounds[currentBgSound]->isLoaded())
 			{
-				bool playing = bgSounds[currentBgSound].update();
-		    if(!bgSounds[currentBgSound].playing() && playing)
+				bool playing = bgSounds[currentBgSound]->update();
+		    if(!bgSounds[currentBgSound]->playing() && playing)
 		    {
-		        if(!bgSounds[currentBgSound].playback())
+		        if(!bgSounds[currentBgSound]->playback())
 		            orxonox::Error("Ogg abruptly stopped.");
 		        else
 		            orxonox::Error("Ogg stream was interrupted.");
@@ -116,12 +119,12 @@ namespace audio
           // switch to next sound in list/array
           currentBgSound = ++currentBgSound % bgSounds.size();
 
-					if (!bgSounds[currentBgSound].isLoaded())
+					if (!bgSounds[currentBgSound]->isLoaded())
 					{
-						bgSounds[currentBgSound].release();
-						bgSounds[currentBgSound].open();
+						bgSounds[currentBgSound]->release();
+						bgSounds[currentBgSound]->open();
 					}
-					bgSounds[currentBgSound].playback();
+					bgSounds[currentBgSound]->playback();
 					COUT(3) << "Info: Playing next background sound" << std::endl;
 				}
 			}

@@ -35,9 +35,6 @@
 #include <string>
 
 #include "core/Tickable.h"
-#include "AudioBuffer.h"
-#include "AudioSource.h"
-#include "AudioStream.h"
 
 namespace audio
 {
@@ -75,7 +72,7 @@ namespace audio
 	private:
 
 		// Background sound
-    std::vector<AudioStream> bgSounds;
+    std::vector<AudioStream*> bgSounds;
 		int currentBgSound;
 
 
@@ -83,11 +80,11 @@ namespace audio
 		std::string ambientPath;
 
 		// Vector containing all audio files
-		std::vector<AudioBuffer> buffers;
+		std::vector<AudioBuffer*> buffers;
 		// Vector containing all audio sources which referer to one buffer
-		std::vector<AudioSource> sources;
+		std::vector<AudioSource*> sources;
 		// The ambient background sound
-		AudioSource ambient;
+		AudioSource* ambient;
 
 		std::vector<float> listenerPosition;
 		std::vector<float> listenerSpeed;

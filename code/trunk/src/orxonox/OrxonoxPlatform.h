@@ -225,12 +225,9 @@ typedef float Real;
 // disable: "truncation from 'double' to 'float'
 //#   pragma warning (disable : 4305)
 
-// disable: "<type> needs to have dll-interface to be used by clients'
+// set to level 4: "<type> needs to have dll-interface to be used by clients'
 // Happens on STL member variables which are not public therefore is ok
-// This has been dealt with in base_properties of the solution since the
-// warning primarily occurs in library header files (which are mostly
-// included before OrxonoxPlatform.h is)
-//#   pragma warning (disable : 4251)
+#   pragma warning (disable : 4251)
 
 // disable: 'MultiTypeString' : multiple assignment operators specified
 // Used in MultiType and works fine so far

@@ -152,6 +152,7 @@ namespace network
       return;
     }
     //since it's not alowed to use void* for pointer arithmetic
+    //FIXME: variable never used
     unsigned char* data = (unsigned char *)(packet->data);
     //copy the GameStateCompressed id into the struct, which is located at second place data+sizeof( int )
     //memcpy( (void*)&(currentState->id), (const void*)(data+sizeof( int )), sizeof( int ) );

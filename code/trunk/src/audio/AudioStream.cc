@@ -42,8 +42,8 @@ namespace audio
 	{
 	    int result;
 
-
-	    if(!(oggFile = fopen(path.c_str(), "rb")))
+      oggFile = fopen(path.c_str(), "rb");
+	    if(!oggFile)
 			{
 	    	orxonox::Error("Could not open Ogg file "+path);
 				return;

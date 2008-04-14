@@ -60,7 +60,7 @@ namespace orxonox
             void resetLanguageIntern();
 
             CoreSettings();
-            CoreSettings(const CoreSettings& other) {}
+            CoreSettings(const CoreSettings& other);
             virtual ~CoreSettings();
 
             int softDebugLevel_;                            //!< The debug level

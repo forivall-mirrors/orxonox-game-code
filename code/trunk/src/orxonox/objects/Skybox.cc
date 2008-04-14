@@ -34,8 +34,6 @@
 #include <OgreSceneManager.h>
 
 #include "util/tinyxml/tinyxml.h"
-//#include "util/Tokenizer.h"
-//#include "util/String2Number.h"
 #include "GraphicsEngine.h"
 #include "core/CoreIncludes.h"
 #include "core/Debug.h"

@@ -70,7 +70,7 @@ namespace orxonox
 
         private:
             Factory() {}                            // don't create
-            Factory(const Factory& factory) {}      // don't copy
+            Factory(const Factory& factory);        // don't copy
             ~Factory() {}                           // don't delete
 
             std::map<std::string, Identifier*> identifierStringMap_;            //!< The map, mapping the name with the Identifier
