@@ -84,27 +84,27 @@
 // ORXONOX HEADERS
 //-----------------------------------------------------------------------
 
-#include "util/Convert.h"
+//#include "util/Convert.h"
 #include "util/Math.h"
-#include "util/Multitype.h"
-#include "util/MultiTypeMath.h"
-#include "util/MultiTypePrimitive.h"
-#include "util/MultiTypeString.h"
+//#include "util/Multitype.h"
+//#include "util/MultiTypeMath.h"
+//#include "util/MultiTypePrimitive.h"
+//#include "util/MultiTypeString.h"
 #include "util/Sleep.h"
 #include "util/String.h"
 #include "util/SubString.h"
-#include "util/XMLIncludes.h"
+//#include "util/XMLIncludes.h"
 #include "util/tinyxml/ticpp.h"
 #include "util/tinyxml/tinyxml.h"
 
 #include "core/BaseObject.h"
-#include "core/CommandExecutor.h"
-#include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
+//#include "core/CommandExecutor.h"
+//#include "core/CoreIncludes.h"
+//#include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
-#include "core/Executor.h"
+//#include "core/Executor.h"
 #include "core/Tickable.h"
-#include "core/XMLPort.h"
+//#include "core/XMLPort.h"
 
 #include "network/Synchronisable.h"
 
