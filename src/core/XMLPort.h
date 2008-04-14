@@ -157,7 +157,7 @@ namespace orxonox
                         std::string attribute = xmlelement.GetAttribute(this->paramname_);
                         if ((attribute.size() > 0) || (this->loadexecutor_->allDefaultValuesSet()))
                         {
-                            COUT(5) << object->getLoaderIndentation() << "Loading parameter " << this->paramname_ << " in " << object->getIdentifier()->getName() << " (objectname " << object->getName() << ")." << std::endl << object->getLoaderIndentation();
+                            COUT(5) << ((BaseObject*)object)->getLoaderIndentation() << "Loading parameter " << this->paramname_ << " in " << object->getIdentifier()->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")." << std::endl << ((BaseObject*)object)->getLoaderIndentation();
                             if (this->loadexecutor_->parse(object, attribute, ","))
                                 this->parseResult_ = PR_finished;
                             else
@@ -167,7 +167,7 @@ namespace orxonox
                     catch(ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << object->getIdentifier()->getName() << "' (objectname: " << object->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << object->getIdentifier()->getName() << "' (objectname: " << ((BaseObject*)object)->getName() << ") in " << ((BaseObject*)object)->getLevelfile() << ":" << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
@@ -304,35 +304,35 @@ namespace orxonox
                                     {
                                         if (this->identifierIsIncludedInLoaderMask(identifier))
                                         {
-                                            COUT(4) << object->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
+                                            COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
 
-                                            O* newObject = (O*)identifier->fabricate();
-                                            newObject->setLoaderIndentation(object->getLoaderIndentation() + "  ");
-                                            newObject->setLevel(object->getLevel());
-                                            newObject->setNamespace(object->getNamespace());
+                                            BaseObject* newObject = identifier->fabricate();
+                                            newObject->setLoaderIndentation(((BaseObject*)object)->getLoaderIndentation() + "  ");
+                                            newObject->setLevel(((BaseObject*)object)->getLevel());
+                                            newObject->setNamespace(((BaseObject*)object)->getNamespace());
 
                                             if (this->bLoadBefore_)
                                             {
                                                 newObject->XMLPort(*child, XMLPort::LoadObject);
-                                                COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << object->getIdentifier()->getName() << " (objectname " << object->getName() << ")" << std::endl;
+                                                COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << object->getIdentifier()->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
                                             }
                                             else
                                             {
-                                                COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << object->getIdentifier()->getName() << " (objectname " << object->getName() << ")" << std::endl;
+                                                COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << object->getIdentifier()->getName() << " (objectname " << ((BaseObject*)object)->getName() << ")" << std::endl;
                                             }
 
-                                            COUT(5) << object->getLoaderIndentation();
+                                            COUT(5) << ((BaseObject*)object)->getLoaderIndentation();
                                             (*this->loadexecutor_)(object, newObject);
 
                                             if (!this->bLoadBefore_)
                                                 newObject->XMLPort(*child, XMLPort::LoadObject);
 
-                                            COUT(5) << object->getLoaderIndentation() << "...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
+                                            COUT(5) << ((BaseObject*)object)->getLoaderIndentation() << "...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
                                         }
                                     }
                                     else
                                     {
-                                        COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a '" << Class(O)->getName() << "'." << std::endl;
+                                        COUT(2) << ((BaseObject*)object)->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a '" << Class(O)->getName() << "'." << std::endl;
                                     }
                                 }
                                 else
@@ -345,7 +345,7 @@ namespace orxonox
                     catch(ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << Class(O)->getName() << "' in '" << this->sectionname_ << "' of '" << object->getIdentifier()->getName() << "' (objectname: " << object->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << Class(O)->getName() << "' in '" << this->sectionname_ << "' of '" << object->getIdentifier()->getName() << "' (objectname: " << ((BaseObject*)object)->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
