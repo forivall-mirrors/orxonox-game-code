@@ -1,0 +1,4 @@
+delay 0 Ambient setAmbientLightTest 1,0,0,1
+delay 0.5 Ambient setAmbientLightTest 0,1,0,1
+delay 1 Ambient setAmbientLightTest 0,0,1,1
+delay 1.5 exec disco.txt
