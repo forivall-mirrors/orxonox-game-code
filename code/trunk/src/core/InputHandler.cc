@@ -36,6 +36,7 @@
 #include "util/Convert.h"
 #include "InputEventListener.h"
 #include "InputEvent.h"
+#include "InputManager.h"
 
 namespace orxonox
 {
@@ -82,6 +83,10 @@ namespace orxonox
     {
       InputEvent e = {1, true, 0, 0, 0};
       InputHandlerGame::callListeners(e);
+    }
+    else if (e.key == OIS::KC_NUMPADENTER)
+    {
+      InputManager::getSingleton().setInputMode(IM_KEYBOARD);
     }
     else
     {

@@ -396,9 +396,11 @@ namespace orxonox
   void Orxonox::startRenderLoop()
   {
     InputBuffer* ib = new InputBuffer();
+    InputManager::getSingleton().feedInputBuffer(ib);
     Testconsole* console = new Testconsole(ib);
     ib->registerListener(console, &Testconsole::listen, true);
     ib->registerListener(console, &Testconsole::execute, '\r', false);
+    ib->registerListener(console, &Testconsole::execute, '\n', false);
     ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
     ib->registerListener(console, &Testconsole::clear, '§', true);
     ib->registerListener(console, &Testconsole::removeLast, '\b', true);

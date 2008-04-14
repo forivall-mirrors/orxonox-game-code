@@ -37,14 +37,10 @@
 #include "Debug.h"
 #include "InputEventListener.h"
 #include "InputHandler.h"
+#include "InputBuffer.h"
 
 namespace orxonox
 {
-  /**
-    @brief The reference to the singleton
-  */
-  //InputManager* InputManager::singletonRef_s = 0;
-
   /**
     @brief Constructor only resets the pointer values to 0.
   */
@@ -125,6 +121,7 @@ namespace orxonox
     // create the handlers
     this->handlerGUI_ = new InputHandlerGUI();
     this->handlerGame_ = new InputHandlerGame();
+    //this->handlerBuffer_ = new InputBuffer();
     this->handlerGame_->loadBindings();
 
     /*COUT(ORX_DEBUG) << "*** InputManager: Loading key bindings..." << std::endl;
@@ -242,5 +239,11 @@ namespace orxonox
   {
     return this->currentMode_;
   }
+
+  void InputManager::feedInputBuffer(InputBuffer* buffer)
+  {
+    this->handlerBuffer_ = buffer;
+  }
+
 
 }
