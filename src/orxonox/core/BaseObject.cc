@@ -51,6 +51,7 @@ namespace orxonox
         this->bActive_ = true;
         this->bVisible_ = true;
         this->level_ = 0;
+        this->namespace_ = 0;
     }
 
     /**
@@ -77,9 +78,9 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    void BaseObject::XMLPort(Element& xmlelement, bool loading)
+    void BaseObject::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        XMLPortParam(BaseObject, "name", setName, getName, xmlelement, loading);
+        XMLPortParam(BaseObject, "name", setName, getName, xmlelement, mode);
     }
 
     /**

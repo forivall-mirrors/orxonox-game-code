@@ -33,6 +33,8 @@
 #include <OgreSceneNode.h>
 
 #include "core/CoreIncludes.h"
+#include "core/Executor.h"
+
 #include "util/Math.h"
 #include "GraphicsEngine.h"
 #include "particle/ParticleInterface.h"
@@ -50,7 +52,7 @@ namespace orxonox
 
         if (owner)
         {
-            this->destroyTimer_.setTimer(this->lifetime_, false, this, &Explosion::destroyObject);
+            this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Explosion::destroyObject)));
 
             Vector3 position = owner->getNode()->getWorldPosition();
 

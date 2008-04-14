@@ -1,6 +1,8 @@
 #ifndef _Test3_H__
 #define _Test3_H__
 
+#include <vector>
+
 #include "core/BaseObject.h"
 #include "util/Math.h"
 
@@ -35,6 +37,10 @@ namespace orxonox
             Vector2             value_vector2_;
             Vector3             value_vector3_;
             ColourValue         value_colourvalue_;
+
+            std::vector<int>         vector_int_;
+            std::vector<std::string> vector_string_;
+            std::vector<Vector3>     vector_vector3_;
     };
 }
 

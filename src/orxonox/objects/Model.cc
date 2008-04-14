@@ -67,11 +67,11 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    void Model::XMLPort(Element& xmlelement, bool loading)
+    void Model::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        WorldEntity::XMLPort(xmlelement, loading);
+        WorldEntity::XMLPort(xmlelement, mode);
 
-        XMLPortParamLoadOnly(Model, "mesh", setMesh, xmlelement, loading);
+        XMLPortParamLoadOnly(Model, "mesh", setMesh, xmlelement, mode);
 
         create();
     }
@@ -83,7 +83,8 @@ namespace orxonox
 
     bool Model::create(){
       WorldEntity::create();
-      if(meshSrc_.compare("")!=0){
+      if ((this->meshSrc_ != "") && (this->meshSrc_.size() > 0))
+      {
         this->mesh_.setMesh(meshSrc_);
         this->attachObject(this->mesh_.getEntity());
         COUT(4) << "Loader: Created model" << std::endl;

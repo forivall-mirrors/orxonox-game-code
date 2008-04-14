@@ -48,7 +48,6 @@
 #include <string>
 
 #include "CorePrereqs.h"
-#include "OrxonoxClass.h"
 
 
 #define AddLanguageEntry(label, fallbackstring) \
@@ -64,7 +63,7 @@ namespace orxonox
     // ###      LanguageEntry      ###
     // ###############################
     //! The LanguageEntry class stores the default- and the translated string of a given entry in the language file.
-    class _CoreExport LanguageEntry : public OrxonoxClass
+    class _CoreExport LanguageEntry
     {
         public:
             explicit LanguageEntry(const std::string& fallbackEntry);
@@ -111,14 +110,12 @@ namespace orxonox
     // ###         Language        ###
     // ###############################
     //! The Language class manges the language files and entries and stores the LanguageEntry objects in a map.
-    class _CoreExport Language : public OrxonoxClass
+    class _CoreExport Language
     {
-        template <class T>
-        friend class ClassIdentifier; // forward declaration because of the private destructor
+        friend class CoreSettings;
 
         public:
             static Language& getLanguage();
-            void setConfigValues();
             void addEntry(const LanguageEntryLabel& label, const std::string& entry);
             const std::string& getLocalisation(const LanguageEntryLabel& label) const;
 
@@ -133,7 +130,6 @@ namespace orxonox
             static const std::string getFileName(const std::string& language);
             LanguageEntry* createEntry(const LanguageEntryLabel& label, const std::string& entry);
 
-            std::string language_;                                  //!< The configured language
             std::string defaultLanguage_;                           //!< The default language
             std::string defaultLocalisation_;                       //!< The returned string, if an entry unavailable entry is requested
             std::map<std::string, LanguageEntry*> languageEntries_; //!< A map to store all LanguageEntry objects and their labels

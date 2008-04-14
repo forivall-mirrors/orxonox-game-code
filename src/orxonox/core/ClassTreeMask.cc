@@ -326,7 +326,7 @@ namespace orxonox
         else
         {
             // No it's not: Search for classes inheriting from the given class and add the rules for them
-            for (std::list<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
+            for (std::set<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
                 if ((*it)->isA(this->root_->getClass()))
                     if (overwrite || (!this->nodeExists(*it))) // If we don't want to overwrite, only add nodes that don't already exist
                         this->add(this->root_, *it, bInclude, overwrite);
@@ -421,7 +421,7 @@ namespace orxonox
     */
     void ClassTreeMask::addSingle(const Identifier* subclass, bool bInclude, bool clean)
     {
-        for (std::list<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
+        for (std::set<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
             this->add(*it, this->isIncluded(*it), false, false);
 
         this->add(subclass, bInclude, false, clean);
@@ -557,6 +557,39 @@ namespace orxonox
 
         // Return a reference to the mask itself
         return (*this);
+    }
+
+    /**
+        @brief Compares the mask with another mask and returns true if they represent the same logic.
+        @param other The other mask
+        @return True if both masks represent the same logic
+    */
+    bool ClassTreeMask::operator==(const ClassTreeMask& other) const
+    {
+        ClassTreeMask temp1 = other;
+        ClassTreeMask temp2 = (*this);
+
+        temp1.clean();
+        temp2.clean();
+
+        ClassTreeMaskIterator it1 = temp1.root_;
+        ClassTreeMaskIterator it2 = temp2.root_;
+
+        for ( ; it1 && it2; ++it1, ++it2)
+            if (it1->getClass() != it2->getClass())
+                return false;
+
+        return true;
+    }
+
+    /**
+        @brief Compares the mask with another mask and returns true if they represent different logics.
+        @param other The other mask
+        @return True if the masks represent different logics
+    */
+    bool ClassTreeMask::operator!=(const ClassTreeMask& other) const
+    {
+        return (!((*this) == other));
     }
 
     /**

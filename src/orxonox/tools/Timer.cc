@@ -26,12 +26,40 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "Timer.h"
-
+#include "core/Executor.h"
 #include "core/CoreIncludes.h"
+#include "core/ConsoleCommand.h"
+#include "core/CommandExecutor.h"
+#include "Timer.h"
 
 namespace orxonox
 {
+    ConsoleCommandShortcutExtern(delay, AccessLevel::None);
+
+    /**
+        @brief Calls a console command after 'delay' seconds.
+        @param delay The delay in seconds
+        @param command The console command
+    */
+    void delay(float delay, const std::string& command)
+    {
+        StaticTimer *delaytimer = new StaticTimer();
+        ExecutorStatic* delayexecutor = createExecutor(createFunctor(&executeDelayedCommand));
+        delayexecutor->setDefaultValues(delaytimer, command);
+        delaytimer->setTimer(delay, false, delayexecutor);
+    }
+
+    /**
+        @brief Executes the command.
+        @param timer The timer to destroy after the command-execution
+        @param command The command to execute
+    */
+    void executeDelayedCommand(StaticTimer* timer, const std::string& command)
+    {
+        CommandExecutor::execute(command);
+        delete timer;
+    }
+
     /**
         @brief Constructor: Sets the default-values.
     */
@@ -39,11 +67,28 @@ namespace orxonox
     {
         RegisterRootObject(TimerBase);
 
+        this->executor_ = 0;
         this->interval_ = 0;
         this->bLoop_ = false;
         this->bActive_ = false;
 
         this->time_ = 0;
+    }
+
+    /**
+        @brief Deletes the executor.
+    */
+    TimerBase::~TimerBase()
+    {
+        delete this->executor_;
+    }
+
+    /**
+        @brief Executes the executor.
+    */
+    void TimerBase::run() const
+    {
+        (*this->executor_)();
     }
 
     /**

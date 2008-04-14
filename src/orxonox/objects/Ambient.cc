@@ -41,14 +41,20 @@
 #include "core/CoreIncludes.h"
 #include "GraphicsEngine.h"
 #include "core/XMLPort.h"
+#include "core/ConsoleCommand.h"
 
 namespace orxonox
 {
+    ConsoleCommand(Ambient, setAmbientLightTest, AccessLevel::Offline, false).setDefaultValues(ColourValue(1, 1, 1, 1));
+
     CreateFactory(Ambient);
+
+    Ambient* Ambient::instance_s;
 
     Ambient::Ambient()
     {
         RegisterObject(Ambient);
+        Ambient::instance_s = this;
     }
 
     Ambient::~Ambient()
@@ -83,10 +89,10 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    void Ambient::XMLPort(Element& xmlelement, bool loading)
+    void Ambient::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlelement, loading);
+        BaseObject::XMLPort(xmlelement, mode);
 
-        XMLPortParamLoadOnly(Ambient, "colourvalue", setAmbientLight, xmlelement, loading);
+        XMLPortParamLoadOnly(Ambient, "colourvalue", setAmbientLight, xmlelement, mode);
     }
 }

@@ -87,7 +87,8 @@ public:
   SubString(const std::string& string, char delimiter = ',');
   SubString(const std::string& string,
             const std::string& delimiters, const std::string& delimiterNeighbours = "", bool emptyEntries=false,
-            char escapeChar ='\\', char safemode_char = '"', char openparenthesis_char = '(', char closeparenthesis_char = ')', char comment_char = '\0');
+            char escapeChar ='\\', bool removeExcapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,
+            char openparenthesis_char = '(', char closeparenthesis_char = ')',  bool removeParenthesisChars = true, char comment_char = '\0');
   SubString(unsigned int argc, const char** argv);
   /** @brief create a Substring as a copy of another one. @param subString the SubString to copy. */
   SubString(const SubString& subString) { *this = subString; };
@@ -110,7 +111,8 @@ public:
   unsigned int split(const std::string& string = "", char delimiter = ',');
   unsigned int split(const std::string& string,
                      const std::string& delimiters, const std::string& delimiterNeighbours = "", bool emptyEntries = false,
-                     char escapeChar ='\\', char safemode_char = '"', char openparenthesis_char = '(', char closeparenthesis_char = ')', char comment_char = '\0');
+                     char escapeChar ='\\', bool removeExcapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,
+                     char openparenthesis_char = '(', char closeparenthesis_char = ')',  bool removeParenthesisChars = true, char comment_char = '\0');
   std::string join(const std::string& delimiter = " ") const;
   ////////////////////////////////////////
 
@@ -119,31 +121,37 @@ public:
   SubString subSet(unsigned int subSetBegin, unsigned int subSetEnd) const;
 
   // retrieve Information from within
-  /** @returns true if the SubString is empty */
+  /** @brief Returns true if the SubString is empty */
   inline bool empty() const { return this->strings.empty(); };
-  /** @returns the count of Strings stored in this substring */
+  /** @brief Returns the count of Strings stored in this substring */
   inline unsigned int size() const { return this->strings.size(); };
-  /** @param i the i'th String @returns the i'th string from the subset of Strings */
+  /** @brief Returns the i'th string from the subset of Strings @param i the i'th String */
   inline const std::string& operator[](unsigned int i) const { return this->strings[i]; };
-  /** @param i the i'th String @returns the i'th string from the subset of Strings */
+  /** @brief Returns the i'th string from the subset of Strings @param i the i'th String */
   inline const std::string& getString(unsigned int i) const { return (*this)[i]; };
-  /** @returns the front of the StringList. */
+  /** @brief Returns true if the token is in safemode. @param i the i'th token */
+  inline bool isInSafemode(unsigned int i) const { return this->bInSafemode[i]; }
+  /** @brief Returns the front of the StringList. */
   inline const std::string& front() const { return this->strings.front(); };
-  /** @returns the back of the StringList. */
+  /** @brief Returns the back of the StringList. */
   inline const std::string& back() const { return this->strings.back(); };
   /** @brief removes the back of the strings list. */
-  inline void pop_back() { this->strings.pop_back(); };
+  inline void pop_back() { this->strings.pop_back(); this->bInSafemode.pop_back(); };
 
   // the almighty algorithm.
   static SPLIT_LINE_STATE splitLine(std::vector<std::string>& ret,
+                                    std::vector<bool>& bInSafemode,
                                     const std::string& line,
                                     const std::string& delimiters = SubString::WhiteSpaces,
                                     const std::string& delimiterNeighbours = "",
                                     bool emptyEntries = false,
                                     char escape_char = '\\',
+                                    bool removeExcapeChar = true,
                                     char safemode_char = '"',
+                                    bool removeSafemodeChar = true,
                                     char openparenthesis_char = '(',
                                     char closeparenthesis_char = ')',
+                                    bool removeParenthesisChars = true,
                                     char comment_char = '\0',
                                     SPLIT_LINE_STATE start_state = SL_NORMAL);
   // debugging.
@@ -156,6 +164,7 @@ public:
 
 private:
   std::vector<std::string>  strings;                      //!< strings produced from a single string splitted in multiple strings
+  std::vector<bool>         bInSafemode;
 };
 
 #endif /* __SUBSTRING_H__ */

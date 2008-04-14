@@ -29,6 +29,7 @@
 #define _Test_H__
 
 #include "core/BaseObject.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {

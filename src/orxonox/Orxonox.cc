@@ -54,10 +54,12 @@
 #include "util/ArgReader.h"
 
 // core
+#include "core/ConsoleCommand.h"
 #include "core/Debug.h"
 #include "core/Factory.h"
 #include "core/Loader.h"
 #include "core/Tickable.h"
+#include "core/InputBuffer.h"
 #include "core/InputManager.h"
 
 // audio
@@ -79,6 +81,43 @@ network::Server *server_g;
 
 namespace orxonox
 {
+  ConsoleCommand(Orxonox, exit, AccessLevel::None, true);
+  ConsoleCommand(Orxonox, slomo, AccessLevel::Offline, true).setDefaultValue(0, 1.0);
+  ConsoleCommand(Orxonox, setTimeFactor, AccessLevel::Offline, false).setDefaultValue(0, 1.0);
+
+  class Testconsole : public InputBufferListener
+  {
+    public:
+      Testconsole(InputBuffer* ib) : ib_(ib) {}
+      void listen() const
+      {
+        std::cout << "> " << this->ib_->get() << std::endl;
+      }
+      void execute() const
+      {
+        std::cout << ">> " << this->ib_->get() << std::endl;
+        if (!CommandExecutor::execute(this->ib_->get()))
+          std::cout << "Error" << std::endl;
+        this->ib_->clear();
+      }
+      void hintandcomplete() const
+      {
+        std::cout << CommandExecutor::hint(this->ib_->get()) << std::endl;
+        this->ib_->set(CommandExecutor::complete(this->ib_->get()));
+      }
+      void clear() const
+      {
+        this->ib_->clear();
+      }
+      void removeLast() const
+      {
+        this->ib_->removeLast();
+      }
+
+    private:
+      InputBuffer* ib_;
+  };
+
   /**
     @brief Reference to the only instance of the class.
   */
@@ -197,19 +236,19 @@ namespace orxonox
   void Orxonox::serverInit(std::string path)
   {
     COUT(2) << "initialising server" << std::endl;
-    
+
     ogre_->setConfigPath(path);
     ogre_->setup();
     //root_ = ogre_->getRoot();
     if(!ogre_->load(this->dataPath_)) abortImmediate(/* unable to load */);
-    
+
     server_g = new network::Server();
   }
 
   void Orxonox::clientInit(std::string path)
   {
     COUT(2) << "initialising client" << std::endl;\
-    
+
     ogre_->setConfigPath(path);
     ogre_->setup();
     if(serverIp_.compare("")==0)
@@ -218,17 +257,17 @@ namespace orxonox
       client_g = new network::Client(serverIp_, NETWORK_PORT);
     if(!ogre_->load(this->dataPath_)) abortImmediate(/* unable to load */);
   }
-  
+
   void Orxonox::standaloneInit(std::string path)
   {
     COUT(2) << "initialising standalone mode" << std::endl;
-    
+
     ogre_->setConfigPath(path);
     ogre_->setup();
     //root_ = ogre_->getRoot();
     if(!ogre_->load(this->dataPath_)) abortImmediate(/* unable to load */);
   }
-  
+
   /**
    * start modules
    */
@@ -245,32 +284,32 @@ namespace orxonox
       standaloneStart();
     }
   }
-  
+
   void Orxonox::clientStart(){
     ogre_->initialise();
     Factory::createClassHierarchy();
-    
-    
+
+
     auMan_ = new audio::AudioManager();
 
     //bulletMgr_ = new BulletManager();
-    
+
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
     HUD* orxonoxHud;
     orxonoxHud = new HUD();
     orxonoxHud->setEnergyValue(20);
     orxonoxHud->setEnergyDistr(20,20,60);
     hudOverlay->show();
-    
+
     client_g->establishConnection();
     client_g->tick(0);
-    
-    
+
+
     //setupInputSystem();
-    
+
     startRenderLoop();
   }
-  
+
   void Orxonox::serverStart(){
     //TODO: start modules
     ogre_->initialise();
@@ -278,12 +317,12 @@ namespace orxonox
     Factory::createClassHierarchy();
     createScene();
     setupInputSystem();
-    
+
     server_g->open();
-    
+
     startRenderLoop();
   }
-  
+
   void Orxonox::standaloneStart(){
     //TODO: start modules
     ogre_->initialise();
@@ -291,7 +330,7 @@ namespace orxonox
     Factory::createClassHierarchy();
     createScene();
     setupInputSystem();
-    
+
     startRenderLoop();
   }
 
@@ -350,6 +389,14 @@ namespace orxonox
   */
   void Orxonox::startRenderLoop()
   {
+    InputBuffer* ib = new InputBuffer();
+    Testconsole* console = new Testconsole(ib);
+    ib->registerListener(console, &Testconsole::listen, true);
+    ib->registerListener(console, &Testconsole::execute, '\r', false);
+    ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
+    ib->registerListener(console, &Testconsole::clear, '§', true);
+    ib->registerListener(console, &Testconsole::removeLast, '\b', true);
+
     // first check whether ogre root object has been created
     if (Ogre::Root::getSingletonPtr() == 0)
     {
@@ -394,7 +441,7 @@ namespace orxonox
 
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
-        (it++)->tick((float)evt.timeSinceLastFrame);
+        (it++)->tick((float)evt.timeSinceLastFrame * this->timefactor_);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly

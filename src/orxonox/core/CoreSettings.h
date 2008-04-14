@@ -26,44 +26,48 @@
  */
 
 /**
-    @file DebugLevel.h
-    @brief Definition of the DebugLevel class.
+    @file CoreSettings.h
+    @brief Definition of the CoreSettings class.
 
-    The DebugLevel class is a singleton, only used to configure the amount of debug
-    output (see Debug.h) into the console and the logfile (see OutputHandler.h).
+    The CoreSettings class is a singleton, only used to configure some variables
+    in the core through the config-file.
 */
 
-#ifndef _DebugLevel_H__
-#define _DebugLevel_H__
-
-#include "CorePrereqs.h"
+#ifndef _CoreSettings_H__
+#define _CoreSettings_H__
 
 #include "OrxonoxClass.h"
 #include "OutputHandler.h"
 
+#include "CorePrereqs.h"
+
 namespace orxonox
 {
-    //! The DebugLevel class is a singleton, only used to configure the amount of debug output.
-    class _CoreExport DebugLevel : public OrxonoxClass
+    //! The CoreSettings class is a singleton, only used to configure some config-values.
+    class _CoreExport CoreSettings : public OrxonoxClass
     {
-        template <class T>
-        friend class ClassIdentifier; // forward declaration because of the private destructor
-
         public:
-            static int getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
+            static CoreSettings& getInstance();
+            static bool& isCreatingCoreSettings();
             void setConfigValues();
 
+            static int getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
+            static const std::string& getLanguage();
+            static void resetLanguage();
+
         private:
-            explicit DebugLevel(bool& bReturnSoftDebugLevel);
-            DebugLevel(const DebugLevel& dl) {} // don't copy
-            virtual ~DebugLevel() {}            // don't delete
+            void resetLanguageIntern();
+
+            CoreSettings();
+            CoreSettings(const CoreSettings& other) {}
+            virtual ~CoreSettings() {}
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console
             int softDebugLevelLogfile_;                     //!< The debug level for the logfile
             int softDebugLevelShell_;                       //!< The debug level for the ingame shell
-            ConfigValueContainer* softDebugLevelContainer_; //!< The config value container for the debug level
+            std::string language_;                          //!< The language
     };
 }
 
-#endif /* _DebugLevel_H__ */
+#endif /* _CoreSettings_H__ */

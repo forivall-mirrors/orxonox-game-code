@@ -29,6 +29,7 @@
 #include "test2.h"
 #include "test3.h"
 #include "core/CoreIncludes.h"
+#include "core/Executor.h"
 
 namespace orxonox
 {
@@ -42,9 +43,9 @@ namespace orxonox
         this->usefullClass2_ = Class(Test2);
         this->usefullClass3_ = Class(Test3);
 
-        timer1.setTimer(1, true, this, &Test2::timerFunction1);
-        timer2.setTimer(5, true, this, &Test2::timerFunction2);
-        timer3.setTimer(10, false, this, &Test2::timerFunction3);
+        timer1.setTimer(1, true, this, createExecutor(createFunctor(&Test2::timerFunction1)));
+        timer2.setTimer(5, true, this, createExecutor(createFunctor(&Test2::timerFunction2)));
+        timer3.setTimer(10, false, this, createExecutor(createFunctor(&Test2::timerFunction3)));
     }
 
     Test2::~Test2()

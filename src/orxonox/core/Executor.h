@@ -31,31 +31,154 @@
 
 #include "CorePrereqs.h"
 #include "Functor.h"
+#include "Debug.h"
+#include "util/SubString.h"
+#include "util/String.h"
+
+
+#define EXECUTOR_PARSE_FUNCTORCALL(mode) EXECUTOR_PARSE_FUNCTORCALL##mode
+#define EXECUTOR_PARSE_FUNCTORCALLnormal (*this->functor_)
+#define EXECUTOR_PARSE_FUNCTORCALLobject (*((FunctorMember<T>*)this->functor_))
+
+#define EXECUTOR_PARSE_OBJECT(mode, comma) EXECUTOR_PARSE_OBJECT##mode##comma
+#define EXECUTOR_PARSE_OBJECTnormal0
+#define EXECUTOR_PARSE_OBJECTnormal1
+#define EXECUTOR_PARSE_OBJECTobject0 object
+#define EXECUTOR_PARSE_OBJECTobject1 object,
+
+#define EXECUTOR_PARSE(mode) \
+    unsigned int paramCount = this->functor_->getParamCount(); \
+    \
+    if (paramCount == 0) \
+    { \
+        COUT(5) << "Calling Executor " << this->name_ << " through parser without parameters." << std::endl; \
+        EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 0)); \
+    } \
+    else if (paramCount == 1) \
+    { \
+        std::string temp = getStripped(params); \
+        if ((temp != "") && (temp.size() != 0)) \
+        { \
+            COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using whole string: " << params << std::endl; \
+            EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) MultiTypeMath(params)); \
+        } \
+        else if (this->bAddedDefaultValue_[0]) \
+        { \
+            COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using default value: " << this->defaultValue_[0] << std::endl; \
+            EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) this->defaultValue_[0]); \
+        } \
+        else \
+        { \
+            COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << temp << ")." << std::endl; \
+            return false; \
+        } \
+    } \
+    else \
+    { \
+        SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0'); \
+        \
+        for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++) \
+        { \
+            if (!this->bAddedDefaultValue_[i]) \
+            { \
+                COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input:" << params << ")." << std::endl; \
+                return false; \
+            } \
+        } \
+        \
+        MultiTypeMath param[MAX_FUNCTOR_ARGUMENTS]; \
+        COUT(5) << "Calling Executor " << this->name_ << " through parser with " << paramCount << " parameters, using " << tokens.size() << " tokens ("; \
+        for (unsigned int i = 0; i < tokens.size() && i < MAX_FUNCTOR_ARGUMENTS; i++) \
+        { \
+            param[i] = tokens[i]; \
+            if (i != 0) \
+            { \
+                COUT(5) << ", "; \
+            } \
+            COUT(5) << tokens[i]; \
+        } \
+        COUT(5) << ") and " << (paramCount - tokens.size()) << " default values ("; \
+        for (unsigned int i = tokens.size(); i < paramCount; i++) \
+        { \
+            param[i] = this->defaultValue_[i]; \
+            if (i != 0) \
+            { \
+                COUT(5) << ", "; \
+            } \
+            COUT(5) << this->defaultValue_[i]; \
+        } \
+        COUT(5) << ")." << std::endl; \
+        \
+        if ((tokens.size() > paramCount) && (this->functor_->getTypenameParam(paramCount - 1) == "string")) \
+            param[paramCount - 1] = tokens.subSet(paramCount - 1).join(); \
+        \
+        switch(paramCount) \
+        { \
+            case 2: \
+                EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) param[0], param[1]); \
+                break; \
+            case 3: \
+                EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) param[0], param[1], param[2]); \
+                break; \
+            case 4: \
+                EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) param[0], param[1], param[2], param[3]); \
+                break; \
+            case 5: \
+                EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) param[0], param[1], param[2], param[3], param[4]); \
+                break; \
+        } \
+    } \
+    \
+    return true
+
+namespace AccessLevel
+{
+    enum Level
+    {
+        None,
+        User,
+        Admin,
+        Offline,
+        Debug,
+        Disabled
+    };
+}
 
 namespace orxonox
 {
     class _CoreExport Executor
     {
         public:
-            Executor(Functor* functor, const std::string& name = "");
+            Executor(Functor* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None);
             virtual ~Executor();
 
-            inline virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null)
+            inline void operator()() const
+                { (*this->functor_)(this->defaultValue_[0], this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(const MultiTypeMath& param1) const
+                { (*this->functor_)(param1, this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(const MultiTypeMath& param1, const MultiTypeMath& param2) const
+                { (*this->functor_)(param1, param2, this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3) const
+                { (*this->functor_)(param1, param2, param3, this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4) const
+                { (*this->functor_)(param1, param2, param3, param4, this->defaultValue_[4]); }
+            inline void operator()(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5) const
                 { (*this->functor_)(param1, param2, param3, param4, param5); }
 
-            void setName(const std::string name);
-            const std::string& getName() const;
+            bool parse(const std::string& params, const std::string& delimiter = " ") const;
 
-            void description(const std::string& description);
+            bool evaluate(const std::string& params, MultiTypeMath param[5], const std::string& delimiter = " ") const;
+
+            Executor& setDescription(const std::string& description);
             const std::string& getDescription() const;
 
-            void descriptionParam(int param, const std::string& description);
+            Executor& setDescriptionParam(int param, const std::string& description);
             const std::string& getDescriptionParam(int param) const;
 
-            void descriptionReturnvalue(const std::string& description);
+            Executor& setDescriptionReturnvalue(const std::string& description);
             const std::string& getDescriptionReturnvalue(int param) const;
 
-            inline int getParamCount() const
+            inline unsigned int getParamCount() const
                 { return this->functor_->getParamCount(); }
             inline bool hasReturnvalue() const
                 { return this->functor_->hasReturnvalue(); }
@@ -63,55 +186,135 @@ namespace orxonox
                 { return this->functor_->getType(); }
             inline MultiTypeMath getReturnvalue() const
                 { return this->functor_->getReturnvalue(); }
-            inline std::string getTypenameParam(int param) const
+            inline std::string getTypenameParam(unsigned int param) const
                 { return this->functor_->getTypenameParam(param); }
             inline std::string getTypenameReturnvalue() const
                 { return this->functor_->getTypenameReturnvalue(); }
 
+            inline void setName(const std::string name)
+                { this->name_ = name; }
+            inline const std::string& getName() const
+                { return this->name_; }
+
+            inline void setAccessLevel(AccessLevel::Level level)
+                { this->accessLevel_ = level; }
+            inline AccessLevel::Level getAccessLevel() const
+                { return this->accessLevel_; }
+
+            Executor& setDefaultValues(const MultiTypeMath& param1);
+            Executor& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2);
+            Executor& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3);
+            Executor& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4);
+            Executor& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5);
+            Executor& setDefaultValue(unsigned int index, const MultiTypeMath& param);
+
+            inline MultiTypeMath getDefaultValue(unsigned int index) const
+            {
+                if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+                    return this->defaultValue_[index];
+
+                return MT_null;
+            }
+
+            bool allDefaultValuesSet() const;
+            inline bool defaultValueSet(unsigned int index) const
+            {
+                if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+                    return this->bAddedDefaultValue_[index];
+
+                return false;
+            }
+
         protected:
             Functor* functor_;
+            std::string name_;
+            MultiTypeMath defaultValue_[MAX_FUNCTOR_ARGUMENTS];
+            bool bAddedDefaultValue_[MAX_FUNCTOR_ARGUMENTS];
 
         private:
-            std::string name_;
-
             LanguageEntryLabel description_;
             LanguageEntryLabel descriptionReturnvalue_;
-            LanguageEntryLabel descriptionParam_[5];
+            LanguageEntryLabel descriptionParam_[MAX_FUNCTOR_ARGUMENTS];
 
             bool bAddedDescription_;
             bool bAddedDescriptionReturnvalue_;
-            bool bAddedDescriptionParam_[5];
+            bool bAddedDescriptionParam_[MAX_FUNCTOR_ARGUMENTS];
+
+            AccessLevel::Level accessLevel_;
     };
 
     class _CoreExport ExecutorStatic : public Executor
     {
         public:
-            ExecutorStatic(FunctorStatic* functor, const std::string& name = "") : Executor(functor, name) {}
+            ExecutorStatic(FunctorStatic* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None) : Executor(functor, name, level) {}
             virtual ~ExecutorStatic() {}
-
-            inline virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null)
-                { (*this->functor_)(param1, param2, param3, param4, param5); }
     };
 
     template <class T>
     class ExecutorMember : public Executor
     {
         public:
-            ExecutorMember(FunctorMember<T>* functor, const std::string& name = "") : Executor(functor, name) {}
+            ExecutorMember(FunctorMember<T>* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None) : Executor(functor, name, level) {}
             virtual ~ExecutorMember() {}
 
-            inline virtual void operator()(T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null)
-                { (*this->functor_)(object, param1, param2, param3, param4, param5); }
-            inline virtual void operator()(const T* object, const MultiTypeMath param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null)
-                { (*this->functor_)(object, param1, param2, param3, param4, param5); }
-            inline virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null)
-                { (*this->functor_)(param1, param2, param3, param4, param5); }
+            inline void operator()(T* object) const
+                { (*((FunctorMember<T>*)this->functor_))(object, this->defaultValue_[0], this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(T* object, const MultiTypeMath& param1) const
+                { (*((FunctorMember<T>*)this->functor_))(object, param1, this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(T* object, const MultiTypeMath& param1, const MultiTypeMath& param2) const
+                { (*((FunctorMember<T>*)this->functor_))(object, param1, param2, this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(T* object, const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3) const
+                { (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(T* object, const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4) const
+                { (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, param4, this->defaultValue_[4]); }
+            inline void operator()(T* object, const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5) const
+                { (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, param4, param5); }
 
-            inline void setObject(T* object)
-                { this->functor_->setObject(object); }
-            inline void setObject(const T* object)
-                { this->functor_->setObject(object); }
+
+            inline void operator()(const T* object) const
+                { (*((FunctorMember<T>*)this->functor_))(object, this->defaultValue_[0], this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(const T* object, const MultiTypeMath& param1) const
+                { (*((FunctorMember<T>*)this->functor_))(object, param1, this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(const T* object, const MultiTypeMath& param1, const MultiTypeMath& param2) const
+                { (*((FunctorMember<T>*)this->functor_))(object, param1, param2, this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(const T* object, const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3) const
+                { (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, this->defaultValue_[3], this->defaultValue_[4]); }
+            inline void operator()(const T* object, const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4) const
+                { (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, param4, this->defaultValue_[4]); }
+            inline void operator()(const T* object, const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5) const
+                { (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, param4, param5); }
+
+            inline void setObject(T* object) const
+                { ((FunctorMember<T>*)this->functor_)->setObject(object); }
+            inline void setObject(const T* object) const
+                { ((FunctorMember<T>*)this->functor_)->setObject(object); }
+
+            bool parse(T* object, const std::string& params, const std::string& delimiter = " ") const
+            {
+                EXECUTOR_PARSE(object);
+            }
+
+            bool parse(const T* object, const std::string& params, const std::string& delimiter = " ") const
+            {
+                EXECUTOR_PARSE(object);
+            }
     };
+
+    inline Executor* createExecutor(Functor* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None)
+    {
+        return new Executor(functor, name, level);
+    }
+
+    template <class T>
+    inline ExecutorMember<T>* createExecutor(FunctorMember<T>* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None)
+    {
+        return new ExecutorMember<T>(functor, name, level);
+    }
+
+    inline ExecutorStatic* createExecutor(FunctorStatic* functor, const std::string& name = "", AccessLevel::Level level = AccessLevel::None)
+    {
+        return new ExecutorStatic(functor, name, level);
+    }
 }
 
 #endif /* _Executor_H__ */

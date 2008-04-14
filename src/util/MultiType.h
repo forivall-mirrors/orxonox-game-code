@@ -34,6 +34,7 @@
 enum _UtilExport MultiType
 {
     MT_null,
+    MT_void,
     MT_int,
     MT_uint,
     MT_char,
@@ -48,6 +49,7 @@ enum _UtilExport MultiType
     MT_bool,
     MT_constchar,
     MT_string,
+    MT_xmlelement,
     MT_vector2,
     MT_vector3,
     MT_colourvalue,
@@ -58,6 +60,7 @@ enum _UtilExport MultiType
 
 union _UtilExport MultiTypeValue
 {
+    void*           void_;
     int             int_;
     unsigned int    uint_;
     char            char_;

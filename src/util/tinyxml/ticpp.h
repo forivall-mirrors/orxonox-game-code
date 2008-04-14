@@ -972,7 +972,7 @@ namespace ticpp
  		/**
  		Stream output operator.
  		*/
- 		friend std::ostream& operator <<( std::ostream& out, Node& base )
+ 		friend std::ostream& operator <<( std::ostream& out, const Node& base )
  		{
  			out << *base.GetTiXmlPointer();
  			return out;

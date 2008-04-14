@@ -50,11 +50,11 @@ namespace orxonox
 
             virtual void tick(float dt);
             virtual void loadParams(TiXmlElement* xmlElem);
-            virtual void XMLPort(Element& xmlelement, bool loading);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             inline bool create(){ return true; }
 
             void attachWorldEntity(WorldEntity* entity);
-            const WorldEntity* getAttachedWorldEntity(unsigned int index);
+            const WorldEntity* getAttachedWorldEntity(unsigned int index) const;
 
             inline Ogre::SceneNode* getNode()
                 { return this->node_; }
