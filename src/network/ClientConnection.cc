@@ -42,7 +42,7 @@
 #include <boost/bind.hpp>
 
 #include "util/Sleep.h"
-#include "orxonox/core/Debug.h"
+#include "core/Debug.h"
 #include "ClientConnection.h"
 
 namespace network
