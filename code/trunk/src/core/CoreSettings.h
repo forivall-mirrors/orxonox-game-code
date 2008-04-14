@@ -61,7 +61,7 @@ namespace orxonox
 
             CoreSettings();
             CoreSettings(const CoreSettings& other) {}
-            virtual ~CoreSettings() {}
+            virtual ~CoreSettings();
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console

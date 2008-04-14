@@ -48,6 +48,17 @@ namespace orxonox
         this->setConfigValues();
     }
 
+    /**
+        @brief Sets the bool to true to avoid static functions accessing a deleted object.
+    */
+    CoreSettings::~CoreSettings()
+    {
+        isCreatingCoreSettings() = true;
+    }
+
+    /**
+        @brief Returns true if the CoreSettings instance is not yet ready and the static functions have to return a default value.
+    */
     bool& CoreSettings::isCreatingCoreSettings()
     {
         static bool bCreatingCoreSettings = true;
