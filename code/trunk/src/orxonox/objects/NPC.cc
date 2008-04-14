@@ -28,7 +28,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "NPC.h"
 
-#include "../core/CoreIncludes.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox {
 
