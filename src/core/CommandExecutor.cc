@@ -195,6 +195,8 @@ namespace orxonox
         {
 //            return KeybindMode::onPress;
         }
+        // FIXME: Had to insert a return statement
+        return (KeybindMode)0;
     }
 
     bool CommandEvaluation::isValid() const

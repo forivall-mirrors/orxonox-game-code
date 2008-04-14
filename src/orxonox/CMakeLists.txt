@@ -42,6 +42,5 @@ TARGET_LINK_LIBRARIES( orxonox
   core
   audio
   network
-#  loader
 )
 

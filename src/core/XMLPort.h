@@ -95,6 +95,7 @@ namespace orxonox
     // ###############################
     class _CoreExport XMLPortParamContainer
     {
+    public:
         enum ParseResult
         {
             PR_not_started,
