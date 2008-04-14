@@ -65,8 +65,8 @@ namespace orxonox
     for (int i = 0; i < numberOfKeys_s; i++)
     {
       // simply write the key number (i) in the string
-      this->bindingsKeyPressed_[i] = ConvertValueAndReturn<int, std::string>(i);
-      this->bindingsKeyReleased_[i] = ConvertValueAndReturn<int, std::string>(i);
+      this->bindingsKeyPressed_[i] = getConvertedValue<int, std::string>(i);
+      this->bindingsKeyReleased_[i] = getConvertedValue<int, std::string>(i);
     }
     return true;
   }

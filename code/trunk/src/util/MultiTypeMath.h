@@ -37,7 +37,8 @@
 class _UtilExport MultiTypeMath : public MultiTypeString
 {
     public:
-        MultiTypeMath(MultiType      type = MT_null);
+        MultiTypeMath(MultiType type = MT_null);
+        inline MultiTypeMath(void*          value) : MultiTypeString(value) {}
         inline MultiTypeMath(int            value) : MultiTypeString(value) {}
         inline MultiTypeMath(unsigned int   value) : MultiTypeString(value) {}
         inline MultiTypeMath(char           value) : MultiTypeString(value) {}
@@ -50,8 +51,8 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         inline MultiTypeMath(double         value) : MultiTypeString(value) {}
         inline MultiTypeMath(long double    value) : MultiTypeString(value) {}
         inline MultiTypeMath(bool           value) : MultiTypeString(value) {}
-        inline MultiTypeMath(const char*        value) : MultiTypeString(value) {}
-        inline MultiTypeMath(const std::string& value) : MultiTypeString(value) {}
+        inline MultiTypeMath(const char*             value) : MultiTypeString(value) {}
+        inline MultiTypeMath(const std::string&      value) : MultiTypeString(value) {}
         inline MultiTypeMath(const orxonox::Vector2&     value) { this->setValue(value); }
         inline MultiTypeMath(const orxonox::Vector3&     value) { this->setValue(value); }
         inline MultiTypeMath(const orxonox::ColourValue& value) { this->setValue(value); }
@@ -88,6 +89,7 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         inline bool operator!=(const orxonox::Degree&      value) const { return (this->degree_      != value); }
         bool operator!=(const MultiTypeMath& mtm) const;
 
+        virtual operator void*()                const;
         virtual operator int()                  const;
         virtual operator unsigned int()         const;
         virtual operator char()                 const;
@@ -139,6 +141,8 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         inline void getValue(orxonox::Quaternion*  variable) const { (*variable) = orxonox::Quaternion  (this->quaternion_);  }
         inline void getValue(orxonox::Radian*      variable) const { (*variable) = orxonox::Radian      (this->radian_);      }
         inline void getValue(orxonox::Degree*      variable) const { (*variable) = orxonox::Degree      (this->degree_);      }
+
+        virtual std::string getTypename() const;
 
         virtual std::string toString() const;
         virtual bool fromString(const std::string value);

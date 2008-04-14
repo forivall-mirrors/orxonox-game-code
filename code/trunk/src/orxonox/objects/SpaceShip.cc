@@ -40,21 +40,32 @@
 #include "util/String2Number.h"
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
 #include "GraphicsEngine.h"
 #include "core/InputManager.h"
 #include "particle/ParticleInterface.h"
 #include "Projectile.h"
 #include "core/XMLPort.h"
+#include "core/ConsoleCommand.h"
 
 namespace orxonox
 {
+    ConsoleCommand(SpaceShip, setMaxSpeedTest, AccessLevel::Debug, false);
+    ConsoleCommandGeneric(test1, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxSpeed", AccessLevel::Debug), false);
+    ConsoleCommandGeneric(test2, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxBlubber", AccessLevel::Debug), false);
+    ConsoleCommandGeneric(test3, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setRofl", AccessLevel::Debug), false);
+
     CreateFactory(SpaceShip);
+
+    SpaceShip* SpaceShip::instance_s;
 
     SpaceShip::SpaceShip()
     {
         RegisterObject(SpaceShip);
         this->registerAllVariables();
+
+        SpaceShip::instance_s = this;
 
         this->setConfigValues();
 
@@ -308,18 +319,18 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    void SpaceShip::XMLPort(Element& xmlelement, bool loading)
+    void SpaceShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        Model::XMLPort(xmlelement, loading);
+        Model::XMLPort(xmlelement, mode);
 
-        XMLPortParamLoadOnly(SpaceShip, "camera", setCamera, xmlelement, loading);
-        XMLPortParamLoadOnly(SpaceShip, "maxSpeed", setMaxSpeed, xmlelement, loading);
-        XMLPortParamLoadOnly(SpaceShip, "maxSideAndBackSpeed", setMaxSideAndBackSpeed, xmlelement, loading);
-        XMLPortParamLoadOnly(SpaceShip, "maxRotation", setMaxRotation, xmlelement, loading);
-        XMLPortParamLoadOnly(SpaceShip, "transAcc", setTransAcc, xmlelement, loading);
-        XMLPortParamLoadOnly(SpaceShip, "rotAcc", setRotAcc, xmlelement, loading);
-        XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, loading);
-        XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, loading);
+        XMLPortParamLoadOnly(SpaceShip, "camera", setCamera, xmlelement, mode);
+        XMLPortParamLoadOnly(SpaceShip, "maxSpeed", setMaxSpeed, xmlelement, mode);
+        XMLPortParamLoadOnly(SpaceShip, "maxSideAndBackSpeed", setMaxSideAndBackSpeed, xmlelement, mode);
+        XMLPortParamLoadOnly(SpaceShip, "maxRotation", setMaxRotation, xmlelement, mode);
+        XMLPortParamLoadOnly(SpaceShip, "transAcc", setTransAcc, xmlelement, mode);
+        XMLPortParamLoadOnly(SpaceShip, "rotAcc", setRotAcc, xmlelement, mode);
+        XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, mode);
+        XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, mode);
     }
 
     int sgn(float x)

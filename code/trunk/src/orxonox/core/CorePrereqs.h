@@ -64,6 +64,18 @@ class SignalHandler;
 
 namespace orxonox
 {
+#ifndef _XMLPort_Mode__
+#define _XMLPort_Mode__
+  namespace XMLPort
+  {
+    enum Mode
+    {
+      LoadObject,
+      SaveObject
+    };
+  }
+#endif
+
   typedef std::string LanguageEntryLabel;
 
   class BaseFactory;
@@ -78,13 +90,30 @@ namespace orxonox
   class ClassTreeMask;
   class ClassTreeMaskIterator;
   class ClassTreeMaskNode;
+  class CommandEvaluation;
+  class CommandExecutor;
+  class ConfigFile;
+  class ConfigFileEntry;
+  class ConfigFileEntryComment;
+  class ConfigFileEntryValue;
+  class ConfigFileManager;
+  class ConfigFileSection;
   class ConfigValueContainer;
-  class DebugLevel;
+  class CoreSettings;
   class Error;
   class Executor;
+  template <class T>
+  class ExecutorMember;
+  class ExecutorStatic;
   class Factory;
+  class Functor;
+  template <class T>
+  class FunctorMember;
+  class FunctorStatic;
   class Identifier;
   class IdentifierDistributor;
+  class InputBuffer;
+  class InputBufferListener;
   class InputHandlerGame;
   class InputHandlerGUI;
   class InputManager;
@@ -97,12 +126,15 @@ namespace orxonox
   class MetaObjectList;
   template <class T>
   class MetaObjectListElement;
+  class Namespace;
+  class NamespaceNode;
   template <class T>
   class ObjectList;
   template <class T>
   class ObjectListElement;
   class OrxonoxClass;
   class OutputHandler;
+  class Shell;
   template <class T>
   class SubclassIdentifier;
   class Tickable;

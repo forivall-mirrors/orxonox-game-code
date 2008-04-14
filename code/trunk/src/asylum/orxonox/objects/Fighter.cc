@@ -37,6 +37,7 @@
 #include "util/tinyxml/tinyxml.h"
 #include "util/String2Number.h"
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "GraphicsEngine.h"
 #include "core/InputManager.h"
 #include "particle/ParticleInterface.h"

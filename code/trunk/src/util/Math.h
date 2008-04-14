@@ -25,8 +25,8 @@
  *
  */
 
-#ifndef _Math_H__
-#define _Math_H__
+#ifndef _Util_Math_H__
+#define _Util_Math_H__
 
 #include <ostream>
 
@@ -145,5 +145,4 @@ inline _UtilExport float rnd(float min, float max)
     return rnd(max - min) + min;
 }
 
-#endif /* _Math_H__ */
-
+#endif /* _Util_Math_H__ */

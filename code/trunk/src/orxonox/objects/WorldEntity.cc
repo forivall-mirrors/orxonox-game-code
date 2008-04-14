@@ -175,18 +175,18 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    void WorldEntity::XMLPort(Element& xmlelement, bool loading)
+    void WorldEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlelement, loading);
+        BaseObject::XMLPort(xmlelement, mode);
 
-        XMLPortParam(WorldEntity, "position", setPositionLoader2, getPosition, xmlelement, loading);
-        XMLPortParamLoadOnly(WorldEntity, "direction", setDirectionLoader, xmlelement, loading);
-        XMLPortParamLoadOnly(WorldEntity, "yawpitchroll", setYawPitchRoll, xmlelement, loading);
-        XMLPortParam(WorldEntity, "scale", setTotalScale, getScale, xmlelement, loading);
-        XMLPortParam(WorldEntity, "rotationAxis", setRotationAxisLoader, getRotationAxis, xmlelement, loading);
-        XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, loading);
+        XMLPortParam(WorldEntity, "position", setPositionLoader2, getPosition, xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "direction", setDirectionLoader, xmlelement, mode);
+        XMLPortParamLoadOnly(WorldEntity, "yawpitchroll", setYawPitchRoll, xmlelement, mode);
+        XMLPortParam(WorldEntity, "scale", setTotalScale, getScale, xmlelement, mode);
+        XMLPortParam(WorldEntity, "rotationAxis", setRotationAxisLoader, getRotationAxis, xmlelement, mode);
+        XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, mode);
 
-        XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, loading);
+        XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, mode, false, true);
     }
 
 
@@ -218,7 +218,7 @@ namespace orxonox
         this->attachedWorldEntities_.push_back(entity);
     }
 
-    const WorldEntity* WorldEntity::getAttachedWorldEntity(unsigned int index)
+    const WorldEntity* WorldEntity::getAttachedWorldEntity(unsigned int index) const
     {
         if (index < this->attachedWorldEntities_.size())
             return this->attachedWorldEntities_[index];

@@ -34,142 +34,150 @@
 
 #include "CorePrereqs.h"
 
+#define MAX_FUNCTOR_ARGUMENTS 5
 
-enum FunctionType
+namespace orxonox
 {
-    FT_MEMBER,
-    FT_CONSTMEMBER,
-    FT_STATIC
-};
+    enum FunctionType
+    {
+        FT_MEMBER,
+        FT_CONSTMEMBER,
+        FT_STATIC
+    };
 
 
-template <class T>
-inline std::string typeToString();
+    template <class T>
+    inline std::string typeToString() { return "unknown"; }
 
 #define CreateTypeToStringTemplate(type) \
     template <> \
-    inline std::string typeToString<type>() { return #type; }
+    inline std::string typeToString<type>() { return #type; } \
+    template <> \
+    inline std::string typeToString<type&>() { return #type; } \
+    template <> \
+    inline std::string typeToString<const type>() { return #type; } \
+    template <> \
+    inline std::string typeToString<const type&>() { return #type; }
 
-CreateTypeToStringTemplate(int);
-CreateTypeToStringTemplate(unsigned int);
-CreateTypeToStringTemplate(char);
-CreateTypeToStringTemplate(unsigned char);
-CreateTypeToStringTemplate(short);
-CreateTypeToStringTemplate(unsigned short);
-CreateTypeToStringTemplate(long);
-CreateTypeToStringTemplate(unsigned long);
-CreateTypeToStringTemplate(float);
-CreateTypeToStringTemplate(double);
-CreateTypeToStringTemplate(long double);
-CreateTypeToStringTemplate(bool);
-CreateTypeToStringTemplate(std::string);
-CreateTypeToStringTemplate(orxonox::Vector2);
-CreateTypeToStringTemplate(orxonox::Vector3);
-CreateTypeToStringTemplate(orxonox::Quaternion);
-CreateTypeToStringTemplate(orxonox::ColourValue);
-CreateTypeToStringTemplate(orxonox::Radian);
-CreateTypeToStringTemplate(orxonox::Degree);
+    CreateTypeToStringTemplate(int);
+    CreateTypeToStringTemplate(unsigned int);
+    CreateTypeToStringTemplate(char);
+    CreateTypeToStringTemplate(unsigned char);
+    CreateTypeToStringTemplate(short);
+    CreateTypeToStringTemplate(unsigned short);
+    CreateTypeToStringTemplate(long);
+    CreateTypeToStringTemplate(unsigned long);
+    CreateTypeToStringTemplate(float);
+    CreateTypeToStringTemplate(double);
+    CreateTypeToStringTemplate(long double);
+    CreateTypeToStringTemplate(bool);
+    CreateTypeToStringTemplate(Vector2);
+    CreateTypeToStringTemplate(Vector3);
+    CreateTypeToStringTemplate(Quaternion);
+    CreateTypeToStringTemplate(ColourValue);
+    CreateTypeToStringTemplate(Radian);
+    CreateTypeToStringTemplate(Degree);
 
+    template <> \
+    inline std::string typeToString<std::string>() { return "string"; } \
+    template <> \
+    inline std::string typeToString<std::string&>() { return "string"; } \
+    template <> \
+    inline std::string typeToString<const std::string>() { return "string"; } \
+    template <> \
+    inline std::string typeToString<const std::string&>() { return "string"; }
 
-class _CoreExport Functor
-{
-    public:
-        Functor() {}
-        virtual ~Functor() {}
+    class _CoreExport Functor
+    {
+        public:
+            Functor() {}
+            virtual ~Functor() {}
 
-        virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
+            virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
 
-        inline int getParamCount() const { return this->numParams_; }
-        inline bool hasReturnvalue() const { return this->hasReturnValue_; }
-        inline FunctionType getType() const { return this->type_; }
-        inline MultiTypeMath getReturnvalue() const { return this->returnedValue_; }
+            inline unsigned int getParamCount() const { return this->numParams_; }
+            inline bool hasReturnvalue() const { return this->hasReturnValue_; }
+            inline FunctionType getType() const { return this->type_; }
+            inline MultiTypeMath getReturnvalue() const { return this->returnedValue_; }
 
-        std::string getTypenameParam(int param) const { return (param > 0 && param <= 5) ? this->typeParam_[param-1] : ""; }
-        std::string getTypenameReturnvalue() const { return this->typeReturnvalue_; }
+            std::string getTypenameParam(unsigned int param) const { return (param >= 0 && param < 5) ? this->typeParam_[param] : ""; }
+            std::string getTypenameReturnvalue() const { return this->typeReturnvalue_; }
 
-    protected:
-        int numParams_;
-        bool hasReturnValue_;
-        FunctionType type_;
-        MultiTypeMath returnedValue_;
+            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const = 0;
 
-        std::string typeReturnvalue_;
-        std::string typeParam_[5];
-};
+        protected:
+            unsigned int numParams_;
+            bool hasReturnValue_;
+            FunctionType type_;
+            MultiTypeMath returnedValue_;
 
-class _CoreExport FunctorStatic : public Functor
-{
-    public:
-        virtual ~FunctorStatic() {}
-        virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
-};
+            std::string typeReturnvalue_;
+            std::string typeParam_[MAX_FUNCTOR_ARGUMENTS];
+    };
 
-template <class T>
-class FunctorMember : public Functor
-{
-    public:
-        FunctorMember()
-        {
-            constObject_ = 0;
-            object_ = 0;
-            bConstObject_ = false;
-        }
-        virtual ~FunctorMember() {}
+    class _CoreExport FunctorStatic : public Functor
+    {
+        public:
+            virtual ~FunctorStatic() {}
+            virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
+    };
 
-        virtual void operator()(T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
-        virtual void operator()(const T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
-
-        virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null)
-        {
-            if (this->bConstObject_)
+    template <class T>
+    class FunctorMember : public Functor
+    {
+        public:
+            FunctorMember()
             {
-                if (this->constObject_)
-                    (*this)(this->constObject_, param1, param2, param3, param4, param5);
+                constObject_ = 0;
+                object_ = 0;
+                bConstObject_ = false;
+            }
+            virtual ~FunctorMember() {}
+
+            virtual void operator()(T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
+            virtual void operator()(const T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
+
+            virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null)
+            {
+                if (this->bConstObject_)
+                {
+                    if (this->constObject_)
+                        (*this)(this->constObject_, param1, param2, param3, param4, param5);
+                    else
+                    {
+                        COUT(1) << "An error occurred in Functor.h:" << std::endl;
+                        COUT(1) << "Error: No const object set." << std::endl;
+                    }
+                }
                 else
                 {
-                    COUT(1) << "An error occurred in Functor.h:" << std::endl;
-                    COUT(1) << "Error: No const object set." << std::endl;
+                    if (this->object_)
+                        (*this)(this->object_, param1, param2, param3, param4, param5);
+                    else
+                    {
+                        COUT(1) << "An error occurred in Functor.h:" << std::endl;
+                        COUT(1) << "Error: No object set." << std::endl;
+                    }
                 }
             }
-            else
+
+            void setObject(T* object)
             {
-                if (this->object_)
-                    (*this)(this->object_, param1, param2, param3, param4, param5);
-                else
-                {
-                    COUT(1) << "An error occurred in Functor.h:" << std::endl;
-                    COUT(1) << "Error: No object set." << std::endl;
-                }
+                this->bConstObject_ = false;
+                this->object_ = object;
             }
-        }
 
-        void setObject(T* object)
-        {
-            this->bConstObject_ = false;
-            this->object_ = object;
-        }
+            void setObject(const T* object)
+            {
+                this->bConstObject_ = true;
+                this->constObject_ = object;
+            }
 
-        void setObject(const T* object)
-        {
-            this->bConstObject_ = true;
-            this->constObject_ = object;
-        }
-
-    private:
-        const T* constObject_;
-        T* object_;
-        bool bConstObject_;
-};
-
-
-
-#define MAKE_COMMA(x) MAKE_COMMA##x
-#define MAKE_COMMA0
-#define MAKE_COMMA1 ,
-#define MAKE_COMMA2 ,
-#define MAKE_COMMA3 ,
-#define MAKE_COMMA4 ,
-#define MAKE_COMMA5 ,
+        private:
+            const T* constObject_;
+            T* object_;
+            bool bConstObject_;
+    };
 
 
 
@@ -271,6 +279,31 @@ class FunctorMember : public Functor
 
 
 
+#define FUNCTOR_EVALUATE_PARAM(numparams) FUNCTOR_EVALUATE_PARAM##numparams
+#define FUNCTOR_EVALUATE_PARAM0
+#define FUNCTOR_EVALUATE_PARAM1 \
+    if (index == 0) param = (P1)param
+#define FUNCTOR_EVALUATE_PARAM2 \
+    if (index == 0) param = (P1)param; \
+    else if (index == 1) param = (P2)param
+#define FUNCTOR_EVALUATE_PARAM3 \
+    if (index == 0) param = (P1)param; \
+    else if (index == 1) param = (P2)param; \
+    else if (index == 2) param = (P3)param
+#define FUNCTOR_EVALUATE_PARAM4 \
+    if (index == 0) param = (P1)param; \
+    else if (index == 1) param = (P2)param; \
+    else if (index == 2) param = (P3)param; \
+    else if (index == 3) param = (P4)param
+#define FUNCTOR_EVALUATE_PARAM5 \
+    if (index == 0) param = (P1)param; \
+    else if (index == 1) param = (P2)param; \
+    else if (index == 2) param = (P3)param; \
+    else if (index == 3) param = (P4)param; \
+    else if (index == 4) param = (P5)param
+
+
+
 
 
 #define CREATE_STATIC_FUNCTOR(returnvalue, numparams) \
@@ -292,6 +325,11 @@ class FunctorMember : public Functor
             void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
+            } \
+    \
+            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const \
+            { \
+                FUNCTOR_EVALUATE_PARAM(numparams); \
             } \
     \
         private: \
@@ -333,6 +371,11 @@ class FunctorMember : public Functor
                 COUT(1) << "Error: Function is not const." << std::endl; \
             } \
     \
+            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const \
+            { \
+                FUNCTOR_EVALUATE_PARAM(numparams); \
+            } \
+    \
         private: \
             FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer_)(FUNCTOR_FUNCTION_PARAMS(numparams)); \
     }; \
@@ -358,6 +401,11 @@ class FunctorMember : public Functor
             void operator()(const T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*object.*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
+            } \
+    \
+            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const \
+            { \
+                FUNCTOR_EVALUATE_PARAM(numparams); \
             } \
     \
         private: \
@@ -411,7 +459,8 @@ class FunctorMember : public Functor
     CREATE_MEMBER_FUNCTOR(1, 5)
 
 
-CREATE_ALL_STATIC_FUNCTORS();
-CREATE_ALL_MEMBER_FUNCTORS();
+    CREATE_ALL_STATIC_FUNCTORS();
+    CREATE_ALL_MEMBER_FUNCTORS();
+}
 
 #endif /* _Functor_H__ */

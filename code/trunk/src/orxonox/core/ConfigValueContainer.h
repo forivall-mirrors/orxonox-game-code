@@ -42,13 +42,14 @@
 #ifndef _ConfigValueContainer_H__
 #define _ConfigValueContainer_H__
 
-#include <list>
 #include <string>
+#include <vector>
 
 #include "CorePrereqs.h"
 
 #include "util/Math.h"
 #include "util/MultiTypeMath.h"
+#include "ConfigFileManager.h"
 
 namespace orxonox
 {
@@ -71,85 +72,69 @@ namespace orxonox
     class _CoreExport ConfigValueContainer
     {
         public:
-            ConfigValueContainer(const std::string& classname, const std::string& varname, MultiTypeMath defvalue);
+            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const MultiTypeMath& defvalue);
+            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const std::vector<MultiTypeMath>& defvalue);
 
             /** @brief Returns the configured value. @param value This is only needed to determine the right type. @return The value */
-/*            template <typename T>
-            inline ConfigValueContainer& getValue(T& value)                           { this->value_.getValue(value); return *this; }
-*/
-            inline ConfigValueContainer& getValue(int* value)            { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(unsigned int* value)   { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(char* value)           { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(unsigned char* value)  { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(short* value)          { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(unsigned short* value) { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(long* value)           { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(unsigned long* value)  { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(float* value)          { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(double* value)         { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(long double* value)    { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(bool* value)           { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(std::string* value)    { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(const char** value)    { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(Vector2* value)        { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(Vector3* value)        { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(ColourValue* value)    { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(Quaternion* value)     { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(Radian* value)         { this->value_.getValue(value); return *this; }
-            inline ConfigValueContainer& getValue(Degree* value)         { this->value_.getValue(value); return *this; }
+            template <typename T>
+            inline ConfigValueContainer& getValue(T* value)
+                { this->value_.getValue(value); return *this; }
+            template <typename T>
+            inline ConfigValueContainer& getValue(std::vector<T>* value)
+            {
+                value->clear();
+                for (unsigned int i = 0; i < this->valueVector_.size(); i++)
+                    value->push_back(this->valueVector_[i]);
+                return *this;
+            }
+
+            inline const std::string& getName() const
+                { return this->varname_; }
+            inline bool isVector() const
+                { return this->bIsVector_; }
+            inline unsigned int getVectorSize() const
+                { return this->valueVector_.size(); }
 
             void description(const std::string& description);
             const std::string& getDescription() const;
 
-            bool parseString(const std::string& input, MultiTypeMath& defvalue);
-            bool valueToString(std::string* output, MultiTypeMath& input);
-            void resetConfigFileEntry();
-            void resetConfigValue();
+            bool add(const std::string& input);
+            bool remove(unsigned int index);
+            bool set(const std::string& input);
+            bool tset(const std::string& input);
+            bool reset();
+            void update();
 
-            static std::string getStrippedLine(const std::string& line);
-            static bool isEmpty(const std::string& line);
-            static bool isComment(const std::string& line);
+            /** @brief Converts the config-value to a string. @return The string */
+            inline std::string toString() const
+                { return this->value_.toString(); }
+            /** @brief Returns the typename of the assigned config-value. @return The typename */
+            inline std::string getTypename() const
+                { return this->value_.getTypename(); }
 
         private:
-            bool parseString(const std::string& input, int defvalue);
-            bool parseString(const std::string& input, unsigned int defvalue);
-            bool parseString(const std::string& input, char defvalue);
-            bool parseString(const std::string& input, unsigned char defvalue);
-            bool parseString(const std::string& input, short defvalue);
-            bool parseString(const std::string& input, unsigned short defvalue);
-            bool parseString(const std::string& input, long defvalue);
-            bool parseString(const std::string& input, unsigned long defvalue);
-            bool parseString(const std::string& input, float defvalue);
-            bool parseString(const std::string& input, double defvalue);
-            bool parseString(const std::string& input, long double defvalue);
-            bool parseString(const std::string& input, bool defvalue);
-            bool parseString(const std::string& input, const std::string& defvalue);
-            bool parseString(const std::string& input, const char* defvalue);
-            bool parseString(const std::string& input, const Vector2& defvalue);
-            bool parseString(const std::string& input, const Vector3& defvalue);
-            bool parseString(const std::string& input, const ColourValue& defvalue);
-            bool parseString(const std::string& input, const Quaternion& defvalue);
-            bool parseString(const std::string& input, const Radian& defvalue);
-            bool parseString(const std::string& input, const Degree& defvalue);
+            bool parse(const std::string& input);
+            bool parse(const std::string& input, const MultiTypeMath& defvalue);
 
-            static std::list<std::string>& getConfigFileLines();
-            static bool finishedReadingConfigFile(bool finished = false);
-            void searchConfigFileLine();
-            std::string parseValueString(bool bStripped = true);
+            bool set(unsigned int index, const std::string& input);
+            bool tset(unsigned int index, const std::string& input);
+            bool parse(unsigned int index, const std::string& input);
+            bool parse(unsigned int index, const std::string& input, const MultiTypeMath& defvalue);
 
-            static void readConfigFile(const std::string& filename);
-            static void writeConfigFile(const std::string& filename);
+            bool                       bIsVector_;                  //!< True if the container contains a std::vector
 
-            std::string         classname_;                     //!< The name of the class the variable belongs to
-            std::string         varname_;                       //!< The name of the variable
-            std::string         defvalueString_;                //!< The string of the default-variable
+            ConfigFileType             type_;                       //!< The type of the corresponding config-file
+            Identifier*                identifier_;                 //!< The identifier of the class
+            std::string                sectionname_;                //!< The name of the class the variable belongs to
+            std::string                varname_;                    //!< The name of the variable
+            std::string                defvalueString_;             //!< The string of the default-value
+            std::vector<std::string>   defvalueStringVector_;       //!< A vector, containg the strings of the default-values in case we're storing a vector
 
-            MultiTypeMath       value_;                         //!< The value
+            MultiTypeMath              value_;                      //!< The value
+            std::vector<MultiTypeMath> valueVector_;                //!< A vector, containg the values in case we're storing a vector
 
-            std::list<std::string>::iterator configFileLine_;   //!< An iterator, pointing to the entry of the variable in the config-file
-
-            bool bAddedDescription_;                            //!< True if a description was added
-            LanguageEntryLabel description_;                    //!< The description
+            bool                       bAddedDescription_;          //!< True if a description was added
+            LanguageEntryLabel         description_;                //!< The description
     };
 }
 

@@ -49,7 +49,7 @@ namespace orxonox
             BaseObject();
             virtual ~BaseObject();
             virtual void loadParams(TiXmlElement* xmlElem);
-            virtual void XMLPort(Element& xmlelement, bool loading);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             /** @brief Sets the name of the object. @param name The name */
             inline void setName(const std::string& name) { this->name_ = name; this->changedName(); }
@@ -78,6 +78,9 @@ namespace orxonox
             inline const Level* getLevel() const { return this->level_; }
             const std::string& getLevelfile() const;
 
+            virtual inline void setNamespace(Namespace* ns) { this->namespace_ = ns; }
+            inline Namespace* getNamespace() const { return this->namespace_; }
+
             /** @brief Sets the indentation of the debug output in the Loader. @param indentation The indentation */
             inline void setLoaderIndentation(const std::string& indentation) { this->loaderIndentation_ = indentation; }
             /** @brief Returns the indentation of the debug output in the Loader. @return The indentation */
@@ -89,6 +92,7 @@ namespace orxonox
             bool bVisible_;                             //!< True = the object is visible
             const Level* level_;                        //!< The level that loaded this object
             std::string loaderIndentation_;             //!< Indentation of the debug output in the Loader
+            Namespace* namespace_;
     };
 }
 

@@ -28,7 +28,10 @@
 #include "OrxonoxStableHeaders.h"
 #include "Projectile.h"
 
-#include "../core/CoreIncludes.h"
+#include "core/CoreIncludes.h"
+#include "core/Executor.h"
+#include "core/ConfigValueIncludes.h"
+
 #include "SpaceShip.h"
 #include "Explosion.h"
 #include "Model.h"
@@ -58,7 +61,7 @@ namespace orxonox
             this->setVelocity(Vector3(1, 0, 0) * this->speed_);
         }
 
-        this->destroyTimer_.setTimer(this->lifetime_, false, this, &Projectile::destroyObject);
+        this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
     }
 
     Projectile::~Projectile()
@@ -69,6 +72,8 @@ namespace orxonox
     {
         SetConfigValue(lifetime_, 10.0).description("The time in seconds a projectile stays alive");
         SetConfigValue(speed_, 2000.0).description("The speed of a projectile in units per second");
+
+        this->setVelocity(Vector3(1, 0, 0) * this->speed_);
     }
 
     void Projectile::tick(float dt)

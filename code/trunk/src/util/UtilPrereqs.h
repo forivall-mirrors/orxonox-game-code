@@ -60,8 +60,6 @@
 //-----------------------------------------------------------------------
 class ArgReader;
 class Convert;
-template <typename FromType, typename ToType>
-class Converter;
 class MultiTypePrimitive;
 class MultiTypeString;
 class MultiTypeMath;

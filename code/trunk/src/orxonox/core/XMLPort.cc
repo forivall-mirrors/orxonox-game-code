@@ -28,63 +28,16 @@
 #include "XMLPort.h"
 #include "Language.h"
 #include "Loader.h"
+#include "Namespace.h"
+#include "CoreIncludes.h"
 
 namespace orxonox
 {
-    // ###############################
-    // ###  XMLPortParamContainer  ###
-    // ###############################
-    XMLPortParamContainer::XMLPortParamContainer()
-    {
-        this->bAddedDescription_ = false;
-        this->bAddedDefaultValues_ = false;
-    }
-
-    XMLPortParamContainer& XMLPortParamContainer::description(const std::string description)
-    {
-        if (!this->bAddedDescription_)
-        {
-            this->description_ = std::string("XMLPortParamContainer::" + this->classname_ + "::" + this->paramname_);
-            AddLanguageEntry(this->description_, description);
-            this->bAddedDescription_ = true;
-        }
-
-        return (*this);
-    }
-
-    const std::string& XMLPortParamContainer::getDescription()
-    {
-        return GetLocalisation(this->description_);
-    }
-
-
     // ################################
     // ###  XMLPortObjectContainer  ###
     // ################################
-    XMLPortObjectContainer::XMLPortObjectContainer()
-    {
-        this->bAddedDescription_ = false;
-    }
-
-    XMLPortObjectContainer& XMLPortObjectContainer::description(const std::string description)
-    {
-        if (!this->bAddedDescription_)
-        {
-            this->description_ = std::string("XMLPortObjectContainer::" + this->classname_ + "::" + this->sectionname_);
-            AddLanguageEntry(this->description_, description);
-            this->bAddedDescription_ = true;
-        }
-
-        return (*this);
-    }
-
-    const std::string& XMLPortObjectContainer::getDescription()
-    {
-        return GetLocalisation(this->description_);
-    }
-
     bool XMLPortObjectContainer::identifierIsIncludedInLoaderMask(const Identifier* identifier)
     {
-        return Loader::currentMask_s.isIncluded(identifier);
+        return ((!this->bApplyLoaderMask_) || identifier->isA(Class(Namespace)) || Loader::currentMask_s.isIncluded(identifier));
     }
 }

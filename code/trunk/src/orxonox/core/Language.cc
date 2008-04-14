@@ -27,13 +27,13 @@
 
 /**
     @file Language.cc
-    @brief Implementation of the Language and the LanguageEntry class.
+    @brief Implementation of the Language and the LanguageEntry classes.
 */
 
 #include <fstream>
 
-#include "CoreIncludes.h"
 #include "Language.h"
+#include "CoreSettings.h"
 
 namespace orxonox
 {
@@ -46,8 +46,6 @@ namespace orxonox
     */
     LanguageEntry::LanguageEntry(const std::string& fallbackEntry)
     {
-        RegisterRootObject(LanguageEntry);
-
         this->fallbackEntry_ = fallbackEntry;
         this->localisedEntry_ = fallbackEntry; // Set the localisation to the fallback entry, for the case that no translation gets assigned
         this->bLocalisationSet_ = false;
@@ -60,7 +58,7 @@ namespace orxonox
     void LanguageEntry::setLocalisation(const std::string& localisation)
     {
         // Check if the translation is more than just an empty string
-        if (localisation.compare("") != 0)
+        if ((localisation != "") && (localisation.size() > 0))
         {
             this->localisedEntry_ = localisation;
             this->bLocalisationSet_ = true;
@@ -90,8 +88,6 @@ namespace orxonox
     */
     Language::Language()
     {
-        RegisterRootObject(Language);
-
         this->defaultLanguage_ = "default";
         this->defaultLocalisation_ = "ERROR: LANGUAGE ENTRY DOESN'T EXIST!";
 
@@ -100,34 +96,13 @@ namespace orxonox
     }
 
     /**
-        @brief Function to collect the SetConfigValue-macro calls.
-    */
-    void Language::setConfigValues()
-    {
-        SetConfigValue(language_, this->defaultLanguage_).description("The language of the ingame text");
-
-        // Read the translation file after the language was configured
-        this->readTranslatedLanguageFile();
-    }
-
-    /**
         @brief Returns a reference to the only existing instance of the Language class and calls the setConfigValues() function.
         @return The reference to the only existing instance
     */
     Language& Language::getLanguage()
     {
-        // Use static variables to avoid conflicts while executing this code before main()
-        static Language theOnlyLanguageObject = Language();
-        static bool bCreatingTheOnlyLanguageObject = true;
-
-        // This workaround is used to set a description of the own config value without creating an infinite recursion
-        if (bCreatingTheOnlyLanguageObject)
-        {
-            bCreatingTheOnlyLanguageObject = false;
-            theOnlyLanguageObject.setConfigValues();
-        }
-
-        return theOnlyLanguageObject;
+        static Language instance = Language();
+        return instance;
     }
 
     /**
@@ -243,7 +218,7 @@ namespace orxonox
             std::string lineString = std::string(line);
 
             // Check if the line is empty
-            if (lineString.compare("") != 0)
+            if ((lineString != "") && (lineString.size() > 0))
             {
                 unsigned int pos = lineString.find('=');
 
@@ -251,7 +226,9 @@ namespace orxonox
                 if (pos > 0 && pos < (lineString.size() - 1) && lineString.size() >= 3)
                     this->createEntry(lineString.substr(0, pos), lineString.substr(pos + 1));
                 else
+                {
                     COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFileName(this->defaultLanguage_) << std::endl;
+                }
             }
         }
 
@@ -263,17 +240,17 @@ namespace orxonox
     */
     void Language::readTranslatedLanguageFile()
     {
-        COUT(4) << "Read translated language file (" << this->language_ << ")." << std::endl;
+        COUT(4) << "Read translated language file (" << CoreSettings::getLanguage() << ")." << std::endl;
 
         // Open the file
         std::ifstream file;
-        file.open(getFileName(this->language_).c_str(), std::fstream::in);
+        file.open(getFileName(CoreSettings::getLanguage()).c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
             COUT(1) << "An error occurred in Language.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open file " << getFileName(this->language_) << " to read the translated language entries!" << std::endl;
-            ResetConfigValue(language_);
+            COUT(1) << "Error: Couldn't open file " << getFileName(CoreSettings::getLanguage()) << " to read the translated language entries!" << std::endl;
+            CoreSettings::resetLanguage();
             COUT(3) << "Info: Reset language to " << this->defaultLanguage_ << "." << std::endl;
             return;
         }
@@ -287,7 +264,7 @@ namespace orxonox
             std::string lineString = std::string(line);
 
             // Check if the line is empty
-            if (lineString.compare("") != 0)
+            if ((lineString != "") && (lineString.size() > 0))
             {
                 unsigned int pos = lineString.find('=');
 
@@ -303,7 +280,9 @@ namespace orxonox
                         this->createEntry(lineString.substr(0, pos), this->defaultLocalisation_)->setLocalisation(lineString.substr(pos + 1));
                 }
                 else
-                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFileName(this->language_) << std::endl;
+                {
+                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFileName(CoreSettings::getLanguage()) << std::endl;
+                }
             }
         }
 
@@ -329,9 +308,9 @@ namespace orxonox
         }
 
         // Iterate through the list an write the lines into the file
-        for (Iterator<LanguageEntry> it = ObjectList<LanguageEntry>::start(); it; ++it)
+        for (std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.begin(); it != this->languageEntries_.end(); ++it)
         {
-            file << it->getLabel() << "=" << it->getDefault() << std::endl;
+            file << (*it).second->getLabel() << "=" << (*it).second->getDefault() << std::endl;
         }
 
         file.close();

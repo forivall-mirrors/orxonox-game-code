@@ -7,6 +7,7 @@ SET (UTIL_SRC_FILES
   ArgReader.cc
   Math.cc
   String.cc
+  Clipboard.cc
   SubString.cc
   MultiTypePrimitive.cc
   MultiTypeString.cc

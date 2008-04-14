@@ -30,11 +30,14 @@
     @brief Implementation of the OutputHandler class.
 */
 
-#include "DebugLevel.h"
+#include "CoreSettings.h"
 #include "OutputHandler.h"
+#include "ConsoleCommand.h"
 
 namespace orxonox
 {
+    ConsoleCommandShortcutGeneric(log, createExecutor(createFunctor(&OutputHandler::log), "log", AccessLevel::None));
+
     /**
         @brief Constructor: Opens the logfile and writes the first line.
         @param logfilename The name of the logfile
@@ -43,7 +46,7 @@ namespace orxonox
     {
         this->logfilename_ = logfilename;
         this->logfile_.open(this->logfilename_.c_str(), std::fstream::out);
-        this->logfile_ << "Started log" << std::endl;
+        this->logfile_ << "Started log at yyyy/mm/dd hh:mm:ss" << std::endl;
         this->logfile_.flush();
     }
 
@@ -73,7 +76,7 @@ namespace orxonox
     */
     int OutputHandler::getSoftDebugLevel(OutputHandler::OutputDevice device)
     {
-        return DebugLevel::getSoftDebugLevel(device);
+        return CoreSettings::getSoftDebugLevel(device);
     }
 
     /**

@@ -26,6 +26,7 @@
  */
 
 #include "core/CoreIncludes.h"
+#include "core/ConsoleCommand.h"
 #include "Tickable.h"
 
 namespace orxonox

@@ -51,7 +51,7 @@
 #ifndef _Identifier_H__
 #define _Identifier_H__
 
-#include <list>
+#include <set>
 #include <map>
 #include <string>
 #include <utility>
@@ -61,6 +61,7 @@
 #include "ObjectList.h"
 #include "Debug.h"
 #include "Iterator.h"
+#include "util/String.h"
 
 namespace orxonox
 {
@@ -104,39 +105,92 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier) const;
             bool isDirectParentOf(const Identifier* identifier) const;
 
-            /** @brief Removes all objects of the corresponding class. */
-            virtual void removeObjects() const = 0;
+            virtual const ObjectList<BaseObject>* getObjectList() const = 0;
+
+            virtual void updateConfigValues() const = 0;
 
             /** @brief Returns the name of the class the Identifier belongs to. @return The name */
             inline const std::string& getName() const { return this->name_; }
 
+
             /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
-            inline const std::list<const Identifier*>& getParents() const { return this->parents_; }
+            inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
             /** @brief Returns the begin-iterator of the parents-list. @return The begin-iterator */
-            inline std::list<const Identifier*>::const_iterator getParentsBegin() const { return this->parents_.begin(); }
+            inline std::set<const Identifier*>::const_iterator getParentsBegin() const { return this->parents_.begin(); }
             /** @brief Returns the end-iterator of the parents-list. @return The end-iterator */
-            inline std::list<const Identifier*>::const_iterator getParentsEnd() const { return this->parents_.end(); }
+            inline std::set<const Identifier*>::const_iterator getParentsEnd() const { return this->parents_.end(); }
 
             /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
-            inline const std::list<const Identifier*>& getChildren() const { return (*this->children_); }
+            inline const std::set<const Identifier*>& getChildren() const { return (*this->children_); }
             /** @brief Returns the begin-iterator of the children-list. @return The begin-iterator */
-            inline std::list<const Identifier*>::const_iterator getChildrenBegin() const { return this->children_->begin(); }
+            inline std::set<const Identifier*>::const_iterator getChildrenBegin() const { return this->children_->begin(); }
             /** @brief Returns the end-iterator of the children-list. @return The end-iterator */
-            inline std::list<const Identifier*>::const_iterator getChildrenEnd() const { return this->children_->end(); }
+            inline std::set<const Identifier*>::const_iterator getChildrenEnd() const { return this->children_->end(); }
 
             /** @brief Returns the direct parents of the class the Identifier belongs to. @return The list of all direct parents */
-            inline const std::list<const Identifier*>& getDirectParents() const { return this->directParents_; }
+            inline const std::set<const Identifier*>& getDirectParents() const { return this->directParents_; }
             /** @brief Returns the begin-iterator of the direct-parents-list. @return The begin-iterator */
-            inline std::list<const Identifier*>::const_iterator getDirectParentsBegin() const { return this->directParents_.begin(); }
+            inline std::set<const Identifier*>::const_iterator getDirectParentsBegin() const { return this->directParents_.begin(); }
             /** @brief Returns the end-iterator of the direct-parents-list. @return The end-iterator */
-            inline std::list<const Identifier*>::const_iterator getDirectParentsEnd() const { return this->directParents_.end(); }
+            inline std::set<const Identifier*>::const_iterator getDirectParentsEnd() const { return this->directParents_.end(); }
 
             /** @brief Returns the direct children the class the Identifier belongs to. @return The list of all direct children */
-            inline const std::list<const Identifier*>& getDirectChildren() const { return (*this->directChildren_); }
+            inline const std::set<const Identifier*>& getDirectChildren() const { return (*this->directChildren_); }
             /** @brief Returns the begin-iterator of the direct-children-list. @return The begin-iterator */
-            inline std::list<const Identifier*>::const_iterator getDirectChildrenBegin() const { return this->directChildren_->begin(); }
+            inline std::set<const Identifier*>::const_iterator getDirectChildrenBegin() const { return this->directChildren_->begin(); }
             /** @brief Returns the end-iterator of the direct-children-list. @return The end-iterator */
-            inline std::list<const Identifier*>::const_iterator getDirectChildrenEnd() const { return this->directChildren_->end(); }
+            inline std::set<const Identifier*>::const_iterator getDirectChildrenEnd() const { return this->directChildren_->end(); }
+
+
+            /** @brief Returns the map that stores all Identifiers. @return The map */
+            static inline const std::map<std::string, Identifier*>& getIdentifierMap() { return Identifier::getIdentifierMapIntern(); }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all Identifiers. @return The const_iterator */
+            static inline std::map<std::string, Identifier*>::const_iterator getIdentifierMapBegin() { return Identifier::getIdentifierMap().begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all Identifiers. @return The const_iterator */
+            static inline std::map<std::string, Identifier*>::const_iterator getIdentifierMapEnd() { return Identifier::getIdentifierMap().end(); }
+
+            /** @brief Returns the map that stores all Identifiers with their names in lowercase. @return The map */
+            static inline const std::map<std::string, Identifier*>& getLowercaseIdentifierMap() { return Identifier::getLowercaseIdentifierMapIntern(); }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all Identifiers with their names in lowercase. @return The const_iterator */
+            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseIdentifierMapBegin() { return Identifier::getLowercaseIdentifierMap().begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all Identifiers with their names in lowercase. @return The const_iterator */
+            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseIdentifierMapEnd() { return Identifier::getLowercaseIdentifierMap().end(); }
+
+
+            /** @brief Returns the map that stores all config values. @return The const_iterator */
+            inline const std::map<std::string, ConfigValueContainer*>& getConfigValueMap() const { return this->configValues_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all config values. @return The const_iterator */
+            inline std::map<std::string, ConfigValueContainer*>::const_iterator getConfigValueMapBegin() const { return this->configValues_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all config values. @return The const_iterator */
+            inline std::map<std::string, ConfigValueContainer*>::const_iterator getConfigValueMapEnd() const { return this->configValues_.end(); }
+
+            /** @brief Returns the map that stores all config values with their names in lowercase. @return The const_iterator */
+            inline const std::map<std::string, ConfigValueContainer*>& getLowercaseConfigValueMap() const { return this->configValues_LC_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all config values with their names in lowercase. @return The const_iterator */
+            inline std::map<std::string, ConfigValueContainer*>::const_iterator getLowercaseConfigValueMapBegin() const { return this->configValues_LC_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all config values with their names in lowercase. @return The const_iterator */
+            inline std::map<std::string, ConfigValueContainer*>::const_iterator getLowercaseConfigValueMapEnd() const { return this->configValues_LC_.end(); }
+
+
+            /** @brief Returns the map that stores all console commands. @return The const_iterator */
+            inline const std::map<std::string, ExecutorStatic*>& getConsoleCommandMap() const { return this->consoleCommands_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all console commands. @return The const_iterator */
+            inline std::map<std::string, ExecutorStatic*>::const_iterator getConsoleCommandMapBegin() const { return this->consoleCommands_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all console commands. @return The const_iterator */
+            inline std::map<std::string, ExecutorStatic*>::const_iterator getConsoleCommandMapEnd() const { return this->consoleCommands_.end(); }
+
+            /** @brief Returns the map that stores all console commands with their names in lowercase. @return The const_iterator */
+            inline const std::map<std::string, ExecutorStatic*>& getLowercaseConsoleCommandMap() const { return this->consoleCommands_LC_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all console commands with their names in lowercase. @return The const_iterator */
+            inline std::map<std::string, ExecutorStatic*>::const_iterator getLowercaseConsoleCommandMapBegin() const { return this->consoleCommands_LC_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all console commands with their names in lowercase. @return The const_iterator */
+            inline std::map<std::string, ExecutorStatic*>::const_iterator getLowercaseConsoleCommandMapEnd() const { return this->consoleCommands_LC_.end(); }
+
+
+            /** @brief Returns true if this class has at least one config value. @return True if this class has at least one config value */
+            inline bool hasConfigValues() const { return this->bHasConfigValues_; }
+            /** @brief Returns true if this class has at least one console command. @return True if this class has at least one console command */
+            inline bool hasConsoleCommands() const { return this->bHasConsoleCommands_; }
 
             /** @brief Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. @return The status of the class-hierarchy creation */
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
@@ -147,27 +201,36 @@ namespace orxonox
             /** @brief Sets the network ID to a new value. @param id The new value */
             void setNetworkID(unsigned int id);
 
-            ConfigValueContainer* getConfigValueContainer(const std::string& varname);
             void addConfigValueContainer(const std::string& varname, ConfigValueContainer* container);
+            ConfigValueContainer* getConfigValueContainer(const std::string& varname);
+            ConfigValueContainer* getLowercaseConfigValueContainer(const std::string& varname);
 
-            virtual XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname) = 0;
             virtual void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container) = 0;
+            virtual XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname) = 0;
 
-            virtual XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname) = 0;
             virtual void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container) = 0;
+            virtual XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname) = 0;
 
-            static bool identifierIsInList(const Identifier* identifier, const std::list<const Identifier*>& list);
+            ExecutorStatic& addConsoleCommand(ExecutorStatic* executor, bool bCreateShortcut);
+            ExecutorStatic* getConsoleCommand(const std::string& name) const;
+            ExecutorStatic* getLowercaseConsoleCommand(const std::string& name) const;
+
+        protected:
+            /** @brief Returns the map that stores all Identifiers. @return The map */
+            static std::map<std::string, Identifier*>& getIdentifierMapIntern();
+            /** @brief Returns the map that stores all Identifiers with their names in lowercase. @return The map */
+            static std::map<std::string, Identifier*>& getLowercaseIdentifierMapIntern();
 
         private:
             Identifier();
             Identifier(const Identifier& identifier) {} // don't copy
             virtual ~Identifier();
-            void initialize(std::list<const Identifier*>* parents);
+            void initialize(std::set<const Identifier*>* parents);
 
             /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
-            inline std::list<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
+            inline std::set<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
             /** @brief Returns the direct children of the class the Identifier belongs to. @return The list of all direct children */
-            inline std::list<const Identifier*>& getDirectChildrenIntern() const { return (*this->directChildren_); }
+            inline std::set<const Identifier*>& getDirectChildrenIntern() const { return (*this->directChildren_); }
 
             /**
                 @brief Increases the hierarchyCreatingCounter_s variable, causing all new objects to store their parents.
@@ -187,22 +250,29 @@ namespace orxonox
                 COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
-            std::list<const Identifier*> parents_;                      //!< The parents of the class the Identifier belongs to
-            std::list<const Identifier*>* children_;                    //!< The children of the class the Identifier belongs to
+            std::set<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to
+            std::set<const Identifier*>* children_;                        //!< The children of the class the Identifier belongs to
 
-            std::list<const Identifier*> directParents_;                //!< The direct parents of the class the Identifier belongs to
-            std::list<const Identifier*>* directChildren_;              //!< The direct children of the class the Identifier belongs to
+            std::set<const Identifier*> directParents_;                    //!< The direct parents of the class the Identifier belongs to
+            std::set<const Identifier*>* directChildren_;                  //!< The direct children of the class the Identifier belongs to
 
-            std::string name_;                                          //!< The name of the class the Identifier belongs to
+            std::string name_;                                             //!< The name of the class the Identifier belongs to
 
-            BaseFactory* factory_;                                      //!< The Factory, able to create new objects of the given class (if available)
-            bool bCreatedOneObject_;                                    //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
-            static int hierarchyCreatingCounter_s;                      //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
-            unsigned int classID_;                                      //!< The network ID to identify a class through the network
-            std::map<std::string, ConfigValueContainer*> configValues_; //!< A map to link the string of configurable variables with their ConfigValueContainer
+            BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
+            bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
+            static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
+            unsigned int classID_;                                         //!< The network ID to identify a class through the network
+
+            bool bHasConfigValues_;                                        //!< True if this class has at least one assigned config value
+            std::map<std::string, ConfigValueContainer*> configValues_;    //!< A map to link the string of configurable variables with their ConfigValueContainer
+            std::map<std::string, ConfigValueContainer*> configValues_LC_; //!< A map to link the string of configurable variables with their ConfigValueContainer
+
+            bool bHasConsoleCommands_;                                     //!< True if this class has at least one assigned console command
+            std::map<std::string, ExecutorStatic*> consoleCommands_;       //!< All console commands of this class
+            std::map<std::string, ExecutorStatic*> consoleCommands_LC_;    //!< All console commands of this class with their names in lowercase
     };
 
-    _CoreExport std::ostream& operator<<(std::ostream& out, const std::list<const Identifier*>& list);
+    _CoreExport std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list);
 
 
     // ###############################
@@ -227,11 +297,15 @@ namespace orxonox
         friend class ClassManager;
 
         public:
-            ClassIdentifier<T>* registerClass(std::list<const Identifier*>* parents, const std::string& name, bool bRootClass);
+            ClassIdentifier<T>* registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass);
             void addObject(T* object);
-            void removeObjects() const;
             void setName(const std::string& name);
+            /** @brief Returns the list of all existing objects of this class. @return The list */
             inline const ObjectList<T>* getObjects() const { return this->objects_; }
+            /** @brief Returns a list of all existing objects of this class. @return The list */
+            inline const ObjectList<BaseObject>* getObjectList() const { return (ObjectList<BaseObject>*)this->objects_; }
+
+            void updateConfigValues() const;
 
             XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
             void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
@@ -244,10 +318,10 @@ namespace orxonox
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ~ClassIdentifier() {}                                       // don't delete
 
-            ObjectList<T>* objects_;    //!< The ObjectList, containing all objects of type T
-            bool bSetName_;             //!< True if the name is set
-            std::map<std::string, XMLPortClassParamContainer<T>*> xmlportParamContainers_;
-            std::map<std::string, XMLPortClassObjectContainer<T, class O>*> xmlportObjectContainers_;
+            ObjectList<T>* objects_;                                                                    //!< The ObjectList, containing all objects of type T
+            bool bSetName_;                                                                             //!< True if the name is set
+            std::map<std::string, XMLPortClassParamContainer<T>*> xmlportParamContainers_;              //!< All loadable parameters
+            std::map<std::string, XMLPortClassObjectContainer<T, class O>*> xmlportObjectContainers_;   //!< All attachable objects
     };
 
     /**
@@ -269,16 +343,14 @@ namespace orxonox
         @return The ClassIdentifier itself
     */
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(std::list<const Identifier*>* parents, const std::string& name, bool bRootClass)
+    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass)
     {
-        COUT(5) << "*** ClassIdentifier: Register Class in " << name << "-Singleton." << std::endl;
+        this->setName(name);
 
         // Check if at least one object of the given type was created
-        if (!this->bCreatedOneObject_)
+        if (!this->bCreatedOneObject_ && Identifier::isCreatingHierarchy())
         {
             // If no: We have to store the informations and initialize the Identifier
-            this->setName(name);
-
             COUT(4) << "*** ClassIdentifier: Register Class in " << name << "-Singleton -> Initialize Singleton." << std::endl;
             if (bRootClass)
                 this->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
@@ -300,6 +372,8 @@ namespace orxonox
         {
             this->name_ = name;
             this->bSetName_ = true;
+            Identifier::getIdentifierMapIntern()[name] = this;
+            Identifier::getLowercaseIdentifierMapIntern()[getLowercase(name)] = this;
         }
     }
 
@@ -315,15 +389,20 @@ namespace orxonox
     }
 
     /**
-        @brief Removes all objects of the corresponding class.
+        @brief Updates the config-values of all existing objects of this class by calling their setConfigValues() function.
     */
     template <class T>
-    void ClassIdentifier<T>::removeObjects() const
+    void ClassIdentifier<T>::updateConfigValues() const
     {
-        for (Iterator<T> it = this->objects_->start(); it;)
-            delete *(it++);
+        for (Iterator<T> it = this->objects_->start(); it; ++it)
+            ((T*)*it)->setConfigValues();
     }
 
+    /**
+        @brief Returns a XMLPortParamContainer that loads a parameter of this class.
+        @param paramname The name of the parameter
+        @return The container
+    */
     template <class T>
     XMLPortParamContainer* ClassIdentifier<T>::getXMLPortParamContainer(const std::string& paramname)
     {
@@ -334,12 +413,22 @@ namespace orxonox
             return 0;
     }
 
+    /**
+        @brief Adds a new XMLPortParamContainer that loads a parameter of this class.
+        @param paramname The name of the parameter
+        @param container The container
+    */
     template <class T>
     void ClassIdentifier<T>::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
     {
         this->xmlportParamContainers_[paramname] = (XMLPortClassParamContainer<T>*)container;
     }
 
+    /**
+        @brief Returns a XMLPortObjectContainer that attaches an object to this class.
+        @param sectionname The name of the section that contains the attachable objects
+        @return The container
+    */
     template <class T>
     XMLPortObjectContainer* ClassIdentifier<T>::getXMLPortObjectContainer(const std::string& sectionname)
     {
@@ -350,6 +439,11 @@ namespace orxonox
             return 0;
     }
 
+    /**
+        @brief Adds a new XMLPortObjectContainer that attaches an object to this class.
+        @param sectionname The name of the section that contains the attachable objects
+        @param container The container
+    */
     template <class T>
     void ClassIdentifier<T>::addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container)
     {

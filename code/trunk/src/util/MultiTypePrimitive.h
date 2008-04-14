@@ -35,10 +35,15 @@
 
 #include "MultiType.h"
 
+namespace orxonox
+{
+    class BaseObject;
+}
 class _UtilExport MultiTypePrimitive
 {
     public:
-        MultiTypePrimitive(MultiType      type = MT_null);
+        MultiTypePrimitive(MultiType type = MT_null);
+        inline MultiTypePrimitive(void*          value) { this->setValue(value); }
         inline MultiTypePrimitive(int            value) { this->setValue(value); }
         inline MultiTypePrimitive(unsigned int   value) { this->setValue(value); }
         inline MultiTypePrimitive(char           value) { this->setValue(value); }
@@ -55,6 +60,7 @@ class _UtilExport MultiTypePrimitive
         virtual inline ~MultiTypePrimitive() {}
 
         inline MultiTypePrimitive& operator=(MultiType      value) { this->type_ = MT_null; return *this; }
+        inline MultiTypePrimitive& operator=(void*          value) { this->setValue(value); return *this; }
         inline MultiTypePrimitive& operator=(int            value) { this->setValue(value); return *this; }
         inline MultiTypePrimitive& operator=(unsigned int   value) { this->setValue(value); return *this; }
         inline MultiTypePrimitive& operator=(char           value) { this->setValue(value); return *this; }
@@ -69,6 +75,7 @@ class _UtilExport MultiTypePrimitive
         inline MultiTypePrimitive& operator=(bool           value) { this->setValue(value); return *this; }
         inline MultiTypePrimitive& operator=(const MultiTypePrimitive& mtp) { this->setValue(mtp); return *this; }
 
+        inline bool operator==(void*          value) const { return (this->value_.void_       == value); }
         inline bool operator==(int            value) const { return (this->value_.int_        == value); }
         inline bool operator==(unsigned int   value) const { return (this->value_.uint_       == value); }
         inline bool operator==(char           value) const { return (this->value_.char_       == value); }
@@ -83,7 +90,7 @@ class _UtilExport MultiTypePrimitive
         inline bool operator==(bool           value) const { return (this->value_.bool_       == value); }
         bool operator==(const MultiTypePrimitive& mtp) const;
 
-        inline bool operator!=(int            value) const { return (this->value_.int_        != value); }
+        inline bool operator!=(void*          value) const { return (this->value_.void_       != value); }
         inline bool operator!=(unsigned int   value) const { return (this->value_.uint_       != value); }
         inline bool operator!=(char           value) const { return (this->value_.char_       != value); }
         inline bool operator!=(unsigned char  value) const { return (this->value_.uchar_      != value); }
@@ -97,6 +104,10 @@ class _UtilExport MultiTypePrimitive
         inline bool operator!=(bool           value) const { return (this->value_.bool_       != value); }
         bool operator!=(const MultiTypePrimitive& mtp) const;
 
+        template <class T>
+        operator T*()                     const
+        { return ((T*)this->value_.void_); }
+        virtual operator void*()          const;
         virtual operator int()            const;
         virtual operator unsigned int()   const;
         virtual operator char()           const;
@@ -110,6 +121,7 @@ class _UtilExport MultiTypePrimitive
         virtual operator long double()    const;
         virtual operator bool()           const;
 
+        inline void setValue(void*          value) { this->type_ = MT_void;       this->value_.void_       = value; }
         inline void setValue(int            value) { this->type_ = MT_int;        this->value_.int_        = value; }
         inline void setValue(unsigned int   value) { this->type_ = MT_uint;       this->value_.uint_       = value; }
         inline void setValue(char           value) { this->type_ = MT_char;       this->value_.char_       = value; }
@@ -124,6 +136,7 @@ class _UtilExport MultiTypePrimitive
         inline void setValue(bool           value) { this->type_ = MT_bool;       this->value_.bool_       = value; }
         void setValue(const MultiTypePrimitive& mtp);
 
+        inline void*          getVoid()          const { return this->value_.void_;        }
         inline int            getInt()           const { return this->value_.int_;        }
         inline unsigned int   getUnsignedInt()   const { return this->value_.uint_;       }
         inline char           getChar()          const { return this->value_.char_;       }
@@ -150,6 +163,7 @@ class _UtilExport MultiTypePrimitive
         inline long double&    getLongDouble()    { return this->value_.longdouble_; }
         inline bool&           getBool()          { return this->value_.bool_;       }
 
+        inline void getValue(void*           variable) const { variable    = this->value_.void_;       }
         inline void getValue(int*            variable) const { (*variable) = this->value_.int_;        }
         inline void getValue(unsigned int*   variable) const { (*variable) = this->value_.uint_;       }
         inline void getValue(char*           variable) const { (*variable) = this->value_.char_;       }
@@ -165,6 +179,8 @@ class _UtilExport MultiTypePrimitive
 
         inline MultiType getType()           const { return this->type_; }
         inline bool      isA(MultiType type) const { return (this->type_ == type); }
+
+        virtual std::string getTypename() const;
 
         virtual std::string toString() const;
         virtual bool fromString(const std::string value);

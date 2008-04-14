@@ -34,6 +34,8 @@
 
 #include "Identifier.h"
 #include "Factory.h"
+#include "Executor.h"
+#include "CommandExecutor.h"
 
 namespace orxonox
 {
@@ -50,8 +52,11 @@ namespace orxonox
         this->bCreatedOneObject_ = false;
         this->factory_ = 0;
 
-        this->children_ = new std::list<const Identifier*>();
-        this->directChildren_ = new std::list<const Identifier*>();
+        this->bHasConfigValues_ = false;
+        this->bHasConsoleCommands_ = false;
+
+        this->children_ = new std::set<const Identifier*>();
+        this->directChildren_ = new std::set<const Identifier*>();
 
         // Use a static variable because the classID gets created before main() and that's why we should avoid static member variables
         static unsigned int classIDcounter_s = 0;
@@ -71,7 +76,7 @@ namespace orxonox
         @brief Initializes the Identifier with a list containing all parents of the class the Identifier belongs to.
         @param parents A list containing all parents
     */
-    void Identifier::initialize(std::list<const Identifier*>* parents)
+    void Identifier::initialize(std::set<const Identifier*>* parents)
     {
         COUT(4) << "*** Identifier: Initialize " << this->name_ << "-Singleton." << std::endl;
         this->bCreatedOneObject_ = true;
@@ -82,16 +87,16 @@ namespace orxonox
             this->directParents_ = (*parents);
 
             // Iterate through all parents
-            for (std::list<const Identifier*>::iterator it = parents->begin(); it != parents->end(); ++it)
+            for (std::set<const Identifier*>::iterator it = parents->begin(); it != parents->end(); ++it)
             {
                 // Tell the parent we're one of it's children
                 (*it)->getChildrenIntern().insert((*it)->getChildrenIntern().end(), this);
 
                 // Erase all parents of our parent from our direct-parent-list
-                for (std::list<const Identifier*>::const_iterator it1 = (*it)->getParents().begin(); it1 != (*it)->getParents().end(); ++it1)
+                for (std::set<const Identifier*>::const_iterator it1 = (*it)->getParents().begin(); it1 != (*it)->getParents().end(); ++it1)
                 {
                     // Search for the parent's parent in our direct-parent-list
-                    for (std::list<const Identifier*>::iterator it2 = this->directParents_.begin(); it2 != this->directParents_.end(); ++it2)
+                    for (std::set<const Identifier*>::iterator it2 = this->directParents_.begin(); it2 != this->directParents_.end(); ++it2)
                     {
                         if ((*it1) == (*it2))
                         {
@@ -104,7 +109,7 @@ namespace orxonox
             }
 
             // Now iterate through all direct parents
-            for (std::list<const Identifier*>::iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
+            for (std::set<const Identifier*>::iterator it = this->directParents_.begin(); it != this->directParents_.end(); ++it)
             {
                 // Tell the parent we're one of it's direct children
                 (*it)->getDirectChildrenIntern().insert((*it)->getDirectChildrenIntern().end(), this);
@@ -148,7 +153,7 @@ namespace orxonox
     */
     bool Identifier::isA(const Identifier* identifier) const
     {
-        return (identifier == this || this->identifierIsInList(identifier, this->parents_));
+        return (identifier == this || (this->parents_.find(identifier) != this->children_->end()));
     }
 
     /**
@@ -166,7 +171,7 @@ namespace orxonox
     */
     bool Identifier::isChildOf(const Identifier* identifier) const
     {
-        return this->identifierIsInList(identifier, this->parents_);
+        return (this->parents_.find(identifier) != this->children_->end());
     }
 
     /**
@@ -175,7 +180,7 @@ namespace orxonox
     */
     bool Identifier::isDirectChildOf(const Identifier* identifier) const
     {
-        return this->identifierIsInList(identifier, this->directParents_);
+        return (this->directParents_.find(identifier) != this->children_->end());
     }
 
     /**
@@ -184,7 +189,7 @@ namespace orxonox
     */
     bool Identifier::isParentOf(const Identifier* identifier) const
     {
-        return this->identifierIsInList(identifier, *this->children_);
+        return (this->children_->find(identifier) != this->children_->end());
     }
 
     /**
@@ -193,7 +198,39 @@ namespace orxonox
     */
     bool Identifier::isDirectParentOf(const Identifier* identifier) const
     {
-        return this->identifierIsInList(identifier, *this->directChildren_);
+        return (this->directChildren_->find(identifier) != this->children_->end());
+    }
+
+    /**
+        @brief Returns the map that stores all Identifiers.
+        @return The map
+    */
+    std::map<std::string, Identifier*>& Identifier::getIdentifierMapIntern()
+    {
+        static std::map<std::string, Identifier*> identifierMap;
+        return identifierMap;
+    }
+
+    /**
+        @brief Returns the map that stores all Identifiers.
+        @return The map
+    */
+    std::map<std::string, Identifier*>& Identifier::getLowercaseIdentifierMapIntern()
+    {
+        static std::map<std::string, Identifier*> lowercaseIdentifierMap;
+        return lowercaseIdentifierMap;
+    }
+
+    /**
+        @brief Adds the ConfigValueContainer of a variable, given by the string of its name.
+        @param varname The name of the variablee
+        @param container The container
+    */
+    void Identifier::addConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
+    {
+        this->bHasConfigValues_ = true;
+        this->configValues_[varname] = container;
+        this->configValues_LC_[getLowercase(varname)] = container;
     }
 
     /**
@@ -211,33 +248,74 @@ namespace orxonox
     }
 
     /**
-        @brief Adds the ConfigValueContainer of a variable, given by the string of its name.
-        @param varname The name of the variablee
-        @param container The container
+        @brief Returns the ConfigValueContainer of a variable, given by the string of its name in lowercase.
+        @param varname The name of the variable in lowercase
+        @return The ConfigValueContainer
     */
-    void Identifier::addConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
+    ConfigValueContainer* Identifier::getLowercaseConfigValueContainer(const std::string& varname)
     {
-        this->configValues_[varname] = container;
+        std::map<std::string, ConfigValueContainer*>::const_iterator it = configValues_LC_.find(varname);
+        if (it != configValues_LC_.end())
+            return ((*it).second);
+        else
+            return 0;
     }
 
     /**
-        @brief Searches for a given identifier in a list and returns whether the identifier is in the list or not.
-        @param identifier The identifier to look for
-        @param list The list
-        @return True = the identifier is in the list
+        @brief Adds a new console command of this class.
+        @param executor The executor of the command
+        @param bCreateShortcut If this is true a shortcut gets created so you don't have to add the classname to access this command
+        @return The executor of the command
     */
-    bool Identifier::identifierIsInList(const Identifier* identifier, const std::list<const Identifier*>& list)
+    ExecutorStatic& Identifier::addConsoleCommand(ExecutorStatic* executor, bool bCreateShortcut)
     {
-        for (std::list<const Identifier*>::const_iterator it = list.begin(); it != list.end(); ++it)
-            if (identifier == (*it))
-                return true;
+        this->bHasConsoleCommands_ = true;
+        this->consoleCommands_[executor->getName()] = executor;
+        this->consoleCommands_LC_[getLowercase(executor->getName())] = executor;
 
-        return false;
+        if (bCreateShortcut)
+            CommandExecutor::addConsoleCommandShortcut(executor);
+
+        return (*executor);
     }
 
-    std::ostream& operator<<(std::ostream& out, const std::list<const Identifier*>& list)
+    /**
+        @brief Returns the executor of a console command with given name.
+        @brief name The name of the requested console command
+        @return The executor of the requested console command
+    */
+    ExecutorStatic* Identifier::getConsoleCommand(const std::string& name) const
     {
-        for (std::list<const Identifier*>::const_iterator it = list.begin(); it != list.end(); ++it)
+        std::map<std::string, ExecutorStatic*>::const_iterator it = this->consoleCommands_.find(name);
+        if (it != this->consoleCommands_.end())
+            return (*it).second;
+        else
+            return 0;
+    }
+
+    /**
+        @brief Returns the executor of a console command with given name in lowercase.
+        @brief name The name of the requested console command in lowercae
+        @return The executor of the requested console command
+    */
+    ExecutorStatic* Identifier::getLowercaseConsoleCommand(const std::string& name) const
+    {
+        std::map<std::string, ExecutorStatic*>::const_iterator it = this->consoleCommands_LC_.find(name);
+        if (it != this->consoleCommands_LC_.end())
+            return (*it).second;
+        else
+            return 0;
+    }
+
+    /**
+        @brief Lists the names of all Identifiers in a std::set<const Identifier*>.
+        @param out The outstream
+        @param list The list (or set) of Identifiers
+        @return The outstream
+    */
+    std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list)
+    {
+        for (std::set<const Identifier*>::const_iterator it = list.begin(); it != list.end(); ++it)
             out << (*it)->getName() << " ";
 
         return out;

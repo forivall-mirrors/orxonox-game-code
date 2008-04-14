@@ -40,6 +40,11 @@ namespace orxonox {
       static Orxonox* getSingleton();
       static void destroySingleton();
 
+      static inline void slomo(float factor) { Orxonox::getSingleton()->timefactor_ = factor; }
+      static inline void setTimeFactor(float factor = 1.0) { Orxonox::getSingleton()->timefactor_ = factor; }
+      static inline float getTimeFactor() { return Orxonox::getSingleton()->timefactor_; }
+      static inline void exit() { Orxonox::getSingleton()->abortRequest(); }
+
    private:
       // don't mess with singletons
       Orxonox();
@@ -74,6 +79,7 @@ namespace orxonox {
       float                 frameSmoothingTime_;
       HUD*                  orxonoxHUD_;
       bool                  bAbort_;        //!< aborts the render loop if true
+      float                 timefactor_;    //!< A factor to change the gamespeed
 
       // this is used to identify the mode (server/client/...) we're in
       gameMode              mode_;

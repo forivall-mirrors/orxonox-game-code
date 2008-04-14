@@ -48,7 +48,7 @@ namespace orxonox
             void init();
             void setConfigValues();
             virtual void loadParams(TiXmlElement* xmlElem);
-            virtual void XMLPort(Element& xmlelement, bool loading);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
             void setCamera(const std::string& camera = "");
@@ -60,12 +60,17 @@ namespace orxonox
             void setTransDamp(float value);
             void setRotDamp(float value);
 
+            static void setMaxSpeedTest(float value)
+                { SpaceShip::instance_s->setMaxSpeed(value); }
+
             bool mouseMoved(const OIS::MouseEvent &e);
             bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
             bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
 
         private:
+            static SpaceShip* instance_s;
+
             Vector3 testvector_;
             bool bInvertYAxis_;
             bool setMouseEventCallback_;

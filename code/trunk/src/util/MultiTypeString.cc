@@ -31,10 +31,7 @@
 
 MultiTypeString::MultiTypeString(MultiType type) : MultiTypePrimitive(type)
 {
-    if (type == MT_constchar)
-        this->string_ = std::string("");
-    else if (type == MT_string)
-        this->string_ = std::string("");
+    // Nothing to do for string and xml-element
 }
 
 bool MultiTypeString::operator==(const MultiTypeString& mts) const
@@ -63,34 +60,36 @@ bool MultiTypeString::operator!=(const MultiTypeString& mts) const
     return true;
 }
 
+MultiTypeString::operator void*() const
+{ return (this->type_ == MT_void) ? this->value_.void_ : getConvertedValue<MultiTypeString, void*>(*this, 0); }
 MultiTypeString::operator int() const
-{ return (this->type_ == MT_int) ? this->value_.int_ : ConvertValueAndReturn<MultiTypeString, int>(*this); }
+{ return (this->type_ == MT_int) ? this->value_.int_ : getConvertedValue<MultiTypeString, int>(*this, 0); }
 MultiTypeString::operator unsigned int() const
-{ return (this->type_ == MT_uint) ? this->value_.uint_ : ConvertValueAndReturn<MultiTypeString, unsigned int>(*this); }
+{ return (this->type_ == MT_uint) ? this->value_.uint_ : getConvertedValue<MultiTypeString, unsigned int>(*this, 0); }
 MultiTypeString::operator char() const
-{ return (this->type_ == MT_char) ? this->value_.char_ : ConvertValueAndReturn<MultiTypeString, char>(*this); }
+{ return (this->type_ == MT_char) ? this->value_.char_ : getConvertedValue<MultiTypeString, char>(*this, 0); }
 MultiTypeString::operator unsigned char() const
-{ return (this->type_ == MT_uchar) ? this->value_.uchar_ : ConvertValueAndReturn<MultiTypeString, unsigned char>(*this); }
+{ return (this->type_ == MT_uchar) ? this->value_.uchar_ : getConvertedValue<MultiTypeString, unsigned char>(*this, 0); }
 MultiTypeString::operator short() const
-{ return (this->type_ == MT_short) ? this->value_.short_ : ConvertValueAndReturn<MultiTypeString, short>(*this); }
+{ return (this->type_ == MT_short) ? this->value_.short_ : getConvertedValue<MultiTypeString, short>(*this, 0); }
 MultiTypeString::operator unsigned short() const
-{ return (this->type_ == MT_ushort) ? this->value_.ushort_ : ConvertValueAndReturn<MultiTypeString, unsigned short>(*this); }
+{ return (this->type_ == MT_ushort) ? this->value_.ushort_ : getConvertedValue<MultiTypeString, unsigned short>(*this, 0); }
 MultiTypeString::operator long() const
-{ return (this->type_ == MT_long) ? this->value_.long_ : ConvertValueAndReturn<MultiTypeString, long>(*this); }
+{ return (this->type_ == MT_long) ? this->value_.long_ : getConvertedValue<MultiTypeString, long>(*this, 0); }
 MultiTypeString::operator unsigned long() const
-{ return (this->type_ == MT_ulong) ? this->value_.ulong_ : ConvertValueAndReturn<MultiTypeString, unsigned long>(*this); }
+{ return (this->type_ == MT_ulong) ? this->value_.ulong_ : getConvertedValue<MultiTypeString, unsigned long>(*this, 0); }
 MultiTypeString::operator float() const
-{ return (this->type_ == MT_float) ? this->value_.float_ : ConvertValueAndReturn<MultiTypeString, float>(*this); }
+{ return (this->type_ == MT_float) ? this->value_.float_ : getConvertedValue<MultiTypeString, float>(*this, 0); }
 MultiTypeString::operator double() const
-{ return (this->type_ == MT_double) ? this->value_.double_ : ConvertValueAndReturn<MultiTypeString, double>(*this); }
+{ return (this->type_ == MT_double) ? this->value_.double_ : getConvertedValue<MultiTypeString, double>(*this, 0); }
 MultiTypeString::operator long double() const
-{ return (this->type_ == MT_longdouble) ? this->value_.longdouble_ : ConvertValueAndReturn<MultiTypeString, long double>(*this); }
+{ return (this->type_ == MT_longdouble) ? this->value_.longdouble_ : getConvertedValue<MultiTypeString, long double>(*this, 0); }
 MultiTypeString::operator bool() const
-{ return (this->type_ == MT_bool) ? this->value_.bool_ : ConvertValueAndReturn<MultiTypeString, bool>(*this); }
+{ return (this->type_ == MT_bool) ? this->value_.bool_ : getConvertedValue<MultiTypeString, bool>(*this, 0); }
 MultiTypeString::operator std::string() const
-{ return (this->type_ == MT_string) ? this->string_ : ConvertValueAndReturn<MultiTypeString, std::string>(*this); }
+{ return (this->type_ == MT_string) ? this->string_ : getConvertedValue<MultiTypeString, std::string>(*this); }
 MultiTypeString::operator const char*() const
-{ return ((this->type_ == MT_constchar) ? this->string_ : ConvertValueAndReturn<MultiTypeString, std::string>(*this)).c_str(); }
+{ return ((this->type_ == MT_constchar) ? this->string_ : getConvertedValue<MultiTypeString, std::string>(*this)).c_str(); }
 
 void MultiTypeString::setValue(const MultiTypeString& mts)
 {
@@ -98,14 +97,28 @@ void MultiTypeString::setValue(const MultiTypeString& mts)
     this->string_ = mts.string_;
 }
 
+std::string MultiTypeString::getTypename() const
+{
+    if (this->type_ == MT_constchar)
+        return "string";
+    else if (this->type_ == MT_string)
+        return "string";
+    else
+        return MultiTypePrimitive::getTypename();
+}
+
 std::string MultiTypeString::toString() const
 {
+    std::string output;
+
     if (this->type_ == MT_constchar)
         return this->string_;
     else if (this->type_ == MT_string)
         return this->string_;
     else
         return MultiTypePrimitive::toString();
+
+    return output;
 }
 
 bool MultiTypeString::fromString(const std::string value)
