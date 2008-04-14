@@ -119,7 +119,8 @@ std::string MultiTypeString::toString() const
     else
         return MultiTypePrimitive::toString();
 
-    return output;
+    // FIXME: unreachable code
+    // return output;
 }
 
 bool MultiTypeString::fromString(const std::string value)

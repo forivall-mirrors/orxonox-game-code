@@ -37,8 +37,8 @@
 #include <OgreViewport.h>
 
 #include "util/tinyxml/tinyxml.h"
-#include "util/Tokenizer.h"
-#include "util/String2Number.h"
+#include "util/Substring.h"
+#include "util/Convert.h"
 #include "util/Math.h"
 #include "core/Debug.h"
 #include "core/CoreIncludes.h"
@@ -72,17 +72,17 @@ namespace orxonox
         Ogre::Camera *cam = mgr->createCamera(name);
 
         float x, y, z;
-        std::vector<std::string> posVec = tokenize(xmlElem->Attribute("pos"),",");
-        String2Number<float>(x, posVec[0]);
-        String2Number<float>(y, posVec[1]);
-        String2Number<float>(z, posVec[2]);
+        SubString posVec(xmlElem->Attribute("pos"), ',');
+        convertValue<std::string, float>(&x, posVec[0]);
+        convertValue<std::string, float>(&y, posVec[1]);
+        convertValue<std::string, float>(&z, posVec[2]);
 
         cam->setPosition(Vector3(x,y,z));
 
-        posVec = tokenize(xmlElem->Attribute("lookat"),",");
-        String2Number<float>(x, posVec[0]);
-        String2Number<float>(y, posVec[1]);
-        String2Number<float>(z, posVec[2]);
+        posVec = SubString(xmlElem->Attribute("lookat"), ',');
+        convertValue<std::string, float>(&x, posVec[0]);
+        convertValue<std::string, float>(&y, posVec[1]);
+        convertValue<std::string, float>(&z, posVec[2]);
 
         cam->lookAt(Vector3(x,y,z));
 
@@ -92,7 +92,8 @@ namespace orxonox
         sceneNode->attachObject((Ogre::MovableObject*)cam);
 
         // FIXME: unused var
-        Ogre::Viewport* vp = GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam);
+        //Ogre::Viewport* vp = 
+        GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam);
 
 
         COUT(4) << "Loader: Created camera "<< name  << std::endl << std::endl;

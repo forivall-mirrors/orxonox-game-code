@@ -35,8 +35,8 @@
 #include <OgreSceneManager.h>
 
 #include "util/tinyxml/tinyxml.h"
-#include "util/Tokenizer.h"
-#include "util/String2Number.h"
+#include "util/SubString.h"
+#include "util/Convert.h"
 #include "util/Math.h"
 #include "core/Debug.h"
 #include "core/CoreIncludes.h"
@@ -66,12 +66,12 @@ namespace orxonox
     {
     	if (xmlElem->Attribute("colourvalue"))
     	{
+        SubString colourvalues(xmlElem->Attribute("colourvalue"), ',');
 
-	    	std::vector<std::string> colourvalues = tokenize(xmlElem->Attribute("colourvalue"),",");
 	    	float r, g, b;
-    	 	String2Number<float>(r, colourvalues[0]);
-	    	String2Number<float>(g, colourvalues[1]);
-	    	String2Number<float>(b, colourvalues[2]);
+        convertValue<std::string, float>(&r, colourvalues[0]);
+        convertValue<std::string, float>(&g, colourvalues[1]);
+        convertValue<std::string, float>(&b, colourvalues[2]);
 
 	    	this->setAmbientLight(ColourValue(r, g, b));
 

@@ -285,7 +285,7 @@ namespace orxonox
 
         private:
             ConfigFileManager();
-            ConfigFileManager(const ConfigFileManager& other) {}
+            ConfigFileManager(const ConfigFileManager& other);
             ~ConfigFileManager();
 
             ConfigFile* getFile(ConfigFileType type);

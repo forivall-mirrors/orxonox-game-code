@@ -160,7 +160,7 @@ namespace orxonox
 
         private:
             CommandExecutor() {}
-            CommandExecutor(const CommandExecutor& other) {}
+            CommandExecutor(const CommandExecutor& other);
             ~CommandExecutor() {}
 
             static CommandExecutor& getInstance();

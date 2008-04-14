@@ -67,4 +67,11 @@ namespace audio
   class AudioStream;
 }
 
+//-----------------------------------------------------------------------
+// Warnings
+//-----------------------------------------------------------------------
+// set to 4: conversion from 'ogg_int64_t' to 'long', possible loss of data
+# pragma warning (4 : 4244)
+
+
 #endif /* _AudioPrereqs_H__ */

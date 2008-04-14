@@ -307,7 +307,7 @@ void lowercase(std::string* str)
 {
     for (unsigned int i = 0; i < str->size(); ++i)
     {
-        (*str)[i] = tolower((*str)[i]);
+        (*str)[i] = (char)tolower((*str)[i]);
     }
 }
 
@@ -331,7 +331,7 @@ void uppercase(std::string* str)
 {
     for (unsigned int i = 0; i < str->size(); ++i)
     {
-        (*str)[i] = toupper((*str)[i]);
+        (*str)[i] = (char)toupper((*str)[i]);
     }
 }
 

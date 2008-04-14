@@ -35,6 +35,12 @@
 #include "MultiTypeString.h"
 #include "Math.h"
 
+// disable annoying warning about multiple assignment operators
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#pragma warning(push)
+#pragma warning(disable:4522)
+#endif
+
 class _UtilExport MultiTypeMath : public MultiTypeString
 {
     public:
@@ -158,5 +164,9 @@ class _UtilExport MultiTypeMath : public MultiTypeString
 };
 
 _UtilExport std::ostream& operator<<(std::ostream& out, MultiTypeMath& mtm);
+
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#pragma warning(pop)
+#endif
 
 #endif /* _MultiTypeMath_H__ */

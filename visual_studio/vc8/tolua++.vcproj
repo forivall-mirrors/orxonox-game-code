@@ -70,7 +70,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\tixml_properties.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\tolua++_properties.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>

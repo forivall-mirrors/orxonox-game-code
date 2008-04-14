@@ -37,6 +37,12 @@
 
 #include "MultiTypePrimitive.h"
 
+// disable annoying warning about multiple assignment operators
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#pragma warning(push)
+#pragma warning(disable:4522)
+#endif
+
 class _UtilExport MultiTypeString : public MultiTypePrimitive
 {
     public:
@@ -115,5 +121,9 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
 };
 
 _UtilExport std::ostream& operator<<(std::ostream& out, MultiTypeString& mts);
+
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#pragma warning(pop)
+#endif
 
 #endif /* _MultiTypeString_H__ */

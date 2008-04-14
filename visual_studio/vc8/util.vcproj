@@ -226,15 +226,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\String2Number.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\util\SubString.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\Tokenizer.h"
 				>
 			</File>
 			<File

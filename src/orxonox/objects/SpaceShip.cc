@@ -38,7 +38,7 @@
 #include <OgreSceneNode.h>
 
 #include "util/tinyxml/tinyxml.h"
-#include "util/String2Number.h"
+#include "util/Convert.h"
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
@@ -258,13 +258,13 @@ namespace orxonox
             std::string tdStr = xmlElem->Attribute("transDamp");
             std::string rdStr = xmlElem->Attribute("rotDamp");
 
-            String2Number<float>(this->maxSpeed_, msStr);
-            String2Number<float>(this->maxSideAndBackSpeed_, msabsStr);
-            String2Number<float>(this->maxRotation_, mrStr);
-            String2Number<float>(this->translationAcceleration_, taStr);
-            String2Number<float>(this->rotationAcceleration_, raStr);
-            String2Number<float>(this->translationDamping_, tdStr);
-            String2Number<float>(this->rotationDamping_, rdStr);
+            convertValue<std::string, float>(&this->maxSpeed_, msStr);
+            convertValue<std::string, float>(&this->maxSideAndBackSpeed_, msabsStr);
+            convertValue<std::string, float>(&this->maxRotation_, mrStr);
+            convertValue<std::string, float>(&this->translationAcceleration_, taStr);
+            convertValue<std::string, float>(&this->rotationAcceleration_, raStr);
+            convertValue<std::string, float>(&this->translationDamping_, tdStr);
+            convertValue<std::string, float>(&this->rotationDamping_, rdStr);
 
             this->maxRotationRadian_ = Radian(this->maxRotation_);
             this->rotationAccelerationRadian_ = Radian(this->rotationAcceleration_);
@@ -457,7 +457,8 @@ namespace orxonox
         }
 
         OIS::Keyboard* mKeyboard = InputManager::getSingleton().getKeyboard();
-        OIS::Mouse* mMouse = InputManager::getSingleton().getMouse();
+        //FIXME: variable never used
+        //OIS::Mouse* mMouse = InputManager::getSingleton().getMouse();
 
 
         // #####################################

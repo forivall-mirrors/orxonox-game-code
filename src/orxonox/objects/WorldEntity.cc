@@ -33,8 +33,7 @@
 #include <sstream>
 
 #include "util/tinyxml/tinyxml.h"
-#include "util/Tokenizer.h"
-#include "util/String2Number.h"
+#include "util/SubString.h"
 #include "core/CoreIncludes.h"
 #include "GraphicsEngine.h"
 #include "core/XMLPort.h"
