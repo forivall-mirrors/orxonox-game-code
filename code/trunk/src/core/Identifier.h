@@ -302,9 +302,9 @@ namespace orxonox
             void addObject(T* object);
             void setName(const std::string& name);
             /** @brief Returns the list of all existing objects of this class. @return The list */
-            inline const ObjectList<T>* getObjects() const { return this->objects_; }
+            inline ObjectList<T>* getObjects() const { return this->objects_; }
             /** @brief Returns a list of all existing objects of this class. @return The list */
-            inline const ObjectList<BaseObject>* getObjectList() const { return (ObjectList<BaseObject>*)this->objects_; }
+            inline ObjectList<BaseObject>* getObjectList() const { return (ObjectList<BaseObject>*)this->objects_; }
 
             void updateConfigValues() const;
 
