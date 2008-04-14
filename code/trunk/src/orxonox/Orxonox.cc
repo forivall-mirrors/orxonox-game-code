@@ -54,6 +54,7 @@
 #include "util/ArgReader.h"
 
 // core
+#include "core/ConfigFileManager.h"
 #include "core/ConsoleCommand.h"
 #include "core/Debug.h"
 #include "core/Factory.h"
@@ -137,6 +138,7 @@ namespace orxonox
     // turn on frame smoothing by setting a value different from 0
     this->frameSmoothingTime_ = 0.0f;
     this->bAbort_ = false;
+    this->timefactor_ = 1.0f;
   }
 
   /**
@@ -287,6 +289,7 @@ namespace orxonox
 
   void Orxonox::clientStart(){
     ogre_->initialise();
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
 
 
@@ -314,6 +317,7 @@ namespace orxonox
     //TODO: start modules
     ogre_->initialise();
     //TODO: run engine
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
     createScene();
     setupInputSystem();
@@ -327,6 +331,7 @@ namespace orxonox
     //TODO: start modules
     ogre_->initialise();
     //TODO: run engine
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
     createScene();
     setupInputSystem();
