@@ -152,6 +152,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\util\Clipboard.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\util\Math.cc"
 				>
 			</File>
@@ -183,6 +187,10 @@
 			>
 			<File
 				RelativePath="..\..\src\util\ArgReader.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\Clipboard.h"
 				>
 			</File>
 			<File

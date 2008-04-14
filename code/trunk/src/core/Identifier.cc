@@ -154,7 +154,7 @@ namespace orxonox
     */
     bool Identifier::isA(const Identifier* identifier) const
     {
-        return (identifier == this || (this->parents_.find(identifier) != this->children_->end()));
+        return (identifier == this || (this->parents_.find(identifier) != this->parents_.end()));
     }
 
     /**

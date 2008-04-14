@@ -148,91 +148,111 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\orxonox\core\BaseObject.cc"
+				RelativePath="..\..\src\core\BaseObject.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\ClassTreeMask.cc"
+				RelativePath="..\..\src\core\ClassTreeMask.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\ConfigValueContainer.cc"
+				RelativePath="..\..\src\core\CommandExecutor.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\DebugLevel.cc"
+				RelativePath="..\..\src\core\ConfigFileManager.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Error.cc"
+				RelativePath="..\..\src\core\ConfigValueContainer.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Executor.cc"
+				RelativePath="..\..\src\core\CoreSettings.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Factory.cc"
+				RelativePath="..\..\src\core\Error.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Identifier.cc"
+				RelativePath="..\..\src\core\Executor.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\IdentifierDistributor.cc"
+				RelativePath="..\..\src\core\Factory.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\InputEventListener.cc"
+				RelativePath="..\..\src\core\Identifier.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\InputHandler.cc"
+				RelativePath="..\..\src\core\IdentifierDistributor.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\InputManager.cc"
+				RelativePath="..\..\src\core\InputBuffer.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Language.cc"
+				RelativePath="..\..\src\core\InputEventListener.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Loader.cc"
+				RelativePath="..\..\src\core\InputHandler.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\MetaObjectList.cc"
+				RelativePath="..\..\src\core\InputManager.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\OrxonoxClass.cc"
+				RelativePath="..\..\src\core\Language.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\OutputHandler.cc"
+				RelativePath="..\..\src\core\Loader.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Script.cc"
+				RelativePath="..\..\src\core\MetaObjectList.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\SignalHandler.cc"
+				RelativePath="..\..\src\core\Namespace.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Tickable.cc"
+				RelativePath="..\..\src\core\NamespaceNode.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\ToLuaBind.cc"
+				RelativePath="..\..\src\core\OrxonoxClass.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\XMLPort.cc"
+				RelativePath="..\..\src\core\OutputHandler.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\Script.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\SignalHandler.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\Tickable.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\ToLuaBind.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\XMLPort.cc"
 				>
 			</File>
 		</Filter>
@@ -242,131 +262,159 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\src\orxonox\core\BaseObject.h"
+				RelativePath="..\..\src\core\BaseObject.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\ClassFactory.h"
+				RelativePath="..\..\src\core\ClassFactory.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\ClassManager.h"
+				RelativePath="..\..\src\core\ClassManager.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\ClassTreeMask.h"
+				RelativePath="..\..\src\core\ClassTreeMask.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\ConfigValueContainer.h"
+				RelativePath="..\..\src\core\CommandExecutor.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\CoreIncludes.h"
+				RelativePath="..\..\src\core\ConfigFileManager.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\CorePrereqs.h"
+				RelativePath="..\..\src\core\ConfigValueContainer.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Debug.h"
+				RelativePath="..\..\src\core\ConfigValueIncludes.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\DebugLevel.h"
+				RelativePath="..\..\src\core\ConsoleCommand.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Error.h"
+				RelativePath="..\..\src\core\CoreIncludes.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Executor.h"
+				RelativePath="..\..\src\core\CorePrereqs.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Factory.h"
+				RelativePath="..\..\src\core\CoreSettings.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Functor.h"
+				RelativePath="..\..\src\core\Debug.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Identifier.h"
+				RelativePath="..\..\src\core\Error.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\IdentifierDistributor.h"
+				RelativePath="..\..\src\core\Executor.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\InputEvent.h"
+				RelativePath="..\..\src\core\Factory.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\InputEventListener.h"
+				RelativePath="..\..\src\core\Functor.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\InputHandler.h"
+				RelativePath="..\..\src\core\Identifier.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\InputManager.h"
+				RelativePath="..\..\src\core\IdentifierDistributor.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Iterator.h"
+				RelativePath="..\..\src\core\InputBuffer.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Language.h"
+				RelativePath="..\..\src\core\InputEvent.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Level.h"
+				RelativePath="..\..\src\core\InputEventListener.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Loader.h"
+				RelativePath="..\..\src\core\InputHandler.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\MetaObjectList.h"
+				RelativePath="..\..\src\core\InputManager.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\ObjectList.h"
+				RelativePath="..\..\src\core\Iterator.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\OrxonoxClass.h"
+				RelativePath="..\..\src\core\Language.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\OutputHandler.h"
+				RelativePath="..\..\src\core\Level.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Script.h"
+				RelativePath="..\..\src\core\Loader.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\SignalHandler.h"
+				RelativePath="..\..\src\core\MetaObjectList.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\Tickable.h"
+				RelativePath="..\..\src\core\Namespace.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\ToLuaBind.h"
+				RelativePath="..\..\src\core\NamespaceNode.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\core\XMLPort.h"
+				RelativePath="..\..\src\core\ObjectList.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\OrxonoxClass.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\OutputHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\Script.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\SignalHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\Tickable.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\ToLuaBind.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\XMLPort.h"
 				>
 			</File>
 		</Filter>
