@@ -37,12 +37,12 @@ namespace orxonox
 {
     InputBuffer::InputBuffer()
     {
-        this->bActivated_ = false;
+        //this->bActivated_ = false;
         this->allowedChars_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ‰ˆ¸ƒ÷‹0123456789 \\\"().:,;_-+*/=!?<>[|]";
         this->keyboard_ = InputManager::getSingleton().getKeyboard();
         this->buffer_ = "";
 
-        this->keyboard_->setEventCallback(this);
+        //this->keyboard_->setEventCallback(this);
     }
 /*
     void InputBuffer::registerListener(InputBufferListener* listener, void (InputBufferListener::*function)(), bool bOnlySingleInput)
@@ -113,9 +113,9 @@ namespace orxonox
         }
     }
 
-    void InputBuffer::activityChanged() const
+    /*void InputBuffer::activityChanged() const
     {
-    }
+    }*/
 
     bool InputBuffer::charIsAllowed(const char& input)
     {
@@ -127,12 +127,12 @@ namespace orxonox
 
     bool InputBuffer::keyPressed(const OIS::KeyEvent &e)
     {
-        if (e.key == OIS::KC_NUMPADENTER)
+        /*if (e.key == OIS::KC_NUMPADENTER)
         {
             this->setActivated(!this->isActivated());
             this->clear();
             return true;
-        }
+        }*/
 
         if (this->keyboard_->isModifierDown(OIS::Keyboard::Ctrl))
         {
@@ -168,16 +168,13 @@ namespace orxonox
             }
         }
 
-        if (this->bActivated_)
-        {
-//std::cout << this->keyboard_->getAsString(e.key) << " / " << (char)e.text << std::endl;
-/*
-            std::string input = this->keyboard_->getAsString(e.key);
-            if (input.size() >= 1)
-                this->append(input[0]);
-*/
-            this->append((char)e.text);
-        }
+        //std::cout << this->keyboard_->getAsString(e.key) << " / " << (char)e.text << std::endl;
+
+        std::string input = this->keyboard_->getAsString(e.key);
+        /*if (input.size() >= 1)
+            this->append(input[0]);*/
+
+        this->append((char)e.text);
         return true;
     }
 

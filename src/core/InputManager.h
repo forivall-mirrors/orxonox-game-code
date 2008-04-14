@@ -74,6 +74,9 @@ namespace orxonox
     void setInputMode(InputMode mode);
     InputMode getInputMode();
 
+    // temporary hack
+    void feedInputBuffer(InputBuffer* buffer);
+
     // Temporary solutions. Will be removed soon!
     OIS::Mouse    *getMouse()    { return this->mouse_   ; }
     OIS::Keyboard *getKeyboard() { return this->keyboard_; }
@@ -95,7 +98,7 @@ namespace orxonox
     InputMode          setMode_;        //!< Input mode that has been set lately
     InputHandlerGUI   *handlerGUI_;     //!< Handles the input if in GUI mode
     // FIXME: insert the InputBuffer once merged with core2
-    InputHandlerGUI   *handlerBuffer_;  //!< Handles the input if in Buffer mode
+    InputBuffer       *handlerBuffer_;  //!< Handles the input if in Buffer mode
     InputHandlerGame  *handlerGame_;    //!< Handles the input if in Game mode
 
     //! Pointer to the instance of the singleton

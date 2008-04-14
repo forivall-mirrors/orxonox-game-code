@@ -43,8 +43,7 @@
 namespace orxonox
 {
     class _CoreExport InputBufferListener
-    {
-    };
+    {};
 
     class _CoreExport InputBuffer : public OIS::KeyListener
     {
@@ -98,7 +97,7 @@ namespace orxonox
             inline std::string get() const
                 { return this->buffer_; }
 
-            inline void activate()
+            /*inline void activate()
                 { this->setActivated(true); }
             inline void deactivate()
                 { this->setActivated(false); }
@@ -107,7 +106,7 @@ namespace orxonox
             inline bool isActivated() const
                 { return this->bActivated_; }
 
-            void activityChanged() const;
+            void activityChanged() const;*/
 
         private:
             bool charIsAllowed(const char& input);
@@ -116,7 +115,7 @@ namespace orxonox
             bool keyReleased(const OIS::KeyEvent &e);
 
             OIS::Keyboard* keyboard_;
-            bool bActivated_;
+            //bool bActivated_;
             std::string buffer_;
             std::list<InputBufferListenerTuple> listeners_;
             std::string allowedChars_;
