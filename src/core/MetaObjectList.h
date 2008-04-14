@@ -88,6 +88,9 @@ namespace orxonox
     template <class T>
     MetaObjectListElement<T>::~MetaObjectListElement()
     {
+        COUT(5) << "*** MetaObjectList: Removing Object from " << ClassManager<T>::getIdentifier()->getName() << "-list." << std::endl;
+        this->list_->notifyIterators(this->element_);
+
         if (this->element_->next_)
             this->element_->next_->prev_ = this->element_->prev_;
         else
@@ -98,14 +101,12 @@ namespace orxonox
         else
             this->list_->first_ = this->element_->next_; // If there is no prev_, we deleted the first object and have to update the first_ pointer of the list
 
-
-        COUT(5) << "*** MetaObjectList: Removing Object from " << ClassManager<T>::getIdentifier()->getName() << "-list." << std::endl;
         delete this->element_;
     }
 
 
     // ###############################
-    // ###       ObjectList        ###
+    // ###     MetaObjectList      ###
     // ###############################
     //!  The MetaObjectList contains ObjectListElements and their ObjectLists.
     /**

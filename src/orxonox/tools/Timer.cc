@@ -107,8 +107,15 @@ namespace orxonox
             {
                 // It's time to call the function
                 if (this->bLoop_)
-                    // Q: Why '+=' and not '='? A: Think about it. It's more accurate like that. Seriously.
-                    this->time_ += this->interval_;
+                {
+                    this->time_ += this->interval_; // Q: Why '+=' and not '='? A: Think about it. It's more accurate like that. Seriously.
+                    while (this->time_ <= 0)
+                    {
+                        // The interval was shorter than one tick, so execute the function more than once
+                        this->run();
+                        this->time_ += this->interval_;
+                    }
+                }
                 else
                     this->stopTimer(); // Stop the timer if we don't want to loop
 
@@ -116,5 +123,4 @@ namespace orxonox
             }
         }
     }
-
 }

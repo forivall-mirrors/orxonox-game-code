@@ -38,6 +38,8 @@
 #ifndef _ObjectList_H__
 #define _ObjectList_H__
 
+#include <set>
+
 #include "CorePrereqs.h"
 
 #include "Iterator.h"
@@ -89,7 +91,6 @@ namespace orxonox
             ~ObjectList();
 
             ObjectListElement<T>* add(T* object);
-//            void remove(OrxonoxClass* object, bool bIterateForwards = true);
 
             /** @brief Returns the first element in the list. @return The first element */
             inline static Iterator<T> start()
@@ -103,8 +104,17 @@ namespace orxonox
             inline static Iterator<T> end()
                 { return Iterator<T>(ClassManager<T>::getIdentifier()->getObjects()->last_); }
 
+            inline void registerIterator(Iterator<T>* iterator)
+                { this->iterators_.insert(this->iterators_.end(), (void*)iterator); }
+            inline void unregisterIterator(Iterator<T>* iterator)
+                { this->iterators_.erase((void*)iterator); }
+            void notifyIterators(ObjectListElement<T>* element);
+
             ObjectListElement<T>* first_;       //!< The first element in the list
             ObjectListElement<T>* last_;        //!< The last element in the list
+
+        private:
+            std::set<void*> iterators_;  //!< A list of iterators pointing on an element in this list
     };
 
     /**
@@ -133,6 +143,18 @@ namespace orxonox
     }
 
     /**
+        @brief Increases all Iterators that currently point on the given element (because it gets removed).
+        @param element The element that gets removed
+    */
+    template <class T>
+    void ObjectList<T>::notifyIterators(ObjectListElement<T>* element)
+    {
+        for (std::set<void*>::iterator it = this->iterators_.begin(); it != this->iterators_.end(); ++it)
+            if ((*(*((Iterator<T>*)(*it)))) == element->object_)
+                ++(*((Iterator<T>*)(*it)));
+    }
+
+    /**
         @brief Adds a new object to the end of the list.
         @param object The object to add
         @return The pointer to the new ObjectListElement, needed by the MetaObjectList of the added object
@@ -157,106 +179,6 @@ namespace orxonox
 
         return this->last_;
     }
-
-
-//    /**
-//        @brief Removes an object from the list.
-//        @param object The object to remove
-//        @param bIterateForwards If true: Start searching the object at the beginning of the list
-//    */
-    /*
-    template <class T>
-    void ObjectList<T>::remove(OrxonoxClass* object, bool bIterateForwards)
-    {
-        if (!object || !this->first_ || !this->last_)
-            return;
-
-        // If there's only one object in the list, we have to set first_ and last_ to zero
-        if (this->first_ == this->last_)
-        {
-            if (this->first_->object_ == object)
-            {
-                delete this->first_;
-                this->first_ = 0;
-                this->last_ = 0;
-            }
-
-            return;
-        }
-
-        // Now we are sure we have more than one element in the list
-        if (bIterateForwards)
-        {
-            // Start at the beginning of the list
-
-            // Check if it's the first object
-            if (this->first_->object_ == object)
-            {
-                ObjectListElement<T>* temp = this->first_->next_;
-                delete this->first_;
-                this->first_ = temp;
-                this->first_->prev_ = 0;
-
-                return;
-            }
-
-            // Iterate through the whole list
-            ObjectListElement<T>* temp = this->first_;
-            while (temp->next_)
-            {
-                if (temp->next_->object_ == object)
-                {
-                    ObjectListElement<T>* temp2 = temp->next_->next_;
-                    delete temp->next_;
-                    temp->next_ = temp2;
-                    if (temp2)
-                        temp2->prev_ = temp;
-                    else
-                        this->last_ = temp; // If there is no next_, we deleted the last element and have to update the last_ pointer.
-
-                    return;
-                }
-
-                temp = temp->next_;
-            }
-        }
-        else
-        {
-            // Start at the end of the list
-
-            // Check if it's the last object
-            if (this->last_->object_ == object)
-            {
-                ObjectListElement<T>* temp = this->last_->prev_;
-                delete this->last_;
-                this->last_ = temp;
-                this->last_->next_ = 0;
-
-                return;
-            }
-
-            // Iterate through the whole list
-            ObjectListElement<T>* temp = this->last_;
-            while (temp->prev_)
-            {
-                if (temp->prev_->object_ == object)
-                {
-                    ObjectListElement<T>* temp2 = temp->prev_->prev_;
-                    delete temp->prev_;
-                    temp->prev_ = temp2;
-                    if (temp2)
-                        temp2->next_ = temp;
-                    else
-                        this->first_ = temp; // If there is no prev_, we deleted the first element and have to update the first_ pointer.
-
-                    return;
-                }
-
-                temp = temp->prev_;
-            }
-        }
-    }
-    */
 }
 
 #endif /* _ObjectList_H__ */

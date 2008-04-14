@@ -64,6 +64,7 @@ namespace orxonox
             Iterator()
             {
                 this->element_ = 0;
+                ClassManager<T>::getIdentifier()->getObjects()->registerIterator(this);
             }
 
             /**
@@ -73,6 +74,15 @@ namespace orxonox
             Iterator(ObjectListElement<T>* element)
             {
                 this->element_ = element;
+                ClassManager<T>::getIdentifier()->getObjects()->registerIterator(this);
+            }
+
+            /**
+                @brief Unregisters the Iterator from the ObjectList.
+            */
+            ~Iterator()
+            {
+                ClassManager<T>::getIdentifier()->getObjects()->unregisterIterator(this);
             }
 
             /**
@@ -90,7 +100,8 @@ namespace orxonox
             */
             Iterator<T> operator++()
             {
-                this->element_ = this->element_->next_;
+                if (this->element_)
+                    this->element_ = this->element_->next_;
                 return *this;
             }
 
@@ -101,7 +112,8 @@ namespace orxonox
             Iterator<T> operator++(int i)
             {
                 Iterator<T> copy = *this;
-                this->element_ = this->element_->next_;
+                if (this->element_)
+                    this->element_ = this->element_->next_;
                 return copy;
             }
 
@@ -111,7 +123,8 @@ namespace orxonox
             */
             Iterator<T> operator--()
             {
-                this->element_ = this->element_->prev_;
+                if (this->element_)
+                    this->element_ = this->element_->prev_;
                 return *this;
             }
 
@@ -122,7 +135,8 @@ namespace orxonox
             Iterator<T> operator--(int i)
             {
                 Iterator<T> copy = *this;
-                this->element_ = this->element_->prev_;
+                if (this->element_)
+                    this->element_ = this->element_->prev_;
                 return copy;
             }
 
@@ -132,7 +146,10 @@ namespace orxonox
             */
             T* operator*()
             {
-                return this->element_->object_;
+                if (this->element_)
+                    return this->element_->object_;
+                else
+                    return 0;
             }
 
             /**
@@ -141,7 +158,10 @@ namespace orxonox
             */
             T* operator->() const
             {
-                return this->element_->object_;
+                if (this->element_)
+                    return this->element_->object_;
+                else
+                    return 0;
 
             }
 
