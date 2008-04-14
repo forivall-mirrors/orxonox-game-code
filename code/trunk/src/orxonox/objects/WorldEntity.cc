@@ -1,5 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -56,14 +57,14 @@ namespace orxonox
         this->rotationAxis_ = Vector3(0, 1, 0);
         this->rotationRate_ = 0;
         this->momentum_ = 0;
-        
+
         if (GraphicsEngine::getSingleton().getSceneManager())
         {
           std::ostringstream name;
           name << (WorldEntity::worldEntityCounter_s++);
           this->setName("WorldEntity" + name.str());
           this->node_ = GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
-        
+
           registerAllVariables();
         }
         else

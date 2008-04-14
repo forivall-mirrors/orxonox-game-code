@@ -2,7 +2,7 @@
 * Orxonox - www.orxonox.net
 * Level Loader class
 *
-* @author Nicolas Perrenoud <nicolape@ee.ethz.ch>
+* @author Nicolas Perrenoud <nicolape_at_ee.ethz.ch>
 */
 
 #ifndef _LevelLoader_H__

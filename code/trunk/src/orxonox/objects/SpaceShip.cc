@@ -1,5 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -137,7 +138,7 @@ namespace orxonox
 */
 //         this->create();
 
-        
+
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
 
@@ -154,14 +155,14 @@ namespace orxonox
         return false;
       return true;
     }
-    
+
     void SpaceShip::registerAllVariables(){
       Model::registerAllVariables();
-      
-      
-      
+
+
+
     }
-    
+
     void SpaceShip::init()
     {
         // START CREATING THRUSTER

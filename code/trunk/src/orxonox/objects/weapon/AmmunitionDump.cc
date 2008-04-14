@@ -1,5 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -113,10 +114,10 @@ namespace orxonox {
       return -1;
     return stock_[id];
   }
-  
+
   void AmmunitionDump::registerAllVariables(){
     registerVar( &numberOfAmmos_, sizeof(int), network::DATA);
-    
+
     for (int i = 0; i < numberOfAmmos_; i++)
     {
       registerVar(&stock_[i], sizeof(int), network::DATA);

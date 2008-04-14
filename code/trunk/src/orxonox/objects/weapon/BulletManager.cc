@@ -1,5 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -109,5 +110,5 @@ namespace orxonox {
     // TODO we got a problem here:
     // there is no possibility (so far) to synchronise pointers to objects
   }
-  
+
 }
