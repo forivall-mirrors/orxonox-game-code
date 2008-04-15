@@ -49,7 +49,7 @@ namespace orxonox
     setTargetWindowStatus("Dead");
     setTargetWindowDistance(30);
 
-    setEnergyValue(60.0);
+    setEnergyValue(60);
 
     setShieldLeftTopValue(true);
     setShieldRightTopValue(false);

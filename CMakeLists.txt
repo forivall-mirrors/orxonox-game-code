@@ -1,7 +1,7 @@
 PROJECT(Orxonox)
 #set some global variables, which are used throughout the project
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin/lib)
+SET(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR}/bin/lib)
 
 OPTION(TESTING_ENABLED "Do you want to enable Testing")
 IF (TESTING_ENABLED)
@@ -56,6 +56,9 @@ ENDIF (UNIX)
 SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
 SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O2 -Wall -g -ggdb")
 SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
+SET(CMAKE_EXE_LINKER_FLAGS " --no-undefined")
+SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
+#SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
 
 #This sets where to look for "Find*.cmake" files
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -71,12 +74,29 @@ FIND_PACKAGE(ALUT)
 FIND_PACKAGE(OggVorbis)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(Lua)
-#FIND_PACKAGE(ToLua)
 
 #Sets the search paths for the linking
-LINK_DIRECTORIES(${OGRE_LIB_DIR} ${OIS_LIB_DIR} ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR} ${ENet_LIBRARY} ${Boost_LIBRARY_DIRS} ${Zlib_LIBRARY_DIR} ${Lua_LIBRARIES} core objects loader network weapon classHierarchy audio)
+LINK_DIRECTORIES(
+  ${OGRE_LIB_DIR}
+  ${OIS_LIB_DIR}
+  ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR}
+  ${ENet_LIBRARY}
+  ${Boost_LIBRARY_DIRS}
+  ${Zlib_LIBRARY_DIR}
+  ${Lua_LIBRARIES}
+#  core objects loader network weapon classHierarchy audio
+)
+
 #Sets the search path for include files
-INCLUDE_DIRECTORIES(${OGRE_INCLUDE_DIR} ${OIS_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR} ${ENet_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${OPENAL_INCLUDE_DIR} ${ALUT_INCLUDE_DIR} ${VORBIS_INCLUDE_DIR} ${OGG_INCLUDE_DIR} ${Lua_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(
+  ${OGRE_INCLUDE_DIR}
+  ${OIS_INCLUDE_DIR}
+  ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR}
+  ${ENet_INCLUDE_DIR}
+  ${Boost_INCLUDE_DIRS}
+  ${OPENAL_INCLUDE_DIR} ${ALUT_INCLUDE_DIR} ${VORBIS_INCLUDE_DIR} ${OGG_INCLUDE_DIR}
+  ${Lua_INCLUDE_DIR}
+)
 
 #Set the execution directory
 
