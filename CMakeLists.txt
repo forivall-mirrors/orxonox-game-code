@@ -1,7 +1,13 @@
 PROJECT(Orxonox)
-#set some global variables, which are used throughout the project
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR}/bin/lib)
+
+#This sets where to look for modules (e.g. "Find*.cmake" files)
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+#Check whether we are on a tardis box
+INCLUDE(CheckTardis)
+
+
+############## Testing options ##################
 
 OPTION(TESTING_ENABLED "Do you want to enable Testing")
 IF (TESTING_ENABLED)
@@ -10,58 +16,38 @@ ENDIF(TESTING_ENABLED)
 
 OPTION(NETWORK_TESTING_ENABLED "Do you want to build network testing tools: i.e. chatclient chatserver and alike")
 
-#Create some verbose output
-SET(CMAKE_VERBOSE_MAKEFILE TRUE)
 
-# set boost search path
-SET(Boost_INCLUDE_DIR "/usr/include/boost/")
+########## Compiler/Linker options ##############
 
-# force-set the compile on tardis machines, as default points to g++-3.3
-# only run this test on a lunix/unix machine
-IF (UNIX)
+# if on tardis change compiler and reset boost include directory
+IF(IS_TARDIS)
+  MESSAGE("System is a TARDIS: Setting Compiler to g++-4.1.1")
+  # force-set the compiler on tardis machines, as default points to g++-3.3
+  SET(CMAKE_CXX_COMPILER "g++-4.1.1")
+  # reset Boost serach path
+  SET(Boost_INCLUDE_DIR "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include")
+ELSE (IS_TARDIS)
+  SET(Boost_INCLUDE_DIR "/usr/include/boost")
+ENDIF(IS_TARDIS)
 
-  FIND_PROGRAM(UNAME_CMD "uname"
-  PATHS "/usr/bin /bin")
-  IF(NOT UNAME_CMD)
-    MESSAGE(ERROR "Unable to find uname. Tardis-Check cannot be done.")
-  ENDIF(NOT UNAME_CMD)
+#set binary output directories
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR}/bin/lib)
 
-  # run uname -n to get nodename
-  EXECUTE_PROCESS(
-  COMMAND "${UNAME_CMD}" "-n"
-  RESULT_VARIABLE UNAME_RV
-  ERROR_VARIABLE UNAME_EV
-  OUTPUT_VARIABLE UNAME_OV)
-
-  IF (NOT "${UNAME_RV}" STREQUAL "0")
-    MESSAGE(ERROR "ERROR: uname terminated unclean.")
-  ENDIF (NOT "${UNAME_RV}" STREQUAL "0")
-
-  # check wheter we are on a tardis machine
-  IF ("${UNAME_OV}" MATCHES "tardis")
-    SET (IS_TARDIS ON)
-  ENDIF ("${UNAME_OV}" MATCHES "tardis")
-
-  # if on tardis change compiler
-  IF(IS_TARDIS)
-    MESSAGE("System is a TARDIS: Setting Compiler to g++-4.1.1")
-    SET(CMAKE_CXX_COMPILER "g++-4.1.1")
-    # reset Boost serach path
-    SET(Boost_INCLUDE_DIR "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/include")
-  ENDIF(IS_TARDIS)
-
-ENDIF (UNIX)
-
-# pipe $FLAGS to the compiler, and add some local flags. force -O2!
+# global compiler/linker flags. force -O2!
 SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
 SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O2 -Wall -g -ggdb")
 SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
 SET(CMAKE_EXE_LINKER_FLAGS " --no-undefined")
 SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
-#SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
+SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
 
-#This sets where to look for "Find*.cmake" files
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+#Create verbose makefile output when compiling
+SET(CMAKE_VERBOSE_MAKEFILE TRUE)
+
+
+############### Library finding #################
+
 #Performs the search and sets the variables
 FIND_PACKAGE(OGRE)
 FIND_PACKAGE(OIS)
@@ -75,11 +61,11 @@ FIND_PACKAGE(OggVorbis)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(Lua)
 
-#Sets the search paths for the linking
+#Set the search paths for the linking
 LINK_DIRECTORIES(
   ${OGRE_LIB_DIR}
   ${OIS_LIB_DIR}
-  ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR}
+#  ${CEGUI_LIB_DIR} ${CEGUI_OGRE_LIB_DIR}
   ${ENet_LIBRARY}
   ${Boost_LIBRARY_DIRS}
   ${Zlib_LIBRARY_DIR}
@@ -87,18 +73,19 @@ LINK_DIRECTORIES(
 #  core objects loader network weapon classHierarchy audio
 )
 
-#Sets the search path for include files
+#Set the search paths for include files
 INCLUDE_DIRECTORIES(
   ${OGRE_INCLUDE_DIR}
   ${OIS_INCLUDE_DIR}
-  ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR}
+#  ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR}
   ${ENet_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
-  ${OPENAL_INCLUDE_DIR} ${ALUT_INCLUDE_DIR} ${VORBIS_INCLUDE_DIR} ${OGG_INCLUDE_DIR}
+#  ${OPENAL_INCLUDE_DIR} ${ALUT_INCLUDE_DIR} ${VORBIS_INCLUDE_DIR} ${OGG_INCLUDE_DIR}
   ${Lua_INCLUDE_DIR}
 )
 
-#Set the execution directory
+
+################ Source files ###################
 
 #add main source dir
 ADD_SUBDIRECTORY(src)
