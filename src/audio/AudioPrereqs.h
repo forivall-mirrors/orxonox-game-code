@@ -70,8 +70,12 @@ namespace audio
 //-----------------------------------------------------------------------
 // Warnings
 //-----------------------------------------------------------------------
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+
 // set to 4: conversion from 'ogg_int64_t' to 'long', possible loss of data
-# pragma warning (4 : 4244)
+#pragma warning (4 : 4244)
+
+#endif
 
 
 #endif /* _AudioPrereqs_H__ */
