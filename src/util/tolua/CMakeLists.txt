@@ -1,7 +1,7 @@
 PROJECT(ToLua)
 
 #This sets where to look for modules (e.g. "Find*.cmake" files)
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/)
 
 #Check whether we are on a tardis box
 INCLUDE(CheckTardis)
@@ -16,8 +16,8 @@ IF(IS_TARDIS)
 ENDIF(IS_TARDIS)
 
 #set binary output directories
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR}/bin/lib)
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/../../../bin)
+SET(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR}/../../../bin)
 
 # global compiler/linker flags. force -O2!
 SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
@@ -38,8 +38,6 @@ FIND_PACKAGE(Lua)
 
 #Set the search paths for the linking
 LINK_DIRECTORIES(
-  ${Lua_LIBRARIES}
-  m
 )
 
 #Set the search paths for include files
@@ -64,4 +62,6 @@ ADD_EXECUTABLE( tolua ${TOLUA_SRC_FILES} )
 
 TARGET_LINK_LIBRARIES( tolua
   ${Lua_LIBRARIES}
+  ${Lua_LIBRARY}
+  m
 )

@@ -54,7 +54,7 @@ FIND_PACKAGE(OIS)
 # FIND_PACKAGE(CEGUI)
 # FIND_PACKAGE(CEGUI_OGRE)
 FIND_PACKAGE(ENet)
-FIND_PACKAGE(Boost REQUIRED thread)
+FIND_PACKAGE(Boost)
 FIND_PACKAGE(OpenAL)
 FIND_PACKAGE(ALUT)
 FIND_PACKAGE(OggVorbis)
@@ -69,8 +69,6 @@ LINK_DIRECTORIES(
   ${ENet_LIBRARY}
   ${Boost_LIBRARY_DIRS}
   ${Zlib_LIBRARY_DIR}
-  ${Lua_LIBRARIES}
-#  core objects loader network weapon classHierarchy audio
 )
 
 #Set the search paths for include files
@@ -80,12 +78,22 @@ INCLUDE_DIRECTORIES(
 #  ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR}
   ${ENet_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
-#  ${OPENAL_INCLUDE_DIR} ${ALUT_INCLUDE_DIR} ${VORBIS_INCLUDE_DIR} ${OGG_INCLUDE_DIR}
+  ${OPENAL_INCLUDE_DIR} ${ALUT_INCLUDE_DIR} ${VORBIS_INCLUDE_DIR} ${OGG_INCLUDE_DIR}
   ${Lua_INCLUDE_DIR}
 )
 
 
 ################ Source files ###################
 
+#At first, build lua
+MESSAGE(STATUS "\n******************* Building tolua... ******************\n\n")
+EXECUTE_PROCESS(COMMAND ./tolua-build)
+MESSAGE(STATUS "\n\n******************* Building tolua done ****************\n")
+
+#generate lua bind source files
+EXECUTE_PROCESS(COMMAND bin/./tolua-exec-script)
+EXECUTE_PROCESS(COMMAND ls)
+
 #add main source dir
 ADD_SUBDIRECTORY(src)
+

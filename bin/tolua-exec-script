@@ -1,0 +1,3 @@
+cd src/core/tolua
+../../../bin/./tolua -n orxonox -o tolua_bind.cc -H tolua_bind.h tolua.pkg
+cd ../../../
