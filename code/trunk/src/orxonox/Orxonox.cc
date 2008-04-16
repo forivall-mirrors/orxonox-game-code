@@ -115,6 +115,10 @@ namespace orxonox
       {
         this->ib_->removeLast();
       }
+      void exit() const
+      {
+        CommandExecutor::execute("setInputMode 2");
+      }
 
     private:
       InputBuffer* ib_;
@@ -404,6 +408,7 @@ namespace orxonox
     ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
     ib->registerListener(console, &Testconsole::clear, '§', true);
     ib->registerListener(console, &Testconsole::removeLast, '\b', true);
+    ib->registerListener(console, &Testconsole::exit, (char)0x1B, true);
 
     // first check whether ogre root object has been created
     if (Ogre::Root::getSingletonPtr() == 0)
@@ -451,8 +456,8 @@ namespace orxonox
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
       {
         (it)->tick((float)evt.timeSinceLastFrame * this->timefactor_);
-         it++;
-     }
+        it++;
+      }
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly

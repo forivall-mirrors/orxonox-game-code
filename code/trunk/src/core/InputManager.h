@@ -71,7 +71,6 @@ namespace orxonox
     void destroy();
     void tick(float dt);
     void setWindowExtents(int width, int height);
-    void setInputMode(InputMode mode);
     InputMode getInputMode();
 
     // temporary hack
@@ -83,6 +82,7 @@ namespace orxonox
 
     static InputManager& getSingleton();
     static InputManager* getSingletonPtr() { return &getSingleton(); }
+    static void setInputMode(int mode);
 
   private:
     // don't mess with a Singleton

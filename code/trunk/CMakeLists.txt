@@ -92,7 +92,6 @@ MESSAGE(STATUS "\n\n******************* Building tolua done ****************\n")
 
 #generate lua bind source files
 EXECUTE_PROCESS(COMMAND bin/./tolua-exec-script)
-EXECUTE_PROCESS(COMMAND ls)
 
 #add main source dir
 ADD_SUBDIRECTORY(src)

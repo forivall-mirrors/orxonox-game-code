@@ -132,6 +132,14 @@
 			<File
 				RelativePath="..\..\src\util\tolua\tolua.c"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\src\util\tolua\tolua_event.c"
@@ -156,6 +164,14 @@
 			<File
 				RelativePath="..\..\src\util\tolua\toluabind.c"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
