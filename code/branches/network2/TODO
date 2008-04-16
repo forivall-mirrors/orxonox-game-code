@@ -1,0 +1,7 @@
+TODO:
+
+network:
+	-handle variables of Spaceship (registerAllVariables) ------ wait for spaceship to be cleaned up
+	-make NPC class synchronisable ----- hopefully done
+	-make Ambient class synchronisable ----- hopefully done
+	-make Skybox class synchronisable ----- mostly done
