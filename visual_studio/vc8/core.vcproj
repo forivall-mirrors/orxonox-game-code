@@ -248,13 +248,24 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\ToLuaBind.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\XMLPort.cc"
 				>
 			</File>
+			<Filter
+				Name="tolua"
+				>
+				<File
+					RelativePath="..\..\src\core\tolua\tolua_bind.cc"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -410,13 +421,17 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\ToLuaBind.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\XMLPort.h"
 				>
 			</File>
+			<Filter
+				Name="tolua"
+				>
+				<File
+					RelativePath="..\..\src\core\tolua\tolua_bind.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

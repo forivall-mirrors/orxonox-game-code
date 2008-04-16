@@ -38,9 +38,12 @@
 #include "InputEventListener.h"
 #include "InputHandler.h"
 #include "InputBuffer.h"
+#include "ConsoleCommand.h"
 
 namespace orxonox
 {
+  ConsoleCommand(InputManager, setInputMode, AccessLevel::Admin, true).setDefaultValue(0, IM_INGAME);
+
   /**
     @brief Constructor only resets the pointer values to 0.
   */
@@ -226,9 +229,10 @@ namespace orxonox
     @param mode The new input mode
     @remark Only has an affect if the mode actually changes
   */
-  void InputManager::setInputMode(InputMode mode)
+  void InputManager::setInputMode(int mode)
   {
-    this->setMode_ = mode;
+    if (mode > 0 && mode < 4)
+      getSingleton().setMode_ = (InputMode)mode;
   }
 
   /**

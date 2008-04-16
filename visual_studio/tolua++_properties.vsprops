@@ -5,8 +5,4 @@
 	Name="tolua++_properties"
 	InheritedPropertySheets=".\directory_properties.vsprops"
 	>
-	<Tool
-		Name="VCLinkerTool"
-		AdditionalDependencies="lua$(CS).lib"
-	/>
 </VisualStudioPropertySheet>

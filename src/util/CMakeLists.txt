@@ -1,5 +1,4 @@
 AUX_SOURCE_DIRECTORY(tinyxml TINYXML_SRC_FILES)
-AUX_SOURCE_DIRECTORY(tolua   TOLUA_SRC_FILES)
 
 SET (UTIL_SRC_FILES
   ArgReader.cc
@@ -10,8 +9,12 @@ SET (UTIL_SRC_FILES
   MultiTypePrimitive.cc
   MultiTypeString.cc
   MultiTypeMath.cc
+  tolua_event.c
+  tolua_is.c
+  tolua_map.c
+  tolua_push.c
+  tolua_to.c
   ${TINYXML_SRC_FILES}
-  ${TOLUA_SRC_FILES}
 )
 
 ADD_LIBRARY( util SHARED ${UTIL_SRC_FILES} )

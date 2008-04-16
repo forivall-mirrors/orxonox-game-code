@@ -1,8 +1,6 @@
 #get the created files
 AUX_SOURCE_DIRECTORY(tolua TOLUA_BIND_FILES) 
 
-MESSAGE(STATUS "tolua sources: ${TOLUA_BIND_FILES}")
-
 SET( CORE_SRC_FILES
   OrxonoxClass.cc
   BaseObject.cc
