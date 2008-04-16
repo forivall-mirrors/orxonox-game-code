@@ -27,6 +27,7 @@
 #include <zlib.h>
 
 #include "core/CoreIncludes.h"
+#include "core/BaseObject.h"
 #include "Synchronisable.h"
 #include "GameStateClient.h"
 
@@ -38,6 +39,7 @@ namespace network
   };
   
   GameStateClient::GameStateClient() {
+    COUT(5) << "this: " << this << std::endl;
   }
 
   GameStateClient::~GameStateClient() {
@@ -109,14 +111,13 @@ namespace network
         
         if(!it){
           COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
-          Synchronisable *no = (Synchronisable*)(ID((unsigned int) sync.classID)->fabricate());
+          Synchronisable *no = dynamic_cast<Synchronisable *>(ID((unsigned int) sync.classID)->fabricate());
           no->objectID=sync.objectID;
           no->classID=sync.classID;
           it=orxonox::ObjectList<Synchronisable>::end();
           // update data and create object/entity...
           if( !no->updateData(sync) && !no->create() )
             COUT(1) << "We couldn't create/update the object: " << sync.objectID << std::endl;
-          ++it;
         }
       } else {
         // we have our object
