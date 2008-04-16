@@ -38,8 +38,8 @@ extern "C" {
 #include <lauxlib.h>
 }
 
-#include "util/tolua/tolua++.h"
-#include "ToLuaBind.h"
+#include "tolua++.h"
+#include "tolua/tolua_bind.h"
 
 namespace orxonox
 {

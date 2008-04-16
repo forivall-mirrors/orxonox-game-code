@@ -1,3 +1,8 @@
+#get the created files
+AUX_SOURCE_DIRECTORY(tolua TOLUA_BIND_FILES) 
+
+MESSAGE(STATUS "tolua sources: ${TOLUA_BIND_FILES}")
+
 SET( CORE_SRC_FILES
   OrxonoxClass.cc
   BaseObject.cc
@@ -25,7 +30,7 @@ SET( CORE_SRC_FILES
   InputBuffer.cc
   Tickable.cc
   Script.cc
-  ToLuaBind.cc
+  ${TOLUA_BIND_FILES}
 )
 
 ADD_LIBRARY( core SHARED ${CORE_SRC_FILES})
@@ -33,5 +38,6 @@ ADD_LIBRARY( core SHARED ${CORE_SRC_FILES})
 TARGET_LINK_LIBRARIES( core
   util
   ${Lua_LIBRARIES}
+  ${Lua_LIBRARY}
   ${OIS_LIBRARIES}
 )
