@@ -53,8 +53,8 @@ IF (UNIX)
 ENDIF (UNIX)
 
 # pipe $FLAGS to the compiler, and add some local flags. force -O2!
-SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
-SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O2 -Wall -g -ggdb")
+SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O0 -Wall -g -ggdb")
+SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
 SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
 
 #This sets where to look for "Find*.cmake" files

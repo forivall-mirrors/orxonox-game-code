@@ -62,7 +62,7 @@ namespace network
   private:
     /*  bool removeObject(Iterator<Synchronisable> it);*/
 
-    std::list<synchronisableVariable *> syncList;
+    std::list<synchronisableVariable *> *syncList;
     int datasize;
   };
 }

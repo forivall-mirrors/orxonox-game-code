@@ -94,7 +94,8 @@ namespace orxonox
     }
 
     void Model::registerAllVariables(){
-      WorldEntity::registerAllVariables();
+//       WorldEntity::registerAllVariables();
+      COUT(5) << "registering new meshsrc with size: " << meshSrc_.length()+1 << std::endl;
       registerVar(&meshSrc_, meshSrc_.length() + 1, network::STRING);
     }
 }
