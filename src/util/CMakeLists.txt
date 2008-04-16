@@ -9,11 +9,11 @@ SET (UTIL_SRC_FILES
   MultiTypePrimitive.cc
   MultiTypeString.cc
   MultiTypeMath.cc
-  tolua_event.c
-  tolua_is.c
-  tolua_map.c
-  tolua_push.c
-  tolua_to.c
+  tolua/tolua_event.c
+  tolua/tolua_is.c
+  tolua/tolua_map.c
+  tolua/tolua_push.c
+  tolua/tolua_to.c
   ${TINYXML_SRC_FILES}
 )
 

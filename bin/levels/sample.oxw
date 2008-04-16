@@ -114,7 +114,7 @@
 </Namespace>
 
 <?lua
-for i = 1, 2, 1 
+for i = 1, 226, 1 
 do ?>
   <Model position="<?lua print(math.random(-19597, 18732))?>, <?lua print(math.random(-19597, 18732)) ?>, <?lua print(math.random(-19597, 18732)) ?>" scale="<?lua print(math.random( 20, 119)) ?>" mesh="ast<?lua print(i%6 + 1) ?>.mesh" rotationAxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationRate="<?lua print(math.random(16, 44)) ?>" />
 <?lua 
