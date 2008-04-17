@@ -74,7 +74,7 @@ namespace network
   class _NetworkExport Synchronisable : virtual public orxonox::OrxonoxClass{
   public:
 
-      virtual ~Synchronisable();
+    virtual ~Synchronisable();
     int objectID;
     int classID;
 
@@ -90,7 +90,7 @@ namespace network
   private:
     /*  bool removeObject(Iterator<Synchronisable> it);*/
 
-    std::list<SYNCVAR> syncList;
+    std::list<synchronisableVariable *> *syncList;
     int datasize;
   };
 }

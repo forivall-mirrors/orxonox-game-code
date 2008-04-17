@@ -74,7 +74,9 @@ namespace network
     int getGamestateID();
     bool removeClient(int clientID);
     bool removeClient(ENetPeer *peer);
+    //## add bool mask-function eventually
     ClientInformation *findClient(int clientID, bool look_backwards=false);
+    //## add bool mask-function eventually
     ClientInformation *findClient(ENetAddress *address, bool look_backwards=false);
 
     void setSynched(bool s);

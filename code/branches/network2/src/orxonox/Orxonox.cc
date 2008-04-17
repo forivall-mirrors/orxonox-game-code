@@ -304,7 +304,8 @@ namespace orxonox
     orxonoxHud->setEnergyDistr(20,20,60);
     hudOverlay->show();
 
-    client_g->establishConnection();
+    if( !client_g->establishConnection() )
+      COUT(1) <<"CLIENT COULD NOT ESTABLISH CONNECTION" << std::endl;
     client_g->tick(0);
 
 

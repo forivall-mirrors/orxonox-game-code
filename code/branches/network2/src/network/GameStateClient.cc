@@ -31,11 +31,18 @@
 #include <zlib.h>
 
 #include "core/CoreIncludes.h"
+#include "core/BaseObject.h"
 #include "Synchronisable.h"
 
 namespace network
 {
+  struct GameStateItem{
+    GameState *state;
+    int id;
+  };
+  
   GameStateClient::GameStateClient() {
+    COUT(5) << "this: " << this << std::endl;
   }
 
   GameStateClient::~GameStateClient() {
@@ -43,8 +50,20 @@ namespace network
 
   bool GameStateClient::pushGameState(GameStateCompressed *compstate) {
     GameState *gs;
-    if(compstate->diffed)
-      gs = decode(reference, compstate);
+    if(compstate->diffed){
+      while(compstate->base_id > gameStateList.front()->id){
+        // clean up old gamestates
+        free(gameStateList.front()->data);
+        // TODO: critical section
+        delete gameStateList.front();
+        gameStateList.pop();
+      }
+      if(compstate->base_id!=gameStateList.front()->id){
+        COUT(4) << "pushGameState: no reference found to diff" << std::endl;
+        return false;
+      }
+      gs = decode(gameStateList.front(), compstate);
+    }
     else
       gs = decode(compstate);
     if(gs)
@@ -94,15 +113,16 @@ namespace network
 
 
         if(!it){
-          COUT(5) << "classid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
-          Synchronisable *no = (Synchronisable*)(ID((unsigned int) sync.classID)->fabricate());
+          COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
+          Synchronisable *no = dynamic_cast<Synchronisable *>(ID((unsigned int) sync.classID)->fabricate());
           no->objectID=sync.objectID;
           no->classID=sync.classID;
           it=orxonox::ObjectList<Synchronisable>::end();
           // update data and create object/entity...
-          if( !no->updateData(sync) && !no->create() )
-            COUT(1) << "We couldn't create/update the object: " << sync.objectID << std::endl;
-          ++it;
+          if( !no->updateData(sync) )
+            COUT(1) << "We couldn't update the object: " << sync.objectID << std::endl;
+          if( !no->create() )
+            COUT(1) << "We couldn't manifest (create() ) the object: " << sync.objectID << std::endl;
         }
       } else {
         // we have our object
@@ -153,7 +173,18 @@ namespace network
     return r;
   }
 
+  //##### ADDED FOR TESTING PURPOSE #####
+  GameState* GameStateClient::testDecompress( GameStateCompressed* gc ) {
+    return decompress( gc );
+  }
+  
+  GameState* GameStateClient::testUndiff( GameState* g_old, GameState* g_diffed ) {
+    return undiff( g_old, g_diffed );
+  }
+  //##### ADDED FOR TESTING PURPOSE #####
+
   GameState *GameStateClient::decompress(GameStateCompressed *a) {
+    //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
     int normsize = a->normsize;
     int compsize = a->compsize;
     int bufsize;
@@ -172,7 +203,7 @@ namespace network
       case Z_OK: COUT(4) << "successfully decompressed" << std::endl; break;
       case Z_MEM_ERROR: COUT(1) << "not enough memory available" << std::endl; return NULL;
       case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer" << std::endl; return NULL;
-      case Z_DATA_ERROR: COUT(2) << "data corrupted" << std::endl; return NULL;
+      case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return NULL;
     }
 
     GameState *gamestate = new GameState;
@@ -188,12 +219,21 @@ namespace network
   }
 
   GameState *GameStateClient::decode(GameState *a, GameStateCompressed *x) {
-    GameState *t = decompress(x);
-    return undiff(a, t);
+    GameState *t = decode(x);
+    gameStateList.push(t);
+    //return undiff(a, t);
+    return t;
   }
 
   GameState *GameStateClient::decode(GameStateCompressed *x) {
-    GameState *t = decompress(x);
+    //GameState *t = decompress(x);
+    GameState *t = new GameState;
+    t->base_id = x->base_id;
+    t->id = x->id;
+    t->diffed = x->diffed;
+    t->data = x->data;
+    t->size = x->normsize;
+    gameStateList.push(t);
     return t;
   }
 

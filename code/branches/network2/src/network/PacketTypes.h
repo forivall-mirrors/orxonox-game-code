@@ -64,6 +64,7 @@ namespace network
     int id;
     int size;                       //!< total size of data
     // new ---- change functions
+    int base_id;                  // if gamestate is diffed this is the id of the old gamestate (base)
     bool diffed;
     unsigned char *data;            //!< pointer to data
   };
@@ -79,6 +80,7 @@ namespace network
     int compsize;                   //!< size of compressed data
     int normsize;                   //!< size of uncompressed data
     // new ----- change functions
+    int base_id;                  // if gamestate is diffed this is the id of the old gamestate (base)
     bool diffed;
     unsigned char *data;            //!< gamestate data
   };

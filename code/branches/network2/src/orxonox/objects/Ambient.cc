@@ -56,12 +56,23 @@ namespace orxonox
     {
         RegisterObject(Ambient);
         Ambient::instance_s = this;
+        registerAllVariables();
     }
 
     Ambient::~Ambient()
     {
     }
 
+    bool Ambient::create(){
+      Orxonox::getSingleton()->getSceneManager()->setAmbientLight(ambientLight_);
+      return true;
+    }
+    
+    void Ambient::registerAllVariables(){
+      registerVar(&ambientLight_, sizeof(ColourValue), network::DATA);
+      
+    }
+    
     void Ambient::loadParams(TiXmlElement* xmlElem)
     {
     	if (xmlElem->Attribute("colourvalue"))
@@ -82,6 +93,7 @@ namespace orxonox
    void Ambient::setAmbientLight(const ColourValue& colour)
    {
     	GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(colour);
+      ambientLight_=colour;	
    }
 
     /**
@@ -95,5 +107,6 @@ namespace orxonox
         BaseObject::XMLPort(xmlelement, mode);
 
         XMLPortParamLoadOnly(Ambient, "colourvalue", setAmbientLight, xmlelement, mode);
+        create();
     }
 }

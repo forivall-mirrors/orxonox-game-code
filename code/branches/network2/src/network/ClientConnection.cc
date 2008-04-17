@@ -86,7 +86,7 @@ namespace network
   }
 
   ENetPacket *ClientConnection::getPacket() {
-    ENetAddress address;
+    ENetAddress address; //sems that address is not needed
     return getPacket(address);
   }
 
@@ -161,8 +161,8 @@ namespace network
         // log handling ================
       case ENET_EVENT_TYPE_CONNECT:
       case ENET_EVENT_TYPE_RECEIVE:
-        COUT(5) << "receiver-Thread: got new packet" << std::endl;
-        processData(&event);
+        COUT(5) << "Cl.Con: receiver-Thread while loop: got new packet" << std::endl;
+        if ( !processData(&event) ) COUT(2) << "Current packet was not pushed to packetBuffer -> ev ongoing SegFault" << std::endl;
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
         quit=true;
@@ -202,7 +202,7 @@ namespace network
 
   bool ClientConnection::establishConnection() {
     ENetEvent event;
-    // connect to peer
+    // connect to peer (server is type ENetPeer*)
     server = enet_host_connect(client, &serverAddress, NETWORK_CLIENT_CHANNELS);
     if(server==NULL)
       // error handling
@@ -217,7 +217,7 @@ namespace network
   }
 
   bool ClientConnection::processData(ENetEvent *event) {
-    COUT(5) << "got packet, pushing to queue" << std::endl;
+    COUT(5) << "Cl.Con: got packet, pushing to queue" << std::endl;
     // just add packet to the buffer
     // this can be extended with some preprocessing
     return buffer.push(event);

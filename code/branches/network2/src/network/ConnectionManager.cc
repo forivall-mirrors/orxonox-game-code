@@ -59,7 +59,9 @@ namespace std
 namespace network
 {
   boost::thread_group network_threads;
-
+  
+  ConnectionManager::ConnectionManager(){}
+  
   ConnectionManager::ConnectionManager(ClientInformation *head) {
     quit=false;
     bindAddress.host = ENET_HOST_ANY;
@@ -87,7 +89,10 @@ namespace network
     else
       return NULL;
   }
-
+/**
+This function only pops the first element in PacketBuffer (first in first out)
+used by processQueue in Server.cc
+*/
   ENetPacket *ConnectionManager::getPacket(int &clientID) {
     ENetAddress address;
     ENetPacket *packet=getPacket(address);
@@ -173,9 +178,11 @@ namespace network
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
           addClient(&event);
+          COUT(5) << "Con.Man: connection event has occured" << std::endl;
           break;
         case ENET_EVENT_TYPE_RECEIVE:
           //std::cout << "received data" << std::endl;
+          COUT(5) << "Con.Man: receive event has occured" << std::endl;
           processData(&event);
           break;
         case ENET_EVENT_TYPE_DISCONNECT:
@@ -190,7 +197,10 @@ namespace network
     // if we're finishied, destroy server
     enet_host_destroy(server);
   }
-
+  
+  //### added some bugfixes here, but we cannot test them because
+  //### the server crashes everytime because of some gamestates
+  //### (trying to resolve that now)
   void ConnectionManager::disconnectClients() {
     ENetEvent event;
     ClientInformation *temp = head_->next();
@@ -198,18 +208,21 @@ namespace network
       enet_peer_disconnect(temp->getPeer(), 0);
       temp = temp->next();
     }
-    temp = temp->next();
+    //bugfix: might be the reason why server crashes when clients disconnects
+    //temp = temp->next();
+    temp = head_->next();
     while( temp!=0 && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) > 0){
       switch (event.type)
       {
-      case ENET_EVENT_TYPE_NONE:
-      case ENET_EVENT_TYPE_CONNECT:
+      case ENET_EVENT_TYPE_NONE: break;
+      case ENET_EVENT_TYPE_CONNECT: break;
       case ENET_EVENT_TYPE_RECEIVE:
         enet_packet_destroy(event.packet);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
-        std::cout << "disconnecting client" << std::endl;
+        COUT(4) << "disconnecting all clients" << std::endl;
         delete head_->findClient(&(event.peer->address));
+        //maybe needs bugfix: might also be a reason for the server to crash
         temp = temp->next();
         break;
       }
@@ -228,17 +241,24 @@ namespace network
   //}
 
   bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
+    COUT(4) << "removing client from list" << std::endl;
     return head_->removeClient(peer);
   }
-
+/**
+This function adds a client that connects to the clientlist of the server
+NOTE: if you change this, don't forget to change the test function
+addClientTest in diffTest.cc since addClient is not good for testing because of syncClassid
+*/
   bool ConnectionManager::addClient(ENetEvent *event) {
     ClientInformation *temp = head_->insertBack(new ClientInformation);
-    if(temp->prev()->head)
+    if(temp->prev()->head) { //not good if you use anything else than insertBack
+      temp->prev()->setID(0); //bugfix: not necessary but usefull
       temp->setID(1);
+    }
     else
       temp->setID(temp->prev()->getID()+1);
     temp->setPeer(event->peer);
-    std::cout << "added client id: " << temp->getID() << std::endl;
+    COUT(4) << "Con.Man: added client id: " << temp->getID() << std::endl;
     syncClassid(temp->getID());
     temp->setSynched(true);
     return true;
@@ -267,13 +287,14 @@ namespace network
         continue;
       classname = id->getName();
       network_id = id->getNetworkID();
-      COUT(4) << "network_id: " << network_id << ", classname: " << classname << std::endl;
+      COUT(4) << "Con.Man:syncClassid:\tnetwork_id: " << network_id << ", classname: " << classname << std::endl;
 
       addPacket(packet_gen.clid( (int)network_id, classname ), clientID);
 
       ++it;
     }
     sendPackets();
+    COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
   }
 
 
@@ -288,8 +309,8 @@ namespace network
   }
 
   int ConnectionManager::getObjectsClientID( int objectID ) {
-    std::map<int, int>::iterator iter = clientsShip.begin();
-    while( iter != clientsShip.end() ) {
+    std::map<int, int>::iterator iter;
+    for( iter = clientsShip.begin(); iter != clientsShip.end(); iter++ ) {
       if( iter->second == objectID ) return iter->first;
     }
     return -99;
@@ -301,10 +322,12 @@ namespace network
 
   void ConnectionManager::deleteObjectIDReg( int objectID ) {
     std::map<int, int>::iterator iter = clientsShip.begin();
-    while( iter != clientsShip.end() ) {
+    for( iter = clientsShip.begin(); iter != clientsShip.end(); iter++ ) {
       if( iter->second == objectID ) break;
     }
     clientsShip.erase( iter->first );
   }
-
+  int ConnectionManager::getNumberOfClients() {
+    return clientsShip.size();
+  }
 }

@@ -70,11 +70,16 @@ namespace network
   public:
     GameStateManager(ClientInformation *head);
     ~GameStateManager();
+    //#### ADDED FOR TESTING PURPOSE ####
+    GameStateCompressed* testCompress( GameState* g );
+    GameState* testDiff( GameState* a, GameState* b );
+    //#### END TESTING PURPOSE ####
     void update();
     GameStateCompressed *popGameState(int clientID);
     void ackGameState(int clientID, int gamestateID);
     int id;
   private:
+    void cleanup(); // "garbage handler"
     GameState *getSnapshot(int id);
     GameStateCompressed *encode(GameState *a, GameState *b);
     GameStateCompressed *encode(GameState *a);
