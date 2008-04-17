@@ -84,7 +84,6 @@ namespace orxonox
         BaseObject::XMLPort(xmlelement, mode);
 
         XMLPortParamLoadOnly(Skybox, "src", setSkybox, xmlelement, mode);
-        XMLPortParamLoadOnly(Skybox, "src", setSkyboxSrc, xmlelement, loading);
         create();
     }
     

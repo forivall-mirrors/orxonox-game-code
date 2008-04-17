@@ -64,7 +64,7 @@ namespace orxonox
     }
 
     bool Ambient::create(){
-      Orxonox::getSingleton()->getSceneManager()->setAmbientLight(ambientLight_);
+      GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(ambientLight_);
       return true;
     }
     
