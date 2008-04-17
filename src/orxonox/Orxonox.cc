@@ -446,11 +446,8 @@ namespace orxonox
         orxonoxHUD_->setRocket1((int)(20000.0f/(eventTimes[3].back() - eventTimes[3].front())));
 
       // Iterate through all Tickables and call their tick(dt) function
-      for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
-      {
-        (it)->tick((float)evt.timeSinceLastFrame * this->timefactor_);
-        it++;
-      }
+      for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
+        it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
