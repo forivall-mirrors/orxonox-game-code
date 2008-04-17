@@ -116,8 +116,10 @@ namespace network
           no->classID=sync.classID;
           it=orxonox::ObjectList<Synchronisable>::end();
           // update data and create object/entity...
-          if( !no->updateData(sync) && !no->create() )
-            COUT(1) << "We couldn't create/update the object: " << sync.objectID << std::endl;
+          if( !no->updateData(sync) )
+            COUT(1) << "We couldn't update the object: " << sync.objectID << std::endl;
+          if( !no->create() )
+            COUT(1) << "We couldn't manifest (create() ) the object: " << sync.objectID << std::endl;
         }
       } else {
         // we have our object

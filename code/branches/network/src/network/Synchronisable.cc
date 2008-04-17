@@ -117,7 +117,7 @@ namespace network
     retVal.length=getSize();
     retVal.data=mem;
     // copy to location
-    int n=0;
+    int n=0; //offset
     for(i=syncList->begin(); n<datasize && i!=syncList->end(); ++i){
       //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
       memcpy( (void *)(retVal.data+n), (const void *)&((*i)->size), sizeof(int) );
@@ -128,8 +128,8 @@ namespace network
         n+=(*i)->size;
         break;
       case STRING:
-        std::memcpy( retVal.data+n, (const void*)( ( (std::string *) (*i)->var)->c_str()), ( (std::string *)(*i)->var )->length()+1);
-        n+=((std::string *) (*i)->var)->length()+1;
+        std::memcpy( retVal.data+n, (const void*)( ( (std::string *) (*i)->var)->c_str()), (*i)->size);
+        n+=(*i)->size;
         break;
       }
     }
@@ -148,24 +148,22 @@ namespace network
       COUT(4) << "Synchronisable::updateData syncList is empty" << std::endl;
       return false;
     }
-    COUT(5) << "Synchronisable: synchronising data" << std::endl;
-    i=syncList->begin();
-    COUT(5) << "element size: " << (*syncList->begin())->size << std::endl;
-    COUT(5) << "*i.size" << (*i)->size << std::endl;
-    for(; i!=syncList->end(); i++){
+    COUT(5) << "Synchronisable: objectID " << objectID << ", classID " << classID << " synchronising data" << std::endl;
+    for(i=syncList->begin(); i!=syncList->end(); i++){
+      COUT(5) << "element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
       if(*(int *)data==(*i)->size || (*i)->type==STRING){
         switch((*i)->type){
-      case DATA:
-        data+=sizeof(int);
-        memcpy((void*)(*i)->var, data, (*i)->size);
-        data+=(*i)->size;
-        break;
-      case STRING:
-        (*i)->size = *(int *)data;
-        data+=sizeof(int);
-        *((std::string *)((*i)->var)) = std::string((const char*)data);
-        data += (*i)->size;
-        break;
+        case DATA:
+          data+=sizeof(int);
+          memcpy((void*)(*i)->var, data, (*i)->size);
+          data+=(*i)->size;
+          break;
+        case STRING:
+          (*i)->size = *(int *)data;
+          data+=sizeof(int);
+          *((std::string *)((*i)->var)) = std::string((const char*)data);
+          data += (*i)->size;
+          break;
         }
       } else
         return false; //there was some problem with registerVar
@@ -188,7 +186,8 @@ namespace network
         break;
       case STRING:
         tsize+=sizeof(int);
-        tsize+=((std::string *)(*i)->var)->length()+1;
+        (*i)->size=((std::string *)(*i)->var)->length()+1;
+        tsize+=(*i)->size;
         break;
       }
     }
