@@ -298,10 +298,9 @@ namespace orxonox
     auMan_ = new audio::AudioManager();
 
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    HUD* orxonoxHud;
-    orxonoxHud = new HUD();
-    orxonoxHud->setEnergyValue(20);
-    orxonoxHud->setEnergyDistr(20,20,60);
+    orxonoxHUD_ = new HUD();
+    orxonoxHUD_->setEnergyValue(20);
+    orxonoxHUD_->setEnergyDistr(20,20,60);
     hudOverlay->show();
 
     if( !client_g->establishConnection() )
@@ -340,7 +339,7 @@ namespace orxonox
     startRenderLoop();
   }
 
-  void Orxonox::createScene(void)
+  void Orxonox::createScene()
   {
 	  // Init audio
     auMan_ = new audio::AudioManager();
