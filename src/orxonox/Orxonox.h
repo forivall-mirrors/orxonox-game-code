@@ -60,8 +60,7 @@ namespace orxonox {
     public:
       void init(int argc, char **argv, std::string path);
       void start();
-      // not sure if this should be private
-      void abortImmediate(/* some error code */);
+      void abortImmediateForce();
       void abortRequest();
       inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
 

@@ -74,7 +74,6 @@
 // objects and tools
 #include "tools/Timer.h"
 #include "hud/HUD.h"
-//#include "objects/weapon/BulletManager.h"
 
 // FIXME: is this really file scope?
 // globals for the server or client
@@ -139,7 +138,6 @@ namespace orxonox
     this->dataPath_ = "";
     this->auMan_ = 0;
     this->inputHandler_ = 0;
-    //this->root_ = 0;
     // turn on frame smoothing by setting a value different from 0
     this->frameSmoothingTime_ = 0.0f;
     this->bAbort_ = false;
@@ -152,8 +150,6 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // keep in mind: the order of deletion is very important!
-//    if (this->bulletMgr_)
-//      delete this->bulletMgr_;
     if (this->orxonoxHUD_)
       delete this->orxonoxHUD_;
     Loader::close();
@@ -171,11 +167,12 @@ namespace orxonox
   }
 
   /**
-   * error kills orxonox
-   */
-  void Orxonox::abortImmediate(/* some error code */)
+    @brief Immediately deletes the orxonox object.
+    Never use if you can help it while rendering!
+  */
+  void Orxonox::abortImmediateForce()
   {
-    //TODO: destroy and destruct everything and print nice error msg
+    COUT(1) << "*** Orxonox Error: Orxonox object was unexpectedly destroyed." << std::endl;
     delete this;
   }
 
@@ -184,6 +181,7 @@ namespace orxonox
   */
   void Orxonox::abortRequest()
   {
+    COUT(3) << "*** Orxonox: Abort requested." << std::endl;
     bAbort_ = true;
   }
 
@@ -224,7 +222,7 @@ namespace orxonox
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", this->dataPath_, false);
     ar.checkArgument("ip", serverIp_, false);
-    if(ar.errorHandling()) abortImmediate();
+    if(ar.errorHandling()) abortImmediateForce();
     if(mode == std::string("client"))
     {
       mode_ = CLIENT;
@@ -247,7 +245,7 @@ namespace orxonox
     ogre_->setConfigPath(path);
     ogre_->setup();
     //root_ = ogre_->getRoot();
-    if(!ogre_->load(this->dataPath_)) abortImmediate(/* unable to load */);
+    if(!ogre_->load(this->dataPath_)) abortImmediateForce(/* unable to load */);
 
     server_g = new network::Server();
   }
@@ -262,7 +260,7 @@ namespace orxonox
       client_g = new network::Client();
     else
       client_g = new network::Client(serverIp_, NETWORK_PORT);
-    if(!ogre_->load(this->dataPath_)) abortImmediate(/* unable to load */);
+    if(!ogre_->load(this->dataPath_)) abortImmediateForce(/* unable to load */);
   }
 
   void Orxonox::standaloneInit(std::string path)
@@ -271,8 +269,7 @@ namespace orxonox
 
     ogre_->setConfigPath(path);
     ogre_->setup();
-    //root_ = ogre_->getRoot();
-    if(!ogre_->load(this->dataPath_)) abortImmediate(/* unable to load */);
+    if(!ogre_->load(this->dataPath_)) abortImmediateForce(/* unable to load */);
   }
 
   /**
@@ -299,8 +296,6 @@ namespace orxonox
 
 
     auMan_ = new audio::AudioManager();
-
-    //bulletMgr_ = new BulletManager();
 
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
     HUD* orxonoxHud;
@@ -349,8 +344,6 @@ namespace orxonox
 	  // Init audio
     auMan_ = new audio::AudioManager();
 
-    //bulletMgr_ = new BulletManager();
-
     // load this file from config
     Level* startlevel = new Level("levels/sample.oxw");
     Loader::open(startlevel);
@@ -379,7 +372,7 @@ namespace orxonox
     inputHandler_ = &InputManager::getSingleton();
     if (!inputHandler_->initialise(ogre_->getWindowHandle(),
           ogre_->getWindowWidth(), ogre_->getWindowHeight()))
-      abortImmediate();
+      abortImmediateForce();
     inputHandler_->setInputMode(IM_INGAME);
   }
 
@@ -413,7 +406,7 @@ namespace orxonox
     // first check whether ogre root object has been created
     if (Ogre::Root::getSingletonPtr() == 0)
     {
-      COUT(2) << "Error: Could not start rendering. No Ogre root object found" << std::endl;
+      COUT(2) << "*** Orxonox Error: Could not start rendering. No Ogre root object found" << std::endl;
       return;
     }
 

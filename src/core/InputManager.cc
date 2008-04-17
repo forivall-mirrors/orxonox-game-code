@@ -52,6 +52,7 @@ namespace orxonox
       currentMode_(IM_UNINIT), setMode_(IM_UNINIT),
       handlerGUI_(0), handlerBuffer_(0), handlerGame_(0)
   {
+    RegisterObject(InputManager);
   }
 
   /**

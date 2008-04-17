@@ -259,4 +259,72 @@ extern "C" _CoreExport int getSoftDebugLevel();
   COUT_EXEC(0)
 #endif /* ifndef COUT */
 
+
+/////////////////////////////////////////////////////////////////////
+///  CCOUT: Prints output with std::cout and adds the classname   ///
+/////////////////////////////////////////////////////////////////////
+
+#define CCOUT_EXEC(x) \
+  orxonox::OutputHandler::getOutStream().setOutputLevel(x) \
+  << "*** " << this->getIdentifier()->getName() << ": "
+
+#ifndef CCOUT
+ #if ORX_PRINT_DEBUG_OUTPUT
+  #define CCOUT(x) \
+   CCOUT ## x
+
+  #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
+   #define CCOUT1  \
+    if (getSoftDebugLevel() >= ORX_ERROR)  \
+     CCOUT_EXEC(1)
+  #else
+   #define CCOUT1 if (ORX_NONE)\
+    CCOUT_EXEC(1)
+  #endif
+
+  #if ORX_HARD_DEBUG_LEVEL >= ORX_WARNING
+   #define CCOUT2 \
+    if (getSoftDebugLevel() >= ORX_WARNING) \
+     CCOUT_EXEC(2)
+  #else
+   #define CCOUT2 if (ORX_NONE) \
+    CCOUT_EXEC(2)
+  #endif
+
+  #if ORX_HARD_DEBUG_LEVEL >= ORX_INFO
+   #define CCOUT3 \
+    if (getSoftDebugLevel() >= ORX_INFO) \
+     CCOUT_EXEC(3)
+  #else
+   #define CCOUT3 if (ORX_NONE) \
+    CCOUT_EXEC(3)
+  #endif
+
+  #if ORX_HARD_DEBUG_LEVEL >= ORX_DEBUG
+   #define CCOUT4 \
+    if (getSoftDebugLevel() >= ORX_DEBUG) \
+     CCOUT_EXEC(4)
+  #else
+   #define CCOUT4 if (ORX_NONE) \
+    CCOUT_EXEC(4)
+  #endif
+
+  #if ORX_HARD_DEBUG_LEVEL >= ORX_vDEBUG
+   #define CCOUT5 \
+    if (getSoftDebugLevel() >= ORX_vDEBUG) \
+     CCOUT_EXEC(5)
+  #else
+   #define CCOUT5 if (ORX_NONE) \
+    CCOUT_EXEC(5)
+  #endif
+
+ #else /* if ORX_PRINT_DEBUG_OUTPUT */
+  #define CCOUT(x) if (ORX_NONE) \
+   CCOUT_EXEC(5)
+ #endif /* if ORX_PRINT_DEBUG_OUTPUT */
+
+ #define CCOUT0 \
+  CCOUT_EXEC(0)
+#endif /* ifndef CCOUT */
+
 #endif /* _Debug_H__ */
