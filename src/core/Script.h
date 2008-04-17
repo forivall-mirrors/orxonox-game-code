@@ -49,6 +49,11 @@ namespace orxonox // tolua_export
 
   class _CoreExport Script // tolua_export
   { // tolua_export
+    struct LoadS {
+      const char *s;
+      size_t size;
+    };
+
     public:
       inline static Script* getInstance() { if (!Script::singletonRef) Script::singletonRef = new Script(); return Script::singletonRef; } // tolua_export
       inline ~Script() { Script::singletonRef = NULL; };
@@ -60,7 +65,7 @@ namespace orxonox // tolua_export
     void luaPrint(std::string str); // tolua_export
 
 #if LUA_VERSION_NUM != 501
-    inline static const char * lua_Chunkreader(lua_State *L, void *data, size_t *size) { return NULL;};
+    static const char * lua_Chunkreader(lua_State *L, void *data, size_t *size);
 #endif
 
     inline lua_State* getLuaState() { return luaState_; };
