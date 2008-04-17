@@ -1,0 +1,87 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Oliver Scheuss, (C) 2007
+ *   Co-authors:
+ *      ...
+ *
+ */
+
+//
+// C++ Interface: Server
+//
+// Description:
+//
+//
+// Author:  Oliver Scheuss, (C) 2007
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+
+#ifndef _Server_H__
+#define _Server_H__
+
+#include "NetworkPrereqs.h"
+
+#include <string>
+
+#include "core/Tickable.h"
+#include "PacketManager.h"
+
+
+
+namespace network
+{
+  /**
+  * This class is the root class of the network module for a server.
+  * It implements all functions necessary for a Server
+  */
+  class _NetworkExport Server : public PacketDecoder, public orxonox::Tickable{
+  public:
+    Server();
+    Server(int port, std::string bindAddress);
+    Server(int port, const char *bindAddress);
+    void open();
+    void close();
+    bool sendMSG(std::string msg);
+    bool sendMSG(const char *msg);
+    void tick(float time);
+  protected:
+    void processQueue();
+    void updateGamestate();
+  private:
+    bool sendGameState();
+    void processAck( ack *data, int clientID);
+    ConnectionManager *connection;
+    GameStateManager *gamestates;
+    PacketGenerator packet_gen;
+
+    ClientInformation *clients;
+  };
+
+
+
+
+}
+
+#endif /* _Server_H__ */
