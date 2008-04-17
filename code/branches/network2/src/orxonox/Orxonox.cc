@@ -261,7 +261,7 @@ namespace orxonox
     hudOverlay->show();
     
     if( !client_g->establishConnection() )
-      COUT(1) <<"CLIENT COULD NOT ESTABLISH CONNECTION :-)" << std::endl;
+      COUT(1) <<"CLIENT COULD NOT ESTABLISH CONNECTION" << std::endl;
     client_g->tick(0);
     
     
