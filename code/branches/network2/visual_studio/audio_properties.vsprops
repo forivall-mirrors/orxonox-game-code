@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="audio_properties"
+	InheritedPropertySheets=".\directory_properties.vsprops"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		PreprocessorDefinitions="AUDIO_SHARED_BUILD"
+		DisableSpecificWarnings="4244"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalDependencies="libvorbisfile$(CSS).lib alut$(CS).lib OpenAL32$(CS).lib"
+	/>
+</VisualStudioPropertySheet>

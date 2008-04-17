@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="loader_properties"
+	InheritedPropertySheets=".\directory_properties.vsprops"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		PreprocessorDefinitions="LOADER_SHARED_BUILD"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalDependencies="OgreMain$(CS).lib"
+		AdditionalLibraryDirectories="$(OutDir)"
+	/>
+</VisualStudioPropertySheet>
