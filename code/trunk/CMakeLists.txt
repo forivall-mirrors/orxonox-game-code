@@ -85,13 +85,18 @@ INCLUDE_DIRECTORIES(
 
 ################ Source files ###################
 
-#At first, build lua
-MESSAGE(STATUS "\n******************* Building tolua... ******************\n\n")
-EXECUTE_PROCESS(COMMAND ./tolua-build)
-MESSAGE(STATUS "\n\n******************* Building tolua done ****************\n")
+#if on a windows box, you have to generate the tolua bind files yourself
+IF(NOT WIN32)
 
-#generate lua bind source files
-EXECUTE_PROCESS(COMMAND bin/./tolua-exec-script)
+  #At first, build lua
+  MESSAGE(STATUS "\n******************* Building tolua... ******************\n\n")
+  EXECUTE_PROCESS(COMMAND ./tolua-build)
+  MESSAGE(STATUS "\n\n******************* Building tolua done ****************\n")
+
+  #generate lua bind source files
+  EXECUTE_PROCESS(COMMAND bin/./tolua-exec-script)
+
+ENDIF(NOT WIN32)
 
 #add main source dir
 ADD_SUBDIRECTORY(src)
