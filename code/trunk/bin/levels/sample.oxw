@@ -1,40 +1,12 @@
-<Namespace name="test" />
-<Namespace name="blub" />
-<Namespace name="rofl" />
-
-<Namespace name="ns1">
-  <Namespace name="ns11">
-    <Namespace name="ns111">
-    </Namespace>
-    <Namespace name="ns112">
-    </Namespace>
-  </Namespace>
-  <Namespace name="ns12">
-    <Namespace name="ns121">
-    </Namespace>
-    <Namespace name="ns122">
-    </Namespace>
-  </Namespace>
-</Namespace>
-
-<Namespace name="ns1::ns12::ns121">
-  <Namespace name="ns1211">
-  </Namespace>
-</Namespace>
-<Namespace name="ns1::ns12::ns122::ns1221" />
-
-<!--
- <audio>
-		<ambient>
-			<ogg src="allgorythm-lift_up" />
-			<ogg src="allgorythm-resonance_blaster" />
-			<ogg src="luke_grey_-_hypermode" />
-			<ogg src="task_horizon_-_menu1" />
-			<ogg src="tha_silent_partner_-_void" />
-		</ambient>
-  </audio> 
-
--->
+ <!--audio>
+	<ambient>
+		<ogg src="allgorythm-lift_up" />
+		<ogg src="allgorythm-resonance_blaster" />
+		<ogg src="luke_grey_-_hypermode" />
+		<ogg src="task_horizon_-_menu1" />
+		<ogg src="tha_silent_partner_-_void" />
+	</ambient>
+  </audio--> 
 
 <Ambient colourvalue="1,1,1" />
 <Skybox src="Orxonox/StarSkyBox" />
@@ -47,8 +19,8 @@
 <NPC position="0,-200,450" scale="1" mesh="razor.mesh"/>
 <NPC position="100,0,400" scale="1" mesh="razor.mesh"/>
 
-<!--Model name="starship" position="200,0,500" scale="10" mesh="starship.mesh" yawpitchroll="-90,-90,0" /-->
-<!--Model name="drone" position="-200,0,500" scale="10" mesh="drone.mesh" yawpitchroll="-90,-90,0">
+<!--Model name="starship" position="200,0,500" scale="10" mesh="starship.mesh" yawpitchroll="-90,-90,0" />
+<Model name="drone" position="-200,0,500" scale="10" mesh="drone.mesh" yawpitchroll="-90,-90,0">
   <attached>
     <Model name="drone2" position="200,-100,-500" scale="10" mesh="drone.mesh" yawpitchroll="-90,-90,0">
       <attached>
@@ -56,7 +28,7 @@
       </attached>
     </Model>
   </attached>
-</Model -->
+</Model-->
 
 <Model position="-200,1000,500" scale="10" mesh="hoover_body.mesh" yawpitchroll="-90,-90,0" />
 <Model position="-200,1000,500" scale="10" mesh="hoover_gear0.mesh" yawpitchroll="-90,-90,0" />
@@ -64,54 +36,6 @@
 <Model position="-200,1000,500" scale="10" mesh="hoover_gear2.mesh" yawpitchroll="-90,-90,0" />
 <Model position="-200,1000,500" scale="10" mesh="hoover_turbine.mesh" yawpitchroll="-90,-90,0" />
 
-
-<Namespace name="test" />
-<Namespace name="blub">
-</Namespace>
-<Namespace name="rofl">
-  <Namespace name="lol">
-  </Namespace>
-</Namespace>
-
-<Namespace name="ns1">
-  <Namespace name="ns11">
-    <Namespace name="ns111">
-      <Namespace name="ns1111">
-      </Namespace>
-    </Namespace>
-  </Namespace>
-  <Namespace name="ns13">
-  </Namespace>
-</Namespace>
-
-<Namespace name="ns1 ns2">
-  <Namespace name="abc" />
-</Namespace>
-
-<Namespace name="ns1::ns11 ns1::ns12 ns1::ns12::ns121">
-  <Namespace name="muhahaha" />
-</Namespace>
-
-<Namespace name="test">
-  <Namespace name="test" />
-</Namespace>
-
-<Namespace name="ns1::ns13">
-  <Namespace name="..::ns14" />
-  <Namespace name="..::..::ns3" />
-</Namespace>
-
-<Namespace name="AAA::BBB::..::CCC::..::DDD::..::BBB::BBBBBB::..::BBBBBBBBBBBBBBBBBBB::..::..::EEE" />
-
-<Namespace name="..::justatest" />
-
-<Namespace name="@file.oxw::anothertest" />
-
-<Namespace name="justonemoretest::@file.oxw::gagagaga" />
-
-<Namespace name="AAA::BBB, AAA::CCC; AAA::DDD,AAA::EEE">
-  <Namespace name="hax" />
-</Namespace>
 
 <!--?lua
 for i = 1, 226, 1 

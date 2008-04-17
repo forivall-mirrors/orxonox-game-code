@@ -59,9 +59,9 @@ namespace audio
 	void AudioManager::ambientStart()
 	{
 // 		currentBgSound = 0;
-    currentBgSound = rand() % bgSounds.size();
 		if (bgSounds.size() > 0)
 		{
+      currentBgSound = rand() % bgSounds.size();
 			if(!bgSounds[currentBgSound]->playback())
 			{
     		orxonox::Error("Ogg refused to play.");
@@ -71,7 +71,6 @@ namespace audio
 				COUT(3) << "Info: Started playing background sound" << std::endl;
 			}
 		}
-
 	}
 
 	void AudioManager::ambientStop()
