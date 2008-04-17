@@ -106,7 +106,7 @@ namespace orxonox {
 
   void GraphicsEngine::setConfigValues()
   {
-    SetConfigValue(dataPath_, "../../media/").description("relative path to media data");
+    SetConfigValue(dataPath_, "../../Media/").description("relative path to media data");
     SetConfigValue(ogreLogfile_, "ogre.log").description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
     SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
     SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
