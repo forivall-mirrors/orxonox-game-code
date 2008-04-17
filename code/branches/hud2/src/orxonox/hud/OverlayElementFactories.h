@@ -33,7 +33,7 @@
 #include <OgrePrerequisites.h>
 #include <OgreOverlayElementFactory.h>
 
-#include "Bar.h"
+#include "BarOverlayElement.h"
 
 
 namespace orxonox{
@@ -41,13 +41,26 @@ namespace orxonox{
   class _OrxonoxExport BarOverlayElementFactory : public Ogre::OverlayElementFactory{
   public:
     Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
-      return new Bar(instanceName);
+      return new BarOverlayElement(instanceName);
     }
     const Ogre::String& getTypeName(void) const{
       static Ogre::String name = "Bar";
       return name;
     }
   };
+
+
+  class _OrxonoxExport SmartBarOverlayElementFactory : public Ogre::OverlayElementFactory{
+    public:
+      Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
+	return new SmartBarOverlayElement(instanceName);
+      }
+      const Ogre::String& getTypeName(void) const{
+	static Ogre::String name = "SmartBar";
+	return name;
+      }
+  };
+
 }
 
 

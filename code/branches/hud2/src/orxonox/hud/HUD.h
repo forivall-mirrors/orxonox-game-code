@@ -37,12 +37,12 @@
 #include "OrxonoxPrereqs.h"
 
 #include "core/Tickable.h"
-#include "Bar.h"
+#include "BarOverlayElement.h"
 
 
 namespace orxonox
 {
-  class _OrxonoxExport HUD : Tickable
+  class _OrxonoxExport HUD// : Tickable
   {
   private:
 
@@ -50,107 +50,12 @@ namespace orxonox
     HUD(int zoom);
     ~HUD();
 
-    virtual void tick(float);
+//    virtual void tick(float);
 
-    Bar* energyCounter;
-    Ogre::SceneNode* ogreNode_;
+    SmartBarOverlayElement* energyCounter;
+//    Ogre::SceneNode* ogreNode_;
   };
 }	
 
 
-
-
-
-
-
-
-
 #endif
-
-/*#ifndef _HUD_H__
-#define _HUD_H__
-
-#include <string>
-
-#include <OgrePrerequisites.h>
-
-#include "../OrxonoxPrereqs.h"
-
-
-namespace orxonox
-{
-  class _OrxonoxExport HUD
-  {
-  private:
-    Ogre::OverlayElement* timeText_;
-    Ogre::OverlayElement* targetWindowNameText_;
-    Ogre::OverlayElement* targetWindowStatusText_;
-    Ogre::OverlayElement* targetWindowDistanceText_;
-    Ogre::OverlayElement* targetWindowHitRatingText_;
-    Ogre::OverlayElement* energyLength_;
-    Ogre::OverlayElement* shieldLeftTop_;
-    Ogre::OverlayElement* shieldRightTop_;
-    Ogre::OverlayElement* shieldLeftBottom_;
-    Ogre::OverlayElement* shieldRightBottom_;
-    Ogre::OverlayElement* rocketNum1_;
-    Ogre::OverlayElement* rocketNum2_;
-    Ogre::OverlayElement* rocketNum3_;
-    Ogre::OverlayElement* rocketNum4_;
-    Ogre::OverlayElement* energyDistrPoint_;
-    Ogre::OverlayElement* primarChoice_;
-
-    int timeMin_;
-    int timeSec_;
-
-    std::string targetWindowName_;
-    std::string targetWindowStatus_;
-    int targetWindowDistance_;
-    int targetWindowHitRating_;
-
-    int energyValue_;
-
-    bool shieldLeftTopValue_;
-    bool shieldRightTopValue_;
-    bool shieldLeftBottomValue_;
-    bool shieldRightBottomValue_;
-
-    int rocket1_;
-    int rocket2_;
-    int rocket3_;
-    int rocket4_;
-
-    float energyDistrShield_;
-    float energyDistrEngine_;
-    float energyDistrLaser_;
-
-    float energyDistrPixelX_;
-    float energyDistrPixelY_;
-
-    int primarValue_;
-
-  public:
-    HUD( void );
-    ~HUD( void );
-    void init( void );
-
-    void setTime(int i, int j);
-    void setTargetWindowName(std::string i);
-    void setTargetWindowStatus(std::string i);
-    void setTargetWindowDistance(int i);
-    void setTargetWindowHitRating(int i);
-    void setEnergyValue(int i);
-    void setShieldLeftTopValue(bool i);
-    void setShieldRightTopValue(bool i);
-    void setShieldLeftBottomValue(bool i);
-    void setShieldRightBottomValue(bool i);
-    void setRocket1(int i);
-    void setRocket2(int i);
-    void setRocket3(int i);
-    void setRocket4(int i);
-    void setEnergyDistr(float s, float e, float l);
-    void setPrimar(int i);
-
-  };
-}
-
-#endif /* _HUD_H__ */

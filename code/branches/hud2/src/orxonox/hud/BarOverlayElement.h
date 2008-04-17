@@ -29,48 +29,68 @@
 #ifndef _BAR_H__
 #define _BAR_H__
 
-#include <string>
-#include <OgreColourValue.h>
-#include <OgrePanelOverlayElement.h>
 #include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
-#include <OgreOverlayContainer.h>
+#include <OgrePanelOverlayElement.h>
+
 #include <OgrePrerequisites.h>
-#include <string.h>
 #include "../OrxonoxPrereqs.h"
 
 
 
 namespace orxonox
 {
-  class _OrxonoxExport Bar : public Ogre::PanelOverlayElement
+  class _OrxonoxExport BarOverlayElement : public Ogre::PanelOverlayElement
   {
   private:
-    float percentage_;
-    bool dir_;
-    Ogre::ColourValue color_;
+    int percentage_;
+    int dir_;	
+    int left_;
+    int top_;
+    int width_;
+    int height_;
 	
     static Ogre::String& typeName_s;
 	
   public:
 
-    Bar(const Ogre::String& name);
+    static const int LEFT = 0;
+    static const int UP = 1;
+    static const int RIGHT = 2;
+    static const int DOWN = 3;
 
+    static const int RED = 0;
+    static const int YELLOW = 1;
+    static const int GREEN = 2;
+
+    BarOverlayElement(const Ogre::String& name);
+    virtual ~BarOverlayElement();
     virtual void initialise();
 
-    virtual ~Bar();
-    
-//    virtual const Ogre::String& getTypeName() const;
-//    virtual ~Bar();
+    void initBarOverlayElement(Real left, Real top, Real width, Real height,
+          int dir,  int colour);
 
+    void reset(int percentage);
+    void setColour(int colour);
 
+  };
+  
+  
+  class _OrxonoxExport SmartBarOverlayElement : public BarOverlayElement
+  {
+    private:
 
+    public:
+      
+      SmartBarOverlayElement(const Ogre::String& name);
+      virtual ~SmartBarOverlayElement(void);
+      virtual void initialise();
+      
+      void initSmartBarOverlayElement(Ogre::Real left, Ogre::Real top, Ogre::Real width, Ogre::Real height, int dir);
+      void reset(int percentage);
+  };
 
-/*    Bar(const Ogre::String& s);
-    ~Bar(void);
-    void setPercentage(float percentage);
-    void setColor(Ogre::ColourValue color);
-*/  };
+  
 }
 
 #endif

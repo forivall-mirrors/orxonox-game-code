@@ -310,6 +310,8 @@ namespace orxonox
     //orxonoxHUD_->setEnergyValue(20);
     //orxonoxHUD_->setEnergyDistr(20,20,60);
     //hudOverlay->show();
+    
+    
 
 	/*
     auMan_->ambientAdd("a1");
