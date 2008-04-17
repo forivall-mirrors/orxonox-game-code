@@ -105,7 +105,7 @@ namespace network
       sync.data = data;
       data+=sync.length;
 
-      if(it->objectID!=sync.objectID){
+      if(!it || it->objectID!=sync.objectID){
         // bad luck ;)
         // delete the synchronisable (obviously seems to be deleted on the server)
         while(it && it->objectID!=sync.objectID)
