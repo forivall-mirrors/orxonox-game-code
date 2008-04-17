@@ -216,6 +216,8 @@ namespace network
 
   void PacketDecoder::processGamestate( GameStateCompressed *state )
   {
+    COUT(5) << "PacketDecoder: processing Gamestate" << std::endl;
+    //printGamestate( state );
   }
 
   void PacketDecoder::processClassid( classid *cid)

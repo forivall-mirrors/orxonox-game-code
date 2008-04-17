@@ -88,14 +88,14 @@ namespace orxonox
       if(meshSrc_.compare("")!=0){
         this->mesh_.setMesh(meshSrc_);
         this->attachObject(this->mesh_.getEntity());
-        COUT(4) << "Loader: Created model" << std::endl;
+        COUT(4) << "Loader (Model.cc): Created model" << std::endl;
       }
       return true;
     }
 
     void Model::registerAllVariables(){
 //       WorldEntity::registerAllVariables();
-      COUT(5) << "registering new meshsrc with size: " << meshSrc_.length()+1 << std::endl;
+      COUT(5) << "Model.cc:registering new meshsrc with size: " << meshSrc_.length()+1 << " this: " << this << std::endl;
       registerVar(&meshSrc_, meshSrc_.length() + 1, network::STRING);
     }
 }

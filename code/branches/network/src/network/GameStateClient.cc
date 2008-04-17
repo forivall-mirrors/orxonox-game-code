@@ -181,7 +181,7 @@ namespace network
   //##### ADDED FOR TESTING PURPOSE #####
 
   GameState *GameStateClient::decompress(GameStateCompressed *a) {
-    COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
+    //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
     int normsize = a->normsize;
     int compsize = a->compsize;
     int bufsize;

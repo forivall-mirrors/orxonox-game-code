@@ -45,11 +45,11 @@ namespace network
     temp->size = size;
     temp->var = var;
     temp->type = t;
-    COUT(5) << "registering var with size: " << temp->size << " and type: " << temp->type << std::endl; 
+    COUT(5) << "Syncronisable::registering var with size: " << temp->size << " and type: " << temp->type << std::endl; 
     // increase datasize
     datasize+=sizeof(int)+size;
     //std::cout << "push temp to syncList (at the bottom) " << datasize << std::endl;
-    COUT(5) << "objectID: " << objectID << " this: " << this << " name: " << this->getIdentifier()->getName() << " networkID: " << this->getIdentifier()->getNetworkID() << std::endl;
+    COUT(5) << "Syncronisable::objectID: " << objectID << " this: " << this << " name: " << this->getIdentifier()->getName() << " networkID: " << this->getIdentifier()->getNetworkID() << std::endl;
     syncList->push_back(temp);
   }
 

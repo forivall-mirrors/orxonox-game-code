@@ -37,7 +37,7 @@ void printGameStateCompressed( GameStateCompressed* gc ) {
 bool compareData( GameState* g1, GameState* g2 ) {
   if ( g1->id != g2->id ) {
     std::cout << "\t--> GameStates are not comparable -> not same id" << std::endl;
-    return 1;
+    return true;
   }
   else if ( g1->size != g2->size ) {
     std::cout << "\t--> GameStates are not the same size!!" << std::endl;
@@ -50,7 +50,18 @@ bool compareData( GameState* g1, GameState* g2 ) {
       return false;
     }
   }
-  std::cout << "\t--> GameStates are identical (compareData)" << std::endl;
+  //std::cout << "\t--> GameData are identical (compareData)" << std::endl;
+  return true;
+}
+
+bool compareData2( GameState* g1, GameState* g2 ) {
+  int length = g1->size;
+  for ( int i=0; i<length; i++ ) {
+    if ( g1->data[i] != g2->data[i] ) {
+      return false;
+    }
+  }
+  //std::cout << "\t--> GameData are identical (compareData)" << std::endl;
   return true;
 }
 
@@ -66,11 +77,11 @@ bool compareGameStates( GameState* g1, GameState* g2 ) {
     std::cout << "\t==> GameState diffed params not identical (GameStateCompare)" << std::endl;
     return false;
   }
-  else if ( !compareData( g1, g2 ) ) {
+  else if ( !compareData2( g1, g2 ) ) {
     std::cout << "\t==> GameState data are not identical (GameStateCompare)" << std::endl;
     return false;
   }
-  std::cout << "\t==> GameStates are identical (GameStateCompare)" << std::endl;
+  //std::cout << "\t==> GameStates are identical (GameStateCompare)" << std::endl;
   return true;
 }
 
@@ -131,7 +142,7 @@ GameState* changeGameStateABit( GameState* a, int mode ) {
     b->data = new unsigned char[length];
     b->size = length;
     for ( int i=0; i<length; i++ ) {
-      if ( i%(rand()%((length)/11)) == 0 ) b->data[i] = rand()%255;
+      if ( i%(rand()%((length)/11)+rand()) == 0 ) b->data[i] = (char)rand()%255;
       else b->data[i] = a->data[i];
     }
   }
@@ -140,11 +151,11 @@ GameState* changeGameStateABit( GameState* a, int mode ) {
     b->data = new unsigned char[s];
     b->size = s;
     for ( int i=0; i<length; i++ ) {
-      if ( i%10 == 0 ) b->data[i] = rand()%255;
+      if ( i%10 == 0 ) b->data[i] = (char)rand()%255;
       else b->data[i] = a->data[i];
     }
     for( int i=length; i<s; i++ ) {
-      b->data[i] = rand()%255;
+      b->data[i] = (char)rand()%255;
     }
   }
   else if ( mode == 4 ) {
@@ -152,7 +163,7 @@ GameState* changeGameStateABit( GameState* a, int mode ) {
     b->data = new unsigned char[s];
     b->size = s;
     for ( int i=0; i<length; i++ ) {
-      if ( i%(rand()%(length)) == 0 ) b->data[i] = rand()%255;
+      if ( i%(rand()%(length)+rand()) == 0 ) b->data[i] = (char)rand()%255;
       else b->data[i] = a->data[i];
     }
     for( int i=length; i<s; i++ ) {
@@ -164,7 +175,7 @@ GameState* changeGameStateABit( GameState* a, int mode ) {
     b->data = new unsigned char[s];
     b->size = s;
     for ( int i=0; i<s; i++ ) {
-      if ( i%10 == 0 ) b->data[i] = rand()%255;
+      if ( i%10 == 0 ) b->data[i] = (char)rand()%255;
       else b->data[i] = a->data[i];
     }
   }
@@ -259,7 +270,7 @@ void testCompressWithDiff( int size, int modeCreateData, int modeChangeData ) {
   std::cout << "---First gererated Gamestate with some changes ev. longer" << std::endl;
   printGameState( g_undiff2 );  
 
-  if( !compareData( g_undiff1, g_undiff2 ) ) std::cout << " BUT THAT'S HOW IT HAS TO BE" << std::endl;
+  if( !compareData( g_undiff1, g_undiff2 ) ) std::cout << " DATA not identical.. ok" << std::endl;
 
   g_diffed = g_manager->testDiff( g_undiff1, g_undiff2 );
   std::cout << "---Diffed Gamestate not compressed" << std::endl;
@@ -278,13 +289,112 @@ void testCompressWithDiff( int size, int modeCreateData, int modeChangeData ) {
   printGameState( g_resultDiffed );
 
   std::cout << "---Diffed Gamestates before compressed and after uncompress comparsion" << std::endl;
-  compareGameStates( g_resultDiffed, g_diffed );
+  if ( compareGameStates( g_resultDiffed, g_diffed ) ) std::cout << "GAMESTATES IDENTICAL" << std::endl;
  
   g_resultUndiffed = g_client->testUndiff( g_undiff1, g_resultDiffed );
   std::cout << "---New Gamestate of pseudo Server compared with new gamestate that Client gets" << std::endl;
-  compareGameStates( g_resultUndiffed, g_undiff2 );
+  if ( compareGameStates( g_resultUndiffed, g_undiff2 ) ) std::cout << "GAMESTATES IDENTICAL" << std::endl;
 
   return;  
+}
+
+bool testNCompressWithDiff( int n, int size, int modeCreateData, int modeChangeData ) { 
+
+  GameStateClient* g_client;
+  GameStateManager* g_manager;;
+  
+  GameStateCompressed* gc = new GameStateCompressed;
+  GameState* g_undiff1 = new GameState;
+  GameState* g_undiff2 = new GameState;
+  GameState* g_diffed;
+  GameState* g_resultDiffed;
+  GameState* g_resultUndiffed;
+
+  g_undiff1->data = createData( size, modeCreateData );
+  g_undiff1->size = size;
+  g_undiff1->id = 1;
+  g_undiff1->diffed = false;
+  //l = -1;
+  g_undiff2 = changeGameStateABit( g_undiff1, modeChangeData );
+
+  while( compareData2( g_undiff1, g_undiff2 ) ) {
+    delete g_undiff2->data;
+    g_undiff2 = changeGameStateABit( g_undiff1, modeChangeData );
+  } 
+  //l = -2;
+  g_diffed = g_manager->testDiff( g_undiff1, g_undiff2 );
+  gc = g_manager->testCompress( g_diffed );
+  g_resultDiffed = g_client->testDecompress( gc );
+
+  if ( !compareGameStates( g_resultDiffed, g_diffed ) ) return false;
+  //l = -3;
+  g_resultUndiffed = g_client->testUndiff( g_undiff1, g_resultDiffed );
+  if ( !compareGameStates( g_resultUndiffed, g_undiff2 ) ) return false;
+  //l = 1;
+  /*if ( gc != NULL && gc->data != NULL )
+    delete gc->data;
+  //l = 2;
+  //if ( gc != NULL ) 
+    //delete gc;
+  //l = 3;
+  if ( g_undiff1 != NULL && g_undiff1->data != NULL )
+    delete g_undiff1->data;
+  //l = 4; 
+  //if ( g_undiff1 != NULL )
+   //delete g_undiff1;
+  //l = 5;
+  if ( g_undiff2 != NULL && g_undiff2->data )
+    delete g_undiff2->data;
+  //l = 6; 
+  //if ( g_undiff2 != NULL )
+    //delete g_undiff2;
+  //l = 7;
+  if ( g_diffed != NULL && g_diffed->data )
+    //delete g_diffed->data;
+  //l = 8; 
+  //if ( g_diffed )
+    //delete g_diffed;
+  //l = 9;
+  if ( g_resultDiffed != NULL && g_resultDiffed->data )
+    delete g_resultDiffed->data;
+  //l = 10; 
+  //if ( g_resultDiffed )
+    //delete g_resultDiffed;
+  //l = 11;*/
+  
+  return true;
+}
+
+bool testNCompression( int n, int size, int mode ) { 
+  GameStateClient* g_client;
+  GameStateManager* g_manager;;
+  
+  GameState* g_new = new GameState;
+  GameState* g_old = new GameState;
+  GameStateCompressed* gc = new GameStateCompressed;
+  
+  g_old->data = createData( size, mode );
+  g_old->size = size;
+  g_old->id = 0;
+  g_old->diffed = false;
+  
+  gc = g_manager->testCompress( g_old );
+
+  g_new = g_client->testDecompress( gc );
+
+  if ( !compareGameStates( g_new, g_old ) ) return false;
+  
+  
+  if ( g_new != NULL && g_new->data != NULL )
+    delete g_new->data;
+
+  if ( g_old != NULL && g_old->data != NULL )
+    delete g_old->data;
+
+  if ( gc != NULL && gc->data )
+    delete gc->data;
+
+  return true;
 }
 
 void printClientObjectMapping( ConnectionManager* cmanager, int clients ) {
@@ -520,14 +630,16 @@ void displayModes() {
 }
 
 int main( int argc, char* argv[] ) {
-  int a,b,c;
+  int a,b,c,n;
   std::string dec = "nothing";
   std::cout << "############### START TEST (quit q) ###############" << std::endl;
   std::cout << "possible tests: " << std::endl;
   std::cout << "displayModes:\t\t modes" << std::endl;
   std::cout << "testCompression:\t tc [datalength] [mode Data]" << std::endl;
+  std::cout << "testNCompression:\t tnc [#of loops] [datalength] [mode Data]" << std::endl;
   std::cout << "testDifferentiation:\t td [datalength] [mode Data] [mode Change]" << std::endl;
   std::cout << "testCompressWithDiff:\t tcd [datalength] [mode Data] [mode Change]" << std::endl;
+  std::cout << "testNCompressWithDiff:\t tncd [#of loops] [datalength] [mode Data] [mode Change]" << std::endl;
   std::cout << "testClientObjectMapping: tcom [#clients]" << std::endl;
   std::cout << "testClientInformation:\t tci [#clients] (call with >10)" << std::endl;
   std::cout << "testPacketBuffer:\t tbuf (comment address assignements in PacketBuffer.cc!)" << std::endl;
@@ -557,7 +669,32 @@ int main( int argc, char* argv[] ) {
     } 
     else if ( dec.compare("tbuf") == 0 ) {
       testPacketBuffer();
-    }   
+    } 
+    else if ( dec.compare("tncd") == 0 ) {
+      std::cin >> n; std::cin >> a; std::cin >> b; std::cin >> c;
+      for ( int i=1; i<=n; i++ ) {  
+        std::cout << i << " s" << a << " ";      
+        //std::cout << "start loop test " << i << std::endl;
+        if ( !testNCompressWithDiff( i, a, b, c ) ) {
+          std::cout << "#COMPARSION ERROR->VERYVERY BAD" << std::endl;
+          break;
+        }
+      }
+      std::cout << "end loop comparsion test" << std::endl;
+    }
+    else if ( dec.compare("tnc") == 0 ) {
+      std::cin >> n; std::cin >> a; std::cin >> b;
+      for ( int i=1; i<=n; i++ ) {  
+        std::cout << i << " s" << a << " ";      
+        //std::cout << "start loop test " << i << std::endl;
+        if ( !testNCompression( i, a, b ) ) {
+          std::cout << "#COMPARSION ERROR->VERYVERY BAD" << std::endl;
+          break;
+        }
+      }
+      std::cout << "end loop comparsion test" << std::endl;
+    }
+    else std::cout << "invalid input" << std::endl;  
     std::cout << "################## END ONE TURN ##################@" << std::endl;
   }
   return 0;
