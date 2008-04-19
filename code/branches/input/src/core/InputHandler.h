@@ -43,12 +43,27 @@
 
 namespace orxonox
 {
+  namespace KeybindSetting
+  {
+    enum KeybindSetting
+    {
+      none,
+      onPress,
+      onRelease,
+      continuous,
+    };
+  }
+
+  class _CoreExport BaseInputHandler
+      : public OIS::KeyListener, public OIS::MouseListener
+  {
+  };
+    
   /**
     @brief Captures mouse and keyboard input while in the actual game mode.
     Manages the key bindings.
   */
-  class _CoreExport InputHandlerGame
-        : public OIS::KeyListener, public OIS::MouseListener
+  class _CoreExport InputHandlerGame : public BaseInputHandler
   {
   public:
     InputHandlerGame ();
@@ -71,9 +86,11 @@ namespace orxonox
         256 should be ok since the highest number in the enum is 237. */
     static const int numberOfKeys_s = 256;
     //! Array of input events for every pressed key
-    std::string bindingsKeyPressed_[numberOfKeys_s];
+    std::string bindingsKeyPress_[numberOfKeys_s];
     //! Array of input events for every released key
-    std::string bindingsKeyReleased_[numberOfKeys_s];
+    std::string bindingsKeyRelease_[numberOfKeys_s];
+    //! Array of input events for every holding key
+    std::string bindingsKeyHold_[numberOfKeys_s];
 
     /** denotes the maximum number of different buttons there are in OIS.
         16 should be ok since the highest number in the enum is 7. */
@@ -90,8 +107,7 @@ namespace orxonox
     @brief Captures mouse and keyboard input and distributes it to the
     GUI.
   */
-  class _CoreExport InputHandlerGUI
-        : public OIS::KeyListener, public OIS::MouseListener
+  class _CoreExport InputHandlerGUI : public BaseInputHandler
   {
   public:
     InputHandlerGUI ();

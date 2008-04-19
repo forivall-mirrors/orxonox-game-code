@@ -156,6 +156,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\util\FloatParser.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\util\Math.cc"
 				>
 			</File>
@@ -195,6 +199,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\util\Convert.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\FloatParser.h"
 				>
 			</File>
 			<File
