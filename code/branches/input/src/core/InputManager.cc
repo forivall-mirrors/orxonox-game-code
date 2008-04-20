@@ -206,9 +206,10 @@ namespace orxonox
     // capture all the input. That calls the event handlers.
     if (mouse_)
       mouse_->capture();
-
     if (keyboard_)
       keyboard_->capture();
+
+    // Give the listeners the chance to do additional calculations
   }
 
   /**

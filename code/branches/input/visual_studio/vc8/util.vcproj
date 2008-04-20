@@ -156,7 +156,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\FloatParser.cpp"
+				RelativePath="..\..\src\util\ExprParser.cc"
 				>
 			</File>
 			<File
@@ -202,7 +202,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\FloatParser.h"
+				RelativePath="..\..\src\util\ExprParser.h"
 				>
 			</File>
 			<File

@@ -73,6 +73,7 @@ namespace orxonox
     }
     this->bindingsKeyPress_[OIS::KC_NUMPADENTER] = "setInputMode " + getConvertedValue<int, std::string>(IM_KEYBOARD);
     this->bindingsKeyPress_[OIS::KC_ESCAPE] = "exit";
+    this->bindingsKeyHold_[OIS::KC_U] = "exec disco.txt";
     return true;
   }
 
@@ -82,6 +83,7 @@ namespace orxonox
   */
   bool InputHandlerGame::keyPressed(const OIS::KeyEvent &e)
   {
+    this->keysDown_.push_back(e.key);
     // find the appropriate key binding
     std::string cmdStr = bindingsKeyPress_[int(e.key)];
     if (cmdStr != "")
@@ -98,6 +100,16 @@ namespace orxonox
   */
   bool InputHandlerGame::keyReleased(const OIS::KeyEvent &e)
   {
+    // remove the key from the keysDown_ list
+    for (std::list<OIS::KeyCode>::iterator it = keysDown_.begin(); it != keysDown_.end(); it++)
+    {
+      if (*it == e.key)
+      {
+        keysDown_.erase(it);
+        break;
+      }
+    }
+
     // find the appropriate key binding
     std::string cmdStr = bindingsKeyRelease_[int(e.key)];
     if (cmdStr != "")
@@ -135,6 +147,25 @@ namespace orxonox
   bool InputHandlerGame::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
     return true;
+  }
+
+  /**
+    @brief Tick method to do additional calculations.
+    @param dt Delta time.
+  */
+  void InputHandlerGame::tick(float dt)
+  {
+    // iterate through all the pressed keys
+    for (std::list<OIS::KeyCode>::iterator it = keysDown_.begin(); it != keysDown_.end(); it++)
+    {
+      // find the appropriate key binding
+      std::string cmdStr = bindingsKeyHold_[*it];
+      if (cmdStr != "")
+      {
+        CommandExecutor::execute(cmdStr);
+        COUT(3) << "Executing command: " << cmdStr << std::endl;
+      }
+    }
   }
 
   /**
@@ -222,6 +253,15 @@ namespace orxonox
   {
 		//CEGUI::System::getSingleton().injectMouseButtonUp(convertOISMouseButtonToCegui(id));
     return true;
+  }
+
+  /**
+    @brief Tick method to do additional calculations.
+    @param dt Delta time.
+  */
+  void InputHandlerGUI::tick(float dt)
+  {
+    
   }
 
 }

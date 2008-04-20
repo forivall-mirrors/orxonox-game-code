@@ -53,7 +53,7 @@
 // util
 //#include "util/Sleep.h"
 #include "util/ArgReader.h"
-#include "util/FloatParser.h"
+#include "util/ExprParser.h"
 
 // core
 #include "core/ConfigFileManager.h"
@@ -129,14 +129,16 @@ namespace orxonox
   public:
     static void calculate(std::string calculation)
     {
-      char** useless = 0;
-      double result = 0.0;
-      bool success = parse_float((char* const)calculation.c_str(), useless, &result);
-      if (success)
+      ExprParser expr(calculation);
+      if (expr.getSuccess())
       {
-        if (result == 42.0)
+        if (expr.getResult() == 42.0)
           std::cout << "Greetings from the restaurant at the end of the universe." << std::endl;
-        std::cout << "Result is: " << result << std::endl;
+        // FIXME: insert modifier to display in full precision
+        std::cout << "Result is: " << expr.getResult() << std::endl;
+        if (expr.getRemains() != "")
+          std::cout << "Warning: Expression could not be parsed to the end! Remains: '"
+              << expr.getRemains() << "'" << std::endl;
       }
       else
         std::cout << "Cannot calculate expression: Parse error" << std::endl;

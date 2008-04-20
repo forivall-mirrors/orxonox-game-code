@@ -1,125 +1,67 @@
-//FloatParser.cpp
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Reto Grieder
+ *   Co-authors:
+ *      ...
+ *
+ */
 
-#include "FloatParser.h"
-#include <string>
+/**
+  @file
+  @brief Declaration of FloatParser
+*/
+
+#include "ExprParser.h"
 #include <cmath>
 #include <cstring>
 
-using namespace std;
-
-//Makros, um Funktionen einfacher parser zu können
+// macros for easier if, else statements
 #define CASE_1(var) if (!strcmp(SWITCH,var))
 #define CASE(var) else if (!strcmp(SWITCH,var))
 #define CASE_ELSE else
 
+//! skip white spaces
 #define PARSE_BLANKS while (*reading_stream == ' ') ++reading_stream;
 
-//static enumerations and variables
-static enum binary_operator { b_plus, b_minus, mal, durch, modulo, hoch, undef, oder, und, gleich, b_nicht, kleiner, groesser, ungleich, kleinergleich, groessergleich};
-static enum unary_operator { u_plus, u_minus, u_nicht };
-static binary_operator op;
-static char* reading_stream;
-static bool parse_float_failed = false;
-
-//static funtions
-static double parse_expr_1();
-static double parse_expr_2();
-static double parse_expr_3();
-static double parse_expr_4();
-static double parse_expr_5();
-static double parse_expr_6();
-static double parse_expr_7();
-static double parse_expr_8();
-static inline char* parse_word(char* str);
-static inline binary_operator parse_binary_operator();
-static inline unary_operator parse_unary_operator();
-static double parse_argument();
-static double parse_last_argument();
-
-//Public functions:
-/******************/
-bool parse_float(char* const string, char **endptr, double* result)
+ExprParser::ExprParser(std::string& str)
 {
-   parse_float_failed = false;
-   reading_stream = string;
-   double value = parse_expr_8();
-   if ( !parse_float_failed && (
-      *reading_stream == ')' || \
-      *reading_stream == '}' || \
-      *reading_stream == ']' || \
-      *reading_stream == ',' || \
-      *reading_stream == ';' || \
-      *reading_stream == '_' || \
-      *reading_stream == '\0' || \
-      *reading_stream > 64 && *reading_stream < 91 || \
-      *reading_stream > 96 && *reading_stream < 123))
-   {
-      endptr = &reading_stream;
-      *result = value;
-      return true;
-   }
-   else
-   {
-     *result = 0;
-     return false;
-   }
-}
-
-bool parse_float(char* const string, char** endptr, char delimiter, double* result)
-{
-   parse_float_failed = false;
-   reading_stream = string;
-   double value = parse_expr_8();
-   if (*reading_stream == delimiter && !parse_float_failed)
-   {
-      endptr = &reading_stream;
-      *result = value;
-      return true;
-   }
-   else
-   {
-     *result = 0;
-     return false;
-   }
-}
-
-bool parse_vector_float(char* const string, char** endptr, bool last_float, double* result)
-{
-   parse_float_failed = false;
-   reading_stream = string;
-   double value = parse_expr_4();
-   if (last_float)
-   {
-      if (*reading_stream == '>')
-      {
-         endptr = &reading_stream;
-         *result = value;
-      }
-      else
-        parse_float_failed = true;
-   }
-   else
-   {
-      if (*reading_stream == ',')
-      {
-         *endptr = reading_stream;
-         *result = value;
-      }
-      else
-        parse_float_failed = true;
-   }
-   if (parse_float_failed)
-   {
-     *result = 0;
-     return false;
-   }
-   else
-     return true;
+  this->failed_ = false;
+  this->reading_stream = str.c_str();
+  if (str.size() == 0 || *reading_stream == '\0')
+  {
+    this->failed_ = true;
+    this->result_ = 0.0;
+  }
+  else
+  {
+    this->result_ = parse_expr_8();
+    this->remains_ = reading_stream;
+  }
 }
 
 //Private functions:
 /******************/
-static double parse_argument()
+double ExprParser::parse_argument()
 {
    double value = parse_expr_8();
    if (*reading_stream == ',')
@@ -129,12 +71,12 @@ static double parse_argument()
    }
    else
    {
-     parse_float_failed = true;
+     this->failed_ = true;
      return 0;
    }
 }
 
-static double parse_last_argument()
+double ExprParser::parse_last_argument()
 {
    double value = parse_expr_8();
    if (*reading_stream == ')')
@@ -144,12 +86,12 @@ static double parse_last_argument()
    }
    else
    {
-     parse_float_failed = true;
+     this->failed_ = true;
      return 0;
    }
 }
 
-static double parse_expr_8()
+double ExprParser::parse_expr_8()
 {
    double value = parse_expr_7();
    for(;;)
@@ -165,7 +107,7 @@ static double parse_expr_8()
 }
 
 
-static double parse_expr_7()
+double ExprParser::parse_expr_7()
 {
    double value = parse_expr_6();
    for(;;)
@@ -180,7 +122,7 @@ static double parse_expr_7()
    };
 }
 
-static double parse_expr_6()
+double ExprParser::parse_expr_6()
 {
    double value = parse_expr_5();
    for(;;)
@@ -199,7 +141,7 @@ static double parse_expr_6()
    };
 }
 
-static double parse_expr_5()
+double ExprParser::parse_expr_5()
 {
    double value = parse_expr_4();
    for(;;)
@@ -224,7 +166,7 @@ static double parse_expr_5()
    };
 }
 
-static double parse_expr_4()
+double ExprParser::parse_expr_4()
 {
    double value = parse_expr_3();
    for(;;)
@@ -243,7 +185,7 @@ static double parse_expr_4()
    };
 }
 
-static double parse_expr_3()
+double ExprParser::parse_expr_3()
 {
    double value = parse_expr_2();
    for(;;)
@@ -268,7 +210,7 @@ static double parse_expr_3()
    };
 }
 
-static double parse_expr_2()
+double ExprParser::parse_expr_2()
 {
    double value = parse_expr_1();
    while (*reading_stream != '\0')
@@ -287,7 +229,7 @@ static double parse_expr_2()
    return value;
 }
 
-static double parse_expr_1()
+double ExprParser::parse_expr_1()
 {
    PARSE_BLANKS
    double value;
@@ -298,15 +240,15 @@ static double parse_expr_1()
    if (*reading_stream == '\0')
    {
      // end of string
-     parse_float_failed = true;
+     this->failed_ = true;
      return 0;
    }
    else if (*reading_stream > 47 && *reading_stream < 59 || *reading_stream == 46)
-   {  //Zahl
-      value = strtod(reading_stream,&reading_stream);
+   {  // number
+      value = strtod(reading_stream, const_cast<char**>(&reading_stream));
    }
    else if (*reading_stream > 64 && *reading_stream < 91 || *reading_stream > 96 && *reading_stream < 123 || *reading_stream == 46)
-   {  //Variable oder Funktion
+   {  // variable or function
       char* word = new char[256];
       parse_word(word);
       PARSE_BLANKS
@@ -385,33 +327,40 @@ static double parse_expr_1()
          CASE("div")
             value = floor(parse_argument()/parse_last_argument());
          CASE("max")
-            value = max(parse_argument(),parse_last_argument());
+           value = std::max(parse_argument(),parse_last_argument());
          CASE("min")
-            value = min(parse_argument(),parse_last_argument());
+           value = std::min(parse_argument(),parse_last_argument());
          CASE_ELSE
          {
-           parse_float_failed = true;
+           this->failed_ = true;
+           delete[] word;
            return 0;
          }
       }
       else
       {
-         //TODO: Variablen-Liste durchsuchen
-         //Momentaner Ersatzwert für jede Variable:
-         //value = 0;
-         parse_float_failed = true;
-         return 0;
+#define SWITCH word
+         CASE_1("pi")
+           value = 3.1415926535897932;
+         CASE("e")
+           value = 2.7182818284590452;
+         CASE_ELSE
+         {
+           this->failed_ = true;
+           delete[] word;
+           return 0;
+         }
       }
       delete[] word;
    }
    else if (*reading_stream == 40)
-   {  //Audruck in Klammern
+   {  // expresion in paranthesis
       ++reading_stream;
       value = parse_last_argument();
    }
    else
    {
-     parse_float_failed = true;
+     this->failed_ = true;
      return 0;
    }
  
@@ -423,13 +372,13 @@ static double parse_expr_1()
       case u_minus: return -value;
       default:
         {
-          parse_float_failed = true;
+          this->failed_ = true;
           return 0;
         }
    }
 }
 
-static inline char* parse_word(char* str)
+char* ExprParser::parse_word(char* str)
 {
    char* word = str;
    int counter = 0;
@@ -439,7 +388,7 @@ static inline char* parse_word(char* str)
       counter++;
       if (counter > 255)
       {
-        parse_float_failed = true;
+        this->failed_ = true;
         return '\0';
       }
    };
@@ -447,7 +396,7 @@ static inline char* parse_word(char* str)
    return str;
 }
 
-static inline binary_operator parse_binary_operator()
+ExprParser::binary_operator ExprParser::parse_binary_operator()
 {
    binary_operator op;
    switch (*reading_stream)
@@ -483,7 +432,7 @@ static inline binary_operator parse_binary_operator()
       return op;
 }
 
-static inline unary_operator parse_unary_operator()
+ExprParser::unary_operator ExprParser::parse_unary_operator()
 {
    switch (*reading_stream)
    {

@@ -37,6 +37,7 @@
 #include "CorePrereqs.h"
 
 #include <string>
+#include <list>
 #include <OIS/OIS.h>
 
 #include "InputEvent.h"
@@ -47,16 +48,17 @@ namespace orxonox
   {
     enum KeybindSetting
     {
-      none,
-      onPress,
-      onRelease,
-      continuous,
+      None,
+      OnPress,
+      OnRelease,
+      Continuous,
     };
   }
 
   class _CoreExport BaseInputHandler
       : public OIS::KeyListener, public OIS::MouseListener
   {
+    virtual void tick(float dt) = 0;
   };
     
   /**
@@ -79,8 +81,13 @@ namespace orxonox
 		bool keyPressed   (const OIS::KeyEvent   &arg);
 		bool keyReleased  (const OIS::KeyEvent   &arg);
 
+    void tick(float dt);
+
     // temporary hack
     void callListeners(InputEvent &evt);
+
+    //! Stores all the keys that are down
+    std::list<OIS::KeyCode> keysDown_;
 
     /** denotes the maximum number of different keys there are in OIS.
         256 should be ok since the highest number in the enum is 237. */
@@ -112,6 +119,8 @@ namespace orxonox
   public:
     InputHandlerGUI ();
     ~InputHandlerGUI();
+
+    void tick(float dt);
 
   private:
     // input events
