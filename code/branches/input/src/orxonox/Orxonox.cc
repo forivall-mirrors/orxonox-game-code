@@ -127,7 +127,7 @@ namespace orxonox
   class Calculator
   {
   public:
-    static void calculate(std::string calculation)
+    static void calculate(const std::string& calculation)
     {
       ExprParser expr(calculation);
       if (expr.getSuccess())

@@ -64,11 +64,11 @@ public:
   {
     u_plus,
     u_minus,
-    u_nicht 
+    u_nicht
   };
 
 
-  ExprParser(std::string& str);
+  ExprParser(const std::string& str);
   std::string& getRemains() { return  this->remains_; }
   double       getResult()  { return  this->result_; }
   bool         getSuccess() { return !this->failed_; }

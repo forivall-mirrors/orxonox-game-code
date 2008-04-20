@@ -43,7 +43,7 @@
 //! skip white spaces
 #define PARSE_BLANKS while (*reading_stream == ' ') ++reading_stream;
 
-ExprParser::ExprParser(std::string& str)
+ExprParser::ExprParser(const std::string& str)
 {
   this->failed_ = false;
   this->reading_stream = str.c_str();
@@ -233,7 +233,7 @@ double ExprParser::parse_expr_1()
 {
    PARSE_BLANKS
    double value;
-   
+
    unary_operator op = parse_unary_operator();
    PARSE_BLANKS
 
@@ -298,7 +298,7 @@ double ExprParser::parse_expr_1()
          CASE("ceil")
             value = ceil(parse_last_argument());
          CASE("abs")
-            value = abs(parse_last_argument());
+            value = fabs(parse_last_argument());
          CASE("exp")
             value = exp(parse_last_argument());
          CASE("log")
@@ -363,7 +363,7 @@ double ExprParser::parse_expr_1()
      this->failed_ = true;
      return 0;
    }
- 
+
    PARSE_BLANKS
    switch (op)
    {
