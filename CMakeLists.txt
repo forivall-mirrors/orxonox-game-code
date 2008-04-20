@@ -78,25 +78,12 @@ INCLUDE_DIRECTORIES(
 #  ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR}
   ${ENet_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
-  ${OPENAL_INCLUDE_DIR} ${ALUT_INCLUDE_DIR} ${VORBIS_INCLUDE_DIR} ${OGG_INCLUDE_DIR}
+  ${OPENAL_INCLUDE_DIR}
+  ${ALUT_INCLUDE_DIR}
+  ${VORBIS_INCLUDE_DIR}
+  ${OGG_INCLUDE_DIR}
   ${Lua_INCLUDE_DIR}
 )
-
-
-################ Source files ###################
-
-#if on a windows box, you have to generate the tolua bind files yourself
-IF(NOT WIN32)
-
-  #At first, build lua
-  MESSAGE(STATUS "\n******************* Building tolua... ******************\n\n")
-  EXECUTE_PROCESS(COMMAND ./tolua-build)
-  MESSAGE(STATUS "\n\n******************* Building tolua done ****************\n")
-
-  #generate lua bind source files
-  EXECUTE_PROCESS(COMMAND bin/./tolua-exec-script)
-
-ENDIF(NOT WIN32)
 
 #add main source dir
 ADD_SUBDIRECTORY(src)
