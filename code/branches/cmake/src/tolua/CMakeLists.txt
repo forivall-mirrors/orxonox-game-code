@@ -13,7 +13,6 @@ ADD_EXECUTABLE(tolua ${TOLUA_SRC_FILES})
 
 TARGET_LINK_LIBRARIES(tolua
   ${Lua_LIBRARIES}
-  ${Lua_LIBRARY}
   m
 )
 
@@ -49,6 +48,5 @@ ADD_LIBRARY(tolualib ${TOLUALIB_SRC_FILES})
 
 TARGET_LINK_LIBRARIES(tolualib
   ${Lua_LIBRARIES}
-  ${Lua_LIBRARY}
 )
 
