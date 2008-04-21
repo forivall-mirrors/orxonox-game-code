@@ -6,6 +6,7 @@ SET(UTIL_SRC_FILES
   String.cc
   Clipboard.cc
   SubString.cc
+  ExprParser.cc
   MultiTypePrimitive.cc
   MultiTypeString.cc
   MultiTypeMath.cc
