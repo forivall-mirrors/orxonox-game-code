@@ -62,26 +62,26 @@ namespace orxonox
             template <class T>
             void registerListener(T* listener, void (T::*function)(), bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {dynamic_cast<InputBufferListener*>(listener), (void (InputBufferListener::*)())function, true, bOnlySingleInput, ' '};
+                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, ' '};
                 this->listeners_.insert(this->listeners_.end(), newListener);
             }
             template <class T>
             void registerListener(T* listener, void (T::*function)() const, bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {dynamic_cast<InputBufferListener*>(listener), (void (InputBufferListener::*)())function, true, bOnlySingleInput, ' '};
+                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, ' '};
                 this->listeners_.insert(this->listeners_.end(), newListener);
             }
 
             template <class T>
             void registerListener(T* listener, void (T::*function)(), char char_, bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {dynamic_cast<InputBufferListener*>(listener), (void (InputBufferListener::*)())function, false, bOnlySingleInput, char_};
+                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, char_};
                 this->listeners_.insert(this->listeners_.end(), newListener);
             }
             template <class T>
             void registerListener(T* listener, void (T::*function)() const, char char_, bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {dynamic_cast<InputBufferListener*>(listener), (void (InputBufferListener::*)())function, false, bOnlySingleInput, char_};
+                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, char_};
                 this->listeners_.insert(this->listeners_.end(), newListener);
             }
 
