@@ -35,6 +35,7 @@ namespace orxonox
 
     const float REL_WIDTH = 0.8;
     const float REL_HEIGHT = 0.4;
+    const float BLINK = 0.25;
 
     InGameConsole::InGameConsole(InputBuffer* ib){
         ib_ = ib;
@@ -167,8 +168,9 @@ namespace orxonox
             active = true;
         }
 
-        cursor = (cursor+1)%20;
-        if(cursor%10==0) print(this->ib_->get());
+        cursor += dt;
+        if(cursor >= 2*BLINK) cursor = 0;
+        print(this->ib_->get());
 
 // this creates a flickering effect
         //consoleOverlayNoise->setTiling(1, rand()%5+1);
@@ -217,7 +219,7 @@ namespace orxonox
     @param s string to be printed
     */
     void InGameConsole::print(std::string s){
-        if(cursor>=10) consoleOverlayTextAreas[0]->setCaption(">" + s);
+        if(cursor>BLINK) consoleOverlayTextAreas[0]->setCaption(">" + s);
         else consoleOverlayTextAreas[0]->setCaption(">" + s + "_");
     }
 

@@ -73,7 +73,7 @@ namespace orxonox
             int windowW;
             int windowH;
             int scroll;
-            int cursor;
+            float cursor;
             bool active;
             InputBuffer* ib_;
             Ogre::OverlayManager* om;
