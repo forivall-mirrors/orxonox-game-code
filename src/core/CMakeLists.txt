@@ -33,6 +33,5 @@ TARGET_LINK_LIBRARIES(core
   util
   tolualib
   ${Lua_LIBRARIES}
-  ${Lua_LIBRARY}
   ${OIS_LIBRARIES}
 )
