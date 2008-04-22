@@ -383,6 +383,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="console"
+				>
+				<File
+					RelativePath="..\..\src\orxonox\console\InGameConsole.cc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -510,6 +518,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\Timer.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="console"
+				>
+				<File
+					RelativePath="..\..\src\orxonox\console\InGameConsole.h"
 					>
 				</File>
 			</Filter>

@@ -470,6 +470,7 @@ namespace orxonox
         (it)->tick((float)evt.timeSinceLastFrame * this->timefactor_);
         it++;
       }
+      orxonoxConsole_->tick((float)evt.timeSinceLastFrame * this->timefactor_);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly

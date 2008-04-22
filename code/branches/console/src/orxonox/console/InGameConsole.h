@@ -30,27 +30,19 @@
 #define _InGameConsole_H__
 
 
-#include "OrxonoxStableHeaders.h"
 #include "OrxonoxPrereqs.h"
-#include "core/Debug.h"
-#include "core/InputBuffer.h"
-#include "core/Tickable.h"
-#include "core/ConsoleCommand.h"
-#include <string>
-#include <GraphicsEngine.h>
 #include <OgrePrerequisites.h>
-#include <OgreOverlay.h>
-#include <OgreOverlayManager.h>
-#include <OgreOverlayContainer.h>
 #include <OgreBorderPanelOverlayElement.h>
 #include <OgreTextAreaOverlayElement.h>
-#include <OgreOverlayElement.h>
-#include <OgreStringConverter.h>
+
+#include "core/Tickable.h"
+#include "core/InputBuffer.h"
 
 
 namespace orxonox
 {
-    class _OrxonoxExport InGameConsole : public InputBufferListener, public Tickable{
+    class _OrxonoxExport InGameConsole : public InputBufferListener
+    {
         public:
             InGameConsole(InputBuffer* ib);
             ~InGameConsole();

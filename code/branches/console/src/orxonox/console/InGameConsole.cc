@@ -26,7 +26,22 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
+
 #include "InGameConsole.h"
+
+#include <string>
+#include <OgreOverlay.h>
+#include <OgreOverlayElement.h>
+#include <OgreOverlayManager.h>
+#include <OgreOverlayContainer.h>
+#include <OgreStringConverter.h>
+
+#include "core/Debug.h"
+#include "core/CoreIncludes.h"
+#include "core/ConsoleCommand.h"
+#include "GraphicsEngine.h"
+
 #define LINES 20
 
 namespace orxonox
@@ -38,7 +53,10 @@ namespace orxonox
     const float BLINK = 0.25;
 
     InGameConsole::InGameConsole(InputBuffer* ib){
+        //RegisterObject(InGameConsole);
         ib_ = ib;
+        active = false;
+        cursor = 0.0;
         init();
     }
 
