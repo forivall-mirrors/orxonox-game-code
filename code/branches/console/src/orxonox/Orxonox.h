@@ -60,7 +60,8 @@ namespace orxonox {
     public:
       void init(int argc, char **argv, std::string path);
       void start();
-      void abortImmediateForce();
+      // not sure if this should be private
+      void abortImmediate(/* some error code */);
       void abortRequest();
       inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
 
@@ -105,6 +106,7 @@ namespace orxonox {
       // TODO: make this a config-value by creating a config class for orxonox
       float                 frameSmoothingTime_;
       HUD*                  orxonoxHUD_;
+      InGameConsole*        orxonoxConsole_;
       bool                  bAbort_;        //!< aborts the render loop if true
       float                 timefactor_;    //!< A factor to change the gamespeed
 
