@@ -39,9 +39,9 @@ SET_SOURCE_FILES_PROPERTIES(tolua_bind.h
 GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
 ADD_CUSTOM_COMMAND(
   OUTPUT tolua_bind.h tolua_bind.cc
-  COMMAND ${TOLUA_EXE} -n orxonox -o tolua/tolua_bind.cc -H tolua/tolua_bind.h tolua/tolua.pkg
+  COMMAND ${TOLUA_EXE} -n orxonox -o ../../src/tolua/tolua_bind.cc -H ../../src/tolua/tolua_bind.h ../../src/tolua/tolua.pkg
   DEPENDS tolua
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
 
 ADD_LIBRARY(tolualib ${TOLUALIB_SRC_FILES})
