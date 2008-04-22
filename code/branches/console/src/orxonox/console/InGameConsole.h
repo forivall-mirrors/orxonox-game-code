@@ -73,6 +73,7 @@ namespace orxonox
             int windowW;
             int windowH;
             int scroll;
+            float scrollTimer;
             float cursor;
             bool active;
             InputBuffer* ib_;

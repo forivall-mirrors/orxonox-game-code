@@ -88,6 +88,7 @@ namespace orxonox
     void InGameConsole::init(){
         // for the beginning, don't scroll
         scroll = 0;
+        scrollTimer = 0;
         cursor = 0;
         // create overlay and elements
         om = &Ogre::OverlayManager::getSingleton();
@@ -150,22 +151,27 @@ namespace orxonox
     @brief used to control the actual scrolling and cursor
     */
     void InGameConsole::tick(float dt){
-        float top = consoleOverlayContainer->getTop();
-        if(scroll!=0){
-            top = top + 0.02*scroll;
-            consoleOverlayContainer->setTop(top);
-        }
-        if(top <= -1.2*REL_HEIGHT){
-            // window has completely scrolled up
-            scroll = 0;
-            consoleOverlay->hide();
-            active = false;
-        }
-        if(top >= 0){
-            // window has completely scrolled down
-            scroll = 0;
-            consoleOverlayContainer->setTop(0);
-            active = true;
+        scrollTimer += dt;
+        if(scrollTimer >= 0.01){
+            float top = consoleOverlayContainer->getTop();
+            scrollTimer = 0;
+            if(scroll!=0){
+                // scroll
+                top = top + 0.02*scroll;
+                consoleOverlayContainer->setTop(top);
+            }
+            if(top <= -1.2*REL_HEIGHT){
+                // window has completely scrolled up
+                scroll = 0;
+                consoleOverlay->hide();
+                active = false;
+            }
+            if(top >= 0){
+                // window has completely scrolled down
+                scroll = 0;
+                consoleOverlayContainer->setTop(0);
+                active = true;
+            }
         }
 
         cursor += dt;
