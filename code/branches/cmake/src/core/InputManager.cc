@@ -92,9 +92,9 @@ namespace orxonox
       windowHndStr << (unsigned int)windowHnd;
       paramList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 
-#if defined OIS_LINUX_PLATFORM
-      paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
-#endif
+//#if defined OIS_LINUX_PLATFORM
+//      paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+//#endif
 
       try
       {
