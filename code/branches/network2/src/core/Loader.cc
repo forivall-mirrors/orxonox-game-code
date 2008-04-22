@@ -114,21 +114,21 @@ namespace orxonox
         /*Script::loadFile(level->getFile(), true);
         Script::init(Script::getLuaState());
         Script::run();*/
-        //Script* lua = Script::getInstance();
-        //lua->loadFile(level->getFile(), true);
-        //lua->run();
+        Script* lua = Script::getInstance();
+        lua->loadFile(level->getFile(), true);
+        lua->run();
 
         try
         {
             COUT(0) << "Start loading " << level->getFile() << "..." << std::endl;
             COUT(3) << "Mask: " << Loader::currentMask_s << std::endl;
 
-            ticpp::Document xmlfile(level->getFile());
-            xmlfile.LoadFile();
+            //ticpp::Document xmlfile(level->getFile());
+            //xmlfile.LoadFile();
             //ticpp::Element myelement(*Script::getFileString());
-            //ticpp::Document xmlfile;
-            xmlfile.ToDocument();
-            //xmlfile.Parse(lua->getLuaOutput(), true);
+            ticpp::Document xmlfile;
+            //xmlfile.ToDocument();
+            xmlfile.Parse(lua->getLuaOutput(), true);
 
             ticpp::Element rootElement;
             rootElement.SetAttribute("name", "root");

@@ -273,6 +273,14 @@ std::string removeSlashes(const std::string& str)
 {
     if (str.size() == 0)
         return str;
+    else if (str.size() == 1)
+    {
+      //TODO: decide whether we need the commented code
+      /*if (str[0] != '\\')
+        return "";
+      else*/
+      return str;
+    }
 
     std::string output = "";
     for (unsigned int pos = 0; pos < str.size() - 1; )

@@ -1,69 +1,74 @@
-# Find Lua includes and library
+#  Find Lua header and library files
 #
-# This module defines
-#  Lua_INCLUDE_DIR
-#  Lua_LIBRARIES, the libraries to link against to use Lua.
-#  Lua_LIB_DIR, the location of the libraries
-#  Lua_FOUND, If false, do not try to use Lua
+#  When called, this script tries to define:
+#  Lua_INCLUDE_DIR    Header files directory
+#  Lua_LIBRARIES      library files (or file when using lua 5.1)
+#  Lua_FOUND          defined (true) if lua was found
+#  Lua_VERSION        either 5.1 or 5.0 or undefined
 #
-# Copyright © 2007, Matt Williams
-#
-# Redistribution and use is allowed according to the terms of the BSD license.
+#  authors: Benjamin Knecht, Reto Grieder
 
-MESSAGE(STATUS "lua libs in cache: ${Lua_LIBRARIES}")
 IF (Lua_LIBRARIES AND Lua_INCLUDE_DIR)
-    SET(Lua_FIND_QUIETLY TRUE) # Already in cache, be silent
+
+  # Already in cache, be silent
+  SET(Lua_FOUND TRUE)
+  SET(Lua_FIND_QUIETLY TRUE) 
+  MESSAGE(STATUS "Lua was found.")
+
+ELSE (Lua_LIBRARIES AND Lua_INCLUDE_DIR)
+
+  FIND_PATH(Lua_INCLUDE_DIR_51 lua.h
+    /usr/include/lua5.1
+    /usr/local/include/lua5.1
+    ../libs/lua-5.1.3/src)
+
+  FIND_PATH(Lua_INCLUDE_DIR_50 lua.h
+    /usr/include/lua50
+    /usr/local/include/lua50
+    /usr/pack/lua-5.0.3-sd/include)
+
+  FIND_LIBRARY(Lua_LIBRARY_51 NAMES lua5.1 lua PATHS
+    /usr/lib
+    /usr/local/lib
+    ../libs/lua-5.1.3/lib)
+
+  FIND_LIBRARY(Lua_LIBRARY_1_50 NAMES lua50 lua PATHS
+	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib #tardis
+    /usr/lib
+    /usr/local/lib)
+
+  FIND_LIBRARY(Lua_LIBRARY_2_50 NAMES lualib50 lualib PATHS
+	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib #tardis
+    /usr/lib
+    /usr/local/lib)
+
+
+  IF (Lua_INCLUDE_DIR_51 AND Lua_LIBRARY_51)
+
+    # Found newer lua 5.1 libs
+    SET(Lua_FOUND TRUE)
+    SET(Lua_VERSION 5.1 CACHE STRING "")
+    SET(Lua_INCLUDE_DIR ${Lua_INCLUDE_DIR_51} CACHE PATH "")
+    SET(Lua_LIBRARIES ${Lua_LIBRARY_51} CACHE FILEPATH "")
+
+  ELSEIF(Lua_INCLUDE_DIR_50 AND Lua_LIBRARY_1_50 AND Lua_LIBRARY_2_50)
+
+    # Found older lua 5.0 libs
+    SET(Lua_FOUND TRUE)
+    SET(Lua_VERSION 5.0 CACHE STRING "")
+    SET(Lua_INCLUDE_DIR ${Lua_INCLUDE_DIR_50} CACHE PATH "")
+    SET(Lua_LIBRARIES ${Lua_LIBRARY_1_50} ${Lua_LIBRARY_2_50} CACHE FILEPATH "")
+
+  ENDIF (Lua_INCLUDE_DIR_51 AND Lua_LIBRARY_51)
+	
+
+  IF (Lua_FOUND)
+    MESSAGE(STATUS "Found Lua: ${Lua_LIBRARIES}")
+  ELSE (Lua_FOUND)
+    IF (Lua_FIND_REQUIRED)
+      MESSAGE(FATAL_ERROR "Could not find Lua")
+    ENDIF (Lua_FIND_REQUIRED)
+  ENDIF (Lua_FOUND)
+
 ENDIF (Lua_LIBRARIES AND Lua_INCLUDE_DIR)
 
-FIND_PATH(Lua_INCLUDE_DIR lua.h
-	/usr/include/lua5.1
-	/usr/local/include/lua5.1
-	../libs/lua-5.1.3/src)
-
-FIND_LIBRARY(Lua_LIBRARIES lua5.1
-	/usr/lib
-	/usr/local/lib
-	../libs/lua-5.1.3/lib)
-
-IF (NOT Lua_INCLUDE_DIR)
- FIND_PATH(Lua_INCLUDE_DIR lua.h
-	/usr/include/lua50
-	/usr/local/include/lua50
-	/usr/pack/lua-5.0.3-sd/include)
-ENDIF (NOT Lua_INCLUDE_DIR)
-
-IF (NOT Lua_LIBRARIES)
- FIND_LIBRARY(Lua_LIBRARIES lua50
-	/usr/lib
-	/usr/local/lib)
-
- FIND_LIBRARY(Lua_LIBRARY lualib50
-	/usr/lib
-	/usr/local/lib)
-
-#SET(Lua_LIBRARIES ${Lua_LIBRARIES} ${Lua_LIBRARY})
-ENDIF (NOT Lua_LIBRARIES)
-
-#especially for tardis
-IF (NOT Lua_LIBRARIES)
- FIND_LIBRARY(Lua_LIBRARIES lua
-	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib)
-
- FIND_LIBRARY(Lua_LIBRARY lualib
-	/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib)
-
-#SET(Lua_LIBRARIES ${Lua_LIBRARIES} ${Lua_LIBRARY})
-ENDIF (NOT Lua_LIBRARIES)
-
-IF (Lua_INCLUDE_DIR AND Lua_LIBRARIES)
-    SET(Lua_FOUND TRUE)
-ENDIF (Lua_INCLUDE_DIR AND Lua_LIBRARIES)
-
-IF (Lua_FOUND)
-    MESSAGE(STATUS "Found Lua: ${Lua_LIBRARIES}")
-    MESSAGE(STATUS "Found Lua: ${Lua_LIBRARY}")
-ELSE (Lua_FOUND)
-    IF (Lua_FIND_REQUIRED)
-        MESSAGE(FATAL_ERROR "Could not find Lua")
-    ENDIF (Lua_FIND_REQUIRED)
-ENDIF (Lua_FOUND)

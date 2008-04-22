@@ -1,5 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
  *
  *
  *   License notice:
@@ -26,29 +27,43 @@
  */
 
 /**
- @file  Orxonox.cc
+ @file
  @brief Orxonox Main Class
  */
 
 // Precompiled Headers
 #include "OrxonoxStableHeaders.h"
-
-//****** OGRE ******
-//#include <OgreException.h>
-#include <OgreFrameListener.h>
-#include <OgreOverlay.h>
-#include <OgreOverlayManager.h>
-#include <OgreTimer.h>
-#include <OgreWindowEventUtilities.h>
+#include "Orxonox.h"
 
 //****** STD *******
 //#include <iostream>
 //#include <exception>
 #include <deque>
 
+//****** OGRE ******
+//#include <OgreException.h>
+#include <OgreFrameListener.h>
+#include <OgreOverlay.h>
+#include <OgreOverlayManager.h>
+#include <OgreRoot.h>
+#include <OgreTimer.h>
+#include <OgreWindowEventUtilities.h>
+
 //***** ORXONOX ****
-//misc
+// util
 //#include "util/Sleep.h"
+#include "util/ArgReader.h"
+#include "util/ExprParser.h"
+
+// core
+#include "core/ConfigFileManager.h"
+#include "core/ConsoleCommand.h"
+#include "core/Debug.h"
+#include "core/Factory.h"
+#include "core/Loader.h"
+#include "core/Tickable.h"
+#include "core/InputBuffer.h"
+#include "core/InputManager.h"
 
 // audio
 #include "audio/AudioManager.h"
@@ -56,25 +71,81 @@
 // network
 #include "network/Server.h"
 #include "network/Client.h"
+
+// objects and tools
+#include "tools/Timer.h"
+#include "hud/HUD.h"
+
+// FIXME: is this really file scope?
+// globals for the server or client
 network::Client *client_g;
 network::Server *server_g;
 
-// objects
-#include "core/ArgReader.h"
-#include "core/Debug.h"
-#include "core/Factory.h"
-#include "core/Loader.h"
-#include "core/Tickable.h"
-#include "hud/HUD.h"
-#include "tools/Timer.h"
-#include "objects/weapon/BulletManager.h"
-
-#include "InputHandler.h"
-
-#include "Orxonox.h"
-
 namespace orxonox
 {
+  ConsoleCommand(Orxonox, exit, AccessLevel::None, true);
+  ConsoleCommand(Orxonox, slomo, AccessLevel::Offline, true).setDefaultValue(0, 1.0);
+  ConsoleCommand(Orxonox, setTimeFactor, AccessLevel::Offline, false).setDefaultValue(0, 1.0);
+
+  class Testconsole : public InputBufferListener
+  {
+    public:
+      Testconsole(InputBuffer* ib) : ib_(ib) {}
+      void listen() const
+      {
+        std::cout << "> " << this->ib_->get() << std::endl;
+      }
+      void execute() const
+      {
+        std::cout << ">> " << this->ib_->get() << std::endl;
+        if (!CommandExecutor::execute(this->ib_->get()))
+          std::cout << "Error" << std::endl;
+        this->ib_->clear();
+      }
+      void hintandcomplete() const
+      {
+        std::cout << CommandExecutor::hint(this->ib_->get()) << std::endl;
+        this->ib_->set(CommandExecutor::complete(this->ib_->get()));
+      }
+      void clear() const
+      {
+        this->ib_->clear();
+      }
+      void removeLast() const
+      {
+        this->ib_->removeLast();
+      }
+      void exit() const
+      {
+        CommandExecutor::execute("setInputMode 2");
+      }
+
+    private:
+      InputBuffer* ib_;
+  };
+
+  class Calculator
+  {
+  public:
+    static void calculate(const std::string& calculation)
+    {
+      ExprParser expr(calculation);
+      if (expr.getSuccess())
+      {
+        if (expr.getResult() == 42.0)
+          std::cout << "Greetings from the restaurant at the end of the universe." << std::endl;
+        // FIXME: insert modifier to display in full precision
+        std::cout << "Result is: " << expr.getResult() << std::endl;
+        if (expr.getRemains() != "")
+          std::cout << "Warning: Expression could not be parsed to the end! Remains: '"
+              << expr.getRemains() << "'" << std::endl;
+      }
+      else
+        std::cout << "Cannot calculate expression: Parse error" << std::endl;
+    }
+  };
+  ConsoleCommandShortcut(Calculator, calculate, AccessLevel::None);
+
   /**
     @brief Reference to the only instance of the class.
   */
@@ -85,15 +156,15 @@ namespace orxonox
    */
   Orxonox::Orxonox()
   {
-    this->ogre_ = new GraphicsEngine();
+    this->ogre_ = &GraphicsEngine::getSingleton();
     this->timer_ = 0;
     this->dataPath_ = "";
     this->auMan_ = 0;
     this->inputHandler_ = 0;
-    //this->root_ = 0;
     // turn on frame smoothing by setting a value different from 0
     this->frameSmoothingTime_ = 0.0f;
     this->bAbort_ = false;
+    this->timefactor_ = 1.0f;
   }
 
   /**
@@ -102,18 +173,15 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // keep in mind: the order of deletion is very important!
-    if (this->bulletMgr_)
-      delete this->bulletMgr_;
     if (this->orxonoxHUD_)
       delete this->orxonoxHUD_;
     Loader::close();
-    InputHandler::destroy();
+    InputManager::getSingleton().destroy();
     if (this->auMan_)
       delete this->auMan_;
     if (this->timer_)
       delete this->timer_;
-    if (this->ogre_)
-      delete this->ogre_;
+    GraphicsEngine::getSingleton().destroy();
 
     if (client_g)
       delete client_g;
@@ -122,11 +190,12 @@ namespace orxonox
   }
 
   /**
-   * error kills orxonox
-   */
-  void Orxonox::abortImmediate(/* some error code */)
+    @brief Immediately deletes the orxonox object.
+    Never use if you can help it while rendering!
+  */
+  void Orxonox::abortImmediateForce()
   {
-    //TODO: destroy and destruct everything and print nice error msg
+    COUT(1) << "*** Orxonox Error: Orxonox object was unexpectedly destroyed." << std::endl;
     delete this;
   }
 
@@ -135,6 +204,7 @@ namespace orxonox
   */
   void Orxonox::abortRequest()
   {
+    COUT(3) << "*** Orxonox: Abort requested." << std::endl;
     bAbort_ = true;
   }
 
@@ -146,14 +216,12 @@ namespace orxonox
     if (!singletonRef_s)
       singletonRef_s = new Orxonox();
     return singletonRef_s;
-    //static Orxonox theOnlyInstance;
-    //return &theOnlyInstance;
   }
 
   /**
     @brief Destroys the Orxonox singleton.
   */
-  void Orxonox::destroy()
+  void Orxonox::destroySingleton()
   {
     if (singletonRef_s)
       delete singletonRef_s;
@@ -173,11 +241,11 @@ namespace orxonox
     //TODO: give config file to Ogre
     std::string mode;
 
-    ArgReader ar = ArgReader(argc, argv);
+    ArgReader ar(argc, argv);
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", this->dataPath_, false);
     ar.checkArgument("ip", serverIp_, false);
-    if(ar.errorHandling()) abortImmediate();
+    if(ar.errorHandling()) abortImmediateForce();
     if(mode == std::string("client"))
     {
       mode_ = CLIENT;
@@ -196,38 +264,37 @@ namespace orxonox
   void Orxonox::serverInit(std::string path)
   {
     COUT(2) << "initialising server" << std::endl;
-    
+
     ogre_->setConfigPath(path);
     ogre_->setup();
     //root_ = ogre_->getRoot();
-    if(!ogre_->load(this->dataPath_)) abortImmediate(/* unable to load */);
-    
+    if(!ogre_->load(this->dataPath_)) abortImmediateForce(/* unable to load */);
+
     server_g = new network::Server();
   }
 
   void Orxonox::clientInit(std::string path)
   {
     COUT(2) << "initialising client" << std::endl;\
-    
+
     ogre_->setConfigPath(path);
     ogre_->setup();
     if(serverIp_.compare("")==0)
       client_g = new network::Client();
     else
       client_g = new network::Client(serverIp_, NETWORK_PORT);
-    if(!ogre_->load(this->dataPath_)) abortImmediate(/* unable to load */);
+    if(!ogre_->load(this->dataPath_)) abortImmediateForce(/* unable to load */);
   }
-  
+
   void Orxonox::standaloneInit(std::string path)
   {
     COUT(2) << "initialising standalone mode" << std::endl;
-    
+
     ogre_->setConfigPath(path);
     ogre_->setup();
-    //root_ = ogre_->getRoot();
-    if(!ogre_->load(this->dataPath_)) abortImmediate(/* unable to load */);
+    if(!ogre_->load(this->dataPath_)) abortImmediateForce(/* unable to load */);
   }
-  
+
   /**
    * start modules
    */
@@ -244,53 +311,54 @@ namespace orxonox
       standaloneStart();
     }
   }
-  
+
   void Orxonox::clientStart(){
     ogre_->initialise();
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
-    
-    
+
+
     auMan_ = new audio::AudioManager();
 
-    bulletMgr_ = new BulletManager();
-    
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    orxonoxHUD_ = new HUD();
-    orxonoxHUD_->setEnergyValue(20);
-    orxonoxHUD_->setEnergyDistr(20,20,60);
+    HUD* orxonoxHud;
+    orxonoxHud = new HUD();
+    orxonoxHud->setEnergyValue(20);
+    orxonoxHud->setEnergyDistr(20,20,60);
     hudOverlay->show();
-    
-    if( !client_g->establishConnection() )
-      COUT(1) <<"CLIENT COULD NOT ESTABLISH CONNECTION" << std::endl;
+
+    client_g->establishConnection();
     client_g->tick(0);
-    
-    
+
+
     //setupInputSystem();
-    
+
     startRenderLoop();
   }
-  
+
   void Orxonox::serverStart(){
     //TODO: start modules
     ogre_->initialise();
     //TODO: run engine
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
     createScene();
     setupInputSystem();
-    
+
     server_g->open();
 
     startRenderLoop();
   }
-  
+
   void Orxonox::standaloneStart(){
     //TODO: start modules
     ogre_->initialise();
     //TODO: run engine
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
     createScene();
     setupInputSystem();
-    
+
     startRenderLoop();
   }
 
@@ -298,8 +366,6 @@ namespace orxonox
   {
 	  // Init audio
     auMan_ = new audio::AudioManager();
-
-    bulletMgr_ = new BulletManager();
 
     // load this file from config
     Level* startlevel = new Level("levels/sample.oxw");
@@ -326,10 +392,11 @@ namespace orxonox
   */
   void Orxonox::setupInputSystem()
   {
-    inputHandler_ = InputHandler::getSingleton();
+    inputHandler_ = &InputManager::getSingleton();
     if (!inputHandler_->initialise(ogre_->getWindowHandle(),
           ogre_->getWindowWidth(), ogre_->getWindowHeight()))
-      abortImmediate();
+      abortImmediateForce();
+    inputHandler_->setInputMode(IM_INGAME);
   }
 
   /**
@@ -342,30 +409,57 @@ namespace orxonox
     in server mode.
     About the loop: The design is almost exactly like the one in ogre, so that
     if any part of ogre registers a framelisteners, it will still behave
-    correctly. Furthermore I have taken over the time smoothing feature from
-    ogre. If turned on (see orxonox constructor), it will calculate the dt_n by
-    means of the recent most dt_n-1, dt_n-2, etc.
+    correctly. Furthermore the time smoothing feature from ogre has been
+    implemented too. If turned on (see orxonox constructor), it will calculate
+    the dt_n by means of the recent most dt_n-1, dt_n-2, etc.
   */
   void Orxonox::startRenderLoop()
   {
+    InputBuffer* ib = new InputBuffer();
+    InputManager::getSingleton().feedInputBuffer(ib);
+    Testconsole* console = new Testconsole(ib);
+    ib->registerListener(console, &Testconsole::listen, true);
+    ib->registerListener(console, &Testconsole::execute, '\r', false);
+    ib->registerListener(console, &Testconsole::execute, '\n', false);
+    ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
+    ib->registerListener(console, &Testconsole::clear, '§', true);
+    ib->registerListener(console, &Testconsole::removeLast, '\b', true);
+    ib->registerListener(console, &Testconsole::exit, (char)0x1B, true);
+
+    // first check whether ogre root object has been created
+    if (Ogre::Root::getSingletonPtr() == 0)
+    {
+      COUT(2) << "*** Orxonox Error: Could not start rendering. No Ogre root object found" << std::endl;
+      return;
+    }
+    Ogre::Root& ogreRoot = Ogre::Root::getSingleton();
+
+
+    // Contains the times of recently fired events
+    // eventTimes[4] is the list for the times required for the fps counter
+    std::deque<unsigned long> eventTimes[4];
+    // Clear event times
+    for (int i = 0; i < 4; ++i)
+      eventTimes[i].clear();
+    // fill the fps time list with zeros
+    for (int i = 0; i < 20; i++)
+      eventTimes[3].push_back(0);
+
     // use the ogre timer class to measure time.
     if (!timer_)
       timer_ = new Ogre::Timer();
     timer_->reset();
 
-    // Contains the times of recently fired events
-    std::deque<unsigned long> eventTimes[3];
-    // Clear event times
-    for (int i = 0; i < 3; ++i)
-      eventTimes[i].clear();
-
 	  while (!bAbort_)
 	  {
 		  // Pump messages in all registered RenderWindows
+      // This calls the WindowEventListener objects.
       Ogre::WindowEventUtilities::messagePump();
 
       // get current time
       unsigned long now = timer_->getMilliseconds();
+      eventTimes[3].push_back(now);
+      eventTimes[3].erase(eventTimes[3].begin());
 
       // create an event to pass to the frameStarted method in ogre
       Ogre::FrameEvent evt;
@@ -373,18 +467,21 @@ namespace orxonox
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
 
       // show the current time in the HUD
-      //orxonoxHUD_->setTime((int)now, 0);
+      orxonoxHUD_->setTime((int)now, 0);
+      if (eventTimes[3].back() - eventTimes[3].front() != 0)
+        orxonoxHUD_->setRocket1((int)(20000.0f/(eventTimes[3].back() - eventTimes[3].front())));
 
       // Iterate through all Tickables and call their tick(dt) function
-      for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; )
-        (it++)->tick((float)evt.timeSinceLastFrame);
+      for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
+        it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
-      ogre_->frameStarted(evt);
+      ogreRoot._fireFrameStarted(evt);
 
+      // server still renders at the moment
       //if (mode_ != SERVER)
-        ogre_->renderOneFrame(); // only render in non-server mode
+      ogreRoot._updateAllRenderTargets(); // only render in non-server mode
 
       // get current time
       now = timer_->getMilliseconds();
@@ -394,7 +491,7 @@ namespace orxonox
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[2]);
 
       // again, just to be sure ogre works fine
-      ogre_->frameEnded(evt);
+      ogreRoot._fireFrameEnded(evt);
 	  }
   }
 
@@ -407,20 +504,21 @@ namespace orxonox
   float Orxonox::calculateEventTime(unsigned long now, std::deque<unsigned long> &times)
   {
     // Calculate the average time passed between events of the given type
-    // during the last mFrameSmoothingTime seconds.
+    // during the last frameSmoothingTime_ seconds.
 
     times.push_back(now);
 
     if(times.size() == 1)
       return 0;
 
-    // Times up to mFrameSmoothingTime seconds old should be kept
-    unsigned long discardThreshold =
-      static_cast<unsigned long>(frameSmoothingTime_ * 1000.0f);
+    // Times up to frameSmoothingTime_ seconds old should be kept
+    unsigned long discardThreshold = (unsigned long)(frameSmoothingTime_ * 1000.0f);
 
     // Find the oldest time to keep
-    std::deque<unsigned long>::iterator it = times.begin(),
-      end = times.end()-2; // We need at least two times
+    std::deque<unsigned long>::iterator it  = times.begin();
+    // We need at least two times
+    std::deque<unsigned long>::iterator end = times.end() - 2;
+
     while(it != end)
     {
       if (now - *it > discardThreshold)
@@ -432,7 +530,7 @@ namespace orxonox
     // Remove old times
     times.erase(times.begin(), it);
 
-    return (float)(times.back() - times.front()) / ((times.size()-1) * 1000);
+    return (float)(times.back() - times.front()) / ((times.size() - 1) * 1000);
   }
 
   /**

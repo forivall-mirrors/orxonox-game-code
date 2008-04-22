@@ -99,7 +99,7 @@ namespace orxonox {
     {
       Ogre::LogManager::getSingleton().getDefaultLog()->removeListener(this);
       Ogre::LogManager::getSingleton().destroyLog(Ogre::LogManager::getSingleton().getDefaultLog());
-      delete Ogre::LogManager::getSingletonPtr();
+      Ogre::LogManager::getSingletonPtr()->~LogManager();
     }
     COUT(4) << "*** GraphicsEngine: Destroying objects done" << std::endl;
   }
