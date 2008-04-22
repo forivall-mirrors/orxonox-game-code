@@ -31,8 +31,8 @@ ELSE (IS_TARDIS)
 ENDIF(IS_TARDIS)
 
 #set binary output directories
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR}/bin/lib)
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/bin/lib)
 
 # global compiler/linker flags. force -O2!
 SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
@@ -42,8 +42,10 @@ SET(CMAKE_EXE_LINKER_FLAGS " --no-undefined")
 SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
 SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
 
-#Create verbose makefile output when compiling
-SET(CMAKE_VERBOSE_MAKEFILE TRUE)
+#use 'cmake -D make_verb:1 path' to get verbose make output when compiling
+IF (MAKE_VERB)
+ SET(CMAKE_VERBOSE_MAKEFILE TRUE)
+ENDIF (MAKE_VERB)
 
 
 ############### Library finding #################
