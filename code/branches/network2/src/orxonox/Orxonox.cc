@@ -332,7 +332,7 @@ namespace orxonox
 
 
     //setupInputSystem();
-
+    std::cout << "STARTING RENDERLOOP" << std::endl;
     startRenderLoop();
   }
 
@@ -415,6 +415,7 @@ namespace orxonox
   */
   void Orxonox::startRenderLoop()
   {
+    ///std::cout << "ON LINE 418 IN Orxonox.cc on frame " << std::endl;
     InputBuffer* ib = new InputBuffer();
     InputManager::getSingleton().feedInputBuffer(ib);
     Testconsole* console = new Testconsole(ib);
@@ -422,7 +423,7 @@ namespace orxonox
     ib->registerListener(console, &Testconsole::execute, '\r', false);
     ib->registerListener(console, &Testconsole::execute, '\n', false);
     ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
-    ib->registerListener(console, &Testconsole::clear, '§', true);
+    ib->registerListener(console, &Testconsole::clear, 'ï¿½', true);
     ib->registerListener(console, &Testconsole::removeLast, '\b', true);
     ib->registerListener(console, &Testconsole::exit, (char)0x1B, true);
 
@@ -434,7 +435,7 @@ namespace orxonox
     }
     Ogre::Root& ogreRoot = Ogre::Root::getSingleton();
 
-
+    ///std::cout << "ON LINE 437 IN Orxonox.cc" << std::endl;
     // Contains the times of recently fired events
     // eventTimes[4] is the list for the times required for the fps counter
     std::deque<unsigned long> eventTimes[4];
@@ -449,13 +450,14 @@ namespace orxonox
     if (!timer_)
       timer_ = new Ogre::Timer();
     timer_->reset();
-
+    ///std::cout << "ON LINE 452 IN Orxonox.cc" << std::endl;
+    int counter = 0;
 	  while (!bAbort_)
 	  {
 		  // Pump messages in all registered RenderWindows
       // This calls the WindowEventListener objects.
       Ogre::WindowEventUtilities::messagePump();
-
+      ///std::cout << "ON LINE 459 IN Orxonox.cc on frame " << counter << std::endl;
       // get current time
       unsigned long now = timer_->getMilliseconds();
       eventTimes[3].push_back(now);
@@ -465,15 +467,19 @@ namespace orxonox
       Ogre::FrameEvent evt;
       evt.timeSinceLastEvent = calculateEventTime(now, eventTimes[0]);
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
+      ///std::cout << "ON LINE 468 IN Orxonox.cc on frame " << counter << std::endl;
 
       // show the current time in the HUD
-      orxonoxHUD_->setTime((int)now, 0);
-      if (eventTimes[3].back() - eventTimes[3].front() != 0)
-        orxonoxHUD_->setRocket1((int)(20000.0f/(eventTimes[3].back() - eventTimes[3].front())));
-
+      ///### THE FOLLOWING HUD STUFF SEEMS TO CREATE SEGFAULT IN NETWORK
+      ///orxonoxHUD_->setTime((int)now, 0);
+      ///std::cout << "ON LINE 473 IN Orxonox.cc on frame " << counter << std::endl;
+      ///if (eventTimes[3].back() - eventTimes[3].front() != 0)
+        ///orxonoxHUD_->setRocket1((int)(20000.0f/(eventTimes[3].back() - eventTimes[3].front())));
+      ///std::cout << "ON LINE 476 IN Orxonox.cc on frame " << counter << std::endl;
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
+      ///std::cout << "ON LINE 476 IN Orxonox.cc on frame " << counter << std::endl;
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
@@ -492,6 +498,7 @@ namespace orxonox
 
       // again, just to be sure ogre works fine
       ogreRoot._fireFrameEnded(evt);
+      counter++;
 	  }
   }
 

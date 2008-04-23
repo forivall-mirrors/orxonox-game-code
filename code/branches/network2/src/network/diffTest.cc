@@ -10,6 +10,7 @@
 #include "time.h"
 #include "ConnectionManager.h"
 #include "ClientInformation.h"
+#include "Synchronisable.h"
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 #include "util/Sleep.h"
@@ -613,6 +614,18 @@ void testPacketBuffer() {
 
 //### end packetbuffer test stuff ###
 
+void testSynchronisable() {
+  Synchronisable* synchtest;
+  unsigned char* data = new unsigned char[100];
+  for( int i=0; i<100; i++ ) {
+    data[i] = i%10;
+  }
+  //synchtest->registerVar( (const void*)data, 100, network::DATA );
+}
+
+//#########################################################################
+//### this stuff is only a loop to chose one of the prev test functions ###
+//#########################################################################
 void displayModes() {
   std::cout << "mode datalength: length of data array to create" << std::endl;
   std::cout << "mode Data:" << std::endl;
@@ -628,7 +641,7 @@ void displayModes() {
   std::cout << "\t-4 -> random differences and randomly longer" << std::endl;
   std::cout << "\t-5 -> only half as long and ever %10 == 0 index is different" << std::endl;
 }
-
+/**
 int main( int argc, char* argv[] ) {
   int a,b,c,n;
   std::string dec = "nothing";
@@ -698,9 +711,13 @@ int main( int argc, char* argv[] ) {
     std::cout << "################## END ONE TURN ##################@" << std::endl;
   }
   return 0;
-}
-/**
+}*/
+
 int main() {
   std::cout << "############### START TEST (quit q) ###############" << std::endl;
-  testClientInformation( 10 );
-}*/
+  testSynchronisable();
+}
+
+//#########################################################################
+//### the prev loop is only to chose one prev prev test functions       ###
+//#########################################################################
