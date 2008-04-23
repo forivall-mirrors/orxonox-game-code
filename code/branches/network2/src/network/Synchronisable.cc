@@ -180,7 +180,7 @@ namespace network
     }
     COUT(5) << "Synchronisable: objectID " << objectID << ", classID " << classID << " synchronising data" << std::endl;
     for(i=syncList->begin(); i!=syncList->end(); i++){
-      COUT(5) << "element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
+      COUT(5) << "Synchronisable: element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
       if(*(int *)data==(*i)->size || (*i)->type==STRING){
         switch((*i)->type){
         case DATA:
