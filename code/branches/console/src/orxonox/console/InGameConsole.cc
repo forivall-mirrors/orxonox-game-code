@@ -152,7 +152,7 @@ namespace orxonox
         consoleOverlay->add2D(consoleOverlayContainer);
         consoleOverlayContainer->addChild(consoleOverlayBorder);
 //comment following line to disable noise
-        //consoleOverlayContainer->addChild(consoleOverlayNoise);
+        consoleOverlayContainer->addChild(consoleOverlayNoise);
         for(int i = 0; i<LINES; i++) consoleOverlayContainer->addChild(consoleOverlayTextAreas[i]);
         resize();
 
@@ -197,7 +197,7 @@ namespace orxonox
         print(this->ib_->get());
 
 // this creates a flickering effect
-        //consoleOverlayNoise->setTiling(1, rand()%5+1);
+        consoleOverlayNoise->setTiling(1, rand()%5+1);
     }
 
     /**
