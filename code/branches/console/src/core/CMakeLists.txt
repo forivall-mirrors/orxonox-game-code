@@ -25,6 +25,7 @@ SET(CORE_SRC_FILES
   InputBuffer.cc
   Tickable.cc
   Script.cc
+  TclBind.cc
 )
 
 ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
@@ -32,6 +33,7 @@ ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
 TARGET_LINK_LIBRARIES(core
   util
   tolualib
+  cpptcl
   ${Lua_LIBRARIES}
   ${OIS_LIBRARIES}
 )

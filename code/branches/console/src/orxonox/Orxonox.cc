@@ -422,7 +422,6 @@ namespace orxonox
     Testconsole* console = new Testconsole(ib);
     ib->registerListener(console, &Testconsole::listen, true);
     ib->registerListener(console, &Testconsole::execute, '\r', false);
-    ib->registerListener(console, &Testconsole::execute, '\n', false);
     ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
     ib->registerListener(console, &Testconsole::clear, '§', true);
     ib->registerListener(console, &Testconsole::removeLast, '\b', true);
@@ -432,7 +431,6 @@ namespace orxonox
     orxonoxConsole_ = new InGameConsole(ib);
     ib->registerListener(orxonoxConsole_, &InGameConsole::listen, true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::execute, '\r', false);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::execute, '\n', false);
     ib->registerListener(orxonoxConsole_, &InGameConsole::hintandcomplete, '\t', true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::clear, '§', true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::removeLast, '\b', true);

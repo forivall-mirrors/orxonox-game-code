@@ -62,6 +62,7 @@ FIND_PACKAGE(ALUT)
 FIND_PACKAGE(OggVorbis)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(Lua)
+FIND_PACKAGE(TCL)
 
 #Set the search paths for the linking
 LINK_DIRECTORIES(
@@ -71,6 +72,7 @@ LINK_DIRECTORIES(
   ${ENet_LIBRARY}
   ${Boost_LIBRARY_DIRS}
   ${Zlib_LIBRARY_DIR}
+  ${TCL_LIBRARY}
 )
 
 #Set the search paths for include files
@@ -85,6 +87,7 @@ INCLUDE_DIRECTORIES(
   ${VORBIS_INCLUDE_DIR}
   ${OGG_INCLUDE_DIR}
   ${Lua_INCLUDE_DIR}
+  ${TCL_INCLUDE_PATH}
 )
 
 #add main source dir
