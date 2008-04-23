@@ -26,6 +26,15 @@ SET(CORE_SRC_FILES
   Tickable.cc
   Script.cc
   tolua/tolua_bind.cc
+  tolua/tolua_bind.h
+)
+
+SET_SOURCE_FILES_PROPERTIES(tolua/tolua_bind.h
+  PROPERTIES
+  OBJECT_DEPENDS tolua/tolua_bind.h
+  OBJECT_DEPENDS tolua/tolua_bind.cc
+  GENERATED true
+  HEADER_FILE_ONLY true
 )
 
 GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
