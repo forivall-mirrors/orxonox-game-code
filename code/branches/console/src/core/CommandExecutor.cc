@@ -337,57 +337,8 @@ namespace orxonox
 
     bool CommandExecutor::execute(const std::string& command)
     {
-        std::string strippedCommand = stripEnclosingQuotes(command);
-
-        SubString tokensIO(strippedCommand, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
-        if (tokensIO.size() >= 2)
-        {
-            if (tokensIO[tokensIO.size() - 2] == ">")
-            {
-                bool success = CommandExecutor::execute(tokensIO.subSet(0, tokensIO.size() - 2).join());
-                write(tokensIO[tokensIO.size() - 1], CommandExecutor::getEvaluation().getReturnvalue());
-                return success;
-            }
-            else if (tokensIO[tokensIO.size() - 2] == "<")
-            {
-                std::string input = read(tokensIO[tokensIO.size() - 1]);
-                if (input == "" || input.size() == 0)
-                    return CommandExecutor::execute(tokensIO.subSet(0, tokensIO.size() - 2).join());
-                else
-                    return CommandExecutor::execute(tokensIO.subSet(0, tokensIO.size() - 2).join() + " " + input);
-            }
-        }
-
-
-        SubString tokensPipeline(strippedCommand, "|", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
-        if (tokensPipeline.size() > 1)
-        {
-            bool success = true;
-            std::string returnValue = "";
-            for (int i = tokensPipeline.size() - 1; i >= 0; i--)
-            {
-                if (returnValue == "" || returnValue.size() == 0)
-                {
-                    //CommandEvaluation evaluation = CommandExecutor::evaluate(tokens[i]);
-                    if (!CommandExecutor::execute(tokensPipeline[i]))
-                        success = false;
-                }
-                else
-                {
-                    //CommandEvaluation evaluation = CommandExecutor::evaluate(tokens[i] + " " + returnValue);
-                    if (!CommandExecutor::execute(tokensPipeline[i] + " " + returnValue))
-                        success = false;
-                }
-
-                //CommandExecutor::execute(evaluation);
-                //returnValue = evaluation.getReturnvalue();
-                returnValue = CommandExecutor::getEvaluation().getReturnvalue().toString();
-            }
-            return success;
-        }
-
-        if ((CommandExecutor::getEvaluation().processedCommand_ != strippedCommand) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
-            CommandExecutor::parse(strippedCommand);
+        if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
+            CommandExecutor::parse(command);
 
         return CommandExecutor::execute(CommandExecutor::getEvaluation());
     }
