@@ -179,8 +179,6 @@ namespace network
   * sends the gamestate
   */
   bool Server::sendGameState() {
-    COUT(4) << "malloc(1000) 1" << std::endl;
-    malloc(1000);
     COUT(5) << "Server: starting function sendGameState" << std::endl;
     ClientInformation *temp = clients;
     bool added=false;
@@ -196,8 +194,6 @@ namespace network
         //think this works without continue
         continue;
       }
-      COUT(4) << "malloc(1000) 2" << std::endl;
-      malloc(1000);
       COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
       int gid = temp->getGamestateID(); //get gamestate id
       int cid = temp->getID(); //get client id

@@ -117,6 +117,7 @@ namespace network
           ///sigsegv may happen here again for some reason
           ///sigsegv is receved after the COUT(4) above
           Synchronisable *no = dynamic_cast<Synchronisable *>(ID((unsigned int) sync.classID)->fabricate());
+          COUT(4) << "loadsnapshort: classid: " << sync.classID << " objectID: " << sync.classID << " length: " << sync.length << std::endl;
           no->objectID=sync.objectID;
           no->classID=sync.classID;
           it=orxonox::ObjectList<Synchronisable>::end();
