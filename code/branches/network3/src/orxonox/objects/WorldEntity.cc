@@ -205,7 +205,6 @@ namespace orxonox
       registerVar( (void*) &(this->getOrientation().x), sizeof(this->getOrientation().x), network::DATA);
       registerVar( (void*) &(this->getOrientation().y), sizeof(this->getOrientation().y), network::DATA);
       registerVar( (void*) &(this->getOrientation().z), sizeof(this->getOrientation().z), network::DATA);
-      // not needed at the moment, because we don't have prediction yet
       // register velocity_
       registerVar( (void*) &(this->getVelocity().x), sizeof(this->getVelocity().x), network::DATA);
       registerVar( (void*) &(this->getVelocity().y), sizeof(this->getVelocity().y), network::DATA);
@@ -215,7 +214,7 @@ namespace orxonox
       registerVar( (void*) &(this->getRotationAxis().x), sizeof(this->getRotationAxis().x), network::DATA);
       registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA);
       registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA);
-      
+      // register scale of node
       registerVar( (void*) &(this->getScale().x), sizeof(this->getScale().x), network::DATA);
       registerVar( (void*) &(this->getScale().y), sizeof(this->getScale().y), network::DATA);
       registerVar( (void*) &(this->getScale().z), sizeof(this->getScale().z), network::DATA);
