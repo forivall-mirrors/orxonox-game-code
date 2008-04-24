@@ -69,7 +69,7 @@ namespace network
   * @param var pointer to the variable
   * @param size size of the datatype the variable consists of
   */
-  void Synchronisable::registerVar(const void *var, int size, variableType t){
+  void Synchronisable::registerVar(void *var, int size, variableType t){
     // create temporary synch.Var struct
     synchronisableVariable *temp = new synchronisableVariable;
     temp->size = size;
@@ -154,13 +154,15 @@ namespace network
       //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
       switch((*i)->type){
       case DATA:
-        std::memcpy( (void *)(retVal.data+n), (const void*)((*i)->var), (*i)->size);
+        std::memcpy( (void *)(retVal.data+n), (void*)((*i)->var), (*i)->size);
         n+=(*i)->size;
         break;
       case STRING:
-        memcpy( (void *)(retVal.data+n), (const void *)&((*i)->size), sizeof(int) );
+        memcpy( (void *)(retVal.data+n), (void *)&((*i)->size), sizeof(int) );
         n+=sizeof(int);
-        std::memcpy( retVal.data+n, (const void*)( ( (std::string *) (*i)->var)->c_str()), (*i)->size);
+        const char *data = ( ( *(std::string *) (*i)->var).c_str());
+        std::memcpy( retVal.data+n, (void*)data, (*i)->size);
+        COUT(4) << "synchronisable: char: " << (const char *)(retVal.data+n) << " data: " << data << " string: " << *(std::string *)((*i)->var) << std::endl;
         n+=(*i)->size;
         break;
       }
@@ -190,8 +192,10 @@ namespace network
         break;
       case STRING:
         (*i)->size = *(int *)data;
+        COUT(4) << "string size: " << (*i)->size << std::endl;
         data+=sizeof(int);
         *((std::string *)((*i)->var)) = std::string((const char*)data);
+        COUT(4) << "synchronisable: char: " << (const char*)data << " string: " << std::string((const char*)data) << std::endl;
         data += (*i)->size;
         break;
       }
@@ -214,6 +218,7 @@ namespace network
       case STRING:
         tsize+=sizeof(int);
         (*i)->size=((std::string *)(*i)->var)->length()+1;
+        COUT(4) << "String size: " << (*i)->size << std::endl;
         tsize+=(*i)->size;
         break;
       }

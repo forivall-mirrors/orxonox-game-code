@@ -157,7 +157,6 @@ namespace orxonox
     }
 
     void SpaceShip::registerAllVariables(){
-      Model::registerAllVariables();
 
 
 

@@ -61,7 +61,7 @@ namespace network
 
   typedef struct synchronisableVariable{
     int size;
-    const void *var;
+    void *var;
     variableType type;
   }SYNCVAR;
 
@@ -78,7 +78,7 @@ namespace network
     int objectID;
     int classID;
 
-    void registerVar(const void *var, int size, variableType t);
+    void registerVar(void *var, int size, variableType t);
     //  syncData getData();
     syncData getData(unsigned char *mem);
     int getSize();
