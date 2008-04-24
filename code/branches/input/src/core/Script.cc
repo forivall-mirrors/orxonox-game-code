@@ -59,7 +59,7 @@ namespace orxonox
     luaopen_io(luaState_);
     luaopen_debug(luaState_);
 #endif
-    tolua_orxonox_open(luaState_);
+    tolua_core_open(luaState_);
     output_ = "";
   }
 
@@ -101,6 +101,16 @@ namespace orxonox
     COUT(4) << "ParsedSourceCode: " << luaSource_ << std::endl;
   }
 
+#if LUA_VERSION_NUM != 501
+  const char * Script::lua_Chunkreader(lua_State *L, void *data, size_t *size)
+  {
+    LoadS* ls = ((LoadS*)data);
+    if (ls->size == 0) return NULL;
+    *size = ls->size;
+    ls->size = 0;
+    return ls->s;
+  }
+#endif
   void Script::run()
   {
     int error = 0;
@@ -109,7 +119,10 @@ namespace orxonox
 #if LUA_VERSION_NUM == 501
     error = luaL_loadstring(luaState_, init.c_str());
 #else
-    error = lua_load(luaState_, &orxonox::Script::lua_Chunkreader, (void*)init.c_str(), "init");
+    LoadS ls;
+    ls.s = init.c_str();
+    ls.size = init.size();
+    error = lua_load(luaState_, &orxonox::Script::lua_Chunkreader, &ls, init.c_str());
 #endif
     if (error == 0)
       error = lua_pcall(luaState_, 0, 0, 0);

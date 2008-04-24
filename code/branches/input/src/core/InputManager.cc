@@ -124,18 +124,10 @@ namespace orxonox
 
     // create the handlers
     this->handlerGUI_ = new InputHandlerGUI();
+    this->handlerGUI_->initialise();
     this->handlerGame_ = new InputHandlerGame();
-    //this->handlerBuffer_ = new InputBuffer();
-    this->handlerGame_->loadBindings();
+    this->handlerGame_->initialise();
 
-    /*COUT(ORX_DEBUG) << "*** InputManager: Loading key bindings..." << std::endl;
-    // load the key bindings
-    InputEvent empty = {0, false, 0, 0, 0};
-    for (int i = 0; i < this->numberOfKeys_; i++)
-      this->bindingsKeyPressed_[i] = empty;
-
-    //assign 'abort' to the escape key
-    this->bindingsKeyPressed_[(int)OIS::KC_ESCAPE].id = 1;
     COUT(ORX_DEBUG) << "*** InputManager: Loading done." << std::endl;*/
 
     return true;
@@ -158,14 +150,11 @@ namespace orxonox
     this->keyboard_      = 0;
     this->inputSystem_   = 0;
 
-    if (this->handlerBuffer_)
-      delete this->handlerBuffer_;
     if (this->handlerGame_)
       delete this->handlerGame_;
     if (this->handlerGUI_)
       delete this->handlerGUI_;
 
-    this->handlerBuffer_ = 0;
     this->handlerGame_   = 0;
     this->handlerGUI_    = 0;
 
@@ -191,10 +180,6 @@ namespace orxonox
         this->mouse_->setEventCallback(this->handlerGame_);
         this->keyboard_->setEventCallback(this->handlerGame_);
         break;
-      case IM_KEYBOARD:
-        this->mouse_->setEventCallback(this->handlerGame_);
-        this->keyboard_->setEventCallback(this->handlerBuffer_);
-        break;
       case IM_UNINIT:
         this->mouse_->setEventCallback(0);
         this->keyboard_->setEventCallback(0);
@@ -210,6 +195,7 @@ namespace orxonox
       keyboard_->capture();
 
     // Give the listeners the chance to do additional calculations
+    this->currentHandler_->tick(dt);
   }
 
   /**

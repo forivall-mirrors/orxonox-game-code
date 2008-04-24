@@ -50,13 +50,6 @@ namespace orxonox
     IM_KEYBOARD: Only keyboard input is captured and passed to the InputBuffer
     IM_INGAME:   Normal game mode. Key bindings and mouse are active.
   */
-  enum InputMode
-  {
-    IM_GUI      = 0,
-    IM_KEYBOARD = 1,
-    IM_INGAME   = 2,
-    IM_UNINIT   = 3,
-  };
 
   /**
     @brief Captures and distributes mouse and keyboard input.
@@ -82,7 +75,8 @@ namespace orxonox
 
     static InputManager& getSingleton();
     static InputManager* getSingletonPtr() { return &getSingleton(); }
-    static void setInputMode(int mode);
+
+    static void setInputHandler(std::string& name);
 
   private:
     // don't mess with a Singleton
@@ -94,15 +88,11 @@ namespace orxonox
     OIS::Keyboard     *keyboard_;       //!< OIS mouse
     OIS::Mouse        *mouse_;          //!< OIS keyboard
 
-    InputMode          currentMode_;    //!< Input mode currently used
-    InputMode          setMode_;        //!< Input mode that has been set lately
-    InputHandlerGUI   *handlerGUI_;     //!< Handles the input if in GUI mode
-    // FIXME: insert the InputBuffer once merged with core2
-    InputBuffer       *handlerBuffer_;  //!< Handles the input if in Buffer mode
-    InputHandlerGame  *handlerGame_;    //!< Handles the input if in Game mode
+    BaseInputHandler* currentHandler_;
+    BaseInputHandler* switchToHandler_;
+    //! Maps the names of the input handlers to their instance
+    std::map<std::string, BaseInputHandler*> handlers_;
 
-    //! Pointer to the instance of the singleton
-    //static InputManager *singletonRef_s;
   };
 }
 
