@@ -2,28 +2,34 @@
 #include <string>
 
 #include "ConsoleCommand.h"
+#include "CommandExecutor.h"
 #include "Debug.h"
-#include "cpptcl/CppTcl.h"
 #include "TclBind.h"
 
 namespace orxonox
 {
-    ConsoleCommandShortcutExtern(test, AccessLevel::None);
     ConsoleCommandShortcutExtern(tcl, AccessLevel::None);
 
-    void hello()
+    void Tcl_puts(Tcl::object const &args)
     {
-        std::cout << "Hello C++/Tcl!" << std::endl;
+        COUT(0) << args.get() << std::endl;
     }
 
-    void test()
+    std::string Tcl_unknown(Tcl::object const &a)
     {
-        Tcl::interpreter i;
-        i.def("hello", hello);
-
-        std::string script = "for {set i 0} {$i != 4} {incr i} { hello }";
-
-        i.eval(script);
+std::cout << "1\n";
+std::cout << a.get() << std::endl;
+        CommandEvaluation evaluation = CommandExecutor::evaluate(std::string(a.get()));
+std::cout << "2\n";
+        CommandExecutor::execute(evaluation);
+std::cout << "3\n";
+        if (evaluation.hasReturnvalue())
+        {
+std::cout << "4\n";
+            return evaluation.getReturnvalue().toString();
+        }
+std::cout << "5\n";
+        return "";
     }
 
     std::string tcl(const std::string& tclcode)
@@ -31,6 +37,8 @@ namespace orxonox
         try
         {
             static Tcl::interpreter i;
+            i.def("puts", Tcl_puts, Tcl::variadic());
+            i.def("blub", Tcl_unknown, Tcl::variadic());
             std::string output = i.eval(tclcode);
             COUT(0) << "tcl> " << output << std::endl;
             return output;

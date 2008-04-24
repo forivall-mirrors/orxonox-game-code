@@ -269,6 +269,22 @@ namespace orxonox
         return MT_null;
     }
 
+    bool CommandEvaluation::hasReturnvalue() const
+    {
+        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
+        {
+            if (this->shortcut_)
+                return this->shortcut_->hasReturnvalue();
+        }
+        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
+        {
+            if (this->function_)
+                return this->function_->hasReturnvalue();
+        }
+
+        return MT_null;
+    }
+
     MultiTypeMath CommandEvaluation::getReturnvalue() const
     {
         if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)

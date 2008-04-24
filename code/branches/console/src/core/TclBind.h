@@ -1,10 +1,13 @@
 #ifndef _TclBind_H__
 #define _TclBind_H__
 
+#include "cpptcl/CppTcl.h"
+
 namespace orxonox
 {
-    void hello();
-    void test();
+    Tcl::interpreter* createNewInterpreter();
+    void Tcl_puts(Tcl::object const &c);
+    std::string Tcl_unknown(Tcl::object const &c);
     std::string tcl(const std::string& tclcode);
 }
 

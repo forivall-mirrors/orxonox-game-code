@@ -94,6 +94,7 @@ namespace orxonox
 
             void evaluateParams();
 
+            bool hasReturnvalue() const;
             MultiTypeMath getReturnvalue() const;
 
         private:
