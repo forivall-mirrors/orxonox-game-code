@@ -126,6 +126,7 @@ SET (TCLTK_POSSIBLE_INCLUDE_PATHS
   /usr/include/tcl8.3
   /usr/include/tcl8.2
   /usr/include/tcl8.0
+  ../libs/tcl8.5.2/generic
 )
 
 FIND_PATH(TCL_INCLUDE_PATH tcl.h
