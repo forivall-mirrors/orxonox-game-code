@@ -96,11 +96,11 @@ namespace network
     // loop as long as we have some data ;)
     while(data < state->data+state->size){
       // prepare the syncData struct
-      sync.length = (int)*data;
+      sync.length = *(int *)data;
       data+=sizeof(int);
-      sync.objectID = (int)*data;
+      sync.objectID = *(int*)data;
       data+=sizeof(int);
-      sync.classID = (int)*data;
+      sync.classID = *(int*)data;
       data+=sizeof(int);
       sync.data = data;
       data+=sync.length;

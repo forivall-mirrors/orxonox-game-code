@@ -140,11 +140,13 @@ namespace network
   */
   syncData Synchronisable::getData(unsigned char *mem){
     //std::cout << "inside getData" << std::endl;
+    classID=this->getIdentifier()->getNetworkID();
     std::list<synchronisableVariable *>::iterator i;
     syncData retVal;
     retVal.objectID=this->objectID;
     retVal.classID=this->classID;
     retVal.length=getSize();
+    COUT(4) << "Synchronisable getting data from objectID: " << retVal.objectID << " classID: " << retVal.classID << " length: " << retVal.length << std::endl;
     retVal.data=mem;
     // copy to location
     int n=0; //offset
