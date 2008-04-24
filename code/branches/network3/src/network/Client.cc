@@ -43,6 +43,37 @@
 
 namespace network
 {
+  Client* Client::_sClient = 0;
+  
+  Client* Client::createSingleton(){
+    if(!_sClient)
+      _sClient = new Client();
+    return _sClient;
+  }
+  
+  Client* Client::createSingleton(std::string address, int port){
+    if(!_sClient)
+      _sClient = new Client(address, port);
+    return _sClient;
+  }
+  
+  Client* Client::createSingleton(const char *address, int port){
+    if(!_sClient)
+      _sClient = new Client(address, port);
+    return _sClient;
+  }
+  
+  void Client::destroySingleton(){
+    if(_sClient){
+      delete _sClient;
+      _sClient = 0;
+    }
+  }
+  
+  Client* Client::getSingleton(){
+    return _sClient; 
+  }
+  
   /**
   * Constructor for the Client class
   * initializes the address and the port to default localhost:NETWORK_PORT
@@ -70,6 +101,11 @@ namespace network
     isConnected=false;
   }
 
+  Client::~Client(){
+    if(isConnected)
+      closeConnection();
+  }
+  
   /**
   * Establish the Connection to the Server
   * @return true/false

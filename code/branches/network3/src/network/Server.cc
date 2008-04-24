@@ -142,7 +142,7 @@ namespace network
     processQueue();
     updateGamestate();
 
-    sleep(1); // TODO remove
+    //sleep(1); // TODO remove
     return;
   }
 

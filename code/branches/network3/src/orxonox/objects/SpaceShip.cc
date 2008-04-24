@@ -49,6 +49,7 @@
 #include "Projectile.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
+#include "network/Client.h"
 
 namespace orxonox
 {
@@ -164,6 +165,7 @@ namespace orxonox
 
     void SpaceShip::init()
     {
+        createCamera();
         // START CREATING THRUSTER
         this->tt_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         this->tt_->getParticleSystem()->setParameter("local_space","true");
@@ -280,22 +282,27 @@ namespace orxonox
 
     void SpaceShip::setCamera(const std::string& camera)
     {
-        Ogre::Camera *cam = GraphicsEngine::getSingleton().getSceneManager()->createCamera("ShipCam");
-        this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
+      // change camera attributes here, if you want to ;)
+    }
+    
+    void SpaceShip::createCamera(){
+      Ogre::Camera *cam = GraphicsEngine::getSingleton().getSceneManager()->createCamera("ShipCam");
+      this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
 /*
 //        node->setInheritOrientation(false);
-        cam->setPosition(Vector3(0,50,-150));
-        cam->lookAt(Vector3(0,20,0));
-        cam->roll(Degree(0));
+      cam->setPosition(Vector3(0,50,-150));
+      cam->lookAt(Vector3(0,20,0));
+      cam->roll(Degree(0));
 */
 
-        cam->setPosition(Vector3(-200,0,35));
+      cam->setPosition(Vector3(-200,0,35));
 //        cam->setPosition(Vector3(0,-350,0));
-        cam->lookAt(Vector3(0,0,35));
-        cam->roll(Degree(-90));
+      cam->lookAt(Vector3(0,0,35));
+      cam->roll(Degree(-90));
 
-        this->camNode_->attachObject(cam);
-        GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam);
+      this->camNode_->attachObject(cam);
+      GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam);
+      
     }
 
     void SpaceShip::setMaxSpeed(float value)
@@ -426,7 +433,8 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
-      if (InputManager::getSingleton().getMouse()->getEventCallback() != this)
+        // only do this if not client TODO: remove this hack
+      if (!network::Client::getSingleton() && InputManager::getSingleton().getMouse()->getEventCallback() != this)
         {
             if (InputManager::getSingleton().getMouse())
             {
@@ -525,26 +533,28 @@ namespace orxonox
             }
         }
 
-        if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
-            this->acceleration_.x = this->translationAcceleration_;
-        else if(mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
-            this->acceleration_.x = -this->translationAcceleration_;
-        else
-            this->acceleration_.x = 0;
-
-        if (mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D))
-            this->acceleration_.y = -this->translationAcceleration_;
-        else if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
-            this->acceleration_.y = this->translationAcceleration_;
-        else
-            this->acceleration_.y = 0;
-
-        if (mKeyboard->isKeyDown(OIS::KC_DELETE) || mKeyboard->isKeyDown(OIS::KC_Q))
-            this->momentum_ = Radian(-this->rotationAccelerationRadian_);
-        else if (mKeyboard->isKeyDown(OIS::KC_PGDOWN) || mKeyboard->isKeyDown(OIS::KC_E))
-            this->momentum_ = Radian(this->rotationAccelerationRadian_);
-        else
-            this->momentum_ = 0;
+        if(!network::Client::getSingleton()){
+          if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
+              this->acceleration_.x = this->translationAcceleration_;
+          else if(mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
+              this->acceleration_.x = -this->translationAcceleration_;
+          else
+              this->acceleration_.x = 0;
+  
+          if (mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D))
+              this->acceleration_.y = -this->translationAcceleration_;
+          else if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
+              this->acceleration_.y = this->translationAcceleration_;
+          else
+              this->acceleration_.y = 0;
+  
+          if (mKeyboard->isKeyDown(OIS::KC_DELETE) || mKeyboard->isKeyDown(OIS::KC_Q))
+              this->momentum_ = Radian(-this->rotationAccelerationRadian_);
+          else if (mKeyboard->isKeyDown(OIS::KC_PGDOWN) || mKeyboard->isKeyDown(OIS::KC_E))
+              this->momentum_ = Radian(this->rotationAccelerationRadian_);
+          else
+              this->momentum_ = 0;
+        }
 
         WorldEntity::tick(dt);
 

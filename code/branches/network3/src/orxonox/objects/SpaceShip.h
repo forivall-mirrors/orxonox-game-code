@@ -70,6 +70,7 @@ namespace orxonox
 
 
         private:
+            void createCamera();
             static SpaceShip* instance_s;
 
             Vector3 testvector_;

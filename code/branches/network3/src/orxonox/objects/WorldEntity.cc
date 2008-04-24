@@ -215,6 +215,10 @@ namespace orxonox
       registerVar( (void*) &(this->getRotationAxis().x), sizeof(this->getRotationAxis().x), network::DATA);
       registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA);
       registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA);
+      
+      registerVar( (void*) &(this->getScale().x), sizeof(this->getScale().x), network::DATA);
+      registerVar( (void*) &(this->getScale().y), sizeof(this->getScale().y), network::DATA);
+      registerVar( (void*) &(this->getScale().z), sizeof(this->getScale().z), network::DATA);
     }
 
     void WorldEntity::attachWorldEntity(WorldEntity* entity)

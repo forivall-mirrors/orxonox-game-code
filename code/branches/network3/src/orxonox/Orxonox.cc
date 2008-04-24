@@ -183,8 +183,8 @@ namespace orxonox
       delete this->timer_;
     GraphicsEngine::getSingleton().destroy();
 
-    if (client_g)
-      delete client_g;
+    if (network::Client::getSingleton())
+      network::Client::destroySingleton();
     if (server_g)
       delete server_g;
   }
@@ -280,9 +280,9 @@ namespace orxonox
     ogre_->setConfigPath(path);
     ogre_->setup();
     if(serverIp_.compare("")==0)
-      client_g = new network::Client();
+      client_g = network::Client::createSingleton();
     else
-      client_g = new network::Client(serverIp_, NETWORK_PORT);
+      client_g = network::Client::createSingleton(serverIp_, NETWORK_PORT);
     if(!ogre_->load(this->dataPath_)) abortImmediateForce(/* unable to load */);
   }
 
@@ -421,7 +421,7 @@ namespace orxonox
     ib->registerListener(console, &Testconsole::execute, '\r', false);
     ib->registerListener(console, &Testconsole::execute, '\n', false);
     ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
-    ib->registerListener(console, &Testconsole::clear, '§', true);
+    ib->registerListener(console, &Testconsole::clear, 'ï¿½', true);
     ib->registerListener(console, &Testconsole::removeLast, '\b', true);
     ib->registerListener(console, &Testconsole::exit, (char)0x1B, true);
 

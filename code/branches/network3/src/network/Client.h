@@ -64,10 +64,13 @@ namespace network
   */
   class _NetworkExport Client : PacketDecoder, public orxonox::Tickable{
   public:
-    Client();
-    Client(std::string address, int port);
-    Client(const char *address, int port);
-
+    
+    static Client* createSingleton();
+    static Client* createSingleton(std::string address, int port);
+    static Client* createSingleton(const char *address, int port);
+    static void destroySingleton();
+    static Client *getSingleton();
+    
     bool establishConnection();
     bool closeConnection();
 
@@ -83,6 +86,13 @@ namespace network
     void tick(float time);
 
   private:
+    Client();
+    Client(std::string address, int port);
+    Client(const char *address, int port);
+    ~Client();
+    
+    static Client* _sClient;
+    
     ClientConnection client_connection;
     PacketGenerator pck_gen;
     GameStateClient gamestate;
