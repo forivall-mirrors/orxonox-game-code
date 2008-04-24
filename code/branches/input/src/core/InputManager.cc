@@ -35,24 +35,30 @@
 #include "InputManager.h"
 #include "CoreIncludes.h"
 #include "Debug.h"
-#include "InputEventListener.h"
-#include "InputHandler.h"
 #include "InputBuffer.h"
 #include "ConsoleCommand.h"
+#include "util/Convert.h"
 
 namespace orxonox
 {
-  ConsoleCommand(InputManager, setInputMode, AccessLevel::Admin, true).setDefaultValue(0, IM_INGAME);
-
   /**
     @brief Constructor only resets the pointer values to 0.
   */
   InputManager::InputManager() :
       inputSystem_(0), keyboard_(0), mouse_(0),
-      currentMode_(IM_UNINIT), setMode_(IM_UNINIT),
-      handlerGUI_(0), handlerBuffer_(0), handlerGame_(0)
+      state_(IS_UNINIT), stateRequest_(IS_UNINIT)
   {
     RegisterObject(InputManager);
+  }
+
+  /**
+    @brief The one instance of the InputManager is stored in this function.
+    @return A reference to the only instance of the InputManager
+  */
+  InputManager& InputManager::_getSingleton()
+  {
+    static InputManager theOnlyInstance;
+    return theOnlyInstance;
   }
 
   /**
@@ -60,17 +66,7 @@ namespace orxonox
   */
   InputManager::~InputManager()
   {
-    this->destroy();
-  }
-
-  /**
-    @brief The one instance of the InputManager is stored in this function.
-    @return A reference to the only instance of the InputManager
-  */
-  InputManager& InputManager::getSingleton()
-  {
-    static InputManager theOnlyInstance;
-    return theOnlyInstance;
+    this->_destroy();
   }
 
   /**
@@ -80,9 +76,9 @@ namespace orxonox
     @param windowWidth The width of the render window
     @param windowHeight The height of the render window
   */
-  bool InputManager::initialise(size_t windowHnd, int windowWidth, int windowHeight)
+  bool InputManager::_initialise(size_t windowHnd, int windowWidth, int windowHeight)
   {
-    if (!this->inputSystem_)
+    if (!inputSystem_)
     {
       // Setup basic variables
       OIS::ParamList paramList;
@@ -92,9 +88,9 @@ namespace orxonox
       windowHndStr << (unsigned int)windowHnd;
       paramList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 
-#if defined OIS_LINUX_PLATFORM
-      paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
-#endif
+//#if defined OIS_LINUX_PLATFORM
+//      paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+//#endif
 
       try
       {
@@ -106,68 +102,75 @@ namespace orxonox
         keyboard_ = static_cast<OIS::Keyboard*>(inputSystem_->createInputObject(OIS::OISKeyboard, true));
         COUT(ORX_DEBUG) << "*** InputManager: Created OIS mouse" << std::endl;
 
+        //TODO: check for already pressed keys
+
         // create a mouse. If none are available the exception is caught.
         mouse_ = static_cast<OIS::Mouse*>(inputSystem_->createInputObject(OIS::OISMouse, true));
         COUT(ORX_DEBUG) << "*** InputManager: Created OIS keyboard" << std::endl;
 
         // Set mouse region
-        this->setWindowExtents(windowWidth, windowHeight);
+        setWindowExtents(windowWidth, windowHeight);
+
+        this->state_ = IS_NONE;
       }
       catch (OIS::Exception ex)
       {
         // something went wrong with the initialisation
         COUT(ORX_ERROR) << "Error: Failed creating an input system/keyboard/mouse. Message: \"" << ex.eText << "\"" << std::endl;
-        this->inputSystem_ = 0;
+        inputSystem_ = 0;
         return false;
       }
     }
 
-    // create the handlers
-    this->handlerGUI_ = new InputHandlerGUI();
-    this->handlerGame_ = new InputHandlerGame();
-    //this->handlerBuffer_ = new InputBuffer();
-    this->handlerGame_->loadBindings();
+    keyboard_->setEventCallback(this);
+    mouse_->setEventCallback(this);
 
-    /*COUT(ORX_DEBUG) << "*** InputManager: Loading key bindings..." << std::endl;
-    // load the key bindings
-    InputEvent empty = {0, false, 0, 0, 0};
-    for (int i = 0; i < this->numberOfKeys_; i++)
-      this->bindingsKeyPressed_[i] = empty;
+    addKeyListener(new InputBuffer(), "buffer");
 
-    //assign 'abort' to the escape key
-    this->bindingsKeyPressed_[(int)OIS::KC_ESCAPE].id = 1;
-    COUT(ORX_DEBUG) << "*** InputManager: Loading done." << std::endl;*/
+    _loadBindings();
+
+    COUT(ORX_DEBUG) << "*** InputManager: Loading done." << std::endl;
 
     return true;
+  }
+
+  void InputManager::_loadBindings()
+  {
+    for (int i = 0; i < numberOfKeys_s; i++)
+    {
+      // simply write the key number (i) in the string
+      this->bindingsKeyPress_[i] = "";
+      this->bindingsKeyRelease_[i] = "";
+    }
+    this->bindingsKeyPress_[OIS::KC_NUMPADENTER] = "activateConsole";
+    this->bindingsKeyPress_[OIS::KC_ESCAPE] = "exit";
+    this->bindingsKeyHold_[OIS::KC_U] = "exec disco.txt";
   }
 
   /**
     @brief Destroys all the created input devices and handlers.
   */
-  void InputManager::destroy()
+  void InputManager::_destroy()
   {
     COUT(ORX_DEBUG) << "*** InputManager: Destroying ..." << std::endl;
-    if (this->mouse_)
-      this->inputSystem_->destroyInputObject(mouse_);
-    if (this->keyboard_)
-      this->inputSystem_->destroyInputObject(keyboard_);
-    if (this->inputSystem_)
-      OIS::InputManager::destroyInputSystem(this->inputSystem_);
+    if (mouse_)
+      inputSystem_->destroyInputObject(mouse_);
+    if (keyboard_)
+      inputSystem_->destroyInputObject(keyboard_);
+    if (inputSystem_)
+      OIS::InputManager::destroyInputSystem(inputSystem_);
 
-    this->mouse_         = 0;
-    this->keyboard_      = 0;
-    this->inputSystem_   = 0;
+    mouse_         = 0;
+    keyboard_      = 0;
+    inputSystem_   = 0;
 
-    if (this->handlerBuffer_)
-      delete this->handlerBuffer_;
-    if (this->handlerGame_)
-      delete this->handlerGame_;
-    if (this->handlerGUI_)
-      delete this->handlerGUI_;
-
-    this->handlerBuffer_ = 0;
-    this->handlerGame_   = 0;
-    this->handlerGUI_    = 0;
+    OIS::KeyListener* buffer = keyListeners_["buffer"];
+    if (buffer)
+    {
+      this->removeKeyListener("buffer");
+      delete buffer;
+      buffer = 0;
+    }
 
     COUT(ORX_DEBUG) << "*** InputManager: Destroying done." << std::endl;
   }
@@ -178,38 +181,167 @@ namespace orxonox
   */
   void InputManager::tick(float dt)
   {
+    if (state_ == IS_UNINIT)
+      return;
+
     // reset the game if it has changed
-    if (this->currentMode_ != this->setMode_)
+    if (state_ != stateRequest_)
     {
-      switch (this->setMode_)
+      if (stateRequest_ != IS_CUSTOM)
+        _setDefaultState();
+
+      switch (stateRequest_)
       {
-      case IM_GUI:
-        this->mouse_->setEventCallback(this->handlerGUI_);
-        this->keyboard_->setEventCallback(this->handlerGUI_);
+      case IS_NORMAL:
         break;
-      case IM_INGAME:
-        this->mouse_->setEventCallback(this->handlerGame_);
-        this->keyboard_->setEventCallback(this->handlerGame_);
+      case IS_GUI:
+        //FIXME: do stuff
         break;
-      case IM_KEYBOARD:
-        this->mouse_->setEventCallback(this->handlerGame_);
-        this->keyboard_->setEventCallback(this->handlerBuffer_);
+      case IS_CONSOLE:
+        if (this->keyListeners_.find("buffer") != this->keyListeners_.end())
+          this->activeKeyListeners_.push_back(this->keyListeners_["buffer"]);
+        this->bDefaultKeyInput = false;
         break;
-      case IM_UNINIT:
-        this->mouse_->setEventCallback(0);
-        this->keyboard_->setEventCallback(0);
+      case IS_CUSTOM:
+        // don't do anything
         break;
       }
-      this->currentMode_ = this->setMode_;
+      state_ = stateRequest_;
     }
 
     // capture all the input. That calls the event handlers.
     if (mouse_)
       mouse_->capture();
-
     if (keyboard_)
       keyboard_->capture();
   }
+
+  void InputManager::_setDefaultState()
+  {
+    this->activeJoyStickListeners_.clear();
+    this->activeKeyListeners_.clear();
+    this->activeMouseListeners_.clear();
+    this->bDefaultKeyInput      = true;
+    this->bDefaultMouseInput    = true;
+    this->bDefaultJoyStickInput = true;
+  }
+
+
+  /**
+    @brief Event handler for the keyPressed Event.
+    @param e Event information
+  */
+  bool InputManager::keyPressed(const OIS::KeyEvent &e)
+  {
+    this->keysDown_.push_back(e.key);
+
+    if (this->bDefaultKeyInput)
+    {
+      // find the appropriate key binding
+      std::string cmdStr = bindingsKeyPress_[int(e.key)];
+      if (cmdStr != "")
+      {
+        CommandExecutor::execute(cmdStr);
+        COUT(3) << "Executing command: " << cmdStr << std::endl;
+      }
+    }
+    else
+    {
+      for (std::list<OIS::KeyListener*>::const_iterator it = activeKeyListeners_.begin(); it != activeKeyListeners_.end(); it++)
+        (*it)->keyPressed(e);
+    }
+    return true;
+  }
+
+  /**
+    @brief Event handler for the keyReleased Event.
+    @param e Event information
+  */
+  bool InputManager::keyReleased(const OIS::KeyEvent &e)
+  {
+    // remove the key from the keysDown_ list
+    for (std::list<OIS::KeyCode>::iterator it = keysDown_.begin(); it != keysDown_.end(); it++)
+    {
+      if (*it == e.key)
+      {
+        keysDown_.erase(it);
+        break;
+      }
+    }
+
+    if (this->bDefaultKeyInput)
+    {
+      // find the appropriate key binding
+      std::string cmdStr = bindingsKeyRelease_[int(e.key)];
+      if (cmdStr != "")
+      {
+        CommandExecutor::execute(cmdStr);
+        COUT(3) << "Executing command: " << cmdStr << std::endl;
+      }
+    }
+    else
+    {
+      for (std::list<OIS::KeyListener*>::const_iterator it = activeKeyListeners_.begin(); it != activeKeyListeners_.end(); it++)
+        (*it)->keyReleased(e);
+    }
+    return true;
+  }
+
+  /**
+    @brief Event handler for the mouseMoved Event.
+    @param e Event information
+  */
+  bool InputManager::mouseMoved(const OIS::MouseEvent &e)
+  {
+    return true;
+  }
+
+  /**
+    @brief Event handler for the mousePressed Event.
+    @param e Event information
+    @param id The ID of the mouse button
+  */
+  bool InputManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+  {
+    return true;
+  }
+
+  /**
+    @brief Event handler for the mouseReleased Event.
+    @param e Event information
+    @param id The ID of the mouse button
+  */
+  bool InputManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+  {
+    return true;
+  }
+
+  bool InputManager::buttonPressed(const OIS::JoyStickEvent &arg, int button)
+  {
+    return true;
+  }
+
+  bool InputManager::buttonReleased(const OIS::JoyStickEvent &arg, int button)
+  {
+    return true;
+  }
+
+  bool InputManager::axisMoved(const OIS::JoyStickEvent &arg, int axis)
+  {
+    return true;
+  }
+
+  bool InputManager::sliderMoved(const OIS::JoyStickEvent &arg, int id)
+  {
+    return true;
+  }
+
+  bool InputManager::povMoved(const OIS::JoyStickEvent &arg, int id)
+  {
+    return true;
+  }
+
+
 
   /**
     @brief Adjusts the mouse window metrics.
@@ -220,7 +352,7 @@ namespace orxonox
   void InputManager::setWindowExtents(int width, int height)
   {
     // Set mouse region (if window resizes, we should alter this to reflect as well)
-    const OIS::MouseState &mouseState = mouse_->getMouseState();
+    const OIS::MouseState &mouseState = _getSingleton().mouse_->getMouseState();
     mouseState.width  = width;
     mouseState.height = height;
   }
@@ -230,25 +362,62 @@ namespace orxonox
     @param mode The new input mode
     @remark Only has an affect if the mode actually changes
   */
-  void InputManager::setInputMode(int mode)
+  void InputManager::setInputState(const InputState state)
   {
-    if (mode > 0 && mode < 4)
-      getSingleton().setMode_ = (InputMode)mode;
+    _getSingleton().stateRequest_ = state;
   }
 
   /**
     @brief Returns the current input handling method
     @return The current input mode.
   */
-  InputMode InputManager::getInputMode()
+  InputManager::InputState InputManager::getInputState()
   {
-    return this->currentMode_;
+    return _getSingleton().state_;
   }
 
-  void InputManager::feedInputBuffer(InputBuffer* buffer)
+  void InputManager::destroy()
   {
-    this->handlerBuffer_ = buffer;
+    _getSingleton()._destroy();
   }
 
+  bool InputManager::initialise(size_t windowHnd, int windowWidth, int windowHeight)
+  {
+    return _getSingleton()._initialise(windowHnd, windowWidth, windowHeight);
+  }
+
+  bool InputManager::addKeyListener(OIS::KeyListener *listener, const std::string& name)
+  {
+    if (_getSingleton().keyListeners_.find(name) == _getSingleton().keyListeners_.end())
+    {
+      _getSingleton().keyListeners_[name] = listener;
+      return true;
+    }
+    else
+      return false;
+  }
+
+  bool InputManager::removeKeyListener(const std::string &name)
+  {
+    std::map<std::string, OIS::KeyListener*>::iterator it = _getSingleton().keyListeners_.find(name);
+    if (it != _getSingleton().keyListeners_.end())
+    {
+      _getSingleton().keyListeners_.erase(it);
+      return true;
+    }
+    else
+      return false;
+  }
+
+  OIS::KeyListener* InputManager::getKeyListener(const std::string& name)
+  {
+    std::map<std::string, OIS::KeyListener*>::iterator it = _getSingleton().keyListeners_.find(name);
+    if (it != _getSingleton().keyListeners_.end())
+    {
+      return (*it).second;
+    }
+    else
+      return 0;
+  }
 
 }

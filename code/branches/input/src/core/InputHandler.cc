@@ -37,6 +37,7 @@
 #include "InputEventListener.h"
 #include "InputEvent.h"
 #include "InputManager.h"
+#include "core/CommandExecutor.h"
 
 namespace orxonox
 {
@@ -67,9 +68,12 @@ namespace orxonox
     for (int i = 0; i < numberOfKeys_s; i++)
     {
       // simply write the key number (i) in the string
-      this->bindingsKeyPressed_[i] = getConvertedValue<int, std::string>(i);
-      this->bindingsKeyReleased_[i] = getConvertedValue<int, std::string>(i);
+      this->bindingsKeyPress_[i] = "";
+      this->bindingsKeyRelease_[i] = "";
     }
+    this->bindingsKeyPress_[OIS::KC_NUMPADENTER] = "setInputMode " + getConvertedValue<int, std::string>(IM_KEYBOARD);
+    this->bindingsKeyPress_[OIS::KC_ESCAPE] = "exit";
+    this->bindingsKeyHold_[OIS::KC_U] = "exec disco.txt";
     return true;
   }
 
@@ -79,20 +83,13 @@ namespace orxonox
   */
   bool InputHandlerGame::keyPressed(const OIS::KeyEvent &e)
   {
-    if (e.key == OIS::KC_ESCAPE)
+    this->keysDown_.push_back(e.key);
+    // find the appropriate key binding
+    std::string cmdStr = bindingsKeyPress_[int(e.key)];
+    if (cmdStr != "")
     {
-      InputEvent e = {1, true, 0, 0, 0};
-      InputHandlerGame::callListeners(e);
-    }
-    else if (e.key == OIS::KC_NUMPADENTER)
-    {
-      InputManager::getSingleton().setInputMode(IM_KEYBOARD);
-    }
-    else
-    {
-      // find the appropriate key binding
-      std::string cmdStr = bindingsKeyPressed_[int(e.key)];
-      //COUT(3) << cmdStr << " pressed" << std::endl;
+      CommandExecutor::execute(cmdStr);
+      COUT(3) << "Executing command: " << cmdStr << std::endl;
     }
     return true;
   }
@@ -103,9 +100,23 @@ namespace orxonox
   */
   bool InputHandlerGame::keyReleased(const OIS::KeyEvent &e)
   {
+    // remove the key from the keysDown_ list
+    for (std::list<OIS::KeyCode>::iterator it = keysDown_.begin(); it != keysDown_.end(); it++)
+    {
+      if (*it == e.key)
+      {
+        keysDown_.erase(it);
+        break;
+      }
+    }
+
     // find the appropriate key binding
-    std::string cmdStr = bindingsKeyReleased_[int(e.key)];
-    //COUT(3) << cmdStr << " released" << std::endl;
+    std::string cmdStr = bindingsKeyRelease_[int(e.key)];
+    if (cmdStr != "")
+    {
+      CommandExecutor::execute(cmdStr);
+      COUT(3) << "Executing command: " << cmdStr << std::endl;
+    }
     return true;
   }
 
@@ -136,6 +147,25 @@ namespace orxonox
   bool InputHandlerGame::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
     return true;
+  }
+
+  /**
+    @brief Tick method to do additional calculations.
+    @param dt Delta time.
+  */
+  void InputHandlerGame::tick(float dt)
+  {
+    // iterate through all the pressed keys
+    for (std::list<OIS::KeyCode>::iterator it = keysDown_.begin(); it != keysDown_.end(); it++)
+    {
+      // find the appropriate key binding
+      std::string cmdStr = bindingsKeyHold_[*it];
+      if (cmdStr != "")
+      {
+        CommandExecutor::execute(cmdStr);
+        COUT(3) << "Executing command: " << cmdStr << std::endl;
+      }
+    }
   }
 
   /**
@@ -223,6 +253,15 @@ namespace orxonox
   {
 		//CEGUI::System::getSingleton().injectMouseButtonUp(convertOISMouseButtonToCegui(id));
     return true;
+  }
+
+  /**
+    @brief Tick method to do additional calculations.
+    @param dt Delta time.
+  */
+  void InputHandlerGUI::tick(float dt)
+  {
+    
   }
 
 }
