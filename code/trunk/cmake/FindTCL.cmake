@@ -13,7 +13,7 @@ SET (TCLTK_POSSIBLE_LIB_PATHS
   "$ENV{ProgramFiles}/Tcl/Lib"
   "C:/Program Files/Tcl/lib" 
   "C:/Tcl/lib" 
-  ../tcl/unix
+  ../libs/tcl8.5.2/unix
   ../libs/tcl8.5.2/win
 )
 
