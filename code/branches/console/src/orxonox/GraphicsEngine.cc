@@ -39,8 +39,7 @@
 #include <OgreConfigFile.h>
 #include <OgreLogManager.h>
 #include <OgreTextureManager.h>
-#include <OgreRenderWindow.h>
-
+#include "core/InputManager.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
@@ -89,6 +88,7 @@ namespace orxonox {
   void GraphicsEngine::destroy()
   {
     COUT(4) << "*** GraphicsEngine: Destroying objects..." << std::endl;
+    Ogre::WindowEventUtilities::removeWindowEventListener(this->renderWindow_, this);
     if (this->root_)
       delete this->root_;
     this->root_ = 0;
@@ -183,6 +183,7 @@ namespace orxonox {
   void GraphicsEngine::initialise()
   {
     this->renderWindow_ = root_->initialise(true, "OrxonoxV2");
+    Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, this);
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
     //TODO: Do NOT load all the groups, why are we doing that? And do we really do that? initialise != load...
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
@@ -288,4 +289,22 @@ namespace orxonox {
     OutputHandler::getOutStream().setOutputLevel(orxonoxLevel)
         << "*** Ogre: " << message << std::endl;
   }
+
+    void GraphicsEngine::windowMoved(Ogre::RenderWindow *rw){
+        int w = rw->getWidth();
+        int h = rw->getHeight();
+        InputManager::getSingleton().setWindowExtents(w, h);
+    }
+
+    void GraphicsEngine::windowResized(Ogre::RenderWindow *rw){
+        int w = rw->getWidth();
+        int h = rw->getHeight();
+        InputManager::getSingleton().setWindowExtents(w, h);
+    }
+
+    void GraphicsEngine::windowFocusChanged(Ogre::RenderWindow *rw){
+        int w = rw->getWidth();
+        int h = rw->getHeight();
+        InputManager::getSingleton().setWindowExtents(w, h);
+    }
 }
