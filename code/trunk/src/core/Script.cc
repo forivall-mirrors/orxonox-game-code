@@ -38,7 +38,7 @@ extern "C" {
 #include <lauxlib.h>
 }
 
-#include "tolua/tolua++.h"
+#include "tolua++.h"
 #include "tolua/tolua_bind.h"
 
 namespace orxonox
@@ -59,7 +59,7 @@ namespace orxonox
     luaopen_io(luaState_);
     luaopen_debug(luaState_);
 #endif
-    tolua_orxonox_open(luaState_);
+    tolua_core_open(luaState_);
     output_ = "";
   }
 
