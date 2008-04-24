@@ -383,6 +383,22 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="tolua"
+				>
+				<File
+					RelativePath="..\..\src\orxonox\tolua\tolua_bind.cc"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -510,6 +526,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\Timer.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="tolua"
+				>
+				<File
+					RelativePath="..\..\src\orxonox\tolua\tolua_bind.h"
 					>
 				</File>
 			</Filter>

@@ -29,8 +29,26 @@ SET( ORXONOX_SRC_FILES
 #  objects/weapon/Bullet.cc
 #  objects/weapon/BulletManager.cc
 #  objects/weapon/WeaponStation.cc
+  tolua/tolua_bind.cc
+#  tolua/tolua_bind.h
 )
 
+#SET_SOURCE_FILES_PROPERTIES(tolua/tolua_bind.h
+#  PROPERTIES
+#  OBJECT_DEPENDS tolua/tolua_bind.h
+#  OBJECT_DEPENDS tolua/tolua_bind.cc
+#  GENERATED true
+#  HEADER_FILE_ONLY true
+#)
+
+GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
+ADD_CUSTOM_COMMAND(
+  OUTPUT tolua/tolua_bind.cc tolua/tolua_bind.h
+  COMMAND ${TOLUA_EXE} -n orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg
+  DEPENDS tolua
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
+)
+	
 ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
 
 TARGET_LINK_LIBRARIES( orxonox

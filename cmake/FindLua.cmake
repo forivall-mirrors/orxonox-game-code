@@ -27,7 +27,7 @@ ELSE (Lua_LIBRARIES AND Lua_INCLUDE_DIR)
     /usr/local/include/lua50
     /usr/pack/lua-5.0.3-sd/include)
 
-  FIND_LIBRARY(Lua_LIBRARY_51 lua5.1
+  FIND_LIBRARY(Lua_LIBRARY_51 NAMES lua5.1 lua PATHS
     /usr/lib
     /usr/local/lib
     ../libs/lua-5.1.3/lib)
