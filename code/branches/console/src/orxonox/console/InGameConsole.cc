@@ -67,7 +67,7 @@ namespace orxonox
 
     void InGameConsole::listen(){
         if(!active) activate();
-        print(this->ib_->get());
+        print(convert2UTF(this->ib_->get()));
     }
 
     void InGameConsole::execute(){
@@ -83,7 +83,7 @@ namespace orxonox
         print(CommandExecutor::hint(this->ib_->get()));
         newline();
         this->ib_->set(CommandExecutor::complete(this->ib_->get()));
-        print(this->ib_->get());
+        print(convert2UTF(this->ib_->get()));
     }
 
     void InGameConsole::clear(){
@@ -195,7 +195,7 @@ namespace orxonox
 
         cursor += dt;
         if(cursor >= 2*BLINK) cursor = 0;
-        print(this->ib_->get());
+        print(convert2UTF(this->ib_->get()));
 
 // this creates a flickering effect
         consoleOverlayNoise->setTiling(1, rand()%5+1);
@@ -243,22 +243,22 @@ namespace orxonox
     @brief prints string to bottom line
     @param s string to be printed
     */
-    void InGameConsole::print(std::string s){
-        if(cursor>BLINK) consoleOverlayTextAreas[0]->setCaption(">" + convert2UTF(s));
-        else consoleOverlayTextAreas[0]->setCaption(">" + convert2UTF(s) + "_");
+    void InGameConsole::print(Ogre::UTFString s){
+        if(cursor>BLINK) consoleOverlayTextAreas[0]->setCaption(">" + s);
+        else consoleOverlayTextAreas[0]->setCaption(">" + s + "_");
     }
 
     /**
     @brief shifts all lines up and clears the bottom line
     */
     void InGameConsole::newline(){
-        std::string line;
+        Ogre::UTFString line;
         for(int i = LINES-1; i>=1; i--){
             line = consoleOverlayTextAreas[i-1]->getCaption();
             // don't copy the cursor...
             int l = line.length();
             if(!line.empty() && line.substr(l-1) == "_") line.erase(l-1);
-            consoleOverlayTextAreas[i]->setCaption(convert2UTF(line));
+            consoleOverlayTextAreas[i]->setCaption(line);
         }
         consoleOverlayTextAreas[0]->setCaption(">");
     }

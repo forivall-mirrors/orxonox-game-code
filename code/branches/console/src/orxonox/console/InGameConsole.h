@@ -59,7 +59,7 @@ namespace orxonox
 
         private:
             void resize();
-            void print(std::string s);
+            void print(Ogre::UTFString s);
             void newline();
             Ogre::UTFString convert2UTF(std::string s);
 
