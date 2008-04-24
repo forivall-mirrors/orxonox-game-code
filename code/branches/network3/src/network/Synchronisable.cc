@@ -178,7 +178,7 @@ namespace network
       COUT(4) << "Synchronisable::updateData syncList is empty" << std::endl;
       return false;
     }
-    COUT(5) << "Synchronisable: objectID " << objectID << ", classID " << classID << " synchronising data" << std::endl;
+    COUT(5) << "Synchronisable: objectID " << vars.objectID << ", classID " << vars.classID << " size: " << vars.length << " synchronising data" << std::endl;
     for(i=syncList->begin(); i!=syncList->end(); i++){
       COUT(5) << "Synchronisable: element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
       switch((*i)->type){

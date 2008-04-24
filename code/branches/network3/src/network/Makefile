@@ -25,19 +25,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /usr/pack/cmake-2.4.5-mo/i686-debian-linux3.1/bin/cmake
+CMAKE_COMMAND = /usr/bin/cmake
 
 # The command to remove a file.
-RM = /usr/pack/cmake-2.4.5-mo/i686-debian-linux3.1/bin/cmake -E remove -f
+RM = /usr/bin/cmake -E remove -f
 
 # The program to use to edit the cache.
-CMAKE_EDIT_COMMAND = /usr/pack/cmake-2.4.5-mo/i686-debian-linux3.1/bin/ccmake
+CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/scheusso/orxonox/network
+CMAKE_SOURCE_DIR = /home/dude/orxonox/network
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/scheusso/orxonox/network
+CMAKE_BINARY_DIR = /home/dude/orxonox/network
 
 # Include the progress variables for this target.
 include CMakeFiles/progress.make
@@ -48,7 +48,7 @@ include CMakeFiles/progress.make
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	cd /home/scheusso/orxonox/network/src/network && /usr/pack/cmake-2.4.5-mo/i686-debian-linux3.1/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	cd /home/dude/orxonox/network/src/network && /usr/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 
 # Special rule for the target edit_cache
 edit_cache/fast: edit_cache
@@ -56,31 +56,31 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	cd /home/scheusso/orxonox/network/src/network && /usr/pack/cmake-2.4.5-mo/i686-debian-linux3.1/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	cd /home/dude/orxonox/network/src/network && /usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 
 # Special rule for the target rebuild_cache
 rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/scheusso/orxonox/network && $(CMAKE_COMMAND) -E cmake_progress_start /home/scheusso/orxonox/network/CMakeFiles $(CMAKE_ALL_PROGRESS)
-	cd /home/scheusso/orxonox/network && $(MAKE) -f CMakeFiles/Makefile2 src/network/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/scheusso/orxonox/network/CMakeFiles 0
+	cd /home/dude/orxonox/network && $(CMAKE_COMMAND) -E cmake_progress_start /home/dude/orxonox/network/CMakeFiles $(CMAKE_ALL_PROGRESS)
+	cd /home/dude/orxonox/network && $(MAKE) -f CMakeFiles/Makefile2 src/network/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dude/orxonox/network/CMakeFiles 0
 
 # The main clean target
 clean:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f CMakeFiles/Makefile2 src/network/clean
+	cd /home/dude/orxonox/network && $(MAKE) -f CMakeFiles/Makefile2 src/network/clean
 
 # The main clean target
 clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/scheusso/orxonox/network && $(MAKE) -f CMakeFiles/Makefile2 src/network/preinstall
+	cd /home/dude/orxonox/network && $(MAKE) -f CMakeFiles/Makefile2 src/network/preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f CMakeFiles/Makefile2 src/network/preinstall
+	cd /home/dude/orxonox/network && $(MAKE) -f CMakeFiles/Makefile2 src/network/preinstall
 
 # clear depends
 depend:
@@ -88,146 +88,202 @@ depend:
 
 # Convenience name for target.
 src/network/CMakeFiles/network.dir/rule:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f CMakeFiles/Makefile2 src/network/CMakeFiles/network.dir/rule
+	cd /home/dude/orxonox/network && $(MAKE) -f CMakeFiles/Makefile2 src/network/CMakeFiles/network.dir/rule
 
 # Convenience name for target.
 network: src/network/CMakeFiles/network.dir/rule
 
 # fast build rule for target.
 network/fast:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/build
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/build
+
+# Convenience name for target.
+src/network/CMakeFiles/networktest.dir/rule:
+	cd /home/dude/orxonox/network && $(MAKE) -f CMakeFiles/Makefile2 src/network/CMakeFiles/networktest.dir/rule
+
+# Convenience name for target.
+networktest: src/network/CMakeFiles/networktest.dir/rule
+
+# fast build rule for target.
+networktest/fast:
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/build
 
 # target to build an object file
 Client.o:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Client.o
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Client.o
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/Client.o
 
 # target to preprocess a source file
 Client.i:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Client.i
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Client.i
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/Client.i
 
 # target to generate assembly for a file
 Client.s:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Client.s
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Client.s
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/Client.s
 
 # target to build an object file
 ClientConnection.o:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientConnection.o
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientConnection.o
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/ClientConnection.o
 
 # target to preprocess a source file
 ClientConnection.i:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientConnection.i
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientConnection.i
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/ClientConnection.i
 
 # target to generate assembly for a file
 ClientConnection.s:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientConnection.s
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientConnection.s
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/ClientConnection.s
 
 # target to build an object file
 ClientInformation.o:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientInformation.o
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientInformation.o
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/ClientInformation.o
 
 # target to preprocess a source file
 ClientInformation.i:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientInformation.i
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientInformation.i
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/ClientInformation.i
 
 # target to generate assembly for a file
 ClientInformation.s:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientInformation.s
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ClientInformation.s
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/ClientInformation.s
 
 # target to build an object file
 ConnectionManager.o:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ConnectionManager.o
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ConnectionManager.o
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/ConnectionManager.o
 
 # target to preprocess a source file
 ConnectionManager.i:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ConnectionManager.i
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ConnectionManager.i
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/ConnectionManager.i
 
 # target to generate assembly for a file
 ConnectionManager.s:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ConnectionManager.s
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/ConnectionManager.s
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/ConnectionManager.s
 
 # target to build an object file
 GameStateClient.o:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateClient.o
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateClient.o
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/GameStateClient.o
 
 # target to preprocess a source file
 GameStateClient.i:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateClient.i
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateClient.i
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/GameStateClient.i
 
 # target to generate assembly for a file
 GameStateClient.s:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateClient.s
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateClient.s
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/GameStateClient.s
 
 # target to build an object file
 GameStateManager.o:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateManager.o
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateManager.o
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/GameStateManager.o
 
 # target to preprocess a source file
 GameStateManager.i:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateManager.i
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateManager.i
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/GameStateManager.i
 
 # target to generate assembly for a file
 GameStateManager.s:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateManager.s
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/GameStateManager.s
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/GameStateManager.s
 
 # target to build an object file
 PacketBuffer.o:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketBuffer.o
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketBuffer.o
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/PacketBuffer.o
 
 # target to preprocess a source file
 PacketBuffer.i:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketBuffer.i
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketBuffer.i
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/PacketBuffer.i
 
 # target to generate assembly for a file
 PacketBuffer.s:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketBuffer.s
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketBuffer.s
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/PacketBuffer.s
 
 # target to build an object file
 PacketDecoder.o:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketDecoder.o
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketDecoder.o
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/PacketDecoder.o
 
 # target to preprocess a source file
 PacketDecoder.i:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketDecoder.i
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketDecoder.i
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/PacketDecoder.i
 
 # target to generate assembly for a file
 PacketDecoder.s:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketDecoder.s
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketDecoder.s
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/PacketDecoder.s
 
 # target to build an object file
 PacketGenerator.o:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketGenerator.o
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketGenerator.o
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/PacketGenerator.o
 
 # target to preprocess a source file
 PacketGenerator.i:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketGenerator.i
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketGenerator.i
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/PacketGenerator.i
 
 # target to generate assembly for a file
 PacketGenerator.s:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketGenerator.s
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/PacketGenerator.s
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/PacketGenerator.s
 
 # target to build an object file
 Server.o:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Server.o
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Server.o
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/Server.o
 
 # target to preprocess a source file
 Server.i:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Server.i
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Server.i
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/Server.i
 
 # target to generate assembly for a file
 Server.s:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Server.s
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Server.s
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/Server.s
 
 # target to build an object file
 Synchronisable.o:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Synchronisable.o
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Synchronisable.o
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/Synchronisable.o
 
 # target to preprocess a source file
 Synchronisable.i:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Synchronisable.i
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Synchronisable.i
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/Synchronisable.i
 
 # target to generate assembly for a file
 Synchronisable.s:
-	cd /home/scheusso/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Synchronisable.s
+	cd /home/dude/orxonox/network && cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/network.dir/build.make src/network/CMakeFiles/network.dir/Synchronisable.s
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/Synchronisable.s
+
+# target to build an object file
+diffTest.o:
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/diffTest.o
+
+# target to preprocess a source file
+diffTest.i:
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/diffTest.i
+
+# target to generate assembly for a file
+diffTest.s:
+	cd /home/dude/orxonox/network && $(MAKE) -f src/network/CMakeFiles/networktest.dir/build.make src/network/CMakeFiles/networktest.dir/diffTest.s
 
 # Help Target
 help::
@@ -237,6 +293,7 @@ help::
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... network"
+	@echo "... networktest"
 	@echo "... rebuild_cache"
 	@echo "... Client.o"
 	@echo "... Client.i"
@@ -271,6 +328,9 @@ help::
 	@echo "... Synchronisable.o"
 	@echo "... Synchronisable.i"
 	@echo "... Synchronisable.s"
+	@echo "... diffTest.o"
+	@echo "... diffTest.i"
+	@echo "... diffTest.s"
 
 
 
@@ -281,5 +341,5 @@ help::
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/scheusso/orxonox/network && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/dude/orxonox/network && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 

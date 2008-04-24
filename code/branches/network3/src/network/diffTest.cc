@@ -641,7 +641,7 @@ void displayModes() {
   std::cout << "\t-4 -> random differences and randomly longer" << std::endl;
   std::cout << "\t-5 -> only half as long and ever %10 == 0 index is different" << std::endl;
 }
-/**
+
 int main( int argc, char* argv[] ) {
   int a,b,c,n;
   std::string dec = "nothing";
@@ -711,12 +711,12 @@ int main( int argc, char* argv[] ) {
     std::cout << "################## END ONE TURN ##################@" << std::endl;
   }
   return 0;
-}*/
-
+}
+/*
 int main() {
   std::cout << "############### START TEST (quit q) ###############" << std::endl;
   testSynchronisable();
-}
+}*/
 
 //#########################################################################
 //### the prev loop is only to chose one prev prev test functions       ###

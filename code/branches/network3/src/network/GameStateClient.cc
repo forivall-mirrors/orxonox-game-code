@@ -113,7 +113,7 @@ namespace network
 
 
         if(!it){
-          COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
+          //COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
           ///sigsegv may happen here again for some reason
           ///sigsegv is receved after the COUT(4) above
           Synchronisable *no = dynamic_cast<Synchronisable *>(ID((unsigned int) sync.classID)->fabricate());
