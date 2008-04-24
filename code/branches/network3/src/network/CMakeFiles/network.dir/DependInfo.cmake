@@ -1,0 +1,28 @@
+# The set of files whose dependency integrity should be checked:
+SET(CMAKE_DEPENDS_LANGUAGES
+  "CXX"
+  )
+SET(CMAKE_DEPENDS_CHECK_CXX
+  "/home/scheusso/orxonox/network/src/network/Client.cc"
+  "/home/scheusso/orxonox/network/src/network/CMakeFiles/network.dir/Client.o"
+  "/home/scheusso/orxonox/network/src/network/ClientConnection.cc"
+  "/home/scheusso/orxonox/network/src/network/CMakeFiles/network.dir/ClientConnection.o"
+  "/home/scheusso/orxonox/network/src/network/ClientInformation.cc"
+  "/home/scheusso/orxonox/network/src/network/CMakeFiles/network.dir/ClientInformation.o"
+  "/home/scheusso/orxonox/network/src/network/ConnectionManager.cc"
+  "/home/scheusso/orxonox/network/src/network/CMakeFiles/network.dir/ConnectionManager.o"
+  "/home/scheusso/orxonox/network/src/network/GameStateManager.cc"
+  "/home/scheusso/orxonox/network/src/network/CMakeFiles/network.dir/GameStateManager.o"
+  "/home/scheusso/orxonox/network/src/network/GameStateClient.cc"
+  "/home/scheusso/orxonox/network/src/network/CMakeFiles/network.dir/GameStateClient.o"
+  "/home/scheusso/orxonox/network/src/network/PacketBuffer.cc"
+  "/home/scheusso/orxonox/network/src/network/CMakeFiles/network.dir/PacketBuffer.o"
+  "/home/scheusso/orxonox/network/src/network/PacketDecoder.cc"
+  "/home/scheusso/orxonox/network/src/network/CMakeFiles/network.dir/PacketDecoder.o"
+  "/home/scheusso/orxonox/network/src/network/PacketGenerator.cc"
+  "/home/scheusso/orxonox/network/src/network/CMakeFiles/network.dir/PacketGenerator.o"
+  "/home/scheusso/orxonox/network/src/network/Server.cc"
+  "/home/scheusso/orxonox/network/src/network/CMakeFiles/network.dir/Server.o"
+  "/home/scheusso/orxonox/network/src/network/Synchronisable.cc"
+  "/home/scheusso/orxonox/network/src/network/CMakeFiles/network.dir/Synchronisable.o"
+  )
