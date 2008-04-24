@@ -61,6 +61,7 @@ namespace orxonox
             void resize();
             void print(std::string s);
             void newline();
+            Ogre::UTFString convert2UTF(std::string s);
 
             int windowW;
             int windowH;

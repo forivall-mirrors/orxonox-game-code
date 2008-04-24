@@ -108,6 +108,7 @@ namespace orxonox
         scroll = 0;
         scrollTimer = 0;
         cursor = 0;
+
         // create overlay and elements
         om = &Ogre::OverlayManager::getSingleton();
 
@@ -243,23 +244,34 @@ namespace orxonox
     @param s string to be printed
     */
     void InGameConsole::print(std::string s){
-        if(cursor>BLINK) consoleOverlayTextAreas[0]->setCaption(">" + s);
-        else consoleOverlayTextAreas[0]->setCaption(">" + s + "_");
+        if(cursor>BLINK) consoleOverlayTextAreas[0]->setCaption(">" + convert2UTF(s));
+        else consoleOverlayTextAreas[0]->setCaption(">" + convert2UTF(s) + "_");
     }
 
     /**
     @brief shifts all lines up and clears the bottom line
     */
     void InGameConsole::newline(){
-
         std::string line;
         for(int i = LINES-1; i>=1; i--){
             line = consoleOverlayTextAreas[i-1]->getCaption();
             // don't copy the cursor...
             int l = line.length();
             if(!line.empty() && line.substr(l-1) == "_") line.erase(l-1);
-            consoleOverlayTextAreas[i]->setCaption(line);
+            consoleOverlayTextAreas[i]->setCaption(convert2UTF(line));
         }
         consoleOverlayTextAreas[0]->setCaption(">");
+    }
+
+    Ogre::UTFString InGameConsole::convert2UTF(std::string s){
+        Ogre::UTFString utf;
+        int i;
+        Ogre::UTFString::code_point cp;
+        for (i=0; i<(int)s.size(); ++i){
+          cp = s[i];
+          cp &= 0xFF;
+          utf.append(1, cp);
+        }
+        return utf;
     }
 }
