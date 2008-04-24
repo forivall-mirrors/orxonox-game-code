@@ -128,56 +128,52 @@ namespace network
     GameState *retval=new GameState; //return value
     retval->id=id++;
     COUT(4) << "G.ST.Man: producing gamestate with id: " << retval->id << std::endl;
-    // reserve a little memory and increase it later on
-    COUT(5) << "G.ST.Man: mallocing: " << memsize << std::endl;
-    retval->data = (unsigned char*)malloc(memsize);
-    COUT(5) << "G.ST.Man: malloced: " << memsize << std::endl;
-
     // offset of memory functions
-    int offset=0;
+    int offset=0, size=0;
+    // get total size of gamestate
+    for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
+      size+=it->getSize();
+      size+=3*sizeof(int);
+    }
+    retval->data = (unsigned char*)malloc(size);
+    if(!retval->data){
+      COUT(2) << "GameStateManager: could not allocate memory" << std::endl;
+      return NULL;
+    }
+    memsize=size;
     // go through all Synchronisables
     for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
-      //std::cout << "begin inner loop" << std::endl;
-      //std::cout << "gamestatemanager: in for loop" << std::endl;
       //get size of the synchronisable
       tempsize=it->getSize();
-      //COUT(5) << "size of temp gamestate: " << tempsize << std::endl;
-      //COUT(2) << "size of synchronisable: " << tempsize << std::endl;
       // add place for data and 3 ints (length,classid,objectid)
       totalsize+=tempsize+3*sizeof(int);
-      //std::cout << "totalsize: " << totalsize << std::endl;
-      //COUT(5) << "G.St.Man: current totalsize=" << totalsize << std::endl;
-      //COUT(5) << "G.St.Man: current it->classID=" << it->classID << " it->objectID=" << it->objectID << std::endl;
       // allocate additional space
       if((totalsize+tempsize) > memsize){
         COUT(5) << "G.St.Man: need additional memory" << std::endl;
-        if(tempsize < 1000){
-          retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
-          memsize+=1000;
-        } else {
-          retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
-          memsize+=tempsize+1000;
-        }
-        COUT(5) << "G.St.Man: additional space allocation finished" << std::endl;
+//         if(tempsize < 1000){
+//           retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
+//           memsize+=1000;
+//         } else {
+//           retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
+//           memsize+=tempsize+1000;
+//         }
+//         COUT(5) << "G.St.Man: additional space allocation finished" << std::endl;
       }
 
       // run Synchronisable::getData with offset and additional place for 3 ints in between (for ids and length)
       sync=it->getData((retval->data)+offset+3*sizeof(int));
-      memcpy(retval->data+offset, (void *)&sync.length, sizeof(int));
-      //*(retval->data+offset)=sync.length;
-      memcpy(retval->data+offset+sizeof(int), (void *)&sync.objectID, sizeof(int));
-      //*(retval->data+offset+sizeof(int))=sync.objectID;
-      memcpy(retval->data+offset+2*sizeof(int), (void *)&sync.classID, sizeof(int));
-      //*(retval->data+offset+2*sizeof(int))=sync.classID;
+      memcpy(retval->data+offset, (void *)&(sync.length), sizeof(int));
+      memcpy(retval->data+offset+sizeof(int), (void *)&(sync.objectID), sizeof(int));
+      memcpy(retval->data+offset+2*sizeof(int), (void *)&(sync.classID), sizeof(int));
       // increase data pointer
       offset+=tempsize+3*sizeof(int);
-      //std::cout << "end inner loop" << std::endl;
     }
     retval->size=totalsize;
     //#### bugfix
     retval->diffed = false;
     //std::cout << "end snapShot" << std::endl;
     COUT(5) << "G.ST.Man: Gamestate size: " << totalsize << std::endl;
+    COUT(5) << "G.ST.Man: 'estimated' Gamestate size: " << size << std::endl;
     return retval;
   }
 
