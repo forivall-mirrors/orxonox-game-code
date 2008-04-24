@@ -46,6 +46,7 @@ namespace orxonox
     Skybox::Skybox()
     {
         RegisterObject(Skybox);
+        registerAllVariables();
     }
 
     Skybox::~Skybox()
@@ -56,10 +57,10 @@ namespace orxonox
     {
     	if (xmlElem->Attribute("src"))
     	{
-    		std::string skyboxSrc = xmlElem->Attribute("src");
-	    	this->setSkybox(skyboxSrc);
+    		skyboxSrc_ = xmlElem->Attribute("src");
+        this->create();
 
-	    	COUT(4) << "Loader: Set skybox: "<< skyboxSrc << std::endl << std::endl;
+	    	COUT(4) << "Loader: Set skybox: "<< skyboxSrc_ << std::endl << std::endl;
     	}
    }
 
@@ -68,6 +69,10 @@ namespace orxonox
     	GraphicsEngine::getSingleton().getSceneManager()->setSkyBox(true, skyboxname);
    }
 
+   void Skybox::setSkyboxSrc(std::string src){
+     skyboxSrc_ = src;
+   }
+   
     /**
         @brief XML loading and saving.
         @param xmlelement The XML-element
@@ -79,5 +84,16 @@ namespace orxonox
         BaseObject::XMLPort(xmlelement, mode);
 
         XMLPortParamLoadOnly(Skybox, "src", setSkybox, xmlelement, mode);
+        create();
     }
+    
+    bool Skybox::create(){
+      this->setSkybox(skyboxSrc_);
+      return true;
+    }
+    
+    void Skybox::registerAllVariables(){
+      registerVar(&skyboxSrc_, skyboxSrc_.length()+1 ,network::STRING);
+    }
+    
 }

@@ -71,6 +71,7 @@ namespace orxonox
           this->node_ = 0;
         }
     }
+    
 
     WorldEntity::~WorldEntity()
     {
@@ -161,6 +162,7 @@ namespace orxonox
         create();
 */
     }
+    
 
     void WorldEntity::setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll)
     {
@@ -187,6 +189,8 @@ namespace orxonox
         XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, mode);
 
         XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, mode, false, true);
+        
+        //create();
     }
 
 
