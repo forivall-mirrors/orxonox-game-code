@@ -280,18 +280,6 @@ src/network/CMakeFiles/network.dir/ClientConnection.o: src/./util/Sleep.h
 src/network/CMakeFiles/network.dir/ClientConnection.o: src/./util/UtilPrereqs.h
 src/network/CMakeFiles/network.dir/ClientConnection.o: src/orxonox/OrxonoxPlatform.h
 
-src/network/CMakeFiles/network.dir/ClientInformation.o: src/network/ClientInformation.cc
-src/network/CMakeFiles/network.dir/ClientInformation.o: src/network/ClientInformation.h
-src/network/CMakeFiles/network.dir/ClientInformation.o: src/network/NetworkPrereqs.h
-src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/callbacks.h
-src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/enet.h
-src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/list.h
-src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/protocol.h
-src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/types.h
-src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/unix.h
-src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/win32.h
-src/network/CMakeFiles/network.dir/ClientInformation.o: src/orxonox/OrxonoxPlatform.h
-
 src/network/CMakeFiles/network.dir/ConnectionManager.o: src/network/ClientInformation.h
 src/network/CMakeFiles/network.dir/ConnectionManager.o: src/network/ConnectionManager.cc
 src/network/CMakeFiles/network.dir/ConnectionManager.o: src/network/ConnectionManager.h
@@ -547,6 +535,18 @@ src/network/CMakeFiles/network.dir/ConnectionManager.o: src/./core/OutputHandler
 src/network/CMakeFiles/network.dir/ConnectionManager.o: src/./util/String.h
 src/network/CMakeFiles/network.dir/ConnectionManager.o: src/./util/UtilPrereqs.h
 src/network/CMakeFiles/network.dir/ConnectionManager.o: src/orxonox/OrxonoxPlatform.h
+
+src/network/CMakeFiles/network.dir/ClientInformation.o: src/network/ClientInformation.cc
+src/network/CMakeFiles/network.dir/ClientInformation.o: src/network/ClientInformation.h
+src/network/CMakeFiles/network.dir/ClientInformation.o: src/network/NetworkPrereqs.h
+src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/callbacks.h
+src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/enet.h
+src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/list.h
+src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/protocol.h
+src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/types.h
+src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/unix.h
+src/network/CMakeFiles/network.dir/ClientInformation.o: /usr/pack/enet-2007-sd/include/enet/win32.h
+src/network/CMakeFiles/network.dir/ClientInformation.o: src/orxonox/OrxonoxPlatform.h
 
 src/network/CMakeFiles/network.dir/GameStateManager.o: src/network/ClientInformation.h
 src/network/CMakeFiles/network.dir/GameStateManager.o: src/network/GameStateManager.cc

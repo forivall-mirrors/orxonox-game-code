@@ -17,7 +17,7 @@ SET(CMAKE_C_INCLUDE_PATH
   "/usr/pack/lua-5.0.3-sd/include"
   "src/."
   "src/orxonox"
-  "src/tolua"
+  "src/util/tolua"
   )
 SET(CMAKE_CXX_INCLUDE_PATH ${CMAKE_C_INCLUDE_PATH})
 

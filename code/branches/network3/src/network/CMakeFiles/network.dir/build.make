@@ -348,7 +348,6 @@ bin/lib/libnetwork.so: /usr/pack/enet-2007-sd/i686-debian-linux3.1/lib/libenet.a
 bin/lib/libnetwork.so: /usr/pack/boost-1.34.1-sd/i686-debian-linux3.1/lib/libboost_thread-gcc41-mt.so
 bin/lib/libnetwork.so: bin/lib/libcore.so
 bin/lib/libnetwork.so: bin/lib/libutil.so
-bin/lib/libnetwork.so: bin/lib/libtolualib.a
 bin/lib/libnetwork.so: /usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib/liblua.so
 bin/lib/libnetwork.so: /usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib/liblualib.so
 bin/lib/libnetwork.so: src/network/CMakeFiles/network.dir/build.make

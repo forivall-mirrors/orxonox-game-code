@@ -150,14 +150,14 @@ namespace network
     int n=0; //offset
     for(i=syncList->begin(); n<datasize && i!=syncList->end(); ++i){
       //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
-      memcpy( (void *)(retVal.data+n), (const void *)&((*i)->size), sizeof(int) );
-      n+=sizeof(int);
       switch((*i)->type){
       case DATA:
         std::memcpy( (void *)(retVal.data+n), (const void*)((*i)->var), (*i)->size);
         n+=(*i)->size;
         break;
       case STRING:
+        memcpy( (void *)(retVal.data+n), (const void *)&((*i)->size), sizeof(int) );
+        n+=sizeof(int);
         std::memcpy( retVal.data+n, (const void*)( ( (std::string *) (*i)->var)->c_str()), (*i)->size);
         n+=(*i)->size;
         break;
@@ -181,22 +181,18 @@ namespace network
     COUT(5) << "Synchronisable: objectID " << objectID << ", classID " << classID << " synchronising data" << std::endl;
     for(i=syncList->begin(); i!=syncList->end(); i++){
       COUT(5) << "Synchronisable: element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
-      if(*(int *)data==(*i)->size || (*i)->type==STRING){
-        switch((*i)->type){
-        case DATA:
-          data+=sizeof(int);
-          memcpy((void*)(*i)->var, data, (*i)->size);
-          data+=(*i)->size;
-          break;
-        case STRING:
-          (*i)->size = *(int *)data;
-          data+=sizeof(int);
-          *((std::string *)((*i)->var)) = std::string((const char*)data);
-          data += (*i)->size;
-          break;
-        }
-      } else
-        return false; //there was some problem with registerVar
+      switch((*i)->type){
+      case DATA:
+        memcpy((void*)(*i)->var, data, (*i)->size);
+        data+=(*i)->size;
+        break;
+      case STRING:
+        (*i)->size = *(int *)data;
+        data+=sizeof(int);
+        *((std::string *)((*i)->var)) = std::string((const char*)data);
+        data += (*i)->size;
+        break;
+      }
     }
     return true;
   }
@@ -211,7 +207,6 @@ namespace network
     for(i=syncList->begin(); i!=syncList->end(); i++){
       switch((*i)->type){
       case DATA:
-        tsize+=sizeof(int);
         tsize+=(*i)->size;
         break;
       case STRING:
