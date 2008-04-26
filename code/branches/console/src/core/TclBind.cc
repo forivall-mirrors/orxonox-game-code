@@ -45,22 +45,20 @@ namespace orxonox
 
     std::string Tcl_execute(Tcl::object const &args)
     {
-std::cout << "1\n";
-std::cout << "args: " << args.get() << std::endl;
+std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         std::string command = args.get();
+
         if (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
             command = command.substr(1, command.size() - 2);
+
         CommandEvaluation evaluation = CommandExecutor::evaluate(command);
-std::cout << "2\n";
+
         if (!CommandExecutor::execute(evaluation))
             COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
-std::cout << "3\n";
+
         if (evaluation.hasReturnvalue())
-        {
-std::cout << "4\n";
             return evaluation.getReturnvalue().toString();
-        }
-std::cout << "5\n";
+
         return "";
     }
 

@@ -375,10 +375,8 @@ namespace orxonox
 
     bool CommandExecutor::execute(const std::string& command)
     {
-std::cout << "CE_execute: " << command << "\n";
         if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
-{std::cout << "CE_execute->parse\n";
-            CommandExecutor::parse(command);}
+            CommandExecutor::parse(command);
 
         return CommandExecutor::execute(CommandExecutor::getEvaluation());
     }
@@ -386,6 +384,7 @@ std::cout << "CE_execute: " << command << "\n";
 
     bool CommandExecutor::execute(const CommandEvaluation& evaluation)
     {
+std::cout << "CE_execute: " << evaluation.processedCommand_ << "\n";
         SubString tokens(evaluation.processedCommand_, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
 
         if (evaluation.bEvaluatedParams_ && evaluation.evaluatedExecutor_)
@@ -636,7 +635,7 @@ std::cout << "CE_execute: " << command << "\n";
     CommandEvaluation CommandExecutor::evaluate(const std::string& command)
     {
         CommandExecutor::parse(command, true);
-std::cout << "1_1: " << command << std::endl;
+
         if (CommandExecutor::getEvaluation().tokens_.size() > 0)
         {
             std::string lastToken;
@@ -645,7 +644,7 @@ std::cout << "1_1: " << command << std::endl;
             CommandExecutor::getEvaluation().tokens_.pop_back();
             CommandExecutor::getEvaluation().tokens_.append(SubString(lastToken, " "));
         }
-std::cout << "1_2: " << CommandExecutor::getEvaluation().tokens_[CommandExecutor::getEvaluation().tokens_.size() - 1] << std::endl;
+
         CommandExecutor::getEvaluation().evaluateParams();
         return CommandExecutor::getEvaluation();
     }

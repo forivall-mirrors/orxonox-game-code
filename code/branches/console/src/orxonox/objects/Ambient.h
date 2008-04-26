@@ -47,7 +47,7 @@ namespace orxonox
             void setAmbientLight(const ColourValue& colour);
 
             static void setAmbientLightTest(const ColourValue& colour)
-                { std::cout << "setambientlight: " << colour << std::endl; Ambient::instance_s->setAmbientLight(colour); }
+                { Ambient::instance_s->setAmbientLight(colour); }
 
         private:
             static Ambient* instance_s;
