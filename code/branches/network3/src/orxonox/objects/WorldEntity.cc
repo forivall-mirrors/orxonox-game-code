@@ -48,7 +48,6 @@ namespace orxonox
     {
         RegisterObject(WorldEntity);
 
-        //create();
 
         this->bStatic_ = true;
         this->velocity_ = Vector3(0, 0, 0);
@@ -218,6 +217,8 @@ namespace orxonox
       registerVar( (void*) &(this->getScale().x), sizeof(this->getScale().x), network::DATA);
       registerVar( (void*) &(this->getScale().y), sizeof(this->getScale().y), network::DATA);
       registerVar( (void*) &(this->getScale().z), sizeof(this->getScale().z), network::DATA);
+      //register staticity
+      registerVar( (void*) &(this->bStatic_), sizeof(this->bStatic_), network::DATA);
     }
 
     void WorldEntity::attachWorldEntity(WorldEntity* entity)
