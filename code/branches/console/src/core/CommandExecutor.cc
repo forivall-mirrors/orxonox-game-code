@@ -235,10 +235,21 @@ namespace orxonox
         {
             if (this->shortcut_)
             {
-                if (this->shortcut_->evaluate(this->processedCommand_ + this->getAdditionalParameter(), this->param_, " "))
+                if (this->tokens_.size() <= 1)
                 {
-                    this->bEvaluatedParams_ = true;
-                    this->evaluatedExecutor_ = this->shortcut_;
+                    if (this->shortcut_->evaluate(this->getAdditionalParameter(), this->param_, " "))
+                    {
+                        this->bEvaluatedParams_ = true;
+                        this->evaluatedExecutor_ = this->shortcut_;
+                    }
+                }
+                else if (this->tokens_.size() > 1)
+                {
+                    if (this->shortcut_->evaluate(this->tokens_.subSet(1).join() + this->getAdditionalParameter(), this->param_, " "))
+                    {
+                        this->bEvaluatedParams_ = true;
+                        this->evaluatedExecutor_ = this->shortcut_;
+                    }
                 }
             }
         }
@@ -246,10 +257,21 @@ namespace orxonox
         {
             if (this->function_)
             {
-                if (this->function_->evaluate(this->processedCommand_ + this->getAdditionalParameter(), this->param_, " "))
+                if (this->tokens_.size() <= 2)
                 {
-                    this->bEvaluatedParams_ = true;
-                    this->evaluatedExecutor_ = this->function_;
+                    if (this->function_->evaluate(this->getAdditionalParameter(), this->param_, " "))
+                    {
+                        this->bEvaluatedParams_ = true;
+                        this->evaluatedExecutor_ = this->function_;
+                    }
+                }
+                else if (this->tokens_.size() > 2)
+                {
+                    if (this->function_->evaluate(this->tokens_.subSet(2).join() + this->getAdditionalParameter(), this->param_, " "))
+                    {
+                        this->bEvaluatedParams_ = true;
+                        this->evaluatedExecutor_ = this->function_;
+                    }
                 }
             }
         }
@@ -353,8 +375,10 @@ namespace orxonox
 
     bool CommandExecutor::execute(const std::string& command)
     {
+std::cout << "CE_execute: " << command << "\n";
         if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
-            CommandExecutor::parse(command);
+{std::cout << "CE_execute->parse\n";
+            CommandExecutor::parse(command);}
 
         return CommandExecutor::execute(CommandExecutor::getEvaluation());
     }
@@ -367,6 +391,7 @@ namespace orxonox
         if (evaluation.bEvaluatedParams_ && evaluation.evaluatedExecutor_)
         {
             (*evaluation.evaluatedExecutor_)(evaluation.param_[0], evaluation.param_[1], evaluation.param_[2], evaluation.param_[3], evaluation.param_[4]);
+            return true;
         }
 
         switch (evaluation.state_)
@@ -611,6 +636,16 @@ namespace orxonox
     CommandEvaluation CommandExecutor::evaluate(const std::string& command)
     {
         CommandExecutor::parse(command, true);
+std::cout << "1_1: " << command << std::endl;
+        if (CommandExecutor::getEvaluation().tokens_.size() > 0)
+        {
+            std::string lastToken;
+            lastToken = CommandExecutor::getEvaluation().tokens_[CommandExecutor::getEvaluation().tokens_.size() - 1];
+            lastToken = lastToken.substr(0, lastToken.size() - 1);
+            CommandExecutor::getEvaluation().tokens_.pop_back();
+            CommandExecutor::getEvaluation().tokens_.append(SubString(lastToken, " "));
+        }
+std::cout << "1_2: " << CommandExecutor::getEvaluation().tokens_[CommandExecutor::getEvaluation().tokens_.size() - 1] << std::endl;
         CommandExecutor::getEvaluation().evaluateParams();
         return CommandExecutor::getEvaluation();
     }
@@ -1047,6 +1082,9 @@ namespace orxonox
     {
         CommandExecutor::getEvaluation().processedCommand_ = command;
         CommandExecutor::getEvaluation().additionalParameter_ = "";
+
+        CommandExecutor::getEvaluation().bEvaluatedParams_ = false;
+        CommandExecutor::getEvaluation().evaluatedExecutor_ = 0;
 
         CommandExecutor::getEvaluation().listOfPossibleFunctionClasses_.clear();
         CommandExecutor::getEvaluation().listOfPossibleShortcuts_.clear();

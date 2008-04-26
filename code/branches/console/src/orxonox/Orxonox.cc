@@ -128,7 +128,7 @@ namespace orxonox
   class Calculator
   {
   public:
-    static void calculate(const std::string& calculation)
+    static float calculate(const std::string& calculation)
     {
       ExprParser expr(calculation);
       if (expr.getSuccess())
@@ -140,9 +140,13 @@ namespace orxonox
         if (expr.getRemains() != "")
           std::cout << "Warning: Expression could not be parsed to the end! Remains: '"
               << expr.getRemains() << "'" << std::endl;
+        return expr.getResult();
       }
       else
+      {
         std::cout << "Cannot calculate expression: Parse error" << std::endl;
+        return 0;
+      }
     }
   };
   ConsoleCommandShortcut(Calculator, calculate, AccessLevel::None);
