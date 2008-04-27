@@ -31,12 +31,12 @@
 
 #include <string>
 
-#include <OIS/OIS.h>
 #include <OgreCamera.h>
 #include <OgreRenderWindow.h>
 #include <OgreParticleSystem.h>
 #include <OgreSceneNode.h>
 
+#include "ois/OIS.h"
 #include "util/tinyxml/tinyxml.h"
 #include "util/Convert.h"
 #include "util/Math.h"

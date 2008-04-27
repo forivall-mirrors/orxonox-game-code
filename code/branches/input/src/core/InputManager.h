@@ -39,8 +39,8 @@
 
 #include <map>
 #include <list>
-#include <OIS/OIS.h>
 
+#include "ois/OIS.h"
 #include "Tickable.h"
 #include "InputEvent.h"
 

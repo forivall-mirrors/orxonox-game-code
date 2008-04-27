@@ -32,8 +32,8 @@
 #include "OrxonoxPrereqs.h"
 
 #include <OgrePrerequisites.h>
-#include <OIS/OISMouse.h>
 
+#include "ois/OISMouse.h"
 #include "Model.h"
 #include "../tools/BillboardSet.h"
 

@@ -34,7 +34,7 @@
 #include <string>
 #include <list>
 
-#include <OIS/OISKeyboard.h>
+#include "ois/OISKeyboard.h"
 
 namespace orxonox
 {

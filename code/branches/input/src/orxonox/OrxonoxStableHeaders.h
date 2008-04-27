@@ -78,11 +78,11 @@
 #include <OgreViewport.h>
 #include <OgreWindowEventUtilities.h>
 
-#include <OIS/OIS.h>
-
 //-----------------------------------------------------------------------
 // ORXONOX HEADERS
 //-----------------------------------------------------------------------
+
+#include "ois/OIS.h"
 
 //#include "util/Convert.h"
 #include "util/Math.h"

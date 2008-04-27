@@ -7,7 +7,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="&quot;$(RootDir)src&quot;;&quot;$(RootDir)src\orxonox&quot;;&quot;$(RootDir)src\util\tolua&quot;;&quot;$(DependencyDir)include&quot;"
+		AdditionalIncludeDirectories="&quot;$(RootDir)src&quot;;&quot;$(RootDir)src\orxonox&quot;;&quot;$(RootDir)src\util\tolua&quot;;&quot;$(RootDir)src\ois\include&quot;;&quot;$(DependencyDir)include&quot;"
 		PreprocessorDefinitions="WIN32;__WIN32__;_WIN32;BOOST_ALL_DYN_LINK;OIS_DYNAMIC_LIB; ZLIB_WINAPI"
 		WarningLevel="3"
 		DisableSpecificWarnings="4522;4251;4800"

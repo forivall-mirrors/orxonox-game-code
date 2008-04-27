@@ -154,11 +154,7 @@ namespace orxonox
   {
     try
     {
-#if (OIS_VERSION >> 8) == 0x0100
-    if (inputSystem_->numKeyboards() > 0)
-#elif (OIS_VERSION >> 8) == 0x0102
-    if (inputSystem_->getNumberOfDevices(OIS::OISKeyboard) > 0)
-#endif
+      if (inputSystem_->getNumberOfDevices(OIS::OISKeyboard) > 0)
       {
         keyboard_ = (OIS::Keyboard*)inputSystem_->createInputObject(OIS::OISKeyboard, true);
         // register our listener in OIS.
@@ -184,11 +180,7 @@ namespace orxonox
   {
     try
     {
-#if (OIS_VERSION >> 8) == 0x0100
-    if (inputSystem_->numMice() > 0)
-#elif (OIS_VERSION >> 8) == 0x0102
-    if (inputSystem_->getNumberOfDevices(OIS::OISMouse) > 0)
-#endif
+      if (inputSystem_->getNumberOfDevices(OIS::OISMouse) > 0)
       {
         mouse_ = static_cast<OIS::Mouse*>(inputSystem_->createInputObject(OIS::OISMouse, true));
         // register our listener in OIS.
@@ -211,15 +203,9 @@ namespace orxonox
   */
   void InputManager::_initialiseJoySticks()
   {
-#if (OIS_VERSION >> 8) == 0x0100
-    if (inputSystem_->numJoySticks() > 0)
-    {
-      _setNumberOfJoysticks(inputSystem_->numJoySticks());
-#elif (OIS_VERSION >> 8) == 0x0102
     if (inputSystem_->getNumberOfDevices(OIS::OISJoyStick) > 0)
     {
       _setNumberOfJoysticks(inputSystem_->getNumberOfDevices(OIS::OISJoyStick));
-#endif
       for (std::vector<OIS::JoyStick*>::iterator it = joySticks_.begin(); it != joySticks_.end(); it++)
       {
         try
@@ -370,11 +356,11 @@ namespace orxonox
 
 
   // ###############################
-  // ###  Public Member Methods  ###
+  // ###    Interface Methods    ###
   // ###############################
 
   /**
-    @brief Updates the InputManager
+    @brief Updates the InputManager. Tick is called by Orxonox.
     @param dt Delta time
   */
   void InputManager::tick(float dt)
@@ -393,7 +379,8 @@ namespace orxonox
         this->listenersJoySticksActive_.clear();
         this->bKeyBindingsActive_            = true;
         this->bMouseButtonBindingsActive_    = true;
-        //this->bJoySticksButtonBindingsActive_ = true;
+        for (unsigned int i = 0; i < joySticks_.size(); i++)
+          this->bJoyStickButtonBindingsActive_[i] = true;
         break;
 
       case IS_GUI:
@@ -403,10 +390,11 @@ namespace orxonox
       case IS_CONSOLE:
         this->listenersKeyActive_.clear();
         this->listenersMouseActive_.clear();
-        //this->listenersJoyStickActive_.clear();
+        this->listenersJoySticksActive_.clear();
         this->bKeyBindingsActive_            = false;
         this->bMouseButtonBindingsActive_    = true;
-        //this->bJoyStickButtonBindingsActive_ = true;
+        for (unsigned int i = 0; i < joySticks_.size(); i++)
+          this->bJoyStickButtonBindingsActive_[i] = true;
         if (listenersKey_.find("buffer") != listenersKey_.end())
           listenersKeyActive_.push_back(listenersKey_["buffer"]);
         else
@@ -420,14 +408,19 @@ namespace orxonox
       case IS_NONE:
         this->listenersKeyActive_.clear();
         this->listenersMouseActive_.clear();
-        //this->listenersJoyStickActive_.clear();
+        this->listenersJoySticksActive_.clear();
         this->bKeyBindingsActive_            = false;
         this->bMouseButtonBindingsActive_    = false;
-        //this->bJoyStickButtonBindingsActive_ = false;
+        for (unsigned int i = 0; i < joySticks_.size(); i++)
+          this->bJoyStickButtonBindingsActive_[i] = false;
         break;
 
       case IS_CUSTOM:
         // don't do anything
+        break;
+
+      case IS_UNINIT:
+        // this can't happen
         break;
       }
       state_ = stateRequest_;
@@ -617,6 +610,18 @@ namespace orxonox
     return _getSingleton()._initialise(windowHnd, windowWidth, windowHeight,
           createKeyboard, createMouse, createJoySticks);
   }
+
+  /*bool InputManager::initialiseKeyboard()
+  {
+  }
+
+  bool InputManager::initialiseMouse()
+  {
+  }
+
+  bool InputManager::initialiseJoySticks()
+  {
+  }*/
 
   bool InputManager::addKeyListener(OIS::KeyListener *listener, const std::string& name)
   {
