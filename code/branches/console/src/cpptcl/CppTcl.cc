@@ -858,6 +858,18 @@ interpreter::interpreter()
      owner_ = true;
 }
 
+interpreter::interpreter(string const &libpath)
+{
+     interp_ =  Tcl_CreateInterp();
+     owner_ = true;
+
+     try
+     {
+        this->eval("set tcl_library " + libpath);
+        Tcl_Init(this->interp_);
+     } catch (...) {}
+}
+
 interpreter::interpreter(Tcl_Interp *interp, bool owner)
 {
      interp_ =  interp;

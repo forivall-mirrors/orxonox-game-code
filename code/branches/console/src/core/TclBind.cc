@@ -36,14 +36,62 @@
 
 namespace orxonox
 {
-    ConsoleCommandShortcutExtern(tcl, AccessLevel::None);
+    ConsoleCommandShortcutGeneric(tcl, createExecutor(createFunctor(&TclBind::tcl), "tcl", AccessLevel::None));
 
-    void Tcl_puts(Tcl::object const &args)
+    TclBind::TclBind()
+    {
+        this->interpreter_ = 0;
+        this->bSetTclLibPath_ = false;
+    }
+
+    TclBind::~TclBind()
+    {
+        if (this->interpreter_)
+            delete this->interpreter_;
+    }
+
+    TclBind& TclBind::getInstance()
+    {
+        static TclBind instance;
+        return instance;
+    }
+
+    void TclBind::setDataPath(const std::string& datapath)
+    {
+        this->tclLibPath_ = datapath + "/tcl";
+        this->bSetTclLibPath_ = true;
+
+        this->createTclInterpreter();
+    }
+
+    void TclBind::createTclInterpreter()
+    {
+        if (this->bSetTclLibPath_ && !this->interpreter_)
+        {
+            this->interpreter_ = new Tcl::interpreter(this->tclLibPath_);
+            this->interpreter_->def("puts", TclBind::puts, Tcl::variadic());
+            this->interpreter_->def("execute", TclBind::execute, Tcl::variadic());
+            this->interpreter_->eval("proc unknown {args} { return [execute $args] }");
+        }
+    }
+
+    void TclBind::createNewTclInterpreter()
+    {
+        if (this->interpreter_)
+        {
+            delete this->interpreter_;
+            this->interpreter_ = 0;
+        }
+
+        this->createTclInterpreter();
+    }
+
+    void TclBind::puts(Tcl::object const &args)
     {
         COUT(0) << args.get() << std::endl;
     }
 
-    std::string Tcl_execute(Tcl::object const &args)
+    std::string TclBind::execute(Tcl::object const &args)
     {
 std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         std::string command = args.get();
@@ -51,26 +99,20 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         if (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
             command = command.substr(1, command.size() - 2);
 
-        CommandEvaluation evaluation = CommandExecutor::evaluate(command);
-
-        if (!CommandExecutor::execute(evaluation))
+        if (!CommandExecutor::execute(command))
             COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
 
-        if (evaluation.hasReturnvalue())
-            return evaluation.getReturnvalue().toString();
+        if (CommandExecutor::getLastEvaluation().hasReturnvalue())
+            return CommandExecutor::getLastEvaluation().getReturnvalue().toString();
 
         return "";
     }
 
-    std::string tcl(const std::string& tclcode)
+    std::string TclBind::tcl(const std::string& tclcode)
     {
         try
         {
-            static Tcl::interpreter i;
-            i.def("puts", Tcl_puts, Tcl::variadic());
-            i.def("execute", Tcl_execute, Tcl::variadic());
-            i.eval("proc unknown {args} { return [execute $args] }");
-            std::string output = i.eval(tclcode);
+            std::string output = TclBind::getInstance().interpreter_->eval(tclcode);
             if (output != "")
                 COUT(0) << "tcl> " << output << std::endl;
             return output;

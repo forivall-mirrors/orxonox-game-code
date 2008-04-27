@@ -338,6 +338,11 @@ namespace orxonox
         return CommandExecutor::getInstance().evaluation_;
     }
 
+    const CommandEvaluation& CommandExecutor::getLastEvaluation()
+    {
+        return CommandExecutor::getInstance().evaluation_;
+    }
+
     Executor& CommandExecutor::addConsoleCommandShortcut(ExecutorStatic* executor)
     {
         CommandExecutor::getInstance().consoleCommandShortcuts_[executor->getName()] = executor;
@@ -384,15 +389,16 @@ namespace orxonox
 
     bool CommandExecutor::execute(const CommandEvaluation& evaluation)
     {
-std::cout << "CE_execute: " << evaluation.processedCommand_ << "\n";
         SubString tokens(evaluation.processedCommand_, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
 
         if (evaluation.bEvaluatedParams_ && evaluation.evaluatedExecutor_)
         {
+std::cout << "CE_execute (evaluation): " << evaluation.evaluatedExecutor_->getName() << " " << evaluation.param_[0] << " " << evaluation.param_[1] << " " << evaluation.param_[2] << " " << evaluation.param_[3] << " " << evaluation.param_[4] << std::endl;
             (*evaluation.evaluatedExecutor_)(evaluation.param_[0], evaluation.param_[1], evaluation.param_[2], evaluation.param_[3], evaluation.param_[4]);
             return true;
         }
 
+std::cout << "CE_execute: " << evaluation.processedCommand_ << "\n";
         switch (evaluation.state_)
         {
             case CS_Uninitialized:
@@ -642,7 +648,7 @@ std::cout << "CE_execute: " << evaluation.processedCommand_ << "\n";
             lastToken = CommandExecutor::getEvaluation().tokens_[CommandExecutor::getEvaluation().tokens_.size() - 1];
             lastToken = lastToken.substr(0, lastToken.size() - 1);
             CommandExecutor::getEvaluation().tokens_.pop_back();
-            CommandExecutor::getEvaluation().tokens_.append(SubString(lastToken, " "));
+            CommandExecutor::getEvaluation().tokens_.append(SubString(lastToken, " ", "", true, '\0', false, '\0', false, '\0', '\0', false, '\0'));
         }
 
         CommandExecutor::getEvaluation().evaluateParams();
