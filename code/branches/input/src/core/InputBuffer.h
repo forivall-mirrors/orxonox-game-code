@@ -34,11 +34,7 @@
 #include <string>
 #include <list>
 
-#ifdef WIN32
 #include <OIS/OISKeyboard.h>
-#else
-#include <OISKeyboard.h>
-#endif
 
 namespace orxonox
 {

@@ -55,71 +55,78 @@ namespace orxonox
         : public Tickable,
           public OIS::MouseListener, public OIS::KeyListener, public OIS::JoyStickListener
   {
-  public:
+  public: // enumerations
     /**
-      @brief Designates the way input is handled currently.
-      IM_GUI:    All the OIS input events are passed to CEGUI
-      IM_BUFFER: Only keyboard input is captured and passed to the InputBuffer
-      IM_NORMAL: Normal game mode. Key bindings and mouse are active.
+      @brief Designates the way input is handled and redirected.
     */
     enum InputState
     {
-      IS_UNINIT,
-      IS_NONE,
-      IS_NORMAL,
-      IS_GUI,
-      IS_CONSOLE,
-      IS_CUSTOM
+      IS_UNINIT,  //!< InputManager has not yet been initialised.
+      IS_NONE,    //!< Input is discarded.
+      IS_NORMAL,  //!< Normal play state. Key and button bindings are active.
+      IS_GUI,     //!< All OIS input events are passed to CEGUI.
+      IS_CONSOLE, //!< Keyboard input is redirected to the InputBuffer.
+      IS_CUSTOM   //!< Any possible configuration.
     };
 
-  public:
-    void tick(float dt);
+  public: // functions
+    // METHODS OF THE STATIC INTERFACE
 
-    static bool initialise(size_t windowHnd, int windowWidth, int windowHeight);
+    static bool initialise(size_t windowHnd, int windowWidth, int windowHeight,
+          bool createKeyboard = true, bool createMouse = true, bool createJoySticks = false);
     static void destroy();
 
     static void setWindowExtents(int width, int height);
+
     static void setInputState(const InputState state);
     static InputState getInputState();
+    static void setKeyBindingState           (bool bActive);
+    static void setMouseButtonBindingState   (bool bActive);
+    static void setJoyStickButtonBindingState(bool bActive);
 
     static bool addKeyListener(OIS::KeyListener* listener, const std::string& name);
-    //static bool removeKeyListener(OIS::KeyListener* listener);
-    static bool removeKeyListener(const std::string& name);
-    static bool enableKeyListener(const std::string& name);
-    static bool disableKeyListener(const std::string& name);
-    static OIS::KeyListener* getKeyListener(const std::string& name);
+    static bool removeKeyListener  (const std::string& name);
+    static bool enableKeyListener  (const std::string& name);
+    static bool disableKeyListener (const std::string& name);
     static bool isKeyListenerActive(const std::string& name);
+    static OIS::KeyListener* getKeyListener(const std::string& name);
 
     static bool addMouseListener(OIS::MouseListener* listener, const std::string& name);
-    //static bool removeMouseListener(OIS::MouseListener* listener);
-    static bool removeMouseListener(const std::string& name);
-    static bool enableMouseListener(const std::string& name);
-    static bool disableMouseListener(const std::string& name);
-    static OIS::MouseListener* getMouseListener(const std::string& name);
+    static bool removeMouseListener  (const std::string& name);
+    static bool enableMouseListener  (const std::string& name);
+    static bool disableMouseListener (const std::string& name);
     static bool isMouseListenerActive(const std::string& name);
+    static OIS::MouseListener* getMouseListener(const std::string& name);
 
     static bool addJoyStickListener(OIS::JoyStickListener* listener, const std::string& name);
-    //static bool removeJoyStickListener(OIS::JoyStickListener* listener);
-    static bool removeJoyStickListener(const std::string& name);
-    static bool enableJoyStickListener(const std::string& name);
-    static bool disableJoyStickListener(const std::string& name);
-    static OIS::JoyStickListener* getJoyStickListener(const std::string& name);
+    static bool removeJoyStickListener  (const std::string& name);
+    static bool enableJoyStickListener  (const std::string& name);
+    static bool disableJoyStickListener (const std::string& name);
     static bool isJoyStickListenerActive(const std::string& name);
+    static OIS::JoyStickListener* getJoyStickListener(const std::string& name);
 
     // Temporary solutions. Will be removed soon!
     static OIS::Mouse*    getMouse()    { return _getSingleton().mouse_   ; }
     static OIS::Keyboard* getKeyboard() { return _getSingleton().keyboard_; }
 
-  private:
+  private: // functions
     // don't mess with a Singleton
     InputManager ();
     InputManager (const InputManager&);
     ~InputManager();
 
-    bool _initialise(size_t windowHnd, int windowWidth, int windowHeight);
+    // Intenal methods
+    bool _initialise(size_t, int, int, bool, bool, bool);
+    void _initialiseKeyboard();
+    void _initialiseMouse();
+    void _initialiseJoySticks();
     void _destroy();
-    void _setDefaultState();
-    void _loadBindings();
+    //void _setDefaultState();
+    bool _loadBindings();
+    void _clearBindings();
+    void _setNumberOfJoysticks(int size);
+
+    void tick(float dt);
 
     // input events
 		bool mousePressed  (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
@@ -136,30 +143,34 @@ namespace orxonox
     static InputManager& _getSingleton();
     static InputManager* _getSingletonPtr() { return &_getSingleton(); }
 
-  private:
+  private: // variables
     OIS::InputManager* inputSystem_;    //!< OIS input manager
     OIS::Keyboard*     keyboard_;       //!< OIS mouse
     OIS::Mouse*        mouse_;          //!< OIS keyboard
+    std::vector<OIS::JoyStick*> joySticks_;       //!< OIS joy sticks
 
     InputState state_;
     InputState stateRequest_;
 
-    std::list<OIS::KeyCode> keysDown_;
+    bool bKeyBindingsActive_;
+    bool bMouseButtonBindingsActive_;
+    std::vector<bool> bJoyStickButtonBindingsActive_;
 
-    bool bDefaultKeyInput;
-    bool bDefaultMouseInput;
-    bool bDefaultJoyStickInput;
+    std::map<std::string, OIS::KeyListener*>      listenersKey_;
+    std::map<std::string, OIS::MouseListener*>    listenersMouse_;
+    std::map<std::string, OIS::JoyStickListener*> listenersJoySticks_;
 
-    std::map<std::string, OIS::KeyListener*>      keyListeners_;
-    std::list<OIS::KeyListener*>                  activeKeyListeners_;
-    std::map<std::string, OIS::MouseListener*>    mouseListeners_;
-    std::list<OIS::MouseListener*>                activeMouseListeners_;
-    std::map<std::string, OIS::JoyStickListener*> joystickListeners_;
-    std::list<OIS::JoyStickListener*>             activeJoyStickListeners_;
+    std::list<OIS::KeyListener*>      listenersKeyActive_;
+    std::list<OIS::MouseListener*>    listenersMouseActive_;
+    std::list<OIS::JoyStickListener*> listenersJoySticksActive_;
+
+    std::list<OIS::KeyCode>         keysDown_;
+    std::list<OIS::MouseButtonID>   mouseButtonsDown_;
+    std::vector< std::list<int> >   joyStickButtonsDown_;
 
 
     /** denotes the maximum number of different keys there are in OIS.
-        256 should be ok since the highest number in the enum is 237. */
+        256 should be ok since the highest number in the OIS enum is 237. */
     static const int numberOfKeys_s = 256;
     //! Array of input events for every pressed key
     std::string bindingsKeyPress_  [numberOfKeys_s];
@@ -169,7 +180,7 @@ namespace orxonox
     std::string bindingsKeyHold_   [numberOfKeys_s];
 
     /** denotes the maximum number of different buttons there are in OIS.
-        16 should be ok since the highest number in the enum is 7. */
+        16 should be ok since the highest number in the OIS enum is 7. */
     static const int numberOfMouseButtons_s = 16;
     //! Array of input events for every pressed mouse button
     std::string bindingsMouseButtonPress_  [numberOfMouseButtons_s];
@@ -181,12 +192,9 @@ namespace orxonox
     /** denotes the maximum number of different buttons there are in OIS.
         32 should be ok. */
     static const int numberOfJoyStickButtons_s = 32;
-    //! Array of input events for every pressed joystick button
-    std::string bindingsJoyStickButtonPress_  [numberOfJoyStickButtons_s];
-    //! Array of input events for every released joystick button
-    std::string bindingsJoyStickButtonRelease_[numberOfJoyStickButtons_s];
-    //! Array of input events for every held joystick button
-    std::string bindingsJoyStickButtonHold_   [numberOfJoyStickButtons_s];
+    std::vector< std::vector< std::string > > bindingsJoyStickButtonPress_;
+    std::vector< std::vector< std::string > > bindingsJoyStickButtonRelease_;
+    std::vector< std::vector< std::string > > bindingsJoyStickButtonHold_;
 
   };
 }

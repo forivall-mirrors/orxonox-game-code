@@ -2,7 +2,11 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tolua++_properties"
+	Name="tolua_properties"
 	InheritedPropertySheets=".\directory_properties.vsprops"
 	>
+	<Tool
+		Name="VCCLCompilerTool"
+		DisableSpecificWarnings="4996"
+	/>
 </VisualStudioPropertySheet>
