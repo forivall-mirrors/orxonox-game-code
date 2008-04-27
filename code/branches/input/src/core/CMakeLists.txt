@@ -4,9 +4,9 @@ SET(CORE_SRC_FILES
   Factory.cc
   Identifier.cc
   IdentifierDistributor.cc
-  InputHandler.cc
+#  InputHandler.cc
   InputManager.cc
-  InputEventListener.cc
+#  InputEventListener.cc
   MetaObjectList.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc

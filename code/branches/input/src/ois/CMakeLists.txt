@@ -30,7 +30,7 @@ ELSEIF (UNIX)
     linux/LinuxForceFeedback.cpp
     linux/LinuxInputManager.cpp
     linux/LinuxJoyStickEvents.cpp
-    linux/LinuxKeyBoard.cpp
+    linux/LinuxKeyboard.cpp
     linux/LinuxMouse.cpp
   )
 ENDIF (WIN32)
