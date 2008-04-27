@@ -70,8 +70,10 @@ namespace orxonox
         {
             this->interpreter_ = new Tcl::interpreter(this->tclLibPath_);
             this->interpreter_->def("puts", TclBind::puts, Tcl::variadic());
+            this->interpreter_->def("orxonox", TclBind::orxonox, Tcl::variadic());
             this->interpreter_->def("execute", TclBind::execute, Tcl::variadic());
-            this->interpreter_->eval("proc unknown {args} { return [execute $args] }");
+            this->interpreter_->eval("proc unknown {args} { return [orxonox $args] }");
+            this->interpreter_->eval("rename exit tclexit; proc exit {} { orxonox exit }");
         }
     }
 
@@ -91,7 +93,7 @@ namespace orxonox
         COUT(0) << args.get() << std::endl;
     }
 
-    std::string TclBind::execute(Tcl::object const &args)
+    std::string TclBind::orxonox(Tcl::object const &args)
     {
 std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         std::string command = args.get();
@@ -99,13 +101,17 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         if (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
             command = command.substr(1, command.size() - 2);
 
-        if (!CommandExecutor::execute(command))
+        if (!CommandExecutor::execute(command, false))
             COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
 
         if (CommandExecutor::getLastEvaluation().hasReturnvalue())
             return CommandExecutor::getLastEvaluation().getReturnvalue().toString();
 
         return "";
+    }
+
+    void TclBind::execute(Tcl::object const &args)
+    {
     }
 
     std::string TclBind::tcl(const std::string& tclcode)
@@ -127,5 +133,24 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         }
 
         return "";
+    }
+
+    bool TclBind::eval(const std::string& tclcode)
+    {
+        try
+        {
+            TclBind::getInstance().interpreter_->eval(tclcode);
+            return true;
+        }
+        catch (Tcl::tcl_error const &e)
+        {
+            COUT(1) << "Error: " << e.what() << std::endl;
+        }
+        catch (std::exception const &e)
+        {
+            COUT(1) << "Error while executing tcl: " << e.what() << std::endl;
+        }
+
+        return false;
     }
 }

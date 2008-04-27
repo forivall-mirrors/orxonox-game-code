@@ -130,7 +130,7 @@ namespace orxonox
     class _CoreExport CommandExecutor
     {
         public:
-            static bool execute(const std::string& command);
+            static bool execute(const std::string& command, bool useTcl = true);
             static bool execute(const CommandEvaluation& evaluation);
 
             static std::string complete(const std::string& command);

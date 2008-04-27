@@ -29,6 +29,8 @@
 #ifndef _TclBind_H__
 #define _TclBind_H__
 
+#include "CorePrereqs.h"
+
 #include "cpptcl/CppTcl.h"
 
 namespace orxonox
@@ -43,8 +45,10 @@ namespace orxonox
             void createNewTclInterpreter();
 
             static void puts(Tcl::object const &args);
-            static std::string execute(Tcl::object const &args);
+            static void execute(Tcl::object const &args);
+            static std::string orxonox(Tcl::object const &args);
             static std::string tcl(const std::string& tclcode);
+            static bool TclBind::eval(const std::string& tclcode);
 
         private:
             TclBind();

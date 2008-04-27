@@ -35,6 +35,7 @@
 #include "Debug.h"
 #include "Executor.h"
 #include "ConfigValueContainer.h"
+#include "TclBind.h"
 
 #define COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE "set"
 #define COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY "tset"
@@ -378,12 +379,19 @@ namespace orxonox
             return 0;
     }
 
-    bool CommandExecutor::execute(const std::string& command)
+    bool CommandExecutor::execute(const std::string& command, bool useTcl)
     {
-        if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
-            CommandExecutor::parse(command);
+        if (useTcl)
+        {
+            return TclBind::eval(command);
+        }
+        else
+        {
+            if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
+                CommandExecutor::parse(command);
 
-        return CommandExecutor::execute(CommandExecutor::getEvaluation());
+            return CommandExecutor::execute(CommandExecutor::getEvaluation());
+        }
     }
 
 
