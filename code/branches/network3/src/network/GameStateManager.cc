@@ -78,6 +78,8 @@ namespace network
   void GameStateManager::cleanup(){
     std::map<int,int>::iterator it = gameStateUsed.begin();
     while(it!=gameStateUsed.end()){
+      if((id_-(*it).first)<KEEP_GAMESTATES)
+        break;
       if( (*it).second <= 0 ){
         COUT(4) << "GameStateManager: deleting gamestate with id: " << (*it).first << ", uses: " << (*it).second << std::endl;
         delete[] gameStateMap[(*it).first]->data;
@@ -85,10 +87,10 @@ namespace network
         gameStateMap.erase((*it).first);
         gameStateUsed.erase(it++);
         continue;
-      }else if(id_-it->first<=KEEP_GAMESTATES){  //as soon as we got a used gamestate break here because we could use newer gamestates in future but only if we do not exceed KEEP_GAMESTATES # of gamestates in cache
+      }/*else if(id_-it->first<=KEEP_GAMESTATES){  //as soon as we got a used gamestate break here because we could use newer gamestates in future but only if we do not exceed KEEP_GAMESTATES # of gamestates in cache
         COUT(4) << "breaking " << std::endl;
         break;
-      }
+      }*/
       it++;
     }
   }
@@ -113,7 +115,7 @@ namespace network
     } else {
       COUT(4) << "we got a GAMESTATEID_INITIAL for clientID: " << clientID << std::endl;
       GameState *server = reference;
-      ackGameState(clientID, reference->id);
+//       ackGameState(clientID, reference->id);
       //head_->findClient(clientID)->setGamestateID(id);
       return encode(server);
       // return an undiffed gamestate and set appropriate flags
@@ -202,33 +204,33 @@ namespace network
   //##### END TESTING PURPOSE #####
 
   GameStateCompressed *GameStateManager::encode(GameState *a, GameState *b) {
-    COUT(5) << "G.St.Man: this will be a DIFFED gamestate" << std::endl;
+    COUT(4) << "G.St.Man: this will be a DIFFED gamestate" << std::endl;
     GameState *r = diff(a,b);
-    //r.diffed = true;
+//     r->diffed = true;
 //     GameState *r = b;
 //     r->diffed = false;
-    //return compress_(r);
-    GameStateCompressed *g = new GameStateCompressed;
+    return compress_(r);
+    /*GameStateCompressed *g = new GameStateCompressed;
     g->base_id = r->base_id;
     g->id = r->id;
     g->diffed = r->diffed;
     g->data = r->data;
     g->normsize = r->size;
     g->compsize = r->size;
-    return g;
+    return g*/;
   }
 
   GameStateCompressed *GameStateManager::encode(GameState *a) {
-    COUT(5) << "G.St.Man: this will be a not diffed gamestate" << std::endl;
-    a->diffed=false;
-    GameStateCompressed *g = new GameStateCompressed;
+    COUT(5) << "G.St.Man: encoding gamestate (compress)" << std::endl;
+    return compress_(a);
+    /*GameStateCompressed *g = new GameStateCompressed;
     g->base_id = a->base_id;
     g->id = a->id;
     g->diffed = a->diffed;
     g->data = a->data;
     g->normsize = a->size;
     g->compsize = a->size;
-    return g;
+    return g;*/
   }
 
   GameState *GameStateManager::diff(GameState *a, GameState *b) {

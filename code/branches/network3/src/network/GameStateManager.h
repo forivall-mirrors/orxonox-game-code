@@ -49,7 +49,7 @@
 namespace network
 {
 
-#define KEEP_GAMESTATES 100
+#define KEEP_GAMESTATES 10
 
   /**
   * This Class implements a manager for gamestates:

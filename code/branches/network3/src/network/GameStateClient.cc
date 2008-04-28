@@ -132,7 +132,7 @@ namespace network
           ///sigsegv is receved after the COUT(4) above
           orxonox::Identifier* id = ID((unsigned int)sync.classID);
           if(!id){
-            COUT(4) << "We could not identify a new object" << std::endl;
+            COUT(4) << "We could not identify a new object; classid: " << sync.classID << std::endl;
             continue;
           }
           Synchronisable *no = dynamic_cast<Synchronisable *>(id->fabricate());
@@ -191,7 +191,7 @@ namespace network
     GameState *r = new GameState;
     r->id = diff->id;
     r->size = dest_length;
-    r->base_id = diff->base_id;
+    r->base_id = old->id;
     r->diffed = false;
     r->data = dp;
     return r;
@@ -235,6 +235,7 @@ namespace network
     gamestate->id = a->id;
     gamestate->size = normsize;
     gamestate->data = dest;
+    gamestate->base_id = a->base_id;
     gamestate->diffed = a->diffed;
 
     delete[] a->data; //delete compressed data
@@ -251,13 +252,13 @@ namespace network
   }
 
   GameState *GameStateClient::decode(GameStateCompressed *x) {
-    //GameState *t = decompress(x);
-    GameState *t = new GameState;
+    GameState *t = decompress(x);
+    /*GameState *t = new GameState;
     t->base_id = x->base_id;
     t->id = x->id;
     t->diffed = x->diffed;
     t->data = x->data;
-    t->size = x->normsize;
+    t->size = x->normsize;*/
     return t;
   }
   
