@@ -146,7 +146,7 @@ namespace network
     retVal.objectID=this->objectID;
     retVal.classID=this->classID;
     retVal.length=getSize();
-    COUT(4) << "Synchronisable getting data from objectID: " << retVal.objectID << " classID: " << retVal.classID << " length: " << retVal.length << std::endl;
+    COUT(5) << "Synchronisable getting data from objectID: " << retVal.objectID << " classID: " << retVal.classID << " length: " << retVal.length << std::endl;
     retVal.data=mem;
     // copy to location
     int n=0; //offset
@@ -162,7 +162,7 @@ namespace network
         n+=sizeof(int);
         const char *data = ( ( *(std::string *) (*i)->var).c_str());
         std::memcpy( retVal.data+n, (void*)data, (*i)->size);
-        COUT(4) << "synchronisable: char: " << (const char *)(retVal.data+n) << " data: " << data << " string: " << *(std::string *)((*i)->var) << std::endl;
+        COUT(5) << "synchronisable: char: " << (const char *)(retVal.data+n) << " data: " << data << " string: " << *(std::string *)((*i)->var) << std::endl;
         n+=(*i)->size;
         break;
       }
@@ -192,10 +192,10 @@ namespace network
         break;
       case STRING:
         (*i)->size = *(int *)data;
-        COUT(4) << "string size: " << (*i)->size << std::endl;
+        COUT(5) << "string size: " << (*i)->size << std::endl;
         data+=sizeof(int);
         *((std::string *)((*i)->var)) = std::string((const char*)data);
-        COUT(4) << "synchronisable: char: " << (const char*)data << " string: " << std::string((const char*)data) << std::endl;
+        COUT(5) << "synchronisable: char: " << (const char*)data << " string: " << std::string((const char*)data) << std::endl;
         data += (*i)->size;
         break;
       }
@@ -218,7 +218,7 @@ namespace network
       case STRING:
         tsize+=sizeof(int);
         (*i)->size=((std::string *)(*i)->var)->length()+1;
-        COUT(4) << "String size: " << (*i)->size << std::endl;
+        COUT(5) << "String size: " << (*i)->size << std::endl;
         tsize+=(*i)->size;
         break;
       }

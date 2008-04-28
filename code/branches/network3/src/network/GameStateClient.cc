@@ -34,6 +34,8 @@
 #include "core/BaseObject.h"
 #include "Synchronisable.h"
 
+#define GAMESTATEID_INITIAL -1
+
 namespace network
 {
   struct GameStateItem{
@@ -43,31 +45,43 @@ namespace network
   
   GameStateClient::GameStateClient() {
     COUT(5) << "this: " << this << std::endl;
+    last_diff_=0;
   }
 
   GameStateClient::~GameStateClient() {
   }
 
   bool GameStateClient::pushGameState(GameStateCompressed *compstate) {
-    GameState *gs;
-    if(compstate->diffed){
-      while(compstate->base_id > gameStateList.front()->id){
-        // clean up old gamestates
-        free(gameStateList.front()->data);
-        // TODO: critical section
-        delete gameStateList.front();
-        gameStateList.pop();
-      }
-      if(compstate->base_id!=gameStateList.front()->id){
+    cleanup();
+    printGameStateMap();
+    GameState *gs, *reference;
+    if(compstate->diffed && compstate->base_id!=GAMESTATEID_INITIAL){
+      std::map<int, GameState*>::iterator it = gameStateMap.find(compstate->base_id);
+      if(it!=gameStateMap.end())
+        reference = (it)->second;
+      else
+        reference = NULL;
+      if(!reference){
         COUT(4) << "pushGameState: no reference found to diff" << std::endl;
         return false;
       }
-      gs = decode(gameStateList.front(), compstate);
+      gs = decode(reference, compstate);
     }
     else
       gs = decode(compstate);
-    if(gs)
-      return loadSnapshot(gs);
+    if(gs){
+      if (loadSnapshot(gs)){
+        gameStateMap.insert(std::pair<int, GameState*>(gs->id, gs));
+        COUT(4) << "adding decoded gs with id: " << gs->id << " diffed from: " << gs->base_id << std::endl;
+        last_diff_=gs->base_id;
+        return true;
+      }else{
+        COUT(4) << "could not decode gs with id: " << gs->id << " diffed from: " << gs->base_id << std::endl;
+        delete[] gs->data;
+        delete gs;
+        return false;
+      }
+    }
     COUT(4) << "could not use gamestate sent by server" << std::endl;
     return false;
   }
@@ -116,7 +130,12 @@ namespace network
           //COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
           ///sigsegv may happen here again for some reason
           ///sigsegv is receved after the COUT(4) above
-          Synchronisable *no = dynamic_cast<Synchronisable *>(ID((unsigned int) sync.classID)->fabricate());
+          orxonox::Identifier* id = ID((unsigned int)sync.classID);
+          if(!id){
+            COUT(4) << "We could not identify a new object" << std::endl;
+            continue;
+          }
+          Synchronisable *no = dynamic_cast<Synchronisable *>(id->fabricate());
           COUT(4) << "loadsnapshort: classid: " << sync.classID << " objectID: " << sync.objectID << " length: " << sync.length << std::endl;
           no->objectID=sync.objectID;
           no->classID=sync.classID;
@@ -139,22 +158,23 @@ namespace network
     return true;
   }
 
-  GameState *GameStateClient::undiff(GameState *a, GameState *b) {
-    unsigned char *ap = a->data, *bp = b->data;
+  GameState *GameStateClient::undiff(GameState *old, GameState *diff) {
+    unsigned char *ap = old->data, *bp = diff->data;
     int of=0; // pointers offset
     int dest_length=0;
-    if(a->size>=b->size)
-      dest_length=a->size;
+    if(old->size>=diff->size)
+      dest_length=old->size;
     else
-      dest_length=b->size;
-    unsigned char *dp = (unsigned char *)malloc(dest_length*sizeof(unsigned char));
-    while(of<a->size && of<b->size){
+      dest_length=diff->size;
+//     unsigned char *dp = (unsigned char *)malloc(dest_length*sizeof(unsigned char));
+    unsigned char *dp = new unsigned char[dest_length*sizeof(unsigned char)];
+    while(of<old->size && of<diff->size){
       *(dp+of)=*(ap+of)^*(bp+of); // do the xor
       ++of;
     }
-    if(a->size!=b->size){ // do we have to fill up ?
+    if(old->size!=diff->size){ // do we have to fill up ?
       unsigned char n=0;
-      if(a->size<b->size){
+      if(old->size<diff->size){
         while(of<dest_length){
           *(dp+of)=n^*(bp+of);
           of++;
@@ -169,8 +189,9 @@ namespace network
     // should be finished now
     // FIXME: is it true or false now? (struct has changed, producing warnings)
     GameState *r = new GameState;
-    r->id = b->id;
+    r->id = diff->id;
     r->size = dest_length;
+    r->base_id = diff->base_id;
     r->diffed = false;
     r->data = dp;
     return r;
@@ -195,7 +216,8 @@ namespace network
       bufsize = compsize;
     else
       bufsize = normsize;
-    unsigned char* dest = (unsigned char*)malloc( bufsize );
+//     unsigned char* dest = (unsigned char*)malloc( bufsize );
+    unsigned char *dest = new unsigned char[bufsize];
     int retval;
     uLongf length=normsize;
     //std::cout << "gamestateclient" << std::endl;
@@ -215,17 +237,17 @@ namespace network
     gamestate->data = dest;
     gamestate->diffed = a->diffed;
 
-    delete a->data; //delete compressed data
+    delete[] a->data; //delete compressed data
     delete a; //we do not need the old (struct) gamestate anymore
 
     return gamestate;
   }
 
-  GameState *GameStateClient::decode(GameState *a, GameStateCompressed *x) {
-    GameState *t = decode(x);
-    gameStateList.push(t);
-    //return undiff(a, t);
-    return t;
+  GameState *GameStateClient::decode(GameState *old, GameStateCompressed *diff) {
+    COUT(4) << "using diffed gamestate" << std::endl;
+    GameState *t = decode(diff);
+    return undiff(old, t);
+//     return t;
   }
 
   GameState *GameStateClient::decode(GameStateCompressed *x) {
@@ -236,8 +258,30 @@ namespace network
     t->diffed = x->diffed;
     t->data = x->data;
     t->size = x->normsize;
-    gameStateList.push(t);
     return t;
   }
+  
+  void GameStateClient::cleanup(){
+    std::map<int, GameState*>::iterator temp, it = gameStateMap.begin();
+    while(it!=gameStateMap.end()){
+      if(it->first>=last_diff_)
+        break;
+      // otherwise delete that stuff
+      delete[] (*it).second->data;
+      delete (*it).second;
+      temp=it++;
+      gameStateMap.erase(temp);
+    }
+  }
 
+  void GameStateClient::printGameStateMap(){
+    std::map<int, GameState*>::iterator it;
+    COUT(4) << "gamestates: ";
+    for(it=gameStateMap.begin(); it!=gameStateMap.end(); it++){
+      COUT(4) << it->first << ":" << it->second << "|";
+    }
+    COUT(4) << std::endl;
+    
+  }
+  
 }

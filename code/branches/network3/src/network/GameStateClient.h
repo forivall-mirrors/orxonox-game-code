@@ -40,7 +40,7 @@
 #ifndef _GameStateClient_H__
 #define _GameStateClient_H__
 
-#include <queue>
+#include <map>
 
 #include "NetworkPrereqs.h"
 #include "core/CorePrereqs.h"
@@ -60,14 +60,17 @@ namespace network
     bool pushGameState(GameStateCompressed *compstate);
   private:
     bool loadSnapshot(GameState *state);
-    GameState *undiff(GameState *a, GameState *b);
+    void cleanup();
+    GameState *undiff(GameState *old, GameState *diff);
     GameState *decompress(GameStateCompressed *a);
-    GameState *decode(GameState *a, GameStateCompressed *x);
+    GameState *decode(GameState *old, GameStateCompressed *diff);
     GameState *decode(GameStateCompressed *x);
     void removeObject(orxonox::Iterator<Synchronisable> &it);
+    void printGameStateMap();
 
     GameState     *reference;
-    std::queue<GameState *> gameStateList;
+    int           last_diff_;
+    std::map<int, GameState *> gameStateMap;
   };
 
 }

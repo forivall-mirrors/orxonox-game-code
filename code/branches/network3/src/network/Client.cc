@@ -229,10 +229,11 @@ namespace network
   void Client::processGamestate( GameStateCompressed *data){
     int id = data->id;
     COUT(5) << "received gamestate id: " << data->id << std::endl;
-    gamestate.pushGameState(data);
-    client_connection.addPacket(pck_gen.acknowledgement(id));
-    client_connection.sendPackets();
-    return;
+    if(gamestate.pushGameState(data)){
+      client_connection.addPacket(pck_gen.acknowledgement(id));
+      if(!client_connection.sendPackets())
+        COUT(2) << "Could not send acknowledgment" << std::endl;
+    }
   }
 
   void Client::processClassid(classid *clid){

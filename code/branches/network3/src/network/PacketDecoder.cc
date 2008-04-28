@@ -96,10 +96,10 @@ namespace network
   void PacketDecoder::acknowledgement( ENetPacket* packet, int clientId )
   {
     ack* a = new ack;
-    *a = *(ack*)packet->data; //press pattern of ack on new data
+    *a = *(ack*)(packet->data); //press pattern of ack on new data
 
 
-    COUT(5) << "PacketDecoder: got ack id: " << a->id << std::endl;
+    COUT(4) << "PacketDecoder: got ack id: " << a->a << std::endl;
     processAck( a, clientId ); //debug info
 
     //clean memory
