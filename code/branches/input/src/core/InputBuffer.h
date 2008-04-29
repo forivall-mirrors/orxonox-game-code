@@ -35,13 +35,14 @@
 #include <list>
 
 #include "ois/OISKeyboard.h"
+#include "InputHandler.h"
 
 namespace orxonox
 {
     class _CoreExport InputBufferListener
     {};
 
-    class _CoreExport InputBuffer : public OIS::KeyListener
+    class _CoreExport InputBuffer : public KeyHandler
     {
         struct InputBufferListenerTuple
         {
@@ -109,6 +110,7 @@ namespace orxonox
 
             bool keyPressed(const OIS::KeyEvent &e);
             bool keyReleased(const OIS::KeyEvent &e);
+            bool keyHeld(const OIS::KeyEvent &e) { return true; }
 
             OIS::Keyboard* keyboard_;
             //bool bActivated_;

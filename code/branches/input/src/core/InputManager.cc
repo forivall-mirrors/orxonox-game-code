@@ -44,6 +44,7 @@ namespace orxonox
   // ###############################
   // ###    Internal Methods     ###
   // ###############################
+  // ###############################
 
   /**
     @brief Constructor only sets member fields to initial zero values
@@ -53,10 +54,6 @@ namespace orxonox
       inputSystem_(0), keyboard_(0), mouse_(0),
       state_(IS_UNINIT), stateRequest_(IS_UNINIT)
   {
-    // overwrite every key binding with ""
-    _clearBindings();
-    _setNumberOfJoysticks(0);
-
     RegisterObject(InputManager);
   }
 
@@ -75,7 +72,7 @@ namespace orxonox
   */
   InputManager::~InputManager()
   {
-    this->_destroy();
+    _destroy();
   }
 
   /**
@@ -128,7 +125,7 @@ namespace orxonox
       // Set mouse/joystick region
       setWindowExtents(windowWidth, windowHeight);
 
-      this->state_ = IS_NONE;
+      state_ = IS_NONE;
       CCOUT(ORX_DEBUG) << "Initialising OIS components done." << std::endl;
     }
     else
@@ -139,9 +136,14 @@ namespace orxonox
     // InputManager holds the input buffer --> create one and add it.
     addKeyListener(new InputBuffer(), "buffer");
 
+    KeyBinder* binder = new KeyBinder();
+    binder->loadBindings();
+    addKeyListener(binder, "keybinder");
+    addMouseListener(binder, "keybinder");
+
     // Read all the key bindings and assign them
-    if (!_loadBindings())
-      return false;
+    //if (!_loadBindings())
+    //  return false;
 
     CCOUT(ORX_DEBUG) << "Initialising complete." << std::endl;
     return true;
@@ -149,9 +151,15 @@ namespace orxonox
 
   /**
     @brief Creates a keyboard and sets the event handler.
+    @return False if keyboard stays uninitialised, true otherwise.
   */
-  void InputManager::_initialiseKeyboard()
+  bool InputManager::_initialiseKeyboard()
   {
+    if (keyboard_ != 0)
+    {
+      CCOUT(2) << "Warning: Keyboard already initialised, skipping." << std::endl;
+      return true;
+    }
     try
     {
       if (inputSystem_->getNumberOfDevices(OIS::OISKeyboard) > 0)
@@ -161,23 +169,35 @@ namespace orxonox
         keyboard_->setEventCallback(this);
         // note: OIS will not detect keys that have already been down when the keyboard was created.
         CCOUT(ORX_DEBUG) << "Created OIS keyboard" << std::endl;
+        return true;
       }
       else
+      {
         CCOUT(ORX_WARNING) << "Warning: No keyboard found!" << std::endl;
+        return false;
+      }
     }
     catch (OIS::Exception ex)
     {
+      // TODO: Test this output regarding formatting
       CCOUT(ORX_WARNING) << "Warning: Failed to create an OIS keyboard\n"
           << "OIS error message: \"" << ex.eText << "\"" << std::endl;
       keyboard_ = 0;
+      return false;
     }
   }
 
   /**
     @brief Creates a mouse and sets the event handler.
+    @return False if mouse stays uninitialised, true otherwise.
   */
-  void InputManager::_initialiseMouse()
+  bool InputManager::_initialiseMouse()
   {
+    if (mouse_ != 0)
+    {
+      CCOUT(2) << "Warning: Mouse already initialised, skipping." << std::endl;
+      return true;
+    }
     try
     {
       if (inputSystem_->getNumberOfDevices(OIS::OISMouse) > 0)
@@ -186,118 +206,61 @@ namespace orxonox
         // register our listener in OIS.
         mouse_->setEventCallback(this);
         CCOUT(ORX_DEBUG) << "Created OIS keyboard" << std::endl;
+        return true;
       }
       else
+      {
         CCOUT(ORX_WARNING) << "Warning: No mouse found!" << std::endl;
+        return false;
+      }
     }
     catch (OIS::Exception ex)
     {
       CCOUT(ORX_WARNING) << "Warning: Failed to create an OIS mouse\n"
           << "OIS error message: \"" << ex.eText << "\"" << std::endl;
       mouse_ = 0;
+      return false;
     }
   }
 
   /**
     @brief Creates all joy sticks and sets the event handler.
+    @return False joy stick stay uninitialised, true otherwise.
   */
-  void InputManager::_initialiseJoySticks()
+  bool InputManager::_initialiseJoySticks()
   {
+    if (joySticks_.size() > 0)
+    {
+      CCOUT(2) << "Warning: Joy sticks already initialised, skipping." << std::endl;
+      return true;
+    }
+    bool success = false;
     if (inputSystem_->getNumberOfDevices(OIS::OISJoyStick) > 0)
     {
-      _setNumberOfJoysticks(inputSystem_->getNumberOfDevices(OIS::OISJoyStick));
-      for (std::vector<OIS::JoyStick*>::iterator it = joySticks_.begin(); it != joySticks_.end(); it++)
+      for (int i = 0; i < inputSystem_->getNumberOfDevices(OIS::OISJoyStick); i++)
       {
         try
         {
-          *it = static_cast<OIS::JoyStick*>(inputSystem_->createInputObject(OIS::OISJoyStick, true));
+          OIS::JoyStick* stig = static_cast<OIS::JoyStick*>(inputSystem_->createInputObject(OIS::OISJoyStick, true));
+          joySticks_[stig->getID()] = stig;
           // register our listener in OIS.
-          (*it)->setEventCallback(this);
-          CCOUT(ORX_DEBUG) << "Created OIS joy stick with ID " << (*it)->getID() << std::endl;
+          stig->setEventCallback(this);
+          CCOUT(ORX_DEBUG) << "Created OIS joy stick with ID " << stig->getID() << std::endl;
+          success = true;
         }
         catch (OIS::Exception ex)
         {
-          CCOUT(ORX_WARNING) << "Warning: Failed to create OIS joy stick with ID" << (*it)->getID() << "\n"
+          CCOUT(ORX_WARNING) << "Warning: Failed to create OIS joy number" << i << "\n"
               << "OIS error message: \"" << ex.eText << "\"" << std::endl;
-          (*it) = 0;
         }
       }
     }
     else
+    {
       CCOUT(ORX_WARNING) << "Warning: Joy stick support requested, but no joy stick was found" << std::endl;
-  }
-
-  /**
-    @brief Resizes all lists related to joy sticks and sets joy stick bindings to "".
-    @param size Number of joy sticks available.
-  */
-  void InputManager::_setNumberOfJoysticks(int size)
-  {
-    this->bindingsJoyStickButtonHold_   .resize(size);
-    this->bindingsJoyStickButtonPress_  .resize(size);
-    this->bindingsJoyStickButtonRelease_.resize(size);
-    this->bJoyStickButtonBindingsActive_.resize(size);
-    this->joyStickButtonsDown_          .resize(size);
-    this->joySticks_                    .resize(size);
-    for (int j = 0; j < size; j++)
-    {
-      bindingsJoyStickButtonPress_  [j].resize(numberOfJoyStickButtons_s);
-      bindingsJoyStickButtonRelease_[j].resize(numberOfJoyStickButtons_s);
-      bindingsJoyStickButtonHold_   [j].resize(numberOfJoyStickButtons_s);
-      for (int i = 0; i < numberOfJoyStickButtons_s; i++)
-      {
-        this->bindingsJoyStickButtonPress_  [j][i] = "";
-        this->bindingsJoyStickButtonRelease_[j][i] = "";
-        this->bindingsJoyStickButtonHold_   [j][i] = "";
-      }
+      return false;
     }
-  }
-
-  /**
-    @brief Loads the key and button bindings.
-  */
-  bool InputManager::_loadBindings()
-  {
-    CCOUT(ORX_DEBUG) << "Loading key bindings..." << std::endl;
-
-    // clear all the bindings at first.
-    _clearBindings();
-
-    // TODO: Insert the code to load the bindings from file.
-    this->bindingsKeyPress_[OIS::KC_NUMPADENTER] = "activateConsole";
-    this->bindingsKeyPress_[OIS::KC_ESCAPE] = "exit";
-    this->bindingsKeyHold_[OIS::KC_U] = "exec disco.txt";
-
-    CCOUT(ORX_DEBUG) << "Loading key bindings done." << std::endl;
-    return true;
-  }
-
-  /**
-    @brief Overwrites all bindings with ""
-  */
-  void InputManager::_clearBindings()
-  {
-    for (int i = 0; i < numberOfKeys_s; i++)
-    {
-      this->bindingsKeyPress_  [i] = "";
-      this->bindingsKeyRelease_[i] = "";
-      this->bindingsKeyHold_   [i] = "";
-    }
-    for (int i = 0; i < numberOfMouseButtons_s; i++)
-    {
-      this->bindingsMouseButtonPress_  [i] = "";
-      this->bindingsMouseButtonRelease_[i] = "";
-      this->bindingsMouseButtonHold_   [i] = "";
-    }
-    for (unsigned int j = 0; j < joySticks_.size(); j++)
-    {
-      for (int i = 0; i < numberOfJoyStickButtons_s; i++)
-      {
-        this->bindingsJoyStickButtonPress_  [j][i] = "";
-        this->bindingsJoyStickButtonRelease_[j][i] = "";
-        this->bindingsJoyStickButtonHold_   [j][i] = "";
-      }
-    }
+    return success;
   }
 
   /**
@@ -309,44 +272,32 @@ namespace orxonox
 
     if (state_ != IS_UNINIT)
     {
-      this->listenersKeyActive_.clear();
-      this->listenersMouseActive_.clear();
-      this->listenersJoySticksActive_.clear();
-      this->listenersKey_.clear();
-      this->listenersMouse_.clear();
-      this->listenersJoySticks_.clear();
-
-      this->keysDown_.clear();
-      this->mouseButtonsDown_.clear();
-
-      _clearBindings();
-
-      if (keyboard_)
-        inputSystem_->destroyInputObject(keyboard_);
-      keyboard_ = 0;
-
-      if (mouse_)
-        inputSystem_->destroyInputObject(mouse_);
-      mouse_ = 0;
-
-      if (joySticks_.size() > 0)
-      {
-        for (unsigned int i = 0; i < joySticks_.size(); i++)
-        {
-          if (joySticks_[i] != 0)
-            inputSystem_->destroyInputObject(joySticks_[i]);
-        }
-        _setNumberOfJoysticks(0);
-      }
-
-      if (inputSystem_)
-        OIS::InputManager::destroyInputSystem(inputSystem_);
-      inputSystem_ = 0;
-
       if (listenersKey_.find("buffer") != listenersKey_.end())
         delete listenersKey_["buffer"];
 
-      this->state_ = IS_UNINIT;
+      if (listenersKey_.find("keybinder") != listenersKey_.end())
+        delete listenersKey_["keybinder"];
+
+      listenersKeyActive_.clear();
+      listenersMouseActive_.clear();
+      listenersJoySticksActive_.clear();
+      listenersKey_.clear();
+      listenersMouse_.clear();
+      listenersJoySticks_.clear();
+
+      keysDown_.clear();
+      mouseButtonsDown_.clear();
+      joySticksButtonsDown_.clear();
+
+      _destroyKeyboard();
+      _destroyMouse();
+      _destroyJoySticks();
+
+      // inputSystem_ can never be 0, or else the code is mistaken
+      OIS::InputManager::destroyInputSystem(inputSystem_);
+      inputSystem_ = 0;
+
+      state_ = IS_UNINIT;
     }
     else
       CCOUT(ORX_WARNING) << "Warning: Cannot be destroyed, since not initialised." << std::endl;
@@ -354,10 +305,53 @@ namespace orxonox
     CCOUT(ORX_DEBUG) << "Destroying done." << std::endl;
   }
 
+  /**
+    @brief Destroys the keyboard and sets it to 0.
+  */
+  void InputManager::_destroyKeyboard()
+  {
+    if (keyboard_)
+      // inputSystem_ can never be 0, or else the code is mistaken
+      inputSystem_->destroyInputObject(keyboard_);
+    keyboard_ = 0;
+    CCOUT(ORX_DEBUG) << "Keyboard destroyed." << std::endl;
+  }
 
-  // ###############################
-  // ###    Interface Methods    ###
-  // ###############################
+  /**
+    @brief Destroys the mouse and sets it to 0.
+  */
+  void InputManager::_destroyMouse()
+  {
+    if (mouse_)
+      // inputSystem_ can never be 0, or else the code is mistaken
+      inputSystem_->destroyInputObject(mouse_);
+    mouse_ = 0;
+    CCOUT(ORX_DEBUG) << "Mouse destroyed." << std::endl;
+  }
+
+  /**
+    @brief Destroys all the joy sticks and resizes the lists to 0.
+  */
+  void InputManager::_destroyJoySticks()
+  {
+    if (joySticks_.size() > 0)
+    {
+      // note: inputSystem_ can never be 0, or else the code is mistaken
+      for (std::map<int, OIS::JoyStick*>::iterator itstick = joySticks_.begin(); itstick != joySticks_.end(); itstick++)
+      {
+        if ((*itstick).second != 0)
+          inputSystem_->destroyInputObject((*itstick).second);
+      }
+      joySticks_.clear();
+    }
+    CCOUT(ORX_DEBUG) << "Joy sticks destroyed." << std::endl;
+  }
+
+
+  // #################################
+  // ### Private Interface Methods ###
+  // #################################
+  // #################################
 
   /**
     @brief Updates the InputManager. Tick is called by Orxonox.
@@ -371,59 +365,61 @@ namespace orxonox
     // reset the game if it has changed
     if (state_ != stateRequest_)
     {
-      switch (stateRequest_)
+      if (stateRequest_ != IS_CUSTOM)
       {
-      case IS_NORMAL:
-        this->listenersKeyActive_.clear();
-        this->listenersMouseActive_.clear();
-        this->listenersJoySticksActive_.clear();
-        this->bKeyBindingsActive_            = true;
-        this->bMouseButtonBindingsActive_    = true;
-        for (unsigned int i = 0; i < joySticks_.size(); i++)
-          this->bJoyStickButtonBindingsActive_[i] = true;
-        break;
+        listenersKeyActive_.clear();
+        listenersMouseActive_.clear();
+        listenersJoySticksActive_.clear();
 
-      case IS_GUI:
-        // FIXME: do stuff
-        break;
-
-      case IS_CONSOLE:
-        this->listenersKeyActive_.clear();
-        this->listenersMouseActive_.clear();
-        this->listenersJoySticksActive_.clear();
-        this->bKeyBindingsActive_            = false;
-        this->bMouseButtonBindingsActive_    = true;
-        for (unsigned int i = 0; i < joySticks_.size(); i++)
-          this->bJoyStickButtonBindingsActive_[i] = true;
-        if (listenersKey_.find("buffer") != listenersKey_.end())
-          listenersKeyActive_.push_back(listenersKey_["buffer"]);
-        else
+        switch (stateRequest_)
         {
-          // someone fiddled with the InputBuffer
-          CCOUT(2) << "Error: Cannot redirect input to console, InputBuffer instance missing." << std::endl;
-          this->bKeyBindingsActive_ = true;
+        case IS_NORMAL:
+          // normal play mode
+          if (listenersKey_.find("keybinder") != listenersKey_.end())
+            listenersKeyActive_.push_back(listenersKey_["keybinder"]);
+          if (listenersMouse_.find("keybinder") != listenersMouse_.end())
+            listenersMouseActive_.push_back(listenersMouse_["keybinder"]);
+          if (listenersJoySticks_.find("keybinder") != listenersJoySticks_.end())
+          {
+            for (std::map<int, OIS::JoyStick*>::const_iterator it = joySticks_.begin();
+                  it != joySticks_.end(); it++)
+              listenersJoySticksActive_[(*it).first].push_back(listenersJoySticks_["keybinder"]);
+          }
+          break;
+
+        case IS_GUI:
+          // FIXME: do stuff
+          break;
+
+        case IS_CONSOLE:
+          if (listenersMouse_.find("keybinder") != listenersMouse_.end())
+            listenersMouseActive_.push_back(listenersMouse_["keybinder"]);
+          if (listenersJoySticks_.find("keybinder") != listenersJoySticks_.end())
+          {
+            for (std::map<int, OIS::JoyStick*>::const_iterator it = joySticks_.begin();
+                  it != joySticks_.end(); it++)
+              listenersJoySticksActive_[(*it).first].push_back(listenersJoySticks_["keybinder"]);
+          }
+
+          if (listenersKey_.find("buffer") != listenersKey_.end())
+            listenersKeyActive_.push_back(listenersKey_["buffer"]);
+          else
+          {
+            // someone fiddled with the InputBuffer
+            CCOUT(2) << "Error: Cannot redirect input to console, InputBuffer instance missing." << std::endl;
+            if (listenersKey_.find("keybinder") != listenersKey_.end())
+              listenersKeyActive_.push_back(listenersKey_["keybinder"]);
+            else
+              // this is bad
+              CCOUT(2) << "Error: Cannot reactivate key binder: not found!" << std::endl;
+          }
+          break;
+
+        default:
+          break;
         }
-        break;
-
-      case IS_NONE:
-        this->listenersKeyActive_.clear();
-        this->listenersMouseActive_.clear();
-        this->listenersJoySticksActive_.clear();
-        this->bKeyBindingsActive_            = false;
-        this->bMouseButtonBindingsActive_    = false;
-        for (unsigned int i = 0; i < joySticks_.size(); i++)
-          this->bJoyStickButtonBindingsActive_[i] = false;
-        break;
-
-      case IS_CUSTOM:
-        // don't do anything
-        break;
-
-      case IS_UNINIT:
-        // this can't happen
-        break;
+        state_ = stateRequest_;
       }
-      state_ = stateRequest_;
     }
 
     // Capture all the input. This calls the event handlers in InputManager.
@@ -431,17 +427,49 @@ namespace orxonox
       mouse_->capture();
     if (keyboard_)
       keyboard_->capture();
-  }
 
-  /*void InputManager::_setDefaultState()
-  {
-    this->listenersKeyActive_.clear();
-    this->listenersMouseActive_.clear();
-    this->listenersJoyStickActive_.clear();
-    this->bKeyBindingsActive_            = true;
-    this->bMouseButtonBindingsActive_    = true;
-    this->bJoyStickButtonBindingsActive_ = true;
-  }*/
+
+    // call all the listeners for the held key events
+    for (std::list<OIS::KeyCode>::const_iterator itKey = keysDown_.begin();
+          itKey != keysDown_.end(); itKey++)
+    {
+      OIS::KeyEvent keyArg(keyboard_, *itKey, 0);
+      for (std::list<KeyHandler*>::const_iterator itKeyHandler = listenersKeyActive_.begin();
+            itKeyHandler != listenersKeyActive_.end(); itKeyHandler++)
+      {
+        (*itKeyHandler)->keyHeld(keyArg);
+      }
+    }
+
+    // call all the listeners for the held mouse button events
+    for (std::list<OIS::MouseButtonID>::const_iterator itMouseButton = mouseButtonsDown_.begin();
+          itMouseButton != mouseButtonsDown_.end(); itMouseButton++)
+    {
+      OIS::MouseEvent mouseButtonArg(mouse_, mouse_->getMouseState());
+      for (std::list<MouseHandler*>::const_iterator itMouseHandler = listenersMouseActive_.begin();
+            itMouseHandler != listenersMouseActive_.end(); itMouseHandler++)
+      {
+        (*itMouseHandler)->mouseHeld(mouseButtonArg, *itMouseButton);
+      }
+    }
+
+    // call all the listeners for the held joy stick button events
+    for (std::map<int, std::list <int> >::const_iterator itJoyStick = joySticksButtonsDown_.begin();
+          itJoyStick != joySticksButtonsDown_.end(); itJoyStick++)
+    {
+      int id = (*itJoyStick).first;
+      for (std::list<int>::const_iterator itJoyStickButton = (*itJoyStick).second.begin();
+            itJoyStickButton != (*itJoyStick).second.end(); itJoyStickButton++)
+      {
+        OIS::JoyStickEvent joyStickButtonArg(joySticks_[id], joySticks_[id]->getJoyStickState());
+        for (std::list<JoyStickHandler*>::const_iterator itJoyStickHandler = listenersJoySticksActive_[id].begin();
+              itJoyStickHandler != listenersJoySticksActive_[id].end(); itJoyStickHandler++)
+        {
+          (*itJoyStickHandler)->buttonHeld(joyStickButtonArg, *itJoyStickButton);
+        }
+      }
+    }
+  }
 
 
   /**
@@ -450,23 +478,20 @@ namespace orxonox
   */
   bool InputManager::keyPressed(const OIS::KeyEvent &e)
   {
-    this->keysDown_.push_back(e.key);
-
-    if (this->bKeyBindingsActive_)
+    // check whether the key is already in the list (can happen when focus was lost)
+    for (std::list<OIS::KeyCode>::iterator it = keysDown_.begin(); it != keysDown_.end(); it++)
     {
-      // find the appropriate key binding
-      std::string cmdStr = bindingsKeyPress_[int(e.key)];
-      if (cmdStr != "")
+      if (*it == e.key)
       {
-        CommandExecutor::execute(cmdStr);
-        COUT(3) << "Executing command: " << cmdStr << std::endl;
+        keysDown_.erase(it);
+        break;
       }
     }
-    else
-    {
-      for (std::list<OIS::KeyListener*>::const_iterator it = listenersKeyActive_.begin(); it != listenersKeyActive_.end(); it++)
-        (*it)->keyPressed(e);
-    }
+    keysDown_.push_back(e.key);
+
+    for (std::list<KeyHandler*>::const_iterator it = listenersKeyActive_.begin(); it != listenersKeyActive_.end(); it++)
+      (*it)->keyPressed(e);
+
     return true;
   }
 
@@ -486,21 +511,9 @@ namespace orxonox
       }
     }
 
-    if (this->bKeyBindingsActive_)
-    {
-      // find the appropriate key binding
-      std::string cmdStr = bindingsKeyRelease_[int(e.key)];
-      if (cmdStr != "")
-      {
-        CommandExecutor::execute(cmdStr);
-        COUT(3) << "Executing command: " << cmdStr << std::endl;
-      }
-    }
-    else
-    {
-      for (std::list<OIS::KeyListener*>::const_iterator it = listenersKeyActive_.begin(); it != listenersKeyActive_.end(); it++)
-        (*it)->keyReleased(e);
-    }
+    for (std::list<KeyHandler*>::const_iterator it = listenersKeyActive_.begin(); it != listenersKeyActive_.end(); it++)
+      (*it)->keyReleased(e);
+
     return true;
   }
 
@@ -510,6 +523,9 @@ namespace orxonox
   */
   bool InputManager::mouseMoved(const OIS::MouseEvent &e)
   {
+    for (std::list<MouseHandler*>::const_iterator it = listenersMouseActive_.begin(); it != listenersMouseActive_.end(); it++)
+      (*it)->mouseMoved(e);
+
     return true;
   }
 
@@ -520,6 +536,20 @@ namespace orxonox
   */
   bool InputManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
+    // check whether the button is already in the list (can happen when focus was lost)
+    for (std::list<OIS::MouseButtonID>::iterator it = mouseButtonsDown_.begin(); it != mouseButtonsDown_.end(); it++)
+    {
+      if (*it == id)
+      {
+        mouseButtonsDown_.erase(it);
+        break;
+      }
+    }
+    mouseButtonsDown_.push_back(id);
+
+    for (std::list<MouseHandler*>::const_iterator it = listenersMouseActive_.begin(); it != listenersMouseActive_.end(); it++)
+      (*it)->mousePressed(e, id);
+
     return true;
   }
 
@@ -530,31 +560,94 @@ namespace orxonox
   */
   bool InputManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
+    // remove the button from the keysDown_ list
+    for (std::list<OIS::MouseButtonID>::iterator it = mouseButtonsDown_.begin(); it != mouseButtonsDown_.end(); it++)
+    {
+      if (*it == id)
+      {
+        mouseButtonsDown_.erase(it);
+        break;
+      }
+    }
+
+    for (std::list<MouseHandler*>::const_iterator it = listenersMouseActive_.begin(); it != listenersMouseActive_.end(); it++)
+      (*it)->mouseReleased(e, id);
+
     return true;
   }
 
   bool InputManager::buttonPressed(const OIS::JoyStickEvent &arg, int button)
   {
+    int devID = arg.device->getID();
+
+    // check whether the button is already in the list (can happen when focus was lost)
+    std::list<int>& buttonsDownList = joySticksButtonsDown_[devID];
+    for (std::list<int>::iterator it = buttonsDownList.begin(); it != buttonsDownList.end(); it++)
+    {
+      if (*it == button)
+      {
+        buttonsDownList.erase(it);
+        break;
+      }
+    }
+    joySticksButtonsDown_[devID].push_back(button);
+
+    std::list<JoyStickHandler*>::iterator end = listenersJoySticksActive_[devID].end();
+    for (std::list<JoyStickHandler*>::const_iterator it = listenersJoySticksActive_[devID].begin(); it != end; it++)
+      (*it)->buttonPressed(arg, button);
+
     return true;
   }
 
   bool InputManager::buttonReleased(const OIS::JoyStickEvent &arg, int button)
   {
+    int devID = arg.device->getID();
+
+    // remove the button from the joySticksButtonsDown_ list
+    std::list<int>& buttonsDownList = joySticksButtonsDown_[devID];
+    for (std::list<int>::iterator it = buttonsDownList.begin(); it != buttonsDownList.end(); it++)
+    {
+      if (*it == button)
+      {
+        buttonsDownList.erase(it);
+        break;
+      }
+    }
+
+    std::list<JoyStickHandler*>::const_iterator end = listenersJoySticksActive_[devID].end();
+    for (std::list<JoyStickHandler*>::const_iterator it = listenersJoySticksActive_[devID].begin(); it != end; it++)
+      (*it)->buttonReleased(arg, button);
+
     return true;
   }
 
   bool InputManager::axisMoved(const OIS::JoyStickEvent &arg, int axis)
   {
+    int devID = arg.device->getID();
+    std::list<JoyStickHandler*>::const_iterator end = listenersJoySticksActive_[devID].end();
+    for (std::list<JoyStickHandler*>::const_iterator it = listenersJoySticksActive_[devID].begin(); it != end; it++)
+      (*it)->axisMoved(arg, axis);
+
     return true;
   }
 
   bool InputManager::sliderMoved(const OIS::JoyStickEvent &arg, int id)
   {
+    int devID = arg.device->getID();
+    std::list<JoyStickHandler*>::const_iterator end = listenersJoySticksActive_[devID].end();
+    for (std::list<JoyStickHandler*>::const_iterator it = listenersJoySticksActive_[devID].begin(); it != end; it++)
+      (*it)->sliderMoved(arg, id);
+
     return true;
   }
 
   bool InputManager::povMoved(const OIS::JoyStickEvent &arg, int id)
   {
+    int devID = arg.device->getID();
+    std::list<JoyStickHandler*>::const_iterator end = listenersJoySticksActive_[devID].end();
+    for (std::list<JoyStickHandler*>::const_iterator it = listenersJoySticksActive_[devID].begin(); it != end; it++)
+      (*it)->povMoved(arg, id);
+
     return true;
   }
 
@@ -562,6 +655,51 @@ namespace orxonox
   // ################################
   // ### Static Interface Methods ###
   // ################################
+  // ################################
+
+  bool InputManager::initialise(size_t windowHnd, int windowWidth, int windowHeight,
+    bool createKeyboard, bool createMouse, bool createJoySticks)
+  {
+    return _getSingleton()._initialise(windowHnd, windowWidth, windowHeight,
+          createKeyboard, createMouse, createJoySticks);
+  }
+
+  bool InputManager::initialiseKeyboard()
+  {
+    return _getSingleton()._initialiseKeyboard();
+  }
+
+  bool InputManager::initialiseMouse()
+  {
+    return _getSingleton()._initialiseMouse();
+  }
+
+  bool InputManager::initialiseJoySticks()
+  {
+    return _getSingleton()._initialiseJoySticks();
+  }
+
+
+  void InputManager::destroy()
+  {
+    _getSingleton()._destroy();
+  }
+
+  void InputManager::destroyKeyboard()
+  {
+    return _getSingleton()._destroyKeyboard();
+  }
+
+  void InputManager::destroyMouse()
+  {
+    return _getSingleton()._destroyMouse();
+  }
+
+  void InputManager::destroyJoySticks()
+  {
+    return _getSingleton()._destroyJoySticks();
+  }
+
 
   /**
     @brief Adjusts the mouse window metrics.
@@ -599,31 +737,16 @@ namespace orxonox
     return _getSingleton().state_;
   }
 
-  void InputManager::destroy()
-  {
-    _getSingleton()._destroy();
-  }
 
-  bool InputManager::initialise(size_t windowHnd, int windowWidth, int windowHeight,
-    bool createKeyboard, bool createMouse, bool createJoySticks)
-  {
-    return _getSingleton()._initialise(windowHnd, windowWidth, windowHeight,
-          createKeyboard, createMouse, createJoySticks);
-  }
+  // ###### KeyHandler ######
 
-  /*bool InputManager::initialiseKeyboard()
-  {
-  }
-
-  bool InputManager::initialiseMouse()
-  {
-  }
-
-  bool InputManager::initialiseJoySticks()
-  {
-  }*/
-
-  bool InputManager::addKeyListener(OIS::KeyListener *listener, const std::string& name)
+  /**
+    @brief Adds a new key listener.
+    @param listener Pointer to the listener object.
+    @param name Unique name of the listener.
+    @return True if added, false if name already existed.
+  */
+  bool InputManager::addKeyListener(KeyHandler* listener, const std::string& name)
   {
     if (_getSingleton().listenersKey_.find(name) == _getSingleton().listenersKey_.end())
     {
@@ -634,9 +757,15 @@ namespace orxonox
       return false;
   }
 
+  /**
+    @brief Removes a Key Listener from the list.
+    @param name Unique name of the listener.
+    @return True if removal was successful, false if name was not found.
+  */
   bool InputManager::removeKeyListener(const std::string &name)
   {
-    std::map<std::string, OIS::KeyListener*>::iterator it = _getSingleton().listenersKey_.find(name);
+    disableKeyListener(name);
+    std::map<std::string, KeyHandler*>::iterator it = _getSingleton().listenersKey_.find(name);
     if (it != _getSingleton().listenersKey_.end())
     {
       _getSingleton().listenersKey_.erase(it);
@@ -646,15 +775,279 @@ namespace orxonox
       return false;
   }
 
-  OIS::KeyListener* InputManager::getKeyListener(const std::string& name)
+  /**
+    @brief Returns the pointer to a listener.
+    @param name Unique name of the listener.
+    @return Pointer to the instance, 0 if name was not found.
+  */
+  KeyHandler* InputManager::getKeyListener(const std::string& name)
   {
-    std::map<std::string, OIS::KeyListener*>::iterator it = _getSingleton().listenersKey_.find(name);
+    std::map<std::string, KeyHandler*>::iterator it = _getSingleton().listenersKey_.find(name);
     if (it != _getSingleton().listenersKey_.end())
     {
       return (*it).second;
     }
     else
       return 0;
+  }
+
+  /**
+    @brief Enables a specific key listener that has already been added.
+    @param name Unique name of the listener.
+    @return False if name was not found, true otherwise.
+  */
+  bool InputManager::enableKeyListener(const std::string& name)
+  {
+    // get pointer from the map with all stored listeners
+    std::map<std::string, KeyHandler*>::const_iterator mapIt = _getSingleton().listenersKey_.find(name);
+    if (mapIt == _getSingleton().listenersKey_.end())
+      return false;
+    // see whether the listener is already in the list
+    for (std::list<KeyHandler*>::iterator it = _getSingleton().listenersKeyActive_.begin();
+          it != _getSingleton().listenersKeyActive_.end(); it++)
+    {
+      if ((*it) == (*mapIt).second)
+        return true;
+    }
+    _getSingleton().listenersKeyActive_.push_back((*mapIt).second);
+    return true;
+  }
+
+  /**
+    @brief Disables a specific key listener.
+    @param name Unique name of the listener.
+    @return False if name was not found, true otherwise.
+  */
+  bool InputManager::disableKeyListener(const std::string &name)
+  {
+    // get pointer from the map with all stored listeners
+    std::map<std::string, KeyHandler*>::const_iterator mapIt = _getSingleton().listenersKey_.find(name);
+    if (mapIt == _getSingleton().listenersKey_.end())
+      return false;
+    // look for the listener in the list
+    for (std::list<KeyHandler*>::iterator it = _getSingleton().listenersKeyActive_.begin();
+          it != _getSingleton().listenersKeyActive_.end(); it++)
+    {
+      if ((*it) == (*mapIt).second)
+      {
+        _getSingleton().listenersKeyActive_.erase(it);
+        return true;
+      }
+    }
+    return true;
+  }
+
+
+  // ###### MouseHandler ######
+  /**
+    @brief Adds a new mouse listener.
+    @param listener Pointer to the listener object.
+    @param name Unique name of the listener.
+    @return True if added, false if name already existed.
+  */
+  bool InputManager::addMouseListener(MouseHandler* listener, const std::string& name)
+  {
+    if (_getSingleton().listenersMouse_.find(name) == _getSingleton().listenersMouse_.end())
+    {
+      _getSingleton().listenersMouse_[name] = listener;
+      return true;
+    }
+    else
+      return false;
+  }
+
+  /**
+    @brief Removes a Mouse Listener from the list.
+    @param name Unique name of the listener.
+    @return True if removal was successful, false if name was not found.
+  */
+  bool InputManager::removeMouseListener(const std::string &name)
+  {
+    disableMouseListener(name);
+    std::map<std::string, MouseHandler*>::iterator it = _getSingleton().listenersMouse_.find(name);
+    if (it != _getSingleton().listenersMouse_.end())
+    {
+      _getSingleton().listenersMouse_.erase(it);
+      return true;
+    }
+    else
+      return false;
+  }
+
+  /**
+    @brief Returns the pointer to a listener.
+    @param name Unique name of the listener.
+    @return Pointer to the instance, 0 if name was not found.
+  */
+  MouseHandler* InputManager::getMouseListener(const std::string& name)
+  {
+    std::map<std::string, MouseHandler*>::iterator it = _getSingleton().listenersMouse_.find(name);
+    if (it != _getSingleton().listenersMouse_.end())
+    {
+      return (*it).second;
+    }
+    else
+      return 0;
+  }
+
+  /**
+    @brief Enables a specific mouse listener that has already been added.
+    @param name Unique name of the listener.
+    @return False if name was not found, true otherwise.
+  */
+  bool InputManager::enableMouseListener(const std::string& name)
+  {
+    // get pointer from the map with all stored listeners
+    std::map<std::string, MouseHandler*>::const_iterator mapIt = _getSingleton().listenersMouse_.find(name);
+    if (mapIt == _getSingleton().listenersMouse_.end())
+      return false;
+    // see whether the listener is already in the list
+    for (std::list<MouseHandler*>::iterator it = _getSingleton().listenersMouseActive_.begin();
+          it != _getSingleton().listenersMouseActive_.end(); it++)
+    {
+      if ((*it) == (*mapIt).second)
+        return true;
+    }
+    _getSingleton().listenersMouseActive_.push_back((*mapIt).second);
+    return true;
+  }
+
+  /**
+    @brief Disables a specific mouse listener.
+    @param name Unique name of the listener.
+    @return False if name was not found, true otherwise.
+  */
+  bool InputManager::disableMouseListener(const std::string &name)
+  {
+    // get pointer from the map with all stored listeners
+    std::map<std::string, MouseHandler*>::const_iterator mapIt = _getSingleton().listenersMouse_.find(name);
+    if (mapIt == _getSingleton().listenersMouse_.end())
+      return false;
+    // look for the listener in the list
+    for (std::list<MouseHandler*>::iterator it = _getSingleton().listenersMouseActive_.begin();
+          it != _getSingleton().listenersMouseActive_.end(); it++)
+    {
+      if ((*it) == (*mapIt).second)
+      {
+        _getSingleton().listenersMouseActive_.erase(it);
+        return true;
+      }
+    }
+    return true;
+  }
+
+
+  // ###### JoyStickHandler ######
+
+  /**
+    @brief Adds a new joy stick listener.
+    @param listener Pointer to the listener object.
+    @param name Unique name of the listener.
+    @return True if added, false if name already existed.
+  */
+  bool InputManager::addJoyStickListener(JoyStickHandler* listener, const std::string& name)
+  {
+    if (_getSingleton().listenersJoySticks_.find(name) == _getSingleton().listenersJoySticks_.end())
+    {
+      _getSingleton().listenersJoySticks_[name] = listener;
+      return true;
+    }
+    else
+      return false;
+  }
+
+  /**
+    @brief Removes a JoyStick Listener from the list.
+    @param name Unique name of the listener.
+    @return True if removal was successful, false if name was not found.
+  */
+  bool InputManager::removeJoyStickListener(const std::string &name)
+  {
+    for (std::map<int, OIS::JoyStick*>::iterator itstick = _getSingleton().joySticks_.begin(); itstick != _getSingleton().joySticks_.end(); itstick++)
+      disableJoyStickListener(name, (*itstick).first);
+
+    std::map<std::string, JoyStickHandler*>::iterator it = _getSingleton().listenersJoySticks_.find(name);
+    if (it != _getSingleton().listenersJoySticks_.end())
+    {
+      _getSingleton().listenersJoySticks_.erase(it);
+      return true;
+    }
+    else
+      return false;
+  }
+
+  /**
+    @brief Returns the pointer to a listener.
+    @param name Unique name of the listener.
+    @return Pointer to the instance, 0 if name was not found.
+  */
+  JoyStickHandler* InputManager::getJoyStickListener(const std::string& name)
+  {
+    std::map<std::string, JoyStickHandler*>::iterator it = _getSingleton().listenersJoySticks_.find(name);
+    if (it != _getSingleton().listenersJoySticks_.end())
+    {
+      return (*it).second;
+    }
+    else
+      return 0;
+  }
+
+  /**
+    @brief Enables a specific joy stick listener that has already been added.
+    @param name Unique name of the listener.
+    @return False if name or id was not found, true otherwise.
+  */
+  bool InputManager::enableJoyStickListener(const std::string& name, const int id)
+  {
+    // get pointer from the map with all stored listeners
+    std::map<std::string, JoyStickHandler*>::const_iterator listenerIt = _getSingleton().listenersJoySticks_.find(name);
+    if (listenerIt == _getSingleton().listenersJoySticks_.end())
+      return false;
+
+    // check for existance of the ID
+    std::map<int, OIS::JoyStick*>::const_iterator joyStickIt = _getSingleton().joySticks_.find(id);
+    if (joyStickIt == _getSingleton().joySticks_.end())
+      return false;
+
+    // see whether the listener is already in the list
+    for (std::list<JoyStickHandler*>::iterator it = _getSingleton().listenersJoySticksActive_[id].begin();
+          it != _getSingleton().listenersJoySticksActive_[id].end(); it++)
+    {
+      if ((*it) == (*listenerIt).second)
+        return true;
+    }
+    _getSingleton().listenersJoySticksActive_[id].push_back((*listenerIt).second);
+    return true;
+  }
+
+  /**
+    @brief Disables a specific joy stick listener.
+    @param name Unique name of the listener.
+    @return False if name or id was not found, true otherwise.
+  */
+  bool InputManager::disableJoyStickListener(const std::string &name, int id)
+  {
+    // get pointer from the map with all stored listeners
+    std::map<std::string, JoyStickHandler*>::const_iterator listenerIt = _getSingleton().listenersJoySticks_.find(name);
+    if (listenerIt == _getSingleton().listenersJoySticks_.end())
+      return false;
+
+    // check for existance of the ID
+    std::map<int, OIS::JoyStick*>::const_iterator joyStickIt = _getSingleton().joySticks_.find(id);
+    if (joyStickIt == _getSingleton().joySticks_.end())
+      return false;
+
+    // look for the listener in the list
+    for (std::list<JoyStickHandler*>::iterator it = _getSingleton().listenersJoySticksActive_[id].begin();
+          it != _getSingleton().listenersJoySticksActive_[id].end(); it++)
+    {
+      if ((*it) == (*listenerIt).second)
+      {
+        _getSingleton().listenersJoySticksActive_[id].erase(it);
+        return true;
+      }
+    }
+    return true;
   }
 
 }

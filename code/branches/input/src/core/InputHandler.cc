@@ -34,56 +34,81 @@
 #include "InputHandler.h"
 #include "Debug.h"
 #include "util/Convert.h"
-#include "InputEventListener.h"
-#include "InputEvent.h"
-#include "InputManager.h"
 #include "core/CommandExecutor.h"
 
 namespace orxonox
 {
   // ###############################
-  // ###    InputHandlerGame     ###
+  // ######     KeyBinder     ######
   // ###############################
 
   /**
-    @brief standard constructor
+    @brief Constructor that does as little as necessary.
   */
-  InputHandlerGame::InputHandlerGame()
+  KeyBinder::KeyBinder()
   {
+    clearBindings();
   }
 
   /**
     @brief Destructor
   */
-  InputHandlerGame::~InputHandlerGame()
+  KeyBinder::~KeyBinder()
   {
   }
 
   /**
-    @brief Loads the key bindings from the ini file.
-    Currently, this is just a simple test routine that fills the list with numbers.
+    @brief Overwrites all bindings with ""
   */
-  bool InputHandlerGame::loadBindings()
+  void KeyBinder::clearBindings()
   {
     for (int i = 0; i < numberOfKeys_s; i++)
     {
-      // simply write the key number (i) in the string
-      this->bindingsKeyPress_[i] = "";
-      this->bindingsKeyRelease_[i] = "";
+      bindingsKeyPress_  [i] = "";
+      bindingsKeyRelease_[i] = "";
+      bindingsKeyHold_   [i] = "";
     }
-    this->bindingsKeyPress_[OIS::KC_NUMPADENTER] = "setInputMode " + getConvertedValue<int, std::string>(IM_KEYBOARD);
-    this->bindingsKeyPress_[OIS::KC_ESCAPE] = "exit";
-    this->bindingsKeyHold_[OIS::KC_U] = "exec disco.txt";
+    for (int i = 0; i < numberOfMouseButtons_s; i++)
+    {
+      bindingsMouseButtonPress_  [i] = "";
+      bindingsMouseButtonRelease_[i] = "";
+      bindingsMouseButtonHold_   [i] = "";
+    }
+    for (int i = 0; i < numberOfJoyStickButtons_s; i++)
+    {
+      bindingsJoyStickButtonPress_  [i] = "";
+      bindingsJoyStickButtonRelease_[i] = "";
+      bindingsJoyStickButtonHold_   [i] = "";
+    }
+  }
+
+  /**
+    @brief Loads the key and button bindings.
+    @return True if loading succeeded.
+  */
+  bool KeyBinder::loadBindings()
+  {
+    COUT(ORX_DEBUG) << "KeyBinder: Loading key bindings..." << std::endl;
+
+    // clear all the bindings at first.
+    clearBindings();
+
+    // TODO: Insert the code to load the bindings from file.
+    bindingsKeyPress_[OIS::KC_NUMPADENTER] = "activateConsole";
+    bindingsKeyPress_[OIS::KC_ESCAPE] = "exit";
+    bindingsKeyHold_[OIS::KC_U] = "exec disco.txt";
+
+    COUT(ORX_DEBUG) << "KeyBinder: Loading key bindings done." << std::endl;
     return true;
   }
+
 
   /**
     @brief Event handler for the keyPressed Event.
     @param e Event information
   */
-  bool InputHandlerGame::keyPressed(const OIS::KeyEvent &e)
+  bool KeyBinder::keyPressed(const OIS::KeyEvent &e)
   {
-    this->keysDown_.push_back(e.key);
     // find the appropriate key binding
     std::string cmdStr = bindingsKeyPress_[int(e.key)];
     if (cmdStr != "")
@@ -91,6 +116,7 @@ namespace orxonox
       CommandExecutor::execute(cmdStr);
       COUT(3) << "Executing command: " << cmdStr << std::endl;
     }
+    
     return true;
   }
 
@@ -98,18 +124,8 @@ namespace orxonox
     @brief Event handler for the keyReleased Event.
     @param e Event information
   */
-  bool InputHandlerGame::keyReleased(const OIS::KeyEvent &e)
+  bool KeyBinder::keyReleased(const OIS::KeyEvent &e)
   {
-    // remove the key from the keysDown_ list
-    for (std::list<OIS::KeyCode>::iterator it = keysDown_.begin(); it != keysDown_.end(); it++)
-    {
-      if (*it == e.key)
-      {
-        keysDown_.erase(it);
-        break;
-      }
-    }
-
     // find the appropriate key binding
     std::string cmdStr = bindingsKeyRelease_[int(e.key)];
     if (cmdStr != "")
@@ -117,6 +133,24 @@ namespace orxonox
       CommandExecutor::execute(cmdStr);
       COUT(3) << "Executing command: " << cmdStr << std::endl;
     }
+
+    return true;
+  }
+
+  /**
+    @brief Event handler for the keyHeld Event.
+    @param e Event information
+  */
+  bool KeyBinder::keyHeld(const OIS::KeyEvent &e)
+  {
+    // find the appropriate key binding
+    std::string cmdStr = bindingsKeyHold_[int(e.key)];
+    if (cmdStr != "")
+    {
+      CommandExecutor::execute(cmdStr);
+      COUT(3) << "Executing command: " << cmdStr << std::endl;
+    }
+
     return true;
   }
 
@@ -124,7 +158,7 @@ namespace orxonox
     @brief Event handler for the mouseMoved Event.
     @param e Event information
   */
-  bool InputHandlerGame::mouseMoved(const OIS::MouseEvent &e)
+  bool KeyBinder::mouseMoved(const OIS::MouseEvent &e)
   {
     return true;
   }
@@ -134,8 +168,16 @@ namespace orxonox
     @param e Event information
     @param id The ID of the mouse button
   */
-  bool InputHandlerGame::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+  bool KeyBinder::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
+    // find the appropriate key binding
+    std::string cmdStr = bindingsMouseButtonPress_[int(id)];
+    if (cmdStr != "")
+    {
+      CommandExecutor::execute(cmdStr);
+      COUT(3) << "Executing command: " << cmdStr << std::endl;
+    }
+
     return true;
   }
 
@@ -144,124 +186,162 @@ namespace orxonox
     @param e Event information
     @param id The ID of the mouse button
   */
-  bool InputHandlerGame::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+  bool KeyBinder::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
-    return true;
-  }
-
-  /**
-    @brief Tick method to do additional calculations.
-    @param dt Delta time.
-  */
-  void InputHandlerGame::tick(float dt)
-  {
-    // iterate through all the pressed keys
-    for (std::list<OIS::KeyCode>::iterator it = keysDown_.begin(); it != keysDown_.end(); it++)
+    // find the appropriate key binding
+    std::string cmdStr = bindingsMouseButtonRelease_[int(id)];
+    if (cmdStr != "")
     {
-      // find the appropriate key binding
-      std::string cmdStr = bindingsKeyHold_[*it];
-      if (cmdStr != "")
-      {
-        CommandExecutor::execute(cmdStr);
-        COUT(3) << "Executing command: " << cmdStr << std::endl;
-      }
+      CommandExecutor::execute(cmdStr);
+      COUT(3) << "Executing command: " << cmdStr << std::endl;
     }
-  }
 
-  /**
-    @brief Calls all the objects from classes that derive from InputEventListener.
-    @param evt The input event that occured.
-  */
-  inline void InputHandlerGame::callListeners(orxonox::InputEvent &evt)
-  {
-    for (Iterator<InputEventListener> it = ObjectList<InputEventListener>::start(); it; )
-    {
-      if (it->bActive_)
-        (it++)->eventOccured(evt);
-      else
-        it++;
-    }
-  }
-
-
-  // ###############################
-  // ###     InputHandlerGUI     ###
-  // ###############################
-
-  /**
-    @brief standard constructor
-  */
-  InputHandlerGUI::InputHandlerGUI()
-  {
-  }
-
-  /**
-    @brief Destructor
-  */
-  InputHandlerGUI::~InputHandlerGUI()
-  {
-  }
-
-  /**
-    @brief Event handler for the keyPressed Event.
-    @param e Event information
-  */
-  bool InputHandlerGUI::keyPressed(const OIS::KeyEvent &e)
-  {
-		//CEGUI::System::getSingleton().injectKeyDown( arg.key );
-		//CEGUI::System::getSingleton().injectChar( arg.text );
     return true;
   }
 
   /**
-    @brief Event handler for the keyReleased Event.
-    @param e Event information
-  */
-  bool InputHandlerGUI::keyReleased(const OIS::KeyEvent &e)
-  {
-		//CEGUI::System::getSingleton().injectKeyUp( arg.key );
-    return true;
-  }
-
-  /**
-    @brief Event handler for the mouseMoved Event.
-    @param e Event information
-  */
-  bool InputHandlerGUI::mouseMoved(const OIS::MouseEvent &e)
-  {
-		//CEGUI::System::getSingleton().injectMouseMove( arg.state.X.rel, arg.state.Y.rel );
-    return true;
-  }
-
-  /**
-    @brief Event handler for the mousePressed Event.
+    @brief Event handler for the mouseHeld Event.
     @param e Event information
     @param id The ID of the mouse button
   */
-  bool InputHandlerGUI::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+  bool KeyBinder::mouseHeld(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
-		//CEGUI::System::getSingleton().injectMouseButtonDown(convertOISMouseButtonToCegui(id));
+    // find the appropriate key binding
+    std::string cmdStr = bindingsMouseButtonHold_[int(id)];
+    if (cmdStr != "")
+    {
+      CommandExecutor::execute(cmdStr);
+      COUT(3) << "Executing command: " << cmdStr << std::endl;
+    }
+
     return true;
   }
 
-  /**
-    @brief Event handler for the mouseReleased Event.
-    @param e Event information
-    @param id The ID of the mouse button
-  */
-  bool InputHandlerGUI::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+  bool KeyBinder::buttonPressed(const OIS::JoyStickEvent &arg, int button)
   {
-		//CEGUI::System::getSingleton().injectMouseButtonUp(convertOISMouseButtonToCegui(id));
+    // find the appropriate key binding
+    std::string cmdStr = bindingsJoyStickButtonPress_[button];
+    if (cmdStr != "")
+    {
+      CommandExecutor::execute(cmdStr);
+      COUT(3) << "Executing command: " << cmdStr << std::endl;
+    }
+
     return true;
   }
 
-  /**
-    @brief Tick method to do additional calculations.
-    @param dt Delta time.
-  */
-  void InputHandlerGUI::tick(float dt)
+  bool KeyBinder::buttonReleased(const OIS::JoyStickEvent &arg, int button)
   {
-    
+    // find the appropriate key binding
+    std::string cmdStr = bindingsJoyStickButtonRelease_[button];
+    if (cmdStr != "")
+    {
+      CommandExecutor::execute(cmdStr);
+      COUT(3) << "Executing command: " << cmdStr << std::endl;
+    }
+
+    return true;
   }
+
+  bool KeyBinder::buttonHeld(const OIS::JoyStickEvent &arg, int button)
+  {
+    // find the appropriate key binding
+    std::string cmdStr = bindingsJoyStickButtonHold_[button];
+    if (cmdStr != "")
+    {
+      CommandExecutor::execute(cmdStr);
+      COUT(3) << "Executing command: " << cmdStr << std::endl;
+    }
+
+    return true;
+  }
+
+  bool KeyBinder::axisMoved(const OIS::JoyStickEvent &arg, int axis)
+  {
+    return true;
+  }
+
+  bool KeyBinder::sliderMoved(const OIS::JoyStickEvent &arg, int id)
+  {
+    return true;
+  }
+
+  bool KeyBinder::povMoved(const OIS::JoyStickEvent &arg, int id)
+  {
+    return true;
+  }
+
+
+
+  // ###############################
+  // ###     GUIInputHandler     ###
+  // ###############################
+
+  ///**
+  //  @brief standard constructor
+  //*/
+  //GUIInputHandler::GUIInputHandler()
+  //{
+  //}
+
+  ///**
+  //  @brief Destructor
+  //*/
+  //GUIInputHandler::~GUIInputHandler()
+  //{
+  //}
+
+  ///**
+  //  @brief Event handler for the keyPressed Event.
+  //  @param e Event information
+  //*/
+  //bool GUIInputHandler::keyPressed(const OIS::KeyEvent &e)
+  //{
+		////CEGUI::System::getSingleton().injectKeyDown( arg.key );
+		////CEGUI::System::getSingleton().injectChar( arg.text );
+  //  return true;
+  //}
+
+  ///**
+  //  @brief Event handler for the keyReleased Event.
+  //  @param e Event information
+  //*/
+  //bool GUIInputHandler::keyReleased(const OIS::KeyEvent &e)
+  //{
+		////CEGUI::System::getSingleton().injectKeyUp( arg.key );
+  //  return true;
+  //}
+
+  ///**
+  //  @brief Event handler for the mouseMoved Event.
+  //  @param e Event information
+  //*/
+  //bool GUIInputHandler::mouseMoved(const OIS::MouseEvent &e)
+  //{
+		////CEGUI::System::getSingleton().injectMouseMove( arg.state.X.rel, arg.state.Y.rel );
+  //  return true;
+  //}
+
+  ///**
+  //  @brief Event handler for the mousePressed Event.
+  //  @param e Event information
+  //  @param id The ID of the mouse button
+  //*/
+  //bool GUIInputHandler::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+  //{
+		////CEGUI::System::getSingleton().injectMouseButtonDown(convertOISMouseButtonToCegui(id));
+  //  return true;
+  //}
+
+  ///**
+  //  @brief Event handler for the mouseReleased Event.
+  //  @param e Event information
+  //  @param id The ID of the mouse button
+  //*/
+  //bool GUIInputHandler::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+  //{
+		////CEGUI::System::getSingleton().injectMouseButtonUp(convertOISMouseButtonToCegui(id));
+  //  return true;
+  //}
 
 }

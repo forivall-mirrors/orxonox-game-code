@@ -128,7 +128,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(RootDir)src\ois"
+				AdditionalIncludeDirectories="$(RootDir)\src\ois"
 				PreprocessorDefinitions="WIN32;_DEBUG;_STLP_DEBUG;OIS_NONCLIENT_BUILD;OIS_DYNAMIC_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
