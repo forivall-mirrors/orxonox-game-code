@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht
  *
  */
 
@@ -34,8 +34,10 @@
 #include <OgrePrerequisites.h>
 #include <OIS/OISMouse.h>
 
+#include "Camera.h"
 #include "Model.h"
 #include "../tools/BillboardSet.h"
+
 
 namespace orxonox
 {
@@ -79,6 +81,7 @@ namespace orxonox
             bool bRMousePressed_;
 
             Ogre::SceneNode* camNode_;
+            Camera* cam_;
 
             ParticleInterface* tt_;
 

@@ -46,57 +46,104 @@
 
 namespace orxonox
 {
-    CreateFactory(Camera);
+  //CreateFactory(Camera);
 
-    Camera::Camera()
+  Camera::Camera(Ogre::SceneNode* node)
+  {
+    //RegisterObject(Camera);
+    this->bHasFocus_ = false;
+    if( node != NULL )
+      this->setCameraNode(node);
+
+  }
+
+  Camera::~Camera()
+  {
+  }
+
+  /*void Camera::loadParams(TiXmlElement* xmlElem)
+  {
+    Ogre::SceneManager* mgr = GraphicsEngine::getSingleton().getSceneManager();
+
+    if (xmlElem->Attribute("name") && xmlElem->Attribute("pos") && xmlElem->Attribute("lookat") && xmlElem->Attribute("node"))
     {
-        RegisterObject(Camera);
+      //    <Camera name="Camera" pos="0,0,-250" lookat="0,0,0" />
+
+      std::string name = xmlElem->Attribute("name");
+      std::string pos = xmlElem->Attribute("pos");
+      std::string lookat = xmlElem->Attribute("lookat");
+
+      this->cam_ = mgr->createCamera(name);
+
+      float x, y, z;
+      SubString posVec(xmlElem->Attribute("pos"), ',');
+      convertValue<std::string, float>(&x, posVec[0]);
+      convertValue<std::string, float>(&y, posVec[1]);
+      convertValue<std::string, float>(&z, posVec[2]);
+
+      setPosition(Vector3(x,y,z));
+
+      //std::string target = xmlElem->Attribute("lookat");
+      posVec.split(xmlElem->Attribute("lookat"), ',');
+      convertValue<std::string, float>(&x, posVec[0]);
+      convertValue<std::string, float>(&y, posVec[1]);
+      convertValue<std::string, float>(&z, posVec[2]);
+
+      cam_->lookAt(Vector3(x,y,z));
+
+      /*std::string node = xmlElem->Attribute("node");
+
+      Ogre::SceneNode* sceneNode = (Ogre::SceneNode*)mgr->getRootSceneNode()->createChildSceneNode(node); //getChild(node);
+      sceneNode->attachObject((Ogre::MovableObject*)cam_);
+      */
+
+      // FIXME: unused var
+      //Ogre::Viewport* vp =
+      //GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam_);
+    /*
+
+      COUT(4) << "Loader: Created camera "<< name  << std::endl << std::endl;
     }
+  }*/
 
-    Camera::~Camera()
-    {
-    }
+  void Camera::setCameraNode(Ogre::SceneNode* node)
+  {
+    this->positionNode_ = node;
+    // set camera to node values according to camera mode
+  }
 
-    void Camera::loadParams(TiXmlElement* xmlElem)
-    {
-      Ogre::SceneManager* mgr = GraphicsEngine::getSingleton().getSceneManager();
+  void Camera::setTargetNode(Ogre::SceneNode* obj)
+  {
+    this->targetNode_ = obj;
+  }
 
-      if (xmlElem->Attribute("name") && xmlElem->Attribute("pos") && xmlElem->Attribute("lookat") && xmlElem->Attribute("node"))
-      {
-        //    <Camera name="Camera" pos="0,0,-250" lookat="0,0,0" />
+  /**
+    don't move anything before here! here the Ogre camera is set to values of this camera
+    always call update after changes
+  */
+  void Camera::update()
+  {
+    COUT(0) << "p " << this->positionNode_->getPosition() << std::endl;
+    COUT(0) << "t " << this->targetNode_->getPosition() << std::endl;
+    if(this->positionNode_ != NULL)
+      //this->cam_->setPosition(this->positionNode_->getPosition());
+    if(this->targetNode_ != NULL)
+      this->cam_->lookAt(this->targetNode_->getPosition());
+  }
 
-        std::string name = xmlElem->Attribute("name");
-        std::string pos = xmlElem->Attribute("pos");
-        std::string lookat = xmlElem->Attribute("lookat");
+  /**
+    what to do when camera loses focus (do not request focus in this function!!)
+    this is called by the CameraHandler singleton class to notify the camera
+  */
+  void Camera::removeFocus()
+  {
+    this->bHasFocus_ = false;
+  }
 
-        Ogre::Camera *cam = mgr->createCamera(name);
-
-        float x, y, z;
-        SubString posVec(xmlElem->Attribute("pos"), ',');
-        convertValue<std::string, float>(&x, posVec[0]);
-        convertValue<std::string, float>(&y, posVec[1]);
-        convertValue<std::string, float>(&z, posVec[2]);
-
-        cam->setPosition(Vector3(x,y,z));
-
-        posVec = SubString(xmlElem->Attribute("lookat"), ',');
-        convertValue<std::string, float>(&x, posVec[0]);
-        convertValue<std::string, float>(&y, posVec[1]);
-        convertValue<std::string, float>(&z, posVec[2]);
-
-        cam->lookAt(Vector3(x,y,z));
-
-        std::string node = xmlElem->Attribute("node");
-
-        Ogre::SceneNode* sceneNode = (Ogre::SceneNode*)mgr->getRootSceneNode()->createChildSceneNode(node); //getChild(node);
-        sceneNode->attachObject((Ogre::MovableObject*)cam);
-
-        // FIXME: unused var
-        //Ogre::Viewport* vp = 
-        GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam);
-
-
-        COUT(4) << "Loader: Created camera "<< name  << std::endl << std::endl;
-      }
-   }
+  void Camera::setFocus(Ogre::Camera* ogreCam)
+  {
+    this->bHasFocus_ = true;
+    this->cam_ = ogreCam;
+    this->positionNode_->attachObject(cam_);
+  }
 }

@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht
  *
  */
 
@@ -37,6 +37,7 @@
 #include <OgreParticleSystem.h>
 #include <OgreSceneNode.h>
 
+#include "CameraHandler.h"
 #include "util/tinyxml/tinyxml.h"
 #include "util/Convert.h"
 #include "util/Math.h"
@@ -281,22 +282,21 @@ namespace orxonox
 
     void SpaceShip::setCamera(const std::string& camera)
     {
-        Ogre::Camera *cam = GraphicsEngine::getSingleton().getSceneManager()->createCamera("ShipCam");
         this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
+        camNode_->setPosition(this->getNode()->getPosition() + Vector3(-50,0,10));
 /*
 //        node->setInheritOrientation(false);
         cam->setPosition(Vector3(0,50,-150));
         cam->lookAt(Vector3(0,20,0));
         cam->roll(Degree(0));
 */
-
-        cam->setPosition(Vector3(-200,0,35));
+        cam_ = new Camera(this->camNode_);
+        cam_->setTargetNode(this->getNode());
+        CameraHandler::getInstance()->requestFocus(cam_);
 //        cam->setPosition(Vector3(0,-350,0));
-        cam->lookAt(Vector3(0,0,35));
-        cam->roll(Degree(-90));
+        //cam->roll(Degree(-90));
 
-        this->camNode_->attachObject(cam);
-        GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam);
+        //this->camNode_->attachObject(cam);
     }
 
     void SpaceShip::setMaxSpeed(float value)
