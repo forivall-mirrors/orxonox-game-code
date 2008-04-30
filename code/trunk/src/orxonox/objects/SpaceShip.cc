@@ -37,7 +37,7 @@
 #include <OgreParticleSystem.h>
 #include <OgreSceneNode.h>
 
-#include "util/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include "util/Convert.h"
 #include "util/Math.h"
 #include "core/CoreIncludes.h"

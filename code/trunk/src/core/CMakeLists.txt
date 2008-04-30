@@ -51,5 +51,7 @@ TARGET_LINK_LIBRARIES(core
   ${Lua_LIBRARIES}
   ${OIS_LIBRARIES}
   ${OGRE_LIBRARIES}
+  tinyxml
+  tolualib
   util
 )

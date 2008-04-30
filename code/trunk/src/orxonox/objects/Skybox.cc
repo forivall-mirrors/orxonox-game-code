@@ -33,7 +33,7 @@
 
 #include <OgreSceneManager.h>
 
-#include "util/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include "GraphicsEngine.h"
 #include "core/CoreIncludes.h"
 #include "core/Debug.h"

@@ -54,6 +54,8 @@ ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
 TARGET_LINK_LIBRARIES( orxonox
   ${OGRE_LIBRARIES}
   ${Lua_LIBRARIES}
+  tinyxml
+  tolualib
   util
   core
   audio

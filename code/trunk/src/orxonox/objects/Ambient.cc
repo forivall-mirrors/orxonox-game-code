@@ -34,7 +34,7 @@
 
 #include <OgreSceneManager.h>
 
-#include "util/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include "util/SubString.h"
 #include "util/Convert.h"
 #include "util/Math.h"
