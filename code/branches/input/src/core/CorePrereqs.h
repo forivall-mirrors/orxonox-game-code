@@ -113,11 +113,6 @@ namespace orxonox
   class FunctorStatic;
   class Identifier;
   class IdentifierDistributor;
-  class InputBuffer;
-  class InputBufferListener;
-  class InputHandlerGame;
-  class InputHandlerGUI;
-  class InputManager;
   template <class T>
   class Iterator;
   class Language;
@@ -145,6 +140,17 @@ namespace orxonox
   class XMLPortClassParamContainer;
   class XMLPortObjectContainer;
   class XMLPortParamContainer;
+
+  // input
+  class InputBuffer;
+  class InputBufferListener;
+  class InputManager;
+  class KeyBinder;
+  class GUIInputHandler;
+  class KeyHandler;
+  class MouseHandler;
+  class JoyStickHandler;
+
 }
 
 #endif /* _CorePrereqs_H__ */

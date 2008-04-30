@@ -43,8 +43,6 @@
 #include "audio/AudioPrereqs.h"
 
 #include "GraphicsEngine.h"
-#include "core/InputEventListener.h"
-
 
 namespace orxonox {
 

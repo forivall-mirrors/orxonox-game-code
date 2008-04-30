@@ -433,10 +433,6 @@
 				RelativePath="..\..\src\orxonox\OrxonoxStableHeaders.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\orxonox\Steerable.h"
-				>
-			</File>
 			<Filter
 				Name="hud"
 				>

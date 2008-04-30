@@ -42,8 +42,6 @@
 
 #include "ois/OIS.h"
 #include "Tickable.h"
-//#include "InputEvent.h"
-#include "InputHandler.h"
 
 namespace orxonox
 {
@@ -53,12 +51,10 @@ namespace orxonox
 
   /**
     @brief Captures and distributes mouse and keyboard input.
-    It resolves the key bindings to InputEvents which can be heard by
-    implementing the InputEventListener interface.
   */
   class _CoreExport InputManager
         : public Tickable,
-          public OIS::MouseListener, public OIS::KeyListener, public OIS::JoyStickListener
+          public OIS::KeyListener, public OIS::MouseListener, public OIS::JoyStickListener
   {
   public: // enumerations
     /**
@@ -75,45 +71,45 @@ namespace orxonox
     };
 
   public: // static functions
-    static bool initialise(size_t windowHnd, int windowWidth, int windowHeight,
-          bool createKeyboard = true, bool createMouse = true, bool createJoySticks = false);
+    static bool initialise(const size_t windowHnd, const int windowWidth, const int windowHeight,
+          const bool createKeyboard = true, const bool createMouse = true, const bool createJoySticks = false);
     static bool initialiseKeyboard();
     static bool initialiseMouse();
     static bool initialiseJoySticks();
+    static bool isKeyboardInitialised();
+    static bool isMouseInitialised();
+    static bool areJoySticksInitialised();
 
     static void destroy();
     static void destroyKeyboard();
     static void destroyMouse();
     static void destroyJoySticks();
 
-    static void setWindowExtents(int width, int height);
+    static void setWindowExtents(const int width, const int height);
 
     static void setInputState(const InputState state);
     static InputState getInputState();
-    static void setKeyBindingState           (bool bActive);
-    static void setMouseButtonBindingState   (bool bActive);
-    static void setJoyStickButtonBindingState(bool bActive);
 
-    static bool addKeyListener(KeyHandler* listener, const std::string& name);
-    static bool removeKeyListener  (const std::string& name);
-    static bool enableKeyListener  (const std::string& name);
-    static bool disableKeyListener (const std::string& name);
-    static bool isKeyListenerActive(const std::string& name);
-    static KeyHandler* getKeyListener(const std::string& name);
+    static bool addKeyHandler                 (KeyHandler* handler, const std::string& name);
+    static bool removeKeyHandler              (const std::string& name);
+    static KeyHandler* getKeyHandler          (const std::string& name);
+    static bool enableKeyHandler              (const std::string& name);
+    static bool disableKeyHandler             (const std::string& name);
+    static bool isKeyHandlerActive            (const std::string& name);
 
-    static bool addMouseListener(MouseHandler* listener, const std::string& name);
-    static bool removeMouseListener  (const std::string& name);
-    static bool enableMouseListener  (const std::string& name);
-    static bool disableMouseListener (const std::string& name);
-    static bool isMouseListenerActive(const std::string& name);
-    static MouseHandler* getMouseListener(const std::string& name);
+    static bool addMouseHandler               (MouseHandler* handler, const std::string& name);
+    static bool removeMouseHandler            (const std::string& name);
+    static MouseHandler* getMouseHandler      (const std::string& name);
+    static bool enableMouseHandler            (const std::string& name);
+    static bool disableMouseHandler           (const std::string& name);
+    static bool isMouseHandlerActive          (const std::string& name);
 
-    static bool addJoyStickListener(JoyStickHandler* listener, const std::string& name);
-    static bool removeJoyStickListener  (const std::string& name);
-    static bool enableJoyStickListener  (const std::string& name, const int id);
-    static bool disableJoyStickListener (const std::string& name, const int id);
-    static bool isJoyStickListenerActive(const std::string& name);
-    static JoyStickHandler* getJoyStickListener(const std::string& name);
+    static bool addJoyStickHandler            (JoyStickHandler* handler, const std::string& name);
+    static bool removeJoyStickHandler         (const std::string& name);
+    static JoyStickHandler* getJoyStickHandler(const std::string& name);
+    static bool enableJoyStickHandler         (const std::string& name, const int id);
+    static bool disableJoyStickHandler        (const std::string& name, const int id);
+    static bool isJoyStickHandlerActive       (const std::string& name, const int id);
 
     // Temporary solutions. Will be removed soon!
     static OIS::Mouse*    getMouse()    { return _getSingleton().mouse_   ; }
@@ -126,7 +122,7 @@ namespace orxonox
     ~InputManager();
 
     // Intenal methods
-    bool _initialise(size_t, int, int, bool, bool, bool);
+    bool _initialise(const size_t, const int, const int, const bool, const bool, const bool);
     bool _initialiseKeyboard();
     bool _initialiseMouse();
     bool _initialiseJoySticks();
@@ -156,25 +152,25 @@ namespace orxonox
     static InputManager* _getSingletonPtr() { return &_getSingleton(); }
 
   private: // variables
-    OIS::InputManager* inputSystem_;            //!< OIS input manager
-    OIS::Keyboard*     keyboard_;               //!< OIS mouse
-    OIS::Mouse*        mouse_;                  //!< OIS keyboard
-    std::map<int, OIS::JoyStick*> joySticks_;   //!< OIS joy sticks
+    OIS::InputManager*                          inputSystem_; //!< OIS input manager
+    OIS::Keyboard*                              keyboard_;    //!< OIS mouse
+    OIS::Mouse*                                 mouse_;       //!< OIS keyboard
+    std::map<int, OIS::JoyStick*>               joySticks_;   //!< OIS joy sticks
 
     InputState state_;
     InputState stateRequest_;
 
-    std::map<std::string, KeyHandler*>      listenersKey_;
-    std::map<std::string, MouseHandler*>    listenersMouse_;
-    std::map<std::string, JoyStickHandler*> listenersJoySticks_;
+    std::map<std::string, KeyHandler*>          keyHandlers_;
+    std::map<std::string, MouseHandler*>        mouseHandlers_;
+    std::map<std::string, JoyStickHandler*>     joyStickHandlers_;
 
-    std::list<KeyHandler*>      listenersKeyActive_;
-    std::list<MouseHandler*>    listenersMouseActive_;
-    std::map< int, std::list<JoyStickHandler*> > listenersJoySticksActive_;
+    std::list<KeyHandler*>                      activeKeyHandlers_;
+    std::list<MouseHandler*>                    activeMouseHandlers_;
+    std::map<int, std::list<JoyStickHandler*> > activeJoyStickHandlers_;
 
-    std::list<OIS::KeyCode>         keysDown_;
-    std::list<OIS::MouseButtonID>   mouseButtonsDown_;
-    std::map< int, std::list<int> > joySticksButtonsDown_;
+    std::list<OIS::KeyCode>                     keysDown_;
+    std::list<OIS::MouseButtonID>               mouseButtonsDown_;
+    std::map< int, std::list<int> >             joyStickButtonsDown_;
 
   };
 }

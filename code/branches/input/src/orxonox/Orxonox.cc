@@ -413,7 +413,7 @@ namespace orxonox
   */
   void Orxonox::startRenderLoop()
   {
-    InputBuffer* ib = dynamic_cast<InputBuffer*>(InputManager::getKeyListener("buffer"));
+    InputBuffer* ib = dynamic_cast<InputBuffer*>(InputManager::getKeyHandler("buffer"));
     console_ = new Testconsole(ib);
     ib->registerListener(console_, &Testconsole::listen, true);
     ib->registerListener(console_, &Testconsole::execute, '\r', false);
