@@ -96,7 +96,7 @@ namespace orxonox
     // TODO: Insert the code to load the bindings from file.
     bindingsKeyPress_[OIS::KC_NUMPADENTER] = "activateConsole";
     bindingsKeyPress_[OIS::KC_ESCAPE] = "exit";
-    bindingsKeyHold_[OIS::KC_U] = "exec disco.txt";
+    bindingsKeyHold_ [OIS::KC_U] = "exec disco.txt";
 
     COUT(ORX_DEBUG) << "KeyBinder: Loading key bindings done." << std::endl;
     return true;

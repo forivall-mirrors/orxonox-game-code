@@ -6,7 +6,6 @@ SET(CORE_SRC_FILES
   IdentifierDistributor.cc
   InputHandler.cc
   InputManager.cc
-#  InputEventListener.cc
   MetaObjectList.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc
