@@ -156,10 +156,13 @@ namespace orxonox
    */
   Orxonox::Orxonox()
   {
+    this->mode_ = STANDALONE;
+    this->serverIp_ = "";
     this->ogre_ = &GraphicsEngine::getSingleton();
     this->timer_ = 0;
     this->dataPath_ = "";
     this->auMan_ = 0;
+    this->orxonoxHUD_ = 0;
     this->inputHandler_ = 0;
     // turn on frame smoothing by setting a value different from 0
     this->frameSmoothingTime_ = 0.0f;
