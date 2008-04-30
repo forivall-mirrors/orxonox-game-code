@@ -32,7 +32,7 @@
 */
 
 #include "BaseObject.h"
-#include "util/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include "CoreIncludes.h"
 #include "XMLPort.h"
 #include "Level.h"

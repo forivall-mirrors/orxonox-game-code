@@ -37,7 +37,7 @@
 #include <OgrePrerequisites.h>
 
 #include "network/Synchronisable.h"
-#include "util/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include "core/BaseObject.h"
 #include "core/Tickable.h"
 

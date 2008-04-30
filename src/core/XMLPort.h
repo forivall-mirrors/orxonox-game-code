@@ -33,7 +33,7 @@
 
 #include "util/XMLIncludes.h"
 #include "util/MultiTypeMath.h"
-#include "util/tinyxml/ticpp.h"
+#include "tinyxml/ticpp.h"
 #include "Executor.h"
 #include "Debug.h"
 #include "CoreIncludes.h"

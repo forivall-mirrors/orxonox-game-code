@@ -36,7 +36,7 @@
 #include "Script.h"
 #include "Namespace.h"
 
-#include "util/tinyxml/ticpp.h"
+#include "tinyxml/ticpp.h"
 
 namespace orxonox
 {

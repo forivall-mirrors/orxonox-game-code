@@ -130,23 +130,23 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\util\tolua\tolua_event.c"
+				RelativePath="..\..\src\tolua\tolua_event.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\tolua\tolua_is.c"
+				RelativePath="..\..\src\tolua\tolua_is.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\tolua\tolua_map.c"
+				RelativePath="..\..\src\tolua\tolua_map.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\tolua\tolua_push.c"
+				RelativePath="..\..\src\tolua\tolua_push.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\tolua\tolua_to.c"
+				RelativePath="..\..\src\tolua\tolua_to.c"
 				>
 			</File>
 		</Filter>
@@ -156,11 +156,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\src\util\tolua\tolua++.h"
+				RelativePath="..\..\src\tolua\tolua++.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\tolua\tolua_event.h"
+				RelativePath="..\..\src\tolua\tolua_event.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tolua\toluabind.h"
 				>
 			</File>
 		</Filter>

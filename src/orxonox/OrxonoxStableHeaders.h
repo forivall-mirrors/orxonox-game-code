@@ -94,8 +94,8 @@
 #include "util/String.h"
 #include "util/SubString.h"
 //#include "util/XMLIncludes.h"
-#include "util/tinyxml/ticpp.h"
-#include "util/tinyxml/tinyxml.h"
+#include "tinyxml/ticpp.h"
+#include "tinyxml/tinyxml.h"
 
 #include "core/BaseObject.h"
 //#include "core/CommandExecutor.h"

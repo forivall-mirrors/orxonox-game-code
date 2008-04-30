@@ -32,7 +32,7 @@
 #include <string>
 #include <sstream>
 
-#include "util/tinyxml/tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include "util/SubString.h"
 #include "core/CoreIncludes.h"
 #include "GraphicsEngine.h"
