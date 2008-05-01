@@ -257,13 +257,6 @@
 				<File
 					RelativePath="..\..\src\core\tolua\tolua_bind.cc"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
 				</File>
 			</Filter>
 		</Filter>

@@ -53,6 +53,7 @@
 // util
 //#include "util/Sleep.h"
 #include "util/ArgReader.h"
+#include "util/ExprParser.h"
 
 // core
 #include "core/ConfigFileManager.h"
@@ -122,6 +123,28 @@ namespace orxonox
     private:
       InputBuffer* ib_;
   };
+
+  class Calculator
+  {
+  public:
+    static void calculate(const std::string& calculation)
+    {
+      ExprParser expr(calculation);
+      if (expr.getSuccess())
+      {
+        if (expr.getResult() == 42.0)
+          std::cout << "Greetings from the restaurant at the end of the universe." << std::endl;
+        // FIXME: insert modifier to display in full precision
+        std::cout << "Result is: " << expr.getResult() << std::endl;
+        if (expr.getRemains() != "")
+          std::cout << "Warning: Expression could not be parsed to the end! Remains: '"
+              << expr.getRemains() << "'" << std::endl;
+      }
+      else
+        std::cout << "Cannot calculate expression: Parse error" << std::endl;
+    }
+  };
+  ConsoleCommandShortcut(Calculator, calculate, AccessLevel::None);
 
   /**
     @brief Reference to the only instance of the class.
@@ -298,10 +321,9 @@ namespace orxonox
     auMan_ = new audio::AudioManager();
 
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    HUD* orxonoxHud;
-    orxonoxHud = new HUD();
-    orxonoxHud->setEnergyValue(20);
-    orxonoxHud->setEnergyDistr(20,20,60);
+    orxonoxHUD_ = new HUD();
+    orxonoxHUD_->setEnergyValue(20);
+    orxonoxHUD_->setEnergyDistr(20,20,60);
     hudOverlay->show();
 
     client_g->establishConnection();
@@ -409,6 +431,8 @@ namespace orxonox
       COUT(2) << "*** Orxonox Error: Could not start rendering. No Ogre root object found" << std::endl;
       return;
     }
+    Ogre::Root& ogreRoot = Ogre::Root::getSingleton();
+
 
     // Contains the times of recently fired events
     // eventTimes[4] is the list for the times required for the fps counter
@@ -428,6 +452,7 @@ namespace orxonox
 	  while (!bAbort_)
 	  {
 		  // Pump messages in all registered RenderWindows
+      // This calls the WindowEventListener objects.
       Ogre::WindowEventUtilities::messagePump();
 
       // get current time
@@ -451,11 +476,11 @@ namespace orxonox
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
-      Ogre::Root::getSingleton()._fireFrameStarted(evt);
+      ogreRoot._fireFrameStarted(evt);
 
       // server still renders at the moment
       //if (mode_ != SERVER)
-      Ogre::Root::getSingleton()._updateAllRenderTargets(); // only render in non-server mode
+      ogreRoot._updateAllRenderTargets(); // only render in non-server mode
 
       // get current time
       now = timer_->getMilliseconds();
@@ -465,7 +490,7 @@ namespace orxonox
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[2]);
 
       // again, just to be sure ogre works fine
-      Ogre::Root::getSingleton()._fireFrameEnded(evt);
+      ogreRoot._fireFrameEnded(evt);
 	  }
   }
 

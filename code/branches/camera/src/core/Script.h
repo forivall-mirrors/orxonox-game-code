@@ -56,7 +56,7 @@ namespace orxonox // tolua_export
 
     public:
       inline static Script* getInstance() { if (!Script::singletonRef) Script::singletonRef = new Script(); return Script::singletonRef; } // tolua_export
-      inline ~Script() { Script::singletonRef = NULL; }
+      inline ~Script() { Script::singletonRef = NULL; };
 
     void loadFile(std::string filename, bool luaTags);
     //void init(lua_State *state_);

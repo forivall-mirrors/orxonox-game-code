@@ -1,7 +1,4 @@
-#get the created files
-AUX_SOURCE_DIRECTORY(tolua TOLUA_BIND_FILES) 
-
-SET( CORE_SRC_FILES
+SET(CORE_SRC_FILES
   OrxonoxClass.cc
   BaseObject.cc
   Factory.cc
@@ -28,14 +25,31 @@ SET( CORE_SRC_FILES
   InputBuffer.cc
   Tickable.cc
   Script.cc
-  ${TOLUA_BIND_FILES}
+  tolua/tolua_bind.cc
+#tolua/tolua_bind.h
 )
 
-ADD_LIBRARY( core SHARED ${CORE_SRC_FILES})
+#SET_SOURCE_FILES_PROPERTIES(tolua/tolua_bind.h
+#  PROPERTIES
+#  OBJECT_DEPENDS tolua/tolua_bind.h
+#  OBJECT_DEPENDS tolua/tolua_bind.cc
+#  GENERATED true
+#  HEADER_FILE_ONLY true
+#)
 
-TARGET_LINK_LIBRARIES( core
-  util
+GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
+ADD_CUSTOM_COMMAND(
+  OUTPUT tolua/tolua_bind.cc tolua/tolua_bind.h
+  COMMAND ${TOLUA_EXE} -n core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg
+  DEPENDS tolua
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
+)
+
+ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
+
+TARGET_LINK_LIBRARIES(core
   ${Lua_LIBRARIES}
-  ${Lua_LIBRARY}
   ${OIS_LIBRARIES}
+  ${OGRE_LIBRARIES}
+  util
 )

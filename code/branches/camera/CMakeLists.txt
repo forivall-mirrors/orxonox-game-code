@@ -31,8 +31,8 @@ ELSE (IS_TARDIS)
 ENDIF(IS_TARDIS)
 
 #set binary output directories
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR}/bin/lib)
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/bin/lib)
 
 # global compiler/linker flags. force -O2!
 SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
@@ -42,8 +42,10 @@ SET(CMAKE_EXE_LINKER_FLAGS " --no-undefined")
 SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
 SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
 
-#Create verbose makefile output when compiling
-SET(CMAKE_VERBOSE_MAKEFILE TRUE)
+#use 'cmake -D make_verb:1 path' to get verbose make output when compiling
+IF (MAKE_VERB)
+ SET(CMAKE_VERBOSE_MAKEFILE TRUE)
+ENDIF (MAKE_VERB)
 
 
 ############### Library finding #################
@@ -78,25 +80,12 @@ INCLUDE_DIRECTORIES(
 #  ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_INCLUDE_DIR}
   ${ENet_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
-  ${OPENAL_INCLUDE_DIR} ${ALUT_INCLUDE_DIR} ${VORBIS_INCLUDE_DIR} ${OGG_INCLUDE_DIR}
+  ${OPENAL_INCLUDE_DIR}
+  ${ALUT_INCLUDE_DIR}
+  ${VORBIS_INCLUDE_DIR}
+  ${OGG_INCLUDE_DIR}
   ${Lua_INCLUDE_DIR}
 )
-
-
-################ Source files ###################
-
-#if on a windows box, you have to generate the tolua bind files yourself
-IF(NOT WIN32)
-
-  #At first, build lua
-  MESSAGE(STATUS "\n******************* Building tolua... ******************\n\n")
-  EXECUTE_PROCESS(COMMAND ./tolua-build)
-  MESSAGE(STATUS "\n\n******************* Building tolua done ****************\n")
-
-  #generate lua bind source files
-  EXECUTE_PROCESS(COMMAND bin/./tolua-exec-script)
-
-ENDIF(NOT WIN32)
 
 #add main source dir
 ADD_SUBDIRECTORY(src)
