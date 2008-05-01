@@ -33,6 +33,8 @@
 
 #include "InputHandler.h"
 #include "Debug.h"
+#include "ConfigValueIncludes.h"
+#include "CoreIncludes.h"
 #include "util/Convert.h"
 #include "core/CommandExecutor.h"
 
@@ -47,7 +49,193 @@ namespace orxonox
   */
   KeyBinder::KeyBinder()
   {
+    RegisterObject(KeyBinder);
     clearBindings();
+
+    std::string keyNames[] = {
+    "UNASSIGNED",
+		"ESCAPE",
+		"1",
+		"2",
+		"3",
+		"4",
+		"5",
+		"6",
+		"7",
+		"8",
+		"9",
+		"0",
+		"MINUS",
+		"EQUALS",
+		"BACK",
+		"TAB",
+		"Q",
+		"W",
+		"E",
+		"R",
+		"T",
+		"Y",
+		"U",
+		"I",
+		"O",
+		"P",
+		"LBRACKET",
+		"RBRACKET",
+		"RETURN",
+		"LCONTROL",
+		"A",
+		"S",
+		"D",
+		"F",
+		"G",
+		"H",
+		"J",
+		"K",
+		"L",
+		"SEMICOLON",
+		"APOSTROPHE",
+		"GRAVE",
+		"LSHIFT",
+		"BACKSLASH",
+		"Z",
+		"X",
+		"C",
+		"V",
+		"B",
+		"N",
+		"M",
+		"COMMA",
+		"PERIOD",
+		"SLASH",
+		"RSHIFT",
+		"MULTIPLY",
+		"LMENU",
+		"SPACE",
+		"CAPITAL",
+		"F1",
+		"F2",
+		"F3",
+		"F4",
+		"F5",
+		"F6",
+		"F7",
+		"F8",
+		"F9",
+		"F10",
+		"NUMLOCK",
+		"SCROLL",
+		"NUMPAD7",
+		"NUMPAD8",
+		"NUMPAD9",
+		"SUBTRACT",
+		"NUMPAD4",
+		"NUMPAD5",
+		"NUMPAD6",
+		"ADD",
+		"NUMPAD1",
+		"NUMPAD2",
+		"NUMPAD3",
+		"NUMPAD0",
+		"DECIMAL",
+    "","",
+		"OEM_102",
+		"F11",
+		"F12",
+    "","","","","","","","","","","",
+		"F13",
+		"F14",
+		"F15",
+    "","","","","","","","","","",
+		"KANA",
+    "","",
+		"ABNT_C1",
+    "","","","","",
+		"CONVERT",
+    "",
+		"NOCONVERT",
+    "",
+		"YEN",
+		"ABNT_C2",
+    "","","","","","","","","","","","","","",
+		"NUMPADEQUALS",
+    "","",
+		"PREVTRACK",
+		"AT",
+		"COLON",
+		"UNDERLINE",
+		"KANJI",
+		"STOP",
+		"AX",
+		"UNLABELED",
+		"NEXTTRACK",
+    "","",
+		"NUMPADENTER",
+		"RCONTROL",
+    "","",
+		"MUTE",
+		"CALCULATOR",
+		"PLAYPAUSE",
+    "",
+		"MEDIASTOP",
+    "","","","","","","","","",
+		"VOLUMEDOWN",
+    "",
+		"VOLUMEUP",
+    "",
+		"WEBHOME",
+		"NUMPADCOMMA",
+    "",
+		"DIVIDE",
+    "",
+		"SYSRQ",
+		"RMENU",
+    "","","","","","","","","","","","",
+		"PAUSE",
+    "",
+		"HOME",
+		"UP",
+		"PGUP",
+    "",
+		"LEFT",
+    "",
+		"RIGHT",
+    "",
+		"END",
+		"DOWN",
+		"PGDOWN",
+		"INSERT",
+		"DELETE",
+    "","","","","","","",
+		"LWIN",
+		"RWIN",
+		"APPS",
+		"POWER",
+		"SLEEP",
+    "","","",
+		"WAKE",
+    "",
+		"WEBSEARCH",
+		"WEBFAVORITES",
+		"WEBREFRESH",
+		"WEBSTOP",
+		"WEBFORWARD",
+		"WEBBACK",
+		"MYCOMPUTER",
+		"MAIL",
+		"MEDIASELECT"
+    };
+    for (int i = 0; i < numberOfKeys_s; i++)
+      keyNames_[i] = keyNames[i];
+
+    std::string mouseButtonNames[] = {
+    "MouseLeft", "MouseRight", "MouseMiddle",
+    "MouseButton3", "MouseButton4", "MouseButton5",
+    "MouseButton6", "MouseButton7" };
+    for (int i = 0; i < numberOfMouseButtons_s; i++)
+      mouseButtonNames_[i] = mouseButtonNames[i];
+
+    for (int i = 0; i < numberOfJoyStickButtons_s; i++)
+      joyStickButtonNames_[i] = "JoyStick" + getConvertedValue<int, std::string>(i);
   }
 
   /**
@@ -55,6 +243,90 @@ namespace orxonox
   */
   KeyBinder::~KeyBinder()
   {
+  }
+
+  /**
+    @brief Loader for the key bindings, managed by config values.
+  */
+  void KeyBinder::setConfigValues()
+  {
+    ConfigValueContainer* cont;
+    std::string modes[] = {"P_", "R_", "H_"};
+
+    // keys
+    for (int i = 0; i < numberOfKeys_s; i++)
+    {
+      for (int j = 0; j < 3; j++)
+      {
+        cont = getIdentifier()->getConfigValueContainer(modes[j] + keyNames_[i]);
+        if (!cont)
+        {
+          cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), modes[j] + keyNames_[i], "");
+          getIdentifier()->addConfigValueContainer(modes[j] + keyNames_[i], cont);
+        }
+        switch (j)
+        {
+          case 0:
+            cont->getValue(bindingsKeyPress_ + i);
+            break;
+          case 1:
+            cont->getValue(bindingsKeyRelease_ + i);
+            break;
+          case 2:
+            cont->getValue(bindingsKeyHold_ + i);
+        }
+      }
+    }
+
+    // mouse buttons
+    for (int i = 0; i < numberOfMouseButtons_s; i++)
+    {
+      for (int j = 0; j < 3; j++)
+      {
+        cont = getIdentifier()->getConfigValueContainer(modes[j] + mouseButtonNames_[i]);
+        if (!cont)
+        {
+          cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), modes[j] + mouseButtonNames_[i], "");
+          getIdentifier()->addConfigValueContainer(modes[j] + mouseButtonNames_[i], cont);
+        }
+        switch (j)
+        {
+          case 0:
+            cont->getValue(bindingsMouseButtonPress_ + i);
+            break;
+          case 1:
+            cont->getValue(bindingsMouseButtonRelease_ + i);
+            break;
+          case 2:
+            cont->getValue(bindingsMouseButtonHold_ + i);
+        }
+      }
+    }
+
+    // joy stick buttons
+    for (int i = 0; i < numberOfJoyStickButtons_s; i++)
+    {
+      for (int j = 0; j < 3; j++)
+      {
+        cont = getIdentifier()->getConfigValueContainer(modes[j] + joyStickButtonNames_[i]);
+        if (!cont)
+        {
+          cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), modes[j] + joyStickButtonNames_[i], "");
+          getIdentifier()->addConfigValueContainer(modes[j] + joyStickButtonNames_[i], cont);
+        }
+        switch (j)
+        {
+          case 0:
+            cont->getValue(bindingsJoyStickButtonPress_ + i);
+            break;
+          case 1:
+            cont->getValue(bindingsJoyStickButtonRelease_ + i);
+            break;
+          case 2:
+            cont->getValue(bindingsJoyStickButtonHold_ + i);
+        }
+      }
+    }
   }
 
   /**
@@ -90,13 +362,8 @@ namespace orxonox
   {
     COUT(ORX_DEBUG) << "KeyBinder: Loading key bindings..." << std::endl;
 
-    // clear all the bindings at first.
-    clearBindings();
-
-    // TODO: Insert the code to load the bindings from file.
-    bindingsKeyPress_[OIS::KC_NUMPADENTER] = "activateConsole";
-    bindingsKeyPress_[OIS::KC_ESCAPE] = "exit";
-    bindingsKeyHold_ [OIS::KC_U] = "exec disco.txt";
+    ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
+    setConfigValues();
 
     COUT(ORX_DEBUG) << "KeyBinder: Loading key bindings done." << std::endl;
     return true;
@@ -109,6 +376,7 @@ namespace orxonox
   */
   bool KeyBinder::keyPressed(const OIS::KeyEvent &e)
   {
+    COUT(3) << "Key: " << e.key << std::endl;
     // find the appropriate key binding
     std::string cmdStr = bindingsKeyPress_[int(e.key)];
     if (cmdStr != "")

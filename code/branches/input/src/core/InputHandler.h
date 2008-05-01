@@ -38,6 +38,7 @@
 
 #include <string>
 #include "ois/OIS.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -84,7 +85,7 @@ namespace orxonox
     @brief Captures mouse, keyboard and joy stick input while in the actual game mode.
            Manages the key bindings.
   */
-  class _CoreExport KeyBinder : public KeyHandler, public MouseHandler, public JoyStickHandler
+  class _CoreExport KeyBinder : public KeyHandler, public MouseHandler, public JoyStickHandler, public OrxonoxClass
   {
   public:
     KeyBinder ();
@@ -92,6 +93,10 @@ namespace orxonox
 
     bool loadBindings();
     void clearBindings();
+
+    void setConfigValues();
+
+    std::string testtest;
 
   private: // functions
 		bool keyPressed   (const OIS::KeyEvent   &arg);
@@ -111,28 +116,30 @@ namespace orxonox
 		bool povMoved      (const OIS::JoyStickEvent &arg, int id);
 
   private: // variables
-    /** denotes the maximum number of different keys there are in OIS.
-        256 should be ok since the highest number in the OIS enum is 237. */
-    static const int numberOfKeys_s = 256;
+
+    //! denotes the number of different keys there are in OIS.
+    static const int numberOfKeys_s = 0xEE;
     //! Array of input events for every pressed key
     std::string bindingsKeyPress_  [numberOfKeys_s];
     //! Array of input events for every released key
     std::string bindingsKeyRelease_[numberOfKeys_s];
-    //!Array of input events for every held key
+    //! Array of input events for every held key
     std::string bindingsKeyHold_   [numberOfKeys_s];
+    //! Names of the keys as strings
+    std::string keyNames_[numberOfKeys_s];
 
-    /** denotes the maximum number of different buttons there are in OIS.
-        16 should be ok since the highest number in the OIS enum is 7. */
-    static const int numberOfMouseButtons_s = 16;
+    //! denotes the number of different mouse buttons there are in OIS.
+    static const int numberOfMouseButtons_s = 8;
     //! Array of input events for every pressed mouse button
     std::string bindingsMouseButtonPress_  [numberOfMouseButtons_s];
     //! Array of input events for every released mouse button
     std::string bindingsMouseButtonRelease_[numberOfMouseButtons_s];
     //! Array of input events for every held mouse button
     std::string bindingsMouseButtonHold_   [numberOfMouseButtons_s];
+    //! Names of the mouse buttons as strings
+    std::string mouseButtonNames_[numberOfMouseButtons_s];
 
-    /** denotes the maximum number of different buttons there are in OIS.
-        32 should be ok. */
+    //! denotes the number of different joy stick buttons there are in OIS.
     static const int numberOfJoyStickButtons_s = 32;
     //! Array of input events for every pressed joy stick button
     std::string bindingsJoyStickButtonPress_  [numberOfJoyStickButtons_s];
@@ -140,6 +147,8 @@ namespace orxonox
     std::string bindingsJoyStickButtonRelease_[numberOfJoyStickButtons_s];
     //! Array of input events for every held joy stick button
     std::string bindingsJoyStickButtonHold_   [numberOfJoyStickButtons_s];
+    //! Names of the joy stick buttons as strings
+    std::string joyStickButtonNames_[numberOfJoyStickButtons_s];
 
   };
 

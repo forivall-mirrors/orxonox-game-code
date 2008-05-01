@@ -821,9 +821,13 @@ namespace orxonox
           it != _getSingleton().activeKeyHandlers_.end(); it++)
     {
       if ((*it) == (*mapIt).second)
+      {
+        _getSingleton().stateRequest_ = IS_CUSTOM;
         return true;
+      }
     }
     _getSingleton().activeKeyHandlers_.push_back((*mapIt).second);
+    _getSingleton().stateRequest_ = IS_CUSTOM;
     return true;
   }
 
@@ -845,9 +849,11 @@ namespace orxonox
       if ((*it) == (*mapIt).second)
       {
         _getSingleton().activeKeyHandlers_.erase(it);
+        _getSingleton().stateRequest_ = IS_CUSTOM;
         return true;
       }
     }
+    _getSingleton().stateRequest_ = IS_CUSTOM;
     return true;
   }
 
@@ -941,9 +947,13 @@ namespace orxonox
           it != _getSingleton().activeMouseHandlers_.end(); it++)
     {
       if ((*it) == (*mapIt).second)
+      {
+        _getSingleton().stateRequest_ = IS_CUSTOM;
         return true;
+      }
     }
     _getSingleton().activeMouseHandlers_.push_back((*mapIt).second);
+    _getSingleton().stateRequest_ = IS_CUSTOM;
     return true;
   }
 
@@ -965,9 +975,11 @@ namespace orxonox
       if ((*it) == (*mapIt).second)
       {
         _getSingleton().activeMouseHandlers_.erase(it);
+        _getSingleton().stateRequest_ = IS_CUSTOM;
         return true;
       }
     }
+    _getSingleton().stateRequest_ = IS_CUSTOM;
     return true;
   }
 
@@ -1070,9 +1082,13 @@ namespace orxonox
           it != _getSingleton().activeJoyStickHandlers_[id].end(); it++)
     {
       if ((*it) == (*handlerIt).second)
+      {
+        _getSingleton().stateRequest_ = IS_CUSTOM;
         return true;
+      }
     }
     _getSingleton().activeJoyStickHandlers_[id].push_back((*handlerIt).second);
+    _getSingleton().stateRequest_ = IS_CUSTOM;
     return true;
   }
 
@@ -1100,9 +1116,11 @@ namespace orxonox
       if ((*it) == (*handlerIt).second)
       {
         _getSingleton().activeJoyStickHandlers_[id].erase(it);
+        _getSingleton().stateRequest_ = IS_CUSTOM;
         return true;
       }
     }
+    _getSingleton().stateRequest_ = IS_CUSTOM;
     return true;
   }
 

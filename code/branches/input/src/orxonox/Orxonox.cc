@@ -397,7 +397,10 @@ namespace orxonox
     if (!InputManager::initialise(ogre_->getWindowHandle(),
           ogre_->getWindowWidth(), ogre_->getWindowHeight()))
       abortImmediateForce();
-    InputManager::setInputState(InputManager::IS_NORMAL);
+    InputManager::setInputState(InputManager::IS_CUSTOM);
+    InputManager::enableKeyHandler("keybinder");
+    InputManager::enableMouseHandler("keybinder");
+    InputManager::enableJoyStickHandler("keybinder", 0);
   }
 
   /**
