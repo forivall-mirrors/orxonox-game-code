@@ -64,9 +64,9 @@ std::string getStripped(const std::string& str)
 std::string removeTrailingWhitespaces(const std::string& str)
 {
     unsigned int pos1 = 0;
-    unsigned int pos2 = str.size() - 1;
+    int pos2 = str.size() - 1;
     for (; pos1 < str.size() && (str[pos1] == ' ' || str[pos1] == '\t' || str[pos1] == '\n'); pos1++);
-    for (; pos2 >= 0         && (str[pos2] == ' ' || str[pos2] == '\t' || str[pos2] == '\n'); pos2--);
+    for (; pos2 > 0          && (str[pos2] == ' ' || str[pos2] == '\t' || str[pos2] == '\n'); pos2--);
     return str.substr(pos1, pos2 - pos1 + 1);
 }
 
