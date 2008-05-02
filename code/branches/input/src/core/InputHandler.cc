@@ -266,8 +266,10 @@ namespace orxonox
         }
         switch (j)
         {
+          // note: the first element in the struct is the string, so the following pointer
+          //       arithmetic works.
           case 0:
-            cont->getValue(bindingsKeyPress_ + i);
+            cont->getValue(&bindingsKeyPress_[i].commandStr);
             break;
           case 1:
             cont->getValue(bindingsKeyRelease_ + i);
@@ -336,9 +338,9 @@ namespace orxonox
   {
     for (int i = 0; i < numberOfKeys_s; i++)
     {
-      bindingsKeyPress_  [i] = "";
-      bindingsKeyRelease_[i] = "";
-      bindingsKeyHold_   [i] = "";
+      bindingsKeyPress_  [i].commandStr = "";
+      bindingsKeyRelease_[i].commandStr = "";
+      bindingsKeyHold_   [i].commandStr = "";
     }
     for (int i = 0; i < numberOfMouseButtons_s; i++)
     {
@@ -365,7 +367,35 @@ namespace orxonox
     ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
     setConfigValues();
 
+    // evaluate the key bindings
+    // TODO: what if binding is invalid?
+    //for (int i = 0; i < numberOfKeys_s; i++)
+    //{
+    //  if (bindingsKeyPress_[i].commandStr != "")
+    //  {
+    //    bindingsKeyPress_[i].evaluation = CommandExecutor::evaluate(bindingsKeyPress_[i].commandStr);
+    //    bindingsKeyPress_[i].commandStr = bindingsKeyPress_[i].evaluation.getCommandString();
+    //  }
+    //}
+
     COUT(ORX_DEBUG) << "KeyBinder: Loading key bindings done." << std::endl;
+    return true;
+  }
+
+  bool KeyBinder::executeBinding(KeyBinding& binding)
+  {
+    if (binding.commandStr != "")
+    {
+      //if (binding.commandStr != binding.evaluation.getCommandString())
+      //{
+      //  // key binding has changed, reevaluate the command string.
+      //  binding.evaluation = CommandExecutor::evaluate(binding.commandStr);
+      //  binding.commandStr = binding.evaluation.getCommandString();
+      //}
+      COUT(3) << "Executing command: " << binding.commandStr << std::endl;
+      CommandExecutor::execute(binding.commandStr);
+    }
+
     return true;
   }
 
@@ -378,13 +408,8 @@ namespace orxonox
   {
     COUT(3) << "Key: " << e.key << std::endl;
     // find the appropriate key binding
-    std::string cmdStr = bindingsKeyPress_[int(e.key)];
-    if (cmdStr != "")
-    {
-      CommandExecutor::execute(cmdStr);
-      COUT(3) << "Executing command: " << cmdStr << std::endl;
-    }
-    
+    executeBinding(bindingsKeyPress_[int(e.key)]);
+     
     return true;
   }
 
@@ -395,12 +420,7 @@ namespace orxonox
   bool KeyBinder::keyReleased(const OIS::KeyEvent &e)
   {
     // find the appropriate key binding
-    std::string cmdStr = bindingsKeyRelease_[int(e.key)];
-    if (cmdStr != "")
-    {
-      CommandExecutor::execute(cmdStr);
-      COUT(3) << "Executing command: " << cmdStr << std::endl;
-    }
+    executeBinding(bindingsKeyRelease_[int(e.key)]);
 
     return true;
   }
@@ -412,12 +432,7 @@ namespace orxonox
   bool KeyBinder::keyHeld(const OIS::KeyEvent &e)
   {
     // find the appropriate key binding
-    std::string cmdStr = bindingsKeyHold_[int(e.key)];
-    if (cmdStr != "")
-    {
-      CommandExecutor::execute(cmdStr);
-      COUT(3) << "Executing command: " << cmdStr << std::endl;
-    }
+    executeBinding(bindingsKeyHold_[int(e.key)]);
 
     return true;
   }
@@ -485,7 +500,7 @@ namespace orxonox
     return true;
   }
 
-  bool KeyBinder::buttonPressed(const OIS::JoyStickEvent &arg, int button)
+  bool KeyBinder::buttonPressed(int joyStickID, const OIS::JoyStickEvent &arg, int button)
   {
     // find the appropriate key binding
     std::string cmdStr = bindingsJoyStickButtonPress_[button];
@@ -498,7 +513,7 @@ namespace orxonox
     return true;
   }
 
-  bool KeyBinder::buttonReleased(const OIS::JoyStickEvent &arg, int button)
+  bool KeyBinder::buttonReleased(int joyStickID, const OIS::JoyStickEvent &arg, int button)
   {
     // find the appropriate key binding
     std::string cmdStr = bindingsJoyStickButtonRelease_[button];
@@ -511,7 +526,7 @@ namespace orxonox
     return true;
   }
 
-  bool KeyBinder::buttonHeld(const OIS::JoyStickEvent &arg, int button)
+  bool KeyBinder::buttonHeld(int joyStickID, const OIS::JoyStickEvent &arg, int button)
   {
     // find the appropriate key binding
     std::string cmdStr = bindingsJoyStickButtonHold_[button];
@@ -524,17 +539,22 @@ namespace orxonox
     return true;
   }
 
-  bool KeyBinder::axisMoved(const OIS::JoyStickEvent &arg, int axis)
+  bool KeyBinder::axisMoved(int joyStickID, const OIS::JoyStickEvent &arg, int axis)
   {
     return true;
   }
 
-  bool KeyBinder::sliderMoved(const OIS::JoyStickEvent &arg, int id)
+  bool KeyBinder::sliderMoved(int joyStickID, const OIS::JoyStickEvent &arg, int id)
   {
     return true;
   }
 
-  bool KeyBinder::povMoved(const OIS::JoyStickEvent &arg, int id)
+  bool KeyBinder::povMoved(int joyStickID, const OIS::JoyStickEvent &arg, int id)
+  {
+    return true;
+  }
+
+  bool KeyBinder::vector3Moved(int joyStickID, const OIS::JoyStickEvent &arg, int id)
   {
     return true;
   }

@@ -76,9 +76,9 @@ namespace orxonox
     static bool initialiseKeyboard();
     static bool initialiseMouse();
     static bool initialiseJoySticks();
-    static bool isKeyboardInitialised();
-    static bool isMouseInitialised();
-    static bool areJoySticksInitialised();
+    static int  numberOfKeyboards();
+    static int  numberOfMice();
+    static int  numberOfJoySticks();
 
     static void destroy();
     static void destroyKeyboard();
@@ -147,6 +147,7 @@ namespace orxonox
 		bool axisMoved     (const OIS::JoyStickEvent &arg, int axis);
 		bool sliderMoved   (const OIS::JoyStickEvent &arg, int id);
 		bool povMoved      (const OIS::JoyStickEvent &arg, int id);
+		bool vector3Moved  (const OIS::JoyStickEvent &arg, int id);
 
     static InputManager& _getSingleton();
     static InputManager* _getSingletonPtr() { return &_getSingleton(); }
@@ -155,7 +156,7 @@ namespace orxonox
     OIS::InputManager*                          inputSystem_; //!< OIS input manager
     OIS::Keyboard*                              keyboard_;    //!< OIS mouse
     OIS::Mouse*                                 mouse_;       //!< OIS keyboard
-    std::map<int, OIS::JoyStick*>               joySticks_;   //!< OIS joy sticks
+    std::vector<OIS::JoyStick*>                 joySticks_;   //!< OIS joy sticks
 
     InputState state_;
     InputState stateRequest_;
@@ -164,13 +165,13 @@ namespace orxonox
     std::map<std::string, MouseHandler*>        mouseHandlers_;
     std::map<std::string, JoyStickHandler*>     joyStickHandlers_;
 
-    std::list<KeyHandler*>                      activeKeyHandlers_;
-    std::list<MouseHandler*>                    activeMouseHandlers_;
-    std::map<int, std::list<JoyStickHandler*> > activeJoyStickHandlers_;
+    std::vector<KeyHandler*>                    activeKeyHandlers_;
+    std::vector<MouseHandler*>                  activeMouseHandlers_;
+    std::map< OIS::JoyStick*, std::vector<JoyStickHandler*> > activeJoyStickHandlers_;
 
     std::list<OIS::KeyCode>                     keysDown_;
     std::list<OIS::MouseButtonID>               mouseButtonsDown_;
-    std::map< int, std::list<int> >             joyStickButtonsDown_;
+    std::map< OIS::JoyStick*, std::list<int> >  joyStickButtonsDown_;
 
   };
 }

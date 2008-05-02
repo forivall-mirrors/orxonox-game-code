@@ -39,6 +39,7 @@
 #include <string>
 #include "ois/OIS.h"
 #include "OrxonoxClass.h"
+#include "CommandExecutor.h"
 
 namespace orxonox
 {
@@ -59,6 +60,7 @@ namespace orxonox
   class _CoreExport KeyHandler : public OIS::KeyListener
   {
   public:
+    virtual ~KeyHandler() { }
     virtual bool keyHeld(const OIS::KeyEvent &arg) = 0;
   };
 
@@ -68,16 +70,30 @@ namespace orxonox
   class _CoreExport MouseHandler : public OIS::MouseListener
   {
   public:
+    virtual ~MouseHandler() { }
     virtual bool mouseHeld(const OIS::MouseEvent &arg, OIS::MouseButtonID id) = 0;
   };
 
   /**
     @brief Interface class used for joy stick input listeners.
   */
-  class _CoreExport JoyStickHandler : public OIS::JoyStickListener
+  class _CoreExport JoyStickHandler
   {
   public:
-    virtual bool buttonHeld(const OIS::JoyStickEvent &arg, int button) = 0;
+    virtual ~JoyStickHandler() { }
+		virtual bool buttonPressed (int joyStickID, const OIS::JoyStickEvent &arg, int button) = 0;
+		virtual bool buttonReleased(int joyStickID, const OIS::JoyStickEvent &arg, int button) = 0;
+    virtual bool buttonHeld    (int joyStickID, const OIS::JoyStickEvent &arg, int button) = 0;
+		virtual bool axisMoved     (int joyStickID, const OIS::JoyStickEvent &arg, int axis)   = 0;
+		virtual bool sliderMoved   (int joyStickID, const OIS::JoyStickEvent &arg, int index) {return true;}
+		virtual bool povMoved      (int joyStickID, const OIS::JoyStickEvent &arg, int index) {return true;}
+		virtual bool vector3Moved  (int joyStickID, const OIS::JoyStickEvent &arg, int index) {return true;}
+  };
+
+  struct _CoreExport KeyBinding
+  {
+    std::string commandStr;
+    CommandEvaluation evaluation;
   };
  
 
@@ -99,6 +115,9 @@ namespace orxonox
     std::string testtest;
 
   private: // functions
+
+    bool executeBinding(KeyBinding &binding);
+
 		bool keyPressed   (const OIS::KeyEvent   &arg);
 		bool keyReleased  (const OIS::KeyEvent   &arg);
 		bool keyHeld      (const OIS::KeyEvent   &arg);
@@ -108,23 +127,24 @@ namespace orxonox
 		bool mouseHeld    (const OIS::MouseEvent &arg, OIS::MouseButtonID id);
     bool mouseMoved   (const OIS::MouseEvent &arg);
 
-		bool buttonPressed (const OIS::JoyStickEvent &arg, int button);
-		bool buttonReleased(const OIS::JoyStickEvent &arg, int button);
-		bool buttonHeld    (const OIS::JoyStickEvent &arg, int button);
-		bool axisMoved     (const OIS::JoyStickEvent &arg, int axis);
-		bool sliderMoved   (const OIS::JoyStickEvent &arg, int id);
-		bool povMoved      (const OIS::JoyStickEvent &arg, int id);
+		bool buttonPressed (int joyStickID, const OIS::JoyStickEvent &arg, int button);
+		bool buttonReleased(int joyStickID, const OIS::JoyStickEvent &arg, int button);
+		bool buttonHeld    (int joyStickID, const OIS::JoyStickEvent &arg, int button);
+		bool axisMoved     (int joyStickID, const OIS::JoyStickEvent &arg, int axis);
+		bool sliderMoved   (int joyStickID, const OIS::JoyStickEvent &arg, int id);
+		bool povMoved      (int joyStickID, const OIS::JoyStickEvent &arg, int id);
+		bool vector3Moved  (int joyStickID, const OIS::JoyStickEvent &arg, int id);
 
   private: // variables
 
     //! denotes the number of different keys there are in OIS.
     static const int numberOfKeys_s = 0xEE;
     //! Array of input events for every pressed key
-    std::string bindingsKeyPress_  [numberOfKeys_s];
+    KeyBinding bindingsKeyPress_  [numberOfKeys_s];
     //! Array of input events for every released key
-    std::string bindingsKeyRelease_[numberOfKeys_s];
+    KeyBinding bindingsKeyRelease_[numberOfKeys_s];
     //! Array of input events for every held key
-    std::string bindingsKeyHold_   [numberOfKeys_s];
+    KeyBinding bindingsKeyHold_   [numberOfKeys_s];
     //! Names of the keys as strings
     std::string keyNames_[numberOfKeys_s];
 

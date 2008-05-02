@@ -430,7 +430,6 @@ namespace orxonox
         if (!setMouseEventCallback_)
         {
           InputManager::addMouseHandler(this, "SpaceShip");
-          InputManager::enableMouseHandler("SpaceShip");
           setMouseEventCallback_ = true;
         }
 
