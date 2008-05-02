@@ -296,18 +296,18 @@ namespace orxonox {
     void GraphicsEngine::windowMoved(Ogre::RenderWindow *rw){
         int w = rw->getWidth();
         int h = rw->getHeight();
-        InputManager::getSingleton().setWindowExtents(w, h);
+        InputManager::setWindowExtents(w, h);
     }
 
     void GraphicsEngine::windowResized(Ogre::RenderWindow *rw){
         int w = rw->getWidth();
         int h = rw->getHeight();
-        InputManager::getSingleton().setWindowExtents(w, h);
+        InputManager::setWindowExtents(w, h);
     }
 
     void GraphicsEngine::windowFocusChanged(Ogre::RenderWindow *rw){
         int w = rw->getWidth();
         int h = rw->getHeight();
-        InputManager::getSingleton().setWindowExtents(w, h);
+        InputManager::setWindowExtents(w, h);
     }
 }

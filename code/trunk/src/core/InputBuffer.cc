@@ -49,7 +49,7 @@ namespace orxonox
     {
         //this->bActivated_ = false;
         this->allowedChars_ = allowedChars;
-        this->keyboard_ = InputManager::getSingleton().getKeyboard();
+        this->keyboard_ = InputManager::getKeyboard();
         this->buffer_ = "";
     }
 /*
