@@ -27,49 +27,54 @@
 
 #include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
 #include <OgreStringConverter.h>
+#include <math.h>
 #include <string.h>
 
-#include "Radar.h"
+#include "RadarOverlayElement.h"
 
 
 namespace orxonox
 {
   using namespace Ogre;
 
-  RadarObject::RadarObject(int name, Ogre::Real x, Ogre::Real y, Ogre::Real z){
-    name_ = name;
-    x = x_;
-    y = y_;
-    z = z_;
+  RadarOverlayElement::RadarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){}
+
+  RadarOverlayElement::~RadarOverlayElement(){}
+
+  void RadarOverlayElement::initialise(){
+    PanelOverlayElement::initialise();
   }
-
-  RadarObject::~RadarObject(void){}
+  
+  void RadarOverlayElement::initRadarOverlayElement(){
+    int dirX, dirY, dirZ;      //flying direction
+    int ortX, ortY, ortZ;      //orthogonal direction
+    int dX, dY, dZ;            //distance between main ship and the object
+    int vecX, vecY, vecZ;      //vector product dir X ort
+    double alpha;              //defines the radius in the radar
+    double beta;               //defines the angle in the radar
+    bool right;                //checks whether the object is on the right side (since cos is not bijective)
     
-  void RadarObject::reset(Ogre::Real x, Ogre::Real y, Ogre::Real z){
-    x = x_;
-    y = y_;
-    z = z_;
-  }
-
-
-  Radar::Radar(){
-    number = 0;
+    dirX = 1;
+    dirY = 0;
+    dirZ = 0;
     
-
-
-
-
-
-
-
-
-
-
-
-
-
+    ortX = 0;
+    ortY = 0;
+    ortZ = 1;
+    
+    dX = 2;
+    dY = 0;
+    dZ = 0;
+    
+    alpha = acos((dirX*dX+dirY*dY+dirZ*dZ)/(sqrt(pow(dX,2)+pow(dY,2)+pow(dZ,2))+sqrt(pow(dirX,2)+pow(dirY,2)+pow(dirZ,2))));
+    beta = acos((ortX*X+ortY*dY+ortZ*dZ)/(sqrt(pow(dX,2)+pow(dY,2)+pow(dZ,2))+sqrt(pow(ortX,2)+pow(ortY,2)+pow(ortZ,2))));
+    vecX = dirY*ortZ - dirZ*ortY;
+    vecY = dirZ*ortX - dirX*ortZ;
+    vecZ = dirX*ortY - dirY*ortX;
+    
+    if((vecX*dX+vecY*dY+vecZ*dZ)>0){right=true;}
+    else right=false;
 
 
 }

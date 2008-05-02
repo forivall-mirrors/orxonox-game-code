@@ -31,43 +31,23 @@
 
 #include <string.h>
 #include <OgreOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
 #include <OgrePrerequisites.h>
 #include "../OrxonoxPrereqs.h"
 
 namespace orxonox
 {
 
-  class _OrxonoxExport RadarObject
+  class _OrxonoxExport RadarOverlayElement : public Ogre::PanelOverlayElement
   {
   private:
-    int name_;
-    Ogre::Real x_;
-    Ogre::Real y_;
-    Ogre::Real z_;
-  public:
-    RadarObject(int name, Ogre::Real x, Ogre::Real y, Ogre::Real z);
-    ~RadarObject();
-    void reset(Ogre::Real x, Ogre::Real y, Ogre::Real z);
-    inline Ogre::Real getX(){return x_;}
-    inline Ogre::Real getY(){return y_;}
-    inline Ogre::Real getZ(){return z_;}
-    inline int getName(){return name_;}
-  };
-
-
-  class _OrxonoxExport Radar
-  {
-  private:
-    int number;
+    int number_;
 
 
   public:
-    Radar();
-    ~Radar();
-
-
-
+    
+    RadarOverlayElement(const Ogre::String& name);
+    virtual ~RadarOverlayElement();
+    virtual void initialise();
 
 
   };
