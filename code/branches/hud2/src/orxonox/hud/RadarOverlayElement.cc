@@ -67,8 +67,8 @@ namespace orxonox
     dY = 0;
     dZ = 0;
     
-    alpha = acos((dirX*dX+dirY*dY+dirZ*dZ)/(sqrt(pow(dX,2)+pow(dY,2)+pow(dZ,2))+sqrt(pow(dirX,2)+pow(dirY,2)+pow(dirZ,2))));
-    beta = acos((ortX*X+ortY*dY+ortZ*dZ)/(sqrt(pow(dX,2)+pow(dY,2)+pow(dZ,2))+sqrt(pow(ortX,2)+pow(ortY,2)+pow(ortZ,2))));
+    alpha = acos(((double)(dirX*dX+dirY*dY+dirZ*dZ))/(sqrt((double)(pow(dX,2)+pow(dY,2)+pow(dZ,2)))+sqrt((double)(pow(dirX,2)+pow(dirY,2)+pow(dirZ,2)))));
+    beta = acos(((double)(ortX*dX+ortY*dY+ortZ*dZ))/(sqrt((double)(pow(dX,2)+pow(dY,2)+pow(dZ,2)))+sqrt((double)(pow(ortX,2)+pow(ortY,2)+pow(ortZ,2)))));
     vecX = dirY*ortZ - dirZ*ortY;
     vecY = dirZ*ortX - dirX*ortZ;
     vecZ = dirX*ortY - dirY*ortX;
