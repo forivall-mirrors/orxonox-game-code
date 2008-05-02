@@ -43,8 +43,6 @@
 #include "audio/AudioPrereqs.h"
 
 #include "GraphicsEngine.h"
-#include "core/InputEventListener.h"
-
 
 namespace orxonox {
 
@@ -55,7 +53,7 @@ namespace orxonox {
   };
 
   //! Orxonox singleton class
-  class _OrxonoxExport Orxonox : public InputEventListener
+  class _OrxonoxExport Orxonox
   {
     public:
       void init(int argc, char **argv, std::string path);
@@ -71,6 +69,7 @@ namespace orxonox {
       static inline void setTimeFactor(float factor = 1.0) { Orxonox::getSingleton()->timefactor_ = factor; }
       static inline float getTimeFactor() { return Orxonox::getSingleton()->timefactor_; }
       static inline void exit() { Orxonox::getSingleton()->abortRequest(); }
+      static inline void activateConsole();
 
    private:
       // don't mess with singletons
@@ -93,8 +92,6 @@ namespace orxonox {
       void setupInputSystem();
       void startRenderLoop();
       float calculateEventTime(unsigned long, std::deque<unsigned long>&);
-
-      void eventOccured(InputEvent &evt);
 
     private:
       GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3

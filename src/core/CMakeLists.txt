@@ -6,7 +6,6 @@ SET(CORE_SRC_FILES
   IdentifierDistributor.cc
   InputHandler.cc
   InputManager.cc
-  InputEventListener.cc
   MetaObjectList.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc
@@ -51,9 +50,9 @@ ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
 TARGET_LINK_LIBRARIES(core
   cpptcl
   ${Lua_LIBRARIES}
-  ${OIS_LIBRARIES}
   ${OGRE_LIBRARIES}
   tinyxml
   tolualib
+  ois
   util
 )

@@ -32,14 +32,14 @@
 #include "OrxonoxPrereqs.h"
 
 #include <OgrePrerequisites.h>
-#include <OIS/OISMouse.h>
 
+#include "core/InputHandler.h"
 #include "Model.h"
 #include "../tools/BillboardSet.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport SpaceShip : public Model, public OIS::MouseListener
+    class _OrxonoxExport SpaceShip : public Model, public MouseHandler
     {
         public:
             SpaceShip();
@@ -67,6 +67,7 @@ namespace orxonox
             bool mouseMoved(const OIS::MouseEvent &e);
             bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
             bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+            bool mouseHeld(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
 
 
         private:

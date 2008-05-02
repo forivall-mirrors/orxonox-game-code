@@ -39,7 +39,7 @@ namespace orxonox
     {
         //this->bActivated_ = false;
         this->allowedChars_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZäöüÄÖÜ0123456789 \\\"(){}[]<>.:,;_-+*/=!?|$&%^";
-        this->keyboard_ = InputManager::getSingleton().getKeyboard();
+        this->keyboard_ = InputManager::getKeyboard();
         this->buffer_ = "";
 
         //this->keyboard_->setEventCallback(this);

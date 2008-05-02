@@ -84,10 +84,10 @@ network::Server *server_g;
 
 namespace orxonox
 {
-  ConsoleCommand(Orxonox, exit, AccessLevel::None, true);
-  ConsoleCommand(Orxonox, slomo, AccessLevel::Offline, true).setDefaultValue(0, 1.0);
-  ConsoleCommand(Orxonox, setTimeFactor, AccessLevel::Offline, false).setDefaultValue(0, 1.0);
-
+  ConsoleCommandShortcut(Orxonox, exit, AccessLevel::None);
+  ConsoleCommandShortcut(Orxonox, slomo, AccessLevel::Offline).setDefaultValue(0, 1.0);
+  ConsoleCommandShortcut(Orxonox, setTimeFactor, AccessLevel::Offline).setDefaultValue(0, 1.0);
+  ConsoleCommandShortcut(Orxonox, activateConsole, AccessLevel::None);
   class Testconsole : public InputBufferListener
   {
     public:
@@ -118,7 +118,7 @@ namespace orxonox
       }
       void exit() const
       {
-        CommandExecutor::execute("setInputMode 2");
+        InputManager::setInputState(InputManager::IS_NORMAL);
       }
 
     private:
@@ -184,7 +184,7 @@ namespace orxonox
     if (this->orxonoxHUD_)
       delete this->orxonoxHUD_;
     Loader::close();
-    InputManager::getSingleton().destroy();
+    InputManager::destroy();
     if (this->auMan_)
       delete this->auMan_;
     if (this->timer_)
@@ -399,11 +399,10 @@ namespace orxonox
   */
   void Orxonox::setupInputSystem()
   {
-    inputHandler_ = &InputManager::getSingleton();
-    if (!inputHandler_->initialise(ogre_->getWindowHandle(),
+    if (!InputManager::initialise(ogre_->getWindowHandle(),
           ogre_->getWindowWidth(), ogre_->getWindowHeight()))
       abortImmediateForce();
-    inputHandler_->setInputMode(IM_INGAME);
+    InputManager::setInputState(InputManager::IS_NORMAL);
   }
 
   /**
@@ -422,8 +421,7 @@ namespace orxonox
   */
   void Orxonox::startRenderLoop()
   {
-    InputBuffer* ib = new InputBuffer();
-    InputManager::getSingleton().feedInputBuffer(ib);
+    InputBuffer* ib = dynamic_cast<InputBuffer*>(InputManager::getKeyHandler("buffer"));
     /*
     Testconsole* console = new Testconsole(ib);
     ib->registerListener(console, &Testconsole::listen, true);
@@ -458,7 +456,7 @@ namespace orxonox
     for (int i = 0; i < 4; ++i)
       eventTimes[i].clear();
     // fill the fps time list with zeros
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 50; i++)
       eventTimes[3].push_back(0);
 
     // use the ogre timer class to measure time.
@@ -484,8 +482,9 @@ namespace orxonox
 
       // show the current time in the HUD
       orxonoxHUD_->setTime((int)now, 0);
+      orxonoxHUD_->setRocket2(ogreRoot.getCurrentFrameNumber());
       if (eventTimes[3].back() - eventTimes[3].front() != 0)
-        orxonoxHUD_->setRocket1((int)(20000.0f/(eventTimes[3].back() - eventTimes[3].front())));
+        orxonoxHUD_->setRocket1((int)(50000.0f/(eventTimes[3].back() - eventTimes[3].front())));
 
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
@@ -550,13 +549,8 @@ namespace orxonox
     return (float)(times.back() - times.front()) / ((times.size() - 1) * 1000);
   }
 
-  /**
-    @brief Test method for the InputHandler.
-    But: Is actually responsible for catching an exit event..
-  */
-  void Orxonox::eventOccured(InputEvent &evt)
+  void Orxonox::activateConsole()
   {
-    if (evt.id == 1)
-      this->abortRequest();
+    InputManager::setInputState(InputManager::IS_CONSOLE);
   }
 }
