@@ -58,6 +58,7 @@ namespace orxonox
 
         public:
             InputBuffer();
+            InputBuffer(const std::string allowedChars);
 
             template <class T>
             void registerListener(T* listener, void (T::*function)(), bool bOnlySingleInput)

@@ -73,7 +73,7 @@ extern "C" {
 
 int main(int argc, char **argv)
 {
-  try {
+  //try {
     SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
     Orxonox* orx = Orxonox::getSingleton();
 
@@ -85,13 +85,13 @@ int main(int argc, char **argv)
 
     orx->start();
     orx->destroySingleton();
-  }
+  /*}
   catch (std::exception &ex)
   {
     std::cerr << "Exception:\n";
     std::cerr << ex.what() << "\n";
     return 1;
-  }
+  }*/
 
   return 0;
 }

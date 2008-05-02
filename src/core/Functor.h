@@ -283,25 +283,25 @@ namespace orxonox
 #define FUNCTOR_EVALUATE_PARAM(numparams) FUNCTOR_EVALUATE_PARAM##numparams
 #define FUNCTOR_EVALUATE_PARAM0
 #define FUNCTOR_EVALUATE_PARAM1 \
-    if (index == 0) param = (P1)param
+    if (index == 0) { P1 temp = param; param = temp; }
 #define FUNCTOR_EVALUATE_PARAM2 \
-    if (index == 0) param = (P1)param; \
-    else if (index == 1) param = (P2)param
+    if (index == 0) { P1 temp = param; param = temp; } \
+    else if (index == 1) { P2 temp = param; param = temp; }
 #define FUNCTOR_EVALUATE_PARAM3 \
-    if (index == 0) param = (P1)param; \
-    else if (index == 1) param = (P2)param; \
-    else if (index == 2) param = (P3)param
+    if (index == 0) { P1 temp = param; param = temp; } \
+    else if (index == 1) { P2 temp = param; param = temp; } \
+    else if (index == 2) { P3 temp = param; param = temp; }
 #define FUNCTOR_EVALUATE_PARAM4 \
-    if (index == 0) param = (P1)param; \
-    else if (index == 1) param = (P2)param; \
-    else if (index == 2) param = (P3)param; \
-    else if (index == 3) param = (P4)param
+    if (index == 0) { P1 temp = param; param = temp; } \
+    else if (index == 1) { P2 temp = param; param = temp; } \
+    else if (index == 2) { P3 temp = param; param = temp; } \
+    else if (index == 3) { P4 temp = param; param = temp; }
 #define FUNCTOR_EVALUATE_PARAM5 \
-    if (index == 0) param = (P1)param; \
-    else if (index == 1) param = (P2)param; \
-    else if (index == 2) param = (P3)param; \
-    else if (index == 3) param = (P4)param; \
-    else if (index == 4) param = (P5)param
+    if (index == 0) { P1 temp = param; param = temp; } \
+    else if (index == 1) { P2 temp = param; param = temp; } \
+    else if (index == 2) { P3 temp = param; param = temp; } \
+    else if (index == 3) { P4 temp = param; param = temp; } \
+    else if (index == 4) { P5 temp = param; param = temp; }
 
 
 

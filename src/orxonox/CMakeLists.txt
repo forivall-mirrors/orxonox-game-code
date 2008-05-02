@@ -2,6 +2,7 @@ SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   Main.cc
   Orxonox.cc
+  console/InGameConsole.cc
 #  SpaceshipSteering.cc
   hud/HUD.cc
   particle/ParticleInterface.cc

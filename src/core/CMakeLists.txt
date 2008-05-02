@@ -27,6 +27,7 @@ SET(CORE_SRC_FILES
   Script.cc
   tolua/tolua_bind.cc
 #tolua/tolua_bind.h
+  TclBind.cc
 )
 
 #SET_SOURCE_FILES_PROPERTIES(tolua/tolua_bind.h
@@ -48,6 +49,7 @@ ADD_CUSTOM_COMMAND(
 ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
 
 TARGET_LINK_LIBRARIES(core
+  cpptcl
   ${Lua_LIBRARIES}
   ${OIS_LIBRARIES}
   ${OGRE_LIBRARIES}

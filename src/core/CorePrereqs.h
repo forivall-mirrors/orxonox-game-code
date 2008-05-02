@@ -138,6 +138,7 @@ namespace orxonox
   class Shell;
   template <class T>
   class SubclassIdentifier;
+  class TclBind;
   class Tickable;
   template <class T, class O>
   class XMLPortClassObjectContainer;

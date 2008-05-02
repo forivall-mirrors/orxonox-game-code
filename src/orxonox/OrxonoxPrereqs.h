@@ -95,6 +95,8 @@ namespace orxonox {
 
   // hud
   class HUD;
+  //console
+  class InGameConsole;
 }
 
 

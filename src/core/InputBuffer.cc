@@ -38,11 +38,19 @@ namespace orxonox
     InputBuffer::InputBuffer()
     {
         //this->bActivated_ = false;
-        this->allowedChars_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZäöüÄÖÜ0123456789 \\\"().:,;_-+*/=!?<>[|]";
+        this->allowedChars_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZäöüÄÖÜ0123456789 \\\"(){}[]<>.:,;_-+*/=!?|$&%^";
         this->keyboard_ = InputManager::getSingleton().getKeyboard();
         this->buffer_ = "";
 
         //this->keyboard_->setEventCallback(this);
+    }
+
+    InputBuffer::InputBuffer(const std::string allowedChars)
+    {
+        //this->bActivated_ = false;
+        this->allowedChars_ = allowedChars;
+        this->keyboard_ = InputManager::getSingleton().getKeyboard();
+        this->buffer_ = "";
     }
 /*
     void InputBuffer::registerListener(InputBufferListener* listener, void (InputBufferListener::*function)(), bool bOnlySingleInput)
