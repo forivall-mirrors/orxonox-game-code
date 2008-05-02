@@ -104,6 +104,7 @@ namespace orxonox {
       Ogre::Timer*          timer_;         //!< Main loop timer
       // TODO: make this a config-value by creating a config class for orxonox
       float                 frameSmoothingTime_;
+      InGameConsole*        orxonoxConsole_;
       HUD*                  orxonoxHUD_;
       bool                  bAbort_;        //!< aborts the render loop if true
       float                 timefactor_;    //!< A factor to change the gamespeed

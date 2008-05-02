@@ -35,6 +35,7 @@
 #include "Debug.h"
 #include "Executor.h"
 #include "ConfigValueContainer.h"
+#include "TclBind.h"
 
 #define COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE "set"
 #define COMMAND_EXECUTOR_KEYWORD_SET_CONFIG_VALUE_TEMPORARY "tset"
@@ -235,10 +236,21 @@ namespace orxonox
         {
             if (this->shortcut_)
             {
-                if (this->shortcut_->evaluate(this->processedCommand_ + this->getAdditionalParameter(), this->param_, " "))
+                if (this->tokens_.size() <= 1)
                 {
-                    this->bEvaluatedParams_ = true;
-                    this->evaluatedExecutor_ = this->shortcut_;
+                    if (this->shortcut_->evaluate(this->getAdditionalParameter(), this->param_, " "))
+                    {
+                        this->bEvaluatedParams_ = true;
+                        this->evaluatedExecutor_ = this->shortcut_;
+                    }
+                }
+                else if (this->tokens_.size() > 1)
+                {
+                    if (this->shortcut_->evaluate(this->tokens_.subSet(1).join() + this->getAdditionalParameter(), this->param_, " "))
+                    {
+                        this->bEvaluatedParams_ = true;
+                        this->evaluatedExecutor_ = this->shortcut_;
+                    }
                 }
             }
         }
@@ -246,10 +258,21 @@ namespace orxonox
         {
             if (this->function_)
             {
-                if (this->function_->evaluate(this->processedCommand_ + this->getAdditionalParameter(), this->param_, " "))
+                if (this->tokens_.size() <= 2)
                 {
-                    this->bEvaluatedParams_ = true;
-                    this->evaluatedExecutor_ = this->function_;
+                    if (this->function_->evaluate(this->getAdditionalParameter(), this->param_, " "))
+                    {
+                        this->bEvaluatedParams_ = true;
+                        this->evaluatedExecutor_ = this->function_;
+                    }
+                }
+                else if (this->tokens_.size() > 2)
+                {
+                    if (this->function_->evaluate(this->tokens_.subSet(2).join() + this->getAdditionalParameter(), this->param_, " "))
+                    {
+                        this->bEvaluatedParams_ = true;
+                        this->evaluatedExecutor_ = this->function_;
+                    }
                 }
             }
         }
@@ -265,6 +288,22 @@ namespace orxonox
     {
         if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
             return this->param_[index];
+
+        return MT_null;
+    }
+
+    bool CommandEvaluation::hasReturnvalue() const
+    {
+        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
+        {
+            if (this->shortcut_)
+                return this->shortcut_->hasReturnvalue();
+        }
+        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
+        {
+            if (this->function_)
+                return this->function_->hasReturnvalue();
+        }
 
         return MT_null;
     }
@@ -296,6 +335,11 @@ namespace orxonox
     }
 
     CommandEvaluation& CommandExecutor::getEvaluation()
+    {
+        return CommandExecutor::getInstance().evaluation_;
+    }
+
+    const CommandEvaluation& CommandExecutor::getLastEvaluation()
     {
         return CommandExecutor::getInstance().evaluation_;
     }
@@ -335,61 +379,19 @@ namespace orxonox
             return 0;
     }
 
-    bool CommandExecutor::execute(const std::string& command)
+    bool CommandExecutor::execute(const std::string& command, bool useTcl)
     {
-        std::string strippedCommand = stripEnclosingQuotes(command);
-
-        SubString tokensIO(strippedCommand, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
-        if (tokensIO.size() >= 2)
+        if (useTcl)
         {
-            if (tokensIO[tokensIO.size() - 2] == ">")
-            {
-                bool success = CommandExecutor::execute(tokensIO.subSet(0, tokensIO.size() - 2).join());
-                write(tokensIO[tokensIO.size() - 1], CommandExecutor::getEvaluation().getReturnvalue());
-                return success;
-            }
-            else if (tokensIO[tokensIO.size() - 2] == "<")
-            {
-                std::string input = read(tokensIO[tokensIO.size() - 1]);
-                if (input == "" || input.size() == 0)
-                    return CommandExecutor::execute(tokensIO.subSet(0, tokensIO.size() - 2).join());
-                else
-                    return CommandExecutor::execute(tokensIO.subSet(0, tokensIO.size() - 2).join() + " " + input);
-            }
+            return TclBind::eval(command);
         }
-
-
-        SubString tokensPipeline(strippedCommand, "|", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
-        if (tokensPipeline.size() > 1)
+        else
         {
-            bool success = true;
-            std::string returnValue = "";
-            for (int i = tokensPipeline.size() - 1; i >= 0; i--)
-            {
-                if (returnValue == "" || returnValue.size() == 0)
-                {
-                    //CommandEvaluation evaluation = CommandExecutor::evaluate(tokens[i]);
-                    if (!CommandExecutor::execute(tokensPipeline[i]))
-                        success = false;
-                }
-                else
-                {
-                    //CommandEvaluation evaluation = CommandExecutor::evaluate(tokens[i] + " " + returnValue);
-                    if (!CommandExecutor::execute(tokensPipeline[i] + " " + returnValue))
-                        success = false;
-                }
+            if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
+                CommandExecutor::parse(command);
 
-                //CommandExecutor::execute(evaluation);
-                //returnValue = evaluation.getReturnvalue();
-                returnValue = CommandExecutor::getEvaluation().getReturnvalue().toString();
-            }
-            return success;
+            return CommandExecutor::execute(CommandExecutor::getEvaluation());
         }
-
-        if ((CommandExecutor::getEvaluation().processedCommand_ != strippedCommand) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
-            CommandExecutor::parse(strippedCommand);
-
-        return CommandExecutor::execute(CommandExecutor::getEvaluation());
     }
 
 
@@ -399,9 +401,12 @@ namespace orxonox
 
         if (evaluation.bEvaluatedParams_ && evaluation.evaluatedExecutor_)
         {
+std::cout << "CE_execute (evaluation): " << evaluation.evaluatedExecutor_->getName() << " " << evaluation.param_[0] << " " << evaluation.param_[1] << " " << evaluation.param_[2] << " " << evaluation.param_[3] << " " << evaluation.param_[4] << std::endl;
             (*evaluation.evaluatedExecutor_)(evaluation.param_[0], evaluation.param_[1], evaluation.param_[2], evaluation.param_[3], evaluation.param_[4]);
+            return true;
         }
 
+std::cout << "CE_execute: " << evaluation.processedCommand_ << "\n";
         switch (evaluation.state_)
         {
             case CS_Uninitialized:
@@ -644,6 +649,16 @@ namespace orxonox
     CommandEvaluation CommandExecutor::evaluate(const std::string& command)
     {
         CommandExecutor::parse(command, true);
+
+        if (CommandExecutor::getEvaluation().tokens_.size() > 0)
+        {
+            std::string lastToken;
+            lastToken = CommandExecutor::getEvaluation().tokens_[CommandExecutor::getEvaluation().tokens_.size() - 1];
+            lastToken = lastToken.substr(0, lastToken.size() - 1);
+            CommandExecutor::getEvaluation().tokens_.pop_back();
+            CommandExecutor::getEvaluation().tokens_.append(SubString(lastToken, " ", "", true, '\0', false, '\0', false, '\0', '\0', false, '\0'));
+        }
+
         CommandExecutor::getEvaluation().evaluateParams();
         return CommandExecutor::getEvaluation();
     }
@@ -1080,6 +1095,9 @@ namespace orxonox
     {
         CommandExecutor::getEvaluation().processedCommand_ = command;
         CommandExecutor::getEvaluation().additionalParameter_ = "";
+
+        CommandExecutor::getEvaluation().bEvaluatedParams_ = false;
+        CommandExecutor::getEvaluation().evaluatedExecutor_ = 0;
 
         CommandExecutor::getEvaluation().listOfPossibleFunctionClasses_.clear();
         CommandExecutor::getEvaluation().listOfPossibleShortcuts_.clear();

@@ -94,6 +94,7 @@ namespace orxonox
 
             void evaluateParams();
 
+            bool hasReturnvalue() const;
             MultiTypeMath getReturnvalue() const;
 
         private:
@@ -129,7 +130,7 @@ namespace orxonox
     class _CoreExport CommandExecutor
     {
         public:
-            static bool execute(const std::string& command);
+            static bool execute(const std::string& command, bool useTcl = true);
             static bool execute(const CommandEvaluation& evaluation);
 
             static std::string complete(const std::string& command);
@@ -139,6 +140,8 @@ namespace orxonox
             static std::string hint(const CommandEvaluation& evaluation);
 
             static CommandEvaluation evaluate(const std::string& command);
+
+            static const CommandEvaluation& getLastEvaluation();
 
             static Executor& addConsoleCommandShortcut(ExecutorStatic* executor);
             static ExecutorStatic* getConsoleCommandShortcut(const std::string& name);

@@ -84,7 +84,7 @@ namespace orxonox
       InputEvent e = {1, true, 0, 0, 0};
       InputHandlerGame::callListeners(e);
     }
-    else if (e.key == OIS::KC_NUMPADENTER)
+    else if (e.key == OIS::KC_UNASSIGNED || e.key == OIS::KC_NUMPADENTER)
     {
       InputManager::getSingleton().setInputMode(IM_KEYBOARD);
     }

@@ -1,5 +1,11 @@
 PROJECT(Orxonox)
 
+cmake_minimum_required(VERSION 2.4)
+
+if(COMMAND cmake_policy)
+  cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
+
 #This sets where to look for modules (e.g. "Find*.cmake" files)
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -62,6 +68,7 @@ FIND_PACKAGE(ALUT)
 FIND_PACKAGE(OggVorbis)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(Lua)
+FIND_PACKAGE(TCL)
 
 #Set the search paths for the linking
 LINK_DIRECTORIES(
@@ -71,6 +78,7 @@ LINK_DIRECTORIES(
   ${ENet_LIBRARY}
   ${Boost_LIBRARY_DIRS}
   ${Zlib_LIBRARY_DIR}
+  ${TCL_LIBRARY}
 )
 
 #Set the search paths for include files
@@ -85,6 +93,7 @@ INCLUDE_DIRECTORIES(
   ${VORBIS_INCLUDE_DIR}
   ${OGG_INCLUDE_DIR}
   ${Lua_INCLUDE_DIR}
+  ${TCL_INCLUDE_PATH}
 )
 
 #add main source dir

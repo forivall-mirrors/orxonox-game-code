@@ -75,6 +75,7 @@
 // objects and tools
 #include "tools/Timer.h"
 #include "hud/HUD.h"
+#include "console/InGameConsole.h"
 
 // FIXME: is this really file scope?
 // globals for the server or client
@@ -127,7 +128,7 @@ namespace orxonox
   class Calculator
   {
   public:
-    static void calculate(const std::string& calculation)
+    static float calculate(const std::string& calculation)
     {
       ExprParser expr(calculation);
       if (expr.getSuccess())
@@ -139,9 +140,13 @@ namespace orxonox
         if (expr.getRemains() != "")
           std::cout << "Warning: Expression could not be parsed to the end! Remains: '"
               << expr.getRemains() << "'" << std::endl;
+        return expr.getResult();
       }
       else
+      {
         std::cout << "Cannot calculate expression: Parse error" << std::endl;
+        return 0;
+      }
     }
   };
   ConsoleCommandShortcut(Calculator, calculate, AccessLevel::None);
@@ -419,14 +424,23 @@ namespace orxonox
   {
     InputBuffer* ib = new InputBuffer();
     InputManager::getSingleton().feedInputBuffer(ib);
+    /*
     Testconsole* console = new Testconsole(ib);
     ib->registerListener(console, &Testconsole::listen, true);
     ib->registerListener(console, &Testconsole::execute, '\r', false);
-    ib->registerListener(console, &Testconsole::execute, '\n', false);
     ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
     ib->registerListener(console, &Testconsole::clear, '§', true);
     ib->registerListener(console, &Testconsole::removeLast, '\b', true);
     ib->registerListener(console, &Testconsole::exit, (char)0x1B, true);
+    */
+
+    orxonoxConsole_ = new InGameConsole(ib);
+    ib->registerListener(orxonoxConsole_, &InGameConsole::listen, true);
+    ib->registerListener(orxonoxConsole_, &InGameConsole::execute, '\r', false);
+    ib->registerListener(orxonoxConsole_, &InGameConsole::hintandcomplete, '\t', true);
+    ib->registerListener(orxonoxConsole_, &InGameConsole::clear, '§', true);
+    ib->registerListener(orxonoxConsole_, &InGameConsole::removeLast, '\b', true);
+    ib->registerListener(orxonoxConsole_, &InGameConsole::exit, (char)0x1B, true);
 
     // first check whether ogre root object has been created
     if (Ogre::Root::getSingletonPtr() == 0)
@@ -476,6 +490,7 @@ namespace orxonox
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
+      orxonoxConsole_->tick((float)evt.timeSinceLastFrame * this->timefactor_);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
