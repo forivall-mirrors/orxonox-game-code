@@ -31,13 +31,13 @@
 
 #include <string>
 
-#include <OIS/OIS.h>
 #include <OgreCamera.h>
 #include <OgreRenderWindow.h>
 #include <OgreParticleSystem.h>
 #include <OgreSceneNode.h>
 
 #include "tinyxml/tinyxml.h"
+#include "ois/OIS.h"
 #include "util/Convert.h"
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
@@ -427,13 +427,10 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
-      if (InputManager::getSingleton().getMouse()->getEventCallback() != this)
+        if (!setMouseEventCallback_)
         {
-            if (InputManager::getSingleton().getMouse())
-            {
-                InputManager::getSingleton().getMouse()->setEventCallback(this);
-                this->setMouseEventCallback_ = true;
-            }
+          InputManager::addMouseHandler(this, "SpaceShip");
+          setMouseEventCallback_ = true;
         }
 
         if (this->redNode_ && this->greenNode_)
@@ -456,9 +453,7 @@ namespace orxonox
             this->timeToReload_ = this->reloadTime_;
         }
 
-        OIS::Keyboard* mKeyboard = InputManager::getSingleton().getKeyboard();
-        //FIXME: variable never used
-        //OIS::Mouse* mMouse = InputManager::getSingleton().getMouse();
+        OIS::Keyboard* mKeyboard = InputManager::getKeyboard();
 
 
         // #####################################

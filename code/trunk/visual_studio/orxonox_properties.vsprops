@@ -13,7 +13,7 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CSS).lib ois-1.2.0$(CS).lib"
+		AdditionalDependencies="OgreMain$(CSS).lib"
 		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
 		IgnoreDefaultLibraryNames=""
 	/>

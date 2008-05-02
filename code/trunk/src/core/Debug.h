@@ -263,6 +263,12 @@ extern "C" _CoreExport int getSoftDebugLevel();
 /////////////////////////////////////////////////////////////////////
 ///  CCOUT: Prints output with std::cout and adds the classname   ///
 /////////////////////////////////////////////////////////////////////
+#define CCOUTORX_NONE    CCOUT0
+#define CCOUTORX_ERROR   CCOUT1
+#define CCOUTORX_WARNING CCOUT2
+#define CCOUTORX_INFO    CCOUT3
+#define CCOUTORX_DEBUG   CCOUT4
+#define CCOUTORX_vDEBUG  CCOUT5
 
 #define CCOUT_EXEC(x) \
   orxonox::OutputHandler::getOutStream().setOutputLevel(x) \

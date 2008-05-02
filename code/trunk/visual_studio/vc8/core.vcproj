@@ -196,10 +196,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\InputEventListener.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\InputHandler.cc"
 				>
 			</File>
@@ -343,14 +339,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\InputBuffer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\InputEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\InputEventListener.h"
 				>
 			</File>
 			<File
