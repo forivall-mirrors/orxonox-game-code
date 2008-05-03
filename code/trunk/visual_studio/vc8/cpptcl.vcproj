@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tolua"
-	ProjectGUID="{35E36A06-0A5C-4A0D-9AB6-5A05EAA87626}"
+	Name="cpptcl"
+	ProjectGUID="{53C56131-E2AA-4A27-B460-7AC05D61A0E6}"
 	RootNamespace="FICN"
 	Keyword="Win32Proj"
 	>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\tolua_properties.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\cpptcl_properties.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -70,7 +70,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\tolua_properties.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\cpptcl_properties.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -130,23 +130,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\tolua\tolua_event.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\tolua\tolua_is.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\tolua\tolua_map.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\tolua\tolua_push.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\tolua\tolua_to.c"
+				RelativePath="..\..\src\cpptcl\CppTcl.cc"
 				>
 			</File>
 		</Filter>
@@ -156,11 +140,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\src\tolua\tolua++.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\tolua\tolua_event.h"
+				RelativePath="..\..\src\cpptcl\CppTcl.h"
 				>
 			</File>
 		</Filter>

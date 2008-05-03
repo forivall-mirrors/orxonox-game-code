@@ -240,6 +240,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\TclBind.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\Tickable.cc"
 				>
 			</File>
@@ -395,6 +399,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\SignalHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\TclBind.h"
 				>
 			</File>
 			<File

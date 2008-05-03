@@ -40,6 +40,7 @@
 #include "core/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
+#include "core/InputManager.h"
 #include "GraphicsEngine.h"
 
 #define LINES 20
@@ -97,7 +98,7 @@ namespace orxonox
     void InGameConsole::exit(){
         clear();
         deactivate();
-        CommandExecutor::execute("setInputMode 2");
+        InputManager::setInputState(InputManager::IS_NORMAL);
     }
 
     /**
