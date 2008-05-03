@@ -2,45 +2,34 @@ SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   Main.cc
   Orxonox.cc
+
   console/InGameConsole.cc
-#  SpaceshipSteering.cc
   hud/HUD.cc
   particle/ParticleInterface.cc
+  tolua/tolua_bind.cc
+
   tools/BillboardSet.cc
   tools/Light.cc
   tools/Mesh.cc
   tools/Timer.cc
+
   objects/Ambient.cc
   objects/Camera.cc
   objects/Explosion.cc
-#  objects/Fighter.cc
   objects/Model.cc
   objects/NPC.cc
   objects/Projectile.cc
   objects/Skybox.cc
   objects/SpaceShip.cc
-#  objects/SpaceshipSteeringObject.cc
-#  objects/test1.cc
-#  objects/test2.cc
-#  objects/test3.cc
   objects/WorldEntity.cc
+
 #  objects/weapon/AmmunitionDump.cc
 #  objects/weapon/BarrelGun.cc
 #  objects/weapon/BaseWeapon.cc
 #  objects/weapon/Bullet.cc
 #  objects/weapon/BulletManager.cc
 #  objects/weapon/WeaponStation.cc
-  tolua/tolua_bind.cc
-#  tolua/tolua_bind.h
 )
-
-#SET_SOURCE_FILES_PROPERTIES(tolua/tolua_bind.h
-#  PROPERTIES
-#  OBJECT_DEPENDS tolua/tolua_bind.h
-#  OBJECT_DEPENDS tolua/tolua_bind.cc
-#  GENERATED true
-#  HEADER_FILE_ONLY true
-#)
 
 GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
 ADD_CUSTOM_COMMAND(

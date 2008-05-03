@@ -1,6 +1,6 @@
 SET ( AUDIO_SRC_FILES
-  AudioManager.cc
   AudioBuffer.cc
+  AudioManager.cc
   AudioSource.cc
   AudioStream.cc
 )
