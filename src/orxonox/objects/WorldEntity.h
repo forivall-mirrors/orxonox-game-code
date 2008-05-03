@@ -154,11 +154,11 @@ namespace orxonox
                 { return this->acceleration_; }
 
             inline void setRotationAxisLoader(const Vector3& axis)
-                { this->rotationAxis_ = axis; }
+                { this->rotationAxis_ = axis; rotationAxis_.normalise(); }
             inline void setRotationAxis(const Vector3& axis)
-                { this->rotationAxis_ = axis; }
+                { this->rotationAxis_ = axis; rotationAxis_.normalise(); }
             inline void setRotationAxis(Real x, Real y, Real z)
-                { this->rotationAxis_.x = x; this->rotationAxis_.y = y; this->rotationAxis_.z = z; }
+                { this->rotationAxis_.x = x; this->rotationAxis_.y = y; this->rotationAxis_.z = z; rotationAxis_.normalise(); }
             inline const Vector3& getRotationAxis() const
                 { return this->rotationAxis_; }
 
