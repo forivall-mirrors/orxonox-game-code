@@ -1,41 +1,32 @@
 SET(CORE_SRC_FILES
-  OrxonoxClass.cc
   BaseObject.cc
+  ClassTreeMask.cc
+  CommandExecutor.cc
+  ConfigFileManager.cc
+  ConfigValueContainer.cc
+  CoreSettings.cc
+  Error.cc
+  Executor.cc
   Factory.cc
   Identifier.cc
   IdentifierDistributor.cc
+  InputBuffer.cc
   InputHandler.cc
   InputManager.cc
-  MetaObjectList.cc
-  ConfigFileManager.cc
-  ConfigValueContainer.cc
-  Error.cc
-  SignalHandler.cc
-  CoreSettings.cc
-  OutputHandler.cc
   Language.cc
-  ClassTreeMask.cc
   Loader.cc
-  Executor.cc
-  XMLPort.cc
+  MetaObjectList.cc
   Namespace.cc
   NamespaceNode.cc
-  CommandExecutor.cc
-  InputBuffer.cc
-  Tickable.cc
+  OrxonoxClass.cc
+  OutputHandler.cc
   Script.cc
-  tolua/tolua_bind.cc
-#tolua/tolua_bind.h
+  SignalHandler.cc
   TclBind.cc
+  Tickable.cc
+  XMLPort.cc
+  tolua/tolua_bind.cc
 )
-
-#SET_SOURCE_FILES_PROPERTIES(tolua/tolua_bind.h
-#  PROPERTIES
-#  OBJECT_DEPENDS tolua/tolua_bind.h
-#  OBJECT_DEPENDS tolua/tolua_bind.cc
-#  GENERATED true
-#  HEADER_FILE_ONLY true
-#)
 
 GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
 ADD_CUSTOM_COMMAND(
@@ -48,9 +39,9 @@ ADD_CUSTOM_COMMAND(
 ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
 
 TARGET_LINK_LIBRARIES(core
-  cpptcl
   ${Lua_LIBRARIES}
   ${OGRE_LIBRARIES}
+  cpptcl
   tinyxml
   tolualib
   ois
