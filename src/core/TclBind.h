@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    class TclBind
+    class _CoreExport TclBind
     {
         public:
             static TclBind& getInstance();

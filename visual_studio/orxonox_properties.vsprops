@@ -13,7 +13,7 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CSS).lib"
+		AdditionalDependencies="OgreMain$(CSS).lib tcl85t.lib"
 		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
 		IgnoreDefaultLibraryNames=""
 	/>
