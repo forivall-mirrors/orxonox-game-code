@@ -137,6 +137,7 @@ namespace orxonox
   */
   void Camera::removeFocus()
   {
+    this->positionNode_->detachObject(cam_);
     this->bHasFocus_ = false;
   }
 
