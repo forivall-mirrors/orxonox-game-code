@@ -79,6 +79,7 @@ namespace orxonox
         this->mouseY_ = 0;
 
         this->camNode_ = 0;
+        this->camName_ = "camNode";
 
         this->tt_ = 0;
         this->redNode_ = 0;
@@ -159,14 +160,12 @@ namespace orxonox
     }
 
     void SpaceShip::registerAllVariables(){
-
-
-
+      registerVar( &camName_, camName_.length()+1, network::STRING);
     }
 
     void SpaceShip::init()
     {
-        createCamera();
+        COUT(4) << "================ \t\t\t\tspaceship::init" << std::endl;
         // START CREATING THRUSTER
         this->tt_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         this->tt_->getParticleSystem()->setParameter("local_space","true");
@@ -197,9 +196,11 @@ namespace orxonox
         this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(0.3, -4.7, -0.3));
         this->greenNode_->setInheritScale(false);
 
+        COUT(4) << "attaching red billboard" << std::endl;
         this->redNode_->attachObject(this->redBillboard_.getBillboardSet());
         this->redNode_->setScale(0.3, 0.3, 0.3);
 
+        COUT(4) << "attaching green billboard" << std::endl;
         this->greenNode_->attachObject(this->greenBillboard_.getBillboardSet());
         this->greenNode_->setScale(0.3, 0.3, 0.3);
         // END CREATING BLINKING LIGHTS
@@ -213,12 +214,16 @@ namespace orxonox
         this->chFarNode_ = this->getNode()->createChildSceneNode(this->getName() + "far", Vector3(200.0, 0.0, 0.0));
         this->chFarNode_->setInheritScale(false);
 
+        COUT(4) << "attaching crosshair near billboard" << std::endl;
         this->chNearNode_->attachObject(this->crosshairNear_.getBillboardSet());
         this->chNearNode_->setScale(0.2, 0.2, 0.2);
 
+        COUT(4) << "attaching crosshair far billboard" << std::endl;
         this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
         this->chFarNode_->setScale(0.4, 0.4, 0.4);
-
+        COUT(4) << "attaching camera" << std::endl;
+        
+        createCamera();
         // END of testing crosshair
     }
 
@@ -231,8 +236,10 @@ namespace orxonox
 
     void SpaceShip::loadParams(TiXmlElement* xmlElem)
     {
+      COUT(4) << "using loadparams" << std::endl;
         Model::loadParams(xmlElem);
         this->create();
+        this->getFocus();
 /*
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
         {
@@ -283,26 +290,40 @@ namespace orxonox
 
     void SpaceShip::setCamera(const std::string& camera)
     {
+      camName_=camera;
       // change camera attributes here, if you want to ;)
     }
     
+    void SpaceShip::getFocus(){
+      COUT(4) << "requesting focus" << std::endl;
+      if(network::Client::getSingleton()==0 || network::Client::getSingleton()->getShipID()==objectID)
+        CameraHandler::getInstance()->requestFocus(cam_);
+      
+    }
+    
     void SpaceShip::createCamera(){
-      this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
-      camNode_->setPosition(this->getNode()->getPosition() + Vector3(-50,0,10));
+      COUT(4) << "begin camera creation" << std::endl;
+      this->camNode_ = this->getNode()->createChildSceneNode(camName_);
+      COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
+      this->camNode_->setPosition(this->getNode()->getPosition() + Vector3(-50,0,10));
+      COUT(4) << "position: (cam)" << this->camNode_->getPosition() << std::endl;
 /*
 //        node->setInheritOrientation(false);
       cam->setPosition(Vector3(0,50,-150));
       cam->lookAt(Vector3(0,20,0));
       cam->roll(Degree(0));
-*/
+      */COUT(4) << "creating new camera" << std::endl;
       cam_ = new Camera(this->camNode_);
+      COUT(4) << "setting target node" << std::endl;
       cam_->setTargetNode(this->getNode());
-      CameraHandler::getInstance()->requestFocus(cam_);
+      // this only applies to clients
+      if(network::Client::getSingleton()!=0 && network::Client::getSingleton()->getShipID()==objectID)
+        CameraHandler::getInstance()->requestFocus(cam_);
 //        cam->setPosition(Vector3(0,-350,0));
       //cam->roll(Degree(-90));
 
       //this->camNode_->attachObject(cam);
-      
+      COUT(4) << "created camera" << std::endl;
     }
 
     void SpaceShip::setMaxSpeed(float value)
@@ -328,6 +349,7 @@ namespace orxonox
     */
     void SpaceShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
+      COUT(4) << "using xmlport" << std::endl;
         Model::XMLPort(xmlelement, mode);
 
         XMLPortParamLoadOnly(SpaceShip, "camera", setCamera, xmlelement, mode);
@@ -338,6 +360,9 @@ namespace orxonox
         XMLPortParamLoadOnly(SpaceShip, "rotAcc", setRotAcc, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, mode);
+        
+        SpaceShip::create();
+        getFocus();
     }
 
     int sgn(float x)
@@ -533,7 +558,7 @@ namespace orxonox
             }
         }
 
-        if(!network::Client::getSingleton()){
+        if(!network::Client::getSingleton() || network::Client::getSingleton()->getShipID() == objectID){
           if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
               this->acceleration_.x = this->translationAcceleration_;
           else if(mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))

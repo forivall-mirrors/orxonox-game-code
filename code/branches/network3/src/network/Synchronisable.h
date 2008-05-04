@@ -61,6 +61,7 @@ namespace network
 
   typedef struct synchronisableVariable{
     int size;
+    int mode; // this determines in which direction the variable gets synchronised
     void *var;
     variableType type;
   }SYNCVAR;
@@ -68,7 +69,8 @@ namespace network
 
   /**
   * This class is the base class of all the Objects in the universe that need to be synchronised over the network
-  * Every class, that inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list. Additionally it also has to provide a Constructor, that takes exactly the variables in this linked list.
+   * Every class, t
+  int mode;hat inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list. Additionally it also has to provide a Constructor, that takes exactly the variables in this linked list.
   * @author Oliver Scheuss
   */
   class _NetworkExport Synchronisable : virtual public orxonox::OrxonoxClass{
@@ -78,13 +80,16 @@ namespace network
     int objectID;
     int classID;
 
-    void registerVar(void *var, int size, variableType t);
+    void registerVar(void *var, int size, variableType t, int mode=1);
     //  syncData getData();
     syncData getData(unsigned char *mem);
     int getSize();
     bool updateData(syncData vars);
+    void setBacksync(bool sync);
+    bool getBacksync();
     virtual void registerAllVariables()=0;
     virtual bool create()=0;
+    static void setClient(bool b);
   protected:
     Synchronisable();
   private:
@@ -92,6 +97,8 @@ namespace network
 
     std::list<synchronisableVariable *> *syncList;
     int datasize;
+    static int state_; // detemines wheter we are server (default) or client
+    bool backsync_; // if true the variables with mode > 1 will be synchronised to server (client -> server)
   };
 }
 

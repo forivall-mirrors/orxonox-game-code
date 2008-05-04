@@ -48,10 +48,13 @@ namespace network
   enum packet_id {
     ACK,
     MOUSE,
+    COMMAND,
     KEYBOARD,
     CHAT,
     GAMESTATE ,
-    CLASSID
+    CLASSID,
+    WELCOME,
+    CONNECT,
   };
 
 
@@ -64,8 +67,9 @@ namespace network
     int id;
     int size;                       //!< total size of data
     // new ---- change functions
-    int base_id;                  // if gamestate is diffed this is the id of the old gamestate (base)
+    int base_id;                    // if gamestate is diffed this is the id of the old gamestate (base)
     bool diffed;
+    bool complete;                  // this determines, wheter all objects are in this gamestate (server) or only few objects (client)
     unsigned char *data;            //!< pointer to data
   };
 
@@ -82,6 +86,7 @@ namespace network
     // new ----- change functions
     int base_id;                  // if gamestate is diffed this is the id of the old gamestate (base)
     bool diffed;
+    bool complete;                  // this determines, wheter all objects are in this gamestate (server) or only few objects (client)
     unsigned char *data;            //!< gamestate data
   };
 
@@ -115,6 +120,16 @@ namespace network
     const char* message;
   };
 
+  struct welcome {
+    int id;
+    int clientID;
+    int shipID;
+    bool allowed;
+  };
+  
+  struct connectRequest{
+    int id;
+  };
 }
 
 #endif /* _PacketTypes_H__ */

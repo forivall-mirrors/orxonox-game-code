@@ -45,6 +45,7 @@
 #include <zlib.h>
 
 #include "core/CoreIncludes.h"
+#include "core/BaseObject.h"
 #include "ClientInformation.h"
 #include "Synchronisable.h"
 
@@ -121,6 +122,12 @@ namespace network
       // return an undiffed gamestate and set appropriate flags
     }
   }
+  
+  bool GameStateManager::pushGameState( GameStateCompressed *gs, int clientID ){
+    GameState *ugs = decompress(gs);
+    return loadPartialSnapshot(ugs, clientID);
+    
+  }
 
   /**
   * This function goes through the whole list of synchronisables and
@@ -187,12 +194,69 @@ namespace network
     retval->size=totalsize;
     //#### bugfix
     retval->diffed = false;
+    retval->complete = true;
     //std::cout << "end snapShot" << std::endl;
     COUT(5) << "G.ST.Man: Gamestate size: " << totalsize << std::endl;
     COUT(5) << "G.ST.Man: 'estimated' Gamestate size: " << size << std::endl;
     return retval;
   }
 
+  bool GameStateManager::loadPartialSnapshot(GameState *state, int clientID){
+    unsigned char *data=state->data;
+    COUT(4) << "loadSnapshot: loading gs: " << state->id << std::endl;
+    // get the start of the Synchronisable list
+    orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::start();
+    syncData sync;
+    // loop as long as we have some data ;)
+    while(data < state->data+state->size){
+      // prepare the syncData struct
+      sync.length = *(int *)data;
+      data+=sizeof(int);
+      sync.objectID = *(int*)data;
+      data+=sizeof(int);
+      sync.classID = *(int*)data;
+      data+=sizeof(int);
+      sync.data = data;
+      data+=sync.length;
+
+      while(it && it->objectID!=sync.objectID)
+        ++it;
+
+
+      if(!it){
+        // the object does not exist yet
+        //COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
+        orxonox::Identifier* id = ID((unsigned int)sync.classID);
+        if(!id){
+          COUT(4) << "We could not identify a new object; classid: " << sync.classID << std::endl;
+          continue;
+        }
+        Synchronisable *no = dynamic_cast<Synchronisable *>(id->fabricate());
+        COUT(4) << "loadpartialsnapshot (generating new object): classid: " << sync.classID << " objectID: " << sync.objectID << " length: " << sync.length << std::endl;
+        no->objectID=sync.objectID;
+        no->classID=sync.classID;
+        it=orxonox::ObjectList<Synchronisable>::end();
+        // update data and create object/entity...
+        if( !no->updateData(sync) )
+          COUT(1) << "We couldn't update the object: " << sync.objectID << std::endl;
+        if( !no->create() )
+          COUT(1) << "We couldn't manifest (create() ) the object: " << sync.objectID << std::endl;
+      }else{
+        // we have our object
+        if(checkAccess(clientID, sync.objectID)){
+          if(! it->updateData(sync))
+            COUT(1) << "We couldn't update objectID: " \
+              << sync.objectID << "; classID: " << sync.classID << std::endl;
+        }else
+          COUT(4) << "loadPartialSnapshot: no access to change objectID: " << sync.objectID << std::endl;
+      }
+      ++it;
+    }
+
+    return true;
+  }
+  
+  
   //##### ADDED FOR TESTING PURPOSE #####
   GameStateCompressed* GameStateManager::testCompress( GameState* g ) {
     return compress_( g );
@@ -268,6 +332,7 @@ namespace network
     r->diffed = true;
     r->base_id = a->id;
     r->data = dp;
+    r->complete = true;
     return r;
   }
 
@@ -306,10 +371,50 @@ namespace network
     compressedGamestate->id = a->id;
     compressedGamestate->data = dest;
     compressedGamestate->diffed = a->diffed;
+    compressedGamestate->complete = a->complete;
     compressedGamestate->base_id = a->base_id;
     //COUT(5) << "G.St.Man: saved compressed data in GameStateCompressed:" << std::endl;
     return compressedGamestate;
   }
+  
+  GameState *GameStateManager::decompress(GameStateCompressed *a) {
+    //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
+    int normsize = a->normsize;
+    int compsize = a->compsize;
+    int bufsize;
+    if(normsize < compsize)
+      bufsize = compsize;
+    else
+      bufsize = normsize;
+//     unsigned char* dest = (unsigned char*)malloc( bufsize );
+    unsigned char *dest = new unsigned char[bufsize];
+    int retval;
+    uLongf length=normsize;
+    //std::cout << "gamestateclient" << std::endl;
+    //std::cout << "normsize " << a.normsize << " compsize " << a.compsize << " " << bufsize << std::endl;
+    retval = uncompress( dest, &length, a->data, (uLong)compsize );
+    //std::cout << "length " << length << std::endl;
+    switch ( retval ) {
+      case Z_OK: COUT(4) << "successfully decompressed" << std::endl; break;
+      case Z_MEM_ERROR: COUT(1) << "not enough memory available" << std::endl; return NULL;
+      case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer" << std::endl; return NULL;
+      case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return NULL;
+    }
+
+    GameState *gamestate = new GameState;
+    gamestate->id = a->id;
+    gamestate->size = normsize;
+    gamestate->data = dest;
+    gamestate->base_id = a->base_id;
+    gamestate->diffed = a->diffed;
+    gamestate->complete = a->complete;
+
+    delete[] a->data; //delete compressed data
+    delete a; //we do not need the old (struct) gamestate anymore
+
+    return gamestate;
+  }
+  
 
   void GameStateManager::ackGameState(int clientID, int gamestateID) {
     ClientInformation *temp = head_->findClient(clientID);
@@ -334,6 +439,11 @@ namespace network
       COUT(4) << (*it).first << ":" << (*it).second << " | ";
     }
     COUT(4) << std::endl;
+  }
+  
+  bool GameStateManager::checkAccess(int clientID, int objectID){
+    // currently we only check, wheter the object is the clients spaceship
+    return head_->findClient(objectID)->getShipID()==objectID;
   }
 
 }

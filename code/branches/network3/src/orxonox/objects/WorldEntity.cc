@@ -189,36 +189,41 @@ namespace orxonox
 
         XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, mode, false, true);
         
-        //create();
+        WorldEntity::create();
     }
 
 
     void WorldEntity::registerAllVariables()
     {
       // register coordinates
-      registerVar( (void*) &(this->getPosition().x), sizeof(this->getPosition().x), network::DATA);
-      registerVar( (void*) &(this->getPosition().y), sizeof(this->getPosition().y), network::DATA);
-      registerVar( (void*) &(this->getPosition().z), sizeof(this->getPosition().z), network::DATA);
+      registerVar( (void*) &(this->getPosition().x), sizeof(this->getPosition().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getPosition().y), sizeof(this->getPosition().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getPosition().z), sizeof(this->getPosition().z), network::DATA, 0x3);
       // register orientation
-      registerVar( (void*) &(this->getOrientation().w), sizeof(this->getOrientation().w), network::DATA);
-      registerVar( (void*) &(this->getOrientation().x), sizeof(this->getOrientation().x), network::DATA);
-      registerVar( (void*) &(this->getOrientation().y), sizeof(this->getOrientation().y), network::DATA);
-      registerVar( (void*) &(this->getOrientation().z), sizeof(this->getOrientation().z), network::DATA);
+      registerVar( (void*) &(this->getOrientation().w), sizeof(this->getOrientation().w), network::DATA, 0x3);
+      registerVar( (void*) &(this->getOrientation().x), sizeof(this->getOrientation().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getOrientation().y), sizeof(this->getOrientation().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getOrientation().z), sizeof(this->getOrientation().z), network::DATA, 0x3);
       // register velocity_
-      registerVar( (void*) &(this->getVelocity().x), sizeof(this->getVelocity().x), network::DATA);
-      registerVar( (void*) &(this->getVelocity().y), sizeof(this->getVelocity().y), network::DATA);
-      registerVar( (void*) &(this->getVelocity().z), sizeof(this->getVelocity().z), network::DATA);
+      registerVar( (void*) &(this->getVelocity().x), sizeof(this->getVelocity().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getVelocity().y), sizeof(this->getVelocity().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getVelocity().z), sizeof(this->getVelocity().z), network::DATA, 0x3);
       // register rotationAxis/rate
-      registerVar( (void*) &(this->getRotationRate()), sizeof(this->getRotationRate()), network::DATA);
-      registerVar( (void*) &(this->getRotationAxis().x), sizeof(this->getRotationAxis().x), network::DATA);
-      registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA);
-      registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA);
+      registerVar( (void*) &(this->getRotationRate()), sizeof(this->getRotationRate()), network::DATA, 0x3);
+      registerVar( (void*) &(this->getRotationAxis().x), sizeof(this->getRotationAxis().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA, 0x3);
       // register scale of node
-      registerVar( (void*) &(this->getScale().x), sizeof(this->getScale().x), network::DATA);
-      registerVar( (void*) &(this->getScale().y), sizeof(this->getScale().y), network::DATA);
-      registerVar( (void*) &(this->getScale().z), sizeof(this->getScale().z), network::DATA);
+      registerVar( (void*) &(this->getScale().x), sizeof(this->getScale().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getScale().y), sizeof(this->getScale().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getScale().z), sizeof(this->getScale().z), network::DATA, 0x3);
       //register staticity
-      registerVar( (void*) &(this->bStatic_), sizeof(this->bStatic_), network::DATA);
+      registerVar( (void*) &(this->bStatic_), sizeof(this->bStatic_), network::DATA, 0x3);
+      //register acceleration
+      // register velocity_
+      registerVar( (void*) &(this->getAcceleration().x), sizeof(this->getAcceleration().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getAcceleration().y), sizeof(this->getAcceleration().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getAcceleration().z), sizeof(this->getAcceleration().z), network::DATA, 0x3);
     }
 
     void WorldEntity::attachWorldEntity(WorldEntity* entity)

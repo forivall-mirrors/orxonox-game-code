@@ -82,6 +82,9 @@ namespace network
     bool addKeyboard(char key_code);
 
     bool sendPackets();
+    
+    int getShipID(){return shipID_;}
+    int getClientID(){return clientID_;}
 
     void tick(float time);
 
@@ -102,6 +105,9 @@ namespace network
     void processGamestate( GameStateCompressed *data);
     void processClassid(classid *clid);
     void processChat( chat *data);
+    bool processWelcome( welcome *w );
+    int clientID_;     // this is the id the server gave to us
+    int shipID_;
   };
 
 

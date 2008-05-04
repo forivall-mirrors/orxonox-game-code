@@ -325,6 +325,7 @@ namespace orxonox
     orxonoxHUD_->setEnergyValue(20);
     orxonoxHUD_->setEnergyDistr(20,20,60);
     hudOverlay->show();
+    setupInputSystem();
 
     client_g->establishConnection();
     client_g->tick(0);
@@ -361,7 +362,7 @@ namespace orxonox
     startRenderLoop();
   }
 
-  void Orxonox::createScene(void)
+  void Orxonox::createScene()
   {
 	  // Init audio
     auMan_ = new audio::AudioManager();

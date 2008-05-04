@@ -85,6 +85,12 @@ namespace network
     COUT(4) << "could not use gamestate sent by server" << std::endl;
     return false;
   }
+  
+  GameStateCompressed *GameStateClient::popPartialGameState(){
+    GameState *gs = getPartialSnapshot();
+    return compress_(gs);
+  }
+  
 
   /**
   * This function removes a Synchronisable out of the universe
@@ -136,15 +142,15 @@ namespace network
             continue;
           }
           Synchronisable *no = dynamic_cast<Synchronisable *>(id->fabricate());
-          COUT(4) << "loadsnapshort: classid: " << sync.classID << " objectID: " << sync.objectID << " length: " << sync.length << std::endl;
+          COUT(4) << "loadsnapshot: classid: " << sync.classID << " objectID: " << sync.objectID << " length: " << sync.length << std::endl;
           no->objectID=sync.objectID;
           no->classID=sync.classID;
-          it=orxonox::ObjectList<Synchronisable>::end();
           // update data and create object/entity...
           if( !no->updateData(sync) )
             COUT(1) << "We couldn't update the object: " << sync.objectID << std::endl;
           if( !no->create() )
             COUT(1) << "We couldn't manifest (create() ) the object: " << sync.objectID << std::endl;
+          it=orxonox::ObjectList<Synchronisable>::end();
         }
       } else {
         // we have our object
@@ -158,7 +164,70 @@ namespace network
     return true;
   }
 
+  GameState *GameStateClient::getPartialSnapshot(){
+    //std::cout << "begin getSnapshot" << std::endl;
+    //the size of the gamestate
+    int totalsize=0;
+    int memsize=0;
+    //the size of one specific synchronisable
+    int tempsize=0;
+    // get the start of the Synchronisable list
+    orxonox::Iterator<Synchronisable> it;
+    // struct for return value of Synchronisable::getData()
+    syncData sync;
+
+    GameState *retval=new GameState; //return value
+    retval->id=reference->id;
+    retval->diffed=false;
+    retval->complete=false;
+    COUT(4) << "G.ST.Client: producing partial gamestate with id: " << retval->id << std::endl;
+    // offset of memory functions
+    int offset=0, size=0;
+    // get total size of gamestate
+    for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
+      if(!it->getBacksync())
+        continue;
+      size+=it->getSize(); // size of the actual data of the synchronisable
+      size+=3*sizeof(int); // size of datasize, classID and objectID
+    }
+    //retval->data = (unsigned char*)malloc(size);
+    retval->data = new unsigned char[size];
+    if(!retval->data){
+      COUT(2) << "GameStateClient: could not allocate memory" << std::endl;
+      return NULL;
+    }
+    memsize=size;
+    // go through all Synchronisables
+    for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
+      if(!it->getBacksync())
+        continue;
+      //get size of the synchronisable
+      tempsize=it->getSize();
+      // add place for data and 3 ints (length,classid,objectid)
+      totalsize+=tempsize+3*sizeof(int);
+      // allocate+tempsize additional space
+      if(totalsize > size){
+        COUT(3) << "G.St.Cl: need additional memory" << std::endl;
+      }
+
+      // run Synchronisable::getData with offset and additional place for 3 ints in between (for ids and length)
+      sync=it->getData((retval->data)+offset+3*sizeof(int));
+      memcpy(retval->data+offset, (void *)&(sync.length), sizeof(int));
+      memcpy(retval->data+offset+sizeof(int), (void *)&(sync.objectID), sizeof(int));
+      memcpy(retval->data+offset+2*sizeof(int), (void *)&(sync.classID), sizeof(int));
+      // increase data pointer
+      offset+=tempsize+3*sizeof(int);
+    }
+    retval->size=totalsize;
+    COUT(5) << "G.ST.Cl: Gamestate size: " << totalsize << std::endl;
+    COUT(5) << "G.ST.Cl: 'estimated' Gamestate size: " << size << std::endl;
+    return retval;
+  }
+  
+  
   GameState *GameStateClient::undiff(GameState *old, GameState *diff) {
+    if(!old || !diff)
+      return NULL;
     unsigned char *ap = old->data, *bp = diff->data;
     int of=0; // pointers offset
     int dest_length=0;
@@ -194,19 +263,46 @@ namespace network
     r->base_id = old->id;
     r->diffed = false;
     r->data = dp;
+    r->complete = true;
     return r;
   }
 
-  //##### ADDED FOR TESTING PURPOSE #####
-  GameState* GameStateClient::testDecompress( GameStateCompressed* gc ) {
-    return decompress( gc );
+
+
+  GameStateCompressed *GameStateClient::compress_(GameState *a) {
+    if(!a)
+      return NULL;
+    int size = a->size;
+
+    uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
+    unsigned char *dest = new unsigned char[buffer];
+    int retval;
+    retval = compress( dest, &buffer, a->data, (uLong)size );
+
+    switch ( retval ) {
+      case Z_OK: COUT(5) << "G.St.Man: compress: successfully compressed" << std::endl; break;
+      case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl; 
+      return NULL;
+      case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl;
+      return NULL;
+      case Z_DATA_ERROR: COUT(2) << "G.St.Man: compress: data corrupted in gamestate.compress" << std::endl;
+      return NULL;
+    }
+
+    GameStateCompressed *compressedGamestate = new GameStateCompressed;
+    compressedGamestate->compsize = buffer;
+    compressedGamestate->normsize = size;
+    compressedGamestate->id = a->id;
+    compressedGamestate->data = dest;
+    compressedGamestate->diffed = a->diffed;
+    compressedGamestate->complete = a->complete;
+    compressedGamestate->base_id = a->base_id;
+    delete[] a->data;
+    delete a;
+    return compressedGamestate;
   }
   
-  GameState* GameStateClient::testUndiff( GameState* g_old, GameState* g_diffed ) {
-    return undiff( g_old, g_diffed );
-  }
-  //##### ADDED FOR TESTING PURPOSE #####
-
+  
   GameState *GameStateClient::decompress(GameStateCompressed *a) {
     //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
     int normsize = a->normsize;
@@ -237,6 +333,7 @@ namespace network
     gamestate->data = dest;
     gamestate->base_id = a->base_id;
     gamestate->diffed = a->diffed;
+    gamestate->complete = a->complete;
 
     delete[] a->data; //delete compressed data
     delete a; //we do not need the old (struct) gamestate anymore
@@ -285,4 +382,17 @@ namespace network
     
   }
   
+  
+    //##### ADDED FOR TESTING PURPOSE #####
+  GameState* GameStateClient::testDecompress( GameStateCompressed* gc ) {
+    return decompress( gc );
+  }
+  
+  GameState* GameStateClient::testUndiff( GameState* g_old, GameState* g_diffed ) {
+    return undiff( g_old, g_diffed );
+  }
+  //##### ADDED FOR TESTING PURPOSE #####
+  
+  
 }
+

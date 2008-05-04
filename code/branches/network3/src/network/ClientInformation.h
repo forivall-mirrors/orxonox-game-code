@@ -66,12 +66,20 @@ namespace network
     ClientInformation *insertAfter(ClientInformation *ins);
     ClientInformation *insertBefore(ClientInformation *ins);
     ClientInformation *insertBack(ClientInformation *ins);
+    
+    // set functions
     void setID(int clientID);
     void setPeer(ENetPeer *peer);
     void setGamestateID(int id);
+    inline void setShipID(int id){ShipID_=id;}
+    
+    // get functions
+    inline int getShipID(){return ShipID_;}
     int getID();
-    ENetPeer *getPeer();
     int getGamestateID();
+    ENetPeer *getPeer();
+    
+    
     bool removeClient(int clientID);
     bool removeClient(ENetPeer *peer);
     //## add bool mask-function eventually
@@ -91,6 +99,7 @@ namespace network
     ENetPeer *peer_;
     int clientID_;
     int gamestateID_;
+    int ShipID_;   // this is the unique objectID
     bool synched_;
   };
 

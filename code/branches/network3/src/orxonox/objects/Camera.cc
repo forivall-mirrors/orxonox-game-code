@@ -126,7 +126,7 @@ namespace orxonox
     COUT(0) << "p " << this->positionNode_->getPosition() << std::endl;
     COUT(0) << "t " << this->targetNode_->getPosition() << std::endl;
     if(this->positionNode_ != NULL)
-      //this->cam_->setPosition(this->positionNode_->getPosition());
+      this->cam_->setPosition(this->positionNode_->getPosition());
     if(this->targetNode_ != NULL)
       this->cam_->lookAt(this->targetNode_->getPosition());
   }
@@ -138,6 +138,7 @@ namespace orxonox
   void Camera::removeFocus()
   {
     this->bHasFocus_ = false;
+    this->positionNode_->detachObject(cam_);
   }
 
   void Camera::setFocus(Ogre::Camera* ogreCam)

@@ -222,5 +222,11 @@ namespace network
     COUT(4) << "Server: processing ack from client: " << clientID << "; ack-id: " << data->a << std::endl;
     gamestates->ackGameState(clientID, data->a);
   }
+  
+  bool Server::processConnectRequest( connectRequest *con, int clientID ){
+    COUT(4) << "processing connectRequest " << std::endl;
+    //connection->addPacket(packet_gen.gstate(gamestates->popGameState(clientID)) , clientID);
+    connection->createClient(clientID);
+  }
 
 }

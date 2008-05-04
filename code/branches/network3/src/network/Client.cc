@@ -39,6 +39,7 @@
 //
 
 #include "Client.h"
+#include "Synchronisable.h"
 #include "core/CoreIncludes.h"
 
 namespace network
@@ -46,8 +47,9 @@ namespace network
   Client* Client::_sClient = 0;
   
   Client* Client::createSingleton(){
-    if(!_sClient)
+    if(!_sClient){
       _sClient = new Client();
+    }
     return _sClient;
   }
   
@@ -111,7 +113,14 @@ namespace network
   * @return true/false
   */
   bool Client::establishConnection(){
+    Synchronisable::setClient(true);
     isConnected=client_connection.createConnection();
+    /*if(isConnected){
+      COUT(2) << "sending connectrequest" << std::endl;
+      client_connection.addPacket(pck_gen.generateConnectRequest());
+      client_connection.sendPackets();
+    }else
+      COUT(2) << "could not create connection" << std::endl;*/
     return isConnected;
   }
 
@@ -247,6 +256,13 @@ namespace network
 
   void Client::processChat( chat *data){
     COUT(0) << "Server: " << data->message << std::endl;
+  }
+  
+  bool Client::processWelcome( welcome *w ){
+    COUT(4) << "processing welcome message" << std::endl;
+    clientID_ = w->clientID;
+    shipID_ = w->shipID;
+    
   }
 
 }

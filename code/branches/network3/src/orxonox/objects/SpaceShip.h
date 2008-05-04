@@ -62,6 +62,8 @@ namespace orxonox
             void setRotAcc(float value);
             void setTransDamp(float value);
             void setRotDamp(float value);
+            
+            void getFocus();
 
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
@@ -82,7 +84,9 @@ namespace orxonox
             bool bRMousePressed_;
 
             Ogre::SceneNode* camNode_;
-            Camera* cam_;
+            Camera* cam_;  
+            std::string camName_;
+
 
             ParticleInterface* tt_;
 

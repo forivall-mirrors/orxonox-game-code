@@ -70,27 +70,37 @@ namespace network
   public:
     GameStateManager(ClientInformation *head);
     ~GameStateManager();
-    //#### ADDED FOR TESTING PURPOSE ####
-    GameStateCompressed* testCompress( GameState* g );
-    GameState* testDiff( GameState* a, GameState* b );
-    //#### END TESTING PURPOSE ####
+    
     void update();
     GameStateCompressed *popGameState(int clientID);
+    bool pushGameState(GameStateCompressed *gs, int clientID);
     void ackGameState(int clientID, int gamestateID);
   private:
     void cleanup(); // "garbage handler"
     GameState *getSnapshot();
+    bool loadPartialSnapshot(GameState *state, int clientID);
     GameStateCompressed *encode(GameState *a, GameState *b);
     GameStateCompressed *encode(GameState *a);
     GameState *diff(GameState *a, GameState *b);
     GameStateCompressed *compress_(GameState *a);
+    GameState *decompress(GameStateCompressed *a);
     bool printGameStates();
+    bool checkAccess(int clientID, int objectID);
 
     std::map<int, GameState*> gameStateMap; //map gsID to gamestate*
     std::map<int, int> gameStateUsed; // save the number of clients, that use the specific gamestate
     GameState *reference;
     ClientInformation *head_;
     int id_;
+    
+    
+    
+    
+  public:
+    //#### ADDED FOR TESTING PURPOSE ####
+    GameStateCompressed* testCompress( GameState* g );
+    GameState* testDiff( GameState* a, GameState* b );
+  //#### END TESTING PURPOSE ####
   };
 
 }

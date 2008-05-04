@@ -41,10 +41,11 @@
 #define _GameStateClient_H__
 
 #include <map>
-
+// 
 #include "NetworkPrereqs.h"
 #include "core/CorePrereqs.h"
 #include "PacketTypes.h"
+
 
 namespace network
 {
@@ -53,15 +54,15 @@ namespace network
   public:
     GameStateClient();
     ~GameStateClient();
-    //#### ADDED FOR TESTING PURPOSE ####
-    GameState* testDecompress( GameStateCompressed* gc );
-    GameState* testUndiff( GameState* g_old, GameState* g_diffed );
-    //#### END TESTING PURPOSE ####
+    
     bool pushGameState(GameStateCompressed *compstate);
+    GameStateCompressed *popPartialGameState();
   private:
     bool loadSnapshot(GameState *state);
+    GameState *getPartialSnapshot();
     void cleanup();
     GameState *undiff(GameState *old, GameState *diff);
+    GameStateCompressed *compress_(GameState *a);
     GameState *decompress(GameStateCompressed *a);
     GameState *decode(GameState *old, GameStateCompressed *diff);
     GameState *decode(GameStateCompressed *x);
@@ -71,6 +72,15 @@ namespace network
     GameState     *reference;
     int           last_diff_;
     std::map<int, GameState *> gameStateMap;
+    
+    
+    
+    
+  public:
+    //#### ADDED FOR TESTING PURPOSE ####
+    GameState* testDecompress( GameStateCompressed* gc );
+    GameState* testUndiff( GameState* g_old, GameState* g_diffed );
+    //#### END TESTING PURPOSE ####
   };
 
 }

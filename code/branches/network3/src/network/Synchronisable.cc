@@ -47,6 +47,10 @@
 
 namespace network
 {
+  
+  
+  int Synchronisable::state_=1; // detemines wheter we are server (default) or client
+  
   /**
   * Constructor:
   * calls registarAllVariables, that has to be implemented by the inheriting classID
@@ -62,6 +66,13 @@ namespace network
 
   Synchronisable::~Synchronisable(){
   }
+  
+  void Synchronisable::setClient(bool b){
+    if(b) // client
+      state_=0x2;
+    else  // server
+      state_=0x1;
+  }
 
   /**
   * This function is used to register a variable to be synchronized
@@ -69,11 +80,12 @@ namespace network
   * @param var pointer to the variable
   * @param size size of the datatype the variable consists of
   */
-  void Synchronisable::registerVar(void *var, int size, variableType t){
+  void Synchronisable::registerVar(void *var, int size, variableType t, int mode){
     // create temporary synch.Var struct
     synchronisableVariable *temp = new synchronisableVariable;
     temp->size = size;
     temp->var = var;
+    temp->mode = mode; 
     temp->type = t;
     COUT(5) << "Syncronisable::registering var with size: " << temp->size << " and type: " << temp->type << std::endl; 
     // increase datasize
@@ -152,6 +164,8 @@ namespace network
     int n=0; //offset
     for(i=syncList->begin(); n<datasize && i!=syncList->end(); ++i){
       //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
+      if( ((*i)->mode & state_) == 0 )
+        continue;  // this variable should only be received
       switch((*i)->type){
       case DATA:
         std::memcpy( (void *)(retVal.data+n), (void*)((*i)->var), (*i)->size);
@@ -184,6 +198,8 @@ namespace network
     }
     COUT(5) << "Synchronisable: objectID " << vars.objectID << ", classID " << vars.classID << " size: " << vars.length << " synchronising data" << std::endl;
     for(i=syncList->begin(); i!=syncList->end(); i++){
+      if( ((*i)->mode ^ state_) == 0 )
+        continue;  // this variable should only be sent
       COUT(5) << "Synchronisable: element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
       switch((*i)->type){
       case DATA:
@@ -211,6 +227,8 @@ namespace network
     int tsize=0;
     std::list<synchronisableVariable *>::iterator i;
     for(i=syncList->begin(); i!=syncList->end(); i++){
+      if( ((*i)->mode & state_) == 0 )
+        continue;  // this variable should only be received, so dont add its size to the send-size
       switch((*i)->type){
       case DATA:
         tsize+=(*i)->size;
@@ -225,5 +243,13 @@ namespace network
     }
     return tsize;
   }
+  
+  void Synchronisable::setBacksync(bool sync){
+    backsync_=sync;
+  }
 
+  bool Synchronisable::getBacksync(){
+    return backsync_;
+  }
+  
 }

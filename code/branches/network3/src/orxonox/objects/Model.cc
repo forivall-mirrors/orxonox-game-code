@@ -72,7 +72,7 @@ namespace orxonox
 
         XMLPortParamLoadOnly(Model, "mesh", setMesh, xmlelement, mode);
 
-        create();
+        Model::create();
     }
 
     void Model::setMesh(const std::string& meshname)

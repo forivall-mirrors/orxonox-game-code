@@ -43,8 +43,12 @@
 #include <boost/bind.hpp>
 
 #include "core/CoreIncludes.h"
+#include "core/BaseObject.h"
+#include "util/Math.h"
+#include "objects/SpaceShip.h"
 #include "ClientInformation.h"
 #include "ConnectionManager.h"
+#include "Synchronisable.h"
 
 namespace std
 {
@@ -178,6 +182,9 @@ used by processQueue in Server.cc
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
           addClient(&event);
+          //this is a workaround to ensure thread safety
+          if(!addFakeConnectRequest(&event))
+            COUT(3) << "Problem pushing fakeconnectRequest to queue" << std::endl;
           COUT(5) << "Con.Man: connection event has occured" << std::endl;
           break;
         case ENET_EVENT_TYPE_RECEIVE:
@@ -236,10 +243,6 @@ used by processQueue in Server.cc
     return buffer.push(event);
   }
 
-  //bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
-  //  return clientDisconnect(*peer);
-  //}
-
   bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
     COUT(4) << "removing client from list" << std::endl;
     return head_->removeClient(peer);
@@ -259,8 +262,6 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
       temp->setID(temp->prev()->getID()+1);
     temp->setPeer(event->peer);
     COUT(4) << "Con.Man: added client id: " << temp->getID() << std::endl;
-    syncClassid(temp->getID());
-    temp->setSynched(true);
     return true;
   }
 
@@ -297,37 +298,89 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
   }
 
-
-
-  void ConnectionManager::addClientsObjectID( int clientID, int objectID ) {
-    COUT(4) << "ship of client: " << clientID << ": " << objectID << " mapped" << std::endl;
-    clientsShip.insert( std::make_pair( clientID, objectID ) );
+  bool ConnectionManager::createClient(int clientID){
+    ClientInformation *temp = head_->findClient(clientID);
+    COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
+    syncClassid(temp->getID());
+    COUT(4) << "creating spaceship for clientid: " << temp->getID() << std::endl;
+    // TODO: this is only a hack, untill we have a possibility to define default player-join actions
+    createShip(temp);
+    COUT(4) << "created spaceship" << std::endl;
+    temp->setSynched(true);
+    COUT(4) << "sending welcome" << std::endl;
+    sendWelcome(temp->getID(), temp->getShipID(), true);
+    return true;
   }
+  
+  bool ConnectionManager::createShip(ClientInformation *client){
+    orxonox::Identifier* id = ID("SpaceShip");
+    if(!id){
+      COUT(4) << "We could not create the SpaceShip for client: " << client->getID() << std::endl;
+      return false;
+    }
+    orxonox::SpaceShip *no = dynamic_cast<orxonox::SpaceShip *>(id->fabricate());
+    no->setPosition(orxonox::Vector3(0,80,0));
+    no->setScale(10);
+    no->setYawPitchRoll(orxonox::Degree(-90),orxonox::Degree(-90),orxonox::Degree(0));
+    no->setMesh("assf3.mesh");
+    no->setMaxSpeed(500);
+    no->setMaxSideAndBackSpeed(50);
+    no->setMaxRotation(1.0);
+    no->setTransAcc(200);
+    no->setRotAcc(3.0);
+    no->setTransDamp(75);
+    no->setRotDamp(1.0);
+    no->setCamera("cam_"+client->getID());
+    no->create();
+    
+    client->setShipID(no->objectID);
+    return true;
+  }
+  
+  bool ConnectionManager::sendWelcome(int clientID, int shipID, bool allowed){
+    addPacket(packet_gen.generateWelcome(clientID, shipID, allowed),clientID);
+    sendPackets();
+  }
+  
+  bool ConnectionManager::addFakeConnectRequest(ENetEvent *ev){
+    ENetEvent event;
+    event.peer=ev->peer;
+    event.packet = packet_gen.generateConnectRequest();
+    return buffer.push(&event);
+  }
+  
+  
+//   int ConnectionManager::getNumberOfClients() {
+//     
+//     return clientsShip.size();
+//   }
+  
+  /*void ConnectionManager::addClientsObjectID( int clientID, int objectID ) {
+  COUT(4) << "ship of client: " << clientID << ": " << objectID << " mapped" << std::endl;
+  clientsShip.insert( std::make_pair( clientID, objectID ) );
+}
 
   int ConnectionManager::getClientsShipID( int clientID ) {
-    return clientsShip[clientID];
-  }
+  return clientsShip[clientID];
+}
 
   int ConnectionManager::getObjectsClientID( int objectID ) {
-    std::map<int, int>::iterator iter;
-    for( iter = clientsShip.begin(); iter != clientsShip.end(); iter++ ) {
-      if( iter->second == objectID ) return iter->first;
-    }
-    return -99;
-  }
+  std::map<int, int>::iterator iter;
+  for( iter = clientsShip.begin(); iter != clientsShip.end(); iter++ ) {
+  if( iter->second == objectID ) return iter->first;
+}
+  return -99;
+}
 
   void ConnectionManager::deleteClientIDReg( int clientID ) {
-    clientsShip.erase( clientID );
-  }
+  clientsShip.erase( clientID );
+}
 
   void ConnectionManager::deleteObjectIDReg( int objectID ) {
-    std::map<int, int>::iterator iter = clientsShip.begin();
-    for( iter = clientsShip.begin(); iter != clientsShip.end(); iter++ ) {
-      if( iter->second == objectID ) break;
-    }
-    clientsShip.erase( iter->first );
-  }
-  int ConnectionManager::getNumberOfClients() {
-    return clientsShip.size();
-  }
+  std::map<int, int>::iterator iter = clientsShip.begin();
+  for( iter = clientsShip.begin(); iter != clientsShip.end(); iter++ ) {
+  if( iter->second == objectID ) break;
+}
+  clientsShip.erase( iter->first );
+}*/
 }
