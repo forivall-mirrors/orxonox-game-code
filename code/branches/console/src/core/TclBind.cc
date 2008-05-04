@@ -69,11 +69,10 @@ namespace orxonox
         if (this->bSetTclLibPath_ && !this->interpreter_)
         {
             this->interpreter_ = new Tcl::interpreter(this->tclLibPath_);
-            this->interpreter_->def("puts", TclBind::puts, Tcl::variadic());
-            this->interpreter_->def("orxonox", TclBind::orxonox, Tcl::variadic());
-            this->interpreter_->def("execute", TclBind::execute, Tcl::variadic());
-            this->interpreter_->eval("proc unknown {args} { return [orxonox $args] }");
+            this->interpreter_->def("orxonox", TclBind::tcl_orxonox, Tcl::variadic());
+            this->interpreter_->def("execute", TclBind::tcl_execute, Tcl::variadic());
             this->interpreter_->eval("rename exit tclexit; proc exit {} { orxonox exit }");
+            this->interpreter_->eval("redef_puts");
         }
     }
 
@@ -88,14 +87,14 @@ namespace orxonox
         this->createTclInterpreter();
     }
 
-    void TclBind::puts(Tcl::object const &args)
+    void TclBind::tcl_puts(Tcl::object const &args)
     {
         COUT(0) << args.get() << std::endl;
     }
 
-    std::string TclBind::orxonox(Tcl::object const &args)
+    std::string TclBind::tcl_orxonox(Tcl::object const &args)
     {
-std::cout << "Tcl_execute: args: " << args.get() << std::endl;
+std::cout << "Tcl_orxonox: args: " << args.get() << std::endl;
         std::string command = args.get();
 
         if (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
@@ -110,8 +109,16 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         return "";
     }
 
-    void TclBind::execute(Tcl::object const &args)
+    void TclBind::tcl_execute(Tcl::object const &args)
     {
+std::cout << "Tcl_execute: args: " << args.get() << std::endl;
+        std::string command = args.get();
+
+        if (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
+            command = command.substr(1, command.size() - 2);
+
+        if (!CommandExecutor::execute(command, false))
+            COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
     }
 
     std::string TclBind::tcl(const std::string& tclcode)
@@ -144,7 +151,7 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         }
         catch (Tcl::tcl_error const &e)
         {
-            COUT(1) << "Error: " << e.what() << std::endl;
+            COUT(1) << "Tcl error: " << e.what() << std::endl;
         }
         catch (std::exception const &e)
         {

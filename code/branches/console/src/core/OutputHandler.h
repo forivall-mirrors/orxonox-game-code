@@ -63,6 +63,22 @@ namespace orxonox
             static inline std::string log(const std::string& text)
                 { OutputHandler::getOutStream().setOutputLevel(0); OutputHandler::getOutStream().output(text + "\n"); return text; }
 
+            /** @brief Puts an error on the outstream. @param text The text */
+            static inline std::string error(const std::string& text)
+                { OutputHandler::getOutStream().setOutputLevel(1); OutputHandler::getOutStream().output(text + "\n"); return text; }
+
+            /** @brief Puts a warning on the outstream. @param text The text */
+            static inline std::string warning(const std::string& text)
+                { OutputHandler::getOutStream().setOutputLevel(2); OutputHandler::getOutStream().output(text + "\n"); return text; }
+
+            /** @brief Puts an info on the outstream. @param text The text */
+            static inline std::string info(const std::string& text)
+                { OutputHandler::getOutStream().setOutputLevel(3); OutputHandler::getOutStream().output(text + "\n"); return text; }
+
+            /** @brief Puts some debug output on the outstream. @param text The text */
+            static inline std::string debug(const std::string& text)
+                { OutputHandler::getOutStream().setOutputLevel(4); OutputHandler::getOutStream().output(text + "\n"); return text; }
+
             /** @brief Returns a reference to the logfile. @return The logfile */
             inline std::ofstream& getLogfile()
                 { return this->logfile_; }

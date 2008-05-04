@@ -35,19 +35,23 @@
 
 namespace orxonox
 {
-    class TclBind
+    class _CoreExport TclBind
     {
         public:
             static TclBind& getInstance();
 
+            static std::string tcl(const std::string& tclcode);
+
             void setDataPath(const std::string& datapath);
+            std::string getTclLibPath() const { return this->tclLibPath_; }
             void createTclInterpreter();
             void createNewTclInterpreter();
 
-            static void puts(Tcl::object const &args);
-            static void execute(Tcl::object const &args);
-            static std::string orxonox(Tcl::object const &args);
-            static std::string tcl(const std::string& tclcode);
+            static void tcl_puts(Tcl::object const &args);
+
+            static void tcl_execute(Tcl::object const &args);
+            static std::string tcl_orxonox(Tcl::object const &args);
+
             static bool eval(const std::string& tclcode);
 
         private:

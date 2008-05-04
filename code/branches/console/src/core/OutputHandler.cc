@@ -37,7 +37,11 @@
 
 namespace orxonox
 {
-    ConsoleCommandShortcutGeneric(log, createExecutor(createFunctor(&OutputHandler::log), "log", AccessLevel::None));
+    ConsoleCommandShortcutGeneric(log,     createExecutor(createFunctor(&OutputHandler::log),     "log",     AccessLevel::None));
+    ConsoleCommandShortcutGeneric(error,   createExecutor(createFunctor(&OutputHandler::error),   "error",   AccessLevel::None));
+    ConsoleCommandShortcutGeneric(warning, createExecutor(createFunctor(&OutputHandler::warning), "warning", AccessLevel::None));
+    ConsoleCommandShortcutGeneric(info,    createExecutor(createFunctor(&OutputHandler::info),    "info",    AccessLevel::None));
+    ConsoleCommandShortcutGeneric(debug,   createExecutor(createFunctor(&OutputHandler::debug),   "debug",   AccessLevel::None));
 
     /**
         @brief Constructor: Opens the logfile and writes the first line.

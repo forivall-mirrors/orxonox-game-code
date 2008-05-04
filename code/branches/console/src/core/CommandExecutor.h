@@ -64,6 +64,7 @@ namespace orxonox
 
     void exec(const std::string& filename);
     std::string echo(const std::string& text);
+    void puts(bool newline, const std::string& test);
 
     void write(const std::string& filename, const std::string& text);
     void append(const std::string& filename, const std::string& text);

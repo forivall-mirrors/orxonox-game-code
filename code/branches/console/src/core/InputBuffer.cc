@@ -38,7 +38,7 @@ namespace orxonox
     InputBuffer::InputBuffer()
     {
         //this->bActivated_ = false;
-        this->allowedChars_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZäöüÄÖÜ0123456789 \\\"(){}[]<>.:,;_-+*/=!?|$&%^";
+        this->allowedChars_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZäöüÄÖÜ0123456789 \\\"(){}[]<>.:,;_-+*/=!?|$&%^~";
         this->keyboard_ = InputManager::getSingleton().getKeyboard();
         this->buffer_ = "";
 

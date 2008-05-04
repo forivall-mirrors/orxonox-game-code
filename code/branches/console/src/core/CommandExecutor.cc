@@ -49,6 +49,7 @@ namespace orxonox
 
     ConsoleCommandShortcutExtern(exec, AccessLevel::None);
     ConsoleCommandShortcutExtern(echo, AccessLevel::None);
+    ConsoleCommandShortcutExtern(puts, AccessLevel::None);
 
     ConsoleCommandShortcutExtern(read, AccessLevel::None);
     ConsoleCommandShortcutExtern(append, AccessLevel::None);
@@ -91,7 +92,16 @@ namespace orxonox
 
     std::string echo(const std::string& text)
     {
+        std::cout << text << std::endl;
         return text;
+    }
+
+    void puts(bool newline, const std::string& text)
+    {
+        if (newline)
+            std::cout << text << std::endl;
+        else
+            std::cout << text;
     }
 
     void write(const std::string& filename, const std::string& text)
@@ -383,15 +393,15 @@ namespace orxonox
     {
         if (useTcl)
         {
-            return TclBind::eval(command);
+            std::string temp = getLowercase(removeTrailingWhitespaces(command));
+            if (!(temp.find("tclthread") == 0 || temp.find("tclthreadmanager") == 0))
+                return TclBind::eval(command);
         }
-        else
-        {
-            if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
-                CommandExecutor::parse(command);
 
-            return CommandExecutor::execute(CommandExecutor::getEvaluation());
-        }
+        if ((CommandExecutor::getEvaluation().processedCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
+            CommandExecutor::parse(command);
+
+        return CommandExecutor::execute(CommandExecutor::getEvaluation());
     }
 
 

@@ -26,6 +26,7 @@ SET(CORE_SRC_FILES
   Tickable.cc
   Script.cc
   TclBind.cc
+  TclThreadManager.cc
 )
 
 ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
@@ -36,4 +37,5 @@ TARGET_LINK_LIBRARIES(core
   cpptcl
   ${Lua_LIBRARIES}
   ${OIS_LIBRARIES}
+  ${Boost_thread_LIBRARIES}
 )
