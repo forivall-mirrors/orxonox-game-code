@@ -334,6 +334,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     no->create();
     
     client->setShipID(no->objectID);
+    no->getFocus();
     return true;
   }
   
