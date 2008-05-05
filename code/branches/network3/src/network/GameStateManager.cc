@@ -100,7 +100,7 @@ namespace network
     //why are we searching the same client's gamestate id as we searched in
     //Server::sendGameState?
     int gID = head_->findClient(clientID)->getGamestateID();
-    COUT(4) << "G.St.Man: popgamestate: sending gstate_id: " << id_ << " diffed from: " << gID << " (not diffed yet)" << std::endl;
+    COUT(4) << "G.St.Man: popgamestate: sending gstate_id: " << id_ << " diffed from: " << gID << std::endl;
 //     COUT(3) << "gamestatemap: " << &gameStateMap << std::endl;
     //chose wheather the next gamestate is the first or not
     if(gID != GAMESTATEID_INITIAL){

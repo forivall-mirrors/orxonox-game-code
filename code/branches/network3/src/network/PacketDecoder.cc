@@ -180,7 +180,8 @@ namespace network
     //since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream
     if(currentState->compsize==0)
       COUT(2) << "PacketDecoder: compsize is 0" << std::endl;
-    currentState->data = (unsigned char*)(malloc( currentState->compsize ));
+//     currentState->data = (unsigned char*)(malloc( currentState->compsize ));
+    currentState->data = new unsigned char[currentState->compsize];
     if(currentState->data==NULL)
       COUT(2) << "PacketDecoder: Gamestatepacket-decoder: memory leak" << std::endl;
     //copy the GameStateCompressed data
@@ -197,7 +198,8 @@ namespace network
     cid->length = ((classid*)(packet->data))->length;
     cid->id = ((classid *)(packet->data))->id;
     cid->clid = ((classid *)(packet->data))->clid;
-    cid->message = (const char *)malloc(cid->length);
+//     cid->message = (const char *)malloc(cid->length);
+    cid->message = new char[cid->length];
     void *data  = (void *)cid->message;
     memcpy(data, (const void*)(packet->data+3*sizeof(int)), cid->length);
     COUT(4) << "PacketDecoder: classid: " << cid->clid << ", name: " << cid->message << std::endl;
