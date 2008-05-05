@@ -283,7 +283,7 @@ namespace orxonox
     void SpaceShip::setCamera(const std::string& camera)
     {
         this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
-        camNode_->setPosition(this->getNode()->getPosition() + Vector3(-50,0,10));
+        camNode_->setPosition(Vector3(-50,0,10));
 /*
 //        node->setInheritOrientation(false);
         cam->setPosition(Vector3(0,50,-150));
