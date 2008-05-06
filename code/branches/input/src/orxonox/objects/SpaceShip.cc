@@ -245,7 +245,7 @@ namespace orxonox
             String2Number<float>(this->maxSpeedLoopRightLeft_, looprightleftStr);
 
             COUT(4) << "Loader: Initialized spaceship steering with values " << maxSpeedForward_ << " " << maxSpeedRotateUpDown_ << " " << maxSpeedRotateRightLeft_ << " " << maxSpeedLoopRightLeft_ << " " << std::endl;
-    	}
+      }
 */
         if (xmlElem->Attribute("maxSpeed") && xmlElem->Attribute("maxSideAndBackSpeed") && xmlElem->Attribute("maxRotation") && xmlElem->Attribute("transAcc") && xmlElem->Attribute("rotAcc") && xmlElem->Attribute("transDamp") && xmlElem->Attribute("rotDamp"))
         {
@@ -271,12 +271,12 @@ namespace orxonox
             this->rotationDampingRadian_ = Radian(this->rotationDamping_);
 
             COUT(4) << "Loader: Initialized SpaceShip" << std::endl;
-    	}
+        }
 
-    	if (xmlElem->Attribute("camera"))
-    	{
-    	    this->setCamera();
-    	}
+        if (xmlElem->Attribute("camera"))
+        {
+            this->setCamera();
+        }
     }
 
     void SpaceShip::setCamera(const std::string& camera)

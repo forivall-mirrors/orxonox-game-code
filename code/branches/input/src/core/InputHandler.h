@@ -94,13 +94,13 @@ namespace orxonox
     bool mouseMoved         (const MouseState& state);
     bool mouseWheelTurned   (const MouseState& state);
 
-		bool joyStickButtonPressed (const JoyStickState& state, int button);
-		bool joyStickButtonReleased(const JoyStickState& state, int button);
+    bool joyStickButtonPressed (const JoyStickState& state, int button);
+    bool joyStickButtonReleased(const JoyStickState& state, int button);
     bool joyStickButtonHeld    (const JoyStickState& state, int button);
-		bool joyStickAxisMoved     (const JoyStickState& state, int axis)  ;
-		bool joyStickSliderMoved   (const JoyStickState& state, int index) ;
-		bool joyStickPovMoved      (const JoyStickState& state, int index) ;
-		bool joyStickVector3Moved  (const JoyStickState& state, int index) ;
+    bool joyStickAxisMoved     (const JoyStickState& state, int axis)  ;
+    bool joyStickSliderMoved   (const JoyStickState& state, int index) ;
+    bool joyStickPovMoved      (const JoyStickState& state, int index) ;
+    bool joyStickVector3Moved  (const JoyStickState& state, int index) ;
 
   private: // variables
 
@@ -152,21 +152,21 @@ namespace orxonox
 
   //private:
   //  // input events
-		//bool keyPressed   (const OIS::KeyEvent   &arg);
-		//bool keyReleased  (const OIS::KeyEvent   &arg);
-		//bool keyHeld      (const OIS::KeyEvent   &arg);
+    //bool keyPressed   (const OIS::KeyEvent   &arg);
+    //bool keyReleased  (const OIS::KeyEvent   &arg);
+    //bool keyHeld      (const OIS::KeyEvent   &arg);
 
   //  bool mousePressed (const OIS::MouseEvent &arg, OIS::MouseButton id);
-		//bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButton id);
-		//bool mouseHeld    (const OIS::MouseEvent &arg, OIS::MouseButton id);
+    //bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButton id);
+    //bool mouseHeld    (const OIS::MouseEvent &arg, OIS::MouseButton id);
   //  bool mouseMoved   (const OIS::MouseEvent &arg);
 
-		//bool buttonPressed (const OIS::JoyStickEvent &arg, int button);
-		//bool buttonReleased(const OIS::JoyStickEvent &arg, int button);
-		//bool buttonHeld    (const OIS::JoyStickEvent &arg, int button);
-		//bool axisMoved     (const OIS::JoyStickEvent &arg, int axis);
-		//bool sliderMoved   (const OIS::JoyStickEvent &arg, int id);
-		//bool povMoved      (const OIS::JoyStickEvent &arg, int id);
+    //bool buttonPressed (const OIS::JoyStickEvent &arg, int button);
+    //bool buttonReleased(const OIS::JoyStickEvent &arg, int button);
+    //bool buttonHeld    (const OIS::JoyStickEvent &arg, int button);
+    //bool axisMoved     (const OIS::JoyStickEvent &arg, int axis);
+    //bool sliderMoved   (const OIS::JoyStickEvent &arg, int id);
+    //bool povMoved      (const OIS::JoyStickEvent &arg, int id);
   //};
 
 }

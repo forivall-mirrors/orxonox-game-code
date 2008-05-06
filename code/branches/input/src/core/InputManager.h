@@ -133,17 +133,17 @@ namespace orxonox
     void tick(float dt);
 
     // input events
-		bool mousePressed  (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
-		bool mouseReleased (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
+    bool mousePressed  (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
+    bool mouseReleased (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
     bool mouseMoved    (const OIS::MouseEvent    &arg);
-		bool keyPressed    (const OIS::KeyEvent      &arg);
-		bool keyReleased   (const OIS::KeyEvent      &arg);
-		bool buttonPressed (const OIS::JoyStickEvent &arg, int button);
-		bool buttonReleased(const OIS::JoyStickEvent &arg, int button);
-		bool axisMoved     (const OIS::JoyStickEvent &arg, int axis);
-		bool sliderMoved   (const OIS::JoyStickEvent &arg, int id);
-		bool povMoved      (const OIS::JoyStickEvent &arg, int id);
-		bool vector3Moved  (const OIS::JoyStickEvent &arg, int id);
+    bool keyPressed    (const OIS::KeyEvent      &arg);
+    bool keyReleased   (const OIS::KeyEvent      &arg);
+    bool buttonPressed (const OIS::JoyStickEvent &arg, int button);
+    bool buttonReleased(const OIS::JoyStickEvent &arg, int button);
+    bool axisMoved     (const OIS::JoyStickEvent &arg, int axis);
+    bool sliderMoved   (const OIS::JoyStickEvent &arg, int id);
+    bool povMoved      (const OIS::JoyStickEvent &arg, int id);
+    bool vector3Moved  (const OIS::JoyStickEvent &arg, int id);
 
     static InputManager& _getSingleton();
     static InputManager* _getSingletonPtr() { return &_getSingleton(); }
