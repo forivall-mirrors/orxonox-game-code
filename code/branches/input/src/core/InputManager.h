@@ -42,13 +42,10 @@
 
 #include "ois/OIS.h"
 #include "Tickable.h"
+#include "InputInterfaces.h"
 
 namespace orxonox
 {
-  class Mouse : public OIS::Mouse
-  {
-  };
-
   /**
     @brief Captures and distributes mouse and keyboard input.
   */
@@ -85,6 +82,11 @@ namespace orxonox
     static void destroyMouse();
     static void destroyJoySticks();
 
+    static bool isModifierDown(KeyboardModifier::Enum modifier);
+    static bool isKeyDown(KeyCode::Enum key);
+    static const MouseState getMouseState();
+    static const JoyStickState getJoyStickState(unsigned int ID);
+
     static void setWindowExtents(const int width, const int height);
 
     static void setInputState(const InputState state);
@@ -107,13 +109,9 @@ namespace orxonox
     static bool addJoyStickHandler            (JoyStickHandler* handler, const std::string& name);
     static bool removeJoyStickHandler         (const std::string& name);
     static JoyStickHandler* getJoyStickHandler(const std::string& name);
-    static bool enableJoyStickHandler         (const std::string& name, const int id);
-    static bool disableJoyStickHandler        (const std::string& name, const int id);
-    static bool isJoyStickHandlerActive       (const std::string& name, const int id);
-
-    // Temporary solutions. Will be removed soon!
-    static OIS::Mouse*    getMouse()    { return _getSingleton().mouse_   ; }
-    static OIS::Keyboard* getKeyboard() { return _getSingleton().keyboard_; }
+    static bool enableJoyStickHandler         (const std::string& name, unsigned int id);
+    static bool disableJoyStickHandler        (const std::string& name, unsigned int id);
+    static bool isJoyStickHandlerActive       (const std::string& name, unsigned int id);
 
   private: // functions
     // don't mess with a Singleton
@@ -131,8 +129,6 @@ namespace orxonox
     void _destroyKeyboard();
     void _destroyMouse();
     void _destroyJoySticks();
-
-    //void _setNumberOfJoysticks(int size);
 
     void tick(float dt);
 
@@ -157,9 +153,11 @@ namespace orxonox
     OIS::Keyboard*                              keyboard_;    //!< OIS mouse
     OIS::Mouse*                                 mouse_;       //!< OIS keyboard
     std::vector<OIS::JoyStick*>                 joySticks_;   //!< OIS joy sticks
+    unsigned int                                joySticksSize_;
 
     InputState state_;
     InputState stateRequest_;
+    unsigned int keyboardModifiers_;
 
     std::map<std::string, KeyHandler*>          keyHandlers_;
     std::map<std::string, MouseHandler*>        mouseHandlers_;
@@ -167,13 +165,14 @@ namespace orxonox
 
     std::vector<KeyHandler*>                    activeKeyHandlers_;
     std::vector<MouseHandler*>                  activeMouseHandlers_;
-    std::map< OIS::JoyStick*, std::vector<JoyStickHandler*> > activeJoyStickHandlers_;
+    std::vector<std::vector<JoyStickHandler*> > activeJoyStickHandlers_;
 
-    std::list<OIS::KeyCode>                     keysDown_;
-    std::list<OIS::MouseButtonID>               mouseButtonsDown_;
-    std::map< OIS::JoyStick*, std::list<int> >  joyStickButtonsDown_;
+    std::vector<Key>                            keysDown_;
+    std::vector<MouseButton::Enum>            mouseButtonsDown_;
+    std::vector<std::vector<int> >              joyStickButtonsDown_;
 
   };
+
 }
 
 #endif /* _InputManager_H__ */

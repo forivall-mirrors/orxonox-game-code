@@ -37,9 +37,11 @@
 #include "CorePrereqs.h"
 
 #include <string>
+
 #include "ois/OIS.h"
 #include "OrxonoxClass.h"
 #include "CommandExecutor.h"
+#include "InputInterfaces.h"
 
 namespace orxonox
 {
@@ -53,42 +55,6 @@ namespace orxonox
       Continuous,
     };
   }
-
-  /**
-    @brief Interface class used for key input listeners.
-  */
-  class _CoreExport KeyHandler : public OIS::KeyListener
-  {
-  public:
-    virtual ~KeyHandler() { }
-    virtual bool keyHeld(const OIS::KeyEvent &arg) = 0;
-  };
-
-  /**
-    @brief Interface class used for mouse input listeners.
-  */
-  class _CoreExport MouseHandler : public OIS::MouseListener
-  {
-  public:
-    virtual ~MouseHandler() { }
-    virtual bool mouseHeld(const OIS::MouseEvent &arg, OIS::MouseButtonID id) = 0;
-  };
-
-  /**
-    @brief Interface class used for joy stick input listeners.
-  */
-  class _CoreExport JoyStickHandler
-  {
-  public:
-    virtual ~JoyStickHandler() { }
-		virtual bool buttonPressed (int joyStickID, const OIS::JoyStickEvent &arg, int button) = 0;
-		virtual bool buttonReleased(int joyStickID, const OIS::JoyStickEvent &arg, int button) = 0;
-    virtual bool buttonHeld    (int joyStickID, const OIS::JoyStickEvent &arg, int button) = 0;
-		virtual bool axisMoved     (int joyStickID, const OIS::JoyStickEvent &arg, int axis)   = 0;
-		virtual bool sliderMoved   (int joyStickID, const OIS::JoyStickEvent &arg, int index) {return true;}
-		virtual bool povMoved      (int joyStickID, const OIS::JoyStickEvent &arg, int index) {return true;}
-		virtual bool vector3Moved  (int joyStickID, const OIS::JoyStickEvent &arg, int index) {return true;}
-  };
 
   struct _CoreExport KeyBinding
   {
@@ -118,22 +84,23 @@ namespace orxonox
 
     bool executeBinding(KeyBinding &binding);
 
-		bool keyPressed   (const OIS::KeyEvent   &arg);
-		bool keyReleased  (const OIS::KeyEvent   &arg);
-		bool keyHeld      (const OIS::KeyEvent   &arg);
+    bool keyPressed (const KeyEvent& evt);
+    bool keyReleased(const KeyEvent& evt);
+    bool keyHeld    (const KeyEvent& evt);
 
-    bool mousePressed (const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-		bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-		bool mouseHeld    (const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-    bool mouseMoved   (const OIS::MouseEvent &arg);
+    bool mouseButtonPressed (const MouseState& state, MouseButton::Enum id);
+    bool mouseButtonReleased(const MouseState& state, MouseButton::Enum id);
+    bool mouseButtonHeld    (const MouseState& state, MouseButton::Enum id);
+    bool mouseMoved         (const MouseState& state);
+    bool mouseWheelTurned   (const MouseState& state);
 
-		bool buttonPressed (int joyStickID, const OIS::JoyStickEvent &arg, int button);
-		bool buttonReleased(int joyStickID, const OIS::JoyStickEvent &arg, int button);
-		bool buttonHeld    (int joyStickID, const OIS::JoyStickEvent &arg, int button);
-		bool axisMoved     (int joyStickID, const OIS::JoyStickEvent &arg, int axis);
-		bool sliderMoved   (int joyStickID, const OIS::JoyStickEvent &arg, int id);
-		bool povMoved      (int joyStickID, const OIS::JoyStickEvent &arg, int id);
-		bool vector3Moved  (int joyStickID, const OIS::JoyStickEvent &arg, int id);
+		bool joyStickButtonPressed (const JoyStickState& state, int button);
+		bool joyStickButtonReleased(const JoyStickState& state, int button);
+    bool joyStickButtonHeld    (const JoyStickState& state, int button);
+		bool joyStickAxisMoved     (const JoyStickState& state, int axis)  ;
+		bool joyStickSliderMoved   (const JoyStickState& state, int index) ;
+		bool joyStickPovMoved      (const JoyStickState& state, int index) ;
+		bool joyStickVector3Moved  (const JoyStickState& state, int index) ;
 
   private: // variables
 
@@ -151,22 +118,22 @@ namespace orxonox
     //! denotes the number of different mouse buttons there are in OIS.
     static const int numberOfMouseButtons_s = 8;
     //! Array of input events for every pressed mouse button
-    std::string bindingsMouseButtonPress_  [numberOfMouseButtons_s];
+    KeyBinding bindingsMouseButtonPress_  [numberOfMouseButtons_s];
     //! Array of input events for every released mouse button
-    std::string bindingsMouseButtonRelease_[numberOfMouseButtons_s];
+    KeyBinding bindingsMouseButtonRelease_[numberOfMouseButtons_s];
     //! Array of input events for every held mouse button
-    std::string bindingsMouseButtonHold_   [numberOfMouseButtons_s];
+    KeyBinding bindingsMouseButtonHold_   [numberOfMouseButtons_s];
     //! Names of the mouse buttons as strings
     std::string mouseButtonNames_[numberOfMouseButtons_s];
 
     //! denotes the number of different joy stick buttons there are in OIS.
     static const int numberOfJoyStickButtons_s = 32;
     //! Array of input events for every pressed joy stick button
-    std::string bindingsJoyStickButtonPress_  [numberOfJoyStickButtons_s];
+    KeyBinding bindingsJoyStickButtonPress_  [numberOfJoyStickButtons_s];
     //! Array of input events for every released joy stick button
-    std::string bindingsJoyStickButtonRelease_[numberOfJoyStickButtons_s];
+    KeyBinding bindingsJoyStickButtonRelease_[numberOfJoyStickButtons_s];
     //! Array of input events for every held joy stick button
-    std::string bindingsJoyStickButtonHold_   [numberOfJoyStickButtons_s];
+    KeyBinding bindingsJoyStickButtonHold_   [numberOfJoyStickButtons_s];
     //! Names of the joy stick buttons as strings
     std::string joyStickButtonNames_[numberOfJoyStickButtons_s];
 
@@ -189,9 +156,9 @@ namespace orxonox
 		//bool keyReleased  (const OIS::KeyEvent   &arg);
 		//bool keyHeld      (const OIS::KeyEvent   &arg);
 
-  //  bool mousePressed (const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-		//bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-		//bool mouseHeld    (const OIS::MouseEvent &arg, OIS::MouseButtonID id);
+  //  bool mousePressed (const OIS::MouseEvent &arg, OIS::MouseButton id);
+		//bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButton id);
+		//bool mouseHeld    (const OIS::MouseEvent &arg, OIS::MouseButton id);
   //  bool mouseMoved   (const OIS::MouseEvent &arg);
 
 		//bool buttonPressed (const OIS::JoyStickEvent &arg, int button);

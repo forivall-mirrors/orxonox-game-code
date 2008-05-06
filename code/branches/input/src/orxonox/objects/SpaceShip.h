@@ -33,7 +33,7 @@
 
 #include <OgrePrerequisites.h>
 
-#include "core/InputHandler.h"
+#include "core/InputInterfaces.h"
 #include "Model.h"
 #include "../tools/BillboardSet.h"
 
@@ -64,10 +64,11 @@ namespace orxonox
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
 
-            bool mouseMoved(const OIS::MouseEvent &e);
-            bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-            bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-            bool mouseHeld(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
+            bool mouseButtonPressed (const MouseState& state, MouseButton::Enum id);
+            bool mouseButtonReleased(const MouseState& state, MouseButton::Enum id);
+            bool mouseButtonHeld    (const MouseState& state, MouseButton::Enum id) { return true; }
+            bool mouseMoved         (const MouseState& state);
+            bool mouseWheelTurned   (const MouseState& state) { return true; }
 
 
         private:
