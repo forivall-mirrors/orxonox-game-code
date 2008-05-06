@@ -443,7 +443,7 @@ namespace orxonox
   {
     // check whether the key already is in the list (can happen when focus was lost)
     unsigned int iKey = 0;
-    while (iKey < keysDown_.size() && keysDown_[iKey].key != e.key)
+    while (iKey < keysDown_.size() && keysDown_[iKey].key != (KeyCode::Enum)e.key)
       iKey++;
     if (iKey == keysDown_.size())
       keysDown_.push_back(Key(e));
@@ -471,7 +471,7 @@ namespace orxonox
     // remove the key from the keysDown_ list
     for (unsigned int iKey = 0; iKey < keysDown_.size(); iKey++)
     {
-      if (keysDown_[iKey].key == e.key)
+      if (keysDown_[iKey].key == (KeyCode::Enum)e.key)
       {
         keysDown_.erase(keysDown_.begin() + iKey);
         break;
@@ -527,7 +527,7 @@ namespace orxonox
   {
     // check whether the button already is in the list (can happen when focus was lost)
     unsigned int iButton = 0;
-    while (iButton < mouseButtonsDown_.size() && mouseButtonsDown_[iButton] != id)
+    while (iButton < mouseButtonsDown_.size() && mouseButtonsDown_[iButton] != (MouseButton::Enum)id)
       iButton++;
     if (iButton == mouseButtonsDown_.size())
       mouseButtonsDown_.push_back((MouseButton::Enum)id);
@@ -548,7 +548,7 @@ namespace orxonox
     // remove the button from the keysDown_ list
     for (unsigned int iButton = 0; iButton < mouseButtonsDown_.size(); iButton++)
     {
-      if (mouseButtonsDown_[iButton] == id)
+      if (mouseButtonsDown_[iButton] == (MouseButton::Enum)id)
       {
         mouseButtonsDown_.erase(mouseButtonsDown_.begin() + iButton);
         break;
