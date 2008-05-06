@@ -43,6 +43,7 @@ typedef int (*SignalCallback)( void * someData );
 
 #ifndef __WIN32__
 #include <signal.h>
+#include <X11/Xlib.h>
 
 struct SignalRec
 {
@@ -85,6 +86,10 @@ class SignalHandler
 
     std::string appName;
     std::string fileName;
+
+    // X Display, used to turn on KeyAutoRepeat if OIS crashes
+		Display *display_;
+    bool bXAutoKeyRepeatOn_;
 };
 
 #else /* #ifndef __WIN32__ */

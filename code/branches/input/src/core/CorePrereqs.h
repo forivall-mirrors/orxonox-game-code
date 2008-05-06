@@ -143,14 +143,17 @@ namespace orxonox
   class XMLPortParamContainer;
 
   // input
+  //class GUIInputHandler;
   class InputBuffer;
   class InputBufferListener;
   class InputManager;
+  class JoyStickHandler;
+  class JoyStickState;
   class KeyBinder;
-  class GUIInputHandler;
+  class KeyEvent;
   class KeyHandler;
   class MouseHandler;
-  class JoyStickHandler;
+  class MouseState;
 
 }
 

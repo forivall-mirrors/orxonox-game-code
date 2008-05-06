@@ -34,6 +34,7 @@
 #include "SignalHandler.h"
 
 #include <assert.h>
+#include <iostream>
 
 #include "Debug.h"
 
@@ -56,6 +57,19 @@ void SignalHandler::doCatch( const std::string & appName, const std::string & fi
 {
   this->appName = appName;
   this->fileName = fileName;
+
+  // prepare for restoring XAutoKeyRepeat
+	if (display_ = XOpenDisplay(0))
+  {
+		XGetKeyboardControl( display_, &bXAutoKeyRepeatOn_ );
+		XCloseDisplay(display_);
+  }
+  else
+  {
+    std::cout << "Warning: couldn't open X display to restore XAutoKeyRepeat." << std::endl;
+    XAutoKeyRepeatOn_ = false;
+  }
+
 
   // make sure doCatch is only called once without calling dontCatch
   assert( sigRecList.size() == 0 );
@@ -119,6 +133,16 @@ void SignalHandler::sigHandler( int sig )
     case SIGILL:
       sigName = "SIGILL";
       break;
+  }
+
+  if (XAutoKeyRepeatOn_)
+  {
+    std::cout << "Trying to restore XAutoKeyRepeat" << std::endl;
+	  if (display_ = XOpenDisplay(0))
+    {
+			XAutoRepeatOn(display_);
+		  XCloseDisplay(display_);
+    }
   }
 
   PRINTF(0)( "recieved signal %s\ntry to write backtrace to file orxonox.log\n", sigName.c_str() );

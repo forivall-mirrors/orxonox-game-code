@@ -218,11 +218,6 @@ namespace orxonox
     };
   }
 
-  class _CoreExport KeyboardState
-  {
-  public:
-  };
-
   struct _CoreExport Key
   {
     Key(const OIS::KeyEvent& evt) : key((KeyCode::Enum)evt.key), text(evt.text) { }
