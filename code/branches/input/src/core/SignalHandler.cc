@@ -43,6 +43,11 @@ SignalHandler * SignalHandler::singletonRef = NULL;
 #ifndef __WIN32__
 
 #include <wait.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/keysym.h>
+
+bool SignalHandler::bXAutoKeyRepeatOn_ = false;
 
 SignalHandler::SignalHandler()
 {
@@ -59,15 +64,21 @@ void SignalHandler::doCatch( const std::string & appName, const std::string & fi
   this->fileName = fileName;
 
   // prepare for restoring XAutoKeyRepeat
-	if (display_ = XOpenDisplay(0))
+    Display* display;
+	if ((display = XOpenDisplay(0)))
   {
-		XGetKeyboardControl( display_, &bXAutoKeyRepeatOn_ );
-		XCloseDisplay(display_);
+	    XKeyboardState oldState;
+		XGetKeyboardControl(display, &oldState);
+		if (oldState.global_auto_repeat == AutoRepeatModeOn)
+          bXAutoKeyRepeatOn_ = true;
+		else
+		  bXAutoKeyRepeatOn_ = false;
+		XCloseDisplay(display);
   }
   else
   {
     std::cout << "Warning: couldn't open X display to restore XAutoKeyRepeat." << std::endl;
-    XAutoKeyRepeatOn_ = false;
+    bXAutoKeyRepeatOn_ = false;
   }
 
 
@@ -135,13 +146,14 @@ void SignalHandler::sigHandler( int sig )
       break;
   }
 
-  if (XAutoKeyRepeatOn_)
+  if (bXAutoKeyRepeatOn_)
   {
     std::cout << "Trying to restore XAutoKeyRepeat" << std::endl;
-	  if (display_ = XOpenDisplay(0))
+	Display* display;
+	  if ((display = XOpenDisplay(0)))
     {
-			XAutoRepeatOn(display_);
-		  XCloseDisplay(display_);
+			XAutoRepeatOn(display);
+		  XCloseDisplay(display);
     }
   }
 

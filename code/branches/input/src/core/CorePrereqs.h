@@ -148,12 +148,9 @@ namespace orxonox
   class InputBufferListener;
   class InputManager;
   class JoyStickHandler;
-  class JoyStickState;
   class KeyBinder;
-  class KeyEvent;
   class KeyHandler;
   class MouseHandler;
-  class MouseState;
 
 }
 
