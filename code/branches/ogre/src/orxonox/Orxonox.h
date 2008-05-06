@@ -56,11 +56,11 @@ namespace orxonox {
   class _OrxonoxExport Orxonox
   {
     public:
-      void init(int argc, char **argv, std::string path);
-      void start();
-      void abortImmediateForce();
+      bool init(int argc, char **argv, std::string path);
+      bool start();
+
       void abortRequest();
-      inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
+      //inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
 
       static Orxonox* getSingleton();
       static void destroySingleton();
@@ -78,25 +78,21 @@ namespace orxonox {
       Orxonox& operator=(const Orxonox& instance);
       ~Orxonox();
 
-      // init functions
-      void serverInit(std::string path);
-      void clientInit(std::string path);
-      void standaloneInit(std::string path);
+      bool loadPlayground();
 
-      // run functions
-      void serverStart();
-      void clientStart();
-      void standaloneStart();
+      bool serverLoad();
+      bool clientLoad();
+      bool standaloneLoad();
 
-      void createScene();
-      void setupInputSystem();
-      void startRenderLoop();
+      bool loadScene();
+
+      bool startRenderLoop();
+
       float calculateEventTime(unsigned long, std::deque<unsigned long>&);
 
     private:
       GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
-      std::string           dataPath_;      //!< path to data
-      audio::AudioManager*  auMan_;         //!< audio manager
+      //audio::AudioManager*  auMan_;         //!< audio manager
       InputManager*         inputHandler_;  //!< Handles input with key bindings
       Ogre::Timer*          timer_;         //!< Main loop timer
       // TODO: make this a config-value by creating a config class for orxonox

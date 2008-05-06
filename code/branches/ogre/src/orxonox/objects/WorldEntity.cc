@@ -46,16 +46,14 @@ namespace orxonox
 
     WorldEntity::WorldEntity()
     {
-        RegisterObject(WorldEntity);
-
-        //create();
-
         this->bStatic_ = true;
         this->velocity_ = Vector3(0, 0, 0);
         this->acceleration_ = Vector3(0, 0, 0);
         this->rotationAxis_ = Vector3(0, 1, 0);
         this->rotationRate_ = 0;
         this->momentum_ = 0;
+
+        RegisterObject(WorldEntity);
 
         if (GraphicsEngine::getSingleton().getSceneManager())
         {

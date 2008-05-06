@@ -63,12 +63,7 @@ namespace orxonox
 
     SpaceShip::SpaceShip()
     {
-        RegisterObject(SpaceShip);
-        this->registerAllVariables();
-
         SpaceShip::instance_s = this;
-
-        this->setConfigValues();
 
         this->setMouseEventCallback_ = false;
         this->bLMousePressed_ = false;
@@ -138,6 +133,9 @@ namespace orxonox
 */
 //         this->create();
 
+        RegisterObject(SpaceShip);
+        this->registerAllVariables();
+        this->setConfigValues();
 
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
@@ -165,6 +163,12 @@ namespace orxonox
 
     void SpaceShip::init()
     {
+        if (!setMouseEventCallback_)
+        {
+          InputManager::addMouseHandler(this, "SpaceShip");
+          setMouseEventCallback_ = true;
+        }
+
         // START CREATING THRUSTER
         this->tt_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         this->tt_->getParticleSystem()->setParameter("local_space","true");
@@ -427,12 +431,6 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
-        if (!setMouseEventCallback_)
-        {
-          InputManager::addMouseHandler(this, "SpaceShip");
-          setMouseEventCallback_ = true;
-        }
-
         if (this->redNode_ && this->greenNode_)
         {
             this->blinkTime_ += dt;

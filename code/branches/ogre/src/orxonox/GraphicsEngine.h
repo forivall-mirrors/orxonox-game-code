@@ -51,18 +51,20 @@ namespace orxonox {
     /**
     @brief Graphics engine manager class
     */
-    class _OrxonoxExport GraphicsEngine : public Ogre::WindowEventListener, public OrxonoxClass, public Ogre::LogListener
+    class _OrxonoxExport GraphicsEngine : public Ogre::WindowEventListener, public Ogre::LogListener, public OrxonoxClass
     {
-        friend class ClassIdentifier<GraphicsEngine>;
         public:
-            void setConfigPath(std::string path) { this->configPath_ = path; };
             void setConfigValues();
-            void setup();
-            bool load(std::string path);
-            void loadRessourceLocations(std::string path);
-            Ogre::SceneManager* getSceneManager();
-            void initialise();
+            bool setup(std::string& dataPath);
+            void declareRessourceLocations();
+            bool loadRenderer();
+            void initialiseResources();
+            bool createNewScene();
+
             void destroy();
+
+            Ogre::SceneManager* getSceneManager() { return scene_; }
+            std::string& getDataPath() { return dataPath_; }
 
             // several window properties
             Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
@@ -70,12 +72,12 @@ namespace orxonox {
             int getWindowWidth() const;
             int getWindowHeight() const;
 
-            static GraphicsEngine& getSingleton();
-            static GraphicsEngine* getSingletonPtr() { return &getSingleton(); }
-
             void windowMoved(Ogre::RenderWindow* rw);
             void windowResized(Ogre::RenderWindow* rw);
             void windowFocusChanged(Ogre::RenderWindow* rw);
+
+            static GraphicsEngine& getSingleton();
+            static GraphicsEngine* getSingletonPtr() { return &getSingleton(); }
 
         private:
             // don't mess with singletons

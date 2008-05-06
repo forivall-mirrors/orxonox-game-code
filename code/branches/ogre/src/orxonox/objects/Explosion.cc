@@ -46,10 +46,10 @@ namespace orxonox
 
     Explosion::Explosion(WorldEntity* owner)
     {
-        RegisterObject(Explosion);
-
         this->particle_ = 0;
         this->lifetime_ = 0.4;
+
+        RegisterObject(Explosion);
 
         if (owner)
         {
