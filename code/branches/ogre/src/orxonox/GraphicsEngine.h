@@ -58,7 +58,7 @@ namespace orxonox {
             bool setup(std::string& dataPath);
             void declareRessourceLocations();
             bool loadRenderer();
-            void initialiseResources();
+            bool initialiseResources();
             bool createNewScene();
 
             void destroy();

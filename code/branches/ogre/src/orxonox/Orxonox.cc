@@ -36,12 +36,9 @@
 #include "Orxonox.h"
 
 //****** STD *******
-//#include <iostream>
-//#include <exception>
 #include <deque>
 
 //****** OGRE ******
-//#include <OgreException.h>
 #include <OgreFrameListener.h>
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
@@ -158,7 +155,7 @@ namespace orxonox
   Orxonox *Orxonox::singletonRef_s = 0;
 
   /**
-   * create a new instance of Orxonox
+   * Create a new instance of Orxonox. Avoid doing any actual work here.
    */
   Orxonox::Orxonox()
   {
@@ -176,7 +173,7 @@ namespace orxonox
   }
 
   /**
-   * destruct Orxonox
+   * Destruct Orxonox.
    */
   Orxonox::~Orxonox()
   {
@@ -207,7 +204,7 @@ namespace orxonox
   }
 
   /**
-   * @return singleton object
+   * @return singleton reference
    */
   Orxonox* Orxonox::getSingleton()
   {
@@ -247,6 +244,7 @@ namespace orxonox
     if(ar.errorHandling())
       return false;
 
+    COUT(3) << "*** Orxonox: Mode is " << mode << "." << std::endl;
     if (mode == "client")
       mode_ = CLIENT;
     else if (mode == "server")
@@ -259,7 +257,7 @@ namespace orxonox
     //else
 
     // for playable server, client and standalone, the startup
-    // procedure until the GUI is the identical
+    // procedure until the GUI is identical
 
     TclBind::getInstance().setDataPath(dataPath);
     ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
@@ -283,21 +281,22 @@ namespace orxonox
     if (!ogre_->loadRenderer())    // creates the render window
       return false;
 
-    // Calls the InputHandler which sets up the input devices.
+    // Calls the InputManager which sets up the input devices.
     // The render window width and height are used to set up the mouse movement.
     if (!InputManager::initialise(ogre_->getWindowHandle(),
           ogre_->getWindowWidth(), ogre_->getWindowHeight()))
       return false;
 
-    // TODO: Spread this so that this call onyl initialises things needed for the GUI
-    ogre_->initialiseResources();
+    // TODO: Spread this so that this call only initialises things needed for the GUI
+    if (!ogre_->initialiseResources())
+      return false;
 
     // TOOD: load the GUI here
     // set InputManager to GUI mode
     InputManager::setInputState(InputManager::IS_GUI);
     // TODO: run GUI here
 
-    // The following lines depend very much on the GUI, so they're probably misplaced here..
+    // The following lines depend very much on the GUI output, so they're probably misplaced here..
 
     InputManager::setInputState(InputManager::IS_NONE);
 
@@ -324,6 +323,10 @@ namespace orxonox
     return startRenderLoop();
   }
 
+  /**
+   * Loads everything in the scene except for the actual objects.
+   * This includes HUD, Console..
+   */
   bool Orxonox::loadPlayground()
   {
     ogre_->createNewScene();
@@ -337,12 +340,14 @@ namespace orxonox
     //auMan_->ambientStart();
 
     // Load the HUD
+    COUT(3) << "*** Orxonox: Loading HUD..." << std::endl;
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
     orxonoxHUD_ = new HUD();
     orxonoxHUD_->setEnergyValue(20);
     orxonoxHUD_->setEnergyDistr(20,20,60);
     hudOverlay->show();
 
+    COUT(3) << "*** Orxonox: Loading Console..." << std::endl;
     InputBuffer* ib = dynamic_cast<InputBuffer*>(InputManager::getKeyHandler("buffer"));
     /*
     Testconsole* console = new Testconsole(ib);
@@ -364,9 +369,12 @@ namespace orxonox
     return true;
   }
 
+  /**
+   * Level loading method for server mode.
+   */
   bool Orxonox::serverLoad()
   {
-    COUT(2) << "initialising server" << std::endl;
+    COUT(2) << "Loading level in server mode" << std::endl;
 
     server_g = new network::Server();
 
@@ -378,9 +386,12 @@ namespace orxonox
     return true;
   }
 
+  /**
+   * Level loading method for client mode.
+   */
   bool Orxonox::clientLoad()
   {
-    COUT(2) << "initialising client" << std::endl;\
+    COUT(2) << "Loading level in client mode" << std::endl;\
 
     if (serverIp_.compare("") == 0)
       client_g = new network::Client();
@@ -393,9 +404,12 @@ namespace orxonox
     return true;
   }
 
+  /**
+   * Level loading method for standalone mode.
+   */
   bool Orxonox::standaloneLoad()
   {
-    COUT(2) << "initialising standalone mode" << std::endl;
+    COUT(2) << "Loading level in standalone mode" << std::endl;
 
     if (!loadScene())
       return false;
@@ -403,6 +417,9 @@ namespace orxonox
     return true;
   }
 
+  /**
+   * Helper method to load a level.
+   */
   bool Orxonox::loadScene()
   {
     Level* startlevel = new Level("levels/sample.oxw");
@@ -446,6 +463,7 @@ namespace orxonox
       timer_ = new Ogre::Timer();
     timer_->reset();
 
+    COUT(3) << "*** Orxonox: Starting the main loop." << std::endl;
 	  while (!bAbort_)
 	  {
 		  // Pump messages in all registered RenderWindows
@@ -533,8 +551,12 @@ namespace orxonox
     return (float)(times.back() - times.front()) / ((times.size() - 1) * 1000);
   }
 
+  /**
+   * Static function that shows the console in game mode.
+   */
   void Orxonox::activateConsole()
   {
+    // currently, the console shows itself when feeded with input.
     InputManager::setInputState(InputManager::IS_CONSOLE);
   }
 }
