@@ -259,7 +259,9 @@ namespace network
       }
       ++it;
     }
-
+    
+    delete[] state->data;
+    delete state;
     return true;
   }
   

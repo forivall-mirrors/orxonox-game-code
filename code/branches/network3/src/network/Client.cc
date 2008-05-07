@@ -234,8 +234,7 @@ namespace network
       if(gs){
         COUT(4) << "client tick: sending gs " << gs << std::endl;
         if(client_connection.addPacket(pck_gen.gstate(gs)))
-          if(!client_connection.sendPackets())
-            COUT(3) << "Problem sending partial gamestate" << std::endl;
+          COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
         // now delete it to save memory
         delete [] gs->data;
         delete gs;
@@ -250,6 +249,8 @@ namespace network
         elaborate(packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
       }
     }
+    if(!client_connection.sendPackets())
+      COUT(3) << "Problem sending packets to server" << std::endl;
     return;
   }
 
@@ -259,8 +260,9 @@ namespace network
       COUT(5) << "received gamestate id: " << data->id << std::endl;
       if(gamestate.pushGameState(data)){
         client_connection.addPacket(pck_gen.acknowledgement(id));
-        if(!client_connection.sendPackets())
-          COUT(2) << "Could not send acknowledgment" << std::endl;
+        // we do this at the end of a tick
+//        if(!client_connection.sendPackets())
+//          COUT(2) << "Could not send acknowledgment" << std::endl;
       }
 //       test_once=true;
     }

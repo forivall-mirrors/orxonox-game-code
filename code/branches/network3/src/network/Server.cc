@@ -209,6 +209,9 @@ namespace network
       //std::cout << "added gamestate" << std::endl;
       added=true;
       temp=temp->next();
+      // now delete gamestate
+      delete[] gs->data;
+      delete gs;
     }
     if(added) {
       //std::cout << "send gamestates from server.cc in sendGameState" << std::endl;
@@ -221,6 +224,7 @@ namespace network
   void Server::processAck( ack *data, int clientID) {
     COUT(4) << "Server: processing ack from client: " << clientID << "; ack-id: " << data->a << std::endl;
     gamestates->ackGameState(clientID, data->a);
+    delete data;
   }
   
   bool Server::processConnectRequest( connectRequest *con, int clientID ){
@@ -234,8 +238,6 @@ namespace network
     COUT(4) << "processing partial gamestate from client " << clientID << std::endl;
     if(!gamestates->pushGameState(data, clientID))
         COUT(3) << "Could not push gamestate\t\t\t\t=====" << std::endl;
-//     delete[] data->data;
-//     delete data;
   }
 
 }

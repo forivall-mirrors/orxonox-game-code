@@ -288,12 +288,12 @@ namespace network
     retval = compress( dest, &buffer, a->data, (uLong)size );
 
     switch ( retval ) {
-      case Z_OK: COUT(5) << "G.St.Man: compress: successfully compressed" << std::endl; break;
-      case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl; 
+      case Z_OK: COUT(5) << "G.St.Cl: compress: successfully compressed" << std::endl; break;
+      case Z_MEM_ERROR: COUT(1) << "G.St.Cl: compress: not enough memory available in gamestate.compress" << std::endl; 
       return NULL;
-      case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl;
+      case Z_BUF_ERROR: COUT(2) << "G.St.Cl: compress: not enough memory available in the buffer in gamestate.compress" << std::endl;
       return NULL;
-      case Z_DATA_ERROR: COUT(2) << "G.St.Man: compress: data corrupted in gamestate.compress" << std::endl;
+      case Z_DATA_ERROR: COUT(2) << "G.St.Cl: compress: data corrupted in gamestate.compress" << std::endl;
       return NULL;
     }
 
