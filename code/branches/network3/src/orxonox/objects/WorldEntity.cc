@@ -80,6 +80,7 @@ namespace orxonox
     {
         if (!this->bStatic_)
         {
+//             COUT(4) << "acceleration: " << this->acceleration_ << " velocity: " << this->velocity_ << std::endl;
             this->velocity_ += (dt * this->acceleration_);
             this->translate(dt * this->velocity_, Ogre::Node::TS_LOCAL);
 
@@ -221,9 +222,9 @@ namespace orxonox
       registerVar( (void*) &(this->bStatic_), sizeof(this->bStatic_), network::DATA, 0x3);
       //register acceleration
       // register velocity_
-      registerVar( (void*) &(this->getAcceleration().x), sizeof(this->getAcceleration().x), network::DATA, 0x3);
-      registerVar( (void*) &(this->getAcceleration().y), sizeof(this->getAcceleration().y), network::DATA, 0x3);
-      registerVar( (void*) &(this->getAcceleration().z), sizeof(this->getAcceleration().z), network::DATA, 0x3);
+//       registerVar( (void*) &(this->getAcceleration().x), sizeof(this->getAcceleration().x), network::DATA, 0x3);
+//       registerVar( (void*) &(this->getAcceleration().y), sizeof(this->getAcceleration().y), network::DATA, 0x3);
+//       registerVar( (void*) &(this->getAcceleration().z), sizeof(this->getAcceleration().z), network::DATA, 0x3);
     }
 
     void WorldEntity::attachWorldEntity(WorldEntity* entity)

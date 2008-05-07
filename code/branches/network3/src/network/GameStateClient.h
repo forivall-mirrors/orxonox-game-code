@@ -69,7 +69,6 @@ namespace network
     void removeObject(orxonox::Iterator<Synchronisable> &it);
     void printGameStateMap();
 
-    GameState     *reference;
     int           last_diff_;
     std::map<int, GameState *> gameStateMap;
     

@@ -164,7 +164,7 @@ used by processQueue in Server.cc
     // what about some error-handling here ?
     enet_initialize();
     atexit(enet_deinitialize);
-    ENetEvent event;
+    ENetEvent *event = new ENetEvent;
     server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
     if(server==NULL){
       // add some error handling here ==========================
@@ -173,15 +173,15 @@ used by processQueue in Server.cc
     }
 
     while(!quit){
-      if(enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT)<0){
+      if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
         // we should never reach this point
         quit=true;
         // add some error handling here ========================
       }
-      switch(event.type){
+      switch(event->type){
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
-          addClient(&event);
+          addClient(event);
           //this is a workaround to ensure thread safety
           /*if(!addFakeConnectRequest(&event))
             COUT(3) << "Problem pushing fakeconnectRequest to queue" << std::endl;*/
@@ -190,15 +190,16 @@ used by processQueue in Server.cc
         case ENET_EVENT_TYPE_RECEIVE:
           //std::cout << "received data" << std::endl;
           COUT(5) << "Con.Man: receive event has occured" << std::endl;
-          processData(&event);
+          processData(event);
           break;
         case ENET_EVENT_TYPE_DISCONNECT:
-          // add some error/log handling here
-          clientDisconnect(event.peer);
+          clientDisconnect(event->peer);
           break;
         case ENET_EVENT_TYPE_NONE:
           break;
       }
+//       usleep(1000);
+      //yield(); //TODO: find apropriate
     }
     disconnectClients();
     // if we're finishied, destroy server
@@ -245,7 +246,7 @@ used by processQueue in Server.cc
 
   bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
     COUT(4) << "removing client from list" << std::endl;
-    return head_->removeClient(peer);
+    return removeClient(head_->findClient(&(peer->address))->getID());
   }
 /**
 This function adds a client that connects to the clientlist of the server
@@ -312,6 +313,21 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     return true;
   }
   
+  bool ConnectionManager::removeClient(int clientID){
+    orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::start();
+    while(it){
+      if(it->objectID!=head_->findClient(clientID)->getShipID()){
+        ++it;
+        continue;
+      }
+      orxonox::Iterator<orxonox::SpaceShip> temp=it;
+      ++it;
+      delete  *temp;
+      return head_->removeClient(clientID);
+    }
+    return false;
+  }
+  
   bool ConnectionManager::createShip(ClientInformation *client){
     orxonox::Identifier* id = ID("SpaceShip");
     if(!id){
@@ -334,13 +350,13 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     no->create();
     
     client->setShipID(no->objectID);
-    no->getFocus();
     return true;
   }
   
   bool ConnectionManager::sendWelcome(int clientID, int shipID, bool allowed){
     addPacket(packet_gen.generateWelcome(clientID, shipID, allowed),clientID);
     sendPackets();
+    return true;
   }
   
   bool ConnectionManager::addFakeConnectRequest(ENetEvent *ev){

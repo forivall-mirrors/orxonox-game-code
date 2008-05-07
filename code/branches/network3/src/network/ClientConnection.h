@@ -75,6 +75,7 @@ namespace network
     // send out all queued packets and save result in event
     bool sendPackets(ENetEvent *event);
     bool waitEstablished(int milisec);
+    bool isConnected(){return established;}
   private:
     bool processData(ENetEvent *event);
     // implementation of the listener

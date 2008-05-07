@@ -77,7 +77,7 @@ namespace network
       chatMessage( packet, clientId );
       return true;
     case GAMESTATE:
-      gstate( packet );
+      gstate( packet, clientId );
       return true;
     case CLASSID:
       clid(packet);
@@ -154,7 +154,7 @@ namespace network
     processChat( chatting, clientId ); //debug info
   }
 
-  void PacketDecoder::gstate( ENetPacket* packet )
+  void PacketDecoder::gstate( ENetPacket* packet, int clientID )
   {
     GameStateCompressed* currentState = NULL;
     currentState = new GameStateCompressed;
@@ -189,7 +189,7 @@ namespace network
 
     //clean memory
     enet_packet_destroy( packet );
-    processGamestate(currentState);
+    processGamestate(currentState, clientID);
   }
 
   void PacketDecoder::clid( ENetPacket *packet)
@@ -233,7 +233,7 @@ namespace network
     printChat(data, clientId);
   }
 
-  void PacketDecoder::processGamestate( GameStateCompressed *state )
+  void PacketDecoder::processGamestate( GameStateCompressed *state, int clientID )
   {
     COUT(5) << "PacketDecoder: processing Gamestate" << std::endl;
     //printGamestate( state );

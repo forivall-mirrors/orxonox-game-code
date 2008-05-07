@@ -73,6 +73,7 @@ namespace network
     bool sendGameState();
     void processAck( ack *data, int clientID);
     bool processConnectRequest( connectRequest *con, int clientID );
+    void processGamestate( GameStateCompressed *data, int clientID);
     ConnectionManager *connection;
     GameStateManager *gamestates;
     PacketGenerator packet_gen;

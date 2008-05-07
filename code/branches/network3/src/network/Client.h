@@ -102,12 +102,13 @@ namespace network
     bool isConnected;
 
     // implement data processing functions of PacketDecoder
-    void processGamestate( GameStateCompressed *data);
+    void processGamestate( GameStateCompressed *data, int clientID);
     void processClassid(classid *clid);
     void processChat( chat *data);
     bool processWelcome( welcome *w );
     int clientID_;     // this is the id the server gave to us
     int shipID_;
+    bool test_once;
   };
 
 

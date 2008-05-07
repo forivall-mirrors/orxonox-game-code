@@ -142,7 +142,7 @@ namespace network
     processQueue();
     updateGamestate();
 
-    usleep(200000); // TODO remove
+//     usleep(500000); // TODO remove
     return;
   }
 
@@ -227,6 +227,15 @@ namespace network
     COUT(4) << "processing connectRequest " << std::endl;
     //connection->addPacket(packet_gen.gstate(gamestates->popGameState(clientID)) , clientID);
     connection->createClient(clientID);
+    return true;
+  }
+  
+  void Server::processGamestate( GameStateCompressed *data, int clientID){
+    COUT(4) << "processing partial gamestate from client " << clientID << std::endl;
+    if(!gamestates->pushGameState(data, clientID))
+        COUT(3) << "Could not push gamestate\t\t\t\t=====" << std::endl;
+//     delete[] data->data;
+//     delete data;
   }
 
 }

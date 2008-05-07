@@ -105,7 +105,10 @@ namespace network
     //chose wheather the next gamestate is the first or not
     if(gID != GAMESTATEID_INITIAL){
       // TODO something with the gamestatemap is wrong
-      GameState *client = gameStateMap.find(gID)->second;
+      GameState *client=NULL;
+      std::map<int, GameState*>::iterator it = gameStateMap.find(gID);
+      if(it!=gameStateMap.end())
+        client = it->second;
       GameState *server = reference;
       //head_->findClient(clientID)->setGamestateID(id);
       COUT(3) << "client: " << client << " server: " << server << " gamestatemap: " << &gameStateMap << std::endl;
@@ -202,6 +205,8 @@ namespace network
   }
 
   bool GameStateManager::loadPartialSnapshot(GameState *state, int clientID){
+    if(!state)
+      return false;
     unsigned char *data=state->data;
     COUT(4) << "loadSnapshot: loading gs: " << state->id << std::endl;
     // get the start of the Synchronisable list
@@ -218,13 +223,14 @@ namespace network
       data+=sizeof(int);
       sync.data = data;
       data+=sync.length;
-
+      COUT(4) << "objectID: " << sync.objectID << " classID: " << sync.classID << std::endl;
       while(it && it->objectID!=sync.objectID)
         ++it;
 
 
       if(!it){
         // the object does not exist yet
+        COUT(4) << "loadsnapshot: creating new object " << std::endl;
         //COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
         orxonox::Identifier* id = ID((unsigned int)sync.classID);
         if(!id){
@@ -243,6 +249,7 @@ namespace network
           COUT(1) << "We couldn't manifest (create() ) the object: " << sync.objectID << std::endl;
       }else{
         // we have our object
+        COUT(4) << "loadpartialsnapshot: we found the appropriate object" << std::endl;
         if(checkAccess(clientID, sync.objectID)){
           if(! it->updateData(sync))
             COUT(1) << "We couldn't update objectID: " \
@@ -395,7 +402,7 @@ namespace network
     retval = uncompress( dest, &length, a->data, (uLong)compsize );
     //std::cout << "length " << length << std::endl;
     switch ( retval ) {
-      case Z_OK: COUT(4) << "successfully decompressed" << std::endl; break;
+      case Z_OK: COUT(5) << "successfully decompressed" << std::endl; break;
       case Z_MEM_ERROR: COUT(1) << "not enough memory available" << std::endl; return NULL;
       case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer" << std::endl; return NULL;
       case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return NULL;
@@ -443,7 +450,8 @@ namespace network
   
   bool GameStateManager::checkAccess(int clientID, int objectID){
     // currently we only check, wheter the object is the clients spaceship
-    return head_->findClient(objectID)->getShipID()==objectID;
+//     return head_->findClient(objectID)->getShipID()==objectID;
+    return true; // TODO: change this
   }
 
 }

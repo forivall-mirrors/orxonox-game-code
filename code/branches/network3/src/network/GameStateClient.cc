@@ -165,6 +165,11 @@ namespace network
   }
 
   GameState *GameStateClient::getPartialSnapshot(){
+    
+    GameState *reference;
+//     std::map<int, GameState*>::iterator it = --gameStateMap.end();
+//     reference=(--gameStateMap.end())->second;
+    
     //std::cout << "begin getSnapshot" << std::endl;
     //the size of the gamestate
     int totalsize=0;
@@ -177,7 +182,9 @@ namespace network
     syncData sync;
 
     GameState *retval=new GameState; //return value
-    retval->id=reference->id;
+//     retval->id=reference->id;
+    if(gameStateMap.size()!=0)
+      retval->id=(--gameStateMap.end())->second->id;
     retval->diffed=false;
     retval->complete=false;
     COUT(4) << "G.ST.Client: producing partial gamestate with id: " << retval->id << std::endl;
@@ -189,6 +196,7 @@ namespace network
         continue;
       size+=it->getSize(); // size of the actual data of the synchronisable
       size+=3*sizeof(int); // size of datasize, classID and objectID
+      COUT(4) << "getpartialsnapshot: size: " << size << std::endl;
     }
     //retval->data = (unsigned char*)malloc(size);
     retval->data = new unsigned char[size];

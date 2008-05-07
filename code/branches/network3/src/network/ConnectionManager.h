@@ -88,6 +88,7 @@ namespace network
 
   private:
     bool clientDisconnect(ENetPeer *peer);
+    bool removeClient(int clientID);
     bool processData(ENetEvent *event);
     bool addClient(ENetEvent *event);
     void receiverThread();

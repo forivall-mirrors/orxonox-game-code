@@ -49,7 +49,7 @@ namespace network
 {
   
   
-  int Synchronisable::state_=1; // detemines wheter we are server (default) or client
+  int Synchronisable::state_=0x1; // detemines wheter we are server (default) or client
   
   /**
   * Constructor:
@@ -164,8 +164,10 @@ namespace network
     int n=0; //offset
     for(i=syncList->begin(); n<datasize && i!=syncList->end(); ++i){
       //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
-      if( ((*i)->mode & state_) == 0 )
+      if( ((*i)->mode & state_) == 0 ){
+        COUT(4) << "not getting data: " << std::endl;
         continue;  // this variable should only be received
+      }
       switch((*i)->type){
       case DATA:
         std::memcpy( (void *)(retVal.data+n), (void*)((*i)->var), (*i)->size);
@@ -198,8 +200,10 @@ namespace network
     }
     COUT(5) << "Synchronisable: objectID " << vars.objectID << ", classID " << vars.classID << " size: " << vars.length << " synchronising data" << std::endl;
     for(i=syncList->begin(); i!=syncList->end(); i++){
-      if( ((*i)->mode ^ state_) == 0 )
-        continue;  // this variable should only be sent
+      if( ((*i)->mode ^ state_) == 0 ){
+        COUT(5) << "synchronisable: not updating variable " << std::endl;
+        continue;  // this variable should only be updated
+      }
       COUT(5) << "Synchronisable: element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
       switch((*i)->type){
       case DATA:
