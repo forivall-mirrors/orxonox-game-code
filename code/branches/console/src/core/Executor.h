@@ -34,6 +34,7 @@
 
 #include "util/SubString.h"
 #include "util/String.h"
+#include "util/Math.h"
 #include "Functor.h"
 #include "Debug.h"
 
@@ -99,7 +100,7 @@
             } \
             COUT(5) << tokens[i]; \
         } \
-        COUT(5) << ") and " << (paramCount - tokens.size()) << " default values ("; \
+        COUT(5) << ") and " << max((int)paramCount - (int)tokens.size(), 0) << " default values ("; \
         for (unsigned int i = tokens.size(); i < paramCount; i++) \
         { \
             param[i] = this->defaultValue_[i]; \

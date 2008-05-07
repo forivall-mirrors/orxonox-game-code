@@ -44,9 +44,18 @@ namespace orxonox
 
     struct TclThread
     {
+        unsigned int threadID_;
         Tcl::interpreter* interpreter_;
         boost::thread* thread_;
-        boost::try_mutex* mutex_;
+        boost::mutex* evalMutex_;
+        boost::mutex* stateMutex_;
+        enum State
+        {
+            Ready,
+            Busy,
+            Finished,
+            Error
+        }* state_;
     };
 
     class _CoreExport TclThreadManager : public Tickable
@@ -59,13 +68,18 @@ namespace orxonox
             static void destroy(unsigned int threadID);
             static void execute(unsigned int threadID, const std::string& command);
             static std::string query(unsigned int threadID, const std::string& command);
+            static void status();
+            static void dump(unsigned int threadID);
 
+            static std::string tcl_query(int id, Tcl::object const &args);
             static void tcl_execute(Tcl::object const &args);
-            static std::string tcl_orxonox(Tcl::object const &args);
 
             Tcl::interpreter* createTclInterpreter(unsigned int threadID) const;
             bool createTclThread();
             bool destroyTclThread(unsigned int threadID);
+
+            void setState(TclThread* tclThread, TclThread::State state);
+            TclThread::State getState(TclThread* tclThread);
 
             void pushCommandBack(const std::string& command);
             std::string popCommandFront();
@@ -84,22 +98,25 @@ namespace orxonox
             TclThreadManager();
 
             bool isReady_;
+            bool isQuerying_;
+            unsigned int queryID_;
 
             unsigned int IDcount_;
-            std::map<unsigned int, TclThread> threads_;
-            std::map<unsigned int, std::queue<std::string> > threadQueues_;
+            std::map<unsigned int, TclThread*> threads_;
+            std::map<unsigned int, std::pair<std::queue<std::string>, boost::condition*> > threadQueues_;
             std::queue<std::string> orxonoxQueue_;
 
-            boost::mutex orxonoxQueueMutex_;
-            boost::mutex threadQueuesMutex_;
-            boost::mutex threadsMutex_;
-            boost::mutex orxonoxEvalMutex_;
+            boost::try_mutex orxonoxQueueMutex_;
+            boost::try_mutex threadQueuesMutex_;
+            boost::try_mutex threadsMutex_;
+            boost::try_mutex orxonoxStateMutex_;
+            boost::try_mutex orxonoxQueryMutex_;
 
             boost::condition orxonoxQueueCondition_;
             boost::condition orxonoxEvalCondition_;
     };
 
-    _CoreExport void tclThreadLoop(Tcl::interpreter* interpreter, boost::try_mutex* mutex, unsigned int threadID);
+    _CoreExport void tclThreadLoop(TclThread* tclThread);
 }
 
 #endif /* _TclThreadManager_H__ */

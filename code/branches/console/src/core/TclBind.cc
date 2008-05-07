@@ -136,7 +136,7 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         }
         catch (std::exception const &e)
         {
-            COUT(1) << "Error while executing tcl: " << e.what() << std::endl;
+            COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;
         }
 
         return "";
@@ -155,7 +155,7 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         }
         catch (std::exception const &e)
         {
-            COUT(1) << "Error while executing tcl: " << e.what() << std::endl;
+            COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;
         }
 
         return false;
