@@ -123,6 +123,8 @@ namespace orxonox
             float mouseY_;
 
             float emitterRate_;
+            
+            bool server_;
     };
 }
 

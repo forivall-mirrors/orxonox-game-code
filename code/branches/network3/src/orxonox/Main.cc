@@ -74,7 +74,7 @@ extern "C" {
 int main(int argc, char **argv)
 {
   try {
-    SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
+    //SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
     Orxonox* orx = Orxonox::getSingleton();
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE

@@ -198,7 +198,7 @@ used by processQueue in Server.cc
         case ENET_EVENT_TYPE_NONE:
           break;
       }
-      usleep(100);
+//       usleep(100);
       //yield(); //TODO: find apropriate
     }
     disconnectClients();

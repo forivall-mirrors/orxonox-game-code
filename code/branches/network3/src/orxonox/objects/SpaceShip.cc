@@ -103,6 +103,8 @@ namespace orxonox
 
         this->setRotationAxis(1, 0, 0);
         this->setStatic(false);
+        
+        server_=false;
 
 
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
@@ -336,6 +338,7 @@ namespace orxonox
         XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, mode);
         
+        server_=true; // TODO: this is only a hack
         SpaceShip::create();
         getFocus();
     }
@@ -534,7 +537,7 @@ namespace orxonox
             }
         }
 
-        if(!network::Client::getSingleton() || network::Client::getSingleton()->getShipID() == objectID){
+        if( (network::Client::getSingleton() &&  network::Client::getSingleton()->getShipID() == objectID) || server_ ){
           COUT(4) << "steering our ship: " << objectID << " mkeyboard: " << mKeyboard << std::endl;
           if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
               this->acceleration_.x = this->translationAcceleration_;
