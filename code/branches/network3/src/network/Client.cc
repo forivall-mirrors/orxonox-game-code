@@ -236,7 +236,7 @@ namespace network
         if(client_connection.addPacket(pck_gen.gstate(gs)))
           COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
         // now delete it to save memory
-        delete [] gs->data;
+        delete[] gs->data;
         delete gs;
       }
     }

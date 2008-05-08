@@ -260,6 +260,8 @@ namespace network
       ++it;
     }
     
+    delete[] state->data;
+    delete state;
     return true;
   }
   
@@ -416,8 +418,6 @@ namespace network
     gamestate->diffed = a->diffed;
     gamestate->complete = a->complete;
 
-    delete[] a->data; //delete compressed data
-    delete a; //we do not need the old (struct) gamestate anymore
 
     return gamestate;
   }

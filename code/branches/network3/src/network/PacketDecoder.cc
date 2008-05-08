@@ -238,8 +238,8 @@ namespace network
   {
     COUT(3) << "PacketDecoder-process: processing Gamestate" << std::endl;
     //printGamestate( state );
-    delete[] state->data;
-    delete state;
+//     delete[] state->data;
+//     delete state;
   }
 
   void PacketDecoder::processClassid( classid *cid)
