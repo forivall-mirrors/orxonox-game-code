@@ -221,6 +221,11 @@ namespace orxonox {
     try
     {
       Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+      Ogre::StringVector str = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
+      for (unsigned int i = 0; i < str.size(); i++)
+      {
+        Ogre::ResourceGroupManager::getSingleton().loadResourceGroup(str[i]);
+      }
     }
     catch (Ogre::Exception e)
     {
