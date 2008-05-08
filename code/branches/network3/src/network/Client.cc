@@ -83,7 +83,7 @@ namespace network
   Client::Client(): client_connection(NETWORK_PORT,"127.0.0.1"){
     // set server address to localhost
     isConnected=false;
-    test_once=false;
+    isSynched_=false;
   }
 
   /**
@@ -93,7 +93,7 @@ namespace network
   */
   Client::Client(std::string address, int port) : client_connection(port, address){
     isConnected=false;
-    test_once=false;
+    isSynched_=false;
   }
 
   /**
@@ -103,7 +103,7 @@ namespace network
   */
   Client::Client(const char *address, int port) : client_connection(port, address){
     isConnected=false;
-    test_once=false;
+    isSynched_=false;
   }
 
   Client::~Client(){
@@ -228,7 +228,7 @@ namespace network
   * Performs a GameState update
   */
   void Client::tick(float time){
-    if(client_connection.isConnected()){
+    if(client_connection.isConnected() && isSynched_){
       COUT(4) << "popping partial gamestate: " << std::endl;
       GameStateCompressed *gs = gamestate.popPartialGameState();
       if(gs){
@@ -245,9 +245,7 @@ namespace network
     while(!(client_connection.queueEmpty())){
       packet = client_connection.getPacket();
       COUT(5) << "tick packet size " << packet->dataLength << std::endl;
-      if(!test_once){
-        elaborate(packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
-      }
+      elaborate(packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
     }
     if(!client_connection.sendPackets())
       COUT(3) << "Problem sending packets to server" << std::endl;
@@ -255,16 +253,15 @@ namespace network
   }
 
   void Client::processGamestate( GameStateCompressed *data, int clientID){
-    if(!test_once){
-      int id = data->id;
-      COUT(5) << "received gamestate id: " << data->id << std::endl;
-      if(gamestate.pushGameState(data)){
-        client_connection.addPacket(pck_gen.acknowledgement(id));
+    int id = data->id;
+    COUT(5) << "received gamestate id: " << data->id << std::endl;
+    if(gamestate.pushGameState(data)){
+      if(!isSynched_)
+        isSynched_=true;
+      client_connection.addPacket(pck_gen.acknowledgement(id));
         // we do this at the end of a tick
-//        if(!client_connection.sendPackets())
-//          COUT(2) << "Could not send acknowledgment" << std::endl;
-      }
-//       test_once=true;
+       if(!client_connection.sendPackets())
+         COUT(2) << "Could not send acknowledgment" << std::endl;
     }
   }
 
@@ -274,17 +271,21 @@ namespace network
     if(id!=NULL)
       id->setNetworkID(clid->clid);
     COUT(4) << "Client: received and set network id: " << clid->clid << "; classname: " << clid->message << std::endl;
+    delete clid;
     return;
   }
 
   void Client::processChat( chat *data){
     COUT(0) << "Server: " << data->message << std::endl;
+    delete[] data->message;
+    delete data;
   }
   
   bool Client::processWelcome( welcome *w ){
     COUT(4) << "processing welcome message" << std::endl;
     clientID_ = w->clientID;
     shipID_ = w->shipID;
+    delete w;
     return true;
   }
 

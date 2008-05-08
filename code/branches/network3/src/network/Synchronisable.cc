@@ -165,7 +165,7 @@ namespace network
     for(i=syncList->begin(); n<datasize && i!=syncList->end(); ++i){
       //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
       if( ((*i)->mode & state_) == 0 ){
-        COUT(4) << "not getting data: " << std::endl;
+        COUT(5) << "not getting data: " << std::endl;
         continue;  // this variable should only be received
       }
       switch((*i)->type){

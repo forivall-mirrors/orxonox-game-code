@@ -100,6 +100,7 @@ namespace network
     PacketGenerator pck_gen;
     GameStateClient gamestate;
     bool isConnected;
+    bool isSynched_;
 
     // implement data processing functions of PacketDecoder
     void processGamestate( GameStateCompressed *data, int clientID);
@@ -108,7 +109,6 @@ namespace network
     bool processWelcome( welcome *w );
     int clientID_;     // this is the id the server gave to us
     int shipID_;
-    bool test_once;
   };
 
 

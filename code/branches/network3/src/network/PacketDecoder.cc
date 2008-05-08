@@ -89,6 +89,8 @@ namespace network
     }
     return false;
   }
+  
+  // ATTENTION: TODO watch, that arguments we pass over to the processFunction gets deleted in THE PROCESSXXX function
 
   //following are the decode functions for the data of the packets
 
@@ -100,7 +102,6 @@ namespace network
 
     COUT(4) << "PacketDecoder: got ack id: " << a->a << std::endl;
     processAck( a, clientId ); //debug info
-
     //clean memory
     enet_packet_destroy( packet );
   }
@@ -120,7 +121,6 @@ namespace network
 
     //clean memory
     enet_packet_destroy( packet );
-
     printMouse( mouseMove ); //debug info
   }
 
@@ -131,7 +131,6 @@ namespace network
 
     //clean memory
     enet_packet_destroy( packet );
-
     printKey( key ); //debug info
 
   }
@@ -231,32 +230,40 @@ namespace network
   void PacketDecoder::processChat( chat *data, int clientId)
   {
     printChat(data, clientId);
+    delete[] data->message;
+    delete data;
   }
 
   void PacketDecoder::processGamestate( GameStateCompressed *state, int clientID )
   {
-    COUT(5) << "PacketDecoder: processing Gamestate" << std::endl;
+    COUT(3) << "PacketDecoder-process: processing Gamestate" << std::endl;
     //printGamestate( state );
+    delete[] state->data;
+    delete state;
   }
 
   void PacketDecoder::processClassid( classid *cid)
   {
     printClassid(cid);
+    delete cid;
     return;
   }
 
   void PacketDecoder::processAck( ack *data, int clientID)
   {
     printAck(data);
+    delete data;
     return;
   }
   
   bool PacketDecoder::processWelcome( welcome *w ){
+    delete w;
     return true;
   }
   
   bool PacketDecoder::processConnectRequest( connectRequest *con, int clientID ){
     COUT(3) << "packetdecoder: processing connectRequest" << std::endl;
+    delete con;
     return true;
   }
 
