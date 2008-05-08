@@ -111,9 +111,14 @@ namespace network
   bool ClientConnection::addPacket(ENetPacket *packet) {
     if(server==NULL)
       return false;
-    if(enet_peer_send(server, 1, packet)!=0)
+    if(!packet){
+      COUT(4) << "Cl.con: addpacket: invalid packet" << std::endl;
       return false;
-    return true;
+    }
+    if(enet_peer_send(server, 0, packet)<0)
+      return false;
+    else
+      return true;
   }
 
   bool ClientConnection::sendPackets(ENetEvent *event) {

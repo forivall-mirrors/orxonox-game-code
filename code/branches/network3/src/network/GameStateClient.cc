@@ -63,6 +63,8 @@ namespace network
         reference = NULL;
       if(!reference){
         COUT(4) << "pushGameState: no reference found to diff" << std::endl;
+        delete[] compstate->data;
+        delete compstate;
         return false;
       }
       gs = decode(reference, compstate);
@@ -88,7 +90,10 @@ namespace network
   
   GameStateCompressed *GameStateClient::popPartialGameState(){
     GameState *gs = getPartialSnapshot();
-    return compress_(gs);
+    GameStateCompressed *cgs = compress_(gs);
+    delete[] gs->data;
+    delete gs;
+    return cgs;
   }
   
 
@@ -165,11 +170,6 @@ namespace network
   }
 
   GameState *GameStateClient::getPartialSnapshot(){
-    
-    GameState *reference;
-//     std::map<int, GameState*>::iterator it = --gameStateMap.end();
-//     reference=(--gameStateMap.end())->second;
-    
     //std::cout << "begin getSnapshot" << std::endl;
     //the size of the gamestate
     int totalsize=0;
@@ -305,8 +305,6 @@ namespace network
     compressedGamestate->diffed = a->diffed;
     compressedGamestate->complete = a->complete;
     compressedGamestate->base_id = a->base_id;
-    delete[] a->data;
-    delete a;
     return compressedGamestate;
   }
   
@@ -343,8 +341,6 @@ namespace network
     gamestate->diffed = a->diffed;
     gamestate->complete = a->complete;
 
-    delete[] a->data; //delete compressed data
-    delete a; //we do not need the old (struct) gamestate anymore
 
     return gamestate;
   }
@@ -352,18 +348,16 @@ namespace network
   GameState *GameStateClient::decode(GameState *old, GameStateCompressed *diff) {
     COUT(4) << "using diffed gamestate" << std::endl;
     GameState *t = decode(diff);
-    return undiff(old, t);
-//     return t;
+    GameState *r = undiff(old, t);
+    delete[] t->data;
+    delete t;
+    return r;
   }
 
   GameState *GameStateClient::decode(GameStateCompressed *x) {
     GameState *t = decompress(x);
-    /*GameState *t = new GameState;
-    t->base_id = x->base_id;
-    t->id = x->id;
-    t->diffed = x->diffed;
-    t->data = x->data;
-    t->size = x->normsize;*/
+    delete[] x->data;
+    delete x;
     return t;
   }
   

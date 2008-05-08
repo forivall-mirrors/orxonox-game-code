@@ -128,8 +128,12 @@ namespace network
   
   bool GameStateManager::pushGameState( GameStateCompressed *gs, int clientID ){
     GameState *ugs = decompress(gs);
-    return loadPartialSnapshot(ugs, clientID);
-    
+    delete[] gs->data;
+    delete gs;
+    bool result = loadPartialSnapshot(ugs, clientID);
+    delete[] ugs->data;
+    delete ugs;
+    return result;
   }
 
   /**
@@ -260,8 +264,6 @@ namespace network
       ++it;
     }
     
-    delete[] state->data;
-    delete state;
     return true;
   }
   
@@ -279,22 +281,15 @@ namespace network
   GameStateCompressed *GameStateManager::encode(GameState *a, GameState *b) {
     COUT(4) << "G.St.Man: this will be a DIFFED gamestate" << std::endl;
     GameState *r = diff(a,b);
-//     r->diffed = true;
-//     GameState *r = b;
-//     r->diffed = false;
-    return compress_(r);
-    /*GameStateCompressed *g = new GameStateCompressed;
-    g->base_id = r->base_id;
-    g->id = r->id;
-    g->diffed = r->diffed;
-    g->data = r->data;
-    g->normsize = r->size;
-    g->compsize = r->size;
-    return g*/;
+    GameStateCompressed *c = compress_(r);
+    delete[] r->data;
+    delete r;
+    return c;
   }
 
   GameStateCompressed *GameStateManager::encode(GameState *a) {
     COUT(5) << "G.St.Man: encoding gamestate (compress)" << std::endl;
+    a->base_id=GAMESTATEID_INITIAL;
     return compress_(a);
     /*GameStateCompressed *g = new GameStateCompressed;
     g->base_id = a->base_id;
