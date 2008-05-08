@@ -53,11 +53,20 @@ namespace orxonox
     const float REL_HEIGHT = 0.4;
     const float BLINK = 0.25;
 
-    InGameConsole::InGameConsole(InputBuffer* ib){
+    InGameConsole::InGameConsole(InputBuffer* ib) :
+        windowW(0), windowH(0),
+        scroll(0), scrollTimer(0.0f),
+        cursor(0.0f),
+        active(false),
+        ib_(ib),
+        om(0),
+        consoleOverlay(0),
+        consoleOverlayContainer(0),
+        consoleOverlayNoise(0),
+        consoleOverlayBorder(0),
+        consoleOverlayTextAreas(0)
+    {
         //RegisterObject(InGameConsole);
-        ib_ = ib;
-        active = false;
-        cursor = 0.0;
         init();
     }
 

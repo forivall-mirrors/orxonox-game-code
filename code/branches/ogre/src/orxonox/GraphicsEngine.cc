@@ -51,7 +51,7 @@ namespace orxonox {
     @brief Returns the singleton instance and creates it the first time.
     @return The only instance of GraphicsEngine.
   */
-  GraphicsEngine& GraphicsEngine::getSingleton()
+  /*static*/ GraphicsEngine& GraphicsEngine::getSingleton()
   {
     static GraphicsEngine theOnlyInstance;
     return theOnlyInstance;
@@ -60,16 +60,27 @@ namespace orxonox {
   /**
     @brief Only use constructor to initialise variables and pointers!
   */
-  GraphicsEngine::GraphicsEngine()
+  GraphicsEngine::GraphicsEngine() :
+    root_(0),
+    scene_(0),
+    renderWindow_(0),
+    //configPath_(""),
+    dataPath_(""),
+    ogreLogfile_("")
   {
     RegisterObject(GraphicsEngine);
-    // set to standard values
-    this->configPath_ = "";
-    this->root_ = 0;
-    this->scene_ = 0;
-    this->renderWindow_ = 0;
+
     this->setConfigValues();
     CCOUT(4) << "Constructed" << std::endl;
+  }
+
+  void GraphicsEngine::setConfigValues()
+  {
+    SetConfigValue(dataPath_, "../../Media/").description("relative path to media data");
+    SetConfigValue(ogreLogfile_, "ogre.log").description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
+    SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
+    SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
+    SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
   }
 
   /**
@@ -101,15 +112,6 @@ namespace orxonox {
       delete Ogre::LogManager::getSingletonPtr();
     }
     COUT(4) << "Destroying objects done" << std::endl;
-  }
-
-  void GraphicsEngine::setConfigValues()
-  {
-    SetConfigValue(dataPath_, "../../Media/").description("relative path to media data");
-    SetConfigValue(ogreLogfile_, "ogre.log").description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
-    SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
-    SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
-    SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
   }
 
   /**

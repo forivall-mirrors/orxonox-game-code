@@ -157,19 +157,19 @@ namespace orxonox
   /**
    * Create a new instance of Orxonox. Avoid doing any actual work here.
    */
-  Orxonox::Orxonox()
-  {
-    this->mode_ = STANDALONE;
-    this->serverIp_ = "";
-    this->ogre_ = &GraphicsEngine::getSingleton();
-    this->timer_ = 0;
-    //this->auMan_ = 0;
-    this->orxonoxHUD_ = 0;
-    this->inputHandler_ = 0;
+  Orxonox::Orxonox() :
+    ogre_(&GraphicsEngine::getSingleton()),
+    //auMan_(0),
+    timer_(0),
     // turn on frame smoothing by setting a value different from 0
-    this->frameSmoothingTime_ = 0.0f;
-    this->bAbort_ = false;
-    this->timefactor_ = 1.0f;
+    frameSmoothingTime_(0.0f),
+    orxonoxConsole_(0),
+    orxonoxHUD_(0),
+    bAbort_(false),
+    timefactor_(1.0f),
+    mode_(STANDALONE),
+    serverIp_("")
+  {
   }
 
   /**

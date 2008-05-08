@@ -93,7 +93,6 @@ namespace orxonox {
     private:
       GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
       //audio::AudioManager*  auMan_;         //!< audio manager
-      InputManager*         inputHandler_;  //!< Handles input with key bindings
       Ogre::Timer*          timer_;         //!< Main loop timer
       // TODO: make this a config-value by creating a config class for orxonox
       float                 frameSmoothingTime_;
