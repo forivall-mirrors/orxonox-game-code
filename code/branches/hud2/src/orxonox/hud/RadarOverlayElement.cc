@@ -27,6 +27,8 @@
 
 #include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
+#include <OgrePanelOverlayElement.h>
+
 #include <OgreStringConverter.h>
 #include <math.h>
 #include <string.h>
@@ -46,7 +48,8 @@ namespace orxonox
     PanelOverlayElement::initialise();
   }
   
-  void RadarOverlayElement::initRadarOverlayElement(){
+  void RadarOverlayElement::initRadarOverlayElement(Real left, Real top, int dim, Ogre::OverlayContainer* container){
+    
     int dirX, dirY, dirZ;      //flying direction
     int ortX, ortY, ortZ;      //orthogonal direction
     int dX, dY, dZ;            //distance between main ship and the object
@@ -67,16 +70,46 @@ namespace orxonox
     dY = 0;
     dZ = 0;
     
-    alpha = acos(((double)(dirX*dX+dirY*dY+dirZ*dZ))/(sqrt((double)(pow(dX,2)+pow(dY,2)+pow(dZ,2)))+sqrt((double)(pow(dirX,2)+pow(dirY,2)+pow(dirZ,2)))));
-    beta = acos(((double)(ortX*dX+ortY*dY+ortZ*dZ))/(sqrt((double)(pow(dX,2)+pow(dY,2)+pow(dZ,2)))+sqrt((double)(pow(ortX,2)+pow(ortY,2)+pow(ortZ,2)))));
+    alpha = acos((dirX*dX+dirY*dY+dirZ*dZ)/(sqrt(pow(dX,2)+pow(dY,2)+pow(dZ,2))*sqrt(pow(dirX,2)+pow(dirY,2)+pow(dirZ,2))));
+    beta = acos((ortX*dX+ortY*dY+ortZ*dZ)/(sqrt(pow(dX,2)+pow(dY,2)+pow(dZ,2))*sqrt(pow(ortX,2)+pow(ortY,2)+pow(ortZ,2))));
     vecX = dirY*ortZ - dirZ*ortY;
     vecY = dirZ*ortX - dirX*ortZ;
     vecZ = dirX*ortY - dirY*ortX;
     
     if((vecX*dX+vecY*dY+vecZ*dZ)>0){right=true;}
     else right=false;
+    
+    setMetricsMode(Ogre::GMM_PIXELS);
+    setPosition(left,top);
+    setDimensions(dim,dim);
+    setMaterialName("Orxonox/MapBackGround");
+    
+    Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
 
+    PanelOverlayElement* point = static_cast<PanelOverlayElement*>(overlayManager.createOverlayElement("Panel", "point"));
+    point->show();
+    
+    container->addChild(point);
+    
+    if (right){
+      point->setPosition(sin(beta)*alpha/3.14*dim/2+dim/2,-cos(beta)*alpha/3.14*dim/2+dim/2);
+      point->setMaterialName("Orxonox/Red");
+      point->setDimensions(5,5);
+      point->setMetricsMode(Ogre::GMM_PIXELS);
+    }
+  
+    else {
+      point->setPosition(-sin(beta)*alpha/3.14*dim/2+dim/2,-cos(beta)*alpha/3.14*dim/2+dim/2);
+      point->setMaterialName("Orxonox/Red");
+      point->setDimensions(5,5);
+      point->setMetricsMode(Ogre::GMM_PIXELS);
+    }
 
+    
+
+    
+  }  
 }
+
 
 

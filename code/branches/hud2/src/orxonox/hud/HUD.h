@@ -38,6 +38,7 @@
 
 #include "core/Tickable.h"
 #include "BarOverlayElement.h"
+#include "RadarOverlayElement.h"
 
 
 namespace orxonox
@@ -53,9 +54,10 @@ namespace orxonox
 //    virtual void tick(float);
 
     SmartBarOverlayElement* energyCounter;
+    
+    RadarOverlayElement* radar;
 //    Ogre::SceneNode* ogreNode_;
   };
 }	
-
 
 #endif

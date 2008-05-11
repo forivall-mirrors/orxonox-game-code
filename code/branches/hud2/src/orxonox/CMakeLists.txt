@@ -5,6 +5,7 @@ SET( ORXONOX_SRC_FILES
 #  SpaceshipSteering.cc
   hud/HUD.cc
   hud/BarOverlayElement.cc
+  hud/RadarOverlayElement.cc
   particle/ParticleInterface.cc
   tools/BillboardSet.cc
   tools/Light.cc

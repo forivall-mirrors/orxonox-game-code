@@ -174,7 +174,7 @@ namespace orxonox {
 
 //For apple, we always have a custom config.h file
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
-#  include "config.h"
+//#  include "config.h"
 #endif
 
 //----------------------------------------------------------------------------

@@ -31,6 +31,8 @@
 
 #include <string.h>
 #include <OgreOverlayElement.h>
+#include <OgrePanelOverlayElement.h>
+
 #include <OgrePrerequisites.h>
 #include "../OrxonoxPrereqs.h"
 
@@ -49,7 +51,7 @@ namespace orxonox
     virtual ~RadarOverlayElement();
     virtual void initialise();
 
-
+    void initRadarOverlayElement(Real left, Real top, int dim, Ogre::OverlayContainer* container);
   };
 }	
 

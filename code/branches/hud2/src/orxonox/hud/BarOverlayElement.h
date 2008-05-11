@@ -43,15 +43,16 @@ namespace orxonox
   class _OrxonoxExport BarOverlayElement : public Ogre::PanelOverlayElement
   {
   private:
+    
     int percentage_;
     int dir_;	
     int left_;
     int top_;
     int width_;
     int height_;
-	
+
     static Ogre::String& typeName_s;
-	
+
   public:
 
     static const int LEFT = 0;
@@ -74,7 +75,7 @@ namespace orxonox
     void setColour(int colour);
 
   };
-  
+
   
   class _OrxonoxExport SmartBarOverlayElement : public BarOverlayElement
   {
@@ -88,9 +89,8 @@ namespace orxonox
       
       void initSmartBarOverlayElement(Ogre::Real left, Ogre::Real top, Ogre::Real width, Ogre::Real height, int dir);
       void reset(int percentage);
+      
   };
-
-  
 }
 
 #endif

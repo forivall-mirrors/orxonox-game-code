@@ -39,7 +39,7 @@
 namespace orxonox{
 
   class _OrxonoxExport BarOverlayElementFactory : public Ogre::OverlayElementFactory{
-  public:
+    public:
     Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
       return new BarOverlayElement(instanceName);
     }
@@ -52,15 +52,25 @@ namespace orxonox{
 
   class _OrxonoxExport SmartBarOverlayElementFactory : public Ogre::OverlayElementFactory{
     public:
+    Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
+      return new SmartBarOverlayElement(instanceName);
+    }
+    const Ogre::String& getTypeName(void) const{
+      static Ogre::String name = "SmartBar";
+      return name;
+    }
+  };
+
+  class _OrxonoxExport RadarOverlayElementFactory : public Ogre::OverlayElementFactory{
+    public:
       Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
-	return new SmartBarOverlayElement(instanceName);
+	return new RadarOverlayElement(instanceName);
       }
       const Ogre::String& getTypeName(void) const{
-	static Ogre::String name = "SmartBar";
+	static Ogre::String name = "Radar";
 	return name;
       }
   };
-
 }
 
 

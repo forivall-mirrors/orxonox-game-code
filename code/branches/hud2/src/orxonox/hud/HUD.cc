@@ -32,9 +32,11 @@
 #include <OgreOverlayManager.h>ma
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
+#include "core/Debug.h"
 
 #include "HUD.h"
 #include "BarOverlayElement.h"
+#include "RadarOverlayElement.h"
 #include "OverlayElementFactories.h"
 // ugly hack
 #include "Orxonox.h"
@@ -54,6 +56,9 @@ namespace orxonox
     SmartBarOverlayElementFactory *smartBarOverlayElementFactory = new SmartBarOverlayElementFactory();
     overlayManager.addOverlayElementFactory(smartBarOverlayElementFactory);
     
+    RadarOverlayElementFactory *radarOverlayElementFactory = new RadarOverlayElementFactory();
+    overlayManager.addOverlayElementFactory(radarOverlayElementFactory);
+    
     Ogre::Overlay* orxonoxOverlay = overlayManager.create("Orxonox/HUD"); 
 
     Ogre::OverlayContainer* energyCounterPanel = static_cast<Ogre::OverlayContainer*>(overlayManager.createOverlayElement("Panel", "Orxonox/HUD/energyCounterPanel"));
@@ -61,12 +66,61 @@ namespace orxonox
     energyCounter = static_cast<SmartBarOverlayElement*>(overlayManager.createOverlayElement("SmartBar", "energyCounter"));
     energyCounter->show();
     
-    energyCounterPanel->addChild(energyCounter);
-    energyCounterPanel->show();
+    
+    radar = static_cast<RadarOverlayElement*>(overlayManager.createOverlayElement("Radar", "radar"));
+    radar->show();
 
+    
+/*    TextAreaOverlayElement* test = static_cast<TextAreaOverlayElement*>(overlayManager.createOverlayElement("TextArea", "test"));
+    
+    int dirX, dirY, dirZ;      //flying direction
+    int ortX, ortY, ortZ;      //orthogonal direction
+    int dX, dY, dZ;            //distance between main ship and the object
+    int vecX, vecY, vecZ;      //vector product dir X ort
+    double alpha;              //defines the radius in the radar
+    double beta;               //defines the angle in the radar
+    bool right;                //checks whether the object is on the right side (since cos is not bijective)
+    
+    dirX = 1;
+    dirY = 0;
+    dirZ = 0;
+    
+    ortX = 0;
+    ortY = 0;
+    ortZ = 1;
+    
+    dX = -2;
+    dY = 2;
+    dZ = 0;
+    
+    alpha = acos((dirX*dX+dirY*dY+dirZ*dZ)/(sqrt(pow(dX,2)+pow(dY,2)+pow(dZ,2))*sqrt(pow(dirX,2)+pow(dirY,2)+pow(dirZ,2))));
+    beta = acos((ortX*dX+ortY*dY+ortZ*dZ)/(sqrt(pow(dX,2)+pow(dY,2)+pow(dZ,2))*sqrt(pow(ortX,2)+pow(ortY,2)+pow(ortZ,2))));
+    vecX = dirY*ortZ - dirZ*ortY;
+    vecY = dirZ*ortX - dirX*ortZ;
+    vecZ = dirX*ortY - dirY*ortX;
+    
+    if((vecX*dX+vecY*dY+vecZ*dZ)>0){right=true;}
+    else right=false;
+    
+    test->setCaption("hell");
+    test->setPosition(10,10);
+    test->setDimensions(20,20);
+    test->show();
+    test->setMetricsMode(Ogre::GMM_PIXELS);	
+    energyCounterPanel->addChild(test);
+    
+    COUT(0)<<alpha<<" "<<beta<<" "<<right<<std::endl;
+*/
+    
+    energyCounterPanel->addChild(energyCounter);
+    energyCounterPanel->addChild(radar);
+    energyCounterPanel->show();
+    
     orxonoxOverlay->add2D(energyCounterPanel);
     orxonoxOverlay->show();
 
+    
+    
     // important: don't use SceneManager to create the node! but register the creator scene manager.
 /*    ogreNode_ = new Ogre::SceneNode(Orxonox::getSingleton()->getSceneManager(), "hudNoedely");
     
@@ -87,6 +141,8 @@ namespace orxonox
         
     energyCounter->initSmartBarOverlayElement(-100,0,200,20,BarOverlayElement::LEFT);
     energyCounter->reset(80);
+    
+    radar->initRadarOverlayElement(10,10,200,energyCounterPanel);
 
     
   }
