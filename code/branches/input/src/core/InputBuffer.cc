@@ -36,16 +36,16 @@
 
 namespace orxonox
 {
-  InputBuffer::InputBuffer(const std::string allowedChars)
+  InputBuffer::InputBuffer(const std::string allowedChars) :
+    buffer_(""),
+    allowedChars_(allowedChars),
+    lastKey_(KeyCode::Unassigned),
+    timeSinceKeyPressed_(0.0f),
+    timeSinceKeyRepeated_(0.0f),
+    keysToRepeat_(0)
   {
     RegisterObject(InputBuffer);
     setConfigValues();
-    allowedChars_ = allowedChars;
-    buffer_ = "";
-    lastKey_ = KeyCode::Unassigned;
-    timeSinceKeyPressed_ = 0.0;
-    timeSinceKeyRepeated_ = 0.0;
-    keysToRepeat_ = 0;
   }
 
   void InputBuffer::setConfigValues()

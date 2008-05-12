@@ -78,11 +78,9 @@ namespace orxonox
 
     void setConfigValues();
 
-    std::string testtest;
-
   private: // functions
 
-    bool executeBinding(KeyBinding &binding);
+    bool executeSimpleBinding(KeyBinding &binding);
 
     bool keyPressed (const KeyEvent& evt);
     bool keyReleased(const KeyEvent& evt);
@@ -92,7 +90,7 @@ namespace orxonox
     bool mouseButtonReleased(const MouseState& state, MouseButton::Enum id);
     bool mouseButtonHeld    (const MouseState& state, MouseButton::Enum id);
     bool mouseMoved         (const MouseState& state);
-    bool mouseWheelTurned   (const MouseState& state);
+    bool mouseScrolled      (const MouseState& state);
 
     bool joyStickButtonPressed (const JoyStickState& state, int button);
     bool joyStickButtonReleased(const JoyStickState& state, int button);
@@ -123,6 +121,10 @@ namespace orxonox
     KeyBinding bindingsMouseButtonRelease_[numberOfMouseButtons_s];
     //! Array of input events for every held mouse button
     KeyBinding bindingsMouseButtonHold_   [numberOfMouseButtons_s];
+    //! Key binding for mouse moved event
+    KeyBinding bindingMouseMoved_;
+    //! Key binding for mouse scrolled event
+    KeyBinding bindingMouseScrolled_;
     //! Names of the mouse buttons as strings
     std::string mouseButtonNames_[numberOfMouseButtons_s];
 

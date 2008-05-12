@@ -68,7 +68,7 @@ namespace orxonox
             bool mouseButtonReleased(const MouseState& state, MouseButton::Enum id);
             bool mouseButtonHeld    (const MouseState& state, MouseButton::Enum id) { return true; }
             bool mouseMoved         (const MouseState& state);
-            bool mouseWheelTurned   (const MouseState& state) { return true; }
+            bool mouseScrolled      (const MouseState& state) { return true; }
 
 
         private:

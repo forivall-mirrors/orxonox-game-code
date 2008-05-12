@@ -38,7 +38,7 @@
 #include "CorePrereqs.h"
 
 #include <map>
-#include <list>
+#include <vector>
 
 #include "ois/OIS.h"
 #include "Tickable.h"
@@ -68,8 +68,8 @@ namespace orxonox
     };
 
   public: // static functions
-    static bool initialise(const size_t windowHnd, const int windowWidth, const int windowHeight,
-          const bool createKeyboard = true, const bool createMouse = true, const bool createJoySticks = false);
+    static bool initialise(const size_t windowHnd, int windowWidth, int windowHeight,
+          bool createKeyboard = true, bool createMouse = true, bool createJoySticks = false);
     static bool initialiseKeyboard();
     static bool initialiseMouse();
     static bool initialiseJoySticks();
@@ -120,7 +120,7 @@ namespace orxonox
     ~InputManager();
 
     // Intenal methods
-    bool _initialise(const size_t, const int, const int, const bool, const bool, const bool);
+    bool _initialise(const size_t, int, int, bool, bool, bool);
     bool _initialiseKeyboard();
     bool _initialiseMouse();
     bool _initialiseJoySticks();
@@ -168,7 +168,7 @@ namespace orxonox
     std::vector<std::vector<JoyStickHandler*> > activeJoyStickHandlers_;
 
     std::vector<Key>                            keysDown_;
-    std::vector<MouseButton::Enum>            mouseButtonsDown_;
+    std::vector<MouseButton::Enum>              mouseButtonsDown_;
     std::vector<std::vector<int> >              joyStickButtonsDown_;
 
   };

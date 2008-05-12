@@ -400,7 +400,7 @@ namespace orxonox
   void Orxonox::setupInputSystem()
   {
     if (!InputManager::initialise(ogre_->getWindowHandle(),
-          ogre_->getWindowWidth(), ogre_->getWindowHeight()))
+          ogre_->getWindowWidth(), ogre_->getWindowHeight(), true, true, true))
       abortImmediateForce();
     InputManager::setInputState(InputManager::IS_NORMAL);
   }

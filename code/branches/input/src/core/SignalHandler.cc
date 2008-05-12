@@ -64,16 +64,16 @@ void SignalHandler::doCatch( const std::string & appName, const std::string & fi
   this->fileName = fileName;
 
   // prepare for restoring XAutoKeyRepeat
-    Display* display;
-	if ((display = XOpenDisplay(0)))
+  Display* display;
+  if ((display = XOpenDisplay(0)))
   {
-	    XKeyboardState oldState;
-		XGetKeyboardControl(display, &oldState);
-		if (oldState.global_auto_repeat == AutoRepeatModeOn)
-          bXAutoKeyRepeatOn_ = true;
-		else
-		  bXAutoKeyRepeatOn_ = false;
-		XCloseDisplay(display);
+    XKeyboardState oldState;
+    XGetKeyboardControl(display, &oldState);
+    if (oldState.global_auto_repeat == AutoRepeatModeOn)
+      bXAutoKeyRepeatOn_ = true;
+    else
+      bXAutoKeyRepeatOn_ = false;
+    XCloseDisplay(display);
   }
   else
   {

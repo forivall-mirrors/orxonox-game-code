@@ -47,16 +47,16 @@ namespace orxonox
     {
       Unassigned    = OIS::KC_UNASSIGNED,  
       Escape        = OIS::KC_ESCAPE,      
-      _1            = OIS::KC_1,           
-      _2            = OIS::KC_2,           
-      _3            = OIS::KC_3,           
-      _4            = OIS::KC_4,           
-      _5            = OIS::KC_5,           
-      _6            = OIS::KC_6,           
-      _7            = OIS::KC_7,           
-      _8            = OIS::KC_8,           
-      _9            = OIS::KC_9,           
-      _0            = OIS::KC_0,           
+      NumRow1       = OIS::KC_1,           
+      NumRow2       = OIS::KC_2,           
+      NumRow3       = OIS::KC_3,           
+      NumRow4       = OIS::KC_4,           
+      NumRow5       = OIS::KC_5,           
+      NumRow6       = OIS::KC_6,           
+      NumRow7       = OIS::KC_7,           
+      NumRow8       = OIS::KC_8,           
+      NumRow9       = OIS::KC_9,           
+      NumRow0       = OIS::KC_0,           
       Minus         = OIS::KC_MINUS,           // - on main keyboard
       Equals        = OIS::KC_EQUALS,      
       Back          = OIS::KC_BACK,            // backspace
@@ -243,9 +243,9 @@ namespace orxonox
   class _CoreExport JoyStickState : OIS::JoyStickState
   {
   public:
-    JoyStickState(const OIS::JoyStickState& state, int ID) : OIS::JoyStickState(state), JoyStickID(ID) { }
+    JoyStickState(const OIS::JoyStickState& state, int ID) : OIS::JoyStickState(state), mJoyStickID(ID) { }
     JoyStickState() { clear(); }
-    int JoyStickID;
+    int mJoyStickID;
   };
 
   /**
@@ -271,7 +271,7 @@ namespace orxonox
     virtual bool mouseButtonReleased(const MouseState& state, MouseButton::Enum id) = 0;
     virtual bool mouseButtonHeld    (const MouseState& state, MouseButton::Enum id) = 0;
     virtual bool mouseMoved         (const MouseState& state) = 0;
-    virtual bool mouseWheelTurned   (const MouseState& state) = 0;
+    virtual bool mouseScrolled      (const MouseState& state) = 0;
   };
 
 

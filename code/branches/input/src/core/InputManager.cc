@@ -51,15 +51,11 @@ namespace orxonox
   */
   InputManager::InputManager() :
       inputSystem_(0), keyboard_(0), mouse_(0),
+      joySticksSize_(0),
       state_(IS_UNINIT), stateRequest_(IS_UNINIT),
-      joySticksSize_(0)
+      keyboardModifiers_(0)
   {
     RegisterObject(InputManager);
-
-    //this->joySticks_.reserve(5);
-    //this->activeJoyStickHandlers_.reserve(10);
-    this->activeKeyHandlers_.reserve(10);
-    this->activeMouseHandlers_.reserve(10);
   }
 
   /**
@@ -87,8 +83,8 @@ namespace orxonox
     @param windowWidth The width of the render window
     @param windowHeight The height of the render window
   */
-  bool InputManager::_initialise(const size_t windowHnd, const int windowWidth, const int windowHeight,
-        const bool createKeyboard, const bool createMouse, const bool createJoySticks)
+  bool InputManager::_initialise(const size_t windowHnd, int windowWidth, int windowHeight,
+        bool createKeyboard, bool createMouse, bool createJoySticks)
   {
     if (state_ == IS_UNINIT)
     {
@@ -145,6 +141,7 @@ namespace orxonox
     binder->loadBindings();
     addKeyHandler(binder, "keybinder");
     addMouseHandler(binder, "keybinder");
+    addJoyStickHandler(binder, "keybinder");
 
     // Read all the key bindings and assign them
     //if (!_loadBindings())
@@ -266,6 +263,8 @@ namespace orxonox
       return false;
     }
     joySticksSize_ = joySticks_.size();
+    activeJoyStickHandlers_.resize(joySticksSize_);
+    joyStickButtonsDown_.resize(joySticksSize_);
     return success;
   }
 
@@ -374,7 +373,8 @@ namespace orxonox
       {
         activeKeyHandlers_.clear();
         activeMouseHandlers_.clear();
-        activeJoyStickHandlers_.clear();
+        for (unsigned int i = 0; i < joySticksSize_; i++)
+          activeJoyStickHandlers_[i].clear();
 
         switch (stateRequest_)
         {
@@ -413,6 +413,8 @@ namespace orxonox
       mouse_->capture();
     if (keyboard_)
       keyboard_->capture();
+    for (unsigned  int i = 0; i < joySticksSize_; i++)
+      joySticks_[i]->capture();
 
 
     // call all the handlers for the held key events
@@ -427,7 +429,7 @@ namespace orxonox
 
     // call all the handlers for the held joy stick button events
     for (unsigned int iJoyStick  = 0; iJoyStick < joySticksSize_; iJoyStick++)
-      for (unsigned int iButton   = 0; iButton   < joyStickButtonsDown_.size(); iButton++)
+      for (unsigned int iButton   = 0; iButton   < joyStickButtonsDown_[iJoyStick].size(); iButton++)
         for (unsigned int iHandler = 0; iHandler  < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
           activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickButtonHeld(
               JoyStickState(joySticks_[iJoyStick]->getJoyStickState(), iJoyStick), joyStickButtonsDown_[iJoyStick][iButton]);
@@ -508,11 +510,11 @@ namespace orxonox
         activeMouseHandlers_[i]->mouseMoved(e.state);
     }
 
-    // check for mouse wheel turned event
+    // check for mouse scrolled event
     if (e.state.Z.rel != 0)
     {
       for (unsigned int i = 0; i < activeMouseHandlers_.size(); i++)
-        activeMouseHandlers_[i]->mouseWheelTurned(e.state);
+        activeMouseHandlers_[i]->mouseScrolled(e.state);
     }
 
     return true;
@@ -673,8 +675,8 @@ namespace orxonox
   // ################################
   // ################################
 
-  bool InputManager::initialise(const size_t windowHnd, const int windowWidth, const int windowHeight,
-    const bool createKeyboard, const bool createMouse, const bool createJoySticks)
+  bool InputManager::initialise(const size_t windowHnd, int windowWidth, int windowHeight,
+    bool createKeyboard, bool createMouse, bool createJoySticks)
   {
     return _getSingleton()._initialise(windowHnd, windowWidth, windowHeight,
           createKeyboard, createMouse, createJoySticks);

@@ -97,7 +97,7 @@ namespace orxonox
     inline std::string get() const
     { return this->buffer_; }
 
-  private:
+  private:  // functions
     bool charIsAllowed(const char& input);
 
     bool keyPressed (const KeyEvent& evt);
@@ -107,6 +107,7 @@ namespace orxonox
 
     void tick(float dt);
 
+  private: // variables
     std::string buffer_;
     std::list<InputBufferListenerTuple> listeners_;
     std::string allowedChars_;

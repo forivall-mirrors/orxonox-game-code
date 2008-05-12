@@ -228,9 +228,9 @@ namespace orxonox
       keyNames_[i] = keyNames[i];
 
     std::string mouseButtonNames[] = {
-    "MouseLeft", "MouseRight", "MouseMiddle",
-    "MouseButton3", "MouseButton4", "MouseButton5",
-    "MouseButton6", "MouseButton7" };
+      "MouseLeft", "MouseRight", "MouseMiddle",
+      "MouseButton3", "MouseButton4", "MouseButton5",
+      "MouseButton6", "MouseButton7" };
     for (int i = 0; i < numberOfMouseButtons_s; i++)
       mouseButtonNames_[i] = mouseButtonNames[i];
 
@@ -380,7 +380,7 @@ namespace orxonox
     return true;
   }
 
-  bool KeyBinder::executeBinding(KeyBinding& binding)
+  bool KeyBinder::executeSimpleBinding(KeyBinding& binding)
   {
     if (binding.commandStr != "")
     {
@@ -405,7 +405,7 @@ namespace orxonox
   bool KeyBinder::keyPressed(const KeyEvent& evt)
   {
     // find the appropriate key binding
-    executeBinding(bindingsKeyPress_[int(evt.key)]);
+    executeSimpleBinding(bindingsKeyPress_[int(evt.key)]);
 
     return true;
   }
@@ -417,7 +417,7 @@ namespace orxonox
   bool KeyBinder::keyReleased(const KeyEvent& evt)
   {
     // find the appropriate key binding
-    executeBinding(bindingsKeyRelease_[int(evt.key)]);
+    executeSimpleBinding(bindingsKeyRelease_[int(evt.key)]);
 
     return true;
   }
@@ -429,7 +429,7 @@ namespace orxonox
   bool KeyBinder::keyHeld(const KeyEvent& evt)
   {
     // find the appropriate key binding
-    executeBinding(bindingsKeyHold_[int(evt.key)]);
+    executeSimpleBinding(bindingsKeyHold_[int(evt.key)]);
 
     return true;
   }
@@ -440,14 +440,28 @@ namespace orxonox
   */
   bool KeyBinder::mouseMoved(const MouseState &evt)
   {
+    /*if (bindingMouseMoved_.commandStr != "")
+    {
+      if (bindingMouseMoved_.commandStr != bindingMouseMoved_.evaluation.getCommandString())
+      {
+        // key binding has changed, reevaluate the command string.
+        bindingMouseMoved_.evaluation = CommandExecutor::evaluate(bindingMouseMoved_.commandStr);
+        bindingMouseMoved_.commandStr = bindingMouseMoved_.evaluation.getCommandString();
+      }
+      COUT(3) << "Executing command: " << bindingMouseMoved_.commandStr << std::endl;
+
+      bindingMouseMoved_.evaluation.setEvaluatedParameter(
+      CommandExecutor::execute(bindingMouseMoved_.commandStr);
+    }*/
+
     return true;
   }
 
   /**
-    @brief Event handler for the mouseWheelTurned Event.
+    @brief Event handler for the mouseScrolled Event.
     @param e Mouse state information
   */
-  bool KeyBinder::mouseWheelTurned(const MouseState &evt)
+  bool KeyBinder::mouseScrolled(const MouseState &evt)
   {
     return true;
   }
@@ -460,7 +474,7 @@ namespace orxonox
   bool KeyBinder::mouseButtonPressed(const MouseState& state, MouseButton::Enum id)
   {
     // find the appropriate key binding
-    executeBinding(bindingsMouseButtonPress_[int(id)]);
+    executeSimpleBinding(bindingsMouseButtonPress_[int(id)]);
 
     return true;
   }
@@ -473,7 +487,7 @@ namespace orxonox
   bool KeyBinder::mouseButtonReleased(const MouseState& state, MouseButton::Enum id)
   {
     // find the appropriate key binding
-    executeBinding(bindingsMouseButtonRelease_[int(id)]);
+    executeSimpleBinding(bindingsMouseButtonRelease_[int(id)]);
 
     return true;
   }
@@ -486,7 +500,7 @@ namespace orxonox
   bool KeyBinder::mouseButtonHeld(const MouseState& state, MouseButton::Enum id)
   {
     // find the appropriate key binding
-    executeBinding(bindingsMouseButtonHold_[int(id)]);
+    executeSimpleBinding(bindingsMouseButtonHold_[int(id)]);
 
     return true;
   }
@@ -494,7 +508,7 @@ namespace orxonox
   bool KeyBinder::joyStickButtonPressed(const JoyStickState& state, int button)
   {
     // find the appropriate key binding
-    executeBinding(bindingsJoyStickButtonPress_[button]);
+    executeSimpleBinding(bindingsJoyStickButtonPress_[button]);
 
     return true;
   }
@@ -502,7 +516,7 @@ namespace orxonox
   bool KeyBinder::joyStickButtonReleased(const JoyStickState& state, int button)
   {
     // find the appropriate key binding
-    executeBinding(bindingsJoyStickButtonRelease_[button]);
+    executeSimpleBinding(bindingsJoyStickButtonRelease_[button]);
 
     return true;
   }
@@ -510,7 +524,7 @@ namespace orxonox
   bool KeyBinder::joyStickButtonHeld(const JoyStickState& state, int button)
   {
     // find the appropriate key binding
-    executeBinding(bindingsJoyStickButtonHold_[button]);
+    executeSimpleBinding(bindingsJoyStickButtonHold_[button]);
 
     return true;
   }
