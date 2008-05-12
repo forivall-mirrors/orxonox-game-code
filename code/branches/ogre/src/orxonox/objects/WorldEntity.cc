@@ -44,15 +44,15 @@ namespace orxonox
 
     unsigned int WorldEntity::worldEntityCounter_s = 0;
 
-    WorldEntity::WorldEntity()
+    WorldEntity::WorldEntity() :
+      velocity_    (0, 0, 0),
+      acceleration_(0, 0, 0),
+      rotationAxis_(0, 1, 0),
+      rotationRate_(0),
+      momentum_    (0),
+      node_        (0),
+      bStatic_     (true)
     {
-        this->bStatic_ = true;
-        this->velocity_ = Vector3(0, 0, 0);
-        this->acceleration_ = Vector3(0, 0, 0);
-        this->rotationAxis_ = Vector3(0, 1, 0);
-        this->rotationRate_ = 0;
-        this->momentum_ = 0;
-
         RegisterObject(WorldEntity);
 
         if (GraphicsEngine::getSingleton().getSceneManager())
@@ -63,10 +63,6 @@ namespace orxonox
           this->node_ = GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
 
           registerAllVariables();
-        }
-        else
-        {
-          this->node_ = 0;
         }
     }
 
@@ -91,73 +87,6 @@ namespace orxonox
 
         BaseObject::loadParams(xmlElem);
         create();
-/*
-        if (xmlElem->Attribute("position"))
-        {
-            std::vector<std::string> pos = tokenize(xmlElem->Attribute("position"),",");
-            float x, y, z;
-            String2Number<float>(x, pos[0]);
-            String2Number<float>(y, pos[1]);
-            String2Number<float>(z, pos[2]);
-            this->setPosition(x, y, z);
-        }
-
-        if (xmlElem->Attribute("direction"))
-        {
-            std::vector<std::string> pos = tokenize(xmlElem->Attribute("direction"),",");
-            float x, y, z;
-            String2Number<float>(x, pos[0]);
-            String2Number<float>(y, pos[1]);
-            String2Number<float>(z, pos[2]);
-            this->setDirection(x, y, z);
-        }
-
-        if (xmlElem->Attribute("yaw") || xmlElem->Attribute("pitch") || xmlElem->Attribute("roll"))
-        {
-            float yaw = 0.0, pitch = 0.0, roll = 0.0;
-            if (xmlElem->Attribute("yaw"))
-                String2Number<float>(yaw,xmlElem->Attribute("yaw"));
-
-            if (xmlElem->Attribute("pitch"))
-                String2Number<float>(pitch,xmlElem->Attribute("pitch"));
-
-            if (xmlElem->Attribute("roll"))
-                String2Number<float>(roll,xmlElem->Attribute("roll"));
-
-            this->yaw(Degree(yaw));
-            this->pitch(Degree(pitch));
-            this->roll(Degree(roll));
-        }
-
-        if (xmlElem->Attribute("scale"))
-        {
-            std::string scaleStr = xmlElem->Attribute("scale");
-            float scale;
-            String2Number<float>(scale, scaleStr);
-            this->setScale(scale);
-        }
-
-        if (xmlElem->Attribute("rotationAxis"))
-        {
-            std::vector<std::string> pos = tokenize(xmlElem->Attribute("rotationAxis"),",");
-            float x, y, z;
-            String2Number<float>(x, pos[0]);
-            String2Number<float>(y, pos[1]);
-            String2Number<float>(z, pos[2]);
-            this->setRotationAxis(x, y, z);
-        }
-
-        if (xmlElem->Attribute("rotationRate"))
-        {
-            float rotationRate;
-            String2Number<float>(rotationRate, xmlElem->Attribute("rotationRate"));
-            this->setRotationRate(Degree(rotationRate));
-            if (rotationRate != 0)
-                this->setStatic(false);
-        }
-
-        create();
-*/
     }
 
     void WorldEntity::setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll)

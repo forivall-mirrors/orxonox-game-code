@@ -72,9 +72,10 @@ namespace orxonox {
             int getWindowWidth() const;
             int getWindowHeight() const;
 
-            void windowMoved(Ogre::RenderWindow* rw);
-            void windowResized(Ogre::RenderWindow* rw);
+            void windowMoved       (Ogre::RenderWindow* rw);
+            void windowResized     (Ogre::RenderWindow* rw);
             void windowFocusChanged(Ogre::RenderWindow* rw);
+            void windowClosed      (Ogre::RenderWindow* rw);
 
             static GraphicsEngine& getSingleton();
             static GraphicsEngine* getSingletonPtr() { return &getSingleton(); }

@@ -43,6 +43,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
+#include "core/CommandExecutor.h"
 
 
 namespace orxonox {
@@ -137,8 +138,8 @@ namespace orxonox {
 
     // create a logManager
     Ogre::LogManager *logger;
-		if (Ogre::LogManager::getSingletonPtr() == 0)
-			logger = new Ogre::LogManager();
+    if (Ogre::LogManager::getSingletonPtr() == 0)
+      logger = new Ogre::LogManager();
     else
       logger = Ogre::LogManager::getSingletonPtr();
     CCOUT(4) << "Ogre LogManager created/assigned" << std::endl;
@@ -221,11 +222,11 @@ namespace orxonox {
     try
     {
       Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-      Ogre::StringVector str = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
+      /*Ogre::StringVector str = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
       for (unsigned int i = 0; i < str.size(); i++)
       {
         Ogre::ResourceGroupManager::getSingleton().loadResourceGroup(str[i]);
-      }
+      }*/
     }
     catch (Ogre::Exception e)
     {
@@ -324,21 +325,45 @@ namespace orxonox {
         << "Ogre: " << message << std::endl;
   }
 
-    void GraphicsEngine::windowMoved(Ogre::RenderWindow *rw){
-        int w = rw->getWidth();
-        int h = rw->getHeight();
-        InputManager::setWindowExtents(w, h);
-    }
+  /**
+  * Window has resized.
+  * @param rw The render window it occured in
+  */
+  void GraphicsEngine::windowMoved(Ogre::RenderWindow *rw)
+  {
+    // note: this doesn't change the window extents
+  }
 
-    void GraphicsEngine::windowResized(Ogre::RenderWindow *rw){
-        int w = rw->getWidth();
-        int h = rw->getHeight();
-        InputManager::setWindowExtents(w, h);
-    }
+  /**
+  * Window has resized.
+  * @param rw The render window it occured in
+  * @note GraphicsEngine has a render window stored itself. This is the same
+  *       as rw. But we have to be careful when using multiple render windows!
+  */
+  void GraphicsEngine::windowResized(Ogre::RenderWindow *rw)
+  {
+    // change the mouse clipping size for absolute mouse movements
+    int w = rw->getWidth();
+    int h = rw->getHeight();
+    InputManager::setWindowExtents(w, h);
+  }
 
-    void GraphicsEngine::windowFocusChanged(Ogre::RenderWindow *rw){
-        int w = rw->getWidth();
-        int h = rw->getHeight();
-        InputManager::setWindowExtents(w, h);
-    }
+  /**
+  * Window has resized.
+  * @param rw The render window it occured in
+  */
+  void GraphicsEngine::windowFocusChanged(Ogre::RenderWindow *rw)
+  {
+    // note: this doesn't change the window extents
+  }
+
+  /**
+  * Window has resized.
+  * @param rw The render window it occured in
+  */
+  void GraphicsEngine::windowClosed(Ogre::RenderWindow *rw)
+  {
+    // using CommandExecutor in order to avoid depending on Orxonox class.
+    CommandExecutor::execute("exit", false);
+  }
 }

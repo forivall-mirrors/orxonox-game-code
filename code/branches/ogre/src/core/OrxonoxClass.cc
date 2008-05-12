@@ -36,12 +36,11 @@
 namespace orxonox
 {
     /** @brief Constructor: Sets the default values. */
-    OrxonoxClass::OrxonoxClass()
+    OrxonoxClass::OrxonoxClass() :
+      identifier_(0),
+      parents_(0)
     {
         this->setConfigValues();
-
-        this->identifier_ = 0;
-        this->parents_ = 0;
     }
 
     /** @brief Destructor: Deletes, if existing, the list of the parents. */

@@ -48,17 +48,6 @@ namespace orxonox
     {
     }
 
-    void Model::loadParams(TiXmlElement* xmlElem)
-    {
-        WorldEntity::loadParams(xmlElem);
-
-        if (xmlElem->Attribute("mesh"))
-        {
-            meshSrc_ = xmlElem->Attribute("mesh");
-        }
-        create();
-    }
-
     /**
         @brief XML loading and saving.
     @p
