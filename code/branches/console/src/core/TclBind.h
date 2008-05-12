@@ -46,11 +46,10 @@ namespace orxonox
             std::string getTclLibPath() const { return this->tclLibPath_; }
             void createTclInterpreter();
             void createNewTclInterpreter();
+            Tcl::interpreter* getTclInterpreter() const { return this->interpreter_; }
 
-            static void tcl_puts(Tcl::object const &args);
-
+            static std::string tcl_query(Tcl::object const &args);
             static void tcl_execute(Tcl::object const &args);
-            static std::string tcl_orxonox(Tcl::object const &args);
 
             static bool eval(const std::string& tclcode);
 

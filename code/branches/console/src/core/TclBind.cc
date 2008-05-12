@@ -32,6 +32,7 @@
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
 #include "Debug.h"
+#include "TclThreadManager.h"
 #include "TclBind.h"
 
 namespace orxonox
@@ -69,10 +70,22 @@ namespace orxonox
         if (this->bSetTclLibPath_ && !this->interpreter_)
         {
             this->interpreter_ = new Tcl::interpreter(this->tclLibPath_);
-            this->interpreter_->def("orxonox", TclBind::tcl_orxonox, Tcl::variadic());
+            this->interpreter_->def("orxonox::query", TclBind::tcl_query, Tcl::variadic());
+            this->interpreter_->def("orxonox::crossquery", TclThreadManager::tcl_crossquery, Tcl::variadic());
             this->interpreter_->def("execute", TclBind::tcl_execute, Tcl::variadic());
-            this->interpreter_->eval("rename exit tclexit; proc exit {} { orxonox exit }");
-            this->interpreter_->eval("redef_puts");
+
+            try
+            {
+                this->interpreter_->eval("proc query args { orxonox::query $args }");
+                this->interpreter_->eval("proc crossquery {id args} { orxonox::crossquery 0 $id $args }");
+                this->interpreter_->eval("set id 0");
+                this->interpreter_->eval("rename exit tcl::exit; proc exit {} { execute exit }");
+                this->interpreter_->eval("redef_puts");
+            }
+            catch (Tcl::tcl_error const &e)
+            {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl;   }
+            catch (std::exception const &e)
+            {   COUT(1) << "Error while creating Tcl-interpreter: " << e.what() << std::endl;   }
         }
     }
 
@@ -87,17 +100,12 @@ namespace orxonox
         this->createTclInterpreter();
     }
 
-    void TclBind::tcl_puts(Tcl::object const &args)
+    std::string TclBind::tcl_query(Tcl::object const &args)
     {
-        COUT(0) << args.get() << std::endl;
-    }
-
-    std::string TclBind::tcl_orxonox(Tcl::object const &args)
-    {
-std::cout << "Tcl_orxonox: args: " << args.get() << std::endl;
+std::cout << "Tcl_query: args: " << args.get() << std::endl;
         std::string command = args.get();
 
-        if (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
+        while (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
             command = command.substr(1, command.size() - 2);
 
         if (!CommandExecutor::execute(command, false))
@@ -114,7 +122,7 @@ std::cout << "Tcl_orxonox: args: " << args.get() << std::endl;
 std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         std::string command = args.get();
 
-        if (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
+        while (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
             command = command.substr(1, command.size() - 2);
 
         if (!CommandExecutor::execute(command, false))
@@ -131,13 +139,9 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
             return output;
         }
         catch (Tcl::tcl_error const &e)
-        {
-            COUT(1) << "tcl> Error: " << e.what() << std::endl;
-        }
+        {   COUT(1) << "tcl> Error: " << e.what() << std::endl;   }
         catch (std::exception const &e)
-        {
-            COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;
-        }
+        {   COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;   }
 
         return "";
     }
@@ -150,13 +154,9 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
             return true;
         }
         catch (Tcl::tcl_error const &e)
-        {
-            COUT(1) << "Tcl error: " << e.what() << std::endl;
-        }
+        {   COUT(1) << "Tcl error: " << e.what() << std::endl;   }
         catch (std::exception const &e)
-        {
-            COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;
-        }
+        {   COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;   }
 
         return false;
     }

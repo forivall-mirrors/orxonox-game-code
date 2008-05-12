@@ -66,7 +66,8 @@ namespace orxonox
   void Script::luaPrint(std::string str)
   {
     output_ += str;
-    COUT(4) << "Lua_output!:" << std::endl << str << std::endl << "***" << std::endl;
+//    COUT(4) << "Lua_output!:" << std::endl << str << std::endl << "***" << std::endl;
+    COUT(5) << str << std::endl;
   }
 
   /**
@@ -98,7 +99,7 @@ namespace orxonox
     //std::string output;
 
     if (luaTags) luaSource_ = replaceLuaTags(levelString);
-    COUT(4) << "ParsedSourceCode: " << luaSource_ << std::endl;
+    COUT(5) << "ParsedSourceCode: " << luaSource_ << std::endl;
   }
 
 #if LUA_VERSION_NUM != 501

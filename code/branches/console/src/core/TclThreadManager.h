@@ -30,6 +30,8 @@
 #define _TclThreadManager_H__
 
 #include <queue>
+#include <map>
+#include <list>
 
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
@@ -42,20 +44,26 @@ namespace orxonox
 {
     class boost::thread;
 
-    struct TclThread
+    struct _CoreExport TclInterpreterBundle
     {
-        unsigned int threadID_;
+        unsigned int id_;
+
+        std::list<std::string> queue_;
+        boost::mutex queueMutex_;
+
         Tcl::interpreter* interpreter_;
-        boost::thread* thread_;
-        boost::mutex* evalMutex_;
-        boost::mutex* stateMutex_;
-        enum State
-        {
-            Ready,
-            Busy,
-            Finished,
-            Error
-        }* state_;
+        std::string interpreterName_;
+        boost::try_mutex interpreterMutex_;
+
+        std::list<unsigned int> queriers_;
+        boost::mutex queriersMutex_;
+
+        bool running_;
+        boost::mutex runningMutex_;
+
+        bool finished_;
+        boost::mutex finishedMutex_;
+        boost::condition finishedCondition_;
     };
 
     class _CoreExport TclThreadManager : public Tickable
@@ -63,60 +71,50 @@ namespace orxonox
         public:
             static TclThreadManager& getInstance();
 
-            static void tclthread(unsigned int threadID, const std::string& command);
             static unsigned int create();
             static void destroy(unsigned int threadID);
             static void execute(unsigned int threadID, const std::string& command);
             static std::string query(unsigned int threadID, const std::string& command);
-            static void status();
-            static void dump(unsigned int threadID);
 
-            static std::string tcl_query(int id, Tcl::object const &args);
             static void tcl_execute(Tcl::object const &args);
+            static std::string tcl_query(int querierID, Tcl::object const &args);
+            static std::string tcl_crossquery(int querierID, int threadID, Tcl::object const &args);
+            static bool tcl_running(int threadID);
 
-            Tcl::interpreter* createTclInterpreter(unsigned int threadID) const;
-            bool createTclThread();
-            bool destroyTclThread(unsigned int threadID);
+            Tcl::interpreter* createNewTclInterpreter(const std::string& threadID);
+            TclInterpreterBundle* getInterpreterBundle(unsigned int threadID);
+            std::string dumpList(const std::list<unsigned int>& list);
 
-            void setState(TclThread* tclThread, TclThread::State state);
-            TclThread::State getState(TclThread* tclThread);
+            void pushCommandToQueue(const std::string& command);
+            void forceCommandToFrontOfQueue(const std::string& command);
+            std::string popCommandFromQueue();
+            bool queueIsEmpty();
 
-            void pushCommandBack(const std::string& command);
-            std::string popCommandFront();
-            bool isEmpty();
+            void pushCommandToQueue(unsigned int threadID, const std::string& command);
+            std::string popCommandFromQueue(unsigned int threadID);
+            bool queueIsEmpty(unsigned int threadID);
 
-            void pushCommandBack(unsigned int threadID, const std::string& command);
-            std::string popCommandFront(unsigned int threadID);
-            bool isEmpty(unsigned int threadID);
+            bool updateQueriersList(TclInterpreterBundle* querier, TclInterpreterBundle* target);
 
-            std::string eval(const std::string& command);
-            std::string eval(unsigned int threadID, const std::string& command);
+            std::string evalQuery(unsigned int querierID, const std::string& command);
+            std::string evalQuery(unsigned int querierID, unsigned int threadID, const std::string& command);
 
             virtual void tick(float dt);
 
         private:
             TclThreadManager();
+            TclThreadManager(const TclThreadManager& other);
+            ~TclThreadManager() {}
 
-            bool isReady_;
-            bool isQuerying_;
-            unsigned int queryID_;
-
-            unsigned int IDcount_;
-            std::map<unsigned int, TclThread*> threads_;
-            std::map<unsigned int, std::pair<std::queue<std::string>, boost::condition*> > threadQueues_;
-            std::queue<std::string> orxonoxQueue_;
-
-            boost::try_mutex orxonoxQueueMutex_;
-            boost::try_mutex threadQueuesMutex_;
-            boost::try_mutex threadsMutex_;
-            boost::try_mutex orxonoxStateMutex_;
-            boost::try_mutex orxonoxQueryMutex_;
-
-            boost::condition orxonoxQueueCondition_;
+            unsigned int threadCounter_;
+            TclInterpreterBundle orxonoxInterpreterBundle_;
+            std::map<unsigned int, TclInterpreterBundle*> interpreterBundles_;
+            boost::mutex bundlesMutex_;
+            boost::condition fullQueueCondition_;
             boost::condition orxonoxEvalCondition_;
     };
 
-    _CoreExport void tclThreadLoop(TclThread* tclThread);
+    _CoreExport void tclThread(TclInterpreterBundle* interpreterBundle, std::string command);
 }
 
 #endif /* _TclThreadManager_H__ */

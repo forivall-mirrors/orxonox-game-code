@@ -62,7 +62,7 @@ namespace orxonox
         CS_Error
     };
 
-    void exec(const std::string& filename);
+    void source(const std::string& filename);
     std::string echo(const std::string& text);
     void puts(bool newline, const std::string& test);
 

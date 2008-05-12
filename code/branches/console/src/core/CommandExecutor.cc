@@ -47,7 +47,7 @@ namespace orxonox
     ConsoleCommandShortcutGeneric(keyword2, createExecutor((FunctorStatic*)0, "tset", AccessLevel::User));
     ConsoleCommandShortcutGeneric(keyword3, createExecutor((FunctorStatic*)0, "bind", AccessLevel::User));
 
-    ConsoleCommandShortcutExtern(exec, AccessLevel::None);
+    ConsoleCommandShortcutExtern(source, AccessLevel::None);
     ConsoleCommandShortcutExtern(echo, AccessLevel::None);
     ConsoleCommandShortcutExtern(puts, AccessLevel::None);
 
@@ -55,14 +55,14 @@ namespace orxonox
     ConsoleCommandShortcutExtern(append, AccessLevel::None);
     ConsoleCommandShortcutExtern(write, AccessLevel::None);
 
-    void exec(const std::string& filename)
+    void source(const std::string& filename)
     {
         static std::set<std::string> executingFiles;
 
         std::set<std::string>::const_iterator it = executingFiles.find(filename);
         if (it != executingFiles.end())
         {
-            COUT(1) << "Error: Recurring exec command in \"" << filename << "\". Stopped execution." << std::endl;
+            COUT(1) << "Error: Recurring source command in \"" << filename << "\". Stopped execution." << std::endl;
             return;
         }
 
@@ -72,7 +72,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "Error: Couldn't execute file \"" << filename << "\"." << std::endl;
+            COUT(1) << "Error: Couldn't open file \"" << filename << "\"." << std::endl;
             return;
         }
 
