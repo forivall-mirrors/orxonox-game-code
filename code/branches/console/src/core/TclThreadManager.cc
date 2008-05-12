@@ -248,7 +248,10 @@ namespace orxonox
         {
             boost::mutex::scoped_lock queue_lock(this->orxonoxInterpreterBundle_.queueMutex_);
             if (this->orxonoxInterpreterBundle_.queue_.size() >= TCLTHREADMANAGER_MAX_QUEUE_LENGTH)
+            {
+                boost::this_thread::yield();
                 return;
+            }
         }
 
         this->forceCommandToFrontOfQueue("error " + error);
