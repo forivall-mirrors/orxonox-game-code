@@ -84,6 +84,7 @@ namespace orxonox
             Tcl::interpreter* createNewTclInterpreter(const std::string& threadID);
             TclInterpreterBundle* getInterpreterBundle(unsigned int threadID);
             std::string dumpList(const std::list<unsigned int>& list);
+            void error(const std::string& error);
 
             void pushCommandToQueue(const std::string& command);
             void forceCommandToFrontOfQueue(const std::string& command);
@@ -112,6 +113,7 @@ namespace orxonox
             boost::mutex bundlesMutex_;
             boost::condition fullQueueCondition_;
             boost::condition orxonoxEvalCondition_;
+            boost::thread::id threadID_;
     };
 
     _CoreExport void tclThread(TclInterpreterBundle* interpreterBundle, std::string command);
