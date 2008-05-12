@@ -52,6 +52,11 @@
 
 namespace network
 {
+  
+  
+#define MAX_FAILURES 20;
+  
+  
   /**
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY
   *
@@ -204,9 +209,13 @@ namespace network
         return false;
       }
       //std::cout << "adding gamestate" << std::endl;
-      if ( !(connection->addPacket(packet_gen.gstate(gs), cid)) )
-        COUT(4) << "Server: packet with client id (cid): " << cid << " not sended" << std::endl; 
+      if ( !(connection->addPacket(packet_gen.gstate(gs), cid)) ){
+        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->failures_ << std::endl; 
+        temp->failures_++;
+        if(temp->failures_ > 20 )
+          disconnectClient(temp);
       //std::cout << "added gamestate" << std::endl;
+      }
       added=true;
       temp=temp->next();
       // now delete gamestate
@@ -239,6 +248,17 @@ namespace network
     COUT(4) << "processing partial gamestate from client " << clientID << std::endl;
     if(!gamestates->pushGameState(data, clientID))
         COUT(3) << "Could not push gamestate\t\t\t\t=====" << std::endl;
+    else
+        clients->findClient(clientID)->failures_=0;
   }
 
+  void Server::disconnectClient(int clientID){
+    ClientInformation *client = clients->findClient(clientID);
+    disconnectClient(client);
+  }
+  void Server::disconnectClient( ClientInformation *client){
+    connection->disconnectClient(client);
+    gamestates->removeClient(client);
+  }
+  
 }

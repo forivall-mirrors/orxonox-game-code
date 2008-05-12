@@ -75,6 +75,7 @@ namespace network
     GameStateCompressed *popGameState(int clientID);
     bool pushGameState(GameStateCompressed *gs, int clientID);
     void ackGameState(int clientID, int gamestateID);
+    void removeClient(ClientInformation *client);
   private:
     void cleanup(); // "garbage handler"
     GameState *getSnapshot();

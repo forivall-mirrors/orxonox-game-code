@@ -85,6 +85,7 @@ namespace network
     bool sendPackets(ENetEvent *event);
     bool sendPackets();
     bool createClient(int clientID);
+    void disconnectClient(ClientInformation *client);
 
   private:
     bool clientDisconnect(ENetPeer *peer);
@@ -98,6 +99,7 @@ namespace network
     void syncClassid(int clientID);
     ENetPeer *getClientPeer(int clientID);
     bool createShip(ClientInformation *client);
+    bool removeShip(ClientInformation *client);
     bool sendWelcome(int clientID, int shipID, bool allowed);
     bool addFakeConnectRequest(ENetEvent *ev);
     PacketBuffer buffer;

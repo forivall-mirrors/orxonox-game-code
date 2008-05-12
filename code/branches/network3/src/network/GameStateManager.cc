@@ -448,5 +448,10 @@ namespace network
 //     return head_->findClient(objectID)->getShipID()==objectID;
     return true; // TODO: change this
   }
+  
+  void GameStateManager::removeClient(ClientInformation* client){
+    gameStateUsed[client->getGamestateID()]--;
+    head_->removeClient(client->getID());
+  }
 
 }

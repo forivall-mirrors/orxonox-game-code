@@ -70,6 +70,8 @@ namespace network
     void processQueue();
     void updateGamestate();
   private:
+    void disconnectClient(int clientID);
+    void disconnectClient( ClientInformation *client);
     bool sendGameState();
     void processAck( ack *data, int clientID);
     bool processConnectRequest( connectRequest *con, int clientID );

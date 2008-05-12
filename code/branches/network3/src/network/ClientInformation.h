@@ -91,6 +91,7 @@ namespace network
     bool getSynched();
 
     bool head;
+    unsigned short failures_;
 
   private:
     ClientInformation *preve;

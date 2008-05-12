@@ -190,7 +190,9 @@ used by processQueue in Server.cc
         case ENET_EVENT_TYPE_RECEIVE:
           //std::cout << "received data" << std::endl;
           COUT(5) << "Con.Man: receive event has occured" << std::endl;
-          processData(event);
+          // only add, if client has connected yet and not been disconnected
+          if(head_->findClient(&event->peer->address))
+            processData(event);
           break;
         case ENET_EVENT_TYPE_DISCONNECT:
           clientDisconnect(event->peer);
@@ -353,10 +355,26 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     return true;
   }
   
+  bool ConnectionManager::removeShip(ClientInformation *client){
+    int id=client->getShipID();
+    orxonox::Iterator<orxonox::SpaceShip> it;
+    for(it = orxonox::ObjectList<orxonox::SpaceShip>::start(); it; ++it){
+      if(it->objectID!=id)
+        continue;
+      delete *it;
+    }
+    return true;
+  }
+  
   bool ConnectionManager::sendWelcome(int clientID, int shipID, bool allowed){
     addPacket(packet_gen.generateWelcome(clientID, shipID, allowed),clientID);
     sendPackets();
     return true;
+  }
+  
+  void ConnectionManager::disconnectClient(ClientInformation *client){
+    enet_peer_disconnect(client->getPeer(), 0);
+    removeShip(client);
   }
   
   bool ConnectionManager::addFakeConnectRequest(ENetEvent *ev){

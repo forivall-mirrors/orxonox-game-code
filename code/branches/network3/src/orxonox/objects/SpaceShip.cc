@@ -112,8 +112,9 @@ namespace orxonox
 
     SpaceShip::~SpaceShip()
     {
-        if (this->tt_)
+        if (this->tt_){
             delete this->tt_;
+        }
     }
 
     bool SpaceShip::create(){

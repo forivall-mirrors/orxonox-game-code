@@ -493,6 +493,10 @@ namespace orxonox
       // again, just to be sure ogre works fine
       ogreRoot._fireFrameEnded(evt);
 	  }
+    if(mode_==CLIENT)
+      network::Client::getSingleton()->closeConnection();
+    else if(mode_==SERVER)
+      server_g->close();
   }
 
   /**
