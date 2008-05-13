@@ -441,6 +441,7 @@ namespace network
       COUT(4) << (*it).first << ":" << (*it).second << " | ";
     }
     COUT(4) << std::endl;
+    return true;
   }
   
   bool GameStateManager::checkAccess(int clientID, int objectID){

@@ -7,14 +7,14 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		PreprocessorDefinitions="ORXONOX_SHARED_BUILD"
+		PreprocessorDefinitions="ORXONOX_SHARED_BUILD;NETWORK_STATIC_BUILD"
 		UsePrecompiledHeader="2"
 		PrecompiledHeaderThrough="OrxonoxStableHeaders.h"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CSS).lib tcl85t.lib"
+		AdditionalDependencies="OgreMain$(CSS).lib tcl85t.lib enet$(CS).lib zlib$(CS).lib"
 		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
-		IgnoreDefaultLibraryNames=""
+		IgnoreDefaultLibraryNames="LIBCMT;LIBCMTD"
 	/>
 </VisualStudioPropertySheet>

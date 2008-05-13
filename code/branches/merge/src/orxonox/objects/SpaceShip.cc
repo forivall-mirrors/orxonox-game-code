@@ -63,7 +63,40 @@ namespace orxonox
 
     SpaceShip* SpaceShip::instance_s;
 
-    SpaceShip::SpaceShip()
+    SpaceShip::SpaceShip() :
+      //testvector_(0,0,0),
+      //bInvertYAxis_(false),
+      setMouseEventCallback_(false),
+      bLMousePressed_(false),
+      bRMousePressed_(false),
+      camNode_(0),
+      cam_(0),
+      camName_("CamNode"),
+      tt_(0),
+      greenNode_(0),
+      redNode_(0),
+      blinkTime_(0.0f),
+      chNearNode_(0),
+      chFarNode_(0),
+      timeToReload_(0.0f),
+      //reloadTime_(0.0f),
+      maxSideAndBackSpeed_(0.0f),
+      maxSpeed_(0.0f),
+      maxRotation_(0.0f),
+      translationAcceleration_(0.0f),
+      rotationAcceleration_(0.0f),
+      translationDamping_(0.0f),
+      rotationDamping_(0.0f),
+      maxRotationRadian_(0),
+      rotationAccelerationRadian_(0),
+      rotationDampingRadian_(0),
+      zeroRadian_(0),
+      mouseXRotation_(0),
+      mouseYRotation_(0),
+      mouseX_(0.0f),
+      mouseY_(0.0f),
+      emitterRate_(0.0f),
+      server_(false)
     {
         RegisterObject(SpaceShip);
         this->registerAllVariables();
@@ -72,40 +105,8 @@ namespace orxonox
 
         this->setConfigValues();
 
-        this->setMouseEventCallback_ = false;
-        this->bLMousePressed_ = false;
-        this->bRMousePressed_ = false;
-        this->mouseX_ = 0;
-        this->mouseY_ = 0;
-
-        this->camNode_ = 0;
-        this->camName_ = "camNode";
-
-        this->tt_ = 0;
-        this->redNode_ = 0;
-        this->greenNode_ = 0;
-        this->blinkTime_ = 0;
-
-        this->timeToReload_ = 0;
-
-        this->maxSpeed_ = 0;
-        this->maxSideAndBackSpeed_ = 0;
-        this->maxRotation_ = 0;
-        this->translationAcceleration_ = 0;
-        this->rotationAcceleration_ = 0;
-        this->translationDamping_ = 0;
-        this->rotationDamping_ = 0;
-
-        this->maxRotationRadian_ = 0;
-        this->rotationAccelerationRadian_ = 0;
-        this->rotationDampingRadian_ = 0;
-        this->zeroRadian_ = Radian(0);
-
         this->setRotationAxis(1, 0, 0);
         this->setStatic(false);
-
-        server_=false;
-
 
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
