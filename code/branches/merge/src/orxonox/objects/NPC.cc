@@ -35,10 +35,10 @@ namespace orxonox {
 
   CreateFactory(NPC);
 
-  NPC::NPC()
+  NPC::NPC() :
+    movable_(true)
   {
     RegisterObject(NPC);
-    movable_ = true;
   }
 
   NPC::~NPC()

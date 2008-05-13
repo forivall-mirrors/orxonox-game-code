@@ -36,12 +36,9 @@
 #include "Orxonox.h"
 
 //****** STD *******
-//#include <iostream>
-//#include <exception>
 #include <deque>
 
 //****** OGRE ******
-//#include <OgreException.h>
 #include <OgreFrameListener.h>
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
@@ -64,6 +61,7 @@
 #include "core/Tickable.h"
 #include "core/InputBuffer.h"
 #include "core/InputManager.h"
+#include "core/TclBind.h"
 
 // audio
 #include "audio/AudioManager.h"
@@ -157,26 +155,25 @@ namespace orxonox
   Orxonox *Orxonox::singletonRef_s = 0;
 
   /**
-   * create a new instance of Orxonox
+   * Create a new instance of Orxonox. Avoid doing any actual work here.
    */
-  Orxonox::Orxonox()
-  {
-    this->mode_ = STANDALONE;
-    this->serverIp_ = "";
-    this->ogre_ = &GraphicsEngine::getSingleton();
-    this->timer_ = 0;
-    this->dataPath_ = "";
-    this->auMan_ = 0;
-    this->orxonoxHUD_ = 0;
-    this->inputHandler_ = 0;
+  Orxonox::Orxonox() :
+    ogre_(&GraphicsEngine::getSingleton()),
+    //auMan_(0),
+    timer_(0),
     // turn on frame smoothing by setting a value different from 0
-    this->frameSmoothingTime_ = 0.0f;
-    this->bAbort_ = false;
-    this->timefactor_ = 1.0f;
+    frameSmoothingTime_(0.0f),
+    orxonoxConsole_(0),
+    orxonoxHUD_(0),
+    bAbort_(false),
+    timefactor_(1.0f),
+    mode_(STANDALONE),
+    serverIp_("")
+  {
   }
 
   /**
-   * destruct Orxonox
+   * Destruct Orxonox.
    */
   Orxonox::~Orxonox()
   {
@@ -185,8 +182,8 @@ namespace orxonox
       delete this->orxonoxHUD_;
     Loader::close();
     InputManager::destroy();
-    if (this->auMan_)
-      delete this->auMan_;
+    //if (this->auMan_)
+    //  delete this->auMan_;
     if (this->timer_)
       delete this->timer_;
     GraphicsEngine::getSingleton().destroy();
@@ -195,16 +192,6 @@ namespace orxonox
       delete client_g;
     if (server_g)
       delete server_g;
-  }
-
-  /**
-    @brief Immediately deletes the orxonox object.
-    Never use if you can help it while rendering!
-  */
-  void Orxonox::abortImmediateForce()
-  {
-    COUT(1) << "*** Orxonox Error: Orxonox object was unexpectedly destroyed." << std::endl;
-    delete this;
   }
 
   /**
@@ -217,7 +204,7 @@ namespace orxonox
   }
 
   /**
-   * @return singleton object
+   * @return singleton reference
    */
   Orxonox* Orxonox::getSingleton()
   {
@@ -242,185 +229,125 @@ namespace orxonox
    * @param argv list of argumenst
    * @param path path to config (in home dir or something)
    */
-  void Orxonox::init(int argc, char **argv, std::string path)
+  bool Orxonox::init(int argc, char **argv, std::string path)
   {
     //TODO: find config file (assuming executable directory)
     //TODO: read config file
     //TODO: give config file to Ogre
     std::string mode;
+    std::string dataPath;
 
     ArgReader ar(argc, argv);
     ar.checkArgument("mode", mode, false);
-    ar.checkArgument("data", this->dataPath_, false);
+    ar.checkArgument("data", dataPath, false);
     ar.checkArgument("ip", serverIp_, false);
-    if(ar.errorHandling()) abortImmediateForce();
-    if(mode == std::string("client"))
-    {
+    if(ar.errorHandling())
+      return false;
+
+    COUT(3) << "*** Orxonox: Mode is " << mode << "." << std::endl;
+    if (mode == "client")
       mode_ = CLIENT;
-      clientInit(path);
-    }
-    else if(mode== std::string("server")){
+    else if (mode == "server")
       mode_ = SERVER;
-      serverInit(path);
-    }
-    else{
-      mode_ = STANDALONE;
-      standaloneInit(path);
-    }
-  }
-
-  void Orxonox::serverInit(std::string path)
-  {
-    COUT(2) << "initialising server" << std::endl;
-
-    ogre_->setConfigPath(path);
-    ogre_->setup();
-    //root_ = ogre_->getRoot();
-    if(!ogre_->load(this->dataPath_)) abortImmediateForce(/* unable to load */);
-
-    server_g = new network::Server();
-  }
-
-  void Orxonox::clientInit(std::string path)
-  {
-    COUT(2) << "initialising client" << std::endl;\
-
-    ogre_->setConfigPath(path);
-    ogre_->setup();
-    if(serverIp_.compare("")==0)
-      client_g = new network::Client();
     else
-      client_g = new network::Client(serverIp_, NETWORK_PORT);
-    if(!ogre_->load(this->dataPath_)) abortImmediateForce(/* unable to load */);
-  }
+      mode_ = STANDALONE;
 
-  void Orxonox::standaloneInit(std::string path)
-  {
-    COUT(2) << "initialising standalone mode" << std::endl;
+    //if (mode_ == DEDICATED)
+      // TODO: decide what to do here
+    //else
 
-    ogre_->setConfigPath(path);
-    ogre_->setup();
-    if(!ogre_->load(this->dataPath_)) abortImmediateForce(/* unable to load */);
+    // for playable server, client and standalone, the startup
+    // procedure until the GUI is identical
+
+    TclBind::getInstance().setDataPath(dataPath);
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
+    Factory::createClassHierarchy();
+
+    if (!ogre_->setup(path))       // creates ogre root and other essentials
+      return false;
+
+    return true;
   }
 
   /**
    * start modules
    */
-  void Orxonox::start()
+  bool Orxonox::start()
   {
-    switch(mode_){
-    case CLIENT:
-      clientStart();
-      break;
-    case SERVER:
-      serverStart();
-      break;
-    default:
-      standaloneStart();
-    }
-  }
+    //if (mode == DEDICATED)
+    // do something else
+    //else
 
-  void Orxonox::clientStart(){
-    ogre_->initialise();
-    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
-    Factory::createClassHierarchy();
+    if (!ogre_->loadRenderer())    // creates the render window
+      return false;
 
-
-    auMan_ = new audio::AudioManager();
-
-    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    orxonoxHUD_ = new HUD();
-    orxonoxHUD_->setEnergyValue(20);
-    orxonoxHUD_->setEnergyDistr(20,20,60);
-    hudOverlay->show();
-
-    client_g->establishConnection();
-    client_g->tick(0);
-
-
-    //setupInputSystem();
-
-    startRenderLoop();
-  }
-
-  void Orxonox::serverStart(){
-    //TODO: start modules
-    ogre_->initialise();
-    //TODO: run engine
-    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
-    Factory::createClassHierarchy();
-    createScene();
-    setupInputSystem();
-
-    server_g->open();
-
-    startRenderLoop();
-  }
-
-  void Orxonox::standaloneStart(){
-    //TODO: start modules
-    ogre_->initialise();
-    //TODO: run engine
-    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
-    Factory::createClassHierarchy();
-    createScene();
-    setupInputSystem();
-
-    startRenderLoop();
-  }
-
-  void Orxonox::createScene(void)
-  {
-	  // Init audio
-    auMan_ = new audio::AudioManager();
-
-    // load this file from config
-    Level* startlevel = new Level("levels/sample.oxw");
-    Loader::open(startlevel);
-
-    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    orxonoxHUD_ = new HUD();
-    orxonoxHUD_->setEnergyValue(20);
-    orxonoxHUD_->setEnergyDistr(20,20,60);
-    hudOverlay->show();
-
-	/*
-    auMan_->ambientAdd("a1");
-    auMan_->ambientAdd("a2");
-    auMan_->ambientAdd("a3");
-    //auMan->ambientAdd("ambient1");
-    auMan_->ambientStart();
-  */
-  }
-
-  /**
-    @brief Calls the InputHandler which sets up the input devices.
-    The render window width and height are used to set up the mouse movement.
-  */
-  void Orxonox::setupInputSystem()
-  {
+    // Calls the InputManager which sets up the input devices.
+    // The render window width and height are used to set up the mouse movement.
     if (!InputManager::initialise(ogre_->getWindowHandle(),
           ogre_->getWindowWidth(), ogre_->getWindowHeight()))
-      abortImmediateForce();
+      return false;
+
+    // TODO: Spread this so that this call only initialises things needed for the GUI
+    if (!ogre_->initialiseResources())
+      return false;
+
+    // TOOD: load the GUI here
+    // set InputManager to GUI mode
+    InputManager::setInputState(InputManager::IS_GUI);
+    // TODO: run GUI here
+
+    // The following lines depend very much on the GUI output, so they're probably misplaced here..
+
+    InputManager::setInputState(InputManager::IS_NONE);
+
+    if (!loadPlayground())
+      return false;
+
+    switch (mode_)
+    {
+    case SERVER:
+      if (!serverLoad())
+        return false;
+      break;
+    case CLIENT:
+      if (!clientLoad())
+        return false;
+      break;
+    default:
+      if (!standaloneLoad())
+        return false;
+    }
+
     InputManager::setInputState(InputManager::IS_NORMAL);
+
+    return startRenderLoop();
   }
 
   /**
-    Main loop of the orxonox game.
-    This is a new solution, using the ogre engine instead of being used by it.
-    An alternative solution would be to simply use the timer of the Root object,
-    but that implies using Ogre in any case. There would be no way to test
-    our code without the help of the root object.
-    There's even a chance that we can dispose of the root object entirely
-    in server mode.
-    About the loop: The design is almost exactly like the one in ogre, so that
-    if any part of ogre registers a framelisteners, it will still behave
-    correctly. Furthermore the time smoothing feature from ogre has been
-    implemented too. If turned on (see orxonox constructor), it will calculate
-    the dt_n by means of the recent most dt_n-1, dt_n-2, etc.
-  */
-  void Orxonox::startRenderLoop()
+   * Loads everything in the scene except for the actual objects.
+   * This includes HUD, Console..
+   */
+  bool Orxonox::loadPlayground()
   {
+    ogre_->createNewScene();
+
+	  // Init audio
+    //auMan_ = new audio::AudioManager();
+    //auMan_->ambientAdd("a1");
+    //auMan_->ambientAdd("a2");
+    //auMan_->ambientAdd("a3");
+    //auMan->ambientAdd("ambient1");
+    //auMan_->ambientStart();
+
+    // Load the HUD
+    COUT(3) << "*** Orxonox: Loading HUD..." << std::endl;
+    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
+    orxonoxHUD_ = new HUD();
+    orxonoxHUD_->setEnergyValue(20);
+    orxonoxHUD_->setEnergyDistr(20,20,60);
+    hudOverlay->show();
+
+    COUT(3) << "*** Orxonox: Loading Console..." << std::endl;
     InputBuffer* ib = dynamic_cast<InputBuffer*>(InputManager::getKeyHandler("buffer"));
     /*
     Testconsole* console = new Testconsole(ib);
@@ -431,7 +358,6 @@ namespace orxonox
     ib->registerListener(console, &Testconsole::removeLast, '\b', true);
     ib->registerListener(console, &Testconsole::exit, (char)0x1B, true);
     */
-
     orxonoxConsole_ = new InGameConsole(ib);
     ib->registerListener(orxonoxConsole_, &InGameConsole::listen, true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::execute, '\r', false);
@@ -440,11 +366,84 @@ namespace orxonox
     ib->registerListener(orxonoxConsole_, &InGameConsole::removeLast, '\b', true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::exit, (char)0x1B, true);
 
+    return true;
+  }
+
+  /**
+   * Level loading method for server mode.
+   */
+  bool Orxonox::serverLoad()
+  {
+    COUT(2) << "Loading level in server mode" << std::endl;
+
+    server_g = new network::Server();
+
+    if (!loadScene())
+      return false;
+
+    server_g->open();
+
+    return true;
+  }
+
+  /**
+   * Level loading method for client mode.
+   */
+  bool Orxonox::clientLoad()
+  {
+    COUT(2) << "Loading level in client mode" << std::endl;\
+
+    if (serverIp_.compare("") == 0)
+      client_g = new network::Client();
+    else
+      client_g = new network::Client(serverIp_, NETWORK_PORT);
+
+    client_g->establishConnection();
+    client_g->tick(0);
+
+    return true;
+  }
+
+  /**
+   * Level loading method for standalone mode.
+   */
+  bool Orxonox::standaloneLoad()
+  {
+    COUT(2) << "Loading level in standalone mode" << std::endl;
+
+    if (!loadScene())
+      return false;
+
+    return true;
+  }
+
+  /**
+   * Helper method to load a level.
+   */
+  bool Orxonox::loadScene()
+  {
+    Level* startlevel = new Level("levels/sample.oxw");
+    Loader::open(startlevel);
+
+    return true;
+  }
+
+
+  /**
+    Main loop of the orxonox game.
+    About the loop: The design is almost exactly like the one in ogre, so that
+    if any part of ogre registers a framelisteners, it will still behave
+    correctly. Furthermore the time smoothing feature from ogre has been
+    implemented too. If turned on (see orxonox constructor), it will calculate
+    the dt_n by means of the recent most dt_n-1, dt_n-2, etc.
+  */
+  bool Orxonox::startRenderLoop()
+  {
     // first check whether ogre root object has been created
     if (Ogre::Root::getSingletonPtr() == 0)
     {
       COUT(2) << "*** Orxonox Error: Could not start rendering. No Ogre root object found" << std::endl;
-      return;
+      return false;
     }
     Ogre::Root& ogreRoot = Ogre::Root::getSingleton();
 
@@ -464,6 +463,7 @@ namespace orxonox
       timer_ = new Ogre::Timer();
     timer_->reset();
 
+    COUT(3) << "*** Orxonox: Starting the main loop." << std::endl;
 	  while (!bAbort_)
 	  {
 		  // Pump messages in all registered RenderWindows
@@ -509,6 +509,8 @@ namespace orxonox
       // again, just to be sure ogre works fine
       ogreRoot._fireFrameEnded(evt);
 	  }
+
+    return true;
   }
 
   /**
@@ -549,8 +551,12 @@ namespace orxonox
     return (float)(times.back() - times.front()) / ((times.size() - 1) * 1000);
   }
 
+  /**
+   * Static function that shows the console in game mode.
+   */
   void Orxonox::activateConsole()
   {
+    // currently, the console shows itself when feeded with input.
     InputManager::setInputState(InputManager::IS_CONSOLE);
   }
 }
