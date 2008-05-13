@@ -38,6 +38,7 @@
 namespace orxonox
 {
     ConsoleCommandShortcutGeneric(tcl, createExecutor(createFunctor(&TclBind::tcl), "tcl", AccessLevel::None));
+    ConsoleCommandShortcutGeneric(bgerror, createExecutor(createFunctor(&TclBind::bgerror), "bgerror", AccessLevel::None));
 
     TclBind::TclBind()
     {
@@ -144,6 +145,14 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         {   COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;   }
 
         return "";
+    }
+
+    void TclBind::bgerror(std::string error)
+    {
+        while (error.size() >= 2 && error[0] == '{' && error[error.size() - 1] == '}')
+            error = error.substr(1, error.size() - 2);
+
+        COUT(1) << "Tcl background error: " << error << std::endl;
     }
 
     bool TclBind::eval(const std::string& tclcode)

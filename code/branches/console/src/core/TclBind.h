@@ -41,6 +41,7 @@ namespace orxonox
             static TclBind& getInstance();
 
             static std::string tcl(const std::string& tclcode);
+            static void bgerror(std::string error);
 
             void setDataPath(const std::string& datapath);
             std::string getTclLibPath() const { return this->tclLibPath_; }

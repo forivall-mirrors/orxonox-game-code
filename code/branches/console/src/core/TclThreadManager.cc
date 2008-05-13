@@ -201,8 +201,8 @@ namespace orxonox
 
             i->eval("redef_puts");
 
-            i->eval("rename while tcl::while");
-            i->eval("proc while {test command} { tcl::while {$test && [orxonox::running " + threadID + "]} \"$command\" }");
+//            i->eval("rename while tcl::while");
+//            i->eval("proc while {test command} { tcl::while {[uplevel 1 expr $test]} {uplevel 1 $command} }"); // (\"$test\" && [orxonox::running " + threadID + "]])
 //            i->eval("rename for tcl::for");
 //            i->eval("proc for {start test next command} { uplevel tcl::for \"$start\" \"$test\" \"$next\" \"$command\" }");
         }
