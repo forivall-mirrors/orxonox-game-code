@@ -91,6 +91,7 @@ namespace orxonox
   {
     if (state_ == IS_UNINIT)
     {
+      CCOUT(3) << "Initialising Input System..." << std::endl;
       CCOUT(ORX_DEBUG) << "Initialising OIS components..." << std::endl;
 
       OIS::ParamList paramList;

@@ -54,183 +54,183 @@ namespace orxonox
 
     std::string keyNames[] = {
     "UNASSIGNED",
-		"ESCAPE",
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7",
-		"8",
-		"9",
-		"0",
-		"MINUS",
-		"EQUALS",
-		"BACK",
-		"TAB",
-		"Q",
-		"W",
-		"E",
-		"R",
-		"T",
-		"Y",
-		"U",
-		"I",
-		"O",
-		"P",
-		"LBRACKET",
-		"RBRACKET",
-		"RETURN",
-		"LCONTROL",
-		"A",
-		"S",
-		"D",
-		"F",
-		"G",
-		"H",
-		"J",
-		"K",
-		"L",
-		"SEMICOLON",
-		"APOSTROPHE",
-		"GRAVE",
-		"LSHIFT",
-		"BACKSLASH",
-		"Z",
-		"X",
-		"C",
-		"V",
-		"B",
-		"N",
-		"M",
-		"COMMA",
-		"PERIOD",
-		"SLASH",
-		"RSHIFT",
-		"MULTIPLY",
-		"LMENU",
-		"SPACE",
-		"CAPITAL",
-		"F1",
-		"F2",
-		"F3",
-		"F4",
-		"F5",
-		"F6",
-		"F7",
-		"F8",
-		"F9",
-		"F10",
-		"NUMLOCK",
-		"SCROLL",
-		"NUMPAD7",
-		"NUMPAD8",
-		"NUMPAD9",
-		"SUBTRACT",
-		"NUMPAD4",
-		"NUMPAD5",
-		"NUMPAD6",
-		"ADD",
-		"NUMPAD1",
-		"NUMPAD2",
-		"NUMPAD3",
-		"NUMPAD0",
-		"DECIMAL",
+    "ESCAPE",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "0",
+    "MINUS",
+    "EQUALS",
+    "BACK",
+    "TAB",
+    "Q",
+    "W",
+    "E",
+    "R",
+    "T",
+    "Y",
+    "U",
+    "I",
+    "O",
+    "P",
+    "LBRACKET",
+    "RBRACKET",
+    "RETURN",
+    "LCONTROL",
+    "A",
+    "S",
+    "D",
+    "F",
+    "G",
+    "H",
+    "J",
+    "K",
+    "L",
+    "SEMICOLON",
+    "APOSTROPHE",
+    "GRAVE",
+    "LSHIFT",
+    "BACKSLASH",
+    "Z",
+    "X",
+    "C",
+    "V",
+    "B",
+    "N",
+    "M",
+    "COMMA",
+    "PERIOD",
+    "SLASH",
+    "RSHIFT",
+    "MULTIPLY",
+    "LMENU",
+    "SPACE",
+    "CAPITAL",
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "F9",
+    "F10",
+    "NUMLOCK",
+    "SCROLL",
+    "NUMPAD7",
+    "NUMPAD8",
+    "NUMPAD9",
+    "SUBTRACT",
+    "NUMPAD4",
+    "NUMPAD5",
+    "NUMPAD6",
+    "ADD",
+    "NUMPAD1",
+    "NUMPAD2",
+    "NUMPAD3",
+    "NUMPAD0",
+    "DECIMAL",
     "","",
-		"OEM_102",
-		"F11",
-		"F12",
+    "OEM_102",
+    "F11",
+    "F12",
     "","","","","","","","","","","",
-		"F13",
-		"F14",
-		"F15",
+    "F13",
+    "F14",
+    "F15",
     "","","","","","","","","","",
-		"KANA",
+    "KANA",
     "","",
-		"ABNT_C1",
+    "ABNT_C1",
     "","","","","",
-		"CONVERT",
+    "CONVERT",
     "",
-		"NOCONVERT",
+    "NOCONVERT",
     "",
-		"YEN",
-		"ABNT_C2",
+    "YEN",
+    "ABNT_C2",
     "","","","","","","","","","","","","","",
-		"NUMPADEQUALS",
+    "NUMPADEQUALS",
     "","",
-		"PREVTRACK",
-		"AT",
-		"COLON",
-		"UNDERLINE",
-		"KANJI",
-		"STOP",
-		"AX",
-		"UNLABELED",
-		"NEXTTRACK",
+    "PREVTRACK",
+    "AT",
+    "COLON",
+    "UNDERLINE",
+    "KANJI",
+    "STOP",
+    "AX",
+    "UNLABELED",
+    "NEXTTRACK",
     "","",
-		"NUMPADENTER",
-		"RCONTROL",
+    "NUMPADENTER",
+    "RCONTROL",
     "","",
-		"MUTE",
-		"CALCULATOR",
-		"PLAYPAUSE",
+    "MUTE",
+    "CALCULATOR",
+    "PLAYPAUSE",
     "",
-		"MEDIASTOP",
+    "MEDIASTOP",
     "","","","","","","","","",
-		"VOLUMEDOWN",
+    "VOLUMEDOWN",
     "",
-		"VOLUMEUP",
+    "VOLUMEUP",
     "",
-		"WEBHOME",
-		"NUMPADCOMMA",
+    "WEBHOME",
+    "NUMPADCOMMA",
     "",
-		"DIVIDE",
+    "DIVIDE",
     "",
-		"SYSRQ",
-		"RMENU",
+    "SYSRQ",
+    "RMENU",
     "","","","","","","","","","","","",
-		"PAUSE",
+    "PAUSE",
     "",
-		"HOME",
-		"UP",
-		"PGUP",
+    "HOME",
+    "UP",
+    "PGUP",
     "",
-		"LEFT",
+    "LEFT",
     "",
-		"RIGHT",
+    "RIGHT",
     "",
-		"END",
-		"DOWN",
-		"PGDOWN",
-		"INSERT",
-		"DELETE",
+    "END",
+    "DOWN",
+    "PGDOWN",
+    "INSERT",
+    "DELETE",
     "","","","","","","",
-		"LWIN",
-		"RWIN",
-		"APPS",
-		"POWER",
-		"SLEEP",
+    "LWIN",
+    "RWIN",
+    "APPS",
+    "POWER",
+    "SLEEP",
     "","","",
-		"WAKE",
+    "WAKE",
     "",
-		"WEBSEARCH",
-		"WEBFAVORITES",
-		"WEBREFRESH",
-		"WEBSTOP",
-		"WEBFORWARD",
-		"WEBBACK",
-		"MYCOMPUTER",
-		"MAIL",
-		"MEDIASELECT"
+    "WEBSEARCH",
+    "WEBFAVORITES",
+    "WEBREFRESH",
+    "WEBSTOP",
+    "WEBFORWARD",
+    "WEBBACK",
+    "MYCOMPUTER",
+    "MAIL",
+    "MEDIASELECT"
     };
     for (int i = 0; i < numberOfKeys_s; i++)
       keyNames_[i] = keyNames[i];
 
     std::string mouseButtonNames[] = {
-    "MouseLeft", "MouseRight", "MouseMiddle",
-    "MouseButton3", "MouseButton4", "MouseButton5",
-    "MouseButton6", "MouseButton7" };
+      "MouseLeft", "MouseRight", "MouseMiddle",
+      "MouseButton3", "MouseButton4", "MouseButton5",
+      "MouseButton6", "MouseButton7" };
     for (int i = 0; i < numberOfMouseButtons_s; i++)
       mouseButtonNames_[i] = mouseButtonNames[i];
 
@@ -392,7 +392,7 @@ namespace orxonox
       //  binding.evaluation = CommandExecutor::evaluate(binding.commandStr);
       //  binding.commandStr = binding.evaluation.getCommandString();
       //}
-      COUT(3) << "Executing command: " << binding.commandStr << std::endl;
+      COUT(ORX_DEBUG) << "Keybinding: Executing command: " << binding.commandStr << std::endl;
       CommandExecutor::execute(binding.commandStr);
     }
 
@@ -406,7 +406,7 @@ namespace orxonox
   */
   bool KeyBinder::keyPressed(const OIS::KeyEvent &e)
   {
-    COUT(3) << "Key: " << e.key << std::endl;
+    //COUT(ORX_DEBUG) << "Key: " << e.key << std::endl;
     // find the appropriate key binding
     executeBinding(bindingsKeyPress_[int(e.key)]);
      
@@ -458,7 +458,7 @@ namespace orxonox
     if (cmdStr != "")
     {
       CommandExecutor::execute(cmdStr);
-      COUT(3) << "Executing command: " << cmdStr << std::endl;
+      //COUT(3) << "Executing command: " << cmdStr << std::endl;
     }
 
     return true;
@@ -476,7 +476,7 @@ namespace orxonox
     if (cmdStr != "")
     {
       CommandExecutor::execute(cmdStr);
-      COUT(3) << "Executing command: " << cmdStr << std::endl;
+      //COUT(3) << "Executing command: " << cmdStr << std::endl;
     }
 
     return true;
@@ -494,7 +494,7 @@ namespace orxonox
     if (cmdStr != "")
     {
       CommandExecutor::execute(cmdStr);
-      COUT(3) << "Executing command: " << cmdStr << std::endl;
+      //COUT(3) << "Executing command: " << cmdStr << std::endl;
     }
 
     return true;
@@ -507,7 +507,7 @@ namespace orxonox
     if (cmdStr != "")
     {
       CommandExecutor::execute(cmdStr);
-      COUT(3) << "Executing command: " << cmdStr << std::endl;
+      //COUT(3) << "Executing command: " << cmdStr << std::endl;
     }
 
     return true;
@@ -520,7 +520,7 @@ namespace orxonox
     if (cmdStr != "")
     {
       CommandExecutor::execute(cmdStr);
-      COUT(3) << "Executing command: " << cmdStr << std::endl;
+      //COUT(3) << "Executing command: " << cmdStr << std::endl;
     }
 
     return true;
@@ -533,7 +533,7 @@ namespace orxonox
     if (cmdStr != "")
     {
       CommandExecutor::execute(cmdStr);
-      COUT(3) << "Executing command: " << cmdStr << std::endl;
+      //COUT(3) << "Executing command: " << cmdStr << std::endl;
     }
 
     return true;
@@ -585,8 +585,8 @@ namespace orxonox
   //*/
   //bool GUIInputHandler::keyPressed(const OIS::KeyEvent &e)
   //{
-		////CEGUI::System::getSingleton().injectKeyDown( arg.key );
-		////CEGUI::System::getSingleton().injectChar( arg.text );
+    ////CEGUI::System::getSingleton().injectKeyDown( arg.key );
+    ////CEGUI::System::getSingleton().injectChar( arg.text );
   //  return true;
   //}
 
@@ -596,7 +596,7 @@ namespace orxonox
   //*/
   //bool GUIInputHandler::keyReleased(const OIS::KeyEvent &e)
   //{
-		////CEGUI::System::getSingleton().injectKeyUp( arg.key );
+    ////CEGUI::System::getSingleton().injectKeyUp( arg.key );
   //  return true;
   //}
 
@@ -606,7 +606,7 @@ namespace orxonox
   //*/
   //bool GUIInputHandler::mouseMoved(const OIS::MouseEvent &e)
   //{
-		////CEGUI::System::getSingleton().injectMouseMove( arg.state.X.rel, arg.state.Y.rel );
+    ////CEGUI::System::getSingleton().injectMouseMove( arg.state.X.rel, arg.state.Y.rel );
   //  return true;
   //}
 
@@ -617,7 +617,7 @@ namespace orxonox
   //*/
   //bool GUIInputHandler::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   //{
-		////CEGUI::System::getSingleton().injectMouseButtonDown(convertOISMouseButtonToCegui(id));
+    ////CEGUI::System::getSingleton().injectMouseButtonDown(convertOISMouseButtonToCegui(id));
   //  return true;
   //}
 
@@ -628,7 +628,7 @@ namespace orxonox
   //*/
   //bool GUIInputHandler::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   //{
-		////CEGUI::System::getSingleton().injectMouseButtonUp(convertOISMouseButtonToCegui(id));
+    ////CEGUI::System::getSingleton().injectMouseButtonUp(convertOISMouseButtonToCegui(id));
   //  return true;
   //}
 

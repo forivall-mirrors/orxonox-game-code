@@ -200,7 +200,7 @@ namespace orxonox
   */
   void Orxonox::abortRequest()
   {
-    COUT(3) << "*** Orxonox: Abort requested." << std::endl;
+    COUT(3) << "Orxonox: Abort requested." << std::endl;
     bAbort_ = true;
   }
 
@@ -245,13 +245,16 @@ namespace orxonox
     if(ar.errorHandling())
       return false;
 
-    COUT(3) << "*** Orxonox: Mode is " << mode << "." << std::endl;
     if (mode == "client")
       mode_ = CLIENT;
     else if (mode == "server")
       mode_ = SERVER;
     else
+    {
+      mode = "standalone";
       mode_ = STANDALONE;
+    }
+    COUT(3) << "Orxonox: Mode is " << mode << "." << std::endl;
 
     //if (mode_ == DEDICATED)
       // TODO: decide what to do here
@@ -342,14 +345,14 @@ namespace orxonox
     //auMan_->ambientStart();
 
     // Load the HUD
-    COUT(3) << "*** Orxonox: Loading HUD..." << std::endl;
+    COUT(3) << "Orxonox: Loading HUD..." << std::endl;
     Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
     orxonoxHUD_ = new HUD();
     orxonoxHUD_->setEnergyValue(20);
     orxonoxHUD_->setEnergyDistr(20,20,60);
     hudOverlay->show();
 
-    COUT(3) << "*** Orxonox: Loading Console..." << std::endl;
+    COUT(3) << "Orxonox: Loading Console..." << std::endl;
     InputBuffer* ib = dynamic_cast<InputBuffer*>(InputManager::getKeyHandler("buffer"));
     /*
     Testconsole* console = new Testconsole(ib);
@@ -444,7 +447,7 @@ namespace orxonox
     // first check whether ogre root object has been created
     if (Ogre::Root::getSingletonPtr() == 0)
     {
-      COUT(2) << "*** Orxonox Error: Could not start rendering. No Ogre root object found" << std::endl;
+      COUT(2) << "Orxonox Error: Could not start rendering. No Ogre root object found" << std::endl;
       return false;
     }
     Ogre::Root& ogreRoot = Ogre::Root::getSingleton();
@@ -465,7 +468,7 @@ namespace orxonox
       timer_ = new Ogre::Timer();
     timer_->reset();
 
-    COUT(3) << "*** Orxonox: Starting the main loop." << std::endl;
+    COUT(3) << "Orxonox: Starting the main loop." << std::endl;
 	  while (!bAbort_)
 	  {
 		  // Pump messages in all registered RenderWindows

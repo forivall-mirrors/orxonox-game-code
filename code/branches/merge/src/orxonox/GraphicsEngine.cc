@@ -98,7 +98,7 @@ namespace orxonox {
   */
   void GraphicsEngine::destroy()
   {
-    COUT(4) << "Destroying objects..." << std::endl;
+    CCOUT(4) << "Destroying objects..." << std::endl;
     Ogre::WindowEventUtilities::removeWindowEventListener(this->renderWindow_, this);
     if (this->root_)
       delete this->root_;
@@ -112,7 +112,7 @@ namespace orxonox {
       Ogre::LogManager::getSingleton().destroyLog(Ogre::LogManager::getSingleton().getDefaultLog());
       delete Ogre::LogManager::getSingletonPtr();
     }
-    COUT(4) << "Destroying objects done" << std::endl;
+    CCOUT(4) << "Destroying objects done" << std::endl;
   }
 
   /**
@@ -138,10 +138,12 @@ namespace orxonox {
 
     // create a logManager
     Ogre::LogManager *logger;
-    if (Ogre::LogManager::getSingletonPtr() == 0)
-      logger = new Ogre::LogManager();
-    else
-      logger = Ogre::LogManager::getSingletonPtr();
+    //if (Ogre::LogManager::getSingletonPtr() == 0)
+    // note: If there's already a logManager, Ogre will complain by a failed assertation.
+    // but that shouldn't happen, since this is the first time to create a logManager..
+    logger = new Ogre::LogManager();
+    //else
+    //  logger = Ogre::LogManager::getSingletonPtr();
     CCOUT(4) << "Ogre LogManager created/assigned" << std::endl;
 
     // create our own log that we can listen to
@@ -150,7 +152,7 @@ namespace orxonox {
       myLog = logger->createLog("ogre.log", true, false, true);
     else
       myLog = logger->createLog(this->ogreLogfile_, true, false, false);
-    COUT(4) << "*** GraphicsEngine: Ogre Log created" << std::endl;
+    CCOUT(4) << "Ogre Log created" << std::endl;
 
     myLog->setLogDetail(Ogre::LL_BOREME);
     myLog->addListener(this);
