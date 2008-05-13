@@ -47,13 +47,15 @@
 
 namespace orxonox
 {
-//    ConsoleCommand(TclThreadManager, tclthread, AccessLevel::None, true);
+    ConsoleCommandShortcutGeneric(tclexecute, createExecutor(createFunctor(&TclThreadManager::execute), "tclexecute", AccessLevel::None));
+    ConsoleCommandShortcutGeneric(tclquery,   createExecutor(createFunctor(&TclThreadManager::query),   "tclquery",   AccessLevel::None));
     ConsoleCommand(TclThreadManager, create,    AccessLevel::None, false);
     ConsoleCommand(TclThreadManager, destroy,   AccessLevel::None, false);
     ConsoleCommand(TclThreadManager, execute,   AccessLevel::None, false);
     ConsoleCommand(TclThreadManager, query,     AccessLevel::None, false);
-//    ConsoleCommand(TclThreadManager, status,    AccessLevel::None, false);
-//    ConsoleCommand(TclThreadManager, dump,      AccessLevel::None, false);
+    ConsoleCommand(TclThreadManager, status,    AccessLevel::None, false);
+    ConsoleCommand(TclThreadManager, dump,      AccessLevel::None, false);
+    ConsoleCommand(TclThreadManager, flush,     AccessLevel::None, false);
 
     TclThreadManager* instance = &TclThreadManager::getInstance();
 
@@ -131,14 +133,105 @@ namespace orxonox
         }
     }
 
-    void TclThreadManager::execute(unsigned int threadID, const std::string& command)
+    void TclThreadManager::execute(unsigned int threadID, const std::string& _command)
     {
-        TclThreadManager::getInstance().pushCommandToQueue(threadID, command);
+        std::string command = _command;
+        while (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
+            command = command.substr(1, command.size() - 2);
+
+
+        if (threadID == 0)
+            TclThreadManager::getInstance().pushCommandToQueue(command);
+        else
+            TclThreadManager::getInstance().pushCommandToQueue(threadID, command);
     }
 
     std::string TclThreadManager::query(unsigned int threadID, const std::string& command)
     {
         return TclThreadManager::getInstance().evalQuery(TclThreadManager::getInstance().orxonoxInterpreterBundle_.id_, threadID, command);
+    }
+
+    void TclThreadManager::status()
+    {
+        COUT(0) << "Thread ID" << '\t' << "Queue size" << '\t' << "State" << std::endl;
+
+        std::string output = "Orxonox";
+        output += "\t\t";
+        {
+            boost::mutex::scoped_lock queue_lock(TclThreadManager::getInstance().orxonoxInterpreterBundle_.queueMutex_);
+            output += getConvertedValue<unsigned int, std::string>(TclThreadManager::getInstance().orxonoxInterpreterBundle_.queue_.size());
+        }
+        output += "\t\t";
+        output += "busy";
+        COUT(0) << output << std::endl;
+
+        boost::mutex::scoped_lock bundles_lock(TclThreadManager::getInstance().bundlesMutex_);
+        for (std::map<unsigned int, TclInterpreterBundle*>::const_iterator it = TclThreadManager::getInstance().interpreterBundles_.begin(); it != TclThreadManager::getInstance().interpreterBundles_.end(); ++it)
+        {
+            std::string output = getConvertedValue<unsigned int, std::string>((*it).first);
+            output += "\t\t";
+            {
+                boost::mutex::scoped_lock queue_lock((*it).second->queueMutex_);
+                output += getConvertedValue<unsigned int, std::string>((*it).second->queue_.size());
+            }
+            output += "\t\t";
+            {
+                boost::mutex::scoped_lock interpreter_lock((*it).second->interpreterMutex_, boost::defer_lock_t());
+                if (interpreter_lock.try_lock())
+                    output += "ready";
+                else
+                    output += "busy";
+            }
+            COUT(0) << output << std::endl;
+        }
+    }
+
+    void TclThreadManager::dump(unsigned int threadID)
+    {
+        TclInterpreterBundle* bundle = 0;
+        if (threadID == 0)
+        {
+            bundle = &TclThreadManager::getInstance().orxonoxInterpreterBundle_;
+            COUT(0) << "Queue dump of Orxonox:" << std::endl;
+        }
+        else
+        {
+            if (bundle = TclThreadManager::getInstance().getInterpreterBundle(threadID))
+            {
+                COUT(0) << "Queue dump of Tcl-thread " << threadID << ":" << std::endl;
+            }
+            else
+                return;
+        }
+
+        boost::mutex::scoped_lock queue_lock(bundle->queueMutex_);
+        unsigned int index = 0;
+        for (std::list<std::string>::const_iterator it = bundle->queue_.begin(); it != bundle->queue_.end(); ++it)
+        {
+            index++;
+            COUT(0) << index << ": " << (*it) << std::endl;
+        }
+    }
+
+    void TclThreadManager::flush(unsigned int threadID)
+    {
+        TclInterpreterBundle* bundle = 0;
+        if (threadID == 0)
+            bundle = &TclThreadManager::getInstance().orxonoxInterpreterBundle_;
+        else
+            if (!(bundle = TclThreadManager::getInstance().getInterpreterBundle(threadID)))
+                return;
+
+        boost::mutex::scoped_lock queue_lock(bundle->queueMutex_);
+        bundle->queue_.clear();
+        if (threadID == 0)
+        {
+            COUT(0) << "Flushed queue of Orxonox Tcl-interpreter." << std::endl;
+        }
+        else
+        {
+            COUT(0) << "Flushed queue of Tcl-interpreter " << threadID << "." << std::endl;
+        }
     }
 
     void TclThreadManager::tcl_execute(Tcl::object const &args)
@@ -472,6 +565,7 @@ namespace orxonox
 
     void tclThread(TclInterpreterBundle* interpreterBundle, std::string command)
     {
+std::cout << "tclthreadm executes " << command << std::endl;
         boost::mutex::scoped_lock interpreter_lock(interpreterBundle->interpreterMutex_);
         try
         {

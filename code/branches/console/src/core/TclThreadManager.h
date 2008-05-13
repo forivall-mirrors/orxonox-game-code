@@ -75,6 +75,9 @@ namespace orxonox
             static void destroy(unsigned int threadID);
             static void execute(unsigned int threadID, const std::string& command);
             static std::string query(unsigned int threadID, const std::string& command);
+            static void status();
+            static void dump(unsigned int threadID);
+            static void flush(unsigned int threadID);
 
             static void tcl_execute(Tcl::object const &args);
             static std::string tcl_query(int querierID, Tcl::object const &args);

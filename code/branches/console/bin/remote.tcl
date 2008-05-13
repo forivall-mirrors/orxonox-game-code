@@ -1,2 +1,2 @@
-TclThreadManager create
-TclThreadManager execute 1 source telnet_server.tcl
+set telnetserverthreadid [TclThreadManager create]
+TclThreadManager execute $telnetserverthreadid source telnet_server.tcl

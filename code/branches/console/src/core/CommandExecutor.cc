@@ -393,8 +393,8 @@ namespace orxonox
     {
         if (useTcl)
         {
-            std::string temp = getLowercase(removeTrailingWhitespaces(command));
-            if (!(temp.find("tclthread") == 0 || temp.find("tclthreadmanager") == 0))
+//            std::string temp = getLowercase(removeTrailingWhitespaces(command));
+//            if (!(temp.substr(0, 16) == "tclthreadmanager" || temp.substr(0, 10) == "tclexecute" || temp.substr(0, 8) == "tclquery"))
                 return TclBind::eval(command);
         }
 
