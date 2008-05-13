@@ -158,7 +158,7 @@ namespace orxonox
    * Create a new instance of Orxonox. Avoid doing any actual work here.
    */
   Orxonox::Orxonox() :
-    ogre_(&GraphicsEngine::getSingleton()),
+    ogre_(0),
     //auMan_(0),
     timer_(0),
     // turn on frame smoothing by setting a value different from 0
@@ -264,6 +264,7 @@ namespace orxonox
     ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
 
+    ogre_ = &GraphicsEngine::getSingleton();
     if (!ogre_->setup(path))       // creates ogre root and other essentials
       return false;
 
