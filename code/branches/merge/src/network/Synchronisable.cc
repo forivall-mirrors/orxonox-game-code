@@ -47,6 +47,10 @@
 
 namespace network
 {
+  
+  
+  int Synchronisable::state_=0x1; // detemines wheter we are server (default) or client
+  
   /**
   * Constructor:
   * calls registarAllVariables, that has to be implemented by the inheriting classID
@@ -56,10 +60,18 @@ namespace network
     static int idCounter=0;
     datasize=0;
     objectID=idCounter++;
+    syncList = new std::list<synchronisableVariable *>;
     //registerAllVariables();
   }
 
   Synchronisable::~Synchronisable(){
+  }
+  
+  void Synchronisable::setClient(bool b){
+    if(b) // client
+      state_=0x2;
+    else  // server
+      state_=0x1;
   }
 
   /**
@@ -68,13 +80,19 @@ namespace network
   * @param var pointer to the variable
   * @param size size of the datatype the variable consists of
   */
-  void Synchronisable::registerVar(const void *var, int size, variableType t){
+  void Synchronisable::registerVar(void *var, int size, variableType t, int mode){
     // create temporary synch.Var struct
-    synchronisableVariable temp={size, var, t};
+    synchronisableVariable *temp = new synchronisableVariable;
+    temp->size = size;
+    temp->var = var;
+    temp->mode = mode; 
+    temp->type = t;
+    COUT(5) << "Syncronisable::registering var with size: " << temp->size << " and type: " << temp->type << std::endl; 
     // increase datasize
     datasize+=sizeof(int)+size;
-    // push temp to syncList (at the bottom)
-    syncList.push_back(temp);
+    //std::cout << "push temp to syncList (at the bottom) " << datasize << std::endl;
+    COUT(5) << "Syncronisable::objectID: " << objectID << " this: " << this << " name: " << this->getIdentifier()->getName() << " networkID: " << this->getIdentifier()->getNetworkID() << std::endl;
+    syncList->push_back(temp);
   }
 
   /**
@@ -90,7 +108,7 @@ namespace network
   //   std::list<synchronisableVariable>::iterator i;
   //   int totalsize=0;
   //   //figure out size of data to be allocated
-  //   for(i=syncList.begin(); i!=syncList.end(); i++){
+  //   for(i=syncList->begin(); i!=syncList->end(); i++){
   //     // increase size (size of variable and size of size of variable ;)
   //     if(i->type == STRING)
   //       totalsize+=sizeof(int)+((std::string *)i->var)->length()+1;
@@ -106,7 +124,7 @@ namespace network
   //   // copy to location
   //   //CHANGED: REMOVED DECLARATION int n=0 FROM LOOP
   //   int n=0;
-  //   for(i=syncList.begin(); n<totalsize && i!=syncList.end(); i++){
+  //   for(i=syncList->begin(); n<totalsize && i!=syncList->end(); i++){
   //     std::memcpy(retVal.data+n, (const void*)(i->size), sizeof(int));
   //     n+=sizeof(int);
   //     switch(i->type){
@@ -133,27 +151,35 @@ namespace network
   * @return data containing all variables and their sizes
   */
   syncData Synchronisable::getData(unsigned char *mem){
-    std::list<synchronisableVariable>::iterator i;
+    //std::cout << "inside getData" << std::endl;
+    classID=this->getIdentifier()->getNetworkID();
+    std::list<synchronisableVariable *>::iterator i;
     syncData retVal;
     retVal.objectID=this->objectID;
     retVal.classID=this->classID;
     retVal.length=getSize();
+    COUT(5) << "Synchronisable getting data from objectID: " << retVal.objectID << " classID: " << retVal.classID << " length: " << retVal.length << std::endl;
     retVal.data=mem;
     // copy to location
-    int n=0;
-    for(i=syncList.begin(); n<datasize && i!=syncList.end(); ++i){
-      //COUT(2) << "size of variable: " << i->size << std::endl;
+    int n=0; //offset
+    for(i=syncList->begin(); n<datasize && i!=syncList->end(); ++i){
       //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
-      memcpy( (void *)(retVal.data+n), (const void*)&(i->size), sizeof(int) );
-      n+=sizeof(int);
-      switch(i->type){
+      if( ((*i)->mode & state_) == 0 ){
+        COUT(5) << "not getting data: " << std::endl;
+        continue;  // this variable should only be received
+      }
+      switch((*i)->type){
       case DATA:
-        std::memcpy( (void *)(retVal.data+n), (const void*)(i->var), i->size);
-        n+=i->size;
+        std::memcpy( (void *)(retVal.data+n), (void*)((*i)->var), (*i)->size);
+        n+=(*i)->size;
         break;
       case STRING:
-        std::memcpy( retVal.data+n, (const void*)( ( (std::string *) i->var)->c_str()), ( (std::string *)i->var )->length()+1);
-        n+=((std::string *) i->var)->length()+1;
+        memcpy( (void *)(retVal.data+n), (void *)&((*i)->size), sizeof(int) );
+        n+=sizeof(int);
+        const char *data = ( ( *(std::string *) (*i)->var).c_str());
+        std::memcpy( retVal.data+n, (void*)data, (*i)->size);
+        COUT(5) << "synchronisable: char: " << (const char *)(retVal.data+n) << " data: " << data << " string: " << *(std::string *)((*i)->var) << std::endl;
+        n+=(*i)->size;
         break;
       }
     }
@@ -167,24 +193,32 @@ namespace network
   */
   bool Synchronisable::updateData(syncData vars){
     unsigned char *data=vars.data;
-    std::list<synchronisableVariable>::iterator i;
-    for(i=syncList.begin(); i!=syncList.end(); i++){
-      if((int)*data==i->size || i->type==STRING){
-        switch(i->type){
+    std::list<synchronisableVariable *>::iterator i;
+    if(syncList->empty()){
+      COUT(4) << "Synchronisable::updateData syncList is empty" << std::endl;
+      return false;
+    }
+    COUT(5) << "Synchronisable: objectID " << vars.objectID << ", classID " << vars.classID << " size: " << vars.length << " synchronising data" << std::endl;
+    for(i=syncList->begin(); i!=syncList->end(); i++){
+      if( ((*i)->mode ^ state_) == 0 ){
+        COUT(5) << "synchronisable: not updating variable " << std::endl;
+        continue;  // this variable should only be updated
+      }
+      COUT(5) << "Synchronisable: element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
+      switch((*i)->type){
       case DATA:
-        data+=sizeof(int);
-        memcpy((void*)i->var, data, i->size);
-        data+=i->size;
+        memcpy((void*)(*i)->var, data, (*i)->size);
+        data+=(*i)->size;
         break;
       case STRING:
-        i->size = (int)*data;
+        (*i)->size = *(int *)data;
+        COUT(5) << "string size: " << (*i)->size << std::endl;
         data+=sizeof(int);
-        *((std::string *)i->var) = std::string((const char*)data);
-        data += i->size;
+        *((std::string *)((*i)->var)) = std::string((const char*)data);
+        COUT(5) << "synchronisable: char: " << (const char*)data << " string: " << std::string((const char*)data) << std::endl;
+        data += (*i)->size;
         break;
-        }
-      } else
-        return false; //there was some problem with registerVar
+      }
     }
     return true;
   }
@@ -195,20 +229,31 @@ namespace network
   */
   int Synchronisable::getSize(){
     int tsize=0;
-    std::list<synchronisableVariable>::iterator i;
-    for(i=syncList.begin(); i!=syncList.end(); i++){
-      switch(i->type){
-    case DATA:
-      tsize+=sizeof(int);
-      tsize+=i->size;
-      break;
-    case STRING:
-      tsize+=sizeof(int);
-      tsize+=((std::string *)i->var)->length()+1;
-      break;
+    std::list<synchronisableVariable *>::iterator i;
+    for(i=syncList->begin(); i!=syncList->end(); i++){
+      if( ((*i)->mode & state_) == 0 )
+        continue;  // this variable should only be received, so dont add its size to the send-size
+      switch((*i)->type){
+      case DATA:
+        tsize+=(*i)->size;
+        break;
+      case STRING:
+        tsize+=sizeof(int);
+        (*i)->size=((std::string *)(*i)->var)->length()+1;
+        COUT(5) << "String size: " << (*i)->size << std::endl;
+        tsize+=(*i)->size;
+        break;
       }
     }
     return tsize;
   }
+  
+  void Synchronisable::setBacksync(bool sync){
+    backsync_=sync;
+  }
 
+  bool Synchronisable::getBacksync(){
+    return backsync_;
+  }
+  
 }

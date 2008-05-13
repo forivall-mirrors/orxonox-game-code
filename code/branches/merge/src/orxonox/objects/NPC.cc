@@ -39,6 +39,7 @@ namespace orxonox {
     movable_(true)
   {
     RegisterObject(NPC);
+    registerAllVariables();
   }
 
   NPC::~NPC()
@@ -58,6 +59,16 @@ namespace orxonox {
     this->setVelocity(speed);
     this->translate(location);
     movable_ = movable;
+  }
+  
+  void NPC::registerAllVariables(){
+    Model::registerAllVariables();
+    registerVar(&movable_, sizeof(movable_), network::DATA);
+  }
+  
+  bool NPC::create(){
+    Model::create();
+    return true;
   }
 
   /**

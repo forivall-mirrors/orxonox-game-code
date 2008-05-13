@@ -188,11 +188,12 @@ namespace orxonox
       delete this->timer_;
     GraphicsEngine::getSingleton().destroy();
 
-    if (client_g)
-      delete client_g;
+    if (network::Client::getSingleton())
+      network::Client::destroySingleton();
     if (server_g)
       delete server_g;
   }
+
 
   /**
     Asks the mainloop nicely to abort.
@@ -394,9 +395,9 @@ namespace orxonox
     COUT(2) << "Loading level in client mode" << std::endl;\
 
     if (serverIp_.compare("") == 0)
-      client_g = new network::Client();
+      client_g = network::Client::createSingleton();
     else
-      client_g = new network::Client(serverIp_, NETWORK_PORT);
+      client_g = network::Client::createSingleton(serverIp_, NETWORK_PORT);
 
     client_g->establishConnection();
     client_g->tick(0);
@@ -510,6 +511,10 @@ namespace orxonox
       ogreRoot._fireFrameEnded(evt);
 	  }
 
+    if(mode_==CLIENT)
+      network::Client::getSingleton()->closeConnection();
+    else if(mode_==SERVER)
+      server_g->close();
     return true;
   }
 

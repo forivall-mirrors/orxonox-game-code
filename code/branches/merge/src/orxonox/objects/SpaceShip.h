@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht
  *
  */
 
@@ -34,6 +34,7 @@
 #include <OgrePrerequisites.h>
 
 #include "core/InputHandler.h"
+#include "Camera.h"
 #include "Model.h"
 #include "../tools/BillboardSet.h"
 
@@ -61,6 +62,8 @@ namespace orxonox
             void setTransDamp(float value);
             void setRotDamp(float value);
 
+            void getFocus();
+
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
 
@@ -71,6 +74,7 @@ namespace orxonox
 
 
         private:
+            void createCamera();
             static SpaceShip* instance_s;
 
             Vector3 testvector_;
@@ -80,6 +84,9 @@ namespace orxonox
             bool bRMousePressed_;
 
             Ogre::SceneNode* camNode_;
+            Camera* cam_;  
+            std::string camName_;
+
 
             ParticleInterface* tt_;
 
@@ -116,6 +123,7 @@ namespace orxonox
             float mouseY_;
 
             float emitterRate_;
+            bool server_;
     };
 }
 

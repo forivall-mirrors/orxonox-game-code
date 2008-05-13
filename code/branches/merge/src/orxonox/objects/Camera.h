@@ -29,24 +29,40 @@
 #ifndef _Camera_H__
 #define _Camera_H__
 
-#include "OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
+#include <OgreSceneNode.h>
+#include <OgreCamera.h>
 
-#include "core/BaseObject.h"
+#include "OrxonoxPrereqs.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Camera : public BaseObject
+    class _OrxonoxExport Camera
     {
-        public:
-            Camera();
-            virtual ~Camera();
+      friend class CameraHandler;
+      public:
+        Camera(Ogre::SceneNode* node = NULL);
+        virtual ~Camera();
+
+        //inline void setPosition(Ogre::Vector3 pos) { position_->setPosition(pos); cam_->setPosition(pos); }
+        void setCameraNode(Ogre::SceneNode* node);
+        inline Ogre::SceneNode* getCameraNode() { return this->positionNode_; }
+        // maybe also BaseObject
+        void setTargetNode(Ogre::SceneNode* obj);
 
 
-            void loadParams(TiXmlElement* xmlElem);
+        void update();
+        inline bool hasFocus() { return this->bHasFocus_; }
 
-        private:
+      private:
+        void removeFocus();
+        void setFocus(Ogre::Camera* ogreCam);
 
-
+      private:
+        Ogre::SceneNode* targetNode_;
+        Ogre::SceneNode* positionNode_;
+        Ogre::Camera* cam_;
+        bool bHasFocus_;
     };
 }
 

@@ -52,7 +52,7 @@ namespace network
 
 #define NETWORK_PORT 55556
 #define NETWORK_CLIENT_MAX_CONNECTIONS 5
-#define NETWORK_CLIENT_TIMEOUT 10
+#define NETWORK_CLIENT_TIMEOUT 100
 #define NETWORK_SEND_WAIT 5
 #define NETWORK_CLIENT_CHANNELS 2
 
@@ -75,6 +75,7 @@ namespace network
     // send out all queued packets and save result in event
     bool sendPackets(ENetEvent *event);
     bool waitEstablished(int milisec);
+    bool isConnected(){return established;}
   private:
     bool processData(ENetEvent *event);
     // implementation of the listener

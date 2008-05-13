@@ -70,8 +70,12 @@ namespace network
     void processQueue();
     void updateGamestate();
   private:
+    void disconnectClient(int clientID);
+    void disconnectClient( ClientInformation *client);
     bool sendGameState();
     void processAck( ack *data, int clientID);
+    bool processConnectRequest( connectRequest *con, int clientID );
+    void processGamestate( GameStateCompressed *data, int clientID);
     ConnectionManager *connection;
     GameStateManager *gamestates;
     PacketGenerator packet_gen;

@@ -15,6 +15,7 @@ SET( ORXONOX_SRC_FILES
 
   objects/Ambient.cc
   objects/Camera.cc
+  objects/CameraHandler.cc
   objects/Explosion.cc
   objects/Model.cc
   objects/NPC.cc

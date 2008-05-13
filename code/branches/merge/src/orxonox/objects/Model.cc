@@ -61,7 +61,7 @@ namespace orxonox
 
         XMLPortParamLoadOnly(Model, "mesh", setMesh, xmlelement, mode);
 
-        create();
+        Model::create();
     }
 
     void Model::setMesh(const std::string& meshname)
@@ -70,18 +70,20 @@ namespace orxonox
     }
 
     bool Model::create(){
-      WorldEntity::create();
+      if(!WorldEntity::create())
+        return false;
       if ((this->meshSrc_ != "") && (this->meshSrc_.size() > 0))
       {
         this->mesh_.setMesh(meshSrc_);
         this->attachObject(this->mesh_.getEntity());
-        COUT(4) << "Loader: Created model" << std::endl;
+        COUT(4) << "Loader (Model.cc): Created model" << std::endl;
       }
       return true;
     }
 
     void Model::registerAllVariables(){
-      WorldEntity::registerAllVariables();
+//       WorldEntity::registerAllVariables();
+      COUT(5) << "Model.cc:registering new meshsrc with size: " << meshSrc_.length()+1 << " this: " << this << std::endl;
       registerVar(&meshSrc_, meshSrc_.length() + 1, network::STRING);
     }
 }
