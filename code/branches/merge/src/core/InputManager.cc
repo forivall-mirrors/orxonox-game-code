@@ -274,10 +274,10 @@ namespace orxonox
   */
   void InputManager::_destroy()
   {
-    CCOUT(ORX_DEBUG) << "Destroying ..." << std::endl;
-
     if (state_ != IS_UNINIT)
     {
+      CCOUT(ORX_DEBUG) << "Destroying ..." << std::endl;
+
       if (keyHandlers_.find("buffer") != keyHandlers_.end())
         delete keyHandlers_["buffer"];
 
@@ -297,11 +297,8 @@ namespace orxonox
       inputSystem_ = 0;
 
       state_ = IS_UNINIT;
+      CCOUT(ORX_DEBUG) << "Destroying done." << std::endl;
     }
-    else
-      CCOUT(ORX_WARNING) << "Warning: Cannot be destroyed, since not initialised." << std::endl;
-
-    CCOUT(ORX_DEBUG) << "Destroying done." << std::endl;
   }
 
   /**

@@ -45,8 +45,8 @@ namespace orxonox
     CreateFactory(Explosion);
 
     Explosion::Explosion(WorldEntity* owner) :
-      particle_(0),
-      lifetime_(0.4)
+      lifetime_(0.4),
+      particle_(0)
     {
         RegisterObject(Explosion);
 
