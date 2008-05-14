@@ -142,6 +142,7 @@ namespace orxonox
   class SubclassIdentifier;
   class TclBind;
   struct TclInterpreterBundle;
+  class TclThreadManager;
   class Tickable;
   template <class T, class O>
   class XMLPortClassObjectContainer;
