@@ -141,14 +141,14 @@ namespace orxonox
 
     void SpaceShip::init()
     {
-		if ((!network::Client::getSingleton() || network::Client::getSingleton()->getShipID()==objectID ))
-		{
-        	if (!setMouseEventCallback_)
-        	{
-          		InputManager::addMouseHandler(this, "SpaceShip");
-          		setMouseEventCallback_ = true;
-        	}
-		}
+    if ((!network::Client::getSingleton() || network::Client::getSingleton()->getShipID()==objectID ))
+    {
+          if (!setMouseEventCallback_)
+          {
+              InputManager::addMouseHandler(this, "SpaceShip");
+              setMouseEventCallback_ = true;
+          }
+    }
 
         // START CREATING THRUSTER
         this->tt_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
@@ -232,7 +232,7 @@ namespace orxonox
             String2Number<float>(this->maxSpeedLoopRightLeft_, looprightleftStr);
 
             COUT(4) << "Loader: Initialized spaceship steering with values " << maxSpeedForward_ << " " << maxSpeedRotateUpDown_ << " " << maxSpeedRotateRightLeft_ << " " << maxSpeedLoopRightLeft_ << " " << std::endl;
-    	}
+      }
 */
         if (xmlElem->Attribute("maxSpeed") && xmlElem->Attribute("maxSideAndBackSpeed") && xmlElem->Attribute("maxRotation") && xmlElem->Attribute("transAcc") && xmlElem->Attribute("rotAcc") && xmlElem->Attribute("transDamp") && xmlElem->Attribute("rotDamp"))
         {
@@ -258,12 +258,12 @@ namespace orxonox
             this->rotationDampingRadian_ = Radian(this->rotationDamping_);
 
             COUT(4) << "Loader: Initialized SpaceShip" << std::endl;
-    	}
+        }
 
-    	if (xmlElem->Attribute("camera"))
-    	{
-    	    this->setCamera();
-    	}
+        if (xmlElem->Attribute("camera"))
+        {
+            this->setCamera();
+        }
     }
 
     void SpaceShip::setCamera(const std::string& camera)
@@ -348,7 +348,7 @@ namespace orxonox
             return -1;
     }
 
-    bool SpaceShip::mouseMoved(const OIS::MouseEvent &e)
+    bool SpaceShip::mouseMoved(const MouseState& state)
     {
 /*
         this->mouseX += e.state.X.rel;
@@ -365,22 +365,22 @@ namespace orxonox
 */
         if (this->bRMousePressed_)
         {
-            this->camNode_->roll(Degree(-e.state.X.rel * 0.10));
-            this->camNode_->yaw(Degree(e.state.Y.rel * 0.10));
+            this->camNode_->roll(Degree(-state.X.rel * 0.10));
+            this->camNode_->yaw(Degree(state.Y.rel * 0.10));
         }
         else
         {
-            float minDimension = e.state.height;
-            if (e.state.width < minDimension)
-                minDimension = e.state.width;
+            float minDimension = state.height;
+            if (state.width < minDimension)
+                minDimension = state.width;
 
-            this->mouseX_ += e.state.X.rel;
+            this->mouseX_ += state.X.rel;
             if (this->mouseX_ < -minDimension)
                 this->mouseX_ = -minDimension;
             if (this->mouseX_ > minDimension)
                 this->mouseX_ = minDimension;
 
-            this->mouseY_ += e.state.Y.rel;
+            this->mouseY_ += state.Y.rel;
             if (this->mouseY_ < -minDimension)
                 this->mouseY_ = -minDimension;
             if (this->mouseY_ > minDimension)
@@ -408,21 +408,21 @@ namespace orxonox
         return true;
     }
 
-    bool SpaceShip::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+    bool SpaceShip::mouseButtonPressed(const MouseState& state, MouseButton::Enum id)
     {
-        if (id == OIS::MB_Left)
+        if (id == MouseButton::Left)
             this->bLMousePressed_ = true;
-        else if (id == OIS::MB_Right)
+        else if (id == MouseButton::Right)
             this->bRMousePressed_ = true;
 
         return true;
     }
 
-    bool SpaceShip::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+    bool SpaceShip::mouseButtonReleased(const MouseState& state, MouseButton::Enum id)
     {
-        if (id == OIS::MB_Left)
+        if (id == MouseButton::Left)
             this->bLMousePressed_ = false;
-        else if (id == OIS::MB_Right)
+        else if (id == MouseButton::Right)
         {
             this->bRMousePressed_ = false;
             this->camNode_->resetOrientation();
@@ -453,8 +453,6 @@ namespace orxonox
             p->setBacksync(true);
             this->timeToReload_ = this->reloadTime_;
         }
-
-        OIS::Keyboard* mKeyboard = InputManager::getKeyboard();
 
 
         // #####################################
@@ -522,25 +520,26 @@ namespace orxonox
             }
         }
 
-        if( (network::Client::getSingleton() &&  network::Client::getSingleton()->getShipID() == objectID) || server_ ){
-          COUT(4) << "steering our ship: " << objectID << " mkeyboard: " << mKeyboard << std::endl;
-          if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
+        if( (network::Client::getSingleton() &&  network::Client::getSingleton()->getShipID() == objectID) || server_ )
+        {
+          COUT(4) << "steering our ship: " << objectID << std::endl;
+          if (InputManager::isKeyDown(KeyCode::Up) || InputManager::isKeyDown(KeyCode::W))
             this->acceleration_.x = this->translationAcceleration_;
-          else if(mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
+          else if(InputManager::isKeyDown(KeyCode::Down) || InputManager::isKeyDown(KeyCode::S))
             this->acceleration_.x = -this->translationAcceleration_;
           else
             this->acceleration_.x = 0;
 
-          if (mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D))
+          if (InputManager::isKeyDown(KeyCode::Right) || InputManager::isKeyDown(KeyCode::D))
             this->acceleration_.y = -this->translationAcceleration_;
-          else if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
+          else if (InputManager::isKeyDown(KeyCode::Left) || InputManager::isKeyDown(KeyCode::A))
             this->acceleration_.y = this->translationAcceleration_;
           else
             this->acceleration_.y = 0;
 
-          if (mKeyboard->isKeyDown(OIS::KC_DELETE) || mKeyboard->isKeyDown(OIS::KC_Q))
+          if (InputManager::isKeyDown(KeyCode::Delete) || InputManager::isKeyDown(KeyCode::Q))
             this->momentum_ = Radian(-this->rotationAccelerationRadian_);
-          else if (mKeyboard->isKeyDown(OIS::KC_PGDOWN) || mKeyboard->isKeyDown(OIS::KC_E))
+          else if (InputManager::isKeyDown(KeyCode::PageDown) || InputManager::isKeyDown(KeyCode::E))
             this->momentum_ = Radian(this->rotationAccelerationRadian_);
           else
             this->momentum_ = 0;

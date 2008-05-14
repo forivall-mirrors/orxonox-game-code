@@ -29,7 +29,7 @@
 /**
   @file
   @brief Implementation of the InputManager that captures all the input from OIS
-         and redirects it to handlers if necessary.
+         and redirects it to handlers.
  */
 
 #include "InputManager.h"
@@ -51,14 +51,11 @@ namespace orxonox
   */
   InputManager::InputManager() :
       inputSystem_(0), keyboard_(0), mouse_(0),
-      state_(IS_UNINIT), stateRequest_(IS_UNINIT)
+      joySticksSize_(0),
+      state_(IS_UNINIT), stateRequest_(IS_UNINIT),
+      keyboardModifiers_(0)
   {
     RegisterObject(InputManager);
-
-    this->joySticks_.reserve(5);
-    //this->activeJoyStickHandlers_.reserve(10);
-    this->activeKeyHandlers_.reserve(10);
-    this->activeMouseHandlers_.reserve(10);
   }
 
   /**
@@ -86,8 +83,8 @@ namespace orxonox
     @param windowWidth The width of the render window
     @param windowHeight The height of the render window
   */
-  bool InputManager::_initialise(const size_t windowHnd, const int windowWidth, const int windowHeight,
-        const bool createKeyboard, const bool createMouse, const bool createJoySticks)
+  bool InputManager::_initialise(const size_t windowHnd, int windowWidth, int windowHeight,
+        bool createKeyboard, bool createMouse, bool createJoySticks)
   {
     if (state_ == IS_UNINIT)
     {
@@ -145,6 +142,7 @@ namespace orxonox
     binder->loadBindings();
     addKeyHandler(binder, "keybinder");
     addMouseHandler(binder, "keybinder");
+    addJoyStickHandler(binder, "keybinder");
 
     // Read all the key bindings and assign them
     //if (!_loadBindings())
@@ -234,7 +232,7 @@ namespace orxonox
   */
   bool InputManager::_initialiseJoySticks()
   {
-    if (joySticks_.size() > 0)
+    if (joySticksSize_ > 0)
     {
       CCOUT(2) << "Warning: Joy sticks already initialised, skipping." << std::endl;
       return true;
@@ -265,6 +263,9 @@ namespace orxonox
       CCOUT(ORX_WARNING) << "Warning: Joy stick support requested, but no joy stick was found" << std::endl;
       return false;
     }
+    joySticksSize_ = joySticks_.size();
+    activeJoyStickHandlers_.resize(joySticksSize_);
+    joyStickButtonsDown_.resize(joySticksSize_);
     return success;
   }
 
@@ -336,14 +337,15 @@ namespace orxonox
   */
   void InputManager::_destroyJoySticks()
   {
-    if (joySticks_.size() > 0)
+    if (joySticksSize_ > 0)
     {
       // note: inputSystem_ can never be 0, or else the code is mistaken
-      for (unsigned int i = 0; i < joySticks_.size(); i++)
+      for (unsigned int i = 0; i < joySticksSize_; i++)
         if (joySticks_[i] != 0)
           inputSystem_->destroyInputObject(joySticks_[i]);
 
       joySticks_.clear();
+      joySticksSize_ = 0;
       activeJoyStickHandlers_.clear();
       joyStickButtonsDown_.clear();
     }
@@ -372,7 +374,8 @@ namespace orxonox
       {
         activeKeyHandlers_.clear();
         activeMouseHandlers_.clear();
-        activeJoyStickHandlers_.clear();
+        for (unsigned int i = 0; i < joySticksSize_; i++)
+          activeJoyStickHandlers_[i].clear();
 
         switch (stateRequest_)
         {
@@ -382,9 +385,8 @@ namespace orxonox
           activeKeyHandlers_.push_back(keyHandlers_["keybinder"]);
           activeMouseHandlers_.push_back(mouseHandlers_["keybinder"]);
           activeMouseHandlers_.push_back(mouseHandlers_["SpaceShip"]);
-          for (std::vector<OIS::JoyStick*>::const_iterator it = joySticks_.begin();
-                it != joySticks_.end(); it++)
-            activeJoyStickHandlers_[*it].push_back(joyStickHandlers_["keybinder"]);
+          for (unsigned int i = 0; i < joySticksSize_; i++)
+            activeJoyStickHandlers_[i].push_back(joyStickHandlers_["keybinder"]);
           break;
 
         case IS_GUI:
@@ -393,9 +395,9 @@ namespace orxonox
 
         case IS_CONSOLE:
           activeMouseHandlers_.push_back(mouseHandlers_["keybinder"]);
-          for (std::vector<OIS::JoyStick*>::const_iterator it = joySticks_.begin();
-                it != joySticks_.end(); it++)
-            activeJoyStickHandlers_[*it].push_back(joyStickHandlers_["keybinder"]);
+          activeMouseHandlers_.push_back(mouseHandlers_["SpaceShip"]);
+          for (unsigned int i = 0; i < joySticksSize_; i++)
+            activeJoyStickHandlers_[i].push_back(joyStickHandlers_["keybinder"]);
 
           activeKeyHandlers_.push_back(keyHandlers_["buffer"]);
           break;
@@ -412,41 +414,27 @@ namespace orxonox
       mouse_->capture();
     if (keyboard_)
       keyboard_->capture();
+    for (unsigned  int i = 0; i < joySticksSize_; i++)
+      joySticks_[i]->capture();
 
 
     // call all the handlers for the held key events
-    for (std::list<OIS::KeyCode>::const_iterator itKey = keysDown_.begin();
-          itKey != keysDown_.end(); itKey++)
-    {
-      OIS::KeyEvent keyArg(keyboard_, *itKey, 0);
-      for (unsigned int i = 0; i < activeKeyHandlers_.size(); i++)
-        activeKeyHandlers_[i]->keyHeld(keyArg);
-    }
+    for (unsigned int iKey = 0; iKey < keysDown_.size(); iKey++)
+      for (unsigned int iHandler = 0; iHandler < activeKeyHandlers_.size(); iHandler++)
+        activeKeyHandlers_[iHandler]->keyHeld(KeyEvent(keysDown_[iKey], keyboardModifiers_));
 
     // call all the handlers for the held mouse button events
-    for (std::list<OIS::MouseButtonID>::const_iterator itMouseButton = mouseButtonsDown_.begin();
-          itMouseButton != mouseButtonsDown_.end(); itMouseButton++)
-    {
-      OIS::MouseEvent mouseButtonArg(mouse_, mouse_->getMouseState());
-      for (unsigned int i = 0; i < activeMouseHandlers_.size(); i++)
-        activeMouseHandlers_[i]->mouseHeld(mouseButtonArg, *itMouseButton);
-    }
+    for (unsigned int iButton = 0; iButton < mouseButtonsDown_.size(); iButton++)
+      for (unsigned int iHandler = 0; iHandler < activeMouseHandlers_.size(); iHandler++)
+        activeMouseHandlers_[iHandler]->mouseButtonHeld(mouse_->getMouseState(), mouseButtonsDown_[iButton]);
 
     // call all the handlers for the held joy stick button events
-    for (std::map< OIS::JoyStick*, std::list <int> >::const_iterator itJoyStick = joyStickButtonsDown_.begin();
-          itJoyStick != joyStickButtonsDown_.end(); itJoyStick++)
-    {
-      OIS::JoyStick* joyStick = (*itJoyStick).first;
-      for (std::list<int>::const_iterator itJoyStickButton = (*itJoyStick).second.begin();
-            itJoyStickButton != (*itJoyStick).second.end(); itJoyStickButton++)
-      {
-        OIS::JoyStickEvent joyStickButtonArg(joyStick, joyStick->getJoyStickState());
-        for (unsigned int i = 0; i < activeJoyStickHandlers_[joyStick].size(); i++)
-          activeJoyStickHandlers_[joyStick][i]->buttonHeld(i, joyStickButtonArg, *itJoyStickButton);
-      }
-    }
+    for (unsigned int iJoyStick  = 0; iJoyStick < joySticksSize_; iJoyStick++)
+      for (unsigned int iButton   = 0; iButton   < joyStickButtonsDown_[iJoyStick].size(); iButton++)
+        for (unsigned int iHandler = 0; iHandler  < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
+          activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickButtonHeld(
+              JoyStickState(joySticks_[iJoyStick]->getJoyStickState(), iJoyStick), joyStickButtonsDown_[iJoyStick][iButton]);
   }
-
 
   // ###### Key Events ######
 
@@ -457,18 +445,22 @@ namespace orxonox
   bool InputManager::keyPressed(const OIS::KeyEvent &e)
   {
     // check whether the key already is in the list (can happen when focus was lost)
-    for (std::list<OIS::KeyCode>::iterator it = keysDown_.begin(); it != keysDown_.end(); it++)
-    {
-      if (*it == e.key)
-      {
-        keysDown_.erase(it);
-        break;
-      }
-    }
-    keysDown_.push_back(e.key);
+    unsigned int iKey = 0;
+    while (iKey < keysDown_.size() && keysDown_[iKey].key != (KeyCode::Enum)e.key)
+      iKey++;
+    if (iKey == keysDown_.size())
+      keysDown_.push_back(Key(e));
+
+    // update modifiers
+    if(e.key == OIS::KC_RMENU    || e.key == OIS::KC_LMENU)
+      keyboardModifiers_ |= KeyboardModifier::Alt;   // alt key
+    if(e.key == OIS::KC_RCONTROL || e.key == OIS::KC_LCONTROL)
+      keyboardModifiers_ |= KeyboardModifier::Ctrl;  // ctrl key
+    if(e.key == OIS::KC_RSHIFT   || e.key == OIS::KC_LSHIFT)
+      keyboardModifiers_ |= KeyboardModifier::Shift; // shift key
 
     for (unsigned int i = 0; i < activeKeyHandlers_.size(); i++)
-      activeKeyHandlers_[i]->keyPressed(e);
+      activeKeyHandlers_[i]->keyPressed(KeyEvent(e, keyboardModifiers_));
 
     return true;
   }
@@ -480,17 +472,25 @@ namespace orxonox
   bool InputManager::keyReleased(const OIS::KeyEvent &e)
   {
     // remove the key from the keysDown_ list
-    for (std::list<OIS::KeyCode>::iterator it = keysDown_.begin(); it != keysDown_.end(); it++)
+    for (unsigned int iKey = 0; iKey < keysDown_.size(); iKey++)
     {
-      if (*it == e.key)
+      if (keysDown_[iKey].key == (KeyCode::Enum)e.key)
       {
-        keysDown_.erase(it);
+        keysDown_.erase(keysDown_.begin() + iKey);
         break;
       }
     }
 
+    // update modifiers
+    if(e.key == OIS::KC_RMENU    || e.key == OIS::KC_LMENU)
+      keyboardModifiers_ &= ~KeyboardModifier::Alt;   // alt key
+    if(e.key == OIS::KC_RCONTROL || e.key == OIS::KC_LCONTROL)
+      keyboardModifiers_ &= ~KeyboardModifier::Ctrl;  // ctrl key
+    if(e.key == OIS::KC_RSHIFT   || e.key == OIS::KC_LSHIFT)
+      keyboardModifiers_ &= ~KeyboardModifier::Shift; // shift key
+
     for (unsigned int i = 0; i < activeKeyHandlers_.size(); i++)
-      activeKeyHandlers_[i]->keyReleased(e);
+      activeKeyHandlers_[i]->keyReleased(KeyEvent(e, keyboardModifiers_));
 
     return true;
   }
@@ -504,8 +504,19 @@ namespace orxonox
   */
   bool InputManager::mouseMoved(const OIS::MouseEvent &e)
   {
-    for (unsigned int i = 0; i < activeMouseHandlers_.size(); i++)
-      activeMouseHandlers_[i]->mouseMoved(e);
+    // check for actual moved event
+    if (e.state.X.rel != 0 || e.state.Y.rel != 0)
+    {
+      for (unsigned int i = 0; i < activeMouseHandlers_.size(); i++)
+        activeMouseHandlers_[i]->mouseMoved(e.state);
+    }
+
+    // check for mouse scrolled event
+    if (e.state.Z.rel != 0)
+    {
+      for (unsigned int i = 0; i < activeMouseHandlers_.size(); i++)
+        activeMouseHandlers_[i]->mouseScrolled(e.state);
+    }
 
     return true;
   }
@@ -518,18 +529,14 @@ namespace orxonox
   bool InputManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
     // check whether the button already is in the list (can happen when focus was lost)
-    for (std::list<OIS::MouseButtonID>::iterator it = mouseButtonsDown_.begin(); it != mouseButtonsDown_.end(); it++)
-    {
-      if (*it == id)
-      {
-        mouseButtonsDown_.erase(it);
-        break;
-      }
-    }
-    mouseButtonsDown_.push_back(id);
+    unsigned int iButton = 0;
+    while (iButton < mouseButtonsDown_.size() && mouseButtonsDown_[iButton] != (MouseButton::Enum)id)
+      iButton++;
+    if (iButton == mouseButtonsDown_.size())
+      mouseButtonsDown_.push_back((MouseButton::Enum)id);
 
     for (unsigned int i = 0; i < activeMouseHandlers_.size(); i++)
-      activeMouseHandlers_[i]->mousePressed(e, id);
+      activeMouseHandlers_[i]->mouseButtonPressed(e.state, (MouseButton::Enum)id);
 
     return true;
   }
@@ -542,17 +549,17 @@ namespace orxonox
   bool InputManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
   {
     // remove the button from the keysDown_ list
-    for (std::list<OIS::MouseButtonID>::iterator it = mouseButtonsDown_.begin(); it != mouseButtonsDown_.end(); it++)
+    for (unsigned int iButton = 0; iButton < mouseButtonsDown_.size(); iButton++)
     {
-      if (*it == id)
+      if (mouseButtonsDown_[iButton] == (MouseButton::Enum)id)
       {
-        mouseButtonsDown_.erase(it);
+        mouseButtonsDown_.erase(mouseButtonsDown_.begin() + iButton);
         break;
       }
     }
 
     for (unsigned int i = 0; i < activeMouseHandlers_.size(); i++)
-      activeMouseHandlers_[i]->mouseReleased(e, id);
+      activeMouseHandlers_[i]->mouseButtonReleased(e.state, (MouseButton::Enum)id);
 
     return true;
   }
@@ -562,79 +569,103 @@ namespace orxonox
 
   bool InputManager::buttonPressed(const OIS::JoyStickEvent &arg, int button)
   {
+    // use the device to identify which one called the method
     OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
+    unsigned int iJoyStick = 0;
+    while (joySticks_[iJoyStick] != joyStick)
+      iJoyStick++;
 
     // check whether the button already is in the list (can happen when focus was lost)
-    std::list<int>& buttonsDownList = joyStickButtonsDown_[joyStick];
-    for (std::list<int>::iterator it = buttonsDownList.begin(); it != buttonsDownList.end(); it++)
-    {
-      if (*it == button)
-      {
-        buttonsDownList.erase(it);
-        break;
-      }
-    }
-    joyStickButtonsDown_[joyStick].push_back(button);
+    std::vector<int> buttonsDown = joyStickButtonsDown_[iJoyStick];
+    unsigned int iButton = 0;
+    while (iButton < buttonsDown.size() && buttonsDown[iButton] != button)
+      iButton++;
+    if (iButton == buttonsDown.size())
+      buttonsDown.push_back(button);
 
-    for (unsigned int i = 0; i < activeJoyStickHandlers_[joyStick].size(); i++)
-      activeJoyStickHandlers_[joyStick][i]->buttonPressed(i, arg, button);
+    for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
+      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickButtonPressed(JoyStickState(arg.state, iJoyStick), button);
 
     return true;
   }
 
   bool InputManager::buttonReleased(const OIS::JoyStickEvent &arg, int button)
   {
+    // use the device to identify which one called the method
     OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
+    unsigned int iJoyStick = 0;
+    while (joySticks_[iJoyStick] != joyStick)
+      iJoyStick++;
 
     // remove the button from the joyStickButtonsDown_ list
-    std::list<int>& buttonsDownList = joyStickButtonsDown_[joyStick];
-    for (std::list<int>::iterator it = buttonsDownList.begin(); it != buttonsDownList.end(); it++)
+    std::vector<int> buttonsDown = joyStickButtonsDown_[iJoyStick];
+    for (unsigned int iButton = 0; iButton < buttonsDown.size(); iButton++)
     {
-      if (*it == button)
+      if (buttonsDown[iButton] == button)
       {
-        buttonsDownList.erase(it);
+        buttonsDown.erase(buttonsDown.begin() + iButton);
         break;
       }
     }
 
-    for (unsigned int i = 0; i < activeJoyStickHandlers_[joyStick].size(); i++)
-      activeJoyStickHandlers_[joyStick][i]->buttonReleased(i, arg, button);
+    for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
+      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickButtonReleased(JoyStickState(arg.state, iJoyStick), button);
 
     return true;
   }
 
   bool InputManager::axisMoved(const OIS::JoyStickEvent &arg, int axis)
   {
+    // use the device to identify which one called the method
     OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
-    for (unsigned int i = 0; i < activeJoyStickHandlers_[joyStick].size(); i++)
-      activeJoyStickHandlers_[joyStick][i]->axisMoved(i, arg, axis);
+    unsigned int iJoyStick = 0;
+    while (joySticks_[iJoyStick] != joyStick)
+      iJoyStick++;
+
+    for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
+      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickAxisMoved(JoyStickState(arg.state, iJoyStick), axis);
 
     return true;
   }
 
   bool InputManager::sliderMoved(const OIS::JoyStickEvent &arg, int id)
   {
+    // use the device to identify which one called the method
     OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
-    for (unsigned int i = 0; i < activeJoyStickHandlers_[joyStick].size(); i++)
-      activeJoyStickHandlers_[joyStick][i]->sliderMoved(i, arg, id);
+    unsigned int iJoyStick = 0;
+    while (joySticks_[iJoyStick] != joyStick)
+      iJoyStick++;
+
+    for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
+      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickSliderMoved(JoyStickState(arg.state, iJoyStick), id);
 
     return true;
   }
 
   bool InputManager::povMoved(const OIS::JoyStickEvent &arg, int id)
   {
+    // use the device to identify which one called the method
     OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
-    for (unsigned int i = 0; i < activeJoyStickHandlers_[joyStick].size(); i++)
-      activeJoyStickHandlers_[joyStick][i]->povMoved(i, arg, id);
+    unsigned int iJoyStick = 0;
+    while (joySticks_[iJoyStick] != joyStick)
+      iJoyStick++;
+
+    for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
+      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickPovMoved(JoyStickState(arg.state, iJoyStick), id);
 
     return true;
   }
 
   bool InputManager::vector3Moved(const OIS::JoyStickEvent &arg, int id)
   {
+    // use the device to identify which one called the method
     OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
-    for (unsigned int i = 0; i < activeJoyStickHandlers_[joyStick].size(); i++)
-      activeJoyStickHandlers_[joyStick][i]->vector3Moved(i, arg, id);
+    unsigned int iJoyStick = 0;
+    while (joySticks_[iJoyStick] != joyStick)
+      iJoyStick++;
+
+    for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
+      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickVector3Moved(JoyStickState(arg.state, iJoyStick), id);
 
     return true;
   }
@@ -645,8 +676,8 @@ namespace orxonox
   // ################################
   // ################################
 
-  bool InputManager::initialise(const size_t windowHnd, const int windowWidth, const int windowHeight,
-    const bool createKeyboard, const bool createMouse, const bool createJoySticks)
+  bool InputManager::initialise(const size_t windowHnd, int windowWidth, int windowHeight,
+    bool createKeyboard, bool createMouse, bool createJoySticks)
   {
     return _getSingleton()._initialise(windowHnd, windowWidth, windowHeight,
           createKeyboard, createMouse, createJoySticks);
@@ -685,7 +716,39 @@ namespace orxonox
 
   int InputManager::numberOfJoySticks()
   {
-    return _getSingleton().joySticks_.size();
+    return _getSingleton().joySticksSize_;
+  }
+
+  bool InputManager::isKeyDown(KeyCode::Enum key)
+  {
+    if (_getSingleton().keyboard_)
+      return _getSingleton().keyboard_->isKeyDown((OIS::KeyCode)key);
+    else
+      return false;
+  }
+
+  bool InputManager::isModifierDown(KeyboardModifier::Enum modifier)
+  {
+    if (_getSingleton().keyboard_)
+      return isModifierDown(modifier);
+    else
+      return false;
+  }
+
+  const MouseState InputManager::getMouseState()
+  {
+    if (_getSingleton().mouse_)
+      return _getSingleton().mouse_->getMouseState();
+    else
+      return MouseState();
+  }
+
+  const JoyStickState InputManager::getJoyStickState(unsigned int ID)
+  {
+    if (ID < _getSingleton().joySticksSize_)
+      return JoyStickState(_getSingleton().joySticks_[ID]->getJoyStickState(), ID);
+    else
+      return JoyStickState();
   }
 
 
@@ -1061,7 +1124,7 @@ namespace orxonox
     @param name Unique name of the handler.
     @return False if name or id was not found, true otherwise.
   */
-  bool InputManager::enableJoyStickHandler(const std::string& name, const int ID)
+  bool InputManager::enableJoyStickHandler(const std::string& name, unsigned int ID)
   {
     // get handler pointer from the map with all stored handlers
     std::map<std::string, JoyStickHandler*>::const_iterator handlerIt = _getSingleton().joyStickHandlers_.find(name);
@@ -1069,13 +1132,12 @@ namespace orxonox
       return false;
 
     // check for existence of the ID
-    if ((unsigned int)ID >= _getSingleton().joySticks_.size())
+    if (ID >= _getSingleton().joySticksSize_)
       return false;
-    OIS::JoyStick* joyStick = _getSingleton().joySticks_[ID];
 
     // see whether the handler already is in the list
-    for (std::vector<JoyStickHandler*>::iterator it = _getSingleton().activeJoyStickHandlers_[joyStick].begin();
-          it != _getSingleton().activeJoyStickHandlers_[joyStick].end(); it++)
+    for (std::vector<JoyStickHandler*>::iterator it = _getSingleton().activeJoyStickHandlers_[ID].begin();
+          it != _getSingleton().activeJoyStickHandlers_[ID].end(); it++)
     {
       if ((*it) == (*handlerIt).second)
       {
@@ -1083,7 +1145,7 @@ namespace orxonox
         return true;
       }
     }
-    _getSingleton().activeJoyStickHandlers_[joyStick].push_back((*handlerIt).second);
+    _getSingleton().activeJoyStickHandlers_[ID].push_back((*handlerIt).second);
     _getSingleton().stateRequest_ = IS_CUSTOM;
     return true;
   }
@@ -1093,7 +1155,7 @@ namespace orxonox
     @param name Unique name of the handler.
     @return False if name or id was not found, true otherwise.
   */
-  bool InputManager::disableJoyStickHandler(const std::string &name, int ID)
+  bool InputManager::disableJoyStickHandler(const std::string &name, unsigned int ID)
   {
     // get handler pointer from the map with all stored handlers
     std::map<std::string, JoyStickHandler*>::const_iterator handlerIt = _getSingleton().joyStickHandlers_.find(name);
@@ -1101,17 +1163,16 @@ namespace orxonox
       return false;
 
     // check for existence of the ID
-    if ((unsigned int)ID >= _getSingleton().joySticks_.size())
+    if (ID >= _getSingleton().joySticksSize_)
       return false;
-    OIS::JoyStick* joyStick = _getSingleton().joySticks_[ID];
 
     // look for the handler in the list
-    for (std::vector<JoyStickHandler*>::iterator it = _getSingleton().activeJoyStickHandlers_[joyStick].begin();
-          it != _getSingleton().activeJoyStickHandlers_[joyStick].end(); it++)
+    for (std::vector<JoyStickHandler*>::iterator it = _getSingleton().activeJoyStickHandlers_[ID].begin();
+          it != _getSingleton().activeJoyStickHandlers_[ID].end(); it++)
     {
       if ((*it) == (*handlerIt).second)
       {
-        _getSingleton().activeJoyStickHandlers_[joyStick].erase(it);
+        _getSingleton().activeJoyStickHandlers_[ID].erase(it);
         _getSingleton().stateRequest_ = IS_CUSTOM;
         return true;
       }
@@ -1124,7 +1185,7 @@ namespace orxonox
     @param name Unique name of the handler.
     @return False if key handler is not active or doesn't exist, true otherwise.
   */
-  bool InputManager::isJoyStickHandlerActive(const std::string& name, const int ID)
+  bool InputManager::isJoyStickHandlerActive(const std::string& name, unsigned int ID)
   {
     // get handler pointer from the map with all stored handlers
     std::map<std::string, JoyStickHandler*>::const_iterator handlerIt = _getSingleton().joyStickHandlers_.find(name);
@@ -1132,13 +1193,12 @@ namespace orxonox
       return false;
 
     // check for existence of the ID
-    if ((unsigned int)ID >= _getSingleton().joySticks_.size())
+    if (ID >= _getSingleton().joySticksSize_)
       return false;
-    OIS::JoyStick* joyStick = _getSingleton().joySticks_[ID];
 
     // see whether the handler already is in the list
-    for (std::vector<JoyStickHandler*>::iterator it = _getSingleton().activeJoyStickHandlers_[joyStick].begin();
-          it != _getSingleton().activeJoyStickHandlers_[joyStick].end(); it++)
+    for (std::vector<JoyStickHandler*>::iterator it = _getSingleton().activeJoyStickHandlers_[ID].begin();
+          it != _getSingleton().activeJoyStickHandlers_[ID].end(); it++)
     {
       if ((*it) == (*handlerIt).second)
         return true;
