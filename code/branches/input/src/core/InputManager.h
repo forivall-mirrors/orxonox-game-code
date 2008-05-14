@@ -50,7 +50,7 @@ namespace orxonox
     @brief Captures and distributes mouse and keyboard input.
   */
   class _CoreExport InputManager
-        : public Tickable,
+        : public TickableReal,
           public OIS::KeyListener, public OIS::MouseListener, public OIS::JoyStickListener
   {
   public: // enumerations

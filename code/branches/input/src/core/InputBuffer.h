@@ -42,7 +42,7 @@ namespace orxonox
   class _CoreExport InputBufferListener
   {};
 
-  class _CoreExport InputBuffer : public KeyHandler, public Tickable
+  class _CoreExport InputBuffer : public KeyHandler, public TickableReal
   {
     struct InputBufferListenerTuple
     {
