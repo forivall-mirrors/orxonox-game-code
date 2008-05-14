@@ -27,6 +27,7 @@ SET(CORE_SRC_FILES
   Script.cc
   TclBind.cc
   TclThreadManager.cc
+  IRC.cc
 )
 
 ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})

@@ -187,6 +187,21 @@ std::string stripEnclosingQuotes(const std::string& str)
 }
 
 /**
+    @brief Removes enclosing {braces}.
+    @param str The string to strip
+    @return The striped string
+*/
+std::string stripEnclosingBraces(const std::string& str)
+{
+    std::string output = str;
+
+    while (output.size() >= 2 && output[0] == '{' && output[output.size() - 1] == '}')
+        output = output.substr(1, output.size() - 2);
+
+    return output;
+}
+
+/**
     @brief Determines if a string in is a comment.
     @param str The string to check
     @return True = it's a comment

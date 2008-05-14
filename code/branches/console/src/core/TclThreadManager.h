@@ -72,6 +72,7 @@ namespace orxonox
             static TclThreadManager& getInstance();
 
             static unsigned int create();
+            static unsigned int createID(unsigned int threadID);
             static void destroy(unsigned int threadID);
             static void execute(unsigned int threadID, const std::string& command);
             static std::string query(unsigned int threadID, const std::string& command);
@@ -88,6 +89,7 @@ namespace orxonox
             TclInterpreterBundle* getInterpreterBundle(unsigned int threadID);
             std::string dumpList(const std::list<unsigned int>& list);
             void error(const std::string& error);
+            void debug(const std::string& error);
 
             void pushCommandToQueue(const std::string& command);
             void forceCommandToFrontOfQueue(const std::string& command);

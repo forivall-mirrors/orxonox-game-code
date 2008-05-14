@@ -118,6 +118,7 @@ namespace orxonox
   class InputHandlerGame;
   class InputHandlerGUI;
   class InputManager;
+  class IRC;
   template <class T>
   class Iterator;
   class Language;
@@ -134,11 +135,13 @@ namespace orxonox
   template <class T>
   class ObjectListElement;
   class OrxonoxClass;
+  class OutputBuffer;
   class OutputHandler;
   class Shell;
   template <class T>
   class SubclassIdentifier;
   class TclBind;
+  struct TclInterpreterBundle;
   class Tickable;
   template <class T, class O>
   class XMLPortClassObjectContainer;

@@ -34,6 +34,7 @@
 #include "Debug.h"
 #include "TclThreadManager.h"
 #include "TclBind.h"
+#include "util/String.h"
 
 namespace orxonox
 {
@@ -103,11 +104,9 @@ namespace orxonox
 
     std::string TclBind::tcl_query(Tcl::object const &args)
     {
-std::cout << "Tcl_query: args: " << args.get() << std::endl;
-        std::string command = args.get();
+        COUT(4) << "Tcl_query: " << args.get() << std::endl;
 
-        while (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
-            command = command.substr(1, command.size() - 2);
+        std::string command = stripEnclosingBraces(args.get());
 
         if (!CommandExecutor::execute(command, false))
             COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
@@ -120,11 +119,8 @@ std::cout << "Tcl_query: args: " << args.get() << std::endl;
 
     void TclBind::tcl_execute(Tcl::object const &args)
     {
-std::cout << "Tcl_execute: args: " << args.get() << std::endl;
-        std::string command = args.get();
-
-        while (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
-            command = command.substr(1, command.size() - 2);
+        COUT(4) << "Tcl_execute: " << args.get() << std::endl;
+        std::string command = stripEnclosingBraces(args.get());
 
         if (!CommandExecutor::execute(command, false))
             COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
@@ -149,10 +145,7 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
 
     void TclBind::bgerror(std::string error)
     {
-        while (error.size() >= 2 && error[0] == '{' && error[error.size() - 1] == '}')
-            error = error.substr(1, error.size() - 2);
-
-        COUT(1) << "Tcl background error: " << error << std::endl;
+        COUT(1) << "Tcl background error: " << stripEnclosingBraces(error) << std::endl;
     }
 
     bool TclBind::eval(const std::string& tclcode)

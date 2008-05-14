@@ -99,9 +99,9 @@ namespace orxonox
     void puts(bool newline, const std::string& text)
     {
         if (newline)
-            std::cout << text << std::endl;
+            COUT(0) << text << std::endl;
         else
-            std::cout << text;
+            COUT(0) << text;
     }
 
     void write(const std::string& filename, const std::string& text)
@@ -411,12 +411,12 @@ namespace orxonox
 
         if (evaluation.bEvaluatedParams_ && evaluation.evaluatedExecutor_)
         {
-std::cout << "CE_execute (evaluation): " << evaluation.evaluatedExecutor_->getName() << " " << evaluation.param_[0] << " " << evaluation.param_[1] << " " << evaluation.param_[2] << " " << evaluation.param_[3] << " " << evaluation.param_[4] << std::endl;
+            COUT(4) << "CE_execute (evaluation): " << evaluation.evaluatedExecutor_->getName() << " " << evaluation.param_[0] << " " << evaluation.param_[1] << " " << evaluation.param_[2] << " " << evaluation.param_[3] << " " << evaluation.param_[4] << std::endl;
             (*evaluation.evaluatedExecutor_)(evaluation.param_[0], evaluation.param_[1], evaluation.param_[2], evaluation.param_[3], evaluation.param_[4]);
             return true;
         }
 
-std::cout << "CE_execute: " << evaluation.processedCommand_ << "\n";
+        COUT(4) << "CE_execute: " << evaluation.processedCommand_ << "\n";
         switch (evaluation.state_)
         {
             case CS_Uninitialized:
