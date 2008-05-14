@@ -137,14 +137,10 @@ namespace orxonox {
 #endif
 
     // create a logManager
-    Ogre::LogManager *logger;
-    //if (Ogre::LogManager::getSingletonPtr() == 0)
     // note: If there's already a logManager, Ogre will complain by a failed assertation.
     // but that shouldn't happen, since this is the first time to create a logManager..
-    logger = new Ogre::LogManager();
-    //else
-    //  logger = Ogre::LogManager::getSingletonPtr();
-    CCOUT(4) << "Ogre LogManager created/assigned" << std::endl;
+    Ogre::LogManager* logger = new Ogre::LogManager();
+    CCOUT(4) << "Ogre LogManager created" << std::endl;
 
     // create our own log that we can listen to
     Ogre::Log *myLog;
