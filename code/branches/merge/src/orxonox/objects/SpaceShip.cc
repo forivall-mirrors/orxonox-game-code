@@ -175,9 +175,9 @@ namespace orxonox
         this->redBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
         this->greenBillboard_.setBillboardSet("Examples/Flare", ColourValue(0.0, 1.0, 0.0), 1);
 
-        this->redNode_ = this->getNode()->createChildSceneNode(this->getName() + "red", Vector3(0.3, 4.7, -0.3));
+        this->redNode_ = this->getNode()->createChildSceneNode(this->getName() + "red", Vector3(0.3, 4.0, -0.3));
         this->redNode_->setInheritScale(false);
-        this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(0.3, -4.7, -0.3));
+        this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(0.3, -4.0, -0.3));
         this->greenNode_->setInheritScale(false);
 
         this->redNode_->attachObject(this->redBillboard_.getBillboardSet());
