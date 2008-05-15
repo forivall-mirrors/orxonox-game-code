@@ -167,7 +167,7 @@ namespace OIS
 		@param cType
 			The ComponentType you are interested in knowing about
 		*/
-		int getNumberOfComponents(ComponentType cType);
+		int getNumberOfComponents(ComponentType cType) const;
 
 		/**
 		@remarks
@@ -183,7 +183,7 @@ namespace OIS
 		@remarks
 			Returns the sensitivity cutoff for Vector3 Component
 		*/
-		float getVector3Sensitivity();
+		float getVector3Sensitivity() const;
 
 		/**
 		@remarks
@@ -195,7 +195,7 @@ namespace OIS
 		virtual void setEventCallback( JoyStickListener *joyListener );
 
 		/** @remarks Returns currently set callback.. or null */
-		JoyStickListener* getEventCallback();
+		JoyStickListener* getEventCallback() const;
 
 		/** @remarks Returns the state of the joystick - is valid for both buffered and non buffered mode */
 		const JoyStickState& getJoyStickState() const { return mState; }
