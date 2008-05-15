@@ -34,11 +34,26 @@
 #include "UtilPrereqs.h"
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+#  ifndef WIN32_LEAN_AND_MEAN
+#    define WIN32_LEAN_AND_MEAN
+#  endif
 #  include <windows.h>
-#  define usleep(x) Sleep((x) / 1000)
-#  define msleep(x) Sleep(x)
-#  define  sleep(x) Sleep((x) * 1000)
+inline void usleep(DWORD dwMicroseconds)
+{
+  Sleep(dwMicroseconds / 1000);
+}
+inline void msleep(DWORD dwMilliseconds)
+{
+  Sleep(dwMilliseconds);
+}
+inline void sleep(DWORD dwSeconds)
+{
+  Sleep(dwSeconds * 1000);
+}
 #else
 #  include <unistd.h>
-#  define msleep(x) uleep((x) * 1000)
+inline void msleep(unsigned long msec)
+{
+  usleep(msec * 1000);
+}
 #endif
