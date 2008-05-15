@@ -46,6 +46,7 @@
 #include <map>
 // enet library for networking support
 #include <enet/enet.h>
+#include <boost/thread/thread.hpp>
 
 #include "PacketBuffer.h"
 #include "PacketManager.h"
@@ -70,6 +71,7 @@ namespace network
 
   class ConnectionManager{
   public:
+    ConnectionManager();
     ConnectionManager(ClientInformation *head);
     ConnectionManager(int port, const char *address, ClientInformation *head);
     ConnectionManager(int port, std::string address, ClientInformation *head);
@@ -83,9 +85,12 @@ namespace network
     bool addPacketAll(ENetPacket *packet);
     bool sendPackets(ENetEvent *event);
     bool sendPackets();
+    bool createClient(int clientID);
+    void disconnectClient(ClientInformation *client);
+
   private:
     bool clientDisconnect(ENetPeer *peer);
-    //bool clientDisconnect(ENetPeer peer);
+    bool removeClient(int clientID);
     bool processData(ENetEvent *event);
     bool addClient(ENetEvent *event);
     void receiverThread();
@@ -94,6 +99,10 @@ namespace network
     int getClientID(ENetAddress address);
     void syncClassid(int clientID);
     ENetPeer *getClientPeer(int clientID);
+    bool createShip(ClientInformation *client);
+    bool removeShip(ClientInformation *client);
+    bool sendWelcome(int clientID, int shipID, bool allowed);
+    bool addFakeConnectRequest(ENetEvent *ev);
     PacketBuffer buffer;
     PacketGenerator packet_gen;
 
@@ -103,21 +112,16 @@ namespace network
     bool quit; // quit-variable (communication with threads)
     ClientInformation *head_;
 
+    boost::thread *receiverThread_;
+//     int getNumberOfClients();
     //functions to map what object every clients uses
-    std::map<int, int> clientsShip;
+    /*std::map<int, int> clientsShip;
     void addClientsObjectID( int clientID, int objectID );
     int getClientsShipID( int clientID );
     int getObjectsClientID( int objectID );
     void deleteClientIDReg( int clientID );
-    void deleteObjectIDReg( int objectID );
+    void deleteObjectIDReg( int objectID );*/
   };
-
-
-
-
-
-
-
 
 }
 

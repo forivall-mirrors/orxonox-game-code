@@ -77,6 +77,8 @@ namespace network
   struct ack;
   struct chat;
   struct classid;
+  struct welcome;
+  struct connectRequest;
   struct ClientList;
   struct GameState;
   struct GameStateCompressed;

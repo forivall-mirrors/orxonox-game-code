@@ -272,7 +272,7 @@ extern "C" _CoreExport int getSoftDebugLevel();
 
 #define CCOUT_EXEC(x) \
   orxonox::OutputHandler::getOutStream().setOutputLevel(x) \
-  << "*** " << this->getIdentifier()->getName() << ": "
+  << this->getIdentifier()->getName() << ": "
 
 #ifndef CCOUT
  #if ORX_PRINT_DEBUG_OUTPUT

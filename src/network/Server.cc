@@ -52,6 +52,11 @@
 
 namespace network
 {
+  
+  
+#define MAX_FAILURES 20;
+  
+  
   /**
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY
   *
@@ -123,11 +128,11 @@ namespace network
   */
   bool Server::sendMSG(const char *msg) {
     ENetPacket *packet = packet_gen.chatMessage(msg);
-    std::cout <<"adding Packets" << std::endl;
+    COUT(4) <<"Server: adding Packets" << std::endl;
     connection->addPacketAll(packet);
     //std::cout <<"added packets" << std::endl;
     if (connection->sendPackets()){
-      std::cout << "Sucessfully" << std::endl;
+      COUT(4) << "Server: Sucessfully" << std::endl;
       return true;
     }
     return false;
@@ -142,7 +147,7 @@ namespace network
     processQueue();
     updateGamestate();
 
-    sleep(1); // TODO remove
+//     usleep(500000); // TODO remove
     return;
   }
 
@@ -154,8 +159,11 @@ namespace network
     int clientID=-1;
     while(!connection->queueEmpty()){
       //std::cout << "Client " << clientID << " sent: " << std::endl;
+      //clientID here is a reference to grab clientID from ClientInformation
       packet = connection->getPacket(clientID);
-      elaborate(packet, clientID);
+      //if statement to catch case that packetbuffer is empty
+      if( !elaborate(packet, clientID) ) 
+        COUT(4) << "Server: PacketBuffer empty" << std::endl;
     }
   }
 
@@ -164,9 +172,11 @@ namespace network
   */
   void Server::updateGamestate() {
     gamestates->update();
+    COUT(4) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
     //std::cout << "updated gamestate, sending it" << std::endl;
     //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
-      sendGameState();
+    sendGameState();
+    COUT(4) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
     //std::cout << "sent gamestate" << std::endl;
   }
 
@@ -174,43 +184,81 @@ namespace network
   * sends the gamestate
   */
   bool Server::sendGameState() {
-    COUT(5) << "starting sendGameState" << std::endl;
+    COUT(5) << "Server: starting function sendGameState" << std::endl;
     ClientInformation *temp = clients;
     bool added=false;
-    while(temp!=NULL){
+    while(temp != NULL){
       if(temp->head){
         temp=temp->next();
+        //think this works without continue
         continue;
       }
       if( !(temp->getSynched()) ){
-        COUT(5) << "not sending gamestate" << std::endl;
+        COUT(5) << "Server: not sending gamestate" << std::endl;
         temp=temp->next();
+        //think this works without continue
         continue;
       }
-      COUT(5) << "doing gamestate gamestate preparation" << std::endl;
-      int gid = temp->getGamestateID();
-      int cid = temp->getID();
-      COUT(5) << "server, got acked (gamestate) ID: " << gid << std::endl;
+      COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
+      int gid = temp->getGamestateID(); //get gamestate id
+      int cid = temp->getID(); //get client id
+      COUT(5) << "Server: got acked (gamestate) ID from clientlist: " << gid << std::endl;
       GameStateCompressed *gs = gamestates->popGameState(cid);
       if(gs==NULL){
-        COUT(2) << "could not generate gamestate" << std::endl;
+        COUT(2) << "Server: could not generate gamestate (NULL from compress)" << std::endl;
         return false;
       }
       //std::cout << "adding gamestate" << std::endl;
-      connection->addPacket(packet_gen.gstate(gs), cid);
+      if ( !(connection->addPacket(packet_gen.gstate(gs), cid)) ){
+        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->failures_ << std::endl; 
+        temp->failures_++;
+        if(temp->failures_ > 20 )
+          disconnectClient(temp);
       //std::cout << "added gamestate" << std::endl;
+      }
       added=true;
       temp=temp->next();
+      // now delete gamestate
+      delete[] gs->data;
+      delete gs;
     }
-    if(added)
+    if(added) {
+      //std::cout << "send gamestates from server.cc in sendGameState" << std::endl;
       return connection->sendPackets();
-    COUT(5) << "had no gamestates to send" << std::endl;
+    }
+    COUT(5) << "Server: had no gamestates to send" << std::endl;
     return false;
   }
 
   void Server::processAck( ack *data, int clientID) {
-    COUT(5) << "processing ack from client: " << clientID << "; ack-id: " << data->id << std::endl;
-    clients->findClient(clientID)->setGamestateID(data->a);
+    COUT(4) << "\b\b\b\n\n\n\n\nServer: processing ack from client: " << clientID << "; ack-id: " << data->a << std::endl;
+    gamestates->ackGameState(clientID, data->a);
+    delete data;
+  }
+  
+  bool Server::processConnectRequest( connectRequest *con, int clientID ){
+    COUT(4) << "processing connectRequest " << std::endl;
+    //connection->addPacket(packet_gen.gstate(gamestates->popGameState(clientID)) , clientID);
+    connection->createClient(clientID);
+    delete con;
+    return true;
+  }
+  
+  void Server::processGamestate( GameStateCompressed *data, int clientID){
+    COUT(4) << "processing partial gamestate from client " << clientID << std::endl;
+    if(!gamestates->pushGameState(data, clientID))
+        COUT(3) << "Could not push gamestate\t\t\t\t=====" << std::endl;
+    else
+        clients->findClient(clientID)->failures_=0;
   }
 
+  void Server::disconnectClient(int clientID){
+    ClientInformation *client = clients->findClient(clientID);
+    disconnectClient(client);
+  }
+  void Server::disconnectClient( ClientInformation *client){
+    connection->disconnectClient(client);
+    gamestates->removeClient(client);
+  }
+  
 }

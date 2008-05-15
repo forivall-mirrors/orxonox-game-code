@@ -85,6 +85,9 @@ class SignalHandler
 
     std::string appName;
     std::string fileName;
+
+    // used to turn on KeyAutoRepeat if OIS crashes
+    static bool bXAutoKeyRepeatOn_;
 };
 
 #else /* #ifndef __WIN32__ */

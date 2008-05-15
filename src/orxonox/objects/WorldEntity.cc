@@ -44,18 +44,16 @@ namespace orxonox
 
     unsigned int WorldEntity::worldEntityCounter_s = 0;
 
-    WorldEntity::WorldEntity()
+    WorldEntity::WorldEntity() :
+      velocity_    (0, 0, 0),
+      acceleration_(0, 0, 0),
+      rotationAxis_(0, 1, 0),
+      rotationRate_(0),
+      momentum_    (0),
+      node_        (0),
+      bStatic_     (true)
     {
         RegisterObject(WorldEntity);
-
-        //create();
-
-        this->bStatic_ = true;
-        this->velocity_ = Vector3(0, 0, 0);
-        this->acceleration_ = Vector3(0, 0, 0);
-        this->rotationAxis_ = Vector3(0, 1, 0);
-        this->rotationRate_ = 0;
-        this->momentum_ = 0;
 
         if (GraphicsEngine::getSingleton().getSceneManager())
         {
@@ -66,20 +64,21 @@ namespace orxonox
 
           registerAllVariables();
         }
-        else
-        {
-          this->node_ = 0;
-        }
     }
+    
 
     WorldEntity::~WorldEntity()
     {
+      // just to make sure we clean out all scene nodes
+      if(this->getNode())
+        this->getNode()->removeAndDestroyAllChildren();
     }
 
     void WorldEntity::tick(float dt)
     {
         if (!this->bStatic_)
         {
+//             COUT(4) << "acceleration: " << this->acceleration_ << " velocity: " << this->velocity_ << std::endl;
             this->velocity_ += (dt * this->acceleration_);
             this->translate(dt * this->velocity_, Ogre::Node::TS_LOCAL);
 
@@ -93,74 +92,8 @@ namespace orxonox
 
         BaseObject::loadParams(xmlElem);
         create();
-/*
-        if (xmlElem->Attribute("position"))
-        {
-            std::vector<std::string> pos = tokenize(xmlElem->Attribute("position"),",");
-            float x, y, z;
-            String2Number<float>(x, pos[0]);
-            String2Number<float>(y, pos[1]);
-            String2Number<float>(z, pos[2]);
-            this->setPosition(x, y, z);
-        }
-
-        if (xmlElem->Attribute("direction"))
-        {
-            std::vector<std::string> pos = tokenize(xmlElem->Attribute("direction"),",");
-            float x, y, z;
-            String2Number<float>(x, pos[0]);
-            String2Number<float>(y, pos[1]);
-            String2Number<float>(z, pos[2]);
-            this->setDirection(x, y, z);
-        }
-
-        if (xmlElem->Attribute("yaw") || xmlElem->Attribute("pitch") || xmlElem->Attribute("roll"))
-        {
-            float yaw = 0.0, pitch = 0.0, roll = 0.0;
-            if (xmlElem->Attribute("yaw"))
-                String2Number<float>(yaw,xmlElem->Attribute("yaw"));
-
-            if (xmlElem->Attribute("pitch"))
-                String2Number<float>(pitch,xmlElem->Attribute("pitch"));
-
-            if (xmlElem->Attribute("roll"))
-                String2Number<float>(roll,xmlElem->Attribute("roll"));
-
-            this->yaw(Degree(yaw));
-            this->pitch(Degree(pitch));
-            this->roll(Degree(roll));
-        }
-
-        if (xmlElem->Attribute("scale"))
-        {
-            std::string scaleStr = xmlElem->Attribute("scale");
-            float scale;
-            String2Number<float>(scale, scaleStr);
-            this->setScale(scale);
-        }
-
-        if (xmlElem->Attribute("rotationAxis"))
-        {
-            std::vector<std::string> pos = tokenize(xmlElem->Attribute("rotationAxis"),",");
-            float x, y, z;
-            String2Number<float>(x, pos[0]);
-            String2Number<float>(y, pos[1]);
-            String2Number<float>(z, pos[2]);
-            this->setRotationAxis(x, y, z);
-        }
-
-        if (xmlElem->Attribute("rotationRate"))
-        {
-            float rotationRate;
-            String2Number<float>(rotationRate, xmlElem->Attribute("rotationRate"));
-            this->setRotationRate(Degree(rotationRate));
-            if (rotationRate != 0)
-                this->setStatic(false);
-        }
-
-        create();
-*/
     }
+    
 
     void WorldEntity::setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll)
     {
@@ -187,30 +120,42 @@ namespace orxonox
         XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, mode);
 
         XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, mode, false, true);
+        
+        WorldEntity::create();
     }
 
 
     void WorldEntity::registerAllVariables()
     {
       // register coordinates
-      registerVar( (void*) &(this->getPosition().x), sizeof(this->getPosition().x), network::DATA);
-      registerVar( (void*) &(this->getPosition().y), sizeof(this->getPosition().y), network::DATA);
-      registerVar( (void*) &(this->getPosition().z), sizeof(this->getPosition().z), network::DATA);
+      registerVar( (void*) &(this->getPosition().x), sizeof(this->getPosition().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getPosition().y), sizeof(this->getPosition().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getPosition().z), sizeof(this->getPosition().z), network::DATA, 0x3);
       // register orientation
-      registerVar( (void*) &(this->getOrientation().w), sizeof(this->getOrientation().w), network::DATA);
-      registerVar( (void*) &(this->getOrientation().x), sizeof(this->getOrientation().x), network::DATA);
-      registerVar( (void*) &(this->getOrientation().y), sizeof(this->getOrientation().y), network::DATA);
-      registerVar( (void*) &(this->getOrientation().z), sizeof(this->getOrientation().z), network::DATA);
-      // not needed at the moment, because we don't have prediction yet
+      registerVar( (void*) &(this->getOrientation().w), sizeof(this->getOrientation().w), network::DATA, 0x3);
+      registerVar( (void*) &(this->getOrientation().x), sizeof(this->getOrientation().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getOrientation().y), sizeof(this->getOrientation().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getOrientation().z), sizeof(this->getOrientation().z), network::DATA, 0x3);
       // register velocity_
-      registerVar( (void*) &(this->getVelocity().x), sizeof(this->getVelocity().x), network::DATA);
-      registerVar( (void*) &(this->getVelocity().y), sizeof(this->getVelocity().y), network::DATA);
-      registerVar( (void*) &(this->getVelocity().z), sizeof(this->getVelocity().z), network::DATA);
-      // register rotationAxis/rate
-      registerVar( (void*) &(this->getRotationRate()), sizeof(this->getRotationRate()), network::DATA);
-      registerVar( (void*) &(this->getRotationAxis().x), sizeof(this->getRotationAxis().x), network::DATA);
-      registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA);
-      registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA);
+//       registerVar( (void*) &(this->getVelocity().x), sizeof(this->getVelocity().x), network::DATA, 0x3);
+//       registerVar( (void*) &(this->getVelocity().y), sizeof(this->getVelocity().y), network::DATA, 0x3);
+//       registerVar( (void*) &(this->getVelocity().z), sizeof(this->getVelocity().z), network::DATA, 0x3);
+//       // register rotationAxis/rate
+//       registerVar( (void*) &(this->getRotationRate()), sizeof(this->getRotationRate()), network::DATA, 0x3);
+//       registerVar( (void*) &(this->getRotationAxis().x), sizeof(this->getRotationAxis().x), network::DATA, 0x3);
+//       registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA, 0x3);
+//       registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA, 0x3);
+      // register scale of node
+      registerVar( (void*) &(this->getScale().x), sizeof(this->getScale().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getScale().y), sizeof(this->getScale().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getScale().z), sizeof(this->getScale().z), network::DATA, 0x3);
+      //register staticity
+      registerVar( (void*) &(this->bStatic_), sizeof(this->bStatic_), network::DATA, 0x3);
+      //register acceleration
+      // register velocity_
+//       registerVar( (void*) &(this->getAcceleration().x), sizeof(this->getAcceleration().x), network::DATA, 0x3);
+//       registerVar( (void*) &(this->getAcceleration().y), sizeof(this->getAcceleration().y), network::DATA, 0x3);
+//       registerVar( (void*) &(this->getAcceleration().z), sizeof(this->getAcceleration().z), network::DATA, 0x3);
     }
 
     void WorldEntity::attachWorldEntity(WorldEntity* entity)

@@ -62,6 +62,8 @@ namespace orxonox {
 
   ParticleInterface::~ParticleInterface(void)
   {
+    while(particleSystem_->getNumEmitters()>0)
+      particleSystem_->removeEmitter(particleSystem_->getNumEmitters()-1);
     sceneManager_->destroyParticleSystem(particleSystem_);
   }
 

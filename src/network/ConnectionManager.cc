@@ -39,12 +39,15 @@
 
 #include <iostream>
 // boost.thread library for multithreading support
-#include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
 #include "core/CoreIncludes.h"
+#include "core/BaseObject.h"
+#include "util/Math.h"
+#include "objects/SpaceShip.h"
 #include "ClientInformation.h"
 #include "ConnectionManager.h"
+#include "Synchronisable.h"
 
 namespace std
 {
@@ -58,23 +61,25 @@ namespace std
 
 namespace network
 {
-  boost::thread_group network_threads;
-
-  ConnectionManager::ConnectionManager(ClientInformation *head) {
+  //boost::thread_group network_threads;
+  
+  ConnectionManager::ConnectionManager():receiverThread_(0){}
+  
+  ConnectionManager::ConnectionManager(ClientInformation *head) : receiverThread_(0) {
     quit=false;
     bindAddress.host = ENET_HOST_ANY;
     bindAddress.port = NETWORK_PORT;
     head_ = head;
   }
 
-  ConnectionManager::ConnectionManager(int port, std::string address, ClientInformation *head) {
+  ConnectionManager::ConnectionManager(int port, std::string address, ClientInformation *head) :receiverThread_(0) {
     quit=false;
     enet_address_set_host (& bindAddress, address.c_str());
     bindAddress.port = NETWORK_PORT;
     head_ = head;
   }
 
-  ConnectionManager::ConnectionManager(int port, const char *address, ClientInformation *head) {
+  ConnectionManager::ConnectionManager(int port, const char *address, ClientInformation *head) : receiverThread_(0) {
     quit=false;
     enet_address_set_host (& bindAddress, address);
     bindAddress.port = NETWORK_PORT;
@@ -87,7 +92,10 @@ namespace network
     else
       return NULL;
   }
-
+/**
+This function only pops the first element in PacketBuffer (first in first out)
+used by processQueue in Server.cc
+*/
   ENetPacket *ConnectionManager::getPacket(int &clientID) {
     ENetAddress address;
     ENetPacket *packet=getPacket(address);
@@ -101,14 +109,16 @@ namespace network
   }
 
   void ConnectionManager::createListener() {
-    network_threads.create_thread(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
-    //     boost::thread thr(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
+    receiverThread_ = new boost::thread(boost::bind(&ConnectionManager::receiverThread, this));
+    //network_threads.create_thread(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
+         //boost::thread thr(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
     return;
   }
 
   bool ConnectionManager::quitListener() {
     quit=true;
-    network_threads.join_all();
+    //network_threads.join_all();
+    receiverThread_->join();
     return true;
   }
 
@@ -155,7 +165,7 @@ namespace network
     // what about some error-handling here ?
     enet_initialize();
     atexit(enet_deinitialize);
-    ENetEvent event;
+    ENetEvent *event = new ENetEvent;
     server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
     if(server==NULL){
       // add some error handling here ==========================
@@ -164,33 +174,44 @@ namespace network
     }
 
     while(!quit){
-      if(enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT)<0){
+      if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
         // we should never reach this point
         quit=true;
         // add some error handling here ========================
       }
-      switch(event.type){
+      switch(event->type){
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
-          addClient(&event);
+          addClient(event);
+          //this is a workaround to ensure thread safety
+          /*if(!addFakeConnectRequest(&event))
+            COUT(3) << "Problem pushing fakeconnectRequest to queue" << std::endl;*/
+          COUT(5) << "Con.Man: connection event has occured" << std::endl;
           break;
         case ENET_EVENT_TYPE_RECEIVE:
           //std::cout << "received data" << std::endl;
-          processData(&event);
+          COUT(5) << "Con.Man: receive event has occured" << std::endl;
+          // only add, if client has connected yet and not been disconnected
+          if(head_->findClient(&event->peer->address))
+            processData(event);
           break;
         case ENET_EVENT_TYPE_DISCONNECT:
-          // add some error/log handling here
-          clientDisconnect(event.peer);
+          clientDisconnect(event->peer);
           break;
         case ENET_EVENT_TYPE_NONE:
           break;
       }
+//       usleep(100);
+      receiverThread_->yield(); //TODO: find apropriate
     }
     disconnectClients();
     // if we're finishied, destroy server
     enet_host_destroy(server);
   }
-
+  
+  //### added some bugfixes here, but we cannot test them because
+  //### the server crashes everytime because of some gamestates
+  //### (trying to resolve that now)
   void ConnectionManager::disconnectClients() {
     ENetEvent event;
     ClientInformation *temp = head_->next();
@@ -198,18 +219,21 @@ namespace network
       enet_peer_disconnect(temp->getPeer(), 0);
       temp = temp->next();
     }
-    temp = temp->next();
+    //bugfix: might be the reason why server crashes when clients disconnects
+    //temp = temp->next();
+    temp = head_->next();
     while( temp!=0 && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) > 0){
       switch (event.type)
       {
-      case ENET_EVENT_TYPE_NONE:
-      case ENET_EVENT_TYPE_CONNECT:
+      case ENET_EVENT_TYPE_NONE: break;
+      case ENET_EVENT_TYPE_CONNECT: break;
       case ENET_EVENT_TYPE_RECEIVE:
         enet_packet_destroy(event.packet);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
-        std::cout << "disconnecting client" << std::endl;
+        COUT(4) << "disconnecting all clients" << std::endl;
         delete head_->findClient(&(event.peer->address));
+        //maybe needs bugfix: might also be a reason for the server to crash
         temp = temp->next();
         break;
       }
@@ -223,24 +247,25 @@ namespace network
     return buffer.push(event);
   }
 
-  //bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
-  //  return clientDisconnect(*peer);
-  //}
-
   bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
-    return head_->removeClient(peer);
+    COUT(4) << "removing client from list" << std::endl;
+    return removeClient(head_->findClient(&(peer->address))->getID());
   }
-
+/**
+This function adds a client that connects to the clientlist of the server
+NOTE: if you change this, don't forget to change the test function
+addClientTest in diffTest.cc since addClient is not good for testing because of syncClassid
+*/
   bool ConnectionManager::addClient(ENetEvent *event) {
     ClientInformation *temp = head_->insertBack(new ClientInformation);
-    if(temp->prev()->head)
+    if(temp->prev()->head) { //not good if you use anything else than insertBack
+      temp->prev()->setID(0); //bugfix: not necessary but usefull
       temp->setID(1);
+    }
     else
       temp->setID(temp->prev()->getID()+1);
     temp->setPeer(event->peer);
-    std::cout << "added client id: " << temp->getID() << std::endl;
-    syncClassid(temp->getID());
-    temp->setSynched(true);
+    COUT(4) << "Con.Man: added client id: " << temp->getID() << std::endl;
     return true;
   }
 
@@ -267,44 +292,131 @@ namespace network
         continue;
       classname = id->getName();
       network_id = id->getNetworkID();
-      COUT(4) << "network_id: " << network_id << ", classname: " << classname << std::endl;
+      COUT(4) << "Con.Man:syncClassid:\tnetwork_id: " << network_id << ", classname: " << classname << std::endl;
 
       addPacket(packet_gen.clid( (int)network_id, classname ), clientID);
 
       ++it;
     }
     sendPackets();
+    COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
   }
 
-
-
-  void ConnectionManager::addClientsObjectID( int clientID, int objectID ) {
-    COUT(4) << "ship of client: " << clientID << ": " << objectID << " mapped" << std::endl;
-    clientsShip.insert( std::make_pair( clientID, objectID ) );
+  bool ConnectionManager::createClient(int clientID){
+    ClientInformation *temp = head_->findClient(clientID);
+    COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
+    syncClassid(temp->getID());
+    COUT(4) << "creating spaceship for clientid: " << temp->getID() << std::endl;
+    // TODO: this is only a hack, untill we have a possibility to define default player-join actions
+    createShip(temp);
+    COUT(4) << "created spaceship" << std::endl;
+    temp->setSynched(true);
+    COUT(4) << "sending welcome" << std::endl;
+    sendWelcome(temp->getID(), temp->getShipID(), true);
+    return true;
   }
+  
+  bool ConnectionManager::removeClient(int clientID){
+    orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::start();
+    while(it){
+      if(it->objectID!=head_->findClient(clientID)->getShipID()){
+        ++it;
+        continue;
+      }
+      orxonox::Iterator<orxonox::SpaceShip> temp=it;
+      ++it;
+      delete  *temp;
+      return head_->removeClient(clientID);
+    }
+    return false;
+  }
+  
+  bool ConnectionManager::createShip(ClientInformation *client){
+    orxonox::Identifier* id = ID("SpaceShip");
+    if(!id){
+      COUT(4) << "We could not create the SpaceShip for client: " << client->getID() << std::endl;
+      return false;
+    }
+    orxonox::SpaceShip *no = dynamic_cast<orxonox::SpaceShip *>(id->fabricate());
+    no->setPosition(orxonox::Vector3(0,80,0));
+    no->setScale(10);
+    no->setYawPitchRoll(orxonox::Degree(-90),orxonox::Degree(-90),orxonox::Degree(0));
+    no->setMesh("assff.mesh");
+    no->setMaxSpeed(500);
+    no->setMaxSideAndBackSpeed(50);
+    no->setMaxRotation(1.0);
+    no->setTransAcc(200);
+    no->setRotAcc(3.0);
+    no->setTransDamp(75);
+    no->setRotDamp(1.0);
+    no->setCamera("cam_"+client->getID());
+    no->create();
+    
+    client->setShipID(no->objectID);
+    return true;
+  }
+  
+  bool ConnectionManager::removeShip(ClientInformation *client){
+    int id=client->getShipID();
+    orxonox::Iterator<orxonox::SpaceShip> it;
+    for(it = orxonox::ObjectList<orxonox::SpaceShip>::start(); it; ++it){
+      if(it->objectID!=id)
+        continue;
+      delete *it;
+    }
+    return true;
+  }
+  
+  bool ConnectionManager::sendWelcome(int clientID, int shipID, bool allowed){
+    addPacket(packet_gen.generateWelcome(clientID, shipID, allowed),clientID);
+    sendPackets();
+    return true;
+  }
+  
+  void ConnectionManager::disconnectClient(ClientInformation *client){
+    enet_peer_disconnect(client->getPeer(), 0);
+    removeShip(client);
+  }
+  
+  bool ConnectionManager::addFakeConnectRequest(ENetEvent *ev){
+    ENetEvent event;
+    event.peer=ev->peer;
+    event.packet = packet_gen.generateConnectRequest();
+    return buffer.push(&event);
+  }
+  
+  
+//   int ConnectionManager::getNumberOfClients() {
+//     
+//     return clientsShip.size();
+//   }
+  
+  /*void ConnectionManager::addClientsObjectID( int clientID, int objectID ) {
+  COUT(4) << "ship of client: " << clientID << ": " << objectID << " mapped" << std::endl;
+  clientsShip.insert( std::make_pair( clientID, objectID ) );
+}
 
   int ConnectionManager::getClientsShipID( int clientID ) {
-    return clientsShip[clientID];
-  }
+  return clientsShip[clientID];
+}
 
   int ConnectionManager::getObjectsClientID( int objectID ) {
-    std::map<int, int>::iterator iter = clientsShip.begin();
-    while( iter != clientsShip.end() ) {
-      if( iter->second == objectID ) return iter->first;
-    }
-    return -99;
-  }
+  std::map<int, int>::iterator iter;
+  for( iter = clientsShip.begin(); iter != clientsShip.end(); iter++ ) {
+  if( iter->second == objectID ) return iter->first;
+}
+  return -99;
+}
 
   void ConnectionManager::deleteClientIDReg( int clientID ) {
-    clientsShip.erase( clientID );
-  }
+  clientsShip.erase( clientID );
+}
 
   void ConnectionManager::deleteObjectIDReg( int objectID ) {
-    std::map<int, int>::iterator iter = clientsShip.begin();
-    while( iter != clientsShip.end() ) {
-      if( iter->second == objectID ) break;
-    }
-    clientsShip.erase( iter->first );
-  }
-
+  std::map<int, int>::iterator iter = clientsShip.begin();
+  for( iter = clientsShip.begin(); iter != clientsShip.end(); iter++ ) {
+  if( iter->second == objectID ) break;
+}
+  clientsShip.erase( iter->first );
+}*/
 }

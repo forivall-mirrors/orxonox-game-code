@@ -41,13 +41,12 @@ namespace orxonox
 {
     CreateFactory(Projectile);
 
-    Projectile::Projectile(SpaceShip* owner)
+    Projectile::Projectile(SpaceShip* owner) :
+      owner_(owner)
     {
         RegisterObject(Projectile);
 
         this->setConfigValues();
-
-        this->owner_ = owner;
 
         this->billboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
         this->attachObject(this->billboard_.getBillboardSet());

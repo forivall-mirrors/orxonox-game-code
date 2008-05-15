@@ -45,13 +45,14 @@
 #include <zlib.h>
 
 #include "core/CoreIncludes.h"
+#include "core/BaseObject.h"
 #include "ClientInformation.h"
 #include "Synchronisable.h"
 
 namespace network
 {
   GameStateManager::GameStateManager(ClientInformation *head) {
-    id=0;
+    id_=0;
     head_=head;
   }
 
@@ -59,27 +60,86 @@ namespace network
   }
 
   void GameStateManager::update(){
-    reference = getSnapshot(id);
-    gameStateMap.insert(std::pair<int, GameState*>(id, reference));
-    gameStateUsed[id]=0;
-    ++id;
+    cleanup();
+    reference = getSnapshot();
+    COUT(4) << "inserting gamestate: " << reference << std::endl;
+    gameStateMap.insert(std::pair<int, GameState*>(id_, reference));
+    gameStateUsed[id_]=0;
+    printGameStates();
     return;
+  }
+  
+  
+  /**
+   * this function is used to keep the memory usage low
+   * it tries to delete all the unused gamestates
+   * 
+   * 
+   */
+  void GameStateManager::cleanup(){
+    std::map<int,int>::iterator it = gameStateUsed.begin();
+    while(it!=gameStateUsed.end()){
+      if((id_-(*it).first)<KEEP_GAMESTATES)
+        break;
+      if( (*it).second <= 0 ){
+        COUT(4) << "GameStateManager: deleting gamestate with id: " << (*it).first << ", uses: " << (*it).second << std::endl;
+        std::map<int, GameState *>::iterator tempit = gameStateMap.find((*it).first);
+        if( tempit != gameStateMap.end() ){
+          GameState *temp = tempit->second;
+          if(temp){
+            delete[] gameStateMap[(*it).first]->data;
+            delete gameStateMap[(*it).first];
+            gameStateMap.erase((*it).first);
+          }
+        }
+        gameStateUsed.erase(it++);
+        continue;
+      }/*else if(id_-it->first<=KEEP_GAMESTATES){  //as soon as we got a used gamestate break here because we could use newer gamestates in future but only if we do not exceed KEEP_GAMESTATES # of gamestates in cache
+        COUT(4) << "breaking " << std::endl;
+        break;
+      }*/
+      it++;
+    }
   }
 
   GameStateCompressed *GameStateManager::popGameState(int clientID) {
+    //why are we searching the same client's gamestate id as we searched in
+    //Server::sendGameState?
     int gID = head_->findClient(clientID)->getGamestateID();
-    COUT(4) << "popgamestate: sending gstate id: " << id << "diffed from: " << gID << std::endl;
-    if(gID!=GAMESTATEID_INITIAL){
-      GameState *client = gameStateMap[gID];
+    COUT(4) << "G.St.Man: popgamestate: sending gstate_id: " << id_ << " diffed from: " << gID << std::endl;
+//     COUT(3) << "gamestatemap: " << &gameStateMap << std::endl;
+    //chose wheather the next gamestate is the first or not
+    if(gID != GAMESTATEID_INITIAL){
+      // TODO something with the gamestatemap is wrong
+      GameState *client=NULL;
+      std::map<int, GameState*>::iterator it = gameStateMap.find(gID);
+      if(it!=gameStateMap.end())
+        client = it->second;
       GameState *server = reference;
       //head_->findClient(clientID)->setGamestateID(id);
-      return encode(client, server);
+      COUT(3) << "client: " << client << " server: " << server << " gamestatemap: " << &gameStateMap << std::endl;
+      if(client)
+        return encode(client, server);
+      else
+        return encode(server);
     } else {
+      COUT(4) << "we got a GAMESTATEID_INITIAL for clientID: " << clientID << std::endl;
       GameState *server = reference;
+//       ackGameState(clientID, reference->id);
       //head_->findClient(clientID)->setGamestateID(id);
       return encode(server);
       // return an undiffed gamestate and set appropriate flags
     }
+  }
+  
+  bool GameStateManager::pushGameState( GameStateCompressed *gs, int clientID ){
+    GameState *ugs = decompress(gs);
+    delete[] gs->data;
+    delete gs;
+    bool result = loadPartialSnapshot(ugs, clientID);
+    delete[] ugs->data;
+    delete ugs;
+    return result;
   }
 
   /**
@@ -87,11 +147,12 @@ namespace network
   * saves all the synchronisables to a flat "list".
   * @return struct of type gamestate containing the size of the whole gamestate and a pointer linking to the flat list
   */
-  GameState *GameStateManager::getSnapshot(int id)
+  GameState *GameStateManager::getSnapshot()
   {
+    //std::cout << "begin getSnapshot" << std::endl;
     //the size of the gamestate
     int totalsize=0;
-    int memsize=1000;
+    int memsize=0;
     //the size of one specific synchronisable
     int tempsize=0;
     // get the start of the Synchronisable list
@@ -100,60 +161,150 @@ namespace network
     syncData sync;
 
     GameState *retval=new GameState; //return value
-    retval->id=id++;
-    COUT(4) << "producing gamestate with id: " << retval->id << std::endl;
-    // reserve a little memory and increase it later on
-    COUT(5) << "mallocing" << std::endl;
-    retval->data = (unsigned char*)malloc(memsize);
-    COUT(5) << "malloced" << std::endl;
-
+    retval->id=++id_;
+    COUT(4) << "G.ST.Man: producing gamestate with id: " << retval->id << std::endl;
     // offset of memory functions
-    int offset=0;
+    int offset=0, size=0;
+    // get total size of gamestate
+    for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
+      size+=it->getSize(); // size of the actual data of the synchronisable
+      size+=3*sizeof(int); // size of datasize, classID and objectID
+    }
+    //retval->data = (unsigned char*)malloc(size);
+    retval->data = new unsigned char[size];
+    if(!retval->data){
+      COUT(2) << "GameStateManager: could not allocate memory" << std::endl;
+      return NULL;
+    }
+    memsize=size;
     // go through all Synchronisables
     for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
-      //std::cout << "gamestatemanager: in for loop" << std::endl;
       //get size of the synchronisable
       tempsize=it->getSize();
-//       COUT(5) << "size of temp gamestate: " << tempsize << std::endl;
-      //COUT(2) << "size of synchronisable: " << tempsize << std::endl;
       // add place for data and 3 ints (length,classid,objectid)
       totalsize+=tempsize+3*sizeof(int);
-      //std::cout << "totalsize: " << totalsize << std::endl;
-      // allocate additional space
-      if(totalsize+tempsize>memsize){
-        if(tempsize<1000){
-          retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
-          memsize+=1000;
-        } else {
-          retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
-          memsize+=tempsize+1000;
-        }
+      // allocate+tempsize additional space
+      if(totalsize > size){
+        COUT(3) << "G.St.Man: need additional memory" << std::endl;
+//         if(tempsize < 1000){
+//           retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
+//           memsize+=1000;
+//         } else {
+//           retval->data = (unsigned char *)realloc((void *)retval->data, totalsize+1000);
+//           memsize+=tempsize+1000;
+//         }
+//         COUT(5) << "G.St.Man: additional space allocation finished" << std::endl;
       }
 
       // run Synchronisable::getData with offset and additional place for 3 ints in between (for ids and length)
       sync=it->getData((retval->data)+offset+3*sizeof(int));
-      *(retval->data+offset)=(unsigned char)sync.length;
-      *(retval->data+offset+sizeof(int))=(unsigned char)sync.objectID;
-      *(retval->data+offset+2*sizeof(int))=(unsigned char)sync.classID;
+      memcpy(retval->data+offset, (void *)&(sync.length), sizeof(int));
+      memcpy(retval->data+offset+sizeof(int), (void *)&(sync.objectID), sizeof(int));
+      memcpy(retval->data+offset+2*sizeof(int), (void *)&(sync.classID), sizeof(int));
       // increase data pointer
       offset+=tempsize+3*sizeof(int);
     }
-    COUT(5) << "Gamestate size: " << totalsize << std::endl;
     retval->size=totalsize;
+    //#### bugfix
+    retval->diffed = false;
+    retval->complete = true;
+    //std::cout << "end snapShot" << std::endl;
+    COUT(5) << "G.ST.Man: Gamestate size: " << totalsize << std::endl;
+    COUT(5) << "G.ST.Man: 'estimated' Gamestate size: " << size << std::endl;
     return retval;
   }
 
+  bool GameStateManager::loadPartialSnapshot(GameState *state, int clientID){
+    if(!state)
+      return false;
+    unsigned char *data=state->data;
+    COUT(4) << "loadSnapshot: loading gs: " << state->id << std::endl;
+    // get the start of the Synchronisable list
+    orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::start();
+    syncData sync;
+    // loop as long as we have some data ;)
+    while(data < state->data+state->size){
+      // prepare the syncData struct
+      sync.length = *(int *)data;
+      data+=sizeof(int);
+      sync.objectID = *(int*)data;
+      data+=sizeof(int);
+      sync.classID = *(int*)data;
+      data+=sizeof(int);
+      sync.data = data;
+      data+=sync.length;
+      COUT(4) << "objectID: " << sync.objectID << " classID: " << sync.classID << std::endl;
+      while(it && it->objectID!=sync.objectID)
+        ++it;
+
+
+      if(!it){
+        // the object does not exist yet
+        COUT(4) << "loadsnapshot: creating new object " << std::endl;
+        //COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
+        orxonox::Identifier* id = ID((unsigned int)sync.classID);
+        if(!id){
+          COUT(4) << "We could not identify a new object; classid: " << sync.classID << std::endl;
+          continue;
+        }
+        Synchronisable *no = dynamic_cast<Synchronisable *>(id->fabricate());
+        COUT(4) << "loadpartialsnapshot (generating new object): classid: " << sync.classID << " objectID: " << sync.objectID << " length: " << sync.length << std::endl;
+        no->objectID=sync.objectID;
+        no->classID=sync.classID;
+        it=orxonox::ObjectList<Synchronisable>::end();
+        // update data and create object/entity...
+        if( !no->updateData(sync) )
+          COUT(1) << "We couldn't update the object: " << sync.objectID << std::endl;
+        if( !no->create() )
+          COUT(1) << "We couldn't manifest (create() ) the object: " << sync.objectID << std::endl;
+      }else{
+        // we have our object
+        COUT(4) << "loadpartialsnapshot: we found the appropriate object" << std::endl;
+        if(checkAccess(clientID, sync.objectID)){
+          if(! it->updateData(sync))
+            COUT(1) << "We couldn't update objectID: " \
+              << sync.objectID << "; classID: " << sync.classID << std::endl;
+        }else
+          COUT(4) << "loadPartialSnapshot: no access to change objectID: " << sync.objectID << std::endl;
+      }
+      ++it;
+    }
+    
+    return true;
+  }
+  
+  
+  //##### ADDED FOR TESTING PURPOSE #####
+  GameStateCompressed* GameStateManager::testCompress( GameState* g ) {
+    return compress_( g );
+  }
+
+  GameState* GameStateManager::testDiff( GameState* a, GameState* b ) {
+    return diff( a, b );
+  }
+  //##### END TESTING PURPOSE #####
+
   GameStateCompressed *GameStateManager::encode(GameState *a, GameState *b) {
-    //GameState r = diff(a,b);
-    //r.diffed = true;
-    GameState *r = b;
-    r->diffed = false;
-    return compress_(r);
+    COUT(4) << "G.St.Man: this will be a DIFFED gamestate" << std::endl;
+    GameState *r = diff(a,b);
+    GameStateCompressed *c = compress_(r);
+    delete[] r->data;
+    delete r;
+    return c;
   }
 
   GameStateCompressed *GameStateManager::encode(GameState *a) {
-    a->diffed=false;
+    COUT(5) << "G.St.Man: encoding gamestate (compress)" << std::endl;
+    a->base_id=GAMESTATEID_INITIAL;
     return compress_(a);
+    /*GameStateCompressed *g = new GameStateCompressed;
+    g->base_id = a->base_id;
+    g->id = a->id;
+    g->diffed = a->diffed;
+    g->data = a->data;
+    g->normsize = a->size;
+    g->compsize = a->size;
+    return g;*/
   }
 
   GameState *GameStateManager::diff(GameState *a, GameState *b) {
@@ -164,7 +315,8 @@ namespace network
       dest_length=a->size;
     else
       dest_length=b->size;
-    unsigned char *dp = (unsigned char *)malloc(dest_length*sizeof(unsigned char));
+    //unsigned char *dp = (unsigned char *)malloc(dest_length*sizeof(unsigned char));
+    unsigned char *dp = new unsigned char[dest_length*sizeof(unsigned char)];
     while(of<a->size && of<b->size){
       *(dp+of)=*(ap+of)^*(bp+of); // do the xor
       ++of;
@@ -188,27 +340,36 @@ namespace network
     r->id = b->id;
     r->size = dest_length;
     r->diffed = true;
+    r->base_id = a->id;
     r->data = dp;
+    r->complete = true;
     return r;
   }
 
   GameStateCompressed *GameStateManager::compress_(GameState *a) {
-    COUT(5) << "compressing gamestate" << std::endl;
+    //COUT(4) << "G.St.Man: compressing gamestate" << std::endl;
+
+    //COUT(4) << "G.St.Man: a: id: " << a->id << " base_id: " << a->base_id << " size: " << a->size << " diffed: " << a->diffed << std::endl;
     int size = a->size;
+
     uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
-    unsigned char* dest = (unsigned char*)malloc( buffer );
+    //COUT(4) << "size: " << size << ", buffer: " << buffer << std::endl;
+    //unsigned char* dest = (unsigned char*)malloc( buffer );
+    unsigned char *dest = new unsigned char[buffer];
+    //COUT(4) << "dest: " << dest << std::endl;
     int retval;
     //std::cout << "before ziped " << buffer << std::endl;
     retval = compress( dest, &buffer, a->data, (uLong)size );
+    //COUT(4) << "bloablabla aft3er compress" << std::endl;
     //std::cout << "after ziped " << buffer << std::endl;
 
     switch ( retval ) {
-      case Z_OK: COUT(5) << "successfully compressed" << std::endl; break;
-      case Z_MEM_ERROR: COUT(1) << "not enough memory available in gamestate.compress" << std::endl;
+      case Z_OK: COUT(5) << "G.St.Man: compress: successfully compressed" << std::endl; break;
+      case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl; 
       return NULL;
-      case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer in gamestate.compress" << std::endl;
+      case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl;
       return NULL;
-      case Z_DATA_ERROR: COUT(2) << "decompress: data corrupted in gamestate.compress" << std::endl;
+      case Z_DATA_ERROR: COUT(2) << "G.St.Man: compress: data corrupted in gamestate.compress" << std::endl;
       return NULL;
     }
 
@@ -220,17 +381,58 @@ namespace network
     compressedGamestate->id = a->id;
     compressedGamestate->data = dest;
     compressedGamestate->diffed = a->diffed;
-
+    compressedGamestate->complete = a->complete;
+    compressedGamestate->base_id = a->base_id;
+    //COUT(5) << "G.St.Man: saved compressed data in GameStateCompressed:" << std::endl;
     return compressedGamestate;
   }
+  
+  GameState *GameStateManager::decompress(GameStateCompressed *a) {
+    //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
+    int normsize = a->normsize;
+    int compsize = a->compsize;
+    int bufsize;
+    if(normsize < compsize)
+      bufsize = compsize;
+    else
+      bufsize = normsize;
+//     unsigned char* dest = (unsigned char*)malloc( bufsize );
+    unsigned char *dest = new unsigned char[bufsize];
+    int retval;
+    uLongf length=normsize;
+    //std::cout << "gamestateclient" << std::endl;
+    //std::cout << "normsize " << a.normsize << " compsize " << a.compsize << " " << bufsize << std::endl;
+    retval = uncompress( dest, &length, a->data, (uLong)compsize );
+    //std::cout << "length " << length << std::endl;
+    switch ( retval ) {
+      case Z_OK: COUT(5) << "successfully decompressed" << std::endl; break;
+      case Z_MEM_ERROR: COUT(1) << "not enough memory available" << std::endl; return NULL;
+      case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer" << std::endl; return NULL;
+      case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return NULL;
+    }
+
+    GameState *gamestate = new GameState;
+    gamestate->id = a->id;
+    gamestate->size = normsize;
+    gamestate->data = dest;
+    gamestate->base_id = a->base_id;
+    gamestate->diffed = a->diffed;
+    gamestate->complete = a->complete;
+
+
+    return gamestate;
+  }
+  
 
   void GameStateManager::ackGameState(int clientID, int gamestateID) {
     ClientInformation *temp = head_->findClient(clientID);
-    int curid = temp->getID();
+    int curid = temp->getGamestateID();
+    COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
     // decrease usage of gamestate and save it
-    deleteUnusedGameState(curid);
+//     deleteUnusedGameState(curid);
     //increase gamestateused
-    ++gameStateUsed.find(gamestateID)->second;
+    --(gameStateUsed.find(curid)->second);
+    ++(gameStateUsed.find(gamestateID)->second);
     temp->setGamestateID(gamestateID);
     /*
     GameState *old = clientGameState[clientID];
@@ -238,15 +440,25 @@ namespace network
     clientGameState[clientID]=idGameState[gamestateID];*/
   }
 
-  bool GameStateManager::deleteUnusedGameState(int gamestateID) {
-    int used = --(gameStateUsed.find(gamestateID)->second);
-    if(id-gamestateID>KEEP_GAMESTATES && used==0){
-      // delete gamestate
-      delete gameStateMap.find(gamestateID)->second;
-      gameStateMap.erase(gamestateID);
-      return true;
+  bool GameStateManager::printGameStates() {
+    std::map<int, GameState*>::iterator it;
+    COUT(4) << "gamestates: ";
+    for(it = gameStateMap.begin(); it!=gameStateMap.end(); it++){
+      COUT(4) << (*it).first << ":" << (*it).second << " | ";
     }
-    return false;
+    COUT(4) << std::endl;
+    return true;
+  }
+  
+  bool GameStateManager::checkAccess(int clientID, int objectID){
+    // currently we only check, wheter the object is the clients spaceship
+//     return head_->findClient(objectID)->getShipID()==objectID;
+    return true; // TODO: change this
+  }
+  
+  void GameStateManager::removeClient(ClientInformation* client){
+    gameStateUsed[client->getGamestateID()]--;
+    head_->removeClient(client->getID());
   }
 
 }

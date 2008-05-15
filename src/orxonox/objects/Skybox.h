@@ -32,10 +32,11 @@
 #include "OrxonoxPrereqs.h"
 
 #include "core/BaseObject.h"
+#include "network/Synchronisable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Skybox : public BaseObject
+    class _OrxonoxExport Skybox : public BaseObject, public network::Synchronisable
     {
         public:
             Skybox();
@@ -44,8 +45,13 @@ namespace orxonox
             void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void setSkybox(const std::string& skyboxname);
+            
+            bool create();
+            void registerAllVariables();
+            void setSkyboxSrc(const std::string &src);
 
         private:
+            std::string skyboxSrc_;
 
 
     };

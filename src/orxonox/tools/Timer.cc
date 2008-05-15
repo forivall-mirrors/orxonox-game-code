@@ -67,14 +67,14 @@ namespace orxonox
     */
     TimerBase::TimerBase()
     {
-        RegisterRootObject(TimerBase);
-
         this->executor_ = 0;
         this->interval_ = 0;
         this->bLoop_ = false;
         this->bActive_ = false;
 
         this->time_ = 0;
+
+        RegisterRootObject(TimerBase);
     }
 
     /**
@@ -82,7 +82,8 @@ namespace orxonox
     */
     TimerBase::~TimerBase()
     {
-        delete this->executor_;
+      if (this->executor_)
+          delete this->executor_;
     }
 
     /**

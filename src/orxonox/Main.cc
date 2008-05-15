@@ -77,13 +77,15 @@ int main(int argc, char **argv)
     SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
     Orxonox* orx = Orxonox::getSingleton();
 
+    bool res = false;
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
-    orx->init(argc, argv, macBundlePath());
+    res = orx->init(argc, argv, macBundlePath());
 #else
-    orx->init(argc, argv, "");
+    res = orx->init(argc, argv, "");
 #endif
 
-    orx->start();
+    if (res)
+      orx->start();
     orx->destroySingleton();
   /*}
   catch (std::exception &ex)

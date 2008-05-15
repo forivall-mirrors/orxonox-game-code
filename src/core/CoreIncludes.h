@@ -58,7 +58,9 @@
     this->setIdentifier(orxonox::ClassManager<ClassName>::getIdentifier()->registerClass(this->getParents(), #ClassName, bRootClass)); \
     if (orxonox::Identifier::isCreatingHierarchy() && this->getParents()) \
         this->getParents()->insert(this->getParents()->end(), this->getIdentifier()); \
-    orxonox::ClassManager<ClassName>::getIdentifier()->addObject(this)
+    orxonox::ClassManager<ClassName>::getIdentifier()->addObject(this); \
+    if (orxonox::Identifier::isCreatingHierarchy()) \
+      return
 
 /**
     @brief Intern macro, containing the specific part of RegisterRootObject.
