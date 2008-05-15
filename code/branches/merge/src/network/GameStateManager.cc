@@ -83,9 +83,15 @@ namespace network
         break;
       if( (*it).second <= 0 ){
         COUT(4) << "GameStateManager: deleting gamestate with id: " << (*it).first << ", uses: " << (*it).second << std::endl;
-        delete[] gameStateMap[(*it).first]->data;
-        delete gameStateMap[(*it).first];
-        gameStateMap.erase((*it).first);
+        std::map<int, GameState *>::iterator tempit = gameStateMap.find((*it).first);
+        if( tempit != gameStateMap.end() ){
+          GameState *temp = tempit->second;
+          if(temp){
+            delete[] gameStateMap[(*it).first]->data;
+            delete gameStateMap[(*it).first];
+            gameStateMap.erase((*it).first);
+          }
+        }
         gameStateUsed.erase(it++);
         continue;
       }/*else if(id_-it->first<=KEEP_GAMESTATES){  //as soon as we got a used gamestate break here because we could use newer gamestates in future but only if we do not exceed KEEP_GAMESTATES # of gamestates in cache

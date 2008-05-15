@@ -341,7 +341,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     no->setPosition(orxonox::Vector3(0,80,0));
     no->setScale(10);
     no->setYawPitchRoll(orxonox::Degree(-90),orxonox::Degree(-90),orxonox::Degree(0));
-    no->setMesh("assf3.mesh");
+    no->setMesh("assff.mesh");
     no->setMaxSpeed(500);
     no->setMaxSideAndBackSpeed(50);
     no->setMaxRotation(1.0);
