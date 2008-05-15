@@ -5,6 +5,9 @@ SET( ORXONOX_SRC_FILES
 
   console/InGameConsole.cc
   hud/HUD.cc
+  hud/BarOverlayElement.cc
+  hud/RadarOverlayElement.cc
+  hud/RadarOverlayElement.cc
   particle/ParticleInterface.cc
   tolua/tolua_bind.cc
 
