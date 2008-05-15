@@ -63,7 +63,7 @@ namespace network
   
   ENetPacket* command( int dataLength, void *data, int reliable = ENET_PACKET_FLAG_RELIABLE )
   {
-    void *stream = new char[dataLength + 2*sizeof(int)];
+    unsigned char *stream = new unsigned char[dataLength + 2*sizeof(int)];
     if(!stream)
       return NULL;
     packet_id a = COMMAND;

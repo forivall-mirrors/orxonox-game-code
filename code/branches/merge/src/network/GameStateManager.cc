@@ -426,6 +426,8 @@ namespace network
 
   void GameStateManager::ackGameState(int clientID, int gamestateID) {
     ClientInformation *temp = head_->findClient(clientID);
+    if(!temp)
+      return;
     int curid = temp->getGamestateID();
     COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
     // decrease usage of gamestate and save it
