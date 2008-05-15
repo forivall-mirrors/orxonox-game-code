@@ -53,7 +53,7 @@ namespace orxonox
     double beta_;               //defines the angle in the radar
     bool right_;                //checks whether the object is on the right side (since cos is not bijective)
     
-    static int ID = 0;
+    //static int ID = 0;
 
   public:
     
@@ -62,7 +62,7 @@ namespace orxonox
     virtual void initialise();
 
     void initRadarOverlayElement(Real left, Real top, int dim, Ogre::OverlayContainer* container);
-    void setMainShipPosition(int dirX, dirY, dirZ, ortX, ortY, ortZ);
+    void setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ);
     
     int newShip(int X, int Y, int Z);
     

@@ -53,7 +53,7 @@ namespace orxonox
     double beta_;               //defines the angle in the radar
     bool right_;                //checks whether the object is on the right side (since cos is not bijective)
     
-    static int ID;
+    //static int ID = 0;
 
   public:
     

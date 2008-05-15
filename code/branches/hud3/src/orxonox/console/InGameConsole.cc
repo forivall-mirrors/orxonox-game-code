@@ -42,6 +42,8 @@
 #include "core/ConsoleCommand.h"
 #include "core/InputManager.h"
 #include "GraphicsEngine.h"
+// just for testing purposes
+//#include "SpaceShip.h"
 
 #define LINES 20
 
@@ -81,6 +83,11 @@ namespace orxonox
     }
 
     void InGameConsole::execute(){
+/*// just for testing purposes
+	if(consoleOverlayTextAreas[0]->getCaption() == ">")
+		consoleOverlayTextAreas[0]->setCaption(SpaceShip::instance_s->getPosition().x
+			+ "__" + SpaceShip::instance_s->getPosition().y
+			+ "__" + SpaceShip::instance_s->getPosition().z);*/
         newline();
         if (!CommandExecutor::execute(this->ib_->get())){
             print("Error");
