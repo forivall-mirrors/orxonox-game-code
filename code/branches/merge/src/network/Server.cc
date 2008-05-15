@@ -148,7 +148,6 @@ namespace network
   void Server::tick(float time) {
     processQueue();
     updateGamestate();
-
 //     usleep(500000); // TODO remove
     return;
   }

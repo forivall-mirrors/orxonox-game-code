@@ -62,6 +62,8 @@ namespace orxonox
         }
 
         this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
+        this->classID = this->getIdentifier()->getNetworkID(); // TODO: remove this hack
+//        COUT(3) << this->classID << std::endl;
     }
 
     Projectile::~Projectile()

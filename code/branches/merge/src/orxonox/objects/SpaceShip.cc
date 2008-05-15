@@ -455,7 +455,9 @@ namespace orxonox
 
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
+          
             Projectile *p = new Projectile(this);
+            
             p->setBacksync(true);
             this->timeToReload_ = this->reloadTime_;
         }
