@@ -42,8 +42,18 @@ namespace orxonox
   class _OrxonoxExport RadarOverlayElement : public Ogre::PanelOverlayElement
   {
   private:
-    int number_;
-
+    
+    PanelOverlayElement* point[100];
+    
+    int dirX_, dirY_, dirZ_;      //flying direction
+    int ortX_, ortY_, ortZ_;      //orthogonal direction
+    int dX_, dY_, dZ_;            //distance between main ship and the object
+    int vecX_, vecY_, vecZ_;      //vector product dir X ort
+    double alpha_;              //defines the radius in the radar
+    double beta_;               //defines the angle in the radar
+    bool right_;                //checks whether the object is on the right side (since cos is not bijective)
+    
+    static int ID = 0;
 
   public:
     
@@ -52,6 +62,11 @@ namespace orxonox
     virtual void initialise();
 
     void initRadarOverlayElement(Real left, Real top, int dim, Ogre::OverlayContainer* container);
+    void setMainShipPosition(int dirX, dirY, dirZ, ortX, ortY, ortZ);
+    
+    int newShip(int X, int Y, int Z);
+    
+    void resetShip(int shipID, int Y, int Z);
   };
 }	
 

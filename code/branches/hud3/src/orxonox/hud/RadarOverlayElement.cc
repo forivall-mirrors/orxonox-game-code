@@ -49,39 +49,33 @@ namespace orxonox
   }
   
   void RadarOverlayElement::initRadarOverlayElement(Real left, Real top, int dim, Ogre::OverlayContainer* container){
+
+
     
-    int dirX, dirY, dirZ;      //flying direction
-    int ortX, ortY, ortZ;      //orthogonal direction
-    int dX, dY, dZ;            //distance between main ship and the object
-    int vecX, vecY, vecZ;      //vector product dir X ort
-    double alpha;              //defines the radius in the radar
-    double beta;               //defines the angle in the radar
-    bool right;                //checks whether the object is on the right side (since cos is not bijective)
+    dirX_ = 1;
+    dirY_ = 0;
+    dirZ_ = 0;
     
-    dirX = 1;
-    dirY = 0;
-    dirZ = 0;
+    ortX_ = 0;
+    ortY_ = 0;
+    ortZ_ = 1;
     
-    ortX = 0;
-    ortY = 0;
-    ortZ = 1;
+    dX_ = 0;
+    dY_ = 0;
+    dZ_ = -1;
     
-    dX = 0;
-    dY = 2;
-    dZ = 0;
+    alpha_ = acos((dirX_*dX_+dirY_*dY_+dirZ_*dZ_)/(sqrt(pow(dX_,2)+pow(dY_,2)+pow(dZ_,2))*sqrt(pow(dirX_,2)+pow(dirY_,2)+pow(dirZ_,2))));
+    beta_ = acos((ortX_*dX_+ortY_*dY_+ortZ_*dZ_)/(sqrt(pow(dX_,2)+pow(dY_,2)+pow(dZ_,2))*sqrt(pow(ortX_,2)+pow(ortY_,2)+pow(ortZ_,2))));
+    vecX_ = dirY_*ortZ_ - dirZ_*ortY_;
+    vecY_ = dirZ_*ortX_ - dirX_*ortZ_;
+    vecZ_ = dirX_*ortY_ - dirY_*ortX_;
     
-    alpha = acos((dirX*dX+dirY*dY+dirZ*dZ)/(sqrt(pow(dX,2)+pow(dY,2)+pow(dZ,2))*sqrt(pow(dirX,2)+pow(dirY,2)+pow(dirZ,2))));
-    beta = acos((ortX*dX+ortY*dY+ortZ*dZ)/(sqrt(pow(dX,2)+pow(dY,2)+pow(dZ,2))*sqrt(pow(ortX,2)+pow(ortY,2)+pow(ortZ,2))));
-    vecX = dirY*ortZ - dirZ*ortY;
-    vecY = dirZ*ortX - dirX*ortZ;
-    vecZ = dirX*ortY - dirY*ortX;
-    
-    if((vecX*dX+vecY*dY+vecZ*dZ)>0){right=true;}
-    else right=false;
+    if((vecX_*dX_+vecY_*dY_+vecZ_*dZ_)>0){right_=true;}
+    else right_=false;
     
     setMetricsMode(Ogre::GMM_PIXELS);
     setPosition(left,top);
-    setDimensions(dim-15,dim-20);
+    setDimensions(dim,dim);
     setMaterialName("Orxonox/Radar");
     
     Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
@@ -91,24 +85,32 @@ namespace orxonox
     
     container->addChild(point);
     
-    if (right){
-      point->setPosition(sin(beta)*alpha/3.14*dim/2+dim/2,-cos(beta)*alpha/3.14*dim/2+dim/2);
+    if (right_){
+      point->setPosition(sin(beta_)*alpha_/3.5*dim/2+dim/2+left-2,-cos(beta_)*alpha_/3.5*dim/2+dim/2+top-2);
       point->setMaterialName("Orxonox/RedPoint");
       point->setDimensions(5,5);
       point->setMetricsMode(Ogre::GMM_PIXELS);
     }
   
     else {
-      point->setPosition(-sin(beta)*alpha/3.14*dim/2+dim/2,-cos(beta)*alpha/3.14*dim/2+dim/2);
+      point->setPosition(-sin(beta_)*alpha_/3.5*dim/2+dim/2+left-2,-cos(beta_)*alpha_/3.5*dim/2+dim/2+top-2);
       point->setMaterialName("Orxonox/RedPoint");
       point->setDimensions(5,5);
       point->setMetricsMode(Ogre::GMM_PIXELS);
     }
-
-    
-
-    
-  }  
+  } 
+   
+  void RadarOverlayElement::setMainShipPosition(int dirX, dirY, dirZ, ortX, ortY, ortZ){
+    dirX_=dirX;
+    dirY_=dirY;
+    dirZ_=dirZ;
+    ortX_=ortX;
+    ortY_=ortY;
+    ortZ_=ortZ;
+  }
+  
+  
+  
 }
 
 
