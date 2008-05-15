@@ -233,7 +233,8 @@ namespace network
       GameStateCompressed *gs = gamestate.popPartialGameState();
       if(gs){
         COUT(4) << "client tick: sending gs " << gs << std::endl;
-        if(client_connection.addPacket(pck_gen.gstate(gs)))
+        ENetPacket *packet = pck_gen.gstate(gs);
+        if( packet == NULL || !client_connection.addPacket(packet))
           COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
         // now delete it to save memory
         delete[] gs->data;

@@ -115,6 +115,8 @@ namespace orxonox
     {
         if (this->tt_)
             delete this->tt_;
+        if(setMouseEventCallback_)
+          InputManager::removeMouseHandler("SpaceShip");
     }
 
     bool SpaceShip::create(){
@@ -141,7 +143,7 @@ namespace orxonox
 
     void SpaceShip::init()
     {
-    if ((!network::Client::getSingleton() || network::Client::getSingleton()->getShipID()==objectID ))
+    if ((server_ || ( network::Client::getSingleton() && network::Client::getSingleton()->getShipID()==objectID ) ))
     {
           if (!setMouseEventCallback_)
           {
