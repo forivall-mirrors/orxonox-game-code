@@ -817,6 +817,8 @@ namespace orxonox
   */
   bool InputManager::addKeyHandler(KeyHandler* handler, const std::string& name)
   {
+    if (!handler)
+      return false;
     if (_getSingleton().keyHandlers_.find(name) == _getSingleton().keyHandlers_.end())
     {
       _getSingleton().keyHandlers_[name] = handler;
@@ -943,6 +945,8 @@ namespace orxonox
   */
   bool InputManager::addMouseHandler(MouseHandler* handler, const std::string& name)
   {
+    if (!handler)
+      return false;
     if (_getSingleton().mouseHandlers_.find(name) == _getSingleton().mouseHandlers_.end())
     {
       _getSingleton().mouseHandlers_[name] = handler;
@@ -1070,6 +1074,8 @@ namespace orxonox
   */
   bool InputManager::addJoyStickHandler(JoyStickHandler* handler, const std::string& name)
   {
+    if (!handler)
+      return false;
     if (_getSingleton().joyStickHandlers_.find(name) == _getSingleton().joyStickHandlers_.end())
     {
       _getSingleton().joyStickHandlers_[name] = handler;
