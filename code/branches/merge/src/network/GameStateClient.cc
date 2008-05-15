@@ -144,15 +144,17 @@ namespace network
           orxonox::Identifier* id = ID((unsigned int)sync.classID);
           if(!id){
             COUT(4) << "We could not identify a new object; classid: " << sync.classID << std::endl;
-            continue;
+            return false;
           }
           Synchronisable *no = dynamic_cast<Synchronisable *>(id->fabricate());
           COUT(4) << "loadsnapshot: classid: " << sync.classID << " objectID: " << sync.objectID << " length: " << sync.length << std::endl;
           no->objectID=sync.objectID;
           no->classID=sync.classID;
           // update data and create object/entity...
-          if( !no->updateData(sync) )
+          if( !no->updateData(sync) ){
             COUT(1) << "We couldn't update the object: " << sync.objectID << std::endl;
+            return false;
+          }
           if( !no->create() )
             COUT(1) << "We couldn't manifest (create() ) the object: " << sync.objectID << std::endl;
           it=orxonox::ObjectList<Synchronisable>::end();
