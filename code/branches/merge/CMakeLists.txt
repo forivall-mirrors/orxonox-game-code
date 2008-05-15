@@ -21,6 +21,7 @@ IF (TESTING_ENABLED)
 ENDIF(TESTING_ENABLED)
 
 OPTION(NETWORK_TESTING_ENABLED "Do you want to build network testing tools: i.e. chatclient chatserver and alike")
+OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Do you want to build dummyserver4 and dummyclient4")
 
 
 ########## Compiler/Linker options ##############

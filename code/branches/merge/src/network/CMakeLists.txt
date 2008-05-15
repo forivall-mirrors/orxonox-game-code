@@ -32,7 +32,8 @@ IF(NETWORK_TESTING_ENABLED)
   SET( TEST_SRC_FILES
     ConnectionManager.cc
     GameStateManager.cc
-    PacketBuffer.cc    PacketDecoder.cc
+    PacketBuffer.cc
+    PacketDecoder.cc
     PacketGenerator.cc
     ClientConnection.cc
     ClientInformation.cc
@@ -53,6 +54,64 @@ IF(NETWORK_TESTING_ENABLED)
   )
   ##### end test for gamestate stuff #####
 ENDIF(NETWORK_TESTING_ENABLED)
+# build this if you want dummyserver4 and dummyclient4
+IF(NETWORKTRAFFIC_TESTING_ENABLED)
+  ##### test network traffic #####
+  SET( DUMMYSERVER4_SRC_FILES
+    ConnectionManager.cc
+    GameStateManager.cc
+    PacketBuffer.cc
+    PacketDecoder.cc
+    PacketGenerator.cc
+    ClientConnection.cc
+    ClientInformation.cc
+    GameStateClient.cc
+    Server.cc
+    Client.cc  
+    Synchronisable.cc
+    dummyserver4.cc
+  )
+
+  SET( DUMMYCLIENT4_SRC_FILES
+    ConnectionManager.cc
+    GameStateManager.cc
+    PacketBuffer.cc
+    PacketDecoder.cc
+    PacketGenerator.cc
+    ClientConnection.cc
+    ClientInformation.cc
+    GameStateClient.cc
+    Server.cc
+    Client.cc  
+    Synchronisable.cc
+    dummyclient4.cc
+  )
+
+  ADD_EXECUTABLE(dummyserver4 ${DUMMYSERVER4_SRC_FILES})
+  TARGET_LINK_LIBRARIES( dummyserver4
+    network
+    ${ENet_LIBRARY}
+    ${ZLIB_LIBRARY}
+    ${WINDOWS_ENET_DEPENDENCIES}
+    ${Boost_thread_LIBRARIES}
+    core
+    orxonoxs
+    audio
+  )
+
+  ADD_EXECUTABLE(dummyclient4 ${DUMMYCLIENT4_SRC_FILES})
+  TARGET_LINK_LIBRARIES( dummyclient4
+    network
+    ${ENet_LIBRARY}
+    ${ZLIB_LIBRARY}
+    ${WINDOWS_ENET_DEPENDENCIES}
+    ${Boost_thread_LIBRARIES}
+    core
+    orxonoxs
+    audio
+  )
+ENDIF(NETWORKTRAFFIC_TESTING_ENABLED)
+
 IF(BLABLA)
   SET( CHATCLIENT_SRC_FILES
     ClientConnection.cc

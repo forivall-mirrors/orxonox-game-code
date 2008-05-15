@@ -42,6 +42,25 @@ ADD_CUSTOM_COMMAND(
 	
 ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
 
+IF(NETWORKTRAFFIC_TESTING_ENABLED)
+
+  SET( ORXONOXS_SRC_FILES
+    GraphicsEngine.cc
+    objects/Ambient.cc
+    objects/Camera.cc
+    objects/CameraHandler.cc
+    objects/Explosion.cc
+    objects/Model.cc
+    objects/NPC.cc
+    objects/Projectile.cc
+    objects/Skybox.cc
+    objects/SpaceShip.cc
+    objects/WorldEntity.cc
+  )
+
+  ADD_LIBRARY(orxonoxs SHARED ${ORXONOX_SRC_FILES})
+ENDIF(NETWORKTRAFFIC_TESTING_ENABLED)
+
 TARGET_LINK_LIBRARIES( orxonox
   ${OGRE_LIBRARIES}
   ${Lua_LIBRARIES}

@@ -39,7 +39,6 @@
 
 #include <iostream>
 // boost.thread library for multithreading support
-#include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
 #include "core/CoreIncludes.h"
@@ -62,25 +61,25 @@ namespace std
 
 namespace network
 {
-  boost::thread_group network_threads;
+  //boost::thread_group network_threads;
   
-  ConnectionManager::ConnectionManager(){}
+  ConnectionManager::ConnectionManager():receiverThread_(0){}
   
-  ConnectionManager::ConnectionManager(ClientInformation *head) {
+  ConnectionManager::ConnectionManager(ClientInformation *head) : receiverThread_(0) {
     quit=false;
     bindAddress.host = ENET_HOST_ANY;
     bindAddress.port = NETWORK_PORT;
     head_ = head;
   }
 
-  ConnectionManager::ConnectionManager(int port, std::string address, ClientInformation *head) {
+  ConnectionManager::ConnectionManager(int port, std::string address, ClientInformation *head) :receiverThread_(0) {
     quit=false;
     enet_address_set_host (& bindAddress, address.c_str());
     bindAddress.port = NETWORK_PORT;
     head_ = head;
   }
 
-  ConnectionManager::ConnectionManager(int port, const char *address, ClientInformation *head) {
+  ConnectionManager::ConnectionManager(int port, const char *address, ClientInformation *head) : receiverThread_(0) {
     quit=false;
     enet_address_set_host (& bindAddress, address);
     bindAddress.port = NETWORK_PORT;
@@ -110,14 +109,16 @@ used by processQueue in Server.cc
   }
 
   void ConnectionManager::createListener() {
-    network_threads.create_thread(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
-    //     boost::thread thr(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
+    receiverThread_ = new boost::thread(boost::bind(&ConnectionManager::receiverThread, this));
+    //network_threads.create_thread(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
+         //boost::thread thr(boost::bind(boost::mem_fn(&ConnectionManager::receiverThread), this));
     return;
   }
 
   bool ConnectionManager::quitListener() {
     quit=true;
-    network_threads.join_all();
+    //network_threads.join_all();
+    receiverThread_->join();
     return true;
   }
 
@@ -201,7 +202,7 @@ used by processQueue in Server.cc
           break;
       }
 //       usleep(100);
-      //yield(); //TODO: find apropriate
+      receiverThread_->yield(); //TODO: find apropriate
     }
     disconnectClients();
     // if we're finishied, destroy server

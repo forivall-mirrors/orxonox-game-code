@@ -8,8 +8,8 @@
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License
  *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
+ *   of the License, or (atl your option) any later version.
+ *lo
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -136,7 +136,7 @@ namespace orxonox {
     std::string plugin_filename = "plugins.cfg";
 #endif
 
-    // create a logManager
+/*    // create a logManager
     // note: If there's already a logManager, Ogre will complain by a failed assertation.
     // but that shouldn't happen, since this is the first time to create a logManager..
     Ogre::LogManager* logger = new Ogre::LogManager();
@@ -147,11 +147,11 @@ namespace orxonox {
     if (this->ogreLogfile_ == "")
       myLog = logger->createLog("ogre.log", true, false, true);
     else
-      myLog = logger->createLog(this->ogreLogfile_, true, false, false);
+          myLog = logger->createLog(this->ogreLogfile_, true, false, false);
     CCOUT(4) << "Ogre Log created" << std::endl;
 
     myLog->setLogDetail(Ogre::LL_BOREME);
-    myLog->addListener(this);
+    myLog->addListener(this);*/
 
     // Root will detect that we've already created a Log
     CCOUT(4) << "Creating Ogre Root..." << std::endl;

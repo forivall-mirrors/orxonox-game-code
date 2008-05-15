@@ -46,6 +46,7 @@
 #include <map>
 // enet library for networking support
 #include <enet/enet.h>
+#include <boost/thread/thread.hpp>
 
 #include "PacketBuffer.h"
 #include "PacketManager.h"
@@ -111,7 +112,7 @@ namespace network
     bool quit; // quit-variable (communication with threads)
     ClientInformation *head_;
 
-    
+    boost::thread *receiverThread_;
 //     int getNumberOfClients();
     //functions to map what object every clients uses
     /*std::map<int, int> clientsShip;
