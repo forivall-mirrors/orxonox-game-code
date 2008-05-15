@@ -32,6 +32,7 @@
 #include "OrxonoxPrereqs.h"
 #include <OgrePrerequisites.h>
 
+#include "util/Math.h"
 #include "core/InputInterfaces.h"
 #include "Camera.h"
 #include "Model.h"
@@ -63,6 +64,8 @@ namespace orxonox
 
             void getFocus();
 
+	    static Vector3 getSPosition();
+	    static Quaternion getSOrientation();
 	    static std::string whereAmI();
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }

@@ -25,14 +25,20 @@
 *
 */
 
+/*	local coordinate system of space ship:
+
+			y
+			+   z
+			|  +
+			| /
+			|/
+	       x +------O
+*/
+
 #include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
-
 #include <OgreStringConverter.h>
-#include <math.h>
-#include <string.h>
-
 #include "RadarOverlayElement.h"
 
 
@@ -40,7 +46,9 @@ namespace orxonox
 {
   using namespace Ogre;
 
-  RadarOverlayElement::RadarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){}
+  RadarOverlayElement::RadarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){
+    initialDir = Vector3(0.0, 0.0, 1.0);
+  }
 
   RadarOverlayElement::~RadarOverlayElement(){}
 
@@ -50,19 +58,17 @@ namespace orxonox
   
   void RadarOverlayElement::initRadarOverlayElement(Real left, Real top, int dim, Ogre::OverlayContainer* container){
 
-
-    
-    dirX_ = 1;
+    dirX_ = 0;	// direction of travel
     dirY_ = 0;
-    dirZ_ = 0;
+    dirZ_ = 1;
     
-    ortX_ = 0;
-    ortY_ = 0;
-    ortZ_ = 1;
+    ortX_ = 0;	// normal of ship
+    ortY_ = 1;
+    ortZ_ = 0;
     
-    dX_ = 0;
+    dX_ = 37;
     dY_ = 0;
-    dZ_ = -1;
+    dZ_ = 0;
     
     alpha_ = acos((dirX_*dX_+dirY_*dY_+dirZ_*dZ_)/(sqrt(pow(dX_,2)+pow(dY_,2)+pow(dZ_,2))*sqrt(pow(dirX_,2)+pow(dirY_,2)+pow(dirZ_,2))));
     beta_ = acos((ortX_*dX_+ortY_*dY_+ortZ_*dZ_)/(sqrt(pow(dX_,2)+pow(dY_,2)+pow(dZ_,2))*sqrt(pow(ortX_,2)+pow(ortY_,2)+pow(ortZ_,2))));

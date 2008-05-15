@@ -436,6 +436,14 @@ namespace orxonox
 	+ "  " + getConvertedValue<int, std::string>(SpaceShip::instance_s->getPosition().z);
     }
 
+    Vector3 SpaceShip::getSPosition() {
+	return SpaceShip::instance_s->getPosition();
+    }
+
+    Quaternion SpaceShip::getSOrientation() {
+	return SpaceShip::instance_s->getOrientation();
+    }
+
     void SpaceShip::tick(float dt)
     {
         if (this->redNode_ && this->greenNode_)
