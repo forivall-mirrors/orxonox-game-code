@@ -116,9 +116,11 @@ namespace network
   bool Server::sendMSG(std::string msg) {
     ENetPacket *packet = packet_gen.chatMessage(msg.c_str());
     //std::cout <<"adding packets" << std::endl;
-    connection->addPacketAll(packet);
+    if(connection->addPacketAll(packet))
     //std::cout <<"added packets" << std::endl;
-    return connection->sendPackets();
+      return connection->sendPackets();
+    else
+      return false;
   }
 
   /**
@@ -161,9 +163,11 @@ namespace network
       //std::cout << "Client " << clientID << " sent: " << std::endl;
       //clientID here is a reference to grab clientID from ClientInformation
       packet = connection->getPacket(clientID);
+      if(!packet)
+        continue;
       //if statement to catch case that packetbuffer is empty
       if( !elaborate(packet, clientID) ) 
-        COUT(4) << "Server: PacketBuffer empty" << std::endl;
+        COUT(3) << "Server: could not elaborate" << std::endl;
     }
   }
 
@@ -237,7 +241,7 @@ namespace network
   }
   
   bool Server::processConnectRequest( connectRequest *con, int clientID ){
-    COUT(4) << "processing connectRequest " << std::endl;
+    COUT(3) << "processing connectRequest " << std::endl;
     //connection->addPacket(packet_gen.gstate(gamestates->popGameState(clientID)) , clientID);
     connection->createClient(clientID);
     delete con;
@@ -249,12 +253,14 @@ namespace network
     if(!gamestates->pushGameState(data, clientID))
         COUT(3) << "Could not push gamestate\t\t\t\t=====" << std::endl;
     else
+      if(clients->findClient(clientID))
         clients->findClient(clientID)->failures_=0;
   }
 
   void Server::disconnectClient(int clientID){
     ClientInformation *client = clients->findClient(clientID);
-    disconnectClient(client);
+    if(client)
+      disconnectClient(client);
   }
   void Server::disconnectClient( ClientInformation *client){
     connection->disconnectClient(client);

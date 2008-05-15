@@ -45,6 +45,7 @@
 #include <enet/enet.h>
 
 #define GAMESTATEID_INITIAL -1
+#define CLIENTID_UNKNOWN -2
 
 namespace network
 {
@@ -69,8 +70,8 @@ namespace network
     
     // set functions
     void setID(int clientID);
-    void setPeer(ENetPeer *peer);
-    void setGamestateID(int id);
+    bool setPeer(ENetPeer *peer);
+    bool setGamestateID(int id);
     inline void setShipID(int id){ShipID_=id;}
     
     // get functions
@@ -87,7 +88,7 @@ namespace network
     //## add bool mask-function eventually
     ClientInformation *findClient(ENetAddress *address, bool look_backwards=false);
 
-    void setSynched(bool s);
+    bool setSynched(bool s);
     bool getSynched();
 
     bool head;

@@ -465,6 +465,8 @@ void testClientObjectMapping( int clients ) {
 
 bool addClientTest( ENetEvent* event, ClientInformation*& head ) {
   ClientInformation *temp = head->insertBack(new ClientInformation);
+  if(!temp)
+    return false;
   if(temp->prev()->head) {
     temp->prev()->setID(0);
     temp->setID(1);
@@ -474,11 +476,12 @@ bool addClientTest( ENetEvent* event, ClientInformation*& head ) {
   temp->setPeer(event->peer);
   std::cout << "added client id: " << temp->getID() << std::endl;
 
-  temp->setSynched(true);
-  return true;
+  return temp->setSynched(true);
 }
 
 void printClientInformationBox( ClientInformation* box ) {
+  if(!box)
+    return;
   std::cout << "ClientList: id: " << box->getID() << "\t";
   std::cout << "g_id: " << box->getGamestateID() << " \t";
   std::cout << "synched: " << box->getSynched() << "\t";

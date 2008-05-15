@@ -116,7 +116,6 @@ namespace network
       if(it!=gameStateMap.end())
         client = it->second;
       GameState *server = reference;
-      //head_->findClient(clientID)->setGamestateID(id);
       COUT(3) << "client: " << client << " server: " << server << " gamestatemap: " << &gameStateMap << std::endl;
       if(client)
         return encode(client, server);
@@ -126,7 +125,6 @@ namespace network
       COUT(4) << "we got a GAMESTATEID_INITIAL for clientID: " << clientID << std::endl;
       GameState *server = reference;
 //       ackGameState(clientID, reference->id);
-      //head_->findClient(clientID)->setGamestateID(id);
       return encode(server);
       // return an undiffed gamestate and set appropriate flags
     }
@@ -426,14 +424,15 @@ namespace network
 
   void GameStateManager::ackGameState(int clientID, int gamestateID) {
     ClientInformation *temp = head_->findClient(clientID);
-    if(!temp)
+    if(temp==0)
       return;
     int curid = temp->getGamestateID();
     COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
     // decrease usage of gamestate and save it
 //     deleteUnusedGameState(curid);
     //increase gamestateused
-    --(gameStateUsed.find(curid)->second);
+    if(curid!=GAMESTATEID_INITIAL)
+      --(gameStateUsed.find(curid)->second);
     ++(gameStateUsed.find(gamestateID)->second);
     temp->setGamestateID(gamestateID);
     /*
@@ -459,7 +458,10 @@ namespace network
   }
   
   void GameStateManager::removeClient(ClientInformation* client){
-    gameStateUsed[client->getGamestateID()]--;
+    if(!client)
+      return;
+    if(client->getGamestateID()>=0)
+      gameStateUsed[client->getGamestateID()]--;
     head_->removeClient(client->getID());
   }
 

@@ -100,6 +100,8 @@ used by processQueue in Server.cc
     ENetAddress address;
     ENetPacket *packet=getPacket(address);
     ClientInformation *temp =head_->findClient(&address);
+    if(!temp)
+      return NULL;
     clientID=temp->getID();
     return packet;
   }
@@ -123,13 +125,19 @@ used by processQueue in Server.cc
   }
 
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer) {
-    if(enet_peer_send(peer, (enet_uint8)head_->findClient(&(peer->address))->getID() , packet)!=0)
+    ClientInformation *temp = head_->findClient(&(peer->address));
+    if(!temp)
+      return false;
+    if(enet_peer_send(peer, (enet_uint8)temp->getID() , packet)!=0)
       return false;
     return true;
   }
 
   bool ConnectionManager::addPacket(ENetPacket *packet, int clientID) {
-    if(enet_peer_send(head_->findClient(clientID)->getPeer(), (enet_uint8)clientID, packet)!=0)
+    ClientInformation *temp = head_->findClient(clientID);
+    if(!temp)
+      return false;
+    if(enet_peer_send(temp->getPeer(), (enet_uint8)clientID, packet)!=0)
       return false;
     return true;
   }
@@ -194,6 +202,8 @@ used by processQueue in Server.cc
           // only add, if client has connected yet and not been disconnected
           if(head_->findClient(&event->peer->address))
             processData(event);
+          else
+            COUT(3) << "received a packet from a client we don't know" << std::endl;
           break;
         case ENET_EVENT_TYPE_DISCONNECT:
           clientDisconnect(event->peer);
@@ -232,7 +242,8 @@ used by processQueue in Server.cc
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
         COUT(4) << "disconnecting all clients" << std::endl;
-        delete head_->findClient(&(event.peer->address));
+        if(head_->findClient(&(event.peer->address)))
+          delete head_->findClient(&(event.peer->address));
         //maybe needs bugfix: might also be a reason for the server to crash
         temp = temp->next();
         break;
@@ -258,6 +269,10 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
 */
   bool ConnectionManager::addClient(ENetEvent *event) {
     ClientInformation *temp = head_->insertBack(new ClientInformation);
+    if(!temp){
+      COUT(2) << "Conn.Man. could not add client" << std::endl;
+      return false;
+    }
     if(temp->prev()->head) { //not good if you use anything else than insertBack
       temp->prev()->setID(0); //bugfix: not necessary but usefull
       temp->setID(1);
@@ -265,7 +280,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     else
       temp->setID(temp->prev()->getID()+1);
     temp->setPeer(event->peer);
-    COUT(4) << "Con.Man: added client id: " << temp->getID() << std::endl;
+    COUT(3) << "Con.Man: added client id: " << temp->getID() << std::endl;
     return true;
   }
 
@@ -282,7 +297,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
   }
 
   void ConnectionManager::syncClassid(int clientID) {
-    unsigned int network_id=0;
+    unsigned int network_id=0, failures=0;
     std::string classname;
     orxonox::Identifier *id;
     std::map<std::string, orxonox::Identifier*>::const_iterator it = orxonox::Factory::getFactoryBegin();
@@ -294,8 +309,9 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
       network_id = id->getNetworkID();
       COUT(4) << "Con.Man:syncClassid:\tnetwork_id: " << network_id << ", classname: " << classname << std::endl;
 
-      addPacket(packet_gen.clid( (int)network_id, classname ), clientID);
-
+      while(!addPacket(packet_gen.clid( (int)network_id, classname ), clientID) && failures < 10){
+        failures++;
+      }
       ++it;
     }
     sendPackets();
@@ -304,22 +320,31 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
 
   bool ConnectionManager::createClient(int clientID){
     ClientInformation *temp = head_->findClient(clientID);
+    if(!temp){
+      COUT(2) << "Conn.Man. could not create client with id: " << clientID << std::endl;
+      return false;
+    }
     COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
     syncClassid(temp->getID());
     COUT(4) << "creating spaceship for clientid: " << temp->getID() << std::endl;
     // TODO: this is only a hack, untill we have a possibility to define default player-join actions
-    createShip(temp);
-    COUT(4) << "created spaceship" << std::endl;
+    if(!createShip(temp))
+      COUT(2) << "Con.Man. could not create ship for clientid: " << clientID << std::endl;
+    else
+      COUT(3) << "created spaceship" << std::endl;
     temp->setSynched(true);
-    COUT(4) << "sending welcome" << std::endl;
+    COUT(3) << "sending welcome" << std::endl;
     sendWelcome(temp->getID(), temp->getShipID(), true);
     return true;
   }
   
   bool ConnectionManager::removeClient(int clientID){
     orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::start();
+    ClientInformation *client = head_->findClient(clientID);
+    if(!client)
+      return false;
     while(it){
-      if(it->objectID!=head_->findClient(clientID)->getShipID()){
+      if(it->objectID!=client->getShipID()){
         ++it;
         continue;
       }
@@ -332,6 +357,8 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
   }
   
   bool ConnectionManager::createShip(ClientInformation *client){
+    if(!client)
+      return false;
     orxonox::Identifier* id = ID("SpaceShip");
     if(!id){
       COUT(4) << "We could not create the SpaceShip for client: " << client->getID() << std::endl;
@@ -368,9 +395,11 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
   }
   
   bool ConnectionManager::sendWelcome(int clientID, int shipID, bool allowed){
-    addPacket(packet_gen.generateWelcome(clientID, shipID, allowed),clientID);
-    sendPackets();
-    return true;
+    if(addPacket(packet_gen.generateWelcome(clientID, shipID, allowed),clientID)){
+      sendPackets();
+      return true;
+    }else
+      return false;
   }
   
   void ConnectionManager::disconnectClient(ClientInformation *client){

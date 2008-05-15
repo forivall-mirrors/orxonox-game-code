@@ -110,6 +110,7 @@ namespace network
     int length = *(int*)((unsigned char *)packet->data+sizeof(int));
     void *data = (void *)new unsigned char[length];
     memcpy(data, (void *)(packet->data+2*sizeof(int)), length);
+    enet_packet_destroy( packet );
     return true;
   }
 

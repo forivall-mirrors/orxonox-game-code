@@ -120,6 +120,8 @@ namespace network
   }
 
   ClientInformation *ClientInformation::insertBefore(ClientInformation *ins){
+    if(!this)
+      return NULL;
     this->prev()->setNext(ins);
     ins->setPrev(this->preve);
     this->preve=ins;
@@ -131,27 +133,44 @@ namespace network
     clientID_ = clientID;
   }
 
-  void ClientInformation::setPeer(ENetPeer *peer){
+  bool ClientInformation::setPeer(ENetPeer *peer){
+    if(!this)
+      return false;
     peer_ = peer;
+    return true;
   }
 
-  void ClientInformation::setGamestateID(int id){
+  bool ClientInformation::setGamestateID(int id){
+    if(!this)
+      return false;
     gamestateID_=id;
+    return true;
   }
 
   int ClientInformation::getID() {
-    return clientID_;
+    if(!this)
+      return CLIENTID_UNKNOWN;
+    else
+      return clientID_;
   }
 
   ENetPeer *ClientInformation::getPeer() {
-    return peer_;
+    if(this)
+      return peer_;
+    else
+      return NULL;
   }
 
   int ClientInformation::getGamestateID() {
-    return gamestateID_;
+    if(this)
+      return gamestateID_;
+    else
+      return -1;
   }
 
   ClientInformation *ClientInformation::insertBack(ClientInformation *ins) {
+    if(!this)
+      return NULL;
     ClientInformation *temp = this;
     while(temp->next()!=0){
       temp = temp->next();
@@ -162,6 +181,8 @@ namespace network
   }
 
   bool ClientInformation::removeClient(int clientID) {
+    if(!this || clientID==CLIENTID_UNKNOWN)
+      return false;
     ClientInformation *temp = this;
     while(temp!=0 && temp->getID()!=clientID)
       temp = temp->next();
@@ -172,6 +193,8 @@ namespace network
   }
 
   bool ClientInformation::removeClient(ENetPeer *peer) {
+    if(!this || !peer)
+      return false;
     ClientInformation *temp = this;
     while(temp!=0){
       if(!temp->head)
@@ -195,8 +218,7 @@ namespace network
     ClientInformation *temp = this;
     if (temp->head)
       temp=temp->next();
-    //bugfix: temp to temp->next(), get last elem if not found, not segflt
-    while(temp->next()!=0 && temp->getID()!=clientID){
+    while(temp!=0 && temp->getID()!=clientID){
       temp = temp->next();
     }
     // returns 0 if nothing has been found
@@ -211,8 +233,7 @@ namespace network
   */
   ClientInformation *ClientInformation::findClient(ENetAddress *address, bool look_backwards) {
     ClientInformation *temp = this;
-    //bugfix: temp to temp->next(), get last elem if not found, not segflt
-    while(temp->next()!=0){
+    while(temp!=0){
       if(temp->head){
         temp = temp->next();
         continue;
@@ -225,12 +246,18 @@ namespace network
     return temp;
   }
 
-  void ClientInformation::setSynched(bool s) {
+  bool ClientInformation::setSynched(bool s) {
+    if(!this)
+      return false;
     synched_=s;
+    return true;
   }
 
   bool ClientInformation::getSynched() {
-    return synched_;
+    if(this)
+      return synched_;
+    else
+      return false;
   }
 
 }

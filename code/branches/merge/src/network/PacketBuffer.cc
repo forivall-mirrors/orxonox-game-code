@@ -62,6 +62,7 @@ namespace network
       last->next=NULL;
       // change this!!!!!!! 
       last->packet = ev->packet;
+      last->address = ev->peer->address;
       //last->address = ev->peer->address;
     } else {
       //insert a new element at the bottom
@@ -71,6 +72,7 @@ namespace network
       last->next=NULL;
       // save the packet to the new element
       last->packet = ev->packet;
+      last->address = ev->peer->address;
       //last->address = ev->peer->address;
     }
     // pseudo bugfix: added a return false statement for error handling
