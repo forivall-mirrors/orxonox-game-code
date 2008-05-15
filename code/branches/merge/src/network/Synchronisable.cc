@@ -55,10 +55,11 @@ namespace network
   * Constructor:
   * calls registarAllVariables, that has to be implemented by the inheriting classID
   */
-  Synchronisable::Synchronisable(){
+  Synchronisable::Synchronisable():
+      backsync_(false),
+      datasize(0) {
     RegisterRootObject(Synchronisable);
     static int idCounter=0;
-    datasize=0;
     objectID=idCounter++;
     syncList = new std::list<synchronisableVariable *>;
     //registerAllVariables();

@@ -1,2 +1,4 @@
-very urgent: make sure receiver thread of connectionmanager is 
+- very urgent: make sure receiver thread of connectionmanager is 
 threadsafe (event_type_receive, findclient)
+- check why we can only use spaceship mesh defined in level file for 
+clientship

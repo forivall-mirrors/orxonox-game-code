@@ -146,14 +146,14 @@ namespace orxonox
 
     void SpaceShip::init()
     {
-    if ((server_ || ( network::Client::getSingleton() && network::Client::getSingleton()->getShipID()==objectID ) ))
-    {
-          if (!setMouseEventCallback_)
-          {
-              InputManager::addMouseHandler(this, "SpaceShip");
-              setMouseEventCallback_ = true;
-          }
-    }
+        if ((server_ || ( network::Client::getSingleton() && network::Client::getSingleton()->getShipID()==objectID ) ))
+        {
+              if (!setMouseEventCallback_)
+              {
+                  InputManager::addMouseHandler(this, "SpaceShip");
+                  setMouseEventCallback_ = true;
+              }
+        }
 
         // START CREATING THRUSTER
         this->tt_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
