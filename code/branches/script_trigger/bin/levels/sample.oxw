@@ -11,6 +11,11 @@
 <!--Ambient colourvalue="1,1,1" /-->
 <Skybox src="Orxonox/StarSkyBox" />
 <SpaceShip camera="true" position="0,0,0" scale="10" yawpitchroll="-90,-90,0" mesh="assff.mesh" maxSpeed="500" maxSideAndBackSpeed="50" maxRotation="1.0" transAcc="200" rotAcc="3.0" transDamp="75" rotDamp="1.0" />
+<Script>
+  print("****")
+  print("Hello Scripting World")
+  print("****")
+</Script>
 
 <NPC position="0,100,400" scale="1" mesh="razor.mesh"/>
 <NPC position="0,100,400" scale="1" mesh="razor.mesh"/>

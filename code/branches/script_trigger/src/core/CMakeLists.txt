@@ -20,7 +20,7 @@ SET(CORE_SRC_FILES
   NamespaceNode.cc
   OrxonoxClass.cc
   OutputHandler.cc
-  Script.cc
+  LuaBind.cc
   SignalHandler.cc
   TclBind.cc
   Tickable.cc

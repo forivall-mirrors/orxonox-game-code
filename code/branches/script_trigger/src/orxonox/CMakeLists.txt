@@ -23,6 +23,7 @@ SET( ORXONOX_SRC_FILES
   objects/Skybox.cc
   objects/SpaceShip.cc
   objects/WorldEntity.cc
+  objects/Script.cc
 
 #  objects/weapon/AmmunitionDump.cc
 #  objects/weapon/BarrelGun.cc
@@ -39,7 +40,7 @@ ADD_CUSTOM_COMMAND(
   DEPENDS tolua
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
-	
+
 ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
 
 IF(NETWORKTRAFFIC_TESTING_ENABLED)
