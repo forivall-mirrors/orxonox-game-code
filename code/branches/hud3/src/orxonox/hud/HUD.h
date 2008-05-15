@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport HUD// : Tickable
+  class _OrxonoxExport HUD : Tickable
   {
   private:
 
@@ -51,13 +51,12 @@ namespace orxonox
     HUD(int zoom);
     ~HUD();
 
-//    virtual void tick(float);
+    virtual void tick(float);
 
     SmartBarOverlayElement* energyCounter;
-    
+
     RadarOverlayElement* radar;
-//    Ogre::SceneNode* ogreNode_;
   };
-}	
+}
 
 #endif

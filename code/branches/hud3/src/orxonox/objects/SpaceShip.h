@@ -63,7 +63,7 @@ namespace orxonox
             void setRotDamp(float value);
 
             void getFocus();
-
+	    static SpaceShip* instance_s;
 	    static Vector3 getSPosition();
 	    static Quaternion getSOrientation();
 	    static std::string whereAmI();
@@ -79,7 +79,6 @@ namespace orxonox
 
         private:
             void createCamera();
-            static SpaceShip* instance_s;
 
             Vector3 testvector_;
             bool bInvertYAxis_;

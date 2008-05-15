@@ -31,46 +31,49 @@
 #include <string.h>
 #include <OgreOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
-#include <math.h>
 #include <util/Math.h>
 #include <string.h>
 #include "core/Tickable.h"
 #include <OgrePrerequisites.h>
+#include "objects/SpaceShip.h"
 #include "../OrxonoxPrereqs.h"
 
 namespace orxonox
 {
 
-  class _OrxonoxExport RadarOverlayElement : public Ogre::PanelOverlayElement, public Tickable
+  class _OrxonoxExport RadarOverlayElement : public Ogre::PanelOverlayElement
   {
   private:
-    
-    PanelOverlayElement* point[100];
-    
-    Vector3 initialDir;		//initial direction
-    int dirX_, dirY_, dirZ_;    //flying direction
-    int ortX_, ortY_, ortZ_;    //orthogonal direction
-    int dX_, dY_, dZ_;          //distance between main ship and the object
-    int vecX_, vecY_, vecZ_;    //vector product dir X ort
-    double alpha_;              //defines the radius in the radar
-    double beta_;               //defines the angle in the radar
-    bool right_;                //checks whether the object is on the right side (since cos is not bijective)
-    
-//    static int ID = 0;
+
+    Ogre::PanelOverlayElement* point;
+    Ogre::OverlayContainer* container_;
+    Ogre::OverlayManager* om;       //pointer to the one and only overlay manager
+    Vector3 initialDir_;	        //initial direction of ship
+    Vector3 currentDir_;            //current direction of ship
+    Vector3 initialOrth_;
+    Vector3 currentOrth_;
+    Vector3 targetPos_;             //position of target
+    Vector3 shipPos_;               //position of ship
+    Vector3 vec_;                   //vector product dir X ort
+    double alpha_;                  //defines the radius in the radar
+    double beta_;                   //defines the angle in the radar
+    float left_, top_;
+    bool right_;                    //checks whether the object is on the right side (since cos is not bijective)
+    int count_;
+    int dim_;
 
   public:
-    
+
     RadarOverlayElement(const Ogre::String& name);
     virtual ~RadarOverlayElement();
     virtual void initialise();
-
+    void update();
     void initRadarOverlayElement(Real left, Real top, int dim, Ogre::OverlayContainer* container);
     void setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ);
-    void tick(float dt); 
     int newShip(int X, int Y, int Z);
-    
+
     void resetShip(int shipID, int Y, int Z);
   };
-}	
+}
 
 #endif
