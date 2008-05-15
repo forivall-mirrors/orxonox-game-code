@@ -105,6 +105,7 @@ namespace orxonox
 
         this->setConfigValues();
 
+
         this->setRotationAxis(1, 0, 0);
         this->setStatic(false);
 
@@ -117,6 +118,8 @@ namespace orxonox
             delete this->tt_;
         if(setMouseEventCallback_)
           InputManager::removeMouseHandler("SpaceShip");
+        if (this->cam_)
+          delete this->cam_;
     }
 
     bool SpaceShip::create(){
@@ -285,14 +288,11 @@ namespace orxonox
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);
       COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
-      this->camNode_->setPosition(/*this->getNode()->getPosition() +*/ Vector3(-50,0,10));
+      this->camNode_->setPosition(Vector3(-50,0,10));
+      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
+      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
+      camNode_->setOrientation(q1*q2);
       COUT(4) << "position: (cam)" << this->camNode_->getPosition() << std::endl;
-/*
-//        node->setInheritOrientation(false);
-        cam->setPosition(Vector3(0,50,-150));
-        cam->lookAt(Vector3(0,20,0));
-        cam->roll(Degree(0));
-      *//*COUT(4) << "creating new camera" << std::endl;*/
       cam_ = new Camera(this->camNode_);
 
       cam_->setTargetNode(this->getNode());
@@ -435,6 +435,9 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
+        if (this->cam_)
+            this->cam_->tick(dt);
+
         if (this->redNode_ && this->greenNode_)
         {
             this->blinkTime_ += dt;

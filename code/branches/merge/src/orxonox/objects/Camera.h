@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht
  *
  */
 
@@ -44,13 +44,12 @@ namespace orxonox
         Camera(Ogre::SceneNode* node = NULL);
         virtual ~Camera();
 
-        //inline void setPosition(Ogre::Vector3 pos) { position_->setPosition(pos); cam_->setPosition(pos); }
-        void setCameraNode(Ogre::SceneNode* node);
+        void setPositionNode(Ogre::SceneNode* node);
         inline Ogre::SceneNode* getCameraNode() { return this->positionNode_; }
         // maybe also BaseObject
         void setTargetNode(Ogre::SceneNode* obj);
 
-
+        void tick(float dt);
         void update();
         inline bool hasFocus() { return this->bHasFocus_; }
 
@@ -61,6 +60,8 @@ namespace orxonox
       private:
         Ogre::SceneNode* targetNode_;
         Ogre::SceneNode* positionNode_;
+        Ogre::SceneNode* cameraNode_;
+        Ogre::Vector3 oldPos;
         Ogre::Camera* cam_;
         bool bHasFocus_;
     };

@@ -22,12 +22,13 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht
  *
  */
 
 #include "OrxonoxStableHeaders.h"
 #include "Camera.h"
+#include "CameraHandler.h"
 
 #include <string>
 
@@ -46,67 +47,21 @@
 
 namespace orxonox
 {
-  //CreateFactory(Camera);
 
   Camera::Camera(Ogre::SceneNode* node)
   {
-    //RegisterObject(Camera);
     this->bHasFocus_ = false;
+    this->cameraNode_ = GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(node->getName() + "Camera");
     if( node != NULL )
-      this->setCameraNode(node);
-
+      this->setPositionNode(node);
   }
 
   Camera::~Camera()
   {
+    CameraHandler::getInstance()->releaseFocus(this);
   }
 
-  /*void Camera::loadParams(TiXmlElement* xmlElem)
-  {
-    Ogre::SceneManager* mgr = GraphicsEngine::getSingleton().getSceneManager();
-
-    if (xmlElem->Attribute("name") && xmlElem->Attribute("pos") && xmlElem->Attribute("lookat") && xmlElem->Attribute("node"))
-    {
-      //    <Camera name="Camera" pos="0,0,-250" lookat="0,0,0" />
-
-      std::string name = xmlElem->Attribute("name");
-      std::string pos = xmlElem->Attribute("pos");
-      std::string lookat = xmlElem->Attribute("lookat");
-
-      this->cam_ = mgr->createCamera(name);
-
-      float x, y, z;
-      SubString posVec(xmlElem->Attribute("pos"), ',');
-      convertValue<std::string, float>(&x, posVec[0]);
-      convertValue<std::string, float>(&y, posVec[1]);
-      convertValue<std::string, float>(&z, posVec[2]);
-
-      setPosition(Vector3(x,y,z));
-
-      //std::string target = xmlElem->Attribute("lookat");
-      posVec.split(xmlElem->Attribute("lookat"), ',');
-      convertValue<std::string, float>(&x, posVec[0]);
-      convertValue<std::string, float>(&y, posVec[1]);
-      convertValue<std::string, float>(&z, posVec[2]);
-
-      cam_->lookAt(Vector3(x,y,z));
-
-      /*std::string node = xmlElem->Attribute("node");
-
-      Ogre::SceneNode* sceneNode = (Ogre::SceneNode*)mgr->getRootSceneNode()->createChildSceneNode(node); //getChild(node);
-      sceneNode->attachObject((Ogre::MovableObject*)cam_);
-      */
-
-      // FIXME: unused var
-      //Ogre::Viewport* vp =
-      //GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam_);
-    /*
-
-      COUT(4) << "Loader: Created camera "<< name  << std::endl << std::endl;
-    }
-  }*/
-
-  void Camera::setCameraNode(Ogre::SceneNode* node)
+  void Camera::setPositionNode(Ogre::SceneNode* node)
   {
     this->positionNode_ = node;
     // set camera to node values according to camera mode
@@ -117,18 +72,28 @@ namespace orxonox
     this->targetNode_ = obj;
   }
 
+  void Camera::tick(float dt)
+  {
+    if(this->positionNode_ != NULL) {
+      // this stuff here may need some adjustments
+      Vector3 offset = this->positionNode_->getWorldPosition() - this->cameraNode_->getPosition();
+      this->cameraNode_->translate(15*dt*offset);
+
+      this->cameraNode_->setOrientation(Quaternion::Slerp(0.7, this->positionNode_->getWorldOrientation(), this->cameraNode_->getWorldOrientation(), false));
+    }
+  }
+
   /**
     don't move anything before here! here the Ogre camera is set to values of this camera
     always call update after changes
   */
   void Camera::update()
   {
-    COUT(0) << "p " << this->positionNode_->getPosition() << std::endl;
-    COUT(0) << "t " << this->targetNode_->getPosition() << std::endl;
     if(this->positionNode_ != NULL)
-      this->cam_->setPosition(this->positionNode_->getPosition());
-    if(this->targetNode_ != NULL)
-      this->cam_->lookAt(this->targetNode_->getPosition());
+    {
+      this->cameraNode_->setPosition(this->positionNode_->getWorldPosition());
+      this->cameraNode_->setOrientation(this->positionNode_->getWorldOrientation());
+    }
   }
 
   /**
@@ -138,13 +103,14 @@ namespace orxonox
   void Camera::removeFocus()
   {
     this->bHasFocus_ = false;
-    this->positionNode_->detachObject(cam_);
+    this->cameraNode_->detachObject(this->cam_);
   }
 
   void Camera::setFocus(Ogre::Camera* ogreCam)
   {
     this->bHasFocus_ = true;
     this->cam_ = ogreCam;
-    this->positionNode_->attachObject(cam_);
+    this->cam_->setOrientation(this->cameraNode_->getWorldOrientation());
+    this->cameraNode_->attachObject(this->cam_);
   }
 }

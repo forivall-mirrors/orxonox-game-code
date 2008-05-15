@@ -72,7 +72,7 @@ namespace orxonox {
     // delete camera from list
     focusList_.remove(cam);
     // set new focus if necessary
-    if(!(focusList_.back()->hasFocus()))
+    if(focusList_.size() > 0 && !(focusList_.back()->hasFocus()))
       focusList_.back()->setFocus(this->cam_);
   }
 /*
