@@ -41,7 +41,6 @@
 
 #include <iostream>
 // boost.thread library for multithreading support
-#include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
 #include "util/Sleep.h"
@@ -49,7 +48,7 @@
 
 namespace network
 {
-  static boost::thread_group network_threads;
+  //static boost::thread_group network_threads;
 
   ClientConnection::ClientConnection(int port, std::string address) {
     quit=false;
@@ -95,14 +94,16 @@ namespace network
   }
 
   bool ClientConnection::createConnection() {
-    network_threads.create_thread(boost::bind(boost::mem_fn(&ClientConnection::receiverThread), this));
+    receiverThread_ = new boost::thread(boost::bind(&ClientConnection::receiverThread, this));
+    //network_threads.create_thread(boost::bind(boost::mem_fn(&ClientConnection::receiverThread), this));
     // wait 10 seconds for the connection to be established
     return waitEstablished(10000);
   }
 
   bool ClientConnection::closeConnection() {
     quit=true;
-    network_threads.join_all();
+    //network_threads.join_all();
+    receiverThread_->join();
     established=false;
     return true;
   }
@@ -178,6 +179,7 @@ namespace network
       case ENET_EVENT_TYPE_NONE:
         continue;
       }
+      //receiverThread_->yield();
     }
     // now disconnect
 

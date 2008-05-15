@@ -44,6 +44,7 @@
 
 #include <string>
 #include <enet/enet.h>
+#include <boost/thread/thread.hpp>
 
 #include "PacketBuffer.h"
 
@@ -92,6 +93,7 @@ namespace network
     bool established;
     // clientlist
     ENetPeer *server;
+    boost::thread *receiverThread_;
   };
 
 
