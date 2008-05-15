@@ -78,6 +78,7 @@ namespace orxonox
         this->mouseY_ = 0;
 
         this->camNode_ = 0;
+        this->cam_ = NULL;
 
         this->tt_ = 0;
         this->redNode_ = 0;
@@ -147,6 +148,8 @@ namespace orxonox
     {
         if (this->tt_)
             delete this->tt_;
+        if (this->cam_)
+          delete this->cam_;
     }
 
     bool SpaceShip::create(){
@@ -283,7 +286,12 @@ namespace orxonox
     void SpaceShip::setCamera(const std::string& camera)
     {
         this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
-        camNode_->setPosition(Vector3(-50,0,10));
+        camNode_->setPosition(Vector3(-30,0,10));
+        Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
+        Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
+        camNode_->setOrientation(q1*q2);
+        //this->camNode_->showBoundingBox(true);
+
 /*
 //        node->setInheritOrientation(false);
         cam->setPosition(Vector3(0,50,-150));
@@ -291,7 +299,7 @@ namespace orxonox
         cam->roll(Degree(0));
 */
         cam_ = new Camera(this->camNode_);
-        cam_->setTargetNode(this->getNode());
+        cam_->setTargetNode(this->chFarNode_);
         CameraHandler::getInstance()->requestFocus(cam_);
 //        cam->setPosition(Vector3(0,-350,0));
         //cam->roll(Degree(-90));
@@ -426,7 +434,13 @@ namespace orxonox
     }
 
     void SpaceShip::tick(float dt)
-    {
+    {/*
+      if (this->cam_)
+        this->cam_->update();
+      */
+      if (this->cam_)
+        this->cam_->tick(dt);
+
       if (InputManager::getSingleton().getMouse()->getEventCallback() != this)
         {
             if (InputManager::getSingleton().getMouse())
