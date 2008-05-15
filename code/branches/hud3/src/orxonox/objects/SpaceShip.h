@@ -28,9 +28,8 @@
 
 #ifndef _SpaceShip_H__
 #define _SpaceShip_H__
-
+#include <string>
 #include "OrxonoxPrereqs.h"
-
 #include <OgrePrerequisites.h>
 
 #include "core/InputInterfaces.h"
@@ -64,6 +63,7 @@ namespace orxonox
 
             void getFocus();
 
+	    static std::string whereAmI();
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
 

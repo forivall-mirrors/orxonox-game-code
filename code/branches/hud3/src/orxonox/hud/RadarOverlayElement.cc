@@ -25,6 +25,16 @@
 *
 */
 
+/*	local coordinate system of space ship:
+
+			y
+			+   z
+			|  +
+			| /
+			|/
+	       x +------O
+*/
+
 #include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
 #include <OgrePanelOverlayElement.h>

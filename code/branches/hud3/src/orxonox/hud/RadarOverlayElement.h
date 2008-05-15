@@ -25,7 +25,6 @@
 *
 */
 
-
 #ifndef _RADAR_H__
 #define _RADAR_H__
 

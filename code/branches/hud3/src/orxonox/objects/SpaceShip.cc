@@ -29,8 +29,6 @@
 #include "OrxonoxStableHeaders.h"
 #include "SpaceShip.h"
 
-#include <string>
-
 #include <OgreCamera.h>
 #include <OgreRenderWindow.h>
 #include <OgreParticleSystem.h>
@@ -55,6 +53,7 @@
 namespace orxonox
 {
     ConsoleCommand(SpaceShip, setMaxSpeedTest, AccessLevel::Debug, false);
+    ConsoleCommand(SpaceShip, whereAmI, AccessLevel::User, true);
     ConsoleCommandGeneric(test1, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxSpeed", AccessLevel::Debug), false);
     ConsoleCommandGeneric(test2, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxBlubber", AccessLevel::Debug), false);
     ConsoleCommandGeneric(test3, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setRofl", AccessLevel::Debug), false);
@@ -429,6 +428,12 @@ namespace orxonox
         }
 
         return true;
+    }
+
+    std::string SpaceShip::whereAmI() {
+	return getConvertedValue<int, std::string>(SpaceShip::instance_s->getPosition().x)
+	+ "  " + getConvertedValue<int, std::string>(SpaceShip::instance_s->getPosition().y)
+	+ "  " + getConvertedValue<int, std::string>(SpaceShip::instance_s->getPosition().z);
     }
 
     void SpaceShip::tick(float dt)

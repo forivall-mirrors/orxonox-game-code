@@ -100,7 +100,7 @@ namespace orxonox
     }
   } 
    
-  void RadarOverlayElement::setMainShipPosition(int dirX, dirY, dirZ, ortX, ortY, ortZ){
+  void RadarOverlayElement::setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ){
     dirX_=dirX;
     dirY_=dirY;
     dirZ_=dirZ;
