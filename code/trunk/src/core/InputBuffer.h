@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
@@ -34,91 +34,93 @@
 #include <string>
 #include <list>
 
-#include "ois/OISKeyboard.h"
-#include "InputHandler.h"
+#include "InputInterfaces.h"
+#include "Tickable.h"
 
 namespace orxonox
 {
-    class _CoreExport InputBufferListener
-    {};
+  class _CoreExport InputBufferListener
+  {};
 
-    class _CoreExport InputBuffer : public KeyHandler
+  class _CoreExport InputBuffer : public KeyHandler, public TickableReal
+  {
+    struct InputBufferListenerTuple
     {
-        struct InputBufferListenerTuple
-        {
-            InputBufferListener* listener_;
-            void (InputBufferListener::*function_)();
-            bool bListenToAllChanges_;
-            bool bOnlySingleInput_;
-            char char_;
-        };
-
-        public:
-            InputBuffer();
-            InputBuffer(const std::string allowedChars);
-
-            template <class T>
-            void registerListener(T* listener, void (T::*function)(), bool bOnlySingleInput)
-            {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, ' '};
-                this->listeners_.insert(this->listeners_.end(), newListener);
-            }
-            template <class T>
-            void registerListener(T* listener, void (T::*function)() const, bool bOnlySingleInput)
-            {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, ' '};
-                this->listeners_.insert(this->listeners_.end(), newListener);
-            }
-
-            template <class T>
-            void registerListener(T* listener, void (T::*function)(), char char_, bool bOnlySingleInput)
-            {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, char_};
-                this->listeners_.insert(this->listeners_.end(), newListener);
-            }
-            template <class T>
-            void registerListener(T* listener, void (T::*function)() const, char char_, bool bOnlySingleInput)
-            {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, char_};
-                this->listeners_.insert(this->listeners_.end(), newListener);
-            }
-
-            void set(const std::string& input);
-            void append(const std::string& input);
-            void append(const char& input);
-            void removeLast();
-            void clear();
-
-            void updated();
-            void updated(const char& update, bool bSingleInput);
-
-            inline std::string get() const
-                { return this->buffer_; }
-
-            /*inline void activate()
-                { this->setActivated(true); }
-            inline void deactivate()
-                { this->setActivated(false); }
-            inline void setActivated(bool bActivated)
-                { if (this->bActivated_ != bActivated) { this->bActivated_ = bActivated; this->activityChanged(); } else { this->bActivated_ = bActivated; } }
-            inline bool isActivated() const
-                { return this->bActivated_; }
-
-            void activityChanged() const;*/
-
-        private:
-            bool charIsAllowed(const char& input);
-
-            bool keyPressed(const OIS::KeyEvent &e);
-            bool keyReleased(const OIS::KeyEvent &e);
-            bool keyHeld(const OIS::KeyEvent &e) { return true; }
-
-            OIS::Keyboard* keyboard_;
-            //bool bActivated_;
-            std::string buffer_;
-            std::list<InputBufferListenerTuple> listeners_;
-            std::string allowedChars_;
+      InputBufferListener* listener_;
+      void (InputBufferListener::*function_)();
+      bool bListenToAllChanges_;
+      bool bOnlySingleInput_;
+      char char_;
     };
+
+  public:
+    InputBuffer(const std::string allowedChars =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ‰ˆ¸ƒ÷‹0123456789 \\\"(){}[]<>.:,;_-+*/=!?|$&%^");
+
+    void setConfigValues();
+
+    template <class T>
+    void registerListener(T* listener, void (T::*function)(), bool bOnlySingleInput)
+    {
+      struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, ' '};
+      this->listeners_.insert(this->listeners_.end(), newListener);
+    }
+    template <class T>
+    void registerListener(T* listener, void (T::*function)() const, bool bOnlySingleInput)
+    {
+      struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, ' '};
+      this->listeners_.insert(this->listeners_.end(), newListener);
+    }
+
+    template <class T>
+    void registerListener(T* listener, void (T::*function)(), char char_, bool bOnlySingleInput)
+    {
+      struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, char_};
+      this->listeners_.insert(this->listeners_.end(), newListener);
+    }
+    template <class T>
+    void registerListener(T* listener, void (T::*function)() const, char char_, bool bOnlySingleInput)
+    {
+      struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, char_};
+      this->listeners_.insert(this->listeners_.end(), newListener);
+    }
+
+    void set(const std::string& input);
+    void append(const std::string& input);
+    void append(const char& input);
+    void removeLast();
+    void clear();
+
+    void updated();
+    void updated(const char& update, bool bSingleInput);
+
+    inline std::string get() const
+    { return this->buffer_; }
+
+  private:  // functions
+    bool charIsAllowed(const char& input);
+
+    bool keyPressed (const KeyEvent& evt);
+    bool keyReleased(const KeyEvent& evt) { return true; }
+    bool keyHeld    (const KeyEvent& evt);
+    void processKey (const KeyEvent &e);
+
+    void tick(float dt);
+
+  private: // variables
+    std::string buffer_;
+    std::list<InputBufferListenerTuple> listeners_;
+    std::string allowedChars_;
+
+    KeyCode::Enum lastKey_;
+    float timeSinceKeyPressed_;
+    float timeSinceKeyRepeated_;
+    int keysToRepeat_;
+
+    // configured values
+    float keyRepeatDeleay_;
+    float keyRepeatTime_;
+  };
 }
 
 #endif /* _InputBuffer_H__ */

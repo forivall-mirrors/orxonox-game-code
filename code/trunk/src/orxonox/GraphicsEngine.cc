@@ -8,8 +8,8 @@
  *   This program is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU General Public License
  *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
+ *   of the License, or (atl your option) any later version.
+ *lo
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -43,7 +43,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
-#include "core/TclBind.h"
+#include "core/CommandExecutor.h"
 
 
 namespace orxonox {
@@ -52,7 +52,7 @@ namespace orxonox {
     @brief Returns the singleton instance and creates it the first time.
     @return The only instance of GraphicsEngine.
   */
-  GraphicsEngine& GraphicsEngine::getSingleton()
+  /*static*/ GraphicsEngine& GraphicsEngine::getSingleton()
   {
     static GraphicsEngine theOnlyInstance;
     return theOnlyInstance;
@@ -61,17 +61,27 @@ namespace orxonox {
   /**
     @brief Only use constructor to initialise variables and pointers!
   */
-  GraphicsEngine::GraphicsEngine()
+  GraphicsEngine::GraphicsEngine() :
+    root_(0),
+    scene_(0),
+    renderWindow_(0),
+    //configPath_(""),
+    dataPath_(""),
+    ogreLogfile_("")
   {
     RegisterObject(GraphicsEngine);
-    //this->bOverwritePath_ = false;
+
     this->setConfigValues();
-    // set to standard values
-    this->configPath_ = "";
-    this->root_ = 0;
-    this->scene_ = 0;
-    this->renderWindow_ = 0;
-    COUT(4) << "*** GraphicsEngine: Constructed" << std::endl;
+    CCOUT(4) << "Constructed" << std::endl;
+  }
+
+  void GraphicsEngine::setConfigValues()
+  {
+    SetConfigValue(dataPath_, "../../Media/").description("relative path to media data");
+    SetConfigValue(ogreLogfile_, "ogre.log").description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
+    SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
+    SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
+    SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
   }
 
   /**
@@ -88,7 +98,7 @@ namespace orxonox {
   */
   void GraphicsEngine::destroy()
   {
-    COUT(4) << "*** GraphicsEngine: Destroying objects..." << std::endl;
+    CCOUT(4) << "Destroying objects..." << std::endl;
     Ogre::WindowEventUtilities::removeWindowEventListener(this->renderWindow_, this);
     if (this->root_)
       delete this->root_;
@@ -102,103 +112,67 @@ namespace orxonox {
       Ogre::LogManager::getSingleton().destroyLog(Ogre::LogManager::getSingleton().getDefaultLog());
       delete Ogre::LogManager::getSingletonPtr();
     }
-    COUT(4) << "*** GraphicsEngine: Destroying objects done" << std::endl;
-  }
-
-  void GraphicsEngine::setConfigValues()
-  {
-    SetConfigValue(dataPath_, "../../Media/").description("relative path to media data");
-    SetConfigValue(ogreLogfile_, "ogre.log").description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
-    SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
-    SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
-    SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
-
-    TclBind::getInstance().setDataPath(this->dataPath_);
+    CCOUT(4) << "Destroying objects done" << std::endl;
   }
 
   /**
     @brief Creates the Ogre Root object and sets up the ogre log.
   */
-  void GraphicsEngine::setup()
+  bool GraphicsEngine::setup(std::string& dataPath)
   {
+    CCOUT(3) << "Setting up..." << std::endl;
+    // temporary overwrite of dataPath, change ini file for permanent change
+    if (dataPath != "")
+      dataPath_ = dataPath;
+    if (dataPath_ == "")
+      return false;
+    if (dataPath_[dataPath_.size() - 1] != '/')
+      dataPath_ += "/";
+
     //TODO: Check if file exists (maybe not here)
-/*#ifndef OGRE_STATIC_LIB
-    root_ = new Ogre::Root(configPath_ + "plugins.cfg", configPath_ + "ogre.cfg",
-                     configPath_ + "Ogre.log");
-#else
-    root_ = new Ogre::Root(NULL, configPath_ + "ogre.cfg", configPath_ + "Ogre.log");
-#endif*/
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && defined(_DEBUG)
     std::string plugin_filename = "plugins_d.cfg";
 #else
     std::string plugin_filename = "plugins.cfg";
 #endif
 
-    // create a logManager
-    Ogre::LogManager *logger;
-		if (Ogre::LogManager::getSingletonPtr() == 0)
-			logger = new Ogre::LogManager();
-    else
-      logger = Ogre::LogManager::getSingletonPtr();
-    COUT(4) << "*** GraphicsEngine: Ogre LogManager created/assigned" << std::endl;
+/*    // create a logManager
+    // note: If there's already a logManager, Ogre will complain by a failed assertation.
+    // but that shouldn't happen, since this is the first time to create a logManager..
+    Ogre::LogManager* logger = new Ogre::LogManager();
+    CCOUT(4) << "Ogre LogManager created" << std::endl;
 
     // create our own log that we can listen to
     Ogre::Log *myLog;
     if (this->ogreLogfile_ == "")
       myLog = logger->createLog("ogre.log", true, false, true);
     else
-      myLog = logger->createLog(this->ogreLogfile_, true, false, false);
-    COUT(4) << "*** GraphicsEngine: Ogre Log created" << std::endl;
+          myLog = logger->createLog(this->ogreLogfile_, true, false, false);
+    CCOUT(4) << "Ogre Log created" << std::endl;
 
     myLog->setLogDetail(Ogre::LL_BOREME);
-    myLog->addListener(this);
+    myLog->addListener(this);*/
 
     // Root will detect that we've already created a Log
-    COUT(4) << "*** GraphicsEngine: Creating Ogre Root..." << std::endl;
+    CCOUT(4) << "Creating Ogre Root..." << std::endl;
     root_ = new Ogre::Root(plugin_filename);
-    COUT(4) << "*** GraphicsEngine: Creating Ogre Root done" << std::endl;
-  }
+    CCOUT(4) << "Creating Ogre Root done" << std::endl;
 
-  /**
-   * @return scene manager
-   */
-  Ogre::SceneManager* GraphicsEngine::getSceneManager()
-  {
-    if(!scene_)
-    {
-      scene_ = root_->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
-      COUT(3) << "Info: Created SceneMan: " << scene_ << std::endl;
-    }
-    return scene_;
-  }
+    // specify where Ogre has to look for resources. This call doesn't parse anything yet!
+    declareRessourceLocations();
 
-  bool GraphicsEngine::load(std::string dataPath)
-  {
-    // temporary overwrite of dataPath, change ini file for permanent change
-    if( dataPath != "" )
-      dataPath_ = dataPath + "/";
-    loadRessourceLocations(this->dataPath_);
-    if (!root_->restoreConfig() && !root_->showConfigDialog())
-      return false;
+    CCOUT(3) << "Set up done." << std::endl;
     return true;
   }
 
-  void GraphicsEngine::initialise()
+  void GraphicsEngine::declareRessourceLocations()
   {
-    this->renderWindow_ = root_->initialise(true, "OrxonoxV2");
-    Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, this);
-    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-    //TODO: Do NOT load all the groups, why are we doing that? And do we really do that? initialise != load...
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-  }
-
-  void GraphicsEngine::loadRessourceLocations(std::string dataPath)
-  {
+    CCOUT(4) << "Declaring Resources" << std::endl;
     //TODO: Specify layout of data file and maybe use xml-loader
     //TODO: Work with ressource groups (should be generated by a special loader)
     // Load resource paths from data file using configfile ressource type
     Ogre::ConfigFile cf;
-    cf.load(dataPath + "resources.cfg");
+    cf.load(dataPath_ + "resources.cfg");
 
     // Go through all sections & settings in the file
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
@@ -215,10 +189,66 @@ namespace orxonox {
         archName = i->second; // name (and location) of archive
 
         Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-                                           std::string(dataPath + archName),
+                                           std::string(dataPath_ + archName),
                                            typeName, secName);
       }
     }
+  }
+
+  bool GraphicsEngine::loadRenderer()
+  {
+    CCOUT(4) << "Configuring Renderer" << std::endl;
+    if (!root_->restoreConfig() && !root_->showConfigDialog())
+      return false;
+
+    CCOUT(4) << "Creating render window" << std::endl;
+    this->renderWindow_ = root_->initialise(true, "OrxonoxV2");
+    if (!root_->isInitialised())
+    {
+      CCOUT(2) << "Error: Creating Ogre root object failed" << std::endl;
+      return false;
+    }
+    Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, this);
+    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+    return true;
+  }
+
+  bool GraphicsEngine::initialiseResources()
+  {
+    CCOUT(4) << "Initialising resources" << std::endl;
+    //TODO: Do NOT load all the groups, why are we doing that? And do we really do that? initialise != load...
+    try
+    {
+      Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+      /*Ogre::StringVector str = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
+      for (unsigned int i = 0; i < str.size(); i++)
+      {
+        Ogre::ResourceGroupManager::getSingleton().loadResourceGroup(str[i]);
+      }*/
+    }
+    catch (Ogre::Exception e)
+    {
+      CCOUT(2) << "Error: There was an Error when initialising the resources." << std::endl;
+      CCOUT(2) << "ErrorMessage: " << e.getFullDescription() << std::endl;
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * @brief Creates the SceneManager
+   */
+  bool GraphicsEngine::createNewScene()
+  {
+    CCOUT(4) << "Creating new SceneManager" << std::endl;
+    if (scene_)
+    {
+      CCOUT(2) << "SceneManager already exists! Skipping." << std::endl;
+      return false;
+    }
+    scene_ = root_->createSceneManager(Ogre::ST_GENERIC, "Default SceneManager");
+    CCOUT(3) << "Created SceneManager: " << scene_ << std::endl;
+    return true;
   }
 
   /**
@@ -290,24 +320,48 @@ namespace orxonox {
         orxonoxLevel = 0;
     }
     OutputHandler::getOutStream().setOutputLevel(orxonoxLevel)
-        << "*** Ogre: " << message << std::endl;
+        << "Ogre: " << message << std::endl;
   }
 
-    void GraphicsEngine::windowMoved(Ogre::RenderWindow *rw){
-        int w = rw->getWidth();
-        int h = rw->getHeight();
-        InputManager::setWindowExtents(w, h);
-    }
+  /**
+  * Window has resized.
+  * @param rw The render window it occured in
+  */
+  void GraphicsEngine::windowMoved(Ogre::RenderWindow *rw)
+  {
+    // note: this doesn't change the window extents
+  }
 
-    void GraphicsEngine::windowResized(Ogre::RenderWindow *rw){
-        int w = rw->getWidth();
-        int h = rw->getHeight();
-        InputManager::setWindowExtents(w, h);
-    }
+  /**
+  * Window has resized.
+  * @param rw The render window it occured in
+  * @note GraphicsEngine has a render window stored itself. This is the same
+  *       as rw. But we have to be careful when using multiple render windows!
+  */
+  void GraphicsEngine::windowResized(Ogre::RenderWindow *rw)
+  {
+    // change the mouse clipping size for absolute mouse movements
+    int w = rw->getWidth();
+    int h = rw->getHeight();
+    InputManager::setWindowExtents(w, h);
+  }
 
-    void GraphicsEngine::windowFocusChanged(Ogre::RenderWindow *rw){
-        int w = rw->getWidth();
-        int h = rw->getHeight();
-        InputManager::setWindowExtents(w, h);
-    }
+  /**
+  * Window has resized.
+  * @param rw The render window it occured in
+  */
+  void GraphicsEngine::windowFocusChanged(Ogre::RenderWindow *rw)
+  {
+    // note: this doesn't change the window extents
+  }
+
+  /**
+  * Window has resized.
+  * @param rw The render window it occured in
+  */
+  void GraphicsEngine::windowClosed(Ogre::RenderWindow *rw)
+  {
+    // using CommandExecutor in order to avoid depending on Orxonox class.
+    CommandExecutor::execute("exit", false);
+  }
 }

@@ -39,10 +39,43 @@
 //
 
 #include "Client.h"
+#include "Synchronisable.h"
 #include "core/CoreIncludes.h"
 
 namespace network
 {
+  Client* Client::_sClient = 0;
+  
+  Client* Client::createSingleton(){
+    if(!_sClient){
+      _sClient = new Client();
+    }
+    return _sClient;
+  }
+  
+  Client* Client::createSingleton(std::string address, int port){
+    if(!_sClient)
+      _sClient = new Client(address, port);
+    return _sClient;
+  }
+  
+  Client* Client::createSingleton(const char *address, int port){
+    if(!_sClient)
+      _sClient = new Client(address, port);
+    return _sClient;
+  }
+  
+  void Client::destroySingleton(){
+    if(_sClient){
+      delete _sClient;
+      _sClient = 0;
+    }
+  }
+  
+  Client* Client::getSingleton(){
+    return _sClient; 
+  }
+  
   /**
   * Constructor for the Client class
   * initializes the address and the port to default localhost:NETWORK_PORT
@@ -50,6 +83,7 @@ namespace network
   Client::Client(): client_connection(NETWORK_PORT,"127.0.0.1"){
     // set server address to localhost
     isConnected=false;
+    isSynched_=false;
   }
 
   /**
@@ -59,6 +93,7 @@ namespace network
   */
   Client::Client(std::string address, int port) : client_connection(port, address){
     isConnected=false;
+    isSynched_=false;
   }
 
   /**
@@ -68,14 +103,27 @@ namespace network
   */
   Client::Client(const char *address, int port) : client_connection(port, address){
     isConnected=false;
+    isSynched_=false;
   }
 
+  Client::~Client(){
+    if(isConnected)
+      closeConnection();
+  }
+  
   /**
   * Establish the Connection to the Server
   * @return true/false
   */
   bool Client::establishConnection(){
+    Synchronisable::setClient(true);
     isConnected=client_connection.createConnection();
+    if(isConnected){
+      COUT(4) << "sending connectrequest" << std::endl;
+      client_connection.addPacket(pck_gen.generateConnectRequest());
+      client_connection.sendPackets();
+    }else
+      COUT(1) << "could not create connection" << std::endl;
     return isConnected;
   }
 
@@ -180,6 +228,19 @@ namespace network
   * Performs a GameState update
   */
   void Client::tick(float time){
+    if(client_connection.isConnected() && isSynched_){
+      COUT(4) << "popping partial gamestate: " << std::endl;
+      GameStateCompressed *gs = gamestate.popPartialGameState();
+      if(gs){
+        COUT(4) << "client tick: sending gs " << gs << std::endl;
+        ENetPacket *packet = pck_gen.gstate(gs);
+        if( packet == NULL || !client_connection.addPacket(packet))
+          COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
+        // now delete it to save memory
+        delete[] gs->data;
+        delete gs;
+      }
+    }
     ENetPacket *packet;
     // stop if the packet queue is empty
     while(!(client_connection.queueEmpty())){
@@ -187,16 +248,22 @@ namespace network
       COUT(5) << "tick packet size " << packet->dataLength << std::endl;
       elaborate(packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
     }
+    if(!client_connection.sendPackets())
+      COUT(3) << "Problem sending packets to server" << std::endl;
     return;
   }
 
-  void Client::processGamestate( GameStateCompressed *data){
+  void Client::processGamestate( GameStateCompressed *data, int clientID){
     int id = data->id;
     COUT(5) << "received gamestate id: " << data->id << std::endl;
-    gamestate.pushGameState(data);
-    client_connection.addPacket(pck_gen.acknowledgement(id));
-    client_connection.sendPackets();
-    return;
+    if(gamestate.pushGameState(data)){
+      if(!isSynched_)
+        isSynched_=true;
+      client_connection.addPacket(pck_gen.acknowledgement(id));
+        // we do this at the end of a tick
+       if(!client_connection.sendPackets())
+         COUT(2) << "Could not send acknowledgment" << std::endl;
+    }
   }
 
   void Client::processClassid(classid *clid){
@@ -204,12 +271,23 @@ namespace network
     id=ID(std::string(clid->message));
     if(id!=NULL)
       id->setNetworkID(clid->clid);
-    COUT(4) << "received and set network id: " << clid->clid << "; classname: " << clid->message << std::endl;
+    COUT(4) << "Client: received and set network id: " << clid->clid << "; classname: " << clid->message << std::endl;
+    delete clid;
     return;
   }
 
   void Client::processChat( chat *data){
     COUT(0) << "Server: " << data->message << std::endl;
+    delete[] data->message;
+    delete data;
+  }
+  
+  bool Client::processWelcome( welcome *w ){
+    COUT(4) << "processing welcome message" << std::endl;
+    clientID_ = w->clientID;
+    shipID_ = w->shipID;
+    delete w;
+    return true;
   }
 
 }

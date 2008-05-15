@@ -53,11 +53,14 @@ namespace network
     PacketGenerator();
     //call one of this functions out of an instance of PacketGenerator to create a packet
     ENetPacket* acknowledgement( int state, int reliable = ENET_PACKET_FLAG_RELIABLE );
+    ENetPacket* command( int dataLength, void *data, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* mousem( double x, double y, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* keystrike( char press, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* chatMessage( const char* message, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* gstate( GameStateCompressed *states, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* clid( int classid, std::string classname, int reliable = ENET_PACKET_FLAG_RELIABLE );
+    ENetPacket* generateWelcome( int clientID,int shipID, bool allowed, int reliable = ENET_PACKET_FLAG_RELIABLE );
+    ENetPacket* generateConnectRequest( int reliable = ENET_PACKET_FLAG_RELIABLE );
   private:
   };
 
@@ -84,17 +87,22 @@ namespace network
 
 
     void acknowledgement( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
+    bool command( ENetPacket* packet, int clientId );
     void mousem( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
     void keystrike( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
-    void chatMessage( ENetPacket* packet, int clientId = CLIENTID_CLIENT);
-    void gstate( ENetPacket* packet );
+    void chatMessage( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
+    void gstate( ENetPacket* packet, int clientID = CLIENTID_CLIENT );
     void clid( ENetPacket *packet);
+    bool decodeWelcome( ENetPacket* packet, int clientID = CLIENTID_CLIENT );
+    bool decodeConnectRequest( ENetPacket *packet, int clientID = CLIENTID_CLIENT );
 
     //process data
     //two functions are note yet implemented!
-    virtual void processGamestate(GameStateCompressed *state);
+    virtual void processGamestate(GameStateCompressed *state, int clientID);
     virtual void processAck( ack *data, int clientID);
     virtual void processClassid( classid *cid);
+    virtual bool processWelcome( welcome *w );
+    virtual bool processConnectRequest( connectRequest *con, int clientID );
     //virtual void processAck( ack *data);
 
     //print functions

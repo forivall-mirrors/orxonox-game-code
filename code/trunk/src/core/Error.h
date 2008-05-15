@@ -43,9 +43,7 @@ namespace orxonox
 	class _CoreExport Error
 	{
 	public:
-		Error();
-		Error(std::string errorMsg, int errorCode = 0);
-		Error(int errorCode, std::string errorMsg = "");
+		Error(std::string errorMsg = "", int errorCode = 0);
 	private:
 
 	};

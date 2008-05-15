@@ -34,6 +34,7 @@
 #include "SignalHandler.h"
 
 #include <assert.h>
+#include <iostream>
 
 #include "Debug.h"
 
@@ -42,6 +43,11 @@ SignalHandler * SignalHandler::singletonRef = NULL;
 #ifndef __WIN32__
 
 #include <wait.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/keysym.h>
+
+bool SignalHandler::bXAutoKeyRepeatOn_ = false;
 
 SignalHandler::SignalHandler()
 {
@@ -56,6 +62,25 @@ void SignalHandler::doCatch( const std::string & appName, const std::string & fi
 {
   this->appName = appName;
   this->fileName = fileName;
+
+  // prepare for restoring XAutoKeyRepeat
+  Display* display;
+  if ((display = XOpenDisplay(0)))
+  {
+    XKeyboardState oldState;
+    XGetKeyboardControl(display, &oldState);
+    if (oldState.global_auto_repeat == AutoRepeatModeOn)
+      bXAutoKeyRepeatOn_ = true;
+    else
+      bXAutoKeyRepeatOn_ = false;
+    XCloseDisplay(display);
+  }
+  else
+  {
+    std::cout << "Warning: couldn't open X display to restore XAutoKeyRepeat." << std::endl;
+    bXAutoKeyRepeatOn_ = false;
+  }
+
 
   // make sure doCatch is only called once without calling dontCatch
   assert( sigRecList.size() == 0 );
@@ -119,6 +144,17 @@ void SignalHandler::sigHandler( int sig )
     case SIGILL:
       sigName = "SIGILL";
       break;
+  }
+
+  if (bXAutoKeyRepeatOn_)
+  {
+    std::cout << "Trying to restore XAutoKeyRepeat" << std::endl;
+	Display* display;
+	  if ((display = XOpenDisplay(0)))
+    {
+			XAutoRepeatOn(display);
+		  XCloseDisplay(display);
+    }
   }
 
   PRINTF(0)( "recieved signal %s\ntry to write backtrace to file orxonox.log\n", sigName.c_str() );

@@ -36,17 +36,7 @@
 
 namespace orxonox
 {
-	Error::Error()
-	{
-		Error(0,"");
-	}
-
 	Error::Error(std::string errorMsg, int errorCode)
-	{
-		Error(errorCode, errorMsg);
-	}
-
-	Error::Error(int errorCode, std::string errorMsg)
 	{
 		COUT(1) << "############################ "<< std::endl
 							<< "#         Error "<<errorCode<< "          #"<< std::endl

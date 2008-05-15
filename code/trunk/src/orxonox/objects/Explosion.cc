@@ -44,12 +44,11 @@ namespace orxonox
 {
     CreateFactory(Explosion);
 
-    Explosion::Explosion(WorldEntity* owner)
+    Explosion::Explosion(WorldEntity* owner) :
+      lifetime_(0.4),
+      particle_(0)
     {
         RegisterObject(Explosion);
-
-        this->particle_ = 0;
-        this->lifetime_ = 0.4;
 
         if (owner)
         {

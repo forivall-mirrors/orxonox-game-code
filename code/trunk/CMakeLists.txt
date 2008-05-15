@@ -21,6 +21,7 @@ IF (TESTING_ENABLED)
 ENDIF(TESTING_ENABLED)
 
 OPTION(NETWORK_TESTING_ENABLED "Do you want to build network testing tools: i.e. chatclient chatserver and alike")
+OPTION(NETWORKTRAFFIC_TESTING_ENABLED "Do you want to build dummyserver4 and dummyclient4")
 
 
 ########## Compiler/Linker options ##############
@@ -41,8 +42,8 @@ SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/bin/lib)
 
 # global compiler/linker flags. force -O2!
-SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O2 -Wall -g -ggdb")
-SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O2 -Wall -g -ggdb")
+SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O0 -Wall -g -ggdb")
+SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
 SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
 SET(CMAKE_EXE_LINKER_FLAGS " --no-undefined")
 SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")

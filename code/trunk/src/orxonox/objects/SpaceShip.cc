@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht
  *
  */
 
@@ -36,6 +36,7 @@
 #include <OgreParticleSystem.h>
 #include <OgreSceneNode.h>
 
+#include "CameraHandler.h"
 #include "tinyxml/tinyxml.h"
 #include "ois/OIS.h"
 #include "util/Convert.h"
@@ -49,6 +50,7 @@
 #include "Projectile.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
+#include "network/Client.h"
 
 namespace orxonox
 {
@@ -61,7 +63,40 @@ namespace orxonox
 
     SpaceShip* SpaceShip::instance_s;
 
-    SpaceShip::SpaceShip()
+    SpaceShip::SpaceShip() :
+      //testvector_(0,0,0),
+      //bInvertYAxis_(false),
+      setMouseEventCallback_(false),
+      bLMousePressed_(false),
+      bRMousePressed_(false),
+      camNode_(0),
+      cam_(0),
+      camName_("CamNode"),
+      tt_(0),
+      redNode_(0),
+      greenNode_(0),
+      blinkTime_(0.0f),
+      chNearNode_(0),
+      chFarNode_(0),
+      timeToReload_(0.0f),
+      //reloadTime_(0.0f),
+      maxSideAndBackSpeed_(0.0f),
+      maxSpeed_(0.0f),
+      maxRotation_(0.0f),
+      translationAcceleration_(0.0f),
+      rotationAcceleration_(0.0f),
+      translationDamping_(0.0f),
+      rotationDamping_(0.0f),
+      maxRotationRadian_(0),
+      rotationAccelerationRadian_(0),
+      rotationDampingRadian_(0),
+      zeroRadian_(0),
+      mouseXRotation_(0),
+      mouseYRotation_(0),
+      mouseX_(0.0f),
+      mouseY_(0.0f),
+      emitterRate_(0.0f),
+      server_(false)
     {
         RegisterObject(SpaceShip);
         this->registerAllVariables();
@@ -70,74 +105,9 @@ namespace orxonox
 
         this->setConfigValues();
 
-        this->setMouseEventCallback_ = false;
-        this->bLMousePressed_ = false;
-        this->bRMousePressed_ = false;
-        this->mouseX_ = 0;
-        this->mouseY_ = 0;
-
-        this->camNode_ = 0;
-
-        this->tt_ = 0;
-        this->redNode_ = 0;
-        this->greenNode_ = 0;
-        this->blinkTime_ = 0;
-
-        this->timeToReload_ = 0;
-
-        this->maxSpeed_ = 0;
-        this->maxSideAndBackSpeed_ = 0;
-        this->maxRotation_ = 0;
-        this->translationAcceleration_ = 0;
-        this->rotationAcceleration_ = 0;
-        this->translationDamping_ = 0;
-        this->rotationDamping_ = 0;
-
-        this->maxRotationRadian_ = 0;
-        this->rotationAccelerationRadian_ = 0;
-        this->rotationDampingRadian_ = 0;
-        this->zeroRadian_ = Radian(0);
 
         this->setRotationAxis(1, 0, 0);
         this->setStatic(false);
-/*
-        this->moveForward_ = 0;
-        this->rotateUp_ = 0;
-        this->rotateDown_ = 0;
-        this->rotateRight_ = 0;
-        this->rotateLeft_ = 0;
-        this->loopRight_ = 0;
-        this->loopLeft_ = 0;
-        this->brakeForward_ = 0;
-        this->brakeRotate_ = 0;
-        this->brakeLoop_ = 0;
-        this->speedForward_ = 0;
-        this->speedRotateUpDown_ = 0;
-        this->speedRotateRightLeft_ = 0;
-        this->speedLoopRightLeft_ = 0;
-        this->maxSpeedForward_ = 0;
-        this->maxSpeedRotateUpDown_ = 0;
-        this->maxSpeedRotateRightLeft_ = 0;
-        this->maxSpeedLoopRightLeft_ = 0;
-        this->accelerationForward_ = 0;
-        this->accelerationRotateUpDown_ = 0;
-        this->accelerationRotateRightLeft_ = 0;
-        this->accelerationLoopRightLeft_ = 0;
-
-        this->speed = 250;
-        this->loop = 100;
-        this->rotate = 10;
-        this->mouseX = 0;
-        this->mouseY = 0;
-        this->maxMouseX = 0;
-        this->minMouseX = 0;
-        this->moved = false;
-
-        this->brakeRotate(rotate*10);
-        this->brakeLoop(loop);
-*/
-//         this->create();
-
 
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
@@ -146,6 +116,10 @@ namespace orxonox
     {
         if (this->tt_)
             delete this->tt_;
+        if(setMouseEventCallback_)
+          InputManager::removeMouseHandler("SpaceShip");
+        if (this->cam_)
+          delete this->cam_;
     }
 
     bool SpaceShip::create(){
@@ -157,14 +131,30 @@ namespace orxonox
     }
 
     void SpaceShip::registerAllVariables(){
-      Model::registerAllVariables();
-
-
+      registerVar( &camName_, camName_.length()+1, network::STRING, 0x1);
+      registerVar( &maxSpeed_, sizeof(maxSpeed_), network::DATA, 0x1);
+      registerVar( &maxSideAndBackSpeed_, sizeof(maxSideAndBackSpeed_), network::DATA, 0x1);
+      registerVar( &maxRotation_, sizeof(maxRotation_), network::DATA, 0x1);
+      registerVar( &translationAcceleration_, sizeof(translationAcceleration_), network::DATA, 0x1);
+      registerVar( &rotationAcceleration_, sizeof(rotationAcceleration_), network::DATA, 0x1);
+      registerVar( &rotationAccelerationRadian_, sizeof(rotationAccelerationRadian_), network::DATA, 0x1);
+      registerVar( &translationDamping_, sizeof(translationDamping_), network::DATA, 0x1);
+      registerVar( &rotationDamping_, sizeof(rotationDamping_), network::DATA, 0x1);
+      registerVar( &rotationDampingRadian_, sizeof(rotationDampingRadian_), network::DATA, 0x1);
 
     }
 
     void SpaceShip::init()
     {
+    if ((server_ || ( network::Client::getSingleton() && network::Client::getSingleton()->getShipID()==objectID ) ))
+    {
+          if (!setMouseEventCallback_)
+          {
+              InputManager::addMouseHandler(this, "SpaceShip");
+              setMouseEventCallback_ = true;
+          }
+    }
+
         // START CREATING THRUSTER
         this->tt_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         this->tt_->getParticleSystem()->setParameter("local_space","true");
@@ -190,9 +180,9 @@ namespace orxonox
         this->redBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
         this->greenBillboard_.setBillboardSet("Examples/Flare", ColourValue(0.0, 1.0, 0.0), 1);
 
-        this->redNode_ = this->getNode()->createChildSceneNode(this->getName() + "red", Vector3(0.3, 4.7, -0.3));
+        this->redNode_ = this->getNode()->createChildSceneNode(this->getName() + "red", Vector3(0.3, 4.0, -0.3));
         this->redNode_->setInheritScale(false);
-        this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(0.3, -4.7, -0.3));
+        this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(0.3, -4.0, -0.3));
         this->greenNode_->setInheritScale(false);
 
         this->redNode_->attachObject(this->redBillboard_.getBillboardSet());
@@ -217,6 +207,7 @@ namespace orxonox
         this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
         this->chFarNode_->setScale(0.4, 0.4, 0.4);
 
+        createCamera();
         // END of testing crosshair
     }
 
@@ -231,6 +222,7 @@ namespace orxonox
     {
         Model::loadParams(xmlElem);
         this->create();
+        this->getFocus();
 /*
         if (xmlElem->Attribute("forward") && xmlElem->Attribute("rotateupdown") && xmlElem->Attribute("rotaterightleft") && xmlElem->Attribute("looprightleft"))
         {
@@ -245,7 +237,7 @@ namespace orxonox
             String2Number<float>(this->maxSpeedLoopRightLeft_, looprightleftStr);
 
             COUT(4) << "Loader: Initialized spaceship steering with values " << maxSpeedForward_ << " " << maxSpeedRotateUpDown_ << " " << maxSpeedRotateRightLeft_ << " " << maxSpeedLoopRightLeft_ << " " << std::endl;
-    	}
+      }
 */
         if (xmlElem->Attribute("maxSpeed") && xmlElem->Attribute("maxSideAndBackSpeed") && xmlElem->Attribute("maxRotation") && xmlElem->Attribute("transAcc") && xmlElem->Attribute("rotAcc") && xmlElem->Attribute("transDamp") && xmlElem->Attribute("rotDamp"))
         {
@@ -271,32 +263,45 @@ namespace orxonox
             this->rotationDampingRadian_ = Radian(this->rotationDamping_);
 
             COUT(4) << "Loader: Initialized SpaceShip" << std::endl;
-    	}
+        }
 
-    	if (xmlElem->Attribute("camera"))
-    	{
-    	    this->setCamera();
-    	}
+        if (xmlElem->Attribute("camera"))
+        {
+            this->setCamera();
+        }
     }
 
     void SpaceShip::setCamera(const std::string& camera)
     {
-        Ogre::Camera *cam = GraphicsEngine::getSingleton().getSceneManager()->createCamera("ShipCam");
-        this->camNode_ = this->getNode()->createChildSceneNode("CamNode");
-/*
-//        node->setInheritOrientation(false);
-        cam->setPosition(Vector3(0,50,-150));
-        cam->lookAt(Vector3(0,20,0));
-        cam->roll(Degree(0));
-*/
+      camName_=camera;
+      // change camera attributes here, if you want to ;)
+    }
+    
+    void SpaceShip::getFocus(){
+      COUT(4) << "requesting focus" << std::endl;
+      if(network::Client::getSingleton()==0 || network::Client::getSingleton()->getShipID()==objectID)
+        CameraHandler::getInstance()->requestFocus(cam_);
+      
+    }
+    
+    void SpaceShip::createCamera(){
+//       COUT(4) << "begin camera creation" << std::endl;
+      this->camNode_ = this->getNode()->createChildSceneNode(camName_);
+      COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
+      this->camNode_->setPosition(Vector3(-50,0,10));
+      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
+      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
+      camNode_->setOrientation(q1*q2);
+      COUT(4) << "position: (cam)" << this->camNode_->getPosition() << std::endl;
+      cam_ = new Camera(this->camNode_);
 
-        cam->setPosition(Vector3(-200,0,35));
+      cam_->setTargetNode(this->getNode());
 //        cam->setPosition(Vector3(0,-350,0));
-        cam->lookAt(Vector3(0,0,35));
-        cam->roll(Degree(-90));
+      if(network::Client::getSingleton()!=0 && network::Client::getSingleton()->getShipID()==objectID){
+        this->setBacksync(true);
+        CameraHandler::getInstance()->requestFocus(cam_);
+      }
 
-        this->camNode_->attachObject(cam);
-        GraphicsEngine::getSingleton().getRenderWindow()->addViewport(cam);
     }
 
     void SpaceShip::setMaxSpeed(float value)
@@ -332,6 +337,9 @@ namespace orxonox
         XMLPortParamLoadOnly(SpaceShip, "rotAcc", setRotAcc, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, mode);
+        server_=true; // TODO: this is only a hack
+        SpaceShip::create();
+        getFocus();
     }
 
     int sgn(float x)
@@ -342,7 +350,7 @@ namespace orxonox
             return -1;
     }
 
-    bool SpaceShip::mouseMoved(const OIS::MouseEvent &e)
+    bool SpaceShip::mouseMoved(const MouseState& state)
     {
 /*
         this->mouseX += e.state.X.rel;
@@ -359,22 +367,22 @@ namespace orxonox
 */
         if (this->bRMousePressed_)
         {
-            this->camNode_->roll(Degree(-e.state.X.rel * 0.10));
-            this->camNode_->yaw(Degree(e.state.Y.rel * 0.10));
+            this->camNode_->roll(Degree(-state.X.rel * 0.10));
+            this->camNode_->yaw(Degree(state.Y.rel * 0.10));
         }
         else
         {
-            float minDimension = e.state.height;
-            if (e.state.width < minDimension)
-                minDimension = e.state.width;
+            float minDimension = state.height;
+            if (state.width < minDimension)
+                minDimension = state.width;
 
-            this->mouseX_ += e.state.X.rel;
+            this->mouseX_ += state.X.rel;
             if (this->mouseX_ < -minDimension)
                 this->mouseX_ = -minDimension;
             if (this->mouseX_ > minDimension)
                 this->mouseX_ = minDimension;
 
-            this->mouseY_ += e.state.Y.rel;
+            this->mouseY_ += state.Y.rel;
             if (this->mouseY_ < -minDimension)
                 this->mouseY_ = -minDimension;
             if (this->mouseY_ > minDimension)
@@ -402,21 +410,21 @@ namespace orxonox
         return true;
     }
 
-    bool SpaceShip::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+    bool SpaceShip::mouseButtonPressed(const MouseState& state, MouseButton::Enum id)
     {
-        if (id == OIS::MB_Left)
+        if (id == MouseButton::Left)
             this->bLMousePressed_ = true;
-        else if (id == OIS::MB_Right)
+        else if (id == MouseButton::Right)
             this->bRMousePressed_ = true;
 
         return true;
     }
 
-    bool SpaceShip::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+    bool SpaceShip::mouseButtonReleased(const MouseState& state, MouseButton::Enum id)
     {
-        if (id == OIS::MB_Left)
+        if (id == MouseButton::Left)
             this->bLMousePressed_ = false;
-        else if (id == OIS::MB_Right)
+        else if (id == MouseButton::Right)
         {
             this->bRMousePressed_ = false;
             this->camNode_->resetOrientation();
@@ -427,11 +435,8 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
-        if (!setMouseEventCallback_)
-        {
-          InputManager::addMouseHandler(this, "SpaceShip");
-          setMouseEventCallback_ = true;
-        }
+        if (this->cam_)
+            this->cam_->tick(dt);
 
         if (this->redNode_ && this->greenNode_)
         {
@@ -449,11 +454,10 @@ namespace orxonox
 
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
-            new Projectile(this);
+            Projectile *p = new Projectile(this);
+            p->setBacksync(true);
             this->timeToReload_ = this->reloadTime_;
         }
-
-        OIS::Keyboard* mKeyboard = InputManager::getKeyboard();
 
 
         // #####################################
@@ -521,26 +525,31 @@ namespace orxonox
             }
         }
 
-        if (mKeyboard->isKeyDown(OIS::KC_UP) || mKeyboard->isKeyDown(OIS::KC_W))
+        if( (network::Client::getSingleton() &&  network::Client::getSingleton()->getShipID() == objectID) || server_ )
+        {
+          COUT(4) << "steering our ship: " << objectID << std::endl;
+          if (InputManager::isKeyDown(KeyCode::Up) || InputManager::isKeyDown(KeyCode::W))
             this->acceleration_.x = this->translationAcceleration_;
-        else if(mKeyboard->isKeyDown(OIS::KC_DOWN) || mKeyboard->isKeyDown(OIS::KC_S))
+          else if(InputManager::isKeyDown(KeyCode::Down) || InputManager::isKeyDown(KeyCode::S))
             this->acceleration_.x = -this->translationAcceleration_;
-        else
+          else
             this->acceleration_.x = 0;
 
-        if (mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D))
+          if (InputManager::isKeyDown(KeyCode::Right) || InputManager::isKeyDown(KeyCode::D))
             this->acceleration_.y = -this->translationAcceleration_;
-        else if (mKeyboard->isKeyDown(OIS::KC_LEFT) || mKeyboard->isKeyDown(OIS::KC_A))
+          else if (InputManager::isKeyDown(KeyCode::Left) || InputManager::isKeyDown(KeyCode::A))
             this->acceleration_.y = this->translationAcceleration_;
-        else
+          else
             this->acceleration_.y = 0;
 
-        if (mKeyboard->isKeyDown(OIS::KC_DELETE) || mKeyboard->isKeyDown(OIS::KC_Q))
+          if (InputManager::isKeyDown(KeyCode::Delete) || InputManager::isKeyDown(KeyCode::Q))
             this->momentum_ = Radian(-this->rotationAccelerationRadian_);
-        else if (mKeyboard->isKeyDown(OIS::KC_PGDOWN) || mKeyboard->isKeyDown(OIS::KC_E))
+          else if (InputManager::isKeyDown(KeyCode::PageDown) || InputManager::isKeyDown(KeyCode::E))
             this->momentum_ = Radian(this->rotationAccelerationRadian_);
-        else
+          else
             this->momentum_ = 0;
+        }/*else
+          COUT(4) << "not steering ship: " << objectID << " our ship: " << network::Client::getSingleton()->getShipID() << std::endl;*/
 
         WorldEntity::tick(dt);
 

@@ -7,7 +7,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		PreprocessorDefinitions="NETWORK_SHARED_BUILD;WIN32_LEAN_AND_MEAN"
+		PreprocessorDefinitions="ORXONOX_NO_EXPORTS;NETWORK_STATIC_BUILD;WIN32_LEAN_AND_MEAN"
 	/>
 	<Tool
 		Name="VCLinkerTool"

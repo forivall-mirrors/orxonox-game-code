@@ -203,6 +203,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\CameraHandler.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Explosion.cc"
 					>
 				</File>
@@ -458,6 +462,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\Camera.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\CameraHandler.h"
 					>
 				</File>
 				<File

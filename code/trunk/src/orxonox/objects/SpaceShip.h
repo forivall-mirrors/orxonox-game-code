@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht
  *
  */
 
@@ -33,7 +33,8 @@
 
 #include <OgrePrerequisites.h>
 
-#include "core/InputHandler.h"
+#include "core/InputInterfaces.h"
+#include "Camera.h"
 #include "Model.h"
 #include "../tools/BillboardSet.h"
 
@@ -61,16 +62,20 @@ namespace orxonox
             void setTransDamp(float value);
             void setRotDamp(float value);
 
+            void getFocus();
+
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
 
-            bool mouseMoved(const OIS::MouseEvent &e);
-            bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-            bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-            bool mouseHeld(const OIS::MouseEvent &e, OIS::MouseButtonID id) { return true; }
+            bool mouseButtonPressed (const MouseState& state, MouseButton::Enum id);
+            bool mouseButtonReleased(const MouseState& state, MouseButton::Enum id);
+            bool mouseButtonHeld    (const MouseState& state, MouseButton::Enum id) { return true; }
+            bool mouseMoved         (const MouseState& state);
+            bool mouseScrolled      (const MouseState& state) { return true; }
 
 
         private:
+            void createCamera();
             static SpaceShip* instance_s;
 
             Vector3 testvector_;
@@ -80,6 +85,9 @@ namespace orxonox
             bool bRMousePressed_;
 
             Ogre::SceneNode* camNode_;
+            Camera* cam_;  
+            std::string camName_;
+
 
             ParticleInterface* tt_;
 
@@ -116,6 +124,7 @@ namespace orxonox
             float mouseY_;
 
             float emitterRate_;
+            bool server_;
     };
 }
 

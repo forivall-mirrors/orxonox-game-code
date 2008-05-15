@@ -60,9 +60,9 @@ namespace network
       first=new QueueItem;
       last=first;
       last->next=NULL;
-      // change this!!!!!!!
+      // change this!!!!!!! 
       last->packet = ev->packet;
-      last->address = ev->peer->address;
+      //last->address = ev->peer->address;
     } else {
       //insert a new element at the bottom
       last->next = new QueueItem;
@@ -71,11 +71,15 @@ namespace network
       last->next=NULL;
       // save the packet to the new element
       last->packet = ev->packet;
-      last->address = ev->peer->address;
+      //last->address = ev->peer->address;
     }
-    return true;
+    // pseudo bugfix: added a return false statement for error handling
+    if ( last->packet == ev->packet ) return true;
+    return false;
   }
 
+  //returns the first element in the list without deleting it but
+  //moving first pointer to next element
   ENetPacket *PacketBuffer::pop() {
     boost::mutex::scoped_lock lock(networkPacketBufferMutex);
     //std::cout << "packetbuffer pop" << std::endl;
