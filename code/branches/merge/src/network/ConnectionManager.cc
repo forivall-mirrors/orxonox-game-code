@@ -307,6 +307,8 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
         continue;
       classname = id->getName();
       network_id = id->getNetworkID();
+      if(network_id==0)
+        COUT(3) << "we got a null class id: " << id->getName() << std::endl;
       COUT(4) << "Con.Man:syncClassid:\tnetwork_id: " << network_id << ", classname: " << classname << std::endl;
 
       while(!addPacket(packet_gen.clid( (int)network_id, classname ), clientID) && failures < 10){
@@ -377,6 +379,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     no->setTransDamp(75);
     no->setRotDamp(1.0);
     no->setCamera("cam_"+client->getID());
+    no->classID = id->getNetworkID();
     no->create();
     
     client->setShipID(no->objectID);
