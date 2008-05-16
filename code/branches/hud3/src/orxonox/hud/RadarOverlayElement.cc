@@ -60,14 +60,14 @@ namespace orxonox
 
         windowW = GraphicsEngine::getSingleton().getWindowWidth();
         windowH = GraphicsEngine::getSingleton().getWindowHeight();
-        dim_ = dim*windowH;                         //conver relative data to absolute
+        dim_ = dim*windowH;                         //convert relative data to absolute
         left_ = left*windowW-dim_/2;                // ...
         top_ = top*windowH-dim_/2;                  // ...
         count_ = 0;
         container_ = container;
 
         shipPos_ = Vector3(0.0, 0.0, 0.0);
-        targetPos_ = Vector3(42.0, 0.0, 0.0);
+        targetPos_ = Vector3(1337.0, 0.0, 0.0);
         initialDir_ = Vector3(1.0, 0.0, 0.0);
         currentDir_ = initialDir_;
         initialOrth_ = Vector3(0.0, 0.0, 1.0);
