@@ -14,6 +14,9 @@ SET(CORE_SRC_FILES
   SignalHandler.cc
   CoreSettings.cc
   OutputHandler.cc
+  OutputBuffer.cc
+  InputBuffer.cc
+  CommandExecutor.cc
   Language.cc
   ClassTreeMask.cc
   Loader.cc
@@ -21,8 +24,6 @@ SET(CORE_SRC_FILES
   XMLPort.cc
   Namespace.cc
   NamespaceNode.cc
-  CommandExecutor.cc
-  InputBuffer.cc
   Tickable.cc
   Script.cc
   TclBind.cc

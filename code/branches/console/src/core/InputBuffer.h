@@ -53,7 +53,9 @@ namespace orxonox
             void (InputBufferListener::*function_)();
             bool bListenToAllChanges_;
             bool bOnlySingleInput_;
+            bool trueKeyFalseChar_;
             char char_;
+            OIS::KeyCode key_;
         };
 
         public:
@@ -63,26 +65,39 @@ namespace orxonox
             template <class T>
             void registerListener(T* listener, void (T::*function)(), bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, ' '};
+                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, false, '\0', OIS::KC_UNASSIGNED};
                 this->listeners_.insert(this->listeners_.end(), newListener);
             }
             template <class T>
             void registerListener(T* listener, void (T::*function)() const, bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, ' '};
+                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, false, '\0', OIS::KC_UNASSIGNED};
                 this->listeners_.insert(this->listeners_.end(), newListener);
             }
 
             template <class T>
-            void registerListener(T* listener, void (T::*function)(), char char_, bool bOnlySingleInput)
+            void registerListener(T* listener, void (T::*function)(), char _char, bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, char_};
+                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, false, _char, OIS::KC_UNASSIGNED};
                 this->listeners_.insert(this->listeners_.end(), newListener);
             }
             template <class T>
-            void registerListener(T* listener, void (T::*function)() const, char char_, bool bOnlySingleInput)
+            void registerListener(T* listener, void (T::*function)() const, char _char, bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, char_};
+                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, false, _char, OIS::KC_UNASSIGNED};
+                this->listeners_.insert(this->listeners_.end(), newListener);
+            }
+
+            template <class T>
+            void registerListener(T* listener, void (T::*function)(), OIS::KeyCode key)
+            {
+                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, true, true, '\0', key};
+                this->listeners_.insert(this->listeners_.end(), newListener);
+            }
+            template <class T>
+            void registerListener(T* listener, void (T::*function)() const, OIS::KeyCode key)
+            {
+                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, true, true, '\0', key};
                 this->listeners_.insert(this->listeners_.end(), newListener);
             }
 
@@ -98,17 +113,6 @@ namespace orxonox
             inline std::string get() const
                 { return this->buffer_; }
 
-            /*inline void activate()
-                { this->setActivated(true); }
-            inline void deactivate()
-                { this->setActivated(false); }
-            inline void setActivated(bool bActivated)
-                { if (this->bActivated_ != bActivated) { this->bActivated_ = bActivated; this->activityChanged(); } else { this->bActivated_ = bActivated; } }
-            inline bool isActivated() const
-                { return this->bActivated_; }
-
-            void activityChanged() const;*/
-
         private:
             bool charIsAllowed(const char& input);
 
@@ -116,7 +120,6 @@ namespace orxonox
             bool keyReleased(const OIS::KeyEvent &e);
 
             OIS::Keyboard* keyboard_;
-            //bool bActivated_;
             std::string buffer_;
             std::list<InputBufferListenerTuple> listeners_;
             std::string allowedChars_;

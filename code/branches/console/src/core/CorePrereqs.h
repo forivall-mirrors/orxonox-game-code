@@ -136,6 +136,7 @@ namespace orxonox
   class ObjectListElement;
   class OrxonoxClass;
   class OutputBuffer;
+  class OutputBufferListener;
   class OutputHandler;
   class Shell;
   template <class T>

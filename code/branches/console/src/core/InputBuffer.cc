@@ -37,34 +37,22 @@ namespace orxonox
 {
     InputBuffer::InputBuffer()
     {
-        //this->bActivated_ = false;
-        this->allowedChars_ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ‰ˆ¸ƒ÷‹0123456789 \\\"(){}[]<>.:,;_-+*/=!?|$&%^~#";
+        this->allowedChars_ = "abcdefghijklmnopqrstuvwxyz \
+                               ABCDEFGHIJKLMNOPQRSTUVWXYZ \
+                               ‰ÎÔˆ¸ƒÀœ÷‹·‚‡ÈÍËÌÓÏÛÙÚ˙˚˘ \
+                               0123456789 \
+                               \\\"(){}[]<>.:,;_-+*/=!?|$&%^~#";
         this->keyboard_ = InputManager::getSingleton().getKeyboard();
         this->buffer_ = "";
-
-        //this->keyboard_->setEventCallback(this);
     }
 
     InputBuffer::InputBuffer(const std::string allowedChars)
     {
-        //this->bActivated_ = false;
         this->allowedChars_ = allowedChars;
         this->keyboard_ = InputManager::getSingleton().getKeyboard();
         this->buffer_ = "";
     }
-/*
-    void InputBuffer::registerListener(InputBufferListener* listener, void (InputBufferListener::*function)(), bool bOnlySingleInput)
-    {
-        struct InputBufferListenerTuple newListener = {listener, function, true, bOnlySingleInput, ' '};
-        this->listeners_.insert(this->listeners_.end(), newListener);
-    }
 
-    void InputBuffer::registerListener(InputBufferListener* listener, void (InputBufferListener::*function)(), char char_, bool bOnlySingleInput)
-    {
-        struct InputBufferListenerTuple newListener = {listener, function, false, bOnlySingleInput, char_};
-        this->listeners_.insert(this->listeners_.end(), newListener);
-    }
-*/
     void InputBuffer::set(const std::string& input)
     {
         this->buffer_ = "";
@@ -116,14 +104,10 @@ namespace orxonox
     {
         for (std::list<InputBufferListenerTuple>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
-            if (((*it).bListenToAllChanges_ || ((*it).char_ == update)) && (!(*it).bOnlySingleInput_ || bSingleInput))
+            if ((!(*it).trueKeyFalseChar_) && ((*it).bListenToAllChanges_ || ((*it).char_ == update)) && (!(*it).bOnlySingleInput_ || bSingleInput))
                 (*(*it).listener_.*(*it).function_)();
         }
     }
-
-    /*void InputBuffer::activityChanged() const
-    {
-    }*/
 
     bool InputBuffer::charIsAllowed(const char& input)
     {
@@ -135,12 +119,11 @@ namespace orxonox
 
     bool InputBuffer::keyPressed(const OIS::KeyEvent &e)
     {
-        /*if (e.key == OIS::KC_NUMPADENTER)
+        for (std::list<InputBufferListenerTuple>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
-            this->setActivated(!this->isActivated());
-            this->clear();
-            return true;
-        }*/
+            if ((*it).trueKeyFalseChar_ && ((*it).key_ == e.key))
+                (*(*it).listener_.*(*it).function_)();
+        }
 
         if (this->keyboard_->isModifierDown(OIS::Keyboard::Ctrl))
         {
@@ -175,12 +158,6 @@ namespace orxonox
                 return true;
             }
         }
-
-        //std::cout << this->keyboard_->getAsString(e.key) << " / " << (char)e.text << std::endl;
-
-        std::string input = this->keyboard_->getAsString(e.key);
-        /*if (input.size() >= 1)
-            this->append(input[0]);*/
 
         this->append((char)e.text);
         return true;
