@@ -59,25 +59,16 @@ namespace orxonox
         dim_ = dim;
         left_ = left;
         top_ = top;
-        count_ = 0;
+        count_ = 100;
         container_ = container;
 
         shipPos_ = Vector3(0.0, 0.0, 0.0);
-        targetPos_ = Vector3(42.0, 42.0, 0.0);
-        initialDir_ = Vector3(0.0, 0.0, 1.0);
+        targetPos_ = Vector3(42.0, 0.0, 0.0);
+        initialDir_ = Vector3(1.0, 0.0, 0.0);
         currentDir_ = initialDir_;
-        initialOrth_ = Vector3(0.0, 1.0, 0.0);
+        initialOrth_ = Vector3(0.0, 0.0, 1.0);
         currentOrth_ = initialOrth_;
-
-        alpha_ = acos((currentDir_.dotProduct(targetPos_ - shipPos_))/((targetPos_ - shipPos_).length()*currentDir_.length()));
-        beta_ = acos((currentOrth_.dotProduct(targetPos_ - shipPos_))/((targetPos_ - shipPos_).length()*currentOrth_.length()));
-        vec_ = currentDir_.crossProduct(currentOrth_);
-
-        if(vec_.dotProduct(targetPos_ - shipPos_) > 0)
-            right_ = true;
-        else
-            right_=false;
-
+     
         setMetricsMode(Ogre::GMM_PIXELS);
         setPosition(left,top);
         setDimensions(dim_,dim_);
@@ -87,20 +78,10 @@ namespace orxonox
         point = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "point"));
         point->show();
         container->addChild(point);
+        point->setMaterialName("Orxonox/RedPoint");
+        point->setDimensions(5,5);
+        point->setMetricsMode(Ogre::GMM_PIXELS);
 
-        if (right_){
-            point->setPosition(sin(beta_)*alpha_/3.5*dim_/2+dim_/2+left-2,-cos(beta_)*alpha_/3.5*dim_/2+dim_/2+top-2);
-            point->setMaterialName("Orxonox/RedPoint");
-            point->setDimensions(5,5);
-            point->setMetricsMode(Ogre::GMM_PIXELS);
-        }
-
-        else {
-            point->setPosition(-sin(beta_)*alpha_/3.5*dim_/2+dim_/2+left-2,-cos(beta_)*alpha_/3.5*dim_/2+dim_/2+top-2);
-            point->setMaterialName("Orxonox/RedPoint");
-            point->setDimensions(5,5);
-            point->setMetricsMode(Ogre::GMM_PIXELS);
-        }
     }
 
 //    void RadarOverlayElement::setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ){
@@ -113,8 +94,28 @@ namespace orxonox
 //    }
 
     void RadarOverlayElement::update() {
+    	if(count_++ >= 100) {		// for testing purposes
+			count_ = 0;
+			COUT(3) << "pos:  " << shipPos_ << std::endl;
+			COUT(3) << "dir:  " << currentDir_ << std::endl;
+			COUT(3) << "orth: " << currentOrth_ << std::endl << std::endl;     	
+    	}
         shipPos_ = SpaceShip::instance_s->getPosition();
-        currentDir_ = SpaceShip::instance_s->getOrientation()*initialDir_; // according to beni....
+        currentDir_ = SpaceShip::instance_s->getOrientation()*initialDir_; 		// according to beni....
+		currentOrth_ = SpaceShip::instance_s->getOrientation()*initialOrth_;
+		
+		radius_ = acos((currentDir_.dotProduct(targetPos_ - shipPos_))/((targetPos_ - shipPos_).length()*currentDir_.length()));
+        phi_ = acos((currentOrth_.dotProduct(targetPos_ - shipPos_))/((targetPos_ - shipPos_).length()*currentOrth_.length()));
+        vec_ = currentDir_.crossProduct(currentOrth_);
+        if(vec_.dotProduct(targetPos_ - shipPos_) > 0) right_ = true;
+        else right_=false;
+        
+        if (right_){
+            point->setPosition(sin(phi_)*radius_/3.5*dim_/2+dim_/2+left_-2,-cos(phi_)*radius_/3.5*dim_/2+dim_/2+top_-2);         
+        }
+        else {
+            point->setPosition(-sin(phi_)*radius_/3.5*dim_/2+dim_/2+left_-2,-cos(phi_)*radius_/3.5*dim_/2+dim_/2+top_-2);
+        }
     }
 
 }

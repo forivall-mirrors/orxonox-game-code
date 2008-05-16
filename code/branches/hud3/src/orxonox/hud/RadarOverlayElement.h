@@ -55,8 +55,8 @@ namespace orxonox
     Vector3 targetPos_;             //position of target
     Vector3 shipPos_;               //position of ship
     Vector3 vec_;                   //vector product dir X ort
-    double alpha_;                  //defines the radius in the radar
-    double beta_;                   //defines the angle in the radar
+    double radius_;                  //defines the radius in the radar
+    double phi_;                   //defines the angle in the radar
     float left_, top_;
     bool right_;                    //checks whether the object is on the right side (since cos is not bijective)
     int count_;

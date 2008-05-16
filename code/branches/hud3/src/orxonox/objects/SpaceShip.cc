@@ -431,9 +431,9 @@ namespace orxonox
     }
 
     std::string SpaceShip::whereAmI() {
-	return getConvertedValue<int, std::string>(SpaceShip::instance_s->getPosition().x)
-	+ "  " + getConvertedValue<int, std::string>(SpaceShip::instance_s->getPosition().y)
-	+ "  " + getConvertedValue<int, std::string>(SpaceShip::instance_s->getPosition().z);
+	return getConvertedValue<float, std::string>(SpaceShip::instance_s->getPosition().x)
+	+ "  " + getConvertedValue<float, std::string>(SpaceShip::instance_s->getPosition().y)
+	+ "  " + getConvertedValue<float, std::string>(SpaceShip::instance_s->getPosition().z);
     }
 
     Vector3 SpaceShip::getSPosition() {

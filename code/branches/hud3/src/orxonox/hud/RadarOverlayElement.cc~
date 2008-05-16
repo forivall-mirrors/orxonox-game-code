@@ -25,14 +25,14 @@
 *
 */
 
-/*	local coordinate system of space ship:
+/*	local coordinate system of space ship at the beginning:
 
 			y
 			+   z
 			|  +
 			| /
 			|/
-	       x +------O
+   x +------O
 */
 
 #include <OgreOverlayManager.h>
@@ -41,82 +41,83 @@
 #include <OgreStringConverter.h>
 #include "RadarOverlayElement.h"
 
-
 namespace orxonox
 {
-  using namespace Ogre;
+    using namespace Ogre;
 
-  RadarOverlayElement::RadarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){
-    initialDir = Vector3(0.0, 0.0, 1.0);
-  }
-
-  RadarOverlayElement::~RadarOverlayElement(){}
-
-  void RadarOverlayElement::initialise(){
-    PanelOverlayElement::initialise();
-  }
-  
-  void RadarOverlayElement::initRadarOverlayElement(Real left, Real top, int dim, Ogre::OverlayContainer* container){
-
-    dirX_ = 0;	// direction of travel
-    dirY_ = 0;
-    dirZ_ = 1;
-    
-    ortX_ = 0;	// normal of ship
-    ortY_ = 1;
-    ortZ_ = 0;
-    
-    dX_ = 37;
-    dY_ = 0;
-    dZ_ = 0;
-    
-    alpha_ = acos((dirX_*dX_+dirY_*dY_+dirZ_*dZ_)/(sqrt(pow(dX_,2)+pow(dY_,2)+pow(dZ_,2))*sqrt(pow(dirX_,2)+pow(dirY_,2)+pow(dirZ_,2))));
-    beta_ = acos((ortX_*dX_+ortY_*dY_+ortZ_*dZ_)/(sqrt(pow(dX_,2)+pow(dY_,2)+pow(dZ_,2))*sqrt(pow(ortX_,2)+pow(ortY_,2)+pow(ortZ_,2))));
-    vecX_ = dirY_*ortZ_ - dirZ_*ortY_;
-    vecY_ = dirZ_*ortX_ - dirX_*ortZ_;
-    vecZ_ = dirX_*ortY_ - dirY_*ortX_;
-    
-    if((vecX_*dX_+vecY_*dY_+vecZ_*dZ_)>0){right_=true;}
-    else right_=false;
-    
-    setMetricsMode(Ogre::GMM_PIXELS);
-    setPosition(left,top);
-    setDimensions(dim,dim);
-    setMaterialName("Orxonox/Radar");
-    
-    Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
-
-    PanelOverlayElement* point = static_cast<PanelOverlayElement*>(overlayManager.createOverlayElement("Panel", "point"));
-    point->show();
-    
-    container->addChild(point);
-    
-    if (right_){
-      point->setPosition(sin(beta_)*alpha_/3.5*dim/2+dim/2+left-2,-cos(beta_)*alpha_/3.5*dim/2+dim/2+top-2);
-      point->setMaterialName("Orxonox/RedPoint");
-      point->setDimensions(5,5);
-      point->setMetricsMode(Ogre::GMM_PIXELS);
+    RadarOverlayElement::RadarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){
     }
-  
-    else {
-      point->setPosition(-sin(beta_)*alpha_/3.5*dim/2+dim/2+left-2,-cos(beta_)*alpha_/3.5*dim/2+dim/2+top-2);
-      point->setMaterialName("Orxonox/RedPoint");
-      point->setDimensions(5,5);
-      point->setMetricsMode(Ogre::GMM_PIXELS);
+
+    RadarOverlayElement::~RadarOverlayElement(){
     }
-  } 
-   
-  void RadarOverlayElement::setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ){
-    dirX_=dirX;
-    dirY_=dirY;
-    dirZ_=dirZ;
-    ortX_=ortX;
-    ortY_=ortY;
-    ortZ_=ortZ;
-  }
-  
-  
-  
+
+    void RadarOverlayElement::initialise(){
+        PanelOverlayElement::initialise();
+    }
+
+    void RadarOverlayElement::initRadarOverlayElement(Real left, Real top, int dim, Ogre::OverlayContainer* container){
+        dim_ = dim;
+        left_ = left;
+        top_ = top;
+        count_ = 100;
+        container_ = container;
+
+        shipPos_ = Vector3(0.0, 0.0, 0.0);
+        targetPos_ = Vector3(42.0, 0.0, 0.0);
+        initialDir_ = Vector3(1.0, 0.0, 0.0);
+        currentDir_ = initialDir_;
+        initialOrth_ = Vector3(0.0, 0.0, 1.0);
+        currentOrth_ = initialOrth_;
+     
+        setMetricsMode(Ogre::GMM_PIXELS);
+        setPosition(left,top);
+        setDimensions(dim_,dim_);
+        setMaterialName("Orxonox/Radar");
+
+        om = &Ogre::OverlayManager::getSingleton();
+        point = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "point"));
+        point->show();
+        container->addChild(point);
+        point->setMaterialName("Orxonox/RedPoint");
+        point->setDimensions(5,5);
+        point->setMetricsMode(Ogre::GMM_PIXELS);
+
+    }
+
+//    void RadarOverlayElement::setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ){
+//        dirX_=dirX;
+//        dirY_=dirY;
+//        dirZ_=dirZ;
+//        ortX_=ortX;
+//        ortY_=ortY;
+//        ortZ_=ortZ;
+//    }
+
+    void RadarOverlayElement::update() {
+    	if(count_++ >= 100) {		// for testing purposes
+			count_ = 0;
+			COUT(3) << "pos:  " << shipPos_ << std::endl;
+			COUT(3) << "dir:  " << currentDir_ << std::endl;
+			COUT(3) << "orth: " << currentOrth_ << std::endl << std::endl;     	
+    	}
+        shipPos_ = SpaceShip::instance_s->getPosition();
+        currentDir_ = SpaceShip::instance_s->getOrientation()*initialDir_; 		// according to beni....
+		currentOrth_ = SpaceShip::instance_s->getOrientation()*initialOrth_;
+		
+		radius_ = acos((currentDir_.dotProduct(targetPos_ - shipPos_))/((targetPos_ - shipPos_).length()*currentDir_.length()));
+        phi_ = acos((currentOrth_.dotProduct(targetPos_ - shipPos_))/((targetPos_ - shipPos_).length()*currentOrth_.length()));
+        vec_ = currentDir_.crossProduct(currentOrth_);
+        if(vec_.dotProduct(targetPos_ - shipPos_) > 0) right_ = true;
+        else right_=false;
+        
+        if (right_){
+            point->setPosition(sin(phi_)*radius_/3.5*dim_/2+dim_/2+left_-2,-cos(phi_)*radius_/3.5*dim_/2+dim_/2+top_-2);         
+        }
+        else {
+            point->setPosition(-sin(phi_)*radius_/3.5*dim_/2+dim_/2+left_-2,-cos(phi_)*radius_/3.5*dim_/2+dim_/2+top_-2);
+        }
+    }
+
 }
 
 

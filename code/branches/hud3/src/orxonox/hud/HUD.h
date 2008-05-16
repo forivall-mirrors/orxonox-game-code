@@ -43,7 +43,7 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport HUD : Tickable
+  class _OrxonoxExport HUD : public Tickable
   {
   private:
 
