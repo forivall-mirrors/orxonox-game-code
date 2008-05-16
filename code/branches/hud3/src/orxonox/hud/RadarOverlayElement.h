@@ -48,19 +48,19 @@ namespace orxonox
     Ogre::PanelOverlayElement* point;
     Ogre::OverlayContainer* container_;
     Ogre::OverlayManager* om;       //pointer to the one and only overlay manager
-    Vector3 initialDir_;	        //initial direction of ship
-    Vector3 currentDir_;            //current direction of ship
-    Vector3 initialOrth_;
+    Vector3 initialDir_;	        // direction of nose
+    Vector3 currentDir_;
+    Vector3 initialOrth_;           // direction of normal
     Vector3 currentOrth_;
     Vector3 targetPos_;             //position of target
     Vector3 shipPos_;               //position of ship
-    Vector3 vec_;                   //vector product dir X ort
-    double radius_;                  //defines the radius in the radar
-    double phi_;                   //defines the angle in the radar
-    float left_, top_;
+
+    double radius_;                 //defines the radius on the radar
+    double phi_;                    //defines the angle on the radar
+    float left_, top_, dim_;
     bool right_;                    //checks whether the object is on the right side (since cos is not bijective)
     int count_;
-    int dim_;
+    int windowW, windowH;
 
   public:
 
@@ -68,7 +68,7 @@ namespace orxonox
     virtual ~RadarOverlayElement();
     virtual void initialise();
     void update();
-    void initRadarOverlayElement(Real left, Real top, int dim, Ogre::OverlayContainer* container);
+    void initRadarOverlayElement(Real left, Real top, Real dim, Ogre::OverlayContainer* container);
     void setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ);
     int newShip(int X, int Y, int Z);
 

@@ -40,6 +40,7 @@
 #include <OgrePanelOverlayElement.h>
 #include <OgreStringConverter.h>
 #include "RadarOverlayElement.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
@@ -55,11 +56,14 @@ namespace orxonox
         PanelOverlayElement::initialise();
     }
 
-    void RadarOverlayElement::initRadarOverlayElement(Real left, Real top, int dim, Ogre::OverlayContainer* container){
-        dim_ = dim;
-        left_ = left;
-        top_ = top;
-        count_ = 100;
+    void RadarOverlayElement::initRadarOverlayElement(Real left, Real top, Real dim, Ogre::OverlayContainer* container){
+
+        windowW = GraphicsEngine::getSingleton().getWindowWidth();
+        windowH = GraphicsEngine::getSingleton().getWindowHeight();
+        dim_ = dim*windowH;                         //conver relative data to absolute
+        left_ = left*windowW-dim_/2;                // ...
+        top_ = top*windowH-dim_/2;                  // ...
+        count_ = 0;
         container_ = container;
 
         shipPos_ = Vector3(0.0, 0.0, 0.0);
@@ -68,11 +72,11 @@ namespace orxonox
         currentDir_ = initialDir_;
         initialOrth_ = Vector3(0.0, 0.0, 1.0);
         currentOrth_ = initialOrth_;
-     
+
         setMetricsMode(Ogre::GMM_PIXELS);
-        setPosition(left,top);
-        setDimensions(dim_,dim_);
         setMaterialName("Orxonox/Radar");
+        setPosition(left_, top_);
+        setDimensions(dim_,dim_);
 
         om = &Ogre::OverlayManager::getSingleton();
         point = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "point"));
@@ -94,24 +98,17 @@ namespace orxonox
 //    }
 
     void RadarOverlayElement::update() {
-    	if(count_++ >= 100) {		// for testing purposes
-			count_ = 0;
-			COUT(3) << "pos:  " << shipPos_ << std::endl;
-			COUT(3) << "dir:  " << currentDir_ << std::endl;
-			COUT(3) << "orth: " << currentOrth_ << std::endl << std::endl;     	
-    	}
         shipPos_ = SpaceShip::instance_s->getPosition();
         currentDir_ = SpaceShip::instance_s->getOrientation()*initialDir_; 		// according to beni....
 		currentOrth_ = SpaceShip::instance_s->getOrientation()*initialOrth_;
-		
+
 		radius_ = acos((currentDir_.dotProduct(targetPos_ - shipPos_))/((targetPos_ - shipPos_).length()*currentDir_.length()));
         phi_ = acos((currentOrth_.dotProduct(targetPos_ - shipPos_))/((targetPos_ - shipPos_).length()*currentOrth_.length()));
-        vec_ = currentDir_.crossProduct(currentOrth_);
-        if(vec_.dotProduct(targetPos_ - shipPos_) > 0) right_ = true;
+        if((currentDir_.crossProduct(currentOrth_)).dotProduct(targetPos_ - shipPos_) > 0) right_ = true;
         else right_=false;
-        
+
         if (right_){
-            point->setPosition(sin(phi_)*radius_/3.5*dim_/2+dim_/2+left_-2,-cos(phi_)*radius_/3.5*dim_/2+dim_/2+top_-2);         
+            point->setPosition(sin(phi_)*radius_/3.5*dim_/2+dim_/2+left_-2,-cos(phi_)*radius_/3.5*dim_/2+dim_/2+top_-2);
         }
         else {
             point->setPosition(-sin(phi_)*radius_/3.5*dim_/2+dim_/2+left_-2,-cos(phi_)*radius_/3.5*dim_/2+dim_/2+top_-2);

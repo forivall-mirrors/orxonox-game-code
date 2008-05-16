@@ -269,15 +269,18 @@ namespace orxonox
     {
       camName_=camera;
       // change camera attributes here, if you want to ;)
+      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
+      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
+      //camNode_->setOrientation(q1*q2);
     }
-    
+
     void SpaceShip::getFocus(){
       COUT(4) << "requesting focus" << std::endl;
       if(network::Client::getSingleton()==0 || network::Client::getSingleton()->getShipID()==objectID)
         CameraHandler::getInstance()->requestFocus(cam_);
-      
+
     }
-    
+
     void SpaceShip::createCamera(){
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);

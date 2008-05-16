@@ -87,7 +87,7 @@ namespace orxonox
             bool bRMousePressed_;
 
             Ogre::SceneNode* camNode_;
-            Camera* cam_;  
+            Camera* cam_;
             std::string camName_;
 
 

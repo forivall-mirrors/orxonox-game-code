@@ -64,7 +64,7 @@ namespace orxonox
     Ogre::OverlayContainer* energyCounterPanel = static_cast<Ogre::OverlayContainer*>(overlayManager.createOverlayElement("Panel", "Orxonox/HUD/energyCounterPanel"));
 
     energyCounter = static_cast<SmartBarOverlayElement*>(overlayManager.createOverlayElement("SmartBar", "energyCounter"));
-    energyCounter->show();
+    //energyCounter->show();
 
 
     radar = static_cast<RadarOverlayElement*>(overlayManager.createOverlayElement("Radar", "radar"));
@@ -132,17 +132,16 @@ namespace orxonox
 //    orxonoxOverlay->add3D(ogreNode_);
 */
 
-    energyCounterPanel->setLeft(-50);
-    energyCounterPanel->setTop(10);
-    energyCounterPanel->setWidth(100);
-    energyCounterPanel->setHeight(20);
-    energyCounterPanel->setHorizontalAlignment(Ogre::GHA_CENTER);
-    energyCounterPanel->setMetricsMode(Ogre::GMM_PIXELS);
+    energyCounterPanel->setLeft(0.0);
+    energyCounterPanel->setTop(0.0);
+    energyCounterPanel->setWidth(1.0);
+    energyCounterPanel->setHeight(1.0);
+    energyCounterPanel->setMetricsMode(Ogre::GMM_RELATIVE);
 
-    energyCounter->initSmartBarOverlayElement(-100,0,200,20,BarOverlayElement::LEFT);
+    energyCounter->initSmartBarOverlayElement(10,10,200,20,BarOverlayElement::LEFT);
     energyCounter->reset(80);
 
-    radar->initRadarOverlayElement(10,10,200,energyCounterPanel);
+    radar->initRadarOverlayElement(0.5, 0.8, 0.2, energyCounterPanel);
 
 
   }
