@@ -282,7 +282,7 @@ namespace orxonox
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);
       COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
-      this->camNode_->setPosition(/*this->getNode()->getPosition() +*/ Vector3(-50,0,10));
+      this->camNode_->setPosition(/*this->getNode()->getPosition() +*/ Vector3(-40,0,0));
       COUT(4) << "position: (cam)" << this->camNode_->getPosition() << std::endl;
 /*
 //        node->setInheritOrientation(false);
@@ -294,9 +294,9 @@ namespace orxonox
 
       cam_->setTargetNode(this->getNode());
 //        cam->setPosition(Vector3(0,-350,0));
-      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
-      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
-      //camNode_->setOrientation(q1*q2);
+      //Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
+      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(1,0,0));
+      //camNode_->setOrientation(q2);
       if(network::Client::getSingleton()!=0 && network::Client::getSingleton()->getShipID()==objectID){
         this->setBacksync(true);
         CameraHandler::getInstance()->requestFocus(cam_);

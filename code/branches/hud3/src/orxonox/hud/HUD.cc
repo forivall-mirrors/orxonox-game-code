@@ -156,7 +156,6 @@ namespace orxonox
       float v = SpaceShip::instance_s->getVelocity().length();
       float vmax = SpaceShip::instance_s->getMaxSpeed();
       speedo->reset(100*v/vmax);
-      COUT(3) << 100*v/vmax << std::endl;
       radar->update();
     /*if (this->ogreNode_)
     {
