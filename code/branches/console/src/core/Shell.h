@@ -29,6 +29,9 @@
 #ifndef _Shell_H__
 #define _Shell_H__
 
+#include <list>
+#include <vector>
+
 #include "CorePrereqs.h"
 
 #include "OrxonoxClass.h"
@@ -37,13 +40,17 @@
 
 namespace orxonox
 {
-    class ShellListener
+    class _CoreExport ShellListener
     {
-        virtual void outputChanged() = 0;
-        virtual void lastLineChanged() = 0;
-        virtual void inputChanged() = 0;
-        virtual void exit() = 0;
-    }
+        friend class Shell;
+
+        virtual void linesChanged() {}
+        virtual void onlyLastLineChanged() {}
+        virtual void lineAdded() {}
+        virtual void inputChanged() {}
+        virtual void cursorChanged() {}
+        virtual void exit() {}
+    };
 
     class _CoreExport Shell : virtual public OrxonoxClass, public InputBufferListener, public OutputBufferListener
     {
@@ -52,30 +59,71 @@ namespace orxonox
 
             virtual void setConfigValues();
 
+            void registerListener(ShellListener* listener);
+            void unregisterListener(ShellListener* listener);
+
+            inline InputBuffer& getInputBuffer()
+                { return this->inputBuffer_; }
+            inline OutputBuffer& getOutputBuffer()
+                { return this->outputBuffer_; }
+
+            void setCursorPosition(unsigned int cursor);
+            inline unsigned int getCursorPosition() const
+                { return this->inputBuffer_.getCursorPosition(); }
+
+            void setInput(const std::string& input);
+
+            inline void clearInput()
+                { this->setInput(""); }
+            inline std::string getInput() const
+                { return this->inputBuffer_.get(); }
+
+            inline std::list<std::string>::const_iterator getNewestLineIterator() const;
+            inline std::list<std::string>::const_iterator getEndIterator() const;
+
+            void addLine(const std::string& line, unsigned int level);
+            void clearLines();
+
+            inline unsigned int getNumLines() const
+                { return this->lines_.size(); }
+            inline unsigned int getScrollPosition() const
+                { return this->scrollPosition_; }
+
         private:
             Shell();
             Shell(const Shell& other);
-            ~Shell() {}
+            virtual ~Shell() {}
+
+            void addToHistory(const std::string& command);
+            std::string getFromHistory() const;
 
             virtual void outputChanged();
             void inputChanged();
             void execute();
             void hintandcomplete();
             void backspace();
+            void deletechar();
+            void clear();
             void cursor_right();
             void cursor_left();
+            void cursor_end();
+            void cursor_home();
             void history_up();
             void history_down();
             void scroll_up();
             void scroll_down();
             void exit();
 
+            std::list<ShellListener*> listeners_;
             InputBuffer inputBuffer_;
-            OutputBuffer OutputBuffer_;
+            OutputBuffer outputBuffer_;
             std::list<std::string> lines_;
-            unsigned int cursor_;
+            std::list<std::string>::const_iterator scrollIterator_;
+            unsigned int scrollPosition_;
             std::vector<std::string> commandHistory_;
             unsigned int maxHistoryLength_;
+            unsigned int historyPosition_;
+            unsigned int historyOffset_;
     };
 }
 

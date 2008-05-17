@@ -100,6 +100,9 @@ namespace orxonox
             this->logfile_.flush();
         }
 
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            Shell::getInstance().getOutputBuffer() << sb;
+
         return *this;
     }
 
@@ -118,6 +121,9 @@ namespace orxonox
             manipulator(this->logfile_);
             this->logfile_.flush();
         }
+
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            manipulator(Shell::getInstance().getOutputBuffer());
 
         return *this;
     }
@@ -138,6 +144,9 @@ namespace orxonox
             this->logfile_.flush();
         }
 
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            manipulator(Shell::getInstance().getOutputBuffer());
+
         return *this;
     }
 
@@ -156,6 +165,9 @@ namespace orxonox
             manipulator(this->logfile_);
             this->logfile_.flush();
         }
+
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            manipulator(Shell::getInstance().getOutputBuffer());
 
         return *this;
     }

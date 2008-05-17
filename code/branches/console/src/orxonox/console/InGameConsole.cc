@@ -91,7 +91,7 @@ namespace orxonox
     }
 
     void InGameConsole::removeLast(){
-        this->ib_->removeLast();
+        this->ib_->removeBehindCursor();
     }
 
     void InGameConsole::exit(){

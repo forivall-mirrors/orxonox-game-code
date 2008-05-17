@@ -29,30 +29,32 @@
 #ifndef _OutputBuffer_H__
 #define _OutputBuffer_H__
 
-#include <set>
+#include <list>
 #include <sstream>
 
 #include "CorePrereqs.h"
 
 namespace orxonox
 {
-    class OutputBufferListener
+    class _CoreExport OutputBufferListener
     {
         friend class OutputBuffer;
+
         virtual void outputChanged() = 0;
     };
 
     class _CoreExport OutputBuffer
     {
         public:
-            static OutputBuffer& getOutputBuffer();
+            OutputBuffer() {}
+            ~OutputBuffer() {}
 
             template <class T>
             inline OutputBuffer& operator<<(T object)
             {
                 this->stream_ << object;
                 this->callListeners();
-                return &this;
+                return *this;
             }
 
             template <class T>
@@ -85,15 +87,16 @@ namespace orxonox
             void registerListener(OutputBufferListener* listener);
             void unregisterListener(OutputBufferListener* listener);
 
-        private:
-            OutputBuffer() {}
-            OutputBuffer(const OutputBuffer& other);
-            ~OutputBuffer() {}
+            inline operator std::stringstream&()
+            {
+                return this->stream_;
+            }
 
+        private:
             void callListeners();
 
             std::stringstream stream_;
-            std::set<OutputBufferListener*> listeners_;
+            std::list<OutputBufferListener*> listeners_;
     };
 }
 

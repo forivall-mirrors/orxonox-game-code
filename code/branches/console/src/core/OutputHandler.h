@@ -43,6 +43,8 @@
 #include <fstream>
 #include <string>
 
+#include "Shell.h"
+
 namespace orxonox
 {
     //! The OutputHandler acts like std::cout, but redirects output to the console AND the logfile.
@@ -153,6 +155,9 @@ namespace orxonox
             this->logfile_.flush();
         }
 
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            Shell::getInstance().getOutputBuffer() << output;
+
         return *this;
     }
 
@@ -173,6 +178,9 @@ namespace orxonox
             out.getLogfile() << output;
             out.getLogfile().flush();
         }
+
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= out.getOutputLevel())
+            Shell::getInstance().getOutputBuffer() << output;
 
         return out;
     }

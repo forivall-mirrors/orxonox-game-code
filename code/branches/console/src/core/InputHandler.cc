@@ -33,6 +33,7 @@
 
 #include "InputHandler.h"
 #include "Debug.h"
+#include "Iterator.h"
 #include "util/Convert.h"
 #include "InputEventListener.h"
 #include "InputEvent.h"

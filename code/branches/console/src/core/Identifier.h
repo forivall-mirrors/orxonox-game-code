@@ -62,6 +62,7 @@
 #include "ObjectList.h"
 #include "Debug.h"
 #include "Iterator.h"
+#include "MetaObjectList.h"
 #include "util/String.h"
 
 namespace orxonox

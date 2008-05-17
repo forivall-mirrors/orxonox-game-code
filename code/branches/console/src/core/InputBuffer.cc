@@ -44,6 +44,7 @@ namespace orxonox
                                \\\"(){}[]<>.:,;_-+*/=!?|$&%^~#";
         this->keyboard_ = InputManager::getSingleton().getKeyboard();
         this->buffer_ = "";
+        this->cursor_ = 0;
     }
 
     InputBuffer::InputBuffer(const std::string allowedChars)
@@ -51,44 +52,82 @@ namespace orxonox
         this->allowedChars_ = allowedChars;
         this->keyboard_ = InputManager::getSingleton().getKeyboard();
         this->buffer_ = "";
+        this->cursor_ = 0;
     }
 
-    void InputBuffer::set(const std::string& input)
+    void InputBuffer::unregisterListener(InputBufferListener* listener)
     {
-        this->buffer_ = "";
-        this->append(input);
-    }
-
-    void InputBuffer::append(const std::string& input)
-    {
-        for (unsigned int i = 0; i < input.size(); i++)
+        for (std::list<InputBufferListenerTuple>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
         {
-            if (this->charIsAllowed(input[i]))
-                this->buffer_ += input[i];
-
-            this->updated(input[i], false);
+            if ((*it).listener_ == listener)
+                this->listeners_.erase(it++);
+            else
+                ++it;
         }
-        this->updated();
     }
 
-    void InputBuffer::append(const char& input)
+    void InputBuffer::set(const std::string& input, bool update)
+    {
+        this->clear(false);
+        this->insert(input, update);
+    }
+
+    void InputBuffer::insert(const std::string& input, bool update)
+    {
+        for (unsigned int i = 0; i < input.size(); ++i)
+        {
+            this->insert(input[i], false);
+
+            if (update)
+                this->updated(input[i], false);
+        }
+
+        if (update)
+            this->updated();
+    }
+
+    void InputBuffer::insert(const char& input, bool update)
     {
         if (this->charIsAllowed(input))
-            this->buffer_ += input;
+        {
+            this->buffer_.insert(this->cursor_, 1, input);
+            ++this->cursor_;
+        }
 
-        this->updated(input, true);
+        if (update)
+            this->updated(input, true);
     }
 
-    void InputBuffer::clear()
+    void InputBuffer::clear(bool update)
     {
         this->buffer_ = "";
-        this->updated();
+        this->cursor_ = 0;
+
+        if (update)
+            this->updated();
     }
 
-    void InputBuffer::removeLast()
+    void InputBuffer::removeBehindCursor(bool update)
     {
-        this->buffer_ = this->buffer_.substr(0, this->buffer_.size() - 1);
-        this->updated();
+        if (this->cursor_ > 0)
+        {
+            --this->cursor_;
+            this->buffer_.erase(this->cursor_, 1);
+
+            if (update)
+                this->updated();
+        }
+    }
+
+    void InputBuffer::removeAtCursor(bool update)
+    {
+        if (this->cursor_ < this->buffer_.size())
+        {
+            this->buffer_.erase(this->cursor_, 1);
+
+            if (update)
+                this->updated();
+        }
     }
 
     void InputBuffer::updated()
@@ -129,7 +168,7 @@ namespace orxonox
         {
             if (e.key == OIS::KC_V)
             {
-                this->append(fromClipboard());
+                this->insert(fromClipboard());
                 return true;
             }
             else if (e.key == OIS::KC_C)
@@ -148,7 +187,7 @@ namespace orxonox
         {
             if (e.key == OIS::KC_INSERT)
             {
-                this->append(fromClipboard());
+                this->insert(fromClipboard());
                 return true;
             }
             else if (e.key == OIS::KC_DELETE)
@@ -159,7 +198,7 @@ namespace orxonox
             }
         }
 
-        this->append((char)e.text);
+        this->insert((char)e.text);
         return true;
     }
 

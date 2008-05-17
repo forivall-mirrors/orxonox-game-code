@@ -17,6 +17,7 @@ SET(CORE_SRC_FILES
   OutputBuffer.cc
   InputBuffer.cc
   CommandExecutor.cc
+  Shell.cc
   Language.cc
   ClassTreeMask.cc
   Loader.cc

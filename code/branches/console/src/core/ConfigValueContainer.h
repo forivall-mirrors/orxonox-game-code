@@ -106,14 +106,6 @@ namespace orxonox
             bool reset();
             void update();
 
-            /** @brief Converts the config-value to a string. @return The string */
-            inline std::string toString() const
-                { return this->value_.toString(); }
-            /** @brief Returns the typename of the assigned config-value. @return The typename */
-            inline std::string getTypename() const
-                { return this->value_.getTypename(); }
-
-        private:
             bool parse(const std::string& input);
             bool parse(const std::string& input, const MultiTypeMath& defvalue);
 
@@ -122,6 +114,14 @@ namespace orxonox
             bool parse(unsigned int index, const std::string& input);
             bool parse(unsigned int index, const std::string& input, const MultiTypeMath& defvalue);
 
+            /** @brief Converts the config-value to a string. @return The string */
+            inline std::string toString() const
+                { return this->value_.toString(); }
+            /** @brief Returns the typename of the assigned config-value. @return The typename */
+            inline std::string getTypename() const
+                { return this->value_.getTypename(); }
+
+        private:
             bool                       bIsVector_;                  //!< True if the container contains a std::vector
 
             ConfigFileType             type_;                       //!< The type of the corresponding config-file

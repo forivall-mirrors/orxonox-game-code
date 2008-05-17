@@ -139,6 +139,7 @@ namespace orxonox
   class OutputBufferListener;
   class OutputHandler;
   class Shell;
+  class ShellListener;
   template <class T>
   class SubclassIdentifier;
   class TclBind;

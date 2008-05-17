@@ -114,7 +114,7 @@ namespace orxonox
       }
       void removeLast() const
       {
-        this->ib_->removeLast();
+        this->ib_->removeBehindCursor();
       }
       void exit() const
       {

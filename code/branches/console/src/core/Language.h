@@ -50,7 +50,6 @@
 #include <map>
 #include <string>
 
-
 #define AddLanguageEntry(label, fallbackstring) \
     orxonox::Language::getLanguage().addEntry(label, fallbackstring)
 

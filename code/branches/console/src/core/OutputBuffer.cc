@@ -32,22 +32,20 @@
 
 namespace orxonox
 {
-    OutputBuffer& OutputBuffer::getOutputBuffer()
-    {
-        static OutputBuffer instance;
-        return instance;
-    }
-
     void OutputBuffer::registerListener(OutputBufferListener* listener)
     {
-        this->listeners_.insert(listener);
+        this->listeners_.insert(this->listeners_.end(), listener);
     }
 
     void OutputBuffer::unregisterListener(OutputBufferListener* listener)
     {
-        std::set<OutputBufferListener*>::iterator it = this->listeners_.find(listener);
-        if (it != this->listeners_.end())
-            this->listeners_.erase(it);
+        for (std::list<OutputBufferListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
+        {
+            if ((*it) == listener)
+                this->listeners_.erase(it++);
+            else
+                ++it;
+        }
     }
 
     bool OutputBuffer::getLine(std::string* output)
@@ -62,12 +60,13 @@ namespace orxonox
         if (eof)
             this->stream_.flush();
 
+        // Return true if this was a whole new line, ended by \n
         return (!eof);
     }
 
     void OutputBuffer::callListeners()
     {
-        for (std::set<OutputBufferListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
-            (*it)->bufferChanged();
+        for (std::list<OutputBufferListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+            (*it)->outputChanged();
     }
 }

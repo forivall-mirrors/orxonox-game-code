@@ -122,6 +122,7 @@ namespace orxonox
         {
             if (index < this->valueVector_.size())
             {
+                // Erase the entry from the vector, change (shift) all entries beginning with index in the config file, remove the last entry from the file
                 this->valueVector_.erase(this->valueVector_.begin() + index);
                 for (unsigned int i = index; i < this->valueVector_.size(); i++)
                     ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isA(MT_string));

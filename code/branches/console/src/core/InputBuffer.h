@@ -101,17 +101,35 @@ namespace orxonox
                 this->listeners_.insert(this->listeners_.end(), newListener);
             }
 
-            void set(const std::string& input);
-            void append(const std::string& input);
-            void append(const char& input);
-            void removeLast();
-            void clear();
+            void unregisterListener(InputBufferListener* listener);
+
+            void set(const std::string& input, bool update = true);
+            void insert(const std::string& input, bool update = true);
+            void insert(const char& input, bool update = true);
+            void clear(bool update = true);
+            void removeAtCursor(bool update = true);
+            void removeBehindCursor(bool update = true);
 
             void updated();
             void updated(const char& update, bool bSingleInput);
 
             inline std::string get() const
                 { return this->buffer_; }
+            inline unsigned int getSize() const
+                { return this->buffer_.size(); }
+
+            inline unsigned int getCursorPosition() const
+                { return this->cursor_; }
+            inline void setCursorPosition(unsigned int cursor)
+                { if (cursor <= this->buffer_.size()) { this->cursor_ = cursor; } }
+            inline void setCursorToEnd()
+                { this->cursor_ = this->buffer_.size(); }
+            inline void setCursorToBegin()
+                { this->cursor_ = 0; }
+            inline void increaseCursor()
+                { if (this->cursor_ < this->buffer_.size()) { ++this->cursor_; } }
+            inline void decreaseCursor()
+                { if (this->cursor_ > 0) { --this->cursor_; } }
 
         private:
             bool charIsAllowed(const char& input);
@@ -123,6 +141,7 @@ namespace orxonox
             std::string buffer_;
             std::list<InputBufferListenerTuple> listeners_;
             std::string allowedChars_;
+            unsigned int cursor_;
     };
 }
 
