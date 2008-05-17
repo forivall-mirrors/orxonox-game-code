@@ -45,6 +45,8 @@ namespace orxonox
         this->keyboard_ = InputManager::getSingleton().getKeyboard();
         this->buffer_ = "";
         this->cursor_ = 0;
+
+        InputManager::getSingleton().feedInputBuffer(this);
     }
 
     InputBuffer::InputBuffer(const std::string allowedChars)
@@ -53,6 +55,8 @@ namespace orxonox
         this->keyboard_ = InputManager::getSingleton().getKeyboard();
         this->buffer_ = "";
         this->cursor_ = 0;
+
+        InputManager::getSingleton().feedInputBuffer(this);
     }
 
     void InputBuffer::unregisterListener(InputBufferListener* listener)

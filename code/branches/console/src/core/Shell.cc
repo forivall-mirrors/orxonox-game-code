@@ -47,7 +47,7 @@ namespace orxonox
         this->historyOffset_ = 0;
 
         this->clearLines();
-
+/*
         this->inputBuffer_.registerListener(this, &Shell::inputChanged, true);
         this->inputBuffer_.registerListener(this, &Shell::execute, '\r', false);
         this->inputBuffer_.registerListener(this, &Shell::hintandcomplete, '\t', true);
@@ -62,7 +62,7 @@ namespace orxonox
         this->inputBuffer_.registerListener(this, &Shell::history_down, OIS::KC_DOWN);
         this->inputBuffer_.registerListener(this, &Shell::scroll_up, OIS::KC_PGUP);
         this->inputBuffer_.registerListener(this, &Shell::scroll_down, OIS::KC_PGDOWN);
-
+*/
         this->setConfigValues();
     }
 
@@ -140,9 +140,16 @@ namespace orxonox
     std::list<std::string>::const_iterator Shell::getNewestLineIterator() const
     {
         if (this->scrollPosition_)
+        {
             return this->scrollIterator_;
+        }
         else
-            return this->lines_.begin();
+        {
+            if ((*this->lines_.begin()) == "" && this->lines_.size() > 1)
+                return (++this->lines_.begin());
+            else
+                return this->lines_.begin();
+        }
     }
 
     std::list<std::string>::const_iterator Shell::getEndIterator() const
@@ -168,7 +175,14 @@ namespace orxonox
         std::string output;
         while (this->outputBuffer_.getLine(&output))
         {
+            bool newline = false;
+            if ((*this->lines_.begin()) == "")
+                newline = true;
+
             (*this->lines_.begin()) += output;
+
+            SHELL_UPDATE_LISTENERS(onlyLastLineChanged);
+
             this->lines_.insert(this->lines_.begin(), "");
 
             if (this->scrollPosition_)
@@ -176,8 +190,10 @@ namespace orxonox
             else
                 this->scrollIterator_ = this->lines_.begin();
 
-            SHELL_UPDATE_LISTENERS(linesChanged);
-            SHELL_UPDATE_LISTENERS(lineAdded);
+            if (newline)
+            {
+                SHELL_UPDATE_LISTENERS(lineAdded);
+            }
         }
 
         (*this->lines_.begin()) += output;

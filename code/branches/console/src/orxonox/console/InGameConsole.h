@@ -36,46 +36,60 @@
 #include <OgreTextAreaOverlayElement.h>
 
 #include "core/Tickable.h"
-#include "core/InputBuffer.h"
+#include "core/Shell.h"
 
 
 namespace orxonox
 {
-    class _OrxonoxExport InGameConsole : public InputBufferListener
+    class _OrxonoxExport InGameConsole : public Tickable, public ShellListener
     {
         public:
-            InGameConsole(InputBuffer* ib);
-            ~InGameConsole();
-            void listen();
-            void execute();
-            void hintandcomplete();
-            void clear();
-            void removeLast();
-            void exit();
-            void init();
+            static InGameConsole& getInstance();
+
+            void setConfigValues();
+
+            virtual void linesChanged();
+            virtual void onlyLastLineChanged();
+            virtual void lineAdded();
+            virtual void inputChanged();
+            virtual void cursorChanged();
+            virtual void exit();
+
             void tick(float dt);
+
             void activate();
             void deactivate();
 
+            static void openConsole();
+            static void closeConsole();
+
         private:
+            InGameConsole();
+            InGameConsole(const InGameConsole& other);
+            ~InGameConsole();
+
+            void init();
             void resize();
             void print(Ogre::UTFString s);
             void newline();
-            Ogre::UTFString convert2UTF(std::string s);
+            static Ogre::UTFString convert2UTF(std::string s);
 
-            int windowW;
-            int windowH;
-            int scroll;
-            float scrollTimer;
-            float cursor;
-            bool active;
-            InputBuffer* ib_;
-            Ogre::OverlayManager* om;
-            Ogre::Overlay* consoleOverlay;
-            Ogre::OverlayContainer* consoleOverlayContainer;
-            Ogre::PanelOverlayElement* consoleOverlayNoise;
-            Ogre::BorderPanelOverlayElement* consoleOverlayBorder;
-            Ogre::TextAreaOverlayElement** consoleOverlayTextAreas;
+            static float REL_WIDTH;
+            static float REL_HEIGHT;
+            static float BLINK;
+
+            int windowW_;
+            int windowH_;
+            int scroll_;
+            float scrollTimer_;
+            float cursor_;
+            bool active_;
+            Ogre::OverlayManager* om_;
+            Ogre::Overlay* consoleOverlay_;
+            Ogre::OverlayContainer* consoleOverlayContainer_;
+            Ogre::PanelOverlayElement* consoleOverlayNoise_;
+            Ogre::BorderPanelOverlayElement* consoleOverlayBorder_;
+            Ogre::TextAreaOverlayElement** consoleOverlayTextAreas_;
     };
 }
 

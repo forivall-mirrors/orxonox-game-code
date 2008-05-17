@@ -75,7 +75,7 @@
 // objects and tools
 #include "tools/Timer.h"
 #include "hud/HUD.h"
-#include "console/InGameConsole.h"
+//#include "console/InGameConsole.h"
 
 // FIXME: is this really file scope?
 // globals for the server or client
@@ -87,7 +87,7 @@ namespace orxonox
   ConsoleCommand(Orxonox, exit, AccessLevel::None, true);
   ConsoleCommand(Orxonox, slomo, AccessLevel::Offline, true).setDefaultValue(0, 1.0);
   ConsoleCommand(Orxonox, setTimeFactor, AccessLevel::Offline, false).setDefaultValue(0, 1.0);
-
+/*
   class Testconsole : public InputBufferListener
   {
     public:
@@ -124,7 +124,7 @@ namespace orxonox
     private:
       InputBuffer* ib_;
   };
-
+*/
   class Calculator
   {
   public:
@@ -420,8 +420,9 @@ namespace orxonox
   */
   void Orxonox::startRenderLoop()
   {
-    InputBuffer* ib = new InputBuffer();
-    InputManager::getSingleton().feedInputBuffer(ib);
+
+//    InputBuffer* ib = new InputBuffer();
+//    InputManager::getSingleton().feedInputBuffer(ib);
     /*
     Testconsole* console = new Testconsole(ib);
     ib->registerListener(console, &Testconsole::listen, true);
@@ -431,7 +432,7 @@ namespace orxonox
     ib->registerListener(console, &Testconsole::removeLast, '\b', true);
     ib->registerListener(console, &Testconsole::exit, (char)0x1B, true);
     */
-
+    /*
     orxonoxConsole_ = new InGameConsole(ib);
     ib->registerListener(orxonoxConsole_, &InGameConsole::listen, true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::execute, '\r', false);
@@ -439,7 +440,7 @@ namespace orxonox
     ib->registerListener(orxonoxConsole_, &InGameConsole::clear, '§', true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::removeLast, '\b', true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::exit, (char)0x1B, true);
-
+    */
     // first check whether ogre root object has been created
     if (Ogre::Root::getSingletonPtr() == 0)
     {
@@ -488,7 +489,7 @@ namespace orxonox
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
-      orxonoxConsole_->tick((float)evt.timeSinceLastFrame * this->timefactor_);
+//      orxonoxConsole_->tick((float)evt.timeSinceLastFrame * this->timefactor_);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly

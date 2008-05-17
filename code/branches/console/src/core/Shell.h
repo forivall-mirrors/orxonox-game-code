@@ -78,8 +78,8 @@ namespace orxonox
             inline std::string getInput() const
                 { return this->inputBuffer_.get(); }
 
-            inline std::list<std::string>::const_iterator getNewestLineIterator() const;
-            inline std::list<std::string>::const_iterator getEndIterator() const;
+            std::list<std::string>::const_iterator getNewestLineIterator() const;
+            std::list<std::string>::const_iterator getEndIterator() const;
 
             void addLine(const std::string& line, unsigned int level);
             void clearLines();

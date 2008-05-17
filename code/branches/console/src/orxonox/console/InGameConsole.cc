@@ -22,7 +22,7 @@
  *   Author:
  *      Felix Schulthess
  *   Co-authors:
- *      ...
+ *      Fabian 'x3n' Landau
  *
  */
 
@@ -39,6 +39,7 @@
 
 #include "core/Debug.h"
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "GraphicsEngine.h"
 
@@ -48,226 +49,327 @@ namespace orxonox
 {
     using namespace Ogre;
 
-    const float REL_WIDTH = 0.8;
-    const float REL_HEIGHT = 0.4;
-    const float BLINK = 0.25;
+    float InGameConsole::REL_WIDTH = 0.8;
+    float InGameConsole::REL_HEIGHT = 0.4;
+    float InGameConsole::BLINK = 0.25;
 
-    InGameConsole::InGameConsole(InputBuffer* ib){
-        //RegisterObject(InGameConsole);
-        ib_ = ib;
-        active = false;
-        cursor = 0.0;
-        init();
-    }
+    /**
+        @brief Constructor: Creates and initializes the InGameConsole.
+    */
+    InGameConsole::InGameConsole()
+    {
+        RegisterObject(InGameConsole);
 
-    InGameConsole::~InGameConsole(void){
-        for(int i=0; i<LINES; i++) delete consoleOverlayTextAreas[i];
-        delete consoleOverlayTextAreas;
-    }
+        this->active_ = false;
+        this->cursor_ = 0.0;
 
-    void InGameConsole::listen(){
-        if(!active) activate();
-        print(convert2UTF(this->ib_->get()));
-    }
-
-    void InGameConsole::execute(){
-        newline();
-        if (!CommandExecutor::execute(this->ib_->get())){
-            print("Error");
-            newline();
-        }
-        this->ib_->clear();
-    }
-
-    void InGameConsole::hintandcomplete(){
-        print(CommandExecutor::hint(this->ib_->get()));
-        newline();
-        this->ib_->set(CommandExecutor::complete(this->ib_->get()));
-        print(convert2UTF(this->ib_->get()));
-    }
-
-    void InGameConsole::clear(){
-        this->ib_->clear();
-    }
-
-    void InGameConsole::removeLast(){
-        this->ib_->removeBehindCursor();
-    }
-
-    void InGameConsole::exit(){
-        clear();
-        deactivate();
-        CommandExecutor::execute("setInputMode 2");
+        this->init();
+        this->setConfigValues();
     }
 
     /**
-    @brief called once by constructor
+        @brief Destructor: Destroys the TextAreas.
     */
-    void InGameConsole::init(){
+    InGameConsole::~InGameConsole(void)
+    {
+        for (int i = 0; i < LINES; i++)
+            delete this->consoleOverlayTextAreas_[i];
+
+        delete this->consoleOverlayTextAreas_;
+    }
+
+    /**
+        @brief Returns a reference to the only existing instance of InGameConsole.
+    */
+    InGameConsole& InGameConsole::getInstance()
+    {
+        static InGameConsole instance;
+        return instance;
+    }
+
+    /**
+        @brief Sets the config values, describing the size of the console.
+    */
+    void InGameConsole::setConfigValues()
+    {
+        SetConfigValue(REL_WIDTH, 0.8);
+        SetConfigValue(REL_HEIGHT, 0.4);
+        SetConfigValue(BLINK, 0.25);
+    }
+
+    /**
+        @brief Called if all output-lines have to be redrawn.
+    */
+    void InGameConsole::linesChanged()
+    {
+        std::list<std::string>::const_iterator it = Shell::getInstance().getNewestLineIterator();
+        for (int i = 1; i < LINES && it != Shell::getInstance().getEndIterator(); i++)
+        {
+            this->consoleOverlayTextAreas_[i]->setCaption(*it);
+            ++it;
+        }
+    }
+
+    /**
+        @brief Called if only the last output-line has changed.
+    */
+    void InGameConsole::onlyLastLineChanged()
+    {
+        if (LINES > 1)
+            this->consoleOverlayTextAreas_[1]->setCaption(*Shell::getInstance().getNewestLineIterator());
+    }
+
+    /**
+        @brief Called if a new output-line was added.
+    */
+    void InGameConsole::lineAdded()
+    {
+        for (int i = LINES - 1; i > 1; i--)
+            this->consoleOverlayTextAreas_[i]->setCaption(this->consoleOverlayTextAreas_[i - 1]->getCaption());
+
+        if (LINES > 1)
+            this->consoleOverlayTextAreas_[1]->setCaption(*Shell::getInstance().getNewestLineIterator());
+    }
+
+    /**
+        @brief Called if the text in the input-line has changed.
+    */
+    void InGameConsole::inputChanged()
+    {
+        if (LINES > 0)
+            this->consoleOverlayTextAreas_[0]->setCaption(Shell::getInstance().getInput());
+    }
+
+    /**
+        @brief Called if the position of the cursor in the input-line has changed.
+    */
+    void InGameConsole::cursorChanged()
+    {
+        std::string input = Shell::getInstance().getInput();
+        input.insert(Shell::getInstance().getCursorPosition(), 1, '|');
+        if (LINES > 0)
+            this->consoleOverlayTextAreas_[0]->setCaption(input);
+    }
+
+    /**
+        @brief Called if the console gets closed.
+    */
+    void InGameConsole::exit()
+    {
+        this->deactivate();
+        CommandExecutor::execute("set InputMode 2");
+    }
+
+    /**
+        @brief Called once by constructor, initializes the InGameConsole.
+    */
+    void InGameConsole::init()
+    {
         // for the beginning, don't scroll
-        scroll = 0;
-        scrollTimer = 0;
-        cursor = 0;
+        this->scroll_ = 0;
+        this->scrollTimer_ = 0;
+        this->cursor_ = 0;
 
         // create overlay and elements
-        om = &Ogre::OverlayManager::getSingleton();
+        this->om_ = &Ogre::OverlayManager::getSingleton();
 
         // create a container
-        consoleOverlayContainer = static_cast<OverlayContainer*>(om->createOverlayElement("Panel", "container"));
-        consoleOverlayContainer->setMetricsMode(Ogre::GMM_RELATIVE);
-        consoleOverlayContainer->setPosition((1-REL_WIDTH)/2, 0);
-        consoleOverlayContainer->setDimensions(REL_WIDTH, REL_HEIGHT);
+        this->consoleOverlayContainer_ = static_cast<OverlayContainer*>(this->om_->createOverlayElement("Panel", "container"));
+        this->consoleOverlayContainer_->setMetricsMode(Ogre::GMM_RELATIVE);
+        this->consoleOverlayContainer_->setPosition((1 - InGameConsole::REL_WIDTH) / 2, 0);
+        this->consoleOverlayContainer_->setDimensions(InGameConsole::REL_WIDTH, InGameConsole::REL_HEIGHT);
 
         // create BorderPanel
-        consoleOverlayBorder = static_cast<BorderPanelOverlayElement*>(om->createOverlayElement("BorderPanel", "borderPanel"));
-        consoleOverlayBorder->setMetricsMode(Ogre::GMM_PIXELS);
-        consoleOverlayBorder->setMaterialName("ConsoleCenter");
+        this->consoleOverlayBorder_ = static_cast<BorderPanelOverlayElement*>(this->om_->createOverlayElement("BorderPanel", "borderPanel"));
+        this->consoleOverlayBorder_->setMetricsMode(Ogre::GMM_PIXELS);
+        this->consoleOverlayBorder_->setMaterialName("ConsoleCenter");
         // set parameters for border
-        consoleOverlayBorder->setBorderSize(16, 16, 0, 16);
-        consoleOverlayBorder->setBorderMaterialName("ConsoleBorder");
-        consoleOverlayBorder->setLeftBorderUV(0.0, 0.49, 0.5, 0.51);
-        consoleOverlayBorder->setRightBorderUV(0.5, 0.49, 1.0, 0.5);
-        consoleOverlayBorder->setBottomBorderUV(0.49, 0.5, 0.51, 1.0);
-        consoleOverlayBorder->setBottomLeftBorderUV(0.0, 0.5, 0.5, 1.0);
-        consoleOverlayBorder->setBottomRightBorderUV(0.5, 0.5, 1.0, 1.0);
+        this->consoleOverlayBorder_->setBorderSize(16, 16, 0, 16);
+        this->consoleOverlayBorder_->setBorderMaterialName("ConsoleBorder");
+        this->consoleOverlayBorder_->setLeftBorderUV(0.0, 0.49, 0.5, 0.51);
+        this->consoleOverlayBorder_->setRightBorderUV(0.5, 0.49, 1.0, 0.5);
+        this->consoleOverlayBorder_->setBottomBorderUV(0.49, 0.5, 0.51, 1.0);
+        this->consoleOverlayBorder_->setBottomLeftBorderUV(0.0, 0.5, 0.5, 1.0);
+        this->consoleOverlayBorder_->setBottomRightBorderUV(0.5, 0.5, 1.0, 1.0);
 
         // create the text lines
-        consoleOverlayTextAreas = new TextAreaOverlayElement*[LINES];
-        for(int i = 0; i<LINES; i++){
-            consoleOverlayTextAreas[i] = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "textArea"+Ogre::StringConverter::toString(i)));
-            consoleOverlayTextAreas[i]->setMetricsMode(Ogre::GMM_PIXELS);
-            consoleOverlayTextAreas[i]->setFontName("Console");
-            consoleOverlayTextAreas[i]->setCharHeight(20);
-            consoleOverlayTextAreas[i]->setParameter("colour_top", "0.21 0.69 0.21");
-            consoleOverlayTextAreas[i]->setLeft(8);
-            consoleOverlayTextAreas[i]->setCaption("");
+        this->consoleOverlayTextAreas_ = new TextAreaOverlayElement*[LINES];
+        for (int i = 0; i < LINES; i++)
+        {
+            this->consoleOverlayTextAreas_[i] = static_cast<TextAreaOverlayElement*>(this->om_->createOverlayElement("TextArea", "textArea" + Ogre::StringConverter::toString(i)));
+            this->consoleOverlayTextAreas_[i]->setMetricsMode(Ogre::GMM_PIXELS);
+            this->consoleOverlayTextAreas_[i]->setFontName("Console");
+            this->consoleOverlayTextAreas_[i]->setCharHeight(20);
+            this->consoleOverlayTextAreas_[i]->setParameter("colour_top", "0.21 0.69 0.21");
+            this->consoleOverlayTextAreas_[i]->setLeft(8);
+            this->consoleOverlayTextAreas_[i]->setCaption("");
         }
 
         // create noise
-        consoleOverlayNoise = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "noise"));
-        consoleOverlayNoise->setMetricsMode(Ogre::GMM_PIXELS);
-        consoleOverlayNoise->setPosition(5,0);
-        consoleOverlayNoise->setMaterialName("ConsoleNoise");
+        this->consoleOverlayNoise_ = static_cast<PanelOverlayElement*>(this->om_->createOverlayElement("Panel", "noise"));
+        this->consoleOverlayNoise_->setMetricsMode(Ogre::GMM_PIXELS);
+        this->consoleOverlayNoise_->setPosition(5,0);
+        this->consoleOverlayNoise_->setMaterialName("ConsoleNoise");
 
-        consoleOverlay = om->create("Console");
-        consoleOverlay->add2D(consoleOverlayContainer);
-        consoleOverlayContainer->addChild(consoleOverlayBorder);
-//comment following line to disable noise
-        consoleOverlayContainer->addChild(consoleOverlayNoise);
-        for(int i = 0; i<LINES; i++) consoleOverlayContainer->addChild(consoleOverlayTextAreas[i]);
-        resize();
+        this->consoleOverlay_ = this->om_->create("Console");
+        this->consoleOverlay_->add2D(this->consoleOverlayContainer_);
+        this->consoleOverlayContainer_->addChild(this->consoleOverlayBorder_);
+        //comment following line to disable noise
+        this->consoleOverlayContainer_->addChild(this->consoleOverlayNoise_);
+        for (int i = 0; i < LINES; i++)
+            this->consoleOverlayContainer_->addChild(this->consoleOverlayTextAreas_[i]);
+
+        this->resize();
 
         // move overlay "above" the top edge of the screen
         // we take -1.2 because the border mkes the panel bigger
-        consoleOverlayContainer->setTop(-1.2*REL_HEIGHT);
+        this->consoleOverlayContainer_->setTop(-1.2 * InGameConsole::REL_HEIGHT);
         // show overlay
-        consoleOverlay->show();
+        this->consoleOverlay_->show();
 
         COUT(3) << "Info: InGameConsole initialized" << std::endl;
     }
 
     /**
-    @brief used to control the actual scrolling and cursor
+        @brief Used to control the actual scrolling and the cursor.
     */
-    void InGameConsole::tick(float dt){
-        scrollTimer += dt;
-        if(scrollTimer >= 0.01){
-            float top = consoleOverlayContainer->getTop();
-            scrollTimer = 0;
-            if(scroll!=0){
+    void InGameConsole::tick(float dt)
+    {
+        this->scrollTimer_ += dt;
+        if (this->scrollTimer_ >= 0.01)
+        {
+            float top = this->consoleOverlayContainer_->getTop();
+            this->scrollTimer_ = 0;
+            if (this->scroll_ != 0)
+            {
                 // scroll
-                top = top + 0.02*scroll;
-                consoleOverlayContainer->setTop(top);
+                top = top + 0.02 * this->scroll_;
+                this->consoleOverlayContainer_->setTop(top);
             }
-            if(top <= -1.2*REL_HEIGHT){
+            if (top <= -1.2 * InGameConsole::REL_HEIGHT)
+            {
                 // window has completely scrolled up
-                scroll = 0;
-                consoleOverlay->hide();
-                active = false;
+                this->scroll_ = 0;
+                this->consoleOverlay_->hide();
+                this->active_ = false;
             }
-            if(top >= 0){
+            if (top >= 0)
+            {
                 // window has completely scrolled down
-                scroll = 0;
-                consoleOverlayContainer->setTop(0);
-                active = true;
+                this->scroll_ = 0;
+                this->consoleOverlayContainer_->setTop(0);
+                this->active_ = true;
             }
         }
 
-        cursor += dt;
-        if(cursor >= 2*BLINK) cursor = 0;
-        print(convert2UTF(this->ib_->get()));
+        this->cursor_ += dt;
+        if (this->cursor_ >= 2 * InGameConsole::BLINK)
+            this->cursor_ = 0;
+//        print(convert2UTF(this->ib_->get()));
 
-// this creates a flickering effect
-        consoleOverlayNoise->setTiling(1, rand()%5+1);
+        // this creates a flickering effect
+        this->consoleOverlayNoise_->setTiling(1, rand() % 5 + 1);
     }
 
     /**
-    @brief resizes the console elements. call if window size changes
+        @brief Resizes the console elements. Call if window size changes.
     */
-    void InGameConsole::resize(){
-        windowW = GraphicsEngine::getSingleton().getWindowWidth();
-        windowH = GraphicsEngine::getSingleton().getWindowHeight();
-        consoleOverlayBorder->setWidth((int) windowW*REL_WIDTH);
-        consoleOverlayBorder->setHeight((int) windowH*REL_HEIGHT);
-        consoleOverlayNoise->setWidth((int) windowW*REL_WIDTH - 10);
-        consoleOverlayNoise->setHeight((int) windowH*REL_HEIGHT - 5);
+    void InGameConsole::resize()
+    {
+        this->windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
+        this->windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
+        this->consoleOverlayBorder_->setWidth((int) this->windowW_* InGameConsole::REL_WIDTH);
+        this->consoleOverlayBorder_->setHeight((int) this->windowH_ * InGameConsole::REL_HEIGHT);
+        this->consoleOverlayNoise_->setWidth((int) this->windowW_ * InGameConsole::REL_WIDTH - 10);
+        this->consoleOverlayNoise_->setHeight((int) this->windowH_ * InGameConsole::REL_HEIGHT - 5);
         // now adjust the text lines...
-        for(int i = 0; i<LINES; i++){
-            consoleOverlayTextAreas[i]->setWidth(windowW*REL_WIDTH);
-            consoleOverlayTextAreas[i]->setTop((int)windowH*REL_HEIGHT - 24 - 16*i);
+        for (int i = 0; i < LINES; i++)
+        {
+            this->consoleOverlayTextAreas_[i]->setWidth((int) this->windowW_ * InGameConsole::REL_WIDTH);
+            this->consoleOverlayTextAreas_[i]->setTop((int) this->windowH_ * InGameConsole::REL_HEIGHT - 24 - 16*i);
         }
     }
 
     /**
-    @brief shows console
+        @brief Shows the InGameConsole.
     */
-    void InGameConsole::activate(){
-        consoleOverlay->show();
+    void InGameConsole::activate()
+    {
+        this->consoleOverlay_->show();
         // just in case window size has changed...
-        resize();
+        this->resize();
         // scroll down
-        scroll = 1;
+        this->scroll_ = 1;
         // the rest is done by tick
     }
 
     /**
-    @brief hides console
+    @brief Hides the InGameConsole.
     */
-    void InGameConsole::deactivate(){
+    void InGameConsole::deactivate()
+    {
         // scroll up
-        scroll = -1;
+        this->scroll_ = -1;
         // the rest is done by tick
     }
 
     /**
-    @brief prints string to bottom line
-    @param s string to be printed
+        @brief Activates the console.
     */
-    void InGameConsole::print(Ogre::UTFString s){
-        if(cursor>BLINK) consoleOverlayTextAreas[0]->setCaption(">" + s);
-        else consoleOverlayTextAreas[0]->setCaption(">" + s + "_");
+    void InGameConsole::openConsole()
+    {
+        InGameConsole::getInstance().activate();
     }
 
     /**
-    @brief shifts all lines up and clears the bottom line
+        @brief Deactivates the console.
     */
-    void InGameConsole::newline(){
+    void InGameConsole::closeConsole()
+    {
+        InGameConsole::getInstance().deactivate();
+    }
+
+    /**
+        @brief Prints string to bottom line.
+        @param s String to be printed
+    */
+    void InGameConsole::print(Ogre::UTFString s)
+    {
+        if (this->cursor_ > InGameConsole::BLINK)
+            this->consoleOverlayTextAreas_[0]->setCaption(">" + s);
+        else
+            this->consoleOverlayTextAreas_[0]->setCaption(">" + s + "_");
+    }
+
+    /**
+        @brief Shifts all lines up and clears the bottom line.
+    */
+    void InGameConsole::newline()
+    {
         Ogre::UTFString line;
-        for(int i = LINES-1; i>=1; i--){
-            line = consoleOverlayTextAreas[i-1]->getCaption();
+        for (int i = LINES - 1; i >= 1; i--)
+        {
+            line = this->consoleOverlayTextAreas_[i - 1]->getCaption();
             // don't copy the cursor...
             int l = line.length();
-            if(!line.empty() && line.substr(l-1) == "_") line.erase(l-1);
-            consoleOverlayTextAreas[i]->setCaption(line);
+            if (!line.empty() && line.substr(l-1) == "_")
+                line.erase(l-1);
+            this->consoleOverlayTextAreas_[i]->setCaption(line);
         }
-        consoleOverlayTextAreas[0]->setCaption(">");
+        this->consoleOverlayTextAreas_[0]->setCaption(">");
     }
 
-    Ogre::UTFString InGameConsole::convert2UTF(std::string s){
+    /**
+        @brief Converts a string into an Ogre::UTFString.
+        @param s The string to convert
+        @return The converted string
+    */
+    Ogre::UTFString InGameConsole::convert2UTF(std::string s)
+    {
         Ogre::UTFString utf;
-        int i;
         Ogre::UTFString::code_point cp;
-        for (i=0; i<(int)s.size(); ++i){
+        for (unsigned int i = 0; i < s.size(); ++i)
+        {
           cp = s[i];
           cp &= 0xFF;
           utf.append(1, cp);
