@@ -63,10 +63,10 @@ namespace orxonox
             void setRotDamp(float value);
 
             void getFocus();
-	    static SpaceShip* instance_s;
-	    static Vector3 getSPosition();
-	    static Quaternion getSOrientation();
-	    static std::string whereAmI();
+            static SpaceShip* instance_s;
+            static Vector3 getSPosition();
+            static Quaternion getSOrientation();
+            static std::string whereAmI();
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
 
@@ -76,6 +76,7 @@ namespace orxonox
             bool mouseMoved         (const MouseState& state);
             bool mouseScrolled      (const MouseState& state) { return true; }
 
+            float getMaxSpeed();
 
         private:
             void createCamera();

@@ -56,14 +56,11 @@ namespace orxonox
         PanelOverlayElement::initialise();
     }
 
-    void RadarOverlayElement::initRadarOverlayElement(Real left, Real top, Real dim, Ogre::OverlayContainer* container){
-
-        windowW = GraphicsEngine::getSingleton().getWindowWidth();
-        windowH = GraphicsEngine::getSingleton().getWindowHeight();
-        dim_ = dim*windowH;                         //convert relative data to absolute
-        left_ = left*windowW-dim_/2;                // ...
-        top_ = top*windowH-dim_/2;                  // ...
+    void RadarOverlayElement::initRadarOverlayElement(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container){
         count_ = 0;
+        dimRel_ = dimRel;
+        leftRel_ = leftRel;
+        topRel_ = topRel;
         container_ = container;
 
         shipPos_ = Vector3(0.0, 0.0, 0.0);
@@ -75,8 +72,7 @@ namespace orxonox
 
         setMetricsMode(Ogre::GMM_PIXELS);
         setMaterialName("Orxonox/Radar");
-        setPosition(left_, top_);
-        setDimensions(dim_,dim_);
+        resize();
 
         om = &Ogre::OverlayManager::getSingleton();
         point = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "point"));
@@ -86,6 +82,17 @@ namespace orxonox
         point->setDimensions(5,5);
         point->setMetricsMode(Ogre::GMM_PIXELS);
 
+    }
+
+    void RadarOverlayElement::resize() {
+        // if window is resized, we must adapt these...
+        windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
+        windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
+        dim_ = dimRel_*windowH_;
+        left_ = leftRel_*windowW_-dim_/2;
+        top_ = topRel_*windowH_-dim_/2;
+        setPosition(left_, top_);
+        setDimensions(dim_,dim_);
     }
 
 //    void RadarOverlayElement::setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ){
@@ -98,6 +105,7 @@ namespace orxonox
 //    }
 
     void RadarOverlayElement::update() {
+        resize();
         shipPos_ = SpaceShip::instance_s->getPosition();
         currentDir_ = SpaceShip::instance_s->getOrientation()*initialDir_; 		// according to beni....
 		currentOrth_ = SpaceShip::instance_s->getOrientation()*initialOrth_;

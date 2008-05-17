@@ -35,7 +35,7 @@
 #include <OgrePrerequisites.h>
 
 #include "OrxonoxPrereqs.h"
-
+#include "objects/SpaceShip.h"
 #include "core/Tickable.h"
 #include "BarOverlayElement.h"
 #include "RadarOverlayElement.h"
@@ -43,20 +43,22 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport HUD : public Tickable
-  {
-  private:
+    class _OrxonoxExport HUD : public Tickable
+    {
+        private:
+            Ogre::OverlayManager* om;
+            Ogre::Overlay* orxonoxHUD;
+            Ogre::OverlayContainer* container;
+            SmartBarOverlayElement* energyCounter;
+            SmartBarOverlayElement* speedo;
+            RadarOverlayElement* radar;
 
-  public:
-    HUD(int zoom);
-    ~HUD();
+        public:
+            HUD(int zoom);
+            ~HUD();
+            virtual void tick(float);
 
-    virtual void tick(float);
-
-    SmartBarOverlayElement* energyCounter;
-
-    RadarOverlayElement* radar;
-  };
+    };
 }
 
 #endif

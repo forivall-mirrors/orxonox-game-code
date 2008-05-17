@@ -47,20 +47,23 @@ namespace orxonox
 
     Ogre::PanelOverlayElement* point;
     Ogre::OverlayContainer* container_;
-    Ogre::OverlayManager* om;       //pointer to the one and only overlay manager
-    Vector3 initialDir_;	        // direction of nose
+    Ogre::OverlayManager* om;               // pointer to the one and only overlay manager
+    Vector3 initialDir_;	                // direction of nose
     Vector3 currentDir_;
-    Vector3 initialOrth_;           // direction of normal
+    Vector3 initialOrth_;                   // direction of normal
     Vector3 currentOrth_;
-    Vector3 targetPos_;             //position of target
-    Vector3 shipPos_;               //position of ship
+    Vector3 targetPos_;                     // position of target
+    Vector3 shipPos_;                       // position of ship
 
-    double radius_;                 //defines the radius on the radar
-    double phi_;                    //defines the angle on the radar
-    float left_, top_, dim_;
-    bool right_;                    //checks whether the object is on the right side (since cos is not bijective)
+    Ogre::Real radius_;                     // radius on the radar
+    Ogre::Real phi_;                        // angle on the radar
+    bool right_;                            // checks whether the object is on the right side (since cos is not bijective)
+    Ogre::Real leftRel_, topRel_, dimRel_;  // relative position/dimension
+    int left_, top_, dim_;                  // absolute position/dimension
+    int windowW_, windowH_;                   // absolute window dimensions
     int count_;
-    int windowW, windowH;
+
+    void resize();
 
   public:
 
@@ -68,7 +71,7 @@ namespace orxonox
     virtual ~RadarOverlayElement();
     virtual void initialise();
     void update();
-    void initRadarOverlayElement(Real left, Real top, Real dim, Ogre::OverlayContainer* container);
+    void initRadarOverlayElement(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
     void setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ);
     int newShip(int X, int Y, int Z);
 

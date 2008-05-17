@@ -47,27 +47,28 @@ namespace orxonox
   using namespace Ogre;
 
   HUD::HUD(int zoom){
-
-    Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+    om = &Ogre::OverlayManager::getSingleton();
 
     BarOverlayElementFactory *barOverlayElementFactory = new BarOverlayElementFactory();
-    overlayManager.addOverlayElementFactory(barOverlayElementFactory);
+    om->addOverlayElementFactory(barOverlayElementFactory);
 
     SmartBarOverlayElementFactory *smartBarOverlayElementFactory = new SmartBarOverlayElementFactory();
-    overlayManager.addOverlayElementFactory(smartBarOverlayElementFactory);
+    om->addOverlayElementFactory(smartBarOverlayElementFactory);
 
     RadarOverlayElementFactory *radarOverlayElementFactory = new RadarOverlayElementFactory();
-    overlayManager.addOverlayElementFactory(radarOverlayElementFactory);
+    om->addOverlayElementFactory(radarOverlayElementFactory);
 
-    Ogre::Overlay* orxonoxOverlay = overlayManager.create("Orxonox/HUD");
+    orxonoxHUD = om->create("Orxonox/HUD");
 
-    Ogre::OverlayContainer* energyCounterPanel = static_cast<Ogre::OverlayContainer*>(overlayManager.createOverlayElement("Panel", "Orxonox/HUD/energyCounterPanel"));
+    container = static_cast<Ogre::OverlayContainer*>(om->createOverlayElement("Panel", "Orxonox/HUD/container"));
 
-    energyCounter = static_cast<SmartBarOverlayElement*>(overlayManager.createOverlayElement("SmartBar", "energyCounter"));
-    //energyCounter->show();
+    energyCounter = static_cast<SmartBarOverlayElement*>(om->createOverlayElement("SmartBar", "energyCounter"));
+    energyCounter->show();
 
+    speedo = static_cast<SmartBarOverlayElement*>(om->createOverlayElement("SmartBar", "speedo"));
+    speedo->show();
 
-    radar = static_cast<RadarOverlayElement*>(overlayManager.createOverlayElement("Radar", "radar"));
+    radar = static_cast<RadarOverlayElement*>(om->createOverlayElement("Radar", "radar"));
     radar->show();
 
 
@@ -107,17 +108,18 @@ namespace orxonox
     test->setDimensions(20,20);
     test->show();
     test->setMetricsMode(Ogre::GMM_PIXELS);
-    energyCounterPanel->addChild(test);
+    container->addChild(test);
 
     COUT(0)<<alpha<<" "<<beta<<" "<<right<<std::endl;
 */
 
-    energyCounterPanel->addChild(energyCounter);
-    energyCounterPanel->addChild(radar);
-    energyCounterPanel->show();
+    container->addChild(energyCounter);
+    container->addChild(speedo);
+    container->addChild(radar);
+    container->show();
 
-    orxonoxOverlay->add2D(energyCounterPanel);
-    orxonoxOverlay->show();
+    orxonoxHUD->add2D(container);
+    orxonoxHUD->show();
 
 
 
@@ -132,22 +134,29 @@ namespace orxonox
 //    orxonoxOverlay->add3D(ogreNode_);
 */
 
-    energyCounterPanel->setLeft(0.0);
-    energyCounterPanel->setTop(0.0);
-    energyCounterPanel->setWidth(1.0);
-    energyCounterPanel->setHeight(1.0);
-    energyCounterPanel->setMetricsMode(Ogre::GMM_RELATIVE);
+    container->setLeft(0.0);
+    container->setTop(0.0);
+    container->setWidth(1.0);
+    container->setHeight(1.0);
+    container->setMetricsMode(Ogre::GMM_RELATIVE);
 
-    energyCounter->initSmartBarOverlayElement(10,10,200,20,BarOverlayElement::LEFT);
-    energyCounter->reset(80);
+    energyCounter->initSmartBarOverlayElement(0.01, 0.01, 0.2, 0.02, BarOverlayElement::LEFT);
+    energyCounter->reset(100);
 
-    radar->initRadarOverlayElement(0.5, 0.8, 0.2, energyCounterPanel);
+    speedo->initSmartBarOverlayElement(0.01, 0.04, 0.2, 0.02, BarOverlayElement::LEFT);
+    speedo->reset(80);
+
+    radar->initRadarOverlayElement(0.5, 0.9, 0.2, container);
 
 
   }
 
   void HUD::tick(float dt)
   {
+      float v = SpaceShip::instance_s->getVelocity().length();
+      float vmax = SpaceShip::instance_s->getMaxSpeed();
+      speedo->reset(100*v/vmax);
+      COUT(3) << 100*v/vmax << std::endl;
       radar->update();
     /*if (this->ogreNode_)
     {

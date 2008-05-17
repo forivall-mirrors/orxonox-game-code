@@ -269,9 +269,6 @@ namespace orxonox
     {
       camName_=camera;
       // change camera attributes here, if you want to ;)
-      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
-      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
-      //camNode_->setOrientation(q1*q2);
     }
 
     void SpaceShip::getFocus(){
@@ -297,6 +294,9 @@ namespace orxonox
 
       cam_->setTargetNode(this->getNode());
 //        cam->setPosition(Vector3(0,-350,0));
+      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
+      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
+      //camNode_->setOrientation(q1*q2);
       if(network::Client::getSingleton()!=0 && network::Client::getSingleton()->getShipID()==objectID){
         this->setBacksync(true);
         CameraHandler::getInstance()->requestFocus(cam_);
@@ -446,6 +446,8 @@ namespace orxonox
     Quaternion SpaceShip::getSOrientation() {
 	return SpaceShip::instance_s->getOrientation();
     }
+
+    float SpaceShip::getMaxSpeed() { return maxSpeed_; }
 
     void SpaceShip::tick(float dt)
     {

@@ -43,13 +43,18 @@ namespace orxonox
   class _OrxonoxExport BarOverlayElement : public Ogre::PanelOverlayElement
   {
   private:
-    
+
     int percentage_;
-    int dir_;	
+    int dir_;
     int left_;
     int top_;
     int width_;
     int height_;
+    Ogre::Real leftRel_;
+    Ogre::Real topRel_;
+    Ogre::Real widthRel_;
+    Ogre::Real heightRel_;
+    int windowW_, windowH_;
 
     static Ogre::String& typeName_s;
 
@@ -68,7 +73,7 @@ namespace orxonox
     virtual ~BarOverlayElement();
     virtual void initialise();
 
-    void initBarOverlayElement(Real left, Real top, Real width, Real height,
+    void initBarOverlayElement(Real leftRel, Real topRel, Real widthRel, Real heightRel,
           int dir,  int colour);
 
     void reset(int percentage);
@@ -76,20 +81,20 @@ namespace orxonox
 
   };
 
-  
+
   class _OrxonoxExport SmartBarOverlayElement : public BarOverlayElement
   {
     private:
 
     public:
-      
+
       SmartBarOverlayElement(const Ogre::String& name);
       virtual ~SmartBarOverlayElement(void);
       virtual void initialise();
-      
+
       void initSmartBarOverlayElement(Ogre::Real left, Ogre::Real top, Ogre::Real width, Ogre::Real height, int dir);
       void reset(int percentage);
-      
+
   };
 }
 
