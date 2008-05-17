@@ -69,7 +69,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\network_properties.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -102,13 +102,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -118,12 +115,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
