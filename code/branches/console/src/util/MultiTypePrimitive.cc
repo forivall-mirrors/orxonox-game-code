@@ -265,6 +265,36 @@ bool MultiTypePrimitive::fromString(const std::string value)
         return false;
 }
 
+void MultiTypePrimitive::assimilate(const MultiTypePrimitive& mtp)
+{
+    if (this->type_ == MT_void)
+        this->value_.void_ = mtp;
+    else if (this->type_ == MT_int)
+        this->value_.int_ = mtp;
+    else if (this->type_ == MT_uint)
+        this->value_.uint_ = mtp;
+    else if (this->type_ == MT_char)
+        this->value_.char_ = mtp;
+    else if (this->type_ == MT_uchar)
+        this->value_.uchar_ = mtp;
+    else if (this->type_ == MT_short)
+        this->value_.short_ = mtp;
+    else if (this->type_ == MT_ushort)
+        this->value_.ushort_ = mtp;
+    else if (this->type_ == MT_long)
+        this->value_.long_ = mtp;
+    else if (this->type_ == MT_ulong)
+        this->value_.ulong_ = mtp;
+    else if (this->type_ == MT_float)
+        this->value_.float_ = mtp;
+    else if (this->type_ == MT_double)
+        this->value_.double_ = mtp;
+    else if (this->type_ == MT_longdouble)
+        this->value_.longdouble_ = mtp;
+    else if (this->type_ == MT_bool)
+        this->value_.bool_ = mtp;
+}
+
 std::ostream& operator<<(std::ostream& out, const MultiTypePrimitive& mtp)
 {
     out << mtp.toString();

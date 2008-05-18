@@ -135,6 +135,16 @@ bool MultiTypeString::fromString(const std::string value)
     return true;
 }
 
+void MultiTypeString::assimilate(const MultiTypeString& mts)
+{
+    if (this->type_ == MT_constchar)
+        this->string_ = mts.toString();
+    else if (this->type_ == MT_string)
+        this->string_ = mts.toString();
+    else
+        MultiTypePrimitive::assimilate(mts);
+}
+
 std::ostream& operator<<(std::ostream& out, MultiTypeString& mts)
 {
     out << mts.toString();

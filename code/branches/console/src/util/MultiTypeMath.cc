@@ -36,6 +36,8 @@ MultiTypeMath::MultiTypeMath(MultiType type) : MultiTypeString(type)
         this->vector2_ = orxonox::Vector2(0, 0);
     else if (type == MT_vector3)
         this->vector3_ = orxonox::Vector3(0, 0, 0);
+    else if (type == MT_vector4)
+        this->vector4_ = orxonox::Vector4(0, 0, 0, 0);
     else if (type == MT_colourvalue)
         this->colourvalue_ = orxonox::ColourValue(0, 0, 0, 0);
     else if (type == MT_quaternion)
@@ -54,6 +56,8 @@ bool MultiTypeMath::operator==(const MultiTypeMath& mtm) const
             return (this->vector2_ == mtm.vector2_);
         else if (this->type_ == MT_vector3)
             return (this->vector3_ == mtm.vector3_);
+        else if (this->type_ == MT_vector4)
+            return (this->vector4_ == mtm.vector4_);
         else if (this->type_ == MT_colourvalue)
             return (this->colourvalue_ == mtm.colourvalue_);
         else if (this->type_ == MT_quaternion)
@@ -75,6 +79,8 @@ bool MultiTypeMath::operator!=(const MultiTypeMath& mtm) const
             return (this->vector2_ != mtm.vector2_);
         else if (this->type_ == MT_vector3)
             return (this->vector3_ != mtm.vector3_);
+        else if (this->type_ == MT_vector4)
+            return (this->vector4_ != mtm.vector4_);
         else if (this->type_ == MT_colourvalue)
             return (this->colourvalue_ != mtm.colourvalue_);
         else if (this->type_ == MT_quaternion)
@@ -122,6 +128,8 @@ MultiTypeMath::operator orxonox::Vector2() const
 { return (this->type_ == MT_vector2) ? this->vector2_ : getConvertedValue<MultiTypeMath, orxonox::Vector2>(*this); }
 MultiTypeMath::operator orxonox::Vector3() const
 { return (this->type_ == MT_vector3) ? this->vector3_ : getConvertedValue<MultiTypeMath, orxonox::Vector3>(*this); }
+MultiTypeMath::operator orxonox::Vector4() const
+{ return (this->type_ == MT_vector4) ? this->vector4_ : getConvertedValue<MultiTypeMath, orxonox::Vector4>(*this); }
 MultiTypeMath::operator orxonox::Quaternion() const
 { return (this->type_ == MT_quaternion) ? this->quaternion_ : getConvertedValue<MultiTypeMath, orxonox::Quaternion>(*this); }
 MultiTypeMath::operator orxonox::ColourValue() const
@@ -136,6 +144,7 @@ void MultiTypeMath::setValue(const MultiTypeMath& mtm)
     MultiTypeString::setValue(mtm);
     this->vector2_ = mtm.vector2_;
     this->vector3_ = mtm.vector3_;
+    this->vector4_ = mtm.vector4_;
     this->quaternion_ = mtm.quaternion_;
     this->colourvalue_ = mtm.colourvalue_;
     this->radian_ = mtm.radian_;
@@ -148,6 +157,8 @@ std::string MultiTypeMath::getTypename() const
         return "Vector2";
     else if (this->type_ == MT_vector3)
         return "Vector3";
+    else if (this->type_ == MT_vector4)
+        return "Vector4";
     else if (this->type_ == MT_colourvalue)
         return "ColourValue";
     else if (this->type_ == MT_quaternion)
@@ -168,6 +179,8 @@ std::string MultiTypeMath::toString() const
         ConvertValue(&output, this->vector2_);
     else if (this->type_ == MT_vector3)
         ConvertValue(&output, this->vector3_);
+    else if (this->type_ == MT_vector4)
+        ConvertValue(&output, this->vector4_);
     else if (this->type_ == MT_colourvalue)
         ConvertValue(&output, this->colourvalue_);
     else if (this->type_ == MT_quaternion)
@@ -188,6 +201,8 @@ bool MultiTypeMath::fromString(const std::string value)
         return ConvertValue(&this->vector2_, value, orxonox::Vector2(0, 0));
     else if (this->type_ == MT_vector3)
         return ConvertValue(&this->vector3_, value, orxonox::Vector3(0, 0, 0));
+    else if (this->type_ == MT_vector4)
+        return ConvertValue(&this->vector4_, value, orxonox::Vector4(0, 0, 0, 0));
     else if (this->type_ == MT_colourvalue)
         return ConvertValue(&this->colourvalue_, value, orxonox::ColourValue(0, 0, 0, 0));
     else if (this->type_ == MT_quaternion)
@@ -198,6 +213,26 @@ bool MultiTypeMath::fromString(const std::string value)
         return ConvertValue(&this->degree_, value, orxonox::Degree(0));
     else
         return MultiTypeString::fromString(value);
+}
+
+void MultiTypeMath::assimilate(const MultiTypeMath& mtm)
+{
+    if (this->type_ == MT_vector2)
+        this->vector2_ = mtm.operator orxonox::Vector2();
+    else if (this->type_ == MT_vector3)
+        this->vector3_ = mtm.operator orxonox::Vector3();
+    else if (this->type_ == MT_vector4)
+        this->vector4_ = mtm.operator orxonox::Vector4();
+    else if (this->type_ == MT_colourvalue)
+        this->colourvalue_ = mtm;
+    else if (this->type_ == MT_quaternion)
+        this->quaternion_ = mtm;
+    else if (this->type_ == MT_radian)
+        this->radian_ = mtm.operator orxonox::Radian();
+    else if (this->type_ == MT_degree)
+        this->degree_ = mtm.operator orxonox::Degree();
+    else
+        MultiTypeString::assimilate(mtm);
 }
 
 std::ostream& operator<<(std::ostream& out, MultiTypeMath& mtm)

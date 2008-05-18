@@ -116,6 +116,8 @@ class _UtilExport MultiTypeString : public MultiTypePrimitive
         virtual std::string toString() const;
         virtual bool fromString(const std::string value);
 
+        virtual void assimilate(const MultiTypeString& mts);
+
     protected:
         std::string      string_;
 };

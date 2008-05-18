@@ -53,6 +53,7 @@ enum _UtilExport MultiType
     MT_xmlelement,
     MT_vector2,
     MT_vector3,
+    MT_vector4,
     MT_colourvalue,
     MT_quaternion,
     MT_degree,
