@@ -43,6 +43,7 @@
 #include "NetworkPrereqs.h"
 
 #include <enet/enet.h>
+#include <boost/thread/recursive_mutex.hpp>
 
 #define GAMESTATEID_INITIAL -1
 #define CLIENTID_UNKNOWN -2
@@ -62,10 +63,6 @@ namespace network
     ~ClientInformation();
     ClientInformation *next();
     ClientInformation *prev();
-    bool setNext(ClientInformation *next);
-    bool setPrev(ClientInformation *prev);
-    ClientInformation *insertAfter(ClientInformation *ins);
-    ClientInformation *insertBefore(ClientInformation *ins);
     ClientInformation *insertBack(ClientInformation *ins);
     
     // set functions
@@ -79,7 +76,12 @@ namespace network
     int getID();
     int getGamestateID();
     ENetPeer *getPeer();
+    bool getHead();
+    void setHead(bool h);
     
+    int getFailures();
+    void addFailure();
+    void resetFailures();
     
     bool removeClient(int clientID);
     bool removeClient(ENetPeer *peer);
@@ -91,10 +93,13 @@ namespace network
     bool setSynched(bool s);
     bool getSynched();
 
-    bool head;
-    unsigned short failures_;
 
-  private:
+    private:
+      bool setNext(ClientInformation *next);
+      bool setPrev(ClientInformation *prev);
+    ClientInformation *insertAfter(ClientInformation *ins);
+    ClientInformation *insertBefore(ClientInformation *ins);
+    
     ClientInformation *preve;
     ClientInformation *nexte;
     //actual information:
@@ -103,6 +108,10 @@ namespace network
     int gamestateID_;
     int ShipID_;   // this is the unique objectID
     bool synched_;
+    bool head_;
+    unsigned short failures_;
+    static boost::recursive_mutex mutex_;
+    
   };
 
 }

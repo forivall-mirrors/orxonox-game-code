@@ -63,6 +63,15 @@ namespace orxonox
 
     SpaceShip* SpaceShip::instance_s;
 
+    SpaceShip *SpaceShip::getLocalShip(){
+      Iterator<SpaceShip> it;
+      for(it = ObjectList<SpaceShip>::start(); it; ++it){
+        if((it)->server_ || ( network::Client::getSingleton() && network::Client::getSingleton()->getShipID()==it->objectID ) )
+          return *it;
+      }
+      return NULL;
+    }
+    
     SpaceShip::SpaceShip() :
       //testvector_(0,0,0),
       //bInvertYAxis_(false),

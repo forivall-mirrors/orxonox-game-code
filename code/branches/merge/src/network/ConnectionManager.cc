@@ -273,7 +273,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
       COUT(2) << "Conn.Man. could not add client" << std::endl;
       return false;
     }
-    if(temp->prev()->head) { //not good if you use anything else than insertBack
+    if(temp->prev()->getHead()) { //not good if you use anything else than insertBack
       temp->prev()->setID(0); //bugfix: not necessary but usefull
       temp->setID(1);
     }

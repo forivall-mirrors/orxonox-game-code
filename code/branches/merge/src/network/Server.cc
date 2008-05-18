@@ -191,7 +191,7 @@ namespace network
     ClientInformation *temp = clients;
     bool added=false;
     while(temp != NULL){
-      if(temp->head){
+      if(temp->getHead()){
         temp=temp->next();
         //think this works without continue
         continue;
@@ -213,9 +213,9 @@ namespace network
       }
       //std::cout << "adding gamestate" << std::endl;
       if ( !(connection->addPacket(packet_gen.gstate(gs), cid)) ){
-        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->failures_ << std::endl; 
-        temp->failures_++;
-        if(temp->failures_ > 20 )
+        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl; 
+        temp->addFailure();
+        if(temp->getFailures() > 20 )
           disconnectClient(temp);
       //std::cout << "added gamestate" << std::endl;
       }
@@ -253,7 +253,7 @@ namespace network
         COUT(3) << "Could not push gamestate\t\t\t\t=====" << std::endl;
     else
       if(clients->findClient(clientID))
-        clients->findClient(clientID)->failures_=0;
+        clients->findClient(clientID)->resetFailures();
   }
 
   void Server::disconnectClient(int clientID){

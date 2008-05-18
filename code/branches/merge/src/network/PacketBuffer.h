@@ -44,6 +44,7 @@
 #include "NetworkPrereqs.h"
 
 #include <enet/enet.h>
+#include <boost/thread/recursive_mutex.hpp>
 
 namespace network
 {
@@ -75,7 +76,7 @@ namespace network
     QueueItem *first;
     QueueItem *last;
     bool closed;
-
+    static boost::recursive_mutex mutex_;
   };
 
 } //namespace
