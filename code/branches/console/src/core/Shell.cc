@@ -30,6 +30,7 @@
 #include "CommandExecutor.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
+#include "CoreSettings.h"
 
 #define SHELL_UPDATE_LISTENERS(function) \
     for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it) \
@@ -69,9 +70,18 @@ namespace orxonox
         this->setConfigValues();
     }
 
+    Shell& Shell::createShell()
+    {
+        int level = CoreSettings::getSoftDebugLevel(OutputHandler::LD_Shell);
+        CoreSettings::setSoftDebugLevel(OutputHandler::LD_Shell, -1);
+        static Shell instance;
+        CoreSettings::setSoftDebugLevel(OutputHandler::LD_Shell, level);
+        return instance;
+    }
+
     Shell& Shell::getInstance()
     {
-        static Shell instance;
+        static Shell& instance = createShell();
         return instance;
     }
 
@@ -324,6 +334,9 @@ namespace orxonox
         }
 
         this->clear();
+        this->scrollPosition_ = 0;
+        this->scrollIterator_ = this->lines_.begin();
+
         SHELL_UPDATE_LISTENERS(exit);
     }
 }

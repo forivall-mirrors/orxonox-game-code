@@ -56,6 +56,7 @@ namespace orxonox
     {
         public:
             static Shell& getInstance();
+            static Shell& createShell();
 
             virtual void setConfigValues();
 
