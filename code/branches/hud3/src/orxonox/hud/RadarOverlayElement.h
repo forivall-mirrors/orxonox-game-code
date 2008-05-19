@@ -71,7 +71,7 @@ namespace orxonox
     virtual ~RadarOverlayElement();
     virtual void initialise();
     void update();
-    void initRadarOverlayElement(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
+    void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
     void setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ);
     int newShip(int X, int Y, int Z);
 

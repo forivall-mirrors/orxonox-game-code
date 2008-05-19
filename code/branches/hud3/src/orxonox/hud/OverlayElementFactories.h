@@ -21,13 +21,12 @@
 *   Author:
 *      Yuning Chai
 *   Co-authors:
-*      ...
+*      Felix Schulthess
 *
 */
 
 #ifndef _FACTORIES_H__
 #define _FACTORIES_H__
-
 
 #include <OgreOverlayElement.h>
 #include <OgrePrerequisites.h>
@@ -35,45 +34,28 @@
 
 #include "BarOverlayElement.h"
 
-
 namespace orxonox{
+    class _OrxonoxExport BarOverlayElementFactory : public Ogre::OverlayElementFactory{
+        public:
+        Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
+            return new BarOverlayElement(instanceName);
+        }
+        const Ogre::String& getTypeName(void) const{
+            static Ogre::String name = "Bar";
+            return name;
+        }
+    };
 
-  class _OrxonoxExport BarOverlayElementFactory : public Ogre::OverlayElementFactory{
-    public:
-    Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
-      return new BarOverlayElement(instanceName);
-    }
-    const Ogre::String& getTypeName(void) const{
-      static Ogre::String name = "Bar";
-      return name;
-    }
-  };
-
-
-  class _OrxonoxExport SmartBarOverlayElementFactory : public Ogre::OverlayElementFactory{
-    public:
-    Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
-      return new SmartBarOverlayElement(instanceName);
-    }
-    const Ogre::String& getTypeName(void) const{
-      static Ogre::String name = "SmartBar";
-      return name;
-    }
-  };
-
-  class _OrxonoxExport RadarOverlayElementFactory : public Ogre::OverlayElementFactory{
-    public:
-      Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
-	return new RadarOverlayElement(instanceName);
-      }
-      const Ogre::String& getTypeName(void) const{
-	static Ogre::String name = "Radar";
-	return name;
-      }
-  };
+    class _OrxonoxExport RadarOverlayElementFactory : public Ogre::OverlayElementFactory{
+        public:
+        Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
+            return new RadarOverlayElement(instanceName);
+        }
+        const Ogre::String& getTypeName(void) const{
+            static Ogre::String name = "Radar";
+            return name;
+        }
+    };
 }
-
-
-
 
 #endif

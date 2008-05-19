@@ -21,7 +21,7 @@
 *   Author:
 *      Yuning Chai
 *   Co-authors:
-*      ...
+*      Felix Schulthess
 *
 */
 
@@ -42,62 +42,49 @@ namespace orxonox
 {
   class _OrxonoxExport BarOverlayElement : public Ogre::PanelOverlayElement
   {
-  private:
+    private:
 
-    int percentage_;
-    int dir_;
+    bool autoColor_;                    // whether bar changes color automatically
+    float value_;                       // progress of bar
+    int dir_;                           // direction of progress
+    int color_;
     int left_;
     int top_;
     int width_;
     int height_;
+    int windowW_, windowH_;
     Ogre::Real leftRel_;
     Ogre::Real topRel_;
     Ogre::Real widthRel_;
     Ogre::Real heightRel_;
-    int windowW_, windowH_;
-
-    static Ogre::String& typeName_s;
-
-  public:
-
-    static const int LEFT = 0;
-    static const int UP = 1;
-    static const int RIGHT = 2;
-    static const int DOWN = 3;
-
-    static const int RED = 0;
-    static const int YELLOW = 1;
-    static const int GREEN = 2;
-
-    BarOverlayElement(const Ogre::String& name);
-    virtual ~BarOverlayElement();
-    virtual void initialise();
-
-    void initBarOverlayElement(Real leftRel, Real topRel, Real widthRel, Real heightRel,
-          int dir,  int colour);
-
-    void reset(int percentage);
-    void setColour(int colour);
-
-  };
-
-
-  class _OrxonoxExport SmartBarOverlayElement : public BarOverlayElement
-  {
-    private:
+    Ogre::PanelOverlayElement* bar_;    // the actual bar
+    Ogre::OverlayManager* om;           // our overlay manager
+    Ogre::OverlayContainer* container_; // our parent container to attach to
+    Ogre::String name_;
 
     public:
+        // directions
+        static const int RIGHT = 0;
+        static const int UP = 1;
+        static const int LEFT = 2;
+        static const int DOWN = 3;
+        // predefined colors
+        static const int RED = 0;
+        static const int YELLOW = 1;
+        static const int GREEN = 2;
 
-      SmartBarOverlayElement(const Ogre::String& name);
-      virtual ~SmartBarOverlayElement(void);
-      virtual void initialise();
+        BarOverlayElement(const Ogre::String& name);
+        virtual ~BarOverlayElement();
 
-      void initSmartBarOverlayElement(Ogre::Real left, Ogre::Real top, Ogre::Real width, Ogre::Real height, int dir);
-      void reset(int percentage);
+        void init(Real leftRel, Real topRel, Real widthRel, Real heightRel, Ogre::OverlayContainer* container);
+        void setDir(int dir);
+        void setValue(float value);
+        void setColor(int color);
 
-  };
+        float getValue();
+        int getBarColor();
+    };
 }
-
 #endif
 
 

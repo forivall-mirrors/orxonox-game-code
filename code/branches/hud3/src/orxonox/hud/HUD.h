@@ -21,7 +21,7 @@
 *   Author:
 *      Yuning Chai
 *   Co-authors:
-*      ...
+*      Felix Schulthess
 *
 */
 
@@ -49,8 +49,8 @@ namespace orxonox
             Ogre::OverlayManager* om;
             Ogre::Overlay* orxonoxHUD;
             Ogre::OverlayContainer* container;
-            SmartBarOverlayElement* energyCounter;
-            SmartBarOverlayElement* speedo;
+            BarOverlayElement* energyCounter;
+            BarOverlayElement* speedo;
             RadarOverlayElement* radar;
 
         public:

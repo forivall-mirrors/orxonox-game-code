@@ -56,7 +56,7 @@ namespace orxonox
         PanelOverlayElement::initialise();
     }
 
-    void RadarOverlayElement::initRadarOverlayElement(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container){
+    void RadarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container){
         count_ = 0;
         dimRel_ = dimRel;
         leftRel_ = leftRel;
@@ -78,7 +78,7 @@ namespace orxonox
         point = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "point"));
         point->show();
         container->addChild(point);
-        point->setMaterialName("Orxonox/RedPoint");
+        point->setMaterialName("Orxonox/RedDot");
         point->setDimensions(5,5);
         point->setMetricsMode(Ogre::GMM_PIXELS);
 
@@ -94,15 +94,6 @@ namespace orxonox
         setPosition(left_, top_);
         setDimensions(dim_,dim_);
     }
-
-//    void RadarOverlayElement::setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ){
-//        dirX_=dirX;
-//        dirY_=dirY;
-//        dirZ_=dirZ;
-//        ortX_=ortX;
-//        ortY_=ortY;
-//        ortZ_=ortZ;
-//    }
 
     void RadarOverlayElement::update() {
         resize();
