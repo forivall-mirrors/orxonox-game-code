@@ -89,6 +89,12 @@ namespace orxonox
                 return *this;
             }
 
+            template <typename T>
+            inline void setVectorType(const std::vector<T>& value)
+            {
+                this->value_ = T();
+            }
+
             inline const std::string& getName() const
                 { return this->varname_; }
             inline bool isVector() const

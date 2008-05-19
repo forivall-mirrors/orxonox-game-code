@@ -79,9 +79,7 @@ namespace orxonox
     {
         SetConfigValue(maxHistoryLength_, 100);
         SetConfigValue(historyOffset_, 0);
-        SetConfigValueVector(commandHistory_, std::vector<std::string>());
-
-std::cout << "gaga1: " << this->commandHistory_[this->historyOffset_] << std::endl;
+        SetConfigValueVector(commandHistory_, std::vector<std::string>(1, ""));
 
         if (this->historyOffset_ >= this->maxHistoryLength_)
             this->historyOffset_ = 0;
@@ -92,8 +90,6 @@ std::cout << "gaga1: " << this->commandHistory_[this->historyOffset_] << std::en
             this->commandHistory_.erase(this->commandHistory_.begin() + index);
             ModifyConfigValue(commandHistory_, remove, index);
         }
-
-std::cout << "gaga2: " << this->commandHistory_[this->historyOffset_] << std::endl;
     }
 
     void Shell::registerListener(ShellListener* listener)
@@ -162,19 +158,18 @@ std::cout << "gaga2: " << this->commandHistory_[this->historyOffset_] << std::en
 
     void Shell::addToHistory(const std::string& command)
     {
-std::cout << "command: " << command << std::endl;
-std::cout << "offset: " << this->historyOffset_ << std::endl;
         ModifyConfigValue(commandHistory_, set, this->historyOffset_, command);
-//        this->commandHistory_[this->historyOffset_] = command;
         this->historyPosition_ = 0;
-std::cout << "gaga3: " << this->commandHistory_[this->historyOffset_] << std::endl;
         ModifyConfigValue(historyOffset_, set, (this->historyOffset_ + 1) % this->maxHistoryLength_);
-std::cout << "offset new: " << this->historyOffset_ << std::endl;
     }
 
     std::string Shell::getFromHistory() const
     {
-        return this->commandHistory_[(this->historyOffset_ - this->historyPosition_) % this->maxHistoryLength_];
+        unsigned int index = mod(((int)this->historyOffset_) - ((int)this->historyPosition_), this->maxHistoryLength_);
+        if (index < this->commandHistory_.size() && this->historyPosition_ != 0)
+            return this->commandHistory_[index];
+        else
+            return "";
     }
 
     void Shell::outputChanged()
@@ -218,7 +213,7 @@ std::cout << "offset new: " << this->historyOffset_ << std::endl;
 
     void Shell::execute()
     {
-//        this->addToHistory(this->inputBuffer_.get());
+        this->addToHistory(this->inputBuffer_.get());
         this->addLine(this->inputBuffer_.get(), 0);
 
         if (!CommandExecutor::execute(this->inputBuffer_.get()))
@@ -251,6 +246,7 @@ std::cout << "offset new: " << this->historyOffset_ << std::endl;
     void Shell::clear()
     {
         this->inputBuffer_.clear();
+        this->historyPosition_ = 0;
         SHELL_UPDATE_LISTENERS(inputChanged);
         SHELL_UPDATE_LISTENERS(cursorChanged);
     }
@@ -281,7 +277,7 @@ std::cout << "offset new: " << this->historyOffset_ << std::endl;
 
     void Shell::history_up()
     {
-        if (this->historyPosition_ < (this->commandHistory_.size() - 1))
+        if (this->historyPosition_ < this->commandHistory_.size())
         {
             this->historyPosition_++;
             this->inputBuffer_.set(this->getFromHistory());

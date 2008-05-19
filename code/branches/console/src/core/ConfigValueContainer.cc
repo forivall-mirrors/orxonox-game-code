@@ -106,13 +106,13 @@ namespace orxonox
     {
         if (this->bIsVector_)
         {
-            return this->callFunctionWithIndex(&ConfigValueContainer::set, input.getString());
+            return this->callFunctionWithIndex(&ConfigValueContainer::set, input.toString());
         }
         else
         {
             if (this->tset(input))
             {
-                ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, input.getString(), this->value_.isA(MT_string));
+                ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, input.toString(), this->value_.isA(MT_string));
                 return true;
             }
         }
@@ -131,7 +131,7 @@ namespace orxonox
         {
             if (this->tset(index, input))
             {
-                ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, index, input.getString(), this->value_.isA(MT_string));
+                ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, index, input.toString(), this->value_.isA(MT_string));
                 return true;
             }
         }
@@ -151,7 +151,7 @@ namespace orxonox
     {
         if (this->bIsVector_)
         {
-            return this->callFunctionWithIndex(&ConfigValueContainer::tset, input.getString());
+            return this->callFunctionWithIndex(&ConfigValueContainer::tset, input.toString());
         }
         else
         {
@@ -159,7 +159,6 @@ namespace orxonox
             if (temp.assimilate(input))
             {
                 this->value_ = temp;
-
                 if (this->identifier_)
                     this->identifier_->updateConfigValues();
 
@@ -190,11 +189,10 @@ namespace orxonox
                 for (unsigned int i = this->valueVector_.size(); i <= index; i++)
                 {
                     this->valueVector_.push_back(MultiTypeMath());
-                    ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isA(MT_string));
                 }
             }
 
-            MultiTypeMath temp = this->valueVector_[index];
+            MultiTypeMath temp = this->value_;
             if (temp.assimilate(input))
             {
                 this->valueVector_[index] = temp;
