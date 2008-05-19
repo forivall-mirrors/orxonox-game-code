@@ -98,11 +98,126 @@ namespace orxonox
     }
 
     /**
+        @brief Assigns a new value to the config-value of all objects and writes the change into the config-file.
+        @param input The new value
+        @return True if the new value was successfully assigned
+    */
+    bool ConfigValueContainer::set(const MultiTypeMath& input)
+    {
+        if (this->bIsVector_)
+        {
+            return this->callFunctionWithIndex(&ConfigValueContainer::set, input.getString());
+        }
+        else
+        {
+            if (this->tset(input))
+            {
+                ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, input.getString(), this->value_.isA(MT_string));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+        @brief Assigns a new value to the config-value of all objects and writes the change into the config-file.
+        @param index The index in the vector
+        @param input The new value
+        @return True if the new value was successfully assigned
+    */
+    bool ConfigValueContainer::set(unsigned int index, const MultiTypeMath& input)
+    {
+        if (this->bIsVector_)
+        {
+            if (this->tset(index, input))
+            {
+                ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, index, input.getString(), this->value_.isA(MT_string));
+                return true;
+            }
+        }
+        else
+        {
+            COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
+        }
+        return false;
+    }
+
+    /**
+        @brief Assigns a new value to the config-value of all objects, but doesn't change the config-file (t stands for temporary).
+        @param input The new value
+        @return True if the new value was successfully assigned
+    */
+    bool ConfigValueContainer::tset(const MultiTypeMath& input)
+    {
+        if (this->bIsVector_)
+        {
+            return this->callFunctionWithIndex(&ConfigValueContainer::tset, input.getString());
+        }
+        else
+        {
+            MultiTypeMath temp = this->value_;
+            if (temp.assimilate(input))
+            {
+                this->value_ = temp;
+
+                if (this->identifier_)
+                    this->identifier_->updateConfigValues();
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+        @brief Assigns a new value to the config-value of all objects, but doesn't change the config-file (t stands for temporary).
+        @param index The index in the vector
+        @param input The new value
+        @return True if the new value was successfully assigned
+    */
+    bool ConfigValueContainer::tset(unsigned int index, const MultiTypeMath& input)
+    {
+        if (this->bIsVector_)
+        {
+            if (index > MAX_VECTOR_INDEX)
+            {
+                COUT(1) << "Error: Index " << index << " is too large." << std::endl;
+                return false;
+            }
+
+            if (index >= this->valueVector_.size())
+            {
+                for (unsigned int i = this->valueVector_.size(); i <= index; i++)
+                {
+                    this->valueVector_.push_back(MultiTypeMath());
+                    ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isA(MT_string));
+                }
+            }
+
+            MultiTypeMath temp = this->valueVector_[index];
+            if (temp.assimilate(input))
+            {
+                this->valueVector_[index] = temp;
+
+                if (this->identifier_)
+                    this->identifier_->updateConfigValues();
+
+                return true;
+            }
+        }
+        else
+        {
+            COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
+        }
+        return false;
+    }
+
+    /**
         @brief Adds a new entry to the end of the vector.
         @param input The new entry
         @return True if the new entry was successfully added
     */
-    bool ConfigValueContainer::add(const std::string& input)
+    bool ConfigValueContainer::add(const MultiTypeMath& input)
     {
         if (this->bIsVector_)
             return this->set(this->valueVector_.size(), input);
@@ -131,98 +246,6 @@ namespace orxonox
                 return true;
             }
             COUT(1) << "Error: Invalid vector-index." << std::endl;
-        }
-
-        COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
-        return false;
-    }
-
-    /**
-        @brief Assigns a new value to the config-value of all objects and writes the change into the config-file.
-        @param input The new value
-        @return True if the new value was successfully assigned
-    */
-    bool ConfigValueContainer::set(const std::string& input)
-    {
-        if (this->bIsVector_)
-        {
-            SubString token(input, " ", "", true, '"', false, '(', ')', false, '\0');
-            int index = -1;
-            bool success = false;
-
-            if (token.size() > 0)
-                success = ConvertValue(&index, token[0]);
-
-            if (!success || index < 0 || index > MAX_VECTOR_INDEX)
-            {
-                if (!success)
-                {
-                    COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is a vector." << std::endl;
-                }
-                else
-                {
-                    COUT(1) << "Error: Invalid vector-index." << std::endl;
-                }
-                return false;
-            }
-
-            if (token.size() >= 2)
-                return this->set(index, token.subSet(1).join());
-            else
-                return this->set(index, "");
-        }
-
-        bool success = this->tset(input);
-        ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, input, this->value_.isA(MT_string));
-        return success;
-    }
-
-    /**
-        @brief Assigns a new value to the config-value of all objects and writes the change into the config-file.
-        @param index The index in the vector
-        @param input The new value
-        @return True if the new value was successfully assigned
-    */
-    bool ConfigValueContainer::set(unsigned int index, const std::string& input)
-    {
-        if (this->bIsVector_)
-        {
-            bool success = this->tset(index, input);
-            ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, index, input, this->value_.isA(MT_string));
-            return success;
-        }
-
-        COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
-        return false;
-    }
-
-    /**
-        @brief Assigns a new value to the config-value of all objects, but doesn't change the config-file (t stands for temporary).
-        @param input The new value
-        @return True if the new value was successfully assigned
-    */
-    bool ConfigValueContainer::tset(const std::string& input)
-    {
-        bool success = this->parse(input);
-        if (this->identifier_)
-            this->identifier_->updateConfigValues();
-        return success;
-    }
-
-    /**
-        @brief Assigns a new value to the config-value of all objects, but doesn't change the config-file (t stands for temporary).
-        @param index The index in the vector
-        @param input The new value
-        @return True if the new value was successfully assigned
-    */
-    bool ConfigValueContainer::tset(unsigned int index, const std::string& input)
-    {
-        if (this->bIsVector_)
-        {
-            bool success = this->parse(index, input);
-            if (this->identifier_)
-                this->identifier_->updateConfigValues();
-            return success;
         }
 
         COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
@@ -259,123 +282,48 @@ namespace orxonox
             this->valueVector_.clear();
             for (unsigned int i = 0; i < ConfigFileManager::getSingleton()->getVectorSize(this->type_, this->sectionname_, this->varname_); i++)
             {
-                this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, this->defvalueStringVector_[i], this->value_.isA(MT_string)));
+                if (i < this->defvalueStringVector_.size())
+                    this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, this->defvalueStringVector_[i], this->value_.isA(MT_string)));
+                else
+                    this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, MultiTypeMath(), this->value_.isA(MT_string)));
+
                 this->valueVector_.push_back(this->value_);
             }
         }
     }
 
     /**
-        @brief Parses a given std::string into a value of the type of the associated variable and assigns it.
-        @param input The string to convert
-        @return True if the string was successfully parsed
+        @brief Calls the given function with parsed index and the parsed argument from the input string.
+        @param function The function to call
+        @param input The input string
+        @return The returnvalue of the functioncall
     */
-    bool ConfigValueContainer::parse(const std::string& input)
+    bool ConfigValueContainer::callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiTypeMath&), const std::string& input)
     {
-        if (this->bIsVector_)
+        SubString token(input, " ", SubString::WhiteSpaces, true, '\\', false, '"', false, '(', ')', false, '\0');
+        int index = -1;
+        bool success = false;
+
+        if (token.size() > 0)
+            success = ConvertValue(&index, token[0]);
+
+        if (!success || index < 0 || index > MAX_VECTOR_INDEX)
         {
-            SubString token(input, " ", "", true, '"', false, '(', ')', false, '\0');
-            int index = -1;
-            bool success = false;
-
-            if (token.size() > 0)
-                success = ConvertValue(&index, token[0]);
-
-            if (!success || index < 0 || index > MAX_VECTOR_INDEX)
+            if (!success)
             {
-                if (!success)
-                {
-                    COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is a vector." << std::endl;
-                }
-                else
-                {
-                    COUT(1) << "Error: Invalid vector-index." << std::endl;
-                }
-                return false;
+                COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is a vector." << std::endl;
             }
-
-            if (token.size() >= 2)
-                return this->parse(index, token.subSet(1).join());
             else
-                return this->parse(index, "");
-        }
-
-        MultiTypeMath temp = this->value_;
-        if (temp.fromString(input))
-        {
-            this->value_ = temp;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-        @brief Parses a given std::string into a value of the type of the associated variable and assigns it.
-        @param index The index in the vector
-        @param input The string to convert
-        @return True if the string was successfully parsed
-    */
-    bool ConfigValueContainer::parse(unsigned int index, const std::string& input)
-    {
-        if (this->bIsVector_)
-        {
-            if (index >= this->valueVector_.size())
             {
-                for (unsigned int i = this->valueVector_.size(); i <= index; i++)
-                {
-                    this->valueVector_.push_back(MultiTypeMath());
-                    ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isA(MT_string));
-                }
-            }
-
-            MultiTypeMath temp = this->value_;
-            if (temp.fromString(input))
-            {
-                this->valueVector_[index] = temp;
-                return true;
+                COUT(1) << "Error: Invalid vector-index." << std::endl;
             }
             return false;
         }
 
-        COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
-        return false;
-    }
-
-    /**
-        @brief Parses a given std::string into a value of the type of the associated variable and assigns it.
-        @param input The string to convert
-        @param defvalue The default value to assign if the parsing fails
-        @return True if the string was successfully parsed
-    */
-    bool ConfigValueContainer::parse(const std::string& input, const MultiTypeMath& defvalue)
-    {
-        if (this->parse(input))
-            return true;
-
-        this->value_ = defvalue;
-        return false;
-    }
-
-    /**
-        @brief Parses a given std::string into a value of the type of the associated variable and assigns it.
-        @param index The index in the vector
-        @param input The string to convert
-        @param defvalue The default value to assign if the parsing fails
-        @return True if the string was successfully parsed
-    */
-    bool ConfigValueContainer::parse(unsigned int index, const std::string& input, const MultiTypeMath& defvalue)
-    {
-        if (this->bIsVector_)
-        {
-            if (this->parse(index, input))
-                return true;
-
-            this->valueVector_[index] = defvalue;
-            return false;
-        }
-
-        COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
-        return false;
+        if (token.size() >= 2)
+            return (this->*function)(index, token.subSet(1).join());
+        else
+            return (this->*function)(index, "");
     }
 
     /**

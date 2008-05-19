@@ -99,20 +99,16 @@ namespace orxonox
             void description(const std::string& description);
             const std::string& getDescription() const;
 
-            bool add(const std::string& input);
+            bool set(const MultiTypeMath& input);
+            bool tset(const MultiTypeMath& input);
+
+            bool set(unsigned int index, const MultiTypeMath& input);
+            bool tset(unsigned int index, const MultiTypeMath& input);
+            bool add(const MultiTypeMath& input);
             bool remove(unsigned int index);
-            bool set(const std::string& input);
-            bool tset(const std::string& input);
+
             bool reset();
             void update();
-
-            bool parse(const std::string& input);
-            bool parse(const std::string& input, const MultiTypeMath& defvalue);
-
-            bool set(unsigned int index, const std::string& input);
-            bool tset(unsigned int index, const std::string& input);
-            bool parse(unsigned int index, const std::string& input);
-            bool parse(unsigned int index, const std::string& input, const MultiTypeMath& defvalue);
 
             /** @brief Converts the config-value to a string. @return The string */
             inline std::string toString() const
@@ -122,6 +118,8 @@ namespace orxonox
                 { return this->value_.getTypename(); }
 
         private:
+            bool callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiTypeMath&), const std::string& input);
+
             bool                       bIsVector_;                  //!< True if the container contains a std::vector
 
             ConfigFileType             type_;                       //!< The type of the corresponding config-file
