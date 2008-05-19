@@ -38,7 +38,6 @@
 #include "BarOverlayElement.h"
 #include "RadarOverlayElement.h"
 #include "OverlayElementFactories.h"
-#include "DialogBox.h"
 
 namespace orxonox
 {
@@ -81,8 +80,6 @@ namespace orxonox
         speedo->init(0.01, 0.90, 0.4, 0.04, container);
 
         radar->init(0.5, 0.9, 0.2, container);
-
-        Dial
     }
 
     void HUD::tick(float dt)
