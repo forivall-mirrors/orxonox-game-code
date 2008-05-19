@@ -45,9 +45,10 @@ namespace orxonox
         this->maxHistoryLength_ = 100;
         this->historyPosition_ = 0;
         this->historyOffset_ = 0;
+        this->finishedLastLine_ = true;
 
         this->clearLines();
-/*
+
         this->inputBuffer_.registerListener(this, &Shell::inputChanged, true);
         this->inputBuffer_.registerListener(this, &Shell::execute, '\r', false);
         this->inputBuffer_.registerListener(this, &Shell::hintandcomplete, '\t', true);
@@ -62,7 +63,9 @@ namespace orxonox
         this->inputBuffer_.registerListener(this, &Shell::history_down, OIS::KC_DOWN);
         this->inputBuffer_.registerListener(this, &Shell::scroll_up, OIS::KC_PGUP);
         this->inputBuffer_.registerListener(this, &Shell::scroll_down, OIS::KC_PGDOWN);
-*/
+
+        this->outputBuffer_.registerListener(this);
+
         this->setConfigValues();
     }
 
@@ -76,7 +79,9 @@ namespace orxonox
     {
         SetConfigValue(maxHistoryLength_, 100);
         SetConfigValue(historyOffset_, 0);
-        SetConfigValueVector(commandHistory_, std::vector<std::string>(1, ""));
+        SetConfigValueVector(commandHistory_, std::vector<std::string>());
+
+std::cout << "gaga1: " << this->commandHistory_[this->historyOffset_] << std::endl;
 
         if (this->historyOffset_ >= this->maxHistoryLength_)
             this->historyOffset_ = 0;
@@ -87,6 +92,8 @@ namespace orxonox
             this->commandHistory_.erase(this->commandHistory_.begin() + index);
             ModifyConfigValue(commandHistory_, remove, index);
         }
+
+std::cout << "gaga2: " << this->commandHistory_[this->historyOffset_] << std::endl;
     }
 
     void Shell::registerListener(ShellListener* listener)
@@ -119,20 +126,23 @@ namespace orxonox
 
     void Shell::addLine(const std::string& line, unsigned int level)
     {
-        if ((*this->lines_.begin()) != "")
-        {
-            orxonox::OutputHandler::getOutStream().setOutputLevel(level) << std::endl;
-        }
-        orxonox::OutputHandler::getOutStream().setOutputLevel(level) << line << std::endl;
+        int original_level = OutputHandler::getOutStream().getOutputLevel();
+        OutputHandler::getOutStream().setOutputLevel(level);
+
+        if (!this->finishedLastLine_)
+            this->outputBuffer_ << std::endl;
+
+        this->outputBuffer_ << line << std::endl;
+        OutputHandler::getOutStream().setOutputLevel(original_level);
     }
 
     void Shell::clearLines()
     {
         this->lines_.clear();
-        this->lines_.insert(this->lines_.begin(), "");
         this->scrollIterator_ = this->lines_.begin();
 
         this->scrollPosition_ = 0;
+        this->finishedLastLine_ = true;
 
         SHELL_UPDATE_LISTENERS(linesChanged);
     }
@@ -140,16 +150,9 @@ namespace orxonox
     std::list<std::string>::const_iterator Shell::getNewestLineIterator() const
     {
         if (this->scrollPosition_)
-        {
             return this->scrollIterator_;
-        }
         else
-        {
-            if ((*this->lines_.begin()) == "" && this->lines_.size() > 1)
-                return (++this->lines_.begin());
-            else
-                return this->lines_.begin();
-        }
+            return this->lines_.begin();
     }
 
     std::list<std::string>::const_iterator Shell::getEndIterator() const
@@ -159,10 +162,14 @@ namespace orxonox
 
     void Shell::addToHistory(const std::string& command)
     {
-        this->historyOffset_ = (this->historyOffset_ + 1) % this->maxHistoryLength_;
+std::cout << "command: " << command << std::endl;
+std::cout << "offset: " << this->historyOffset_ << std::endl;
         ModifyConfigValue(commandHistory_, set, this->historyOffset_, command);
-        this->commandHistory_[this->historyOffset_] = command;
+//        this->commandHistory_[this->historyOffset_] = command;
         this->historyPosition_ = 0;
+std::cout << "gaga3: " << this->commandHistory_[this->historyOffset_] << std::endl;
+        ModifyConfigValue(historyOffset_, set, (this->historyOffset_ + 1) % this->maxHistoryLength_);
+std::cout << "offset new: " << this->historyOffset_ << std::endl;
     }
 
     std::string Shell::getFromHistory() const
@@ -173,31 +180,34 @@ namespace orxonox
     void Shell::outputChanged()
     {
         std::string output;
-        while (this->outputBuffer_.getLine(&output))
+        bool newline;
+        do
         {
-            bool newline = false;
-            if ((*this->lines_.begin()) == "")
-                newline = true;
+            newline = this->outputBuffer_.getLine(&output);
 
-            (*this->lines_.begin()) += output;
+            if (!newline && output == "")
+                break;
 
-            SHELL_UPDATE_LISTENERS(onlyLastLineChanged);
-
-            this->lines_.insert(this->lines_.begin(), "");
-
-            if (this->scrollPosition_)
-                this->scrollPosition_++;
-            else
-                this->scrollIterator_ = this->lines_.begin();
-
-            if (newline)
+            if (this->finishedLastLine_)
             {
+                this->lines_.insert(this->lines_.begin(), output);
+
+                if (this->scrollPosition_)
+                    this->scrollPosition_++;
+                else
+                    this->scrollIterator_ = this->lines_.begin();
+
+                this->finishedLastLine_ = newline;
                 SHELL_UPDATE_LISTENERS(lineAdded);
             }
-        }
+            else
+            {
+                (*this->lines_.begin()) += output;
+                this->finishedLastLine_ = newline;
+                SHELL_UPDATE_LISTENERS(onlyLastLineChanged);
+            }
 
-        (*this->lines_.begin()) += output;
-        SHELL_UPDATE_LISTENERS(onlyLastLineChanged);
+        } while (newline);
     }
 
     void Shell::inputChanged()
@@ -208,9 +218,10 @@ namespace orxonox
 
     void Shell::execute()
     {
-        if (CommandExecutor::execute(this->inputBuffer_.get()))
-            this->addLine(this->inputBuffer_.get(), 0);
-        else
+//        this->addToHistory(this->inputBuffer_.get());
+        this->addLine(this->inputBuffer_.get(), 0);
+
+        if (!CommandExecutor::execute(this->inputBuffer_.get()))
             this->addLine("Error: Can't execute \"" + this->inputBuffer_.get() + "\".", 1);
 
         this->clear();
@@ -281,7 +292,7 @@ namespace orxonox
     {
         if (this->historyPosition_ > 0)
         {
-            this->historyPosition_++;
+            this->historyPosition_--;
             this->inputBuffer_.set(this->getFromHistory());
         }
     }

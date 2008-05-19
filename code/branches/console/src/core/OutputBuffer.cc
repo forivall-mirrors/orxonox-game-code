@@ -48,6 +48,27 @@ namespace orxonox
         }
     }
 
+    OutputBuffer& OutputBuffer::operator<<(std::ostream& (*manipulator)(std::ostream&))
+    {
+                this->stream_ << manipulator;
+                this->callListeners();
+                return *this;
+    }
+
+    OutputBuffer& OutputBuffer::operator<<(std::ios& (*manipulator)(std::ios&))
+    {
+                this->stream_ << manipulator;
+                this->callListeners();
+                return *this;
+    }
+
+    OutputBuffer& OutputBuffer::operator<<(std::ios_base& (*manipulator)(std::ios_base&))
+    {
+                this->stream_ << manipulator;
+                this->callListeners();
+                return *this;
+    }
+
     bool OutputBuffer::getLine(std::string* output)
     {
         char line[OUTPUTBUFFER_MAX_LINE_LENGTH];
@@ -58,9 +79,11 @@ namespace orxonox
         bool eof = this->stream_.eof();
 
         if (eof)
+        {
             this->stream_.flush();
+            this->stream_.clear();
+        }
 
-        // Return true if this was a whole new line, ended by \n
         return (!eof);
     }
 

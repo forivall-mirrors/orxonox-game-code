@@ -104,11 +104,14 @@ namespace orxonox
 
         // create a keyboard. If none are available the exception is caught.
         keyboard_ = static_cast<OIS::Keyboard*>(inputSystem_->createInputObject(OIS::OISKeyboard, true));
-        COUT(ORX_DEBUG) << "*** InputManager: Created OIS mouse" << std::endl;
+        COUT(ORX_DEBUG) << "*** InputManager: Created OIS keyboard" << std::endl;
+
+        if (this->handlerBuffer_)
+            this->handlerBuffer_->setKeyboard(this->keyboard_);
 
         // create a mouse. If none are available the exception is caught.
         mouse_ = static_cast<OIS::Mouse*>(inputSystem_->createInputObject(OIS::OISMouse, true));
-        COUT(ORX_DEBUG) << "*** InputManager: Created OIS keyboard" << std::endl;
+        COUT(ORX_DEBUG) << "*** InputManager: Created OIS mouse" << std::endl;
 
         // Set mouse region
         this->setWindowExtents(windowWidth, windowHeight);

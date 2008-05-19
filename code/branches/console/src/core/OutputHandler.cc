@@ -123,7 +123,7 @@ namespace orxonox
         }
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            manipulator(Shell::getInstance().getOutputBuffer());
+            Shell::getInstance().getOutputBuffer() << manipulator;
 
         return *this;
     }
@@ -145,7 +145,7 @@ namespace orxonox
         }
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            manipulator(Shell::getInstance().getOutputBuffer());
+            Shell::getInstance().getOutputBuffer() << manipulator;
 
         return *this;
     }
@@ -167,7 +167,7 @@ namespace orxonox
         }
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            manipulator(Shell::getInstance().getOutputBuffer());
+            Shell::getInstance().getOutputBuffer() << manipulator;
 
         return *this;
     }

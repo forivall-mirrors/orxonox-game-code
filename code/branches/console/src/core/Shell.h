@@ -117,6 +117,7 @@ namespace orxonox
             std::list<ShellListener*> listeners_;
             InputBuffer inputBuffer_;
             OutputBuffer outputBuffer_;
+            bool finishedLastLine_;
             std::list<std::string> lines_;
             std::list<std::string>::const_iterator scrollIterator_;
             unsigned int scrollPosition_;

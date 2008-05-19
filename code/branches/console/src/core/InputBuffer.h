@@ -62,6 +62,9 @@ namespace orxonox
             InputBuffer();
             InputBuffer(const std::string allowedChars);
 
+            inline void setKeyboard(OIS::Keyboard* keyboard)
+                { this->keyboard_ = keyboard; }
+
             template <class T>
             void registerListener(T* listener, void (T::*function)(), bool bOnlySingleInput)
             {

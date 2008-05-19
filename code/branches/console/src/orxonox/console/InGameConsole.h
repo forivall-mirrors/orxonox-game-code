@@ -70,8 +70,7 @@ namespace orxonox
 
             void init();
             void resize();
-            void print(Ogre::UTFString s);
-            void newline();
+            void print(const std::string& text, int index);
             static Ogre::UTFString convert2UTF(std::string s);
 
             static float REL_WIDTH;
@@ -83,6 +82,7 @@ namespace orxonox
             int scroll_;
             float scrollTimer_;
             float cursor_;
+            char cursorSymbol_;
             bool active_;
             Ogre::OverlayManager* om_;
             Ogre::Overlay* consoleOverlay_;

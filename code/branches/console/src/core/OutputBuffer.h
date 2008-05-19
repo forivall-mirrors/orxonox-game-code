@@ -31,6 +31,7 @@
 
 #include <list>
 #include <sstream>
+#include <iostream>
 
 #include "CorePrereqs.h"
 
@@ -56,6 +57,10 @@ namespace orxonox
                 this->callListeners();
                 return *this;
             }
+
+            OutputBuffer& operator<<(std::ostream& (*manipulator)(std::ostream&));
+            OutputBuffer& operator<<(std::ios& (*manipulator)(std::ios&));
+            OutputBuffer& operator<<(std::ios_base& (*manipulator)(std::ios_base&));
 
             template <class T>
             inline void add(T object)
@@ -86,11 +91,6 @@ namespace orxonox
 
             void registerListener(OutputBufferListener* listener);
             void unregisterListener(OutputBufferListener* listener);
-
-            inline operator std::stringstream&()
-            {
-                return this->stream_;
-            }
 
         private:
             void callListeners();

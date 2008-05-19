@@ -41,17 +41,21 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
+#include "core/InputManager.h"
 #include "GraphicsEngine.h"
 
 #define LINES 20
 
 namespace orxonox
 {
+    ConsoleCommand(InGameConsole, openConsole, AccessLevel::None, true);
+    ConsoleCommand(InGameConsole, closeConsole, AccessLevel::None, true);
+
     using namespace Ogre;
 
     float InGameConsole::REL_WIDTH = 0.8;
     float InGameConsole::REL_HEIGHT = 0.4;
-    float InGameConsole::BLINK = 0.25;
+    float InGameConsole::BLINK = 0.5;
 
     /**
         @brief Constructor: Creates and initializes the InGameConsole.
@@ -62,9 +66,12 @@ namespace orxonox
 
         this->active_ = false;
         this->cursor_ = 0.0;
+        this->cursorSymbol_ = '|';
 
         this->init();
         this->setConfigValues();
+
+        Shell::getInstance().registerListener(this);
     }
 
     /**
@@ -94,7 +101,7 @@ namespace orxonox
     {
         SetConfigValue(REL_WIDTH, 0.8);
         SetConfigValue(REL_HEIGHT, 0.4);
-        SetConfigValue(BLINK, 0.25);
+        SetConfigValue(BLINK, 0.5);
     }
 
     /**
@@ -103,10 +110,17 @@ namespace orxonox
     void InGameConsole::linesChanged()
     {
         std::list<std::string>::const_iterator it = Shell::getInstance().getNewestLineIterator();
-        for (int i = 1; i < LINES && it != Shell::getInstance().getEndIterator(); i++)
+        for (int i = 1; i < LINES; i++)
         {
-            this->consoleOverlayTextAreas_[i]->setCaption(*it);
-            ++it;
+            if (it != Shell::getInstance().getEndIterator())
+            {
+                this->print(*it, i);
+                ++it;
+            }
+            else
+            {
+                this->print("", i);
+            }
         }
     }
 
@@ -116,7 +130,7 @@ namespace orxonox
     void InGameConsole::onlyLastLineChanged()
     {
         if (LINES > 1)
-            this->consoleOverlayTextAreas_[1]->setCaption(*Shell::getInstance().getNewestLineIterator());
+            this->print(*Shell::getInstance().getNewestLineIterator(), 1);
     }
 
     /**
@@ -124,11 +138,7 @@ namespace orxonox
     */
     void InGameConsole::lineAdded()
     {
-        for (int i = LINES - 1; i > 1; i--)
-            this->consoleOverlayTextAreas_[i]->setCaption(this->consoleOverlayTextAreas_[i - 1]->getCaption());
-
-        if (LINES > 1)
-            this->consoleOverlayTextAreas_[1]->setCaption(*Shell::getInstance().getNewestLineIterator());
+        this->linesChanged();
     }
 
     /**
@@ -137,7 +147,7 @@ namespace orxonox
     void InGameConsole::inputChanged()
     {
         if (LINES > 0)
-            this->consoleOverlayTextAreas_[0]->setCaption(Shell::getInstance().getInput());
+            this->print(Shell::getInstance().getInput(), 0);
     }
 
     /**
@@ -146,9 +156,9 @@ namespace orxonox
     void InGameConsole::cursorChanged()
     {
         std::string input = Shell::getInstance().getInput();
-        input.insert(Shell::getInstance().getCursorPosition(), 1, '|');
+        input.insert(Shell::getInstance().getCursorPosition(), 1, this->cursorSymbol_);
         if (LINES > 0)
-            this->consoleOverlayTextAreas_[0]->setCaption(input);
+            this->print(input, 0);
     }
 
     /**
@@ -157,7 +167,7 @@ namespace orxonox
     void InGameConsole::exit()
     {
         this->deactivate();
-        CommandExecutor::execute("set InputMode 2");
+        InputManager::getSingleton().setInputMode(IM_INGAME);
     }
 
     /**
@@ -265,7 +275,17 @@ namespace orxonox
         this->cursor_ += dt;
         if (this->cursor_ >= 2 * InGameConsole::BLINK)
             this->cursor_ = 0;
-//        print(convert2UTF(this->ib_->get()));
+
+        if (this->cursor_ >= InGameConsole::BLINK && this->cursorSymbol_ == '|')
+        {
+            this->cursorSymbol_ = ' ';
+            this->cursorChanged();
+        }
+        else if (this->cursor_ < InGameConsole::BLINK && this->cursorSymbol_ == ' ')
+        {
+            this->cursorSymbol_ = '|';
+            this->cursorChanged();
+        }
 
         // this creates a flickering effect
         this->consoleOverlayNoise_->setTiling(1, rand() % 5 + 1);
@@ -295,6 +315,8 @@ namespace orxonox
     */
     void InGameConsole::activate()
     {
+        this->linesChanged();
+
         this->consoleOverlay_->show();
         // just in case window size has changed...
         this->resize();
@@ -333,30 +355,10 @@ namespace orxonox
         @brief Prints string to bottom line.
         @param s String to be printed
     */
-    void InGameConsole::print(Ogre::UTFString s)
+    void InGameConsole::print(const std::string& text, int index)
     {
-        if (this->cursor_ > InGameConsole::BLINK)
-            this->consoleOverlayTextAreas_[0]->setCaption(">" + s);
-        else
-            this->consoleOverlayTextAreas_[0]->setCaption(">" + s + "_");
-    }
-
-    /**
-        @brief Shifts all lines up and clears the bottom line.
-    */
-    void InGameConsole::newline()
-    {
-        Ogre::UTFString line;
-        for (int i = LINES - 1; i >= 1; i--)
-        {
-            line = this->consoleOverlayTextAreas_[i - 1]->getCaption();
-            // don't copy the cursor...
-            int l = line.length();
-            if (!line.empty() && line.substr(l-1) == "_")
-                line.erase(l-1);
-            this->consoleOverlayTextAreas_[i]->setCaption(line);
-        }
-        this->consoleOverlayTextAreas_[0]->setCaption(">");
+        if (LINES > index)
+            this->consoleOverlayTextAreas_[index]->setCaption(convert2UTF(text));
     }
 
     /**

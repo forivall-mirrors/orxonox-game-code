@@ -38,6 +38,7 @@
 #include "InputEventListener.h"
 #include "InputEvent.h"
 #include "InputManager.h"
+#include "CommandExecutor.h"
 
 namespace orxonox
 {
@@ -88,6 +89,7 @@ namespace orxonox
     else if (e.key == OIS::KC_UNASSIGNED || e.key == OIS::KC_NUMPADENTER)
     {
       InputManager::getSingleton().setInputMode(IM_KEYBOARD);
+      CommandExecutor::execute("openConsole");
     }
     else
     {
