@@ -44,7 +44,7 @@
 #include "core/InputManager.h"
 #include "GraphicsEngine.h"
 
-#define LINES 20
+#define LINES 30
 
 namespace orxonox
 {
@@ -71,7 +71,7 @@ namespace orxonox
         this->init();
         this->setConfigValues();
 
-        Shell::getInstance().registerListener(this);
+        Shell::getInstance().addOutputLevel(true);
     }
 
     /**
@@ -138,9 +138,12 @@ namespace orxonox
     */
     void InGameConsole::lineAdded()
     {
-        this->linesChanged();
         for (unsigned int i = LINES - 1; i > 1; --i)
+        {
             this->consoleOverlayTextAreas_[i]->setCaption(this->consoleOverlayTextAreas_[i - 1]->getCaption());
+            this->consoleOverlayTextAreas_[i]->setColourTop(this->consoleOverlayTextAreas_[i - 1]->getColourTop());
+            this->consoleOverlayTextAreas_[i]->setColourBottom(this->consoleOverlayTextAreas_[i - 1]->getColourBottom());
+        }
 
         this->onlyLastLineChanged();
     }
@@ -213,7 +216,7 @@ namespace orxonox
             this->consoleOverlayTextAreas_[i] = static_cast<TextAreaOverlayElement*>(this->om_->createOverlayElement("TextArea", "textArea" + Ogre::StringConverter::toString(i)));
             this->consoleOverlayTextAreas_[i]->setMetricsMode(Ogre::GMM_PIXELS);
             this->consoleOverlayTextAreas_[i]->setFontName("Console");
-            this->consoleOverlayTextAreas_[i]->setCharHeight(20);
+            this->consoleOverlayTextAreas_[i]->setCharHeight(18);
             this->consoleOverlayTextAreas_[i]->setParameter("colour_top", "0.21 0.69 0.21");
             this->consoleOverlayTextAreas_[i]->setLeft(8);
             this->consoleOverlayTextAreas_[i]->setCaption("");
@@ -266,6 +269,7 @@ namespace orxonox
                 this->scroll_ = 0;
                 this->consoleOverlay_->hide();
                 this->active_ = false;
+                Shell::getInstance().unregisterListener(this);
             }
             if (top >= 0)
             {
@@ -310,7 +314,7 @@ namespace orxonox
         for (int i = 0; i < LINES; i++)
         {
             this->consoleOverlayTextAreas_[i]->setWidth((int) this->windowW_ * InGameConsole::REL_WIDTH);
-            this->consoleOverlayTextAreas_[i]->setTop((int) this->windowH_ * InGameConsole::REL_HEIGHT - 24 - 16*i);
+            this->consoleOverlayTextAreas_[i]->setTop((int) this->windowH_ * InGameConsole::REL_HEIGHT - 24 - 14*i);
         }
     }
 
@@ -319,6 +323,7 @@ namespace orxonox
     */
     void InGameConsole::activate()
     {
+        Shell::getInstance().registerListener(this);
         this->linesChanged();
 
         this->consoleOverlay_->show();
@@ -361,8 +366,55 @@ namespace orxonox
     */
     void InGameConsole::print(const std::string& text, int index)
     {
+        char level = 0;
+        if (text.size() > 0)
+            level = text[0];
+
+        std::string output = text;
+
+        if (level >= -1 && level <= 5)
+            output.erase(0, 1);
+
         if (LINES > index)
-            this->consoleOverlayTextAreas_[index]->setCaption(convert2UTF(text));
+        {
+            if (level == -1)
+            {
+                this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.90, 0.90, 0.90, 1.00));
+                this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 1.00, 1.00, 1.00));
+            }
+            else if (level == 1)
+            {
+                this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.95, 0.25, 0.25, 1.00));
+                this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 0.50, 0.50, 1.00));
+            }
+            else if (level == 2)
+            {
+                this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.95, 0.50, 0.20, 1.00));
+                this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 0.70, 0.50, 1.00));
+            }
+            else if (level == 3)
+            {
+                this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.25, 0.25, 0.75, 1.00));
+                this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.80, 0.80, 1.00, 1.00));
+            }
+            else if (level == 4)
+            {
+                this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.65, 0.48, 0.44, 1.00));
+                this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 0.90, 0.90, 1.00));
+            }
+            else if (level == 5)
+            {
+                this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.40, 0.20, 0.40, 1.00));
+                this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.80, 0.60, 0.80, 1.00));
+            }
+            else
+            {
+                this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.21, 0.69, 0.21, 1.00));
+                this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.80, 1.00, 0.80, 1.00));
+            }
+
+            this->consoleOverlayTextAreas_[index]->setCaption(convert2UTF(output));
+        }
     }
 
     /**

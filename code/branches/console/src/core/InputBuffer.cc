@@ -162,6 +162,9 @@ namespace orxonox
 
     bool InputBuffer::keyPressed(const OIS::KeyEvent &e)
     {
+        if (this->keyboard_->isModifierDown(OIS::Keyboard::Alt) && e.key == OIS::KC_TAB)
+            return true;
+
         for (std::list<InputBufferListenerTuple>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
             if ((*it).trueKeyFalseChar_ && ((*it).key_ == e.key))

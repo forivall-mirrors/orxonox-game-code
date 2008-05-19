@@ -77,6 +77,7 @@ namespace orxonox
         (*output) = std::string(line);
 
         bool eof = this->stream_.eof();
+        bool fail = this->stream_.fail();
 
         if (eof)
         {
@@ -84,7 +85,7 @@ namespace orxonox
             this->stream_.clear();
         }
 
-        return (!eof);
+        return (!eof && !fail);
     }
 
     void OutputBuffer::callListeners()

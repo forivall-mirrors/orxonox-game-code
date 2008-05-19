@@ -47,6 +47,7 @@ namespace orxonox
         this->historyPosition_ = 0;
         this->historyOffset_ = 0;
         this->finishedLastLine_ = true;
+        this->bAddOutputLevel_ = false;
 
         this->clearLines();
 
@@ -130,7 +131,7 @@ namespace orxonox
         this->inputChanged();
     }
 
-    void Shell::addLine(const std::string& line, unsigned int level)
+    void Shell::addLine(const std::string& line, int level)
     {
         int original_level = OutputHandler::getOutStream().getOutputLevel();
         OutputHandler::getOutStream().setOutputLevel(level);
@@ -195,6 +196,9 @@ namespace orxonox
 
             if (this->finishedLastLine_)
             {
+                if (this->bAddOutputLevel_)
+                    output.insert(0, 1, (char)OutputHandler::getOutStream().getOutputLevel());
+
                 this->lines_.insert(this->lines_.begin(), output);
 
                 if (this->scrollPosition_)
@@ -238,7 +242,7 @@ namespace orxonox
 
     void Shell::hintandcomplete()
     {
-        this->addLine(CommandExecutor::hint(this->inputBuffer_.get()), 0);
+        this->addLine(CommandExecutor::hint(this->inputBuffer_.get()), -1);
         this->inputBuffer_.set(CommandExecutor::complete(this->inputBuffer_.get()));
 
         this->inputChanged();

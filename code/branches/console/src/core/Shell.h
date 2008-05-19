@@ -82,13 +82,16 @@ namespace orxonox
             std::list<std::string>::const_iterator getNewestLineIterator() const;
             std::list<std::string>::const_iterator getEndIterator() const;
 
-            void addLine(const std::string& line, unsigned int level);
+            void addLine(const std::string& line, int level);
             void clearLines();
 
             inline unsigned int getNumLines() const
                 { return this->lines_.size(); }
             inline unsigned int getScrollPosition() const
                 { return this->scrollPosition_; }
+
+            inline void addOutputLevel(bool bAddOutputLevel)
+                { this->bAddOutputLevel_ = bAddOutputLevel; }
 
         private:
             Shell();
@@ -126,6 +129,7 @@ namespace orxonox
             unsigned int maxHistoryLength_;
             unsigned int historyPosition_;
             unsigned int historyOffset_;
+            bool bAddOutputLevel_;
     };
 }
 

@@ -87,44 +87,7 @@ namespace orxonox
   ConsoleCommand(Orxonox, exit, AccessLevel::None, true);
   ConsoleCommand(Orxonox, slomo, AccessLevel::Offline, true).setDefaultValue(0, 1.0);
   ConsoleCommand(Orxonox, setTimeFactor, AccessLevel::Offline, false).setDefaultValue(0, 1.0);
-/*
-  class Testconsole : public InputBufferListener
-  {
-    public:
-      Testconsole(InputBuffer* ib) : ib_(ib) {}
-      void listen() const
-      {
-        std::cout << "> " << this->ib_->get() << std::endl;
-      }
-      void execute() const
-      {
-        std::cout << ">> " << this->ib_->get() << std::endl;
-        if (!CommandExecutor::execute(this->ib_->get()))
-          std::cout << "Error" << std::endl;
-        this->ib_->clear();
-      }
-      void hintandcomplete() const
-      {
-        std::cout << CommandExecutor::hint(this->ib_->get()) << std::endl;
-        this->ib_->set(CommandExecutor::complete(this->ib_->get()));
-      }
-      void clear() const
-      {
-        this->ib_->clear();
-      }
-      void removeLast() const
-      {
-        this->ib_->removeBehindCursor();
-      }
-      void exit() const
-      {
-        CommandExecutor::execute("setInputMode 2");
-      }
 
-    private:
-      InputBuffer* ib_;
-  };
-*/
   class Calculator
   {
   public:
@@ -420,27 +383,6 @@ namespace orxonox
   */
   void Orxonox::startRenderLoop()
   {
-
-//    InputBuffer* ib = new InputBuffer();
-//    InputManager::getSingleton().feedInputBuffer(ib);
-    /*
-    Testconsole* console = new Testconsole(ib);
-    ib->registerListener(console, &Testconsole::listen, true);
-    ib->registerListener(console, &Testconsole::execute, '\r', false);
-    ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
-    ib->registerListener(console, &Testconsole::clear, '§', true);
-    ib->registerListener(console, &Testconsole::removeLast, '\b', true);
-    ib->registerListener(console, &Testconsole::exit, (char)0x1B, true);
-    */
-    /*
-    orxonoxConsole_ = new InGameConsole(ib);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::listen, true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::execute, '\r', false);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::hintandcomplete, '\t', true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::clear, '§', true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::removeLast, '\b', true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::exit, (char)0x1B, true);
-    */
     // first check whether ogre root object has been created
     if (Ogre::Root::getSingletonPtr() == 0)
     {
@@ -489,7 +431,6 @@ namespace orxonox
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
-//      orxonoxConsole_->tick((float)evt.timeSinceLastFrame * this->timefactor_);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly

@@ -67,7 +67,7 @@ namespace orxonox
   {
     output_ += str;
 //    COUT(4) << "Lua_output!:" << std::endl << str << std::endl << "***" << std::endl;
-    COUT(5) << str << std::endl;
+    COUT(5) << str;
   }
 
   /**
