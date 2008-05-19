@@ -203,7 +203,11 @@ namespace orxonox
                     this->scrollIterator_ = this->lines_.begin();
 
                 this->finishedLastLine_ = newline;
-                SHELL_UPDATE_LISTENERS(lineAdded);
+
+                if (!this->scrollPosition_)
+                {
+                    SHELL_UPDATE_LISTENERS(lineAdded);
+                }
             }
             else
             {

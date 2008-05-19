@@ -288,7 +288,7 @@ namespace orxonox
                 }
                 else
                 {
-                    this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, "abc", this->value_.isA(MT_string)));
+                    this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, MultiTypeMath(), this->value_.isA(MT_string)));
                 }
 
                 this->valueVector_.push_back(this->value_);

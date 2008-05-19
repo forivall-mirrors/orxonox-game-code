@@ -139,6 +139,10 @@ namespace orxonox
     void InGameConsole::lineAdded()
     {
         this->linesChanged();
+        for (unsigned int i = LINES - 1; i > 1; --i)
+            this->consoleOverlayTextAreas_[i]->setCaption(this->consoleOverlayTextAreas_[i - 1]->getCaption());
+
+        this->onlyLastLineChanged();
     }
 
     /**
