@@ -350,6 +350,8 @@ namespace network
   GameState *GameStateClient::decode(GameState *old, GameStateCompressed *diff) {
     COUT(4) << "using diffed gamestate" << std::endl;
     GameState *t = decode(diff);
+    if(!t)
+      return NULL;
     GameState *r = undiff(old, t);
     delete[] t->data;
     delete t;
