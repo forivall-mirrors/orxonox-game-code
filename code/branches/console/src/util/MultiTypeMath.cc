@@ -215,24 +215,24 @@ bool MultiTypeMath::fromString(const std::string value)
         return MultiTypeString::fromString(value);
 }
 
-void MultiTypeMath::assimilate(const MultiTypeMath& mtm)
+bool MultiTypeMath::assimilate(const MultiTypeMath& mtm, const MultiTypeMath& defvalue)
 {
     if (this->type_ == MT_vector2)
-        this->vector2_ = mtm.operator orxonox::Vector2();
+        return ConvertValue(&this->vector2_, mtm, defvalue.vector2_);
     else if (this->type_ == MT_vector3)
-        this->vector3_ = mtm.operator orxonox::Vector3();
+        return ConvertValue(&this->vector3_, mtm, defvalue.vector3_);
     else if (this->type_ == MT_vector4)
-        this->vector4_ = mtm.operator orxonox::Vector4();
+        return ConvertValue(&this->vector4_, mtm, defvalue.vector4_);
     else if (this->type_ == MT_colourvalue)
-        this->colourvalue_ = mtm;
+        return ConvertValue(&this->colourvalue_, mtm, defvalue.colourvalue_);
     else if (this->type_ == MT_quaternion)
-        this->quaternion_ = mtm;
+        return ConvertValue(&this->quaternion_, mtm, defvalue.quaternion_);
     else if (this->type_ == MT_radian)
-        this->radian_ = mtm.operator orxonox::Radian();
+        return ConvertValue(&this->radian_, mtm, defvalue.radian_);
     else if (this->type_ == MT_degree)
-        this->degree_ = mtm.operator orxonox::Degree();
+        return ConvertValue(&this->degree_, mtm, defvalue.degree_);
     else
-        MultiTypeString::assimilate(mtm);
+        return MultiTypeString::assimilate(mtm, defvalue);
 }
 
 std::ostream& operator<<(std::ostream& out, MultiTypeMath& mtm)

@@ -163,7 +163,7 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         virtual std::string toString() const;
         virtual bool fromString(const std::string value);
 
-        virtual void assimilate(const MultiTypeMath& mtm);
+        virtual bool assimilate(const MultiTypeMath& mtm, const MultiTypeMath& defvalue = MultiTypeMath());
 
     protected:
         orxonox::Vector2      vector2_;

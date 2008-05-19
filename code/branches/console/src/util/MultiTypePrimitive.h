@@ -186,7 +186,7 @@ class _UtilExport MultiTypePrimitive
         virtual std::string toString() const;
         virtual bool fromString(const std::string value);
 
-        virtual void assimilate(const MultiTypePrimitive& mtp);
+        virtual bool assimilate(const MultiTypePrimitive& mtp, const MultiTypePrimitive& defvalue = MultiTypePrimitive());
 
     protected:
         MultiTypeValue  value_;

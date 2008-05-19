@@ -265,34 +265,37 @@ bool MultiTypePrimitive::fromString(const std::string value)
         return false;
 }
 
-void MultiTypePrimitive::assimilate(const MultiTypePrimitive& mtp)
+bool MultiTypePrimitive::assimilate(const MultiTypePrimitive& mtp, const MultiTypePrimitive& defvalue)
 {
     if (this->type_ == MT_void)
-        this->value_.void_ = mtp;
+        return ConvertValue(&this->value_.void_, mtp, defvalue.value_.void_);
     else if (this->type_ == MT_int)
-        this->value_.int_ = mtp;
+        return ConvertValue(&this->value_.int_, mtp, defvalue.value_.int_);
     else if (this->type_ == MT_uint)
-        this->value_.uint_ = mtp;
+        return ConvertValue(&this->value_.uint_, mtp, defvalue.value_.uint_);
     else if (this->type_ == MT_char)
-        this->value_.char_ = mtp;
+        return ConvertValue(&this->value_.char_, mtp, defvalue.value_.char_);
     else if (this->type_ == MT_uchar)
-        this->value_.uchar_ = mtp;
+        return ConvertValue(&this->value_.uchar_, mtp, defvalue.value_.uchar_);
     else if (this->type_ == MT_short)
-        this->value_.short_ = mtp;
+        return ConvertValue(&this->value_.short_, mtp, defvalue.value_.short_);
     else if (this->type_ == MT_ushort)
-        this->value_.ushort_ = mtp;
+        return ConvertValue(&this->value_.ushort_, mtp, defvalue.value_.ushort_);
     else if (this->type_ == MT_long)
-        this->value_.long_ = mtp;
+        return ConvertValue(&this->value_.long_, mtp, defvalue.value_.long_);
     else if (this->type_ == MT_ulong)
-        this->value_.ulong_ = mtp;
+        return ConvertValue(&this->value_.ulong_, mtp, defvalue.value_.ulong_);
     else if (this->type_ == MT_float)
-        this->value_.float_ = mtp;
+        return ConvertValue(&this->value_.float_, mtp, defvalue.value_.float_);
     else if (this->type_ == MT_double)
-        this->value_.double_ = mtp;
+        return ConvertValue(&this->value_.double_, mtp, defvalue.value_.double_);
     else if (this->type_ == MT_longdouble)
-        this->value_.longdouble_ = mtp;
+        return ConvertValue(&this->value_.longdouble_, mtp, defvalue.value_.longdouble_);
     else if (this->type_ == MT_bool)
-        this->value_.bool_ = mtp;
+        return ConvertValue(&this->value_.bool_, mtp, defvalue.value_.bool_);
+    else
+        return false;
+
 }
 
 std::ostream& operator<<(std::ostream& out, const MultiTypePrimitive& mtp)
