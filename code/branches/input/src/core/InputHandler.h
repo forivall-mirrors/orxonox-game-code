@@ -39,29 +39,56 @@
 #include <string>
 
 #include "ois/OIS.h"
+#include "util/Math.h"
 #include "OrxonoxClass.h"
 #include "CommandExecutor.h"
 #include "InputInterfaces.h"
 
 namespace orxonox
 {
-  namespace KeybindSetting
-  {
-    enum KeybindSetting
-    {
-      None,
-      OnPress,
-      OnRelease,
-      Continuous,
-    };
-  }
-
-  struct _CoreExport KeyBinding
+  struct _CoreExport AxisCommand
   {
     std::string commandStr;
     CommandEvaluation evaluation;
+    bool bRelative;
+    float value;
+    unsigned int nValuesAdded;
   };
- 
+
+  struct _CoreExport SimpleCommand
+  {
+    // for simple binding; direct
+    std::string commandStr;
+    CommandEvaluation evaluation;
+
+    // axis binding; buffered
+    AxisCommand* axisCommand;
+    float axisModifier;
+  };
+
+  struct _CoreExport KeyBinding
+  {
+    void clear() { commands = 0; nCommands = 0; }
+    SimpleCommand* commands;
+    unsigned int nCommands;
+  };
+
+  struct _CoreExport KeyBindingBundle
+  {
+    KeyBinding OnPress;
+    KeyBinding OnRelease;
+    KeyBinding OnHold;
+  };
+
+  struct _CoreExport HalfAxis
+  {
+    float rel;
+    float abs;
+    float threshold;
+    bool wasDown;
+    bool hasChanged;
+  };
+
 
   /**
     @brief Captures mouse, keyboard and joy stick input while in the actual game mode.
@@ -74,71 +101,85 @@ namespace orxonox
     ~KeyBinder();
 
     bool loadBindings();
-    void clearBindings();
+    void clearBindings(bool bInit = false);
 
     void setConfigValues();
 
   private: // functions
+    bool readBindings(std::string* names, std::string* bindingStrings, KeyBindingBundle* bindings, unsigned int size);
+    bool executeBinding(KeyBinding& binding, float axisRel, float axisAbs);
+    void clearBundle(KeyBindingBundle& bundle, bool bInit);
 
-    bool executeSimpleBinding(KeyBinding &binding);
+    void tick(float dt);
 
     bool keyPressed (const KeyEvent& evt);
     bool keyReleased(const KeyEvent& evt);
     bool keyHeld    (const KeyEvent& evt);
 
-    bool mouseButtonPressed (const MouseState& state, MouseButton::Enum id);
-    bool mouseButtonReleased(const MouseState& state, MouseButton::Enum id);
-    bool mouseButtonHeld    (const MouseState& state, MouseButton::Enum id);
-    bool mouseMoved         (const MouseState& state);
-    bool mouseScrolled      (const MouseState& state);
+    bool mouseButtonPressed (MouseButton::Enum id);
+    bool mouseButtonReleased(MouseButton::Enum id);
+    bool mouseButtonHeld    (MouseButton::Enum id);
+    bool mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
+    bool mouseScrolled      (int abs, int rel);
 
-    bool joyStickButtonPressed (const JoyStickState& state, int button);
-    bool joyStickButtonReleased(const JoyStickState& state, int button);
-    bool joyStickButtonHeld    (const JoyStickState& state, int button);
-    bool joyStickAxisMoved     (const JoyStickState& state, int axis)  ;
-    bool joyStickSliderMoved   (const JoyStickState& state, int index) ;
-    bool joyStickPovMoved      (const JoyStickState& state, int index) ;
-    bool joyStickVector3Moved  (const JoyStickState& state, int index) ;
+    bool joyStickButtonPressed (int joyStickID, int button);
+    bool joyStickButtonReleased(int joyStickID, int button);
+    bool joyStickButtonHeld    (int joyStickID, int button);
+    bool joyStickAxisMoved     (int joyStickID, int axis, int value)  ;
 
   private: // variables
-
     //! denotes the number of different keys there are in OIS.
-    static const int numberOfKeys_s = 0xEE;
-    //! Array of input events for every pressed key
-    KeyBinding bindingsKeyPress_  [numberOfKeys_s];
-    //! Array of input events for every released key
-    KeyBinding bindingsKeyRelease_[numberOfKeys_s];
-    //! Array of input events for every held key
-    KeyBinding bindingsKeyHold_   [numberOfKeys_s];
+    static const unsigned int nKeys_s = 0xEE;
+    //! Actual key bindings as bundle for Press, Hold and Release
+    KeyBindingBundle bindingsKeys_ [nKeys_s];
     //! Names of the keys as strings
-    std::string keyNames_[numberOfKeys_s];
+    std::string namesKeys_         [nKeys_s];
+    //! The configured string values
+    std::string bindingStringsKeys_[nKeys_s];
 
     //! denotes the number of different mouse buttons there are in OIS.
-    static const int numberOfMouseButtons_s = 8;
-    //! Array of input events for every pressed mouse button
-    KeyBinding bindingsMouseButtonPress_  [numberOfMouseButtons_s];
-    //! Array of input events for every released mouse button
-    KeyBinding bindingsMouseButtonRelease_[numberOfMouseButtons_s];
-    //! Array of input events for every held mouse button
-    KeyBinding bindingsMouseButtonHold_   [numberOfMouseButtons_s];
-    //! Key binding for mouse moved event
-    KeyBinding bindingMouseMoved_;
-    //! Key binding for mouse scrolled event
-    KeyBinding bindingMouseScrolled_;
+    static const unsigned int nMouseButtons_s = 8;
+    //! Actual key bindings as bundle for Press, Hold and Release
+    KeyBindingBundle bindingsMouseButtons_ [nMouseButtons_s];
     //! Names of the mouse buttons as strings
-    std::string mouseButtonNames_[numberOfMouseButtons_s];
+    std::string namesMouseButtons_         [nMouseButtons_s];
+    //! The configured string values
+    std::string bindingStringsMouseButtons_[nMouseButtons_s];
 
     //! denotes the number of different joy stick buttons there are in OIS.
-    static const int numberOfJoyStickButtons_s = 32;
-    //! Array of input events for every pressed joy stick button
-    KeyBinding bindingsJoyStickButtonPress_  [numberOfJoyStickButtons_s];
-    //! Array of input events for every released joy stick button
-    KeyBinding bindingsJoyStickButtonRelease_[numberOfJoyStickButtons_s];
-    //! Array of input events for every held joy stick button
-    KeyBinding bindingsJoyStickButtonHold_   [numberOfJoyStickButtons_s];
+    static const unsigned int nJoyStickButtons_s = 32 + 4 * 4; // 32 buttons and 4 POVs with 4 buttons
+    //! Actual key bindings as bundle for Press, Hold and Release
+    KeyBindingBundle bindingsJoyStickButtons_ [nJoyStickButtons_s];
     //! Names of the joy stick buttons as strings
-    std::string joyStickButtonNames_[numberOfJoyStickButtons_s];
+    std::string namesJoyStickButtons_         [nJoyStickButtons_s];
+    //! The configured string values
+    std::string bindingStringsJoyStickButtons_[nJoyStickButtons_s];
 
+    //! denotes the number of half axes (every axis twice) there can be.
+    static const unsigned int nHalfAxes_s = 56;
+    /**
+    * Array with all the half axes for mouse and joy sticks.
+    * Bear in mind that the positions are fixed and that the first entry is the
+    * positive one and the second is negative.
+    * Sequence is as follows:
+    *  0 -  3: Mouse x and y
+    *  4 -  7: Mouse scroll wheels 1 and 2 (2 not yet supported)
+    *  8 - 23: joy stick (slider) axes 1 to 8
+    * 24 - 55: joy stick axes 1 - 16
+    */
+    HalfAxis halfAxes_[nHalfAxes_s];
+    //! Actual key bindings as bundle for Press, Hold and Release
+    KeyBindingBundle bindingsHalfAxes_ [nHalfAxes_s];
+    //! Names of the half axes
+    std::string namesHalfAxes_         [nHalfAxes_s];
+    //! The configured string values
+    std::string bindingStringsHalfAxes_[nHalfAxes_s];
+
+    /**
+    * Commands that have additional parameters (axes) are executed at the end of
+    * the tick() so that all values can be buffered for single execution.
+    */
+    std::vector<AxisCommand*> axisCommands_;
   };
 
 

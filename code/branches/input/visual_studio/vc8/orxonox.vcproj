@@ -164,6 +164,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\PlayerManager.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\PrecompiledHeaderFiles.cc"
 				>
 				<FileConfiguration
@@ -443,6 +447,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\OrxonoxStableHeaders.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\PlayerManager.h"
 				>
 			</File>
 			<Filter

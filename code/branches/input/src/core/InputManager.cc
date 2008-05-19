@@ -266,6 +266,8 @@ namespace orxonox
     joySticksSize_ = joySticks_.size();
     activeJoyStickHandlers_.resize(joySticksSize_);
     joyStickButtonsDown_.resize(joySticksSize_);
+    povStates_.resize(joySticksSize_);
+    sliderStates_.resize(joySticksSize_);
     return success;
   }
 
@@ -349,6 +351,24 @@ namespace orxonox
     CCOUT(ORX_DEBUG) << "Joy sticks destroyed." << std::endl;
   }
 
+  void InputManager::_updateTickables()
+  {
+    // we can use a set to have a list of unique pointers (an object can implement all 3 handlers)
+    std::set<InputTickable*> tempSet;
+    for (unsigned int iHandler = 0; iHandler < activeKeyHandlers_.size(); iHandler++)
+      tempSet.insert(activeKeyHandlers_[iHandler]);
+    for (unsigned int iHandler = 0; iHandler < activeMouseHandlers_.size(); iHandler++)
+      tempSet.insert(activeMouseHandlers_[iHandler]);
+    for (unsigned int iJoyStick  = 0; iJoyStick < joySticksSize_; iJoyStick++)
+      for (unsigned int iHandler = 0; iHandler  < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
+        tempSet.insert(activeJoyStickHandlers_[iJoyStick][iHandler]);
+
+    // copy the content of the set back to the actual vector
+    activeHandlers_.clear();
+    for (std::set<InputTickable*>::const_iterator itHandler = tempSet.begin(); itHandler != tempSet.end(); itHandler++)
+      activeHandlers_.push_back(*itHandler);
+  }
+
 
   // #################################
   // ### Private Interface Methods ###
@@ -388,7 +408,7 @@ namespace orxonox
           break;
 
         case IS_GUI:
-          // FIXME: do stuff
+          // TODO: do stuff
           break;
 
         case IS_CONSOLE:
@@ -425,14 +445,18 @@ namespace orxonox
     // call all the handlers for the held mouse button events
     for (unsigned int iButton = 0; iButton < mouseButtonsDown_.size(); iButton++)
       for (unsigned int iHandler = 0; iHandler < activeMouseHandlers_.size(); iHandler++)
-        activeMouseHandlers_[iHandler]->mouseButtonHeld(mouse_->getMouseState(), mouseButtonsDown_[iButton]);
+        activeMouseHandlers_[iHandler]->mouseButtonHeld(mouseButtonsDown_[iButton]);
 
     // call all the handlers for the held joy stick button events
     for (unsigned int iJoyStick  = 0; iJoyStick < joySticksSize_; iJoyStick++)
       for (unsigned int iButton   = 0; iButton   < joyStickButtonsDown_[iJoyStick].size(); iButton++)
         for (unsigned int iHandler = 0; iHandler  < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
-          activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickButtonHeld(
-              JoyStickState(joySticks_[iJoyStick]->getJoyStickState(), iJoyStick), joyStickButtonsDown_[iJoyStick][iButton]);
+          activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickButtonHeld(iJoyStick, joyStickButtonsDown_[iJoyStick][iButton]);
+
+
+    // call the ticks
+    for (unsigned int iHandler = 0; iHandler < activeHandlers_.size(); iHandler++)
+      activeHandlers_[iHandler]->tick(dt);
   }
 
   // ###### Key Events ######
@@ -507,14 +531,15 @@ namespace orxonox
     if (e.state.X.rel != 0 || e.state.Y.rel != 0)
     {
       for (unsigned int i = 0; i < activeMouseHandlers_.size(); i++)
-        activeMouseHandlers_[i]->mouseMoved(e.state);
+        activeMouseHandlers_[i]->mouseMoved(IntVector2(e.state.X.abs, e.state.Y.abs),
+            IntVector2(e.state.X.rel, e.state.Y.rel), IntVector2(e.state.width, e.state.height));
     }
 
     // check for mouse scrolled event
     if (e.state.Z.rel != 0)
     {
       for (unsigned int i = 0; i < activeMouseHandlers_.size(); i++)
-        activeMouseHandlers_[i]->mouseScrolled(e.state);
+        activeMouseHandlers_[i]->mouseScrolled(e.state.Z.abs, e.state.Z.rel);
     }
 
     return true;
@@ -535,7 +560,7 @@ namespace orxonox
       mouseButtonsDown_.push_back((MouseButton::Enum)id);
 
     for (unsigned int i = 0; i < activeMouseHandlers_.size(); i++)
-      activeMouseHandlers_[i]->mouseButtonPressed(e.state, (MouseButton::Enum)id);
+      activeMouseHandlers_[i]->mouseButtonPressed((MouseButton::Enum)id);
 
     return true;
   }
@@ -558,7 +583,7 @@ namespace orxonox
     }
 
     for (unsigned int i = 0; i < activeMouseHandlers_.size(); i++)
-      activeMouseHandlers_[i]->mouseButtonReleased(e.state, (MouseButton::Enum)id);
+      activeMouseHandlers_[i]->mouseButtonReleased((MouseButton::Enum)id);
 
     return true;
   }
@@ -583,7 +608,7 @@ namespace orxonox
       buttonsDown.push_back(button);
 
     for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
-      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickButtonPressed(JoyStickState(arg.state, iJoyStick), button);
+      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickButtonPressed(iJoyStick, button);
 
     return true;
   }
@@ -608,35 +633,50 @@ namespace orxonox
     }
 
     for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
-      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickButtonReleased(JoyStickState(arg.state, iJoyStick), button);
+      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickButtonReleased(iJoyStick, button);
 
     return true;
   }
 
   bool InputManager::axisMoved(const OIS::JoyStickEvent &arg, int axis)
   {
+    //CCOUT(3) << arg.state.mAxes[axis].abs << std::endl;
     // use the device to identify which one called the method
     OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
     unsigned int iJoyStick = 0;
     while (joySticks_[iJoyStick] != joyStick)
       iJoyStick++;
 
+    // keep in mind that the first 8 axes are reserved for the sliders
     for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
-      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickAxisMoved(JoyStickState(arg.state, iJoyStick), axis);
+      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickAxisMoved(iJoyStick, axis + 8, arg.state.mAxes[axis].abs);
 
     return true;
   }
 
   bool InputManager::sliderMoved(const OIS::JoyStickEvent &arg, int id)
   {
+    //CCOUT(3) << arg.state.mSliders[id].abX << "\t |" << arg.state.mSliders[id].abY << std::endl;
     // use the device to identify which one called the method
     OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
     unsigned int iJoyStick = 0;
     while (joySticks_[iJoyStick] != joyStick)
       iJoyStick++;
 
-    for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
-      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickSliderMoved(JoyStickState(arg.state, iJoyStick), id);
+    if (sliderStates_[iJoyStick].sliderStates[id].x != arg.state.mSliders[id].abX)
+    {
+      // slider X axis changed
+      sliderStates_[iJoyStick].sliderStates[id].x = arg.state.mSliders[id].abX;
+      for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
+        activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickAxisMoved(iJoyStick, id * 2, arg.state.mSliders[id].abX);
+    }
+    else if (sliderStates_[iJoyStick].sliderStates[id].y != arg.state.mSliders[id].abY)
+    {
+      // slider Y axis changed
+      sliderStates_[iJoyStick].sliderStates[id].y = arg.state.mSliders[id].abY;
+      for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
+        activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickAxisMoved(iJoyStick, id * 2 + 1, arg.state.mSliders[id].abY);
+    }
 
     return true;
   }
@@ -649,13 +689,32 @@ namespace orxonox
     while (joySticks_[iJoyStick] != joyStick)
       iJoyStick++;
 
-    for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
-      activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickPovMoved(JoyStickState(arg.state, iJoyStick), id);
+    // translate the POV into 8 simple buttons
+    int lastState = povStates_[iJoyStick][id];
+    if (lastState & OIS::Pov::North)
+      buttonReleased(arg, 32 + id * 4 + 0);
+    if (lastState & OIS::Pov::South)
+      buttonReleased(arg, 32 + id * 4 + 1);
+    if (lastState & OIS::Pov::East)
+      buttonReleased(arg, 32 + id * 4 + 2);
+    if (lastState & OIS::Pov::West)
+      buttonReleased(arg, 32 + id * 4 + 3);
+    
+    povStates_[iJoyStick].povStates[id] = arg.state.mPOV[id].direction;
+    int currentState = povStates_[iJoyStick][id];
+    if (currentState & OIS::Pov::North)
+      buttonPressed(arg, 32 + id * 4 + 0);
+    if (currentState & OIS::Pov::South)
+      buttonPressed(arg, 32 + id * 4 + 1);
+    if (currentState & OIS::Pov::East)
+      buttonPressed(arg, 32 + id * 4 + 2);
+    if (currentState & OIS::Pov::West)
+      buttonPressed(arg, 32 + id * 4 + 3);
 
     return true;
   }
 
-  bool InputManager::vector3Moved(const OIS::JoyStickEvent &arg, int id)
+  /*bool InputManager::vector3Moved(const OIS::JoyStickEvent &arg, int id)
   {
     // use the device to identify which one called the method
     OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
@@ -667,7 +726,7 @@ namespace orxonox
       activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickVector3Moved(JoyStickState(arg.state, iJoyStick), id);
 
     return true;
-  }
+  }*/
 
 
   // ################################
@@ -734,21 +793,21 @@ namespace orxonox
       return false;
   }
 
-  const MouseState InputManager::getMouseState()
+  /*const MouseState InputManager::getMouseState()
   {
     if (_getSingleton().mouse_)
       return _getSingleton().mouse_->getMouseState();
     else
       return MouseState();
-  }
+  }*/
 
-  const JoyStickState InputManager::getJoyStickState(unsigned int ID)
+  /*const JoyStickState InputManager::getJoyStickState(unsigned int ID)
   {
     if (ID < _getSingleton().joySticksSize_)
       return JoyStickState(_getSingleton().joySticks_[ID]->getJoyStickState(), ID);
     else
       return JoyStickState();
-  }
+  }*/
 
 
   void InputManager::destroy()
@@ -881,12 +940,12 @@ namespace orxonox
     {
       if ((*it) == (*mapIt).second)
       {
-        _getSingleton().stateRequest_ = IS_CUSTOM;
         return true;
       }
     }
     _getSingleton().activeKeyHandlers_.push_back((*mapIt).second);
     _getSingleton().stateRequest_ = IS_CUSTOM;
+    _getSingleton()._updateTickables();
     return true;
   }
 
@@ -909,10 +968,10 @@ namespace orxonox
       {
         _getSingleton().activeKeyHandlers_.erase(it);
         _getSingleton().stateRequest_ = IS_CUSTOM;
+        _getSingleton()._updateTickables();
         return true;
       }
     }
-    _getSingleton().stateRequest_ = IS_CUSTOM;
     return true;
   }
 
@@ -1009,12 +1068,12 @@ namespace orxonox
     {
       if ((*it) == (*mapIt).second)
       {
-        _getSingleton().stateRequest_ = IS_CUSTOM;
         return true;
       }
     }
     _getSingleton().activeMouseHandlers_.push_back((*mapIt).second);
     _getSingleton().stateRequest_ = IS_CUSTOM;
+    _getSingleton()._updateTickables();
     return true;
   }
 
@@ -1037,10 +1096,10 @@ namespace orxonox
       {
         _getSingleton().activeMouseHandlers_.erase(it);
         _getSingleton().stateRequest_ = IS_CUSTOM;
+        _getSingleton()._updateTickables();
         return true;
       }
     }
-    _getSingleton().stateRequest_ = IS_CUSTOM;
     return true;
   }
 
@@ -1146,12 +1205,12 @@ namespace orxonox
     {
       if ((*it) == (*handlerIt).second)
       {
-        _getSingleton().stateRequest_ = IS_CUSTOM;
         return true;
       }
     }
     _getSingleton().activeJoyStickHandlers_[ID].push_back((*handlerIt).second);
     _getSingleton().stateRequest_ = IS_CUSTOM;
+    _getSingleton()._updateTickables();
     return true;
   }
 
@@ -1179,6 +1238,7 @@ namespace orxonox
       {
         _getSingleton().activeJoyStickHandlers_[ID].erase(it);
         _getSingleton().stateRequest_ = IS_CUSTOM;
+        _getSingleton()._updateTickables();
         return true;
       }
     }

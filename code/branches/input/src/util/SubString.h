@@ -88,7 +88,7 @@ public:
   SubString(const std::string& string, char delimiter = ',');
   SubString(const std::string& string,
             const std::string& delimiters, const std::string& delimiterNeighbours = "", bool emptyEntries=false,
-            char escapeChar ='\\', bool removeExcapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,
+            char escapeChar ='\\', bool removeEscapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,
             char openparenthesis_char = '(', char closeparenthesis_char = ')',  bool removeParenthesisChars = true, char comment_char = '\0');
   SubString(unsigned int argc, const char** argv);
   /** @brief create a Substring as a copy of another one. @param subString the SubString to copy. */

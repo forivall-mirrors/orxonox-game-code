@@ -49,7 +49,6 @@ namespace orxonox
             void registerAllVariables();
             void init();
             void setConfigValues();
-            virtual void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
@@ -67,11 +66,11 @@ namespace orxonox
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
 
-            bool mouseButtonPressed (const MouseState& state, MouseButton::Enum id);
-            bool mouseButtonReleased(const MouseState& state, MouseButton::Enum id);
-            bool mouseButtonHeld    (const MouseState& state, MouseButton::Enum id) { return true; }
-            bool mouseMoved         (const MouseState& state);
-            bool mouseScrolled      (const MouseState& state) { return true; }
+            bool mouseButtonPressed (MouseButton::Enum id);
+            bool mouseButtonReleased(MouseButton::Enum id);
+            bool mouseButtonHeld    (MouseButton::Enum id) { return true; }
+            bool mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
+            bool mouseScrolled      (int abs, int rel) { return true; }
 
 
         private:

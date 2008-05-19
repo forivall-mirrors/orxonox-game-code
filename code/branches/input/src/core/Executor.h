@@ -232,6 +232,8 @@ namespace orxonox
             std::string name_;
             MultiTypeMath defaultValue_[MAX_FUNCTOR_ARGUMENTS];
             bool bAddedDefaultValue_[MAX_FUNCTOR_ARGUMENTS];
+            KeybindMode::Enum keybindMode_;
+            int axisParameter_;
 
         private:
             LanguageEntryLabel description_;

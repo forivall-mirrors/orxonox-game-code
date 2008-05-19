@@ -146,4 +146,13 @@ inline _UtilExport float rnd(float min, float max)
     return rnd(max - min) + min;
 }
 
+class _UtilExport IntVector2
+{
+public:
+  IntVector2() : x(0), y(0) { }
+  IntVector2(int _x, int _y) : x(_x), y(_y) { }
+  int x;
+  int y;
+};
+
 #endif /* _Util_Math_H__ */

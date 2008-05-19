@@ -172,6 +172,10 @@ namespace orxonox
     append((char)evt.text);
   }
 
+  /**
+  * This tick() function is called by the InputManager if the InputBuffer is active.
+  * @param dt Delta time
+  */
   void InputBuffer::tick(float dt)
   {
     timeSinceKeyPressed_ += dt;

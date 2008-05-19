@@ -41,11 +41,31 @@
 #include <vector>
 
 #include "ois/OIS.h"
+#include "util/Math.h"
 #include "Tickable.h"
 #include "InputInterfaces.h"
 
 namespace orxonox
 {
+  /**
+  * Helper class to realise a vector<int[4]>
+  */
+  class POVStates
+  {
+  public:
+    int operator[](unsigned int index) { return povStates[index]; }
+    int povStates[4];
+  };
+
+  /**
+  * Helper class to realise a vector< {int[4], int[4]} >
+  */
+  class SliderStates
+  {
+  public:
+    IntVector2 sliderStates[4];
+  };
+
   /**
     @brief Captures and distributes mouse and keyboard input.
   */
@@ -84,8 +104,8 @@ namespace orxonox
 
     static bool isModifierDown(KeyboardModifier::Enum modifier);
     static bool isKeyDown(KeyCode::Enum key);
-    static const MouseState getMouseState();
-    static const JoyStickState getJoyStickState(unsigned int ID);
+    //static const MouseState getMouseState();
+    //static const JoyStickState getJoyStickState(unsigned int ID);
 
     static void setWindowExtents(const int width, const int height);
 
@@ -130,6 +150,8 @@ namespace orxonox
     void _destroyMouse();
     void _destroyJoySticks();
 
+    void _updateTickables();
+
     void tick(float dt);
 
     // input events
@@ -143,7 +165,7 @@ namespace orxonox
     bool axisMoved     (const OIS::JoyStickEvent &arg, int axis);
     bool sliderMoved   (const OIS::JoyStickEvent &arg, int id);
     bool povMoved      (const OIS::JoyStickEvent &arg, int id);
-    bool vector3Moved  (const OIS::JoyStickEvent &arg, int id);
+    //bool vector3Moved  (const OIS::JoyStickEvent &arg, int id);
 
     static InputManager& _getSingleton();
     static InputManager* _getSingletonPtr() { return &_getSingleton(); }
@@ -159,6 +181,11 @@ namespace orxonox
     InputState stateRequest_;
     unsigned int keyboardModifiers_;
 
+    //! Keeps track of the joy stick POV states
+    std::vector<POVStates>                      povStates_;
+    //! Keeps track of the possibly two slider axes
+    std::vector<SliderStates>                   sliderStates_;
+
     std::map<std::string, KeyHandler*>          keyHandlers_;
     std::map<std::string, MouseHandler*>        mouseHandlers_;
     std::map<std::string, JoyStickHandler*>     joyStickHandlers_;
@@ -166,6 +193,7 @@ namespace orxonox
     std::vector<KeyHandler*>                    activeKeyHandlers_;
     std::vector<MouseHandler*>                  activeMouseHandlers_;
     std::vector<std::vector<JoyStickHandler*> > activeJoyStickHandlers_;
+    std::vector<InputTickable*>                 activeHandlers_;
 
     std::vector<Key>                            keysDown_;
     std::vector<MouseButton::Enum>              mouseButtonsDown_;

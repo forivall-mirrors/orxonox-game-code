@@ -69,8 +69,6 @@ namespace orxonox
     void append(const std::string& filename, const std::string& text);
     std::string read(const std::string& filename);
 
-    enum KeybindMode {}; // temporary
-
     ///////////////////////
     // CommandEvaluation //
     ///////////////////////
@@ -81,14 +79,14 @@ namespace orxonox
         public:
             CommandEvaluation();
 
-            KeybindMode getKeybindMode();
+            KeybindMode::Enum getKeybindMode();
             bool isValid() const;
 
             inline void setAdditionalParameter(const std::string& param)
                 { this->additionalParameter_ = param; this->bEvaluatedParams_ = false; }
             inline std::string getAdditionalParameter() const
                 { return (this->additionalParameter_ != "") ? (" " + this->additionalParameter_) : ""; }
-            inline std::string getCommandString() const { return this->processedCommand_; }
+            inline Executor* getExecutor() { return 0; }
 
             void setEvaluatedParameter(unsigned int index, MultiTypeMath param);
             MultiTypeMath getEvaluatedParameter(unsigned int index) const;
