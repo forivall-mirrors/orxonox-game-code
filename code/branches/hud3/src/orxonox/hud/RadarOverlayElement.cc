@@ -77,6 +77,7 @@ namespace orxonox
         om = &Ogre::OverlayManager::getSingleton();
         point = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "point"));
         point->show();
+        container->addChild(this);
         container->addChild(point);
         point->setMaterialName("Orxonox/RedDot");
         point->setDimensions(5,5);
@@ -96,7 +97,6 @@ namespace orxonox
     }
 
     void RadarOverlayElement::update() {
-        resize();
         shipPos_ = SpaceShip::instance_s->getPosition();
         currentDir_ = SpaceShip::instance_s->getOrientation()*initialDir_; 		// according to beni....
 		currentOrth_ = SpaceShip::instance_s->getOrientation()*initialOrth_;

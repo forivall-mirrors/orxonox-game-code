@@ -48,7 +48,7 @@ namespace orxonox
         value_ = 0;
         color_ = 2;
         autoColor_ = true;
-        dir_ = BarOverlayElement::RIGHT;
+        left2Right = false; // default: right to left progress
 
         // get window data...
         windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
@@ -65,23 +65,35 @@ namespace orxonox
         height_ = heightRel_ * windowH_;
 
         // create background...
-        bar_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", name_+"Bar"));
-        bar_->show();
-        container_->addChild(bar_);
-        bar_->setPosition(left_, top_);
-        bar_->setDimensions(width_, height_);
-        bar_->setMetricsMode(Ogre::GMM_PIXELS);
-        bar_->setMaterialName("Orxonox/Green");
+        background_ = static_cast<OverlayContainer*>(om->createOverlayElement("Panel", name_+"container"));
+        background_->show();
+        container_->addChild(background_);
+        background_->setMetricsMode(Ogre::GMM_PIXELS);
+        background_->setMaterialName("Orxonox/BarBackground");
 
-        setPosition(left_,top_);
-        setDimensions(width_,height_);
+        show();
+        background_->addChild(this);
         setMetricsMode(Ogre::GMM_PIXELS);
-        setMaterialName("Orxonox/BarBackground");
+        setMaterialName("Orxonox/Green");
+        resize();
+    }
+
+    void BarOverlayElement::resize(){
+        windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
+        windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
+        // cálculate new absolute coordinates...
+        left_ = leftRel_ * windowW_;
+        top_ = topRel_ * windowH_;
+        width_ = widthRel_ * windowW_;
+        height_ = heightRel_ * windowH_;
+        // adapt background
+        background_->setPosition(left_, top_);
+        background_->setDimensions(width_, height_);
+        // adapt bar
         setValue(value_);
     }
 
-
-   void BarOverlayElement::setValue(float value){
+    void BarOverlayElement::setValue(float value){
         value_ = value;
         // set color, if nescessary
         if(autoColor_){
@@ -90,40 +102,27 @@ namespace orxonox
             else setColor(BarOverlayElement::RED);
         }
         // set value
-        switch(dir_){
-        case BarOverlayElement::DOWN:
-            bar_->setPosition(left_,top_);
-            bar_->setDimensions(width_,height_*value_);
-            break;
-        case BarOverlayElement::LEFT:
-            bar_->setPosition(left_+width_-width_*value_,top_);
-            bar_->setDimensions(width_*value_,height_);
-            break;
-        case BarOverlayElement::UP:
-            bar_->setPosition(left_,top_+height_-height_*value_);
-            bar_->setDimensions(width_,height_*value_);
-            break;
-        default:
-            bar_->setPosition(left_,top_);
-            bar_->setDimensions(width_*value_,height_);
-            break;
+        if(left2Right){ // backward case
+            setPosition(0+width_-width_*value_, 0);
+            setDimensions(width_*value_,height_);
+        }else{          // default case
+            setPosition(0, 0);
+            setDimensions(width_*value_,height_);
         }
-    }
-
-    void BarOverlayElement::setDir(int dir){
+        if(value_ != 0) setTiling(value_, 1.0);
     }
 
     void BarOverlayElement::setColor(int color){
         color_ = color;
         switch(color){
         case 0:
-            bar_->setMaterialName("Orxonox/Red");
+            setMaterialName("Orxonox/Red");
             break;
         case 1:
-            bar_->setMaterialName("Orxonox/Yellow");
+            setMaterialName("Orxonox/Yellow");
             break;
         case 2:
-            bar_->setMaterialName("Orxonox/Green");
+            setMaterialName("Orxonox/Green");
         }
     }
 

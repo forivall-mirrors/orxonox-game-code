@@ -65,9 +65,6 @@ namespace orxonox
     radar = static_cast<RadarOverlayElement*>(om->createOverlayElement("Radar", "radar"));
     radar->show();
 
-    container->addChild(energyCounter);
-    container->addChild(speedo);
-    container->addChild(radar);
     container->show();
     orxonoxHUD->add2D(container);
     orxonoxHUD->show();
@@ -77,19 +74,24 @@ namespace orxonox
     container->setHeight(1.0);
     container->setMetricsMode(Ogre::GMM_RELATIVE);
 
-    energyCounter->init(0.01, 0.01, 0.2, 0.02, container);
+    energyCounter->init(0.01, 0.95, 0.4, 0.04, container);
     energyCounter->setValue(1);
 
-    speedo->init(0.01, 0.04, 0.2, 0.02, container);
+    speedo->init(0.01, 0.90, 0.4, 0.04, container);
 
     radar->init(0.5, 0.9, 0.2, container);
   }
 
   void HUD::tick(float dt)
   {
+      energyCounter->resize();
+
       float v = SpaceShip::instance_s->getVelocity().length();
       float vmax = SpaceShip::instance_s->getMaxSpeed();
       speedo->setValue(v/vmax);
+      speedo->resize();
+
+      radar->resize();
       radar->update();
   }
 

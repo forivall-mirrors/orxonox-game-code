@@ -40,43 +40,38 @@
 
 namespace orxonox
 {
+    class _OrxonoxExport RadarOverlayElement : public Ogre::PanelOverlayElement
+    {
+        private:
+            Ogre::PanelOverlayElement* point;
+            Ogre::OverlayContainer* container_;
+            Ogre::OverlayManager* om;               // pointer to the one and only overlay manager
+            Vector3 initialDir_;	                // direction of nose
+            Vector3 currentDir_;
+            Vector3 initialOrth_;                   // direction of normal
+            Vector3 currentOrth_;
+            Vector3 targetPos_;                     // position of target
+            Vector3 shipPos_;                       // position of ship
 
-  class _OrxonoxExport RadarOverlayElement : public Ogre::PanelOverlayElement
-  {
-  private:
+            Ogre::Real radius_;                     // radius on the radar
+            Ogre::Real phi_;                        // angle on the radar
+            bool right_;                            // checks whether the object is on the right side (since cos is not bijective)
+            Ogre::Real leftRel_, topRel_, dimRel_;  // relative position/dimension
+            int left_, top_, dim_;                  // absolute position/dimension
+            int windowW_, windowH_;                   // absolute window dimensions
+            int count_;
 
-    Ogre::PanelOverlayElement* point;
-    Ogre::OverlayContainer* container_;
-    Ogre::OverlayManager* om;               // pointer to the one and only overlay manager
-    Vector3 initialDir_;	                // direction of nose
-    Vector3 currentDir_;
-    Vector3 initialOrth_;                   // direction of normal
-    Vector3 currentOrth_;
-    Vector3 targetPos_;                     // position of target
-    Vector3 shipPos_;                       // position of ship
-
-    Ogre::Real radius_;                     // radius on the radar
-    Ogre::Real phi_;                        // angle on the radar
-    bool right_;                            // checks whether the object is on the right side (since cos is not bijective)
-    Ogre::Real leftRel_, topRel_, dimRel_;  // relative position/dimension
-    int left_, top_, dim_;                  // absolute position/dimension
-    int windowW_, windowH_;                   // absolute window dimensions
-    int count_;
-
-    void resize();
-
-  public:
-
-    RadarOverlayElement(const Ogre::String& name);
-    virtual ~RadarOverlayElement();
-    virtual void initialise();
-    void update();
-    void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
-    void setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ);
-    int newShip(int X, int Y, int Z);
-
-    void resetShip(int shipID, int Y, int Z);
-  };
+        public:
+            RadarOverlayElement(const Ogre::String& name);
+            virtual ~RadarOverlayElement();
+            virtual void initialise();
+            void update();
+            void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
+            void setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ);
+            int newShip(int X, int Y, int Z);
+            void resize();
+            void resetShip(int shipID, int Y, int Z);
+    };
 }
 
 #endif
