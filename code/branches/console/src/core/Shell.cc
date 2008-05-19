@@ -79,7 +79,7 @@ namespace orxonox
     {
         SetConfigValue(maxHistoryLength_, 100);
         SetConfigValue(historyOffset_, 0);
-        SetConfigValueVector(commandHistory_, std::vector<std::string>(1, ""));
+        SetConfigValueVector(commandHistory_, std::vector<std::string>());
 
         if (this->historyOffset_ >= this->maxHistoryLength_)
             this->historyOffset_ = 0;

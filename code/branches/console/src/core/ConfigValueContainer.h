@@ -93,6 +93,7 @@ namespace orxonox
             inline void setVectorType(const std::vector<T>& value)
             {
                 this->value_ = T();
+                this->update();
             }
 
             inline const std::string& getName() const
