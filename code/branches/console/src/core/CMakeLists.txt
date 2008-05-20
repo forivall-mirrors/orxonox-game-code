@@ -16,8 +16,10 @@ SET(CORE_SRC_FILES
   OutputHandler.cc
   OutputBuffer.cc
   InputBuffer.cc
-  CommandExecutor.cc
   Shell.cc
+  CommandExecutor.cc
+  CommandEvaluation.cc
+  ConsoleCommandCompilation.cc
   Language.cc
   ClassTreeMask.cc
   Loader.cc

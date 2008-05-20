@@ -37,10 +37,10 @@
 
 namespace orxonox
 {
-    ConsoleCommandShortcutExtern(reloadConfig, AccessLevel::None);
-    ConsoleCommandShortcutExtern(cleanConfig, AccessLevel::None);
-    ConsoleCommandShortcutExtern(loadSettings, AccessLevel::None);
-    ConsoleCommandShortcutExtern(loadKeybindings, AccessLevel::None);
+    SetConsoleCommandShortcutExtern(reloadConfig);
+    SetConsoleCommandShortcutExtern(cleanConfig);
+    SetConsoleCommandShortcutExtern(loadSettings);
+    SetConsoleCommandShortcutExtern(loadKeybindings);
 
     void reloadConfig()
     {

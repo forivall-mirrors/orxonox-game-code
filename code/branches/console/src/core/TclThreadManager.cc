@@ -47,15 +47,15 @@
 
 namespace orxonox
 {
-    ConsoleCommandShortcutGeneric(tclexecute, createExecutor(createFunctor(&TclThreadManager::execute), "tclexecute", AccessLevel::None));
-    ConsoleCommandShortcutGeneric(tclquery,   createExecutor(createFunctor(&TclThreadManager::query),   "tclquery",   AccessLevel::None));
-    ConsoleCommand(TclThreadManager, create,    AccessLevel::None, false);
-    ConsoleCommand(TclThreadManager, destroy,   AccessLevel::None, false);
-    ConsoleCommand(TclThreadManager, execute,   AccessLevel::None, false);
-    ConsoleCommand(TclThreadManager, query,     AccessLevel::None, false);
-    ConsoleCommand(TclThreadManager, status,    AccessLevel::None, false);
-    ConsoleCommand(TclThreadManager, dump,      AccessLevel::None, false);
-    ConsoleCommand(TclThreadManager, flush,     AccessLevel::None, false);
+    SetConsoleCommandShortcutGeneric(tclexecute, createExecutor(createFunctor(&TclThreadManager::execute), "tclexecute"));
+    SetConsoleCommandShortcutGeneric(tclquery,   createExecutor(createFunctor(&TclThreadManager::query),   "tclquery"  ));
+    SetConsoleCommand(TclThreadManager, create,  false);
+    SetConsoleCommand(TclThreadManager, destroy, false);
+    SetConsoleCommand(TclThreadManager, execute, false);
+    SetConsoleCommand(TclThreadManager, query,   false);
+    SetConsoleCommand(TclThreadManager, status,  false);
+    SetConsoleCommand(TclThreadManager, dump,    false);
+    SetConsoleCommand(TclThreadManager, flush,   false);
 
     TclThreadManager* instance_tclthreadmanager = &TclThreadManager::getInstance();
 

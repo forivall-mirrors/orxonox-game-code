@@ -42,7 +42,7 @@
 
 namespace orxonox
 {
-  ConsoleCommand(InputManager, setInputMode, AccessLevel::Admin, true).setDefaultValue(0, IM_INGAME);
+  SetConsoleCommand(InputManager, setInputMode, true).setDefaultValue(0, IM_INGAME);
 
   /**
     @brief Constructor only resets the pointer values to 0.

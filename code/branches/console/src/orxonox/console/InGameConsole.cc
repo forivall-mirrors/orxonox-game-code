@@ -48,8 +48,8 @@
 
 namespace orxonox
 {
-    ConsoleCommand(InGameConsole, openConsole, AccessLevel::None, true);
-    ConsoleCommand(InGameConsole, closeConsole, AccessLevel::None, true);
+    SetConsoleCommand(InGameConsole, openConsole, true);
+    SetConsoleCommand(InGameConsole, closeConsole, true);
 
     using namespace Ogre;
 

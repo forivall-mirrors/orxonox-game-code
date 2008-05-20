@@ -37,22 +37,75 @@
 #include "CommandExecutor.h"
 
 
+#define SetConsoleCommand(classname, function,  bCreateShortcut) \
+    SetConsoleCommandGeneric(classname##function##consolecommand__, classname, orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), #function), bCreateShortcut)
 
-#define ConsoleCommand(classname, function, accesslevel, bCreateShortcut) \
-    ConsoleCommandGeneric(classname##function##consolecommand__, classname, orxonox::createExecutor(orxonox::createFunctor(&classname::function), #function, accesslevel), bCreateShortcut)
-
-#define ConsoleCommandGeneric(fakevariable, classname, executor, bCreateShortcut) \
-    Executor& fakevariable = ClassManager<classname>::getIdentifier()->addConsoleCommand((ExecutorStatic*)executor, bCreateShortcut)
+#define SetConsoleCommandGeneric(fakevariable, classname, executor, bCreateShortcut) \
+    Executor& fakevariable = ClassManager<classname>::getIdentifier()->addConsoleCommand((ConsoleCommand*)executor, bCreateShortcut)
 
 
-#define ConsoleCommandShortcut(classname, function, accesslevel) \
-    ConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createExecutor(orxonox::createFunctor(&classname::function), #function, accesslevel))
+#define SetConsoleCommandShortcut(classname, function) \
+    SetConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), #function))
 
-#define ConsoleCommandShortcutExtern(function, accesslevel) \
-    ConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createExecutor(orxonox::createFunctor(&function), #function, accesslevel))
+#define SetConsoleCommandShortcutExtern(function) \
+    SetConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createConsoleCommand(orxonox::createFunctor(&function), #function))
 
-#define ConsoleCommandShortcutGeneric(fakevariable, executor) \
-    Executor& fakevariable = CommandExecutor::addConsoleCommandShortcut((ExecutorStatic*)executor)
+#define SetConsoleCommandShortcutGeneric(fakevariable, executor) \
+    Executor& fakevariable = CommandExecutor::addConsoleCommandShortcut((ConsoleCommand*)executor)
 
+
+namespace orxonox
+{
+    namespace AccessLevel
+    {
+        enum Level
+        {
+            None,
+            User,
+            Admin,
+            Offline,
+            Debug,
+            Disabled
+        };
+    }
+
+    class _CoreExport ConsoleCommand : public ExecutorStatic
+    {
+        public:
+            ConsoleCommand(FunctorStatic* functor, const std::string& name = "") : ExecutorStatic(functor, name), accessLevel_(AccessLevel::None) {}
+
+            inline ConsoleCommand& setDescription(const std::string& description)
+                { this->ExecutorStatic::setDescription(description); return (*this); }
+            inline ConsoleCommand& setDescriptionParam(int param, const std::string& description)
+                { this->ExecutorStatic::setDescriptionParam(param, description); return (*this); }
+            inline ConsoleCommand& setDescriptionReturnvalue(const std::string& description)
+                { this->ExecutorStatic::setDescriptionReturnvalue(description); return (*this); }
+            inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1)
+                { this->ExecutorStatic::setDefaultValues(param1); return (*this); }
+            inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2)
+                { this->ExecutorStatic::setDefaultValues(param1, param2); return (*this); }
+            inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3)
+                { this->ExecutorStatic::setDefaultValues(param1, param2, param3); return (*this); }
+            inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4)
+                { this->ExecutorStatic::setDefaultValues(param1, param2, param3, param4); return (*this); }
+            inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5)
+                { this->ExecutorStatic::setDefaultValues(param1, param2, param3, param4, param5); return (*this); }
+            inline ConsoleCommand& setDefaultValue(unsigned int index, const MultiTypeMath& param)
+                { this->ExecutorStatic::setDefaultValue(index, param); return (*this); }
+
+            inline ConsoleCommand& setAccessLevel(AccessLevel::Level level)
+                { this->accessLevel_ = level; return (*this); }
+            inline AccessLevel::Level getAccessLevel() const
+                { return this->accessLevel_; }
+
+        private:
+            AccessLevel::Level accessLevel_;
+    };
+
+    inline ConsoleCommand* createConsoleCommand(FunctorStatic* functor, const std::string& name = "")
+    {
+        return new ConsoleCommand(functor, name);
+    }
+}
 
 #endif /* _ConsoleCommand_H__ */

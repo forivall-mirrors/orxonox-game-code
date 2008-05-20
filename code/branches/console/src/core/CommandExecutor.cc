@@ -43,301 +43,10 @@
 
 namespace orxonox
 {
-    ConsoleCommandShortcutGeneric(keyword1, createExecutor((FunctorStatic*)0, "set", AccessLevel::User));
-    ConsoleCommandShortcutGeneric(keyword2, createExecutor((FunctorStatic*)0, "tset", AccessLevel::User));
-    ConsoleCommandShortcutGeneric(keyword3, createExecutor((FunctorStatic*)0, "bind", AccessLevel::User));
+    SetConsoleCommandShortcutGeneric(keyword1, createExecutor((FunctorStatic*)0, "set")).setAccessLevel(AccessLevel::User);
+    SetConsoleCommandShortcutGeneric(keyword2, createExecutor((FunctorStatic*)0, "tset")).setAccessLevel(AccessLevel::User);
+    SetConsoleCommandShortcutGeneric(keyword3, createExecutor((FunctorStatic*)0, "bind")).setAccessLevel(AccessLevel::User);
 
-    ConsoleCommandShortcutExtern(source, AccessLevel::None);
-    ConsoleCommandShortcutExtern(echo, AccessLevel::None);
-    ConsoleCommandShortcutExtern(puts, AccessLevel::None);
-
-    ConsoleCommandShortcutExtern(read, AccessLevel::None);
-    ConsoleCommandShortcutExtern(append, AccessLevel::None);
-    ConsoleCommandShortcutExtern(write, AccessLevel::None);
-
-    void source(const std::string& filename)
-    {
-        static std::set<std::string> executingFiles;
-
-        std::set<std::string>::const_iterator it = executingFiles.find(filename);
-        if (it != executingFiles.end())
-        {
-            COUT(1) << "Error: Recurring source command in \"" << filename << "\". Stopped execution." << std::endl;
-            return;
-        }
-
-        // Open the file
-        std::ifstream file;
-        file.open(filename.c_str(), std::fstream::in);
-
-        if (!file.is_open())
-        {
-            COUT(1) << "Error: Couldn't open file \"" << filename << "\"." << std::endl;
-            return;
-        }
-
-        executingFiles.insert(filename);
-
-        // Iterate through the file and put the lines into the CommandExecutor
-        char line[1024];
-        while (file.good() && !file.eof())
-        {
-            file.getline(line, 1024);
-            CommandExecutor::execute(line);
-        }
-
-        executingFiles.erase(filename);
-        file.close();
-    }
-
-    std::string echo(const std::string& text)
-    {
-        std::cout << text << std::endl;
-        return text;
-    }
-
-    void puts(bool newline, const std::string& text)
-    {
-        if (newline)
-            COUT(0) << text << std::endl;
-        else
-            COUT(0) << text;
-    }
-
-    void write(const std::string& filename, const std::string& text)
-    {
-        std::ofstream file;
-        file.open(filename.c_str(), std::fstream::out);
-
-        if (!file.is_open())
-        {
-            COUT(1) << "Error: Couldn't write to file \"" << filename << "\"." << std::endl;
-            return;
-        }
-
-        file << text << std::endl;
-        file.close();
-    }
-
-    void append(const std::string& filename, const std::string& text)
-    {
-        std::ofstream file;
-        file.open(filename.c_str(), std::fstream::app);
-
-        if (!file.is_open())
-        {
-            COUT(1) << "Error: Couldn't append to file \"" << filename << "\"." << std::endl;
-            return;
-        }
-
-        file << text << std::endl;
-        file.close();
-    }
-
-    std::string read(const std::string& filename)
-    {
-        std::ifstream file;
-        file.open(filename.c_str(), std::fstream::in);
-
-        if (!file.is_open())
-        {
-            COUT(1) << "Error: Couldn't read from file \"" << filename << "\"." << std::endl;
-            return "";
-        }
-
-        std::string output = "";
-        char line[1024];
-        while (file.good() && !file.eof())
-        {
-            file.getline(line, 1024);
-            output += line;
-            output += "\n";
-        }
-
-        file.close();
-
-        return output;
-    }
-
-
-    ///////////////////////
-    // CommandEvaluation //
-    ///////////////////////
-    CommandEvaluation::CommandEvaluation()
-    {
-        this->processedCommand_ = "";
-        this->additionalParameter_ = "";
-
-        this->functionclass_ = 0;
-        this->configvalueclass_ = 0;
-        this->shortcut_ = 0;
-        this->function_ = 0;
-        this->configvalue_ = 0;
-        this->key_ = 0;
-
-        this->errorMessage_ = "";
-        this->state_ = CS_Uninitialized;
-
-        this->bEvaluatedParams_ = false;
-        this->evaluatedExecutor_ = 0;
-    }
-
-    KeybindMode CommandEvaluation::getKeybindMode()
-    {
-        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
-        {
-//            if (this->shortcut_ != 0)
-//                return this->shortcut_->getKeybindMode();
-        }
-        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
-        {
-//            if (this->function_ != 0)
-//                return this->function_->getKeybindMode();
-        }
-        else if (this->state_ == CS_ConfigValueType || this->state_ == CS_ConfigValueFinished)
-        {
-//            return KeybindMode::onPress;
-        }
-        else if (this->state_ == CS_KeybindCommand || this->state_ == CS_KeybindFinished)
-        {
-//            return KeybindMode::onPress;
-        }
-        else
-        {
-//            return KeybindMode::onPress;
-        }
-        // FIXME: Had to insert a return statement
-        return (KeybindMode)0;
-    }
-
-    bool CommandEvaluation::isValid() const
-    {
-        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
-        {
-            return this->shortcut_;
-        }
-        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
-        {
-            return (this->functionclass_ && this->function_);
-        }
-        else if (this->state_ == CS_ConfigValueType || this->state_ == CS_ConfigValueFinished)
-        {
-            return (this->configvalueclass_ && this->configvalue_);
-        }
-        else if (this->state_ == CS_KeybindCommand || this->state_ == CS_KeybindFinished)
-        {
-            return this->key_;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    void CommandEvaluation::evaluateParams()
-    {
-        this->bEvaluatedParams_ = false;
-        this->evaluatedExecutor_ = 0;
-
-        for (unsigned int i = 0; i < MAX_FUNCTOR_ARGUMENTS; i++)
-            this->param_[i] = MT_null;
-
-        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
-        {
-            if (this->shortcut_)
-            {
-                if (this->tokens_.size() <= 1)
-                {
-                    if (this->shortcut_->evaluate(this->getAdditionalParameter(), this->param_, " "))
-                    {
-                        this->bEvaluatedParams_ = true;
-                        this->evaluatedExecutor_ = this->shortcut_;
-                    }
-                }
-                else if (this->tokens_.size() > 1)
-                {
-                    if (this->shortcut_->evaluate(this->tokens_.subSet(1).join() + this->getAdditionalParameter(), this->param_, " "))
-                    {
-                        this->bEvaluatedParams_ = true;
-                        this->evaluatedExecutor_ = this->shortcut_;
-                    }
-                }
-            }
-        }
-        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
-        {
-            if (this->function_)
-            {
-                if (this->tokens_.size() <= 2)
-                {
-                    if (this->function_->evaluate(this->getAdditionalParameter(), this->param_, " "))
-                    {
-                        this->bEvaluatedParams_ = true;
-                        this->evaluatedExecutor_ = this->function_;
-                    }
-                }
-                else if (this->tokens_.size() > 2)
-                {
-                    if (this->function_->evaluate(this->tokens_.subSet(2).join() + this->getAdditionalParameter(), this->param_, " "))
-                    {
-                        this->bEvaluatedParams_ = true;
-                        this->evaluatedExecutor_ = this->function_;
-                    }
-                }
-            }
-        }
-    }
-
-    void CommandEvaluation::setEvaluatedParameter(unsigned int index, MultiTypeMath param)
-    {
-        if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
-            this->param_[index] = param;
-    }
-
-    MultiTypeMath CommandEvaluation::getEvaluatedParameter(unsigned int index) const
-    {
-        if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
-            return this->param_[index];
-
-        return MT_null;
-    }
-
-    bool CommandEvaluation::hasReturnvalue() const
-    {
-        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
-        {
-            if (this->shortcut_)
-                return this->shortcut_->hasReturnvalue();
-        }
-        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
-        {
-            if (this->function_)
-                return this->function_->hasReturnvalue();
-        }
-
-        return MT_null;
-    }
-
-    MultiTypeMath CommandEvaluation::getReturnvalue() const
-    {
-        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
-        {
-            if (this->shortcut_)
-                return this->shortcut_->getReturnvalue();
-        }
-        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
-        {
-            if (this->function_)
-                return this->function_->getReturnvalue();
-        }
-
-        return MT_null;
-    }
-
-
-    /////////////////////
-    // CommandExecutor //
-    /////////////////////
     CommandExecutor& CommandExecutor::getInstance()
     {
         static CommandExecutor instance;
@@ -354,11 +63,11 @@ namespace orxonox
         return CommandExecutor::getInstance().evaluation_;
     }
 
-    Executor& CommandExecutor::addConsoleCommandShortcut(ExecutorStatic* executor)
+    ConsoleCommand& CommandExecutor::addConsoleCommandShortcut(ConsoleCommand* command)
     {
-        CommandExecutor::getInstance().consoleCommandShortcuts_[executor->getName()] = executor;
-        CommandExecutor::getInstance().consoleCommandShortcuts_LC_[getLowercase(executor->getName())] = executor;
-        return (*executor);
+        CommandExecutor::getInstance().consoleCommandShortcuts_[command->getName()] = command;
+        CommandExecutor::getInstance().consoleCommandShortcuts_LC_[getLowercase(command->getName())] = command;
+        return (*command);
     }
 
     /**
@@ -366,9 +75,9 @@ namespace orxonox
         @brief name The name of the requested console command shortcut
         @return The executor of the requested console command shortcut
     */
-    ExecutorStatic* CommandExecutor::getConsoleCommandShortcut(const std::string& name)
+    ConsoleCommand* CommandExecutor::getConsoleCommandShortcut(const std::string& name)
     {
-        std::map<std::string, ExecutorStatic*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_.find(name);
+        std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_.find(name);
         if (it != CommandExecutor::getInstance().consoleCommandShortcuts_.end())
             return (*it).second;
         else
@@ -380,9 +89,9 @@ namespace orxonox
         @brief name The name of the requested console command shortcut in lowercase
         @return The executor of the requested console command shortcut
     */
-    ExecutorStatic* CommandExecutor::getLowercaseConsoleCommandShortcut(const std::string& name)
+    ConsoleCommand* CommandExecutor::getLowercaseConsoleCommandShortcut(const std::string& name)
     {
-        std::map<std::string, ExecutorStatic*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_LC_.find(name);
+        std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_LC_.find(name);
         if (it != CommandExecutor::getInstance().consoleCommandShortcuts_LC_.end())
             return (*it).second;
         else
@@ -1186,7 +895,7 @@ namespace orxonox
 
     void CommandExecutor::createListOfPossibleShortcuts(const std::string& fragment)
     {
-        for (std::map<std::string, ExecutorStatic*>::const_iterator it = CommandExecutor::getLowercaseConsoleCommandShortcutMapBegin(); it != CommandExecutor::getLowercaseConsoleCommandShortcutMapEnd(); ++it)
+        for (std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getLowercaseConsoleCommandShortcutMapBegin(); it != CommandExecutor::getLowercaseConsoleCommandShortcutMapEnd(); ++it)
         {
             if ((*it).first.find(getLowercase(fragment)) == 0 || fragment == "")
             {
@@ -1199,7 +908,7 @@ namespace orxonox
 
     void CommandExecutor::createListOfPossibleFunctions(const std::string& fragment, Identifier* identifier)
     {
-        for (std::map<std::string, ExecutorStatic*>::const_iterator it = identifier->getLowercaseConsoleCommandMapBegin(); it != identifier->getLowercaseConsoleCommandMapEnd(); ++it)
+        for (std::map<std::string, ConsoleCommand*>::const_iterator it = identifier->getLowercaseConsoleCommandMapBegin(); it != identifier->getLowercaseConsoleCommandMapEnd(); ++it)
         {
             if ((*it).first.find(getLowercase(fragment)) == 0 || fragment == "")
             {
@@ -1260,18 +969,18 @@ namespace orxonox
         return 0;
     }
 
-    ExecutorStatic* CommandExecutor::getExecutorOfPossibleShortcut(const std::string& name)
+    ConsoleCommand* CommandExecutor::getExecutorOfPossibleShortcut(const std::string& name)
     {
-        std::map<std::string, ExecutorStatic*>::const_iterator it = CommandExecutor::getLowercaseConsoleCommandShortcutMap().find(getLowercase(name));
+        std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getLowercaseConsoleCommandShortcutMap().find(getLowercase(name));
         if (it != CommandExecutor::getLowercaseConsoleCommandShortcutMapEnd())
             return (*it).second;
 
         return 0;
     }
 
-    ExecutorStatic* CommandExecutor::getExecutorOfPossibleFunction(const std::string& name, Identifier* identifier)
+    ConsoleCommand* CommandExecutor::getExecutorOfPossibleFunction(const std::string& name, Identifier* identifier)
     {
-        std::map<std::string, ExecutorStatic*>::const_iterator it = identifier->getLowercaseConsoleCommandMap().find(getLowercase(name));
+        std::map<std::string, ConsoleCommand*>::const_iterator it = identifier->getLowercaseConsoleCommandMap().find(getLowercase(name));
         if (it != identifier->getLowercaseConsoleCommandMapEnd())
             return (*it).second;
 
@@ -1318,23 +1027,23 @@ namespace orxonox
         return output;
     }
 
-    std::string CommandExecutor::dump(const ExecutorStatic* executor)
+    std::string CommandExecutor::dump(const ConsoleCommand* command)
     {
         std::string output = "";
-        for (unsigned int i = 0; i < executor->getParamCount(); i++)
+        for (unsigned int i = 0; i < command->getParamCount(); i++)
         {
             if (i != 0)
                 output += " ";
 
-            if (executor->defaultValueSet(i))
+            if (command->defaultValueSet(i))
                 output += "[";
             else
                 output += "{";
 
-            output += executor->getTypenameParam(i);
+            output += command->getTypenameParam(i);
 
-            if (executor->defaultValueSet(i))
-                output += "=" + executor->getDefaultValue(i).toString() + "]";
+            if (command->defaultValueSet(i))
+                output += "=" + command->getDefaultValue(i).toString() + "]";
             else
                 output += "}";
         }

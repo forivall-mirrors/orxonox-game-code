@@ -53,16 +53,13 @@
 // util
 //#include "util/Sleep.h"
 #include "util/ArgReader.h"
-#include "util/ExprParser.h"
 
 // core
 #include "core/ConfigFileManager.h"
 #include "core/ConsoleCommand.h"
 #include "core/Debug.h"
-#include "core/Factory.h"
 #include "core/Loader.h"
 #include "core/Tickable.h"
-#include "core/InputBuffer.h"
 #include "core/InputManager.h"
 
 // audio
@@ -73,7 +70,6 @@
 #include "network/Client.h"
 
 // objects and tools
-#include "tools/Timer.h"
 #include "hud/HUD.h"
 //#include "console/InGameConsole.h"
 
@@ -84,35 +80,9 @@ network::Server *server_g;
 
 namespace orxonox
 {
-  ConsoleCommand(Orxonox, exit, AccessLevel::None, true);
-  ConsoleCommand(Orxonox, slomo, AccessLevel::Offline, true).setDefaultValue(0, 1.0);
-  ConsoleCommand(Orxonox, setTimeFactor, AccessLevel::Offline, false).setDefaultValue(0, 1.0);
-
-  class Calculator
-  {
-  public:
-    static float calculate(const std::string& calculation)
-    {
-      ExprParser expr(calculation);
-      if (expr.getSuccess())
-      {
-        if (expr.getResult() == 42.0)
-          std::cout << "Greetings from the restaurant at the end of the universe." << std::endl;
-        // FIXME: insert modifier to display in full precision
-        std::cout << "Result is: " << expr.getResult() << std::endl;
-        if (expr.getRemains() != "")
-          std::cout << "Warning: Expression could not be parsed to the end! Remains: '"
-              << expr.getRemains() << "'" << std::endl;
-        return expr.getResult();
-      }
-      else
-      {
-        std::cout << "Cannot calculate expression: Parse error" << std::endl;
-        return 0;
-      }
-    }
-  };
-  ConsoleCommandShortcut(Calculator, calculate, AccessLevel::None);
+  SetConsoleCommand(Orxonox, exit, true);
+  SetConsoleCommand(Orxonox, slomo, true).setDefaultValue(0, 1.0).setAccessLevel(AccessLevel::Offline);
+  SetConsoleCommand(Orxonox, setTimeFactor, false).setDefaultValue(0, 1.0).setAccessLevel(AccessLevel::Offline);
 
   /**
     @brief Reference to the only instance of the class.

@@ -52,10 +52,10 @@
 
 namespace orxonox
 {
-    ConsoleCommand(SpaceShip, setMaxSpeedTest, AccessLevel::Debug, false);
-    ConsoleCommandGeneric(test1, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxSpeed", AccessLevel::Debug), false);
-    ConsoleCommandGeneric(test2, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxBlubber", AccessLevel::Debug), false);
-    ConsoleCommandGeneric(test3, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setRofl", AccessLevel::Debug), false);
+    SetConsoleCommand(SpaceShip, setMaxSpeedTest, false).setAccessLevel(AccessLevel::Debug);
+    SetConsoleCommandGeneric(test1, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxSpeed"), false).setAccessLevel(AccessLevel::Debug);
+    SetConsoleCommandGeneric(test2, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxBlubber"), false).setAccessLevel(AccessLevel::Debug);
+    SetConsoleCommandGeneric(test3, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setRofl"), false).setAccessLevel(AccessLevel::Debug);
 
     CreateFactory(SpaceShip);
 

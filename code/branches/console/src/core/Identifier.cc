@@ -36,7 +36,7 @@
 #include <ostream>
 
 #include "Factory.h"
-#include "Executor.h"
+#include "ConsoleCommand.h"
 #include "CommandExecutor.h"
 
 namespace orxonox
@@ -269,16 +269,16 @@ namespace orxonox
         @param bCreateShortcut If this is true a shortcut gets created so you don't have to add the classname to access this command
         @return The executor of the command
     */
-    ExecutorStatic& Identifier::addConsoleCommand(ExecutorStatic* executor, bool bCreateShortcut)
+    ConsoleCommand& Identifier::addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut)
     {
         this->bHasConsoleCommands_ = true;
-        this->consoleCommands_[executor->getName()] = executor;
-        this->consoleCommands_LC_[getLowercase(executor->getName())] = executor;
+        this->consoleCommands_[command->getName()] = command;
+        this->consoleCommands_LC_[getLowercase(command->getName())] = command;
 
         if (bCreateShortcut)
-            CommandExecutor::addConsoleCommandShortcut(executor);
+            CommandExecutor::addConsoleCommandShortcut(command);
 
-        return (*executor);
+        return (*command);
     }
 
     /**
@@ -286,9 +286,9 @@ namespace orxonox
         @brief name The name of the requested console command
         @return The executor of the requested console command
     */
-    ExecutorStatic* Identifier::getConsoleCommand(const std::string& name) const
+    ConsoleCommand* Identifier::getConsoleCommand(const std::string& name) const
     {
-        std::map<std::string, ExecutorStatic*>::const_iterator it = this->consoleCommands_.find(name);
+        std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_.find(name);
         if (it != this->consoleCommands_.end())
             return (*it).second;
         else
@@ -300,9 +300,9 @@ namespace orxonox
         @brief name The name of the requested console command in lowercae
         @return The executor of the requested console command
     */
-    ExecutorStatic* Identifier::getLowercaseConsoleCommand(const std::string& name) const
+    ConsoleCommand* Identifier::getLowercaseConsoleCommand(const std::string& name) const
     {
-        std::map<std::string, ExecutorStatic*>::const_iterator it = this->consoleCommands_LC_.find(name);
+        std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_LC_.find(name);
         if (it != this->consoleCommands_LC_.end())
             return (*it).second;
         else

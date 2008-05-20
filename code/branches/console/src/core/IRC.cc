@@ -38,9 +38,9 @@
 
 namespace orxonox
 {
-    ConsoleCommand(IRC, say,  AccessLevel::User, true);
-    ConsoleCommand(IRC, msg,  AccessLevel::User, false);
-    ConsoleCommand(IRC, nick, AccessLevel::User, false);
+    SetConsoleCommand(IRC, say,  true).setAccessLevel(AccessLevel::User);
+    SetConsoleCommand(IRC, msg,  false).setAccessLevel(AccessLevel::User);
+    SetConsoleCommand(IRC, nick, false).setAccessLevel(AccessLevel::User);
 
     IRC* instance_irc = &IRC::getInstance();
 

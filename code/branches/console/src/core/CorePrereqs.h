@@ -65,8 +65,6 @@ class SignalHandler;
 
 namespace orxonox
 {
-#ifndef _XMLPort_Mode__
-#define _XMLPort_Mode__
   namespace XMLPort
   {
     enum Mode
@@ -75,7 +73,6 @@ namespace orxonox
       SaveObject
     };
   }
-#endif
 
   typedef std::string LanguageEntryLabel;
 
@@ -100,6 +97,7 @@ namespace orxonox
   class ConfigFileManager;
   class ConfigFileSection;
   class ConfigValueContainer;
+  class ConsoleCommand;
   class CoreSettings;
   class Error;
   class Executor;
