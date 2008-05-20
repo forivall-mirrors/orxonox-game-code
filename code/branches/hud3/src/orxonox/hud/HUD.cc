@@ -33,7 +33,7 @@
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
 #include "core/Debug.h"
-
+#include "objects/SpaceShip.h"
 #include "HUD.h"
 #include "BarOverlayElement.h"
 #include "RadarOverlayElement.h"
@@ -45,27 +45,28 @@ namespace orxonox
 
     HUD::HUD(int zoom){
         om = &Ogre::OverlayManager::getSingleton();
-
+		
+		// create Factories
         BarOverlayElementFactory *barOverlayElementFactory = new BarOverlayElementFactory();
         om->addOverlayElementFactory(barOverlayElementFactory);
-
         RadarOverlayElementFactory *radarOverlayElementFactory = new RadarOverlayElementFactory();
         om->addOverlayElementFactory(radarOverlayElementFactory);
 
         orxonoxHUD = om->create("Orxonox/HUD");
-
         container = static_cast<Ogre::OverlayContainer*>(om->createOverlayElement("Panel", "Orxonox/HUD/container"));
-
-        energyCounter = static_cast<BarOverlayElement*>(om->createOverlayElement("Bar", "energyCounter"));
-        energyCounter->show();
-
-        speedo = static_cast<BarOverlayElement*>(om->createOverlayElement("Bar", "speedo"));
-        speedo->show();
-
+        // create energy bar    
+        energyBar = static_cast<BarOverlayElement*>(om->createOverlayElement("Bar", "energyBar"));
+        energyBar->show();
+        // create speedo bar
+        speedoBar = static_cast<BarOverlayElement*>(om->createOverlayElement("Bar", "speedoBar"));
+        speedoBar->show();
+        // create radar
         radar = static_cast<RadarOverlayElement*>(om->createOverlayElement("Radar", "radar"));
         radar->show();
 
+		// set up screen-wide container
         container->show();
+        
         orxonoxHUD->add2D(container);
         orxonoxHUD->show();
         container->setLeft(0.0);
@@ -73,23 +74,21 @@ namespace orxonox
         container->setWidth(1.0);
         container->setHeight(1.0);
         container->setMetricsMode(Ogre::GMM_RELATIVE);
-
-        energyCounter->init(0.01, 0.95, 0.4, 0.04, container);
-        energyCounter->setValue(1);
-
-        speedo->init(0.01, 0.90, 0.4, 0.04, container);
-
+        energyBar->init(0.01, 0.94, 0.4, 0.04, container);
+        energyBar->setValue(1);
+        speedoBar->init(0.01, 0.90, 0.4, 0.04, container);
         radar->init(0.5, 0.9, 0.2, container);
+        radar->addObject(Vector3(1337.0, 0.0, 0.0));
     }
 
     void HUD::tick(float dt)
     {
-        energyCounter->resize();
+        energyBar->resize();
 
         float v = SpaceShip::instance_s->getVelocity().length();
         float vmax = SpaceShip::instance_s->getMaxSpeed();
-        speedo->setValue(v/vmax);
-        speedo->resize();
+        speedoBar->setValue(v/vmax);
+        speedoBar->resize();
 
         radar->resize();
         radar->update();

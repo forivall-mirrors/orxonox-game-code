@@ -52,19 +52,14 @@ namespace orxonox
     RadarOverlayElement::~RadarOverlayElement(){
     }
 
-    void RadarOverlayElement::initialise(){
-        PanelOverlayElement::initialise();
-    }
-
     void RadarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container){
-        count_ = 0;
+		om = &Ogre::OverlayManager::getSingleton();        
         dimRel_ = dimRel;
         leftRel_ = leftRel;
         topRel_ = topRel;
         container_ = container;
 
         shipPos_ = Vector3(0.0, 0.0, 0.0);
-        targetPos_ = Vector3(1337.0, 0.0, 0.0);
         initialDir_ = Vector3(1.0, 0.0, 0.0);
         currentDir_ = initialDir_;
         initialOrth_ = Vector3(0.0, 0.0, 1.0);
@@ -73,16 +68,8 @@ namespace orxonox
         setMetricsMode(Ogre::GMM_PIXELS);
         setMaterialName("Orxonox/Radar");
         resize();
-
-        om = &Ogre::OverlayManager::getSingleton();
-        point = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "point"));
-        point->show();
-        container->addChild(this);
-        container->addChild(point);
-        point->setMaterialName("Orxonox/RedDot");
-        point->setDimensions(5,5);
-        point->setMetricsMode(Ogre::GMM_PIXELS);
-
+        
+        container_->addChild(this);
     }
 
     void RadarOverlayElement::resize() {
@@ -101,20 +88,63 @@ namespace orxonox
         currentDir_ = SpaceShip::instance_s->getOrientation()*initialDir_; 		// according to beni....
 		currentOrth_ = SpaceShip::instance_s->getOrientation()*initialOrth_;
 
-		radius_ = acos((currentDir_.dotProduct(targetPos_ - shipPos_))/((targetPos_ - shipPos_).length()*currentDir_.length()));
-        phi_ = acos((currentOrth_.dotProduct(targetPos_ - shipPos_))/((targetPos_ - shipPos_).length()*currentOrth_.length()));
-        if((currentDir_.crossProduct(currentOrth_)).dotProduct(targetPos_ - shipPos_) > 0) right_ = true;
-        else right_=false;
+		if(tomato_ == NULL) return;		
+		
+		tomato_->radius_ = acos((currentDir_.dotProduct(tomato_->pos_ - shipPos_))/
+			((tomato_->pos_ - shipPos_).length()*currentDir_.length()));
+        tomato_->phi_ = acos((currentOrth_.dotProduct(tomato_->pos_ - shipPos_))/
+        	((tomato_->pos_ - shipPos_).length()*currentOrth_.length()));
+        if((currentDir_.crossProduct(currentOrth_)).dotProduct(tomato_->pos_ - shipPos_) > 0) 
+        	tomato_->right_ = true;
+        else tomato_->right_=false;
 
-        if (right_){
-            point->setPosition(sin(phi_)*radius_/3.5*dim_/2+dim_/2+left_-2,-cos(phi_)*radius_/3.5*dim_/2+dim_/2+top_-2);
+        if (tomato_->right_){
+            tomato_->panel_->setPosition(sin(tomato_->phi_)*tomato_->radius_/
+            	3.5*dim_/2+dim_/2+left_-2,-cos(tomato_->phi_)*tomato_->radius_/3.5*dim_/2+dim_/2+top_-2);
         }
         else {
-            point->setPosition(-sin(phi_)*radius_/3.5*dim_/2+dim_/2+left_-2,-cos(phi_)*radius_/3.5*dim_/2+dim_/2+top_-2);
+            tomato_->panel_->setPosition(-sin(tomato_->phi_)*tomato_->radius_/
+            	3.5*dim_/2+dim_/2+left_-2,-cos(tomato_->phi_)*tomato_->radius_/3.5*dim_/2+dim_/2+top_-2);
         }
     }
-
+    
+    void RadarOverlayElement::addObject(Vector3 pos){
+		tomato_ = new RadarObject(container_);
+		tomato_->pos_ = pos;
+	}
+	
+	//// RadarObject ////
+	
+	int RadarObject::count = 0;
+	
+	RadarObject::RadarObject(Ogre::OverlayContainer* container){
+		container_ = container;
+		pos_ = Vector3(0.0, 0.0, 0.0);
+		init();
+	}
+	
+	RadarObject::RadarObject(Ogre::OverlayContainer* container, Vector3 pos){
+		container_ = container;
+		pos_ = pos;
+		init();
+	}
+	
+	RadarObject::~RadarObject(){}
+	
+	void RadarObject::init(){
+		om = &Ogre::OverlayManager::getSingleton();
+		panel_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel",
+			"Object"+Ogre::StringConverter::toString(count++)));
+		panel_->setMaterialName("Orxonox/RedDot");
+		panel_->setDimensions(5,5);
+        panel_->setMetricsMode(Ogre::GMM_PIXELS);
+        panel_->show();
+        container_->addChild(panel_);
+	}
 }
 
-
-
+/* my local clipboard...
+COUT(3) << "WWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
+COUT(3) << tomato_->radius_ << "  " << tomato_->phi_ << std::endl;
+COUT(3) << "WWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
+*/

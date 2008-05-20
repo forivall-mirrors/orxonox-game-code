@@ -31,11 +31,9 @@
 
 #include <string.h>
 #include <OgreOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
 #include <OgrePrerequisites.h>
 
 #include "OrxonoxPrereqs.h"
-#include "objects/SpaceShip.h"
 #include "core/Tickable.h"
 #include "BarOverlayElement.h"
 #include "RadarOverlayElement.h"
@@ -49,8 +47,8 @@ namespace orxonox
             Ogre::OverlayManager* om;
             Ogre::Overlay* orxonoxHUD;
             Ogre::OverlayContainer* container;
-            BarOverlayElement* energyCounter;
-            BarOverlayElement* speedo;
+            BarOverlayElement* energyBar;
+            BarOverlayElement* speedoBar;
             RadarOverlayElement* radar;
 
         public:

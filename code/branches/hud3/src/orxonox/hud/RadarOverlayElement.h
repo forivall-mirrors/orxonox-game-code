@@ -40,38 +40,51 @@
 
 namespace orxonox
 {
+    class _OrxonoxExport RadarObject
+    {
+    	private:
+    		Ogre::OverlayManager* om;				// our one and only overlay manager
+    		void init();
+    		
+    	public:
+    		RadarObject(Ogre::OverlayContainer* container);
+    		RadarObject(Ogre::OverlayContainer* container, Vector3 pos);
+    		~RadarObject();
+    		
+    		Vector3 pos_;							// position in space
+			Ogre::Real radius_, phi_;				// position on radar
+			bool right_;
+			Ogre::OverlayContainer* container_;
+			Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
+			
+    		static int count;
+	};
+
     class _OrxonoxExport RadarOverlayElement : public Ogre::PanelOverlayElement
     {
         private:
-            Ogre::PanelOverlayElement* point;
+            Ogre::OverlayManager* om;               // our one and only overlay manager
             Ogre::OverlayContainer* container_;
-            Ogre::OverlayManager* om;               // pointer to the one and only overlay manager
             Vector3 initialDir_;	                // direction of nose
-            Vector3 currentDir_;
+            Vector3 currentDir_;					
             Vector3 initialOrth_;                   // direction of normal
             Vector3 currentOrth_;
-            Vector3 targetPos_;                     // position of target
             Vector3 shipPos_;                       // position of ship
-
-            Ogre::Real radius_;                     // radius on the radar
-            Ogre::Real phi_;                        // angle on the radar
-            bool right_;                            // checks whether the object is on the right side (since cos is not bijective)
+            
+			RadarObject* tomato_;            
+            
             Ogre::Real leftRel_, topRel_, dimRel_;  // relative position/dimension
             int left_, top_, dim_;                  // absolute position/dimension
-            int windowW_, windowH_;                   // absolute window dimensions
-            int count_;
+            int windowW_, windowH_;             	// absolute window dimensions
 
         public:
             RadarOverlayElement(const Ogre::String& name);
-            virtual ~RadarOverlayElement();
-            virtual void initialise();
-            void update();
+            ~RadarOverlayElement();
             void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
-            void setMainShipPosition(int dirX, int dirY, int dirZ, int ortX, int ortY, int ortZ);
-            int newShip(int X, int Y, int Z);
-            void resize();
-            void resetShip(int shipID, int Y, int Z);
-    };
+			void resize();            
+            void update();
+            void addObject(Vector3 pos);
+	};
 }
 
 #endif
