@@ -282,7 +282,7 @@ namespace orxonox
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);
       COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
-      this->camNode_->setPosition(/*this->getNode()->getPosition() +*/ Vector3(-40,0,0));
+      this->camNode_->setPosition(/*this->getNode()->getPosition() +*/ Vector3(-40,0,5));
       COUT(4) << "position: (cam)" << this->camNode_->getPosition() << std::endl;
 /*
 //        node->setInheritOrientation(false);

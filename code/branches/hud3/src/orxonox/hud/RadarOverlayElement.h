@@ -45,18 +45,19 @@ namespace orxonox
     	private:
     		Ogre::OverlayManager* om;				// our one and only overlay manager
     		void init();
-    		
+
     	public:
     		RadarObject(Ogre::OverlayContainer* container);
     		RadarObject(Ogre::OverlayContainer* container, Vector3 pos);
     		~RadarObject();
-    		
+
+            bool right_;
     		Vector3 pos_;							// position in space
 			Ogre::Real radius_, phi_;				// position on radar
-			bool right_;
 			Ogre::OverlayContainer* container_;
 			Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
-			
+			RadarObject* next;                      // next pointer of linked list
+
     		static int count;
 	};
 
@@ -66,13 +67,14 @@ namespace orxonox
             Ogre::OverlayManager* om;               // our one and only overlay manager
             Ogre::OverlayContainer* container_;
             Vector3 initialDir_;	                // direction of nose
-            Vector3 currentDir_;					
+            Vector3 currentDir_;
             Vector3 initialOrth_;                   // direction of normal
             Vector3 currentOrth_;
             Vector3 shipPos_;                       // position of ship
-            
-			RadarObject* tomato_;            
-            
+
+			RadarObject* firstRadarObject_;         // start of linked list
+			RadarObject* lastRadarObject_;          // end of linked list
+
             Ogre::Real leftRel_, topRel_, dimRel_;  // relative position/dimension
             int left_, top_, dim_;                  // absolute position/dimension
             int windowW_, windowH_;             	// absolute window dimensions
@@ -81,9 +83,13 @@ namespace orxonox
             RadarOverlayElement(const Ogre::String& name);
             ~RadarOverlayElement();
             void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
-			void resize();            
+			void resize();
             void update();
             void addObject(Vector3 pos);
+            void listObjects();
+            float calcRadius(RadarObject* obj);
+            float calcPhi(RadarObject* obj);
+            bool calcRight(RadarObject* obj);
 	};
 }
 

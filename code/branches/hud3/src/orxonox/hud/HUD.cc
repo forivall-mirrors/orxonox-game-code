@@ -45,7 +45,7 @@ namespace orxonox
 
     HUD::HUD(int zoom){
         om = &Ogre::OverlayManager::getSingleton();
-		
+
 		// create Factories
         BarOverlayElementFactory *barOverlayElementFactory = new BarOverlayElementFactory();
         om->addOverlayElementFactory(barOverlayElementFactory);
@@ -54,7 +54,7 @@ namespace orxonox
 
         orxonoxHUD = om->create("Orxonox/HUD");
         container = static_cast<Ogre::OverlayContainer*>(om->createOverlayElement("Panel", "Orxonox/HUD/container"));
-        // create energy bar    
+        // create energy bar
         energyBar = static_cast<BarOverlayElement*>(om->createOverlayElement("Bar", "energyBar"));
         energyBar->show();
         // create speedo bar
@@ -66,7 +66,7 @@ namespace orxonox
 
 		// set up screen-wide container
         container->show();
-        
+
         orxonoxHUD->add2D(container);
         orxonoxHUD->show();
         container->setLeft(0.0);
@@ -78,7 +78,8 @@ namespace orxonox
         energyBar->setValue(1);
         speedoBar->init(0.01, 0.90, 0.4, 0.04, container);
         radar->init(0.5, 0.9, 0.2, container);
-        radar->addObject(Vector3(1337.0, 0.0, 0.0));
+        radar->addObject(Vector3(1500.0, 0.0, 0.0));
+        radar->addObject(Vector3(0.0, 4000.0, 0.0));
     }
 
     void HUD::tick(float dt)
