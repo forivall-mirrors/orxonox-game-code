@@ -32,11 +32,13 @@
 #include "NetworkPrereqs.h"
 
 #include <string>
+#include <inttypes.h>
 #include <enet/enet.h>
 
 #include "core/CoreIncludes.h"
 
 #define CLIENTID_CLIENT -1
+#define NETWORK_CRC32POLY 0x04C11DB7 /* CRC-32 Polynom */
 
 //enum netowk generally used to set the type ID of a packet
 namespace network
@@ -47,6 +49,9 @@ namespace network
   * @autor: Dumeni Manatschal
   *
   */
+  //void calcCRC(uint32_t &crc32, int bit);
+  uint32_t calcCRC(unsigned char *data, unsigned int dataLength);
+  
   class PacketGenerator
   {
   public:
@@ -62,6 +67,7 @@ namespace network
     ENetPacket* generateWelcome( int clientID,int shipID, bool allowed, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* generateConnectRequest( int reliable = ENET_PACKET_FLAG_RELIABLE );
   private:
+    bool addCRC( ENetPacket *packet);
   };
 
   /*
@@ -83,7 +89,7 @@ namespace network
 
 
   private:
-
+    bool testAndRemoveCRC(ENetPacket *packet);
 
 
     void acknowledgement( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
