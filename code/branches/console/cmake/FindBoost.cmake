@@ -115,7 +115,8 @@ SET(SUFFIX_FOR_PATH
 IF(WIN32)
   SET(Boost_INCLUDE_DIR
 #    ../libs/boost_1_33_1
-    ../libs/boost_1_35_0
+    ../libs/boost_1_34_1
+#    ../libs/boost_1_35_0
   )
 ELSE(WIN32)
   FIND_PATH(Boost_INCLUDE_DIR NAMES boost/config.hpp PATH_SUFFIXES ${SUFFIX_FOR_PATH} PATHS
@@ -191,6 +192,7 @@ SET(BOOST_SUFFIX_SEARCH
   il
   gcc-1_33_1
   gcc-mt-1_33_1
+  mgw34-mt-1_34_1
   mgw34-mt-1_35
 )
 

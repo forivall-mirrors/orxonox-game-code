@@ -66,7 +66,11 @@ namespace orxonox
         this->threadCounter_ = 0;
         this->orxonoxInterpreterBundle_.id_ = 0;
         this->orxonoxInterpreterBundle_.interpreter_ = TclBind::getInstance().getTclInterpreter();
+#if (BOOST_VERSION >= 103500)
         this->threadID_ = boost::this_thread::get_id();
+#else
+        //
+#endif
     }
 
     TclThreadManager& TclThreadManager::getInstance()
@@ -118,13 +122,21 @@ namespace orxonox
                     if (bundle->finished_)
                     {
                         boost::mutex::scoped_lock bundles_lock(TclThreadManager::getInstance().bundlesMutex_);
-                        boost::mutex::scoped_lock interpreter_lock(bundle->interpreterMutex_, boost::defer_lock_t());
+#if (BOOST_VERSION >= 103500)
+                        boost::mutex::scoped_try_lock interpreter_lock(bundle->interpreterMutex_);
+#else
+                        boost::try_mutex::scoped_try_lock interpreter_lock(bundle->interpreterMutex_);
+#endif
                         try
                         {
                             while (!interpreter_lock.try_lock())
                             {
                                 TclThreadManager::getInstance().orxonoxEvalCondition_.notify_one();
+#if (BOOST_VERSION >= 103500)
                                 boost::this_thread::yield();
+#else
+                                boost::thread::yield();
+#endif
                             }
                         } catch (...) {}
                         delete bundle->interpreter_;
@@ -135,7 +147,11 @@ namespace orxonox
                 }
 
                 TclThreadManager::getInstance().orxonoxEvalCondition_.notify_one();
+#if (BOOST_VERSION >= 103500)
                 boost::this_thread::yield();
+#else
+                boost::thread::yield();
+#endif
             }
 
             COUT(0) << "Destroyed Tcl-interpreter with ID " << threadID << std::endl;
@@ -182,7 +198,11 @@ namespace orxonox
             }
             output += "\t\t";
             {
-                boost::mutex::scoped_lock interpreter_lock((*it).second->interpreterMutex_, boost::defer_lock_t());
+#if (BOOST_VERSION >= 103500)
+                boost::mutex::scoped_try_lock interpreter_lock((*it).second->interpreterMutex_);
+#else
+                boost::try_mutex::scoped_try_lock interpreter_lock((*it).second->interpreterMutex_);
+#endif
                 if (interpreter_lock.try_lock())
                     output += "ready";
                 else
@@ -331,12 +351,20 @@ namespace orxonox
 
     void TclThreadManager::error(const std::string& error)
     {
+#if (BOOST_VERSION >= 103500)
         if (boost::this_thread::get_id() != this->threadID_)
+#else
+        if (boost::thread() != this->threadID_)
+#endif
         {
             boost::mutex::scoped_lock queue_lock(this->orxonoxInterpreterBundle_.queueMutex_);
             if (this->orxonoxInterpreterBundle_.queue_.size() >= TCLTHREADMANAGER_MAX_QUEUE_LENGTH)
             {
+#if (BOOST_VERSION >= 103500)
                 boost::this_thread::yield();
+#else
+                boost::thread::yield();
+#endif
                 return;
             }
         }
@@ -346,12 +374,20 @@ namespace orxonox
 
     void TclThreadManager::debug(const std::string& error)
     {
+#if (BOOST_VERSION >= 103500)
         if (boost::this_thread::get_id() != this->threadID_)
+#else
+        if (boost::thread() != this->threadID_)
+#endif
         {
             boost::mutex::scoped_lock queue_lock(this->orxonoxInterpreterBundle_.queueMutex_);
             if (this->orxonoxInterpreterBundle_.queue_.size() >= TCLTHREADMANAGER_MAX_QUEUE_LENGTH)
             {
+#if (BOOST_VERSION >= 103500)
                 boost::this_thread::yield();
+#else
+                boost::thread::yield();
+#endif
                 return;
             }
         }
@@ -460,7 +496,11 @@ namespace orxonox
         {
             if (this->updateQueriersList(querier, &this->orxonoxInterpreterBundle_))
             {
+#if (BOOST_VERSION >= 103500)
                 boost::mutex::scoped_lock interpreter_lock(this->orxonoxInterpreterBundle_.interpreterMutex_);
+#else
+                boost::try_mutex::scoped_lock interpreter_lock(this->orxonoxInterpreterBundle_.interpreterMutex_);
+#endif
                 this->orxonoxEvalCondition_.wait(interpreter_lock);
 
                 if (!CommandExecutor::execute(command, false))
@@ -497,7 +537,11 @@ namespace orxonox
             {
                 if (this->updateQueriersList(querier, target))
                 {
-                    boost::mutex::scoped_lock interpreter_lock(target->interpreterMutex_, boost::defer_lock_t());
+#if (BOOST_VERSION >= 103500)
+                    boost::mutex::scoped_try_lock interpreter_lock(target->interpreterMutex_);
+#else
+                    boost::try_mutex::scoped_try_lock interpreter_lock(target->interpreterMutex_);
+#endif
                     bool successfullyLocked = false;
                     try
                     {
@@ -506,7 +550,13 @@ namespace orxonox
                         else
                         {
                             while (!interpreter_lock.try_lock())
+                            {
+#if (BOOST_VERSION >= 103500)
                                 boost::this_thread::yield();
+#else
+                                boost::thread::yield();
+#endif
+                            }
 
                             successfullyLocked = true;
                         }
@@ -539,7 +589,11 @@ namespace orxonox
     {
         {
             this->orxonoxEvalCondition_.notify_one();
+#if (BOOST_VERSION >= 103500)
             boost::this_thread::yield();
+#else
+            boost::thread::yield();
+#endif
         }
 
         {
@@ -561,7 +615,11 @@ namespace orxonox
         }
 
         {
+#if (BOOST_VERSION >= 103500)
             boost::mutex::scoped_lock interpreter_lock(this->orxonoxInterpreterBundle_.interpreterMutex_);
+#else
+            boost::try_mutex::scoped_lock interpreter_lock(this->orxonoxInterpreterBundle_.interpreterMutex_);
+#endif
             unsigned long maxtime = (unsigned long)(dt * 1000000 * TCLTHREADMANAGER_MAX_CPU_USAGE);
             Ogre::Timer timer;
             while (!this->queueIsEmpty())
@@ -576,7 +634,11 @@ namespace orxonox
     void tclThread(TclInterpreterBundle* interpreterBundle, std::string command)
     {
         TclThreadManager::getInstance().debug("TclThread_execute: " + command);
+#if (BOOST_VERSION >= 103500)
         boost::mutex::scoped_lock interpreter_lock(interpreterBundle->interpreterMutex_);
+#else
+        boost::try_mutex::scoped_lock interpreter_lock(interpreterBundle->interpreterMutex_);
+#endif
         try
         {
             interpreterBundle->interpreter_->eval(command);

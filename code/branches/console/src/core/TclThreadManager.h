@@ -35,6 +35,7 @@
 
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
+#include <boost/thread/thread.hpp>
 
 #include "CorePrereqs.h"
 #include "Tickable.h"
@@ -118,7 +119,11 @@ namespace orxonox
             boost::mutex bundlesMutex_;
             boost::condition fullQueueCondition_;
             boost::condition orxonoxEvalCondition_;
+#if (BOOST_VERSION >= 103500)
             boost::thread::id threadID_;
+#else
+            boost::thread threadID_;
+#endif
     };
 
     _CoreExport void tclThread(TclInterpreterBundle* interpreterBundle, std::string command);
