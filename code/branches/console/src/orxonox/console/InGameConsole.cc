@@ -191,13 +191,13 @@ namespace orxonox
         this->om_ = &Ogre::OverlayManager::getSingleton();
 
         // create a container
-        this->consoleOverlayContainer_ = static_cast<OverlayContainer*>(this->om_->createOverlayElement("Panel", "container"));
+        this->consoleOverlayContainer_ = static_cast<OverlayContainer*>(this->om_->createOverlayElement("Panel", "InGameConsoleContainer"));
         this->consoleOverlayContainer_->setMetricsMode(Ogre::GMM_RELATIVE);
         this->consoleOverlayContainer_->setPosition((1 - InGameConsole::REL_WIDTH) / 2, 0);
         this->consoleOverlayContainer_->setDimensions(InGameConsole::REL_WIDTH, InGameConsole::REL_HEIGHT);
 
         // create BorderPanel
-        this->consoleOverlayBorder_ = static_cast<BorderPanelOverlayElement*>(this->om_->createOverlayElement("BorderPanel", "borderPanel"));
+        this->consoleOverlayBorder_ = static_cast<BorderPanelOverlayElement*>(this->om_->createOverlayElement("BorderPanel", "InGameConsoleBorderPanel"));
         this->consoleOverlayBorder_->setMetricsMode(Ogre::GMM_PIXELS);
         this->consoleOverlayBorder_->setMaterialName("ConsoleCenter");
         // set parameters for border
@@ -213,7 +213,7 @@ namespace orxonox
         this->consoleOverlayTextAreas_ = new TextAreaOverlayElement*[LINES];
         for (int i = 0; i < LINES; i++)
         {
-            this->consoleOverlayTextAreas_[i] = static_cast<TextAreaOverlayElement*>(this->om_->createOverlayElement("TextArea", "textArea" + Ogre::StringConverter::toString(i)));
+            this->consoleOverlayTextAreas_[i] = static_cast<TextAreaOverlayElement*>(this->om_->createOverlayElement("TextArea", "InGameConsoleTextArea" + Ogre::StringConverter::toString(i)));
             this->consoleOverlayTextAreas_[i]->setMetricsMode(Ogre::GMM_PIXELS);
             this->consoleOverlayTextAreas_[i]->setFontName("Console");
             this->consoleOverlayTextAreas_[i]->setCharHeight(18);
@@ -223,12 +223,12 @@ namespace orxonox
         }
 
         // create noise
-        this->consoleOverlayNoise_ = static_cast<PanelOverlayElement*>(this->om_->createOverlayElement("Panel", "noise"));
+        this->consoleOverlayNoise_ = static_cast<PanelOverlayElement*>(this->om_->createOverlayElement("Panel", "InGameConsoleNoise"));
         this->consoleOverlayNoise_->setMetricsMode(Ogre::GMM_PIXELS);
         this->consoleOverlayNoise_->setPosition(5,0);
         this->consoleOverlayNoise_->setMaterialName("ConsoleNoise");
 
-        this->consoleOverlay_ = this->om_->create("Console");
+        this->consoleOverlay_ = this->om_->create("InGameConsoleConsole");
         this->consoleOverlay_->add2D(this->consoleOverlayContainer_);
         this->consoleOverlayContainer_->addChild(this->consoleOverlayBorder_);
         //comment following line to disable noise
@@ -244,7 +244,7 @@ namespace orxonox
         // show overlay
         this->consoleOverlay_->show();
 
-        COUT(3) << "Info: InGameConsole initialized" << std::endl;
+        COUT(4) << "Info: InGameConsole initialized" << std::endl;
     }
 
     /**
@@ -394,7 +394,7 @@ namespace orxonox
             }
             else if (level == 3)
             {
-                this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.25, 0.25, 0.75, 1.00));
+                this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.50, 0.50, 0.95, 1.00));
                 this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.80, 0.80, 1.00, 1.00));
             }
             else if (level == 4)
