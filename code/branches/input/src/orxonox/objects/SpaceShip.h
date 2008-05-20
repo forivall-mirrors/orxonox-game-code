@@ -66,11 +66,11 @@ namespace orxonox
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
 
-            bool mouseButtonPressed (MouseButton::Enum id);
-            bool mouseButtonReleased(MouseButton::Enum id);
-            bool mouseButtonHeld    (MouseButton::Enum id) { return true; }
-            bool mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
-            bool mouseScrolled      (int abs, int rel) { return true; }
+            void mouseButtonPressed (MouseButton::Enum id);
+            void mouseButtonReleased(MouseButton::Enum id);
+            void mouseButtonHeld    (MouseButton::Enum id) { }
+            void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
+            void mouseScrolled      (int abs, int rel) { }
 
 
         private:

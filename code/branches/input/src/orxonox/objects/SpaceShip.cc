@@ -295,7 +295,7 @@ namespace orxonox
             return -1;
     }
 
-    bool SpaceShip::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
+    void SpaceShip::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
     {
 /*
         this->mouseX += e.state.X.rel;
@@ -351,21 +351,17 @@ namespace orxonox
                 yRotation = -this->maxRotation_;
             this->mouseYRotation_ = Radian(yRotation);
         }
-
-        return true;
     }
 
-    bool SpaceShip::mouseButtonPressed(MouseButton::Enum id)
+    void SpaceShip::mouseButtonPressed(MouseButton::Enum id)
     {
         if (id == MouseButton::Left)
             this->bLMousePressed_ = true;
         else if (id == MouseButton::Right)
             this->bRMousePressed_ = true;
-
-        return true;
     }
 
-    bool SpaceShip::mouseButtonReleased(MouseButton::Enum id)
+    void SpaceShip::mouseButtonReleased(MouseButton::Enum id)
     {
         if (id == MouseButton::Left)
             this->bLMousePressed_ = false;
@@ -374,8 +370,6 @@ namespace orxonox
             this->bRMousePressed_ = false;
             this->camNode_->resetOrientation();
         }
-
-        return true;
     }
 
     void SpaceShip::tick(float dt)

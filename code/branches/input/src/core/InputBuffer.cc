@@ -190,7 +190,7 @@ namespace orxonox
     }
   }
 
-  bool InputBuffer::keyPressed(const KeyEvent &evt)
+  void InputBuffer::keyPressed(const KeyEvent &evt)
   {
     lastKey_ = evt.key;
     timeSinceKeyPressed_ = 0.0;
@@ -198,10 +198,9 @@ namespace orxonox
     keysToRepeat_ = 0;
 
     processKey(evt);
-    return true;
   }
 
-  bool InputBuffer::keyHeld(const KeyEvent& evt)
+  void InputBuffer::keyHeld(const KeyEvent& evt)
   {
     if (evt.key == lastKey_)
     {
@@ -211,7 +210,6 @@ namespace orxonox
         keysToRepeat_--;
       }
     }
-    return true;
   }
 
 }

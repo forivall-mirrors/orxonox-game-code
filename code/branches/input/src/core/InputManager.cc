@@ -399,12 +399,10 @@ namespace orxonox
         case IS_NORMAL:
           // normal play mode
           // note: we assume that the handlers exist since otherwise, something's wrong anyway.
-          activeKeyHandlers_.push_back(keyHandlers_["keybinder"]);
-          activeMouseHandlers_.push_back(mouseHandlers_["keybinder"]);
-          if (getMouseHandler("SpaceShip"))
-            activeMouseHandlers_.push_back(mouseHandlers_["SpaceShip"]);
-          for (unsigned int i = 0; i < joySticksSize_; i++)
-            activeJoyStickHandlers_[i].push_back(joyStickHandlers_["keybinder"]);
+          enableKeyHandler("keybinder");
+          enableMouseHandler("keybinder");
+          enableMouseHandler("SpaceShip");
+          enableJoyStickHandler("keybinder", 0);
           break;
 
         case IS_GUI:
@@ -412,13 +410,10 @@ namespace orxonox
           break;
 
         case IS_CONSOLE:
-          activeMouseHandlers_.push_back(mouseHandlers_["keybinder"]);
-          if (getMouseHandler("SpaceShip"))
-            activeMouseHandlers_.push_back(mouseHandlers_["SpaceShip"]);
-          for (unsigned int i = 0; i < joySticksSize_; i++)
-            activeJoyStickHandlers_[i].push_back(joyStickHandlers_["keybinder"]);
-
-          activeKeyHandlers_.push_back(keyHandlers_["buffer"]);
+          enableMouseHandler("keybinder");
+          enableMouseHandler("SpaceShip");
+          enableJoyStickHandler("keybinder", 0);
+          enableKeyHandler("buffer");
           break;
 
         default:

@@ -203,6 +203,21 @@ namespace orxonox
             inline AccessLevel::Level getAccessLevel() const
                 { return this->accessLevel_; }
 
+            inline Executor& setKeybindMode(KeybindMode::Enum mode)
+                { this->keybindMode_ = mode; return *this; }
+            inline KeybindMode::Enum getKeybindMode() const
+                { return this->keybindMode_; }
+
+            inline Executor& setAxisParamIndex(int index)
+                { this->axisParamIndex_ = index; return *this; }
+            inline int getAxisParamIndex() const
+                { return this->axisParamIndex_; }
+
+            inline Executor& setIsAxisRelative(bool val)
+                { this->bAxisRelative_ = val; return *this; }
+            inline int getIsAxisRelative() const
+                { return this->bAxisRelative_; }
+
             Executor& setDefaultValues(const MultiTypeMath& param1);
             Executor& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2);
             Executor& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3);
@@ -232,8 +247,10 @@ namespace orxonox
             std::string name_;
             MultiTypeMath defaultValue_[MAX_FUNCTOR_ARGUMENTS];
             bool bAddedDefaultValue_[MAX_FUNCTOR_ARGUMENTS];
+
             KeybindMode::Enum keybindMode_;
-            int axisParameter_;
+            int axisParamIndex_;
+            bool bAxisRelative_;
 
         private:
             LanguageEntryLabel description_;

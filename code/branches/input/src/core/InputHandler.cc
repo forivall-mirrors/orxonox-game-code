@@ -44,6 +44,261 @@
 namespace orxonox
 {
   // ###############################
+  // ######      Button       ######
+  // ###############################
+
+  bool BufferedParamCommand::execute()
+  {
+    if (nValuesAdded_)
+    {
+      BufferedParamCommand& cmd = *this;
+      cmd.evaluation_.setEvaluatedParameter(cmd.paramIndex_, cmd.value_);
+      // reset
+      cmd.nValuesAdded_ = 0;
+      cmd.value_ = 0;
+      return CommandExecutor::execute(cmd.evaluation_);
+    }
+    else
+      return true;
+  }
+
+  bool SimpleCommand::execute(float abs, float rel)
+  {
+    return CommandExecutor::execute(evaluation_);
+  }
+
+  bool ParamCommand::execute(float abs, float rel)
+  {
+    BufferedParamCommand& paramCommand = *paramCommand_;
+    // command has an additional parameter
+    if (bRelative_)
+    {
+      // we have to calculate a relative movement.
+      // amplitude says how much one keystroke is
+      paramCommand.value_ += paramModifier_ * rel;
+    }
+    else
+    {
+      // we have to calculate absolute position of the axis.
+      // for a key this simply is 1, but multiplied by a user defined factor
+      // since there might be another axis that is affected, we have to wait and
+      // store the result in a temporary place
+      paramCommand.value_ = (paramCommand.value_ * paramCommand.nValuesAdded_ + paramModifier_ * abs)
+                            /++paramCommand.nValuesAdded_;
+    }
+    return true;
+  }
+
+  void Button::clear()
+  {
+    for (unsigned int j = 0; j < 3; j++)
+    {
+      if (nCommands_[j])
+      {
+        // delete all commands and the command pointer array
+        for (unsigned int i = 0; i < nCommands_[j]; i++)
+          delete commands_[j][i];
+        delete[] commands_[j];
+        commands_[j] = 0;
+        nCommands_[j] = 0;
+      }
+      else
+      {
+        commands_[j] = 0;
+      }
+    }
+  }
+
+  void Button::parse(std::vector<BufferedParamCommand*>& paramCommandBuffer)
+  {
+    if (isEmpty(bindingString_))
+    {
+      clear();
+      return;
+    }
+
+    // use std::vector for a temporary dynamic array
+    std::vector<BaseCommand*> commands[3];
+
+
+    // separate the commands
+    SubString commandStrings(bindingString_, "|", SubString::WhiteSpaces, false,
+        '\\', false, '"', false, '(', ')', false, '\0');
+
+    for (unsigned int iCommand = 0; iCommand < commandStrings.size(); iCommand++)
+    {
+      if (commandStrings[iCommand] != "")
+      {
+        SubString tokens(commandStrings[iCommand], " ", SubString::WhiteSpaces, false,
+            '\\', false, '"', false, '(', ')', false, '\0');
+        
+        unsigned int iToken = 0;
+
+        // for real axes, we can feed a ButtonThreshold argument as entire command
+        if (getLowercase(tokens[0]) == "buttonthreshold")
+        {
+          if (tokens.size() == 1)
+            continue;
+          // may fail, but doesn't matter
+          convertValue(&buttonThreshold_, tokens[1]);
+          continue;
+        }
+
+        // first argument can be OnPress, OnHold OnRelease or nothing
+        KeybindMode::Enum mode = KeybindMode::None;
+        if (getLowercase(tokens[iToken]) == "onpress")
+          mode = KeybindMode::OnPress,   iToken++;
+        if (getLowercase(tokens[iToken]) == "onrelease")
+          mode = KeybindMode::OnRelease, iToken++;
+        if (getLowercase(tokens[iToken]) == "onhold")
+          mode = KeybindMode::OnHold,    iToken++;
+
+        if (iToken == tokens.size())
+          continue;
+
+        // second argument can be the amplitude for the case it as an axis command
+        // default amplitude is 1.0f
+        float paramModifier = 1.0f;
+        if (getLowercase(tokens[iToken]) == "axisamp")
+        {
+          iToken++;
+          if (iToken == tokens.size() || !convertValue(&paramModifier, tokens[iToken]))
+          {
+            COUT(2) << "Error while parsing key binding " << name_
+                << ". Numeric expression expected afer 'AxisAmp', switching to default value" << std::endl;
+            if (iToken == tokens.size())
+              continue;
+          }
+          iToken++;
+        }
+
+        // no more arguments expected except for the actual command
+        if (iToken == tokens.size())
+          continue;
+
+        std::string commandStr;
+        while (iToken != tokens.size())
+          commandStr += tokens[iToken++] + " ";
+
+        // evaluate the command
+        CommandEvaluation& eval = CommandExecutor::evaluate(commandStr);
+        if (!eval.isValid())
+          continue;
+
+        // check for param command
+        int paramIndex = eval.getEvaluatedExecutor()->getAxisParamIndex();
+        // TODO: check in Executor for correct paramIndex
+        if (paramIndex >= 0)
+        {
+          // parameter supported command
+          ParamCommand* cmd = new ParamCommand();
+          cmd->paramModifier_ = paramModifier;
+          cmd->bRelative_ = eval.getEvaluatedExecutor()->getIsAxisRelative();
+
+          // add command to the buffer if not yet existing
+          for (unsigned int iParamCmd = 0; iParamCmd < paramCommandBuffer.size(); iParamCmd++)
+          {
+            if (getLowercase(paramCommandBuffer[iParamCmd]->evaluation_.getCommandString())
+                == getLowercase(commandStr))
+            {
+              // already in list
+              cmd->paramCommand_ = paramCommandBuffer[iParamCmd];
+              break;
+            }
+          }
+          if (cmd->paramCommand_ == 0)
+          {
+            cmd->paramCommand_ = new BufferedParamCommand();
+            paramCommandBuffer.push_back(cmd->paramCommand_);
+            cmd->paramCommand_->evaluation_ = eval;
+            cmd->paramCommand_->paramIndex_ = paramIndex;
+          }
+
+
+          // we don't know whether this is an actual axis or just a button
+          if (mode == KeybindMode::None)
+          {
+            if (!addParamCommand(cmd))
+            {
+              mode = eval.getEvaluatedExecutor()->getKeybindMode();
+              commands[mode].push_back(cmd);
+            }
+          }
+        }
+        else
+        {
+          SimpleCommand* cmd = new SimpleCommand();
+          cmd->evaluation_ = eval;
+
+          //TODO: check CommandEvaluation for correct KeybindMode
+          if (mode == KeybindMode::None)
+            mode = eval.getEvaluatedExecutor()->getKeybindMode();
+
+          commands[mode].push_back(cmd);
+        }
+      }
+    }
+
+    for (unsigned int j = 0; j < 3; j++)
+    {
+      nCommands_[j] = commands[j].size();
+      if (nCommands_[j])
+      {
+        commands_[j] = new BaseCommand*[nCommands_[j]];
+        for (unsigned int i = 0; i < commands[j].size(); i++)
+          commands_[j][i] = commands[j][i];
+      }
+      else
+        commands_[j] = 0;
+    }
+  }
+
+  bool Button::execute(KeybindMode::Enum mode)
+  {
+    // execute all the parsed commands in the string
+    for (unsigned int iCommand = 0; iCommand < nCommands_[mode]; iCommand++)
+      commands_[mode][iCommand]->execute();
+    return true;
+  }
+
+  void HalfAxis::clear()
+  {
+    Button::clear();
+    if (nParamCommands_)
+    {
+      // delete all commands and the command pointer array
+      for (unsigned int i = 0; i < nParamCommands_; i++)
+        delete paramCommands_[i];
+      delete[] paramCommands_;
+    }
+    else
+    {
+      nParamCommands_ = 0; nParamCommands_ = 0;
+    }
+  }
+  
+  bool HalfAxis::addParamCommand(ParamCommand* command)
+  {
+    ParamCommand** cmds = paramCommands_;
+    paramCommands_ = new ParamCommand*[++nParamCommands_];
+    unsigned int i;
+    for (i = 0; i < nParamCommands_ - 1; i++)
+      paramCommands_[i] = cmds[i];
+    paramCommands_[i] = command;
+    delete[] cmds;
+    return true;
+  }
+
+  bool HalfAxis::execute()
+  {
+    bool success = true;
+    for (unsigned int i = 0; i < nParamCommands_; i++)
+      success = success && paramCommands_[i]->execute(absVal_, relVal_);
+    return success;
+  }
+
+
+  // ###############################
   // ######     KeyBinder     ######
   // ###############################
 
@@ -53,102 +308,39 @@ namespace orxonox
   KeyBinder::KeyBinder()
   {
     RegisterObject(KeyBinder);
-    clearBindings(true);
 
     // keys
     std::string keyNames[] = {
       "UNASSIGNED",
       "ESCAPE",
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "0",
-      "MINUS",
-      "EQUALS",
-      "BACK",
-      "TAB",
-      "Q",
-      "W",
-      "E",
-      "R",
-      "T",
-      "Y",
-      "U",
-      "I",
-      "O",
-      "P",
-      "LBRACKET",
-      "RBRACKET",
-      "RETURN",
-      "LCONTROL",
-      "A",
-      "S",
-      "D",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "SEMICOLON",
-      "APOSTROPHE",
-      "GRAVE",
-      "LSHIFT",
-      "BACKSLASH",
-      "Z",
-      "X",
-      "C",
-      "V",
-      "B",
-      "N",
-      "M",
-      "COMMA",
-      "PERIOD",
-      "SLASH",
+      "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
+      "MINUS", "EQUALS", "BACK", "TAB",
+      "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
+      "LBRACKET", "RBRACKET",
+      "RETURN", "LCONTROL",
+      "A", "S", "D", "F", "G", "H", "J", "K", "L",
+      "SEMICOLON", "APOSTROPHE", "GRAVE",
+      "LSHIFT", "BACKSLASH",
+      "Z", "X", "C", "V", "B", "N", "M",
+      "COMMA", "PERIOD", "SLASH",
       "RSHIFT",
       "MULTIPLY",
       "LMENU",
       "SPACE",
       "CAPITAL",
-      "F1",
-      "F2",
-      "F3",
-      "F4",
-      "F5",
-      "F6",
-      "F7",
-      "F8",
-      "F9",
-      "F10",
-      "NUMLOCK",
-      "SCROLL",
-      "NUMPAD7",
-      "NUMPAD8",
-      "NUMPAD9",
+      "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10",
+      "NUMLOCK", "SCROLL",
+      "NUMPAD7", "NUMPAD8", "NUMPAD9",
       "SUBTRACT",
-      "NUMPAD4",
-      "NUMPAD5",
-      "NUMPAD6",
+      "NUMPAD4", "NUMPAD5", "NUMPAD6",
       "ADD",
-      "NUMPAD1",
-      "NUMPAD2",
-      "NUMPAD3",
-      "NUMPAD0",
+      "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD0",
       "DECIMAL",
       "","",
       "OEM_102",
-      "F11",
-      "F12",
+      "F11", "F12",
       "","","","","","","","","","","",
-      "F13",
-      "F14",
-      "F15",
+      "F13", "F14", "F15",
       "","","","","","","","","","",
       "KANA",
       "","",
@@ -165,8 +357,7 @@ namespace orxonox
       "","",
       "PREVTRACK",
       "AT",
-      "COLON",
-      "UNDERLINE",
+      "COLON", "UNDERLINE",
       "KANJI",
       "STOP",
       "AX",
@@ -204,32 +395,18 @@ namespace orxonox
       "",
       "RIGHT",
       "",
-      "END",
-      "DOWN",
-      "PGDOWN",
-      "INSERT",
-      "DELETE",
+      "END", "DOWN", "PGDOWN", "INSERT", "DELETE",
       "","","","","","","",
-      "LWIN",
-      "RWIN",
-      "APPS",
-      "POWER",
-      "SLEEP",
+      "LWIN", "RWIN", "APPS",
+      "POWER", "SLEEP",
       "","","",
       "WAKE",
       "",
-      "WEBSEARCH",
-      "WEBFAVORITES",
-      "WEBREFRESH",
-      "WEBSTOP",
-      "WEBFORWARD",
-      "WEBBACK",
-      "MYCOMPUTER",
-      "MAIL",
-      "MEDIASELECT"
+      "WEBSEARCH", "WEBFAVORITES", "WEBREFRESH", "WEBSTOP", "WEBFORWARD", "WEBBACK",
+      "MYCOMPUTER", "MAIL", "MEDIASELECT"
     };
     for (int i = 0; i < nKeys_s; i++)
-      namesKeys_[i] = "Key" + keyNames[i];
+      keys_[i].name_ = "Key" + keyNames[i];
 
     // mouse buttons
     std::string mouseButtonNames[] = {
@@ -237,17 +414,17 @@ namespace orxonox
       "MouseButton3", "MouseButton4", "MouseButton5",
       "MouseButton6", "MouseButton7" };
     for (int i = 0; i < nMouseButtons_s; i++)
-      namesMouseButtons_[i] = mouseButtonNames[i];
+      mouseButtons_[i].name_ = mouseButtonNames[i];
 
     // joy stick buttons
     for (int i = 0; i < 32; i++)
-      namesJoyStickButtons_[i] = "JoyButton" + getConvertedValue<int, std::string>(i);
+      joyStickButtons_[i].name_ = "JoyButton" + getConvertedValue<int, std::string>(i);
     for (int i = 32; i < nJoyStickButtons_s; i += 4)
     {
-		  namesJoyStickButtons_[i + 0] = "JoyPOV" + getConvertedValue<int, std::string>((i - 32)/4 + 1) + "North";
-		  namesJoyStickButtons_[i + 1] = "JoyPOV" + getConvertedValue<int, std::string>((i - 32)/4 + 1) + "South";
-		  namesJoyStickButtons_[i + 2] = "JoyPOV" + getConvertedValue<int, std::string>((i - 32)/4 + 1) + "East";
-		  namesJoyStickButtons_[i + 3] = "JoyPOV" + getConvertedValue<int, std::string>((i - 32)/4 + 1) + "West";
+		  joyStickButtons_[i + 0].name_ = "JoyPOV" + getConvertedValue<int, std::string>((i - 32)/4 + 1) + "North";
+		  joyStickButtons_[i + 1].name_ = "JoyPOV" + getConvertedValue<int, std::string>((i - 32)/4 + 1) + "South";
+		  joyStickButtons_[i + 2].name_ = "JoyPOV" + getConvertedValue<int, std::string>((i - 32)/4 + 1) + "East";
+		  joyStickButtons_[i + 3].name_ = "JoyPOV" + getConvertedValue<int, std::string>((i - 32)/4 + 1) + "West";
     }
 
     // half axes
@@ -260,9 +437,12 @@ namespace orxonox
       rawNames[i] = "JoyAxis" + getConvertedValue<int, std::string>(i - 3);
     for (unsigned int i = 0; i < nHalfAxes_s/2; i++)
     {
-      namesHalfAxes_[i * 2 + 0] = rawNames[i] + "Pos";
-      namesHalfAxes_[i * 2 + 1] = rawNames[i] + "Neg";
+      halfAxes_[i * 2 + 0].name_ = rawNames[i] + "Pos";
+      halfAxes_[i * 2 + 1].name_ = rawNames[i] + "Neg";
     }
+
+    for (unsigned int i = 0; i < this->nHalfAxes_s; i++)
+      halfAxes_[i].buttonThreshold_ = buttonThreshold_;
   }
 
   /**
@@ -275,217 +455,65 @@ namespace orxonox
   }
 
   /**
+    @brief Loads the key and button bindings.
+    @return True if loading succeeded.
+  */
+  void KeyBinder::loadBindings()
+  {
+    COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
+
+    ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
+    clearBindings();
+    setConfigValues();
+
+    COUT(3) << "KeyBinder: Loading key bindings done." << std::endl;
+  }
+
+  /**
     @brief Loader for the key bindings, managed by config values.
   */
   void KeyBinder::setConfigValues()
   {
-    bool success = true;
+    SetConfigValue(analogThreshold_, 0.01f).description("Threshold for analog axes until which the state is 0.");
+    float oldThresh = buttonThreshold_;
+    SetConfigValue(buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
+    if (oldThresh != buttonThreshold_)
+      for (unsigned int i = 0; i < nHalfAxes_s; i++)
+        if (halfAxes_[i].buttonThreshold_ == oldThresh)
+          halfAxes_[i].buttonThreshold_ = buttonThreshold_;
+
     // keys
-    success |= readBindings(namesKeys_, bindingStringsKeys_, bindingsKeys_, nKeys_s);
+    for (unsigned int i = 0; i < nKeys_s; i++)
+      readTrigger(keys_[i]);
     // mouse buttons
-    success |= readBindings(namesMouseButtons_, bindingStringsMouseButtons_, bindingsMouseButtons_, nMouseButtons_s);
+    for (unsigned int i = 0; i < nMouseButtons_s; i++)
+      readTrigger(mouseButtons_[i]);
     // joy stick buttons
-    success |= readBindings(namesJoyStickButtons_, bindingStringsJoyStickButtons_,
-        bindingsJoyStickButtons_, nJoyStickButtons_s);
+    for (unsigned int i = 0; i < nJoyStickButtons_s; i++)
+      readTrigger(joyStickButtons_[i]);
     // half axes
-    success |= readBindings(namesHalfAxes_, bindingStringsHalfAxes_, bindingsHalfAxes_, nHalfAxes_s);
-    
-    // TODO: what happens if parsing didn't succeed in all parts? nothing?
+    for (unsigned int i = 0; i < nHalfAxes_s; i++)
+      readTrigger(halfAxes_[i]);
   }
 
-  bool KeyBinder::readBindings(std::string* names, std::string* bindingStrings,
-      KeyBindingBundle* bindings, unsigned int size)
+  void KeyBinder::readTrigger(Button& button)
   {
-    for (unsigned int i = 0; i < size; i++)
+    // config value stuff
+    ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer(button.name_);
+    if (!cont)
     {
-      // config value stuff
-      ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer(names[i]);
-      if (!cont)
-      {
-        cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), names[i], "");
-        getIdentifier()->addConfigValueContainer(names[i], cont);
-      }
-      std::string old = bindingStrings[i];
-      cont->getValue(&bindingStrings[i]);
-
-      // keybinder stuff
-      if (old != bindingStrings[i])
-      {
-        // binding has changed
-        if (bindingStrings[i] == "")
-        {
-          // empty binding, occurs at least the first time since init value is " "
-          bindings[i].OnPress.clear();
-          bindings[i].OnRelease.clear();
-          bindings[i].OnHold.clear();
-        }
-        else
-        {
-          // actually parse the command(s)
-          SubString commands(bindingStrings[i], "|", SubString::WhiteSpaces, false,
-              '\\', false, '"', false, '(', ')', false, '\0');
-          bindings[i].OnHold.nCommands = 0;
-          bindings[i].OnHold.commands = new SimpleCommand[64];
-          bindings[i].OnPress.nCommands = 0;
-          bindings[i].OnPress.commands = new SimpleCommand[64];
-          bindings[i].OnRelease.nCommands = 0;
-          bindings[i].OnRelease.commands = new SimpleCommand[64];
-          for (unsigned int iCommand = 0; iCommand < commands.size(); iCommand++)
-          {
-            if (commands[iCommand] != "")
-            {
-              SubString tokens(commands[iCommand], " ", SubString::WhiteSpaces, false,
-                  '\\', false, '"', false, '(', ')', false, '\0');
-              
-              unsigned int iToken = 0;
-
-              // first argument can be OnPress, OnHold OnRelease or nothing
-              KeybindMode::Enum mode = KeybindMode::None;
-              if (getLowercase(tokens[iToken]) == "onpress")
-                mode = KeybindMode::OnPress,   iToken++;
-              if (getLowercase(tokens[iToken]) == "onrelease")
-                mode = KeybindMode::OnRelease, iToken++;
-              if (getLowercase(tokens[iToken]) == "onhold")
-                mode = KeybindMode::OnHold,    iToken++;
-
-              if (iToken == tokens.size())
-                continue;
-
-              SimpleCommand* cmd = new SimpleCommand();
-
-              // second argument can be the amplitude for the case it as an axis command
-              // default amplitude is 1.0f
-              if (getLowercase(tokens[iToken]) == "axisamp")
-              {
-                iToken++;
-                float value;
-                if (iToken == tokens.size() || !convertValue(&value, tokens[iToken]))
-                {
-                  CCOUT(2) << "Error while parsing key binding " << names[i]
-                      << ". Numeric expression expected afer 'AxisAmp', switching to default value" << std::endl;
-                  if (iToken == tokens.size())
-                  {
-                    delete cmd;
-                    continue;
-                  }
-                  cmd->axisModifier = 1.0f;
-                }
-                else
-                  cmd->axisModifier = value;
-                iToken++;
-              }
-              else
-                cmd->axisModifier = 1.0f;
-
-              // no more arguments expected except for the actual command
-              if (iToken == tokens.size())
-              { // no command given
-                delete cmd;
-                continue;
-              }
-              while (iToken != tokens.size())
-                cmd->commandStr += tokens[iToken++] + " ";
-
-              // check whether we exceed 64 commands...
-              if (bindings[i].OnHold.nCommands == 64 || bindings[i].OnPress.nCommands == 64
-                  || bindings[i].OnRelease.nCommands == 64)
-              {
-                CCOUT(2) << "Error while parsing key binding " << names[i]
-                    << ". You shouldn't assign more than 64 key bindings to one key "
-                    << "just to test the parser" << std::endl;
-              }
-
-              // evaluate the command
-              cmd->axisCommand = 0;
-              CommandEvaluation& eval = CommandExecutor::evaluate(cmd->commandStr);
-              // TOOD: check for axis command
-              if (false)
-              {
-                cmd->axisCommand->commandStr = cmd->commandStr;
-                cmd->commandStr = "";
-                cmd->axisCommand->evaluation = eval;
-                // add command to the buffer if not yet existing
-                for (unsigned int iAxisCmd = 0; iAxisCmd < axisCommands_.size(); iAxisCmd++)
-                {
-                  if (getLowercase(axisCommands_[iAxisCmd]->commandStr) == getLowercase(cmd->commandStr))
-                  {
-                    // already in list
-                    cmd->axisCommand = axisCommands_[iAxisCmd];
-                    break;
-                  }
-                }
-                if (cmd->axisCommand == 0)
-                {
-                  cmd->axisCommand = new AxisCommand();
-                  axisCommands_.push_back(cmd->axisCommand);
-                }
-                // TODO: check for relative/absolute command
-                cmd->axisCommand->bRelative = false;
-
-                // axis commands are always OnHold
-                *(bindings[i].OnHold.commands + bindings[i].OnHold.nCommands++) = *cmd;
-              }
-              else
-              {
-                cmd->evaluation = eval;
-
-                // TODO: determine whether the command is OnHold, OnPress or OnRelease
-                switch (mode)
-                {
-                case KeybindMode::None:
-                  *(bindings[i].OnPress.commands + bindings[i].OnPress.nCommands++) = *cmd;
-                  break;
-                case KeybindMode::OnPress:
-                  *(bindings[i].OnPress.commands + bindings[i].OnPress.nCommands++) = *cmd;
-                  break;
-                case KeybindMode::OnHold:
-                  *(bindings[i].OnHold.commands + bindings[i].OnHold.nCommands++) = *cmd;
-                  break;
-                case KeybindMode::OnRelease:
-                  *(bindings[i].OnRelease.commands + bindings[i].OnRelease.nCommands++) = *cmd;
-                  break;                      
-                }
-              }
-            }
-          }
-
-          // redimension arrays with simple commands
-          SimpleCommand* sCmd = bindings[i].OnHold.commands;
-          if (bindings[i].OnHold.nCommands)
-          {
-            bindings[i].OnHold.commands = new SimpleCommand[bindings[i].OnHold.nCommands];
-            for (unsigned int iCmd = 0; iCmd < bindings[i].OnHold.nCommands; iCmd++)
-              bindings[i].OnHold.commands[iCmd] = sCmd[iCmd];
-          }
-          else
-            bindings[i].OnHold.commands = 0;
-          delete[] sCmd;
-
-          sCmd = bindings[i].OnPress.commands;
-          if (bindings[i].OnPress.nCommands)
-          {
-            bindings[i].OnPress.commands = new SimpleCommand[bindings[i].OnPress.nCommands];
-            for (unsigned int iCmd = 0; iCmd < bindings[i].OnPress.nCommands; iCmd++)
-              bindings[i].OnPress.commands[iCmd] = sCmd[iCmd];
-          }
-          else
-            bindings[i].OnPress.commands = 0;
-          delete[] sCmd;
-
-          sCmd = bindings[i].OnRelease.commands;
-          if (bindings[i].OnRelease.nCommands)
-          {
-            bindings[i].OnRelease.commands = new SimpleCommand[bindings[i].OnRelease.nCommands];
-            for (unsigned int iCmd = 0; iCmd < bindings[i].OnRelease.nCommands; iCmd++)
-              bindings[i].OnRelease.commands[iCmd] = sCmd[iCmd];
-          }
-          else
-            bindings[i].OnRelease.commands = 0;
-          delete[] sCmd;
-        }
-      }
+      cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), button.name_, "");
+      getIdentifier()->addConfigValueContainer(button.name_, cont);
     }
-    return true;
+    std::string old = button.bindingString_;
+    cont->getValue(&button.bindingString_);
+
+    // keybinder stuff
+    if (old != button.bindingString_)
+    {
+      // binding has changed
+      button.parse(paramCommandBuffer_);
+    }
   }
 
   /**
@@ -494,70 +522,20 @@ namespace orxonox
   void KeyBinder::clearBindings(bool bInit)
   {
     for (int i = 0; i < nKeys_s; i++)
-    {
-      clearBundle(bindingsKeys_[i], bInit);
-      bindingStringsKeys_[i] = " ";
-    }
+      keys_[i].clear();
+
     for (int i = 0; i < nMouseButtons_s; i++)
-    {
-      clearBundle(bindingsMouseButtons_[i], bInit);
-      bindingStringsMouseButtons_[i] = " ";
-    }
+      mouseButtons_[i].clear();
+
     for (int i = 0; i < nJoyStickButtons_s; i++)
-    {
-      clearBundle(bindingsJoyStickButtons_[i], bInit);
-      bindingStringsJoyStickButtons_[i] = " ";
-    }
+      joyStickButtons_[i].clear();
+
     for (int i = 0; i < nHalfAxes_s; i++)
-    {
-      clearBundle(bindingsHalfAxes_[i], bInit);
-      bindingStringsHalfAxes_[i] = " ";
-    }
-    for (unsigned int i = 0; i < axisCommands_.size(); i++)
-      delete axisCommands_[i];
-    axisCommands_.clear();
-  }
+      halfAxes_[i].clear();
 
-  void KeyBinder::clearBundle(KeyBindingBundle& bundle, bool bInit)
-  {
-    if (!bInit)
-    {
-      if (bundle.OnHold.nCommands)
-        delete[] bundle.OnHold.commands;
-      if (bundle.OnPress.nCommands)
-        delete[] bundle.OnPress.commands;
-      if (bundle.OnRelease.nCommands)
-        delete[] bundle.OnRelease.commands;
-    }
-    bundle.OnPress.nCommands = 0;
-    bundle.OnHold.nCommands = 0;
-    bundle.OnRelease.nCommands = 0;
-  }
-
-  /**
-    @brief Loads the key and button bindings.
-    @return True if loading succeeded.
-  */
-  bool KeyBinder::loadBindings()
-  {
-    COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
-
-    // clear half axes
-    for (unsigned int i = 0; i < nHalfAxes_s; i++)
-    {
-      halfAxes_[i].hasChanged = false;
-      halfAxes_[i].abs = 0.0f;
-      halfAxes_[i].rel = 0.0f;
-      halfAxes_[i].wasDown = false;
-      halfAxes_[i].threshold = 0.01f;
-    }
-
-    ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
-    clearBindings();
-    setConfigValues();
-
-    COUT(3) << "KeyBinder: Loading key bindings done." << std::endl;
-    return true;
+    for (unsigned int i = 0; i < paramCommandBuffer_.size(); i++)
+      delete paramCommandBuffer_[i];
+    paramCommandBuffer_.clear();
   }
 
   void KeyBinder::tick(float dt)
@@ -565,164 +543,118 @@ namespace orxonox
     // we have to process all the analog input since there is e.g. no 'mouseDoesntMove' event.
     for (unsigned int i = 0; i < nHalfAxes_s; i++)
     {
-      if (!halfAxes_[i].hasChanged)
+      if (halfAxes_[i].hasChanged_)
       {
-        if (!halfAxes_[i].wasDown && halfAxes_[i].abs > halfAxes_[i].threshold)
+        if (!halfAxes_[i].wasDown_ && halfAxes_[i].absVal_ > halfAxes_[i].buttonThreshold_)
         {
-          halfAxes_[i].wasDown = true;
-          if (bindingsHalfAxes_[i].OnPress.nCommands)
-            executeBinding(bindingsHalfAxes_[i].OnPress, halfAxes_[i].rel, halfAxes_[i].abs);
+          halfAxes_[i].wasDown_ = true;
+          if (halfAxes_[i].nCommands_[KeybindMode::OnPress])
+            halfAxes_[i].execute(KeybindMode::OnPress);
         }
-        else if (halfAxes_[i].wasDown && halfAxes_[i].abs < halfAxes_[i].threshold)
+        else if (halfAxes_[i].wasDown_ && halfAxes_[i].absVal_ < halfAxes_[i].buttonThreshold_)
         {
-          halfAxes_[i].wasDown = false;
-          if (bindingsHalfAxes_[i].OnRelease.nCommands)
-            executeBinding(bindingsHalfAxes_[i].OnRelease, halfAxes_[i].rel, halfAxes_[i].abs);
+          halfAxes_[i].wasDown_ = false;
+          if (halfAxes_[i].nCommands_[KeybindMode::OnRelease])
+            halfAxes_[i].execute(KeybindMode::OnRelease);
         }
-        if (halfAxes_[i].wasDown)
+        if (halfAxes_[i].wasDown_)
         {
-          executeBinding(bindingsHalfAxes_[i].OnHold, halfAxes_[i].rel, halfAxes_[i].abs);
+          if (halfAxes_[i].nCommands_[KeybindMode::OnHold])
+            halfAxes_[i].execute(KeybindMode::OnHold);
         }
-        halfAxes_[i].hasChanged = false;
+        halfAxes_[i].hasChanged_ = false;
+      }
+
+      // these are the actually useful axis bindings for analog input AND output
+      if (halfAxes_[i].relVal_ > analogThreshold_ || halfAxes_[i].absVal_ > analogThreshold_)
+      {
+        halfAxes_[i].execute();
       }
     }
 
     // execute all buffered bindings (addional parameter)
-    for (unsigned int i = 0; i < axisCommands_.size(); i++)
-    {
-      if (axisCommands_[i]->nValuesAdded > 0)
-      {
-        axisCommands_[i]->evaluation.setEvaluatedParameter(0, axisCommands_[i]->value);
-        // reset
-        axisCommands_[i]->nValuesAdded = 0;
-        axisCommands_[i]->value = 0.0f;
-      }
-    }
+    for (unsigned int i = 0; i < paramCommandBuffer_.size(); i++)
+      paramCommandBuffer_[i]->execute();
+
+    // always reset the relative movement of the mouse
+    for (unsigned int i = 0; i < 4; i++)
+      halfAxes_[i].relVal_ = 0;
   }
 
-  bool KeyBinder::executeBinding(KeyBinding& binding, float axisRel, float axisAbs)
-  {
-    // execute all the parsed commands in the string
-    for (unsigned int iCommand = 0; iCommand < binding.nCommands; iCommand++)
-    {
-      SimpleCommand& command = binding.commands[iCommand];
-      if (command.axisCommand)
-      {
-        AxisCommand& axisCommand = *command.axisCommand;
-        // command has an additional parameter
-        if (command.axisCommand->bRelative)
-        {
-          // we have to calculate a relative movement.
-          // amplitude says how much one keystroke is
-          axisCommand.value += command.axisModifier * axisRel;
-        }
-        else
-        {
-          // we have to calculate absolute position of the axis.
-          // for a key this simply is 1, but multiplied by a user defined factor
-          // since there might be another axis that is affected, we have to wait and
-          // store the result in a temporary place
-          axisCommand.value =
-              (axisCommand.value * (axisCommand.nValuesAdded++) + command.axisModifier * axisAbs)
-              / axisCommand.nValuesAdded;
-        }
-      }
-      else
-      {
-        // simple command, just execute directly
-        // TODO: calculate whether this a Press, Release or Hold event
-        CommandExecutor::execute(command.evaluation);
-      }
-    }
-    return true;
-  }
+  void KeyBinder::keyPressed (const KeyEvent& evt)
+  { keys_[evt.key].execute(KeybindMode::OnPress); }
+
+  void KeyBinder::keyReleased(const KeyEvent& evt)
+  { keys_[evt.key].execute(KeybindMode::OnRelease); }
+
+  void KeyBinder::keyHeld    (const KeyEvent& evt)
+  { keys_[evt.key].execute(KeybindMode::OnHold); }
 
 
-  /**
-    @brief Event handler for the keyPressed Event.
-    @param e Event information
-  */
-  bool KeyBinder::keyPressed(const KeyEvent& evt)
-  {
-    // find the appropriate key binding
-    executeBinding(bindingsKeys_[int(evt.key)].OnPress, 1.0, 1.0);
+  void KeyBinder::mouseButtonPressed (MouseButton::Enum id)
+  { mouseButtons_[id].execute(KeybindMode::OnPress); }
 
-    return true;
-  }
+  void KeyBinder::mouseButtonReleased(MouseButton::Enum id)
+  { mouseButtons_[id].execute(KeybindMode::OnRelease); }
 
-  /**
-    @brief Event handler for the keyReleased Event.
-    @param e Event information
-  */
-  bool KeyBinder::keyReleased(const KeyEvent& evt)
-  {
-    // find the appropriate key binding
-    executeBinding(bindingsKeys_[int(evt.key)].OnRelease, 1.0, 1.0);
+  void KeyBinder::mouseButtonHeld    (MouseButton::Enum id)
+  { mouseButtons_[id].execute(KeybindMode::OnHold); }
 
-    return true;
-  }
 
-  /**
-    @brief Event handler for the keyHeld Event.
-    @param e Mouse state information
-  */
-  bool KeyBinder::keyHeld(const KeyEvent& evt)
-  {
-    // find the appropriate key binding
-    executeBinding(bindingsKeys_[int(evt.key)].OnHold, 1.0, 1.0);
+  void KeyBinder::joyStickButtonPressed (int joyStickID, int button)
+  { joyStickButtons_[button].execute(KeybindMode::OnPress); }
 
-    return true;
-  }
+  void KeyBinder::joyStickButtonReleased(int joyStickID, int button)
+  { joyStickButtons_[button].execute(KeybindMode::OnRelease); }
+
+  void KeyBinder::joyStickButtonHeld    (int joyStickID, int button)
+  { joyStickButtons_[button].execute(KeybindMode::OnHold); }
 
   /**
     @brief Event handler for the mouseMoved Event.
     @param e Mouse state information
   */
-  bool KeyBinder::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
+  void KeyBinder::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
   {
-    halfAxes_[0].hasChanged = true;
-    halfAxes_[1].hasChanged = true;
-    halfAxes_[2].hasChanged = true;
-    halfAxes_[3].hasChanged = true;
     // translate absolute mouse position into joystick like behaviour
     if (clippingSize.x > clippingSize.y)
     {
       int margin = (clippingSize.x - clippingSize.y) / 2;
       if (abs.x - margin > clippingSize.y)
       {
-        halfAxes_[0].abs = 1.0f;
-        halfAxes_[1].abs = 0.0f;
+        halfAxes_[0].absVal_ = 1.0f;
+        halfAxes_[1].absVal_ = 0.0f;
       }
       else if (abs.x < margin)
       {
-        halfAxes_[0].abs = 0.0f;
-        halfAxes_[1].abs = 1.0f;
+        halfAxes_[0].absVal_ = 0.0f;
+        halfAxes_[1].absVal_ = 1.0f;
       }
       else
       {
         float temp = ((float)abs.x) / clippingSize.y * 2 - 1;
         if (temp > 0)
         {
-          halfAxes_[0].abs = temp;
-          halfAxes_[1].abs = 0.0f;
+          halfAxes_[0].absVal_ = temp;
+          halfAxes_[1].absVal_ = 0.0f;
         }
         else
         {
-          halfAxes_[0].abs = 0.0f;
-          halfAxes_[1].abs = -temp;
+          halfAxes_[0].absVal_ = 0.0f;
+          halfAxes_[1].absVal_ = -temp;
         }
       }
 
       float temp = -((float)abs.y) / clippingSize.y * 2 + 1;
       if (temp > 0)
       {
-        halfAxes_[2].abs = temp;
-        halfAxes_[3].abs = 0.0;
+        halfAxes_[2].absVal_ = temp;
+        halfAxes_[3].absVal_ = 0.0;
       }
       else
       {
-        halfAxes_[2].abs = 0.0;
-        halfAxes_[3].abs = -temp;
+        halfAxes_[2].absVal_ = 0.0;
+        halfAxes_[3].absVal_ = -temp;
       }
     }
     else
@@ -730,156 +662,99 @@ namespace orxonox
       float temp = ((float)abs.x) / clippingSize.x * 2 - 1;
       if (temp > 0)
       {
-        halfAxes_[0].abs = temp;
-        halfAxes_[1].abs = 0.0;
+        halfAxes_[0].absVal_ = temp;
+        halfAxes_[1].absVal_ = 0.0;
       }
       else
       {
-        halfAxes_[0].abs = 0.0;
-        halfAxes_[1].abs = -temp;
+        halfAxes_[0].absVal_ = 0.0;
+        halfAxes_[1].absVal_ = -temp;
       }
 
       int margin = (clippingSize.y - clippingSize.x) / 2;
       if (abs.y - margin > clippingSize.x)
       {
-        halfAxes_[2].abs = 0.0;
-        halfAxes_[3].abs = 1.0;
+        halfAxes_[2].absVal_ = 0.0;
+        halfAxes_[3].absVal_ = 1.0;
       }
       else if (abs.y < margin)
       {
-        halfAxes_[2].abs = 1.0;
-        halfAxes_[3].abs = 0.0;
+        halfAxes_[2].absVal_ = 1.0;
+        halfAxes_[3].absVal_ = 0.0;
       }
       else
       {
         float temp = -((float)abs.y) / clippingSize.x * 2 + 1;
         if (temp > 0)
         {
-          halfAxes_[2].abs = temp;
-          halfAxes_[3].abs = 0.0;
+          halfAxes_[2].absVal_ = temp;
+          halfAxes_[3].absVal_ = 0.0;
         }
         else
         {
-          halfAxes_[2].abs = 0.0;
-          halfAxes_[3].abs = -temp;
+          halfAxes_[2].absVal_ = 0.0;
+          halfAxes_[3].absVal_ = -temp;
         }
       }
     }
-    
+
     // relative movements
     if (rel.x > 0)
     {
-      halfAxes_[0].rel = rel.x;
-      halfAxes_[1].rel = 0.0;
+      halfAxes_[0].hasChanged_ = true;
+      halfAxes_[1].hasChanged_ = true;
+      halfAxes_[0].relVal_ = rel.x;
+      halfAxes_[1].relVal_ = 0.0;
     }
-    else
+    else if (rel.x < 0)
     {
-      halfAxes_[0].rel = 0.0;
-      halfAxes_[1].rel = rel.x;
+      halfAxes_[0].hasChanged_ = true;
+      halfAxes_[1].hasChanged_ = true;
+      halfAxes_[0].relVal_ = 0.0;
+      halfAxes_[1].relVal_ = rel.x;
     }
 
     if (rel.y /*!*/ < /*!*/ 0)
     {
-      halfAxes_[0].rel = -rel.y;
-      halfAxes_[1].rel = 0.0;
+      halfAxes_[2].hasChanged_ = true;
+      halfAxes_[3].hasChanged_ = true;
+      halfAxes_[0].relVal_ = -rel.y;
+      halfAxes_[1].relVal_ = 0.0;
     }
-    else
+    else if (rel.y > 0)
     {
-      halfAxes_[0].rel = 0.0;
-      halfAxes_[1].rel = -rel.y;
+      halfAxes_[2].hasChanged_ = true;
+      halfAxes_[3].hasChanged_ = true;
+      halfAxes_[0].relVal_ = 0.0;
+      halfAxes_[1].relVal_ = -rel.y;
     }
-
-    return true;
   }
 
   /**
     @brief Event handler for the mouseScrolled Event.
     @param e Mouse state information
   */
-  bool KeyBinder::mouseScrolled(int abs, int rel)
+  void KeyBinder::mouseScrolled(int abs, int rel)
   {
     // TODO: obvious...
-    return true;
   }
 
-  /**
-    @brief Event handler for the mousePressed Event.
-    @param e Event information
-    @param id The ID of the mouse button
-  */
-  bool KeyBinder::mouseButtonPressed(MouseButton::Enum id)
-  {
-    // find the appropriate key binding
-    executeBinding(bindingsMouseButtons_[int(id)].OnPress, 1.0, 1.0);
-
-    return true;
-  }
-
-  /**
-    @brief Event handler for the mouseReleased Event.
-    @param e Event information
-    @param id The ID of the mouse button
-  */
-  bool KeyBinder::mouseButtonReleased(MouseButton::Enum id)
-  {
-    // find the appropriate key binding
-    executeBinding(bindingsMouseButtons_[int(id)].OnRelease, 1.0, 1.0);
-
-    return true;
-  }
-
-  /**
-    @brief Event handler for the mouseHeld Event.
-    @param e Event information
-    @param id The ID of the mouse button
-  */
-  bool KeyBinder::mouseButtonHeld(MouseButton::Enum id)
-  {
-    // find the appropriate key binding
-    executeBinding(bindingsMouseButtons_[int(id)].OnHold, 1.0, 1.0);
-
-    return true;
-  }
-
-  bool KeyBinder::joyStickButtonPressed(int joyStickID, int button)
-  {
-    // find the appropriate key binding
-    executeBinding(bindingsJoyStickButtons_[button].OnPress, 1.0, 1.0);
-
-    return true;
-  }
-
-  bool KeyBinder::joyStickButtonReleased(int joyStickID, int button)
-  {
-    // find the appropriate key binding
-    executeBinding(bindingsJoyStickButtons_[button].OnRelease, 1.0, 1.0);
-
-    return true;
-  }
-
-  bool KeyBinder::joyStickButtonHeld(int joyStickID, int button)
-  {
-    // find the appropriate key binding
-    executeBinding(bindingsJoyStickButtons_[button].OnHold, 1.0, 1.0);
-
-    return true;
-  }
-
-  bool KeyBinder::joyStickAxisMoved(int joyStickID, int axis, int value)
+  void KeyBinder::joyStickAxisMoved(int joyStickID, int axis, int value)
   {
     // TODO: check whether 16 bit integer as general axis value is a good idea (works under windows)
-    halfAxes_[8 + axis].hasChanged = true;
+    //CCOUT(3) << axis << std::endl;
     if (value >= 0)
     {
-      halfAxes_[8 + axis].abs = ((float)value)/0x1000;
-      halfAxes_[8 + axis].hasChanged = true;
+      halfAxes_[8 + axis].absVal_ = ((float)value)/0x8000;
+      halfAxes_[8 + axis].relVal_ = ((float)value)/0x8000;
+      halfAxes_[8 + axis].hasChanged_ = true;
     }
     else
     {
-      halfAxes_[8 + axis + 1].abs = -((float)value)/0x1000;
-      halfAxes_[8 + axis + 1].hasChanged = true;
+      halfAxes_[8 + axis + 1].absVal_ = -((float)value)/0x8000;
+      halfAxes_[8 + axis + 1].relVal_ = -((float)value)/0x8000;
+      halfAxes_[8 + axis + 1].hasChanged_ = true;
     }
-    return true;
   }
 
 

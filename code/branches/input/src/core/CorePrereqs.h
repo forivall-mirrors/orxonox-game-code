@@ -81,10 +81,10 @@ namespace orxonox
   {
     enum Enum
     {
-      None,
       OnPress,
       OnHold,
-      OnRelease
+      OnRelease,
+      None
     };
   };
 

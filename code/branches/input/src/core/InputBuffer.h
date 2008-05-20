@@ -100,9 +100,9 @@ namespace orxonox
   private:  // functions
     bool charIsAllowed(const char& input);
 
-    bool keyPressed (const KeyEvent& evt);
-    bool keyReleased(const KeyEvent& evt) { return true; }
-    bool keyHeld    (const KeyEvent& evt);
+    void keyPressed (const KeyEvent& evt);
+    void keyReleased(const KeyEvent& evt) { }
+    void keyHeld    (const KeyEvent& evt);
     void processKey (const KeyEvent &e);
 
     void tick(float dt);

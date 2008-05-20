@@ -37,6 +37,7 @@
 #include "CorePrereqs.h"
 
 #include <string>
+#include <vector>
 
 #include "ois/OIS.h"
 #include "util/Math.h"
@@ -46,52 +47,91 @@
 
 namespace orxonox
 {
-  struct _CoreExport AxisCommand
+  class _CoreExport BaseCommand
   {
-    std::string commandStr;
-    CommandEvaluation evaluation;
-    bool bRelative;
-    float value;
-    unsigned int nValuesAdded;
+  public:
+    virtual ~BaseCommand() { }
+    virtual bool execute(float abs = 1.0f, float rel = 1.0f) = 0;
   };
 
-  struct _CoreExport SimpleCommand
+  class _CoreExport BufferedParamCommand
   {
-    // for simple binding; direct
-    std::string commandStr;
-    CommandEvaluation evaluation;
-
-    // axis binding; buffered
-    AxisCommand* axisCommand;
-    float axisModifier;
+  public:
+    BufferedParamCommand() : value_(0.0f), nValuesAdded_(0), paramIndex_(-1) { }
+    bool execute();
+    float value_;
+    unsigned int nValuesAdded_;
+    int paramIndex_;
+    CommandEvaluation evaluation_;
   };
 
-  struct _CoreExport KeyBinding
+  class _CoreExport SimpleCommand : public BaseCommand
   {
-    void clear() { commands = 0; nCommands = 0; }
-    SimpleCommand* commands;
-    unsigned int nCommands;
+  public:
+    bool execute(float abs = 1.0f, float rel = 1.0f);
+
+    CommandEvaluation evaluation_;
   };
 
-  struct _CoreExport KeyBindingBundle
+  class _CoreExport ParamCommand : public BaseCommand
   {
-    KeyBinding OnPress;
-    KeyBinding OnRelease;
-    KeyBinding OnHold;
+  public:
+    ParamCommand() : bRelative_(false), paramModifier_(1.0f), paramCommand_(0) { }
+    bool execute(float abs = 1.0f, float rel = 1.0f);
+
+    bool bRelative_;
+    float paramModifier_;
+    BufferedParamCommand* paramCommand_;
   };
 
-  struct _CoreExport HalfAxis
+  class _CoreExport Button
   {
-    float rel;
-    float abs;
-    float threshold;
-    bool wasDown;
-    bool hasChanged;
+  public:
+    Button() { nCommands_[0]=0; nCommands_[1]=0; nCommands_[2]=0; clear(); }
+    virtual ~Button() { clear(); }
+    virtual void clear();
+    virtual bool addParamCommand(ParamCommand* command) { return false; }
+    void parse(std::vector<BufferedParamCommand*>& paramCommandBuffer);
+    bool execute(KeybindMode::Enum mode);
+
+    //! The configured string value
+    std::string bindingString_;
+    //! Name of the trigger as strings
+    std::string name_;
+    //! Basic commands for OnPress, OnHold and OnRelease
+    BaseCommand** commands_[3];
+    //! Number of basic commands
+    unsigned int nCommands_[3];
+    //! Says how much it takes for an analog axis to trigger a button
+    //! Note: This variable is here to have only one parse() function.
+    float buttonThreshold_;
+  };
+
+
+  class _CoreExport HalfAxis : public Button
+  {
+  public:
+    HalfAxis() : relVal_(0.0f), absVal_(0.0f), paramCommands_(0), nParamCommands_(0),
+                 wasDown_(false), hasChanged_(false) { }
+    bool execute();
+    bool execute(KeybindMode::Enum mode) { return Button::execute(mode); }
+    bool addParamCommand(ParamCommand* command);
+    void clear();
+
+    // axis related
+    float relVal_;
+    float absVal_;
+    ParamCommand** paramCommands_;
+    unsigned int nParamCommands_;
+
+    // button related
+    bool wasDown_;
+    bool hasChanged_;
   };
 
 
   /**
-    @brief Captures mouse, keyboard and joy stick input while in the actual game mode.
+    @brief Handles mouse, keyboard and joy stick input while in the actual game mode.
            Manages the key bindings.
   */
   class _CoreExport KeyBinder : public KeyHandler, public MouseHandler, public JoyStickHandler, public OrxonoxClass
@@ -100,66 +140,55 @@ namespace orxonox
     KeyBinder ();
     ~KeyBinder();
 
-    bool loadBindings();
+    void loadBindings();
     void clearBindings(bool bInit = false);
 
     void setConfigValues();
 
   private: // functions
-    bool readBindings(std::string* names, std::string* bindingStrings, KeyBindingBundle* bindings, unsigned int size);
-    bool executeBinding(KeyBinding& binding, float axisRel, float axisAbs);
-    void clearBundle(KeyBindingBundle& bundle, bool bInit);
+    void readTrigger(Button& button);
+
+    //static void clearBundle(KeyBindingBundle& bundle, bool bInit);
+    //static void redimensionBinding(KeyBinding& binding);
 
     void tick(float dt);
 
-    bool keyPressed (const KeyEvent& evt);
-    bool keyReleased(const KeyEvent& evt);
-    bool keyHeld    (const KeyEvent& evt);
+    void keyPressed (const KeyEvent& evt);
+    void keyReleased(const KeyEvent& evt);
+    void keyHeld    (const KeyEvent& evt);
 
-    bool mouseButtonPressed (MouseButton::Enum id);
-    bool mouseButtonReleased(MouseButton::Enum id);
-    bool mouseButtonHeld    (MouseButton::Enum id);
-    bool mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
-    bool mouseScrolled      (int abs, int rel);
+    void mouseButtonPressed (MouseButton::Enum id);
+    void mouseButtonReleased(MouseButton::Enum id);
+    void mouseButtonHeld    (MouseButton::Enum id);
+    void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
+    void mouseScrolled      (int abs, int rel);
 
-    bool joyStickButtonPressed (int joyStickID, int button);
-    bool joyStickButtonReleased(int joyStickID, int button);
-    bool joyStickButtonHeld    (int joyStickID, int button);
-    bool joyStickAxisMoved     (int joyStickID, int axis, int value)  ;
+    void joyStickButtonPressed (int joyStickID, int button);
+    void joyStickButtonReleased(int joyStickID, int button);
+    void joyStickButtonHeld    (int joyStickID, int button);
+    void joyStickAxisMoved     (int joyStickID, int axis, int value);
 
   private: // variables
     //! denotes the number of different keys there are in OIS.
     static const unsigned int nKeys_s = 0xEE;
     //! Actual key bindings as bundle for Press, Hold and Release
-    KeyBindingBundle bindingsKeys_ [nKeys_s];
-    //! Names of the keys as strings
-    std::string namesKeys_         [nKeys_s];
-    //! The configured string values
-    std::string bindingStringsKeys_[nKeys_s];
+    Button keys_ [nKeys_s];
 
     //! denotes the number of different mouse buttons there are in OIS.
     static const unsigned int nMouseButtons_s = 8;
     //! Actual key bindings as bundle for Press, Hold and Release
-    KeyBindingBundle bindingsMouseButtons_ [nMouseButtons_s];
-    //! Names of the mouse buttons as strings
-    std::string namesMouseButtons_         [nMouseButtons_s];
-    //! The configured string values
-    std::string bindingStringsMouseButtons_[nMouseButtons_s];
+    Button mouseButtons_ [nMouseButtons_s];
 
     //! denotes the number of different joy stick buttons there are in OIS.
     static const unsigned int nJoyStickButtons_s = 32 + 4 * 4; // 32 buttons and 4 POVs with 4 buttons
     //! Actual key bindings as bundle for Press, Hold and Release
-    KeyBindingBundle bindingsJoyStickButtons_ [nJoyStickButtons_s];
-    //! Names of the joy stick buttons as strings
-    std::string namesJoyStickButtons_         [nJoyStickButtons_s];
-    //! The configured string values
-    std::string bindingStringsJoyStickButtons_[nJoyStickButtons_s];
+    Button joyStickButtons_ [nJoyStickButtons_s];
 
     //! denotes the number of half axes (every axis twice) there can be.
     static const unsigned int nHalfAxes_s = 56;
     /**
     * Array with all the half axes for mouse and joy sticks.
-    * Bear in mind that the positions are fixed and that the first entry is the
+    * Keep in mind that the positions are fixed and that the first entry is the
     * positive one and the second is negative.
     * Sequence is as follows:
     *  0 -  3: Mouse x and y
@@ -168,18 +197,17 @@ namespace orxonox
     * 24 - 55: joy stick axes 1 - 16
     */
     HalfAxis halfAxes_[nHalfAxes_s];
-    //! Actual key bindings as bundle for Press, Hold and Release
-    KeyBindingBundle bindingsHalfAxes_ [nHalfAxes_s];
-    //! Names of the half axes
-    std::string namesHalfAxes_         [nHalfAxes_s];
-    //! The configured string values
-    std::string bindingStringsHalfAxes_[nHalfAxes_s];
 
     /**
     * Commands that have additional parameters (axes) are executed at the end of
     * the tick() so that all values can be buffered for single execution.
     */
-    std::vector<AxisCommand*> axisCommands_;
+    std::vector<BufferedParamCommand*> paramCommandBuffer_;
+
+    //! Threshold for analog triggers until which the state is 0.
+    float analogThreshold_;
+    //! Threshold for analog triggers until which the button is not pressed.
+    float buttonThreshold_;
   };
 
 

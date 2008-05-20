@@ -86,7 +86,8 @@ namespace orxonox
                 { this->additionalParameter_ = param; this->bEvaluatedParams_ = false; }
             inline std::string getAdditionalParameter() const
                 { return (this->additionalParameter_ != "") ? (" " + this->additionalParameter_) : ""; }
-            inline Executor* getExecutor() { return 0; }
+            inline ExecutorStatic* getEvaluatedExecutor() { return evaluatedExecutor_; }
+            inline std::string getCommandString() { return this->processedCommand_; }
 
             void setEvaluatedParameter(unsigned int index, MultiTypeMath param);
             MultiTypeMath getEvaluatedParameter(unsigned int index) const;
