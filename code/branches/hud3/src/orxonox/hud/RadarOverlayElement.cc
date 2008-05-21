@@ -31,7 +31,10 @@ namespace orxonox
 {
     using namespace Ogre;
 
+    RadarOverlayElement* RadarOverlayElement::instance_s = NULL;
+
     RadarOverlayElement::RadarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){
+        RadarOverlayElement::instance_s = this;
     }
 
     RadarOverlayElement::~RadarOverlayElement(){
@@ -46,6 +49,16 @@ namespace orxonox
         container_ = container;
         firstRadarObject_ = NULL;
         lastRadarObject_ = NULL;
+        focus_ = NULL;
+
+        // create nav marker ...
+        navMarker_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "NavMarker"));
+        navMarker_->setMetricsMode(Ogre::GMM_PIXELS);
+        navMarker_->setMaterialName("Orxonox/NavMarker");
+        navMarker_->setDimensions(16,16);
+        navMarker_->setPosition(0,386);
+        navMarker_->hide();
+        container_->addChild(navMarker_);
 
         // these have to fit the data in the level
         shipPos_ = Vector3(0.0, 0.0, 0.0);
@@ -104,6 +117,43 @@ namespace orxonox
             }
             ro = ro->next;
 		}
+		updateNavMarker();
+    }
+
+    void RadarOverlayElement::updateNavMarker(){
+        if(focus_ == NULL) return;
+        // from the angle we find out where to draw the marker
+        // and which of the four arrows to take
+        float r1 = 0.97;//atan(windowW_/windowH_); // doesn't work correctly yet
+        float phi = focus_->phi_;
+        if(focus_->right_){
+            if(phi<r1){
+                navMarker_->setPosition(tan(phi)*windowH_/2+windowW_/2, 0);
+                navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
+            }
+            else if(phi>3.14-r1){
+                navMarker_->setPosition(-tan(phi)*windowH_/2+windowW_/2, windowH_-16);
+                navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
+            }
+            else {
+                navMarker_->setPosition(windowW_-16, -tan((3.14-2*phi)/2)*windowW_/2+windowH_/2);
+                navMarker_->setUV(0.5, 0.5, 1.0, 1.0);
+            }
+        }
+        else{
+            if(phi<r1) {
+                navMarker_->setPosition(-tan(phi)*windowH_/2+windowW_/2, 0);
+                navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
+            }
+            else if(phi>3.14-r1) {
+                navMarker_->setPosition(tan(phi)*windowH_/2+windowW_/2, windowH_-16);
+                navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
+            }
+            else {
+                navMarker_->setPosition(0, -tan((3.14-2*phi)/2)*windowW_/2+windowH_/2);
+                navMarker_->setUV(0.0, 0.0, 0.5, 0.5);
+            }
+        }
     }
 
     void RadarOverlayElement::addObject(Vector3 pos){
@@ -145,6 +195,18 @@ namespace orxonox
 	    if((currentDir_.crossProduct(currentOrth_)).dotProduct(obj->pos_ - shipPos_) > 0)
         	return true;
         else return false;
+	}
+
+	/*static*/void RadarOverlayElement::cycleFocus(){
+	    if(RadarOverlayElement::instance_s == NULL) return;
+	    if(RadarOverlayElement::instance_s->focus_ == NULL)
+            RadarOverlayElement::instance_s->focus_ = RadarOverlayElement::instance_s->firstRadarObject_;
+        else
+            RadarOverlayElement::instance_s->focus_ = RadarOverlayElement::instance_s->focus_->next;
+        if(RadarOverlayElement::instance_s->focus_ == NULL)
+            RadarOverlayElement::instance_s->navMarker_->hide();
+        else
+            RadarOverlayElement::instance_s->navMarker_->show();
 	}
 }
 

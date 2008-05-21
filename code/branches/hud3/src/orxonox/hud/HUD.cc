@@ -80,6 +80,7 @@ namespace orxonox
         radar->init(0.5, 0.9, 0.2, container);
         radar->addObject(Vector3(1500.0, 0.0, 0.0));
         radar->addObject(Vector3(0.0, 4000.0, 0.0));
+        RadarOverlayElement::cycleFocus();
     }
 
     void HUD::tick(float dt)

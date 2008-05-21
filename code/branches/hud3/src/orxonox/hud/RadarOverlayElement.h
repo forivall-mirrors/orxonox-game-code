@@ -49,16 +49,13 @@ namespace orxonox
     {
         private:
             Ogre::OverlayManager* om;               // our one and only overlay manager
-            Ogre::OverlayContainer* container_;
+            Ogre::OverlayContainer* container_;     // pointer to the container we're in
             Vector3 initialDir_;	                // direction of nose
             Vector3 currentDir_;
             Vector3 initialOrth_;                   // direction of normal
             Vector3 currentOrth_;
             Vector3 shipPos_;                       // position of ship
             Ogre::Plane plane;                      // plane perpendicular to dir
-
-			RadarObject* firstRadarObject_;         // start of linked list
-			RadarObject* lastRadarObject_;          // end of linked list
 
             Ogre::Real leftRel_, topRel_, dimRel_;  // relative position/dimension
             int left_, top_, dim_;                  // absolute position/dimension
@@ -70,11 +67,20 @@ namespace orxonox
             void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
 			void resize();
             void update();
+            void updateNavMarker();
             void addObject(Vector3 pos);
             void listObjects();
             float calcRadius(RadarObject* obj);
             float calcPhi(RadarObject* obj);
             bool calcRight(RadarObject* obj);
+
+            Ogre::PanelOverlayElement* navMarker_;  // marker to help navigating
+			RadarObject* firstRadarObject_;         // start of linked list
+			RadarObject* lastRadarObject_;          // end of linked list
+			RadarObject* focus_;                    // object that is focussed
+
+            static RadarOverlayElement* instance_s;
+            static void cycleFocus();
 	};
 }
 
