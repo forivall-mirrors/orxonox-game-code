@@ -212,7 +212,7 @@ namespace orxonox
     int mouseRelative_[2];
     float deriveTime_;
 
-    //**** ConfigValues *****\\
+    //##### ConfigValues #####
     //! Threshold for analog triggers until which the state is 0.
     float analogThreshold_;
     //! Threshold for analog triggers until which the button is not pressed.

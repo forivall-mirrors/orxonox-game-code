@@ -180,7 +180,7 @@ namespace orxonox
           commandStr += tokens[iToken++] + " ";
 
         // evaluate the command
-        CommandEvaluation& eval = CommandExecutor::evaluate(commandStr);
+        CommandEvaluation eval = CommandExecutor::evaluate(commandStr);
         if (!eval.isValid())
           continue;
 
@@ -404,7 +404,7 @@ namespace orxonox
       "WEBSEARCH", "WEBFAVORITES", "WEBREFRESH", "WEBSTOP", "WEBFORWARD", "WEBBACK",
       "MYCOMPUTER", "MAIL", "MEDIASELECT"
     };
-    for (int i = 0; i < nKeys_s; i++)
+    for (unsigned int i = 0; i < nKeys_s; i++)
       keys_[i].name_ = "Key" + keyNames[i];
 
     // mouse buttons
@@ -414,13 +414,13 @@ namespace orxonox
       "MouseButton6", "MouseButton7",
       "MouseWheel1Up", "MouseWheel1Down",
       "MouseWheel2Up", "MouseWheel2Down" };
-    for (int i = 0; i < nMouseButtons_s; i++)
+    for (unsigned int i = 0; i < nMouseButtons_s; i++)
       mouseButtons_[i].name_ = mouseButtonNames[i];
 
     // joy stick buttons
-    for (int i = 0; i < 32; i++)
+    for (unsigned int i = 0; i < 32; i++)
       joyStickButtons_[i].name_ = "JoyButton" + getConvertedValue<int, std::string>(i);
-    for (int i = 32; i < nJoyStickButtons_s; i += 4)
+    for (unsigned int i = 32; i < nJoyStickButtons_s; i += 4)
     {
 		  joyStickButtons_[i + 0].name_ = "JoyPOV" + getConvertedValue<int, std::string>((i - 32)/4 + 1) + "North";
 		  joyStickButtons_[i + 1].name_ = "JoyPOV" + getConvertedValue<int, std::string>((i - 32)/4 + 1) + "South";
@@ -526,16 +526,16 @@ namespace orxonox
   */
   void KeyBinder::clearBindings(bool bInit)
   {
-    for (int i = 0; i < nKeys_s; i++)
+    for (unsigned int i = 0; i < nKeys_s; i++)
       keys_[i].clear();
 
-    for (int i = 0; i < nMouseButtons_s; i++)
+    for (unsigned int i = 0; i < nMouseButtons_s; i++)
       mouseButtons_[i].clear();
 
-    for (int i = 0; i < nJoyStickButtons_s; i++)
+    for (unsigned int i = 0; i < nJoyStickButtons_s; i++)
       joyStickButtons_[i].clear();
 
-    for (int i = 0; i < nHalfAxes_s; i++)
+    for (unsigned int i = 0; i < nHalfAxes_s; i++)
       halfAxes_[i].clear();
 
     for (unsigned int i = 0; i < paramCommandBuffer_.size(); i++)
@@ -587,16 +587,16 @@ namespace orxonox
         {
           if (mouseRelative_[i] > 0)
           {
-            halfAxes_[2*i + 0].absVal_ = mouseRelative_[i] * derivePeriod_ / 500;
+            halfAxes_[2*i + 0].absVal_ = mouseRelative_[i] * derivePeriod_ / 500 * mouseSensitivity_;
             halfAxes_[2*i + 1].absVal_ = 0.0f;
           }
           else if (mouseRelative_[0] < 0)
           {
             halfAxes_[2*i + 0].absVal_ = 0.0f;
-            halfAxes_[2*i + 1].absVal_ = -mouseRelative_[i] * derivePeriod_ / 500;
+            halfAxes_[2*i + 1].absVal_ = -mouseRelative_[i] * derivePeriod_ / 500 * mouseSensitivity_;
           }
           COUT(3) << mouseRelative_[i] << " | ";
-          mouseRelative_[i] = 0.0f;
+          mouseRelative_[i] = 0;
         }
         COUT(3) << std::endl;
       }
@@ -651,7 +651,7 @@ namespace orxonox
     if (!bDeriveMouseInput_)
     {
       // y axis of mouse input is inverted
-      int rel[] = { rel_.x * mouseSensitivity_, -rel_.y * mouseSensitivity_ };
+      int rel[] = { rel_.x, -rel_.y };
 
       COUT(3) << rel[0] << " | " << rel[1] << std::endl;
 
@@ -667,11 +667,11 @@ namespace orxonox
             if (mousePosition_[i] < 0)
             {
               halfAxes_[1 + 2*i].hasChanged_ = true;
-              halfAxes_[1 + 2*i].absVal_ = -((float)mousePosition_[i])/1024;
+              halfAxes_[1 + 2*i].absVal_ = -((float)mousePosition_[i])/1024 * mouseSensitivity_;
               halfAxes_[0 + 2*i].absVal_ =  0.0f;
             }
             else
-              halfAxes_[1 + 2*i].absVal_ =  ((float)mousePosition_[i])/1024;
+              halfAxes_[1 + 2*i].absVal_ =  ((float)mousePosition_[i])/1024 * mouseSensitivity_;
           }
           else
           {
@@ -680,25 +680,25 @@ namespace orxonox
             if (mousePosition_[i] > 0)
             {
               halfAxes_[0 + 2*i].hasChanged_ = true;
-              halfAxes_[0 + 2*i].absVal_ =  ((float)mousePosition_[i])/1024;
+              halfAxes_[0 + 2*i].absVal_ =  ((float)mousePosition_[i])/1024 * mouseSensitivity_;
               halfAxes_[1 + 2*i].absVal_ =  0.0f;
             }
             else
-              halfAxes_[1 + 2*i].absVal_ = -((float)mousePosition_[i])/1024;
+              halfAxes_[1 + 2*i].absVal_ = -((float)mousePosition_[i])/1024 * mouseSensitivity_;
           }
 
           // relative
           if (rel[i] > 0)
-            halfAxes_[0 + 2*i].relVal_ =  ((float)rel[i])/1024;
+            halfAxes_[0 + 2*i].relVal_ =  ((float)rel[i])/1024 * mouseSensitivity_;
           else
-            halfAxes_[1 + 2*i].relVal_ = -((float)rel[i])/1024;
+            halfAxes_[1 + 2*i].relVal_ = -((float)rel[i])/1024 * mouseSensitivity_;
         }
       }
     }
     else
     {
-      mouseRelative_[0] += rel_.x * mouseSensitivity_;
-      mouseRelative_[1] -= rel_.y * mouseSensitivity_;
+      mouseRelative_[0] += rel_.x;
+      mouseRelative_[1] -= rel_.y;
     }
   }
 
