@@ -66,10 +66,10 @@ SubString::SubString(const std::string& string, char delimiter)
  */
 SubString::SubString(const std::string& string,
                      const std::string& delimiters, const std::string& delimiterNeighbours, bool emptyEntries,
-                     char escapeChar, bool removeExcapeChar, char safemode_char, bool removeSafemodeChar,
+                     char escapeChar, bool removeEscapeChar, char safemode_char, bool removeSafemodeChar,
                      char openparenthesis_char, char closeparenthesis_char, bool removeParenthesisChars, char comment_char)
 {
-  SubString::splitLine(this->strings, this->bInSafemode, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, removeExcapeChar, safemode_char, removeSafemodeChar, openparenthesis_char, closeparenthesis_char, removeParenthesisChars, comment_char);
+  SubString::splitLine(this->strings, this->bInSafemode, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, removeEscapeChar, safemode_char, removeSafemodeChar, openparenthesis_char, closeparenthesis_char, removeParenthesisChars, comment_char);
 }
 
 /**

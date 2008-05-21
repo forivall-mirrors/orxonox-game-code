@@ -77,6 +77,17 @@ namespace orxonox
   }
 #endif
 
+  namespace KeybindMode
+  {
+    enum Enum
+    {
+      OnPress,
+      OnHold,
+      OnRelease,
+      None
+    };
+  };
+
   typedef std::string LanguageEntryLabel;
 
   class BaseFactory;

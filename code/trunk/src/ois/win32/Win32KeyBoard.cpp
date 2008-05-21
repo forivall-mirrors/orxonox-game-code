@@ -104,13 +104,19 @@ void Win32Keyboard::_readBuffered()
 	DIDEVICEOBJECTDATA diBuff[KEYBOARD_DX_BUFFERSIZE];
 	DWORD entries = KEYBOARD_DX_BUFFERSIZE;
 	HRESULT hr;
+	//Only one keyboard allowed per app, so static is ok
+	static bool verifyAfterAltTab = false;
 
 	hr = mKeyboard->GetDeviceData( sizeof(DIDEVICEOBJECTDATA), diBuff, &entries, 0 );
 	if( hr != DI_OK )
 	{
 		hr = mKeyboard->Acquire();
+		if (hr == E_ACCESSDENIED)
+			verifyAfterAltTab = true;
+
 		while( hr == DIERR_INPUTLOST )
 			hr = mKeyboard->Acquire();
+
 		return;
 	}
 
@@ -120,7 +126,7 @@ void Win32Keyboard::_readBuffered()
 	//Update keyboard and modifier states.. And, if mListener, fire events
 	for(unsigned int i = 0; i < entries; ++i )
 	{
-		//If the mListener returns false, that means that we are probably deleted...
+		//If the listener returns false, that means that we are probably deleted...
 		//send no more events and just leave as the this pointer is invalid now...
 		bool ret = true;
 		KeyCode kc = (KeyCode)diBuff[ i ].dwOfs;
@@ -158,6 +164,39 @@ void Win32Keyboard::_readBuffered()
 
 		if(ret == false)
 			break;
+	}
+
+	// If a lost device/access denied was detected, recover gracefully with new events
+	if(verifyAfterAltTab)
+	{
+		bool ret = true;
+		
+		//Copy old buffer to temp location to compare against
+		unsigned char keyBufferCopy[256];
+		memcpy(keyBufferCopy, KeyBuffer, 256);
+
+		//Update new state
+		_read();
+
+		for (unsigned i = 0; i < 256; i++)
+		{
+			if (keyBufferCopy[i] != KeyBuffer[i])
+			{
+				if (mListener)
+				{
+					if (KeyBuffer[i])
+						ret = mListener->keyPressed( KeyEvent( this, (KeyCode)i, _translateText((KeyCode)i) ) );
+					else
+						ret = mListener->keyReleased( KeyEvent( this, (KeyCode)i, 0 ) );
+				}
+			}
+
+			//If user returned false from callback, return immediately
+			if(ret == false)
+				return;
+		}
+
+		verifyAfterAltTab = false;
 	}
 }
 
@@ -242,7 +281,7 @@ int Win32Keyboard::_translateText( KeyCode kc )
 }
 
 //--------------------------------------------------------------------------------------------------//
-bool Win32Keyboard::isKeyDown( KeyCode key )
+bool Win32Keyboard::isKeyDown( KeyCode key ) const
 {
 	return (KeyBuffer[key] & 0x80) != 0;
 }
@@ -271,7 +310,7 @@ const std::string& Win32Keyboard::getAsString( KeyCode kc )
 }
 
 //--------------------------------------------------------------------------------------------------//
-void Win32Keyboard::copyKeyStates( char keys[256] )
+void Win32Keyboard::copyKeyStates( char keys[256] ) const
 {
 	for(int i = 0; i < 256; ++i)
 		keys[i] = KeyBuffer[i] > 0; //Normalise the DX values (0x80)
