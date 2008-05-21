@@ -74,9 +74,9 @@ namespace orxonox
         container->setWidth(1.0);
         container->setHeight(1.0);
         container->setMetricsMode(Ogre::GMM_RELATIVE);
-        energyBar->init(0.01, 0.94, 0.4, 0.04, container);
+        energyBar->init(0.01, 0.94, 0.4, container);
         energyBar->setValue(1);
-        speedoBar->init(0.01, 0.90, 0.4, 0.04, container);
+        speedoBar->init(0.01, 0.90, 0.4, container);
         radar->init(0.5, 0.9, 0.2, container);
         radar->addObject(Vector3(1500.0, 0.0, 0.0));
         radar->addObject(Vector3(0.0, 4000.0, 0.0));

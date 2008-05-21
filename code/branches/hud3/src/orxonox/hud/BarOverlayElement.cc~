@@ -21,110 +21,109 @@
 *   Author:
 *      Yuning Chai
 *   Co-authors:
-*      ...
+*      Felix Schulthess
 *
 */
 
 #include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
-
-
+#include "GraphicsEngine.h"
 #include "BarOverlayElement.h"
 
 namespace orxonox
 {
   using namespace Ogre;
 
-
-    BarOverlayElement::BarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){}
+    BarOverlayElement::BarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){
+        name_ = name;
+    }
 
     BarOverlayElement::~BarOverlayElement(){}
 
-    void BarOverlayElement::initialise(){
-	PanelOverlayElement::initialise();
-/*	setDimensions(100,100);
-	setPosition(10,10);
-	setMaterialName("Orxonox/Green");
-	setMetricsMode(Ogre::GMM_PIXELS);
-*/  }
+    void BarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container){
+        // init some values...
+        container_ = container;
+        om = &Ogre::OverlayManager::getSingleton();
+        value_ = 0;
+        color_ = 2;
+        autoColor_ = true;
+        left2Right = false; 	// default is right to left progress
+        leftRel_ = leftRel;
+        topRel_ = topRel;
+        dimRel_ = dimRel;
+        
+        // create background...
+        background_ = static_cast<OverlayContainer*>(om->createOverlayElement("Panel", name_+"container"));
+        background_->show();
+        container_->addChild(background_);
+        background_->setMetricsMode(Ogre::GMM_PIXELS);
+        background_->setMaterialName("Orxonox/BarBackground");
 
+        // calculate absolute coordinates...
+        resize();
 
-    void BarOverlayElement::initBarOverlayElement(Real left, Real top, Real width, Real height,
-       int dir,  int colour){
-	 setMetricsMode(Ogre::GMM_PIXELS);
-	 dir_ = dir;
-	 left_ = left;
-	 top_ = top;
-	 width_ = width;
-	 height_ = height;
-	 setPosition(left_,top_);
-	 setDimensions(width_,height_);
-	 setColour(colour);
+        show();
+        setMetricsMode(Ogre::GMM_PIXELS);
+        setMaterialName("Orxonox/Green");
+        background_->addChild(this);
     }
 
+    void BarOverlayElement::resize(){
+        windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
+        windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
+        // calculate new absolute coordinates...
+        left_ = (int) (leftRel_ * windowW_);
+        top_ = (int) (topRel_ * windowH_);
+        width_ = (int) (dimRel_ * windowW_);
+        height_ = (int) (0.1*width_);	// the texture has dimensions height:length = 1:10
+        // adapt background
+        background_->setPosition(left_, top_);
+        background_->setDimensions(width_, height_);
+        // adapt bar
+        setValue(value_);
+    }
 
-   void BarOverlayElement::reset(int percentage){
-      switch(dir_){
+    void BarOverlayElement::setValue(float value){
+        value_ = value;
+        // set color, if nescessary
+        if(autoColor_){
+            if (value_>0.5) {setColor(BarOverlayElement::GREEN);}
+            else if (value_>0.25) {setColor(BarOverlayElement::YELLOW);}
+            else setColor(BarOverlayElement::RED);
+        }
+        // set value
+        if(left2Right){ // backward case
+            setPosition(0+width_-width_*value_, 0);
+            setDimensions(width_*value_,height_);
+        }else{          // default case
+            setPosition(0, 0);
+            setDimensions(width_*value_,height_);
+        }
+        if(value_ != 0) setTiling(value_, 1.0);
+    }
+
+    void BarOverlayElement::setColor(int color){
+        color_ = color;
+        switch(color){
+        case 0:
+            setMaterialName("Orxonox/Red");
+            break;
         case 1:
-	  setPosition(left_,top_);
-	  setDimensions(width_,height_*percentage/100);
-	  break;
-	case 2:
-	  setPosition(left_+width_-width_*percentage/100,top_);
-	  setDimensions(width_*percentage/100,height_);
-	  break;
-	case 3:
-	  setPosition(left_,top_+height_-height_*percentage/100);
-	  setDimensions(width_,height_*percentage/100);
-	  break;
-	default:
-	  setPosition(left_,top_);
-	  setDimensions(width_*percentage/100,height_);	
-      }
-    }
-       
-       
-    void BarOverlayElement::setColour(int colour){
-      switch(colour){
-	case 0:
-	  setMaterialName("Orxonox/Red");
-	  break;
-	case 1:
-	  setMaterialName("Orxonox/Yellow");
-	  break;
-	case 2:
-	  setMaterialName("Orxonox/Green");
-      }
+            setMaterialName("Orxonox/Yellow");
+            break;
+        case 2:
+            setMaterialName("Orxonox/Green");
+        }
     }
 
-
-    SmartBarOverlayElement::SmartBarOverlayElement(const String& name):BarOverlayElement(name){}
-
-    SmartBarOverlayElement::~SmartBarOverlayElement(void){}
-    
-    
-    void SmartBarOverlayElement::initialise(){
-      PanelOverlayElement::initialise();
-/*	setDimensions(100,100);
-      setPosition(10,10);
-      setMaterialName("Orxonox/Green");
-      setMetricsMode(Ogre::GMM_PIXELS);
-*/  }
-    
-    void SmartBarOverlayElement::initSmartBarOverlayElement(Real left, Real top, Real width, Real height, int dir)
-    {
-      BarOverlayElement::initBarOverlayElement(left, top, width, height, dir, BarOverlayElement::GREEN);
+    float BarOverlayElement::getValue(){
+        return(value_);
     }
 
-
-    void SmartBarOverlayElement::reset(int percentage){
-      if (percentage>50) {setColour(BarOverlayElement::GREEN);}
-      else if (percentage>25) {setColour(BarOverlayElement::YELLOW);}
-      else setColour(BarOverlayElement::RED);
-      OverlayElementBar::reset(percentage);
+    int BarOverlayElement::getBarColor(){
+        return(color_);
     }
-
 }
 
 

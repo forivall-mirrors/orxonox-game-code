@@ -53,12 +53,16 @@ namespace orxonox
     }
 
     void RadarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container){
-		om = &Ogre::OverlayManager::getSingleton();        
+        // some initial data
+		om = &Ogre::OverlayManager::getSingleton();
         dimRel_ = dimRel;
         leftRel_ = leftRel;
         topRel_ = topRel;
         container_ = container;
+        firstRadarObject_ = NULL;
+        lastRadarObject_ = NULL;
 
+        // these have to fit the data in the level
         shipPos_ = Vector3(0.0, 0.0, 0.0);
         initialDir_ = Vector3(1.0, 0.0, 0.0);
         currentDir_ = initialDir_;
@@ -68,7 +72,7 @@ namespace orxonox
         setMetricsMode(Ogre::GMM_PIXELS);
         setMaterialName("Orxonox/Radar");
         resize();
-        
+
         container_->addChild(this);
     }
 
@@ -76,9 +80,9 @@ namespace orxonox
         // if window is resized, we must adapt these...
         windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
         windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
-        dim_ = dimRel_*windowH_;
-        left_ = leftRel_*windowW_-dim_/2;
-        top_ = topRel_*windowH_-dim_/2;
+        dim_ = (int) (dimRel_*windowH_);
+        left_ = (int) (leftRel_*windowW_-dim_/2);
+        top_ = (int) (topRel_*windowH_-dim_/2);
         setPosition(left_, top_);
         setDimensions(dim_,dim_);
     }
@@ -88,53 +92,84 @@ namespace orxonox
         currentDir_ = SpaceShip::instance_s->getOrientation()*initialDir_; 		// according to beni....
 		currentOrth_ = SpaceShip::instance_s->getOrientation()*initialOrth_;
 
-		if(tomato_ == NULL) return;		
-		
-		tomato_->radius_ = acos((currentDir_.dotProduct(tomato_->pos_ - shipPos_))/
-			((tomato_->pos_ - shipPos_).length()*currentDir_.length()));
-        tomato_->phi_ = acos((currentOrth_.dotProduct(tomato_->pos_ - shipPos_))/
-        	((tomato_->pos_ - shipPos_).length()*currentOrth_.length()));
-        if((currentDir_.crossProduct(currentOrth_)).dotProduct(tomato_->pos_ - shipPos_) > 0) 
-        	tomato_->right_ = true;
-        else tomato_->right_=false;
-
-        if (tomato_->right_){
-            tomato_->panel_->setPosition(sin(tomato_->phi_)*tomato_->radius_/
-            	3.5*dim_/2+dim_/2+left_-2,-cos(tomato_->phi_)*tomato_->radius_/3.5*dim_/2+dim_/2+top_-2);
-        }
-        else {
-            tomato_->panel_->setPosition(-sin(tomato_->phi_)*tomato_->radius_/
-            	3.5*dim_/2+dim_/2+left_-2,-cos(tomato_->phi_)*tomato_->radius_/3.5*dim_/2+dim_/2+top_-2);
-        }
-        COUT(3) << "WWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
-        COUT(3) << tomato_->radius_ << "  " << tomato_->phi_ << std::endl;
-        COUT(3) << "WWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
+        RadarObject* ro = firstRadarObject_;
+        // iterate through all RadarObjects
+		while(ro != NULL){
+            ro->radius_ = calcRadius(ro);
+            ro->phi_ = calcPhi(ro);
+            ro->right_ = calcRight(ro);
+            if (ro->right_){
+                ro->panel_->setPosition(sin(ro->phi_)*ro->radius_/
+                    3.5*dim_/2+dim_/2+left_-2,-cos(ro->phi_)*ro->radius_/3.5*dim_/2+dim_/2+top_-2);
+            }
+            else {
+                ro->panel_->setPosition(-sin(ro->phi_)*ro->radius_/
+                    3.5*dim_/2+dim_/2+left_-2,-cos(ro->phi_)*ro->radius_/3.5*dim_/2+dim_/2+top_-2);
+            }
+            ro = ro->next;
+		}
     }
-    
+
     void RadarOverlayElement::addObject(Vector3 pos){
-		tomato_ = new RadarObject(container_);
-		tomato_->pos_ = pos;
+        if(firstRadarObject_ == NULL){
+            firstRadarObject_ = new RadarObject(container_);
+            firstRadarObject_->pos_ = pos;
+            lastRadarObject_ = firstRadarObject_;
+        }
+        else{
+            lastRadarObject_->next = new RadarObject(container_);
+            lastRadarObject_->next->pos_ = pos;
+            lastRadarObject_ = lastRadarObject_->next;
+        }
 	}
-	
-	//// RadarObject ////
-	
-	int RadarObject::count = 0;
-	
+
+	void RadarOverlayElement::listObjects(){
+	    int i = 0;
+	    RadarObject* ro = firstRadarObject_;
+	    COUT(3) << "List of RadarObjects:\n";
+	    // iterate through all Radar Objects
+	    while(ro != NULL) {
+	        COUT(3) << i++ << ": " << ro->pos_ << std::endl;
+	        ro = ro->next;
+	    }
+	}
+
+	float RadarOverlayElement::calcRadius(RadarObject* obj){
+	    return(acos((currentDir_.dotProduct(obj->pos_ - shipPos_))/
+			((obj->pos_ - shipPos_).length()*currentDir_.length())));
+	}
+
+	float RadarOverlayElement::calcPhi(RadarObject* obj){
+	    return(acos((currentOrth_.dotProduct(firstRadarObject_->pos_ - shipPos_))/
+        	((firstRadarObject_->pos_ - shipPos_).length()*currentOrth_.length())));
+	}
+
+	bool RadarOverlayElement::calcRight(RadarObject* obj){
+	    if((currentDir_.crossProduct(currentOrth_)).dotProduct(obj->pos_ - shipPos_) > 0)
+        	return true;
+        else return false;
+	}
+
+//////// RadarObject ////////
+
+	int RadarObject::count = 0;		// initialize static variable
+
 	RadarObject::RadarObject(Ogre::OverlayContainer* container){
 		container_ = container;
 		pos_ = Vector3(0.0, 0.0, 0.0);
 		init();
 	}
-	
+
 	RadarObject::RadarObject(Ogre::OverlayContainer* container, Vector3 pos){
 		container_ = container;
 		pos_ = pos;
 		init();
 	}
-	
+
 	RadarObject::~RadarObject(){}
-	
+
 	void RadarObject::init(){
+	    next = NULL;
 		om = &Ogre::OverlayManager::getSingleton();
 		panel_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel",
 			"Object"+Ogre::StringConverter::toString(count++)));
@@ -146,5 +181,8 @@ namespace orxonox
 	}
 }
 
-
-
+/* my local clipboard...
+COUT(3) << "WWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
+COUT(3) << firstRadarObject_->radius_ << "  " << firstRadarObject_->phi_ << std::endl;
+COUT(3) << "WWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
+*/

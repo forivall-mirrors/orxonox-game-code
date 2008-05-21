@@ -41,29 +41,18 @@ namespace orxonox
 
     BarOverlayElement::~BarOverlayElement(){}
 
-    void BarOverlayElement::init(Real leftRel, Real topRel, Real widthRel, Real heightRel, Ogre::OverlayContainer* container){
+    void BarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container){
         // init some values...
         container_ = container;
         om = &Ogre::OverlayManager::getSingleton();
         value_ = 0;
         color_ = 2;
         autoColor_ = true;
-        left2Right = false; // default: right to left progress
-
-        // get window data...
-        windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
-        windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
+        left2Right = false; 	// default is right to left progress
         leftRel_ = leftRel;
         topRel_ = topRel;
-        widthRel_ = widthRel;
-        heightRel_ = heightRel;
-
-        // cálculate absolute coordinates...
-        left_ = leftRel_ * windowW_;
-        top_ = topRel_ * windowH_;
-        width_ = widthRel_ * windowW_;
-        height_ = heightRel_ * windowH_;
-
+        dimRel_ = dimRel;
+        
         // create background...
         background_ = static_cast<OverlayContainer*>(om->createOverlayElement("Panel", name_+"container"));
         background_->show();
@@ -71,21 +60,23 @@ namespace orxonox
         background_->setMetricsMode(Ogre::GMM_PIXELS);
         background_->setMaterialName("Orxonox/BarBackground");
 
+        // calculate absolute coordinates...
+        resize();
+
         show();
-        background_->addChild(this);
         setMetricsMode(Ogre::GMM_PIXELS);
         setMaterialName("Orxonox/Green");
-        resize();
+        background_->addChild(this);
     }
 
     void BarOverlayElement::resize(){
         windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
         windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
-        // cálculate new absolute coordinates...
-        left_ = leftRel_ * windowW_;
-        top_ = topRel_ * windowH_;
-        width_ = widthRel_ * windowW_;
-        height_ = heightRel_ * windowH_;
+        // calculate new absolute coordinates...
+        left_ = (int) (leftRel_ * windowW_);
+        top_ = (int) (topRel_ * windowH_);
+        width_ = (int) (dimRel_ * windowW_);
+        height_ = (int) (0.1*width_);	// the texture has dimensions height:length = 1:10
         // adapt background
         background_->setPosition(left_, top_);
         background_->setDimensions(width_, height_);

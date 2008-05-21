@@ -80,9 +80,9 @@ namespace orxonox
         // if window is resized, we must adapt these...
         windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
         windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
-        dim_ = dimRel_*windowH_;
-        left_ = leftRel_*windowW_-dim_/2;
-        top_ = topRel_*windowH_-dim_/2;
+        dim_ = (int) (dimRel_*windowH_);
+        left_ = (int) (leftRel_*windowW_-dim_/2);
+        top_ = (int) (topRel_*windowH_-dim_/2);
         setPosition(left_, top_);
         setDimensions(dim_,dim_);
     }
@@ -150,9 +150,9 @@ namespace orxonox
         else return false;
 	}
 
-	//// RadarObject ////
+//////// RadarObject ////////
 
-	int RadarObject::count = 0;
+	int RadarObject::count = 0;		// initialize static variable
 
 	RadarObject::RadarObject(Ogre::OverlayContainer* container){
 		container_ = container;

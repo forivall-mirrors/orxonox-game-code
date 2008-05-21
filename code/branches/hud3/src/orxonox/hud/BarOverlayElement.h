@@ -53,8 +53,7 @@ namespace orxonox
         int windowW_, windowH_;
         Ogre::Real leftRel_;
         Ogre::Real topRel_;
-        Ogre::Real widthRel_;
-        Ogre::Real heightRel_;
+        Ogre::Real dimRel_;
         Ogre::OverlayManager* om;           // our overlay manager
         Ogre::OverlayContainer* container_; // our parent container to attach to
         Ogre::OverlayContainer* background_;
@@ -68,7 +67,7 @@ namespace orxonox
 
         BarOverlayElement(const Ogre::String& name);
         virtual ~BarOverlayElement();
-        void init(Real leftRel, Real topRel, Real widthRel, Real heightRel, Ogre::OverlayContainer* container);
+        void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
         void resize();
         void setValue(float value);
         void setColor(int color);
