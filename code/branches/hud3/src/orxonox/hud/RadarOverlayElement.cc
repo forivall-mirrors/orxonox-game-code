@@ -25,22 +25,7 @@
 *
 */
 
-/*	local coordinate system of space ship at the beginning:
-
-			y
-			+   z
-			|  +
-			| /
-			|/
-   x +------O
-*/
-
-#include <OgreOverlayManager.h>
-#include <OgreOverlayElement.h>
-#include <OgrePanelOverlayElement.h>
-#include <OgreStringConverter.h>
 #include "RadarOverlayElement.h"
-#include "GraphicsEngine.h"
 
 namespace orxonox
 {
@@ -97,9 +82,18 @@ namespace orxonox
         RadarObject* ro = firstRadarObject_;
         // iterate through all RadarObjects
 		while(ro != NULL){
+		    // calc position on radar...
             ro->radius_ = calcRadius(ro);
             ro->phi_ = calcPhi(ro);
             ro->right_ = calcRight(ro);
+
+            // set size to fit distance...
+            float d = (ro->pos_-shipPos_).length();
+            if(d<4000) ro->panel_->setDimensions(4,4);
+            else if(d<8000) ro->panel_->setDimensions(3,3);
+            else if(d<12000) ro->panel_->setDimensions(2,2);
+            else ro->panel_->setDimensions(1,1);
+
             if (ro->right_){
                 ro->panel_->setPosition(sin(ro->phi_)*ro->radius_/
                     3.5*dim_/2+dim_/2+left_-2,-cos(ro->phi_)*ro->radius_/3.5*dim_/2+dim_/2+top_-2);
@@ -114,13 +108,11 @@ namespace orxonox
 
     void RadarOverlayElement::addObject(Vector3 pos){
         if(firstRadarObject_ == NULL){
-            firstRadarObject_ = new RadarObject(container_);
-            firstRadarObject_->pos_ = pos;
+            firstRadarObject_ = new RadarObject(container_, pos);
             lastRadarObject_ = firstRadarObject_;
         }
         else{
-            lastRadarObject_->next = new RadarObject(container_);
-            lastRadarObject_->next->pos_ = pos;
+            lastRadarObject_->next = new RadarObject(container_, pos);
             lastRadarObject_ = lastRadarObject_->next;
         }
 	}
@@ -153,36 +145,6 @@ namespace orxonox
 	    if((currentDir_.crossProduct(currentOrth_)).dotProduct(obj->pos_ - shipPos_) > 0)
         	return true;
         else return false;
-	}
-
-//////// RadarObject ////////
-
-	int RadarObject::count = 0;		// initialize static variable
-
-	RadarObject::RadarObject(Ogre::OverlayContainer* container){
-		container_ = container;
-		pos_ = Vector3(0.0, 0.0, 0.0);
-		init();
-	}
-
-	RadarObject::RadarObject(Ogre::OverlayContainer* container, Vector3 pos){
-		container_ = container;
-		pos_ = pos;
-		init();
-	}
-
-	RadarObject::~RadarObject(){}
-
-	void RadarObject::init(){
-	    next = NULL;
-		om = &Ogre::OverlayManager::getSingleton();
-		panel_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel",
-			"Object"+Ogre::StringConverter::toString(count++)));
-		panel_->setMaterialName("Orxonox/RedDot");
-		panel_->setDimensions(5,5);
-        panel_->setMetricsMode(Ogre::GMM_PIXELS);
-        panel_->show();
-        container_->addChild(panel_);
 	}
 }
 

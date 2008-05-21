@@ -29,38 +29,22 @@
 #define _RADAR_H__
 
 #include <string.h>
+#include <OgreOverlayManager.h>
+#include <OgreStringConverter.h>
 #include <OgreOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
+#include <OgrePrerequisites.h>
+
 #include <util/Math.h>
 #include <string.h>
 #include "core/Tickable.h"
-#include <OgrePrerequisites.h>
 #include "objects/SpaceShip.h"
 #include "../OrxonoxPrereqs.h"
+#include "RadarObject.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport RadarObject
-    {
-    	private:
-    		Ogre::OverlayManager* om;				// our one and only overlay manager
-    		void init();
-
-    	public:
-    		RadarObject(Ogre::OverlayContainer* container);
-    		RadarObject(Ogre::OverlayContainer* container, Vector3 pos);
-    		~RadarObject();
-
-            bool right_;
-    		Vector3 pos_;							// position in space
-			Ogre::Real radius_, phi_;				// position on radar
-			Ogre::OverlayContainer* container_;
-			Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
-			RadarObject* next;                      // next pointer of linked list
-
-    		static int count;
-	};
-
     class _OrxonoxExport RadarOverlayElement : public Ogre::PanelOverlayElement
     {
         private:
