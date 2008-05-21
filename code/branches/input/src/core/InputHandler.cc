@@ -71,17 +71,16 @@ namespace orxonox
   {
     BufferedParamCommand& paramCommand = *paramCommand_;
     // command has an additional parameter
-    if (bRelative_)
+    if (bRelative_ && (rel > 0 || rel < 0))
     {
       // we have to calculate a relative movement.
-      // amplitude says how much one keystroke is
+      // paramModifier_ says how much one keystroke is
       paramCommand.value_ += paramModifier_ * rel;
     }
-    else
+    else if (abs > 0 || abs < 0)
     {
       // we have to calculate absolute position of the axis.
-      // for a key this simply is 1, but multiplied by a user defined factor
-      // since there might be another axis that is affected, we have to wait and
+      // Since there might be another axis that is affected, we have to wait and
       // store the result in a temporary place
       paramCommand.value_ = (paramCommand.value_ * paramCommand.nValuesAdded_ + paramModifier_ * abs)
                             /++paramCommand.nValuesAdded_;
@@ -253,11 +252,11 @@ namespace orxonox
     }
   }
 
-  bool Button::execute(KeybindMode::Enum mode)
+  bool Button::execute(KeybindMode::Enum mode, float abs, float rel)
   {
     // execute all the parsed commands in the string
     for (unsigned int iCommand = 0; iCommand < nCommands_[mode]; iCommand++)
-      commands_[mode][iCommand]->execute();
+      commands_[mode][iCommand]->execute(abs, rel);
     return true;
   }
 
@@ -305,7 +304,7 @@ namespace orxonox
   /**
     @brief Constructor that does as little as necessary.
   */
-  KeyBinder::KeyBinder()
+  KeyBinder::KeyBinder() : deriveTime_(0.0f)
   {
     RegisterObject(KeyBinder);
 
@@ -412,7 +411,9 @@ namespace orxonox
     std::string mouseButtonNames[] = {
       "MouseLeft", "MouseRight", "MouseMiddle",
       "MouseButton3", "MouseButton4", "MouseButton5",
-      "MouseButton6", "MouseButton7" };
+      "MouseButton6", "MouseButton7",
+      "MouseWheel1Up", "MouseWheel1Down",
+      "MouseWheel2Up", "MouseWheel2Down" };
     for (int i = 0; i < nMouseButtons_s; i++)
       mouseButtons_[i].name_ = mouseButtonNames[i];
 
@@ -431,8 +432,8 @@ namespace orxonox
     std::string rawNames[nHalfAxes_s/2];
     rawNames[0] = "MouseX";
     rawNames[1] = "MouseY";
-    rawNames[2] = "MouseWheel1";
-    rawNames[3] = "MouseWheel2";
+    rawNames[2] = "Empty1";
+    rawNames[3] = "Empty2";
     for (unsigned int i = 4; i < nHalfAxes_s/2; i++)
       rawNames[i] = "JoyAxis" + getConvertedValue<int, std::string>(i - 3);
     for (unsigned int i = 0; i < nHalfAxes_s/2; i++)
@@ -474,7 +475,11 @@ namespace orxonox
   */
   void KeyBinder::setConfigValues()
   {
-    SetConfigValue(analogThreshold_, 0.01f).description("Threshold for analog axes until which the state is 0.");
+    SetConfigValue(analogThreshold_, 0.01f)  .description("Threshold for analog axes until which the state is 0.");
+    SetConfigValue(bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
+    SetConfigValue(derivePeriod_, 0.1f)      .description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
+    SetConfigValue(mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
+
     float oldThresh = buttonThreshold_;
     SetConfigValue(buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
     if (oldThresh != buttonThreshold_)
@@ -572,13 +577,40 @@ namespace orxonox
       }
     }
 
+    if (bDeriveMouseInput_)
+    {
+      if (deriveTime_ > derivePeriod_)
+      {
+        deriveTime_ = 0.0f;
+        CCOUT(3) << "mouse abs: ";
+        for (int i = 0; i < 2; i++)
+        {
+          if (mouseRelative_[i] > 0)
+          {
+            halfAxes_[2*i + 0].absVal_ = mouseRelative_[i] * derivePeriod_ / 500;
+            halfAxes_[2*i + 1].absVal_ = 0.0f;
+          }
+          else if (mouseRelative_[0] < 0)
+          {
+            halfAxes_[2*i + 0].absVal_ = 0.0f;
+            halfAxes_[2*i + 1].absVal_ = -mouseRelative_[i] * derivePeriod_ / 500;
+          }
+          COUT(3) << mouseRelative_[i] << " | ";
+          mouseRelative_[i] = 0.0f;
+        }
+        COUT(3) << std::endl;
+      }
+      else
+        deriveTime_ += dt;
+    }
+
     // execute all buffered bindings (addional parameter)
     for (unsigned int i = 0; i < paramCommandBuffer_.size(); i++)
       paramCommandBuffer_[i]->execute();
 
     // always reset the relative movement of the mouse
-    for (unsigned int i = 0; i < 4; i++)
-      halfAxes_[i].relVal_ = 0;
+    for (unsigned int i = 0; i < 8; i++)
+      halfAxes_[i].relVal_ = 0.0f;
   }
 
   void KeyBinder::keyPressed (const KeyEvent& evt)
@@ -614,119 +646,59 @@ namespace orxonox
     @brief Event handler for the mouseMoved Event.
     @param e Mouse state information
   */
-  void KeyBinder::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
+  void KeyBinder::mouseMoved(IntVector2 abs_, IntVector2 rel_, IntVector2 clippingSize)
   {
-    // translate absolute mouse position into joystick like behaviour
-    if (clippingSize.x > clippingSize.y)
+    if (!bDeriveMouseInput_)
     {
-      int margin = (clippingSize.x - clippingSize.y) / 2;
-      if (abs.x - margin > clippingSize.y)
-      {
-        halfAxes_[0].absVal_ = 1.0f;
-        halfAxes_[1].absVal_ = 0.0f;
-      }
-      else if (abs.x < margin)
-      {
-        halfAxes_[0].absVal_ = 0.0f;
-        halfAxes_[1].absVal_ = 1.0f;
-      }
-      else
-      {
-        float temp = ((float)abs.x) / clippingSize.y * 2 - 1;
-        if (temp > 0)
-        {
-          halfAxes_[0].absVal_ = temp;
-          halfAxes_[1].absVal_ = 0.0f;
-        }
-        else
-        {
-          halfAxes_[0].absVal_ = 0.0f;
-          halfAxes_[1].absVal_ = -temp;
-        }
-      }
+      // y axis of mouse input is inverted
+      int rel[] = { rel_.x * mouseSensitivity_, -rel_.y * mouseSensitivity_ };
 
-      float temp = -((float)abs.y) / clippingSize.y * 2 + 1;
-      if (temp > 0)
+      COUT(3) << rel[0] << " | " << rel[1] << std::endl;
+
+      for (int i = 0; i < 2; i++)
       {
-        halfAxes_[2].absVal_ = temp;
-        halfAxes_[3].absVal_ = 0.0;
-      }
-      else
-      {
-        halfAxes_[2].absVal_ = 0.0;
-        halfAxes_[3].absVal_ = -temp;
+        if (rel[i])
+        {
+          // absolute
+          if (mousePosition_[i] >= 0)
+          {
+            mousePosition_[i] += rel[i];
+            halfAxes_[0 + 2*i].hasChanged_ = true;
+            if (mousePosition_[i] < 0)
+            {
+              halfAxes_[1 + 2*i].hasChanged_ = true;
+              halfAxes_[1 + 2*i].absVal_ = -((float)mousePosition_[i])/1024;
+              halfAxes_[0 + 2*i].absVal_ =  0.0f;
+            }
+            else
+              halfAxes_[1 + 2*i].absVal_ =  ((float)mousePosition_[i])/1024;
+          }
+          else
+          {
+            mousePosition_[i] += rel[i];
+            halfAxes_[1 + 2*i].hasChanged_ = true;
+            if (mousePosition_[i] > 0)
+            {
+              halfAxes_[0 + 2*i].hasChanged_ = true;
+              halfAxes_[0 + 2*i].absVal_ =  ((float)mousePosition_[i])/1024;
+              halfAxes_[1 + 2*i].absVal_ =  0.0f;
+            }
+            else
+              halfAxes_[1 + 2*i].absVal_ = -((float)mousePosition_[i])/1024;
+          }
+
+          // relative
+          if (rel[i] > 0)
+            halfAxes_[0 + 2*i].relVal_ =  ((float)rel[i])/1024;
+          else
+            halfAxes_[1 + 2*i].relVal_ = -((float)rel[i])/1024;
+        }
       }
     }
     else
     {
-      float temp = ((float)abs.x) / clippingSize.x * 2 - 1;
-      if (temp > 0)
-      {
-        halfAxes_[0].absVal_ = temp;
-        halfAxes_[1].absVal_ = 0.0;
-      }
-      else
-      {
-        halfAxes_[0].absVal_ = 0.0;
-        halfAxes_[1].absVal_ = -temp;
-      }
-
-      int margin = (clippingSize.y - clippingSize.x) / 2;
-      if (abs.y - margin > clippingSize.x)
-      {
-        halfAxes_[2].absVal_ = 0.0;
-        halfAxes_[3].absVal_ = 1.0;
-      }
-      else if (abs.y < margin)
-      {
-        halfAxes_[2].absVal_ = 1.0;
-        halfAxes_[3].absVal_ = 0.0;
-      }
-      else
-      {
-        float temp = -((float)abs.y) / clippingSize.x * 2 + 1;
-        if (temp > 0)
-        {
-          halfAxes_[2].absVal_ = temp;
-          halfAxes_[3].absVal_ = 0.0;
-        }
-        else
-        {
-          halfAxes_[2].absVal_ = 0.0;
-          halfAxes_[3].absVal_ = -temp;
-        }
-      }
-    }
-
-    // relative movements
-    if (rel.x > 0)
-    {
-      halfAxes_[0].hasChanged_ = true;
-      halfAxes_[1].hasChanged_ = true;
-      halfAxes_[0].relVal_ = rel.x;
-      halfAxes_[1].relVal_ = 0.0;
-    }
-    else if (rel.x < 0)
-    {
-      halfAxes_[0].hasChanged_ = true;
-      halfAxes_[1].hasChanged_ = true;
-      halfAxes_[0].relVal_ = 0.0;
-      halfAxes_[1].relVal_ = rel.x;
-    }
-
-    if (rel.y /*!*/ < /*!*/ 0)
-    {
-      halfAxes_[2].hasChanged_ = true;
-      halfAxes_[3].hasChanged_ = true;
-      halfAxes_[0].relVal_ = -rel.y;
-      halfAxes_[1].relVal_ = 0.0;
-    }
-    else if (rel.y > 0)
-    {
-      halfAxes_[2].hasChanged_ = true;
-      halfAxes_[3].hasChanged_ = true;
-      halfAxes_[0].relVal_ = 0.0;
-      halfAxes_[1].relVal_ = -rel.y;
+      mouseRelative_[0] += rel_.x * mouseSensitivity_;
+      mouseRelative_[1] -= rel_.y * mouseSensitivity_;
     }
   }
 
@@ -736,13 +708,20 @@ namespace orxonox
   */
   void KeyBinder::mouseScrolled(int abs, int rel)
   {
-    // TODO: obvious...
+    COUT(3) << mouseButtons_[8].name_ << "   " << abs << " | " << rel << std::endl;
+
+    if (rel > 0)
+      for (int i = 0; i < rel/120; i++)
+        mouseButtons_[8].execute(KeybindMode::OnPress, ((float)abs)/120.0f);
+    else
+      for (int i = 0; i < -rel/120; i++)
+        mouseButtons_[9].execute(KeybindMode::OnPress, ((float)abs)/120.0f);
   }
 
   void KeyBinder::joyStickAxisMoved(int joyStickID, int axis, int value)
   {
     // TODO: check whether 16 bit integer as general axis value is a good idea (works under windows)
-    //CCOUT(3) << axis << std::endl;
+    CCOUT(3) << halfAxes_[8 + axis].name_ << std::endl;
     if (value >= 0)
     {
       halfAxes_[8 + axis].absVal_ = ((float)value)/0x8000;

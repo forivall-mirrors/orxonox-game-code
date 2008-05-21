@@ -155,4 +155,14 @@ public:
   int y;
 };
 
+class _UtilExport IntVector3
+{
+public:
+  IntVector3() : x(0), y(0), z(0) { }
+  IntVector3(int _x, int _y, int _z) : x(_x), y(_y), z(_z) { }
+  int x;
+  int y;
+  int z;
+};
+
 #endif /* _Util_Math_H__ */

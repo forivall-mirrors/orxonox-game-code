@@ -59,6 +59,7 @@ namespace orxonox
   public:
     BufferedParamCommand() : value_(0.0f), nValuesAdded_(0), paramIndex_(-1) { }
     bool execute();
+
     float value_;
     unsigned int nValuesAdded_;
     int paramIndex_;
@@ -92,7 +93,7 @@ namespace orxonox
     virtual void clear();
     virtual bool addParamCommand(ParamCommand* command) { return false; }
     void parse(std::vector<BufferedParamCommand*>& paramCommandBuffer);
-    bool execute(KeybindMode::Enum mode);
+    bool execute(KeybindMode::Enum mode, float abs = 1.0f, float rel = 1.0f);
 
     //! The configured string value
     std::string bindingString_;
@@ -113,8 +114,9 @@ namespace orxonox
   public:
     HalfAxis() : relVal_(0.0f), absVal_(0.0f), paramCommands_(0), nParamCommands_(0),
                  wasDown_(false), hasChanged_(false) { }
+    using Button::execute;
     bool execute();
-    bool execute(KeybindMode::Enum mode) { return Button::execute(mode); }
+    //bool execute(KeybindMode::Enum mode) { return Button::execute(mode); }
     bool addParamCommand(ParamCommand* command);
     void clear();
 
@@ -175,7 +177,7 @@ namespace orxonox
     Button keys_ [nKeys_s];
 
     //! denotes the number of different mouse buttons there are in OIS.
-    static const unsigned int nMouseButtons_s = 8;
+    static const unsigned int nMouseButtons_s = 8 + 2*2; // 8 buttons and 2 scroll wheels
     //! Actual key bindings as bundle for Press, Hold and Release
     Button mouseButtons_ [nMouseButtons_s];
 
@@ -192,7 +194,7 @@ namespace orxonox
     * positive one and the second is negative.
     * Sequence is as follows:
     *  0 -  3: Mouse x and y
-    *  4 -  7: Mouse scroll wheels 1 and 2 (2 not yet supported)
+    *  4 -  7: empty
     *  8 - 23: joy stick (slider) axes 1 to 8
     * 24 - 55: joy stick axes 1 - 16
     */
@@ -204,10 +206,23 @@ namespace orxonox
     */
     std::vector<BufferedParamCommand*> paramCommandBuffer_;
 
+    //! Keeps track of the absolute mouse value (incl. scroll wheel)
+    int mousePosition_[3];
+    //! Used to derive mouse input if requested
+    int mouseRelative_[2];
+    float deriveTime_;
+
+    //**** ConfigValues *****\\
     //! Threshold for analog triggers until which the state is 0.
     float analogThreshold_;
     //! Threshold for analog triggers until which the button is not pressed.
     float buttonThreshold_;
+    //! Derive mouse input for absolute values?
+    bool bDeriveMouseInput_;
+    //! Accuracy of the mouse input deriver. The higher the more precise, but laggier.
+    float derivePeriod_;
+    //! mouse sensitivity
+    float mouseSensitivity_;
   };
 
 
