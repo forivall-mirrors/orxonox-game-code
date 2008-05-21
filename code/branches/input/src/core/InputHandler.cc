@@ -582,7 +582,7 @@ namespace orxonox
       if (deriveTime_ > derivePeriod_)
       {
         deriveTime_ = 0.0f;
-        CCOUT(3) << "mouse abs: ";
+        //CCOUT(3) << "mouse abs: ";
         for (int i = 0; i < 2; i++)
         {
           if (mouseRelative_[i] > 0)
@@ -595,10 +595,10 @@ namespace orxonox
             halfAxes_[2*i + 0].absVal_ = 0.0f;
             halfAxes_[2*i + 1].absVal_ = -mouseRelative_[i] * derivePeriod_ / 500 * mouseSensitivity_;
           }
-          COUT(3) << mouseRelative_[i] << " | ";
+          //COUT(3) << mouseRelative_[i] << " | ";
           mouseRelative_[i] = 0;
         }
-        COUT(3) << std::endl;
+        //COUT(3) << std::endl;
       }
       else
         deriveTime_ += dt;
@@ -653,7 +653,7 @@ namespace orxonox
       // y axis of mouse input is inverted
       int rel[] = { rel_.x, -rel_.y };
 
-      COUT(3) << rel[0] << " | " << rel[1] << std::endl;
+      //COUT(3) << rel[0] << " | " << rel[1] << std::endl;
 
       for (int i = 0; i < 2; i++)
       {
@@ -708,7 +708,7 @@ namespace orxonox
   */
   void KeyBinder::mouseScrolled(int abs, int rel)
   {
-    COUT(3) << mouseButtons_[8].name_ << "   " << abs << " | " << rel << std::endl;
+    //COUT(3) << mouseButtons_[8].name_ << "   " << abs << " | " << rel << std::endl;
 
     if (rel > 0)
       for (int i = 0; i < rel/120; i++)
