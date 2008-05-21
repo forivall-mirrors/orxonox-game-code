@@ -43,33 +43,67 @@ namespace orxonox
     {
         CS_Uninitialized,
         CS_Empty,
-        CS_FunctionClass_Or_Shortcut_Or_Keyword,
+        CS_FunctionClass_Or_Shortcut,
         CS_Shortcut_Params,
         CS_Shortcut_Finished,
         CS_Function,
         CS_Function_Params,
         CS_Function_Finished,
-        CS_ConfigValueClass,
-        CS_ConfigValue,
-        CS_ConfigValueType,
-        CS_ConfigValueFinished,
-        CS_KeybindKey,
-        CS_KeybindCommand,
-        CS_KeybindFinished,
         CS_Error
     };
 
-    enum KeybindMode {}; // temporary
-
     class _CoreExport CommandEvaluation
     {
-        friend class CommandExecutor;
-
         public:
             CommandEvaluation();
 
-            KeybindMode getKeybindMode();
+            void initialize(const std::string& command);
+
+            void execute() const;
+            std::string complete() const;
+            std::string hint() const;
+            void evaluateParams();
+
             bool isValid() const;
+
+            inline Identifier* getIdentifier() const
+                { return this->functionclass_; }
+            inline void setIdentifier(Identifier* identifier)
+                { this->functionclass_ = identifier; }
+            inline ConsoleCommand* getFunction() const
+                { return this->function_; }
+            inline void setFunction(ConsoleCommand* command)
+                { this->function_ = command; }
+
+            inline const std::string& getOriginalCommand() const
+                { return this->originalCommand_; }
+            inline const std::string& getCommand() const
+                { return this->command_; }
+            inline void setCommand(const std::string& command)
+                { this->command_ = command; }
+            inline const CommandState& getState() const
+                { return this->state_; }
+            inline void setState(CommandState state)
+                { this->state_ = state; }
+            inline SubString& getOriginalTokens()
+                { return this->originalCommandTokens_; }
+            inline SubString& getTokens()
+                { return this->commandTokens_; }
+            inline void setTokens(const std::string& command)
+                { this->commandTokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0'); }
+            inline const std::string& getError() const
+                { return this->errorMessage_; }
+            inline void setError(const std::string& error)
+                { this->errorMessage_ = error; }
+            inline bool isNewCommand() const
+                { return this->bNewCommand_; }
+            inline void setNewCommand(bool bNewCommand)
+                { this->bNewCommand_ = bNewCommand; }
+
+            inline std::list<std::pair<const std::string*, const std::string*> >& getListOfPossibleFunctionClasses()
+                { return this->listOfPossibleFunctionClasses_; }
+            inline std::list<std::pair<const std::string*, const std::string*> >& getListOfPossibleFunctions()
+                { return this->listOfPossibleFunctions_; }
 
             inline void setAdditionalParameter(const std::string& param)
                 { this->additionalParameter_ = param; this->bEvaluatedParams_ = false; }
@@ -79,36 +113,35 @@ namespace orxonox
             void setEvaluatedParameter(unsigned int index, MultiTypeMath param);
             MultiTypeMath getEvaluatedParameter(unsigned int index) const;
 
-            void evaluateParams();
-
             bool hasReturnvalue() const;
             MultiTypeMath getReturnvalue() const;
 
         private:
-            std::string processedCommand_;
-            SubString tokens_;
+            unsigned int getStartindex() const;
+            static std::string getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list);
+            static std::string dump(const std::list<std::pair<const std::string*, const std::string*> >& list);
+            static std::string dump(const ConsoleCommand* command);
+
+
+            bool bNewCommand_;
+
+            std::string originalCommand_;
+            std::string command_;
+            SubString originalCommandTokens_;
+            SubString commandTokens_;
             std::string additionalParameter_;
 
             std::list<std::pair<const std::string*, const std::string*> > listOfPossibleFunctionClasses_;
-            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleShortcuts_;
             std::list<std::pair<const std::string*, const std::string*> > listOfPossibleFunctions_;
-            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleConfigValueClasses_;
-            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleConfigValues_;
-            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleKeys_;
 
             Identifier* functionclass_;
-            Identifier* configvalueclass_;
-            ConsoleCommand* shortcut_;
             ConsoleCommand* function_;
-            ConfigValueContainer* configvalue_;
-            ConfigValueContainer* key_;
 
             std::string errorMessage_;
             CommandState state_;
 
             bool bEvaluatedParams_;
             MultiTypeMath param_[5];
-            ConsoleCommand* evaluatedExecutor_;
     };
 }
 

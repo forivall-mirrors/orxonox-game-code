@@ -43,16 +43,10 @@ namespace orxonox
     {
         public:
             static bool execute(const std::string& command, bool useTcl = true);
-            static bool execute(const CommandEvaluation& evaluation);
-
             static std::string complete(const std::string& command);
-            static std::string complete(const CommandEvaluation& evaluation);
-
             static std::string hint(const std::string& command);
-            static std::string hint(const CommandEvaluation& evaluation);
 
             static CommandEvaluation evaluate(const std::string& command);
-
             static const CommandEvaluation& getLastEvaluation();
 
             static ConsoleCommand& addConsoleCommandShortcut(ConsoleCommand* command);
@@ -82,39 +76,23 @@ namespace orxonox
             static CommandEvaluation& getEvaluation();
 
             static void parse(const std::string& command, bool bInitialize = true);
-            static void initialize(const std::string& command);
 
-            static bool argumentsGiven(unsigned int num);
+            static bool argumentsFinished(unsigned int num);
+            static unsigned int argumentsFinished();
             static unsigned int argumentsGiven();
-
+            static bool enoughArgumentsGiven(ConsoleCommand* command, unsigned int head);
             static std::string getToken(unsigned int index);
 
-            static bool enoughParametersGiven(unsigned int head, Executor* executor);
-
-            static void createListOfPossibleShortcuts(const std::string& fragment);
             static void createListOfPossibleFunctionClasses(const std::string& fragment);
-            static void createListOfPossibleFunctions(const std::string& fragment, Identifier* identifier);
-            static void createListOfPossibleConfigValueClasses(const std::string& fragment);
-            static void createListOfPossibleConfigValues(const std::string& fragment, Identifier* identifier);
-            static void createListOfPossibleKeys(const std::string& fragment);
+            static void createListOfPossibleFunctions(const std::string& fragment, Identifier* identifier = 0);
+
+            static Identifier* getPossibleIdentifier(const std::string& name);
+            static ConsoleCommand* getPossibleCommand(const std::string& name, Identifier* identifier = 0);
 
             static bool compareStringsInList(const std::pair<const std::string*, const std::string*>& first, const std::pair<const std::string*, const std::string*>& second);
 
-            static std::string dump(const std::list<std::pair<const std::string*, const std::string*> >& list);
-            static std::string dump(const ConsoleCommand* command);
-            static std::string dump(const ConfigValueContainer* container);
-
-            static std::string getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list);
-
-            static Identifier* getIdentifierOfPossibleFunctionClass(const std::string& name);
-            static ConsoleCommand* getExecutorOfPossibleShortcut(const std::string& name);
-            static ConsoleCommand* getExecutorOfPossibleFunction(const std::string& name, Identifier* identifier);
-            static Identifier* getIdentifierOfPossibleConfigValueClass(const std::string& name);
-            static ConfigValueContainer* getContainerOfPossibleConfigValue(const std::string& name, Identifier* identifier);
-            static ConfigValueContainer* getContainerOfPossibleKey(const std::string& name);
 
             CommandEvaluation evaluation_;
-
             std::map<std::string, ConsoleCommand*> consoleCommandShortcuts_;
             std::map<std::string, ConsoleCommand*> consoleCommandShortcuts_LC_;
     };
