@@ -97,7 +97,8 @@ namespace orxonox
       // Fill parameter list
       windowHndStr << (unsigned int)windowHnd;
       paramList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
-
+      //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
+      //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
 //#if defined OIS_LINUX_PLATFORM
 //      paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
 //#endif
@@ -125,7 +126,13 @@ namespace orxonox
         _initialiseJoySticks();
 
       // Set mouse/joystick region
-      setWindowExtents(windowWidth, windowHeight);
+      if (mouse_)
+      {
+        //// hack the mouse position
+        //((OIS::MouseState&)mouse_->getMouseState()).X.abs = windowWidth/2;
+        //((OIS::MouseState&)mouse_->getMouseState()).Y.abs = windowHeight/2;
+        setWindowExtents(windowWidth, windowHeight);
+      }
 
       state_ = IS_NONE;
       CCOUT(ORX_DEBUG) << "Initialising OIS components done." << std::endl;
