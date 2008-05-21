@@ -30,6 +30,7 @@
 #include "ConsoleCommand.h"
 #include "util/String.h"
 #include "util/Convert.h"
+#include "util/SubString.h"
 #include "Identifier.h"
 #include "Language.h"
 #include "Debug.h"
@@ -172,7 +173,7 @@ namespace orxonox
         this->evaluatedExecutor_ = 0;
     }
 
-    KeybindMode CommandEvaluation::getKeybindMode()
+    KeybindMode::Enum CommandEvaluation::getKeybindMode()
     {
         if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
         {
@@ -197,7 +198,7 @@ namespace orxonox
 //            return KeybindMode::onPress;
         }
         // FIXME: Had to insert a return statement
-        return (KeybindMode)0;
+        return (KeybindMode::Enum)0;
     }
 
     bool CommandEvaluation::isValid() const

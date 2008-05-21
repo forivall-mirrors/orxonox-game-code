@@ -219,7 +219,7 @@ namespace OIS
 		@param key
 			A KeyCode to check
 		*/
-		virtual bool isKeyDown( KeyCode key ) = 0;
+		virtual bool isKeyDown( KeyCode key ) const = 0;
 
 		/**
 		@remarks
@@ -234,7 +234,7 @@ namespace OIS
 		@remarks
 			Returns currently set callback.. or 0
 		*/
-		KeyListener* getEventCallback() {return mListener;}
+		KeyListener* getEventCallback() const {return mListener;}
 
 		//! TextTranslation Mode
 		enum TextTranslationMode
@@ -259,7 +259,7 @@ namespace OIS
 		@remarks
 			Returns current translation mode
 		*/
-		TextTranslationMode getTextTranslation(){return mTextMode;}
+		TextTranslationMode getTextTranslation() const {return mTextMode;}
 		
 		/**
 		@remarks
@@ -285,14 +285,14 @@ namespace OIS
 		@remarks
 			Check modifier status
 		*/
-		bool isModifierDown( Modifier mod );
+		bool isModifierDown( Modifier mod ) const;
 
 		/**
 		@remarks
 			Copies the state of the keys into the sent buffer
 			(in the form of 1 is down and 0 is up)
 		*/
-		virtual void copyKeyStates( char keys[256] ) = 0;
+		virtual void copyKeyStates( char keys[256] ) const = 0;
 		
 	protected:
 		Keyboard(const std::string &vendor, bool buffered, int devID, InputManager* creator)

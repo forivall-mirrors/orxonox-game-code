@@ -148,8 +148,8 @@ BOOL CALLBACK Win32JoyStick::DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTAN
 	diptr.diph.dwHeaderSize = sizeof(DIPROPHEADER);
 	diptr.diph.dwHow        = DIPH_BYID;
 	diptr.diph.dwObj        = lpddoi->dwType;
-	//Add the high bit in so that an axis value of zero does not mean a null userdata
-	diptr.uData             = 0x80000000 | _this->_AxisNumber;
+	//Add a magic number to recognise we set seomthing
+	diptr.uData             = 0x13130000 | _this->_AxisNumber;
 
 	//Check if axis is slider, if so, do not treat as regular axis
 	if(GUID_Slider == lpddoi->guidType)
@@ -165,7 +165,8 @@ BOOL CALLBACK Win32JoyStick::DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTAN
 	}
 
 	//Increase for next time through
-	_this->_AxisNumber += 1;
+	if(GUID_Slider != lpddoi->guidType)
+		_this->_AxisNumber += 1;
 
 	//Set range
 	DIPROPRANGE diprg;
@@ -237,81 +238,82 @@ void Win32JoyStick::capture()
 	//Loop through all the events
 	for(unsigned int i = 0; i < entries; ++i)
 	{
-		//First check to see if event entry is a Axis we enumerated earlier
-		if( diBuff[i].uAppData != 0xFFFFFFFF && diBuff[i].uAppData > 0 )
+		//This may seem outof order, but is in order of the way these variables
+		//are declared in the JoyStick State 2 structure.
+		switch(diBuff[i].dwOfs)
 		{
-			int axis = (int)(0x7FFFFFFF & diBuff[i].uAppData); //Mask out the high bit
-			assert( axis >= 0 && axis < (int)mState.mAxes.size() && "Axis out of range!");
-			mState.mAxes[axis].abs = diBuff[i].dwData;
-			axisMoved[axis] = true;
-		}
-		else
-		{
-			//This may seem outof order, but is in order of the way these variables
-			//are declared in the JoyStick State 2 structure.
-			switch(diBuff[i].dwOfs)
+		//------ slider -//
+		case DIJOFS_SLIDER0(0):
+			sliderMoved[0] = true;
+			mState.mSliders[0].abX = diBuff[i].dwData;
+			break;
+		case DIJOFS_SLIDER0(1):
+			sliderMoved[0] = true;
+			mState.mSliders[0].abY = diBuff[i].dwData;
+			break;
+		//----- Max 4 POVs Next ---------------//
+		case DIJOFS_POV(0):
+			if(!_changePOV(0,diBuff[i]))
+				return;
+			break;
+		case DIJOFS_POV(1):
+			if(!_changePOV(1,diBuff[i]))
+				return;
+			break;
+		case DIJOFS_POV(2):
+			if(!_changePOV(2,diBuff[i]))
+				return;
+			break;
+		case DIJOFS_POV(3):
+			if(!_changePOV(3,diBuff[i]))
+				return;
+			break;
+		case DIJOFS_SLIDER1(0):
+			sliderMoved[1] = true;
+			mState.mSliders[1].abX = diBuff[i].dwData;
+			break;
+		case DIJOFS_SLIDER1(1):
+			sliderMoved[1] = true;
+			mState.mSliders[1].abY = diBuff[i].dwData;
+			break;
+		case DIJOFS_SLIDER2(0):
+			sliderMoved[2] = true;
+			mState.mSliders[2].abX = diBuff[i].dwData;
+			break;
+		case DIJOFS_SLIDER2(1):
+			sliderMoved[2] = true;
+			mState.mSliders[2].abY = diBuff[i].dwData;
+			break;
+		case DIJOFS_SLIDER3(0):
+			sliderMoved[3] = true;
+			mState.mSliders[3].abX = diBuff[i].dwData;
+			break;
+		case DIJOFS_SLIDER3(1):
+			sliderMoved[3] = true;
+			mState.mSliders[3].abY = diBuff[i].dwData;
+			break;
+		//-----------------------------------------//
+		default:
+			//Handle Button Events Easily using the DX Offset Macros
+			if( diBuff[i].dwOfs >= DIJOFS_BUTTON(0) && diBuff[i].dwOfs < DIJOFS_BUTTON(128) )
 			{
-			//------ slider -//
-			case DIJOFS_SLIDER0(0):
-				sliderMoved[0] = true;
-				mState.mSliders[0].abX = diBuff[i].dwData;
-				break;
-			case DIJOFS_SLIDER0(1):
-				sliderMoved[0] = true;
-				mState.mSliders[0].abY = diBuff[i].dwData;
-				break;
-			//----- Max 4 POVs Next ---------------//
-			case DIJOFS_POV(0):
-				if(!_changePOV(0,diBuff[i]))
+				if(!_doButtonClick((diBuff[i].dwOfs - DIJOFS_BUTTON(0)), diBuff[i]))
 					return;
-				break;
-			case DIJOFS_POV(1):
-				if(!_changePOV(1,diBuff[i]))
-					return;
-				break;
-			case DIJOFS_POV(2):
-				if(!_changePOV(2,diBuff[i]))
-					return;
-				break;
-			case DIJOFS_POV(3):
-				if(!_changePOV(3,diBuff[i]))
-					return;
-				break;
-			case DIJOFS_SLIDER1(0):
-				sliderMoved[1] = true;
-				mState.mSliders[1].abX = diBuff[i].dwData;
-				break;
-			case DIJOFS_SLIDER1(1):
-				sliderMoved[1] = true;
-				mState.mSliders[1].abY = diBuff[i].dwData;
-				break;
-			case DIJOFS_SLIDER2(0):
-				sliderMoved[2] = true;
-				mState.mSliders[2].abX = diBuff[i].dwData;
-				break;
-			case DIJOFS_SLIDER2(1):
-				sliderMoved[2] = true;
-				mState.mSliders[2].abY = diBuff[i].dwData;
-				break;
-			case DIJOFS_SLIDER3(0):
-				sliderMoved[3] = true;
-				mState.mSliders[3].abX = diBuff[i].dwData;
-				break;
-			case DIJOFS_SLIDER3(1):
-				sliderMoved[3] = true;
-				mState.mSliders[3].abY = diBuff[i].dwData;
-				break;
-			//-----------------------------------------//
-			default:
-				//Handle Button Events Easily using the DX Offset Macros
-				if( diBuff[i].dwOfs >= DIJOFS_BUTTON(0) && diBuff[i].dwOfs < DIJOFS_BUTTON(128) )
+			}
+			else if((short)(diBuff[i].uAppData >> 16) == 0x1313)
+			{	//If it was nothing else, might be axis enumerated earlier (determined by magic number)
+				int axis = (int)(0x0000FFFF & diBuff[i].uAppData); //Mask out the high bit
+				assert( axis >= 0 && axis < (int)mState.mAxes.size() && "Axis out of range!");
+
+				if(axis >= 0 && axis < (int)mState.mAxes.size())
 				{
-					if(!_doButtonClick((diBuff[i].dwOfs - DIJOFS_BUTTON(0)), diBuff[i]))
-						return;
+					mState.mAxes[axis].abs = diBuff[i].dwData;
+					axisMoved[axis] = true;
 				}
-				break;
-			} //end case
-		} //End else
+			}
+
+			break;
+		} //end case
 	} //end for
 
 	//Check to see if any of the axes values have changed.. if so send events

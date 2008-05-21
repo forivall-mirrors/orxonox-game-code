@@ -149,11 +149,11 @@ void SignalHandler::sigHandler( int sig )
   if (bXAutoKeyRepeatOn_)
   {
     std::cout << "Trying to restore XAutoKeyRepeat" << std::endl;
-	Display* display;
-	  if ((display = XOpenDisplay(0)))
+    Display* display;
+    if ((display = XOpenDisplay(0)))
     {
-			XAutoRepeatOn(display);
-		  XCloseDisplay(display);
+      XAutoRepeatOn(display);
+      XCloseDisplay(display);
     }
   }
 
@@ -319,9 +319,9 @@ void SignalHandler::sigHandler( int sig )
   time_t now = time(NULL);
 
   std::string timeString = "\n\n\n\n"
-	                   "=======================================================\n"
-	                   "= time: " + std::string(ctime(&now)) +
-			   "=======================================================\n";
+                     "=======================================================\n"
+                     "= time: " + std::string(ctime(&now)) +
+         "=======================================================\n";
   bt.insert(0, timeString);
 
   FILE * f = fopen( getInstance()->fileName.c_str(), "a" );

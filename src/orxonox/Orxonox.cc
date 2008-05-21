@@ -82,8 +82,9 @@ network::Server *server_g;
 
 namespace orxonox
 {
-  ConsoleCommandShortcut(Orxonox, exit, AccessLevel::None);
-  ConsoleCommandShortcut(Orxonox, slomo, AccessLevel::Offline).setDefaultValue(0, 1.0);
+  ConsoleCommandShortcut(Orxonox, exit, AccessLevel::None).setKeybindMode(KeybindMode::OnPress);
+  ConsoleCommandShortcut(Orxonox, slomo, AccessLevel::Offline).setDefaultValue(0, 1.0)
+    .setAxisParamIndex(0).setIsAxisRelative(false);
   ConsoleCommandShortcut(Orxonox, setTimeFactor, AccessLevel::Offline).setDefaultValue(0, 1.0);
   ConsoleCommandShortcut(Orxonox, activateConsole, AccessLevel::None);
   class Testconsole : public InputBufferListener

@@ -37,6 +37,7 @@
 #include "CorePrereqs.h"
 
 #include "ois/OIS.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
@@ -238,57 +239,67 @@ namespace orxonox
     unsigned int modifiers;
   };
 
-  typedef OIS::MouseState MouseState;
+  //typedef OIS::MouseState MouseState;
 
-  class _CoreExport JoyStickState : OIS::JoyStickState
+  /*class _CoreExport JoyStickState
   {
   public:
     JoyStickState(const OIS::JoyStickState& state, int ID) : OIS::JoyStickState(state), mJoyStickID(ID) { }
     JoyStickState() { clear(); }
     int mJoyStickID;
+		JoyStickState() { clear(); }
+
+		std::vector<bool> mButtons;
+		int axes[16];
+		std::vector<Vector3> mVectors;
+  };*/
+
+  class _CoreExport InputTickable
+  {
+  public:
+    virtual ~InputTickable() { }
+    virtual void tick(float dt) = 0;
   };
 
   /**
     @brief Interface class used for key input listeners.
   */
-  class _CoreExport KeyHandler
+  class _CoreExport KeyHandler : virtual public InputTickable
   {
   public:
     virtual ~KeyHandler() { }
-    virtual bool keyPressed (const KeyEvent& evt) = 0;
-    virtual bool keyReleased(const KeyEvent& evt) = 0;
-    virtual bool keyHeld    (const KeyEvent& evt) = 0;
+    virtual void keyPressed (const KeyEvent& evt) = 0;
+    virtual void keyReleased(const KeyEvent& evt) = 0;
+    virtual void keyHeld    (const KeyEvent& evt) = 0;
   };
 
   /**
     @brief Interface class used for mouse input listeners.
   */
-  class _CoreExport MouseHandler 
+  class _CoreExport MouseHandler : virtual public InputTickable
   {
   public:
     virtual ~MouseHandler() { }
-    virtual bool mouseButtonPressed (const MouseState& state, MouseButton::Enum id) = 0;
-    virtual bool mouseButtonReleased(const MouseState& state, MouseButton::Enum id) = 0;
-    virtual bool mouseButtonHeld    (const MouseState& state, MouseButton::Enum id) = 0;
-    virtual bool mouseMoved         (const MouseState& state) = 0;
-    virtual bool mouseScrolled      (const MouseState& state) = 0;
+    virtual void mouseButtonPressed (MouseButton::Enum id) = 0;
+    virtual void mouseButtonReleased(MouseButton::Enum id) = 0;
+    virtual void mouseButtonHeld    (MouseButton::Enum id) = 0;
+    virtual void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) = 0;
+    virtual void mouseScrolled      (int abs, int rel)     = 0;
   };
 
 
   /**
     @brief Interface class used for joy stick input listeners.
   */
-  class _CoreExport JoyStickHandler
+  class _CoreExport JoyStickHandler : virtual public InputTickable
   {
   public:
     virtual ~JoyStickHandler() { }
-    virtual bool joyStickButtonPressed (const JoyStickState& state, int button) = 0;
-    virtual bool joyStickButtonReleased(const JoyStickState& state, int button) = 0;
-    virtual bool joyStickButtonHeld    (const JoyStickState& state, int button) = 0;
-    virtual bool joyStickAxisMoved     (const JoyStickState& state, int axis)   = 0;
-    virtual bool joyStickSliderMoved   (const JoyStickState& state, int index) {return true;}
-    virtual bool joyStickPovMoved      (const JoyStickState& state, int index) {return true;}
-    virtual bool joyStickVector3Moved  (const JoyStickState& state, int index) {return true;}
+    virtual void joyStickButtonPressed (int joyStickID, int button) = 0;
+    virtual void joyStickButtonReleased(int joyStickID, int button) = 0;
+    virtual void joyStickButtonHeld    (int joyStickID, int button) = 0;
+    virtual void joyStickAxisMoved     (int joyStickID, int axis, int value) = 0;
+    //virtual bool joyStickVector3Moved  (int joyStickID, int index /*, fill list*/) {return true;}
   };
 
 }
