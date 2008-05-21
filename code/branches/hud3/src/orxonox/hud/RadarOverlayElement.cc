@@ -68,6 +68,7 @@ namespace orxonox
         currentDir_ = initialDir_;
         initialOrth_ = Vector3(0.0, 0.0, 1.0);
         currentOrth_ = initialOrth_;
+        plane = Plane(currentDir_, shipPos_);
 
         setMetricsMode(Ogre::GMM_PIXELS);
         setMaterialName("Orxonox/Radar");
@@ -91,6 +92,7 @@ namespace orxonox
         shipPos_ = SpaceShip::instance_s->getPosition();
         currentDir_ = SpaceShip::instance_s->getOrientation()*initialDir_; 		// according to beni....
 		currentOrth_ = SpaceShip::instance_s->getOrientation()*initialOrth_;
+        plane = Plane(currentDir_, shipPos_);
 
         RadarObject* ro = firstRadarObject_;
         // iterate through all RadarObjects
@@ -140,8 +142,11 @@ namespace orxonox
 	}
 
 	float RadarOverlayElement::calcPhi(RadarObject* obj){
-	    return(acos((currentOrth_.dotProduct(firstRadarObject_->pos_ - shipPos_))/
-        	((firstRadarObject_->pos_ - shipPos_).length()*currentOrth_.length())));
+	    // project difference vector on our plane...
+	    Ogre::Vector3 proj = plane.projectVector(obj->pos_ - shipPos_);
+	    // ...and find out the angle
+	    return(acos((currentOrth_.dotProduct(proj))/
+            (currentOrth_.length()*proj.length())));
 	}
 
 	bool RadarOverlayElement::calcRight(RadarObject* obj){

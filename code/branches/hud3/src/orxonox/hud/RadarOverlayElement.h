@@ -71,6 +71,7 @@ namespace orxonox
             Vector3 initialOrth_;                   // direction of normal
             Vector3 currentOrth_;
             Vector3 shipPos_;                       // position of ship
+            Ogre::Plane plane;                      // plane perpendicular to dir
 
 			RadarObject* firstRadarObject_;         // start of linked list
 			RadarObject* lastRadarObject_;          // end of linked list
