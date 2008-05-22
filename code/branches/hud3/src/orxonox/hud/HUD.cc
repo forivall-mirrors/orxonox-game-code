@@ -98,7 +98,8 @@ namespace orxonox
     void HUD::tick(float dt)
     {
         int d = radar->getDist2Focus()/10;
-        test->setCaption("Distance: " + Ogre::StringConverter::toString(d));
+        if(d) test->setCaption("Distance: " + Ogre::StringConverter::toString(d));
+        else test->setCaption("");
 
         energyBar->resize();
 
