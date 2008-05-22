@@ -25,6 +25,7 @@
 *
 */
 
+#include "OrxonoxStableHeaders.h"
 #include <OgreOverlayManager.h>
 #include <OgreOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
@@ -125,5 +126,6 @@ namespace orxonox
         return(color_);
     }
 }
+
 
 

@@ -187,7 +187,19 @@
 				Name="hud"
 				>
 				<File
+					RelativePath="..\..\src\orxonox\hud\BarOverlayElement.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\hud\HUD.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\RadarObject.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\RadarOverlayElement.cc"
 					>
 				</File>
 			</Filter>
@@ -449,7 +461,23 @@
 				Name="hud"
 				>
 				<File
+					RelativePath="..\..\src\orxonox\hud\BarOverlayElement.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\hud\HUD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\OverlayElementFactories.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\RadarObject.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\RadarOverlayElement.h"
 					>
 				</File>
 			</Filter>
