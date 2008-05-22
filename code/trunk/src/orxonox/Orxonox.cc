@@ -486,7 +486,7 @@ namespace orxonox
 //      orxonoxHUD_->setTime((int)now, 0);
 //      orxonoxHUD_->setRocket2(ogreRoot.getCurrentFrameNumber());
       if (eventTimes[3].back() - eventTimes[3].front() != 0)
-//        orxonoxHUD_->setRocket1((int)(50000.0f/(eventTimes[3].back() - eventTimes[3].front())));
+        orxonoxHUD_->setFPS(50000.0f/(eventTimes[3].back() - eventTimes[3].front()));
 
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)

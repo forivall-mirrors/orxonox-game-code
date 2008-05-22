@@ -59,10 +59,19 @@ namespace orxonox
         test = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "test123"));
         test->show();
         test->setMetricsMode(Ogre::GMM_RELATIVE);
-        test->setDimensions(0.8, 0.8);
+        test->setDimensions(0.3, 0.3);
         test->setPosition(0.02, 0.02);
         test->setFontName("Console");
         test->setCaption("init");
+
+        // test2
+        fpsText = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "fpsText"));
+        fpsText->show();
+        fpsText->setMetricsMode(Ogre::GMM_RELATIVE);
+        fpsText->setDimensions(0.3, 0.3);
+        fpsText->setPosition(0.9, 0.02);
+        fpsText->setFontName("Console");
+        fpsText->setCaption("init");
 
         // create energy bar
         energyBar = static_cast<BarOverlayElement*>(om->createOverlayElement("Bar", "energyBar"));
@@ -85,6 +94,7 @@ namespace orxonox
         container->setHeight(1.0);
         container->setMetricsMode(Ogre::GMM_RELATIVE);
         container->addChild(test);
+        container->addChild(fpsText);
         energyBar->init(0.01, 0.94, 0.4, container);
         energyBar->setValue(1);
         speedoBar->init(0.01, 0.90, 0.4, container);
@@ -110,6 +120,10 @@ namespace orxonox
 
         radar->resize();
         radar->update();
+    }
+
+    void HUD::setFPS(float fps){
+        fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
     }
 
     HUD::~HUD(void){
