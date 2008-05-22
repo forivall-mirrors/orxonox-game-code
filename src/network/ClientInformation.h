@@ -43,8 +43,10 @@
 #include "NetworkPrereqs.h"
 
 #include <enet/enet.h>
+#include <boost/thread/recursive_mutex.hpp>
 
 #define GAMESTATEID_INITIAL -1
+#define CLIENTID_UNKNOWN -2
 
 namespace network
 {
@@ -61,24 +63,27 @@ namespace network
     ~ClientInformation();
     ClientInformation *next();
     ClientInformation *prev();
-    bool setNext(ClientInformation *next);
-    bool setPrev(ClientInformation *prev);
-    ClientInformation *insertAfter(ClientInformation *ins);
-    ClientInformation *insertBefore(ClientInformation *ins);
     ClientInformation *insertBack(ClientInformation *ins);
     
     // set functions
     void setID(int clientID);
-    void setPeer(ENetPeer *peer);
-    void setGamestateID(int id);
+    bool setPeer(ENetPeer *peer);
+    bool setGamestateID(int id);
+    bool setPartialGamestateID(int id);
     inline void setShipID(int id){ShipID_=id;}
     
     // get functions
     inline int getShipID(){return ShipID_;}
     int getID();
     int getGamestateID();
+    int getPartialGamestateID();
     ENetPeer *getPeer();
+    bool getHead();
+    void setHead(bool h);
     
+    int getFailures();
+    void addFailure();
+    void resetFailures();
     
     bool removeClient(int clientID);
     bool removeClient(ENetPeer *peer);
@@ -87,21 +92,29 @@ namespace network
     //## add bool mask-function eventually
     ClientInformation *findClient(ENetAddress *address, bool look_backwards=false);
 
-    void setSynched(bool s);
+    bool setSynched(bool s);
     bool getSynched();
 
-    bool head;
-    unsigned short failures_;
 
-  private:
+    private:
+      bool setNext(ClientInformation *next);
+      bool setPrev(ClientInformation *prev);
+    ClientInformation *insertAfter(ClientInformation *ins);
+    ClientInformation *insertBefore(ClientInformation *ins);
+    
     ClientInformation *preve;
     ClientInformation *nexte;
     //actual information:
     ENetPeer *peer_;
     int clientID_;
     int gamestateID_;
+    int partialGamestateID_;
     int ShipID_;   // this is the unique objectID
     bool synched_;
+    bool head_;
+    unsigned short failures_;
+    static boost::recursive_mutex mutex_;
+    
   };
 
 }

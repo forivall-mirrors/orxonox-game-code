@@ -152,7 +152,9 @@ namespace network
   */
   syncData Synchronisable::getData(unsigned char *mem){
     //std::cout << "inside getData" << std::endl;
-    classID=this->getIdentifier()->getNetworkID();
+    if(classID==0)
+      COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
+    this->classID=this->getIdentifier()->getNetworkID();
     std::list<synchronisableVariable *>::iterator i;
     syncData retVal;
     retVal.objectID=this->objectID;

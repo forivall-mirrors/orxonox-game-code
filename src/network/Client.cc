@@ -119,9 +119,9 @@ namespace network
     Synchronisable::setClient(true);
     isConnected=client_connection.createConnection();
     if(isConnected){
-      COUT(4) << "sending connectrequest" << std::endl;
-      client_connection.addPacket(pck_gen.generateConnectRequest());
-      client_connection.sendPackets();
+      COUT(3) << "sending connectrequest" << std::endl;
+      if(!client_connection.addPacket(pck_gen.generateConnectRequest()) || !client_connection.sendPackets())
+        COUT(1) << "could not create connection" << std::endl;
     }else
       COUT(1) << "could not create connection" << std::endl;
     return isConnected;
@@ -228,6 +228,7 @@ namespace network
   * Performs a GameState update
   */
   void Client::tick(float time){
+//     COUT(3) << ".";
     if(client_connection.isConnected() && isSynched_){
       COUT(4) << "popping partial gamestate: " << std::endl;
       GameStateCompressed *gs = gamestate.popPartialGameState();
@@ -259,10 +260,11 @@ namespace network
     if(gamestate.pushGameState(data)){
       if(!isSynched_)
         isSynched_=true;
-      client_connection.addPacket(pck_gen.acknowledgement(id));
+      if(!client_connection.addPacket(pck_gen.acknowledgement(id)))
+        return;
         // we do this at the end of a tick
-       if(!client_connection.sendPackets())
-         COUT(2) << "Could not send acknowledgment" << std::endl;
+      if(!client_connection.sendPackets())
+        COUT(2) << "Could not send acknowledgment" << std::endl;
     }
   }
 

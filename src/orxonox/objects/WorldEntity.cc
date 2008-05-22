@@ -137,25 +137,25 @@ namespace orxonox
       registerVar( (void*) &(this->getOrientation().y), sizeof(this->getOrientation().y), network::DATA, 0x3);
       registerVar( (void*) &(this->getOrientation().z), sizeof(this->getOrientation().z), network::DATA, 0x3);
       // register velocity_
-//       registerVar( (void*) &(this->getVelocity().x), sizeof(this->getVelocity().x), network::DATA, 0x3);
-//       registerVar( (void*) &(this->getVelocity().y), sizeof(this->getVelocity().y), network::DATA, 0x3);
-//       registerVar( (void*) &(this->getVelocity().z), sizeof(this->getVelocity().z), network::DATA, 0x3);
-//       // register rotationAxis/rate
-//       registerVar( (void*) &(this->getRotationRate()), sizeof(this->getRotationRate()), network::DATA, 0x3);
-//       registerVar( (void*) &(this->getRotationAxis().x), sizeof(this->getRotationAxis().x), network::DATA, 0x3);
-//       registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA, 0x3);
-//       registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA, 0x3);
+      registerVar( (void*) &(this->getVelocity().x), sizeof(this->getVelocity().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getVelocity().y), sizeof(this->getVelocity().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getVelocity().z), sizeof(this->getVelocity().z), network::DATA, 0x3);
+      // register rotationAxis/rate
+      registerVar( (void*) &(this->getRotationRate()), sizeof(this->getRotationRate()), network::DATA, 0x3);
+      registerVar( (void*) &(this->getRotationAxis().x), sizeof(this->getRotationAxis().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA, 0x3);
       // register scale of node
       registerVar( (void*) &(this->getScale().x), sizeof(this->getScale().x), network::DATA, 0x3);
       registerVar( (void*) &(this->getScale().y), sizeof(this->getScale().y), network::DATA, 0x3);
       registerVar( (void*) &(this->getScale().z), sizeof(this->getScale().z), network::DATA, 0x3);
       //register staticity
       registerVar( (void*) &(this->bStatic_), sizeof(this->bStatic_), network::DATA, 0x3);
-      //register acceleration
-      // register velocity_
-//       registerVar( (void*) &(this->getAcceleration().x), sizeof(this->getAcceleration().x), network::DATA, 0x3);
-//       registerVar( (void*) &(this->getAcceleration().y), sizeof(this->getAcceleration().y), network::DATA, 0x3);
-//       registerVar( (void*) &(this->getAcceleration().z), sizeof(this->getAcceleration().z), network::DATA, 0x3);
+      //register acceleration & momentum
+      registerVar( (void*) &(this->getAcceleration().x), sizeof(this->getAcceleration().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getAcceleration().y), sizeof(this->getAcceleration().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getAcceleration().z), sizeof(this->getAcceleration().z), network::DATA, 0x3);
+      registerVar( (void*) &(this->getMomentum()), sizeof(this->getMomentum()), network::DATA);
     }
 
     void WorldEntity::attachWorldEntity(WorldEntity* entity)

@@ -90,6 +90,24 @@ namespace network
     return false;
   }
   
+  bool PacketDecoder::testAndRemoveCRC(ENetPacket *packet){
+    uint32_t submittetcrc;
+    int dataLength = packet->dataLength;
+    // get the submittet crc code
+    memcpy(&submittetcrc, &packet->data[dataLength-sizeof(uint32_t)], sizeof(uint32_t));
+    unsigned char *data = packet->data;
+    uint32_t crc32=calcCRC(data, packet->dataLength-sizeof(uint32_t));
+    // now append the crc to the packet data
+    if(crc32==submittetcrc){
+      dataLength-=sizeof(uint32_t);
+      enet_packet_resize(packet, dataLength);
+      return true;
+    }
+    COUT(3) << "gamestate crc: " << crc32 << std::endl;
+    COUT(3) << "submitted crc: " << submittetcrc << std::endl;
+    return false;
+  }
+  
   // ATTENTION: TODO watch, that arguments we pass over to the processFunction gets deleted in THE PROCESSXXX function
 
   //following are the decode functions for the data of the packets
@@ -110,6 +128,7 @@ namespace network
     int length = *(int*)((unsigned char *)packet->data+sizeof(int));
     void *data = (void *)new unsigned char[length];
     memcpy(data, (void *)(packet->data+2*sizeof(int)), length);
+    enet_packet_destroy( packet );
     return true;
   }
 
@@ -155,6 +174,10 @@ namespace network
 
   void PacketDecoder::gstate( ENetPacket* packet, int clientID )
   {
+    if(!testAndRemoveCRC(packet)){
+      COUT(3) << "crc test of gamestate failed - dropping packet" << std::endl;
+      return;
+    }
     GameStateCompressed* currentState = NULL;
     currentState = new GameStateCompressed;
     if(currentState == NULL){
