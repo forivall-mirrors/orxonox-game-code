@@ -84,10 +84,10 @@ namespace network
 
   ClientInformation::~ClientInformation() {
     boost::recursive_mutex::scoped_lock lock(mutex_);
-    if(preve!=0)
-      preve->setNext(this->nexte);
-    if(nexte!=0)
-      nexte->setPrev(this->preve);
+    if(next()!=0)
+      prev()->setNext(this->next());
+    if(next()!=0)
+      next()->setPrev(this->prev());
   }
 
   ClientInformation *ClientInformation::next() {
@@ -122,8 +122,8 @@ namespace network
 
   ClientInformation *ClientInformation::insertAfter(ClientInformation *ins) {
     boost::recursive_mutex::scoped_lock lock(mutex_);
-    this->nexte->setPrev(ins);
-    ins->setNext(this->nexte);
+    this->next()->setPrev(ins);
+    ins->setNext(this->next());
     ins->setPrev(this);
     this->nexte = ins;
     return ins;
@@ -134,13 +134,15 @@ namespace network
     if(!this)
       return NULL;
     this->prev()->setNext(ins);
-    ins->setPrev(this->preve);
+    ins->setPrev(this->prev());
     this->preve=ins;
     ins->setNext(this);
     return ins;
   }
 
   void ClientInformation::setID(int clientID){
+    if(!this)
+      return;
     boost::recursive_mutex::scoped_lock lock(mutex_);
     clientID_ = clientID;
   }

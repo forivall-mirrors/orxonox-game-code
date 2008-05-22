@@ -83,7 +83,7 @@ namespace network
     bool addPacket(ENetPacket *packet, ENetPeer *peer);
     bool addPacket(ENetPacket *packet, int ID);
     bool addPacketAll(ENetPacket *packet);
-    bool sendPackets(ENetEvent *event);
+  //  bool sendPackets(ENetEvent *event);
     bool sendPackets();
     bool createClient(int clientID);
     void disconnectClient(ClientInformation *client);

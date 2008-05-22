@@ -150,23 +150,20 @@ used by processQueue in Server.cc
     return true;
   }
 
-  bool ConnectionManager::sendPackets(ENetEvent *event) {
+  /*bool ConnectionManager::sendPackets(ENetEvent *event) {
     if(server==NULL)
       return false;
     if(enet_host_service(server, event, NETWORK_SEND_WAIT)>=0)
       return true;
     else
       return false;
-  }
+  }*/
 
   bool ConnectionManager::sendPackets() {
-    ENetEvent event;
     if(server==NULL)
       return false;
-    if(enet_host_service(server, &event, NETWORK_SEND_WAIT)>=0)
-      return true;
-    else
-      return false;
+    enet_host_flush(server);
+    return true;
   }
 
   void ConnectionManager::receiverThread() {
@@ -207,11 +204,11 @@ used by processQueue in Server.cc
           clientDisconnect(event->peer);
           break;
         case ENET_EVENT_TYPE_NONE:
-          receiverThread_->yield();
+          //receiverThread_->yield();
           break;
       }
 //       usleep(100);
-      receiverThread_->yield(); //TODO: find apropriate
+      //receiverThread_->yield(); //TODO: find apropriate
     }
     disconnectClients();
     // if we're finishied, destroy server
