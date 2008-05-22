@@ -31,6 +31,7 @@
 
 #include <string.h>
 #include <OgreOverlayElement.h>
+#include <OgreTextAreaOverlayElement.h>
 #include <OgrePrerequisites.h>
 
 #include "OrxonoxPrereqs.h"
@@ -47,6 +48,7 @@ namespace orxonox
             Ogre::OverlayManager* om;
             Ogre::Overlay* orxonoxHUD;
             Ogre::OverlayContainer* container;
+            Ogre::TextAreaOverlayElement* test;
             BarOverlayElement* energyBar;
             BarOverlayElement* speedoBar;
             RadarOverlayElement* radar;

@@ -71,6 +71,7 @@ namespace orxonox
             void updateNavMarker();
             void addObject(Vector3 pos);
             void listObjects();
+            float getDist2Focus();
             float calcRadius(RadarObject* obj);
             float calcPhi(RadarObject* obj);
             bool calcRight(RadarObject* obj);

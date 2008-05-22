@@ -180,6 +180,10 @@ namespace orxonox
 	    }
 	}
 
+	float RadarOverlayElement::getDist2Focus(){
+	    return((focus_->pos_-shipPos_).length());
+	}
+
 	float RadarOverlayElement::calcRadius(RadarObject* obj){
 	    return(acos((currentDir_.dotProduct(obj->pos_ - shipPos_))/
 			((obj->pos_ - shipPos_).length()*currentDir_.length())));

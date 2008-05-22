@@ -32,6 +32,7 @@
 #include <OgreOverlayManager.h>
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
+#include <OgreStringConverter.h>
 #include "core/Debug.h"
 #include "objects/SpaceShip.h"
 #include "HUD.h"
@@ -54,6 +55,15 @@ namespace orxonox
 
         orxonoxHUD = om->create("Orxonox/HUD");
         container = static_cast<Ogre::OverlayContainer*>(om->createOverlayElement("Panel", "Orxonox/HUD/container"));
+        // test
+        test = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "test123"));
+        test->show();
+        test->setMetricsMode(Ogre::GMM_RELATIVE);
+        test->setDimensions(0.8, 0.8);
+        test->setPosition(0.02, 0.02);
+        test->setFontName("Console");
+        test->setCaption("init");
+
         // create energy bar
         energyBar = static_cast<BarOverlayElement*>(om->createOverlayElement("Bar", "energyBar"));
         energyBar->show();
@@ -74,18 +84,22 @@ namespace orxonox
         container->setWidth(1.0);
         container->setHeight(1.0);
         container->setMetricsMode(Ogre::GMM_RELATIVE);
+        container->addChild(test);
         energyBar->init(0.01, 0.94, 0.4, container);
         energyBar->setValue(1);
         speedoBar->init(0.01, 0.90, 0.4, container);
         radar->init(0.5, 0.9, 0.2, container);
-        radar->addObject(Vector3(1500.0, 0.0, 0.0));
+        radar->addObject(Vector3(1500.0, 0.0, 100.0));
         radar->addObject(Vector3(0.0, 4000.0, 0.0));
-	radar->addObject(Vector3(0.0, 0.0, 6800.0));
+        radar->addObject(Vector3(0.0, 0.0, 6800.0));
         RadarOverlayElement::cycleFocus();
     }
 
     void HUD::tick(float dt)
     {
+        int d = radar->getDist2Focus()/10;
+        test->setCaption("Distance: " + Ogre::StringConverter::toString(d));
+
         energyBar->resize();
 
         float v = SpaceShip::instance_s->getVelocity().length();
