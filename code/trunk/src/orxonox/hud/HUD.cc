@@ -66,7 +66,7 @@ namespace orxonox
         test->setFontName("Console");
         test->setCaption("init");
 
-        // test2
+        // creating text to display fps
         fpsText = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "fpsText"));
         fpsText->show();
         fpsText->setMetricsMode(Ogre::GMM_RELATIVE);
@@ -101,7 +101,7 @@ namespace orxonox
         energyBar->setValue(1);
         speedoBar->init(0.01, 0.90, 0.4, container);
         radar->init(0.5, 0.9, 0.2, container);
-        radar->addObject(Vector3(1500.0, 0.0, 100.0));
+        radar->addObject(Vector3(2000.0, 1000.0, 1000.0));
         radar->addObject(Vector3(0.0, 4000.0, 0.0));
         radar->addObject(Vector3(0.0, 0.0, 6800.0));
     }
@@ -134,6 +134,10 @@ namespace orxonox
 
     /*static*/void HUD::setFPS(float fps){
         HUD::getSingleton().fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
+    }
+
+    /*static*/void HUD::setEnergy(float value){
+        HUD::getSingleton().energyBar->setValue(value);
     }
 
     /*static*/void HUD::cycleRadarFocus(){
