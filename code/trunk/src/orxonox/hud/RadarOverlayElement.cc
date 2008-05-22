@@ -29,14 +29,10 @@
 
 namespace orxonox
 {
-    ConsoleCommandShortcut(RadarOverlayElement, cycleFocus, AccessLevel::User);
 
     using namespace Ogre;
 
-    RadarOverlayElement* RadarOverlayElement::instance_s = NULL;
-
     RadarOverlayElement::RadarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){
-        RadarOverlayElement::instance_s = this;
     }
 
     RadarOverlayElement::~RadarOverlayElement(){
@@ -204,23 +200,21 @@ namespace orxonox
         else return false;
 	}
 
-	/*static*/void RadarOverlayElement::cycleFocus(){
-	    if(RadarOverlayElement::instance_s == NULL) return;
-
-	    if(RadarOverlayElement::instance_s->focus_ == NULL){
-            RadarOverlayElement::instance_s->focus_ = RadarOverlayElement::instance_s->firstRadarObject_;
+	void RadarOverlayElement::cycleFocus(){
+	    if(focus_ == NULL){
+            focus_ = firstRadarObject_;
 	    }
         else{
-            RadarOverlayElement::instance_s->focus_->panel_->setMaterialName("Orxonox/RedDot");
-            RadarOverlayElement::instance_s->focus_ = RadarOverlayElement::instance_s->focus_->next;
+            focus_->panel_->setMaterialName("Orxonox/RedDot");
+            focus_ = focus_->next;
         }
 
-        if(RadarOverlayElement::instance_s->focus_ == NULL){
-            RadarOverlayElement::instance_s->navMarker_->hide();
+        if(focus_ == NULL){
+            navMarker_->hide();
         }
         else{
-            RadarOverlayElement::instance_s->navMarker_->show();
-            RadarOverlayElement::instance_s->focus_->panel_->setMaterialName("Orxonox/WhiteDot");
+            navMarker_->show();
+            focus_->panel_->setMaterialName("Orxonox/WhiteDot");
         }
 	}
 }
