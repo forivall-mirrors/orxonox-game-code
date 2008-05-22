@@ -1,1 +1,0 @@
-<SpaceShip camera="true" position="0,0,0" scale="10" yawpitchroll="-90,-90,0" mesh="assf3.mesh" maxSpeed="500" maxSideAndBackSpeed="50" maxRotation="1.0" transAcc="200" rotAcc="3.0" transDamp="75" rotDamp="1.0" />
