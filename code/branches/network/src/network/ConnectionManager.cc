@@ -344,6 +344,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
   }
   
   bool ConnectionManager::removeClient(int clientID){
+    boost::recursive_mutex::scoped_lock lock(head_->mutex_);
     orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::start();
     ClientInformation *client = head_->findClient(clientID);
     if(!client)
@@ -370,9 +371,9 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
       return false;
     }
     orxonox::SpaceShip *no = dynamic_cast<orxonox::SpaceShip *>(id->fabricate());
-    no->setPosition(orxonox::Vector3(0,80,0));
+    no->setPosition(orxonox::Vector3(0,0,80));
     no->setScale(10);
-    no->setYawPitchRoll(orxonox::Degree(-90),orxonox::Degree(-90),orxonox::Degree(0));
+    //no->setYawPitchRoll(orxonox::Degree(-90),orxonox::Degree(-90),orxonox::Degree(0));
     no->setMesh("assff.mesh");
     no->setMaxSpeed(500);
     no->setMaxSideAndBackSpeed(50);

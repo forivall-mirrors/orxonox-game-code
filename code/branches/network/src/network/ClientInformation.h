@@ -94,6 +94,7 @@ namespace network
 
     bool setSynched(bool s);
     bool getSynched();
+    static boost::recursive_mutex mutex_;
 
 
     private:
@@ -113,7 +114,6 @@ namespace network
     bool synched_;
     bool head_;
     unsigned short failures_;
-    static boost::recursive_mutex mutex_;
     
   };
 

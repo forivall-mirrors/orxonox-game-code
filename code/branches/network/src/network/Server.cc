@@ -42,6 +42,7 @@
 
 #include <iostream>
 
+
 #include "ConnectionManager.h"
 #include "PacketTypes.h"
 #include "GameStateManager.h"
@@ -195,6 +196,7 @@ namespace network
   */
   bool Server::sendGameState() {
     COUT(5) << "Server: starting function sendGameState" << std::endl;
+    boost::recursive_mutex::scoped_lock lock(clients->mutex_);
     ClientInformation *temp = clients;
     bool added=false;
     while(temp != NULL){

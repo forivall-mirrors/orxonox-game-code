@@ -84,7 +84,7 @@ namespace network
 
   ClientInformation::~ClientInformation() {
     boost::recursive_mutex::scoped_lock lock(mutex_);
-    if(next()!=0)
+    if(prev()!=0)
       prev()->setNext(this->next());
     if(next()!=0)
       next()->setPrev(this->prev());
