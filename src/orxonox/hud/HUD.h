@@ -63,6 +63,7 @@ namespace orxonox
             static HUD* instance_s;
             static HUD& getSingleton();
             static void setFPS(float fps);
+            static void setEnergy(float value);
             static void cycleRadarFocus();
     };
 }
