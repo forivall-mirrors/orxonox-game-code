@@ -276,14 +276,14 @@ namespace orxonox
       camName_=camera;
       // change camera attributes here, if you want to ;)
     }
-    
+
     void SpaceShip::getFocus(){
       COUT(4) << "requesting focus" << std::endl;
       if(network::Client::getSingleton()==0 || network::Client::getSingleton()->getShipID()==objectID)
         CameraHandler::getInstance()->requestFocus(cam_);
-      
+
     }
-    
+
     void SpaceShip::createCamera(){
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);

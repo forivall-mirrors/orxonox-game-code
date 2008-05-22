@@ -32,7 +32,7 @@ GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
 ADD_CUSTOM_COMMAND(
   OUTPUT tolua/tolua_bind.cc tolua/tolua_bind.h
   COMMAND ${TOLUA_EXE} -n core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg
-  DEPENDS tolua
+  DEPENDS tolua LuaBind_clean.h
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
 

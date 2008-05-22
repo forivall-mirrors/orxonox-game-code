@@ -24,6 +24,7 @@ SET( ORXONOX_SRC_FILES
   objects/SpaceShip.cc
   objects/WorldEntity.cc
   objects/Script.cc
+  objects/Trigger.cc
 
 #  objects/weapon/AmmunitionDump.cc
 #  objects/weapon/BarrelGun.cc
