@@ -169,7 +169,8 @@ namespace orxonox
     bAbort_(false),
     timefactor_(1.0f),
     mode_(STANDALONE),
-    serverIp_("")
+    serverIp_(""),
+    serverPort_(NETWORK_PORT)
   {
   }
 
@@ -243,6 +244,7 @@ namespace orxonox
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", dataPath, false);
     ar.checkArgument("ip", serverIp_, false);
+    ar.checkArgument("port", serverPort_, false);
     if(ar.errorHandling())
       return false;
 
@@ -356,7 +358,7 @@ namespace orxonox
     ib->registerListener(console, &Testconsole::listen, true);
     ib->registerListener(console, &Testconsole::execute, '\r', false);
     ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
-    ib->registerListener(console, &Testconsole::clear, '§', true);
+    ib->registerListener(console, &Testconsole::clear, 'ï¿½', true);
     ib->registerListener(console, &Testconsole::removeLast, '\b', true);
     ib->registerListener(console, &Testconsole::exit, (char)0x1B, true);
     */
@@ -364,7 +366,7 @@ namespace orxonox
     ib->registerListener(orxonoxConsole_, &InGameConsole::listen, true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::execute, '\r', false);
     ib->registerListener(orxonoxConsole_, &InGameConsole::hintandcomplete, '\t', true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::clear, '§', true);
+    ib->registerListener(orxonoxConsole_, &InGameConsole::clear, 'ï¿½', true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::removeLast, '\b', true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::exit, (char)0x1B, true);
 
@@ -378,7 +380,7 @@ namespace orxonox
   {
     COUT(2) << "Loading level in server mode" << std::endl;
 
-    server_g = new network::Server();
+    server_g = new network::Server(serverPort_);
 
     if (!loadScene())
       return false;
@@ -398,7 +400,8 @@ namespace orxonox
     if (serverIp_.compare("") == 0)
       client_g = network::Client::createSingleton();
     else
-      client_g = network::Client::createSingleton(serverIp_, NETWORK_PORT);
+      
+      client_g = network::Client::createSingleton(serverIp_, serverPort_);
 
     client_g->establishConnection();
     client_g->tick(0);

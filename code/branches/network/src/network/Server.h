@@ -59,6 +59,7 @@ namespace network
   class _NetworkExport Server : public PacketDecoder, public orxonox::Tickable{
   public:
     Server();
+    Server(int port);
     Server(int port, std::string bindAddress);
     Server(int port, const char *bindAddress);
     void open();

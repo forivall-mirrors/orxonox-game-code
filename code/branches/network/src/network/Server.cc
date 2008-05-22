@@ -67,6 +67,13 @@ namespace network
     connection = new ConnectionManager(clients);
     gamestates = new GameStateManager(clients);
   }
+  
+  Server::Server(int port){
+    packet_gen = PacketGenerator();
+    clients = new ClientInformation(true);
+    connection = new ConnectionManager(clients, port);
+    gamestates = new GameStateManager(clients);
+  }
 
   /**
   * Constructor

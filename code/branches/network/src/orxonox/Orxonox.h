@@ -104,6 +104,7 @@ namespace orxonox {
       // this is used to identify the mode (server/client/...) we're in
       gameMode              mode_;
       std::string           serverIp_;
+      int                   serverPort_;
 
       static Orxonox *singletonRef_s;
   };

@@ -73,6 +73,7 @@ namespace network
   public:
     ConnectionManager();
     ConnectionManager(ClientInformation *head);
+    ConnectionManager(ClientInformation *head, int port);
     ConnectionManager(int port, const char *address, ClientInformation *head);
     ConnectionManager(int port, std::string address, ClientInformation *head);
     ENetPacket *getPacket(ENetAddress &address); // thread1

@@ -71,6 +71,13 @@ namespace network
     bindAddress.port = NETWORK_PORT;
     head_ = head;
   }
+  
+  ConnectionManager::ConnectionManager(ClientInformation *head, int port){
+    quit=false;
+    bindAddress.host = ENET_HOST_ANY;
+    bindAddress.port = port;
+    head_ = head;
+  }
 
   ConnectionManager::ConnectionManager(int port, std::string address, ClientInformation *head) :receiverThread_(0) {
     quit=false;
