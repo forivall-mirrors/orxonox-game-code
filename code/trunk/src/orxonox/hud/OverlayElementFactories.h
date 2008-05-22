@@ -25,39 +25,36 @@
 *
 */
 
+#ifndef _FACTORIES_H__
+#define _FACTORIES_H__
 
-#ifndef _HUD_H__
-#define _HUD_H__
-
-#include <string.h>
 #include <OgreOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
 #include <OgrePrerequisites.h>
+#include <OgreOverlayElementFactory.h>
 
-#include "OrxonoxPrereqs.h"
-#include "core/Tickable.h"
 #include "BarOverlayElement.h"
-#include "RadarOverlayElement.h"
 
-
-namespace orxonox
-{
-    class _OrxonoxExport HUD : public Tickable
-    {
-        private:
-            Ogre::OverlayManager* om;
-            Ogre::Overlay* orxonoxHUD;
-            Ogre::OverlayContainer* container;
-            Ogre::TextAreaOverlayElement* test;
-            BarOverlayElement* energyBar;
-            BarOverlayElement* speedoBar;
-            RadarOverlayElement* radar;
-
+namespace orxonox{
+    class _OrxonoxExport BarOverlayElementFactory : public Ogre::OverlayElementFactory{
         public:
-            HUD(int zoom);
-            ~HUD();
-            virtual void tick(float);
+        Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
+            return new BarOverlayElement(instanceName);
+        }
+        const Ogre::String& getTypeName(void) const{
+            static Ogre::String name = "Bar";
+            return name;
+        }
+    };
 
+    class _OrxonoxExport RadarOverlayElementFactory : public Ogre::OverlayElementFactory{
+        public:
+        Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
+            return new RadarOverlayElement(instanceName);
+        }
+        const Ogre::String& getTypeName(void) const{
+            static Ogre::String name = "Radar";
+            return name;
+        }
     };
 }
 

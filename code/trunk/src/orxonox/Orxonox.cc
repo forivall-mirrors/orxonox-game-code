@@ -347,11 +347,7 @@ namespace orxonox
 
     // Load the HUD
     COUT(3) << "Orxonox: Loading HUD..." << std::endl;
-    Ogre::Overlay* hudOverlay = Ogre::OverlayManager::getSingleton().getByName("Orxonox/HUD1.2");
-    orxonoxHUD_ = new HUD();
-    orxonoxHUD_->setEnergyValue(20);
-    orxonoxHUD_->setEnergyDistr(20,20,60);
-    hudOverlay->show();
+    orxonoxHUD_ = new HUD(1);
 
     COUT(3) << "Orxonox: Loading Console..." << std::endl;
     InputBuffer* ib = dynamic_cast<InputBuffer*>(InputManager::getKeyHandler("buffer"));
@@ -487,10 +483,10 @@ namespace orxonox
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
 
       // show the current time in the HUD
-      orxonoxHUD_->setTime((int)now, 0);
-      orxonoxHUD_->setRocket2(ogreRoot.getCurrentFrameNumber());
+//      orxonoxHUD_->setTime((int)now, 0);
+//      orxonoxHUD_->setRocket2(ogreRoot.getCurrentFrameNumber());
       if (eventTimes[3].back() - eventTimes[3].front() != 0)
-        orxonoxHUD_->setRocket1((int)(50000.0f/(eventTimes[3].back() - eventTimes[3].front())));
+//        orxonoxHUD_->setRocket1((int)(50000.0f/(eventTimes[3].back() - eventTimes[3].front())));
 
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)

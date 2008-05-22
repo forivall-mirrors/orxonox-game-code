@@ -28,11 +28,11 @@
 
 #ifndef _SpaceShip_H__
 #define _SpaceShip_H__
-
+#include <string>
 #include "OrxonoxPrereqs.h"
-
 #include <OgrePrerequisites.h>
 
+#include "util/Math.h"
 #include "core/InputInterfaces.h"
 #include "Camera.h"
 #include "Model.h"
@@ -65,7 +65,10 @@ namespace orxonox
             void setRotDamp(float value);
 
             void getFocus();
-
+            static SpaceShip* instance_s;
+            static Vector3 getSPosition();
+            static Quaternion getSOrientation();
+            static std::string whereAmI();
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
 
@@ -75,10 +78,10 @@ namespace orxonox
             void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
             void mouseScrolled      (int abs, int rel) { }
 
+            float getMaxSpeed();
 
         private:
             void createCamera();
-            static SpaceShip* instance_s;
 
             Vector3 testvector_;
             bool bInvertYAxis_;
@@ -87,7 +90,7 @@ namespace orxonox
             bool bRMousePressed_;
 
             Ogre::SceneNode* camNode_;
-            Camera* cam_;  
+            Camera* cam_;
             std::string camName_;
 
 
