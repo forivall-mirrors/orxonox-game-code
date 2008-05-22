@@ -106,7 +106,7 @@ namespace orxonox
             float d = (ro->pos_-shipPos_).length();
             if(d<4000) ro->panel_->setDimensions(4,4);
             else if(d<8000) ro->panel_->setDimensions(3,3);
-            else if(d<12000) ro->panel_->setDimensions(2,2);
+            else if(d<16000) ro->panel_->setDimensions(2,2);
             else ro->panel_->setDimensions(1,1);
 
             if (ro->right_){
