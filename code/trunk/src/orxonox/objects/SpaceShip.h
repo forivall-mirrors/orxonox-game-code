@@ -43,6 +43,9 @@ namespace orxonox
     class _OrxonoxExport SpaceShip : public Model, public MouseHandler
     {
         public:
+          
+            static SpaceShip *getLocalShip();
+            
             SpaceShip();
             ~SpaceShip();
             bool create();

@@ -195,6 +195,7 @@ namespace orxonox {
 //typedef unsigned int uint32;
 //typedef unsigned short uint16;
 //typedef unsigned char uint8;
+// proper approach
 
 #ifdef ORXONOX_DOUBLE_PRECISION
 typedef double Real;

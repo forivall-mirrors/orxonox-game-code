@@ -37,6 +37,7 @@
 #include "core/CoreIncludes.h"
 
 #define CLIENTID_CLIENT -1
+#define NETWORK_CRC32POLY 0x04C11DB7 /* CRC-32 Polynom */
 
 //enum netowk generally used to set the type ID of a packet
 namespace network
@@ -47,21 +48,25 @@ namespace network
   * @autor: Dumeni Manatschal
   *
   */
+  //void calcCRC(uint32_t &crc32, int bit);
+  uint32_t calcCRC(unsigned char *data, unsigned int dataLength);
+  
   class PacketGenerator
   {
   public:
     PacketGenerator();
     //call one of this functions out of an instance of PacketGenerator to create a packet
-    ENetPacket* acknowledgement( int state, int reliable = ENET_PACKET_FLAG_RELIABLE );
+    ENetPacket* acknowledgement( int state, int reliable = 0 ); // we do not want reliability
     ENetPacket* command( int dataLength, void *data, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* mousem( double x, double y, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* keystrike( char press, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* chatMessage( const char* message, int reliable = ENET_PACKET_FLAG_RELIABLE );
-    ENetPacket* gstate( GameStateCompressed *states, int reliable = ENET_PACKET_FLAG_RELIABLE );
+    ENetPacket* gstate( GameStateCompressed *states, int reliable = 0 ); // we do not want reliability of gamestates
     ENetPacket* clid( int classid, std::string classname, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* generateWelcome( int clientID,int shipID, bool allowed, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* generateConnectRequest( int reliable = ENET_PACKET_FLAG_RELIABLE );
   private:
+    bool addCRC( ENetPacket *packet);
   };
 
   /*
@@ -83,7 +88,7 @@ namespace network
 
 
   private:
-
+    bool testAndRemoveCRC(ENetPacket *packet);
 
 
     void acknowledgement( ENetPacket* packet, int clientId = CLIENTID_CLIENT );

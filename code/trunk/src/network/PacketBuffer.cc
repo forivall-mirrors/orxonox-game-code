@@ -40,7 +40,7 @@
 
 namespace network
 {
-  boost::mutex networkPacketBufferMutex;
+   boost::recursive_mutex PacketBuffer::mutex_;
 
   PacketBuffer::PacketBuffer() {
     closed=false;
@@ -51,7 +51,7 @@ namespace network
 
 
   bool PacketBuffer::push(ENetEvent *ev) {
-    boost::mutex::scoped_lock lock(networkPacketBufferMutex);
+    boost::recursive_mutex::scoped_lock lock(mutex_);
     //std::cout << "event size inside packetbuffer " << ev->packet->dataLength << std::endl;
     //   if(closed)
     //     return false;
@@ -60,8 +60,9 @@ namespace network
       first=new QueueItem;
       last=first;
       last->next=NULL;
-      // change this!!!!!!! 
+      // change this!!!!!!!  ---- we are not doing stl so we won't change this
       last->packet = ev->packet;
+      last->address = ev->peer->address;
       //last->address = ev->peer->address;
     } else {
       //insert a new element at the bottom
@@ -71,35 +72,22 @@ namespace network
       last->next=NULL;
       // save the packet to the new element
       last->packet = ev->packet;
+      last->address = ev->peer->address;
       //last->address = ev->peer->address;
     }
-    // pseudo bugfix: added a return false statement for error handling
-    if ( last->packet == ev->packet ) return true;
-    return false;
+    lock.unlock();
+    return true;
   }
 
   //returns the first element in the list without deleting it but
   //moving first pointer to next element
   ENetPacket *PacketBuffer::pop() {
-    boost::mutex::scoped_lock lock(networkPacketBufferMutex);
-    //std::cout << "packetbuffer pop" << std::endl;
-    if(first!=NULL /*&& !closed*/){
-      QueueItem *temp = first;
-      // get packet
-      ENetPacket *pck=first->packet;
-      // remove first element
-      first = first->next;
-      delete temp;
-      //std::cout << "pop size of packet " << pck->dataLength << std::endl;
-      return pck;
-    } else{
-      //std::cout << "nothing to return" << std::endl;
-      return NULL;
-    }
+    ENetAddress address;
+    return pop(address);
   }
 
   ENetPacket *PacketBuffer::pop(ENetAddress &address) {
-    boost::mutex::scoped_lock lock(networkPacketBufferMutex);
+    boost::recursive_mutex::scoped_lock lock(mutex_);
     //std::cout << "packetbuffer pop(address)" << std::endl;
     if(first!=NULL /*&& !closed*/){
       QueueItem *temp = first;
@@ -109,9 +97,11 @@ namespace network
       // remove first element
       first = first->next;
       delete temp;
+      lock.unlock();
       //std::cout << "pop(address) size of packet " << pck->dataLength << std::endl;
       return pck;
     } else{
+      lock.unlock();
       return NULL;
     }
   }

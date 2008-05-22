@@ -46,6 +46,7 @@ namespace network
   GameStateClient::GameStateClient() {
     COUT(5) << "this: " << this << std::endl;
     last_diff_=0;
+    last_gamestate_=GAMESTATEID_INITIAL-1;
   }
 
   GameStateClient::~GameStateClient() {
@@ -55,6 +56,11 @@ namespace network
     cleanup();
     printGameStateMap();
     GameState *gs, *reference;
+    /*if(compstate->id<last_gamestate_){
+      // network packets got messed up
+      COUT(3) << "received an obsolete gamestate" << std::endl;
+      return false;
+    }*/
     if(compstate->diffed && compstate->base_id!=GAMESTATEID_INITIAL){
       std::map<int, GameState*>::iterator it = gameStateMap.find(compstate->base_id);
       if(it!=gameStateMap.end())
@@ -76,6 +82,7 @@ namespace network
         gameStateMap.insert(std::pair<int, GameState*>(gs->id, gs));
         COUT(4) << "adding decoded gs with id: " << gs->id << " diffed from: " << gs->base_id << std::endl;
         last_diff_=gs->base_id;
+        //last_gamestate_=gs->id;
         return true;
       }else{
         COUT(4) << "could not decode gs with id: " << gs->id << " diffed from: " << gs->base_id << std::endl;
@@ -144,15 +151,21 @@ namespace network
           orxonox::Identifier* id = ID((unsigned int)sync.classID);
           if(!id){
             COUT(4) << "We could not identify a new object; classid: " << sync.classID << std::endl;
-            continue;
+            return false;
           }
           Synchronisable *no = dynamic_cast<Synchronisable *>(id->fabricate());
           COUT(4) << "loadsnapshot: classid: " << sync.classID << " objectID: " << sync.objectID << " length: " << sync.length << std::endl;
+          if(!no){
+            COUT(2) << "coudl not frabricate classid: " << sync.classID << " objectID: " << sync.objectID << " identifier: " << id << std::endl;
+            break;
+          }
           no->objectID=sync.objectID;
           no->classID=sync.classID;
           // update data and create object/entity...
-          if( !no->updateData(sync) )
+          if( !no->updateData(sync) ){
             COUT(1) << "We couldn't update the object: " << sync.objectID << std::endl;
+            return false;
+          }
           if( !no->create() )
             COUT(1) << "We couldn't manifest (create() ) the object: " << sync.objectID << std::endl;
           it=orxonox::ObjectList<Synchronisable>::end();
@@ -348,6 +361,8 @@ namespace network
   GameState *GameStateClient::decode(GameState *old, GameStateCompressed *diff) {
     COUT(4) << "using diffed gamestate" << std::endl;
     GameState *t = decode(diff);
+    if(!t)
+      return NULL;
     GameState *r = undiff(old, t);
     delete[] t->data;
     delete t;

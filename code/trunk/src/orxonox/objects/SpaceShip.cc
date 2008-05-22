@@ -61,6 +61,15 @@ namespace orxonox
 
     SpaceShip* SpaceShip::instance_s;
 
+    SpaceShip *SpaceShip::getLocalShip(){
+      Iterator<SpaceShip> it;
+      for(it = ObjectList<SpaceShip>::start(); it; ++it){
+        if((it)->server_ || ( network::Client::getSingleton() && network::Client::getSingleton()->getShipID()==it->objectID ) )
+          return *it;
+      }
+      return NULL;
+    }
+    
     SpaceShip::SpaceShip() :
       //testvector_(0,0,0),
       //bInvertYAxis_(false),
@@ -144,14 +153,15 @@ namespace orxonox
 
     void SpaceShip::init()
     {
-    if ((server_ || ( network::Client::getSingleton() && network::Client::getSingleton()->getShipID()==objectID ) ))
-    {
-          if (!setMouseEventCallback_)
-          {
-              InputManager::addMouseHandler(this, "SpaceShip");
-              setMouseEventCallback_ = true;
-          }
-    }
+        if ((server_ || ( network::Client::getSingleton() && network::Client::getSingleton()->getShipID()==objectID ) ))
+        {
+              if (!setMouseEventCallback_)
+              {
+                  InputManager::addMouseHandler(this, "SpaceShip");
+                  //InputManager::enableMouseHandler("SpaceShip");
+                  setMouseEventCallback_ = true;
+              }
+        }
 
         // START CREATING THRUSTER
         this->tt_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
@@ -393,7 +403,9 @@ namespace orxonox
 
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
+          
             Projectile *p = new Projectile(this);
+            
             p->setBacksync(true);
             this->timeToReload_ = this->reloadTime_;
         }
