@@ -151,10 +151,11 @@ namespace orxonox
       registerVar( (void*) &(this->getScale().z), sizeof(this->getScale().z), network::DATA, 0x3);
       //register staticity
       registerVar( (void*) &(this->bStatic_), sizeof(this->bStatic_), network::DATA, 0x3);
-      //register acceleration
+      //register acceleration & momentum
       registerVar( (void*) &(this->getAcceleration().x), sizeof(this->getAcceleration().x), network::DATA, 0x3);
       registerVar( (void*) &(this->getAcceleration().y), sizeof(this->getAcceleration().y), network::DATA, 0x3);
       registerVar( (void*) &(this->getAcceleration().z), sizeof(this->getAcceleration().z), network::DATA, 0x3);
+      registerVar( (void*) &(this->getMomentum()), sizeof(this->getMomentum()), network::DATA);
     }
 
     void WorldEntity::attachWorldEntity(WorldEntity* entity)

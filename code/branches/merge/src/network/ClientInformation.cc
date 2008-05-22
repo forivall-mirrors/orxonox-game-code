@@ -50,6 +50,7 @@ namespace network
     gamestateID_=GAMESTATEID_INITIAL;
     preve=0;
     nexte=0;
+    partialGamestateID_=GAMESTATEID_INITIAL-1;
     this->head_=false;
     synched_=false;
   }
@@ -58,6 +59,7 @@ namespace network
     gamestateID_=GAMESTATEID_INITIAL;
     preve=0;
     nexte=0;
+    partialGamestateID_=GAMESTATEID_INITIAL-1;
     this->head_=head;
     synched_=false;
   }
@@ -158,6 +160,14 @@ namespace network
     gamestateID_=id;
     return true;
   }
+  
+  bool ClientInformation::setPartialGamestateID(int id){
+    boost::recursive_mutex::scoped_lock lock(mutex_);
+    if(!this)
+      return false;
+    partialGamestateID_=id;
+    return true;
+  }
 
   int ClientInformation::getID() {
     boost::recursive_mutex::scoped_lock lock(mutex_);
@@ -202,6 +212,14 @@ namespace network
     boost::recursive_mutex::scoped_lock lock(mutex_);
     if(this)
       return gamestateID_;
+    else
+      return -1;
+  }
+  
+  int ClientInformation::getPartialGamestateID() {
+    boost::recursive_mutex::scoped_lock lock(mutex_);
+    if(this)
+      return partialGamestateID_;
     else
       return -1;
   }

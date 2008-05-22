@@ -192,8 +192,6 @@ used by processQueue in Server.cc
         case ENET_EVENT_TYPE_CONNECT:
           addClient(event);
           //this is a workaround to ensure thread safety
-          /*if(!addFakeConnectRequest(&event))
-            COUT(3) << "Problem pushing fakeconnectRequest to queue" << std::endl;*/
           COUT(5) << "Con.Man: connection event has occured" << std::endl;
           break;
         case ENET_EVENT_TYPE_RECEIVE:
@@ -209,6 +207,7 @@ used by processQueue in Server.cc
           clientDisconnect(event->peer);
           break;
         case ENET_EVENT_TYPE_NONE:
+          receiverThread_->yield();
           break;
       }
 //       usleep(100);

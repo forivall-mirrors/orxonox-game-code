@@ -155,7 +155,7 @@ namespace network
     //std::cout << "inside getData" << std::endl;
     if(classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
-    classID=this->getIdentifier()->getNetworkID();
+    this->classID=this->getIdentifier()->getNetworkID();
     std::list<synchronisableVariable *>::iterator i;
     syncData retVal;
     retVal.objectID=this->objectID;
