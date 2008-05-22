@@ -29,7 +29,7 @@
 
 namespace orxonox
 {
-    //ConsoleCommand(RadarOverlayElement, cycleFocus, AccessLevel::User, true);
+    ConsoleCommandShortcut(RadarOverlayElement, cycleFocus, AccessLevel::User);
 
     using namespace Ogre;
 
@@ -181,6 +181,7 @@ namespace orxonox
 	}
 
 	float RadarOverlayElement::getDist2Focus(){
+	    if(focus_ == NULL) return(0.0);
 	    return((focus_->pos_-shipPos_).length());
 	}
 
