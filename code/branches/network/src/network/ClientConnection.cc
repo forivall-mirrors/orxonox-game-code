@@ -97,7 +97,7 @@ namespace network
     receiverThread_ = new boost::thread(boost::bind(&ClientConnection::receiverThread, this));
     //network_threads.create_thread(boost::bind(boost::mem_fn(&ClientConnection::receiverThread), this));
     // wait 10 seconds for the connection to be established
-    return waitEstablished(10000);
+    return waitEstablished(3000);
   }
 
   bool ClientConnection::closeConnection() {
@@ -122,23 +122,21 @@ namespace network
       return true;
   }
 
-  bool ClientConnection::sendPackets(ENetEvent *event) {
-    if(server==NULL)
-      return false;
-    if(enet_host_service(client, event, NETWORK_SEND_WAIT)>=0){
-      return true;}
-    else
-      return false;
-  }
+//   bool ClientConnection::sendPackets(ENetEvent *event) {
+//     if(server==NULL)
+//       return false;
+//     if(enet_host_service(client, event, NETWORK_SEND_WAIT)>=0){
+//       return true;}
+//     else
+//       return false;
+//   }
 
   bool ClientConnection::sendPackets() {
     ENetEvent event;
     if(server==NULL)
       return false;
-    if(enet_host_service(client, &event, NETWORK_SEND_WAIT)>=0){
-      return true;}
-    else
-      return false;
+    enet_host_flush(client);
+    return true;
   }
 
   void ClientConnection::receiverThread() {
@@ -147,11 +145,14 @@ namespace network
     atexit(enet_deinitialize);
     ENetEvent event;
     client = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0);
-    if(client==NULL)
+    if(client==NULL) {
+      COUT(2) << "ClientConnection: could not create client host" << std::endl;
       // add some error handling here ==========================
       quit=true;
+    }
     //connect to the server
     if(!establishConnection()){
+      COUT(2) << "clientConn: receiver thread: could not establishConnection" << std::endl;
       quit=true;
       return;
     }
@@ -166,6 +167,7 @@ namespace network
       switch(event.type){
         // log handling ================
       case ENET_EVENT_TYPE_CONNECT:
+        break;
       case ENET_EVENT_TYPE_RECEIVE:
         COUT(5) << "Cl.Con: receiver-Thread while loop: got new packet" << std::endl;
         if ( !processData(&event) ) COUT(2) << "Current packet was not pushed to packetBuffer -> ev ongoing SegFault" << std::endl;
@@ -212,16 +214,20 @@ namespace network
     ENetEvent event;
     // connect to peer (server is type ENetPeer*)
     server = enet_host_connect(client, &serverAddress, NETWORK_CLIENT_CHANNELS);
-    if(server==NULL)
+    if(server==NULL) {
+      COUT(2) << "ClientConnection: server == NULL" << std::endl;
       // error handling
       return false;
+    }
     // handshake
-    if(enet_host_service(client, &event, NETWORK_CLIENT_TIMEOUT)>0 && event.type == ENET_EVENT_TYPE_CONNECT){
+    if(enet_host_service(client, &event, NETWORK_CLIENT_TIMEOUT)>=0 && event.type == ENET_EVENT_TYPE_CONNECT){
       established=true;
       return true;
     }
-    else
+    else {
+      COUT(2) << "ClientConnection: enet_host_service < 0 or event.type != ENET_EVENT_TYPE_CONNECT # EVENT:" << event.type << std::endl;
       return false;
+    }
   }
 
   bool ClientConnection::processData(ENetEvent *event) {

@@ -121,9 +121,9 @@ namespace network
     if(isConnected){
       COUT(3) << "sending connectrequest" << std::endl;
       if(!client_connection.addPacket(pck_gen.generateConnectRequest()) || !client_connection.sendPackets())
-        COUT(1) << "could not create connection" << std::endl;
+        COUT(1) << "could not send connection request !!!!!!!!!" << std::endl;
     }else
-      COUT(1) << "could not create connection" << std::endl;
+      COUT(1) << "could not create connection laber" << std::endl;
     return isConnected;
   }
 
@@ -215,13 +215,9 @@ namespace network
   bool Client::sendPackets(){
     if(!isConnected)
       return false;
-    ENetEvent event;
     // send packets
-    client_connection.sendPackets(&event);
-    if(event.type==ENET_EVENT_TYPE_NONE)
-      return true;
-    else
-      return false;
+    client_connection.sendPackets();
+    return true;
   }
 
   /**
