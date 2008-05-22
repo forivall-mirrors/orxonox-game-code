@@ -103,8 +103,8 @@ namespace orxonox
 
         energyBar->resize();
 
-        float v = SpaceShip::instance_s->getVelocity().length();
-        float vmax = SpaceShip::instance_s->getMaxSpeed();
+        float v = SpaceShip::getLocalShip()->getVelocity().length();
+        float vmax = SpaceShip::getLocalShip()->getMaxSpeed();
         speedoBar->setValue(v/vmax);
         speedoBar->resize();
 

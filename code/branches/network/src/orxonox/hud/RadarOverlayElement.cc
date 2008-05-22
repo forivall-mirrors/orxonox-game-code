@@ -90,9 +90,9 @@ namespace orxonox
     }
 
     void RadarOverlayElement::update() {
-        shipPos_ = SpaceShip::instance_s->getPosition();
-        currentDir_ = SpaceShip::instance_s->getOrientation()*initialDir_; 		// according to beni....
-		currentOrth_ = SpaceShip::instance_s->getOrientation()*initialOrth_;
+        shipPos_ = SpaceShip::getLocalShip()->getPosition();
+        currentDir_ = SpaceShip::getLocalShip()->getOrientation()*initialDir_; 		// according to beni....
+		currentOrth_ = SpaceShip::getLocalShip()->getOrientation()*initialOrth_;
         plane = Plane(currentDir_, shipPos_);
 
         RadarObject* ro = firstRadarObject_;
