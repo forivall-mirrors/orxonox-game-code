@@ -49,6 +49,7 @@ namespace orxonox
             Ogre::Overlay* orxonoxHUD;
             Ogre::OverlayContainer* container;
             Ogre::TextAreaOverlayElement* test;
+            Ogre::TextAreaOverlayElement* fpsText;
             BarOverlayElement* energyBar;
             BarOverlayElement* speedoBar;
             RadarOverlayElement* radar;
@@ -56,6 +57,7 @@ namespace orxonox
         public:
             HUD(int zoom);
             ~HUD();
+            void setFPS(float fps);
             virtual void tick(float);
 
     };
