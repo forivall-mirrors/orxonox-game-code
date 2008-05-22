@@ -38,6 +38,7 @@
 #include <util/Math.h>
 #include <string.h>
 #include "core/Tickable.h"
+#include "core/ConsoleCommand.h"
 #include "objects/SpaceShip.h"
 #include "../OrxonoxPrereqs.h"
 #include "RadarObject.h"

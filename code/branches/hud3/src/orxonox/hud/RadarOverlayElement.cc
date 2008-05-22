@@ -29,6 +29,8 @@
 
 namespace orxonox
 {
+    //ConsoleCommand(RadarOverlayElement, cycleFocus, AccessLevel::User, true);
+
     using namespace Ogre;
 
     RadarOverlayElement* RadarOverlayElement::instance_s = NULL;
@@ -199,14 +201,22 @@ namespace orxonox
 
 	/*static*/void RadarOverlayElement::cycleFocus(){
 	    if(RadarOverlayElement::instance_s == NULL) return;
-	    if(RadarOverlayElement::instance_s->focus_ == NULL)
+
+	    if(RadarOverlayElement::instance_s->focus_ == NULL){
             RadarOverlayElement::instance_s->focus_ = RadarOverlayElement::instance_s->firstRadarObject_;
-        else
+	    }
+        else{
+            RadarOverlayElement::instance_s->focus_->panel_->setMaterialName("Orxonox/RedDot");
             RadarOverlayElement::instance_s->focus_ = RadarOverlayElement::instance_s->focus_->next;
-        if(RadarOverlayElement::instance_s->focus_ == NULL)
+        }
+
+        if(RadarOverlayElement::instance_s->focus_ == NULL){
             RadarOverlayElement::instance_s->navMarker_->hide();
-        else
+        }
+        else{
             RadarOverlayElement::instance_s->navMarker_->show();
+            RadarOverlayElement::instance_s->focus_->panel_->setMaterialName("Orxonox/WhiteDot");
+        }
 	}
 }
 
