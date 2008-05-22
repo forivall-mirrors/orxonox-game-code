@@ -155,7 +155,7 @@ namespace orxonox
       registerVar( (void*) &(this->getAcceleration().x), sizeof(this->getAcceleration().x), network::DATA, 0x3);
       registerVar( (void*) &(this->getAcceleration().y), sizeof(this->getAcceleration().y), network::DATA, 0x3);
       registerVar( (void*) &(this->getAcceleration().z), sizeof(this->getAcceleration().z), network::DATA, 0x3);
-      registerVar( (void*) &(this->getMomentum()), sizeof(this->getMomentum()), network::DATA);
+      registerVar( (void*) &(this->getMomentum()), sizeof(this->getMomentum()), network::DATA, 0x3);
     }
 
     void WorldEntity::attachWorldEntity(WorldEntity* entity)

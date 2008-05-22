@@ -70,7 +70,6 @@ namespace network
     void printGameStateMap();
 
     int           last_diff_;
-    int           last_gamestate_;
     std::map<int, GameState *> gameStateMap;
     
     

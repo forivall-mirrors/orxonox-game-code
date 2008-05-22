@@ -220,14 +220,6 @@ namespace network
     // get the start of the Synchronisable list
     orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::start();
     syncData sync;
-    /*ClientInformation *client = head_->findClient(clientID);
-    if(client)
-      if(client->getPartialGamestateID()>state->id){
-        COUT(3) << "we received an obsolete partial gamestate" << std::endl;
-        return false;
-      }
-    else;*/
-        //what should we do now ??
     // loop as long as we have some data ;)
     while(data < state->data+state->size){
       // prepare the syncData struct
@@ -275,7 +267,7 @@ namespace network
       }
       ++it;
     }
-    //client->setPartialGamestateID(state->id);
+    
     return true;
   }
   
@@ -435,9 +427,6 @@ namespace network
     if(temp==0)
       return;
     int curid = temp->getGamestateID();
-    if(curid > gamestateID)
-      // the network packets got messed up 
-      return;
     COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
     // decrease usage of gamestate and save it
 //     deleteUnusedGameState(curid);
