@@ -45,6 +45,9 @@ namespace orxonox
     class _OrxonoxExport HUD : public Tickable
     {
         private:
+            HUD();
+            HUD(HUD& instance);
+            ~HUD();
             Ogre::OverlayManager* om;
             Ogre::Overlay* orxonoxHUD;
             Ogre::OverlayContainer* container;
@@ -55,11 +58,12 @@ namespace orxonox
             RadarOverlayElement* radar;
 
         public:
-            HUD(int zoom);
-            ~HUD();
-            void setFPS(float fps);
             virtual void tick(float);
 
+            static HUD* instance_s;
+            static HUD& getSingleton();
+            static void setFPS(float fps);
+            static void cycleRadarFocus();
     };
 }
 

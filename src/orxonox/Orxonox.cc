@@ -179,8 +179,8 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // keep in mind: the order of deletion is very important!
-    if (this->orxonoxHUD_)
-      delete this->orxonoxHUD_;
+//    if (this->orxonoxHUD_)
+//      delete this->orxonoxHUD_;
     Loader::close();
     InputManager::destroy();
     //if (this->auMan_)
@@ -347,7 +347,7 @@ namespace orxonox
 
     // Load the HUD
     COUT(3) << "Orxonox: Loading HUD..." << std::endl;
-    orxonoxHUD_ = new HUD(1);
+    orxonoxHUD_ = &HUD::getSingleton();
 
     COUT(3) << "Orxonox: Loading Console..." << std::endl;
     InputBuffer* ib = dynamic_cast<InputBuffer*>(InputManager::getKeyHandler("buffer"));
@@ -486,7 +486,7 @@ namespace orxonox
 //      orxonoxHUD_->setTime((int)now, 0);
 //      orxonoxHUD_->setRocket2(ogreRoot.getCurrentFrameNumber());
       if (eventTimes[3].back() - eventTimes[3].front() != 0)
-        orxonoxHUD_->setFPS(50000.0f/(eventTimes[3].back() - eventTimes[3].front()));
+        HUD::setFPS(50000.0f/(eventTimes[3].back() - eventTimes[3].front()));
 
       // Iterate through all Tickables and call their tick(dt) function
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)

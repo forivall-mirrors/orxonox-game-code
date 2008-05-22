@@ -42,9 +42,11 @@
 
 namespace orxonox
 {
+    ConsoleCommandShortcut(HUD, cycleRadarFocus, AccessLevel::User);
+
     using namespace Ogre;
 
-    HUD::HUD(int zoom){
+    HUD::HUD(){
         om = &Ogre::OverlayManager::getSingleton();
 
 		// create Factories
@@ -102,7 +104,10 @@ namespace orxonox
         radar->addObject(Vector3(1500.0, 0.0, 100.0));
         radar->addObject(Vector3(0.0, 4000.0, 0.0));
         radar->addObject(Vector3(0.0, 0.0, 6800.0));
-        RadarOverlayElement::cycleFocus();
+    }
+
+    HUD::~HUD(){
+        //todo: clean up objects
     }
 
     void HUD::tick(float dt)
@@ -122,11 +127,17 @@ namespace orxonox
         radar->update();
     }
 
-    void HUD::setFPS(float fps){
-        fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
+    /*static*/HUD& HUD::getSingleton(){
+        static HUD theInstance;
+        return theInstance;
     }
 
-    HUD::~HUD(void){
+    /*static*/void HUD::setFPS(float fps){
+        HUD::getSingleton().fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
+    }
+
+    /*static*/void HUD::cycleRadarFocus(){
+        HUD::getSingleton().radar->cycleFocus();
     }
 }
 

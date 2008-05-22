@@ -71,6 +71,7 @@ namespace orxonox
             void updateNavMarker();
             void addObject(Vector3 pos);
             void listObjects();
+            void cycleFocus();
             float getDist2Focus();
             float calcRadius(RadarObject* obj);
             float calcPhi(RadarObject* obj);
@@ -80,9 +81,6 @@ namespace orxonox
 			RadarObject* firstRadarObject_;         // start of linked list
 			RadarObject* lastRadarObject_;          // end of linked list
 			RadarObject* focus_;                    // object that is focussed
-
-            static RadarOverlayElement* instance_s;
-            static void cycleFocus();
 	};
 }
 
