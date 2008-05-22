@@ -21,44 +21,46 @@
 *   Author:
 *      Yuning Chai
 *   Co-authors:
-*      Felix Schulthess
+*      ...
 *
 */
 
-
-#ifndef _HUD_H__
-#define _HUD_H__
+#ifndef _RADAR2_H__
+#define _RADAR2_H__
 
 #include <string.h>
-#include <OgreOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
 #include <OgrePrerequisites.h>
+#include <OgreOverlayManager.h>
+#include <OgreOverlayElement.h>
+#include <OgrePanelOverlayElement.h>
+#include <OgreStringConverter.h>
 
-#include "OrxonoxPrereqs.h"
-#include "core/Tickable.h"
-#include "BarOverlayElement.h"
-#include "RadarOverlayElement.h"
-
+#include <util/Math.h>
+#include "../OrxonoxPrereqs.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HUD : public Tickable
+    class _OrxonoxExport RadarObject
     {
-        private:
-            Ogre::OverlayManager* om;
-            Ogre::Overlay* orxonoxHUD;
-            Ogre::OverlayContainer* container;
-            Ogre::TextAreaOverlayElement* test;
-            BarOverlayElement* energyBar;
-            BarOverlayElement* speedoBar;
-            RadarOverlayElement* radar;
+    	private:
+    		Ogre::OverlayManager* om;				// our one and only overlay manager
+    		void init();
 
-        public:
-            HUD(int zoom);
-            ~HUD();
-            virtual void tick(float);
+    	public:
+    		RadarObject(Ogre::OverlayContainer* container);
+    		RadarObject(Ogre::OverlayContainer* container, Vector3 pos);
+    		~RadarObject();
 
-    };
+            bool right_;
+            int index_;                             // index number of object
+    		Vector3 pos_;							// position in space
+			Ogre::Real radius_, phi_;				// position on radar
+			Ogre::OverlayContainer* container_;
+			Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
+			RadarObject* next;                      // next pointer of linked list
+
+    		static int count;
+	};
 }
 
 #endif

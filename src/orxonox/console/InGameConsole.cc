@@ -80,7 +80,7 @@ namespace orxonox
         print(convert2UTF(this->ib_->get()));
     }
 
-    void InGameConsole::execute(){
+    void InGameConsole::execute(){	
         newline();
         if (!CommandExecutor::execute(this->ib_->get())){
             print("Error");

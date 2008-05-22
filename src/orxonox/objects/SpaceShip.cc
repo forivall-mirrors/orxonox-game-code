@@ -29,15 +29,13 @@
 #include "OrxonoxStableHeaders.h"
 #include "SpaceShip.h"
 
-#include <string>
-
 #include <OgreCamera.h>
 #include <OgreRenderWindow.h>
 #include <OgreParticleSystem.h>
 #include <OgreSceneNode.h>
 
 #include "CameraHandler.h"
-//#include "util/Convert.h"
+#include "util/Convert.h"
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
@@ -53,6 +51,7 @@
 namespace orxonox
 {
     ConsoleCommand(SpaceShip, setMaxSpeedTest, AccessLevel::Debug, false);
+    ConsoleCommand(SpaceShip, whereAmI, AccessLevel::User, true);
     ConsoleCommandGeneric(test1, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxSpeed", AccessLevel::Debug), false);
     ConsoleCommandGeneric(test2, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxBlubber", AccessLevel::Debug), false);
     ConsoleCommandGeneric(test3, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setRofl", AccessLevel::Debug), false);
@@ -231,27 +230,30 @@ namespace orxonox
       camName_=camera;
       // change camera attributes here, if you want to ;)
     }
-    
+
     void SpaceShip::getFocus(){
       COUT(4) << "requesting focus" << std::endl;
       if(network::Client::getSingleton()==0 || network::Client::getSingleton()->getShipID()==objectID)
         CameraHandler::getInstance()->requestFocus(cam_);
-      
+
     }
-    
+
     void SpaceShip::createCamera(){
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);
       COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
       this->camNode_->setPosition(Vector3(-50,0,10));
-      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
-      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
-      camNode_->setOrientation(q1*q2);
+//      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
+//      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
+//      camNode_->setOrientation(q1*q2);
       COUT(4) << "position: (cam)" << this->camNode_->getPosition() << std::endl;
       cam_ = new Camera(this->camNode_);
 
       cam_->setTargetNode(this->getNode());
 //        cam->setPosition(Vector3(0,-350,0));
+      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
+      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(1,0,0));
+      camNode_->setOrientation(q2*q1);
       if(network::Client::getSingleton()!=0 && network::Client::getSingleton()->getShipID()==objectID){
         this->setBacksync(true);
         CameraHandler::getInstance()->requestFocus(cam_);
@@ -381,6 +383,22 @@ namespace orxonox
             this->camNode_->resetOrientation();
         }
     }
+
+    std::string SpaceShip::whereAmI() {
+	return getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().x)
+	+ "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().y)
+	+ "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().z);
+    }
+
+    Vector3 SpaceShip::getSPosition() {
+	return SpaceShip::getLocalShip()->getPosition();
+    }
+
+    Quaternion SpaceShip::getSOrientation() {
+	return SpaceShip::getLocalShip()->getOrientation();
+    }
+
+    float SpaceShip::getMaxSpeed() { return maxSpeed_; }
 
     void SpaceShip::tick(float dt)
     {
