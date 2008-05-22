@@ -126,7 +126,7 @@ namespace orxonox
         if(focus_ == NULL) return;
         // from the angle we find out where to draw the marker
         // and which of the four arrows to take
-        float r1 = 0.97;//atan(windowW_/windowH_); // doesn't work correctly yet
+        float r1 = atan((float)(windowW_)/(float)(windowH_));
         float phi = focus_->phi_;
         if(focus_->right_){
             if(phi<r1){
