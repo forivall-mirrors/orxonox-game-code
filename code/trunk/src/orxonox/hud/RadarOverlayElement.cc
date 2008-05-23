@@ -112,7 +112,6 @@ namespace orxonox
                 ro->panel_->setPosition(-sin(ro->phi_)*ro->radius_/
                     3.5*dim_/2+dim_/2+left_-2,-cos(ro->phi_)*ro->radius_/3.5*dim_/2+dim_/2+top_-2);
             }
-            listObjects();
             ro = ro->next;
 		}
     }

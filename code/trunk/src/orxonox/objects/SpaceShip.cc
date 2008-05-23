@@ -68,7 +68,7 @@ namespace orxonox
       }
       return NULL;
     }
-    
+
     SpaceShip::SpaceShip() :
       //testvector_(0,0,0),
       //bInvertYAxis_(false),
@@ -236,6 +236,10 @@ namespace orxonox
       if(network::Client::getSingleton()==0 || network::Client::getSingleton()->getShipID()==objectID)
         CameraHandler::getInstance()->requestFocus(cam_);
 
+    }
+
+    Camera* SpaceShip::getCamera(){
+        return cam_;
     }
 
     void SpaceShip::createCamera(){
@@ -421,9 +425,9 @@ namespace orxonox
 
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
-          
+
             Projectile *p = new Projectile(this);
-            
+
             p->setBacksync(true);
             this->timeToReload_ = this->reloadTime_;
         }

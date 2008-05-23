@@ -63,10 +63,11 @@ namespace orxonox
         // creating text to display fps
         fpsText = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "fpsText"));
         fpsText->show();
-        fpsText->setMetricsMode(Ogre::GMM_RELATIVE);
-        fpsText->setDimensions(0.3, 0.3);
-        fpsText->setPosition(0.9, 0.02);
+        fpsText->setMetricsMode(Ogre::GMM_PIXELS);
+        fpsText->setDimensions(0.001, 0.001);
+        fpsText->setPosition(10, 10);
         fpsText->setFontName("Console");
+        fpsText->setCharHeight(20);
         fpsText->setCaption("init");
 
         // create energy bar
