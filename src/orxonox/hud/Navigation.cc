@@ -26,6 +26,7 @@
 */
 
 #include <OgreOverlayManager.h>
+#include <OgreStringConverter.h>
 #include <GraphicsEngine.h>
 #include "objects/SpaceShip.h"
 #include "HUD.h"
@@ -108,8 +109,8 @@ namespace orxonox
         }
 
         int d = (float)(getDist2Focus()/10);
-        if(d) test->setCaption("Distance: " + Ogre::StringConverter::toString(d));
-        else test->setCaption("");
+        if(d) navText_->setCaption("Distance: " + Ogre::StringConverter::toString(d));
+        else navText_->setCaption("");
     }
 
     void Navigation::cycleFocus(){
