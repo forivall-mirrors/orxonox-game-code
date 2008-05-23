@@ -35,6 +35,8 @@
 #include "core/Tickable.h"
 #include "BarOverlayElement.h"
 #include "RadarOverlayElement.h"
+#include "Navigation.h"
+#include "RadarObject.h"
 
 
 namespace orxonox
@@ -53,15 +55,20 @@ namespace orxonox
             BarOverlayElement* energyBar;
             BarOverlayElement* speedoBar;
             RadarOverlayElement* radar;
+            RadarObject* firstRadarObject;
+            RadarObject* lastRadarObject;
+            Navigation* nav;
 
         public:
             virtual void tick(float);
+            void addRadarObject(Vector3 pos);
+            RadarObject* getFirstRadarObject();
 
             static HUD* instance_s;
             static HUD& getSingleton();
             static void setFPS(float fps);
             static void setEnergy(float value);
-            static void cycleRadarFocus();
+            static void cycleNavigationFocus();
     };
 }
 

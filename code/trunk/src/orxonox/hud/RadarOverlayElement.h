@@ -57,19 +57,10 @@ namespace orxonox
             void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
 			void resize();
             void update();
-            void updateNavMarker();
-            void addObject(Vector3 pos);
             void listObjects();
-            void cycleFocus();
-            float getDist2Focus();
             float calcRadius(RadarObject* obj);
             float calcPhi(RadarObject* obj);
             bool calcRight(RadarObject* obj);
-
-            Ogre::PanelOverlayElement* navMarker_;  // marker to help navigating
-			RadarObject* firstRadarObject_;         // start of linked list
-			RadarObject* lastRadarObject_;          // end of linked list
-			RadarObject* focus_;                    // object that is focussed
 	};
 }
 

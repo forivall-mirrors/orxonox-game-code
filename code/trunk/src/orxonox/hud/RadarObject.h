@@ -27,7 +27,6 @@
 
 #ifndef _RADAR2_H__
 #define _RADAR2_H__
-
 #include <OgrePrerequisites.h>
 #include "../OrxonoxPrereqs.h"
 

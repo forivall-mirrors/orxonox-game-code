@@ -42,12 +42,14 @@
 
 namespace orxonox
 {
-    ConsoleCommandShortcut(HUD, cycleRadarFocus, AccessLevel::User);
+    ConsoleCommandShortcut(HUD, cycleNavigationFocus, AccessLevel::User);
 
     using namespace Ogre;
 
     HUD::HUD(){
         om = &Ogre::OverlayManager::getSingleton();
+        firstRadarObject = NULL;
+        lastRadarObject = NULL;
 
 		// create Factories
         BarOverlayElementFactory *barOverlayElementFactory = new BarOverlayElementFactory();
@@ -85,6 +87,9 @@ namespace orxonox
         radar = static_cast<RadarOverlayElement*>(om->createOverlayElement("Radar", "radar"));
         radar->show();
 
+        // create Navigation
+        nav = new Navigation(container);
+
 		// set up screen-wide container
         container->show();
 
@@ -97,13 +102,16 @@ namespace orxonox
         container->setMetricsMode(Ogre::GMM_RELATIVE);
         container->addChild(test);
         container->addChild(fpsText);
+
         energyBar->init(0.01, 0.94, 0.4, container);
         energyBar->setValue(1);
+
         speedoBar->init(0.01, 0.90, 0.4, container);
+
         radar->init(0.5, 0.9, 0.2, container);
-        radar->addObject(Vector3(2000.0, 1000.0, 1000.0));
-        radar->addObject(Vector3(0.0, 4000.0, 0.0));
-        radar->addObject(Vector3(0.0, 0.0, 6800.0));
+        addRadarObject(Vector3(2000.0, 1000.0, 1000.0));
+        addRadarObject(Vector3(0.0, 4000.0, 0.0));
+        addRadarObject(Vector3(0.0, 0.0, 6800.0));
     }
 
     HUD::~HUD(){
@@ -112,7 +120,7 @@ namespace orxonox
 
     void HUD::tick(float dt)
     {
-        int d = (float)(radar->getDist2Focus()/10);
+        int d = (float)(nav->getDist2Focus()/10);
         if(d) test->setCaption("Distance: " + Ogre::StringConverter::toString(d));
         else test->setCaption("");
 
@@ -125,6 +133,24 @@ namespace orxonox
 
         radar->resize();
         radar->update();
+
+        nav->update();
+    }
+
+    void HUD::addRadarObject(Vector3 pos){
+        // check if this is the first RadarObject to create
+        if(firstRadarObject == NULL){
+            firstRadarObject = new RadarObject(container, pos);
+            lastRadarObject = firstRadarObject;
+        }
+        else{ // if not, append to list
+            lastRadarObject->next = new RadarObject(container, pos);
+            lastRadarObject = lastRadarObject->next;
+        }
+    }
+
+    RadarObject* HUD::getFirstRadarObject(){
+        return firstRadarObject;
     }
 
     /*static*/HUD& HUD::getSingleton(){
@@ -140,8 +166,8 @@ namespace orxonox
         HUD::getSingleton().energyBar->setValue(value);
     }
 
-    /*static*/void HUD::cycleRadarFocus(){
-        HUD::getSingleton().radar->cycleFocus();
+    /*static*/void HUD::cycleNavigationFocus(){
+        HUD::getSingleton().nav->cycleFocus();
     }
 }
 
