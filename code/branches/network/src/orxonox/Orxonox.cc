@@ -516,6 +516,7 @@ namespace orxonox
 
       // again, just to be sure ogre works fine
       ogreRoot._fireFrameEnded(evt);
+      //msleep(100);
 	  }
 
     if(mode_==CLIENT)

@@ -52,6 +52,12 @@ namespace orxonox
 {
     ConsoleCommand(SpaceShip, setMaxSpeedTest, AccessLevel::Debug, false);
     ConsoleCommand(SpaceShip, whereAmI, AccessLevel::User, true);
+    ConsoleCommand(SpaceShip, moveLongitudinal, AccessLevel::User, true).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
+    ConsoleCommand(SpaceShip, moveLateral, AccessLevel::User, true).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
+    ConsoleCommand(SpaceShip, moveYaw, AccessLevel::User, true).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
+    ConsoleCommand(SpaceShip, movePitch, AccessLevel::User, true).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
+    ConsoleCommand(SpaceShip, moveRoll, AccessLevel::User, true).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
+    ConsoleCommand(SpaceShip, fire, AccessLevel::User, true).setKeybindMode(KeybindMode::OnHold);
     ConsoleCommandGeneric(test1, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxSpeed", AccessLevel::Debug), false);
     ConsoleCommandGeneric(test2, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxBlubber", AccessLevel::Debug), false);
     ConsoleCommandGeneric(test3, SpaceShip, createExecutor(createFunctor(&SpaceShip::setMaxSpeedTest), "setRofl", AccessLevel::Debug), false);
@@ -307,77 +313,15 @@ namespace orxonox
             return -1;
     }
 
-    void SpaceShip::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
-    {
-/*
-        this->mouseX += e.state.X.rel;
-        if (this->bInvertMouse_)
-            this->mouseY += e.state.Y.rel;
-        else
-            this->mouseY -= e.state.Y.rel;
-
-//        if(mouseX>maxMouseX) maxMouseX = mouseX;
-//        if(mouseX<minMouseX) minMouseX = mouseX;
-//        cout << "mouseX: " << mouseX << "\tmouseY: " << mouseY << endl;
-
-        this->moved = true;
-*/
-        if (this->bRMousePressed_)
-        {
-            this->camNode_->roll(Degree(-rel.x * 0.10));
-            this->camNode_->yaw(Degree(rel.y * 0.10));
-        }
-        else
-        {
-            float minDimension = clippingSize.y;
-            if (clippingSize.x < minDimension)
-                minDimension = clippingSize.x;
-
-            this->mouseX_ += rel.x;
-            if (this->mouseX_ < -minDimension)
-                this->mouseX_ = -minDimension;
-            if (this->mouseX_ > minDimension)
-                this->mouseX_ = minDimension;
-
-            this->mouseY_ += rel.y;
-            if (this->mouseY_ < -minDimension)
-                this->mouseY_ = -minDimension;
-            if (this->mouseY_ > minDimension)
-                this->mouseY_ = minDimension;
-
-            float xRotation = this->mouseX_ / minDimension;
-            xRotation = xRotation*xRotation * sgn(xRotation);
-            xRotation *= -this->rotationAcceleration_;
-            if (xRotation > this->maxRotation_)
-                xRotation = this->maxRotation_;
-            if (xRotation < -this->maxRotation_)
-                xRotation = -this->maxRotation_;
-            this->mouseXRotation_ = Radian(xRotation);
-
-            float yRotation = this->mouseY_ / minDimension;
-            yRotation = yRotation*yRotation * sgn(yRotation);
-            yRotation *= this->rotationAcceleration_;
-            if (yRotation > this->maxRotation_)
-                yRotation = this->maxRotation_;
-            if (yRotation < -this->maxRotation_)
-                yRotation = -this->maxRotation_;
-            this->mouseYRotation_ = Radian(yRotation);
-        }
-    }
-
     void SpaceShip::mouseButtonPressed(MouseButton::Enum id)
     {
-        if (id == MouseButton::Left)
-            this->bLMousePressed_ = true;
-        else if (id == MouseButton::Right)
+        if (id == MouseButton::Right)
             this->bRMousePressed_ = true;
     }
 
     void SpaceShip::mouseButtonReleased(MouseButton::Enum id)
     {
-        if (id == MouseButton::Left)
-            this->bLMousePressed_ = false;
-        else if (id == MouseButton::Right)
+        if (id == MouseButton::Right)
         {
             this->bRMousePressed_ = false;
             this->camNode_->resetOrientation();
@@ -494,31 +438,6 @@ namespace orxonox
             }
         }
 
-        if( (network::Client::getSingleton() &&  network::Client::getSingleton()->getShipID() == objectID) || server_ )
-        {
-          COUT(4) << "steering our ship: " << objectID << std::endl;
-          if (InputManager::isKeyDown(KeyCode::Up) || InputManager::isKeyDown(KeyCode::W))
-            this->acceleration_.x = this->translationAcceleration_;
-          else if(InputManager::isKeyDown(KeyCode::Down) || InputManager::isKeyDown(KeyCode::S))
-            this->acceleration_.x = -this->translationAcceleration_;
-          else
-            this->acceleration_.x = 0;
-
-          if (InputManager::isKeyDown(KeyCode::Right) || InputManager::isKeyDown(KeyCode::D))
-            this->acceleration_.y = -this->translationAcceleration_;
-          else if (InputManager::isKeyDown(KeyCode::Left) || InputManager::isKeyDown(KeyCode::A))
-            this->acceleration_.y = this->translationAcceleration_;
-          else
-            this->acceleration_.y = 0;
-
-          if (InputManager::isKeyDown(KeyCode::Delete) || InputManager::isKeyDown(KeyCode::Q))
-            this->momentum_ = Radian(-this->rotationAccelerationRadian_);
-          else if (InputManager::isKeyDown(KeyCode::PageDown) || InputManager::isKeyDown(KeyCode::E))
-            this->momentum_ = Radian(this->rotationAccelerationRadian_);
-          else
-            this->momentum_ = 0;
-        }/*else
-          COUT(4) << "not steering ship: " << objectID << " our ship: " << network::Client::getSingleton()->getShipID() << std::endl;*/
 
         WorldEntity::tick(dt);
 
@@ -532,6 +451,63 @@ namespace orxonox
             this->tt_->setRate(emitterRate_);
         else
             this->tt_->setRate(0);
+
+        if( (network::Client::getSingleton() &&  network::Client::getSingleton()->getShipID() == objectID) || server_ )
+        {
+          COUT(4) << "steering our ship: " << objectID << std::endl;
+          this->acceleration_.x = 0;
+          this->acceleration_.y = 0;
+          this->momentum_ = 0;
+          this->mouseXRotation_ = Radian(0);
+          this->mouseYRotation_ = Radian(0);
+          this->bLMousePressed_ = false;
+        }/*else
+          COUT(4) << "not steering ship: " << objectID << " our ship: " << network::Client::getSingleton()->getShipID() << std::endl;*/
+    }
+    void SpaceShip::movePitch(float val)
+    {
+        SpaceShip* this_ = getLocalShip();
+        val = -val * val * sgn(val) * this_->rotationAcceleration_;
+        if (val > this_->maxRotation_)
+            val = this_->maxRotation_;
+        if (val < -this_->maxRotation_)
+            val = -this_->maxRotation_;
+        this_->mouseYRotation_ = Radian(val);
     }
 
+    void SpaceShip::moveYaw(float val)
+    {
+        SpaceShip* this_ = getLocalShip();
+        val = -val * val * sgn(val) * this_->rotationAcceleration_;
+        if (val > this_->maxRotation_)
+            val = this_->maxRotation_;
+        if (val < -this_->maxRotation_)
+            val = -this_->maxRotation_;
+        this_->mouseXRotation_ = Radian(val);
+    }
+
+    void SpaceShip::moveRoll(float val)
+    {
+        SpaceShip* this_ = getLocalShip();
+        this_->momentum_ = Radian(-this_->rotationAccelerationRadian_ * val);
+    }
+
+    void SpaceShip::moveLongitudinal(float val)
+    {
+        SpaceShip* this_ = getLocalShip();
+        COUT(3) << val << std::endl;
+        this_->acceleration_.x = this_->translationAcceleration_ * val;
+    }
+
+    void SpaceShip::moveLateral(float val)
+    {
+        SpaceShip* this_ = getLocalShip();
+        this_->acceleration_.y = -this_->translationAcceleration_ * val;
+    }
+
+    void SpaceShip::fire()
+    {
+        SpaceShip* this_ = getLocalShip();
+        this_->bLMousePressed_ = true;
+    }
 }

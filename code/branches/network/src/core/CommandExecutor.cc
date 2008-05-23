@@ -402,12 +402,12 @@ namespace orxonox
 
         if (evaluation.bEvaluatedParams_ && evaluation.evaluatedExecutor_)
         {
-std::cout << "CE_execute (evaluation): " << evaluation.evaluatedExecutor_->getName() << " " << evaluation.param_[0] << " " << evaluation.param_[1] << " " << evaluation.param_[2] << " " << evaluation.param_[3] << " " << evaluation.param_[4] << std::endl;
+//std::cout << "CE_execute (evaluation): " << evaluation.evaluatedExecutor_->getName() << " " << evaluation.param_[0] << " " << evaluation.param_[1] << " " << evaluation.param_[2] << " " << evaluation.param_[3] << " " << evaluation.param_[4] << std::endl;
             (*evaluation.evaluatedExecutor_)(evaluation.param_[0], evaluation.param_[1], evaluation.param_[2], evaluation.param_[3], evaluation.param_[4]);
             return true;
         }
 
-std::cout << "CE_execute: " << evaluation.processedCommand_ << "\n";
+//std::cout << "CE_execute: " << evaluation.processedCommand_ << "\n";
         switch (evaluation.state_)
         {
             case CS_Uninitialized:

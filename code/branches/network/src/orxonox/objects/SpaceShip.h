@@ -65,17 +65,23 @@ namespace orxonox
             void setRotDamp(float value);
 
             void getFocus();
-            static SpaceShip* instance_s;
             static Vector3 getSPosition();
             static Quaternion getSOrientation();
             static std::string whereAmI();
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
 
+            static void movePitch(float value);
+            static void moveYaw(float value);
+            static void moveRoll(float value);
+            static void moveLongitudinal(float value);
+            static void moveLateral(float value);
+            static void fire();
+
             void mouseButtonPressed (MouseButton::Enum id);
             void mouseButtonReleased(MouseButton::Enum id);
             void mouseButtonHeld    (MouseButton::Enum id) { }
-            void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
+            void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) { }
             void mouseScrolled      (int abs, int rel) { }
 
             float getMaxSpeed();
@@ -130,6 +136,8 @@ namespace orxonox
 
             float emitterRate_;
             bool server_;
+
+            static SpaceShip* instance_s;
     };
 }
 

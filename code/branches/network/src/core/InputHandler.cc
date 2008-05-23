@@ -158,7 +158,7 @@ namespace orxonox
         // second argument can be the amplitude for the case it as an axis command
         // default amplitude is 1.0f
         float paramModifier = 1.0f;
-        if (getLowercase(tokens[iToken]) == "axisamp")
+        if (getLowercase(tokens[iToken]) == "scale")
         {
           iToken++;
           if (iToken == tokens.size() || !convertValue(&paramModifier, tokens[iToken]))
@@ -306,6 +306,11 @@ namespace orxonox
   */
   KeyBinder::KeyBinder() : deriveTime_(0.0f)
   {
+    mouseRelative_[0] = 0;
+    mouseRelative_[1] = 0;
+    mousePosition_[0] = 0;
+    mousePosition_[1] = 0;
+
     RegisterObject(KeyBinder);
 
     // keys
@@ -476,9 +481,10 @@ namespace orxonox
   void KeyBinder::setConfigValues()
   {
     SetConfigValue(analogThreshold_, 0.01f)  .description("Threshold for analog axes until which the state is 0.");
-    SetConfigValue(bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
-    SetConfigValue(derivePeriod_, 0.1f)      .description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
     SetConfigValue(mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
+    SetConfigValue(bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
+    SetConfigValue(derivePeriod_, 0.1f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
+    SetConfigValue(mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
 
     float oldThresh = buttonThreshold_;
     SetConfigValue(buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
@@ -573,6 +579,7 @@ namespace orxonox
       // these are the actually useful axis bindings for analog input AND output
       if (halfAxes_[i].relVal_ > analogThreshold_ || halfAxes_[i].absVal_ > analogThreshold_)
       {
+        COUT(3) << halfAxes_[i].name_ << "\t" << halfAxes_[i].absVal_ << std::endl;
         halfAxes_[i].execute();
       }
     }
@@ -587,13 +594,18 @@ namespace orxonox
         {
           if (mouseRelative_[i] > 0)
           {
-            halfAxes_[2*i + 0].absVal_ = mouseRelative_[i] * derivePeriod_ / 500 * mouseSensitivity_;
+            halfAxes_[2*i + 0].absVal_ =  mouseRelative_[i] / derivePeriod_ / 5000 * mouseSensitivityDerived_;
             halfAxes_[2*i + 1].absVal_ = 0.0f;
           }
-          else if (mouseRelative_[0] < 0)
+          else if (mouseRelative_[i] < 0)
           {
             halfAxes_[2*i + 0].absVal_ = 0.0f;
-            halfAxes_[2*i + 1].absVal_ = -mouseRelative_[i] * derivePeriod_ / 500 * mouseSensitivity_;
+            halfAxes_[2*i + 1].absVal_ = -mouseRelative_[i] / derivePeriod_ / 5000 * mouseSensitivityDerived_;
+          }
+          else
+          {
+            halfAxes_[2*i + 0].absVal_ = 0.0f;
+            halfAxes_[2*i + 1].absVal_ = 0.0f;
           }
           //COUT(3) << mouseRelative_[i] << " | ";
           mouseRelative_[i] = 0;
@@ -671,7 +683,7 @@ namespace orxonox
               halfAxes_[0 + 2*i].absVal_ =  0.0f;
             }
             else
-              halfAxes_[1 + 2*i].absVal_ =  ((float)mousePosition_[i])/1024 * mouseSensitivity_;
+              halfAxes_[0 + 2*i].absVal_ =  ((float)mousePosition_[i])/1024 * mouseSensitivity_;
           }
           else
           {
@@ -686,6 +698,10 @@ namespace orxonox
             else
               halfAxes_[1 + 2*i].absVal_ = -((float)mousePosition_[i])/1024 * mouseSensitivity_;
           }
+          //COUT(3) << "half axis 0: " << halfAxes_[0].absVal_ << std::endl;
+          //COUT(3) << "half axis 1: " << halfAxes_[1].absVal_ << std::endl;
+          //COUT(3) << "half axis 2: " << halfAxes_[2].absVal_ << std::endl;
+          //COUT(3) << "half axis 3: " << halfAxes_[3].absVal_ << std::endl;
 
           // relative
           if (rel[i] > 0)
@@ -721,18 +737,36 @@ namespace orxonox
   void KeyBinder::joyStickAxisMoved(int joyStickID, int axis, int value)
   {
     // TODO: check whether 16 bit integer as general axis value is a good idea (works under windows)
-    CCOUT(3) << halfAxes_[8 + axis].name_ << std::endl;
+    int i = 8 + axis * 2;
     if (value >= 0)
     {
-      halfAxes_[8 + axis].absVal_ = ((float)value)/0x8000;
-      halfAxes_[8 + axis].relVal_ = ((float)value)/0x8000;
-      halfAxes_[8 + axis].hasChanged_ = true;
+      //if (value > 10000)
+      //{ CCOUT(3) << halfAxes_[i].name_ << std::endl; }
+
+      halfAxes_[i].absVal_ = ((float)value)/0x8000;
+      halfAxes_[i].relVal_ = ((float)value)/0x8000;
+      halfAxes_[i].hasChanged_ = true;
+      if (halfAxes_[i + 1].absVal_ > 0)
+      {
+        halfAxes_[i + 1].absVal_ = -0.0f;
+        halfAxes_[i + 1].relVal_ = -0.0f;
+        halfAxes_[i + 1].hasChanged_ = true;
+      }
     }
     else
     {
-      halfAxes_[8 + axis + 1].absVal_ = -((float)value)/0x8000;
-      halfAxes_[8 + axis + 1].relVal_ = -((float)value)/0x8000;
-      halfAxes_[8 + axis + 1].hasChanged_ = true;
+      //if (value < -10000)
+      //{ CCOUT(3) << halfAxes_[i + 1].name_ << std::endl; }
+
+      halfAxes_[i + 1].absVal_ = -((float)value)/0x8000;
+      halfAxes_[i + 1].relVal_ = -((float)value)/0x8000;
+      halfAxes_[i + 1].hasChanged_ = true;
+      if (halfAxes_[i].absVal_ > 0)
+      {
+        halfAxes_[i].absVal_ = -0.0f;
+        halfAxes_[i].relVal_ = -0.0f;
+        halfAxes_[i].hasChanged_ = true;
+      }
     }
   }
 

@@ -602,7 +602,7 @@ namespace orxonox
       iJoyStick++;
 
     // check whether the button already is in the list (can happen when focus was lost)
-    std::vector<int> buttonsDown = joyStickButtonsDown_[iJoyStick];
+    std::vector<int>& buttonsDown = joyStickButtonsDown_[iJoyStick];
     unsigned int iButton = 0;
     while (iButton < buttonsDown.size() && buttonsDown[iButton] != button)
       iButton++;
@@ -624,7 +624,7 @@ namespace orxonox
       iJoyStick++;
 
     // remove the button from the joyStickButtonsDown_ list
-    std::vector<int> buttonsDown = joyStickButtonsDown_[iJoyStick];
+    std::vector<int>& buttonsDown = joyStickButtonsDown_[iJoyStick];
     for (unsigned int iButton = 0; iButton < buttonsDown.size(); iButton++)
     {
       if (buttonsDown[iButton] == button)
@@ -642,7 +642,8 @@ namespace orxonox
 
   bool InputManager::axisMoved(const OIS::JoyStickEvent &arg, int axis)
   {
-    //CCOUT(3) << arg.state.mAxes[axis].abs << std::endl;
+    //if (arg.state.mAxes[axis].abs > 10000 || arg.state.mAxes[axis].abs < -10000)
+    //{ CCOUT(3) << "axis " << axis << " moved" << arg.state.mAxes[axis].abs << std::endl;}
     // use the device to identify which one called the method
     OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
     unsigned int iJoyStick = 0;
@@ -658,6 +659,8 @@ namespace orxonox
 
   bool InputManager::sliderMoved(const OIS::JoyStickEvent &arg, int id)
   {
+    //if (arg.state.mSliders[id].abX > 10000 || arg.state.mSliders[id].abX < -10000)
+    //{CCOUT(3) << "slider " << id << " moved" << arg.state.mSliders[id].abX << std::endl;}
     //CCOUT(3) << arg.state.mSliders[id].abX << "\t |" << arg.state.mSliders[id].abY << std::endl;
     // use the device to identify which one called the method
     OIS::JoyStick* joyStick = (OIS::JoyStick*)arg.device;
