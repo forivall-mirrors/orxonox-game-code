@@ -19,50 +19,44 @@
 *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *
 *   Author:
-*      Felix Schulthess
+*      Yuning Chai
 *   Co-authors:
 *      ...
 *
 */
 
-#include <string.h>
-#include <OgreOverlayManager.h>
+#ifndef _NAVIGATION_H__
+#define _NAVIGATION_H__
+
+#include <OgrePrerequisites.h>
 #include <OgrePanelOverlayElement.h>
-#include <OgreStringConverter.h>
-#include <util/Math.h>
+#include "../OrxonoxPrereqs.h"
+#include "util/Math.h"
 #include "RadarObject.h"
 
 namespace orxonox
 {
-    using namespace Ogre;
+    class _OrxonoxExport Navigation
+    {
+    	private:
+    		Ogre::OverlayManager* om;				    // our one and only overlay manager
+    		Vector3 shipPos_;                           // position of ship
+    		int windowW_, windowH_;
 
-	int RadarObject::count = 0;		// initialize static variable
+    		void init();
 
-	RadarObject::RadarObject(OverlayContainer* container){
-		container_ = container;
-		pos_ = Vector3(0.0, 0.0, 0.0);
-		init();
-	}
+    	public:
+    		Navigation(Ogre::OverlayContainer* container);
+    		Navigation(Ogre::OverlayContainer* container, RadarObject* focus);
+    		~Navigation();
+            Ogre::OverlayContainer* container_;
+			Ogre::PanelOverlayElement* navMarker_;     // the panel used to show the dot
+			RadarObject* focus_;                        // next pointer of linked list
 
-	RadarObject::RadarObject(OverlayContainer* container, Vector3 pos){
-		container_ = container;
-		pos_ = pos;
-		init();
-	}
-
-	RadarObject::~RadarObject(){}
-
-	void RadarObject::init(){
-	    next = NULL;
-		om = &OverlayManager::getSingleton();
-		panel_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel",
-			"Object"+StringConverter::toString(count)));
-		panel_->setMaterialName("Orxonox/RedDot");
-		panel_->setDimensions(3,3);
-        panel_->setMetricsMode(Ogre::GMM_PIXELS);
-        panel_->show();
-        index_ = count;
-        count++;
-        container_->addChild(panel_);
-	}
+    		void update();
+    		void cycleFocus();
+    		float getDist2Focus();
+	};
 }
+
+#endif
