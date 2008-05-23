@@ -19,7 +19,7 @@
 *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *
 *   Author:
-*      Yuning Chai
+*      Felix Schulthess
 *   Co-authors:
 *      ...
 *
@@ -29,8 +29,6 @@
 #define _NAVIGATION_H__
 
 #include <OgrePrerequisites.h>
-#include <OgrePanelOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
 #include "../OrxonoxPrereqs.h"
 #include "util/Math.h"
 #include "RadarObject.h"
@@ -43,11 +41,14 @@ namespace orxonox
     		Ogre::OverlayManager* om;				    // our one and only overlay manager
             Ogre::OverlayContainer* container_;
             Ogre::PanelOverlayElement* navMarker_;      // the panel used to show the arrow
-            Ogre::TextAreaOverlayElement* navText_;      // displaying distance...
+            Ogre::TextAreaOverlayElement* navText_;     // displaying distance
+            Ogre::MovableObject* movo_;
+            Ogre::Camera* cam_;
     		Vector3 shipPos_;                           // position of ship
     		int windowW_, windowH_;
 
     		void init();
+    		void updateMarker();
 
     	public:
     		Navigation(Ogre::OverlayContainer* container);

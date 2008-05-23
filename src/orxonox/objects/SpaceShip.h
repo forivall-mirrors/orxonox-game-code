@@ -43,9 +43,9 @@ namespace orxonox
     class _OrxonoxExport SpaceShip : public Model, public MouseHandler
     {
         public:
-          
+
             static SpaceShip *getLocalShip();
-            
+
             SpaceShip();
             ~SpaceShip();
             bool create();
@@ -65,6 +65,7 @@ namespace orxonox
             void setRotDamp(float value);
 
             void getFocus();
+            Camera* getCamera();
             static SpaceShip* instance_s;
             static Vector3 getSPosition();
             static Quaternion getSOrientation();
