@@ -43,7 +43,7 @@ namespace orxonox
     {
         CS_Uninitialized,
         CS_Empty,
-        CS_FunctionClass_Or_Shortcut,
+        CS_ShortcutOrIdentifier,
         CS_Shortcut_Params,
         CS_Shortcut_Finished,
         CS_Function,
@@ -59,7 +59,7 @@ namespace orxonox
 
             void initialize(const std::string& command);
 
-            void execute() const;
+            bool execute() const;
             std::string complete() const;
             std::string hint() const;
             void evaluateParams();
@@ -100,10 +100,12 @@ namespace orxonox
             inline void setNewCommand(bool bNewCommand)
                 { this->bNewCommand_ = bNewCommand; }
 
-            inline std::list<std::pair<const std::string*, const std::string*> >& getListOfPossibleFunctionClasses()
-                { return this->listOfPossibleFunctionClasses_; }
+            inline std::list<std::pair<const std::string*, const std::string*> >& getListOfPossibleIdentifiers()
+                { return this->listOfPossibleIdentifiers_; }
             inline std::list<std::pair<const std::string*, const std::string*> >& getListOfPossibleFunctions()
                 { return this->listOfPossibleFunctions_; }
+            inline std::list<std::pair<const std::string*, const std::string*> >& getListOfPossibleArguments()
+                { return this->listOfPossibleArguments_; }
 
             inline void setAdditionalParameter(const std::string& param)
                 { this->additionalParameter_ = param; this->bEvaluatedParams_ = false; }
@@ -131,8 +133,9 @@ namespace orxonox
             SubString commandTokens_;
             std::string additionalParameter_;
 
-            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleFunctionClasses_;
+            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleIdentifiers_;
             std::list<std::pair<const std::string*, const std::string*> > listOfPossibleFunctions_;
+            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleArguments_;
 
             Identifier* functionclass_;
             ConsoleCommand* function_;

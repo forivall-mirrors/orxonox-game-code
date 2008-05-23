@@ -230,6 +230,12 @@ namespace orxonox
     */
     void Identifier::addConfigValueContainer(const std::string& varname, ConfigValueContainer* container)
     {
+        std::map<std::string, ConfigValueContainer*>::const_iterator it = this->configValues_.find(varname);
+        if (it != this->configValues_.end())
+        {
+            COUT(2) << "Warning: Overwriting config-value with name " << varname << " in class " << this->getName() << "." << std::endl;
+        }
+
         this->bHasConfigValues_ = true;
         this->configValues_[varname] = container;
         this->configValues_LC_[getLowercase(varname)] = container;
@@ -271,6 +277,12 @@ namespace orxonox
     */
     ConsoleCommand& Identifier::addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut)
     {
+        std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_.find(command->getName());
+        if (it != this->consoleCommands_.end())
+        {
+            COUT(2) << "Warning: Overwriting console-command with name " << command->getName() << " in class " << this->getName() << "." << std::endl;
+        }
+
         this->bHasConsoleCommands_ = true;
         this->consoleCommands_[command->getName()] = command;
         this->consoleCommands_LC_[getLowercase(command->getName())] = command;

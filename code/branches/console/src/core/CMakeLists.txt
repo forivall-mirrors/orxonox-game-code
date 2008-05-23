@@ -19,6 +19,8 @@ SET(CORE_SRC_FILES
   Shell.cc
   CommandExecutor.cc
   CommandEvaluation.cc
+  ConsoleCommand.cc
+  ArgumentCompletionFunctions.cc
   ConsoleCommandCompilation.cc
   Language.cc
   ClassTreeMask.cc

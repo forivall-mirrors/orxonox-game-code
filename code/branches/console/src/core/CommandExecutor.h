@@ -77,17 +77,19 @@ namespace orxonox
 
             static void parse(const std::string& command, bool bInitialize = true);
 
-            static bool argumentsFinished(unsigned int num);
             static unsigned int argumentsFinished();
             static unsigned int argumentsGiven();
-            static bool enoughArgumentsGiven(ConsoleCommand* command, unsigned int head);
-            static std::string getToken(unsigned int index);
+            static bool enoughArgumentsGiven(ConsoleCommand* command);
+            static std::string getArgument(unsigned int index);
+            static std::string getLastArgument();
 
-            static void createListOfPossibleFunctionClasses(const std::string& fragment);
+            static void createListOfPossibleIdentifiers(const std::string& fragment);
             static void createListOfPossibleFunctions(const std::string& fragment, Identifier* identifier = 0);
+            static void createListOfPossibleArguments(const std::string& fragment, ConsoleCommand* command, unsigned int param);
 
             static Identifier* getPossibleIdentifier(const std::string& name);
             static ConsoleCommand* getPossibleCommand(const std::string& name, Identifier* identifier = 0);
+            static const std::string* getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param);
 
             static bool compareStringsInList(const std::pair<const std::string*, const std::string*>& first, const std::pair<const std::string*, const std::string*>& second);
 

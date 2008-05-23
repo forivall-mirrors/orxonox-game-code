@@ -51,7 +51,7 @@ namespace orxonox
 
         this->bEvaluatedParams_ = false;
 
-        this->listOfPossibleFunctionClasses_.clear();
+        this->listOfPossibleIdentifiers_.clear();
         this->listOfPossibleFunctions_.clear();
 
         this->functionclass_ = 0;
@@ -63,18 +63,7 @@ namespace orxonox
 
     bool CommandEvaluation::isValid() const
     {
-        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
-        {
-            return this->function_;
-        }
-        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
-        {
-            return (this->functionclass_ && this->function_);
-        }
-        else
-        {
-            return false;
-        }
+        return (this->function_);
     }
 
     bool CommandEvaluation::execute() const
@@ -93,35 +82,44 @@ namespace orxonox
 
         unsigned int startindex = this->getStartindex();
         if (this->originalCommandTokens_.size() > startindex)
-            return evaluation.shortcut_->parse(removeSlashes(this->originalCommandTokens_.subSet(startindex).join() + evaluation.getAdditionalParameter()));
+            return this->function_->parse(removeSlashes(this->originalCommandTokens_.subSet(startindex).join() + this->getAdditionalParameter()));
         else
-            return evaluation.shortcut_->parse(removeSlashes(evaluation.additionalParameter_));
+            return this->function_->parse(removeSlashes(this->additionalParameter_));
     }
 
     std::string CommandEvaluation::complete() const
     {
         switch (this->state_)
         {
+            case CS_Uninitialized:
             case CS_Empty:
-                std::list<std::pair<const std::string*, const std::string*> > temp;
-                if (evaluation.state_ == CS_Empty)
+            case CS_ShortcutOrIdentifier:
                 {
-                    temp.insert(temp.end(), this->listOfPossibleFunctions_.begin(), this->listOfPossibleFunctions_.end());
-                    temp.insert(temp.end(), this->listOfPossibleFunctionClasses_.begin(), this->listOfPossibleFunctionClasses_.end());
+                    std::list<std::pair<const std::string*, const std::string*> > temp;
+                    if (this->state_ == CS_Empty)
+                    {
+                        temp.insert(temp.end(), this->listOfPossibleFunctions_.begin(), this->listOfPossibleFunctions_.end());
+                        temp.insert(temp.end(), this->listOfPossibleIdentifiers_.begin(), this->listOfPossibleIdentifiers_.end());
+                    }
+                    return (CommandEvaluation::getCommonBegin(temp));
                 }
-                return (CommandEvaluation::getCommonBegin(temp));
                 break;
             case CS_Shortcut_Params:
                 if (this->function_)
-                    return (this->function_->getName() + " ");
+                {
+                    if (this->commandTokens_.size() > 1)
+                        return (this->function_->getName() + " " + this->commandTokens_.subSet(1, this->commandTokens_.size() - 1).join() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleArguments_));
+                    else
+                        return (this->function_->getName() + " ");
+                }
                 break;
             case CS_Shortcut_Finished:
                 if (this->function_)
                 {
-                    if (this->function_->getParamCount() == 0)
+                    if (this->commandTokens_.size() > 1)
+                        return (this->function_->getName() + " " + this->originalCommandTokens_.subSet(1, this->originalCommandTokens_.size() - 1).join());
+                    else
                         return (this->function_->getName());
-                    else if (this->originalCommandTokens_.size() > 1)
-                        return (this->function_->getName() + " " + this->originalCommandTokens_.subSet(1).join());
                 }
                 break;
             case CS_Function:
@@ -130,16 +128,23 @@ namespace orxonox
                 break;
             case CS_Function_Params:
                 if (this->functionclass_ && this->function_)
-                    return (this->functionclass_->getName() + " " + this->function_->getName() + " ");
+                {
+                    if (this->commandTokens_.size() > 2)
+                        return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->commandTokens_.subSet(2, this->commandTokens_.size() - 1).join() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleArguments_));
+                    else
+                        return (this->functionclass_->getName() + " " + this->function_->getName() + " ");
+                }
                 break;
             case CS_Function_Finished:
                 if (this->functionclass_ && this->function_)
                 {
-                    if (this->function_->getParamCount() == 0)
-                        return (this->functionclass_->getName() + " " + this->unction_->getName());
-                    else if (this->originalCommandTokens_.size() > 2)
-                        return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->originalCommandTokens_.subSet(2).join());
+                    if (this->commandTokens_.size() > 2)
+                        return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->originalCommandTokens_.subSet(2, this->originalCommandTokens_.size() - 1).join());
+                    else
+                        return (this->functionclass_->getName() + " " + this->function_->getName());
                 }
+               break;
+            case CS_Error:
                 break;
         }
 
@@ -150,15 +155,19 @@ namespace orxonox
     {
         switch (this->state_)
         {
+            case CS_Uninitialized:
+                break;
             case CS_Empty:
-                return (CommandEvaluation::dump(this->listOfPossibleFunctions_) + "\n" + CommandExecutor::dump(this->listOfPossibleFunctionClasses_));
+            case CS_ShortcutOrIdentifier:
+                return (CommandEvaluation::dump(this->listOfPossibleFunctions_) + "\n" + CommandEvaluation::dump(this->listOfPossibleIdentifiers_));
                 break;
             case CS_Function:
                 return CommandEvaluation::dump(this->listOfPossibleFunctions_);
                 break;
             case CS_Shortcut_Params:
-            case CS_Shortcut_Finished:
             case CS_Function_Params:
+                return CommandEvaluation::dump(this->listOfPossibleArguments_);
+            case CS_Shortcut_Finished:
             case CS_Function_Finished:
                 if (this->function_)
                     return CommandEvaluation::dump(this->function_);
@@ -174,7 +183,6 @@ namespace orxonox
     void CommandEvaluation::evaluateParams()
     {
         this->bEvaluatedParams_ = false;
-        this->evaluatedExecutor_ = 0;
 
         for (unsigned int i = 0; i < MAX_FUNCTOR_ARGUMENTS; i++)
             this->param_[i] = MT_null;
@@ -187,18 +195,12 @@ namespace orxonox
         if (this->originalCommandTokens_.size() <= startindex)
         {
             if (this->function_->evaluate(this->getAdditionalParameter(), this->param_, " "))
-            {
                 this->bEvaluatedParams_ = true;
-                this->evaluatedExecutor_ = this->function_;
-            }
         }
         else if (this->originalCommandTokens_.size() > startindex)
         {
             if (this->function_->evaluate(this->originalCommandTokens_.subSet(startindex).join() + this->getAdditionalParameter(), this->param_, " "))
-            {
                 this->bEvaluatedParams_ = true;
-                this->evaluatedExecutor_ = this->function_;
-            }
         }
     }
 
@@ -237,7 +239,7 @@ namespace orxonox
     {
         if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
             return 1;
-        else if (this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
+        else if (this->state_ == CS_Function || this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
             return 2;
         else
             return 0;

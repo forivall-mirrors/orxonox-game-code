@@ -35,6 +35,7 @@
 #include "ClassManager.h"
 #include "Identifier.h"
 #include "CommandExecutor.h"
+#include "ArgumentCompletionFunctions.h"
 
 
 #define SetConsoleCommand(classname, function,  bCreateShortcut) \
@@ -72,7 +73,7 @@ namespace orxonox
     class _CoreExport ConsoleCommand : public ExecutorStatic
     {
         public:
-            ConsoleCommand(FunctorStatic* functor, const std::string& name = "") : ExecutorStatic(functor, name), accessLevel_(AccessLevel::None) {}
+            ConsoleCommand(FunctorStatic* functor, const std::string& name = "");
 
             inline ConsoleCommand& setDescription(const std::string& description)
                 { this->ExecutorStatic::setDescription(description); return (*this); }
@@ -98,8 +99,15 @@ namespace orxonox
             inline AccessLevel::Level getAccessLevel() const
                 { return this->accessLevel_; }
 
+            ConsoleCommand& setArgumentCompletionList(unsigned int param, const std::list<std::pair<std::string, std::string> >& (*function) (void));
+
+            const std::list<std::pair<std::string, std::string> >& getArgumentCompletionList(unsigned int param) const;
+            std::list<std::pair<std::string, std::string> >::const_iterator getArgumentCompletionListBegin(unsigned int param) const;
+            std::list<std::pair<std::string, std::string> >::const_iterator getArgumentCompletionListEnd(unsigned int param) const;
+
         private:
             AccessLevel::Level accessLevel_;
+            const std::list<std::pair<std::string, std::string> >& (*autocompletionFunction_[5]) (void);
     };
 
     inline ConsoleCommand* createConsoleCommand(FunctorStatic* functor, const std::string& name = "")
