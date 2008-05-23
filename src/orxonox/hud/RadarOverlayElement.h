@@ -40,12 +40,9 @@ namespace orxonox
         private:
             Ogre::OverlayManager* om;               // our one and only overlay manager
             Ogre::OverlayContainer* container_;     // pointer to the container we're in
-            Vector3 initialDir_;	                // direction of nose
             Vector3 currentDir_;
-            Vector3 initialOrth_;                   // direction of normal
             Vector3 currentOrth_;
             Vector3 shipPos_;                       // position of ship
-            Ogre::Plane plane;                      // plane perpendicular to dir
 
             Ogre::Real leftRel_, topRel_, dimRel_;  // relative position/dimension
             int left_, top_, dim_;                  // absolute position/dimension
@@ -58,9 +55,10 @@ namespace orxonox
 			void resize();
             void update();
             void listObjects();
-            float calcRadius(RadarObject* obj);
-            float calcPhi(RadarObject* obj);
-            bool calcRight(RadarObject* obj);
+
+            static float calcRadius(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj);
+            static float calcPhi(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj);
+            static bool calcRight(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj);
 	};
 }
 

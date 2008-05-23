@@ -30,6 +30,7 @@
 
 #include <OgrePrerequisites.h>
 #include "../OrxonoxPrereqs.h"
+#include <OgrePlane.h>
 #include "util/Math.h"
 #include "RadarObject.h"
 
@@ -42,11 +43,11 @@ namespace orxonox
             Ogre::OverlayContainer* container_;
             Ogre::PanelOverlayElement* navMarker_;      // the panel used to show the arrow
             Ogre::TextAreaOverlayElement* navText_;     // displaying distance
-            Ogre::MovableObject* movo_;
-            Ogre::Camera* cam_;
-    		Vector3 shipPos_;                           // position of ship
+            Ogre::Camera* navCam_;
+    		Vector3 navCamPos_;                            // position of ship
+    		Vector3 currentDir_;
+            Vector3 currentOrth_;
     		int windowW_, windowH_;
-
     		void init();
     		void updateMarker();
 

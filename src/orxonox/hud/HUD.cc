@@ -101,9 +101,9 @@ namespace orxonox
         speedoBar->init(0.01, 0.90, 0.4, container);
 
         radar->init(0.5, 0.9, 0.2, container);
-        addRadarObject(Vector3(2000.0, 1000.0, 1000.0));
-        addRadarObject(Vector3(0.0, 4000.0, 0.0));
-        addRadarObject(Vector3(0.0, 0.0, 6800.0));
+        addRadarObject(Vector3(2000.0, 0.0, 0.0));
+        addRadarObject(Vector3(0.0, 2000.0, 0.0));
+        addRadarObject(Vector3(0.0, 0.0, 2000.0));
     }
 
     HUD::~HUD(){
