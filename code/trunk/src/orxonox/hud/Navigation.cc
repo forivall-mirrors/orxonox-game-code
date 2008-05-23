@@ -57,7 +57,7 @@ namespace orxonox
         navText_->setDimensions(0.3, 0.3);
         navText_->setPosition(0.02, 0.02);
         navText_->setFontName("Console");
-        navText_->setCaption("init");
+        navText_->setCaption("");
         container_->addChild(navText_);
 
 
