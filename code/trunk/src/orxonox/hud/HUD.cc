@@ -59,14 +59,6 @@ namespace orxonox
 
         orxonoxHUD = om->create("Orxonox/HUD");
         container = static_cast<Ogre::OverlayContainer*>(om->createOverlayElement("Panel", "Orxonox/HUD/container"));
-        // test
-        test = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "test123"));
-        test->show();
-        test->setMetricsMode(Ogre::GMM_RELATIVE);
-        test->setDimensions(0.3, 0.3);
-        test->setPosition(0.02, 0.02);
-        test->setFontName("Console");
-        test->setCaption("init");
 
         // creating text to display fps
         fpsText = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "fpsText"));
@@ -100,7 +92,6 @@ namespace orxonox
         container->setWidth(1.0);
         container->setHeight(1.0);
         container->setMetricsMode(Ogre::GMM_RELATIVE);
-        container->addChild(test);
         container->addChild(fpsText);
 
         energyBar->init(0.01, 0.94, 0.4, container);
@@ -120,10 +111,6 @@ namespace orxonox
 
     void HUD::tick(float dt)
     {
-        int d = (float)(nav->getDist2Focus()/10);
-        if(d) test->setCaption("Distance: " + Ogre::StringConverter::toString(d));
-        else test->setCaption("");
-
         energyBar->resize();
 
         float v = SpaceShip::instance_s->getVelocity().length();

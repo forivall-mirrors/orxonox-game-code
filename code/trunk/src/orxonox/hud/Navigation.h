@@ -30,6 +30,7 @@
 
 #include <OgrePrerequisites.h>
 #include <OgrePanelOverlayElement.h>
+#include <OgreTextAreaOverlayElement.h>
 #include "../OrxonoxPrereqs.h"
 #include "util/Math.h"
 #include "RadarObject.h"
@@ -40,6 +41,9 @@ namespace orxonox
     {
     	private:
     		Ogre::OverlayManager* om;				    // our one and only overlay manager
+            Ogre::OverlayContainer* container_;
+            Ogre::PanelOverlayElement* navMarker_;      // the panel used to show the arrow
+            Ogre::TextAreaOverlayElement navText_;      // displaying distance...
     		Vector3 shipPos_;                           // position of ship
     		int windowW_, windowH_;
 
@@ -49,8 +53,6 @@ namespace orxonox
     		Navigation(Ogre::OverlayContainer* container);
     		Navigation(Ogre::OverlayContainer* container, RadarObject* focus);
     		~Navigation();
-            Ogre::OverlayContainer* container_;
-			Ogre::PanelOverlayElement* navMarker_;     // the panel used to show the dot
 			RadarObject* focus_;                        // next pointer of linked list
 
     		void update();
