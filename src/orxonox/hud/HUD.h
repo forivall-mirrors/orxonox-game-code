@@ -50,7 +50,6 @@ namespace orxonox
             Ogre::OverlayManager* om;
             Ogre::Overlay* orxonoxHUD;
             Ogre::OverlayContainer* container;
-            Ogre::TextAreaOverlayElement* test;
             Ogre::TextAreaOverlayElement* fpsText;
             BarOverlayElement* energyBar;
             BarOverlayElement* speedoBar;

@@ -1,5 +1,5 @@
 /*
-*   ORXONOX - the hottest 3D action shooter ever to exist
+*   ORXONOX - the hotnavText_ 3D action shooter ever to exist
 *
 *
 *   License notice:
@@ -49,6 +49,17 @@ namespace orxonox
 
     void Navigation::init(){
 		om = &OverlayManager::getSingleton();
+        // create nav text
+        navText_ = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "navText"));
+        navText_->show();
+        navText_->setMetricsMode(Ogre::GMM_RELATIVE);
+        navText_->setDimensions(0.3, 0.3);
+        navText_->setPosition(0.02, 0.02);
+        navText_->setFontName("Console");
+        navText_->setCaption("init");
+        container_->addChild(navText_);
+
+
         // create nav marker ...
         navMarker_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "NavMarker"));
         navMarker_->setMetricsMode(GMM_PIXELS);
@@ -95,6 +106,10 @@ namespace orxonox
                 navMarker_->setUV(0.0, 0.0, 0.5, 0.5);
             }
         }
+
+        int d = (float)(getDist2Focus()/10);
+        if(d) test->setCaption("Distance: " + Ogre::StringConverter::toString(d));
+        else test->setCaption("");
     }
 
     void Navigation::cycleFocus(){
