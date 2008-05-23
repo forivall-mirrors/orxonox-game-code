@@ -24,7 +24,18 @@
 *      ...
 *
 */
+#include <string.h>
 
+
+#include <string.h>
+#include <OgreOverlayManager.h>
+#include <OgreStringConverter.h>
+#include <OgrePanelOverlayElement.h>
+
+#include "GraphicsEngine.h"
+#include "core/Tickable.h"
+#include "core/ConsoleCommand.h"
+#include "objects/SpaceShip.h"
 #include "RadarOverlayElement.h"
 
 namespace orxonox
@@ -32,15 +43,15 @@ namespace orxonox
 
     using namespace Ogre;
 
-    RadarOverlayElement::RadarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){
+    RadarOverlayElement::RadarOverlayElement(const String& name):PanelOverlayElement(name){
     }
 
     RadarOverlayElement::~RadarOverlayElement(){
     }
 
-    void RadarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container){
+    void RadarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, OverlayContainer* container){
         // some initial data
-		om = &Ogre::OverlayManager::getSingleton();
+		om = &OverlayManager::getSingleton();
         dimRel_ = dimRel;
         leftRel_ = leftRel;
         topRel_ = topRel;
@@ -51,7 +62,7 @@ namespace orxonox
 
         // create nav marker ...
         navMarker_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "NavMarker"));
-        navMarker_->setMetricsMode(Ogre::GMM_PIXELS);
+        navMarker_->setMetricsMode(GMM_PIXELS);
         navMarker_->setMaterialName("Orxonox/NavMarker");
         navMarker_->setDimensions(16,16);
         navMarker_->setPosition(0,386);
@@ -66,7 +77,7 @@ namespace orxonox
         currentOrth_ = initialOrth_;
         plane = Plane(currentDir_, shipPos_);
 
-        setMetricsMode(Ogre::GMM_PIXELS);
+        setMetricsMode(GMM_PIXELS);
         setMaterialName("Orxonox/Radar");
         resize();
 
@@ -188,7 +199,7 @@ namespace orxonox
 
 	float RadarOverlayElement::calcPhi(RadarObject* obj){
 	    // project difference vector on our plane...
-	    Ogre::Vector3 proj = plane.projectVector(obj->pos_ - shipPos_);
+	    Vector3 proj = plane.projectVector(obj->pos_ - shipPos_);
 	    // ...and find out the angle
 	    return(acos((currentOrth_.dotProduct(proj))/
             (currentOrth_.length()*proj.length())));

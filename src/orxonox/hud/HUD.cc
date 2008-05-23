@@ -25,20 +25,20 @@
 *
 */
 
-
+#include <string.h>
 #include "OrxonoxStableHeaders.h"
 #include <OgreOverlay.h>
 #include <OgreOverlayContainer.h>
 #include <OgreOverlayManager.h>
-#include <OgreSceneNode.h>
-#include <OgreEntity.h>
 #include <OgreStringConverter.h>
+
 #include "core/Debug.h"
+#include "core/ConsoleCommand.h"
 #include "objects/SpaceShip.h"
-#include "HUD.h"
 #include "BarOverlayElement.h"
 #include "RadarOverlayElement.h"
 #include "OverlayElementFactories.h"
+#include "HUD.h"
 
 namespace orxonox
 {

@@ -28,21 +28,10 @@
 #ifndef _RADAR_H__
 #define _RADAR_H__
 
-#include <string.h>
-#include <OgreOverlayManager.h>
-#include <OgreStringConverter.h>
-#include <OgreOverlayElement.h>
-#include <OgrePanelOverlayElement.h>
-#include <OgrePrerequisites.h>
-
 #include <util/Math.h>
-#include <string.h>
-#include "core/Tickable.h"
-#include "core/ConsoleCommand.h"
-#include "objects/SpaceShip.h"
+#include <OgrePrerequisites.h>
 #include "../OrxonoxPrereqs.h"
 #include "RadarObject.h"
-#include "GraphicsEngine.h"
 
 namespace orxonox
 {
