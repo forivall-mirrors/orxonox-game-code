@@ -46,7 +46,6 @@ namespace orxonox
             bool right_;
             int index_;                             // index number of object
     		Vector3 pos_;							// position in space
-			Ogre::Real radius_, phi_;				// position on radar
 			Ogre::OverlayContainer* container_;
 			Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
 			RadarObject* next;                      // next pointer of linked list

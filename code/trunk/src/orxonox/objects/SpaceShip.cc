@@ -111,6 +111,10 @@ namespace orxonox
 
         this->setConfigValues();
 
+        initialDir_ = Vector3(1.0, 0.0, 0.0);
+        currentDir_ = initialDir_;
+        initialOrth_ = Vector3(0.0, 0.0, 1.0);
+        currentOrth_ = initialOrth_;
 
         this->setRotationAxis(1, 0, 0);
         this->setStatic(false);
@@ -246,7 +250,7 @@ namespace orxonox
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);
       COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
-      this->camNode_->setPosition(Vector3(-50,0,10));
+      this->camNode_->setPosition(Vector3(0,0,0));//-50,0,10));
 //      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
 //      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
 //      camNode_->setOrientation(q1*q2);
@@ -394,18 +398,21 @@ namespace orxonox
 	+ "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().z);
     }
 
-    Vector3 SpaceShip::getSPosition() {
-	return SpaceShip::getLocalShip()->getPosition();
+    Vector3 SpaceShip::getDir() {
+        return currentDir_;
     }
 
-    Quaternion SpaceShip::getSOrientation() {
-	return SpaceShip::getLocalShip()->getOrientation();
+    Vector3 SpaceShip::getOrth(){
+        return currentOrth_;
     }
 
     float SpaceShip::getMaxSpeed() { return maxSpeed_; }
 
     void SpaceShip::tick(float dt)
     {
+        currentDir_ = getOrientation()*initialDir_;
+		currentOrth_ = getOrientation()*initialOrth_;
+
         if (this->cam_)
             this->cam_->tick(dt);
 
