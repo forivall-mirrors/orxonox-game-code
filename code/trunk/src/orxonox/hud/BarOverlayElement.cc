@@ -26,8 +26,6 @@
 */
 
 #include <OgreOverlayManager.h>
-#include <OgreOverlayElement.h>
-#include <OgrePanelOverlayElement.h>
 #include "GraphicsEngine.h"
 #include "BarOverlayElement.h"
 
@@ -35,16 +33,16 @@ namespace orxonox
 {
   using namespace Ogre;
 
-    BarOverlayElement::BarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){
+    BarOverlayElement::BarOverlayElement(const String& name):PanelOverlayElement(name){
         name_ = name;
     }
 
     BarOverlayElement::~BarOverlayElement(){}
 
-    void BarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container){
+    void BarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, OverlayContainer* container){
         // init some values...
         container_ = container;
-        om = &Ogre::OverlayManager::getSingleton();
+        om = &OverlayManager::getSingleton();
         value_ = 0;
         color_ = 2;
         autoColor_ = true;
@@ -52,19 +50,19 @@ namespace orxonox
         leftRel_ = leftRel;
         topRel_ = topRel;
         dimRel_ = dimRel;
-        
+
         // create background...
         background_ = static_cast<OverlayContainer*>(om->createOverlayElement("Panel", name_+"container"));
         background_->show();
         container_->addChild(background_);
-        background_->setMetricsMode(Ogre::GMM_PIXELS);
+        background_->setMetricsMode(GMM_PIXELS);
         background_->setMaterialName("Orxonox/BarBackground");
 
         // calculate absolute coordinates...
         resize();
 
         show();
-        setMetricsMode(Ogre::GMM_PIXELS);
+        setMetricsMode(GMM_PIXELS);
         setMaterialName("Orxonox/Green");
         background_->addChild(this);
     }

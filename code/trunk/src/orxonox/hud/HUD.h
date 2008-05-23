@@ -29,11 +29,8 @@
 #ifndef _HUD_H__
 #define _HUD_H__
 
-#include <string.h>
-#include <OgreOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
 #include <OgrePrerequisites.h>
-
+#include <OgreTextAreaOverlayElement.h>
 #include "OrxonoxPrereqs.h"
 #include "core/Tickable.h"
 #include "BarOverlayElement.h"
