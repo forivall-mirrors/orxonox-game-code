@@ -43,7 +43,7 @@ namespace orxonox
     		Ogre::OverlayManager* om;				    // our one and only overlay manager
             Ogre::OverlayContainer* container_;
             Ogre::PanelOverlayElement* navMarker_;      // the panel used to show the arrow
-            Ogre::TextAreaOverlayElement navText_;      // displaying distance...
+            Ogre::TextAreaOverlayElement* navText_;      // displaying distance...
     		Vector3 shipPos_;                           // position of ship
     		int windowW_, windowH_;
 
