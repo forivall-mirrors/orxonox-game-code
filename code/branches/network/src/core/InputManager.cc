@@ -408,7 +408,6 @@ namespace orxonox
           // note: we assume that the handlers exist since otherwise, something's wrong anyway.
           enableKeyHandler("keybinder");
           enableMouseHandler("keybinder");
-          enableMouseHandler("SpaceShip");
           enableJoyStickHandler("keybinder", 0);
           break;
 
@@ -418,7 +417,6 @@ namespace orxonox
 
         case IS_CONSOLE:
           enableMouseHandler("keybinder");
-          enableMouseHandler("SpaceShip");
           enableJoyStickHandler("keybinder", 0);
           enableKeyHandler("buffer");
           break;

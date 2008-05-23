@@ -225,6 +225,8 @@ namespace orxonox
     float mouseSensitivity_;
     //! mouse sensitivity if mouse input is derived
     float mouseSensitivityDerived_;
+    //! default ini file for the keybindings
+    std::string keybindingsDefault_;
   };
 
 

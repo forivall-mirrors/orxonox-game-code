@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport SpaceShip : public Model, public MouseHandler
+    class _OrxonoxExport SpaceShip : public Model
     {
         public:
           
@@ -77,12 +77,6 @@ namespace orxonox
             static void moveLongitudinal(float value);
             static void moveLateral(float value);
             static void fire();
-
-            void mouseButtonPressed (MouseButton::Enum id);
-            void mouseButtonReleased(MouseButton::Enum id);
-            void mouseButtonHeld    (MouseButton::Enum id) { }
-            void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) { }
-            void mouseScrolled      (int abs, int rel) { }
 
             float getMaxSpeed();
 

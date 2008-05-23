@@ -158,16 +158,6 @@ namespace orxonox
 
     void SpaceShip::init()
     {
-        if ((server_ || ( network::Client::getSingleton() && network::Client::getSingleton()->getShipID()==objectID ) ))
-        {
-              if (!setMouseEventCallback_)
-              {
-                  InputManager::addMouseHandler(this, "SpaceShip");
-                  InputManager::enableMouseHandler("SpaceShip");
-                  setMouseEventCallback_ = true;
-              }
-        }
-
         // START CREATING THRUSTER
         this->tt_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
         this->tt_->getParticleSystem()->setParameter("local_space","true");
@@ -311,21 +301,6 @@ namespace orxonox
             return 1;
         else
             return -1;
-    }
-
-    void SpaceShip::mouseButtonPressed(MouseButton::Enum id)
-    {
-        if (id == MouseButton::Right)
-            this->bRMousePressed_ = true;
-    }
-
-    void SpaceShip::mouseButtonReleased(MouseButton::Enum id)
-    {
-        if (id == MouseButton::Right)
-        {
-            this->bRMousePressed_ = false;
-            this->camNode_->resetOrientation();
-        }
     }
 
     std::string SpaceShip::whereAmI() {

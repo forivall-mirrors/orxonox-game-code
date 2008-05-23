@@ -32,6 +32,7 @@
  */
 
 #include "InputHandler.h"
+#include <fstream>
 #include "util/Convert.h"
 #include "util/SubString.h"
 #include "util/String.h"
@@ -468,8 +469,17 @@ namespace orxonox
   {
     COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
 
-    ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
     clearBindings();
+
+    /*std::ifstream infile;
+    infile.open("keybindings.ini");
+    if (!infile.is_open())
+    {
+      ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings_def.ini");
+      setConfigValues();
+    }
+    infile.close();*/
+    ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
     setConfigValues();
 
     COUT(3) << "KeyBinder: Loading key bindings done." << std::endl;
@@ -485,6 +495,7 @@ namespace orxonox
     SetConfigValue(bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
     SetConfigValue(derivePeriod_, 0.1f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
     SetConfigValue(mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
+    SetConfigValue(keybindingsDefault_, "keybindings_def.ini").description("Default ini file for the keybindings.");
 
     float oldThresh = buttonThreshold_;
     SetConfigValue(buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
@@ -579,7 +590,7 @@ namespace orxonox
       // these are the actually useful axis bindings for analog input AND output
       if (halfAxes_[i].relVal_ > analogThreshold_ || halfAxes_[i].absVal_ > analogThreshold_)
       {
-        COUT(3) << halfAxes_[i].name_ << "\t" << halfAxes_[i].absVal_ << std::endl;
+        //COUT(3) << halfAxes_[i].name_ << "\t" << halfAxes_[i].absVal_ << std::endl;
         halfAxes_[i].execute();
       }
     }
