@@ -253,12 +253,24 @@ namespace orxonox
 		int axes[16];
 		std::vector<Vector3> mVectors;
   };*/
+  
+  /**
+  * Helper struct to determine which handlers of an object (can implement
+  * multiple handlers) are active.
+  */
+  struct HandlerState
+  {
+    HandlerState() : key(false), mouse(false), joyStick(false) { }
+    bool key;
+    bool mouse;
+    bool joyStick;
+  };
 
   class _CoreExport InputTickable
   {
   public:
     virtual ~InputTickable() { }
-    virtual void tick(float dt) = 0;
+    virtual void tickInput(float dt, const HandlerState& state) = 0;
   };
 
   /**
@@ -271,6 +283,7 @@ namespace orxonox
     virtual void keyPressed (const KeyEvent& evt) = 0;
     virtual void keyReleased(const KeyEvent& evt) = 0;
     virtual void keyHeld    (const KeyEvent& evt) = 0;
+    //virtual void tickKey    (float dt) { }
   };
 
   /**
@@ -285,6 +298,7 @@ namespace orxonox
     virtual void mouseButtonHeld    (MouseButton::Enum id) = 0;
     virtual void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) = 0;
     virtual void mouseScrolled      (int abs, int rel)     = 0;
+    //virtual void tickMouse          (float dt) { }
   };
 
 
@@ -300,6 +314,7 @@ namespace orxonox
     virtual void joyStickButtonHeld    (int joyStickID, int button) = 0;
     virtual void joyStickAxisMoved     (int joyStickID, int axis, int value) = 0;
     //virtual bool joyStickVector3Moved  (int joyStickID, int index /*, fill list*/) {return true;}
+    //virtual void tickJoyStick          (float dt) { }
   };
 
 }

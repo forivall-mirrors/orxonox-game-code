@@ -79,12 +79,13 @@ namespace orxonox
     */
     enum InputState
     {
-      IS_UNINIT,  //!< InputManager has not yet been initialised.
-      IS_NONE,    //!< Input is discarded.
-      IS_NORMAL,  //!< Normal play state. Key and button bindings are active.
-      IS_GUI,     //!< All OIS input events are passed to CEGUI.
-      IS_CONSOLE, //!< Keyboard input is redirected to the InputBuffer.
-      IS_CUSTOM   //!< Any possible configuration.
+      IS_UNINIT,    //!< InputManager has not yet been initialised.
+      IS_NONE,      //!< Input is discarded.
+      IS_NORMAL,    //!< Normal play state. Key and button bindings are active.
+      IS_GUI,       //!< All OIS input events are passed to CEGUI.
+      IS_CONSOLE,   //!< Keyboard input is redirected to the InputBuffer.
+      IS_DETECTION, //!< All the input goes to the KeyDetector
+      IS_CUSTOM     //!< Any possible configuration.
     };
 
   public: // static functions
@@ -102,8 +103,8 @@ namespace orxonox
     static void destroyMouse();
     static void destroyJoySticks();
 
-    static bool isModifierDown(KeyboardModifier::Enum modifier);
-    static bool isKeyDown(KeyCode::Enum key);
+    //static bool isModifierDown(KeyboardModifier::Enum modifier);
+    //static bool isKeyDown(KeyCode::Enum key);
     //static const MouseState getMouseState();
     //static const JoyStickState getJoyStickState(unsigned int ID);
 
@@ -111,6 +112,9 @@ namespace orxonox
 
     static void setInputState(const InputState state);
     static InputState getInputState();
+
+    static void storeKeyStroke(const std::string& name);
+    static const std::string& getLastKeyStroke();
 
     static bool addKeyHandler                 (KeyHandler* handler, const std::string& name);
     static bool removeKeyHandler              (const std::string& name);
@@ -171,15 +175,20 @@ namespace orxonox
     static InputManager* _getSingletonPtr() { return &_getSingleton(); }
 
   private: // variables
-    OIS::InputManager*                          inputSystem_; //!< OIS input manager
-    OIS::Keyboard*                              keyboard_;    //!< OIS mouse
-    OIS::Mouse*                                 mouse_;       //!< OIS keyboard
-    std::vector<OIS::JoyStick*>                 joySticks_;   //!< OIS joy sticks
+    OIS::InputManager*                          inputSystem_;     //!< OIS input manager
+    OIS::Keyboard*                              keyboard_;        //!< OIS mouse
+    OIS::Mouse*                                 mouse_;           //!< OIS keyboard
+    std::vector<OIS::JoyStick*>                 joySticks_;       //!< OIS joy sticks
     unsigned int                                joySticksSize_;
+
+    KeyBinder*                                  keyBinder_;       //!< KeyBinder instance
+    KeyDetector*                                keyDetector_;     //!< KeyDetector instance
+    InputBuffer*                                buffer_;          //!< InputBuffer instance
 
     InputState state_;
     InputState stateRequest_;
     unsigned int keyboardModifiers_;
+    std::string lastStroke_;
 
     //! Keeps track of the joy stick POV states
     std::vector<POVStates>                      povStates_;
@@ -193,7 +202,7 @@ namespace orxonox
     std::vector<KeyHandler*>                    activeKeyHandlers_;
     std::vector<MouseHandler*>                  activeMouseHandlers_;
     std::vector<std::vector<JoyStickHandler*> > activeJoyStickHandlers_;
-    std::vector<InputTickable*>                 activeHandlers_;
+    std::vector<std::pair<InputTickable*, HandlerState> > activeHandlers_;
 
     std::vector<Key>                            keysDown_;
     std::vector<MouseButton::Enum>              mouseButtonsDown_;

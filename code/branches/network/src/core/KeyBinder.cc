@@ -31,7 +31,7 @@
  @brief Implementation of the different input handlers.
  */
 
-#include "InputHandler.h"
+#include "KeyBinder.h"
 #include <fstream>
 #include "util/Convert.h"
 #include "util/SubString.h"
@@ -471,15 +471,17 @@ namespace orxonox
 
     clearBindings();
 
-    /*std::ifstream infile;
+    std::ifstream infile;
     infile.open("keybindings.ini");
     if (!infile.is_open())
     {
-      ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings_def.ini");
-      setConfigValues();
+      ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, keybindingsDefault_);
+      ConfigFileManager::getSingleton()->save(CFT_Keybindings, "keybindings.ini");
     }
-    infile.close();*/
+    infile.close();
     ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
+
+    // parse key bindings
     setConfigValues();
 
     COUT(3) << "KeyBinder: Loading key bindings done." << std::endl;
@@ -495,7 +497,7 @@ namespace orxonox
     SetConfigValue(bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
     SetConfigValue(derivePeriod_, 0.1f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
     SetConfigValue(mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
-    SetConfigValue(keybindingsDefault_, "keybindings_def.ini").description("Default ini file for the keybindings.");
+    SetConfigValue(keybindingsDefault_, "def_keybindings.ini").description("Default ini file for the keybindings.");
 
     float oldThresh = buttonThreshold_;
     SetConfigValue(buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
@@ -541,7 +543,7 @@ namespace orxonox
   /**
     @brief Overwrites all bindings with ""
   */
-  void KeyBinder::clearBindings(bool bInit)
+  void KeyBinder::clearBindings()
   {
     for (unsigned int i = 0; i < nKeys_s; i++)
       keys_[i].clear();
@@ -560,10 +562,16 @@ namespace orxonox
     paramCommandBuffer_.clear();
   }
 
-  void KeyBinder::tick(float dt)
+  void KeyBinder::tickInput(float dt, const HandlerState& state)
   {
     // we have to process all the analog input since there is e.g. no 'mouseDoesntMove' event.
-    for (unsigned int i = 0; i < nHalfAxes_s; i++)
+    unsigned int iBegin = 8;
+    unsigned int iEnd   = 8;
+    if (state.joyStick)
+      iEnd = nHalfAxes_s;
+    if (state.mouse)
+      iBegin = 0;
+    for (unsigned int i = iBegin; i < iEnd; i++)
     {
       if (halfAxes_[i].hasChanged_)
       {
@@ -595,23 +603,22 @@ namespace orxonox
       }
     }
 
-    if (bDeriveMouseInput_)
+    if (bDeriveMouseInput_ && state.mouse)
     {
       if (deriveTime_ > derivePeriod_)
       {
-        deriveTime_ = 0.0f;
         //CCOUT(3) << "mouse abs: ";
         for (int i = 0; i < 2; i++)
         {
           if (mouseRelative_[i] > 0)
           {
-            halfAxes_[2*i + 0].absVal_ =  mouseRelative_[i] / derivePeriod_ / 5000 * mouseSensitivityDerived_;
+            halfAxes_[2*i + 0].absVal_ =  mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
             halfAxes_[2*i + 1].absVal_ = 0.0f;
           }
           else if (mouseRelative_[i] < 0)
           {
             halfAxes_[2*i + 0].absVal_ = 0.0f;
-            halfAxes_[2*i + 1].absVal_ = -mouseRelative_[i] / derivePeriod_ / 5000 * mouseSensitivityDerived_;
+            halfAxes_[2*i + 1].absVal_ = -mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
           }
           else
           {
@@ -621,6 +628,7 @@ namespace orxonox
           //COUT(3) << mouseRelative_[i] << " | ";
           mouseRelative_[i] = 0;
         }
+        deriveTime_ = 0.0f;
         //COUT(3) << std::endl;
       }
       else
@@ -632,8 +640,9 @@ namespace orxonox
       paramCommandBuffer_[i]->execute();
 
     // always reset the relative movement of the mouse
-    for (unsigned int i = 0; i < 8; i++)
-      halfAxes_[i].relVal_ = 0.0f;
+    if (state.mouse)
+      for (unsigned int i = 0; i < 8; i++)
+        halfAxes_[i].relVal_ = 0.0f;
   }
 
   void KeyBinder::keyPressed (const KeyEvent& evt)
@@ -783,74 +792,61 @@ namespace orxonox
 
 
   // ###############################
-  // ###     GUIInputHandler     ###
+  // #####     KeyDetector     #####
   // ###############################
 
-  ///**
-  //  @brief standard constructor
-  //*/
-  //GUIInputHandler::GUIInputHandler()
-  //{
-  //}
+  /**
+    @brief Constructor
+  */
+  KeyDetector::KeyDetector()
+  {
+    RegisterObject(KeyDetector);
+  }
 
-  ///**
-  //  @brief Destructor
-  //*/
-  //GUIInputHandler::~GUIInputHandler()
-  //{
-  //}
+  /**
+    @brief Destructor
+  */
+  KeyDetector::~KeyDetector()
+  {
+  }
 
-  ///**
-  //  @brief Event handler for the keyPressed Event.
-  //  @param e Event information
-  //*/
-  //bool GUIInputHandler::keyPressed(const OIS::KeyEvent &e)
-  //{
-    ////CEGUI::System::getSingleton().injectKeyDown( arg.key );
-    ////CEGUI::System::getSingleton().injectChar( arg.text );
-  //  return true;
-  //}
+  /**
+    @brief Loads the key and button bindings.
+    @return True if loading succeeded.
+  */
+  void KeyDetector::loadBindings()
+  {
+    clearBindings();
+    setConfigValues();
+  }
 
-  ///**
-  //  @brief Event handler for the keyReleased Event.
-  //  @param e Event information
-  //*/
-  //bool GUIInputHandler::keyReleased(const OIS::KeyEvent &e)
-  //{
-    ////CEGUI::System::getSingleton().injectKeyUp( arg.key );
-  //  return true;
-  //}
+  /**
+    @brief Loader for the key bindings, managed by config values.
+  */
+  void KeyDetector::setConfigValues()
+  {
+    // keys
+    for (unsigned int i = 0; i < nKeys_s; i++)
+      readTrigger(keys_[i]);
+    // mouse buttons
+    for (unsigned int i = 0; i < nMouseButtons_s; i++)
+      readTrigger(mouseButtons_[i]);
+    // joy stick buttons
+    for (unsigned int i = 0; i < nJoyStickButtons_s; i++)
+      readTrigger(joyStickButtons_[i]);
+    // half axes
+    for (unsigned int i = 0; i < nHalfAxes_s; i++)
+      readTrigger(halfAxes_[i]);
+  }
 
-  ///**
-  //  @brief Event handler for the mouseMoved Event.
-  //  @param e Event information
-  //*/
-  //bool GUIInputHandler::mouseMoved(const OIS::MouseEvent &e)
-  //{
-    ////CEGUI::System::getSingleton().injectMouseMove( arg.state.X.rel, arg.state.Y.rel );
-  //  return true;
-  //}
-
-  ///**
-  //  @brief Event handler for the mousePressed Event.
-  //  @param e Event information
-  //  @param id The ID of the mouse button
-  //*/
-  //bool GUIInputHandler::mousePressed(const OIS::MouseEvent &e, OIS::MouseButton id)
-  //{
-    ////CEGUI::System::getSingleton().injectMouseButtonDown(convertOISMouseButtonToCegui(id));
-  //  return true;
-  //}
-
-  ///**
-  //  @brief Event handler for the mouseReleased Event.
-  //  @param e Event information
-  //  @param id The ID of the mouse button
-  //*/
-  //bool GUIInputHandler::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButton id)
-  //{
-    ////CEGUI::System::getSingleton().injectMouseButtonUp(convertOISMouseButtonToCegui(id));
-  //  return true;
-  //}
-
+  void KeyDetector::readTrigger(Button& button)
+  {
+    // binding has changed
+    button.parse(paramCommandBuffer_);
+    SimpleCommand* cmd = new SimpleCommand();
+    cmd->evaluation_ = CommandExecutor::evaluate("storeKeyStroke " + button.name_);
+    button.commands_[KeybindMode::OnPress] = new BaseCommand*[1];
+    button.commands_[KeybindMode::OnPress][0] = cmd;
+    button.nCommands_[KeybindMode::OnPress] = 1;
+  }
 }

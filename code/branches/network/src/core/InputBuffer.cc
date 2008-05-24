@@ -176,7 +176,7 @@ namespace orxonox
   * This tick() function is called by the InputManager if the InputBuffer is active.
   * @param dt Delta time
   */
-  void InputBuffer::tick(float dt)
+  void InputBuffer::tickInput(float dt, const HandlerState& state)
   {
     timeSinceKeyPressed_ += dt;
     if (keysToRepeat_ < 10 && timeSinceKeyPressed_ > keyRepeatDeleay_)

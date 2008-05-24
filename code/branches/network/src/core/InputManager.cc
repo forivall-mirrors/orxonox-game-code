@@ -36,7 +36,7 @@
 #include "CoreIncludes.h"
 #include "Debug.h"
 #include "InputBuffer.h"
-#include "InputHandler.h"
+#include "KeyBinder.h"
 
 namespace orxonox
 {
@@ -51,6 +51,7 @@ namespace orxonox
   */
   InputManager::InputManager() :
       inputSystem_(0), keyboard_(0), mouse_(0),
+      keyBinder_(0), buffer_(0),
       joySticksSize_(0),
       state_(IS_UNINIT), stateRequest_(IS_UNINIT),
       keyboardModifiers_(0)
@@ -143,17 +144,20 @@ namespace orxonox
     }
 
     // InputManager holds the input buffer --> create one and add it.
-    addKeyHandler(new InputBuffer(), "buffer");
+    buffer_ = new InputBuffer();
+    addKeyHandler(buffer_, "buffer");
 
-    KeyBinder* binder = new KeyBinder();
-    binder->loadBindings();
-    addKeyHandler(binder, "keybinder");
-    addMouseHandler(binder, "keybinder");
-    addJoyStickHandler(binder, "keybinder");
+    keyBinder_ = new KeyBinder();
+    keyBinder_->loadBindings();
+    addKeyHandler(keyBinder_, "keybinder");
+    addMouseHandler(keyBinder_, "keybinder");
+    addJoyStickHandler(keyBinder_, "keybinder");
 
-    // Read all the key bindings and assign them
-    //if (!_loadBindings())
-    //  return false;
+    keyDetector_ = new KeyDetector();
+    keyDetector_->loadBindings();
+    addKeyHandler(keyDetector_, "keydetector");
+    addMouseHandler(keyDetector_, "keydetector");
+    addJoyStickHandler(keyDetector_, "keydetector");
 
     CCOUT(ORX_DEBUG) << "Initialising complete." << std::endl;
     return true;
@@ -287,11 +291,14 @@ namespace orxonox
     {
       CCOUT(ORX_DEBUG) << "Destroying ..." << std::endl;
 
-      if (keyHandlers_.find("buffer") != keyHandlers_.end())
-        delete keyHandlers_["buffer"];
+      if (buffer_)
+        delete buffer_;
 
-      if (keyHandlers_.find("keybinder") != keyHandlers_.end())
-        delete keyHandlers_["keybinder"];
+      if (keyBinder_)
+        delete keyBinder_;
+
+      if (keyDetector_)
+        delete keyDetector_;
 
       keyHandlers_.clear();
       mouseHandlers_.clear();
@@ -360,20 +367,21 @@ namespace orxonox
 
   void InputManager::_updateTickables()
   {
-    // we can use a set to have a list of unique pointers (an object can implement all 3 handlers)
-    std::set<InputTickable*> tempSet;
+    // we can use a map to have a list of unique pointers (an object can implement all 3 handlers)
+    std::map<InputTickable*, HandlerState> tempSet;
     for (unsigned int iHandler = 0; iHandler < activeKeyHandlers_.size(); iHandler++)
-      tempSet.insert(activeKeyHandlers_[iHandler]);
+      tempSet[activeKeyHandlers_[iHandler]].joyStick = true;
     for (unsigned int iHandler = 0; iHandler < activeMouseHandlers_.size(); iHandler++)
-      tempSet.insert(activeMouseHandlers_[iHandler]);
+      tempSet[activeMouseHandlers_[iHandler]].mouse = true;
     for (unsigned int iJoyStick  = 0; iJoyStick < joySticksSize_; iJoyStick++)
       for (unsigned int iHandler = 0; iHandler  < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
-        tempSet.insert(activeJoyStickHandlers_[iJoyStick][iHandler]);
+        tempSet[activeJoyStickHandlers_[iJoyStick][iHandler]].joyStick = true;
 
-    // copy the content of the set back to the actual vector
+    // copy the content of the map back to the actual vector
     activeHandlers_.clear();
-    for (std::set<InputTickable*>::const_iterator itHandler = tempSet.begin(); itHandler != tempSet.end(); itHandler++)
-      activeHandlers_.push_back(*itHandler);
+    for (std::map<InputTickable*, HandlerState>::const_iterator itHandler = tempSet.begin();
+        itHandler != tempSet.end(); itHandler++)
+      activeHandlers_.push_back(std::pair<InputTickable*, HandlerState>((*itHandler).first, (*itHandler).second));
   }
 
 
@@ -421,6 +429,20 @@ namespace orxonox
           enableKeyHandler("buffer");
           break;
 
+        case IS_DETECTION:
+          if (mouse_)
+            mouse_->capture();
+          if (keyboard_)
+            keyboard_->capture();
+          for (unsigned  int i = 0; i < joySticksSize_; i++)
+            joySticks_[i]->capture();
+
+          lastStroke_ = "";
+          enableKeyHandler("keydetector");
+          enableMouseHandler("keydetector");
+          enableJoyStickHandler("keydetector", 0);
+          break;
+
         default:
           break;
         }
@@ -454,9 +476,17 @@ namespace orxonox
           activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickButtonHeld(iJoyStick, joyStickButtonsDown_[iJoyStick][iButton]);
 
 
-    // call the ticks
+    // call the ticks for the handlers (need to be treated specially)
     for (unsigned int iHandler = 0; iHandler < activeHandlers_.size(); iHandler++)
-      activeHandlers_[iHandler]->tick(dt);
+      activeHandlers_[iHandler].first->tickInput(dt, activeHandlers_[iHandler].second);
+
+    /*for (unsigned int iHandler = 0; iHandler < activeKeyHandlers_.size(); iHandler++)
+      activeKeyHandlers_[iHandler]->tickKey(dt);
+    for (unsigned int iHandler = 0; iHandler < activeMouseHandlers_.size(); iHandler++)
+      activeMouseHandlers_[iHandler]->tickMouse(dt);
+    for (unsigned int iJoyStick  = 0; iJoyStick < joySticksSize_; iJoyStick++)
+      for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
+        activeJoyStickHandlers_[iJoyStick][iHandler]->tickJoyStick(dt);*/
   }
 
   // ###### Key Events ######
@@ -780,21 +810,21 @@ namespace orxonox
     return _getSingleton().joySticksSize_;
   }
 
-  bool InputManager::isKeyDown(KeyCode::Enum key)
+  /*bool InputManager::isKeyDown(KeyCode::Enum key)
   {
     if (_getSingleton().keyboard_)
       return _getSingleton().keyboard_->isKeyDown((OIS::KeyCode)key);
     else
       return false;
-  }
+  }*/
 
-  bool InputManager::isModifierDown(KeyboardModifier::Enum modifier)
+  /*bool InputManager::isModifierDown(KeyboardModifier::Enum modifier)
   {
     if (_getSingleton().keyboard_)
       return isModifierDown(modifier);
     else
       return false;
-  }
+  }*/
 
   /*const MouseState InputManager::getMouseState()
   {
@@ -811,7 +841,6 @@ namespace orxonox
     else
       return JoyStickState();
   }*/
-
 
   void InputManager::destroy()
   {
@@ -868,6 +897,17 @@ namespace orxonox
   InputManager::InputState InputManager::getInputState()
   {
     return _getSingleton().state_;
+  }
+
+  void InputManager::storeKeyStroke(const std::string& name)
+  {
+    if (_getSingleton().lastStroke_ == "")
+      _getSingleton().lastStroke_ = name;
+  }
+
+  const std::string& InputManager::getLastKeyStroke()
+  {
+    return _getSingleton().lastStroke_;
   }
 
 

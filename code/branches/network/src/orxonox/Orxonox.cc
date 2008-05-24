@@ -366,7 +366,7 @@ namespace orxonox
     ib->registerListener(orxonoxConsole_, &InGameConsole::listen, true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::execute, '\r', false);
     ib->registerListener(orxonoxConsole_, &InGameConsole::hintandcomplete, '\t', true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::clear, '�', true);
+    //ib->registerListener(orxonoxConsole_, &InGameConsole::clear, '§', true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::removeLast, '\b', true);
     ib->registerListener(orxonoxConsole_, &InGameConsole::exit, (char)0x1B, true);
 
@@ -516,7 +516,7 @@ namespace orxonox
 
       // again, just to be sure ogre works fine
       ogreRoot._fireFrameEnded(evt);
-      //msleep(100);
+      //msleep(50);
 	  }
 
     if(mode_==CLIENT)

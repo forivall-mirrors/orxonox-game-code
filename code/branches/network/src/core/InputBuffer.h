@@ -105,7 +105,7 @@ namespace orxonox
     void keyHeld    (const KeyEvent& evt);
     void processKey (const KeyEvent &e);
 
-    void tick(float dt);
+    void tickInput(float dt, const HandlerState& state);
 
   private: // variables
     std::string buffer_;

@@ -337,6 +337,14 @@ namespace orxonox
         COUT(4) << "Saved config file \"" << this->filename_ << "\"." << std::endl;
     }
 
+    void ConfigFile::save(const std::string& filename)
+    {
+        std::string temp = this->filename_;
+        this->filename_ = filename;
+        this->save();
+        this->filename_ = temp;
+    }
+
     void ConfigFile::clean(bool bCleanComments)
     {
         for (std::list<ConfigFileSection*>::iterator it1 = this->sections_.begin(); it1 != this->sections_.end(); )
@@ -470,6 +478,11 @@ namespace orxonox
     void ConfigFileManager::save(ConfigFileType type)
     {
         this->getFile(type)->save();
+    }
+
+    void ConfigFileManager::save(ConfigFileType type, const std::string& filename)
+    {
+        this->getFile(type)->save(filename);
     }
 
     void ConfigFileManager::clean(ConfigFileType type, bool bCleanComments)

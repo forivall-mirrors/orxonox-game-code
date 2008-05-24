@@ -221,6 +221,7 @@ namespace orxonox
 
             void load(bool bCreateIfNotExisting = true);
             void save() const;
+            void save(const std::string& filename);
             void clean(bool bCleanComments = false);
 
             inline void setValue(const std::string& section, const std::string& name, const std::string& value, bool bString)
@@ -264,6 +265,7 @@ namespace orxonox
 
             void load(ConfigFileType type, bool bCreateIfNotExisting = true);
             void save(ConfigFileType type);
+            void save(ConfigFileType type, const std::string& filename);
             void clean(ConfigFileType type, bool bCleanComments = false);
 
             inline void setValue(ConfigFileType type, const std::string& section, const std::string& name, const std::string& value, bool bString)

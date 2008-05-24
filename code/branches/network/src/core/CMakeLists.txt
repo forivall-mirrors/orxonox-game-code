@@ -11,8 +11,8 @@ SET(CORE_SRC_FILES
   Identifier.cc
   IdentifierDistributor.cc
   InputBuffer.cc
-  InputHandler.cc
   InputManager.cc
+  KeyBinder.cc
   Language.cc
   Loader.cc
   MetaObjectList.cc

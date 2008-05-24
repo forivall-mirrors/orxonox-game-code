@@ -196,11 +196,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\InputHandler.cc"
+				RelativePath="..\..\src\core\InputManager.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\InputManager.cc"
+				RelativePath="..\..\src\core\KeyBinder.cc"
 				>
 			</File>
 			<File
@@ -346,10 +346,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\InputHandler.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\InputInterfaces.h"
 				>
 			</File>
@@ -359,6 +355,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\Iterator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\KeyBinder.h"
 				>
 			</File>
 			<File

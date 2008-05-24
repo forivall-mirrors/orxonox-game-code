@@ -481,7 +481,6 @@ namespace orxonox
     void SpaceShip::moveLongitudinal(float val)
     {
         SpaceShip* this_ = getLocalShip();
-        COUT(3) << val << std::endl;
         this_->acceleration_.x = this_->translationAcceleration_ * val;
     }
 

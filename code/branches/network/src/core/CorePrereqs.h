@@ -160,7 +160,7 @@ namespace orxonox
   class InputManager;
   class JoyStickHandler;
   class KeyBinder;
-  class KeyHandler;
+  class KeyDetector;
   class MouseHandler;
 
 }
