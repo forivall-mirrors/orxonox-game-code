@@ -30,9 +30,7 @@
 
 #include <string.h>
 #include <OgreOverlayManager.h>
-#include <OgrePanelOverlayElement.h>
 #include <OgreStringConverter.h>
-#include <util/Math.h>
 
 namespace orxonox
 {

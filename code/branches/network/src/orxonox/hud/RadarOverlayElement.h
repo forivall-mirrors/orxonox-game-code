@@ -30,6 +30,7 @@
 
 #include <util/Math.h>
 #include <OgrePrerequisites.h>
+#include <OgrePanelOverlayElement.h>
 #include "../OrxonoxPrereqs.h"
 #include "RadarObject.h"
 

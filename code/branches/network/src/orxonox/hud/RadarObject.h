@@ -28,7 +28,9 @@
 #ifndef _RADAR2_H__
 #define _RADAR2_H__
 #include <OgrePrerequisites.h>
+#include <OgrePanelOverlayElement.h>
 #include "../OrxonoxPrereqs.h"
+#include "util/Math.h"
 
 namespace orxonox
 {

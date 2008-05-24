@@ -317,14 +317,6 @@ namespace orxonox
 	+ "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().z);
     }
 
-    Vector3 SpaceShip::getSPosition() {
-	return SpaceShip::getLocalShip()->getPosition();
-    }
-
-    Quaternion SpaceShip::getSOrientation() {
-	return SpaceShip::getLocalShip()->getOrientation();
-    }
-
     Vector3 SpaceShip::getDir() {
         return currentDir_;
     }
