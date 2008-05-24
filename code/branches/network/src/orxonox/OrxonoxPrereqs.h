@@ -94,7 +94,12 @@ namespace orxonox {
   class ParticleInterface;
 
   // hud
+  class BarOverlayElement;
   class HUD;
+  class Navigation;
+  class RadarObject;
+  class RadarOverlayElement;
+
   //console
   class InGameConsole;
 }

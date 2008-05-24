@@ -25,18 +25,21 @@
 *
 */
 
-#ifndef _FACTORIES_H__
-#define _FACTORIES_H__
+#ifndef _OverlayElementFactories_H__
+#define _OverlayElementFactories_H__
 
-#include <OgreOverlayElement.h>
+#include "OrxonoxPrereqs.h"
+
 #include <OgrePrerequisites.h>
+#include <OgreOverlayElement.h>
 #include <OgreOverlayElementFactory.h>
 
 #include "BarOverlayElement.h"
+#include "RadarOverlayElement.h"
 
 namespace orxonox{
     class _OrxonoxExport BarOverlayElementFactory : public Ogre::OverlayElementFactory{
-        public:
+      public:
         Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
             return new BarOverlayElement(instanceName);
         }
@@ -47,7 +50,7 @@ namespace orxonox{
     };
 
     class _OrxonoxExport RadarOverlayElementFactory : public Ogre::OverlayElementFactory{
-        public:
+      public:
         Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
             return new RadarOverlayElement(instanceName);
         }
@@ -58,4 +61,4 @@ namespace orxonox{
     };
 }
 
-#endif
+#endif /* _OverlayElementFactories_H__ */

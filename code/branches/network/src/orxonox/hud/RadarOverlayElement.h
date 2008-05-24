@@ -25,42 +25,42 @@
 *
 */
 
-#ifndef _RADAR_H__
-#define _RADAR_H__
+#ifndef _RadarOverlayElement_H__
+#define _RadarOverlayElement_H__
 
-#include <util/Math.h>
+#include "OrxonoxPrereqs.h"
+
 #include <OgrePrerequisites.h>
 #include <OgrePanelOverlayElement.h>
-#include "../OrxonoxPrereqs.h"
-#include "RadarObject.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
     class _OrxonoxExport RadarOverlayElement : public Ogre::PanelOverlayElement
     {
-        private:
-            Ogre::OverlayManager* om;               // our one and only overlay manager
-            Ogre::OverlayContainer* container_;     // pointer to the container we're in
-            Vector3 currentDir_;
-            Vector3 currentOrth_;
-            Vector3 shipPos_;                       // position of ship
+      private:
+        Ogre::OverlayManager* om;               // our one and only overlay manager
+        Ogre::OverlayContainer* container_;     // pointer to the container we're in
+        Vector3 currentDir_;
+        Vector3 currentOrth_;
+        Vector3 shipPos_;                       // position of ship
 
-            Ogre::Real leftRel_, topRel_, dimRel_;  // relative position/dimension
-            int left_, top_, dim_;                  // absolute position/dimension
-            int windowW_, windowH_;             	// absolute window dimensions
+        Ogre::Real leftRel_, topRel_, dimRel_;  // relative position/dimension
+        int left_, top_, dim_;                  // absolute position/dimension
+        int windowW_, windowH_;             	  // absolute window dimensions
 
-        public:
-            RadarOverlayElement(const Ogre::String& name);
-            ~RadarOverlayElement();
-            void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
-			void resize();
-            void update();
-            void listObjects();
+      public:
+        RadarOverlayElement(const Ogre::String& name);
+        ~RadarOverlayElement();
+        void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
+        void resize();
+        void update();
+        void listObjects();
 
-            static float calcRadius(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj);
-            static float calcPhi(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj);
-            static bool calcRight(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj);
-	};
+        static float calcRadius(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj);
+        static float calcPhi(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj);
+        static bool calcRight(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj);
+  };
 }
 
-#endif
+#endif /* _RadarOverlayElement_H__ */

@@ -25,35 +25,37 @@
 *
 */
 
-#ifndef _RADAR2_H__
-#define _RADAR2_H__
+#ifndef _RadarObject_H__
+#define _RadarObject_H__
+
+#include "OrxonoxPrereqs.h"
+
 #include <OgrePrerequisites.h>
 #include <OgrePanelOverlayElement.h>
-#include "../OrxonoxPrereqs.h"
 #include "util/Math.h"
 
 namespace orxonox
 {
     class _OrxonoxExport RadarObject
     {
-    	private:
-    		Ogre::OverlayManager* om;				// our one and only overlay manager
-    		void init();
+      private:
+        Ogre::OverlayManager* om;				// our one and only overlay manager
+        void init();
 
-    	public:
-    		RadarObject(Ogre::OverlayContainer* container);
-    		RadarObject(Ogre::OverlayContainer* container, Vector3 pos);
-    		~RadarObject();
+      public:
+        RadarObject(Ogre::OverlayContainer* container);
+        RadarObject(Ogre::OverlayContainer* container, Vector3 pos);
+        ~RadarObject();
 
-            bool right_;
-            int index_;                             // index number of object
-    		Vector3 pos_;							// position in space
-			Ogre::OverlayContainer* container_;
-			Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
-			RadarObject* next;                      // next pointer of linked list
+        bool right_;
+        int index_;                             // index number of object
+        Vector3 pos_;							// position in space
+        Ogre::OverlayContainer* container_;
+        Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
+        RadarObject* next;                      // next pointer of linked list
 
-    		static int count;
-	};
+        static int count;
+  };
 }
 
-#endif
+#endif /* _RadarObject_H__ */

@@ -26,13 +26,14 @@
 */
 
 #include "OrxonoxStableHeaders.h"
+#include "BarOverlayElement.h"
+
 #include <OgreOverlayManager.h>
 #include "GraphicsEngine.h"
-#include "BarOverlayElement.h"
 
 namespace orxonox
 {
-  using namespace Ogre;
+    using namespace Ogre;
 
     BarOverlayElement::BarOverlayElement(const String& name):PanelOverlayElement(name){
         name_ = name;
@@ -124,6 +125,3 @@ namespace orxonox
         return(color_);
     }
 }
-
-
-

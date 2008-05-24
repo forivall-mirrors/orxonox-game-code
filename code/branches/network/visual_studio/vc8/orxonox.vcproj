@@ -195,6 +195,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\hud\Navigation.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\hud\RadarObject.cc"
 					>
 				</File>
@@ -466,6 +470,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\hud\HUD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\Navigation.h"
 					>
 				</File>
 				<File

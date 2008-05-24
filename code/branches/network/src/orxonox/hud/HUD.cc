@@ -25,8 +25,10 @@
 *
 */
 
-#include <string.h>
 #include "OrxonoxStableHeaders.h"
+#include "HUD.h"
+
+#include <string>
 #include <OgreOverlay.h>
 #include <OgreOverlayContainer.h>
 #include <OgreOverlayManager.h>
@@ -36,9 +38,10 @@
 #include "core/ConsoleCommand.h"
 #include "objects/SpaceShip.h"
 #include "BarOverlayElement.h"
+#include "RadarObject.h"
 #include "RadarOverlayElement.h"
+#include "Navigation.h"
 #include "OverlayElementFactories.h"
-#include "HUD.h"
 
 namespace orxonox
 {
@@ -51,7 +54,7 @@ namespace orxonox
         firstRadarObject = NULL;
         lastRadarObject = NULL;
 
-		// create Factories
+        // create Factories
         BarOverlayElementFactory *barOverlayElementFactory = new BarOverlayElementFactory();
         om->addOverlayElementFactory(barOverlayElementFactory);
         RadarOverlayElementFactory *radarOverlayElementFactory = new RadarOverlayElementFactory();
@@ -83,7 +86,7 @@ namespace orxonox
         // create Navigation
         nav = new Navigation(container);
 
-		// set up screen-wide container
+        // set up screen-wide container
         container->show();
 
         orxonoxHUD->add2D(container);
@@ -143,20 +146,20 @@ namespace orxonox
         return firstRadarObject;
     }
 
-    /*static*/HUD& HUD::getSingleton(){
+    /*static*/ HUD& HUD::getSingleton(){
         static HUD theInstance;
         return theInstance;
     }
 
-    /*static*/void HUD::setFPS(float fps){
+    /*static*/ void HUD::setFPS(float fps){
         HUD::getSingleton().fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
     }
 
-    /*static*/void HUD::setEnergy(float value){
+    /*static*/ void HUD::setEnergy(float value){
         HUD::getSingleton().energyBar->setValue(value);
     }
 
-    /*static*/void HUD::cycleNavigationFocus(){
+    /*static*/ void HUD::cycleNavigationFocus(){
         HUD::getSingleton().nav->cycleFocus();
     }
 }

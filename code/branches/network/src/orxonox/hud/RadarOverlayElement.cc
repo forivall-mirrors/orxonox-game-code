@@ -28,20 +28,19 @@
 #include "OrxonoxStableHeaders.h"
 #include "RadarOverlayElement.h"
 
-#include <string.h>
+#include <string>
 #include <OgreOverlayManager.h>
 #include <OgreStringConverter.h>
-#include <OgrePanelOverlayElement.h>
 
 #include "GraphicsEngine.h"
 #include "core/Tickable.h"
 #include "core/ConsoleCommand.h"
 #include "objects/SpaceShip.h"
+#include "RadarObject.h"
 #include "HUD.h"
 
 namespace orxonox
 {
-
     using namespace Ogre;
 
     RadarOverlayElement::RadarOverlayElement(const String& name):PanelOverlayElement(name){
@@ -52,7 +51,7 @@ namespace orxonox
 
     void RadarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, OverlayContainer* container){
         // some initial data
-		om = &OverlayManager::getSingleton();
+        om = &OverlayManager::getSingleton();
         dimRel_ = dimRel;
         leftRel_ = leftRel;
         topRel_ = topRel;
@@ -79,11 +78,11 @@ namespace orxonox
     void RadarOverlayElement::update() {
         shipPos_ = SpaceShip::getLocalShip()->getPosition();
         currentDir_ = SpaceShip::getLocalShip()->getDir();
-		currentOrth_ = SpaceShip::getLocalShip()->getOrth();
+        currentOrth_ = SpaceShip::getLocalShip()->getOrth();
         RadarObject* ro = HUD::getSingleton().getFirstRadarObject();
         // iterate through all RadarObjects
-		while(ro != NULL){
-		    // calc position on radar...
+        while(ro != NULL){
+        // calc position on radar...
             float radius = calcRadius(shipPos_, currentDir_, currentOrth_, ro);
             float phi = calcPhi(shipPos_, currentDir_, currentOrth_, ro);
             bool right = calcRight(shipPos_, currentDir_, currentOrth_, ro);
@@ -104,36 +103,36 @@ namespace orxonox
                     3.5*dim_/2+dim_/2+left_-2,-cos(phi)*radius/3.5*dim_/2+dim_/2+top_-2);
             }
             ro = ro->next;
-		}
+        }
     }
 
-	void RadarOverlayElement::listObjects(){
-	    int i = 0;
-	    RadarObject* ro = HUD::getSingleton().getFirstRadarObject();
-	    COUT(3) << "List of RadarObjects:\n";
-	    // iterate through all Radar Objects
-	    while(ro != NULL) {
-	        COUT(3) << i++ << ": " << ro->pos_ << std::endl;
-	        ro = ro->next;
-	    }
-	}
+    void RadarOverlayElement::listObjects(){
+        int i = 0;
+        RadarObject* ro = HUD::getSingleton().getFirstRadarObject();
+        COUT(3) << "List of RadarObjects:\n";
+        // iterate through all Radar Objects
+        while(ro != NULL) {
+            COUT(3) << i++ << ": " << ro->pos_ << std::endl;
+            ro = ro->next;
+        }
+    }
 
-	float RadarOverlayElement::calcRadius(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
-	    return(acos((dir.dotProduct(obj->pos_ - pos))/
-			((obj->pos_ - pos).length()*dir.length())));
-	}
+    float RadarOverlayElement::calcRadius(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
+        return(acos((dir.dotProduct(obj->pos_ - pos))/
+        ((obj->pos_ - pos).length()*dir.length())));
+    }
 
-	float RadarOverlayElement::calcPhi(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
-	    // project difference vector on our plane...
-	    Vector3 proj = Plane(dir, pos).projectVector(obj->pos_ - pos);
-	    // ...and find out the angle
-	    return(acos((orth.dotProduct(proj))/
-            (orth.length()*proj.length())));
-	}
+    float RadarOverlayElement::calcPhi(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
+        // project difference vector on our plane...
+        Vector3 proj = Plane(dir, pos).projectVector(obj->pos_ - pos);
+        // ...and find out the angle
+        return(acos((orth.dotProduct(proj))/
+              (orth.length()*proj.length())));
+    }
 
-	bool RadarOverlayElement::calcRight(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
-	    if((dir.crossProduct(orth)).dotProduct(obj->pos_ - pos) > 0)
-        	return true;
+    bool RadarOverlayElement::calcRight(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
+        if((dir.crossProduct(orth)).dotProduct(obj->pos_ - pos) > 0)
+            return true;
         else return false;
-	}
+    }
 }

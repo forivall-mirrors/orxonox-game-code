@@ -28,7 +28,6 @@
 #include "OrxonoxStableHeaders.h"
 #include "RadarObject.h"
 
-#include <string.h>
 #include <OgreOverlayManager.h>
 #include <OgreStringConverter.h>
 
@@ -36,33 +35,33 @@ namespace orxonox
 {
     using namespace Ogre;
 
-	int RadarObject::count = 0;		// initialize static variable
+    int RadarObject::count = 0;		// initialize static variable
 
-	RadarObject::RadarObject(OverlayContainer* container){
-		container_ = container;
-		pos_ = Vector3(0.0, 0.0, 0.0);
-		init();
-	}
+    RadarObject::RadarObject(OverlayContainer* container){
+        container_ = container;
+        pos_ = Vector3(0.0, 0.0, 0.0);
+        init();
+    }
 
-	RadarObject::RadarObject(OverlayContainer* container, Vector3 pos){
-		container_ = container;
-		pos_ = pos;
-		init();
-	}
+    RadarObject::RadarObject(OverlayContainer* container, Vector3 pos){
+        container_ = container;
+        pos_ = pos;
+        init();
+    }
 
-	RadarObject::~RadarObject(){}
+    RadarObject::~RadarObject(){}
 
-	void RadarObject::init(){
-	    next = NULL;
-		om = &OverlayManager::getSingleton();
-		panel_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel",
-			"Object"+StringConverter::toString(count)));
-		panel_->setMaterialName("Orxonox/RedDot");
-		panel_->setDimensions(3,3);
+    void RadarObject::init(){
+        next = NULL;
+        om = &OverlayManager::getSingleton();
+        panel_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel",
+          "Object"+StringConverter::toString(count)));
+        panel_->setMaterialName("Orxonox/RedDot");
+        panel_->setDimensions(3,3);
         panel_->setMetricsMode(Ogre::GMM_PIXELS);
         panel_->show();
         index_ = count;
         count++;
         container_->addChild(panel_);
-	}
+    }
 }

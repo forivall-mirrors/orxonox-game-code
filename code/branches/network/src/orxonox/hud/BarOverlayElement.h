@@ -26,51 +26,50 @@
 */
 
 
-#ifndef _BAR_H__
-#define _BAR_H__
+#ifndef _BarOverlayElement_H__
+#define _BarOverlayElement_H__
 
+#include "OrxonoxPrereqs.h"
 
-#include <OgrePanelOverlayElement.h>
 #include <OgrePrerequisites.h>
-#include "../OrxonoxPrereqs.h"
+#include <OgrePanelOverlayElement.h>
 
 namespace orxonox
 {
   class _OrxonoxExport BarOverlayElement : public Ogre::PanelOverlayElement
   {
     private:
-        bool autoColor_;                    // whether bar changes color automatically
-        float value_;                       // progress of bar
-        int color_;
-        int left_;
-        int top_;
-        int width_;
-        int height_;
-        int windowW_, windowH_;
-        Ogre::Real leftRel_;
-        Ogre::Real topRel_;
-        Ogre::Real dimRel_;
-        Ogre::OverlayManager* om;           // our overlay manager
-        Ogre::OverlayContainer* container_; // our parent container to attach to
-        Ogre::OverlayContainer* background_;
-        Ogre::String name_;
+      bool autoColor_;                    // whether bar changes color automatically
+      float value_;                       // progress of bar
+      int color_;
+      int left_;
+      int top_;
+      int width_;
+      int height_;
+      int windowW_, windowH_;
+      Ogre::Real leftRel_;
+      Ogre::Real topRel_;
+      Ogre::Real dimRel_;
+      Ogre::OverlayManager* om;           // our overlay manager
+      Ogre::OverlayContainer* container_; // our parent container to attach to
+      Ogre::OverlayContainer* background_;
+      Ogre::String name_;
 
     public:
-        bool left2Right;
-        static const int RED = 0;           // predefined colors
-        static const int YELLOW = 1;
-        static const int GREEN = 2;
+      bool left2Right;
+      static const int RED = 0;           // predefined colors
+      static const int YELLOW = 1;
+      static const int GREEN = 2;
 
-        BarOverlayElement(const Ogre::String& name);
-        virtual ~BarOverlayElement();
-        void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
-        void resize();
-        void setValue(float value);
-        void setColor(int color);
-        float getValue();
-        int getBarColor();
+      BarOverlayElement(const Ogre::String& name);
+      virtual ~BarOverlayElement();
+      void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
+      void resize();
+      void setValue(float value);
+      void setColor(int color);
+      float getValue();
+      int getBarColor();
     };
 }
-#endif
 
-
+#endif /* _BarOverlayElement_H__ */

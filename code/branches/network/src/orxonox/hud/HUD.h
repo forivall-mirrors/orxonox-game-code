@@ -29,46 +29,43 @@
 #ifndef _HUD_H__
 #define _HUD_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <OgrePrerequisites.h>
 #include <OgreTextAreaOverlayElement.h>
-#include "OrxonoxPrereqs.h"
 #include "core/Tickable.h"
-#include "BarOverlayElement.h"
-#include "RadarOverlayElement.h"
-#include "Navigation.h"
-#include "RadarObject.h"
-
+#include "util/Math.h"
 
 namespace orxonox
 {
     class _OrxonoxExport HUD : public Tickable
     {
-        private:
-            HUD();
-            HUD(HUD& instance);
-            ~HUD();
-            Ogre::OverlayManager* om;
-            Ogre::Overlay* orxonoxHUD;
-            Ogre::OverlayContainer* container;
-            Ogre::TextAreaOverlayElement* fpsText;
-            BarOverlayElement* energyBar;
-            BarOverlayElement* speedoBar;
-            RadarOverlayElement* radar;
-            RadarObject* firstRadarObject;
-            RadarObject* lastRadarObject;
-            Navigation* nav;
+      private:
+        HUD();
+        HUD(HUD& instance);
+        ~HUD();
+        Ogre::OverlayManager* om;
+        Ogre::Overlay* orxonoxHUD;
+        Ogre::OverlayContainer* container;
+        Ogre::TextAreaOverlayElement* fpsText;
+        BarOverlayElement* energyBar;
+        BarOverlayElement* speedoBar;
+        RadarOverlayElement* radar;
+        RadarObject* firstRadarObject;
+        RadarObject* lastRadarObject;
+        Navigation* nav;
 
-        public:
-            virtual void tick(float);
-            void addRadarObject(Vector3 pos);
-            RadarObject* getFirstRadarObject();
+      public:
+        virtual void tick(float);
+        void addRadarObject(Vector3 pos);
+        RadarObject* getFirstRadarObject();
 
-            static HUD* instance_s;
-            static HUD& getSingleton();
-            static void setFPS(float fps);
-            static void setEnergy(float value);
-            static void cycleNavigationFocus();
+        static HUD* instance_s;
+        static HUD& getSingleton();
+        static void setFPS(float fps);
+        static void setEnergy(float value);
+        static void cycleNavigationFocus();
     };
 }
 
-#endif
+#endif /* _HUD_H__ */

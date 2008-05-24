@@ -25,15 +25,19 @@
 *
 */
 
+#include "OrxonoxStableHeaders.h"
+#include "Navigation.h"
+
 #include <OgreOverlayManager.h>
-#include <OgrePanelOverlayElement.h>
-#include <OgreTextAreaOverlayElement.h>
 #include <OgreStringConverter.h>
-#include <GraphicsEngine.h>
+
+#include "GraphicsEngine.h"
+// TODO: remove the SpaceShip and CameraHandler dependencies
 #include "objects/SpaceShip.h"
 #include "objects/CameraHandler.h"
+#include "RadarObject.h"
+#include "RadarOverlayElement.h"
 #include "HUD.h"
-#include "Navigation.h"
 
 namespace orxonox
 {
@@ -52,8 +56,8 @@ namespace orxonox
     }
 
     void Navigation::init(){
-		om = &OverlayManager::getSingleton();
-		navCam_ = NULL;
+        om = &OverlayManager::getSingleton();
+        navCam_ = NULL;
         // create nav text
         navText_ = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "navText"));
         navText_->show();
@@ -72,13 +76,13 @@ namespace orxonox
         navMarker_->hide();
         navText_->hide();
         container_->addChild(navMarker_);
-	}
+    }
 
-	void Navigation::update(){
+    void Navigation::update(){
         if(focus_ == NULL) return;
         navCamPos_ = SpaceShip::getLocalShip()->getPosition();
         currentDir_ = SpaceShip::getLocalShip()->getDir();
-		currentOrth_ = SpaceShip::getLocalShip()->getOrth();
+        currentOrth_ = SpaceShip::getLocalShip()->getOrth();
 
         windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
         windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
@@ -167,12 +171,12 @@ namespace orxonox
             navMarker_->setPosition(xPos-navMarker_->getWidth()/2, yPos-navMarker_->getHeight()/2);
             navText_->setPosition(xPos+navMarker_->getWidth()/2, yPos+navMarker_->getHeight()/2);
         }
-	}
+    }
 
     void Navigation::cycleFocus(){
-	    if(focus_ == NULL){
+        if(focus_ == NULL){
             focus_ = HUD::getSingleton().getFirstRadarObject();
-	    }
+        }
         else{
             focus_->panel_->setMaterialName("Orxonox/RedDot");
             if(focus_ != NULL) focus_ = focus_->next;
@@ -187,10 +191,10 @@ namespace orxonox
             navText_->show();
             focus_->panel_->setMaterialName("Orxonox/WhiteDot");
         }
-	}
+    }
 
-	float Navigation::getDist2Focus(){
-	    if(focus_ == NULL) return(0.0);
-	    return((focus_->pos_-SpaceShip::getLocalShip()->getPosition()).length());
-	}
+    float Navigation::getDist2Focus(){
+        if(focus_ == NULL) return(0.0);
+        return((focus_->pos_-SpaceShip::getLocalShip()->getPosition()).length());
+    }
 }
