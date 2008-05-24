@@ -43,8 +43,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
-#include "util/Math.h"
 #include "objects/SpaceShip.h"
+#include "util/Math.h"
 #include "ClientInformation.h"
 #include "ConnectionManager.h"
 #include "Synchronisable.h"
@@ -93,17 +93,17 @@ namespace network
     head_ = head;
   }
 
-  ENetPacket *ConnectionManager::getPacket(ENetAddress &address) {
+  /*ENetPacket *ConnectionManager::getPacket(ENetAddress &address) {
     if(!buffer.isEmpty())
       return buffer.pop(address);
     else
       return NULL;
-  }
+  }*/
 /**
 This function only pops the first element in PacketBuffer (first in first out)
 used by processQueue in Server.cc
 */
-  ENetPacket *ConnectionManager::getPacket(int &clientID) {
+  /*ENetPacket *ConnectionManager::getPacket(int &clientID) {
     ENetAddress address;
     ENetPacket *packet=getPacket(address);
     ClientInformation *temp =head_->findClient(&address);
@@ -111,6 +111,13 @@ used by processQueue in Server.cc
       return NULL;
     clientID=temp->getID();
     return packet;
+  }*/
+  
+  ENetEvent *ConnectionManager::getEvent(){
+    if(!buffer.isEmpty())
+      return buffer.pop();
+    else
+      return NULL;
   }
 
   bool ConnectionManager::queueEmpty() {
@@ -175,9 +182,9 @@ used by processQueue in Server.cc
 
   void ConnectionManager::receiverThread() {
     // what about some error-handling here ?
+    ENetEvent *event;
     enet_initialize();
     atexit(enet_deinitialize);
-    ENetEvent *event = new ENetEvent;
     server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
     if(server==NULL){
       // add some error handling here ==========================
@@ -186,6 +193,7 @@ used by processQueue in Server.cc
     }
 
     while(!quit){
+      event = new ENetEvent;
       if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
         // we should never reach this point
         quit=true;
@@ -194,23 +202,26 @@ used by processQueue in Server.cc
       switch(event->type){
         // log handling ================
         case ENET_EVENT_TYPE_CONNECT:
-          addClient(event);
+          COUT(3) << "adding event_type_connect to queue" << std::endl;
+        case ENET_EVENT_TYPE_DISCONNECT:
+          //addClient(event);
           //this is a workaround to ensure thread safety
-          COUT(5) << "Con.Man: connection event has occured" << std::endl;
-          break;
+          //COUT(5) << "Con.Man: connection event has occured" << std::endl;
+          //break;
         case ENET_EVENT_TYPE_RECEIVE:
           //std::cout << "received data" << std::endl;
           COUT(5) << "Con.Man: receive event has occured" << std::endl;
           // only add, if client has connected yet and not been disconnected
-          if(head_->findClient(&event->peer->address))
+          //if(head_->findClient(&event->peer->address))
             processData(event);
-          else
-            COUT(3) << "received a packet from a client we don't know" << std::endl;
+//           else
+//             COUT(3) << "received a packet from a client we don't know" << std::endl;
           break;
-        case ENET_EVENT_TYPE_DISCONNECT:
-          clientDisconnect(event->peer);
-          break;
+        //case ENET_EVENT_TYPE_DISCONNECT:
+          //clientDisconnect(event->peer);
+          //break;
         case ENET_EVENT_TYPE_NONE:
+          delete event;
           //receiverThread_->yield();
           break;
       }
@@ -261,16 +272,16 @@ used by processQueue in Server.cc
     return buffer.push(event);
   }
 
-  bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
+  /*bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
     COUT(4) << "removing client from list" << std::endl;
     return removeClient(head_->findClient(&(peer->address))->getID());
-  }
+  }*/
 /**
 This function adds a client that connects to the clientlist of the server
 NOTE: if you change this, don't forget to change the test function
 addClientTest in diffTest.cc since addClient is not good for testing because of syncClassid
 */
-  bool ConnectionManager::addClient(ENetEvent *event) {
+  /*bool ConnectionManager::addClient(ENetEvent *event) {
     ClientInformation *temp = head_->insertBack(new ClientInformation);
     if(!temp){
       COUT(2) << "Conn.Man. could not add client" << std::endl;
@@ -285,7 +296,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     temp->setPeer(event->peer);
     COUT(3) << "Con.Man: added client id: " << temp->getID() << std::endl;
     return true;
-  }
+  }*/
 
   int ConnectionManager::getClientID(ENetPeer peer) {
     return getClientID(peer.address);
@@ -323,7 +334,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
   }
 
-  bool ConnectionManager::createClient(int clientID){
+  /*bool ConnectionManager::createClient(int clientID){
     ClientInformation *temp = head_->findClient(clientID);
     if(!temp){
       COUT(2) << "Conn.Man. could not create client with id: " << clientID << std::endl;
@@ -341,9 +352,9 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     COUT(3) << "sending welcome" << std::endl;
     sendWelcome(temp->getID(), temp->getShipID(), true);
     return true;
-  }
+  }*/
   
-  bool ConnectionManager::removeClient(int clientID){
+  /*bool ConnectionManager::removeClient(int clientID){
     boost::recursive_mutex::scoped_lock lock(head_->mutex_);
     orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::start();
     ClientInformation *client = head_->findClient(clientID);
@@ -360,9 +371,9 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
       return head_->removeClient(clientID);
     }
     return false;
-  }
+  }*/
   
-  bool ConnectionManager::createShip(ClientInformation *client){
+/*  bool ConnectionManager::createShip(ClientInformation *client){
     if(!client)
       return false;
     orxonox::Identifier* id = ID("SpaceShip");
@@ -388,7 +399,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     
     client->setShipID(no->objectID);
     return true;
-  }
+  }*/
   
   bool ConnectionManager::removeShip(ClientInformation *client){
     int id=client->getShipID();

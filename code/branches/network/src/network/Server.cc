@@ -49,6 +49,7 @@
 #include "ClientInformation.h"
 //#include "NetworkFrameListener.h"
 #include "util/Sleep.h"
+#include "objects/SpaceShip.h"
 
 
 namespace network
@@ -164,17 +165,33 @@ namespace network
   * processes all the packets waiting in the queue
   */
   void Server::processQueue() {
-    ENetPacket *packet;
+    ENetEvent *event;
     int clientID=-1;
     while(!connection->queueEmpty()){
       //std::cout << "Client " << clientID << " sent: " << std::endl;
       //clientID here is a reference to grab clientID from ClientInformation
-      packet = connection->getPacket(clientID);
-      if(!packet)
+      event = connection->getEvent();
+      if(!event)
         continue;
+      switch( event->type ) {
+      case ENET_EVENT_TYPE_CONNECT:
+        COUT(3) << "processing event_Type_connect" << std::endl;
+        addClient(event);
+        break;
+      case ENET_EVENT_TYPE_DISCONNECT:
+        if(clients->findClient(&event->peer->address))
+          disconnectClient(event);
+        break;
+      case ENET_EVENT_TYPE_RECEIVE:
+        if(clients->findClient(&event->peer->address)){
+          clientID = clients->findClient(&event->peer->address)->getID();
+          if( !elaborate(event->packet, clientID) ) 
+            COUT(3) << "Server: could not elaborate" << std::endl;
+        }
+        break;
+      }
+      delete event;
       //if statement to catch case that packetbuffer is empty
-      if( !elaborate(packet, clientID) ) 
-        COUT(3) << "Server: could not elaborate" << std::endl;
     }
   }
 
@@ -249,9 +266,9 @@ namespace network
   }
   
   bool Server::processConnectRequest( connectRequest *con, int clientID ){
-    COUT(3) << "processing connectRequest " << std::endl;
+    //(COUT(3) << "processing connectRequest " << std::endl;
     //connection->addPacket(packet_gen.gstate(gamestates->popGameState(clientID)) , clientID);
-    connection->createClient(clientID);
+    //createClient(clientID);
     delete con;
     return true;
   }
@@ -263,6 +280,93 @@ namespace network
     else
       if(clients->findClient(clientID))
         clients->findClient(clientID)->resetFailures();
+  }
+  
+  bool Server::addClient(ENetEvent *event){
+    ClientInformation *temp = clients->insertBack(new ClientInformation);
+    if(!temp){
+      COUT(2) << "Server: could not add client" << std::endl;
+      return false;
+    }
+    if(temp->prev()->getHead()) { //not good if you use anything else than insertBack
+      temp->prev()->setID(0); //bugfix: not necessary but usefull
+      temp->setID(1);
+    }
+    else
+      temp->setID(temp->prev()->getID()+1);
+    temp->setPeer(event->peer);
+    COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
+    return createClient(temp->getID());
+  }
+  
+  bool Server::createClient(int clientID){
+    ClientInformation *temp = clients->findClient(clientID);
+    if(!temp){
+      COUT(2) << "Conn.Man. could not create client with id: " << clientID << std::endl;
+      return false;
+    }
+    COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
+    connection->syncClassid(temp->getID());
+    COUT(4) << "creating spaceship for clientid: " << temp->getID() << std::endl;
+    // TODO: this is only a hack, untill we have a possibility to define default player-join actions
+    if(!createShip(temp))
+      COUT(2) << "Con.Man. could not create ship for clientid: " << clientID << std::endl;
+    else
+      COUT(3) << "created spaceship" << std::endl;
+    temp->setSynched(true);
+    COUT(3) << "sending welcome" << std::endl;
+    connection->sendWelcome(temp->getID(), temp->getShipID(), true);
+    return true;
+  }
+  
+  bool Server::createShip(ClientInformation *client){
+    if(!client)
+      return false;
+    orxonox::Identifier* id = ID("SpaceShip");
+    if(!id){
+      COUT(4) << "We could not create the SpaceShip for client: " << client->getID() << std::endl;
+      return false;
+    }
+    orxonox::SpaceShip *no = dynamic_cast<orxonox::SpaceShip *>(id->fabricate());
+    no->setPosition(orxonox::Vector3(0,0,80));
+    no->setScale(10);
+    //no->setYawPitchRoll(orxonox::Degree(-90),orxonox::Degree(-90),orxonox::Degree(0));
+    no->setMesh("assff.mesh");
+    no->setMaxSpeed(500);
+    no->setMaxSideAndBackSpeed(50);
+    no->setMaxRotation(1.0);
+    no->setTransAcc(200);
+    no->setRotAcc(3.0);
+    no->setTransDamp(75);
+    no->setRotDamp(1.0);
+    no->setCamera("cam_"+client->getID());
+    no->classID = id->getNetworkID();
+    no->create();
+    
+    client->setShipID(no->objectID);
+    return true;
+  }
+  
+  bool Server::disconnectClient(ENetEvent *event){
+    COUT(4) << "removing client from list" << std::endl;
+    //return removeClient(head_->findClient(&(peer->address))->getID());
+    
+    //boost::recursive_mutex::scoped_lock lock(head_->mutex_);
+    orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::start();
+    ClientInformation *client = clients->findClient(&event->peer->address);
+    if(!client)
+      return false;
+    while(it){
+      if(it->objectID!=client->getShipID()){
+        ++it;
+        continue;
+      }
+      orxonox::Iterator<orxonox::SpaceShip> temp=it;
+      ++it;
+      delete  *temp;
+      return clients->removeClient(event->peer);
+    }
+    return false;
   }
 
   void Server::disconnectClient(int clientID){

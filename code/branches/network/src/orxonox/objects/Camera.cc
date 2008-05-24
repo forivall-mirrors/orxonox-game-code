@@ -59,6 +59,7 @@ namespace orxonox
   Camera::~Camera()
   {
     CameraHandler::getInstance()->releaseFocus(this);
+    GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->removeAndDestroyChild(cameraNode_->getName());
   }
 
   void Camera::setPositionNode(Ogre::SceneNode* node)

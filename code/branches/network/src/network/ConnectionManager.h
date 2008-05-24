@@ -76,8 +76,9 @@ namespace network
     ConnectionManager(ClientInformation *head, int port);
     ConnectionManager(int port, const char *address, ClientInformation *head);
     ConnectionManager(int port, std::string address, ClientInformation *head);
-    ENetPacket *getPacket(ENetAddress &address); // thread1
-    ENetPacket *getPacket(int &clientID);
+    //ENetPacket *getPacket(ENetAddress &address); // thread1
+    //ENetPacket *getPacket(int &clientID);
+    ENetEvent *getEvent();
     bool queueEmpty();
     void createListener();
     bool quitListener();
@@ -86,23 +87,23 @@ namespace network
     bool addPacketAll(ENetPacket *packet);
   //  bool sendPackets(ENetEvent *event);
     bool sendPackets();
-    bool createClient(int clientID);
+    //bool createClient(int clientID);
     void disconnectClient(ClientInformation *client);
+    void syncClassid(int clientID);
+    bool sendWelcome(int clientID, int shipID, bool allowed);
 
   private:
-    bool clientDisconnect(ENetPeer *peer);
-    bool removeClient(int clientID);
+//     bool clientDisconnect(ENetPeer *peer);
+//     bool removeClient(int clientID);
     bool processData(ENetEvent *event);
-    bool addClient(ENetEvent *event);
+    //bool addClient(ENetEvent *event);
     void receiverThread();
     void disconnectClients();
     int getClientID(ENetPeer peer);
     int getClientID(ENetAddress address);
-    void syncClassid(int clientID);
     ENetPeer *getClientPeer(int clientID);
-    bool createShip(ClientInformation *client);
+    //bool createShip(ClientInformation *client);
     bool removeShip(ClientInformation *client);
-    bool sendWelcome(int clientID, int shipID, bool allowed);
     bool addFakeConnectRequest(ENetEvent *ev);
     PacketBuffer buffer;
     PacketGenerator packet_gen;

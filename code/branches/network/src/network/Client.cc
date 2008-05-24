@@ -119,9 +119,9 @@ namespace network
     Synchronisable::setClient(true);
     isConnected=client_connection.createConnection();
     if(isConnected){
-      COUT(3) << "sending connectrequest" << std::endl;
-      if(!client_connection.addPacket(pck_gen.generateConnectRequest()) || !client_connection.sendPackets())
-        COUT(1) << "could not send connection request !!!!!!!!!" << std::endl;
+//       COUT(3) << "sending connectrequest" << std::endl;
+//       if(!client_connection.addPacket(pck_gen.generateConnectRequest()) || !client_connection.sendPackets())
+//         COUT(1) << "could not send connection request !!!!!!!!!" << std::endl;
     }else
       COUT(1) << "could not create connection laber" << std::endl;
     return isConnected;
@@ -238,12 +238,12 @@ namespace network
         delete gs;
       }
     }
-    ENetPacket *packet;
+    ENetEvent *event;
     // stop if the packet queue is empty
     while(!(client_connection.queueEmpty())){
-      packet = client_connection.getPacket();
-      COUT(5) << "tick packet size " << packet->dataLength << std::endl;
-      elaborate(packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
+      event = client_connection.getEvent();
+      COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
+      elaborate(event->packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
     }
     if(!client_connection.sendPackets())
       COUT(3) << "Problem sending packets to server" << std::endl;

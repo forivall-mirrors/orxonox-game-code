@@ -54,8 +54,8 @@ namespace network
   };
 
   struct QueueItem{
-    ENetPacket *packet;
-    ENetAddress address;
+    ENetEvent *event;
+    //ENetAddress address;
     QueueItem *next;
   };
 
@@ -67,8 +67,9 @@ namespace network
     void setClosed(bool value);
     void print();
     // pops a packet from the queue
-    ENetPacket *pop();
-    ENetPacket *pop(ENetAddress &address);
+    //ENetPacket *pop();
+    //ENetPacket *pop(ENetAddress &address);
+    ENetEvent *pop();
     // pushs a packet to the queue
     bool push(ENetEvent *ev);
 

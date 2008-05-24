@@ -74,7 +74,7 @@ namespace network
   }
 
 
-  ENetPacket *ClientConnection::getPacket(ENetAddress &address) {
+  /*ENetPacket *ClientConnection::getPacket(ENetAddress &address) {
     if(!buffer.isEmpty()) {
       //std::cout << "###BUFFER IS NOT EMPTY###" << std::endl;
       return buffer.pop(address);
@@ -87,6 +87,13 @@ namespace network
   ENetPacket *ClientConnection::getPacket() {
     ENetAddress address; //sems that address is not needed
     return getPacket(address);
+  }*/
+  
+  ENetEvent *ClientConnection::getEvent(){
+    if(!buffer.isEmpty())
+      return buffer.pop();
+    else
+      return NULL;
   }
 
   bool ClientConnection::queueEmpty() {
@@ -143,7 +150,7 @@ namespace network
     // what about some error-handling here ?
     enet_initialize();
     atexit(enet_deinitialize);
-    ENetEvent event;
+    ENetEvent *event;
     client = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0);
     if(client==NULL) {
       COUT(2) << "ClientConnection: could not create client host" << std::endl;
@@ -158,19 +165,20 @@ namespace network
     }
     //main loop
     while(!quit){
+      event = new ENetEvent;
       //std::cout << "connection loop" << std::endl;
-      if(enet_host_service(client, &event, NETWORK_CLIENT_TIMEOUT)<0){
+      if(enet_host_service(client, event, NETWORK_CLIENT_TIMEOUT)<0){
         // we should never reach this point
         quit=true;
         // add some error handling here ========================
       }
-      switch(event.type){
+      switch(event->type){
         // log handling ================
       case ENET_EVENT_TYPE_CONNECT:
         break;
       case ENET_EVENT_TYPE_RECEIVE:
         COUT(5) << "Cl.Con: receiver-Thread while loop: got new packet" << std::endl;
-        if ( !processData(&event) ) COUT(2) << "Current packet was not pushed to packetBuffer -> ev ongoing SegFault" << std::endl;
+        if ( !processData(event) ) COUT(2) << "Current packet was not pushed to packetBuffer -> ev ongoing SegFault" << std::endl;
         COUT(5) << "Cl.Con: processed Data in receiver-thread while loop" << std::endl;
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
