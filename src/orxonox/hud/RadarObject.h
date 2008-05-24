@@ -27,7 +27,15 @@
 
 #ifndef _RADAR2_H__
 #define _RADAR2_H__
+
+#include <string.h>
 #include <OgrePrerequisites.h>
+#include <OgreOverlayManager.h>
+#include <OgreOverlayElement.h>
+#include <OgrePanelOverlayElement.h>
+#include <OgreStringConverter.h>
+
+#include <util/Math.h>
 #include "../OrxonoxPrereqs.h"
 
 namespace orxonox
@@ -46,6 +54,7 @@ namespace orxonox
             bool right_;
             int index_;                             // index number of object
     		Vector3 pos_;							// position in space
+			Ogre::Real radius_, phi_;				// position on radar
 			Ogre::OverlayContainer* container_;
 			Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
 			RadarObject* next;                      // next pointer of linked list

@@ -25,31 +25,27 @@
 *
 */
 
-#include <string.h>
+
 #include "OrxonoxStableHeaders.h"
 #include <OgreOverlay.h>
 #include <OgreOverlayContainer.h>
 #include <OgreOverlayManager.h>
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
 #include <OgreStringConverter.h>
-
 #include "core/Debug.h"
-#include "core/ConsoleCommand.h"
 #include "objects/SpaceShip.h"
+#include "HUD.h"
 #include "BarOverlayElement.h"
 #include "RadarOverlayElement.h"
 #include "OverlayElementFactories.h"
-#include "HUD.h"
 
 namespace orxonox
 {
-    ConsoleCommandShortcut(HUD, cycleNavigationFocus, AccessLevel::User);
-
     using namespace Ogre;
 
-    HUD::HUD(){
+    HUD::HUD(int zoom){
         om = &Ogre::OverlayManager::getSingleton();
-        firstRadarObject = NULL;
-        lastRadarObject = NULL;
 
 		// create Factories
         BarOverlayElementFactory *barOverlayElementFactory = new BarOverlayElementFactory();
@@ -59,16 +55,14 @@ namespace orxonox
 
         orxonoxHUD = om->create("Orxonox/HUD");
         container = static_cast<Ogre::OverlayContainer*>(om->createOverlayElement("Panel", "Orxonox/HUD/container"));
-
-        // creating text to display fps
-        fpsText = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "fpsText"));
-        fpsText->show();
-        fpsText->setMetricsMode(Ogre::GMM_PIXELS);
-        fpsText->setDimensions(0.001, 0.001);
-        fpsText->setPosition(10, 10);
-        fpsText->setFontName("Console");
-        fpsText->setCharHeight(20);
-        fpsText->setCaption("init");
+        // test
+        test = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "test123"));
+        test->show();
+        test->setMetricsMode(Ogre::GMM_RELATIVE);
+        test->setDimensions(0.8, 0.8);
+        test->setPosition(0.02, 0.02);
+        test->setFontName("Console");
+        test->setCaption("init");
 
         // create energy bar
         energyBar = static_cast<BarOverlayElement*>(om->createOverlayElement("Bar", "energyBar"));
@@ -80,9 +74,6 @@ namespace orxonox
         radar = static_cast<RadarOverlayElement*>(om->createOverlayElement("Radar", "radar"));
         radar->show();
 
-        // create Navigation
-        nav = new Navigation(container);
-
 		// set up screen-wide container
         container->show();
 
@@ -93,25 +84,23 @@ namespace orxonox
         container->setWidth(1.0);
         container->setHeight(1.0);
         container->setMetricsMode(Ogre::GMM_RELATIVE);
-        container->addChild(fpsText);
-
+        container->addChild(test);
         energyBar->init(0.01, 0.94, 0.4, container);
         energyBar->setValue(1);
-
         speedoBar->init(0.01, 0.90, 0.4, container);
-
         radar->init(0.5, 0.9, 0.2, container);
-        addRadarObject(Vector3(2000.0, 0.0, 0.0));
-        addRadarObject(Vector3(0.0, 2000.0, 0.0));
-        addRadarObject(Vector3(0.0, 0.0, 2000.0));
-    }
-
-    HUD::~HUD(){
-        //todo: clean up objects
+        radar->addObject(Vector3(1500.0, 0.0, 100.0));
+        radar->addObject(Vector3(0.0, 4000.0, 0.0));
+        radar->addObject(Vector3(0.0, 0.0, 6800.0));
+        RadarOverlayElement::cycleFocus();
     }
 
     void HUD::tick(float dt)
     {
+        int d = radar->getDist2Focus()/10;
+        if(d) test->setCaption("Distance: " + Ogre::StringConverter::toString(d));
+        else test->setCaption("");
+
         energyBar->resize();
 
         float v = SpaceShip::instance_s->getVelocity().length();
@@ -121,41 +110,9 @@ namespace orxonox
 
         radar->resize();
         radar->update();
-
-        nav->update();
     }
 
-    void HUD::addRadarObject(Vector3 pos){
-        // check if this is the first RadarObject to create
-        if(firstRadarObject == NULL){
-            firstRadarObject = new RadarObject(container, pos);
-            lastRadarObject = firstRadarObject;
-        }
-        else{ // if not, append to list
-            lastRadarObject->next = new RadarObject(container, pos);
-            lastRadarObject = lastRadarObject->next;
-        }
-    }
-
-    RadarObject* HUD::getFirstRadarObject(){
-        return firstRadarObject;
-    }
-
-    /*static*/HUD& HUD::getSingleton(){
-        static HUD theInstance;
-        return theInstance;
-    }
-
-    /*static*/void HUD::setFPS(float fps){
-        HUD::getSingleton().fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
-    }
-
-    /*static*/void HUD::setEnergy(float value){
-        HUD::getSingleton().energyBar->setValue(value);
-    }
-
-    /*static*/void HUD::cycleNavigationFocus(){
-        HUD::getSingleton().nav->cycleFocus();
+    HUD::~HUD(void){
     }
 }
 
