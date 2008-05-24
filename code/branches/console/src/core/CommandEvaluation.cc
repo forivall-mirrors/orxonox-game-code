@@ -52,6 +52,7 @@ namespace orxonox
 
         this->listOfPossibleIdentifiers_.clear();
         this->listOfPossibleFunctions_.clear();
+        this->listOfPossibleArguments_.clear();
 
         this->functionclass_ = 0;
         this->function_ = 0;
@@ -113,7 +114,12 @@ std::cout << "complete: state: CS_Shortcut_Params" << std::endl;
                 {
 std::cout << "complete: function != 0" << std::endl;
                     if (this->commandTokens_.size() > 1)
-                        return (this->function_->getName() + " " + this->commandTokens_.subSet(1, this->commandTokens_.size() - 1).join() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleArguments_));
+                    {
+                        if ((this->commandTokens_.size() - 1) >= this->function_->getParamCount())
+                            return (this->function_->getName() + " " + this->commandTokens_.subSet(1, this->commandTokens_.size()).join());
+                        else
+                            return (this->function_->getName() + " " + this->commandTokens_.subSet(1, this->commandTokens_.size()).join() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleArguments_));
+                    }
                     else
                         return (this->function_->getName() + " ");
                 }
@@ -124,7 +130,7 @@ std::cout << "complete: state: CS_Shortcut_Finished" << std::endl;
                 {
 std::cout << "complete: function != 0" << std::endl;
                     if (this->commandTokens_.size() > 1)
-                        return (this->function_->getName() + " " + this->commandTokens_.subSet(1, this->commandTokens_.size() - 1).join());
+                        return (this->function_->getName() + " " + this->commandTokens_.subSet(1, this->commandTokens_.size()).join());
                     else
                         return (this->function_->getName());
                 }
@@ -143,7 +149,12 @@ std::cout << "complete: state: CS_Function_Params" << std::endl;
                 {
 std::cout << "complete: function und functionclass != 0" << std::endl;
                     if (this->commandTokens_.size() > 2)
-                        return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->commandTokens_.subSet(2, this->commandTokens_.size()).join() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleArguments_));
+                    {
+                        if ((this->commandTokens_.size() - 2) >= this->function_->getParamCount())
+                            return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->commandTokens_.subSet(2, this->commandTokens_.size()).join());
+                        else
+                            return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->commandTokens_.subSet(2, this->commandTokens_.size()).join() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleArguments_));
+                    }
                     else
                         return (this->functionclass_->getName() + " " + this->function_->getName() + " ");
                 }

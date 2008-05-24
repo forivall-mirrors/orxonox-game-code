@@ -37,11 +37,11 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutGeneric(log,     createExecutor(createFunctor(&OutputHandler::log),     "log"    ));
-    SetConsoleCommandShortcutGeneric(error,   createExecutor(createFunctor(&OutputHandler::error),   "error"  ));
-    SetConsoleCommandShortcutGeneric(warning, createExecutor(createFunctor(&OutputHandler::warning), "warning"));
-    SetConsoleCommandShortcutGeneric(info,    createExecutor(createFunctor(&OutputHandler::info),    "info"   ));
-    SetConsoleCommandShortcutGeneric(debug,   createExecutor(createFunctor(&OutputHandler::debug),   "debug"  ));
+    SetConsoleCommandShortcutGeneric(log,     createConsoleCommand(createFunctor(&OutputHandler::log),     "log"    ));
+    SetConsoleCommandShortcutGeneric(error,   createConsoleCommand(createFunctor(&OutputHandler::error),   "error"  ));
+    SetConsoleCommandShortcutGeneric(warning, createConsoleCommand(createFunctor(&OutputHandler::warning), "warning"));
+    SetConsoleCommandShortcutGeneric(info,    createConsoleCommand(createFunctor(&OutputHandler::info),    "info"   ));
+    SetConsoleCommandShortcutGeneric(debug,   createConsoleCommand(createFunctor(&OutputHandler::debug),   "debug"  ));
 
     /**
         @brief Constructor: Opens the logfile and writes the first line.

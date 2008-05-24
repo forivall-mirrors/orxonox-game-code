@@ -36,7 +36,7 @@ namespace orxonox
 {
     namespace autocompletion
     {
-        const std::list<std::pair<std::string, std::string> >& fallback();
+        std::list<std::pair<std::string, std::string> > fallback();
     }
 }
 

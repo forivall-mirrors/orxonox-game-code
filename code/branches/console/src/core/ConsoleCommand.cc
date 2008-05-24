@@ -40,7 +40,7 @@ namespace orxonox
         this->autocompletionFunction_[4] = &autocompletion::fallback;
     }
 
-    ConsoleCommand& ConsoleCommand::setArgumentCompletionList(unsigned int param, const std::list<std::pair<std::string, std::string> >& (*function) (void))
+    ConsoleCommand& ConsoleCommand::setArgumentCompletionList(unsigned int param, std::list<std::pair<std::string, std::string> > (*function) (void))
     {
         if (param < 5)
             this->autocompletionFunction_[param] = function;
@@ -51,41 +51,33 @@ namespace orxonox
         return (*this);
     }
 
-    const std::list<std::pair<std::string, std::string> >& ConsoleCommand::getArgumentCompletionList(unsigned int param) const
+    const std::list<std::pair<std::string, std::string> >& ConsoleCommand::getArgumentCompletionList(unsigned int param)
     {
         if (param < 5)
-            return (*this->autocompletionFunction_[param])();
+            this->argumentList_ = (*this->autocompletionFunction_[param])();
         else
-            return autocompletion::fallback();
+            this->argumentList_ = autocompletion::fallback();
+
+        return this->argumentList_;
     }
 
-    std::list<std::pair<std::string, std::string> >::const_iterator ConsoleCommand::getArgumentCompletionListBegin(unsigned int param) const
+    std::list<std::pair<std::string, std::string> >::const_iterator ConsoleCommand::getArgumentCompletionListBegin(unsigned int param)
     {
-std::cout << "3_1: param: " << param << "\n";
         if (param < 5)
-        {
-std::cout << "3_2: >" << this->autocompletionFunction_[param] << "<\n";
-            return (*this->autocompletionFunction_[param])().begin();
-        }
+            this->argumentList_ = (*this->autocompletionFunction_[param])();
         else
-        {
-std::cout << "3_3\n";
-            return autocompletion::fallback().begin();
-        }
+            this->argumentList_ = autocompletion::fallback();
+
+        return this->argumentList_.begin();
     }
 
-    std::list<std::pair<std::string, std::string> >::const_iterator ConsoleCommand::getArgumentCompletionListEnd(unsigned int param) const
+    std::list<std::pair<std::string, std::string> >::const_iterator ConsoleCommand::getArgumentCompletionListEnd(unsigned int param)
     {
-std::cout << "4_1: param: " << param << "\n";
         if (param < 5)
-        {
-std::cout << "4_2: >" << this->autocompletionFunction_[param] << "<\n";
-            return (*this->autocompletionFunction_[param])().end();
-        }
+            this->argumentList_ = (*this->autocompletionFunction_[param])();
         else
-        {
-std::cout << "4_3\n";
-            return autocompletion::fallback().end();
-        }
+            this->argumentList_ = autocompletion::fallback();
+
+        return this->argumentList_.end();
     }
 }

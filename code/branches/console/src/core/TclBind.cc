@@ -38,8 +38,8 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutGeneric(tcl, createExecutor(createFunctor(&TclBind::tcl), "tcl"));
-    SetConsoleCommandShortcutGeneric(bgerror, createExecutor(createFunctor(&TclBind::bgerror), "bgerror"));
+    SetConsoleCommandShortcutGeneric(tcl, createConsoleCommand(createFunctor(&TclBind::tcl), "tcl"));
+    SetConsoleCommandShortcutGeneric(bgerror, createConsoleCommand(createFunctor(&TclBind::bgerror), "bgerror"));
 
     TclBind::TclBind()
     {

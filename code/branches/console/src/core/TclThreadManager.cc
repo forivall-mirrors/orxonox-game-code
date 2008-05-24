@@ -47,8 +47,8 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutGeneric(tclexecute, createExecutor(createFunctor(&TclThreadManager::execute), "tclexecute"));
-    SetConsoleCommandShortcutGeneric(tclquery,   createExecutor(createFunctor(&TclThreadManager::query),   "tclquery"  ));
+    SetConsoleCommandShortcutGeneric(tclexecute, createConsoleCommand(createFunctor(&TclThreadManager::execute), "tclexecute"));
+    SetConsoleCommandShortcutGeneric(tclquery,   createConsoleCommand(createFunctor(&TclThreadManager::query),   "tclquery"  ));
     SetConsoleCommand(TclThreadManager, create,  false);
     SetConsoleCommand(TclThreadManager, destroy, false);
     SetConsoleCommand(TclThreadManager, execute, false);

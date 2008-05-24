@@ -47,18 +47,11 @@ namespace orxonox
             static InGameConsole& getInstance();
 
             void setConfigValues();
-
-            virtual void linesChanged();
-            virtual void onlyLastLineChanged();
-            virtual void lineAdded();
-            virtual void inputChanged();
-            virtual void cursorChanged();
-            virtual void exit();
-
             void tick(float dt);
 
             void activate();
             void deactivate();
+            void resize();
 
             static void openConsole();
             static void closeConsole();
@@ -68,9 +61,17 @@ namespace orxonox
             InGameConsole(const InGameConsole& other);
             ~InGameConsole();
 
+            virtual void linesChanged();
+            virtual void onlyLastLineChanged();
+            virtual void lineAdded();
+            virtual void inputChanged();
+            virtual void cursorChanged();
+            virtual void exit();
+
             void init();
-            void resize();
-            void print(const std::string& text, int index);
+            void shiftLines();
+            void colourLine(int colourcode, int index);
+            void print(const std::string& text, int index, bool alwaysShift = false);
             static Ogre::UTFString convert2UTF(std::string s);
 
             static float REL_WIDTH;
@@ -79,9 +80,13 @@ namespace orxonox
 
             int windowW_;
             int windowH_;
+            int desiredTextWidth_;
+            unsigned int maxCharsPerLine_;
+            unsigned int numLinesShifted_;
             int scroll_;
             float scrollTimer_;
             float cursor_;
+            unsigned int inputWindowStart_;
             char cursorSymbol_;
             bool active_;
             Ogre::OverlayManager* om_;

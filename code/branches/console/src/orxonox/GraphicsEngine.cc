@@ -44,7 +44,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
 #include "core/TclBind.h"
-
+#include "console/InGameConsole.h"
 
 namespace orxonox {
 
@@ -303,6 +303,7 @@ namespace orxonox {
         int w = rw->getWidth();
         int h = rw->getHeight();
         InputManager::getSingleton().setWindowExtents(w, h);
+        InGameConsole::getInstance().resize();
     }
 
     void GraphicsEngine::windowFocusChanged(Ogre::RenderWindow *rw){
