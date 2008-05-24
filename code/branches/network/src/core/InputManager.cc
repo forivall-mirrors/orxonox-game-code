@@ -420,7 +420,6 @@ namespace orxonox
           break;
 
         case IS_GUI:
-          // TODO: do stuff
           break;
 
         case IS_CONSOLE:

@@ -35,7 +35,6 @@
 #ifndef _OrxonoxPlatform_H__
 #define _OrxonoxPlatform_H__
 
-namespace orxonox {
 /* Initial platform/compiler-related stuff to set.
 */
 #define ORXONOX_PLATFORM_WIN32 1
@@ -190,18 +189,29 @@ namespace orxonox {
 #  define ORXONOX_ENDIAN ORXONOX_ENDIAN_LITTLE
 #endif
 
-// Integer formats of fixed bit width
-// FIXME: consider 64 bit platforms!
-//typedef unsigned int uint32;
-//typedef unsigned short uint16;
-//typedef unsigned char uint8;
-// proper approach
+//-----------------------------------------------------------------------
+// fixed width integers
+//-----------------------------------------------------------------------
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+typedef __int8            int8_t;
+typedef __int16           int16_t;
+typedef __int32           int32_t;
+typedef __int64           int64_t;
+typedef unsigned __int8   uint8_t;
+typedef unsigned __int16  uint16_t;
+typedef unsigned __int32  uint32_t;
+typedef unsigned __int64  uint64_t;
+#else
+# include "inttypes.h"
+#endif
 
+namespace orxonox {
 #ifdef ORXONOX_DOUBLE_PRECISION
 typedef double Real;
 #else
 typedef float Real;
 #endif
+}
 
 
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
@@ -268,7 +278,5 @@ typedef float Real;
 
 // include visual leak detector to search for memory leaks
 //#include <vld.h>
-
-} /* namespace orxonox */
 
 #endif /* _OrxonoxPlatform_H__ */

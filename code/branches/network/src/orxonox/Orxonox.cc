@@ -455,13 +455,10 @@ namespace orxonox
 
     // Contains the times of recently fired events
     // eventTimes[4] is the list for the times required for the fps counter
-    std::deque<unsigned long> eventTimes[4];
+    std::deque<unsigned long> eventTimes[3];
     // Clear event times
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 3; ++i)
       eventTimes[i].clear();
-    // fill the fps time list with zeros
-    for (int i = 0; i < 50; i++)
-      eventTimes[3].push_back(0);
 
     // use the ogre timer class to measure time.
     if (!timer_)
@@ -477,8 +474,6 @@ namespace orxonox
 
       // get current time
       unsigned long now = timer_->getMilliseconds();
-      eventTimes[3].push_back(now);
-      eventTimes[3].erase(eventTimes[3].begin());
 
       // create an event to pass to the frameStarted method in ogre
       Ogre::FrameEvent evt;
@@ -486,25 +481,21 @@ namespace orxonox
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
 
       // show the current time in the HUD
-//      orxonoxHUD_->setTime((int)now, 0);
-//      orxonoxHUD_->setRocket2(ogreRoot.getCurrentFrameNumber());
-      if (eventTimes[3].back() - eventTimes[3].front() != 0)
-        HUD::getSingleton().setFPS(50000.0f/(eventTimes[3].back() - eventTimes[3].front()));
+      // HUD::getSingleton().setTime(now);
 
-      // Iterate through all Tickables and call their tick(dt) function
+      // Call those objects that need the real time
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
-      // Iterate through all TickableReals and call their tick(dt) function
+      // Call the scene objects
       for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame);
+      // TODO: currently a hack. Somehow the console doesn't work with OrxonoxClass
       orxonoxConsole_->tick((float)evt.timeSinceLastFrame);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
       ogreRoot._fireFrameStarted(evt);
 
-      // server still renders at the moment
-      //if (mode_ != SERVER)
       ogreRoot._updateAllRenderTargets(); // only render in non-server mode
 
       // get current time
@@ -516,13 +507,13 @@ namespace orxonox
 
       // again, just to be sure ogre works fine
       ogreRoot._fireFrameEnded(evt);
-      //msleep(50);
 	  }
 
-    if(mode_==CLIENT)
+    if (mode_==CLIENT)
       network::Client::getSingleton()->closeConnection();
-    else if(mode_==SERVER)
+    else if (mode_==SERVER)
       server_g->close();
+
     return true;
   }
 

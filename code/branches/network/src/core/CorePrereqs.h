@@ -34,7 +34,7 @@
 #ifndef _CorePrereqs_H__
 #define _CorePrereqs_H__
 
-#include "OrxonoxPlatform.h"
+#include "util/OrxonoxPlatform.h"
 
 #include <string>
 

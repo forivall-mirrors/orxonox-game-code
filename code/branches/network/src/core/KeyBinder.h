@@ -47,13 +47,6 @@
 
 namespace orxonox
 {
-  class _CoreExport BaseCommand
-  {
-  public:
-    virtual ~BaseCommand() { }
-    virtual bool execute(float abs = 1.0f, float rel = 1.0f) = 0;
-  };
-
   class _CoreExport BufferedParamCommand
   {
   public:
@@ -64,6 +57,13 @@ namespace orxonox
     unsigned int nValuesAdded_;
     int paramIndex_;
     CommandEvaluation evaluation_;
+  };
+
+  class _CoreExport BaseCommand
+  {
+  public:
+    virtual ~BaseCommand() { }
+    virtual bool execute(float abs = 1.0f, float rel = 1.0f) = 0;
   };
 
   class _CoreExport SimpleCommand : public BaseCommand

@@ -450,10 +450,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\OrxonoxPlatform.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\orxonox\OrxonoxPrereqs.h"
 				>
 			</File>

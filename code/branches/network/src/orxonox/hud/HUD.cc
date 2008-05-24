@@ -37,6 +37,7 @@
 #include "core/Debug.h"
 #include "core/ConsoleCommand.h"
 #include "objects/SpaceShip.h"
+#include "GraphicsEngine.h"
 #include "BarOverlayElement.h"
 #include "RadarObject.h"
 #include "RadarOverlayElement.h"
@@ -128,9 +129,8 @@ namespace orxonox
         radar->update();
 
         nav->update();
-    }
 
-    void HUD::setFPS(float fps){
+        float fps = GraphicsEngine::getSingleton().getAverageFPS();
         fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
     }
 

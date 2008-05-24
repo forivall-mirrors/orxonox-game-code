@@ -57,7 +57,6 @@ namespace orxonox
 
       public:
         virtual void tick(float);
-        void setFPS(float fps);
         void addRadarObject(Vector3 pos);
         RadarObject* getFirstRadarObject();
 

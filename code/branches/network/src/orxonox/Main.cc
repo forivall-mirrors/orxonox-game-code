@@ -35,7 +35,7 @@
 
 #include <exception>
 
-#include "OrxonoxPlatform.h"
+#include "util/OrxonoxPlatform.h"
 #include "core/SignalHandler.h"
 #include "Orxonox.h"
 

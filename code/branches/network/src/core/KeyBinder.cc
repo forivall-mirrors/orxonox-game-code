@@ -187,7 +187,6 @@ namespace orxonox
 
         // check for param command
         int paramIndex = eval.getEvaluatedExecutor()->getAxisParamIndex();
-        // TODO: check in Executor for correct paramIndex
         if (paramIndex >= 0)
         {
           // parameter supported command
@@ -230,7 +229,6 @@ namespace orxonox
           SimpleCommand* cmd = new SimpleCommand();
           cmd->evaluation_ = eval;
 
-          //TODO: check CommandEvaluation for correct KeybindMode
           if (mode == KeybindMode::None)
             mode = eval.getEvaluatedExecutor()->getKeybindMode();
 
@@ -756,7 +754,7 @@ namespace orxonox
 
   void KeyBinder::joyStickAxisMoved(int joyStickID, int axis, int value)
   {
-    // TODO: check whether 16 bit integer as general axis value is a good idea (works under windows)
+    // TODO: Use proper calibration values instead of generally 16-bit integer
     int i = 8 + axis * 2;
     if (value >= 0)
     {
