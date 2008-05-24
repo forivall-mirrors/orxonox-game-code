@@ -19,38 +19,47 @@
 *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 *
 *   Author:
-*      Yuning Chai
+*      Felix Schulthess
 *   Co-authors:
 *      ...
 *
 */
 
-#ifndef _RADAR2_H__
-#define _RADAR2_H__
+#ifndef _NAVIGATION_H__
+#define _NAVIGATION_H__
+
 #include <OgrePrerequisites.h>
 #include "../OrxonoxPrereqs.h"
+#include <OgrePlane.h>
+#include "util/Math.h"
+#include "RadarObject.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport RadarObject
+    class _OrxonoxExport Navigation
     {
     	private:
-    		Ogre::OverlayManager* om;				// our one and only overlay manager
+    		Ogre::OverlayManager* om;				    // our one and only overlay manager
+            Ogre::OverlayContainer* container_;
+            Ogre::PanelOverlayElement* navMarker_;      // the panel used to show the arrow
+            Ogre::TextAreaOverlayElement* navText_;     // displaying distance
+            Ogre::Camera* navCam_;
+    		Vector3 navCamPos_;                            // position of ship
+    		Vector3 currentDir_;
+            Vector3 currentOrth_;
+    		int windowW_, windowH_;
     		void init();
+    		void updateMarker();
 
     	public:
-    		RadarObject(Ogre::OverlayContainer* container);
-    		RadarObject(Ogre::OverlayContainer* container, Vector3 pos);
-    		~RadarObject();
+    		Navigation(Ogre::OverlayContainer* container);
+    		Navigation(Ogre::OverlayContainer* container, RadarObject* focus);
+    		~Navigation();
+			RadarObject* focus_;                        // next pointer of linked list
 
-            bool right_;
-            int index_;                             // index number of object
-    		Vector3 pos_;							// position in space
-			Ogre::OverlayContainer* container_;
-			Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
-			RadarObject* next;                      // next pointer of linked list
-
-    		static int count;
+    		void update();
+    		void cycleFocus();
+    		float getDist2Focus();
 	};
 }
 

@@ -8,6 +8,7 @@ SET( ORXONOX_SRC_FILES
   hud/BarOverlayElement.cc
   hud/RadarOverlayElement.cc
   hud/RadarObject.cc
+  hud/Navigation.cc
   particle/ParticleInterface.cc
   tolua/tolua_bind.cc
 

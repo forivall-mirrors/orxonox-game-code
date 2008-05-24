@@ -74,7 +74,7 @@ namespace orxonox
       }
       return NULL;
     }
-    
+
     SpaceShip::SpaceShip() :
       //testvector_(0,0,0),
       //bInvertYAxis_(false),
@@ -117,6 +117,10 @@ namespace orxonox
 
         this->setConfigValues();
 
+        initialDir_ = Vector3(1.0, 0.0, 0.0);
+        currentDir_ = initialDir_;
+        initialOrth_ = Vector3(0.0, 0.0, 1.0);
+        currentOrth_ = initialOrth_;
 
         this->setRotationAxis(1, 0, 0);
         this->setStatic(false);
@@ -234,6 +238,10 @@ namespace orxonox
 
     }
 
+    Camera* SpaceShip::getCamera(){
+        return cam_;
+    }
+
     void SpaceShip::createCamera(){
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);
@@ -317,10 +325,21 @@ namespace orxonox
 	return SpaceShip::getLocalShip()->getOrientation();
     }
 
+    Vector3 SpaceShip::getDir() {
+        return currentDir_;
+    }
+
+    Vector3 SpaceShip::getOrth(){
+        return currentOrth_;
+    }
+
     float SpaceShip::getMaxSpeed() { return maxSpeed_; }
 
     void SpaceShip::tick(float dt)
     {
+        currentDir_ = getOrientation()*initialDir_;
+		currentOrth_ = getOrientation()*initialOrth_;
+
         if (this->cam_)
             this->cam_->tick(dt);
 
@@ -340,9 +359,9 @@ namespace orxonox
 
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
-          
+
             Projectile *p = new Projectile(this);
-            
+
             p->setBacksync(true);
             this->timeToReload_ = this->reloadTime_;
         }

@@ -28,19 +28,25 @@
 #include "OrxonoxStableHeaders.h"
 #include "RadarObject.h"
 
+#include <string.h>
+#include <OgreOverlayManager.h>
+#include <OgrePanelOverlayElement.h>
+#include <OgreStringConverter.h>
+#include <util/Math.h>
+
 namespace orxonox
 {
     using namespace Ogre;
 
 	int RadarObject::count = 0;		// initialize static variable
 
-	RadarObject::RadarObject(Ogre::OverlayContainer* container){
+	RadarObject::RadarObject(OverlayContainer* container){
 		container_ = container;
 		pos_ = Vector3(0.0, 0.0, 0.0);
 		init();
 	}
 
-	RadarObject::RadarObject(Ogre::OverlayContainer* container, Vector3 pos){
+	RadarObject::RadarObject(OverlayContainer* container, Vector3 pos){
 		container_ = container;
 		pos_ = pos;
 		init();
@@ -50,9 +56,9 @@ namespace orxonox
 
 	void RadarObject::init(){
 	    next = NULL;
-		om = &Ogre::OverlayManager::getSingleton();
+		om = &OverlayManager::getSingleton();
 		panel_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel",
-			"Object"+Ogre::StringConverter::toString(count)));
+			"Object"+StringConverter::toString(count)));
 		panel_->setMaterialName("Orxonox/RedDot");
 		panel_->setDimensions(3,3);
         panel_->setMetricsMode(Ogre::GMM_PIXELS);
@@ -62,9 +68,3 @@ namespace orxonox
         container_->addChild(panel_);
 	}
 }
-
-/* my local clipboard...
-COUT(3) << "WWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
-COUT(3) << firstRadarObject_->radius_ << "  " << firstRadarObject_->phi_ << std::endl;
-COUT(3) << "WWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
-*/

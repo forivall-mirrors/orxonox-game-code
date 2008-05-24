@@ -21,57 +21,44 @@
 *   Author:
 *      Yuning Chai
 *   Co-authors:
-*      ...
+*      Felix Schulthess
 *
 */
 
 #include "OrxonoxStableHeaders.h"
 #include "RadarOverlayElement.h"
 
+#include <string.h>
+#include <OgreOverlayManager.h>
+#include <OgreStringConverter.h>
+#include <OgrePanelOverlayElement.h>
+
+#include "GraphicsEngine.h"
+#include "core/Tickable.h"
+#include "core/ConsoleCommand.h"
+#include "objects/SpaceShip.h"
+#include "HUD.h"
+
 namespace orxonox
 {
-    ConsoleCommandShortcut(RadarOverlayElement, cycleFocus, AccessLevel::User);
 
     using namespace Ogre;
 
-    RadarOverlayElement* RadarOverlayElement::instance_s = NULL;
-
-    RadarOverlayElement::RadarOverlayElement(const String& name):Ogre::PanelOverlayElement(name){
-        RadarOverlayElement::instance_s = this;
+    RadarOverlayElement::RadarOverlayElement(const String& name):PanelOverlayElement(name){
     }
 
     RadarOverlayElement::~RadarOverlayElement(){
     }
 
-    void RadarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container){
+    void RadarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, OverlayContainer* container){
         // some initial data
-		om = &Ogre::OverlayManager::getSingleton();
+		om = &OverlayManager::getSingleton();
         dimRel_ = dimRel;
         leftRel_ = leftRel;
         topRel_ = topRel;
         container_ = container;
-        firstRadarObject_ = NULL;
-        lastRadarObject_ = NULL;
-        focus_ = NULL;
 
-        // create nav marker ...
-        navMarker_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel", "NavMarker"));
-        navMarker_->setMetricsMode(Ogre::GMM_PIXELS);
-        navMarker_->setMaterialName("Orxonox/NavMarker");
-        navMarker_->setDimensions(16,16);
-        navMarker_->setPosition(0,386);
-        navMarker_->hide();
-        container_->addChild(navMarker_);
-
-        // these have to fit the data in the level
-        shipPos_ = Vector3(0.0, 0.0, 0.0);
-        initialDir_ = Vector3(1.0, 0.0, 0.0);
-        currentDir_ = initialDir_;
-        initialOrth_ = Vector3(0.0, 0.0, 1.0);
-        currentOrth_ = initialOrth_;
-        plane = Plane(currentDir_, shipPos_);
-
-        setMetricsMode(Ogre::GMM_PIXELS);
+        setMetricsMode(GMM_PIXELS);
         setMaterialName("Orxonox/Radar");
         resize();
 
@@ -90,18 +77,25 @@ namespace orxonox
     }
 
     void RadarOverlayElement::update() {
+<<<<<<< .working
         shipPos_ = SpaceShip::getLocalShip()->getPosition();
         currentDir_ = SpaceShip::getLocalShip()->getOrientation()*initialDir_; 		// according to beni....
 		currentOrth_ = SpaceShip::getLocalShip()->getOrientation()*initialOrth_;
         plane = Plane(currentDir_, shipPos_);
 
         RadarObject* ro = firstRadarObject_;
+=======
+        shipPos_ = SpaceShip::getLocalShip()->getPosition();
+        currentDir_ = SpaceShip::getLocalShip()->getDir();
+		currentOrth_ = SpaceShip::getLocalShip()->getOrth();
+        RadarObject* ro = HUD::getSingleton().getFirstRadarObject();
+>>>>>>> .merge-right.r1401
         // iterate through all RadarObjects
 		while(ro != NULL){
 		    // calc position on radar...
-            ro->radius_ = calcRadius(ro);
-            ro->phi_ = calcPhi(ro);
-            ro->right_ = calcRight(ro);
+            float radius = calcRadius(shipPos_, currentDir_, currentOrth_, ro);
+            float phi = calcPhi(shipPos_, currentDir_, currentOrth_, ro);
+            bool right = calcRight(shipPos_, currentDir_, currentOrth_, ro);
 
             // set size to fit distance...
             float d = (ro->pos_-shipPos_).length();
@@ -110,69 +104,21 @@ namespace orxonox
             else if(d<16000) ro->panel_->setDimensions(2,2);
             else ro->panel_->setDimensions(1,1);
 
-            if (ro->right_){
-                ro->panel_->setPosition(sin(ro->phi_)*ro->radius_/
-                    3.5*dim_/2+dim_/2+left_-2,-cos(ro->phi_)*ro->radius_/3.5*dim_/2+dim_/2+top_-2);
+            if (right){
+                ro->panel_->setPosition(sin(phi)*radius/
+                    3.5*dim_/2+dim_/2+left_-2,-cos(phi)*radius/3.5*dim_/2+dim_/2+top_-2);
             }
             else {
-                ro->panel_->setPosition(-sin(ro->phi_)*ro->radius_/
-                    3.5*dim_/2+dim_/2+left_-2,-cos(ro->phi_)*ro->radius_/3.5*dim_/2+dim_/2+top_-2);
+                ro->panel_->setPosition(-sin(phi)*radius/
+                    3.5*dim_/2+dim_/2+left_-2,-cos(phi)*radius/3.5*dim_/2+dim_/2+top_-2);
             }
             ro = ro->next;
 		}
-		updateNavMarker();
     }
-
-    void RadarOverlayElement::updateNavMarker(){
-        if(focus_ == NULL) return;
-        // from the angle we find out where to draw the marker
-        // and which of the four arrows to take
-        float r1 = atan((float)(windowW_)/(float)(windowH_));
-        float phi = focus_->phi_;
-        if(focus_->right_){
-            if(phi<r1){
-                navMarker_->setPosition(tan(phi)*windowH_/2+windowW_/2, 0);
-                navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
-            }
-            else if(phi>3.14-r1){
-                navMarker_->setPosition(-tan(phi)*windowH_/2+windowW_/2, windowH_-16);
-                navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
-            }
-            else {
-                navMarker_->setPosition(windowW_-16, -tan((3.14-2*phi)/2)*windowW_/2+windowH_/2);
-                navMarker_->setUV(0.5, 0.5, 1.0, 1.0);
-            }
-        }
-        else{
-            if(phi<r1) {
-                navMarker_->setPosition(-tan(phi)*windowH_/2+windowW_/2, 0);
-                navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
-            }
-            else if(phi>3.14-r1) {
-                navMarker_->setPosition(tan(phi)*windowH_/2+windowW_/2, windowH_-16);
-                navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
-            }
-            else {
-                navMarker_->setPosition(0, -tan((3.14-2*phi)/2)*windowW_/2+windowH_/2);
-                navMarker_->setUV(0.0, 0.0, 0.5, 0.5);
-            }
-        }
-    }
-
-    void RadarOverlayElement::addObject(Vector3 pos){
-        if(firstRadarObject_ == NULL){
-            firstRadarObject_ = new RadarObject(container_, pos);
-            lastRadarObject_ = firstRadarObject_;
-        }
-        else{
-            lastRadarObject_->next = new RadarObject(container_, pos);
-            lastRadarObject_ = lastRadarObject_->next;
-        }
-	}
 
 	void RadarOverlayElement::listObjects(){
 	    int i = 0;
-	    RadarObject* ro = firstRadarObject_;
+	    RadarObject* ro = HUD::getSingleton().getFirstRadarObject();
 	    COUT(3) << "List of RadarObjects:\n";
 	    // iterate through all Radar Objects
 	    while(ro != NULL) {
@@ -181,53 +127,22 @@ namespace orxonox
 	    }
 	}
 
-	float RadarOverlayElement::getDist2Focus(){
-	    if(focus_ == NULL) return(0.0);
-	    return((focus_->pos_-shipPos_).length());
+	float RadarOverlayElement::calcRadius(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
+	    return(acos((dir.dotProduct(obj->pos_ - pos))/
+			((obj->pos_ - pos).length()*dir.length())));
 	}
 
-	float RadarOverlayElement::calcRadius(RadarObject* obj){
-	    return(acos((currentDir_.dotProduct(obj->pos_ - shipPos_))/
-			((obj->pos_ - shipPos_).length()*currentDir_.length())));
-	}
-
-	float RadarOverlayElement::calcPhi(RadarObject* obj){
+	float RadarOverlayElement::calcPhi(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
 	    // project difference vector on our plane...
-	    Ogre::Vector3 proj = plane.projectVector(obj->pos_ - shipPos_);
+	    Vector3 proj = Plane(dir, pos).projectVector(obj->pos_ - pos);
 	    // ...and find out the angle
-	    return(acos((currentOrth_.dotProduct(proj))/
-            (currentOrth_.length()*proj.length())));
+	    return(acos((orth.dotProduct(proj))/
+            (orth.length()*proj.length())));
 	}
 
-	bool RadarOverlayElement::calcRight(RadarObject* obj){
-	    if((currentDir_.crossProduct(currentOrth_)).dotProduct(obj->pos_ - shipPos_) > 0)
+	bool RadarOverlayElement::calcRight(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
+	    if((dir.crossProduct(orth)).dotProduct(obj->pos_ - pos) > 0)
         	return true;
         else return false;
 	}
-
-	/*static*/void RadarOverlayElement::cycleFocus(){
-	    if(RadarOverlayElement::instance_s == NULL) return;
-
-	    if(RadarOverlayElement::instance_s->focus_ == NULL){
-            RadarOverlayElement::instance_s->focus_ = RadarOverlayElement::instance_s->firstRadarObject_;
-	    }
-        else{
-            RadarOverlayElement::instance_s->focus_->panel_->setMaterialName("Orxonox/RedDot");
-            RadarOverlayElement::instance_s->focus_ = RadarOverlayElement::instance_s->focus_->next;
-        }
-
-        if(RadarOverlayElement::instance_s->focus_ == NULL){
-            RadarOverlayElement::instance_s->navMarker_->hide();
-        }
-        else{
-            RadarOverlayElement::instance_s->navMarker_->show();
-            RadarOverlayElement::instance_s->focus_->panel_->setMaterialName("Orxonox/WhiteDot");
-        }
-	}
 }
-
-/* my local clipboard...
-COUT(3) << "WWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
-COUT(3) << firstRadarObject_->radius_ << "  " << firstRadarObject_->phi_ << std::endl;
-COUT(3) << "WWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
-*/

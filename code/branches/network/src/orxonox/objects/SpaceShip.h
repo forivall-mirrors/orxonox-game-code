@@ -43,9 +43,9 @@ namespace orxonox
     class _OrxonoxExport SpaceShip : public Model
     {
         public:
-          
+
             static SpaceShip *getLocalShip();
-            
+
             SpaceShip();
             ~SpaceShip();
             bool create();
@@ -63,10 +63,8 @@ namespace orxonox
             void setRotAcc(float value);
             void setTransDamp(float value);
             void setRotDamp(float value);
-
             void getFocus();
-            static Vector3 getSPosition();
-            static Quaternion getSOrientation();
+
             static std::string whereAmI();
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
@@ -79,11 +77,18 @@ namespace orxonox
             static void fire();
 
             float getMaxSpeed();
+            Vector3 getDir();
+            Vector3 getOrth();
+            Camera* getCamera();
 
         private:
             void createCamera();
 
             Vector3 testvector_;
+            Vector3 initialDir_;
+            Vector3 currentDir_;
+            Vector3 initialOrth_;
+            Vector3 currentOrth_;
             bool bInvertYAxis_;
             bool setMouseEventCallback_;
             bool bLMousePressed_;
