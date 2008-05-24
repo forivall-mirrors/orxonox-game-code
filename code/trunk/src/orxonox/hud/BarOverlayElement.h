@@ -29,10 +29,14 @@
 #ifndef _BAR_H__
 #define _BAR_H__
 
-
+#include <OgreOverlayManager.h>
+#include <OgreOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
+
 #include <OgrePrerequisites.h>
 #include "../OrxonoxPrereqs.h"
+
+
 
 namespace orxonox
 {

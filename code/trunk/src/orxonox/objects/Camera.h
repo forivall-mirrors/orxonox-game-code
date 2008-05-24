@@ -49,8 +49,6 @@ namespace orxonox
         // maybe also BaseObject
         void setTargetNode(Ogre::SceneNode* obj);
 
-        Ogre::Camera* cam_;
-
         void tick(float dt);
         void update();
         inline bool hasFocus() { return this->bHasFocus_; }
@@ -64,6 +62,7 @@ namespace orxonox
         Ogre::SceneNode* positionNode_;
         Ogre::SceneNode* cameraNode_;
         Ogre::Vector3 oldPos;
+        Ogre::Camera* cam_;
         bool bHasFocus_;
     };
 }

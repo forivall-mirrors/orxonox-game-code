@@ -29,14 +29,15 @@
 #ifndef _HUD_H__
 #define _HUD_H__
 
-#include <OgrePrerequisites.h>
+#include <string.h>
+#include <OgreOverlayElement.h>
 #include <OgreTextAreaOverlayElement.h>
+#include <OgrePrerequisites.h>
+
 #include "OrxonoxPrereqs.h"
 #include "core/Tickable.h"
 #include "BarOverlayElement.h"
 #include "RadarOverlayElement.h"
-#include "Navigation.h"
-#include "RadarObject.h"
 
 
 namespace orxonox
@@ -44,30 +45,19 @@ namespace orxonox
     class _OrxonoxExport HUD : public Tickable
     {
         private:
-            HUD();
-            HUD(HUD& instance);
-            ~HUD();
             Ogre::OverlayManager* om;
             Ogre::Overlay* orxonoxHUD;
             Ogre::OverlayContainer* container;
-            Ogre::TextAreaOverlayElement* fpsText;
+            Ogre::TextAreaOverlayElement* test;
             BarOverlayElement* energyBar;
             BarOverlayElement* speedoBar;
             RadarOverlayElement* radar;
-            RadarObject* firstRadarObject;
-            RadarObject* lastRadarObject;
-            Navigation* nav;
 
         public:
+            HUD(int zoom);
+            ~HUD();
             virtual void tick(float);
-            void addRadarObject(Vector3 pos);
-            RadarObject* getFirstRadarObject();
 
-            static HUD* instance_s;
-            static HUD& getSingleton();
-            static void setFPS(float fps);
-            static void setEnergy(float value);
-            static void cycleNavigationFocus();
     };
 }
 
