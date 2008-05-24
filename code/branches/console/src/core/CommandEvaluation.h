@@ -85,8 +85,6 @@ namespace orxonox
                 { return this->state_; }
             inline void setState(CommandState state)
                 { this->state_ = state; }
-            inline SubString& getOriginalTokens()
-                { return this->originalCommandTokens_; }
             inline SubString& getTokens()
                 { return this->commandTokens_; }
             inline void setTokens(const std::string& command)
@@ -129,7 +127,6 @@ namespace orxonox
 
             std::string originalCommand_;
             std::string command_;
-            SubString originalCommandTokens_;
             SubString commandTokens_;
             std::string additionalParameter_;
 

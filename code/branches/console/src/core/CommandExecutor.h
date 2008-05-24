@@ -75,6 +75,7 @@ namespace orxonox
             static CommandExecutor& getInstance();
             static CommandEvaluation& getEvaluation();
 
+            static void parseIfNeeded(const std::string& command);
             static void parse(const std::string& command, bool bInitialize = true);
 
             static unsigned int argumentsFinished();

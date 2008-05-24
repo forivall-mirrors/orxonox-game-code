@@ -26,6 +26,8 @@
  *
  */
 
+#include <iostream>
+
 #include "ArgumentCompletionFunctions.h"
 
 namespace orxonox
@@ -34,7 +36,9 @@ namespace orxonox
     {
         const std::list<std::pair<std::string, std::string> >& fallback()
         {
+std::cout << "5_1\n";
             static std::list<std::pair<std::string, std::string> > list;
+std::cout << "5_2\n";
             return list;
         }
     }

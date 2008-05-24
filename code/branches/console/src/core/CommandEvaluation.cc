@@ -44,7 +44,6 @@ namespace orxonox
 
         this->originalCommand_ = command;
         this->command_ = command;
-        this->originalCommandTokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
         this->commandTokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
 
         this->additionalParameter_ = "";
@@ -78,11 +77,11 @@ namespace orxonox
             return true;
         }
 
-        COUT(4) << "CE_execute: " << this->originalCommand_ << "\n";
+        COUT(4) << "CE_execute: " << this->command_ << "\n";
 
         unsigned int startindex = this->getStartindex();
-        if (this->originalCommandTokens_.size() > startindex)
-            return this->function_->parse(removeSlashes(this->originalCommandTokens_.subSet(startindex).join() + this->getAdditionalParameter()));
+        if (this->commandTokens_.size() > startindex)
+            return this->function_->parse(removeSlashes(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter()));
         else
             return this->function_->parse(removeSlashes(this->additionalParameter_));
     }
@@ -92,21 +91,27 @@ namespace orxonox
         switch (this->state_)
         {
             case CS_Uninitialized:
+std::cout << "complete: state: CS_Uninitialized" << std::endl;
             case CS_Empty:
+std::cout << "complete: state: CS_Empty" << std::endl;
             case CS_ShortcutOrIdentifier:
+std::cout << "complete: state: CS_ShortcutOrIdentifier" << std::endl;
                 {
                     std::list<std::pair<const std::string*, const std::string*> > temp;
-                    if (this->state_ == CS_Empty)
+                    temp.insert(temp.end(), this->listOfPossibleFunctions_.begin(), this->listOfPossibleFunctions_.end());
+                    temp.insert(temp.end(), this->listOfPossibleIdentifiers_.begin(), this->listOfPossibleIdentifiers_.end());
+                    if (temp.size() > 0)
                     {
-                        temp.insert(temp.end(), this->listOfPossibleFunctions_.begin(), this->listOfPossibleFunctions_.end());
-                        temp.insert(temp.end(), this->listOfPossibleIdentifiers_.begin(), this->listOfPossibleIdentifiers_.end());
+std::cout << "complete: temp > 0" << std::endl;
+                        return (CommandEvaluation::getCommonBegin(temp));
                     }
-                    return (CommandEvaluation::getCommonBegin(temp));
                 }
                 break;
             case CS_Shortcut_Params:
+std::cout << "complete: state: CS_Shortcut_Params" << std::endl;
                 if (this->function_)
                 {
+std::cout << "complete: function != 0" << std::endl;
                     if (this->commandTokens_.size() > 1)
                         return (this->function_->getName() + " " + this->commandTokens_.subSet(1, this->commandTokens_.size() - 1).join() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleArguments_));
                     else
@@ -114,37 +119,48 @@ namespace orxonox
                 }
                 break;
             case CS_Shortcut_Finished:
+std::cout << "complete: state: CS_Shortcut_Finished" << std::endl;
                 if (this->function_)
                 {
+std::cout << "complete: function != 0" << std::endl;
                     if (this->commandTokens_.size() > 1)
-                        return (this->function_->getName() + " " + this->originalCommandTokens_.subSet(1, this->originalCommandTokens_.size() - 1).join());
+                        return (this->function_->getName() + " " + this->commandTokens_.subSet(1, this->commandTokens_.size() - 1).join());
                     else
                         return (this->function_->getName());
                 }
                 break;
             case CS_Function:
+std::cout << "complete: state: CS_Function" << std::endl;
                 if (this->functionclass_)
+                {
+std::cout << "complete: functionclass != 0" << std::endl;
                     return (this->functionclass_->getName() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleFunctions_));
+                }
                 break;
             case CS_Function_Params:
+std::cout << "complete: state: CS_Function_Params" << std::endl;
                 if (this->functionclass_ && this->function_)
                 {
+std::cout << "complete: function und functionclass != 0" << std::endl;
                     if (this->commandTokens_.size() > 2)
-                        return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->commandTokens_.subSet(2, this->commandTokens_.size() - 1).join() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleArguments_));
+                        return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->commandTokens_.subSet(2, this->commandTokens_.size()).join() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleArguments_));
                     else
                         return (this->functionclass_->getName() + " " + this->function_->getName() + " ");
                 }
                 break;
             case CS_Function_Finished:
+std::cout << "complete: state: CS_Function_Finished" << std::endl;
                 if (this->functionclass_ && this->function_)
                 {
+std::cout << "complete: function und functionclass != 0" << std::endl;
                     if (this->commandTokens_.size() > 2)
-                        return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->originalCommandTokens_.subSet(2, this->originalCommandTokens_.size() - 1).join());
+                        return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->commandTokens_.subSet(2, this->commandTokens_.size()).join());
                     else
                         return (this->functionclass_->getName() + " " + this->function_->getName());
                 }
                break;
             case CS_Error:
+std::cout << "complete: state: CS_Error" << std::endl;
                 break;
         }
 
@@ -159,14 +175,22 @@ namespace orxonox
                 break;
             case CS_Empty:
             case CS_ShortcutOrIdentifier:
-                return (CommandEvaluation::dump(this->listOfPossibleFunctions_) + "\n" + CommandEvaluation::dump(this->listOfPossibleIdentifiers_));
+                if (this->listOfPossibleFunctions_.size() == 0)
+                    return CommandEvaluation::dump(this->listOfPossibleIdentifiers_);
+                else if (this->listOfPossibleIdentifiers_.size() == 0)
+                    return CommandEvaluation::dump(this->listOfPossibleFunctions_);
+                else
+                    return (CommandEvaluation::dump(this->listOfPossibleFunctions_) + "\n" + CommandEvaluation::dump(this->listOfPossibleIdentifiers_));
                 break;
             case CS_Function:
                 return CommandEvaluation::dump(this->listOfPossibleFunctions_);
                 break;
             case CS_Shortcut_Params:
             case CS_Function_Params:
-                return CommandEvaluation::dump(this->listOfPossibleArguments_);
+                if (this->listOfPossibleArguments_.size() > 0)
+                    return CommandEvaluation::dump(this->listOfPossibleArguments_);
+                else
+                    return CommandEvaluation::dump(this->function_);
             case CS_Shortcut_Finished:
             case CS_Function_Finished:
                 if (this->function_)
@@ -192,14 +216,14 @@ namespace orxonox
 
         unsigned int startindex = this->getStartindex();
 
-        if (this->originalCommandTokens_.size() <= startindex)
+        if (this->commandTokens_.size() <= startindex)
         {
             if (this->function_->evaluate(this->getAdditionalParameter(), this->param_, " "))
                 this->bEvaluatedParams_ = true;
         }
-        else if (this->originalCommandTokens_.size() > startindex)
+        else if (this->commandTokens_.size() > startindex)
         {
-            if (this->function_->evaluate(this->originalCommandTokens_.subSet(startindex).join() + this->getAdditionalParameter(), this->param_, " "))
+            if (this->function_->evaluate(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter(), this->param_, " "))
                 this->bEvaluatedParams_ = true;
         }
     }

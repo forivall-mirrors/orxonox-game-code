@@ -42,7 +42,7 @@ namespace orxonox
 
     ConsoleCommand& ConsoleCommand::setArgumentCompletionList(unsigned int param, const std::list<std::pair<std::string, std::string> >& (*function) (void))
     {
-        if (param >= 0 && param < 5)
+        if (param < 5)
             this->autocompletionFunction_[param] = function;
         else
         {
@@ -53,7 +53,7 @@ namespace orxonox
 
     const std::list<std::pair<std::string, std::string> >& ConsoleCommand::getArgumentCompletionList(unsigned int param) const
     {
-        if (param >= 0 && param < 5)
+        if (param < 5)
             return (*this->autocompletionFunction_[param])();
         else
             return autocompletion::fallback();
@@ -61,17 +61,31 @@ namespace orxonox
 
     std::list<std::pair<std::string, std::string> >::const_iterator ConsoleCommand::getArgumentCompletionListBegin(unsigned int param) const
     {
-        if (param >= 0 && param < 5)
+std::cout << "3_1: param: " << param << "\n";
+        if (param < 5)
+        {
+std::cout << "3_2: >" << this->autocompletionFunction_[param] << "<\n";
             return (*this->autocompletionFunction_[param])().begin();
+        }
         else
+        {
+std::cout << "3_3\n";
             return autocompletion::fallback().begin();
+        }
     }
 
     std::list<std::pair<std::string, std::string> >::const_iterator ConsoleCommand::getArgumentCompletionListEnd(unsigned int param) const
     {
-        if (param >= 0 && param < 5)
+std::cout << "4_1: param: " << param << "\n";
+        if (param < 5)
+        {
+std::cout << "4_2: >" << this->autocompletionFunction_[param] << "<\n";
             return (*this->autocompletionFunction_[param])().end();
+        }
         else
+        {
+std::cout << "4_3\n";
             return autocompletion::fallback().end();
+        }
     }
 }
