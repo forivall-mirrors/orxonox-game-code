@@ -57,12 +57,12 @@ namespace orxonox
 
       public:
         virtual void tick(float);
+        void setFPS(float fps);
         void addRadarObject(Vector3 pos);
         RadarObject* getFirstRadarObject();
 
         static HUD* instance_s;
         static HUD& getSingleton();
-        static void setFPS(float fps);
         static void setEnergy(float value);
         static void cycleNavigationFocus();
     };

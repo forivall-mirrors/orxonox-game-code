@@ -102,60 +102,87 @@ namespace orxonox
         float yPosRel = 1-(0.5*pos.y+0.5);
         int xPos = xPosRel*windowW_;
         int yPos = yPosRel*windowH_;
+        int xFromCenter = xPos-windowW_/2;
+        int yFromCenter = yPos-windowH_/2;
         // is object in view?
+        float radius = RadarOverlayElement::calcRadius(navCamPos_, currentDir_, currentOrth_, focus_);
+        bool isRight = (currentDir_.crossProduct(currentOrth_)).dotProduct(focus_->pos_ - navCamPos_)>0;
+        bool isAbove = currentOrth_.dotProduct(focus_->pos_ - navCamPos_)>0;
         bool outOfView = (xPosRel<0 || xPosRel>1 || yPosRel<0 || yPosRel>1);
         // if object is behind us, it is out of view anyway:
-        if(!outOfView && RadarOverlayElement::calcRadius(navCamPos_, currentDir_, currentOrth_, focus_)>3.14/2) outOfView = true;
+        if(!outOfView && radius>3.14/2) outOfView = true;
 
         if(outOfView){
-            // NO!
+            // object is not in view
             navMarker_->setMaterialName("Orxonox/NavArrows");
             navMarker_->setDimensions(16,16);
-            float phiUpRight = atan((float)(windowW_)/(float)(windowH_));
-            // from the angle we find out where to draw the marker
+            float phiUpperCorner = atan((float)(windowW_)/(float)(windowH_));
+            // from the angle we find out on which edge to draw the marker
             // and which of the four arrows to take
-            float phiNav = RadarOverlayElement::calcPhi(navCamPos_, currentDir_, currentOrth_, focus_);
-            bool right = RadarOverlayElement::calcRight(navCamPos_, currentDir_, currentOrth_, focus_);
-            if(right){
-                if(phiNav<phiUpRight){
-                    // arrow up
-                    navMarker_->setPosition(tan(phiNav)*windowH_/2+windowW_/2, 0);
-                    navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
-                    navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
-                    navText_->setTop(navMarker_->getHeight());
-                }
-                else if(phiNav>3.14-phiUpRight){
-                    // arrow down
-                    navMarker_->setPosition(-tan(phiNav)*windowH_/2+windowW_/2, windowH_-16);
-                    navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
-                    navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
-                    navText_->setTop(navMarker_->getTop()-navMarker_->getHeight());
-                }
-                else {
-                    // arrow right
-                    navMarker_->setPosition(windowW_-16, -tan((3.14-2*phiNav)/2)*windowW_/2+windowH_/2);
-                    navMarker_->setUV(0.5, 0.5, 1.0, 1.0);
-                    navText_->setLeft(navMarker_->getLeft()-navMarker_->getWidth());
-                    navText_->setTop(navMarker_->getTop()+navMarker_->getHeight());
-                }
-            }
-            else{
-                if(phiNav<phiUpRight) {
-                    // arrow up
+            float phiNav = atan((float) xFromCenter / (float) yFromCenter);
+
+            if(isAbove && isRight){
+                // top right quadrant
+                if(-phiNav<phiUpperCorner){
+                    COUT(3) << "arrow up\n";
                     navMarker_->setPosition(-tan(phiNav)*windowH_/2+windowW_/2, 0);
                     navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
                     navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
                     navText_->setTop(navMarker_->getHeight());
                 }
-                else if(phiNav>3.14-phiUpRight) {
-                    // arrow down
+                else {
+                    COUT(3) << "arrow right\n";
+                    navMarker_->setPosition(windowW_-16, tan((3.14-2*phiNav)/2)*windowW_/2+windowH_/2);
+                    navMarker_->setUV(0.5, 0.5, 1.0, 1.0);
+                    navText_->setLeft(navMarker_->getLeft()-navMarker_->getWidth());
+                    navText_->setTop(navMarker_->getTop()+navMarker_->getHeight());
+                }
+            }
+            if(!isAbove && isRight){
+                // bottom right quadrant
+                if(phiNav<phiUpperCorner) {
+                    COUT(3) << "arrow down\n";
                     navMarker_->setPosition(tan(phiNav)*windowH_/2+windowW_/2, windowH_-16);
                     navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
                     navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
                     navText_->setTop(navMarker_->getTop()-navMarker_->getHeight());
                 }
                 else {
-                    // arrow left
+                    COUT(3) << "arrow right\n";
+                    navMarker_->setPosition(windowW_-16, tan((3.14-2*phiNav)/2)*windowW_/2+windowH_/2);
+                    navMarker_->setUV(0.5, 0.5, 1.0, 1.0);
+                    navText_->setLeft(navMarker_->getLeft()-navMarker_->getWidth());
+                    navText_->setTop(navMarker_->getTop()+navMarker_->getHeight());
+                }
+            }
+            if(isAbove && !isRight){
+                // top left quadrant
+                if(phiNav<phiUpperCorner){
+                    COUT(3) << "arrow up\n";
+                    navMarker_->setPosition(-tan(phiNav)*windowH_/2+windowW_/2, 0);
+                    navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
+                    navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
+                    navText_->setTop(navMarker_->getHeight());
+                }
+                else {
+                    COUT(3) << "arrow left\n";
+                    navMarker_->setPosition(0, -tan((3.14-2*phiNav)/2)*windowW_/2+windowH_/2);
+                    navMarker_->setUV(0.0, 0.0, 0.5, 0.5);
+                    navText_->setLeft(navMarker_->getWidth());
+                    navText_->setTop(navMarker_->getTop()+navMarker_->getHeight());
+                }
+            }
+            if(!isAbove && !isRight){
+                // bottom left quadrant
+                if(phiNav>-phiUpperCorner) {
+                    COUT(3) << "arrow down\n";
+                    navMarker_->setPosition(tan(phiNav)*windowH_/2+windowW_/2, windowH_-16);
+                    navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
+                    navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
+                    navText_->setTop(navMarker_->getTop()-navMarker_->getHeight());
+                }
+                else {
+                    COUT(3) << "arrow left\n";
                     navMarker_->setPosition(0, -tan((3.14-2*phiNav)/2)*windowW_/2+windowH_/2);
                     navMarker_->setUV(0.0, 0.0, 0.5, 0.5);
                     navText_->setLeft(navMarker_->getWidth());
@@ -164,7 +191,7 @@ namespace orxonox
             }
         }
         else{
-            // YES!
+            // object is in view
             navMarker_->setMaterialName("Orxonox/NavTDC");
             navMarker_->setDimensions(24,24);
             navMarker_->setUV(0.0,0.0,1.0,1.0);

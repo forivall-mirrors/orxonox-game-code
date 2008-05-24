@@ -27,7 +27,6 @@
 
 #include "OrxonoxStableHeaders.h"
 #include "BarOverlayElement.h"
-
 #include <OgreOverlayManager.h>
 #include "GraphicsEngine.h"
 

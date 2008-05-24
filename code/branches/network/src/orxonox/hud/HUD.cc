@@ -130,6 +130,10 @@ namespace orxonox
         nav->update();
     }
 
+    void HUD::setFPS(float fps){
+        fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
+    }
+
     void HUD::addRadarObject(Vector3 pos){
         // check if this is the first RadarObject to create
         if(firstRadarObject == NULL){
@@ -149,10 +153,6 @@ namespace orxonox
     /*static*/ HUD& HUD::getSingleton(){
         static HUD theInstance;
         return theInstance;
-    }
-
-    /*static*/ void HUD::setFPS(float fps){
-        HUD::getSingleton().fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
     }
 
     /*static*/ void HUD::setEnergy(float value){
