@@ -44,6 +44,9 @@ SET(LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/bin/lib)
 # global compiler/linker flags. force -O2!
 SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O0 -Wall -g -ggdb")
 SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+#SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O3")
+#SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O3")
+
 SET(CMAKE_LD_FLAGS "$ENV{LDFLAGS}")
 SET(CMAKE_EXE_LINKER_FLAGS " --no-undefined")
 SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
