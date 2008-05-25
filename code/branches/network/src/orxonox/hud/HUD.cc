@@ -74,6 +74,16 @@ namespace orxonox
         fpsText->setCharHeight(20);
         fpsText->setCaption("init");
 
+        // creating text to display render time ratio
+        rTRText = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "rTRText"));
+        rTRText->show();
+        rTRText->setMetricsMode(Ogre::GMM_PIXELS);
+        rTRText->setDimensions(0.001, 0.001);
+        rTRText->setPosition(10, 30);
+        rTRText->setFontName("Console");
+        rTRText->setCharHeight(20);
+        rTRText->setCaption("init");
+
         // create energy bar
         energyBar = static_cast<BarOverlayElement*>(om->createOverlayElement("Bar", "energyBar"));
         energyBar->show();
@@ -98,6 +108,7 @@ namespace orxonox
         container->setHeight(1.0);
         container->setMetricsMode(Ogre::GMM_RELATIVE);
         container->addChild(fpsText);
+        container->addChild(rTRText);
 
         energyBar->init(0.01, 0.94, 0.4, container);
         energyBar->setValue(1);
@@ -132,6 +143,11 @@ namespace orxonox
 
         float fps = GraphicsEngine::getSingleton().getAverageFPS();
         fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
+    }
+
+    void HUD::setRenderTimeRatio(float ratio)
+    {
+      rTRText->setCaption("Render time ratio: " + Ogre::StringConverter::toString(ratio));
     }
 
     void HUD::addRadarObject(Vector3 pos){

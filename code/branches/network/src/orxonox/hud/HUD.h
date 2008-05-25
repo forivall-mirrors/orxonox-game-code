@@ -48,6 +48,7 @@ namespace orxonox
         Ogre::Overlay* orxonoxHUD;
         Ogre::OverlayContainer* container;
         Ogre::TextAreaOverlayElement* fpsText;
+        Ogre::TextAreaOverlayElement* rTRText;
         BarOverlayElement* energyBar;
         BarOverlayElement* speedoBar;
         RadarOverlayElement* radar;
@@ -59,6 +60,7 @@ namespace orxonox
         virtual void tick(float);
         void addRadarObject(Vector3 pos);
         RadarObject* getFirstRadarObject();
+        void setRenderTimeRatio(float ratio);
 
         static HUD* instance_s;
         static HUD& getSingleton();

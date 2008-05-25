@@ -51,8 +51,8 @@ namespace orxonox
   */
   InputManager::InputManager() :
       inputSystem_(0), keyboard_(0), mouse_(0),
-      keyBinder_(0), buffer_(0),
       joySticksSize_(0),
+      keyBinder_(0), buffer_(0), keyDetector_(0),
       state_(IS_UNINIT), stateRequest_(IS_UNINIT),
       keyboardModifiers_(0)
   {

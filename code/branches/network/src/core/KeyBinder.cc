@@ -45,9 +45,14 @@
 namespace orxonox
 {
   // ###############################
-  // ######      Button       ######
+  // ###  BufferedParamCommand   ###
   // ###############################
 
+  /**
+  * Executes a buffered command. This is used for commands with additional
+  * parameters.
+  * @return True if command execution was successful or value was zero.
+  */
   bool BufferedParamCommand::execute()
   {
     if (nValuesAdded_)
@@ -63,31 +68,74 @@ namespace orxonox
       return true;
   }
 
+  // ###############################
+  // #####    SimpleCommand    #####
+  // ###############################
+
+  /**
+  * Executes a simple command with no additional paramters.
+  * @return True if command execution was successful, false otherwise.
+  */
   bool SimpleCommand::execute(float abs, float rel)
   {
     return CommandExecutor::execute(evaluation_);
   }
 
+  // ###############################
+  // #####    ParamCommand     #####
+  // ###############################
+
+  /**
+  * Executes a parameter command. The commmand string is not directly executed,
+  * but instead stored in a buffer list so that values can be combined.
+  * @return Always true.
+  */
   bool ParamCommand::execute(float abs, float rel)
   {
-    BufferedParamCommand& paramCommand = *paramCommand_;
+    BufferedParamCommand& cmd = *paramCommand_;
     // command has an additional parameter
-    if (bRelative_ && (rel > 0 || rel < 0))
+    if (bRelative_)
     {
-      // we have to calculate a relative movement.
-      // paramModifier_ says how much one keystroke is
-      paramCommand.value_ += paramModifier_ * rel;
+      if (rel != 0.0f)
+      {
+        // we have to calculate a relative movement.
+        // paramModifier_ says how much one keystroke is
+        cmd.value_ += paramModifier_ * rel;
+      }
     }
-    else if (abs > 0 || abs < 0)
+    else if (abs != 0.0f)
     {
-      // we have to calculate absolute position of the axis.
-      // Since there might be another axis that is affected, we have to wait and
-      // store the result in a temporary place
-      paramCommand.value_ = (paramCommand.value_ * paramCommand.nValuesAdded_ + paramModifier_ * abs)
-                            /++paramCommand.nValuesAdded_;
+      // Usually, joy sticks create 'noise' (they return values if they're in 0 position)
+      // and normally this is caught in tickInput(), but that threshold cannot be to high
+      // in order to preserve accuracy. Instead, we have to catch the problem here. An example:
+      // Someone only uses buttons with an active joystick. The joy stick value could then
+      // be 0.05 for instance and the the key value 1. Without handling the problem, the final
+      // value would be computed to (1+0.05)/2=0.5025 which is not what the user expects.
+      float absQ = abs * abs;
+      float valueQ = cmd.value_ * cmd.value_;
+      if (absQ > 50.0f * valueQ) // ease up comparison by using quadratics
+      {
+        cmd.value_ = abs * paramModifier_;
+        cmd.nValuesAdded_ = 1;
+      }
+      else if (absQ * 50.0f < valueQ)
+      {
+        // abs is too small, we just don't do anything
+      }
+      else
+      {
+        // we have to calculate the absolute position of the axis.
+        // Since there might be another axis that is affected, we have to wait and
+        // store the result in a temporary place
+        cmd.value_ = (cmd.value_ * cmd.nValuesAdded_ + paramModifier_ * abs) / ++cmd.nValuesAdded_;
+      }
     }
     return true;
   }
+
+  // ###############################
+  // #####       Button        #####
+  // ###############################
 
   void Button::clear()
   {
@@ -258,6 +306,10 @@ namespace orxonox
       commands_[mode][iCommand]->execute(abs, rel);
     return true;
   }
+
+  // ###############################
+  // #####      HalfAxis       #####
+  // ###############################
 
   void HalfAxis::clear()
   {
@@ -493,7 +545,7 @@ namespace orxonox
     SetConfigValue(analogThreshold_, 0.01f)  .description("Threshold for analog axes until which the state is 0.");
     SetConfigValue(mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
     SetConfigValue(bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
-    SetConfigValue(derivePeriod_, 0.1f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
+    SetConfigValue(derivePeriod_, 0.5f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
     SetConfigValue(mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
 
     float oldThresh = buttonThreshold_;

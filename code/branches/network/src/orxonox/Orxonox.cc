@@ -465,6 +465,10 @@ namespace orxonox
       timer_ = new Ogre::Timer();
     timer_->reset();
 
+    float renderTime = 0.0f;
+    float frameTime = 0.0f;
+    clock_t time = 0;
+
     COUT(3) << "Orxonox: Starting the main loop." << std::endl;
 	  while (!bAbort_)
 	  {
@@ -479,22 +483,33 @@ namespace orxonox
       Ogre::FrameEvent evt;
       evt.timeSinceLastEvent = calculateEventTime(now, eventTimes[0]);
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
+      frameTime += evt.timeSinceLastFrame;
 
       // show the current time in the HUD
       // HUD::getSingleton().setTime(now);
+      if (frameTime > 0.4f)
+      {
+        HUD::getSingleton().setRenderTimeRatio(renderTime / frameTime);
+        frameTime = 0.0f;
+        renderTime = 0.0f;
+      }
 
       // Call those objects that need the real time
-      for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
-        it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
-      // Call the scene objects
       for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame);
+      // Call the scene objects
+      for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
+        it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
       // TODO: currently a hack. Somehow the console doesn't work with OrxonoxClass
       orxonoxConsole_->tick((float)evt.timeSinceLastFrame);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
       ogreRoot._fireFrameStarted(evt);
+
+      // get current time
+      now = timer_->getMilliseconds();
+      calculateEventTime(now, eventTimes[2]);
 
       ogreRoot._updateAllRenderTargets(); // only render in non-server mode
 
@@ -503,7 +518,7 @@ namespace orxonox
 
       // create an event to pass to the frameEnded method in ogre
       evt.timeSinceLastEvent = calculateEventTime(now, eventTimes[0]);
-      evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[2]);
+      renderTime += calculateEventTime(now, eventTimes[2]);
 
       // again, just to be sure ogre works fine
       ogreRoot._fireFrameEnded(evt);
