@@ -65,7 +65,7 @@ namespace orxonox
 
     bool Ambient::create(){
       GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(ambientLight_);
-      return true;
+      return Synchronisable::create();
     }
     
     void Ambient::registerAllVariables(){

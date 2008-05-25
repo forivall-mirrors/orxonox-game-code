@@ -88,7 +88,7 @@ namespace network
     void setBacksync(bool sync);
     bool getBacksync();
     virtual void registerAllVariables()=0;
-    virtual bool create()=0;
+    virtual bool create();
     static void setClient(bool b);
   protected:
     Synchronisable();

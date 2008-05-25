@@ -67,6 +67,11 @@ namespace network
   Synchronisable::~Synchronisable(){
   }
   
+  bool Synchronisable::create(){
+    this->classID = this->getIdentifier()->getNetworkID();
+    return true;
+  }
+  
   void Synchronisable::setClient(bool b){
     if(b) // client
       state_=0x2;
