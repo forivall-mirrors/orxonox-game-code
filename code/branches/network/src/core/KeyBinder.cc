@@ -899,4 +899,5 @@ namespace orxonox
     button.commands_[KeybindMode::OnPress][0] = cmd;
     button.nCommands_[KeybindMode::OnPress] = 1;
   }
+  
 }

@@ -37,9 +37,14 @@
 #include "Debug.h"
 #include "InputBuffer.h"
 #include "KeyBinder.h"
+#include "CommandExecutor.h"
+#include "ConsoleCommand.h"
 
 namespace orxonox
 {
+  ConsoleCommandShortcut(InputManager, keyBind, AccessLevel::User);
+  ConsoleCommandShortcut(InputManager, storeKeyStroke, AccessLevel::Offline);
+
   // ###############################
   // ###    Internal Methods     ###
   // ###############################
@@ -53,7 +58,7 @@ namespace orxonox
       inputSystem_(0), keyboard_(0), mouse_(0),
       joySticksSize_(0),
       keyBinder_(0), buffer_(0), keyDetector_(0),
-      state_(IS_UNINIT), stateRequest_(IS_UNINIT),
+      state_(IS_UNINIT), stateRequest_(IS_UNINIT), savedState_(IS_UNINIT),
       keyboardModifiers_(0)
   {
     RegisterObject(InputManager);
@@ -404,10 +409,13 @@ namespace orxonox
     {
       if (stateRequest_ != IS_CUSTOM)
       {
-        activeKeyHandlers_.clear();
-        activeMouseHandlers_.clear();
-        for (unsigned int i = 0; i < joySticksSize_; i++)
-          activeJoyStickHandlers_[i].clear();
+        if (stateRequest_ != IS_NODETECT && stateRequest_ != IS_DETECT)
+        {
+          activeKeyHandlers_.clear();
+          activeMouseHandlers_.clear();
+          for (unsigned int i = 0; i < joySticksSize_; i++)
+            activeJoyStickHandlers_[i].clear();
+        }
 
         switch (stateRequest_)
         {
@@ -428,24 +436,27 @@ namespace orxonox
           enableKeyHandler("buffer");
           break;
 
-        case IS_DETECTION:
-          if (mouse_)
-            mouse_->capture();
-          if (keyboard_)
-            keyboard_->capture();
-          for (unsigned  int i = 0; i < joySticksSize_; i++)
-            joySticks_[i]->capture();
-
-          lastStroke_ = "";
+        case IS_DETECT:
+          savedState_ = state_;
           enableKeyHandler("keydetector");
           enableMouseHandler("keydetector");
           enableJoyStickHandler("keydetector", 0);
           break;
 
+        case IS_NODETECT:
+          disableKeyHandler("keydetector");
+          disableMouseHandler("keydetector");
+          disableJoyStickHandler("keydetector", 0);
+          break;
+
         default:
           break;
         }
-        state_ = stateRequest_;
+
+        if (stateRequest_ == IS_NODETECT)
+          state_ = savedState_;
+        else
+          state_ = stateRequest_;
       }
     }
 
@@ -766,6 +777,8 @@ namespace orxonox
   // ################################
   // ################################
 
+  std::string InputManager::bindingCommmandString_s = "";
+
   bool InputManager::initialise(const size_t windowHnd, int windowWidth, int windowHeight,
     bool createKeyboard, bool createMouse, bool createJoySticks)
   {
@@ -900,15 +913,16 @@ namespace orxonox
 
   void InputManager::storeKeyStroke(const std::string& name)
   {
-    if (_getSingleton().lastStroke_ == "")
-      _getSingleton().lastStroke_ = name;
+    setInputState(IS_NODETECT);
+    COUT(3) << "Binding string \"" << bindingCommmandString_s << "\" on key '" << name << "'" << std::endl;
+    CommandExecutor::execute("set KeyBinder " + name + " " + bindingCommmandString_s, false);
   }
 
-  const std::string& InputManager::getLastKeyStroke()
+  void InputManager::keyBind(const std::string& command)
   {
-    return _getSingleton().lastStroke_;
+    bindingCommmandString_s = command;
+    setInputState(IS_DETECT);
   }
-
 
   // ###### KeyHandler ######
 

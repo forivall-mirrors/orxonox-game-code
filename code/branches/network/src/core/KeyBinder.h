@@ -231,6 +231,7 @@ namespace orxonox
     ~KeyDetector();
     void loadBindings();
     void setConfigValues();
+
   protected:
     void readTrigger(Button& button);
   };

@@ -84,7 +84,8 @@ namespace orxonox
       IS_NORMAL,    //!< Normal play state. Key and button bindings are active.
       IS_GUI,       //!< All OIS input events are passed to CEGUI.
       IS_CONSOLE,   //!< Keyboard input is redirected to the InputBuffer.
-      IS_DETECTION, //!< All the input goes to the KeyDetector
+      IS_DETECT,    //!< All the input additionally goes to the KeyDetector
+      IS_NODETECT,  //!< remove KeyDetector
       IS_CUSTOM     //!< Any possible configuration.
     };
 
@@ -114,7 +115,7 @@ namespace orxonox
     static InputState getInputState();
 
     static void storeKeyStroke(const std::string& name);
-    static const std::string& getLastKeyStroke();
+    static void keyBind(const std::string& command);
 
     static bool addKeyHandler                 (KeyHandler* handler, const std::string& name);
     static bool removeKeyHandler              (const std::string& name);
@@ -188,7 +189,7 @@ namespace orxonox
     InputState state_;
     InputState stateRequest_;
     unsigned int keyboardModifiers_;
-    std::string lastStroke_;
+    InputState savedState_;
 
     //! Keeps track of the joy stick POV states
     std::vector<POVStates>                      povStates_;
@@ -208,6 +209,7 @@ namespace orxonox
     std::vector<MouseButton::Enum>              mouseButtonsDown_;
     std::vector<std::vector<int> >              joyStickButtonsDown_;
 
+    static std::string                          bindingCommmandString_s;
   };
 
 }
