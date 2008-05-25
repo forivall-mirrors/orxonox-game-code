@@ -54,6 +54,8 @@ namespace orxonox
 
     class _CoreExport CommandEvaluation
     {
+        friend class CommandExecutor;
+
         public:
             CommandEvaluation();
 
@@ -65,45 +67,6 @@ namespace orxonox
             void evaluateParams();
 
             bool isValid() const;
-
-            inline Identifier* getIdentifier() const
-                { return this->functionclass_; }
-            inline void setIdentifier(Identifier* identifier)
-                { this->functionclass_ = identifier; }
-            inline ConsoleCommand* getFunction() const
-                { return this->function_; }
-            inline void setFunction(ConsoleCommand* command)
-                { this->function_ = command; }
-
-            inline const std::string& getOriginalCommand() const
-                { return this->originalCommand_; }
-            inline const std::string& getCommand() const
-                { return this->command_; }
-            inline void setCommand(const std::string& command)
-                { this->command_ = command; }
-            inline const CommandState& getState() const
-                { return this->state_; }
-            inline void setState(CommandState state)
-                { this->state_ = state; }
-            inline SubString& getTokens()
-                { return this->commandTokens_; }
-            inline void setTokens(const std::string& command)
-                { this->commandTokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0'); }
-            inline const std::string& getError() const
-                { return this->errorMessage_; }
-            inline void setError(const std::string& error)
-                { this->errorMessage_ = error; }
-            inline bool isNewCommand() const
-                { return this->bNewCommand_; }
-            inline void setNewCommand(bool bNewCommand)
-                { this->bNewCommand_ = bNewCommand; }
-
-            inline std::list<std::pair<const std::string*, const std::string*> >& getListOfPossibleIdentifiers()
-                { return this->listOfPossibleIdentifiers_; }
-            inline std::list<std::pair<const std::string*, const std::string*> >& getListOfPossibleFunctions()
-                { return this->listOfPossibleFunctions_; }
-            inline std::list<std::pair<const std::string*, const std::string*> >& getListOfPossibleArguments()
-                { return this->listOfPossibleArguments_; }
 
             inline void setAdditionalParameter(const std::string& param)
                 { this->additionalParameter_ = param; this->bEvaluatedParams_ = false; }
