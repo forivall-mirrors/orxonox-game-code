@@ -222,7 +222,7 @@ namespace orxonox
         }
         else
         {
-            if (bundle = TclThreadManager::getInstance().getInterpreterBundle(threadID))
+            if ((bundle = TclThreadManager::getInstance().getInterpreterBundle(threadID)))
             {
                 COUT(0) << "Queue dump of Tcl-thread " << threadID << ":" << std::endl;
             }

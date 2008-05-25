@@ -41,7 +41,11 @@ namespace orxonox
     {
         friend class OutputBuffer;
 
-        virtual void outputChanged() = 0;
+        public:
+            virtual ~OutputBufferListener() {}
+
+        private:
+            virtual void outputChanged() = 0;
     };
 
     class _CoreExport OutputBuffer

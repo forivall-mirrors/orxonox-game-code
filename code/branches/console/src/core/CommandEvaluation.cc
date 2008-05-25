@@ -41,7 +41,7 @@ namespace orxonox
     void CommandEvaluation::initialize(const std::string& command)
     {
         this->bNewCommand_ = true;
-
+        this->bCommandChanged_ = false;
         this->originalCommand_ = command;
         this->command_ = command;
         this->commandTokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
@@ -78,104 +78,51 @@ namespace orxonox
             return true;
         }
 
-        COUT(4) << "CE_execute: " << this->command_ << "\n";
-
-        unsigned int startindex = this->getStartindex();
-        if (this->commandTokens_.size() > startindex)
-            return this->function_->parse(removeSlashes(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter()));
-        else
-            return this->function_->parse(removeSlashes(this->additionalParameter_));
-    }
-
-    std::string CommandEvaluation::complete() const
-    {
-        switch (this->state_)
+        if (!this->bCommandChanged_)
         {
-            case CS_Uninitialized:
-std::cout << "complete: state: CS_Uninitialized" << std::endl;
-            case CS_Empty:
-std::cout << "complete: state: CS_Empty" << std::endl;
-            case CS_ShortcutOrIdentifier:
-std::cout << "complete: state: CS_ShortcutOrIdentifier" << std::endl;
-                {
-                    std::list<std::pair<const std::string*, const std::string*> > temp;
-                    temp.insert(temp.end(), this->listOfPossibleFunctions_.begin(), this->listOfPossibleFunctions_.end());
-                    temp.insert(temp.end(), this->listOfPossibleIdentifiers_.begin(), this->listOfPossibleIdentifiers_.end());
-                    if (temp.size() > 0)
-                    {
-std::cout << "complete: temp > 0" << std::endl;
-                        return (CommandEvaluation::getCommonBegin(temp));
-                    }
-                }
-                break;
-            case CS_Shortcut_Params:
-std::cout << "complete: state: CS_Shortcut_Params" << std::endl;
-                if (this->function_)
-                {
-std::cout << "complete: function != 0" << std::endl;
-                    if (this->commandTokens_.size() > 1)
-                    {
-                        if ((this->commandTokens_.size() - 1) >= this->function_->getParamCount())
-                            return (this->function_->getName() + " " + this->commandTokens_.subSet(1, this->commandTokens_.size()).join());
-                        else
-                            return (this->function_->getName() + " " + this->commandTokens_.subSet(1, this->commandTokens_.size()).join() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleArguments_));
-                    }
-                    else
-                        return (this->function_->getName() + " ");
-                }
-                break;
-            case CS_Shortcut_Finished:
-std::cout << "complete: state: CS_Shortcut_Finished" << std::endl;
-                if (this->function_)
-                {
-std::cout << "complete: function != 0" << std::endl;
-                    if (this->commandTokens_.size() > 1)
-                        return (this->function_->getName() + " " + this->commandTokens_.subSet(1, this->commandTokens_.size()).join());
-                    else
-                        return (this->function_->getName());
-                }
-                break;
-            case CS_Function:
-std::cout << "complete: state: CS_Function" << std::endl;
-                if (this->functionclass_)
-                {
-std::cout << "complete: functionclass != 0" << std::endl;
-                    return (this->functionclass_->getName() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleFunctions_));
-                }
-                break;
-            case CS_Function_Params:
-std::cout << "complete: state: CS_Function_Params" << std::endl;
-                if (this->functionclass_ && this->function_)
-                {
-std::cout << "complete: function und functionclass != 0" << std::endl;
-                    if (this->commandTokens_.size() > 2)
-                    {
-                        if ((this->commandTokens_.size() - 2) >= this->function_->getParamCount())
-                            return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->commandTokens_.subSet(2, this->commandTokens_.size()).join());
-                        else
-                            return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->commandTokens_.subSet(2, this->commandTokens_.size()).join() + " " + CommandEvaluation::getCommonBegin(this->listOfPossibleArguments_));
-                    }
-                    else
-                        return (this->functionclass_->getName() + " " + this->function_->getName() + " ");
-                }
-                break;
-            case CS_Function_Finished:
-std::cout << "complete: state: CS_Function_Finished" << std::endl;
-                if (this->functionclass_ && this->function_)
-                {
-std::cout << "complete: function und functionclass != 0" << std::endl;
-                    if (this->commandTokens_.size() > 2)
-                        return (this->functionclass_->getName() + " " + this->function_->getName() + " " + this->commandTokens_.subSet(2, this->commandTokens_.size()).join());
-                    else
-                        return (this->functionclass_->getName() + " " + this->function_->getName());
-                }
-               break;
-            case CS_Error:
-std::cout << "complete: state: CS_Error" << std::endl;
-                break;
+            COUT(4) << "CE_execute: " << this->command_ << "\n";
+
+            unsigned int startindex = this->getStartindex();
+            if (this->commandTokens_.size() > startindex)
+                return this->function_->parse(removeSlashes(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter()));
+            else
+                return this->function_->parse(removeSlashes(this->additionalParameter_));
         }
 
-        return this->originalCommand_;
+        return false;
+    }
+
+    std::string CommandEvaluation::complete()
+    {
+        if (!this->bNewCommand_)
+        {
+std::cout << "ASDF" << std::endl;
+            switch (this->state_)
+            {
+                case CS_Uninitialized:
+                    break;
+                case CS_Empty:
+                    break;
+                case CS_ShortcutOrIdentifier:
+                    if (this->function_)
+                        return CommandExecutor::complete(this->function_->getName() + " ");
+                    else if (this->functionclass_)
+                        return CommandExecutor::complete(this->functionclass_->getName() + " ");
+                    break;
+                case CS_Function:
+                    if (this->function_)
+                        return CommandExecutor::complete(this->functionclass_->getName() + " " + this->function_->getName() + " ");
+                    break;
+                case CS_Params:
+                    break;
+                case CS_Finished:
+                    break;
+                case CS_Error:
+                    break;
+            }
+        }
+        this->bNewCommand_ = false;
+        return this->command_;
     }
 
     std::string CommandEvaluation::hint() const
@@ -196,14 +143,12 @@ std::cout << "complete: state: CS_Error" << std::endl;
             case CS_Function:
                 return CommandEvaluation::dump(this->listOfPossibleFunctions_);
                 break;
-            case CS_Shortcut_Params:
-            case CS_Function_Params:
+            case CS_Params:
                 if (this->listOfPossibleArguments_.size() > 0)
                     return CommandEvaluation::dump(this->listOfPossibleArguments_);
                 else
                     return CommandEvaluation::dump(this->function_);
-            case CS_Shortcut_Finished:
-            case CS_Function_Finished:
+            case CS_Finished:
                 if (this->function_)
                     return CommandEvaluation::dump(this->function_);
                 break;
@@ -272,53 +217,12 @@ std::cout << "complete: state: CS_Error" << std::endl;
 
     unsigned int CommandEvaluation::getStartindex() const
     {
-        if (this->state_ == CS_Shortcut_Params || this->state_ == CS_Shortcut_Finished)
-            return 1;
-        else if (this->state_ == CS_Function || this->state_ == CS_Function_Params || this->state_ == CS_Function_Finished)
+        if (this->functionclass_ && this->function_)
             return 2;
+        else if (this->function_)
+            return 1;
         else
             return 0;
-    }
-
-    std::string CommandEvaluation::getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list)
-    {
-        if (list.size() == 0)
-        {
-            return "";
-        }
-        else if (list.size() == 1)
-        {
-            return ((*(*list.begin()).first) + " ");
-        }
-        else
-        {
-            std::string output = "";
-            for (unsigned int i = 0; true; i++)
-            {
-                char temp = 0;
-                for (std::list<std::pair<const std::string*, const std::string*> >::const_iterator it = list.begin(); it != list.end(); ++it)
-                {
-                    if ((*(*it).first).size() > i)
-                    {
-                        if (it == list.begin())
-                        {
-                            temp = (*(*it).first)[i];
-                        }
-                        else
-                        {
-                            if (temp != (*(*it).first)[i])
-                                return output;
-                        }
-                    }
-                    else
-                    {
-                        return output;
-                    }
-                }
-                output += temp;
-            }
-            return output;
-        }
     }
 
     std::string CommandEvaluation::dump(const std::list<std::pair<const std::string*, const std::string*> >& list)
@@ -336,7 +240,7 @@ std::cout << "complete: state: CS_Error" << std::endl;
 
     std::string CommandEvaluation::dump(const ConsoleCommand* command)
     {
-        std::string output = "";
+        std::string output = command->getName() + ": ";
         for (unsigned int i = 0; i < command->getParamCount(); i++)
         {
             if (i != 0)

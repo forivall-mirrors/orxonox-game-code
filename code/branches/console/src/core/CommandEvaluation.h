@@ -44,11 +44,9 @@ namespace orxonox
         CS_Uninitialized,
         CS_Empty,
         CS_ShortcutOrIdentifier,
-        CS_Shortcut_Params,
-        CS_Shortcut_Finished,
         CS_Function,
-        CS_Function_Params,
-        CS_Function_Finished,
+        CS_Params,
+        CS_Finished,
         CS_Error
     };
 
@@ -62,7 +60,7 @@ namespace orxonox
             void initialize(const std::string& command);
 
             bool execute() const;
-            std::string complete() const;
+            std::string complete();
             std::string hint() const;
             void evaluateParams();
 
@@ -81,12 +79,12 @@ namespace orxonox
 
         private:
             unsigned int getStartindex() const;
-            static std::string getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list);
             static std::string dump(const std::list<std::pair<const std::string*, const std::string*> >& list);
             static std::string dump(const ConsoleCommand* command);
 
 
             bool bNewCommand_;
+            bool bCommandChanged_;
 
             std::string originalCommand_;
             std::string command_;

@@ -44,12 +44,16 @@ namespace orxonox
     {
         friend class Shell;
 
-        virtual void linesChanged() {}
-        virtual void onlyLastLineChanged() {}
-        virtual void lineAdded() {}
-        virtual void inputChanged() {}
-        virtual void cursorChanged() {}
-        virtual void exit() {}
+        public:
+            virtual ~ShellListener() {}
+
+        private:
+            virtual void linesChanged() {}
+            virtual void onlyLastLineChanged() {}
+            virtual void lineAdded() {}
+            virtual void inputChanged() {}
+            virtual void cursorChanged() {}
+            virtual void exit() {}
     };
 
     class _CoreExport Shell : virtual public OrxonoxClass, public InputBufferListener, public OutputBufferListener
@@ -57,6 +61,9 @@ namespace orxonox
         public:
             static Shell& getInstance();
             static Shell& createShell();
+
+            static void clearShell();
+            static void history();
 
             virtual void setConfigValues();
 
@@ -82,7 +89,7 @@ namespace orxonox
             std::list<std::string>::const_iterator getNewestLineIterator() const;
             std::list<std::string>::const_iterator getEndIterator() const;
 
-            void addLine(const std::string& line, int level);
+            void addLine(const std::string& line, int level = 0);
             void clearLines();
 
             inline unsigned int getNumLines() const

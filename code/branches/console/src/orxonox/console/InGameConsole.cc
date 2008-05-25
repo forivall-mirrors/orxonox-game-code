@@ -185,7 +185,6 @@ namespace orxonox
     void InGameConsole::exit()
     {
         this->deactivate();
-        InputManager::getSingleton().setInputMode(IM_INGAME);
     }
 
     /**
@@ -363,6 +362,7 @@ namespace orxonox
         // scroll up
         this->scroll_ = -1;
         // the rest is done by tick
+        InputManager::getSingleton().setInputMode(IM_INGAME);
     }
 
     /**

@@ -31,6 +31,7 @@
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
 #include "CoreSettings.h"
+#include "ConsoleCommand.h"
 
 #define SHELL_UPDATE_LISTENERS(function) \
     for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it) \
@@ -38,6 +39,9 @@
 
 namespace orxonox
 {
+    SetConsoleCommand(Shell, clearShell, true);
+    SetConsoleCommand(Shell, history, true);
+
     Shell::Shell()
     {
         RegisterRootObject(Shell);
@@ -101,6 +105,21 @@ namespace orxonox
             this->commandHistory_.erase(this->commandHistory_.begin() + index);
             ModifyConfigValue(commandHistory_, remove, index);
         }
+    }
+
+    void Shell::clearShell()
+    {
+        Shell::getInstance().clearLines();
+    }
+
+    void Shell::history()
+    {
+        Shell& instance = Shell::getInstance();
+
+        for (int i = instance.historyOffset_; i < (int)instance.commandHistory_.size(); ++i)
+            instance.addLine(instance.commandHistory_[i], -1);
+        for (int i =  0; i < (int)instance.historyOffset_; ++i)
+            instance.addLine(instance.commandHistory_[i], -1);
     }
 
     void Shell::registerListener(ShellListener* listener)
@@ -242,8 +261,8 @@ namespace orxonox
 
     void Shell::hintandcomplete()
     {
-        this->addLine(CommandExecutor::hint(this->inputBuffer_.get()), -1);
         this->inputBuffer_.set(CommandExecutor::complete(this->inputBuffer_.get()));
+        this->addLine(CommandExecutor::hint(this->inputBuffer_.get()), -1);
 
         this->inputChanged();
     }

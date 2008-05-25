@@ -107,12 +107,6 @@ namespace orxonox
     std::string CommandExecutor::complete(const std::string& command)
     {
         CommandExecutor::parseIfNeeded(command);
-
-        if (!CommandExecutor::getEvaluation().bNewCommand_)
-            CommandExecutor::parse(CommandExecutor::getEvaluation().command_, false);
-        else
-            CommandExecutor::getEvaluation().bNewCommand_ = false;
-
         return CommandExecutor::getEvaluation().complete();
     }
 
@@ -131,8 +125,22 @@ namespace orxonox
 
     void CommandExecutor::parseIfNeeded(const std::string& command)
     {
-        if ((CommandExecutor::getEvaluation().originalCommand_ != command) || (CommandExecutor::getEvaluation().state_ == CS_Uninitialized))
+        if (CommandExecutor::getEvaluation().state_ == CS_Uninitialized)
+        {
             CommandExecutor::parse(command);
+        }
+        else if (CommandExecutor::getEvaluation().originalCommand_ != command)
+        {
+            if (CommandExecutor::getEvaluation().command_ == command)
+            {
+                CommandExecutor::parse(command);
+                CommandExecutor::getEvaluation().bNewCommand_ = false;
+            }
+            else
+            {
+                CommandExecutor::parse(command);
+            }
+        }
     }
 
     void CommandExecutor::parse(const std::string& command, bool bInitialize)
@@ -148,255 +156,230 @@ std::cout << "parse: command: >" << command << "<" << std::endl;
         {
             case CS_Uninitialized:
             {
-std::cout << "parse: state: CS_Uninitialized" << std::endl;
                 // Impossible
                 break;
             }
             case CS_Empty:
             {
-std::cout << "parse: state: CS_Empty" << std::endl;
-                CommandExecutor::createListOfPossibleIdentifiers(CommandExecutor::getArgument(0));
-                CommandExecutor::createListOfPossibleFunctions(CommandExecutor::getArgument(0));
-
-                if (CommandExecutor::argumentsGiven() > 0)
+                if (CommandExecutor::argumentsGiven() == 0)
+                {
+                    CommandExecutor::createListOfPossibleFunctions("");
+                    CommandExecutor::createListOfPossibleIdentifiers("");
+                    break;
+                }
+                else
                 {
                     CommandExecutor::getEvaluation().state_ = CS_ShortcutOrIdentifier;
-                    CommandExecutor::parse(command, false);
-                    return;
+                    // Move on to next case
                 }
-                break;
             }
             case CS_ShortcutOrIdentifier:
             {
-std::cout << "parse: state: CS_ShortcutOrIdentifier" << std::endl;
-                if (CommandExecutor::argumentsFinished() > 0 || !CommandExecutor::getEvaluation().bNewCommand_)
+                if (CommandExecutor::argumentsGiven() > 1)
                 {
-                    // There's already a finished first argument - check if it's function or a classname
-                    CommandExecutor::getEvaluation().functionclass_ = CommandExecutor::getPossibleIdentifier(CommandExecutor::getArgument(0));
+                    // There's a finished first argument - check if it's a shortcut or a classname
                     CommandExecutor::getEvaluation().function_ = CommandExecutor::getPossibleCommand(CommandExecutor::getArgument(0));
+                    CommandExecutor::getEvaluation().functionclass_ = CommandExecutor::getPossibleIdentifier(CommandExecutor::getArgument(0));
 
                     if (CommandExecutor::getEvaluation().function_)
                     {
-                        // It's a shortcut - continue parsing
-                        CommandExecutor::getEvaluation().state_ = CS_Shortcut_Params;
-                        if (CommandExecutor::argumentsFinished() > 0 )
-                            CommandExecutor::parse(command, false);
-                        else
-                            CommandExecutor::parse(command + " ", false);
-                        return;
+                        // It's a shortcut
+                        CommandExecutor::getEvaluation().state_ = CS_Params;
+                        CommandExecutor::getEvaluation().functionclass_ = 0;
+                        // Move on to next case
                     }
                     else if (CommandExecutor::getEvaluation().functionclass_)
                     {
-                        // It's a classname - continue parsing
+                        // It's a functionname
                         CommandExecutor::getEvaluation().state_ = CS_Function;
-                        if (CommandExecutor::argumentsFinished() > 0 )
-                            CommandExecutor::parse(command, false);
-                        else
-                            CommandExecutor::parse(command + " ", false);
+                        CommandExecutor::getEvaluation().function_ = 0;
+                        // Move on to next case
+                    }
+                    else
+                    {
+                        // The first argument is bad
+                        CommandExecutor::getEvaluation().state_ = CS_Error;
+                        AddLanguageEntry("commandexecutorunknownfirstargument", "is not a shortcut nor a classname");
+                        CommandExecutor::getEvaluation().errorMessage_ = "Error: " + CommandExecutor::getArgument(0) + " " + GetLocalisation("commandexecutorunknownfirstargument") + ".";
                         return;
                     }
                 }
-
-                unsigned int numIdentifiers = CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.size();
-                unsigned int numCommands = CommandExecutor::getEvaluation().listOfPossibleFunctions_.size();
-
-                if (CommandExecutor::argumentsFinished() == 0)
+                else
                 {
-                    // There is no finished first argument
-                    if (numCommands == 1 && numIdentifiers == 0)
+                    // There's no finished first argument - search possible shortcuts or classnames
+                    CommandExecutor::createListOfPossibleFunctions(CommandExecutor::getArgument(0));
+                    CommandExecutor::createListOfPossibleIdentifiers(CommandExecutor::getArgument(0));
+
+                    unsigned int num_functions = CommandExecutor::getEvaluation().listOfPossibleFunctions_.size();
+                    unsigned int num_identifiers = CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.size();
+
+                    if (num_functions == 1 && num_identifiers == 0)
                     {
-                        // It must be this command
-                        const std::string* possibleCommand = (*CommandExecutor::getEvaluation().listOfPossibleFunctions_.begin()).second;
-                        CommandExecutor::getEvaluation().state_ = CS_Shortcut_Params;
-                        CommandExecutor::getEvaluation().function_ = CommandExecutor::getPossibleCommand(*possibleCommand);
-                        CommandExecutor::parse(*possibleCommand + " ", false);
-                        return;
+                        // It's a shortcut
+                        std::string functionname = *(*CommandExecutor::getEvaluation().listOfPossibleFunctions_.begin()).first;
+                        CommandExecutor::getEvaluation().function_ = CommandExecutor::getPossibleCommand(functionname);
+                        if (getLowercase(functionname) != getLowercase(CommandExecutor::getArgument(0)))
+                        {
+                            // Unfinished shortcut
+                            CommandExecutor::getEvaluation().bCommandChanged_ = true;
+                        }
+                        CommandExecutor::getEvaluation().state_ = CS_Params;
+                        CommandExecutor::getEvaluation().functionclass_ = 0;
+                        CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().function_->getName();
+                        if (CommandExecutor::getEvaluation().function_->getParamCount() > 0)
+                            CommandExecutor::getEvaluation().command_ += " ";
+                        // Move on to next case
                     }
-                    else if (numIdentifiers == 1 && numCommands == 0)
+                    else if (num_identifiers == 1 && num_functions == 0)
                     {
-                        // It must be this classname
-                        const std::string* possibleIdentifier = (*CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.begin()).second;
+                        // It's a classname
+                        std::string classname = *(*CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.begin()).first;
+                        CommandExecutor::getEvaluation().functionclass_ = CommandExecutor::getPossibleIdentifier(classname);
+                        if (getLowercase(classname) != getLowercase(CommandExecutor::getArgument(0)))
+                        {
+                            // Unfinished classname
+                            CommandExecutor::getEvaluation().bCommandChanged_ = true;
+                        }
                         CommandExecutor::getEvaluation().state_ = CS_Function;
-                        CommandExecutor::getEvaluation().functionclass_ = CommandExecutor::getPossibleIdentifier(*possibleIdentifier);
-                        CommandExecutor::parse(*possibleIdentifier + " ", false);
+                        CommandExecutor::getEvaluation().function_ = 0;
+                        CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().functionclass_->getName() + " ";
+                        // Move on to next case
+                    }
+                    else if (num_identifiers == 0 && num_functions == 0)
+                    {
+                        // No possibilities
+                        CommandExecutor::getEvaluation().state_ = CS_Error;
+                        AddLanguageEntry("commandexecutorunknownfirstargumentstart", "There is no command or classname starting with");
+                        CommandExecutor::getEvaluation().errorMessage_ = "Error: " + GetLocalisation("commandexecutorunknownfirstargumentstart") + " " + CommandExecutor::getArgument(0) + ".";
+                        return;
+                    }
+                    else
+                    {
+                        // There are several possiblilities
+                        std::list<std::pair<const std::string*, const std::string*> > temp;
+                        temp.insert(temp.end(), CommandExecutor::getEvaluation().listOfPossibleFunctions_.begin(), CommandExecutor::getEvaluation().listOfPossibleFunctions_.end());
+                        temp.insert(temp.end(), CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.begin(), CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.end());
+                        CommandExecutor::getEvaluation().command_ = CommandExecutor::getCommonBegin(temp);
+                        CommandExecutor::getEvaluation().function_ = CommandExecutor::getPossibleCommand(CommandExecutor::getArgument(0));
+                        CommandExecutor::getEvaluation().functionclass_ = CommandExecutor::getPossibleIdentifier(CommandExecutor::getArgument(0));
                         return;
                     }
                 }
-
-                if (numCommands == 0 && numIdentifiers == 0)
-                {
-                    // It's not a shortcut nor a classname
-                    CommandExecutor::getEvaluation().state_ = CS_Error;
-                    AddLanguageEntry("commandexecutorunknownfirstargument", "is not a shortcut nor a classname");
-                    CommandExecutor::getEvaluation().errorMessage_ = "Error: " + CommandExecutor::getArgument(0) + " " + GetLocalisation("commandexecutorunknownfirstargument") + ".";
-                }
-                break;
             }
             case CS_Function:
-std::cout << "parse: state: CS_Function" << std::endl;
             {
-                if (CommandExecutor::getEvaluation().functionclass_ && CommandExecutor::argumentsGiven() > 0)
+                if (CommandExecutor::getEvaluation().functionclass_)
                 {
-                    if (CommandExecutor::argumentsFinished() > 1 || !CommandExecutor::getEvaluation().bNewCommand_)
+                    // There is a classname - search for the commandname
+                    if (CommandExecutor::argumentsGiven() > 2)
                     {
-                        // There is already a second argument - check if it's a valid function
+                        // There is a finished second argument - check if it's a commandname
                         CommandExecutor::getEvaluation().function_ = CommandExecutor::getPossibleCommand(CommandExecutor::getArgument(1), CommandExecutor::getEvaluation().functionclass_);
 
                         if (CommandExecutor::getEvaluation().function_)
                         {
-                            // It's a shortcut - continue parsing
-                            CommandExecutor::getEvaluation().state_ = CS_Function_Params;
-                            if (CommandExecutor::argumentsFinished() > 1 )
-                                CommandExecutor::parse(command, false);
-                            else
-                                CommandExecutor::parse(command + " ", false);
+                            // It's a function
+                            CommandExecutor::getEvaluation().state_ = CS_Params;
+                            // Move on to next case
+                        }
+                        else
+                        {
+                            // The second argument is bad
+                            CommandExecutor::getEvaluation().state_ = CS_Error;
+                            AddLanguageEntry("commandexecutorunknownsecondargument", "is not a function of");
+                            CommandExecutor::getEvaluation().errorMessage_ = "Error: " + CommandExecutor::getArgument(1) + " " + GetLocalisation("commandexecutorunknownsecondargument") + " " + CommandExecutor::getEvaluation().functionclass_->getName() + ".";
                             return;
                         }
-                        else if (CommandExecutor::argumentsFinished() > 1)
-                        {
-                            // It's not a function
-                            AddLanguageEntry("commandexecutorunknowncommand", "is not a valid commandname");
-                            CommandExecutor::getEvaluation().errorMessage_ = "Error: " + CommandExecutor::getArgument(1) + " " + GetLocalisation("commandexecutorunknowncommand") + ".";
-                            CommandExecutor::getEvaluation().state_ = CS_Error;
-                        }
                     }
-
-                    CommandExecutor::createListOfPossibleFunctions(CommandExecutor::getArgument(1), CommandExecutor::getEvaluation().functionclass_);
-
-                    if (CommandExecutor::argumentsFinished() <= 1)
+                    else
                     {
-                        // There is no finished second argument
-                        unsigned int numFunctions = CommandExecutor::getEvaluation().listOfPossibleFunctions_.size();
+                        // There is no finished second argument - search for possibilities
+                        CommandExecutor::createListOfPossibleFunctions(CommandExecutor::getArgument(1), CommandExecutor::getEvaluation().functionclass_);
+                        unsigned int num_functions = CommandExecutor::getEvaluation().listOfPossibleFunctions_.size();
 
-                        if (numFunctions == 1)
+                        if (num_functions == 1)
                         {
-                            // It must be this command
-                            const std::string* possibleCommand = (*CommandExecutor::getEvaluation().listOfPossibleFunctions_.begin()).second;
-                            CommandExecutor::getEvaluation().state_ = CS_Function_Params;
-                            CommandExecutor::getEvaluation().function_ = CommandExecutor::getPossibleCommand(*possibleCommand, CommandExecutor::getEvaluation().functionclass_);
-                            CommandExecutor::parse(CommandExecutor::getArgument(0) + " " + *possibleCommand + " ", false);
-                            return;
+                            // It's a function
+                            std::string functionname = *(*CommandExecutor::getEvaluation().listOfPossibleFunctions_.begin()).first;
+                            CommandExecutor::getEvaluation().function_ = CommandExecutor::getPossibleCommand(functionname, CommandExecutor::getEvaluation().functionclass_);
+                            if (getLowercase(functionname) != getLowercase(CommandExecutor::getArgument(1)))
+                            {
+                                // Unfinished function
+                                CommandExecutor::getEvaluation().bCommandChanged_ = true;
+                            }
+                            CommandExecutor::getEvaluation().state_ = CS_Params;
+                            CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().functionclass_->getName() + " " + CommandExecutor::getEvaluation().function_->getName();
+                            if (CommandExecutor::getEvaluation().function_->getParamCount() > 0)
+                                CommandExecutor::getEvaluation().command_ += " ";
+                            // Move on to next case
                         }
-                        else if (numFunctions == 0)
+                        else if (num_functions == 0)
                         {
-                            // It's not a function
-                            AddLanguageEntry("commandexecutorunknowncommand", "is not a valid commandname");
-                            CommandExecutor::getEvaluation().errorMessage_ = "Error: " + CommandExecutor::getArgument(1) + " " + GetLocalisation("commandexecutorunknowncommand") + ".";
+                            // No possibilities
                             CommandExecutor::getEvaluation().state_ = CS_Error;
-                        }
-                    }
-
-                    // It's ambiguous
-                    return;
-                }
-
-                // Bad state
-                CommandExecutor::getEvaluation().state_ = CS_Error;
-                break;
-            }
-            case CS_Shortcut_Params:
-std::cout << "parse: state: CS_Shortcut_Params" << std::endl;
-            case CS_Function_Params:
-            {
-std::cout << "parse: state: CS_Function_Params" << std::endl;
-                if (CommandExecutor::getEvaluation().function_)
-                {
-                    unsigned int startindex = 0;
-                    if (CommandExecutor::getEvaluation().state_ == CS_Shortcut_Params)
-                        startindex = 1;
-                    else if (CommandExecutor::getEvaluation().state_ == CS_Function_Params)
-                        startindex = 2;
-
-                    if (CommandExecutor::argumentsGiven() >= startindex)
-                    {
-                        if ((CommandExecutor::argumentsGiven() == CommandExecutor::argumentsFinished() || !CommandExecutor::getEvaluation().bNewCommand_) && CommandExecutor::enoughArgumentsGiven(CommandExecutor::getEvaluation().function_))
-                        {
-                            if (CommandExecutor::getEvaluation().state_ == CS_Shortcut_Params)
-                                CommandExecutor::getEvaluation().state_ = CS_Shortcut_Finished;
-                            else if (CommandExecutor::getEvaluation().state_ == CS_Function_Params)
-                                CommandExecutor::getEvaluation().state_ = CS_Function_Finished;
-
+                            AddLanguageEntry("commandexecutorunknownsecondargumentstart", "has no function starting with");
+                            CommandExecutor::getEvaluation().errorMessage_ = "Error: " + CommandExecutor::getEvaluation().functionclass_->getName() + " " + GetLocalisation("commandexecutorunknownsecondargumentstart") + " " + CommandExecutor::getArgument(1) + ".";
                             return;
                         }
                         else
                         {
-                            CommandExecutor::createListOfPossibleArguments(CommandExecutor::getLastArgument(), CommandExecutor::getEvaluation().function_, CommandExecutor::getEvaluation().commandTokens_.size() - startindex);
-                            unsigned int numArguments = CommandExecutor::getEvaluation().listOfPossibleArguments_.size();
-
-                            if (numArguments == 1)
-                            {
-                                // There is exactly one possible argument
-                                const std::string* possibleArgument = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).second;
-                                if (CommandExecutor::argumentsGiven() > CommandExecutor::argumentsFinished())
-                                    CommandExecutor::parse(CommandExecutor::getEvaluation().commandTokens_.subSet(0, CommandExecutor::getEvaluation().commandTokens_.size() - 1).join() + " " + (*possibleArgument) + " ", false);
-                                else
-                                    CommandExecutor::parse(CommandExecutor::getEvaluation().commandTokens_.subSet(0, CommandExecutor::getEvaluation().commandTokens_.size()).join() + " " + (*possibleArgument) + " ", false);
-
-                                return;
-                            }
-
-                            if ((CommandExecutor::argumentsGiven() > CommandExecutor::argumentsFinished()) && (!CommandExecutor::getEvaluation().bNewCommand_))
-                            {
-                                // There is more than one argument, but the user wants to use this - check if there is a perfect match
-                                const std::string* possibleArgument = CommandExecutor::getPossibleArgument(CommandExecutor::getLastArgument(), CommandExecutor::getEvaluation().function_, CommandExecutor::getEvaluation().commandTokens_.size() - startindex);
-                                if (possibleArgument)
-                                {
-                                    // There is such an argument - use it
-                                    CommandExecutor::parse(command + " ", false);
-                                    return;
-                                }
-                            }
+                            // There are several possibilities
+                            CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().functionclass_->getName() + " " + CommandExecutor::getCommonBegin(CommandExecutor::getEvaluation().listOfPossibleFunctions_);
+                            CommandExecutor::getEvaluation().function_ = CommandExecutor::getPossibleCommand(CommandExecutor::getArgument(1), CommandExecutor::getEvaluation().functionclass_);
+                            return;
                         }
-
-                        // Nothing to do
-                        return;
                     }
                 }
-
-                // Bad state
-                CommandExecutor::getEvaluation().state_ = CS_Error;
+                else
+                {
+                    // There is no classname - move on to CS_Shortcut_Params
+                }
+            }
+std::cout << "Waiting for arguments" << std::endl;
+            case CS_Params:
+            {
+            }
+            case CS_Finished:
+            {
+                // Nothing more to do
                 break;
             }
-            case CS_Shortcut_Finished:
-std::cout << "parse: state: CS_Shortcut_Finished" << std::endl;
-                break;
-            case CS_Function_Finished:
-std::cout << "parse: state: CS_Function_Finished" << std::endl;
-                break;
             case CS_Error:
-std::cout << "parse: state: CS_Error" << std::endl;
+            {
+                // Bad, very bad
                 break;
+            }
         }
     }
 
     unsigned int CommandExecutor::argumentsFinished()
     {
-        if (CommandExecutor::getEvaluation().command_.size() > 0)
-        {
-            if (CommandExecutor::getEvaluation().command_[CommandExecutor::getEvaluation().command_.size() - 1] == ' ')
-                return CommandExecutor::getEvaluation().commandTokens_.size();
-            else if (CommandExecutor::getEvaluation().commandTokens_.size() > 0)
-                return CommandExecutor::getEvaluation().commandTokens_.size() - 1;
-        }
-        return 0;
+        unsigned int argumentsGiven = CommandExecutor::argumentsGiven();
+        if (argumentsGiven > 0)
+            return argumentsGiven - 1;
+        else
+            return 0;
     }
 
     unsigned int CommandExecutor::argumentsGiven()
     {
-        return CommandExecutor::getEvaluation().commandTokens_.size();
+        if (CommandExecutor::getEvaluation().command_.size() > 0 && CommandExecutor::getEvaluation().command_[CommandExecutor::getEvaluation().command_.size() - 1] == ' ')
+            return CommandExecutor::getEvaluation().commandTokens_.size() + 1;
+        else
+            return CommandExecutor::getEvaluation().commandTokens_.size();
     }
 
     bool CommandExecutor::enoughArgumentsGiven(ConsoleCommand* command)
     {
         if (CommandExecutor::getEvaluation().functionclass_)
-            return (CommandExecutor::argumentsGiven() >= (2 + command->getParamCount()));
+            return (CommandExecutor::getEvaluation().commandTokens_.size() >= (2 + command->getParamCount()));
         else
-            return (CommandExecutor::argumentsGiven() >= (1 + command->getParamCount()));
+            return (CommandExecutor::getEvaluation().commandTokens_.size() >= (1 + command->getParamCount()));
     }
 
     std::string CommandExecutor::getArgument(unsigned int index)
     {
-        if ((index >= 0) && index < (CommandExecutor::getEvaluation().commandTokens_.size()))
+        if (index < (CommandExecutor::getEvaluation().commandTokens_.size()))
             return CommandExecutor::getEvaluation().commandTokens_[index];
         else
             return "";
@@ -404,11 +387,7 @@ std::cout << "parse: state: CS_Error" << std::endl;
 
     std::string CommandExecutor::getLastArgument()
     {
-        if (CommandExecutor::getEvaluation().commandTokens_.size() > 0)
-            if (CommandExecutor::getEvaluation().commandTokens_.size() > 0 && CommandExecutor::getEvaluation().command_[CommandExecutor::getEvaluation().command_.size() - 1] != ' ')
-                return CommandExecutor::getEvaluation().commandTokens_[CommandExecutor::getEvaluation().commandTokens_.size() - 1];
-
-        return "";
+        return CommandExecutor::getArgument(CommandExecutor::argumentsGiven());
     }
 
     void CommandExecutor::createListOfPossibleIdentifiers(const std::string& fragment)
@@ -490,6 +469,47 @@ std::cout << "parse: state: CS_Error" << std::endl;
                 return &(*it).second;
 
         return 0;
+    }
+
+    std::string CommandExecutor::getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list)
+    {
+        if (list.size() == 0)
+        {
+            return "";
+        }
+        else if (list.size() == 1)
+        {
+            return ((*(*list.begin()).first) + " ");
+        }
+        else
+        {
+            std::string output = "";
+            for (unsigned int i = 0; true; i++)
+            {
+                char temp = 0;
+                for (std::list<std::pair<const std::string*, const std::string*> >::const_iterator it = list.begin(); it != list.end(); ++it)
+                {
+                    if ((*(*it).first).size() > i)
+                    {
+                        if (it == list.begin())
+                        {
+                            temp = (*(*it).first)[i];
+                        }
+                        else
+                        {
+                            if (temp != (*(*it).first)[i])
+                                return output;
+                        }
+                    }
+                    else
+                    {
+                        return output;
+                    }
+                }
+                output += temp;
+            }
+            return output;
+        }
     }
 
     bool CommandExecutor::compareStringsInList(const std::pair<const std::string*, const std::string*>& first, const std::pair<const std::string*, const std::string*>& second)
