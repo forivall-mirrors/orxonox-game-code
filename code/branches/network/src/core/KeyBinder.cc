@@ -473,7 +473,7 @@ namespace orxonox
     infile.open("keybindings.ini");
     if (!infile.is_open())
     {
-      ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, keybindingsDefault_);
+      ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "def_keybindings.ini");
       ConfigFileManager::getSingleton()->save(CFT_Keybindings, "keybindings.ini");
     }
     infile.close();
@@ -495,7 +495,6 @@ namespace orxonox
     SetConfigValue(bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
     SetConfigValue(derivePeriod_, 0.1f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
     SetConfigValue(mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
-    SetConfigValue(keybindingsDefault_, "def_keybindings.ini").description("Default ini file for the keybindings.");
 
     float oldThresh = buttonThreshold_;
     SetConfigValue(buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
@@ -585,12 +584,13 @@ namespace orxonox
           if (halfAxes_[i].nCommands_[KeybindMode::OnRelease])
             halfAxes_[i].execute(KeybindMode::OnRelease);
         }
-        if (halfAxes_[i].wasDown_)
-        {
-          if (halfAxes_[i].nCommands_[KeybindMode::OnHold])
-            halfAxes_[i].execute(KeybindMode::OnHold);
-        }
         halfAxes_[i].hasChanged_ = false;
+      }
+
+      if (halfAxes_[i].wasDown_)
+      {
+        if (halfAxes_[i].nCommands_[KeybindMode::OnHold])
+          halfAxes_[i].execute(KeybindMode::OnHold);
       }
 
       // these are the actually useful axis bindings for analog input AND output
