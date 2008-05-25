@@ -78,6 +78,10 @@ namespace orxonox
             delete this->particle_;
         }
     };
+    
+    bool Explosion::create(){
+      return WorldEntity::create();
+    }
 
     void Explosion::destroyObject()
     {
