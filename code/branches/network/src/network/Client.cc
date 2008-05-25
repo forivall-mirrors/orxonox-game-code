@@ -245,23 +245,23 @@ namespace network
       COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
       elaborate(event->packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
     }
+    int gameStateID = gamestate.processGameState();
+    if(gameStateID!=GAMESTATEID_INITIAL){
+      // ack gamestate and set synched
+      if(!isSynched_)
+        isSynched_=true;
+      if(!client_connection.addPacket(pck_gen.acknowledgement(gameStateID)))
+        COUT(3) << "could not ack gamestate" << std::endl;
+    }
+    gamestate.cleanup();
     if(!client_connection.sendPackets())
       COUT(3) << "Problem sending packets to server" << std::endl;
     return;
   }
 
   void Client::processGamestate( GameStateCompressed *data, int clientID){
-    int id = data->id;
     COUT(5) << "received gamestate id: " << data->id << std::endl;
-    if(gamestate.pushGameState(data)){
-      if(!isSynched_)
-        isSynched_=true;
-      if(!client_connection.addPacket(pck_gen.acknowledgement(id)))
-        return;
-        // we do this at the end of a tick
-      if(!client_connection.sendPackets())
-        COUT(2) << "Could not send acknowledgment" << std::endl;
-    }
+    gamestate.addGameState(data);
   }
 
   void Client::processClassid(classid *clid){

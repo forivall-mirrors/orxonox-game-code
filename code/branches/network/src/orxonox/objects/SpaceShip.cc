@@ -69,7 +69,7 @@ namespace orxonox
     SpaceShip *SpaceShip::getLocalShip(){
       Iterator<SpaceShip> it;
       for(it = ObjectList<SpaceShip>::start(); it; ++it){
-        if((it)->server_ || ( network::Client::getSingleton() && network::Client::getSingleton()->getShipID()==it->objectID ) )
+        if( (it)->myShip_ )
           return *it;
       }
       return NULL;
@@ -108,7 +108,7 @@ namespace orxonox
       mouseX_(0.0f),
       mouseY_(0.0f),
       emitterRate_(0.0f),
-      server_(false)
+      myShip_(false)
     {
         RegisterObject(SpaceShip);
         this->registerAllVariables();
@@ -139,6 +139,10 @@ namespace orxonox
     }
 
     bool SpaceShip::create(){
+      if(!myShip_){
+        if(network::Client::getSingleton() && objectID == network::Client::getSingleton()->getShipID())
+          myShip_=true;
+      }
       if(Model::create())
         this->init();
       else
@@ -298,7 +302,7 @@ namespace orxonox
         XMLPortParamLoadOnly(SpaceShip, "rotAcc", setRotAcc, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, mode);
-        server_=true; // TODO: this is only a hack
+        myShip_=true; // TODO: this is only a hack
         SpaceShip::create();
         getFocus();
     }
@@ -353,6 +357,7 @@ namespace orxonox
         {
 
             Projectile *p = new Projectile(this);
+            p->create();
 
             p->setBacksync(true);
             this->timeToReload_ = this->reloadTime_;
@@ -438,7 +443,7 @@ namespace orxonox
         else
             this->tt_->setRate(0);
 
-        if( (network::Client::getSingleton() &&  network::Client::getSingleton()->getShipID() == objectID) || server_ )
+        if( myShip_ )
         {
           COUT(4) << "steering our ship: " << objectID << std::endl;
           this->acceleration_.x = 0;

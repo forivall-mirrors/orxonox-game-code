@@ -90,7 +90,8 @@ namespace orxonox
 
                 if (this->getPosition().squaredDistance(it->getPosition()) <= (radius*radius))
                 {
-                    new Explosion(this);
+                    Explosion *exp = new Explosion(this);
+                    exp->create();
                     delete this;
                     return;
                 }

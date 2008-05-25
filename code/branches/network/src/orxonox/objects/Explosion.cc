@@ -79,9 +79,11 @@ namespace orxonox
         }
     };
     
-    bool Explosion::create(){
-      return WorldEntity::create();
-    }
+    /*bool Explosion::create(){
+      if(!WorldEntity::create())
+        return false;
+      classID=this->getIdentifier()->getNetworkID();
+    }*/
 
     void Explosion::destroyObject()
     {

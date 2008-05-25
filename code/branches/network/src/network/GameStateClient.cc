@@ -20,9 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Oliver Scheuss
  *   Co-authors:
- *      ...
+ *      Dumeni Manatschal
  *
  */
 
@@ -34,7 +34,6 @@
 #include "core/BaseObject.h"
 #include "Synchronisable.h"
 
-#define GAMESTATEID_INITIAL -1
 
 namespace network
 {
@@ -47,6 +46,8 @@ namespace network
     COUT(5) << "this: " << this << std::endl;
     last_diff_=0;
     last_gamestate_=GAMESTATEID_INITIAL-1;
+    tempGameState_=NULL;
+    myShip_=NULL;
   }
 
   GameStateClient::~GameStateClient() {
@@ -101,6 +102,30 @@ namespace network
     delete[] gs->data;
     delete gs;
     return cgs;
+  }
+  
+  void GameStateClient::addGameState(GameStateCompressed *gs){
+    if(tempGameState_!=NULL){
+      //delete the obsolete gamestate
+      if(tempGameState_->id>gs->id)
+        return;
+      delete[] tempGameState_->data;
+      delete tempGameState_;
+    }
+    tempGameState_=gs;
+  }
+  int GameStateClient::processGameState(){
+    if(tempGameState_==NULL)
+      return GAMESTATEID_INITIAL;
+    int id=tempGameState_->id;
+    bool b = saveShipCache();
+    if(pushGameState(tempGameState_)){
+      if(b)
+        loadShipCache();
+      return id;
+    }
+    else
+      return GAMESTATEID_INITIAL;
   }
   
 
@@ -387,6 +412,7 @@ namespace network
       temp=it++;
       gameStateMap.erase(temp);
     }
+    tempGameState_=NULL;
   }
 
   void GameStateClient::printGameStateMap(){
@@ -399,6 +425,31 @@ namespace network
     
   }
   
+  bool GameStateClient::saveShipCache(){
+    if(myShip_==NULL)
+      myShip_ = orxonox::SpaceShip::getLocalShip();
+    if(myShip_){
+      //      unsigned char *data = new unsigned char[myShip_->getSize()];
+      int size=myShip_->getSize(0x3);
+      if(size==0)
+        return false;
+      unsigned char *data = new unsigned char [size];
+      shipCache_ = myShip_->getData(data, 0x1);
+      return true;
+    }else
+      return false;
+  }
+  
+  bool GameStateClient::loadShipCache(){
+    if(myShip_){
+      myShip_->updateData(shipCache_, 0x2);
+      if(shipCache_.data){
+        delete[] shipCache_.data;
+      }
+      return true;
+    }else
+      return false;
+  }
   
     //##### ADDED FOR TESTING PURPOSE #####
   GameState* GameStateClient::testDecompress( GameStateCompressed* gc ) {

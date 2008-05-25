@@ -69,6 +69,29 @@ namespace network
     return;
   }
   
+  void GameStateManager::addGameState(GameStateCompressed *gs, int clientID){
+    if(!gs)
+      return;
+    std::map<int, GameStateCompressed*>::iterator it = gameStateQueue.find(clientID);
+    if(it!=gameStateQueue.end()){
+      // delete obsolete gamestate
+      delete[] it->second->data;
+      delete it->second;
+    }
+    gameStateQueue[clientID] = gs;
+    return;
+  }
+  
+  void GameStateManager::processGameStates(){
+    std::map<int, GameStateCompressed*>::iterator it;
+    // now push only the most recent gamestates we received (ignore obsolete ones)
+    for(it = gameStateQueue.begin(); it!=gameStateQueue.end(); it++){
+      pushGameState(it->second, it->first);
+    }
+    // now clear the queue
+    gameStateQueue.clear();
+  }
+  
   
   /**
    * this function is used to keep the memory usage low

@@ -71,12 +71,15 @@ namespace network
     GameStateManager(ClientInformation *head);
     ~GameStateManager();
     
+    void addGameState(GameStateCompressed *gs, int clientID);
+    void processGameStates();
+    
     void update();
     GameStateCompressed *popGameState(int clientID);
-    bool pushGameState(GameStateCompressed *gs, int clientID);
     void ackGameState(int clientID, int gamestateID);
     void removeClient(ClientInformation *client);
-  private:
+    private:
+    bool pushGameState(GameStateCompressed *gs, int clientID);
     void cleanup(); // "garbage handler"
     GameState *getSnapshot();
     bool loadPartialSnapshot(GameState *state, int clientID);
@@ -90,6 +93,7 @@ namespace network
 
     std::map<int, GameState*> gameStateMap; //map gsID to gamestate*
     std::map<int, int> gameStateUsed; // save the number of clients, that use the specific gamestate
+    std::map<int, GameStateCompressed*> gameStateQueue;
     GameState *reference;
     ClientInformation *head_;
     int id_;

@@ -42,7 +42,7 @@ namespace orxonox
             Explosion(WorldEntity* owner = 0);
             virtual ~Explosion();
             void destroyObject();
-            bool create();
+            virtual bool create(){return WorldEntity::create();}
 
         private:
             Timer<Explosion> destroyTimer_;

@@ -20,9 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Oliver Scheuss
  *   Co-authors:
- *      ...
+ *      Dumeni Manatschal
  *
  */
 
@@ -32,7 +32,7 @@
 // Description:
 //
 //
-// Author:  <>, (C) 2007
+// Author:  Oliver Scheuss, (C) 2007
 //
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -45,7 +45,10 @@
 #include "NetworkPrereqs.h"
 #include "core/CorePrereqs.h"
 #include "PacketTypes.h"
+#include "objects/SpaceShip.h"
 
+
+#define GAMESTATEID_INITIAL -1
 
 namespace network
 {
@@ -55,12 +58,14 @@ namespace network
     GameStateClient();
     ~GameStateClient();
     
-    bool pushGameState(GameStateCompressed *compstate);
+    void addGameState(GameStateCompressed *gs);
+    int processGameState();
     GameStateCompressed *popPartialGameState();
+    void cleanup();
   private:
+    bool pushGameState(GameStateCompressed *compstate);
     bool loadSnapshot(GameState *state);
     GameState *getPartialSnapshot();
-    void cleanup();
     GameState *undiff(GameState *old, GameState *diff);
     GameStateCompressed *compress_(GameState *a);
     GameState *decompress(GameStateCompressed *a);
@@ -68,10 +73,15 @@ namespace network
     GameState *decode(GameStateCompressed *x);
     void removeObject(orxonox::Iterator<Synchronisable> &it);
     void printGameStateMap();
+    bool saveShipCache();
+    bool loadShipCache();
 
     int           last_diff_;
     int           last_gamestate_;
     std::map<int, GameState *> gameStateMap;
+    GameStateCompressed *tempGameState_; // we save the received gamestates here during processQueue
+    orxonox::SpaceShip *myShip_;
+    syncData shipCache_;
     
     
     

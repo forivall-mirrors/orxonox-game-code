@@ -66,10 +66,6 @@ namespace orxonox {
     registerVar(&movable_, sizeof(movable_), network::DATA);
   }
   
-  bool NPC::create(){
-    Model::create();
-    return true;
-  }
 
   /**
    * calculates the distance between the element and an other point given by temp

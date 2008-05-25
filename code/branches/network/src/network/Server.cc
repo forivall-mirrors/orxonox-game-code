@@ -156,6 +156,7 @@ namespace network
   */
   void Server::tick(float time) {
     processQueue();
+    gamestates->processGameStates();
     updateGamestate();
 //     usleep(500000); // TODO remove
     return;
@@ -244,7 +245,8 @@ namespace network
         if(temp->getFailures() > 20 )
           disconnectClient(temp);
       //std::cout << "added gamestate" << std::endl;
-      }
+      }else
+        temp->resetFailures();
       added=true;
       temp=temp->next();
       // now delete gamestate
@@ -275,11 +277,11 @@ namespace network
   
   void Server::processGamestate( GameStateCompressed *data, int clientID){
     COUT(4) << "processing partial gamestate from client " << clientID << std::endl;
-    if(!gamestates->pushGameState(data, clientID))
-        COUT(3) << "Could not push gamestate\t\t\t\t=====" << std::endl;
+    gamestates->addGameState(data, clientID);
+        /*COUT(3) << "Could not push gamestate\t\t\t\t=====" << std::endl;
     else
       if(clients->findClient(clientID))
-        clients->findClient(clientID)->resetFailures();
+        clients->findClient(clientID)->resetFailures();*/
   }
   
   bool Server::addClient(ENetEvent *event){

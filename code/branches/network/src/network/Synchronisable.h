@@ -82,9 +82,9 @@ namespace network
 
     void registerVar(void *var, int size, variableType t, int mode=1);
     //  syncData getData();
-    syncData getData(unsigned char *mem);
-    int getSize();
-    bool updateData(syncData vars);
+    syncData getData(unsigned char *mem, int mode=0x0);
+    int getSize(int mode=0x0);
+    bool updateData(syncData vars, int mode=0x0);
     void setBacksync(bool sync);
     bool getBacksync();
     virtual void registerAllVariables()=0;

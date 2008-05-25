@@ -45,6 +45,7 @@ namespace orxonox
             void setConfigValues();
             void destroyObject();
             virtual void tick(float dt);
+            virtual bool create(){return WorldEntity::create();}
 
         private:
             SpaceShip* owner_;

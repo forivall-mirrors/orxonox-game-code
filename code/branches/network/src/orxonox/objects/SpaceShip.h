@@ -48,7 +48,7 @@ namespace orxonox
 
             SpaceShip();
             ~SpaceShip();
-            bool create();
+            virtual bool create();
             void registerAllVariables();
             void init();
             void setConfigValues();
@@ -80,6 +80,8 @@ namespace orxonox
             Vector3 getDir();
             Vector3 getOrth();
             Camera* getCamera();
+            
+            bool getMyShip(){return myShip_;}
 
         private:
             void createCamera();
@@ -134,7 +136,7 @@ namespace orxonox
             float mouseY_;
 
             float emitterRate_;
-            bool server_;
+            bool myShip_;
 
             static SpaceShip* instance_s;
     };
