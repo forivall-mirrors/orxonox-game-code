@@ -32,7 +32,7 @@
 
 MultiTypeString::MultiTypeString(MultiType type) : MultiTypePrimitive(type)
 {
-    // Nothing to do for string and xml-element
+    // Nothing to do for string
 }
 
 bool MultiTypeString::operator==(const MultiTypeString& mts) const
@@ -48,6 +48,11 @@ bool MultiTypeString::operator==(const MultiTypeString& mts) const
     return false;
 }
 
+bool MultiTypeString::operator==(const MultiTypePrimitive& mtp) const
+{
+    return MultiTypePrimitive::operator==(mtp);
+}
+
 bool MultiTypeString::operator!=(const MultiTypeString& mts) const
 {
     if (MultiTypePrimitive::operator==(mts) && this->type_ == mts.type_)
@@ -59,6 +64,11 @@ bool MultiTypeString::operator!=(const MultiTypeString& mts) const
     }
 
     return true;
+}
+
+bool MultiTypeString::operator!=(const MultiTypePrimitive& mtp) const
+{
+    return MultiTypePrimitive::operator!=(mtp);
 }
 
 MultiTypeString::operator void*() const
@@ -96,6 +106,11 @@ void MultiTypeString::setValue(const MultiTypeString& mts)
 {
     MultiTypePrimitive::setValue(mts);
     this->string_ = mts.string_;
+}
+
+void MultiTypeString::setValue(const MultiTypePrimitive& mtp)
+{
+    MultiTypePrimitive::setValue(mtp);
 }
 
 std::string MultiTypeString::getTypename() const
@@ -137,12 +152,38 @@ bool MultiTypeString::fromString(const std::string value)
 
 bool MultiTypeString::assimilate(const MultiTypeString& mts, const MultiTypeString& defvalue)
 {
-    if (this->type_ == MT_constchar)
+    if (this->type_ == MT_void)
+        return ConvertValue(&this->value_.void_, mts, defvalue.value_.void_);
+    else if (this->type_ == MT_int)
+        return ConvertValue(&this->value_.int_, mts, defvalue.value_.int_);
+    else if (this->type_ == MT_uint)
+        return ConvertValue(&this->value_.uint_, mts, defvalue.value_.uint_);
+    else if (this->type_ == MT_char)
+        return ConvertValue(&this->value_.char_, mts, defvalue.value_.char_);
+    else if (this->type_ == MT_uchar)
+        return ConvertValue(&this->value_.uchar_, mts, defvalue.value_.uchar_);
+    else if (this->type_ == MT_short)
+        return ConvertValue(&this->value_.short_, mts, defvalue.value_.short_);
+    else if (this->type_ == MT_ushort)
+        return ConvertValue(&this->value_.ushort_, mts, defvalue.value_.ushort_);
+    else if (this->type_ == MT_long)
+        return ConvertValue(&this->value_.long_, mts, defvalue.value_.long_);
+    else if (this->type_ == MT_ulong)
+        return ConvertValue(&this->value_.ulong_, mts, defvalue.value_.ulong_);
+    else if (this->type_ == MT_float)
+        return ConvertValue(&this->value_.float_, mts, defvalue.value_.float_);
+    else if (this->type_ == MT_double)
+        return ConvertValue(&this->value_.double_, mts, defvalue.value_.double_);
+    else if (this->type_ == MT_longdouble)
+        return ConvertValue(&this->value_.longdouble_, mts, defvalue.value_.longdouble_);
+    else if (this->type_ == MT_bool)
+        return ConvertValue(&this->value_.bool_, mts, defvalue.value_.bool_);
+    else if (this->type_ == MT_constchar)
         return ConvertValue(&this->string_, mts, defvalue.string_);
     else if (this->type_ == MT_string)
         return ConvertValue(&this->string_, mts, defvalue.string_);
     else
-        return MultiTypePrimitive::assimilate(mts, defvalue);
+        return false;
 }
 
 std::ostream& operator<<(std::ostream& out, MultiTypeString& mts)

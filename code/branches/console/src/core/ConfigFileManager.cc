@@ -38,7 +38,7 @@
 namespace orxonox
 {
     SetConsoleCommandShortcutExtern(config).setArgumentCompleter(0, autocompletion::configvalueclasses()).setArgumentCompleter(1, autocompletion::configvalues()).setArgumentCompleter(2, autocompletion::configvalue());
-    SetConsoleCommandShortcutExtern(tconfig);
+    SetConsoleCommandShortcutExtern(tconfig).setArgumentCompleter(0, autocompletion::configvalueclasses()).setArgumentCompleter(1, autocompletion::configvalues()).setArgumentCompleter(2, autocompletion::configvalue());
     SetConsoleCommandShortcutExtern(reloadConfig);
     SetConsoleCommandShortcutExtern(cleanConfig);
     SetConsoleCommandShortcutExtern(loadSettings);
@@ -46,34 +46,24 @@ namespace orxonox
 
     bool config(const std::string& classname, const std::string& varname, const std::string& value)
     {
-std::cout << "10a_1\n";
         std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseIdentifierMap().find(getLowercase(classname));
         if (identifier != Identifier::getLowercaseIdentifierMapEnd())
         {
-std::cout << "10a_2\n";
             std::map<std::string, ConfigValueContainer*>::const_iterator variable = (*identifier).second->getLowercaseConfigValueMap().find(getLowercase(varname));
             if (variable != (*identifier).second->getLowercaseConfigValueMapEnd())
-            {
-std::cout << "10a_3\n";
-                return (*variable).second->tset(value);
-            }
+                return (*variable).second->set(value);
         }
         return false;
     }
 
     bool tconfig(const std::string& classname, const std::string& varname, const std::string& value)
     {
-std::cout << "10b_1\n";
         std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseIdentifierMap().find(getLowercase(classname));
         if (identifier != Identifier::getLowercaseIdentifierMapEnd())
         {
-std::cout << "10b_2\n";
             std::map<std::string, ConfigValueContainer*>::const_iterator variable = (*identifier).second->getLowercaseConfigValueMap().find(getLowercase(varname));
             if (variable != (*identifier).second->getLowercaseConfigValueMapEnd())
-            {
-std::cout << "10b_3\n";
                 return (*variable).second->tset(value);
-            }
         }
         return false;
     }

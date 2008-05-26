@@ -125,29 +125,22 @@ namespace orxonox
 
     void CommandExecutor::parseIfNeeded(const std::string& command)
     {
-std::cout << "parse if needed: command:      >" << command << "<" << std::endl;
-std::cout << "                 old original: >" << CommandExecutor::getEvaluation().originalCommand_ << "<" << std::endl;
-std::cout << "                 old modified: >" << CommandExecutor::getEvaluation().command_ << "<" << std::endl;
         if (CommandExecutor::getEvaluation().state_ == CS_Uninitialized)
         {
-std::cout << "parse if needed: parse!" << std::endl;
             CommandExecutor::parse(command);
         }
-        else if (/*removeTrailingWhitespaces*/(CommandExecutor::getEvaluation().originalCommand_) != /*removeTrailingWhitespaces*/(command))
+        else if (CommandExecutor::getEvaluation().originalCommand_ != command)
         {
             if (CommandExecutor::getEvaluation().command_ == command)
             {
-std::cout << "parse if needed: parse and set bNewCommand_ to false" << std::endl;
                 CommandExecutor::parse(command);
                 CommandExecutor::getEvaluation().bNewCommand_ = false;
             }
             else
             {
-std::cout << "parse if needed: parse!" << std::endl;
                 CommandExecutor::parse(command);
             }
         }
-std::cout << "parse if needed: don't parse" << std::endl;
     }
 
     void CommandExecutor::parse(const std::string& command, bool bInitialize)
@@ -162,13 +155,11 @@ std::cout << "parse (" << bInitialize << "): command: >" << command << "<" << st
         switch (CommandExecutor::getEvaluation().state_)
         {
             case CS_Uninitialized:
-std::cout << "0: Uninitialized\n";
             {
                 // Impossible
                 break;
             }
             case CS_Empty:
-std::cout << "0: Empty\n";
             {
                 if (CommandExecutor::argumentsGiven() == 0)
                 {
@@ -183,7 +174,6 @@ std::cout << "0: Empty\n";
                 }
             }
             case CS_ShortcutOrIdentifier:
-std::cout << "0: ShortcutOrIdentifier\n";
             {
                 if (CommandExecutor::argumentsGiven() > 1)
                 {
@@ -200,7 +190,6 @@ std::cout << "0: ShortcutOrIdentifier\n";
                     }
                     else if (CommandExecutor::getEvaluation().functionclass_)
                     {
-std::cout << "MEP" << std::endl;
                         // It's a functionname
                         CommandExecutor::getEvaluation().state_ = CS_Function;
                         CommandExecutor::getEvaluation().function_ = 0;
@@ -282,7 +271,6 @@ std::cout << "MEP" << std::endl;
                 }
             }
             case CS_Function:
-std::cout << "0: Function\n";
             {
                 if (CommandExecutor::getEvaluation().functionclass_)
                 {
@@ -294,7 +282,6 @@ std::cout << "0: Function\n";
 
                         if (CommandExecutor::getEvaluation().function_)
                         {
-std::cout << "MEP2" << std::endl;
                             // It's a function
                             CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
                             // Move on to next case
@@ -550,20 +537,15 @@ std::cout << "4\n";
 
     std::string CommandExecutor::getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param)
     {
-std::cout << "4_1\n";
         CommandExecutor::createArgumentCompletionList(command, param);
 
-std::cout << "4_2\n";
         std::string lowercase = getLowercase(name);
-std::cout << "4_3\n";
         for (std::list<std::pair<std::string, std::string> >::const_iterator it = command->getArgumentCompletionListBegin(); it != command->getArgumentCompletionListEnd(); ++it)
         {
-std::cout << "4_4\n";
             if ((*it).first == lowercase)
                 return (*it).second;
         }
 
-std::cout << "4_5\n";
         return "";
     }
 

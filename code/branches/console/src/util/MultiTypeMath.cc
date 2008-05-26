@@ -71,6 +71,16 @@ bool MultiTypeMath::operator==(const MultiTypeMath& mtm) const
     return false;
 }
 
+bool MultiTypeMath::operator==(const MultiTypeString& mts) const
+{
+    return MultiTypeString::operator==(mts);
+}
+
+bool MultiTypeMath::operator==(const MultiTypePrimitive& mtp) const
+{
+    return MultiTypePrimitive::operator==(mtp);
+}
+
 bool MultiTypeMath::operator!=(const MultiTypeMath& mtm) const
 {
     if (MultiTypeString::operator==(mtm) && this->type_ == mtm.type_)
@@ -92,6 +102,16 @@ bool MultiTypeMath::operator!=(const MultiTypeMath& mtm) const
     }
 
     return true;
+}
+
+bool MultiTypeMath::operator!=(const MultiTypeString& mts) const
+{
+    return MultiTypeString::operator!=(mts);
+}
+
+bool MultiTypeMath::operator!=(const MultiTypePrimitive& mtp) const
+{
+    return MultiTypePrimitive::operator!=(mtp);
 }
 
 MultiTypeMath::operator void*() const
@@ -149,6 +169,16 @@ void MultiTypeMath::setValue(const MultiTypeMath& mtm)
     this->colourvalue_ = mtm.colourvalue_;
     this->radian_ = mtm.radian_;
     this->degree_ = mtm.degree_;
+}
+
+void MultiTypeMath::setValue(const MultiTypeString& mts)
+{
+    MultiTypeString::setValue(mts);
+}
+
+void MultiTypeMath::setValue(const MultiTypePrimitive& mtp)
+{
+    MultiTypePrimitive::setValue(mtp);
 }
 
 std::string MultiTypeMath::getTypename() const
@@ -217,7 +247,37 @@ bool MultiTypeMath::fromString(const std::string value)
 
 bool MultiTypeMath::assimilate(const MultiTypeMath& mtm, const MultiTypeMath& defvalue)
 {
-    if (this->type_ == MT_vector2)
+    if (this->type_ == MT_void)
+        return ConvertValue(&this->value_.void_, mtm, defvalue.value_.void_);
+    else if (this->type_ == MT_int)
+        return ConvertValue(&this->value_.int_, mtm, defvalue.value_.int_);
+    else if (this->type_ == MT_uint)
+        return ConvertValue(&this->value_.uint_, mtm, defvalue.value_.uint_);
+    else if (this->type_ == MT_char)
+        return ConvertValue(&this->value_.char_, mtm, defvalue.value_.char_);
+    else if (this->type_ == MT_uchar)
+        return ConvertValue(&this->value_.uchar_, mtm, defvalue.value_.uchar_);
+    else if (this->type_ == MT_short)
+        return ConvertValue(&this->value_.short_, mtm, defvalue.value_.short_);
+    else if (this->type_ == MT_ushort)
+        return ConvertValue(&this->value_.ushort_, mtm, defvalue.value_.ushort_);
+    else if (this->type_ == MT_long)
+        return ConvertValue(&this->value_.long_, mtm, defvalue.value_.long_);
+    else if (this->type_ == MT_ulong)
+        return ConvertValue(&this->value_.ulong_, mtm, defvalue.value_.ulong_);
+    else if (this->type_ == MT_float)
+        return ConvertValue(&this->value_.float_, mtm, defvalue.value_.float_);
+    else if (this->type_ == MT_double)
+        return ConvertValue(&this->value_.double_, mtm, defvalue.value_.double_);
+    else if (this->type_ == MT_longdouble)
+        return ConvertValue(&this->value_.longdouble_, mtm, defvalue.value_.longdouble_);
+    else if (this->type_ == MT_bool)
+        return ConvertValue(&this->value_.bool_, mtm, defvalue.value_.bool_);
+    else if (this->type_ == MT_constchar)
+        return ConvertValue(&this->string_, mtm, defvalue.string_);
+    else if (this->type_ == MT_string)
+        return ConvertValue(&this->string_, mtm, defvalue.string_);
+    else if (this->type_ == MT_vector2)
         return ConvertValue(&this->vector2_, mtm, defvalue.vector2_);
     else if (this->type_ == MT_vector3)
         return ConvertValue(&this->vector3_, mtm, defvalue.vector3_);
@@ -232,7 +292,7 @@ bool MultiTypeMath::assimilate(const MultiTypeMath& mtm, const MultiTypeMath& de
     else if (this->type_ == MT_degree)
         return ConvertValue(&this->degree_, mtm, defvalue.degree_);
     else
-        return MultiTypeString::assimilate(mtm, defvalue);
+        return false;
 }
 
 std::ostream& operator<<(std::ostream& out, MultiTypeMath& mtm)

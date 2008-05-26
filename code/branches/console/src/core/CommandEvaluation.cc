@@ -99,7 +99,6 @@ namespace orxonox
     {
         if (!this->bNewCommand_)
         {
-std::cout << "not new" << std::endl;
             switch (this->state_)
             {
                 case CS_Uninitialized:
@@ -162,12 +161,9 @@ std::cout << "not new" << std::endl;
         switch (this->state_)
         {
             case CS_Uninitialized:
-std::cout << "hint: CS_Uninitialized" << std::endl;
                 break;
             case CS_Empty:
-std::cout << "hint: CS_Empty" << std::endl;
             case CS_ShortcutOrIdentifier:
-std::cout << "hint: CS_ShortcutOrIdentifier" << std::endl;
                 if (this->listOfPossibleFunctions_.size() == 0)
                     return CommandEvaluation::dump(this->listOfPossibleIdentifiers_);
                 else if (this->listOfPossibleIdentifiers_.size() == 0)
@@ -176,24 +172,19 @@ std::cout << "hint: CS_ShortcutOrIdentifier" << std::endl;
                     return (CommandEvaluation::dump(this->listOfPossibleFunctions_) + "\n" + CommandEvaluation::dump(this->listOfPossibleIdentifiers_));
                 break;
             case CS_Function:
-std::cout << "hint: CS_Function" << std::endl;
                 return CommandEvaluation::dump(this->listOfPossibleFunctions_);
                 break;
             case CS_ParamPreparation:
-std::cout << "hint: CS_ParamPreparation" << std::endl;
             case CS_Params:
-std::cout << "hint: CS_Params" << std::endl;
                 if (this->listOfPossibleArguments_.size() > 0)
                     return CommandEvaluation::dump(this->listOfPossibleArguments_);
                 else
                     return CommandEvaluation::dump(this->function_);
             case CS_Finished:
-std::cout << "hint: CS_Finished" << std::endl;
                 if (this->function_)
                     return CommandEvaluation::dump(this->function_);
                 break;
             case CS_Error:
-std::cout << "hint: CS_Error" << std::endl;
                 return this->errorMessage_;
                 break;
         }
