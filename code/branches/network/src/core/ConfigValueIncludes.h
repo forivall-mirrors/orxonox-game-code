@@ -56,6 +56,21 @@
     container##varname->getValue(&varname)
 
 /**
+    @brief Assigns the value, defined in the config-file, to the variable (or the default-value, if there is no entry in the file).
+    @param classname name in which the config value should be stored
+    @param varname The name of the variable
+    @param defvalue The default-value of the variable
+*/
+#define SetConfigValueGeneric(classname, varname, defvalue) \
+    orxonox::ConfigValueContainer* container##varname = ClassManager<classname>::getIdentifier()->getConfigValueContainer(#varname); \
+    if (!container##varname) \
+    { \
+        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, ClassManager<classname>::getIdentifier(), #varname, varname = defvalue); \
+        ClassManager<classname>::getIdentifier()->addConfigValueContainer(#varname, container##varname); \
+    } \
+    container##varname->getValue(&varname)
+
+/**
     @brief Assigns the vector-values, defined in the config-file, to the vector (or the default-value, if there are no entries in the file).
     @param varname The name of the std::vector
     @param defvalue The default-value

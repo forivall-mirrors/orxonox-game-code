@@ -149,7 +149,7 @@ namespace orxonox
   protected: // functions
     void tickInput(float dt, const HandlerState& state);
 
-    void readTrigger(Button& button);
+    virtual void readTrigger(Button& button);
 
     void keyPressed (const KeyEvent& evt);
     void keyReleased(const KeyEvent& evt);
@@ -221,6 +221,8 @@ namespace orxonox
     float mouseSensitivity_;
     //! mouse sensitivity if mouse input is derived
     float mouseSensitivityDerived_;
+    //! Whether or not to clip abslute mouse values to 1024
+    bool bClipMouse_;
   };
 
 
@@ -230,7 +232,6 @@ namespace orxonox
     KeyDetector();
     ~KeyDetector();
     void loadBindings();
-    void setConfigValues();
 
   protected:
     void readTrigger(Button& button);

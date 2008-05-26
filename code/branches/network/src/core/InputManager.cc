@@ -370,6 +370,22 @@ namespace orxonox
     CCOUT(ORX_DEBUG) << "Joy sticks destroyed." << std::endl;
   }
 
+  void InputManager::_saveState()
+  {
+    savedHandlers_.activeHandlers_ = activeHandlers_;
+    savedHandlers_.activeJoyStickHandlers_ = activeJoyStickHandlers_;
+    savedHandlers_.activeKeyHandlers_ = activeKeyHandlers_;
+    savedHandlers_.activeMouseHandlers_ = activeMouseHandlers_;
+  }
+
+  void InputManager::_restoreState()
+  {
+    activeHandlers_ = savedHandlers_.activeHandlers_;
+    activeJoyStickHandlers_ = savedHandlers_.activeJoyStickHandlers_;
+    activeKeyHandlers_ = savedHandlers_.activeKeyHandlers_;
+    activeMouseHandlers_ = savedHandlers_.activeMouseHandlers_;
+  }
+
   void InputManager::_updateTickables()
   {
     // we can use a map to have a list of unique pointers (an object can implement all 3 handlers)
@@ -404,12 +420,11 @@ namespace orxonox
     if (state_ == IS_UNINIT)
       return;
 
-    // reset the game if it has changed
     if (state_ != stateRequest_)
     {
       if (stateRequest_ != IS_CUSTOM)
       {
-        if (stateRequest_ != IS_NODETECT && stateRequest_ != IS_DETECT)
+        if (stateRequest_ != IS_DETECT)
         {
           activeKeyHandlers_.clear();
           activeMouseHandlers_.clear();
@@ -438,15 +453,20 @@ namespace orxonox
 
         case IS_DETECT:
           savedState_ = state_;
+          _saveState();
+
+          activeKeyHandlers_.clear();
+          activeMouseHandlers_.clear();
+          for (unsigned int i = 0; i < joySticksSize_; i++)
+            activeJoyStickHandlers_[i].clear();
+
           enableKeyHandler("keydetector");
           enableMouseHandler("keydetector");
           enableJoyStickHandler("keydetector", 0);
           break;
 
         case IS_NODETECT:
-          disableKeyHandler("keydetector");
-          disableMouseHandler("keydetector");
-          disableJoyStickHandler("keydetector", 0);
+          _restoreState();
           break;
 
         default:

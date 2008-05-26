@@ -67,6 +67,17 @@ namespace orxonox
   };
 
   /**
+  * Struct for storing a custom input state
+  */
+  struct StoredState
+  {
+    std::vector<KeyHandler*>                    activeKeyHandlers_;
+    std::vector<MouseHandler*>                  activeMouseHandlers_;
+    std::vector<std::vector<JoyStickHandler*> > activeJoyStickHandlers_;
+    std::vector<std::pair<InputTickable*, HandlerState> > activeHandlers_;
+  };
+
+  /**
     @brief Captures and distributes mouse and keyboard input.
   */
   class _CoreExport InputManager
@@ -157,6 +168,9 @@ namespace orxonox
 
     void _updateTickables();
 
+    void _saveState();
+    void _restoreState();
+
     void tick(float dt);
 
     // input events
@@ -190,6 +204,7 @@ namespace orxonox
     InputState stateRequest_;
     unsigned int keyboardModifiers_;
     InputState savedState_;
+    StoredState savedHandlers_;
 
     //! Keeps track of the joy stick POV states
     std::vector<POVStates>                      povStates_;
