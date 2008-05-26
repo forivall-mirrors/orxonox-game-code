@@ -88,6 +88,8 @@ namespace network
   
   ENetPacket* command( int dataLength, void *data, int reliable = ENET_PACKET_FLAG_RELIABLE )
   {
+    if(dataLength==0)
+      return NULL;
     unsigned char *stream = new unsigned char[dataLength + 2*sizeof(int)];
     if(!stream)
       return NULL;
@@ -149,6 +151,8 @@ namespace network
     int totalLen = 5*sizeof( int ) + 2*sizeof(bool) + states->compsize; //calculate the total size of the datastream memory
     //std::cout << "totalLen " << totalLen << std::endl;
     //unsigned char *data = (unsigned char*)malloc( totalLen ); //allocate the memory for datastream
+    if(totalLen==0)
+      return NULL;
     unsigned char *data = new unsigned char[totalLen];
     memcpy( (void*)(data), (const void*)&gid, sizeof( int ) ); //this is the enet id
     memcpy( (void*)(data+sizeof(int)), (const void*)&(states->id), sizeof(int) ); //the GameStateCompressed id
@@ -172,6 +176,8 @@ namespace network
   ENetPacket* PacketGenerator::clid( int classid, std::string classname, int reliable )
   {
     //unsigned char* data = (unsigned char *)malloc(3*sizeof(int)+classname.length()+1);
+    if(classname.length()==0)
+      return NULL;
     unsigned char *data = new unsigned char[3*sizeof(int)+classname.length()+1];
     std::cout << "PacketGenerator: classid: " << classid << ", name: " << classname << std::endl;
     *(int *)data = CLASSID;

@@ -192,6 +192,8 @@ namespace network
       size+=3*sizeof(int); // size of datasize, classID and objectID
     }
     //retval->data = (unsigned char*)malloc(size);
+    if(size==0)
+      return NULL;
     retval->data = new unsigned char[size];
     if(!retval->data){
       COUT(2) << "GameStateManager: could not allocate memory" << std::endl;
@@ -346,6 +348,8 @@ namespace network
       dest_length=alt->size;
     else*/
       dest_length=neu->size;
+    if(dest_length==0)
+      return NULL;
     //unsigned char *dp = (unsigned char *)malloc(dest_length*sizeof(unsigned char));
     unsigned char *dp = new unsigned char[dest_length*sizeof(unsigned char)];
     while(of<alt->size && of<neu->size){
@@ -386,6 +390,8 @@ namespace network
     uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
     //COUT(4) << "size: " << size << ", buffer: " << buffer << std::endl;
     //unsigned char* dest = (unsigned char*)malloc( buffer );
+    if(buffer==0)
+      return NULL;
     unsigned char *dest = new unsigned char[buffer];
     //COUT(4) << "dest: " << dest << std::endl;
     int retval;
@@ -428,6 +434,8 @@ namespace network
     else
       bufsize = normsize;
 //     unsigned char* dest = (unsigned char*)malloc( bufsize );
+    if(bufsize==0)
+      return NULL;
     unsigned char *dest = new unsigned char[bufsize];
     int retval;
     uLongf length=normsize;

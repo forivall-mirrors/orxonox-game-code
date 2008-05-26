@@ -237,6 +237,8 @@ namespace network
       COUT(4) << "getpartialsnapshot: size: " << size << std::endl;
     }
     //retval->data = (unsigned char*)malloc(size);
+    if(size==0)
+      return NULL;
     retval->data = new unsigned char[size];
     if(!retval->data){
       COUT(2) << "GameStateClient: could not allocate memory" << std::endl;
@@ -282,6 +284,8 @@ namespace network
     else*/
       dest_length=diff->size;
 //     unsigned char *dp = (unsigned char *)malloc(dest_length*sizeof(unsigned char));
+    if(dest_length==0)
+      return NULL;
     unsigned char *dp = new unsigned char[dest_length*sizeof(unsigned char)];
     while(of<old->size && of<diff->size){
       *(dp+of)=*(ap+of)^*(bp+of); // do the xor
@@ -321,6 +325,8 @@ namespace network
     int size = a->size;
 
     uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
+    if(buffer==0)
+      return NULL;
     unsigned char *dest = new unsigned char[buffer];
     int retval;
     retval = compress( dest, &buffer, a->data, (uLong)size );
@@ -357,6 +363,8 @@ namespace network
     else
       bufsize = normsize;
 //     unsigned char* dest = (unsigned char*)malloc( bufsize );
+    if(bufsize==0)
+      return NULL;
     unsigned char *dest = new unsigned char[bufsize];
     int retval;
     uLongf length=normsize;

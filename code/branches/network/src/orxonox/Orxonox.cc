@@ -493,7 +493,7 @@ namespace orxonox
         frameTime = 0.0f;
         renderTime = 0.0f;
       }
-
+      
       // Call those objects that need the real time
       for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame);

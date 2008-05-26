@@ -126,6 +126,8 @@ namespace network
   
   bool PacketDecoder::command( ENetPacket* packet, int clientId ){
     int length = *(int*)((unsigned char *)packet->data+sizeof(int));
+    if(length<=0)
+      return false;
     void *data = (void *)new unsigned char[length];
     memcpy(data, (void *)(packet->data+2*sizeof(int)), length);
     enet_packet_destroy( packet );
@@ -157,6 +159,8 @@ namespace network
   void PacketDecoder::chatMessage( ENetPacket* packet, int clientId )
   {
     chat* chatting = new chat;
+    if(packet->dataLength==4)
+      return;
     chatting->id = (int)*packet->data; //first copy id into new struct
     //since the chat message is a char*, allocate the memory needed
     char* reserve = new char[packet->dataLength-4];
@@ -203,6 +207,8 @@ namespace network
     if(currentState->compsize==0)
       COUT(2) << "PacketDecoder: compsize is 0" << std::endl;
 //     currentState->data = (unsigned char*)(malloc( currentState->compsize ));
+    if(currentState->compsize==0)
+      return;
     currentState->data = new unsigned char[currentState->compsize];
     if(currentState->data==NULL)
       COUT(2) << "PacketDecoder: Gamestatepacket-decoder: memory leak" << std::endl;
@@ -220,6 +226,8 @@ namespace network
     cid->length = ((classid*)(packet->data))->length;
     cid->id = ((classid *)(packet->data))->id;
     cid->clid = ((classid *)(packet->data))->clid;
+    if(cid->length==0)
+      return;
 //     cid->message = (const char *)malloc(cid->length);
     cid->message = new char[cid->length];
     void *data  = (void *)cid->message;
