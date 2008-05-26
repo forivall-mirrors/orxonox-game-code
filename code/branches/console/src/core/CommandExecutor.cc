@@ -354,10 +354,11 @@ std::cout << "2\n";
                 }
                 else
                 {
-                    unsigned int argumentNumber = CommandExecutor::argumentsGiven() - 1;
+                    unsigned int argumentNumber = CommandExecutor::argumentsGiven() - 2;
                     if (CommandExecutor::getEvaluation().functionclass_)
                         argumentNumber -= 1;
 
+std::cout << "arglist: " << CommandExecutor::getLastArgument() << ", " << CommandExecutor::getEvaluation().function_->getName() << ", " << argumentNumber << std::endl;
                     CommandExecutor::createListOfPossibleArguments(CommandExecutor::getLastArgument(), CommandExecutor::getEvaluation().function_, argumentNumber);
                     CommandExecutor::getEvaluation().state_ = CS_Params;
 
@@ -487,9 +488,11 @@ std::cout << "4\n";
 
     void CommandExecutor::createListOfPossibleArguments(const std::string& fragment, ConsoleCommand* command, unsigned int param)
     {
+        CommandExecutor::createArgumentCompletionList(command, param);
+
         CommandExecutor::getEvaluation().listOfPossibleArguments_.clear();
         std::string lowercase = getLowercase(fragment);
-        for (std::list<std::pair<std::string, std::string> >::const_iterator it = command->getArgumentCompletionListBegin(param); it != command->getArgumentCompletionListEnd(param); ++it)
+        for (std::list<std::pair<std::string, std::string> >::const_iterator it = command->getArgumentCompletionListBegin(); it != command->getArgumentCompletionListEnd(); ++it)
             if ((*it).first.find(lowercase) == 0 || fragment == "")
                 CommandExecutor::getEvaluation().listOfPossibleArguments_.push_back(std::pair<const std::string*, const std::string*>(&(*it).first, &(*it).second));
 
@@ -526,12 +529,32 @@ std::cout << "4\n";
 
     std::string CommandExecutor::getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param)
     {
+        CommandExecutor::createArgumentCompletionList(command, param);
+
         std::string lowercase = getLowercase(name);
-        for (std::list<std::pair<std::string, std::string> >::const_iterator it = command->getArgumentCompletionListBegin(param); it != command->getArgumentCompletionListEnd(param); ++it)
+        for (std::list<std::pair<std::string, std::string> >::const_iterator it = command->getArgumentCompletionListBegin(); it != command->getArgumentCompletionListEnd(); ++it)
             if ((*it).first == lowercase)
                 return (*it).second;
 
         return 0;
+    }
+
+    void CommandExecutor::createArgumentCompletionList(ConsoleCommand* command, unsigned int param)
+    {
+        std::string params[5];
+
+        unsigned int index = 0;
+        unsigned int lowestIndex = 1 + (CommandExecutor::getEvaluation().functionclass_ != 0);
+
+        for (unsigned int i = CommandExecutor::argumentsGiven() - 2; i >= lowestIndex; --i)
+        {
+            params[index] = CommandExecutor::getArgument(i);
+            ++index;
+            if (index >= 5)
+                break;
+        }
+
+        command->createArgumentCompletionList(param, params[0], params[1], params[2], params[3], params[4]);
     }
 
     std::string CommandExecutor::getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list)

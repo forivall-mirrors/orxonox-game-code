@@ -42,7 +42,7 @@
     SetConsoleCommandGeneric(classname##function##consolecommand__, classname, orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), #function), bCreateShortcut)
 
 #define SetConsoleCommandGeneric(fakevariable, classname, command, bCreateShortcut) \
-    ConsoleCommand& fakevariable = ClassManager<classname>::getIdentifier()->addConsoleCommand((ConsoleCommand*)command, bCreateShortcut)
+    ConsoleCommand& fakevariable = ClassManager<classname>::getIdentifier()->addConsoleCommand(command, bCreateShortcut)
 
 
 #define SetConsoleCommandShortcut(classname, function) \
@@ -52,7 +52,7 @@
     SetConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createConsoleCommand(orxonox::createFunctor(&function), #function))
 
 #define SetConsoleCommandShortcutGeneric(fakevariable, command) \
-    ConsoleCommand& fakevariable = CommandExecutor::addConsoleCommandShortcut((ConsoleCommand*)command)
+    ConsoleCommand& fakevariable = CommandExecutor::addConsoleCommandShortcut(command)
 
 
 namespace orxonox
@@ -99,15 +99,18 @@ namespace orxonox
             inline AccessLevel::Level getAccessLevel() const
                 { return this->accessLevel_; }
 
-            ConsoleCommand& setArgumentCompletionList(unsigned int param, std::list<std::pair<std::string, std::string> > (*function) (void));
-
-            const std::list<std::pair<std::string, std::string> >& getArgumentCompletionList(unsigned int param);
-            std::list<std::pair<std::string, std::string> >::const_iterator getArgumentCompletionListBegin(unsigned int param);
-            std::list<std::pair<std::string, std::string> >::const_iterator getArgumentCompletionListEnd(unsigned int param);
+            ConsoleCommand& setArgumentCompletionList(unsigned int param, ArgumentCompleter* completer);
+            void createArgumentCompletionList(unsigned int param, const std::string& param1 = "", const std::string& param2 = "", const std::string& param3 = "", const std::string& param4 = "", const std::string& param5 = "");
+            const std::list<std::pair<std::string, std::string> >& getArgumentCompletionList() const
+                { return this->argumentList_; }
+            std::list<std::pair<std::string, std::string> >::const_iterator getArgumentCompletionListBegin() const
+                { return this->argumentList_.begin(); }
+            std::list<std::pair<std::string, std::string> >::const_iterator getArgumentCompletionListEnd() const
+                { return this->argumentList_.end(); }
 
         private:
             AccessLevel::Level accessLevel_;
-            std::list<std::pair<std::string, std::string> > (*autocompletionFunction_[5]) (void);
+            ArgumentCompleter* argumentCompleter_[5];
             std::list<std::pair<std::string, std::string> > argumentList_;
     };
 

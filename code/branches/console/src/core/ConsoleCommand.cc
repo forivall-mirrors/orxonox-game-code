@@ -33,17 +33,17 @@ namespace orxonox
     ConsoleCommand::ConsoleCommand(FunctorStatic* functor, const std::string& name) : ExecutorStatic(functor, name)
     {
         this->accessLevel_ = AccessLevel::None;
-        this->autocompletionFunction_[0] = &autocompletion::fallback;
-        this->autocompletionFunction_[1] = &autocompletion::fallback;
-        this->autocompletionFunction_[2] = &autocompletion::fallback;
-        this->autocompletionFunction_[3] = &autocompletion::fallback;
-        this->autocompletionFunction_[4] = &autocompletion::fallback;
+        this->argumentCompleter_[0] = 0;
+        this->argumentCompleter_[1] = 0;
+        this->argumentCompleter_[2] = 0;
+        this->argumentCompleter_[3] = 0;
+        this->argumentCompleter_[4] = 0;
     }
 
-    ConsoleCommand& ConsoleCommand::setArgumentCompletionList(unsigned int param, std::list<std::pair<std::string, std::string> > (*function) (void))
+    ConsoleCommand& ConsoleCommand::setArgumentCompletionList(unsigned int param, ArgumentCompleter* completer)
     {
         if (param < 5)
-            this->autocompletionFunction_[param] = function;
+            this->argumentCompleter_[param] = completer;
         else
         {
             COUT(2) << "Warning: Couldn't add autocompletion-function for param " << param << ": index out of bound." << std::endl;
@@ -51,33 +51,11 @@ namespace orxonox
         return (*this);
     }
 
-    const std::list<std::pair<std::string, std::string> >& ConsoleCommand::getArgumentCompletionList(unsigned int param)
+    void ConsoleCommand::createArgumentCompletionList(unsigned int param, const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5)
     {
-        if (param < 5)
-            this->argumentList_ = (*this->autocompletionFunction_[param])();
+        if (param < 5 && this->argumentCompleter_[param])
+            this->argumentList_ = (*this->argumentCompleter_[param])(param1, param2, param3, param4, param5);
         else
-            this->argumentList_ = autocompletion::fallback();
-
-        return this->argumentList_;
-    }
-
-    std::list<std::pair<std::string, std::string> >::const_iterator ConsoleCommand::getArgumentCompletionListBegin(unsigned int param)
-    {
-        if (param < 5)
-            this->argumentList_ = (*this->autocompletionFunction_[param])();
-        else
-            this->argumentList_ = autocompletion::fallback();
-
-        return this->argumentList_.begin();
-    }
-
-    std::list<std::pair<std::string, std::string> >::const_iterator ConsoleCommand::getArgumentCompletionListEnd(unsigned int param)
-    {
-        if (param < 5)
-            this->argumentList_ = (*this->autocompletionFunction_[param])();
-        else
-            this->argumentList_ = autocompletion::fallback();
-
-        return this->argumentList_.end();
+            this->argumentList_.clear();
     }
 }

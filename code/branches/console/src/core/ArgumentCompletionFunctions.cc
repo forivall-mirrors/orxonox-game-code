@@ -34,10 +34,9 @@ namespace orxonox
 {
     namespace autocompletion
     {
-        std::list<std::pair<std::string, std::string> > fallback()
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(fallback)()
         {
-            static std::list<std::pair<std::string, std::string> > list(1, std::pair<std::string, std::string>("muh", "MUH"));
-            return list;
+            return std::list<std::pair<std::string, std::string> >();
         }
     }
 }

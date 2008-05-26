@@ -109,25 +109,28 @@ std::cout << "not new" << std::endl;
                     if (this->function_)
                     {
                         if (this->function_->getParamCount() == 0)
-                            return /*CommandExecutor::complete*/(this->command_ = this->function_->getName());
+                            return (this->command_ = this->function_->getName());
                         else
-                            return /*CommandExecutor::complete*/(this->command_ = this->function_->getName() + " ");
+                            return (this->command_ = this->function_->getName() + " ");
                     }
                     else if (this->functionclass_)
-                        return /*CommandExecutor::complete*/(this->command_ = this->functionclass_->getName() + " ");
+                        return (this->command_ = this->functionclass_->getName() + " ");
                     break;
                 case CS_Function:
                     if (this->function_)
                     {
                         if (this->function_->getParamCount() == 0)
-                            return /*CommandExecutor::complete*/(this->command_ = this->functionclass_->getName() + " " + this->function_->getName());
+                            return (this->command_ = this->functionclass_->getName() + " " + this->function_->getName());
                         else
-                            return /*CommandExecutor::complete*/(this->command_ = this->functionclass_->getName() + " " + this->function_->getName() + " ");
+                            return (this->command_ = this->functionclass_->getName() + " " + this->function_->getName() + " ");
                     }
                     break;
                 case CS_ParamPreparation:
                 case CS_Params:
                 {
+                    if (this->argument_ == "" && this->possibleArgument_ == "")
+                        break;
+
                     unsigned int maxIndex = this->commandTokens_.size();
                     if (this->command_[this->command_.size() - 1] != ' ')
                         maxIndex -= 1;
@@ -141,7 +144,7 @@ std::cout << "not new" << std::endl;
                         this->argument_ = this->possibleArgument_;
                     }
 
-                    return /*CommandExecutor::complete*/(this->command_ = this->commandTokens_.subSet(0, maxIndex).join() + " " + this->argument_ + whitespace);
+                    return (this->command_ = this->commandTokens_.subSet(0, maxIndex).join() + " " + this->argument_ + whitespace);
                     break;
                 }
                 case CS_Finished:
