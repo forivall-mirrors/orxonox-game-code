@@ -44,7 +44,6 @@
 
 namespace network
 {
-  boost::recursive_mutex ClientInformation::mutex_;
   
   ClientInformation::ClientInformation() {
     gamestateID_=GAMESTATEID_INITIAL;
@@ -83,7 +82,6 @@ namespace network
   // }
 
   ClientInformation::~ClientInformation() {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(prev()!=0)
       prev()->setNext(this->next());
     if(next()!=0)
@@ -91,14 +89,12 @@ namespace network
   }
 
   ClientInformation *ClientInformation::next() {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(this!=0)
       return this->nexte;
     else
       return 0;
   }
   ClientInformation *ClientInformation::prev() {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(this!=0)
       return this->preve;
     else
@@ -106,7 +102,6 @@ namespace network
   }
 
   bool ClientInformation::setPrev(ClientInformation *prev) {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(!head_)
       this->preve = prev;
     else
@@ -115,13 +110,11 @@ namespace network
   }
 
   bool ClientInformation::setNext(ClientInformation *next) {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     this->nexte = next;
     return true;
   }
 
   ClientInformation *ClientInformation::insertAfter(ClientInformation *ins) {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     this->next()->setPrev(ins);
     ins->setNext(this->next());
     ins->setPrev(this);
@@ -130,7 +123,6 @@ namespace network
   }
 
   ClientInformation *ClientInformation::insertBefore(ClientInformation *ins){
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(!this)
       return NULL;
     this->prev()->setNext(ins);
@@ -143,12 +135,10 @@ namespace network
   void ClientInformation::setID(int clientID){
     if(!this)
       return;
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     clientID_ = clientID;
   }
 
   bool ClientInformation::setPeer(ENetPeer *peer){
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(!this)
       return false;
     peer_ = peer;
@@ -156,7 +146,6 @@ namespace network
   }
 
   bool ClientInformation::setGameStateID(int id){
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(!this)
       return false;
     gamestateID_=id;
@@ -164,7 +153,6 @@ namespace network
   }
   
   bool ClientInformation::setPartialGamestateID(int id){
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(!this)
       return false;
     partialGamestateID_=id;
@@ -172,7 +160,6 @@ namespace network
   }
 
   int ClientInformation::getID() {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(!this)
       return CLIENTID_UNKNOWN;
     else
@@ -180,7 +167,6 @@ namespace network
   }
 
   ENetPeer *ClientInformation::getPeer() {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(this)
       return peer_;
     else
@@ -188,30 +174,24 @@ namespace network
   }
   
   bool ClientInformation::getHead(){
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     return head_;
   }
   
   void ClientInformation::setHead(bool h){
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     head_=h;
   }
   
   int ClientInformation::getFailures(){
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     return failures_;
   }
   void ClientInformation::addFailure(){
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     failures_++;
   }
   void ClientInformation::resetFailures(){
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     failures_=0;
   }
 
   int ClientInformation::getGamestateID() {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(this)
       return gamestateID_;
     else
@@ -219,7 +199,6 @@ namespace network
   }
   
   int ClientInformation::getPartialGamestateID() {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(this)
       return partialGamestateID_;
     else
@@ -227,7 +206,6 @@ namespace network
   }
 
   ClientInformation *ClientInformation::insertBack(ClientInformation *ins) {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(!this)
       return NULL;
     ClientInformation *temp = this;
@@ -240,7 +218,6 @@ namespace network
   }
 
   bool ClientInformation::removeClient(int clientID) {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(!this || clientID==CLIENTID_UNKNOWN)
       return false;
     ClientInformation *temp = this;
@@ -253,7 +230,6 @@ namespace network
   }
 
   bool ClientInformation::removeClient(ENetPeer *peer) {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(!this || !peer)
       return false;
     ClientInformation *temp = this;
@@ -276,7 +252,6 @@ namespace network
   * @return pointer to the last element in the list or 0 if the search was unsuccessfull
   */
   ClientInformation *ClientInformation::findClient(int clientID, bool look_backwards) {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     ClientInformation *temp = this;
     if (temp->head_)
       temp=temp->next();
@@ -294,7 +269,6 @@ namespace network
   * @return pointer to the element in the list
   */
   ClientInformation *ClientInformation::findClient(ENetAddress *address, bool look_backwards) {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     ClientInformation *temp = this;
     while(temp!=0){
       if(temp->head_){
@@ -310,7 +284,6 @@ namespace network
   }
 
   bool ClientInformation::setSynched(bool s) {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(!this)
       return false;
     synched_=s;
@@ -318,7 +291,6 @@ namespace network
   }
 
   bool ClientInformation::getSynched() {
-    boost::recursive_mutex::scoped_lock lock(mutex_);
     if(this)
       return synched_;
     else

@@ -96,7 +96,6 @@ namespace network
 
     bool setSynched(bool s);
     bool getSynched();
-    static boost::recursive_mutex mutex_;
 
 
     private:
