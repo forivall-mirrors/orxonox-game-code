@@ -84,6 +84,7 @@ namespace network
     // set server address to localhost
     isConnected=false;
     isSynched_=false;
+    gameStateFailure_=false;
   }
 
   /**
@@ -94,6 +95,7 @@ namespace network
   Client::Client(std::string address, int port) : client_connection(port, address){
     isConnected=false;
     isSynched_=false;
+    gameStateFailure_=false;
   }
 
   /**
@@ -104,6 +106,7 @@ namespace network
   Client::Client(const char *address, int port) : client_connection(port, address){
     isConnected=false;
     isSynched_=false;
+    gameStateFailure_=false;
   }
 
   Client::~Client(){
@@ -246,13 +249,23 @@ namespace network
       elaborate(event->packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
     }
     int gameStateID = gamestate.processGameState();
-    if(gameStateID!=GAMESTATEID_INITIAL){
+    if(gameStateID==GAMESTATEID_INITIAL)
+      if(gameStateFailure_){
+        if(!client_connection.addPacket(pck_gen.acknowledgement(GAMESTATEID_INITIAL)))
+          COUT(3) << "could not (negatively) ack gamestate" << std::endl;
+        else 
+          COUT(4) << "negatively acked a gamestate" << std::endl;
+        }
+      else
+        gameStateFailure_=true;
+    else if(gameStateID!=0){
       // ack gamestate and set synched
       if(!isSynched_)
         isSynched_=true;
+      gameStateFailure_=false;
       if(!client_connection.addPacket(pck_gen.acknowledgement(gameStateID)))
         COUT(3) << "could not ack gamestate" << std::endl;
-    }
+    }// otherwise we had no gamestate to load
     gamestate.cleanup();
     if(!client_connection.sendPackets())
       COUT(3) << "Problem sending packets to server" << std::endl;

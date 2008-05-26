@@ -358,6 +358,8 @@ namespace orxonox
 
             Projectile *p = new Projectile(this);
             p->create();
+            if(p->classID==0)
+              COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
 
             p->setBacksync(true);
             this->timeToReload_ = this->reloadTime_;

@@ -109,6 +109,7 @@ namespace network
     bool processWelcome( welcome *w );
     int clientID_;     // this is the id the server gave to us
     int shipID_;
+    bool gameStateFailure_;
   };
 
 

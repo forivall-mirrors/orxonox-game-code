@@ -85,7 +85,7 @@ namespace network
     bool loadPartialSnapshot(GameState *state, int clientID);
     GameStateCompressed *encode(GameState *a, GameState *b);
     GameStateCompressed *encode(GameState *a);
-    GameState *diff(GameState *a, GameState *b);
+    GameState *diff(GameState *alt, GameState *neu);
     GameStateCompressed *compress_(GameState *a);
     GameState *decompress(GameStateCompressed *a);
     bool printGameStates();

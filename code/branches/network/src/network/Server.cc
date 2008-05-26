@@ -262,7 +262,7 @@ namespace network
   }
 
   void Server::processAck( ack *data, int clientID) {
-    COUT(4) << "\b\b\b\n\n\n\n\nServer: processing ack from client: " << clientID << "; ack-id: " << data->a << std::endl;
+    COUT(4) << "Server: processing ack from client: " << clientID << "; ack-id: " << data->a << std::endl;
     gamestates->ackGameState(clientID, data->a);
     delete data;
   }

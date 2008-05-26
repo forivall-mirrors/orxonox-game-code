@@ -69,7 +69,7 @@ namespace network
   
   bool Synchronisable::create(){
     this->classID = this->getIdentifier()->getNetworkID();
-    COUT(4) << "setting classid from " << this->getIdentifier()->getName() << " to: " << classID << std::endl;
+    COUT(4) << "creating synchronisable: setting classid from " << this->getIdentifier()->getName() << " to: " << classID << std::endl;
     return true;
   }
   

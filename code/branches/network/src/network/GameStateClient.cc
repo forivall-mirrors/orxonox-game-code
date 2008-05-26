@@ -116,7 +116,7 @@ namespace network
   }
   int GameStateClient::processGameState(){
     if(tempGameState_==NULL)
-      return GAMESTATEID_INITIAL;
+      return 0;
     int id=tempGameState_->id;
     bool b = saveShipCache();
     if(pushGameState(tempGameState_)){
@@ -175,8 +175,8 @@ namespace network
           ///sigsegv is receved after the COUT(4) above
           orxonox::Identifier* id = ID((unsigned int)sync.classID);
           if(!id){
-            COUT(4) << "We could not identify a new object; classid: " << sync.classID << std::endl;
-            return false;
+            COUT(3) << "We could not identify a new object; classid: " << sync.classID << " objectID: " << sync.objectID << " size: " << sync.length << std::endl;
+            return false; // most probably the gamestate is corrupted
           }
           Synchronisable *no = dynamic_cast<Synchronisable *>(id->fabricate());
           COUT(4) << "loadsnapshot: classid: " << sync.classID << " objectID: " << sync.objectID << " length: " << sync.length << std::endl;
@@ -277,9 +277,9 @@ namespace network
     unsigned char *ap = old->data, *bp = diff->data;
     int of=0; // pointers offset
     int dest_length=0;
-    if(old->size>=diff->size)
+    /*if(old->size>=diff->size)
       dest_length=old->size;
-    else
+    else*/
       dest_length=diff->size;
 //     unsigned char *dp = (unsigned char *)malloc(dest_length*sizeof(unsigned char));
     unsigned char *dp = new unsigned char[dest_length*sizeof(unsigned char)];
@@ -294,12 +294,12 @@ namespace network
           *(dp+of)=n^*(bp+of);
           of++;
         }
-      } else{
+      } /*else{
         while(of<dest_length){
           *(dp+of)=*(ap+of)^n;
           of++;
         }
-      }
+      }*/
     }
     // should be finished now
     // FIXME: is it true or false now? (struct has changed, producing warnings)

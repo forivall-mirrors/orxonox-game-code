@@ -155,7 +155,7 @@ namespace network
     return true;
   }
 
-  bool ClientInformation::setGamestateID(int id){
+  bool ClientInformation::setGameStateID(int id){
     boost::recursive_mutex::scoped_lock lock(mutex_);
     if(!this)
       return false;

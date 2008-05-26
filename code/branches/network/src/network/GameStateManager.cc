@@ -139,7 +139,7 @@ namespace network
       if(it!=gameStateMap.end())
         client = it->second;
       GameState *server = reference;
-      COUT(3) << "client: " << client << " server: " << server << " gamestatemap: " << &gameStateMap << std::endl;
+      COUT(3) << "client: " << client << " server: " << server << " gamestatemap: " << &gameStateMap << " size: " << server->size << std::endl;
       if(client)
         return encode(client, server);
       else
@@ -259,6 +259,8 @@ namespace network
       sync.objectID = *(int*)data;
       data+=sizeof(int);
       sync.classID = *(int*)data;
+      if(sync.classID == 0) // TODO: remove this
+        COUT(3) << "received a classid 0" << std::endl;
       data+=sizeof(int);
       sync.data = data;
       data+=sync.length;
@@ -268,7 +270,7 @@ namespace network
 
 
       if(!it){
-        // the object does not exist yet
+        // the objectaber ich glaub die  does not exist yet
         COUT(4) << "loadsnapshot: creating new object " << std::endl;
         //COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
         orxonox::Identifier* id = ID((unsigned int)sync.classID);
@@ -336,40 +338,40 @@ namespace network
     return g;*/
   }
 
-  GameState *GameStateManager::diff(GameState *a, GameState *b) {
-    unsigned char *ap = a->data, *bp = b->data;
+  GameState *GameStateManager::diff(GameState *alt, GameState *neu) {
+    unsigned char *ap = alt->data, *bp = neu->data;
     int of=0; // pointers offset
     int dest_length=0;
-    if(a->size>=b->size)
-      dest_length=a->size;
-    else
-      dest_length=b->size;
+    /*if(alt->size>neu->size)
+      dest_length=alt->size;
+    else*/
+      dest_length=neu->size;
     //unsigned char *dp = (unsigned char *)malloc(dest_length*sizeof(unsigned char));
     unsigned char *dp = new unsigned char[dest_length*sizeof(unsigned char)];
-    while(of<a->size && of<b->size){
+    while(of<alt->size && of<neu->size){
       *(dp+of)=*(ap+of)^*(bp+of); // do the xor
       ++of;
     }
-    if(a->size!=b->size){ // do we have to fill up ?
+    if(alt->size!=neu->size){ // do we have to fill up ?
       unsigned char n=0;
-      if(a->size<b->size){
+      if(alt->size<neu->size){
         while(of<dest_length){
           *(dp+of)=n^*(bp+of);
           of++;
         }
-      } else{
+      } /*else{
         while(of<dest_length){
           *(dp+of)=*(ap+of)^n;
           of++;
         }
-      }
+      }*/
     }
 
     GameState *r = new GameState;
-    r->id = b->id;
+    r->id = neu->id;
     r->size = dest_length;
     r->diffed = true;
-    r->base_id = a->id;
+    r->base_id = alt->id;
     r->data = dp;
     r->complete = true;
     return r;
@@ -458,6 +460,12 @@ namespace network
     if(temp==0)
       return;
     int curid = temp->getGamestateID();
+    
+    if(gamestateID == GAMESTATEID_INITIAL){
+      temp->setGameStateID(GAMESTATEID_INITIAL);
+      --(gameStateUsed.find(curid)->second);
+      return;
+    }
     if(curid > gamestateID)
       // the network packets got messed up 
       return;
@@ -468,7 +476,7 @@ namespace network
     if(curid!=GAMESTATEID_INITIAL)
       --(gameStateUsed.find(curid)->second);
     ++(gameStateUsed.find(gamestateID)->second);
-    temp->setGamestateID(gamestateID);
+    temp->setGameStateID(gamestateID);
     /*
     GameState *old = clientGameState[clientID];
     deleteUnusedGameState(old);
