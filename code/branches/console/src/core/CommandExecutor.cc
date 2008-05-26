@@ -145,7 +145,7 @@ namespace orxonox
 
     void CommandExecutor::parse(const std::string& command, bool bInitialize)
     {
-std::cout << "parse: command: >" << command << "<" << std::endl;
+std::cout << "parse (" << bInitialize << "): command: >" << command << "<" << std::endl;
         if (bInitialize)
             CommandExecutor::getEvaluation().initialize(command);
 
@@ -184,7 +184,7 @@ std::cout << "parse: command: >" << command << "<" << std::endl;
                     if (CommandExecutor::getEvaluation().function_)
                     {
                         // It's a shortcut
-                        CommandExecutor::getEvaluation().state_ = CS_Params;
+                        CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
                         CommandExecutor::getEvaluation().functionclass_ = 0;
                         // Move on to next case
                     }
@@ -223,11 +223,14 @@ std::cout << "parse: command: >" << command << "<" << std::endl;
                             // Unfinished shortcut
                             CommandExecutor::getEvaluation().bCommandChanged_ = true;
                         }
-                        CommandExecutor::getEvaluation().state_ = CS_Params;
+                        CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
                         CommandExecutor::getEvaluation().functionclass_ = 0;
                         CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().function_->getName();
                         if (CommandExecutor::getEvaluation().function_->getParamCount() > 0)
+                        {
                             CommandExecutor::getEvaluation().command_ += " ";
+                            CommandExecutor::getEvaluation().bCommandChanged_ = true;
+                        }
                         // Move on to next case
                     }
                     else if (num_identifiers == 1 && num_functions == 0)
@@ -262,6 +265,7 @@ std::cout << "parse: command: >" << command << "<" << std::endl;
                         CommandExecutor::getEvaluation().command_ = CommandExecutor::getCommonBegin(temp);
                         CommandExecutor::getEvaluation().function_ = CommandExecutor::getPossibleCommand(CommandExecutor::getArgument(0));
                         CommandExecutor::getEvaluation().functionclass_ = CommandExecutor::getPossibleIdentifier(CommandExecutor::getArgument(0));
+                        CommandExecutor::getEvaluation().bCommandChanged_ = true;
                         return;
                     }
                 }
@@ -279,7 +283,7 @@ std::cout << "parse: command: >" << command << "<" << std::endl;
                         if (CommandExecutor::getEvaluation().function_)
                         {
                             // It's a function
-                            CommandExecutor::getEvaluation().state_ = CS_Params;
+                            CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
                             // Move on to next case
                         }
                         else
@@ -307,10 +311,13 @@ std::cout << "parse: command: >" << command << "<" << std::endl;
                                 // Unfinished function
                                 CommandExecutor::getEvaluation().bCommandChanged_ = true;
                             }
-                            CommandExecutor::getEvaluation().state_ = CS_Params;
+                            CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
                             CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().functionclass_->getName() + " " + CommandExecutor::getEvaluation().function_->getName();
                             if (CommandExecutor::getEvaluation().function_->getParamCount() > 0)
+                            {
                                 CommandExecutor::getEvaluation().command_ += " ";
+                                CommandExecutor::getEvaluation().bCommandChanged_ = true;
+                            }
                             // Move on to next case
                         }
                         else if (num_functions == 0)
@@ -326,20 +333,76 @@ std::cout << "parse: command: >" << command << "<" << std::endl;
                             // There are several possibilities
                             CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().functionclass_->getName() + " " + CommandExecutor::getCommonBegin(CommandExecutor::getEvaluation().listOfPossibleFunctions_);
                             CommandExecutor::getEvaluation().function_ = CommandExecutor::getPossibleCommand(CommandExecutor::getArgument(1), CommandExecutor::getEvaluation().functionclass_);
+                            CommandExecutor::getEvaluation().bCommandChanged_ = true;
                             return;
                         }
                     }
                 }
                 else
                 {
-                    // There is no classname - move on to CS_Shortcut_Params
+                    // There is no classname - move on to CS_ParamPreparation
                 }
             }
-std::cout << "Waiting for arguments" << std::endl;
-            case CS_Params:
+std::cout << "1\n";
+            case CS_ParamPreparation:
+std::cout << "2\n";
             {
+                if (CommandExecutor::getEvaluation().function_->getParamCount() == 0 || CommandExecutor::enoughArgumentsGiven(CommandExecutor::getEvaluation().function_))
+                {
+                    CommandExecutor::getEvaluation().state_ = CS_Finished;
+                    return;
+                }
+                else
+                {
+                    unsigned int argumentNumber = CommandExecutor::argumentsGiven() - 1;
+                    if (CommandExecutor::getEvaluation().functionclass_)
+                        argumentNumber -= 1;
+
+                    CommandExecutor::createListOfPossibleArguments(CommandExecutor::getLastArgument(), CommandExecutor::getEvaluation().function_, argumentNumber);
+                    CommandExecutor::getEvaluation().state_ = CS_Params;
+
+                    if (CommandExecutor::getEvaluation().bCommandChanged_)
+                    {
+                        // Don't do more than one change
+                        return;
+                    }
+                }
+            }
+            case CS_Params:
+std::cout << "3\n";
+            {
+                if (CommandExecutor::getEvaluation().listOfPossibleArguments_.size() == 1)
+                {
+std::cout << "3_1\n";
+                    // There is exactly one possible argument
+                    CommandExecutor::getEvaluation().argument_ = *(*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).second;
+                    CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
+                    return;
+                }
+                else if (CommandExecutor::getEvaluation().listOfPossibleArguments_.size() == 0)
+                {
+std::cout << "3_2\n";
+                    // The user tries something new - we let him do
+                    CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
+                    CommandExecutor::getEvaluation().argument_ = CommandExecutor::getLastArgument();
+                    return;
+                }
+                else
+                {
+std::cout << "3_3\n";
+                    // There are several possibilities
+                    unsigned int argumentNumber = CommandExecutor::argumentsGiven() - 1;
+                    if (CommandExecutor::getEvaluation().functionclass_)
+                        argumentNumber -= 1;
+
+                    CommandExecutor::getEvaluation().argument_ = CommandExecutor::getCommonBegin(CommandExecutor::getEvaluation().listOfPossibleArguments_);
+                    CommandExecutor::getEvaluation().possibleArgument_ = CommandExecutor::getPossibleArgument(CommandExecutor::getLastArgument(), CommandExecutor::getEvaluation().function_, argumentNumber);
+                    CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
+                    return;
+                }
             }
             case CS_Finished:
+std::cout << "4\n";
             {
                 // Nothing more to do
                 break;
@@ -372,9 +435,9 @@ std::cout << "Waiting for arguments" << std::endl;
     bool CommandExecutor::enoughArgumentsGiven(ConsoleCommand* command)
     {
         if (CommandExecutor::getEvaluation().functionclass_)
-            return (CommandExecutor::getEvaluation().commandTokens_.size() >= (2 + command->getParamCount()));
+            return (CommandExecutor::argumentsGiven() > (2 + command->getParamCount()));
         else
-            return (CommandExecutor::getEvaluation().commandTokens_.size() >= (1 + command->getParamCount()));
+            return (CommandExecutor::argumentsGiven() > (1 + command->getParamCount()));
     }
 
     std::string CommandExecutor::getArgument(unsigned int index)
@@ -387,7 +450,7 @@ std::cout << "Waiting for arguments" << std::endl;
 
     std::string CommandExecutor::getLastArgument()
     {
-        return CommandExecutor::getArgument(CommandExecutor::argumentsGiven());
+        return CommandExecutor::getArgument(CommandExecutor::argumentsGiven() - 1);
     }
 
     void CommandExecutor::createListOfPossibleIdentifiers(const std::string& fragment)
@@ -461,12 +524,12 @@ std::cout << "Waiting for arguments" << std::endl;
         return 0;
     }
 
-    const std::string* CommandExecutor::getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param)
+    std::string CommandExecutor::getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param)
     {
         std::string lowercase = getLowercase(name);
         for (std::list<std::pair<std::string, std::string> >::const_iterator it = command->getArgumentCompletionListBegin(param); it != command->getArgumentCompletionListEnd(param); ++it)
             if ((*it).first == lowercase)
-                return &(*it).second;
+                return (*it).second;
 
         return 0;
     }

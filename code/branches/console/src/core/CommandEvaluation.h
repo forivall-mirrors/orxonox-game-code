@@ -45,6 +45,7 @@ namespace orxonox
         CS_Empty,
         CS_ShortcutOrIdentifier,
         CS_Function,
+        CS_ParamPreparation,
         CS_Params,
         CS_Finished,
         CS_Error
@@ -97,6 +98,8 @@ namespace orxonox
 
             Identifier* functionclass_;
             ConsoleCommand* function_;
+            std::string possibleArgument_;
+            std::string argument_;
 
             std::string errorMessage_;
             CommandState state_;

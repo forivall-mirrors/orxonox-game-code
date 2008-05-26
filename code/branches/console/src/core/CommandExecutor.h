@@ -90,7 +90,7 @@ namespace orxonox
 
             static Identifier* getPossibleIdentifier(const std::string& name);
             static ConsoleCommand* getPossibleCommand(const std::string& name, Identifier* identifier = 0);
-            static const std::string* getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param);
+            static std::string getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param);
 
             static std::string getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list);
             static bool compareStringsInList(const std::pair<const std::string*, const std::string*>& first, const std::pair<const std::string*, const std::string*>& second);

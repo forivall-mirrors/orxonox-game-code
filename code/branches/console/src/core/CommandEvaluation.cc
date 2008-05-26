@@ -56,6 +56,8 @@ namespace orxonox
 
         this->functionclass_ = 0;
         this->function_ = 0;
+        this->possibleArgument_ = "";
+        this->argument_ = "";
 
         this->errorMessage_ = "";
         this->state_ = CS_Empty;
@@ -96,7 +98,7 @@ namespace orxonox
     {
         if (!this->bNewCommand_)
         {
-std::cout << "ASDF" << std::endl;
+std::cout << "not new" << std::endl;
             switch (this->state_)
             {
                 case CS_Uninitialized:
@@ -105,16 +107,43 @@ std::cout << "ASDF" << std::endl;
                     break;
                 case CS_ShortcutOrIdentifier:
                     if (this->function_)
-                        return CommandExecutor::complete(this->function_->getName() + " ");
+                    {
+                        if (this->function_->getParamCount() == 0)
+                            return /*CommandExecutor::complete*/(this->command_ = this->function_->getName());
+                        else
+                            return /*CommandExecutor::complete*/(this->command_ = this->function_->getName() + " ");
+                    }
                     else if (this->functionclass_)
-                        return CommandExecutor::complete(this->functionclass_->getName() + " ");
+                        return /*CommandExecutor::complete*/(this->command_ = this->functionclass_->getName() + " ");
                     break;
                 case CS_Function:
                     if (this->function_)
-                        return CommandExecutor::complete(this->functionclass_->getName() + " " + this->function_->getName() + " ");
+                    {
+                        if (this->function_->getParamCount() == 0)
+                            return /*CommandExecutor::complete*/(this->command_ = this->functionclass_->getName() + " " + this->function_->getName());
+                        else
+                            return /*CommandExecutor::complete*/(this->command_ = this->functionclass_->getName() + " " + this->function_->getName() + " ");
+                    }
                     break;
+                case CS_ParamPreparation:
                 case CS_Params:
+                {
+                    unsigned int maxIndex = this->commandTokens_.size();
+                    if (this->command_[this->command_.size() - 1] != ' ')
+                        maxIndex -= 1;
+                    std::string whitespace = "";
+                    if (this->function_->getParamCount() > (maxIndex + 1 - this->getStartindex()))
+                        whitespace = " ";
+
+                    if (this->possibleArgument_ != "")
+                    {
+                        maxIndex -= 1;
+                        this->argument_ = this->possibleArgument_;
+                    }
+
+                    return /*CommandExecutor::complete*/(this->command_ = this->commandTokens_.subSet(0, maxIndex).join() + " " + this->argument_ + whitespace);
                     break;
+                }
                 case CS_Finished:
                     break;
                 case CS_Error:
@@ -143,6 +172,7 @@ std::cout << "ASDF" << std::endl;
             case CS_Function:
                 return CommandEvaluation::dump(this->listOfPossibleFunctions_);
                 break;
+            case CS_ParamPreparation:
             case CS_Params:
                 if (this->listOfPossibleArguments_.size() > 0)
                     return CommandEvaluation::dump(this->listOfPossibleArguments_);
@@ -240,7 +270,10 @@ std::cout << "ASDF" << std::endl;
 
     std::string CommandEvaluation::dump(const ConsoleCommand* command)
     {
-        std::string output = command->getName() + ": ";
+        std::string output = command->getName();
+        if (command->getParamCount() > 0)
+            output += ": ";
+
         for (unsigned int i = 0; i < command->getParamCount(); i++)
         {
             if (i != 0)
