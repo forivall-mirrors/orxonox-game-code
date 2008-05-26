@@ -99,7 +99,9 @@ namespace orxonox
             inline AccessLevel::Level getAccessLevel() const
                 { return this->accessLevel_; }
 
-            ConsoleCommand& setArgumentCompletionList(unsigned int param, ArgumentCompleter* completer);
+            ConsoleCommand& setArgumentCompleter(unsigned int param, ArgumentCompleter* completer);
+            ArgumentCompleter* getArgumentCompleter(unsigned int param) const;
+
             void createArgumentCompletionList(unsigned int param, const std::string& param1 = "", const std::string& param2 = "", const std::string& param3 = "", const std::string& param4 = "", const std::string& param5 = "");
             const std::list<std::pair<std::string, std::string> >& getArgumentCompletionList() const
                 { return this->argumentList_; }

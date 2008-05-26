@@ -29,6 +29,7 @@
 #include "CommandEvaluation.h"
 #include "ConsoleCommand.h"
 #include "Debug.h"
+#include "util/String.h"
 
 namespace orxonox
 {
@@ -80,7 +81,7 @@ namespace orxonox
             return true;
         }
 
-        if (!this->bCommandChanged_)
+        if (!this->bCommandChanged_ || removeTrailingWhitespaces(this->command_) == removeTrailingWhitespaces(this->originalCommand_))
         {
             COUT(4) << "CE_execute: " << this->command_ << "\n";
 
@@ -135,13 +136,12 @@ std::cout << "not new" << std::endl;
                     if (this->command_[this->command_.size() - 1] != ' ')
                         maxIndex -= 1;
                     std::string whitespace = "";
-                    if (this->function_->getParamCount() > (maxIndex + 1 - this->getStartindex()))
-                        whitespace = " ";
 
                     if (this->possibleArgument_ != "")
                     {
-                        maxIndex -= 1;
                         this->argument_ = this->possibleArgument_;
+                        if (this->function_->getParamCount() > (maxIndex + 1 - this->getStartindex()))
+                            whitespace = " ";
                     }
 
                     return (this->command_ = this->commandTokens_.subSet(0, maxIndex).join() + " " + this->argument_ + whitespace);
@@ -162,9 +162,12 @@ std::cout << "not new" << std::endl;
         switch (this->state_)
         {
             case CS_Uninitialized:
+std::cout << "hint: CS_Uninitialized" << std::endl;
                 break;
             case CS_Empty:
+std::cout << "hint: CS_Empty" << std::endl;
             case CS_ShortcutOrIdentifier:
+std::cout << "hint: CS_ShortcutOrIdentifier" << std::endl;
                 if (this->listOfPossibleFunctions_.size() == 0)
                     return CommandEvaluation::dump(this->listOfPossibleIdentifiers_);
                 else if (this->listOfPossibleIdentifiers_.size() == 0)
@@ -173,19 +176,24 @@ std::cout << "not new" << std::endl;
                     return (CommandEvaluation::dump(this->listOfPossibleFunctions_) + "\n" + CommandEvaluation::dump(this->listOfPossibleIdentifiers_));
                 break;
             case CS_Function:
+std::cout << "hint: CS_Function" << std::endl;
                 return CommandEvaluation::dump(this->listOfPossibleFunctions_);
                 break;
             case CS_ParamPreparation:
+std::cout << "hint: CS_ParamPreparation" << std::endl;
             case CS_Params:
+std::cout << "hint: CS_Params" << std::endl;
                 if (this->listOfPossibleArguments_.size() > 0)
                     return CommandEvaluation::dump(this->listOfPossibleArguments_);
                 else
                     return CommandEvaluation::dump(this->function_);
             case CS_Finished:
+std::cout << "hint: CS_Finished" << std::endl;
                 if (this->function_)
                     return CommandEvaluation::dump(this->function_);
                 break;
             case CS_Error:
+std::cout << "hint: CS_Error" << std::endl;
                 return this->errorMessage_;
                 break;
         }
@@ -267,6 +275,19 @@ std::cout << "not new" << std::endl;
                 output += " ";
 
             output += *(*it).second;
+        }
+        return output;
+    }
+
+    std::string CommandEvaluation::dump(const std::list<std::pair<std::string, std::string> >& list)
+    {
+        std::string output = "";
+        for (std::list<std::pair<std::string, std::string> >::const_iterator it = list.begin(); it != list.end(); ++it)
+        {
+            if (it != list.begin())
+                output += " ";
+
+            output += (*it).second;
         }
         return output;
     }

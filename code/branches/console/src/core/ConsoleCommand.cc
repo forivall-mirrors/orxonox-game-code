@@ -40,7 +40,7 @@ namespace orxonox
         this->argumentCompleter_[4] = 0;
     }
 
-    ConsoleCommand& ConsoleCommand::setArgumentCompletionList(unsigned int param, ArgumentCompleter* completer)
+    ConsoleCommand& ConsoleCommand::setArgumentCompleter(unsigned int param, ArgumentCompleter* completer)
     {
         if (param < 5)
             this->argumentCompleter_[param] = completer;
@@ -49,6 +49,14 @@ namespace orxonox
             COUT(2) << "Warning: Couldn't add autocompletion-function for param " << param << ": index out of bound." << std::endl;
         }
         return (*this);
+    }
+
+    ArgumentCompleter* ConsoleCommand::getArgumentCompleter(unsigned int param) const
+    {
+        if (param < 5)
+            return this->argumentCompleter_[param];
+        else
+            return 0;
     }
 
     void ConsoleCommand::createArgumentCompletionList(unsigned int param, const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5)

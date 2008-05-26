@@ -49,6 +49,8 @@ namespace orxonox
     };
 
 
+    bool config(const std::string& classname, const std::string& varname, const std::string& value);
+    bool tconfig(const std::string& classname, const std::string& varname, const std::string& value);
     void reloadConfig();
     void saveConfig();
     void cleanConfig();

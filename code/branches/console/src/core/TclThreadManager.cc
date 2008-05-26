@@ -47,15 +47,15 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutGeneric(tclexecute, createConsoleCommand(createFunctor(&TclThreadManager::execute), "tclexecute"));
-    SetConsoleCommandShortcutGeneric(tclquery,   createConsoleCommand(createFunctor(&TclThreadManager::query),   "tclquery"  ));
+    SetConsoleCommandShortcutGeneric(tclexecute, createConsoleCommand(createFunctor(&TclThreadManager::execute), "tclexecute")).setArgumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommandShortcutGeneric(tclquery,   createConsoleCommand(createFunctor(&TclThreadManager::query),   "tclquery"  )).setArgumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand(TclThreadManager, create,  false);
-    SetConsoleCommand(TclThreadManager, destroy, false);
-    SetConsoleCommand(TclThreadManager, execute, false);
-    SetConsoleCommand(TclThreadManager, query,   false);
+    SetConsoleCommand(TclThreadManager, destroy, false).setArgumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand(TclThreadManager, execute, false).setArgumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand(TclThreadManager, query,   false).setArgumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand(TclThreadManager, status,  false);
-    SetConsoleCommand(TclThreadManager, dump,    false);
-    SetConsoleCommand(TclThreadManager, flush,   false);
+    SetConsoleCommand(TclThreadManager, dump,    false).setArgumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand(TclThreadManager, flush,   false).setArgumentCompleter(0, autocompletion::tclthreads());
 
     TclThreadManager* instance_tclthreadmanager = &TclThreadManager::getInstance();
 
@@ -629,6 +629,18 @@ namespace orxonox
                     break;
             }
         }
+    }
+
+    std::list<std::pair<std::string, std::string> > TclThreadManager::getThreadList() const
+    {
+        boost::mutex::scoped_lock bundles_lock(TclThreadManager::getInstance().bundlesMutex_);
+        std::list<std::pair<std::string, std::string> > threads;
+        for (std::map<unsigned int, TclInterpreterBundle*>::const_iterator it = this->interpreterBundles_.begin(); it != this->interpreterBundles_.end(); ++it)
+        {
+            std::string number = getConvertedValue<unsigned int, std::string>((*it).first);
+            threads.push_back(std::pair<std::string, std::string>(number, number));
+        }
+        return threads;
     }
 
     void tclThread(TclInterpreterBundle* interpreterBundle, std::string command)

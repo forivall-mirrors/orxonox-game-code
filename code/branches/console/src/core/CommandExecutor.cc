@@ -125,22 +125,29 @@ namespace orxonox
 
     void CommandExecutor::parseIfNeeded(const std::string& command)
     {
+std::cout << "parse if needed: command:      >" << command << "<" << std::endl;
+std::cout << "                 old original: >" << CommandExecutor::getEvaluation().originalCommand_ << "<" << std::endl;
+std::cout << "                 old modified: >" << CommandExecutor::getEvaluation().command_ << "<" << std::endl;
         if (CommandExecutor::getEvaluation().state_ == CS_Uninitialized)
         {
+std::cout << "parse if needed: parse!" << std::endl;
             CommandExecutor::parse(command);
         }
-        else if (CommandExecutor::getEvaluation().originalCommand_ != command)
+        else if (/*removeTrailingWhitespaces*/(CommandExecutor::getEvaluation().originalCommand_) != /*removeTrailingWhitespaces*/(command))
         {
             if (CommandExecutor::getEvaluation().command_ == command)
             {
+std::cout << "parse if needed: parse and set bNewCommand_ to false" << std::endl;
                 CommandExecutor::parse(command);
                 CommandExecutor::getEvaluation().bNewCommand_ = false;
             }
             else
             {
+std::cout << "parse if needed: parse!" << std::endl;
                 CommandExecutor::parse(command);
             }
         }
+std::cout << "parse if needed: don't parse" << std::endl;
     }
 
     void CommandExecutor::parse(const std::string& command, bool bInitialize)
@@ -155,11 +162,13 @@ std::cout << "parse (" << bInitialize << "): command: >" << command << "<" << st
         switch (CommandExecutor::getEvaluation().state_)
         {
             case CS_Uninitialized:
+std::cout << "0: Uninitialized\n";
             {
                 // Impossible
                 break;
             }
             case CS_Empty:
+std::cout << "0: Empty\n";
             {
                 if (CommandExecutor::argumentsGiven() == 0)
                 {
@@ -174,6 +183,7 @@ std::cout << "parse (" << bInitialize << "): command: >" << command << "<" << st
                 }
             }
             case CS_ShortcutOrIdentifier:
+std::cout << "0: ShortcutOrIdentifier\n";
             {
                 if (CommandExecutor::argumentsGiven() > 1)
                 {
@@ -190,6 +200,7 @@ std::cout << "parse (" << bInitialize << "): command: >" << command << "<" << st
                     }
                     else if (CommandExecutor::getEvaluation().functionclass_)
                     {
+std::cout << "MEP" << std::endl;
                         // It's a functionname
                         CommandExecutor::getEvaluation().state_ = CS_Function;
                         CommandExecutor::getEvaluation().function_ = 0;
@@ -271,6 +282,7 @@ std::cout << "parse (" << bInitialize << "): command: >" << command << "<" << st
                 }
             }
             case CS_Function:
+std::cout << "0: Function\n";
             {
                 if (CommandExecutor::getEvaluation().functionclass_)
                 {
@@ -282,6 +294,7 @@ std::cout << "parse (" << bInitialize << "): command: >" << command << "<" << st
 
                         if (CommandExecutor::getEvaluation().function_)
                         {
+std::cout << "MEP2" << std::endl;
                             // It's a function
                             CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
                             // Move on to next case
@@ -376,7 +389,8 @@ std::cout << "3\n";
                 {
 std::cout << "3_1\n";
                     // There is exactly one possible argument
-                    CommandExecutor::getEvaluation().argument_ = *(*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).second;
+                    CommandExecutor::getEvaluation().argument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).second;
+                    CommandExecutor::getEvaluation().possibleArgument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).second;
                     CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
                     return;
                 }
@@ -392,13 +406,20 @@ std::cout << "3_2\n";
                 {
 std::cout << "3_3\n";
                     // There are several possibilities
-                    unsigned int argumentNumber = CommandExecutor::argumentsGiven() - 1;
-                    if (CommandExecutor::getEvaluation().functionclass_)
-                        argumentNumber -= 1;
+                    unsigned int argumentNumber = CommandExecutor::argumentsGiven();
+                    if (argumentNumber > 0)
+                        --argumentNumber;
+std::cout << "3_3_1\n";
+                    if (CommandExecutor::getEvaluation().functionclass_ && argumentNumber > 0)
+                        --argumentNumber;
 
+std::cout << "3_3_2\n";
                     CommandExecutor::getEvaluation().argument_ = CommandExecutor::getCommonBegin(CommandExecutor::getEvaluation().listOfPossibleArguments_);
+std::cout << "3_3_3\n";
                     CommandExecutor::getEvaluation().possibleArgument_ = CommandExecutor::getPossibleArgument(CommandExecutor::getLastArgument(), CommandExecutor::getEvaluation().function_, argumentNumber);
+std::cout << "3_3_4\n";
                     CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
+std::cout << "3_3_5\n";
                     return;
                 }
             }
@@ -494,9 +515,9 @@ std::cout << "4\n";
         std::string lowercase = getLowercase(fragment);
         for (std::list<std::pair<std::string, std::string> >::const_iterator it = command->getArgumentCompletionListBegin(); it != command->getArgumentCompletionListEnd(); ++it)
             if ((*it).first.find(lowercase) == 0 || fragment == "")
-                CommandExecutor::getEvaluation().listOfPossibleArguments_.push_back(std::pair<const std::string*, const std::string*>(&(*it).first, &(*it).second));
+                CommandExecutor::getEvaluation().listOfPossibleArguments_.push_back(std::pair<std::string, std::string>((*it).first, (*it).second));
 
-        CommandExecutor::getEvaluation().listOfPossibleArguments_.sort(CommandExecutor::compareStringsInList);
+        CommandExecutor::getEvaluation().listOfPossibleArguments_.sort(CommandExecutor::compareStringsInList2);
     }
 
     Identifier* CommandExecutor::getPossibleIdentifier(const std::string& name)
@@ -529,14 +550,21 @@ std::cout << "4\n";
 
     std::string CommandExecutor::getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param)
     {
+std::cout << "4_1\n";
         CommandExecutor::createArgumentCompletionList(command, param);
 
+std::cout << "4_2\n";
         std::string lowercase = getLowercase(name);
+std::cout << "4_3\n";
         for (std::list<std::pair<std::string, std::string> >::const_iterator it = command->getArgumentCompletionListBegin(); it != command->getArgumentCompletionListEnd(); ++it)
+        {
+std::cout << "4_4\n";
             if ((*it).first == lowercase)
                 return (*it).second;
+        }
 
-        return 0;
+std::cout << "4_5\n";
+        return "";
     }
 
     void CommandExecutor::createArgumentCompletionList(ConsoleCommand* command, unsigned int param)
@@ -598,8 +626,54 @@ std::cout << "4\n";
         }
     }
 
+    std::string CommandExecutor::getCommonBegin(const std::list<std::pair<std::string, std::string> >& list)
+    {
+        if (list.size() == 0)
+        {
+            return "";
+        }
+        else if (list.size() == 1)
+        {
+            return ((*list.begin()).first + " ");
+        }
+        else
+        {
+            std::string output = "";
+            for (unsigned int i = 0; true; i++)
+            {
+                char temp = 0;
+                for (std::list<std::pair<std::string, std::string> >::const_iterator it = list.begin(); it != list.end(); ++it)
+                {
+                    if ((*it).first.size() > i)
+                    {
+                        if (it == list.begin())
+                        {
+                            temp = (*it).first[i];
+                        }
+                        else
+                        {
+                            if (temp != (*it).first[i])
+                                return output;
+                        }
+                    }
+                    else
+                    {
+                        return output;
+                    }
+                }
+                output += temp;
+            }
+            return output;
+        }
+    }
+
     bool CommandExecutor::compareStringsInList(const std::pair<const std::string*, const std::string*>& first, const std::pair<const std::string*, const std::string*>& second)
     {
         return ((*first.first) < (*second.first));
+    }
+
+    bool CommandExecutor::compareStringsInList2(const std::pair<std::string, std::string>& first, const std::pair<std::string, std::string>& second)
+    {
+        return (first.first < second.first);
     }
 }

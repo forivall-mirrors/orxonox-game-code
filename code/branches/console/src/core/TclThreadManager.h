@@ -108,6 +108,8 @@ namespace orxonox
 
             virtual void tick(float dt);
 
+            std::list<std::pair<std::string, std::string> > getThreadList() const;
+
         private:
             TclThreadManager();
             TclThreadManager(const TclThreadManager& other);
