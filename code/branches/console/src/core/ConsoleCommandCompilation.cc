@@ -87,9 +87,13 @@ namespace orxonox
     void puts(bool newline, const std::string& text)
     {
         if (newline)
+        {
             COUT(0) << text << std::endl;
+        }
         else
+        {
             COUT(0) << text;
+        }
     }
 
     void write(const std::string& filename, const std::string& text)

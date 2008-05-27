@@ -145,7 +145,6 @@ namespace orxonox
 
     void CommandExecutor::parse(const std::string& command, bool bInitialize)
     {
-std::cout << "parse (" << bInitialize << "): command: >" << command << "<" << std::endl;
         if (bInitialize)
             CommandExecutor::getEvaluation().initialize(command);
 
@@ -343,9 +342,7 @@ std::cout << "parse (" << bInitialize << "): command: >" << command << "<" << st
                     // There is no classname - move on to CS_ParamPreparation
                 }
             }
-std::cout << "1\n";
             case CS_ParamPreparation:
-std::cout << "2\n";
             {
                 if (CommandExecutor::getEvaluation().function_->getParamCount() == 0 || CommandExecutor::enoughArgumentsGiven(CommandExecutor::getEvaluation().function_))
                 {
@@ -358,7 +355,6 @@ std::cout << "2\n";
                     if (CommandExecutor::getEvaluation().functionclass_)
                         argumentNumber -= 1;
 
-std::cout << "arglist: " << CommandExecutor::getLastArgument() << ", " << CommandExecutor::getEvaluation().function_->getName() << ", " << argumentNumber << std::endl;
                     CommandExecutor::createListOfPossibleArguments(CommandExecutor::getLastArgument(), CommandExecutor::getEvaluation().function_, argumentNumber);
                     CommandExecutor::getEvaluation().state_ = CS_Params;
 
@@ -370,11 +366,9 @@ std::cout << "arglist: " << CommandExecutor::getLastArgument() << ", " << Comman
                 }
             }
             case CS_Params:
-std::cout << "3\n";
             {
                 if (CommandExecutor::getEvaluation().listOfPossibleArguments_.size() == 1)
                 {
-std::cout << "3_1\n";
                     // There is exactly one possible argument
                     CommandExecutor::getEvaluation().argument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).second;
                     CommandExecutor::getEvaluation().possibleArgument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).second;
@@ -383,7 +377,6 @@ std::cout << "3_1\n";
                 }
                 else if (CommandExecutor::getEvaluation().listOfPossibleArguments_.size() == 0)
                 {
-std::cout << "3_2\n";
                     // The user tries something new - we let him do
                     CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
                     CommandExecutor::getEvaluation().argument_ = CommandExecutor::getLastArgument();
@@ -391,27 +384,20 @@ std::cout << "3_2\n";
                 }
                 else
                 {
-std::cout << "3_3\n";
                     // There are several possibilities
                     unsigned int argumentNumber = CommandExecutor::argumentsGiven();
                     if (argumentNumber > 0)
                         --argumentNumber;
-std::cout << "3_3_1\n";
                     if (CommandExecutor::getEvaluation().functionclass_ && argumentNumber > 0)
                         --argumentNumber;
 
-std::cout << "3_3_2\n";
                     CommandExecutor::getEvaluation().argument_ = CommandExecutor::getCommonBegin(CommandExecutor::getEvaluation().listOfPossibleArguments_);
-std::cout << "3_3_3\n";
                     CommandExecutor::getEvaluation().possibleArgument_ = CommandExecutor::getPossibleArgument(CommandExecutor::getLastArgument(), CommandExecutor::getEvaluation().function_, argumentNumber);
-std::cout << "3_3_4\n";
                     CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
-std::cout << "3_3_5\n";
                     return;
                 }
             }
             case CS_Finished:
-std::cout << "4\n";
             {
                 // Nothing more to do
                 break;
