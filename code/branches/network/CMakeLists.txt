@@ -73,6 +73,7 @@ FIND_PACKAGE(OggVorbis)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(Lua)
 FIND_PACKAGE(TCL)
+FIND_PACKAGE(DirectX)
 
 #Set the search paths for the linking
 LINK_DIRECTORIES(
@@ -98,6 +99,8 @@ INCLUDE_DIRECTORIES(
   ${OGG_INCLUDE_DIR}
   ${Lua_INCLUDE_DIR}
   ${TCL_INCLUDE_PATH}
+  ${DirectX_INCLUDE_DIR}
+  ${ZLIB_INCLUDE_DIR}
 )
 
 #add main source dir

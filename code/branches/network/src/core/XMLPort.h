@@ -165,7 +165,7 @@ namespace orxonox
                                 this->parseResult_ = PR_waiting_for_default_values;
                         }
                     }
-                    catch(ticpp::Exception& ex)
+                    catch (ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
                         COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << object->getIdentifier()->getName() << "' (objectname: " << ((BaseObject*)object)->getName() << ") in " << ((BaseObject*)object)->getLevelfile() << ":" << std::endl;
@@ -343,7 +343,7 @@ namespace orxonox
                             }
                         }
                     }
-                    catch(ticpp::Exception& ex)
+                    catch (ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
                         COUT(1) << "An error occurred in XMLPort.h while loading a '" << Class(O)->getName() << "' in '" << this->sectionname_ << "' of '" << object->getIdentifier()->getName() << "' (objectname: " << ((BaseObject*)object)->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
