@@ -45,4 +45,5 @@ TARGET_LINK_LIBRARIES(core
   ${Lua_LIBRARIES}
   ${OIS_LIBRARIES}
   ${Boost_thread_LIBRARIES}
+  ${Boost_filesystem_LIBRARIES}
 )

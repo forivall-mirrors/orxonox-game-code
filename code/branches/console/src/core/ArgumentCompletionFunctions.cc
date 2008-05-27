@@ -29,7 +29,7 @@
 #include <iostream>
 #include <map>
 
-#include <dirent.h>
+#include "boost/filesystem.hpp"
 
 #include "ArgumentCompletionFunctions.h"
 #include "CoreIncludes.h"
@@ -38,7 +38,6 @@
 #include "TclThreadManager.h"
 #include "util/Convert.h"
 #include "util/String.h"
-#include "util/SubString.h"
 
 namespace orxonox
 {
@@ -54,43 +53,37 @@ namespace orxonox
             ArgumentCompletionList dirlist;
             ArgumentCompletionList filelist;
 
-            SubString tokens(fragment, "/", "", false, '\0', false, '\0', false, '\0', '\0', false, '\0');
-
-            std::string startdirectory = ".";
-            if (fragment.size() > 0 && fragment[fragment.size() - 1] == '/' && tokens.size() > 0)
-                startdirectory = tokens.subSet(0, tokens.size()).join("/");
-            else if (tokens.size() > 1)
-                startdirectory = tokens.subSet(0, tokens.size() - 1).join("/");
-
-            struct stat fileInfo;
-            struct dirent *currentFile;
-            DIR *handler = 0;
-
-            handler = opendir(startdirectory.c_str());
-            if (handler)
+            try
             {
-                while ((currentFile = readdir(handler)) != 0)
+                boost::filesystem::path input(fragment);
+                boost::filesystem::path startdirectory(input.branch_path());
+
+                if (!boost::filesystem::exists(startdirectory))
                 {
-                    if (strcmp(currentFile->d_name, ".") && strcmp(currentFile->d_name, ".."))
-                    {
-                        std::string path = startdirectory + "/" + currentFile->d_name;
-                        if (stat(path.c_str(), &fileInfo) == -1)
-                        {
-                            closedir(handler);
-                            break;
-                        }
-
-                        if (S_ISREG(fileInfo.st_mode)) // normal file
-                            filelist.push_back(ArgumentCompletionListElement(path, getLowercase(path), currentFile->d_name));
-                        else if (S_ISDIR(fileInfo.st_mode)) // directory
-                            dirlist.push_back(ArgumentCompletionListElement(path + "/", getLowercase(path) + "/", std::string(currentFile->d_name) + "/"));
-                        else // special file
-                            filelist.push_back(ArgumentCompletionListElement(path, getLowercase(path), currentFile->d_name));
-                    }
+                    startdirectory = ".";
                 }
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+                else
+                {
+                    std::string dir = startdirectory.string();
+                    if (dir.size() > 0 && dir[dir.size() - 1] == ':')
+                        startdirectory = dir + "/";
+                }
+#endif
 
-                closedir(handler);
+                boost::filesystem::directory_iterator file(startdirectory);
+                boost::filesystem::directory_iterator end;
+
+                while (file != end)
+                {
+                    if (boost::filesystem::is_directory(*file))
+                        dirlist.push_back(ArgumentCompletionListElement((*file).string() + "/", getLowercase((*file).string()) + "/", (*file).leaf() + "/"));
+                    else
+                        filelist.push_back(ArgumentCompletionListElement((*file).string(), getLowercase((*file).string()), (*file).leaf()));
+                    ++file;
+                }
             }
+            catch (...) {}
 
             filelist.insert(filelist.begin(), dirlist.begin(), dirlist.end());
             return filelist;

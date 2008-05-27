@@ -80,10 +80,10 @@ namespace orxonox
         bool fail = this->stream_.fail();
 
         if (eof)
-        {
             this->stream_.flush();
+
+        if (eof || fail)
             this->stream_.clear();
-        }
 
         return (!eof && !fail);
     }
