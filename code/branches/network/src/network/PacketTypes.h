@@ -47,9 +47,7 @@ namespace network
 {
   enum packet_id {
     ACK,
-    MOUSE,
     COMMAND,
-    KEYBOARD,
     CHAT,
     GAMESTATE ,
     CLASSID,
@@ -103,16 +101,6 @@ namespace network
     int a;
   };
 
-  struct mouse {
-    int id;
-    double x;
-    double y;
-  };
-
-  struct keyboard {
-    int id;
-    char press;
-  };
   //only in this class, not PacketGenerator, used as pattern to put incoming
   //bytes inside
   struct chat {

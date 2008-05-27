@@ -139,36 +139,9 @@ namespace network
     return client_connection.closeConnection();
   }
 
-  /**
-  * submits a MouseAction to the server
-  * @param x x Coordinate
-  * @param y y Coordinate
-  * @return true/false
-  */
-  bool Client::sendMouse(double x, double y){
-    // generate packet and add it to the queue
-    if(!isConnected)
-      return false;
-    if(!client_connection.addPacket(pck_gen.mousem(x, y)))
-      return false;
-    // send packets
-    return client_connection.sendPackets();
-  }
+  
 
-  /**
-  * submits a Keystrike to the server
-  * @param key_code code to submit
-  * @return true/false
-  */
-  bool Client::sendKeyboard(char key_code){
-    // generate packet and add it to queue
-    if(!isConnected)
-      return false;
-    if(!client_connection.addPacket(pck_gen.keystrike(key_code)))
-      return false;
-    // send packets
-    return client_connection.sendPackets();
-  }
+  
 
   /**
   * submits a chat message to the server
@@ -185,32 +158,6 @@ namespace network
     return false;
   }
 
-  /**
-  * Adds a MouseAction to the PacketQueue
-  * @param x x Coordinate
-  * @param y y Coordinate
-  * @return true/false
-  */
-  bool Client::addMouse(double x, double y){
-    // generate packet and add it to the queue
-    if(client_connection.addPacket(pck_gen.mousem(x, y)))
-      return true;
-    else
-      return false;
-  }
-
-  /**
-  * Adds a Keystrike to the PacketQueue
-  * @param key_code
-  * @return true/false
-  */
-  bool Client::addKeyboard(char key_code){
-    // generate packet and add it to queue
-    if(client_connection.addPacket(pck_gen.keystrike(key_code)))
-      return true;
-    else
-      return false;
-  }
 
   /**
   * Sends out all the packets queued by addXXX

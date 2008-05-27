@@ -67,12 +67,6 @@ namespace network
       return true;
     case COMMAND:
       return command( packet, clientId );
-    case MOUSE:
-      mousem( packet, clientId );
-      return true;
-    case KEYBOARD:
-      keystrike( packet, clientId );
-      return true;
     case CHAT:
       chatMessage( packet, clientId );
       return true;
@@ -134,28 +128,6 @@ namespace network
     return true;
   }
 
-  void PacketDecoder::mousem( ENetPacket* packet, int clientId )
-  {
-    mouse* mouseMove = new mouse;
-    //copy data of packet->data to new struct
-    *mouseMove = *(mouse*)packet->data;
-
-    //clean memory
-    enet_packet_destroy( packet );
-    printMouse( mouseMove ); //debug info
-  }
-
-  void PacketDecoder::keystrike( ENetPacket* packet, int clientId )
-  {
-    keyboard* key = new keyboard;
-    *key = *(keyboard*)packet->data; //see above
-
-    //clean memory
-    enet_packet_destroy( packet );
-    printKey( key ); //debug info
-
-  }
-
   void PacketDecoder::chatMessage( ENetPacket* packet, int clientId )
   {
     chat* chatting = new chat;
@@ -188,9 +160,6 @@ namespace network
       COUT(3) << "PacketDecoder: could not generate new GameStateCompressed" << std::endl;
       return;
     }
-    //since it's not alowed to use void* for pointer arithmetic
-    //FIXME: variable never used
-    unsigned char* data = (unsigned char *)(packet->data);
     //copy the GameStateCompressed id into the struct, which is located at second place data+sizeof( int )
     memcpy( (void*)&(currentState->id), (const void*)(packet->data+1*sizeof( int )), sizeof( int) );
     COUT(5) << "PacketDecoder: received gs id: " << currentState->id << std::endl;
@@ -306,17 +275,6 @@ namespace network
     COUT(5) << "data:    " << data->a << std::endl;
   }
 
-  void PacketDecoder::printMouse( mouse* data )
-  {
-    COUT(5) << "data id: " << data->id << std::endl;
-    COUT(5) << "data:    " << data->x << " " << data->y << std::endl;
-  }
-
-  void PacketDecoder::printKey( keyboard* data )
-  {
-    COUT(5) << "data id: " << data->id << std::endl;
-    COUT(5) << "data:    " << (char)data->press << std::endl;
-  }
 
   void PacketDecoder::printChat( chat* data, int clientId )
   {
