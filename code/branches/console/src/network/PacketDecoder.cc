@@ -175,10 +175,14 @@ namespace network
 //     std::cout << "diffed: " << currentState->diffed << std::endl;
     //since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream
     if(currentState->compsize==0)
+    {
       COUT(2) << "compsize is 0" << std::endl;
+    }
     currentState->data = (unsigned char*)(malloc( currentState->compsize ));
     if(currentState->data==NULL)
+    {
       COUT(2) << "Gamestatepacket-decoder: memory leak" << std::endl;
+    }
     //copy the GameStateCompressed data
     //std::cout << "packet size (enet): " << packet->dataLength << std::endl;
     //std::cout << "totallen: " << 4*sizeof(int)+sizeof(bool)+currentState->compsize << std::endl;
@@ -251,7 +255,9 @@ namespace network
   void PacketDecoder::printChat( chat* data, int clientId )
   {
     if(clientId!=CLIENTID_CLIENT)
+    {
       COUT(5) << "client: " << clientId << std::endl;
+    }
     COUT(5) << "data id: " << data->id << std::endl;
     COUT(5) << "data:    " << data->message << std::endl;
   }

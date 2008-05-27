@@ -127,7 +127,10 @@ namespace orxonox
 #endif
     if (error == 0)
       error = lua_pcall(luaState_, 0, 0, 0);
-    if (error != 0) COUT(2) << "Error in Lua-script: " << lua_tostring(luaState_, -1) << std::endl;
+    if (error != 0)
+    {
+      COUT(2) << "Error in Lua-script: " << lua_tostring(luaState_, -1) << std::endl;
+    }
   }
 
   unsigned int Script::getNextQuote(const std::string& text, unsigned int start)

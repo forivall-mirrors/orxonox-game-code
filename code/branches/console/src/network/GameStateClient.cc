@@ -101,14 +101,18 @@ namespace network
           it=orxonox::ObjectList<Synchronisable>::end();
           // update data and create object/entity...
           if( !no->updateData(sync) && !no->create() )
+          {
             COUT(1) << "We couldn't create/update the object: " << sync.objectID << std::endl;
+          }
           ++it;
         }
       } else {
         // we have our object
         if(! it->updateData(sync))
+        {
           COUT(1) << "We couldn't update objectID: " \
           << sync.objectID << "; classID: " << sync.classID << std::endl;
+        }
       }
       ++it;
     }
