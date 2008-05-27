@@ -556,7 +556,7 @@ std::cout << "4\n";
         unsigned int index = 0;
         unsigned int lowestIndex = 1 + (CommandExecutor::getEvaluation().functionclass_ != 0);
 
-        for (unsigned int i = CommandExecutor::argumentsGiven() - 2; i >= lowestIndex; --i)
+        for (unsigned int i = CommandExecutor::argumentsGiven() - 1; i >= lowestIndex; --i)
         {
             params[index] = CommandExecutor::getArgument(i);
             ++index;

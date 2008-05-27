@@ -29,12 +29,20 @@
 #include <iostream>
 #include <map>
 
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <errno.h>
+//#include <sys/types.h>
+//#include <sys/stat.h>
+#include <dirent.h>
+
 #include "ArgumentCompletionFunctions.h"
 #include "CoreIncludes.h"
 #include "Identifier.h"
 #include "ConfigValueContainer.h"
 #include "TclThreadManager.h"
 #include "util/String.h"
+#include "util/SubString.h"
 
 namespace orxonox
 {
@@ -43,6 +51,55 @@ namespace orxonox
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(fallback)()
         {
             return std::list<std::pair<std::string, std::string> >();
+        }
+
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(files)(const std::string& fragment)
+        {
+            std::list<std::pair<std::string, std::string> > dirlist;
+            std::list<std::pair<std::string, std::string> > filelist;
+
+            SubString tokens(fragment, "/", "", false, '\0', false, '\0', false, '\0', '\0', false, '\0');
+
+            std::string startdirectory = ".";
+            if (fragment.size() > 0 && fragment[fragment.size() - 1] == '/' && tokens.size() > 0)
+                startdirectory = tokens.subSet(0, tokens.size()).join("/");
+            else if (tokens.size() > 1)
+                startdirectory = tokens.subSet(0, tokens.size() - 1).join("/");
+
+std::cout << "startdir: " << startdirectory << std::endl;
+
+            struct stat fileInfo;
+            struct dirent *currentFile;
+            DIR *handler = 0;
+
+            handler = opendir(startdirectory.c_str());
+            if (handler)
+            {
+                while ((currentFile = readdir(handler)) != 0)
+                {
+                    if (strcmp(currentFile->d_name, ".") && strcmp(currentFile->d_name, ".."))
+                    {
+                        std::string path = startdirectory + "/" + currentFile->d_name;
+                        if (stat(path.c_str(), &fileInfo) == -1)
+                        {
+                            closedir(handler);
+                            break;
+                        }
+
+                        if (S_ISREG(fileInfo.st_mode)) // normal file
+                            filelist.push_back(std::pair<std::string, std::string>(getLowercase(path), path));
+                        else if (S_ISDIR(fileInfo.st_mode)) // directory
+                            dirlist.push_back(std::pair<std::string, std::string>(getLowercase(path) + "/", path + "/"));
+                        else // special file
+                            filelist.push_back(std::pair<std::string, std::string>(getLowercase(path), path));
+                    }
+                }
+
+                closedir(handler);
+            }
+
+            filelist.insert(filelist.begin(), dirlist.begin(), dirlist.end());
+            return filelist;
         }
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalueclasses)()
@@ -56,7 +113,7 @@ namespace orxonox
             return classlist;
         }
 
-        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalues)(const std::string& classname)
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalues)(const std::string& fragment, const std::string& classname)
         {
             std::list<std::pair<std::string, std::string> > configvalues;
             std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getIdentifierMap().find(classname);
@@ -70,7 +127,7 @@ namespace orxonox
             return configvalues;
         }
 
-        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalue)(const std::string& varname, const std::string& classname)
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalue)(const std::string& fragment, const std::string& varname, const std::string& classname)
         {
             std::list<std::pair<std::string, std::string> > oldvalue;
             std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseIdentifierMap().find(getLowercase(classname));

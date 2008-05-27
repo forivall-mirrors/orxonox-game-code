@@ -63,7 +63,7 @@ namespace orxonox
                     case 5:
                         return (*this->function_5_)(param1, param2, param3, param4, param5);
                     default:
-                        return (*this->function_0_)();
+                        return std::list<std::pair<std::string, std::string> >();
                 }
             }
 

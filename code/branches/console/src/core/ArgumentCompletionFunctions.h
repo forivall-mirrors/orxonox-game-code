@@ -55,9 +55,10 @@ namespace orxonox
     namespace autocompletion
     {
         ARGUMENT_COMPLETION_FUNCTION_DECLARATION(fallback)();
+        ARGUMENT_COMPLETION_FUNCTION_DECLARATION(files)(const std::string& fragment);
         ARGUMENT_COMPLETION_FUNCTION_DECLARATION(configvalueclasses)();
-        ARGUMENT_COMPLETION_FUNCTION_DECLARATION(configvalues)(const std::string& classname);
-        ARGUMENT_COMPLETION_FUNCTION_DECLARATION(configvalue)(const std::string& varname, const std::string& classname);
+        ARGUMENT_COMPLETION_FUNCTION_DECLARATION(configvalues)(const std::string& fragment, const std::string& classname);
+        ARGUMENT_COMPLETION_FUNCTION_DECLARATION(configvalue)(const std::string& fragment, const std::string& varname, const std::string& classname);
         ARGUMENT_COMPLETION_FUNCTION_DECLARATION(tclthreads)();
     }
 }

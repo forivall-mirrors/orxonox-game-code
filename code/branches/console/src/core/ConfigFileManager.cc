@@ -41,8 +41,8 @@ namespace orxonox
     SetConsoleCommandShortcutExtern(tconfig).setArgumentCompleter(0, autocompletion::configvalueclasses()).setArgumentCompleter(1, autocompletion::configvalues()).setArgumentCompleter(2, autocompletion::configvalue());
     SetConsoleCommandShortcutExtern(reloadConfig);
     SetConsoleCommandShortcutExtern(cleanConfig);
-    SetConsoleCommandShortcutExtern(loadSettings);
-    SetConsoleCommandShortcutExtern(loadKeybindings);
+    SetConsoleCommandShortcutExtern(loadSettings).setArgumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(loadKeybindings).setArgumentCompleter(0, autocompletion::files());
 
     bool config(const std::string& classname, const std::string& varname, const std::string& value)
     {

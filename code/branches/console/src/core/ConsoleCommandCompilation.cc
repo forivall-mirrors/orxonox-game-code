@@ -33,13 +33,13 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutExtern(source);
+    SetConsoleCommandShortcutExtern(source).setArgumentCompleter(0, autocompletion::files());
     SetConsoleCommandShortcutExtern(echo);
     SetConsoleCommandShortcutExtern(puts);
 
-    SetConsoleCommandShortcutExtern(read);
-    SetConsoleCommandShortcutExtern(append);
-    SetConsoleCommandShortcutExtern(write);
+    SetConsoleCommandShortcutExtern(read).setArgumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(append).setArgumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(write).setArgumentCompleter(0, autocompletion::files());
 
     SetConsoleCommandShortcutExtern(calculate);
 
