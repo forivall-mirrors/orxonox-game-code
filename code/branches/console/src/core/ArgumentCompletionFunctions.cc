@@ -66,8 +66,6 @@ namespace orxonox
             else if (tokens.size() > 1)
                 startdirectory = tokens.subSet(0, tokens.size() - 1).join("/");
 
-std::cout << "startdir: " << startdirectory << std::endl;
-
             struct stat fileInfo;
             struct dirent *currentFile;
             DIR *handler = 0;
