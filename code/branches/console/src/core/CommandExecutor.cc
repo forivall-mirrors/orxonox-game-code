@@ -370,8 +370,8 @@ namespace orxonox
                 if (CommandExecutor::getEvaluation().listOfPossibleArguments_.size() == 1)
                 {
                     // There is exactly one possible argument
-                    CommandExecutor::getEvaluation().argument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).second;
-                    CommandExecutor::getEvaluation().possibleArgument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).second;
+                    CommandExecutor::getEvaluation().argument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).getString();
+                    CommandExecutor::getEvaluation().possibleArgument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).getString();
                     CommandExecutor::getEvaluation().state_ = CS_ParamPreparation;
                     return;
                 }
@@ -456,8 +456,6 @@ namespace orxonox
             if ((*it).second->hasConsoleCommands())
                 if ((*it).first.find(lowercase) == 0 || fragment == "")
                     CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.push_back(std::pair<const std::string*, const std::string*>(&(*it).first, &(*it).second->getName()));
-
-        CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.sort(CommandExecutor::compareStringsInList);
     }
 
     void CommandExecutor::createListOfPossibleFunctions(const std::string& fragment, Identifier* identifier)
@@ -476,8 +474,6 @@ namespace orxonox
                 if ((*it).first.find(lowercase) == 0 || fragment == "")
                     CommandExecutor::getEvaluation().listOfPossibleFunctions_.push_back(std::pair<const std::string*, const std::string*>(&(*it).first, &(*it).second->getName()));
         }
-
-        CommandExecutor::getEvaluation().listOfPossibleFunctions_.sort(CommandExecutor::compareStringsInList);
     }
 
     void CommandExecutor::createListOfPossibleArguments(const std::string& fragment, ConsoleCommand* command, unsigned int param)
@@ -486,11 +482,19 @@ namespace orxonox
 
         CommandExecutor::getEvaluation().listOfPossibleArguments_.clear();
         std::string lowercase = getLowercase(fragment);
-        for (std::list<std::pair<std::string, std::string> >::const_iterator it = command->getArgumentCompletionListBegin(); it != command->getArgumentCompletionListEnd(); ++it)
-            if ((*it).first.find(lowercase) == 0 || fragment == "")
-                CommandExecutor::getEvaluation().listOfPossibleArguments_.push_back(std::pair<std::string, std::string>((*it).first, (*it).second));
-
-        CommandExecutor::getEvaluation().listOfPossibleArguments_.sort(CommandExecutor::compareStringsInList2);
+        for (ArgumentCompletionList::const_iterator it = command->getArgumentCompletionListBegin(); it != command->getArgumentCompletionListEnd(); ++it)
+        {
+            if ((*it).lowercaseComparison())
+            {
+                if ((*it).getComparable().find(lowercase) == 0 || fragment == "")
+                    CommandExecutor::getEvaluation().listOfPossibleArguments_.push_back(*it);
+            }
+            else
+            {
+                if ((*it).getComparable().find(fragment) == 0 || fragment == "")
+                    CommandExecutor::getEvaluation().listOfPossibleArguments_.push_back(*it);
+            }
+        }
     }
 
     Identifier* CommandExecutor::getPossibleIdentifier(const std::string& name)
@@ -526,10 +530,18 @@ namespace orxonox
         CommandExecutor::createArgumentCompletionList(command, param);
 
         std::string lowercase = getLowercase(name);
-        for (std::list<std::pair<std::string, std::string> >::const_iterator it = command->getArgumentCompletionListBegin(); it != command->getArgumentCompletionListEnd(); ++it)
+        for (ArgumentCompletionList::const_iterator it = command->getArgumentCompletionListBegin(); it != command->getArgumentCompletionListEnd(); ++it)
         {
-            if ((*it).first == lowercase)
-                return (*it).second;
+            if ((*it).lowercaseComparison())
+            {
+                if ((*it).getComparable() == lowercase)
+                    return (*it).getString();
+            }
+            else
+            {
+                if ((*it).getComparable() == name)
+                    return (*it).getString();
+            }
         }
 
         return "";
@@ -594,7 +606,7 @@ namespace orxonox
         }
     }
 
-    std::string CommandExecutor::getCommonBegin(const std::list<std::pair<std::string, std::string> >& list)
+    std::string CommandExecutor::getCommonBegin(const ArgumentCompletionList& list)
     {
         if (list.size() == 0)
         {
@@ -602,7 +614,7 @@ namespace orxonox
         }
         else if (list.size() == 1)
         {
-            return ((*list.begin()).first + " ");
+            return ((*list.begin()).getComparable() + " ");
         }
         else
         {
@@ -610,17 +622,18 @@ namespace orxonox
             for (unsigned int i = 0; true; i++)
             {
                 char temp = 0;
-                for (std::list<std::pair<std::string, std::string> >::const_iterator it = list.begin(); it != list.end(); ++it)
+                for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
                 {
-                    if ((*it).first.size() > i)
+                    std::string argument = (*it).getComparable();
+                    if (argument.size() > i)
                     {
                         if (it == list.begin())
                         {
-                            temp = (*it).first[i];
+                            temp = argument[i];
                         }
                         else
                         {
-                            if (temp != (*it).first[i])
+                            if (temp != argument[i])
                                 return output;
                         }
                     }
@@ -633,15 +646,5 @@ namespace orxonox
             }
             return output;
         }
-    }
-
-    bool CommandExecutor::compareStringsInList(const std::pair<const std::string*, const std::string*>& first, const std::pair<const std::string*, const std::string*>& second)
-    {
-        return ((*first.first) < (*second.first));
-    }
-
-    bool CommandExecutor::compareStringsInList2(const std::pair<std::string, std::string>& first, const std::pair<std::string, std::string>& second)
-    {
-        return (first.first < second.first);
     }
 }

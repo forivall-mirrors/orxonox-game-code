@@ -33,7 +33,6 @@
 
 #include "Executor.h"
 #include "ClassManager.h"
-#include "Identifier.h"
 #include "CommandExecutor.h"
 #include "ArgumentCompletionFunctions.h"
 
@@ -103,17 +102,17 @@ namespace orxonox
             ArgumentCompleter* getArgumentCompleter(unsigned int param) const;
 
             void createArgumentCompletionList(unsigned int param, const std::string& param1 = "", const std::string& param2 = "", const std::string& param3 = "", const std::string& param4 = "", const std::string& param5 = "");
-            const std::list<std::pair<std::string, std::string> >& getArgumentCompletionList() const
+            const ArgumentCompletionList& getArgumentCompletionList() const
                 { return this->argumentList_; }
-            std::list<std::pair<std::string, std::string> >::const_iterator getArgumentCompletionListBegin() const
+            ArgumentCompletionList::const_iterator getArgumentCompletionListBegin() const
                 { return this->argumentList_.begin(); }
-            std::list<std::pair<std::string, std::string> >::const_iterator getArgumentCompletionListEnd() const
+            ArgumentCompletionList::const_iterator getArgumentCompletionListEnd() const
                 { return this->argumentList_.end(); }
 
         private:
             AccessLevel::Level accessLevel_;
             ArgumentCompleter* argumentCompleter_[5];
-            std::list<std::pair<std::string, std::string> > argumentList_;
+            ArgumentCompletionList argumentList_;
     };
 
     inline ConsoleCommand* createConsoleCommand(FunctorStatic* functor, const std::string& name = "")

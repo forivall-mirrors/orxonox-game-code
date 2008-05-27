@@ -631,15 +631,12 @@ namespace orxonox
         }
     }
 
-    std::list<std::pair<std::string, std::string> > TclThreadManager::getThreadList() const
+    std::list<unsigned int> TclThreadManager::getThreadList() const
     {
         boost::mutex::scoped_lock bundles_lock(TclThreadManager::getInstance().bundlesMutex_);
-        std::list<std::pair<std::string, std::string> > threads;
+        std::list<unsigned int> threads;
         for (std::map<unsigned int, TclInterpreterBundle*>::const_iterator it = this->interpreterBundles_.begin(); it != this->interpreterBundles_.end(); ++it)
-        {
-            std::string number = getConvertedValue<unsigned int, std::string>((*it).first);
-            threads.push_back(std::pair<std::string, std::string>(number, number));
-        }
+            threads.push_back((*it).first);
         return threads;
     }
 

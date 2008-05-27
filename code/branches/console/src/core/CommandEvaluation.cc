@@ -270,15 +270,15 @@ namespace orxonox
         return output;
     }
 
-    std::string CommandEvaluation::dump(const std::list<std::pair<std::string, std::string> >& list)
+    std::string CommandEvaluation::dump(const ArgumentCompletionList& list)
     {
         std::string output = "";
-        for (std::list<std::pair<std::string, std::string> >::const_iterator it = list.begin(); it != list.end(); ++it)
+        for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
         {
             if (it != list.begin())
                 output += " ";
 
-            output += (*it).second;
+            output += (*it).getDisplay();
         }
         return output;
     }

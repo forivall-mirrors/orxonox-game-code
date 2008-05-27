@@ -29,24 +29,22 @@
 #ifndef _ArgumentCompleter_H__
 #define _ArgumentCompleter_H__
 
-#include <list>
-#include <string>
-
 #include "CorePrereqs.h"
+#include "ArgumentCompletionListElement.h"
 
 namespace orxonox
 {
     class _CoreExport ArgumentCompleter
     {
         public:
-            ArgumentCompleter(std::list<std::pair<std::string, std::string> > (*function) (void)) : paramCount_(0), function_0_(function) {}
-            ArgumentCompleter(std::list<std::pair<std::string, std::string> > (*function) (const std::string& param1)) : paramCount_(1), function_1_(function) {}
-            ArgumentCompleter(std::list<std::pair<std::string, std::string> > (*function) (const std::string& param1, const std::string& param2)) : paramCount_(2), function_2_(function) {}
-            ArgumentCompleter(std::list<std::pair<std::string, std::string> > (*function) (const std::string& param1, const std::string& param2, const std::string& param3)) : paramCount_(3), function_3_(function) {}
-            ArgumentCompleter(std::list<std::pair<std::string, std::string> > (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4)) : paramCount_(4), function_4_(function) {}
-            ArgumentCompleter(std::list<std::pair<std::string, std::string> > (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5)) : paramCount_(5), function_5_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (void)) : paramCount_(0), function_0_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1)) : paramCount_(1), function_1_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2)) : paramCount_(2), function_2_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3)) : paramCount_(3), function_3_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4)) : paramCount_(4), function_4_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5)) : paramCount_(5), function_5_(function) {}
 
-            std::list<std::pair<std::string, std::string> > operator()(const std::string& param1 = "", const std::string& param2 = "", const std::string& param3 = "", const std::string& param4 = "", const std::string& param5 = "")
+            ArgumentCompletionList operator()(const std::string& param1 = "", const std::string& param2 = "", const std::string& param3 = "", const std::string& param4 = "", const std::string& param5 = "")
             {
                 switch (this->paramCount_)
                 {
@@ -63,18 +61,18 @@ namespace orxonox
                     case 5:
                         return (*this->function_5_)(param1, param2, param3, param4, param5);
                     default:
-                        return std::list<std::pair<std::string, std::string> >();
+                        return ArgumentCompletionList();
                 }
             }
 
         private:
             unsigned char paramCount_;
-            std::list<std::pair<std::string, std::string> > (*function_0_) (void);
-            std::list<std::pair<std::string, std::string> > (*function_1_) (const std::string& param1);
-            std::list<std::pair<std::string, std::string> > (*function_2_) (const std::string& param1, const std::string& param2);
-            std::list<std::pair<std::string, std::string> > (*function_3_) (const std::string& param1, const std::string& param2, const std::string& param3);
-            std::list<std::pair<std::string, std::string> > (*function_4_) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4);
-            std::list<std::pair<std::string, std::string> > (*function_5_) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5);
+            ArgumentCompletionList (*function_0_) (void);
+            ArgumentCompletionList (*function_1_) (const std::string& param1);
+            ArgumentCompletionList (*function_2_) (const std::string& param1, const std::string& param2);
+            ArgumentCompletionList (*function_3_) (const std::string& param1, const std::string& param2, const std::string& param3);
+            ArgumentCompletionList (*function_4_) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4);
+            ArgumentCompletionList (*function_5_) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5);
     };
 }
 

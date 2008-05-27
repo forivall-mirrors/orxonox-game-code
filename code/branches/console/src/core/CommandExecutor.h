@@ -35,8 +35,6 @@
 
 #include "CommandEvaluation.h"
 
-#define COMMAND_EXECUTOR_CURSOR "$"
-
 namespace orxonox
 {
     class _CoreExport CommandExecutor
@@ -94,10 +92,7 @@ namespace orxonox
 
             static void createArgumentCompletionList(ConsoleCommand* command, unsigned int param);
             static std::string getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list);
-            static std::string getCommonBegin(const std::list<std::pair<std::string, std::string> >& list);
-            static bool compareStringsInList(const std::pair<const std::string*, const std::string*>& first, const std::pair<const std::string*, const std::string*>& second);
-            static bool compareStringsInList2(const std::pair<std::string, std::string>& first, const std::pair<std::string, std::string>& second);
-
+            static std::string getCommonBegin(const ArgumentCompletionList& list);
 
             CommandEvaluation evaluation_;
             std::map<std::string, ConsoleCommand*> consoleCommandShortcuts_;

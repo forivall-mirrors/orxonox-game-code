@@ -34,6 +34,7 @@
 #include <string>
 #include <list>
 
+#include "ArgumentCompletionListElement.h"
 #include "util/SubString.h"
 #include "util/MultiTypeMath.h"
 
@@ -81,7 +82,7 @@ namespace orxonox
         private:
             unsigned int getStartindex() const;
             static std::string dump(const std::list<std::pair<const std::string*, const std::string*> >& list);
-            static std::string dump(const std::list<std::pair<std::string, std::string> >& list);
+            static std::string dump(const ArgumentCompletionList& list);
             static std::string dump(const ConsoleCommand* command);
 
 
@@ -95,7 +96,7 @@ namespace orxonox
 
             std::list<std::pair<const std::string*, const std::string*> > listOfPossibleIdentifiers_;
             std::list<std::pair<const std::string*, const std::string*> > listOfPossibleFunctions_;
-            std::list<std::pair<std::string, std::string> > listOfPossibleArguments_;
+            ArgumentCompletionList listOfPossibleArguments_;
 
             Identifier* functionclass_;
             ConsoleCommand* function_;

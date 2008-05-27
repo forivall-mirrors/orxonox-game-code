@@ -29,16 +29,13 @@
 #ifndef _ArgumentCompletionFunctions_H__
 #define _ArgumentCompletionFunctions_H__
 
-#include <list>
-#include <string>
-
-#include "ArgumentCompleter.h"
 #include "CorePrereqs.h"
+#include "ArgumentCompleter.h"
 
 
 #define ARGUMENT_COMPLETION_FUNCTION_DECLARATION(functionname) \
     ArgumentCompleter* functionname(); \
-    _CoreExport std::list<std::pair<std::string, std::string> > acf_##functionname
+    _CoreExport ArgumentCompletionList acf_##functionname
 
 #define ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(functionname) \
     ArgumentCompleter* functionname() \
@@ -47,7 +44,7 @@
         return &completer; \
     } \
     \
-    std::list<std::pair<std::string, std::string> > acf_##functionname
+    ArgumentCompletionList acf_##functionname
 
 
 namespace orxonox

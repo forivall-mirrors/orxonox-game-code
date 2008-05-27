@@ -29,11 +29,6 @@
 #include <iostream>
 #include <map>
 
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <errno.h>
-//#include <sys/types.h>
-//#include <sys/stat.h>
 #include <dirent.h>
 
 #include "ArgumentCompletionFunctions.h"
@@ -41,6 +36,7 @@
 #include "Identifier.h"
 #include "ConfigValueContainer.h"
 #include "TclThreadManager.h"
+#include "util/Convert.h"
 #include "util/String.h"
 #include "util/SubString.h"
 
@@ -50,13 +46,13 @@ namespace orxonox
     {
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(fallback)()
         {
-            return std::list<std::pair<std::string, std::string> >();
+            return ArgumentCompletionList();
         }
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(files)(const std::string& fragment)
         {
-            std::list<std::pair<std::string, std::string> > dirlist;
-            std::list<std::pair<std::string, std::string> > filelist;
+            ArgumentCompletionList dirlist;
+            ArgumentCompletionList filelist;
 
             SubString tokens(fragment, "/", "", false, '\0', false, '\0', false, '\0', '\0', false, '\0');
 
@@ -85,11 +81,11 @@ namespace orxonox
                         }
 
                         if (S_ISREG(fileInfo.st_mode)) // normal file
-                            filelist.push_back(std::pair<std::string, std::string>(getLowercase(path), path));
+                            filelist.push_back(ArgumentCompletionListElement(path, getLowercase(path), currentFile->d_name));
                         else if (S_ISDIR(fileInfo.st_mode)) // directory
-                            dirlist.push_back(std::pair<std::string, std::string>(getLowercase(path) + "/", path + "/"));
+                            dirlist.push_back(ArgumentCompletionListElement(path + "/", getLowercase(path) + "/", std::string(currentFile->d_name) + "/"));
                         else // special file
-                            filelist.push_back(std::pair<std::string, std::string>(getLowercase(path), path));
+                            filelist.push_back(ArgumentCompletionListElement(path, getLowercase(path), currentFile->d_name));
                     }
                 }
 
@@ -102,24 +98,24 @@ namespace orxonox
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalueclasses)()
         {
-            std::list<std::pair<std::string, std::string> > classlist;
+            ArgumentCompletionList classlist;
 
             for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getIdentifierMapBegin(); it != Identifier::getIdentifierMapEnd(); ++it)
                 if ((*it).second->hasConfigValues())
-                    classlist.push_back(std::pair<std::string, std::string>(getLowercase((*it).first), (*it).second->getName()));
+                    classlist.push_back(ArgumentCompletionListElement((*it).second->getName(), getLowercase((*it).first)));
 
             return classlist;
         }
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalues)(const std::string& fragment, const std::string& classname)
         {
-            std::list<std::pair<std::string, std::string> > configvalues;
+            ArgumentCompletionList configvalues;
             std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getIdentifierMap().find(classname);
 
             if (identifier != Identifier::getIdentifierMapEnd() && (*identifier).second->hasConfigValues())
             {
                 for (std::map<std::string, ConfigValueContainer*>::const_iterator it = (*identifier).second->getConfigValueMapBegin(); it != (*identifier).second->getConfigValueMapEnd(); ++it)
-                    configvalues.push_back(std::pair<std::string, std::string>(getLowercase((*it).first), (*it).second->getName()));
+                    configvalues.push_back(ArgumentCompletionListElement((*it).second->getName(), getLowercase((*it).first)));
             }
 
             return configvalues;
@@ -127,7 +123,7 @@ namespace orxonox
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalue)(const std::string& fragment, const std::string& varname, const std::string& classname)
         {
-            std::list<std::pair<std::string, std::string> > oldvalue;
+            ArgumentCompletionList oldvalue;
             std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseIdentifierMap().find(getLowercase(classname));
             if (identifier != Identifier::getLowercaseIdentifierMapEnd())
             {
@@ -135,7 +131,7 @@ namespace orxonox
                 if (variable != (*identifier).second->getLowercaseConfigValueMapEnd())
                 {
                     std::string valuestring = (*variable).second->toString();
-                    oldvalue.push_back(std::pair<std::string, std::string>(valuestring, valuestring));
+                    oldvalue.push_back(ArgumentCompletionListElement(valuestring, getLowercase(valuestring), "Old value: " + valuestring));
                 }
             }
             return oldvalue;
@@ -143,7 +139,13 @@ namespace orxonox
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(tclthreads)()
         {
-            return TclThreadManager::getInstance().getThreadList();
+            std::list<unsigned int> threadnumbers = TclThreadManager::getInstance().getThreadList();
+            ArgumentCompletionList threads;
+
+            for (std::list<unsigned int>::const_iterator it = threadnumbers.begin(); it != threadnumbers.end(); ++it)
+                threads.push_back(ArgumentCompletionListElement(getConvertedValue<unsigned int, std::string>(*it)));
+
+            return threads;
         }
     }
 }

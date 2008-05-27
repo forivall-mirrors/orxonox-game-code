@@ -77,6 +77,7 @@ namespace orxonox
   typedef std::string LanguageEntryLabel;
 
   class ArgumentCompleter;
+  class ArgumentCompletionListElement;
   class BaseFactory;
   class BaseMetaObjectListElement;
   class BaseObject;
