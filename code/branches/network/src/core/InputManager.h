@@ -77,6 +77,13 @@ namespace orxonox
     std::vector<std::pair<InputTickable*, HandlerState> > activeHandlers_;
   };
 
+  struct JoyStickCalibration
+  {
+    int zeroStates[24];
+    float positiveCoeff[24];
+    float negativeCoeff[24];
+  };
+
   /**
     @brief Captures and distributes mouse and keyboard input.
   */
@@ -97,8 +104,13 @@ namespace orxonox
       IS_CONSOLE,   //!< Keyboard input is redirected to the InputBuffer.
       IS_DETECT,    //!< All the input additionally goes to the KeyDetector
       IS_NODETECT,  //!< remove KeyDetector
+      IS_NOCALIBRATE,
+      IS_CALIBRATE,
       IS_CUSTOM     //!< Any possible configuration.
     };
+
+  public: // member functions
+    void setConfigValues();
 
   public: // static functions
     static bool initialise(const size_t windowHnd, int windowWidth, int windowHeight,
@@ -127,6 +139,8 @@ namespace orxonox
 
     static void storeKeyStroke(const std::string& name);
     static void keyBind(const std::string& command);
+
+    static void calibrate();
 
     static bool addKeyHandler                 (KeyHandler* handler, const std::string& name);
     static bool removeKeyHandler              (const std::string& name);
@@ -171,6 +185,11 @@ namespace orxonox
     void _saveState();
     void _restoreState();
 
+    void _completeCalibration();
+
+    void _fireAxis(unsigned int iJoyStick, int axis, int value);
+    unsigned int _getJoystick(const OIS::JoyStickEvent& arg);
+
     void tick(float dt);
 
     // input events
@@ -199,17 +218,26 @@ namespace orxonox
     KeyBinder*                                  keyBinder_;       //!< KeyBinder instance
     KeyDetector*                                keyDetector_;     //!< KeyDetector instance
     InputBuffer*                                buffer_;          //!< InputBuffer instance
+    CalibratorCallback*                         calibratorCallback_;
 
     InputState state_;
     InputState stateRequest_;
-    unsigned int keyboardModifiers_;
     InputState savedState_;
+    unsigned int keyboardModifiers_;
     StoredState savedHandlers_;
+
+    // joystick calibration
+    //std::vector<int> marginalsMaxConfig_;
+    //std::vector<int> marginalsMinConfig_;
+    int marginalsMax_[24];
+    int marginalsMin_[24];
+    bool bCalibrated_;
 
     //! Keeps track of the joy stick POV states
     std::vector<POVStates>                      povStates_;
     //! Keeps track of the possibly two slider axes
     std::vector<SliderStates>                   sliderStates_;
+    std::vector<JoyStickCalibration>            joySticksCalibration_;
 
     std::map<std::string, KeyHandler*>          keyHandlers_;
     std::map<std::string, MouseHandler*>        mouseHandlers_;

@@ -124,14 +124,14 @@ namespace orxonox
             if(isAbove && isRight){
                 // top right quadrant
                 if(-phiNav<phiUpperCorner){
-                    COUT(3) << "arrow up\n";
+                    //COUT(3) << "arrow up\n";
                     navMarker_->setPosition(-tan(phiNav)*windowH_/2+windowW_/2, 0);
                     navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
                     navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
                     navText_->setTop(navMarker_->getHeight());
                 }
                 else {
-                    COUT(3) << "arrow right\n";
+                    //COUT(3) << "arrow right\n";
                     navMarker_->setPosition(windowW_-16, tan((3.14-2*phiNav)/2)*windowW_/2+windowH_/2);
                     navMarker_->setUV(0.5, 0.5, 1.0, 1.0);
                     navText_->setLeft(navMarker_->getLeft()-navMarker_->getWidth());
@@ -141,14 +141,14 @@ namespace orxonox
             if(!isAbove && isRight){
                 // bottom right quadrant
                 if(phiNav<phiUpperCorner) {
-                    COUT(3) << "arrow down\n";
+                    //COUT(3) << "arrow down\n";
                     navMarker_->setPosition(tan(phiNav)*windowH_/2+windowW_/2, windowH_-16);
                     navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
                     navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
                     navText_->setTop(navMarker_->getTop()-navMarker_->getHeight());
                 }
                 else {
-                    COUT(3) << "arrow right\n";
+                    //COUT(3) << "arrow right\n";
                     navMarker_->setPosition(windowW_-16, tan((3.14-2*phiNav)/2)*windowW_/2+windowH_/2);
                     navMarker_->setUV(0.5, 0.5, 1.0, 1.0);
                     navText_->setLeft(navMarker_->getLeft()-navMarker_->getWidth());
@@ -158,14 +158,14 @@ namespace orxonox
             if(isAbove && !isRight){
                 // top left quadrant
                 if(phiNav<phiUpperCorner){
-                    COUT(3) << "arrow up\n";
+                    //COUT(3) << "arrow up\n";
                     navMarker_->setPosition(-tan(phiNav)*windowH_/2+windowW_/2, 0);
                     navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
                     navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
                     navText_->setTop(navMarker_->getHeight());
                 }
                 else {
-                    COUT(3) << "arrow left\n";
+                    //COUT(3) << "arrow left\n";
                     navMarker_->setPosition(0, -tan((3.14-2*phiNav)/2)*windowW_/2+windowH_/2);
                     navMarker_->setUV(0.0, 0.0, 0.5, 0.5);
                     navText_->setLeft(navMarker_->getWidth());
@@ -175,14 +175,14 @@ namespace orxonox
             if(!isAbove && !isRight){
                 // bottom left quadrant
                 if(phiNav>-phiUpperCorner) {
-                    COUT(3) << "arrow down\n";
+                    //COUT(3) << "arrow down\n";
                     navMarker_->setPosition(tan(phiNav)*windowH_/2+windowW_/2, windowH_-16);
                     navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
                     navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
                     navText_->setTop(navMarker_->getTop()-navMarker_->getHeight());
                 }
                 else {
-                    COUT(3) << "arrow left\n";
+                    //COUT(3) << "arrow left\n";
                     navMarker_->setPosition(0, -tan((3.14-2*phiNav)/2)*windowW_/2+windowH_/2);
                     navMarker_->setUV(0.0, 0.0, 0.5, 0.5);
                     navText_->setLeft(navMarker_->getWidth());

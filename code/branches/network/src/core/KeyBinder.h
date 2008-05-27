@@ -164,7 +164,7 @@ namespace orxonox
     void joyStickButtonPressed (int joyStickID, int button);
     void joyStickButtonReleased(int joyStickID, int button);
     void joyStickButtonHeld    (int joyStickID, int button);
-    void joyStickAxisMoved     (int joyStickID, int axis, int value);
+    void joyStickAxisMoved     (int joyStickID, int axis, float value);
 
   protected: // variables
     //! denotes the number of different keys there are in OIS.
@@ -191,7 +191,7 @@ namespace orxonox
     * Sequence is as follows:
     *  0 -  3: Mouse x and y
     *  4 -  7: empty
-    *  8 - 23: joy stick (slider) axes 1 to 8
+    *  8 - 23: joy stick slider axes 1 to 8
     * 24 - 55: joy stick axes 1 - 16
     */
     HalfAxis halfAxes_[nHalfAxes_s];
@@ -235,6 +235,20 @@ namespace orxonox
 
   protected:
     void readTrigger(Button& button);
+  };
+
+  class _CoreExport CalibratorCallback : public KeyHandler
+  {
+  public:
+    CalibratorCallback() {}
+    ~CalibratorCallback() {}
+
+  private:
+    void keyPressed (const KeyEvent& evt);
+    void keyReleased(const KeyEvent& evt) {}
+    void keyHeld    (const KeyEvent& evt) {}
+
+    void tickInput(float dt, const HandlerState &state) { }
   };
 }
 

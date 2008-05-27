@@ -155,6 +155,8 @@ namespace orxonox
 
   // input
   //class GUIInputHandler;
+  class Calibrator;
+  class CalibratorCallback;
   class InputBuffer;
   class InputBufferListener;
   class InputManager;

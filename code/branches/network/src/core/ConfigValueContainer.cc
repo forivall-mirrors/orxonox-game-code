@@ -138,7 +138,7 @@ namespace orxonox
 
     /**
         @brief Assigns a new value to the config-value of all objects and writes the change into the config-file.
-        @param input The new value
+        @param input The new value. If bIsVector_ then write "index value"
         @return True if the new value was successfully assigned
     */
     bool ConfigValueContainer::set(const std::string& input)

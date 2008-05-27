@@ -33,6 +33,7 @@
 
 #include "KeyBinder.h"
 #include <fstream>
+#include <limits.h>
 #include "util/Convert.h"
 #include "util/SubString.h"
 #include "util/String.h"
@@ -41,6 +42,8 @@
 #include "CoreIncludes.h"
 #include "CommandExecutor.h"
 #include "Executor.h"
+// TODO: only needed by the CalibratorCallback class; move to new file
+#include "InputManager.h"
 
 namespace orxonox
 {
@@ -804,7 +807,7 @@ namespace orxonox
         mouseButtons_[9].execute(KeybindMode::OnPress, ((float)abs)/120.0f);
   }
 
-  void KeyBinder::joyStickAxisMoved(int joyStickID, int axis, int value)
+  void KeyBinder::joyStickAxisMoved(int joyStickID, int axis, float value)
   {
     // TODO: Use proper calibration values instead of generally 16-bit integer
     int i = 8 + axis * 2;
@@ -813,10 +816,10 @@ namespace orxonox
       //if (value > 10000)
       //{ CCOUT(3) << halfAxes_[i].name_ << std::endl; }
 
-      halfAxes_[i].absVal_ = ((float)value)/0x8000;
-      halfAxes_[i].relVal_ = ((float)value)/0x8000;
+      halfAxes_[i].absVal_ = value;
+      halfAxes_[i].relVal_ = value;
       halfAxes_[i].hasChanged_ = true;
-      if (halfAxes_[i + 1].absVal_ > 0)
+      if (halfAxes_[i + 1].absVal_ > 0.0f)
       {
         halfAxes_[i + 1].absVal_ = -0.0f;
         halfAxes_[i + 1].relVal_ = -0.0f;
@@ -828,10 +831,10 @@ namespace orxonox
       //if (value < -10000)
       //{ CCOUT(3) << halfAxes_[i + 1].name_ << std::endl; }
 
-      halfAxes_[i + 1].absVal_ = -((float)value)/0x8000;
-      halfAxes_[i + 1].relVal_ = -((float)value)/0x8000;
+      halfAxes_[i + 1].absVal_ = -value;
+      halfAxes_[i + 1].relVal_ = -value;
       halfAxes_[i + 1].hasChanged_ = true;
-      if (halfAxes_[i].absVal_ > 0)
+      if (halfAxes_[i].absVal_ > 0.0f)
       {
         halfAxes_[i].absVal_ = -0.0f;
         halfAxes_[i].relVal_ = -0.0f;
@@ -878,5 +881,17 @@ namespace orxonox
     button.commands_[KeybindMode::OnPress][0] = cmd;
     button.nCommands_[KeybindMode::OnPress] = 1;
   }
-  
+
+
+  // ###############################
+  // ##### CalibratorCallback  #####
+  // ###############################
+
+  void CalibratorCallback::keyPressed(const orxonox::KeyEvent &evt)
+  {
+    if (evt.key == KeyCode::Return)
+    {
+      InputManager::setInputState(InputManager::IS_NOCALIBRATE);
+    }
+  }
 }

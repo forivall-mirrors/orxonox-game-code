@@ -120,17 +120,4 @@
         COUT(2) << "Warning: Couln't modify config-value '" << #varname << "', corresponding container doesn't exist." << std::endl; \
     }
 
-/**
-    @brief Assigns the command, defined in the keybind-file, to the key-variable (or an empty string, if there is no entry in the file).
-    @param varname The name of the key-variable
-*/
-#define SetKeybind(keyname) \
-    orxonox::ConfigValueContainer* container##keyname = this->getIdentifier()->getConfigValueContainer(#keyname); \
-    if (!container##keyname) \
-    { \
-        container##keyname = new orxonox::ConfigValueContainer(CFT_Keybindings, this->getIdentifier(), #keyname, keyname = ""); \
-        this->getIdentifier()->addConfigValueContainer(#keyname, container##keyname); \
-    } \
-    container##keyname->getValue(&varname)
-
 #endif /* _ConfigValueIncludes_H__ */

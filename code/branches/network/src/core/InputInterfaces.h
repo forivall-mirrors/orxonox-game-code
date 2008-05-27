@@ -312,7 +312,7 @@ namespace orxonox
     virtual void joyStickButtonPressed (int joyStickID, int button) = 0;
     virtual void joyStickButtonReleased(int joyStickID, int button) = 0;
     virtual void joyStickButtonHeld    (int joyStickID, int button) = 0;
-    virtual void joyStickAxisMoved     (int joyStickID, int axis, int value) = 0;
+    virtual void joyStickAxisMoved     (int joyStickID, int axis, float value) = 0;
     //virtual bool joyStickVector3Moved  (int joyStickID, int index /*, fill list*/) {return true;}
     //virtual void tickJoyStick          (float dt) { }
   };
