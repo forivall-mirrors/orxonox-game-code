@@ -84,6 +84,7 @@ namespace orxonox
 
             this->rotationRate_ += (dt * this->momentum_);
             this->rotate(this->rotationAxis_, dt * this->rotationRate_);
+            COUT(3) << "rotationrate: " << this->rotationRate_.valueDegrees() << " momentum: " << this->momentum_.valueDegrees() << std::endl;
         }
     }
 
@@ -137,14 +138,14 @@ namespace orxonox
       registerVar( (void*) &(this->getOrientation().y), sizeof(this->getOrientation().y), network::DATA, 0x3);
       registerVar( (void*) &(this->getOrientation().z), sizeof(this->getOrientation().z), network::DATA, 0x3);
       // register velocity_
-      registerVar( (void*) &(this->getVelocity().x), sizeof(this->getVelocity().x), network::DATA, 0x3);
+      /*registerVar( (void*) &(this->getVelocity().x), sizeof(this->getVelocity().x), network::DATA, 0x3);
       registerVar( (void*) &(this->getVelocity().y), sizeof(this->getVelocity().y), network::DATA, 0x3);
       registerVar( (void*) &(this->getVelocity().z), sizeof(this->getVelocity().z), network::DATA, 0x3);
       // register rotationAxis/rate
       registerVar( (void*) &(this->getRotationRate()), sizeof(this->getRotationRate()), network::DATA, 0x3);
       registerVar( (void*) &(this->getRotationAxis().x), sizeof(this->getRotationAxis().x), network::DATA, 0x3);
       registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA, 0x3);
-      registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA, 0x3);
+      registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA, 0x3);*/
       // register scale of node
       registerVar( (void*) &(this->getScale().x), sizeof(this->getScale().x), network::DATA, 0x3);
       registerVar( (void*) &(this->getScale().y), sizeof(this->getScale().y), network::DATA, 0x3);

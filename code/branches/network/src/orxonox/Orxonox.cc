@@ -403,7 +403,8 @@ namespace orxonox
 
       client_g = network::Client::createSingleton(serverIp_, serverPort_);
 
-    client_g->establishConnection();
+    if(!client_g->establishConnection())
+      return false;
     client_g->tick(0);
 
     return true;
