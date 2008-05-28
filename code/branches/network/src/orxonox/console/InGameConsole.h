@@ -93,6 +93,7 @@ namespace orxonox
             Ogre::Overlay* consoleOverlay_;
             Ogre::OverlayContainer* consoleOverlayContainer_;
             Ogre::PanelOverlayElement* consoleOverlayNoise_;
+            Ogre::PanelOverlayElement* consoleOverlayCursor_;
             Ogre::BorderPanelOverlayElement* consoleOverlayBorder_;
             Ogre::TextAreaOverlayElement** consoleOverlayTextAreas_;
     };

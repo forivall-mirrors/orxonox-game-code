@@ -241,9 +241,17 @@ namespace orxonox
         this->consoleOverlayNoise_->setPosition(5,0);
         this->consoleOverlayNoise_->setMaterialName("ConsoleNoise");
 
+        // create cursor
+        this->consoleOverlayCursor_ = static_cast<PanelOverlayElement*>(this->om_->createOverlayElement("Panel", "InGameConsoleCursor"));
+        this->consoleOverlayCursor_->setMetricsMode(Ogre::GMM_PIXELS);
+        this->consoleOverlayCursor_->setPosition(40,217);
+        this->consoleOverlayCursor_->setDimensions(2, 20);
+        this->consoleOverlayCursor_->setMaterialName("ConsoleNoise");
+
         this->consoleOverlay_ = this->om_->create("InGameConsoleConsole");
         this->consoleOverlay_->add2D(this->consoleOverlayContainer_);
         this->consoleOverlayContainer_->addChild(this->consoleOverlayBorder_);
+        this->consoleOverlayContainer_->addChild(this->consoleOverlayCursor_);
         //comment following line to disable noise
         this->consoleOverlayContainer_->addChild(this->consoleOverlayNoise_);
         for (int i = 0; i < LINES; i++)
