@@ -102,8 +102,8 @@ namespace orxonox
         pos = navCam_->getProjectionMatrix()*navCam_->getViewMatrix()*pos;
         float xPosRel = 0.5*pos.x+0.5;
         float yPosRel = 1-(0.5*pos.y+0.5);
-        int xPos = (int) xPosRel*windowW_;
-        int yPos = (int) yPosRel*windowH_;
+        int xPos = (int) (xPosRel*windowW_);
+        int yPos = (int) (yPosRel*windowH_);
         int xFromCenter = xPos-windowW_/2;
         int yFromCenter = yPos-windowH_/2;
         // is object in view?
