@@ -47,6 +47,8 @@
 namespace orxonox
 {
     SetConsoleCommandShortcut(HUD, cycleNavigationFocus).setAccessLevel(AccessLevel::User);
+    SetConsoleCommandShortcut(HUD, toggleFPS).setAccessLevel(AccessLevel::User);
+    SetConsoleCommandShortcut(HUD, toggleRenderTime).setAccessLevel(AccessLevel::User);
 
     using namespace Ogre;
 
@@ -55,6 +57,8 @@ namespace orxonox
         sm = GraphicsEngine::getSingleton().getSceneManager();
         firstRadarObject = NULL;
         lastRadarObject = NULL;
+        showFPS = true;
+        showRenderTime = true;
 
         // create Factories
         BarOverlayElementFactory *barOverlayElementFactory = new BarOverlayElementFactory();
@@ -146,13 +150,29 @@ namespace orxonox
 
         nav->update();
 
-        float fps = GraphicsEngine::getSingleton().getAverageFPS();
-        fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
+        setFPS();
     }
 
     void HUD::setRenderTimeRatio(float ratio)
     {
-      rTRText->setCaption("Render time ratio: " + Ogre::StringConverter::toString(ratio));
+        if(showRenderTime){
+            rTRText->setCaption("Render time ratio: " + Ogre::StringConverter::toString(ratio));
+        }
+        else{
+            rTRText->setCaption("");
+            return;
+        }
+    }
+
+    void HUD::setFPS(){
+        if(showFPS){
+            float fps = GraphicsEngine::getSingleton().getAverageFPS();
+            fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
+        }
+        else{
+            fpsText->setCaption("");
+            return;
+        }
     }
 
     void HUD::addRadarObject(SceneNode* node, int colour){
@@ -182,6 +202,16 @@ namespace orxonox
 
     /*static*/ void HUD::cycleNavigationFocus(){
         HUD::getSingleton().nav->cycleFocus();
+    }
+
+    /*static*/ void HUD::toggleFPS(){
+        if(HUD::getSingleton().showFPS) HUD::getSingleton().showFPS = false;
+        else HUD::getSingleton().showFPS = true;
+    }
+
+    /*static*/ void HUD::toggleRenderTime(){
+        if(HUD::getSingleton().showRenderTime) HUD::getSingleton().showRenderTime = false;
+        else HUD::getSingleton().showRenderTime = true;
     }
 }
 

@@ -58,16 +58,22 @@ namespace orxonox
         RadarObject* lastRadarObject;
         Navigation* nav;
 
+        bool showFPS;
+        bool showRenderTime;
+
       public:
         virtual void tick(float);
         void addRadarObject(Ogre::SceneNode* node, int colour = 0);
         RadarObject* getFirstRadarObject();
         void setRenderTimeRatio(float ratio);
+        void setFPS();
 
         static HUD* instance_s;
         static HUD& getSingleton();
         static void setEnergy(float value);
         static void cycleNavigationFocus();
+        static void toggleFPS();
+        static void toggleRenderTime();
     };
 }
 
