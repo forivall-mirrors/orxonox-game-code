@@ -145,6 +145,7 @@ namespace orxonox
     void loadBindings();
     void clearBindings();
     void setConfigValues();
+    void resetJoyStickAxes();
 
   protected: // functions
     void tickInput(float dt, const HandlerState& state);

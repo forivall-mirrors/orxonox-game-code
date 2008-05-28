@@ -212,13 +212,11 @@ namespace orxonox
     }
 
     /*static*/ void HUD::toggleFPS(){
-        if(HUD::getSingleton().showFPS) HUD::getSingleton().showFPS = false;
-        else HUD::getSingleton().showFPS = true;
+        HUD::getSingleton().showFPS = !HUD::getSingleton().showFPS;
     }
 
     /*static*/ void HUD::toggleRenderTime(){
-        if(HUD::getSingleton().showRenderTime) HUD::getSingleton().showRenderTime = false;
-        else HUD::getSingleton().showRenderTime = true;
+        HUD::getSingleton().showRenderTime = !HUD::getSingleton().showRenderTime;
     }
 }
 

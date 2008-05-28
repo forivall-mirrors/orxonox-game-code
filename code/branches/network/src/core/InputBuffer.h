@@ -65,6 +65,8 @@ namespace orxonox
             void registerListener(T* listener, void (T::*function)(), bool bOnlySingleInput)
             {
                 struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, false, '\0', KeyCode::Unassigned};
+                // TODO: this is a major hack!!!
+                // Fix it properly
                 *((int*)(&newListener.listener_)) = (int)(listener);
 
                 this->listeners_.insert(this->listeners_.end(), newListener);

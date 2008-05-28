@@ -620,6 +620,15 @@ namespace orxonox
     paramCommandBuffer_.clear();
   }
 
+  void KeyBinder::resetJoyStickAxes()
+  {
+    for (unsigned int i = 8; i < nHalfAxes_s; i++)
+    {
+      halfAxes_[i].absVal_ = 0.0f;
+      halfAxes_[i].relVal_ = 0.0f;
+    }
+  }
+
   void KeyBinder::tickInput(float dt, const HandlerState& state)
   {
     // we have to process all the analog input since there is e.g. no 'mouseDoesntMove' event.
