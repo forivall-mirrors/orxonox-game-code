@@ -80,41 +80,37 @@ namespace orxonox
         shipPos_ = SpaceShip::getLocalShip()->getPosition();
         currentDir_ = SpaceShip::getLocalShip()->getDir();
         currentOrth_ = SpaceShip::getLocalShip()->getOrth();
-        RadarObject* ro = HUD::getSingleton().getFirstRadarObject();
         // iterate through all RadarObjects
-        while(ro != NULL){
+        for(std::set<RadarObject*>::iterator it=HUD::getSingleton().roSet.begin(); it!=HUD::getSingleton().roSet.end(); it++){
         // calc position on radar...
-            float radius = calcRadius(shipPos_, currentDir_, currentOrth_, ro);
-            float phi = calcPhi(shipPos_, currentDir_, currentOrth_, ro);
-            bool right = calcRight(shipPos_, currentDir_, currentOrth_, ro);
+            float radius = calcRadius(shipPos_, currentDir_, currentOrth_, (*it));
+            float phi = calcPhi(shipPos_, currentDir_, currentOrth_, (*it));
+            bool right = calcRight(shipPos_, currentDir_, currentOrth_, (*it));
 
             // set size to fit distance...
-            float d = (ro->getPosition()-shipPos_).length();
-            if(d<4000) ro->panel_->setDimensions(4,4);
-            else if(d<8000) ro->panel_->setDimensions(3,3);
-            else if(d<16000) ro->panel_->setDimensions(2,2);
-            else ro->panel_->setDimensions(1,1);
+            float d = ((*it)->getPosition()-shipPos_).length();
+            if(d<4000) (*it)->panel_->setDimensions(4,4);
+            else if(d<8000) (*it)->panel_->setDimensions(3,3);
+            else if(d<16000) (*it)->panel_->setDimensions(2,2);
+            else (*it)->panel_->setDimensions(1,1);
 
             if (right){
-                ro->panel_->setPosition(sin(phi)*radius/
+                (*it)->panel_->setPosition(sin(phi)*radius/
                     3.5*dim_/2+dim_/2+left_-2,-cos(phi)*radius/3.5*dim_/2+dim_/2+top_-2);
             }
             else {
-                ro->panel_->setPosition(-sin(phi)*radius/
+                (*it)->panel_->setPosition(-sin(phi)*radius/
                     3.5*dim_/2+dim_/2+left_-2,-cos(phi)*radius/3.5*dim_/2+dim_/2+top_-2);
             }
-            ro = ro->next;
         }
     }
 
     void RadarOverlayElement::listObjects(){
         int i = 0;
-        RadarObject* ro = HUD::getSingleton().getFirstRadarObject();
         COUT(3) << "List of RadarObjects:\n";
         // iterate through all Radar Objects
-        while(ro != NULL) {
-            COUT(3) << i++ << ": " << ro->getPosition() << std::endl;
-            ro = ro->next;
+        for(std::set<RadarObject*>::iterator it=HUD::getSingleton().roSet.begin(); it!=HUD::getSingleton().roSet.end(); it++){
+            COUT(3) << i++ << ": " << (*it)->getPosition() << std::endl;
         }
     }
 

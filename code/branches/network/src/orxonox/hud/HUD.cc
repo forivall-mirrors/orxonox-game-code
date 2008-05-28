@@ -30,6 +30,7 @@
 #include "HUD.h"
 
 #include <string>
+#include <set>
 #include <OgreOverlay.h>
 #include <OgreOverlayContainer.h>
 #include <OgreOverlayManager.h>
@@ -56,8 +57,6 @@ namespace orxonox
     HUD::HUD(){
         om = &Ogre::OverlayManager::getSingleton();
         sm = GraphicsEngine::getSingleton().getSceneManager();
-        firstRadarObject = NULL;
-        lastRadarObject = NULL;
         showFPS = true;
         showRenderTime = true;
 
@@ -177,19 +176,26 @@ namespace orxonox
     }
 
     void HUD::addRadarObject(SceneNode* node, int colour){
-        // check if this is the first RadarObject to create
-        if(firstRadarObject == NULL){
-            firstRadarObject = new RadarObject(container, node, colour);
-            lastRadarObject = firstRadarObject;
-        }
-        else{ // if not, append to list
-            lastRadarObject->next = new RadarObject(container, node, colour);
-            lastRadarObject = lastRadarObject->next;
-        }
+        RadarObject* obj = new RadarObject(container, node, colour);
+        roSet.insert(obj);
+//        // check if this is the first RadarObject to create
+//        if(firstRadarObject == NULL){
+//            firstRadarObject = new RadarObject(container, node, colour);
+//            lastRadarObject = firstRadarObject;
+//        }
+//        else{ // if not, append to list
+//            lastRadarObject->next = new RadarObject(container, node, colour);
+//            lastRadarObject = lastRadarObject->next;
+//        }
     }
 
-    RadarObject* HUD::getFirstRadarObject(){
-        return firstRadarObject;
+    void HUD::removeRadarObject(SceneNode* node){
+        for(std::set<RadarObject*>::iterator it=roSet.begin(); it!=roSet.end(); it++){
+            if((*it)->getNode() == node) {
+                delete (*it);
+                roSet.erase(it);
+            }
+        }
     }
 
     /*static*/ HUD& HUD::getSingleton(){

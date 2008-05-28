@@ -50,12 +50,12 @@ namespace orxonox
         void setColour(int colour);
         void resetColour();
         Vector3 getPosition();
+        Ogre::SceneNode* getNode();
 
         bool right_;
         int index_;                             // index number of object
         Ogre::OverlayContainer* container_;
         Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
-        RadarObject* next;                      // next pointer of linked list
 
         static int count;
         static const int RED = 0;

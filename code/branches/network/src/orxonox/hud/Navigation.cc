@@ -39,6 +39,7 @@
 #include "RadarObject.h"
 #include "RadarOverlayElement.h"
 #include "HUD.h"
+#include "core/Debug.h"
 
 namespace orxonox
 {
@@ -203,13 +204,17 @@ namespace orxonox
 
     void Navigation::cycleFocus(){
         if(focus_ == NULL){
-            focus_ = HUD::getSingleton().getFirstRadarObject();
+            it_ = HUD::getSingleton().roSet.begin();
+            focus_ = *it_;
         }
         else{
             focus_->resetColour();
-            if(focus_ != NULL) focus_ = focus_->next;
+            if(it_ != HUD::getSingleton().roSet.end()){
+                focus_ = *it_;
+                ++it_;
+            }
+            else focus_ = NULL;
         }
-
         if(focus_ == NULL){
             navMarker_->hide();
             navText_->hide();

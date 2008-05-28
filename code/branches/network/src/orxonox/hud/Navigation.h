@@ -50,6 +50,7 @@ namespace orxonox
         Vector3 navCamPos_;                         // position of ship
         Vector3 currentDir_;
         Vector3 currentOrth_;
+        std::set<RadarObject*>::iterator it_;
         int windowW_, windowH_;
         void init();
         void updateMarker();

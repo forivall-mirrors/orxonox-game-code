@@ -42,7 +42,6 @@ namespace orxonox
         container_ = container;
         node_ = node;
         colour_ = colour;
-        next = NULL;
         om = &OverlayManager::getSingleton();
         panel_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel",
             "Object"+StringConverter::toString(count)));
@@ -56,7 +55,7 @@ namespace orxonox
     }
 
     RadarObject::~RadarObject(){
-        // todo: clean up stuff
+        delete panel_;
     }
 
     void RadarObject::setColour(int colour){
@@ -76,6 +75,10 @@ namespace orxonox
 
     Vector3 RadarObject::getPosition(){
         return node_->getPosition();
+    }
+
+    SceneNode* RadarObject::getNode(){
+        return node_;
     }
 }
 

@@ -55,8 +55,6 @@ namespace orxonox
         BarOverlayElement* energyBar;
         BarOverlayElement* speedoBar;
         RadarOverlayElement* radar;
-        RadarObject* firstRadarObject;
-        RadarObject* lastRadarObject;
         Navigation* nav;
 
         bool showFPS;
@@ -65,9 +63,11 @@ namespace orxonox
       public:
         virtual void tick(float);
         void addRadarObject(Ogre::SceneNode* node, int colour = 0);
-        RadarObject* getFirstRadarObject();
+        void removeRadarObject(Ogre::SceneNode* node);
         void setRenderTimeRatio(float ratio);
         void setFPS();
+
+        std::set<RadarObject*> roSet;
 
         static HUD* instance_s;
         static HUD& getSingleton();
