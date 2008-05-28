@@ -69,6 +69,9 @@
 
 // objects and tools
 #include "hud/HUD.h"
+#include <Ogre.h>
+
+#include "GraphicsEngine.h"
 
 // FIXME: is this really file scope?
 // globals for the server or client
@@ -339,7 +342,17 @@ namespace orxonox
   {
     Level* startlevel = new Level("levels/sample.oxw");
     Loader::open(startlevel);
+    
 
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    mSceneMgr->setAmbientLight(ColourValue(0.4,0.4,0.4));
+    Ogre::Light* dirlight = mSceneMgr->createLight("Light1");
+
+       dirlight->setType(Ogre::Light::LT_DIRECTIONAL);
+       dirlight->setDirection(Vector3( 0, 1, 5 ));
+       dirlight->setDiffuseColour(ColourValue(0.6, 0.6, 0.4));
+       dirlight->setSpecularColour(ColourValue(1.0, 1.0, 1.0));
+    
     return true;
   }
 
@@ -378,6 +391,12 @@ namespace orxonox
     float renderTime = 0.0f;
     float frameTime = 0.0f;
     clock_t time = 0;
+
+    //Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    //Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    
+    //Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "Bloom");
+    //Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "MotionBlur");
 
     COUT(3) << "Orxonox: Starting the main loop." << std::endl;
 	  while (!bAbort_)

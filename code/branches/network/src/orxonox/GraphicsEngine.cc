@@ -47,8 +47,17 @@
 #include "core/TclBind.h"
 #include "console/InGameConsole.h"
 
-namespace orxonox {
+#include "core/ConsoleCommand.h"
+#include <OgreSceneManager.h>
+#include <OgreCompositorManager.h>
+#include <OgreViewport.h>
 
+namespace orxonox {
+  
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOn).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorMotionBlurOn).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOff).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorMotionBlurOff).setAccessLevel(AccessLevel::User);
   /**
     @brief Returns the singleton instance and creates it the first time.
     @return The only instance of GraphicsEngine.
@@ -367,5 +376,34 @@ namespace orxonox {
   {
     // using CommandExecutor in order to avoid depending on Orxonox class.
     CommandExecutor::execute("exit", false);
+  }
+
+  //HACK!!
+  void GraphicsEngine::CompositorBloomOn()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "Bloom");
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "Bloom", true);
+  }
+  void GraphicsEngine::CompositorBloomOff()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "Bloom", false);
+  }
+
+  void GraphicsEngine::CompositorMotionBlurOn()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "MotionBlur");
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "MotionBlur", true);
+  }
+  void GraphicsEngine::CompositorMotionBlurOff()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "MotionBlur", false);
   }
 }
