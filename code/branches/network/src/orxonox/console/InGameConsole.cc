@@ -298,11 +298,12 @@ namespace orxonox
         if (this->scrollTimer_ >= 0.01)
         {
             float top = this->consoleOverlayContainer_->getTop();
+            float timePassed = scrollTimer_;
             this->scrollTimer_ = 0;
             if (this->scroll_ != 0)
             {
                 // scroll
-                top = top + 0.02 * this->scroll_;
+                top = top + timePassed * this->scroll_;
                 this->consoleOverlayContainer_->setTop(top);
             }
             if (top <= -1.2 * InGameConsole::REL_HEIGHT)

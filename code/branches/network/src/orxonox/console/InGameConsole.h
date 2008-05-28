@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport InGameConsole : public Tickable, public ShellListener
+    class _OrxonoxExport InGameConsole : public TickableReal, public ShellListener
     {
         public:
             static InGameConsole& getInstance();

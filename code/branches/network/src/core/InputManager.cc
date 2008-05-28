@@ -575,7 +575,7 @@ namespace orxonox
             marginalsMax_[i] = INT_MIN;
             marginalsMin_[i] = INT_MAX;
           }
-          COUT(1) << "Move all joy stick axes in all directions a few times. "
+          COUT(0) << "Move all joy stick axes in all directions a few times. "
             << "Then put all axes in zero state and hit enter." << std::endl;
 
           savedState_ = state_;
@@ -1124,7 +1124,7 @@ namespace orxonox
   void InputManager::storeKeyStroke(const std::string& name)
   {
     setInputState(IS_NODETECT);
-    COUT(1) << "Binding string \"" << bindingCommmandString_s << "\" on key '" << name << "'" << std::endl;
+    COUT(0) << "Binding string \"" << bindingCommmandString_s << "\" on key '" << name << "'" << std::endl;
     CommandExecutor::execute("config KeyBinder " + name + " " + bindingCommmandString_s, false);
   }
 
@@ -1132,7 +1132,7 @@ namespace orxonox
   {
     bindingCommmandString_s = command;
     setInputState(IS_DETECT);
-    COUT(1) << "Press any button/key or move a mouse/joystick axis" << std::endl;
+    COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
   }
 
   void InputManager::calibrate()
