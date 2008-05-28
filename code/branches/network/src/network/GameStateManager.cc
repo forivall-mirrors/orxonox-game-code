@@ -139,7 +139,7 @@ namespace network
       if(it!=gameStateMap.end())
         client = it->second;
       GameState *server = reference;
-      COUT(3) << "client: " << client << " server: " << server << " gamestatemap: " << &gameStateMap << " size: " << server->size << std::endl;
+      COUT(4) << "client: " << client << " server: " << server << " gamestatemap: " << &gameStateMap << " size: " << server->size << std::endl;
       if(client)
         return encode(client, server);
       else
@@ -471,7 +471,8 @@ namespace network
     
     if(gamestateID == GAMESTATEID_INITIAL){
       temp->setGameStateID(GAMESTATEID_INITIAL);
-      --(gameStateUsed.find(curid)->second);
+      if(curid!=GAMESTATEID_INITIAL)
+        --(gameStateUsed.find(curid)->second);
       return;
     }
     if(curid > gamestateID)
