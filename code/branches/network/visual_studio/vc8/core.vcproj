@@ -148,11 +148,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\core\ArgumentCompletionFunctions.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\BaseObject.cc"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\core\ClassTreeMask.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\CommandEvaluation.cc"
 				>
 			</File>
 			<File
@@ -165,6 +173,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\ConfigValueContainer.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\ConsoleCommand.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\ConsoleCommandCompilation.cc"
 				>
 			</File>
 			<File
@@ -200,6 +216,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\IRC.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\KeyBinder.cc"
 				>
 			</File>
@@ -228,6 +248,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\OutputBuffer.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\OutputHandler.cc"
 				>
 			</File>
@@ -236,11 +260,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Shell.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\SignalHandler.cc"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\core\TclBind.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\TclThreadManager.cc"
 				>
 			</File>
 			<File
@@ -266,6 +298,18 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\..\src\core\ArgumentCompleter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\ArgumentCompletionFunctions.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\ArgumentCompletionListElement.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\BaseObject.h"
 				>
 			</File>
@@ -279,6 +323,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\ClassTreeMask.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\CommandEvaluation.h"
 				>
 			</File>
 			<File
@@ -299,6 +347,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\ConsoleCommand.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\ConsoleCommandCompilation.h"
 				>
 			</File>
 			<File
@@ -354,6 +406,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\IRC.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\Iterator.h"
 				>
 			</File>
@@ -394,6 +450,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\OutputBuffer.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\OutputHandler.h"
 				>
 			</File>
@@ -402,11 +462,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Script_clean.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\Shell.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\SignalHandler.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\core\TclBind.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\TclThreadManager.h"
 				>
 			</File>
 			<File

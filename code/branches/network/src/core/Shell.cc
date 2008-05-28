@@ -101,6 +101,7 @@ namespace orxonox
         if (this->inputBuffer_)
         {
             this->inputBuffer_->unregisterListener(this);
+            // TODO: may be very dangerous. InputManager already deletes InputBuffer instance!!!
             delete this->inputBuffer_;
         }
 
