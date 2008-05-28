@@ -25,11 +25,11 @@
 *
 */
 
-#include "OrxonoxStableHeaders.h"
-#include "RadarObject.h"
-
 #include <OgreOverlayManager.h>
 #include <OgreStringConverter.h>
+#include "OrxonoxStableHeaders.h"
+#include "GraphicsEngine.h"
+#include "RadarObject.h"
 
 namespace orxonox
 {
@@ -37,26 +37,15 @@ namespace orxonox
 
     int RadarObject::count = 0;		// initialize static variable
 
-    RadarObject::RadarObject(OverlayContainer* container){
+    RadarObject::RadarObject(OverlayContainer* container, SceneNode* node, int colour){
         container_ = container;
-        pos_ = Vector3(0.0, 0.0, 0.0);
-        init();
-    }
-
-    RadarObject::RadarObject(OverlayContainer* container, Vector3 pos){
-        container_ = container;
-        pos_ = pos;
-        init();
-    }
-
-    RadarObject::~RadarObject(){}
-
-    void RadarObject::init(){
+        node_ = node;
+        colour_ = colour;
         next = NULL;
         om = &OverlayManager::getSingleton();
         panel_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel",
-          "Object"+StringConverter::toString(count)));
-        panel_->setMaterialName("Orxonox/RedDot");
+            "Object"+StringConverter::toString(count)));
+        setColour(colour_);
         panel_->setDimensions(3,3);
         panel_->setMetricsMode(Ogre::GMM_PIXELS);
         panel_->show();
@@ -64,4 +53,28 @@ namespace orxonox
         count++;
         container_->addChild(panel_);
     }
+
+    RadarObject::~RadarObject(){
+        // todo: clean up stuff
+    }
+
+    void RadarObject::setColour(int colour){
+        switch(colour){
+        case RED: panel_->setMaterialName("Orxonox/RedDot"); break;
+        case YELLOW: panel_->setMaterialName("Orxonox/YellowDot"); break;
+        case GREEN: panel_->setMaterialName("Orxonox/GreenDot"); break;
+        case BLUE: panel_->setMaterialName("Orxonox/BlueDot"); break;
+        case WHITE: panel_->setMaterialName("Orxonox/WhiteDot"); break;
+        default: panel_->setMaterialName("Orxonox/RedDot"); break;
+        }
+    }
+
+    void RadarObject::resetColour(){
+        setColour(colour_);
+    }
+
+    Vector3 RadarObject::getPosition(){
+        return node_->getPosition();
+    }
 }
+

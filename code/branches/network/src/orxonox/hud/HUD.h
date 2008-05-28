@@ -33,6 +33,7 @@
 
 #include <OgrePrerequisites.h>
 #include <OgreTextAreaOverlayElement.h>
+#include <OgreSceneNode.h>
 #include "core/Tickable.h"
 #include "util/Math.h"
 
@@ -45,6 +46,7 @@ namespace orxonox
         HUD(HUD& instance);
         ~HUD();
         Ogre::OverlayManager* om;
+        Ogre::SceneManager* sm;
         Ogre::Overlay* orxonoxHUD;
         Ogre::OverlayContainer* container;
         Ogre::TextAreaOverlayElement* fpsText;
@@ -58,7 +60,7 @@ namespace orxonox
 
       public:
         virtual void tick(float);
-        void addRadarObject(Vector3 pos);
+        void addRadarObject(Ogre::SceneNode* node, int colour = 0);
         RadarObject* getFirstRadarObject();
         void setRenderTimeRatio(float ratio);
 

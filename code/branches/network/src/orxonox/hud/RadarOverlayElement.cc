@@ -88,7 +88,7 @@ namespace orxonox
             bool right = calcRight(shipPos_, currentDir_, currentOrth_, ro);
 
             // set size to fit distance...
-            float d = (ro->pos_-shipPos_).length();
+            float d = (ro->getPosition()-shipPos_).length();
             if(d<4000) ro->panel_->setDimensions(4,4);
             else if(d<8000) ro->panel_->setDimensions(3,3);
             else if(d<16000) ro->panel_->setDimensions(2,2);
@@ -112,26 +112,26 @@ namespace orxonox
         COUT(3) << "List of RadarObjects:\n";
         // iterate through all Radar Objects
         while(ro != NULL) {
-            COUT(3) << i++ << ": " << ro->pos_ << std::endl;
+            COUT(3) << i++ << ": " << ro->getPosition() << std::endl;
             ro = ro->next;
         }
     }
 
     float RadarOverlayElement::calcRadius(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
-        return(acos((dir.dotProduct(obj->pos_ - pos))/
-        ((obj->pos_ - pos).length()*dir.length())));
+        return(acos((dir.dotProduct(obj->getPosition() - pos))/
+        ((obj->getPosition() - pos).length()*dir.length())));
     }
 
     float RadarOverlayElement::calcPhi(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
         // project difference vector on our plane...
-        Vector3 proj = Plane(dir, pos).projectVector(obj->pos_ - pos);
+        Vector3 proj = Plane(dir, pos).projectVector(obj->getPosition() - pos);
         // ...and find out the angle
         return(acos((orth.dotProduct(proj))/
               (orth.length()*proj.length())));
     }
 
     bool RadarOverlayElement::calcRight(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
-        if((dir.crossProduct(orth)).dotProduct(obj->pos_ - pos) > 0)
+        if((dir.crossProduct(orth)).dotProduct(obj->getPosition() - pos) > 0)
             return true;
         else return false;
     }

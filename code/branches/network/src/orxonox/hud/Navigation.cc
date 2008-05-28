@@ -95,7 +95,7 @@ namespace orxonox
         navText_->setCaption(Ogre::StringConverter::toString(dist));
 
         if(navCam_ == NULL) navCam_ = SpaceShip::getLocalShip()->getCamera()->cam_;
-        Vector3 pos = focus_->pos_;
+        Vector3 pos = focus_->getPosition();
         // transform to screen coordinates
         pos = navCam_->getProjectionMatrix()*navCam_->getViewMatrix()*pos;
         float xPosRel = 0.5*pos.x+0.5;
@@ -106,8 +106,8 @@ namespace orxonox
         int yFromCenter = yPos-windowH_/2;
         // is object in view?
         float radius = RadarOverlayElement::calcRadius(navCamPos_, currentDir_, currentOrth_, focus_);
-        bool isRight = (currentDir_.crossProduct(currentOrth_)).dotProduct(focus_->pos_ - navCamPos_)>0;
-        bool isAbove = currentOrth_.dotProduct(focus_->pos_ - navCamPos_)>0;
+        bool isRight = (currentDir_.crossProduct(currentOrth_)).dotProduct(focus_->getPosition() - navCamPos_)>0;
+        bool isAbove = currentOrth_.dotProduct(focus_->getPosition() - navCamPos_)>0;
         bool outOfView = (xPosRel<0 || xPosRel>1 || yPosRel<0 || yPosRel>1);
         // if object is behind us, it is out of view anyway:
         if(!outOfView && radius>3.14/2) outOfView = true;
@@ -205,7 +205,7 @@ namespace orxonox
             focus_ = HUD::getSingleton().getFirstRadarObject();
         }
         else{
-            focus_->panel_->setMaterialName("Orxonox/RedDot");
+            focus_->resetColour();
             if(focus_ != NULL) focus_ = focus_->next;
         }
 
@@ -216,12 +216,12 @@ namespace orxonox
         else{
             navMarker_->show();
             navText_->show();
-            focus_->panel_->setMaterialName("Orxonox/WhiteDot");
+            focus_->setColour(RadarObject::WHITE);
         }
     }
 
     float Navigation::getDist2Focus(){
         if(focus_ == NULL) return(0.0);
-        return((focus_->pos_-SpaceShip::getLocalShip()->getPosition()).length());
+        return((focus_->getPosition()-SpaceShip::getLocalShip()->getPosition()).length());
     }
 }

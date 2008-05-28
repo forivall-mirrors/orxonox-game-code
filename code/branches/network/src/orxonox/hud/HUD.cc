@@ -52,6 +52,7 @@ namespace orxonox
 
     HUD::HUD(){
         om = &Ogre::OverlayManager::getSingleton();
+        sm = GraphicsEngine::getSingleton().getSceneManager();
         firstRadarObject = NULL;
         lastRadarObject = NULL;
 
@@ -116,9 +117,13 @@ namespace orxonox
         speedoBar->init(0.01, 0.90, 0.4, container);
 
         radar->init(0.5, 0.9, 0.2, container);
-        addRadarObject(Vector3(2000.0, 0.0, 0.0));
-        addRadarObject(Vector3(0.0, 2000.0, 0.0));
-        addRadarObject(Vector3(0.0, 0.0, 2000.0));
+        SceneNode* node;
+        node = sm->getRootSceneNode()->createChildSceneNode("tomato1", Vector3(2000.0, 0.0, 0.0));
+        addRadarObject(node);
+        node = sm->getRootSceneNode()->createChildSceneNode("tomato2", Vector3(0.0, 2000.0, 0.0));
+        addRadarObject(node);
+        node = sm->getRootSceneNode()->createChildSceneNode("tomato3", Vector3(0.0, 0.0, 2000.0));
+        addRadarObject(node);
     }
 
     HUD::~HUD(){
@@ -150,14 +155,14 @@ namespace orxonox
       rTRText->setCaption("Render time ratio: " + Ogre::StringConverter::toString(ratio));
     }
 
-    void HUD::addRadarObject(Vector3 pos){
+    void HUD::addRadarObject(SceneNode* node, int colour){
         // check if this is the first RadarObject to create
         if(firstRadarObject == NULL){
-            firstRadarObject = new RadarObject(container, pos);
+            firstRadarObject = new RadarObject(container, node, colour);
             lastRadarObject = firstRadarObject;
         }
         else{ // if not, append to list
-            lastRadarObject->next = new RadarObject(container, pos);
+            lastRadarObject->next = new RadarObject(container, node, colour);
             lastRadarObject = lastRadarObject->next;
         }
     }

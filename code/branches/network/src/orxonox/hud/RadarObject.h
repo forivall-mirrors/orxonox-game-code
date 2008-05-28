@@ -28,10 +28,10 @@
 #ifndef _RadarObject_H__
 #define _RadarObject_H__
 
-#include "OrxonoxPrereqs.h"
-
 #include <OgrePrerequisites.h>
+#include <OgreSceneNode.h>
 #include <OgrePanelOverlayElement.h>
+#include "OrxonoxPrereqs.h"
 #include "util/Math.h"
 
 namespace orxonox
@@ -40,21 +40,28 @@ namespace orxonox
     {
       private:
         Ogre::OverlayManager* om;				// our one and only overlay manager
-        void init();
+        Ogre::SceneNode* node_;					// node of object
+        int colour_;
 
       public:
-        RadarObject(Ogre::OverlayContainer* container);
-        RadarObject(Ogre::OverlayContainer* container, Vector3 pos);
+        RadarObject(Ogre::OverlayContainer* container, Ogre::SceneNode* node, int colour = 0);
         ~RadarObject();
+        void setColour(int colour);
+        void resetColour();
+        Vector3 getPosition();
 
         bool right_;
         int index_;                             // index number of object
-        Vector3 pos_;							// position in space
         Ogre::OverlayContainer* container_;
         Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
         RadarObject* next;                      // next pointer of linked list
 
         static int count;
+        static const int RED = 0;
+        static const int YELLOW = 1;
+        static const int GREEN = 2;
+        static const int BLUE = 3;
+        static const int WHITE = 99;            // used if object got nav focus
   };
 }
 
