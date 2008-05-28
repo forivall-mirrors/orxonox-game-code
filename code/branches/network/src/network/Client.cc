@@ -230,6 +230,7 @@ namespace network
     if(id!=NULL)
       id->setNetworkID(clid->clid);
     COUT(4) << "Client: received and set network id: " << clid->clid << "; classname: " << clid->message << std::endl;
+    COUT(4) << "id(classid)->getName " << ID((unsigned int)clid->clid)->getName() << std::endl;
     delete clid;
     return;
   }

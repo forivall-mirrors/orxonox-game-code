@@ -175,7 +175,7 @@ namespace network
           ///sigsegv is receved after the COUT(4) above
           orxonox::Identifier* id = ID((unsigned int)sync.classID);
           if(!id){
-            COUT(3) << "We could not identify a new object; classid: " << sync.classID << " objectID: " << sync.objectID << " size: " << sync.length << std::endl;
+            COUT(3) << "We could not identify a new object; classid: " << sync.classID << " uint: " << (unsigned int)sync.classID << " objectID: " << sync.objectID << " size: " << sync.length << std::endl;
             return false; // most probably the gamestate is corrupted
           }
           Synchronisable *no = dynamic_cast<Synchronisable *>(id->fabricate());
