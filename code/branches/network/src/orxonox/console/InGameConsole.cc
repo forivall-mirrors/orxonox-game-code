@@ -85,12 +85,12 @@ namespace orxonox
     */
     InGameConsole::~InGameConsole(void)
     {
-        for (int i = 0; i < LINES; i++)
+        /*for (int i = 0; i < LINES; i++)
             if (this->consoleOverlayTextAreas_[i])
-                delete this->consoleOverlayTextAreas_[i];
+                om_->destroyOverlayElement(this->consoleOverlayTextAreas_[i]);
 
         if (this->consoleOverlayTextAreas_)
-            delete this->consoleOverlayTextAreas_;
+            delete[] this->consoleOverlayTextAreas_;*/
     }
 
     /**

@@ -661,8 +661,7 @@ namespace orxonox
       // config value
       ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer("CoeffPos");
       assert(cont);
-      cont->set(getConvertedValue<int, std::string>(i) + " "
-        + getConvertedValue<float, std::string>(joySticksCalibration_[0].positiveCoeff[i]));
+      cont->set(i, joySticksCalibration_[0].positiveCoeff[i]);
 
       // negative coefficient
       if (marginalsMin_[i] == INT_MAX)
@@ -675,8 +674,7 @@ namespace orxonox
       // config value
       cont = getIdentifier()->getConfigValueContainer("CoeffNeg");
       assert(cont);
-      cont->set(getConvertedValue<int, std::string>(i) + " "
-        + getConvertedValue<float, std::string>(joySticksCalibration_[0].negativeCoeff[i]));
+      cont->set(i, joySticksCalibration_[0].negativeCoeff[i]);
 
       // zero states
       if (i < 8)
@@ -696,8 +694,7 @@ namespace orxonox
       // config value
       cont = getIdentifier()->getConfigValueContainer("Zero");
       assert(cont);
-      cont->set(getConvertedValue<int, std::string>(i) + " "
-        + getConvertedValue<int, std::string>(joySticksCalibration_[0].zeroStates[i]));
+      cont->set(i, joySticksCalibration_[0].zeroStates[i]);
     }
   }
 
