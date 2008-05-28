@@ -32,7 +32,7 @@
 #include "ConfigValueIncludes.h"
 #include "CoreSettings.h"
 #include "ConsoleCommand.h"
-#include "InputManager.h"
+#include "InputInterfaces.h"
 
 #define SHELL_UPDATE_LISTENERS(function) \
     for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it) \
@@ -109,16 +109,16 @@ namespace orxonox
         this->inputBuffer_->registerListener(this, &Shell::execute, '\r', false);
         this->inputBuffer_->registerListener(this, &Shell::hintandcomplete, '\t', true);
         this->inputBuffer_->registerListener(this, &Shell::backspace, '\b', true);
-        this->inputBuffer_->registerListener(this, &Shell::deletechar, OIS::KC_DELETE);
+        this->inputBuffer_->registerListener(this, &Shell::deletechar, KeyCode::Delete);
         this->inputBuffer_->registerListener(this, &Shell::exit, (char)27, true);
-        this->inputBuffer_->registerListener(this, &Shell::cursor_right, OIS::KC_RIGHT);
-        this->inputBuffer_->registerListener(this, &Shell::cursor_left, OIS::KC_LEFT);
-        this->inputBuffer_->registerListener(this, &Shell::cursor_end, OIS::KC_END);
-        this->inputBuffer_->registerListener(this, &Shell::cursor_home, OIS::KC_HOME);
-        this->inputBuffer_->registerListener(this, &Shell::history_up, OIS::KC_UP);
-        this->inputBuffer_->registerListener(this, &Shell::history_down, OIS::KC_DOWN);
-        this->inputBuffer_->registerListener(this, &Shell::scroll_up, OIS::KC_PGUP);
-        this->inputBuffer_->registerListener(this, &Shell::scroll_down, OIS::KC_PGDOWN);
+        this->inputBuffer_->registerListener(this, &Shell::cursor_right, KeyCode::Right);
+        this->inputBuffer_->registerListener(this, &Shell::cursor_left, KeyCode::Left);
+        this->inputBuffer_->registerListener(this, &Shell::cursor_end, KeyCode::End);
+        this->inputBuffer_->registerListener(this, &Shell::cursor_home, KeyCode::Home);
+        this->inputBuffer_->registerListener(this, &Shell::history_up, KeyCode::Up);
+        this->inputBuffer_->registerListener(this, &Shell::history_down, KeyCode::Down);
+        this->inputBuffer_->registerListener(this, &Shell::scroll_up, KeyCode::PageUp);
+        this->inputBuffer_->registerListener(this, &Shell::scroll_down, KeyCode::PageDown);
     }
 
     void Shell::clearShell()
