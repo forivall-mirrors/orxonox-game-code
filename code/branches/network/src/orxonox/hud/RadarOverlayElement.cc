@@ -89,10 +89,9 @@ namespace orxonox
 
             // set size to fit distance...
             float d = ((*it)->getPosition()-shipPos_).length();
-            if(d<4000) (*it)->panel_->setDimensions(4,4);
-            else if(d<8000) (*it)->panel_->setDimensions(3,3);
-            else if(d<16000) (*it)->panel_->setDimensions(2,2);
-            else (*it)->panel_->setDimensions(1,1);
+            if(d<10000) (*it)->panel_->setDimensions(4,4);
+            else if(d<20000) (*it)->panel_->setDimensions(3,3);
+            else (*it)->panel_->setDimensions(2,2);
 
             if (right){
                 (*it)->panel_->setPosition(sin(phi)*radius/

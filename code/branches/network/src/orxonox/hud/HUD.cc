@@ -128,6 +128,8 @@ namespace orxonox
         addRadarObject(node);
         node = sm->getRootSceneNode()->createChildSceneNode("tomato3", Vector3(0.0, 0.0, 2000.0));
         addRadarObject(node);
+	node = sm->getRootSceneNode()->createChildSceneNode("station", Vector3(10000.0,16000.0,0.0));
+        addRadarObject(node, 3);
     }
 
     HUD::~HUD(){
