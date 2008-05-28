@@ -93,7 +93,7 @@ namespace orxonox
 
     void Navigation::updateMarker(){
         // set text
-        int dist = (float)(getDist2Focus()/100);
+        int dist = (int) getDist2Focus()/100;
         navText_->setCaption(Ogre::StringConverter::toString(dist));
 
         if(navCam_ == NULL) navCam_ = SpaceShip::getLocalShip()->getCamera()->cam_;
@@ -102,8 +102,8 @@ namespace orxonox
         pos = navCam_->getProjectionMatrix()*navCam_->getViewMatrix()*pos;
         float xPosRel = 0.5*pos.x+0.5;
         float yPosRel = 1-(0.5*pos.y+0.5);
-        int xPos = xPosRel*windowW_;
-        int yPos = yPosRel*windowH_;
+        int xPos = (int) xPosRel*windowW_;
+        int yPos = (int) yPosRel*windowH_;
         int xFromCenter = xPos-windowW_/2;
         int yFromCenter = yPos-windowH_/2;
         // is object in view?
