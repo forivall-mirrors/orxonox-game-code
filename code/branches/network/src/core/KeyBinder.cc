@@ -340,7 +340,8 @@ namespace orxonox
     for (i = 0; i < nParamCommands_ - 1; i++)
       paramCommands_[i] = cmds[i];
     paramCommands_[i] = command;
-    delete[] cmds;
+    if (nParamCommands_ > 1)
+      delete[] cmds;
     return true;
   }
 

@@ -559,6 +559,9 @@ namespace orxonox
 
       case IS_NODETECT:
         _restoreState();
+        keysDown_.clear();
+        mouseButtonsDown_.clear();
+        joyStickButtonsDown_[0].clear();
         state_ = IS_NODETECT;
         stateRequest_ = savedState_;
         break;
