@@ -77,6 +77,8 @@ namespace orxonox
     }
 
     SpaceShip::SpaceShip() :
+      teamNr_(0),
+      health_(100),
       //testvector_(0,0,0),
       //bInvertYAxis_(false),
       setMouseEventCallback_(false),

@@ -132,19 +132,22 @@ namespace orxonox
 
     std::string TclBind::tcl(const std::string& tclcode)
     {
-        try
+        if (TclBind::getInstance().interpreter_)
         {
-            std::string output = TclBind::getInstance().interpreter_->eval(tclcode);
-            if (output != "")
+            try
             {
-                COUT(0) << "tcl> " << output << std::endl;
+                std::string output = TclBind::getInstance().interpreter_->eval(tclcode);
+                if (output != "")
+                {
+                    COUT(0) << "tcl> " << output << std::endl;
+                }
+                return output;
             }
-            return output;
+            catch (Tcl::tcl_error const &e)
+            {   COUT(1) << "tcl> Error: " << e.what() << std::endl;   }
+            catch (std::exception const &e)
+            {   COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;   }
         }
-        catch (Tcl::tcl_error const &e)
-        {   COUT(1) << "tcl> Error: " << e.what() << std::endl;   }
-        catch (std::exception const &e)
-        {   COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;   }
 
         return "";
     }

@@ -22,7 +22,7 @@
  *   Author:
  *      Felix Schulthess
  *   Co-authors:
- *      ...
+ *      Fabian 'x3n' Landau
  *
  */
 

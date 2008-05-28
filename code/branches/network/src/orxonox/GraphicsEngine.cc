@@ -44,6 +44,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
 #include "core/CommandExecutor.h"
+#include "core/TclBind.h"
 #include "console/InGameConsole.h"
 
 namespace orxonox {
@@ -82,6 +83,8 @@ namespace orxonox {
     SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
     SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
     SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
+
+    TclBind::getInstance().setDataPath(this->dataPath_);
   }
 
   /**

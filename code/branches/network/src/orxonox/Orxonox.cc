@@ -196,7 +196,6 @@ namespace orxonox
     // for playable server, client and standalone, the startup
     // procedure until the GUI is identical
 
-    TclBind::getInstance().setDataPath(dataPath);
     ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
 

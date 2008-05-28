@@ -80,8 +80,12 @@ namespace orxonox
             Vector3 getDir();
             Vector3 getOrth();
             Camera* getCamera();
-            
+
             bool getMyShip(){return myShip_;}
+
+        protected:
+            int teamNr_;
+            int health_;
 
         private:
             void createCamera();

@@ -26,6 +26,8 @@
  *
  */
 
+#include <OgreBillboard.h>
+
 #include "OrxonoxStableHeaders.h"
 #include "Projectile.h"
 
@@ -40,6 +42,8 @@
 namespace orxonox
 {
     CreateFactory(Projectile);
+
+    float Projectile::speed_ = 0;
 
     Projectile::Projectile(SpaceShip* owner) :
       owner_(owner)
@@ -102,5 +106,10 @@ namespace orxonox
     void Projectile::destroyObject()
     {
         delete this;
+    }
+
+    void Projectile::setColour(const ColourValue& colour)
+    {
+        this->billboard_.getBillboardSet()->getBillboard(0)->setColour(colour);
     }
 }
