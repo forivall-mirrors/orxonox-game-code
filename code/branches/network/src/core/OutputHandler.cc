@@ -34,6 +34,7 @@
 #include "OutputHandler.h"
 #include "CoreSettings.h"
 #include "ConsoleCommand.h"
+#include "Shell.h"
 
 namespace orxonox
 {
@@ -82,6 +83,16 @@ namespace orxonox
     int OutputHandler::getSoftDebugLevel(OutputHandler::OutputDevice device)
     {
         return CoreSettings::getSoftDebugLevel(device);
+    }
+
+    /**
+        @brief Returns the Shell's OutputBuffer. This is mere placed here to avoid
+               recompiling the entire project when Shell.h changes.
+        @return The OutputBuffer of the Shell
+    */
+    OutputBuffer& OutputHandler::getShellOutputBuffer()
+    {
+        return Shell::getInstance().getOutputBuffer();
     }
 
     /**

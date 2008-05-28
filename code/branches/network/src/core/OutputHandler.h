@@ -43,7 +43,7 @@
 #include <fstream>
 #include <string>
 
-#include "Shell.h"
+#include "OutputBuffer.h"
 
 namespace orxonox
 {
@@ -94,6 +94,8 @@ namespace orxonox
                 { return this->outputLevel_; }
 
             static int getSoftDebugLevel(OutputHandler::OutputDevice device);
+
+            OutputBuffer& getShellOutputBuffer();
 
             template <class T>
             OutputHandler& output(const T& output);
@@ -156,7 +158,7 @@ namespace orxonox
         }
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            Shell::getInstance().getOutputBuffer() << output;
+            OutputHandler::getOutStream().getShellOutputBuffer() << output;
 
         return *this;
     }
@@ -180,7 +182,7 @@ namespace orxonox
         }
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= out.getOutputLevel())
-            Shell::getInstance().getOutputBuffer() << output;
+            OutputHandler::getOutStream().getShellOutputBuffer() << output;
 
         return out;
     }
