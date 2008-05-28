@@ -204,13 +204,11 @@ namespace orxonox
 
     void Navigation::cycleFocus(){
         if(focus_ == NULL){
-        COUT(3) << "focus = null\n";
             it_ = HUD::getSingleton().roSet.begin();
             focus_ = *it_;
             ++it_;
         }
         else{
-        COUT(3) << "focus = " << focus_ << std::endl;
             focus_->resetColour();
             if(it_ != HUD::getSingleton().roSet.end()){
                 focus_ = *it_;
