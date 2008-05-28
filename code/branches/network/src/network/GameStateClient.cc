@@ -41,7 +41,7 @@ namespace network
     GameState *state;
     int id;
   };
-  
+
   GameStateClient::GameStateClient() {
     COUT(5) << "this: " << this << std::endl;
     last_diff_=0;
@@ -95,7 +95,7 @@ namespace network
     COUT(4) << "could not use gamestate sent by server" << std::endl;
     return false;
   }
-  
+
   GameStateCompressed *GameStateClient::popPartialGameState(){
     GameState *gs = getPartialSnapshot();
     GameStateCompressed *cgs = compress_(gs);
@@ -103,7 +103,7 @@ namespace network
     delete gs;
     return cgs;
   }
-  
+
   void GameStateClient::addGameState(GameStateCompressed *gs){
     if(tempGameState_!=NULL){
       //delete the obsolete gamestate
@@ -127,7 +127,7 @@ namespace network
     else
       return GAMESTATEID_INITIAL;
   }
-  
+
 
   /**
   * This function removes a Synchronisable out of the universe
@@ -192,14 +192,18 @@ namespace network
             return false;
           }
           if( !no->create() )
+          {
             COUT(1) << "We couldn't manifest (create() ) the object: " << sync.objectID << std::endl;
+          }
           it=orxonox::ObjectList<Synchronisable>::end();
         }
       } else {
         // we have our object
         if(! it->updateData(sync))
+        {
           COUT(1) << "We couldn't update objectID: " \
           << sync.objectID << "; classID: " << sync.classID << std::endl;
+        }
       }
       ++it;
     }
@@ -271,8 +275,8 @@ namespace network
     COUT(5) << "G.ST.Cl: 'estimated' Gamestate size: " << size << std::endl;
     return retval;
   }
-  
-  
+
+
   GameState *GameStateClient::undiff(GameState *old, GameState *diff) {
     if(!old || !diff)
       return NULL;
@@ -333,7 +337,7 @@ namespace network
 
     switch ( retval ) {
       case Z_OK: COUT(5) << "G.St.Cl: compress: successfully compressed" << std::endl; break;
-      case Z_MEM_ERROR: COUT(1) << "G.St.Cl: compress: not enough memory available in gamestate.compress" << std::endl; 
+      case Z_MEM_ERROR: COUT(1) << "G.St.Cl: compress: not enough memory available in gamestate.compress" << std::endl;
       return NULL;
       case Z_BUF_ERROR: COUT(2) << "G.St.Cl: compress: not enough memory available in the buffer in gamestate.compress" << std::endl;
       return NULL;
@@ -351,8 +355,8 @@ namespace network
     compressedGamestate->base_id = a->base_id;
     return compressedGamestate;
   }
-  
-  
+
+
   GameState *GameStateClient::decompress(GameStateCompressed *a) {
     //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
     int normsize = a->normsize;
@@ -408,7 +412,7 @@ namespace network
     delete x;
     return t;
   }
-  
+
   void GameStateClient::cleanup(){
     std::map<int, GameState*>::iterator temp, it = gameStateMap.begin();
     while(it!=gameStateMap.end()){
@@ -430,9 +434,9 @@ namespace network
       COUT(4) << it->first << ":" << it->second << "|";
     }
     COUT(4) << std::endl;
-    
+
   }
-  
+
   bool GameStateClient::saveShipCache(){
     if(myShip_==NULL)
       myShip_ = orxonox::SpaceShip::getLocalShip();
@@ -447,7 +451,7 @@ namespace network
     }else
       return false;
   }
-  
+
   bool GameStateClient::loadShipCache(){
     if(myShip_){
       myShip_->updateData(shipCache_, 0x2);
@@ -458,17 +462,17 @@ namespace network
     }else
       return false;
   }
-  
+
     //##### ADDED FOR TESTING PURPOSE #####
   GameState* GameStateClient::testDecompress( GameStateCompressed* gc ) {
     return decompress( gc );
   }
-  
+
   GameState* GameStateClient::testUndiff( GameState* g_old, GameState* g_diffed ) {
     return undiff( g_old, g_diffed );
   }
   //##### ADDED FOR TESTING PURPOSE #####
-  
-  
+
+
 }
 

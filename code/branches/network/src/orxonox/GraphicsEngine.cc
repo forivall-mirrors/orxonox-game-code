@@ -44,7 +44,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
 #include "core/CommandExecutor.h"
-
+#include "console/InGameConsole.h"
 
 namespace orxonox {
 
@@ -344,6 +344,7 @@ namespace orxonox {
     int w = rw->getWidth();
     int h = rw->getHeight();
     InputManager::setWindowExtents(w, h);
+    InGameConsole::getInstance().resize();
   }
 
   /**

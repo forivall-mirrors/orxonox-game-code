@@ -69,7 +69,6 @@ namespace orxonox {
       static inline void setTimeFactor(float factor = 1.0) { Orxonox::getSingleton()->timefactor_ = factor; }
       static inline float getTimeFactor() { return Orxonox::getSingleton()->timefactor_; }
       static inline void exit() { Orxonox::getSingleton()->abortRequest(); }
-      static inline void activateConsole();
 
    private:
       // don't mess with singletons
@@ -96,7 +95,6 @@ namespace orxonox {
       Ogre::Timer*          timer_;         //!< Main loop timer
       // TODO: make this a config-value by creating a config class for orxonox
       float                 frameSmoothingTime_;
-      InGameConsole*        orxonoxConsole_;
       HUD*                  orxonoxHUD_;
       bool                  bAbort_;        //!< aborts the render loop if true
       float                 timefactor_;    //!< A factor to change the gamespeed

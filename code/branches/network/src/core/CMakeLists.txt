@@ -1,7 +1,6 @@
 SET(CORE_SRC_FILES
   BaseObject.cc
   ClassTreeMask.cc
-  CommandExecutor.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc
   CoreSettings.cc
@@ -10,9 +9,16 @@ SET(CORE_SRC_FILES
   Factory.cc
   Identifier.cc
   IdentifierDistributor.cc
-  InputBuffer.cc
   InputManager.cc
   KeyBinder.cc
+  OutputBuffer.cc
+  InputBuffer.cc
+  Shell.cc
+  CommandExecutor.cc
+  CommandEvaluation.cc
+  ConsoleCommand.cc
+  ArgumentCompletionFunctions.cc
+  ConsoleCommandCompilation.cc
   Language.cc
   Loader.cc
   MetaObjectList.cc
@@ -25,6 +31,8 @@ SET(CORE_SRC_FILES
   TclBind.cc
   Tickable.cc
   XMLPort.cc
+  TclThreadManager.cc
+  IRC.cc
   tolua/tolua_bind.cc
 )
 
@@ -36,7 +44,11 @@ ADD_CUSTOM_COMMAND(
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
 
-ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
+IF(WIN32)
+  ADD_LIBRARY(core ${CORE_SRC_FILES})
+ELSE(WIN32)
+  ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
+ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(core
   ${Lua_LIBRARIES}
@@ -46,4 +58,6 @@ TARGET_LINK_LIBRARIES(core
   tolualib
   ois
   util
+  ${Boost_thread_LIBRARIES}
+  ${Boost_filesystem_LIBRARIES}
 )

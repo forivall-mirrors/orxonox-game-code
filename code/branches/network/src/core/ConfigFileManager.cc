@@ -37,10 +37,36 @@
 
 namespace orxonox
 {
-    ConsoleCommandShortcutExtern(reloadConfig, AccessLevel::None);
-    ConsoleCommandShortcutExtern(cleanConfig, AccessLevel::None);
-    ConsoleCommandShortcutExtern(loadSettings, AccessLevel::None);
-    ConsoleCommandShortcutExtern(loadKeybindings, AccessLevel::None);
+    SetConsoleCommandShortcutExtern(config).setArgumentCompleter(0, autocompletion::configvalueclasses()).setArgumentCompleter(1, autocompletion::configvalues()).setArgumentCompleter(2, autocompletion::configvalue());
+    SetConsoleCommandShortcutExtern(tconfig).setArgumentCompleter(0, autocompletion::configvalueclasses()).setArgumentCompleter(1, autocompletion::configvalues()).setArgumentCompleter(2, autocompletion::configvalue());
+    SetConsoleCommandShortcutExtern(reloadConfig);
+    SetConsoleCommandShortcutExtern(cleanConfig);
+    SetConsoleCommandShortcutExtern(loadSettings).setArgumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(loadKeybindings).setArgumentCompleter(0, autocompletion::files());
+
+    bool config(const std::string& classname, const std::string& varname, const std::string& value)
+    {
+        std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseIdentifierMap().find(getLowercase(classname));
+        if (identifier != Identifier::getLowercaseIdentifierMapEnd())
+        {
+            std::map<std::string, ConfigValueContainer*>::const_iterator variable = (*identifier).second->getLowercaseConfigValueMap().find(getLowercase(varname));
+            if (variable != (*identifier).second->getLowercaseConfigValueMapEnd())
+                return (*variable).second->set(value);
+        }
+        return false;
+    }
+
+    bool tconfig(const std::string& classname, const std::string& varname, const std::string& value)
+    {
+        std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseIdentifierMap().find(getLowercase(classname));
+        if (identifier != Identifier::getLowercaseIdentifierMapEnd())
+        {
+            std::map<std::string, ConfigValueContainer*>::const_iterator variable = (*identifier).second->getLowercaseConfigValueMap().find(getLowercase(varname));
+            if (variable != (*identifier).second->getLowercaseConfigValueMapEnd())
+                return (*variable).second->tset(value);
+        }
+        return false;
+    }
 
     void reloadConfig()
     {

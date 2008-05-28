@@ -46,7 +46,7 @@
 
 namespace orxonox
 {
-    ConsoleCommandShortcut(HUD, cycleNavigationFocus, AccessLevel::User);
+    SetConsoleCommandShortcut(HUD, cycleNavigationFocus).setAccessLevel(AccessLevel::User);
 
     using namespace Ogre;
 

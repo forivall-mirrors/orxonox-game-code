@@ -37,7 +37,11 @@
 
 namespace orxonox
 {
-    ConsoleCommandShortcutGeneric(log, createExecutor(createFunctor(&OutputHandler::log), "log", AccessLevel::None));
+    SetConsoleCommandShortcutGeneric(log,     createConsoleCommand(createFunctor(&OutputHandler::log),     "log"    ));
+    SetConsoleCommandShortcutGeneric(error,   createConsoleCommand(createFunctor(&OutputHandler::error),   "error"  ));
+    SetConsoleCommandShortcutGeneric(warning, createConsoleCommand(createFunctor(&OutputHandler::warning), "warning"));
+    SetConsoleCommandShortcutGeneric(info,    createConsoleCommand(createFunctor(&OutputHandler::info),    "info"   ));
+    SetConsoleCommandShortcutGeneric(debug,   createConsoleCommand(createFunctor(&OutputHandler::debug),   "debug"  ));
 
     /**
         @brief Constructor: Opens the logfile and writes the first line.
@@ -96,6 +100,9 @@ namespace orxonox
             this->logfile_.flush();
         }
 
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            Shell::getInstance().getOutputBuffer() << sb;
+
         return *this;
     }
 
@@ -114,6 +121,9 @@ namespace orxonox
             manipulator(this->logfile_);
             this->logfile_.flush();
         }
+
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            Shell::getInstance().getOutputBuffer() << manipulator;
 
         return *this;
     }
@@ -134,6 +144,9 @@ namespace orxonox
             this->logfile_.flush();
         }
 
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            Shell::getInstance().getOutputBuffer() << manipulator;
+
         return *this;
     }
 
@@ -152,6 +165,9 @@ namespace orxonox
             manipulator(this->logfile_);
             this->logfile_.flush();
         }
+
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            Shell::getInstance().getOutputBuffer() << manipulator;
 
         return *this;
     }

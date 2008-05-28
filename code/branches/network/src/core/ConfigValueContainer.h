@@ -89,6 +89,13 @@ namespace orxonox
                 return *this;
             }
 
+            template <typename T>
+            inline void setVectorType(const std::vector<T>& value)
+            {
+                this->value_ = T();
+                this->update();
+            }
+
             inline const std::string& getName() const
                 { return this->varname_; }
             inline bool isVector() const
@@ -99,10 +106,14 @@ namespace orxonox
             void description(const std::string& description);
             const std::string& getDescription() const;
 
-            bool add(const std::string& input);
+            bool set(const MultiTypeMath& input);
+            bool tset(const MultiTypeMath& input);
+
+            bool set(unsigned int index, const MultiTypeMath& input);
+            bool tset(unsigned int index, const MultiTypeMath& input);
+            bool add(const MultiTypeMath& input);
             bool remove(unsigned int index);
-            bool set(const std::string& input);
-            bool tset(const std::string& input);
+
             bool reset();
             void update();
 
@@ -114,13 +125,7 @@ namespace orxonox
                 { return this->value_.getTypename(); }
 
         private:
-            bool parse(const std::string& input);
-            bool parse(const std::string& input, const MultiTypeMath& defvalue);
-
-            bool set(unsigned int index, const std::string& input);
-            bool tset(unsigned int index, const std::string& input);
-            bool parse(unsigned int index, const std::string& input);
-            bool parse(unsigned int index, const std::string& input, const MultiTypeMath& defvalue);
+            bool callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiTypeMath&), const std::string& input);
 
             bool                       bIsVector_;                  //!< True if the container contains a std::vector
 

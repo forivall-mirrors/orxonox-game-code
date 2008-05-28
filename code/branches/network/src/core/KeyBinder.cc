@@ -41,6 +41,7 @@
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
 #include "CommandExecutor.h"
+#include "ConsoleCommand.h"
 #include "Executor.h"
 // TODO: only needed by the CalibratorCallback class; move to new file
 #include "InputManager.h"
@@ -65,7 +66,7 @@ namespace orxonox
       // reset
       cmd.nValuesAdded_ = 0;
       cmd.value_ = 0;
-      return CommandExecutor::execute(cmd.evaluation_);
+      return cmd.evaluation_.execute();
     }
     else
       return true;
@@ -81,7 +82,7 @@ namespace orxonox
   */
   bool SimpleCommand::execute(float abs, float rel)
   {
-    return CommandExecutor::execute(evaluation_);
+    return evaluation_.execute();
   }
 
   // ###############################
@@ -182,7 +183,7 @@ namespace orxonox
       {
         SubString tokens(commandStrings[iCommand], " ", SubString::WhiteSpaces, false,
             '\\', false, '"', false, '(', ')', false, '\0');
-        
+
         unsigned int iToken = 0;
 
         // for real axes, we can feed a ButtonThreshold argument as entire command
@@ -237,18 +238,18 @@ namespace orxonox
           continue;
 
         // check for param command
-        int paramIndex = eval.getEvaluatedExecutor()->getAxisParamIndex();
+        int paramIndex = eval.getConsoleCommand()->getAxisParamIndex();
         if (paramIndex >= 0)
         {
           // parameter supported command
           ParamCommand* cmd = new ParamCommand();
           cmd->paramModifier_ = paramModifier;
-          cmd->bRelative_ = eval.getEvaluatedExecutor()->getIsAxisRelative();
+          cmd->bRelative_ = eval.getConsoleCommand()->getIsAxisRelative();
 
           // add command to the buffer if not yet existing
           for (unsigned int iParamCmd = 0; iParamCmd < paramCommandBuffer.size(); iParamCmd++)
           {
-            if (getLowercase(paramCommandBuffer[iParamCmd]->evaluation_.getCommandString())
+            if (getLowercase(paramCommandBuffer[iParamCmd]->evaluation_.getOriginalCommand())
                 == getLowercase(commandStr))
             {
               // already in list
@@ -270,7 +271,7 @@ namespace orxonox
           {
             if (!addParamCommand(cmd))
             {
-              mode = eval.getEvaluatedExecutor()->getKeybindMode();
+              mode = eval.getConsoleCommand()->getKeybindMode();
               commands[mode].push_back(cmd);
             }
           }
@@ -281,7 +282,7 @@ namespace orxonox
           cmd->evaluation_ = eval;
 
           if (mode == KeybindMode::None)
-            mode = eval.getEvaluatedExecutor()->getKeybindMode();
+            mode = eval.getConsoleCommand()->getKeybindMode();
 
           commands[mode].push_back(cmd);
         }
@@ -330,7 +331,7 @@ namespace orxonox
       nParamCommands_ = 0; nParamCommands_ = 0;
     }
   }
-  
+
   bool HalfAxis::addParamCommand(ParamCommand* command)
   {
     ParamCommand** cmds = paramCommands_;

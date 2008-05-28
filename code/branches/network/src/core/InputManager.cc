@@ -41,12 +41,13 @@
 #include "KeyBinder.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
+#include "Shell.h"
 
 namespace orxonox
 {
-  ConsoleCommandShortcut(InputManager, keyBind, AccessLevel::User);
-  ConsoleCommandShortcut(InputManager, storeKeyStroke, AccessLevel::Offline);
-  ConsoleCommandShortcut(InputManager, calibrate, AccessLevel::User);
+  SetConsoleCommandShortcut(InputManager, keyBind);
+  SetConsoleCommandShortcut(InputManager, storeKeyStroke);
+  SetConsoleCommandShortcut(InputManager, calibrate);
 
   // ###############################
   // ###    Internal Methods     ###
@@ -149,6 +150,7 @@ namespace orxonox
       // InputManager holds the input buffer --> create one and add it.
       buffer_ = new InputBuffer();
       addKeyHandler(buffer_, "buffer");
+      Shell::getInstance().setInputBuffer(buffer_);
 
       keyBinder_ = new KeyBinder();
       keyBinder_->loadBindings();
@@ -232,7 +234,7 @@ namespace orxonox
         mouse_ = static_cast<OIS::Mouse*>(inputSystem_->createInputObject(OIS::OISMouse, true));
         // register our listener in OIS.
         mouse_->setEventCallback(this);
-        CCOUT(ORX_DEBUG) << "Created OIS keyboard" << std::endl;
+        CCOUT(ORX_DEBUG) << "Created OIS mouse" << std::endl;
         return true;
       }
       else
@@ -906,7 +908,7 @@ namespace orxonox
 
       for (unsigned int iHandler = 0; iHandler < activeJoyStickHandlers_[iJoyStick].size(); iHandler++)
         activeJoyStickHandlers_[iJoyStick][iHandler]->joyStickAxisMoved(iJoyStick, axis, fValue);
-    }    
+    }
   }
 
   bool InputManager::axisMoved(const OIS::JoyStickEvent &arg, int axis)
@@ -952,7 +954,7 @@ namespace orxonox
       buttonReleased(arg, 32 + id * 4 + 2);
     if (lastState & OIS::Pov::West)
       buttonReleased(arg, 32 + id * 4 + 3);
-    
+
     povStates_[iJoyStick].povStates[id] = arg.state.mPOV[id].direction;
 
     int currentState = povStates_[iJoyStick][id];

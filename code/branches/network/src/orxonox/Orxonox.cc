@@ -50,16 +50,13 @@
 // util
 //#include "util/Sleep.h"
 #include "util/ArgReader.h"
-#include "util/ExprParser.h"
 
 // core
 #include "core/ConfigFileManager.h"
 #include "core/ConsoleCommand.h"
 #include "core/Debug.h"
-#include "core/Factory.h"
 #include "core/Loader.h"
 #include "core/Tickable.h"
-#include "core/InputBuffer.h"
 #include "core/InputManager.h"
 #include "core/TclBind.h"
 
@@ -71,9 +68,7 @@
 #include "network/Client.h"
 
 // objects and tools
-#include "tools/Timer.h"
 #include "hud/HUD.h"
-#include "console/InGameConsole.h"
 
 // FIXME: is this really file scope?
 // globals for the server or client
@@ -82,73 +77,9 @@ network::Server *server_g;
 
 namespace orxonox
 {
-  ConsoleCommandShortcut(Orxonox, exit, AccessLevel::None).setKeybindMode(KeybindMode::OnPress);
-  ConsoleCommandShortcut(Orxonox, slomo, AccessLevel::Offline).setDefaultValue(0, 1.0)
-    .setAxisParamIndex(0).setIsAxisRelative(false);
-  ConsoleCommandShortcut(Orxonox, setTimeFactor, AccessLevel::Offline).setDefaultValue(0, 1.0);
-  ConsoleCommandShortcut(Orxonox, activateConsole, AccessLevel::None);
-  class Testconsole : public InputBufferListener
-  {
-    public:
-      Testconsole(InputBuffer* ib) : ib_(ib) {}
-      void listen() const
-      {
-        std::cout << "> " << this->ib_->get() << std::endl;
-      }
-      void execute() const
-      {
-        std::cout << ">> " << this->ib_->get() << std::endl;
-        if (!CommandExecutor::execute(this->ib_->get()))
-          std::cout << "Error" << std::endl;
-        this->ib_->clear();
-      }
-      void hintandcomplete() const
-      {
-        std::cout << CommandExecutor::hint(this->ib_->get()) << std::endl;
-        this->ib_->set(CommandExecutor::complete(this->ib_->get()));
-      }
-      void clear() const
-      {
-        this->ib_->clear();
-      }
-      void removeLast() const
-      {
-        this->ib_->removeLast();
-      }
-      void exit() const
-      {
-        InputManager::setInputState(InputManager::IS_NORMAL);
-      }
-
-    private:
-      InputBuffer* ib_;
-  };
-
-  class Calculator
-  {
-  public:
-    static float calculate(const std::string& calculation)
-    {
-      ExprParser expr(calculation);
-      if (expr.getSuccess())
-      {
-        if (expr.getResult() == 42.0)
-          std::cout << "Greetings from the restaurant at the end of the universe." << std::endl;
-        // FIXME: insert modifier to display in full precision
-        std::cout << "Result is: " << expr.getResult() << std::endl;
-        if (expr.getRemains() != "")
-          std::cout << "Warning: Expression could not be parsed to the end! Remains: '"
-              << expr.getRemains() << "'" << std::endl;
-        return expr.getResult();
-      }
-      else
-      {
-        std::cout << "Cannot calculate expression: Parse error" << std::endl;
-        return 0;
-      }
-    }
-  };
-  ConsoleCommandShortcut(Calculator, calculate, AccessLevel::None);
+  SetConsoleCommandShortcut(Orxonox, exit).setKeybindMode(KeybindMode::OnPress);
+  SetConsoleCommandShortcut(Orxonox, slomo).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0).setAxisParamIndex(0).setIsAxisRelative(false);
+  SetConsoleCommandShortcut(Orxonox, setTimeFactor).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0);
 
   /**
     @brief Reference to the only instance of the class.
@@ -164,7 +95,6 @@ namespace orxonox
     timer_(0),
     // turn on frame smoothing by setting a value different from 0
     frameSmoothingTime_(0.0f),
-    orxonoxConsole_(0),
     orxonoxHUD_(0),
     bAbort_(false),
     timefactor_(1.0f),
@@ -350,26 +280,6 @@ namespace orxonox
     // Load the HUD
     COUT(3) << "Orxonox: Loading HUD..." << std::endl;
     orxonoxHUD_ = &HUD::getSingleton();
-
-    COUT(3) << "Orxonox: Loading Console..." << std::endl;
-    InputBuffer* ib = dynamic_cast<InputBuffer*>(InputManager::getKeyHandler("buffer"));
-    /*
-    Testconsole* console = new Testconsole(ib);
-    ib->registerListener(console, &Testconsole::listen, true);
-    ib->registerListener(console, &Testconsole::execute, '\r', false);
-    ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
-    ib->registerListener(console, &Testconsole::clear, '�', true);
-    ib->registerListener(console, &Testconsole::removeLast, '\b', true);
-    ib->registerListener(console, &Testconsole::exit, (char)0x1B, true);
-    */
-    orxonoxConsole_ = new InGameConsole(ib);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::listen, true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::execute, '\r', false);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::hintandcomplete, '\t', true);
-    //ib->registerListener(orxonoxConsole_, &InGameConsole::clear, '§', true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::removeLast, '\b', true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::exit, (char)0x1B, true);
-
     return true;
   }
 
@@ -494,15 +404,13 @@ namespace orxonox
         frameTime = 0.0f;
         renderTime = 0.0f;
       }
-      
+
       // Call those objects that need the real time
       for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame);
       // Call the scene objects
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
-      // TODO: currently a hack. Somehow the console doesn't work with OrxonoxClass
-      orxonoxConsole_->tick((float)evt.timeSinceLastFrame);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
@@ -569,14 +477,5 @@ namespace orxonox
     times.erase(times.begin(), it);
 
     return (float)(times.back() - times.front()) / ((times.size() - 1) * 1000);
-  }
-
-  /**
-   * Static function that shows the console in game mode.
-   */
-  void Orxonox::activateConsole()
-  {
-    // currently, the console shows itself when feeded with input.
-    InputManager::setInputState(InputManager::IS_CONSOLE);
   }
 }

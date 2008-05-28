@@ -116,7 +116,9 @@ namespace audio
 	        << "vendor " << vorbisComment->vendor << std::endl;
 
 	    for(int i = 0; i < vorbisComment->comments; i++)
+	    {
 	        COUT(3) << "   " << vorbisComment->user_comments[i] << std::endl;
+	    }
 
 	    COUT(3) << std::endl;
 		}

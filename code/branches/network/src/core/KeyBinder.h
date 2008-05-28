@@ -42,7 +42,7 @@
 #include "ois/OIS.h"
 #include "util/Math.h"
 #include "OrxonoxClass.h"
-#include "CommandExecutor.h"
+#include "CommandEvaluation.h"
 #include "InputInterfaces.h"
 
 namespace orxonox

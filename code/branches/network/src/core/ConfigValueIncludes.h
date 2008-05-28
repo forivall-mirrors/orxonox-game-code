@@ -83,6 +83,7 @@
         for (unsigned int i = 0; i < defvalue.size(); i++) \
             temp.push_back(MultiTypeMath(defvalue[i])); \
         container##varname = new orxonox::ConfigValueContainer(CFT_Settings, this->getIdentifier(), #varname, temp); \
+        container##varname->setVectorType(varname); \
         this->getIdentifier()->addConfigValueContainer(#varname, container##varname); \
     } \
     container##varname->getValue(&varname)

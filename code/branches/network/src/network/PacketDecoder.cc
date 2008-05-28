@@ -83,7 +83,7 @@ namespace network
     }
     return false;
   }
-  
+
   bool PacketDecoder::testAndRemoveCRC(ENetPacket *packet){
     uint32_t submittetcrc;
     int dataLength = packet->dataLength;
@@ -101,7 +101,7 @@ namespace network
     COUT(3) << "submitted crc: " << submittetcrc << std::endl;
     return false;
   }
-  
+
   // ATTENTION: TODO watch, that arguments we pass over to the processFunction gets deleted in THE PROCESSXXX function
 
   //following are the decode functions for the data of the packets
@@ -117,7 +117,7 @@ namespace network
     //clean memory
     enet_packet_destroy( packet );
   }
-  
+
   bool PacketDecoder::command( ENetPacket* packet, int clientId ){
     int length = *(int*)((unsigned char *)packet->data+sizeof(int));
     if(length<=0)
@@ -174,13 +174,17 @@ namespace network
     memcpy( (void*)&(currentState->complete), (const void*)(packet->data+5*sizeof(int)+sizeof(bool)), sizeof(bool));
     //since data is not allocated, because it's just a pointer, allocate it with size of gamestatedatastream
     if(currentState->compsize==0)
+    {
       COUT(2) << "PacketDecoder: compsize is 0" << std::endl;
+    }
 //     currentState->data = (unsigned char*)(malloc( currentState->compsize ));
     if(currentState->compsize==0)
       return;
     currentState->data = new unsigned char[currentState->compsize];
     if(currentState->data==NULL)
+    {
       COUT(2) << "PacketDecoder: Gamestatepacket-decoder: memory leak" << std::endl;
+    }
     //copy the GameStateCompressed data
     memcpy( (void*)(currentState->data), (const void*)(packet->data+5*sizeof( int ) + 2*sizeof(bool)), currentState->compsize );
 
@@ -205,8 +209,8 @@ namespace network
     enet_packet_destroy( packet );
     processClassid(cid);
   }
-  
-  
+
+
   bool PacketDecoder::decodeWelcome( ENetPacket* packet, int clientID ){
     welcome *w = new welcome;
     w->allowed = ((welcome *)(packet->data))->allowed;
@@ -216,7 +220,7 @@ namespace network
     enet_packet_destroy( packet );
     return processWelcome(w);
   }
-  
+
   bool PacketDecoder::decodeConnectRequest( ENetPacket *packet, int clientID ){
     connectRequest *con = new connectRequest;
     con->id = ((connectRequest *)(packet->data))->id;
@@ -255,12 +259,12 @@ namespace network
     delete data;
     return;
   }
-  
+
   bool PacketDecoder::processWelcome( welcome *w ){
     delete w;
     return true;
   }
-  
+
   bool PacketDecoder::processConnectRequest( connectRequest *con, int clientID ){
     COUT(3) << "packetdecoder: processing connectRequest" << std::endl;
     delete con;
@@ -279,7 +283,9 @@ namespace network
   void PacketDecoder::printChat( chat* data, int clientId )
   {
     if(clientId!=CLIENTID_CLIENT)
+    {
       COUT(5) << "client: " << clientId << std::endl;
+    }
     COUT(5) << "data id: " << data->id << std::endl;
     COUT(5) << "data:    " << data->message << std::endl;
   }

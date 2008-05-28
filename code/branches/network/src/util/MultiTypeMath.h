@@ -62,39 +62,51 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         inline MultiTypeMath(const std::string&      value) : MultiTypeString(value) {}
         inline MultiTypeMath(const orxonox::Vector2&     value) { this->setValue(value); }
         inline MultiTypeMath(const orxonox::Vector3&     value) { this->setValue(value); }
+        inline MultiTypeMath(const orxonox::Vector4&     value) { this->setValue(value); }
         inline MultiTypeMath(const orxonox::ColourValue& value) { this->setValue(value); }
         inline MultiTypeMath(const orxonox::Quaternion&  value) { this->setValue(value); }
         inline MultiTypeMath(const orxonox::Radian&      value) { this->setValue(value); }
         inline MultiTypeMath(const orxonox::Degree&      value) { this->setValue(value); }
         inline MultiTypeMath(const MultiTypeMath& mtm)          { this->setValue(mtm);   }
+        inline MultiTypeMath(const MultiTypeString& mts)        { this->setValue(mts);   }
+        inline MultiTypeMath(const MultiTypePrimitive& mtp)     { this->setValue(mtp);   }
         virtual inline ~MultiTypeMath() {}
 
         using MultiTypeString::operator=;
         inline MultiTypeMath& operator=(const orxonox::Vector2&     value) { this->setValue(value); return *this; }
         inline MultiTypeMath& operator=(const orxonox::Vector3&     value) { this->setValue(value); return *this; }
+        inline MultiTypeMath& operator=(const orxonox::Vector4&     value) { this->setValue(value); return *this; }
         inline MultiTypeMath& operator=(const orxonox::ColourValue& value) { this->setValue(value); return *this; }
         inline MultiTypeMath& operator=(const orxonox::Quaternion&  value) { this->setValue(value); return *this; }
         inline MultiTypeMath& operator=(const orxonox::Radian&      value) { this->setValue(value); return *this; }
         inline MultiTypeMath& operator=(const orxonox::Degree&      value) { this->setValue(value); return *this; }
         inline MultiTypeMath& operator=(const MultiTypeMath& mtm)          { this->setValue(mtm);   return *this; }
+        inline MultiTypeMath& operator=(const MultiTypeString& mts)        { this->setValue(mts);   return *this; }
+        inline MultiTypeMath& operator=(const MultiTypePrimitive mtp)      { this->setValue(mtp);   return *this; }
 
         using MultiTypeString::operator==;
         inline bool operator==(const orxonox::Vector2&     value) const { return (this->vector2_     == value); }
         inline bool operator==(const orxonox::Vector3&     value) const { return (this->vector3_     == value); }
+        inline bool operator==(const orxonox::Vector4&     value) const { return (this->vector4_     == value); }
         inline bool operator==(const orxonox::ColourValue& value) const { return (this->colourvalue_ == value); }
         inline bool operator==(const orxonox::Quaternion&  value) const { return (this->quaternion_  == value); }
         inline bool operator==(const orxonox::Radian&      value) const { return (this->radian_      == value); }
         inline bool operator==(const orxonox::Degree&      value) const { return (this->degree_      == value); }
         bool operator==(const MultiTypeMath& mtm) const;
+        bool operator==(const MultiTypeString& mts) const;
+        bool operator==(const MultiTypePrimitive& mtp) const;
 
         using MultiTypeString::operator!=;
         inline bool operator!=(const orxonox::Vector2&     value) const { return (this->vector2_     != value); }
         inline bool operator!=(const orxonox::Vector3&     value) const { return (this->vector3_     != value); }
+        inline bool operator!=(const orxonox::Vector4&     value) const { return (this->vector4_     != value); }
         inline bool operator!=(const orxonox::ColourValue& value) const { return (this->colourvalue_ != value); }
         inline bool operator!=(const orxonox::Quaternion&  value) const { return (this->quaternion_  != value); }
         inline bool operator!=(const orxonox::Radian&      value) const { return (this->radian_      != value); }
         inline bool operator!=(const orxonox::Degree&      value) const { return (this->degree_      != value); }
         bool operator!=(const MultiTypeMath& mtm) const;
+        bool operator!=(const MultiTypeString& mts) const;
+        bool operator!=(const MultiTypePrimitive& mtp) const;
 
         virtual operator void*()                const;
         virtual operator int()                  const;
@@ -113,6 +125,7 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         virtual operator const char*()          const;
         virtual operator orxonox::Vector2()     const;
         virtual operator orxonox::Vector3()     const;
+        virtual operator orxonox::Vector4()     const;
         virtual operator orxonox::ColourValue() const;
         virtual operator orxonox::Quaternion()  const;
         virtual operator orxonox::Radian()      const;
@@ -121,14 +134,18 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         using MultiTypeString::setValue;
         inline void setValue(const orxonox::Vector2&     value) { this->type_ = MT_vector2;     this->vector2_     = value; }
         inline void setValue(const orxonox::Vector3&     value) { this->type_ = MT_vector3;     this->vector3_     = value; }
+        inline void setValue(const orxonox::Vector4&     value) { this->type_ = MT_vector4;     this->vector4_     = value; }
         inline void setValue(const orxonox::ColourValue& value) { this->type_ = MT_colourvalue; this->colourvalue_ = value; }
         inline void setValue(const orxonox::Quaternion&  value) { this->type_ = MT_quaternion;  this->quaternion_  = value; }
         inline void setValue(const orxonox::Radian&      value) { this->type_ = MT_radian;      this->radian_      = value; }
         inline void setValue(const orxonox::Degree&      value) { this->type_ = MT_degree;      this->degree_      = value; }
         void setValue(const MultiTypeMath& mtm);
+        void setValue(const MultiTypeString& mts);
+        void setValue(const MultiTypePrimitive& mtp);
 
         inline orxonox::Vector2     getVector2()     const { return this->vector2_;     }
         inline orxonox::Vector3     getVector3()     const { return this->vector3_;     }
+        inline orxonox::Vector4     getVector4()     const { return this->vector4_;     }
         inline orxonox::ColourValue getColourValue() const { return this->colourvalue_; }
         inline orxonox::Quaternion  getQuaternion()  const { return this->quaternion_;  }
         inline orxonox::Radian      getRadian()      const { return this->radian_;      }
@@ -136,6 +153,7 @@ class _UtilExport MultiTypeMath : public MultiTypeString
 
         inline orxonox::Vector2&     getVector2()     { return this->vector2_;     }
         inline orxonox::Vector3&     getVector3()     { return this->vector3_;     }
+        inline orxonox::Vector4&     getVector4()     { return this->vector4_;     }
         inline orxonox::ColourValue& getColourValue() { return this->colourvalue_; }
         inline orxonox::Quaternion&  getQuaternion()  { return this->quaternion_;  }
         inline orxonox::Radian&      getRadian()      { return this->radian_;      }
@@ -144,6 +162,7 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         using MultiTypeString::getValue;
         inline void getValue(orxonox::Vector2*     variable) const { (*variable) = orxonox::Vector2     (this->vector2_);     }
         inline void getValue(orxonox::Vector3*     variable) const { (*variable) = orxonox::Vector3     (this->vector3_);     }
+        inline void getValue(orxonox::Vector4*     variable) const { (*variable) = orxonox::Vector4     (this->vector4_);     }
         inline void getValue(orxonox::ColourValue* variable) const { (*variable) = orxonox::ColourValue (this->colourvalue_); }
         inline void getValue(orxonox::Quaternion*  variable) const { (*variable) = orxonox::Quaternion  (this->quaternion_);  }
         inline void getValue(orxonox::Radian*      variable) const { (*variable) = orxonox::Radian      (this->radian_);      }
@@ -154,9 +173,12 @@ class _UtilExport MultiTypeMath : public MultiTypeString
         virtual std::string toString() const;
         virtual bool fromString(const std::string value);
 
+        virtual bool assimilate(const MultiTypeMath& mtm, const MultiTypeMath& defvalue = MultiTypeMath());
+
     protected:
         orxonox::Vector2      vector2_;
         orxonox::Vector3      vector3_;
+        orxonox::Vector4      vector4_;
         orxonox::ColourValue  colourvalue_;
         orxonox::Quaternion   quaternion_;
         orxonox::Radian       radian_;

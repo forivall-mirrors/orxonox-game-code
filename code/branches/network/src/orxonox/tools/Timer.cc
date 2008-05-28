@@ -26,6 +26,8 @@
  *
  */
 
+#include <set>
+
 #include "OrxonoxStableHeaders.h"
 #include "Timer.h"
 
@@ -36,7 +38,10 @@
 
 namespace orxonox
 {
-    ConsoleCommandShortcutExtern(delay, AccessLevel::None);
+    SetConsoleCommandShortcutExtern(delay);
+    SetConsoleCommandShortcutExtern(killdelays);
+
+    static std::set<StaticTimer*> delaytimerset;
 
     /**
         @brief Calls a console command after 'delay' seconds.
@@ -46,6 +51,8 @@ namespace orxonox
     void delay(float delay, const std::string& command)
     {
         StaticTimer *delaytimer = new StaticTimer();
+        delaytimerset.insert(delaytimer);
+
         ExecutorStatic* delayexecutor = createExecutor(createFunctor(&executeDelayedCommand));
         delayexecutor->setDefaultValues(delaytimer, command);
         delaytimer->setTimer(delay, false, delayexecutor);
@@ -60,6 +67,18 @@ namespace orxonox
     {
         CommandExecutor::execute(command);
         delete timer;
+        delaytimerset.erase(timer);
+    }
+
+    /**
+        @brief Kills all delayed commands.
+    */
+    void killdelays()
+    {
+        for (std::set<StaticTimer*>::iterator it = delaytimerset.begin(); it != delaytimerset.end(); ++it)
+            delete (*it);
+
+        delaytimerset.clear();
     }
 
     /**
