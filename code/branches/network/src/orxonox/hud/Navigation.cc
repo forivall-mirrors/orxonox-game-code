@@ -196,7 +196,7 @@ namespace orxonox
             // object is in view
             navMarker_->setMaterialName("Orxonox/NavTDC");
             navMarker_->setDimensions(24,24);
-            navMarker_->setUV(0.0,0.0,1.0,1.0);
+            navMarker_->setUV(0.0, 0.0, 1.0, 1.0);
             navMarker_->setPosition(xPos-navMarker_->getWidth()/2, yPos-navMarker_->getHeight()/2);
             navText_->setPosition(xPos+navMarker_->getWidth()/2, yPos+navMarker_->getHeight()/2);
         }
@@ -204,10 +204,13 @@ namespace orxonox
 
     void Navigation::cycleFocus(){
         if(focus_ == NULL){
+        COUT(3) << "focus = null\n";
             it_ = HUD::getSingleton().roSet.begin();
             focus_ = *it_;
+            ++it_;
         }
         else{
+        COUT(3) << "focus = " << focus_ << std::endl;
             focus_->resetColour();
             if(it_ != HUD::getSingleton().roSet.end()){
                 focus_ = *it_;
