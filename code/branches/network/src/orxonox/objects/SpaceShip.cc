@@ -483,7 +483,7 @@ namespace orxonox
     {
         SpaceShip* this_ = getLocalShip();
         this_->momentum_ = Radian(-this_->rotationAccelerationRadian_ * val);
-        COUT(3) << "rotating val: " << val << " acceleration: " << this_->rotationAccelerationRadian_.valueDegrees() << std::endl;
+        //COUT(3) << "rotating val: " << val << " acceleration: " << this_->rotationAccelerationRadian_.valueDegrees() << std::endl;
     }
 
     void SpaceShip::moveLongitudinal(float val)

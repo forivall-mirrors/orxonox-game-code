@@ -84,7 +84,7 @@ namespace orxonox
 
             this->rotationRate_ += (dt * this->momentum_);
             this->rotate(this->rotationAxis_, dt * this->rotationRate_);
-            COUT(3) << "rotationrate: " << this->rotationRate_.valueDegrees() << " momentum: " << this->momentum_.valueDegrees() << std::endl;
+            //COUT(3) << "rotationrate: " << this->rotationRate_.valueDegrees() << " momentum: " << this->momentum_.valueDegrees() << std::endl;
         }
     }
 
