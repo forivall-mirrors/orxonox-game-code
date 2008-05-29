@@ -44,6 +44,7 @@
 #include "core/InputManager.h"
 #include "particle/ParticleInterface.h"
 #include "Projectile.h"
+#include "RotatingProjectile.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
 #include "network/Client.h"
@@ -77,8 +78,6 @@ namespace orxonox
     }
 
     SpaceShip::SpaceShip() :
-      teamNr_(0),
-      health_(100),
       //testvector_(0,0,0),
       //bInvertYAxis_(false),
       setMouseEventCallback_(false),
@@ -111,7 +110,9 @@ namespace orxonox
       mouseX_(0.0f),
       mouseY_(0.0f),
       emitterRate_(0.0f),
-      myShip_(false)
+      myShip_(false),
+      teamNr_(0),
+      health_(100)
     {
         RegisterObject(SpaceShip);
         this->registerAllVariables();
@@ -124,6 +125,8 @@ namespace orxonox
         currentDir_ = initialDir_;
         initialOrth_ = Vector3(0.0, 0.0, 1.0);
         currentOrth_ = initialOrth_;
+
+        this->camName_ = this->getName() + "CamNode";
 
         this->setRotationAxis(1, 0, 0);
         this->setStatic(false);
@@ -208,20 +211,23 @@ namespace orxonox
         this->greenNode_->setScale(0.3, 0.3, 0.3);
         // END CREATING BLINKING LIGHTS
 
-        // START of testing crosshair
-        this->crosshairNear_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
-        this->crosshairFar_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
+        if (this->isExactlyA(Class(SpaceShip)))
+        {
+            // START of testing crosshair
+            this->crosshairNear_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
+            this->crosshairFar_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
 
-        this->chNearNode_ = this->getNode()->createChildSceneNode(this->getName() + "near", Vector3(50.0, 0.0, 0.0));
-        this->chNearNode_->setInheritScale(false);
-        this->chFarNode_ = this->getNode()->createChildSceneNode(this->getName() + "far", Vector3(200.0, 0.0, 0.0));
-        this->chFarNode_->setInheritScale(false);
+            this->chNearNode_ = this->getNode()->createChildSceneNode(this->getName() + "near", Vector3(50.0, 0.0, 0.0));
+            this->chNearNode_->setInheritScale(false);
+            this->chFarNode_ = this->getNode()->createChildSceneNode(this->getName() + "far", Vector3(200.0, 0.0, 0.0));
+            this->chFarNode_->setInheritScale(false);
 
-        this->chNearNode_->attachObject(this->crosshairNear_.getBillboardSet());
-        this->chNearNode_->setScale(0.2, 0.2, 0.2);
+            this->chNearNode_->attachObject(this->crosshairNear_.getBillboardSet());
+            this->chNearNode_->setScale(0.2, 0.2, 0.2);
 
-        this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
-        this->chFarNode_->setScale(0.4, 0.4, 0.4);
+            this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
+            this->chFarNode_->setScale(0.4, 0.4, 0.4);
+        }
 
         createCamera();
         // END of testing crosshair
@@ -361,7 +367,12 @@ namespace orxonox
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
 
-            Projectile *p = new Projectile(this);
+            Projectile *p;
+            if (this->isExactlyA(Class(SpaceShip)))
+                p = new RotatingProjectile(this);
+            else
+                p = new Projectile(this);
+            p->setColour(this->getProjectileColour());
             p->create();
             if(p->classID==0)
               COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
@@ -462,50 +473,58 @@ namespace orxonox
         }/*else
           COUT(4) << "not steering ship: " << objectID << " our ship: " << network::Client::getSingleton()->getShipID() << std::endl;*/
     }
+
     void SpaceShip::movePitch(float val)
-    {
-        SpaceShip* this_ = getLocalShip();
-        val = -val * val * sgn(val) * this_->rotationAcceleration_;
-        if (val > this_->maxRotation_)
-            val = this_->maxRotation_;
-        if (val < -this_->maxRotation_)
-            val = -this_->maxRotation_;
-        this_->mouseYRotation_ = Radian(val);
-    }
-
+    {   getLocalShip()->setMovePitch(val);   }
     void SpaceShip::moveYaw(float val)
-    {
-        SpaceShip* this_ = getLocalShip();
-        val = -val * val * sgn(val) * this_->rotationAcceleration_;
-        if (val > this_->maxRotation_)
-            val = this_->maxRotation_;
-        if (val < -this_->maxRotation_)
-            val = -this_->maxRotation_;
-        this_->mouseXRotation_ = Radian(val);
-    }
-
+    {   getLocalShip()->setMoveYaw(val);   }
     void SpaceShip::moveRoll(float val)
-    {
-        SpaceShip* this_ = getLocalShip();
-        this_->momentum_ = Radian(-this_->rotationAccelerationRadian_ * val);
-        //COUT(3) << "rotating val: " << val << " acceleration: " << this_->rotationAccelerationRadian_.valueDegrees() << std::endl;
-    }
-
+    {   getLocalShip()->setMoveRoll(val);   }
     void SpaceShip::moveLongitudinal(float val)
-    {
-        SpaceShip* this_ = getLocalShip();
-        this_->acceleration_.x = this_->translationAcceleration_ * val;
-    }
-
+    {   getLocalShip()->setMoveLongitudinal(val);   }
     void SpaceShip::moveLateral(float val)
+    {   getLocalShip()->setMoveLateral(val);   }
+    void SpaceShip::fire()
+    {   getLocalShip()->doFire();   }
+
+    void SpaceShip::setMovePitch(float val)
     {
-        SpaceShip* this_ = getLocalShip();
-        this_->acceleration_.y = -this_->translationAcceleration_ * val;
+        val = -val * val * sgn(val) * this->rotationAcceleration_;
+        if (val > this->maxRotation_)
+            val = this->maxRotation_;
+        if (val < -this->maxRotation_)
+            val = -this->maxRotation_;
+        this->mouseYRotation_ = Radian(val);
     }
 
-    void SpaceShip::fire()
+    void SpaceShip::setMoveYaw(float val)
     {
-        SpaceShip* this_ = getLocalShip();
-        this_->bLMousePressed_ = true;
+        val = -val * val * sgn(val) * this->rotationAcceleration_;
+        if (val > this->maxRotation_)
+            val = this->maxRotation_;
+        if (val < -this->maxRotation_)
+            val = -this->maxRotation_;
+        this->mouseXRotation_ = Radian(val);
+    }
+
+    void SpaceShip::setMoveRoll(float val)
+    {
+        this->momentum_ = Radian(-this->rotationAccelerationRadian_ * val);
+        //COUT(3) << "rotating val: " << val << " acceleration: " << this->rotationAccelerationRadian_.valueDegrees() << std::endl;
+    }
+
+    void SpaceShip::setMoveLongitudinal(float val)
+    {
+        this->acceleration_.x = this->translationAcceleration_ * val;
+    }
+
+    void SpaceShip::setMoveLateral(float val)
+    {
+        this->acceleration_.y = -this->translationAcceleration_ * val;
+    }
+
+    void SpaceShip::doFire()
+    {
+        this->bLMousePressed_ = true;
     }
 }

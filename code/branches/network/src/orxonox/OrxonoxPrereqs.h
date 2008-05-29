@@ -73,6 +73,7 @@ namespace orxonox {
   class Projectile;
   class Skybox;
   class SpaceShip;
+  class SpaceShipAI;
   class WorldEntity;
 
   class AmmunitionDump;

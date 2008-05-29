@@ -24,8 +24,10 @@ SET( ORXONOX_SRC_FILES
   objects/Model.cc
   objects/NPC.cc
   objects/Projectile.cc
+  objects/RotatingProjectile.cc
   objects/Skybox.cc
   objects/SpaceShip.cc
+  objects/SpaceShipAI.cc
   objects/WorldEntity.cc
 
 #  objects/weapon/AmmunitionDump.cc

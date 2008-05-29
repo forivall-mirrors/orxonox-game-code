@@ -75,20 +75,33 @@ namespace orxonox
             static void moveLongitudinal(float value);
             static void moveLateral(float value);
             static void fire();
+            void setMovePitch(float value);
+            void setMoveYaw(float value);
+            void setMoveRoll(float value);
+            void setMoveLongitudinal(float value);
+            void setMoveLateral(float value);
+            void doFire();
 
             float getMaxSpeed();
             Vector3 getDir();
             Vector3 getOrth();
             Camera* getCamera();
 
+            int getTeamNr() const
+                { return this->teamNr_; }
+            int getHealth() const
+                { return this->health_; }
+
             bool getMyShip(){return myShip_;}
 
         protected:
-            int teamNr_;
-            int health_;
+            void setTeamNr(int teamNr)
+                { this->teamNr_ = teamNr; }
 
         private:
             void createCamera();
+            virtual ColourValue getProjectileColour() const
+                { return ColourValue(1.0, 1.0, 0.5); }
 
             Vector3 testvector_;
             Vector3 initialDir_;
@@ -141,6 +154,9 @@ namespace orxonox
 
             float emitterRate_;
             bool myShip_;
+
+            int teamNr_;
+            int health_;
 
             static SpaceShip* instance_s;
     };

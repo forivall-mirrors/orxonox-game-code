@@ -26,41 +26,50 @@
  *
  */
 
-#ifndef _Projectile_H__
-#define _Projectile_H__
+#ifndef _SpaceShipAI_H__
+#define _SpaceShipAI_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "WorldEntity.h"
-#include "../tools/BillboardSet.h"
-#include "../tools/Timer.h"
+#include "SpaceShip.h"
+#include "tools/Timer.h"
 #include "util/Math.h"
+
+#define NUM_AI_TEAMS 3
 
 namespace orxonox
 {
-    class _OrxonoxExport Projectile : public WorldEntity
+    class SpaceShipAI : public SpaceShip
     {
         public:
-            Projectile(SpaceShip* owner = 0);
-            virtual ~Projectile();
-            void setConfigValues();
-            void destroyObject();
-            virtual void tick(float dt);
-            virtual bool create(){return WorldEntity::create();}
-            void setColour(const ColourValue& colour);
-
-            static float getSpeed()
-                { return Projectile::speed_; }
-
-        protected:
-            SpaceShip* owner_;
+            SpaceShipAI();
+            static void createEnemy(int num);
+            static void killEnemies(int num);
 
         private:
-            BillboardSet billboard_;
-            static float speed_;
-            float lifetime_;
-            Timer<Projectile> destroyTimer_;
+            virtual void tick(float dt);
+            virtual ColourValue getProjectileColour() const;
+
+            void action();
+
+            void moveToTargetPosition(float dt);
+            void searchNewTargetPosition();
+            void forgetTarget();
+            void searchNewTarget();
+            void aimAtTarget();
+            bool isCloseAtTarget(float distance);
+            bool isLookingAtTarget(float angle);
+
+            Timer<SpaceShipAI> actionTimer_;
+
+            bool alive_;
+            bool bHasTargetPosition_;
+            Vector3 targetPosition_;
+            SpaceShip* target_;
+            bool bShooting_;
+
+            ColourValue teamColours_[NUM_AI_TEAMS + 1];
     };
 }
 
-#endif /* _Projectile_H__ */
+#endif /* _SpaceShipAI_H__ */
