@@ -67,8 +67,14 @@ namespace orxonox
 
         for (int i = 4; i <= NUM_AI_TEAMS; ++i)
             this->teamColours_[i] = ColourValue(rnd(), rnd(), rnd(), 1);
+    }
 
-        actionTimer_.setTimer(ACTION_INTERVAL, true, this, createExecutor(createFunctor(&SpaceShipAI::action)));
+    void SpaceShipAI::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SpaceShip::XMLPort(xmlelement, mode);
+        myShip_=true;
+
+        this->actionTimer_.setTimer(ACTION_INTERVAL, true, this, createExecutor(createFunctor(&SpaceShipAI::action)));
     }
 
     void SpaceShipAI::createEnemy(int num)
@@ -87,7 +93,7 @@ namespace orxonox
             newenemy->setTransDamp(75);
             newenemy->setRotDamp(1.0);
             Element xmlelement;
-            newenemy->create();
+            newenemy->XMLPort(xmlelement, XMLPort::LoadObject);
         }
     }
 
@@ -217,7 +223,7 @@ std::cout << "roll: " << rotation.getRoll().valueRadians() << std::endl;
 
     void SpaceShipAI::searchNewTargetPosition()
     {
-        this->targetPosition_ += Vector3(rnd(-10000,10000), rnd(-10000,10000), rnd(-10000,10000));
+        this->targetPosition_ = Vector3(rnd(-5000,5000), rnd(-5000,5000), rnd(-5000,5000));
         this->bHasTargetPosition_ = true;
     }
 

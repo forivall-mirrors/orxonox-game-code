@@ -43,6 +43,7 @@ namespace orxonox
     {
         public:
             SpaceShipAI();
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             static void createEnemy(int num);
             static void killEnemies(int num);
 

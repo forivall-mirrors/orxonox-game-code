@@ -314,8 +314,10 @@ namespace orxonox
         XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, mode);
         myShip_=true; // TODO: this is only a hack
+
         SpaceShip::create();
-        getFocus();
+        if (this->isExactlyA(Class(SpaceShip)))
+            getFocus();
     }
 
     int sgn(float x)

@@ -153,6 +153,8 @@ namespace orxonox
             float mouseY_;
 
             float emitterRate_;
+
+        protected:
             bool myShip_;
 
             int teamNr_;
