@@ -57,13 +57,14 @@ namespace network
   
   
 #define MAX_FAILURES 20;
-  
+#define NETWORK_FREQUENCY 30
   
   /**
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY
   *
   */
   Server::Server() {
+    timeSinceLastUpdate_=0;
     packet_gen = PacketGenerator();
     clients = new ClientInformation(true);
     connection = new ConnectionManager(clients);
@@ -71,6 +72,7 @@ namespace network
   }
   
   Server::Server(int port){
+    timeSinceLastUpdate_=0;
     packet_gen = PacketGenerator();
     clients = new ClientInformation(true);
     connection = new ConnectionManager(clients, port);
@@ -83,6 +85,7 @@ namespace network
   * @param bindAddress Address to listen on
   */
   Server::Server(int port, std::string bindAddress) {
+    timeSinceLastUpdate_=0;
     packet_gen = PacketGenerator();
     clients = new ClientInformation();
     connection = new ConnectionManager(port, bindAddress, clients);
@@ -95,6 +98,7 @@ namespace network
   * @param bindAddress Address to listen on
   */
   Server::Server(int port, const char *bindAddress) {
+    timeSinceLastUpdate_=0;
     packet_gen = PacketGenerator();
     clients = new ClientInformation();
     connection = new ConnectionManager(port, bindAddress, clients);
@@ -156,9 +160,14 @@ namespace network
   */
   void Server::tick(float time) {
     processQueue();
-    gamestates->processGameStates();
-    updateGamestate();
-     usleep(5000); // TODO remove
+    //this steers our network frequency
+    timeSinceLastUpdate_+=time;
+    if(timeSinceLastUpdate_>=(1./NETWORK_FREQUENCY)){
+      timeSinceLastUpdate_-=(1./NETWORK_FREQUENCY);
+      gamestates->processGameStates();
+      updateGamestate();
+    }
+//     usleep(5000); // TODO remove
     return;
   }
 

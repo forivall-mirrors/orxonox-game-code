@@ -86,6 +86,7 @@ namespace network
     PacketGenerator packet_gen;
 
     ClientInformation *clients;
+    float timeSinceLastUpdate_;
   };
 
 

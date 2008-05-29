@@ -142,6 +142,9 @@ namespace orxonox
           InputManager::removeMouseHandler("SpaceShip");
         if (this->cam_)
           delete this->cam_;
+        if (!Identifier::isCreatingHierarchy() && !myShip_ && &HUD::getSingleton()!=NULL)
+          //remove the radar object
+          HUD::getSingleton().removeRadarObject(this->getNode());
     }
 
     bool SpaceShip::create(){

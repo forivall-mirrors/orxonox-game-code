@@ -191,7 +191,8 @@ namespace orxonox
 //        }
     }
 
-    void HUD::removeRadarObject(SceneNode* node){
+    void HUD::removeRadarObject(Ogre::SceneNode* node){
+      COUT(3) << "blabla" << std::endl;
         for(std::set<RadarObject*>::iterator it=roSet.begin(); it!=roSet.end(); it++){
             if((*it)->getNode() == node) {
                 delete (*it);
