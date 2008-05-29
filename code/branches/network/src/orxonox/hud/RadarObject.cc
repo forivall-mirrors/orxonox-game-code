@@ -26,11 +26,12 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
+#include "RadarObject.h"
+
 #include <OgreOverlayManager.h>
 #include <OgreStringConverter.h>
-#include "OrxonoxStableHeaders.h"
 #include "GraphicsEngine.h"
-#include "RadarObject.h"
 
 namespace orxonox
 {

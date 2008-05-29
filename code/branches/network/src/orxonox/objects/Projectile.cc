@@ -26,10 +26,10 @@
  *
  */
 
-#include <OgreBillboard.h>
-
 #include "OrxonoxStableHeaders.h"
 #include "Projectile.h"
+
+#include <OgreBillboard.h>
 
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"

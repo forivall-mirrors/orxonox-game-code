@@ -26,9 +26,10 @@
  *
  */
 
-#include <OgreMath.h>
-
+#include "OrxonoxStableHeaders.h"
 #include "SpaceShipAI.h"
+
+#include <OgreMath.h>
 #include "Projectile.h"
 #include "core/CoreIncludes.h"
 #include "core/Iterator.h"

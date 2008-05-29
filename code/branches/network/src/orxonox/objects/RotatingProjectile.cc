@@ -26,11 +26,11 @@
  */
 
 #include "OrxonoxStableHeaders.h"
+#include "RotatingProjectile.h"
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include <OgreBillboard.h>
-#include "RotatingProjectile.h"
 
 namespace orxonox
 {

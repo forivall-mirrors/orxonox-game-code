@@ -239,11 +239,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\RotatingProjectile.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Skybox.cc"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\SpaceShip.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\SpaceShipAI.cc"
 					>
 				</File>
 				<File
@@ -517,11 +525,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\RotatingProjectile.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Skybox.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\SpaceShip.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\SpaceShipAI.h"
 					>
 				</File>
 				<File
