@@ -7,13 +7,14 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport RotatingProjectile : public Projectile
+    class _OrxonoxExport RotatingProjectile : public Projectile/*, public network::Synchronisable*/
     {
         public:
             RotatingProjectile(SpaceShip* owner = 0);
             virtual ~RotatingProjectile();
             void setConfigValues();
             virtual void tick(float dt);
+            virtual bool create(){return Projectile::create();}
 
         private:
             ColourValue colour_;

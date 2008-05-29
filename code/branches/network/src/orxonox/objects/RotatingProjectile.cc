@@ -42,7 +42,7 @@ namespace orxonox
 
         this->time_ = 0;
 
-        if (this->owner_)
+        if (/*this->owner_*/true)
         {
             this->rotatingBillboard1_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
             this->rotatingBillboard2_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);

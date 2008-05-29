@@ -7,7 +7,7 @@ if [[ !  -f orxonox ]] ; then
 	exit 1
 fi
 
-if [[ ! -f orge.cfg ]] ; then
+if [[ -ne orge.cfg ]] ; then
 	cp ogre.cfg-init ogre.cfg
 fi
 
