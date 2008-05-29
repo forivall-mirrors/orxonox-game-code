@@ -479,7 +479,7 @@ namespace orxonox
             else
                 width += CHAR_WIDTH3;
         }
-        this->consoleOverlayCursor_->setPosition(width + 5, 219);
+        this->consoleOverlayCursor_->setPosition(width + 5, this->windowH_ * InGameConsole::REL_HEIGHT - 20);
     }
 
     /**
