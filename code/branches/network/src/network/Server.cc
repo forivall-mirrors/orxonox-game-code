@@ -158,7 +158,7 @@ namespace network
     processQueue();
     gamestates->processGameStates();
     updateGamestate();
-//     usleep(500000); // TODO remove
+     usleep(5000); // TODO remove
     return;
   }
 
@@ -235,14 +235,17 @@ namespace network
       GameStateCompressed *gs = gamestates->popGameState(cid);
       if(gs==NULL){
         COUT(2) << "Server: could not generate gamestate (NULL from compress)" << std::endl;
-        return false;
+        continue;
       }
       //std::cout << "adding gamestate" << std::endl;
-      if ( !(connection->addPacket(packet_gen.gstate(gs), cid)) ){
+      ENetPacket *packet = packet_gen.gstate(gs);
+      if(!packet)
+	continue;
+      if ( !(connection->addPacket(packet, cid)) ){
         COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl; 
         temp->addFailure();
-        if(temp->getFailures() > 20 )
-          disconnectClient(temp);
+        /*if(temp->getFailures() > 0 )
+          disconnectClient(temp);*/
       //std::cout << "added gamestate" << std::endl;
       }else
         temp->resetFailures();
