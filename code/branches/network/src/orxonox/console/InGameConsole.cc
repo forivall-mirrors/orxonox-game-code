@@ -46,7 +46,9 @@
 #include "GraphicsEngine.h"
 
 #define LINES 30
-#define CHAR_WIDTH 7.85 // fix this please - determine the char-width dynamically
+#define CHAR_WIDTH1 7.34 // fix this please - determine the char-width dynamically
+#define CHAR_WIDTH2 8.28 // fix this please - determine the char-width dynamically
+#define CHAR_WIDTH3 7.78 // fix this please - determine the char-width dynamically
 
 namespace orxonox
 {
@@ -176,10 +178,11 @@ namespace orxonox
     */
     void InGameConsole::cursorChanged()
     {
-        std::string input = Shell::getInstance().getInput();
+        /*std::string input = Shell::getInstance().getInput();
         input.insert(Shell::getInstance().getCursorPosition(), 1, this->cursorSymbol_);
         if (LINES > 0)
-            this->print(input, 0);
+            this->print(input, 0);*/
+        this->setCursorPosition(Shell::getInstance().getCursorPosition() - inputWindowStart_);
     }
 
     /**
@@ -244,9 +247,9 @@ namespace orxonox
         // create cursor
         this->consoleOverlayCursor_ = static_cast<PanelOverlayElement*>(this->om_->createOverlayElement("Panel", "InGameConsoleCursor"));
         this->consoleOverlayCursor_->setMetricsMode(Ogre::GMM_PIXELS);
-        this->consoleOverlayCursor_->setPosition(40,217);
-        this->consoleOverlayCursor_->setDimensions(2, 20);
-        this->consoleOverlayCursor_->setMaterialName("ConsoleNoise");
+        this->consoleOverlayCursor_->setPosition(5,219);
+        this->consoleOverlayCursor_->setDimensions(1, 14);
+        this->consoleOverlayCursor_->setMaterialName("Orxonox/GreenDot");
 
         this->consoleOverlay_ = this->om_->create("InGameConsoleConsole");
         this->consoleOverlay_->add2D(this->consoleOverlayContainer_);
@@ -284,7 +287,7 @@ namespace orxonox
         this->desiredTextWidth_ = (int) (this->windowW_ * InGameConsole::REL_WIDTH) - 12;
 
         if (LINES > 0)
-            this->maxCharsPerLine_ = max((unsigned int)10, (unsigned int) ((float)this->desiredTextWidth_ / CHAR_WIDTH));
+            this->maxCharsPerLine_ = max((unsigned int)10, (unsigned int) ((float)this->desiredTextWidth_ / CHAR_WIDTH3));
         else
             this->maxCharsPerLine_ = 10;
 
@@ -332,8 +335,18 @@ namespace orxonox
         }
 
         this->cursor_ += dt;
-        if (this->cursor_ >= 2 * InGameConsole::BLINK)
+        if (this->cursor_ >= InGameConsole::BLINK)
+        {
             this->cursor_ = 0;
+            bShowCursor_ = !bShowCursor_;
+            if (bShowCursor_)
+              this->consoleOverlayCursor_->show();
+            else
+              this->consoleOverlayCursor_->hide();
+        }
+
+        /*if (this->cursor_ >= 2 * InGameConsole::BLINK)
+          this->cursor_ = 0;
 
         if (this->cursor_ >= InGameConsole::BLINK && this->cursorSymbol_ == '|')
         {
@@ -344,7 +357,7 @@ namespace orxonox
         {
             this->cursorSymbol_ = '|';
             this->cursorChanged();
-        }
+        }*/
 
         // this creates a flickering effect
         this->consoleOverlayNoise_->setTiling(1, rand() % 5 + 1);
@@ -446,6 +459,29 @@ namespace orxonox
         }
     }
 
+    void InGameConsole::setCursorPosition(int pos)
+    {
+        static std::string char1 = "bdefgilpqtzCEGIJKNOPQT5[}дь";
+        static std::string char2 = "Z4";
+
+        if (pos > maxCharsPerLine_)
+          pos = maxCharsPerLine_;
+        else if (pos < 0)
+          pos = 0;
+
+        float width = 0;
+        for (int i = 0; i < pos; ++i)
+        {
+            if (char1.find(displayedText_[i]) != std::string::npos)
+                width += CHAR_WIDTH1;
+            else if (char2.find(displayedText_[i]) != std::string::npos)
+                width += CHAR_WIDTH2;
+            else
+                width += CHAR_WIDTH3;
+        }
+        this->consoleOverlayCursor_->setPosition(width + 5, 219);
+    }
+
     /**
         @brief Prints string to bottom line.
         @param s String to be printed
@@ -479,6 +515,7 @@ namespace orxonox
                     this->colourLine(level, index);
                 }
                 this->consoleOverlayTextAreas_[index]->setCaption(convert2UTF(output));
+                this->displayedText_ = output;
                 this->numLinesShifted_ = linesUsed;
             }
             else
@@ -492,6 +529,9 @@ namespace orxonox
 
                     output = output.substr(this->inputWindowStart_, this->maxCharsPerLine_);
                 }
+                else
+                  this->inputWindowStart_ = 0;
+                this->displayedText_ = output;
                 this->consoleOverlayTextAreas_[index]->setCaption(convert2UTF(output));
             }
         }

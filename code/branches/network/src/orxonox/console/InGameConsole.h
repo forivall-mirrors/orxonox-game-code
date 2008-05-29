@@ -71,6 +71,7 @@ namespace orxonox
             void init();
             void shiftLines();
             void colourLine(int colourcode, int index);
+            void setCursorPosition(int pos);
             void print(const std::string& text, int index, bool alwaysShift = false);
             static Ogre::UTFString convert2UTF(std::string s);
 
@@ -89,6 +90,8 @@ namespace orxonox
             unsigned int inputWindowStart_;
             char cursorSymbol_;
             bool active_;
+            bool bShowCursor_;
+            std::string displayedText_;
             Ogre::OverlayManager* om_;
             Ogre::Overlay* consoleOverlay_;
             Ogre::OverlayContainer* consoleOverlayContainer_;
