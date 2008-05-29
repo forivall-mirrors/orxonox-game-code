@@ -98,6 +98,8 @@ namespace network
 
   GameStateCompressed *GameStateClient::popPartialGameState(){
     GameState *gs = getPartialSnapshot();
+    if(!gs)
+      return NULL;
     GameStateCompressed *cgs = compress_(gs);
     delete[] gs->data;
     delete gs;

@@ -149,7 +149,7 @@ namespace orxonox
         if(network::Client::getSingleton() && objectID == network::Client::getSingleton()->getShipID())
           myShip_=true;
         else
-          HUD::getSingleton().addRadarObject(this->getNode(), 2);
+          HUD::getSingleton().addRadarObject(this->getNode(), 3);
       }
       if(Model::create())
         this->init();
