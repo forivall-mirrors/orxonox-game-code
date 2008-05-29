@@ -46,9 +46,9 @@
 #include "GraphicsEngine.h"
 
 #define LINES 30
-#define CHAR_WIDTH1 7.34 // fix this please - determine the char-width dynamically
+#define CHAR_WIDTH1 7.78 //34 // fix this please - determine the char-width dynamically
 #define CHAR_WIDTH2 8.28 // fix this please - determine the char-width dynamically
-#define CHAR_WIDTH3 7.78 // fix this please - determine the char-width dynamically
+#define CHAR_WIDTH3 7.80 //78 // fix this please - determine the char-width dynamically
 
 namespace orxonox
 {
@@ -464,7 +464,7 @@ namespace orxonox
         static std::string char1 = "bdefgilpqtzCEGIJKNOPQT5[}дь";
         static std::string char2 = "Z4";
 
-        if (pos > maxCharsPerLine_)
+        if (pos > (int)maxCharsPerLine_)
           pos = maxCharsPerLine_;
         else if (pos < 0)
           pos = 0;

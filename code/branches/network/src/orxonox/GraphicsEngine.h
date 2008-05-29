@@ -71,6 +71,7 @@ namespace orxonox {
             size_t getWindowHandle();
             int getWindowWidth() const;
             int getWindowHeight() const;
+            float getWindowAspectRatio() const;
             float getAverageFPS() const
             { if (renderWindow_) return this->renderWindow_->getAverageFPS(); else return 0.0f; }
 

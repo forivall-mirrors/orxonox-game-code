@@ -53,7 +53,7 @@
 #include <OgreViewport.h>
 
 namespace orxonox {
-  
+
   SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOn).setAccessLevel(AccessLevel::User);
   SetConsoleCommandShortcut(GraphicsEngine, CompositorMotionBlurOn).setAccessLevel(AccessLevel::User);
   SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOff).setAccessLevel(AccessLevel::User);
@@ -302,6 +302,18 @@ namespace orxonox {
       return this->renderWindow_->getHeight();
     else
       return 0;
+  }
+
+  /**
+    @brief Returns the window aspect ratio height/width.
+    @return The ratio
+  */
+  float GraphicsEngine::getWindowAspectRatio() const
+  {
+    if (this->renderWindow_)
+        return (float)this->renderWindow_->getHeight() / (float)this->renderWindow_->getWidth();
+    else
+        return 1.0f;
   }
 
   /**

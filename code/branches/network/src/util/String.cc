@@ -111,6 +111,7 @@ bool isBetweenQuotes(const std::string& str, unsigned int pos)
     while ((quote = getNextQuote(str, quote)) < pos)
     {
         quotecount++;
+        quote++;
     }
 
     if (quote == std::string::npos)
