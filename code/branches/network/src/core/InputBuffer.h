@@ -39,22 +39,41 @@
 
 namespace orxonox
 {
-    class _CoreExport InputBufferListener
-    {};
+    class BaseInputBufferListenerTuple
+    {
+    public:
+        BaseInputBufferListenerTuple(bool bListenToAllChanges, bool bOnlySingleInput,
+            bool trueKeyFalseChar, char _char, KeyCode::Enum key)
+            : bListenToAllChanges_(bListenToAllChanges), bOnlySingleInput_(bOnlySingleInput),
+              trueKeyFalseChar_(trueKeyFalseChar), char_(_char), key_(key)
+        { }
+        virtual void callFunction() = 0;
+        bool bListenToAllChanges_;
+        bool bOnlySingleInput_;
+        bool trueKeyFalseChar_;
+        char char_;
+        KeyCode::Enum key_;
+    };
+
+    template <class T>
+    class InputBufferListenerTuple : public BaseInputBufferListenerTuple
+    {
+    public:
+        InputBufferListenerTuple(T* listener, void (T::*function)(), bool bListenToAllChanges,
+            bool bOnlySingleInput, bool trueKeyFalseChar, char _char, KeyCode::Enum key)
+            : BaseInputBufferListenerTuple(bListenToAllChanges, bOnlySingleInput, trueKeyFalseChar, _char, key),
+              listener_(listener), function_(function)
+        { }
+        void InputBufferListenerTuple::callFunction()
+        {
+            (listener_->*function_)();
+        }
+        T* listener_;
+        void (T::*function_)();
+    };
 
     class _CoreExport InputBuffer : public KeyHandler, public OrxonoxClass
     {
-        struct InputBufferListenerTuple
-        {
-            InputBufferListener* listener_;
-            void (InputBufferListener::*function_)();
-            bool bListenToAllChanges_;
-            bool bOnlySingleInput_;
-            bool trueKeyFalseChar_;
-            char char_;
-            KeyCode::Enum key_;
-        };
-
         public:
             InputBuffer();
             InputBuffer(const std::string allowedChars);
@@ -64,52 +83,53 @@ namespace orxonox
             template <class T>
             void registerListener(T* listener, void (T::*function)(), bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, false, '\0', KeyCode::Unassigned};
-                // TODO: this is a major hack!!!
-                // Fix it properly
-                *((int*)(&newListener.listener_)) = (int)(listener);
-
-                this->listeners_.insert(this->listeners_.end(), newListener);
+                InputBufferListenerTuple<T>* newTuple = new InputBufferListenerTuple<T>(listener, (void (T::*)())function, true, bOnlySingleInput, false, '\0', KeyCode::Unassigned);
+                this->listeners_.insert(this->listeners_.end(), newTuple);
             }
             template <class T>
             void registerListener(T* listener, void (T::*function)() const, bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, true, bOnlySingleInput, false, '\0', KeyCode::Unassigned};
-                *((int*)(&newListener.listener_)) = (int)(listener);
-                this->listeners_.insert(this->listeners_.end(), newListener);
+                InputBufferListenerTuple<T>* newTuple = new InputBufferListenerTuple<T>(listener, (void (T::*)())function, true, bOnlySingleInput, false, '\0', KeyCode::Unassigned);
+                this->listeners_.insert(this->listeners_.end(), newTuple);
             }
-
             template <class T>
             void registerListener(T* listener, void (T::*function)(), char _char, bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, false, _char, KeyCode::Unassigned};
-                *((int*)(&newListener.listener_)) = (int)(listener);
-                this->listeners_.insert(this->listeners_.end(), newListener);
+                InputBufferListenerTuple<T>* newTuple = new InputBufferListenerTuple<T>(listener, (void (T::*)())function, false, bOnlySingleInput, false, _char, KeyCode::Unassigned);
+                this->listeners_.insert(this->listeners_.end(), newTuple);
             }
             template <class T>
             void registerListener(T* listener, void (T::*function)() const, char _char, bool bOnlySingleInput)
             {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, bOnlySingleInput, false, _char, KeyCode::Unassigned};
-                *((int*)(&newListener.listener_)) = (int)(listener);
-                this->listeners_.insert(this->listeners_.end(), newListener);
+                InputBufferListenerTuple<T>* newTuple = new InputBufferListenerTuple<T>(listener, (void (T::*)())function, false, bOnlySingleInput, false, _char, KeyCode::Unassigned);
+                this->listeners_.insert(this->listeners_.end(), newTuple);
             }
 
             template <class T>
             void registerListener(T* listener, void (T::*function)(), KeyCode::Enum key)
             {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, true, true, '\0', key};
-                *((int*)(&newListener.listener_)) = (int)(listener);
-                this->listeners_.insert(this->listeners_.end(), newListener);
+                InputBufferListenerTuple<T>* newTuple = new InputBufferListenerTuple<T>(listener, (void (T::*)())function, false, true, true, '\0', key);
+                this->listeners_.insert(this->listeners_.end(), newTuple);
             }
             template <class T>
             void registerListener(T* listener, void (T::*function)() const, KeyCode::Enum key)
             {
-                struct InputBufferListenerTuple newListener = {listener, (void (InputBufferListener::*)())function, false, true, true, '\0', key};
-                *((int*)(&newListener.listener_)) = (int)(listener);
-                this->listeners_.insert(this->listeners_.end(), newListener);
+                InputBufferListenerTuple<T>* newTuple = new InputBufferListenerTuple<T>(listener, (void (T::*)())function, false, true, true, '\0', key);
+                this->listeners_.insert(this->listeners_.end(), newTuple);
             }
 
-            void unregisterListener(InputBufferListener* listener);
+            template <class T>
+            void unregisterListener(T* listener)
+            {
+                for (std::list<BaseInputBufferListenerTuple*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
+                {
+                    InputBufferListenerTuple<T>* refListener = dynamic_cast<InputBufferListenerTuple<T>*>(*it);
+                    if (refListener && refListener->listener_ == listener)
+                        this->listeners_.erase(it++);
+                    else
+                        it++;
+                }
+            }
 
             void set(const std::string& input, bool update = true);
             void insert(const std::string& input, bool update = true);
@@ -150,7 +170,7 @@ namespace orxonox
             void tickInput(float dt, const HandlerState& state);
 
             std::string buffer_;
-            std::list<InputBufferListenerTuple> listeners_;
+            std::list<BaseInputBufferListenerTuple*> listeners_;
             std::string allowedChars_;
             unsigned int cursor_;
 

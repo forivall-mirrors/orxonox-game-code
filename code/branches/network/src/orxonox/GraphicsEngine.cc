@@ -148,7 +148,9 @@ namespace orxonox {
     std::string plugin_filename = "plugins.cfg";
 #endif
 
-/*    // create a logManager
+// TODO: LogManager doesn't work on specific systems. The why is unknown yet.
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+    // create a logManager
     // note: If there's already a logManager, Ogre will complain by a failed assertation.
     // but that shouldn't happen, since this is the first time to create a logManager..
     Ogre::LogManager* logger = new Ogre::LogManager();
@@ -163,7 +165,8 @@ namespace orxonox {
     CCOUT(4) << "Ogre Log created" << std::endl;
 
     myLog->setLogDetail(Ogre::LL_BOREME);
-    myLog->addListener(this);*/
+    myLog->addListener(this);
+#endif
 
     // Root will detect that we've already created a Log
     CCOUT(4) << "Creating Ogre Root..." << std::endl;

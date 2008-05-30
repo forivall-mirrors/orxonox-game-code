@@ -87,17 +87,6 @@ namespace orxonox
         }
     }
 
-    void InputBuffer::unregisterListener(InputBufferListener* listener)
-    {
-        for (std::list<InputBufferListenerTuple>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
-        {
-            if ((*it).listener_ == listener)
-                this->listeners_.erase(it++);
-            else
-                ++it;
-        }
-    }
-
     void InputBuffer::set(const std::string& input, bool update)
     {
         this->clear(false);
@@ -164,19 +153,19 @@ namespace orxonox
 
     void InputBuffer::updated()
     {
-        for (std::list<InputBufferListenerTuple>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::list<BaseInputBufferListenerTuple*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
-            if ((*it).bListenToAllChanges_)
-                (*(*it).listener_.*(*it).function_)();
+            if ((*it)->bListenToAllChanges_)
+                (*it)->callFunction();
         }
     }
 
     void InputBuffer::updated(const char& update, bool bSingleInput)
     {
-        for (std::list<InputBufferListenerTuple>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::list<BaseInputBufferListenerTuple*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
-            if ((!(*it).trueKeyFalseChar_) && ((*it).bListenToAllChanges_ || ((*it).char_ == update)) && (!(*it).bOnlySingleInput_ || bSingleInput))
-                (*(*it).listener_.*(*it).function_)();
+            if ((!(*it)->trueKeyFalseChar_) && ((*it)->bListenToAllChanges_ || ((*it)->char_ == update)) && (!(*it)->bOnlySingleInput_ || bSingleInput))
+                (*it)->callFunction();
         }
     }
 
@@ -194,10 +183,10 @@ namespace orxonox
         if (evt.isModifierDown(KeyboardModifier::Alt) && evt.key == KeyCode::Tab)
             return;
 
-        for (std::list<InputBufferListenerTuple>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::list<BaseInputBufferListenerTuple*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
-            if ((*it).trueKeyFalseChar_ && ((*it).key_ == evt.key))
-                (*(*it).listener_.*(*it).function_)();
+            if ((*it)->trueKeyFalseChar_ && ((*it)->key_ == evt.key))
+                (*it)->callFunction();
         }
 
         if (evt.isModifierDown(KeyboardModifier::Ctrl))

@@ -84,7 +84,7 @@ namespace orxonox
         this->attachObject(this->mesh_.getEntity());
 
         //HACK!!
-        if ((this->meshSrc_ == "assff.mesh") || (this->meshSrc_ == "ast1.mesh") || (this->meshSrc_ == "ast2.mesh") || (this->meshSrc_ == "ast3.mesh") || (this->meshSrc_ == "ast4.mesh") ||(this->meshSrc_ == "ast5.mesh") || (this->meshSrc_ == "ast6.mesh"))
+        /*if ((this->meshSrc_ == "assff.mesh") || (this->meshSrc_ == "ast1.mesh") || (this->meshSrc_ == "ast2.mesh") || (this->meshSrc_ == "ast3.mesh") || (this->meshSrc_ == "ast4.mesh") ||(this->meshSrc_ == "ast5.mesh") || (this->meshSrc_ == "ast6.mesh"))
         {
           Ogre::MeshPtr pMesh = this->mesh_.getEntity()->getMesh();
           //set Mesh to tangentspace 
@@ -103,7 +103,7 @@ namespace orxonox
           }
 
 
-        }
+        }*/
         COUT(4) << "Loader (Model.cc): Created model" << std::endl;
       }
       return true;

@@ -56,7 +56,7 @@ namespace orxonox
             virtual void exit() {}
     };
 
-    class _CoreExport Shell : virtual public OrxonoxClass, public InputBufferListener, public OutputBufferListener
+    class _CoreExport Shell : virtual public OrxonoxClass, public OutputBufferListener
     {
         public:
             static Shell& getInstance();
