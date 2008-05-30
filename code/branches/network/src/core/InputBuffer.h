@@ -47,6 +47,7 @@ namespace orxonox
             : bListenToAllChanges_(bListenToAllChanges), bOnlySingleInput_(bOnlySingleInput),
               trueKeyFalseChar_(trueKeyFalseChar), char_(_char), key_(key)
         { }
+        virtual ~BaseInputBufferListenerTuple() { }
         virtual void callFunction() = 0;
         bool bListenToAllChanges_;
         bool bOnlySingleInput_;
@@ -64,6 +65,7 @@ namespace orxonox
             : BaseInputBufferListenerTuple(bListenToAllChanges, bOnlySingleInput, trueKeyFalseChar, _char, key),
               listener_(listener), function_(function)
         { }
+        virtual ~InputBufferListenerTuple() { }
         void callFunction()
         {
             (listener_->*function_)();
