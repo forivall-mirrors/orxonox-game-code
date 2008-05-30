@@ -64,7 +64,7 @@ namespace orxonox
             : BaseInputBufferListenerTuple(bListenToAllChanges, bOnlySingleInput, trueKeyFalseChar, _char, key),
               listener_(listener), function_(function)
         { }
-        void InputBufferListenerTuple::callFunction()
+        void callFunction()
         {
             (listener_->*function_)();
         }
