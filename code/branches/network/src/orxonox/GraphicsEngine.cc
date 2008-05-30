@@ -53,11 +53,6 @@
 #include <OgreViewport.h>
 
 namespace orxonox {
-
-  SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOn).setAccessLevel(AccessLevel::User);
-  SetConsoleCommandShortcut(GraphicsEngine, CompositorMotionBlurOn).setAccessLevel(AccessLevel::User);
-  SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOff).setAccessLevel(AccessLevel::User);
-  SetConsoleCommandShortcut(GraphicsEngine, CompositorMotionBlurOff).setAccessLevel(AccessLevel::User);
   /**
     @brief Returns the singleton instance and creates it the first time.
     @return The only instance of GraphicsEngine.
@@ -394,6 +389,10 @@ namespace orxonox {
   }
 
   //HACK!!
+  /*SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOn).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorMotionBlurOn).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOff).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorMotionBlurOff).setAccessLevel(AccessLevel::User);
   void GraphicsEngine::CompositorBloomOn()
   {
     Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
@@ -420,5 +419,5 @@ namespace orxonox {
     Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
     Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
     Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "MotionBlur", false);
-  }
+  }*/
 }
