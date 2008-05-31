@@ -43,8 +43,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
-#include "core/CommandExecutor.h"
-#include "core/TclBind.h"
+#include "core/CommandExecutor.h"#include "core/TclBind.h"
 #include "console/InGameConsole.h"
 
 #include "core/ConsoleCommand.h"
@@ -86,9 +85,7 @@ namespace orxonox {
     SetConfigValue(ogreLogfile_, "ogre.log").description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
     SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
     SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
-    SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
-
-    TclBind::getInstance().setDataPath(this->dataPath_);
+    SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");    TclBind::getInstance().setDataPath(this->dataPath_);
   }
 
   /**
@@ -311,19 +308,7 @@ namespace orxonox {
     else
       return 0;
   }
-
-  /**
-    @brief Returns the window aspect ratio height/width.
-    @return The ratio
-  */
-  float GraphicsEngine::getWindowAspectRatio() const
-  {
-    if (this->renderWindow_)
-        return (float)this->renderWindow_->getHeight() / (float)this->renderWindow_->getWidth();
-    else
-        return 1.0f;
-  }
-
+  /**    @brief Returns the window aspect ratio height/width.    @return The ratio  */  float GraphicsEngine::getWindowAspectRatio() const  {    if (this->renderWindow_)        return (float)this->renderWindow_->getHeight() / (float)this->renderWindow_->getWidth();    else        return 1.0f;  }
   /**
     @brief Method called by the LogListener interface from Ogre.
     We use it to capture Ogre log messages and handle it ourselves.
@@ -370,9 +355,7 @@ namespace orxonox {
   * @note GraphicsEngine has a render window stored itself. This is the same
   *       as rw. But we have to be careful when using multiple render windows!
   */
-  void GraphicsEngine::windowResized(Ogre::RenderWindow *rw)
-  {
-    // change the mouse clipping size for absolute mouse movements
+  void GraphicsEngine::windowResized(Ogre::RenderWindow *rw)  {    // change the mouse clipping size for absolute mouse movements
     int w = rw->getWidth();
     int h = rw->getHeight();
     InputManager::setWindowExtents(w, h);

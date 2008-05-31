@@ -1,7 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
- *
+ *                    > www.orxonox.net < *
  *
  *   License notice:
  *
@@ -25,7 +24,6 @@
  *      ...
  *
  */
-
 /**
  @file  Sleep.h
  @brief Macros for using sleep() and usleep() under windows
@@ -33,11 +31,7 @@
 
 #include "UtilPrereqs.h"
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
-#  ifndef WIN32_LEAN_AND_MEAN
-#    define WIN32_LEAN_AND_MEAN
-#  endif
-#  include <windows.h>
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32#  ifndef WIN32_LEAN_AND_MEAN#    define WIN32_LEAN_AND_MEAN#  endif#  include <windows.h>
 inline void usleep(DWORD dwMicroseconds)
 {
   Sleep(dwMicroseconds / 1000);

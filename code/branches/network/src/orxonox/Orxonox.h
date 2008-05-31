@@ -70,7 +70,6 @@ namespace orxonox {
       static inline void setTimeFactor(float factor = 1.0) { Orxonox::getSingleton()->timefactor_ = factor; }
       static inline float getTimeFactor() { return Orxonox::getSingleton()->timefactor_; }
       static inline void exit() { Orxonox::getSingleton()->abortRequest(); }
-
    private:
       // don't mess with singletons
       Orxonox();

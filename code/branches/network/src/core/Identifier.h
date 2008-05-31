@@ -1,7 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
- *
+ *                    > www.orxonox.net < *
  *
  *   License notice:
  *
@@ -62,9 +61,7 @@
 #include "ObjectList.h"
 #include "Debug.h"
 #include "Iterator.h"
-#include "MetaObjectList.h"
-#include "util/String.h"
-
+#include "MetaObjectList.h"#include "util/String.h"
 namespace orxonox
 {
     // ###############################

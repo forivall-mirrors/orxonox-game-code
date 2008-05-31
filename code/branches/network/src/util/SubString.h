@@ -1,42 +1,4 @@
-/*
- *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
- *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      Christian Meyer
- *   Co-authors:
- *      Benjamin Grauer
- *      Fabian 'x3n' Landau
- *
-
-//  splitLine
-//  STL string tokenizer
-//
-//  Created by Clemens Wacha.
-//  Version 1.0
-//  Copyright (c) 2005 Clemens Wacha. All rights reserved.
-
- * Extended by Fabian 'x3n' Landau with the SL_PARENTHESES mode.
- */
-
- /*!
+/* *   ORXONOX - the hottest 3D action shooter ever to exist *                    > www.orxonox.net < * * *   License notice: * *   This program is free software; you can redistribute it and/or *   modify it under the terms of the GNU General Public License *   as published by the Free Software Foundation; either version 2 *   of the License, or (at your option) any later version. * *   This program is distributed in the hope that it will be useful, *   but WITHOUT ANY WARRANTY; without even the implied warranty of *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the *   GNU General Public License for more details. * *   You should have received a copy of the GNU General Public License *   along with this program; if not, write to the Free Software *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. * *   Author: *      Christian Meyer *   Co-authors: *      Benjamin Grauer *      Fabian 'x3n' Landau *//  splitLine//  STL string tokenizer////  Created by Clemens Wacha.//  Version 1.0//  Copyright (c) 2005 Clemens Wacha. All rights reserved. * Extended by Fabian 'x3n' Landau with the SL_PARENTHESES mode. */ /*!
  * @file substring.h
  * @brief a small class to get the parts of a string separated by commas
  *
@@ -59,7 +21,6 @@
 #define __SUBSTRING_H__
 
 #include "UtilPrereqs.h"
-
 #include <vector>
 #include <string>
 
@@ -77,9 +38,7 @@ public:
     SL_ESCAPE,            //!< After an escape character
     SL_SAFEMODE,          //!< In safe mode (between "" mostly).
     SL_SAFEESCAPE,        //!< In safe mode with the internal escape character, that escapes even the savemode character.
-    SL_COMMENT,           //!< In Comment mode.
-    SL_PARENTHESES,       //!< Between parentheses (usually '(' and ')')
-    SL_PARENTHESESESCAPE, //!< Between parentheses with the internal escape character, that escapes even the closing paranthesis character.
+    SL_COMMENT,           //!< In Comment mode.    SL_PARENTHESES,       //!< Between parentheses (usually '(' and ')')    SL_PARENTHESESESCAPE, //!< Between parentheses with the internal escape character, that escapes even the closing paranthesis character.
   } SPLIT_LINE_STATE;
 
 
@@ -88,8 +47,7 @@ public:
   SubString(const std::string& string, char delimiter = ',');
   SubString(const std::string& string,
             const std::string& delimiters, const std::string& delimiterNeighbours = "", bool emptyEntries=false,
-            char escapeChar ='\\', bool removeEscapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,
-            char openparenthesis_char = '(', char closeparenthesis_char = ')',  bool removeParenthesisChars = true, char comment_char = '\0');
+            char escapeChar ='\\', bool removeEscapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,            char openparenthesis_char = '(', char closeparenthesis_char = ')',  bool removeParenthesisChars = true, char comment_char = '\0');
   SubString(unsigned int argc, const char** argv);
   /** @brief create a Substring as a copy of another one. @param subString the SubString to copy. */
   SubString(const SubString& subString) { *this = subString; };
@@ -112,8 +70,7 @@ public:
   unsigned int split(const std::string& string = "", char delimiter = ',');
   unsigned int split(const std::string& string,
                      const std::string& delimiters, const std::string& delimiterNeighbours = "", bool emptyEntries = false,
-                     char escapeChar ='\\', bool removeExcapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,
-                     char openparenthesis_char = '(', char closeparenthesis_char = ')',  bool removeParenthesisChars = true, char comment_char = '\0');
+                     char escapeChar ='\\', bool removeExcapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,                     char openparenthesis_char = '(', char closeparenthesis_char = ')',  bool removeParenthesisChars = true, char comment_char = '\0');
   std::string join(const std::string& delimiter = " ") const;
   ////////////////////////////////////////
 
@@ -129,9 +86,7 @@ public:
   /** @brief Returns the i'th string from the subset of Strings @param i the i'th String */
   inline const std::string& operator[](unsigned int i) const { return this->strings[i]; };
   /** @brief Returns the i'th string from the subset of Strings @param i the i'th String */
-  inline const std::string& getString(unsigned int i) const { return (*this)[i]; };
-  /** @brief Returns true if the token is in safemode. @param i the i'th token */
-  inline bool isInSafemode(unsigned int i) const { return this->bInSafemode[i]; }
+  inline const std::string& getString(unsigned int i) const { return (*this)[i]; };  /** @brief Returns true if the token is in safemode. @param i the i'th token */  inline bool isInSafemode(unsigned int i) const { return this->bInSafemode[i]; }
   /** @brief Returns the front of the StringList. */
   inline const std::string& front() const { return this->strings.front(); };
   /** @brief Returns the back of the StringList. */
@@ -140,20 +95,14 @@ public:
   inline void pop_back() { this->strings.pop_back(); this->bInSafemode.pop_back(); };
 
   // the almighty algorithm.
-  static SPLIT_LINE_STATE splitLine(std::vector<std::string>& ret,
-                                    std::vector<bool>& bInSafemode,
+  static SPLIT_LINE_STATE splitLine(std::vector<std::string>& ret,                                    std::vector<bool>& bInSafemode,
                                     const std::string& line,
                                     const std::string& delimiters = SubString::WhiteSpaces,
                                     const std::string& delimiterNeighbours = "",
                                     bool emptyEntries = false,
-                                    char escape_char = '\\',
-                                    bool removeExcapeChar = true,
+                                    char escape_char = '\\',                                    bool removeExcapeChar = true,
                                     char safemode_char = '"',
-                                    bool removeSafemodeChar = true,
-                                    char openparenthesis_char = '(',
-                                    char closeparenthesis_char = ')',
-                                    bool removeParenthesisChars = true,
-                                    char comment_char = '\0',
+                                    bool removeSafemodeChar = true,                                    char openparenthesis_char = '(',                                    char closeparenthesis_char = ')',                                    bool removeParenthesisChars = true,                                    char comment_char = '\0',
                                     SPLIT_LINE_STATE start_state = SL_NORMAL);
   // debugging.
   void debug() const;
@@ -164,8 +113,7 @@ public:
   static const SubString   NullSubString;
 
 private:
-  std::vector<std::string>  strings;                      //!< strings produced from a single string splitted in multiple strings
-  std::vector<bool>         bInSafemode;
+  std::vector<std::string>  strings;                      //!< strings produced from a single string splitted in multiple strings  std::vector<bool>         bInSafemode;
 };
 
 #endif /* __SUBSTRING_H__ */

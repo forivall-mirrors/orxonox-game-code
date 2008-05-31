@@ -1,7 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
- *
+ *                    > www.orxonox.net < *
  *
  *   License notice:
  *
@@ -25,103 +24,4 @@
  *      ...
  *
  */
-
-
-#ifndef _BaseWeapon_H__
-#define _BaseWeapon_H__
-
-#include "OrxonoxPrereqs.h"
-
-#include <OgrePrerequisites.h>
-
-#include "../Model.h"
-
-
-namespace orxonox {
-  class _OrxonoxExport BaseWeapon : public Model
-  {
-  public:
-    enum Action {
-      NOTHING  = 0,
-      RELOAD   = 1,
-      CHANGE_AMMO  = 2,
-      SPECIAL  = 3
-    };
-
-  protected:
-    enum State {
-      IDLE = 0,
-      PRIMARY_FIRE = 1,
-      SECONDARY_FIRE = 2,
-      RELOADING = 3,
-      CHANGING_AMMO = 4,
-    };
-
-  public:
-    BaseWeapon();
-	  virtual ~BaseWeapon();
-
-    bool addAction(const Action);
-
-    void primaryFireRequest();
-
-    void secondaryFireRequest();
-
-    int getAmmoState();
-
-    void setAmmoDump(AmmunitionDump*);
-
-    inline virtual void loadParams(TiXmlElement* xmlElem) { Model::loadParams(xmlElem); };
-
-    virtual void tick(float dt);
-
-  protected:
-    virtual void primaryFire() = 0;
-
-    virtual void primaryFiring(float) = 0;
-
-    virtual void secondaryFire() = 0;
-
-    virtual void secondaryFiring(float) = 0;
-
-    virtual void registerAllVariables() { };
-
-  public:
-
-  protected:
-    Ogre::SceneManager *sceneMgr_;
-
-    int bulletCounter_;
-    BulletManager *bulletManager_;
-
-    AmmunitionDump *ammoDump_;
-
-    bool primaryFireRequest_;
-    bool secondaryFireRequest_;
-
-    float totalTime_;
-    float actionStartTime_;
-
-    State currentState_;
-    bool secondaryFired_;
-
-    Action nextAction_;
-    bool actionAdded_;
-    float timeSinceNextActionAdded_;
-    static float nextActionValidityPeriod_s;
-
-    // weapon properties
-    int leftAmmo_;
-    float primaryFirePower_;
-    float secondaryFirePower_;
-    float primaryFiringRate_;
-    float secondaryFiringRate_;
-    Real primaryBulletSpeed_;
-    Real secondaryBulletSpeed_;
-
-    int magazineSize_;
-
-  };
-}
-
-#endif /* _BaseWeapon_H__ */
+#ifndef _BaseWeapon_H__#define _BaseWeapon_H__#include "OrxonoxPrereqs.h"#include <OgrePrerequisites.h>#include "../Model.h"namespace orxonox {  class _OrxonoxExport BaseWeapon : public Model  {  public:    enum Action {      NOTHING  = 0,      RELOAD   = 1,      CHANGE_AMMO  = 2,      SPECIAL  = 3    };  protected:    enum State {      IDLE = 0,      PRIMARY_FIRE = 1,      SECONDARY_FIRE = 2,      RELOADING = 3,      CHANGING_AMMO = 4,    };  public:    BaseWeapon();	  virtual ~BaseWeapon();    bool addAction(const Action);    void primaryFireRequest();    void secondaryFireRequest();    int getAmmoState();    void setAmmoDump(AmmunitionDump*);    inline virtual void loadParams(TiXmlElement* xmlElem) { Model::loadParams(xmlElem); };    virtual void tick(float dt);  protected:    virtual void primaryFire() = 0;    virtual void primaryFiring(float) = 0;    virtual void secondaryFire() = 0;    virtual void secondaryFiring(float) = 0;    virtual void registerAllVariables() { };  public:  protected:    Ogre::SceneManager *sceneMgr_;    int bulletCounter_;    BulletManager *bulletManager_;    AmmunitionDump *ammoDump_;    bool primaryFireRequest_;    bool secondaryFireRequest_;    float totalTime_;    float actionStartTime_;    State currentState_;    bool secondaryFired_;    Action nextAction_;    bool actionAdded_;    float timeSinceNextActionAdded_;    static float nextActionValidityPeriod_s;    // weapon properties    int leftAmmo_;    float primaryFirePower_;    float secondaryFirePower_;    float primaryFiringRate_;    float secondaryFiringRate_;    Real primaryBulletSpeed_;    Real secondaryBulletSpeed_;    int magazineSize_;  };}#endif /* _BaseWeapon_H__ */

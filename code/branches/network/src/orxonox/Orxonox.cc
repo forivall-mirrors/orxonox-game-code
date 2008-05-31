@@ -83,7 +83,6 @@ namespace orxonox
   SetConsoleCommandShortcut(Orxonox, exit).setKeybindMode(KeybindMode::OnPress);
   SetConsoleCommandShortcut(Orxonox, slomo).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0).setAxisParamIndex(0).setIsAxisRelative(false);
   SetConsoleCommandShortcut(Orxonox, setTimeFactor).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0);
-
   /**
     @brief Reference to the only instance of the class.
   */

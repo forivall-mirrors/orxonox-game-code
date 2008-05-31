@@ -40,9 +40,7 @@
 #include "InputBuffer.h"
 #include "KeyBinder.h"
 #include "CommandExecutor.h"
-#include "ConsoleCommand.h"
-#include "Shell.h"
-
+#include "ConsoleCommand.h"#include "Shell.h"
 namespace orxonox
 {
   SetConsoleCommandShortcut(InputManager, keyBind);
@@ -151,7 +149,6 @@ namespace orxonox
       buffer_ = new InputBuffer();
       addKeyHandler(buffer_, "buffer");
       Shell::getInstance().setInputBuffer(buffer_);
-
       keyBinder_ = new KeyBinder();
       keyBinder_->loadBindings();
       addKeyHandler(keyBinder_, "keybinder");
@@ -196,8 +193,7 @@ namespace orxonox
         keyboard_ = (OIS::Keyboard*)inputSystem_->createInputObject(OIS::OISKeyboard, true);
         // register our listener in OIS.
         keyboard_->setEventCallback(this);
-        // note: OIS will not detect keys that have already been down when the keyboard was created.
-        CCOUT(ORX_DEBUG) << "Created OIS keyboard" << std::endl;
+        // note: OIS will not detect keys that have already been down when the keyboard was created.        CCOUT(ORX_DEBUG) << "Created OIS keyboard" << std::endl;
         return true;
       }
       else
@@ -313,9 +309,7 @@ namespace orxonox
   */
   void InputManager::setConfigValues()
   {
-    if (joySticksSize_)
-    {
-      std::vector<MultiTypeMath> coeffPos;
+    if (joySticksSize_)    {      std::vector<MultiTypeMath> coeffPos;
       std::vector<MultiTypeMath> coeffNeg;
       std::vector<MultiTypeMath> zero;
       coeffPos.resize(24);
@@ -328,39 +322,7 @@ namespace orxonox
         zero[i]     =  0;
       }
 
-      ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer("CoeffPos");
-      if (!cont)
-      {
-          cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "CoeffPos", coeffPos);
-          getIdentifier()->addConfigValueContainer("CoeffPos", cont);
-      }
-      cont->getValue(&coeffPos);
-
-      cont = getIdentifier()->getConfigValueContainer("CoeffNeg");
-      if (!cont)
-      {
-          cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "CoeffNeg", coeffNeg);
-          getIdentifier()->addConfigValueContainer("CoeffNeg", cont);
-      }
-      cont->getValue(&coeffNeg);
-
-      cont = getIdentifier()->getConfigValueContainer("Zero");
-      if (!cont)
-      {
-          cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "Zero", zero);
-          getIdentifier()->addConfigValueContainer("Zero", cont);
-      }
-      cont->getValue(&zero);
-
-      // copy values to our own variables
-      for (unsigned int i = 0; i < 24; i++)
-      {
-        joySticksCalibration_[0].positiveCoeff[i] = coeffPos[i];
-        joySticksCalibration_[0].negativeCoeff[i] = coeffNeg[i];
-        joySticksCalibration_[0].zeroStates[i]    = zero[i];
-      }
-    }
-  }
+      ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer("CoeffPos");      if (!cont)      {          cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "CoeffPos", coeffPos);          getIdentifier()->addConfigValueContainer("CoeffPos", cont);      }      cont->getValue(&coeffPos);      cont = getIdentifier()->getConfigValueContainer("CoeffNeg");      if (!cont)      {          cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "CoeffNeg", coeffNeg);          getIdentifier()->addConfigValueContainer("CoeffNeg", cont);      }      cont->getValue(&coeffNeg);      cont = getIdentifier()->getConfigValueContainer("Zero");      if (!cont)      {          cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "Zero", zero);          getIdentifier()->addConfigValueContainer("Zero", cont);      }      cont->getValue(&zero);      // copy values to our own variables      for (unsigned int i = 0; i < 24; i++)      {        joySticksCalibration_[0].positiveCoeff[i] = coeffPos[i];        joySticksCalibration_[0].negativeCoeff[i] = coeffNeg[i];        joySticksCalibration_[0].zeroStates[i]    = zero[i];      }    }  }
 
   /**
     @brief Destroys all the created input devices and sets the InputManager to construction state.
@@ -661,26 +623,14 @@ namespace orxonox
         joySticksCalibration_[0].positiveCoeff[i] =  1.0f/(marginalsMax_[i] - joySticksCalibration_[0].zeroStates[i]);
       else
         joySticksCalibration_[0].positiveCoeff[i] =  1.0f;
-
       // config value
-      ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer("CoeffPos");
-      assert(cont);
-      cont->set(i, joySticksCalibration_[0].positiveCoeff[i]);
-
-      // negative coefficient
+      ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer("CoeffPos");      assert(cont);      cont->set(i, joySticksCalibration_[0].positiveCoeff[i]);      // negative coefficient
       if (marginalsMin_[i] == INT_MAX)
         marginalsMin_[i] = -32768;
       // coefficients
       if (marginalsMin_[i] - joySticksCalibration_[0].zeroStates[i])
-        joySticksCalibration_[0].negativeCoeff[i] = -1.0f/(marginalsMin_[i] - joySticksCalibration_[0].zeroStates[i]);
-      else
-        joySticksCalibration_[0].negativeCoeff[i] =  1.0f;
-      // config value
-      cont = getIdentifier()->getConfigValueContainer("CoeffNeg");
-      assert(cont);
-      cont->set(i, joySticksCalibration_[0].negativeCoeff[i]);
-
-      // zero states
+        joySticksCalibration_[0].negativeCoeff[i] = -1.0f/(marginalsMin_[i] - joySticksCalibration_[0].zeroStates[i]);      else        joySticksCalibration_[0].negativeCoeff[i] =  1.0f;      // config value
+      cont = getIdentifier()->getConfigValueContainer("CoeffNeg");      assert(cont);      cont->set(i, joySticksCalibration_[0].negativeCoeff[i]);      // zero states
       if (i < 8)
       {
         if (!(i & 1))
@@ -696,10 +646,7 @@ namespace orxonox
           joySticksCalibration_[0].zeroStates[i] = 0;
       }
       // config value
-      cont = getIdentifier()->getConfigValueContainer("Zero");
-      assert(cont);
-      cont->set(i, joySticksCalibration_[0].zeroStates[i]);
-    }
+      cont = getIdentifier()->getConfigValueContainer("Zero");      assert(cont);      cont->set(i, joySticksCalibration_[0].zeroStates[i]);    }
   }
 
   // ###### Key Events ######

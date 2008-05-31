@@ -1,7 +1,6 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net <
- *
+ *                    > www.orxonox.net < *
  *
  *   License notice:
  *
@@ -36,29 +35,8 @@
 
 #include "util/OrxonoxPlatform.h"
 
-//-----------------------------------------------------------------------
-// Shared library settings
-//-----------------------------------------------------------------------
-#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( AUDIO_STATIC_BUILD )
-#  ifdef AUDIO_SHARED_BUILD
-#    define _AudioExport __declspec(dllexport)
-#  else
-#    if defined( __MINGW32__ )
-#      define _AudioExport
-#    else
-#      define _AudioExport __declspec(dllimport)
-#    endif
-#  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
-#  define _AudioExport  __attribute__ ((visibility("default")))
-#else
-#  define _AudioExport
-#endif
-
-
-//-----------------------------------------------------------------------
-// Forward declarations
-//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------// Shared library settings//-----------------------------------------------------------------------#if (ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32) && !defined( AUDIO_STATIC_BUILD )#  ifdef AUDIO_SHARED_BUILD#    define _AudioExport __declspec(dllexport)#  else#    if defined( __MINGW32__ )#      define _AudioExport#    else#      define _AudioExport __declspec(dllimport)#    endif#  endif#elif defined ( ORXONOX_GCC_VISIBILITY )#  define _AudioExport  __attribute__ ((visibility("default")))#else#  define _AudioExport#endif
+//-----------------------------------------------------------------------// Forward declarations//-----------------------------------------------------------------------
 namespace audio
 {
   class AudioBuffer;
@@ -67,15 +45,9 @@ namespace audio
   class AudioStream;
 }
 
-//-----------------------------------------------------------------------
-// Warnings
-//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------// Warnings//-----------------------------------------------------------------------
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
 
-// set to 4: conversion from 'ogg_int64_t' to 'long', possible loss of data
-#pragma warning (4 : 4244)
-
-#endif
-
+// set to 4: conversion from 'ogg_int64_t' to 'long', possible loss of data#pragma warning (4 : 4244)#endif
 
 #endif /* _AudioPrereqs_H__ */
