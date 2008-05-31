@@ -168,20 +168,12 @@ used by processQueue in Server.cc
     return true;
   }
 
-  /*bool ConnectionManager::sendPackets(ENetEvent *event) {
-    if(server==NULL)
-      return false;
-    if(enet_host_service(server, event, NETWORK_SEND_WAIT)>=0)
-      return true;
-    else
-      return false;
-  }*/
-
   bool ConnectionManager::sendPackets() {
     if(server==NULL)
       return false;
     boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     enet_host_flush(server);
+    lock.unlock();
     return true;
   }
 
@@ -193,6 +185,7 @@ used by processQueue in Server.cc
       boost::recursive_mutex::scoped_lock lock(enet_mutex_);
       enet_initialize();
       server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
+      lock.unlock();
     }
     if(server==NULL){
       // add some error handling here ==========================
@@ -210,6 +203,7 @@ used by processQueue in Server.cc
           continue;
           // add some error handling here ========================
         }
+        lock.unlock();
       }
       switch(event->type){
         // log handling ================
@@ -234,7 +228,7 @@ used by processQueue in Server.cc
           //break;
         case ENET_EVENT_TYPE_NONE:
           delete event;
-          //receiverThread_->yield();
+          receiverThread_->yield();
           break;
       }
 //       usleep(100);
@@ -245,6 +239,7 @@ used by processQueue in Server.cc
     {
       boost::recursive_mutex::scoped_lock lock(enet_mutex_);
       enet_host_destroy(server);
+      lock.unlock();
     }
   }
   
@@ -258,6 +253,7 @@ used by processQueue in Server.cc
       {
         boost::recursive_mutex::scoped_lock lock(enet_mutex_);
         enet_peer_disconnect(temp->getPeer(), 0);
+        lock.unlock();
       }
       temp = temp->next();
     }
@@ -438,6 +434,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     {
       boost::recursive_mutex::scoped_lock lock(enet_mutex_);
       enet_peer_disconnect(client->getPeer(), 0);
+      lock.unlock();
     }
     removeShip(client);
   }

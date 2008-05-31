@@ -132,21 +132,12 @@ namespace network
       return true;
   }
 
-//   bool ClientConnection::sendPackets(ENetEvent *event) {
-//     if(server==NULL)
-//       return false;
-//     if(enet_host_service(client, event, NETWORK_SEND_WAIT)>=0){
-//       return true;}
-//     else
-//       return false;
-//   }
-
   bool ClientConnection::sendPackets() {
-    ENetEvent event;
     if(server==NULL)
       return false;
     boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     enet_host_flush(client);
+    lock.unlock();
     return true;
   }
 
@@ -158,6 +149,7 @@ namespace network
       boost::recursive_mutex::scoped_lock lock(enet_mutex_);
       enet_initialize();
       client = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0);
+      lock.unlock();
     }
     if(client==NULL) {
       COUT(2) << "ClientConnection: could not create client host" << std::endl;
@@ -182,6 +174,7 @@ namespace network
           continue;
           // add some error handling here ========================
         }
+        lock.unlock();
       }
       switch(event->type){
         // log handling ================
@@ -200,7 +193,7 @@ namespace network
       case ENET_EVENT_TYPE_NONE:
         continue;
       }
-      //receiverThread_->yield();
+      receiverThread_->yield();
     }
     // now disconnect
 
