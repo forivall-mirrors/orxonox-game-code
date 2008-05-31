@@ -50,6 +50,8 @@ namespace network
 {
   //static boost::thread_group network_threads;
 
+  boost::recursive_mutex ClientConnection::enet_mutex_;
+
   ClientConnection::ClientConnection(int port, std::string address) {
     quit=false;
     server=NULL;
@@ -123,6 +125,7 @@ namespace network
       COUT(3) << "Cl.con: addpacket: invalid packet" << std::endl;
       return false;
     }
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     if(enet_peer_send(server, 0, packet)<0)
       return false;
     else
@@ -142,16 +145,20 @@ namespace network
     ENetEvent event;
     if(server==NULL)
       return false;
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     enet_host_flush(client);
     return true;
   }
 
   void ClientConnection::receiverThread() {
     // what about some error-handling here ?
-    enet_initialize();
     atexit(enet_deinitialize);
     ENetEvent *event;
-    client = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0);
+    {
+      boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+      enet_initialize();
+      client = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0);
+    }
     if(client==NULL) {
       COUT(2) << "ClientConnection: could not create client host" << std::endl;
       // add some error handling here ==========================
@@ -167,10 +174,14 @@ namespace network
     while(!quit){
       event = new ENetEvent;
       //std::cout << "connection loop" << std::endl;
-      if(enet_host_service(client, event, NETWORK_CLIENT_TIMEOUT)<0){
-        // we should never reach this point
-        quit=true;
-        // add some error handling here ========================
+      {
+        boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+        if(enet_host_service(client, event, NETWORK_CLIENT_TIMEOUT)<0){
+          // we should never reach this point
+          quit=true;
+          continue;
+          // add some error handling here ========================
+        }
       }
       switch(event->type){
         // log handling ================
@@ -195,12 +206,14 @@ namespace network
 
     if(!disconnectConnection())
       // if disconnecting failed destroy conn.
+      boost::recursive_mutex::scoped_lock lock(enet_mutex_);
       enet_peer_reset(server);
     return;
   }
 
   bool ClientConnection::disconnectConnection() {
     ENetEvent event;
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     enet_peer_disconnect(server, 0);
     while(enet_host_service(client, &event, NETWORK_CLIENT_TIMEOUT) > 0){
       switch (event.type)
@@ -221,6 +234,7 @@ namespace network
   bool ClientConnection::establishConnection() {
     ENetEvent event;
     // connect to peer (server is type ENetPeer*)
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     server = enet_host_connect(client, &serverAddress, NETWORK_CLIENT_CHANNELS);
     if(server==NULL) {
       COUT(2) << "ClientConnection: server == NULL" << std::endl;

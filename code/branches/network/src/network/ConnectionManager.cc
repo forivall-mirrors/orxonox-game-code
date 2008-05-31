@@ -64,6 +64,7 @@ namespace network
   //boost::thread_group network_threads;
   
   ConnectionManager::ConnectionManager():receiverThread_(0){}
+  boost::recursive_mutex ConnectionManager::enet_mutex_;
   
   ConnectionManager::ConnectionManager(ClientInformation *head) : receiverThread_(0) {
     quit=false;
@@ -142,6 +143,7 @@ used by processQueue in Server.cc
     ClientInformation *temp = head_->findClient(&(peer->address));
     if(!temp)
       return false;
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     if(enet_peer_send(peer, (enet_uint8)temp->getID() , packet)!=0)
       return false;
     return true;
@@ -151,12 +153,14 @@ used by processQueue in Server.cc
     ClientInformation *temp = head_->findClient(clientID);
     if(!temp)
       return false;
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     if(enet_peer_send(temp->getPeer(), (enet_uint8)clientID, packet)!=0)
       return false;
     return true;
   }
 
   bool ConnectionManager::addPacketAll(ENetPacket *packet) {
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     for(ClientInformation *i=head_->next(); i!=0; i=i->next()){
       if(enet_peer_send(i->getPeer(), (enet_uint8)i->getID(), packet)!=0)
         return false;
@@ -176,6 +180,7 @@ used by processQueue in Server.cc
   bool ConnectionManager::sendPackets() {
     if(server==NULL)
       return false;
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     enet_host_flush(server);
     return true;
   }
@@ -183,9 +188,12 @@ used by processQueue in Server.cc
   void ConnectionManager::receiverThread() {
     // what about some error-handling here ?
     ENetEvent *event;
-    enet_initialize();
     atexit(enet_deinitialize);
-    server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
+    { //scope of the mutex
+      boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+      enet_initialize();
+      server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
+    }
     if(server==NULL){
       // add some error handling here ==========================
       quit=true;
@@ -194,10 +202,14 @@ used by processQueue in Server.cc
 
     while(!quit){
       event = new ENetEvent;
-      if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
-        // we should never reach this point
-        quit=true;
-        // add some error handling here ========================
+      { //mutex scope
+        boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+        if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
+          // we should never reach this point
+          quit=true;
+          continue;
+          // add some error handling here ========================
+        }
       }
       switch(event->type){
         // log handling ================
@@ -230,7 +242,10 @@ used by processQueue in Server.cc
     }
     disconnectClients();
     // if we're finishied, destroy server
-    enet_host_destroy(server);
+    {
+      boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+      enet_host_destroy(server);
+    }
   }
   
   //### added some bugfixes here, but we cannot test them because
@@ -240,13 +255,16 @@ used by processQueue in Server.cc
     ENetEvent event;
     ClientInformation *temp = head_->next();
     while(temp!=0){
-      enet_peer_disconnect(temp->getPeer(), 0);
+      {
+        boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+        enet_peer_disconnect(temp->getPeer(), 0);
+      }
       temp = temp->next();
     }
     //bugfix: might be the reason why server crashes when clients disconnects
-    //temp = temp->next();
     temp = head_->next();
-    while( temp!=0 && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) > 0){
+    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+    while( temp!=0 && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) >= 0){
       switch (event.type)
       {
       case ENET_EVENT_TYPE_NONE: break;
@@ -272,10 +290,6 @@ used by processQueue in Server.cc
     return buffer.push(event);
   }
 
-  /*bool ConnectionManager::clientDisconnect(ENetPeer *peer) {
-    COUT(4) << "removing client from list" << std::endl;
-    return removeClient(head_->findClient(&(peer->address))->getID());
-  }*/
 /**
 This function adds a client that connects to the clientlist of the server
 NOTE: if you change this, don't forget to change the test function
@@ -421,7 +435,10 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
   }
   
   void ConnectionManager::disconnectClient(ClientInformation *client){
-    enet_peer_disconnect(client->getPeer(), 0);
+    {
+      boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+      enet_peer_disconnect(client->getPeer(), 0);
+    }
     removeShip(client);
   }
   

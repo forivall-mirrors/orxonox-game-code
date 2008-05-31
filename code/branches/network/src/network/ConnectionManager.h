@@ -47,6 +47,7 @@
 // enet library for networking support
 #include <enet/enet.h>
 #include <boost/thread/thread.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 
 #include "PacketBuffer.h"
 #include "PacketManager.h"
@@ -115,6 +116,7 @@ namespace network
     ClientInformation *head_;
 
     boost::thread *receiverThread_;
+    static boost::recursive_mutex enet_mutex_;
 //     int getNumberOfClients();
     //functions to map what object every clients uses
     /*std::map<int, int> clientsShip;

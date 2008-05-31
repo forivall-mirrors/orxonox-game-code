@@ -95,6 +95,8 @@ namespace network
     // clientlist
     ENetPeer *server;
     boost::thread *receiverThread_;
+    
+    static boost::recursive_mutex enet_mutex_;
   };
 
 

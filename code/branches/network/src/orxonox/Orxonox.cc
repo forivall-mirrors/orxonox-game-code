@@ -185,6 +185,8 @@ namespace orxonox
       mode_ = CLIENT;
     else if (mode == "server")
       mode_ = SERVER;
+    else if (mode == "dedicated")
+      mode_= DEDICATED;
     else
     {
       mode = "standalone";
@@ -214,7 +216,7 @@ namespace orxonox
    */
   bool Orxonox::start()
   {
-    //if (mode == DEDICATED)
+    //if (mode_ == DEDICATED)
     // do something else
     //else
 
@@ -432,13 +434,15 @@ namespace orxonox
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
-      ogreRoot._fireFrameStarted(evt);
+      if(mode_!=DEDICATED)
+        ogreRoot._fireFrameStarted(evt);
 
       // get current time
       now = timer_->getMilliseconds();
       calculateEventTime(now, eventTimes[2]);
 
-      ogreRoot._updateAllRenderTargets(); // only render in non-server mode
+      if(mode_!=DEDICATED)
+        ogreRoot._updateAllRenderTargets(); // only render in non-server mode
 
       // get current time
       now = timer_->getMilliseconds();
@@ -448,7 +452,8 @@ namespace orxonox
       renderTime += calculateEventTime(now, eventTimes[2]);
 
       // again, just to be sure ogre works fine
-      ogreRoot._fireFrameEnded(evt);
+      if(mode_!=DEDICATED)
+        ogreRoot._fireFrameEnded(evt);
 	  }
 
     if (mode_==CLIENT)

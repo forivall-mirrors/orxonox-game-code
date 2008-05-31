@@ -49,7 +49,8 @@ namespace orxonox {
   enum gameMode{
     SERVER,
     CLIENT,
-    STANDALONE
+    STANDALONE,
+    DEDICATED
   };
 
   //! Orxonox singleton class
