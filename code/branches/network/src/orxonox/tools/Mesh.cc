@@ -39,9 +39,9 @@ namespace orxonox
 {
     unsigned int Mesh::meshCounter_s = 0;
 
-    Mesh::Mesh()
+    Mesh::Mesh() :
+      entity_(0)
     {
-        this->entity_ = 0;
     }
 
     void Mesh::setMesh(const std::string& file)

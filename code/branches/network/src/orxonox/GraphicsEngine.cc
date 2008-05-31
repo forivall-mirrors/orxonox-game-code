@@ -156,7 +156,7 @@ namespace orxonox {
     if (this->ogreLogfile_ == "")
       myLog = logger->createLog("ogre.log", true, false, true);
     else
-          myLog = logger->createLog(this->ogreLogfile_, true, false, false);
+      myLog = logger->createLog(this->ogreLogfile_, true, false, false);
     CCOUT(4) << "Ogre Log created" << std::endl;
 
     myLog->setLogDetail(Ogre::LL_BOREME);
@@ -165,7 +165,17 @@ namespace orxonox {
 
     // Root will detect that we've already created a Log
     CCOUT(4) << "Creating Ogre Root..." << std::endl;
-    root_ = new Ogre::Root(plugin_filename);
+
+    root_ = new Ogre::Root(plugin_filename, "ogre.cfg", this->ogreLogfile_);
+
+#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
+    // tame the ogre ouput so we don't get all the mess in the console
+    Ogre::Log* defaultLog = Ogre::LogManager::getSingleton().getDefaultLog();
+    defaultLog->setDebugOutputEnabled(false);
+    defaultLog->setLogDetail(Ogre::LL_BOREME);
+    defaultLog->addListener(this);
+#endif
+
     CCOUT(4) << "Creating Ogre Root done" << std::endl;
 
     // specify where Ogre has to look for resources. This call doesn't parse anything yet!
@@ -250,7 +260,7 @@ namespace orxonox {
    */
   bool GraphicsEngine::createNewScene()
   {
-    CCOUT(4) << "Creating new SceneManager" << std::endl;
+    CCOUT(4) << "Creating new SceneManager..." << std::endl;
     if (scene_)
     {
       CCOUT(2) << "SceneManager already exists! Skipping." << std::endl;

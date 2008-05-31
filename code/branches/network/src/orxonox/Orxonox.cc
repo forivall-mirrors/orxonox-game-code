@@ -186,7 +186,7 @@ namespace orxonox
     else if (mode == "server")
       mode_ = SERVER;
     else if (mode == "dedicated")
-      mode_= DEDICATED;
+      mode_ = DEDICATED;
     else
     {
       mode = "standalone";
@@ -216,34 +216,40 @@ namespace orxonox
    */
   bool Orxonox::start()
   {
-    //if (mode_ == DEDICATED)
-    // do something else
-    //else
+    if (mode_ == DEDICATED)
+    {
+      // do something else
+    }
+    else
+    { // not dedicated server
+      if (!ogre_->loadRenderer())    // creates the render window
+        return false;
 
-    if (!ogre_->loadRenderer())    // creates the render window
-      return false;
+      // Calls the InputManager which sets up the input devices.
+      // The render window width and height are used to set up the mouse movement.
+      if (!InputManager::initialise(ogre_->getWindowHandle(),
+            ogre_->getWindowWidth(), ogre_->getWindowHeight(), true, true, true))
+        return false;
 
-    // Calls the InputManager which sets up the input devices.
-    // The render window width and height are used to set up the mouse movement.
-    if (!InputManager::initialise(ogre_->getWindowHandle(),
-          ogre_->getWindowWidth(), ogre_->getWindowHeight(), true, true, true))
-      return false;
+      // TODO: Spread this so that this call only initialises things needed for the GUI
+      if (!ogre_->initialiseResources())
+        return false;
 
-    // TODO: Spread this so that this call only initialises things needed for the GUI
-    if (!ogre_->initialiseResources())
-      return false;
+      // TOOD: load the GUI here
+      // set InputManager to GUI mode
+      InputManager::setInputState(InputManager::IS_GUI);
+      // TODO: run GUI here
 
-    // TOOD: load the GUI here
-    // set InputManager to GUI mode
-    InputManager::setInputState(InputManager::IS_GUI);
-    // TODO: run GUI here
+      // The following lines depend very much on the GUI output, so they're probably misplaced here..
 
-    // The following lines depend very much on the GUI output, so they're probably misplaced here..
+      InputManager::setInputState(InputManager::IS_NONE);
 
-    InputManager::setInputState(InputManager::IS_NONE);
+      // create Ogre SceneManager
+      ogre_->createNewScene();
 
-    if (!loadPlayground())
-      return false;
+      if (!loadPlayground())
+        return false;
+    }
 
     switch (mode_)
     {
@@ -253,6 +259,10 @@ namespace orxonox
       break;
     case CLIENT:
       if (!clientLoad())
+        return false;
+      break;
+    case DEDICATED:
+      if (!serverLoad())
         return false;
       break;
     default:
@@ -271,9 +281,7 @@ namespace orxonox
    */
   bool Orxonox::loadPlayground()
   {
-    ogre_->createNewScene();
-
-	  // Init audio
+    // Init audio
     //auMan_ = new audio::AudioManager();
     //auMan_->ambientAdd("a1");
     //auMan_->ambientAdd("a2");
@@ -345,15 +353,15 @@ namespace orxonox
     Level* startlevel = new Level("levels/sample.oxw");
     Loader::open(startlevel);
     
-
-    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    // HACK: shader stuff for presentation
+    /*Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
     mSceneMgr->setAmbientLight(ColourValue(0.4,0.4,0.4));
     Ogre::Light* dirlight = mSceneMgr->createLight("Light1");
 
-       dirlight->setType(Ogre::Light::LT_DIRECTIONAL);
-       dirlight->setDirection(Vector3( 0, 1, 5 ));
-       dirlight->setDiffuseColour(ColourValue(0.6, 0.6, 0.4));
-       dirlight->setSpecularColour(ColourValue(1.0, 1.0, 1.0));
+    dirlight->setType(Ogre::Light::LT_DIRECTIONAL);
+    dirlight->setDirection(Vector3( 0, 1, 5 ));
+    dirlight->setDiffuseColour(ColourValue(0.6, 0.6, 0.4));
+    dirlight->setSpecularColour(ColourValue(1.0, 1.0, 1.0));*/
     
     return true;
   }
@@ -401,12 +409,8 @@ namespace orxonox
     //Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "MotionBlur");
 
     COUT(3) << "Orxonox: Starting the main loop." << std::endl;
-	  while (!bAbort_)
-	  {
-		  // Pump messages in all registered RenderWindows
-      // This calls the WindowEventListener objects.
-      Ogre::WindowEventUtilities::messagePump();
-
+    while (!bAbort_)
+    {
       // get current time
       unsigned long now = timer_->getMilliseconds();
 
@@ -418,7 +422,7 @@ namespace orxonox
 
       // show the current time in the HUD
       // HUD::getSingleton().setTime(now);
-      if (frameTime > 0.4f)
+      if (mode_ != DEDICATED && frameTime > 0.4f)
       {
         HUD::getSingleton().setRenderTimeRatio(renderTime / frameTime);
         frameTime = 0.0f;
@@ -434,15 +438,21 @@ namespace orxonox
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
-      if(mode_!=DEDICATED)
-        ogreRoot._fireFrameStarted(evt);
+      ogreRoot._fireFrameStarted(evt);
 
       // get current time
       now = timer_->getMilliseconds();
       calculateEventTime(now, eventTimes[2]);
 
-      if(mode_!=DEDICATED)
-        ogreRoot._updateAllRenderTargets(); // only render in non-server mode
+      if (mode_ != DEDICATED)
+      {
+        // Pump messages in all registered RenderWindows
+        // This calls the WindowEventListener objects.
+        Ogre::WindowEventUtilities::messagePump();
+
+        // render
+        ogreRoot._updateAllRenderTargets();
+      }
 
       // get current time
       now = timer_->getMilliseconds();
@@ -452,13 +462,13 @@ namespace orxonox
       renderTime += calculateEventTime(now, eventTimes[2]);
 
       // again, just to be sure ogre works fine
-      if(mode_!=DEDICATED)
-        ogreRoot._fireFrameEnded(evt);
-	  }
+      ogreRoot._fireFrameEnded(evt);
+      //msleep(200);
+    }
 
-    if (mode_==CLIENT)
+    if (mode_ == CLIENT)
       network::Client::getSingleton()->closeConnection();
-    else if (mode_==SERVER)
+    else if (mode_ == SERVER)
       server_g->close();
 
     return true;
