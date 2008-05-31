@@ -1,6 +1,7 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net < *
+ *                    > www.orxonox.net <
+ *
  *
  *   License notice:
  *
@@ -24,9 +25,15 @@
  *      ...
  *
  */
-/**    @file Error.cc    @brief Implementation of the Error class.*/
+
+/**
+    @file Error.cc
+    @brief Implementation of the Error class.
+*/
+
 #include "Error.h"
 #include "Debug.h"
+
 namespace orxonox
 {
 	Error::Error(std::string errorMsg, int errorCode)

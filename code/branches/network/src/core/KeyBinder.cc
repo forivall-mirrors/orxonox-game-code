@@ -40,7 +40,9 @@
 #include "Debug.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
-#include "CommandExecutor.h"#include "ConsoleCommand.h"#include "Executor.h"
+#include "CommandExecutor.h"
+#include "ConsoleCommand.h"
+#include "Executor.h"
 // TODO: only needed by the CalibratorCallback class; move to new file
 #include "InputManager.h"
 

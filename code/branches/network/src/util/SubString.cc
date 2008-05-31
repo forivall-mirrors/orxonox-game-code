@@ -1,4 +1,39 @@
-/* *   ORXONOX - the hottest 3D action shooter ever to exist *                    > www.orxonox.net < * * *   License notice: * *   This program is free software; you can redistribute it and/or *   modify it under the terms of the GNU General Public License *   as published by the Free Software Foundation; either version 2 *   of the License, or (at your option) any later version. * *   This program is distributed in the hope that it will be useful, *   but WITHOUT ANY WARRANTY; without even the implied warranty of *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the *   GNU General Public License for more details. * *   You should have received a copy of the GNU General Public License *   along with this program; if not, write to the Free Software *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. * *   Author: *      Christian Meyer *   Co-authors: *      Benjamin Grauer *////  splitLine//  STL string tokenizer////  Created by Clemens Wacha.//  Version 1.0//  Copyright (c) 2005 Clemens Wacha. All rights reserved.// */
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Christian Meyer
+ *   Co-authors:
+ *      Benjamin Grauer
+ *
+//
+//  splitLine
+//  STL string tokenizer
+//
+//  Created by Clemens Wacha.
+//  Version 1.0
+//  Copyright (c) 2005 Clemens Wacha. All rights reserved.
+//
+ */
+
 #include "SubString.h"
 
 /**
@@ -31,7 +66,8 @@ SubString::SubString(const std::string& string, char delimiter)
  */
 SubString::SubString(const std::string& string,
                      const std::string& delimiters, const std::string& delimiterNeighbours, bool emptyEntries,
-                     char escapeChar, bool removeEscapeChar, char safemode_char, bool removeSafemodeChar,                     char openparenthesis_char, char closeparenthesis_char, bool removeParenthesisChars, char comment_char)
+                     char escapeChar, bool removeEscapeChar, char safemode_char, bool removeSafemodeChar,
+                     char openparenthesis_char, char closeparenthesis_char, bool removeParenthesisChars, char comment_char)
 {
   SubString::splitLine(this->strings, this->bInSafemode, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, removeEscapeChar, safemode_char, removeSafemodeChar, openparenthesis_char, closeparenthesis_char, removeParenthesisChars, comment_char);
 }
@@ -43,8 +79,11 @@ SubString::SubString(const std::string& string,
  */
 SubString::SubString(const SubString& subString, unsigned int subSetBegin)
 {
-  for (unsigned int i = subSetBegin; i < subString.size(); i++)  {
-    this->strings.push_back(subString[i]);    this->bInSafemode.push_back(subString.isInSafemode(i));  }
+  for (unsigned int i = subSetBegin; i < subString.size(); i++)
+  {
+    this->strings.push_back(subString[i]);
+    this->bInSafemode.push_back(subString.isInSafemode(i));
+  }
 }
 
 
@@ -56,8 +95,11 @@ SubString::SubString(const SubString& subString, unsigned int subSetBegin)
  */
 SubString::SubString(const SubString& subString, unsigned int subSetBegin, unsigned int subSetEnd)
 {
-  for (unsigned int i = subSetBegin; i < subString.size() && i < subSetEnd; i++)  {
-    this->strings.push_back(subString[i]);    this->bInSafemode.push_back(subString.isInSafemode(i));  }
+  for (unsigned int i = subSetBegin; i < subString.size() && i < subSetEnd; i++)
+  {
+    this->strings.push_back(subString[i]);
+    this->bInSafemode.push_back(subString.isInSafemode(i));
+  }
 }
 
 /**
@@ -67,8 +109,11 @@ SubString::SubString(const SubString& subString, unsigned int subSetBegin, unsig
  */
 SubString::SubString(unsigned int argc, const char** argv)
 {
-  for(unsigned int i = 0; i < argc; ++i)  {
-    this->strings.push_back(std::string(argv[i]));    this->bInSafemode.push_back(false);  }
+  for(unsigned int i = 0; i < argc; ++i)
+  {
+    this->strings.push_back(std::string(argv[i]));
+    this->bInSafemode.push_back(false);
+  }
 }
 
 /**
@@ -93,7 +138,8 @@ const SubString SubString::NullSubString = SubString();
  */
 SubString& SubString::operator=(const SubString& subString)
 {
-  this->strings = subString.strings;  this->bInSafemode = subString.bInSafemode;
+  this->strings = subString.strings;
+  this->bInSafemode = subString.bInSafemode;
   return *this;
 }
 
@@ -154,8 +200,11 @@ SubString SubString::operator+(const SubString& subString) const
  */
 SubString& SubString::operator+=(const SubString& subString)
 {
-  for (unsigned int i = 0; i < subString.size(); i++)  {
-    this->strings.push_back(subString[i]);    this->bInSafemode.push_back(subString.isInSafemode(i));  }
+  for (unsigned int i = 0; i < subString.size(); i++)
+  {
+    this->strings.push_back(subString[i]);
+    this->bInSafemode.push_back(subString.isInSafemode(i));
+  }
   return *this;
 }
 
@@ -167,7 +216,8 @@ SubString& SubString::operator+=(const SubString& subString)
  */
 unsigned int SubString::split(const std::string& string, char splitter)
 {
-  this->strings.clear();  this->bInSafemode.clear();
+  this->strings.clear();
+  this->bInSafemode.clear();
   char split[2];
   split[0] = splitter;
   split[1] = '\0';
@@ -188,9 +238,11 @@ unsigned int SubString::split(const std::string& string, char splitter)
  */
 unsigned int SubString::split(const std::string& string,
                               const std::string& delimiters, const std::string& delimiterNeighbours, bool emptyEntries,
-                              char escapeChar, bool removeExcapeChar, char safemode_char, bool removeSafemodeChar,                              char openparenthesis_char, char closeparenthesis_char, bool removeParenthesisChars, char comment_char)
+                              char escapeChar, bool removeExcapeChar, char safemode_char, bool removeSafemodeChar,
+                              char openparenthesis_char, char closeparenthesis_char, bool removeParenthesisChars, char comment_char)
 {
-  this->strings.clear();  this->bInSafemode.clear();
+  this->strings.clear();
+  this->bInSafemode.clear();
   SubString::splitLine(this->strings, this->bInSafemode, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, removeExcapeChar, safemode_char, removeSafemodeChar, openparenthesis_char, closeparenthesis_char, removeParenthesisChars, comment_char);
   return this->strings.size();
 }
@@ -256,7 +308,11 @@ SubString SubString::subSet(unsigned int subSetBegin, unsigned int subSetEnd) co
  * @param delimiterNeighbours Naighbours to the Delimitter, that will be removed if they are to the left or the right of a Delimiter.
  * @param emptyEntries: if empty Strings are added to the List of Strings.
  * @param escape_char: Escape carater (escapes splitters)
- * @param safemode_char: the beginning of the safemode is marked with this * @param removeSafemodeChar removes the safemode_char from the beginning and the ending of a token * @param openparenthesis_char the beginning of a safemode is marked with this * @param closeparenthesis_char the ending of a safemode is marked with this * @param removeParenthesisChars removes the parenthesis from the beginning and the ending of a token
+ * @param safemode_char: the beginning of the safemode is marked with this
+ * @param removeSafemodeChar removes the safemode_char from the beginning and the ending of a token
+ * @param openparenthesis_char the beginning of a safemode is marked with this
+ * @param closeparenthesis_char the ending of a safemode is marked with this
+ * @param removeParenthesisChars removes the parenthesis from the beginning and the ending of a token
  * @param comment_char: the beginning of a comment is marked with this: (until the end of a Line)
  * @param start_state: the Initial state on how to parse the String.
  * @return SPLIT_LINE_STATE the parser was in when returning
@@ -266,13 +322,19 @@ SubString SubString::subSet(unsigned int subSetBegin, unsigned int subSetEnd) co
  * ignores special  characters between safemode_char and between comment_char and linend '\n'.
  */
 SubString::SPLIT_LINE_STATE
-SubString::splitLine(std::vector<std::string>& ret,                     std::vector<bool>& bInSafemode,
+SubString::splitLine(std::vector<std::string>& ret,
+                     std::vector<bool>& bInSafemode,
                      const std::string& line,
                      const std::string& delimiters,
                      const std::string& delimiterNeighbours,
                      bool emptyEntries,
-                     char escape_char,                     bool removeExcapeChar,
-                     char safemode_char,                     bool removeSafemodeChar,                     char openparenthesis_char,                     char closeparenthesis_char,                     bool removeParenthesisChars,
+                     char escape_char,
+                     bool removeExcapeChar,
+                     char safemode_char,
+                     bool removeSafemodeChar,
+                     char openparenthesis_char,
+                     char closeparenthesis_char,
+                     bool removeParenthesisChars,
                      char comment_char,
                      SPLIT_LINE_STATE start_state)
 {
@@ -280,10 +342,20 @@ SubString::splitLine(std::vector<std::string>& ret,                     std::vec
   unsigned int i = 0;
   unsigned int fallBackNeighbours = 0;
 
-  std::string token;  bool inSafemode = false;
+  std::string token;
+  bool inSafemode = false;
 
-  if(start_state != SL_NORMAL && ret.size() > 0)  {    token = ret[ret.size()-1];
-    ret.pop_back();  }  if(start_state != SL_NORMAL && bInSafemode.size() > 0)  {    inSafemode = bInSafemode[bInSafemode.size()-1];    bInSafemode.pop_back();  }
+  if(start_state != SL_NORMAL && ret.size() > 0)
+  {
+    token = ret[ret.size()-1];
+    ret.pop_back();
+  }
+  if(start_state != SL_NORMAL && bInSafemode.size() > 0)
+  {
+    inSafemode = bInSafemode[bInSafemode.size()-1];
+    bInSafemode.pop_back();
+  }
+
   while(i < line.size())
   {
     switch(state)
@@ -291,12 +363,24 @@ SubString::splitLine(std::vector<std::string>& ret,                     std::vec
       case SL_NORMAL:
         if(line[i] == escape_char)
         {
-          state = SL_ESCAPE;          if (!removeExcapeChar)            token += line[i];
+          state = SL_ESCAPE;
+          if (!removeExcapeChar)
+            token += line[i];
         }
         else if(line[i] == safemode_char)
         {
-          state = SL_SAFEMODE;          inSafemode = true;          if (!removeSafemodeChar)            token += line[i];
-        }        else if(line[i] == openparenthesis_char)        {          state = SL_PARENTHESES;          inSafemode = true;          if (!removeParenthesisChars)            token += line[i];        }
+          state = SL_SAFEMODE;
+          inSafemode = true;
+          if (!removeSafemodeChar)
+            token += line[i];
+        }
+        else if(line[i] == openparenthesis_char)
+        {
+          state = SL_PARENTHESES;
+          inSafemode = true;
+          if (!removeParenthesisChars)
+            token += line[i];
+        }
         else if(line[i] == comment_char)
         {
           if (fallBackNeighbours > 0)
@@ -304,7 +388,11 @@ SubString::splitLine(std::vector<std::string>& ret,                     std::vec
           /// FINISH
           if(emptyEntries || token.size() > 0)
           {
-            ret.push_back(token);            token.clear();            bInSafemode.push_back(inSafemode);            inSafemode = false;          }
+            ret.push_back(token);
+            token.clear();
+            bInSafemode.push_back(inSafemode);
+            inSafemode = false;
+          }
           token += line[i];       // EAT
           state = SL_COMMENT;
         }
@@ -318,7 +406,9 @@ SubString::splitLine(std::vector<std::string>& ret,                     std::vec
           {
             ret.push_back(token);
             token.clear();
-            bInSafemode.push_back(inSafemode);            inSafemode = false;          }
+            bInSafemode.push_back(inSafemode);
+            inSafemode = false;
+          }
           state = SL_NORMAL;
         }
         else
@@ -338,7 +428,11 @@ SubString::splitLine(std::vector<std::string>& ret,                     std::vec
           token += line[i];       // EAT
         }
         break;
-      case SL_ESCAPE:        if (!removeSafemodeChar)          token += line[i];        else        {
+      case SL_ESCAPE:
+        if (!removeSafemodeChar)
+          token += line[i];
+        else
+        {
           if(line[i] == 'n') token += '\n';
           else if(line[i] == 't') token += '\t';
           else if(line[i] == 'v') token += '\v';
@@ -347,14 +441,17 @@ SubString::splitLine(std::vector<std::string>& ret,                     std::vec
           else if(line[i] == 'f') token += '\f';
           else if(line[i] == 'a') token += '\a';
           else if(line[i] == '?') token += '\?';
-          else token += line[i];  // EAT        }
+          else token += line[i];  // EAT
+        }
         state = SL_NORMAL;
         break;
       case SL_SAFEMODE:
         if(line[i] == safemode_char)
         {
           state = SL_NORMAL;
-          if (!removeSafemodeChar)            token += line[i];        }
+          if (!removeSafemodeChar)
+            token += line[i];
+        }
         else if(line[i] == escape_char)
         {
           state = SL_SAFEESCAPE;
@@ -363,7 +460,9 @@ SubString::splitLine(std::vector<std::string>& ret,                     std::vec
         {
           token += line[i];       // EAT
         }
-        break;      case SL_SAFEESCAPE:
+        break;
+
+      case SL_SAFEESCAPE:
         if(line[i] == 'n') token += '\n';
         else if(line[i] == 't') token += '\t';
         else if(line[i] == 'v') token += '\v';
@@ -375,7 +474,37 @@ SubString::splitLine(std::vector<std::string>& ret,                     std::vec
         else token += line[i];  // EAT
         state = SL_SAFEMODE;
         break;
-      case SL_PARENTHESES:        if(line[i] == closeparenthesis_char)        {          state = SL_NORMAL;          if (!removeParenthesisChars)            token += line[i];        }        else if(line[i] == escape_char)        {          state = SL_PARENTHESESESCAPE;        }        else        {          token += line[i];       // EAT        }        break;      case SL_PARENTHESESESCAPE:        if(line[i] == 'n') token += '\n';        else if(line[i] == 't') token += '\t';        else if(line[i] == 'v') token += '\v';        else if(line[i] == 'b') token += '\b';        else if(line[i] == 'r') token += '\r';        else if(line[i] == 'f') token += '\f';        else if(line[i] == 'a') token += '\a';        else if(line[i] == '?') token += '\?';        else token += line[i];  // EAT        state = SL_PARENTHESES;        break;
+
+      case SL_PARENTHESES:
+        if(line[i] == closeparenthesis_char)
+        {
+          state = SL_NORMAL;
+          if (!removeParenthesisChars)
+            token += line[i];
+        }
+        else if(line[i] == escape_char)
+        {
+          state = SL_PARENTHESESESCAPE;
+        }
+        else
+        {
+          token += line[i];       // EAT
+        }
+        break;
+
+      case SL_PARENTHESESESCAPE:
+        if(line[i] == 'n') token += '\n';
+        else if(line[i] == 't') token += '\t';
+        else if(line[i] == 'v') token += '\v';
+        else if(line[i] == 'b') token += '\b';
+        else if(line[i] == 'r') token += '\r';
+        else if(line[i] == 'f') token += '\f';
+        else if(line[i] == 'a') token += '\a';
+        else if(line[i] == '?') token += '\?';
+        else token += line[i];  // EAT
+        state = SL_PARENTHESES;
+        break;
+
       case SL_COMMENT:
         if(line[i] == '\n')
         {
@@ -384,7 +513,9 @@ SubString::splitLine(std::vector<std::string>& ret,                     std::vec
           {
             ret.push_back(token);
             token.clear();
-            bInSafemode.push_back(inSafemode);            inSafemode = false;          }
+            bInSafemode.push_back(inSafemode);
+            inSafemode = false;
+          }
           state = SL_NORMAL;
         }
         else
@@ -407,7 +538,9 @@ SubString::splitLine(std::vector<std::string>& ret,                     std::vec
   {
     ret.push_back(token);
     token.clear();
-    bInSafemode.push_back(inSafemode);    inSafemode = false;  }
+    bInSafemode.push_back(inSafemode);
+    inSafemode = false;
+  }
   return(state);
 }
 

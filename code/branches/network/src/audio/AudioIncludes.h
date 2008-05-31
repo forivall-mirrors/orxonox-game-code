@@ -1,6 +1,7 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net < *
+ *                    > www.orxonox.net <
+ *
  *
  *   License notice:
  *
@@ -25,7 +26,12 @@
  *
  */
 
-/**  @file  @brief Various headers used in the audio lib. Avoid including this to         increase accuracy of header file dependencies.*/
+/**
+  @file
+  @brief Various headers used in the audio lib. Avoid including this to
+         increase accuracy of header file dependencies.
+*/
+
 #include "AudioPrereqs.h"
 
 #include <iostream>

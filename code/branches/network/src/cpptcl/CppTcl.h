@@ -466,7 +466,8 @@ extern details::no_init_type no_init;
 class interpreter
 {
 public:
-     interpreter();     interpreter(std::string const &libpath);
+     interpreter();
+     interpreter(std::string const &libpath);
      interpreter(Tcl_Interp *, bool owner = true);
      ~interpreter();
 

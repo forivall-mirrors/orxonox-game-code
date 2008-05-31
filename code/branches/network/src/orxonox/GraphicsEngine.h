@@ -1,6 +1,7 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net < *
+ *                    > www.orxonox.net <
+ *
  *
  *   License notice:
  *
@@ -69,7 +70,8 @@ namespace orxonox {
             Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
             size_t getWindowHandle();
             int getWindowWidth() const;
-            int getWindowHeight() const;            float getWindowAspectRatio() const;
+            int getWindowHeight() const;
+            float getWindowAspectRatio() const;
             float getAverageFPS() const
             { if (renderWindow_) return this->renderWindow_->getAverageFPS(); else return 0.0f; }
 

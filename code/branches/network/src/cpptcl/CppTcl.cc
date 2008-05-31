@@ -854,8 +854,21 @@ Tcl_Interp * object::get_interp() const
 
 interpreter::interpreter()
 {
-     interp_ =  Tcl_CreateInterp();     owner_ = true;
-}interpreter::interpreter(string const &libpath){     interp_ =  Tcl_CreateInterp();     owner_ = true;     try     {        this->eval("set tcl_library " + libpath);        Tcl_Init(this->interp_);     } catch (...) {}}
+     interp_ =  Tcl_CreateInterp();
+     owner_ = true;
+}
+
+interpreter::interpreter(string const &libpath)
+{
+     interp_ =  Tcl_CreateInterp();
+     owner_ = true;
+
+     try
+     {
+        this->eval("set tcl_library " + libpath);
+        Tcl_Init(this->interp_);
+     } catch (...) {}
+}
 
 interpreter::interpreter(Tcl_Interp *interp, bool owner)
 {
@@ -869,7 +882,9 @@ interpreter::~interpreter()
      {
           // clear all callback info belonging to this interpreter
           clear_definitions(interp_);
-          Tcl_DeleteInterp(interp_);     }
+
+          Tcl_DeleteInterp(interp_);
+     }
 }
 
 void interpreter::make_safe()

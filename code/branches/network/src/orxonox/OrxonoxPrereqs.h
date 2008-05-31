@@ -1,6 +1,7 @@
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
- *                    > www.orxonox.net < *
+ *                    > www.orxonox.net <
+ *
  *
  *   License notice:
  *
@@ -71,7 +72,8 @@ namespace orxonox {
   class NPC;
   class Projectile;
   class Skybox;
-  class SpaceShip;  class SpaceShipAI;
+  class SpaceShip;
+  class SpaceShipAI;
   class WorldEntity;
 
   class AmmunitionDump;
@@ -93,7 +95,11 @@ namespace orxonox {
   class ParticleInterface;
 
   // hud
-  class BarOverlayElement;  class HUD;  class Navigation;  class RadarObject;  class RadarOverlayElement;
+  class BarOverlayElement;
+  class HUD;
+  class Navigation;
+  class RadarObject;
+  class RadarOverlayElement;
 
   //console
   class InGameConsole;
