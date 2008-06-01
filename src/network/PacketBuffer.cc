@@ -61,8 +61,7 @@ namespace network
       last=first;
       last->next=NULL;
       // change this!!!!!!!  ---- we are not doing stl so we won't change this
-      last->packet = ev->packet;
-      last->address = ev->peer->address;
+      last->event = ev;
       //last->address = ev->peer->address;
     } else {
       //insert a new element at the bottom
@@ -71,8 +70,7 @@ namespace network
       // initialize last->next
       last->next=NULL;
       // save the packet to the new element
-      last->packet = ev->packet;
-      last->address = ev->peer->address;
+      last->event = ev;
       //last->address = ev->peer->address;
     }
     lock.unlock();
@@ -81,19 +79,39 @@ namespace network
 
   //returns the first element in the list without deleting it but
   //moving first pointer to next element
-  ENetPacket *PacketBuffer::pop() {
+  /*ENetPacket *PacketBuffer::pop() {
     ENetAddress address;
     return pop(address);
-  }
-
-  ENetPacket *PacketBuffer::pop(ENetAddress &address) {
+  }*/
+  
+  ENetEvent *PacketBuffer::pop(){
     boost::recursive_mutex::scoped_lock lock(mutex_);
     //std::cout << "packetbuffer pop(address)" << std::endl;
     if(first!=NULL /*&& !closed*/){
       QueueItem *temp = first;
       // get packet
-      ENetPacket *pck=first->packet;
-      address = first->address;
+      ENetEvent *ev=first->event;
+      //address = first->address;
+      // remove first element
+      first = first->next;
+      delete temp;
+      lock.unlock();
+      //std::cout << "pop(address) size of packet " << pck->dataLength << std::endl;
+      return ev;
+    } else{
+      lock.unlock();
+      return NULL;
+    }
+  }
+
+  /*ENetPacket *PacketBuffer::pop(ENetAddress &address) {
+    boost::recursive_mutex::scoped_lock lock(mutex_);
+    //std::cout << "packetbuffer pop(address)" << std::endl;
+    if(first!=NULL ){
+      QueueItem *temp = first;
+      // get packet
+      ENetPacket *pck=first->event->packet;
+      address = first->event->peer->address;
       // remove first element
       first = first->next;
       delete temp;
@@ -104,7 +122,7 @@ namespace network
       lock.unlock();
       return NULL;
     }
-  }
+  }*/
 
   bool PacketBuffer::isEmpty() {
     return (first==NULL);

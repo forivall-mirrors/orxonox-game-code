@@ -59,7 +59,7 @@ namespace orxonox {
 
 
   protected:
-    inline bool create() { return true; }
+    inline bool create() { return Synchronisable::create(); }
     void registerAllVariables();
 
     int numberOfAmmos_;

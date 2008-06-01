@@ -46,7 +46,7 @@ namespace orxonox
             void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void setAmbientLight(const ColourValue& colour);
-            bool create();
+            virtual bool create();
             void registerAllVariables();
 
             static void setAmbientLightTest(const ColourValue& colour)

@@ -59,7 +59,7 @@ namespace orxonox {
     inline virtual void loadParams(TiXmlElement* xmlElem) { BaseObject::loadParams(xmlElem); };
 
   protected:
-    inline bool create() { return true; }
+    inline bool create() { return Synchronisable::create(); }
     void registerAllVariables();
 
     // Bullet array

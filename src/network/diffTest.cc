@@ -548,7 +548,7 @@ void testClientInformation( int numberOfClients ) {
   printClientInformationBox( temp );
 
   std::cout << "test setGamestateID" << std::endl;
-  temp->setGamestateID( 8 );
+  temp->setGameStateID( 8 );
   printClientInformationBox( temp );
 
   std::cout << "test insertAfter() and insertBefore()" << std::endl;
@@ -558,7 +558,7 @@ void testClientInformation( int numberOfClients ) {
   newInfo->setID( numberOfClients+2);
   newInfo->setSynched( true );
   newInfo->setPeer( NULL );
-  toool->setGamestateID( 199 );
+  toool->setGameStateID( 199 );
   toool->setID( numberOfClients+1);
   toool->setSynched( true );
   toool->setPeer( NULL );

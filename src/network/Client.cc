@@ -84,6 +84,7 @@ namespace network
     // set server address to localhost
     isConnected=false;
     isSynched_=false;
+    gameStateFailure_=false;
   }
 
   /**
@@ -94,6 +95,7 @@ namespace network
   Client::Client(std::string address, int port) : client_connection(port, address){
     isConnected=false;
     isSynched_=false;
+    gameStateFailure_=false;
   }
 
   /**
@@ -104,6 +106,7 @@ namespace network
   Client::Client(const char *address, int port) : client_connection(port, address){
     isConnected=false;
     isSynched_=false;
+    gameStateFailure_=false;
   }
 
   Client::~Client(){
@@ -119,11 +122,11 @@ namespace network
     Synchronisable::setClient(true);
     isConnected=client_connection.createConnection();
     if(isConnected){
-      COUT(3) << "sending connectrequest" << std::endl;
-      if(!client_connection.addPacket(pck_gen.generateConnectRequest()) || !client_connection.sendPackets())
-        COUT(1) << "could not create connection" << std::endl;
+//       COUT(3) << "sending connectrequest" << std::endl;
+//       if(!client_connection.addPacket(pck_gen.generateConnectRequest()) || !client_connection.sendPackets())
+//         COUT(1) << "could not send connection request !!!!!!!!!" << std::endl;
     }else
-      COUT(1) << "could not create connection" << std::endl;
+      COUT(1) << "could not create connection laber" << std::endl;
     return isConnected;
   }
 
@@ -136,36 +139,9 @@ namespace network
     return client_connection.closeConnection();
   }
 
-  /**
-  * submits a MouseAction to the server
-  * @param x x Coordinate
-  * @param y y Coordinate
-  * @return true/false
-  */
-  bool Client::sendMouse(double x, double y){
-    // generate packet and add it to the queue
-    if(!isConnected)
-      return false;
-    if(!client_connection.addPacket(pck_gen.mousem(x, y)))
-      return false;
-    // send packets
-    return client_connection.sendPackets();
-  }
+  
 
-  /**
-  * submits a Keystrike to the server
-  * @param key_code code to submit
-  * @return true/false
-  */
-  bool Client::sendKeyboard(char key_code){
-    // generate packet and add it to queue
-    if(!isConnected)
-      return false;
-    if(!client_connection.addPacket(pck_gen.keystrike(key_code)))
-      return false;
-    // send packets
-    return client_connection.sendPackets();
-  }
+  
 
   /**
   * submits a chat message to the server
@@ -176,52 +152,10 @@ namespace network
     // generate packet and add it to queue
     if(!isConnected)
       return false;
-    if(client_connection.addPacket(pck_gen.chatMessage( message.c_str() )))
-      return client_connection.sendPackets();
+    return client_connection.addPacket(pck_gen.chatMessage( message.c_str() ));
+      //return client_connection.sendPackets();
     // send packets
     return false;
-  }
-
-  /**
-  * Adds a MouseAction to the PacketQueue
-  * @param x x Coordinate
-  * @param y y Coordinate
-  * @return true/false
-  */
-  bool Client::addMouse(double x, double y){
-    // generate packet and add it to the queue
-    if(client_connection.addPacket(pck_gen.mousem(x, y)))
-      return true;
-    else
-      return false;
-  }
-
-  /**
-  * Adds a Keystrike to the PacketQueue
-  * @param key_code
-  * @return true/false
-  */
-  bool Client::addKeyboard(char key_code){
-    // generate packet and add it to queue
-    if(client_connection.addPacket(pck_gen.keystrike(key_code)))
-      return true;
-    else
-      return false;
-  }
-
-  /**
-  * Sends out all the packets queued by addXXX
-  */
-  bool Client::sendPackets(){
-    if(!isConnected)
-      return false;
-    ENetEvent event;
-    // send packets
-    client_connection.sendPackets(&event);
-    if(event.type==ENET_EVENT_TYPE_NONE)
-      return true;
-    else
-      return false;
   }
 
   /**
@@ -242,30 +176,40 @@ namespace network
         delete gs;
       }
     }
-    ENetPacket *packet;
+    ENetEvent *event;
     // stop if the packet queue is empty
     while(!(client_connection.queueEmpty())){
-      packet = client_connection.getPacket();
-      COUT(5) << "tick packet size " << packet->dataLength << std::endl;
-      elaborate(packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
+      event = client_connection.getEvent();
+      COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
+      elaborate(event->packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
     }
-    if(!client_connection.sendPackets())
-      COUT(3) << "Problem sending packets to server" << std::endl;
+    int gameStateID = gamestate.processGameState();
+    if(gameStateID==GAMESTATEID_INITIAL)
+      if(gameStateFailure_){
+        if(!client_connection.addPacket(pck_gen.acknowledgement(GAMESTATEID_INITIAL)))
+          COUT(3) << "could not (negatively) ack gamestate" << std::endl;
+        else 
+          COUT(4) << "negatively acked a gamestate" << std::endl;
+        }
+      else
+        gameStateFailure_=true;
+    else if(gameStateID!=0){
+      // ack gamestate and set synched
+      if(!isSynched_)
+        isSynched_=true;
+      gameStateFailure_=false;
+      if(!client_connection.addPacket(pck_gen.acknowledgement(gameStateID)))
+        COUT(3) << "could not ack gamestate" << std::endl;
+    }// otherwise we had no gamestate to load
+    gamestate.cleanup();
+    /*if(!client_connection.sendPackets())
+      COUT(3) << "Problem sending packets to server" << std::endl;*/
     return;
   }
 
   void Client::processGamestate( GameStateCompressed *data, int clientID){
-    int id = data->id;
     COUT(5) << "received gamestate id: " << data->id << std::endl;
-    if(gamestate.pushGameState(data)){
-      if(!isSynched_)
-        isSynched_=true;
-      if(!client_connection.addPacket(pck_gen.acknowledgement(id)))
-        return;
-        // we do this at the end of a tick
-      if(!client_connection.sendPackets())
-        COUT(2) << "Could not send acknowledgment" << std::endl;
-    }
+    gamestate.addGameState(data);
   }
 
   void Client::processClassid(classid *clid){
@@ -274,6 +218,7 @@ namespace network
     if(id!=NULL)
       id->setNetworkID(clid->clid);
     COUT(4) << "Client: received and set network id: " << clid->clid << "; classname: " << clid->message << std::endl;
+    COUT(4) << "id(classid)->getName " << ID((unsigned int)clid->clid)->getName() << std::endl;
     delete clid;
     return;
   }

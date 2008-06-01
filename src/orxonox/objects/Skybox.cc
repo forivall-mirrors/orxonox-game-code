@@ -89,7 +89,7 @@ namespace orxonox
     
     bool Skybox::create(){
       this->setSkybox(skyboxSrc_);
-      return true;
+      return Synchronisable::create();
     }
     
     void Skybox::registerAllVariables(){

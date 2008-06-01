@@ -120,6 +120,15 @@ inline int round(T x)
 }
 
 template <typename T>
+inline int mod(T x, int max)
+{
+    if (x >= 0)
+        return (x % max);
+    else
+        return ((x % max) + max);
+}
+
+template <typename T>
 T interpolate(float time, const T& start, const T& end)
 {
     return time * (end - start) + start;

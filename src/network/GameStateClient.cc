@@ -20,9 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Oliver Scheuss
  *   Co-authors:
- *      ...
+ *      Dumeni Manatschal
  *
  */
 
@@ -34,7 +34,6 @@
 #include "core/BaseObject.h"
 #include "Synchronisable.h"
 
-#define GAMESTATEID_INITIAL -1
 
 namespace network
 {
@@ -42,11 +41,13 @@ namespace network
     GameState *state;
     int id;
   };
-  
+
   GameStateClient::GameStateClient() {
     COUT(5) << "this: " << this << std::endl;
     last_diff_=0;
     last_gamestate_=GAMESTATEID_INITIAL-1;
+    tempGameState_=NULL;
+    myShip_=NULL;
   }
 
   GameStateClient::~GameStateClient() {
@@ -94,15 +95,41 @@ namespace network
     COUT(4) << "could not use gamestate sent by server" << std::endl;
     return false;
   }
-  
+
   GameStateCompressed *GameStateClient::popPartialGameState(){
     GameState *gs = getPartialSnapshot();
+    if(!gs)
+      return NULL;
     GameStateCompressed *cgs = compress_(gs);
     delete[] gs->data;
     delete gs;
     return cgs;
   }
-  
+
+  void GameStateClient::addGameState(GameStateCompressed *gs){
+    if(tempGameState_!=NULL){
+      //delete the obsolete gamestate
+      if(tempGameState_->id>gs->id)
+        return;
+      delete[] tempGameState_->data;
+      delete tempGameState_;
+    }
+    tempGameState_=gs;
+  }
+  int GameStateClient::processGameState(){
+    if(tempGameState_==NULL)
+      return 0;
+    int id=tempGameState_->id;
+    bool b = saveShipCache();
+    if(pushGameState(tempGameState_)){
+      if(b)
+        loadShipCache();
+      return id;
+    }
+    else
+      return GAMESTATEID_INITIAL;
+  }
+
 
   /**
   * This function removes a Synchronisable out of the universe
@@ -150,8 +177,8 @@ namespace network
           ///sigsegv is receved after the COUT(4) above
           orxonox::Identifier* id = ID((unsigned int)sync.classID);
           if(!id){
-            COUT(4) << "We could not identify a new object; classid: " << sync.classID << std::endl;
-            return false;
+            COUT(3) << "We could not identify a new object; classid: " << sync.classID << " uint: " << (unsigned int)sync.classID << " objectID: " << sync.objectID << " size: " << sync.length << std::endl;
+            return false; // most probably the gamestate is corrupted
           }
           Synchronisable *no = dynamic_cast<Synchronisable *>(id->fabricate());
           COUT(4) << "loadsnapshot: classid: " << sync.classID << " objectID: " << sync.objectID << " length: " << sync.length << std::endl;
@@ -167,14 +194,18 @@ namespace network
             return false;
           }
           if( !no->create() )
+          {
             COUT(1) << "We couldn't manifest (create() ) the object: " << sync.objectID << std::endl;
+          }
           it=orxonox::ObjectList<Synchronisable>::end();
         }
       } else {
         // we have our object
         if(! it->updateData(sync))
+        {
           COUT(1) << "We couldn't update objectID: " \
           << sync.objectID << "; classID: " << sync.classID << std::endl;
+        }
       }
       ++it;
     }
@@ -212,6 +243,8 @@ namespace network
       COUT(4) << "getpartialsnapshot: size: " << size << std::endl;
     }
     //retval->data = (unsigned char*)malloc(size);
+    if(size==0)
+      return NULL;
     retval->data = new unsigned char[size];
     if(!retval->data){
       COUT(2) << "GameStateClient: could not allocate memory" << std::endl;
@@ -244,19 +277,21 @@ namespace network
     COUT(5) << "G.ST.Cl: 'estimated' Gamestate size: " << size << std::endl;
     return retval;
   }
-  
-  
+
+
   GameState *GameStateClient::undiff(GameState *old, GameState *diff) {
     if(!old || !diff)
       return NULL;
     unsigned char *ap = old->data, *bp = diff->data;
     int of=0; // pointers offset
     int dest_length=0;
-    if(old->size>=diff->size)
+    /*if(old->size>=diff->size)
       dest_length=old->size;
-    else
+    else*/
       dest_length=diff->size;
 //     unsigned char *dp = (unsigned char *)malloc(dest_length*sizeof(unsigned char));
+    if(dest_length==0)
+      return NULL;
     unsigned char *dp = new unsigned char[dest_length*sizeof(unsigned char)];
     while(of<old->size && of<diff->size){
       *(dp+of)=*(ap+of)^*(bp+of); // do the xor
@@ -269,12 +304,12 @@ namespace network
           *(dp+of)=n^*(bp+of);
           of++;
         }
-      } else{
+      } /*else{
         while(of<dest_length){
           *(dp+of)=*(ap+of)^n;
           of++;
         }
-      }
+      }*/
     }
     // should be finished now
     // FIXME: is it true or false now? (struct has changed, producing warnings)
@@ -296,13 +331,15 @@ namespace network
     int size = a->size;
 
     uLongf buffer = (uLongf)((a->size + 12)*1.01)+1;
+    if(buffer==0)
+      return NULL;
     unsigned char *dest = new unsigned char[buffer];
     int retval;
     retval = compress( dest, &buffer, a->data, (uLong)size );
 
     switch ( retval ) {
       case Z_OK: COUT(5) << "G.St.Cl: compress: successfully compressed" << std::endl; break;
-      case Z_MEM_ERROR: COUT(1) << "G.St.Cl: compress: not enough memory available in gamestate.compress" << std::endl; 
+      case Z_MEM_ERROR: COUT(1) << "G.St.Cl: compress: not enough memory available in gamestate.compress" << std::endl;
       return NULL;
       case Z_BUF_ERROR: COUT(2) << "G.St.Cl: compress: not enough memory available in the buffer in gamestate.compress" << std::endl;
       return NULL;
@@ -320,8 +357,8 @@ namespace network
     compressedGamestate->base_id = a->base_id;
     return compressedGamestate;
   }
-  
-  
+
+
   GameState *GameStateClient::decompress(GameStateCompressed *a) {
     //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
     int normsize = a->normsize;
@@ -332,6 +369,8 @@ namespace network
     else
       bufsize = normsize;
 //     unsigned char* dest = (unsigned char*)malloc( bufsize );
+    if(bufsize==0)
+      return NULL;
     unsigned char *dest = new unsigned char[bufsize];
     int retval;
     uLongf length=normsize;
@@ -375,7 +414,7 @@ namespace network
     delete x;
     return t;
   }
-  
+
   void GameStateClient::cleanup(){
     std::map<int, GameState*>::iterator temp, it = gameStateMap.begin();
     while(it!=gameStateMap.end()){
@@ -387,6 +426,7 @@ namespace network
       temp=it++;
       gameStateMap.erase(temp);
     }
+    tempGameState_=NULL;
   }
 
   void GameStateClient::printGameStateMap(){
@@ -396,20 +436,45 @@ namespace network
       COUT(4) << it->first << ":" << it->second << "|";
     }
     COUT(4) << std::endl;
-    
+
   }
-  
-  
+
+  bool GameStateClient::saveShipCache(){
+    if(myShip_==NULL)
+      myShip_ = orxonox::SpaceShip::getLocalShip();
+    if(myShip_){
+      //      unsigned char *data = new unsigned char[myShip_->getSize()];
+      int size=myShip_->getSize(0x3);
+      if(size==0)
+        return false;
+      unsigned char *data = new unsigned char [size];
+      shipCache_ = myShip_->getData(data, 0x1);
+      return true;
+    }else
+      return false;
+  }
+
+  bool GameStateClient::loadShipCache(){
+    if(myShip_){
+      myShip_->updateData(shipCache_, 0x2);
+      if(shipCache_.data){
+        delete[] shipCache_.data;
+      }
+      return true;
+    }else
+      return false;
+  }
+
     //##### ADDED FOR TESTING PURPOSE #####
   GameState* GameStateClient::testDecompress( GameStateCompressed* gc ) {
     return decompress( gc );
   }
-  
+
   GameState* GameStateClient::testUndiff( GameState* g_old, GameState* g_diffed ) {
     return undiff( g_old, g_diffed );
   }
   //##### ADDED FOR TESTING PURPOSE #####
-  
-  
+
+
 }
 

@@ -32,11 +32,14 @@
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
 #include "Debug.h"
+#include "TclThreadManager.h"
 #include "TclBind.h"
+#include "util/String.h"
 
 namespace orxonox
 {
-    ConsoleCommandShortcutGeneric(tcl, createExecutor(createFunctor(&TclBind::tcl), "tcl", AccessLevel::None));
+    SetConsoleCommandShortcutGeneric(tcl, createConsoleCommand(createFunctor(&TclBind::tcl), "tcl"));
+    SetConsoleCommandShortcutGeneric(bgerror, createConsoleCommand(createFunctor(&TclBind::bgerror), "bgerror"));
 
     TclBind::TclBind()
     {
@@ -58,7 +61,7 @@ namespace orxonox
 
     void TclBind::setDataPath(const std::string& datapath)
     {
-        this->tclLibPath_ = datapath + "/tcl";
+        this->tclLibPath_ = datapath + "/tcl" + TCL_VERSION + "/";
         this->bSetTclLibPath_ = true;
 
         this->createTclInterpreter();
@@ -69,11 +72,22 @@ namespace orxonox
         if (this->bSetTclLibPath_ && !this->interpreter_)
         {
             this->interpreter_ = new Tcl::interpreter(this->tclLibPath_);
-            this->interpreter_->def("puts", TclBind::puts, Tcl::variadic());
-            this->interpreter_->def("orxonox", TclBind::orxonox, Tcl::variadic());
-            this->interpreter_->def("execute", TclBind::execute, Tcl::variadic());
-            this->interpreter_->eval("proc unknown {args} { return [orxonox $args] }");
-            this->interpreter_->eval("rename exit tclexit; proc exit {} { orxonox exit }");
+            this->interpreter_->def("orxonox::query", TclBind::tcl_query, Tcl::variadic());
+            this->interpreter_->def("orxonox::crossquery", TclThreadManager::tcl_crossquery, Tcl::variadic());
+            this->interpreter_->def("execute", TclBind::tcl_execute, Tcl::variadic());
+
+            try
+            {
+                this->interpreter_->eval("proc query args { orxonox::query $args }");
+                this->interpreter_->eval("proc crossquery {id args} { orxonox::crossquery 0 $id $args }");
+                this->interpreter_->eval("set id 0");
+                this->interpreter_->eval("rename exit tcl::exit; proc exit {} { execute exit }");
+                this->interpreter_->eval("redef_puts");
+            }
+            catch (Tcl::tcl_error const &e)
+            {   COUT(1) << "Tcl error while creating Tcl-interpreter: " << e.what() << std::endl;   }
+            catch (std::exception const &e)
+            {   COUT(1) << "Error while creating Tcl-interpreter: " << e.what() << std::endl;   }
         }
     }
 
@@ -88,21 +102,16 @@ namespace orxonox
         this->createTclInterpreter();
     }
 
-    void TclBind::puts(Tcl::object const &args)
+    std::string TclBind::tcl_query(Tcl::object const &args)
     {
-        COUT(0) << args.get() << std::endl;
-    }
+        COUT(4) << "Tcl_query: " << args.get() << std::endl;
 
-    std::string TclBind::orxonox(Tcl::object const &args)
-    {
-std::cout << "Tcl_execute: args: " << args.get() << std::endl;
-        std::string command = args.get();
-
-        if (command.size() >= 2 && command[0] == '{' && command[command.size() - 1] == '}')
-            command = command.substr(1, command.size() - 2);
+        std::string command = stripEnclosingBraces(args.get());
 
         if (!CommandExecutor::execute(command, false))
+        {
             COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
+        }
 
         if (CommandExecutor::getLastEvaluation().hasReturnvalue())
             return CommandExecutor::getLastEvaluation().getReturnvalue().toString();
@@ -110,29 +119,42 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
         return "";
     }
 
-    void TclBind::execute(Tcl::object const &args)
+    void TclBind::tcl_execute(Tcl::object const &args)
     {
+        COUT(4) << "Tcl_execute: " << args.get() << std::endl;
+        std::string command = stripEnclosingBraces(args.get());
+
+        if (!CommandExecutor::execute(command, false))
+        {
+            COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
+        }
     }
 
     std::string TclBind::tcl(const std::string& tclcode)
     {
-        try
+        if (TclBind::getInstance().interpreter_)
         {
-            std::string output = TclBind::getInstance().interpreter_->eval(tclcode);
-            if (output != "")
-                COUT(0) << "tcl> " << output << std::endl;
-            return output;
-        }
-        catch (Tcl::tcl_error const &e)
-        {
-            COUT(1) << "tcl> Error: " << e.what() << std::endl;
-        }
-        catch (std::exception const &e)
-        {
-            COUT(1) << "Error while executing tcl: " << e.what() << std::endl;
+            try
+            {
+                std::string output = TclBind::getInstance().interpreter_->eval(tclcode);
+                if (output != "")
+                {
+                    COUT(0) << "tcl> " << output << std::endl;
+                }
+                return output;
+            }
+            catch (Tcl::tcl_error const &e)
+            {   COUT(1) << "tcl> Error: " << e.what() << std::endl;   }
+            catch (std::exception const &e)
+            {   COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;   }
         }
 
         return "";
+    }
+
+    void TclBind::bgerror(std::string error)
+    {
+        COUT(1) << "Tcl background error: " << stripEnclosingBraces(error) << std::endl;
     }
 
     bool TclBind::eval(const std::string& tclcode)
@@ -143,13 +165,9 @@ std::cout << "Tcl_execute: args: " << args.get() << std::endl;
             return true;
         }
         catch (Tcl::tcl_error const &e)
-        {
-            COUT(1) << "Error: " << e.what() << std::endl;
-        }
+        {   COUT(1) << "Tcl error: " << e.what() << std::endl;   }
         catch (std::exception const &e)
-        {
-            COUT(1) << "Error while executing tcl: " << e.what() << std::endl;
-        }
+        {   COUT(1) << "Error while executing Tcl: " << e.what() << std::endl;   }
 
         return false;
     }

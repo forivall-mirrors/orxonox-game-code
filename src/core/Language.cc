@@ -37,6 +37,8 @@
 
 #include "CoreSettings.h"
 
+#include "Debug.h"
+
 namespace orxonox
 {
     // ###############################

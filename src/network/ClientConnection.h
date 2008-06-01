@@ -53,8 +53,7 @@ namespace network
 
 #define NETWORK_PORT 55556
 #define NETWORK_CLIENT_MAX_CONNECTIONS 5
-#define NETWORK_CLIENT_TIMEOUT 100
-#define NETWORK_SEND_WAIT 5
+#define NETWORK_CLIENT_TIMEOUT 1
 #define NETWORK_CLIENT_CHANNELS 2
 
 
@@ -62,8 +61,9 @@ namespace network
   public:
     ClientConnection(int port, std::string address);
     ClientConnection(int port, const char* address);
-    ENetPacket *getPacket(ENetAddress &address); // thread1
-    ENetPacket *getPacket(); // thread1
+    //ENetPacket *getPacket(ENetAddress &address); // thread1
+    //ENetPacket *getPacket(); // thread1
+    ENetEvent *getEvent();
     // check wheter the packet queue is empty
     bool queueEmpty();
     // create a new listener thread
@@ -74,7 +74,7 @@ namespace network
     // send out all queued packets
     bool sendPackets();
     // send out all queued packets and save result in event
-    bool sendPackets(ENetEvent *event);
+    //bool sendPackets(ENetEvent *event);
     bool waitEstablished(int milisec);
     bool isConnected(){return established;}
   private:
@@ -94,6 +94,8 @@ namespace network
     // clientlist
     ENetPeer *server;
     boost::thread *receiverThread_;
+    
+    static boost::recursive_mutex enet_mutex_;
   };
 
 

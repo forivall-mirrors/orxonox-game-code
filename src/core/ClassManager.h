@@ -48,6 +48,7 @@
 
 #include "Identifier.h"
 #include "IdentifierDistributor.h"
+#include "Debug.h"
 
 namespace orxonox
 {

@@ -53,6 +53,7 @@ namespace orxonox
             void setConfigValues();
 
             static int getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
+            static void setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
             static const std::string& getLanguage();
             static void resetLanguage();
 

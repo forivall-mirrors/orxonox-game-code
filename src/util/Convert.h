@@ -383,6 +383,8 @@ struct ConverterSpecialized<MultiTypeMath, ToType, _FromType_>
             return ConvertValue(output, input.getVector2());
         else if (input.getType() == MT_vector3)
             return ConvertValue(output, input.getVector3());
+        else if (input.getType() == MT_vector4)
+            return ConvertValue(output, input.getVector4());
         else if (input.getType() == MT_quaternion)
             return ConvertValue(output, input.getQuaternion());
         else if (input.getType() == MT_colourvalue)

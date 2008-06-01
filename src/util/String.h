@@ -46,6 +46,7 @@ _UtilExport bool         hasStringBetweenQuotes(const std::string& str);
 _UtilExport std::string  getStringBetweenQuotes(const std::string& str);
 
 _UtilExport std::string  stripEnclosingQuotes(const std::string& str);
+_UtilExport std::string  stripEnclosingBraces(const std::string& str);
 
 _UtilExport bool         isEmpty(const std::string& str);
 _UtilExport bool         isComment(const std::string& str);

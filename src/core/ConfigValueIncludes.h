@@ -56,6 +56,21 @@
     container##varname->getValue(&varname)
 
 /**
+    @brief Assigns the value, defined in the config-file, to the variable (or the default-value, if there is no entry in the file).
+    @param classname name in which the config value should be stored
+    @param varname The name of the variable
+    @param defvalue The default-value of the variable
+*/
+#define SetConfigValueGeneric(classname, varname, defvalue) \
+    orxonox::ConfigValueContainer* container##varname = ClassManager<classname>::getIdentifier()->getConfigValueContainer(#varname); \
+    if (!container##varname) \
+    { \
+        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, ClassManager<classname>::getIdentifier(), #varname, varname = defvalue); \
+        ClassManager<classname>::getIdentifier()->addConfigValueContainer(#varname, container##varname); \
+    } \
+    container##varname->getValue(&varname)
+
+/**
     @brief Assigns the vector-values, defined in the config-file, to the vector (or the default-value, if there are no entries in the file).
     @param varname The name of the std::vector
     @param defvalue The default-value
@@ -68,6 +83,7 @@
         for (unsigned int i = 0; i < defvalue.size(); i++) \
             temp.push_back(MultiTypeMath(defvalue[i])); \
         container##varname = new orxonox::ConfigValueContainer(CFT_Settings, this->getIdentifier(), #varname, temp); \
+        container##varname->setVectorType(varname); \
         this->getIdentifier()->addConfigValueContainer(#varname, container##varname); \
     } \
     container##varname->getValue(&varname)
@@ -104,18 +120,5 @@
     { \
         COUT(2) << "Warning: Couln't modify config-value '" << #varname << "', corresponding container doesn't exist." << std::endl; \
     }
-
-/**
-    @brief Assigns the command, defined in the keybind-file, to the key-variable (or an empty string, if there is no entry in the file).
-    @param varname The name of the key-variable
-*/
-#define SetKeybind(keyname) \
-    orxonox::ConfigValueContainer* container##keyname = this->getIdentifier()->getConfigValueContainer(#keyname); \
-    if (!container##keyname) \
-    { \
-        container##keyname = new orxonox::ConfigValueContainer(CFT_Keybindings, this->getIdentifier(), #keyname, keyname = ""); \
-        this->getIdentifier()->addConfigValueContainer(#keyname, container##keyname); \
-    } \
-    container##keyname->getValue(&varname)
 
 #endif /* _ConfigValueIncludes_H__ */

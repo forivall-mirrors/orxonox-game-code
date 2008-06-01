@@ -68,6 +68,7 @@ namespace orxonox
 {
     class StaticTimer;
     void delay(float delay, const std::string& command);
+    void killdelays();
     void executeDelayedCommand(StaticTimer* timer, const std::string& command);
 
     //! TimerBase is the parent of the Timer class.

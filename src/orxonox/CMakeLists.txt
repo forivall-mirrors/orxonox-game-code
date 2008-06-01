@@ -8,6 +8,7 @@ SET( ORXONOX_SRC_FILES
   hud/BarOverlayElement.cc
   hud/RadarOverlayElement.cc
   hud/RadarObject.cc
+  hud/Navigation.cc
   particle/ParticleInterface.cc
   tolua/tolua_bind.cc
 
@@ -23,8 +24,10 @@ SET( ORXONOX_SRC_FILES
   objects/Model.cc
   objects/NPC.cc
   objects/Projectile.cc
+  objects/RotatingProjectile.cc
   objects/Skybox.cc
   objects/SpaceShip.cc
+  objects/SpaceShipAI.cc
   objects/WorldEntity.cc
 
 #  objects/weapon/AmmunitionDump.cc

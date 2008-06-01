@@ -62,6 +62,7 @@
 #include "ObjectList.h"
 #include "Debug.h"
 #include "Iterator.h"
+#include "MetaObjectList.h"
 #include "util/String.h"
 
 namespace orxonox
@@ -174,18 +175,18 @@ namespace orxonox
 
 
             /** @brief Returns the map that stores all console commands. @return The const_iterator */
-            inline const std::map<std::string, ExecutorStatic*>& getConsoleCommandMap() const { return this->consoleCommands_; }
+            inline const std::map<std::string, ConsoleCommand*>& getConsoleCommandMap() const { return this->consoleCommands_; }
             /** @brief Returns a const_iterator to the beginning of the map that stores all console commands. @return The const_iterator */
-            inline std::map<std::string, ExecutorStatic*>::const_iterator getConsoleCommandMapBegin() const { return this->consoleCommands_.begin(); }
+            inline std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandMapBegin() const { return this->consoleCommands_.begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all console commands. @return The const_iterator */
-            inline std::map<std::string, ExecutorStatic*>::const_iterator getConsoleCommandMapEnd() const { return this->consoleCommands_.end(); }
+            inline std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandMapEnd() const { return this->consoleCommands_.end(); }
 
             /** @brief Returns the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            inline const std::map<std::string, ExecutorStatic*>& getLowercaseConsoleCommandMap() const { return this->consoleCommands_LC_; }
+            inline const std::map<std::string, ConsoleCommand*>& getLowercaseConsoleCommandMap() const { return this->consoleCommands_LC_; }
             /** @brief Returns a const_iterator to the beginning of the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            inline std::map<std::string, ExecutorStatic*>::const_iterator getLowercaseConsoleCommandMapBegin() const { return this->consoleCommands_LC_.begin(); }
+            inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapBegin() const { return this->consoleCommands_LC_.begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            inline std::map<std::string, ExecutorStatic*>::const_iterator getLowercaseConsoleCommandMapEnd() const { return this->consoleCommands_LC_.end(); }
+            inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapEnd() const { return this->consoleCommands_LC_.end(); }
 
 
             /** @brief Returns true if this class has at least one config value. @return True if this class has at least one config value */
@@ -212,9 +213,9 @@ namespace orxonox
             virtual void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container) = 0;
             virtual XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname) = 0;
 
-            ExecutorStatic& addConsoleCommand(ExecutorStatic* executor, bool bCreateShortcut);
-            ExecutorStatic* getConsoleCommand(const std::string& name) const;
-            ExecutorStatic* getLowercaseConsoleCommand(const std::string& name) const;
+            ConsoleCommand& addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut);
+            ConsoleCommand* getConsoleCommand(const std::string& name) const;
+            ConsoleCommand* getLowercaseConsoleCommand(const std::string& name) const;
 
         protected:
             /** @brief Returns the map that stores all Identifiers. @return The map */
@@ -269,8 +270,8 @@ namespace orxonox
             std::map<std::string, ConfigValueContainer*> configValues_LC_; //!< A map to link the string of configurable variables with their ConfigValueContainer
 
             bool bHasConsoleCommands_;                                     //!< True if this class has at least one assigned console command
-            std::map<std::string, ExecutorStatic*> consoleCommands_;       //!< All console commands of this class
-            std::map<std::string, ExecutorStatic*> consoleCommands_LC_;    //!< All console commands of this class with their names in lowercase
+            std::map<std::string, ConsoleCommand*> consoleCommands_;       //!< All console commands of this class
+            std::map<std::string, ConsoleCommand*> consoleCommands_LC_;    //!< All console commands of this class with their names in lowercase
     };
 
     _CoreExport std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list);

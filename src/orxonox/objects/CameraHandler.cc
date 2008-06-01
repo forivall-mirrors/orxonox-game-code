@@ -25,12 +25,13 @@
  *      ...
  *
  */
+#include "OrxonoxStableHeaders.h"
+#include "CameraHandler.h"
+
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 
-#include "OrxonoxStableHeaders.h"
 #include "core/ObjectList.h"
-#include "CameraHandler.h"
 #include "Camera.h"
 #include "GraphicsEngine.h"
 

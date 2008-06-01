@@ -48,6 +48,8 @@
 #define GAMESTATEID_INITIAL -1
 #define CLIENTID_UNKNOWN -2
 
+// WATCH OUT: THE CLIENTINFORMATION LIST IS NOT THREADSAFE ANYMORE
+
 namespace network
 {
   /**
@@ -68,7 +70,7 @@ namespace network
     // set functions
     void setID(int clientID);
     bool setPeer(ENetPeer *peer);
-    bool setGamestateID(int id);
+    bool setGameStateID(int id);
     bool setPartialGamestateID(int id);
     inline void setShipID(int id){ShipID_=id;}
     
@@ -113,7 +115,6 @@ namespace network
     bool synched_;
     bool head_;
     unsigned short failures_;
-    static boost::recursive_mutex mutex_;
     
   };
 

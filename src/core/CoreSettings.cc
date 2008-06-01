@@ -116,7 +116,9 @@ namespace orxonox
     }
 
     /**
-        @brief Static function that holds the singleton.
+        @brief Returns the softDebugLevel for the given device (returns a default-value if the class ist right about to be created).
+        @param device The device
+        @return The softDebugLevel
     */
     int CoreSettings::getSoftDebugLevel(OutputHandler::OutputDevice device)
     {
@@ -135,6 +137,26 @@ namespace orxonox
         // Return a constant value while we're creating the object
         return 2;
     }
+
+     /**
+        @brief Sets the softDebugLevel for the given device. Please use this only temporary and restore the value afterwards, as it overrides the configured value.
+        @param device The device
+        @param level The level
+    */
+     void CoreSettings::setSoftDebugLevel(OutputHandler::OutputDevice device, int level)
+     {
+        if (!CoreSettings::isCreatingCoreSettings())
+        {
+            if (device == OutputHandler::LD_All)
+                CoreSettings::getInstance().softDebugLevel_ = level;
+            else if (device == OutputHandler::LD_Console)
+                CoreSettings::getInstance().softDebugLevelConsole_ = level;
+            else if (device == OutputHandler::LD_Logfile)
+                CoreSettings::getInstance().softDebugLevelLogfile_ = level;
+            else if (device == OutputHandler::LD_Shell)
+                CoreSettings::getInstance().softDebugLevelShell_ = level;
+        }
+     }
 
     /**
         @brief Returns the configured language.

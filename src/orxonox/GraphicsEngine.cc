@@ -44,10 +44,15 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
 #include "core/CommandExecutor.h"
+#include "core/TclBind.h"
+#include "console/InGameConsole.h"
 
+#include "core/ConsoleCommand.h"
+#include <OgreSceneManager.h>
+#include <OgreCompositorManager.h>
+#include <OgreViewport.h>
 
 namespace orxonox {
-
   /**
     @brief Returns the singleton instance and creates it the first time.
     @return The only instance of GraphicsEngine.
@@ -82,6 +87,8 @@ namespace orxonox {
     SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
     SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
     SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
+
+    TclBind::getInstance().setDataPath(this->dataPath_);
   }
 
   /**
@@ -136,7 +143,9 @@ namespace orxonox {
     std::string plugin_filename = "plugins.cfg";
 #endif
 
-/*    // create a logManager
+// TODO: LogManager doesn't work on specific systems. The why is unknown yet.
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+    // create a logManager
     // note: If there's already a logManager, Ogre will complain by a failed assertation.
     // but that shouldn't happen, since this is the first time to create a logManager..
     Ogre::LogManager* logger = new Ogre::LogManager();
@@ -147,15 +156,26 @@ namespace orxonox {
     if (this->ogreLogfile_ == "")
       myLog = logger->createLog("ogre.log", true, false, true);
     else
-          myLog = logger->createLog(this->ogreLogfile_, true, false, false);
+      myLog = logger->createLog(this->ogreLogfile_, true, false, false);
     CCOUT(4) << "Ogre Log created" << std::endl;
 
     myLog->setLogDetail(Ogre::LL_BOREME);
-    myLog->addListener(this);*/
+    myLog->addListener(this);
+#endif
 
     // Root will detect that we've already created a Log
     CCOUT(4) << "Creating Ogre Root..." << std::endl;
-    root_ = new Ogre::Root(plugin_filename);
+
+    root_ = new Ogre::Root(plugin_filename, "ogre.cfg", this->ogreLogfile_);
+
+#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
+    // tame the ogre ouput so we don't get all the mess in the console
+    Ogre::Log* defaultLog = Ogre::LogManager::getSingleton().getDefaultLog();
+    defaultLog->setDebugOutputEnabled(false);
+    defaultLog->setLogDetail(Ogre::LL_BOREME);
+    defaultLog->addListener(this);
+#endif
+
     CCOUT(4) << "Creating Ogre Root done" << std::endl;
 
     // specify where Ogre has to look for resources. This call doesn't parse anything yet!
@@ -240,7 +260,7 @@ namespace orxonox {
    */
   bool GraphicsEngine::createNewScene()
   {
-    CCOUT(4) << "Creating new SceneManager" << std::endl;
+    CCOUT(4) << "Creating new SceneManager..." << std::endl;
     if (scene_)
     {
       CCOUT(2) << "SceneManager already exists! Skipping." << std::endl;
@@ -290,6 +310,18 @@ namespace orxonox {
       return this->renderWindow_->getHeight();
     else
       return 0;
+  }
+
+  /**
+    @brief Returns the window aspect ratio height/width.
+    @return The ratio
+  */
+  float GraphicsEngine::getWindowAspectRatio() const
+  {
+    if (this->renderWindow_)
+        return (float)this->renderWindow_->getHeight() / (float)this->renderWindow_->getWidth();
+    else
+        return 1.0f;
   }
 
   /**
@@ -344,6 +376,7 @@ namespace orxonox {
     int w = rw->getWidth();
     int h = rw->getHeight();
     InputManager::setWindowExtents(w, h);
+    InGameConsole::getInstance().resize();
   }
 
   /**
@@ -364,4 +397,37 @@ namespace orxonox {
     // using CommandExecutor in order to avoid depending on Orxonox class.
     CommandExecutor::execute("exit", false);
   }
+
+  //HACK!!
+  /*SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOn).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorMotionBlurOn).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOff).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorMotionBlurOff).setAccessLevel(AccessLevel::User);
+  void GraphicsEngine::CompositorBloomOn()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "Bloom");
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "Bloom", true);
+  }
+  void GraphicsEngine::CompositorBloomOff()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "Bloom", false);
+  }
+
+  void GraphicsEngine::CompositorMotionBlurOn()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "MotionBlur");
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "MotionBlur", true);
+  }
+  void GraphicsEngine::CompositorMotionBlurOff()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "MotionBlur", false);
+  }*/
 }

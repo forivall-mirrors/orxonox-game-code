@@ -33,14 +33,10 @@
 
 namespace orxonox
 {
-    Executor::Executor(Functor* functor, const std::string& name, AccessLevel::Level level)
+    Executor::Executor(Functor* functor, const std::string& name)
     {
         this->functor_ = functor;
         this->name_ = name;
-        this->accessLevel_ = level;
-        this->keybindMode_ = KeybindMode::OnPress;
-        this->axisParamIndex_ = -1;
-        this->bAxisRelative_ = false;
 
         this->bAddedDescription_ = false;
         this->bAddedDescriptionReturnvalue_ = false;

@@ -952,6 +952,10 @@ void interpreter::clear_definitions(Tcl_Interp *interp)
      // delete all callbacks that were registered for given interpreter
 
      {
+          // TODO: why could this probably be necessary? map::find of empty map
+          // shouldn't be a problem.
+          if (callbacks.size() == 0)
+            return;
           callback_map::iterator it = callbacks.find(interp);
           if (it == callbacks.end())
           {

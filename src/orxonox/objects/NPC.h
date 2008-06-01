@@ -52,7 +52,7 @@ namespace orxonox {
       void update();
       void setValues(Vector3 location, Vector3 speed, Vector3 acceleration, bool movable);
       void registerAllVariables();
-      bool create();
+      virtual bool create(){return Model::create();}
 
     private:
       float getDistance(WorldEntity* temp);

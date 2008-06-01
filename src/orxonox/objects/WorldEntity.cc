@@ -84,6 +84,7 @@ namespace orxonox
 
             this->rotationRate_ += (dt * this->momentum_);
             this->rotate(this->rotationAxis_, dt * this->rotationRate_);
+            //COUT(3) << "rotationrate: " << this->rotationRate_.valueDegrees() << " momentum: " << this->momentum_.valueDegrees() << std::endl;
         }
     }
 
@@ -152,10 +153,10 @@ namespace orxonox
       //register staticity
       registerVar( (void*) &(this->bStatic_), sizeof(this->bStatic_), network::DATA, 0x3);
       //register acceleration & momentum
-      registerVar( (void*) &(this->getAcceleration().x), sizeof(this->getAcceleration().x), network::DATA, 0x3);
-      registerVar( (void*) &(this->getAcceleration().y), sizeof(this->getAcceleration().y), network::DATA, 0x3);
-      registerVar( (void*) &(this->getAcceleration().z), sizeof(this->getAcceleration().z), network::DATA, 0x3);
-      registerVar( (void*) &(this->getMomentum()), sizeof(this->getMomentum()), network::DATA);
+//       registerVar( (void*) &(this->getAcceleration().x), sizeof(this->getAcceleration().x), network::DATA, 0x2);
+//       registerVar( (void*) &(this->getAcceleration().y), sizeof(this->getAcceleration().y), network::DATA, 0x2);
+//       registerVar( (void*) &(this->getAcceleration().z), sizeof(this->getAcceleration().z), network::DATA, 0x2);
+//       registerVar( (void*) &(this->getMomentum()), sizeof(this->getMomentum()), network::DATA, 0x2); // only backsync
     }
 
     void WorldEntity::attachWorldEntity(WorldEntity* entity)

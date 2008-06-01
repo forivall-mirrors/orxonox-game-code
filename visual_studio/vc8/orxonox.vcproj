@@ -187,7 +187,23 @@
 				Name="hud"
 				>
 				<File
+					RelativePath="..\..\src\orxonox\hud\BarOverlayElement.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\hud\HUD.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\Navigation.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\RadarObject.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\RadarOverlayElement.cc"
 					>
 				</File>
 			</Filter>
@@ -223,11 +239,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\RotatingProjectile.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Skybox.cc"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\SpaceShip.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\SpaceShipAI.cc"
 					>
 				</File>
 				<File
@@ -434,10 +458,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\OrxonoxPlatform.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\orxonox\OrxonoxPrereqs.h"
 				>
 			</File>
@@ -449,7 +469,27 @@
 				Name="hud"
 				>
 				<File
+					RelativePath="..\..\src\orxonox\hud\BarOverlayElement.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\hud\HUD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\Navigation.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\OverlayElementFactories.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\RadarObject.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\RadarOverlayElement.h"
 					>
 				</File>
 			</Filter>
@@ -485,11 +525,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\RotatingProjectile.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Skybox.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\SpaceShip.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\SpaceShipAI.h"
 					>
 				</File>
 				<File

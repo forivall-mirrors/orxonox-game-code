@@ -47,6 +47,7 @@
 // enet library for networking support
 #include <enet/enet.h>
 #include <boost/thread/thread.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 
 #include "PacketBuffer.h"
 #include "PacketManager.h"
@@ -60,8 +61,7 @@ namespace network
 {
 #define NETWORK_PORT 55556
 #define NETWORK_MAX_CONNECTIONS 50
-#define NETWORK_WAIT_TIMEOUT 5000
-#define NETWORK_SEND_WAIT 5
+#define NETWORK_WAIT_TIMEOUT 1
 
   struct ClientList{
     ENetEvent *event;
@@ -73,35 +73,37 @@ namespace network
   public:
     ConnectionManager();
     ConnectionManager(ClientInformation *head);
+    ConnectionManager(ClientInformation *head, int port);
     ConnectionManager(int port, const char *address, ClientInformation *head);
     ConnectionManager(int port, std::string address, ClientInformation *head);
-    ENetPacket *getPacket(ENetAddress &address); // thread1
-    ENetPacket *getPacket(int &clientID);
+    //ENetPacket *getPacket(ENetAddress &address); // thread1
+    //ENetPacket *getPacket(int &clientID);
+    ENetEvent *getEvent();
     bool queueEmpty();
     void createListener();
     bool quitListener();
     bool addPacket(ENetPacket *packet, ENetPeer *peer);
     bool addPacket(ENetPacket *packet, int ID);
     bool addPacketAll(ENetPacket *packet);
-    bool sendPackets(ENetEvent *event);
+  //  bool sendPackets(ENetEvent *event);
     bool sendPackets();
-    bool createClient(int clientID);
+    //bool createClient(int clientID);
     void disconnectClient(ClientInformation *client);
+    void syncClassid(int clientID);
+    bool sendWelcome(int clientID, int shipID, bool allowed);
 
   private:
-    bool clientDisconnect(ENetPeer *peer);
-    bool removeClient(int clientID);
+//     bool clientDisconnect(ENetPeer *peer);
+//     bool removeClient(int clientID);
     bool processData(ENetEvent *event);
-    bool addClient(ENetEvent *event);
+    //bool addClient(ENetEvent *event);
     void receiverThread();
     void disconnectClients();
     int getClientID(ENetPeer peer);
     int getClientID(ENetAddress address);
-    void syncClassid(int clientID);
     ENetPeer *getClientPeer(int clientID);
-    bool createShip(ClientInformation *client);
+    //bool createShip(ClientInformation *client);
     bool removeShip(ClientInformation *client);
-    bool sendWelcome(int clientID, int shipID, bool allowed);
     bool addFakeConnectRequest(ENetEvent *ev);
     PacketBuffer buffer;
     PacketGenerator packet_gen;
@@ -113,6 +115,7 @@ namespace network
     ClientInformation *head_;
 
     boost::thread *receiverThread_;
+    static boost::recursive_mutex enet_mutex_;
 //     int getNumberOfClients();
     //functions to map what object every clients uses
     /*std::map<int, int> clientsShip;

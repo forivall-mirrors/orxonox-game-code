@@ -34,7 +34,7 @@
 #ifndef _OrxonoxStableHeaders_H__
 #define _OrxonoxStableHeaders_H__
 
-#include "OrxonoxPlatform.h"
+#include "util/OrxonoxPlatform.h"
 
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
 
@@ -108,7 +108,6 @@
 
 #include "network/Synchronisable.h"
 
-#include "OrxonoxPlatform.h"
 #include "OrxonoxPrereqs.h"
 #include "tools/Timer.h"
 #include "objects/Model.h"

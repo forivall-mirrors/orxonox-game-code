@@ -49,7 +49,6 @@
 #include "CorePrereqs.h"
 
 #include "ObjectList.h"
-#include "Debug.h"
 
 namespace orxonox
 {

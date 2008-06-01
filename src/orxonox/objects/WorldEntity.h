@@ -52,7 +52,7 @@ namespace orxonox
             virtual void tick(float dt);
             virtual void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            inline bool create(){ return true; }
+            virtual inline bool create(){ return Synchronisable::create(); }
 
             void attachWorldEntity(WorldEntity* entity);
             const WorldEntity* getAttachedWorldEntity(unsigned int index) const;
