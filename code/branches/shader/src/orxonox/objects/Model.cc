@@ -83,6 +83,27 @@ namespace orxonox
         this->mesh_.setMesh(meshSrc_);
         this->attachObject(this->mesh_.getEntity());
 
+        //HACK!!
+        if ((this->meshSrc_ == "assff.mesh") || (this->meshSrc_ == "ast1.mesh") || (this->meshSrc_ == "ast2.mesh") || (this->meshSrc_ == "ast3.mesh") || (this->meshSrc_ == "ast4.mesh") ||(this->meshSrc_ == "ast5.mesh") || (this->meshSrc_ == "ast6.mesh"))
+        {
+          Ogre::MeshPtr pMesh = this->mesh_.getEntity()->getMesh();
+          //set Mesh to tangentspace 
+          unsigned short src, dest;
+          if (!pMesh->suggestTangentVectorBuildParams(Ogre::VES_TANGENT, src, dest))
+          {
+            pMesh->buildTangentVectors(Ogre::VES_TANGENT, src, dest);
+          }
+          if ((this->meshSrc_ == "assff.mesh"))
+          {
+            (this->mesh_.getEntity())->setMaterialName("Assff/BumpMap");
+          }
+          else
+          {
+            (this->mesh_.getEntity())->setMaterialName("Asteroid/BumpMap");
+          }
+
+
+        }
         COUT(4) << "Loader (Model.cc): Created model" << std::endl;
       }
       return true;

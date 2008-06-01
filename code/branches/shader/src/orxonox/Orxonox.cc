@@ -353,6 +353,16 @@ namespace orxonox
     Level* startlevel = new Level("levels/sample.oxw");
     Loader::open(startlevel);
     
+    // HACK: shader stuff for presentation
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    mSceneMgr->setAmbientLight(ColourValue(0.4,0.4,0.4));
+    Ogre::Light* dirlight = mSceneMgr->createLight("Light1");
+
+    dirlight->setType(Ogre::Light::LT_DIRECTIONAL);
+    dirlight->setDirection(Vector3( 0, 1, 5 ));
+    dirlight->setDiffuseColour(ColourValue(0.6, 0.6, 0.4));
+    dirlight->setSpecularColour(ColourValue(1.0, 1.0, 1.0));
+    
     return true;
   }
 

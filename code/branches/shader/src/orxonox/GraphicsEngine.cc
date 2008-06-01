@@ -398,4 +398,36 @@ namespace orxonox {
     CommandExecutor::execute("exit", false);
   }
 
+  //HACK!!
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOn).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorMotionBlurOn).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorBloomOff).setAccessLevel(AccessLevel::User);
+  SetConsoleCommandShortcut(GraphicsEngine, CompositorMotionBlurOff).setAccessLevel(AccessLevel::User);
+  void GraphicsEngine::CompositorBloomOn()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "Bloom");
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "Bloom", true);
+  }
+  void GraphicsEngine::CompositorBloomOff()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "Bloom", false);
+  }
+
+  void GraphicsEngine::CompositorMotionBlurOn()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "MotionBlur");
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "MotionBlur", true);
+  }
+  void GraphicsEngine::CompositorMotionBlurOff()
+  {
+    Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    Ogre::CompositorManager::getSingleton().setCompositorEnabled(mViewport, "MotionBlur", false);
+  }
 }
