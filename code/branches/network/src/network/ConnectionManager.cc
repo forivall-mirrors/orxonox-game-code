@@ -151,11 +151,15 @@ used by processQueue in Server.cc
 
   bool ConnectionManager::addPacket(ENetPacket *packet, int clientID) {
     ClientInformation *temp = head_->findClient(clientID);
-    if(!temp)
+    if(!temp){
+      COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
       return false;
+    }
     boost::recursive_mutex::scoped_lock lock(enet_mutex_);
-    if(enet_peer_send(temp->getPeer(), (enet_uint8)clientID, packet)!=0)
+    if(enet_peer_send(temp->getPeer(), 0, packet)!=0){
+      COUT(3) << "C.Man: addPacket enet_peer_send failed" << std::endl;
       return false;
+    }
     return true;
   }
 
