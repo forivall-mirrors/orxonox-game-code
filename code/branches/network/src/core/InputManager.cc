@@ -138,9 +138,6 @@ namespace orxonox
       // Set mouse/joystick region
       if (mouse_)
       {
-        //// hack the mouse position
-        //((OIS::MouseState&)mouse_->getMouseState()).X.abs = windowWidth/2;
-        //((OIS::MouseState&)mouse_->getMouseState()).Y.abs = windowHeight/2;
         setWindowExtents(windowWidth, windowHeight);
       }
 

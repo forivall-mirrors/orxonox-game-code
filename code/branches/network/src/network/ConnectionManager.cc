@@ -353,7 +353,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
     COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
     syncClassid(temp->getID());
     COUT(4) << "creating spaceship for clientid: " << temp->getID() << std::endl;
-    // TODO: this is only a hack, untill we have a possibility to define default player-join actions
+    // TODO: this is only a hack, until we have a possibility to define default player-join actions
     if(!createShip(temp))
       COUT(2) << "Con.Man. could not create ship for clientid: " << clientID << std::endl;
     else
