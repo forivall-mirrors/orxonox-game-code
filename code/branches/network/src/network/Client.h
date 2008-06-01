@@ -76,8 +76,6 @@ namespace network
 
     bool sendChat( std::string message );
     
-    bool sendPackets();
-    
     int getShipID(){return shipID_;}
     int getClientID(){return clientID_;}
 

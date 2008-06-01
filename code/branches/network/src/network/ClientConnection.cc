@@ -162,9 +162,9 @@ namespace network
       quit=true;
       return;
     }
+    event = new ENetEvent;
     //main loop
     while(!quit){
-      event = new ENetEvent;
       //std::cout << "connection loop" << std::endl;
       {
         boost::recursive_mutex::scoped_lock lock(enet_mutex_);
@@ -184,6 +184,7 @@ namespace network
         COUT(5) << "Cl.Con: receiver-Thread while loop: got new packet" << std::endl;
         if ( !processData(event) ) COUT(2) << "Current packet was not pushed to packetBuffer -> ev ongoing SegFault" << std::endl;
         COUT(5) << "Cl.Con: processed Data in receiver-thread while loop" << std::endl;
+        event = new ENetEvent;
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
         quit=true;
@@ -191,9 +192,10 @@ namespace network
         return;
         break;
       case ENET_EVENT_TYPE_NONE:
-        continue;
+        //receiverThread_->yield();
+        usleep(1000);
+        break;
       }
-      receiverThread_->yield();
     }
     // now disconnect
 

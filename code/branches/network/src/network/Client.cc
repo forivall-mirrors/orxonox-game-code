@@ -152,22 +152,10 @@ namespace network
     // generate packet and add it to queue
     if(!isConnected)
       return false;
-    if(client_connection.addPacket(pck_gen.chatMessage( message.c_str() )))
-      return client_connection.sendPackets();
+    return client_connection.addPacket(pck_gen.chatMessage( message.c_str() ));
+      //return client_connection.sendPackets();
     // send packets
     return false;
-  }
-
-
-  /**
-  * Sends out all the packets queued by addXXX
-  */
-  bool Client::sendPackets(){
-    if(!isConnected)
-      return false;
-    // send packets
-    client_connection.sendPackets();
-    return true;
   }
 
   /**
@@ -214,8 +202,8 @@ namespace network
         COUT(3) << "could not ack gamestate" << std::endl;
     }// otherwise we had no gamestate to load
     gamestate.cleanup();
-    if(!client_connection.sendPackets())
-      COUT(3) << "Problem sending packets to server" << std::endl;
+    /*if(!client_connection.sendPackets())
+      COUT(3) << "Problem sending packets to server" << std::endl;*/
     return;
   }
 

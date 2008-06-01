@@ -168,6 +168,7 @@ used by processQueue in Server.cc
     return true;
   }
 
+  // we actually dont need that function, because host_service does that for us
   bool ConnectionManager::sendPackets() {
     if(server==NULL)
       return false;
@@ -193,8 +194,8 @@ used by processQueue in Server.cc
       return;
     }
 
+    event = new ENetEvent;
     while(!quit){
-      event = new ENetEvent;
       { //mutex scope
         boost::recursive_mutex::scoped_lock lock(enet_mutex_);
         if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
@@ -220,6 +221,7 @@ used by processQueue in Server.cc
           // only add, if client has connected yet and not been disconnected
           //if(head_->findClient(&event->peer->address))
             processData(event);
+            event = new ENetEvent;
 //           else
 //             COUT(3) << "received a packet from a client we don't know" << std::endl;
           break;
@@ -227,8 +229,8 @@ used by processQueue in Server.cc
           //clientDisconnect(event->peer);
           //break;
         case ENET_EVENT_TYPE_NONE:
-          delete event;
-          receiverThread_->yield();
+          //receiverThread_->yield();
+          usleep(1000);
           break;
       }
 //       usleep(100);
@@ -286,27 +288,7 @@ used by processQueue in Server.cc
     return buffer.push(event);
   }
 
-/**
-This function adds a client that connects to the clientlist of the server
-NOTE: if you change this, don't forget to change the test function
-addClientTest in diffTest.cc since addClient is not good for testing because of syncClassid
-*/
-  /*bool ConnectionManager::addClient(ENetEvent *event) {
-    ClientInformation *temp = head_->insertBack(new ClientInformation);
-    if(!temp){
-      COUT(2) << "Conn.Man. could not add client" << std::endl;
-      return false;
-    }
-    if(temp->prev()->getHead()) { //not good if you use anything else than insertBack
-      temp->prev()->setID(0); //bugfix: not necessary but usefull
-      temp->setID(1);
-    }
-    else
-      temp->setID(temp->prev()->getID()+1);
-    temp->setPeer(event->peer);
-    COUT(3) << "Con.Man: added client id: " << temp->getID() << std::endl;
-    return true;
-  }*/
+
 
   int ConnectionManager::getClientID(ENetPeer peer) {
     return getClientID(peer.address);
@@ -340,76 +322,11 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
       }
       ++it;
     }
-    sendPackets();
+    //sendPackets();
     COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
   }
 
-  /*bool ConnectionManager::createClient(int clientID){
-    ClientInformation *temp = head_->findClient(clientID);
-    if(!temp){
-      COUT(2) << "Conn.Man. could not create client with id: " << clientID << std::endl;
-      return false;
-    }
-    COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
-    syncClassid(temp->getID());
-    COUT(4) << "creating spaceship for clientid: " << temp->getID() << std::endl;
-    // TODO: this is only a hack, until we have a possibility to define default player-join actions
-    if(!createShip(temp))
-      COUT(2) << "Con.Man. could not create ship for clientid: " << clientID << std::endl;
-    else
-      COUT(3) << "created spaceship" << std::endl;
-    temp->setSynched(true);
-    COUT(3) << "sending welcome" << std::endl;
-    sendWelcome(temp->getID(), temp->getShipID(), true);
-    return true;
-  }*/
   
-  /*bool ConnectionManager::removeClient(int clientID){
-    boost::recursive_mutex::scoped_lock lock(head_->mutex_);
-    orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::start();
-    ClientInformation *client = head_->findClient(clientID);
-    if(!client)
-      return false;
-    while(it){
-      if(it->objectID!=client->getShipID()){
-        ++it;
-        continue;
-      }
-      orxonox::Iterator<orxonox::SpaceShip> temp=it;
-      ++it;
-      delete  *temp;
-      return head_->removeClient(clientID);
-    }
-    return false;
-  }*/
-  
-/*  bool ConnectionManager::createShip(ClientInformation *client){
-    if(!client)
-      return false;
-    orxonox::Identifier* id = ID("SpaceShip");
-    if(!id){
-      COUT(4) << "We could not create the SpaceShip for client: " << client->getID() << std::endl;
-      return false;
-    }
-    orxonox::SpaceShip *no = dynamic_cast<orxonox::SpaceShip *>(id->fabricate());
-    no->setPosition(orxonox::Vector3(0,0,80));
-    no->setScale(10);
-    //no->setYawPitchRoll(orxonox::Degree(-90),orxonox::Degree(-90),orxonox::Degree(0));
-    no->setMesh("assff.mesh");
-    no->setMaxSpeed(500);
-    no->setMaxSideAndBackSpeed(50);
-    no->setMaxRotation(1.0);
-    no->setTransAcc(200);
-    no->setRotAcc(3.0);
-    no->setTransDamp(75);
-    no->setRotDamp(1.0);
-    no->setCamera("cam_"+client->getID());
-    no->classID = id->getNetworkID();
-    no->create();
-    
-    client->setShipID(no->objectID);
-    return true;
-  }*/
   
   bool ConnectionManager::removeShip(ClientInformation *client){
     int id=client->getShipID();
@@ -424,7 +341,7 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
   
   bool ConnectionManager::sendWelcome(int clientID, int shipID, bool allowed){
     if(addPacket(packet_gen.generateWelcome(clientID, shipID, allowed),clientID)){
-      sendPackets();
+      //sendPackets();
       return true;
     }else
       return false;
@@ -447,37 +364,5 @@ addClientTest in diffTest.cc since addClient is not good for testing because of 
   }
   
   
-//   int ConnectionManager::getNumberOfClients() {
-//     
-//     return clientsShip.size();
-//   }
-  
-  /*void ConnectionManager::addClientsObjectID( int clientID, int objectID ) {
-  COUT(4) << "ship of client: " << clientID << ": " << objectID << " mapped" << std::endl;
-  clientsShip.insert( std::make_pair( clientID, objectID ) );
-}
 
-  int ConnectionManager::getClientsShipID( int clientID ) {
-  return clientsShip[clientID];
-}
-
-  int ConnectionManager::getObjectsClientID( int objectID ) {
-  std::map<int, int>::iterator iter;
-  for( iter = clientsShip.begin(); iter != clientsShip.end(); iter++ ) {
-  if( iter->second == objectID ) return iter->first;
-}
-  return -99;
-}
-
-  void ConnectionManager::deleteClientIDReg( int clientID ) {
-  clientsShip.erase( clientID );
-}
-
-  void ConnectionManager::deleteObjectIDReg( int objectID ) {
-  std::map<int, int>::iterator iter = clientsShip.begin();
-  for( iter = clientsShip.begin(); iter != clientsShip.end(); iter++ ) {
-  if( iter->second == objectID ) break;
-}
-  clientsShip.erase( iter->first );
-}*/
 }

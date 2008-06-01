@@ -61,7 +61,7 @@ namespace network
 {
 #define NETWORK_PORT 55556
 #define NETWORK_MAX_CONNECTIONS 50
-#define NETWORK_WAIT_TIMEOUT 10
+#define NETWORK_WAIT_TIMEOUT 1
 
   struct ClientList{
     ENetEvent *event;

@@ -129,11 +129,7 @@ namespace network
   bool Server::sendMSG(std::string msg) {
     ENetPacket *packet = packet_gen.chatMessage(msg.c_str());
     //std::cout <<"adding packets" << std::endl;
-    if(connection->addPacketAll(packet))
-    //std::cout <<"added packets" << std::endl;
-      return connection->sendPackets();
-    else
-      return false;
+    return connection->addPacketAll(packet);
   }
 
   /**
@@ -144,13 +140,7 @@ namespace network
   bool Server::sendMSG(const char *msg) {
     ENetPacket *packet = packet_gen.chatMessage(msg);
     COUT(4) <<"Server: adding Packets" << std::endl;
-    connection->addPacketAll(packet);
-    //std::cout <<"added packets" << std::endl;
-    if (connection->sendPackets()){
-      COUT(4) << "Server: Sucessfully" << std::endl;
-      return true;
-    }
-    return false;
+    return connection->addPacketAll(packet);
   }
 
   /**
@@ -183,6 +173,7 @@ namespace network
       event = connection->getEvent();
       if(!event)
         continue;
+      assert(event->type != ENET_EVENT_TYPE_NONE);
       switch( event->type ) {
       case ENET_EVENT_TYPE_CONNECT:
         COUT(3) << "processing event_Type_connect" << std::endl;
@@ -264,12 +255,12 @@ namespace network
       delete[] gs->data;
       delete gs;
     }
-    if(added) {
+    /*if(added) {
       //std::cout << "send gamestates from server.cc in sendGameState" << std::endl;
       return connection->sendPackets();
-    }
-    COUT(5) << "Server: had no gamestates to send" << std::endl;
-    return false;
+    }*/
+    //COUT(5) << "Server: had no gamestates to send" << std::endl;
+    return true;
   }
 
   void Server::processAck( ack *data, int clientID) {
