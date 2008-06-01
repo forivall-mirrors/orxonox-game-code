@@ -168,7 +168,7 @@ namespace orxonox {
 
     root_ = new Ogre::Root(plugin_filename, "ogre.cfg", this->ogreLogfile_);
 
-#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
+#if 0
     // tame the ogre ouput so we don't get all the mess in the console
     Ogre::Log* defaultLog = Ogre::LogManager::getSingleton().getDefaultLog();
     defaultLog->setDebugOutputEnabled(false);
