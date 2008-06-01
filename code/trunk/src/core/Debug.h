@@ -205,6 +205,15 @@ extern "C" _CoreExport int getSoftDebugLevel();
   #define COUT(x) \
    COUT ## x
 
+  #if ORX_HARD_DEBUG_LEVEL >= ORX_NONE
+   #define COUT0  \
+    if (getSoftDebugLevel() >= ORX_NONE)  \
+     COUT_EXEC(0)
+  #else
+   #define COUT0 if (ORX_NONE)\
+    COUT_EXEC(0)
+  #endif
+
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
    #define COUT1  \
     if (getSoftDebugLevel() >= ORX_ERROR)  \
@@ -255,8 +264,6 @@ extern "C" _CoreExport int getSoftDebugLevel();
    COUT_EXEC(5)
  #endif /* if ORX_PRINT_DEBUG_OUTPUT */
 
- #define COUT0 \
-  COUT_EXEC(0)
 #endif /* ifndef COUT */
 
 
@@ -278,6 +285,15 @@ extern "C" _CoreExport int getSoftDebugLevel();
  #if ORX_PRINT_DEBUG_OUTPUT
   #define CCOUT(x) \
    CCOUT ## x
+
+  #if ORX_HARD_DEBUG_LEVEL >= ORX_NONE
+   #define CCOUT0  \
+    if (getSoftDebugLevel() >= ORX_NONE)  \
+     CCOUT_EXEC(0)
+  #else
+   #define CCOUT0 if (ORX_NONE)\
+    CCOUT_EXEC(0)
+  #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
    #define CCOUT1  \
@@ -329,8 +345,6 @@ extern "C" _CoreExport int getSoftDebugLevel();
    CCOUT_EXEC(5)
  #endif /* if ORX_PRINT_DEBUG_OUTPUT */
 
- #define CCOUT0 \
-  CCOUT_EXEC(0)
 #endif /* ifndef CCOUT */
 
 #endif /* _Debug_H__ */

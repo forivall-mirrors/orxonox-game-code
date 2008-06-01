@@ -40,14 +40,18 @@ namespace orxonox
         public:
             static TclBind& getInstance();
 
+            static std::string tcl(const std::string& tclcode);
+            static void bgerror(std::string error);
+
             void setDataPath(const std::string& datapath);
+            std::string getTclLibPath() const { return this->tclLibPath_; }
             void createTclInterpreter();
             void createNewTclInterpreter();
+            Tcl::interpreter* getTclInterpreter() const { return this->interpreter_; }
 
-            static void puts(Tcl::object const &args);
-            static void execute(Tcl::object const &args);
-            static std::string orxonox(Tcl::object const &args);
-            static std::string tcl(const std::string& tclcode);
+            static std::string tcl_query(Tcl::object const &args);
+            static void tcl_execute(Tcl::object const &args);
+
             static bool eval(const std::string& tclcode);
 
         private:

@@ -34,6 +34,7 @@
 #include "WorldEntity.h"
 #include "../tools/BillboardSet.h"
 #include "../tools/Timer.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
@@ -45,11 +46,18 @@ namespace orxonox
             void setConfigValues();
             void destroyObject();
             virtual void tick(float dt);
+            virtual bool create(){return WorldEntity::create();}
+            void setColour(const ColourValue& colour);
+
+            static float getSpeed()
+                { return Projectile::speed_; }
+
+        protected:
+            SpaceShip* owner_;
 
         private:
-            SpaceShip* owner_;
             BillboardSet billboard_;
-            float speed_;
+            static float speed_;
             float lifetime_;
             Timer<Projectile> destroyTimer_;
     };

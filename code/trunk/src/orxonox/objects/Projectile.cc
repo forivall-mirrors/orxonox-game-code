@@ -29,6 +29,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "Projectile.h"
 
+#include <OgreBillboard.h>
+
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "core/ConfigValueIncludes.h"
@@ -40,6 +42,8 @@
 namespace orxonox
 {
     CreateFactory(Projectile);
+
+    float Projectile::speed_ = 0;
 
     Projectile::Projectile(SpaceShip* owner) :
       owner_(owner)
@@ -62,7 +66,6 @@ namespace orxonox
         }
 
         this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
-        this->classID = this->getIdentifier()->getNetworkID(); // TODO: remove this hack
 //        COUT(3) << this->classID << std::endl;
     }
 
@@ -91,7 +94,8 @@ namespace orxonox
 
                 if (this->getPosition().squaredDistance(it->getPosition()) <= (radius*radius))
                 {
-                    new Explosion(this);
+                    Explosion *exp = new Explosion(this);
+                    exp->create();
                     delete this;
                     return;
                 }
@@ -102,5 +106,10 @@ namespace orxonox
     void Projectile::destroyObject()
     {
         delete this;
+    }
+
+    void Projectile::setColour(const ColourValue& colour)
+    {
+        this->billboard_.getBillboardSet()->getBillboard(0)->setColour(colour);
     }
 }

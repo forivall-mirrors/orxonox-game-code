@@ -137,7 +137,7 @@ class _UtilExport MultiTypePrimitive
         inline void setValue(bool           value) { this->type_ = MT_bool;       this->value_.bool_       = value; }
         void setValue(const MultiTypePrimitive& mtp);
 
-        inline void*          getVoid()          const { return this->value_.void_;        }
+        inline void*          getVoid()          const { return this->value_.void_;       }
         inline int            getInt()           const { return this->value_.int_;        }
         inline unsigned int   getUnsignedInt()   const { return this->value_.uint_;       }
         inline char           getChar()          const { return this->value_.char_;       }
@@ -185,6 +185,8 @@ class _UtilExport MultiTypePrimitive
 
         virtual std::string toString() const;
         virtual bool fromString(const std::string value);
+
+        virtual bool assimilate(const MultiTypePrimitive& mtp, const MultiTypePrimitive& defvalue = MultiTypePrimitive());
 
     protected:
         MultiTypeValue  value_;

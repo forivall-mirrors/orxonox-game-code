@@ -31,8 +31,8 @@
  @brief Different definitions of input processing.
  */
 
-#ifndef _InputHandler_H__
-#define _InputHandler_H__
+#ifndef _KeyBinder_H__
+#define _KeyBinder_H__
 
 #include "CorePrereqs.h"
 
@@ -42,18 +42,11 @@
 #include "ois/OIS.h"
 #include "util/Math.h"
 #include "OrxonoxClass.h"
-#include "CommandExecutor.h"
+#include "CommandEvaluation.h"
 #include "InputInterfaces.h"
 
 namespace orxonox
 {
-  class _CoreExport BaseCommand
-  {
-  public:
-    virtual ~BaseCommand() { }
-    virtual bool execute(float abs = 1.0f, float rel = 1.0f) = 0;
-  };
-
   class _CoreExport BufferedParamCommand
   {
   public:
@@ -64,6 +57,13 @@ namespace orxonox
     unsigned int nValuesAdded_;
     int paramIndex_;
     CommandEvaluation evaluation_;
+  };
+
+  class _CoreExport BaseCommand
+  {
+  public:
+    virtual ~BaseCommand() { }
+    virtual bool execute(float abs = 1.0f, float rel = 1.0f) = 0;
   };
 
   class _CoreExport SimpleCommand : public BaseCommand
@@ -140,20 +140,17 @@ namespace orxonox
   {
   public:
     KeyBinder ();
-    ~KeyBinder();
+    virtual ~KeyBinder();
 
     void loadBindings();
-    void clearBindings(bool bInit = false);
-
+    void clearBindings();
     void setConfigValues();
+    void resetJoyStickAxes();
 
-  private: // functions
-    void readTrigger(Button& button);
+  protected: // functions
+    void tickInput(float dt, const HandlerState& state);
 
-    //static void clearBundle(KeyBindingBundle& bundle, bool bInit);
-    //static void redimensionBinding(KeyBinding& binding);
-
-    void tick(float dt);
+    virtual void readTrigger(Button& button);
 
     void keyPressed (const KeyEvent& evt);
     void keyReleased(const KeyEvent& evt);
@@ -168,9 +165,9 @@ namespace orxonox
     void joyStickButtonPressed (int joyStickID, int button);
     void joyStickButtonReleased(int joyStickID, int button);
     void joyStickButtonHeld    (int joyStickID, int button);
-    void joyStickAxisMoved     (int joyStickID, int axis, int value);
+    void joyStickAxisMoved     (int joyStickID, int axis, float value);
 
-  private: // variables
+  protected: // variables
     //! denotes the number of different keys there are in OIS.
     static const unsigned int nKeys_s = 0xEE;
     //! Actual key bindings as bundle for Press, Hold and Release
@@ -195,7 +192,7 @@ namespace orxonox
     * Sequence is as follows:
     *  0 -  3: Mouse x and y
     *  4 -  7: empty
-    *  8 - 23: joy stick (slider) axes 1 to 8
+    *  8 - 23: joy stick slider axes 1 to 8
     * 24 - 55: joy stick axes 1 - 16
     */
     HalfAxis halfAxes_[nHalfAxes_s];
@@ -207,7 +204,7 @@ namespace orxonox
     std::vector<BufferedParamCommand*> paramCommandBuffer_;
 
     //! Keeps track of the absolute mouse value (incl. scroll wheel)
-    int mousePosition_[3];
+    int mousePosition_[2];
     //! Used to derive mouse input if requested
     int mouseRelative_[2];
     float deriveTime_;
@@ -223,38 +220,40 @@ namespace orxonox
     float derivePeriod_;
     //! mouse sensitivity
     float mouseSensitivity_;
+    //! mouse sensitivity if mouse input is derived
+    float mouseSensitivityDerived_;
+    //! Whether or not to clip abslute mouse values to 1024
+    bool bClipMouse_;
   };
 
 
-  /**
-    @brief Captures mouse and keyboard input and distributes it to the
-    GUI.
-  */
-  //class _CoreExport GUIInputHandler : public KeyHandler, public MouseHandler, public JoyStickHandler
-  //{
-  //public:
-  //  GUIInputHandler ();
-  //  ~GUIInputHandler();
+  class _CoreExport KeyDetector : public KeyBinder
+  {
+  public:
+    KeyDetector();
+    ~KeyDetector();
+    void loadBindings();
 
-  //private:
-  //  // input events
-    //bool keyPressed   (const OIS::KeyEvent   &arg);
-    //bool keyReleased  (const OIS::KeyEvent   &arg);
-    //bool keyHeld      (const OIS::KeyEvent   &arg);
+  protected:
+    void readTrigger(Button& button);
+  };
 
-  //  bool mousePressed (const OIS::MouseEvent &arg, OIS::MouseButton id);
-    //bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButton id);
-    //bool mouseHeld    (const OIS::MouseEvent &arg, OIS::MouseButton id);
-  //  bool mouseMoved   (const OIS::MouseEvent &arg);
+  class _CoreExport CalibratorCallback : public KeyHandler
+  {
+  public:
+    CalibratorCallback() {}
+    ~CalibratorCallback() {}
 
-    //bool buttonPressed (const OIS::JoyStickEvent &arg, int button);
-    //bool buttonReleased(const OIS::JoyStickEvent &arg, int button);
-    //bool buttonHeld    (const OIS::JoyStickEvent &arg, int button);
-    //bool axisMoved     (const OIS::JoyStickEvent &arg, int axis);
-    //bool sliderMoved   (const OIS::JoyStickEvent &arg, int id);
-    //bool povMoved      (const OIS::JoyStickEvent &arg, int id);
-  //};
+  private:
+    void keyPressed (const KeyEvent& evt);
+    void keyReleased(const KeyEvent& evt) {}
+    void keyHeld    (const KeyEvent& evt) {}
 
+    void tickInput(float dt, const HandlerState &state) { }
+  };
 }
 
-#endif /* _InputHandler_H__ */
+
+
+
+#endif /* _KeyBinder_H__ */

@@ -59,6 +59,7 @@ namespace orxonox
   Camera::~Camera()
   {
     CameraHandler::getInstance()->releaseFocus(this);
+    GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->removeAndDestroyChild(cameraNode_->getName());
   }
 
   void Camera::setPositionNode(Ogre::SceneNode* node)
@@ -74,12 +75,17 @@ namespace orxonox
 
   void Camera::tick(float dt)
   {
-    if(this->positionNode_ != NULL) {
+    if (this->positionNode_ != NULL)
+    {
       // this stuff here may need some adjustments
-      Vector3 offset = this->positionNode_->getWorldPosition() - this->cameraNode_->getPosition();
-      this->cameraNode_->translate(15*dt*offset);
+      Vector3 offset = this->positionNode_->getWorldPosition() - this->cameraNode_->getWorldPosition();
+      float coeff = 15.0f * dt;
+      if (coeff > 1.0f)
+        coeff = 1.0f;
 
-      this->cameraNode_->setOrientation(Quaternion::Slerp(0.7, this->positionNode_->getWorldOrientation(), this->cameraNode_->getWorldOrientation(), false));
+      this->cameraNode_->translate(coeff * offset);
+
+      this->cameraNode_->setOrientation(Quaternion::Slerp(7.0f * dt, this->positionNode_->getWorldOrientation(), this->cameraNode_->getWorldOrientation(), false));
     }
   }
 

@@ -57,14 +57,18 @@ IF(WIN32)
     SET (ZLIB_LIBRARY_DIR "../libs/ogre/Dependencies/lib/Release")
   ENDIF(EXISTS "../libs/ogre/Dependencies/lib/Release")
 
+  FIND_PATH(ZLIB_INCLUDE_DIR zlib.h
+    ../libs/ogre/Dependencies/include
+  )
+
   FIND_LIBRARY(ZLIB_LIBRARY
     NAMES zlib
     PATHS ${ZLIB_LIBRARY_DIR}
   )
 
-  IF(ZLIB_LIBRARY)
+  IF(ZLIB_LIBRARY AND ZLIB_INCLUDE_DIR)
     MESSAGE(STATUS "Zlib was found.")
-  ELSE(ZLIB_LIBRARY)
+  ELSE(ZLIB_LIBRARY AND ZLIB_INCLUDE_DIR)
     MESSAGE(FATAL_ERROR "Zlib was NOT found.")
-  ENDIF(ZLIB_LIBRARY)
+  ENDIF(ZLIB_LIBRARY AND ZLIB_INCLUDE_DIR)
 ENDIF(WIN32)

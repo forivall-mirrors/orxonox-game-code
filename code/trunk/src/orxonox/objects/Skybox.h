@@ -46,7 +46,7 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void setSkybox(const std::string& skyboxname);
             
-            bool create();
+            virtual bool create();
             void registerAllVariables();
             void setSkyboxSrc(const std::string &src);
 

@@ -59,6 +59,7 @@ namespace network
   class _NetworkExport Server : public PacketDecoder, public orxonox::Tickable{
   public:
     Server();
+    Server(int port);
     Server(int port, std::string bindAddress);
     Server(int port, const char *bindAddress);
     void open();
@@ -70,6 +71,10 @@ namespace network
     void processQueue();
     void updateGamestate();
   private:
+    bool addClient(ENetEvent *event);
+    bool createClient(int clientID);
+    bool createShip(ClientInformation *client);
+    bool disconnectClient(ENetEvent *event);
     void disconnectClient(int clientID);
     void disconnectClient( ClientInformation *client);
     bool sendGameState();
@@ -81,6 +86,7 @@ namespace network
     PacketGenerator packet_gen;
 
     ClientInformation *clients;
+    float timeSinceLastUpdate_;
   };
 
 

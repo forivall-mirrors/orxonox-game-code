@@ -148,18 +148,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\core\BaseObject.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\ClassTreeMask.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\CommandExecutor.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\ConfigFileManager.cc"
 				>
 			</File>
@@ -176,55 +164,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Executor.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Factory.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Identifier.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\IdentifierDistributor.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\InputBuffer.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\InputHandler.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\InputManager.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\Language.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Loader.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\MetaObjectList.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Namespace.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\NamespaceNode.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\OrxonoxClass.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\OutputBuffer.cc"
 				>
 			</File>
 			<File
@@ -240,15 +188,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\TclBind.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\Tickable.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\XMLPort.cc"
 				>
 			</File>
 			<Filter
@@ -259,32 +199,124 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="command"
+				>
+				<File
+					RelativePath="..\..\src\core\ArgumentCompletionFunctions.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\CommandEvaluation.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\CommandExecutor.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ConsoleCommand.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ConsoleCommandCompilation.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Executor.cc"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="hierarchy"
+				>
+				<File
+					RelativePath="..\..\src\core\Factory.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Identifier.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\IdentifierDistributor.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\MetaObjectList.cc"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="level"
+				>
+				<File
+					RelativePath="..\..\src\core\BaseObject.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ClassTreeMask.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Loader.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Namespace.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\NamespaceNode.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\XMLPort.cc"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="input"
+				>
+				<File
+					RelativePath="..\..\src\core\InputBuffer.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\InputManager.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\KeyBinder.cc"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="shell"
+				>
+				<File
+					RelativePath="..\..\src\core\IRC.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Shell.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\TclBind.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\TclThreadManager.cc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath="..\..\src\core\BaseObject.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\ClassFactory.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\ClassManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\ClassTreeMask.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\CommandExecutor.h"
-				>
-			</File>
 			<File
 				RelativePath="..\..\src\core\ConfigFileManager.h"
 				>
@@ -295,14 +327,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\ConfigValueIncludes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\ConsoleCommand.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\CoreIncludes.h"
 				>
 			</File>
 			<File
@@ -322,75 +346,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Executor.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Factory.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Functor.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Identifier.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\IdentifierDistributor.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\InputBuffer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\InputHandler.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\InputInterfaces.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\InputManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Iterator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\Language.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Level.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Loader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\MetaObjectList.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Namespace.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\NamespaceNode.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\ObjectList.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\OrxonoxClass.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\OutputBuffer.h"
 				>
 			</File>
 			<File
@@ -402,21 +366,169 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\SignalHandler.h"
+				RelativePath="..\..\src\core\Script_clean.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\TclBind.h"
+				RelativePath="..\..\src\core\SignalHandler.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\core\Tickable.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\core\XMLPort.h"
+			<Filter
+				Name="input"
 				>
-			</File>
+				<File
+					RelativePath="..\..\src\core\InputBuffer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\InputInterfaces.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\InputManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\KeyBinder.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="command"
+				>
+				<File
+					RelativePath="..\..\src\core\ArgumentCompleter.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ArgumentCompletionFunctions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ArgumentCompletionListElement.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\CommandEvaluation.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\CommandExecutor.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ConsoleCommand.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ConsoleCommandCompilation.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Executor.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Functor.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="shell"
+				>
+				<File
+					RelativePath="..\..\src\core\IRC.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Shell.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\TclBind.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\TclThreadManager.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="hierarchy"
+				>
+				<File
+					RelativePath="..\..\src\core\ClassFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ClassManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\CoreIncludes.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Factory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Identifier.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\IdentifierDistributor.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Iterator.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\MetaObjectList.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ObjectList.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="level"
+				>
+				<File
+					RelativePath="..\..\src\core\BaseObject.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ClassTreeMask.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Level.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Loader.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\Namespace.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\NamespaceNode.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\XMLPort.h"
+					>
+				</File>
+			</Filter>
 			<Filter
 				Name="tolua"
 				>

@@ -50,8 +50,13 @@ void sender(){
 
   Client client( str, PORT );
   if ( client.establishConnection() )
+  {
     COUT(3) << "connection established" << std::endl;
-  else COUT(0) << "problems establishing connection" << std::endl;
+  }
+  else
+  {
+    COUT(0) << "problems establishing connection" << std::endl;
+  }
   char message[10000];
   char signs[] = "abcdefghijklmnopqrstuvwxy";
   while (true) {

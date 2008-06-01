@@ -50,16 +50,13 @@
 // util
 //#include "util/Sleep.h"
 #include "util/ArgReader.h"
-#include "util/ExprParser.h"
 
 // core
 #include "core/ConfigFileManager.h"
 #include "core/ConsoleCommand.h"
 #include "core/Debug.h"
-#include "core/Factory.h"
 #include "core/Loader.h"
 #include "core/Tickable.h"
-#include "core/InputBuffer.h"
 #include "core/InputManager.h"
 #include "core/TclBind.h"
 
@@ -71,9 +68,10 @@
 #include "network/Client.h"
 
 // objects and tools
-#include "tools/Timer.h"
 #include "hud/HUD.h"
-#include "console/InGameConsole.h"
+#include <Ogre.h>
+
+#include "GraphicsEngine.h"
 
 // FIXME: is this really file scope?
 // globals for the server or client
@@ -82,73 +80,9 @@ network::Server *server_g;
 
 namespace orxonox
 {
-  ConsoleCommandShortcut(Orxonox, exit, AccessLevel::None).setKeybindMode(KeybindMode::OnPress);
-  ConsoleCommandShortcut(Orxonox, slomo, AccessLevel::Offline).setDefaultValue(0, 1.0)
-    .setAxisParamIndex(0).setIsAxisRelative(false);
-  ConsoleCommandShortcut(Orxonox, setTimeFactor, AccessLevel::Offline).setDefaultValue(0, 1.0);
-  ConsoleCommandShortcut(Orxonox, activateConsole, AccessLevel::None);
-  class Testconsole : public InputBufferListener
-  {
-    public:
-      Testconsole(InputBuffer* ib) : ib_(ib) {}
-      void listen() const
-      {
-        std::cout << "> " << this->ib_->get() << std::endl;
-      }
-      void execute() const
-      {
-        std::cout << ">> " << this->ib_->get() << std::endl;
-        if (!CommandExecutor::execute(this->ib_->get()))
-          std::cout << "Error" << std::endl;
-        this->ib_->clear();
-      }
-      void hintandcomplete() const
-      {
-        std::cout << CommandExecutor::hint(this->ib_->get()) << std::endl;
-        this->ib_->set(CommandExecutor::complete(this->ib_->get()));
-      }
-      void clear() const
-      {
-        this->ib_->clear();
-      }
-      void removeLast() const
-      {
-        this->ib_->removeLast();
-      }
-      void exit() const
-      {
-        InputManager::setInputState(InputManager::IS_NORMAL);
-      }
-
-    private:
-      InputBuffer* ib_;
-  };
-
-  class Calculator
-  {
-  public:
-    static float calculate(const std::string& calculation)
-    {
-      ExprParser expr(calculation);
-      if (expr.getSuccess())
-      {
-        if (expr.getResult() == 42.0)
-          std::cout << "Greetings from the restaurant at the end of the universe." << std::endl;
-        // FIXME: insert modifier to display in full precision
-        std::cout << "Result is: " << expr.getResult() << std::endl;
-        if (expr.getRemains() != "")
-          std::cout << "Warning: Expression could not be parsed to the end! Remains: '"
-              << expr.getRemains() << "'" << std::endl;
-        return expr.getResult();
-      }
-      else
-      {
-        std::cout << "Cannot calculate expression: Parse error" << std::endl;
-        return 0;
-      }
-    }
-  };
-  ConsoleCommandShortcut(Calculator, calculate, AccessLevel::None);
+  SetConsoleCommandShortcut(Orxonox, exit).setKeybindMode(KeybindMode::OnPress);
+  SetConsoleCommandShortcut(Orxonox, slomo).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0).setAxisParamIndex(0).setIsAxisRelative(false);
+  SetConsoleCommandShortcut(Orxonox, setTimeFactor).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0);
 
   /**
     @brief Reference to the only instance of the class.
@@ -164,12 +98,12 @@ namespace orxonox
     timer_(0),
     // turn on frame smoothing by setting a value different from 0
     frameSmoothingTime_(0.0f),
-    orxonoxConsole_(0),
     orxonoxHUD_(0),
     bAbort_(false),
     timefactor_(1.0f),
     mode_(STANDALONE),
-    serverIp_("")
+    serverIp_(""),
+    serverPort_(NETWORK_PORT)
   {
   }
 
@@ -179,8 +113,8 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // keep in mind: the order of deletion is very important!
-    if (this->orxonoxHUD_)
-      delete this->orxonoxHUD_;
+//    if (this->orxonoxHUD_)
+//      delete this->orxonoxHUD_;
     Loader::close();
     InputManager::destroy();
     //if (this->auMan_)
@@ -243,6 +177,7 @@ namespace orxonox
     ar.checkArgument("mode", mode, false);
     ar.checkArgument("data", dataPath, false);
     ar.checkArgument("ip", serverIp_, false);
+    ar.checkArgument("port", serverPort_, false);
     if(ar.errorHandling())
       return false;
 
@@ -250,6 +185,8 @@ namespace orxonox
       mode_ = CLIENT;
     else if (mode == "server")
       mode_ = SERVER;
+    else if (mode == "dedicated")
+      mode_ = DEDICATED;
     else
     {
       mode = "standalone";
@@ -264,7 +201,6 @@ namespace orxonox
     // for playable server, client and standalone, the startup
     // procedure until the GUI is identical
 
-    TclBind::getInstance().setDataPath(dataPath);
     ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
     Factory::createClassHierarchy();
 
@@ -280,34 +216,40 @@ namespace orxonox
    */
   bool Orxonox::start()
   {
-    //if (mode == DEDICATED)
-    // do something else
-    //else
+    if (mode_ == DEDICATED)
+    {
+      // do something else
+    }
+    else
+    { // not dedicated server
+      if (!ogre_->loadRenderer())    // creates the render window
+        return false;
 
-    if (!ogre_->loadRenderer())    // creates the render window
-      return false;
+      // Calls the InputManager which sets up the input devices.
+      // The render window width and height are used to set up the mouse movement.
+      if (!InputManager::initialise(ogre_->getWindowHandle(),
+            ogre_->getWindowWidth(), ogre_->getWindowHeight(), true, true, true))
+        return false;
 
-    // Calls the InputManager which sets up the input devices.
-    // The render window width and height are used to set up the mouse movement.
-    if (!InputManager::initialise(ogre_->getWindowHandle(),
-          ogre_->getWindowWidth(), ogre_->getWindowHeight(), true, true, true))
-      return false;
+      // TODO: Spread this so that this call only initialises things needed for the GUI
+      if (!ogre_->initialiseResources())
+        return false;
 
-    // TODO: Spread this so that this call only initialises things needed for the GUI
-    if (!ogre_->initialiseResources())
-      return false;
+      // TOOD: load the GUI here
+      // set InputManager to GUI mode
+      InputManager::setInputState(InputManager::IS_GUI);
+      // TODO: run GUI here
 
-    // TOOD: load the GUI here
-    // set InputManager to GUI mode
-    InputManager::setInputState(InputManager::IS_GUI);
-    // TODO: run GUI here
+      // The following lines depend very much on the GUI output, so they're probably misplaced here..
 
-    // The following lines depend very much on the GUI output, so they're probably misplaced here..
+      InputManager::setInputState(InputManager::IS_NONE);
 
-    InputManager::setInputState(InputManager::IS_NONE);
+      // create Ogre SceneManager
+      ogre_->createNewScene();
 
-    if (!loadPlayground())
-      return false;
+      if (!loadPlayground())
+        return false;
+    }
 
     switch (mode_)
     {
@@ -317,6 +259,10 @@ namespace orxonox
       break;
     case CLIENT:
       if (!clientLoad())
+        return false;
+      break;
+    case DEDICATED:
+      if (!serverLoad())
         return false;
       break;
     default:
@@ -335,9 +281,7 @@ namespace orxonox
    */
   bool Orxonox::loadPlayground()
   {
-    ogre_->createNewScene();
-
-	  // Init audio
+    // Init audio
     //auMan_ = new audio::AudioManager();
     //auMan_->ambientAdd("a1");
     //auMan_->ambientAdd("a2");
@@ -347,27 +291,7 @@ namespace orxonox
 
     // Load the HUD
     COUT(3) << "Orxonox: Loading HUD..." << std::endl;
-    orxonoxHUD_ = new HUD(1);
-
-    COUT(3) << "Orxonox: Loading Console..." << std::endl;
-    InputBuffer* ib = dynamic_cast<InputBuffer*>(InputManager::getKeyHandler("buffer"));
-    /*
-    Testconsole* console = new Testconsole(ib);
-    ib->registerListener(console, &Testconsole::listen, true);
-    ib->registerListener(console, &Testconsole::execute, '\r', false);
-    ib->registerListener(console, &Testconsole::hintandcomplete, '\t', true);
-    ib->registerListener(console, &Testconsole::clear, '§', true);
-    ib->registerListener(console, &Testconsole::removeLast, '\b', true);
-    ib->registerListener(console, &Testconsole::exit, (char)0x1B, true);
-    */
-    orxonoxConsole_ = new InGameConsole(ib);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::listen, true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::execute, '\r', false);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::hintandcomplete, '\t', true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::clear, '§', true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::removeLast, '\b', true);
-    ib->registerListener(orxonoxConsole_, &InGameConsole::exit, (char)0x1B, true);
-
+    orxonoxHUD_ = &HUD::getSingleton();
     return true;
   }
 
@@ -378,7 +302,7 @@ namespace orxonox
   {
     COUT(2) << "Loading level in server mode" << std::endl;
 
-    server_g = new network::Server();
+    server_g = new network::Server(serverPort_);
 
     if (!loadScene())
       return false;
@@ -398,9 +322,11 @@ namespace orxonox
     if (serverIp_.compare("") == 0)
       client_g = network::Client::createSingleton();
     else
-      client_g = network::Client::createSingleton(serverIp_, NETWORK_PORT);
 
-    client_g->establishConnection();
+      client_g = network::Client::createSingleton(serverIp_, serverPort_);
+
+    if(!client_g->establishConnection())
+      return false;
     client_g->tick(0);
 
     return true;
@@ -426,7 +352,17 @@ namespace orxonox
   {
     Level* startlevel = new Level("levels/sample.oxw");
     Loader::open(startlevel);
+    
+    // HACK: shader stuff for presentation
+    /*Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    mSceneMgr->setAmbientLight(ColourValue(0.4,0.4,0.4));
+    Ogre::Light* dirlight = mSceneMgr->createLight("Light1");
 
+    dirlight->setType(Ogre::Light::LT_DIRECTIONAL);
+    dirlight->setDirection(Vector3( 0, 1, 5 ));
+    dirlight->setDiffuseColour(ColourValue(0.6, 0.6, 0.4));
+    dirlight->setSpecularColour(ColourValue(1.0, 1.0, 1.0));*/
+    
     return true;
   }
 
@@ -452,73 +388,89 @@ namespace orxonox
 
     // Contains the times of recently fired events
     // eventTimes[4] is the list for the times required for the fps counter
-    std::deque<unsigned long> eventTimes[4];
+    std::deque<unsigned long> eventTimes[3];
     // Clear event times
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 3; ++i)
       eventTimes[i].clear();
-    // fill the fps time list with zeros
-    for (int i = 0; i < 50; i++)
-      eventTimes[3].push_back(0);
 
     // use the ogre timer class to measure time.
     if (!timer_)
       timer_ = new Ogre::Timer();
     timer_->reset();
 
-    COUT(3) << "Orxonox: Starting the main loop." << std::endl;
-	  while (!bAbort_)
-	  {
-		  // Pump messages in all registered RenderWindows
-      // This calls the WindowEventListener objects.
-      Ogre::WindowEventUtilities::messagePump();
+    float renderTime = 0.0f;
+    float frameTime = 0.0f;
+    clock_t time = 0;
 
+    //Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
+    //Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    
+    //Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "Bloom");
+    //Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "MotionBlur");
+
+    COUT(3) << "Orxonox: Starting the main loop." << std::endl;
+    while (!bAbort_)
+    {
       // get current time
       unsigned long now = timer_->getMilliseconds();
-      eventTimes[3].push_back(now);
-      eventTimes[3].erase(eventTimes[3].begin());
 
       // create an event to pass to the frameStarted method in ogre
       Ogre::FrameEvent evt;
       evt.timeSinceLastEvent = calculateEventTime(now, eventTimes[0]);
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
+      frameTime += evt.timeSinceLastFrame;
 
       // show the current time in the HUD
-//      orxonoxHUD_->setTime((int)now, 0);
-//      orxonoxHUD_->setRocket2(ogreRoot.getCurrentFrameNumber());
-      if (eventTimes[3].back() - eventTimes[3].front() != 0)
-//        orxonoxHUD_->setRocket1((int)(50000.0f/(eventTimes[3].back() - eventTimes[3].front())));
+      // HUD::getSingleton().setTime(now);
+      if (mode_ != DEDICATED && frameTime > 0.4f)
+      {
+        HUD::getSingleton().setRenderTimeRatio(renderTime / frameTime);
+        frameTime = 0.0f;
+        renderTime = 0.0f;
+      }
 
-      // Iterate through all Tickables and call their tick(dt) function
-      for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
-        it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
-      // Iterate through all TickableReals and call their tick(dt) function
+      // Call those objects that need the real time
       for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame);
-      orxonoxConsole_->tick((float)evt.timeSinceLastFrame);
+      // Call the scene objects
+      for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
+        it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
       ogreRoot._fireFrameStarted(evt);
 
-      // server still renders at the moment
-      //if (mode_ != SERVER)
-      ogreRoot._updateAllRenderTargets(); // only render in non-server mode
+      // get current time
+      now = timer_->getMilliseconds();
+      calculateEventTime(now, eventTimes[2]);
+
+      if (mode_ != DEDICATED)
+      {
+        // Pump messages in all registered RenderWindows
+        // This calls the WindowEventListener objects.
+        Ogre::WindowEventUtilities::messagePump();
+
+        // render
+        ogreRoot._updateAllRenderTargets();
+      }
 
       // get current time
       now = timer_->getMilliseconds();
 
       // create an event to pass to the frameEnded method in ogre
       evt.timeSinceLastEvent = calculateEventTime(now, eventTimes[0]);
-      evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[2]);
+      renderTime += calculateEventTime(now, eventTimes[2]);
 
       // again, just to be sure ogre works fine
       ogreRoot._fireFrameEnded(evt);
-	  }
+      //msleep(200);
+    }
 
-    if(mode_==CLIENT)
+    if (mode_ == CLIENT)
       network::Client::getSingleton()->closeConnection();
-    else if(mode_==SERVER)
+    else if (mode_ == SERVER)
       server_g->close();
+
     return true;
   }
 
@@ -558,14 +510,5 @@ namespace orxonox
     times.erase(times.begin(), it);
 
     return (float)(times.back() - times.front()) / ((times.size() - 1) * 1000);
-  }
-
-  /**
-   * Static function that shows the console in game mode.
-   */
-  void Orxonox::activateConsole()
-  {
-    // currently, the console shows itself when feeded with input.
-    InputManager::setInputState(InputManager::IS_CONSOLE);
   }
 }

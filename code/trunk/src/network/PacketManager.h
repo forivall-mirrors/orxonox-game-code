@@ -58,8 +58,6 @@ namespace network
     //call one of this functions out of an instance of PacketGenerator to create a packet
     ENetPacket* acknowledgement( int state, int reliable = 0 ); // we do not want reliability
     ENetPacket* command( int dataLength, void *data, int reliable = ENET_PACKET_FLAG_RELIABLE );
-    ENetPacket* mousem( double x, double y, int reliable = ENET_PACKET_FLAG_RELIABLE );
-    ENetPacket* keystrike( char press, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* chatMessage( const char* message, int reliable = ENET_PACKET_FLAG_RELIABLE );
     ENetPacket* gstate( GameStateCompressed *states, int reliable = 0 ); // we do not want reliability of gamestates
     ENetPacket* clid( int classid, std::string classname, int reliable = ENET_PACKET_FLAG_RELIABLE );
@@ -93,8 +91,6 @@ namespace network
 
     void acknowledgement( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
     bool command( ENetPacket* packet, int clientId );
-    void mousem( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
-    void keystrike( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
     void chatMessage( ENetPacket* packet, int clientId = CLIENTID_CLIENT );
     void gstate( ENetPacket* packet, int clientID = CLIENTID_CLIENT );
     void clid( ENetPacket *packet);
@@ -112,8 +108,6 @@ namespace network
 
     //print functions
     void printAck( ack* data );
-    void printMouse( mouse* data );
-    void printKey( keyboard* data );
     void printChat( chat* data, int clientId );
     void printGamestate( GameStateCompressed *data );
     void printClassid( classid *cid);

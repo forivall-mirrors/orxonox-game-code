@@ -74,14 +74,7 @@ namespace network
     bool establishConnection();
     bool closeConnection();
 
-    bool sendMouse(double x, double y);
-    bool sendKeyboard(char key_code);
     bool sendChat( std::string message );
-
-    bool addMouse(double x, double y);
-    bool addKeyboard(char key_code);
-
-    bool sendPackets();
     
     int getShipID(){return shipID_;}
     int getClientID(){return clientID_;}
@@ -109,6 +102,7 @@ namespace network
     bool processWelcome( welcome *w );
     int clientID_;     // this is the id the server gave to us
     int shipID_;
+    bool gameStateFailure_;
   };
 
 

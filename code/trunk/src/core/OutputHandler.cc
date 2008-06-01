@@ -34,10 +34,15 @@
 #include "OutputHandler.h"
 #include "CoreSettings.h"
 #include "ConsoleCommand.h"
+#include "Shell.h"
 
 namespace orxonox
 {
-    ConsoleCommandShortcutGeneric(log, createExecutor(createFunctor(&OutputHandler::log), "log", AccessLevel::None));
+    SetConsoleCommandShortcutGeneric(log,     createConsoleCommand(createFunctor(&OutputHandler::log),     "log"    ));
+    SetConsoleCommandShortcutGeneric(error,   createConsoleCommand(createFunctor(&OutputHandler::error),   "error"  ));
+    SetConsoleCommandShortcutGeneric(warning, createConsoleCommand(createFunctor(&OutputHandler::warning), "warning"));
+    SetConsoleCommandShortcutGeneric(info,    createConsoleCommand(createFunctor(&OutputHandler::info),    "info"   ));
+    SetConsoleCommandShortcutGeneric(debug,   createConsoleCommand(createFunctor(&OutputHandler::debug),   "debug"  ));
 
     /**
         @brief Constructor: Opens the logfile and writes the first line.
@@ -81,6 +86,16 @@ namespace orxonox
     }
 
     /**
+        @brief Returns the Shell's OutputBuffer. This is mere placed here to avoid
+               recompiling the entire project when Shell.h changes.
+        @return The OutputBuffer of the Shell
+    */
+    OutputBuffer& OutputHandler::getShellOutputBuffer()
+    {
+        return Shell::getInstance().getOutputBuffer();
+    }
+
+    /**
         @brief Overloaded << operator, redirects the output to the console and the logfile.
         @param sb The streambuffer that should be shown in the console
         @return A reference to the OutputHandler itself
@@ -95,6 +110,9 @@ namespace orxonox
             this->logfile_ << sb;
             this->logfile_.flush();
         }
+
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            Shell::getInstance().getOutputBuffer() << sb;
 
         return *this;
     }
@@ -115,6 +133,9 @@ namespace orxonox
             this->logfile_.flush();
         }
 
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            Shell::getInstance().getOutputBuffer() << manipulator;
+
         return *this;
     }
 
@@ -134,6 +155,9 @@ namespace orxonox
             this->logfile_.flush();
         }
 
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            Shell::getInstance().getOutputBuffer() << manipulator;
+
         return *this;
     }
 
@@ -152,6 +176,9 @@ namespace orxonox
             manipulator(this->logfile_);
             this->logfile_.flush();
         }
+
+        if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
+            Shell::getInstance().getOutputBuffer() << manipulator;
 
         return *this;
     }

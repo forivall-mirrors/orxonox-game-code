@@ -67,6 +67,12 @@ namespace network
   Synchronisable::~Synchronisable(){
   }
   
+  bool Synchronisable::create(){
+    this->classID = this->getIdentifier()->getNetworkID();
+    COUT(4) << "creating synchronisable: setting classid from " << this->getIdentifier()->getName() << " to: " << classID << std::endl;
+    return true;
+  }
+  
   void Synchronisable::setClient(bool b){
     if(b) // client
       state_=0x2;
@@ -150,8 +156,10 @@ namespace network
   * varx: size = varx_size
   * @return data containing all variables and their sizes
   */
-  syncData Synchronisable::getData(unsigned char *mem){
+  syncData Synchronisable::getData(unsigned char *mem, int mode){
     //std::cout << "inside getData" << std::endl;
+    if(mode==0x0)
+      mode=state_;
     if(classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
     this->classID=this->getIdentifier()->getNetworkID();
@@ -166,7 +174,7 @@ namespace network
     int n=0; //offset
     for(i=syncList->begin(); n<datasize && i!=syncList->end(); ++i){
       //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
-      if( ((*i)->mode & state_) == 0 ){
+      if( ((*i)->mode & mode) == 0 ){
         COUT(5) << "not getting data: " << std::endl;
         continue;  // this variable should only be received
       }
@@ -193,7 +201,9 @@ namespace network
   * @param vars data of the variables
   * @return true/false
   */
-  bool Synchronisable::updateData(syncData vars){
+  bool Synchronisable::updateData(syncData vars, int mode){
+    if(mode==0x0)
+      mode=state_;
     unsigned char *data=vars.data;
     std::list<synchronisableVariable *>::iterator i;
     if(syncList->empty()){
@@ -202,9 +212,9 @@ namespace network
     }
     COUT(5) << "Synchronisable: objectID " << vars.objectID << ", classID " << vars.classID << " size: " << vars.length << " synchronising data" << std::endl;
     for(i=syncList->begin(); i!=syncList->end(); i++){
-      if( ((*i)->mode ^ state_) == 0 ){
+      if( ((*i)->mode ^ mode) == 0 ){
         COUT(5) << "synchronisable: not updating variable " << std::endl;
-        continue;  // this variable should only be updated
+        continue;  // this variable should only be set
       }
       COUT(5) << "Synchronisable: element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
       switch((*i)->type){
@@ -229,11 +239,13 @@ namespace network
   * This function returns the total amount of bytes needed by getData to save the whole content of the variables
   * @return amount of bytes
   */
-  int Synchronisable::getSize(){
+  int Synchronisable::getSize(int mode){
     int tsize=0;
+    if(mode==0x0)
+      mode=state_;
     std::list<synchronisableVariable *>::iterator i;
     for(i=syncList->begin(); i!=syncList->end(); i++){
-      if( ((*i)->mode & state_) == 0 )
+      if( ((*i)->mode & mode) == 0 )
         continue;  // this variable should only be received, so dont add its size to the send-size
       switch((*i)->type){
       case DATA:

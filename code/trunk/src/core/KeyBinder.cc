@@ -31,7 +31,9 @@
  @brief Implementation of the different input handlers.
  */
 
-#include "InputHandler.h"
+#include "KeyBinder.h"
+#include <fstream>
+#include <limits.h>
 #include "util/Convert.h"
 #include "util/SubString.h"
 #include "util/String.h"
@@ -39,14 +41,22 @@
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
 #include "CommandExecutor.h"
+#include "ConsoleCommand.h"
 #include "Executor.h"
+// TODO: only needed by the CalibratorCallback class; move to new file
+#include "InputManager.h"
 
 namespace orxonox
 {
   // ###############################
-  // ######      Button       ######
+  // ###  BufferedParamCommand   ###
   // ###############################
 
+  /**
+  * Executes a buffered command. This is used for commands with additional
+  * parameters.
+  * @return True if command execution was successful or value was zero.
+  */
   bool BufferedParamCommand::execute()
   {
     if (nValuesAdded_)
@@ -56,37 +66,80 @@ namespace orxonox
       // reset
       cmd.nValuesAdded_ = 0;
       cmd.value_ = 0;
-      return CommandExecutor::execute(cmd.evaluation_);
+      return cmd.evaluation_.execute();
     }
     else
       return true;
   }
 
+  // ###############################
+  // #####    SimpleCommand    #####
+  // ###############################
+
+  /**
+  * Executes a simple command with no additional paramters.
+  * @return True if command execution was successful, false otherwise.
+  */
   bool SimpleCommand::execute(float abs, float rel)
   {
-    return CommandExecutor::execute(evaluation_);
+    return evaluation_.execute();
   }
 
+  // ###############################
+  // #####    ParamCommand     #####
+  // ###############################
+
+  /**
+  * Executes a parameter command. The commmand string is not directly executed,
+  * but instead stored in a buffer list so that values can be combined.
+  * @return Always true.
+  */
   bool ParamCommand::execute(float abs, float rel)
   {
-    BufferedParamCommand& paramCommand = *paramCommand_;
+    BufferedParamCommand& cmd = *paramCommand_;
     // command has an additional parameter
-    if (bRelative_ && (rel > 0 || rel < 0))
+    if (bRelative_)
     {
-      // we have to calculate a relative movement.
-      // paramModifier_ says how much one keystroke is
-      paramCommand.value_ += paramModifier_ * rel;
+      if (rel != 0.0f)
+      {
+        // we have to calculate a relative movement.
+        // paramModifier_ says how much one keystroke is
+        cmd.value_ += paramModifier_ * rel;
+      }
     }
-    else if (abs > 0 || abs < 0)
+    else if (abs != 0.0f)
     {
-      // we have to calculate absolute position of the axis.
-      // Since there might be another axis that is affected, we have to wait and
-      // store the result in a temporary place
-      paramCommand.value_ = (paramCommand.value_ * paramCommand.nValuesAdded_ + paramModifier_ * abs)
-                            /++paramCommand.nValuesAdded_;
+      // Usually, joy sticks create 'noise' (they return values if they're in 0 position)
+      // and normally this is caught in tickInput(), but that threshold cannot be to high
+      // in order to preserve accuracy. Instead, we have to catch the problem here. An example:
+      // Someone only uses buttons with an active joystick. The joy stick value could then
+      // be 0.05 for instance and the the key value 1. Without handling the problem, the final
+      // value would be computed to (1+0.05)/2=0.5025 which is not what the user expects.
+      float absQ = abs * abs;
+      float valueQ = cmd.value_ * cmd.value_;
+      if (absQ > 50.0f * valueQ) // ease up comparison by using quadratics
+      {
+        cmd.value_ = abs * paramModifier_;
+        cmd.nValuesAdded_ = 1;
+      }
+      else if (absQ * 50.0f < valueQ)
+      {
+        // abs is too small, we just don't do anything
+      }
+      else
+      {
+        // we have to calculate the absolute position of the axis.
+        // Since there might be another axis that is affected, we have to wait and
+        // store the result in a temporary place
+        cmd.value_ = (cmd.value_ * cmd.nValuesAdded_ + paramModifier_ * abs) / ++cmd.nValuesAdded_;
+      }
     }
     return true;
   }
+
+  // ###############################
+  // #####       Button        #####
+  // ###############################
 
   void Button::clear()
   {
@@ -130,7 +183,7 @@ namespace orxonox
       {
         SubString tokens(commandStrings[iCommand], " ", SubString::WhiteSpaces, false,
             '\\', false, '"', false, '(', ')', false, '\0');
-        
+
         unsigned int iToken = 0;
 
         // for real axes, we can feed a ButtonThreshold argument as entire command
@@ -158,7 +211,7 @@ namespace orxonox
         // second argument can be the amplitude for the case it as an axis command
         // default amplitude is 1.0f
         float paramModifier = 1.0f;
-        if (getLowercase(tokens[iToken]) == "axisamp")
+        if (getLowercase(tokens[iToken]) == "scale")
         {
           iToken++;
           if (iToken == tokens.size() || !convertValue(&paramModifier, tokens[iToken]))
@@ -185,19 +238,18 @@ namespace orxonox
           continue;
 
         // check for param command
-        int paramIndex = eval.getEvaluatedExecutor()->getAxisParamIndex();
-        // TODO: check in Executor for correct paramIndex
+        int paramIndex = eval.getConsoleCommand()->getAxisParamIndex();
         if (paramIndex >= 0)
         {
           // parameter supported command
           ParamCommand* cmd = new ParamCommand();
           cmd->paramModifier_ = paramModifier;
-          cmd->bRelative_ = eval.getEvaluatedExecutor()->getIsAxisRelative();
+          cmd->bRelative_ = eval.getConsoleCommand()->getIsAxisRelative();
 
           // add command to the buffer if not yet existing
           for (unsigned int iParamCmd = 0; iParamCmd < paramCommandBuffer.size(); iParamCmd++)
           {
-            if (getLowercase(paramCommandBuffer[iParamCmd]->evaluation_.getCommandString())
+            if (getLowercase(paramCommandBuffer[iParamCmd]->evaluation_.getOriginalCommand())
                 == getLowercase(commandStr))
             {
               // already in list
@@ -219,7 +271,7 @@ namespace orxonox
           {
             if (!addParamCommand(cmd))
             {
-              mode = eval.getEvaluatedExecutor()->getKeybindMode();
+              mode = eval.getConsoleCommand()->getKeybindMode();
               commands[mode].push_back(cmd);
             }
           }
@@ -229,9 +281,8 @@ namespace orxonox
           SimpleCommand* cmd = new SimpleCommand();
           cmd->evaluation_ = eval;
 
-          //TODO: check CommandEvaluation for correct KeybindMode
           if (mode == KeybindMode::None)
-            mode = eval.getEvaluatedExecutor()->getKeybindMode();
+            mode = eval.getConsoleCommand()->getKeybindMode();
 
           commands[mode].push_back(cmd);
         }
@@ -260,6 +311,10 @@ namespace orxonox
     return true;
   }
 
+  // ###############################
+  // #####      HalfAxis       #####
+  // ###############################
+
   void HalfAxis::clear()
   {
     Button::clear();
@@ -269,13 +324,14 @@ namespace orxonox
       for (unsigned int i = 0; i < nParamCommands_; i++)
         delete paramCommands_[i];
       delete[] paramCommands_;
+      nParamCommands_ = 0;
     }
     else
     {
       nParamCommands_ = 0; nParamCommands_ = 0;
     }
   }
-  
+
   bool HalfAxis::addParamCommand(ParamCommand* command)
   {
     ParamCommand** cmds = paramCommands_;
@@ -284,7 +340,8 @@ namespace orxonox
     for (i = 0; i < nParamCommands_ - 1; i++)
       paramCommands_[i] = cmds[i];
     paramCommands_[i] = command;
-    delete[] cmds;
+    if (nParamCommands_ > 1)
+      delete[] cmds;
     return true;
   }
 
@@ -306,6 +363,11 @@ namespace orxonox
   */
   KeyBinder::KeyBinder() : deriveTime_(0.0f)
   {
+    mouseRelative_[0] = 0;
+    mouseRelative_[1] = 0;
+    mousePosition_[0] = 0;
+    mousePosition_[1] = 0;
+
     RegisterObject(KeyBinder);
 
     // keys
@@ -463,8 +525,19 @@ namespace orxonox
   {
     COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
 
-    ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
     clearBindings();
+
+    std::ifstream infile;
+    infile.open("keybindings.ini");
+    if (!infile.is_open())
+    {
+      ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "def_keybindings.ini");
+      ConfigFileManager::getSingleton()->save(CFT_Keybindings, "keybindings.ini");
+    }
+    infile.close();
+    ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
+
+    // parse key bindings
     setConfigValues();
 
     COUT(3) << "KeyBinder: Loading key bindings done." << std::endl;
@@ -475,13 +548,15 @@ namespace orxonox
   */
   void KeyBinder::setConfigValues()
   {
-    SetConfigValue(analogThreshold_, 0.01f)  .description("Threshold for analog axes until which the state is 0.");
-    SetConfigValue(bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
-    SetConfigValue(derivePeriod_, 0.1f)      .description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
-    SetConfigValue(mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
+    SetConfigValueGeneric(KeyBinder, analogThreshold_, 0.01f)  .description("Threshold for analog axes until which the state is 0.");
+    SetConfigValueGeneric(KeyBinder, mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
+    SetConfigValueGeneric(KeyBinder, bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
+    SetConfigValueGeneric(KeyBinder, derivePeriod_, 0.5f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
+    SetConfigValueGeneric(KeyBinder, mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
+    SetConfigValueGeneric(KeyBinder, bClipMouse_, true).description("Whether or not to clip absolute value of mouse in non derive mode.");
 
     float oldThresh = buttonThreshold_;
-    SetConfigValue(buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
+    SetConfigValueGeneric(KeyBinder, buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
     if (oldThresh != buttonThreshold_)
       for (unsigned int i = 0; i < nHalfAxes_s; i++)
         if (halfAxes_[i].buttonThreshold_ == oldThresh)
@@ -504,11 +579,11 @@ namespace orxonox
   void KeyBinder::readTrigger(Button& button)
   {
     // config value stuff
-    ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer(button.name_);
+    ConfigValueContainer* cont = ClassManager<KeyBinder>::getIdentifier()->getConfigValueContainer(button.name_);
     if (!cont)
     {
-      cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), button.name_, "");
-      getIdentifier()->addConfigValueContainer(button.name_, cont);
+      cont = new ConfigValueContainer(CFT_Keybindings, ClassManager<KeyBinder>::getIdentifier(), button.name_, "");
+      ClassManager<KeyBinder>::getIdentifier()->addConfigValueContainer(button.name_, cont);
     }
     std::string old = button.bindingString_;
     cont->getValue(&button.bindingString_);
@@ -516,6 +591,9 @@ namespace orxonox
     // keybinder stuff
     if (old != button.bindingString_)
     {
+      // clear everything so we don't get old axis ParamCommands mixed up
+      button.clear();
+
       // binding has changed
       button.parse(paramCommandBuffer_);
     }
@@ -524,7 +602,7 @@ namespace orxonox
   /**
     @brief Overwrites all bindings with ""
   */
-  void KeyBinder::clearBindings(bool bInit)
+  void KeyBinder::clearBindings()
   {
     for (unsigned int i = 0; i < nKeys_s; i++)
       keys_[i].clear();
@@ -543,10 +621,25 @@ namespace orxonox
     paramCommandBuffer_.clear();
   }
 
-  void KeyBinder::tick(float dt)
+  void KeyBinder::resetJoyStickAxes()
+  {
+    for (unsigned int i = 8; i < nHalfAxes_s; i++)
+    {
+      halfAxes_[i].absVal_ = 0.0f;
+      halfAxes_[i].relVal_ = 0.0f;
+    }
+  }
+
+  void KeyBinder::tickInput(float dt, const HandlerState& state)
   {
     // we have to process all the analog input since there is e.g. no 'mouseDoesntMove' event.
-    for (unsigned int i = 0; i < nHalfAxes_s; i++)
+    unsigned int iBegin = 8;
+    unsigned int iEnd   = 8;
+    if (state.joyStick)
+      iEnd = nHalfAxes_s;
+    if (state.mouse)
+      iBegin = 0;
+    for (unsigned int i = iBegin; i < iEnd; i++)
     {
       if (halfAxes_[i].hasChanged_)
       {
@@ -562,42 +655,51 @@ namespace orxonox
           if (halfAxes_[i].nCommands_[KeybindMode::OnRelease])
             halfAxes_[i].execute(KeybindMode::OnRelease);
         }
-        if (halfAxes_[i].wasDown_)
-        {
-          if (halfAxes_[i].nCommands_[KeybindMode::OnHold])
-            halfAxes_[i].execute(KeybindMode::OnHold);
-        }
         halfAxes_[i].hasChanged_ = false;
+      }
+
+      if (halfAxes_[i].wasDown_)
+      {
+        if (halfAxes_[i].nCommands_[KeybindMode::OnHold])
+          halfAxes_[i].execute(KeybindMode::OnHold);
       }
 
       // these are the actually useful axis bindings for analog input AND output
       if (halfAxes_[i].relVal_ > analogThreshold_ || halfAxes_[i].absVal_ > analogThreshold_)
       {
+        //COUT(3) << halfAxes_[i].name_ << "\t" << halfAxes_[i].absVal_ << std::endl;
         halfAxes_[i].execute();
       }
     }
 
-    if (bDeriveMouseInput_)
+    if (bDeriveMouseInput_ && state.mouse)
     {
       if (deriveTime_ > derivePeriod_)
       {
-        deriveTime_ = 0.0f;
         //CCOUT(3) << "mouse abs: ";
         for (int i = 0; i < 2; i++)
         {
           if (mouseRelative_[i] > 0)
           {
-            halfAxes_[2*i + 0].absVal_ = mouseRelative_[i] * derivePeriod_ / 500 * mouseSensitivity_;
+            halfAxes_[2*i + 0].absVal_ =  mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
             halfAxes_[2*i + 1].absVal_ = 0.0f;
           }
-          else if (mouseRelative_[0] < 0)
+          else if (mouseRelative_[i] < 0)
           {
             halfAxes_[2*i + 0].absVal_ = 0.0f;
-            halfAxes_[2*i + 1].absVal_ = -mouseRelative_[i] * derivePeriod_ / 500 * mouseSensitivity_;
+            halfAxes_[2*i + 1].absVal_ = -mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
+          }
+          else
+          {
+            halfAxes_[2*i + 0].absVal_ = 0.0f;
+            halfAxes_[2*i + 1].absVal_ = 0.0f;
           }
           //COUT(3) << mouseRelative_[i] << " | ";
           mouseRelative_[i] = 0;
+          halfAxes_[2*i + 0].hasChanged_ = true;
+          halfAxes_[2*i + 1].hasChanged_ = true;
         }
+        deriveTime_ = 0.0f;
         //COUT(3) << std::endl;
       }
       else
@@ -609,8 +711,9 @@ namespace orxonox
       paramCommandBuffer_[i]->execute();
 
     // always reset the relative movement of the mouse
-    for (unsigned int i = 0; i < 8; i++)
-      halfAxes_[i].relVal_ = 0.0f;
+    if (state.mouse)
+      for (unsigned int i = 0; i < 8; i++)
+        halfAxes_[i].relVal_ = 0.0f;
   }
 
   void KeyBinder::keyPressed (const KeyEvent& evt)
@@ -648,57 +751,54 @@ namespace orxonox
   */
   void KeyBinder::mouseMoved(IntVector2 abs_, IntVector2 rel_, IntVector2 clippingSize)
   {
+    // y axis of mouse input is inverted
+    int rel[] = { rel_.x, -rel_.y };
+
     if (!bDeriveMouseInput_)
     {
-      // y axis of mouse input is inverted
-      int rel[] = { rel_.x, -rel_.y };
-
-      //COUT(3) << rel[0] << " | " << rel[1] << std::endl;
-
       for (int i = 0; i < 2; i++)
       {
         if (rel[i])
         {
           // absolute
-          if (mousePosition_[i] >= 0)
+          halfAxes_[2*i + 0].hasChanged_ = true;
+          halfAxes_[2*i + 1].hasChanged_ = true;
+          mousePosition_[i] += rel[i];
+
+          if (bClipMouse_)
           {
-            mousePosition_[i] += rel[i];
-            halfAxes_[0 + 2*i].hasChanged_ = true;
-            if (mousePosition_[i] < 0)
-            {
-              halfAxes_[1 + 2*i].hasChanged_ = true;
-              halfAxes_[1 + 2*i].absVal_ = -((float)mousePosition_[i])/1024 * mouseSensitivity_;
-              halfAxes_[0 + 2*i].absVal_ =  0.0f;
-            }
-            else
-              halfAxes_[1 + 2*i].absVal_ =  ((float)mousePosition_[i])/1024 * mouseSensitivity_;
-          }
-          else
-          {
-            mousePosition_[i] += rel[i];
-            halfAxes_[1 + 2*i].hasChanged_ = true;
-            if (mousePosition_[i] > 0)
-            {
-              halfAxes_[0 + 2*i].hasChanged_ = true;
-              halfAxes_[0 + 2*i].absVal_ =  ((float)mousePosition_[i])/1024 * mouseSensitivity_;
-              halfAxes_[1 + 2*i].absVal_ =  0.0f;
-            }
-            else
-              halfAxes_[1 + 2*i].absVal_ = -((float)mousePosition_[i])/1024 * mouseSensitivity_;
+            if (mousePosition_[i] > 1024)
+              mousePosition_[i] =  1024;
+            if (mousePosition_[i] < -1024)
+              mousePosition_[i] = -1024;
           }
 
-          // relative
-          if (rel[i] > 0)
-            halfAxes_[0 + 2*i].relVal_ =  ((float)rel[i])/1024 * mouseSensitivity_;
+          if (mousePosition_[i] >= 0)
+          {
+            halfAxes_[2*i + 0].absVal_ =   mousePosition_[i]/1024.0f * mouseSensitivity_;
+            halfAxes_[2*i + 1].absVal_ =  0.0f;
+          }
           else
-            halfAxes_[1 + 2*i].relVal_ = -((float)rel[i])/1024 * mouseSensitivity_;
+          {
+            halfAxes_[2*i + 0].absVal_ =  0.0f;
+            halfAxes_[2*i + 1].absVal_ =  -mousePosition_[i]/1024.0f * mouseSensitivity_;
+          }
         }
       }
     }
     else
     {
-      mouseRelative_[0] += rel_.x;
-      mouseRelative_[1] -= rel_.y;
+      mouseRelative_[0] += rel[0];
+      mouseRelative_[1] += rel[1];
+    }
+
+    // relative
+    for (int i = 0; i < 2; i++)
+    {
+      if (rel[i] > 0)
+        halfAxes_[0 + 2*i].relVal_ =  ((float)rel[i])/1024 * mouseSensitivity_;
+      else
+        halfAxes_[1 + 2*i].relVal_ = -((float)rel[i])/1024 * mouseSensitivity_;
     }
   }
 
@@ -718,94 +818,91 @@ namespace orxonox
         mouseButtons_[9].execute(KeybindMode::OnPress, ((float)abs)/120.0f);
   }
 
-  void KeyBinder::joyStickAxisMoved(int joyStickID, int axis, int value)
+  void KeyBinder::joyStickAxisMoved(int joyStickID, int axis, float value)
   {
-    // TODO: check whether 16 bit integer as general axis value is a good idea (works under windows)
-    CCOUT(3) << halfAxes_[8 + axis].name_ << std::endl;
+    // TODO: Use proper calibration values instead of generally 16-bit integer
+    int i = 8 + axis * 2;
     if (value >= 0)
     {
-      halfAxes_[8 + axis].absVal_ = ((float)value)/0x8000;
-      halfAxes_[8 + axis].relVal_ = ((float)value)/0x8000;
-      halfAxes_[8 + axis].hasChanged_ = true;
+      //if (value > 10000)
+      //{ CCOUT(3) << halfAxes_[i].name_ << std::endl; }
+
+      halfAxes_[i].absVal_ = value;
+      halfAxes_[i].relVal_ = value;
+      halfAxes_[i].hasChanged_ = true;
+      if (halfAxes_[i + 1].absVal_ > 0.0f)
+      {
+        halfAxes_[i + 1].absVal_ = -0.0f;
+        halfAxes_[i + 1].relVal_ = -0.0f;
+        halfAxes_[i + 1].hasChanged_ = true;
+      }
     }
     else
     {
-      halfAxes_[8 + axis + 1].absVal_ = -((float)value)/0x8000;
-      halfAxes_[8 + axis + 1].relVal_ = -((float)value)/0x8000;
-      halfAxes_[8 + axis + 1].hasChanged_ = true;
+      //if (value < -10000)
+      //{ CCOUT(3) << halfAxes_[i + 1].name_ << std::endl; }
+
+      halfAxes_[i + 1].absVal_ = -value;
+      halfAxes_[i + 1].relVal_ = -value;
+      halfAxes_[i + 1].hasChanged_ = true;
+      if (halfAxes_[i].absVal_ > 0.0f)
+      {
+        halfAxes_[i].absVal_ = -0.0f;
+        halfAxes_[i].relVal_ = -0.0f;
+        halfAxes_[i].hasChanged_ = true;
+      }
     }
   }
 
 
   // ###############################
-  // ###     GUIInputHandler     ###
+  // #####     KeyDetector     #####
   // ###############################
 
-  ///**
-  //  @brief standard constructor
-  //*/
-  //GUIInputHandler::GUIInputHandler()
-  //{
-  //}
+  /**
+    @brief Constructor
+  */
+  KeyDetector::KeyDetector()
+  {
+    RegisterObject(KeyDetector);
+  }
 
-  ///**
-  //  @brief Destructor
-  //*/
-  //GUIInputHandler::~GUIInputHandler()
-  //{
-  //}
+  /**
+    @brief Destructor
+  */
+  KeyDetector::~KeyDetector()
+  {
+  }
 
-  ///**
-  //  @brief Event handler for the keyPressed Event.
-  //  @param e Event information
-  //*/
-  //bool GUIInputHandler::keyPressed(const OIS::KeyEvent &e)
-  //{
-    ////CEGUI::System::getSingleton().injectKeyDown( arg.key );
-    ////CEGUI::System::getSingleton().injectChar( arg.text );
-  //  return true;
-  //}
+  /**
+    @brief Loads the key and button bindings.
+    @return True if loading succeeded.
+  */
+  void KeyDetector::loadBindings()
+  {
+    clearBindings();
+    setConfigValues();
+  }
 
-  ///**
-  //  @brief Event handler for the keyReleased Event.
-  //  @param e Event information
-  //*/
-  //bool GUIInputHandler::keyReleased(const OIS::KeyEvent &e)
-  //{
-    ////CEGUI::System::getSingleton().injectKeyUp( arg.key );
-  //  return true;
-  //}
+  void KeyDetector::readTrigger(Button& button)
+  {
+    SimpleCommand* cmd = new SimpleCommand();
+    cmd->evaluation_ = CommandExecutor::evaluate("storeKeyStroke " + button.name_);
+    button.commands_[KeybindMode::OnPress] = new BaseCommand*[1];
+    button.commands_[KeybindMode::OnPress][0] = cmd;
+    button.nCommands_[KeybindMode::OnPress] = 1;
+  }
 
-  ///**
-  //  @brief Event handler for the mouseMoved Event.
-  //  @param e Event information
-  //*/
-  //bool GUIInputHandler::mouseMoved(const OIS::MouseEvent &e)
-  //{
-    ////CEGUI::System::getSingleton().injectMouseMove( arg.state.X.rel, arg.state.Y.rel );
-  //  return true;
-  //}
 
-  ///**
-  //  @brief Event handler for the mousePressed Event.
-  //  @param e Event information
-  //  @param id The ID of the mouse button
-  //*/
-  //bool GUIInputHandler::mousePressed(const OIS::MouseEvent &e, OIS::MouseButton id)
-  //{
-    ////CEGUI::System::getSingleton().injectMouseButtonDown(convertOISMouseButtonToCegui(id));
-  //  return true;
-  //}
+  // ###############################
+  // ##### CalibratorCallback  #####
+  // ###############################
 
-  ///**
-  //  @brief Event handler for the mouseReleased Event.
-  //  @param e Event information
-  //  @param id The ID of the mouse button
-  //*/
-  //bool GUIInputHandler::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButton id)
-  //{
-    ////CEGUI::System::getSingleton().injectMouseButtonUp(convertOISMouseButtonToCegui(id));
-  //  return true;
-  //}
-
+  void CalibratorCallback::keyPressed(const orxonox::KeyEvent &evt)
+  {
+    if (evt.key == KeyCode::Return)
+    {
+      InputManager::setInputState(InputManager::IS_NOCALIBRATE);
+    }
+  }
 }

@@ -40,15 +40,15 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport SpaceShip : public Model, public MouseHandler
+    class _OrxonoxExport SpaceShip : public Model
     {
         public:
-          
+
             static SpaceShip *getLocalShip();
-            
+
             SpaceShip();
             ~SpaceShip();
-            bool create();
+            virtual bool create();
             void registerAllVariables();
             void init();
             void setConfigValues();
@@ -63,27 +63,51 @@ namespace orxonox
             void setRotAcc(float value);
             void setTransDamp(float value);
             void setRotDamp(float value);
-
             void getFocus();
-            static SpaceShip* instance_s;
-            static Vector3 getSPosition();
-            static Quaternion getSOrientation();
+
             static std::string whereAmI();
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
 
-            void mouseButtonPressed (MouseButton::Enum id);
-            void mouseButtonReleased(MouseButton::Enum id);
-            void mouseButtonHeld    (MouseButton::Enum id) { }
-            void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
-            void mouseScrolled      (int abs, int rel) { }
+            static void movePitch(float value);
+            static void moveYaw(float value);
+            static void moveRoll(float value);
+            static void moveLongitudinal(float value);
+            static void moveLateral(float value);
+            static void fire();
+            void setMovePitch(float value);
+            void setMoveYaw(float value);
+            void setMoveRoll(float value);
+            void setMoveLongitudinal(float value);
+            void setMoveLateral(float value);
+            void doFire();
 
             float getMaxSpeed();
+            Vector3 getDir();
+            Vector3 getOrth();
+            Camera* getCamera();
+
+            int getTeamNr() const
+                { return this->teamNr_; }
+            int getHealth() const
+                { return this->health_; }
+
+            bool getMyShip(){return myShip_;}
+
+        protected:
+            void setTeamNr(int teamNr)
+                { this->teamNr_ = teamNr; }
 
         private:
             void createCamera();
+            virtual ColourValue getProjectileColour() const
+                { return ColourValue(1.0, 1.0, 0.5); }
 
             Vector3 testvector_;
+            Vector3 initialDir_;
+            Vector3 currentDir_;
+            Vector3 initialOrth_;
+            Vector3 currentOrth_;
             bool bInvertYAxis_;
             bool setMouseEventCallback_;
             bool bLMousePressed_;
@@ -129,7 +153,14 @@ namespace orxonox
             float mouseY_;
 
             float emitterRate_;
-            bool server_;
+
+        protected:
+            bool myShip_;
+
+            int teamNr_;
+            int health_;
+
+            static SpaceShip* instance_s;
     };
 }
 

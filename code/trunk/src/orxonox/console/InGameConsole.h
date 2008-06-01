@@ -22,7 +22,7 @@
  *   Author:
  *      Felix Schulthess
  *   Co-authors:
- *      ...
+ *      Fabian 'x3n' Landau
  *
  */
 
@@ -36,46 +36,69 @@
 #include <OgreTextAreaOverlayElement.h>
 
 #include "core/Tickable.h"
-#include "core/InputBuffer.h"
+#include "core/Shell.h"
 
 
 namespace orxonox
 {
-    class _OrxonoxExport InGameConsole : public InputBufferListener
+    class _OrxonoxExport InGameConsole : public TickableReal, public ShellListener
     {
         public:
-            InGameConsole(InputBuffer* ib);
-            ~InGameConsole();
-            void listen();
-            void execute();
-            void hintandcomplete();
-            void clear();
-            void removeLast();
-            void exit();
-            void init();
+            static InGameConsole& getInstance();
+
+            void setConfigValues();
             void tick(float dt);
+
             void activate();
             void deactivate();
+            void resize();
+
+            static void openConsole();
+            static void closeConsole();
 
         private:
-            void resize();
-            void print(Ogre::UTFString s);
-            void newline();
-            Ogre::UTFString convert2UTF(std::string s);
+            InGameConsole();
+            InGameConsole(const InGameConsole& other);
+            ~InGameConsole();
 
-            int windowW;
-            int windowH;
-            int scroll;
-            float scrollTimer;
-            float cursor;
-            bool active;
-            InputBuffer* ib_;
-            Ogre::OverlayManager* om;
-            Ogre::Overlay* consoleOverlay;
-            Ogre::OverlayContainer* consoleOverlayContainer;
-            Ogre::PanelOverlayElement* consoleOverlayNoise;
-            Ogre::BorderPanelOverlayElement* consoleOverlayBorder;
-            Ogre::TextAreaOverlayElement** consoleOverlayTextAreas;
+            virtual void linesChanged();
+            virtual void onlyLastLineChanged();
+            virtual void lineAdded();
+            virtual void inputChanged();
+            virtual void cursorChanged();
+            virtual void exit();
+
+            void init();
+            void shiftLines();
+            void colourLine(int colourcode, int index);
+            void setCursorPosition(int pos);
+            void print(const std::string& text, int index, bool alwaysShift = false);
+            static Ogre::UTFString convert2UTF(std::string s);
+
+            static float REL_WIDTH;
+            static float REL_HEIGHT;
+            static float BLINK;
+
+            int windowW_;
+            int windowH_;
+            int desiredTextWidth_;
+            unsigned int maxCharsPerLine_;
+            unsigned int numLinesShifted_;
+            int scroll_;
+            float scrollTimer_;
+            float cursor_;
+            unsigned int inputWindowStart_;
+            char cursorSymbol_;
+            bool active_;
+            bool bShowCursor_;
+            std::string displayedText_;
+            Ogre::OverlayManager* om_;
+            Ogre::Overlay* consoleOverlay_;
+            Ogre::OverlayContainer* consoleOverlayContainer_;
+            Ogre::PanelOverlayElement* consoleOverlayNoise_;
+            Ogre::PanelOverlayElement* consoleOverlayCursor_;
+            Ogre::BorderPanelOverlayElement* consoleOverlayBorder_;
+            Ogre::TextAreaOverlayElement** consoleOverlayTextAreas_;
     };
 }
 

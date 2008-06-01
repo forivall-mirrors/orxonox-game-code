@@ -107,8 +107,8 @@ bool isBetweenQuotes(const std::string& str, unsigned int pos)
         return false;
 
     unsigned int quotecount = 0;
-    unsigned int quote = 0;
-    while ((quote = getNextQuote(str, quote)) < pos)
+    unsigned int quote = (unsigned int)-1;
+    while ((quote = getNextQuote(str, quote + 1)) < pos)
     {
         quotecount++;
     }
@@ -184,6 +184,21 @@ std::string stripEnclosingQuotes(const std::string& str)
         return str.substr(start + 1, end - start - 1);
     else
         return str;
+}
+
+/**
+    @brief Removes enclosing {braces}.
+    @param str The string to strip
+    @return The striped string
+*/
+std::string stripEnclosingBraces(const std::string& str)
+{
+    std::string output = str;
+
+    while (output.size() >= 2 && output[0] == '{' && output[output.size() - 1] == '}')
+        output = output.substr(1, output.size() - 2);
+
+    return output;
 }
 
 /**

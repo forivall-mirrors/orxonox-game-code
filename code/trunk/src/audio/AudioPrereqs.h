@@ -34,7 +34,7 @@
 #ifndef _AudioPrereqs_H__
 #define _AudioPrereqs_H__
 
-#include "OrxonoxPlatform.h"
+#include "util/OrxonoxPlatform.h"
 
 //-----------------------------------------------------------------------
 // Shared library settings

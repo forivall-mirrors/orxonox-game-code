@@ -78,6 +78,12 @@ namespace orxonox
             delete this->particle_;
         }
     };
+    
+    /*bool Explosion::create(){
+      if(!WorldEntity::create())
+        return false;
+      classID=this->getIdentifier()->getNetworkID();
+    }*/
 
     void Explosion::destroyObject()
     {

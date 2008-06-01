@@ -34,7 +34,7 @@
 #ifndef _CorePrereqs_H__
 #define _CorePrereqs_H__
 
-#include "OrxonoxPlatform.h"
+#include "util/OrxonoxPlatform.h"
 
 #include <string>
 
@@ -65,8 +65,6 @@ class SignalHandler;
 
 namespace orxonox
 {
-#ifndef _XMLPort_Mode__
-#define _XMLPort_Mode__
   namespace XMLPort
   {
     enum Mode
@@ -75,7 +73,6 @@ namespace orxonox
       SaveObject
     };
   }
-#endif
 
   namespace KeybindMode
   {
@@ -90,6 +87,8 @@ namespace orxonox
 
   typedef std::string LanguageEntryLabel;
 
+  class ArgumentCompleter;
+  class ArgumentCompletionListElement;
   class BaseFactory;
   class BaseMetaObjectListElement;
   class BaseObject;
@@ -111,6 +110,7 @@ namespace orxonox
   class ConfigFileManager;
   class ConfigFileSection;
   class ConfigValueContainer;
+  class ConsoleCommand;
   class CoreSettings;
   class Error;
   class Executor;
@@ -124,6 +124,7 @@ namespace orxonox
   class FunctorStatic;
   class Identifier;
   class IdentifierDistributor;
+  class IRC;
   template <class T>
   class Iterator;
   class Language;
@@ -140,11 +141,16 @@ namespace orxonox
   template <class T>
   class ObjectListElement;
   class OrxonoxClass;
+  class OutputBuffer;
+  class OutputBufferListener;
   class OutputHandler;
   class Shell;
+  class ShellListener;
   template <class T>
   class SubclassIdentifier;
   class TclBind;
+  struct TclInterpreterBundle;
+  class TclThreadManager;
   class Tickable;
   template <class T, class O>
   class XMLPortClassObjectContainer;
@@ -155,12 +161,14 @@ namespace orxonox
 
   // input
   //class GUIInputHandler;
+  class Calibrator;
+  class CalibratorCallback;
   class InputBuffer;
   class InputBufferListener;
   class InputManager;
   class JoyStickHandler;
   class KeyBinder;
-  class KeyHandler;
+  class KeyDetector;
   class MouseHandler;
 
 }
