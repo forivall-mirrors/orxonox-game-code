@@ -45,6 +45,7 @@
 #include "core/BaseObject.h"
 #include "objects/SpaceShip.h"
 #include "util/Math.h"
+#include "util/Sleep.h"
 #include "ClientInformation.h"
 #include "ConnectionManager.h"
 #include "Synchronisable.h"
