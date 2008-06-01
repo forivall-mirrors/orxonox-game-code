@@ -83,12 +83,6 @@ namespace orxonox {
             static GraphicsEngine& getSingleton();
             static GraphicsEngine* getSingletonPtr() { return &getSingleton(); }
 
-            //HACK!!!
-            //void static CompositorBloomOn();
-            //void static CompositorBloomOff();
-            //void static CompositorMotionBlurOn();
-            //void static CompositorMotionBlurOff();
-
 
         private:
             // don't mess with singletons
