@@ -39,7 +39,7 @@
 #include <OgreConfigFile.h>
 #include <OgreLogManager.h>
 #include <OgreTextureManager.h>
-#include "core/InputManager.h"
+#include "core/input/InputManager.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"

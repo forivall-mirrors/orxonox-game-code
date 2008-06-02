@@ -31,8 +31,8 @@
 #include <iostream>
 
 #include "util/Clipboard.h"
-#include "CoreIncludes.h"
-#include "ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 
 namespace orxonox
 {

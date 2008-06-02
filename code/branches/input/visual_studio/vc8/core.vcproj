@@ -279,15 +279,15 @@
 				Name="input"
 				>
 				<File
-					RelativePath="..\..\src\core\InputBuffer.cc"
+					RelativePath="..\..\src\core\input\InputBuffer.cc"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\InputManager.cc"
+					RelativePath="..\..\src\core\input\InputManager.cc"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\KeyBinder.cc"
+					RelativePath="..\..\src\core\input\KeyBinder.cc"
 					>
 				</File>
 			</Filter>
@@ -381,19 +381,19 @@
 				Name="input"
 				>
 				<File
-					RelativePath="..\..\src\core\InputBuffer.h"
+					RelativePath="..\..\src\core\input\InputBuffer.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\InputInterfaces.h"
+					RelativePath="..\..\src\core\input\InputInterfaces.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\InputManager.h"
+					RelativePath="..\..\src\core\input\InputManager.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\KeyBinder.h"
+					RelativePath="..\..\src\core\input\KeyBinder.h"
 					>
 				</File>
 			</Filter>

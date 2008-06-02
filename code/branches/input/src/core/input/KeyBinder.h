@@ -34,15 +34,15 @@
 #ifndef _KeyBinder_H__
 #define _KeyBinder_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <string>
 #include <vector>
 
 #include "ois/OIS.h"
 #include "util/Math.h"
-#include "OrxonoxClass.h"
-#include "CommandEvaluation.h"
+#include "core/OrxonoxClass.h"
+#include "core/CommandEvaluation.h"
 #include "InputInterfaces.h"
 
 namespace orxonox

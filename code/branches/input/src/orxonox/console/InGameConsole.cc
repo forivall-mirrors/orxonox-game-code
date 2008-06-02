@@ -41,7 +41,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
-#include "core/InputManager.h"
+#include "core/input/InputManager.h"
 #include "util/Math.h"
 #include "GraphicsEngine.h"
 

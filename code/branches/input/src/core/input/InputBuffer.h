@@ -29,13 +29,13 @@
 #ifndef _InputBuffer_H__
 #define _InputBuffer_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <string>
 #include <list>
 
+#include "core/OrxonoxClass.h"
 #include "InputInterfaces.h"
-#include "OrxonoxClass.h"
 
 namespace orxonox
 {

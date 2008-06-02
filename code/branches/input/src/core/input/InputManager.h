@@ -35,14 +35,14 @@
 #ifndef _InputManager_H__
 #define _InputManager_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <map>
 #include <vector>
 
 #include "ois/OIS.h"
 #include "util/Math.h"
-#include "Tickable.h"
+#include "core/Tickable.h"
 #include "InputInterfaces.h"
 
 namespace orxonox

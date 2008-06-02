@@ -37,12 +37,12 @@
 #include "util/Convert.h"
 #include "util/SubString.h"
 #include "util/String.h"
-#include "Debug.h"
-#include "ConfigValueIncludes.h"
-#include "CoreIncludes.h"
-#include "CommandExecutor.h"
-#include "ConsoleCommand.h"
-#include "Executor.h"
+#include "core/Debug.h"
+#include "core/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
+#include "core/CommandExecutor.h"
+#include "core/ConsoleCommand.h"
+#include "core/Executor.h"
 // TODO: only needed by the CalibratorCallback class; move to new file
 #include "InputManager.h"
 

@@ -57,7 +57,7 @@
 #include "core/Debug.h"
 #include "core/Loader.h"
 #include "core/Tickable.h"
-#include "core/InputManager.h"
+#include "core/input/InputManager.h"
 #include "core/TclBind.h"
 
 // audio

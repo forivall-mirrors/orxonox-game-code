@@ -9,10 +9,7 @@ SET(CORE_SRC_FILES
   Factory.cc
   Identifier.cc
   IdentifierDistributor.cc
-  InputManager.cc
-  KeyBinder.cc
   OutputBuffer.cc
-  InputBuffer.cc
   Shell.cc
   CommandExecutor.cc
   CommandEvaluation.cc
@@ -33,6 +30,9 @@ SET(CORE_SRC_FILES
   XMLPort.cc
   TclThreadManager.cc
   IRC.cc
+  input/InputBuffer.cc
+  input/InputManager.cc
+  input/KeyBinder.cc
   tolua/tolua_bind.cc
 )
 

@@ -41,7 +41,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
 #include "GraphicsEngine.h"
-#include "core/InputManager.h"
+#include "core/input/InputManager.h"
 #include "particle/ParticleInterface.h"
 #include "Projectile.h"
 #include "RotatingProjectile.h"
