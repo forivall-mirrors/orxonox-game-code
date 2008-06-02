@@ -43,6 +43,7 @@
 #include <utility>
 #include <iostream>
 #include <zlib.h>
+#include <assert.h>
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
@@ -472,8 +473,10 @@ namespace network
     
     if(gamestateID == GAMESTATEID_INITIAL){
       temp->setGameStateID(GAMESTATEID_INITIAL);
-      if(curid!=GAMESTATEID_INITIAL)
+      if(curid!=GAMESTATEID_INITIAL){
+        assert(gameStateUsed.find(curid)!=gameStateUsed.end());
         --(gameStateUsed.find(curid)->second);
+      }
       return;
     }
     if(curid > gamestateID)
@@ -483,10 +486,16 @@ namespace network
     // decrease usage of gamestate and save it
 //     deleteUnusedGameState(curid);
     //increase gamestateused
-    if(curid!=GAMESTATEID_INITIAL)
-      --(gameStateUsed.find(curid)->second);
-    ++(gameStateUsed.find(gamestateID)->second);
-    temp->setGameStateID(gamestateID);
+    std::map<int, int>::iterator it = gameStateUsed.find(curid);
+    if(curid!=GAMESTATEID_INITIAL){
+      if(it!=gameStateUsed.end())
+        --(it->second);
+    }
+    it = gameStateUsed.find(gamestateID);
+    if(it!=gameStateUsed.end()){
+      ++(it->second);
+      temp->setGameStateID(gamestateID);
+    }
     /*
     GameState *old = clientGameState[clientID];
     deleteUnusedGameState(old);
