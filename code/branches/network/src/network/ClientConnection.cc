@@ -56,7 +56,7 @@ namespace network
     quit=false;
     server=NULL;
     enet_address_set_host(&serverAddress, address.c_str());
-    serverAddress.port = NETWORK_PORT;
+    serverAddress.port = port;
     established=false;
   }
 
@@ -64,7 +64,7 @@ namespace network
     quit=false;
     server=NULL;
     enet_address_set_host(&serverAddress, address);
-    serverAddress.port = NETWORK_PORT;
+    serverAddress.port = port;
     established=false;
   }
 
