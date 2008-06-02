@@ -32,7 +32,7 @@
 */
 
 #include "OutputHandler.h"
-#include "CoreSettings.h"
+#include "Core.h"
 #include "ConsoleCommand.h"
 #include "Shell.h"
 
@@ -82,7 +82,7 @@ namespace orxonox
     */
     int OutputHandler::getSoftDebugLevel(OutputHandler::OutputDevice device)
     {
-        return CoreSettings::getSoftDebugLevel(device);
+        return Core::getSoftDebugLevel(device);
     }
 
     /**

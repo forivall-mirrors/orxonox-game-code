@@ -255,6 +255,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\Tickable.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\WorldEntity.cc"
 					>
 				</File>
@@ -538,6 +542,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\SpaceShipAI.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\Tickable.h"
 					>
 				</File>
 				<File

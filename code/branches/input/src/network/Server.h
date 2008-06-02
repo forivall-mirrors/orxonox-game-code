@@ -45,7 +45,6 @@
 
 #include <string>
 
-#include "core/Tickable.h"
 #include "PacketManager.h"
 
 
@@ -56,7 +55,7 @@ namespace network
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
   */
-  class _NetworkExport Server : public PacketDecoder, public orxonox::Tickable{
+  class _NetworkExport Server : public PacketDecoder{
   public:
     Server();
     Server(int port);

@@ -111,7 +111,7 @@ namespace orxonox
   class ConfigFileSection;
   class ConfigValueContainer;
   class ConsoleCommand;
-  class CoreSettings;
+  class Core;
   class Error;
   class Executor;
   template <class T>

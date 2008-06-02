@@ -42,7 +42,7 @@
 
 #include "ois/OIS.h"
 #include "util/Math.h"
-#include "core/Tickable.h"
+#include "core/OrxonoxClass.h"
 #include "InputInterfaces.h"
 
 namespace orxonox
@@ -88,7 +88,7 @@ namespace orxonox
     @brief Captures and distributes mouse and keyboard input.
   */
   class _CoreExport InputManager
-        : public TickableReal,
+        : public OrxonoxClass,
           public OIS::KeyListener, public OIS::MouseListener, public OIS::JoyStickListener
   {
   public: // enumerations
@@ -142,6 +142,8 @@ namespace orxonox
 
     static void calibrate();
 
+    static void tick(float dt);
+
     static bool addKeyHandler                 (KeyHandler* handler, const std::string& name);
     static bool removeKeyHandler              (const std::string& name);
     static KeyHandler* getKeyHandler          (const std::string& name);
@@ -190,7 +192,7 @@ namespace orxonox
     void _fireAxis(unsigned int iJoyStick, int axis, int value);
     unsigned int _getJoystick(const OIS::JoyStickEvent& arg);
 
-    void tick(float dt);
+    void _tick(float dt);
 
     // input events
     bool mousePressed  (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);

@@ -156,7 +156,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\CoreSettings.cc"
+				RelativePath="..\..\src\core\Core.cc"
 				>
 			</File>
 			<File
@@ -185,10 +185,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\SignalHandler.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Tickable.cc"
 				>
 			</File>
 			<Filter
@@ -350,11 +346,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\CorePrereqs.h"
+				RelativePath="..\..\src\core\Core.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\CoreSettings.h"
+				RelativePath="..\..\src\core\CorePrereqs.h"
 				>
 			</File>
 			<File
@@ -391,10 +387,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\SignalHandler.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Tickable.h"
 				>
 			</File>
 			<Filter

@@ -498,7 +498,7 @@ namespace orxonox
     @brief Updates the InputManager. Tick is called by Orxonox.
     @param dt Delta time
   */
-  void InputManager::tick(float dt)
+  void InputManager::_tick(float dt)
   {
     if (state_ == IS_UNINIT)
       return;
@@ -648,7 +648,7 @@ namespace orxonox
     for (unsigned int iHandler = 0; iHandler < activeHandlers_.size(); iHandler++)
       activeHandlers_[iHandler].first->tickInput(dt, activeHandlers_[iHandler].second);
   }
-
+    
   void InputManager::_completeCalibration()
   {
     for (unsigned int i = 0; i < 24; i++)
@@ -1138,6 +1138,11 @@ namespace orxonox
   void InputManager::calibrate()
   {
     _getSingleton().setInputState(IS_CALIBRATE);
+  }
+
+  void InputManager::tick(float dt)
+  {
+    _getSingleton()._tick(dt);
   }
 
   // ###### KeyHandler ######

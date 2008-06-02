@@ -26,9 +26,10 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
 #include "Tickable.h"
-#include "CoreIncludes.h"
-#include "ConsoleCommand.h"
+#include "core/CoreIncludes.h"
+#include "core/ConsoleCommand.h"
 
 namespace orxonox
 {

@@ -3,7 +3,7 @@ SET(CORE_SRC_FILES
   ClassTreeMask.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc
-  CoreSettings.cc
+  Core.cc
   Error.cc
   Executor.cc
   Factory.cc
@@ -26,7 +26,6 @@ SET(CORE_SRC_FILES
   Script.cc
   SignalHandler.cc
   TclBind.cc
-  Tickable.cc
   XMLPort.cc
   TclThreadManager.cc
   IRC.cc

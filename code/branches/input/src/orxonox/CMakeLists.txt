@@ -28,6 +28,7 @@ SET( ORXONOX_SRC_FILES
   objects/Skybox.cc
   objects/SpaceShip.cc
   objects/SpaceShipAI.cc
+  objects/Tickable.cc
   objects/WorldEntity.cc
 
 #  objects/weapon/AmmunitionDump.cc

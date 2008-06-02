@@ -30,7 +30,7 @@
 #include "CommandExecutor.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
-#include "CoreSettings.h"
+#include "Core.h"
 #include "ConsoleCommand.h"
 #include "input/InputInterfaces.h"
 
@@ -66,10 +66,10 @@ namespace orxonox
 
     Shell& Shell::createShell()
     {
-        int level = CoreSettings::getSoftDebugLevel(OutputHandler::LD_Shell);
-        CoreSettings::setSoftDebugLevel(OutputHandler::LD_Shell, -1);
+        int level = Core::getSoftDebugLevel(OutputHandler::LD_Shell);
+        Core::setSoftDebugLevel(OutputHandler::LD_Shell, -1);
         static Shell instance;
-        CoreSettings::setSoftDebugLevel(OutputHandler::LD_Shell, level);
+        Core::setSoftDebugLevel(OutputHandler::LD_Shell, level);
         return instance;
     }
 
