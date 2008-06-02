@@ -41,7 +41,7 @@
     SetConsoleCommandGeneric(classname##function##consolecommand__, classname, orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), #function), bCreateShortcut)
 
 #define SetConsoleCommandGeneric(fakevariable, classname, command, bCreateShortcut) \
-    ConsoleCommand& fakevariable = ClassManager<classname>::getIdentifier()->addConsoleCommand(command, bCreateShortcut)
+    orxonox::ConsoleCommand& fakevariable = orxonox::ClassManager<classname>::getIdentifier()->addConsoleCommand(command, bCreateShortcut)
 
 
 #define SetConsoleCommandShortcut(classname, function) \
@@ -51,7 +51,7 @@
     SetConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createConsoleCommand(orxonox::createFunctor(&function), #function))
 
 #define SetConsoleCommandShortcutGeneric(fakevariable, command) \
-    ConsoleCommand& fakevariable = CommandExecutor::addConsoleCommandShortcut(command)
+    orxonox::ConsoleCommand& fakevariable = orxonox::CommandExecutor::addConsoleCommandShortcut(command)
 
 
 namespace orxonox

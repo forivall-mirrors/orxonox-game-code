@@ -74,7 +74,7 @@ namespace network
     bool establishConnection();
     bool closeConnection();
 
-    bool sendChat( std::string message );
+    static void Chat( std::string message );
     
     int getShipID(){return shipID_;}
     int getClientID(){return clientID_;}
@@ -95,10 +95,12 @@ namespace network
     bool isConnected;
     bool isSynched_;
 
+    bool sendChat( std::string message );
+    
     // implement data processing functions of PacketDecoder
     void processGamestate( GameStateCompressed *data, int clientID);
     void processClassid(classid *clid);
-    void processChat( chat *data);
+    void processChat( chat *data, int clientId );
     bool processWelcome( welcome *w );
     int clientID_;     // this is the id the server gave to us
     int shipID_;
