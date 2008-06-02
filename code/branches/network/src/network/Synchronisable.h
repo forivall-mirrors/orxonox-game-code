@@ -26,17 +26,6 @@
  *
  */
 
-//
-// C++ Interface: synchronisable
-//
-// Description:
-//
-//
-// Author:  Oliver Scheuss, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef _Synchronisable_H__
 #define _Synchronisable_H__
 
@@ -44,6 +33,7 @@
 
 #include <list>
 #include "core/OrxonoxClass.h"
+#include "NetworkCallback.h"
 
 namespace network
 {
@@ -64,6 +54,7 @@ namespace network
     int mode; // this determines in which direction the variable gets synchronised
     void *var;
     variableType type;
+    NetworkCallbackBase *callback;
   }SYNCVAR;
 
 
@@ -80,7 +71,7 @@ namespace network
     int objectID;
     int classID;
 
-    void registerVar(void *var, int size, variableType t, int mode=1);
+    void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
     //  syncData getData();
     syncData getData(unsigned char *mem, int mode=0x0);
     int getSize(int mode=0x0);

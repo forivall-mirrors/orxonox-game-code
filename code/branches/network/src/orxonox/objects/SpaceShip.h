@@ -43,6 +43,7 @@ namespace orxonox
     class _OrxonoxExport SpaceShip : public Model
     {
         public:
+          
 
             static SpaceShip *getLocalShip();
 

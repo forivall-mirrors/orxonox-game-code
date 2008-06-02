@@ -68,6 +68,7 @@ namespace orxonox
 
     SpaceShip* SpaceShip::instance_s;
 
+    
     SpaceShip *SpaceShip::getLocalShip(){
       Iterator<SpaceShip> it;
       for(it = ObjectList<SpaceShip>::start(); it; ++it){
@@ -162,7 +163,7 @@ namespace orxonox
     }
 
     void SpaceShip::registerAllVariables(){
-      registerVar( &camName_, camName_.length()+1, network::STRING, 0x1);
+      registerVar( &camName_, camName_.length()+1, network::STRING, 0x1 );
       registerVar( &maxSpeed_, sizeof(maxSpeed_), network::DATA, 0x1);
       registerVar( &maxSideAndBackSpeed_, sizeof(maxSideAndBackSpeed_), network::DATA, 0x1);
       registerVar( &maxRotation_, sizeof(maxRotation_), network::DATA, 0x1);
