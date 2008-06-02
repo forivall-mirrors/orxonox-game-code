@@ -150,6 +150,8 @@ namespace network
       Client::getSingleton()->sendChat(message);
     else if(Server::getSingleton())
       Server::getSingleton()->sendChat(message);
+    else
+      COUT(1) << "do you want to monologize ??" << std::endl;
   }
   
 
