@@ -201,11 +201,11 @@ namespace network
   */
   void Server::updateGamestate() {
     gamestates->update();
-    COUT(4) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
+    COUT(5) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
     //std::cout << "updated gamestate, sending it" << std::endl;
     //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
     sendGameState();
-    COUT(4) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
+    COUT(5) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
     //std::cout << "sent gamestate" << std::endl;
   }
 
@@ -228,6 +228,7 @@ namespace network
         //think this works without continue
         continue;
       }
+      COUT(4) << "client id: " << temp->getID() << " RTT: " << temp->getRTT() << " loss: " << temp->getPacketLoss() << std::endl;
       COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
       int gid = temp->getGamestateID(); //get gamestate id
       int cid = temp->getID(); //get client id
@@ -311,7 +312,7 @@ namespace network
     }
     COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
     connection->syncClassid(temp->getID());
-    COUT(4) << "creating spaceship for clientid: " << temp->getID() << std::endl;
+    COUT(5) << "creating spaceship for clientid: " << temp->getID() << std::endl;
     // TODO: this is only a hack, untill we have a possibility to define default player-join actions
     if(!createShip(temp))
       COUT(2) << "Con.Man. could not create ship for clientid: " << clientID << std::endl;

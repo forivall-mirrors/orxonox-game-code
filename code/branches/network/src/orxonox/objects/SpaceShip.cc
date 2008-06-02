@@ -468,7 +468,7 @@ namespace orxonox
 
         if( myShip_ )
         {
-          COUT(4) << "steering our ship: " << objectID << std::endl;
+          COUT(5) << "steering our ship: " << objectID << std::endl;
           this->acceleration_.x = 0;
           this->acceleration_.y = 0;
           this->momentum_ = 0;

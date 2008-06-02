@@ -105,7 +105,7 @@ namespace network
       if((id_-(*it).first)<KEEP_GAMESTATES)
         break;
       if( (*it).second <= 0 ){
-        COUT(4) << "GameStateManager: deleting gamestate with id: " << (*it).first << ", uses: " << (*it).second << std::endl;
+        COUT(5) << "GameStateManager: deleting gamestate with id: " << (*it).first << ", uses: " << (*it).second << std::endl;
         std::map<int, GameState *>::iterator tempit = gameStateMap.find((*it).first);
         if( tempit != gameStateMap.end() ){
           GameState *temp = tempit->second;
@@ -139,7 +139,8 @@ namespace network
       if(it!=gameStateMap.end())
         client = it->second;
       GameState *server = reference;
-      COUT(4) << "client: " << client << " server: " << server << " gamestatemap: " << &gameStateMap << " size: " << server->size << std::endl;
+      //COUT(4) << "client: " << client << " server: " << server << " gamestatemap: " << &gameStateMap << " size: " << server->size << std::endl;
+      COUT(4) << "client: " << (client!=0 ? client->id : (int)client) << " server: " << server->id << " gamestatemap: " << &gameStateMap << " size: " << server->size << std::endl;
       if(client)
         return encode(client, server);
       else
@@ -266,7 +267,7 @@ namespace network
       data+=sizeof(int);
       sync.data = data;
       data+=sync.length;
-      COUT(4) << "objectID: " << sync.objectID << " classID: " << sync.classID << std::endl;
+      COUT(5) << "objectID: " << sync.objectID << " classID: " << sync.classID << std::endl;
       while(it && it->objectID!=sync.objectID)
         ++it;
 
@@ -318,7 +319,7 @@ namespace network
   //##### END TESTING PURPOSE #####
 
   GameStateCompressed *GameStateManager::encode(GameState *a, GameState *b) {
-    COUT(4) << "G.St.Man: this will be a DIFFED gamestate" << std::endl;
+    COUT(5) << "G.St.Man: this will be a DIFFED gamestate" << std::endl;
     GameState *r = diff(a,b);
     GameStateCompressed *c = compress_(r);
     delete[] r->data;
