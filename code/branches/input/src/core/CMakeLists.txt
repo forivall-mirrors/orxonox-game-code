@@ -30,9 +30,16 @@ SET(CORE_SRC_FILES
   XMLPort.cc
   TclThreadManager.cc
   IRC.cc
+
+  input/Button.cc
+  input/CalibratorCallback.cc
+  input/HalfAxis.cc
   input/InputBuffer.cc
+  input/InputCommands.cc
   input/InputManager.cc
   input/KeyBinder.cc
+  input/KeyDetector.cc
+
   tolua/tolua_bind.cc
 )
 

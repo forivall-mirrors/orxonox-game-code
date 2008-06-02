@@ -34,15 +34,17 @@
 
 #include "InputManager.h"
 
-#include "util/Convert.h"
+#include <limits.h>
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
-#include "core/Shell.h"
+#include "core/Shell.h"               // hack!
 #include "InputBuffer.h"
 #include "KeyBinder.h"
+#include "KeyDetector.h"
+#include "CalibratorCallback.h"
 
 namespace orxonox
 {

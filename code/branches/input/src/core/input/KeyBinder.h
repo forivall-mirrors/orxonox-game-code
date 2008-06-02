@@ -36,102 +36,15 @@
 
 #include "core/CorePrereqs.h"
 
-#include <string>
 #include <vector>
 
-#include "ois/OIS.h"
-#include "util/Math.h"
 #include "core/OrxonoxClass.h"
-#include "core/CommandEvaluation.h"
 #include "InputInterfaces.h"
+#include "Button.h"
+#include "HalfAxis.h"
 
 namespace orxonox
 {
-  class _CoreExport BufferedParamCommand
-  {
-  public:
-    BufferedParamCommand() : value_(0.0f), nValuesAdded_(0), paramIndex_(-1) { }
-    bool execute();
-
-    float value_;
-    unsigned int nValuesAdded_;
-    int paramIndex_;
-    CommandEvaluation evaluation_;
-  };
-
-  class _CoreExport BaseCommand
-  {
-  public:
-    virtual ~BaseCommand() { }
-    virtual bool execute(float abs = 1.0f, float rel = 1.0f) = 0;
-  };
-
-  class _CoreExport SimpleCommand : public BaseCommand
-  {
-  public:
-    bool execute(float abs = 1.0f, float rel = 1.0f);
-
-    CommandEvaluation evaluation_;
-  };
-
-  class _CoreExport ParamCommand : public BaseCommand
-  {
-  public:
-    ParamCommand() : bRelative_(false), paramModifier_(1.0f), paramCommand_(0) { }
-    bool execute(float abs = 1.0f, float rel = 1.0f);
-
-    bool bRelative_;
-    float paramModifier_;
-    BufferedParamCommand* paramCommand_;
-  };
-
-  class _CoreExport Button
-  {
-  public:
-    Button() { nCommands_[0]=0; nCommands_[1]=0; nCommands_[2]=0; clear(); }
-    virtual ~Button() { clear(); }
-    virtual void clear();
-    virtual bool addParamCommand(ParamCommand* command) { return false; }
-    void parse(std::vector<BufferedParamCommand*>& paramCommandBuffer);
-    bool execute(KeybindMode::Enum mode, float abs = 1.0f, float rel = 1.0f);
-
-    //! The configured string value
-    std::string bindingString_;
-    //! Name of the trigger as strings
-    std::string name_;
-    //! Basic commands for OnPress, OnHold and OnRelease
-    BaseCommand** commands_[3];
-    //! Number of basic commands
-    unsigned int nCommands_[3];
-    //! Says how much it takes for an analog axis to trigger a button
-    //! Note: This variable is here to have only one parse() function.
-    float buttonThreshold_;
-  };
-
-
-  class _CoreExport HalfAxis : public Button
-  {
-  public:
-    HalfAxis() : relVal_(0.0f), absVal_(0.0f), paramCommands_(0), nParamCommands_(0),
-                 wasDown_(false), hasChanged_(false) { }
-    using Button::execute;
-    bool execute();
-    //bool execute(KeybindMode::Enum mode) { return Button::execute(mode); }
-    bool addParamCommand(ParamCommand* command);
-    void clear();
-
-    // axis related
-    float relVal_;
-    float absVal_;
-    ParamCommand** paramCommands_;
-    unsigned int nParamCommands_;
-
-    // button related
-    bool wasDown_;
-    bool hasChanged_;
-  };
-
-
   /**
     @brief Handles mouse, keyboard and joy stick input while in the actual game mode.
            Manages the key bindings.
@@ -225,35 +138,6 @@ namespace orxonox
     //! Whether or not to clip abslute mouse values to 1024
     bool bClipMouse_;
   };
-
-
-  class _CoreExport KeyDetector : public KeyBinder
-  {
-  public:
-    KeyDetector();
-    ~KeyDetector();
-    void loadBindings();
-
-  protected:
-    void readTrigger(Button& button);
-  };
-
-  class _CoreExport CalibratorCallback : public KeyHandler
-  {
-  public:
-    CalibratorCallback() {}
-    ~CalibratorCallback() {}
-
-  private:
-    void keyPressed (const KeyEvent& evt);
-    void keyReleased(const KeyEvent& evt) {}
-    void keyHeld    (const KeyEvent& evt) {}
-
-    void tickInput(float dt, const HandlerState &state) { }
-  };
 }
-
-
-
 
 #endif /* _KeyBinder_H__ */

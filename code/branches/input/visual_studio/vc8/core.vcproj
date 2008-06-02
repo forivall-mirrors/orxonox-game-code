@@ -279,7 +279,23 @@
 				Name="input"
 				>
 				<File
+					RelativePath="..\..\src\core\input\Button.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\CalibratorCallback.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\HalfAxis.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\input\InputBuffer.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\InputCommands.cc"
 					>
 				</File>
 				<File
@@ -288,6 +304,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\input\KeyBinder.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\KeyDetector.cc"
 					>
 				</File>
 			</Filter>
@@ -381,7 +401,23 @@
 				Name="input"
 				>
 				<File
+					RelativePath="..\..\src\core\input\Button.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\CalibratorCallback.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\HalfAxis.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\input\InputBuffer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\InputCommands.h"
 					>
 				</File>
 				<File
@@ -394,6 +430,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\input\KeyBinder.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\KeyDetector.h"
 					>
 				</File>
 			</Filter>
