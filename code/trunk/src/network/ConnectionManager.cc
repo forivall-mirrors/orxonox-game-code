@@ -167,7 +167,8 @@ used by processQueue in Server.cc
   bool ConnectionManager::addPacketAll(ENetPacket *packet) {
     boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     for(ClientInformation *i=head_->next(); i!=0; i=i->next()){
-      if(enet_peer_send(i->getPeer(), (enet_uint8)i->getID(), packet)!=0)
+      COUT(3) << "adding broadcast packet for client: " << i->getID() << std::endl;
+      if(enet_peer_send(i->getPeer(), 0, packet)!=0)
         return false;
     }
     return true;

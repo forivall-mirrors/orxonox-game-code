@@ -126,7 +126,7 @@ namespace orxonox
     if (network::Client::getSingleton())
       network::Client::destroySingleton();
     if (server_g)
-      delete server_g;
+      delete network::Server::getSingleton();
   }
 
 
@@ -302,7 +302,8 @@ namespace orxonox
   {
     COUT(2) << "Loading level in server mode" << std::endl;
 
-    server_g = new network::Server(serverPort_);
+    //server_g = new network::Server(serverPort_);
+    server_g = network::Server::createSingleton(serverPort_);
 
     if (!loadScene())
       return false;

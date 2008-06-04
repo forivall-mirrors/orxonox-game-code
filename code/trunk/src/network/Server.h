@@ -52,25 +52,37 @@
 
 namespace network
 {
+  #define CLIENTID_SERVER 0
+  
   /**
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
   */
   class _NetworkExport Server : public PacketDecoder, public orxonox::Tickable{
   public:
-    Server();
-    Server(int port);
-    Server(int port, std::string bindAddress);
-    Server(int port, const char *bindAddress);
+    static Server *createSingleton();
+    static Server *createSingleton(int port);
+    static Server *createSingleton(int port, std::string bindAddress);
+    static Server *createSingleton(int port, const char *bindAddress);
+    
+    static Server *getSingleton();
+    
     void open();
     void close();
-    bool sendMSG(std::string msg);
-    bool sendMSG(const char *msg);
+    bool sendChat(std::string msg);
+    bool sendChat(const char *msg);
     void tick(float time);
   protected:
     void processQueue();
     void updateGamestate();
   private:
+    Server();
+    Server(int port);
+    Server(int port, std::string bindAddress);
+    Server(int port, const char *bindAddress);
+    
+    static Server *instance_;
+    
     bool addClient(ENetEvent *event);
     bool createClient(int clientID);
     bool createShip(ClientInformation *client);
@@ -81,6 +93,7 @@ namespace network
     void processAck( ack *data, int clientID);
     bool processConnectRequest( connectRequest *con, int clientID );
     void processGamestate( GameStateCompressed *data, int clientID);
+    void processChat( chat *data, int clientId);
     ConnectionManager *connection;
     GameStateManager *gamestates;
     PacketGenerator packet_gen;
