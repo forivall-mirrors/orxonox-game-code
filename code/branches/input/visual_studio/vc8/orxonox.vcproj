@@ -183,6 +183,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\..\src\orxonox\Settings.cc"
+				>
+			</File>
 			<Filter
 				Name="hud"
 				>
@@ -467,6 +471,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\OrxonoxStableHeaders.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\Settings.h"
 				>
 			</File>
 			<Filter

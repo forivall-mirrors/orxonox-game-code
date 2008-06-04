@@ -20,9 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
- *   Co-authors:
  *      Reto Grieder
+ *   Co-authors:
+ *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007, Felix Schulthess
  *
  */
 
@@ -34,23 +34,24 @@
 #include "OrxonoxStableHeaders.h"
 #include "GraphicsEngine.h"
 
-#include <OgreRoot.h>
-#include <OgreException.h>
 #include <OgreConfigFile.h>
+#include <OgreException.h>
 #include <OgreLogManager.h>
+#include <OgreRoot.h>
+#include <OgreSceneManager.h>
 #include <OgreTextureManager.h>
-#include "core/input/InputManager.h"
+#include <OgreViewport.h>
+
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
 #include "core/CommandExecutor.h"
-#include "core/TclBind.h"
-#include "console/InGameConsole.h"
-
 #include "core/ConsoleCommand.h"
-#include <OgreSceneManager.h>
-#include <OgreCompositorManager.h>
-#include <OgreViewport.h>
+#include "core/input/InputManager.h"
+
+#include "console/InGameConsole.h"
+#include "Settings.h"
+
 
 namespace orxonox {
   /**
@@ -69,10 +70,7 @@ namespace orxonox {
   GraphicsEngine::GraphicsEngine() :
     root_(0),
     scene_(0),
-    renderWindow_(0),
-    //configPath_(""),
-    dataPath_(""),
-    ogreLogfile_("")
+    renderWindow_(0)
   {
     RegisterObject(GraphicsEngine);
 
@@ -82,13 +80,14 @@ namespace orxonox {
 
   void GraphicsEngine::setConfigValues()
   {
-    SetConfigValue(dataPath_, "../../Media/").description("relative path to media data");
-    SetConfigValue(ogreLogfile_, "ogre.log").description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
+    SetConfigValue(resourceFile_,    "resources.cfg").description("Location of the resources file in the data path.");
+    SetConfigValue(ogreConfigFile_,  "ogre.cfg").description("Location of the Ogre config file");
+    SetConfigValue(ogrePluginsFile_, "plugins.cfg").description("Location of the Ogre plugins file");
+    SetConfigValue(ogreLogFile_,     "ogre.log").description("Logfile for messages from Ogre. \
+                                                             Use \"\" to suppress log file creation.");
     SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
     SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
     SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
-
-    TclBind::getInstance().setDataPath(this->dataPath_);
   }
 
   /**
@@ -125,23 +124,10 @@ namespace orxonox {
   /**
     @brief Creates the Ogre Root object and sets up the ogre log.
   */
-  bool GraphicsEngine::setup(std::string& dataPath)
+  bool GraphicsEngine::setup()
   {
     CCOUT(3) << "Setting up..." << std::endl;
     // temporary overwrite of dataPath, change ini file for permanent change
-    if (dataPath != "")
-      dataPath_ = dataPath;
-    if (dataPath_ == "")
-      return false;
-    if (dataPath_[dataPath_.size() - 1] != '/')
-      dataPath_ += "/";
-
-    //TODO: Check if file exists (maybe not here)
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && defined(_DEBUG)
-    std::string plugin_filename = "plugins_d.cfg";
-#else
-    std::string plugin_filename = "plugins.cfg";
-#endif
 
 // TODO: LogManager doesn't work on specific systems. The why is unknown yet.
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
@@ -153,10 +139,10 @@ namespace orxonox {
 
     // create our own log that we can listen to
     Ogre::Log *myLog;
-    if (this->ogreLogfile_ == "")
+    if (this->ogreLogFile_ == "")
       myLog = logger->createLog("ogre.log", true, false, true);
     else
-      myLog = logger->createLog(this->ogreLogfile_, true, false, false);
+      myLog = logger->createLog(this->ogreLogFile_, true, false, false);
     CCOUT(4) << "Ogre Log created" << std::endl;
 
     myLog->setLogDetail(Ogre::LL_BOREME);
@@ -166,7 +152,38 @@ namespace orxonox {
     // Root will detect that we've already created a Log
     CCOUT(4) << "Creating Ogre Root..." << std::endl;
 
-    root_ = new Ogre::Root(plugin_filename, "ogre.cfg", this->ogreLogfile_);
+    if (ogrePluginsFile_ == "")
+    {
+      COUT(1) << "Error: Ogre plugins file set to \"\". Cannot load." << std::endl;
+      return false;
+    }
+    if (ogreConfigFile_ == "")
+    {
+      COUT(1) << "Error: Ogre config file set to \"\". Cannot load." << std::endl;
+      return false;
+    }
+    if (ogreLogFile_ == "")
+    {
+      COUT(1) << "Error: Ogre log file set to \"\". Cannot load." << std::endl;
+      return false;
+    }
+
+    try
+    {
+      root_ = new Ogre::Root(ogrePluginsFile_, ogreConfigFile_, ogreLogFile_);
+    }
+    catch (Ogre::Exception ex)
+    {
+      COUT(2) << "Error: There was an exception when creating Ogre Root." << std::endl;
+      return false;
+    }
+
+    if (!root_->getInstalledPlugins().size())
+    {
+      COUT(1) << "Error: No plugins declared. Cannot load Ogre." << std::endl;
+      COUT(0) << "Is the plugins file correctly declared?" << std::endl;
+      return false;
+    }
 
 #if 0
     // tame the ogre ouput so we don't get all the mess in the console
@@ -179,20 +196,37 @@ namespace orxonox {
     CCOUT(4) << "Creating Ogre Root done" << std::endl;
 
     // specify where Ogre has to look for resources. This call doesn't parse anything yet!
-    declareRessourceLocations();
+    if (!declareRessourceLocations())
+      return false;
 
     CCOUT(3) << "Set up done." << std::endl;
     return true;
   }
 
-  void GraphicsEngine::declareRessourceLocations()
+  bool GraphicsEngine::declareRessourceLocations()
   {
     CCOUT(4) << "Declaring Resources" << std::endl;
     //TODO: Specify layout of data file and maybe use xml-loader
     //TODO: Work with ressource groups (should be generated by a special loader)
+
+    if (resourceFile_ == "")
+    {
+      COUT(1) << "Error: Resource file set to \"\". Cannot load." << std::endl;
+      return false;
+    }
+
     // Load resource paths from data file using configfile ressource type
     Ogre::ConfigFile cf;
-    cf.load(dataPath_ + "resources.cfg");
+    try
+    {
+      cf.load(Settings::getDataPath() + resourceFile_);
+    }
+    catch (Ogre::Exception ex)
+    {
+      COUT(1) << "Error: Could not load resources.cfg in path " << Settings::getDataPath() << std::endl;
+      COUT(0) << "Have you forgotten to set the data path in orxnox.ini?" << std::endl;
+      return false;
+    }
 
     // Go through all sections & settings in the file
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
@@ -200,19 +234,26 @@ namespace orxonox {
     std::string secName, typeName, archName;
     while (seci.hasMoreElements())
     {
-      secName = seci.peekNextKey();
-      Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
-      Ogre::ConfigFile::SettingsMultiMap::iterator i;
-      for (i = settings->begin(); i != settings->end(); ++i)
+      try
       {
-        typeName = i->first; // for instance "FileSystem" or "Zip"
-        archName = i->second; // name (and location) of archive
+        secName = seci.peekNextKey();
+        Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+        Ogre::ConfigFile::SettingsMultiMap::iterator i;
+        for (i = settings->begin(); i != settings->end(); ++i)
+        {
+          typeName = i->first; // for instance "FileSystem" or "Zip"
+          archName = i->second; // name (and location) of archive
 
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-                                           std::string(dataPath_ + archName),
-                                           typeName, secName);
+          Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+              std::string(Settings::getDataPath() + archName), typeName, secName);
+        }
+      }
+      catch (Ogre::Exception ex)
+      {
+        COUT(2) << "Exception while reading resources.cfg. Proceeding.." << ex.getDescription() << std::endl;
       }
     }
+    return true;
   }
 
   bool GraphicsEngine::loadRenderer()
@@ -222,10 +263,19 @@ namespace orxonox {
       return false;
 
     CCOUT(4) << "Creating render window" << std::endl;
-    this->renderWindow_ = root_->initialise(true, "OrxonoxV2");
+    try
+    {
+      this->renderWindow_ = root_->initialise(true, "OrxonoxV2");
+    }
+    catch (Ogre::Exception ex)
+    {
+      COUT(2) << "Error: There was an exception when initialising Ogre Root." << std::endl;
+      return false;
+    }
+
     if (!root_->isInitialised())
     {
-      CCOUT(2) << "Error: Creating Ogre root object failed" << std::endl;
+      CCOUT(2) << "Error: Initialising Ogre root object failed." << std::endl;
       return false;
     }
     Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, this);

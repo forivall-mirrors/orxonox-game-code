@@ -68,7 +68,7 @@ namespace orxonox
       state_(IS_UNINIT), stateRequest_(IS_UNINIT), savedState_(IS_UNINIT),
       keyboardModifiers_(0)
   {
-    RegisterObject(InputManager);
+    RegisterRootObject(InputManager);
   }
 
   /**

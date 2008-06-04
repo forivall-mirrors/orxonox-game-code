@@ -52,7 +52,7 @@ namespace orxonox
     mousePosition_[0] = 0;
     mousePosition_[1] = 0;
 
-    RegisterObject(KeyBinder);
+    RegisterRootObject(KeyBinder);
 
     // keys
     std::string keyNames[] = {

@@ -20,9 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Benjamin Knecht <beni_at_orxonox.net>
+ *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht <beni_at_orxonox.net>
  *
  */
 
@@ -38,23 +38,79 @@
 #include "UtilPrereqs.h"
 
 #include <string>
+#include <vector>
+#include "Convert.h"
+
+struct _UtilExport CmdLineArg
+{
+  std::string name_;
+  std::string value_;
+  bool bChecked_;
+};
 
 class _UtilExport ArgReader
 {
   public:
     ArgReader(int argc, char **argv);
-    void checkArgument(std::string option, std::string& string, bool must=false);
-    void checkArgument(std::string option, int& integer, bool must=false);
-    void checkArgument(std::string option, float& floating, bool must=false);
+    template <class T>
+    void checkArgument(std::string option, T* value, bool must = false);
     bool errorHandling();
-  private:
-    int checkOption(std::string option);
+    const std::string& getErrorString();
 
   private:
-    int counter_;
-    char **arguments_;
-    bool fail_;
-    std::string errorStr_;
+    std::vector<CmdLineArg> arguments_;
+    bool failure_;
+    std::string errorString_;
 };
+
+template <class T>
+void ArgReader::checkArgument(std::string option, T* value, bool must)
+{
+  unsigned int iArg = 0;
+  while (iArg < arguments_.size())
+  {
+    if (arguments_[iArg].name_ == option)
+      break;
+    ++iArg;
+  }
+  if (iArg == arguments_.size())
+  {
+    if (must)
+    {
+      failure_ = true;
+      errorString_ += "Cannot find mandatory argument \"" + option + "\"\n";
+      return;
+    }
+    else
+      return;
+  }
+
+  arguments_[iArg].bChecked_ = true;
+
+  if (!convertValue(value, arguments_[iArg].value_))
+  {
+    failure_ = true;
+    errorString_ += "Cannot convert argument value for option \"" + option + "\"\n";
+  }
+}
+
+template <>
+void ArgReader::checkArgument(std::string option, bool* value, bool must)
+{
+  // for type bool, only check whether the option was set or not
+  unsigned int iArg = 0;
+  while (iArg < arguments_.size())
+  {
+    if (arguments_[iArg].name_ == option)
+    {
+      arguments_[iArg].bChecked_ = true;
+      *value = true;
+      break;
+    }
+    ++iArg;
+  }
+  if (iArg == arguments_.size())
+    *value = false;
+}
 
 #endif /* _ArgReader_H__ */

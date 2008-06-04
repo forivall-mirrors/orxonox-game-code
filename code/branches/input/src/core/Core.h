@@ -34,8 +34,8 @@
     in the core through the config-file.
 */
 
-#ifndef _CoreSettings_H__
-#define _CoreSettings_H__
+#ifndef _Core_H__
+#define _Core_H__
 
 #include "CorePrereqs.h"
 
@@ -74,4 +74,4 @@ namespace orxonox
     };
 }
 
-#endif /* _CoreSettings_H__ */
+#endif /* _Core_H__ */

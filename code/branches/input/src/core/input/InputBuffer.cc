@@ -38,7 +38,7 @@ namespace orxonox
 {
     InputBuffer::InputBuffer()
     {
-        RegisterObject(InputBuffer);
+        RegisterRootObject(InputBuffer);
 
         this->buffer_ = "";
         this->cursor_ = 0;
@@ -58,7 +58,7 @@ namespace orxonox
 
     InputBuffer::InputBuffer(const std::string allowedChars)
     {
-        RegisterObject(InputBuffer);
+        RegisterRootObject(InputBuffer);
 
         this->allowedChars_ = allowedChars;
         this->buffer_ = "";
