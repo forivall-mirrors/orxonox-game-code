@@ -27,14 +27,16 @@
  */
 
 /**
-    @file CoreSettings.cc
-    @brief Implementation of the CoreSettings class.
+    @file Core.cc
+    @brief Implementation of the Core class.
 */
 
-#include "CoreSettings.h"
+#include "Core.h"
 #include "Language.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
+#include "input/InputManager.h"
+#include "TclThreadManager.h"
 
 namespace orxonox
 {
@@ -42,45 +44,45 @@ namespace orxonox
         @brief Constructor: Registers the object and sets the config-values.
         @param A reference to a global variable, used to avoid an infinite recursion in getSoftDebugLevel()
     */
-    CoreSettings::CoreSettings()
+    Core::Core()
     {
-        RegisterRootObject(CoreSettings);
+        RegisterRootObject(Core);
         this->setConfigValues();
     }
 
     /**
         @brief Sets the bool to true to avoid static functions accessing a deleted object.
     */
-    CoreSettings::~CoreSettings()
+    Core::~Core()
     {
         isCreatingCoreSettings() = true;
     }
 
     /**
-        @brief Returns true if the CoreSettings instance is not yet ready and the static functions have to return a default value.
+        @brief Returns true if the Core instance is not yet ready and the static functions have to return a default value.
     */
-    bool& CoreSettings::isCreatingCoreSettings()
+    bool& Core::isCreatingCoreSettings()
     {
         static bool bCreatingCoreSettings = true;
         static bool bFirstTime = true;
         if (bFirstTime)
         {
             bFirstTime = false;
-            CoreSettings::getInstance();
+            Core::getInstance();
         }
         return bCreatingCoreSettings;
     }
 
     /**
-        @brief Returns a unique instance of CoreSettings.
+        @brief Returns a unique instance of Core.
         @return The instance
     */
-    CoreSettings& CoreSettings::getInstance()
+    Core& Core::getInstance()
     {
-        static CoreSettings instance = CoreSettings();
+        static Core instance = Core();
 
         // If bCreatingSoftDebugLevelObject is true, we're just about to create an instance of the DebugLevel class
-        if (CoreSettings::isCreatingCoreSettings())
+        if (Core::isCreatingCoreSettings())
         {
             isCreatingCoreSettings() = false;
             instance.setConfigValues();
@@ -91,7 +93,7 @@ namespace orxonox
     /**
         @brief Function to collect the SetConfigValue-macro calls.
     */
-    void CoreSettings::setConfigValues()
+    void Core::setConfigValues()
     {
         SetConfigValue(softDebugLevelConsole_, 3).description("The maximal level of debug output shown in the console");
         SetConfigValue(softDebugLevelLogfile_, 3).description("The maximal level of debug output shown in the logfile");
@@ -120,18 +122,18 @@ namespace orxonox
         @param device The device
         @return The softDebugLevel
     */
-    int CoreSettings::getSoftDebugLevel(OutputHandler::OutputDevice device)
+    int Core::getSoftDebugLevel(OutputHandler::OutputDevice device)
     {
-        if (!CoreSettings::isCreatingCoreSettings())
+        if (!Core::isCreatingCoreSettings())
         {
             if (device == OutputHandler::LD_All)
-                return CoreSettings::getInstance().softDebugLevel_;
+                return Core::getInstance().softDebugLevel_;
             else if (device == OutputHandler::LD_Console)
-                return CoreSettings::getInstance().softDebugLevelConsole_;
+                return Core::getInstance().softDebugLevelConsole_;
             else if (device == OutputHandler::LD_Logfile)
-                return CoreSettings::getInstance().softDebugLevelLogfile_;
+                return Core::getInstance().softDebugLevelLogfile_;
             else if (device == OutputHandler::LD_Shell)
-                return CoreSettings::getInstance().softDebugLevelShell_;
+                return Core::getInstance().softDebugLevelShell_;
         }
 
         // Return a constant value while we're creating the object
@@ -143,28 +145,28 @@ namespace orxonox
         @param device The device
         @param level The level
     */
-     void CoreSettings::setSoftDebugLevel(OutputHandler::OutputDevice device, int level)
+     void Core::setSoftDebugLevel(OutputHandler::OutputDevice device, int level)
      {
-        if (!CoreSettings::isCreatingCoreSettings())
+        if (!Core::isCreatingCoreSettings())
         {
             if (device == OutputHandler::LD_All)
-                CoreSettings::getInstance().softDebugLevel_ = level;
+                Core::getInstance().softDebugLevel_ = level;
             else if (device == OutputHandler::LD_Console)
-                CoreSettings::getInstance().softDebugLevelConsole_ = level;
+                Core::getInstance().softDebugLevelConsole_ = level;
             else if (device == OutputHandler::LD_Logfile)
-                CoreSettings::getInstance().softDebugLevelLogfile_ = level;
+                Core::getInstance().softDebugLevelLogfile_ = level;
             else if (device == OutputHandler::LD_Shell)
-                CoreSettings::getInstance().softDebugLevelShell_ = level;
+                Core::getInstance().softDebugLevelShell_ = level;
         }
      }
 
     /**
         @brief Returns the configured language.
     */
-    const std::string& CoreSettings::getLanguage()
+    const std::string& Core::getLanguage()
     {
-        if (!CoreSettings::isCreatingCoreSettings())
-            return CoreSettings::getInstance().language_;
+        if (!Core::isCreatingCoreSettings())
+            return Core::getInstance().language_;
 
         return Language::getLanguage().defaultLanguage_;
     }
@@ -172,17 +174,28 @@ namespace orxonox
     /**
         @brief Sets the language in the config-file back to the default.
     */
-    void CoreSettings::resetLanguage()
+    void Core::resetLanguage()
     {
-        CoreSettings::getInstance().resetLanguageIntern();
+        Core::getInstance().resetLanguageIntern();
     }
 
     /**
         @brief Sets the language in the config-file back to the default.
     */
-    void CoreSettings::resetLanguageIntern()
+    void Core::resetLanguageIntern()
     {
         ResetConfigValue(language_);
+    }
+
+    /**
+        @brief Ticks every core class in a specified sequence. Has to be called
+               every Orxonox tick!
+        @param dt Delta Time
+    */
+    void Core::tick(float dt)
+    {
+        TclThreadManager::getInstance().tick(dt);
+        InputManager::tick(dt);
     }
 }
 
@@ -192,5 +205,5 @@ namespace orxonox
 */
 int getSoftDebugLevel()
 {
-    return orxonox::CoreSettings::getSoftDebugLevel();
+    return orxonox::Core::getSoftDebugLevel();
 }

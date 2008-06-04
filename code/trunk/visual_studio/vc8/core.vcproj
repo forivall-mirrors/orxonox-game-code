@@ -156,7 +156,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\CoreSettings.cc"
+				RelativePath="..\..\src\core\Core.cc"
 				>
 			</File>
 			<File
@@ -185,10 +185,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\SignalHandler.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Tickable.cc"
 				>
 			</File>
 			<Filter
@@ -279,15 +275,35 @@
 				Name="input"
 				>
 				<File
-					RelativePath="..\..\src\core\InputBuffer.cc"
+					RelativePath="..\..\src\core\input\Button.cc"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\InputManager.cc"
+					RelativePath="..\..\src\core\input\CalibratorCallback.cc"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\KeyBinder.cc"
+					RelativePath="..\..\src\core\input\HalfAxis.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\InputBuffer.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\InputCommands.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\InputManager.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\KeyBinder.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\KeyDetector.cc"
 					>
 				</File>
 			</Filter>
@@ -330,11 +346,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\CorePrereqs.h"
+				RelativePath="..\..\src\core\Core.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\CoreSettings.h"
+				RelativePath="..\..\src\core\CorePrereqs.h"
 				>
 			</File>
 			<File
@@ -373,27 +389,43 @@
 				RelativePath="..\..\src\core\SignalHandler.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\core\Tickable.h"
-				>
-			</File>
 			<Filter
 				Name="input"
 				>
 				<File
-					RelativePath="..\..\src\core\InputBuffer.h"
+					RelativePath="..\..\src\core\input\Button.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\InputInterfaces.h"
+					RelativePath="..\..\src\core\input\CalibratorCallback.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\InputManager.h"
+					RelativePath="..\..\src\core\input\HalfAxis.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\KeyBinder.h"
+					RelativePath="..\..\src\core\input\InputBuffer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\InputCommands.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\InputInterfaces.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\InputManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\KeyBinder.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\KeyDetector.h"
 					>
 				</File>
 			</Filter>

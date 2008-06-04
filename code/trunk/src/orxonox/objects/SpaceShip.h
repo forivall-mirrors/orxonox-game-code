@@ -33,10 +33,9 @@
 #include <OgrePrerequisites.h>
 
 #include "util/Math.h"
-#include "core/InputInterfaces.h"
 #include "Camera.h"
 #include "Model.h"
-#include "../tools/BillboardSet.h"
+#include "tools/BillboardSet.h"
 
 namespace orxonox
 {

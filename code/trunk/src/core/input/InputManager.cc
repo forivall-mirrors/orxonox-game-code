@@ -33,15 +33,18 @@
  */
 
 #include "InputManager.h"
-#include "util/Convert.h"
-#include "CoreIncludes.h"
-#include "ConfigValueIncludes.h"
-#include "Debug.h"
+
+#include <limits.h>
+#include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
+#include "core/Debug.h"
+#include "core/CommandExecutor.h"
+#include "core/ConsoleCommand.h"
+#include "core/Shell.h"               // hack!
 #include "InputBuffer.h"
 #include "KeyBinder.h"
-#include "CommandExecutor.h"
-#include "ConsoleCommand.h"
-#include "Shell.h"
+#include "KeyDetector.h"
+#include "CalibratorCallback.h"
 
 namespace orxonox
 {
@@ -65,7 +68,7 @@ namespace orxonox
       state_(IS_UNINIT), stateRequest_(IS_UNINIT), savedState_(IS_UNINIT),
       keyboardModifiers_(0)
   {
-    RegisterObject(InputManager);
+    RegisterRootObject(InputManager);
   }
 
   /**
@@ -495,7 +498,7 @@ namespace orxonox
     @brief Updates the InputManager. Tick is called by Orxonox.
     @param dt Delta time
   */
-  void InputManager::tick(float dt)
+  void InputManager::_tick(float dt)
   {
     if (state_ == IS_UNINIT)
       return;
@@ -645,7 +648,7 @@ namespace orxonox
     for (unsigned int iHandler = 0; iHandler < activeHandlers_.size(); iHandler++)
       activeHandlers_[iHandler].first->tickInput(dt, activeHandlers_[iHandler].second);
   }
-
+    
   void InputManager::_completeCalibration()
   {
     for (unsigned int i = 0; i < 24; i++)
@@ -1135,6 +1138,11 @@ namespace orxonox
   void InputManager::calibrate()
   {
     _getSingleton().setInputState(IS_CALIBRATE);
+  }
+
+  void InputManager::tick(float dt)
+  {
+    _getSingleton()._tick(dt);
   }
 
   // ###### KeyHandler ######

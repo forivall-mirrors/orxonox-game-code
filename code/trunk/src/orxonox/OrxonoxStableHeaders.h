@@ -103,13 +103,13 @@
 //#include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
 //#include "core/Executor.h"
-#include "core/Tickable.h"
 //#include "core/XMLPort.h"
 
 #include "network/Synchronisable.h"
 
 #include "OrxonoxPrereqs.h"
 #include "tools/Timer.h"
+#include "objects/Tickable.h"
 #include "objects/Model.h"
 #include "objects/WorldEntity.h"
 

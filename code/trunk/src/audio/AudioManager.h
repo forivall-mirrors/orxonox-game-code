@@ -34,11 +34,9 @@
 #include <vector>
 #include <string>
 
-#include "core/Tickable.h"
-
 namespace audio
 {
-  class _AudioExport AudioManager : public orxonox::Tickable
+  class _AudioExport AudioManager
 	{
 	public:
 

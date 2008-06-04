@@ -111,7 +111,7 @@ namespace orxonox
   class ConfigFileSection;
   class ConfigValueContainer;
   class ConsoleCommand;
-  class CoreSettings;
+  class Core;
   class Error;
   class Executor;
   template <class T>
@@ -161,16 +161,20 @@ namespace orxonox
 
   // input
   //class GUIInputHandler;
-  class Calibrator;
+  class BaseCommand;
+  class BufferedParamCommand;
+  class Button;
   class CalibratorCallback;
+  class HalfAxis;
   class InputBuffer;
-  class InputBufferListener;
   class InputManager;
   class JoyStickHandler;
+  class MouseHandler;
   class KeyBinder;
   class KeyDetector;
-  class MouseHandler;
-
+  class KeyHandler;
+  class ParamCommand;
+  class SimpleCommand;
 }
 
 #endif /* _CorePrereqs_H__ */

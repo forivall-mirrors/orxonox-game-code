@@ -20,31 +20,27 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#include "Tickable.h"
-#include "CoreIncludes.h"
-#include "ConsoleCommand.h"
+/**
+ @file
+ @brief Implementation of the different input handlers.
+ */
+
+#include "CalibratorCallback.h"
+#include "InputManager.h"
 
 namespace orxonox
 {
-    /**
-        @brief Constructor: Registers the object in the Tickable-list
-    */
-    Tickable::Tickable()
+  void CalibratorCallback::keyPressed(const orxonox::KeyEvent &evt)
+  {
+    if (evt.key == KeyCode::Return)
     {
-        RegisterRootObject(Tickable);
+      InputManager::setInputState(InputManager::IS_NOCALIBRATE);
     }
-
-    /**
-        @brief Constructor: Registers the object in the TickableReal-list
-    */
-    TickableReal::TickableReal()
-    {
-        RegisterRootObject(TickableReal);
-    }
+  }
 }

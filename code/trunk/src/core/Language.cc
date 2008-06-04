@@ -35,7 +35,7 @@
 
 #include <fstream>
 
-#include "CoreSettings.h"
+#include "Core.h"
 
 #include "Debug.h"
 
@@ -244,17 +244,17 @@ namespace orxonox
     */
     void Language::readTranslatedLanguageFile()
     {
-        COUT(4) << "Read translated language file (" << CoreSettings::getLanguage() << ")." << std::endl;
+        COUT(4) << "Read translated language file (" << Core::getLanguage() << ")." << std::endl;
 
         // Open the file
         std::ifstream file;
-        file.open(getFileName(CoreSettings::getLanguage()).c_str(), std::fstream::in);
+        file.open(getFileName(Core::getLanguage()).c_str(), std::fstream::in);
 
         if (!file.is_open())
         {
             COUT(1) << "An error occurred in Language.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open file " << getFileName(CoreSettings::getLanguage()) << " to read the translated language entries!" << std::endl;
-            CoreSettings::resetLanguage();
+            COUT(1) << "Error: Couldn't open file " << getFileName(Core::getLanguage()) << " to read the translated language entries!" << std::endl;
+            Core::resetLanguage();
             COUT(3) << "Info: Reset language to " << this->defaultLanguage_ << "." << std::endl;
             return;
         }
@@ -285,7 +285,7 @@ namespace orxonox
                 }
                 else
                 {
-                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFileName(CoreSettings::getLanguage()) << std::endl;
+                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFileName(Core::getLanguage()) << std::endl;
                 }
             }
         }

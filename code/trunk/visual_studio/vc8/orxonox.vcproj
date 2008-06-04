@@ -183,6 +183,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\..\src\orxonox\Settings.cc"
+				>
+			</File>
 			<Filter
 				Name="hud"
 				>
@@ -252,6 +256,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\SpaceShipAI.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\Tickable.cc"
 					>
 				</File>
 				<File
@@ -465,6 +473,10 @@
 				RelativePath="..\..\src\orxonox\OrxonoxStableHeaders.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\orxonox\Settings.h"
+				>
+			</File>
 			<Filter
 				Name="hud"
 				>
@@ -538,6 +550,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\SpaceShipAI.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\Tickable.h"
 					>
 				</File>
 				<File
