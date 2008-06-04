@@ -71,7 +71,7 @@ namespace orxonox
             void init();
             void shiftLines();
             void colourLine(int colourcode, int index);
-            void setCursorPosition(int pos);
+            void setCursorPosition(unsigned int pos);
             void print(const std::string& text, int index, bool alwaysShift = false);
             static Ogre::UTFString convert2UTF(std::string s);
 

@@ -298,6 +298,7 @@ namespace orxonox
         }
 
         this->linesChanged();
+        this->cursorChanged();
     }
 
     /**
@@ -371,6 +372,7 @@ namespace orxonox
         InputManager::setInputState(InputManager::IS_CONSOLE);
         Shell::getInstance().registerListener(this);
         this->linesChanged();
+        this->cursorChanged();
 
         this->consoleOverlay_->show();
         // just in case window size has changed...
@@ -459,7 +461,7 @@ namespace orxonox
         }
     }
 
-    void InGameConsole::setCursorPosition(int pos)
+    void InGameConsole::setCursorPosition(unsigned int pos)
     {
         static std::string char1 = "bdefgilpqtzCEGIJKNOPQT5[}дь";
         static std::string char2 = "Z4";
@@ -470,7 +472,7 @@ namespace orxonox
           pos = 0;
 
         float width = 0;
-        for (int i = 0; i < pos; ++i)
+        for (unsigned int i = 0; i < pos && i < displayedText_.size(); ++i)
         {
             if (char1.find(displayedText_[i]) != std::string::npos)
                 width += CHAR_WIDTH1;

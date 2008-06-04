@@ -213,12 +213,13 @@ namespace orxonox
 
     std::ifstream infile;
     infile.open("keybindings.ini");
-    if (!infile.is_open())
+    if (!infile)
     {
       ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "def_keybindings.ini");
       ConfigFileManager::getSingleton()->save(CFT_Keybindings, "keybindings.ini");
     }
-    infile.close();
+    else
+      infile.close();
     ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
 
     // parse key bindings
