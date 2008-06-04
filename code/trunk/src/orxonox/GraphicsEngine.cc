@@ -34,6 +34,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "GraphicsEngine.h"
 
+#include <fstream>
+
 #include <OgreConfigFile.h>
 #include <OgreException.h>
 #include <OgreLogManager.h>
@@ -259,8 +261,23 @@ namespace orxonox {
   bool GraphicsEngine::loadRenderer()
   {
     CCOUT(4) << "Configuring Renderer" << std::endl;
-    if (!root_->restoreConfig() && !root_->showConfigDialog())
-      return false;
+
+    // check for file existence because Ogre displays exceptions if not
+    std::ifstream probe;
+    probe.open(ogreConfigFile_.c_str());
+    if (!probe)
+    {
+      // create a zero sized file
+      std::ofstream creator;
+      creator.open(ogreConfigFile_.c_str());
+      creator.close();
+    }
+    else
+      probe.close();
+
+    if (!root_->restoreConfig())
+      if (!root_->showConfigDialog())
+        return false;
 
     CCOUT(4) << "Creating render window" << std::endl;
     try
