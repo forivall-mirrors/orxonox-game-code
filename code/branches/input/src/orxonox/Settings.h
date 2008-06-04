@@ -38,6 +38,8 @@
 #define _Settings_H__
 
 #include "OrxonoxPrereqs.h"
+#include <string>
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
