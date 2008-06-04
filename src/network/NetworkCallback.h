@@ -6,6 +6,7 @@ namespace network{
   {
     public:
       virtual void call() = 0;
+	  virtual ~NetworkCallbackBase() {}
   };
   
   template <class T>
@@ -13,6 +14,7 @@ namespace network{
   {
     public:
       NetworkCallback(T* object, void (T::*function) (void)) : object_(object), function_(function) {}
+	  virtual ~NetworkCallback() {}
       virtual void call()
         { (this->object_->*function_)(); }
   
