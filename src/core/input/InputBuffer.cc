@@ -31,14 +31,14 @@
 #include <iostream>
 
 #include "util/Clipboard.h"
-#include "CoreIncludes.h"
-#include "ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 
 namespace orxonox
 {
     InputBuffer::InputBuffer()
     {
-        RegisterObject(InputBuffer);
+        RegisterRootObject(InputBuffer);
 
         this->buffer_ = "";
         this->cursor_ = 0;
@@ -58,7 +58,7 @@ namespace orxonox
 
     InputBuffer::InputBuffer(const std::string allowedChars)
     {
-        RegisterObject(InputBuffer);
+        RegisterRootObject(InputBuffer);
 
         this->allowedChars_ = allowedChars;
         this->buffer_ = "";

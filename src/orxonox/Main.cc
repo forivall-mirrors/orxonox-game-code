@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
     res = orx->init(argc, argv, macBundlePath());
 #else
-    res = orx->init(argc, argv, "");
+    res = orx->init(argc, argv);
 #endif
 
     if (res)

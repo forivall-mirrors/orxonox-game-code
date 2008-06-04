@@ -61,8 +61,7 @@
 #define _Timer_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/CorePrereqs.h"
-#include "core/Tickable.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {

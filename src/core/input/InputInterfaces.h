@@ -34,7 +34,7 @@
 #ifndef _InputInterfaces_H__
 #define _InputInterfaces_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include "ois/OIS.h"
 #include "util/Math.h"

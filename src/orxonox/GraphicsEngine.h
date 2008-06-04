@@ -20,9 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
- *   Co-authors:
  *      Reto Grieder
+ *   Co-authors:
+ *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007, Felix Schulthess
  *
  */
 
@@ -55,8 +55,8 @@ namespace orxonox {
     {
         public:
             void setConfigValues();
-            bool setup(std::string& dataPath);
-            void declareRessourceLocations();
+            bool setup();
+            bool declareRessourceLocations();
             bool loadRenderer();
             bool initialiseResources();
             bool createNewScene();
@@ -64,7 +64,6 @@ namespace orxonox {
             void destroy();
 
             Ogre::SceneManager* getSceneManager() { return scene_; }
-            std::string& getDataPath() { return dataPath_; }
 
             // several window properties
             Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
@@ -94,16 +93,16 @@ namespace orxonox {
             void messageLogged(const std::string&, Ogre::LogMessageLevel,
                              bool, const std::string&);
 
-            Ogre::Root*         root_;        //!< Ogre's root
-            Ogre::SceneManager* scene_;       //!< scene manager of the game
-            Ogre::RenderWindow* renderWindow_;//!< the current render window
-            //bool               bOverwritePath_; //!< overwrites path
-            //std::string         configPath_;  //!< path to config file
-            std::string         dataPath_;    //!< path to data file
-            std::string         ogreLogfile_; //!< log file name for Ogre log messages
-            int ogreLogLevelTrivial_;         //!< Corresponding Orxonx debug level for LL_TRIVIAL
-            int ogreLogLevelNormal_;          //!< Corresponding Orxonx debug level for LL_NORMAL
-            int ogreLogLevelCritical_;        //!< Corresponding Orxonx debug level for LL_CRITICAL
+            Ogre::Root*         root_;              //!< Ogre's root
+            Ogre::SceneManager* scene_;             //!< scene manager of the game
+            Ogre::RenderWindow* renderWindow_;      //!< the current render window
+            std::string         resourceFile_;      //!< resources file name
+            std::string         ogreConfigFile_;    //!< ogre config file name
+            std::string         ogrePluginsFile_;   //!< ogre plugins file name
+            std::string         ogreLogFile_;       //!< log file name for Ogre log messages
+            int ogreLogLevelTrivial_;               //!< Corresponding Orxonx debug level for LL_TRIVIAL
+            int ogreLogLevelNormal_;                //!< Corresponding Orxonx debug level for LL_NORMAL
+            int ogreLogLevelCritical_;              //!< Corresponding Orxonx debug level for LL_CRITICAL
     };
 }
 

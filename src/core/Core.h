@@ -27,15 +27,15 @@
  */
 
 /**
-    @file CoreSettings.h
-    @brief Definition of the CoreSettings class.
+    @file Core.h
+    @brief Definition of the Core class.
 
-    The CoreSettings class is a singleton, only used to configure some variables
+    The Core class is a singleton, only used to configure some variables
     in the core through the config-file.
 */
 
-#ifndef _CoreSettings_H__
-#define _CoreSettings_H__
+#ifndef _Core_H__
+#define _Core_H__
 
 #include "CorePrereqs.h"
 
@@ -44,11 +44,11 @@
 
 namespace orxonox
 {
-    //! The CoreSettings class is a singleton, only used to configure some config-values.
-    class _CoreExport CoreSettings : public OrxonoxClass
+    //! The Core class is a singleton, only used to configure some config-values.
+    class _CoreExport Core : public OrxonoxClass
     {
         public:
-            static CoreSettings& getInstance();
+            static Core& getInstance();
             static bool& isCreatingCoreSettings();
             void setConfigValues();
 
@@ -57,12 +57,14 @@ namespace orxonox
             static const std::string& getLanguage();
             static void resetLanguage();
 
+            static void tick(float dt);
+
         private:
             void resetLanguageIntern();
 
-            CoreSettings();
-            CoreSettings(const CoreSettings& other);
-            virtual ~CoreSettings();
+            Core();
+            Core(const Core& other);
+            virtual ~Core();
 
             int softDebugLevel_;                            //!< The debug level
             int softDebugLevelConsole_;                     //!< The debug level for the console
@@ -72,4 +74,4 @@ namespace orxonox
     };
 }
 
-#endif /* _CoreSettings_H__ */
+#endif /* _Core_H__ */

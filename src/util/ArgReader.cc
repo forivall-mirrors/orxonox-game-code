@@ -20,9 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
+ *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht <beni_at_orxonox.net>
  *
  */
 
@@ -32,79 +32,63 @@
  */
 
 #include "ArgReader.h"
+#include "SubString.h"
 
-#include <iostream>
-
-ArgReader::ArgReader(int argc, char** argv)
+ArgReader::ArgReader(int argc, char **argv)
 {
-  counter_ = argc;
-  arguments_ = argv;
-  fail_ = false;
-  errorStr_ = "";
-}
+  failure_ = false;
+  errorString_ = "";
+  CmdLineArg arg;
 
-void ArgReader::checkArgument(std::string option, std::string &string, bool must)
-{
-  int argpos = checkOption(option) + 1;
-  if(argpos != 0)
+  int i = 1;
+  while (i < argc)
   {
-    string = arguments_[argpos];
-  }
-  else
-  {
-    if(must) {
-      errorStr_ = errorStr_ + "Cannot find mandatory argument \"" + option + "\"\n";
-      fail_ = true;
+    if (argv[i][0] == '-' && argv[i][1] == '-') // name
+    {
+      if (argv[i][2] == '\0')
+      {
+        failure_ = true;
+        errorString_ += "Expected word after \"--\".\n";
+      }
+      arg.bChecked_ = false;
+      arg.name_ = argv[i] + 2;
+      arg.value_ = "";
+      arguments_.push_back(arg);
     }
-  }
+    else // value
+    {
+      if (arguments_.size() == 0)
+      {
+        failure_ = true;
+        errorString_ += "Expected \"--\" in command line arguments.\n";
+        arg.bChecked_ = false;
+        arg.name_ = "";
+        arg.value_ = "";
+        arguments_.push_back(arg);
+      }
 
-}
-
-void ArgReader::checkArgument(std::string option, int &integer, bool must)
-{
-  int argpos = checkOption(option) + 1;
-  if(argpos != 0)
-  {
-    integer = atoi(arguments_[argpos]);
-  }
-  else
-  {
-    if(must) {
-      errorStr_ = errorStr_ + "Cannot find mandatory argument \"" + option + "\"\n";
-      fail_ = true;
+      if (arguments_.back().value_ != "")
+        arguments_.back().value_ += " " + std::string(argv[i]);
+      else
+        arguments_.back().value_ = argv[i];
     }
+    ++i;
   }
-}
-
-void ArgReader::checkArgument(std::string option, float &floating, bool must)
-{
-  int argpos = checkOption(option) + 1;
-  if(argpos != 0)
-  {
-    floating = (float)atof(arguments_[argpos]);
-  }
-  else
-  {
-    if(must) {
-      errorStr_ = errorStr_ + "Cannot find mandatory argument \"" + option + "\"\n";
-      fail_ = true;
-    }
-  }
-}
-
-int ArgReader::checkOption(std::string option)
-{
-  for(int i = 1; i < counter_; i++)
-  {
-    if(arguments_[i] == "--" + option)
-        return i;
-  }
-  return -1;
 }
 
 bool ArgReader::errorHandling()
 {
-  if(fail_)
-    std::cout << errorStr_;
-  return fail_;
+  bool argumentsChecked = true;
+  for (unsigned int i = 1; i < arguments_.size(); ++i)
+    argumentsChecked &= arguments_[i].bChecked_;
+
+  if (!argumentsChecked)
+    errorString_ += "Not all arguments could be matched.\n";
+
+  return !argumentsChecked || failure_;
+}
+
+const std::string& ArgReader::getErrorString()
+{
+  return errorString_;
 }

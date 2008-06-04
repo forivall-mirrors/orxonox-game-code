@@ -3,16 +3,13 @@ SET(CORE_SRC_FILES
   ClassTreeMask.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc
-  CoreSettings.cc
+  Core.cc
   Error.cc
   Executor.cc
   Factory.cc
   Identifier.cc
   IdentifierDistributor.cc
-  InputManager.cc
-  KeyBinder.cc
   OutputBuffer.cc
-  InputBuffer.cc
   Shell.cc
   CommandExecutor.cc
   CommandEvaluation.cc
@@ -29,10 +26,19 @@ SET(CORE_SRC_FILES
   Script.cc
   SignalHandler.cc
   TclBind.cc
-  Tickable.cc
   XMLPort.cc
   TclThreadManager.cc
   IRC.cc
+
+  input/Button.cc
+  input/CalibratorCallback.cc
+  input/HalfAxis.cc
+  input/InputBuffer.cc
+  input/InputCommands.cc
+  input/InputManager.cc
+  input/KeyBinder.cc
+  input/KeyDetector.cc
+
   tolua/tolua_bind.cc
 )
 

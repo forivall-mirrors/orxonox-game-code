@@ -38,7 +38,7 @@
 #include "util/XMLIncludes.h"
 #include "network/Synchronisable.h"
 #include "core/BaseObject.h"
-#include "core/Tickable.h"
+#include "Tickable.h"
 #include "../tools/Mesh.h"
 
 namespace orxonox

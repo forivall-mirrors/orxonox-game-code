@@ -20,9 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
  *
  */
 
@@ -57,7 +57,7 @@ namespace orxonox {
   class _OrxonoxExport Orxonox
   {
     public:
-      bool init(int argc, char **argv, std::string path);
+      bool init(int argc, char **argv);
       bool start();
 
       void abortRequest();

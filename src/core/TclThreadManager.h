@@ -29,6 +29,8 @@
 #ifndef _TclThreadManager_H__
 #define _TclThreadManager_H__
 
+#include "CorePrereqs.h"
+
 #include <queue>
 #include <map>
 #include <list>
@@ -37,9 +39,8 @@
 #include <boost/thread/condition.hpp>
 #include <boost/thread/thread.hpp>
 
-#include "CorePrereqs.h"
-#include "Tickable.h"
 #include "cpptcl/CppTcl.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -67,7 +68,7 @@ namespace orxonox
         boost::condition finishedCondition_;
     };
 
-    class _CoreExport TclThreadManager : public Tickable
+    class _CoreExport TclThreadManager : public OrxonoxClass
     {
         public:
             static TclThreadManager& getInstance();

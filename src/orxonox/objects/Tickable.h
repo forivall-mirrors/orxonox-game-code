@@ -41,14 +41,14 @@
 #ifndef _Tickable_H__
 #define _Tickable_H__
 
-#include "CorePrereqs.h"
+#include "OrxonoxPrereqs.h"
 
-#include "OrxonoxClass.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
     //! The Tickable interface provides a tick(dt) function, that gets called every frame.
-    class _CoreExport Tickable : virtual public OrxonoxClass
+    class _OrxonoxExport Tickable : virtual public OrxonoxClass
     {
         public:
             /**
@@ -62,7 +62,7 @@ namespace orxonox
     };
 
     //! The Tickable interface provides a tick(dt) function, that gets called every frame.
-    class _CoreExport TickableReal : virtual public OrxonoxClass
+    class _OrxonoxExport TickableReal : virtual public OrxonoxClass
     {
         public:
             /**

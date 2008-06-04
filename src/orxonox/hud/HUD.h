@@ -35,12 +35,12 @@
 #include <OgrePrerequisites.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgreSceneNode.h>
-#include "core/Tickable.h"
+#include "objects/Tickable.h"
 #include "util/Math.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HUD : public Tickable
+    class _OrxonoxExport HUD : public TickableReal
     {
       private:
         HUD();

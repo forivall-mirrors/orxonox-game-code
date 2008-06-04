@@ -34,8 +34,8 @@
 #include <OgreStringConverter.h>
 
 #include "GraphicsEngine.h"
-#include "core/Tickable.h"
 #include "core/ConsoleCommand.h"
+#include "objects/Tickable.h"
 #include "objects/SpaceShip.h"
 #include "RadarObject.h"
 #include "HUD.h"

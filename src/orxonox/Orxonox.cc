@@ -20,9 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
+ *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
  *
  */
 
@@ -56,9 +56,9 @@
 #include "core/ConsoleCommand.h"
 #include "core/Debug.h"
 #include "core/Loader.h"
-#include "core/Tickable.h"
-#include "core/InputManager.h"
+#include "core/input/InputManager.h"
 #include "core/TclBind.h"
+#include "core/Core.h"
 
 // audio
 #include "audio/AudioManager.h"
@@ -69,14 +69,15 @@
 
 // objects and tools
 #include "hud/HUD.h"
-#include <Ogre.h>
+#include "objects/Tickable.h"
 
 #include "GraphicsEngine.h"
+#include "Settings.h"
 
 // FIXME: is this really file scope?
 // globals for the server or client
-network::Client *client_g;
-network::Server *server_g;
+network::Client *client_g = 0;
+network::Server *server_g = 0;
 
 namespace orxonox
 {
@@ -165,21 +166,31 @@ namespace orxonox
    * @param argv list of argumenst
    * @param path path to config (in home dir or something)
    */
-  bool Orxonox::init(int argc, char **argv, std::string path)
+  bool Orxonox::init(int argc, char **argv)
   {
-    //TODO: find config file (assuming executable directory)
-    //TODO: read config file
-    //TODO: give config file to Ogre
+#ifdef _DEBUG
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox_d.ini");
+#else
+    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
+#endif
+    Factory::createClassHierarchy();
+
     std::string mode;
-    std::string dataPath;
+    std::string tempDataPath;
 
     ArgReader ar(argc, argv);
-    ar.checkArgument("mode", mode, false);
-    ar.checkArgument("data", dataPath, false);
-    ar.checkArgument("ip", serverIp_, false);
-    ar.checkArgument("port", serverPort_, false);
+    ar.checkArgument("mode", &mode, false);
+    ar.checkArgument("data", &tempDataPath, false);
+    ar.checkArgument("ip",   &serverIp_, false);
+    ar.checkArgument("port", &serverPort_, false);
     if(ar.errorHandling())
+    {
+      COUT(1) << "Error while parsing command line arguments" << std::endl;
+      COUT(1) << ar.getErrorString();
+      COUT(0) << "Usage:" << std::endl << "orxonox [mode client|server|dedicated|standalone] "
+        << "[--data PATH] [--ip IP] [--port PORT]" << std::endl;
       return false;
+    }
 
     if (mode == "client")
       mode_ = CLIENT;
@@ -189,10 +200,27 @@ namespace orxonox
       mode_ = DEDICATED;
     else
     {
-      mode = "standalone";
+      if (mode == "")
+        mode = "standalone";
+      if (mode != "standalone")
+      {
+        COUT(2) << "Warning: mode \"" << mode << "\" doesn't exist. "
+          << "Defaulting to standalone" << std::endl;
+        mode = "standalone";
+      }
       mode_ = STANDALONE;
     }
     COUT(3) << "Orxonox: Mode is " << mode << "." << std::endl;
+
+    if (tempDataPath != "")
+    {
+      if (tempDataPath[tempDataPath.size() - 1] != '/')
+        tempDataPath += "/";
+      Settings::tsetDataPath(tempDataPath);
+    }
+
+    // initialise TCL
+    TclBind::getInstance().setDataPath(Settings::getDataPath());
 
     //if (mode_ == DEDICATED)
       // TODO: decide what to do here
@@ -201,11 +229,8 @@ namespace orxonox
     // for playable server, client and standalone, the startup
     // procedure until the GUI is identical
 
-    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
-    Factory::createClassHierarchy();
-
     ogre_ = &GraphicsEngine::getSingleton();
-    if (!ogre_->setup(path))       // creates ogre root and other essentials
+    if (!ogre_->setup())       // creates ogre root and other essentials
       return false;
 
     return true;
@@ -420,12 +445,19 @@ namespace orxonox
         renderTime = 0.0f;
       }
 
+      // tick the core
+      Core::tick((float)evt.timeSinceLastFrame);
       // Call those objects that need the real time
       for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame);
       // Call the scene objects
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
+      //AudioManager::tick();
+      if (client_g)
+        client_g->tick((float)evt.timeSinceLastFrame);
+      if (server_g)
+        server_g->tick((float)evt.timeSinceLastFrame);
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly

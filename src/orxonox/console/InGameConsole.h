@@ -35,8 +35,8 @@
 #include <OgreBorderPanelOverlayElement.h>
 #include <OgreTextAreaOverlayElement.h>
 
-#include "core/Tickable.h"
 #include "core/Shell.h"
+#include "objects/Tickable.h"
 
 
 namespace orxonox

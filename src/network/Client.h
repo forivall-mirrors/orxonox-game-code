@@ -45,7 +45,6 @@
 
 #include <string>
 
-#include "core/Tickable.h"
 #include "ClientConnection.h"
 #include "PacketManager.h"
 #include "GameStateClient.h"
@@ -62,7 +61,7 @@ namespace network
   * It is the root class of the network module
   *
   */
-  class _NetworkExport Client : PacketDecoder, public orxonox::Tickable{
+  class _NetworkExport Client : PacketDecoder{
   public:
     
     static Client* createSingleton();
