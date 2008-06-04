@@ -466,7 +466,7 @@ namespace orxonox
         static std::string char1 = "bdefgilpqtzCEGIJKNOPQT5[}дь";
         static std::string char2 = "Z4";
 
-        if (pos > (int)maxCharsPerLine_)
+        if (pos > maxCharsPerLine_)
           pos = maxCharsPerLine_;
         else if (pos < 0)
           pos = 0;
