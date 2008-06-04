@@ -561,7 +561,8 @@ namespace orxonox
         _restoreState();
         keysDown_.clear();
         mouseButtonsDown_.clear();
-        joyStickButtonsDown_[0].clear();
+        for (unsigned int i = 0; i < joySticksSize_; i++)
+          joyStickButtonsDown_[i].clear();
         state_ = IS_NODETECT;
         stateRequest_ = savedState_;
         break;
