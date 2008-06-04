@@ -81,7 +81,7 @@ namespace network
     if(gs){
       if (loadSnapshot(gs)){
         gameStateMap.insert(std::pair<int, GameState*>(gs->id, gs));
-        COUT(4) << "adding decoded gs with id: " << gs->id << " diffed from: " << gs->base_id << std::endl;
+        COUT(5) << "adding decoded gs with id: " << gs->id << " diffed from: " << gs->base_id << std::endl;
         last_diff_=gs->base_id;
         //last_gamestate_=gs->id;
         return true;
@@ -240,7 +240,7 @@ namespace network
         continue;
       size+=it->getSize(); // size of the actual data of the synchronisable
       size+=3*sizeof(int); // size of datasize, classID and objectID
-      COUT(4) << "getpartialsnapshot: size: " << size << std::endl;
+      COUT(5) << "getpartialsnapshot: size: " << size << std::endl;
     }
     //retval->data = (unsigned char*)malloc(size);
     if(size==0)
@@ -379,7 +379,7 @@ namespace network
     retval = uncompress( dest, &length, a->data, (uLong)compsize );
     //std::cout << "length " << length << std::endl;
     switch ( retval ) {
-      case Z_OK: COUT(4) << "successfully decompressed" << std::endl; break;
+      case Z_OK: COUT(5) << "successfully decompressed" << std::endl; break;
       case Z_MEM_ERROR: COUT(1) << "not enough memory available" << std::endl; return NULL;
       case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer" << std::endl; return NULL;
       case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return NULL;
@@ -398,7 +398,7 @@ namespace network
   }
 
   GameState *GameStateClient::decode(GameState *old, GameStateCompressed *diff) {
-    COUT(4) << "using diffed gamestate" << std::endl;
+    COUT(5) << "using diffed gamestate" << std::endl;
     GameState *t = decode(diff);
     if(!t)
       return NULL;

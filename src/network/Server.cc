@@ -50,14 +50,40 @@
 //#include "NetworkFrameListener.h"
 #include "util/Sleep.h"
 #include "objects/SpaceShip.h"
-
+#include "core/ConsoleCommand.h"
 
 namespace network
 {
+  #define MAX_FAILURES 20;
+  #define NETWORK_FREQUENCY 30
   
+  Server *Server::instance_=0;
   
-#define MAX_FAILURES 20;
-#define NETWORK_FREQUENCY 30
+  Server *Server::createSingleton(){
+    if(!instance_)
+      instance_ = new Server();
+    return instance_;
+  }
+  Server *Server::createSingleton(int port){
+    if(!instance_)
+      instance_ = new Server(port);
+    return instance_;
+  }
+  Server *Server::createSingleton(int port, std::string bindAddress){
+    if(!instance_)
+      instance_ = new Server(port, bindAddress);
+    return instance_;
+  }
+  Server *Server::createSingleton(int port, const char *bindAddress){
+    if(!instance_)
+      instance_ = new Server(port, bindAddress);
+    return instance_;
+  }
+  
+  Server *Server::getSingleton(){
+    return instance_;
+  }
+  
   
   /**
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY
@@ -126,10 +152,8 @@ namespace network
   * @param msg message
   * @return true/false
   */
-  bool Server::sendMSG(std::string msg) {
-    ENetPacket *packet = packet_gen.chatMessage(msg.c_str());
-    //std::cout <<"adding packets" << std::endl;
-    return connection->addPacketAll(packet);
+  bool Server::sendChat(std::string msg) {
+    return sendChat(msg.c_str());
   }
 
   /**
@@ -137,9 +161,12 @@ namespace network
   * @param msg message
   * @return true/false
   */
-  bool Server::sendMSG(const char *msg) {
-    ENetPacket *packet = packet_gen.chatMessage(msg);
-    COUT(4) <<"Server: adding Packets" << std::endl;
+  bool Server::sendChat(const char *msg) {
+    char *message = new char [strlen(msg)+10+1];
+    sprintf(message, "Player %d: %s", CLIENTID_SERVER, msg);
+    COUT(1) << message << std::endl;
+    ENetPacket *packet = packet_gen.chatMessage(message);
+    COUT(5) <<"Server: adding Packets" << std::endl;
     return connection->addPacketAll(packet);
   }
 
@@ -201,11 +228,11 @@ namespace network
   */
   void Server::updateGamestate() {
     gamestates->update();
-    COUT(4) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
+    COUT(5) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
     //std::cout << "updated gamestate, sending it" << std::endl;
     //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
     sendGameState();
-    COUT(4) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
+    COUT(5) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
     //std::cout << "sent gamestate" << std::endl;
   }
 
@@ -228,6 +255,7 @@ namespace network
         //think this works without continue
         continue;
       }
+      COUT(4) << "client id: " << temp->getID() << " RTT: " << temp->getRTT() << " loss: " << temp->getPacketLoss() << std::endl;
       COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
       int gid = temp->getGamestateID(); //get gamestate id
       int cid = temp->getID(); //get client id
@@ -286,6 +314,16 @@ namespace network
         clients->findClient(clientID)->resetFailures();*/
   }
   
+  void Server::processChat( chat *data, int clientId){
+    char *message = new char [strlen(data->message)+10+1];
+    sprintf(message, "Player %d: %s", clientId, data->message);
+    COUT(1) << message << std::endl;
+    ENetPacket *pck = packet_gen.chatMessage(message);
+    connection->addPacketAll(pck);
+    delete[] data->message;
+    delete data;
+  }
+  
   bool Server::addClient(ENetEvent *event){
     ClientInformation *temp = clients->insertBack(new ClientInformation);
     if(!temp){
@@ -311,7 +349,7 @@ namespace network
     }
     COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
     connection->syncClassid(temp->getID());
-    COUT(4) << "creating spaceship for clientid: " << temp->getID() << std::endl;
+    COUT(5) << "creating spaceship for clientid: " << temp->getID() << std::endl;
     // TODO: this is only a hack, untill we have a possibility to define default player-join actions
     if(!createShip(temp))
       COUT(2) << "Con.Man. could not create ship for clientid: " << clientID << std::endl;

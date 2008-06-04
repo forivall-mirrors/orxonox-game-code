@@ -190,6 +190,14 @@ namespace network
   void ClientInformation::resetFailures(){
     failures_=0;
   }
+  
+  enet_uint32 ClientInformation::getRTT(){
+    return peer_->roundTripTime;
+  }
+  
+  enet_uint32 ClientInformation::getPacketLoss(){
+    return peer_->packetLoss;
+  }
 
   int ClientInformation::getGamestateID() {
     if(this)

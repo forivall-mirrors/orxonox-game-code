@@ -150,10 +150,10 @@ namespace network
 
   void PacketDecoder::gstate( ENetPacket* packet, int clientID )
   {
-    if(!testAndRemoveCRC(packet)){
-      COUT(3) << "crc test of gamestate failed - dropping packet" << std::endl;
-      return;
-    }
+//    if(!testAndRemoveCRC(packet)){
+//     COUT(3) << "crc test of gamestate failed - dropping packet" << std::endl;
+//      return;
+//    }
     GameStateCompressed* currentState = NULL;
     currentState = new GameStateCompressed;
     if(currentState == NULL){

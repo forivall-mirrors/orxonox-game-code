@@ -86,6 +86,8 @@ namespace network
     int getFailures();
     void addFailure();
     void resetFailures();
+    enet_uint32 getRTT();
+    enet_uint32 getPacketLoss();
     
     bool removeClient(int clientID);
     bool removeClient(ENetPeer *peer);

@@ -56,7 +56,7 @@ namespace network
     quit=false;
     server=NULL;
     enet_address_set_host(&serverAddress, address.c_str());
-    serverAddress.port = NETWORK_PORT;
+    serverAddress.port = port;
     established=false;
   }
 
@@ -64,7 +64,7 @@ namespace network
     quit=false;
     server=NULL;
     enet_address_set_host(&serverAddress, address);
-    serverAddress.port = NETWORK_PORT;
+    serverAddress.port = port;
     established=false;
   }
 
@@ -106,7 +106,7 @@ namespace network
     receiverThread_ = new boost::thread(boost::bind(&ClientConnection::receiverThread, this));
     //network_threads.create_thread(boost::bind(boost::mem_fn(&ClientConnection::receiverThread), this));
     // wait 10 seconds for the connection to be established
-    return waitEstablished(3000);
+    return waitEstablished(NETWORK_CLIENT_CONNECT_TIMEOUT);
   }
 
   bool ClientConnection::closeConnection() {
@@ -168,7 +168,7 @@ namespace network
       //std::cout << "connection loop" << std::endl;
       {
         boost::recursive_mutex::scoped_lock lock(enet_mutex_);
-        if(enet_host_service(client, event, NETWORK_CLIENT_TIMEOUT)<0){
+        if(enet_host_service(client, event, NETWORK_CLIENT_WAIT_TIME)<0){
           // we should never reach this point
           quit=true;
           continue;
@@ -210,7 +210,7 @@ namespace network
     ENetEvent event;
     boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     enet_peer_disconnect(server, 0);
-    while(enet_host_service(client, &event, NETWORK_CLIENT_TIMEOUT) > 0){
+    while(enet_host_service(client, &event, NETWORK_CLIENT_WAIT_TIME) > 0){
       switch (event.type)
       {
       case ENET_EVENT_TYPE_NONE:
@@ -237,14 +237,14 @@ namespace network
       return false;
     }
     // handshake
-    if(enet_host_service(client, &event, NETWORK_CLIENT_TIMEOUT)>=0 && event.type == ENET_EVENT_TYPE_CONNECT){
-      established=true;
-      return true;
+    while(enet_host_service(client, &event, NETWORK_CLIENT_WAIT_TIME)>=0 && !quit){
+      if( event.type == ENET_EVENT_TYPE_CONNECT ){
+        established=true;
+        return true;
+      }
     }
-    else {
-      COUT(2) << "ClientConnection: enet_host_service < 0 or event.type != ENET_EVENT_TYPE_CONNECT # EVENT:" << event.type << std::endl;
-      return false;
-    }
+    COUT(2) << "ClientConnection: enet_host_service < 0 or event.type != ENET_EVENT_TYPE_CONNECT # EVENT:" << event.type << std::endl;
+    return false;
   }
 
   bool ClientConnection::processData(ENetEvent *event) {

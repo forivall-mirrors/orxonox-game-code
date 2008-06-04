@@ -41,9 +41,13 @@
 #include "Client.h"
 #include "Synchronisable.h"
 #include "core/CoreIncludes.h"
+#include "core/ConsoleCommand.h"
+#include "Server.h"
 
 namespace network
 {
+  SetConsoleCommandShortcut(Client, Chat);
+  
   Client* Client::_sClient = 0;
   
   Client* Client::createSingleton(){
@@ -141,6 +145,14 @@ namespace network
 
   
 
+  void Client::Chat( std::string message ){
+    if(Client::getSingleton())
+      Client::getSingleton()->sendChat(message);
+    else if(Server::getSingleton())
+      Server::getSingleton()->sendChat(message);
+    else
+      COUT(1) << "do you want to monologize ??" << std::endl;
+  }
   
 
   /**
@@ -223,8 +235,8 @@ namespace network
     return;
   }
 
-  void Client::processChat( chat *data){
-    COUT(0) << "Server: " << data->message << std::endl;
+  void Client::processChat( chat *data, int clientId){
+    COUT(1) << data->message << std::endl;
     delete[] data->message;
     delete data;
   }

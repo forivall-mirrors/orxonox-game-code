@@ -44,6 +44,7 @@
 #include <iostream>
 
 #include "core/CoreIncludes.h"
+// #include "core/Identifier.h"
 
 namespace network
 {
@@ -65,6 +66,10 @@ namespace network
   }
 
   Synchronisable::~Synchronisable(){
+    // delete callback function objects
+    if(!orxonox::Identifier::isCreatingHierarchy())
+      for(std::list<synchronisableVariable *>::iterator it = syncList->begin(); it!=syncList->end(); it++)
+        delete (*it)->callback;
   }
   
   bool Synchronisable::create(){
@@ -86,13 +91,14 @@ namespace network
   * @param var pointer to the variable
   * @param size size of the datatype the variable consists of
   */
-  void Synchronisable::registerVar(void *var, int size, variableType t, int mode){
+  void Synchronisable::registerVar(void *var, int size, variableType t, int mode, NetworkCallbackBase *cb){
     // create temporary synch.Var struct
     synchronisableVariable *temp = new synchronisableVariable;
     temp->size = size;
     temp->var = var;
     temp->mode = mode; 
     temp->type = t;
+    temp->callback = cb;
     COUT(5) << "Syncronisable::registering var with size: " << temp->size << " and type: " << temp->type << std::endl; 
     // increase datasize
     datasize+=sizeof(int)+size;
@@ -217,8 +223,12 @@ namespace network
         continue;  // this variable should only be set
       }
       COUT(5) << "Synchronisable: element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
+      bool callback=false;
       switch((*i)->type){
       case DATA:
+        if((*i)->callback) // check whether this variable changed (but only if callback was set)
+          if(strncmp((char *)(*i)->var, (char *)data, (*i)->size)!=0)
+            callback=true;
         memcpy((void*)(*i)->var, data, (*i)->size);
         data+=(*i)->size;
         break;
@@ -226,11 +236,17 @@ namespace network
         (*i)->size = *(int *)data;
         COUT(5) << "string size: " << (*i)->size << std::endl;
         data+=sizeof(int);
+        if((*i)->callback) // check whether this string changed
+          if( *(std::string *)((*i)->var) != std::string((char *)data) )
+            callback=true;
         *((std::string *)((*i)->var)) = std::string((const char*)data);
         COUT(5) << "synchronisable: char: " << (const char*)data << " string: " << std::string((const char*)data) << std::endl;
         data += (*i)->size;
         break;
       }
+      // call the callback function, if defined
+      if(callback)
+        (*i)->callback->call();
     }
     return true;
   }
