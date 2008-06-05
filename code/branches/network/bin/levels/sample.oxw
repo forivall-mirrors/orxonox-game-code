@@ -1,0 +1,49 @@
+ <!--audio>
+	<ambient>
+		<ogg src="allgorythm-lift_up" />
+		<ogg src="allgorythm-resonance_blaster" />
+		<ogg src="luke_grey_-_hypermode" />
+		<ogg src="task_horizon_-_menu1" />
+		<ogg src="tha_silent_partner_-_void" />
+	</ambient>
+  </audio--> 
+
+<Ambient colourvalue="0.1, 0.1, 0.1" />
+<Skybox src="Orxonox/Starbox" />
+<SpaceShip camera="true" position="0,0,0" scale="10" yawpitchroll="0,0,0" mesh="assff.mesh" maxSpeed="500" maxSideAndBackSpeed="50" maxRotation="1.0" transAcc="200" rotAcc="3.0" transDamp="75" rotDamp="1.0" />
+<Model position="2000,0,0" scale="10" mesh="tomato.mesh" yawpitchroll="-40,30,0" rotationAxis="1,0,0" rotationRate="-30"/>
+<Model position="0,2000,0" scale="10" mesh="tomato.mesh" yawpitchroll="-50,60,0" rotationAxis="1,0,0" rotationRate="-30"/>
+<Model position="0,0,2000" scale="10" mesh="tomato.mesh" yawpitchroll="-50,-30,0" rotationAxis="1,0,0" rotationRate="-30"/>
+<Model position="10000,16000,0" scale="100" mesh="DuBall1.mesh"/>
+<Model position="11400,16000,0" scale="60" mesh="DuBall2.mesh"/>
+<NPC position="0,100,400" scale="1" mesh="razor.mesh"/>
+<NPC position="0,100,400" scale="1" mesh="razor.mesh"/>
+<NPC position="0,-100,500" scale="1" mesh="razor.mesh"/>
+<NPC position="0,-200,450" scale="1" mesh="razor.mesh"/>
+<NPC position="100,0,400" scale="1" mesh="razor.mesh"/>
+
+<!--Model name="starship" position="200,0,500" scale="10" mesh="starship.mesh" yawpitchroll="-90,-90,0" />
+<Model name="drone" position="-200,0,500" scale="10" mesh="drone.mesh" yawpitchroll="-90,-90,0">
+  <attached>
+    <Model name="drone2" position="200,-100,-500" scale="10" mesh="drone.mesh" yawpitchroll="-90,-90,0">
+      <attached>
+        <Model name="starship2" position="500,200,-500" scale="10" mesh="starship.mesh" yawpitchroll="-90,-90,0" />
+      </attached>
+    </Model>
+  </attached>
+</Model-->
+
+<!--Model position="-200,1000,500" scale="10" mesh="hoover_body.mesh" yawpitchroll="-90,-90,0" />
+<Model position="-200,1000,500" scale="10" mesh="hoover_gear0.mesh" yawpitchroll="-90,-90,0" />
+<Model position="-200,1000,500" scale="10" mesh="hoover_gear1.mesh" yawpitchroll="-90,-90,0" />
+<Model position="-200,1000,500" scale="10" mesh="hoover_gear2.mesh" yawpitchroll="-90,-90,0" />
+<Model position="-200,1000,500" scale="10" mesh="hoover_turbine.mesh" yawpitchroll="-90,-90,0" /-->
+
+
+<?lua
+for i = 1, 226, 1 
+do ?>
+  <Model position="<?lua print(math.random(-19597, 18732))?>, <?lua print(math.random(-19597, 18732)) ?>, <?lua print(math.random(-19597, 18732)) ?>" scale="<?lua print(math.random( 20, 119)) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" rotationAxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationRate="<?lua print(math.random(16, 44)) ?>" />
+<?lua 
+end
+?>
