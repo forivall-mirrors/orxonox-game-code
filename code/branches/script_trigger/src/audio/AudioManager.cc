@@ -38,110 +38,105 @@
 
 namespace audio
 {
-	AudioManager::AudioManager()
-	{
+  AudioManager::AudioManager()
+  {
     ambientPath = "audio/ambient";
 
     alutInit(NULL, 0);
+  }
 
+  AudioManager::~AudioManager()
+  {
+    for (unsigned int i=0;i<bgSounds.size();i++)
+    {
+      bgSounds[i]->release();
+    }
+    alutExit();
+  }
 
-	}
-
-	AudioManager::~AudioManager()
-	{
-		for (unsigned int i=0;i<bgSounds.size();i++)
-		{
-			bgSounds[i]->release();
-		}
-		alutExit();
-	}
-
-	void AudioManager::ambientStart()
-	{
-// 		currentBgSound = 0;
-		if (bgSounds.size() > 0)
-		{
+  void AudioManager::ambientStart()
+  {
+    // currentBgSound = 0;
+    if (bgSounds.size() > 0)
+    {
       currentBgSound = rand() % bgSounds.size();
-			if(!bgSounds[currentBgSound]->playback())
-			{
-    		orxonox::Error("Ogg refused to play.");
-			}
-			else
-			{
-				COUT(3) << "Info: Started playing background sound" << std::endl;
-			}
-		}
-	}
+      if(!bgSounds[currentBgSound]->playback())
+      {
+        orxonox::Error("Ogg refused to play.");
+      }
+      else
+      {
+        COUT(3) << "Info: Started playing background sound" << std::endl;
+      }
+    }
+  }
 
-	void AudioManager::ambientStop()
-	{
-		COUT(3) << "Info: Stopped playing background sound" << std::endl;
-	}
+  void AudioManager::ambientStop()
+  {
+    COUT(3) << "Info: Stopped playing background sound" << std::endl;
+  }
 
-	void AudioManager::ambientAdd(std::string file)
-	{
+  void AudioManager::ambientAdd(std::string file)
+  {
     std::string path = ambientPath + "/" + file + ".ogg";
-		AudioStream* tmp = new AudioStream(path);
-		tmp->open();
-		if (tmp->isLoaded())
-		{
-			bgSounds.push_back(tmp);
-			COUT(3) << "Info: Added background sound " << file << std::endl;
-		}
-	}
+    AudioStream* tmp = new AudioStream(path);
+    tmp->open();
+    if (tmp->isLoaded())
+    {
+      bgSounds.push_back(tmp);
+      COUT(3) << "Info: Added background sound " << file << std::endl;
+    }
+  }
 
-	void AudioManager::tick(float dt)
-	{
-		if (bgSounds.size() > 0)
-		{
-			if (bgSounds[currentBgSound]->isLoaded())
-			{
-				bool playing = bgSounds[currentBgSound]->update();
-		    if(!bgSounds[currentBgSound]->playing() && playing)
-		    {
-		        if(!bgSounds[currentBgSound]->playback())
-		            orxonox::Error("Ogg abruptly stopped.");
-		        else
-		            orxonox::Error("Ogg stream was interrupted.");
-
-		    }
-				if (!playing)
-				{
-// 					if (currentBgSound < bgSounds.size()-1)
-// 					{
-// 						currentBgSound++;
-// 					}
-// 					else
-// 					{
-// 						currentBgSound=0;
-// 					}
+  void AudioManager::tick(float dt)
+  {
+    if (bgSounds.size() > 0)
+    {
+      if (bgSounds[currentBgSound]->isLoaded())
+      {
+        bool playing = bgSounds[currentBgSound]->update();
+        if(!bgSounds[currentBgSound]->playing() && playing)
+        {
+          if(!bgSounds[currentBgSound]->playback())
+            orxonox::Error("Ogg abruptly stopped.");
+          else
+            orxonox::Error("Ogg stream was interrupted.");
+        }
+        if (!playing)
+        {
+          // if (currentBgSound < bgSounds.size()-1)
+          // {
+          //   currentBgSound++;
+          // }
+          // else
+          // {
+          //   currentBgSound=0;
+          // }
           // switch to next sound in list/array
           currentBgSound = ++currentBgSound % bgSounds.size();
 
-					if (!bgSounds[currentBgSound]->isLoaded())
-					{
-						bgSounds[currentBgSound]->release();
-						bgSounds[currentBgSound]->open();
-					}
-					bgSounds[currentBgSound]->playback();
-					COUT(3) << "Info: Playing next background sound" << std::endl;
-				}
-			}
-		}
-	}
+          if (!bgSounds[currentBgSound]->isLoaded())
+          {
+            bgSounds[currentBgSound]->release();
+            bgSounds[currentBgSound]->open();
+          }
+          bgSounds[currentBgSound]->playback();
+          COUT(3) << "Info: Playing next background sound" << std::endl;
+        }
+      }
+    }
+  }
 
-	void AudioManager::setPos(std::vector<float> newPosition)
-	{
+  void AudioManager::setPos(std::vector<float> newPosition)
+  {
+  }
 
-	}
+  void AudioManager::setSpeed(std::vector<float> newSpeed)
+  {
+  }
 
-	void AudioManager::setSpeed(std::vector<float> newSpeed)
-	{
+  void AudioManager::setOri(std::vector<float> at, std::vector<float> up)
+  {
+  }
 
-	}
-
-	void AudioManager::setOri(std::vector<float> at, std::vector<float> up)
-	{
-
-	}
 }

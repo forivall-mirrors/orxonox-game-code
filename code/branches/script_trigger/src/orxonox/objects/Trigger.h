@@ -29,12 +29,13 @@
 #ifndef _Trigger_H__
 #define _Trigger_H__
 
-#include <list>
+#include <set>
 
 #include "OrxonoxPrereqs.h"
 
 #include "WorldEntity.h"
 #include "core/BaseObject.h"
+#include "core/ClassTreeMask.h"
 
 namespace orxonox {
 
@@ -55,14 +56,26 @@ namespace orxonox {
       ~Trigger();
 
       bool isTriggered();
+      bool isTriggered(TriggerMode mode);
       void addTrigger(Trigger* trig);
+      void addTargets(std::string targets);
       inline TriggerMode getMode() { return mode_; }
       inline void setMode(TriggerMode mode) { this->mode_ = mode; }
+      inline void tick(float dt) { this->actualTime_ += dt; }
+
+    private:
+      bool checkAnd();
+      bool checkOr();
+      bool checkDelay();
+      bool checkDistance();
 
     private:
       std::set<Trigger*> triggers_;
       TriggerMode mode_;
-
+      float triggingTime_;
+      float actualTime_;
+      float radius_;
+      ClassTreeMask targetMask_;
   };
 
 }

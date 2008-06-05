@@ -38,6 +38,7 @@ namespace orxonox
   {
     RegisterObject(Trigger);
 
+    targetMask_.exclude(Class(BaseObject));
   }
 
   Trigger::~Trigger()
@@ -46,13 +47,98 @@ namespace orxonox
 
   bool Trigger::isTriggered()
   {
-    return true;
+    return this->isTriggered(this->mode_);
+  }
+
+  bool Trigger::isTriggered(TriggerMode mode)
+  {
+    switch(mode)
+    {
+      case TM_EventTriggerAnd:
+        return checkAnd();
+        break;
+      case TM_EventTriggerOr:
+        return checkOr();
+        break;
+      case TM_DelayTrigger:
+        return checkDelay();
+        break;
+      case TM_DistanceTrigger:
+        return checkDistance();
+        break;
+      case TM_DistanceEventTriggerAnd:
+        if (checkDistance() && checkAnd())
+          return true;
+        else
+          return false;
+        break;
+      case TM_DistanceEventTriggerOr:
+        if (checkDistance() && checkOr())
+          return true;
+        else
+          return false;
+        break;
+      default:
+        return false;
+        break;
+    }
   }
 
   void Trigger::addTrigger(Trigger* trig)
   {
     if (this != trig)
       this->triggers_.insert(trig);
+  }
+
+  void Trigger::addTargets(std::string targets)
+  {
+    Identifier* targetId = ID(targets);
+    targetMask_.include(targetId);
+    // trigger shouldn't react on itself or other triggers
+    targetMask_.exclude(Class(Trigger), true);
+  }
+
+  bool Trigger::checkAnd()
+  {
+    std::set<Trigger*>::iterator it;
+    for(it = this->triggers_.begin(); it != this->triggers_.end(); it++)
+    {
+      if(!((*it)->isTriggered()))
+        return false;
+    }
+    return true;
+  }
+
+  bool Trigger::checkOr()
+  {
+    std::set<Trigger*>::iterator it;
+    for(it = this->triggers_.begin(); it != this->triggers_.end(); it++)
+    {
+      if((*it)->isTriggered())
+        return true;
+    }
+    return false;
+  }
+
+  bool Trigger::checkDelay()
+  {
+    if (triggingTime_ < actualTime_)
+      return true;
+    else
+      return false;
+  }
+
+  bool Trigger::checkDistance()
+  {
+    // Iterate through all WorldEntities
+    for(Iterator<WorldEntity> it = ObjectList<WorldEntity>::begin(); it; it++)
+    {
+      Vector3 distanceVec = it->getNode()->getWorldPosition() - this->getNode()->getWorldPosition();
+      if (distanceVec.length() < radius_)
+        return true;
+    }
+    return false;
+
   }
 
 }

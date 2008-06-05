@@ -1,4 +1,4 @@
- <!--audio>
+<AudioManager>
 	<ambient>
 		<ogg src="allgorythm-lift_up" />
 		<ogg src="allgorythm-resonance_blaster" />
@@ -6,7 +6,7 @@
 		<ogg src="task_horizon_-_menu1" />
 		<ogg src="tha_silent_partner_-_void" />
 	</ambient>
-  </audio--> 
+</AudioManager> 
 
 <!--Ambient colourvalue="1,1,1" /-->
 <Skybox src="Orxonox/StarSkyBox" />
