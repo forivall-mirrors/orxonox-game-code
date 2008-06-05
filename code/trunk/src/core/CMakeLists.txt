@@ -1,35 +1,43 @@
 SET(CORE_SRC_FILES
-  BaseObject.cc
-  ClassTreeMask.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc
   Core.cc
   Error.cc
-  Executor.cc
-  Factory.cc
-  Identifier.cc
-  IdentifierDistributor.cc
-  OutputBuffer.cc
-  Shell.cc
-  CommandExecutor.cc
-  CommandEvaluation.cc
-  ConsoleCommand.cc
-  ArgumentCompletionFunctions.cc
-  ConsoleCommandCompilation.cc
   Language.cc
-  Loader.cc
-  MetaObjectList.cc
-  Namespace.cc
-  NamespaceNode.cc
   OrxonoxClass.cc
+  OutputBuffer.cc
   OutputHandler.cc
   Script.cc
   SignalHandler.cc
-  TclBind.cc
-  XMLPort.cc
-  TclThreadManager.cc
-  IRC.cc
 
+  # command
+  ArgumentCompletionFunctions.cc
+  CommandEvaluation.cc
+  CommandExecutor.cc
+  ConsoleCommand.cc
+  ConsoleCommandCompilation.cc
+  Executor.cc
+
+  # hierarchy
+  Factory.cc
+  Identifier.cc
+  MetaObjectList.cc
+
+  # level
+  BaseObject.cc
+  ClassTreeMask.cc
+  Loader.cc
+  Namespace.cc
+  NamespaceNode.cc
+  XMLPort.cc
+
+  # shell
+  IRC.cc
+  Shell.cc
+  TclBind.cc
+  TclThreadManager.cc
+
+  # input
   input/Button.cc
   input/CalibratorCallback.cc
   input/HalfAxis.cc

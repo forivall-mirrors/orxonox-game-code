@@ -96,8 +96,6 @@ namespace orxonox
   class ClassFactory;
   template <class T>
   class ClassIdentifier;
-  template <class T>
-  class ClassManager;
   class ClassTreeMask;
   class ClassTreeMaskIterator;
   class ClassTreeMaskNode;
@@ -123,7 +121,6 @@ namespace orxonox
   class FunctorMember;
   class FunctorStatic;
   class Identifier;
-  class IdentifierDistributor;
   class IRC;
   template <class T>
   class Iterator;

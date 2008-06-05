@@ -43,7 +43,6 @@
 #include "CorePrereqs.h"
 
 #include "Identifier.h"
-#include "ClassManager.h"
 #include "Factory.h"
 #include "ClassFactory.h"
 #include "Debug.h"
@@ -55,10 +54,10 @@
     @param bRootClass True if the class is directly derived from OrxonoxClass
 */
 #define InternRegisterObject(ClassName, bRootClass) \
-    this->setIdentifier(orxonox::ClassManager<ClassName>::getIdentifier()->registerClass(this->getParents(), #ClassName, bRootClass)); \
+    this->setIdentifier(orxonox::ClassIdentifier<ClassName>::getIdentifier()->registerClass(this->getParents(), #ClassName, bRootClass)); \
     if (orxonox::Identifier::isCreatingHierarchy() && this->getParents()) \
         this->getParents()->insert(this->getParents()->end(), this->getIdentifier()); \
-    orxonox::ClassManager<ClassName>::getIdentifier()->addObject(this); \
+    orxonox::ClassIdentifier<ClassName>::getIdentifier()->addObject(this); \
     if (orxonox::Identifier::isCreatingHierarchy()) \
       return
 
@@ -92,7 +91,7 @@
     @param ClassName The name of the class
 */
 #define Class(ClassName) \
-    ClassManager<ClassName>::getIdentifier()
+    ClassIdentifier<ClassName>::getIdentifier()
 
 /**
     @brief Creates the entry in the Factory.

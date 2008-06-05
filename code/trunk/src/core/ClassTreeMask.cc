@@ -265,7 +265,7 @@ namespace orxonox
     */
     ClassTreeMask::ClassTreeMask()
     {
-        this->root_ = new ClassTreeMaskNode(ClassManager<BaseObject>::getIdentifier(), true);
+        this->root_ = new ClassTreeMaskNode(ClassIdentifier<BaseObject>::getIdentifier(), true);
     }
 
     /**
@@ -274,7 +274,7 @@ namespace orxonox
     */
     ClassTreeMask::ClassTreeMask(const ClassTreeMask& other)
     {
-        this->root_ = new ClassTreeMaskNode(ClassManager<BaseObject>::getIdentifier(), true);
+        this->root_ = new ClassTreeMaskNode(ClassIdentifier<BaseObject>::getIdentifier(), true);
         for (ClassTreeMaskIterator it = other.root_; it; ++it)
             this->add(it->getClass(), it->isIncluded(), false);
     }
@@ -434,7 +434,7 @@ namespace orxonox
     void ClassTreeMask::reset()
     {
         delete this->root_;
-        this->root_ = new ClassTreeMaskNode(ClassManager<BaseObject>::getIdentifier(), true);
+        this->root_ = new ClassTreeMaskNode(ClassIdentifier<BaseObject>::getIdentifier(), true);
     }
 
     /**

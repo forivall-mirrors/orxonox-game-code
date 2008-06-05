@@ -62,11 +62,11 @@
     @param defvalue The default-value of the variable
 */
 #define SetConfigValueGeneric(classname, varname, defvalue) \
-    orxonox::ConfigValueContainer* container##varname = ClassManager<classname>::getIdentifier()->getConfigValueContainer(#varname); \
+    orxonox::ConfigValueContainer* container##varname = ClassIdentifier<classname>::getIdentifier()->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, ClassManager<classname>::getIdentifier(), #varname, varname = defvalue); \
-        ClassManager<classname>::getIdentifier()->addConfigValueContainer(#varname, container##varname); \
+        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, ClassIdentifier<classname>::getIdentifier(), #varname, varname = defvalue); \
+        ClassIdentifier<classname>::getIdentifier()->addConfigValueContainer(#varname, container##varname); \
     } \
     container##varname->getValue(&varname)
 

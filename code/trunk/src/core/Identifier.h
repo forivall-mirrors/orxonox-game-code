@@ -252,6 +252,8 @@ namespace orxonox
                 COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
+            static Identifier* getIdentifier(std::string &name, Identifier *proposal);
+
             std::set<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to
             std::set<const Identifier*>* children_;                        //!< The children of the class the Identifier belongs to
 
@@ -287,17 +289,11 @@ namespace orxonox
         objects of that class without defining static variables in every class.
 
         To be really sure that not more than exactly one object exists (even with libraries),
-        ClassIdentifiers are only created by IdentifierDistributor.
-
-        You can access the ClassIdentifiers created by IdentifierDistributor through the
-        ClassManager singletons.
+        ClassIdentifiers are stored in the Identifier Singleton.
     */
     template <class T>
     class ClassIdentifier : public Identifier
     {
-        template <class TT>
-        friend class ClassManager;
-
         public:
             ClassIdentifier<T>* registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass);
             void addObject(T* object);
@@ -315,6 +311,8 @@ namespace orxonox
             XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
             void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
 
+            static ClassIdentifier<T> *getIdentifier();
+
         private:
             ClassIdentifier();
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
@@ -324,7 +322,12 @@ namespace orxonox
             bool bSetName_;                                                                             //!< True if the name is set
             std::map<std::string, XMLPortClassParamContainer<T>*> xmlportParamContainers_;              //!< All loadable parameters
             std::map<std::string, XMLPortClassObjectContainer<T, class O>*> xmlportObjectContainers_;   //!< All attachable objects
+
+            static ClassIdentifier<T> *classIdentifier_s;
     };
+
+    template <class T>
+    ClassIdentifier<T> *ClassIdentifier<T>::classIdentifier_s = 0;
 
     /**
         @brief Constructor: Creates the ObjectList.
@@ -361,6 +364,30 @@ namespace orxonox
         }
 
         return this;
+    }
+
+    /**
+        @brief Creates the only instance of this class for the template class T and retrieves a unique Identifier for the given name.
+        @return The unique Identifier
+    */
+    template <class T>
+    ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
+    {
+        // check if the static field has already been filled
+        if (ClassIdentifier<T>::classIdentifier_s == 0)
+        {
+            // Get the name of the class
+            std::string name = typeid(T).name();
+
+            // create a new identifier anyway. Will be deleted in Identifier::getIdentifier if not used.
+            ClassIdentifier<T> *proposal = new ClassIdentifier<T>();
+
+            // Get the entry from the map
+            ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)Identifier::getIdentifier(name, proposal);
+        }
+
+        // Finally return the unique ClassIdentifier
+        return ClassIdentifier<T>::classIdentifier_s;
     }
 
     /**
@@ -471,7 +498,7 @@ namespace orxonox
             */
             SubclassIdentifier()
             {
-                this->identifier_ = ClassManager<T>::getIdentifier();
+                this->identifier_ = ClassIdentifier<T>::getIdentifier();
             }
 
             /**
@@ -490,11 +517,11 @@ namespace orxonox
             */
             SubclassIdentifier<T>& operator=(Identifier* identifier)
             {
-                if (!identifier->isA(ClassManager<T>::getIdentifier()))
+                if (!identifier->isA(ClassIdentifier<T>::getIdentifier()))
                 {
                     COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
-                    COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassManager<T>::getIdentifier()->getName() << "!" << std::endl;
-                    COUT(1) << "Error: SubclassIdentifier<" << ClassManager<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
+                    COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!" << std::endl;
+                    COUT(1) << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
                     COUT(1) << "Aborting..." << std::endl;
                     abort();
                 }
@@ -540,7 +567,7 @@ namespace orxonox
                     if (this->identifier_)
                     {
                         COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
-                        COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << ClassManager<T>::getIdentifier()->getName() << "!" << std::endl;
+                        COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!" << std::endl;
                         COUT(1) << "Error: Couldn't fabricate a new Object." << std::endl;
                         COUT(1) << "Aborting..." << std::endl;
                     }

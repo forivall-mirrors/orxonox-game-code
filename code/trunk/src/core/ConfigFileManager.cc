@@ -528,7 +528,7 @@ namespace orxonox
         {
             for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getIdentifierMapBegin(); it != Identifier::getIdentifierMapEnd(); ++it)
             {
-                if ((*it).second->hasConfigValues() /* && (*it).second != ClassManager<KeyBinder>::getIdentifier()*/)
+                if ((*it).second->hasConfigValues() /* && (*it).second != ClassIdentifier<KeyBinder>::getIdentifier()*/)
                 {
                     for (std::map<std::string, ConfigValueContainer*>::const_iterator it2 = (*it).second->getConfigValueMapBegin(); it2 != (*it).second->getConfigValueMapEnd(); ++it2)
                         (*it2).second->update();

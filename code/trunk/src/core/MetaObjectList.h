@@ -88,7 +88,7 @@ namespace orxonox
     template <class T>
     MetaObjectListElement<T>::~MetaObjectListElement()
     {
-        COUT(5) << "*** MetaObjectList: Removing Object from " << ClassManager<T>::getIdentifier()->getName() << "-list." << std::endl;
+        COUT(5) << "*** MetaObjectList: Removing Object from " << ClassIdentifier<T>::getIdentifier()->getName() << "-list." << std::endl;
         this->list_->notifyIterators(this->element_);
 
         if (this->element_->next_)

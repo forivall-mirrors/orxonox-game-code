@@ -63,7 +63,7 @@ namespace orxonox
             Iterator()
             {
                 this->element_ = 0;
-                ClassManager<T>::getIdentifier()->getObjects()->registerIterator(this);
+                ClassIdentifier<T>::getIdentifier()->getObjects()->registerIterator(this);
             }
 
             /**
@@ -73,7 +73,7 @@ namespace orxonox
             Iterator(ObjectListElement<T>* element)
             {
                 this->element_ = element;
-                ClassManager<T>::getIdentifier()->getObjects()->registerIterator(this);
+                ClassIdentifier<T>::getIdentifier()->getObjects()->registerIterator(this);
             }
 
             /**
@@ -81,7 +81,7 @@ namespace orxonox
             */
             ~Iterator()
             {
-                ClassManager<T>::getIdentifier()->getObjects()->unregisterIterator(this);
+                ClassIdentifier<T>::getIdentifier()->getObjects()->unregisterIterator(this);
             }
 
             /**
