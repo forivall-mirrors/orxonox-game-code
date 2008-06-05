@@ -28,6 +28,8 @@
 
 #include "Trigger.h"
 
+#include "core/Debug.h"
+
 #include "core/CoreIncludes.h"
 
 namespace orxonox
@@ -39,6 +41,12 @@ namespace orxonox
     RegisterObject(Trigger);
 
     targetMask_.exclude(Class(BaseObject));
+
+    if (getSoftDebugLevel() >= ORX_DEBUG)
+    {
+      debugBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
+      this->getNode()->attachObject(debugBillboard_.getBillboardSet());
+    }
   }
 
   Trigger::~Trigger()
@@ -84,10 +92,15 @@ namespace orxonox
     }
   }
 
+  void Trigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+  {
+    WorldEntity::XMLPort(xmlelement, mode);
+  }
+
   void Trigger::addTrigger(Trigger* trig)
   {
     if (this != trig)
-      this->triggers_.insert(trig);
+      this->subTriggers_.insert(trig);
   }
 
   void Trigger::addTargets(std::string targets)
@@ -98,10 +111,16 @@ namespace orxonox
     targetMask_.exclude(Class(Trigger), true);
   }
 
+  void Trigger::removeTargets(std::string targets)
+  {
+    Identifier* targetId = ID(targets);
+    targetMask_.exclude(targetId);
+  }
+
   bool Trigger::checkAnd()
   {
     std::set<Trigger*>::iterator it;
-    for(it = this->triggers_.begin(); it != this->triggers_.end(); it++)
+    for(it = this->subTriggers_.begin(); it != this->subTriggers_.end(); it++)
     {
       if(!((*it)->isTriggered()))
         return false;
@@ -112,7 +131,7 @@ namespace orxonox
   bool Trigger::checkOr()
   {
     std::set<Trigger*>::iterator it;
-    for(it = this->triggers_.begin(); it != this->triggers_.end(); it++)
+    for(it = this->subTriggers_.begin(); it != this->subTriggers_.end(); it++)
     {
       if((*it)->isTriggered())
         return true;

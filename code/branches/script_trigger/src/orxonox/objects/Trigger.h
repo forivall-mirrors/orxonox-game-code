@@ -36,6 +36,7 @@
 #include "WorldEntity.h"
 #include "core/BaseObject.h"
 #include "core/ClassTreeMask.h"
+#include "../tools/BillboardSet.h"
 
 namespace orxonox {
 
@@ -53,15 +54,20 @@ namespace orxonox {
   {
     public:
       Trigger();
+      Trigger(bool active) { bActive_ = active; }
       ~Trigger();
 
       bool isTriggered();
       bool isTriggered(TriggerMode mode);
       void addTrigger(Trigger* trig);
       void addTargets(std::string targets);
+      void removeTargets(std::string targets);
+      virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
       inline TriggerMode getMode() { return mode_; }
       inline void setMode(TriggerMode mode) { this->mode_ = mode; }
-      inline void tick(float dt) { this->actualTime_ += dt; }
+      inline void tick(float dt) { if(bActive_) this->actualTime_ += dt; }
+      inline void reset(float time) { this->actualTime_ = 0; this->triggingTime_ = time; }
+      inline void reset() { reset(triggingTime_); }
 
     private:
       bool checkAnd();
@@ -70,12 +76,14 @@ namespace orxonox {
       bool checkDistance();
 
     private:
-      std::set<Trigger*> triggers_;
+      std::set<Trigger*> subTriggers_;
       TriggerMode mode_;
       float triggingTime_;
       float actualTime_;
       float radius_;
+      bool bActive_;
       ClassTreeMask targetMask_;
+      BillboardSet debugBillboard_;
   };
 
 }
