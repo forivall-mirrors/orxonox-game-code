@@ -1,2 +1,0 @@
-- should we use enet_peer_ping to test if a client is still alive ?
-- enet_host_broadcast ? (to all peers)
