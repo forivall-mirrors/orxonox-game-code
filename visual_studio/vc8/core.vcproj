@@ -235,10 +235,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\IdentifierDistributor.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\core\MetaObjectList.cc"
 					>
 				</File>
@@ -497,10 +493,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\ClassManager.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\core\CoreIncludes.h"
 					>
 				</File>
@@ -510,10 +502,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\Identifier.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\core\IdentifierDistributor.h"
 					>
 				</File>
 				<File

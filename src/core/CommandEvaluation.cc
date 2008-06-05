@@ -28,6 +28,7 @@
 
 #include "CommandEvaluation.h"
 #include "ConsoleCommand.h"
+#include "Identifier.h"
 #include "Debug.h"
 #include "util/String.h"
 

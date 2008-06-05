@@ -75,6 +75,29 @@ namespace orxonox
     }
 
     /**
+        @brief Returns an identifier by name and adds it if not available
+        @param name The name of the identifier as typeid().name() suggests
+        @param proposal A pointer to a newly created identifier for the case of non existance in the map
+        @return The identifier (unique instance)
+    */
+    Identifier *Identifier::getIdentifier(std::string &name, Identifier *proposal)
+    {
+        static std::map<std::string, Identifier*> identifiers;    //!< The map to store all Identifiers.
+        std::map<std::string, Identifier*>::const_iterator it = identifiers.find(name);
+        if (it == identifiers.end())
+        {
+            // there isn't an entry yet, put the proposal in it
+            identifiers[name] = proposal;
+        }
+        else
+        {
+            // this happens when a template exists twice --> delete the proposal
+            delete proposal;
+        }
+        return identifiers[name];
+    }
+
+    /**
         @brief Initializes the Identifier with a list containing all parents of the class the Identifier belongs to.
         @param parents A list containing all parents
     */

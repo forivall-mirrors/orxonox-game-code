@@ -264,11 +264,11 @@ namespace orxonox
   void KeyBinder::readTrigger(Button& button)
   {
     // config value stuff
-    ConfigValueContainer* cont = ClassManager<KeyBinder>::getIdentifier()->getConfigValueContainer(button.name_);
+    ConfigValueContainer* cont = ClassIdentifier<KeyBinder>::getIdentifier()->getConfigValueContainer(button.name_);
     if (!cont)
     {
-      cont = new ConfigValueContainer(CFT_Keybindings, ClassManager<KeyBinder>::getIdentifier(), button.name_, "");
-      ClassManager<KeyBinder>::getIdentifier()->addConfigValueContainer(button.name_, cont);
+      cont = new ConfigValueContainer(CFT_Keybindings, ClassIdentifier<KeyBinder>::getIdentifier(), button.name_, "");
+      ClassIdentifier<KeyBinder>::getIdentifier()->addConfigValueContainer(button.name_, cont);
     }
     std::string old = button.bindingString_;
     cont->getValue(&button.bindingString_);

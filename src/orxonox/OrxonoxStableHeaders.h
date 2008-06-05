@@ -58,6 +58,8 @@
 #include <OgreLogManager.h>
 #include <OgreMath.h>
 #include <OgreMatrix3.h>
+#include <OgreMatrix4.h>
+#include <OgreMesh.h>
 #include <OgreOverlay.h>
 #include <OgreOverlayElement.h>
 #include <OgreOverlayManager.h>
@@ -69,6 +71,7 @@
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
+#include <OgreString.h>
 #include <OgreStringConverter.h>
 #include <OgreTextureManager.h>
 #include <OgreTimer.h>
@@ -83,34 +86,35 @@
 //-----------------------------------------------------------------------
 
 #include "ois/OIS.h"
-
-//#include "util/Convert.h"
-#include "util/Math.h"
-//#include "util/Multitype.h"
-//#include "util/MultiTypeMath.h"
-//#include "util/MultiTypePrimitive.h"
-//#include "util/MultiTypeString.h"
-#include "util/Sleep.h"
-#include "util/String.h"
-#include "util/SubString.h"
-//#include "util/XMLIncludes.h"
+#include "cpptcl/CppTcl.h"
 #include "tinyxml/ticpp.h"
 #include "tinyxml/tinyxml.h"
 
+#include "util/Convert.h"
+#include "util/Math.h"
+#include "util/Multitype.h"
+#include "util/MultiTypeMath.h"
+#include "util/Sleep.h"
+#include "util/String.h"
+#include "util/SubString.h"
+#include "util/XMLIncludes.h"
+
 #include "core/BaseObject.h"
-//#include "core/CommandExecutor.h"
-//#include "core/CoreIncludes.h"
-//#include "core/ConfigValueIncludes.h"
+#include "core/ConsoleCommand.h"
+#include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
-//#include "core/Executor.h"
-//#include "core/XMLPort.h"
+#include "core/OutputBuffer.h"
+#include "core/OutputHandler.h"
+#include "core/Executor.h"
+#include "core/XMLPort.h"
 
 #include "network/Synchronisable.h"
 
-#include "OrxonoxPrereqs.h"
+#include "tools/Mesh.h"
 #include "tools/Timer.h"
-#include "objects/Tickable.h"
 #include "objects/Model.h"
+#include "objects/Tickable.h"
 #include "objects/WorldEntity.h"
 
 #endif /* Compiler MSVC */

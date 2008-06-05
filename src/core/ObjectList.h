@@ -43,7 +43,7 @@
 #include "CorePrereqs.h"
 
 #include "Iterator.h"
-#include "ClassManager.h"
+#include "Identifier.h"
 
 namespace orxonox
 {
@@ -94,15 +94,15 @@ namespace orxonox
 
             /** @brief Returns the first element in the list. @return The first element */
             inline static Iterator<T> start()
-                { return Iterator<T>(ClassManager<T>::getIdentifier()->getObjects()->first_); }
+                { return Iterator<T>(ClassIdentifier<T>::getIdentifier()->getObjects()->first_); }
 
             /** @brief Returns the first element in the list. @return The first element */
             inline static Iterator<T> begin()
-                { return Iterator<T>(ClassManager<T>::getIdentifier()->getObjects()->first_); }
+                { return Iterator<T>(ClassIdentifier<T>::getIdentifier()->getObjects()->first_); }
 
             /** @brief Returns the last element in the list. @return The last element */
             inline static Iterator<T> end()
-                { return Iterator<T>(ClassManager<T>::getIdentifier()->getObjects()->last_); }
+                { return Iterator<T>(ClassIdentifier<T>::getIdentifier()->getObjects()->last_); }
 
             inline void registerIterator(Iterator<T>* iterator)
                 { this->iterators_.insert(this->iterators_.end(), (void*)iterator); }
