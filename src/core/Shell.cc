@@ -35,8 +35,8 @@
 #include "input/InputInterfaces.h"
 
 #define SHELL_UPDATE_LISTENERS(function) \
-    for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it) \
-        (*it)->function()
+    for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ) \
+        (*(it++))->function()
 
 namespace orxonox
 {
