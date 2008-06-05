@@ -180,10 +180,13 @@ namespace network
     //this steers our network frequency
     timeSinceLastUpdate_+=time;
     if(timeSinceLastUpdate_>=(1./NETWORK_FREQUENCY)){
-      timeSinceLastUpdate_-=(1./NETWORK_FREQUENCY);
+      timeSinceLastUpdate_=(float)((int)(timeSinceLastUpdate_*NETWORK_FREQUENCY))/timeSinceLastUpdate_;
+//      timeSinceLastUpdate_-=1./NETWORK_FREQUENCY;
       gamestates->processGameStates();
       updateGamestate();
     }
+    /*while(timeSinceLastUpdate_>1./NETWORK_FREQUENCY)
+      timeSinceLastUpdate_-=1./NETWORK_FREQUENCY;*/
 //     usleep(5000); // TODO remove
     return;
   }
