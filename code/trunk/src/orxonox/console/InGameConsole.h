@@ -49,10 +49,7 @@ namespace orxonox
             void setConfigValues();
             void tick(float dt);
 
-            void activate();
-            void deactivate();
             void resize();
-
             static void openConsole();
             static void closeConsole();
 
@@ -60,6 +57,9 @@ namespace orxonox
             InGameConsole();
             InGameConsole(const InGameConsole& other);
             ~InGameConsole();
+
+            void activate();
+            void deactivate();
 
             virtual void linesChanged();
             virtual void onlyLastLineChanged();
@@ -79,17 +79,16 @@ namespace orxonox
             static float REL_HEIGHT;
             static float BLINK;
 
+            bool bActive_;
             int windowW_;
             int windowH_;
             int desiredTextWidth_;
             unsigned int maxCharsPerLine_;
             unsigned int numLinesShifted_;
             int scroll_;
-            float scrollTimer_;
             float cursor_;
             unsigned int inputWindowStart_;
             char cursorSymbol_;
-            bool active_;
             bool bShowCursor_;
             std::string displayedText_;
             Ogre::OverlayManager* om_;

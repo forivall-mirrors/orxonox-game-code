@@ -70,7 +70,7 @@ namespace orxonox
     {
         RegisterObject(InGameConsole);
 
-        this->active_ = false;
+        this->bActive_ = false;
         this->cursor_ = 0.0;
         this->cursorSymbol_ = '|';
         this->inputWindowStart_ = 0;
@@ -200,7 +200,6 @@ namespace orxonox
     {
         // for the beginning, don't scroll
         this->scroll_ = 0;
-        this->scrollTimer_ = 0;
         this->cursor_ = 0;
 
         // create overlay and elements
@@ -306,62 +305,56 @@ namespace orxonox
     */
     void InGameConsole::tick(float dt)
     {
-        this->scrollTimer_ += dt;
-        if (this->scrollTimer_ >= 0.01)
+        if (this->scroll_ != 0)
         {
-            float top = this->consoleOverlayContainer_->getTop();
-            float timePassed = scrollTimer_;
-            this->scrollTimer_ = 0;
-            if (this->scroll_ != 0)
-            {
-                // scroll
-                top = top + timePassed * this->scroll_;
-                this->consoleOverlayContainer_->setTop(top);
-            }
-            if (top <= -1.2 * InGameConsole::REL_HEIGHT)
+            float top = this->consoleOverlayContainer_->getTop() + dt * this->scroll_;
+            this->consoleOverlayContainer_->setTop(top);
+
+            if (this->scroll_ < 0 && top <= -1.2 * InGameConsole::REL_HEIGHT)
             {
                 // window has completely scrolled up
                 this->scroll_ = 0;
                 this->consoleOverlay_->hide();
-                this->active_ = false;
-                Shell::getInstance().unregisterListener(this);
             }
-            if (top >= 0)
+
+            if (this->scroll_ > 0 && top >= 0)
             {
                 // window has completely scrolled down
                 this->scroll_ = 0;
                 this->consoleOverlayContainer_->setTop(0);
-                this->active_ = true;
             }
         }
 
-        this->cursor_ += dt;
-        if (this->cursor_ >= InGameConsole::BLINK)
+        if (this->bActive_)
         {
-            this->cursor_ = 0;
-            bShowCursor_ = !bShowCursor_;
-            if (bShowCursor_)
-              this->consoleOverlayCursor_->show();
-            else
-              this->consoleOverlayCursor_->hide();
+            this->cursor_ += dt;
+            if (this->cursor_ >= InGameConsole::BLINK)
+            {
+                this->cursor_ = 0;
+                bShowCursor_ = !bShowCursor_;
+                if (bShowCursor_)
+                  this->consoleOverlayCursor_->show();
+                else
+                  this->consoleOverlayCursor_->hide();
+            }
+
+            /*if (this->cursor_ >= 2 * InGameConsole::BLINK)
+              this->cursor_ = 0;
+
+            if (this->cursor_ >= InGameConsole::BLINK && this->cursorSymbol_ == '|')
+            {
+                this->cursorSymbol_ = ' ';
+                this->cursorChanged();
+            }
+            else if (this->cursor_ < InGameConsole::BLINK && this->cursorSymbol_ == ' ')
+            {
+                this->cursorSymbol_ = '|';
+                this->cursorChanged();
+            }*/
+
+            // this creates a flickering effect
+            this->consoleOverlayNoise_->setTiling(1, rand() % 5 + 1);
         }
-
-        /*if (this->cursor_ >= 2 * InGameConsole::BLINK)
-          this->cursor_ = 0;
-
-        if (this->cursor_ >= InGameConsole::BLINK && this->cursorSymbol_ == '|')
-        {
-            this->cursorSymbol_ = ' ';
-            this->cursorChanged();
-        }
-        else if (this->cursor_ < InGameConsole::BLINK && this->cursorSymbol_ == ' ')
-        {
-            this->cursorSymbol_ = '|';
-            this->cursorChanged();
-        }*/
-
-        // this creates a flickering effect
-        this->consoleOverlayNoise_->setTiling(1, rand() % 5 + 1);
     }
 
     /**
@@ -369,17 +362,21 @@ namespace orxonox
     */
     void InGameConsole::activate()
     {
-        InputManager::setInputState(InputManager::IS_CONSOLE);
-        Shell::getInstance().registerListener(this);
-        this->linesChanged();
-        this->cursorChanged();
+        if (!this->bActive_)
+        {
+            this->bActive_ = true;
+            InputManager::setInputState(InputManager::IS_CONSOLE);
+            Shell::getInstance().registerListener(this);
 
-        this->consoleOverlay_->show();
-        // just in case window size has changed...
-        this->resize();
-        // scroll down
-        this->scroll_ = 1;
-        // the rest is done by tick
+            this->resize();
+            this->linesChanged();
+            this->cursorChanged();
+            this->consoleOverlay_->show();
+
+            // scroll down
+            this->scroll_ = 1;
+            // the rest is done by tick
+        }
     }
 
     /**
@@ -387,10 +384,16 @@ namespace orxonox
     */
     void InGameConsole::deactivate()
     {
-        // scroll up
-        this->scroll_ = -1;
-        // the rest is done by tick
-        InputManager::setInputState(InputManager::IS_NORMAL);
+        if (this->bActive_)
+        {
+            this->bActive_ = false;
+            InputManager::setInputState(InputManager::IS_NORMAL);
+            Shell::getInstance().unregisterListener(this);
+
+            // scroll up
+            this->scroll_ = -1;
+            // the rest is done by tick
+        }
     }
 
     /**
