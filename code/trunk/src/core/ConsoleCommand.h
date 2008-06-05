@@ -32,7 +32,7 @@
 #include "CorePrereqs.h"
 
 #include "Executor.h"
-#include "ClassManager.h"
+// #include "ClassManager.h"
 #include "CommandExecutor.h"
 #include "ArgumentCompletionFunctions.h"
 
