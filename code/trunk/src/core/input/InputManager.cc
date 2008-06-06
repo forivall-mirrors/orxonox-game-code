@@ -35,16 +35,21 @@
 #include "InputManager.h"
 
 #include <limits.h>
+
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 #include "core/Shell.h"               // hack!
+
 #include "InputBuffer.h"
 #include "KeyBinder.h"
 #include "KeyDetector.h"
 #include "CalibratorCallback.h"
+
+#include "src/ois/OISException.h"
+#include "src/ois/OISInputManager.h"
 
 namespace orxonox
 {
@@ -649,7 +654,7 @@ namespace orxonox
     for (unsigned int iHandler = 0; iHandler < activeHandlers_.size(); iHandler++)
       activeHandlers_[iHandler].first->tickInput(dt, activeHandlers_[iHandler].second);
   }
-    
+
   void InputManager::_completeCalibration()
   {
     for (unsigned int i = 0; i < 24; i++)

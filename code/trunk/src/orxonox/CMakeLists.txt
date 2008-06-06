@@ -77,7 +77,7 @@ TARGET_LINK_LIBRARIES( orxonox
   ${Lua_LIBRARIES}
   tinyxml
   tolualib
-  ois
+  ois_orxonox
   util
   core
   audio
