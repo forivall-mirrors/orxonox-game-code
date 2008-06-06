@@ -43,7 +43,7 @@
 <?lua
 for i = 1, 226, 1 
 do ?>
-  <Model position="<?lua print(math.random(-19597, 18732))?>, <?lua print(math.random(-19597, 18732)) ?>, <?lua print(math.random(-19597, 18732)) ?>" scale="<?lua print(math.random( 20, 119)) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" rotationAxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationRate="<?lua print(math.random(16, 44)) ?>" />
+  <Model position="<?lua print(math.random() * 40000 - 20000)?>, <?lua print(math.random() * 40000 - 20000) ?>, <?lua print(math.random() * 40000 - 20000) ?>" scale="<?lua print(math.random() * 100 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" rotationAxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationRate="<?lua print(math.random() * 30 + 15) ?>" />
 <?lua 
 end
 ?>
