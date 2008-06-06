@@ -42,7 +42,7 @@
 
 namespace orxonox
 {
-    float Projectile::speed_ = 2000;
+    float Projectile::speed_ = 5000;
 
     Projectile::Projectile(SpaceShip* owner) : owner_(owner)
     {
@@ -71,8 +71,8 @@ namespace orxonox
     void Projectile::setConfigValues()
     {
         SetConfigValue(damage_, 15.0).description("The damage caused by the projectile");
-        SetConfigValue(lifetime_, 5.0).description("The time in seconds a projectile stays alive");
-        SetConfigValue(speed_, 2000.0).description("The speed of a projectile in units per second");
+        SetConfigValue(lifetime_, 4.0).description("The time in seconds a projectile stays alive");
+        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second");
 
         this->setVelocity(this->owner_->getInitialDir() * this->speed_);
     }
