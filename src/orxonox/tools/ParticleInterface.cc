@@ -38,6 +38,7 @@
 #include <OgreSceneManager.h>
 
 #include "GraphicsEngine.h"
+#include "Orxonox.h"
 #include "util/Convert.h"
 
 namespace orxonox
@@ -49,6 +50,7 @@ namespace orxonox
   {
     this->sceneNode_ = 0;
     this->particleSystem_ = GraphicsEngine::getSingleton().getSceneManager()->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
+    this->particleSystem_->setSpeedFactor(Orxonox::getSingleton()->getTimeFactor());
   }
 
   ParticleInterface::~ParticleInterface()
@@ -137,7 +139,7 @@ namespace orxonox
 
   void ParticleInterface::setSpeedFactor(float factor)
   {
-    this->particleSystem_->setSpeedFactor(factor);
+    this->particleSystem_->setSpeedFactor(Orxonox::getSingleton()->getTimeFactor() * factor);
   }
   float ParticleInterface::getSpeedFactor() const
   {

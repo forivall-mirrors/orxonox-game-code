@@ -40,7 +40,6 @@
 #include <map>
 #include <vector>
 
-#include "ois/OIS.h"
 #include "util/Math.h"
 #include "core/OrxonoxClass.h"
 #include "InputInterfaces.h"

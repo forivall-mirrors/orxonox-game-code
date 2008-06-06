@@ -64,9 +64,9 @@ TARGET_LINK_LIBRARIES(core
   ${Lua_LIBRARIES}
   ${OGRE_LIBRARIES}
   cpptcl
+  ois_orxonox
   tinyxml
   tolualib
-  ois
   util
   ${Boost_thread_LIBRARIES}
   ${Boost_filesystem_LIBRARIES}
