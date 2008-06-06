@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "BillboardProjectile.h"
-#include "particle/ParticleInterface.h"
+#include "tools/ParticleInterface.h"
 #include "util/Math.h"
 
 namespace orxonox

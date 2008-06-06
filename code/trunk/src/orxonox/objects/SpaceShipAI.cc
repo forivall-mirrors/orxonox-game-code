@@ -37,7 +37,7 @@
 #include "core/Executor.h"
 #include "core/ConsoleCommand.h"
 #include "core/XMLPort.h"
-#include "particle/ParticleInterface.h"
+#include "tools/ParticleInterface.h"
 
 #define ACTION_INTERVAL 1.0f
 

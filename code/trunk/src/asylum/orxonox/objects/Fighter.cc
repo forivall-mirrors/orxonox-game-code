@@ -41,7 +41,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "GraphicsEngine.h"
 #include "core/InputManager.h"
-#include "particle/ParticleInterface.h"
+#include "tools/ParticleInterface.h"
 #include "weapon/AmmunitionDump.h"
 #include "weapon/BarrelGun.h"
 
