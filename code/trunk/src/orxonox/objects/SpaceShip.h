@@ -42,8 +42,6 @@ namespace orxonox
     class _OrxonoxExport SpaceShip : public Model
     {
         public:
-          
-
             static SpaceShip *getLocalShip();
 
             SpaceShip();
@@ -65,6 +63,21 @@ namespace orxonox
             void setRotDamp(float value);
             void getFocus();
 
+            inline float getMaxSpeed() const
+                { return this->maxSpeed_; }
+            inline float getMaxSideAndBackSpeed() const
+                { return this->maxSideAndBackSpeed_; }
+            inline float getMaxRotation() const
+                { return this->maxRotation_; }
+            inline float getTransAcc() const
+                { return this->translationAcceleration_; }
+            inline float getRotAcc() const
+                { return this->rotationAcceleration_; }
+            inline float getTransDamp() const
+                { return this->translationDamping_; }
+            inline float getRotDamp() const
+                { return this->rotationDamping_; }
+
             static std::string whereAmI();
             static void setMaxSpeedTest(float value)
                 { SpaceShip::instance_s->setMaxSpeed(value); }
@@ -82,14 +95,20 @@ namespace orxonox
             void setMoveLateral(float value);
             void doFire();
 
-            float getMaxSpeed();
-            Vector3 getDir();
-            Vector3 getOrth();
+            inline const Vector3& getDir() const
+                { return this->currentDir_; }
+            inline const Vector3& getInitialDir() const
+                { return this->initialDir_; }
+            inline const Vector3& getOrth() const
+                { return this->currentOrth_; }
+            inline const Vector3& getInitialOrth() const
+                { return this->initialOrth_; }
+
             Camera* getCamera();
 
             int getTeamNr() const
                 { return this->teamNr_; }
-            int getHealth() const
+            float getHealth() const
                 { return this->health_; }
 
             bool getMyShip(){return myShip_;}
@@ -117,8 +136,8 @@ namespace orxonox
             Camera* cam_;
             std::string camName_;
 
-
-            ParticleInterface* tt_;
+            ParticleInterface* tt1_;
+            ParticleInterface* tt2_;
 
             BillboardSet redBillboard_;
             BillboardSet greenBillboard_;
@@ -152,13 +171,11 @@ namespace orxonox
             float mouseX_;
             float mouseY_;
 
-            float emitterRate_;
-
         protected:
             bool myShip_;
 
             int teamNr_;
-            int health_;
+            float health_;
 
             static SpaceShip* instance_s;
     };

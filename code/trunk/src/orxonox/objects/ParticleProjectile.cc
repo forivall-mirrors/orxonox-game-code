@@ -26,39 +26,32 @@
  *
  */
 
-#ifndef _Projectile_H__
-#define _Projectile_H__
+#include "OrxonoxStableHeaders.h"
+#include "ParticleProjectile.h"
 
-#include "OrxonoxPrereqs.h"
-
-#include "WorldEntity.h"
-#include "tools/Timer.h"
+#include "SpaceShip.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Projectile : public WorldEntity
+    CreateFactory(ParticleProjectile);
+
+    ParticleProjectile::ParticleProjectile(SpaceShip* owner) : BillboardProjectile(owner), particles_(0)
     {
-        public:
-            virtual ~Projectile();
-            void setConfigValues();
-            void destroyObject();
-            virtual void tick(float dt);
+        RegisterObject(ParticleProjectile);
 
-            static float getSpeed()
-                { return Projectile::speed_; }
+        if (this->owner_)
+        {
+            this->particles_ = new ParticleInterface("Orxonox/shot2");
+            this->particles_->addToSceneNode(this->getNode());
+            this->particles_->getAllEmitters()->setDirection(-this->owner_->getInitialDir());
+            this->particles_->setKeepParticlesInLocalSpace(true);
+        }
+    }
 
-        protected:
-            Projectile(SpaceShip* owner = 0);
-            SpaceShip* owner_;
-
-        private:
-            std::string explosionTemplateName_;
-            std::string smokeTemplateName_;
-            static float speed_;
-            float lifetime_;
-            float damage_;
-            Timer<Projectile> destroyTimer_;
-    };
+    ParticleProjectile::~ParticleProjectile()
+    {
+        if (this->particles_)
+            delete this->particles_;
+    }
 }
-
-#endif /* _Projectile_H__ */

@@ -77,6 +77,7 @@ namespace orxonox
             ~TimerBase();
 
             void run() const;
+            void deleteExecutor();
 
             /** @brief Starts the Timer: Function-call after 'interval' seconds. */
             inline void startTimer()
@@ -148,6 +149,8 @@ namespace orxonox
             */
             void setTimer(float interval, bool bLoop, T* object, ExecutorMember<T>* executor)
             {
+                this->deleteExecutor();
+
                 this->interval_ = interval;
                 this->bLoop_ = bLoop;
                 executor->setObject(object);
@@ -184,6 +187,8 @@ namespace orxonox
             */
             void setTimer(float interval, bool bLoop, ExecutorStatic* executor)
             {
+                this->deleteExecutor();
+
                 this->interval_ = interval;
                 this->bLoop_ = bLoop;
                 this->executor_ = (Executor*)executor;

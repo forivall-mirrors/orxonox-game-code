@@ -101,8 +101,7 @@ namespace orxonox
     */
     TimerBase::~TimerBase()
     {
-      if (this->executor_)
-          delete this->executor_;
+        this->deleteExecutor();
     }
 
     /**
@@ -111,6 +110,15 @@ namespace orxonox
     void TimerBase::run() const
     {
         (*this->executor_)();
+    }
+
+    /**
+        @brief Deletes the executor.
+    */
+    void TimerBase::deleteExecutor()
+    {
+      if (this->executor_)
+          delete this->executor_;
     }
 
     /**

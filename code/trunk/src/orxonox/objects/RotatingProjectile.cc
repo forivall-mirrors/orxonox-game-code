@@ -36,7 +36,7 @@ namespace orxonox
 {
     CreateFactory(RotatingProjectile);
 
-    RotatingProjectile::RotatingProjectile(SpaceShip* owner) : Projectile(owner)
+    RotatingProjectile::RotatingProjectile(SpaceShip* owner) : BillboardProjectile(owner)
     {
         RegisterObject(RotatingProjectile);
 

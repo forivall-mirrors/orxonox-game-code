@@ -33,116 +33,123 @@
 #include "OrxonoxStableHeaders.h"
 #include "ParticleInterface.h"
 
-// #include <OgreParticleSystem.h>
-// #include <Ogre.h>
-// #include <OIS/OIS.h>
-// #include <CEGUI/CEGUI.h>
-// #include <CEGUIRenderer.h>
+#include <OgreParticleSystem.h>
+#include <OgreParticleEmitter.h>
+#include <OgreSceneManager.h>
 
+#include "GraphicsEngine.h"
+#include "util/Convert.h"
 
+namespace orxonox
+{
+  unsigned int ParticleInterface::counter_s = 0;
+  ParticleInterface* ParticleInterface::currentParticleInterface_s = 0;
 
-namespace orxonox {
-  using namespace Ogre;
-
-  ParticleInterface::ParticleInterface( SceneManager *sceneManager, std::string name, std::string templateName )
+  ParticleInterface::ParticleInterface(const std::string& templateName)
   {
-    sceneManager_ = sceneManager;
-    particleSystem_ = sceneManager->createParticleSystem(name, templateName);
-
-    //Variabeln einlesen, Emitter1_ ist Referenz-Emitter
-    velocity_ = particleSystem_->getSpeedFactor();
-    colour_ = particleSystem_->getEmitter(0)->getColour();
-    rate_ = particleSystem_->getEmitter(0)->getEmissionRate();
-    distance_ = particleSystem_->getEmitter(0)->getTimeToLive();
-
-    //Anzahl der Emitter
-    numberOfEmitters_ = particleSystem_->getNumEmitters();
-    standardizeEmitters();
+    this->sceneNode_ = 0;
+    this->particleSystem_ = GraphicsEngine::getSingleton().getSceneManager()->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
   }
 
-  ParticleInterface::~ParticleInterface(void)
+  ParticleInterface::~ParticleInterface()
   {
-    while(particleSystem_->getNumEmitters()>0)
-      particleSystem_->removeEmitter(particleSystem_->getNumEmitters()-1);
-    sceneManager_->destroyParticleSystem(particleSystem_);
+    this->particleSystem_->removeAllEmitters();
+    GraphicsEngine::getSingleton().getSceneManager()->destroyParticleSystem(particleSystem_);
   }
 
-  void ParticleInterface::standardizeEmitters(void)
+  void ParticleInterface::addToSceneNode(Ogre::SceneNode* sceneNode)
   {
-    //Abgleichen der anderen Emitter an die Variabeln
-    for (int i=0; i < numberOfEmitters_; i++) {
-      particleSystem_->getEmitter(i)->setColour( colour_ );
-      particleSystem_->getEmitter(i)->setTimeToLive( distance_ );
-      particleSystem_->getEmitter(i)->setEmissionRate( rate_ );
-    }
-
+    this->sceneNode_ = sceneNode;
+    this->sceneNode_->attachObject(this->particleSystem_);
   }
 
-  void ParticleInterface::setVelocity(Real v)
+  void ParticleInterface::detachFromSceneNode()
   {
-    velocity_ = v;
-    //partikel anpassen
-    particleSystem_->setSpeedFactor(v);
-  }
-
-  void ParticleInterface::setRate(float r)
-  {
-    rate_ = r;
-    //partikel anpassen
-    for (int i=0; i<numberOfEmitters_; i++) {
-      particleSystem_->getEmitter(i)->setEmissionRate(rate_);
+    if (this->sceneNode_)
+    {
+      this->sceneNode_->detachObject(this->particleSystem_);
+      this->sceneNode_ = 0;
     }
   }
 
-  void ParticleInterface::setDistance(Real d)
+  Ogre::ParticleEmitter* ParticleInterface::createNewEmitter()
   {
-    distance_ = d;
-    //partikel anpassen
-    for (int i=0; i < numberOfEmitters_; i++) {
-      particleSystem_->getEmitter(i)->setTimeToLive(distance_);
+    if (this->particleSystem_->getNumEmitters() > 0)
+    {
+      Ogre::ParticleEmitter* newemitter = this->particleSystem_->addEmitter(this->particleSystem_->getEmitter(0)->getType());
+      this->particleSystem_->getEmitter(0)->copyParametersTo(newemitter);
+      return newemitter;
     }
+    else
+      return 0;
   }
-
-  void ParticleInterface::setColour(ColourValue colour)
+  Ogre::ParticleEmitter* ParticleInterface::getEmitter(unsigned int emitterNr) const
   {
-    colour_ = colour;
-    //partikel anpassen
-    for (int i=0; i < numberOfEmitters_; i++) {
-      particleSystem_->getEmitter(i)->setColour(colour_);
-    }
+    if (emitterNr < this->particleSystem_->getNumEmitters())
+      return this->particleSystem_->getEmitter(emitterNr);
+    else
+      return 0;
   }
-
-  ParticleEmitter* ParticleInterface::getEmitter( int emitterNr )
+  void ParticleInterface::removeEmitter(unsigned int emitterNr)
   {
-    if ( (emitterNr >= numberOfEmitters_) || (emitterNr < 0) ) return NULL;
-    return particleSystem_->getEmitter(emitterNr);
+    if (emitterNr < this->particleSystem_->getNumEmitters())
+      this->particleSystem_->removeEmitter(emitterNr);
   }
-
-  void ParticleInterface::newEmitter ()
+  void ParticleInterface::removeAllEmitters()
   {
-    particleSystem_->addEmitter(particleSystem_->getEmitter(0)->getType());
-    particleSystem_->getEmitter(0)->copyParametersTo( particleSystem_->getEmitter(numberOfEmitters_) );
-    numberOfEmitters_++;
+    this->particleSystem_->removeAllEmitters();
   }
-
-  // TODO check if this really works
-  Vector3 ParticleInterface::getPositionOfEmitter ( int emitterNr )
+  unsigned int ParticleInterface::getNumEmitters() const
   {
-    return particleSystem_->getEmitter(emitterNr)->getPosition();
+    return this->particleSystem_->getNumEmitters();
   }
 
-  void ParticleInterface::setDirection ( Vector3 direction )
+  Ogre::ParticleAffector* ParticleInterface::addAffector(const std::string& name)
   {
-    for(int i=0; i < numberOfEmitters_; i++) {
-      particleSystem_->getEmitter(i)->setDirection(direction);
-    }
+    return this->particleSystem_->addAffector(name);
+  }
+  Ogre::ParticleAffector* ParticleInterface::getAffector(unsigned int affectorNr) const
+  {
+    if (affectorNr < this->particleSystem_->getNumAffectors())
+      return this->particleSystem_->getAffector(affectorNr);
+    else
+      return 0;
+  }
+  void ParticleInterface::removeAffector(unsigned int affectorNr)
+  {
+    if (affectorNr < this->particleSystem_->getNumAffectors())
+      this->particleSystem_->removeAffector(affectorNr);
+  }
+  void ParticleInterface::removeAllAffectors()
+  {
+    this->particleSystem_->removeAllAffectors();
+  }
+  unsigned int ParticleInterface::getNumAffectors() const
+  {
+    return this->particleSystem_->getNumAffectors();
   }
 
-  void ParticleInterface::switchEnable(){
-    bool enable=(!(particleSystem_->getEmitter(0)->getEnabled()));
-    for(int i=0; i < numberOfEmitters_; i++) {
-      particleSystem_->getEmitter(i)->setEnabled(enable);
-    }
+  void ParticleInterface::setEnabled(bool enable)
+  {
+    for (unsigned int i = 0; i < this->particleSystem_->getNumEmitters(); i++)
+      this->particleSystem_->getEmitter(i)->setEnabled(enable);
   }
 
+  void ParticleInterface::setSpeedFactor(float factor)
+  {
+    this->particleSystem_->setSpeedFactor(factor);
+  }
+  float ParticleInterface::getSpeedFactor() const
+  {
+    return this->particleSystem_->getSpeedFactor();
+  }
+
+  bool ParticleInterface::getKeepParticlesInLocalSpace() const
+  {
+    return this->particleSystem_->getKeepParticlesInLocalSpace();
+  }
+  void ParticleInterface::setKeepParticlesInLocalSpace(bool keep)
+  {
+    this->particleSystem_->setKeepParticlesInLocalSpace(keep);
+  }
 }

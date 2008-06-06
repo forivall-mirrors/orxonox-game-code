@@ -66,15 +66,19 @@ namespace orxonox {
   // objects
   class Ambient;
   class Camera;
-  class Explosion;
   class Fighter;
   class Model;
   class NPC;
-  class Projectile;
+  class ParticleSpawner;
   class Skybox;
   class SpaceShip;
   class SpaceShipAI;
   class WorldEntity;
+
+  class Projectile;
+  class BillboardProjectile;
+  class RotatingProjectile;
+  class ParticleProjectile;
 
   class AmmunitionDump;
   class Bullet;

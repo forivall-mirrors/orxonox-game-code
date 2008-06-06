@@ -44,7 +44,7 @@ namespace orxonox
 {
     CreateFactory(Model);
 
-    Model::Model()
+    Model::Model() : meshSrc_("")
     {
         RegisterObject(Model);
         registerAllVariables();
@@ -52,6 +52,8 @@ namespace orxonox
 
     Model::~Model()
     {
+        if ((this->meshSrc_ != "") && (this->meshSrc_.size() > 0))
+            this->detachObject(this->mesh_.getEntity());
     }
 
     /**
