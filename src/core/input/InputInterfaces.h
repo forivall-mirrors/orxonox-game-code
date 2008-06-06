@@ -38,7 +38,7 @@
 
 #include "src/ois/OISKeyboard.h"
 #include "src/ois/OISMouse.h"
-#include "src/ois/OISJoystick.h"
+#include "src/ois/OISJoyStick.h"
 #include "util/Math.h"
 
 namespace orxonox
