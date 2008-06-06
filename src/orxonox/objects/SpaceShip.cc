@@ -42,7 +42,7 @@
 #include "core/Debug.h"
 #include "GraphicsEngine.h"
 #include "core/input/InputManager.h"
-#include "particle/ParticleInterface.h"
+#include "tools/ParticleInterface.h"
 #include "RotatingProjectile.h"
 #include "ParticleProjectile.h"
 #include "core/XMLPort.h"

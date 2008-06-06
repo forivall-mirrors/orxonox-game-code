@@ -10,12 +10,12 @@ SET( ORXONOX_SRC_FILES
   hud/RadarOverlayElement.cc
   hud/RadarObject.cc
   hud/Navigation.cc
-  particle/ParticleInterface.cc
   tolua/tolua_bind.cc
 
   tools/BillboardSet.cc
   tools/Light.cc
   tools/Mesh.cc
+  tools/ParticleInterface.cc
   tools/Timer.cc
 
   objects/Ambient.cc

@@ -31,7 +31,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
-#include "particle/ParticleInterface.h"
+#include "tools/ParticleInterface.h"
 
 namespace orxonox
 {
