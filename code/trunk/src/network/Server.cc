@@ -220,6 +220,8 @@ namespace network
             COUT(3) << "Server: could not elaborate" << std::endl;
         }
         break;
+      default:
+        break;
       }
       delete event;
       //if statement to catch case that packetbuffer is empty

@@ -416,7 +416,7 @@ namespace orxonox
 
     float renderTime = 0.0f;
     float frameTime = 0.0f;
-    clock_t time = 0;
+//    clock_t time = 0;
 
     //Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
     //Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
