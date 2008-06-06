@@ -26,39 +26,26 @@
  *
  */
 
-#ifndef _Projectile_H__
-#define _Projectile_H__
+#ifndef _ParticleProjectile_H__
+#define _ParticleProjectile_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "WorldEntity.h"
-#include "tools/Timer.h"
+#include "BillboardProjectile.h"
+#include "particle/ParticleInterface.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Projectile : public WorldEntity
+    class _OrxonoxExport ParticleProjectile : public BillboardProjectile
     {
         public:
-            virtual ~Projectile();
-            void setConfigValues();
-            void destroyObject();
-            virtual void tick(float dt);
-
-            static float getSpeed()
-                { return Projectile::speed_; }
-
-        protected:
-            Projectile(SpaceShip* owner = 0);
-            SpaceShip* owner_;
+            ParticleProjectile(SpaceShip* owner = 0);
+            virtual ~ParticleProjectile();
 
         private:
-            std::string explosionTemplateName_;
-            std::string smokeTemplateName_;
-            static float speed_;
-            float lifetime_;
-            float damage_;
-            Timer<Projectile> destroyTimer_;
+            ParticleInterface* particles_;
     };
 }
 
-#endif /* _Projectile_H__ */
+#endif /* _ParticleProjectile_H__ */

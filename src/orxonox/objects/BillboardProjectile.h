@@ -26,29 +26,27 @@
  *
  */
 
-#ifndef _Explosion_H__
-#define _Explosion_H__
+#ifndef _BillboardProjectile_H__
+#define _BillboardProjectile_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "WorldEntity.h"
-#include "../tools/Timer.h"
+#include "Projectile.h"
+#include "tools/BillboardSet.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Explosion : public WorldEntity
+    class _OrxonoxExport BillboardProjectile : public Projectile
     {
         public:
-            Explosion(WorldEntity* owner = 0);
-            virtual ~Explosion();
-            void destroyObject();
-            virtual bool create(){return WorldEntity::create();}
+            BillboardProjectile(SpaceShip* owner = 0);
+            virtual ~BillboardProjectile();
+            virtual void setColour(const ColourValue& colour);
 
         private:
-            Timer<Explosion> destroyTimer_;
-            float lifetime_;
-            ParticleInterface* particle_;
+            BillboardSet billboard_;
     };
 }
 
-#endif /* _Explosion_H__ */
+#endif /* _BillboardProjectile_H__ */

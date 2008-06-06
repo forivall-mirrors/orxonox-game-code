@@ -65,13 +65,16 @@ namespace orxonox
           registerAllVariables();
         }
     }
-    
+
 
     WorldEntity::~WorldEntity()
     {
-      // just to make sure we clean out all scene nodes
-      if(this->getNode())
-        this->getNode()->removeAndDestroyAllChildren();
+        // just to make sure we clean out all scene nodes
+        if(this->getNode())
+        {
+            this->getNode()->removeAndDestroyAllChildren();
+            GraphicsEngine::getSingleton().getSceneManager()->destroySceneNode(this->getName());
+        }
     }
 
     void WorldEntity::tick(float dt)
@@ -94,7 +97,7 @@ namespace orxonox
         BaseObject::loadParams(xmlElem);
         create();
     }
-    
+
 
     void WorldEntity::setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll)
     {
@@ -121,7 +124,7 @@ namespace orxonox
         XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, mode);
 
         XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, mode, false, true);
-        
+
         WorldEntity::create();
     }
 

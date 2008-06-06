@@ -26,39 +26,37 @@
  *
  */
 
-#ifndef _Projectile_H__
-#define _Projectile_H__
+#include "OrxonoxStableHeaders.h"
+#include "BillboardProjectile.h"
 
-#include "OrxonoxPrereqs.h"
+#include <OgreBillboard.h>
 
-#include "WorldEntity.h"
-#include "tools/Timer.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Projectile : public WorldEntity
+    CreateFactory(BillboardProjectile);
+
+    BillboardProjectile::BillboardProjectile(SpaceShip* owner) : Projectile(owner)
     {
-        public:
-            virtual ~Projectile();
-            void setConfigValues();
-            void destroyObject();
-            virtual void tick(float dt);
+        RegisterObject(BillboardProjectile);
 
-            static float getSpeed()
-                { return Projectile::speed_; }
+        if (this->owner_)
+        {
+            this->billboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
+            this->attachObject(this->billboard_.getBillboardSet());
+            this->scale(0.5);
+        }
+    }
 
-        protected:
-            Projectile(SpaceShip* owner = 0);
-            SpaceShip* owner_;
+    BillboardProjectile::~BillboardProjectile()
+    {
+        if (this->owner_)
+            this->detachObject(this->billboard_.getBillboardSet());
+    }
 
-        private:
-            std::string explosionTemplateName_;
-            std::string smokeTemplateName_;
-            static float speed_;
-            float lifetime_;
-            float damage_;
-            Timer<Projectile> destroyTimer_;
-    };
+    void BillboardProjectile::setColour(const ColourValue& colour)
+    {
+        this->billboard_.getBillboardSet()->getBillboard(0)->setColour(colour);
+    }
 }
-
-#endif /* _Projectile_H__ */

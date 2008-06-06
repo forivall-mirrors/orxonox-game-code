@@ -1,20 +1,19 @@
 #ifndef _RotatingProjectile_H__
 #define _RotatingProjectile_H__
 
-#include "../OrxonoxPrereqs.h"
+#include "OrxonoxPrereqs.h"
 #include "util/Math.h"
-#include "Projectile.h"
+#include "BillboardProjectile.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport RotatingProjectile : public Projectile/*, public network::Synchronisable*/
+    class _OrxonoxExport RotatingProjectile : public BillboardProjectile
     {
         public:
             RotatingProjectile(SpaceShip* owner = 0);
             virtual ~RotatingProjectile();
             void setConfigValues();
             virtual void tick(float dt);
-            virtual bool create(){return Projectile::create();}
 
         private:
             ColourValue colour_;

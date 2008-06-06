@@ -21,16 +21,19 @@ SET( ORXONOX_SRC_FILES
   objects/Ambient.cc
   objects/Camera.cc
   objects/CameraHandler.cc
-  objects/Explosion.cc
   objects/Model.cc
   objects/NPC.cc
-  objects/Projectile.cc
-  objects/RotatingProjectile.cc
+  objects/ParticleSpawner.cc
   objects/Skybox.cc
   objects/SpaceShip.cc
   objects/SpaceShipAI.cc
   objects/Tickable.cc
   objects/WorldEntity.cc
+
+  objects/Projectile.cc
+  objects/BillboardProjectile.cc
+  objects/RotatingProjectile.cc
+  objects/ParticleProjectile.cc
 
 #  objects/weapon/AmmunitionDump.cc
 #  objects/weapon/BarrelGun.cc

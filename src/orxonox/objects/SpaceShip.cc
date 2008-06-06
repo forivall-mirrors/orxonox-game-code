@@ -43,8 +43,8 @@
 #include "GraphicsEngine.h"
 #include "core/input/InputManager.h"
 #include "particle/ParticleInterface.h"
-#include "Projectile.h"
 #include "RotatingProjectile.h"
+#include "ParticleProjectile.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
 #include "network/Client.h"
@@ -68,7 +68,7 @@ namespace orxonox
 
     SpaceShip* SpaceShip::instance_s;
 
-    
+
     SpaceShip *SpaceShip::getLocalShip(){
       Iterator<SpaceShip> it;
       for(it = ObjectList<SpaceShip>::start(); it; ++it){
@@ -87,7 +87,8 @@ namespace orxonox
       camNode_(0),
       cam_(0),
       camName_("CamNode"),
-      tt_(0),
+      tt1_(0),
+      tt2_(0),
       redNode_(0),
       greenNode_(0),
       blinkTime_(0.0f),
@@ -110,7 +111,6 @@ namespace orxonox
       mouseYRotation_(0),
       mouseX_(0.0f),
       mouseY_(0.0f),
-      emitterRate_(0.0f),
       myShip_(false),
       teamNr_(0),
       health_(100)
@@ -137,8 +137,10 @@ namespace orxonox
 
     SpaceShip::~SpaceShip()
     {
-        if (this->tt_)
-            delete this->tt_;
+        if (this->tt1_)
+            delete this->tt1_;
+        if (this->tt2_)
+            delete this->tt2_;
         if(setMouseEventCallback_)
           InputManager::removeMouseHandler("SpaceShip");
         if (this->cam_)
@@ -179,24 +181,28 @@ namespace orxonox
     void SpaceShip::init()
     {
         // START CREATING THRUSTER
-        this->tt_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
-        this->tt_->getParticleSystem()->setParameter("local_space","true");
-        this->tt_->newEmitter();
-/*
-        this->tt_->setDirection(Vector3(0,0,1));
-        this->tt_->setPositionOfEmitter(0, Vector3(20,-1,-15));
-        this->tt_->setPositionOfEmitter(1, Vector3(-20,-1,-15));
-*/
-        this->tt_->setDirection(Vector3(-1,0,0));
-        this->tt_->setPositionOfEmitter(0, Vector3(-15,20,-1));
-        this->tt_->setPositionOfEmitter(1, Vector3(-15,-20,-1));
-        this->tt_->setVelocity(50);
+        this->tt1_ = new ParticleInterface("Orxonox/thruster1");
+        this->tt1_->createNewEmitter();
+        this->tt1_->getAllEmitters()->setDirection(-this->getInitialDir());
+        this->tt1_->getEmitter(0)->setPosition(Vector3(-15, 20, -1));
+        this->tt1_->getEmitter(1)->setPosition(Vector3(-15, -20, -1));
+        this->tt1_->setSpeedFactor(3.0);
 
-        emitterRate_ = tt_->getRate();
+        Ogre::SceneNode* node2a = this->getNode()->createChildSceneNode(this->getName() + "particle2a");
+        node2a->setInheritScale(false);
+        node2a->setScale(1, 1, 1);
+        tt1_->addToSceneNode(node2a);
 
-        Ogre::SceneNode* node2 = this->getNode()->createChildSceneNode(this->getName() + "particle2");
-        node2->setInheritScale(false);
-        tt_->addToSceneNode(node2);
+        this->tt2_ = new ParticleInterface("Orxonox/thruster2");
+        this->tt2_->createNewEmitter();
+        this->tt2_->getAllEmitters()->setDirection(Vector3(-1, 0, 0));
+        this->tt2_->getEmitter(0)->setPosition(Vector3(-30, 40, -2));
+        this->tt2_->getEmitter(1)->setPosition(Vector3(-30, -40, -2));
+
+        Ogre::SceneNode* node2b = this->getNode()->createChildSceneNode(this->getName() + "particle2b");
+        node2b->setInheritScale(false);
+        node2b->setScale(0.5, 0.5, 0.5);
+        tt2_->addToSceneNode(node2b);
         // END CREATING THRUSTER
 
         // START CREATING BLINKING LIGHTS
@@ -265,7 +271,7 @@ namespace orxonox
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);
       COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
-      this->camNode_->setPosition(Vector3(-50,0,10));
+      this->camNode_->setPosition(Vector3(-25,0,5));
 //      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
 //      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
 //      camNode_->setOrientation(q1*q2);
@@ -338,16 +344,6 @@ namespace orxonox
 	+ "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().z);
     }
 
-    Vector3 SpaceShip::getDir() {
-        return currentDir_;
-    }
-
-    Vector3 SpaceShip::getOrth(){
-        return currentOrth_;
-    }
-
-    float SpaceShip::getMaxSpeed() { return maxSpeed_; }
-
     void SpaceShip::tick(float dt)
     {
         currentDir_ = getOrientation()*initialDir_;
@@ -373,17 +369,15 @@ namespace orxonox
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
 
-            Projectile *p;
-            if (this->isExactlyA(Class(SpaceShip)))
-                p = new RotatingProjectile(this);
-            else
-                p = new Projectile(this);
-            p->setColour(this->getProjectileColour());
-            p->create();
-            if(p->classID==0)
+            BillboardProjectile* projectile = new ParticleProjectile(this);
+            projectile->setColour(this->getProjectileColour());
+            projectile->create();
+            if (projectile->classID == 0)
+            {
               COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
+            }
 
-            p->setBacksync(true);
+            projectile->setBacksync(true);
             this->timeToReload_ = this->reloadTime_;
         }
 
@@ -463,9 +457,15 @@ namespace orxonox
             this->yaw(Radian(this->mouseYRotation_ * dt));
 
         if (this->acceleration_.x > 0)
-            this->tt_->setRate(emitterRate_);
+        {
+            this->tt1_->setEnabled(true);
+            this->tt2_->setEnabled(true);
+        }
         else
-            this->tt_->setRate(0);
+        {
+            this->tt1_->setEnabled(false);
+            this->tt2_->setEnabled(false);
+        }
 
         if( myShip_ )
         {
