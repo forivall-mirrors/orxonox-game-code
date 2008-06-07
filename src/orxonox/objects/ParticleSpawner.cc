@@ -37,12 +37,12 @@ namespace orxonox
 {
     CreateFactory(ParticleSpawner);
 
-    ParticleSpawner::ParticleSpawner() : particle_(0)
+    ParticleSpawner::ParticleSpawner()
     {
         RegisterObject(ParticleSpawner);
     }
 
-    ParticleSpawner::ParticleSpawner(const std::string& templateName, float lifetime, float delay, const Vector3& direction) : particle_(0)
+    ParticleSpawner::ParticleSpawner(const std::string& templateName, float lifetime, float delay, const Vector3& direction)
     {
         RegisterObject(ParticleSpawner);
 
@@ -60,7 +60,7 @@ namespace orxonox
 
     ParticleSpawner::~ParticleSpawner()
     {
-        if (this->particle_)
+        if (this->isInitialized())
         {
             this->particle_->detachFromSceneNode();
             delete this->particle_;

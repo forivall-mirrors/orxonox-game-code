@@ -78,76 +78,81 @@ namespace orxonox
       return NULL;
     }
 
-    SpaceShip::SpaceShip() :
-      //testvector_(0,0,0),
-      //bInvertYAxis_(false),
-      setMouseEventCallback_(false),
-      bLMousePressed_(false),
-      bRMousePressed_(false),
-      camNode_(0),
-      cam_(0),
-      camName_("CamNode"),
-      tt1_(0),
-      tt2_(0),
-      redNode_(0),
-      greenNode_(0),
-      blinkTime_(0.0f),
-      chNearNode_(0),
-      chFarNode_(0),
-      timeToReload_(0.0f),
-      //reloadTime_(0.0f),
-      maxSideAndBackSpeed_(0.0f),
-      maxSpeed_(0.0f),
-      maxRotation_(0.0f),
-      translationAcceleration_(0.0f),
-      rotationAcceleration_(0.0f),
-      translationDamping_(0.0f),
-      rotationDamping_(0.0f),
-      maxRotationRadian_(0),
-      rotationAccelerationRadian_(0),
-      rotationDampingRadian_(0),
-      zeroRadian_(0),
-      mouseXRotation_(0),
-      mouseYRotation_(0),
-      mouseX_(0.0f),
-      mouseY_(0.0f),
-      myShip_(false),
-      teamNr_(0),
-      health_(100)
+    SpaceShip::SpaceShip()
     {
         RegisterObject(SpaceShip);
+
+        this->setRotationAxis(1, 0, 0);
+        this->setStatic(false);
+
+        this->zeroRadian_ = 0;
+        this->maxSideAndBackSpeed_ = 0;
+        this->maxSpeed_ = 0;
+        this->maxRotation_ = 0;
+        this->translationAcceleration_ = 0;
+        this->rotationAcceleration_ = 0;
+        this->translationDamping_ = 0;
+        this->rotationDamping_ = 0;
+        this->maxRotationRadian_ = 0;
+        this->rotationAccelerationRadian_ = 0;
+        this->rotationDampingRadian_ = 0;
+
+        this->cam_ = 0;
+        this->tt1_ = 0;
+        this->tt2_ = 0;
+
+        this->redNode_ = 0;
+        this->greenNode_ = 0;
+        this->blinkTime_ = 0;
+
+        this->timeToReload_ = 0;
+
+        this->setMouseEventCallback_ = false;
+        this->bLMousePressed_ = false;
+        this->bRMousePressed_ = false;
+        this->mouseXRotation_ = 0;
+        this->mouseYRotation_ = 0;
+        this->mouseX_ = 0;
+        this->mouseY_ = 0;
+        this->myShip_ = false;
+
         this->registerAllVariables();
 
         SpaceShip::instance_s = this;
 
         this->setConfigValues();
 
-        initialDir_ = Vector3(1.0, 0.0, 0.0);
-        currentDir_ = initialDir_;
-        initialOrth_ = Vector3(0.0, 0.0, 1.0);
-        currentOrth_ = initialOrth_;
+        this->initialDir_ = Vector3(1.0, 0.0, 0.0);
+        this->currentDir_ = initialDir_;
+        this->initialOrth_ = Vector3(0.0, 0.0, 1.0);
+        this->currentOrth_ = initialOrth_;
 
         this->camName_ = this->getName() + "CamNode";
 
-        this->setRotationAxis(1, 0, 0);
-        this->setStatic(false);
+        this->teamNr_ = 0;
+        this->health_ = 100;
 
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
 
     SpaceShip::~SpaceShip()
     {
-        if (this->tt1_)
-            delete this->tt1_;
-        if (this->tt2_)
-            delete this->tt2_;
-        if(setMouseEventCallback_)
-          InputManager::removeMouseHandler("SpaceShip");
-        if (this->cam_)
-          delete this->cam_;
-        if (!Identifier::isCreatingHierarchy() && !myShip_ && &HUD::getSingleton()!=NULL)
-          //remove the radar object
-          HUD::getSingleton().removeRadarObject(this->getNode());
+        if (this->isInitialized())
+        {
+            if (this->tt1_)
+                delete this->tt1_;
+            if (this->tt2_)
+                delete this->tt2_;
+
+            if (setMouseEventCallback_)
+                InputManager::removeMouseHandler("SpaceShip");
+
+            if (this->cam_)
+                delete this->cam_;
+
+            if (!myShip_ && &HUD::getSingleton()!=NULL)
+              HUD::getSingleton().removeRadarObject(this->getNode());
+        }
     }
 
     bool SpaceShip::create(){
@@ -306,7 +311,7 @@ namespace orxonox
 //        cam->setPosition(Vector3(0,-350,0));
       Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
       Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(1,0,0));
-      camNode_->setOrientation(q2*q1);
+      this->camNode_->setOrientation(q2*q1);
       if(network::Client::getSingleton()!=0 && network::Client::getSingleton()->getShipID()==objectID){
         this->setBacksync(true);
         CameraHandler::getInstance()->requestFocus(cam_);

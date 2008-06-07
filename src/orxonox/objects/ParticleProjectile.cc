@@ -36,7 +36,7 @@ namespace orxonox
 {
     CreateFactory(ParticleProjectile);
 
-    ParticleProjectile::ParticleProjectile(SpaceShip* owner) : BillboardProjectile(owner), particles_(0)
+    ParticleProjectile::ParticleProjectile(SpaceShip* owner) : BillboardProjectile(owner)
     {
         RegisterObject(ParticleProjectile);
 
@@ -46,6 +46,10 @@ namespace orxonox
             this->particles_->addToSceneNode(this->getNode());
             this->particles_->getAllEmitters()->setDirection(-this->owner_->getInitialDir());
             this->particles_->setKeepParticlesInLocalSpace(true);
+        }
+        else
+        {
+            this->particles_ = 0;
         }
     }
 

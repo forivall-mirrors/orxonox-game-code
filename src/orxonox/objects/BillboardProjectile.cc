@@ -51,7 +51,7 @@ namespace orxonox
 
     BillboardProjectile::~BillboardProjectile()
     {
-        if (this->owner_)
+        if (this->isInitialized() && this->owner_)
             this->detachObject(this->billboard_.getBillboardSet());
     }
 
