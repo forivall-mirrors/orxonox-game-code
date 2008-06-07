@@ -32,7 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "WorldEntity.h"
-#include "../tools/Timer.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
@@ -40,7 +40,7 @@ namespace orxonox
     {
         public:
             ParticleSpawner();
-            ParticleSpawner(const std::string& templateName, float lifetime, float delay = 0, const Vector3& direction = Vector3::ZERO);
+            ParticleSpawner(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float delay = 0, const Vector3& direction = Vector3::ZERO);
             virtual ~ParticleSpawner();
             inline ParticleInterface* getParticleInterface() const
                 { return this->particle_; }

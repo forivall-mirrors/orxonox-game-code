@@ -42,14 +42,14 @@ namespace orxonox
         RegisterObject(ParticleSpawner);
     }
 
-    ParticleSpawner::ParticleSpawner(const std::string& templateName, float lifetime, float delay, const Vector3& direction)
+    ParticleSpawner::ParticleSpawner(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float delay, const Vector3& direction)
     {
         RegisterObject(ParticleSpawner);
 
         ExecutorMember<ParticleSpawner>* executor = createExecutor(createFunctor(&ParticleSpawner::createParticleSpawner));
         executor->setDefaultValues(lifetime);
         this->timer_.setTimer(delay, false, this, executor);
-        this->particle_ = new ParticleInterface(templateName);
+        this->particle_ = new ParticleInterface(templateName, detaillevel);
         this->particle_->addToSceneNode(this->getNode());
         this->particle_->setEnabled(false);
         if (direction != Vector3::ZERO)

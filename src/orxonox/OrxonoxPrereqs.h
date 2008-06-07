@@ -59,7 +59,19 @@
 // Forward declarations
 //-----------------------------------------------------------------------
 
-namespace orxonox {
+namespace orxonox
+{
+  namespace LODParticle
+  {
+    enum LOD
+    {
+      off = 0,
+      low = 1,
+      normal = 2,
+      high = 3
+    };
+  }
+
   class GraphicsEngine;
   class Orxonox;
 

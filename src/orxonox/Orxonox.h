@@ -66,8 +66,8 @@ namespace orxonox {
       static Orxonox* getSingleton();
       static void destroySingleton();
 
-      static inline void slomo(float factor) { Orxonox::getSingleton()->timefactor_ = factor; }
-      static inline void setTimeFactor(float factor = 1.0) { Orxonox::getSingleton()->timefactor_ = factor; }
+      static inline void slomo(float factor) { Orxonox::setTimeFactor(factor); }
+      static void setTimeFactor(float factor = 1.0);
       static inline float getTimeFactor() { return Orxonox::getSingleton()->timefactor_; }
       static inline void exit() { Orxonox::getSingleton()->abortRequest(); }
 

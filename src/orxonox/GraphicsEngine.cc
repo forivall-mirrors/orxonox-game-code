@@ -52,6 +52,7 @@
 #include "core/input/InputManager.h"
 
 #include "console/InGameConsole.h"
+#include "tools/ParticleInterface.h"
 #include "Settings.h"
 
 
@@ -76,6 +77,8 @@ namespace orxonox {
   {
     RegisterObject(GraphicsEngine);
 
+    this->detailLevelParticle_ = 0;
+
     this->setConfigValues();
     CCOUT(4) << "Constructed" << std::endl;
   }
@@ -90,6 +93,13 @@ namespace orxonox {
     SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
     SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
     SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
+
+    unsigned int old = this->detailLevelParticle_;
+    SetConfigValue(detailLevelParticle_, 2).description("O: off, 1: low, 2: normal, 3: high");
+
+    if (this->detailLevelParticle_ != old)
+      for (Iterator<ParticleInterface> it = ObjectList<ParticleInterface>::begin(); it; ++it)
+        it->detailLevelChanged(this->detailLevelParticle_);
   }
 
   /**

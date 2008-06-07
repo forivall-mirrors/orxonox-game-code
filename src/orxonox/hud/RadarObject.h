@@ -63,7 +63,8 @@ namespace orxonox
 
       private:
         static std::map<std::string, std::map<ColourValue, std::string> > materials_s;
-        unsigned static int count_s;
+        static unsigned int count_s;
+        static unsigned int materialcount_s;
         Ogre::SceneNode* node_;					// node of object
         ColourValue colour_;
         std::string texturename_;

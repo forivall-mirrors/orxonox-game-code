@@ -79,6 +79,9 @@ namespace orxonox {
             void windowFocusChanged(Ogre::RenderWindow* rw);
             void windowClosed      (Ogre::RenderWindow* rw);
 
+            inline unsigned int getDetailLevelParticle() const
+              { return this->detailLevelParticle_; }
+
             static GraphicsEngine& getSingleton();
             static GraphicsEngine* getSingletonPtr() { return &getSingleton(); }
 
@@ -93,16 +96,17 @@ namespace orxonox {
             void messageLogged(const std::string&, Ogre::LogMessageLevel,
                              bool, const std::string&);
 
-            Ogre::Root*         root_;              //!< Ogre's root
-            Ogre::SceneManager* scene_;             //!< scene manager of the game
-            Ogre::RenderWindow* renderWindow_;      //!< the current render window
-            std::string         resourceFile_;      //!< resources file name
-            std::string         ogreConfigFile_;    //!< ogre config file name
-            std::string         ogrePluginsFile_;   //!< ogre plugins file name
-            std::string         ogreLogFile_;       //!< log file name for Ogre log messages
-            int ogreLogLevelTrivial_;               //!< Corresponding Orxonx debug level for LL_TRIVIAL
-            int ogreLogLevelNormal_;                //!< Corresponding Orxonx debug level for LL_NORMAL
-            int ogreLogLevelCritical_;              //!< Corresponding Orxonx debug level for LL_CRITICAL
+            Ogre::Root*         root_;                  //!< Ogre's root
+            Ogre::SceneManager* scene_;                 //!< scene manager of the game
+            Ogre::RenderWindow* renderWindow_;          //!< the current render window
+            std::string         resourceFile_;          //!< resources file name
+            std::string         ogreConfigFile_;        //!< ogre config file name
+            std::string         ogrePluginsFile_;       //!< ogre plugins file name
+            std::string         ogreLogFile_;           //!< log file name for Ogre log messages
+            int                 ogreLogLevelTrivial_;   //!< Corresponding Orxonx debug level for LL_TRIVIAL
+            int                 ogreLogLevelNormal_;    //!< Corresponding Orxonx debug level for LL_NORMAL
+            int                 ogreLogLevelCritical_;  //!< Corresponding Orxonx debug level for LL_CRITICAL
+            unsigned int        detailLevelParticle_;   //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
     };
 }
 

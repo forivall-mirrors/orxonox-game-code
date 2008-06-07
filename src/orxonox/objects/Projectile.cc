@@ -96,10 +96,10 @@ namespace orxonox
                     // hit
                     if (it->isA(Class(SpaceShipAI)))
                         ((SpaceShipAI*)(*it))->damage(this->damage_);
-                    ParticleSpawner* explosion = new ParticleSpawner(this->explosionTemplateName_, 2.0);
+                    ParticleSpawner* explosion = new ParticleSpawner(this->explosionTemplateName_, LODParticle::low, 2.0);
                     explosion->setPosition(this->getPosition());
                     explosion->create();
-                    ParticleSpawner* smoke = new ParticleSpawner(this->smokeTemplateName_, 6.0, 0.0);
+                    ParticleSpawner* smoke = new ParticleSpawner(this->smokeTemplateName_, LODParticle::normal, 6.0, 0.0);
                     smoke->setPosition(this->getPosition());
                     smoke->getParticleInterface()->setSpeedFactor(3.0);
                     smoke->create();
