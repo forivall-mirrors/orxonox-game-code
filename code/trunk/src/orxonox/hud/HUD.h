@@ -62,7 +62,7 @@ namespace orxonox
 
       public:
         virtual void tick(float);
-        void addRadarObject(Ogre::SceneNode* node, int colour = 0);
+        void addRadarObject(Ogre::SceneNode* node, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1));
         void removeRadarObject(Ogre::SceneNode* node);
         void setRenderTimeRatio(float ratio);
         void setFPS();

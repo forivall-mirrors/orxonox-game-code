@@ -209,7 +209,7 @@ namespace orxonox
             ++it_;
         }
         else{
-            focus_->resetColour();
+            focus_->resetMaterial();
             if(it_ != HUD::getSingleton().roSet.end()){
                 focus_ = *it_;
                 ++it_;
@@ -223,7 +223,7 @@ namespace orxonox
         else{
             navMarker_->show();
             navText_->show();
-            focus_->setColour(RadarObject::WHITE);
+            focus_->setColour(ColourValue::White);
         }
     }
 

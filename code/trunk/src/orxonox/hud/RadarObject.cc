@@ -30,55 +30,96 @@
 #include "RadarObject.h"
 
 #include <OgreOverlayManager.h>
-#include <OgreStringConverter.h>
+#include <OgreMaterialManager.h>
+#include <OgreTechnique.h>
+
 #include "GraphicsEngine.h"
+#include "util/Convert.h"
+
+namespace std
+{
+    template <>
+    class less<orxonox::ColourValue>
+    {
+        public:
+            bool operator()(const orxonox::ColourValue& __x, const orxonox::ColourValue& __y)
+            {
+                if (__x.r == __y.r)
+                {
+                    if (__x.g == __y.g)
+                    {
+                        if (__x.b == __y.b)
+                        {
+                            return __x.a < __y.a;
+                        }
+                        return __x.b < __y.b;
+                    }
+                    return __x.g < __y.g;
+                }
+                return __x.r < __y.r;
+            }
+    };
+}
 
 namespace orxonox
 {
-    using namespace Ogre;
+    unsigned int RadarObject::count_s = 0;
+    std::map<std::string, std::map<ColourValue, std::string> > RadarObject::materials_s;
 
-    int RadarObject::count = 0;		// initialize static variable
+    RadarObject::RadarObject(Ogre::OverlayContainer* container, Ogre::SceneNode* node, const ColourValue& colour, const std::string& texturename)
+    {
+        this->colour_ = colour;
+        this->texturename_ = texturename;
 
-    RadarObject::RadarObject(OverlayContainer* container, SceneNode* node, int colour){
-        container_ = container;
-        node_ = node;
-        colour_ = colour;
-        om = &OverlayManager::getSingleton();
-        panel_ = static_cast<PanelOverlayElement*>(om->createOverlayElement("Panel",
-            "Object"+StringConverter::toString(count)));
-        setColour(colour_);
-        panel_->setDimensions(3,3);
-        panel_->setMetricsMode(Ogre::GMM_PIXELS);
-        panel_->show();
-        index_ = count;
-        count++;
-        container_->addChild(panel_);
+        this->container_ = container;
+        this->node_ = node;
+
+        this->panel_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarObject" + getConvertedValue<unsigned int, std::string>(RadarObject::count_s)));
+        this->setMaterial(colour, texturename);
+
+        this->panel_->setDimensions(3,3);
+        this->panel_->setMetricsMode(Ogre::GMM_PIXELS);
+        this->panel_->show();
+
+        this->index_ = count_s++;
+        this->container_->addChild(panel_);
     }
 
-    RadarObject::~RadarObject(){
+    RadarObject::~RadarObject()
+    {
         delete panel_;
     }
 
-    void RadarObject::setColour(int colour){
-        switch(colour){
-        case RED: panel_->setMaterialName("Orxonox/RedDot"); break;
-        case YELLOW: panel_->setMaterialName("Orxonox/YellowDot"); break;
-        case GREEN: panel_->setMaterialName("Orxonox/GreenDot"); break;
-        case BLUE: panel_->setMaterialName("Orxonox/BlueDot"); break;
-        case WHITE: panel_->setMaterialName("Orxonox/WhiteDot"); break;
-        default: panel_->setMaterialName("Orxonox/RedDot"); break;
+    void RadarObject::setMaterial(const ColourValue& colour, const std::string& texturename)
+    {
+        std::map<ColourValue, std::string>& colourmap = this->materials_s[texturename];
+        std::map<ColourValue, std::string>::const_iterator it = colourmap.find(colour);
+        std::string materialname;
+
+        if (it == colourmap.end())
+        {
+            materialname = "radarmaterial" + getConvertedValue<unsigned int, std::string>(RadarObject::count_s);
+            Ogre::MaterialPtr material = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().create(materialname, "General");
+            Ogre::TextureUnitState* textureunitstate = material->getTechnique(0)->getPass(0)->createTextureUnitState();
+            textureunitstate->setTextureName(texturename);
+            textureunitstate->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, colour);
+            colourmap[colour] = materialname;
         }
+        else
+        {
+            materialname = (*it).second;
+        }
+
+        this->panel_->setMaterialName(materialname);
     }
 
-    void RadarObject::resetColour(){
-        setColour(colour_);
-    }
-
-    Vector3 RadarObject::getPosition(){
+    Vector3 RadarObject::getPosition()
+    {
         return node_->getPosition();
     }
 
-    SceneNode* RadarObject::getNode(){
+    Ogre::SceneNode* RadarObject::getNode()
+    {
         return node_;
     }
 }
