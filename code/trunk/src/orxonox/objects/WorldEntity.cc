@@ -44,33 +44,36 @@ namespace orxonox
 
     unsigned int WorldEntity::worldEntityCounter_s = 0;
 
-    WorldEntity::WorldEntity() :
-      velocity_    (0, 0, 0),
-      acceleration_(0, 0, 0),
-      rotationAxis_(0, 1, 0),
-      rotationRate_(0),
-      momentum_    (0),
-      node_        (0),
-      bStatic_     (true)
+    WorldEntity::WorldEntity()
     {
         RegisterObject(WorldEntity);
 
         if (GraphicsEngine::getSingleton().getSceneManager())
         {
-          std::ostringstream name;
-          name << (WorldEntity::worldEntityCounter_s++);
-          this->setName("WorldEntity" + name.str());
-          this->node_ = GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
+            std::ostringstream name;
+            name << (WorldEntity::worldEntityCounter_s++);
+            this->setName("WorldEntity" + name.str());
+            this->node_ = GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
 
-          registerAllVariables();
+            registerAllVariables();
         }
+        else
+        {
+            this->node_ = 0;
+        }
+
+        this->bStatic_ = true;
+        this->velocity_ = Vector3(0, 0, 0);
+        this->acceleration_ = Vector3(0, 0, 0);
+        this->rotationAxis_ = Vector3(0, 1, 0);
+        this->rotationRate_ = 0;
+        this->momentum_ = 0;
     }
 
 
     WorldEntity::~WorldEntity()
     {
-        // just to make sure we clean out all scene nodes
-        if(this->getNode())
+        if (this->isInitialized())
         {
             this->getNode()->removeAndDestroyAllChildren();
             GraphicsEngine::getSingleton().getSceneManager()->destroySceneNode(this->getName());
