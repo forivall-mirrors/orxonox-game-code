@@ -64,6 +64,7 @@ namespace std
 namespace orxonox
 {
     unsigned int RadarObject::count_s = 0;
+    unsigned int RadarObject::materialcount_s = 0;
     std::map<std::string, std::map<ColourValue, std::string> > RadarObject::materials_s;
 
     RadarObject::RadarObject(Ogre::OverlayContainer* container, Ogre::SceneNode* node, const ColourValue& colour, const std::string& texturename)
@@ -98,8 +99,9 @@ namespace orxonox
 
         if (it == colourmap.end())
         {
-            materialname = "radarmaterial" + getConvertedValue<unsigned int, std::string>(RadarObject::count_s);
+            materialname = "radarmaterial" + getConvertedValue<unsigned int, std::string>(RadarObject::materialcount_s++);
             Ogre::MaterialPtr material = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().create(materialname, "General");
+            material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
             Ogre::TextureUnitState* textureunitstate = material->getTechnique(0)->getPass(0)->createTextureUnitState();
             textureunitstate->setTextureName(texturename);
             textureunitstate->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, colour);

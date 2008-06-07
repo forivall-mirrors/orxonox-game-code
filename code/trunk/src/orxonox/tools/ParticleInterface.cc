@@ -39,6 +39,7 @@
 
 #include "GraphicsEngine.h"
 #include "Orxonox.h"
+#include "core/CoreIncludes.h"
 #include "util/Convert.h"
 
 namespace orxonox
@@ -46,11 +47,25 @@ namespace orxonox
   unsigned int ParticleInterface::counter_s = 0;
   ParticleInterface* ParticleInterface::currentParticleInterface_s = 0;
 
-  ParticleInterface::ParticleInterface(const std::string& templateName)
+  ParticleInterface::ParticleInterface(const std::string& templateName, LODParticle::LOD detaillevel)
   {
+    RegisterRootObject(ParticleInterface);
+
     this->sceneNode_ = 0;
+    this->bEnabled_ = true;
+    this->detaillevel_ = (unsigned int)detaillevel;
     this->particleSystem_ = GraphicsEngine::getSingleton().getSceneManager()->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
     this->particleSystem_->setSpeedFactor(Orxonox::getSingleton()->getTimeFactor());
+
+    if (GraphicsEngine::getSingleton().getDetailLevelParticle() < (unsigned int)this->detaillevel_)
+    {
+      this->bVisible_ = false;
+      this->updateVisibility();
+    }
+    else
+    {
+      this->bVisible_ = true;
+    }
   }
 
   ParticleInterface::~ParticleInterface()
@@ -133,8 +148,24 @@ namespace orxonox
 
   void ParticleInterface::setEnabled(bool enable)
   {
+    this->bEnabled_ = enable;
+    this->updateVisibility();
+  }
+
+  void ParticleInterface::detailLevelChanged(unsigned int newlevel)
+  {
+    if (newlevel >= (unsigned int)this->detaillevel_)
+      this->bVisible_ = true;
+    else
+      this->bVisible_ = false;
+
+    this->updateVisibility();
+  }
+
+  void ParticleInterface::updateVisibility()
+  {
     for (unsigned int i = 0; i < this->particleSystem_->getNumEmitters(); i++)
-      this->particleSystem_->getEmitter(i)->setEnabled(enable);
+      this->particleSystem_->getEmitter(i)->setEnabled(this->bEnabled_ && this->bVisible_);
   }
 
   void ParticleInterface::setSpeedFactor(float factor)
@@ -143,7 +174,7 @@ namespace orxonox
   }
   float ParticleInterface::getSpeedFactor() const
   {
-    return this->particleSystem_->getSpeedFactor();
+    return (this->particleSystem_->getSpeedFactor() / Orxonox::getSingleton()->getTimeFactor());
   }
 
   bool ParticleInterface::getKeepParticlesInLocalSpace() const

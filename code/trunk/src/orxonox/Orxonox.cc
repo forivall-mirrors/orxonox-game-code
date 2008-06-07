@@ -70,6 +70,7 @@
 // objects and tools
 #include "hud/HUD.h"
 #include "objects/Tickable.h"
+#include "tools/ParticleInterface.h"
 
 #include "GraphicsEngine.h"
 #include "Settings.h"
@@ -158,6 +159,18 @@ namespace orxonox
     if (singletonRef_s)
       delete singletonRef_s;
     singletonRef_s = 0;
+  }
+
+  /**
+    @brief Changes the speed of Orxonox
+  */
+  void Orxonox::setTimeFactor(float factor)
+  {
+    float change = factor / Orxonox::getSingleton()->getTimeFactor();
+    Orxonox::getSingleton()->timefactor_ = factor;
+
+    for (Iterator<ParticleInterface> it = ObjectList<ParticleInterface>::begin(); it; ++it)
+        it->setSpeedFactor(it->getSpeedFactor() * change);
   }
 
   /**
@@ -378,7 +391,7 @@ namespace orxonox
   {
     Level* startlevel = new Level("levels/sample.oxw");
     Loader::open(startlevel);
-    
+
     return true;
   }
 
@@ -420,7 +433,7 @@ namespace orxonox
 
     //Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
     //Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
-    
+
     //Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "Bloom");
     //Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "MotionBlur");
 

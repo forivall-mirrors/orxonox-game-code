@@ -186,7 +186,7 @@ namespace orxonox
     void SpaceShip::init()
     {
         // START CREATING THRUSTER
-        this->tt1_ = new ParticleInterface("Orxonox/thruster1");
+        this->tt1_ = new ParticleInterface("Orxonox/thruster1", LODParticle::low);
         this->tt1_->createNewEmitter();
         this->tt1_->getAllEmitters()->setDirection(-this->getInitialDir());
         this->tt1_->getEmitter(0)->setPosition(Vector3(-15, 20, -1));
@@ -198,7 +198,7 @@ namespace orxonox
         node2a->setScale(1, 1, 1);
         tt1_->addToSceneNode(node2a);
 
-        this->tt2_ = new ParticleInterface("Orxonox/thruster2");
+        this->tt2_ = new ParticleInterface("Orxonox/thruster2", LODParticle::normal);
         this->tt2_->createNewEmitter();
         this->tt2_->getAllEmitters()->setDirection(Vector3(-1, 0, 0));
         this->tt2_->getEmitter(0)->setPosition(Vector3(-30, 40, -2));

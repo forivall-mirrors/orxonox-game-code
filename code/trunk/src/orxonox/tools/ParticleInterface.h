@@ -34,6 +34,7 @@
 #include <string>
 #include <OgreParticleEmitter.h>
 
+#include "core/OrxonoxClass.h"
 #include "util/Math.h"
 
 #define getAllEmitters() \
@@ -43,10 +44,10 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport ParticleInterface
+  class _OrxonoxExport ParticleInterface : public OrxonoxClass
   {
     public:
-      ParticleInterface(const std::string& templateName);
+      ParticleInterface(const std::string& templateName, LODParticle::LOD detaillevel);
       ~ParticleInterface();
 
       inline Ogre::ParticleSystem* getParticleSystem() const
@@ -73,6 +74,7 @@ namespace orxonox
       void setKeepParticlesInLocalSpace(bool keep);
 
       void setEnabled(bool enable);
+      void detailLevelChanged(unsigned int newlevel);
 
       inline void storeThisAsCurrentParticleInterface()
         { ParticleInterface::currentParticleInterface_s = this; }
@@ -80,10 +82,15 @@ namespace orxonox
         { return ParticleInterface::currentParticleInterface_s; }
 
     private:
+      void updateVisibility();
+
       static ParticleInterface* currentParticleInterface_s;
       static unsigned int counter_s;
       Ogre::SceneNode* sceneNode_;
       Ogre::ParticleSystem* particleSystem_;
+      bool bVisible_;
+      bool bEnabled_;
+      unsigned int detaillevel_;                            //!< Detail level of this particle effect (0: off, 1: low, 2: normal, 3: high)
   };
 }
 

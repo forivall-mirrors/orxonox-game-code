@@ -42,7 +42,7 @@ namespace orxonox
 
         if (this->owner_)
         {
-            this->particles_ = new ParticleInterface("Orxonox/shot2");
+            this->particles_ = new ParticleInterface("Orxonox/shot2", LODParticle::normal);
             this->particles_->addToSceneNode(this->getNode());
             this->particles_->getAllEmitters()->setDirection(-this->owner_->getInitialDir());
             this->particles_->setKeepParticlesInLocalSpace(true);
