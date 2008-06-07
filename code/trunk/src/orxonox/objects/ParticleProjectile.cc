@@ -55,7 +55,7 @@ namespace orxonox
 
     ParticleProjectile::~ParticleProjectile()
     {
-        if (this->particles_)
+        if (this->isInitialized() && this->particles_)
             delete this->particles_;
     }
 
