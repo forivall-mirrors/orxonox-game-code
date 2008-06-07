@@ -79,7 +79,7 @@ namespace orxonox
 
     void WorldEntity::tick(float dt)
     {
-        if (!this->bStatic_)
+        if (!this->bStatic_ && this->isActive())
         {
 //             COUT(4) << "acceleration: " << this->acceleration_ << " velocity: " << this->velocity_ << std::endl;
             this->velocity_ += (dt * this->acceleration_);
@@ -131,6 +131,9 @@ namespace orxonox
 
     void WorldEntity::registerAllVariables()
     {
+      // register inheritec variables from BaseObject
+      registerVar( (void*) &(this->bActive_), sizeof(this->bActive_), network::DATA, 0x3);
+      registerVar( (void*) &(this->bVisible_), sizeof(this->bVisible_), network::DATA, 0x3);
       // register coordinates
       registerVar( (void*) &(this->getPosition().x), sizeof(this->getPosition().x), network::DATA, 0x3);
       registerVar( (void*) &(this->getPosition().y), sizeof(this->getPosition().y), network::DATA, 0x3);

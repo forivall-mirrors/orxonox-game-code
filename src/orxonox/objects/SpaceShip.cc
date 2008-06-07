@@ -250,6 +250,30 @@ namespace orxonox
         SetConfigValue(testvector_, Vector3()).description("asdfblah");
     }
 
+    void SpaceShip::changedVisibility()
+    {
+        Model::changedVisibility();
+
+        this->tt1_->setEnabled(this->isVisible());
+        this->tt2_->setEnabled(this->isVisible());
+        this->redBillboard_.setVisible(this->isVisible());
+        this->greenBillboard_.setVisible(this->isVisible());
+        this->crosshairNear_.setVisible(this->isVisible());
+        this->crosshairFar_.setVisible(this->isVisible());
+    }
+
+    void SpaceShip::changedActivity()
+    {
+        Model::changedActivity();
+
+        this->tt1_->setEnabled(this->isVisible());
+        this->tt2_->setEnabled(this->isVisible());
+        this->redBillboard_.setVisible(this->isVisible());
+        this->greenBillboard_.setVisible(this->isVisible());
+        this->crosshairNear_.setVisible(this->isVisible());
+        this->crosshairFar_.setVisible(this->isVisible());
+    }
+
     void SpaceShip::setCamera(const std::string& camera)
     {
       camName_=camera;
@@ -346,6 +370,9 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
+        if (!this->isActive())
+            return;
+
         currentDir_ = getOrientation()*initialDir_;
 		currentOrth_ = getOrientation()*initialOrth_;
 

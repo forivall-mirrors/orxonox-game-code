@@ -14,6 +14,7 @@ namespace orxonox
             virtual ~RotatingProjectile();
             void setConfigValues();
             virtual void tick(float dt);
+            virtual void changedVisibility();
 
         private:
             ColourValue colour_;

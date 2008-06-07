@@ -72,11 +72,21 @@ namespace orxonox
 
     void RotatingProjectile::tick(float dt)
     {
-        this->time_ += dt;
+        if (this->isActive())
+        {
+            this->time_ += dt;
 
-        this->rotatingNode1_->setPosition(0, 50 * sin(this->time_ * 20), 50 * cos(this->time_ * 20));
-        this->rotatingNode2_->setPosition(0, -50 * sin(this->time_ * 20), -50 * cos(this->time_ * 20));
+            this->rotatingNode1_->setPosition(0, 50 * sin(this->time_ * 20), 50 * cos(this->time_ * 20));
+            this->rotatingNode2_->setPosition(0, -50 * sin(this->time_ * 20), -50 * cos(this->time_ * 20));
+        }
 
         Projectile::tick(dt);
+    }
+
+    void RotatingProjectile::changedVisibility()
+    {
+        BillboardProjectile::changedVisibility();
+        this->rotatingBillboard1_.setVisible(this->isVisible());
+        this->rotatingBillboard2_.setVisible(this->isVisible());
     }
 }

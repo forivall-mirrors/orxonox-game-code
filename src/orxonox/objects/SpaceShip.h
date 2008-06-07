@@ -52,6 +52,8 @@ namespace orxonox
             void setConfigValues();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
+            virtual void changedVisibility();
+            virtual void changedActivity();
 
             void setCamera(const std::string& camera = "");
             void setMaxSpeed(float value);

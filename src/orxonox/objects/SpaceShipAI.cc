@@ -207,6 +207,9 @@ namespace orxonox
 
     void SpaceShipAI::tick(float dt)
     {
+        if (!this->isActive())
+            return;
+
         if (this->target_)
             this->aimAtTarget();
 

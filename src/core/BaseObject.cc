@@ -45,12 +45,15 @@ namespace orxonox
         @brief Constructor: Registers the object in the BaseObject-list.
     */
     BaseObject::BaseObject() :
-      bActive_(true),
-      bVisible_(true),
-      level_(0),
-      namespace_(0)
+        bInitialized_(false),
+        bActive_(true),
+        bVisible_(true),
+        level_(0),
+        namespace_(0)
     {
         RegisterRootObject(BaseObject);
+
+        this->bInitialized_ = true;
     }
 
     /**

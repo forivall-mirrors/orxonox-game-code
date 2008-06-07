@@ -54,4 +54,10 @@ namespace orxonox
         if (this->particles_)
             delete this->particles_;
     }
+
+    void ParticleProjectile::changedVisibility()
+    {
+        BillboardProjectile::changedVisibility();
+        this->particles_->setEnabled(this->isVisible());
+    }
 }

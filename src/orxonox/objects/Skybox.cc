@@ -53,26 +53,16 @@ namespace orxonox
     {
     }
 
-    void Skybox::loadParams(TiXmlElement* xmlElem)
+    void Skybox::setSkybox(const std::string& skyboxname)
     {
-    	if (xmlElem->Attribute("src"))
-    	{
-    		skyboxSrc_ = xmlElem->Attribute("src");
-        this->create();
-
-	    	COUT(4) << "Loader: Set skybox: "<< skyboxSrc_ << std::endl << std::endl;
-    	}
-   }
-
-   void Skybox::setSkybox(const std::string& skyboxname)
-   {
     	GraphicsEngine::getSingleton().getSceneManager()->setSkyBox(true, skyboxname);
-   }
+    }
 
-   void Skybox::setSkyboxSrc(const std::string& src){
-     skyboxSrc_ = src;
-   }
-   
+    void Skybox::setSkyboxSrc(const std::string& src)
+    {
+        this->skyboxSrc_ = src;
+    }
+
     /**
         @brief XML loading and saving.
         @param xmlelement The XML-element
@@ -86,14 +76,21 @@ namespace orxonox
         XMLPortParamLoadOnly(Skybox, "src", setSkyboxSrc, xmlelement, mode);
         create();
     }
-    
-    bool Skybox::create(){
-      this->setSkybox(skyboxSrc_);
-      return Synchronisable::create();
+
+    bool Skybox::create()
+    {
+        this->setSkybox(this->skyboxSrc_);
+        return Synchronisable::create();
     }
-    
-    void Skybox::registerAllVariables(){
-      registerVar(&skyboxSrc_, skyboxSrc_.length()+1 ,network::STRING);
+
+    void Skybox::registerAllVariables()
+    {
+        registerVar(&skyboxSrc_, skyboxSrc_.length()+1 ,network::STRING);
     }
-    
+
+    void Skybox::changedVisibility()
+    {
+        BaseObject::changedVisibility();
+        GraphicsEngine::getSingleton().getSceneManager()->setSkyBox(this->isVisible(), this->skyboxSrc_);
+    }
 }

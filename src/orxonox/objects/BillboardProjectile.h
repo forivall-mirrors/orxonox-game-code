@@ -42,7 +42,9 @@ namespace orxonox
         public:
             BillboardProjectile(SpaceShip* owner = 0);
             virtual ~BillboardProjectile();
+
             virtual void setColour(const ColourValue& colour);
+            virtual void changedVisibility();
 
         private:
             BillboardSet billboard_;

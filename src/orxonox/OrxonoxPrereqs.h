@@ -65,6 +65,7 @@ namespace orxonox {
 
   // objects
   class Ambient;
+  class Backlight;
   class Camera;
   class Fighter;
   class Model;
