@@ -81,6 +81,9 @@ namespace orxonox
     {
         WorldEntity::tick(dt);
 
+        if (!this->isActive())
+            return;
+
         float radius;
         for (Iterator<Model> it = ObjectList<Model>::start(); it; ++it)
         {

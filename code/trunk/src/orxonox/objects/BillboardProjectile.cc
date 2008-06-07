@@ -59,4 +59,10 @@ namespace orxonox
     {
         this->billboard_.getBillboardSet()->getBillboard(0)->setColour(colour);
     }
+
+    void BillboardProjectile::changedVisibility()
+    {
+        Projectile::changedVisibility();
+        this->billboard_.setVisible(this->isVisible());
+    }
 }

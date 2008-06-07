@@ -32,8 +32,8 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
 #include <OgreBillboardSet.h>
+
 #include "util/Math.h"
 
 namespace orxonox
@@ -50,6 +50,11 @@ namespace orxonox
 
             inline const std::string& getName() const
                 { return this->billboardSet_->getName(); }
+
+            inline void setVisible(bool visible)
+                { this->billboardSet_->setVisible(visible); }
+            inline bool getVisible() const
+                { return this->billboardSet_->getVisible(); }
 
         private:
             static unsigned int billboardSetCounter_s;

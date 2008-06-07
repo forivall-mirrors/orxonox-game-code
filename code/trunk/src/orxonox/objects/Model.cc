@@ -95,4 +95,10 @@ namespace orxonox
       COUT(5) << "Model.cc:registering new meshsrc with size: " << meshSrc_.length()+1 << " this: " << this << std::endl;
       registerVar(&meshSrc_, meshSrc_.length() + 1, network::STRING);
     }
+
+    void Model::changedVisibility()
+    {
+        WorldEntity::changedVisibility();
+        this->mesh_.setVisible(this->isVisible());
+    }
 }

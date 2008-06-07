@@ -42,6 +42,7 @@ namespace orxonox
         public:
             ParticleProjectile(SpaceShip* owner = 0);
             virtual ~ParticleProjectile();
+            virtual void changedVisibility();
 
         private:
             ParticleInterface* particles_;
