@@ -219,6 +219,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\BillboardProjectile.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Camera.cc"
 					>
 				</File>
@@ -227,15 +231,19 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Explosion.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\Model.cc"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\NPC.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\ParticleProjectile.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\ParticleSpawner.cc"
 					>
 				</File>
 				<File
@@ -392,14 +400,6 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="particle"
-				>
-				<File
-					RelativePath="..\..\src\orxonox\particle\ParticleInterface.cc"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="tools"
 				>
 				<File
@@ -412,6 +412,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\Mesh.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\tools\ParticleInterface.cc"
 					>
 				</File>
 				<File
@@ -513,6 +517,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\BillboardProjectile.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Camera.h"
 					>
 				</File>
@@ -521,15 +529,19 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Explosion.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\Model.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\NPC.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\ParticleProjectile.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\ParticleSpawner.h"
 					>
 				</File>
 				<File
@@ -590,14 +602,6 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="particle"
-				>
-				<File
-					RelativePath="..\..\src\orxonox\particle\ParticleInterface.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="tools"
 				>
 				<File
@@ -610,6 +614,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\Mesh.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\tools\ParticleInterface.h"
 					>
 				</File>
 				<File
