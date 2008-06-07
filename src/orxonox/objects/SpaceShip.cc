@@ -150,8 +150,8 @@ namespace orxonox
             if (this->cam_)
                 delete this->cam_;
 
-            if (!myShip_ && &HUD::getSingleton()!=NULL)
-              HUD::getSingleton().removeRadarObject(this->getNode());
+            if (!this->myShip_)
+                HUD::getSingleton().removeRadarObject(this->getNode());
         }
     }
 
@@ -160,7 +160,7 @@ namespace orxonox
         if(network::Client::getSingleton() && objectID == network::Client::getSingleton()->getShipID())
           myShip_=true;
         else
-          HUD::getSingleton().addRadarObject(this->getNode(), 3);
+          HUD::getSingleton().addRadarObject(this->getNode(), this->getProjectileColour());
       }
       if(Model::create())
         this->init();
@@ -281,6 +281,7 @@ namespace orxonox
 
     void SpaceShip::setCamera(const std::string& camera)
     {
+      myShip_=true; // TODO: this is only a hack
       camName_=camera;
       // change camera attributes here, if you want to ;)
     }
@@ -352,7 +353,6 @@ namespace orxonox
         XMLPortParamLoadOnly(SpaceShip, "rotAcc", setRotAcc, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, mode);
-        myShip_=true; // TODO: this is only a hack
 
         SpaceShip::create();
         if (this->isExactlyA(Class(SpaceShip)))

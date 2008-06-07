@@ -29,6 +29,8 @@
 #ifndef _RadarObject_H__
 #define _RadarObject_H__
 
+#include <map>
+
 #include <OgrePrerequisites.h>
 #include <OgreSceneNode.h>
 #include <OgrePanelOverlayElement.h>
@@ -39,16 +41,18 @@ namespace orxonox
 {
     class _OrxonoxExport RadarObject
     {
-      private:
-        Ogre::OverlayManager* om;				// our one and only overlay manager
-        Ogre::SceneNode* node_;					// node of object
-        int colour_;
-
       public:
-        RadarObject(Ogre::OverlayContainer* container, Ogre::SceneNode* node, int colour = 0);
+        RadarObject(Ogre::OverlayContainer* container, Ogre::SceneNode* node, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1), const std::string& texturename = "white.tga");
         ~RadarObject();
-        void setColour(int colour);
-        void resetColour();
+
+        void setMaterial(const ColourValue& colour, const std::string& texturename);
+        inline void setColour(const ColourValue& colour)
+            { this->setMaterial(colour, this->texturename_); }
+        inline void setTexture(const std::string& texturename)
+            { this->setMaterial(this->colour_, texturename); }
+        inline void resetMaterial()
+            { this->setMaterial(this->colour_, this->texturename_); }
+
         Vector3 getPosition();
         Ogre::SceneNode* getNode();
 
@@ -57,12 +61,12 @@ namespace orxonox
         Ogre::OverlayContainer* container_;
         Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
 
-        static int count;
-        static const int RED = 0;
-        static const int YELLOW = 1;
-        static const int GREEN = 2;
-        static const int BLUE = 3;
-        static const int WHITE = 99;            // used if object got nav focus
+      private:
+        static std::map<std::string, std::map<ColourValue, std::string> > materials_s;
+        unsigned static int count_s;
+        Ogre::SceneNode* node_;					// node of object
+        ColourValue colour_;
+        std::string texturename_;
   };
 }
 

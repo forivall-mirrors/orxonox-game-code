@@ -79,7 +79,6 @@ namespace orxonox
     {
         SpaceShip::XMLPort(xmlelement, mode);
 
-        this->myShip_=true;
         this->actionTimer_.setTimer(ACTION_INTERVAL, true, this, createExecutor(createFunctor(&SpaceShipAI::action)));
     }
 

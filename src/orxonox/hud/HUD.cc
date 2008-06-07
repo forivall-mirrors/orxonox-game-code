@@ -123,13 +123,13 @@ namespace orxonox
         radar->init(0.5, 0.9, 0.2, container);
         SceneNode* node;
         node = sm->getRootSceneNode()->createChildSceneNode("tomato1", Vector3(2000.0, 0.0, 0.0));
-        addRadarObject(node);
+        addRadarObject(node, ColourValue(0.5, 0, 0, 1));
         node = sm->getRootSceneNode()->createChildSceneNode("tomato2", Vector3(0.0, 2000.0, 0.0));
-        addRadarObject(node);
+        addRadarObject(node, ColourValue(0.5, 0, 0, 1));
         node = sm->getRootSceneNode()->createChildSceneNode("tomato3", Vector3(0.0, 0.0, 2000.0));
-        addRadarObject(node);
+        addRadarObject(node, ColourValue(0.5, 0, 0, 1));
 	node = sm->getRootSceneNode()->createChildSceneNode("station", Vector3(10000.0,16000.0,0.0));
-        addRadarObject(node, 3);
+        addRadarObject(node);
     }
 
     HUD::~HUD(){
@@ -177,7 +177,7 @@ namespace orxonox
         }
     }
 
-    void HUD::addRadarObject(SceneNode* node, int colour){
+    void HUD::addRadarObject(SceneNode* node, const ColourValue& colour){
         RadarObject* obj = new RadarObject(container, node, colour);
         roSet.insert(obj);
 //        // check if this is the first RadarObject to create
@@ -192,11 +192,18 @@ namespace orxonox
     }
 
     void HUD::removeRadarObject(Ogre::SceneNode* node){
-      COUT(3) << "blabla" << std::endl;
-        for(std::set<RadarObject*>::iterator it=roSet.begin(); it!=roSet.end(); it++){
-            if((*it)->getNode() == node) {
+        for(std::set<RadarObject*>::iterator it=roSet.begin(); it!=roSet.end(); ++it){
+            if ((*it)->getNode() == node)
+            {
+                if (this->nav->focus_ == (*it))
+                {
+                    this->nav->cycleFocus();
+                    if (this->nav->focus_ == (*it))
+                        this->nav->focus_ = 0;
+                }
                 delete (*it);
                 roSet.erase(it);
+                return;
             }
         }
     }
