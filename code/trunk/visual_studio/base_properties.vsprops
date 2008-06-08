@@ -46,4 +46,8 @@
 		Name="LibDir"
 		Value="$(RootDir)..\lib_src\"
 	/>
+	<UserMacro
+		Name="libOgre"
+		Value="OgreMain$(CS).lib"
+	/>
 </VisualStudioPropertySheet>
