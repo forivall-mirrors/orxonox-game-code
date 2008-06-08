@@ -115,8 +115,7 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // keep in mind: the order of deletion is very important!
-//    if (this->orxonoxHUD_)
-//      delete this->orxonoxHUD_;
+    this->orxonoxHUD_->destroy();
     Loader::close();
     InputManager::destroy();
     //if (this->auMan_)
@@ -330,6 +329,7 @@ namespace orxonox
     // Load the HUD
     COUT(3) << "Orxonox: Loading HUD..." << std::endl;
     orxonoxHUD_ = &HUD::getSingleton();
+    orxonoxHUD_->initialise();
     return true;
   }
 

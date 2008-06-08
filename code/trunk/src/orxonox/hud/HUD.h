@@ -36,13 +36,16 @@
 #include <OgreTextAreaOverlayElement.h>
 #include "objects/Tickable.h"
 #include "util/Math.h"
+#include "OverlayElementFactories.h"
 
 namespace orxonox
 {
     class _OrxonoxExport HUD : public TickableReal
     {
       public:
-        static HUD& getSingleton();
+        void initialise();
+        void destroy();
+
         virtual void tick(float);
 
         void resize();
@@ -53,6 +56,8 @@ namespace orxonox
 
         inline std::list<RadarObject*>& getRadarObjects()
             { return this->roSet_; }
+
+        static HUD& getSingleton();
 
         static void setEnergy(float value);
         static void cycleNavigationFocus();
@@ -65,13 +70,12 @@ namespace orxonox
         HUD(const HUD& instance);
         ~HUD();
 
-        static HUD* instance_s;
-
         std::list<RadarObject*> roSet_;
+        BarOverlayElementFactory barOverlayElementFactory_;
+        RadarOverlayElementFactory radarOverlayElementFactory_;
+
         Ogre::Overlay* orxonoxHUD_;
         Ogre::OverlayContainer* container_;
-        BarOverlayElementFactory* barOverlayElementFactory_;
-        RadarOverlayElementFactory* radarOverlayElementFactory_;
         Ogre::TextAreaOverlayElement* fpsText_;
         Ogre::TextAreaOverlayElement* rTRText_;
         BarOverlayElement* energyBar_;

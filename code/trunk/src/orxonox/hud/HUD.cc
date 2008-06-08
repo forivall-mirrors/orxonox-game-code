@@ -45,7 +45,6 @@
 #include "RadarObject.h"
 #include "RadarOverlayElement.h"
 #include "Navigation.h"
-#include "OverlayElementFactories.h"
 
 namespace orxonox
 {
@@ -58,14 +57,31 @@ namespace orxonox
 
     HUD::HUD()
     {
+        orxonoxHUD_ = 0;
+        container_ = 0;
+        fpsText_ = 0;
+        rTRText_ = 0;
+        energyBar_ = 0;
+        speedoBar_ = 0;
+        radar_ = 0;
+        nav_ = 0;
+        bool showFPS_ = true;
+        bool showRenderTime_ = true;
+    }
+
+    HUD::~HUD()
+    {
+        this->destroy();
+    }
+
+    void HUD::initialise()
+    {
         showFPS_ = true;
         showRenderTime_ = true;
 
         // create Factories
-        barOverlayElementFactory_ = new BarOverlayElementFactory();
-        Ogre::OverlayManager::getSingleton().addOverlayElementFactory(barOverlayElementFactory_);
-        radarOverlayElementFactory_ = new RadarOverlayElementFactory();
-        Ogre::OverlayManager::getSingleton().addOverlayElementFactory(radarOverlayElementFactory_);
+        Ogre::OverlayManager::getSingleton().addOverlayElementFactory(&barOverlayElementFactory_);
+        Ogre::OverlayManager::getSingleton().addOverlayElementFactory(&radarOverlayElementFactory_);
 
         orxonoxHUD_ = Ogre::OverlayManager::getSingleton().create("Orxonox/HUD");
         container_ = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "Orxonox/HUD/container"));
@@ -138,18 +154,33 @@ namespace orxonox
         addRadarObject(object);
     }
 
-    HUD::~HUD()
+    void HUD::destroy()
     {
-        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->container_);
-        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->fpsText_);
-        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->rTRText_);
-        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->energyBar_);
-        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->speedoBar_);
-        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->radar_);
+        if (this->container_)
+          Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->container_);
+        this->container_ = 0;
+        if (this->fpsText_)
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->fpsText_);
+        this->fpsText_ = 0;
+        if (this->rTRText_)
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->rTRText_);
+        this->rTRText_ = 0;
+        if (this->energyBar_)
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->energyBar_);
+        this->energyBar_ = 0;
+        if (this->speedoBar_)
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->speedoBar_);
+        this->speedoBar_ = 0;
+        if (this->radar_)
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->radar_);
+        this->radar_ = 0;
+        if (this->orxonoxHUD_)
+            Ogre::OverlayManager::getSingleton().destroy(this->orxonoxHUD_);
+        this->orxonoxHUD_ = 0;
 
-        delete this->nav_;
-        delete this->barOverlayElementFactory_;
-        delete this->radarOverlayElementFactory_;
+        if (this->nav_)
+            delete this->nav_;
+        this->nav_ = 0;
     }
 
     void HUD::tick(float dt)

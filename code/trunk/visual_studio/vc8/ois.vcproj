@@ -23,6 +23,7 @@
 			ConfigurationType="2"
 			InheritedPropertySheets="..\directory_properties.vsprops"
 			CharacterSet="2"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -75,7 +76,6 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				OptimizeForWindows98="1"
-				LinkTimeCodeGeneration="1"
 				ImportLibrary="$(RootDir)lib\$(TargetName).lib"
 			/>
 			<Tool
