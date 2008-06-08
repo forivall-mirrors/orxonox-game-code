@@ -46,9 +46,9 @@
 #include "GraphicsEngine.h"
 
 #define LINES 30
-#define CHAR_WIDTH1 7.78 //34 // fix this please - determine the char-width dynamically
-#define CHAR_WIDTH2 8.28 // fix this please - determine the char-width dynamically
-#define CHAR_WIDTH3 7.80 //78 // fix this please - determine the char-width dynamically
+#define CHAR_WIDTH1 7.45 //78 //34 // fix this please - determine the char-width dynamically
+#define CHAR_WIDTH2 CHAR_WIDTH1 //28 // fix this please - determine the char-width dynamically
+#define CHAR_WIDTH3 CHAR_WIDTH1 //80 //78 // fix this please - determine the char-width dynamically
 
 namespace orxonox
 {
@@ -230,7 +230,7 @@ namespace orxonox
         {
             this->consoleOverlayTextAreas_[i] = static_cast<TextAreaOverlayElement*>(this->om_->createOverlayElement("TextArea", "InGameConsoleTextArea" + Ogre::StringConverter::toString(i)));
             this->consoleOverlayTextAreas_[i]->setMetricsMode(Ogre::GMM_PIXELS);
-            this->consoleOverlayTextAreas_[i]->setFontName("Console");
+            this->consoleOverlayTextAreas_[i]->setFontName("Monofur");
             this->consoleOverlayTextAreas_[i]->setCharHeight(18);
             this->consoleOverlayTextAreas_[i]->setParameter("colour_top", "0.21 0.69 0.21");
             this->consoleOverlayTextAreas_[i]->setLeft(8);
@@ -484,7 +484,7 @@ namespace orxonox
             else
                 width += CHAR_WIDTH3;
         }
-        this->consoleOverlayCursor_->setPosition(width + 5, this->windowH_ * InGameConsole::REL_HEIGHT - 20);
+        this->consoleOverlayCursor_->setPosition(width + 8, this->windowH_ * InGameConsole::REL_HEIGHT - 20);
     }
 
     /**
