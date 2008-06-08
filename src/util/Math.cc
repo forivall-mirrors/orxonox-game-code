@@ -105,3 +105,20 @@ orxonox::Vector2 get2DViewcoordinates(const orxonox::Vector3& myposition, const 
     else
         return orxonox::Vector2(-sin(angle) * radius, cos(angle) * radius);
 }
+
+orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposition, float projectilespeed, const orxonox::Vector3& targetposition, const orxonox::Vector3& targetvelocity)
+{
+    float squaredProjectilespeed = projectilespeed * projectilespeed;
+    orxonox::Vector3 distance = targetposition - myposition;
+    float a = distance.squaredLength();
+    float b = 2 * (distance.x + distance.y + distance.z) * (targetvelocity.x + targetvelocity.y + targetvelocity.z);
+    float c = targetvelocity.squaredLength();
+
+    float temp = 4*squaredProjectilespeed*c + a*a - 4*b*c;
+    if (temp < 0)
+        return orxonox::Vector3::ZERO;
+
+    temp = sqrt(temp);
+    float time = (temp + a) / (2 * (squaredProjectilespeed - b));
+    return (targetposition + targetvelocity * time);
+}

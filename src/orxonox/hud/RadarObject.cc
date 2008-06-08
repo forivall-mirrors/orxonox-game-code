@@ -119,9 +119,9 @@ namespace orxonox
         return this->object_->getPosition();
     }
 
-    const Vector3& RadarObject::getVelocity() const
+    Vector3 RadarObject::getOrientedVelocity() const
     {
-        return this->object_->getVelocity();
+        return this->object_->getOrientation() * this->object_->getVelocity();
     }
 }
 

@@ -237,7 +237,7 @@ namespace orxonox
         this->setMoveYaw(0.8 * sgn(coord.x));
         this->setMovePitch(0.8 * sgn(coord.y));
 
-        if ((this->targetPosition_ - this->getPosition()).length() > 300)
+        if ((this->targetPosition_ - this->getPosition()).length() > 500)
             this->setMoveLongitudinal(0.8);
 
         if (this->isCloseAtTarget(300) && this->target_)
@@ -286,21 +286,8 @@ namespace orxonox
         if (!this->target_)
             return;
 
-        Vector3 enemymovement = this->target_->getVelocity();
-        Vector3 distance_normalised = this->target_->getPosition() - this->getPosition();
-        distance_normalised.normalise();
-
-        float scalarprod = enemymovement.dotProduct(distance_normalised);
-        float aimoffset = scalarprod*scalarprod + Projectile::getSpeed() * Projectile::getSpeed() - this->target_->getVelocity().squaredLength();
-
-        if (aimoffset < 0)
-        {
-            this->bHasTargetPosition_ = false;
-            return;
-        }
-        aimoffset = -scalarprod + sqrt(aimoffset);
-        this->targetPosition_ = this->getPosition() + enemymovement + distance_normalised * aimoffset;
-        this->bHasTargetPosition_ = true;
+        this->targetPosition_ = getPredictedPosition(this->getPosition(), Projectile::getSpeed(), this->target_->getPosition(), this->target_->getOrientation() * this->target_->getVelocity());
+        this->bHasTargetPosition_ = (this->targetPosition_ != Vector3::ZERO);
     }
 
     bool SpaceShipAI::isCloseAtTarget(float distance)

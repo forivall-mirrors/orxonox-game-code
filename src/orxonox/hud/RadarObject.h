@@ -53,7 +53,7 @@ namespace orxonox
             { this->setMaterial(this->colour_, this->texturename_); }
 
         const Vector3& getPosition() const;
-        const Vector3& getVelocity() const;
+        Vector3 getOrientedVelocity() const;
 
         inline WorldEntity* getObject() const
             { return this->object_; }

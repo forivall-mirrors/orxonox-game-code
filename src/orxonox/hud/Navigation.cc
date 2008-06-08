@@ -35,6 +35,7 @@
 #include "GraphicsEngine.h"
 // TODO: remove the SpaceShip and CameraHandler dependencies
 #include "objects/SpaceShip.h"
+#include "objects/Projectile.h"
 #include "objects/CameraHandler.h"
 #include "RadarObject.h"
 #include "RadarOverlayElement.h"
@@ -86,6 +87,9 @@ namespace orxonox
         aimMarker_->setMetricsMode(GMM_PIXELS);
         navMarker_->hide();
         aimMarker_->hide();
+        aimMarker_->setMaterialName("Orxonox/NavCrosshair");
+        aimMarker_->setDimensions(20, 20);
+        aimMarker_->setUV(0.0, 0.0, 1.0, 1.0);
         container_->addChild(navMarker_);
         container_->addChild(aimMarker_);
     }
@@ -105,15 +109,19 @@ namespace orxonox
         int dist = (int) getDist2Focus()/100;
         navText_->setCaption(Ogre::StringConverter::toString(dist));
 
-        Vector3 pos = focus_->getPosition();
         Ogre::Camera* navCam = SpaceShip::getLocalShip()->getCamera()->cam_;
         // transform to screen coordinates
-        pos = navCam->getProjectionMatrix() * navCam->getViewMatrix() * pos;
+        Vector3 pos = navCam->getProjectionMatrix() * navCam->getViewMatrix() * focus_->getPosition();
+        Vector3 aimpos = navCam->getProjectionMatrix() * navCam->getViewMatrix() * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(), Projectile::getSpeed(), focus_->getPosition(), focus_->getOrientedVelocity());
 
         float xPosRel = 0.5*pos.x+0.5;
         float yPosRel = 1-(0.5*pos.y+0.5);
+        float xAimPosRel = 0.5*aimpos.x+0.5;
+        float yAimPosRel = 1-(0.5*aimpos.y+0.5);
         int xPos = (int) (xPosRel*windowW);
         int yPos = (int) (yPosRel*windowH);
+        int xAimPos = (int) (xAimPosRel*windowW);
+        int yAimPos = (int) (yAimPosRel*windowH);
         int xFromCenter = xPos-windowW/2;
         int yFromCenter = yPos-windowH/2;
 
@@ -132,6 +140,7 @@ namespace orxonox
             // object is not in view
             navMarker_->setMaterialName("Orxonox/NavArrows");
             navMarker_->setDimensions(16,16);
+            aimMarker_->hide();
             float phiUpperCorner = atan((float)(windowW)/(float)(windowH));
             // from the angle we find out on which edge to draw the marker
             // and which of the four arrows to take
@@ -209,9 +218,13 @@ namespace orxonox
         else{
             // object is in view
             navMarker_->setMaterialName("Orxonox/NavTDC");
-            navMarker_->setDimensions(24,24);
+            navMarker_->setDimensions(35, 35);
             navMarker_->setUV(0.0, 0.0, 1.0, 1.0);
             navMarker_->setPosition(xPos-navMarker_->getWidth()/2, yPos-navMarker_->getHeight()/2);
+
+            aimMarker_->show();
+            aimMarker_->setPosition(xAimPos-aimMarker_->getWidth()/2, yAimPos-aimMarker_->getHeight()/2);
+
             navText_->setPosition(xPos+navMarker_->getWidth()/2, yPos+navMarker_->getHeight()/2);
         }
     }
@@ -258,6 +271,7 @@ namespace orxonox
     void Navigation::updateFocus(){
         if(focus_ == NULL){
             navMarker_->hide();
+            aimMarker_->hide();
             navText_->hide();
         }
         else{
