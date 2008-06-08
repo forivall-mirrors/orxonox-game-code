@@ -13,7 +13,7 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CSS).lib tcl85t.lib enet$(CS).lib zlib$(CS).lib"
+		AdditionalDependencies="OgreMain$(CSS).lib tcl85t.lib enet-1.2$(CS).lib zlib-1.2.3$(CS).lib"
 		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
 		IgnoreDefaultLibraryNames="LIBCMT;LIBCMTD"
 	/>
