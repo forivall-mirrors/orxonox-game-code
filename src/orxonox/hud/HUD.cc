@@ -65,8 +65,8 @@ namespace orxonox
         speedoBar_ = 0;
         radar_ = 0;
         nav_ = 0;
-        bool showFPS_ = true;
-        bool showRenderTime_ = true;
+        showFPS_ = true;
+        showRenderTime_ = true;
     }
 
     HUD::~HUD()
@@ -83,47 +83,28 @@ namespace orxonox
         Ogre::OverlayManager::getSingleton().addOverlayElementFactory(&barOverlayElementFactory_);
         Ogre::OverlayManager::getSingleton().addOverlayElementFactory(&radarOverlayElementFactory_);
 
-        orxonoxHUD_ = Ogre::OverlayManager::getSingleton().create("Orxonox/HUD");
-        container_ = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "Orxonox/HUD/container"));
-
         // creating text to display fps
         fpsText_ = static_cast<TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "fpsText"));
-        fpsText_->show();
         fpsText_->setMetricsMode(Ogre::GMM_PIXELS);
         fpsText_->setDimensions(0.001, 0.001);
         fpsText_->setPosition(10, 10);
         fpsText_->setFontName("Console");
         fpsText_->setCharHeight(20);
         fpsText_->setCaption("init");
+        fpsText_->show();
 
         // creating text to display render time ratio
         rTRText_ = static_cast<TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "rTRText"));
-        rTRText_->show();
         rTRText_->setMetricsMode(Ogre::GMM_PIXELS);
         rTRText_->setDimensions(0.001, 0.001);
         rTRText_->setPosition(10, 30);
         rTRText_->setFontName("Console");
         rTRText_->setCharHeight(20);
         rTRText_->setCaption("init");
-
-        // create energy bar
-        energyBar_ = static_cast<BarOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Bar", "energyBar"));
-        energyBar_->show();
-        // create speedo bar
-        speedoBar_ = static_cast<BarOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Bar", "speedoBar"));
-        speedoBar_->show();
-        // create radar
-        radar_ = static_cast<RadarOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Radar", "radar"));
-        radar_->show();
-
-        // create Navigation
-        nav_ = new Navigation(container_);
+        rTRText_->show();
 
         // set up screen-wide container
-        container_->show();
-
-        orxonoxHUD_->add2D(container_);
-        orxonoxHUD_->show();
+        container_ = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "Orxonox/HUD/container"));
         container_->setLeft(0.0);
         container_->setTop(0.0);
         container_->setWidth(1.0);
@@ -131,13 +112,33 @@ namespace orxonox
         container_->setMetricsMode(Ogre::GMM_RELATIVE);
         container_->addChild(fpsText_);
         container_->addChild(rTRText_);
+        container_->show();
 
+        orxonoxHUD_ = Ogre::OverlayManager::getSingleton().create("Orxonox/HUD");
+        orxonoxHUD_->add2D(container_);
+        orxonoxHUD_->show();
+
+        // create energy bar
+        energyBar_ = static_cast<BarOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Bar", "energyBar"));
         energyBar_->init(0.01, 0.94, 0.4, container_);
         energyBar_->setValue(1);
+        energyBar_->show();
 
+        // create speedo bar
+        speedoBar_ = static_cast<BarOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Bar", "speedoBar"));
         speedoBar_->init(0.01, 0.90, 0.4, container_);
+        speedoBar_->addColour(0.7, ColourValue(0.2, 0.7, 0.2));
+        speedoBar_->addColour(0.4, ColourValue(0.7, 0.5, 0.2));
+        speedoBar_->addColour(0.1, ColourValue(0.7, 0.2, 0.2));
+        speedoBar_->show();
 
+        // create radar
+        radar_ = static_cast<RadarOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Radar", "radar"));
         radar_->init(0.5, 0.9, 0.2, container_);
+        radar_->show();
+
+        // create Navigation
+        nav_ = new Navigation(container_);
 
         WorldEntity* object;
         object = new WorldEntity();
@@ -246,7 +247,7 @@ namespace orxonox
             if ((*it)->getObject() == object)
             {
                 if (this->nav_->getFocus() == (*it))
-                    this->nav_->setFocus(0);
+                    this->nav_->releaseFocus();
 
                 delete (*it);
                 roSet_.erase(it);
@@ -269,7 +270,7 @@ namespace orxonox
     }
 
     /*static*/ void HUD::releaseNavigationFocus(){
-        HUD::getSingleton().nav_->setFocus(0);
+        HUD::getSingleton().nav_->releaseFocus();
     }
 
     /*static*/ void HUD::toggleFPS(){

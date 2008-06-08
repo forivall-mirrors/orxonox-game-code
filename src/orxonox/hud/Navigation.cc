@@ -281,6 +281,13 @@ namespace orxonox
         }
     }
 
+    void Navigation::releaseFocus()
+    {
+        this->focus_ = 0;
+        this->it_ = HUD::getSingleton().getRadarObjects().end();
+        this->updateFocus();
+    }
+
     float Navigation::getDist2Focus() const {
         if(focus_ == NULL) return(0.0);
         return((focus_->getPosition()-SpaceShip::getLocalShip()->getPosition()).length());
