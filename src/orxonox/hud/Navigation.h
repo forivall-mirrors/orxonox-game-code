@@ -34,36 +34,36 @@
 #include <OgrePrerequisites.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
-#include "util/Math.h"
 
 namespace orxonox
 {
-
     class _OrxonoxExport Navigation
     {
-      private:
-        Ogre::OverlayManager* om;				            // our one and only overlay manager
-        Ogre::OverlayContainer* container_;
-        Ogre::PanelOverlayElement* navMarker_;      // the panel used to show the arrow
-        Ogre::TextAreaOverlayElement* navText_;     // displaying distance
-        Ogre::Camera* navCam_;
-        Vector3 navCamPos_;                         // position of ship
-        Vector3 currentDir_;
-        Vector3 currentOrth_;
-        std::set<RadarObject*>::iterator it_;
-        int windowW_, windowH_;
-        void init();
-        void updateMarker();
-
       public:
         Navigation(Ogre::OverlayContainer* container);
         Navigation(Ogre::OverlayContainer* container, RadarObject* focus);
         ~Navigation();
-        RadarObject* focus_;                        // next pointer of linked list
 
         void update();
         void cycleFocus();
-        float getDist2Focus();
+        float getDist2Focus() const;
+
+        inline RadarObject* getFocus() const
+            { return this->focus_; }
+        inline void setFocus(RadarObject* object)
+            { this->focus_ = object; this->updateFocus(); }
+
+      private:
+        void init();
+        void updateMarker();
+        void updateFocus();
+
+        Ogre::OverlayContainer* container_;
+        Ogre::PanelOverlayElement* navMarker_;      // the panel used to show the arrow
+        Ogre::PanelOverlayElement* aimMarker_;
+        Ogre::TextAreaOverlayElement* navText_;     // displaying distance
+        std::list<RadarObject*>::iterator it_;
+        RadarObject* focus_;                        // next pointer of linked list
   };
 }
 

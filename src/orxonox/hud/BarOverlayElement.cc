@@ -30,33 +30,37 @@
 #include "BarOverlayElement.h"
 #include <OgreOverlayManager.h>
 #include "GraphicsEngine.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
     using namespace Ogre;
 
-    BarOverlayElement::BarOverlayElement(const String& name):PanelOverlayElement(name){
+    BarOverlayElement::BarOverlayElement(const String& name) : PanelOverlayElement(name)
+    {
         name_ = name;
+        widthratio_ = 100.0f / 800.0f; // calculates the ratio (backgroundwidth - barwidth) / backgroundwidth
     }
 
-    BarOverlayElement::~BarOverlayElement(){}
+    BarOverlayElement::~BarOverlayElement()
+    {
+        OverlayManager::getSingleton().destroyOverlayElement(this->background_);
+    }
 
     void BarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, OverlayContainer* container){
         // init some values...
-        container_ = container;
-        om = &OverlayManager::getSingleton();
         value_ = 0;
-        color_ = 2;
-        autoColor_ = true;
-        left2Right = false; 	// default is right to left progress
+        colour_ = 2;
+        autoColour_ = true;
+        right2Left_ = false; // default is left to right progress
         leftRel_ = leftRel;
         topRel_ = topRel;
         dimRel_ = dimRel;
 
         // create background...
-        background_ = static_cast<OverlayContainer*>(om->createOverlayElement("Panel", name_+"container"));
+        background_ = static_cast<OverlayContainer*>(OverlayManager::getSingleton().createOverlayElement("Panel", name_+"container"));
         background_->show();
-        container_->addChild(background_);
+        container->addChild(background_);
         background_->setMetricsMode(GMM_PIXELS);
         background_->setMaterialName("Orxonox/BarBackground");
 
@@ -70,13 +74,14 @@ namespace orxonox
     }
 
     void BarOverlayElement::resize(){
-        windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
-        windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
         // calculate new absolute coordinates...
-        left_ = (int) (leftRel_ * windowW_);
-        top_ = (int) (topRel_ * windowH_);
-        width_ = (int) (dimRel_ * windowW_);
-        height_ = (int) (0.1*width_);	// the texture has dimensions height:length = 1:10
+        left_ = (int) (leftRel_ * GraphicsEngine::getSingleton().getWindowWidth());
+        top_ = (int) (topRel_ * GraphicsEngine::getSingleton().getWindowHeight());
+        width_ = (int) (dimRel_ * GraphicsEngine::getSingleton().getWindowWidth());
+        height_ = (int) (0.1 * width_);	// the texture has dimensions height:length = 1:10
+        offset_ = (int) (width_ * widthratio_ * 0.5);
+        barwidth_ = (int) (width_ * (1.0f - widthratio_));
+
         // adapt background
         background_->setPosition(left_, top_);
         background_->setDimensions(width_, height_);
@@ -85,27 +90,28 @@ namespace orxonox
     }
 
     void BarOverlayElement::setValue(float value){
-        value_ = value;
-        // set color, if nescessary
-        if(autoColor_){
-            if (value_>0.5) {setColor(BarOverlayElement::GREEN);}
-            else if (value_>0.25) {setColor(BarOverlayElement::YELLOW);}
-            else setColor(BarOverlayElement::RED);
+        value_ = clamp<float>(value, 0, 1);
+        // set colour, if nescessary
+        if(autoColour_){
+            if (value_>0.5) {setColour(BarOverlayElement::GREEN);}
+            else if (value_>0.25) {setColour(BarOverlayElement::YELLOW);}
+            else setColour(BarOverlayElement::RED);
         }
+
         // set value
-        if(left2Right){ // backward case
-            setPosition(0+width_-width_*value_, 0);
-            setDimensions(width_*value_,height_);
+        if(right2Left_){ // backward case
+            setPosition(offset_ + barwidth_ * (1 - value_), 0);
+            setDimensions(barwidth_ * value_, height_);
         }else{          // default case
-            setPosition(0, 0);
-            setDimensions(width_*value_,height_);
+            setPosition(offset_, 0);
+            setDimensions(barwidth_ * value_, height_);
         }
         if(value_ != 0) setTiling(value_, 1.0);
     }
 
-    void BarOverlayElement::setColor(int color){
-        color_ = color;
-        switch(color){
+    void BarOverlayElement::setColour(int colour){
+        colour_ = colour;
+        switch(colour){
         case 0:
             setMaterialName("Orxonox/Red");
             break;
@@ -115,13 +121,5 @@ namespace orxonox
         case 2:
             setMaterialName("Orxonox/Green");
         }
-    }
-
-    float BarOverlayElement::getValue(){
-        return(value_);
-    }
-
-    int BarOverlayElement::getBarColor(){
-        return(color_);
     }
 }

@@ -33,10 +33,12 @@
 #include <OgreOverlayManager.h>
 #include <OgreStringConverter.h>
 
-#include "GraphicsEngine.h"
 #include "core/ConsoleCommand.h"
 #include "objects/Tickable.h"
 #include "objects/SpaceShip.h"
+#include "util/Math.h"
+
+#include "GraphicsEngine.h"
 #include "RadarObject.h"
 #include "HUD.h"
 
@@ -52,83 +54,54 @@ namespace orxonox
 
     void RadarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, OverlayContainer* container){
         // some initial data
-        om = &OverlayManager::getSingleton();
         dimRel_ = dimRel;
         leftRel_ = leftRel;
         topRel_ = topRel;
-        container_ = container;
 
         setMetricsMode(GMM_PIXELS);
         setMaterialName("Orxonox/Radar");
         resize();
 
-        container_->addChild(this);
+        container->addChild(this);
     }
 
     void RadarOverlayElement::resize() {
         // if window is resized, we must adapt these...
-        windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
-        windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
-        dim_ = (int) (dimRel_*windowH_);
-        left_ = (int) (leftRel_*windowW_-dim_/2);
-        top_ = (int) (topRel_*windowH_-dim_/2);
+        dim_ = (int) (dimRel_*GraphicsEngine::getSingleton().getWindowHeight());
+        left_ = (int) (leftRel_*GraphicsEngine::getSingleton().getWindowWidth()-dim_/2);
+        top_ = (int) (topRel_*GraphicsEngine::getSingleton().getWindowHeight()-dim_/2);
         setPosition(left_, top_);
         setDimensions(dim_,dim_);
     }
 
     void RadarOverlayElement::update() {
-        shipPos_ = SpaceShip::getLocalShip()->getPosition();
-        currentDir_ = SpaceShip::getLocalShip()->getDir();
-        currentOrth_ = SpaceShip::getLocalShip()->getOrth();
         // iterate through all RadarObjects
-        for(std::set<RadarObject*>::iterator it=HUD::getSingleton().roSet.begin(); it!=HUD::getSingleton().roSet.end(); it++){
-        // calc position on radar...
-            float radius = calcRadius(shipPos_, currentDir_, currentOrth_, (*it));
-            float phi = calcPhi(shipPos_, currentDir_, currentOrth_, (*it));
-            bool right = calcRight(shipPos_, currentDir_, currentOrth_, (*it));
-
+        for(std::list<RadarObject*>::iterator it=HUD::getSingleton().getRadarObjects().begin(); it!=HUD::getSingleton().getRadarObjects().end(); it++)
+        {
+            // calc position on radar...
             // set size to fit distance...
-            float d = ((*it)->getPosition()-shipPos_).length();
-            if(d<10000) (*it)->panel_->setDimensions(4,4);
-            else if(d<20000) (*it)->panel_->setDimensions(3,3);
-            else (*it)->panel_->setDimensions(2,2);
+            float distance = ((*it)->getPosition() - SpaceShip::getLocalShip()->getPosition()).length();
+            if (distance > 20000) (*it)->getPanel()->setDimensions(1, 1);
+            else if (distance > 10000) (*it)->getPanel()->setDimensions(2, 2);
+            else if (distance > 5000) (*it)->getPanel()->setDimensions(3, 3);
+            else if (distance > 2500) (*it)->getPanel()->setDimensions(4, 4);
+            else if (distance > 1000) (*it)->getPanel()->setDimensions(5, 5);
+            else (*it)->getPanel()->setDimensions(6,6);
 
-            if (right){
-                (*it)->panel_->setPosition(sin(phi)*radius/
-                    3.5*dim_/2+dim_/2+left_-2,-cos(phi)*radius/3.5*dim_/2+dim_/2+top_-2);
-            }
-            else {
-                (*it)->panel_->setPosition(-sin(phi)*radius/
-                    3.5*dim_/2+dim_/2+left_-2,-cos(phi)*radius/3.5*dim_/2+dim_/2+top_-2);
-            }
+            Vector2 coord = get2DViewcoordinates(SpaceShip::getLocalShip()->getPosition(), SpaceShip::getLocalShip()->getDir(), SpaceShip::getLocalShip()->getOrth(), (*it)->getPosition());
+            coord = coord * Ogre::Math::PI / 3.5; // small adjustment to make it fit the texture
+            float dimfactor = dim_ / 2.0;
+            (*it)->getPanel()->setPosition((1 + coord.x) * dimfactor + left_ - 2,
+                                           (1 - coord.y) * dimfactor + top_ - 2);
         }
     }
 
-    void RadarOverlayElement::listObjects(){
+    void RadarOverlayElement::listObjects() const {
         int i = 0;
         COUT(3) << "List of RadarObjects:\n";
         // iterate through all Radar Objects
-        for(std::set<RadarObject*>::iterator it=HUD::getSingleton().roSet.begin(); it!=HUD::getSingleton().roSet.end(); it++){
+        for(std::list<RadarObject*>::const_iterator it=HUD::getSingleton().getRadarObjects().begin(); it!=HUD::getSingleton().getRadarObjects().end(); ++it){
             COUT(3) << i++ << ": " << (*it)->getPosition() << std::endl;
         }
-    }
-
-    float RadarOverlayElement::calcRadius(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
-        return(acos((dir.dotProduct(obj->getPosition() - pos))/
-        ((obj->getPosition() - pos).length()*dir.length())));
-    }
-
-    float RadarOverlayElement::calcPhi(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
-        // project difference vector on our plane...
-        Vector3 proj = Plane(dir, pos).projectVector(obj->getPosition() - pos);
-        // ...and find out the angle
-        return(acos((orth.dotProduct(proj))/
-              (orth.length()*proj.length())));
-    }
-
-    bool RadarOverlayElement::calcRight(Vector3 pos, Vector3 dir, Vector3 orth, RadarObject* obj){
-        if((dir.crossProduct(orth)).dotProduct(obj->getPosition() - pos) > 0)
-            return true;
-        else return false;
     }
 }

@@ -34,7 +34,6 @@
 
 #include <OgrePrerequisites.h>
 #include <OgreTextAreaOverlayElement.h>
-#include <OgreSceneNode.h>
 #include "objects/Tickable.h"
 #include "util/Math.h"
 
@@ -42,39 +41,46 @@ namespace orxonox
 {
     class _OrxonoxExport HUD : public TickableReal
     {
-      private:
-        HUD();
-        HUD(HUD& instance);
-        ~HUD();
-        Ogre::OverlayManager* om;
-        Ogre::SceneManager* sm;
-        Ogre::Overlay* orxonoxHUD;
-        Ogre::OverlayContainer* container;
-        Ogre::TextAreaOverlayElement* fpsText;
-        Ogre::TextAreaOverlayElement* rTRText;
-        BarOverlayElement* energyBar;
-        BarOverlayElement* speedoBar;
-        RadarOverlayElement* radar;
-        Navigation* nav;
-
-        bool showFPS;
-        bool showRenderTime;
-
       public:
+        static HUD& getSingleton();
         virtual void tick(float);
-        void addRadarObject(Ogre::SceneNode* node, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1));
-        void removeRadarObject(Ogre::SceneNode* node);
+
+        void resize();
+        void addRadarObject(WorldEntity* object, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1));
+        void removeRadarObject(WorldEntity* object);
         void setRenderTimeRatio(float ratio);
         void setFPS();
 
-        std::set<RadarObject*> roSet;
+        inline std::list<RadarObject*>& getRadarObjects()
+            { return this->roSet_; }
 
-        static HUD* instance_s;
-        static HUD& getSingleton();
         static void setEnergy(float value);
         static void cycleNavigationFocus();
+        static void releaseNavigationFocus();
         static void toggleFPS();
         static void toggleRenderTime();
+
+      private:
+        HUD();
+        HUD(const HUD& instance);
+        ~HUD();
+
+        static HUD* instance_s;
+
+        std::list<RadarObject*> roSet_;
+        Ogre::Overlay* orxonoxHUD_;
+        Ogre::OverlayContainer* container_;
+        BarOverlayElementFactory* barOverlayElementFactory_;
+        RadarOverlayElementFactory* radarOverlayElementFactory_;
+        Ogre::TextAreaOverlayElement* fpsText_;
+        Ogre::TextAreaOverlayElement* rTRText_;
+        BarOverlayElement* energyBar_;
+        BarOverlayElement* speedoBar_;
+        RadarOverlayElement* radar_;
+        Navigation* nav_;
+
+        bool showFPS_;
+        bool showRenderTime_;
     };
 }
 

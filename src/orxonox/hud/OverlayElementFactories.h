@@ -38,7 +38,8 @@
 #include "BarOverlayElement.h"
 #include "RadarOverlayElement.h"
 
-namespace orxonox{
+namespace orxonox
+{
     class _OrxonoxExport BarOverlayElementFactory : public Ogre::OverlayElementFactory{
       public:
         Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){

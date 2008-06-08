@@ -22,7 +22,7 @@
  *   Author:
  *      Felix Schulthess
  *   Co-authors:
- *      ...
+ *      Fabian 'x3n' Landau
  *
  */
 
@@ -34,6 +34,7 @@
 #include <OgreTechnique.h>
 
 #include "GraphicsEngine.h"
+#include "objects/WorldEntity.h"
 #include "util/Convert.h"
 
 namespace std
@@ -42,7 +43,7 @@ namespace std
     class less<orxonox::ColourValue>
     {
         public:
-            bool operator()(const orxonox::ColourValue& __x, const orxonox::ColourValue& __y)
+            bool operator()(const orxonox::ColourValue& __x, const orxonox::ColourValue& __y) const
             {
                 if (__x.r == __y.r)
                 {
@@ -67,28 +68,26 @@ namespace orxonox
     unsigned int RadarObject::materialcount_s = 0;
     std::map<std::string, std::map<ColourValue, std::string> > RadarObject::materials_s;
 
-    RadarObject::RadarObject(Ogre::OverlayContainer* container, Ogre::SceneNode* node, const ColourValue& colour, const std::string& texturename)
+    RadarObject::RadarObject(Ogre::OverlayContainer* container, WorldEntity* object, const ColourValue& colour, const std::string& texturename)
     {
         this->colour_ = colour;
         this->texturename_ = texturename;
 
-        this->container_ = container;
-        this->node_ = node;
+        this->object_ = object;
 
-        this->panel_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarObject" + getConvertedValue<unsigned int, std::string>(RadarObject::count_s)));
+        this->panel_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarObject" + getConvertedValue<unsigned int, std::string>(RadarObject::count_s++)));
         this->setMaterial(colour, texturename);
 
-        this->panel_->setDimensions(3,3);
+        this->panel_->setDimensions(3, 3);
         this->panel_->setMetricsMode(Ogre::GMM_PIXELS);
         this->panel_->show();
 
-        this->index_ = count_s++;
-        this->container_->addChild(panel_);
+        container->addChild(panel_);
     }
 
     RadarObject::~RadarObject()
     {
-        delete panel_;
+        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->panel_);
     }
 
     void RadarObject::setMaterial(const ColourValue& colour, const std::string& texturename)
@@ -115,14 +114,14 @@ namespace orxonox
         this->panel_->setMaterialName(materialname);
     }
 
-    Vector3 RadarObject::getPosition()
+    const Vector3& RadarObject::getPosition() const
     {
-        return node_->getPosition();
+        return this->object_->getPosition();
     }
 
-    Ogre::SceneNode* RadarObject::getNode()
+    const Vector3& RadarObject::getVelocity() const
     {
-        return node_;
+        return this->object_->getVelocity();
     }
 }
 

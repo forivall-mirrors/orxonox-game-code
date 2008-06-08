@@ -113,10 +113,12 @@ namespace orxonox
 
   // hud
   class BarOverlayElement;
+  class BarOverlayElementFactory;
   class HUD;
   class Navigation;
   class RadarObject;
   class RadarOverlayElement;
+  class RadarOverlayElementFactory;
 
   //console
   class InGameConsole;
