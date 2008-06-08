@@ -83,7 +83,7 @@
 			ConfigurationType="1"
 			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\orxonox_properties.vsprops"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"

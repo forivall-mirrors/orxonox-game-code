@@ -233,10 +233,10 @@ namespace orxonox
   */
   void KeyBinder::setConfigValues()
   {
-    SetConfigValueGeneric(KeyBinder, analogThreshold_, 0.01f)  .description("Threshold for analog axes until which the state is 0.");
+    SetConfigValueGeneric(KeyBinder, analogThreshold_, 0.05f)  .description("Threshold for analog axes until which the state is 0.");
     SetConfigValueGeneric(KeyBinder, mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
     SetConfigValueGeneric(KeyBinder, bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
-    SetConfigValueGeneric(KeyBinder, derivePeriod_, 0.5f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
+    SetConfigValueGeneric(KeyBinder, derivePeriod_, 0.05f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
     SetConfigValueGeneric(KeyBinder, mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
     SetConfigValueGeneric(KeyBinder, bClipMouse_, true).description("Whether or not to clip absolute value of mouse in non derive mode.");
 
