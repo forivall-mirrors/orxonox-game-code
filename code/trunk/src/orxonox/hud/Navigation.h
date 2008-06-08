@@ -50,8 +50,7 @@ namespace orxonox
 
         inline RadarObject* getFocus() const
             { return this->focus_; }
-        inline void setFocus(RadarObject* object)
-            { this->focus_ = object; this->updateFocus(); }
+        void releaseFocus();
 
       private:
         void init();

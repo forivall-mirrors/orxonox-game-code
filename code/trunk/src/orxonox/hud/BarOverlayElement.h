@@ -23,6 +23,7 @@
  *      Yuning Chai
  *   Co-authors:
  *      Felix Schulthess
+ *      Fabian 'x3n' Landau
  *
  */
 
@@ -31,8 +32,12 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <map>
+
 #include <OgrePrerequisites.h>
 #include <OgrePanelOverlayElement.h>
+
+#include "util/Math.h"
 
 namespace orxonox
 {
@@ -45,7 +50,8 @@ namespace orxonox
       void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
       void resize();
       void setValue(float value);
-      void setColour(int colour);
+      void addColour(float value, const ColourValue& colour);
+      void clearColours();
 
       inline void setRightToLeft(bool r2l)
         { this->right2Left_ = r2l; }
@@ -53,18 +59,12 @@ namespace orxonox
         { return this->right2Left_; }
       inline float getValue() const
         { return this->value_; }
-      inline int getBarColour() const
-        { return this->colour_; }
 
     private:
-      static const int RED = 0;           // predefined colours
-      static const int YELLOW = 1;
-      static const int GREEN = 2;
-
+      static unsigned int materialcount_s;
       bool right2Left_;
       bool autoColour_;                   // whether bar changes colour automatically
       float value_;                       // progress of bar
-      int colour_;
       int left_;
       int top_;
       int width_;
@@ -77,6 +77,8 @@ namespace orxonox
       Ogre::Real dimRel_;
       Ogre::OverlayContainer* background_;
       Ogre::String name_;
+      Ogre::TextureUnitState* textureUnitState_;
+      std::map<float, ColourValue> colours_;
     };
 }
 #endif /* _BarOverlayElement_H__ */
