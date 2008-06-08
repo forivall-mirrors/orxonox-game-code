@@ -39,6 +39,7 @@
 #include "core/Debug.h"
 #include "core/ConsoleCommand.h"
 #include "objects/SpaceShip.h"
+#include "objects/WorldEntity.h"
 #include "GraphicsEngine.h"
 #include "BarOverlayElement.h"
 #include "RadarObject.h"
@@ -49,160 +50,175 @@
 namespace orxonox
 {
     SetConsoleCommandShortcut(HUD, cycleNavigationFocus).setAccessLevel(AccessLevel::User);
+    SetConsoleCommandShortcut(HUD, releaseNavigationFocus).setAccessLevel(AccessLevel::User);
     SetConsoleCommandShortcut(HUD, toggleFPS).setAccessLevel(AccessLevel::User);
     SetConsoleCommandShortcut(HUD, toggleRenderTime).setAccessLevel(AccessLevel::User);
 
     using namespace Ogre;
 
-    HUD::HUD(){
-        om = &Ogre::OverlayManager::getSingleton();
-        sm = GraphicsEngine::getSingleton().getSceneManager();
-        showFPS = true;
-        showRenderTime = true;
+    HUD::HUD()
+    {
+        showFPS_ = true;
+        showRenderTime_ = true;
 
         // create Factories
-        BarOverlayElementFactory *barOverlayElementFactory = new BarOverlayElementFactory();
-        om->addOverlayElementFactory(barOverlayElementFactory);
-        RadarOverlayElementFactory *radarOverlayElementFactory = new RadarOverlayElementFactory();
-        om->addOverlayElementFactory(radarOverlayElementFactory);
+        barOverlayElementFactory_ = new BarOverlayElementFactory();
+        Ogre::OverlayManager::getSingleton().addOverlayElementFactory(barOverlayElementFactory_);
+        radarOverlayElementFactory_ = new RadarOverlayElementFactory();
+        Ogre::OverlayManager::getSingleton().addOverlayElementFactory(radarOverlayElementFactory_);
 
-        orxonoxHUD = om->create("Orxonox/HUD");
-        container = static_cast<Ogre::OverlayContainer*>(om->createOverlayElement("Panel", "Orxonox/HUD/container"));
+        orxonoxHUD_ = Ogre::OverlayManager::getSingleton().create("Orxonox/HUD");
+        container_ = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "Orxonox/HUD/container"));
 
         // creating text to display fps
-        fpsText = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "fpsText"));
-        fpsText->show();
-        fpsText->setMetricsMode(Ogre::GMM_PIXELS);
-        fpsText->setDimensions(0.001, 0.001);
-        fpsText->setPosition(10, 10);
-        fpsText->setFontName("Console");
-        fpsText->setCharHeight(20);
-        fpsText->setCaption("init");
+        fpsText_ = static_cast<TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "fpsText"));
+        fpsText_->show();
+        fpsText_->setMetricsMode(Ogre::GMM_PIXELS);
+        fpsText_->setDimensions(0.001, 0.001);
+        fpsText_->setPosition(10, 10);
+        fpsText_->setFontName("Console");
+        fpsText_->setCharHeight(20);
+        fpsText_->setCaption("init");
 
         // creating text to display render time ratio
-        rTRText = static_cast<TextAreaOverlayElement*>(om->createOverlayElement("TextArea", "rTRText"));
-        rTRText->show();
-        rTRText->setMetricsMode(Ogre::GMM_PIXELS);
-        rTRText->setDimensions(0.001, 0.001);
-        rTRText->setPosition(10, 30);
-        rTRText->setFontName("Console");
-        rTRText->setCharHeight(20);
-        rTRText->setCaption("init");
+        rTRText_ = static_cast<TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "rTRText"));
+        rTRText_->show();
+        rTRText_->setMetricsMode(Ogre::GMM_PIXELS);
+        rTRText_->setDimensions(0.001, 0.001);
+        rTRText_->setPosition(10, 30);
+        rTRText_->setFontName("Console");
+        rTRText_->setCharHeight(20);
+        rTRText_->setCaption("init");
 
         // create energy bar
-        energyBar = static_cast<BarOverlayElement*>(om->createOverlayElement("Bar", "energyBar"));
-        energyBar->show();
+        energyBar_ = static_cast<BarOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Bar", "energyBar"));
+        energyBar_->show();
         // create speedo bar
-        speedoBar = static_cast<BarOverlayElement*>(om->createOverlayElement("Bar", "speedoBar"));
-        speedoBar->show();
+        speedoBar_ = static_cast<BarOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Bar", "speedoBar"));
+        speedoBar_->show();
         // create radar
-        radar = static_cast<RadarOverlayElement*>(om->createOverlayElement("Radar", "radar"));
-        radar->show();
+        radar_ = static_cast<RadarOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Radar", "radar"));
+        radar_->show();
 
         // create Navigation
-        nav = new Navigation(container);
+        nav_ = new Navigation(container_);
 
         // set up screen-wide container
-        container->show();
+        container_->show();
 
-        orxonoxHUD->add2D(container);
-        orxonoxHUD->show();
-        container->setLeft(0.0);
-        container->setTop(0.0);
-        container->setWidth(1.0);
-        container->setHeight(1.0);
-        container->setMetricsMode(Ogre::GMM_RELATIVE);
-        container->addChild(fpsText);
-        container->addChild(rTRText);
+        orxonoxHUD_->add2D(container_);
+        orxonoxHUD_->show();
+        container_->setLeft(0.0);
+        container_->setTop(0.0);
+        container_->setWidth(1.0);
+        container_->setHeight(1.0);
+        container_->setMetricsMode(Ogre::GMM_RELATIVE);
+        container_->addChild(fpsText_);
+        container_->addChild(rTRText_);
 
-        energyBar->init(0.01, 0.94, 0.4, container);
-        energyBar->setValue(1);
+        energyBar_->init(0.01, 0.94, 0.4, container_);
+        energyBar_->setValue(1);
 
-        speedoBar->init(0.01, 0.90, 0.4, container);
+        speedoBar_->init(0.01, 0.90, 0.4, container_);
 
-        radar->init(0.5, 0.9, 0.2, container);
-        SceneNode* node;
-        node = sm->getRootSceneNode()->createChildSceneNode("tomato1", Vector3(2000.0, 0.0, 0.0));
-        addRadarObject(node, ColourValue(0.5, 0, 0, 1));
-        node = sm->getRootSceneNode()->createChildSceneNode("tomato2", Vector3(0.0, 2000.0, 0.0));
-        addRadarObject(node, ColourValue(0.5, 0, 0, 1));
-        node = sm->getRootSceneNode()->createChildSceneNode("tomato3", Vector3(0.0, 0.0, 2000.0));
-        addRadarObject(node, ColourValue(0.5, 0, 0, 1));
-	node = sm->getRootSceneNode()->createChildSceneNode("station", Vector3(10000.0,16000.0,0.0));
-        addRadarObject(node);
+        radar_->init(0.5, 0.9, 0.2, container_);
+
+        WorldEntity* object;
+        object = new WorldEntity();
+        object->setPosition(2000.0, 0.0, 0.0);
+        addRadarObject(object, ColourValue(0.5, 0, 0, 1));
+        object = new WorldEntity();
+        object->setPosition(0.0, 2000.0, 0.0);
+        addRadarObject(object, ColourValue(0.5, 0, 0, 1));
+        object = new WorldEntity();
+        object->setPosition(0.0, 0.0, 2000.0);
+        addRadarObject(object, ColourValue(0.5, 0, 0, 1));
+        object = new WorldEntity();
+        object->setPosition(10000.0,16000.0,0.0);
+        addRadarObject(object);
     }
 
-    HUD::~HUD(){
-        //todo: clean up objects
+    HUD::~HUD()
+    {
+        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->container_);
+        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->fpsText_);
+        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->rTRText_);
+        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->energyBar_);
+        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->speedoBar_);
+        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->radar_);
+
+        delete this->nav_;
+        delete this->barOverlayElementFactory_;
+        delete this->radarOverlayElementFactory_;
     }
 
     void HUD::tick(float dt)
     {
-        energyBar->resize();
-
         if(!SpaceShip::getLocalShip())
           return;
+
         float v = SpaceShip::getLocalShip()->getVelocity().length();
         float vmax = SpaceShip::getLocalShip()->getMaxSpeed();
-        speedoBar->setValue(v/vmax);
-        speedoBar->resize();
+        speedoBar_->setValue(v/vmax);
 
-        radar->resize();
-        radar->update();
-
-        nav->update();
+        radar_->update();
+        nav_->update();
 
         setFPS();
     }
 
+    void HUD::resize()
+    {
+        this->speedoBar_->resize();
+        this->energyBar_->resize();
+        this->radar_->resize();
+    }
+
     void HUD::setRenderTimeRatio(float ratio)
     {
-        if(showRenderTime){
-            rTRText->setCaption("Render time ratio: " + Ogre::StringConverter::toString(ratio));
+        if(showRenderTime_){
+            rTRText_->setCaption("Render time ratio: " + Ogre::StringConverter::toString(ratio));
         }
         else{
-            rTRText->setCaption("");
+            rTRText_->setCaption("");
             return;
         }
     }
 
     void HUD::setFPS(){
-        if(showFPS){
+        if(showFPS_){
             float fps = GraphicsEngine::getSingleton().getAverageFPS();
-            fpsText->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
+            fpsText_->setCaption("FPS: " + Ogre::StringConverter::toString(fps));
         }
         else{
-            fpsText->setCaption("");
+            fpsText_->setCaption("");
             return;
         }
     }
 
-    void HUD::addRadarObject(SceneNode* node, const ColourValue& colour){
-        RadarObject* obj = new RadarObject(container, node, colour);
-        roSet.insert(obj);
+    void HUD::addRadarObject(WorldEntity* object, const ColourValue& colour){
+        RadarObject* obj = new RadarObject(container_, object, colour);
+        roSet_.insert(roSet_.end(), obj);
 //        // check if this is the first RadarObject to create
 //        if(firstRadarObject == NULL){
-//            firstRadarObject = new RadarObject(container, node, colour);
+//            firstRadarObject = new RadarObject(container_, object, colour);
 //            lastRadarObject = firstRadarObject;
 //        }
 //        else{ // if not, append to list
-//            lastRadarObject->next = new RadarObject(container, node, colour);
+//            lastRadarObject->next = new RadarObject(container_, object, colour);
 //            lastRadarObject = lastRadarObject->next;
 //        }
     }
 
-    void HUD::removeRadarObject(Ogre::SceneNode* node){
-        for(std::set<RadarObject*>::iterator it=roSet.begin(); it!=roSet.end(); ++it){
-            if ((*it)->getNode() == node)
+    void HUD::removeRadarObject(WorldEntity* object){
+        for(std::list<RadarObject*>::iterator it=roSet_.begin(); it!=roSet_.end(); ++it){
+            if ((*it)->getObject() == object)
             {
-                if (this->nav->focus_ == (*it))
-                {
-                    this->nav->cycleFocus();
-                    if (this->nav->focus_ == (*it))
-                        this->nav->focus_ = 0;
-                }
+                if (this->nav_->getFocus() == (*it))
+                    this->nav_->setFocus(0);
+
                 delete (*it);
-                roSet.erase(it);
+                roSet_.erase(it);
                 return;
             }
         }
@@ -214,24 +230,22 @@ namespace orxonox
     }
 
     /*static*/ void HUD::setEnergy(float value){
-        HUD::getSingleton().energyBar->setValue(value);
+        HUD::getSingleton().energyBar_->setValue(value);
     }
 
     /*static*/ void HUD::cycleNavigationFocus(){
-        HUD::getSingleton().nav->cycleFocus();
+        HUD::getSingleton().nav_->cycleFocus();
+    }
+
+    /*static*/ void HUD::releaseNavigationFocus(){
+        HUD::getSingleton().nav_->setFocus(0);
     }
 
     /*static*/ void HUD::toggleFPS(){
-        HUD::getSingleton().showFPS = !HUD::getSingleton().showFPS;
+        HUD::getSingleton().showFPS_ = !HUD::getSingleton().showFPS_;
     }
 
     /*static*/ void HUD::toggleRenderTime(){
-        HUD::getSingleton().showRenderTime = !HUD::getSingleton().showRenderTime;
+        HUD::getSingleton().showRenderTime_ = !HUD::getSingleton().showRenderTime_;
     }
 }
-
-
-
-
-
-

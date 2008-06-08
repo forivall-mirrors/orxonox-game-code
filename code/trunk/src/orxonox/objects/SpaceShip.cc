@@ -151,7 +151,7 @@ namespace orxonox
                 delete this->cam_;
 
             if (!this->myShip_)
-                HUD::getSingleton().removeRadarObject(this->getNode());
+                HUD::getSingleton().removeRadarObject(this);
         }
     }
 
@@ -160,7 +160,7 @@ namespace orxonox
         if(network::Client::getSingleton() && objectID == network::Client::getSingleton()->getShipID())
           myShip_=true;
         else
-          HUD::getSingleton().addRadarObject(this->getNode(), this->getProjectileColour());
+          HUD::getSingleton().addRadarObject(this, this->getProjectileColour());
       }
       if(Model::create())
         this->init();
@@ -507,9 +507,10 @@ namespace orxonox
           this->momentum_ = 0;
           this->mouseXRotation_ = Radian(0);
           this->mouseYRotation_ = Radian(0);
-          this->bLMousePressed_ = false;
         }/*else
           COUT(4) << "not steering ship: " << objectID << " our ship: " << network::Client::getSingleton()->getShipID() << std::endl;*/
+
+          this->bLMousePressed_ = false;
     }
 
     void SpaceShip::movePitch(float val)

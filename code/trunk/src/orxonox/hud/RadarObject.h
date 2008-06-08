@@ -22,19 +22,18 @@
  *   Author:
  *      Felix Schulthess
  *   Co-authors:
- *      ...
+ *      Fabian 'x3n' Landau
  *
  */
 
 #ifndef _RadarObject_H__
 #define _RadarObject_H__
 
-#include <map>
-
-#include <OgrePrerequisites.h>
-#include <OgreSceneNode.h>
-#include <OgrePanelOverlayElement.h>
 #include "OrxonoxPrereqs.h"
+
+#include <map>
+#include <OgrePanelOverlayElement.h>
+
 #include "util/Math.h"
 
 namespace orxonox
@@ -42,7 +41,7 @@ namespace orxonox
     class _OrxonoxExport RadarObject
     {
       public:
-        RadarObject(Ogre::OverlayContainer* container, Ogre::SceneNode* node, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1), const std::string& texturename = "white.tga");
+        RadarObject(Ogre::OverlayContainer* container, WorldEntity* object, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1), const std::string& texturename = "white.tga");
         ~RadarObject();
 
         void setMaterial(const ColourValue& colour, const std::string& texturename);
@@ -53,22 +52,25 @@ namespace orxonox
         inline void resetMaterial()
             { this->setMaterial(this->colour_, this->texturename_); }
 
-        Vector3 getPosition();
-        Ogre::SceneNode* getNode();
+        const Vector3& getPosition() const;
+        const Vector3& getVelocity() const;
 
-        bool right_;
-        int index_;                             // index number of object
-        Ogre::OverlayContainer* container_;
-        Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
+        inline WorldEntity* getObject() const
+            { return this->object_; }
+        inline Ogre::PanelOverlayElement* getPanel() const
+            { return this->panel_; }
 
       private:
         static std::map<std::string, std::map<ColourValue, std::string> > materials_s;
         static unsigned int count_s;
         static unsigned int materialcount_s;
-        Ogre::SceneNode* node_;					// node of object
+
+        WorldEntity* object_;					// the object
         ColourValue colour_;
         std::string texturename_;
-  };
+
+        Ogre::PanelOverlayElement* panel_;		// the panel used to show the dot
+    };
 }
 
 #endif /* _RadarObject_H__ */

@@ -52,6 +52,7 @@
 #include "core/input/InputManager.h"
 
 #include "console/InGameConsole.h"
+#include "hud/HUD.h"
 #include "tools/ParticleInterface.h"
 #include "Settings.h"
 
@@ -454,6 +455,7 @@ namespace orxonox {
     int h = rw->getHeight();
     InputManager::setWindowExtents(w, h);
     InGameConsole::getInstance().resize();
+    HUD::getSingleton().resize();
   }
 
   /**

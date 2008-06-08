@@ -26,6 +26,8 @@
  *
  */
 
+#include <OgrePlane.h>
+
 #include "Math.h"
 
 /**
@@ -66,4 +68,40 @@ std::istream& operator>>(std::istream& in, orxonox::Degree& degree)
     in >> temp;
     degree = temp;
     return in;
+}
+
+
+float getAngle(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& otherposition)
+{
+    orxonox::Vector3 distance = otherposition - myposition;
+    return acos(mydirection.dotProduct(distance) / distance.length());
+}
+
+orxonox::Vector2 get2DViewdirection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition)
+{
+    orxonox::Vector3 distance = otherposition - myposition;
+
+    // project difference vector on our plane
+    orxonox::Vector3 projection = Ogre::Plane(mydirection, myposition).projectVector(distance);
+    float angle = acos(myorthonormal.dotProduct(projection) / projection.length());
+
+    if ((mydirection.crossProduct(myorthonormal)).dotProduct(distance) > 0)
+        return orxonox::Vector2(sin(angle), cos(angle));
+    else
+        return orxonox::Vector2(-sin(angle), cos(angle));
+}
+
+orxonox::Vector2 get2DViewcoordinates(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition)
+{
+    orxonox::Vector3 distance = otherposition - myposition;
+
+    // project difference vector on our plane
+    orxonox::Vector3 projection = Ogre::Plane(mydirection, myposition).projectVector(distance);
+    float angle = acos(myorthonormal.dotProduct(projection) / projection.length());
+    float radius = acos(mydirection.dotProduct(distance) / distance.length()) / Ogre::Math::PI;
+
+    if ((mydirection.crossProduct(myorthonormal)).dotProduct(distance) > 0)
+        return orxonox::Vector2(sin(angle) * radius, cos(angle) * radius);
+    else
+        return orxonox::Vector2(-sin(angle) * radius, cos(angle) * radius);
 }

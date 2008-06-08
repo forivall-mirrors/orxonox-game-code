@@ -38,37 +38,45 @@ namespace orxonox
 {
   class _OrxonoxExport BarOverlayElement : public Ogre::PanelOverlayElement
   {
+    public:
+      BarOverlayElement(const Ogre::String& name);
+      virtual ~BarOverlayElement();
+
+      void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
+      void resize();
+      void setValue(float value);
+      void setColour(int colour);
+
+      inline void setRightToLeft(bool r2l)
+        { this->right2Left_ = r2l; }
+      inline bool getRightToLeft() const
+        { return this->right2Left_; }
+      inline float getValue() const
+        { return this->value_; }
+      inline int getBarColour() const
+        { return this->colour_; }
+
     private:
-      bool autoColor_;                    // whether bar changes color automatically
+      static const int RED = 0;           // predefined colours
+      static const int YELLOW = 1;
+      static const int GREEN = 2;
+
+      bool right2Left_;
+      bool autoColour_;                   // whether bar changes colour automatically
       float value_;                       // progress of bar
-      int color_;
+      int colour_;
       int left_;
       int top_;
       int width_;
       int height_;
-      int windowW_, windowH_;
+      float widthratio_;
+      int offset_;
+      int barwidth_;
       Ogre::Real leftRel_;
       Ogre::Real topRel_;
       Ogre::Real dimRel_;
-      Ogre::OverlayManager* om;           // our overlay manager
-      Ogre::OverlayContainer* container_; // our parent container to attach to
       Ogre::OverlayContainer* background_;
       Ogre::String name_;
-
-    public:
-      bool left2Right;
-      static const int RED = 0;           // predefined colors
-      static const int YELLOW = 1;
-      static const int GREEN = 2;
-
-      BarOverlayElement(const Ogre::String& name);
-      virtual ~BarOverlayElement();
-      void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
-      void resize();
-      void setValue(float value);
-      void setColor(int color);
-      float getValue();
-      int getBarColor();
     };
 }
 #endif /* _BarOverlayElement_H__ */

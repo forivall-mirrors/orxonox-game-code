@@ -225,7 +225,7 @@ namespace orxonox
         if (this->bHasTargetPosition_)
             this->moveToTargetPosition(dt);
 
-        if (this->bShooting_ && this->isCloseAtTarget(2500) && this->isLookingAtTarget(Ogre::Math::PI / 10))
+        if (this->bShooting_ && this->isCloseAtTarget(2500) && this->isLookingAtTarget(Ogre::Math::PI / 20.0))
             this->doFire();
 
         SpaceShip::tick(dt);
@@ -233,22 +233,17 @@ namespace orxonox
 
     void SpaceShipAI::moveToTargetPosition(float dt)
     {
-        Vector3 proj = Ogre::Plane(this->getDir(), this->getPosition()).projectVector(this->targetPosition_ - this->getPosition());
-        float angle = acos((this->getOrth().dotProduct(proj)) / (this->getOrth().length()*proj.length()));
-
-        if ((this->getDir().crossProduct(this->getOrth())).dotProduct(this->targetPosition_ - this->getPosition()) > 0)
-            this->setMoveYaw(sgn(sin(angle)));
-        else
-            this->setMoveYaw(-sgn(sin(angle)));
-        this->setMovePitch(sgn(cos(angle)));
+        Vector2 coord = get2DViewdirection(this->getPosition(), this->getDir(), this->getOrth(), this->targetPosition_);
+        this->setMoveYaw(0.8 * sgn(coord.x));
+        this->setMovePitch(0.8 * sgn(coord.y));
 
         if ((this->targetPosition_ - this->getPosition()).length() > 300)
-            this->setMoveLongitudinal(1);
+            this->setMoveLongitudinal(0.8);
 
         if (this->isCloseAtTarget(300) && this->target_)
         {
             if (this->getVelocity().length() > this->target_->getVelocity().length())
-                this->setMoveLongitudinal(-1);
+                this->setMoveLongitudinal(-0.5);
         }
     }
 
@@ -318,8 +313,7 @@ namespace orxonox
 
     bool SpaceShipAI::isLookingAtTarget(float angle)
     {
-        Vector3 dist = this->targetPosition_ - this->getPosition();
-        return (acos((this->getDir().dotProduct(dist)) / (dist.length() * this->getDir().length())) < angle);
+        return (getAngle(this->getPosition(), this->getDir(), this->targetPosition_) < angle);
     }
 
     void SpaceShipAI::shipDied(SpaceShipAI* ship)
