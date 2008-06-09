@@ -41,7 +41,6 @@ namespace orxonox
     {
       public:
         Navigation(Ogre::OverlayContainer* container);
-        Navigation(Ogre::OverlayContainer* container, RadarObject* focus);
         ~Navigation();
 
         void update();
