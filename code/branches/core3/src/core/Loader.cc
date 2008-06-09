@@ -31,6 +31,7 @@
 #include "BaseObject.h"
 #include "Identifier.h"
 #include "Iterator.h"
+#include "ObjectList.h"
 #include "Debug.h"
 #include "CoreIncludes.h"
 #include "Script.h"
@@ -90,7 +91,7 @@ namespace orxonox
 
     void Loader::unload(const ClassTreeMask& mask)
     {
-        for (Iterator<BaseObject> it = ObjectList<BaseObject>::begin(); it; )
+        for (Iterator<BaseObject> it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); )
         {
             if (mask.isIncluded(it->getIdentifier()))
                 delete (*(it++));

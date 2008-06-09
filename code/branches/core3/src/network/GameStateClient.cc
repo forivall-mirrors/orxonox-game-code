@@ -150,7 +150,7 @@ namespace network
     unsigned char *data=state->data;
     COUT(4) << "loadSnapshot: loading gs: " << state->id << std::endl;
     // get the start of the Synchronisable list
-    orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::start();
+    orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::begin();
     syncData sync;
     // loop as long as we have some data ;)
     while(data < state->data+state->size){
@@ -235,7 +235,7 @@ namespace network
     // offset of memory functions
     int offset=0, size=0;
     // get total size of gamestate
-    for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
+    for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it){
       if(!it->getBacksync())
         continue;
       size+=it->getSize(); // size of the actual data of the synchronisable
@@ -252,7 +252,7 @@ namespace network
     }
     memsize=size;
     // go through all Synchronisables
-    for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
+    for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it){
       if(!it->getBacksync())
         continue;
       //get size of the synchronisable

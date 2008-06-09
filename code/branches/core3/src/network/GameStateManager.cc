@@ -69,7 +69,7 @@ namespace network
     printGameStates();
     return;
   }
-  
+
   void GameStateManager::addGameState(GameStateCompressed *gs, int clientID){
     if(!gs)
       return;
@@ -82,7 +82,7 @@ namespace network
     gameStateQueue[clientID] = gs;
     return;
   }
-  
+
   void GameStateManager::processGameStates(){
     std::map<int, GameStateCompressed*>::iterator it;
     // now push only the most recent gamestates we received (ignore obsolete ones)
@@ -92,13 +92,13 @@ namespace network
     // now clear the queue
     gameStateQueue.clear();
   }
-  
-  
+
+
   /**
    * this function is used to keep the memory usage low
    * it tries to delete all the unused gamestates
-   * 
-   * 
+   *
+   *
    */
   void GameStateManager::cleanup(){
     std::map<int,int>::iterator it = gameStateUsed.begin();
@@ -154,7 +154,7 @@ namespace network
       // return an undiffed gamestate and set appropriate flags
     }
   }
-  
+
   bool GameStateManager::pushGameState( GameStateCompressed *gs, int clientID ){
     GameState *ugs = decompress(gs);
     delete[] gs->data;
@@ -189,7 +189,7 @@ namespace network
     // offset of memory functions
     int offset=0, size=0;
     // get total size of gamestate
-    for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
+    for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it){
       size+=it->getSize(); // size of the actual data of the synchronisable
       size+=3*sizeof(int); // size of datasize, classID and objectID
     }
@@ -203,7 +203,7 @@ namespace network
     }
     memsize=size;
     // go through all Synchronisables
-    for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
+    for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it){
       //get size of the synchronisable
       tempsize=it->getSize();
       // add place for data and 3 ints (length,classid,objectid)
@@ -245,7 +245,7 @@ namespace network
     unsigned char *data=state->data;
     COUT(4) << "loadSnapshot: loading gs: " << state->id << std::endl;
     // get the start of the Synchronisable list
-    orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::start();
+    orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::begin();
     syncData sync;
     /*ClientInformation *client = head_->findClient(clientID);
     if(client)
@@ -307,8 +307,8 @@ namespace network
     //client->setPartialGamestateID(state->id);
     return true;
   }
-  
-  
+
+
   //##### ADDED FOR TESTING PURPOSE #####
   GameStateCompressed* GameStateManager::testCompress( GameState* g ) {
     return compress_( g );
@@ -404,7 +404,7 @@ namespace network
 
     switch ( retval ) {
       case Z_OK: COUT(5) << "G.St.Man: compress: successfully compressed" << std::endl; break;
-      case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl; 
+      case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl;
       return NULL;
       case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl;
       return NULL;
@@ -425,7 +425,7 @@ namespace network
     //COUT(5) << "G.St.Man: saved compressed data in GameStateCompressed:" << std::endl;
     return compressedGamestate;
   }
-  
+
   GameState *GameStateManager::decompress(GameStateCompressed *a) {
     //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
     int normsize = a->normsize;
@@ -463,14 +463,14 @@ namespace network
 
     return gamestate;
   }
-  
+
 
   void GameStateManager::ackGameState(int clientID, int gamestateID) {
     ClientInformation *temp = head_->findClient(clientID);
     if(temp==0)
       return;
     int curid = temp->getGamestateID();
-    
+
     if(gamestateID == GAMESTATEID_INITIAL){
       temp->setGameStateID(GAMESTATEID_INITIAL);
       if(curid!=GAMESTATEID_INITIAL){
@@ -480,7 +480,7 @@ namespace network
       return;
     }
     if(curid > gamestateID)
-      // the network packets got messed up 
+      // the network packets got messed up
       return;
     COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
     // decrease usage of gamestate and save it
@@ -511,13 +511,13 @@ namespace network
     COUT(4) << std::endl;
     return true;
   }
-  
+
   bool GameStateManager::checkAccess(int clientID, int objectID){
     // currently we only check, wheter the object is the clients spaceship
 //     return head_->findClient(objectID)->getShipID()==objectID;
     return true; // TODO: change this
   }
-  
+
   void GameStateManager::removeClient(ClientInformation* client){
     if(!client)
       return;

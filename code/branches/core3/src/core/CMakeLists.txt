@@ -4,6 +4,7 @@ SET(CORE_SRC_FILES
   Core.cc
   Error.cc
   Language.cc
+  ObjectListBase.cc
   OrxonoxClass.cc
   OutputBuffer.cc
   OutputHandler.cc

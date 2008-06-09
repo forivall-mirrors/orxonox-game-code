@@ -32,9 +32,38 @@
 */
 
 #include "MetaObjectList.h"
+#include "Debug.h"
 
 namespace orxonox
 {
+    // ###############################
+    // ###  MetaObjectListElement  ###
+    // ###############################
+    /**
+        @brief Destructor: Removes the ObjectListBaseElement from the ObjectListBase by linking next_ and prev_ of the ObjectListBaseElement.
+    */
+    MetaObjectListElement::~MetaObjectListElement()
+    {
+        COUT(5) << "*** MetaObjectList: Removing Object from " << this->list_->getIdentifier()->getName() << "-list." << std::endl;
+        this->list_->notifyIterators(this->element_);
+
+        if (this->element_->next_)
+            this->element_->next_->prev_ = this->element_->prev_;
+        else
+            this->list_->last_ = this->element_->prev_; // If there is no next_, we deleted the last object and have to update the last_ pointer of the list
+
+        if (this->element_->prev_)
+            this->element_->prev_->next_ = this->element_->next_;
+        else
+            this->list_->first_ = this->element_->next_; // If there is no prev_, we deleted the first object and have to update the first_ pointer of the list
+
+        delete this->element_;
+    }
+
+
+    // ###############################
+    // ###     MetaObjectList      ###
+    // ###############################
     /**
         @brief Constructor: Sets first_ to zero.
     */
@@ -48,12 +77,24 @@ namespace orxonox
     */
     MetaObjectList::~MetaObjectList()
     {
-        BaseMetaObjectListElement* temp;
+        MetaObjectListElement* temp;
         while (this->first_)
         {
             temp = this->first_->next_;
             delete this->first_;
             this->first_ = temp;
         }
+    }
+
+    /**
+        @brief Adds an ObjectList and an element of that list to the MetaObjectList.
+        @param list The ObjectList wherein the element is
+        @param element The element wherein the object is
+    */
+    void MetaObjectList::add(ObjectListBase* list, ObjectListBaseElement* element)
+    {
+        MetaObjectListElement* temp = this->first_;
+        this->first_ = new MetaObjectListElement(list, element);
+        this->first_->next_ = temp;
     }
 }

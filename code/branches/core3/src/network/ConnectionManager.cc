@@ -63,17 +63,17 @@ namespace std
 namespace network
 {
   //boost::thread_group network_threads;
-  
+
   ConnectionManager::ConnectionManager():receiverThread_(0){}
   boost::recursive_mutex ConnectionManager::enet_mutex_;
-  
+
   ConnectionManager::ConnectionManager(ClientInformation *head) : receiverThread_(0) {
     quit=false;
     bindAddress.host = ENET_HOST_ANY;
     bindAddress.port = NETWORK_PORT;
     head_ = head;
   }
-  
+
   ConnectionManager::ConnectionManager(ClientInformation *head, int port){
     quit=false;
     bindAddress.host = ENET_HOST_ANY;
@@ -114,7 +114,7 @@ used by processQueue in Server.cc
     clientID=temp->getID();
     return packet;
   }*/
-  
+
   ENetEvent *ConnectionManager::getEvent(){
     if(!buffer.isEmpty())
       return buffer.pop();
@@ -250,7 +250,7 @@ used by processQueue in Server.cc
       lock.unlock();
     }
   }
-  
+
   //### added some bugfixes here, but we cannot test them because
   //### the server crashes everytime because of some gamestates
   //### (trying to resolve that now)
@@ -332,19 +332,19 @@ used by processQueue in Server.cc
     COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
   }
 
-  
-  
+
+
   bool ConnectionManager::removeShip(ClientInformation *client){
     int id=client->getShipID();
     orxonox::Iterator<orxonox::SpaceShip> it;
-    for(it = orxonox::ObjectList<orxonox::SpaceShip>::start(); it; ++it){
+    for(it = orxonox::ObjectList<orxonox::SpaceShip>::begin(); it; ++it){
       if(it->objectID!=id)
         continue;
       delete *it;
     }
     return true;
   }
-  
+
   bool ConnectionManager::sendWelcome(int clientID, int shipID, bool allowed){
     if(addPacket(packet_gen.generateWelcome(clientID, shipID, allowed),clientID)){
       //sendPackets();
@@ -352,7 +352,7 @@ used by processQueue in Server.cc
     }else
       return false;
   }
-  
+
   void ConnectionManager::disconnectClient(ClientInformation *client){
     {
       boost::recursive_mutex::scoped_lock lock(enet_mutex_);
@@ -361,14 +361,14 @@ used by processQueue in Server.cc
     }
     removeShip(client);
   }
-  
+
   bool ConnectionManager::addFakeConnectRequest(ENetEvent *ev){
     ENetEvent event;
     event.peer=ev->peer;
     event.packet = packet_gen.generateConnectRequest();
     return buffer.push(&event);
   }
-  
-  
+
+
 
 }

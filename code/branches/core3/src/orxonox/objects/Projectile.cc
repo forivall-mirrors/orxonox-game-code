@@ -85,7 +85,7 @@ namespace orxonox
             return;
 
         float radius;
-        for (Iterator<Model> it = ObjectList<Model>::start(); it; ++it)
+        for (Iterator<Model> it = ObjectList<Model>::begin(); it; ++it)
         {
             if ((*it) != this->owner_)
             {

@@ -124,19 +124,19 @@ namespace orxonox
   class IRC;
   template <class T>
   class Iterator;
+  class IteratorBase;
   class Language;
   class LanguageEntry;
   class Level;
   class Loader;
   class MetaObjectList;
-  template <class T>
   class MetaObjectListElement;
   class Namespace;
   class NamespaceNode;
   template <class T>
   class ObjectList;
-  template <class T>
-  class ObjectListElement;
+  class ObjectListBase;
+  class ObjectListBaseElement;
   class OrxonoxClass;
   class OutputBuffer;
   class OutputBufferListener;

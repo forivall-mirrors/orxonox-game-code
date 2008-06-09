@@ -38,10 +38,10 @@
 namespace orxonox
 {
     /** @brief Constructor: Sets the default values. */
-    OrxonoxClass::OrxonoxClass() :
-      identifier_(0),
-      parents_(0)
+    OrxonoxClass::OrxonoxClass()
     {
+        this->identifier_ = 0;
+        this->parents_ = 0;
         this->metaList_ = new MetaObjectList();
 
         this->setConfigValues();

@@ -56,9 +56,9 @@ namespace network
 {
   #define MAX_FAILURES 20;
   #define NETWORK_FREQUENCY 30
-  
+
   Server *Server::instance_=0;
-  
+
   Server *Server::createSingleton(){
     if(!instance_)
       instance_ = new Server();
@@ -79,12 +79,12 @@ namespace network
       instance_ = new Server(port, bindAddress);
     return instance_;
   }
-  
+
   Server *Server::getSingleton(){
     return instance_;
   }
-  
-  
+
+
   /**
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY
   *
@@ -96,7 +96,7 @@ namespace network
     connection = new ConnectionManager(clients);
     gamestates = new GameStateManager(clients);
   }
-  
+
   Server::Server(int port){
     timeSinceLastUpdate_=0;
     packet_gen = PacketGenerator();
@@ -216,7 +216,7 @@ namespace network
       case ENET_EVENT_TYPE_RECEIVE:
         if(clients->findClient(&event->peer->address)){
           clientID = clients->findClient(&event->peer->address)->getID();
-          if( !elaborate(event->packet, clientID) ) 
+          if( !elaborate(event->packet, clientID) )
             COUT(3) << "Server: could not elaborate" << std::endl;
         }
         break;
@@ -275,7 +275,7 @@ namespace network
       if(!packet)
 	continue;
       if ( !(connection->addPacket(packet, cid)) ){
-        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl; 
+        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl;
         temp->addFailure();
         /*if(temp->getFailures() > 0 )
           disconnectClient(temp);*/
@@ -301,7 +301,7 @@ namespace network
     gamestates->ackGameState(clientID, data->a);
     delete data;
   }
-  
+
   bool Server::processConnectRequest( connectRequest *con, int clientID ){
     //(COUT(3) << "processing connectRequest " << std::endl;
     //connection->addPacket(packet_gen.gstate(gamestates->popGameState(clientID)) , clientID);
@@ -309,7 +309,7 @@ namespace network
     delete con;
     return true;
   }
-  
+
   void Server::processGamestate( GameStateCompressed *data, int clientID){
     COUT(4) << "processing partial gamestate from client " << clientID << std::endl;
     gamestates->addGameState(data, clientID);
@@ -318,7 +318,7 @@ namespace network
       if(clients->findClient(clientID))
         clients->findClient(clientID)->resetFailures();*/
   }
-  
+
   void Server::processChat( chat *data, int clientId){
     char *message = new char [strlen(data->message)+10+1];
     sprintf(message, "Player %d: %s", clientId, data->message);
@@ -328,7 +328,7 @@ namespace network
     delete[] data->message;
     delete data;
   }
-  
+
   bool Server::addClient(ENetEvent *event){
     ClientInformation *temp = clients->insertBack(new ClientInformation);
     if(!temp){
@@ -345,7 +345,7 @@ namespace network
     COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
     return createClient(temp->getID());
   }
-  
+
   bool Server::createClient(int clientID){
     ClientInformation *temp = clients->findClient(clientID);
     if(!temp){
@@ -365,7 +365,7 @@ namespace network
     connection->sendWelcome(temp->getID(), temp->getShipID(), true);
     return true;
   }
-  
+
   bool Server::createShip(ClientInformation *client){
     if(!client)
       return false;
@@ -389,17 +389,17 @@ namespace network
     no->setCamera("cam_"+client->getID());
     no->classID = id->getNetworkID();
     no->create();
-    
+
     client->setShipID(no->objectID);
     return true;
   }
-  
+
   bool Server::disconnectClient(ENetEvent *event){
     COUT(4) << "removing client from list" << std::endl;
     //return removeClient(head_->findClient(&(peer->address))->getID());
-    
+
     //boost::recursive_mutex::scoped_lock lock(head_->mutex_);
-    orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::start();
+    orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::begin();
     ClientInformation *client = clients->findClient(&event->peer->address);
     if(!client)
       return false;
@@ -425,5 +425,5 @@ namespace network
     connection->disconnectClient(client);
     gamestates->removeClient(client);
   }
-  
+
 }

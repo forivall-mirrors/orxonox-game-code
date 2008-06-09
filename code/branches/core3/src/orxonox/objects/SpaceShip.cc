@@ -71,7 +71,7 @@ namespace orxonox
 
     SpaceShip *SpaceShip::getLocalShip(){
       Iterator<SpaceShip> it;
-      for(it = ObjectList<SpaceShip>::start(); it; ++it){
+      for(it = ObjectList<SpaceShip>::begin(); it; ++it){
         if( (it)->myShip_ )
           return *it;
       }

@@ -461,10 +461,10 @@ namespace orxonox
       // tick the core
       Core::tick((float)evt.timeSinceLastFrame);
       // Call those objects that need the real time
-      for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
+      for (Iterator<TickableReal> it = ObjectList<TickableReal>::begin(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame);
       // Call the scene objects
-      for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
+      for (Iterator<Tickable> it = ObjectList<Tickable>::begin(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
       //AudioManager::tick();
       if (client_g)

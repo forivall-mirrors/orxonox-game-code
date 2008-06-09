@@ -59,10 +59,8 @@
 #include <string>
 #include <utility>
 
-#include "ObjectList.h"
 #include "Debug.h"
 #include "Iterator.h"
-#include "MetaObjectList.h"
 #include "util/String.h"
 
 namespace orxonox
@@ -107,13 +105,16 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier) const;
             bool isDirectParentOf(const Identifier* identifier) const;
 
-            virtual const ObjectList<BaseObject>* getObjectList() const = 0;
+            void addObject(OrxonoxClass* object);
 
-            virtual void updateConfigValues() const = 0;
+            /** @brief Returns the list of all existing objects of this class. @return The list */
+            inline ObjectListBase* getObjects() const
+                { return this->objects_; }
 
             /** @brief Returns the name of the class the Identifier belongs to. @return The name */
             inline const std::string& getName() const { return this->name_; }
 
+            virtual void updateConfigValues() const = 0;
 
             /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
             inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
@@ -262,6 +263,7 @@ namespace orxonox
 
             std::string name_;                                             //!< The name of the class the Identifier belongs to
 
+            ObjectListBase* objects_;                                      //!< The list of all objects of this class
             BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
             bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
             static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
@@ -296,12 +298,7 @@ namespace orxonox
     {
         public:
             ClassIdentifier<T>* registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass);
-            void addObject(T* object);
             void setName(const std::string& name);
-            /** @brief Returns the list of all existing objects of this class. @return The list */
-            inline ObjectList<T>* getObjects() const { return this->objects_; }
-            /** @brief Returns a list of all existing objects of this class. @return The list */
-            inline ObjectList<BaseObject>* getObjectList() const { return (ObjectList<BaseObject>*)this->objects_; }
 
             void updateConfigValues() const;
 
@@ -318,7 +315,6 @@ namespace orxonox
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ~ClassIdentifier() {}                                       // don't delete
 
-            ObjectList<T>* objects_;                                                                    //!< The ObjectList, containing all objects of type T
             bool bSetName_;                                                                             //!< True if the name is set
             std::map<std::string, XMLPortClassParamContainer<T>*> xmlportParamContainers_;              //!< All loadable parameters
             std::map<std::string, XMLPortClassObjectContainer<T, class O>*> xmlportObjectContainers_;   //!< All attachable objects
@@ -335,8 +331,6 @@ namespace orxonox
     template <class T>
     ClassIdentifier<T>::ClassIdentifier()
     {
-//        this->objects_ = ObjectList<T>::getList();
-        this->objects_ = new ObjectList<T>();
         this->bSetName_ = false;
     }
 
@@ -407,24 +401,13 @@ namespace orxonox
     }
 
     /**
-        @brief Adds an object of the given type to the ObjectList.
-        @param object The object to add
-    */
-    template <class T>
-    void ClassIdentifier<T>::addObject(T* object)
-    {
-        COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
-        object->getMetaList().add(this->objects_, this->objects_->add(object));
-    }
-
-    /**
         @brief Updates the config-values of all existing objects of this class by calling their setConfigValues() function.
     */
     template <class T>
     void ClassIdentifier<T>::updateConfigValues() const
     {
-        for (Iterator<T> it = this->objects_->start(); it; ++it)
-            ((T*)*it)->setConfigValues();
+        for (Iterator<T> it = this->objects_->begin(); it; ++it)
+            (*it)->setConfigValues();
     }
 
     /**

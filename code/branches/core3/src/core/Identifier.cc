@@ -38,6 +38,9 @@
 #include "Factory.h"
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
+#include "MetaObjectList.h"
+#include "ObjectList.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -51,6 +54,8 @@ namespace orxonox
     */
     Identifier::Identifier()
     {
+        this->objects_ = new ObjectListBase(this);
+
         this->bCreatedOneObject_ = false;
         this->factory_ = 0;
 
@@ -170,6 +175,16 @@ namespace orxonox
     {
         Factory::changeNetworkID(this, this->classID_, id);
         this->classID_ = id;
+    }
+
+    /**
+        @brief Adds an object of the given type to the ObjectList.
+        @param object The object to add
+    */
+    void Identifier::addObject(OrxonoxClass* object)
+    {
+        COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
+        object->getMetaList().add(this->objects_, this->objects_->add(object));
     }
 
     /**
