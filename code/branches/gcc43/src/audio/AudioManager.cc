@@ -28,6 +28,8 @@
 
 #include "AudioManager.h"
 
+#include <cstdlib>
+
 #include <AL/alut.h>
 
 #include "AudioBuffer.h"

@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @author		Ryan Mulder
 @date		04/11/2006
 
+@version  0.04b by nico@orxonox.net: gcc-4.3 compilation hotfixes
 @version	0.04a by edam@waxworlds.org: based Exception based on std::exception; added stream
 					<< and >> support; added Document::Parse(); bug fix; improved THROW() macro.
 @version	0.04 Added NodeImp class. Also made all the classes inherit from NodeImp.
@@ -50,6 +51,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <vector>
 #include <memory>
 #include <exception>
+#include <typeinfo>
 
 /**
 @subpage ticpp is a TinyXML wrapper that uses a lot more C++ ideals.
