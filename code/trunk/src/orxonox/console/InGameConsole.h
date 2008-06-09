@@ -43,42 +43,42 @@ namespace orxonox
 {
     class _OrxonoxExport InGameConsole : public TickableReal, public ShellListener
     {
-        public:
+        public: // functions
+            void initialise();
+            void destroy();
+            void setConfigValues();
+
+            void tick(float dt);
+            void resize();
+
             static InGameConsole& getInstance();
 
-            void setConfigValues();
-            void tick(float dt);
-
-            void resize();
             static void openConsole();
             static void closeConsole();
 
-        private:
+        private: // functions
             InGameConsole();
-            InGameConsole(const InGameConsole& other);
+            InGameConsole(const InGameConsole& other) {}
             ~InGameConsole();
 
             void activate();
             void deactivate();
 
-            virtual void linesChanged();
-            virtual void onlyLastLineChanged();
-            virtual void lineAdded();
-            virtual void inputChanged();
-            virtual void cursorChanged();
-            virtual void exit();
+            void linesChanged();
+            void onlyLastLineChanged();
+            void lineAdded();
+            void inputChanged();
+            void cursorChanged();
+            void exit();
 
-            void init();
             void shiftLines();
             void colourLine(int colourcode, int index);
             void setCursorPosition(unsigned int pos);
             void print(const std::string& text, int index, bool alwaysShift = false);
+
             static Ogre::UTFString convert2UTF(std::string s);
 
-            static float REL_WIDTH;
-            static float REL_HEIGHT;
-            static float BLINK;
-
+        private: // variables
             bool bActive_;
             int windowW_;
             int windowH_;
@@ -91,13 +91,19 @@ namespace orxonox
             char cursorSymbol_;
             bool bShowCursor_;
             std::string displayedText_;
-            Ogre::OverlayManager* om_;
             Ogre::Overlay* consoleOverlay_;
             Ogre::OverlayContainer* consoleOverlayContainer_;
             Ogre::PanelOverlayElement* consoleOverlayNoise_;
-            Ogre::PanelOverlayElement* consoleOverlayCursor_;
+            Ogre::TextAreaOverlayElement* consoleOverlayCursor_;
             Ogre::BorderPanelOverlayElement* consoleOverlayBorder_;
             Ogre::TextAreaOverlayElement** consoleOverlayTextAreas_;
+
+            // config values
+            float relativeWidth;
+            float relativeHeight;
+            float blinkTime;
+            float scrollSpeed_;
+            float noiseSize_;
     };
 }
 
