@@ -246,8 +246,9 @@ namespace orxonox
         for(std::list<RadarObject*>::iterator it=roSet_.begin(); it!=roSet_.end(); ++it){
             if ((*it)->getObject() == object)
             {
-                if (this->nav_->getFocus() == (*it))
-                    this->nav_->releaseFocus();
+		if (this->nav_)
+	          if (this->nav_->getFocus() == (*it))
+	            this->nav_->releaseFocus();
 
                 delete (*it);
                 roSet_.erase(it);
