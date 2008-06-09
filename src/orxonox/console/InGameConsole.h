@@ -88,7 +88,6 @@ namespace orxonox
             int scroll_;
             float cursor_;
             unsigned int inputWindowStart_;
-            char cursorSymbol_;
             bool bShowCursor_;
             std::string displayedText_;
             Ogre::Overlay* consoleOverlay_;
@@ -104,6 +103,7 @@ namespace orxonox
             float blinkTime;
             float scrollSpeed_;
             float noiseSize_;
+            char cursorSymbol_;
     };
 }
 

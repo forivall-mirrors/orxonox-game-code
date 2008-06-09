@@ -103,6 +103,7 @@ namespace orxonox
         SetConfigValue(blinkTime, 0.5);
         SetConfigValue(scrollSpeed_, 3.0f);
         SetConfigValue(noiseSize_, 1.0f);
+        SetConfigValue(cursorSymbol_, '|');
     }
 
     /**
@@ -151,13 +152,13 @@ namespace orxonox
         }
 
         // create cursor (also a text area overlay element)
-        this->consoleOverlayCursor_ = static_cast<TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleTextArea" + Ogre::StringConverter::toString(i)));
+        this->consoleOverlayCursor_ = static_cast<TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleCursor"));
         this->consoleOverlayCursor_->setMetricsMode(Ogre::GMM_PIXELS);
         this->consoleOverlayCursor_->setFontName("Monofur");
         this->consoleOverlayCursor_->setCharHeight(18);
         this->consoleOverlayCursor_->setParameter("colour_top", "0.21 0.69 0.21");
         this->consoleOverlayCursor_->setLeft(7);
-        this->consoleOverlayCursor_->setCaption("|");
+        this->consoleOverlayCursor_->setCaption(std::string(this->cursorSymbol_, 1));
         this->consoleOverlayContainer_->addChild(this->consoleOverlayCursor_);
 
         // create noise
