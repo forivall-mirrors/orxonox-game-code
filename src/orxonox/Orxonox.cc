@@ -69,16 +69,16 @@
 
 // objects and tools
 #include "hud/HUD.h"
+#include "console/InGameConsole.h"
 #include "objects/Tickable.h"
 #include "tools/ParticleInterface.h"
 
 #include "GraphicsEngine.h"
 #include "Settings.h"
 
-// FIXME: is this really file scope?
 // globals for the server or client
-network::Client *client_g = 0;
-network::Server *server_g = 0;
+static network::Client *client_g = 0;
+static network::Server *server_g = 0;
 
 namespace orxonox
 {
@@ -120,6 +120,7 @@ namespace orxonox
     InputManager::destroy();
     //if (this->auMan_)
     //  delete this->auMan_;
+    InGameConsole::getInstance().destroy();
     if (this->timer_)
       delete this->timer_;
     GraphicsEngine::getSingleton().destroy();
@@ -262,14 +263,17 @@ namespace orxonox
       if (!ogre_->loadRenderer())    // creates the render window
         return false;
 
+      // TODO: Spread this so that this call only initialises things needed for the Console
+      if (!ogre_->initialiseResources())
+        return false;
+
+      // Load the InGameConsole
+      InGameConsole::getInstance().initialise();
+
       // Calls the InputManager which sets up the input devices.
       // The render window width and height are used to set up the mouse movement.
       if (!InputManager::initialise(ogre_->getWindowHandle(),
             ogre_->getWindowWidth(), ogre_->getWindowHeight(), true, true, true))
-        return false;
-
-      // TODO: Spread this so that this call only initialises things needed for the GUI
-      if (!ogre_->initialiseResources())
         return false;
 
       // TOOD: load the GUI here
@@ -314,7 +318,7 @@ namespace orxonox
 
   /**
    * Loads everything in the scene except for the actual objects.
-   * This includes HUD, Console..
+   * This includes HUD, audio..
    */
   bool Orxonox::loadPlayground()
   {
@@ -330,6 +334,7 @@ namespace orxonox
     COUT(3) << "Orxonox: Loading HUD..." << std::endl;
     orxonoxHUD_ = &HUD::getSingleton();
     orxonoxHUD_->initialise();
+
     return true;
   }
 
@@ -338,7 +343,7 @@ namespace orxonox
    */
   bool Orxonox::serverLoad()
   {
-    COUT(2) << "Loading level in server mode" << std::endl;
+    COUT(0) << "Loading level in server mode" << std::endl;
 
     //server_g = new network::Server(serverPort_);
     server_g = network::Server::createSingleton(serverPort_);
@@ -356,7 +361,7 @@ namespace orxonox
    */
   bool Orxonox::clientLoad()
   {
-    COUT(2) << "Loading level in client mode" << std::endl;\
+    COUT(0) << "Loading level in client mode" << std::endl;\
 
     if (serverIp_.compare("") == 0)
       client_g = network::Client::createSingleton();
@@ -376,7 +381,7 @@ namespace orxonox
    */
   bool Orxonox::standaloneLoad()
   {
-    COUT(2) << "Loading level in standalone mode" << std::endl;
+    COUT(0) << "Loading level in standalone mode" << std::endl;
 
     if (!loadScene())
       return false;
@@ -499,7 +504,7 @@ namespace orxonox
 
       // again, just to be sure ogre works fine
       ogreRoot._fireFrameEnded(evt);
-      //msleep(200);
+      //msleep(500);
     }
 
     if (mode_ == CLIENT)
