@@ -73,6 +73,8 @@ namespace orxonox {
             float getWindowAspectRatio() const;
             float getAverageFPS() const
             { if (renderWindow_) return this->renderWindow_->getAverageFPS(); else return 0.0f; }
+            float getAverageRTR() const { return this->renderTimeRatio_; }
+            void setAverageRTR(float rtr) { this->renderTimeRatio_ = rtr; }
 
             void windowMoved       (Ogre::RenderWindow* rw);
             void windowResized     (Ogre::RenderWindow* rw);
@@ -107,6 +109,7 @@ namespace orxonox {
             int                 ogreLogLevelNormal_;    //!< Corresponding Orxonx debug level for LL_NORMAL
             int                 ogreLogLevelCritical_;  //!< Corresponding Orxonx debug level for LL_CRITICAL
             unsigned int        detailLevelParticle_;   //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
+            float               renderTimeRatio_;       //!< Ratio between time required to render a frame and to tick() it
     };
 }
 

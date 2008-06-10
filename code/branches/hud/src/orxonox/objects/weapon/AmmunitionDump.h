@@ -55,8 +55,6 @@ namespace orxonox {
 
     int getStockSize(const std::string &name);
 
-    virtual void loadParams(TiXmlElement* xmlElem) { BaseObject::loadParams(xmlElem); };
-
 
   protected:
     inline bool create() { return Synchronisable::create(); }

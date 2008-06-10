@@ -56,8 +56,6 @@ namespace orxonox {
 
     virtual void tick(float dt);
 
-    inline virtual void loadParams(TiXmlElement* xmlElem) { BaseObject::loadParams(xmlElem); };
-
   protected:
     inline bool create() { return Synchronisable::create(); }
     void registerAllVariables();

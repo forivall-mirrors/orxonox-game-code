@@ -191,11 +191,31 @@
 				Name="hud"
 				>
 				<File
-					RelativePath="..\..\src\orxonox\hud\BarOverlayElement.cc"
+					RelativePath="..\..\src\orxonox\hud\HUD.cc"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\hud\HUD.cc"
+					RelativePath="..\..\src\orxonox\hud\HUDBar.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\HUDFPSText.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\HUDOverlay.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\HUDRTRText.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\HUDSpeedBar.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\HUDText.cc"
 					>
 				</File>
 				<File
@@ -485,11 +505,31 @@
 				Name="hud"
 				>
 				<File
-					RelativePath="..\..\src\orxonox\hud\BarOverlayElement.h"
+					RelativePath="..\..\src\orxonox\hud\HUD.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\hud\HUD.h"
+					RelativePath="..\..\src\orxonox\hud\HUDBar.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\HUDFPSText.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\HUDOverlay.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\HUDRTRText.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\HUDSpeedBar.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\hud\HUDText.h"
 					>
 				</File>
 				<File

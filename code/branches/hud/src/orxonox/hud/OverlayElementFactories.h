@@ -35,22 +35,10 @@
 #include <OgreOverlayElement.h>
 #include <OgreOverlayElementFactory.h>
 
-#include "BarOverlayElement.h"
 #include "RadarOverlayElement.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport BarOverlayElementFactory : public Ogre::OverlayElementFactory{
-      public:
-        Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
-            return new BarOverlayElement(instanceName);
-        }
-        const Ogre::String& getTypeName(void) const{
-            static Ogre::String name = "Bar";
-            return name;
-        }
-    };
-
     class _OrxonoxExport RadarOverlayElementFactory : public Ogre::OverlayElementFactory{
       public:
         Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){

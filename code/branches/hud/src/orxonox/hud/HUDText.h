@@ -20,42 +20,48 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _Ambient_H__
-#define _Ambient_H__
+#ifndef _HUDText_H__
+#define _HUDText_H__
 
 #include "OrxonoxPrereqs.h"
 
+#include <OgrePrerequisites.h>
+#include <OgreTextAreaOverlayElement.h>
+#include <OgrePanelOverlayElement.h>
+
 #include "util/Math.h"
-#include "core/BaseObject.h"
-#include "network/Synchronisable.h"
+#include "HUDOverlay.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Ambient : public BaseObject, network::Synchronisable
-    {
-        public:
-            Ambient();
-            virtual ~Ambient();
+  class _OrxonoxExport HUDText : public HUDOverlay, public TickableReal
+  {
+  public:
+    HUDText();
+    virtual ~HUDText();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void setAmbientLight(const ColourValue& colour);
-            virtual bool create();
-            void registerAllVariables();
+    virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-            static void setAmbientLightTest(const ColourValue& colour)
-                { Ambient::instance_s->setAmbientLight(colour); }
+    virtual void tick(float dt) { }
 
-        private:
-            static Ambient* instance_s;
-            ColourValue ambientLight_;
+  protected:
+    void setBackgroundMaterial(const std::string& material);
+    std::string getBackgroundMaterial() const;
+    void setCaption(const std::string& caption);
+    const std::string& getCaption() const;
+    void setFont(const std::string& font);
+    std::string getFont() const;
 
-    };
+    Ogre::TextAreaOverlayElement* text_;
+  private:
+    std::string caption_;
+    Ogre::PanelOverlayElement* background_;
+  };
 }
-
-#endif /* _Ambient_H__ */
+#endif /* _HUDText_H__ */

@@ -24,90 +24,88 @@
  *   Co-authors:
  *      Felix Schulthess
  *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "BarOverlayElement.h"
+#include "HUDBar.h"
 
 #include <OgreOverlayManager.h>
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
 
-#include "GraphicsEngine.h"
 #include "util/Convert.h"
 
 namespace orxonox
 {
+    unsigned int HUDBar::materialcount_s = 0;
+
     using namespace Ogre;
 
-    unsigned int BarOverlayElement::materialcount_s = 0;
-
-    BarOverlayElement::BarOverlayElement(const String& name) : PanelOverlayElement(name)
+    HUDBar::HUDBar()
     {
+        RegisterObject(HUDBar);
+
+        this->bar_ = 0;
+        this->background_ = 0;
         this->textureUnitState_ = 0;
-        this->name_ = name;
-        this->widthratio_ = 100.0f / 800.0f; // calculates the ratio (backgroundwidth - barwidth) / backgroundwidth
-    }
 
-    BarOverlayElement::~BarOverlayElement()
-    {
-        OverlayManager::getSingleton().destroyOverlayElement(this->background_);
-    }
+        barWidth_s = 0.88f;
+        barHeight_s = 0.3f;
+        barOffsetLeft_s = 0.06f;
+        barOffsetTop_s = 0.0f;
 
-    void BarOverlayElement::init(Real leftRel, Real topRel, Real dimRel, OverlayContainer* container)
-    {
-        // init some values...
         this->value_ = -1;
         this->autoColour_ = true;
         this->right2Left_ = false; // default is left to right progress
-        this->leftRel_ = leftRel;
-        this->topRel_ = topRel;
-        this->dimRel_ = dimRel;
+    }
 
-        // create background...
-        this->background_ = static_cast<OverlayContainer*>(OverlayManager::getSingleton().createOverlayElement("Panel", name_+"container"));
-        this->background_->show();
-        container->addChild(background_);
-        this->background_->setMetricsMode(GMM_PIXELS);
+    HUDBar::~HUDBar()
+    {
+        if (this->isInitialized())
+        {
+            if (this->bar_)
+                OverlayManager::getSingleton().destroyOverlayElement(this->bar_);
+        }
+    }
+
+    void HUDBar::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    {
+        HUDOverlay::XMLPort(xmlElement, mode);
+
+        // create background
+        this->background_ = static_cast<PanelOverlayElement*>(
+                OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background"));
         this->background_->setMaterialName("Orxonox/BarBackground");
-
-        // calculate absolute coordinates...
-        this->resize();
-        this->show();
+        this->background_->setMetricsMode(GMM_RELATIVE);
+        this->background_->setDimensions(1.0f, 0.3f);
+        this->background_->setPosition(0.0f, 0.0f);
+        this->overlay_->add2D(this->background_);
 
         // create new material
-        std::string materialname = "barmaterial" + getConvertedValue<unsigned int, std::string>(BarOverlayElement::materialcount_s++);
+        std::string materialname = "barmaterial" + getConvertedValue<unsigned int, std::string>(materialcount_s++);
         Ogre::MaterialPtr material = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().create(materialname, "General");
         material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
         this->textureUnitState_ = material->getTechnique(0)->getPass(0)->createTextureUnitState();
         this->textureUnitState_->setTextureName("bar2.tga");
         // use the default colour
         this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2, 0.7, 0.2));
-        this->setMaterialName(materialname);
-        this->setMetricsMode(GMM_PIXELS);
 
-        this->background_->addChild(this);
+        // create bar
+        this->bar_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "Bar"));
+        this->bar_->setMaterialName(materialname);
+        this->bar_->setMetricsMode(GMM_RELATIVE);
+        this->background_->addChild(bar_);
+
+        XMLPortParamLoadOnly(HUDBar, "value", setValue, xmlElement, mode);
+
+        this->addColour(0.7, ColourValue(0.2, 0.7, 0.2));
+        this->addColour(0.4, ColourValue(0.7, 0.5, 0.2));
+        this->addColour(0.1, ColourValue(0.7, 0.2, 0.2));
     }
 
-    void BarOverlayElement::resize()
-    {
-        // calculate new absolute coordinates...
-        this->left_ = (int) (this->leftRel_ * GraphicsEngine::getSingleton().getWindowWidth());
-        this->top_ = (int) (this->topRel_ * GraphicsEngine::getSingleton().getWindowHeight());
-        this->width_ = (int) (this->dimRel_ * GraphicsEngine::getSingleton().getWindowWidth());
-        this->height_ = (int) (0.1 * this->width_);	// the texture has dimensions height:length = 1:10
-        this->offset_ = (int) (this->width_ * this->widthratio_ * 0.5);
-        this->barwidth_ = (int) (this->width_ * (1.0f - this->widthratio_));
-
-        // adapt background
-        this->background_->setPosition(this->left_, this->top_);
-        this->background_->setDimensions(this->width_,this-> height_);
-        // adapt bar
-        this->setValue(this->value_);
-    }
-
-    void BarOverlayElement::setValue(float value)
+    void HUDBar::setValue(float value)
     {
         if (value == this->value_)
             return;
@@ -151,27 +149,27 @@ namespace orxonox
         // set value
         if (this->right2Left_)
         {
-            // backward case
-            this->setPosition(this->offset_ + this->barwidth_ * (1 - this->value_), 0);
-            this->setDimensions(this->barwidth_ * this->value_, this->height_);
+            // backward casew
+            this->bar_->setPosition(barOffsetLeft_s + barWidth_s * (1 - this->value_), barOffsetTop_s);
+            this->bar_->setDimensions(barWidth_s * this->value_, barHeight_s);
         }
         else
         {
             // default case
-            this->setPosition(this->offset_, 0);
-            this->setDimensions(this->barwidth_ * this->value_, this->height_);
+            this->bar_->setPosition(barOffsetLeft_s, barOffsetTop_s);
+            this->bar_->setDimensions(barWidth_s * this->value_, barHeight_s);
         }
         if (this->value_ != 0)
-            this->setTiling(this->value_, 1.0);
+            this->bar_->setTiling(this->value_, 1.0);
     }
 
-    void BarOverlayElement::addColour(float value, const ColourValue& colour)
+    void HUDBar::addColour(float value, const ColourValue& colour)
     {
         value = clamp<float>(value, 0, 1);
         this->colours_[value] = colour;
     }
 
-    void BarOverlayElement::clearColours()
+    void HUDBar::clearColours()
     {
         this->colours_.clear();
     }

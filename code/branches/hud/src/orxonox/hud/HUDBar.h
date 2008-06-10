@@ -24,31 +24,33 @@
  *   Co-authors:
  *      Felix Schulthess
  *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *
  */
 
-#ifndef _BarOverlayElement_H__
-#define _BarOverlayElement_H__
+#ifndef _HUDBar_H__
+#define _HUDBar_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <map>
 
 #include <OgrePrerequisites.h>
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Math.h"
+#include "HUDOverlay.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport BarOverlayElement : public Ogre::PanelOverlayElement
+  class _OrxonoxExport HUDBar : public HUDOverlay, public TickableReal
   {
     public:
-      BarOverlayElement(const Ogre::String& name);
-      virtual ~BarOverlayElement();
+      HUDBar();
+      virtual ~HUDBar();
 
-      void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
-      void resize();
+      virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+
+      //virtual void tick(float dt) { }
+
       void setValue(float value);
       void addColour(float value, const ColourValue& colour);
       void clearColours();
@@ -65,20 +67,15 @@ namespace orxonox
       bool right2Left_;
       bool autoColour_;                   // whether bar changes colour automatically
       float value_;                       // progress of bar
-      int left_;
-      int top_;
-      int width_;
-      int height_;
-      float widthratio_;
-      int offset_;
-      int barwidth_;
-      Ogre::Real leftRel_;
-      Ogre::Real topRel_;
-      Ogre::Real dimRel_;
-      Ogre::OverlayContainer* background_;
-      Ogre::String name_;
+      Ogre::PanelOverlayElement* bar_;
+      Ogre::PanelOverlayElement* background_;
       Ogre::TextureUnitState* textureUnitState_;
       std::map<float, ColourValue> colours_;
+
+      float barWidth_s;
+      float barHeight_s;
+      float barOffsetLeft_s;
+      float barOffsetTop_s;
     };
 }
-#endif /* _BarOverlayElement_H__ */
+#endif /* _HUDBar_H__ */

@@ -20,42 +20,36 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _Ambient_H__
-#define _Ambient_H__
-
-#include "OrxonoxPrereqs.h"
-
-#include "util/Math.h"
-#include "core/BaseObject.h"
-#include "network/Synchronisable.h"
+#include "OrxonoxStableHeaders.h"
+#include "HUDFPSText.h"
+#include "GraphicsEngine.h"
+#include "util/Convert.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Ambient : public BaseObject, network::Synchronisable
+  CreateFactory(HUDFPSText);
+
+  HUDFPSText::HUDFPSText()
+  {
+    RegisterObject(HUDFPSText);
+  }
+
+  HUDFPSText::~HUDFPSText()
+  {
+    if (this->isInitialized())
     {
-        public:
-            Ambient();
-            virtual ~Ambient();
+    }
+  }
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void setAmbientLight(const ColourValue& colour);
-            virtual bool create();
-            void registerAllVariables();
-
-            static void setAmbientLightTest(const ColourValue& colour)
-                { Ambient::instance_s->setAmbientLight(colour); }
-
-        private:
-            static Ambient* instance_s;
-            ColourValue ambientLight_;
-
-    };
+  void HUDFPSText::tick(float dt)
+  {
+    float fps = GraphicsEngine::getSingleton().getAverageFPS();
+    this->text_->setCaption(this->getCaption() + convertToString(fps));
+  }
 }
-
-#endif /* _Ambient_H__ */

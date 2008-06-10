@@ -100,7 +100,7 @@ namespace orxonox
     timer_(0),
     // turn on frame smoothing by setting a value different from 0
     frameSmoothingTime_(0.0f),
-    orxonoxHUD_(0),
+    //orxonoxHUD_(0),
     bAbort_(false),
     timefactor_(1.0f),
     mode_(STANDALONE),
@@ -115,7 +115,8 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // keep in mind: the order of deletion is very important!
-    this->orxonoxHUD_->destroy();
+    /*if (this->orxonoxHUD_)
+      delete this->orxonoxHUD_;*/
     Loader::close();
     InputManager::destroy();
     //if (this->auMan_)
@@ -331,9 +332,10 @@ namespace orxonox
     //auMan_->ambientStart();
 
     // Load the HUD
-    COUT(3) << "Orxonox: Loading HUD..." << std::endl;
-    orxonoxHUD_ = &HUD::getSingleton();
-    orxonoxHUD_->initialise();
+    COUT(3) << "Orxonox: Loading HUD" << std::endl;
+
+    Level* hud = new Level("hud/hud.oxh");
+    Loader::load(hud);
 
     return true;
   }
@@ -436,12 +438,6 @@ namespace orxonox
     float frameTime = 0.0f;
 //    clock_t time = 0;
 
-    //Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
-    //Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
-
-    //Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "Bloom");
-    //Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "MotionBlur");
-
     COUT(3) << "Orxonox: Starting the main loop." << std::endl;
     while (!bAbort_)
     {
@@ -458,7 +454,7 @@ namespace orxonox
       // HUD::getSingleton().setTime(now);
       if (mode_ != DEDICATED && frameTime > 0.4f)
       {
-        HUD::getSingleton().setRenderTimeRatio(renderTime / frameTime);
+        GraphicsEngine::getSingleton().setAverageRTR(renderTime / frameTime);
         frameTime = 0.0f;
         renderTime = 0.0f;
       }

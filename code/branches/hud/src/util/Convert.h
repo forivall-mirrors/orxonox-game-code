@@ -298,6 +298,13 @@ struct ConverterSpecialized<FromType, std::string, _ToType_>
     }
 };
 
+// convert to string Shortcut
+template <class FromType>
+std::string convertToString(FromType value)
+{
+  return getConvertedValue<FromType, std::string>(value);
+}
+
 // convert from string
 template <class ToType>
 struct ConverterSpecialized<std::string, ToType, _FromType_>

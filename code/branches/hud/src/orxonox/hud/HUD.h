@@ -34,24 +34,29 @@
 
 #include <OgrePrerequisites.h>
 #include <OgreTextAreaOverlayElement.h>
+#include "core/BaseObject.h"
 #include "objects/Tickable.h"
 #include "util/Math.h"
 #include "OverlayElementFactories.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HUD : public TickableReal
+    class HUDBar;
+    class HUDOverlay;
+
+    class _OrxonoxExport HUD : public BaseObject, public TickableReal
     {
       public:
-        void initialise();
-        void destroy();
+        HUD();
+        ~HUD();
+
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
         virtual void tick(float);
 
         void resize();
         void addRadarObject(WorldEntity* object, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1));
         void removeRadarObject(WorldEntity* object);
-        void setRenderTimeRatio(float ratio);
         void setFPS();
 
         inline std::list<RadarObject*>& getRadarObjects()
@@ -62,29 +67,33 @@ namespace orxonox
         static void setEnergy(float value);
         static void cycleNavigationFocus();
         static void releaseNavigationFocus();
-        static void toggleFPS();
-        static void toggleRenderTime();
+        static void toggleVisibility(const std::string& name);
 
       private:
-        HUD();
         HUD(const HUD& instance);
-        ~HUD();
+
+        void addHUDElement(HUDOverlay* element);
+        HUDOverlay* getHUDElement(unsigned int index);
+
+        std::map<std::string, HUDOverlay*> hudElements_;
 
         std::list<RadarObject*> roSet_;
-        BarOverlayElementFactory barOverlayElementFactory_;
+
         RadarOverlayElementFactory radarOverlayElementFactory_;
 
         Ogre::Overlay* orxonoxHUD_;
         Ogre::OverlayContainer* container_;
         Ogre::TextAreaOverlayElement* fpsText_;
         Ogre::TextAreaOverlayElement* rTRText_;
-        BarOverlayElement* energyBar_;
+        HUDBar* energyBar_;
         BarOverlayElement* speedoBar_;
         RadarOverlayElement* radar_;
         Navigation* nav_;
 
         bool showFPS_;
         bool showRenderTime_;
+
+        static HUD* instance_s;
     };
 }
 

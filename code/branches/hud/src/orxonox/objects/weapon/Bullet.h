@@ -44,8 +44,6 @@ namespace orxonox {
 	  ~Bullet();
 
     virtual void tick(float dt) { }
-
-    inline virtual void loadParams(TiXmlElement* xmlElem) { Model::loadParams(xmlElem); };
  };
 }
 

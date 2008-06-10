@@ -20,42 +20,32 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _Ambient_H__
-#define _Ambient_H__
+#ifndef _HUDRTRText_H__
+#define _HUDRTRText_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "util/Math.h"
-#include "core/BaseObject.h"
-#include "network/Synchronisable.h"
+#include "HUDText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Ambient : public BaseObject, network::Synchronisable
-    {
-        public:
-            Ambient();
-            virtual ~Ambient();
+  class _OrxonoxExport HUDRTRText : public HUDText
+  {
+  public:
+    HUDRTRText();
+    virtual ~HUDRTRText();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void setAmbientLight(const ColourValue& colour);
-            virtual bool create();
-            void registerAllVariables();
+    //virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-            static void setAmbientLightTest(const ColourValue& colour)
-                { Ambient::instance_s->setAmbientLight(colour); }
+    virtual void tick(float dt);
 
-        private:
-            static Ambient* instance_s;
-            ColourValue ambientLight_;
-
-    };
+  private:
+  };
 }
-
-#endif /* _Ambient_H__ */
+#endif /* _HUDRTRText_H__ */
