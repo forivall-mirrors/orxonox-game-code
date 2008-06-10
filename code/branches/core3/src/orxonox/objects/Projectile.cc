@@ -74,7 +74,8 @@ namespace orxonox
         SetConfigValue(lifetime_, 4.0).description("The time in seconds a projectile stays alive");
         SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second");
 
-        this->setVelocity(this->owner_->getInitialDir() * this->speed_);
+        if (this->owner_)
+            this->setVelocity(this->owner_->getInitialDir() * this->speed_);
     }
 
     void Projectile::tick(float dt)

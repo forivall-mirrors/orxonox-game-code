@@ -66,8 +66,11 @@ namespace orxonox
     {
         SetConfigValue(colour_, ColourValue(1.0, 0.0, 0.0));
 
-        this->rotatingBillboard1_.getBillboardSet()->getBillboard(0)->setColour(this->colour_);
-        this->rotatingBillboard2_.getBillboardSet()->getBillboard(0)->setColour(this->colour_);
+        if (this->isInitialized())
+        {
+            this->rotatingBillboard1_.getBillboardSet()->getBillboard(0)->setColour(this->colour_);
+            this->rotatingBillboard2_.getBillboardSet()->getBillboard(0)->setColour(this->colour_);
+        }
     }
 
     void RotatingProjectile::tick(float dt)
