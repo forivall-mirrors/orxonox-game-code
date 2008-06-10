@@ -57,6 +57,7 @@ namespace orxonox
         this->objects_ = new ObjectListBase(this);
 
         this->bCreatedOneObject_ = false;
+        this->bSetName_ = false;
         this->factory_ = 0;
 
         this->bHasConfigValues_ = false;
@@ -85,21 +86,23 @@ namespace orxonox
         @param proposal A pointer to a newly created identifier for the case of non existance in the map
         @return The identifier (unique instance)
     */
-    Identifier *Identifier::getIdentifier(std::string &name, Identifier *proposal)
+    Identifier* Identifier::getIdentifierSingleton(const std::string& name, Identifier* proposal)
     {
         static std::map<std::string, Identifier*> identifiers;    //!< The map to store all Identifiers.
         std::map<std::string, Identifier*>::const_iterator it = identifiers.find(name);
-        if (it == identifiers.end())
+
+        if (it != identifiers.end())
         {
-            // there isn't an entry yet, put the proposal in it
-            identifiers[name] = proposal;
+            // There is already an entry: return it and delete the proposal
+            delete proposal;
+            return (*it).second;
         }
         else
         {
-            // this happens when a template exists twice --> delete the proposal
-            delete proposal;
+            // There is no entry: put the proposal into the map and return it
+            identifiers[name] = proposal;
+            return proposal;
         }
-        return identifiers[name];
     }
 
     /**
@@ -144,6 +147,21 @@ namespace orxonox
                 // Tell the parent we're one of it's direct children
                 (*it)->getDirectChildrenIntern().insert((*it)->getDirectChildrenIntern().end(), this);
             }
+        }
+    }
+
+    /**
+        @brief Sets the name of the class.
+        @param name The name
+    */
+    void Identifier::setName(const std::string& name)
+    {
+        if (!this->bSetName_)
+        {
+            this->name_ = name;
+            this->bSetName_ = true;
+            Identifier::getIdentifierMapIntern()[name] = this;
+            Identifier::getLowercaseIdentifierMapIntern()[getLowercase(name)] = this;
         }
     }
 

@@ -57,8 +57,6 @@ namespace orxonox
     SetConsoleCommand(TclThreadManager, dump,    false).setArgumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand(TclThreadManager, flush,   false).setArgumentCompleter(0, autocompletion::tclthreads());
 
-    TclThreadManager* instance_tclthreadmanager = &TclThreadManager::getInstance();
-
     TclThreadManager::TclThreadManager()
     {
         RegisterRootObject(TclThreadManager);

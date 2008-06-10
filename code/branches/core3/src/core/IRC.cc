@@ -42,8 +42,6 @@ namespace orxonox
     SetConsoleCommand(IRC, msg,  false).setAccessLevel(AccessLevel::User);
     SetConsoleCommand(IRC, nick, false).setAccessLevel(AccessLevel::User);
 
-    IRC* instance_irc = &IRC::getInstance();
-
     IRC::IRC()
     {
         RegisterRootObject(IRC);

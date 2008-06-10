@@ -86,9 +86,6 @@ namespace orxonox
     class _CoreExport Identifier
     {
         template <class T>
-        friend class ClassIdentifier;
-
-        template <class T>
         friend class SubclassIdentifier;
 
         friend class Factory;
@@ -113,6 +110,7 @@ namespace orxonox
 
             /** @brief Returns the name of the class the Identifier belongs to. @return The name */
             inline const std::string& getName() const { return this->name_; }
+            void setName(const std::string& name);
 
             virtual void updateConfigValues() const = 0;
 
@@ -219,17 +217,21 @@ namespace orxonox
             ConsoleCommand* getLowercaseConsoleCommand(const std::string& name) const;
 
         protected:
+            Identifier();
+            Identifier(const Identifier& identifier); // don't copy
+            virtual ~Identifier();
+
+            void initialize(std::set<const Identifier*>* parents);
+            static Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
+
             /** @brief Returns the map that stores all Identifiers. @return The map */
             static std::map<std::string, Identifier*>& getIdentifierMapIntern();
             /** @brief Returns the map that stores all Identifiers with their names in lowercase. @return The map */
             static std::map<std::string, Identifier*>& getLowercaseIdentifierMapIntern();
 
-        private:
-            Identifier();
-            Identifier(const Identifier& identifier); // don't copy
-            virtual ~Identifier();
-            void initialize(std::set<const Identifier*>* parents);
+            bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
 
+        private:
             /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
             inline std::set<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
             /** @brief Returns the direct children of the class the Identifier belongs to. @return The list of all direct children */
@@ -253,19 +255,16 @@ namespace orxonox
                 COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
-            static Identifier* getIdentifier(std::string &name, Identifier *proposal);
-
             std::set<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to
             std::set<const Identifier*>* children_;                        //!< The children of the class the Identifier belongs to
 
             std::set<const Identifier*> directParents_;                    //!< The direct parents of the class the Identifier belongs to
             std::set<const Identifier*>* directChildren_;                  //!< The direct children of the class the Identifier belongs to
 
+            bool bSetName_;                                                //!< True if the name is set
             std::string name_;                                             //!< The name of the class the Identifier belongs to
-
             ObjectListBase* objects_;                                      //!< The list of all objects of this class
             BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
-            bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
             static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
             unsigned int classID_;                                         //!< The network ID to identify a class through the network
 
@@ -297,8 +296,10 @@ namespace orxonox
     class ClassIdentifier : public Identifier
     {
         public:
-            ClassIdentifier<T>* registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass);
-            void setName(const std::string& name);
+            static ClassIdentifier<T> *getIdentifier();
+            static ClassIdentifier<T> *getIdentifier(const std::string& name);
+            void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
+            static bool isFirstCall();
 
             void updateConfigValues() const;
 
@@ -308,14 +309,11 @@ namespace orxonox
             XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
             void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
 
-            static ClassIdentifier<T> *getIdentifier();
-
         private:
-            ClassIdentifier();
+            ClassIdentifier() {}
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ~ClassIdentifier() {}                                       // don't delete
 
-            bool bSetName_;                                                                             //!< True if the name is set
             std::map<std::string, XMLPortClassParamContainer<T>*> xmlportParamContainers_;              //!< All loadable parameters
             std::map<std::string, XMLPortClassObjectContainer<T, class O>*> xmlportObjectContainers_;   //!< All attachable objects
 
@@ -326,58 +324,72 @@ namespace orxonox
     ClassIdentifier<T> *ClassIdentifier<T>::classIdentifier_s = 0;
 
     /**
-        @brief Constructor: Creates the ObjectList.
-    */
-    template <class T>
-    ClassIdentifier<T>::ClassIdentifier()
-    {
-        this->bSetName_ = false;
-    }
-
-    /**
         @brief Registers a class, which means that the name and the parents get stored.
         @param parents A list, containing the Identifiers of all parents of the class
-        @param name A string, containing exactly the name of the class
         @param bRootClass True if the class is either an Interface or the BaseObject itself
-        @return The ClassIdentifier itself
     */
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass)
+    void ClassIdentifier<T>::initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass)
     {
-        this->setName(name);
-
         // Check if at least one object of the given type was created
         if (!this->bCreatedOneObject_ && Identifier::isCreatingHierarchy())
         {
             // If no: We have to store the informations and initialize the Identifier
-            COUT(4) << "*** ClassIdentifier: Register Class in " << name << "-Singleton -> Initialize Singleton." << std::endl;
+            COUT(4) << "*** ClassIdentifier: Register Class in " << this->getName() << "-Singleton -> Initialize Singleton." << std::endl;
             if (bRootClass)
-                this->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
+                this->initialize(0); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
             else
                 this->initialize(parents);
         }
-
-        return this;
     }
 
     /**
-        @brief Creates the only instance of this class for the template class T and retrieves a unique Identifier for the given name.
+        @brief Returns true if the function gets called the first time, false otherwise.
+        @return True if this function got called the first time.
+    */
+    template <class T>
+    bool ClassIdentifier<T>::isFirstCall()
+    {
+        static bool bFirstCall = true;
+
+        if (bFirstCall)
+        {
+            bFirstCall = false;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+        @brief Returns the only instance of this class.
         @return The unique Identifier
     */
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
         // check if the static field has already been filled
-        if (ClassIdentifier<T>::classIdentifier_s == 0)
+        if (ClassIdentifier<T>::isFirstCall())
         {
             // Get the name of the class
             std::string name = typeid(T).name();
 
             // create a new identifier anyway. Will be deleted in Identifier::getIdentifier if not used.
-            ClassIdentifier<T> *proposal = new ClassIdentifier<T>();
+            ClassIdentifier<T>* proposal = new ClassIdentifier<T>();
 
             // Get the entry from the map
-            ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)Identifier::getIdentifier(name, proposal);
+            ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)Identifier::getIdentifierSingleton(name, proposal);
+
+            if (ClassIdentifier<T>::classIdentifier_s == proposal)
+            {
+                COUT(4) << "*** Identifier: Requested Identifier for " << name << " was not yet existing and got created." << std::endl;
+            }
+            else
+            {
+                COUT(4) << "*** Identifier: Requested Identifier for " << name << " was already existing and got assigned." << std::endl;
+            }
         }
 
         // Finally return the unique ClassIdentifier
@@ -385,19 +397,16 @@ namespace orxonox
     }
 
     /**
-        @brief Sets the name of the class.
-        @param name The name
+        @brief Does the same as getIdentifier() but sets the name if this wasn't done yet.
+        @param name The name of this Identifier
+        @return The Identifier
     */
     template <class T>
-    void ClassIdentifier<T>::setName(const std::string& name)
+    ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier(const std::string& name)
     {
-        if (!this->bSetName_)
-        {
-            this->name_ = name;
-            this->bSetName_ = true;
-            Identifier::getIdentifierMapIntern()[name] = this;
-            Identifier::getLowercaseIdentifierMapIntern()[getLowercase(name)] = this;
-        }
+        ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier();
+        identifier->setName(name);
+        return identifier;
     }
 
     /**
@@ -406,7 +415,7 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::updateConfigValues() const
     {
-        for (Iterator<T> it = this->objects_->begin(); it; ++it)
+        for (Iterator<T> it = this->getObjects()->begin(); it; ++it)
             (*it)->setConfigValues();
     }
 
