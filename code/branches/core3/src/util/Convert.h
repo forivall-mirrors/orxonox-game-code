@@ -40,6 +40,7 @@
 #include <sstream>
 
 #include "Math.h"
+#include "Debug.h"
 #include "SubString.h"
 #include "MultiTypeMath.h"
 
@@ -73,7 +74,10 @@ struct ConverterSpecialized
 {
     enum { specialized = false };
     static bool convert(ToType* output, const FromType& input)
-    { return false; }
+    {
+        COUT(2) << "Warning: Couldn't convert a value." << std::endl;
+        return false;
+    }
 };
 
 
@@ -138,6 +142,7 @@ struct ConverterDefault
 {
     static bool convert(ToType* output, const FromType& input)
     {
+        COUT(2) << "Warning: Couldn't convert a value." << std::endl;
         return false;
     }
 };

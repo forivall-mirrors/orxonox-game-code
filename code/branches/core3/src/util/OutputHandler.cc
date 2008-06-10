@@ -32,24 +32,17 @@
 */
 
 #include "OutputHandler.h"
-#include "Core.h"
-#include "ConsoleCommand.h"
-#include "Shell.h"
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutGeneric(log,     createConsoleCommand(createFunctor(&OutputHandler::log),     "log"    ));
-    SetConsoleCommandShortcutGeneric(error,   createConsoleCommand(createFunctor(&OutputHandler::error),   "error"  ));
-    SetConsoleCommandShortcutGeneric(warning, createConsoleCommand(createFunctor(&OutputHandler::warning), "warning"));
-    SetConsoleCommandShortcutGeneric(info,    createConsoleCommand(createFunctor(&OutputHandler::info),    "info"   ));
-    SetConsoleCommandShortcutGeneric(debug,   createConsoleCommand(createFunctor(&OutputHandler::debug),   "debug"  ));
-
     /**
         @brief Constructor: Opens the logfile and writes the first line.
         @param logfilename The name of the logfile
     */
     OutputHandler::OutputHandler(const std::string& logfilename)
     {
+        this->outputBuffer_ = &this->fallbackBuffer_;
+        this->softDebugLevel_[0] = this->softDebugLevel_[1] = this->softDebugLevel_[2] = this->softDebugLevel_[3] = 2;
         this->logfilename_ = logfilename;
         this->logfile_.open(this->logfilename_.c_str(), std::fstream::out);
         this->logfile_ << "Started log at yyyy/mm/dd hh:mm:ss" << std::endl;
@@ -76,23 +69,33 @@ namespace orxonox
     }
 
     /**
+        @brief Sets the soft debug level for a given output device.
+        @param device The output device
+        @param level The debug level
+    */
+    void OutputHandler::setSoftDebugLevel(OutputHandler::OutputDevice device, int level)
+    {
+        OutputHandler::getOutStream().softDebugLevel_[(unsigned int)device] = level;
+    }
+
+    /**
         @brief Returns the soft debug level for a given output device.
         @param device The output device
         @return The debug level
     */
     int OutputHandler::getSoftDebugLevel(OutputHandler::OutputDevice device)
     {
-        return Core::getSoftDebugLevel(device);
+        return OutputHandler::getOutStream().softDebugLevel_[(unsigned int)device];
     }
 
     /**
-        @brief Returns the Shell's OutputBuffer. This is mere placed here to avoid
-               recompiling the entire project when Shell.h changes.
-        @return The OutputBuffer of the Shell
+        @brief Sets the OutputBuffer, representing the third output stream.
+        @param buffer The OutputBuffer
     */
-    OutputBuffer& OutputHandler::getShellOutputBuffer()
+    void OutputHandler::setOutputBuffer(OutputBuffer& buffer)
     {
-        return Shell::getInstance().getOutputBuffer();
+        buffer.getStream() >> this->outputBuffer_->getStream().rdbuf();
+        this->outputBuffer_ = &buffer;
     }
 
     /**
@@ -112,7 +115,7 @@ namespace orxonox
         }
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            Shell::getInstance().getOutputBuffer() << sb;
+            (*this->outputBuffer_) << sb;
 
         return *this;
     }
@@ -134,7 +137,7 @@ namespace orxonox
         }
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            Shell::getInstance().getOutputBuffer() << manipulator;
+            (*this->outputBuffer_) << manipulator;
 
         return *this;
     }
@@ -156,7 +159,7 @@ namespace orxonox
         }
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            Shell::getInstance().getOutputBuffer() << manipulator;
+            (*this->outputBuffer_) << manipulator;
 
         return *this;
     }
@@ -178,7 +181,7 @@ namespace orxonox
         }
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            Shell::getInstance().getOutputBuffer() << manipulator;
+            (*this->outputBuffer_) << manipulator;
 
         return *this;
     }

@@ -30,12 +30,11 @@
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 
+#include "core/BaseObject.h"
 #include "core/Error.h"
-#include "core/Debug.h"
 #include "core/CoreIncludes.h"
 
 #include "audio/AudioManager.h"
-#include "core/BaseObject.h"
 #include "orxonox/Orxonox.h"
 
 #include "LevelLoader.h"

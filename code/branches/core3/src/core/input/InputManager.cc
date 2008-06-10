@@ -38,10 +38,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Debug.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 #include "core/Shell.h"               // hack!
+#include "util/Debug.h"
 
 #include "InputBuffer.h"
 #include "KeyBinder.h"

@@ -27,7 +27,7 @@
  */
 #include "AudioStream.h"
 
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "core/Error.h"
 
 namespace audio

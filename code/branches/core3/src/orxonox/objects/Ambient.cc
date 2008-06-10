@@ -38,11 +38,11 @@
 #include "util/SubString.h"
 #include "util/Convert.h"
 #include "util/Math.h"
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "core/CoreIncludes.h"
-#include "GraphicsEngine.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
@@ -67,12 +67,12 @@ namespace orxonox
       GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(ambientLight_);
       return Synchronisable::create();
     }
-    
+
     void Ambient::registerAllVariables(){
       registerVar(&ambientLight_, sizeof(ColourValue), network::DATA);
-      
+
     }
-    
+
     void Ambient::loadParams(TiXmlElement* xmlElem)
     {
     	if (xmlElem->Attribute("colourvalue"))
@@ -93,7 +93,7 @@ namespace orxonox
    void Ambient::setAmbientLight(const ColourValue& colour)
    {
     	GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(colour);
-      ambientLight_=colour;	
+      ambientLight_=colour;
    }
 
     /**

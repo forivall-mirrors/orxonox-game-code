@@ -36,7 +36,7 @@
 #include <OgreOverlayManager.h>
 #include <OgreStringConverter.h>
 
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "core/ConsoleCommand.h"
 #include "objects/SpaceShip.h"
 #include "objects/WorldEntity.h"

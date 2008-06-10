@@ -40,7 +40,7 @@
 #include "RadarObject.h"
 #include "RadarOverlayElement.h"
 #include "HUD.h"
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "util/Math.h"
 
 namespace orxonox

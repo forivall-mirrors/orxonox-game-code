@@ -91,9 +91,12 @@
 #include "tinyxml/tinyxml.h"
 
 #include "util/Convert.h"
+#include "util/Debug.h"
 #include "util/Math.h"
 #include "util/Multitype.h"
 #include "util/MultiTypeMath.h"
+#include "util/OutputBuffer.h"
+#include "util/OutputHandler.h"
 #include "util/Sleep.h"
 #include "util/String.h"
 #include "util/SubString.h"
@@ -103,9 +106,6 @@
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Debug.h"
-#include "core/OutputBuffer.h"
-#include "core/OutputHandler.h"
 #include "core/Executor.h"
 #include "core/XMLPort.h"
 

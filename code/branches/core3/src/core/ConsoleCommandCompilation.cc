@@ -28,7 +28,7 @@
 
 #include "ConsoleCommandCompilation.h"
 #include "ConsoleCommand.h"
-#include "Debug.h"
+#include "util/Debug.h"
 #include "util/ExprParser.h"
 
 namespace orxonox

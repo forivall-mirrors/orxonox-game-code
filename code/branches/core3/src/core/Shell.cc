@@ -33,6 +33,7 @@
 #include "Core.h"
 #include "ConsoleCommand.h"
 #include "input/InputInterfaces.h"
+#include "util/OutputHandler.h"
 
 #define SHELL_UPDATE_LISTENERS(function) \
     for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ) \
@@ -42,6 +43,12 @@ namespace orxonox
 {
     SetConsoleCommand(Shell, clearShell, true);
     SetConsoleCommand(Shell, history, true);
+
+    SetConsoleCommandShortcutGeneric(log,     createConsoleCommand(createFunctor(&OutputHandler::log),     "log"    ));
+    SetConsoleCommandShortcutGeneric(error,   createConsoleCommand(createFunctor(&OutputHandler::error),   "error"  ));
+    SetConsoleCommandShortcutGeneric(warning, createConsoleCommand(createFunctor(&OutputHandler::warning), "warning"));
+    SetConsoleCommandShortcutGeneric(info,    createConsoleCommand(createFunctor(&OutputHandler::info),    "info"   ));
+    SetConsoleCommandShortcutGeneric(debug,   createConsoleCommand(createFunctor(&OutputHandler::debug),   "debug"  ));
 
     Shell::Shell()
     {

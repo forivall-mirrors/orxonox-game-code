@@ -39,7 +39,7 @@
 
 #include <iostream>
 
-#include "core/Debug.h"
+#include "util/Debug.h"
 
 namespace network
 {

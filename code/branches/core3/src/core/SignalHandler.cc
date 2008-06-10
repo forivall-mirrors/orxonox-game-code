@@ -36,8 +36,6 @@
 #include <assert.h>
 #include <iostream>
 
-#include "Debug.h"
-
 SignalHandler * SignalHandler::singletonRef = NULL;
 
 #ifndef __WIN32__

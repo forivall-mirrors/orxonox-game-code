@@ -34,7 +34,7 @@
 #include "AudioSource.h"
 #include "AudioStream.h"
 #include "core/Error.h"
-#include "core/Debug.h"
+#include "util/Debug.h"
 
 namespace audio
 {

@@ -54,11 +54,11 @@
 // core
 #include "core/ConfigFileManager.h"
 #include "core/ConsoleCommand.h"
-#include "core/Debug.h"
 #include "core/Loader.h"
 #include "core/input/InputManager.h"
 #include "core/TclBind.h"
 #include "core/Core.h"
+#include "util/Debug.h"
 
 // audio
 #include "audio/AudioManager.h"

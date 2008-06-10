@@ -64,8 +64,13 @@ class Convert;
 class MultiTypePrimitive;
 class MultiTypeString;
 class MultiTypeMath;
-template <class T>
-class String2Number;
+class OutputHandler;
 class SubString;
+
+namespace orxonox
+{
+    class OutputBuffer;
+    class OutputBufferListener;
+}
 
 #endif /* _UtilPrereqs_H__ */

@@ -41,7 +41,7 @@
 #include "util/SubString.h"
 #include "util/Convert.h"
 #include "util/Math.h"
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "GraphicsEngine.h"
 

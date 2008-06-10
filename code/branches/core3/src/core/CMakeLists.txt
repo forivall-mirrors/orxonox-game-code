@@ -6,8 +6,6 @@ SET(CORE_SRC_FILES
   Language.cc
   ObjectListBase.cc
   OrxonoxClass.cc
-  OutputBuffer.cc
-  OutputHandler.cc
   Script.cc
   SignalHandler.cc
 

@@ -31,9 +31,9 @@
 
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
-#include "Debug.h"
 #include "TclThreadManager.h"
 #include "TclBind.h"
+#include "util/Debug.h"
 #include "util/String.h"
 
 namespace orxonox

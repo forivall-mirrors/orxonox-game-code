@@ -32,7 +32,7 @@
 */
 
 #include "MetaObjectList.h"
-#include "Debug.h"
+#include "util/Debug.h"
 
 namespace orxonox
 {

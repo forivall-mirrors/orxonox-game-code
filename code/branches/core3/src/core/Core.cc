@@ -106,6 +106,10 @@ namespace orxonox
         if (this->softDebugLevelShell_ > this->softDebugLevel_)
             this->softDebugLevel_ = this->softDebugLevelShell_;
 
+        OutputHandler::setSoftDebugLevel(OutputHandler::LD_All,     this->softDebugLevel_);
+        OutputHandler::setSoftDebugLevel(OutputHandler::LD_Console, this->softDebugLevelConsole_);
+        OutputHandler::setSoftDebugLevel(OutputHandler::LD_Logfile, this->softDebugLevelLogfile_);
+        OutputHandler::setSoftDebugLevel(OutputHandler::LD_Shell,   this->softDebugLevelShell_);
 
         std::string temp = this->language_;
         SetConfigValue(language_, Language::getLanguage().defaultLanguage_).description("The language of the ingame text");
@@ -157,6 +161,8 @@ namespace orxonox
                 Core::getInstance().softDebugLevelLogfile_ = level;
             else if (device == OutputHandler::LD_Shell)
                 Core::getInstance().softDebugLevelShell_ = level;
+
+            OutputHandler::setSoftDebugLevel(device, level);
         }
      }
 
@@ -197,13 +203,4 @@ namespace orxonox
         TclThreadManager::getInstance().tick(dt);
         InputManager::tick(dt);
     }
-}
-
-/**
-    @brief Returns the soft debug level, stored in the only existing instance of the DebugLevel class, configured in the config-file.
-    @return The soft debug level
-*/
-int getSoftDebugLevel()
-{
-    return orxonox::Core::getSoftDebugLevel();
 }

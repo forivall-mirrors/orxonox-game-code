@@ -59,8 +59,8 @@
 #include <string>
 #include <utility>
 
-#include "Debug.h"
 #include "Iterator.h"
+#include "util/Debug.h"
 #include "util/String.h"
 
 namespace orxonox

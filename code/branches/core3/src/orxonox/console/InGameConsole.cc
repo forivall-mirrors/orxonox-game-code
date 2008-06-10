@@ -37,11 +37,11 @@
 #include <OgreOverlayContainer.h>
 #include <OgreStringConverter.h>
 
-#include "core/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
+#include "util/Debug.h"
 #include "util/Math.h"
 #include "GraphicsEngine.h"
 
@@ -456,6 +456,11 @@ namespace orxonox
         {
             this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.40, 0.20, 0.40, 1.00));
             this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.80, 0.60, 0.80, 1.00));
+        }
+        else if (colourcode == 6)
+        {
+            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.30, 0.20, 0.30, 1.00));
+            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.50, 0.40, 0.50, 1.00));
         }
         else
         {

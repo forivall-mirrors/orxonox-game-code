@@ -36,13 +36,22 @@
 #ifndef _Debug_H__
 #define _Debug_H__
 
-#include "CorePrereqs.h"
+#include "UtilPrereqs.h"
 
 #include <stdio.h>
 
 #include "OutputHandler.h"
 
-extern "C" _CoreExport int getSoftDebugLevel();
+
+/**
+    @brief Returns the soft debug level, stored in the only existing instance of the OutputHandler class, configured in the config-file.
+    @return The soft debug level
+*/
+static inline int getSoftDebugLevel()
+{
+    return orxonox::OutputHandler::getSoftDebugLevel();
+}
+
 
 // DEFINE ERROR MODES
 #define ORX_NONE            0

@@ -30,9 +30,9 @@
 #include "ConsoleCommand.h"
 #include "util/String.h"
 #include "util/Convert.h"
+#include "util/Debug.h"
 #include "Identifier.h"
 #include "Language.h"
-#include "Debug.h"
 #include "TclBind.h"
 
 namespace orxonox

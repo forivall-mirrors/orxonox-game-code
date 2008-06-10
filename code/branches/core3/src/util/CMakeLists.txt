@@ -6,6 +6,8 @@ SET(UTIL_SRC_FILES
   MultiTypePrimitive.cc
   MultiTypeString.cc
   MultiTypeMath.cc
+  OutputBuffer.cc
+  OutputHandler.cc
   String.cc
   SubString.cc
 )

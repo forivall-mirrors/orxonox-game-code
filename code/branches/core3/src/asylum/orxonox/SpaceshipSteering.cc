@@ -30,7 +30,7 @@
 #include <OgreNode.h>
 #include <OgreSceneNode.h>
 
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "util/Math.h"
 #include "SpaceshipSteering.h"
 

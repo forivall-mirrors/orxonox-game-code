@@ -36,8 +36,8 @@
 #include "tinyxml/tinyxml.h"
 #include "GraphicsEngine.h"
 #include "core/CoreIncludes.h"
-#include "core/Debug.h"
 #include "core/XMLPort.h"
+#include "util/Debug.h"
 
 namespace orxonox
 {

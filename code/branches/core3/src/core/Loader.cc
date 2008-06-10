@@ -32,10 +32,10 @@
 #include "Identifier.h"
 #include "Iterator.h"
 #include "ObjectList.h"
-#include "Debug.h"
 #include "CoreIncludes.h"
 #include "Script.h"
 #include "Namespace.h"
+#include "util/Debug.h"
 
 #include "tinyxml/ticpp.h"
 

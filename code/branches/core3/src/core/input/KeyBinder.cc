@@ -35,7 +35,7 @@
 #include <fstream>
 #include <string>
 #include "util/Convert.h"
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "InputCommands.h"

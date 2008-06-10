@@ -37,9 +37,9 @@
 #include "CoreIncludes.h"
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
-#include "Debug.h"
 #include "TclBind.h"
 #include "TclThreadManager.h"
+#include "util/Debug.h"
 #include "util/Convert.h"
 
 #define TCLTHREADMANAGER_MAX_QUEUE_LENGTH 100

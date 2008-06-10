@@ -31,11 +31,11 @@
 
 #include "CorePrereqs.h"
 
+#include "util/Debug.h"
 #include "util/XMLIncludes.h"
 #include "util/MultiTypeMath.h"
 #include "tinyxml/ticpp.h"
 #include "Executor.h"
-#include "Debug.h"
 #include "CoreIncludes.h"
 #include "BaseObject.h"
 

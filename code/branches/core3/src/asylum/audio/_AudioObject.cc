@@ -29,7 +29,7 @@
 #include <iostream>
 #include <string>
 
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "AudioObject.h"
 
 namespace audio

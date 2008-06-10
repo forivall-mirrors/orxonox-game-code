@@ -128,7 +128,7 @@ class _UtilExport Convert
             @example
             std::string input = "3.14";
             float f;
-            bool success = string2Number(&f, input);
+            bool success = FromString(&f, input);
         */
         template <typename T>
         static bool FromString(T* output, const std::string& input)
@@ -150,7 +150,7 @@ class _UtilExport Convert
             @example
             std::string input = "3.14";
             float f;
-            bool success = string2Number(&f, input, 0.000000);
+            bool success = FromString(&f, input, 0.000000);
         */
         template <typename T>
         static bool FromString(T* output, const std::string& input, T fallbackValue)

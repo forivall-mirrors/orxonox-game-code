@@ -46,10 +46,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Debug.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
+#include "util/Debug.h"
 
 #include "console/InGameConsole.h"
 #include "hud/HUD.h"

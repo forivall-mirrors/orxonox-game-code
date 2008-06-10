@@ -37,18 +37,18 @@
 #include "CameraHandler.h"
 #include "util/Convert.h"
 #include "util/Math.h"
+#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Debug.h"
-#include "GraphicsEngine.h"
 #include "core/input/InputManager.h"
-#include "tools/ParticleInterface.h"
-#include "RotatingProjectile.h"
-#include "ParticleProjectile.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
+#include "tools/ParticleInterface.h"
 #include "network/Client.h"
 #include "hud/HUD.h"
+#include "RotatingProjectile.h"
+#include "ParticleProjectile.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
