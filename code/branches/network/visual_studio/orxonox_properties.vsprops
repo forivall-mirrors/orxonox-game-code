@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="orxonox_properties"
+	InheritedPropertySheets=".\directory_properties.vsprops"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		PreprocessorDefinitions="ORXONOX_NO_EXPORTS;NETWORK_STATIC_BUILD"
+		UsePrecompiledHeader="2"
+		PrecompiledHeaderThrough="OrxonoxStableHeaders.h"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalDependencies="OgreMain$(CSS).lib tcl85t.lib enet-1.2$(CS).lib zlib-1.2.3$(CS).lib"
+		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
+		IgnoreDefaultLibraryNames="LIBCMT;LIBCMTD"
+	/>
+</VisualStudioPropertySheet>
