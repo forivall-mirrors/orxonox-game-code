@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDSpeedBar : public HUDBar
+  class _OrxonoxExport HUDSpeedBar : public HUDBar, public Tickable
   {
     public:
       HUDSpeedBar();

@@ -32,10 +32,10 @@
 #include <OgreOverlayManager.h>
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
-  CreateFactory(HUDOverlay);
   unsigned int HUDOverlay::hudOverlayCounter_s = 0;
 
   HUDOverlay::HUDOverlay()
@@ -48,16 +48,26 @@ namespace orxonox
   {
     BaseObject::XMLPort(xmlElement, mode);
 
-    overlay_ = Ogre::OverlayManager::getSingleton().create("HUDOverlay"
-          + convertToString(hudOverlayCounter_s++) + "_" + this->getName());
+    if (mode == XMLPort::LoadObject)
+    {
+      overlay_ = Ogre::OverlayManager::getSingleton().create("HUDOverlay"
+            + convertToString(hudOverlayCounter_s++) + "_" + this->getName());
+
+      this->windowWidth_ = GraphicsEngine::getSingleton().getWindowWidth();
+      this->windowHeight_ = GraphicsEngine::getSingleton().getWindowHeight();
+      this->windowAspectRatio_ = windowWidth_/(float)windowHeight_;
+    }
 
     XMLPortParam(HUDOverlay, "scale", setScale, getScale, xmlElement, mode);
     XMLPortParam(HUDOverlay, "scroll", setScroll, getScroll, xmlElement, mode);
     XMLPortParam(HUDOverlay, "rotation", setRotation, getRotation, xmlElement, mode);
 
-    this->overlay_->show();
-    if (!this->isVisible())
-        this->overlay_->hide();
+    if (mode == XMLPort::LoadObject)
+    {
+      this->overlay_->show();
+      if (!this->isVisible())
+          this->overlay_->hide();
+    }
   }
 
   HUDOverlay::~HUDOverlay()
@@ -73,6 +83,13 @@ namespace orxonox
           else
               overlay_->hide();
       }
+  }
+
+  void HUDOverlay::windowResized(int newWidth, int newHeight)
+  {
+    this->windowWidth_ = newWidth;
+    this->windowHeight_ = newHeight;
+    this->windowAspectRatio_ = windowWidth_/(float)windowHeight_;
   }
 
 }

@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDFPSText : public HUDText
+  class _OrxonoxExport HUDFPSText : public HUDText, public Tickable
   {
   public:
     HUDFPSText();

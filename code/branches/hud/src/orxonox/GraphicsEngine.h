@@ -46,8 +46,8 @@
 #include "core/OrxonoxClass.h"
 
 
-namespace orxonox {
-
+namespace orxonox
+{
     /**
     @brief Graphics engine manager class
     */

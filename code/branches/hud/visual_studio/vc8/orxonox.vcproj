@@ -221,6 +221,13 @@
 				<File
 					RelativePath="..\..\src\orxonox\hud\Navigation.cc"
 					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\hud\RadarObject.cc"
@@ -440,6 +447,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\Timer.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\tools\WindowEventListener.cc"
 					>
 				</File>
 			</Filter>
@@ -662,6 +673,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tools\Timer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\tools\WindowEventListener.h"
 					>
 				</File>
 			</Filter>

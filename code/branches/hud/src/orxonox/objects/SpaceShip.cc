@@ -368,9 +368,9 @@ namespace orxonox
     }
 
     std::string SpaceShip::whereAmI() {
-	return getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().x)
-	+ "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().y)
-	+ "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().z);
+  return getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().x)
+  + "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().y)
+  + "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().z);
     }
 
     void SpaceShip::tick(float dt)
@@ -379,7 +379,7 @@ namespace orxonox
             return;
 
         currentDir_ = getOrientation()*initialDir_;
-		currentOrth_ = getOrientation()*initialOrth_;
+    currentOrth_ = getOrientation()*initialOrth_;
 
         if (this->cam_)
             this->cam_->tick(dt);

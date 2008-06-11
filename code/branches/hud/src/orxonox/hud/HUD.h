@@ -38,13 +38,14 @@
 #include "objects/Tickable.h"
 #include "util/Math.h"
 #include "OverlayElementFactories.h"
+#include "tools/WindowEventListener.h"
 
 namespace orxonox
 {
     class HUDBar;
     class HUDOverlay;
 
-    class _OrxonoxExport HUD : public BaseObject, public TickableReal
+    class _OrxonoxExport HUD : public BaseObject, public TickableReal, public WindowEventListener
     {
       public:
         HUD();
@@ -74,6 +75,8 @@ namespace orxonox
 
         void addHUDElement(HUDOverlay* element);
         HUDOverlay* getHUDElement(unsigned int index);
+
+        void windowResized(int newWidth, int newHeight);
 
         std::map<std::string, HUDOverlay*> hudElements_;
 

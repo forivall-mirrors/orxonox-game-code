@@ -22,7 +22,7 @@
  *   Author:
  *      Felix Schulthess
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
@@ -34,16 +34,21 @@
 #include <OgrePrerequisites.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
+#include "HUDOverlay.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Navigation
+    class _OrxonoxExport Navigation : public HUDOverlay, public Tickable
     {
       public:
-        Navigation(Ogre::OverlayContainer* container);
-        ~Navigation();
+        Navigation();
+        virtual ~Navigation();
 
-        void update();
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+
+        virtual void tick(float dt);
+
         void cycleFocus();
         float getDist2Focus() const;
 
@@ -51,17 +56,30 @@ namespace orxonox
             { return this->focus_; }
         void releaseFocus();
 
+    protected:
+      virtual void windowResized(int newWidth, int newHeight);
+
       private:
         void init();
         void updateMarker();
         void updateFocus();
 
-        Ogre::OverlayContainer* container_;
+        void setNavMarkerSize(Vector2 size);
+        Vector2 getNavMarkerSize() const;
+        void setAimMarkerSize(Vector2 size);
+        Vector2 getAimMarkerSize() const;
+        void setTextSize(float size);
+        float getTextSize() const;
+        void setFont(const std::string& font);
+        std::string getFont() const;
+
+        Ogre::OverlayContainer* container_;         //!< Container that holds the navigation elements
         Ogre::PanelOverlayElement* navMarker_;      // the panel used to show the arrow
         Ogre::PanelOverlayElement* aimMarker_;
         Ogre::TextAreaOverlayElement* navText_;     // displaying distance
         std::list<RadarObject*>::iterator it_;
         RadarObject* focus_;                        // next pointer of linked list
+        bool wasOutOfView_;
   };
 }
 

@@ -61,27 +61,33 @@ namespace orxonox
   {
     HUDOverlay::XMLPort(xmlElement, mode);
 
-    // create background
-    this->background_ = static_cast<PanelOverlayElement*>(
-            OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background"));
-    this->background_->setMetricsMode(GMM_RELATIVE);
-    this->background_->setDimensions(1.0f, 1.0f);
-    this->background_->setPosition(0.0f, 0.0f);
+    if (mode == XMLPort::LoadObject)
+    {
+      // create background
+      this->background_ = static_cast<PanelOverlayElement*>(
+              OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background"));
+      this->background_->setMetricsMode(GMM_RELATIVE);
+      this->background_->setDimensions(1.0f, 1.0f);
+      this->background_->setPosition(0.0f, 0.0f);
 
-    this->text_ = static_cast<TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", getName() + "_Text"));
-    this->text_->setMetricsMode(Ogre::GMM_RELATIVE);
-    this->text_->setDimensions(1.0f, 1.0f);
-    this->text_->setPosition(0.0f, 0.0f);
-    this->text_->setCharHeight(1.0f);
+      this->text_ = static_cast<TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", getName() + "_Text"));
+      this->text_->setMetricsMode(Ogre::GMM_RELATIVE);
+      this->text_->setPosition(0.0f, 0.0f);
+      this->text_->setCharHeight(1.0f);
+      this->text_->setFontName("Monofur");
 
-    this->overlay_->add2D(this->background_);
-    this->background_->addChild(this->text_);
+      this->overlay_->add2D(this->background_);
+      this->background_->addChild(this->text_);
+    }
 
     XMLPortParam(HUDText, "material", setBackgroundMaterial, getBackgroundMaterial, xmlElement, mode);
     XMLPortParam(HUDText, "font", setFont, getFont, xmlElement, mode);
     XMLPortParam(HUDText, "caption", setCaption, getCaption, xmlElement, mode);
 
-    this->text_->setCaption(this->caption_);
+    if (mode == XMLPort::LoadObject)
+    {
+      this->text_->setCaption(this->caption_);
+    }
   }
 
   void HUDText::setBackgroundMaterial(const std::string& material)

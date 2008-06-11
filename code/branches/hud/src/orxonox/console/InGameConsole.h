@@ -37,11 +37,12 @@
 
 #include "core/Shell.h"
 #include "objects/Tickable.h"
+#include "tools/WindowEventListener.h"
 
 
 namespace orxonox
 {
-    class _OrxonoxExport InGameConsole : public TickableReal, public ShellListener
+    class _OrxonoxExport InGameConsole : public TickableReal, public ShellListener, public WindowEventListener
     {
         public: // functions
             void initialise();
@@ -49,7 +50,6 @@ namespace orxonox
             void setConfigValues();
 
             void tick(float dt);
-            void resize();
 
             static InGameConsole& getInstance();
 
@@ -75,6 +75,8 @@ namespace orxonox
             void colourLine(int colourcode, int index);
             void setCursorPosition(unsigned int pos);
             void print(const std::string& text, int index, bool alwaysShift = false);
+
+            void windowResized(int newWidth, int newHeight);
 
             static Ogre::UTFString convert2UTF(std::string s);
 

@@ -40,15 +40,13 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDText : public HUDOverlay, public TickableReal
+  class _OrxonoxExport HUDText : public HUDOverlay
   {
   public:
     HUDText();
     virtual ~HUDText();
 
     virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-
-    virtual void tick(float dt) { }
 
   protected:
     void setBackgroundMaterial(const std::string& material);

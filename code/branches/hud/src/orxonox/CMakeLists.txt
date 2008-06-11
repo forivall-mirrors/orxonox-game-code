@@ -17,6 +17,7 @@ SET( ORXONOX_SRC_FILES
   tools/Mesh.cc
   tools/ParticleInterface.cc
   tools/Timer.cc
+  tools/WindowEventListener.cc
 
   objects/Ambient.cc
   objects/Camera.cc

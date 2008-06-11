@@ -26,26 +26,33 @@
  *
  */
 
-#ifndef _HUDRTRText_H__
-#define _HUDRTRText_H__
+#ifndef _WindowEventListener_H__
+#define _WindowEventListener_H__
 
 #include "OrxonoxPrereqs.h"
+#include "core/OrxonoxClass.h"
 
-#include "HUDText.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDRTRText : public HUDText, public Tickable
-  {
-  public:
-    HUDRTRText();
-    virtual ~HUDRTRText();
+    /**
+        @brief Interface for receiving window events.
+    */
+    class _OrxonoxExport WindowEventListener : virtual public OrxonoxClass
+    {
+    public:
+        WindowEventListener();
+        virtual ~WindowEventListener() { }
 
-    //virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+		    /** Window has moved position */
+		    virtual void windowMoved() { }
 
-    virtual void tick(float dt);
+		    /** Window has resized */
+		    virtual void windowResized(int newWidth, int newHeight) { }
 
-  private:
-  };
+		    /** Window has lost/gained focus */
+		    virtual void windowFocusChanged() { }
+    };
 }
-#endif /* _HUDRTRText_H__ */
+
+#endif /* _WindowEventListener_H__ */

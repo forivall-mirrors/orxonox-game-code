@@ -169,7 +169,7 @@ namespace orxonox
         // comment following line to disable noise
         this->consoleOverlayContainer_->addChild(this->consoleOverlayNoise_);
 
-        this->resize();
+        this->windowResized(GraphicsEngine::getSingleton().getWindowWidth(), GraphicsEngine::getSingleton().getWindowHeight());
 
         // move overlay "above" the top edge of the screen
         // we take -1.2 because the border makes the panel bigger
@@ -369,10 +369,10 @@ namespace orxonox
     /**
         @brief Resizes the console elements. Call if window size changes.
     */
-    void InGameConsole::resize()
+    void InGameConsole::windowResized(int newWidth, int newHeight)
     {
-        this->windowW_ = GraphicsEngine::getSingleton().getWindowWidth();
-        this->windowH_ = GraphicsEngine::getSingleton().getWindowHeight();
+        this->windowW_ = newWidth;
+        this->windowH_ = newHeight;
         this->consoleOverlayBorder_->setWidth((int) this->windowW_* this->relativeWidth);
         this->consoleOverlayBorder_->setHeight((int) this->windowH_ * this->relativeHeight);
         this->consoleOverlayNoise_->setWidth((int) this->windowW_ * this->relativeWidth - 10);
@@ -467,7 +467,7 @@ namespace orxonox
             InputManager::setInputState(InputManager::IS_CONSOLE);
             Shell::getInstance().registerListener(this);
 
-            this->resize();
+            this->windowResized(this->windowW_, this->windowH_);
             this->linesChanged();
             this->cursorChanged();
             this->consoleOverlay_->show();

@@ -106,10 +106,6 @@ namespace orxonox
             if (this->orxonoxHUD_)
                 Ogre::OverlayManager::getSingleton().destroy(this->orxonoxHUD_);
             this->orxonoxHUD_ = 0;
-
-            if (this->nav_)
-                delete this->nav_;
-            this->nav_ = 0;
         }
 
         instance_s = 0;
@@ -141,9 +137,6 @@ namespace orxonox
         // create radar
         radar_ = static_cast<RadarOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Radar", "radar"));
         radar_->init(0.5, 0.9, 0.2, container_);
-
-        // create Navigation
-        nav_ = new Navigation(container_);
 
         WorldEntity* object;
         object = new WorldEntity();
@@ -188,10 +181,9 @@ namespace orxonox
     void HUD::tick(float dt)
     {
         radar_->update();
-        nav_->update();
     }
 
-    void HUD::resize()
+    void HUD::windowResized(int newWidth, int newHeight)
     {
         this->radar_->resize();
     }
@@ -214,8 +206,8 @@ namespace orxonox
         for(std::list<RadarObject*>::iterator it=roSet_.begin(); it!=roSet_.end(); ++it){
             if ((*it)->getObject() == object)
             {
-                if (this->nav_ && this->nav_->getFocus() == (*it))
-                    this->nav_->releaseFocus();
+                /*if (this->nav_ && this->nav_->getFocus() == (*it))
+                    this->nav_->releaseFocus();*/
 
                 delete (*it);
                 roSet_.erase(it);
@@ -242,11 +234,16 @@ namespace orxonox
         HUD::getSingleton().energyBar_->setValue(value);
     }
 
-    /*static*/ void HUD::cycleNavigationFocus(){
-        HUD::getSingleton().nav_->cycleFocus();
+    /*static*/ void HUD::cycleNavigationFocus()
+    {
+        if (HUD::getSingleton().hudElements_.find("Navigation") != HUD::getSingleton().hudElements_.end())
+        {
+            Navigation* navi = dynamic_cast<Navigation*>(HUD::getSingleton().hudElements_["Navigation"]);
+            navi->cycleFocus();
+        }
     }
 
     /*static*/ void HUD::releaseNavigationFocus(){
-        HUD::getSingleton().nav_->releaseFocus();
+        //HUD::getSingleton().nav_->releaseFocus();
     }
 }

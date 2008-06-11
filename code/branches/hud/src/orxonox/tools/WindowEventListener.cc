@@ -26,26 +26,16 @@
  *
  */
 
-#ifndef _HUDRTRText_H__
-#define _HUDRTRText_H__
-
-#include "OrxonoxPrereqs.h"
-
-#include "HUDText.h"
+#include "OrxonoxStableHeaders.h"
+#include "WindowEventListener.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDRTRText : public HUDText, public Tickable
-  {
-  public:
-    HUDRTRText();
-    virtual ~HUDRTRText();
-
-    //virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-
-    virtual void tick(float dt);
-
-  private:
-  };
+    /**
+        @brief Constructor for the WindowEventListener.
+    */
+    WindowEventListener::WindowEventListener()
+    {
+        RegisterObject(WindowEventListener);
+    }
 }
-#endif /* _HUDRTRText_H__ */

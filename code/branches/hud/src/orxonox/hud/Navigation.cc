@@ -22,7 +22,7 @@
  *   Author:
  *      Felix Schulthess
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
@@ -32,65 +32,153 @@
 #include <OgreOverlayManager.h>
 #include <OgreStringConverter.h>
 
-#include "GraphicsEngine.h"
+//#include "GraphicsEngine.h"
 // TODO: remove the SpaceShip and CameraHandler dependencies
 #include "objects/SpaceShip.h"
 #include "objects/Projectile.h"
 #include "objects/CameraHandler.h"
+#include "HUD.h"
 #include "RadarObject.h"
 #include "RadarOverlayElement.h"
-#include "HUD.h"
 #include "core/Debug.h"
-#include "util/Math.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
+    CreateFactory(Navigation);
+
     using namespace Ogre;
 
-    Navigation::Navigation(OverlayContainer* container)
+    Navigation::Navigation()
+      : container_(0)
+      , navMarker_(0)
+      , aimMarker_(0)
+      , focus_(0)
     {
-        container_ = container;
-        focus_ = NULL;
-        init();
+        RegisterObject(Navigation);
     }
 
     Navigation::~Navigation()
     {
-        OverlayManager::getSingleton().destroyOverlayElement(this->navText_);
-        OverlayManager::getSingleton().destroyOverlayElement(this->navMarker_);
-        OverlayManager::getSingleton().destroyOverlayElement(this->aimMarker_);
+        if (this->isInitialized())
+        {
+            if (this->container_)
+                OverlayManager::getSingleton().destroyOverlayElement(this->container_);
+            if (this->navMarker_)
+                OverlayManager::getSingleton().destroyOverlayElement(this->navMarker_);
+            if (this->navText_)
+                OverlayManager::getSingleton().destroyOverlayElement(this->navText_);
+            if (this->aimMarker_)
+                OverlayManager::getSingleton().destroyOverlayElement(this->aimMarker_);
+        }
     }
 
-    void Navigation::init()
+    void Navigation::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        // create nav text
-        navText_ = static_cast<TextAreaOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("TextArea", "navText"));
-        navText_->show();
-        navText_->setMetricsMode(Ogre::GMM_PIXELS);
-        navText_->setDimensions(0.001, 0.001);
-        navText_->setPosition(0.02, 0.02);
-        navText_->setFontName("Console");
-        navText_->setCharHeight(20);
-        navText_->setCaption("");
-        navText_->hide();
-        container_->addChild(navText_);
+        HUDOverlay::XMLPort(xmlElement, mode);
 
+        if (mode == XMLPort::LoadObject)
+        {
+            // create container
+            this->container_ = static_cast<OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_navContainer"));
+            this->container_->setMetricsMode(Ogre::GMM_RELATIVE);
+            this->container_->setLeft(0.0);
+            this->container_->setTop(0.0);
+            this->container_->setWidth(1.0);
+            this->container_->setHeight(1.0);
 
-        // create nav marker ...
-        navMarker_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", "NavMarker"));
-        aimMarker_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", "aimMarker"));
-        navMarker_->setMetricsMode(GMM_PIXELS);
-        aimMarker_->setMetricsMode(GMM_PIXELS);
-        navMarker_->hide();
-        aimMarker_->hide();
-        aimMarker_->setMaterialName("Orxonox/NavCrosshair");
-        aimMarker_->setDimensions(20, 20);
-        aimMarker_->setUV(0.0, 0.0, 1.0, 1.0);
-        container_->addChild(navMarker_);
-        container_->addChild(aimMarker_);
+            // create nav text
+            this->navText_ = static_cast<TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", getName() + "_navText"));
+            this->navText_->setMetricsMode(Ogre::GMM_RELATIVE);
+            this->navText_->setPosition(0.0f, 0.0f);
+            this->navText_->setCharHeight(0.05f);
+            this->navText_->setFontName("Monofur");
+
+            // create nav marker
+            navMarker_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_navMarker"));
+            navMarker_->setMetricsMode(GMM_RELATIVE);
+            navMarker_->setDimensions(0.05f, 0.05f);
+            navMarker_->setMaterialName("Orxonox/NavArrows");
+            this->wasOutOfView_ = true; // just a to ensure the material is changed right the first time..
+
+            // create aim marker
+            aimMarker_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_aimMarker"));
+            aimMarker_->setMetricsMode(GMM_RELATIVE);
+            aimMarker_->setDimensions(0.05f, 0.05f);
+            aimMarker_->setMaterialName("Orxonox/NavCrosshair");
+            
+            container_->addChild(navMarker_);
+            container_->addChild(aimMarker_);
+            container_->addChild(navText_);
+            container_->show();
+
+            this->overlay_->add2D(container_);
+            this->overlay_->hide();
+        }
+
+        XMLPortParam(Navigation, "font", setFont, getFont, xmlElement, mode);
+        XMLPortParam(Navigation, "textsize", setTextSize, getTextSize, xmlElement, mode);
+        XMLPortParam(Navigation, "navmarkersize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode);
+        XMLPortParam(Navigation, "aimmarkersize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
     }
 
-    void Navigation::update()
+    void Navigation::setNavMarkerSize(Vector2 size)
+    {
+        if (this->navMarker_ && size.squaredLength() >= 0.0f)
+            this->navMarker_->setDimensions(size.x, size.y);
+    }
+
+    Vector2 Navigation::getNavMarkerSize() const
+    {
+        if (this->navMarker_)
+            return Vector2(navMarker_->getWidth(), navMarker_->getHeight());
+        else
+            return Vector2::ZERO;
+    }
+
+    void Navigation::setAimMarkerSize(Vector2 size)
+    {
+        if (this->aimMarker_ && size.squaredLength() >= 0.0f)
+            this->aimMarker_->setDimensions(size.x, size.y);
+    }
+
+    Vector2 Navigation::getAimMarkerSize() const
+    {
+        if (this->aimMarker_)
+            return Vector2(aimMarker_->getWidth(), aimMarker_->getHeight());
+        else
+            return Vector2::ZERO;
+    }
+
+    void Navigation::setFont(const std::string& font)
+    {
+        if (this->navText_ && font != "")
+            this->navText_->setFontName(font);
+    }
+
+    std::string Navigation::getFont() const
+    {
+        if (this->navText_)
+            return this->navText_->getFontName();
+        else
+            return "";
+    }
+
+    void Navigation::setTextSize(float size)
+    {
+        if (this->navText_ && size >= 0.0f)
+            this->navText_->setCharHeight(size);
+    }
+
+    float Navigation::getTextSize() const
+    {
+        if (this->navText_)
+            return this->navText_->getCharHeight();
+        else
+            return 0.0f;
+    }
+
+    void Navigation::tick(float dt)
     {
         if (!focus_)
             return;
@@ -100,146 +188,108 @@ namespace orxonox
 
     void Navigation::updateMarker()
     {
-        int windowW = GraphicsEngine::getSingleton().getWindowWidth();
-        int windowH = GraphicsEngine::getSingleton().getWindowHeight();
-
         // set text
-        int dist = (int) getDist2Focus()/100;
-        navText_->setCaption(Ogre::StringConverter::toString(dist));
+        int dist = (int) getDist2Focus()/100.0f;
+        navText_->setCaption(convertToString(dist));
+        float textLength = convertToString(dist).size() * navText_->getCharHeight() * 0.3;
 
         Ogre::Camera* navCam = SpaceShip::getLocalShip()->getCamera()->cam_;
+        Matrix4 transformationMatrix = navCam->getProjectionMatrix() * navCam->getViewMatrix();
         // transform to screen coordinates
-        Vector3 pos = navCam->getProjectionMatrix() * navCam->getViewMatrix() * focus_->getPosition();
-        Vector3 aimpos = navCam->getProjectionMatrix() * navCam->getViewMatrix() * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(), Projectile::getSpeed(), focus_->getPosition(), focus_->getOrientedVelocity());
+        Vector3 pos = transformationMatrix * focus_->getPosition();
 
-        float xPosRel = 0.5*pos.x+0.5;
-        float yPosRel = 1-(0.5*pos.y+0.5);
-        float xAimPosRel = 0.5*aimpos.x+0.5;
-        float yAimPosRel = 1-(0.5*aimpos.y+0.5);
-        int xPos = (int) (xPosRel*windowW);
-        int yPos = (int) (yPosRel*windowH);
-        int xAimPos = (int) (xAimPosRel*windowW);
-        int yAimPos = (int) (yAimPosRel*windowH);
-        int xFromCenter = xPos-windowW/2;
-        int yFromCenter = yPos-windowH/2;
-
-        // is object in view?
-        Vector3 navCamPos = SpaceShip::getLocalShip()->getPosition();
-        Vector3 currentDir = SpaceShip::getLocalShip()->getDir();
-        Vector3 currentOrth = SpaceShip::getLocalShip()->getOrth();
-        float radius = getAngle(navCamPos, currentDir, focus_->getPosition());
-        bool isRight = (currentDir.crossProduct(currentOrth)).dotProduct(focus_->getPosition() - navCamPos)>0;
-        bool isAbove = currentOrth.dotProduct(focus_->getPosition() - navCamPos)>0;
-        bool outOfView = (xPosRel<0 || xPosRel>1 || yPosRel<0 || yPosRel>1);
-
-        // if object is behind us, it is out of view anyway:
-        if (!outOfView && radius > Ogre::Math::PI / 2)
+        bool outOfView;
+        if (pos.z > 1.0)
+        {
+            // z > 1.0 means that the object is behind the camera
             outOfView = true;
+            // we have to switch all coordinates (if you don't know why,
+            // try linear algebra lectures, because I can't explain..)
+            pos.x = -pos.x;
+            pos.y = -pos.y;
+            pos.z = -pos.z;
+        }
+        else
+            outOfView = pos.x < -1.0 || pos.x > 1.0 || pos.y < -1.0 || pos.y > 1.0;
 
         if (outOfView)
         {
             // object is not in view
-            navMarker_->setMaterialName("Orxonox/NavArrows");
-            navMarker_->setDimensions(16,16);
             aimMarker_->hide();
-            float phiUpperCorner = atan((float)(windowW)/(float)(windowH));
-            // from the angle we find out on which edge to draw the marker
-            // and which of the four arrows to take
-            float phiNav = atan((float) xFromCenter / (float) yFromCenter);
 
-            if (isAbove && isRight)
+            if (!wasOutOfView_)
             {
-                // top right quadrant
-                if (-phiNav < phiUpperCorner)
+                navMarker_->setMaterialName("Orxonox/NavArrows");
+                wasOutOfView_ = true;
+            }
+
+            if (pos.x < pos.y)
+            {
+                if (pos.y > -pos.x)
                 {
-                    //COUT(3) << "arrow up\n";
-                    navMarker_->setPosition(-tan(phiNav)*windowH/2+windowW/2, 0);
+                    // up
+                    float position = pos.x / pos.y + 1.0;
+                    navMarker_->setPosition((position - navMarker_->getWidth()) * 0.5, 0.0);
                     navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
-                    navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
+                    navText_->setLeft((position - textLength) * 0.5);
                     navText_->setTop(navMarker_->getHeight());
                 }
                 else
                 {
-                    //COUT(3) << "arrow right\n";
-                    navMarker_->setPosition(windowW-16, tan((3.14-2*phiNav)/2)*windowW/2+windowH/2);
-                    navMarker_->setUV(0.5, 0.5, 1.0, 1.0);
-                    navText_->setLeft(navMarker_->getLeft()-navMarker_->getWidth());
-                    navText_->setTop(navMarker_->getTop()+navMarker_->getHeight());
-                }
-            }
-            if (!isAbove && isRight)
-            {
-                // bottom right quadrant
-                if (phiNav < phiUpperCorner)
-                {
-                    //COUT(3) << "arrow down\n";
-                    navMarker_->setPosition(tan(phiNav)*windowH/2+windowW/2, windowH-16);
-                    navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
-                    navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
-                    navText_->setTop(navMarker_->getTop()-navMarker_->getHeight());
-                }
-                else
-                {
-                    //COUT(3) << "arrow right\n";
-                    navMarker_->setPosition(windowW-16, tan((3.14-2*phiNav)/2)*windowW/2+windowH/2);
-                    navMarker_->setUV(0.5, 0.5, 1.0, 1.0);
-                    navText_->setLeft(navMarker_->getLeft()-navMarker_->getWidth());
-                    navText_->setTop(navMarker_->getTop()+navMarker_->getHeight());
-                }
-            }
-            if (isAbove && !isRight)
-            {
-                // top left quadrant
-                if (phiNav<phiUpperCorner)
-                {
-                    //COUT(3) << "arrow up\n";
-                    navMarker_->setPosition(-tan(phiNav)*windowH/2+windowW/2, 0);
-                    navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
-                    navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
-                    navText_->setTop(navMarker_->getHeight());
-                }
-                else
-                {
-                    //COUT(3) << "arrow left\n";
-                    navMarker_->setPosition(0, -tan((3.14-2*phiNav)/2)*windowW/2+windowH/2);
+                    // left
+                    float position = pos.y / pos.x + 1.0;
+                    navMarker_->setPosition(0.0, (position - navMarker_->getWidth()) * 0.5);
                     navMarker_->setUV(0.0, 0.0, 0.5, 0.5);
-                    navText_->setLeft(navMarker_->getWidth());
-                    navText_->setTop(navMarker_->getTop()+navMarker_->getHeight());
+                    navText_->setLeft(navMarker_->getWidth() + 0.01);
+                    navText_->setTop((position - navText_->getCharHeight()) * 0.5);
                 }
             }
-            if (!isAbove && !isRight)
+            else
             {
-                // bottom left quadrant
-                if (phiNav>-phiUpperCorner)
+                if (pos.y < -pos.x)
                 {
-                    //COUT(3) << "arrow down\n";
-                    navMarker_->setPosition(tan(phiNav)*windowH/2+windowW/2, windowH-16);
+                    // down
+                    float position = -pos.x / pos.y + 1.0;
+                    navMarker_->setPosition((position - navMarker_->getWidth()) * 0.5, 1.0 - navMarker_->getHeight());
                     navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
-                    navText_->setLeft(navMarker_->getLeft()+navMarker_->getWidth());
-                    navText_->setTop(navMarker_->getTop()-navMarker_->getHeight());
+                    navText_->setLeft((position - textLength) * 0.5);
+                    navText_->setTop(1.0 - navMarker_->getHeight() - navText_->getCharHeight());
                 }
                 else
                 {
-                    //COUT(3) << "arrow left\n";
-                    navMarker_->setPosition(0, -tan((3.14-2*phiNav)/2)*windowW/2+windowH/2);
-                    navMarker_->setUV(0.0, 0.0, 0.5, 0.5);
-                    navText_->setLeft(navMarker_->getWidth());
-                    navText_->setTop(navMarker_->getTop()+navMarker_->getHeight());
+                    // right
+                    float position = -pos.y / pos.x + 1.0;
+                    navMarker_->setPosition(1.0 - navMarker_->getWidth(), (position - navMarker_->getHeight()) * 0.5);
+                    navMarker_->setUV(0.5, 0.5, 1.0, 1.0);
+                    navText_->setLeft(1.0 - navMarker_->getWidth() - textLength - 0.01);
+                    navText_->setTop((position - navText_->getCharHeight()) * 0.5);
                 }
             }
         }
         else
         {
             // object is in view
-            navMarker_->setMaterialName("Orxonox/NavTDC");
-            navMarker_->setDimensions(35, 35);
+
+            Vector3 aimpos = transformationMatrix * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(),
+                    Projectile::getSpeed(), focus_->getPosition(), focus_->getOrientedVelocity());
+
+            if (wasOutOfView_)
+            {
+                navMarker_->setMaterialName("Orxonox/NavTDC");
+                wasOutOfView_ = false;
+            }
+
+            // object is in view
             navMarker_->setUV(0.0, 0.0, 1.0, 1.0);
-            navMarker_->setPosition(xPos-navMarker_->getWidth()/2, yPos-navMarker_->getHeight()/2);
+            navMarker_->setLeft((pos.x + 1.0 - navMarker_->getWidth()) * 0.5);
+            navMarker_->setTop((-pos.y + 1.0 - navMarker_->getHeight()) * 0.5);
 
             aimMarker_->show();
-            aimMarker_->setPosition(xAimPos-aimMarker_->getWidth()/2, yAimPos-aimMarker_->getHeight()/2);
+            aimMarker_->setLeft((aimpos.x + 1.0 - aimMarker_->getWidth()) * 0.5);
+            aimMarker_->setTop((-aimpos.y + 1.0 - aimMarker_->getHeight()) * 0.5);
 
-            navText_->setPosition(xPos+navMarker_->getWidth()/2, yPos+navMarker_->getHeight()/2);
+            navText_->setLeft((pos.x + 1.0 + navMarker_->getWidth()) * 0.5);
+            navText_->setTop((-pos.y + 1.0 + navMarker_->getHeight()) * 0.5);
         }
     }
 
@@ -292,15 +342,12 @@ namespace orxonox
     {
         if (focus_)
         {
-            navMarker_->show();
-            navText_->show();
+            overlay_->show();
             focus_->setColour(ColourValue::White);
         }
         else
         {
-            navMarker_->hide();
-            aimMarker_->hide();
-            navText_->hide();
+            overlay_->hide();
         }
     }
 
@@ -316,5 +363,14 @@ namespace orxonox
             return (focus_->getPosition() - SpaceShip::getLocalShip()->getPosition()).length();
         else
             return 0;
+    }
+
+    void Navigation::windowResized(int newWidth, int newHeight)
+    {
+        HUDOverlay::windowResized(newWidth, newHeight);
+
+        //if (this->navMarker_)
+        //    navMarker_->setDimensions(0.05, 0.05);
+
     }
 }

@@ -32,12 +32,13 @@
 #include "OrxonoxPrereqs.h"
 
 #include <OgrePrerequisites.h>
+#include "tools/WindowEventListener.h"
 #include "util/Math.h"
 #include "core/BaseObject.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDOverlay : public BaseObject
+  class _OrxonoxExport HUDOverlay : public BaseObject, public WindowEventListener
   {
     public:
       HUDOverlay();
@@ -75,10 +76,15 @@ namespace orxonox
       void scale(Vector2 scale) { overlay_->setScale(overlay_->getScaleX()*scale.x, overlay_->getScaleY()*scale.y); }
 
     protected:
-      Ogre::Overlay* overlay_;
+      virtual void windowResized(int newWidth, int newHeight);
 
-  private:
-    static unsigned int hudOverlayCounter_s;
+      Ogre::Overlay* overlay_;
+      float windowAspectRatio_;
+      int windowWidth_;
+      int windowHeight_;
+
+    private:
+      static unsigned int hudOverlayCounter_s;
 
   };
 }

@@ -41,15 +41,13 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDBar : public HUDOverlay, public TickableReal
+  class _OrxonoxExport HUDBar : public HUDOverlay
   {
     public:
       HUDBar();
       virtual ~HUDBar();
 
       virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-
-      //virtual void tick(float dt) { }
 
       void setValue(float value);
       void addColour(float value, const ColourValue& colour);

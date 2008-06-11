@@ -74,35 +74,41 @@ namespace orxonox
     {
         HUDOverlay::XMLPort(xmlElement, mode);
 
-        // create background
-        this->background_ = static_cast<PanelOverlayElement*>(
-                OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background"));
-        this->background_->setMaterialName("Orxonox/BarBackground");
-        this->background_->setMetricsMode(GMM_RELATIVE);
-        this->background_->setDimensions(1.0f, 0.3f);
-        this->background_->setPosition(0.0f, 0.0f);
-        this->overlay_->add2D(this->background_);
+        if (mode == XMLPort::LoadObject)
+        {
+            // create background
+            this->background_ = static_cast<PanelOverlayElement*>(
+                    OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background"));
+            this->background_->setMaterialName("Orxonox/BarBackground");
+            this->background_->setMetricsMode(GMM_RELATIVE);
+            this->background_->setDimensions(1.0f, 0.3f);
+            this->background_->setPosition(0.0f, 0.0f);
+            this->overlay_->add2D(this->background_);
 
-        // create new material
-        std::string materialname = "barmaterial" + getConvertedValue<unsigned int, std::string>(materialcount_s++);
-        Ogre::MaterialPtr material = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().create(materialname, "General");
-        material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-        this->textureUnitState_ = material->getTechnique(0)->getPass(0)->createTextureUnitState();
-        this->textureUnitState_->setTextureName("bar2.tga");
-        // use the default colour
-        this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2, 0.7, 0.2));
+            // create new material
+            std::string materialname = "barmaterial" + getConvertedValue<unsigned int, std::string>(materialcount_s++);
+            Ogre::MaterialPtr material = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().create(materialname, "General");
+            material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+            this->textureUnitState_ = material->getTechnique(0)->getPass(0)->createTextureUnitState();
+            this->textureUnitState_->setTextureName("bar2.tga");
+            // use the default colour
+            this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2, 0.7, 0.2));
 
-        // create bar
-        this->bar_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "Bar"));
-        this->bar_->setMaterialName(materialname);
-        this->bar_->setMetricsMode(GMM_RELATIVE);
-        this->background_->addChild(bar_);
+            // create bar
+            this->bar_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "Bar"));
+            this->bar_->setMaterialName(materialname);
+            this->bar_->setMetricsMode(GMM_RELATIVE);
+            this->background_->addChild(bar_);
+        }
 
         XMLPortParamLoadOnly(HUDBar, "value", setValue, xmlElement, mode);
 
-        this->addColour(0.7, ColourValue(0.2, 0.7, 0.2));
-        this->addColour(0.4, ColourValue(0.7, 0.5, 0.2));
-        this->addColour(0.1, ColourValue(0.7, 0.2, 0.2));
+        if (mode == XMLPort::LoadObject)
+        {
+            this->addColour(0.7, ColourValue(0.2, 0.7, 0.2));
+            this->addColour(0.4, ColourValue(0.7, 0.5, 0.2));
+            this->addColour(0.1, ColourValue(0.7, 0.2, 0.2));
+        }
     }
 
     void HUDBar::setValue(float value)
