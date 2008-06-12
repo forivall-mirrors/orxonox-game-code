@@ -58,11 +58,6 @@ namespace orxonox
     	GraphicsEngine::getSingleton().getSceneManager()->setSkyBox(true, skyboxname);
     }
 
-    void Skybox::setSkyboxSrc(const std::string& src)
-    {
-        this->skyboxSrc_ = src;
-    }
-
     /**
         @brief XML loading and saving.
         @param xmlelement The XML-element
@@ -73,7 +68,7 @@ namespace orxonox
     {
         BaseObject::XMLPort(xmlelement, mode);
 
-        XMLPortParamLoadOnly(Skybox, "src", setSkyboxSrc, xmlelement, mode);
+        XMLPortParam(Skybox, "src", setSkyboxSrc, getSkyboxSrc, xmlelement, mode);
         create();
     }
 

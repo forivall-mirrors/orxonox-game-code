@@ -41,6 +41,7 @@
 #include "Iterator.h"
 #include "ObjectList.h"
 #include "OrxonoxClass.h"
+#include "XMLPort.h"
 
 namespace orxonox
 {
@@ -202,6 +203,14 @@ namespace orxonox
     {
         for (BaseIterator it = this->getObjects()->begin(); it; ++it)
             (*it)->setConfigValues();
+    }
+
+    /**
+        @brief Tells the container to which Identifier it belongs to.
+    */
+    void Identifier::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
+    {
+        container->setIdentifier(this);
     }
 
     /**

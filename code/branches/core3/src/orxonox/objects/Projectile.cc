@@ -91,7 +91,7 @@ namespace orxonox
         {
             if ((*it) != this->owner_)
             {
-                radius = it->getScale().x * 3.0;
+                radius = it->getScale3D().x * 3.0;
 
                 if (this->getPosition().squaredDistance(it->getPosition()) <= (radius*radius))
                 {

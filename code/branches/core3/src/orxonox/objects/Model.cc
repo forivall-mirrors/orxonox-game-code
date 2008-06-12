@@ -67,14 +67,9 @@ namespace orxonox
     {
         WorldEntity::XMLPort(xmlelement, mode);
 
-        XMLPortParamLoadOnly(Model, "mesh", setMesh, xmlelement, mode);
+        XMLPortParam(Model, "mesh", setMesh, getMesh, xmlelement, mode);
 
         Model::create();
-    }
-
-    void Model::setMesh(const std::string& meshname)
-    {
-        this->meshSrc_ = meshname;
     }
 
     bool Model::create(){

@@ -79,13 +79,13 @@ namespace orxonox
     CreateTypeToStringTemplate(Radian);
     CreateTypeToStringTemplate(Degree);
 
-    template <> \
-    inline std::string typeToString<std::string>() { return "string"; } \
-    template <> \
-    inline std::string typeToString<std::string&>() { return "string"; } \
-    template <> \
-    inline std::string typeToString<const std::string>() { return "string"; } \
-    template <> \
+    template <>
+    inline std::string typeToString<std::string>() { return "string"; }
+    template <>
+    inline std::string typeToString<std::string&>() { return "string"; }
+    template <>
+    inline std::string typeToString<const std::string>() { return "string"; }
+    template <>
     inline std::string typeToString<const std::string&>() { return "string"; }
 
     class _CoreExport Functor

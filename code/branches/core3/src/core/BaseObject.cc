@@ -65,17 +65,6 @@ namespace orxonox
     }
 
     /**
-        @brief load general xml paramters
-    */
-    void BaseObject::loadParams(TiXmlElement* xmlElem)
-    {
-        if (xmlElem->Attribute("name"))
-        {
-            this->setName(xmlElem->Attribute("name"));
-        }
-    }
-
-    /**
         @brief XML loading and saving.
         @param xmlelement The XML-element
         @param loading Loading (true) or saving (false)

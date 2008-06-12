@@ -205,7 +205,7 @@ namespace orxonox
             ConfigValueContainer* getConfigValueContainer(const std::string& varname);
             ConfigValueContainer* getLowercaseConfigValueContainer(const std::string& varname);
 
-            virtual void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container) = 0;
+            virtual void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
             virtual XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname) = 0;
 
             virtual void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container) = 0;
@@ -312,7 +312,7 @@ namespace orxonox
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ~ClassIdentifier() {}                                       // don't delete
 
-            std::map<std::string, XMLPortClassParamContainer<T>*> xmlportParamContainers_;              //!< All loadable parameters
+            std::map<std::string, XMLPortClassParamContainer<class O>*> xmlportParamContainers_;              //!< All loadable parameters
             std::map<std::string, XMLPortClassObjectContainer<T, class O>*> xmlportObjectContainers_;   //!< All attachable objects
 
             static ClassIdentifier<T> *classIdentifier_s;
@@ -426,7 +426,7 @@ namespace orxonox
     template <class T>
     XMLPortParamContainer* ClassIdentifier<T>::getXMLPortParamContainer(const std::string& paramname)
     {
-        typename std::map<std::string, XMLPortClassParamContainer<T>*>::const_iterator it = xmlportParamContainers_.find(paramname);
+        typename std::map<std::string, XMLPortClassParamContainer<class O>*>::const_iterator it = xmlportParamContainers_.find(paramname);
         if (it != xmlportParamContainers_.end())
             return (XMLPortParamContainer*)((*it).second);
         else
@@ -441,7 +441,8 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
     {
-        this->xmlportParamContainers_[paramname] = (XMLPortClassParamContainer<T>*)container;
+        Identifier::addXMLPortParamContainer(paramname, container);
+        this->xmlportParamContainers_[paramname] = (XMLPortClassParamContainer<class O>*)container;
     }
 
     /**

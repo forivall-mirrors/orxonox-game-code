@@ -63,38 +63,22 @@ namespace orxonox
     {
     }
 
-    bool Ambient::create(){
-      GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(ambientLight_);
-      return Synchronisable::create();
-    }
-
-    void Ambient::registerAllVariables(){
-      registerVar(&ambientLight_, sizeof(ColourValue), network::DATA);
-
-    }
-
-    void Ambient::loadParams(TiXmlElement* xmlElem)
+    bool Ambient::create()
     {
-    	if (xmlElem->Attribute("colourvalue"))
-    	{
-        SubString colourvalues(xmlElem->Attribute("colourvalue"), ',');
+        GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(ambientLight_);
+        return Synchronisable::create();
+    }
 
-	    	float r, g, b;
-        convertValue<std::string, float>(&r, colourvalues[0]);
-        convertValue<std::string, float>(&g, colourvalues[1]);
-        convertValue<std::string, float>(&b, colourvalues[2]);
+    void Ambient::registerAllVariables()
+    {
+        registerVar(&ambientLight_, sizeof(ColourValue), network::DATA);
+    }
 
-	    	this->setAmbientLight(ColourValue(r, g, b));
-
-	    	COUT(4) << "Loader: Set ambient light: "<<r<<" " << g << " " << b  << std::endl << std::endl;
-    	}
-   }
-
-   void Ambient::setAmbientLight(const ColourValue& colour)
-   {
-    	GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(colour);
-      ambientLight_=colour;
-   }
+    void Ambient::setAmbientLight(const ColourValue& colour)
+    {
+        GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(colour);
+        ambientLight_=colour;
+    }
 
     /**
         @brief XML loading and saving.
@@ -106,7 +90,7 @@ namespace orxonox
     {
         BaseObject::XMLPort(xmlelement, mode);
 
-        XMLPortParamLoadOnly(Ambient, "colourvalue", setAmbientLight, xmlelement, mode);
+        XMLPortParam(Ambient, "colourvalue", setAmbientLight, getAmbienetLight, xmlelement, mode);
         create();
     }
 }

@@ -346,14 +346,14 @@ namespace orxonox
     {
         Model::XMLPort(xmlelement, mode);
 
-        XMLPortParamLoadOnly(SpaceShip, "camera", setCamera, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "maxSpeed", setMaxSpeed, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "maxSideAndBackSpeed", setMaxSideAndBackSpeed, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "maxRotation", setMaxRotation, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "transAcc", setTransAcc, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "rotAcc", setRotAcc, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, mode);
+        XMLPortParam(SpaceShip, "camera", setCamera, getCamera, xmlelement, mode);
+        XMLPortParam(SpaceShip, "maxSpeed", setMaxSpeed, getMaxSpeed, xmlelement, mode);
+        XMLPortParam(SpaceShip, "maxSideAndBackSpeed", setMaxSideAndBackSpeed, getMaxSideAndBackSpeed, xmlelement, mode);
+        XMLPortParam(SpaceShip, "maxRotation", setMaxRotation, getMaxRotation, xmlelement, mode);
+        XMLPortParam(SpaceShip, "transAcc", setTransAcc, getTransAcc, xmlelement, mode);
+        XMLPortParam(SpaceShip, "rotAcc", setRotAcc, getRotAcc, xmlelement, mode);
+        XMLPortParam(SpaceShip, "transDamp", setTransDamp, getTransDamp, xmlelement, mode);
+        XMLPortParam(SpaceShip, "rotDamp", setRotDamp, getRotDamp, xmlelement, mode);
 
         SpaceShip::create();
         if (this->isExactlyA(Class(SpaceShip)))
