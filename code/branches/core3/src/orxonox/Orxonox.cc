@@ -84,9 +84,9 @@ network::Server *server_g = 0;
 
 namespace orxonox
 {
-  SetConsoleCommandShortcut(Orxonox, exit).setKeybindMode(KeybindMode::OnPress);
-  SetConsoleCommandShortcut(Orxonox, slomo).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0).setAxisParamIndex(0).setIsAxisRelative(false);
-  SetConsoleCommandShortcut(Orxonox, setTimeFactor).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0);
+  SetConsoleCommandShortcut(Orxonox, exit).keybindMode(KeybindMode::OnPress);
+  SetConsoleCommandShortcut(Orxonox, slomo).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0).axisParamIndex(0).isAxisRelative(false);
+  SetConsoleCommandShortcut(Orxonox, setTimeFactor).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);
 
   /**
     @brief Reference to the only instance of the class.

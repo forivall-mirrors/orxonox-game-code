@@ -37,12 +37,12 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutExtern(config).setArgumentCompleter(0, autocompletion::configvalueclasses()).setArgumentCompleter(1, autocompletion::configvalues()).setArgumentCompleter(2, autocompletion::configvalue());
-    SetConsoleCommandShortcutExtern(tconfig).setArgumentCompleter(0, autocompletion::configvalueclasses()).setArgumentCompleter(1, autocompletion::configvalues()).setArgumentCompleter(2, autocompletion::configvalue());
+    SetConsoleCommandShortcutExtern(config).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
+    SetConsoleCommandShortcutExtern(tconfig).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
     SetConsoleCommandShortcutExtern(reloadConfig);
     SetConsoleCommandShortcutExtern(cleanConfig);
-    SetConsoleCommandShortcutExtern(loadSettings).setArgumentCompleter(0, autocompletion::files());
-    SetConsoleCommandShortcutExtern(loadKeybindings).setArgumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(loadSettings).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(loadKeybindings).argumentCompleter(0, autocompletion::files());
 
     bool config(const std::string& classname, const std::string& varname, const std::string& value)
     {

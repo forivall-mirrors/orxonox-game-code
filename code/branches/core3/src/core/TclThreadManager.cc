@@ -47,15 +47,15 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutGeneric(tclexecute, createConsoleCommand(createFunctor(&TclThreadManager::execute), "tclexecute")).setArgumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommandShortcutGeneric(tclquery,   createConsoleCommand(createFunctor(&TclThreadManager::query),   "tclquery"  )).setArgumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommandShortcutAlias(TclThreadManager, execute, "tclexecute").argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommandShortcutAlias(TclThreadManager, query,   "tclquery"  ).argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand(TclThreadManager, create,  false);
-    SetConsoleCommand(TclThreadManager, destroy, false).setArgumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand(TclThreadManager, execute, false).setArgumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand(TclThreadManager, query,   false).setArgumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand(TclThreadManager, destroy, false).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand(TclThreadManager, execute, false).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand(TclThreadManager, query,   false).argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand(TclThreadManager, status,  false);
-    SetConsoleCommand(TclThreadManager, dump,    false).setArgumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand(TclThreadManager, flush,   false).setArgumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand(TclThreadManager, dump,    false).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand(TclThreadManager, flush,   false).argumentCompleter(0, autocompletion::tclthreads());
 
     TclThreadManager::TclThreadManager()
     {

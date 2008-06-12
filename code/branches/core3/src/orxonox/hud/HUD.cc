@@ -48,10 +48,10 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcut(HUD, cycleNavigationFocus).setAccessLevel(AccessLevel::User);
-    SetConsoleCommandShortcut(HUD, releaseNavigationFocus).setAccessLevel(AccessLevel::User);
-    SetConsoleCommandShortcut(HUD, toggleFPS).setAccessLevel(AccessLevel::User);
-    SetConsoleCommandShortcut(HUD, toggleRenderTime).setAccessLevel(AccessLevel::User);
+    SetConsoleCommandShortcut(HUD, cycleNavigationFocus).accessLevel(AccessLevel::User);
+    SetConsoleCommandShortcut(HUD, releaseNavigationFocus).accessLevel(AccessLevel::User);
+    SetConsoleCommandShortcut(HUD, toggleFPS).accessLevel(AccessLevel::User);
+    SetConsoleCommandShortcut(HUD, toggleRenderTime).accessLevel(AccessLevel::User);
 
     using namespace Ogre;
 

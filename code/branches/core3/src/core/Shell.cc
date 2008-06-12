@@ -44,11 +44,11 @@ namespace orxonox
     SetConsoleCommand(Shell, clearShell, true);
     SetConsoleCommand(Shell, history, true);
 
-    SetConsoleCommandShortcutGeneric(log,     createConsoleCommand(createFunctor(&OutputHandler::log),     "log"    ));
-    SetConsoleCommandShortcutGeneric(error,   createConsoleCommand(createFunctor(&OutputHandler::error),   "error"  ));
-    SetConsoleCommandShortcutGeneric(warning, createConsoleCommand(createFunctor(&OutputHandler::warning), "warning"));
-    SetConsoleCommandShortcutGeneric(info,    createConsoleCommand(createFunctor(&OutputHandler::info),    "info"   ));
-    SetConsoleCommandShortcutGeneric(debug,   createConsoleCommand(createFunctor(&OutputHandler::debug),   "debug"  ));
+    SetConsoleCommandShortcut(OutputHandler, log);
+    SetConsoleCommandShortcut(OutputHandler, error);
+    SetConsoleCommandShortcut(OutputHandler, warning);
+    SetConsoleCommandShortcut(OutputHandler, info);
+    SetConsoleCommandShortcut(OutputHandler, debug);
 
     Shell::Shell()
     {

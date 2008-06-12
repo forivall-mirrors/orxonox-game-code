@@ -43,8 +43,8 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(SpaceShipAI, createEnemy, true).setDefaultValue(0, 1);
-    SetConsoleCommand(SpaceShipAI, killEnemies, true).setDefaultValue(0, 0);
+    SetConsoleCommand(SpaceShipAI, createEnemy, true).defaultValue(0, 1);
+    SetConsoleCommand(SpaceShipAI, killEnemies, true).defaultValue(0, 0);
 
     CreateFactory(SpaceShipAI);
 

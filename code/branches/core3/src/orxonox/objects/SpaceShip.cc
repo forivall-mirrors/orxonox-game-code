@@ -53,17 +53,17 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(SpaceShip, setMaxSpeedTest, false).setAccessLevel(AccessLevel::Debug);
-    SetConsoleCommand(SpaceShip, whereAmI, true).setAccessLevel(AccessLevel::User);
-    SetConsoleCommand(SpaceShip, moveLongitudinal, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(SpaceShip, moveLateral, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(SpaceShip, moveYaw, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(SpaceShip, movePitch, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(SpaceShip, moveRoll, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(SpaceShip, fire, true).setAccessLevel(AccessLevel::User).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommandGeneric(test1, SpaceShip, createConsoleCommand(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxSpeed"), false).setAccessLevel(AccessLevel::Debug);
-    SetConsoleCommandGeneric(test2, SpaceShip, createConsoleCommand(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxBlubber"), false).setAccessLevel(AccessLevel::Debug);
-    SetConsoleCommandGeneric(test3, SpaceShip, createConsoleCommand(createFunctor(&SpaceShip::setMaxSpeedTest), "setRofl"), false).setAccessLevel(AccessLevel::Debug);
+    SetConsoleCommand(SpaceShip, setMaxSpeedTest, false).accessLevel(AccessLevel::Debug);
+    SetConsoleCommand(SpaceShip, whereAmI, true).accessLevel(AccessLevel::User);
+    SetConsoleCommand(SpaceShip, moveLongitudinal, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(SpaceShip, moveLateral, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(SpaceShip, moveYaw, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(SpaceShip, movePitch, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(SpaceShip, moveRoll, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(SpaceShip, fire, true).accessLevel(AccessLevel::User).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommandAliasMulti(SpaceShip, setMaxSpeedTest, "setMaxSpeed", 1, false).accessLevel(AccessLevel::Debug);
+    SetConsoleCommandAliasMulti(SpaceShip, setMaxSpeedTest, "setMaxBlubber", 2, false).accessLevel(AccessLevel::Debug);
+    SetConsoleCommandAliasMulti(SpaceShip, setMaxSpeedTest, "setRofl", 3, false).accessLevel(AccessLevel::Debug);
 
     CreateFactory(SpaceShip);
 
