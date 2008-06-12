@@ -57,26 +57,28 @@ namespace orxonox
         void releaseFocus();
 
     protected:
-      virtual void windowResized(int newWidth, int newHeight);
+      virtual void sizeChanged();
 
       private:
         void init();
         void updateMarker();
         void updateFocus();
 
-        void setNavMarkerSize(Vector2 size);
-        Vector2 getNavMarkerSize() const;
-        void setAimMarkerSize(Vector2 size);
-        Vector2 getAimMarkerSize() const;
+        void setNavMarkerSize(float size);
+        float getNavMarkerSize() const;
+        void setAimMarkerSize(float size);
+        float getAimMarkerSize() const;
         void setTextSize(float size);
         float getTextSize() const;
         void setFont(const std::string& font);
         std::string getFont() const;
 
         Ogre::OverlayContainer* container_;         //!< Container that holds the navigation elements
-        Ogre::PanelOverlayElement* navMarker_;      // the panel used to show the arrow
-        Ogre::PanelOverlayElement* aimMarker_;
-        Ogre::TextAreaOverlayElement* navText_;     // displaying distance
+        Ogre::PanelOverlayElement* navMarker_;      //!< the panel used to show the arrow and the target marker
+        float navMarkerSize_;                       //!< One paramter size of the navigation marker
+        Ogre::PanelOverlayElement* aimMarker_;      //!< Panel used to show the aim Marker
+        float aimMarkerSize_;                       //!< One paramter size of the aim marker
+        Ogre::TextAreaOverlayElement* navText_;     //!< Text overlay to display the target distance
         std::list<RadarObject*>::iterator it_;
         RadarObject* focus_;                        // next pointer of linked list
         bool wasOutOfView_;

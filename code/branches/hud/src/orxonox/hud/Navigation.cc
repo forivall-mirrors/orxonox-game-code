@@ -53,6 +53,7 @@ namespace orxonox
       : container_(0)
       , navMarker_(0)
       , aimMarker_(0)
+      , navText_(0)
       , focus_(0)
     {
         RegisterObject(Navigation);
@@ -80,32 +81,32 @@ namespace orxonox
         if (mode == XMLPort::LoadObject)
         {
             // create container
-            this->container_ = static_cast<OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_navContainer"));
-            this->container_->setMetricsMode(Ogre::GMM_RELATIVE);
-            this->container_->setLeft(0.0);
-            this->container_->setTop(0.0);
-            this->container_->setWidth(1.0);
-            this->container_->setHeight(1.0);
+            container_ = static_cast<OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_navContainer"));
+            container_->setMetricsMode(Ogre::GMM_RELATIVE);
+            container_->setLeft(0.0);
+            container_->setTop(0.0);
+            container_->setWidth(1.0);
+            container_->setHeight(1.0);
 
             // create nav text
-            this->navText_ = static_cast<TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", getName() + "_navText"));
-            this->navText_->setMetricsMode(Ogre::GMM_RELATIVE);
-            this->navText_->setPosition(0.0f, 0.0f);
-            this->navText_->setCharHeight(0.05f);
-            this->navText_->setFontName("Monofur");
+            navText_ = static_cast<TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", getName() + "_navText"));
+            navText_->setMetricsMode(Ogre::GMM_RELATIVE);
+            navText_->setPosition(0.0f, 0.0f);
+            navText_->setCharHeight(0.05f);
+            navText_->setFontName("Monofur");
 
             // create nav marker
             navMarker_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_navMarker"));
             navMarker_->setMetricsMode(GMM_RELATIVE);
-            navMarker_->setDimensions(0.05f, 0.05f);
             navMarker_->setMaterialName("Orxonox/NavArrows");
+            this->navMarkerSize_ = 0.05;
             this->wasOutOfView_ = true; // just a to ensure the material is changed right the first time..
 
             // create aim marker
             aimMarker_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_aimMarker"));
             aimMarker_->setMetricsMode(GMM_RELATIVE);
-            aimMarker_->setDimensions(0.05f, 0.05f);
             aimMarker_->setMaterialName("Orxonox/NavCrosshair");
+            this->aimMarkerSize_ = 0.04;
             
             container_->addChild(navMarker_);
             container_->addChild(aimMarker_);
@@ -120,34 +121,31 @@ namespace orxonox
         XMLPortParam(Navigation, "textsize", setTextSize, getTextSize, xmlElement, mode);
         XMLPortParam(Navigation, "navmarkersize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode);
         XMLPortParam(Navigation, "aimmarkersize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
+
+        if (mode == XMLPort::LoadObject)
+        {
+            this->sizeChanged();
+        }
     }
 
-    void Navigation::setNavMarkerSize(Vector2 size)
+    void Navigation::setNavMarkerSize(float size)
     {
-        if (this->navMarker_ && size.squaredLength() >= 0.0f)
-            this->navMarker_->setDimensions(size.x, size.y);
+        this->navMarkerSize_ = size;
     }
 
-    Vector2 Navigation::getNavMarkerSize() const
+    float Navigation::getNavMarkerSize() const
     {
-        if (this->navMarker_)
-            return Vector2(navMarker_->getWidth(), navMarker_->getHeight());
-        else
-            return Vector2::ZERO;
+        return this->navMarkerSize_;
     }
 
-    void Navigation::setAimMarkerSize(Vector2 size)
+    void Navigation::setAimMarkerSize(float size)
     {
-        if (this->aimMarker_ && size.squaredLength() >= 0.0f)
-            this->aimMarker_->setDimensions(size.x, size.y);
+        this->aimMarkerSize_ = size;
     }
 
-    Vector2 Navigation::getAimMarkerSize() const
+    float Navigation::getAimMarkerSize() const
     {
-        if (this->aimMarker_)
-            return Vector2(aimMarker_->getWidth(), aimMarker_->getHeight());
-        else
-            return Vector2::ZERO;
+        return this->aimMarkerSize_;
     }
 
     void Navigation::setFont(const std::string& font)
@@ -207,7 +205,6 @@ namespace orxonox
             // try linear algebra lectures, because I can't explain..)
             pos.x = -pos.x;
             pos.y = -pos.y;
-            pos.z = -pos.z;
         }
         else
             outOfView = pos.x < -1.0 || pos.x > 1.0 || pos.y < -1.0 || pos.y > 1.0;
@@ -365,12 +362,15 @@ namespace orxonox
             return 0;
     }
 
-    void Navigation::windowResized(int newWidth, int newHeight)
+    void Navigation::sizeChanged()
     {
-        HUDOverlay::windowResized(newWidth, newHeight);
-
-        //if (this->navMarker_)
-        //    navMarker_->setDimensions(0.05, 0.05);
-
+        float xScale = this->getActualSize().x;
+        float yScale = this->getActualSize().y;
+        if (this->navMarker_)
+            navMarker_->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
+        if (this->aimMarker_)
+            aimMarker_->setDimensions(aimMarkerSize_ * xScale, aimMarkerSize_ * yScale);
+        if (this->navText_)
+            navText_->setCharHeight(navText_->getCharHeight() * yScale);
     }
 }

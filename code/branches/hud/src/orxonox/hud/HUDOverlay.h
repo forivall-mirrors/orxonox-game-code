@@ -46,7 +46,8 @@ namespace orxonox
 
       virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-      virtual void changedVisibility();
+      void setAspectCorrection(bool val);
+      bool getAspectCorrection() { return this->bCorrectAspect_; }
 
       /** Sets the scrolling factor of this overlay. */
       void setScroll(Vector2 scroll) { overlay_->setScroll(scroll.x, scroll.y); }
@@ -67,25 +68,36 @@ namespace orxonox
       void rotate(const Radian& angle) { overlay_->rotate(angle); }
 
       /** Sets the scaling factor of this overlay. */
-      void setScale(const Vector2& scale) { overlay_->setScale(scale.x, scale.y); }
+      void setSize(const Vector2& size) { this->size_ = size; this->sizeChanged(); }
 
-      /** Gets the current scale value */
-      Vector2 getScale() const { return Vector2(overlay_->getScaleX(), overlay_->getScaleY()); }
+      /** Gets the current size (not corrected) */
+      Vector2 getSize() const { return this->size_; }
+
+      /** Gets the current size (corrected) */
+      Vector2 getActualSize() const { return this->size_ * this->sizeCorrection_; }
+
+      /** Gets the current size correction */
+      Vector2 getSizeCorrection() const { return this->sizeCorrection_; }
 
       /** Scales the overlay */
-      void scale(Vector2 scale) { overlay_->setScale(overlay_->getScaleX()*scale.x, overlay_->getScaleY()*scale.y); }
+      void scale(Vector2 scale) { this->size_ *= scale; this->sizeChanged(); }
 
     protected:
-      virtual void windowResized(int newWidth, int newHeight);
+      virtual void changedVisibility();
+      virtual void sizeChanged();
+      float getWindowAspectRatio() { return windowAspectRatio_; } 
 
       Ogre::Overlay* overlay_;
-      float windowAspectRatio_;
-      int windowWidth_;
-      int windowHeight_;
 
     private:
-      static unsigned int hudOverlayCounter_s;
+      void windowResized(int newWidth, int newHeight);
 
+      float windowAspectRatio_;
+      bool bCorrectAspect_;
+      Vector2 size_;
+      Vector2 sizeCorrection_;
+
+      static unsigned int hudOverlayCounter_s;
   };
 }
 

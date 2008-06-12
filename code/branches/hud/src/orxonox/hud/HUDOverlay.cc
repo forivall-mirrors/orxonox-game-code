@@ -40,6 +40,10 @@ namespace orxonox
 
   HUDOverlay::HUDOverlay()
     : overlay_(0)
+    , windowAspectRatio_(1.0f)
+    , bCorrectAspect_(false)
+    , size_(1.0f)
+    , sizeCorrection_(1.0f)
   {
     RegisterObject(HUDOverlay);
   }
@@ -53,12 +57,12 @@ namespace orxonox
       overlay_ = Ogre::OverlayManager::getSingleton().create("HUDOverlay"
             + convertToString(hudOverlayCounter_s++) + "_" + this->getName());
 
-      this->windowWidth_ = GraphicsEngine::getSingleton().getWindowWidth();
-      this->windowHeight_ = GraphicsEngine::getSingleton().getWindowHeight();
-      this->windowAspectRatio_ = windowWidth_/(float)windowHeight_;
+      this->windowResized(GraphicsEngine::getSingleton().getWindowWidth(),
+            GraphicsEngine::getSingleton().getWindowHeight());
     }
 
-    XMLPortParam(HUDOverlay, "scale", setScale, getScale, xmlElement, mode);
+    XMLPortParam(HUDOverlay, "size", setSize, getSize, xmlElement, mode);
+    XMLPortParam(HUDOverlay, "correctAspect", setAspectCorrection, getAspectCorrection, xmlElement, mode);
     XMLPortParam(HUDOverlay, "scroll", setScroll, getScroll, xmlElement, mode);
     XMLPortParam(HUDOverlay, "rotation", setRotation, getRotation, xmlElement, mode);
 
@@ -67,6 +71,8 @@ namespace orxonox
       this->overlay_->show();
       if (!this->isVisible())
           this->overlay_->hide();
+
+      this->sizeChanged();
     }
   }
 
@@ -76,20 +82,48 @@ namespace orxonox
 
   void HUDOverlay::changedVisibility()
   {
-      if (this->overlay_)
-      {
-          if (this->isVisible())
-              overlay_->show();
-          else
-              overlay_->hide();
-      }
+    if (this->overlay_)
+    {
+      if (this->isVisible())
+        this->overlay_->show();
+      else
+        this->overlay_->hide();
+    }
   }
 
   void HUDOverlay::windowResized(int newWidth, int newHeight)
   {
-    this->windowWidth_ = newWidth;
-    this->windowHeight_ = newHeight;
-    this->windowAspectRatio_ = windowWidth_/(float)windowHeight_;
+    this->windowAspectRatio_ = newWidth/(float)newHeight;
+
+    this->setAspectCorrection(this->bCorrectAspect_);
+  }
+
+  void HUDOverlay::setAspectCorrection(bool val)
+  {
+    if (val)
+    {
+      // note: this is only an approximation that is mostly valid when the
+      // magnitude of the width is about the magnitude of the height.
+      // Correctly we would have to take the square root of width*height
+      this->sizeCorrection_.x = 2.0 / (this->windowAspectRatio_ + 1.0);
+      this->sizeCorrection_.y = this->windowAspectRatio_ * this->sizeCorrection_.x;
+    }
+    else
+    {
+      this->sizeCorrection_ = Vector2::UNIT_SCALE;
+    }
+
+    this->bCorrectAspect_ = val;
+    this->sizeChanged();
+  }
+
+  /**
+    @remarks
+      This function can be overriden by any derivative.
+  */
+  void HUDOverlay::sizeChanged()
+  {
+    this->overlay_->setScale(size_.x * sizeCorrection_.x, size_.x * sizeCorrection_.y);
   }
 
 }
