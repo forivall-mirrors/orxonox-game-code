@@ -86,8 +86,7 @@ static inline int getSoftDebugLevel()
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_NONE
    #define COUT0  \
-    if (getSoftDebugLevel() >= ORX_NONE)  \
-     COUT_EXEC(0)
+    (getSoftDebugLevel() < ORX_NONE) ? COUT_EXEC(0) : COUT_EXEC(0)
   #else
    #define COUT0 \
     false ? COUT_EXEC(0) : COUT_EXEC(0)
@@ -95,8 +94,7 @@ static inline int getSoftDebugLevel()
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
    #define COUT1  \
-    if (getSoftDebugLevel() >= ORX_ERROR)  \
-     COUT_EXEC(1)
+    (getSoftDebugLevel() < ORX_ERROR) ? COUT_EXEC(1) : COUT_EXEC(1)
   #else
    #define COUT1 \
     false ? COUT_EXEC(1) : COUT_EXEC(1)
@@ -104,8 +102,7 @@ static inline int getSoftDebugLevel()
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_WARNING
    #define COUT2 \
-    if (getSoftDebugLevel() >= ORX_WARNING) \
-     COUT_EXEC(2)
+    (getSoftDebugLevel() < ORX_WARNING) ? COUT_EXEC(2) : COUT_EXEC(2)
   #else
    #define COUT2 \
     false ? COUT_EXEC(2) : COUT_EXEC(2)
@@ -113,8 +110,7 @@ static inline int getSoftDebugLevel()
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_INFO
    #define COUT3 \
-    if (getSoftDebugLevel() >= ORX_INFO) \
-     COUT_EXEC(3)
+    (getSoftDebugLevel() < ORX_INFO) ? COUT_EXEC(3) : COUT_EXEC(3)
   #else
    #define COUT3 \
     false ? COUT_EXEC(3) : COUT_EXEC(3)
@@ -122,8 +118,7 @@ static inline int getSoftDebugLevel()
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_DEBUG
    #define COUT4 \
-    if (getSoftDebugLevel() >= ORX_DEBUG) \
-     COUT_EXEC(4)
+    (getSoftDebugLevel() < ORX_DEBUG) ? COUT_EXEC(4) : COUT_EXEC(4)
   #else
    #define COUT4 \
     false ? COUT_EXEC(4) : COUT_EXEC(4)
@@ -131,8 +126,7 @@ static inline int getSoftDebugLevel()
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_VERBOSE
    #define COUT5 \
-    if (getSoftDebugLevel() >= ORX_VERBOSE) \
-     COUT_EXEC(5)
+    (getSoftDebugLevel() < ORX_VERBOSE) ? COUT_EXEC(5) : COUT_EXEC(5)
   #else
    #define COUT5 \
     false ? COUT_EXEC(5) : COUT_EXEC(5)
@@ -140,8 +134,7 @@ static inline int getSoftDebugLevel()
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ULTRA
    #define COUT6 \
-    if (getSoftDebugLevel() >= ORX_ULTRA) \
-     COUT_EXEC(6)
+    (getSoftDebugLevel() < ORX_ULTRA) ? COUT_EXEC(6) : COUT_EXEC(6)
   #else
    #define COUT6 \
     false ? COUT_EXEC(6) : COUT_EXEC(6)
@@ -177,65 +170,58 @@ static inline int getSoftDebugLevel()
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_NONE
    #define CCOUT0  \
-    if (getSoftDebugLevel() >= ORX_NONE)  \
-     CCOUT_EXEC(0)
+    (getSoftDebugLevel() < ORX_NONE) ? COUT_EXEC(0) : CCOUT_EXEC(0)
   #else
    #define CCOUT0 \
-    false ? CCOUT_EXEC(0) : CCOUT_EXEC(0)
+    false ? COUT_EXEC(0) : CCOUT_EXEC(0)
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
    #define CCOUT1  \
-    if (getSoftDebugLevel() >= ORX_ERROR)  \
-     CCOUT_EXEC(1)
+    (getSoftDebugLevel() < ORX_ERROR) ? COUT_EXEC(1) : CCOUT_EXEC(1)
   #else
    #define CCOUT1 \
-    false ? CCOUT_EXEC(1) : CCOUT_EXEC(1)
+    false ? COUT_EXEC(1) : CCOUT_EXEC(1)
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_WARNING
    #define CCOUT2 \
-    if (getSoftDebugLevel() >= ORX_WARNING) \
-     CCOUT_EXEC(2)
+    (getSoftDebugLevel() < ORX_WARNING) ? COUT_EXEC(2) : CCOUT_EXEC(2)
   #else
    #define CCOUT2 \
-    false ? CCOUT_EXEC(2) : CCOUT_EXEC(2)
+    false ? COUT_EXEC(2) : CCOUT_EXEC(2)
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_INFO
    #define CCOUT3 \
-    if (getSoftDebugLevel() >= ORX_INFO) \
-     CCOUT_EXEC(3)
+    (getSoftDebugLevel() < ORX_INFO) ? COUT_EXEC(3) : CCOUT_EXEC(3)
   #else
    #define CCOUT3 \
-    false ? CCOUT_EXEC(3) : CCOUT_EXEC(3)
+    false ? COUT_EXEC(3) : CCOUT_EXEC(3)
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_DEBUG
    #define CCOUT4 \
-    if (getSoftDebugLevel() >= ORX_DEBUG) \
-     CCOUT_EXEC(4)
+    (getSoftDebugLevel() < ORX_DEBUG) ? COUT_EXEC(4) : CCOUT_EXEC(4)
   #else
    #define CCOUT4 \
-    false ? CCOUT_EXEC(4) : CCOUT_EXEC(4)
+    false ? COUT_EXEC(4) : CCOUT_EXEC(4)
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_VERBOSE
    #define CCOUT5 \
-    if (getSoftDebugLevel() >= ORX_VERBOSE) \
-     CCOUT_EXEC(5)
+    (getSoftDebugLevel() < ORX_VERBOSE) ? COUT_EXEC(5) : CCOUT_EXEC(5)
   #else
    #define CCOUT5 \
-    false ? CCOUT_EXEC(5) : CCOUT_EXEC(5)
+    false ? COUT_EXEC(5) : CCOUT_EXEC(5)
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ULTRA
    #define CCOUT6 \
-    if (getSoftDebugLevel() >= ORX_ULTRA) \
-     CCOUT_EXEC(6)
+    (getSoftDebugLevel() < ORX_ULTRA) ? COUT_EXEC(6) : CCOUT_EXEC(6)
   #else
    #define CCOUT6 \
-    false ? CCOUT_EXEC(6) : CCOUT_EXEC(6)
+    false ? COUT_EXEC(6) : CCOUT_EXEC(6)
   #endif
 
  #else /* if ORX_PRINT_DEBUG_OUTPUT */
