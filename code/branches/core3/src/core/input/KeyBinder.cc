@@ -233,15 +233,15 @@ namespace orxonox
   */
   void KeyBinder::setConfigValues()
   {
-    SetConfigValue(/*Generic(KeyBinder, */analogThreshold_, 0.05f)  .description("Threshold for analog axes until which the state is 0.");
-    SetConfigValue(/*Generic(KeyBinder, */mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
-    SetConfigValue(/*Generic(KeyBinder, */bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
-    SetConfigValue(/*Generic(KeyBinder, */derivePeriod_, 0.05f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
-    SetConfigValue(/*Generic(KeyBinder, */mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
-    SetConfigValue(/*Generic(KeyBinder, */bClipMouse_, true).description("Whether or not to clip absolute value of mouse in non derive mode.");
+    SetConfigValue(analogThreshold_, 0.05f)  .description("Threshold for analog axes until which the state is 0.");
+    SetConfigValue(mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
+    SetConfigValue(bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
+    SetConfigValue(derivePeriod_, 0.05f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
+    SetConfigValue(mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
+    SetConfigValue(bClipMouse_, true).description("Whether or not to clip absolute value of mouse in non derive mode.");
 
     float oldThresh = buttonThreshold_;
-    SetConfigValue(/*Generic(KeyBinder, */buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
+    SetConfigValue(buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
     if (oldThresh != buttonThreshold_)
       for (unsigned int i = 0; i < nHalfAxes_s; i++)
         if (halfAxes_[i].buttonThreshold_ == oldThresh)

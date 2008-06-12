@@ -44,7 +44,6 @@ namespace orxonox
             virtual ~ParticleProjectile();
             virtual void changedVisibility();
             void setConfigValues();
-            void speedChanged();
 
         private:
             ParticleInterface* particles_;

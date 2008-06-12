@@ -66,13 +66,6 @@ namespace orxonox
         SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback(&ParticleProjectile::speedChanged);
     }
 
-    void ParticleProjectile::speedChanged()
-    {
-        Projectile::speed_s = this->speed_;
-        if (this->owner_)
-            this->setVelocity(this->owner_->getInitialDir() * this->speed_);
-    }
-
     void ParticleProjectile::changedVisibility()
     {
         BillboardProjectile::changedVisibility();
