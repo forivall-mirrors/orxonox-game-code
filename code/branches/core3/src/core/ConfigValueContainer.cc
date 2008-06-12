@@ -58,6 +58,7 @@ namespace orxonox
         this->identifier_ = identifier;
         this->sectionname_ = identifier->getName();
         this->varname_ = varname;
+        this->callback_ = 0;
 
         this->value_ = defvalue;
         this->bAddedDescription_ = false;
@@ -97,6 +98,15 @@ namespace orxonox
 
             this->update();
         }
+    }
+
+    /**
+        @brief Destructor: Deletes the callback object if necessary.
+    */
+    ConfigValueContainer::~ConfigValueContainer()
+    {
+        if (this->callback_)
+            delete this->callback_;
     }
 
     /**
@@ -334,7 +344,7 @@ namespace orxonox
         @brief Adds a description to the config-value.
         @param description The description
     */
-    void ConfigValueContainer::description(const std::string& description)
+    ConfigValueContainer& ConfigValueContainer::description(const std::string& description)
     {
         if (!this->bAddedDescription_)
         {
@@ -342,6 +352,7 @@ namespace orxonox
             AddLanguageEntry(this->description_, description);
             this->bAddedDescription_ = true;
         }
+        return (*this);
     }
 
     /**

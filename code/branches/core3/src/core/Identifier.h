@@ -60,7 +60,7 @@
 #include <utility>
 
 #include "MetaObjectList.h"
-#include "ObjectListBase.h"
+#include "Iterator.h"
 #include "util/Debug.h"
 #include "util/String.h"
 
@@ -111,7 +111,7 @@ namespace orxonox
             inline const std::string& getName() const { return this->name_; }
             void setName(const std::string& name);
 
-            void updateConfigValues() const;
+            virtual void updateConfigValues(bool updateChildren = true) const = 0;
 
             /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
             inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
@@ -301,6 +301,8 @@ namespace orxonox
             static bool isFirstCall();
             void addObject(T* object);
 
+            void updateConfigValues(bool updateChildren = true) const;
+
             XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
             void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
 
@@ -416,6 +418,23 @@ namespace orxonox
     {
         COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
         object->getMetaList().add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
+    }
+
+    /**
+        @brief Updates the config-values of all existing objects of this class by calling their setConfigValues() function.
+    */
+    template <class T>
+    void ClassIdentifier<T>::updateConfigValues(bool updateChildren) const
+    {
+        if (!this->hasConfigValues())
+            return;
+
+        for (ObjectListIterator<T> it = ObjectList<T>::begin(); it; ++it)
+            it->setConfigValues();
+
+        if (updateChildren)
+            for (std::set<const Identifier*>::const_iterator it = this->getChildrenBegin(); it != this->getChildrenEnd(); ++it)
+                (*it)->updateConfigValues(false);
     }
 
     /**

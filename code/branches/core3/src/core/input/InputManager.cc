@@ -339,7 +339,7 @@ namespace orxonox
           cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "CoeffPos", coeffPos);
           getIdentifier()->addConfigValueContainer("CoeffPos", cont);
       }
-      cont->getValue(&coeffPos);
+      cont->getValue(&coeffPos, this);
 
       cont = getIdentifier()->getConfigValueContainer("CoeffNeg");
       if (!cont)
@@ -347,7 +347,7 @@ namespace orxonox
           cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "CoeffNeg", coeffNeg);
           getIdentifier()->addConfigValueContainer("CoeffNeg", cont);
       }
-      cont->getValue(&coeffNeg);
+      cont->getValue(&coeffNeg, this);
 
       cont = getIdentifier()->getConfigValueContainer("Zero");
       if (!cont)
@@ -355,7 +355,7 @@ namespace orxonox
           cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "Zero", zero);
           getIdentifier()->addConfigValueContainer("Zero", cont);
       }
-      cont->getValue(&zero);
+      cont->getValue(&zero, this);
 
       // copy values to our own variables
       for (unsigned int i = 0; i < 24; i++)

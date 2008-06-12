@@ -64,8 +64,11 @@ namespace orxonox
 
     void RotatingProjectile::setConfigValues()
     {
-        SetConfigValue(colour_, ColourValue(1.0, 0.0, 0.0));
+        SetConfigValue(colour_, ColourValue(1.0, 0.0, 0.0)).callback(&RotatingProjectile::colourChanged);
+    }
 
+    void RotatingProjectile::colourChanged()
+    {
         if (this->isInitialized())
         {
             this->rotatingBillboard1_.getBillboardSet()->getBillboard(0)->setColour(this->colour_);

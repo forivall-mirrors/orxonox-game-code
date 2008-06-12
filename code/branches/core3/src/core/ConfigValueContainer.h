@@ -54,6 +54,27 @@
 
 namespace orxonox
 {
+    class ConfigValueCallbackBase
+    {
+        public:
+            virtual void call(void* object) = 0;
+            inline virtual ~ConfigValueCallbackBase() {}
+    };
+
+    template <class T>
+    class ConfigValueCallback: public ConfigValueCallbackBase
+    {
+        public:
+            inline ConfigValueCallback(void (T::*function) (void)) : function_(function) {}
+            inline virtual ~ConfigValueCallback() {}
+            inline virtual void call(void* object)
+                { (((T*)object)->*this->function_)(); }
+
+        private:
+            void (T::*function_) (void);
+    };
+
+
     //! The ConfigValuecontainer contains all needed informations about a configurable variable.
     /**
         The ConfigValueContainer class contains all needed informations about a configurable variable:
@@ -75,17 +96,60 @@ namespace orxonox
         public:
             ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const MultiTypeMath& defvalue);
             ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const std::vector<MultiTypeMath>& defvalue);
+            ~ConfigValueContainer();
 
-            /** @brief Returns the configured value. @param value This is only needed to determine the right type. @return The value */
-            template <typename T>
-            inline ConfigValueContainer& getValue(T* value)
-                { this->value_.getValue(value); return *this; }
-            template <typename T>
-            inline ConfigValueContainer& getValue(std::vector<T>* value)
+            /** @brief Returns the configured value. @param value A pointer to the variable to store the value. @return The ConfigValueContainer */
+            template <typename T, class C>
+            ConfigValueContainer& getValue(T* value, C* object)
             {
-                value->clear();
-                for (unsigned int i = 0; i < this->valueVector_.size(); i++)
-                    value->push_back(this->valueVector_[i]);
+                if (this->callback_ && object)
+                {
+                    T temp = *value;
+                    this->value_.getValue(value);
+                    if ((*value) != temp)
+                        this->callback_->call(object);
+                }
+                else
+                {
+                    this->value_.getValue(value);
+                }
+                return *this;
+            }
+
+            /** @brief Returns the configured vector. @param value A pointer to the vector to store the values. @return The ConfigValueContainer */
+            template <typename T, class C>
+            ConfigValueContainer& getValue(std::vector<T>* value, C* object)
+            {
+                if (this->callback_ && object)
+                {
+                    std::vector<T> temp = *value;
+
+                    value->clear();
+                    for (unsigned int i = 0; i < this->valueVector_.size(); ++i)
+                        value->push_back(this->valueVector_[i]);
+
+                    if (value->size() != temp.size())
+                    {
+                        this->callback_->call(object);
+                    }
+                    else
+                    {
+                        for (unsigned int i = 0; i < value->size(); ++i)
+                        {
+                            if ((*value)[i] != temp[i])
+                            {
+                                this->callback_->call(object);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    value->clear();
+                    for (unsigned int i = 0; i < this->valueVector_.size(); ++i)
+                        value->push_back(this->valueVector_[i]);
+                }
                 return *this;
             }
 
@@ -103,8 +167,16 @@ namespace orxonox
             inline unsigned int getVectorSize() const
                 { return this->valueVector_.size(); }
 
-            void description(const std::string& description);
+            ConfigValueContainer& description(const std::string& description);
             const std::string& getDescription() const;
+
+            template <class T>
+            inline ConfigValueContainer& callback(void (T::*function) (void))
+            {
+                if (!this->callback_)
+                    this->callback_ = new ConfigValueCallback<T>(function);
+                return (*this);
+            }
 
             bool set(const MultiTypeMath& input);
             bool tset(const MultiTypeMath& input);
@@ -141,6 +213,7 @@ namespace orxonox
 
             bool                       bAddedDescription_;          //!< True if a description was added
             LanguageEntryLabel         description_;                //!< The description
+            ConfigValueCallbackBase*   callback_;                   //!< A callback function to call after getValue if the value changed
     };
 }
 

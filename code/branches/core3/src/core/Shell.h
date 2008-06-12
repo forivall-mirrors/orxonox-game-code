@@ -66,6 +66,8 @@ namespace orxonox
             static void history();
 
             virtual void setConfigValues();
+            void commandHistoryOffsetChanged();
+            void commandHistoryLengthChanged();
 
             void registerListener(ShellListener* listener);
             void unregisterListener(ShellListener* listener);

@@ -31,7 +31,7 @@
 
 #include "SpaceShip.h"
 #include "core/CoreIncludes.h"
-
+#include "core/ConfigValueIncludes.h"
 namespace orxonox
 {
     CreateFactory(ParticleProjectile);
@@ -51,12 +51,26 @@ namespace orxonox
         {
             this->particles_ = 0;
         }
+
+        this->setConfigValues();
     }
 
     ParticleProjectile::~ParticleProjectile()
     {
         if (this->isInitialized() && this->particles_)
             delete this->particles_;
+    }
+
+    void ParticleProjectile::setConfigValues()
+    {
+        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback(&ParticleProjectile::speedChanged);
+    }
+
+    void ParticleProjectile::speedChanged()
+    {
+        Projectile::speed_s = this->speed_;
+        if (this->owner_)
+            this->setVelocity(this->owner_->getInitialDir() * this->speed_);
     }
 
     void ParticleProjectile::changedVisibility()

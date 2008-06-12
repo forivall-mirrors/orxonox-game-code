@@ -43,8 +43,6 @@ namespace orxonox
         this->identifier_ = 0;
         this->parents_ = 0;
         this->metaList_ = new MetaObjectList();
-
-        this->setConfigValues();
     }
 
     /** @brief Destructor: Deletes, if existing, the list of the parents. */

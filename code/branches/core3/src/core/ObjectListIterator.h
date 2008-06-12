@@ -35,7 +35,7 @@
     This is the only way to access the objects stored in an ObjectList.
 
     Usage:
-    for (Iterator<myClass> it = ObjectList<myClass>::begin(); it != ObjectList<myClass>::end(); ++it)
+    for (ObjectListIterator<myClass> it = ObjectList<myClass>::begin(); it != ObjectList<myClass>::end(); ++it)
     {
         it->someFunction(...);
         myClass* myObject = *it;

@@ -38,9 +38,6 @@
 #include "Factory.h"
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
-#include "Iterator.h"
-#include "ObjectList.h"
-#include "OrxonoxClass.h"
 #include "XMLPort.h"
 
 namespace orxonox
@@ -194,15 +191,6 @@ namespace orxonox
     {
         Factory::changeNetworkID(this, this->classID_, id);
         this->classID_ = id;
-    }
-
-    /**
-        @brief Updates the config-values of all existing objects of this class by calling their setConfigValues() function.
-    */
-    void Identifier::updateConfigValues() const
-    {
-        for (BaseIterator it = this->getObjects()->begin(); it; ++it)
-            (*it)->setConfigValues();
     }
 
     /**

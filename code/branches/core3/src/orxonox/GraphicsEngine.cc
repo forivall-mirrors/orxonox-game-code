@@ -96,12 +96,13 @@ namespace orxonox {
     SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
     SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
 
-    unsigned int old = this->detailLevelParticle_;
-    SetConfigValue(detailLevelParticle_, 2).description("O: off, 1: low, 2: normal, 3: high");
+    SetConfigValue(detailLevelParticle_, 2).description("O: off, 1: low, 2: normal, 3: high").callback(&GraphicsEngine::detailLevelParticleChanged);
+  }
 
-    if (this->detailLevelParticle_ != old)
-      for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it; ++it)
-        it->detailLevelChanged(this->detailLevelParticle_);
+  void GraphicsEngine::detailLevelParticleChanged()
+  {
+    for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it; ++it)
+      it->detailLevelChanged(this->detailLevelParticle_);
   }
 
   /**

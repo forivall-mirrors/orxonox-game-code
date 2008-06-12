@@ -233,15 +233,15 @@ namespace orxonox
   */
   void KeyBinder::setConfigValues()
   {
-    SetConfigValueGeneric(KeyBinder, analogThreshold_, 0.05f)  .description("Threshold for analog axes until which the state is 0.");
-    SetConfigValueGeneric(KeyBinder, mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
-    SetConfigValueGeneric(KeyBinder, bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
-    SetConfigValueGeneric(KeyBinder, derivePeriod_, 0.05f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
-    SetConfigValueGeneric(KeyBinder, mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
-    SetConfigValueGeneric(KeyBinder, bClipMouse_, true).description("Whether or not to clip absolute value of mouse in non derive mode.");
+    SetConfigValue(/*Generic(KeyBinder, */analogThreshold_, 0.05f)  .description("Threshold for analog axes until which the state is 0.");
+    SetConfigValue(/*Generic(KeyBinder, */mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
+    SetConfigValue(/*Generic(KeyBinder, */bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
+    SetConfigValue(/*Generic(KeyBinder, */derivePeriod_, 0.05f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
+    SetConfigValue(/*Generic(KeyBinder, */mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
+    SetConfigValue(/*Generic(KeyBinder, */bClipMouse_, true).description("Whether or not to clip absolute value of mouse in non derive mode.");
 
     float oldThresh = buttonThreshold_;
-    SetConfigValueGeneric(KeyBinder, buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
+    SetConfigValue(/*Generic(KeyBinder, */buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
     if (oldThresh != buttonThreshold_)
       for (unsigned int i = 0; i < nHalfAxes_s; i++)
         if (halfAxes_[i].buttonThreshold_ == oldThresh)
@@ -271,7 +271,7 @@ namespace orxonox
       ClassIdentifier<KeyBinder>::getIdentifier()->addConfigValueContainer(button.name_, cont);
     }
     std::string old = button.bindingString_;
-    cont->getValue(&button.bindingString_);
+    cont->getValue(&button.bindingString_, this);
 
     // keybinder stuff
     if (old != button.bindingString_)

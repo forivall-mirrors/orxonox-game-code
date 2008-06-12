@@ -47,13 +47,14 @@
     @param defvalue The default-value of the variable
 */
 #define SetConfigValue(varname, defvalue) \
-    orxonox::ConfigValueContainer* container##varname = this->getIdentifier()->getConfigValueContainer(#varname); \
+    static orxonox::Identifier* identifier##varname = this->getIdentifier(); \
+    orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, this->getIdentifier(), #varname, varname = defvalue); \
-        this->getIdentifier()->addConfigValueContainer(#varname, container##varname); \
+        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, identifier##varname, #varname, varname = defvalue); \
+        identifier##varname->addConfigValueContainer(#varname, container##varname); \
     } \
-    container##varname->getValue(&varname)
+    container##varname->getValue(&varname, this)
 
 /**
     @brief Assigns the value, defined in the config-file, to the variable (or the default-value, if there is no entry in the file).
@@ -62,13 +63,14 @@
     @param defvalue The default-value of the variable
 */
 #define SetConfigValueGeneric(classname, varname, defvalue) \
-    orxonox::ConfigValueContainer* container##varname = ClassIdentifier<classname>::getIdentifier()->getConfigValueContainer(#varname); \
+    static orxonox::Identifier* identifier##varname = ClassIdentifier<classname>::getIdentifier(); \
+    orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, ClassIdentifier<classname>::getIdentifier(), #varname, varname = defvalue); \
-        ClassIdentifier<classname>::getIdentifier()->addConfigValueContainer(#varname, container##varname); \
+        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, identifier##varname, #varname, varname = defvalue); \
+        identifier##varname->addConfigValueContainer(#varname, container##varname); \
     } \
-    container##varname->getValue(&varname)
+    container##varname->getValue(&varname, this)
 
 /**
     @brief Assigns the vector-values, defined in the config-file, to the vector (or the default-value, if there are no entries in the file).
@@ -76,17 +78,18 @@
     @param defvalue The default-value
 */
 #define SetConfigValueVector(varname, defvalue) \
-    orxonox::ConfigValueContainer* container##varname = this->getIdentifier()->getConfigValueContainer(#varname); \
+    static orxonox::Identifier* identifier##varname = this->getIdentifier(); \
+    orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
         std::vector<MultiTypeMath> temp; \
         for (unsigned int i = 0; i < defvalue.size(); i++) \
             temp.push_back(MultiTypeMath(defvalue[i])); \
-        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, this->getIdentifier(), #varname, temp); \
+        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, identifier##varname, #varname, temp); \
         container##varname->setVectorType(varname); \
-        this->getIdentifier()->addConfigValueContainer(#varname, container##varname); \
+        identifier##varname->addConfigValueContainer(#varname, container##varname); \
     } \
-    container##varname->getValue(&varname)
+    container##varname->getValue(&varname, this)
 
 /**
     @brief Sets the variable and the config-file entry back to the previously defined default-value.
@@ -97,7 +100,7 @@
     if (container##varname##reset) \
     { \
         container##varname##reset->reset(); \
-        container##varname##reset->getValue(&varname); \
+        container##varname##reset->getValue(&varname, this); \
     } \
     else \
     { \
@@ -114,7 +117,7 @@
     if (container##varname##modify##modifier) \
     { \
         container##varname##modify##modifier->modifier(__VA_ARGS__); \
-        container##varname##modify##modifier->getValue(&varname); \
+        container##varname##modify##modifier->getValue(&varname, this); \
     } \
     else \
     { \
