@@ -46,6 +46,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/Iterator.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
@@ -99,7 +100,7 @@ namespace orxonox {
     SetConfigValue(detailLevelParticle_, 2).description("O: off, 1: low, 2: normal, 3: high");
 
     if (this->detailLevelParticle_ != old)
-      for (Iterator<ParticleInterface> it = ObjectList<ParticleInterface>::begin(); it; ++it)
+      for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it; ++it)
         it->detailLevelChanged(this->detailLevelParticle_);
   }
 

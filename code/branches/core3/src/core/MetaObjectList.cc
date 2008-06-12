@@ -32,6 +32,8 @@
 */
 
 #include "MetaObjectList.h"
+#include "ObjectListBase.h"
+#include "Identifier.h"
 #include "util/Debug.h"
 
 namespace orxonox
@@ -45,7 +47,7 @@ namespace orxonox
     MetaObjectListElement::~MetaObjectListElement()
     {
         COUT(5) << "*** MetaObjectList: Removing Object from " << this->list_->getIdentifier()->getName() << "-list." << std::endl;
-        this->list_->notifyIterators(this->element_);
+        this->list_->notifyIterators(this->element_->objectBase_);
 
         if (this->element_->next_)
             this->element_->next_->prev_ = this->element_->prev_;

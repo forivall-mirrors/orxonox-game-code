@@ -41,7 +41,7 @@
 #define _GameStateClient_H__
 
 #include <map>
-// 
+//
 #include "NetworkPrereqs.h"
 #include "core/CorePrereqs.h"
 #include "PacketTypes.h"
@@ -57,7 +57,7 @@ namespace network
   public:
     GameStateClient();
     ~GameStateClient();
-    
+
     void addGameState(GameStateCompressed *gs);
     int processGameState();
     GameStateCompressed *popPartialGameState();
@@ -71,7 +71,7 @@ namespace network
     GameState *decompress(GameStateCompressed *a);
     GameState *decode(GameState *old, GameStateCompressed *diff);
     GameState *decode(GameStateCompressed *x);
-    void removeObject(orxonox::Iterator<Synchronisable> &it);
+    void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
     void printGameStateMap();
     bool saveShipCache();
     bool loadShipCache();
@@ -82,10 +82,10 @@ namespace network
     GameStateCompressed *tempGameState_; // we save the received gamestates here during processQueue
     orxonox::SpaceShip *myShip_;
     syncData shipCache_;
-    
-    
-    
-    
+
+
+
+
   public:
     //#### ADDED FOR TESTING PURPOSE ####
     GameState* testDecompress( GameStateCompressed* gc );

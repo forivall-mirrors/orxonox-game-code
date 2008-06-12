@@ -40,7 +40,7 @@
 #include "CorePrereqs.h"
 
 #include "Identifier.h"
-#include "Iterator.h"
+#include "ObjectListIterator.h"
 
 namespace orxonox
 {
@@ -50,27 +50,29 @@ namespace orxonox
     //! The ObjectList contains all objects of the given class.
     /**
         Wraps the ObjectListBase of the corresponding Identifier.
-        Use Iterator<class> to iterate through all objects in the list.
+        Use ObjectListIterator<class> to iterate through all objects in the list.
     */
     template <class T>
     class ObjectList
     {
         public:
+            typedef ObjectListIterator<T> iterator;
+
             /** @brief Returns an Iterator to the first element in the list. @return The Iterator */
-            inline static Iterator<T> begin()
-                { return Iterator<T>(ClassIdentifier<T>::getIdentifier()->getObjects()->begin()); }
+            inline static ObjectListElement<T>* begin()
+                { return ((ObjectListElement<T>*)ClassIdentifier<T>::getIdentifier()->getObjects()->begin().element_); }
 
             /** @brief Returns an Iterator to the element after the last element in the list. @return The Iterator */
-            inline static Iterator<T> end()
-                { return Iterator<T>(ClassIdentifier<T>::getIdentifier()->getObjects()->end()); }
+            inline static ObjectListElement<T>* end()
+                { return ((ObjectListElement<T>*)ClassIdentifier<T>::getIdentifier()->getObjects()->end().element_); }
 
             /** @brief Returns an Iterator to the last element in the list. @return The Iterator */
-            inline static Iterator<T> rbegin()
-                { return Iterator<T>(ClassIdentifier<T>::getIdentifier()->getObjects()->rbegin()); }
+            inline static ObjectListElement<T>* rbegin()
+                { return ((ObjectListElement<T>*)ClassIdentifier<T>::getIdentifier()->getObjects()->rbegin().element_); }
 
             /** @brief Returns an Iterator to the element before the first element in the list. @return The Iterator */
-            inline static Iterator<T> rend()
-                { return Iterator<T>(ClassIdentifier<T>::getIdentifier()->getObjects()->rend()); }
+            inline static ObjectListElement<T>* rend()
+                { return ((ObjectListElement<T>*)ClassIdentifier<T>::getIdentifier()->getObjects()->rend().element_); }
     };
 }
 

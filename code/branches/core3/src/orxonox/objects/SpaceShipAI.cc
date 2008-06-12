@@ -71,7 +71,7 @@ namespace orxonox
 
     SpaceShipAI::~SpaceShipAI()
     {
-        for (Iterator<SpaceShipAI> it = ObjectList<SpaceShipAI>::begin(); it; ++it)
+        for (ObjectList<SpaceShipAI>::iterator it = ObjectList<SpaceShipAI>::begin(); it; ++it)
             it->shipDied(this);
     }
 
@@ -110,7 +110,7 @@ namespace orxonox
     void SpaceShipAI::killEnemies(int num)
     {
         int i = 0;
-        for (Iterator<SpaceShipAI> it = ObjectList<SpaceShipAI>::begin(); it; )
+        for (ObjectList<SpaceShipAI>::iterator it = ObjectList<SpaceShipAI>::begin(); it; )
         {
             (it++)->kill();
             if (num && i >= num)
@@ -258,7 +258,7 @@ namespace orxonox
         this->targetPosition_ = this->getPosition();
         this->forgetTarget();
 
-        for (Iterator<SpaceShip> it = ObjectList<SpaceShip>::begin(); it; ++it)
+        for (ObjectList<SpaceShip>::iterator it = ObjectList<SpaceShip>::begin(); it; ++it)
         {
             if (it->getTeamNr() != this->getTeamNr())
             {

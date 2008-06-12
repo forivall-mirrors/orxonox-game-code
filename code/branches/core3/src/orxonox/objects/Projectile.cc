@@ -34,6 +34,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/Iterator.h"
 #include "tools/ParticleInterface.h"
 
 #include "SpaceShipAI.h"
@@ -86,7 +87,7 @@ namespace orxonox
             return;
 
         float radius;
-        for (Iterator<Model> it = ObjectList<Model>::begin(); it; ++it)
+        for (ObjectList<Model>::iterator it = ObjectList<Model>::begin(); it; ++it)
         {
             if ((*it) != this->owner_)
             {

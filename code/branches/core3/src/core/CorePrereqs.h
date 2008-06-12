@@ -137,6 +137,10 @@ namespace orxonox
   class ObjectList;
   class ObjectListBase;
   class ObjectListBaseElement;
+  template <class T>
+  class ObjectListElement;
+  template <class T>
+  class ObjectListIterator;
   class OrxonoxClass;
   class Shell;
   class ShellListener;
@@ -152,6 +156,8 @@ namespace orxonox
   class XMLPortClassParamContainer;
   class XMLPortObjectContainer;
   class XMLPortParamContainer;
+
+  struct ObjectListBase::Export;
 
   // input
   //class GUIInputHandler;

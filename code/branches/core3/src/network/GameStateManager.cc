@@ -47,6 +47,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
+#include "core/Iterator.h"
 #include "ClientInformation.h"
 #include "Synchronisable.h"
 
@@ -179,7 +180,7 @@ namespace network
     //the size of one specific synchronisable
     int tempsize=0;
     // get the start of the Synchronisable list
-    orxonox::Iterator<Synchronisable> it;
+    orxonox::ObjectList<Synchronisable>::iterator it;
     // struct for return value of Synchronisable::getData()
     syncData sync;
 
@@ -245,7 +246,7 @@ namespace network
     unsigned char *data=state->data;
     COUT(4) << "loadSnapshot: loading gs: " << state->id << std::endl;
     // get the start of the Synchronisable list
-    orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::begin();
+    orxonox::ObjectList<Synchronisable>::iterator it=orxonox::ObjectList<Synchronisable>::begin();
     syncData sync;
     /*ClientInformation *client = head_->findClient(clientID);
     if(client)

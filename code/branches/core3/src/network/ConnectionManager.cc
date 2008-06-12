@@ -43,6 +43,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
+#include "core/Iterator.h"
 #include "objects/SpaceShip.h"
 #include "util/Math.h"
 #include "util/Sleep.h"
@@ -336,7 +337,7 @@ used by processQueue in Server.cc
 
   bool ConnectionManager::removeShip(ClientInformation *client){
     int id=client->getShipID();
-    orxonox::Iterator<orxonox::SpaceShip> it;
+    orxonox::ObjectList<orxonox::SpaceShip>::iterator it;
     for(it = orxonox::ObjectList<orxonox::SpaceShip>::begin(); it; ++it){
       if(it->objectID!=id)
         continue;

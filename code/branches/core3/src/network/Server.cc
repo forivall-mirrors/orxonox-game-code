@@ -51,6 +51,7 @@
 #include "util/Sleep.h"
 #include "objects/SpaceShip.h"
 #include "core/ConsoleCommand.h"
+#include "core/Iterator.h"
 
 namespace network
 {
@@ -399,7 +400,7 @@ namespace network
     //return removeClient(head_->findClient(&(peer->address))->getID());
 
     //boost::recursive_mutex::scoped_lock lock(head_->mutex_);
-    orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::begin();
+    orxonox::ObjectList<orxonox::SpaceShip>::iterator it = orxonox::ObjectList<orxonox::SpaceShip>::begin();
     ClientInformation *client = clients->findClient(&event->peer->address);
     if(!client)
       return false;
@@ -408,7 +409,7 @@ namespace network
         ++it;
         continue;
       }
-      orxonox::Iterator<orxonox::SpaceShip> temp=it;
+      orxonox::ObjectList<orxonox::SpaceShip>::iterator temp=it;
       ++it;
       delete  *temp;
       return clients->removeClient(event->peer);

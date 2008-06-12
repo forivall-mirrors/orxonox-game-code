@@ -38,7 +38,7 @@
 #include "Factory.h"
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
-#include "MetaObjectList.h"
+#include "Iterator.h"
 #include "ObjectList.h"
 #include "OrxonoxClass.h"
 
@@ -196,13 +196,12 @@ namespace orxonox
     }
 
     /**
-        @brief Adds an object of the given type to the ObjectList.
-        @param object The object to add
+        @brief Updates the config-values of all existing objects of this class by calling their setConfigValues() function.
     */
-    void Identifier::addObject(OrxonoxClass* object)
+    void Identifier::updateConfigValues() const
     {
-        COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
-        object->getMetaList().add(this->objects_, this->objects_->add(object));
+        for (BaseIterator it = this->getObjects()->begin(); it; ++it)
+            (*it)->setConfigValues();
     }
 
     /**

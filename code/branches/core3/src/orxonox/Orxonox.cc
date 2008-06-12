@@ -53,6 +53,7 @@
 
 // core
 #include "core/ConfigFileManager.h"
+#include "core/Iterator.h"
 #include "core/ConsoleCommand.h"
 #include "core/Loader.h"
 #include "core/input/InputManager.h"
@@ -74,6 +75,7 @@
 
 #include "GraphicsEngine.h"
 #include "Settings.h"
+
 
 // FIXME: is this really file scope?
 // globals for the server or client
@@ -168,7 +170,7 @@ namespace orxonox
     float change = factor / Orxonox::getSingleton()->getTimeFactor();
     Orxonox::getSingleton()->timefactor_ = factor;
 
-    for (Iterator<ParticleInterface> it = ObjectList<ParticleInterface>::begin(); it; ++it)
+    for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it; ++it)
         it->setSpeedFactor(it->getSpeedFactor() * change);
   }
 
@@ -461,10 +463,10 @@ namespace orxonox
       // tick the core
       Core::tick((float)evt.timeSinceLastFrame);
       // Call those objects that need the real time
-      for (Iterator<TickableReal> it = ObjectList<TickableReal>::begin(); it; ++it)
+      for (ObjectList<TickableReal>::iterator it = ObjectList<TickableReal>::begin(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame);
       // Call the scene objects
-      for (Iterator<Tickable> it = ObjectList<Tickable>::begin(); it; ++it)
+      for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
         it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
       //AudioManager::tick();
       if (client_g)

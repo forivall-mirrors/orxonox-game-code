@@ -40,6 +40,7 @@
 #include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/Iterator.h"
 #include "core/input/InputManager.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
@@ -70,7 +71,7 @@ namespace orxonox
 
 
     SpaceShip *SpaceShip::getLocalShip(){
-      Iterator<SpaceShip> it;
+      ObjectList<SpaceShip>::iterator it;
       for(it = ObjectList<SpaceShip>::begin(); it; ++it){
         if( (it)->myShip_ )
           return *it;

@@ -67,6 +67,7 @@ namespace orxonox
         this->setInputBuffer(new InputBuffer());
 
         this->outputBuffer_.registerListener(this);
+        OutputHandler::getOutStream().setOutputBuffer(this->outputBuffer_);
 
         this->setConfigValues();
     }

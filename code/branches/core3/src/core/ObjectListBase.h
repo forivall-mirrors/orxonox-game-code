@@ -37,7 +37,7 @@
 #ifndef _ObjectListBase_H__
 #define _ObjectListBase_H__
 
-#include <set>
+#include <list>
 
 #include "CorePrereqs.h"
 
@@ -54,11 +54,24 @@ namespace orxonox
                 @brief Constructor: Creates the list-element with an object.
                 @param object The object to store
             */
-            ObjectListBaseElement(OrxonoxClass* object) : object_(object), next_(0), prev_(0) {}
+            ObjectListBaseElement(OrxonoxClass* objectBase) : next_(0), prev_(0), objectBase_(objectBase) {}
 
-            OrxonoxClass* object_;              //!< The object
             ObjectListBaseElement* next_;       //!< The next element in the list
             ObjectListBaseElement* prev_;       //!< The previous element in the list
+            OrxonoxClass* objectBase_;
+    };
+
+
+    // ###############################
+    // ###    ObjectListElement    ###
+    // ###############################
+    //! The list-element that actually contains the object
+    template <class T>
+    class ObjectListElement : public ObjectListBaseElement
+    {
+        public:
+            ObjectListElement(T* object) : ObjectListBaseElement(object), object_(object) {}
+            T* object_;              //!< The object
     };
 
 
@@ -78,30 +91,38 @@ namespace orxonox
             ObjectListBase(Identifier* identifier);
             ~ObjectListBase();
 
-            ObjectListBaseElement* add(OrxonoxClass* object);
+            ObjectListBaseElement* add(ObjectListBaseElement* element);
+
+            struct Export
+            {
+                Export(ObjectListBase* list, ObjectListBaseElement* element) : list_(list), element_(element) {}
+                ObjectListBase* list_;
+                ObjectListBaseElement* element_;
+            };
 
             /** @brief Returns a pointer to the first element in the list. @return The element */
-            inline ObjectListBaseElement* begin() const { return this->first_; }
+            inline Export begin() { return ObjectListBase::Export(this, this->first_); }
             /** @brief Returns a pointer to the element after the last element in the list. @return The element */
-            inline ObjectListBaseElement* end() const { return 0; }
+            inline Export end() { return ObjectListBase::Export(this, 0); }
             /** @brief Returns a pointer to the last element in the list. @return The element */
-            inline ObjectListBaseElement* rbegin() const { return this->last_; }
+            inline Export rbegin() { return ObjectListBase::Export(this, this->last_); }
             /** @brief Returns a pointer to the element in front of the first element in the list. @return The element */
-            inline ObjectListBaseElement* rend() const { return 0; }
+            inline Export rend() { return ObjectListBase::Export(this, 0); }
 
-            inline void registerIterator(IteratorBase* iterator)
-                { this->iterators_.insert(this->iterators_.end(), iterator); }
-            inline void unregisterIterator(IteratorBase* iterator)
-                { this->iterators_.erase(iterator); }
-            void notifyIterators(ObjectListBaseElement* element);
+            inline std::list<void*>::iterator registerIterator(void* iterator) { return this->iterators_.insert(this->iterators_.begin(), iterator); }
+            inline void unregisterIterator(const std::list<void*>::iterator& iterator) { this->iterators_.erase(iterator); }
+            inline std::list<void*>::iterator registerObjectListIterator(void* iterator) { return this->objectListIterators_.insert(this->iterators_.begin(), iterator); }
+            inline void unregisterObjectListIterator(const std::list<void*>::iterator& iterator) { this->objectListIterators_.erase(iterator); }
+            void notifyIterators(OrxonoxClass* object) const;
 
             inline Identifier* getIdentifier() const { return this->identifier_; }
 
         private:
-            Identifier* identifier_;             //!< The Iterator owning this list
-            ObjectListBaseElement* first_;       //!< The first element in the list
-            ObjectListBaseElement* last_;        //!< The last element in the list
-            std::set<IteratorBase*> iterators_;  //!< A list of iterators pointing on an element in this list
+            Identifier* identifier_;               //!< The Iterator owning this list
+            ObjectListBaseElement* first_;         //!< The first element in the list
+            ObjectListBaseElement* last_;          //!< The last element in the list
+            std::list<void*> iterators_;           //!< A list of Iterators pointing on an element in this list
+            std::list<void*> objectListIterators_; //!< A list of ObjectListIterators pointing on an element in this list
     };
 }
 

@@ -59,7 +59,8 @@
 #include <string>
 #include <utility>
 
-#include "Iterator.h"
+#include "MetaObjectList.h"
+#include "ObjectListBase.h"
 #include "util/Debug.h"
 #include "util/String.h"
 
@@ -102,8 +103,6 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier) const;
             bool isDirectParentOf(const Identifier* identifier) const;
 
-            void addObject(OrxonoxClass* object);
-
             /** @brief Returns the list of all existing objects of this class. @return The list */
             inline ObjectListBase* getObjects() const
                 { return this->objects_; }
@@ -112,7 +111,7 @@ namespace orxonox
             inline const std::string& getName() const { return this->name_; }
             void setName(const std::string& name);
 
-            virtual void updateConfigValues() const = 0;
+            void updateConfigValues() const;
 
             /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
             inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
@@ -230,6 +229,7 @@ namespace orxonox
             static std::map<std::string, Identifier*>& getLowercaseIdentifierMapIntern();
 
             bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
+            ObjectListBase* objects_;                                      //!< The list of all objects of this class
 
         private:
             /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
@@ -263,7 +263,6 @@ namespace orxonox
 
             bool bSetName_;                                                //!< True if the name is set
             std::string name_;                                             //!< The name of the class the Identifier belongs to
-            ObjectListBase* objects_;                                      //!< The list of all objects of this class
             BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
             static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
             unsigned int classID_;                                         //!< The network ID to identify a class through the network
@@ -300,8 +299,7 @@ namespace orxonox
             static ClassIdentifier<T> *getIdentifier(const std::string& name);
             void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
             static bool isFirstCall();
-
-            void updateConfigValues() const;
+            void addObject(T* object);
 
             XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
             void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
@@ -410,13 +408,14 @@ namespace orxonox
     }
 
     /**
-        @brief Updates the config-values of all existing objects of this class by calling their setConfigValues() function.
+        @brief Adds an object of the given type to the ObjectList.
+        @param object The object to add
     */
     template <class T>
-    void ClassIdentifier<T>::updateConfigValues() const
+    void ClassIdentifier<T>::addObject(T* object)
     {
-        for (Iterator<T> it = this->getObjects()->begin(); it; ++it)
-            (*it)->setConfigValues();
+        COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
+        object->getMetaList().add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
     }
 
     /**

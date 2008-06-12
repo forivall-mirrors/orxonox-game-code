@@ -40,9 +40,6 @@
 
 #include "CorePrereqs.h"
 
-#include "ObjectListBase.h"
-#include "Identifier.h"
-
 namespace orxonox
 {
     // ###############################

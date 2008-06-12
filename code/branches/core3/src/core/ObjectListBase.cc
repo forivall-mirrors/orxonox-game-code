@@ -40,7 +40,7 @@
 
 #include "ObjectListBase.h"
 #include "Identifier.h"
-#include "IteratorBase.h"
+#include "Iterator.h"
 
 namespace orxonox
 {
@@ -72,11 +72,12 @@ namespace orxonox
         @brief Increases all Iterators that currently point on the given element (because it gets removed).
         @param element The element that gets removed
     */
-    void ObjectListBase::notifyIterators(ObjectListBaseElement* element)
+    void ObjectListBase::notifyIterators(OrxonoxClass* object) const
     {
-        for (std::set<IteratorBase*>::iterator it = this->iterators_.begin(); it != this->iterators_.end(); ++it)
-            if ((*(*(*it))) == element->object_)
-                ++(*(*it));
+        for (std::list<void*>::const_iterator it = this->iterators_.begin(); it != this->iterators_.end(); ++it)
+            ((Iterator<OrxonoxClass>*)(*it))->incrementIfEqual(object);
+        for (std::list<void*>::const_iterator it = this->objectListIterators_.begin(); it != this->objectListIterators_.end(); ++it)
+            ((ObjectListIterator<OrxonoxClass>*)(*it))->incrementIfEqual(object);
     }
 
     /**
@@ -84,19 +85,19 @@ namespace orxonox
         @param object The object to add
         @return The pointer to the new ObjectListBaseElement, needed by the MetaObjectList of the added object
     */
-    ObjectListBaseElement* ObjectListBase::add(OrxonoxClass* object)
+    ObjectListBaseElement* ObjectListBase::add(ObjectListBaseElement* element)
     {
         if (!this->last_)
         {
             // If the list is empty
-            this->last_ = new ObjectListBaseElement(object);
+            this->last_ = element;
             this->first_ = this->last_; // There's only one object in the list now
         }
         else
         {
             // If the list isn't empty
             ObjectListBaseElement* temp = this->last_;
-            this->last_ = new ObjectListBaseElement(object);
+            this->last_ = element;
             this->last_->prev_ = temp;
             temp->next_ = this->last_;
         }

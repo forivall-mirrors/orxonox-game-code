@@ -32,6 +32,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
+#include "core/Iterator.h"
 #include "Synchronisable.h"
 
 
@@ -136,8 +137,8 @@ namespace network
   * @param it iterator of the list pointing to the object
   * @return iterator pointing to the next object in the list
   */
-  void GameStateClient::removeObject(orxonox::Iterator<Synchronisable> &it) {
-    orxonox::Iterator<Synchronisable> temp=it;
+  void GameStateClient::removeObject(orxonox::ObjectList<Synchronisable>::iterator &it) {
+    orxonox::ObjectList<Synchronisable>::iterator temp=it;
     ++it;
     delete  *temp;
   }
@@ -150,7 +151,7 @@ namespace network
     unsigned char *data=state->data;
     COUT(4) << "loadSnapshot: loading gs: " << state->id << std::endl;
     // get the start of the Synchronisable list
-    orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::begin();
+    orxonox::ObjectList<Synchronisable>::iterator it=orxonox::ObjectList<Synchronisable>::begin();
     syncData sync;
     // loop as long as we have some data ;)
     while(data < state->data+state->size){
@@ -221,7 +222,7 @@ namespace network
     //the size of one specific synchronisable
     int tempsize=0;
     // get the start of the Synchronisable list
-    orxonox::Iterator<Synchronisable> it;
+    orxonox::ObjectList<Synchronisable>::iterator it;
     // struct for return value of Synchronisable::getData()
     syncData sync;
 
