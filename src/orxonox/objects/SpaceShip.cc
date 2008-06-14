@@ -131,8 +131,6 @@ namespace orxonox
 
         this->teamNr_ = 0;
         this->health_ = 100;
-
-        COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
 
     SpaceShip::~SpaceShip()
@@ -208,6 +206,15 @@ namespace orxonox
         node2b->setInheritScale(false);
         node2b->setScale(0.5, 0.5, 0.5);
         tt2_->addToSceneNode(node2b);
+
+        this->leftThrusterFlare_.setBillboardSet("Flares/ThrusterFlare1", Vector3(-7.5, -10, -0.5));
+        this->rightThrusterFlare_.setBillboardSet("Flares/ThrusterFlare1", Vector3(-7.5, 10, -0.5));
+
+        Ogre::SceneNode* node2c = this->getNode()->createChildSceneNode(this->getName() + "particle2c");
+        node2c->setInheritScale(false);
+        node2c->setScale(2, 2, 2);
+        node2c->attachObject(this->leftThrusterFlare_.getBillboardSet());
+        node2c->attachObject(this->rightThrusterFlare_.getBillboardSet());
         // END CREATING THRUSTER
 
         // START CREATING BLINKING LIGHTS
@@ -225,6 +232,11 @@ namespace orxonox
         this->greenNode_->attachObject(this->greenBillboard_.getBillboardSet());
         this->greenNode_->setScale(0.3, 0.3, 0.3);
         // END CREATING BLINKING LIGHTS
+
+        this->smoke_.setParticle("Orxonox/smoke5", LODParticle::normal);
+        this->fire_.setParticle("Orxonox/fire3", LODParticle::normal);
+        this->attachObject(this->smoke_);
+        this->attachObject(this->fire_);
 
         if (this->isExactlyA(Class(SpaceShip)))
         {
@@ -265,6 +277,10 @@ namespace orxonox
         this->greenBillboard_.setVisible(this->isVisible());
         this->crosshairNear_.setVisible(this->isVisible());
         this->crosshairFar_.setVisible(this->isVisible());
+        this->rightThrusterFlare_.setVisible(this->isVisible());
+        this->leftThrusterFlare_.setVisible(this->isVisible());
+        this->smoke_.setVisible(this->isVisible());
+        this->fire_.setVisible(this->isVisible());
     }
 
     void SpaceShip::changedActivity()
@@ -277,6 +293,8 @@ namespace orxonox
         this->greenBillboard_.setVisible(this->isVisible());
         this->crosshairNear_.setVisible(this->isVisible());
         this->crosshairFar_.setVisible(this->isVisible());
+        this->rightThrusterFlare_.setVisible(this->isVisible());
+        this->leftThrusterFlare_.setVisible(this->isVisible());
     }
 
     void SpaceShip::setCamera(const std::string& camera)
@@ -383,6 +401,9 @@ namespace orxonox
 
         if (this->cam_)
             this->cam_->tick(dt);
+
+        this->smoke_.setVisible(this->isVisible() && this->health_ < 40);
+        this->fire_.setVisible(this->isVisible() && this->health_ < 20);
 
         if (this->redNode_ && this->greenNode_)
         {

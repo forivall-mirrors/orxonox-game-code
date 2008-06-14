@@ -45,7 +45,34 @@ namespace orxonox
         this->billboardSet_ = 0;
     }
 
-    void BillboardSet::setBillboardSet(const std::string& file, const ColourValue& colour, int count, const Vector3& position)
+    void BillboardSet::setBillboardSet(const std::string& file, int count)
+    {
+        std::ostringstream name;
+        name << (BillboardSet::billboardSetCounter_s++);
+        this->billboardSet_ = GraphicsEngine::getSingleton().getSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_->createBillboard(Vector3::ZERO);
+        this->billboardSet_->setMaterialName(file);
+    }
+
+    void BillboardSet::setBillboardSet(const std::string& file, const ColourValue& colour, int count)
+    {
+        std::ostringstream name;
+        name << (BillboardSet::billboardSetCounter_s++);
+        this->billboardSet_ = GraphicsEngine::getSingleton().getSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_->createBillboard(Vector3::ZERO, colour);
+        this->billboardSet_->setMaterialName(file);
+    }
+
+    void BillboardSet::setBillboardSet(const std::string& file, const Vector3& position, int count)
+    {
+        std::ostringstream name;
+        name << (BillboardSet::billboardSetCounter_s++);
+        this->billboardSet_ = GraphicsEngine::getSingleton().getSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_->createBillboard(position);
+        this->billboardSet_->setMaterialName(file);
+    }
+
+    void BillboardSet::setBillboardSet(const std::string& file, const ColourValue& colour, const Vector3& position, int count)
     {
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);

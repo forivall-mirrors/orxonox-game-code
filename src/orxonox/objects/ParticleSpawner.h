@@ -40,10 +40,14 @@ namespace orxonox
     {
         public:
             ParticleSpawner();
-            ParticleSpawner(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float delay = 0, const Vector3& direction = Vector3::ZERO);
+            ParticleSpawner(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime = 0, float delay = 0, const Vector3& direction = Vector3::ZERO);
             virtual ~ParticleSpawner();
+
+            void setParticle(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime = 0, float delay = 0, const Vector3& direction = Vector3::ZERO);
             inline ParticleInterface* getParticleInterface() const
                 { return this->particle_; }
+
+            void setVisible(bool visible);
 
         private:
             void createParticleSpawner(float lifetime);

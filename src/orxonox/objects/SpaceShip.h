@@ -36,6 +36,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "tools/BillboardSet.h"
+#include "ParticleSpawner.h"
 
 namespace orxonox
 {
@@ -140,12 +141,17 @@ namespace orxonox
 
             ParticleInterface* tt1_;
             ParticleInterface* tt2_;
+            BillboardSet leftThrusterFlare_;
+            BillboardSet rightThrusterFlare_;
 
             BillboardSet redBillboard_;
             BillboardSet greenBillboard_;
             Ogre::SceneNode* redNode_;
             Ogre::SceneNode* greenNode_;
             float blinkTime_;
+
+            ParticleSpawner smoke_;
+            ParticleSpawner fire_;
 
             BillboardSet crosshairNear_;
             BillboardSet crosshairFar_;
