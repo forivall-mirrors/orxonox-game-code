@@ -171,6 +171,7 @@ namespace orxonox
     void WorldEntity::attachWorldEntity(WorldEntity* entity)
     {
         this->attachedWorldEntities_.push_back(entity);
+        this->attachObject(entity);
     }
 
     const WorldEntity* WorldEntity::getAttachedWorldEntity(unsigned int index) const
@@ -179,5 +180,17 @@ namespace orxonox
             return this->attachedWorldEntities_[index];
         else
             return 0;
+    }
+
+    void WorldEntity::attachObject(const WorldEntity& obj) const
+    {
+        GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(obj.getNode());
+        this->getNode()->addChild(obj.getNode());
+    }
+
+    void WorldEntity::attachObject(WorldEntity* obj) const
+    {
+        GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(obj->getNode());
+        this->getNode()->addChild(obj->getNode());
     }
 }

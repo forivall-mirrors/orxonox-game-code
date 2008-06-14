@@ -40,12 +40,17 @@ namespace orxonox
     ParticleSpawner::ParticleSpawner()
     {
         RegisterObject(ParticleSpawner);
+        this->particle_ = 0;
     }
 
     ParticleSpawner::ParticleSpawner(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float delay, const Vector3& direction)
     {
         RegisterObject(ParticleSpawner);
+        this->setParticle(templateName, detaillevel, lifetime, delay, direction);
+    }
 
+    void ParticleSpawner::setParticle(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float delay, const Vector3& direction)
+    {
         ExecutorMember<ParticleSpawner>* executor = createExecutor(createFunctor(&ParticleSpawner::createParticleSpawner));
         executor->setDefaultValues(lifetime);
         this->timer_.setTimer(delay, false, this, executor);
@@ -60,7 +65,7 @@ namespace orxonox
 
     ParticleSpawner::~ParticleSpawner()
     {
-        if (this->isInitialized())
+        if (this->isInitialized() && this->particle_)
         {
             this->particle_->detachFromSceneNode();
             delete this->particle_;
@@ -69,12 +74,19 @@ namespace orxonox
 
     void ParticleSpawner::createParticleSpawner(float lifetime)
     {
-        this->timer_.setTimer(lifetime, false, this, createExecutor(createFunctor(&ParticleSpawner::destroyParticleSpawner)));
         this->particle_->setEnabled(true);
+        if (lifetime != 0)
+            this->timer_.setTimer(lifetime, false, this, createExecutor(createFunctor(&ParticleSpawner::destroyParticleSpawner)));
     }
 
     void ParticleSpawner::destroyParticleSpawner()
     {
         delete this;
+    }
+
+    void ParticleSpawner::setVisible(bool visible)
+    {
+        if (this->particle_)
+            this->particle_->setEnabled(visible);
     }
 }

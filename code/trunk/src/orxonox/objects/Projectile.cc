@@ -49,8 +49,8 @@ namespace orxonox
         RegisterObject(Projectile);
 
         this->setConfigValues();
-        this->explosionTemplateName_ = "Orxonox/explosion1";
-        this->smokeTemplateName_ = "Orxonox/smoke3";
+        this->explosionTemplateName_ = "Orxonox/explosion3";
+        this->smokeTemplateName_ = "Orxonox/smoke4";
 
         if (this->owner_)
         {
@@ -100,9 +100,9 @@ namespace orxonox
                     ParticleSpawner* explosion = new ParticleSpawner(this->explosionTemplateName_, LODParticle::low, 2.0);
                     explosion->setPosition(this->getPosition());
                     explosion->create();
-                    ParticleSpawner* smoke = new ParticleSpawner(this->smokeTemplateName_, LODParticle::normal, 6.0, 0.0);
+                    ParticleSpawner* smoke = new ParticleSpawner(this->smokeTemplateName_, LODParticle::normal, 2.0, 0.0);
                     smoke->setPosition(this->getPosition());
-                    smoke->getParticleInterface()->setSpeedFactor(3.0);
+//                    smoke->getParticleInterface()->setSpeedFactor(3.0);
                     smoke->create();
                     delete this;
                     return;
