@@ -48,7 +48,7 @@
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
 #include "network/Client.h"
-#include "overlays/OverlayGroup.h"
+#include "overlays/hud/HUDRadar.h"
 
 namespace orxonox
 {
@@ -151,7 +151,7 @@ namespace orxonox
                 delete this->cam_;
 
             if (!this->myShip_)
-                OverlayGroup::getHUD().removeRadarObject(this);
+                HUDRadar::getInstance().removeRadarObject(this);
         }
     }
 
@@ -160,7 +160,7 @@ namespace orxonox
         if(network::Client::getSingleton() && objectID == network::Client::getSingleton()->getShipID())
           myShip_=true;
         else
-          OverlayGroup::getHUD().addRadarObject(this, this->getProjectileColour());
+          HUDRadar::getInstance().addRadarObject(this, this->getProjectileColour());
       }
       if(Model::create())
         this->init();

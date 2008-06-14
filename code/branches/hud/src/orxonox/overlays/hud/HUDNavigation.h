@@ -43,11 +43,11 @@ namespace orxonox
     {
       public:
         HUDNavigation();
-        virtual ~HUDNavigation();
+        ~HUDNavigation();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-        virtual void tick(float dt);
+        void tick(float dt);
 
         void cycleFocus();
         float getDist2Focus() const;
@@ -56,16 +56,21 @@ namespace orxonox
             { return this->focus_; }
         void releaseFocus();
 
-    protected:
-      virtual void sizeChanged();
-      virtual void angleChanged() { }
-      virtual void positionChanged() { }
+        static void cycleNavigationFocus();
+        static void releaseNavigationFocus();
+        static HUDNavigation& getInstance();
+
+      protected:
+        void sizeChanged();
+        void angleChanged() { }
+        void positionChanged() { }
 
       private:
-        void init();
+        HUDNavigation(HUDNavigation& instance);
         void updateMarker();
         void updateFocus();
 
+        // XMLPort accessors
         void setNavMarkerSize(float size);
         float getNavMarkerSize() const;
         void setAimMarkerSize(float size);
@@ -83,7 +88,9 @@ namespace orxonox
         Ogre::TextAreaOverlayElement* navText_;     //!< Text overlay to display the target distance
         std::list<RadarObject*>::iterator it_;
         RadarObject* focus_;                        // next pointer of linked list
-        bool wasOutOfView_;
+        bool wasOutOfView_;                         //!< Performance booster variable: setMaterial is not cheap
+
+        static HUDNavigation* instance_s;
   };
 }
 

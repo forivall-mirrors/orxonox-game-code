@@ -40,26 +40,22 @@
 namespace std
 {
     template <>
-    class less<orxonox::ColourValue>
+    bool less<orxonox::ColourValue>::operator()(const orxonox::ColourValue& __x, const orxonox::ColourValue& __y) const
     {
-        public:
-            bool operator()(const orxonox::ColourValue& __x, const orxonox::ColourValue& __y) const
+        if (__x.r == __y.r)
+        {
+            if (__x.g == __y.g)
             {
-                if (__x.r == __y.r)
+                if (__x.b == __y.b)
                 {
-                    if (__x.g == __y.g)
-                    {
-                        if (__x.b == __y.b)
-                        {
-                            return __x.a < __y.a;
-                        }
-                        return __x.b < __y.b;
-                    }
-                    return __x.g < __y.g;
+                    return __x.a < __y.a;
                 }
-                return __x.r < __y.r;
+                return __x.b < __y.b;
             }
-    };
+            return __x.g < __y.g;
+        }
+        return __x.r < __y.r;
+    }
 }
 
 namespace orxonox
@@ -68,7 +64,7 @@ namespace orxonox
     unsigned int RadarObject::materialcount_s = 0;
     std::map<std::string, std::map<ColourValue, std::string> > RadarObject::materials_s;
 
-    RadarObject::RadarObject(Ogre::OverlayContainer* container, WorldEntity* object, const ColourValue& colour, const std::string& texturename)
+    RadarObject::RadarObject(Ogre::Overlay* container, WorldEntity* object, const ColourValue& colour, const std::string& texturename)
     {
         this->colour_ = colour;
         this->texturename_ = texturename;
@@ -77,12 +73,8 @@ namespace orxonox
 
         this->panel_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarObject" + getConvertedValue<unsigned int, std::string>(RadarObject::count_s++)));
         this->setMaterial(colour, texturename);
-
-        this->panel_->setDimensions(3, 3);
-        this->panel_->setMetricsMode(Ogre::GMM_PIXELS);
-        this->panel_->show();
-
-        container->addChild(panel_);
+        this->panel_->setDimensions(0.01, 0.01);
+        container->add2D(panel_);
     }
 
     RadarObject::~RadarObject()

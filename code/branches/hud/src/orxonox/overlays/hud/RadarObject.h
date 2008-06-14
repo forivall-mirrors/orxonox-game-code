@@ -41,7 +41,7 @@ namespace orxonox
     class _OrxonoxExport RadarObject
     {
       public:
-        RadarObject(Ogre::OverlayContainer* container, WorldEntity* object, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1), const std::string& texturename = "white.tga");
+        RadarObject(Ogre::Overlay* container, WorldEntity* object, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1), const std::string& texturename = "white.tga");
         ~RadarObject();
 
         void setMaterial(const ColourValue& colour, const std::string& texturename);

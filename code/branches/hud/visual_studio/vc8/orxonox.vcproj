@@ -462,6 +462,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDRadar.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDRTRText.cc"
 						>
 					</File>
@@ -475,10 +479,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\RadarObject.cc"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\RadarOverlayElement.cc"
 						>
 					</File>
 				</Filter>
@@ -664,6 +664,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDRadar.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDRTRText.h"
 						>
 					</File>
@@ -681,10 +685,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\RadarObject.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\RadarOverlayElement.h"
 						>
 					</File>
 				</Filter>

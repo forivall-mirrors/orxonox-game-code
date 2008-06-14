@@ -94,18 +94,20 @@ namespace orxonox
   /**
    * Create a new instance of Orxonox. Avoid doing any actual work here.
    */
-  Orxonox::Orxonox() :
-    ogre_(0),
-    //auMan_(0),
-    timer_(0),
+  Orxonox::Orxonox()
+    : ogre_(0)
+    , startLevel_(0)
+    , hud_(0)
+    //, auMan_(0)
+    , timer_(0)
     // turn on frame smoothing by setting a value different from 0
-    frameSmoothingTime_(0.0f),
-    //orxonoxHUD_(0),
-    bAbort_(false),
-    timefactor_(1.0f),
-    mode_(STANDALONE),
-    serverIp_(""),
-    serverPort_(NETWORK_PORT)
+    , frameSmoothingTime_(0.0f)
+    //orxonoxHUD_(0)
+    , bAbort_(false)
+    , timefactor_(1.0f)
+    , mode_(STANDALONE)
+    , serverIp_("")
+    , serverPort_(NETWORK_PORT)
   {
   }
 
@@ -115,15 +117,21 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // keep in mind: the order of deletion is very important!
-    /*if (this->orxonoxHUD_)
-      delete this->orxonoxHUD_;*/
+    Loader::unload(startLevel_);
+    if (this->startLevel_)
+      delete this->startLevel_;
+
+    Loader::unload(hud_);
+    if (this->hud_)
+      delete this->hud_;
+
     Loader::close();
-    InputManager::destroy();
     //if (this->auMan_)
     //  delete this->auMan_;
     InGameConsole::getInstance().destroy();
     if (this->timer_)
       delete this->timer_;
+    InputManager::destroy();
     GraphicsEngine::getSingleton().destroy();
 
     if (network::Client::getSingleton())
@@ -334,8 +342,8 @@ namespace orxonox
     // Load the HUD
     COUT(3) << "Orxonox: Loading HUD" << std::endl;
 
-    Level* hud = new Level(Settings::getDataPath() + "overlay/hud.oxo");
-    Loader::load(hud);
+    hud_ = new Level(Settings::getDataPath() + "overlay/hud.oxo");
+    Loader::load(hud_);
 
     return true;
   }
@@ -396,8 +404,8 @@ namespace orxonox
    */
   bool Orxonox::loadScene()
   {
-    Level* startlevel = new Level("levels/sample.oxw");
-    Loader::open(startlevel);
+    startLevel_ = new Level("levels/sample.oxw");
+    Loader::open(startLevel_);
 
     return true;
   }

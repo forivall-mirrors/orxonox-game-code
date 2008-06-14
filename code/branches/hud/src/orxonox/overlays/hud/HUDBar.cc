@@ -80,9 +80,6 @@ namespace orxonox
             this->background_ = static_cast<PanelOverlayElement*>(
                     OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background"));
             this->background_->setMaterialName("Orxonox/BarBackground");
-            this->background_->setMetricsMode(GMM_RELATIVE);
-            this->background_->setDimensions(1.0f, 1.0f);
-            this->background_->setPosition(0.0f, 0.0f);
             this->overlay_->add2D(this->background_);
 
             // create new material
@@ -97,7 +94,6 @@ namespace orxonox
             // create bar
             this->bar_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "Bar"));
             this->bar_->setMaterialName(materialname);
-            this->bar_->setMetricsMode(GMM_RELATIVE);
             this->background_->addChild(bar_);
         }
 

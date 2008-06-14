@@ -26,31 +26,46 @@
  *
  */
 
-#ifndef _RadarOverlayElement_H__
-#define _RadarOverlayElement_H__
+#ifndef _HUDRadar_H__
+#define _HUDRadar_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include <OgrePrerequisites.h>
 #include <OgrePanelOverlayElement.h>
-#include "util/Math.h"
+#include "overlays/OrxonoxOverlay.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport RadarOverlayElement : public Ogre::PanelOverlayElement
+    class _OrxonoxExport HUDRadar : public OrxonoxOverlay, public Tickable
     {
       public:
-        RadarOverlayElement(const Ogre::String& name);
-        ~RadarOverlayElement();
-        void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
-        void resize();
-        void update();
-        void listObjects() const;
+        HUDRadar();
+        ~HUDRadar();
+
+        void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+
+        void tick(float dt);
+
+        void listObjects();
+
+        inline std::list<RadarObject*>& getRadarObjects()
+            { return this->roSet_; }
+
+        void addRadarObject(WorldEntity* object, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1));
+        void removeRadarObject(WorldEntity* object);
+
+        static HUDRadar& getInstance();
 
       private:
-        Ogre::Real leftRel_, topRel_, dimRel_;  // relative position/dimension
-        int left_, top_, dim_;                  // absolute position/dimension
-  };
+        HUDRadar(HUDRadar& instance);
+
+        std::list<RadarObject*> roSet_;
+        Ogre::PanelOverlayElement* background_;
+
+        static HUDRadar* instance_s;
+    };
 }
 
-#endif /* _RadarOverlayElement_H__ */
+#endif /* _HUDRadar_H__ */

@@ -12,11 +12,11 @@ SET( ORXONOX_SRC_FILES
   overlays/hud/HUDBar.cc
   overlays/hud/HUDFPSText.cc
   overlays/hud/HUDNavigation.cc
+  overlays/hud/HUDRadar.cc
   overlays/hud/HUDRTRText.cc
   overlays/hud/HUDSpeedBar.cc
   overlays/hud/HUDText.cc
   overlays/hud/RadarObject.cc
-  overlays/hud/RadarOverlayElement.cc
 
   tolua/tolua_bind.cc
 

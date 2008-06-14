@@ -92,6 +92,8 @@ namespace orxonox {
 
     private:
       GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
+      Level*                startLevel_;    //!< current hard coded default level
+      Level*                hud_;           //!< 'level' object fo the HUD
       //audio::AudioManager*  auMan_;         //!< audio manager
       Ogre::Timer*          timer_;         //!< Main loop timer
       // TODO: make this a config-value by creating a config class for orxonox

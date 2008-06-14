@@ -20,32 +20,28 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Yuning Chai
+ *      Reto Grieder
  *   Co-authors:
- *      Felix Schulthess
+ *      ...
  *
  */
-
 
 #ifndef _OverlayGroup_H__
 #define _OverlayGroup_H__
 
 #include "OrxonoxPrereqs.h"
 
+#include <map>
 #include <OgrePrerequisites.h>
-#include <OgreTextAreaOverlayElement.h>
 #include "core/BaseObject.h"
-#include "objects/Tickable.h"
 #include "util/Math.h"
-#include "hud/OverlayElementFactories.h"
-#include "tools/WindowEventListener.h"
 
 namespace orxonox
 {
     class HUDBar;
     class OrxonoxOverlay;
 
-    class _OrxonoxExport OverlayGroup : public BaseObject, public TickableReal, public WindowEventListener
+    class _OrxonoxExport OverlayGroup : public BaseObject
     {
       public:
         OverlayGroup();
@@ -53,22 +49,11 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-        virtual void tick(float);
+        void scale(const Vector2& scale);
+        Vector2 getScale() const { return this->scale_; }
 
-        void resize();
-        void addRadarObject(WorldEntity* object, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1));
-        void removeRadarObject(WorldEntity* object);
-        void setFPS();
-
-        inline std::list<RadarObject*>& getRadarObjects()
-            { return this->roSet_; }
-
-        static OverlayGroup& getHUD();
-
-        static void setEnergy(float value);
-        static void cycleNavigationFocus();
-        static void releaseNavigationFocus();
         static void toggleVisibility(const std::string& name);
+        static OverlayGroup& getHUD();
 
       private:
         OverlayGroup(const OverlayGroup& instance);
@@ -76,25 +61,8 @@ namespace orxonox
         void addElement(OrxonoxOverlay* element);
         OrxonoxOverlay* getElement(unsigned int index);
 
-        void windowResized(int newWidth, int newHeight);
-
         std::map<std::string, OrxonoxOverlay*> hudElements_;
-
-        std::list<RadarObject*> roSet_;
-
-        RadarOverlayElementFactory radarOverlayElementFactory_;
-
-        Ogre::Overlay* orxonoxHUD_;
-        Ogre::OverlayContainer* container_;
-        Ogre::TextAreaOverlayElement* fpsText_;
-        Ogre::TextAreaOverlayElement* rTRText_;
-        HUDBar* energyBar_;
-        BarOverlayElement* speedoBar_;
-        RadarOverlayElement* radar_;
-        HUDNavigation* nav_;
-
-        bool showFPS_;
-        bool showRenderTime_;
+        Vector2 scale_;
 
         static OverlayGroup* hudInstance_s;
     };

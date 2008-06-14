@@ -41,6 +41,7 @@ namespace orxonox
   class _OrxonoxExport OrxonoxOverlay : public BaseObject, public WindowEventListener
   {
     public:
+      Ogre::Overlay* getOverlay() { return this->overlay_; }
       OrxonoxOverlay();
       virtual ~OrxonoxOverlay();
 
@@ -73,14 +74,14 @@ namespace orxonox
       /** Adds the passed in angle to the rotation applied to this overlay. */
       void rotate(const Radian& angle) { this->angle_ += angle; this->angleChanged(); }
 
-      /** Sets the scaling factor of this overlay. */
+      /** Sets the size of this overlay. */
       void setSize(const Vector2& size) { this->size_ = size; this->sizeChanged(); }
 
       /** Gets the current size (not corrected) */
-      Vector2 getSize() const { return this->size_; }
+      Vector2 getUncorrectedSize() const { return this->size_; }
 
       /** Gets the current size (corrected) */
-      Vector2 getActualSize() const { return this->size_ * this->sizeCorrection_; }
+      Vector2 getSize() const { return this->size_ * this->sizeCorrection_; }
 
       /** Gets the current size correction */
       Vector2 getSizeCorrection() const { return this->sizeCorrection_; }

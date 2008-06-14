@@ -65,7 +65,7 @@ namespace orxonox
     }
 
     XMLPortParam(OrxonoxOverlay, "correctAspect", setAspectCorrection, getAspectCorrection, xmlElement, mode);
-    XMLPortParam(OrxonoxOverlay, "size", setSize, getSize, xmlElement, mode);
+    XMLPortParam(OrxonoxOverlay, "size", setSize, getUncorrectedSize, xmlElement, mode);
     XMLPortParam(OrxonoxOverlay, "rotation", setRotation, getRotation, xmlElement, mode);
     XMLPortParam(OrxonoxOverlay, "origin", setOrigin, getOrigin, xmlElement, mode);
     XMLPortParam(OrxonoxOverlay, "position", setPosition, getPosition, xmlElement, mode);
@@ -77,6 +77,8 @@ namespace orxonox
           this->overlay_->hide();
 
       this->sizeChanged();
+      this->positionChanged();
+      this->angleChanged();
     }
   }
 
@@ -128,6 +130,7 @@ namespace orxonox
   void OrxonoxOverlay::sizeChanged()
   {
     this->overlay_->setScale(size_.x * sizeCorrection_.x, size_.y * sizeCorrection_.y);
+    positionChanged();
   }
 
   /**
@@ -145,7 +148,7 @@ namespace orxonox
   */
   void OrxonoxOverlay::positionChanged()
   {
-    Vector2 scroll = (position_ - 0.5 - size_ * (origin_ - 0.5)) * 2.0;
+    Vector2 scroll = (position_ - 0.5 - size_ * sizeCorrection_ * (origin_ - 0.5)) * 2.0;
     this->overlay_->setScroll(scroll.x, -scroll.y);
   }
 }
