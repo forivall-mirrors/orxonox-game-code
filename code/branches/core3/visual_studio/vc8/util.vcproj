@@ -176,6 +176,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\util\OutputBuffer.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\OutputHandler.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\util\String.cc"
 				>
 			</File>
@@ -199,6 +207,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\util\Convert.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\Debug.h"
 				>
 			</File>
 			<File
@@ -227,6 +239,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\util\OrxonoxPlatform.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\OutputBuffer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\OutputHandler.h"
 				>
 			</File>
 			<File
