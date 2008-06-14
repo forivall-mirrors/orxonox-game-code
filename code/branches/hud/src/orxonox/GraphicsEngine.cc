@@ -50,8 +50,8 @@
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 
-#include "console/InGameConsole.h"
-#include "hud/HUD.h"
+#include "overlays/console/InGameConsole.h"
+#include "overlays/OverlayGroup.h"
 #include "tools/ParticleInterface.h"
 #include "Settings.h"
 #include "tools/WindowEventListener.h"

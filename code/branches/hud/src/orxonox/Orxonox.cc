@@ -68,8 +68,8 @@
 #include "network/Client.h"
 
 // objects and tools
-#include "hud/HUD.h"
-#include "console/InGameConsole.h"
+#include "overlays/OverlayGroup.h"
+#include "overlays/console/InGameConsole.h"
 #include "objects/Tickable.h"
 #include "tools/ParticleInterface.h"
 
@@ -334,7 +334,7 @@ namespace orxonox
     // Load the HUD
     COUT(3) << "Orxonox: Loading HUD" << std::endl;
 
-    Level* hud = new Level("hud/hud.oxh");
+    Level* hud = new Level(Settings::getDataPath() + "overlay/hud.oxo");
     Loader::load(hud);
 
     return true;
@@ -450,8 +450,7 @@ namespace orxonox
       evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
       frameTime += evt.timeSinceLastFrame;
 
-      // show the current time in the HUD
-      // HUD::getSingleton().setTime(now);
+      // OverlayGroup::getHUD().setTime(now);
       if (mode_ != DEDICATED && frameTime > 0.4f)
       {
         GraphicsEngine::getSingleton().setAverageRTR(renderTime / frameTime);

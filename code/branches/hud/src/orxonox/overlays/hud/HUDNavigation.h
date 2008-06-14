@@ -26,24 +26,24 @@
  *
  */
 
-#ifndef _Navigation_H__
-#define _Navigation_H__
+#ifndef _HUDNavigation_H__
+#define _HUDNavigation_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include <OgrePrerequisites.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
-#include "HUDOverlay.h"
+#include "overlays/OrxonoxOverlay.h"
 #include "util/Math.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Navigation : public HUDOverlay, public Tickable
+    class _OrxonoxExport HUDNavigation : public OrxonoxOverlay, public Tickable
     {
       public:
-        Navigation();
-        virtual ~Navigation();
+        HUDNavigation();
+        virtual ~HUDNavigation();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
@@ -87,4 +87,4 @@ namespace orxonox
   };
 }
 
-#endif /* _Navigation_H__ */
+#endif /* _HUDNavigation_H__ */

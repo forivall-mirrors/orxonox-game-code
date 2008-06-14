@@ -27,8 +27,8 @@
  */
 
 
-#ifndef _HUD_H__
-#define _HUD_H__
+#ifndef _OverlayGroup_H__
+#define _OverlayGroup_H__
 
 #include "OrxonoxPrereqs.h"
 
@@ -37,19 +37,19 @@
 #include "core/BaseObject.h"
 #include "objects/Tickable.h"
 #include "util/Math.h"
-#include "OverlayElementFactories.h"
+#include "hud/OverlayElementFactories.h"
 #include "tools/WindowEventListener.h"
 
 namespace orxonox
 {
     class HUDBar;
-    class HUDOverlay;
+    class OrxonoxOverlay;
 
-    class _OrxonoxExport HUD : public BaseObject, public TickableReal, public WindowEventListener
+    class _OrxonoxExport OverlayGroup : public BaseObject, public TickableReal, public WindowEventListener
     {
       public:
-        HUD();
-        ~HUD();
+        OverlayGroup();
+        ~OverlayGroup();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
@@ -63,7 +63,7 @@ namespace orxonox
         inline std::list<RadarObject*>& getRadarObjects()
             { return this->roSet_; }
 
-        static HUD& getSingleton();
+        static OverlayGroup& getHUD();
 
         static void setEnergy(float value);
         static void cycleNavigationFocus();
@@ -71,14 +71,14 @@ namespace orxonox
         static void toggleVisibility(const std::string& name);
 
       private:
-        HUD(const HUD& instance);
+        OverlayGroup(const OverlayGroup& instance);
 
-        void addHUDElement(HUDOverlay* element);
-        HUDOverlay* getHUDElement(unsigned int index);
+        void addElement(OrxonoxOverlay* element);
+        OrxonoxOverlay* getElement(unsigned int index);
 
         void windowResized(int newWidth, int newHeight);
 
-        std::map<std::string, HUDOverlay*> hudElements_;
+        std::map<std::string, OrxonoxOverlay*> hudElements_;
 
         std::list<RadarObject*> roSet_;
 
@@ -91,13 +91,13 @@ namespace orxonox
         HUDBar* energyBar_;
         BarOverlayElement* speedoBar_;
         RadarOverlayElement* radar_;
-        Navigation* nav_;
+        HUDNavigation* nav_;
 
         bool showFPS_;
         bool showRenderTime_;
 
-        static HUD* instance_s;
+        static OverlayGroup* hudInstance_s;
     };
 }
 
-#endif /* _HUD_H__ */
+#endif /* _OverlayGroup_H__ */

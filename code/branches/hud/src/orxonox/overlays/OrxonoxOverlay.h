@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _HUDOverlay_H__
-#define _HUDOverlay_H__
+#ifndef _OrxonoxOverlay_H__
+#define _OrxonoxOverlay_H__
 
 #include "OrxonoxPrereqs.h"
 
@@ -38,11 +38,11 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDOverlay : public BaseObject, public WindowEventListener
+  class _OrxonoxExport OrxonoxOverlay : public BaseObject, public WindowEventListener
   {
     public:
-      HUDOverlay();
-      virtual ~HUDOverlay();
+      OrxonoxOverlay();
+      virtual ~OrxonoxOverlay();
 
       virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
@@ -112,4 +112,4 @@ namespace orxonox
   };
 }
 
-#endif /* _HUDOverlay_H__ */
+#endif /* _OrxonoxOverlay_H__ */

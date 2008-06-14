@@ -72,7 +72,7 @@ namespace orxonox
 
     void HUDBar::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        HUDOverlay::XMLPort(xmlElement, mode);
+        OrxonoxOverlay::XMLPort(xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {

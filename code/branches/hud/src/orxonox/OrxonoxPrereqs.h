@@ -114,8 +114,9 @@ namespace orxonox
   // hud
   class BarOverlayElement;
   class BarOverlayElementFactory;
-  class HUD;
-  class Navigation;
+  class OverlayGroup;
+  class OrxonoxOverlay;
+  class HUDNavigation;
   class RadarObject;
   class RadarOverlayElement;
   class RadarOverlayElementFactory;

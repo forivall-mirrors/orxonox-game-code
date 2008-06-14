@@ -27,7 +27,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "HUD.h"
+#include "OverlayGroup.h"
 
 #include <string>
 #include <set>
@@ -43,28 +43,28 @@
 #include "objects/SpaceShip.h"
 #include "objects/WorldEntity.h"
 #include "GraphicsEngine.h"
-#include "HUDBar.h"
-#include "RadarObject.h"
-#include "RadarOverlayElement.h"
-#include "Navigation.h"
+#include "hud/HUDBar.h"
+#include "hud/RadarObject.h"
+#include "hud/RadarOverlayElement.h"
+#include "hud/HUDNavigation.h"
 
 namespace orxonox
 {
-    CreateFactory(HUD);
+    CreateFactory(OverlayGroup);
 
-    SetConsoleCommandShortcut(HUD, cycleNavigationFocus).setAccessLevel(AccessLevel::User);
-    SetConsoleCommandShortcut(HUD, releaseNavigationFocus).setAccessLevel(AccessLevel::User);
-    SetConsoleCommand(HUD, toggleVisibility, false).setAccessLevel(AccessLevel::User);
+    SetConsoleCommandShortcut(OverlayGroup, cycleNavigationFocus).setAccessLevel(AccessLevel::User);
+    SetConsoleCommandShortcut(OverlayGroup, releaseNavigationFocus).setAccessLevel(AccessLevel::User);
+    SetConsoleCommand(OverlayGroup, toggleVisibility, false).setAccessLevel(AccessLevel::User);
 
-    HUD* HUD::instance_s = 0;
+    OverlayGroup* OverlayGroup::hudInstance_s = 0;
 
     using namespace Ogre;
 
-    HUD::HUD()
+    OverlayGroup::OverlayGroup()
     {
-        assert(instance_s == 0);
-        instance_s = this;
-        RegisterObject(HUD);
+        assert(hudInstance_s == 0);
+        hudInstance_s = this;
+        RegisterObject(OverlayGroup);
 
         // Singleton like in Ogre. Constructor and destructor are public,
         // but the assert prevents from having multiple instances.
@@ -81,7 +81,7 @@ namespace orxonox
         showRenderTime_ = true;
     }
 
-    HUD::~HUD()
+    OverlayGroup::~OverlayGroup()
     {
         if (this->isInitialized())
         {
@@ -108,17 +108,17 @@ namespace orxonox
             this->orxonoxHUD_ = 0;
         }
 
-        instance_s = 0;
+        hudInstance_s = 0;
     }
 
-    void HUD::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void OverlayGroup::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         BaseObject::XMLPort(xmlElement, mode);
 
         showFPS_ = true;
         showRenderTime_ = true;
 
-        XMLPortObject(HUD, HUDOverlay, "", addHUDElement, getHUDElement, xmlElement, mode, false, true);
+        XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlElement, mode, false, true);
 
         // create Factories
         Ogre::OverlayManager::getSingleton().addOverlayElementFactory(&radarOverlayElementFactory_);
@@ -155,7 +155,7 @@ namespace orxonox
         orxonoxHUD_->show();
     }
 
-    void HUD::addHUDElement(HUDOverlay* element)
+    void OverlayGroup::addElement(OrxonoxOverlay* element)
     {
         if (hudElements_.find(element->getName()) != hudElements_.end())
         {
@@ -165,11 +165,11 @@ namespace orxonox
           hudElements_[element->getName()] = element;
     }
 
-    HUDOverlay* HUD::getHUDElement(unsigned int index)
+    OrxonoxOverlay* OverlayGroup::getElement(unsigned int index)
     {
         if (index < this->hudElements_.size())
         {
-          std::map<std::string, HUDOverlay*>::const_iterator it = hudElements_.begin();
+          std::map<std::string, OrxonoxOverlay*>::const_iterator it = hudElements_.begin();
           for (unsigned int i = 0; i != index; ++it, ++i)
             ;
           return (*it).second;
@@ -178,17 +178,17 @@ namespace orxonox
             return 0;
     }
 
-    void HUD::tick(float dt)
+    void OverlayGroup::tick(float dt)
     {
         radar_->update();
     }
 
-    void HUD::windowResized(int newWidth, int newHeight)
+    void OverlayGroup::windowResized(int newWidth, int newHeight)
     {
         this->radar_->resize();
     }
 
-    void HUD::addRadarObject(WorldEntity* object, const ColourValue& colour){
+    void OverlayGroup::addRadarObject(WorldEntity* object, const ColourValue& colour){
         RadarObject* obj = new RadarObject(container_, object, colour);
         roSet_.insert(roSet_.end(), obj);
 //        // check if this is the first RadarObject to create
@@ -202,7 +202,7 @@ namespace orxonox
 //        }
     }
 
-    void HUD::removeRadarObject(WorldEntity* object){
+    void OverlayGroup::removeRadarObject(WorldEntity* object){
         for(std::list<RadarObject*>::iterator it=roSet_.begin(); it!=roSet_.end(); ++it){
             if ((*it)->getObject() == object)
             {
@@ -216,34 +216,34 @@ namespace orxonox
         }
     }
 
-    /*static*/ HUD& HUD::getSingleton()
+    /*static*/ OverlayGroup& OverlayGroup::getHUD()
     {
-        assert(instance_s);
-        return *instance_s;
+        assert(hudInstance_s);
+        return *hudInstance_s;
     }
 
-    /*static*/ void HUD::toggleVisibility(const std::string& name)
+    /*static*/ void OverlayGroup::toggleVisibility(const std::string& name)
     {
-        if (HUD::getSingleton().hudElements_.find(name) != HUD::getSingleton().hudElements_.end())
+        if (OverlayGroup::getHUD().hudElements_.find(name) != OverlayGroup::getHUD().hudElements_.end())
         {
-            HUD::getSingleton().hudElements_[name]->setVisibility(!HUD::getSingleton().hudElements_[name]->isVisible());
+            OverlayGroup::getHUD().hudElements_[name]->setVisibility(!OverlayGroup::getHUD().hudElements_[name]->isVisible());
         }
     }
 
-    /*static*/ void HUD::setEnergy(float value){
-        HUD::getSingleton().energyBar_->setValue(value);
+    /*static*/ void OverlayGroup::setEnergy(float value){
+        OverlayGroup::getHUD().energyBar_->setValue(value);
     }
 
-    /*static*/ void HUD::cycleNavigationFocus()
+    /*static*/ void OverlayGroup::cycleNavigationFocus()
     {
-        if (HUD::getSingleton().hudElements_.find("Navigation") != HUD::getSingleton().hudElements_.end())
+        if (OverlayGroup::getHUD().hudElements_.find("Navigation") != OverlayGroup::getHUD().hudElements_.end())
         {
-            Navigation* navi = dynamic_cast<Navigation*>(HUD::getSingleton().hudElements_["Navigation"]);
+            HUDNavigation* navi = dynamic_cast<HUDNavigation*>(OverlayGroup::getHUD().hudElements_["Navigation"]);
             navi->cycleFocus();
         }
     }
 
-    /*static*/ void HUD::releaseNavigationFocus(){
-        //HUD::getSingleton().nav_->releaseFocus();
+    /*static*/ void OverlayGroup::releaseNavigationFocus(){
+        //OverlayGroup::getHUD().nav_->releaseFocus();
     }
 }

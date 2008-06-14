@@ -4,12 +4,20 @@ SET( ORXONOX_SRC_FILES
   Orxonox.cc
   Settings.cc
 
-  console/InGameConsole.cc
-  hud/HUD.cc
-  hud/BarOverlayElement.cc
-  hud/RadarOverlayElement.cc
-  hud/RadarObject.cc
-  hud/Navigation.cc
+  overlays/OrxonoxOverlay.cc
+  overlays/OverlayGroup.cc
+
+  overlays/console/InGameConsole.cc
+
+  overlays/hud/HUDBar.cc
+  overlays/hud/HUDFPSText.cc
+  overlays/hud/HUDNavigation.cc
+  overlays/hud/HUDRTRText.cc
+  overlays/hud/HUDSpeedBar.cc
+  overlays/hud/HUDText.cc
+  overlays/hud/RadarObject.cc
+  overlays/hud/RadarOverlayElement.cc
+
   tolua/tolua_bind.cc
 
   tools/BillboardSet.cc

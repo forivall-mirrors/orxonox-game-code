@@ -36,11 +36,11 @@
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Math.h"
-#include "HUDOverlay.h"
+#include "overlays/OrxonoxOverlay.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDText : public HUDOverlay
+  class _OrxonoxExport HUDText : public OrxonoxOverlay
   {
   public:
     HUDText();

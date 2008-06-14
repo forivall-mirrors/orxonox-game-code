@@ -27,7 +27,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "HUDOverlay.h"
+#include "OrxonoxOverlay.h"
 
 #include <OgreOverlayManager.h>
 #include "util/Convert.h"
@@ -36,9 +36,9 @@
 
 namespace orxonox
 {
-  unsigned int HUDOverlay::hudOverlayCounter_s = 0;
+  unsigned int OrxonoxOverlay::hudOverlayCounter_s = 0;
 
-  HUDOverlay::HUDOverlay()
+  OrxonoxOverlay::OrxonoxOverlay()
     : overlay_(0)
     , windowAspectRatio_(1.0f)
     , bCorrectAspect_(false)
@@ -46,29 +46,29 @@ namespace orxonox
     , sizeCorrection_(1.0f, 1.0f)
     , angle_(0.0f)
     , position_(0.0f, 0.0f)
-    , origin_(0.5f, 0.5f)
+    , origin_(0.0f, 0.0f)
   {
-    RegisterObject(HUDOverlay);
+    RegisterObject(OrxonoxOverlay);
   }
 
-  void HUDOverlay::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+  void OrxonoxOverlay::XMLPort(Element& xmlElement, XMLPort::Mode mode)
   {
     BaseObject::XMLPort(xmlElement, mode);
 
     if (mode == XMLPort::LoadObject)
     {
-      overlay_ = Ogre::OverlayManager::getSingleton().create("HUDOverlay"
+      overlay_ = Ogre::OverlayManager::getSingleton().create("OrxonoxOverlay"
             + convertToString(hudOverlayCounter_s++) + "_" + this->getName());
 
       this->windowResized(GraphicsEngine::getSingleton().getWindowWidth(),
             GraphicsEngine::getSingleton().getWindowHeight());
     }
 
-    XMLPortParam(HUDOverlay, "correctAspect", setAspectCorrection, getAspectCorrection, xmlElement, mode);
-    XMLPortParam(HUDOverlay, "size", setSize, getSize, xmlElement, mode);
-    XMLPortParam(HUDOverlay, "rotation", setRotation, getRotation, xmlElement, mode);
-    XMLPortParam(HUDOverlay, "origin", setOrigin, getOrigin, xmlElement, mode);
-    XMLPortParam(HUDOverlay, "position", setPosition, getPosition, xmlElement, mode);
+    XMLPortParam(OrxonoxOverlay, "correctAspect", setAspectCorrection, getAspectCorrection, xmlElement, mode);
+    XMLPortParam(OrxonoxOverlay, "size", setSize, getSize, xmlElement, mode);
+    XMLPortParam(OrxonoxOverlay, "rotation", setRotation, getRotation, xmlElement, mode);
+    XMLPortParam(OrxonoxOverlay, "origin", setOrigin, getOrigin, xmlElement, mode);
+    XMLPortParam(OrxonoxOverlay, "position", setPosition, getPosition, xmlElement, mode);
 
     if (mode == XMLPort::LoadObject)
     {
@@ -80,11 +80,11 @@ namespace orxonox
     }
   }
 
-  HUDOverlay::~HUDOverlay()
+  OrxonoxOverlay::~OrxonoxOverlay()
   {
   }
 
-  void HUDOverlay::changedVisibility()
+  void OrxonoxOverlay::changedVisibility()
   {
     if (this->overlay_)
     {
@@ -95,14 +95,14 @@ namespace orxonox
     }
   }
 
-  void HUDOverlay::windowResized(int newWidth, int newHeight)
+  void OrxonoxOverlay::windowResized(int newWidth, int newHeight)
   {
     this->windowAspectRatio_ = newWidth/(float)newHeight;
 
     this->setAspectCorrection(this->bCorrectAspect_);
   }
 
-  void HUDOverlay::setAspectCorrection(bool val)
+  void OrxonoxOverlay::setAspectCorrection(bool val)
   {
     if (val)
     {
@@ -125,7 +125,7 @@ namespace orxonox
     @remarks
       This function can be overriden by any derivative.
   */
-  void HUDOverlay::sizeChanged()
+  void OrxonoxOverlay::sizeChanged()
   {
     this->overlay_->setScale(size_.x * sizeCorrection_.x, size_.y * sizeCorrection_.y);
   }
@@ -134,7 +134,7 @@ namespace orxonox
     @remarks
       This function can be overriden by any derivative.
   */
-  void HUDOverlay::angleChanged()
+  void OrxonoxOverlay::angleChanged()
   {
     this->overlay_->setRotate(this->angle_);
   }
@@ -143,7 +143,7 @@ namespace orxonox
     @remarks
       This function can be overriden by any derivative.
   */
-  void HUDOverlay::positionChanged()
+  void OrxonoxOverlay::positionChanged()
   {
     Vector2 scroll = (position_ - 0.5 - size_ * (origin_ - 0.5)) * 2.0;
     this->overlay_->setScroll(scroll.x, -scroll.y);

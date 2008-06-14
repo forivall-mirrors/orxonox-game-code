@@ -377,7 +377,7 @@ namespace orxonox
         this->consoleOverlayBorder_->setHeight((int) this->windowH_ * this->relativeHeight);
         this->consoleOverlayNoise_->setWidth((int) this->windowW_ * this->relativeWidth - 10);
         this->consoleOverlayNoise_->setHeight((int) this->windowH_ * this->relativeHeight - 5);
-        this->consoleOverlayNoise_->setTiling(consoleOverlayNoise_->getWidth() / 80.0f * this->noiseSize_, consoleOverlayNoise_->getHeight() / 80.0f * this->noiseSize_);
+        this->consoleOverlayNoise_->setTiling(consoleOverlayNoise_->getWidth() / (50.0f * this->noiseSize_), consoleOverlayNoise_->getHeight() / (50.0f * this->noiseSize_));
 
         // now adjust the text lines...
         this->desiredTextWidth_ = (int) (this->windowW_ * this->relativeWidth) - 12;

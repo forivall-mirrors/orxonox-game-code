@@ -40,7 +40,7 @@
 
 #include "GraphicsEngine.h"
 #include "RadarObject.h"
-#include "HUD.h"
+#include "overlays/OverlayGroup.h"
 
 namespace orxonox
 {
@@ -76,7 +76,7 @@ namespace orxonox
 
     void RadarOverlayElement::update() {
         // iterate through all RadarObjects
-        for(std::list<RadarObject*>::iterator it=HUD::getSingleton().getRadarObjects().begin(); it!=HUD::getSingleton().getRadarObjects().end(); it++)
+        for(std::list<RadarObject*>::iterator it=OverlayGroup::getHUD().getRadarObjects().begin(); it!=OverlayGroup::getHUD().getRadarObjects().end(); it++)
         {
             // calc position on radar...
             // set size to fit distance...
@@ -100,7 +100,7 @@ namespace orxonox
         int i = 0;
         COUT(3) << "List of RadarObjects:\n";
         // iterate through all Radar Objects
-        for(std::list<RadarObject*>::const_iterator it=HUD::getSingleton().getRadarObjects().begin(); it!=HUD::getSingleton().getRadarObjects().end(); ++it){
+        for(std::list<RadarObject*>::const_iterator it=OverlayGroup::getHUD().getRadarObjects().begin(); it!=OverlayGroup::getHUD().getRadarObjects().end(); ++it){
             COUT(3) << i++ << ": " << (*it)->getPosition() << std::endl;
         }
     }

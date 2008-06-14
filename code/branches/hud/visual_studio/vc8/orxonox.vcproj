@@ -188,57 +188,6 @@
 				>
 			</File>
 			<Filter
-				Name="hud"
-				>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUD.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDBar.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDFPSText.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDOverlay.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDRTRText.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDSpeedBar.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDText.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\Navigation.cc"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\RadarObject.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\RadarOverlayElement.cc"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="objects"
 				>
 				<File
@@ -455,14 +404,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="console"
-				>
-				<File
-					RelativePath="..\..\src\orxonox\console\InGameConsole.cc"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="tolua"
 				>
 				<File
@@ -485,6 +426,62 @@
 						/>
 					</FileConfiguration>
 				</File>
+			</Filter>
+			<Filter
+				Name="overlays"
+				>
+				<File
+					RelativePath="..\..\src\orxonox\overlays\OrxonoxOverlay.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\overlays\OverlayGroup.cc"
+					>
+				</File>
+				<Filter
+					Name="console"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\console\InGameConsole.cc"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="hud"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDBar.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDFPSText.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDNavigation.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDRTRText.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDSpeedBar.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDText.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\RadarObject.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\RadarOverlayElement.cc"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -512,54 +509,6 @@
 				RelativePath="..\..\src\orxonox\Settings.h"
 				>
 			</File>
-			<Filter
-				Name="hud"
-				>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUD.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDBar.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDFPSText.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDOverlay.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDRTRText.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDSpeedBar.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\HUDText.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\Navigation.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\OverlayElementFactories.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\RadarObject.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\hud\RadarOverlayElement.h"
-					>
-				</File>
-			</Filter>
 			<Filter
 				Name="objects"
 				>
@@ -681,20 +630,72 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="console"
-				>
-				<File
-					RelativePath="..\..\src\orxonox\console\InGameConsole.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="tolua"
 				>
 				<File
 					RelativePath="..\..\src\orxonox\tolua\tolua_bind.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="overlays"
+				>
+				<File
+					RelativePath="..\..\src\orxonox\overlays\OrxonoxOverlay.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\overlays\OverlayGroup.h"
+					>
+				</File>
+				<Filter
+					Name="hud"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDBar.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDFPSText.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDNavigation.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDRTRText.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDSpeedBar.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDText.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\OverlayElementFactories.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\RadarObject.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\RadarOverlayElement.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="console"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\console\InGameConsole.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter

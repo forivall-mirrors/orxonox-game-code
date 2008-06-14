@@ -27,7 +27,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "Navigation.h"
+#include "HUDNavigation.h"
 
 #include <OgreOverlayManager.h>
 #include <OgreStringConverter.h>
@@ -37,7 +37,7 @@
 #include "objects/SpaceShip.h"
 #include "objects/Projectile.h"
 #include "objects/CameraHandler.h"
-#include "HUD.h"
+#include "overlays/OverlayGroup.h"
 #include "RadarObject.h"
 #include "RadarOverlayElement.h"
 #include "core/Debug.h"
@@ -45,21 +45,21 @@
 
 namespace orxonox
 {
-    CreateFactory(Navigation);
+    CreateFactory(HUDNavigation);
 
     using namespace Ogre;
 
-    Navigation::Navigation()
+    HUDNavigation::HUDNavigation()
       : container_(0)
       , navMarker_(0)
       , aimMarker_(0)
       , navText_(0)
       , focus_(0)
     {
-        RegisterObject(Navigation);
+        RegisterObject(HUDNavigation);
     }
 
-    Navigation::~Navigation()
+    HUDNavigation::~HUDNavigation()
     {
         if (this->isInitialized())
         {
@@ -74,9 +74,9 @@ namespace orxonox
         }
     }
 
-    void Navigation::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void HUDNavigation::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        HUDOverlay::XMLPort(xmlElement, mode);
+        OrxonoxOverlay::XMLPort(xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {
@@ -117,10 +117,10 @@ namespace orxonox
             this->overlay_->hide();
         }
 
-        XMLPortParam(Navigation, "font", setFont, getFont, xmlElement, mode);
-        XMLPortParam(Navigation, "textsize", setTextSize, getTextSize, xmlElement, mode);
-        XMLPortParam(Navigation, "navmarkersize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode);
-        XMLPortParam(Navigation, "aimmarkersize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "font", setFont, getFont, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "textsize", setTextSize, getTextSize, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "navmarkersize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "aimmarkersize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {
@@ -128,33 +128,33 @@ namespace orxonox
         }
     }
 
-    void Navigation::setNavMarkerSize(float size)
+    void HUDNavigation::setNavMarkerSize(float size)
     {
         this->navMarkerSize_ = size;
     }
 
-    float Navigation::getNavMarkerSize() const
+    float HUDNavigation::getNavMarkerSize() const
     {
         return this->navMarkerSize_;
     }
 
-    void Navigation::setAimMarkerSize(float size)
+    void HUDNavigation::setAimMarkerSize(float size)
     {
         this->aimMarkerSize_ = size;
     }
 
-    float Navigation::getAimMarkerSize() const
+    float HUDNavigation::getAimMarkerSize() const
     {
         return this->aimMarkerSize_;
     }
 
-    void Navigation::setFont(const std::string& font)
+    void HUDNavigation::setFont(const std::string& font)
     {
         if (this->navText_ && font != "")
             this->navText_->setFontName(font);
     }
 
-    std::string Navigation::getFont() const
+    std::string HUDNavigation::getFont() const
     {
         if (this->navText_)
             return this->navText_->getFontName();
@@ -162,13 +162,13 @@ namespace orxonox
             return "";
     }
 
-    void Navigation::setTextSize(float size)
+    void HUDNavigation::setTextSize(float size)
     {
         if (this->navText_ && size >= 0.0f)
             this->navText_->setCharHeight(size);
     }
 
-    float Navigation::getTextSize() const
+    float HUDNavigation::getTextSize() const
     {
         if (this->navText_)
             return this->navText_->getCharHeight();
@@ -176,7 +176,7 @@ namespace orxonox
             return 0.0f;
     }
 
-    void Navigation::tick(float dt)
+    void HUDNavigation::tick(float dt)
     {
         if (!focus_)
             return;
@@ -184,7 +184,7 @@ namespace orxonox
         updateMarker();
     }
 
-    void Navigation::updateMarker()
+    void HUDNavigation::updateMarker()
     {
         // set text
         int dist = (int) getDist2Focus()/100.0f;
@@ -290,16 +290,16 @@ namespace orxonox
         }
     }
 
-    void Navigation::cycleFocus()
+    void HUDNavigation::cycleFocus()
     {
         if (!focus_)
         {
             // Get closest object
             float distance = (unsigned int) -1;
             Vector3 shipPos = SpaceShip::getLocalShip()->getPosition();
-            it_ = HUD::getSingleton().getRadarObjects().begin();
+            it_ = OverlayGroup::getHUD().getRadarObjects().begin();
 
-            for (std::list<RadarObject*>::iterator it = HUD::getSingleton().getRadarObjects().begin(); it != HUD::getSingleton().getRadarObjects().end(); ++it)
+            for (std::list<RadarObject*>::iterator it = OverlayGroup::getHUD().getRadarObjects().begin(); it != OverlayGroup::getHUD().getRadarObjects().end(); ++it)
             {
                 float newdist = (*it)->getPosition().squaredDistance(shipPos);
                 if (newdist < distance)
@@ -309,21 +309,21 @@ namespace orxonox
                 }
             }
 
-            if (it_ != HUD::getSingleton().getRadarObjects().end())
+            if (it_ != OverlayGroup::getHUD().getRadarObjects().end())
             {
                 focus_ = *it_;
 
                 // move the focused object to the begin of the list, so we will iterate through all other objects when cycling
-                HUD::getSingleton().getRadarObjects().erase(it_);
-                HUD::getSingleton().getRadarObjects().insert(HUD::getSingleton().getRadarObjects().begin(), focus_);
-                it_ = HUD::getSingleton().getRadarObjects().begin();
+                OverlayGroup::getHUD().getRadarObjects().erase(it_);
+                OverlayGroup::getHUD().getRadarObjects().insert(OverlayGroup::getHUD().getRadarObjects().begin(), focus_);
+                it_ = OverlayGroup::getHUD().getRadarObjects().begin();
             }
         }
-        else if (it_ != HUD::getSingleton().getRadarObjects().end())
+        else if (it_ != OverlayGroup::getHUD().getRadarObjects().end())
         {
             focus_->resetMaterial();
             ++it_;
-            if (it_ != HUD::getSingleton().getRadarObjects().end())
+            if (it_ != OverlayGroup::getHUD().getRadarObjects().end())
                 focus_ = *it_;
             else
                 focus_ = 0;
@@ -335,7 +335,7 @@ namespace orxonox
         updateFocus();
     }
 
-    void Navigation::updateFocus()
+    void HUDNavigation::updateFocus()
     {
         if (focus_)
         {
@@ -348,13 +348,13 @@ namespace orxonox
         }
     }
 
-    void Navigation::releaseFocus()
+    void HUDNavigation::releaseFocus()
     {
         this->focus_ = 0;
         this->updateFocus();
     }
 
-    float Navigation::getDist2Focus() const
+    float HUDNavigation::getDist2Focus() const
     {
         if (focus_)
             return (focus_->getPosition() - SpaceShip::getLocalShip()->getPosition()).length();
@@ -362,7 +362,7 @@ namespace orxonox
             return 0;
     }
 
-    void Navigation::sizeChanged()
+    void HUDNavigation::sizeChanged()
     {
         float xScale = this->getActualSize().x;
         float yScale = this->getActualSize().y;
