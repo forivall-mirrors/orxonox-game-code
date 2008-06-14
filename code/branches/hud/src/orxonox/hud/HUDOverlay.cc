@@ -42,8 +42,11 @@ namespace orxonox
     : overlay_(0)
     , windowAspectRatio_(1.0f)
     , bCorrectAspect_(false)
-    , size_(1.0f)
-    , sizeCorrection_(1.0f)
+    , size_(1.0f, 1.0f)
+    , sizeCorrection_(1.0f, 1.0f)
+    , angle_(0.0f)
+    , position_(0.0f, 0.0f)
+    , origin_(0.5f, 0.5f)
   {
     RegisterObject(HUDOverlay);
   }
@@ -61,10 +64,11 @@ namespace orxonox
             GraphicsEngine::getSingleton().getWindowHeight());
     }
 
-    XMLPortParam(HUDOverlay, "size", setSize, getSize, xmlElement, mode);
     XMLPortParam(HUDOverlay, "correctAspect", setAspectCorrection, getAspectCorrection, xmlElement, mode);
-    XMLPortParam(HUDOverlay, "scroll", setScroll, getScroll, xmlElement, mode);
+    XMLPortParam(HUDOverlay, "size", setSize, getSize, xmlElement, mode);
     XMLPortParam(HUDOverlay, "rotation", setRotation, getRotation, xmlElement, mode);
+    XMLPortParam(HUDOverlay, "origin", setOrigin, getOrigin, xmlElement, mode);
+    XMLPortParam(HUDOverlay, "position", setPosition, getPosition, xmlElement, mode);
 
     if (mode == XMLPort::LoadObject)
     {
@@ -123,7 +127,25 @@ namespace orxonox
   */
   void HUDOverlay::sizeChanged()
   {
-    this->overlay_->setScale(size_.x * sizeCorrection_.x, size_.x * sizeCorrection_.y);
+    this->overlay_->setScale(size_.x * sizeCorrection_.x, size_.y * sizeCorrection_.y);
   }
 
+  /**
+    @remarks
+      This function can be overriden by any derivative.
+  */
+  void HUDOverlay::angleChanged()
+  {
+    this->overlay_->setRotate(this->angle_);
+  }
+
+  /**
+    @remarks
+      This function can be overriden by any derivative.
+  */
+  void HUDOverlay::positionChanged()
+  {
+    Vector2 scroll = (position_ - 0.5 - size_ * (origin_ - 0.5)) * 2.0;
+    this->overlay_->setScroll(scroll.x, -scroll.y);
+  }
 }

@@ -58,6 +58,8 @@ namespace orxonox
 
     protected:
       virtual void sizeChanged();
+      virtual void angleChanged() { }
+      virtual void positionChanged() { }
 
       private:
         void init();

@@ -52,7 +52,7 @@ namespace orxonox
         this->textureUnitState_ = 0;
 
         barWidth_s = 0.88f;
-        barHeight_s = 0.3f;
+        barHeight_s = 1.0f;
         barOffsetLeft_s = 0.06f;
         barOffsetTop_s = 0.0f;
 
@@ -81,7 +81,7 @@ namespace orxonox
                     OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background"));
             this->background_->setMaterialName("Orxonox/BarBackground");
             this->background_->setMetricsMode(GMM_RELATIVE);
-            this->background_->setDimensions(1.0f, 0.3f);
+            this->background_->setDimensions(1.0f, 1.0f);
             this->background_->setPosition(0.0f, 0.0f);
             this->overlay_->add2D(this->background_);
 

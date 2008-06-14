@@ -49,23 +49,29 @@ namespace orxonox
       void setAspectCorrection(bool val);
       bool getAspectCorrection() { return this->bCorrectAspect_; }
 
-      /** Sets the scrolling factor of this overlay. */
-      void setScroll(Vector2 scroll) { overlay_->setScroll(scroll.x, scroll.y); }
+      /** Sets the position of this overlay. */
+      void setPosition(Vector2 pos) { this->position_ = pos; this->positionChanged(); }
 
-      /** Gets the current scroll value */
-      Vector2 getScroll() const { return Vector2(overlay_->getScrollX(), overlay_->getScrollY()); }
+      /** Gets the current position. */
+      Vector2 getPosition() const { return this->position_; }
 
       /** Scrolls the overlay by the offsets provided. */
-      void scroll(Vector2 scroll) { overlay_->scroll(scroll.x, scroll.y); }
+      void scroll(Vector2 scroll) { this->position_ += scroll; this->positionChanged(); }
+
+      /** Sets the origin point of this overlay. */
+      void setOrigin(Vector2 pos) { this->origin_ = pos; this->positionChanged(); }
+
+      /** Gets the origin point of this overlay */
+      Vector2 getOrigin() const { return this->origin_; }
 
       /** Sets the rotation applied to this overlay.*/
-      void setRotation(const Ogre::Radian& angle) { overlay_->setRotate(angle); }
+      void setRotation(const Ogre::Radian& angle) { this->angle_ = angle; this->angleChanged(); }
 
       /** Gets the rotation applied to this overlay, in degrees.*/
-      const Radian& getRotation() const { return overlay_->getRotate(); }
+      const Radian& getRotation() const { return this->angle_; }
 
       /** Adds the passed in angle to the rotation applied to this overlay. */
-      void rotate(const Radian& angle) { overlay_->rotate(angle); }
+      void rotate(const Radian& angle) { this->angle_ += angle; this->angleChanged(); }
 
       /** Sets the scaling factor of this overlay. */
       void setSize(const Vector2& size) { this->size_ = size; this->sizeChanged(); }
@@ -85,6 +91,8 @@ namespace orxonox
     protected:
       virtual void changedVisibility();
       virtual void sizeChanged();
+      virtual void angleChanged();
+      virtual void positionChanged();
       float getWindowAspectRatio() { return windowAspectRatio_; } 
 
       Ogre::Overlay* overlay_;
@@ -96,6 +104,9 @@ namespace orxonox
       bool bCorrectAspect_;
       Vector2 size_;
       Vector2 sizeCorrection_;
+      Radian angle_;
+      Vector2 position_;
+      Vector2 origin_;
 
       static unsigned int hudOverlayCounter_s;
   };
