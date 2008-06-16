@@ -27,33 +27,26 @@
  */
 
 /**
-    @file Error.cc
-    @brief Implementation of the Error class.
+    @file Error.h
+    @brief Definition of the Error class.
 */
 
-#include "Error.h"
-#include "util/Debug.h"
+#ifndef _Error_H__
+#define _Error_H__
+
+#include "UtilPrereqs.h"
+
+#include <string>
 
 namespace orxonox
 {
-	Error::Error(std::string errorMsg, int errorCode)
+	class _UtilExport Error
 	{
-		COUT(1) << "############################ "<< std::endl
-							<< "#         Error "<<errorCode<< "          #"<< std::endl
-							<< "############################ "<< std::endl
-							<< "An error occured in Orxonox: "<< std::endl;
+	public:
+		Error(std::string errorMsg = "", int errorCode = 0);
+	private:
 
-		if (errorMsg=="")
-		{
-			switch (errorCode)
-			{
-				case 1:
-					errorMsg = "Some error!";
-					break;
-				default:
-					errorMsg = "Unknown error!";
-			}
-		}
-		COUT(1) << errorMsg << std::endl<< std::endl;
-	}
+	};
 }
+
+#endif /* _Error_H__ */

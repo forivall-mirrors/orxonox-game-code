@@ -160,10 +160,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Error.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\Language.cc"
 				>
 			</File>
@@ -343,10 +339,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\CorePrereqs.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Error.h"
 				>
 			</File>
 			<File

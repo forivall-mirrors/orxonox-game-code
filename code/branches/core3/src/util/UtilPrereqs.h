@@ -61,16 +61,18 @@
 //-----------------------------------------------------------------------
 class ArgReader;
 class Convert;
+class ExprParser;
 class MultiTypePrimitive;
 class MultiTypeString;
 class MultiTypeMath;
-class OutputHandler;
 class SubString;
 
 namespace orxonox
 {
     class OutputBuffer;
     class OutputBufferListener;
+    class Error;
+    class OutputHandler;
 }
 
 #endif /* _UtilPrereqs_H__ */

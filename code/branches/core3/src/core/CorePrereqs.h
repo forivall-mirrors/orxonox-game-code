@@ -110,7 +110,6 @@ namespace orxonox
   class ConfigValueContainer;
   class ConsoleCommand;
   class Core;
-  class Error;
   class Executor;
   template <class T>
   class ExecutorMember;
@@ -156,8 +155,6 @@ namespace orxonox
   class XMLPortClassParamContainer;
   class XMLPortObjectContainer;
   class XMLPortParamContainer;
-
-  struct ObjectListBase::Export;
 
   // input
   //class GUIInputHandler;

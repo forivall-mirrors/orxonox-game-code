@@ -156,6 +156,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\util\Error.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\util\ExprParser.cc"
 				>
 			</File>
@@ -211,6 +215,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\util\Debug.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\Error.h"
 				>
 			</File>
 			<File

@@ -2,7 +2,6 @@ SET(CORE_SRC_FILES
   ConfigFileManager.cc
   ConfigValueContainer.cc
   Core.cc
-  Error.cc
   Language.cc
   ObjectListBase.cc
   OrxonoxClass.cc
