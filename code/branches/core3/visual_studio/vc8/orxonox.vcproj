@@ -187,6 +187,10 @@
 				RelativePath="..\..\src\orxonox\Settings.cc"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\orxonox\SignalHandler.cc"
+				>
+			</File>
 			<Filter
 				Name="hud"
 				>
@@ -479,6 +483,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\Settings.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\SignalHandler.h"
 				>
 			</File>
 			<Filter

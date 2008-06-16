@@ -34,14 +34,14 @@
 #ifndef _SignalHandler_H__
 #define _SignalHandler_H__
 
-#include "CorePrereqs.h"
+#include "OrxonoxPrereqs.h"
 
 #include <list>
 #include <string>
 
 typedef int (*SignalCallback)( void * someData );
 
-#ifndef __WIN32__
+#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
 #include <signal.h>
 
 struct SignalRec
@@ -90,19 +90,20 @@ class SignalHandler
     static bool bXAutoKeyRepeatOn_;
 };
 
-#else /* #ifndef __WIN32__ */
+#else /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */
 
-class _CoreExport SignalHandler
+class _OrxonoxExport SignalHandler
 {
- public:
-   inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; };
-   void doCatch( const std::string & appName, const std::string & fileName ) {};
-  void dontCatch() {};
-  void registerCallback( SignalCallback cb, void * someData ) {};
+  public:
+    inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; };
+    void doCatch( const std::string & appName, const std::string & fileName ) {};
+    void dontCatch() {};
+    void registerCallback( SignalCallback cb, void * someData ) {};
 
- private:
+  private:
     static SignalHandler * singletonRef;
 };
-#endif /* #ifndef __WIN32__ */
+
+#endif /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */
 
 #endif /* _SignalHandler_H__ */

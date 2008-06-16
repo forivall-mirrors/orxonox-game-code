@@ -31,6 +31,7 @@
     @brief Implementation of the SignalHandler class.
 */
 
+#include "OrxonoxStableHeaders.h"
 #include "SignalHandler.h"
 
 #include <assert.h>
@@ -38,7 +39,7 @@
 
 SignalHandler * SignalHandler::singletonRef = NULL;
 
-#ifndef __WIN32__
+#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
 
 #include <wait.h>
 #include <X11/Xlib.h>
@@ -348,4 +349,4 @@ void SignalHandler::registerCallback( SignalCallback cb, void * someData )
   callbackList.push_back(rec);
 }
 
-#endif /* __WIN32__ */
+#endif /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */

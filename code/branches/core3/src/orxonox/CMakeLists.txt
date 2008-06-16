@@ -3,6 +3,7 @@ SET( ORXONOX_SRC_FILES
   Main.cc
   Orxonox.cc
   Settings.cc
+  SignalHandler.cc
 
   console/InGameConsole.cc
   hud/HUD.cc

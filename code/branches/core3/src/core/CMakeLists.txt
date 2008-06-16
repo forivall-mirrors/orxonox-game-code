@@ -6,7 +6,6 @@ SET(CORE_SRC_FILES
   ObjectListBase.cc
   OrxonoxClass.cc
   Script.cc
-  SignalHandler.cc
 
   # command
   ArgumentCompletionFunctions.cc

@@ -171,10 +171,6 @@
 				RelativePath="..\..\src\core\Script.cc"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\core\SignalHandler.cc"
-				>
-			</File>
 			<Filter
 				Name="tolua"
 				>
@@ -355,10 +351,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\Script_clean.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\SignalHandler.h"
 				>
 			</File>
 			<Filter
