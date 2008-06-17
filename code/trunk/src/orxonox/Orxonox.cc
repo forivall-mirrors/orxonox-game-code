@@ -71,6 +71,7 @@
 #include "hud/HUD.h"
 #include "console/InGameConsole.h"
 #include "objects/Tickable.h"
+#include "objects/Backlight.h"
 #include "tools/ParticleInterface.h"
 
 #include "GraphicsEngine.h"
@@ -168,9 +169,11 @@ namespace orxonox
   {
     float change = factor / Orxonox::getSingleton()->getTimeFactor();
     Orxonox::getSingleton()->timefactor_ = factor;
-
     for (Iterator<ParticleInterface> it = ObjectList<ParticleInterface>::begin(); it; ++it)
         it->setSpeedFactor(it->getSpeedFactor() * change);
+
+    for (Iterator<Backlight> it = ObjectList<Backlight>::begin(); it; ++it)
+        it->setTimeFactor(Orxonox::getSingleton()->getTimeFactor());
   }
 
   /**

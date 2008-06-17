@@ -94,6 +94,9 @@ namespace orxonox
             /** @brief Returns true if the Timer is active (= not stoped, not paused). @return True = Time is active */
             inline bool isActive() const
                 { return this->bActive_; }
+            /** @brief Returns the remaining time until the Timer calls the function. @return The remaining time */
+            inline float getRemainingTime() const
+                { return this->time_; }
             /** @brief Gives the Timer some extra time. @param time The amount of extra time in seconds */
             inline void addTime(float time)
                 { this->time_ += time; }

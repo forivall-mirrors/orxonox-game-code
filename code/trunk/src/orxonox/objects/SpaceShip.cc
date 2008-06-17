@@ -34,21 +34,27 @@
 #include <OgreParticleSystem.h>
 #include <OgreSceneNode.h>
 
-#include "CameraHandler.h"
 #include "util/Convert.h"
 #include "util/Math.h"
+
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
-#include "GraphicsEngine.h"
-#include "core/input/InputManager.h"
-#include "tools/ParticleInterface.h"
-#include "RotatingProjectile.h"
-#include "ParticleProjectile.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
+#include "core/input/InputManager.h"
+
 #include "network/Client.h"
+
 #include "hud/HUD.h"
+#include "tools/ParticleInterface.h"
+
+#include "GraphicsEngine.h"
+#include "RotatingProjectile.h"
+#include "ParticleProjectile.h"
+#include "ParticleSpawner.h"
+#include "Backlight.h"
+#include "CameraHandler.h"
 
 namespace orxonox
 {
@@ -100,6 +106,10 @@ namespace orxonox
         this->cam_ = 0;
         this->tt1_ = 0;
         this->tt2_ = 0;
+        this->smoke_ = 0;
+        this->fire_ = 0;
+
+        this->backlight_ = 0;
 
         this->redNode_ = 0;
         this->greenNode_ = 0;
@@ -142,7 +152,15 @@ namespace orxonox
             if (this->tt2_)
                 delete this->tt2_;
 
-            if (setMouseEventCallback_)
+            if (this->smoke_)
+                this->smoke_->destroy();
+            if (this->fire_)
+                this->fire_->destroy();
+
+            if (this->backlight_)
+                delete this->backlight_;
+
+            if (this->setMouseEventCallback_)
                 InputManager::removeMouseHandler("SpaceShip");
 
             if (this->cam_)
@@ -183,7 +201,7 @@ namespace orxonox
 
     void SpaceShip::init()
     {
-        // START CREATING THRUSTER
+        // START CREATING THRUSTERS
         this->tt1_ = new ParticleInterface("Orxonox/thruster1", LODParticle::low);
         this->tt1_->createNewEmitter();
         this->tt1_->getAllEmitters()->setDirection(-this->getInitialDir());
@@ -215,7 +233,7 @@ namespace orxonox
         node2c->setScale(2, 2, 2);
         node2c->attachObject(this->leftThrusterFlare_.getBillboardSet());
         node2c->attachObject(this->rightThrusterFlare_.getBillboardSet());
-        // END CREATING THRUSTER
+        // END CREATING THRUSTERS
 
         // START CREATING BLINKING LIGHTS
         this->redBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
@@ -233,10 +251,20 @@ namespace orxonox
         this->greenNode_->setScale(0.3, 0.3, 0.3);
         // END CREATING BLINKING LIGHTS
 
-        this->smoke_.setParticle("Orxonox/smoke5", LODParticle::normal);
-        this->fire_.setParticle("Orxonox/fire3", LODParticle::normal);
+        // START CREATING ADDITIONAL EFFECTS
+        this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
+        this->attachObject(this->backlight_);
+        this->backlight_->setPosition(-2.35, 0, 0.2);
+        this->backlight_->setColour(this->getProjectileColour());
+
+        this->smoke_ = new ParticleSpawner();
+        this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
         this->attachObject(this->smoke_);
+
+        this->fire_ = new ParticleSpawner();
+        this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
         this->attachObject(this->fire_);
+        // END CREATING ADDITIONAL EFFECTS
 
         if (this->isExactlyA(Class(SpaceShip)))
         {
@@ -254,10 +282,10 @@ namespace orxonox
 
             this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
             this->chFarNode_->setScale(0.4, 0.4, 0.4);
+            // END of testing crosshair
         }
 
         createCamera();
-        // END of testing crosshair
     }
 
     void SpaceShip::setConfigValues()
@@ -279,8 +307,9 @@ namespace orxonox
         this->crosshairFar_.setVisible(this->isVisible());
         this->rightThrusterFlare_.setVisible(this->isVisible());
         this->leftThrusterFlare_.setVisible(this->isVisible());
-        this->smoke_.setVisible(this->isVisible());
-        this->fire_.setVisible(this->isVisible());
+        this->smoke_->setVisible(this->isVisible());
+        this->fire_->setVisible(this->isVisible());
+        this->backlight_->setVisible(this->isVisible());
     }
 
     void SpaceShip::changedActivity()
@@ -335,7 +364,6 @@ namespace orxonox
         this->setBacksync(true);
         CameraHandler::getInstance()->requestFocus(cam_);
       }
-
     }
 
     void SpaceShip::setMaxSpeed(float value)
@@ -377,18 +405,10 @@ namespace orxonox
             getFocus();
     }
 
-    int sgn(float x)
-    {
-        if (x >= 0)
-            return 1;
-        else
-            return -1;
-    }
-
     std::string SpaceShip::whereAmI() {
-	return getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().x)
-	+ "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().y)
-	+ "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().z);
+        return getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().x)
+        + "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().y)
+        + "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().z);
     }
 
     void SpaceShip::tick(float dt)
@@ -402,8 +422,18 @@ namespace orxonox
         if (this->cam_)
             this->cam_->tick(dt);
 
-        this->smoke_.setVisible(this->isVisible() && this->health_ < 40);
-        this->fire_.setVisible(this->isVisible() && this->health_ < 20);
+        if (this->smoke_)
+            this->smoke_->setVisible(this->isVisible() && this->health_ < 40);
+        if (this->fire_)
+            this->fire_->setVisible(this->isVisible() && this->health_ < 20);
+
+        if (this->backlight_)
+        {   // (there's already fire ||                 we're to slow                 ||                  we're moving backwards                  )
+            if (this->health_ < 20   || this->getVelocity().squaredLength() < 150*150 || this->getVelocity().dotProduct(this->getInitialDir()) < 0)
+                this->backlight_->setActive(false);
+            else
+                this->backlight_->setActive(true);
+        }
 
         if (this->redNode_ && this->greenNode_)
         {
@@ -520,18 +550,13 @@ namespace orxonox
             this->tt2_->setEnabled(false);
         }
 
-        if( myShip_ )
-        {
-          COUT(5) << "steering our ship: " << objectID << std::endl;
-          this->acceleration_.x = 0;
-          this->acceleration_.y = 0;
-          this->momentum_ = 0;
-          this->mouseXRotation_ = Radian(0);
-          this->mouseYRotation_ = Radian(0);
-        }/*else
-          COUT(4) << "not steering ship: " << objectID << " our ship: " << network::Client::getSingleton()->getShipID() << std::endl;*/
-
-          this->bLMousePressed_ = false;
+        COUT(5) << "steering our ship: " << objectID << std::endl;
+        this->acceleration_.x = 0;
+        this->acceleration_.y = 0;
+        this->momentum_ = 0;
+        this->mouseXRotation_ = Radian(0);
+        this->mouseYRotation_ = Radian(0);
+        this->bLMousePressed_ = false;
     }
 
     void SpaceShip::movePitch(float val)

@@ -32,6 +32,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "tools/ParticleInterface.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
@@ -43,17 +44,18 @@ namespace orxonox
         this->particle_ = 0;
     }
 
-    ParticleSpawner::ParticleSpawner(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float delay, const Vector3& direction)
+    ParticleSpawner::ParticleSpawner(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float startdelay, float destroydelay, const Vector3& direction)
     {
         RegisterObject(ParticleSpawner);
-        this->setParticle(templateName, detaillevel, lifetime, delay, direction);
+        this->setParticle(templateName, detaillevel, lifetime, startdelay, destroydelay, direction);
     }
 
-    void ParticleSpawner::setParticle(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float delay, const Vector3& direction)
+    void ParticleSpawner::setParticle(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float startdelay, float destroydelay, const Vector3& direction)
     {
         ExecutorMember<ParticleSpawner>* executor = createExecutor(createFunctor(&ParticleSpawner::createParticleSpawner));
+        this->destroydelay_ = destroydelay;
         executor->setDefaultValues(lifetime);
-        this->timer_.setTimer(delay, false, this, executor);
+        this->timer_.setTimer(startdelay, false, this, executor);
         this->particle_ = new ParticleInterface(templateName, detaillevel);
         this->particle_->addToSceneNode(this->getNode());
         this->particle_->setEnabled(false);
@@ -71,6 +73,17 @@ namespace orxonox
             delete this->particle_;
         }
     };
+
+    void ParticleSpawner::destroy()
+    {
+        this->setPosition(this->getNode()->getParent()->getPosition());
+        this->getNode()->getParent()->removeChild(this->getNode());
+        GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->addChild(this->getNode());
+        if (this->particle_)
+            this->particle_->setEnabled(false);
+        if (!this->timer_.isActive() || this->timer_.getRemainingTime() > this->destroydelay_)
+            this->timer_.setTimer(this->destroydelay_, false, this, createExecutor(createFunctor(&ParticleSpawner::destroyParticleSpawner)));
+    }
 
     void ParticleSpawner::createParticleSpawner(float lifetime)
     {

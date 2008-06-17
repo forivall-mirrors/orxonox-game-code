@@ -101,7 +101,7 @@ namespace orxonox
             Element xmlelement;
             newenemy->XMLPort(xmlelement, XMLPort::LoadObject);
 
-            ParticleSpawner* spawneffect = new ParticleSpawner("Orxonox/fairytwirl", LODParticle::normal, 2.0, 0.0, newenemy->getOrth());
+            ParticleSpawner* spawneffect = new ParticleSpawner("Orxonox/fairytwirl", LODParticle::normal, 2.0, 0, 0, newenemy->getOrth());
             spawneffect->setPosition(newenemy->getPosition() - newenemy->getOrth() * 50);
             spawneffect->create();
         }
@@ -130,7 +130,7 @@ namespace orxonox
 
         // search enemy
         random = rnd(maxrand);
-        if (random < 20 && (!this->target_))
+        if (random < 15 && (!this->target_))
             this->searchNewTarget();
 
         // forget enemy
@@ -145,7 +145,7 @@ namespace orxonox
 
         // fly somewhere
         random = rnd(maxrand);
-        if (random < 40 && (!this->bHasTargetPosition_ && !this->target_))
+        if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
             this->searchNewTargetPosition();
 
         // stop flying
@@ -200,12 +200,12 @@ namespace orxonox
 
         Vector3 ringdirection = Vector3(rnd(), rnd(), rnd());
         ringdirection.normalise();
-        explosion = new ParticleSpawner("Orxonox/BigExplosion1part3", LODParticle::normal, 3.0, 0.5, ringdirection);
+        explosion = new ParticleSpawner("Orxonox/BigExplosion1part3", LODParticle::normal, 3.0, 0.5, 0, ringdirection);
         explosion->setPosition(this->getPosition());
         explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
         explosion->setScale(4);
         explosion->create();
-        explosion = new ParticleSpawner("Orxonox/BigExplosion1part3", LODParticle::high, 3.0, 0.5, ringdirection);
+        explosion = new ParticleSpawner("Orxonox/BigExplosion1part3", LODParticle::high, 3.0, 0.5, 0, ringdirection);
         explosion->setPosition(this->getPosition());
         explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
         explosion->setScale(4);
@@ -234,17 +234,21 @@ namespace orxonox
     void SpaceShipAI::moveToTargetPosition(float dt)
     {
         Vector2 coord = get2DViewdirection(this->getPosition(), this->getDir(), this->getOrth(), this->targetPosition_);
-        this->setMoveYaw(0.8 * sgn(coord.x));
-        this->setMovePitch(0.8 * sgn(coord.y));
 
-        if ((this->targetPosition_ - this->getPosition()).length() > 500)
-            this->setMoveLongitudinal(0.8);
-
-        if (this->isCloseAtTarget(300) && this->target_)
+        float distance = (this->targetPosition_ - this->getPosition()).length();
+        if (this->target_ || distance > 50)
         {
-            if (this->getVelocity().length() > this->target_->getVelocity().length())
-                this->setMoveLongitudinal(-0.5);
+            // Multiply with 0.8 to make them a bit slower
+            this->setMoveYaw(0.8 * sgn(coord.x) * coord.x*coord.x);
+            this->setMovePitch(0.8 * sgn(coord.y) * coord.y*coord.y);
         }
+
+        if (this->target_ && distance < 1000 && this->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
+            this->setMoveLongitudinal(-0.5); // They don't brake with full power to give the player a chance
+        else if (!this->target_ && distance <= this->getVelocity().length() / (2 * this->getTransAcc()))
+            this->setMoveLongitudinal(-1.0);
+        else
+            this->setMoveLongitudinal(0.8);
     }
 
     void SpaceShipAI::searchNewTargetPosition()
@@ -305,7 +309,10 @@ namespace orxonox
 
     void SpaceShipAI::shipDied(SpaceShipAI* ship)
     {
-        this->forgetTarget();
-        this->searchNewTargetPosition();
+        if (ship == this->target_)
+        {
+            this->forgetTarget();
+            this->searchNewTargetPosition();
+        }
     }
 }
