@@ -32,6 +32,7 @@
 #include "UtilPrereqs.h"
 
 #include <ostream>
+#include <string>
 
 #include <OgreMath.h>
 #include <OgreVector2.h>
@@ -161,6 +162,9 @@ inline _UtilExport float rnd(float min, float max)
 {
     return rnd(max - min) + min;
 }
+
+_UtilExport unsigned long getUniqueNumber();
+_UtilExport std::string getUniqueNumberStr();
 
 class _UtilExport IntVector2
 {

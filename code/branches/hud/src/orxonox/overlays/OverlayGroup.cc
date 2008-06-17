@@ -69,8 +69,8 @@ namespace orxonox
   {
     BaseObject::XMLPort(xmlElement, mode);
 
-    XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlElement, mode, false, true);
     XMLPortParam(OverlayGroup, "scale", scale, getScale, xmlElement, mode);
+    XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlElement, mode, false, true);
   }
 
   void OverlayGroup::scale(const Vector2& scale)

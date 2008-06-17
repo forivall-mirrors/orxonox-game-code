@@ -31,16 +31,18 @@
 
 #include <assert.h>
 #include <OgreOverlayManager.h>
+#include <OgreMaterialManager.h>
 
 #include "core/ConsoleCommand.h"
-#include "util/Math.h"
 #include "objects/SpaceShip.h"
 #include "objects/WorldEntity.h"
-#include "RadarObject.h"
+#include "RadarViewable.h"
 
 namespace orxonox
 {
     CreateFactory(HUDRadar);
+    CreateFactory(RadarColour);
+    CreateFactory(RadarShape);
 
     HUDRadar* HUDRadar::instance_s = 0;
 
@@ -61,6 +63,11 @@ namespace orxonox
         {
             if (this->background_)
                 OverlayManager::getSingleton().destroyOverlayElement(this->background_);
+            while (this->radarDots_.size() > 0)
+            {
+                OverlayManager::getSingleton().destroyOverlayElement(this->radarDots_[this->radarDots_.size() - 1]);
+                this->radarDots_.pop_back();
+            }
         }
 
         instance_s = 0;
@@ -70,13 +77,28 @@ namespace orxonox
     {
         OrxonoxOverlay::XMLPort(xmlElement, mode);
 
+        XMLPortObject(HUDRadar, RadarColour, "shapes", addShape, getShape, xmlElement, mode, false, true);
+
         if (mode == XMLPort::LoadObject)
         {
             background_ = (Ogre::PanelOverlayElement*)Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background");
             background_->setMaterialName("Orxonox/Radar");
             overlay_->add2D(background_);
 
-            WorldEntity* object;
+            // create an array of all possible materials
+            unsigned int iMaterial = 0;
+            for (std::map<unsigned int, RadarShape*>::const_iterator itShape = shapes_.begin(); itShape != shapes_.end(); ++itShape)
+            {
+                Ogre::MaterialPtr originalMaterial = (Ogre::MaterialPtr)(Ogre::MaterialManager::getSingleton().getByName((*itShape).second->getAttribute()));
+                for (std::map<unsigned int, RadarColour*>::const_iterator itColour = colours_.begin(); itColour != colours_.end(); ++itColour)
+                {
+                    Ogre::MaterialPtr newMaterial = originalMaterial->clone((*itShape).second->getAttribute() + convertToString(iMaterial++));
+                    newMaterial->getTechnique(0)->getPass(0)->setAmbient((*itColour).second->getAttribute()); 
+                    materialNames_[(*itShape).first + ((*itColour).first << 8)] = newMaterial->getName();
+                }
+            }
+
+            /*WorldEntity* object;
             object = new WorldEntity();
             object->setPosition(2000.0, 0.0, 0.0);
             addRadarObject(object, ColourValue(0.5, 0, 0, 1));
@@ -88,58 +110,90 @@ namespace orxonox
             addRadarObject(object, ColourValue(0.5, 0, 0, 1));
             object = new WorldEntity();
             object->setPosition(10000.0,16000.0,0.0);
-            addRadarObject(object);
+            addRadarObject(object);*/
         }
+    }
 
+    void HUDRadar::addColour(RadarColour* colour)
+    {
+        this->colours_[colour->getIndex()] = colour;
+    }
+
+    RadarColour* HUDRadar::getColour(unsigned int index) const
+    {
+        if (index < this->colours_.size())
+        {
+            std::map<unsigned int, RadarColour*>::const_iterator it = colours_.begin();
+            for (unsigned int i = 0; i != index; ++it, ++i)
+                ;
+            return (*it).second;
+        }
+        else
+            return 0;
+    }
+
+    void HUDRadar::addShape(RadarShape* shape)
+    {
+        this->shapes_[shape->getIndex()] = shape;
+    }
+
+    RadarShape* HUDRadar::getShape(unsigned int index) const
+    {
+        if (index < this->shapes_.size())
+        {
+            std::map<unsigned int, RadarShape*>::const_iterator it = shapes_.begin();
+            for (unsigned int i = 0; i != index; ++it, ++i)
+                ;
+            return (*it).second;
+        }
+        else
+            return 0;
     }
 
     void HUDRadar::tick(float dt)
     {
         // iterate through all RadarObjects
-        for(std::list<RadarObject*>::iterator it = getRadarObjects().begin(); it!= getRadarObjects().end(); it++)
+        unsigned int i = 0;
+        for (Iterator<RadarViewable> it = ObjectList<RadarViewable>::start(); it; ++it, ++i)
         {
-            // calc position on radar...
-            // set size to fit distance...
-            float size = 1.0/(((*it)->getPosition() - SpaceShip::getLocalShip()->getPosition()).length());
-            size = clamp(size * 100.0f, 0.02f, 0.12f);
-            (*it)->getPanel()->setDimensions(size, size);
+            if ((*it)->isVisibleOnRadar())
+            {
+                WorldEntity* object = (*it)->getWorldEntity();
+                // Just to be sure that we actually have a WorldEntity
+                // We could do a dynamic_cast, but that's a lot slower
+                assert(object);
 
-            Vector2 coord = get2DViewcoordinates(SpaceShip::getLocalShip()->getPosition(), SpaceShip::getLocalShip()->getDir(), SpaceShip::getLocalShip()->getOrth(), (*it)->getPosition());
-            coord *= Ogre::Math::PI / 3.5; // small adjustment to make it fit the texture
-            (*it)->getPanel()->setPosition((1.0 + coord.x) * 0.5, (1.0 - coord.y) * 0.5);
+                // set size to fit distance...
+                float size = 1.0/((object->getWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length());
+                size = clamp(size * 100.0f, 0.02f, 0.12f);
+                if (i == radarDots_.size())
+                {
+                    // we have to create a new panel
+                    radarDots_.push_back(static_cast<Ogre::PanelOverlayElement*>(
+                        Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarDot" + convertToString(i))));
+                }
+                radarDots_[i]->setDimensions(size, size);
+
+                // calc position on radar...
+                Vector2 coord = get2DViewcoordinates(SpaceShip::getLocalShip()->getPosition(), SpaceShip::getLocalShip()->getDir(), SpaceShip::getLocalShip()->getOrth(), object->getWorldPosition());
+                coord *= Ogre::Math::PI / 3.5; // small adjustment to make it fit the texture
+                radarDots_[i]->setPosition((1.0 + coord.x) * 0.5, (1.0 - coord.y) * 0.5);
+
+                // apply the right material
+                RadarPoint description = (*it)->getDescription();
+                radarDots_[i]->setMaterialName(materialNames_[description.shape_ + (description.colour_ << 8)]);
+            }
         }
     }
 
     void HUDRadar::listObjects()
     {
-        int i = 0;
         COUT(3) << "List of RadarObjects:\n";
         // iterate through all Radar Objects
-        for(std::list<RadarObject*>::const_iterator it = getRadarObjects().begin(); it != getRadarObjects().end(); ++it)
+        unsigned int i = 0;
+        for (Iterator<RadarViewable> it = ObjectList<RadarViewable>::start(); it; ++it, ++i)
         {
-            COUT(3) << i++ << ": " << (*it)->getPosition() << std::endl;
-        }
-    }
-
-    void HUDRadar::addRadarObject(WorldEntity* object, const ColourValue& colour)
-    {
-        RadarObject* obj = new RadarObject(overlay_, object, colour);
-        roSet_.insert(roSet_.end(), obj);
-    }
-
-    void HUDRadar::removeRadarObject(WorldEntity* object)
-    {
-        for(std::list<RadarObject*>::iterator it=roSet_.begin(); it!=roSet_.end(); ++it)
-        {
-            if ((*it)->getObject() == object)
-            {
-                /*if (this->nav_ && this->nav_->getFocus() == (*it))
-                    this->nav_->releaseFocus();*/
-
-                delete (*it);
-                roSet_.erase(it);
-                return;
-            }
+            COUT(3) << i++ << ": " << (*it)->getWorldEntity()->getWorldPosition() << std::endl;
         }
     }
 

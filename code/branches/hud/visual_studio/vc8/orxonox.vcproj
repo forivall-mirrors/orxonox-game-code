@@ -184,6 +184,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\Radar.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\Settings.cc"
 				>
 			</File>
@@ -395,6 +399,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\tools\TextureGenerator.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\tools\Timer.cc"
 					>
 				</File>
@@ -481,6 +489,10 @@
 						RelativePath="..\..\src\orxonox\overlays\hud\RadarObject.cc"
 						>
 					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\RadarViewable.cc"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>
@@ -503,6 +515,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\OrxonoxStableHeaders.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\Radar.h"
 				>
 			</File>
 			<File
@@ -621,6 +637,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\tools\TextureGenerator.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\tools\Timer.h"
 					>
 				</File>
@@ -685,6 +705,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\RadarObject.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\RadarViewable.h"
 						>
 					</File>
 				</Filter>

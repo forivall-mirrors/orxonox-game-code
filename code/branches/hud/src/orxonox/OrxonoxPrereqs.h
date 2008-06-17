@@ -75,6 +75,10 @@ namespace orxonox
   class GraphicsEngine;
   class Orxonox;
 
+  class RadarViewable;
+  class Radar;
+  class RadarListener;
+
   // objects
   class Ambient;
   class Backlight;

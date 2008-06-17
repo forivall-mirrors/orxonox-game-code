@@ -20,35 +20,40 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Yuning Chai
+ *      Fabian 'x3n' Landau
  *   Co-authors:
- *      Felix Schulthess
+ *      Reto Grieder
  *
  */
 
-#ifndef _OverlayElementFactories_H__
-#define _OverlayElementFactories_H__
+/**
+    @file
+    @brief
+*/
+
+#ifndef _TextureGenerator_H__
+#define _TextureGenerator_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include <OgrePrerequisites.h>
-#include <OgreOverlayElement.h>
-#include <OgreOverlayElementFactory.h>
-
-#include "RadarOverlayElement.h"
+#include <string>
+#include <map>
+#include "util/Math.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport RadarOverlayElementFactory : public Ogre::OverlayElementFactory{
-      public:
-        Ogre::OverlayElement* createOverlayElement(const Ogre::String& instanceName){
-            return new RadarOverlayElement(instanceName);
-        }
-        const Ogre::String& getTypeName(void) const{
-            static Ogre::String name = "Radar";
-            return name;
-        }
+    class _OrxonoxExport TextureGenerator
+    {
+    public:
+        static const std::string& getMaterialName(std::string textureName, const ColourValue& colour);
+
+    private:
+        TextureGenerator();
+        TextureGenerator(const TextureGenerator&);
+        ~TextureGenerator();
+
+        static std::map<std::string, std::map<ColourValue, std::string> > materials_s;
+        static unsigned int materialCount_s;
     };
 }
 
-#endif /* _OverlayElementFactories_H__ */
+#endif /* _TextureGenerator_H__ */

@@ -78,7 +78,7 @@ namespace orxonox
         {
             // create background
             this->background_ = static_cast<PanelOverlayElement*>(
-                    OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background"));
+                    OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background_" + getUniqueNumberStr()));
             this->background_->setMaterialName("Orxonox/BarBackground");
             this->overlay_->add2D(this->background_);
 
@@ -92,7 +92,7 @@ namespace orxonox
             this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2, 0.7, 0.2));
 
             // create bar
-            this->bar_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "Bar"));
+            this->bar_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "Bar" + getUniqueNumberStr()));
             this->bar_->setMaterialName(materialname);
             this->background_->addChild(bar_);
         }

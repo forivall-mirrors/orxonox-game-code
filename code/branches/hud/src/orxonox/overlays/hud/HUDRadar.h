@@ -35,10 +35,63 @@
 #include <OgrePanelOverlayElement.h>
 #include "overlays/OrxonoxOverlay.h"
 #include "objects/Tickable.h"
+#include "core/BaseObject.h"
+#include "util/Math.h"
+#include "core/Debug.h"
+#include "Radar.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HUDRadar : public OrxonoxOverlay, public Tickable
+    template <class T, int Dummy>
+    class _OrxonoxExport RadarAttribute : public BaseObject
+    {
+      public:
+        RadarAttribute();
+        ~RadarAttribute() { }
+
+        void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        void loadAttribute(Element& xmlElement, XMLPort::Mode mode);
+
+        void setAttribute(const T& attribute) { this->attribute_ = attribute; }
+        const T& getAttribute() const { return this->attribute_; }
+
+        void setIndex(unsigned int index); 
+        unsigned int getIndex() { return this->index_; }
+
+      private:
+        unsigned int index_;
+        T attribute_;
+    };
+
+    template <class T, int Dummy>
+    void RadarAttribute<T, Dummy>::setIndex(unsigned int index)
+    {
+        if (index > 0xFF)
+        {
+            COUT(1) << "Shape index was larger than 255 while parsing a RadarAttribute. "
+              << "Using random number!!!" << std::endl;
+            this->index_ = rand() & 0xFF;
+        }
+        else
+            this->index_ = index;
+    }
+
+    typedef RadarAttribute<std::string, 1> RadarShape;
+
+    template <>
+    RadarShape::RadarAttribute() : index_(0)
+        { RegisterObject(RadarShape); }
+
+    template <>
+    void RadarShape::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    {
+        BaseObject::XMLPort(xmlElement, mode);
+        XMLPortParam(RadarShape, "shape", setAttribute, getAttribute, xmlElement, mode);
+        XMLPortParam(RadarShape, "index", setIndex, getIndex, xmlElement, mode);
+    }
+
+
+    class _OrxonoxExport HUDRadar : public OrxonoxOverlay, public Tickable, public RadarListener
     {
       public:
         HUDRadar();
@@ -46,25 +99,23 @@ namespace orxonox
 
         void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
+        void addShape(RadarShape* shape);
+        RadarShape* getShape(unsigned int index) const;
+
         void tick(float dt);
 
         void listObjects();
 
-        inline std::list<RadarObject*>& getRadarObjects()
-            { return this->roSet_; }
-
-        void addRadarObject(WorldEntity* object, const ColourValue& colour = ColourValue(0.5, 0.5, 0.5, 1));
-        void removeRadarObject(WorldEntity* object);
-
-        static HUDRadar& getInstance();
-
       private:
-        HUDRadar(HUDRadar& instance);
+        void addColour(RadarColour* colour);
+        RadarColour* getColour(unsigned int index) const;
 
-        std::list<RadarObject*> roSet_;
+        std::map<unsigned int, std::string> materialNames_;
+        std::map<unsigned int, RadarColour*> colours_;
+        std::map<unsigned int, RadarShape*> shapes_;
+
         Ogre::PanelOverlayElement* background_;
-
-        static HUDRadar* instance_s;
+        std::map<RadarViewable*, Ogre::PanelOverlayElement*> radarDots_;
     };
 }
 
