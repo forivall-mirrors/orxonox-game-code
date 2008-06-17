@@ -19,6 +19,7 @@ SET( ORXONOX_SRC_FILES
   tools/Timer.cc
 
   objects/Ambient.cc
+  objects/Backlight.cc
   objects/Camera.cc
   objects/CameraHandler.cc
   objects/Model.cc

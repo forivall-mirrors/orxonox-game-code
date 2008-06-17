@@ -26,38 +26,50 @@
  *
  */
 
-#ifndef _ParticleSpawner_H__
-#define _ParticleSpawner_H__
+#ifndef _Backlight_H__
+#define _Backlight_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include "WorldEntity.h"
 #include "tools/Timer.h"
+#include "tools/BillboardSet.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ParticleSpawner : public WorldEntity
+    class _OrxonoxExport Backlight : public WorldEntity
     {
         public:
-            ParticleSpawner();
-            ParticleSpawner(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime = 0, float startdelay = 0, float destroydelay = 0, const Vector3& direction = Vector3::ZERO);
-            virtual ~ParticleSpawner();
-            void destroy();
+            Backlight(float maxspeed = 1.0, float brakingtime = 1.0, float scale = 1.0);
+            virtual ~Backlight();
 
-            void setParticle(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime = 0, float startdelay = 0, float destroydelay = 0, const Vector3& direction = Vector3::ZERO);
-            inline ParticleInterface* getParticleInterface() const
-                { return this->particle_; }
+            void setConfigValues();
+            virtual void tick(float dt);
+            virtual void changedVisibility();
 
-            void setVisible(bool visible);
+            void setColour(const ColourValue& colour);
+            void setTimeFactor(float factor);
 
         private:
-            void createParticleSpawner(float lifetime);
-            void destroyParticleSpawner();
+            void configure(float maxspeed, float brakingtime, float scale = 1);
+            void updateColourChange();
 
-            Timer<ParticleSpawner> timer_;
-            ParticleInterface* particle_;
-            float destroydelay_;
+            static float timeFactor_s;
+            BillboardSet billboard_;
+            Ogre::SceneNode* ribbonTrailNode_;
+            Ogre::RibbonTrail* ribbonTrail_;
+
+            float maxLifeTime_;
+            float trailSegmentLength_;
+            float width_;
+
+            float brakefactor_;
+
+            float maxTraillength_;
+            float traillength_;
+
+            size_t maxTrailsegments_;
     };
 }
 
-#endif /* _ParticleSpawner_H__ */
+#endif /* _Backlight_H__ */

@@ -74,7 +74,11 @@ std::istream& operator>>(std::istream& in, orxonox::Degree& degree)
 float getAngle(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& otherposition)
 {
     orxonox::Vector3 distance = otherposition - myposition;
-    return acos(mydirection.dotProduct(distance) / distance.length());
+    float distancelength = distance.length();
+    if (distancelength == 0)
+        return 0;
+    else
+        return acos(clamp<float>(mydirection.dotProduct(distance) / distancelength, -1, 1));
 }
 
 orxonox::Vector2 get2DViewdirection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition)
@@ -83,7 +87,10 @@ orxonox::Vector2 get2DViewdirection(const orxonox::Vector3& myposition, const or
 
     // project difference vector on our plane
     orxonox::Vector3 projection = Ogre::Plane(mydirection, myposition).projectVector(distance);
-    float angle = acos(myorthonormal.dotProduct(projection) / projection.length());
+
+    float projectionlength = projection.length();
+    if (projectionlength == 0) return orxonox::Vector2(0, 0);
+    float angle = acos(clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1));
 
     if ((mydirection.crossProduct(myorthonormal)).dotProduct(distance) > 0)
         return orxonox::Vector2(sin(angle), cos(angle));
@@ -97,8 +104,14 @@ orxonox::Vector2 get2DViewcoordinates(const orxonox::Vector3& myposition, const 
 
     // project difference vector on our plane
     orxonox::Vector3 projection = Ogre::Plane(mydirection, myposition).projectVector(distance);
-    float angle = acos(myorthonormal.dotProduct(projection) / projection.length());
-    float radius = acos(mydirection.dotProduct(distance) / distance.length()) / Ogre::Math::PI;
+
+    float projectionlength = projection.length();
+    if (projectionlength == 0) return orxonox::Vector2(0, 0);
+    float angle = acos(clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1));
+
+    float distancelength = distance.length();
+    if (distancelength == 0) return orxonox::Vector2(0, 0);
+    float radius = acos(clamp<float>(mydirection.dotProduct(distance) / distancelength, -1, 1)) / Ogre::Math::PI;
 
     if ((mydirection.crossProduct(myorthonormal)).dotProduct(distance) > 0)
         return orxonox::Vector2(sin(angle) * radius, cos(angle) * radius);
