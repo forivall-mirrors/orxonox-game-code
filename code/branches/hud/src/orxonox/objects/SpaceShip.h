@@ -35,11 +35,12 @@
 #include "util/Math.h"
 #include "Camera.h"
 #include "Model.h"
+#include "RadarViewable.h"
 #include "tools/BillboardSet.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport SpaceShip : public Model
+    class _OrxonoxExport SpaceShip : public Model, public RadarViewable
     {
         public:
             static SpaceShip *getLocalShip();

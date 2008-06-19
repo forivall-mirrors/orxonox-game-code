@@ -76,8 +76,7 @@ namespace orxonox
             Ogre::TextureUnitState* textureUnitState = material->getTechnique(0)->getPass(0)->createTextureUnitState();
             textureUnitState->setTextureName(textureName);
             textureUnitState->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, colour);
-            colourMap[colour] = materialName;
-            return colourMap[colour];
+            return (colourMap[colour] = materialName);
         }
         else
         {

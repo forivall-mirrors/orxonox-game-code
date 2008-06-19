@@ -41,14 +41,13 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
 #include "GraphicsEngine.h"
-#include "core/input/InputManager.h"
+//#include "core/input/InputManager.h"
 #include "tools/ParticleInterface.h"
 #include "RotatingProjectile.h"
 #include "ParticleProjectile.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
 #include "network/Client.h"
-#include "overlays/hud/HUDRadar.h"
 
 namespace orxonox
 {
@@ -132,6 +131,8 @@ namespace orxonox
         this->teamNr_ = 0;
         this->health_ = 100;
 
+        this->radarObject_ = static_cast<WorldEntity*>(this);
+
         COUT(3) << "Info: SpaceShip was loaded" << std::endl;
     }
 
@@ -143,15 +144,8 @@ namespace orxonox
                 delete this->tt1_;
             if (this->tt2_)
                 delete this->tt2_;
-
-            if (setMouseEventCallback_)
-                InputManager::removeMouseHandler("SpaceShip");
-
             if (this->cam_)
                 delete this->cam_;
-
-            if (!this->myShip_)
-                HUDRadar::getInstance().removeRadarObject(this);
         }
     }
 
@@ -160,7 +154,7 @@ namespace orxonox
         if(network::Client::getSingleton() && objectID == network::Client::getSingleton()->getShipID())
           myShip_=true;
         else
-          HUDRadar::getInstance().addRadarObject(this, this->getProjectileColour());
+          this->setRadarObjectColour(this->getProjectileColour());
       }
       if(Model::create())
         this->init();

@@ -75,6 +75,7 @@
 
 #include "GraphicsEngine.h"
 #include "Settings.h"
+#include "Radar.h"
 
 // globals for the server or client
 static network::Client *client_g = 0;
@@ -98,6 +99,7 @@ namespace orxonox
     : ogre_(0)
     , startLevel_(0)
     , hud_(0)
+    , radar_(0)
     //, auMan_(0)
     , timer_(0)
     // turn on frame smoothing by setting a value different from 0
@@ -124,6 +126,9 @@ namespace orxonox
     Loader::unload(hud_);
     if (this->hud_)
       delete this->hud_;
+
+    if (this->radar_)
+      delete this->radar_;
 
     Loader::close();
     //if (this->auMan_)
@@ -341,9 +346,11 @@ namespace orxonox
 
     // Load the HUD
     COUT(3) << "Orxonox: Loading HUD" << std::endl;
-
     hud_ = new Level(Settings::getDataPath() + "overlay/hud.oxo");
     Loader::load(hud_);
+
+    // Start the Radar
+    this->radar_ = new Radar();
 
     return true;
   }

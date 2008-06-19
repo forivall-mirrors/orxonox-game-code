@@ -91,7 +91,7 @@ namespace orxonox
     }
 
 
-    class _OrxonoxExport HUDRadar : public OrxonoxOverlay, public Tickable, public RadarListener
+    class _OrxonoxExport HUDRadar : public OrxonoxOverlay, public RadarListener//, public Tickable
     {
       public:
         HUDRadar();
@@ -99,23 +99,38 @@ namespace orxonox
 
         void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-        void addShape(RadarShape* shape);
-        RadarShape* getShape(unsigned int index) const;
+        /*void addShape(RadarShape* shape);
+        RadarShape* getShape(unsigned int index) const;*/
 
-        void tick(float dt);
+        float getRadarSensitivity() const { return this->sensitivity_; }
+        void setRadarSensitivity(float sensitivity) { this->sensitivity_ = sensitivity; }
 
-        void listObjects();
+        float getHalfDotSizeDistance() const { return this->halfDotSizeDistance_; }
+        void setHalfDotSizeDistance(float distance) { this->halfDotSizeDistance_ = distance; }
+
+        float getMaximumDotSize() const { return this->maximumDotSize_; }
+        void setMaximumDotSize(float size) { this->maximumDotSize_ = size; }
+
+        //void tick(float dt);
+
+        //void listObjects();
 
       private:
-        void addColour(RadarColour* colour);
-        RadarColour* getColour(unsigned int index) const;
+        void displayObject(RadarViewable* viewable, bool bIsMarked);
+        void hideMarker() { this->marker_->hide(); }
+        float getRadarSensitivity() { return 1.0f; }
+        void radarTick(float dt);
 
-        std::map<unsigned int, std::string> materialNames_;
-        std::map<unsigned int, RadarColour*> colours_;
-        std::map<unsigned int, RadarShape*> shapes_;
+        std::map<RadarViewable::Shape, std::string> shapeMaterials_;
 
         Ogre::PanelOverlayElement* background_;
         std::map<RadarViewable*, Ogre::PanelOverlayElement*> radarDots_;
+        Ogre::PanelOverlayElement* marker_;
+
+        float halfDotSizeDistance_;
+        float maximumDotSize_;
+
+        float sensitivity_;
     };
 }
 

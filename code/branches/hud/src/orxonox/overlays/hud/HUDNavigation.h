@@ -49,16 +49,16 @@ namespace orxonox
 
         void tick(float dt);
 
-        void cycleFocus();
+        //void cycleFocus();
         float getDist2Focus() const;
 
-        inline RadarObject* getFocus() const
+        /*inline RadarObject* getFocus() const
             { return this->focus_; }
-        void releaseFocus();
+        void releaseFocus();*/
 
-        static void cycleNavigationFocus();
+        /*static void cycleNavigationFocus();
         static void releaseNavigationFocus();
-        static HUDNavigation& getInstance();
+        static HUDNavigation& getInstance();*/
 
       protected:
         void sizeChanged();
@@ -86,11 +86,9 @@ namespace orxonox
         Ogre::PanelOverlayElement* aimMarker_;      //!< Panel used to show the aim Marker
         float aimMarkerSize_;                       //!< One paramter size of the aim marker
         Ogre::TextAreaOverlayElement* navText_;     //!< Text overlay to display the target distance
-        std::list<RadarObject*>::iterator it_;
-        RadarObject* focus_;                        // next pointer of linked list
         bool wasOutOfView_;                         //!< Performance booster variable: setMaterial is not cheap
 
-        static HUDNavigation* instance_s;
+        //static HUDNavigation* instance_s;
   };
 }
 

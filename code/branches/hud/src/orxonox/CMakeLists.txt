@@ -3,6 +3,7 @@ SET( ORXONOX_SRC_FILES
   Main.cc
   Orxonox.cc
   Radar.cc
+  RadarViewable.cc
   Settings.cc
 
   overlays/OrxonoxOverlay.cc
@@ -17,8 +18,7 @@ SET( ORXONOX_SRC_FILES
   overlays/hud/HUDRTRText.cc
   overlays/hud/HUDSpeedBar.cc
   overlays/hud/HUDText.cc
-  overlays/hud/RadarObject.cc
-  overlays/hud/RadarViewable.cc
+  overlays/hud/HUDRadar.cc
 
   tolua/tolua_bind.cc
 

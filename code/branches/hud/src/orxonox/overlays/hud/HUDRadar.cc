@@ -36,48 +36,56 @@
 #include "core/ConsoleCommand.h"
 #include "objects/SpaceShip.h"
 #include "objects/WorldEntity.h"
+#include "tools/TextureGenerator.h"
 #include "RadarViewable.h"
 
 namespace orxonox
 {
     CreateFactory(HUDRadar);
-    CreateFactory(RadarColour);
     CreateFactory(RadarShape);
-
-    HUDRadar* HUDRadar::instance_s = 0;
 
     using namespace Ogre;
 
     HUDRadar::HUDRadar()
       : background_(0)
+      , marker_(0)
+      , sensitivity_(1.0f)
     {
         RegisterObject(HUDRadar);
-
-        assert(instance_s == 0);
-        instance_s = this;
     }
 
     HUDRadar::~HUDRadar()
     {
         if (this->isInitialized())
         {
-            if (this->background_)
+            /*if (this->background_)
                 OverlayManager::getSingleton().destroyOverlayElement(this->background_);
             while (this->radarDots_.size() > 0)
             {
                 OverlayManager::getSingleton().destroyOverlayElement(this->radarDots_[this->radarDots_.size() - 1]);
                 this->radarDots_.pop_back();
-            }
+            }*/
         }
-
-        instance_s = 0;
     }
 
     void HUDRadar::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         OrxonoxOverlay::XMLPort(xmlElement, mode);
 
-        XMLPortObject(HUDRadar, RadarColour, "shapes", addShape, getShape, xmlElement, mode, false, true);
+        if (mode == XMLPort::LoadObject)
+        {
+            this->sensitivity_ = 1.0f;
+            this->halfDotSizeDistance_ = 3000.0f;
+            this->maximumDotSize_ = 0.1;
+        }
+
+        XMLPortParam(HUDRadar, "sensitivity", setRadarSensitivity, getRadarSensitivity, xmlElement, mode);
+        XMLPortParam(HUDRadar, "halfDotSizeDistance", setHalfDotSizeDistance, getHalfDotSizeDistance, xmlElement, mode);
+        XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlElement, mode);
+
+        shapeMaterials_[RadarViewable::Dot]      = "RadarSquare.tga";
+        shapeMaterials_[RadarViewable::Triangle] = "RadarSquare.tga";
+        shapeMaterials_[RadarViewable::Square]   = "RadarSquare.tga";
 
         if (mode == XMLPort::LoadObject)
         {
@@ -85,54 +93,14 @@ namespace orxonox
             background_->setMaterialName("Orxonox/Radar");
             overlay_->add2D(background_);
 
-            // create an array of all possible materials
-            unsigned int iMaterial = 0;
-            for (std::map<unsigned int, RadarShape*>::const_iterator itShape = shapes_.begin(); itShape != shapes_.end(); ++itShape)
-            {
-                Ogre::MaterialPtr originalMaterial = (Ogre::MaterialPtr)(Ogre::MaterialManager::getSingleton().getByName((*itShape).second->getAttribute()));
-                for (std::map<unsigned int, RadarColour*>::const_iterator itColour = colours_.begin(); itColour != colours_.end(); ++itColour)
-                {
-                    Ogre::MaterialPtr newMaterial = originalMaterial->clone((*itShape).second->getAttribute() + convertToString(iMaterial++));
-                    newMaterial->getTechnique(0)->getPass(0)->setAmbient((*itColour).second->getAttribute()); 
-                    materialNames_[(*itShape).first + ((*itColour).first << 8)] = newMaterial->getName();
-                }
-            }
-
-            /*WorldEntity* object;
-            object = new WorldEntity();
-            object->setPosition(2000.0, 0.0, 0.0);
-            addRadarObject(object, ColourValue(0.5, 0, 0, 1));
-            object = new WorldEntity();
-            object->setPosition(0.0, 2000.0, 0.0);
-            addRadarObject(object, ColourValue(0.5, 0, 0, 1));
-            object = new WorldEntity();
-            object->setPosition(0.0, 0.0, 2000.0);
-            addRadarObject(object, ColourValue(0.5, 0, 0, 1));
-            object = new WorldEntity();
-            object->setPosition(10000.0,16000.0,0.0);
-            addRadarObject(object);*/
+            marker_ = (Ogre::PanelOverlayElement*)Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Marker");
+            marker_->setMaterialName("Orxonox/RadarMarker");
+            overlay_->add2D(marker_);
+            marker_->hide();
         }
     }
 
-    void HUDRadar::addColour(RadarColour* colour)
-    {
-        this->colours_[colour->getIndex()] = colour;
-    }
-
-    RadarColour* HUDRadar::getColour(unsigned int index) const
-    {
-        if (index < this->colours_.size())
-        {
-            std::map<unsigned int, RadarColour*>::const_iterator it = colours_.begin();
-            for (unsigned int i = 0; i != index; ++it, ++i)
-                ;
-            return (*it).second;
-        }
-        else
-            return 0;
-    }
-
-    void HUDRadar::addShape(RadarShape* shape)
+    /*void HUDRadar::addShape(RadarShape* shape)
     {
         this->shapes_[shape->getIndex()] = shape;
     }
@@ -148,9 +116,76 @@ namespace orxonox
         }
         else
             return 0;
+    }*/
+
+    void HUDRadar::displayObject(RadarViewable* object, bool bIsMarked)
+    {
+        const WorldEntity* wePointer = object->getWorldEntity();
+
+        // Just to be sure that we actually have a WorldEntity
+        // We could do a dynamic_cast, but that's a lot slower
+        if (!wePointer)
+        {
+            CCOUT(4) << "Cannot display a non-WorldEntitiy on the radar" << std::endl;
+            return;
+        }
+
+        /*static int counter = 0;
+        if (++counter < 1120 && counter > 120)
+        {
+            // we have to create a new entry
+            Ogre::PanelOverlayElement* panel = static_cast<Ogre::PanelOverlayElement*>(
+                Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarDot" + getUniqueNumberStr()));
+            // get right material
+            panel->setMaterialName("Orxonox/RadarSquare");
+            panel->setDimensions(0.03, 0.03);
+            panel->setPosition((1.0 + (rand() & 0xFF) / 256.0 - 0.001) * 0.5, (1.0 - (rand() & 0xFF) / 256.0 - 0.001) * 0.5);
+            panel->show();
+            this->overlay_->add2D(panel);
+            this->overlay_->show();
+        }*/
+
+        // try to find a panel already created
+        Ogre::PanelOverlayElement* panel;
+        std::map<RadarViewable*, Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.find(object);
+        if (it == this->radarDots_.end())
+        {
+            // we have to create a new entry
+            panel = static_cast<Ogre::PanelOverlayElement*>(
+                Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarDot" + getUniqueNumberStr()));
+            radarDots_[object] = panel;
+            // get right material
+            panel->setMaterialName(TextureGenerator::getMaterialName(
+                shapeMaterials_[object->getRadarObjectType()], object->getRadarObjectColour()));
+            this->overlay_->add2D(panel);
+        }
+        else
+            panel = (*it).second;
+
+        // set size to fit distance...
+        float distance = (wePointer->getWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length();
+        // calculate the size with 1/distance dependency for simplicity (instead of exp(-distance * lambda)
+        float size = maximumDotSize_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance);
+        panel->setDimensions(size, size);
+
+        // calc position on radar...
+        Vector2 coord = get2DViewcoordinates(SpaceShip::getLocalShip()->getPosition(), SpaceShip::getLocalShip()->getDir(), SpaceShip::getLocalShip()->getOrth(), wePointer->getWorldPosition());
+        coord *= Ogre::Math::PI / 3.5; // small adjustment to make it fit the texture
+        panel->setPosition((1.0 + coord.x - size) * 0.5, (1.0 - coord.y - size) * 0.5);
+
+        if (bIsMarked)
+        {
+            this->marker_->show();
+            this->marker_->setDimensions(size * 1.2, size * 1.2);
+            this->marker_->setPosition((1.0 + coord.x - size * 1.2) * 0.5, (1.0 - coord.y - size * 1.2) * 0.5);
+        }
     }
 
-    void HUDRadar::tick(float dt)
+    void HUDRadar::radarTick(float dt)
+    {
+    }
+
+    /*void HUDRadar::tick(float dt)
     {
         // iterate through all RadarObjects
         unsigned int i = 0;
@@ -158,35 +193,11 @@ namespace orxonox
         {
             if ((*it)->isVisibleOnRadar())
             {
-                WorldEntity* object = (*it)->getWorldEntity();
-                // Just to be sure that we actually have a WorldEntity
-                // We could do a dynamic_cast, but that's a lot slower
-                assert(object);
-
-                // set size to fit distance...
-                float size = 1.0/((object->getWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length());
-                size = clamp(size * 100.0f, 0.02f, 0.12f);
-                if (i == radarDots_.size())
-                {
-                    // we have to create a new panel
-                    radarDots_.push_back(static_cast<Ogre::PanelOverlayElement*>(
-                        Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarDot" + convertToString(i))));
-                }
-                radarDots_[i]->setDimensions(size, size);
-
-                // calc position on radar...
-                Vector2 coord = get2DViewcoordinates(SpaceShip::getLocalShip()->getPosition(), SpaceShip::getLocalShip()->getDir(), SpaceShip::getLocalShip()->getOrth(), object->getWorldPosition());
-                coord *= Ogre::Math::PI / 3.5; // small adjustment to make it fit the texture
-                radarDots_[i]->setPosition((1.0 + coord.x) * 0.5, (1.0 - coord.y) * 0.5);
-
-                // apply the right material
-                RadarPoint description = (*it)->getDescription();
-                radarDots_[i]->setMaterialName(materialNames_[description.shape_ + (description.colour_ << 8)]);
             }
         }
-    }
+    }*/
 
-    void HUDRadar::listObjects()
+    /*void HUDRadar::listObjects()
     {
         COUT(3) << "List of RadarObjects:\n";
         // iterate through all Radar Objects
@@ -195,11 +206,5 @@ namespace orxonox
         {
             COUT(3) << i++ << ": " << (*it)->getWorldEntity()->getWorldPosition() << std::endl;
         }
-    }
-
-    /*static*/ HUDRadar& HUDRadar::getInstance()
-    {
-        assert(instance_s);
-        return *instance_s;
-    }
+    }*/
 }

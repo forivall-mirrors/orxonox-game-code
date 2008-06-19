@@ -37,19 +37,23 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
+#include "core/Iterator.h"
 #include "core/OrxonoxClass.h"
 #include "objects/Tickable.h"
+#include "RadarViewable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport RadarListener : public OrxonoxClass
+    class _OrxonoxExport RadarListener : virtual public OrxonoxClass
     {
     public:
         RadarListener();
         virtual ~RadarListener() { }
 
-        virtual void displayObject(RadarViewable* viewable) = 0;
+        virtual void displayObject(RadarViewable* viewable, bool bIsMarked) = 0;
+        virtual void hideMarker() = 0;
         virtual float getRadarSensitivity() = 0;
+        virtual void radarTick(float dt) = 0;
     };
 
     /**
@@ -68,15 +72,28 @@ namespace orxonox
         Radar();
         ~Radar();
 
-        void unregisterObject(RadarViewable* object);
-
-        void tick(float dt);
+        //void unregisterObject(RadarViewable* object);
+        const RadarViewable* getFocus();
+        RadarViewable::Shape addObjectDescription(const std::string name);
 
         static Radar& getInstance();
         static Radar* getInstancePtr() { return instance_s; }
 
+        static void cycleNavigationFocus();
+        static void releaseNavigationFocus();
+
     private:
         Radar(Radar& instance);
+        void tick(float dt);
+
+        void releaseFocus();
+        void updateFocus();
+        void cycleFocus();
+
+        Iterator<RadarViewable> itFocus_;
+        RadarViewable* focus_;
+        std::map<std::string, RadarViewable::Shape> objectTypes_;
+        int objectTypeCounter_; 
 
         static Radar* instance_s;
     };

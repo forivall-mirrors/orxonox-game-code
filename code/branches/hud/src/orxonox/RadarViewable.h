@@ -42,24 +42,44 @@ namespace orxonox
     class _OrxonoxExport RadarViewable : virtual public OrxonoxClass
     {
     public:
+        enum Shape
+        {
+            Square,
+            Dot,
+            Triangle
+        };
+
+    public:
         RadarViewable();
-        virtual ~RadarViewable() { unregisterFromRadar(); }
+        virtual ~RadarViewable() { }//unregisterFromRadar(); }
 
-        void unregisterFromRadar();
-
-        float getRadarObjectVisibility() const { return this->radarObjectVisibility_; }
-        void setRadarObjectVisibility(float visibility) { this->radarObjectVisibility_ = visibility; }
-
-        const std::string& getRadarObjectType() const { return this->radarObjectType_; }
-        void setRadarObjectType(const std::string& type) { this->radarObjectType_ = type; }
+        float getRadarObjectCamouflage() const { return this->radarObjectCamouflage_; }
+        void setRadarObjectCamouflage(float camouflage) { this->radarObjectCamouflage_ = camouflage; }
 
         const ColourValue& getRadarObjectColour() const { return this->radarObjectColour_; }
         void setRadarObjectColour(const ColourValue& colour) { this->radarObjectColour_ = colour; }
 
-    private:
-        float radarObjectVisibility_;
+        const std::string& getRadarObjectDescription() const { return this->radarObjectDescription_; }
+        void setRadarObjectDescription(const std::string& str);
+
+        const WorldEntity* getWorldEntity() const { return this->radarObject_; }
+        const Vector3& getWorldPosition() const { validate(); return this->radarObject_->getWorldPosition(); }
+        Vector3 getOrientedVelocity() const
+            { validate(); return this->radarObject_->getOrientation() * this->radarObject_->getVelocity(); }
+
+        Shape getRadarObjectType() const { return this->radarObjectType_; }
+
+    protected:
         WorldEntity* radarObject_;
-        std::string radarObjectType_;
+        //void unregisterFromRadar();
+
+    private:
+        void validate() const { if (!this->radarObject_)
+        { COUT(1) << "Assertation: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl; assert(0); } }
+
+        float radarObjectCamouflage_;
+        Shape radarObjectType_;
+        std::string radarObjectDescription_;
         ColourValue radarObjectColour_;
     };
 }

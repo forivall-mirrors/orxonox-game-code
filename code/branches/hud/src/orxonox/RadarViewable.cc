@@ -37,13 +37,27 @@ namespace orxonox
         @brief Constructor.
     */
     RadarViewable::RadarViewable()
-        : radarObjectVisibility_(1.0f)
+        : radarObjectCamouflage_(0.0f)
+        , radarObjectType_(Dot)
         , radarObject_(0)
+        , radarObjectDescription_("staticObject")
     {
         RegisterRootObject(RadarViewable);
     }
 
-    void RadarViewable::unregisterFromRadar()
+    void RadarViewable::setRadarObjectDescription(const std::string& str)
+    {
+        Radar* radar = Radar::getInstancePtr();
+        if (radar)
+            this->radarObjectType_ = radar->addObjectDescription(str);
+        else
+        {
+            CCOUT(2) << "Attempting to access the radar, but the radar is non existent." << std::endl;
+        }
+        this->radarObjectDescription_ = str;
+    }
+
+    /*void RadarViewable::unregisterFromRadar()
     {
         Radar* radar = Radar::getInstancePtr();
         if (radar)
@@ -52,5 +66,5 @@ namespace orxonox
         {
             CCOUT(2) << "Attempting to unregister an object to the radar, but the radar is non existent." << std::endl;
         }
-    }
+    }*/
 }

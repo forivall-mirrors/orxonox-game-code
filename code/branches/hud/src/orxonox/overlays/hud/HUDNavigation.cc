@@ -41,17 +41,13 @@
 #include "objects/Projectile.h"
 #include "objects/CameraHandler.h"
 #include "overlays/OverlayGroup.h"
-#include "RadarObject.h"
-#include "HUDRadar.h"
+#include "Radar.h"
 
 namespace orxonox
 {
     CreateFactory(HUDNavigation);
 
-    SetConsoleCommand(HUDNavigation, cycleNavigationFocus, true).setAccessLevel(AccessLevel::User);
-    SetConsoleCommand(HUDNavigation, releaseNavigationFocus, true).setAccessLevel(AccessLevel::User);
-
-    HUDNavigation* HUDNavigation::instance_s = 0;
+    //HUDNavigation* HUDNavigation::instance_s = 0;
 
     using namespace Ogre;
 
@@ -60,12 +56,11 @@ namespace orxonox
       , navMarker_(0)
       , aimMarker_(0)
       , navText_(0)
-      , focus_(0)
     {
         RegisterObject(HUDNavigation);
         
-        assert(instance_s == 0); // singleton class
-        HUDNavigation::instance_s = this;
+        /*assert(instance_s == 0); // singleton class
+        HUDNavigation::instance_s = this;*/
     }
 
     HUDNavigation::~HUDNavigation()
@@ -82,7 +77,7 @@ namespace orxonox
                 OverlayManager::getSingleton().destroyOverlayElement(this->aimMarker_);
         }
 
-        HUDNavigation::instance_s = 0;
+        //HUDNavigation::instance_s = 0;
     }
 
     void HUDNavigation::XMLPort(Element& xmlElement, XMLPort::Mode mode)
@@ -116,7 +111,6 @@ namespace orxonox
             container_->show();
 
             overlay_->add2D(container_);
-            overlay_->hide();
         }
 
         XMLPortParam(HUDNavigation, "font", setFont, getFont, xmlElement, mode);
@@ -180,18 +174,25 @@ namespace orxonox
 
     void HUDNavigation::tick(float dt)
     {
-        if (!focus_)
+        if (!Radar::getInstance().getFocus())
+        {
+            this->overlay_->hide();
             return;
+        }
+        else
+        {
+            this->overlay_->show();
+        }
 
         // set text
-        int dist = (int) getDist2Focus()/100.0f;
+        int dist = (int) getDist2Focus();
         navText_->setCaption(convertToString(dist));
         float textLength = convertToString(dist).size() * navText_->getCharHeight() * 0.3;
 
         Ogre::Camera* navCam = SpaceShip::getLocalShip()->getCamera()->cam_;
         Matrix4 transformationMatrix = navCam->getProjectionMatrix() * navCam->getViewMatrix();
         // transform to screen coordinates
-        Vector3 pos = transformationMatrix * focus_->getPosition();
+        Vector3 pos = transformationMatrix * Radar::getInstance().getFocus()->getWorldPosition();
 
         bool outOfView;
         if (pos.z > 1.0)
@@ -265,7 +266,7 @@ namespace orxonox
             // object is in view
 
             Vector3 aimpos = transformationMatrix * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(),
-                    Projectile::getSpeed(), focus_->getPosition(), focus_->getOrientedVelocity());
+                    Projectile::getSpeed(), Radar::getInstance().getFocus()->getWorldPosition(), Radar::getInstance().getFocus()->getOrientedVelocity());
 
             if (wasOutOfView_)
             {
@@ -287,74 +288,10 @@ namespace orxonox
         }
     }
 
-    void HUDNavigation::cycleFocus()
-    {
-        if (!focus_)
-        {
-            // Get closest object
-            float distance = (unsigned int) -1;
-            Vector3 shipPos = SpaceShip::getLocalShip()->getPosition();
-            it_ = HUDRadar::getInstance().getRadarObjects().begin();
-
-            for (std::list<RadarObject*>::iterator it = HUDRadar::getInstance().getRadarObjects().begin(); it != HUDRadar::getInstance().getRadarObjects().end(); ++it)
-            {
-                float newdist = (*it)->getPosition().squaredDistance(shipPos);
-                if (newdist < distance)
-                {
-                    distance = newdist;
-                    it_ = it;
-                }
-            }
-
-            if (it_ != HUDRadar::getInstance().getRadarObjects().end())
-            {
-                focus_ = *it_;
-
-                // move the focused object to the begin of the list, so we will iterate through all other objects when cycling
-                HUDRadar::getInstance().getRadarObjects().erase(it_);
-                HUDRadar::getInstance().getRadarObjects().insert(HUDRadar::getInstance().getRadarObjects().begin(), focus_);
-                it_ = HUDRadar::getInstance().getRadarObjects().begin();
-            }
-        }
-        else if (it_ != HUDRadar::getInstance().getRadarObjects().end())
-        {
-            focus_->resetMaterial();
-            ++it_;
-            if (it_ != HUDRadar::getInstance().getRadarObjects().end())
-                focus_ = *it_;
-            else
-                focus_ = 0;
-        }
-        else
-        {
-            focus_ = 0;
-        }
-        updateFocus();
-    }
-
-    void HUDNavigation::updateFocus()
-    {
-        if (focus_)
-        {
-            overlay_->show();
-            focus_->setColour(ColourValue::White);
-        }
-        else
-        {
-            overlay_->hide();
-        }
-    }
-
-    void HUDNavigation::releaseFocus()
-    {
-        this->focus_ = 0;
-        this->updateFocus();
-    }
-
     float HUDNavigation::getDist2Focus() const
     {
-        if (focus_)
-            return (focus_->getPosition() - SpaceShip::getLocalShip()->getPosition()).length();
+        if (Radar::getInstance().getFocus())
+            return (Radar::getInstance().getFocus()->getWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length();
         else
             return 0;
     }
@@ -376,25 +313,9 @@ namespace orxonox
             navText_->setCharHeight(navText_->getCharHeight() * yScale);
     }
 
-    /*static*/ HUDNavigation& HUDNavigation::getInstance()
+    /*static*/ /*HUDNavigation& HUDNavigation::getInstance()
     {
         assert(instance_s);
         return *instance_s;
-    }
-
-    /*static*/ void HUDNavigation::cycleNavigationFocus()
-    {
-        // avoid using getInstance because of the assert().
-        // User might call this fuction even if HUDNavigation doesn't exist.
-        if (instance_s)
-            instance_s->cycleFocus();
-    }
-
-    /*static*/ void HUDNavigation::releaseNavigationFocus()
-    {
-        // avoid using getInstance because of the assert().
-        // User might call this fuction even if HUDNavigation doesn't exist.
-        if (instance_s)
-            instance_s->releaseFocus();
-    }
+    }*/
 }

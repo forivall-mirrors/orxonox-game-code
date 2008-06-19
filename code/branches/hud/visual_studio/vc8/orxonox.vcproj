@@ -188,6 +188,28 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\RadarViewable.cc"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\Settings.cc"
 				>
 			</File>
@@ -485,14 +507,6 @@
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDText.cc"
 						>
 					</File>
-					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\RadarObject.cc"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\RadarViewable.cc"
-						>
-					</File>
 				</Filter>
 			</Filter>
 		</Filter>
@@ -519,6 +533,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\Radar.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\RadarViewable.h"
 				>
 			</File>
 			<File
@@ -697,18 +715,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDText.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\OverlayElementFactories.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\RadarObject.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\RadarViewable.h"
 						>
 					</File>
 				</Filter>
