@@ -267,7 +267,7 @@ namespace orxonox
     ConfigValueContainer* cont = ClassIdentifier<KeyBinder>::getIdentifier()->getConfigValueContainer(button.name_);
     if (!cont)
     {
-      cont = new ConfigValueContainer(CFT_Keybindings, ClassIdentifier<KeyBinder>::getIdentifier(), button.name_, "");
+      cont = new ConfigValueContainer(CFT_Keybindings, ClassIdentifier<KeyBinder>::getIdentifier(), button.name_, "", button.name_);
       ClassIdentifier<KeyBinder>::getIdentifier()->addConfigValueContainer(button.name_, cont);
     }
     std::string old = button.bindingString_;

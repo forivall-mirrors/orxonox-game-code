@@ -46,13 +46,9 @@
 namespace orxonox
 {
     /**
-        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets the intern value variable.
-        @param type The type of the corresponding config-file
-        @param identifier The identifier of the class the variable belongs to
-        @param varname The name of the variable
-        @param defvalue The default-value
+        @brief Initializes the ConfigValueContainer with defaultvalues.
     */
-    ConfigValueContainer::ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const MultiTypeMath& defvalue)
+    void ConfigValueContainer::init(ConfigFileType type, Identifier* identifier, const std::string& varname)
     {
         this->type_ = type;
         this->identifier_ = identifier;
@@ -62,47 +58,34 @@ namespace orxonox
         this->bContainerIsNew_ = true;
         this->bDoInitialCallback_ = false;
         this->bAddedDescription_ = false;
+    }
 
+    /**
+        @brief Does some special initialization for single config-values.
+    */
+    void ConfigValueContainer::initValue(const MultiTypeMath& defvalue)
+    {
         this->value_ = defvalue;
         this->bIsVector_ = false;
 
-        this->defvalueString_ = defvalue.toString();
+        this->defvalueString_ = this->value_.toString();
         this->update();
     }
 
     /**
-        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets the intern value variable.
-        @param type The type of the corresponding config-file
-        @param identifier The identifier of the class the variable belongs to
-        @param varname The name of the variable
-        @param defvalue The default-value
+        @brief Does some special initialization for vector config-values.
     */
-    ConfigValueContainer::ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const std::vector<MultiTypeMath>& defvalue)
+    void ConfigValueContainer::initVector()
     {
-        this->type_ = type;
-        this->identifier_ = identifier;
-        this->sectionname_ = identifier->getName();
-        this->varname_ = varname;
-        this->callback_ = 0;
-        this->bContainerIsNew_ = true;
-        this->bDoInitialCallback_ = false;
-        this->bAddedDescription_ = false;
-
-        this->valueVector_ = defvalue;
         this->bIsVector_ = true;
 
-        if (defvalue.size() > 0)
+        for (unsigned int i = 0; i < this->valueVector_.size(); i++)
         {
-                this->value_ = defvalue[0];
-
-            for (unsigned int i = 0; i < defvalue.size(); i++)
-            {
-                ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, defvalue[i].toString(), this->value_.isA(MT_string));
-                this->defvalueStringVector_.push_back(defvalue[i].toString());
-            }
-
-            this->update();
+            ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i].toString(), this->value_.isA(MT_string));
+            this->defvalueStringVector_.push_back(this->valueVector_[i].toString());
         }
+
+        this->update();
     }
 
     /**

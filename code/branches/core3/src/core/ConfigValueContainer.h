@@ -94,15 +94,51 @@ namespace orxonox
     class _CoreExport ConfigValueContainer
     {
         public:
-            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const MultiTypeMath& defvalue);
-            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const std::vector<MultiTypeMath>& defvalue);
+            /**
+                @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets the intern value variable.
+                @param type The type of the corresponding config-file
+                @param identifier The identifier of the class the variable belongs to
+                @param varname The name of the variable
+                @param defvalue The default-value
+                @param value Only needed do determine the right type.
+            */
+            template <class D, class V>
+            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const D& defvalue, const V& value)
+            {
+                this->init(type, identifier, varname);
+                this->initValue((V)defvalue);
+            }
+
+            /**
+                @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets the intern value variable.
+                @param type The type of the corresponding config-file
+                @param identifier The identifier of the class the variable belongs to
+                @param varname The name of the variable
+                @param defvalue The default-value
+            */
+            template <class V>
+            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const std::vector<V>& defvalue)
+            {
+                this->init(type, identifier, varname);
+
+                this->value_ = V();
+                for (unsigned int i = 0; i < defvalue.size(); i++)
+                    this->valueVector_.push_back(MultiTypeMath(defvalue[i]));
+
+                this->initVector();
+            }
+
             ~ConfigValueContainer();
 
-            /** @brief Returns the configured value. @param value A pointer to the variable to store the value. @return The ConfigValueContainer */
+            /**
+                @brief Returns the configured value.
+                @param value A pointer to the variable to store the value.
+                @param object The object calling this function
+                @return The ConfigValueContainer
+            */
             template <typename T, class C>
             ConfigValueContainer& getValue(T* value, C* object)
             {
-std::cout << "start: " << this->getName() << std::endl;
                 if ((this->callback_ && object) || this->bContainerIsNew_)
                 {
                     if (this->bContainerIsNew_)
@@ -122,11 +158,15 @@ std::cout << "start: " << this->getName() << std::endl;
                 {
                     this->value_.getValue(value);
                 }
-std::cout << "end" << std::endl;
                 return *this;
             }
 
-            /** @brief Returns the configured vector. @param value A pointer to the vector to store the values. @return The ConfigValueContainer */
+            /**
+                @brief Returns the configured vector.
+                @param value A pointer to the vector to store the values.
+                @param object The object calling this function
+                @return The ConfigValueContainer
+            */
             template <typename T, class C>
             ConfigValueContainer& getValue(std::vector<T>* value, C* object)
             {
@@ -171,23 +211,24 @@ std::cout << "end" << std::endl;
                 return *this;
             }
 
-            template <typename T>
-            inline void setVectorType(const std::vector<T>& value)
-            {
-                this->value_ = T();
-                this->update();
-            }
-
+            /** @brief Returns the name of this container. */
             inline const std::string& getName() const
                 { return this->varname_; }
+            /** @brief Returns true if this config-value is a vector */
             inline bool isVector() const
                 { return this->bIsVector_; }
+            /** @brief Returns the vectors size (or zero if it's not a vector). */
             inline unsigned int getVectorSize() const
                 { return this->valueVector_.size(); }
 
             ConfigValueContainer& description(const std::string& description);
             const std::string& getDescription() const;
 
+            /**
+                @brief Adds a callback function, that gets called after getValue() if the newly assigned value differs from the old value of the variable.
+                @param object The object to call the function
+                @param function The callback function
+            */
             template <class T>
             inline ConfigValueContainer& callback(T* object, void (T::*function) (void))
             {
@@ -224,6 +265,9 @@ std::cout << "end" << std::endl;
                 { return this->value_.getTypename(); }
 
         private:
+            void init(ConfigFileType type, Identifier* identifier, const std::string& varname);
+            void initValue(const MultiTypeMath& defvalue);
+            void initVector();
             bool callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiTypeMath&), const std::string& input);
 
             bool                       bIsVector_;                  //!< True if the container contains a std::vector
