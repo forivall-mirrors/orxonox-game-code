@@ -89,8 +89,8 @@ namespace orxonox
 
     void Shell::setConfigValues()
     {
-        SetConfigValue(maxHistoryLength_, 100).callback(&Shell::commandHistoryLengthChanged);
-        SetConfigValue(historyOffset_, 0).callback(&Shell::commandHistoryOffsetChanged);
+        SetConfigValue(maxHistoryLength_, 100).callback(this, &Shell::commandHistoryLengthChanged);
+        SetConfigValue(historyOffset_, 0).callback(this, &Shell::commandHistoryOffsetChanged);
         SetConfigValueVector(commandHistory_, std::vector<std::string>());
     }
 

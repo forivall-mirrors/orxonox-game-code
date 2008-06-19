@@ -95,10 +95,10 @@ namespace orxonox
     */
     void Core::setConfigValues()
     {
-        SetConfigValue(softDebugLevelConsole_, 3).description("The maximal level of debug output shown in the console").callback(&Core::debugLevelChanged);
-        SetConfigValue(softDebugLevelLogfile_, 3).description("The maximal level of debug output shown in the logfile").callback(&Core::debugLevelChanged);
-        SetConfigValue(softDebugLevelShell_, 1).description("The maximal level of debug output shown in the ingame shell").callback(&Core::debugLevelChanged);
-        SetConfigValue(language_, Language::getLanguage().defaultLanguage_).description("The language of the ingame text").callback(&Core::languageChanged);
+        SetConfigValue(softDebugLevelConsole_, 3).description("The maximal level of debug output shown in the console").callback(this, &Core::debugLevelChanged);
+        SetConfigValue(softDebugLevelLogfile_, 3).description("The maximal level of debug output shown in the logfile").callback(this, &Core::debugLevelChanged);
+        SetConfigValue(softDebugLevelShell_, 1).description("The maximal level of debug output shown in the ingame shell").callback(this, &Core::debugLevelChanged);
+        SetConfigValue(language_, Language::getLanguage().defaultLanguage_).description("The language of the ingame text").callback(this, &Core::languageChanged);
     }
 
     /**

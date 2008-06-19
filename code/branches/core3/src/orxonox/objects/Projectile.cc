@@ -73,7 +73,7 @@ namespace orxonox
     {
         SetConfigValue(damage_, 15.0).description("The damage caused by the projectile");
         SetConfigValue(lifetime_, 4.0).description("The time in seconds a projectile stays alive");
-        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback(&Projectile::speedChanged);
+        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback(this, &Projectile::speedChanged);
     }
 
     void Projectile::speedChanged()

@@ -64,7 +64,7 @@ namespace orxonox
 
     void RotatingProjectile::setConfigValues()
     {
-        SetConfigValue(colour_, ColourValue(1.0, 0.0, 0.0)).callback(&RotatingProjectile::colourChanged);
+        SetConfigValue(colour_, ColourValue(1.0, 0.0, 0.0)).callback(this, &RotatingProjectile::colourChanged);
     }
 
     void RotatingProjectile::colourChanged()

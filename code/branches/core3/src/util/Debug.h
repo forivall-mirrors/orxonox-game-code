@@ -85,7 +85,7 @@ static inline int getSoftDebugLevel()
    COUT ## x
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_NONE
-   #define COUT0  \
+   #define COUT0 \
     (getSoftDebugLevel() < ORX_NONE) ? COUT_EXEC(0) : COUT_EXEC(0)
   #else
    #define COUT0 \
@@ -93,7 +93,7 @@ static inline int getSoftDebugLevel()
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
-   #define COUT1  \
+   #define COUT1 \
     (getSoftDebugLevel() < ORX_ERROR) ? COUT_EXEC(1) : COUT_EXEC(1)
   #else
    #define COUT1 \
@@ -169,7 +169,7 @@ static inline int getSoftDebugLevel()
    CCOUT ## x
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_NONE
-   #define CCOUT0  \
+   #define CCOUT0 \
     (getSoftDebugLevel() < ORX_NONE) ? COUT_EXEC(0) : CCOUT_EXEC(0)
   #else
    #define CCOUT0 \
@@ -177,7 +177,7 @@ static inline int getSoftDebugLevel()
   #endif
 
   #if ORX_HARD_DEBUG_LEVEL >= ORX_ERROR
-   #define CCOUT1  \
+   #define CCOUT1 \
     (getSoftDebugLevel() < ORX_ERROR) ? COUT_EXEC(1) : CCOUT_EXEC(1)
   #else
    #define CCOUT1 \

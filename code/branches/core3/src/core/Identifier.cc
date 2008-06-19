@@ -194,14 +194,6 @@ namespace orxonox
     }
 
     /**
-        @brief Tells the container to which Identifier it belongs to.
-    */
-    void Identifier::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
-    {
-        container->setIdentifier(this);
-    }
-
-    /**
         @brief Returns true, if the Identifier is at least of the given type.
         @param identifier The identifier to compare with
     */

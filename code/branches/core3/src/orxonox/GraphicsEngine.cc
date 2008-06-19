@@ -96,7 +96,7 @@ namespace orxonox {
     SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
     SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
 
-    SetConfigValue(detailLevelParticle_, 2).description("O: off, 1: low, 2: normal, 3: high").callback(&GraphicsEngine::detailLevelParticleChanged);
+    SetConfigValue(detailLevelParticle_, 2).description("O: off, 1: low, 2: normal, 3: high").callback(this, &GraphicsEngine::detailLevelParticleChanged);
   }
 
   void GraphicsEngine::detailLevelParticleChanged()

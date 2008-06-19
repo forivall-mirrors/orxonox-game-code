@@ -111,7 +111,9 @@ namespace orxonox
     {
         BaseObject::XMLPort(xmlelement, mode);
 
-        XMLPortParamExternTemplate(Ogre::Node, this->node_, "position", setPosition, getPosition, xmlelement, mode, Ogre::Node, const Vector3&);
+std::cout << "111111111111111\n";
+        XMLPortParamExternTemplate(WorldEntity, Ogre::Node, this->node_, "position", setPosition, getPosition, xmlelement, mode, Ogre::Node, const Vector3&);
+std::cout << "222222222222222\n";
         XMLPortParamLoadOnly(WorldEntity, "direction", setDirectionSimple, xmlelement, mode);
         XMLPortParamLoadOnly(WorldEntity, "yawpitchroll", setYawPitchRoll, xmlelement, mode);
         XMLPortParam(WorldEntity, "scale", setScale, getScale, xmlelement, mode);

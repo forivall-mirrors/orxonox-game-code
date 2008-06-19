@@ -102,17 +102,27 @@ namespace orxonox
             template <typename T, class C>
             ConfigValueContainer& getValue(T* value, C* object)
             {
-                if (this->callback_ && object)
+std::cout << "start: " << this->getName() << std::endl;
+                if ((this->callback_ && object) || this->bContainerIsNew_)
                 {
+                    if (this->bContainerIsNew_)
+                        this->bContainerIsNew_ = false;
+
                     T temp = *value;
                     this->value_.getValue(value);
                     if ((*value) != temp)
-                        this->callback_->call(object);
+                    {
+                        if (this->callback_ && object)
+                            this->callback_->call(object);
+                        else
+                            this->bDoInitialCallback_ = true;
+                    }
                 }
                 else
                 {
                     this->value_.getValue(value);
                 }
+std::cout << "end" << std::endl;
                 return *this;
             }
 
@@ -120,17 +130,22 @@ namespace orxonox
             template <typename T, class C>
             ConfigValueContainer& getValue(std::vector<T>* value, C* object)
             {
-                if (this->callback_ && object)
+                if ((this->callback_ && object) || this->bContainerIsNew_)
                 {
-                    std::vector<T> temp = *value;
+                    if (this->bContainerIsNew_)
+                        this->bContainerIsNew_ = false;
 
+                    std::vector<T> temp = *value;
                     value->clear();
                     for (unsigned int i = 0; i < this->valueVector_.size(); ++i)
                         value->push_back(this->valueVector_[i]);
 
                     if (value->size() != temp.size())
                     {
-                        this->callback_->call(object);
+                        if (this->callback_ && object)
+                            this->callback_->call(object);
+                        else
+                            this->bDoInitialCallback_ = true;
                     }
                     else
                     {
@@ -138,7 +153,10 @@ namespace orxonox
                         {
                             if ((*value)[i] != temp[i])
                             {
-                                this->callback_->call(object);
+                                if (this->callback_ && object)
+                                    this->callback_->call(object);
+                                else
+                                    this->bDoInitialCallback_ = true;
                                 break;
                             }
                         }
@@ -171,10 +189,19 @@ namespace orxonox
             const std::string& getDescription() const;
 
             template <class T>
-            inline ConfigValueContainer& callback(void (T::*function) (void))
+            inline ConfigValueContainer& callback(T* object, void (T::*function) (void))
             {
                 if (!this->callback_)
+                {
                     this->callback_ = new ConfigValueCallback<T>(function);
+
+                    if (this->bDoInitialCallback_)
+                    {
+                        this->bDoInitialCallback_ = false;
+                        this->callback_->call(object);
+                    }
+                }
+
                 return (*this);
             }
 
@@ -214,6 +241,9 @@ namespace orxonox
             bool                       bAddedDescription_;          //!< True if a description was added
             LanguageEntryLabel         description_;                //!< The description
             ConfigValueCallbackBase*   callback_;                   //!< A callback function to call after getValue if the value changed
+
+            bool                       bContainerIsNew_;            //!< True if it's the first time getValue() gets called
+            bool                       bDoInitialCallback_;         //!< True if the callback should be called as soon as it gets created
     };
 }
 

@@ -205,7 +205,7 @@ namespace orxonox
             ConfigValueContainer* getConfigValueContainer(const std::string& varname);
             ConfigValueContainer* getLowercaseConfigValueContainer(const std::string& varname);
 
-            virtual void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
+            virtual void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container) = 0;
             virtual XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname) = 0;
 
             virtual void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container) = 0;
@@ -460,7 +460,6 @@ namespace orxonox
     template <class T>
     void ClassIdentifier<T>::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
     {
-        Identifier::addXMLPortParamContainer(paramname, container);
         this->xmlportParamContainers_[paramname] = (XMLPortClassParamContainer<class O>*)container;
     }
 

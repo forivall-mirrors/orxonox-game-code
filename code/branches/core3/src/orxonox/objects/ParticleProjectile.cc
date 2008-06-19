@@ -63,7 +63,7 @@ namespace orxonox
 
     void ParticleProjectile::setConfigValues()
     {
-        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback(&ParticleProjectile::speedChanged);
+        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback((Projectile*)this, &ParticleProjectile::speedChanged);
     }
 
     void ParticleProjectile::changedVisibility()

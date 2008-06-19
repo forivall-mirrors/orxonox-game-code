@@ -59,9 +59,11 @@ namespace orxonox
         this->sectionname_ = identifier->getName();
         this->varname_ = varname;
         this->callback_ = 0;
+        this->bContainerIsNew_ = true;
+        this->bDoInitialCallback_ = false;
+        this->bAddedDescription_ = false;
 
         this->value_ = defvalue;
-        this->bAddedDescription_ = false;
         this->bIsVector_ = false;
 
         this->defvalueString_ = defvalue.toString();
@@ -81,9 +83,12 @@ namespace orxonox
         this->identifier_ = identifier;
         this->sectionname_ = identifier->getName();
         this->varname_ = varname;
+        this->callback_ = 0;
+        this->bContainerIsNew_ = true;
+        this->bDoInitialCallback_ = false;
+        this->bAddedDescription_ = false;
 
         this->valueVector_ = defvalue;
-        this->bAddedDescription_ = false;
         this->bIsVector_ = true;
 
         if (defvalue.size() > 0)
