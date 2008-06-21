@@ -20,34 +20,30 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Felix Schulthess
  *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _HUDSpeedBar_H__
-#define _HUDSpeedBar_H__
+#ifndef _RadarListener_H__
+#define _RadarListener_H__
 
 #include "OrxonoxPrereqs.h"
-
-#include "HUDBar.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDSpeedBar : public HUDBar, public Tickable
-  {
+    class _OrxonoxExport RadarListener : virtual public OrxonoxClass
+    {
     public:
-      HUDSpeedBar();
-      virtual ~HUDSpeedBar();
+        RadarListener();
+        virtual ~RadarListener() { }
 
-      //virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-
-      virtual void tick(float dt);
-
-    private:
-
+        virtual void displayObject(RadarViewable* viewable, bool bIsMarked) = 0;
+        virtual float getRadarSensitivity() = 0;
+        virtual void radarTick(float dt) = 0;
     };
 }
-#endif /* _HUDSpeedBar_H__ */
+
+#endif /* _RadarListener_H__ */

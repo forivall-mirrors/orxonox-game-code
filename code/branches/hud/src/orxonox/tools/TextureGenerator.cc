@@ -22,13 +22,13 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      Reto Grieder
+ *      ...
  *
  */
 
 /**
     @file
-    @brief Implementation of the Settings class.
+    @brief Implementation of the TextureGenerator.
 */
 
 #include "OrxonoxStableHeaders.h"

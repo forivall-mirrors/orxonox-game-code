@@ -30,6 +30,8 @@
 #include "HUDText.h"
 
 #include <OgreOverlayManager.h>
+#include <OgreTextAreaOverlayElement.h>
+#include <OgrePanelOverlayElement.h>
 
 #include "util/Convert.h"
 
@@ -40,8 +42,7 @@ namespace orxonox
   using namespace Ogre;
 
   HUDText::HUDText()
-    : background_(0)
-    , text_(0)
+    : text_(0)
   {
     RegisterObject(HUDText);
   }
@@ -52,8 +53,6 @@ namespace orxonox
     {
       if (this->text_)
           OverlayManager::getSingleton().destroyOverlayElement(this->text_);
-      if (this->background_)
-          OverlayManager::getSingleton().destroyOverlayElement(this->background_);
     }
   }
 
@@ -63,19 +62,13 @@ namespace orxonox
 
     if (mode == XMLPort::LoadObject)
     {
-      // create background
-      this->background_ = static_cast<PanelOverlayElement*>(
-              OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background"));
-
       this->text_ = static_cast<TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", getName() + "_Text"));
       this->text_->setCharHeight(1.0f);
       this->text_->setFontName("Monofur");
 
-      this->overlay_->add2D(this->background_);
       this->background_->addChild(this->text_);
     }
 
-    XMLPortParam(HUDText, "material", setBackgroundMaterial, getBackgroundMaterial, xmlElement, mode);
     XMLPortParam(HUDText, "font", setFont, getFont, xmlElement, mode);
     XMLPortParam(HUDText, "caption", setCaption, getCaption, xmlElement, mode);
 
@@ -83,20 +76,6 @@ namespace orxonox
     {
       this->text_->setCaption(this->caption_);
     }
-  }
-
-  void HUDText::setBackgroundMaterial(const std::string& material)
-  {
-    if (this->background_ && material != "")
-      this->background_->setMaterialName(material);
-  }
-
-  std::string HUDText::getBackgroundMaterial() const
-  {
-    if (this->background_)
-      return this->background_->getMaterialName();
-    else
-      return "";
   }
 
   void HUDText::setCaption(const std::string& caption)

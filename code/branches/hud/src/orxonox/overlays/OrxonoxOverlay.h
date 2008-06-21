@@ -38,78 +38,85 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport OrxonoxOverlay : public BaseObject, public WindowEventListener
-  {
+    class _OrxonoxExport OrxonoxOverlay : public BaseObject, public WindowEventListener
+    {
     public:
-      Ogre::Overlay* getOverlay() { return this->overlay_; }
-      OrxonoxOverlay();
-      virtual ~OrxonoxOverlay();
+        Ogre::Overlay* getOverlay() { return this->overlay_; }
+        OrxonoxOverlay();
+        virtual ~OrxonoxOverlay();
 
-      virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-      void setAspectCorrection(bool val);
-      bool getAspectCorrection() { return this->bCorrectAspect_; }
+        void show() { this->setVisibility(true); }
+        void hide() { this->setVisibility(false); }
 
-      /** Sets the position of this overlay. */
-      void setPosition(Vector2 pos) { this->position_ = pos; this->positionChanged(); }
+        void setAspectCorrection(bool val);
+        bool getAspectCorrection() { return this->bCorrectAspect_; }
 
-      /** Gets the current position. */
-      Vector2 getPosition() const { return this->position_; }
+        /** Sets the position of this overlay. */
+        void setPosition(Vector2 pos) { this->position_ = pos; this->positionChanged(); }
 
-      /** Scrolls the overlay by the offsets provided. */
-      void scroll(Vector2 scroll) { this->position_ += scroll; this->positionChanged(); }
+        /** Gets the current position. */
+        Vector2 getPosition() const { return this->position_; }
 
-      /** Sets the origin point of this overlay. */
-      void setOrigin(Vector2 pos) { this->origin_ = pos; this->positionChanged(); }
+        /** Scrolls the overlay by the offsets provided. */
+        void scroll(Vector2 scroll) { this->position_ += scroll; this->positionChanged(); }
 
-      /** Gets the origin point of this overlay */
-      Vector2 getOrigin() const { return this->origin_; }
+        /** Sets the origin point of this overlay. */
+        void setOrigin(Vector2 pos) { this->origin_ = pos; this->positionChanged(); }
 
-      /** Sets the rotation applied to this overlay.*/
-      void setRotation(const Ogre::Radian& angle) { this->angle_ = angle; this->angleChanged(); }
+        /** Gets the origin point of this overlay */
+        Vector2 getOrigin() const { return this->origin_; }
 
-      /** Gets the rotation applied to this overlay, in degrees.*/
-      const Radian& getRotation() const { return this->angle_; }
+        /** Sets the rotation applied to this overlay.*/
+        void setRotation(const Ogre::Radian& angle) { this->angle_ = angle; this->angleChanged(); }
 
-      /** Adds the passed in angle to the rotation applied to this overlay. */
-      void rotate(const Radian& angle) { this->angle_ += angle; this->angleChanged(); }
+        /** Gets the rotation applied to this overlay, in degrees.*/
+        const Radian& getRotation() const { return this->angle_; }
 
-      /** Sets the size of this overlay. */
-      void setSize(const Vector2& size) { this->size_ = size; this->sizeChanged(); }
+        /** Adds the passed in angle to the rotation applied to this overlay. */
+        void rotate(const Radian& angle) { this->angle_ += angle; this->angleChanged(); }
 
-      /** Gets the current size (not corrected) */
-      Vector2 getUncorrectedSize() const { return this->size_; }
+        /** Sets the size of this overlay. */
+        void setSize(const Vector2& size) { this->size_ = size; this->sizeChanged(); }
 
-      /** Gets the current size (corrected) */
-      Vector2 getSize() const { return this->size_ * this->sizeCorrection_; }
+        /** Gets the current size (not corrected) */
+        Vector2 getUncorrectedSize() const { return this->size_; }
 
-      /** Gets the current size correction */
-      Vector2 getSizeCorrection() const { return this->sizeCorrection_; }
+        /** Gets the current size (corrected) */
+        Vector2 getSize() const { return this->size_ * this->sizeCorrection_; }
 
-      /** Scales the overlay */
-      void scale(Vector2 scale) { this->size_ *= scale; this->sizeChanged(); }
+        /** Gets the current size correction */
+        Vector2 getSizeCorrection() const { return this->sizeCorrection_; }
+
+        /** Scales the overlay */
+        void scale(Vector2 scale) { this->size_ *= scale; this->sizeChanged(); }
 
     protected:
-      virtual void changedVisibility();
-      virtual void sizeChanged();
-      virtual void angleChanged();
-      virtual void positionChanged();
-      float getWindowAspectRatio() { return windowAspectRatio_; } 
+        virtual void changedVisibility();
+        virtual void sizeChanged();
+        virtual void angleChanged();
+        virtual void positionChanged();
+        float getWindowAspectRatio() { return windowAspectRatio_; }
 
-      Ogre::Overlay* overlay_;
+        void setBackgroundMaterial(const std::string& material);
+        std::string getBackgroundMaterial() const;
+
+        Ogre::Overlay* overlay_;
+        Ogre::PanelOverlayElement* background_;
 
     private:
-      void windowResized(int newWidth, int newHeight);
+        void windowResized(int newWidth, int newHeight);
 
-      float windowAspectRatio_;
-      bool bCorrectAspect_;
-      Vector2 size_;
-      Vector2 sizeCorrection_;
-      Radian angle_;
-      Vector2 position_;
-      Vector2 origin_;
+        float windowAspectRatio_;
+        bool bCorrectAspect_;
+        Vector2 size_;
+        Vector2 sizeCorrection_;
+        Radian angle_;
+        Vector2 position_;
+        Vector2 origin_;
 
-      static unsigned int hudOverlayCounter_s;
+        static unsigned int hudOverlayCounter_s;
   };
 }
 

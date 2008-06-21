@@ -30,17 +30,14 @@
 #include "HUDNavigation.h"
 
 #include <OgreOverlayManager.h>
-#include <OgreStringConverter.h>
+#include <OgreTextAreaOverlayElement.h>
+#include <OgrePanelOverlayElement.h>
 
-//#include "GraphicsEngine.h"
-// TODO: remove the SpaceShip and CameraHandler dependencies
-#include "core/Debug.h"
-#include "core/CoreIncludes.h"
+#include "util/Math.h"
 #include "core/ConsoleCommand.h"
 #include "objects/SpaceShip.h"
 #include "objects/Projectile.h"
 #include "objects/CameraHandler.h"
-#include "overlays/OverlayGroup.h"
 #include "Radar.h"
 
 namespace orxonox
@@ -67,14 +64,14 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            if (this->container_)
-                OverlayManager::getSingleton().destroyOverlayElement(this->container_);
             if (this->navMarker_)
                 OverlayManager::getSingleton().destroyOverlayElement(this->navMarker_);
             if (this->navText_)
                 OverlayManager::getSingleton().destroyOverlayElement(this->navText_);
             if (this->aimMarker_)
                 OverlayManager::getSingleton().destroyOverlayElement(this->aimMarker_);
+            if (this->container_)
+                OverlayManager::getSingleton().destroyOverlayElement(this->container_);
         }
 
         //HUDNavigation::instance_s = 0;
@@ -86,7 +83,7 @@ namespace orxonox
 
         if (mode == XMLPort::LoadObject)
         {
-            // create container
+            // create container because we cannot add a Text element to an Overlay
             container_ = static_cast<OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_navContainer"));
 
             // create nav text

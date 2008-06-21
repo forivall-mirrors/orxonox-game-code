@@ -34,6 +34,7 @@
 #include <OgreOverlayManager.h>
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
+#include <OgrePanelOverlayElement.h>
 
 #include "util/Convert.h"
 
@@ -44,21 +45,10 @@ namespace orxonox
     using namespace Ogre;
 
     HUDBar::HUDBar()
+        : bar_(0)
+        , textureUnitState_(0)
     {
         RegisterObject(HUDBar);
-
-        this->bar_ = 0;
-        this->background_ = 0;
-        this->textureUnitState_ = 0;
-
-        barWidth_s = 0.88f;
-        barHeight_s = 1.0f;
-        barOffsetLeft_s = 0.06f;
-        barOffsetTop_s = 0.0f;
-
-        this->value_ = -1;
-        this->autoColour_ = true;
-        this->right2Left_ = false; // default is left to right progress
     }
 
     HUDBar::~HUDBar()
@@ -67,6 +57,7 @@ namespace orxonox
         {
             if (this->bar_)
                 OverlayManager::getSingleton().destroyOverlayElement(this->bar_);
+            // FIXME: Check whether we have to delete the textureUnitState_;
         }
     }
 
@@ -76,12 +67,6 @@ namespace orxonox
 
         if (mode == XMLPort::LoadObject)
         {
-            // create background
-            this->background_ = static_cast<PanelOverlayElement*>(
-                    OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Background_" + getUniqueNumberStr()));
-            this->background_->setMaterialName("Orxonox/BarBackground");
-            this->overlay_->add2D(this->background_);
-
             // create new material
             std::string materialname = "barmaterial" + getConvertedValue<unsigned int, std::string>(materialcount_s++);
             Ogre::MaterialPtr material = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().create(materialname, "General");
@@ -92,19 +77,24 @@ namespace orxonox
             this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2, 0.7, 0.2));
 
             // create bar
+            barWidth_s = 0.88f;
+            barHeight_s = 1.0f;
+            barOffsetLeft_s = 0.06f;
+            barOffsetTop_s = 0.0f;
             this->bar_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "Bar" + getUniqueNumberStr()));
             this->bar_->setMaterialName(materialname);
             this->background_->addChild(bar_);
-        }
 
-        XMLPortParamLoadOnly(HUDBar, "value", setValue, xmlElement, mode);
+            this->setValue(0);
+            this->autoColour_ = true;
+            this->right2Left_ = false; // default is left to right progress
 
-        if (mode == XMLPort::LoadObject)
-        {
             this->addColour(0.7, ColourValue(0.2, 0.7, 0.2));
             this->addColour(0.4, ColourValue(0.7, 0.5, 0.2));
             this->addColour(0.1, ColourValue(0.7, 0.2, 0.2));
         }
+
+        XMLPortParamLoadOnly(HUDBar, "value", setValue, xmlElement, mode);
     }
 
     void HUDBar::setValue(float value)

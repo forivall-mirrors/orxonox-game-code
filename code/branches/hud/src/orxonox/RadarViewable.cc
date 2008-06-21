@@ -56,15 +56,4 @@ namespace orxonox
         }
         this->radarObjectDescription_ = str;
     }
-
-    /*void RadarViewable::unregisterFromRadar()
-    {
-        Radar* radar = Radar::getInstancePtr();
-        if (radar)
-            radar->unregisterObject(this);
-        else
-        {
-            CCOUT(2) << "Attempting to unregister an object to the radar, but the radar is non existent." << std::endl;
-        }
-    }*/
 }

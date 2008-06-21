@@ -51,7 +51,7 @@ namespace orxonox
 
     public:
         RadarViewable();
-        virtual ~RadarViewable() { }//unregisterFromRadar(); }
+        virtual ~RadarViewable() { }
 
         float getRadarObjectCamouflage() const { return this->radarObjectCamouflage_; }
         void setRadarObjectCamouflage(float camouflage) { this->radarObjectCamouflage_ = camouflage; }
@@ -71,7 +71,6 @@ namespace orxonox
 
     protected:
         WorldEntity* radarObject_;
-        //void unregisterFromRadar();
 
     private:
         void validate() const { if (!this->radarObject_)

@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Yuning Chai
- *   Co-authors:
  *      Felix Schulthess
+ *   Co-authors:
+ *      Reto Grieder
  *
  */
 
@@ -31,76 +32,22 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <vector>
+#include <map>
 #include <OgrePrerequisites.h>
-#include <OgrePanelOverlayElement.h>
 #include "overlays/OrxonoxOverlay.h"
-#include "objects/Tickable.h"
-#include "core/BaseObject.h"
-#include "util/Math.h"
-#include "core/Debug.h"
-#include "Radar.h"
+#include "RadarListener.h"
+#include "RadarViewable.h"
 
 namespace orxonox
 {
-    template <class T, int Dummy>
-    class _OrxonoxExport RadarAttribute : public BaseObject
-    {
-      public:
-        RadarAttribute();
-        ~RadarAttribute() { }
-
-        void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-        void loadAttribute(Element& xmlElement, XMLPort::Mode mode);
-
-        void setAttribute(const T& attribute) { this->attribute_ = attribute; }
-        const T& getAttribute() const { return this->attribute_; }
-
-        void setIndex(unsigned int index); 
-        unsigned int getIndex() { return this->index_; }
-
-      private:
-        unsigned int index_;
-        T attribute_;
-    };
-
-    template <class T, int Dummy>
-    void RadarAttribute<T, Dummy>::setIndex(unsigned int index)
-    {
-        if (index > 0xFF)
-        {
-            COUT(1) << "Shape index was larger than 255 while parsing a RadarAttribute. "
-              << "Using random number!!!" << std::endl;
-            this->index_ = rand() & 0xFF;
-        }
-        else
-            this->index_ = index;
-    }
-
-    typedef RadarAttribute<std::string, 1> RadarShape;
-
-    template <>
-    RadarShape::RadarAttribute() : index_(0)
-        { RegisterObject(RadarShape); }
-
-    template <>
-    void RadarShape::XMLPort(Element& xmlElement, XMLPort::Mode mode)
-    {
-        BaseObject::XMLPort(xmlElement, mode);
-        XMLPortParam(RadarShape, "shape", setAttribute, getAttribute, xmlElement, mode);
-        XMLPortParam(RadarShape, "index", setIndex, getIndex, xmlElement, mode);
-    }
-
-
-    class _OrxonoxExport HUDRadar : public OrxonoxOverlay, public RadarListener//, public Tickable
+    class _OrxonoxExport HUDRadar : public OrxonoxOverlay, public RadarListener
     {
       public:
         HUDRadar();
         ~HUDRadar();
 
         void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-
-        /*void addShape(RadarShape* shape);
-        RadarShape* getShape(unsigned int index) const;*/
 
         float getRadarSensitivity() const { return this->sensitivity_; }
         void setRadarSensitivity(float sensitivity) { this->sensitivity_ = sensitivity; }
@@ -111,20 +58,15 @@ namespace orxonox
         float getMaximumDotSize() const { return this->maximumDotSize_; }
         void setMaximumDotSize(float size) { this->maximumDotSize_ = size; }
 
-        //void tick(float dt);
-
-        //void listObjects();
-
       private:
         void displayObject(RadarViewable* viewable, bool bIsMarked);
-        void hideMarker() { this->marker_->hide(); }
         float getRadarSensitivity() { return 1.0f; }
         void radarTick(float dt);
 
         std::map<RadarViewable::Shape, std::string> shapeMaterials_;
 
-        Ogre::PanelOverlayElement* background_;
-        std::map<RadarViewable*, Ogre::PanelOverlayElement*> radarDots_;
+        std::vector<Ogre::PanelOverlayElement*> radarDots_;
+        std::vector<Ogre::PanelOverlayElement*>::iterator itRadarDots_;
         Ogre::PanelOverlayElement* marker_;
 
         float halfDotSizeDistance_;

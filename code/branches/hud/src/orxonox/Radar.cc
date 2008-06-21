@@ -22,7 +22,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Felix Schulthess
  *
  */
 
@@ -37,15 +37,11 @@
 #include "objects/WorldEntity.h"
 #include "objects/SpaceShip.h"
 #include "core/CoreIncludes.h"
+#include "RadarListener.h"
 //#include "core/ConfigValueIncludes.h"
 
 namespace orxonox
 {
-    RadarListener::RadarListener()
-    {
-        RegisterRootObject(RadarListener);
-    }
-
     SetConsoleCommand(Radar, cycleNavigationFocus, true).setAccessLevel(AccessLevel::User);
     SetConsoleCommand(Radar, releaseNavigationFocus, true).setAccessLevel(AccessLevel::User);
 
@@ -85,13 +81,6 @@ namespace orxonox
         instance_s = 0;
     }
 
-    /*void Radar::unregisterObject(RadarViewable* object)
-    {
-        if (this->focus_ == object)
-            this->focus_ = 0;
-        // TODO: check for focus
-    }*/
-
     const RadarViewable* Radar::getFocus()
     {
         return *(this->itFocus_);
@@ -118,16 +107,13 @@ namespace orxonox
 
         for (Iterator<RadarListener> itListener = ObjectList<RadarListener>::begin(); itListener; ++itListener)
         {
+            (*itListener)->radarTick(dt);
+
             for (Iterator<RadarViewable> itElement = ObjectList<RadarViewable>::begin(); itElement; ++itElement)
             {
                 if ((*itElement) != SpaceShip::getLocalShip() && (*itListener)->getRadarSensitivity() > (*itElement)->getRadarObjectCamouflage())
                     (*itListener)->displayObject(*itElement, *itElement == this->focus_);
             }
-
-            (*itListener)->radarTick(dt);
-
-            if (this->focus_ == 0)
-                (*itListener)->hideMarker();
         }
     }
 
@@ -187,6 +173,17 @@ namespace orxonox
     {
         this->itFocus_ = 0;
         this->focus_ = 0;
+    }
+
+    void Radar::listObjects() const
+    {
+        COUT(3) << "List of RadarObjects:\n";
+        // iterate through all Radar Objects
+        unsigned int i = 0;
+        for (Iterator<RadarViewable> it = ObjectList<RadarViewable>::start(); it; ++it, ++i)
+        {
+            COUT(3) << i++ << ": " << (*it)->getWorldPosition() << std::endl;
+        }
     }
 
 

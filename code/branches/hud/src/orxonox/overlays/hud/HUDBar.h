@@ -33,9 +33,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <map>
 #include <OgrePrerequisites.h>
-#include <OgrePanelOverlayElement.h>
-
 #include "util/Math.h"
 #include "overlays/OrxonoxOverlay.h"
 
@@ -66,7 +65,6 @@ namespace orxonox
       bool autoColour_;                   // whether bar changes colour automatically
       float value_;                       // progress of bar
       Ogre::PanelOverlayElement* bar_;
-      Ogre::PanelOverlayElement* background_;
       Ogre::TextureUnitState* textureUnitState_;
       std::map<float, ColourValue> colours_;
 

@@ -30,6 +30,7 @@
 #include "OrxonoxOverlay.h"
 
 #include <OgreOverlayManager.h>
+#include <OgrePanelOverlayElement.h>
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "GraphicsEngine.h"
@@ -40,6 +41,7 @@ namespace orxonox
 
   OrxonoxOverlay::OrxonoxOverlay()
     : overlay_(0)
+    , background_(0)
     , windowAspectRatio_(1.0f)
     , bCorrectAspect_(false)
     , size_(1.0f, 1.0f)
@@ -49,6 +51,12 @@ namespace orxonox
     , origin_(0.0f, 0.0f)
   {
     RegisterObject(OrxonoxOverlay);
+  }
+
+  OrxonoxOverlay::~OrxonoxOverlay()
+  {
+    if (this->background_)
+      Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->background_);
   }
 
   void OrxonoxOverlay::XMLPort(Element& xmlElement, XMLPort::Mode mode)
@@ -62,6 +70,11 @@ namespace orxonox
 
       this->windowResized(GraphicsEngine::getSingleton().getWindowWidth(),
             GraphicsEngine::getSingleton().getWindowHeight());
+
+      // create background
+      this->background_ = static_cast<Ogre::PanelOverlayElement*>(
+          Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", getUniqueNumberStr() + "_Background"));
+      this->overlay_->add2D(this->background_);
     }
 
     XMLPortParam(OrxonoxOverlay, "correctAspect", setAspectCorrection, getAspectCorrection, xmlElement, mode);
@@ -69,6 +82,7 @@ namespace orxonox
     XMLPortParam(OrxonoxOverlay, "rotation", setRotation, getRotation, xmlElement, mode);
     XMLPortParam(OrxonoxOverlay, "origin", setOrigin, getOrigin, xmlElement, mode);
     XMLPortParam(OrxonoxOverlay, "position", setPosition, getPosition, xmlElement, mode);
+    XMLPortParam(OrxonoxOverlay, "background", setBackgroundMaterial, getBackgroundMaterial, xmlElement, mode);
 
     if (mode == XMLPort::LoadObject)
     {
@@ -82,8 +96,18 @@ namespace orxonox
     }
   }
 
-  OrxonoxOverlay::~OrxonoxOverlay()
+  void OrxonoxOverlay::setBackgroundMaterial(const std::string& material)
   {
+    if (this->background_ && material != "")
+      this->background_->setMaterialName(material);
+  }
+
+  std::string OrxonoxOverlay::getBackgroundMaterial() const
+  {
+    if (this->background_)
+      return this->background_->getMaterialName();
+    else
+      return "";
   }
 
   void OrxonoxOverlay::changedVisibility()

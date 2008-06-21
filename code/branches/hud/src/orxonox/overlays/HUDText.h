@@ -20,34 +20,41 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Felix Schulthess
  *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _HUDSpeedBar_H__
-#define _HUDSpeedBar_H__
+#ifndef _HUDText_H__
+#define _HUDText_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "HUDBar.h"
+#include <string>
+#include <OgrePrerequisites.h>
+#include "overlays/OrxonoxOverlay.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDSpeedBar : public HUDBar, public Tickable
+  class _OrxonoxExport HUDText : public OrxonoxOverlay
   {
-    public:
-      HUDSpeedBar();
-      virtual ~HUDSpeedBar();
+  public:
+    HUDText();
+    virtual ~HUDText();
 
-      //virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+    virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-      virtual void tick(float dt);
+  protected:
+    void setCaption(const std::string& caption);
+    const std::string& getCaption() const;
+    void setFont(const std::string& font);
+    std::string getFont() const;
 
-    private:
+    Ogre::TextAreaOverlayElement* text_;
 
-    };
+  private:
+    std::string caption_;
+  };
 }
-#endif /* _HUDSpeedBar_H__ */
+#endif /* _HUDText_H__ */

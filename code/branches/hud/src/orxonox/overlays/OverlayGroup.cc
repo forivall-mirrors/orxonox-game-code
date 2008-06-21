@@ -40,8 +40,7 @@ namespace orxonox
   CreateFactory(OverlayGroup);
 
   SetConsoleCommand(OverlayGroup, toggleVisibility, false).setAccessLevel(AccessLevel::User);
-
-  OverlayGroup* OverlayGroup::hudInstance_s = 0;
+  SetConsoleCommand(OverlayGroup, scaleGroup, false).setAccessLevel(AccessLevel::User);
 
   using namespace Ogre;
 
@@ -49,20 +48,10 @@ namespace orxonox
     : scale_(1.0, 1.0)
   {
     RegisterObject(OverlayGroup);
-
-    // Singleton like in Ogre. Constructor and destructor are public,
-    // but the assert prevents from having multiple instances.
-    assert(hudInstance_s == 0);
-    hudInstance_s = this;
   }
 
   OverlayGroup::~OverlayGroup()
   {
-    if (this->isInitialized())
-    {
-    }
-
-    hudInstance_s = 0;
   }
 
   void OverlayGroup::XMLPort(Element& xmlElement, XMLPort::Mode mode)
@@ -103,18 +92,22 @@ namespace orxonox
       return 0;
   }
 
-  /*static*/ OverlayGroup& OverlayGroup::getHUD()
-  {
-    assert(hudInstance_s);
-    return *hudInstance_s;
-  }
 
   /*static*/ void OverlayGroup::toggleVisibility(const std::string& name)
   {
-    if (OverlayGroup::getHUD().hudElements_.find(name) != OverlayGroup::getHUD().hudElements_.end())
+    for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
     {
-      OverlayGroup::getHUD().hudElements_[name]->setVisibility(!OverlayGroup::getHUD().hudElements_[name]->isVisible());
+        if ((*it)->getName() == name)
+            (*it)->setVisibility(!((*it)->isVisible()));
     }
   }
 
+  /*static*/ void OverlayGroup::scaleGroup(const std::string& name, float scale)
+  {
+    for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
+    {
+        if ((*it)->getName() == name)
+            (*it)->scale(Vector2(scale, scale));
+    }
+  }
 }

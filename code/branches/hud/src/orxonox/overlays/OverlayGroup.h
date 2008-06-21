@@ -53,7 +53,7 @@ namespace orxonox
         Vector2 getScale() const { return this->scale_; }
 
         static void toggleVisibility(const std::string& name);
-        static OverlayGroup& getHUD();
+        static void scaleGroup(const std::string& name, float scale);
 
       private:
         OverlayGroup(const OverlayGroup& instance);
@@ -63,8 +63,6 @@ namespace orxonox
 
         std::map<std::string, OrxonoxOverlay*> hudElements_;
         Vector2 scale_;
-
-        static OverlayGroup* hudInstance_s;
     };
 }
 

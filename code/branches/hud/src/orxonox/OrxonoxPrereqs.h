@@ -129,5 +129,13 @@ namespace orxonox
   class InGameConsole;
 }
 
+namespace Ogre
+{
+    // some got forgotten in OgrePrerequisites
+    class BorderPanelOverlayElement;
+    class PanelOverlayElement;
+    class TextAreaOverlayElement;
+}
+
 
 #endif /* _OrxonoxPrereqs_H__ */

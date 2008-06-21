@@ -32,10 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <OgrePrerequisites.h>
-#include <OgreTextAreaOverlayElement.h>
-#include <OgrePanelOverlayElement.h>
 #include "overlays/OrxonoxOverlay.h"
-#include "util/Math.h"
 
 namespace orxonox
 {
@@ -49,16 +46,7 @@ namespace orxonox
 
         void tick(float dt);
 
-        //void cycleFocus();
         float getDist2Focus() const;
-
-        /*inline RadarObject* getFocus() const
-            { return this->focus_; }
-        void releaseFocus();*/
-
-        /*static void cycleNavigationFocus();
-        static void releaseNavigationFocus();
-        static HUDNavigation& getInstance();*/
 
       protected:
         void sizeChanged();
@@ -87,8 +75,6 @@ namespace orxonox
         float aimMarkerSize_;                       //!< One paramter size of the aim marker
         Ogre::TextAreaOverlayElement* navText_;     //!< Text overlay to display the target distance
         bool wasOutOfView_;                         //!< Performance booster variable: setMaterial is not cheap
-
-        //static HUDNavigation* instance_s;
   };
 }
 

@@ -22,7 +22,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Felix Schulthess
  *
  */
 
@@ -36,6 +36,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <map>
 #include <string>
 #include "core/Iterator.h"
 #include "core/OrxonoxClass.h"
@@ -44,18 +45,6 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport RadarListener : virtual public OrxonoxClass
-    {
-    public:
-        RadarListener();
-        virtual ~RadarListener() { }
-
-        virtual void displayObject(RadarViewable* viewable, bool bIsMarked) = 0;
-        virtual void hideMarker() = 0;
-        virtual float getRadarSensitivity() = 0;
-        virtual void radarTick(float dt) = 0;
-    };
-
     /**
     @brief This class merely ensures that no one can inherit from Radar.
     */
@@ -72,9 +61,10 @@ namespace orxonox
         Radar();
         ~Radar();
 
-        //void unregisterObject(RadarViewable* object);
         const RadarViewable* getFocus();
         RadarViewable::Shape addObjectDescription(const std::string name);
+
+        void listObjects() const;
 
         static Radar& getInstance();
         static Radar* getInstancePtr() { return instance_s; }

@@ -26,40 +26,13 @@
  *
  */
 
-#ifndef _HUDText_H__
-#define _HUDText_H__
-
-#include "OrxonoxPrereqs.h"
-
-#include <OgrePrerequisites.h>
-#include <OgreTextAreaOverlayElement.h>
-#include <OgrePanelOverlayElement.h>
-
-#include "util/Math.h"
-#include "overlays/OrxonoxOverlay.h"
+#include "OrxonoxStableHeaders.h"
+#include "RadarListener.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDText : public OrxonoxOverlay
-  {
-  public:
-    HUDText();
-    virtual ~HUDText();
-
-    virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-
-  protected:
-    void setBackgroundMaterial(const std::string& material);
-    std::string getBackgroundMaterial() const;
-    void setCaption(const std::string& caption);
-    const std::string& getCaption() const;
-    void setFont(const std::string& font);
-    std::string getFont() const;
-
-    Ogre::TextAreaOverlayElement* text_;
-  private:
-    std::string caption_;
-    Ogre::PanelOverlayElement* background_;
-  };
+    RadarListener::RadarListener()
+    {
+        RegisterRootObject(RadarListener);
+    }
 }
-#endif /* _HUDText_H__ */

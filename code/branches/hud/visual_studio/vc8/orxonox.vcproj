@@ -188,6 +188,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\RadarListener.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\RadarViewable.cc"
 				>
 				<FileConfiguration
@@ -533,6 +537,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\Radar.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\RadarListener.h"
 				>
 			</File>
 			<File
