@@ -206,7 +206,9 @@ namespace orxonox
     */
     void OrxonoxOverlay::positionChanged()
     {
-        float angle = abs(this->angle_.valueRadians());
+        float angle = this->angle_.valueRadians();
+        if (angle < 0.0)
+            angle = -angle;
         angle -= Ogre::Math::PI * (int)(angle / (Ogre::Math::PI));
         if (angle > Ogre::Math::PI * 0.5)
             angle = Ogre::Math::PI - angle;

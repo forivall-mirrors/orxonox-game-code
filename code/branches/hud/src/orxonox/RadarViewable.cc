@@ -39,9 +39,9 @@ namespace orxonox
         @brief Constructor.
     */
     RadarViewable::RadarViewable()
-        : radarObjectCamouflage_(0.0f)
+        : radarObject_(0)
+        , radarObjectCamouflage_(0.0f)
         , radarObjectType_(Dot)
-        , radarObject_(0)
         , radarObjectDescription_("staticObject")
     {
         RegisterRootObject(RadarViewable);

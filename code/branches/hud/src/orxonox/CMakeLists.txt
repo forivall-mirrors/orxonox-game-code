@@ -26,6 +26,7 @@ SET( ORXONOX_SRC_FILES
   tools/Light.cc
   tools/Mesh.cc
   tools/ParticleInterface.cc
+  tools/TextureGenerator.cc
   tools/Timer.cc
   tools/WindowEventListener.cc
 
