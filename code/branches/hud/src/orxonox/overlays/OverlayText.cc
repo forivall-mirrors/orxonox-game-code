@@ -35,6 +35,8 @@
 
 #include "util/Convert.h"
 #include "util/String.h"
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 
 namespace orxonox
 {

@@ -33,6 +33,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "HUDBar.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {

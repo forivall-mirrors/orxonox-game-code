@@ -37,8 +37,8 @@
 #include "objects/WorldEntity.h"
 #include "objects/SpaceShip.h"
 #include "core/CoreIncludes.h"
+#include "core/ConsoleCommand.h"
 #include "RadarListener.h"
-//#include "core/ConfigValueIncludes.h"
 
 namespace orxonox
 {

@@ -28,6 +28,7 @@
 
 #include "OrxonoxStableHeaders.h"
 #include "WindowEventListener.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {

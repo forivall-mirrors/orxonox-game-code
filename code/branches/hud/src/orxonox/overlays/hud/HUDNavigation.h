@@ -33,6 +33,7 @@
 
 #include <OgrePrerequisites.h>
 #include "overlays/OrxonoxOverlay.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {

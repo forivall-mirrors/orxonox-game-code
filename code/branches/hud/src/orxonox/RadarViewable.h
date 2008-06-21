@@ -31,8 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 #include <string>
-#include "core/OrxonoxClass.h"
 #include "util/Math.h"
+#include "core/Debug.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -63,9 +64,8 @@ namespace orxonox
         void setRadarObjectDescription(const std::string& str);
 
         const WorldEntity* getWorldEntity() const { return this->radarObject_; }
-        const Vector3& getWorldPosition() const { validate(); return this->radarObject_->getWorldPosition(); }
-        Vector3 getOrientedVelocity() const
-            { validate(); return this->radarObject_->getOrientation() * this->radarObject_->getVelocity(); }
+        const Vector3& getWorldPosition() const;
+        Vector3 getOrientedVelocity() const;
 
         Shape getRadarObjectType() const { return this->radarObjectType_; }
 

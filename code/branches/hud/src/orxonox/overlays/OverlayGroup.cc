@@ -32,6 +32,7 @@
 #include "core/Debug.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 #include "OrxonoxOverlay.h"
 
 namespace orxonox

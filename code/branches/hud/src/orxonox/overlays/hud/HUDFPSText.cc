@@ -29,6 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "HUDFPSText.h"
 #include <OgreTextAreaOverlayElement.h>
+#include "core/CoreIncludes.h"
 #include "GraphicsEngine.h"
 #include "util/Convert.h"
 

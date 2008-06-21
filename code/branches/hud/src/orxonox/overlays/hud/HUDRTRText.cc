@@ -29,8 +29,9 @@
 #include "OrxonoxStableHeaders.h"
 #include "HUDRTRText.h"
 #include <OgreTextAreaOverlayElement.h>
-#include "GraphicsEngine.h"
+#include "core/CoreIncludes.h"
 #include "util/Convert.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {

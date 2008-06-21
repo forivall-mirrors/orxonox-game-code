@@ -37,6 +37,8 @@
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Convert.h"
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 
 namespace orxonox
 {

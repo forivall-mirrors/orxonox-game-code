@@ -29,6 +29,7 @@
 
 #include "OrxonoxStableHeaders.h"
 #include "HUDSpeedBar.h"
+#include "core/CoreIncludes.h"
 #include "objects/SpaceShip.h"
 
 namespace orxonox

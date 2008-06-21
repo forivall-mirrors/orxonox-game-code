@@ -29,6 +29,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "RadarViewable.h"
 #include "core/Debug.h"
+#include "core/CoreIncludes.h"
+#include "objects/WorldEntity.h"
 #include "Radar.h"
 
 namespace orxonox
@@ -55,5 +57,17 @@ namespace orxonox
             CCOUT(2) << "Attempting to access the radar, but the radar is non existent." << std::endl;
         }
         this->radarObjectDescription_ = str;
+    }
+
+    const Vector3& RadarViewable::getWorldPosition() const
+    {
+        validate();
+        return this->radarObject_->getWorldPosition();
+    }
+
+    Vector3 RadarViewable::getOrientedVelocity() const
+    {
+        validate();
+        return this->radarObject_->getOrientation() * this->radarObject_->getVelocity();
     }
 }

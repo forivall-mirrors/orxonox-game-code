@@ -35,6 +35,8 @@
 
 #include "util/Math.h"
 #include "core/ConsoleCommand.h"
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 #include "objects/SpaceShip.h"
 #include "objects/WorldEntity.h"
 #include "tools/TextureGenerator.h"

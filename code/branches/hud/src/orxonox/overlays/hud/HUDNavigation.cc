@@ -35,7 +35,10 @@
 
 #include "util/Math.h"
 #include "util/String.h"
+#include "util/Convert.h"
 #include "core/ConsoleCommand.h"
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 #include "objects/SpaceShip.h"
 #include "objects/Projectile.h"
 #include "objects/CameraHandler.h"
