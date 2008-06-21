@@ -43,24 +43,26 @@ namespace orxonox
 {
     class _OrxonoxExport HUDRadar : public OrxonoxOverlay, public RadarListener
     {
-      public:
+    public:
         HUDRadar();
         ~HUDRadar();
 
         void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-        float getRadarSensitivity() const { return this->sensitivity_; }
-        void setRadarSensitivity(float sensitivity) { this->sensitivity_ = sensitivity; }
-
+    private:
+        // XML accessors
         float getHalfDotSizeDistance() const { return this->halfDotSizeDistance_; }
         void setHalfDotSizeDistance(float distance) { this->halfDotSizeDistance_ = distance; }
 
         float getMaximumDotSize() const { return this->maximumDotSize_; }
         void setMaximumDotSize(float size) { this->maximumDotSize_ = size; }
 
-      private:
+        float getRadarSensitivity() const { return this->sensitivity_; }
+        // used also by RadarListener interface!
+        void setRadarSensitivity(float sensitivity) { this->sensitivity_ = sensitivity; }
+
+        // RadarListener interface
         void displayObject(RadarViewable* viewable, bool bIsMarked);
-        float getRadarSensitivity() { return 1.0f; }
         void radarTick(float dt);
 
         std::map<RadarViewable::Shape, std::string> shapeMaterials_;

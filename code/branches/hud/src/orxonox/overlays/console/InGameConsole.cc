@@ -53,8 +53,6 @@ namespace orxonox
     SetConsoleCommand(InGameConsole, openConsole, true);
     SetConsoleCommand(InGameConsole, closeConsole, true);
 
-    using namespace Ogre;
-
     /**
         @brief Constructor: Creates and initializes the InGameConsole.
     */
@@ -118,14 +116,14 @@ namespace orxonox
         this->consoleOverlay_ = ovMan->create("InGameConsoleConsole");
 
         // create a container
-        this->consoleOverlayContainer_ = static_cast<OverlayContainer*>(ovMan->createOverlayElement("Panel", "InGameConsoleContainer"));
+        this->consoleOverlayContainer_ = static_cast<Ogre::OverlayContainer*>(ovMan->createOverlayElement("Panel", "InGameConsoleContainer"));
         this->consoleOverlayContainer_->setMetricsMode(Ogre::GMM_RELATIVE);
         this->consoleOverlayContainer_->setPosition((1 - this->relativeWidth) / 2, 0);
         this->consoleOverlayContainer_->setDimensions(this->relativeWidth, this->relativeHeight);
         this->consoleOverlay_->add2D(this->consoleOverlayContainer_);
 
         // create BorderPanel
-        this->consoleOverlayBorder_ = static_cast<BorderPanelOverlayElement*>(ovMan->createOverlayElement("BorderPanel", "InGameConsoleBorderPanel"));
+        this->consoleOverlayBorder_ = static_cast<Ogre::BorderPanelOverlayElement*>(ovMan->createOverlayElement("BorderPanel", "InGameConsoleBorderPanel"));
         this->consoleOverlayBorder_->setMetricsMode(Ogre::GMM_PIXELS);
         this->consoleOverlayBorder_->setMaterialName("ConsoleCenter");
         this->consoleOverlayBorder_->setBorderSize(16, 16, 0, 16);
@@ -138,10 +136,10 @@ namespace orxonox
         this->consoleOverlayContainer_->addChild(this->consoleOverlayBorder_);
 
         // create the text lines
-        this->consoleOverlayTextAreas_ = new TextAreaOverlayElement*[LINES];
+        this->consoleOverlayTextAreas_ = new Ogre::TextAreaOverlayElement*[LINES];
         for (int i = 0; i < LINES; i++)
         {
-            this->consoleOverlayTextAreas_[i] = static_cast<TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleTextArea" + Ogre::StringConverter::toString(i)));
+            this->consoleOverlayTextAreas_[i] = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleTextArea" + Ogre::StringConverter::toString(i)));
             this->consoleOverlayTextAreas_[i]->setMetricsMode(Ogre::GMM_PIXELS);
             this->consoleOverlayTextAreas_[i]->setFontName("Monofur");
             this->consoleOverlayTextAreas_[i]->setCharHeight(18);
@@ -152,7 +150,7 @@ namespace orxonox
         }
 
         // create cursor (also a text area overlay element)
-        this->consoleOverlayCursor_ = static_cast<TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleCursor"));
+        this->consoleOverlayCursor_ = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleCursor"));
         this->consoleOverlayCursor_->setMetricsMode(Ogre::GMM_PIXELS);
         this->consoleOverlayCursor_->setFontName("Monofur");
         this->consoleOverlayCursor_->setCharHeight(18);
@@ -162,7 +160,7 @@ namespace orxonox
         this->consoleOverlayContainer_->addChild(this->consoleOverlayCursor_);
 
         // create noise
-        this->consoleOverlayNoise_ = static_cast<PanelOverlayElement*>(ovMan->createOverlayElement("Panel", "InGameConsoleNoise"));
+        this->consoleOverlayNoise_ = static_cast<Ogre::PanelOverlayElement*>(ovMan->createOverlayElement("Panel", "InGameConsoleNoise"));
         this->consoleOverlayNoise_->setMetricsMode(Ogre::GMM_PIXELS);
         this->consoleOverlayNoise_->setPosition(5,0);
         this->consoleOverlayNoise_->setMaterialName("ConsoleNoiseSmall");

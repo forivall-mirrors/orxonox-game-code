@@ -31,21 +31,18 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "HUDText.h"
+#include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDRTRText : public HUDText, public Tickable
-  {
-  public:
-    HUDRTRText();
-    virtual ~HUDRTRText();
+    class _OrxonoxExport HUDRTRText : public OverlayText, public Tickable
+    {
+    public:
+        HUDRTRText();
+        ~HUDRTRText();
 
-    //virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-
-    virtual void tick(float dt);
-
-  private:
-  };
+    private:
+        void tick(float dt);
+    };
 }
 #endif /* _HUDRTRText_H__ */

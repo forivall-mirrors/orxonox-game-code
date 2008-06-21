@@ -34,23 +34,20 @@
 
 namespace orxonox
 {
-  CreateFactory(HUDFPSText);
+    CreateFactory(HUDFPSText);
 
-  HUDFPSText::HUDFPSText()
-  {
-    RegisterObject(HUDFPSText);
-  }
+    HUDFPSText::HUDFPSText()
+    {
+        RegisterObject(HUDFPSText);
+    }
 
-  HUDFPSText::~HUDFPSText()
-  {
-    if (this->isInitialized())
+    HUDFPSText::~HUDFPSText()
     {
     }
-  }
 
-  void HUDFPSText::tick(float dt)
-  {
-    float fps = GraphicsEngine::getSingleton().getAverageFPS();
-    this->text_->setCaption(this->getCaption() + convertToString(fps));
-  }
+    void HUDFPSText::tick(float dt)
+    {
+        float fps = GraphicsEngine::getSingleton().getAverageFPS();
+        this->text_->setCaption(this->getCaption() + convertToString(fps));
+    }
 }

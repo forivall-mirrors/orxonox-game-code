@@ -472,6 +472,10 @@
 					RelativePath="..\..\src\orxonox\overlays\OverlayGroup.cc"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\orxonox\overlays\OverlayText.cc"
+					>
+				</File>
 				<Filter
 					Name="console"
 					>
@@ -505,10 +509,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDSpeedBar.cc"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\HUDText.cc"
 						>
 					</File>
 				</Filter>
@@ -694,6 +694,10 @@
 					RelativePath="..\..\src\orxonox\overlays\OverlayGroup.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\orxonox\overlays\OverlayText.h"
+					>
+				</File>
 				<Filter
 					Name="hud"
 					>
@@ -719,10 +723,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDSpeedBar.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\HUDText.h"
 						>
 					</File>
 				</Filter>

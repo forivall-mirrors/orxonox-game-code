@@ -36,18 +36,14 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDSpeedBar : public HUDBar, public Tickable
-  {
+    class _OrxonoxExport HUDSpeedBar : public HUDBar, public Tickable
+    {
     public:
-      HUDSpeedBar();
-      virtual ~HUDSpeedBar();
-
-      //virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-
-      virtual void tick(float dt);
+        HUDSpeedBar();
+        ~HUDSpeedBar();
 
     private:
-
+        void tick(float dt);
     };
 }
 #endif /* _HUDSpeedBar_H__ */

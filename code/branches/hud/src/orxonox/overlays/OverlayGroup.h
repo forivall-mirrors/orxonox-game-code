@@ -38,31 +38,34 @@
 
 namespace orxonox
 {
-    class HUDBar;
-    class OrxonoxOverlay;
-
     class _OrxonoxExport OverlayGroup : public BaseObject
     {
-      public:
+    public:
         OverlayGroup();
         ~OverlayGroup();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-
-        void scale(const Vector2& scale);
-        Vector2 getScale() const { return this->scale_; }
+        void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
         static void toggleVisibility(const std::string& name);
         static void scaleGroup(const std::string& name, float scale);
+        static void scrollGroup(const std::string& name, const Vector2& scroll);
+        static void rotateGroup(const std::string& name, Radian angle);
 
-      private:
-        OverlayGroup(const OverlayGroup& instance);
+    private:
+        void scale(const Vector2& scale) { this->setScale(scale * this->scale_); }
+        void setScale(const Vector2& scale);
+        Vector2 getScale() const { return this->scale_; }
+
+        void scroll(const Vector2& scroll) { this->setScroll(scroll + this->scroll_); }
+        void setScroll(const Vector2& scroll);
+        Vector2 getScroll() const { return this->scale_; }
 
         void addElement(OrxonoxOverlay* element);
         OrxonoxOverlay* getElement(unsigned int index);
 
         std::map<std::string, OrxonoxOverlay*> hudElements_;
         Vector2 scale_;
+        Vector2 scroll_;
     };
 }
 

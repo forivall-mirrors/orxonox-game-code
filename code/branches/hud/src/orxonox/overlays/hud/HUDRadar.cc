@@ -44,8 +44,6 @@ namespace orxonox
 {
     CreateFactory(HUDRadar);
 
-    using namespace Ogre;
-
     HUDRadar::HUDRadar()
         : marker_(0)
     {
@@ -54,24 +52,30 @@ namespace orxonox
 
     HUDRadar::~HUDRadar()
     {
-        if (this->isInitialized())
+        if (this->marker_)
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->marker_);
+        for (std::vector<Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.begin();
+            it != this->radarDots_.end(); ++it)
         {
-            if (this->marker_)
-                OverlayManager::getSingleton().destroyOverlayElement(this->marker_);
-            for (std::vector<Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.begin();
-                it != this->radarDots_.end(); ++it)
-            {
-                OverlayManager::getSingleton().destroyOverlayElement(*it);
-            }
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(*it);
         }
     }
 
     void HUDRadar::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
+        if (mode == XMLPort::LoadObject)
+            this->bCorrectAspect_ = true;
+
         OrxonoxOverlay::XMLPort(xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {
+            marker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+                .createOverlayElement("Panel", "HUDRadar_marker_" + getUniqueNumberStr()));
+            marker_->setMaterialName("Orxonox/RadarMarker");
+            overlay_->add2D(marker_);
+            marker_->hide();
+
             this->sensitivity_ = 1.0f;
             this->halfDotSizeDistance_ = 3000.0f;
             this->maximumDotSize_ = 0.1;
@@ -84,14 +88,6 @@ namespace orxonox
         shapeMaterials_[RadarViewable::Dot]      = "RadarSquare.tga";
         shapeMaterials_[RadarViewable::Triangle] = "RadarSquare.tga";
         shapeMaterials_[RadarViewable::Square]   = "RadarSquare.tga";
-
-        if (mode == XMLPort::LoadObject)
-        {
-            marker_ = (Ogre::PanelOverlayElement*)Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "_Marker");
-            marker_->setMaterialName("Orxonox/RadarMarker");
-            overlay_->add2D(marker_);
-            marker_->hide();
-        }
     }
 
     void HUDRadar::displayObject(RadarViewable* object, bool bIsMarked)

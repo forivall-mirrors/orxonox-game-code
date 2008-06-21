@@ -26,35 +26,41 @@
  *
  */
 
-#ifndef _HUDText_H__
-#define _HUDText_H__
+#ifndef _OverlayText_H__
+#define _OverlayText_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include <string>
 #include <OgrePrerequisites.h>
-#include "overlays/OrxonoxOverlay.h"
+#include "OrxonoxOverlay.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDText : public OrxonoxOverlay
-  {
-  public:
-    HUDText();
-    virtual ~HUDText();
+    class _OrxonoxExport OverlayText : public OrxonoxOverlay
+    {
+    public:
+        OverlayText();
+        virtual ~OverlayText();
 
-    virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-  protected:
-    void setCaption(const std::string& caption);
-    const std::string& getCaption() const;
-    void setFont(const std::string& font);
-    std::string getFont() const;
+    protected:
+        virtual void sizeChanged();
 
-    Ogre::TextAreaOverlayElement* text_;
+        void setCaption(const std::string& caption) { this->caption_ = caption; }
+        const std::string& getCaption() const       { return this->caption_; }
 
-  private:
-    std::string caption_;
-  };
+        void setFont(const std::string& font);
+        const std::string& getFont() const;
+
+        void setTextSize(float size) { this->setSize(Vector2(size, size)); }
+        float getTextSize() const    { return this->getUncorrectedSize().y; }
+
+        Ogre::TextAreaOverlayElement* text_;
+
+    private:
+        std::string caption_;
+    };
 }
-#endif /* _HUDText_H__ */
+#endif /* _OverlayText_H__ */

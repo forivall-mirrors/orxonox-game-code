@@ -33,31 +33,26 @@
 
 namespace orxonox
 {
-  CreateFactory(HUDSpeedBar);
+    CreateFactory(HUDSpeedBar);
 
-  using namespace Ogre;
+    HUDSpeedBar::HUDSpeedBar()
+    {
+        RegisterObject(HUDSpeedBar);
 
-  HUDSpeedBar::HUDSpeedBar()
-  {
-    RegisterObject(HUDSpeedBar);
+    }
 
-  }
-
-  HUDSpeedBar::~HUDSpeedBar()
-  {
-    if (this->isInitialized())
+    HUDSpeedBar::~HUDSpeedBar()
     {
     }
-  }
 
-  void HUDSpeedBar::tick(float dt)
-  {
-    SpaceShip* ship = SpaceShip::getLocalShip();
-    if (ship)
+    void HUDSpeedBar::tick(float dt)
     {
-      float v = ship->getVelocity().length();
-      float vmax = ship->getMaxSpeed();
-      this->setValue(v/vmax);
+        SpaceShip* ship = SpaceShip::getLocalShip();
+        if (ship)
+        {
+            float v = ship->getVelocity().length();
+            float vmax = ship->getMaxSpeed();
+            this->setValue(v/vmax);
+        }
     }
-  }
 }

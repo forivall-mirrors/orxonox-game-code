@@ -29,7 +29,6 @@
 #include "OrxonoxStableHeaders.h"
 #include "OverlayGroup.h"
 
-#include <assert.h>
 #include "core/Debug.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
@@ -37,77 +36,93 @@
 
 namespace orxonox
 {
-  CreateFactory(OverlayGroup);
+    CreateFactory(OverlayGroup);
 
-  SetConsoleCommand(OverlayGroup, toggleVisibility, false).setAccessLevel(AccessLevel::User);
-  SetConsoleCommand(OverlayGroup, scaleGroup, false).setAccessLevel(AccessLevel::User);
+    SetConsoleCommand(OverlayGroup, toggleVisibility, false).setAccessLevel(AccessLevel::User);
+    SetConsoleCommand(OverlayGroup, scaleGroup, false).setAccessLevel(AccessLevel::User);
+    SetConsoleCommand(OverlayGroup, scrollGroup, false).setAccessLevel(AccessLevel::User);
 
-  using namespace Ogre;
-
-  OverlayGroup::OverlayGroup()
-    : scale_(1.0, 1.0)
-  {
-    RegisterObject(OverlayGroup);
-  }
-
-  OverlayGroup::~OverlayGroup()
-  {
-  }
-
-  void OverlayGroup::XMLPort(Element& xmlElement, XMLPort::Mode mode)
-  {
-    BaseObject::XMLPort(xmlElement, mode);
-
-    XMLPortParam(OverlayGroup, "scale", scale, getScale, xmlElement, mode);
-    XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlElement, mode, false, true);
-  }
-
-  void OverlayGroup::scale(const Vector2& scale)
-  {
-    for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
-      (*it).second->scale(scale);
-    this->scale_ = scale;
-  }
-
-  void OverlayGroup::addElement(OrxonoxOverlay* element)
-  {
-    if (hudElements_.find(element->getName()) != hudElements_.end())
+    OverlayGroup::OverlayGroup()
+        : scale_(1.0, 1.0)
     {
-      COUT(1) << "Ambiguous names encountered while load the HUD overlays" << std::endl;
+        RegisterObject(OverlayGroup);
     }
-    else
-      hudElements_[element->getName()] = element;
-  }
 
-  OrxonoxOverlay* OverlayGroup::getElement(unsigned int index)
-  {
-    if (index < this->hudElements_.size())
+    OverlayGroup::~OverlayGroup()
     {
-      std::map<std::string, OrxonoxOverlay*>::const_iterator it = hudElements_.begin();
-      for (unsigned int i = 0; i != index; ++it, ++i)
-        ;
-      return (*it).second;
     }
-    else
-      return 0;
-  }
 
-
-  /*static*/ void OverlayGroup::toggleVisibility(const std::string& name)
-  {
-    for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
+    void OverlayGroup::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        if ((*it)->getName() == name)
-            (*it)->setVisibility(!((*it)->isVisible()));
-    }
-  }
+        BaseObject::XMLPort(xmlElement, mode);
 
-  /*static*/ void OverlayGroup::scaleGroup(const std::string& name, float scale)
-  {
-    for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
-    {
-        if ((*it)->getName() == name)
-            (*it)->scale(Vector2(scale, scale));
+        XMLPortParam(OverlayGroup, "scale", setScale, getScale, xmlElement, mode);
+        XMLPortParam(OverlayGroup, "scroll", setScroll, getScroll, xmlElement, mode);
+        XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlElement, mode, false, true);
     }
-  }
+
+    void OverlayGroup::setScale(const Vector2& scale)
+    {
+        for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            (*it).second->scale(scale / this->scale_);
+        this->scale_ = scale;
+    }
+
+    void OverlayGroup::setScroll(const Vector2& scroll)
+    {
+        for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            (*it).second->scroll(scroll - this->scroll_);
+        this->scroll_ = scroll;
+    }
+
+    void OverlayGroup::addElement(OrxonoxOverlay* element)
+    {
+        if (hudElements_.find(element->getName()) != hudElements_.end())
+        {
+            COUT(1) << "Ambiguous names encountered while load the HUD overlays" << std::endl;
+        }
+        else
+            hudElements_[element->getName()] = element;
+    }
+
+    OrxonoxOverlay* OverlayGroup::getElement(unsigned int index)
+    {
+        if (index < this->hudElements_.size())
+        {
+            std::map<std::string, OrxonoxOverlay*>::const_iterator it = hudElements_.begin();
+            for (unsigned int i = 0; i != index; ++it, ++i)
+                ;
+            return (*it).second;
+        }
+        else
+            return 0;
+    }
+
+
+    /*static*/ void OverlayGroup::toggleVisibility(const std::string& name)
+    {
+        for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
+        {
+            if ((*it)->getName() == name)
+                (*it)->setVisibility(!((*it)->isVisible()));
+        }
+    }
+
+    /*static*/ void OverlayGroup::scaleGroup(const std::string& name, float scale)
+    {
+        for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
+        {
+            if ((*it)->getName() == name)
+                (*it)->scale(Vector2(scale, scale));
+        }
+    }
+
+    /*static*/ void OverlayGroup::scrollGroup(const std::string& name, const Vector2& scroll)
+    {
+        for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
+        {
+            if ((*it)->getName() == name)
+                (*it)->scroll(scroll);
+        }
+    }
 }

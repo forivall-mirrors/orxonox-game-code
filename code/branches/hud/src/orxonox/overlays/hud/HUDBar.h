@@ -40,38 +40,40 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDBar : public OrxonoxOverlay
-  {
+    class _OrxonoxExport HUDBar : public OrxonoxOverlay
+    {
     public:
-      HUDBar();
-      virtual ~HUDBar();
+        HUDBar();
+        virtual ~HUDBar();
 
-      virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-      void setValue(float value);
-      void addColour(float value, const ColourValue& colour);
-      void clearColours();
+        virtual void setValue(float value);
+        void addColour(float value, const ColourValue& colour);
+        void clearColours();
 
-      inline void setRightToLeft(bool r2l)
+        inline void setRightToLeft(bool r2l)
         { this->right2Left_ = r2l; }
-      inline bool getRightToLeft() const
+        inline bool getRightToLeft() const
         { return this->right2Left_; }
-      inline float getValue() const
+        inline float getValue() const
         { return this->value_; }
 
     private:
-      static unsigned int materialcount_s;
-      bool right2Left_;
-      bool autoColour_;                   // whether bar changes colour automatically
-      float value_;                       // progress of bar
-      Ogre::PanelOverlayElement* bar_;
-      Ogre::TextureUnitState* textureUnitState_;
-      std::map<float, ColourValue> colours_;
+        bool right2Left_;
+        bool autoColour_;                   //!< whether bar changes colour automatically
+        float value_;                       //!< progress of bar
 
-      float barWidth_s;
-      float barHeight_s;
-      float barOffsetLeft_s;
-      float barOffsetTop_s;
+        Ogre::PanelOverlayElement* bar_;
+        Ogre::TextureUnitState* textureUnitState_;
+        std::map<float, ColourValue> colours_;
+
+        float barWidth_s;
+        float barHeight_s;
+        float barOffsetLeft_s;
+        float barOffsetTop_s;
+
+        static unsigned int materialcount_s;
     };
 }
 #endif /* _HUDBar_H__ */

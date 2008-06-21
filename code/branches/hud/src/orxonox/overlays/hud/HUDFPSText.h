@@ -31,21 +31,20 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "HUDText.h"
+#include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport HUDFPSText : public HUDText, public Tickable
-  {
-  public:
-    HUDFPSText();
-    virtual ~HUDFPSText();
+    class _OrxonoxExport HUDFPSText : public OverlayText, public Tickable
+    {
+    public:
+        HUDFPSText();
+        ~HUDFPSText();
 
-    //virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+    private:
+        void tick(float dt);
 
-    virtual void tick(float dt);
-
-  private:
-  };
+    private:
+    };
 }
 #endif /* _HUDFPSText_H__ */

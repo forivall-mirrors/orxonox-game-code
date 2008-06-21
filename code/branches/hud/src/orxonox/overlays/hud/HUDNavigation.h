@@ -38,44 +38,43 @@ namespace orxonox
 {
     class _OrxonoxExport HUDNavigation : public OrxonoxOverlay, public Tickable
     {
-      public:
+    public:
         HUDNavigation();
         ~HUDNavigation();
 
         void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-        void tick(float dt);
-
-        float getDist2Focus() const;
-
-      protected:
+    private:
         void sizeChanged();
         void angleChanged() { }
         void positionChanged() { }
 
-      private:
-        HUDNavigation(HUDNavigation& instance);
-        void updateMarker();
-        void updateFocus();
+        void tick(float dt);
 
         // XMLPort accessors
-        void setNavMarkerSize(float size);
-        float getNavMarkerSize() const;
-        void setAimMarkerSize(float size);
-        float getAimMarkerSize() const;
+        void setNavMarkerSize(float size) { this->navMarkerSize_ = size; }
+        float getNavMarkerSize() const    { return this->navMarkerSize_; }
+
+        void setAimMarkerSize(float size) { this->aimMarkerSize_ = size; }
+        float getAimMarkerSize() const    { return this->aimMarkerSize_; }
+
         void setTextSize(float size);
         float getTextSize() const;
-        void setFont(const std::string& font);
-        std::string getFont() const;
 
-        Ogre::OverlayContainer* container_;         //!< Container that holds the navigation elements
+        void setFont(const std::string& font);
+        const std::string& getFont() const;
+
+        void updateMarker();
+        void updateFocus();
+        float getDist2Focus() const;
+
         Ogre::PanelOverlayElement* navMarker_;      //!< the panel used to show the arrow and the target marker
         float navMarkerSize_;                       //!< One paramter size of the navigation marker
         Ogre::PanelOverlayElement* aimMarker_;      //!< Panel used to show the aim Marker
         float aimMarkerSize_;                       //!< One paramter size of the aim marker
         Ogre::TextAreaOverlayElement* navText_;     //!< Text overlay to display the target distance
         bool wasOutOfView_;                         //!< Performance booster variable: setMaterial is not cheap
-  };
+    };
 }
 
 #endif /* _HUDNavigation_H__ */

@@ -42,8 +42,6 @@ namespace orxonox
 {
     unsigned int HUDBar::materialcount_s = 0;
 
-    using namespace Ogre;
-
     HUDBar::HUDBar()
         : bar_(0)
         , textureUnitState_(0)
@@ -53,12 +51,8 @@ namespace orxonox
 
     HUDBar::~HUDBar()
     {
-        if (this->isInitialized())
-        {
-            if (this->bar_)
-                OverlayManager::getSingleton().destroyOverlayElement(this->bar_);
-            // FIXME: Check whether we have to delete the textureUnitState_;
-        }
+        if (this->bar_)
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->bar_);
     }
 
     void HUDBar::XMLPort(Element& xmlElement, XMLPort::Mode mode)
@@ -81,7 +75,9 @@ namespace orxonox
             barHeight_s = 1.0f;
             barOffsetLeft_s = 0.06f;
             barOffsetTop_s = 0.0f;
-            this->bar_ = static_cast<PanelOverlayElement*>(OverlayManager::getSingleton().createOverlayElement("Panel", getName() + "Bar" + getUniqueNumberStr()));
+
+            this->bar_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+                .createOverlayElement("Panel", "HUDBar_bar_" + getUniqueNumberStr()));
             this->bar_->setMaterialName(materialname);
             this->background_->addChild(bar_);
 

@@ -41,7 +41,6 @@ namespace orxonox
     class _OrxonoxExport OrxonoxOverlay : public BaseObject, public WindowEventListener
     {
     public:
-        Ogre::Overlay* getOverlay() { return this->overlay_; }
         OrxonoxOverlay();
         virtual ~OrxonoxOverlay();
 
@@ -69,13 +68,13 @@ namespace orxonox
         Vector2 getOrigin() const { return this->origin_; }
 
         /** Sets the rotation applied to this overlay.*/
-        void setRotation(const Ogre::Radian& angle) { this->angle_ = angle; this->angleChanged(); }
+        void setRotation(const Degree& angle) { this->angle_ = angle; this->angleChanged(); }
 
         /** Gets the rotation applied to this overlay, in degrees.*/
         const Radian& getRotation() const { return this->angle_; }
 
         /** Adds the passed in angle to the rotation applied to this overlay. */
-        void rotate(const Radian& angle) { this->angle_ += angle; this->angleChanged(); }
+        void rotate(const Degree& angle) { this->angle_ += angle; this->angleChanged(); }
 
         /** Sets the size of this overlay. */
         void setSize(const Vector2& size) { this->size_ = size; this->sizeChanged(); }
@@ -92,22 +91,22 @@ namespace orxonox
         /** Scales the overlay */
         void scale(Vector2 scale) { this->size_ *= scale; this->sizeChanged(); }
 
+        static void scaleOverlay(const std::string& name, float scale);
+        static void scrollOverlay(const std::string& name, const Vector2& scroll);
+        static void rotateOverlay(const std::string& name, const Degree& angle);
+
     protected:
         virtual void changedVisibility();
         virtual void sizeChanged();
         virtual void angleChanged();
         virtual void positionChanged();
-        float getWindowAspectRatio() { return windowAspectRatio_; }
+        virtual void sizeCorrectionChanged();
 
         void setBackgroundMaterial(const std::string& material);
-        std::string getBackgroundMaterial() const;
+        const std::string& getBackgroundMaterial() const;
 
         Ogre::Overlay* overlay_;
         Ogre::PanelOverlayElement* background_;
-
-    private:
-        void windowResized(int newWidth, int newHeight);
-
         float windowAspectRatio_;
         bool bCorrectAspect_;
         Vector2 size_;
@@ -116,7 +115,11 @@ namespace orxonox
         Vector2 position_;
         Vector2 origin_;
 
+    private:
+        void windowResized(int newWidth, int newHeight);
+
         static unsigned int hudOverlayCounter_s;
+        static std::map<std::string, OrxonoxOverlay*> overlays_s;
   };
 }
 

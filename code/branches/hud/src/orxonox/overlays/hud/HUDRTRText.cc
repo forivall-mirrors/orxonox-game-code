@@ -34,23 +34,20 @@
 
 namespace orxonox
 {
-  CreateFactory(HUDRTRText);
+    CreateFactory(HUDRTRText);
 
-  HUDRTRText::HUDRTRText()
-  {
-    RegisterObject(HUDRTRText);
-  }
+    HUDRTRText::HUDRTRText()
+    {
+        RegisterObject(HUDRTRText);
+    }
 
-  HUDRTRText::~HUDRTRText()
-  {
-    if (this->isInitialized())
+    HUDRTRText::~HUDRTRText()
     {
     }
-  }
 
-  void HUDRTRText::tick(float dt)
-  {
-    float rtr = GraphicsEngine::getSingleton().getAverageRTR();
-    this->text_->setCaption(this->getCaption() + convertToString(rtr));
-  }
+    void HUDRTRText::tick(float dt)
+    {
+        float rtr = GraphicsEngine::getSingleton().getAverageRTR();
+        this->text_->setCaption(this->getCaption() + convertToString(rtr));
+    }
 }
