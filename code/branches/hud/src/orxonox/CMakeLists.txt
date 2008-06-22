@@ -47,13 +47,6 @@ SET( ORXONOX_SRC_FILES
   objects/BillboardProjectile.cc
   objects/RotatingProjectile.cc
   objects/ParticleProjectile.cc
-
-#  objects/weapon/AmmunitionDump.cc
-#  objects/weapon/BarrelGun.cc
-#  objects/weapon/BaseWeapon.cc
-#  objects/weapon/Bullet.cc
-#  objects/weapon/BulletManager.cc
-#  objects/weapon/WeaponStation.cc
 )
 
 GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
