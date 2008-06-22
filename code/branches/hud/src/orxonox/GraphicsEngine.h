@@ -76,6 +76,9 @@ namespace orxonox
             float getAverageRTR() const { return this->renderTimeRatio_; }
             void setAverageRTR(float rtr) { this->renderTimeRatio_ = rtr; }
 
+            void setWindowActivity(bool activity)
+            { if (this->renderWindow_) this->renderWindow_->setActive(activity); }
+
             void windowMoved       (Ogre::RenderWindow* rw);
             void windowResized     (Ogre::RenderWindow* rw);
             void windowFocusChanged(Ogre::RenderWindow* rw);

@@ -42,6 +42,23 @@
 
 namespace orxonox
 {
+    CreateFactory(BarColour);
+
+    BarColour::BarColour()
+        : position_(0.0)
+    {
+        RegisterObject(BarColour);
+    }
+
+    void BarColour::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    {
+        BaseObject::XMLPort(xmlElement, mode);
+
+        XMLPortParam(BarColour, "colour", setColour, getColour, xmlElement, mode);
+        XMLPortParam(BarColour, "position", setPosition, getPosition, xmlElement, mode);
+    }
+
+
     unsigned int HUDBar::materialcount_s = 0;
 
     HUDBar::HUDBar()
@@ -86,13 +103,11 @@ namespace orxonox
             this->setValue(0);
             this->autoColour_ = true;
             this->right2Left_ = false; // default is left to right progress
-
-            this->addColour(0.7, ColourValue(0.2, 0.7, 0.2));
-            this->addColour(0.4, ColourValue(0.7, 0.5, 0.2));
-            this->addColour(0.1, ColourValue(0.7, 0.2, 0.2));
         }
 
         XMLPortParamLoadOnly(HUDBar, "value", setValue, xmlElement, mode);
+        XMLPortParam(HUDBar, "right2left", setRightToLeft, getRightToLeft, xmlElement, mode);
+        XMLPortObject(HUDBar, BarColour, "", addColour, getColour, xmlElement, mode, false, true);
     }
 
     void HUDBar::setValue(float value)
@@ -153,10 +168,20 @@ namespace orxonox
             this->bar_->setTiling(this->value_, 1.0);
     }
 
-    void HUDBar::addColour(float value, const ColourValue& colour)
+    void HUDBar::addColour(BarColour* colour)
     {
-        value = clamp<float>(value, 0, 1);
-        this->colours_[value] = colour;
+        float value = clamp<float>(colour->getPosition(), 0.0, 1.0);
+        this->colours_[value] = colour->getColour();
+
+        this->barColours_.push_back(colour);
+    }
+
+    BarColour* HUDBar::getColour(unsigned int index)
+    {
+        if (index < this->barColours_.size())
+            return barColours_[index];
+        else
+            return 0;
     }
 
     void HUDBar::clearColours()

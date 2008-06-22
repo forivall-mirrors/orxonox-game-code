@@ -500,6 +500,7 @@ namespace orxonox
         // Pump messages in all registered RenderWindows
         // This calls the WindowEventListener objects.
         Ogre::WindowEventUtilities::messagePump();
+        GraphicsEngine::getSingleton().setWindowActivity(true);
 
         // render
         ogreRoot._updateAllRenderTargets();

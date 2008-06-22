@@ -667,7 +667,7 @@ struct ConverterSpecialized<std::string, orxonox::ColourValue, _Explicit_>
         if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
         SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
-        if (tokens.size() >= 4)
+        if (tokens.size() >= 3)
         {
             if (!ConvertValue(&(output->r), tokens[0]))
                 return false;
@@ -675,8 +675,13 @@ struct ConverterSpecialized<std::string, orxonox::ColourValue, _Explicit_>
                 return false;
             if (!ConvertValue(&(output->b), tokens[2]))
                 return false;
-            if (!ConvertValue(&(output->a), tokens[3]))
-                return false;
+            if (tokens.size() >= 4)
+            {
+                if (!ConvertValue(&(output->a), tokens[3]))
+                    return false;
+            }
+            else
+                output->a = 1.0;
 
             return true;
         }

@@ -40,6 +40,25 @@
 
 namespace orxonox
 {
+    class _OrxonoxExport BarColour : public BaseObject
+    {
+    public:
+        BarColour();
+        ~BarColour() { }
+
+        void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+
+        void setColour(const ColourValue& colour) { this->colour_ = colour; }
+        const ColourValue& getColour() const { return this->colour_; }
+
+        void setPosition(float pos) { this->position_ = pos; }
+        float getPosition() const    { return this->position_; }
+
+    private:
+        ColourValue colour_;
+        float position_;
+    };
+
     class _OrxonoxExport HUDBar : public OrxonoxOverlay
     {
     public:
@@ -49,7 +68,6 @@ namespace orxonox
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
         virtual void setValue(float value);
-        void addColour(float value, const ColourValue& colour);
         void clearColours();
 
         inline void setRightToLeft(bool r2l)
@@ -60,6 +78,9 @@ namespace orxonox
         { return this->value_; }
 
     private:
+        void addColour(BarColour* colour);
+        BarColour* getColour(unsigned int index);
+
         bool right2Left_;
         bool autoColour_;                   //!< whether bar changes colour automatically
         float value_;                       //!< progress of bar
@@ -67,6 +88,7 @@ namespace orxonox
         Ogre::PanelOverlayElement* bar_;
         Ogre::TextureUnitState* textureUnitState_;
         std::map<float, ColourValue> colours_;
+        std::vector<BarColour*> barColours_;
 
         float barWidth_s;
         float barHeight_s;

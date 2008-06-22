@@ -110,6 +110,7 @@ namespace orxonox
             if (!this->isVisible())
                 this->overlay_->hide();
 
+            this->sizeCorrectionChanged();
             this->sizeChanged();
             this->positionChanged();
             this->angleChanged();
@@ -159,10 +160,14 @@ namespace orxonox
         if (this->bCorrectAspect_)
         {
             float angle = this->angle_.valueDegrees();
+            if (angle < 0.0)
+                angle = -angle;
+            angle -= 180.0 * (int)(angle / 180.0);
+
             float tempAspect;
-            if (angle > 89.0 && angle < 91.0 || angle > 269 && angle < 271)
+            if (angle > 89.0 && angle < 91.0)
                 tempAspect = 1.0 / this->windowAspectRatio_;
-            else if (angle > 359 && angle < 1 || angle > 179 && angle < 181)
+            else if (angle > 179 || angle < 1)
                 tempAspect = this->windowAspectRatio_;
             else
                 tempAspect = 1.0;

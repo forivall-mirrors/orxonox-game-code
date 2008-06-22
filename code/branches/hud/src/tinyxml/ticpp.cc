@@ -22,6 +22,13 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+/*
+Modifications by the orxonox team:
+In function: void Document::Parse( const std::string& xml, bool throwIfParseError, TiXmlEncoding encoding )
+     change: Added row and column number to the error description.
+     author: Reto Grieder
+*/
+
 #ifdef TIXML_USE_TICPP
 
 #include "ticpp.h"
@@ -852,7 +859,8 @@ void Document::Parse( const std::string& xml, bool throwIfParseError, TiXmlEncod
 	m_tiXmlPointer->Parse( xml.c_str(), 0, encoding );
 	if( throwIfParseError && m_tiXmlPointer->Error() )
 	{
-		TICPPTHROW( "Error parsing xml: " << m_tiXmlPointer->ErrorDesc() );
+		TICPPTHROW( "Error parsing xml: " << m_tiXmlPointer->ErrorDesc()
+            << " In row " << m_tiXmlPointer->ErrorRow() << ", column " << m_tiXmlPointer->ErrorCol() << ".");
 	}
 }
 
