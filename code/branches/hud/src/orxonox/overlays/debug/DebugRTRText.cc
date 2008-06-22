@@ -26,24 +26,29 @@
  *
  */
 
-#ifndef _HUDRTRText_H__
-#define _HUDRTRText_H__
-
-#include "OrxonoxPrereqs.h"
-
-#include "overlays/OverlayText.h"
-#include "objects/Tickable.h"
+#include "OrxonoxStableHeaders.h"
+#include "DebugRTRText.h"
+#include <OgreTextAreaOverlayElement.h>
+#include "core/CoreIncludes.h"
+#include "util/Convert.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport HUDRTRText : public OverlayText, public Tickable
-    {
-    public:
-        HUDRTRText();
-        ~HUDRTRText();
+    CreateFactory(DebugRTRText);
 
-    private:
-        void tick(float dt);
-    };
+    DebugRTRText::DebugRTRText()
+    {
+        RegisterObject(DebugRTRText);
+    }
+
+    DebugRTRText::~DebugRTRText()
+    {
+    }
+
+    void DebugRTRText::tick(float dt)
+    {
+        float rtr = GraphicsEngine::getSingleton().getAverageRTR();
+        this->text_->setCaption(this->getCaption() + convertToString(rtr));
+    }
 }
-#endif /* _HUDRTRText_H__ */

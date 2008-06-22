@@ -13,11 +13,12 @@ SET( ORXONOX_SRC_FILES
 
   overlays/console/InGameConsole.cc
 
+  overlays/debug/DebugFPSText.cc
+  overlays/debug/DebugRTRText.cc
+
   overlays/hud/HUDBar.cc
-  overlays/hud/HUDFPSText.cc
   overlays/hud/HUDNavigation.cc
   overlays/hud/HUDRadar.cc
-  overlays/hud/HUDRTRText.cc
   overlays/hud/HUDSpeedBar.cc
 
   tolua/tolua_bind.cc

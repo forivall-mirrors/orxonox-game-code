@@ -27,7 +27,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "HUDFPSText.h"
+#include "DebugFPSText.h"
 #include <OgreTextAreaOverlayElement.h>
 #include "core/CoreIncludes.h"
 #include "GraphicsEngine.h"
@@ -35,18 +35,18 @@
 
 namespace orxonox
 {
-    CreateFactory(HUDFPSText);
+    CreateFactory(DebugFPSText);
 
-    HUDFPSText::HUDFPSText()
+    DebugFPSText::DebugFPSText()
     {
-        RegisterObject(HUDFPSText);
+        RegisterObject(DebugFPSText);
     }
 
-    HUDFPSText::~HUDFPSText()
+    DebugFPSText::~DebugFPSText()
     {
     }
 
-    void HUDFPSText::tick(float dt)
+    void DebugFPSText::tick(float dt)
     {
         float fps = GraphicsEngine::getSingleton().getAverageFPS();
         this->text_->setCaption(this->getCaption() + convertToString(fps));

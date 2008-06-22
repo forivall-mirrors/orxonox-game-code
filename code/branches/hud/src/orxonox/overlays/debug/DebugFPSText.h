@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _HUDFPSText_H__
-#define _HUDFPSText_H__
+#ifndef _DebugFPSText_H__
+#define _DebugFPSText_H__
 
 #include "OrxonoxPrereqs.h"
 
@@ -36,11 +36,11 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport HUDFPSText : public OverlayText, public Tickable
+    class _OrxonoxExport DebugFPSText : public OverlayText, public Tickable
     {
     public:
-        HUDFPSText();
-        ~HUDFPSText();
+        DebugFPSText();
+        ~DebugFPSText();
 
     private:
         void tick(float dt);
@@ -48,4 +48,4 @@ namespace orxonox
     private:
     };
 }
-#endif /* _HUDFPSText_H__ */
+#endif /* _DebugFPSText_H__ */

@@ -492,10 +492,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\HUDFPSText.cc"
-						>
-					</File>
-					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDNavigation.cc"
 						>
 					</File>
@@ -504,11 +500,19 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\HUDRTRText.cc"
+						RelativePath="..\..\src\orxonox\overlays\hud\HUDSpeedBar.cc"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="debug"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\debug\DebugFPSText.cc"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\HUDSpeedBar.cc"
+						RelativePath="..\..\src\orxonox\overlays\debug\DebugRTRText.cc"
 						>
 					</File>
 				</Filter>
@@ -706,19 +710,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\HUDFPSText.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDNavigation.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDRadar.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\overlays\hud\HUDRTRText.h"
 						>
 					</File>
 					<File
@@ -731,6 +727,18 @@
 					>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\console\InGameConsole.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="debug"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\debug\DebugFPSText.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\debug\DebugRTRText.h"
 						>
 					</File>
 				</Filter>
