@@ -100,9 +100,9 @@ namespace orxonox
         }
 
         XMLPortParam(HUDNavigation, "font", setFont, getFont, xmlElement, mode);
-        XMLPortParam(HUDNavigation, "textsize", setTextSize, getTextSize, xmlElement, mode);
-        XMLPortParam(HUDNavigation, "navmarkersize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode);
-        XMLPortParam(HUDNavigation, "aimmarkersize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "textSize", setTextSize, getTextSize, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {

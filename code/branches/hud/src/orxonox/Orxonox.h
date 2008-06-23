@@ -61,7 +61,6 @@ namespace orxonox {
       bool start();
 
       void abortRequest();
-      //inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
 
       static Orxonox* getSingleton();
       static void destroySingleton();
@@ -97,8 +96,6 @@ namespace orxonox {
       Radar*                radar_;         //!< represents the Radar (not the HUD part)
       //audio::AudioManager*  auMan_;         //!< audio manager
       Ogre::Timer*          timer_;         //!< Main loop timer
-      // TODO: make this a config-value by creating a config class for orxonox
-      float                 frameSmoothingTime_;
       bool                  bAbort_;        //!< aborts the render loop if true
       float                 timefactor_;    //!< A factor to change the gamespeed
 

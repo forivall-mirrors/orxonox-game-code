@@ -48,7 +48,7 @@ namespace orxonox
 
     void DebugFPSText::tick(float dt)
     {
-        float fps = GraphicsEngine::getSingleton().getAverageFPS();
+        float fps = GraphicsEngine::getSingleton().getAverageFramesPerSecond();
         this->text_->setCaption(this->getCaption() + convertToString(fps));
     }
 }

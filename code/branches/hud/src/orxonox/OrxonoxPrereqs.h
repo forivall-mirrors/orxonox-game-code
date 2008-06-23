@@ -61,72 +61,62 @@
 
 namespace orxonox
 {
-  namespace LODParticle
-  {
-    enum LOD
+    namespace LODParticle
     {
-      off = 0,
-      low = 1,
-      normal = 2,
-      high = 3
-    };
-  }
+        enum LOD
+        {
+            off = 0,
+            low = 1,
+            normal = 2,
+            high = 3
+        };
+    }
 
-  class GraphicsEngine;
-  class Orxonox;
+    class GraphicsEngine;
+    class Orxonox;
 
-  class RadarViewable;
-  class Radar;
-  class RadarListener;
+    class RadarViewable;
+    class Radar;
+    class RadarListener;
 
-  // objects
-  class Ambient;
-  class Backlight;
-  class Camera;
-  class Fighter;
-  class Model;
-  class NPC;
-  class ParticleSpawner;
-  class Skybox;
-  class SpaceShip;
-  class SpaceShipAI;
-  class WorldEntity;
+    // objects
+    class Ambient;
+    class Backlight;
+    class Camera;
+    class Fighter;
+    class Model;
+    class NPC;
+    class ParticleSpawner;
+    class Skybox;
+    class SpaceShip;
+    class SpaceShipAI;
+    class WorldEntity;
 
-  class Projectile;
-  class BillboardProjectile;
-  class RotatingProjectile;
-  class ParticleProjectile;
+    class Projectile;
+    class BillboardProjectile;
+    class RotatingProjectile;
+    class ParticleProjectile;
 
-  class AmmunitionDump;
-  class Bullet;
-  class BulletManager;
-  class BaseWeapon;
-  class BarrelGun;
-  class WeaponStation;
+    // tools
+    class BillboardSet;
+    class Light;
+    class Mesh;
+    class ParticleInterface;
+    template <class T>
+    class Timer;
 
-  // tools
-  class BillboardSet;
-  class Light;
-  class Mesh;
-  template <class T>
-  class Timer;
-  class TimerBase;
-
-  // particle
-  class ParticleInterface;
-
-  // hud
-  class BarOverlayElement;
-  class BarOverlayElementFactory;
-  class OverlayGroup;
-  class OrxonoxOverlay;
-  class HUDNavigation;
-  class RadarObject;
-  class RadarOverlayElement;
-  class RadarOverlayElementFactory;
-
-  //console
-  class InGameConsole;
+    // overlays
+    class BarColour;
+    class DebugFPSText;
+    class DebugRTRText;
+    class HUDBar;
+    class HUDNavigation;
+    class HUDRadar;
+    class HUDSpeedBar;
+    class InGameConsole;
+    class OrxonoxOverlay;
+    class OverlayGroup;
+    class OverlayText;
 }
 
 namespace Ogre
@@ -136,6 +126,5 @@ namespace Ogre
     class PanelOverlayElement;
     class TextAreaOverlayElement;
 }
-
 
 #endif /* _OrxonoxPrereqs_H__ */

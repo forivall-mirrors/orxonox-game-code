@@ -71,10 +71,10 @@ namespace orxonox
             int getWindowWidth() const;
             int getWindowHeight() const;
             float getWindowAspectRatio() const;
-            float getAverageFPS() const
-            { if (renderWindow_) return this->renderWindow_->getAverageFPS(); else return 0.0f; }
-            float getAverageRTR() const { return this->renderTimeRatio_; }
-            void setAverageRTR(float rtr) { this->renderTimeRatio_ = rtr; }
+            float getAverageFramesPerSecond() const { return this->avgFramesPerSecond_; }
+            float getAverageTickTime() const { return this->avgTickTime_; }
+            void setAverageTickTime(float tickTime) { this->avgTickTime_ = tickTime; }
+            void setAverageFramesPerSecond(float fps) { this->avgFramesPerSecond_ = fps; }
 
             void setWindowActivity(bool activity)
             { if (this->renderWindow_) this->renderWindow_->setActive(activity); }
@@ -112,7 +112,8 @@ namespace orxonox
             int                 ogreLogLevelNormal_;    //!< Corresponding Orxonx debug level for LL_NORMAL
             int                 ogreLogLevelCritical_;  //!< Corresponding Orxonx debug level for LL_CRITICAL
             unsigned int        detailLevelParticle_;   //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
-            float               renderTimeRatio_;       //!< Ratio between time required to render a frame and to tick() it
+            float               avgTickTime_;           //!< time in ms to tick() one frame
+            float               avgFramesPerSecond_;    //!< number of frames processed in one second
     };
 }
 

@@ -102,9 +102,6 @@ namespace orxonox
     , radar_(0)
     //, auMan_(0)
     , timer_(0)
-    // turn on frame smoothing by setting a value different from 0
-    , frameSmoothingTime_(0.0f)
-    //orxonoxHUD_(0)
     , bAbort_(false)
     , timefactor_(1.0f)
     , mode_(STANDALONE)
@@ -437,85 +434,89 @@ namespace orxonox
     Ogre::Root& ogreRoot = Ogre::Root::getSingleton();
 
 
-    // Contains the times of recently fired events
-    // eventTimes[4] is the list for the times required for the fps counter
-    std::deque<unsigned long> eventTimes[3];
-    // Clear event times
-    for (int i = 0; i < 3; ++i)
-      eventTimes[i].clear();
-
     // use the ogre timer class to measure time.
     if (!timer_)
       timer_ = new Ogre::Timer();
-    timer_->reset();
 
-    float renderTime = 0.0f;
-    float frameTime = 0.0f;
-//    clock_t time = 0;
+    unsigned long frameCount = 0;
+    
+    const unsigned long refreshTime = 3000000;
+    unsigned long refreshStartTime = 0;
+    unsigned long tickTime = 0;
+    unsigned long oldFrameCount = 0;
+
+    unsigned long timeBeforeTick = 0;
+    unsigned long timeBeforeTickOld = 0;
+    unsigned long timeAfterTick = 0;
 
     COUT(3) << "Orxonox: Starting the main loop." << std::endl;
+
+    timer_->reset();
     while (!bAbort_)
     {
       // get current time
-      unsigned long now = timer_->getMilliseconds();
+      timeBeforeTickOld = timeBeforeTick;
+      timeBeforeTick    = timer_->getMicroseconds();
+      float dt = (timeBeforeTick - timeBeforeTickOld) / 1000000.0;
 
-      // create an event to pass to the frameStarted method in ogre
-      Ogre::FrameEvent evt;
-      evt.timeSinceLastEvent = calculateEventTime(now, eventTimes[0]);
-      evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
-      frameTime += evt.timeSinceLastFrame;
 
-      // OverlayGroup::getHUD().setTime(now);
-      if (mode_ != DEDICATED && frameTime > 0.4f)
-      {
-        GraphicsEngine::getSingleton().setAverageRTR(renderTime / frameTime);
-        frameTime = 0.0f;
-        renderTime = 0.0f;
-      }
+      // tick the core (needs real time for input and tcl thread management)
+      Core::tick(dt);
 
-      // tick the core
-      Core::tick((float)evt.timeSinceLastFrame);
       // Call those objects that need the real time
       for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
-        it->tick((float)evt.timeSinceLastFrame);
+        it->tick(dt);
       // Call the scene objects
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
-        it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
-      //AudioManager::tick();
+        it->tick(dt * this->timefactor_);
+
+      // call server/client with normal dt
       if (client_g)
-        client_g->tick((float)evt.timeSinceLastFrame);
+        client_g->tick(dt * this->timefactor_);
       if (server_g)
-        server_g->tick((float)evt.timeSinceLastFrame);
+        server_g->tick(dt * this->timefactor_);
+
+
+      // get current time once again
+      timeAfterTick = timer_->getMicroseconds();
+
+      tickTime += timeAfterTick - timeBeforeTick;
+      if (timeAfterTick > refreshStartTime + refreshTime)
+      {
+        GraphicsEngine::getSingleton().setAverageTickTime(
+            (float)tickTime * 0.001 / (frameCount - oldFrameCount));
+        GraphicsEngine::getSingleton().setAverageFramesPerSecond(
+            (float)(frameCount - oldFrameCount) / (timeAfterTick - refreshStartTime) * 1000000.0);
+        oldFrameCount = frameCount;
+        tickTime = 0;
+        refreshStartTime = timeAfterTick;
+      }
+
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
+      Ogre::FrameEvent evt;
+      evt.timeSinceLastFrame = dt;
+      evt.timeSinceLastEvent = dt; // note: same time, but shouldn't matter anyway
       ogreRoot._fireFrameStarted(evt);
-
-      // get current time
-      now = timer_->getMilliseconds();
-      calculateEventTime(now, eventTimes[2]);
 
       if (mode_ != DEDICATED)
       {
         // Pump messages in all registered RenderWindows
         // This calls the WindowEventListener objects.
         Ogre::WindowEventUtilities::messagePump();
+        // make sure the window stays active even when not focused
+        // (probably only necessary on windows)
         GraphicsEngine::getSingleton().setWindowActivity(true);
 
         // render
         ogreRoot._updateAllRenderTargets();
       }
 
-      // get current time
-      now = timer_->getMilliseconds();
-
-      // create an event to pass to the frameEnded method in ogre
-      evt.timeSinceLastEvent = calculateEventTime(now, eventTimes[0]);
-      renderTime += calculateEventTime(now, eventTimes[2]);
-
       // again, just to be sure ogre works fine
-      ogreRoot._fireFrameEnded(evt);
-      //msleep(500);
+      ogreRoot._fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
+
+      ++frameCount;
     }
 
     if (mode_ == CLIENT)
@@ -524,43 +525,5 @@ namespace orxonox
       server_g->close();
 
     return true;
-  }
-
-  /**
-    Method for calculating the average time between recently fired events.
-    Code directly taken from OgreRoot.cc
-    @param now The current time in ms.
-    @param type The type of event to be considered.
-  */
-  float Orxonox::calculateEventTime(unsigned long now, std::deque<unsigned long> &times)
-  {
-    // Calculate the average time passed between events of the given type
-    // during the last frameSmoothingTime_ seconds.
-
-    times.push_back(now);
-
-    if(times.size() == 1)
-      return 0;
-
-    // Times up to frameSmoothingTime_ seconds old should be kept
-    unsigned long discardThreshold = (unsigned long)(frameSmoothingTime_ * 1000.0f);
-
-    // Find the oldest time to keep
-    std::deque<unsigned long>::iterator it  = times.begin();
-    // We need at least two times
-    std::deque<unsigned long>::iterator end = times.end() - 2;
-
-    while(it != end)
-    {
-      if (now - *it > discardThreshold)
-        ++it;
-      else
-        break;
-    }
-
-    // Remove old times
-    times.erase(times.begin(), it);
-
-    return (float)(times.back() - times.front()) / ((times.size() - 1) * 1000);
   }
 }
