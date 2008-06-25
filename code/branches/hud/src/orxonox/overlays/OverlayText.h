@@ -55,7 +55,7 @@ namespace orxonox
         const std::string& getFont() const;
 
         void setTextSize(float size) { this->setSize(Vector2(size, size)); }
-        float getTextSize() const    { return this->getUncorrectedSize().y; }
+        float getTextSize() const    { return this->getSize().y; }
 
         Ogre::TextAreaOverlayElement* text_;
 

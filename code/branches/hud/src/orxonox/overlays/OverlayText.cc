@@ -101,7 +101,7 @@ namespace orxonox
 
     void OverlayText::sizeChanged()
     {
-        this->overlay_->setScale(getSize().y, getSize().y);
+        this->overlay_->setScale(size_.y * sizeCorrection_.y, size_.y * sizeCorrection_.y);
         positionChanged();
     }
 }

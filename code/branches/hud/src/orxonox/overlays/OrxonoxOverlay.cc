@@ -26,10 +26,16 @@
  *
  */
 
+/**
+@file
+@brief Definition of the OrxonoxOverlay class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "OrxonoxOverlay.h"
 
 #include <cmath>
+#include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 #include <OgrePanelOverlayElement.h>
 #include "util/Convert.h"
@@ -51,78 +57,104 @@ namespace orxonox
     OrxonoxOverlay::OrxonoxOverlay()
         : overlay_(0)
         , background_(0)
-        , windowAspectRatio_(1.0f)
-        , bCorrectAspect_(false)
-        , size_(1.0f, 1.0f)
-        , sizeCorrection_(1.0f, 1.0f)
-        , angle_(0.0f)
-        , position_(0.0f, 0.0f)
-        , origin_(0.0f, 0.0f)
     {
         RegisterObject(OrxonoxOverlay);
     }
 
+    /**
+    @brief
+        Make sure everything gets removed/destroyed.
+    @remark
+        We assume that the Ogre::OverlayManager exists (there is an assert in Ogre for that!)
+    */
     OrxonoxOverlay::~OrxonoxOverlay()
     {
-        if (this->background_)
-            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->background_);
-
+        // erase ourself from the map with all overlays
         std::map<std::string, OrxonoxOverlay*>::iterator it = overlays_s.find(this->getName());
         if (it != overlays_s.end())
             overlays_s.erase(it);
+
+        if (this->background_)
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->background_);
+        if (this->overlay_)
+            Ogre::OverlayManager::getSingleton().destroy(this->overlay_);
     }
 
+    /**
+    @brief
+        Loads the OrxonoxOverlay.
+        
+        This has to be called before usage, otherwise strange behaviour is
+        guaranteed! (there should be no segfaults however).
+    @copydoc
+        BaseObject::XMLPort()
+    */
     void OrxonoxOverlay::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         BaseObject::XMLPort(xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {
+            // set some default values
+            this->windowAspectRatio_ = 1.0f;
+            this->bCorrectAspect_    = false;
+            this->size_              = Vector2(1.0f, 1.0f);
+            this->sizeCorrection_    = Vector2(1.0f, 1.0f);
+            this->position_          = Vector2(0.0f, 0.0f);
+            this->pickPoint_         = Vector2(0.0f, 0.0f);
+            this->angle_             = Radian(0.0f);
+
+            // add this overlay to the static map of OrxonoxOverlays
             if (overlays_s.find(this->getName()) != overlays_s.end())
             {
                 COUT(1) << "Overlay names should be unique or you cannnot access them via console." << std::endl;
             }
             overlays_s[this->getName()] = this;
 
+            // create the Ogre::Overlay
             overlay_ = Ogre::OverlayManager::getSingleton().create("OrxonoxOverlay_overlay_"
                 + convertToString(hudOverlayCounter_s++));
 
-            // create background
+            // create background panel (can be used to show any picture)
             this->background_ = static_cast<Ogre::PanelOverlayElement*>(
                 Ogre::OverlayManager::getSingleton().createOverlayElement("Panel",
                 "OrxonoxOverlay_background_" + convertToString(hudOverlayCounter_s++)));
             this->overlay_->add2D(this->background_);
 
+            // We'll have to get the aspect ratio for the first. Afterwards windowResized() gets
+            // called automatically by the GraphicsEngine.
             this->windowResized(GraphicsEngine::getSingleton().getWindowWidth(),
                 GraphicsEngine::getSingleton().getWindowHeight());
         }
 
         XMLPortParam(OrxonoxOverlay, "correctAspect", setAspectCorrection, getAspectCorrection, xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "size", setSize, getUncorrectedSize, xmlElement, mode);
+        XMLPortParam(OrxonoxOverlay, "size", setSize, getSize, xmlElement, mode);
         XMLPortParam(OrxonoxOverlay, "rotation", setRotation, getRotation, xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "origin", setOrigin, getOrigin, xmlElement, mode);
+        // see setPickPoint()
+        XMLPortParam(OrxonoxOverlay, "pickPoint", setPickPoint, getPickPoint, xmlElement, mode);
         XMLPortParam(OrxonoxOverlay, "position", setPosition, getPosition, xmlElement, mode);
         XMLPortParam(OrxonoxOverlay, "background", setBackgroundMaterial, getBackgroundMaterial, xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {
-            this->overlay_->show();
-            if (!this->isVisible())
-                this->overlay_->hide();
-
+            // call all the virtual 'setters'
+            this->changedVisibility();
+            this->angleChanged();
             this->sizeCorrectionChanged();
             this->sizeChanged();
+            // probably gets called 4 times (by all the methods), but sizeChanged() could be overwritten.
             this->positionChanged();
-            this->angleChanged();
         }
     }
 
+    //! Only sets the background material name if not ""
     void OrxonoxOverlay::setBackgroundMaterial(const std::string& material)
     {
         if (this->background_ && material != "")
             this->background_->setMaterialName(material);
     }
 
+    //! Returns the the material name of the background
     const std::string& OrxonoxOverlay::getBackgroundMaterial() const
     {
         if (this->background_)
@@ -131,30 +163,50 @@ namespace orxonox
             return blankString;
     }
 
+    //! Called by BaseObject when visibility has changed.
     void OrxonoxOverlay::changedVisibility()
     {
-        if (this->overlay_)
-        {
-            if (this->isVisible())
-                this->overlay_->show();
-            else
-                this->overlay_->hide();
-        }
+        if (!this->overlay_)
+            return;
+
+        if (this->isVisible())
+            this->overlay_->show();
+        else
+            this->overlay_->hide();
     }
 
+    /**
+    @brief
+        Called by the GraphicsEngine whenever the window size changes.
+        Calculates the aspect ratio only.
+    */
     void OrxonoxOverlay::windowResized(int newWidth, int newHeight)
     {
         this->windowAspectRatio_ = newWidth/(float)newHeight;
-
-        this->setAspectCorrection(this->bCorrectAspect_);
-    }
-
-    void OrxonoxOverlay::setAspectCorrection(bool val)
-    {
-        this->bCorrectAspect_ = val;
         this->sizeCorrectionChanged();
     }
 
+    /**
+    @brief
+        Called whenever the rotation angle has changed.
+    */
+    void OrxonoxOverlay::angleChanged()
+    {
+        if (!this->overlay_)
+            return;
+
+        this->overlay_->setRotate(this->angle_);
+        this->sizeCorrectionChanged();
+    }
+
+    /**
+    @brief
+        Called whenever the aspect ratio or the angle has changed.
+        The method calculates a correction factor for the size to compensate
+        for aspect distortion if desired.
+    @remarks
+        This only works when the angle is about 0 or 90 degrees.
+    */
     void OrxonoxOverlay::sizeCorrectionChanged()
     {
         if (this->bCorrectAspect_)
@@ -164,6 +216,7 @@ namespace orxonox
                 angle = -angle;
             angle -= 180.0 * (int)(angle / 180.0);
 
+            // take the reverse if angle is about 90 degrees
             float tempAspect;
             if (angle > 89.0 && angle < 91.0)
                 tempAspect = 1.0 / this->windowAspectRatio_;
@@ -182,50 +235,63 @@ namespace orxonox
         {
             this->sizeCorrection_ = Vector2::UNIT_SCALE;
         }
+
         this->sizeChanged();
     }
 
     /**
-    @remarks
-        This function can be overriden by any derivative.
+    @brief
+        Sets the overlay size using the actual corrected size.
     */
     void OrxonoxOverlay::sizeChanged()
     {
+        if (!this->overlay_)
+            return;
+
         this->overlay_->setScale(size_.x * sizeCorrection_.x, size_.y * sizeCorrection_.y);
         positionChanged();
     }
 
     /**
-    @remarks
-        This function can be overriden by any derivative.
-    */
-    void OrxonoxOverlay::angleChanged()
-    {
-        this->overlay_->setRotate(this->angle_);
-        this->sizeCorrectionChanged();
-    }
-
-    /**
-    @remarks
-        This function can be overriden by any derivative.
+    @brief
+        Determines the position of the overlay.
+        This works also well when a rotation angle is applied. The overlay always
+        gets aligned correctly as well as possible.
     */
     void OrxonoxOverlay::positionChanged()
     {
+        if (!this->overlay_)
+            return;
+
+        // transform the angle to a range of 0 - pi/2 first.
         float angle = this->angle_.valueRadians();
         if (angle < 0.0)
             angle = -angle;
         angle -= Ogre::Math::PI * (int)(angle / (Ogre::Math::PI));
         if (angle > Ogre::Math::PI * 0.5)
             angle = Ogre::Math::PI - angle;
+        
+        // do some mathematical fiddling for a bounding box
         Vector2 actualSize = size_ * sizeCorrection_;
         float radius = actualSize.length();
         float phi = atan(actualSize.y / actualSize.x);
         Vector2 boundingBox(radius * cos(angle - phi), radius * sin(angle + phi));
-        Vector2 scroll = (position_ - 0.5 - boundingBox * (origin_ - 0.5)) * 2.0;
+
+        // calculate the scrolling offset
+        Vector2 scroll = (position_ - 0.5 - boundingBox * (pickPoint_ - 0.5)) * 2.0;
         this->overlay_->setScroll(scroll.x, -scroll.y);
     }
 
 
+    //########### Console commands ############
+
+    /**
+    @brief
+        Scales an overlay by its name.
+    @param name
+        The name of the overlay defined BaseObject::setName() (usually done with the "name"
+        attribute in the xml file.
+    */
     /*static*/ void OrxonoxOverlay::scaleOverlay(const std::string& name, float scale)
     {
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
@@ -233,6 +299,13 @@ namespace orxonox
             (*it).second->scale(Vector2(scale, scale));
     }
 
+    /**
+    @brief
+        Scrolls an overlay by its name.
+    @param name
+        The name of the overlay defined BaseObject::setName() (usually done with the "name"
+        attribute in the xml file.
+    */
     /*static*/ void OrxonoxOverlay::scrollOverlay(const std::string& name, const Vector2& scroll)
     {
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
@@ -240,6 +313,13 @@ namespace orxonox
             (*it).second->scroll(scroll);
     }
 
+    /**
+    @brief
+        Rotates an overlay by its name.
+    @param name
+        The name of the overlay defined BaseObject::setName() (usually done with the "name"
+        attribute in the xml file.
+    */
     /*static*/ void OrxonoxOverlay::rotateOverlay(const std::string& name, const Degree& angle)
     {
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
