@@ -65,13 +65,12 @@ namespace orxonox
 
         if (mode == XMLPort::LoadObject)
         {
-            // set default values
-            this->scale_  = Vector2(1.0, 1.0);
-            this->scroll_ = Vector2(0.0, 0.0);
+            this->setScale(Vector2(1.0f, 1.0f));
+            this->setScroll(Vector2(0.0f, 0.0f));
         }
 
-        XMLPortParam(OverlayGroup, "scale", setScale, getScale, xmlElement, mode);
-        XMLPortParam(OverlayGroup, "scroll", setScroll, getScroll, xmlElement, mode);
+        XMLPortParam(OverlayGroup, "scale",  setScale,  getScale,  xmlElement, mode).defaultValues(Vector2(1.0, 1.0));
+        XMLPortParam(OverlayGroup, "scroll", setScroll, getScroll, xmlElement, mode).defaultValues(Vector2(0.0, 0.0));
         // loads all the child elements
         XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlElement, mode, false, true);
     }

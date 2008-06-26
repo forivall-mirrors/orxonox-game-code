@@ -53,10 +53,10 @@ namespace orxonox
         void tick(float dt);
 
         // XMLPort accessors
-        void setNavMarkerSize(float size) { this->navMarkerSize_ = size; }
+        void setNavMarkerSize(float size) { this->navMarkerSize_ = size; this->sizeChanged(); }
         float getNavMarkerSize() const    { return this->navMarkerSize_; }
 
-        void setAimMarkerSize(float size) { this->aimMarkerSize_ = size; }
+        void setAimMarkerSize(float size) { this->aimMarkerSize_ = size; this->sizeChanged(); }
         float getAimMarkerSize() const    { return this->aimMarkerSize_; }
 
         void setTextSize(float size);
