@@ -118,13 +118,6 @@ namespace orxonox
                 GraphicsEngine::getSingleton().getWindowHeight());
 
             this->changedVisibility();
-
-            this->setSize(Vector2(0.5f, 0.5f));
-            this->setPickPoint(Vector2(0.5f, 0.5f));
-            this->setPosition(Vector2(0.5f, 0.5f));
-            this->setRotation(Degree(0.0f));
-            this->setAspectCorrection(true);
-            this->setBackgroundMaterial("");
         }
 
         XMLPortParam(OrxonoxOverlay, "size",      setSize,      getSize,      xmlElement, mode)

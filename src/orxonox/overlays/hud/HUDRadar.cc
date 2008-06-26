@@ -74,10 +74,6 @@ namespace orxonox
             marker_->setMaterialName("Orxonox/RadarMarker");
             overlay_->add2D(marker_);
             marker_->hide();
-
-            this->setRadarSensitivity(1.0f);
-            this->setHalfDotSizeDistance(3000.0f);
-            this->setMaximumDotSize(0.1f);
         }
 
         XMLPortParam(HUDRadar, "sensitivity", setRadarSensitivity, getRadarSensitivity, xmlElement, mode)

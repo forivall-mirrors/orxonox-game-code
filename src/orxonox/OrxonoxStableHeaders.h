@@ -36,7 +36,7 @@
 
 #include "util/OrxonoxPlatform.h"
 
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && 0
 
 // including std headers here is useless since they're already precompiled
 
@@ -111,11 +111,11 @@
 
 #include "network/Synchronisable.h"
 
-#include "tools/Mesh.h"
-#include "tools/Timer.h"
-#include "objects/Model.h"
-#include "objects/Tickable.h"
-#include "objects/WorldEntity.h"
+//#include "tools/Mesh.h"
+//#include "tools/Timer.h"
+//#include "objects/Model.h"
+//#include "objects/Tickable.h"
+//#include "objects/WorldEntity.h"
 
 #endif /* Compiler MSVC */
 

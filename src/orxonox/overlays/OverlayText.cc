@@ -64,10 +64,6 @@ namespace orxonox
                 .createOverlayElement("TextArea", "OverlayText_text_" + getUniqueNumberStr()));
 
             this->background_->addChild(this->text_);
-
-            this->setFont("Monofur");
-            this->caption_ = "";
-            this->setTextSize(1.0f);
         }
 
         XMLPortParam(OverlayText, "font",     setFont,     getFont,     xmlElement, mode).defaultValues("Monofur");
