@@ -47,7 +47,6 @@ namespace orxonox {
 
       NPC();
       virtual ~NPC();
-      virtual void loadParams(TiXmlElement* xmlElem);
       void tick(float dt);
       void update();
       void setValues(Vector3 location, Vector3 speed, Vector3 acceleration, bool movable);

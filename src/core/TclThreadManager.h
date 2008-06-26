@@ -44,8 +44,6 @@
 
 namespace orxonox
 {
-    class boost::thread;
-
     struct _CoreExport TclInterpreterBundle
     {
         unsigned int id_;

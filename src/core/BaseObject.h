@@ -51,7 +51,6 @@ namespace orxonox
         public:
             BaseObject();
             virtual ~BaseObject();
-            virtual void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             /** @brief Returns if the object was initialized (passed the object registration). @return True was the object is initialized */

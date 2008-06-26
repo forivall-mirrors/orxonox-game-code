@@ -35,11 +35,12 @@
 #include "util/Math.h"
 #include "Camera.h"
 #include "Model.h"
+#include "RadarViewable.h"
 #include "tools/BillboardSet.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport SpaceShip : public Model
+    class _OrxonoxExport SpaceShip : public Model, public RadarViewable
     {
         public:
             static SpaceShip *getLocalShip();
@@ -130,7 +131,6 @@ namespace orxonox
             Vector3 initialOrth_;
             Vector3 currentOrth_;
             bool bInvertYAxis_;
-            bool setMouseEventCallback_;
             bool bLMousePressed_;
             bool bRMousePressed_;
 

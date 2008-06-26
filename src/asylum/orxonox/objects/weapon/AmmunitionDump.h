@@ -27,26 +27,43 @@
  */
 
 
-#ifndef _Bullet_H__
-#define _Bullet_H__
+#ifndef _AmmunitionDump_H__
+#define _AmmunitionDump_H__
 
 #include "OrxonoxPrereqs.h"
 
+#include <string>
+
 #include <OgrePrerequisites.h>
 
-#include "../Model.h"
+#include "network/Synchronisable.h"
+#include "core/BaseObject.h"
+
 
 namespace orxonox {
-  class _OrxonoxExport Bullet : public Model
+  class _OrxonoxExport AmmunitionDump : public BaseObject, public network::Synchronisable
   {
   public:
-	  Bullet();
-	  ~Bullet();
+    AmmunitionDump();
+	  ~AmmunitionDump();
 
-    virtual void tick(float dt) { }
+    void setDumpSize(const std::string &name, int size);
 
-    inline virtual void loadParams(TiXmlElement* xmlElem) { Model::loadParams(xmlElem); };
- };
+    int store(const std::string &name, int quantiy);
+
+    int getAmmunition(const std::string &name, int quantity);
+
+    int getStockSize(const std::string &name);
+
+
+  protected:
+    inline bool create() { return Synchronisable::create(); }
+    void registerAllVariables();
+
+    int numberOfAmmos_;
+    int *stock_;
+    int *capacity_;
+  };
 }
 
-#endif /* _Bullet_H__ */
+#endif /* _AmmunitionDump_H__ */

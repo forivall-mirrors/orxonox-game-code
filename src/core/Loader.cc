@@ -115,6 +115,7 @@ namespace orxonox
         Script::init(Script::getLuaState());
         Script::run();*/
         Script* lua = Script::getInstance();
+        lua->clearLuaOutput();
         lua->loadFile(level->getFile(), true);
         lua->run();
 

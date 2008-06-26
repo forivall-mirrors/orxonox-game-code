@@ -32,12 +32,14 @@
 #include "UtilPrereqs.h"
 
 #include <ostream>
+#include <string>
 
 #include <OgreMath.h>
 #include <OgreVector2.h>
 #include <OgreVector3.h>
 #include <OgreVector4.h>
 #include <OgreMatrix3.h>
+#include <OgreMatrix4.h>
 #include <OgreQuaternion.h>
 #include <OgreColourValue.h>
 
@@ -49,6 +51,7 @@ namespace orxonox
   typedef Ogre::Vector3 Vector3;
   typedef Ogre::Vector4 Vector4;
   typedef Ogre::Matrix3 Matrix3;
+  typedef Ogre::Matrix4 Matrix4;
   typedef Ogre::Quaternion Quaternion;
   typedef Ogre::ColourValue ColourValue;
 }
@@ -159,6 +162,9 @@ inline _UtilExport float rnd(float min, float max)
 {
     return rnd(max - min) + min;
 }
+
+_UtilExport unsigned long getUniqueNumber();
+_UtilExport std::string getUniqueNumberStr();
 
 class _UtilExport IntVector2
 {
