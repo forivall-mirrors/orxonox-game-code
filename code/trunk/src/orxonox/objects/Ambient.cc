@@ -72,29 +72,12 @@ namespace orxonox
       registerVar(&ambientLight_, sizeof(ColourValue), network::DATA);
       
     }
-    
-    void Ambient::loadParams(TiXmlElement* xmlElem)
+
+    void Ambient::setAmbientLight(const ColourValue& colour)
     {
-    	if (xmlElem->Attribute("colourvalue"))
-    	{
-        SubString colourvalues(xmlElem->Attribute("colourvalue"), ',');
-
-	    	float r, g, b;
-        convertValue<std::string, float>(&r, colourvalues[0]);
-        convertValue<std::string, float>(&g, colourvalues[1]);
-        convertValue<std::string, float>(&b, colourvalues[2]);
-
-	    	this->setAmbientLight(ColourValue(r, g, b));
-
-	    	COUT(4) << "Loader: Set ambient light: "<<r<<" " << g << " " << b  << std::endl << std::endl;
-    	}
-   }
-
-   void Ambient::setAmbientLight(const ColourValue& colour)
-   {
-    	GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(colour);
+	    GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(colour);
       ambientLight_=colour;	
-   }
+    }
 
     /**
         @brief XML loading and saving.

@@ -2,21 +2,34 @@ SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   Main.cc
   Orxonox.cc
+  Radar.cc
+  RadarListener.cc
+  RadarViewable.cc
   Settings.cc
 
-  console/InGameConsole.cc
-  hud/HUD.cc
-  hud/BarOverlayElement.cc
-  hud/RadarOverlayElement.cc
-  hud/RadarObject.cc
-  hud/Navigation.cc
+  overlays/OrxonoxOverlay.cc
+  overlays/OverlayGroup.cc
+  overlays/OverlayText.cc
+
+  overlays/console/InGameConsole.cc
+
+  overlays/debug/DebugFPSText.cc
+  overlays/debug/DebugRTRText.cc
+
+  overlays/hud/HUDBar.cc
+  overlays/hud/HUDNavigation.cc
+  overlays/hud/HUDRadar.cc
+  overlays/hud/HUDSpeedBar.cc
+
   tolua/tolua_bind.cc
 
   tools/BillboardSet.cc
   tools/Light.cc
   tools/Mesh.cc
   tools/ParticleInterface.cc
+  tools/TextureGenerator.cc
   tools/Timer.cc
+  tools/WindowEventListener.cc
 
   objects/Ambient.cc
   objects/Backlight.cc
@@ -35,13 +48,6 @@ SET( ORXONOX_SRC_FILES
   objects/BillboardProjectile.cc
   objects/RotatingProjectile.cc
   objects/ParticleProjectile.cc
-
-#  objects/weapon/AmmunitionDump.cc
-#  objects/weapon/BarrelGun.cc
-#  objects/weapon/BaseWeapon.cc
-#  objects/weapon/Bullet.cc
-#  objects/weapon/BulletManager.cc
-#  objects/weapon/WeaponStation.cc
 )
 
 GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)

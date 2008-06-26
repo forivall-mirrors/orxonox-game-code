@@ -27,46 +27,24 @@
  */
 
 
-#ifndef _BulletManager_H__
-#define _BulletManager_H__
+#ifndef _Bullet_H__
+#define _Bullet_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include <string>
-
 #include <OgrePrerequisites.h>
 
-#include "network/Synchronisable.h"
-#include "tinyxml/tinyxml.h"
-#include "core/BaseObject.h"
-#include "core/Tickable.h"
+#include "../Model.h"
 
 namespace orxonox {
-  class _OrxonoxExport BulletManager : public BaseObject, public network::Synchronisable, public Tickable
+  class _OrxonoxExport Bullet : public Model
   {
   public:
-    BulletManager();
-	  virtual ~BulletManager();
+	  Bullet();
+	  ~Bullet();
 
-    void addBullet(Bullet*);
-
-    int getAmmunitionID(const std::string&);
-
-    int getNumberOfAmmos();
-
-    virtual void tick(float dt);
-
-    inline virtual void loadParams(TiXmlElement* xmlElem) { BaseObject::loadParams(xmlElem); };
-
-  protected:
-    inline bool create() { return Synchronisable::create(); }
-    void registerAllVariables();
-
-    // Bullet array
-	  Bullet **bullets_;
-	  int bulletsSize_;
-	  int bulletsIndex_;
-  };
+    virtual void tick(float dt) { }
+ };
 }
 
-#endif /* _BulletManager_H__ */
+#endif /* _Bullet_H__ */

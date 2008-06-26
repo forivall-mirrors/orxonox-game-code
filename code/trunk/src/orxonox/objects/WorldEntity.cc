@@ -94,13 +94,6 @@ namespace orxonox
         }
     }
 
-    void WorldEntity::loadParams(TiXmlElement* xmlElem)
-    {
-
-        BaseObject::loadParams(xmlElem);
-        create();
-    }
-
 
     void WorldEntity::setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll)
     {

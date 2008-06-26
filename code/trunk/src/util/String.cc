@@ -32,6 +32,12 @@
 #include <iostream>
 
 /**
+    @brief Blank string as variable so you can use const std::string& even
+           if you have to return "".
+*/
+std::string blankString = "";
+
+/**
     @brief Removes all whitespaces from a string.
     @param str The string to strip
 */

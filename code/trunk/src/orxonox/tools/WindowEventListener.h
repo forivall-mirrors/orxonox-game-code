@@ -20,37 +20,39 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Yuning Chai
+ *      Reto Grieder
  *   Co-authors:
- *      Felix Schulthess
+ *      ...
  *
  */
 
-#ifndef _RadarOverlayElement_H__
-#define _RadarOverlayElement_H__
+#ifndef _WindowEventListener_H__
+#define _WindowEventListener_H__
 
 #include "OrxonoxPrereqs.h"
+#include "core/OrxonoxClass.h"
 
-#include <OgrePrerequisites.h>
-#include <OgrePanelOverlayElement.h>
-#include "util/Math.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport RadarOverlayElement : public Ogre::PanelOverlayElement
+    /**
+        @brief Interface for receiving window events.
+    */
+    class _OrxonoxExport WindowEventListener : virtual public OrxonoxClass
     {
-      public:
-        RadarOverlayElement(const Ogre::String& name);
-        ~RadarOverlayElement();
-        void init(Real leftRel, Real topRel, Real dimRel, Ogre::OverlayContainer* container);
-        void resize();
-        void update();
-        void listObjects() const;
+    public:
+        WindowEventListener();
+        virtual ~WindowEventListener() { }
 
-      private:
-        Ogre::Real leftRel_, topRel_, dimRel_;  // relative position/dimension
-        int left_, top_, dim_;                  // absolute position/dimension
-  };
+		    /** Window has moved position */
+		    virtual void windowMoved() { }
+
+		    /** Window has resized */
+		    virtual void windowResized(int newWidth, int newHeight) { }
+
+		    /** Window has lost/gained focus */
+		    virtual void windowFocusChanged() { }
+    };
 }
 
-#endif /* _RadarOverlayElement_H__ */
+#endif /* _WindowEventListener_H__ */

@@ -81,7 +81,7 @@
 			ConfigurationType="2"
 			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\audio_properties.vsprops"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"

@@ -91,6 +91,7 @@ namespace orxonox
             Iterator<T> operator=(ObjectListElement<T>* element)
             {
                 this->element_ = element;
+                return *this;
             }
 
             /**

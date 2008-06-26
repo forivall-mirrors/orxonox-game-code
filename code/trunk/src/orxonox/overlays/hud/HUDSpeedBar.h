@@ -21,48 +21,30 @@
  *
  *   Author:
  *      Felix Schulthess
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _Navigation_H__
-#define _Navigation_H__
+#ifndef _HUDSpeedBar_H__
+#define _HUDSpeedBar_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include <OgrePrerequisites.h>
-#include <OgreTextAreaOverlayElement.h>
-#include <OgrePanelOverlayElement.h>
+#include "HUDBar.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Navigation
+    class _OrxonoxExport HUDSpeedBar : public HUDBar, public Tickable
     {
-      public:
-        Navigation(Ogre::OverlayContainer* container);
-        ~Navigation();
+    public:
+        HUDSpeedBar();
+        ~HUDSpeedBar();
 
-        void update();
-        void cycleFocus();
-        float getDist2Focus() const;
-
-        inline RadarObject* getFocus() const
-            { return this->focus_; }
-        void releaseFocus();
-
-      private:
-        void init();
-        void updateMarker();
-        void updateFocus();
-
-        Ogre::OverlayContainer* container_;
-        Ogre::PanelOverlayElement* navMarker_;      // the panel used to show the arrow
-        Ogre::PanelOverlayElement* aimMarker_;
-        Ogre::TextAreaOverlayElement* navText_;     // displaying distance
-        std::list<RadarObject*>::iterator it_;
-        RadarObject* focus_;                        // next pointer of linked list
-  };
+    private:
+        void tick(float dt);
+    };
 }
-
-#endif /* _Navigation_H__ */
+#endif /* _HUDSpeedBar_H__ */

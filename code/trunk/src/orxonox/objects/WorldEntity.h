@@ -50,7 +50,6 @@ namespace orxonox
             virtual ~WorldEntity();
 
             virtual void tick(float dt);
-            virtual void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual inline bool create(){ return Synchronisable::create(); }
 
@@ -73,6 +72,8 @@ namespace orxonox
                 { this->node_->setPosition(x, y, z); }
             inline const Vector3& getPosition() const
                 { return this->node_->getPosition(); }
+            inline const Vector3& getWorldPosition() const
+                { return this->node_->getWorldPosition(); }
 
             inline void translate(const Vector3& d, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_PARENT)
                 { this->node_->translate(d, relativeTo); }
@@ -100,6 +101,8 @@ namespace orxonox
 
             inline const Ogre::Quaternion& getOrientation()
               { return this->node_->getOrientation(); }
+            inline const Ogre::Quaternion& getWorldOrientation()
+              { return this->node_->getWorldOrientation(); }
             inline void setOrientation(const Ogre::Quaternion& quat)
               { this->node_->setOrientation(quat); }
             inline void rotate(const Vector3& axis, const Radian& angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)

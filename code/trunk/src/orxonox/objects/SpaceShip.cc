@@ -42,11 +42,9 @@
 #include "core/Debug.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
-#include "core/input/InputManager.h"
 
 #include "network/Client.h"
 
-#include "hud/HUD.h"
 #include "tools/ParticleInterface.h"
 
 #include "GraphicsEngine.h"
@@ -117,13 +115,10 @@ namespace orxonox
 
         this->timeToReload_ = 0;
 
-        this->setMouseEventCallback_ = false;
         this->bLMousePressed_ = false;
         this->bRMousePressed_ = false;
         this->mouseXRotation_ = 0;
         this->mouseYRotation_ = 0;
-        this->mouseX_ = 0;
-        this->mouseY_ = 0;
         this->myShip_ = false;
 
         this->registerAllVariables();
@@ -141,6 +136,8 @@ namespace orxonox
 
         this->teamNr_ = 0;
         this->health_ = 100;
+
+        this->radarObject_ = static_cast<WorldEntity*>(this);
     }
 
     SpaceShip::~SpaceShip()
@@ -160,14 +157,8 @@ namespace orxonox
             if (this->backlight_)
                 delete this->backlight_;
 
-            if (this->setMouseEventCallback_)
-                InputManager::removeMouseHandler("SpaceShip");
-
             if (this->cam_)
                 delete this->cam_;
-
-            if (!this->myShip_)
-                HUD::getSingleton().removeRadarObject(this);
         }
     }
 
@@ -176,7 +167,7 @@ namespace orxonox
         if(network::Client::getSingleton() && objectID == network::Client::getSingleton()->getShipID())
           myShip_=true;
         else
-          HUD::getSingleton().addRadarObject(this, this->getProjectileColour());
+          this->setRadarObjectColour(this->getProjectileColour());
       }
       if(Model::create())
         this->init();
@@ -417,7 +408,7 @@ namespace orxonox
             return;
 
         currentDir_ = getOrientation()*initialDir_;
-		currentOrth_ = getOrientation()*initialOrth_;
+        currentOrth_ = getOrientation()*initialOrth_;
 
         if (this->cam_)
             this->cam_->tick(dt);

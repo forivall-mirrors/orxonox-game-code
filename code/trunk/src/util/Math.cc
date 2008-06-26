@@ -29,6 +29,7 @@
 #include <OgrePlane.h>
 
 #include "Math.h"
+#include "Convert.h"
 
 /**
     @brief Function for writing to a stream.
@@ -134,4 +135,15 @@ orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposition, float 
     temp = sqrt(temp);
     float time = (temp + a) / (2 * (squaredProjectilespeed - b));
     return (targetposition + targetvelocity * time);
+}
+
+unsigned long getUniqueNumber()
+{
+    static unsigned long aNumber = 135;
+    return aNumber++;
+}
+
+std::string getUniqueNumberStr()
+{
+    return convertToString(getUniqueNumber());
 }
