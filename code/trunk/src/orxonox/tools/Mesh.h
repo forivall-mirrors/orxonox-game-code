@@ -51,9 +51,9 @@ namespace orxonox
                 { return this->entity_->getName(); }
 
             inline void setVisible(bool visible)
-                { this->entity_->setVisible(visible); }
+                { if (this->entity_) this->entity_->setVisible(visible); }
             inline bool getVisible() const
-                { return this->entity_->getVisible(); }
+                { if (this->entity_) return this->entity_->getVisible(); else return false; }
 
         private:
             static unsigned int meshCounter_s;

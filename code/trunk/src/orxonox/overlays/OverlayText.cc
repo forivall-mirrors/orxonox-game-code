@@ -56,33 +56,23 @@ namespace orxonox
 
     void OverlayText::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        if (mode == XMLPort::LoadObject)
-        {
-            // setting this to true makes the text more readable when the
-            // resolution aspect is far from 1.0
-            this->bCorrectAspect_ = true; // can be overridden by xml
-        }
-
         OrxonoxOverlay::XMLPort(xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {
             this->text_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
                 .createOverlayElement("TextArea", "OverlayText_text_" + getUniqueNumberStr()));
-            this->text_->setCharHeight(1.0f);
-            this->text_->setFontName("Monofur");
 
             this->background_->addChild(this->text_);
+
+            this->setFont("Monofur");
+            this->caption_ = "";
+            this->setTextSize(1.0f);
         }
 
-        XMLPortParam(OverlayText, "font", setFont, getFont, xmlElement, mode);
-        XMLPortParam(OverlayText, "caption", setCaption, getCaption, xmlElement, mode);
-        XMLPortParam(OverlayText, "textSize", setTextSize, getTextSize, xmlElement, mode);
-
-        if (mode == XMLPort::LoadObject)
-        {
-            this->text_->setCaption(this->caption_);
-        }
+        XMLPortParam(OverlayText, "font",     setFont,     getFont,     xmlElement, mode).defaultValues("Monofur");
+        XMLPortParam(OverlayText, "caption",  setCaption,  getCaption,  xmlElement, mode).defaultValues("");
+        XMLPortParam(OverlayText, "textSize", setTextSize, getTextSize, xmlElement, mode).defaultValues(1.0f);
     }
 
     void OverlayText::setFont(const std::string& font)
@@ -101,6 +91,9 @@ namespace orxonox
 
     void OverlayText::sizeChanged()
     {
+        if (!this->overlay_)
+            return;
+
         this->overlay_->setScale(size_.y * sizeCorrection_.y, size_.y * sizeCorrection_.y);
         positionChanged();
     }

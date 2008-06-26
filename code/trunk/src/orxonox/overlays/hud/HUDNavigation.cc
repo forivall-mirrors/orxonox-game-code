@@ -75,21 +75,17 @@ namespace orxonox
             // create nav text
             navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
                 .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberStr()));
-            navText_->setCharHeight(0.05f);
-            navText_->setFontName("Monofur");
 
             // create nav marker
             navMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
                 .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberStr()));
             navMarker_->setMaterialName("Orxonox/NavArrows");
-            navMarkerSize_ = 0.05; //default
             wasOutOfView_ = true; // just to ensure the material is changed right the first time..
 
             // create aim marker
             aimMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
                 .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberStr()));
             aimMarker_->setMaterialName("Orxonox/NavCrosshair");
-            aimMarkerSize_ = 0.04; // default
             
             background_->addChild(navMarker_);
             background_->addChild(aimMarker_);
@@ -97,17 +93,19 @@ namespace orxonox
 
             // hide at first
             this->setVisible(false);
+
+            this->setFont("Monofur");
+            this->setTextSize(0.05f);
+            this->setNavMarkerSize(0.05f);
+            this->setAimMarkerSize(0.04f);
         }
 
-        XMLPortParam(HUDNavigation, "font", setFont, getFont, xmlElement, mode);
-        XMLPortParam(HUDNavigation, "textSize", setTextSize, getTextSize, xmlElement, mode);
-        XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode);
-        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
-
-        if (mode == XMLPort::LoadObject)
-        {
-            this->sizeChanged();
-        }
+        XMLPortParam(HUDNavigation, "font",     setFont,     getFont,     xmlElement, mode).defaultValues("Monofur");
+        XMLPortParam(HUDNavigation, "textSize", setTextSize, getTextSize, xmlElement, mode).defaultValues(0.05f);
+        XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode)
+            .defaultValues(0.05f);
+        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode)
+            .defaultValues(0.04f);
     }
 
     void HUDNavigation::setFont(const std::string& font)

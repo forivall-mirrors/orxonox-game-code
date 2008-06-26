@@ -65,9 +65,6 @@ namespace orxonox
 
     void HUDRadar::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        if (mode == XMLPort::LoadObject)
-            this->bCorrectAspect_ = true;
-
         OrxonoxOverlay::XMLPort(xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
@@ -78,14 +75,17 @@ namespace orxonox
             overlay_->add2D(marker_);
             marker_->hide();
 
-            this->sensitivity_ = 1.0f;
-            this->halfDotSizeDistance_ = 3000.0f;
-            this->maximumDotSize_ = 0.1;
+            this->setRadarSensitivity(1.0f);
+            this->setHalfDotSizeDistance(3000.0f);
+            this->setMaximumDotSize(0.1f);
         }
 
-        XMLPortParam(HUDRadar, "sensitivity", setRadarSensitivity, getRadarSensitivity, xmlElement, mode);
-        XMLPortParam(HUDRadar, "halfDotSizeDistance", setHalfDotSizeDistance, getHalfDotSizeDistance, xmlElement, mode);
-        XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlElement, mode);
+        XMLPortParam(HUDRadar, "sensitivity", setRadarSensitivity, getRadarSensitivity, xmlElement, mode)
+            .defaultValues(1.0f);
+        XMLPortParam(HUDRadar, "halfDotSizeDistance", setHalfDotSizeDistance, getHalfDotSizeDistance,
+            xmlElement, mode).defaultValues(3000.0f);
+        XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlElement, mode)
+            .defaultValues(0.1f);
 
         shapeMaterials_[RadarViewable::Dot]      = "RadarSquare.tga";
         shapeMaterials_[RadarViewable::Triangle] = "RadarSquare.tga";

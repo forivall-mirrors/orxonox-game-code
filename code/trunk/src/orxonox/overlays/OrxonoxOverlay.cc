@@ -95,15 +95,6 @@ namespace orxonox
 
         if (mode == XMLPort::LoadObject)
         {
-            // set some default values
-            this->windowAspectRatio_ = 1.0f;
-            this->bCorrectAspect_    = false;
-            this->size_              = Vector2(1.0f, 1.0f);
-            this->sizeCorrection_    = Vector2(1.0f, 1.0f);
-            this->position_          = Vector2(0.0f, 0.0f);
-            this->pickPoint_         = Vector2(0.0f, 0.0f);
-            this->angle_             = Radian(0.0f);
-
             // add this overlay to the static map of OrxonoxOverlays
             if (overlays_s.find(this->getName()) != overlays_s.end())
             {
@@ -121,30 +112,33 @@ namespace orxonox
                 "OrxonoxOverlay_background_" + convertToString(hudOverlayCounter_s++)));
             this->overlay_->add2D(this->background_);
 
-            // We'll have to get the aspect ratio for the first. Afterwards windowResized() gets
+            // We'll have to get the aspect ratio manually for the first time. Afterwards windowResized() gets
             // called automatically by the GraphicsEngine.
             this->windowResized(GraphicsEngine::getSingleton().getWindowWidth(),
                 GraphicsEngine::getSingleton().getWindowHeight());
-        }
 
-        XMLPortParam(OrxonoxOverlay, "correctAspect", setAspectCorrection, getAspectCorrection, xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "size", setSize, getSize, xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "rotation", setRotation, getRotation, xmlElement, mode);
-        // see setPickPoint()
-        XMLPortParam(OrxonoxOverlay, "pickPoint", setPickPoint, getPickPoint, xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "position", setPosition, getPosition, xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "background", setBackgroundMaterial, getBackgroundMaterial, xmlElement, mode);
-
-        if (mode == XMLPort::LoadObject)
-        {
-            // call all the virtual 'setters'
             this->changedVisibility();
-            this->angleChanged();
-            this->sizeCorrectionChanged();
-            this->sizeChanged();
-            // probably gets called 4 times (by all the methods), but sizeChanged() could be overwritten.
-            this->positionChanged();
+
+            this->setSize(Vector2(0.5f, 0.5f));
+            this->setPickPoint(Vector2(0.5f, 0.5f));
+            this->setPosition(Vector2(0.5f, 0.5f));
+            this->setRotation(Degree(0.0f));
+            this->setAspectCorrection(true);
+            this->setBackgroundMaterial("");
         }
+
+        XMLPortParam(OrxonoxOverlay, "size",      setSize,      getSize,      xmlElement, mode)
+            .defaultValues(Vector2(0.5f, 0.5f));
+        XMLPortParam(OrxonoxOverlay, "pickPoint", setPickPoint, getPickPoint, xmlElement, mode)
+            .defaultValues(Vector2(0.0f, 0.0f));
+        XMLPortParam(OrxonoxOverlay, "position",  setPosition,  getPosition,  xmlElement, mode)
+            .defaultValues(Vector2(0.0f, 0.0f));
+        XMLPortParam(OrxonoxOverlay, "rotation",  setRotation,  getRotation,  xmlElement, mode)
+            .defaultValues(0.0f);
+        XMLPortParam(OrxonoxOverlay, "correctAspect", setAspectCorrection,   getAspectCorrection,   xmlElement, mode)
+            .defaultValues(true);
+        XMLPortParam(OrxonoxOverlay, "background",    setBackgroundMaterial, getBackgroundMaterial, xmlElement, mode)
+            .defaultValues("");
     }
 
     //! Only sets the background material name if not ""

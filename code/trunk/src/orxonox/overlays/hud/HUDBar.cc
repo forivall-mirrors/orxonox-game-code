@@ -54,8 +54,15 @@ namespace orxonox
     {
         BaseObject::XMLPort(xmlElement, mode);
 
-        XMLPortParam(BarColour, "colour", setColour, getColour, xmlElement, mode);
-        XMLPortParam(BarColour, "position", setPosition, getPosition, xmlElement, mode);
+        if (mode == XMLPort::LoadObject)
+        {
+            this->setColour(ColourValue(1.0, 1.0, 1.0, 1.0));
+            this->setPosition(0.0f);
+        }
+
+        XMLPortParam(BarColour, "colour", setColour, getColour, xmlElement, mode)
+            .defaultValues(ColourValue(1.0, 1.0, 1.0, 1.0));
+        XMLPortParam(BarColour, "position", setPosition, getPosition, xmlElement, mode).defaultValues(0.0f);
     }
 
 
@@ -89,30 +96,24 @@ namespace orxonox
             // use the default colour
             this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2, 0.7, 0.2));
 
-            // create bar
-            barWidth_s = 0.88f;
-            barHeight_s = 1.0f;
-            barOffsetLeft_s = 0.06f;
-            barOffsetTop_s = 0.0f;
-
             this->bar_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
                 .createOverlayElement("Panel", "HUDBar_bar_" + getUniqueNumberStr()));
             this->bar_->setMaterialName(materialname);
             this->background_->addChild(bar_);
 
-            this->setValue(0);
-            this->autoColour_ = true;
-            this->right2Left_ = false; // default is left to right progress
+            this->setValue(0.0f);
+            this->setRightToLeft(false);
+            this->setAutoColour(true);
         }
 
-        XMLPortParamLoadOnly(HUDBar, "value", setValue, xmlElement, mode);
-        XMLPortParam(HUDBar, "right2left", setRightToLeft, getRightToLeft, xmlElement, mode);
+        XMLPortParam(HUDBar, "initialValue", setValue,       getValue,       xmlElement, mode).defaultValues(0.0f);
+        XMLPortParam(HUDBar, "rightToLeft",   setRightToLeft, getRightToLeft, xmlElement, mode).defaultValues(false);
+        XMLPortParam(HUDBar, "autoColour",   setAutoColour,  getAutoColour,  xmlElement, mode).defaultValues(true);
         XMLPortObject(HUDBar, BarColour, "", addColour, getColour, xmlElement, mode, false, true);
     }
 
-    void HUDBar::setValue(float value)
+    void HUDBar::valueChanged()
     {
-        this->value_ = clamp<float>(value, 0, 1);
         if (this->autoColour_ && this->textureUnitState_)
         {
             // set colour
@@ -152,14 +153,14 @@ namespace orxonox
         if (this->right2Left_)
         {
             // backward casew
-            this->bar_->setPosition(barOffsetLeft_s + barWidth_s * (1 - this->value_), barOffsetTop_s);
-            this->bar_->setDimensions(barWidth_s * this->value_, barHeight_s);
+            this->bar_->setPosition(0.06f + 0.88f * (1 - this->value_), 0.0f);
+            this->bar_->setDimensions(0.88f * this->value_, 1.0f);
         }
         else
         {
             // default case
-            this->bar_->setPosition(barOffsetLeft_s, barOffsetTop_s);
-            this->bar_->setDimensions(barWidth_s * this->value_, barHeight_s);
+            this->bar_->setPosition(0.06f, 0.0f);
+            this->bar_->setDimensions(0.88f * this->value_, 1.0f);
         }
         if (this->value_ != 0)
             this->bar_->setTiling(this->value_, 1.0);

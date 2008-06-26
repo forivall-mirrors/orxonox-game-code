@@ -58,8 +58,7 @@ namespace orxonox
 
     /**
         @brief XML loading and saving.
-    @p
-    aram xmlelement The XML-element
+        @param xmlelement The XML-element
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
@@ -99,6 +98,7 @@ namespace orxonox
     void Model::changedVisibility()
     {
         WorldEntity::changedVisibility();
-        this->mesh_.setVisible(this->isVisible());
+        if (this->isInitialized())
+            this->mesh_.setVisible(this->isVisible());
     }
 }

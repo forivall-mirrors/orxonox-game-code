@@ -59,6 +59,7 @@ namespace orxonox
         float position_;
     };
 
+
     class _OrxonoxExport HUDBar : public OrxonoxOverlay
     {
     public:
@@ -67,15 +68,19 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-        virtual void setValue(float value);
         void clearColours();
 
-        inline void setRightToLeft(bool r2l)
-        { this->right2Left_ = r2l; this->setValue(this->value_); }
-        inline bool getRightToLeft() const
-        { return this->right2Left_; }
-        inline float getValue() const
-        { return this->value_; }
+        void setRightToLeft(bool r2l) { this->right2Left_ = r2l; this->valueChanged(); }
+        bool getRightToLeft() const   { return this->right2Left_; }
+
+        void setValue(float value)    { this->value_ = clamp(value, 0.0f, 1.0f); this->valueChanged(); }
+        float getValue() const        { return this->value_; }
+
+        void setAutoColour(bool val)  { this->autoColour_ = val; this->valueChanged(); }
+        bool getAutoColour() const    { return this->autoColour_; }
+
+    protected:
+        virtual void valueChanged();
 
     private:
         void addColour(BarColour* colour);
@@ -89,11 +94,6 @@ namespace orxonox
         Ogre::TextureUnitState* textureUnitState_;
         std::map<float, ColourValue> colours_;
         std::vector<BarColour*> barColours_;
-
-        float barWidth_s;
-        float barHeight_s;
-        float barOffsetLeft_s;
-        float barOffsetTop_s;
 
         static unsigned int materialcount_s;
     };
