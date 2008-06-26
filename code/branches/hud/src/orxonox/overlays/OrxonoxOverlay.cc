@@ -290,7 +290,7 @@ namespace orxonox
         Scales an overlay by its name.
     @param name
         The name of the overlay defined BaseObject::setName() (usually done with the "name"
-        attribute in the xml file.
+        attribute in the xml file).
     */
     /*static*/ void OrxonoxOverlay::scaleOverlay(const std::string& name, float scale)
     {
@@ -304,7 +304,7 @@ namespace orxonox
         Scrolls an overlay by its name.
     @param name
         The name of the overlay defined BaseObject::setName() (usually done with the "name"
-        attribute in the xml file.
+        attribute in the xml file).
     */
     /*static*/ void OrxonoxOverlay::scrollOverlay(const std::string& name, const Vector2& scroll)
     {
@@ -318,7 +318,7 @@ namespace orxonox
         Rotates an overlay by its name.
     @param name
         The name of the overlay defined BaseObject::setName() (usually done with the "name"
-        attribute in the xml file.
+        attribute in the xml file).
     */
     /*static*/ void OrxonoxOverlay::rotateOverlay(const std::string& name, const Degree& angle)
     {

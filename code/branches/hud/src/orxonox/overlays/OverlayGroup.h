@@ -26,6 +26,11 @@
  *
  */
 
+/**
+@file
+@brief Declaration of the OverlayGroup class.
+*/
+
 #ifndef _OverlayGroup_H__
 #define _OverlayGroup_H__
 
@@ -38,34 +43,45 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+        OverlayGroup does almost exactly what it says: It groups OrxonoxOverlays together.
+        You can scroll the entire group by a certain amount. Scale however works differently
+        than expected: Each OrxonoxOverlay scales individually. That's quite useful when you
+        create your HUD with an OverlayGroup and then want to alter its size.
+    */
     class _OrxonoxExport OverlayGroup : public BaseObject
     {
     public:
         OverlayGroup();
-        ~OverlayGroup();
+        //! Empty destructor.
+        ~OverlayGroup() { }
 
         void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
         static void toggleVisibility(const std::string& name);
         static void scaleGroup(const std::string& name, float scale);
         static void scrollGroup(const std::string& name, const Vector2& scroll);
-        static void rotateGroup(const std::string& name, Radian angle);
 
     private:
+        //! Scales each OrxonoxOverlay individually by scale.
         void scale(const Vector2& scale) { this->setScale(scale * this->scale_); }
         void setScale(const Vector2& scale);
+        //! Returns the current size of the group.
         Vector2 getScale() const { return this->scale_; }
 
+        //! Scrolls each OrxonoxOverlay individually by scroll.
         void scroll(const Vector2& scroll) { this->setScroll(scroll + this->scroll_); }
         void setScroll(const Vector2& scroll);
+        //! Returns the current scrolling offset of the group.
         Vector2 getScroll() const { return this->scale_; }
 
         void addElement(OrxonoxOverlay* element);
         OrxonoxOverlay* getElement(unsigned int index);
 
-        std::map<std::string, OrxonoxOverlay*> hudElements_;
-        Vector2 scale_;
-        Vector2 scroll_;
+        std::map<std::string, OrxonoxOverlay*> hudElements_;    //!< Contains all the OrxonoxOverlays of the this group.
+        Vector2 scale_;                                         //!< Current scale (independant of the elements).
+        Vector2 scroll_;                                        //!< Current scrolling offset.
     };
 }
 

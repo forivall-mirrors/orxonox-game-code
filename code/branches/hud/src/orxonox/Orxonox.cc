@@ -440,7 +440,8 @@ namespace orxonox
 
     unsigned long frameCount = 0;
     
-    const unsigned long refreshTime = 3000000;
+    // TODO: this would very well fit into a configValue
+    const unsigned long refreshTime = 200000;
     unsigned long refreshStartTime = 0;
     unsigned long tickTime = 0;
     unsigned long oldFrameCount = 0;

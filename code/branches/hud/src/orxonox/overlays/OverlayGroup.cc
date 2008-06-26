@@ -26,6 +26,11 @@
  *
  */
 
+/**
+@file
+@brief Definition of the OverlayGroup class.
+*/
+
 #include "OrxonoxStableHeaders.h"
 #include "OverlayGroup.h"
 
@@ -44,24 +49,34 @@ namespace orxonox
     SetConsoleCommand(OverlayGroup, scrollGroup, false).setAccessLevel(AccessLevel::User);
 
     OverlayGroup::OverlayGroup()
-        : scale_(1.0, 1.0)
     {
         RegisterObject(OverlayGroup);
     }
 
-    OverlayGroup::~OverlayGroup()
-    {
-    }
-
+    /**
+    @brief
+        Loads the group and all its children OrxonoxOverlays.
+    @copydoc
+        BaseObject::XMLPort()
+    */
     void OverlayGroup::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         BaseObject::XMLPort(xmlElement, mode);
 
+        if (mode == XMLPort::LoadObject)
+        {
+            // set default values
+            this->scale_  = Vector2(1.0, 1.0);
+            this->scroll_ = Vector2(0.0, 0.0);
+        }
+
         XMLPortParam(OverlayGroup, "scale", setScale, getScale, xmlElement, mode);
         XMLPortParam(OverlayGroup, "scroll", setScroll, getScroll, xmlElement, mode);
+        // loads all the child elements
         XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlElement, mode, false, true);
     }
 
+    //! Scales every element in the map.
     void OverlayGroup::setScale(const Vector2& scale)
     {
         for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
@@ -69,6 +84,7 @@ namespace orxonox
         this->scale_ = scale;
     }
 
+    //! Scrolls every element in the map.
     void OverlayGroup::setScroll(const Vector2& scroll)
     {
         for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
@@ -76,6 +92,12 @@ namespace orxonox
         this->scroll_ = scroll;
     }
 
+    /**
+    @brief
+        Adds an element to the map (used when loading with XMLPort).
+    @remarks
+        The names of the OrxonoxOverlays have to be unique!
+    */
     void OverlayGroup::addElement(OrxonoxOverlay* element)
     {
         if (hudElements_.find(element->getName()) != hudElements_.end())
@@ -86,6 +108,7 @@ namespace orxonox
             hudElements_[element->getName()] = element;
     }
 
+    //! Returns a different element as long as index < hudElements_.size().
     OrxonoxOverlay* OverlayGroup::getElement(unsigned int index)
     {
         if (index < this->hudElements_.size())
@@ -100,6 +123,15 @@ namespace orxonox
     }
 
 
+    //########### Console commands ############
+
+    /**
+    @brief
+        Hides/shows an overlay group by its name.
+    @param name
+        The name of the group defined BaseObject::setName() (usually done with the "name"
+        attribute in the xml file).
+    */
     /*static*/ void OverlayGroup::toggleVisibility(const std::string& name)
     {
         for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
@@ -109,6 +141,13 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Scales an overlay group by its name.
+    @param name
+        The name of the group defined BaseObject::setName() (usually done with the "name"
+        attribute in the xml file).
+    */
     /*static*/ void OverlayGroup::scaleGroup(const std::string& name, float scale)
     {
         for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
@@ -118,6 +157,13 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Scrolls an overlay group by its name.
+    @param name
+        The name of the group defined BaseObject::setName() (usually done with the "name"
+        attribute in the xml file).
+    */
     /*static*/ void OverlayGroup::scrollGroup(const std::string& name, const Vector2& scroll)
     {
         for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
