@@ -219,6 +219,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\Backlight.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\BillboardProjectile.cc"
 					>
 				</File>
@@ -514,6 +518,10 @@
 				>
 				<File
 					RelativePath="..\..\src\orxonox\objects\Ambient.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\Backlight.h"
 					>
 				</File>
 				<File
