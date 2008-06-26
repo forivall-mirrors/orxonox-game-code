@@ -112,9 +112,6 @@ namespace orxonox
 
     void HUDBar::setValue(float value)
     {
-        if (value == this->value_)
-            return;
-
         this->value_ = clamp<float>(value, 0, 1);
         if (this->autoColour_ && this->textureUnitState_)
         {

@@ -52,8 +52,9 @@ namespace orxonox
         if (ship)
         {
             float v = ship->getVelocity().length();
-            float vmax = ship->getMaxSpeed();
-            this->setValue(v/vmax);
+            float value = v / ship->getMaxSpeed();
+			if (value != this->getValue())
+                this->setValue(value);
         }
     }
 }

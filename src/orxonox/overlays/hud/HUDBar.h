@@ -71,7 +71,7 @@ namespace orxonox
         void clearColours();
 
         inline void setRightToLeft(bool r2l)
-        { this->right2Left_ = r2l; }
+        { this->right2Left_ = r2l; this->setValue(this->value_); }
         inline bool getRightToLeft() const
         { return this->right2Left_; }
         inline float getValue() const
