@@ -54,12 +54,6 @@ namespace orxonox
     {
         BaseObject::XMLPort(xmlElement, mode);
 
-        if (mode == XMLPort::LoadObject)
-        {
-            this->setColour(ColourValue(1.0, 1.0, 1.0, 1.0));
-            this->setPosition(0.0f);
-        }
-
         XMLPortParam(BarColour, "colour", setColour, getColour, xmlElement, mode)
             .defaultValues(ColourValue(1.0, 1.0, 1.0, 1.0));
         XMLPortParam(BarColour, "position", setPosition, getPosition, xmlElement, mode).defaultValues(0.0f);
@@ -100,14 +94,10 @@ namespace orxonox
                 .createOverlayElement("Panel", "HUDBar_bar_" + getUniqueNumberStr()));
             this->bar_->setMaterialName(materialname);
             this->background_->addChild(bar_);
-
-            this->setValue(0.0f);
-            this->setRightToLeft(false);
-            this->setAutoColour(true);
         }
 
-        XMLPortParam(HUDBar, "initialValue", setValue,       getValue,       xmlElement, mode).defaultValues(0.0f);
-        XMLPortParam(HUDBar, "rightToLeft",   setRightToLeft, getRightToLeft, xmlElement, mode).defaultValues(false);
+        XMLPortParam(HUDBar, "initialValue", setValue,       getValue,       xmlElement, mode).defaultValues(0.4567654f);
+        XMLPortParam(HUDBar, "rightToLeft",  setRightToLeft, getRightToLeft, xmlElement, mode).defaultValues(false);
         XMLPortParam(HUDBar, "autoColour",   setAutoColour,  getAutoColour,  xmlElement, mode).defaultValues(true);
         XMLPortObject(HUDBar, BarColour, "", addColour, getColour, xmlElement, mode, false, true);
     }

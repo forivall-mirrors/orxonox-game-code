@@ -151,6 +151,8 @@ namespace orxonox
                             else
                                 this->parseResult_ = PR_waiting_for_default_values;
                         }
+                        else
+                            this->parseResult_ = PR_waiting_for_default_values;
                     }
                     catch (ticpp::Exception& ex)
                     {

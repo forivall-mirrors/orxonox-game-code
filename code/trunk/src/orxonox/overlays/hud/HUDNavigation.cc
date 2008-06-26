@@ -93,11 +93,6 @@ namespace orxonox
 
             // hide at first
             this->setVisible(false);
-
-            this->setFont("Monofur");
-            this->setTextSize(0.05f);
-            this->setNavMarkerSize(0.05f);
-            this->setAimMarkerSize(0.04f);
         }
 
         XMLPortParam(HUDNavigation, "font",     setFont,     getFont,     xmlElement, mode).defaultValues("Monofur");
