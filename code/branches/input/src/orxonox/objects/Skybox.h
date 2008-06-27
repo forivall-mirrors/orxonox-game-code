@@ -42,10 +42,10 @@ namespace orxonox
             Skybox();
             virtual ~Skybox();
 
-            void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void changedVisibility();
             void setSkybox(const std::string& skyboxname);
-            
+
             virtual bool create();
             void registerAllVariables();
             void setSkyboxSrc(const std::string &src);

@@ -32,33 +32,31 @@
 #include "OrxonoxPrereqs.h"
 
 #include "WorldEntity.h"
-#include "../tools/BillboardSet.h"
-#include "../tools/Timer.h"
-#include "util/Math.h"
+#include "tools/Timer.h"
 
 namespace orxonox
 {
     class _OrxonoxExport Projectile : public WorldEntity
     {
         public:
-            Projectile(SpaceShip* owner = 0);
             virtual ~Projectile();
             void setConfigValues();
             void destroyObject();
             virtual void tick(float dt);
-            virtual bool create(){return WorldEntity::create();}
-            void setColour(const ColourValue& colour);
 
             static float getSpeed()
                 { return Projectile::speed_; }
 
         protected:
+            Projectile(SpaceShip* owner = 0);
             SpaceShip* owner_;
 
         private:
-            BillboardSet billboard_;
+            std::string explosionTemplateName_;
+            std::string smokeTemplateName_;
             static float speed_;
             float lifetime_;
+            float damage_;
             Timer<Projectile> destroyTimer_;
     };
 }

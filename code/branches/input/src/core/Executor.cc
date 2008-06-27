@@ -29,6 +29,7 @@
 
 #include "Executor.h"
 #include "util/Math.h"
+#include "util/Convert.h"
 #include "Language.h"
 
 namespace orxonox
@@ -135,7 +136,7 @@ namespace orxonox
             if (!this->bAddedDescriptionParam_[param])
             {
                 std::string paramnumber;
-                if (!Convert::ToString(&paramnumber, param))
+                if (!convertValue(&paramnumber, param))
                     return (*this);
 
                 this->descriptionParam_[param] = std::string("ExecutorDescription::" + this->name_ + "::param" + paramnumber);

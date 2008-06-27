@@ -68,16 +68,19 @@
 #include "network/Client.h"
 
 // objects and tools
-#include "hud/HUD.h"
+#include "overlays/OverlayGroup.h"
+#include "overlays/console/InGameConsole.h"
 #include "objects/Tickable.h"
+#include "objects/Backlight.h"
+#include "tools/ParticleInterface.h"
 
 #include "GraphicsEngine.h"
 #include "Settings.h"
+#include "Radar.h"
 
-// FIXME: is this really file scope?
 // globals for the server or client
-network::Client *client_g = 0;
-network::Server *server_g = 0;
+static network::Client *client_g = 0;
+static network::Server *server_g = 0;
 
 namespace orxonox
 {
@@ -93,18 +96,18 @@ namespace orxonox
   /**
    * Create a new instance of Orxonox. Avoid doing any actual work here.
    */
-  Orxonox::Orxonox() :
-    ogre_(0),
-    //auMan_(0),
-    timer_(0),
-    // turn on frame smoothing by setting a value different from 0
-    frameSmoothingTime_(0.0f),
-    orxonoxHUD_(0),
-    bAbort_(false),
-    timefactor_(1.0f),
-    mode_(STANDALONE),
-    serverIp_(""),
-    serverPort_(NETWORK_PORT)
+  Orxonox::Orxonox()
+    : ogre_(0)
+    , startLevel_(0)
+    , hud_(0)
+    , radar_(0)
+    //, auMan_(0)
+    , timer_(0)
+    , bAbort_(false)
+    , timefactor_(1.0f)
+    , mode_(STANDALONE)
+    , serverIp_("")
+    , serverPort_(NETWORK_PORT)
   {
   }
 
@@ -114,14 +117,24 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // keep in mind: the order of deletion is very important!
-//    if (this->orxonoxHUD_)
-//      delete this->orxonoxHUD_;
+    Loader::unload(startLevel_);
+    if (this->startLevel_)
+      delete this->startLevel_;
+
+    Loader::unload(hud_);
+    if (this->hud_)
+      delete this->hud_;
+
+    if (this->radar_)
+      delete this->radar_;
+
     Loader::close();
-    InputManager::destroy();
     //if (this->auMan_)
     //  delete this->auMan_;
+    InGameConsole::getInstance().destroy();
     if (this->timer_)
       delete this->timer_;
+    InputManager::destroy();
     GraphicsEngine::getSingleton().destroy();
 
     if (network::Client::getSingleton())
@@ -158,6 +171,20 @@ namespace orxonox
     if (singletonRef_s)
       delete singletonRef_s;
     singletonRef_s = 0;
+  }
+
+  /**
+    @brief Changes the speed of Orxonox
+  */
+  void Orxonox::setTimeFactor(float factor)
+  {
+    float change = factor / Orxonox::getSingleton()->getTimeFactor();
+    Orxonox::getSingleton()->timefactor_ = factor;
+    for (Iterator<ParticleInterface> it = ObjectList<ParticleInterface>::begin(); it; ++it)
+        it->setSpeedFactor(it->getSpeedFactor() * change);
+
+    for (Iterator<Backlight> it = ObjectList<Backlight>::begin(); it; ++it)
+        it->setTimeFactor(Orxonox::getSingleton()->getTimeFactor());
   }
 
   /**
@@ -250,14 +277,17 @@ namespace orxonox
       if (!ogre_->loadRenderer())    // creates the render window
         return false;
 
+      // TODO: Spread this so that this call only initialises things needed for the Console
+      if (!ogre_->initialiseResources())
+        return false;
+
+      // Load the InGameConsole
+      InGameConsole::getInstance().initialise();
+
       // Calls the InputManager which sets up the input devices.
       // The render window width and height are used to set up the mouse movement.
       if (!InputManager::initialise(ogre_->getWindowHandle(),
             ogre_->getWindowWidth(), ogre_->getWindowHeight(), true, true, true))
-        return false;
-
-      // TODO: Spread this so that this call only initialises things needed for the GUI
-      if (!ogre_->initialiseResources())
         return false;
 
       // TOOD: load the GUI here
@@ -302,7 +332,7 @@ namespace orxonox
 
   /**
    * Loads everything in the scene except for the actual objects.
-   * This includes HUD, Console..
+   * This includes HUD, audio..
    */
   bool Orxonox::loadPlayground()
   {
@@ -315,8 +345,13 @@ namespace orxonox
     //auMan_->ambientStart();
 
     // Load the HUD
-    COUT(3) << "Orxonox: Loading HUD..." << std::endl;
-    orxonoxHUD_ = &HUD::getSingleton();
+    COUT(3) << "Orxonox: Loading HUD" << std::endl;
+    hud_ = new Level(Settings::getDataPath() + "overlay/hud.oxo");
+    Loader::load(hud_);
+
+    // Start the Radar
+    this->radar_ = new Radar();
+
     return true;
   }
 
@@ -325,7 +360,7 @@ namespace orxonox
    */
   bool Orxonox::serverLoad()
   {
-    COUT(2) << "Loading level in server mode" << std::endl;
+    COUT(0) << "Loading level in server mode" << std::endl;
 
     //server_g = new network::Server(serverPort_);
     server_g = network::Server::createSingleton(serverPort_);
@@ -343,7 +378,7 @@ namespace orxonox
    */
   bool Orxonox::clientLoad()
   {
-    COUT(2) << "Loading level in client mode" << std::endl;\
+    COUT(0) << "Loading level in client mode" << std::endl;\
 
     if (serverIp_.compare("") == 0)
       client_g = network::Client::createSingleton();
@@ -363,7 +398,7 @@ namespace orxonox
    */
   bool Orxonox::standaloneLoad()
   {
-    COUT(2) << "Loading level in standalone mode" << std::endl;
+    COUT(0) << "Loading level in standalone mode" << std::endl;
 
     if (!loadScene())
       return false;
@@ -376,9 +411,9 @@ namespace orxonox
    */
   bool Orxonox::loadScene()
   {
-    Level* startlevel = new Level("levels/sample.oxw");
-    Loader::open(startlevel);
-    
+    startLevel_ = new Level("levels/sample.oxw");
+    Loader::open(startLevel_);
+
     return true;
   }
 
@@ -402,91 +437,90 @@ namespace orxonox
     Ogre::Root& ogreRoot = Ogre::Root::getSingleton();
 
 
-    // Contains the times of recently fired events
-    // eventTimes[4] is the list for the times required for the fps counter
-    std::deque<unsigned long> eventTimes[3];
-    // Clear event times
-    for (int i = 0; i < 3; ++i)
-      eventTimes[i].clear();
-
     // use the ogre timer class to measure time.
     if (!timer_)
       timer_ = new Ogre::Timer();
-    timer_->reset();
 
-    float renderTime = 0.0f;
-    float frameTime = 0.0f;
-    clock_t time = 0;
-
-    //Ogre::SceneManager* mSceneMgr = GraphicsEngine::getSingleton().getSceneManager();
-    //Ogre::Viewport* mViewport = mSceneMgr->getCurrentViewport();
+    unsigned long frameCount = 0;
     
-    //Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "Bloom");
-    //Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "MotionBlur");
+    // TODO: this would very well fit into a configValue
+    const unsigned long refreshTime = 200000;
+    unsigned long refreshStartTime = 0;
+    unsigned long tickTime = 0;
+    unsigned long oldFrameCount = 0;
+
+    unsigned long timeBeforeTick = 0;
+    unsigned long timeBeforeTickOld = 0;
+    unsigned long timeAfterTick = 0;
 
     COUT(3) << "Orxonox: Starting the main loop." << std::endl;
+
+    timer_->reset();
     while (!bAbort_)
     {
       // get current time
-      unsigned long now = timer_->getMilliseconds();
+      timeBeforeTickOld = timeBeforeTick;
+      timeBeforeTick    = timer_->getMicroseconds();
+      float dt = (timeBeforeTick - timeBeforeTickOld) / 1000000.0;
 
-      // create an event to pass to the frameStarted method in ogre
-      Ogre::FrameEvent evt;
-      evt.timeSinceLastEvent = calculateEventTime(now, eventTimes[0]);
-      evt.timeSinceLastFrame = calculateEventTime(now, eventTimes[1]);
-      frameTime += evt.timeSinceLastFrame;
 
-      // show the current time in the HUD
-      // HUD::getSingleton().setTime(now);
-      if (mode_ != DEDICATED && frameTime > 0.4f)
-      {
-        HUD::getSingleton().setRenderTimeRatio(renderTime / frameTime);
-        frameTime = 0.0f;
-        renderTime = 0.0f;
-      }
+      // tick the core (needs real time for input and tcl thread management)
+      Core::tick(dt);
 
-      // tick the core
-      Core::tick((float)evt.timeSinceLastFrame);
       // Call those objects that need the real time
       for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
-        it->tick((float)evt.timeSinceLastFrame);
+        it->tick(dt);
       // Call the scene objects
       for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
-        it->tick((float)evt.timeSinceLastFrame * this->timefactor_);
-      //AudioManager::tick();
+        it->tick(dt * this->timefactor_);
+
+      // call server/client with normal dt
       if (client_g)
-        client_g->tick((float)evt.timeSinceLastFrame);
+        client_g->tick(dt * this->timefactor_);
       if (server_g)
-        server_g->tick((float)evt.timeSinceLastFrame);
+        server_g->tick(dt * this->timefactor_);
+
+
+      // get current time once again
+      timeAfterTick = timer_->getMicroseconds();
+
+      tickTime += timeAfterTick - timeBeforeTick;
+      if (timeAfterTick > refreshStartTime + refreshTime)
+      {
+        GraphicsEngine::getSingleton().setAverageTickTime(
+            (float)tickTime * 0.001 / (frameCount - oldFrameCount));
+        GraphicsEngine::getSingleton().setAverageFramesPerSecond(
+            (float)(frameCount - oldFrameCount) / (timeAfterTick - refreshStartTime) * 1000000.0);
+        oldFrameCount = frameCount;
+        tickTime = 0;
+        refreshStartTime = timeAfterTick;
+      }
+
 
       // don't forget to call _fireFrameStarted in ogre to make sure
       // everything goes smoothly
+      Ogre::FrameEvent evt;
+      evt.timeSinceLastFrame = dt;
+      evt.timeSinceLastEvent = dt; // note: same time, but shouldn't matter anyway
       ogreRoot._fireFrameStarted(evt);
-
-      // get current time
-      now = timer_->getMilliseconds();
-      calculateEventTime(now, eventTimes[2]);
 
       if (mode_ != DEDICATED)
       {
         // Pump messages in all registered RenderWindows
         // This calls the WindowEventListener objects.
         Ogre::WindowEventUtilities::messagePump();
+        // make sure the window stays active even when not focused
+        // (probably only necessary on windows)
+        GraphicsEngine::getSingleton().setWindowActivity(true);
 
         // render
         ogreRoot._updateAllRenderTargets();
       }
 
-      // get current time
-      now = timer_->getMilliseconds();
-
-      // create an event to pass to the frameEnded method in ogre
-      evt.timeSinceLastEvent = calculateEventTime(now, eventTimes[0]);
-      renderTime += calculateEventTime(now, eventTimes[2]);
-
       // again, just to be sure ogre works fine
-      ogreRoot._fireFrameEnded(evt);
-      //msleep(200);
+      ogreRoot._fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
+
+      ++frameCount;
     }
 
     if (mode_ == CLIENT)
@@ -495,43 +529,5 @@ namespace orxonox
       server_g->close();
 
     return true;
-  }
-
-  /**
-    Method for calculating the average time between recently fired events.
-    Code directly taken from OgreRoot.cc
-    @param now The current time in ms.
-    @param type The type of event to be considered.
-  */
-  float Orxonox::calculateEventTime(unsigned long now, std::deque<unsigned long> &times)
-  {
-    // Calculate the average time passed between events of the given type
-    // during the last frameSmoothingTime_ seconds.
-
-    times.push_back(now);
-
-    if(times.size() == 1)
-      return 0;
-
-    // Times up to frameSmoothingTime_ seconds old should be kept
-    unsigned long discardThreshold = (unsigned long)(frameSmoothingTime_ * 1000.0f);
-
-    // Find the oldest time to keep
-    std::deque<unsigned long>::iterator it  = times.begin();
-    // We need at least two times
-    std::deque<unsigned long>::iterator end = times.end() - 2;
-
-    while(it != end)
-    {
-      if (now - *it > discardThreshold)
-        ++it;
-      else
-        break;
-    }
-
-    // Remove old times
-    times.erase(times.begin(), it);
-
-    return (float)(times.back() - times.front()) / ((times.size() - 1) * 1000);
   }
 }

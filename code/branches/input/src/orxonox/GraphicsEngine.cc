@@ -49,13 +49,16 @@
 #include "core/Debug.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
-#include "core/input/InputManager.h"
 
-#include "console/InGameConsole.h"
+#include "overlays/console/InGameConsole.h"
+#include "overlays/OverlayGroup.h"
+#include "tools/ParticleInterface.h"
 #include "Settings.h"
+#include "tools/WindowEventListener.h"
 
 
-namespace orxonox {
+namespace orxonox
+{
   /**
     @brief Returns the singleton instance and creates it the first time.
     @return The only instance of GraphicsEngine.
@@ -76,6 +79,8 @@ namespace orxonox {
   {
     RegisterObject(GraphicsEngine);
 
+    this->detailLevelParticle_ = 0;
+
     this->setConfigValues();
     CCOUT(4) << "Constructed" << std::endl;
   }
@@ -90,6 +95,13 @@ namespace orxonox {
     SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
     SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
     SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
+
+    unsigned int old = this->detailLevelParticle_;
+    SetConfigValue(detailLevelParticle_, 2).description("O: off, 1: low, 2: normal, 3: high");
+
+    if (this->detailLevelParticle_ != old)
+      for (Iterator<ParticleInterface> it = ObjectList<ParticleInterface>::begin(); it; ++it)
+        it->detailLevelChanged(this->detailLevelParticle_);
   }
 
   /**
@@ -423,12 +435,13 @@ namespace orxonox {
   }
 
   /**
-  * Window has resized.
+  * Window has moved.
   * @param rw The render window it occured in
   */
   void GraphicsEngine::windowMoved(Ogre::RenderWindow *rw)
   {
-    // note: this doesn't change the window extents
+    for (Iterator<orxonox::WindowEventListener> it = ObjectList<orxonox::WindowEventListener>::start(); it; ++it)
+      it->windowMoved();
   }
 
   /**
@@ -439,29 +452,27 @@ namespace orxonox {
   */
   void GraphicsEngine::windowResized(Ogre::RenderWindow *rw)
   {
-    // change the mouse clipping size for absolute mouse movements
-    int w = rw->getWidth();
-    int h = rw->getHeight();
-    InputManager::setWindowExtents(w, h);
-    InGameConsole::getInstance().resize();
+    for (Iterator<orxonox::WindowEventListener> it = ObjectList<orxonox::WindowEventListener>::start(); it; ++it)
+      it->windowResized(this->renderWindow_->getWidth(), this->renderWindow_->getHeight());
   }
 
   /**
-  * Window has resized.
+  * Window has changed Focus.
   * @param rw The render window it occured in
   */
   void GraphicsEngine::windowFocusChanged(Ogre::RenderWindow *rw)
   {
-    // note: this doesn't change the window extents
+    for (Iterator<orxonox::WindowEventListener> it = ObjectList<orxonox::WindowEventListener>::start(); it; ++it)
+      it->windowFocusChanged();
   }
 
   /**
-  * Window has resized.
+  * Window was closed.
   * @param rw The render window it occured in
   */
   void GraphicsEngine::windowClosed(Ogre::RenderWindow *rw)
   {
-    // using CommandExecutor in order to avoid depending on Orxonox class.
+    // using CommandExecutor in order to avoid depending on Orxonox.h.
     CommandExecutor::execute("exit", false);
   }
 

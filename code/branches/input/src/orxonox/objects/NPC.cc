@@ -46,11 +46,6 @@ namespace orxonox {
   {
   }
 
-  void NPC::loadParams(TiXmlElement* xmlElem)
-  {
-    Model::loadParams(xmlElem);
-  }
-
   /**
    * function to chance values of an element
    */

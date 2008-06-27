@@ -44,39 +44,45 @@ namespace orxonox
 
     unsigned int WorldEntity::worldEntityCounter_s = 0;
 
-    WorldEntity::WorldEntity() :
-      velocity_    (0, 0, 0),
-      acceleration_(0, 0, 0),
-      rotationAxis_(0, 1, 0),
-      rotationRate_(0),
-      momentum_    (0),
-      node_        (0),
-      bStatic_     (true)
+    WorldEntity::WorldEntity()
     {
         RegisterObject(WorldEntity);
 
         if (GraphicsEngine::getSingleton().getSceneManager())
         {
-          std::ostringstream name;
-          name << (WorldEntity::worldEntityCounter_s++);
-          this->setName("WorldEntity" + name.str());
-          this->node_ = GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
+            std::ostringstream name;
+            name << (WorldEntity::worldEntityCounter_s++);
+            this->setName("WorldEntity" + name.str());
+            this->node_ = GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
 
-          registerAllVariables();
+            registerAllVariables();
         }
+        else
+        {
+            this->node_ = 0;
+        }
+
+        this->bStatic_ = true;
+        this->velocity_ = Vector3(0, 0, 0);
+        this->acceleration_ = Vector3(0, 0, 0);
+        this->rotationAxis_ = Vector3(0, 1, 0);
+        this->rotationRate_ = 0;
+        this->momentum_ = 0;
     }
-    
+
 
     WorldEntity::~WorldEntity()
     {
-      // just to make sure we clean out all scene nodes
-      if(this->getNode())
-        this->getNode()->removeAndDestroyAllChildren();
+        if (this->isInitialized())
+        {
+            this->getNode()->removeAndDestroyAllChildren();
+            GraphicsEngine::getSingleton().getSceneManager()->destroySceneNode(this->getName());
+        }
     }
 
     void WorldEntity::tick(float dt)
     {
-        if (!this->bStatic_)
+        if (!this->bStatic_ && this->isActive())
         {
 //             COUT(4) << "acceleration: " << this->acceleration_ << " velocity: " << this->velocity_ << std::endl;
             this->velocity_ += (dt * this->acceleration_);
@@ -88,13 +94,6 @@ namespace orxonox
         }
     }
 
-    void WorldEntity::loadParams(TiXmlElement* xmlElem)
-    {
-
-        BaseObject::loadParams(xmlElem);
-        create();
-    }
-    
 
     void WorldEntity::setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll)
     {
@@ -121,13 +120,16 @@ namespace orxonox
         XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, mode);
 
         XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, mode, false, true);
-        
+
         WorldEntity::create();
     }
 
 
     void WorldEntity::registerAllVariables()
     {
+      // register inheritec variables from BaseObject
+      registerVar( (void*) &(this->bActive_), sizeof(this->bActive_), network::DATA, 0x3);
+      registerVar( (void*) &(this->bVisible_), sizeof(this->bVisible_), network::DATA, 0x3);
       // register coordinates
       registerVar( (void*) &(this->getPosition().x), sizeof(this->getPosition().x), network::DATA, 0x3);
       registerVar( (void*) &(this->getPosition().y), sizeof(this->getPosition().y), network::DATA, 0x3);
@@ -162,6 +164,7 @@ namespace orxonox
     void WorldEntity::attachWorldEntity(WorldEntity* entity)
     {
         this->attachedWorldEntities_.push_back(entity);
+        this->attachObject(entity);
     }
 
     const WorldEntity* WorldEntity::getAttachedWorldEntity(unsigned int index) const
@@ -170,5 +173,17 @@ namespace orxonox
             return this->attachedWorldEntities_[index];
         else
             return 0;
+    }
+
+    void WorldEntity::attachObject(const WorldEntity& obj) const
+    {
+        GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(obj.getNode());
+        this->getNode()->addChild(obj.getNode());
+    }
+
+    void WorldEntity::attachObject(WorldEntity* obj) const
+    {
+        GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(obj->getNode());
+        this->getNode()->addChild(obj->getNode());
     }
 }

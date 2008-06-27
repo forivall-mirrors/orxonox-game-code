@@ -59,51 +59,72 @@
 // Forward declarations
 //-----------------------------------------------------------------------
 
-namespace orxonox {
-  class GraphicsEngine;
-  class Orxonox;
+namespace orxonox
+{
+    namespace LODParticle
+    {
+        enum LOD
+        {
+            off = 0,
+            low = 1,
+            normal = 2,
+            high = 3
+        };
+    }
 
-  // objects
-  class Ambient;
-  class Camera;
-  class Explosion;
-  class Fighter;
-  class Model;
-  class NPC;
-  class Projectile;
-  class Skybox;
-  class SpaceShip;
-  class SpaceShipAI;
-  class WorldEntity;
+    class GraphicsEngine;
+    class Orxonox;
 
-  class AmmunitionDump;
-  class Bullet;
-  class BulletManager;
-  class BaseWeapon;
-  class BarrelGun;
-  class WeaponStation;
+    class RadarViewable;
+    class Radar;
+    class RadarListener;
 
-  // tools
-  class BillboardSet;
-  class Light;
-  class Mesh;
-  template <class T>
-  class Timer;
-  class TimerBase;
+    // objects
+    class Ambient;
+    class Backlight;
+    class Camera;
+    class Fighter;
+    class Model;
+    class NPC;
+    class ParticleSpawner;
+    class Skybox;
+    class SpaceShip;
+    class SpaceShipAI;
+    class WorldEntity;
 
-  // particle
-  class ParticleInterface;
+    class Projectile;
+    class BillboardProjectile;
+    class RotatingProjectile;
+    class ParticleProjectile;
 
-  // hud
-  class BarOverlayElement;
-  class HUD;
-  class Navigation;
-  class RadarObject;
-  class RadarOverlayElement;
+    // tools
+    class BillboardSet;
+    class Light;
+    class Mesh;
+    class ParticleInterface;
+    template <class T>
+    class Timer;
 
-  //console
-  class InGameConsole;
+    // overlays
+    class BarColour;
+    class DebugFPSText;
+    class DebugRTRText;
+    class HUDBar;
+    class HUDNavigation;
+    class HUDRadar;
+    class HUDSpeedBar;
+    class InGameConsole;
+    class OrxonoxOverlay;
+    class OverlayGroup;
+    class OverlayText;
 }
 
+namespace Ogre
+{
+    // some got forgotten in OgrePrerequisites
+    class BorderPanelOverlayElement;
+    class PanelOverlayElement;
+    class TextAreaOverlayElement;
+}
 
 #endif /* _OrxonoxPrereqs_H__ */

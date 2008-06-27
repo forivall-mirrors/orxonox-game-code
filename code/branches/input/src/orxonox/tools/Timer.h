@@ -77,6 +77,7 @@ namespace orxonox
             ~TimerBase();
 
             void run() const;
+            void deleteExecutor();
 
             /** @brief Starts the Timer: Function-call after 'interval' seconds. */
             inline void startTimer()
@@ -93,6 +94,9 @@ namespace orxonox
             /** @brief Returns true if the Timer is active (= not stoped, not paused). @return True = Time is active */
             inline bool isActive() const
                 { return this->bActive_; }
+            /** @brief Returns the remaining time until the Timer calls the function. @return The remaining time */
+            inline float getRemainingTime() const
+                { return this->time_; }
             /** @brief Gives the Timer some extra time. @param time The amount of extra time in seconds */
             inline void addTime(float time)
                 { this->time_ += time; }
@@ -148,6 +152,8 @@ namespace orxonox
             */
             void setTimer(float interval, bool bLoop, T* object, ExecutorMember<T>* executor)
             {
+                this->deleteExecutor();
+
                 this->interval_ = interval;
                 this->bLoop_ = bLoop;
                 executor->setObject(object);
@@ -184,6 +190,8 @@ namespace orxonox
             */
             void setTimer(float interval, bool bLoop, ExecutorStatic* executor)
             {
+                this->deleteExecutor();
+
                 this->interval_ = interval;
                 this->bLoop_ = bLoop;
                 this->executor_ = (Executor*)executor;

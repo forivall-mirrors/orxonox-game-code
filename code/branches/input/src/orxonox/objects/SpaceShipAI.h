@@ -43,9 +43,14 @@ namespace orxonox
     {
         public:
             SpaceShipAI();
+            virtual ~SpaceShipAI();
+
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             static void createEnemy(int num);
             static void killEnemies(int num);
+            void shipDied(SpaceShipAI* ship);
+            void damage(float damage);
+            void kill();
 
         private:
             virtual void tick(float dt);
@@ -63,7 +68,6 @@ namespace orxonox
 
             Timer<SpaceShipAI> actionTimer_;
 
-            bool alive_;
             bool bHasTargetPosition_;
             Vector3 targetPosition_;
             SpaceShip* target_;

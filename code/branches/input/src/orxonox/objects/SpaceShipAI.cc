@@ -31,11 +31,13 @@
 
 #include <OgreMath.h>
 #include "Projectile.h"
+#include "ParticleSpawner.h"
 #include "core/CoreIncludes.h"
 #include "core/Iterator.h"
 #include "core/Executor.h"
 #include "core/ConsoleCommand.h"
 #include "core/XMLPort.h"
+#include "tools/ParticleInterface.h"
 
 #define ACTION_INTERVAL 1.0f
 
@@ -50,8 +52,6 @@ namespace orxonox
     {
         RegisterObject(SpaceShipAI);
 
-        this->alive_ = true;
-        this->setPosition(Vector3(rnd(-1000, 1000), rnd(-1000, 1000), rnd(-1000, 0000)));
         this->target_ = 0;
         this->bShooting_ = 0;
         this->bHasTargetPosition_ = false;
@@ -69,10 +69,15 @@ namespace orxonox
             this->teamColours_[i] = ColourValue(rnd(), rnd(), rnd(), 1);
     }
 
+    SpaceShipAI::~SpaceShipAI()
+    {
+        for (Iterator<SpaceShipAI> it = ObjectList<SpaceShipAI>::begin(); it; ++it)
+            it->shipDied(this);
+    }
+
     void SpaceShipAI::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SpaceShip::XMLPort(xmlelement, mode);
-        myShip_=true;
 
         this->actionTimer_.setTimer(ACTION_INTERVAL, true, this, createExecutor(createFunctor(&SpaceShipAI::action)));
     }
@@ -84,6 +89,7 @@ namespace orxonox
             SpaceShipAI* newenemy = new SpaceShipAI();
             newenemy->setMesh("assff.mesh");
 //            newenemy->setPosition(0, 0, 0);
+            newenemy->setPosition(Vector3(rnd(-3000, 3000), rnd(-3000, 3000), rnd(-3000, 3000)));
             newenemy->setScale(10);
             newenemy->setMaxSpeed(500);
             newenemy->setMaxSideAndBackSpeed(50);
@@ -94,6 +100,10 @@ namespace orxonox
             newenemy->setRotDamp(1.0);
             Element xmlelement;
             newenemy->XMLPort(xmlelement, XMLPort::LoadObject);
+
+            ParticleSpawner* spawneffect = new ParticleSpawner("Orxonox/fairytwirl", LODParticle::normal, 2.0, 0, 0, newenemy->getOrth());
+            spawneffect->setPosition(newenemy->getPosition() - newenemy->getOrth() * 50);
+            spawneffect->create();
         }
     }
 
@@ -102,8 +112,7 @@ namespace orxonox
         int i = 0;
         for (Iterator<SpaceShipAI> it = ObjectList<SpaceShipAI>::begin(); it; )
         {
-            delete *(it++);
-            ++i;
+            (it++)->kill();
             if (num && i >= num)
                 break;
         }
@@ -121,78 +130,102 @@ namespace orxonox
 
         // search enemy
         random = rnd(maxrand);
-//std::cout << "search enemy: " << random << std::endl;
-        if (random < 20 && (!this->target_))
-        {
+        if (random < 15 && (!this->target_))
             this->searchNewTarget();
-        }
 
         // forget enemy
         random = rnd(maxrand);
-//std::cout << "forget enemy: " << random << std::endl;
         if (random < 5 && (this->target_))
-        {
             this->forgetTarget();
-        }
 
         // next enemy
         random = rnd(maxrand);
-//std::cout << "next enemy: " << random << std::endl;
         if (random < 10 && (this->target_))
-        {
             this->searchNewTarget();
-        }
 
         // fly somewhere
         random = rnd(maxrand);
-//std::cout << "fly somewhere: " << random << std::endl;
-        if (random < 40 && (!this->bHasTargetPosition_ && !this->target_))
-        {
+        if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
             this->searchNewTargetPosition();
-        }
 
         // stop flying
         random = rnd(maxrand);
-//std::cout << "stop flying: " << random << std::endl;
         if (random < 10 && (this->bHasTargetPosition_ && !this->target_))
-        {
             this->bHasTargetPosition_ = false;
-        }
 
         // fly somewhere else
         random = rnd(maxrand);
-//std::cout << "fly somewhere else: " << random << std::endl;
         if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
-        {
             this->searchNewTargetPosition();
-        }
 
         // shoot
         random = rnd(maxrand);
-//std::cout << "shoot: " << random << std::endl;
         if (random < 75 && (this->target_ && !this->bShooting_))
-        {
             this->bShooting_ = true;
-        }
 
         // stop shooting
         random = rnd(maxrand);
-//std::cout << "stop shooting: " << random << std::endl;
         if (random < 25 && (this->bShooting_))
-        {
             this->bShooting_ = false;
+    }
+
+    void SpaceShipAI::damage(float damage)
+    {
+        this->health_ -= damage;
+        if (this->health_ <= 0)
+        {
+            this->kill();
+            SpaceShipAI::createEnemy(1);
         }
+    }
+
+    void SpaceShipAI::kill()
+    {
+        ParticleSpawner* explosion = new ParticleSpawner("Orxonox/BigExplosion1part1", LODParticle::low, 3.0);
+        explosion->setPosition(this->getPosition());
+        explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
+        explosion->setScale(4);
+        explosion->create();
+
+        explosion = new ParticleSpawner("Orxonox/BigExplosion1part2", LODParticle::normal, 3.0);
+        explosion->setPosition(this->getPosition());
+        explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
+        explosion->setScale(4);
+        explosion->create();
+        explosion = new ParticleSpawner("Orxonox/BigExplosion1part2", LODParticle::high, 3.0);
+        explosion->setPosition(this->getPosition());
+        explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
+        explosion->setScale(4);
+        explosion->create();
+
+        Vector3 ringdirection = Vector3(rnd(), rnd(), rnd());
+        ringdirection.normalise();
+        explosion = new ParticleSpawner("Orxonox/BigExplosion1part3", LODParticle::normal, 3.0, 0.5, 0, ringdirection);
+        explosion->setPosition(this->getPosition());
+        explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
+        explosion->setScale(4);
+        explosion->create();
+        explosion = new ParticleSpawner("Orxonox/BigExplosion1part3", LODParticle::high, 3.0, 0.5, 0, ringdirection);
+        explosion->setPosition(this->getPosition());
+        explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
+        explosion->setScale(4);
+        explosion->create();
+
+        delete this;
     }
 
     void SpaceShipAI::tick(float dt)
     {
+        if (!this->isActive())
+            return;
+
         if (this->target_)
             this->aimAtTarget();
 
         if (this->bHasTargetPosition_)
             this->moveToTargetPosition(dt);
 
-        if (this->bShooting_ && this->isCloseAtTarget(2000) && this->isLookingAtTarget(Ogre::Math::PI / 10.0f))
+        if (this->bShooting_ && this->isCloseAtTarget(2500) && this->isLookingAtTarget(Ogre::Math::PI / 20.0))
             this->doFire();
 
         SpaceShip::tick(dt);
@@ -200,25 +233,22 @@ namespace orxonox
 
     void SpaceShipAI::moveToTargetPosition(float dt)
     {
-        static Radian RadianZERO(0);
+        Vector2 coord = get2DViewdirection(this->getPosition(), this->getDir(), this->getOrth(), this->targetPosition_);
 
-//        float dotprod = (this->getOrientation() * Ogre::Vector3::UNIT_X).dotProduct(this->targetPosition_ - this->getPosition());
-        Quaternion rotation = (this->getOrientation() * Ogre::Vector3::UNIT_X).getRotationTo(this->targetPosition_ - this->getPosition());
-/*
-std::cout << "scalprod: " << dotprod << std::endl;
-std::cout << "dist: " << this->targetPosition_ - this->getPosition() << std::endl;
-std::cout << "yaw: " << rotation.getYaw().valueRadians() << std::endl;
-std::cout << "pitch: " << rotation.getPitch().valueRadians() << std::endl;
-std::cout << "roll: " << rotation.getRoll().valueRadians() << std::endl;
-*/
-        this->setMoveYaw(-rotation.getRoll().valueRadians());
-        this->setMovePitch(rotation.getYaw().valueRadians());
-
-        if ((this->targetPosition_ - this->getPosition()).length() > 100)
+        float distance = (this->targetPosition_ - this->getPosition()).length();
+        if (this->target_ || distance > 50)
         {
-            this->setMoveLongitudinal(1);
+            // Multiply with 0.8 to make them a bit slower
+            this->setMoveYaw(0.8 * sgn(coord.x) * coord.x*coord.x);
+            this->setMovePitch(0.8 * sgn(coord.y) * coord.y*coord.y);
         }
 
+        if (this->target_ && distance < 1000 && this->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
+            this->setMoveLongitudinal(-0.5); // They don't brake with full power to give the player a chance
+        else if (!this->target_ && distance <= this->getVelocity().length() / (2 * this->getTransAcc()))
+            this->setMoveLongitudinal(-1.0);
+        else
+            this->setMoveLongitudinal(0.8);
     }
 
     void SpaceShipAI::searchNewTargetPosition()
@@ -240,14 +270,14 @@ std::cout << "roll: " << rotation.getRoll().valueRadians() << std::endl;
                 Vector3 distanceCurrent = this->targetPosition_ - this->getPosition();
                 Vector3 distanceNew = it->getPosition() - this->getPosition();
                 if (!this->target_ || it->getPosition().squaredDistance(this->getPosition()) * (1.5f + acos((this->getOrientation() * Ogre::Vector3::UNIT_X).dotProduct(distanceNew) / speed / distanceNew.length()) / (2 * Ogre::Math::PI))
-                        < this->targetPosition_.squaredDistance(this->getPosition()) * (1.5f + acos((this->getOrientation() * Ogre::Vector3::UNIT_X).dotProduct(distanceCurrent) / speed / distanceCurrent.length()) / (2 * Ogre::Math::PI)))
+                        < this->targetPosition_.squaredDistance(this->getPosition()) * (1.5f + acos((this->getOrientation() * Ogre::Vector3::UNIT_X).dotProduct(distanceCurrent) / speed / distanceCurrent.length()) / (2 * Ogre::Math::PI)) + rnd(-250, 250))
                 {
                     this->target_ = (*it);
                     this->targetPosition_ = it->getPosition();
                 }
             }
         }
-   }
+    }
 
     void SpaceShipAI::forgetTarget()
     {
@@ -259,35 +289,30 @@ std::cout << "roll: " << rotation.getRoll().valueRadians() << std::endl;
     {
         if (!this->target_)
             return;
-/*
-        Vector3 enemymovement = this->target_->getVelocity();
-        Vector3 distance_normalised = this->target_->getPosition() - this->getPosition();
-        distance_normalised.normalise();
 
-        float scalarprod = enemymovement.dotProduct(distance_normalised);
-        float aimoffset = scalarprod*scalarprod + Projectile::getSpeed() * Projectile::getSpeed() - this->target_->getVelocity().squaredLength();
-        if (aimoffset < 0)
-        {
-            this->bHasTargetPosition_ = false;
-            return;
-        }
-        aimoffset = -scalarprod + sqrt(aimoffset);
-        this->targetPosition_ = enemymovement + distance_normalised * aimoffset;
-        this->bHasTargetPosition_ = true;
-
-        std::cout << "targetpos: " << this->targetPosition_ << std::endl;
-*/
-        this->targetPosition_ = this->target_->getPosition();
-        this->bHasTargetPosition_ = true;
+        this->targetPosition_ = getPredictedPosition(this->getPosition(), Projectile::getSpeed(), this->target_->getPosition(), this->target_->getOrientation() * this->target_->getVelocity());
+        this->bHasTargetPosition_ = (this->targetPosition_ != Vector3::ZERO);
     }
 
     bool SpaceShipAI::isCloseAtTarget(float distance)
     {
-        return (this->getPosition().squaredDistance(this->targetPosition_) < distance*distance);
+        if (!this->target_)
+            return (this->getPosition().squaredDistance(this->targetPosition_) < distance*distance);
+        else
+            return (this->getPosition().squaredDistance(this->target_->getPosition()) < distance*distance);
     }
 
     bool SpaceShipAI::isLookingAtTarget(float angle)
     {
-        return (this->getOrientation() * Ogre::Vector3::UNIT_X).directionEquals(this->targetPosition_ - this->getPosition(), Radian(angle));
+        return (getAngle(this->getPosition(), this->getDir(), this->targetPosition_) < angle);
+    }
+
+    void SpaceShipAI::shipDied(SpaceShipAI* ship)
+    {
+        if (ship == this->target_)
+        {
+            this->forgetTarget();
+            this->searchNewTargetPosition();
+        }
     }
 }

@@ -32,8 +32,8 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-
 #include <OgreBillboardSet.h>
+
 #include "util/Math.h"
 
 namespace orxonox
@@ -43,13 +43,21 @@ namespace orxonox
         public:
             BillboardSet();
             ~BillboardSet();
-            void setBillboardSet(const std::string& file, const ColourValue& colour = ColourValue(1.0, 1.0, 1.0), int count = 1, const Vector3& position = Vector3::ZERO);
+            void setBillboardSet(const std::string& file, int count = 1);
+            void setBillboardSet(const std::string& file, const ColourValue& colour, int count = 1);
+            void setBillboardSet(const std::string& file, const Vector3& position, int count = 1);
+            void setBillboardSet(const std::string& file, const ColourValue& colour, const Vector3& position, int count = 1);
 
             inline Ogre::BillboardSet* getBillboardSet()
                 { return this->billboardSet_; }
 
             inline const std::string& getName() const
                 { return this->billboardSet_->getName(); }
+
+            inline void setVisible(bool visible)
+                { this->billboardSet_->setVisible(visible); }
+            inline bool getVisible() const
+                { return this->billboardSet_->getVisible(); }
 
         private:
             static unsigned int billboardSetCounter_s;

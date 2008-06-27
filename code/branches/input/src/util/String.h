@@ -34,6 +34,8 @@
 #include <string>
 #include <sstream>
 
+extern _UtilExport std::string blankString;
+
 _UtilExport void         strip(std::string* str);
 _UtilExport std::string  getStripped(const std::string& str);
 
@@ -68,99 +70,5 @@ _UtilExport bool         hasComment(const std::string& str);
 _UtilExport std::string  getComment(const std::string& str);
 _UtilExport unsigned int getCommentPosition(const std::string& str);
 _UtilExport unsigned int getNextCommentPosition(const std::string& str, unsigned int start = 0);
-
-//! The Convert class has some static member functions to convert strings to values and values to strings.
-class _UtilExport Convert
-{
-    public:
-        /**
-            @brief Converts a value of any type to a string.
-            @param output The string to write the result in
-            @param input The variable to convert
-            @return True if the conversion succeded
-
-            @example
-            float f = 3.14;
-            std::string output;
-            bool success = Convert::ToString(&output, f);
-        */
-        template <typename T>
-        static bool ToString(std::string* output, T input)
-        {
-            std::ostringstream oss;
-            if (oss << input)
-            {
-                (*output) = oss.str();
-                return true;
-            }
-
-            return false;
-        }
-
-        /**
-            @brief Converts a value of any type to a string and assigns a defaultvalue if the conversion fails.
-            @param output The string to write the result in
-            @param input The variable to convert
-            @param fallbackString The assigned string if the conversion fails.
-            @return True if the conversion succeeded
-
-            @example
-            float f = 3.14;
-            std::string output;
-            bool success = Convert::ToString(&output, f, "0.000000");
-        */
-        template <typename T>
-        static bool ToString(std::string* output, T input, const std::string& fallbackString)
-        {
-            if (Convert::ToString(output, input))
-                return true;
-
-            (*output) = fallbackString;
-            return false;
-        }
-
-        /**
-            @brief Converts a string to a value of any type.
-            @param output The variable to assign the result to
-            @param input The string to convert
-            @return True if the conversion succeeded
-
-            @example
-            std::string input = "3.14";
-            float f;
-            bool success = string2Number(&f, input);
-        */
-        template <typename T>
-        static bool FromString(T* output, const std::string& input)
-        {
-            std::istringstream iss(input);
-            if (iss >> (*output))
-                return true;
-
-            return false;
-        }
-
-        /**
-            @brief Converts a string to a value of any type.
-            @param output The variable to assign the result to
-            @param input The string to convert
-            @param fallbackValue The assigned value if the conversion fails
-            @return True if the conversion succeeded
-
-            @example
-            std::string input = "3.14";
-            float f;
-            bool success = string2Number(&f, input, 0.000000);
-        */
-        template <typename T>
-        static bool FromString(T* output, const std::string& input, T fallbackValue)
-        {
-            if (Convert::FromString(output, input))
-                return true;
-
-            (*output) = fallbackValue;
-            return false;
-        }
-};
 
 #endif /* _Util_String_H__ */

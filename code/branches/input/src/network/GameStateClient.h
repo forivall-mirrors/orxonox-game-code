@@ -43,12 +43,14 @@
 #include <map>
 // 
 #include "NetworkPrereqs.h"
+#include "OrxonoxPrereqs.h"
 #include "core/CorePrereqs.h"
 #include "PacketTypes.h"
-#include "objects/SpaceShip.h"
+#include "Synchronisable.h"
 
 
 #define GAMESTATEID_INITIAL -1
+
 
 namespace network
 {

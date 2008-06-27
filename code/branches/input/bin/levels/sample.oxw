@@ -8,7 +8,7 @@
 	</ambient>
   </audio--> 
 
-<Ambient colourvalue="0.1, 0.1, 0.1" />
+<Ambient colourvalue="1.0, 1.0, 1.0" />
 <Skybox src="Orxonox/Starbox" />
 <SpaceShip camera="true" position="0,0,0" scale="10" yawpitchroll="0,0,0" mesh="assff.mesh" maxSpeed="500" maxSideAndBackSpeed="50" maxRotation="1.0" transAcc="200" rotAcc="3.0" transDamp="75" rotDamp="1.0" />
 <Model position="2000,0,0" scale="10" mesh="tomato.mesh" yawpitchroll="-40,30,0" rotationAxis="1,0,0" rotationRate="-30"/>
@@ -43,7 +43,7 @@
 <?lua
 for i = 1, 226, 1 
 do ?>
-  <Model position="<?lua print(math.random(-19597, 18732))?>, <?lua print(math.random(-19597, 18732)) ?>, <?lua print(math.random(-19597, 18732)) ?>" scale="<?lua print(math.random( 20, 119)) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" rotationAxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationRate="<?lua print(math.random(16, 44)) ?>" />
+  <Model position="<?lua print(math.random() * 40000 - 20000)?>, <?lua print(math.random() * 40000 - 20000) ?>, <?lua print(math.random() * 40000 - 20000) ?>" scale="<?lua print(math.random() * 250 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" rotationAxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationRate="<?lua print(math.random() * 30 + 15) ?>" />
 <?lua 
 end
 ?>

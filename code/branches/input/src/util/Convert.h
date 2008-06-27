@@ -42,6 +42,7 @@
 #include "Math.h"
 #include "SubString.h"
 #include "MultiTypeMath.h"
+#include "String.h"
 
 // disable annoying warning about forcing value to boolean
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
@@ -298,6 +299,13 @@ struct ConverterSpecialized<FromType, std::string, _ToType_>
     }
 };
 
+// convert to string Shortcut
+template <class FromType>
+std::string convertToString(FromType value)
+{
+  return getConvertedValue<FromType, std::string>(value);
+}
+
 // convert from string
 template <class ToType>
 struct ConverterSpecialized<std::string, ToType, _FromType_>
@@ -312,6 +320,13 @@ struct ConverterSpecialized<std::string, ToType, _FromType_>
             return false;
     }
 };
+
+// convert from string Shortcut
+template <class ToType>
+ToType convertFromString(std::string str)
+{
+  return getConvertedValue<std::string, ToType>(str);
+}
 
 
 ////////////////
@@ -403,6 +418,21 @@ struct ConverterSpecialized<MultiTypeMath, ToType, _FromType_>
 // MATH TO STRING //
 ////////////////////
 
+// bool to std::string
+template <>
+struct ConverterSpecialized<bool, std::string, _Explicit_>
+{
+    enum { specialized = true };
+    static bool convert(std::string* output, const bool& input)
+    {
+        if (input)
+          *output = "true";
+        else
+          *output = "false";
+        return false;
+    }
+};
+
 // Vector2 to std::string
 template <>
 struct ConverterSpecialized<orxonox::Vector2, std::string, _Explicit_>
@@ -492,6 +522,33 @@ struct ConverterSpecialized<orxonox::ColourValue, std::string, _Explicit_>
 ////////////////////
 // STRING TO MATH //
 ////////////////////
+
+// std::string to bool
+template <>
+struct ConverterSpecialized<std::string, bool, _Explicit_>
+{
+    enum { specialized = true };
+    static bool convert(bool* output, const std::string& input)
+    {
+        std::string stripped = getLowercase(removeTrailingWhitespaces(input));
+        if (stripped == "true" || stripped == "on" || stripped == "yes")
+        {
+          *output = true;
+          return true;
+        }
+        else if (stripped == "false" || stripped == "off" || stripped == "no")
+        {
+          *output = false;
+          return true;
+        }
+
+        std::istringstream iss(input);
+        if (iss >> (*output))
+            return true;
+        else
+            return false;
+    }
+};
 
 // std::string to Vector2
 template <>
@@ -610,7 +667,7 @@ struct ConverterSpecialized<std::string, orxonox::ColourValue, _Explicit_>
         if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
         SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
-        if (tokens.size() >= 4)
+        if (tokens.size() >= 3)
         {
             if (!ConvertValue(&(output->r), tokens[0]))
                 return false;
@@ -618,8 +675,13 @@ struct ConverterSpecialized<std::string, orxonox::ColourValue, _Explicit_>
                 return false;
             if (!ConvertValue(&(output->b), tokens[2]))
                 return false;
-            if (!ConvertValue(&(output->a), tokens[3]))
-                return false;
+            if (tokens.size() >= 4)
+            {
+                if (!ConvertValue(&(output->a), tokens[3]))
+                    return false;
+            }
+            else
+                output->a = 1.0;
 
             return true;
         }

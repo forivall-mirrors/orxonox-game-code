@@ -34,27 +34,23 @@
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "core/ConfigValueIncludes.h"
+#include "tools/ParticleInterface.h"
 
-#include "SpaceShip.h"
-#include "Explosion.h"
+#include "SpaceShipAI.h"
+#include "ParticleSpawner.h"
 #include "Model.h"
 
 namespace orxonox
 {
-    CreateFactory(Projectile);
+    float Projectile::speed_ = 5000;
 
-    float Projectile::speed_ = 0;
-
-    Projectile::Projectile(SpaceShip* owner) :
-      owner_(owner)
+    Projectile::Projectile(SpaceShip* owner) : owner_(owner)
     {
         RegisterObject(Projectile);
 
         this->setConfigValues();
-
-        this->billboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
-        this->attachObject(this->billboard_.getBillboardSet());
-        this->scale(0.5);
+        this->explosionTemplateName_ = "Orxonox/explosion3";
+        this->smokeTemplateName_ = "Orxonox/smoke4";
 
         if (this->owner_)
         {
@@ -62,11 +58,10 @@ namespace orxonox
             this->setOrientation(this->owner_->getOrientation());
             this->setPosition(this->owner_->getPosition());
             this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
-            this->setVelocity(Vector3(1, 0, 0) * this->speed_);
+            this->setVelocity(this->owner_->getInitialDir() * this->speed_);
         }
 
         this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
-//        COUT(3) << this->classID << std::endl;
     }
 
     Projectile::~Projectile()
@@ -75,15 +70,20 @@ namespace orxonox
 
     void Projectile::setConfigValues()
     {
-        SetConfigValue(lifetime_, 10.0).description("The time in seconds a projectile stays alive");
-        SetConfigValue(speed_, 2000.0).description("The speed of a projectile in units per second");
+        SetConfigValue(damage_, 15.0).description("The damage caused by the projectile");
+        SetConfigValue(lifetime_, 4.0).description("The time in seconds a projectile stays alive");
+        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second");
 
-        this->setVelocity(Vector3(1, 0, 0) * this->speed_);
+	if(this->owner_)
+          this->setVelocity(this->owner_->getInitialDir() * this->speed_);
     }
 
     void Projectile::tick(float dt)
     {
         WorldEntity::tick(dt);
+
+        if (!this->isActive())
+            return;
 
         float radius;
         for (Iterator<Model> it = ObjectList<Model>::start(); it; ++it)
@@ -94,8 +94,16 @@ namespace orxonox
 
                 if (this->getPosition().squaredDistance(it->getPosition()) <= (radius*radius))
                 {
-                    Explosion *exp = new Explosion(this);
-                    exp->create();
+                    // hit
+                    if (it->isA(Class(SpaceShipAI)))
+                        ((SpaceShipAI*)(*it))->damage(this->damage_);
+                    ParticleSpawner* explosion = new ParticleSpawner(this->explosionTemplateName_, LODParticle::low, 2.0);
+                    explosion->setPosition(this->getPosition());
+                    explosion->create();
+                    ParticleSpawner* smoke = new ParticleSpawner(this->smokeTemplateName_, LODParticle::normal, 2.0, 0.0);
+                    smoke->setPosition(this->getPosition());
+//                    smoke->getParticleInterface()->setSpeedFactor(3.0);
+                    smoke->create();
                     delete this;
                     return;
                 }
@@ -106,10 +114,5 @@ namespace orxonox
     void Projectile::destroyObject()
     {
         delete this;
-    }
-
-    void Projectile::setColour(const ColourValue& colour)
-    {
-        this->billboard_.getBillboardSet()->getBillboard(0)->setColour(colour);
     }
 }

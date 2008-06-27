@@ -52,12 +52,13 @@ namespace orxonox
 
     Model::~Model()
     {
+        if (this->isInitialized() && (this->meshSrc_ != "") && (this->meshSrc_.size() > 0))
+            this->detachObject(this->mesh_.getEntity());
     }
 
     /**
         @brief XML loading and saving.
-    @p
-    aram xmlelement The XML-element
+        @param xmlelement The XML-element
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
@@ -92,5 +93,12 @@ namespace orxonox
 //       WorldEntity::registerAllVariables();
       COUT(5) << "Model.cc:registering new meshsrc with size: " << meshSrc_.length()+1 << " this: " << this << std::endl;
       registerVar(&meshSrc_, meshSrc_.length() + 1, network::STRING);
+    }
+
+    void Model::changedVisibility()
+    {
+        WorldEntity::changedVisibility();
+        if (this->isInitialized())
+            this->mesh_.setVisible(this->isVisible());
     }
 }

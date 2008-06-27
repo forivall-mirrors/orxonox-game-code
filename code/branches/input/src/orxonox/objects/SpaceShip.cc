@@ -34,21 +34,25 @@
 #include <OgreParticleSystem.h>
 #include <OgreSceneNode.h>
 
-#include "CameraHandler.h"
 #include "util/Convert.h"
 #include "util/Math.h"
+
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
-#include "GraphicsEngine.h"
-#include "core/input/InputManager.h"
-#include "particle/ParticleInterface.h"
-#include "Projectile.h"
-#include "RotatingProjectile.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
+
 #include "network/Client.h"
-#include "hud/HUD.h"
+
+#include "tools/ParticleInterface.h"
+
+#include "GraphicsEngine.h"
+#include "RotatingProjectile.h"
+#include "ParticleProjectile.h"
+#include "ParticleSpawner.h"
+#include "Backlight.h"
+#include "CameraHandler.h"
 
 namespace orxonox
 {
@@ -68,7 +72,7 @@ namespace orxonox
 
     SpaceShip* SpaceShip::instance_s;
 
-    
+
     SpaceShip *SpaceShip::getLocalShip(){
       Iterator<SpaceShip> it;
       for(it = ObjectList<SpaceShip>::start(); it; ++it){
@@ -78,74 +82,84 @@ namespace orxonox
       return NULL;
     }
 
-    SpaceShip::SpaceShip() :
-      //testvector_(0,0,0),
-      //bInvertYAxis_(false),
-      setMouseEventCallback_(false),
-      bLMousePressed_(false),
-      bRMousePressed_(false),
-      camNode_(0),
-      cam_(0),
-      camName_("CamNode"),
-      tt_(0),
-      redNode_(0),
-      greenNode_(0),
-      blinkTime_(0.0f),
-      chNearNode_(0),
-      chFarNode_(0),
-      timeToReload_(0.0f),
-      //reloadTime_(0.0f),
-      maxSideAndBackSpeed_(0.0f),
-      maxSpeed_(0.0f),
-      maxRotation_(0.0f),
-      translationAcceleration_(0.0f),
-      rotationAcceleration_(0.0f),
-      translationDamping_(0.0f),
-      rotationDamping_(0.0f),
-      maxRotationRadian_(0),
-      rotationAccelerationRadian_(0),
-      rotationDampingRadian_(0),
-      zeroRadian_(0),
-      mouseXRotation_(0),
-      mouseYRotation_(0),
-      mouseX_(0.0f),
-      mouseY_(0.0f),
-      emitterRate_(0.0f),
-      myShip_(false),
-      teamNr_(0),
-      health_(100)
+    SpaceShip::SpaceShip()
     {
         RegisterObject(SpaceShip);
+
+        this->setRotationAxis(1, 0, 0);
+        this->setStatic(false);
+
+        this->zeroRadian_ = 0;
+        this->maxSideAndBackSpeed_ = 0;
+        this->maxSpeed_ = 0;
+        this->maxRotation_ = 0;
+        this->translationAcceleration_ = 0;
+        this->rotationAcceleration_ = 0;
+        this->translationDamping_ = 0;
+        this->rotationDamping_ = 0;
+        this->maxRotationRadian_ = 0;
+        this->rotationAccelerationRadian_ = 0;
+        this->rotationDampingRadian_ = 0;
+
+        this->cam_ = 0;
+        this->tt1_ = 0;
+        this->tt2_ = 0;
+        this->smoke_ = 0;
+        this->fire_ = 0;
+
+        this->backlight_ = 0;
+
+        this->redNode_ = 0;
+        this->greenNode_ = 0;
+        this->blinkTime_ = 0;
+
+        this->timeToReload_ = 0;
+
+        this->bLMousePressed_ = false;
+        this->bRMousePressed_ = false;
+        this->mouseXRotation_ = 0;
+        this->mouseYRotation_ = 0;
+        this->myShip_ = false;
+
         this->registerAllVariables();
 
         SpaceShip::instance_s = this;
 
         this->setConfigValues();
 
-        initialDir_ = Vector3(1.0, 0.0, 0.0);
-        currentDir_ = initialDir_;
-        initialOrth_ = Vector3(0.0, 0.0, 1.0);
-        currentOrth_ = initialOrth_;
+        this->initialDir_ = Vector3(1.0, 0.0, 0.0);
+        this->currentDir_ = initialDir_;
+        this->initialOrth_ = Vector3(0.0, 0.0, 1.0);
+        this->currentOrth_ = initialOrth_;
 
         this->camName_ = this->getName() + "CamNode";
 
-        this->setRotationAxis(1, 0, 0);
-        this->setStatic(false);
+        this->teamNr_ = 0;
+        this->health_ = 100;
 
-        COUT(3) << "Info: SpaceShip was loaded" << std::endl;
+        this->radarObject_ = static_cast<WorldEntity*>(this);
     }
 
     SpaceShip::~SpaceShip()
     {
-        if (this->tt_)
-            delete this->tt_;
-        if(setMouseEventCallback_)
-          InputManager::removeMouseHandler("SpaceShip");
-        if (this->cam_)
-          delete this->cam_;
-        if (!Identifier::isCreatingHierarchy() && !myShip_ && &HUD::getSingleton()!=NULL)
-          //remove the radar object
-          HUD::getSingleton().removeRadarObject(this->getNode());
+        if (this->isInitialized())
+        {
+            if (this->tt1_)
+                delete this->tt1_;
+            if (this->tt2_)
+                delete this->tt2_;
+
+            if (this->smoke_)
+                this->smoke_->destroy();
+            if (this->fire_)
+                this->fire_->destroy();
+
+            if (this->backlight_)
+                delete this->backlight_;
+
+            if (this->cam_)
+                delete this->cam_;
+        }
     }
 
     bool SpaceShip::create(){
@@ -153,7 +167,7 @@ namespace orxonox
         if(network::Client::getSingleton() && objectID == network::Client::getSingleton()->getShipID())
           myShip_=true;
         else
-          HUD::getSingleton().addRadarObject(this->getNode(), 3);
+          this->setRadarObjectColour(this->getProjectileColour());
       }
       if(Model::create())
         this->init();
@@ -178,26 +192,39 @@ namespace orxonox
 
     void SpaceShip::init()
     {
-        // START CREATING THRUSTER
-        this->tt_ = new ParticleInterface(GraphicsEngine::getSingleton().getSceneManager(),"twinthruster" + this->getName(),"Orxonox/engineglow");
-        this->tt_->getParticleSystem()->setParameter("local_space","true");
-        this->tt_->newEmitter();
-/*
-        this->tt_->setDirection(Vector3(0,0,1));
-        this->tt_->setPositionOfEmitter(0, Vector3(20,-1,-15));
-        this->tt_->setPositionOfEmitter(1, Vector3(-20,-1,-15));
-*/
-        this->tt_->setDirection(Vector3(-1,0,0));
-        this->tt_->setPositionOfEmitter(0, Vector3(-15,20,-1));
-        this->tt_->setPositionOfEmitter(1, Vector3(-15,-20,-1));
-        this->tt_->setVelocity(50);
+        // START CREATING THRUSTERS
+        this->tt1_ = new ParticleInterface("Orxonox/thruster1", LODParticle::low);
+        this->tt1_->createNewEmitter();
+        this->tt1_->getAllEmitters()->setDirection(-this->getInitialDir());
+        this->tt1_->getEmitter(0)->setPosition(Vector3(-15, 20, -1));
+        this->tt1_->getEmitter(1)->setPosition(Vector3(-15, -20, -1));
+        this->tt1_->setSpeedFactor(3.0);
 
-        emitterRate_ = tt_->getRate();
+        Ogre::SceneNode* node2a = this->getNode()->createChildSceneNode(this->getName() + "particle2a");
+        node2a->setInheritScale(false);
+        node2a->setScale(1, 1, 1);
+        tt1_->addToSceneNode(node2a);
 
-        Ogre::SceneNode* node2 = this->getNode()->createChildSceneNode(this->getName() + "particle2");
-        node2->setInheritScale(false);
-        tt_->addToSceneNode(node2);
-        // END CREATING THRUSTER
+        this->tt2_ = new ParticleInterface("Orxonox/thruster2", LODParticle::normal);
+        this->tt2_->createNewEmitter();
+        this->tt2_->getAllEmitters()->setDirection(Vector3(-1, 0, 0));
+        this->tt2_->getEmitter(0)->setPosition(Vector3(-30, 40, -2));
+        this->tt2_->getEmitter(1)->setPosition(Vector3(-30, -40, -2));
+
+        Ogre::SceneNode* node2b = this->getNode()->createChildSceneNode(this->getName() + "particle2b");
+        node2b->setInheritScale(false);
+        node2b->setScale(0.5, 0.5, 0.5);
+        tt2_->addToSceneNode(node2b);
+
+        this->leftThrusterFlare_.setBillboardSet("Flares/ThrusterFlare1", Vector3(-7.5, -10, -0.5));
+        this->rightThrusterFlare_.setBillboardSet("Flares/ThrusterFlare1", Vector3(-7.5, 10, -0.5));
+
+        Ogre::SceneNode* node2c = this->getNode()->createChildSceneNode(this->getName() + "particle2c");
+        node2c->setInheritScale(false);
+        node2c->setScale(2, 2, 2);
+        node2c->attachObject(this->leftThrusterFlare_.getBillboardSet());
+        node2c->attachObject(this->rightThrusterFlare_.getBillboardSet());
+        // END CREATING THRUSTERS
 
         // START CREATING BLINKING LIGHTS
         this->redBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
@@ -215,6 +242,21 @@ namespace orxonox
         this->greenNode_->setScale(0.3, 0.3, 0.3);
         // END CREATING BLINKING LIGHTS
 
+        // START CREATING ADDITIONAL EFFECTS
+        this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
+        this->attachObject(this->backlight_);
+        this->backlight_->setPosition(-2.35, 0, 0.2);
+        this->backlight_->setColour(this->getProjectileColour());
+
+        this->smoke_ = new ParticleSpawner();
+        this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
+        this->attachObject(this->smoke_);
+
+        this->fire_ = new ParticleSpawner();
+        this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
+        this->attachObject(this->fire_);
+        // END CREATING ADDITIONAL EFFECTS
+
         if (this->isExactlyA(Class(SpaceShip)))
         {
             // START of testing crosshair
@@ -231,10 +273,10 @@ namespace orxonox
 
             this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
             this->chFarNode_->setScale(0.4, 0.4, 0.4);
+            // END of testing crosshair
         }
 
         createCamera();
-        // END of testing crosshair
     }
 
     void SpaceShip::setConfigValues()
@@ -244,8 +286,40 @@ namespace orxonox
         SetConfigValue(testvector_, Vector3()).description("asdfblah");
     }
 
+    void SpaceShip::changedVisibility()
+    {
+        Model::changedVisibility();
+
+        this->tt1_->setEnabled(this->isVisible());
+        this->tt2_->setEnabled(this->isVisible());
+        this->redBillboard_.setVisible(this->isVisible());
+        this->greenBillboard_.setVisible(this->isVisible());
+        this->crosshairNear_.setVisible(this->isVisible());
+        this->crosshairFar_.setVisible(this->isVisible());
+        this->rightThrusterFlare_.setVisible(this->isVisible());
+        this->leftThrusterFlare_.setVisible(this->isVisible());
+        this->smoke_->setVisible(this->isVisible());
+        this->fire_->setVisible(this->isVisible());
+        this->backlight_->setVisible(this->isVisible());
+    }
+
+    void SpaceShip::changedActivity()
+    {
+        Model::changedActivity();
+
+        this->tt1_->setEnabled(this->isVisible());
+        this->tt2_->setEnabled(this->isVisible());
+        this->redBillboard_.setVisible(this->isVisible());
+        this->greenBillboard_.setVisible(this->isVisible());
+        this->crosshairNear_.setVisible(this->isVisible());
+        this->crosshairFar_.setVisible(this->isVisible());
+        this->rightThrusterFlare_.setVisible(this->isVisible());
+        this->leftThrusterFlare_.setVisible(this->isVisible());
+    }
+
     void SpaceShip::setCamera(const std::string& camera)
     {
+      myShip_=true; // TODO: this is only a hack
       camName_=camera;
       // change camera attributes here, if you want to ;)
     }
@@ -265,7 +339,7 @@ namespace orxonox
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);
       COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
-      this->camNode_->setPosition(Vector3(-50,0,10));
+      this->camNode_->setPosition(Vector3(-25,0,5));
 //      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
 //      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
 //      camNode_->setOrientation(q1*q2);
@@ -276,12 +350,11 @@ namespace orxonox
 //        cam->setPosition(Vector3(0,-350,0));
       Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
       Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(1,0,0));
-      camNode_->setOrientation(q2*q1);
+      this->camNode_->setOrientation(q2*q1);
       if(network::Client::getSingleton()!=0 && network::Client::getSingleton()->getShipID()==objectID){
         this->setBacksync(true);
         CameraHandler::getInstance()->requestFocus(cam_);
       }
-
     }
 
     void SpaceShip::setMaxSpeed(float value)
@@ -317,44 +390,41 @@ namespace orxonox
         XMLPortParamLoadOnly(SpaceShip, "rotAcc", setRotAcc, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, mode);
-        myShip_=true; // TODO: this is only a hack
 
         SpaceShip::create();
         if (this->isExactlyA(Class(SpaceShip)))
             getFocus();
     }
 
-    int sgn(float x)
-    {
-        if (x >= 0)
-            return 1;
-        else
-            return -1;
-    }
-
     std::string SpaceShip::whereAmI() {
-	return getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().x)
-	+ "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().y)
-	+ "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().z);
+        return getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().x)
+        + "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().y)
+        + "  " + getConvertedValue<float, std::string>(SpaceShip::getLocalShip()->getPosition().z);
     }
-
-    Vector3 SpaceShip::getDir() {
-        return currentDir_;
-    }
-
-    Vector3 SpaceShip::getOrth(){
-        return currentOrth_;
-    }
-
-    float SpaceShip::getMaxSpeed() { return maxSpeed_; }
 
     void SpaceShip::tick(float dt)
     {
+        if (!this->isActive())
+            return;
+
         currentDir_ = getOrientation()*initialDir_;
-		currentOrth_ = getOrientation()*initialOrth_;
+        currentOrth_ = getOrientation()*initialOrth_;
 
         if (this->cam_)
             this->cam_->tick(dt);
+
+        if (this->smoke_)
+            this->smoke_->setVisible(this->isVisible() && this->health_ < 40);
+        if (this->fire_)
+            this->fire_->setVisible(this->isVisible() && this->health_ < 20);
+
+        if (this->backlight_)
+        {   // (there's already fire ||                 we're to slow                 ||                  we're moving backwards                  )
+            if (this->health_ < 20   || this->getVelocity().squaredLength() < 150*150 || this->getVelocity().dotProduct(this->getInitialDir()) < 0)
+                this->backlight_->setActive(false);
+            else
+                this->backlight_->setActive(true);
+        }
 
         if (this->redNode_ && this->greenNode_)
         {
@@ -373,17 +443,15 @@ namespace orxonox
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
 
-            Projectile *p;
-            if (this->isExactlyA(Class(SpaceShip)))
-                p = new RotatingProjectile(this);
-            else
-                p = new Projectile(this);
-            p->setColour(this->getProjectileColour());
-            p->create();
-            if(p->classID==0)
+            BillboardProjectile* projectile = new ParticleProjectile(this);
+            projectile->setColour(this->getProjectileColour());
+            projectile->create();
+            if (projectile->classID == 0)
+            {
               COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
+            }
 
-            p->setBacksync(true);
+            projectile->setBacksync(true);
             this->timeToReload_ = this->reloadTime_;
         }
 
@@ -463,21 +531,23 @@ namespace orxonox
             this->yaw(Radian(this->mouseYRotation_ * dt));
 
         if (this->acceleration_.x > 0)
-            this->tt_->setRate(emitterRate_);
-        else
-            this->tt_->setRate(0);
-
-        if( myShip_ )
         {
-          COUT(5) << "steering our ship: " << objectID << std::endl;
-          this->acceleration_.x = 0;
-          this->acceleration_.y = 0;
-          this->momentum_ = 0;
-          this->mouseXRotation_ = Radian(0);
-          this->mouseYRotation_ = Radian(0);
-          this->bLMousePressed_ = false;
-        }/*else
-          COUT(4) << "not steering ship: " << objectID << " our ship: " << network::Client::getSingleton()->getShipID() << std::endl;*/
+            this->tt1_->setEnabled(true);
+            this->tt2_->setEnabled(true);
+        }
+        else
+        {
+            this->tt1_->setEnabled(false);
+            this->tt2_->setEnabled(false);
+        }
+
+        COUT(5) << "steering our ship: " << objectID << std::endl;
+        this->acceleration_.x = 0;
+        this->acceleration_.y = 0;
+        this->momentum_ = 0;
+        this->mouseXRotation_ = Radian(0);
+        this->mouseYRotation_ = Radian(0);
+        this->bLMousePressed_ = false;
     }
 
     void SpaceShip::movePitch(float val)

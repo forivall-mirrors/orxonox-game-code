@@ -50,14 +50,13 @@ namespace orxonox
             virtual ~WorldEntity();
 
             virtual void tick(float dt);
-            virtual void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual inline bool create(){ return Synchronisable::create(); }
 
             void attachWorldEntity(WorldEntity* entity);
             const WorldEntity* getAttachedWorldEntity(unsigned int index) const;
 
-            inline Ogre::SceneNode* getNode()
+            inline Ogre::SceneNode* getNode() const
                 { return this->node_; }
 
             inline void setNode(Ogre::SceneNode* node)
@@ -73,47 +72,51 @@ namespace orxonox
                 { this->node_->setPosition(x, y, z); }
             inline const Vector3& getPosition() const
                 { return this->node_->getPosition(); }
+            inline const Vector3& getWorldPosition() const
+                { return this->node_->getWorldPosition(); }
 
-            inline void translate(const Vector3 &d, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_PARENT)
+            inline void translate(const Vector3& d, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_PARENT)
                 { this->node_->translate(d, relativeTo); }
             inline void translate(Real x, Real y, Real z, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_PARENT)
                 { this->node_->translate(x, y, z, relativeTo); }
-            inline void translate(const Matrix3 &axes, const Vector3 &move, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_PARENT)
+            inline void translate(const Matrix3& axes, const Vector3& move, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_PARENT)
                 { this->node_->translate(axes, move, relativeTo); }
-            inline void translate(const Matrix3 &axes, Real x, Real y, Real z, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_PARENT)
+            inline void translate(const Matrix3& axes, Real x, Real y, Real z, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_PARENT)
                 { this->node_->translate(axes, x, y, z, relativeTo); }
 
-            inline void yaw(const Radian &angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
+            inline void yaw(const Radian& angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
                 { this->node_->yaw(angle, relativeTo); }
-            inline void pitch(const Radian &angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
+            inline void pitch(const Radian& angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
                 { this->node_->pitch(angle, relativeTo); }
-            inline void roll(const Radian &angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
+            inline void roll(const Radian& angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
                 { this->node_->roll(angle, relativeTo); }
             void setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll);
 
-            inline void setYaw(const Degree &angle)
+            inline void setYaw(const Degree& angle)
                 { this->node_->yaw(angle, Ogre::Node::TS_LOCAL); }
-            inline void setPitch(const Degree &angle)
+            inline void setPitch(const Degree& angle)
                 { this->node_->pitch(angle, Ogre::Node::TS_LOCAL); }
-            inline void setRoll(const Degree &angle)
+            inline void setRoll(const Degree& angle)
                 { this->node_->roll(angle, Ogre::Node::TS_LOCAL); }
 
             inline const Ogre::Quaternion& getOrientation()
               { return this->node_->getOrientation(); }
+            inline const Ogre::Quaternion& getWorldOrientation()
+              { return this->node_->getWorldOrientation(); }
             inline void setOrientation(const Ogre::Quaternion& quat)
               { this->node_->setOrientation(quat); }
-            inline void rotate(const Vector3 &axis, const Radian &angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
+            inline void rotate(const Vector3& axis, const Radian& angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
               { this->node_->rotate(axis, angle, relativeTo); }
             inline void setDirectionLoader(Real x, Real y, Real z)
               { this->setDirection(x, y, z); }
-            inline void setDirection(Real x, Real y, Real z, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
+            inline void setDirection(Real x, Real y, Real z, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
               { this->node_->setDirection(x, y, z, relativeTo, localDirectionVector); }
-            inline void setDirection(const Vector3 &vec, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
+            inline void setDirection(const Vector3& vec, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
               { this->node_->setDirection(vec, relativeTo, localDirectionVector); }
-            inline void lookAt(const Vector3 &targetPoint, Ogre::Node::TransformSpace relativeTo, const Vector3 &localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
+            inline void lookAt(const Vector3& targetPoint, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
               { this->node_->lookAt(targetPoint, relativeTo, localDirectionVector); }
 
-            inline void setScale(const Vector3 &scale)
+            inline void setScale(const Vector3& scale)
               { this->node_->setScale(scale); }
             inline void setScale(Real x, Real y, Real z)
               { this->node_->setScale(x, y, z); }
@@ -123,20 +126,22 @@ namespace orxonox
               { this->node_->setScale(scale, scale, scale); }
             inline const Vector3& getScale(void) const
               { return this->node_->getScale(); }
-            inline void scale(const Vector3 &scale)
+            inline void scale(const Vector3& scale)
               { this->node_->scale(scale); }
             inline void scale(Real x, Real y, Real z)
               { this->node_->scale(x, y, z); }
             inline void scale(Real scale)
               { this->node_->scale(scale, scale, scale); }
 
-            inline void attachObject(Ogre::MovableObject *obj)
+            void attachObject(const WorldEntity& obj) const;
+            void attachObject(WorldEntity* obj) const;
+            inline void attachObject(Ogre::MovableObject* obj) const
               { this->node_->attachObject(obj); }
-            inline void attachObject(Mesh &mesh)
+            inline void attachObject(Mesh& mesh) const
               { this->node_->attachObject(mesh.getEntity()); }
-            inline void detachObject(Ogre::MovableObject *obj)
+            inline void detachObject(Ogre::MovableObject* obj) const
               { this->node_->detachObject(obj); }
-            inline void detachAllObjects()
+            inline void detachAllObjects() const
               { this->node_->detachAllObjects(); }
 
             inline void setVelocity(const Vector3& velocity)
@@ -178,7 +183,7 @@ namespace orxonox
 
             inline void setStatic(bool bStatic)
                 { this->bStatic_ = bStatic; }
-            inline bool isStatic()
+            inline bool isStatic() const
                 { return this->bStatic_; }
 
         protected:

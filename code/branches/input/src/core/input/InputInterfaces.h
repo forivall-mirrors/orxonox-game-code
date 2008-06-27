@@ -36,7 +36,9 @@
 
 #include "core/CorePrereqs.h"
 
-#include "ois/OIS.h"
+#include "src/ois/OISKeyboard.h"
+#include "src/ois/OISMouse.h"
+#include "src/ois/OISJoyStick.h"
 #include "util/Math.h"
 
 namespace orxonox
@@ -46,93 +48,93 @@ namespace orxonox
     // note: KeyCode comments were directly taken from OISKeyboard.h
     enum Enum
     {
-      Unassigned    = OIS::KC_UNASSIGNED,  
-      Escape        = OIS::KC_ESCAPE,      
-      NumRow1       = OIS::KC_1,           
-      NumRow2       = OIS::KC_2,           
-      NumRow3       = OIS::KC_3,           
-      NumRow4       = OIS::KC_4,           
-      NumRow5       = OIS::KC_5,           
-      NumRow6       = OIS::KC_6,           
-      NumRow7       = OIS::KC_7,           
-      NumRow8       = OIS::KC_8,           
-      NumRow9       = OIS::KC_9,           
-      NumRow0       = OIS::KC_0,           
+      Unassigned    = OIS::KC_UNASSIGNED,
+      Escape        = OIS::KC_ESCAPE,
+      NumRow1       = OIS::KC_1,
+      NumRow2       = OIS::KC_2,
+      NumRow3       = OIS::KC_3,
+      NumRow4       = OIS::KC_4,
+      NumRow5       = OIS::KC_5,
+      NumRow6       = OIS::KC_6,
+      NumRow7       = OIS::KC_7,
+      NumRow8       = OIS::KC_8,
+      NumRow9       = OIS::KC_9,
+      NumRow0       = OIS::KC_0,
       Minus         = OIS::KC_MINUS,           // - on main keyboard
-      Equals        = OIS::KC_EQUALS,      
+      Equals        = OIS::KC_EQUALS,
       Back          = OIS::KC_BACK,            // backspace
-      Tab           = OIS::KC_TAB,         
-      Q             = OIS::KC_Q,           
-      W             = OIS::KC_W,           
-      E             = OIS::KC_E,           
-      R             = OIS::KC_R,           
-      T             = OIS::KC_T,           
-      Y             = OIS::KC_Y,           
-      U             = OIS::KC_U,           
-      I             = OIS::KC_I,           
-      O             = OIS::KC_O,           
-      P             = OIS::KC_P,           
-      LeftBracket   = OIS::KC_LBRACKET,    
-      RightBracket  = OIS::KC_RBRACKET,    
+      Tab           = OIS::KC_TAB,
+      Q             = OIS::KC_Q,
+      W             = OIS::KC_W,
+      E             = OIS::KC_E,
+      R             = OIS::KC_R,
+      T             = OIS::KC_T,
+      Y             = OIS::KC_Y,
+      U             = OIS::KC_U,
+      I             = OIS::KC_I,
+      O             = OIS::KC_O,
+      P             = OIS::KC_P,
+      LeftBracket   = OIS::KC_LBRACKET,
+      RightBracket  = OIS::KC_RBRACKET,
       Return        = OIS::KC_RETURN,          // Enter on main keyboard
-      LeftControl   = OIS::KC_LCONTROL,    
-      A             = OIS::KC_A,           
-      S             = OIS::KC_S,           
-      D             = OIS::KC_D,           
-      F             = OIS::KC_F,           
-      G             = OIS::KC_G,           
-      H             = OIS::KC_H,           
-      J             = OIS::KC_J,           
-      K             = OIS::KC_K,           
-      L             = OIS::KC_L,           
-      Semicolon     = OIS::KC_SEMICOLON,   
-      Apostrophe    = OIS::KC_APOSTROPHE,  
+      LeftControl   = OIS::KC_LCONTROL,
+      A             = OIS::KC_A,
+      S             = OIS::KC_S,
+      D             = OIS::KC_D,
+      F             = OIS::KC_F,
+      G             = OIS::KC_G,
+      H             = OIS::KC_H,
+      J             = OIS::KC_J,
+      K             = OIS::KC_K,
+      L             = OIS::KC_L,
+      Semicolon     = OIS::KC_SEMICOLON,
+      Apostrophe    = OIS::KC_APOSTROPHE,
       Grave         = OIS::KC_GRAVE,           // accent
-      LeftShift     = OIS::KC_LSHIFT,      
-      Backslash     = OIS::KC_BACKSLASH,   
-      Z             = OIS::KC_Z,           
-      X             = OIS::KC_X,           
-      C             = OIS::KC_C,           
-      V             = OIS::KC_V,           
-      B             = OIS::KC_B,           
-      N             = OIS::KC_N,           
-      M             = OIS::KC_M,           
-      Comma         = OIS::KC_COMMA,       
+      LeftShift     = OIS::KC_LSHIFT,
+      Backslash     = OIS::KC_BACKSLASH,
+      Z             = OIS::KC_Z,
+      X             = OIS::KC_X,
+      C             = OIS::KC_C,
+      V             = OIS::KC_V,
+      B             = OIS::KC_B,
+      N             = OIS::KC_N,
+      M             = OIS::KC_M,
+      Comma         = OIS::KC_COMMA,
       Period        = OIS::KC_PERIOD,          // . on main keyboard
       Slash         = OIS::KC_SLASH,           // / on main keyboard
-      RightShift    = OIS::KC_RSHIFT,      
+      RightShift    = OIS::KC_RSHIFT,
       Multiply      = OIS::KC_MULTIPLY,        // * on numeric keypad
       LeftAlt       = OIS::KC_LMENU,           // left Alt
-      Space         = OIS::KC_SPACE,       
-      CapsLock      = OIS::KC_CAPITAL,     
-      F1            = OIS::KC_F1,          
-      F2            = OIS::KC_F2,          
-      F3            = OIS::KC_F3,          
-      F4            = OIS::KC_F4,          
-      F5            = OIS::KC_F5,          
-      F6            = OIS::KC_F6,          
-      F7            = OIS::KC_F7,          
-      F8            = OIS::KC_F8,          
-      F9            = OIS::KC_F9,          
-      F10           = OIS::KC_F10,         
-      Numlock       = OIS::KC_NUMLOCK,     
+      Space         = OIS::KC_SPACE,
+      CapsLock      = OIS::KC_CAPITAL,
+      F1            = OIS::KC_F1,
+      F2            = OIS::KC_F2,
+      F3            = OIS::KC_F3,
+      F4            = OIS::KC_F4,
+      F5            = OIS::KC_F5,
+      F6            = OIS::KC_F6,
+      F7            = OIS::KC_F7,
+      F8            = OIS::KC_F8,
+      F9            = OIS::KC_F9,
+      F10           = OIS::KC_F10,
+      Numlock       = OIS::KC_NUMLOCK,
       Scrolllock    = OIS::KC_SCROLL,          // Scroll Lock
-      Numpad7       = OIS::KC_NUMPAD7,     
-      Numpad8       = OIS::KC_NUMPAD8,     
-      Numpad9       = OIS::KC_NUMPAD9,     
+      Numpad7       = OIS::KC_NUMPAD7,
+      Numpad8       = OIS::KC_NUMPAD8,
+      Numpad9       = OIS::KC_NUMPAD9,
       NumpadSubtract= OIS::KC_SUBTRACT,        // - on numeric keypad
-      Numpad4       = OIS::KC_NUMPAD4,     
-      Numpad5       = OIS::KC_NUMPAD5,     
-      Numpad6       = OIS::KC_NUMPAD6,     
+      Numpad4       = OIS::KC_NUMPAD4,
+      Numpad5       = OIS::KC_NUMPAD5,
+      Numpad6       = OIS::KC_NUMPAD6,
       NumpadAdd     = OIS::KC_ADD,             // + on numeric keypad
-      Numpad1       = OIS::KC_NUMPAD1,     
-      Numpad2       = OIS::KC_NUMPAD2,     
-      Numpad3       = OIS::KC_NUMPAD3,     
-      Numpad0       = OIS::KC_NUMPAD0,     
+      Numpad1       = OIS::KC_NUMPAD1,
+      Numpad2       = OIS::KC_NUMPAD2,
+      Numpad3       = OIS::KC_NUMPAD3,
+      Numpad0       = OIS::KC_NUMPAD0,
       NumpadPeriod  = OIS::KC_DECIMAL,         // . on numeric keypad
       LessThan      = OIS::KC_OEM_102,         // < > | on UK/Germany keyboards
-      F11           = OIS::KC_F11,         
-      F12           = OIS::KC_F12,         
+      F11           = OIS::KC_F11,
+      F12           = OIS::KC_F12,
       F13           = OIS::KC_F13,             //                     (NEC PC98)
       F14           = OIS::KC_F14,             //                     (NEC PC98)
       F15           = OIS::KC_F15,             //                     (NEC PC98)
@@ -153,7 +155,7 @@ namespace orxonox
       Unlabeled     = OIS::KC_UNLABELED,       //                        (J3100)
       NextTrack     = OIS::KC_NEXTTRACK,       // Next Track
       NumpadEnter   = OIS::KC_NUMPADENTER,     // Enter on numeric keypad
-      RightControl  = OIS::KC_RCONTROL,    
+      RightControl  = OIS::KC_RCONTROL,
       Mute          = OIS::KC_MUTE,            // Mute
       Calculator    = OIS::KC_CALCULATOR,      // Calculator
       PlayPause     = OIS::KC_PLAYPAUSE,       // Play / Pause
@@ -163,7 +165,7 @@ namespace orxonox
       WebHome       = OIS::KC_WEBHOME,         // Web home
       NumpadComma   = OIS::KC_NUMPADCOMMA,     // , on numeric keypad (NEC PC98)
       Divide        = OIS::KC_DIVIDE,          // / on numeric keypad
-      SYSRQ         = OIS::KC_SYSRQ,       
+      SYSRQ         = OIS::KC_SYSRQ,
       RightAlt      = OIS::KC_RMENU,           // right Alt
       Pause         = OIS::KC_PAUSE,           // Pause
       Home          = OIS::KC_HOME,            // Home on arrow keypad
@@ -253,7 +255,7 @@ namespace orxonox
 		int axes[16];
 		std::vector<Vector3> mVectors;
   };*/
-  
+
   /**
   * Helper struct to determine which handlers of an object (can implement
   * multiple handlers) are active.

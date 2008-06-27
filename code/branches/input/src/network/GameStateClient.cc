@@ -33,6 +33,7 @@
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
 #include "Synchronisable.h"
+#include "objects/SpaceShip.h"
 
 
 namespace network

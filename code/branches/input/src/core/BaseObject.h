@@ -46,11 +46,15 @@ namespace orxonox
     //! The BaseObject is the parent of all classes representing an instance in the game.
     class _CoreExport BaseObject : virtual public OrxonoxClass
     {
+        friend class WorldEntity;
+
         public:
             BaseObject();
             virtual ~BaseObject();
-            virtual void loadParams(TiXmlElement* xmlElem);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+
+            /** @brief Returns if the object was initialized (passed the object registration). @return True was the object is initialized */
+            inline bool isInitialized() const { return this->bInitialized_; }
 
             /** @brief Sets the name of the object. @param name The name */
             inline void setName(const std::string& name) { this->name_ = name; this->changedName(); }
@@ -60,16 +64,16 @@ namespace orxonox
             virtual void changedName() {}
 
             /** @brief Sets the state of the objects activity. @param bActive True = active */
-            inline void setActivity(bool bActive) { this->bActive_ = bActive; this->changedActivity(); }
+            inline void setActive(bool bActive) { this->bActive_ = bActive; this->changedActivity(); }
             /** @brief Returns the state of the objects activity. @return The state of the activity */
-            inline const bool isActive() const { return this->bActive_; }
+            inline bool isActive() const { return this->bActive_; }
             /** @brief This function gets called if the activity of the object changes. */
             virtual void changedActivity() {}
 
             /** @brief Sets the state of the objects visibility. @param bVisible True = visible */
-            inline void setVisibility(bool bVisible) { this->bVisible_ = bVisible; this->changedVisibility(); }
+            inline void setVisible(bool bVisible) { this->bVisible_ = bVisible; this->changedVisibility(); }
             /** @brief Returns the state of the objects visibility. @return The state of the visibility */
-            inline const bool isVisible() const { return this->bVisible_; }
+            inline bool isVisible() const { return this->bVisible_; }
             /** @brief This function gets called if the visibility of the object changes. */
             virtual void changedVisibility() {}
 
@@ -89,6 +93,7 @@ namespace orxonox
 
         private:
             std::string name_;                          //!< The name of the object
+            bool bInitialized_;                         //!< True if the object was initialized (passed the object registration)
             bool bActive_;                              //!< True = the object is active
             bool bVisible_;                             //!< True = the object is visible
             const Level* level_;                        //!< The level that loaded this object

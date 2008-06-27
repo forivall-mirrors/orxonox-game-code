@@ -44,13 +44,17 @@ namespace orxonox
     /**
         @brief Constructor: Registers the object in the BaseObject-list.
     */
-    BaseObject::BaseObject() :
-      bActive_(true),
-      bVisible_(true),
-      level_(0),
-      namespace_(0)
+    BaseObject::BaseObject() : bInitialized_(false)
     {
         RegisterRootObject(BaseObject);
+
+        this->bInitialized_ = true;
+
+        this->bActive_ = true;
+        this->bVisible_ = true;
+
+        this->level_ = 0;
+        this->namespace_ = 0;
     }
 
     /**
@@ -58,17 +62,6 @@ namespace orxonox
     */
     BaseObject::~BaseObject()
     {
-    }
-
-    /**
-        @brief load general xml paramters
-    */
-    void BaseObject::loadParams(TiXmlElement* xmlElem)
-    {
-        if (xmlElem->Attribute("name"))
-        {
-            this->setName(xmlElem->Attribute("name"));
-        }
     }
 
     /**
@@ -80,6 +73,8 @@ namespace orxonox
     void BaseObject::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         XMLPortParam(BaseObject, "name", setName, getName, xmlelement, mode);
+        XMLPortParam(BaseObject, "visible", setVisible, isVisible, xmlelement, mode);
+        XMLPortParam(BaseObject, "active", setActive, isActive, xmlelement, mode);
     }
 
     /**

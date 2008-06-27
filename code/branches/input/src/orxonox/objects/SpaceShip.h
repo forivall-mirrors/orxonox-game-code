@@ -35,15 +35,14 @@
 #include "util/Math.h"
 #include "Camera.h"
 #include "Model.h"
+#include "RadarViewable.h"
 #include "tools/BillboardSet.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport SpaceShip : public Model
+    class _OrxonoxExport SpaceShip : public Model, public RadarViewable
     {
         public:
-          
-
             static SpaceShip *getLocalShip();
 
             SpaceShip();
@@ -54,6 +53,8 @@ namespace orxonox
             void setConfigValues();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
+            virtual void changedVisibility();
+            virtual void changedActivity();
 
             void setCamera(const std::string& camera = "");
             void setMaxSpeed(float value);
@@ -64,6 +65,21 @@ namespace orxonox
             void setTransDamp(float value);
             void setRotDamp(float value);
             void getFocus();
+
+            inline float getMaxSpeed() const
+                { return this->maxSpeed_; }
+            inline float getMaxSideAndBackSpeed() const
+                { return this->maxSideAndBackSpeed_; }
+            inline float getMaxRotation() const
+                { return this->maxRotation_; }
+            inline float getTransAcc() const
+                { return this->translationAcceleration_; }
+            inline float getRotAcc() const
+                { return this->rotationAcceleration_; }
+            inline float getTransDamp() const
+                { return this->translationDamping_; }
+            inline float getRotDamp() const
+                { return this->rotationDamping_; }
 
             static std::string whereAmI();
             static void setMaxSpeedTest(float value)
@@ -82,14 +98,20 @@ namespace orxonox
             void setMoveLateral(float value);
             void doFire();
 
-            float getMaxSpeed();
-            Vector3 getDir();
-            Vector3 getOrth();
+            inline const Vector3& getDir() const
+                { return this->currentDir_; }
+            inline const Vector3& getInitialDir() const
+                { return this->initialDir_; }
+            inline const Vector3& getOrth() const
+                { return this->currentOrth_; }
+            inline const Vector3& getInitialOrth() const
+                { return this->initialOrth_; }
+
             Camera* getCamera();
 
             int getTeamNr() const
                 { return this->teamNr_; }
-            int getHealth() const
+            float getHealth() const
                 { return this->health_; }
 
             bool getMyShip(){return myShip_;}
@@ -109,7 +131,6 @@ namespace orxonox
             Vector3 initialOrth_;
             Vector3 currentOrth_;
             bool bInvertYAxis_;
-            bool setMouseEventCallback_;
             bool bLMousePressed_;
             bool bRMousePressed_;
 
@@ -117,14 +138,21 @@ namespace orxonox
             Camera* cam_;
             std::string camName_;
 
+            ParticleInterface* tt1_;
+            ParticleInterface* tt2_;
+            BillboardSet leftThrusterFlare_;
+            BillboardSet rightThrusterFlare_;
 
-            ParticleInterface* tt_;
+            Backlight* backlight_;
 
             BillboardSet redBillboard_;
             BillboardSet greenBillboard_;
             Ogre::SceneNode* redNode_;
             Ogre::SceneNode* greenNode_;
             float blinkTime_;
+
+            ParticleSpawner* smoke_;
+            ParticleSpawner* fire_;
 
             BillboardSet crosshairNear_;
             BillboardSet crosshairFar_;
@@ -152,13 +180,11 @@ namespace orxonox
             float mouseX_;
             float mouseY_;
 
-            float emitterRate_;
-
         protected:
             bool myShip_;
 
             int teamNr_;
-            int health_;
+            float health_;
 
             static SpaceShip* instance_s;
     };
