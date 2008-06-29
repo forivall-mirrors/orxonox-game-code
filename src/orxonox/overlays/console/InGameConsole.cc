@@ -35,14 +35,16 @@
 #include <OgreOverlayElement.h>
 #include <OgreOverlayManager.h>
 #include <OgreOverlayContainer.h>
-#include <OgreStringConverter.h>
+#include <OgreFontManager.h>
+#include <OgreFont.h>
 
+#include "util/Math.h"
+#include "util/Convert.h"
 #include "core/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
-#include "util/Math.h"
 #include "GraphicsEngine.h"
 
 #define LINES 30
@@ -135,13 +137,24 @@ namespace orxonox
         this->consoleOverlayBorder_->setBottomRightBorderUV(0.5, 0.5, 1.0, 1.0);
         this->consoleOverlayContainer_->addChild(this->consoleOverlayBorder_);
 
+        // create a new font to match the requested size exactly
+        Ogre::FontPtr font = static_cast<Ogre::FontPtr>
+            (Ogre::FontManager::getSingleton().create("MonofurConsole", "General"));
+        font->setType(Ogre::FT_TRUETYPE);
+        font->setSource("Monofur.ttf");
+        font->setTrueTypeSize(18);
+        // reto: I don't know why, but setting the resolution twice as high makes the font look a lot clearer
+        font->setTrueTypeResolution(192);
+        font->addCodePointRange(Ogre::Font::CodePointRange(33, 126));
+        font->addCodePointRange(Ogre::Font::CodePointRange(161, 255));
+
         // create the text lines
         this->consoleOverlayTextAreas_ = new Ogre::TextAreaOverlayElement*[LINES];
         for (int i = 0; i < LINES; i++)
         {
-            this->consoleOverlayTextAreas_[i] = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleTextArea" + Ogre::StringConverter::toString(i)));
+            this->consoleOverlayTextAreas_[i] = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleTextArea" + convertToString(i)));
             this->consoleOverlayTextAreas_[i]->setMetricsMode(Ogre::GMM_PIXELS);
-            this->consoleOverlayTextAreas_[i]->setFontName("Monofur");
+            this->consoleOverlayTextAreas_[i]->setFontName("MonofurConsole");
             this->consoleOverlayTextAreas_[i]->setCharHeight(18);
             this->consoleOverlayTextAreas_[i]->setParameter("colour_top", "0.21 0.69 0.21");
             this->consoleOverlayTextAreas_[i]->setLeft(8);
@@ -152,7 +165,7 @@ namespace orxonox
         // create cursor (also a text area overlay element)
         this->consoleOverlayCursor_ = static_cast<Ogre::TextAreaOverlayElement*>(ovMan->createOverlayElement("TextArea", "InGameConsoleCursor"));
         this->consoleOverlayCursor_->setMetricsMode(Ogre::GMM_PIXELS);
-        this->consoleOverlayCursor_->setFontName("Monofur");
+        this->consoleOverlayCursor_->setFontName("MonofurConsole");
         this->consoleOverlayCursor_->setCharHeight(18);
         this->consoleOverlayCursor_->setParameter("colour_top", "0.21 0.69 0.21");
         this->consoleOverlayCursor_->setLeft(7);

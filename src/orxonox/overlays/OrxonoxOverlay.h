@@ -131,10 +131,10 @@ namespace orxonox
         void setSize(const Vector2& size)         { this->size_ = size; this->sizeChanged(); }
 
         //! Gets the current size that was set (uncorrected)
-        Vector2 getSize() const                   { return this->size_ * this->sizeCorrection_; }
+        const Vector2& getSize() const                   { return this->size_; }
 
         //! Gets the actual size of the overlay on the screen (corrected)
-        const Vector2& getActualSize() const      { return this->size_; }
+        Vector2 getActualSize() const      { return this->size_ * this->sizeCorrection_; }
 
         //! Gets the current size correction (default: 1.0, 1.0)
         const Vector2& getSizeCorrection() const  { return this->sizeCorrection_; }

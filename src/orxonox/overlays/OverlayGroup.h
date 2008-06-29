@@ -79,6 +79,8 @@ namespace orxonox
         void addElement(OrxonoxOverlay* element);
         OrxonoxOverlay* getElement(unsigned int index);
 
+        void changedVisibility();
+
         std::map<std::string, OrxonoxOverlay*> hudElements_;    //!< Contains all the OrxonoxOverlays of the this group.
         Vector2 scale_;                                         //!< Current scale (independant of the elements).
         Vector2 scroll_;                                        //!< Current scrolling offset.

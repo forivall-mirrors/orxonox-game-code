@@ -121,7 +121,7 @@ namespace orxonox
         }
 
         XMLPortParam(OrxonoxOverlay, "size",      setSize,      getSize,      xmlElement, mode)
-            .defaultValues(Vector2(0.5f, 0.5f));
+            .defaultValues(Vector2(1.0f, 1.0f));
         XMLPortParam(OrxonoxOverlay, "pickPoint", setPickPoint, getPickPoint, xmlElement, mode)
             .defaultValues(Vector2(0.0f, 0.0f));
         XMLPortParam(OrxonoxOverlay, "position",  setPosition,  getPosition,  xmlElement, mode)
