@@ -206,11 +206,20 @@ namespace orxonox
             // take the reverse if angle is about 90 degrees
             float tempAspect;
             if (angle > 89.0 && angle < 91.0)
+            {
                 tempAspect = 1.0 / this->windowAspectRatio_;
+                rotState_ = Vertical;
+            }
             else if (angle > 179 || angle < 1)
+            {
                 tempAspect = this->windowAspectRatio_;
+                rotState_ = Horizontal;
+            }
             else
+            {
                 tempAspect = 1.0;
+                rotState_ = Inbetween;
+            }
 
             // note: this is only an approximation that is mostly valid when the
             // magnitude of the width is about the magnitude of the height.

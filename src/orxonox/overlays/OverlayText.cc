@@ -62,6 +62,7 @@ namespace orxonox
         {
             this->text_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
                 .createOverlayElement("TextArea", "OverlayText_text_" + getUniqueNumberStr()));
+            this->text_->setCharHeight(1.0);
 
             this->background_->addChild(this->text_);
         }
@@ -90,7 +91,13 @@ namespace orxonox
         if (!this->overlay_)
             return;
 
-        this->overlay_->setScale(size_.y * sizeCorrection_.y, size_.y * sizeCorrection_.y);
+        if (this->rotState_ == Horizontal)
+            this->overlay_->setScale(size_.y * sizeCorrection_.y, size_.y * sizeCorrection_.y);
+        else if (this->rotState_ == Vertical)
+            this->overlay_->setScale(size_.y / (sizeCorrection_.y * sizeCorrection_.y), size_.y * sizeCorrection_.y);
+        else
+            this->overlay_->setScale(size_.y, size_.y);
+
         positionChanged();
     }
 }

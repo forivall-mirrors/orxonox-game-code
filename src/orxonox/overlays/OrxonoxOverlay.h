@@ -69,6 +69,20 @@ namespace orxonox
     class _OrxonoxExport OrxonoxOverlay : public BaseObject, public WindowEventListener
     {
     public:
+        /**
+        @brief
+            Describes the rotational state of a an overlay.
+            Horizontal means 0/180 degrees, Vertical is 90/270 degrees
+            and Inbetween is everything else.
+        */
+        enum RotationState
+        {
+            Horizontal,
+            Vertical,
+            Inbetween
+        };
+
+    public:
         OrxonoxOverlay();
         virtual ~OrxonoxOverlay();
 
@@ -155,6 +169,7 @@ namespace orxonox
         Vector2 position_;                         //!< Position of the pickPoint on the screen.
         Vector2 pickPoint_;                        //!< Point on the overlay to pick when translating
         Radian angle_;                             //!< Rotation angle of the overlay
+        RotationState rotState_;             //!< horizontal, vertical or inbetween
 
     private:
         void windowResized(int newWidth, int newHeight);
