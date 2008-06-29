@@ -55,7 +55,7 @@ namespace orxonox
             ~OutputBuffer() {}
 
             template <class T>
-            inline OutputBuffer& operator<<(T object)
+            OutputBuffer& operator<<(T object)
             {
                 this->stream_ << object;
                 this->callListeners();
@@ -67,26 +67,26 @@ namespace orxonox
             OutputBuffer& operator<<(std::ios_base& (*manipulator)(std::ios_base&));
 
             template <class T>
-            inline void add(T object)
+            void add(T object)
             {
                 this->stream_ << object;
                 this->callListeners();
             }
 
             template <class T>
-            inline void addLine(T object)
+            void addLine(T object)
             {
                 this->stream_ << object << std::endl;
                 this->callListeners();
             }
 
-            inline void newline()
+            void newline()
             {
                 this->stream_ << std::endl;
                 this->callListeners();
             }
 
-            inline void flush()
+            void flush()
             {
                 this->stream_.flush();
             }

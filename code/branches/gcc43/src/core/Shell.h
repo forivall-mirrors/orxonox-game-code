@@ -71,20 +71,20 @@ namespace orxonox
             void unregisterListener(ShellListener* listener);
 
             void setInputBuffer(InputBuffer* buffer);
-            inline InputBuffer& getInputBuffer()
+            InputBuffer& getInputBuffer()
                 { return (*this->inputBuffer_); }
-            inline OutputBuffer& getOutputBuffer()
+            OutputBuffer& getOutputBuffer()
                 { return this->outputBuffer_; }
 
             void setCursorPosition(unsigned int cursor);
-            inline unsigned int getCursorPosition() const
+            unsigned int getCursorPosition() const
                 { return this->inputBuffer_->getCursorPosition(); }
 
             void setInput(const std::string& input);
 
-            inline void clearInput()
+            void clearInput()
                 { this->setInput(""); }
-            inline std::string getInput() const
+            std::string getInput() const
                 { return this->inputBuffer_->get(); }
 
             std::list<std::string>::const_iterator getNewestLineIterator() const;
@@ -93,12 +93,12 @@ namespace orxonox
             void addLine(const std::string& line, int level = 0);
             void clearLines();
 
-            inline unsigned int getNumLines() const
+            unsigned int getNumLines() const
                 { return this->lines_.size(); }
-            inline unsigned int getScrollPosition() const
+            unsigned int getScrollPosition() const
                 { return this->scrollPosition_; }
 
-            inline void addOutputLevel(bool bAddOutputLevel)
+            void addOutputLevel(bool bAddOutputLevel)
                 { this->bAddOutputLevel_ = bAddOutputLevel; }
 
         private:

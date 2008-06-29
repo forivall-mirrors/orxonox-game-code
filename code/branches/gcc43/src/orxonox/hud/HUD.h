@@ -54,7 +54,7 @@ namespace orxonox
         void setRenderTimeRatio(float ratio);
         void setFPS();
 
-        inline std::list<RadarObject*>& getRadarObjects()
+        std::list<RadarObject*>& getRadarObjects()
             { return this->roSet_; }
 
         static HUD& getSingleton();

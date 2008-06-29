@@ -46,10 +46,10 @@ namespace orxonox
             ~Light();
             void setLight(Ogre::Light::LightTypes type = Ogre::Light::LT_POINT, const ColourValue& diffuse = ColourValue(1.0, 1.0, 1.0), const ColourValue& specular = ColourValue(1.0, 1.0, 1.0));
 
-            inline Ogre::Light* getLight()
+            Ogre::Light* getLight()
                 { return this->light_; }
 
-            inline const std::string& getName() const
+            const std::string& getName() const
                 { return this->light_->getName(); }
 
         private:

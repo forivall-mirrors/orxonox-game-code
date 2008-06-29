@@ -45,7 +45,7 @@ namespace orxonox
         virtual ~Camera();
 
         void setPositionNode(Ogre::SceneNode* node);
-        inline Ogre::SceneNode* getCameraNode() { return this->positionNode_; }
+        Ogre::SceneNode* getCameraNode() { return this->positionNode_; }
         // maybe also BaseObject
         void setTargetNode(Ogre::SceneNode* obj);
 
@@ -53,7 +53,7 @@ namespace orxonox
 
         void tick(float dt);
         void update();
-        inline bool hasFocus() { return this->bHasFocus_; }
+        bool hasFocus() { return this->bHasFocus_; }
 
       private:
         void removeFocus();

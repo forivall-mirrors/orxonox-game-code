@@ -45,19 +45,19 @@ namespace orxonox
         ~RadarObject();
 
         void setMaterial(const ColourValue& colour, const std::string& texturename);
-        inline void setColour(const ColourValue& colour)
+        void setColour(const ColourValue& colour)
             { this->setMaterial(colour, this->texturename_); }
-        inline void setTexture(const std::string& texturename)
+        void setTexture(const std::string& texturename)
             { this->setMaterial(this->colour_, texturename); }
-        inline void resetMaterial()
+        void resetMaterial()
             { this->setMaterial(this->colour_, this->texturename_); }
 
         const Vector3& getPosition() const;
         Vector3 getOrientedVelocity() const;
 
-        inline WorldEntity* getObject() const
+        WorldEntity* getObject() const
             { return this->object_; }
-        inline Ogre::PanelOverlayElement* getPanel() const
+        Ogre::PanelOverlayElement* getPanel() const
             { return this->panel_; }
 
       private:

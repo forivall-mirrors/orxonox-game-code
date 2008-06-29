@@ -48,7 +48,7 @@ namespace orxonox
         void cycleFocus();
         float getDist2Focus() const;
 
-        inline RadarObject* getFocus() const
+        RadarObject* getFocus() const
             { return this->focus_; }
         void releaseFocus();
 

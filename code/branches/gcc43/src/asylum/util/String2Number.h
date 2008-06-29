@@ -65,7 +65,7 @@ class String2Number
    * string where the number is taken from, the third parameter
    * should be one of std::hex, std::dec or std::oct (dec is default value)
    */
-  inline String2Number(T& t, const std::string& s, std::ios_base& (*f)(std::ios_base&) =  std::dec, int haltOnError=1)
+  String2Number(T& t, const std::string& s, std::ios_base& (*f)(std::ios_base&) =  std::dec, int haltOnError=1)
   {
     std::istringstream iss(s);
     success_ = !(iss >> f >> t).fail();

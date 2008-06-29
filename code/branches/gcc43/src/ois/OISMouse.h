@@ -61,7 +61,7 @@ namespace OIS
 		int buttons;
 
 		//! Button down test
-		inline bool buttonDown( MouseButtonID button ) const
+		bool buttonDown( MouseButtonID button ) const
 		{
 			return ((buttons & ( 1L << button )) == 0) ? false : true;
 		}

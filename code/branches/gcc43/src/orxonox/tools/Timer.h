@@ -80,31 +80,31 @@ namespace orxonox
             void deleteExecutor();
 
             /** @brief Starts the Timer: Function-call after 'interval' seconds. */
-            inline void startTimer()
+            void startTimer()
                 { this->bActive_ = true; this->time_ = this->interval_; }
             /** @brief Stops the Timer. */
-            inline void stopTimer()
+            void stopTimer()
                 { this->bActive_ = false; this->time_ = this->interval_; }
             /** @brief Pauses the Timer - it will continue with the actual state if you unpause it. */
-            inline void pauseTimer()
+            void pauseTimer()
                 { this->bActive_ = false; }
             /** @brief Unpauses the Timer - continues with the given state. */
-            inline void unpauseTimer()
+            void unpauseTimer()
                 { this->bActive_ = true; }
             /** @brief Returns true if the Timer is active (= not stoped, not paused). @return True = Time is active */
-            inline bool isActive() const
+            bool isActive() const
                 { return this->bActive_; }
             /** @brief Gives the Timer some extra time. @param time The amount of extra time in seconds */
-            inline void addTime(float time)
+            void addTime(float time)
                 { this->time_ += time; }
             /** @brief Decreases the remaining time of the Timer. @param time The amount of time to remove */
-            inline void removeTime(float time)
+            void removeTime(float time)
                 { this->time_ -= time; }
             /** @brief Sets the interval of the Timer. @param interval The interval */
-            inline void setInterval(float interval)
+            void setInterval(float interval)
                 { this->interval_ = interval; }
             /** @brief Sets bLoop to a given value. @param bLoop True = loop */
-            inline void setLoop(bool bLoop)
+            void setLoop(bool bLoop)
                 { this->bLoop_ = bLoop; }
 
             void tick(float dt);

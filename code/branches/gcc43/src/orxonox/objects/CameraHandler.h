@@ -51,9 +51,9 @@ namespace orxonox
   {
 
     public:
-      inline static CameraHandler* getInstance() { if (!CameraHandler::singletonRef) CameraHandler::singletonRef = new CameraHandler(); return CameraHandler::singletonRef; }
-      inline ~CameraHandler() { CameraHandler::singletonRef = NULL; }
-      inline Camera* getActiveCamera() { return this->focusList_.back(); }
+      static CameraHandler* getInstance() { if (!CameraHandler::singletonRef) CameraHandler::singletonRef = new CameraHandler(); return CameraHandler::singletonRef; }
+      ~CameraHandler() { CameraHandler::singletonRef = NULL; }
+      Camera* getActiveCamera() { return this->focusList_.back(); }
       /*void registerCamera(Camera* newCam);
       void changeActiveCamera(Camera* setCam);*/
       void requestFocus(Camera* requestCam);

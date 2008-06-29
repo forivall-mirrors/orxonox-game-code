@@ -79,7 +79,7 @@ namespace orxonox {
             void windowFocusChanged(Ogre::RenderWindow* rw);
             void windowClosed      (Ogre::RenderWindow* rw);
 
-            inline unsigned int getDetailLevelParticle() const
+            unsigned int getDetailLevelParticle() const
               { return this->detailLevelParticle_; }
 
             static GraphicsEngine& getSingleton();

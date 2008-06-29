@@ -56,10 +56,10 @@ namespace orxonox {
 
     virtual void tick(float dt);
 
-    inline virtual void loadParams(TiXmlElement* xmlElem) { BaseObject::loadParams(xmlElem); };
+    virtual void loadParams(TiXmlElement* xmlElem) { BaseObject::loadParams(xmlElem); };
 
   protected:
-    inline bool create() { return Synchronisable::create(); }
+    bool create() { return Synchronisable::create(); }
     void registerAllVariables();
 
     // Bullet array

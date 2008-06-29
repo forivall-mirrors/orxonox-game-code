@@ -29,9 +29,9 @@ namespace loader
     void loadLevel();
 
     // Getters
-    inline std::string name() {return name_; };
-    inline std::string description() {return description_; };
-    inline std::string image() {return image_; };
+    std::string name() {return name_; };
+    std::string description() {return description_; };
+    std::string image() {return image_; };
   private:
     //! Level information
     std::string name_;

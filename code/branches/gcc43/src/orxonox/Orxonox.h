@@ -61,15 +61,15 @@ namespace orxonox {
       bool start();
 
       void abortRequest();
-      //inline audio::AudioManager* getAudioManagerPointer() { return auMan_; };
+      //audio::AudioManager* getAudioManagerPointer() { return auMan_; };
 
       static Orxonox* getSingleton();
       static void destroySingleton();
 
-      static inline void slomo(float factor) { Orxonox::setTimeFactor(factor); }
+      static void slomo(float factor) { Orxonox::setTimeFactor(factor); }
       static void setTimeFactor(float factor = 1.0);
-      static inline float getTimeFactor() { return Orxonox::getSingleton()->timefactor_; }
-      static inline void exit() { Orxonox::getSingleton()->abortRequest(); }
+      static float getTimeFactor() { return Orxonox::getSingleton()->timefactor_; }
+      static void exit() { Orxonox::getSingleton()->abortRequest(); }
 
    private:
       // don't mess with singletons

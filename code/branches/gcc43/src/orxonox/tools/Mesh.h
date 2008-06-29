@@ -44,15 +44,15 @@ namespace orxonox
             ~Mesh();
             void setMesh(const std::string& file);
 
-            inline Ogre::Entity* getEntity()
+            Ogre::Entity* getEntity()
                 { return this->entity_; }
 
-            inline const std::string& getName() const
+            const std::string& getName() const
                 { return this->entity_->getName(); }
 
-            inline void setVisible(bool visible)
+            void setVisible(bool visible)
                 { this->entity_->setVisible(visible); }
-            inline bool getVisible() const
+            bool getVisible() const
                 { return this->entity_->getVisible(); }
 
         private:

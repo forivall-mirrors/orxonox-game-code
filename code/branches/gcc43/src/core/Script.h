@@ -55,8 +55,8 @@ namespace orxonox // tolua_export
     };
 
     public:
-      inline static Script* getInstance() { if (!Script::singletonRef) Script::singletonRef = new Script(); return Script::singletonRef; } // tolua_export
-      inline ~Script() { Script::singletonRef = NULL; };
+      static Script* getInstance() { if (!Script::singletonRef) Script::singletonRef = new Script(); return Script::singletonRef; } // tolua_export
+      ~Script() { Script::singletonRef = NULL; };
 
     void loadFile(std::string filename, bool luaTags);
     //void init(lua_State *state_);
@@ -68,9 +68,9 @@ namespace orxonox // tolua_export
     static const char * lua_Chunkreader(lua_State *L, void *data, size_t *size);
 #endif
 
-    inline lua_State* getLuaState() { return luaState_; };
-    inline std::string getLuaOutput() { return output_; };
-    //inline std::string* getFileString() { return &fileString_; };
+    lua_State* getLuaState() { return luaState_; };
+    std::string getLuaOutput() { return output_; };
+    //std::string* getFileString() { return &fileString_; };
 
     unsigned int getNextQuote(const std::string& text, unsigned int start);
     std::string replaceLuaTags(const std::string& text);

@@ -93,20 +93,20 @@ namespace orxonox
             ObjectListElement<T>* add(T* object);
 
             /** @brief Returns the first element in the list. @return The first element */
-            inline static Iterator<T> start()
+            static Iterator<T> start()
                 { return Iterator<T>(ClassIdentifier<T>::getIdentifier()->getObjects()->first_); }
 
             /** @brief Returns the first element in the list. @return The first element */
-            inline static Iterator<T> begin()
+            static Iterator<T> begin()
                 { return Iterator<T>(ClassIdentifier<T>::getIdentifier()->getObjects()->first_); }
 
             /** @brief Returns the last element in the list. @return The last element */
-            inline static Iterator<T> end()
+            static Iterator<T> end()
                 { return Iterator<T>(ClassIdentifier<T>::getIdentifier()->getObjects()->last_); }
 
-            inline void registerIterator(Iterator<T>* iterator)
+            void registerIterator(Iterator<T>* iterator)
                 { this->iterators_.insert(this->iterators_.end(), (void*)iterator); }
-            inline void unregisterIterator(Iterator<T>* iterator)
+            void unregisterIterator(Iterator<T>* iterator)
                 { this->iterators_.erase((void*)iterator); }
             void notifyIterators(ObjectListElement<T>* element);
 

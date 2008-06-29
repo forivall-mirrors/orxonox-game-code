@@ -95,7 +95,7 @@ namespace orxonox
                 { this->parseResult_ = PR_not_started; }
             virtual ~XMLPortParamContainer() {}
 
-            inline const std::string& getName() const
+            const std::string& getName() const
                 { return this->paramname_; }
 
             virtual XMLPortParamContainer& description(const std::string description) = 0;
@@ -242,7 +242,7 @@ namespace orxonox
                 { this->bApplyLoaderMask_ = false; }
             virtual ~XMLPortObjectContainer() {}
 
-            inline const std::string& getName() const
+            const std::string& getName() const
                 { return this->sectionname_; }
 
             virtual XMLPortObjectContainer& description(const std::string description) = 0;

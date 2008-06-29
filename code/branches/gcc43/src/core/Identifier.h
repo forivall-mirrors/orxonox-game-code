@@ -99,7 +99,7 @@ namespace orxonox
 
         public:
             /** @brief Sets the Factory. @param factory The factory to assign */
-            inline void addFactory(BaseFactory* factory) { this->factory_ = factory; }
+            void addFactory(BaseFactory* factory) { this->factory_ = factory; }
 
             BaseObject* fabricate();
             bool isA(const Identifier* identifier) const;
@@ -114,93 +114,93 @@ namespace orxonox
             virtual void updateConfigValues() const = 0;
 
             /** @brief Returns the name of the class the Identifier belongs to. @return The name */
-            inline const std::string& getName() const { return this->name_; }
+            const std::string& getName() const { return this->name_; }
 
 
             /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
-            inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
+            const std::set<const Identifier*>& getParents() const { return this->parents_; }
             /** @brief Returns the begin-iterator of the parents-list. @return The begin-iterator */
-            inline std::set<const Identifier*>::const_iterator getParentsBegin() const { return this->parents_.begin(); }
+            std::set<const Identifier*>::const_iterator getParentsBegin() const { return this->parents_.begin(); }
             /** @brief Returns the end-iterator of the parents-list. @return The end-iterator */
-            inline std::set<const Identifier*>::const_iterator getParentsEnd() const { return this->parents_.end(); }
+            std::set<const Identifier*>::const_iterator getParentsEnd() const { return this->parents_.end(); }
 
             /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
-            inline const std::set<const Identifier*>& getChildren() const { return (*this->children_); }
+            const std::set<const Identifier*>& getChildren() const { return (*this->children_); }
             /** @brief Returns the begin-iterator of the children-list. @return The begin-iterator */
-            inline std::set<const Identifier*>::const_iterator getChildrenBegin() const { return this->children_->begin(); }
+            std::set<const Identifier*>::const_iterator getChildrenBegin() const { return this->children_->begin(); }
             /** @brief Returns the end-iterator of the children-list. @return The end-iterator */
-            inline std::set<const Identifier*>::const_iterator getChildrenEnd() const { return this->children_->end(); }
+            std::set<const Identifier*>::const_iterator getChildrenEnd() const { return this->children_->end(); }
 
             /** @brief Returns the direct parents of the class the Identifier belongs to. @return The list of all direct parents */
-            inline const std::set<const Identifier*>& getDirectParents() const { return this->directParents_; }
+            const std::set<const Identifier*>& getDirectParents() const { return this->directParents_; }
             /** @brief Returns the begin-iterator of the direct-parents-list. @return The begin-iterator */
-            inline std::set<const Identifier*>::const_iterator getDirectParentsBegin() const { return this->directParents_.begin(); }
+            std::set<const Identifier*>::const_iterator getDirectParentsBegin() const { return this->directParents_.begin(); }
             /** @brief Returns the end-iterator of the direct-parents-list. @return The end-iterator */
-            inline std::set<const Identifier*>::const_iterator getDirectParentsEnd() const { return this->directParents_.end(); }
+            std::set<const Identifier*>::const_iterator getDirectParentsEnd() const { return this->directParents_.end(); }
 
             /** @brief Returns the direct children the class the Identifier belongs to. @return The list of all direct children */
-            inline const std::set<const Identifier*>& getDirectChildren() const { return (*this->directChildren_); }
+            const std::set<const Identifier*>& getDirectChildren() const { return (*this->directChildren_); }
             /** @brief Returns the begin-iterator of the direct-children-list. @return The begin-iterator */
-            inline std::set<const Identifier*>::const_iterator getDirectChildrenBegin() const { return this->directChildren_->begin(); }
+            std::set<const Identifier*>::const_iterator getDirectChildrenBegin() const { return this->directChildren_->begin(); }
             /** @brief Returns the end-iterator of the direct-children-list. @return The end-iterator */
-            inline std::set<const Identifier*>::const_iterator getDirectChildrenEnd() const { return this->directChildren_->end(); }
+            std::set<const Identifier*>::const_iterator getDirectChildrenEnd() const { return this->directChildren_->end(); }
 
 
             /** @brief Returns the map that stores all Identifiers. @return The map */
-            static inline const std::map<std::string, Identifier*>& getIdentifierMap() { return Identifier::getIdentifierMapIntern(); }
+            static const std::map<std::string, Identifier*>& getIdentifierMap() { return Identifier::getIdentifierMapIntern(); }
             /** @brief Returns a const_iterator to the beginning of the map that stores all Identifiers. @return The const_iterator */
-            static inline std::map<std::string, Identifier*>::const_iterator getIdentifierMapBegin() { return Identifier::getIdentifierMap().begin(); }
+            static std::map<std::string, Identifier*>::const_iterator getIdentifierMapBegin() { return Identifier::getIdentifierMap().begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all Identifiers. @return The const_iterator */
-            static inline std::map<std::string, Identifier*>::const_iterator getIdentifierMapEnd() { return Identifier::getIdentifierMap().end(); }
+            static std::map<std::string, Identifier*>::const_iterator getIdentifierMapEnd() { return Identifier::getIdentifierMap().end(); }
 
             /** @brief Returns the map that stores all Identifiers with their names in lowercase. @return The map */
-            static inline const std::map<std::string, Identifier*>& getLowercaseIdentifierMap() { return Identifier::getLowercaseIdentifierMapIntern(); }
+            static const std::map<std::string, Identifier*>& getLowercaseIdentifierMap() { return Identifier::getLowercaseIdentifierMapIntern(); }
             /** @brief Returns a const_iterator to the beginning of the map that stores all Identifiers with their names in lowercase. @return The const_iterator */
-            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseIdentifierMapBegin() { return Identifier::getLowercaseIdentifierMap().begin(); }
+            static std::map<std::string, Identifier*>::const_iterator getLowercaseIdentifierMapBegin() { return Identifier::getLowercaseIdentifierMap().begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all Identifiers with their names in lowercase. @return The const_iterator */
-            static inline std::map<std::string, Identifier*>::const_iterator getLowercaseIdentifierMapEnd() { return Identifier::getLowercaseIdentifierMap().end(); }
+            static std::map<std::string, Identifier*>::const_iterator getLowercaseIdentifierMapEnd() { return Identifier::getLowercaseIdentifierMap().end(); }
 
 
             /** @brief Returns the map that stores all config values. @return The const_iterator */
-            inline const std::map<std::string, ConfigValueContainer*>& getConfigValueMap() const { return this->configValues_; }
+            const std::map<std::string, ConfigValueContainer*>& getConfigValueMap() const { return this->configValues_; }
             /** @brief Returns a const_iterator to the beginning of the map that stores all config values. @return The const_iterator */
-            inline std::map<std::string, ConfigValueContainer*>::const_iterator getConfigValueMapBegin() const { return this->configValues_.begin(); }
+            std::map<std::string, ConfigValueContainer*>::const_iterator getConfigValueMapBegin() const { return this->configValues_.begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all config values. @return The const_iterator */
-            inline std::map<std::string, ConfigValueContainer*>::const_iterator getConfigValueMapEnd() const { return this->configValues_.end(); }
+            std::map<std::string, ConfigValueContainer*>::const_iterator getConfigValueMapEnd() const { return this->configValues_.end(); }
 
             /** @brief Returns the map that stores all config values with their names in lowercase. @return The const_iterator */
-            inline const std::map<std::string, ConfigValueContainer*>& getLowercaseConfigValueMap() const { return this->configValues_LC_; }
+            const std::map<std::string, ConfigValueContainer*>& getLowercaseConfigValueMap() const { return this->configValues_LC_; }
             /** @brief Returns a const_iterator to the beginning of the map that stores all config values with their names in lowercase. @return The const_iterator */
-            inline std::map<std::string, ConfigValueContainer*>::const_iterator getLowercaseConfigValueMapBegin() const { return this->configValues_LC_.begin(); }
+            std::map<std::string, ConfigValueContainer*>::const_iterator getLowercaseConfigValueMapBegin() const { return this->configValues_LC_.begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all config values with their names in lowercase. @return The const_iterator */
-            inline std::map<std::string, ConfigValueContainer*>::const_iterator getLowercaseConfigValueMapEnd() const { return this->configValues_LC_.end(); }
+            std::map<std::string, ConfigValueContainer*>::const_iterator getLowercaseConfigValueMapEnd() const { return this->configValues_LC_.end(); }
 
 
             /** @brief Returns the map that stores all console commands. @return The const_iterator */
-            inline const std::map<std::string, ConsoleCommand*>& getConsoleCommandMap() const { return this->consoleCommands_; }
+            const std::map<std::string, ConsoleCommand*>& getConsoleCommandMap() const { return this->consoleCommands_; }
             /** @brief Returns a const_iterator to the beginning of the map that stores all console commands. @return The const_iterator */
-            inline std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandMapBegin() const { return this->consoleCommands_.begin(); }
+            std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandMapBegin() const { return this->consoleCommands_.begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all console commands. @return The const_iterator */
-            inline std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandMapEnd() const { return this->consoleCommands_.end(); }
+            std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandMapEnd() const { return this->consoleCommands_.end(); }
 
             /** @brief Returns the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            inline const std::map<std::string, ConsoleCommand*>& getLowercaseConsoleCommandMap() const { return this->consoleCommands_LC_; }
+            const std::map<std::string, ConsoleCommand*>& getLowercaseConsoleCommandMap() const { return this->consoleCommands_LC_; }
             /** @brief Returns a const_iterator to the beginning of the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapBegin() const { return this->consoleCommands_LC_.begin(); }
+            std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapBegin() const { return this->consoleCommands_LC_.begin(); }
             /** @brief Returns a const_iterator to the end of the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapEnd() const { return this->consoleCommands_LC_.end(); }
+            std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapEnd() const { return this->consoleCommands_LC_.end(); }
 
 
             /** @brief Returns true if this class has at least one config value. @return True if this class has at least one config value */
-            inline bool hasConfigValues() const { return this->bHasConfigValues_; }
+            bool hasConfigValues() const { return this->bHasConfigValues_; }
             /** @brief Returns true if this class has at least one console command. @return True if this class has at least one console command */
-            inline bool hasConsoleCommands() const { return this->bHasConsoleCommands_; }
+            bool hasConsoleCommands() const { return this->bHasConsoleCommands_; }
 
             /** @brief Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. @return The status of the class-hierarchy creation */
-            inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
+            static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
             /** @brief Returns the network ID to identify a class through the network. @return the network ID */
-            inline const unsigned int getNetworkID() const { return this->classID_; }
+            const unsigned int getNetworkID() const { return this->classID_; }
 
             /** @brief Sets the network ID to a new value. @param id The new value */
             void setNetworkID(unsigned int id);
@@ -232,14 +232,14 @@ namespace orxonox
             void initialize(std::set<const Identifier*>* parents);
 
             /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
-            inline std::set<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
+            std::set<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
             /** @brief Returns the direct children of the class the Identifier belongs to. @return The list of all direct children */
-            inline std::set<const Identifier*>& getDirectChildrenIntern() const { return (*this->directChildren_); }
+            std::set<const Identifier*>& getDirectChildrenIntern() const { return (*this->directChildren_); }
 
             /**
                 @brief Increases the hierarchyCreatingCounter_s variable, causing all new objects to store their parents.
             */
-            inline static void startCreatingHierarchy()
+            static void startCreatingHierarchy()
             {
                 hierarchyCreatingCounter_s++;
                 COUT(4) << "*** Identifier: Increased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
@@ -248,7 +248,7 @@ namespace orxonox
             /**
                 @brief Decreases the hierarchyCreatingCounter_s variable, causing the objects to stop storing their parents.
             */
-            inline static void stopCreatingHierarchy()
+            static void stopCreatingHierarchy()
             {
                 hierarchyCreatingCounter_s--;
                 COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
@@ -301,9 +301,9 @@ namespace orxonox
             void addObject(T* object);
             void setName(const std::string& name);
             /** @brief Returns the list of all existing objects of this class. @return The list */
-            inline ObjectList<T>* getObjects() const { return this->objects_; }
+            ObjectList<T>* getObjects() const { return this->objects_; }
             /** @brief Returns a list of all existing objects of this class. @return The list */
-            inline ObjectList<BaseObject>* getObjectList() const { return (ObjectList<BaseObject>*)this->objects_; }
+            ObjectList<BaseObject>* getObjectList() const { return (ObjectList<BaseObject>*)this->objects_; }
 
             void updateConfigValues() const;
 
@@ -585,31 +585,31 @@ namespace orxonox
             }
 
             /** @brief Returns the assigned identifier. @return The identifier */
-            inline const Identifier* getIdentifier() const
+            const Identifier* getIdentifier() const
                 { return this->identifier_; }
 
             /** @brief Returns true, if the assigned identifier is at least of the given type. @param identifier The identifier to compare with */
-            inline bool isA(const Identifier* identifier) const
+            bool isA(const Identifier* identifier) const
                 { return this->identifier_->isA(identifier); }
 
             /** @brief Returns true, if the assigned identifier is exactly of the given type. @param identifier The identifier to compare with */
-            inline bool isExactlyA(const Identifier* identifier) const
+            bool isExactlyA(const Identifier* identifier) const
                 { return this->identifier_->isExactlyA(identifier); }
 
             /** @brief Returns true, if the assigned identifier is a child of the given identifier. @param identifier The identifier to compare with */
-            inline bool isChildOf(const Identifier* identifier) const
+            bool isChildOf(const Identifier* identifier) const
                 { return this->identifier_->isChildOf(identifier); }
 
             /** @brief Returns true, if the assigned identifier is a direct child of the given identifier. @param identifier The identifier to compare with */
-            inline bool isDirectChildOf(const Identifier* identifier) const
+            bool isDirectChildOf(const Identifier* identifier) const
                 { return this->identifier_->isDirectChildOf(identifier); }
 
             /** @brief Returns true, if the assigned identifier is a parent of the given identifier. @param identifier The identifier to compare with */
-            inline bool isParentOf(const Identifier* identifier) const
+            bool isParentOf(const Identifier* identifier) const
                 { return this->identifier_->isParentOf(identifier); }
 
             /** @brief Returns true, if the assigned identifier is a direct parent of the given identifier. @param identifier The identifier to compare with */
-            inline bool isDirectParentOf(const Identifier* identifier) const
+            bool isDirectParentOf(const Identifier* identifier) const
                 { return this->identifier_->isDirectParentOf(identifier); }
 
         private:

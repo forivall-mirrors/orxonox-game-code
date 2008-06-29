@@ -65,19 +65,19 @@ namespace orxonox
             void setRotDamp(float value);
             void getFocus();
 
-            inline float getMaxSpeed() const
+            float getMaxSpeed() const
                 { return this->maxSpeed_; }
-            inline float getMaxSideAndBackSpeed() const
+            float getMaxSideAndBackSpeed() const
                 { return this->maxSideAndBackSpeed_; }
-            inline float getMaxRotation() const
+            float getMaxRotation() const
                 { return this->maxRotation_; }
-            inline float getTransAcc() const
+            float getTransAcc() const
                 { return this->translationAcceleration_; }
-            inline float getRotAcc() const
+            float getRotAcc() const
                 { return this->rotationAcceleration_; }
-            inline float getTransDamp() const
+            float getTransDamp() const
                 { return this->translationDamping_; }
-            inline float getRotDamp() const
+            float getRotDamp() const
                 { return this->rotationDamping_; }
 
             static std::string whereAmI();
@@ -97,13 +97,13 @@ namespace orxonox
             void setMoveLateral(float value);
             void doFire();
 
-            inline const Vector3& getDir() const
+            const Vector3& getDir() const
                 { return this->currentDir_; }
-            inline const Vector3& getInitialDir() const
+            const Vector3& getInitialDir() const
                 { return this->initialDir_; }
-            inline const Vector3& getOrth() const
+            const Vector3& getOrth() const
                 { return this->currentOrth_; }
-            inline const Vector3& getInitialOrth() const
+            const Vector3& getInitialOrth() const
                 { return this->initialOrth_; }
 
             Camera* getCamera();

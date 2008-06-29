@@ -74,28 +74,28 @@ namespace orxonox
               @brief Returns the localised entry in the configured language.
               @return The translated entry
             */
-            inline const std::string& getLocalisation()
+            const std::string& getLocalisation()
                 { return this->localisedEntry_; }
 
             /**
               @brief Returns the default entry.
               @return The default entry
             */
-            inline const std::string& getDefault()
+            const std::string& getDefault()
                 { return this->fallbackEntry_; }
 
             /**
                 @brief Sets the label of this entry.
                 @param label The label
             */
-            inline void setLabel(const LanguageEntryLabel& label)
+            void setLabel(const LanguageEntryLabel& label)
                 { this->label_ = label; }
 
             /**
                 @brief Returns the label of this entry.
                 @return The label
             */
-            inline const LanguageEntryLabel& getLabel() const
+            const LanguageEntryLabel& getLabel() const
                 { return this->label_; }
 
         private:

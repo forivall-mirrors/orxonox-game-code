@@ -42,7 +42,7 @@ namespace orxonox
             ParticleSpawner();
             ParticleSpawner(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float delay = 0, const Vector3& direction = Vector3::ZERO);
             virtual ~ParticleSpawner();
-            inline ParticleInterface* getParticleInterface() const
+            ParticleInterface* getParticleInterface() const
                 { return this->particle_; }
 
         private:

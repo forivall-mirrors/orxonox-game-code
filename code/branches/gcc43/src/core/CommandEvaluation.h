@@ -68,16 +68,16 @@ namespace orxonox
 
             bool isValid() const;
 
-            inline ConsoleCommand* getConsoleCommand() const
+            ConsoleCommand* getConsoleCommand() const
                 { return this->function_; }
-            inline const std::string& getOriginalCommand() const
+            const std::string& getOriginalCommand() const
                 { return this->originalCommand_; }
-            inline const std::string& getCommand() const
+            const std::string& getCommand() const
                 { return this->command_; }
 
-            inline void setAdditionalParameter(const std::string& param)
+            void setAdditionalParameter(const std::string& param)
                 { this->additionalParameter_ = param; this->bEvaluatedParams_ = false; }
-            inline std::string getAdditionalParameter() const
+            std::string getAdditionalParameter() const
                 { return (this->additionalParameter_ != "") ? (" " + this->additionalParameter_) : ""; }
 
             void setEvaluatedParameter(unsigned int index, MultiTypeMath param);

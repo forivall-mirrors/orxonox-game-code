@@ -72,10 +72,10 @@ namespace network
     bool setPeer(ENetPeer *peer);
     bool setGameStateID(int id);
     bool setPartialGamestateID(int id);
-    inline void setShipID(int id){ShipID_=id;}
+    void setShipID(int id){ShipID_=id;}
     
     // get functions
-    inline int getShipID(){return ShipID_;}
+    int getShipID(){return ShipID_;}
     int getID();
     int getGamestateID();
     int getPartialGamestateID();

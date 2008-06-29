@@ -78,10 +78,10 @@ namespace orxonox
 
             /** @brief Returns the configured value. @param value This is only needed to determine the right type. @return The value */
             template <typename T>
-            inline ConfigValueContainer& getValue(T* value)
+            ConfigValueContainer& getValue(T* value)
                 { this->value_.getValue(value); return *this; }
             template <typename T>
-            inline ConfigValueContainer& getValue(std::vector<T>* value)
+            ConfigValueContainer& getValue(std::vector<T>* value)
             {
                 value->clear();
                 for (unsigned int i = 0; i < this->valueVector_.size(); i++)
@@ -90,17 +90,17 @@ namespace orxonox
             }
 
             template <typename T>
-            inline void setVectorType(const std::vector<T>& value)
+            void setVectorType(const std::vector<T>& value)
             {
                 this->value_ = T();
                 this->update();
             }
 
-            inline const std::string& getName() const
+            const std::string& getName() const
                 { return this->varname_; }
-            inline bool isVector() const
+            bool isVector() const
                 { return this->bIsVector_; }
-            inline unsigned int getVectorSize() const
+            unsigned int getVectorSize() const
                 { return this->valueVector_.size(); }
 
             void description(const std::string& description);
@@ -118,10 +118,10 @@ namespace orxonox
             void update();
 
             /** @brief Converts the config-value to a string. @return The string */
-            inline std::string toString() const
+            std::string toString() const
                 { return this->value_.toString(); }
             /** @brief Returns the typename of the assigned config-value. @return The typename */
-            inline std::string getTypename() const
+            std::string getTypename() const
                 { return this->value_.getTypename(); }
 
         private:

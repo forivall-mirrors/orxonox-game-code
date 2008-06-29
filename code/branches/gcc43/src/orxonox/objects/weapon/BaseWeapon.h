@@ -71,7 +71,7 @@ namespace orxonox {
 
     void setAmmoDump(AmmunitionDump*);
 
-    inline virtual void loadParams(TiXmlElement* xmlElem) { Model::loadParams(xmlElem); };
+    virtual void loadParams(TiXmlElement* xmlElem) { Model::loadParams(xmlElem); };
 
     virtual void tick(float dt);
 

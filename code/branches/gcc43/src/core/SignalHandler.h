@@ -65,7 +65,7 @@ class SignalHandler
   private:
     SignalHandler();
   public:
-    inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; }
+    static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; }
     ~SignalHandler(){ SignalHandler::singletonRef = NULL; }
 
     void registerCallback( SignalCallback cb, void * someData );
@@ -95,7 +95,7 @@ class SignalHandler
 class _CoreExport SignalHandler
 {
  public:
-   inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; };
+   static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; };
    void doCatch( const std::string & appName, const std::string & fileName ) {};
   void dontCatch() {};
   void registerCallback( SignalCallback cb, void * someData ) {};

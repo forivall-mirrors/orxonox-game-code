@@ -143,22 +143,22 @@ namespace orxonox
             void updated();
             void updated(const char& update, bool bSingleInput);
 
-            inline std::string get() const
+            std::string get() const
                 { return this->buffer_; }
-            inline unsigned int getSize() const
+            unsigned int getSize() const
                 { return this->buffer_.size(); }
 
-            inline unsigned int getCursorPosition() const
+            unsigned int getCursorPosition() const
                 { return this->cursor_; }
-            inline void setCursorPosition(unsigned int cursor)
+            void setCursorPosition(unsigned int cursor)
                 { if (cursor <= this->buffer_.size()) { this->cursor_ = cursor; } }
-            inline void setCursorToEnd()
+            void setCursorToEnd()
                 { this->cursor_ = this->buffer_.size(); }
-            inline void setCursorToBegin()
+            void setCursorToBegin()
                 { this->cursor_ = 0; }
-            inline void increaseCursor()
+            void increaseCursor()
                 { if (this->cursor_ < this->buffer_.size()) { ++this->cursor_; } }
-            inline void decreaseCursor()
+            void decreaseCursor()
                 { if (this->cursor_ > 0) { --this->cursor_; } }
 
         private:

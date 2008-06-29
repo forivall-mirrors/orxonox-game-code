@@ -53,11 +53,11 @@ namespace orxonox
       void addColour(float value, const ColourValue& colour);
       void clearColours();
 
-      inline void setRightToLeft(bool r2l)
+      void setRightToLeft(bool r2l)
         { this->right2Left_ = r2l; }
-      inline bool getRightToLeft() const
+      bool getRightToLeft() const
         { return this->right2Left_; }
-      inline float getValue() const
+      float getValue() const
         { return this->value_; }
 
     private:

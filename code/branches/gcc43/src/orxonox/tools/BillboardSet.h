@@ -45,15 +45,15 @@ namespace orxonox
             ~BillboardSet();
             void setBillboardSet(const std::string& file, const ColourValue& colour = ColourValue(1.0, 1.0, 1.0), int count = 1, const Vector3& position = Vector3::ZERO);
 
-            inline Ogre::BillboardSet* getBillboardSet()
+            Ogre::BillboardSet* getBillboardSet()
                 { return this->billboardSet_; }
 
-            inline const std::string& getName() const
+            const std::string& getName() const
                 { return this->billboardSet_->getName(); }
 
-            inline void setVisible(bool visible)
+            void setVisible(bool visible)
                 { this->billboardSet_->setVisible(visible); }
-            inline bool getVisible() const
+            bool getVisible() const
                 { return this->billboardSet_->getVisible(); }
 
         private:

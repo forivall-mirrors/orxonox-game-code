@@ -52,7 +52,7 @@ namespace audio
       bool playback();
       bool playing();
       bool update();
-      inline bool isLoaded() { return loaded; }
+      bool isLoaded() { return loaded; }
 
     protected:
       bool stream(ALuint buffer);

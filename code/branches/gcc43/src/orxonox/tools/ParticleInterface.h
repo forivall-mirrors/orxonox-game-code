@@ -50,7 +50,7 @@ namespace orxonox
       ParticleInterface(const std::string& templateName, LODParticle::LOD detaillevel);
       ~ParticleInterface();
 
-      inline Ogre::ParticleSystem* getParticleSystem() const
+      Ogre::ParticleSystem* getParticleSystem() const
         { return this->particleSystem_; }
 
       void addToSceneNode(Ogre::SceneNode* sceneNode);
@@ -76,9 +76,9 @@ namespace orxonox
       void setEnabled(bool enable);
       void detailLevelChanged(unsigned int newlevel);
 
-      inline void storeThisAsCurrentParticleInterface()
+      void storeThisAsCurrentParticleInterface()
         { ParticleInterface::currentParticleInterface_s = this; }
-      inline static ParticleInterface* getCurrentParticleInterface()
+      static ParticleInterface* getCurrentParticleInterface()
         { return ParticleInterface::currentParticleInterface_s; }
 
     private:
