@@ -115,6 +115,13 @@ namespace orxonox
             return 0;
     }
 
+    //! Changes the visibility of all elements
+    void OverlayGroup::changedVisibility()
+    {
+        for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            (*it).second->setVisible(this->isVisible());
+    }
+
 
     //########### Console commands ############
 
