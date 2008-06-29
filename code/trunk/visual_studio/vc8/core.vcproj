@@ -191,6 +191,20 @@
 				Name="tolua"
 				>
 				<File
+					RelativePath="..\..\src\core\tolua\tolua.pkg"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Generating tolua bind files..."
+							CommandLine="&quot;$(OutDir)\tolua_app.exe&quot; -n core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg"
+							Outputs="$(RootDir)\src\core\tolua\tolua_bind.cc; $(RootDir)\src\core\tolua\tolua_bind.h"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath="..\..\src\core\tolua\tolua_bind.cc"
 					>
 				</File>
