@@ -38,6 +38,7 @@
 #include "PacketManager.h"
 
 #include <iostream>
+#include <string.h>
 
 #include "core/Debug.h"
 

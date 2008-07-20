@@ -58,6 +58,8 @@
 #include <map>
 #include <string>
 #include <utility>
+#include <typeinfo>
+#include <stdlib.h>
 
 #include "ObjectList.h"
 #include "Debug.h"
