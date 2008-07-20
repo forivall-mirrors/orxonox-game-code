@@ -42,16 +42,17 @@
 
 #include <string>
 #include <iostream>
+#include <string.h>
 
 #include "core/CoreIncludes.h"
 // #include "core/Identifier.h"
 
 namespace network
 {
-  
-  
+
+
   int Synchronisable::state_=0x1; // detemines wheter we are server (default) or client
-  
+
   /**
   * Constructor:
   * calls registarAllVariables, that has to be implemented by the inheriting classID
@@ -71,13 +72,13 @@ namespace network
       for(std::list<synchronisableVariable *>::iterator it = syncList->begin(); it!=syncList->end(); it++)
         delete (*it)->callback;
   }
-  
+
   bool Synchronisable::create(){
     this->classID = this->getIdentifier()->getNetworkID();
     COUT(4) << "creating synchronisable: setting classid from " << this->getIdentifier()->getName() << " to: " << classID << std::endl;
     return true;
   }
-  
+
   void Synchronisable::setClient(bool b){
     if(b) // client
       state_=0x2;
@@ -96,10 +97,10 @@ namespace network
     synchronisableVariable *temp = new synchronisableVariable;
     temp->size = size;
     temp->var = var;
-    temp->mode = mode; 
+    temp->mode = mode;
     temp->type = t;
     temp->callback = cb;
-    COUT(5) << "Syncronisable::registering var with size: " << temp->size << " and type: " << temp->type << std::endl; 
+    COUT(5) << "Syncronisable::registering var with size: " << temp->size << " and type: " << temp->type << std::endl;
     // increase datasize
     datasize+=sizeof(int)+size;
     //std::cout << "push temp to syncList (at the bottom) " << datasize << std::endl;
@@ -186,14 +187,14 @@ namespace network
       }
       switch((*i)->type){
       case DATA:
-        std::memcpy( (void *)(retVal.data+n), (void*)((*i)->var), (*i)->size);
+        memcpy( (void *)(retVal.data+n), (void*)((*i)->var), (*i)->size);
         n+=(*i)->size;
         break;
       case STRING:
         memcpy( (void *)(retVal.data+n), (void *)&((*i)->size), sizeof(int) );
         n+=sizeof(int);
         const char *data = ( ( *(std::string *) (*i)->var).c_str());
-        std::memcpy( retVal.data+n, (void*)data, (*i)->size);
+        memcpy( retVal.data+n, (void*)data, (*i)->size);
         COUT(5) << "synchronisable: char: " << (const char *)(retVal.data+n) << " data: " << data << " string: " << *(std::string *)((*i)->var) << std::endl;
         n+=(*i)->size;
         break;
@@ -277,7 +278,7 @@ namespace network
     }
     return tsize;
   }
-  
+
   void Synchronisable::setBacksync(bool sync){
     backsync_=sync;
   }
@@ -285,5 +286,5 @@ namespace network
   bool Synchronisable::getBacksync(){
     return backsync_;
   }
-  
+
 }

@@ -34,6 +34,7 @@
 #include "ExprParser.h"
 #include <cmath>
 #include <cstring>
+#include <stdlib.h>
 
 // macros for easier if, else statements
 #define CASE_1(var) if (!strcmp(SWITCH,var))
