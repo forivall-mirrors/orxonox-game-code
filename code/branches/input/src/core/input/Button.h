@@ -63,6 +63,9 @@ namespace orxonox
         //! Says how much it takes for an analog axis to trigger a button
         //! Note: This variable is here to have only one parse() function.
         float buttonThreshold_;
+
+    private:
+        void parseError(std::string message, bool serious);
     };
 }
 

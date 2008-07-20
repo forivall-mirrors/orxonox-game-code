@@ -46,10 +46,13 @@ namespace orxonox
     public:
         KeyDetector();
         ~KeyDetector();
-        void loadBindings();
+        void loadBindings(const std::string& command);
 
     protected:
         void readTrigger(Button& button);
+
+    private:
+        std::string command_;
     };
 }
 

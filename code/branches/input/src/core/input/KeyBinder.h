@@ -63,7 +63,12 @@ namespace orxonox
         void resetJoyStickAxes();
 
     protected: // functions
-        void tickInput(float dt, const HandlerState& state);
+        void tickInput(float dt);
+        //void tickInput(float dt, int device);
+        void tickKey(float dt) { }
+        void tickMouse(float dt);
+        void tickJoyStick(float dt, int device);
+        void tickDevices(unsigned int begin, unsigned int end);
 
         virtual void readTrigger(Button& button);
 
@@ -77,10 +82,10 @@ namespace orxonox
         void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
         void mouseScrolled      (int abs, int rel);
 
-        void joyStickButtonPressed (int joyStickID, int button);
-        void joyStickButtonReleased(int joyStickID, int button);
-        void joyStickButtonHeld    (int joyStickID, int button);
-        void joyStickAxisMoved     (int joyStickID, int axis, float value);
+        void joyStickButtonPressed (unsigned int joyStickID, unsigned int button);
+        void joyStickButtonReleased(unsigned int joyStickID, unsigned int button);
+        void joyStickButtonHeld    (unsigned int joyStickID, unsigned int button);
+        void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value);
 
     protected: // variables
         //! denotes the number of different keys there are in OIS.

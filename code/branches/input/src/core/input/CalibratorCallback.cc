@@ -41,7 +41,7 @@ namespace orxonox
     {
         if (evt.key == KeyCode::Return)
         {
-            InputManager::setInputState(InputManager::IS_NOCALIBRATE);
+            //InputManager::setInputState(InputManager::IS_NOCALIBRATE);
         }
     }
 }

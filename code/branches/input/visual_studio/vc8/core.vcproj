@@ -279,6 +279,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\input\ExtendedInputState.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\input\HalfAxis.cc"
 					>
 				</File>
@@ -300,6 +304,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\input\KeyDetector.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\SimpleInputState.cc"
 					>
 				</File>
 			</Filter>
@@ -397,6 +405,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\input\ExtendedInputState.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\input\HalfAxis.h"
 					>
 				</File>
@@ -417,11 +429,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\input\InputState.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\input\KeyBinder.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\core\input\KeyDetector.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\SimpleInputState.h"
 					>
 				</File>
 			</Filter>

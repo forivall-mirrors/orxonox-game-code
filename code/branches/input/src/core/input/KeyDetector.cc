@@ -65,16 +65,17 @@ namespace orxonox
     @return
         True if loading succeeded.
     */
-    void KeyDetector::loadBindings()
+    void KeyDetector::loadBindings(const std::string& command)
     {
         clearBindings();
         setConfigValues();
+        this->command_ = command;
     }
 
     void KeyDetector::readTrigger(Button& button)
     {
         SimpleCommand* cmd = new SimpleCommand();
-        cmd->evaluation_ = CommandExecutor::evaluate("storeKeyStroke " + button.name_);
+        cmd->evaluation_ = CommandExecutor::evaluate(this->command_ + " " + button.name_);
         button.commands_[KeybindMode::OnPress] = new BaseCommand*[1];
         button.commands_[KeybindMode::OnPress][0] = cmd;
         button.nCommands_[KeybindMode::OnPress] = 1;

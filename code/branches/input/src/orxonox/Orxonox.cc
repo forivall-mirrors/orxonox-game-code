@@ -57,6 +57,8 @@
 #include "core/Debug.h"
 #include "core/Loader.h"
 #include "core/input/InputManager.h"
+#include "core/input/SimpleInputState.h"
+#include "core/input/KeyBinder.h"
 #include "core/TclBind.h"
 #include "core/Core.h"
 
@@ -134,6 +136,7 @@ namespace orxonox
     InGameConsole::getInstance().destroy();
     if (this->timer_)
       delete this->timer_;
+    dynamic_cast<SimpleInputState*>(InputManager::getState("game"))->removeAndDestroyAllHandlers();
     InputManager::destroy();
     GraphicsEngine::getSingleton().destroy();
 
@@ -289,15 +292,17 @@ namespace orxonox
       if (!InputManager::initialise(ogre_->getWindowHandle(),
             ogre_->getWindowWidth(), ogre_->getWindowHeight(), true, true, true))
         return false;
+      KeyBinder* keyBinder = new KeyBinder();
+      InputManager::createSimpleInputState("game", 20)->setHandler(keyBinder);
 
       // TOOD: load the GUI here
       // set InputManager to GUI mode
-      InputManager::setInputState(InputManager::IS_GUI);
       // TODO: run GUI here
 
       // The following lines depend very much on the GUI output, so they're probably misplaced here..
 
-      InputManager::setInputState(InputManager::IS_NONE);
+      keyBinder->loadBindings();
+      InputManager::requestEnterState("game");
 
       // create Ogre SceneManager
       ogre_->createNewScene();
@@ -324,8 +329,6 @@ namespace orxonox
       if (!standaloneLoad())
         return false;
     }
-
-    InputManager::setInputState(InputManager::IS_NORMAL);
 
     return startRenderLoop();
   }

@@ -462,7 +462,7 @@ namespace orxonox
         if (!this->bActive_)
         {
             this->bActive_ = true;
-            InputManager::setInputState(InputManager::IS_CONSOLE);
+            InputManager::requestEnterState("console");
             Shell::getInstance().registerListener(this);
 
             this->windowResized(this->windowW_, this->windowH_);
@@ -484,7 +484,7 @@ namespace orxonox
         if (this->bActive_)
         {
             this->bActive_ = false;
-            InputManager::setInputState(InputManager::IS_NORMAL);
+            InputManager::requestLeaveState("console");
             Shell::getInstance().unregisterListener(this);
 
             // scroll up

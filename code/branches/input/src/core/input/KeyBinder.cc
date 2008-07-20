@@ -332,49 +332,11 @@ namespace orxonox
         }
     }
 
-    void KeyBinder::tickInput(float dt, const HandlerState& state)
+    void KeyBinder::tickMouse(float dt)
     {
-        // we have to process all the analog input since there is e.g. no 'mouseDoesntMove' event.
-        unsigned int iBegin = 8;
-        unsigned int iEnd   = 8;
-        if (state.joyStick)
-            iEnd = nHalfAxes_s;
-        if (state.mouse)
-            iBegin = 0;
-        for (unsigned int i = iBegin; i < iEnd; i++)
-        {
-            if (halfAxes_[i].hasChanged_)
-            {
-                if (!halfAxes_[i].wasDown_ && halfAxes_[i].absVal_ > halfAxes_[i].buttonThreshold_)
-                {
-                    halfAxes_[i].wasDown_ = true;
-                    if (halfAxes_[i].nCommands_[KeybindMode::OnPress])
-                        halfAxes_[i].execute(KeybindMode::OnPress);
-                }
-                else if (halfAxes_[i].wasDown_ && halfAxes_[i].absVal_ < halfAxes_[i].buttonThreshold_)
-                {
-                    halfAxes_[i].wasDown_ = false;
-                    if (halfAxes_[i].nCommands_[KeybindMode::OnRelease])
-                        halfAxes_[i].execute(KeybindMode::OnRelease);
-                }
-                halfAxes_[i].hasChanged_ = false;
-            }
+        tickDevices(0, 8);
 
-            if (halfAxes_[i].wasDown_)
-            {
-                if (halfAxes_[i].nCommands_[KeybindMode::OnHold])
-                    halfAxes_[i].execute(KeybindMode::OnHold);
-            }
-
-            // these are the actually useful axis bindings for analog input AND output
-            if (halfAxes_[i].relVal_ > analogThreshold_ || halfAxes_[i].absVal_ > analogThreshold_)
-            {
-                //COUT(3) << halfAxes_[i].name_ << "\t" << halfAxes_[i].absVal_ << std::endl;
-                halfAxes_[i].execute();
-            }
-        }
-
-        if (bDeriveMouseInput_ && state.mouse)
+        if (bDeriveMouseInput_)
         {
             if (deriveTime_ > derivePeriod_)
             {
@@ -409,15 +371,60 @@ namespace orxonox
             else
                 deriveTime_ += dt;
         }
+    }
 
-        // execute all buffered bindings (addional parameter)
+    void KeyBinder::tickJoyStick(float dt, int device)
+    {
+        tickDevices(8, nHalfAxes_s);
+    }
+
+    void KeyBinder::tickInput(float dt)
+    {
+        // execute all buffered bindings (additional parameter)
         for (unsigned int i = 0; i < paramCommandBuffer_.size(); i++)
             paramCommandBuffer_[i]->execute();
 
         // always reset the relative movement of the mouse
-        if (state.mouse)
-            for (unsigned int i = 0; i < 8; i++)
-                halfAxes_[i].relVal_ = 0.0f;
+        for (unsigned int i = 0; i < 8; i++)
+            halfAxes_[i].relVal_ = 0.0f;
+    }
+
+    void KeyBinder::tickDevices(unsigned int begin, unsigned int end)
+    {
+        for (unsigned int i = begin; i < end; i++)
+        {
+            // button mode
+            // TODO: optimize out all the half axes that don't act as a button at the moment
+            if (halfAxes_[i].hasChanged_)
+            {
+                if (!halfAxes_[i].wasDown_ && halfAxes_[i].absVal_ > halfAxes_[i].buttonThreshold_)
+                {
+                    halfAxes_[i].wasDown_ = true;
+                    if (halfAxes_[i].nCommands_[KeybindMode::OnPress])
+                        halfAxes_[i].execute(KeybindMode::OnPress);
+                }
+                else if (halfAxes_[i].wasDown_ && halfAxes_[i].absVal_ < halfAxes_[i].buttonThreshold_)
+                {
+                    halfAxes_[i].wasDown_ = false;
+                    if (halfAxes_[i].nCommands_[KeybindMode::OnRelease])
+                        halfAxes_[i].execute(KeybindMode::OnRelease);
+                }
+                halfAxes_[i].hasChanged_ = false;
+            }
+
+            if (halfAxes_[i].wasDown_)
+            {
+                if (halfAxes_[i].nCommands_[KeybindMode::OnHold])
+                    halfAxes_[i].execute(KeybindMode::OnHold);
+            }
+
+            // these are the actually useful axis bindings for analog input
+            if (halfAxes_[i].relVal_ > analogThreshold_ || halfAxes_[i].absVal_ > analogThreshold_)
+            {
+                //COUT(3) << halfAxes_[i].name_ << "\t" << halfAxes_[i].absVal_ << std::endl;
+                halfAxes_[i].execute();
+            }
+        }
     }
 
     void KeyBinder::keyPressed (const KeyEvent& evt)
@@ -440,13 +447,13 @@ namespace orxonox
     { mouseButtons_[id].execute(KeybindMode::OnHold); }
 
 
-    void KeyBinder::joyStickButtonPressed (int joyStickID, int button)
+    void KeyBinder::joyStickButtonPressed (unsigned int joyStickID, unsigned int button)
     { joyStickButtons_[button].execute(KeybindMode::OnPress); }
 
-    void KeyBinder::joyStickButtonReleased(int joyStickID, int button)
+    void KeyBinder::joyStickButtonReleased(unsigned int joyStickID, unsigned int button)
     { joyStickButtons_[button].execute(KeybindMode::OnRelease); }
 
-    void KeyBinder::joyStickButtonHeld    (int joyStickID, int button)
+    void KeyBinder::joyStickButtonHeld    (unsigned int joyStickID, unsigned int button)
     { joyStickButtons_[button].execute(KeybindMode::OnHold); }
 
     /**
@@ -524,9 +531,8 @@ namespace orxonox
                 mouseButtons_[9].execute(KeybindMode::OnPress, ((float)abs)/120.0f);
     }
 
-    void KeyBinder::joyStickAxisMoved(int joyStickID, int axis, float value)
+    void KeyBinder::joyStickAxisMoved(unsigned int joyStickID, unsigned int axis, float value)
     {
-        // TODO: Use proper calibration values instead of generally 16-bit integer
         int i = 8 + axis * 2;
         if (value >= 0)
         {

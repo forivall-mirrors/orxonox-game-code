@@ -37,9 +37,9 @@
 
 #include "core/CorePrereqs.h"
 
-#include "src/ois/OISKeyboard.h"
-#include "src/ois/OISMouse.h"
-#include "src/ois/OISJoyStick.h"
+#include "ois/OISKeyboard.h"
+#include "ois/OISMouse.h"
+#include "ois/OISJoyStick.h"
 #include "util/Math.h"
 
 namespace orxonox
@@ -221,6 +221,20 @@ namespace orxonox
             Alt   = 0x0000100
         };
     }
+    
+    namespace InputDevice
+    {
+        enum Enum
+        {
+            Keyboard,
+            Mouse,
+            JoyStick0,
+            JoyStick1,
+            JoyStick2,
+            JoyStick3,
+            // note: No problem if there are more joy sticks. This enum is just for convenience.
+        };
+    }
 
     struct _CoreExport Key
     {
@@ -264,19 +278,20 @@ namespace orxonox
         Helper struct to determine which handlers of an object (can implement
         multiple handlers) are active.
     */
-    struct HandlerState
-    {
-        HandlerState() : key(false), mouse(false), joyStick(false) { }
-        bool key;
-        bool mouse;
-        bool joyStick;
-    };
+    //struct HandlerState
+    //{
+    //    HandlerState() : keyboard(false), mouse(false) { }
+    //    bool keyboard;
+    //    bool mouse;
+    //    std::vector<bool> joySticks;
+    //};
 
     class _CoreExport InputTickable
     {
     public:
         virtual ~InputTickable() { }
-        virtual void tickInput(float dt, const HandlerState& state) = 0;
+        virtual void tickInput(float dt) = 0;
+        //virtual void tickInput(float dt, unsigned int device) = 0;
     };
 
     /**
@@ -290,7 +305,7 @@ namespace orxonox
         virtual void keyPressed (const KeyEvent& evt) = 0;
         virtual void keyReleased(const KeyEvent& evt) = 0;
         virtual void keyHeld    (const KeyEvent& evt) = 0;
-        //virtual void tickKey    (float dt) { }
+        virtual void tickKey    (float dt) { }
     };
 
     /**
@@ -306,7 +321,7 @@ namespace orxonox
         virtual void mouseButtonHeld    (MouseButton::Enum id) = 0;
         virtual void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) = 0;
         virtual void mouseScrolled      (int abs, int rel)     = 0;
-        //virtual void tickMouse          (float dt) { }
+        virtual void tickMouse          (float dt) { }
     };
 
 
@@ -318,12 +333,34 @@ namespace orxonox
     {
     public:
         virtual ~JoyStickHandler() { }
-        virtual void joyStickButtonPressed (int joyStickID, int button) = 0;
-        virtual void joyStickButtonReleased(int joyStickID, int button) = 0;
-        virtual void joyStickButtonHeld    (int joyStickID, int button) = 0;
-        virtual void joyStickAxisMoved     (int joyStickID, int axis, float value) = 0;
-        //virtual bool joyStickVector3Moved  (int joyStickID, int index /*, fill list*/) {return true;}
-        //virtual void tickJoyStick          (float dt) { }
+        virtual void joyStickButtonPressed (unsigned int joyStickID, unsigned int button) = 0;
+        virtual void joyStickButtonReleased(unsigned int joyStickID, unsigned int button) = 0;
+        virtual void joyStickButtonHeld    (unsigned int joyStickID, unsigned int button) = 0;
+        virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
+        //virtual bool joyStickVector3Moved  (unsigned int joyStickID, unsigned int index /*, fill list*/) {return true;}
+        virtual void tickJoyStick          (float dt, unsigned int device) { }
+    };
+
+    class _CoreExport EmptyHandler : public KeyHandler, public MouseHandler, public JoyStickHandler
+    {
+    private:
+        void tickInput(float dt) { }
+        void tickInput(float dt, unsigned int device) { }
+
+        void keyPressed (const KeyEvent& evt) { }
+        void keyReleased(const KeyEvent& evt) { }
+        void keyHeld    (const KeyEvent& evt) { }
+
+        void mouseButtonPressed (MouseButton::Enum id) { }
+        void mouseButtonReleased(MouseButton::Enum id) { }
+        void mouseButtonHeld    (MouseButton::Enum id) { }
+        void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) { }
+        void mouseScrolled      (int abs, int rel) { }
+
+        void joyStickButtonPressed (unsigned int joyStickID, unsigned int button) { }
+        void joyStickButtonReleased(unsigned int joyStickID, unsigned int button) { }
+        void joyStickButtonHeld    (unsigned int joyStickID, unsigned int button) { }
+        void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) { }
     };
 
 }

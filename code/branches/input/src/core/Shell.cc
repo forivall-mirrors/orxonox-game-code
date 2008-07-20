@@ -33,6 +33,8 @@
 #include "Core.h"
 #include "ConsoleCommand.h"
 #include "input/InputInterfaces.h"
+#include "input/SimpleInputState.h"
+#include "input/InputManager.h"
 
 #define SHELL_UPDATE_LISTENERS(function) \
     for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ) \
@@ -56,12 +58,23 @@ namespace orxonox
 
         this->clearLines();
 
-        this->inputBuffer_ = 0;
-        this->setInputBuffer(new InputBuffer());
+        this->inputBuffer_ = new InputBuffer();
+        this->configureInputBuffer();
+        InputManager::createSimpleInputState("console", 40)->setKeyHandler(this->inputBuffer_);
 
         this->outputBuffer_.registerListener(this);
 
         this->setConfigValues();
+    }
+
+    Shell::~Shell()
+    {
+        SimpleInputState * inputState = dynamic_cast<SimpleInputState*>(InputManager::getState("console"));
+        if (inputState)
+        {
+            inputState->removeAndDestroyAllHandlers();
+            InputManager::destroyState("console");
+        }
     }
 
     Shell& Shell::createShell()
@@ -96,16 +109,8 @@ namespace orxonox
         }
     }
 
-    void Shell::setInputBuffer(InputBuffer* buffer)
+    void Shell::configureInputBuffer()
     {
-        if (this->inputBuffer_)
-        {
-            this->inputBuffer_->unregisterListener(this);
-            // TODO: may be very dangerous. InputManager already deletes InputBuffer instance!!!
-            delete this->inputBuffer_;
-        }
-
-        this->inputBuffer_ = buffer;
         this->inputBuffer_->registerListener(this, &Shell::inputChanged, true);
         this->inputBuffer_->registerListener(this, &Shell::execute, '\r', false);
         this->inputBuffer_->registerListener(this, &Shell::hintandcomplete, '\t', true);
