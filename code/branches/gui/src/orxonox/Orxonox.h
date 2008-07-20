@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Reto Grieder
- *   Co-authors:
  *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
+ *   Co-authors:
+ *      ...
  *
  */
 
@@ -40,54 +41,46 @@
 #include <string>
 
 #include <OgrePrerequisites.h>
+
+#include "core/OrxonoxClass.h"
 #include "audio/AudioPrereqs.h"
-
 #include "GraphicsEngine.h"
+#include "Settings.h"
 
-namespace orxonox {
-
-  enum gameMode{
-    SERVER,
-    CLIENT,
-    STANDALONE,
-    DEDICATED
-  };
-
+namespace orxonox
+{
   //! Orxonox singleton class
-  class _OrxonoxExport Orxonox
+    class _OrxonoxExport Orxonox : public OrxonoxClass
   {
     public:
-      bool init(int argc, char **argv);
-      bool start();
+      Orxonox();
+      ~Orxonox();
+
+      void start();
+      void setConfigValues();
 
       void abortRequest();
 
-      static Orxonox* getSingleton();
-      static void destroySingleton();
+      static Orxonox& getSingleton();
 
-      static inline void slomo(float factor) { Orxonox::setTimeFactor(factor); }
+      static void slomo(float factor) { Orxonox::setTimeFactor(factor); }
+      static float getTimeFactor()    { return Orxonox::getSingleton().timefactor_; }
+      static void loadGame(const std::string& name);
+      static void exit()              { Orxonox::getSingleton().abortRequest(); }
       static void setTimeFactor(float factor = 1.0);
-      static inline float getTimeFactor() { return Orxonox::getSingleton()->timefactor_; }
-      static inline void exit() { Orxonox::getSingleton()->abortRequest(); }
 
    private:
       // don't mess with singletons
-      Orxonox();
       Orxonox(Orxonox& instance);
-      Orxonox& operator=(const Orxonox& instance);
-      ~Orxonox();
 
-      bool loadPlayground();
-
+      bool loadLevel(const GameMode& mode);
       bool serverLoad();
       bool clientLoad();
       bool standaloneLoad();
 
+      bool loadPlayground();
       bool loadScene();
-
-      bool startRenderLoop();
-
-      float calculateEventTime(unsigned long, std::deque<unsigned long>&);
+      void startRenderLoop();
 
     private:
       GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
@@ -100,9 +93,11 @@ namespace orxonox {
       float                 timefactor_;    //!< A factor to change the gamespeed
 
       // this is used to identify the mode (server/client/...) we're in
-      gameMode              mode_;
-      std::string           serverIp_;
-      int                   serverPort_;
+      GameMode              mode_;
+      GameMode              modeRequest_;
+
+      // config values
+      float                 debugRefreshTime_;
 
       static Orxonox *singletonRef_s;
   };

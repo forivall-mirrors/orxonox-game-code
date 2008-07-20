@@ -164,6 +164,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Exception.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\Language.cc"
 				>
 			</File>
@@ -194,12 +198,22 @@
 					RelativePath="..\..\src\core\tolua\tolua.pkg"
 					>
 					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Generating tolua bind files..."
+							CommandLine="&quot;$(OutDir)\tolua_app_d.exe&quot; -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg&#x0D;&#x0A;"
+							Outputs="$(RootDir)\src\core\tolua\tolua_bind.cc; $(RootDir)\src\core\tolua\tolua_bind.h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Generating tolua bind files..."
-							CommandLine="&quot;$(OutDir)\tolua_app.exe&quot; -n core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg"
+							CommandLine="&quot;$(OutDir)\tolua_app.exe&quot; -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg&#x0D;&#x0A;"
 							Outputs="$(RootDir)\src\core\tolua\tolua_bind.cc; $(RootDir)\src\core\tolua\tolua_bind.h"
 						/>
 					</FileConfiguration>
@@ -293,6 +307,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\input\ExtendedInputState.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\input\HalfAxis.cc"
 					>
 				</File>
@@ -314,6 +332,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\input\KeyDetector.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\SimpleInputState.cc"
 					>
 				</File>
 			</Filter>
@@ -372,6 +394,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Exception.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\Language.h"
 				>
 			</File>
@@ -411,6 +437,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\input\ExtendedInputState.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\input\HalfAxis.h"
 					>
 				</File>
@@ -431,11 +461,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\input\InputState.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\input\KeyBinder.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\core\input\KeyDetector.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\SimpleInputState.h"
 					>
 				</File>
 			</Filter>

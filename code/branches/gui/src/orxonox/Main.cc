@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
@@ -34,12 +35,18 @@
 #include "OrxonoxStableHeaders.h"
 
 #include <exception>
+#include <cassert>
 
 #include "util/OrxonoxPlatform.h"
+#include "util/ArgReader.h"
 #include "core/SignalHandler.h"
+#include "core/Debug.h"
+#include "network/ClientConnection.h"
+#include "Settings.h"
 #include "Orxonox.h"
 
 using namespace orxonox;
+
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
 
@@ -48,54 +55,93 @@ using namespace orxonox;
 // for locating your configuration files and resources.
              std::string macBundlePath()
 {
-  char path[1024];
-  CFBundleRef mainBundle = CFBundleGetMainBundle();
-  assert(mainBundle);
+    char path[1024];
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    assert(mainBundle);
 
-  CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
-  assert(mainBundleURL);
+    CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
+    assert(mainBundleURL);
 
-  CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
-  assert(cfStringRef);
+    CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
+    assert(cfStringRef);
 
-  CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
+    CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
 
-  CFRelease(mainBundleURL);
-  CFRelease(cfStringRef);
+    CFRelease(mainBundleURL);
+    CFRelease(cfStringRef);
 
-  return std::string(path);
+    return std::string(path);
 }
 #endif
+
+bool parseCommandLine(int argc, char** argv)
+{
+    ArgReader args;
+    std::string errorStr = args.parse(argc, argv);
+    if (errorStr != "")
+    {
+        COUT(1) << "Command Line: Parsing failed.\n" << errorStr << std::endl;
+        return false;
+    }
+
+    // Argument reader parses the command line to check syntax.
+    // Settings Singleton then stores the arguments. It always
+    // expects a default value.
+    bool success = true;
+    success &= Settings::addCommandLineArgument<std::string>
+        ("mode",     args.getArgument("mode"),     "standalone");
+    success &= Settings::addCommandLineArgument<std::string>
+        ("dataPath", args.getArgument("dataPath"), "./");
+    success &= Settings::addCommandLineArgument<std::string>
+        ("ip",       args.getArgument("ip"),       "127.0.0.0");
+    success &= Settings::addCommandLineArgument<int>
+        ("port",     args.getArgument("port"),     NETWORK_PORT);
+
+    if (!success)
+        return false;
+
+    if (!args.allChecked())
+    {
+        COUT(1) << "Command Line: Parsing failed.\nNot all arguments were matched." << std::endl;
+        return false;
+    }
+
+    return true;
+}
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-  //try {
+    // create a signal handler (only works for linux)
     SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
-    Orxonox* orx = Orxonox::getSingleton();
 
-    bool res = false;
+    if (!parseCommandLine(argc, argv))
+    {
+        COUT(0) << "Usage:" << std::endl << "orxonox [--mode client|server|dedicated|standalone] "
+                << "[--data PATH] [--ip IP] [--port PORT]" << std::endl;
+        return 0;
+    }
+
+    Orxonox orxonoxInstance;
+
+    try
+    {
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
-    res = orx->init(argc, argv, macBundlePath());
+        orxonoxInstance.start(macBundlePath());
 #else
-    res = orx->init(argc, argv);
+        orxonoxInstance.start();
 #endif
+    }
+    catch (std::exception& ex)
+    {
+        COUT(1) << ex.what() << std::endl;
+        COUT(1) << "Abort." << std::endl;
+    }
 
-    if (res)
-      orx->start();
-    orx->destroySingleton();
-  /*}
-  catch (std::exception &ex)
-  {
-    std::cerr << "Exception:\n";
-    std::cerr << ex.what() << "\n";
-    return 1;
-  }*/
-
-  return 0;
+    return 0;
 }
 
 #ifdef __cplusplus

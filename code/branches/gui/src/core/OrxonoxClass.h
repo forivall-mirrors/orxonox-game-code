@@ -28,7 +28,7 @@
 
 /**
     @file OrxonoxClass.h
-    @brief Definition of the OrxonoxClass Class.
+    @brief Declaration of the OrxonoxClass Class.
 
     All objects and interfaces of the game-logic (not the engine) are derived from OrxonoxClass.
     It stores the Identifier and the MetaObjectList and has all needed functions to create and use the class-hierarchy.

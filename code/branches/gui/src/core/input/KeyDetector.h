@@ -27,9 +27,10 @@
  */
 
 /**
- @file
- @brief Different definitions of input processing.
- */
+@file
+@brief
+    Different definitions of input processing.
+*/
 
 #ifndef _KeyDetector_H__
 #define _KeyDetector_H__
@@ -40,16 +41,19 @@
 
 namespace orxonox
 {
-  class _CoreExport KeyDetector : public KeyBinder
-  {
-  public:
-    KeyDetector();
-    ~KeyDetector();
-    void loadBindings();
+    class _CoreExport KeyDetector : public KeyBinder
+    {
+    public:
+        KeyDetector();
+        ~KeyDetector();
+        void loadBindings(const std::string& command);
 
-  protected:
-    void readTrigger(Button& button);
-  };
+    protected:
+        void readTrigger(Button& button);
+
+    private:
+        std::string command_;
+    };
 }
 
 #endif /* _KeyDetector_H__ */

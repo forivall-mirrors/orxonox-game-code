@@ -152,7 +152,31 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\tolua\toluabind.c"
+				RelativePath="..\..\src\tolua\tolua.pkg"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generating tolua bind files..."
+						CommandLine="&quot;$(OutDir)\tolua_gen_d.exe&quot; -n tolua -o ../../src/tolua/toluabind_orxonox.cc -H ../../src/tolua/toluabind_orxonox.h ../../src/tolua/tolua.pkg"
+						Outputs="$(RootDir)\src\tolua\toluabind_orxonox.cc; $(RootDir)\src\tolua\toluabind_orxonox.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generating tolua bind files..."
+						CommandLine="&quot;$(OutDir)\tolua_gen.exe&quot; -n tolua -o ../../src/tolua/toluabind_orxonox.cc -H ../../src/tolua/toluabind_orxonox.h ../../src/tolua/tolua.pkg"
+						Outputs="$(RootDir)\src\tolua\toluabind_orxonox.cc; $(RootDir)\src\tolua\toluabind_orxonox.h"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\tolua\toluabind_orxonox.cc"
 				>
 			</File>
 		</Filter>
@@ -161,6 +185,14 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\src\tolua\tolua++.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\tolua\toluabind_orxonox.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

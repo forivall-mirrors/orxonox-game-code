@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Reto Grieder
- *   Co-authors:
  *      Benjamin Knecht <beni_at_orxonox.net>
+ *   Co-authors:
+ *      ...
  *
  */
 
@@ -34,61 +35,65 @@
 #include "ArgReader.h"
 #include "SubString.h"
 
-ArgReader::ArgReader(int argc, char **argv)
+std::string ArgReader::parse(int argc, char **argv)
 {
-  failure_ = false;
-  errorString_ = "";
-  CmdLineArg arg;
-
-  int i = 1;
-  while (i < argc)
-  {
-    if (argv[i][0] == '-' && argv[i][1] == '-') // name
+    std::string errorString;
+    CmdLineArg arg;
+    int i = 1;
+    while (i < argc)
     {
-      if (argv[i][2] == '\0')
-      {
-        failure_ = true;
-        errorString_ += "Expected word after \"--\".\n";
-      }
-      arg.bChecked_ = false;
-      arg.name_ = argv[i] + 2;
-      arg.value_ = "";
-      arguments_.push_back(arg);
-    }
-    else // value
-    {
-      if (arguments_.size() == 0)
-      {
-        failure_ = true;
-        errorString_ += "Expected \"--\" in command line arguments.\n";
-        arg.bChecked_ = false;
-        arg.name_ = "";
-        arg.value_ = "";
-        arguments_.push_back(arg);
-      }
+        if (argv[i][0] == '-' && argv[i][1] == '-') // name
+        {
+            if (argv[i][2] == '\0')
+            {
+                errorString += "Expected word after \"--\".\n";
+            }
+            arg.bChecked_ = false;
+            arg.name_ = argv[i] + 2;
+            arg.value_ = " ";
+            arguments_.push_back(arg);
+        }
+        else // value
+        {
+            if (arguments_.size() == 0)
+            {
+                errorString += "Expected \"--\" in command line arguments.\n";
+                arg.bChecked_ = false;
+                arg.name_ = "";
+                arg.value_ = " ";
+                arguments_.push_back(arg);
+            }
 
-      if (arguments_.back().value_ != "")
-        arguments_.back().value_ += " " + std::string(argv[i]);
-      else
-        arguments_.back().value_ = argv[i];
+            if (arguments_.back().value_ != " ")
+                arguments_.back().value_ += " " + std::string(argv[i]);
+            else
+                arguments_.back().value_ = argv[i];
+        }
+        ++i;
     }
-    ++i;
-  }
+    return errorString;
 }
 
-bool ArgReader::errorHandling()
+const std::string& ArgReader::getArgument(const std::string& option)
 {
-  bool argumentsChecked = true;
-  for (unsigned int i = 1; i < arguments_.size(); ++i)
-    argumentsChecked &= arguments_[i].bChecked_;
-
-  if (!argumentsChecked)
-    errorString_ += "Not all arguments could be matched.\n";
-
-  return !argumentsChecked || failure_;
+    unsigned int iArg = 0;
+    while (iArg < arguments_.size())
+    {
+        if (arguments_[iArg].name_ == option)
+        {
+            arguments_[iArg].bChecked_ = true;
+            return arguments_[iArg].value_;
+        }
+        ++iArg;
+    }
+    return blankString;
 }
 
-const std::string& ArgReader::getErrorString()
+bool ArgReader::allChecked()
 {
-  return errorString_;
+    bool argumentsChecked = true;
+    for (unsigned int i = 1; i < arguments_.size(); ++i)
+        argumentsChecked &= arguments_[i].bChecked_;
+
+    return argumentsChecked;
 }

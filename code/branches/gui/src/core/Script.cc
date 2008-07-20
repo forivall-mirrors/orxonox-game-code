@@ -59,7 +59,7 @@ namespace orxonox
     luaopen_io(luaState_);
     luaopen_debug(luaState_);
 #endif
-    tolua_core_open(luaState_);
+    tolua_Core_open(luaState_);
     output_ = "";
   }
 

@@ -157,14 +157,15 @@ namespace orxonox
   class XMLPortParamContainer;
 
   // input
-  //class GUIInputHandler;
   class BaseCommand;
   class BufferedParamCommand;
   class Button;
   class CalibratorCallback;
+  class ExtendedInputState;
   class HalfAxis;
   class InputBuffer;
   class InputManager;
+  class InputState;
   class JoyStickHandler;
   class MouseHandler;
   class KeyBinder;
@@ -172,6 +173,7 @@ namespace orxonox
   class KeyHandler;
   class ParamCommand;
   class SimpleCommand;
+  class SimpleInputState;
 }
 
 #endif /* _CorePrereqs_H__ */

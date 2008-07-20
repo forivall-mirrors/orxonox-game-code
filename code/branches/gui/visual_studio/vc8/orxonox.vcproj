@@ -284,130 +284,6 @@
 					RelativePath="..\..\src\orxonox\objects\WorldEntity.cc"
 					>
 				</File>
-				<Filter
-					Name="weapon"
-					>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\AmmunitionDump.cc"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\BarrelGun.cc"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\BaseWeapon.cc"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\Bullet.cc"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\BulletManager.cc"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\WeaponStation.cc"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="tools"
@@ -444,6 +320,32 @@
 			<Filter
 				Name="tolua"
 				>
+				<File
+					RelativePath="..\..\src\orxonox\tolua\tolua.pkg"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Generating tolua bind files..."
+							CommandLine="&quot;$(OutDir)\tolua_app_d.exe&quot; -n Orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg&#x0D;&#x0A;"
+							AdditionalDependencies="$(RootDir)\src\orxonox\gui\GUIManager.h"
+							Outputs="$(RootDir)\src\orxonox\tolua\tolua_bind.cc; $(RootDir)\src\orxonox\tolua\tolua_bind.h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Generating tolua bind files..."
+							CommandLine="&quot;$(OutDir)\tolua_app.exe&quot; -n Orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg&#x0D;&#x0A;"
+							AdditionalDependencies="$(RootDir)\src\orxonox\gui\GUIManager.h"
+							Outputs="$(RootDir)\src\orxonox\tolua\tolua_bind.cc; $(RootDir)\src\orxonox\tolua\tolua_bind.h"
+						/>
+					</FileConfiguration>
+				</File>
 				<File
 					RelativePath="..\..\src\orxonox\tolua\tolua_bind.cc"
 					>
@@ -520,6 +422,74 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="gui"
+				>
+				<File
+					RelativePath="..\..\src\orxonox\gui\GUIManager.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gui\OgreCEGUIRenderer.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gui\OgreCEGUIResourceProvider.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gui\OgreCEGUITexture.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -626,34 +596,6 @@
 					RelativePath="..\..\src\orxonox\objects\WorldEntity.h"
 					>
 				</File>
-				<Filter
-					Name="weapon"
-					>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\AmmunitionDump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\BarrelGun.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\BaseWeapon.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\Bullet.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\BulletManager.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\orxonox\objects\weapon\WeaponStation.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="tools"
@@ -750,6 +692,26 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="gui"
+				>
+				<File
+					RelativePath="..\..\src\orxonox\gui\GUIManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gui\OgreCEGUIRenderer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gui\OgreCEGUIResourceProvider.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gui\OgreCEGUITexture.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

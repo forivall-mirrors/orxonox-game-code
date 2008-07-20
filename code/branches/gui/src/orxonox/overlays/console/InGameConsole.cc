@@ -58,10 +58,16 @@ namespace orxonox
     /**
         @brief Constructor: Creates and initializes the InGameConsole.
     */
-    InGameConsole::InGameConsole() :
-        consoleOverlay_(0), consoleOverlayContainer_(0),
-        consoleOverlayNoise_(0), consoleOverlayCursor_(0), consoleOverlayBorder_(0),
-        consoleOverlayTextAreas_(0)
+    InGameConsole::InGameConsole()
+        : consoleOverlay_(0)
+        , consoleOverlayContainer_(0)
+        , consoleOverlayNoise_(0)
+        , consoleOverlayCursor_(0)
+        , consoleOverlayBorder_(0)
+        , consoleOverlayTextAreas_(0)
+        , emptySceneManager_(0)
+        , emptyCamera_(0)
+        , viewport_(0)
     {
         RegisterObject(InGameConsole);
 
@@ -187,6 +193,14 @@ namespace orxonox
         this->consoleOverlayContainer_->setTop(-1.2 * this->relativeHeight);
 
         Shell::getInstance().addOutputLevel(true);
+
+        // create a sceneManager in order to render in our own viewport
+        this->emptySceneManager_ = Ogre::Root::getSingleton()
+            .createSceneManager(Ogre::ST_GENERIC, "Console/EmptySceneManager");
+        this->emptyCamera_ = this->emptySceneManager_->createCamera("Console/EmptyCamera");
+        this->viewport_ = GraphicsEngine::getSingleton().getRenderWindow()->addViewport(emptyCamera_, 10);
+        this->viewport_->setOverlaysEnabled(true);
+        this->viewport_->setClearEveryFrame(false);
 
         COUT(4) << "Info: InGameConsole initialized" << std::endl;
     }
@@ -475,7 +489,7 @@ namespace orxonox
         if (!this->bActive_)
         {
             this->bActive_ = true;
-            InputManager::setInputState(InputManager::IS_CONSOLE);
+            InputManager::requestEnterState("console");
             Shell::getInstance().registerListener(this);
 
             this->windowResized(this->windowW_, this->windowH_);
@@ -497,7 +511,7 @@ namespace orxonox
         if (this->bActive_)
         {
             this->bActive_ = false;
-            InputManager::setInputState(InputManager::IS_NORMAL);
+            InputManager::requestLeaveState("console");
             Shell::getInstance().unregisterListener(this);
 
             // scroll up

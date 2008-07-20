@@ -53,67 +53,76 @@ namespace orxonox
     */
     class _OrxonoxExport GraphicsEngine : public Ogre::WindowEventListener, public Ogre::LogListener, public OrxonoxClass
     {
-        public:
-            void setConfigValues();
-            bool setup();
-            bool declareRessourceLocations();
-            bool loadRenderer();
-            bool initialiseResources();
-            bool createNewScene();
+    public:
+        GraphicsEngine();
+        ~GraphicsEngine();
 
-            void destroy();
+        void setConfigValues();
+        void setup();
+        void declareRessourceLocations();
+        bool loadRenderer();
+        bool initialiseResources();
+        bool createNewScene();
 
-            Ogre::SceneManager* getSceneManager() { return scene_; }
+        void setLevelSceneManager(Ogre::SceneManager* sceneMgr) { this->levelSceneManager_ = sceneMgr; }
+        Ogre::SceneManager* getLevelSceneManager() { return levelSceneManager_; }
 
-            // several window properties
-            Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
-            size_t getWindowHandle();
-            int getWindowWidth() const;
-            int getWindowHeight() const;
-            float getWindowAspectRatio() const;
-            float getAverageFramesPerSecond() const { return this->avgFramesPerSecond_; }
-            float getAverageTickTime() const { return this->avgTickTime_; }
-            void setAverageTickTime(float tickTime) { this->avgTickTime_ = tickTime; }
-            void setAverageFramesPerSecond(float fps) { this->avgFramesPerSecond_ = fps; }
+        Ogre::Viewport* getLevelViewport() { return this->levelViewport_; }
 
-            void setWindowActivity(bool activity)
-            { if (this->renderWindow_) this->renderWindow_->setActive(activity); }
+        // several window properties
+        Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
+        size_t getWindowHandle();
+        int getWindowWidth() const;
+        int getWindowHeight() const;
+        float getWindowAspectRatio() const;
+        float getAverageFramesPerSecond() const   { return this->avgFramesPerSecond_; }
+        float getAverageTickTime() const          { return this->avgTickTime_; }
+        void setAverageTickTime(float tickTime)   { this->avgTickTime_ = tickTime; }
+        void setAverageFramesPerSecond(float fps) { this->avgFramesPerSecond_ = fps; }
 
-            void windowMoved       (Ogre::RenderWindow* rw);
-            void windowResized     (Ogre::RenderWindow* rw);
-            void windowFocusChanged(Ogre::RenderWindow* rw);
-            void windowClosed      (Ogre::RenderWindow* rw);
+        void setWindowActivity(bool activity)
+        { if (this->renderWindow_) this->renderWindow_->setActive(activity); }
 
-            inline unsigned int getDetailLevelParticle() const
-              { return this->detailLevelParticle_; }
+        inline unsigned int getDetailLevelParticle() const
+        { return this->detailLevelParticle_; }
 
-            static GraphicsEngine& getSingleton();
-            static GraphicsEngine* getSingletonPtr() { return &getSingleton(); }
+        static GraphicsEngine& getSingleton();
+        static GraphicsEngine* getSingletonPtr() { return &getSingleton(); }
 
+    private:
+        // don't mess with singletons
+        GraphicsEngine(GraphicsEngine&) { }
 
-        private:
-            // don't mess with singletons
-            GraphicsEngine();
-            ~GraphicsEngine();
-            GraphicsEngine(GraphicsEngine&) { }
+        //! Method called by the LogListener from Ogre
+        void messageLogged(const std::string&, Ogre::LogMessageLevel,
+            bool, const std::string&);
 
-            //! Method called by the LogListener from Ogre
-            void messageLogged(const std::string&, Ogre::LogMessageLevel,
-                             bool, const std::string&);
+        // window events from Ogre::WindowEventListener
+        void windowMoved       (Ogre::RenderWindow* rw);
+        void windowResized     (Ogre::RenderWindow* rw);
+        void windowFocusChanged(Ogre::RenderWindow* rw);
+        void windowClosed      (Ogre::RenderWindow* rw);
 
-            Ogre::Root*         root_;                  //!< Ogre's root
-            Ogre::SceneManager* scene_;                 //!< scene manager of the game
-            Ogre::RenderWindow* renderWindow_;          //!< the current render window
-            std::string         resourceFile_;          //!< resources file name
-            std::string         ogreConfigFile_;        //!< ogre config file name
-            std::string         ogrePluginsFile_;       //!< ogre plugins file name
-            std::string         ogreLogFile_;           //!< log file name for Ogre log messages
-            int                 ogreLogLevelTrivial_;   //!< Corresponding Orxonx debug level for LL_TRIVIAL
-            int                 ogreLogLevelNormal_;    //!< Corresponding Orxonx debug level for LL_NORMAL
-            int                 ogreLogLevelCritical_;  //!< Corresponding Orxonx debug level for LL_CRITICAL
-            unsigned int        detailLevelParticle_;   //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
-            float               avgTickTime_;           //!< time in ms to tick() one frame
-            float               avgFramesPerSecond_;    //!< number of frames processed in one second
+        Ogre::Root*         root_;                  //!< Ogre's root
+        Ogre::RenderWindow* renderWindow_;          //!< the current render window
+        Ogre::SceneManager* levelSceneManager_;     //!< scene manager of the game
+        Ogre::Viewport*     levelViewport_;         //!< default full size viewport for the level
+
+        // stats
+        float               avgTickTime_;           //!< time in ms to tick() one frame
+        float               avgFramesPerSecond_;    //!< number of frames processed in one second
+
+        // config values
+        std::string         resourceFile_;          //!< resources file name
+        std::string         ogreConfigFile_;        //!< ogre config file name
+        std::string         ogrePluginsFile_;       //!< ogre plugins file name
+        std::string         ogreLogFile_;           //!< log file name for Ogre log messages
+        int                 ogreLogLevelTrivial_;   //!< Corresponding Orxonx debug level for LL_TRIVIAL
+        int                 ogreLogLevelNormal_;    //!< Corresponding Orxonx debug level for LL_NORMAL
+        int                 ogreLogLevelCritical_;  //!< Corresponding Orxonx debug level for LL_CRITICAL
+        unsigned int        detailLevelParticle_;   //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
+
+        static GraphicsEngine* singletonRef_s;      //!< Pointer to the Singleton
     };
 }
 

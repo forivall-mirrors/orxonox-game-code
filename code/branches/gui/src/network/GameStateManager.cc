@@ -43,7 +43,7 @@
 #include <utility>
 #include <iostream>
 #include <zlib.h>
-#include <assert.h>
+#include <cassert>
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
@@ -277,7 +277,7 @@ namespace network
         // the objectaber ich glaub die  does not exist yet
         COUT(4) << "loadsnapshot: creating new object " << std::endl;
         //COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
-        orxonox::Identifier* id = ID((unsigned int)sync.classID);
+        orxonox::Identifier* id = GetIdentifier((unsigned int)sync.classID);
         if(!id){
           COUT(4) << "We could not identify a new object; classid: " << sync.classID << std::endl;
           continue;

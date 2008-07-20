@@ -27,9 +27,10 @@
  */
 
 /**
- @file
- @brief Implementation of the different input handlers.
- */
+@file
+@brief
+    Implementation of the different input handlers.
+*/
 
 #include "KeyDetector.h"
 #include "core/Debug.h"
@@ -41,37 +42,42 @@
 
 namespace orxonox
 {
-  /**
-    @brief Constructor
-  */
-  KeyDetector::KeyDetector()
-  {
-    RegisterObject(KeyDetector);
-  }
+    /**
+    @brief
+        Constructor
+    */
+    KeyDetector::KeyDetector()
+    {
+        RegisterObject(KeyDetector);
+    }
 
-  /**
-    @brief Destructor
-  */
-  KeyDetector::~KeyDetector()
-  {
-  }
+    /**
+    @brief
+        Destructor
+    */
+    KeyDetector::~KeyDetector()
+    {
+    }
 
-  /**
-    @brief Loads the key and button bindings.
-    @return True if loading succeeded.
-  */
-  void KeyDetector::loadBindings()
-  {
-    clearBindings();
-    setConfigValues();
-  }
+    /**
+    @brief
+        Loads the key and button bindings.
+    @return
+        True if loading succeeded.
+    */
+    void KeyDetector::loadBindings(const std::string& command)
+    {
+        clearBindings();
+        setConfigValues();
+        this->command_ = command;
+    }
 
-  void KeyDetector::readTrigger(Button& button)
-  {
-    SimpleCommand* cmd = new SimpleCommand();
-    cmd->evaluation_ = CommandExecutor::evaluate("storeKeyStroke " + button.name_);
-    button.commands_[KeybindMode::OnPress] = new BaseCommand*[1];
-    button.commands_[KeybindMode::OnPress][0] = cmd;
-    button.nCommands_[KeybindMode::OnPress] = 1;
-  }
+    void KeyDetector::readTrigger(Button& button)
+    {
+        SimpleCommand* cmd = new SimpleCommand();
+        cmd->evaluation_ = CommandExecutor::evaluate(this->command_ + " " + button.name_);
+        button.commands_[KeybindMode::OnPress] = new BaseCommand*[1];
+        button.commands_[KeybindMode::OnPress][0] = cmd;
+        button.nCommands_[KeybindMode::OnPress] = 1;
+    }
 }

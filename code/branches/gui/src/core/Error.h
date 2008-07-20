@@ -28,7 +28,7 @@
 
 /**
     @file Error.h
-    @brief Definition of the Error class.
+    @brief Declaration of the Error class.
 */
 
 #ifndef _Error_H__
@@ -40,13 +40,13 @@
 
 namespace orxonox
 {
-	class _CoreExport Error
-	{
-	public:
-		Error(std::string errorMsg = "", int errorCode = 0);
-	private:
+    class _CoreExport Error
+    {
+    public:
+        Error(std::string errorMsg = "", int errorCode = 0);
+    private:
 
-	};
+    };
 }
 
 #endif /* _Error_H__ */

@@ -27,32 +27,32 @@
  */
 
 /**
- @file
- @brief Different definitions of input processing.
- */
+@file
+@brief
+    Different definitions of input processing.
+*/
 
 #ifndef _CalibratorCallback_H__
 #define _CalibratorCallback_H__
 
 #include "core/CorePrereqs.h"
-
 #include "InputInterfaces.h"
 
 namespace orxonox
 {
-  class _CoreExport CalibratorCallback : public KeyHandler
-  {
-  public:
-    CalibratorCallback() {}
-    ~CalibratorCallback() {}
+    class _CoreExport CalibratorCallback : public KeyHandler
+    {
+    public:
+        CalibratorCallback()  { }
+        ~CalibratorCallback() { }
 
-  private:
-    void keyPressed (const KeyEvent& evt);
-    void keyReleased(const KeyEvent& evt) {}
-    void keyHeld    (const KeyEvent& evt) {}
+    private:
+        void keyPressed (const KeyEvent& evt);
+        void keyReleased(const KeyEvent& evt) { }
+        void keyHeld    (const KeyEvent& evt) { }
 
-    void tickInput(float dt, const HandlerState &state) { }
-  };
+        void tickInput(float dt) { }
+    };
 }
 
 #endif /* _CalibratorCallback_H__ */

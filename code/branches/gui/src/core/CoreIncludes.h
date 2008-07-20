@@ -104,7 +104,7 @@
     @brief Returns the Identifier with either a given name or a given network ID through the factory.
     @param StringOrInt The name or the network ID of the class
 */
-#define ID(StringOrInt) \
+#define GetIdentifier(StringOrInt) \
     orxonox::Factory::getIdentifier(StringOrInt)
 
 #endif /* _CoreIncludes_H__ */

@@ -33,7 +33,8 @@
 
 #include "OrxonoxStableHeaders.h"
 #include "Radar.h"
-#include <float.h>
+#include <cfloat>
+#include <cassert>
 #include "objects/WorldEntity.h"
 #include "objects/SpaceShip.h"
 #include "core/CoreIncludes.h"

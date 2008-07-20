@@ -44,14 +44,14 @@ namespace orxonox
         WindowEventListener();
         virtual ~WindowEventListener() { }
 
-		    /** Window has moved position */
-		    virtual void windowMoved() { }
+            /** Window has moved position */
+            virtual void windowMoved() { }
 
-		    /** Window has resized */
-		    virtual void windowResized(int newWidth, int newHeight) { }
+            /** Window has resized */
+            virtual void windowResized(int newWidth, int newHeight) { }
 
-		    /** Window has lost/gained focus */
-		    virtual void windowFocusChanged() { }
+            /** Window has lost/gained focus */
+            virtual void windowFocusChanged() { }
     };
 }
 

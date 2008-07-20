@@ -28,7 +28,7 @@
 
 /**
  @file  Sleep.h
- @brief Macros for using sleep() and usleep() under windows
+ @brief Functions for using sleep() and usleep() under windows
  */
 
 #include "UtilPrereqs.h"

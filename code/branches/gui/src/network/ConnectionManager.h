@@ -46,11 +46,12 @@
 #include <map>
 // enet library for networking support
 #include <enet/enet.h>
-#include <boost/thread/thread.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 
 #include "PacketBuffer.h"
 #include "PacketManager.h"
+
+namespace boost { class thread; }
 
 namespace std
 {

@@ -28,7 +28,7 @@
 
 /*!
     @file Tickable.h
-    @brief Definition of the Tickable interface.
+    @brief Declaration of the Tickable interface.
 
     The Tickable interface provides a tick(dt) function, that gets called every frame.
     float dt is the time since the last frame in seconds.

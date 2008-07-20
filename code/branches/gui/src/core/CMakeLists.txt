@@ -3,6 +3,7 @@ SET(CORE_SRC_FILES
   ConfigValueContainer.cc
   Core.cc
   Error.cc
+  Exception.cc
   Language.cc
   OrxonoxClass.cc
   OutputBuffer.cc
@@ -40,12 +41,14 @@ SET(CORE_SRC_FILES
   # input
   input/Button.cc
   input/CalibratorCallback.cc
+  input/ExtendedInputState.cc
   input/HalfAxis.cc
   input/InputBuffer.cc
   input/InputCommands.cc
   input/InputManager.cc
   input/KeyBinder.cc
   input/KeyDetector.cc
+  input/SimpleInputState.cc
 
   tolua/tolua_bind.cc
 )

@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Reto Grieder
- *   Co-authors:
  *      Benjamin Knecht <beni_at_orxonox.net>
+ *   Co-authors:
+ *      ...
  *
  */
 
@@ -41,76 +42,24 @@
 #include <vector>
 #include "Convert.h"
 
-struct _UtilExport CmdLineArg
-{
-  std::string name_;
-  std::string value_;
-  bool bChecked_;
-};
 
 class _UtilExport ArgReader
 {
-  public:
-    ArgReader(int argc, char **argv);
-    template <class T>
-    void checkArgument(std::string option, T* value, bool must = false);
-    bool errorHandling();
-    const std::string& getErrorString();
+public:
+    ArgReader() { }
+    std::string parse(int argc, char **argv);
+    const std::string& getArgument(const std::string& option);
+    bool allChecked();
 
-  private:
+private:
+    struct CmdLineArg
+    {
+        std::string name_;
+        std::string value_;
+        bool bChecked_;
+    };
+
     std::vector<CmdLineArg> arguments_;
-    bool failure_;
-    std::string errorString_;
 };
-
-template <class T>
-void ArgReader::checkArgument(std::string option, T* value, bool must)
-{
-  unsigned int iArg = 0;
-  while (iArg < arguments_.size())
-  {
-    if (arguments_[iArg].name_ == option)
-      break;
-    ++iArg;
-  }
-  if (iArg == arguments_.size())
-  {
-    if (must)
-    {
-      failure_ = true;
-      errorString_ += "Cannot find mandatory argument \"" + option + "\"\n";
-      return;
-    }
-    else
-      return;
-  }
-
-  arguments_[iArg].bChecked_ = true;
-
-  if (!convertValue(value, arguments_[iArg].value_))
-  {
-    failure_ = true;
-    errorString_ += "Cannot convert argument value for option \"" + option + "\"\n";
-  }
-}
-
-template <>
-void ArgReader::checkArgument(std::string option, bool* value, bool must)
-{
-  // for type bool, only check whether the option was set or not
-  unsigned int iArg = 0;
-  while (iArg < arguments_.size())
-  {
-    if (arguments_[iArg].name_ == option)
-    {
-      arguments_[iArg].bChecked_ = true;
-      *value = true;
-      break;
-    }
-    ++iArg;
-  }
-  if (iArg == arguments_.size())
-    *value = false;
-}
 
 #endif /* _ArgReader_H__ */

@@ -176,7 +176,7 @@ namespace network
           //COUT(4) << "loadSnapshot:\tclassid: " << sync.classID << ", name: " << ID((unsigned int) sync.classID)->getName() << std::endl;
           ///sigsegv may happen here again for some reason
           ///sigsegv is receved after the COUT(4) above
-          orxonox::Identifier* id = ID((unsigned int)sync.classID);
+          orxonox::Identifier* id = GetIdentifier((unsigned int)sync.classID);
           if(!id){
             COUT(3) << "We could not identify a new object; classid: " << sync.classID << " uint: " << (unsigned int)sync.classID << " objectID: " << sync.objectID << " size: " << sync.length << std::endl;
             return false; // most probably the gamestate is corrupted

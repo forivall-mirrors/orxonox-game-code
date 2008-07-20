@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 #include <string>
+#include <cassert>
 #include "util/Math.h"
 #include "core/Debug.h"
 #include "core/OrxonoxClass.h"

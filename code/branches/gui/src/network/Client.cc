@@ -226,11 +226,11 @@ namespace network
 
   void Client::processClassid(classid *clid){
     orxonox::Identifier *id;
-    id=ID(std::string(clid->message));
+    id=GetIdentifier(std::string(clid->message));
     if(id!=NULL)
       id->setNetworkID(clid->clid);
     COUT(4) << "Client: received and set network id: " << clid->clid << "; classname: " << clid->message << std::endl;
-    COUT(4) << "id(classid)->getName " << ID((unsigned int)clid->clid)->getName() << std::endl;
+    COUT(4) << "id(classid)->getName " << GetIdentifier((unsigned int)clid->clid)->getName() << std::endl;
     delete clid;
     return;
   }

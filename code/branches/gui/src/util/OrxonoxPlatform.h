@@ -104,6 +104,19 @@
 #  define ORXONOX_ARCH_TYPE ORXONOX_ARCHITECTURE_32
 #endif
 
+// try to define function information
+#ifndef __FUNCTIONNAME__
+#  if ORXONOX_COMPILER == ORXONOX_COMPILER_BORL
+#    define __FUNCTIONNAME__ __FUNC__
+#  elif ORXONOX_COMPILER == ORXONOX_COMPILER_GNUC
+#    define __FUNCTIONNAME__ __PRETTY_FUNCTION__
+#  elif ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#    define __FUNCTIONNAME__ __FUNCTION__
+#  else
+#    define __FUNCTIONNAME__
+#  endif
+#endif
+
 // For generating compiler warnings - should work on any compiler
 // As a side note, if you start your message with 'Warning: ', the MSVC
 // IDE actually does catch a warning :)
@@ -264,7 +277,7 @@ typedef float Real;
 // the warnings with things we may not be able to do anything about (e.g.
 // generated code from nvparse etc). I doubt very much that these calls
 // will ever be actually removed from VC anyway, it would break too much code.
-//#	pragma warning( disable: 4996)
+//# pragma warning( disable: 4996)
 
 // disable: "conditional expression constant", always occurs on
 // ORXONOX_MUTEX_CONDITIONAL when no threading enabled

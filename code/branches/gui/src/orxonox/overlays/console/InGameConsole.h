@@ -44,68 +44,72 @@ namespace orxonox
 {
     class _OrxonoxExport InGameConsole : public TickableReal, public ShellListener, public WindowEventListener
     {
-        public: // functions
-            void initialise();
-            void destroy();
-            void setConfigValues();
+    public: // functions
+        void initialise();
+        void destroy();
+        void setConfigValues();
 
-            void tick(float dt);
+        void tick(float dt);
 
-            static InGameConsole& getInstance();
+        static InGameConsole& getInstance();
 
-            static void openConsole();
-            static void closeConsole();
+        static void openConsole();
+        static void closeConsole();
 
-        private: // functions
-            InGameConsole();
-            InGameConsole(const InGameConsole& other) {}
-            ~InGameConsole();
+    private: // functions
+        InGameConsole();
+        InGameConsole(const InGameConsole& other) {}
+        ~InGameConsole();
 
-            void activate();
-            void deactivate();
+        void activate();
+        void deactivate();
 
-            void linesChanged();
-            void onlyLastLineChanged();
-            void lineAdded();
-            void inputChanged();
-            void cursorChanged();
-            void exit();
+        void linesChanged();
+        void onlyLastLineChanged();
+        void lineAdded();
+        void inputChanged();
+        void cursorChanged();
+        void exit();
 
-            void shiftLines();
-            void colourLine(int colourcode, int index);
-            void setCursorPosition(unsigned int pos);
-            void print(const std::string& text, int index, bool alwaysShift = false);
+        void shiftLines();
+        void colourLine(int colourcode, int index);
+        void setCursorPosition(unsigned int pos);
+        void print(const std::string& text, int index, bool alwaysShift = false);
 
-            void windowResized(int newWidth, int newHeight);
+        void windowResized(int newWidth, int newHeight);
 
-            static Ogre::UTFString convert2UTF(std::string s);
+        static Ogre::UTFString convert2UTF(std::string s);
 
-        private: // variables
-            bool bActive_;
-            int windowW_;
-            int windowH_;
-            int desiredTextWidth_;
-            unsigned int maxCharsPerLine_;
-            unsigned int numLinesShifted_;
-            int scroll_;
-            float cursor_;
-            unsigned int inputWindowStart_;
-            bool bShowCursor_;
-            std::string displayedText_;
-            Ogre::Overlay* consoleOverlay_;
-            Ogre::OverlayContainer* consoleOverlayContainer_;
-            Ogre::PanelOverlayElement* consoleOverlayNoise_;
-            Ogre::TextAreaOverlayElement* consoleOverlayCursor_;
-            Ogre::BorderPanelOverlayElement* consoleOverlayBorder_;
-            Ogre::TextAreaOverlayElement** consoleOverlayTextAreas_;
+    private: // variables
+        bool bActive_;
+        int windowW_;
+        int windowH_;
+        int desiredTextWidth_;
+        unsigned int maxCharsPerLine_;
+        unsigned int numLinesShifted_;
+        int scroll_;
+        float cursor_;
+        unsigned int inputWindowStart_;
+        bool bShowCursor_;
+        std::string displayedText_;
+        Ogre::Overlay* consoleOverlay_;
+        Ogre::OverlayContainer* consoleOverlayContainer_;
+        Ogre::PanelOverlayElement* consoleOverlayNoise_;
+        Ogre::TextAreaOverlayElement* consoleOverlayCursor_;
+        Ogre::BorderPanelOverlayElement* consoleOverlayBorder_;
+        Ogre::TextAreaOverlayElement** consoleOverlayTextAreas_;
 
-            // config values
-            float relativeWidth;
-            float relativeHeight;
-            float blinkTime;
-            float scrollSpeed_;
-            float noiseSize_;
-            char cursorSymbol_;
+        Ogre::SceneManager* emptySceneManager_;     //!< dummy SceneManager to render overlays in empty windows
+        Ogre::Camera*       emptyCamera_;           //!< dummy camera to render overlays in empty windows
+        Ogre::Viewport*     viewport_;
+
+        // config values
+        float relativeWidth;
+        float relativeHeight;
+        float blinkTime;
+        float scrollSpeed_;
+        float noiseSize_;
+        char cursorSymbol_;
     };
 }
 

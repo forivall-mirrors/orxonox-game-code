@@ -54,8 +54,8 @@ namespace orxonox
     this->sceneNode_ = 0;
     this->bEnabled_ = true;
     this->detaillevel_ = (unsigned int)detaillevel;
-    this->particleSystem_ = GraphicsEngine::getSingleton().getSceneManager()->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
-    this->particleSystem_->setSpeedFactor(Orxonox::getSingleton()->getTimeFactor());
+    this->particleSystem_ = GraphicsEngine::getSingleton().getLevelSceneManager()->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
+    this->particleSystem_->setSpeedFactor(Orxonox::getSingleton().getTimeFactor());
 
     if (GraphicsEngine::getSingleton().getDetailLevelParticle() < (unsigned int)this->detaillevel_)
     {
@@ -71,7 +71,7 @@ namespace orxonox
   ParticleInterface::~ParticleInterface()
   {
     this->particleSystem_->removeAllEmitters();
-    GraphicsEngine::getSingleton().getSceneManager()->destroyParticleSystem(particleSystem_);
+    GraphicsEngine::getSingleton().getLevelSceneManager()->destroyParticleSystem(particleSystem_);
   }
 
   void ParticleInterface::addToSceneNode(Ogre::SceneNode* sceneNode)
@@ -170,11 +170,11 @@ namespace orxonox
 
   void ParticleInterface::setSpeedFactor(float factor)
   {
-    this->particleSystem_->setSpeedFactor(Orxonox::getSingleton()->getTimeFactor() * factor);
+    this->particleSystem_->setSpeedFactor(Orxonox::getSingleton().getTimeFactor() * factor);
   }
   float ParticleInterface::getSpeedFactor() const
   {
-    return (this->particleSystem_->getSpeedFactor() / Orxonox::getSingleton()->getTimeFactor());
+    return (this->particleSystem_->getSpeedFactor() / Orxonox::getSingleton().getTimeFactor());
   }
 
   bool ParticleInterface::getKeepParticlesInLocalSpace() const
