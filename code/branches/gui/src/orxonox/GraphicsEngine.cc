@@ -84,7 +84,7 @@ namespace orxonox
         : root_(0)
         , renderWindow_(0)
         , levelSceneManager_(0)
-        , levelViewport_(0)
+        , viewport_(0)
     {
         RegisterObject(GraphicsEngine);
 
@@ -307,7 +307,7 @@ namespace orxonox
         // create a full screen viewport in which to render the scene and the loading screen
         // The GUI uses its own one to be able to render on top of everything.
         // That explains why the Z order here is only 1 and not 0 (top most)
-        this->levelViewport_ = this->renderWindow_->addViewport(0, 1);
+        this->viewport_ = this->renderWindow_->addViewport(0, 1);
 
         return true;
     }

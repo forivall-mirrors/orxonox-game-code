@@ -58,11 +58,11 @@ namespace orxonox
     SetConsoleCommandShortcut(GUIManager, showGUI_s).setKeybindMode(KeybindMode::OnPress);
 
     GUIManager::GUIManager()
-        : emptySceneManager_(0)
-        , backgroundSceneManager_(0)
-        , emptyCamera_(0)
+        //: emptySceneManager_(0)
+        : backgroundSceneManager_(0)
+        //, emptyCamera_(0)
         , backgroundCamera_(0)
-        , viewport_(0)
+        //, viewport_(0)
         , renderWindow_(0)
         , guiRenderer_(0)
         , resourceProvider_(0)
@@ -90,11 +90,11 @@ namespace orxonox
                 renderWindow_ = GraphicsEngine::getSingleton().getRenderWindow();
 
                 // Full screen viewport with Z order = 0 (top most). Don't yet feed a camera (so nothing gets rendered)
-                this->viewport_ = renderWindow_->addViewport(0, 3);
-                this->viewport_->setOverlaysEnabled(false);
-                this->viewport_->setShadowsEnabled(false);
-                this->viewport_->setSkiesEnabled(false);
-                this->viewport_->setClearEveryFrame(false);
+                //this->viewport_ = renderWindow_->addViewport(0, 3);
+                //this->viewport_->setOverlaysEnabled(false);
+                //this->viewport_->setShadowsEnabled(false);
+                //this->viewport_->setSkiesEnabled(false);
+                //this->viewport_->setClearEveryFrame(false);
 
                 // Note: No SceneManager specified yet
                 this->guiRenderer_ = new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_MAIN, true, 3000);
@@ -144,13 +144,13 @@ namespace orxonox
         // port before rendering, so everything from the GUI gets on top eventually.
         // But in order to realise that, we also need a SceneManager with an empty scene,
         // because the SceneManager is responsible for the render queue.
-        this->emptySceneManager_ = Ogre::Root::getSingleton()
-            .createSceneManager(Ogre::ST_GENERIC, "GUI/EmptySceneManager");
+        //this->emptySceneManager_ = Ogre::Root::getSingleton()
+        //    .createSceneManager(Ogre::ST_GENERIC, "GUI/EmptySceneManager");
 
         // we also need a camera or we won't see anything at all.
         // The camera settings don't matter at all for an empty scene since the GUI
         // gets rendered on top of the screen rather than into the scene.
-        this->emptyCamera_ = this->emptySceneManager_->createCamera("GUI/EmptyCamera");
+        //this->emptyCamera_ = this->emptySceneManager_->createCamera("GUI/EmptyCamera");
 
         // Create another SceneManager that enables to display some 3D
         // scene in the background of the main menu.
@@ -170,7 +170,7 @@ namespace orxonox
         }
     }
 
-    void GUIManager::showGUI(const std::string& name, bool showBackground)
+    void GUIManager::showGUI(const std::string& name, Ogre::SceneManager* sceneManager)// bool showBackground)
     {
         if (state_ != Uninitialised)
         {
@@ -180,21 +180,21 @@ namespace orxonox
             COUT(3) << "Loading GUI " << name << std::endl;
             try
             {
-                if (showBackground)
+                if (!sceneManager)
                 {
                     // currently, only an image is loaded. We could do 3D, see loadBackground.
-                    this->viewport_->setClearEveryFrame(true);
+                    //this->viewport_->setClearEveryFrame(true);
                     this->guiRenderer_->setTargetSceneManager(this->backgroundSceneManager_);
-                    this->viewport_->setCamera(this->backgroundCamera_);
+                    //this->viewport_->setCamera(this->backgroundCamera_);
 
                     lua_pushboolean(this->scriptModule_->getLuaState(), true);
                     lua_setglobal(this->scriptModule_->getLuaState(), "showBackground");
                 }
                 else
                 {
-                    this->viewport_->setClearEveryFrame(false);
-                    this->guiRenderer_->setTargetSceneManager(this->emptySceneManager_);
-                    this->viewport_->setCamera(this->emptyCamera_);
+                    //this->viewport_->setClearEveryFrame(false);
+                    this->guiRenderer_->setTargetSceneManager(sceneManager);
+                    //this->viewport_->setCamera(this->emptyCamera_);
 
                     lua_pushboolean(this->scriptModule_->getLuaState(), false);
                     lua_setglobal(this->scriptModule_->getLuaState(), "showBackground");
@@ -225,7 +225,8 @@ namespace orxonox
     {
         if (this->state_ != OnDisplay)
             return;
-        this->viewport_->setCamera(0);
+        //this->viewport_->setCamera(0);
+        this->guiRenderer_->setTargetSceneManager(0);
         this->state_ = Ready;
         InputManager::requestLeaveState("gui");
     }

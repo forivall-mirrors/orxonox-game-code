@@ -67,7 +67,7 @@ namespace orxonox
         void setLevelSceneManager(Ogre::SceneManager* sceneMgr) { this->levelSceneManager_ = sceneMgr; }
         Ogre::SceneManager* getLevelSceneManager() { return levelSceneManager_; }
 
-        Ogre::Viewport* getLevelViewport() { return this->levelViewport_; }
+        Ogre::Viewport* getViewport() { return this->viewport_; }
 
         // several window properties
         Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
@@ -106,7 +106,7 @@ namespace orxonox
         Ogre::Root*         root_;                  //!< Ogre's root
         Ogre::RenderWindow* renderWindow_;          //!< the current render window
         Ogre::SceneManager* levelSceneManager_;     //!< scene manager of the game
-        Ogre::Viewport*     levelViewport_;         //!< default full size viewport for the level
+        Ogre::Viewport*     viewport_;              //!< default full size viewport
 
         // stats
         float               avgTickTime_;           //!< time in ms to tick() one frame

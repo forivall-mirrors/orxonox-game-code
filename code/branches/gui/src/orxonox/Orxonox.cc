@@ -249,6 +249,7 @@ namespace orxonox
           InputManager::initialise(ogre_->getWindowHandle(),
                 ogre_->getWindowWidth(), ogre_->getWindowHeight(), true, true, true);
           KeyBinder* keyBinder = new KeyBinder();
+          keyBinder->loadBindings();
           InputManager::createSimpleInputState("game", 20)->setHandler(keyBinder);
 
           // Load the InGameConsole
@@ -276,8 +277,8 @@ namespace orxonox
         if (showGUI)
         {
           // show main menu
-          //GraphicsEngine::getSingleton().createNewScene();
-          GUIManager::getInstance().showGUI("MainMenu", true);
+          GUIManager::getInstance().showGUI("MainMenu", 0);
+          GraphicsEngine::getSingleton().getViewport()->setCamera(GUIManager::getInstance().getCamera());
         }
     }
     catch (std::exception& ex)
@@ -339,7 +340,10 @@ namespace orxonox
       }
       
       if (success)
+      {
         InputManager::requestEnterState("game");
+        this->mode_ = mode;
+      }
 
       return success;
   }
@@ -449,7 +453,8 @@ namespace orxonox
 
     unsigned long frameCount = 0;
     
-    const unsigned long refreshTime = debugRefreshTime_ * 1000000.0f;
+    const unsigned long refreshTime = 50000.0f;
+    //const unsigned long refreshTime = debugRefreshTime_ * 1000000.0f;
     unsigned long refreshStartTime = 0;
     unsigned long tickTime = 0;
     unsigned long oldFrameCount = 0;
@@ -457,8 +462,6 @@ namespace orxonox
     unsigned long timeBeforeTick = 0;
     unsigned long timeBeforeTickOld = 0;
     unsigned long timeAfterTick = 0;
-
-    int sleepTime = 0;
 
     // TODO: Update time in seconds every 7 seconds to avoid any overflow (7 secs is very tight)
 
@@ -510,22 +513,10 @@ namespace orxonox
           float avgFPS = (float)(frameCount - oldFrameCount) / (timeAfterTick - refreshStartTime) * 1000000.0;
           GraphicsEngine::getSingleton().setAverageFramesPerSecond(avgFPS);
 
-          if (avgFPS > 60.0)
-            sleepTime++;
-          else
-            sleepTime--;
-          if (sleepTime < 0)
-              sleepTime = 0;
-
           oldFrameCount = frameCount;
           tickTime = 0;
           refreshStartTime = timeAfterTick;
         }
-
-        // do some sleeping when the frameRate is over 60
-        if (sleepTime > 0)
-          msleep(sleepTime);
-
 
         // don't forget to call _fireFrameStarted in ogre to make sure
         // everything goes smoothly

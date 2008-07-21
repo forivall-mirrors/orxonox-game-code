@@ -69,13 +69,15 @@ namespace orxonox // tolua_export
 
         bool initialise();
         void tick(float dt);
-        void showGUI(const std::string& name, bool showBackground); // tolua_export
+        void showGUI(const std::string& name, Ogre::SceneManager* sceneManager);// bool showBackground); // tolua_export
         void _hideGUI(); // tolua_export
 
+        Ogre::Camera* getCamera() { return this->backgroundCamera_; }
+
         static GUIManager& getInstance(); // tolua_export
-        static void showGUI_s(const std::string& name, bool showBackground)
+        static void showGUI_s(const std::string& name, Ogre::SceneManager* sceneManager)//bool showBackground)
         {
-            getInstance().showGUI(name, showBackground);
+            getInstance().showGUI(name, sceneManager);
         }
 
     private:
@@ -103,11 +105,11 @@ namespace orxonox // tolua_export
 
         void loadScenes();
 
-        Ogre::SceneManager*       emptySceneManager_;
+        //Ogre::SceneManager*       emptySceneManager_;
         Ogre::SceneManager*       backgroundSceneManager_;
-        Ogre::Camera*             emptyCamera_;
+        //Ogre::Camera*             emptyCamera_;
         Ogre::Camera*             backgroundCamera_;
-        Ogre::Viewport*           viewport_;
+        //Ogre::Viewport*           viewport_;
         Ogre::RenderWindow*       renderWindow_;
         CEGUI::OgreCEGUIRenderer* guiRenderer_;
         CEGUI::ResourceProvider*  resourceProvider_;
