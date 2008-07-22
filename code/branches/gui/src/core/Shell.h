@@ -70,8 +70,8 @@ namespace orxonox
             void registerListener(ShellListener* listener);
             void unregisterListener(ShellListener* listener);
 
-            inline InputBuffer& getInputBuffer()
-                { return (*this->inputBuffer_); }
+            inline InputBuffer* getInputBuffer()
+                { return this->inputBuffer_; }
             inline OutputBuffer& getOutputBuffer()
                 { return this->outputBuffer_; }
 

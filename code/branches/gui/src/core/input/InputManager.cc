@@ -90,7 +90,18 @@ namespace orxonox
 
     /**
     @brief
+        Destructor itself only called at the end of the program, after main.
+        Instance gets registered for destruction with atexit(.).
+    */
+    InputManager::~InputManager()
+    {
+        _destroy();
+    }
+
+    /**
+    @brief
         The one instance of the InputManager is stored in this function.
+        Only for internal use. Public Interface ist static.
     @return
         A reference to the only instance of the InputManager
     */
@@ -98,15 +109,6 @@ namespace orxonox
     {
         static InputManager theOnlyInstance;
         return theOnlyInstance;
-    }
-
-    /**
-    @brief
-        Destructor only called at the end of the program, after main.
-    */
-    InputManager::~InputManager()
-    {
-        _destroy();
     }
 
 
@@ -132,7 +134,7 @@ namespace orxonox
         if (inputSystem_ == 0)
         {
             CCOUT(3) << "Initialising Input System..." << std::endl;
-            CCOUT(ORX_DEBUG) << "Initialising OIS components..." << std::endl;
+            CCOUT(4) << "Initialising OIS components..." << std::endl;
 
             OIS::ParamList paramList;
             std::ostringstream windowHndStr;
@@ -179,11 +181,6 @@ namespace orxonox
 
             CCOUT(ORX_DEBUG) << "Initialising OIS components done." << std::endl;
 
-            // InputManager holds the input buffer --> create one and add it.
-            //buffer_ = new InputBuffer();
-            //addKeyHandler(buffer_, "buffer");
-            //Shell::getInstance().setInputBuffer(buffer_);
-
             setConfigValues();
 
             stateEmpty_ = createSimpleInputState("empty", -1);
@@ -203,11 +200,11 @@ namespace orxonox
 
             _updateActiveStates();
 
-            CCOUT(ORX_DEBUG) << "Initialising complete." << std::endl;
+            CCOUT(3) << "Initialising complete." << std::endl;
         }
         else
         {
-            CCOUT(ORX_WARNING) << "Warning: OIS compoments already initialised, skipping" << std::endl;
+            CCOUT(2) << "Warning: OIS compoments already initialised, skipping" << std::endl;
         }
         return true;
     }
@@ -332,6 +329,14 @@ namespace orxonox
         return success;
     }
 
+    /**
+    @brief
+        Sets the size of all the different lists that are dependent on the number
+        of joy stick devices created.
+    @remarks
+        No matter whether there are a mouse and/or keyboard, they will always
+        occupy 2 places in the device number dependent lists.
+    */
     void InputManager::_redimensionLists()
     {
         joySticksSize_ = joySticks_.size();
@@ -355,7 +360,7 @@ namespace orxonox
         // state management
         activeStatesTop_.resize(devicesNum_);
 
-        // inform all registered states
+        // inform all states
         for (std::map<int, InputState*>::const_iterator it = inputStatesByPriority_.begin();
             it != inputStatesByPriority_.end(); ++it)
             (*it).second->setNumOfJoySticks(joySticksSize_);
@@ -363,11 +368,12 @@ namespace orxonox
 
     /**
     @brief
-        Sets the configurable values. Use keybindings.ini as file..
+        Sets the configurable values.
+        This mainly concerns joy stick calibrations.
     */
     void InputManager::setConfigValues()
     {
-        if (joySticksSize_)
+        if (joySticksSize_ > 0)
         {
             std::vector<MultiTypeMath> coeffPos;
             std::vector<MultiTypeMath> coeffNeg;
@@ -385,7 +391,7 @@ namespace orxonox
             ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer("CoeffPos");
             if (!cont)
             {
-                cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "CoeffPos", coeffPos);
+                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), "CoeffPos", coeffPos);
                 getIdentifier()->addConfigValueContainer("CoeffPos", cont);
             }
             cont->getValue(&coeffPos);
@@ -393,7 +399,7 @@ namespace orxonox
             cont = getIdentifier()->getConfigValueContainer("CoeffNeg");
             if (!cont)
             {
-                cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "CoeffNeg", coeffNeg);
+                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), "CoeffNeg", coeffNeg);
                 getIdentifier()->addConfigValueContainer("CoeffNeg", cont);
             }
             cont->getValue(&coeffNeg);
@@ -401,7 +407,7 @@ namespace orxonox
             cont = getIdentifier()->getConfigValueContainer("Zero");
             if (!cont)
             {
-                cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "Zero", zero);
+                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), "Zero", zero);
                 getIdentifier()->addConfigValueContainer("Zero", cont);
             }
             cont->getValue(&zero);
@@ -424,47 +430,58 @@ namespace orxonox
 
     /**
     @brief
-        Destroys all the created input devices and sets the InputManager to construction state.
+        Destroys all the created input devices. InputManager will be ready for a
+        new initialisation.
     */
     void InputManager::_destroy()
     {
         if (inputSystem_)
         {
-            CCOUT(ORX_DEBUG) << "Destroying ..." << std::endl;
+            try
+            {
+                CCOUT(3) << "Destroying ..." << std::endl;
 
-            // kick all active states 'nicely'
-            for (std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin();
-                rit != activeStates_.rend(); ++rit)
-                (*rit).second->onLeave();
-            activeStates_.clear();
+                // clear our own states
+                stateEmpty_->removeAndDestroyAllHandlers();
+                stateCalibrator_->removeAndDestroyAllHandlers();
+                stateDetector_->removeAndDestroyAllHandlers();
 
-            // destroy our own states
-            stateEmpty_->removeAndDestroyAllHandlers();
-            stateCalibrator_->removeAndDestroyAllHandlers();
-            stateDetector_->removeAndDestroyAllHandlers();
-            _destroyState(stateEmpty_);
-            _destroyState(stateCalibrator_);
-            _destroyState(stateDetector_);
-            stateEmpty_ = 0;
-            stateCalibrator_ = 0;
-            stateDetector_ = 0;
+                // kick all active states 'nicely'
+                for (std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin();
+                    rit != activeStates_.rend(); ++rit)
+                {
+                    (*rit).second->onLeave();
+                }
+                activeStates_.clear();
+                _updateActiveStates();
 
-            // we don't remove the other states yet because the singleton might still exist.
-            // So people can still removeAndDestroy their states
-            //inputStatesByName_.clear();
-            //inputStatesByPriority_.clear();
+                // destroy all input states
+                while (inputStatesByPriority_.size() > 0)
+                {
+                    _destroyState((*inputStatesByPriority_.rbegin()).second);
+                }
 
-            // destroy the devices
-            _destroyKeyboard();
-            _destroyMouse();
-            _destroyJoySticks();
+                stateEmpty_ = 0;
+                stateCalibrator_ = 0;
+                stateDetector_ = 0;
 
-            _redimensionLists();
+                // destroy the devices
+                _destroyKeyboard();
+                _destroyMouse();
+                _destroyJoySticks();
 
-            OIS::InputManager::destroyInputSystem(inputSystem_);
-            inputSystem_ = 0;
+                // 0 joy sticks now
+                _redimensionLists();
 
-            CCOUT(ORX_DEBUG) << "Destroying done." << std::endl;
+                OIS::InputManager::destroyInputSystem(inputSystem_);
+                inputSystem_ = 0;
+
+                CCOUT(3) << "Destroying done." << std::endl;
+            }
+            catch (OIS::Exception& ex)
+            {
+                CCOUT(1) << "An exception has occured while destroying:\n" << ex.what() << std::endl;
+            }
         }
     }
 
@@ -478,7 +495,7 @@ namespace orxonox
             inputSystem_->destroyInputObject(keyboard_);
         keyboard_ = 0;
         keysDown_.clear();
-        CCOUT(ORX_DEBUG) << "Keyboard destroyed." << std::endl;
+        CCOUT(4) << "Keyboard destroyed." << std::endl;
     }
 
     /**
@@ -491,7 +508,7 @@ namespace orxonox
             inputSystem_->destroyInputObject(mouse_);
         mouse_ = 0;
         mouseButtonsDown_.clear();
-        CCOUT(ORX_DEBUG) << "Mouse destroyed." << std::endl;
+        CCOUT(4) << "Mouse destroyed." << std::endl;
     }
 
     /**
@@ -509,7 +526,7 @@ namespace orxonox
 
             joySticks_.clear();
         }
-        CCOUT(ORX_DEBUG) << "Joy sticks destroyed." << std::endl;
+        CCOUT(4) << "Joy sticks destroyed." << std::endl;
     }
 
     void InputManager::_destroyState(InputState* state)
@@ -596,6 +613,11 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Updates the currently active states (according to activeStates_) for each device.
+        Also, a list of all active states (no duplicates!) is compiled for the general tick.
+    */
     void InputManager::_updateActiveStates()
     {
         for (std::map<int, InputState*>::const_iterator it = activeStates_.begin(); it != activeStates_.end(); ++it)
@@ -615,6 +637,10 @@ namespace orxonox
             activeStatesTicked_.push_back(*it);
     }
 
+    /**
+    @brief
+        Processes the accumultated data for the joy stick calibration.
+    */
     void InputManager::_completeCalibration()
     {
         for (unsigned int i = 0; i < 24; i++)
@@ -675,6 +701,7 @@ namespace orxonox
 
         // restore old input state
         requestLeaveState("calibrator");
+        bCalibrating_ = false;
     }
 
 
@@ -821,6 +848,10 @@ namespace orxonox
 
     // ###### Joy Stick Events ######
 
+    /**
+    @brief
+        Returns the joy stick ID (orxonox) according to a OIS::JoyStickEvent
+    */
     inline unsigned int InputManager::_getJoystick(const OIS::JoyStickEvent& arg)
     {
         // use the device to identify which one called the method
@@ -838,14 +869,14 @@ namespace orxonox
         unsigned int iJoyStick = _getJoystick(arg);
 
         // check whether the button already is in the list (can happen when focus was lost)
-        std::vector<int>& buttonsDown = joyStickButtonsDown_[iJoyStick];
+        std::vector<JoyStickButton::Enum>& buttonsDown = joyStickButtonsDown_[iJoyStick];
         unsigned int iButton = 0;
         while (iButton < buttonsDown.size() && buttonsDown[iButton] != button)
             iButton++;
         if (iButton == buttonsDown.size())
-            buttonsDown.push_back(button);
+            buttonsDown.push_back((JoyStickButton::Enum)button);
 
-        activeStatesTop_[2 + iJoyStick]->joyStickButtonPressed(iJoyStick, button);
+        activeStatesTop_[2 + iJoyStick]->joyStickButtonPressed(iJoyStick, (JoyStickButton::Enum)button);
 
         return true;
     }
@@ -855,7 +886,7 @@ namespace orxonox
         unsigned int iJoyStick = _getJoystick(arg);
 
         // remove the button from the joyStickButtonsDown_ list
-        std::vector<int>& buttonsDown = joyStickButtonsDown_[iJoyStick];
+        std::vector<JoyStickButton::Enum>& buttonsDown = joyStickButtonsDown_[iJoyStick];
         for (unsigned int iButton = 0; iButton < buttonsDown.size(); iButton++)
         {
             if (buttonsDown[iButton] == button)
@@ -865,11 +896,16 @@ namespace orxonox
             }
         }
 
-        activeStatesTop_[2 + iJoyStick]->joyStickButtonReleased(iJoyStick, button);
+        activeStatesTop_[2 + iJoyStick]->joyStickButtonReleased(iJoyStick, (JoyStickButton::Enum)button);
 
         return true;
     }
 
+    /**
+    @brief
+        Calls the states for a particular axis with our enumeration.
+        Used by OIS sliders and OIS axes.
+    */
     void InputManager::_fireAxis(unsigned int iJoyStick, int axis, int value)
     {
         if (bCalibrating_)
@@ -918,6 +954,7 @@ namespace orxonox
         unsigned int iJoyStick = _getJoystick(arg);
 
         // translate the POV into 8 simple buttons
+
         int lastState = povStates_[iJoyStick][id];
         if (lastState & OIS::Pov::North)
             buttonReleased(arg, 32 + id * 4 + 0);
@@ -956,21 +993,6 @@ namespace orxonox
     {
         return _getInstance()._initialise(windowHnd, windowWidth, windowHeight,
             createKeyboard, createMouse, createJoySticks);
-    }
-
-    bool InputManager::initialiseKeyboard()
-    {
-        return _getInstance()._initialiseKeyboard();
-    }
-
-    bool InputManager::initialiseMouse()
-    {
-        return _getInstance()._initialiseMouse();
-    }
-
-    bool InputManager::initialiseJoySticks()
-    {
-        return _getInstance()._initialiseJoySticks();
     }
 
     int InputManager::numberOfKeyboards()
@@ -1031,21 +1053,6 @@ namespace orxonox
         _getInstance()._destroy();
     }
 
-    void InputManager::destroyKeyboard()
-    {
-        return _getInstance()._destroyKeyboard();
-    }
-
-    void InputManager::destroyMouse()
-    {
-        return _getInstance()._destroyMouse();
-    }
-
-    void InputManager::destroyJoySticks()
-    {
-        return _getInstance()._destroyJoySticks();
-    }
-
 
     /**
     @brief
@@ -1067,6 +1074,16 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Method for easily storing a string with the command executor. It is used by the
+        KeyDetector to get assign commands. The KeyDetector simply executes
+        the command 'storeKeyStroke myName' for each button/axis.
+    @remarks
+        This is only a temporary hack until we thourouhgly support multiple KeyBinders.
+    @param name
+        The name of the button/axis.
+    */
     void InputManager::storeKeyStroke(const std::string& name)
     {
         requestLeaveState("detector");
@@ -1074,6 +1091,13 @@ namespace orxonox
         CommandExecutor::execute("config KeyBinder " + name + " " + bindingCommmandString_s, false);
     }
 
+    /**
+    @brief
+        Assigns a command string to a key/button/axis. The name is determined via KeyDetector
+        and InputManager::storeKeyStroke(.).
+    @param command
+        Command string that can be executed by the CommandExecutor
+    */
     void InputManager::keyBind(const std::string& command)
     {
         bindingCommmandString_s = command;
@@ -1081,8 +1105,13 @@ namespace orxonox
         COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
     }
 
+    /**
+    @brief
+        Starts joy stick calibration.
+    */
     void InputManager::calibrate()
     {
+        _getInstance().bCalibrating_ = true;
         requestEnterState("calibrator");
     }
 
@@ -1100,8 +1129,10 @@ namespace orxonox
         Pointer to the handler object.
     @param name
         Unique name of the handler.
+    @param priority
+        Unique integer number. Higher means more prioritised.
     @return
-        True if added, false if name already existed.
+        True if added, false if name or priority already existed.
     */
     bool InputManager::_configureInputState(InputState* state, const std::string& name, int priority)
     {
@@ -1133,6 +1164,10 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Returns a new SimpleInputState and configures it first.
+    */
     SimpleInputState* InputManager::createSimpleInputState(const std::string &name, int priority)
     {
         SimpleInputState* state = new SimpleInputState();
@@ -1145,6 +1180,10 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Returns a new ExtendedInputState and configures it first.
+    */
     ExtendedInputState* InputManager::createExtendedInputState(const std::string &name, int priority)
     {
         ExtendedInputState* state = new ExtendedInputState();
@@ -1159,11 +1198,13 @@ namespace orxonox
 
     /**
     @brief
-        Removes a Key handler from the list.
+        Removes an input state internally.
     @param name
-        Unique name of the handler.
+        Name of the handler.
     @return
         True if removal was successful, false if name was not found.
+    @remarks
+        You can't remove the internal states "empty", "calibrator" and "detector".
     */
     bool InputManager::destroyState(const std::string& name)
     {
@@ -1183,9 +1224,9 @@ namespace orxonox
 
     /**
     @brief
-        Returns the pointer to a handler.
+        Returns the pointer to the requested InputState.
     @param name
-        Unique name of the handler.
+        Unique name of the state.
     @return
         Pointer to the instance, 0 if name was not found.
     */
@@ -1200,9 +1241,9 @@ namespace orxonox
 
     /**
     @brief
-        Returns the current input handling method
+        Returns the current input state (there might be others active too!)
     @return
-        The current input mode.
+        The current highest prioritised active input state.
     */
     InputState* InputManager::getCurrentState()
     {
@@ -1211,9 +1252,10 @@ namespace orxonox
 
     /**
     @brief
-        Enables a specific key handler that has already been added.
+        Activates a specific input state.
+        It might not be really activated if the priority is too low!
     @param name
-        Unique name of the handler.
+        Unique name of the state.
     @return
         False if name was not found, true otherwise.
     */
@@ -1229,6 +1271,14 @@ namespace orxonox
         return false;
     }
 
+    /**
+    @brief
+        Deactivates a specific input state.
+    @param name
+        Unique name of the state.
+    @return
+        False if name was not found, true otherwise.
+    */
     bool InputManager::requestLeaveState(const std::string& name)
     {
         // get pointer from the map with all stored handlers

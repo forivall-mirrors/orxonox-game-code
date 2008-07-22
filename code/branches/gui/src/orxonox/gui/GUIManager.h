@@ -102,6 +102,8 @@ namespace orxonox // tolua_export
         { guiSystem_->injectMouseWheelChange(rel);}
 
         void tickInput(float dt) { }
+        void tickKey(float dt) { }
+        void tickMouse(float dt) { }
 
         void loadScenes();
 

@@ -80,9 +80,9 @@ namespace orxonox
         void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
         void mouseScrolled      (int abs, int rel);
 
-        void joyStickButtonPressed (unsigned int joyStickID, unsigned int button);
-        void joyStickButtonReleased(unsigned int joyStickID, unsigned int button);
-        void joyStickButtonHeld    (unsigned int joyStickID, unsigned int button);
+        void joyStickButtonPressed (unsigned int joyStickID, JoyStickButton::Enum id);
+        void joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id);
+        void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButton::Enum id);
         void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value);        void updateTickables();
 
         void numberOfJoySticksChanged(unsigned int n);

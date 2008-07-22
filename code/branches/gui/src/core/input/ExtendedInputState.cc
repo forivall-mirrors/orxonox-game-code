@@ -117,25 +117,25 @@ namespace orxonox
             joyStickHandlers_[joyStickID][i]->joyStickAxisMoved(joyStickID, axis, value);
     }
 
-    void ExtendedInputState::joyStickButtonPressed(unsigned int joyStickID, unsigned int button)
+    void ExtendedInputState::joyStickButtonPressed(unsigned int joyStickID, JoyStickButton::Enum id)
     {
         assert(joyStickID < joyStickHandlers_.size());
         for (unsigned int i = 0; i < joyStickHandlers_[joyStickID].size(); i++)
-            joyStickHandlers_[joyStickID][i]->joyStickButtonPressed(joyStickID, button);
+            joyStickHandlers_[joyStickID][i]->joyStickButtonPressed(joyStickID, id);
     }
 
-    void ExtendedInputState::joyStickButtonReleased(unsigned int joyStickID, unsigned int button)
+    void ExtendedInputState::joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id)
     {
         assert(joyStickID < joyStickHandlers_.size());
         for (unsigned int i = 0; i < joyStickHandlers_[joyStickID].size(); i++)
-            joyStickHandlers_[joyStickID][i]->joyStickButtonReleased(joyStickID, button);
+            joyStickHandlers_[joyStickID][i]->joyStickButtonReleased(joyStickID, id);
     }
 
-    void ExtendedInputState::joyStickButtonHeld(unsigned int joyStickID, unsigned int button)
+    void ExtendedInputState::joyStickButtonHeld(unsigned int joyStickID, JoyStickButton::Enum id)
     {
         assert(joyStickID < joyStickHandlers_.size());
         for (unsigned int i = 0; i < joyStickHandlers_[joyStickID].size(); i++)
-            joyStickHandlers_[joyStickID][i]->joyStickButtonHeld(joyStickID, button);
+            joyStickHandlers_[joyStickID][i]->joyStickButtonHeld(joyStickID, id);
     }
 
 

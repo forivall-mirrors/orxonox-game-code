@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Reto Grieder
+ *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
  *   Co-authors:
- *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007, Felix Schulthess
+ *      Felix Schulthess
  *
  */
 
@@ -87,7 +88,7 @@ namespace orxonox
         { return this->detailLevelParticle_; }
 
         static GraphicsEngine& getSingleton();
-        static GraphicsEngine* getSingletonPtr() { return &getSingleton(); }
+        static GraphicsEngine* getSingletonPtr() { return singletonRef_s; }
 
     private:
         // don't mess with singletons

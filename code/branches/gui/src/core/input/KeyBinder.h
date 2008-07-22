@@ -67,7 +67,7 @@ namespace orxonox
         //void tickInput(float dt, int device);
         void tickKey(float dt) { }
         void tickMouse(float dt);
-        void tickJoyStick(float dt, int device);
+        void tickJoyStick(float dt, unsigned int joyStick);
         void tickDevices(unsigned int begin, unsigned int end);
 
         virtual void readTrigger(Button& button);
@@ -82,9 +82,9 @@ namespace orxonox
         void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
         void mouseScrolled      (int abs, int rel);
 
-        void joyStickButtonPressed (unsigned int joyStickID, unsigned int button);
-        void joyStickButtonReleased(unsigned int joyStickID, unsigned int button);
-        void joyStickButtonHeld    (unsigned int joyStickID, unsigned int button);
+        void joyStickButtonPressed (unsigned int joyStickID, JoyStickButton::Enum id);
+        void joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id);
+        void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButton::Enum id);
         void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value);
 
     protected: // variables

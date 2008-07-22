@@ -83,9 +83,9 @@ namespace orxonox
         virtual void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) = 0;
         virtual void mouseScrolled      (int abs, int rel) = 0;
 
-        virtual void joyStickButtonPressed (unsigned int joyStickID, unsigned int button) = 0;
-        virtual void joyStickButtonReleased(unsigned int joyStickID, unsigned int button) = 0;
-        virtual void joyStickButtonHeld    (unsigned int joyStickID, unsigned int button) = 0;
+        virtual void joyStickButtonPressed (unsigned int joyStickID, JoyStickButton::Enum id) = 0;
+        virtual void joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id) = 0;
+        virtual void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButton::Enum id) = 0;
         virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
 
     protected:

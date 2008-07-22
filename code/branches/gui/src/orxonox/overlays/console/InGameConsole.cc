@@ -45,6 +45,8 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
+#include "core/input/SimpleInputState.h"
+#include "core/input/InputBuffer.h"
 #include "GraphicsEngine.h"
 
 #define LINES 30
@@ -65,9 +67,6 @@ namespace orxonox
         , consoleOverlayCursor_(0)
         , consoleOverlayBorder_(0)
         , consoleOverlayTextAreas_(0)
-        , emptySceneManager_(0)
-        , emptyCamera_(0)
-        , viewport_(0)
     {
         RegisterObject(InGameConsole);
 
@@ -117,6 +116,9 @@ namespace orxonox
     */
     void InGameConsole::initialise()
     {
+        // create the corresponding input state
+        InputManager::createSimpleInputState("console", 40)->setKeyHandler(Shell::getInstance().getInputBuffer());
+
         // create overlay and elements
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
 
@@ -194,14 +196,6 @@ namespace orxonox
 
         Shell::getInstance().addOutputLevel(true);
 
-        // create a sceneManager in order to render in our own viewport
-        this->emptySceneManager_ = Ogre::Root::getSingleton()
-            .createSceneManager(Ogre::ST_GENERIC, "Console/EmptySceneManager");
-        this->emptyCamera_ = this->emptySceneManager_->createCamera("Console/EmptyCamera");
-        this->viewport_ = GraphicsEngine::getSingleton().getRenderWindow()->addViewport(emptyCamera_, 10);
-        this->viewport_->setOverlaysEnabled(true);
-        this->viewport_->setClearEveryFrame(false);
-
         COUT(4) << "Info: InGameConsole initialized" << std::endl;
     }
 
@@ -210,6 +204,13 @@ namespace orxonox
     */
     void InGameConsole::destroy()
     {
+        this->deactivate();
+
+        // destroy the input state previously created
+        SimpleInputState * inputState = dynamic_cast<SimpleInputState*>(InputManager::getState("console"));
+        if (inputState)
+            InputManager::destroyState("console");
+
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
         if (ovMan)
         {
@@ -466,10 +467,10 @@ namespace orxonox
             {
                 if (output.size() > this->maxCharsPerLine_)
                 {
-                    if (Shell::getInstance().getInputBuffer().getCursorPosition() < this->inputWindowStart_)
-                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer().getCursorPosition();
-                    else if (Shell::getInstance().getInputBuffer().getCursorPosition() >= (this->inputWindowStart_ + this->maxCharsPerLine_ - 1))
-                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer().getCursorPosition() - this->maxCharsPerLine_ + 1;
+                    if (Shell::getInstance().getInputBuffer()->getCursorPosition() < this->inputWindowStart_)
+                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer()->getCursorPosition();
+                    else if (Shell::getInstance().getInputBuffer()->getCursorPosition() >= (this->inputWindowStart_ + this->maxCharsPerLine_ - 1))
+                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer()->getCursorPosition() - this->maxCharsPerLine_ + 1;
 
                     output = output.substr(this->inputWindowStart_, this->maxCharsPerLine_);
                 }

@@ -212,6 +212,33 @@ namespace orxonox
         };
     }
 
+    namespace JoyStickButton
+    {
+        enum Enum
+        {
+            Button0       =  0, Button1       =  1, Button2       =  2, Button3       =  3,
+            Button4       =  4, Button5       =  5, Button6       =  6, Button7       =  7,
+            Button8       =  8, Button9       =  9, Button10      = 10, Button11      = 11,
+            Button12      = 12, Button13      = 13, Button14      = 14, Button15      = 15,
+            Button16      = 16, Button17      = 17, Button18      = 18, Button19      = 19,
+            Button20      = 20, Button21      = 21, Button22      = 22, Button23      = 23,
+            Button24      = 24, Button25      = 25, Button26      = 26, Button27      = 27,
+            Button28      = 28, Button29      = 29, Button30      = 30, Button31      = 31,
+
+            POV0North     = 32, POV0South     = 33, POV0East      = 34, POV0West      = 35,
+            POV0NorthEast = 36, POV0SouthEast = 37, POV0NorthWest = 38, POV0SouthWest = 39,
+
+            POV1North     = 40, POV1South     = 41, POV1East      = 42, POV1West      = 43,
+            POV1NorthEast = 44, POV1SouthEast = 45, POV1NorthWest = 46, POV1SouthWest = 47,
+
+            POV2North     = 48, POV2South     = 49, POV2East      = 50, POV2West      = 51,
+            POV2NorthEast = 52, POV2SouthEast = 53, POV2NorthWest = 54, POV2SouthWest = 55,
+
+            POV3North     = 56, POV3South     = 57, POV3East      = 58, POV3West      = 59,
+            POV3NorthEast = 60, POV3SouthEast = 61, POV3NorthWest = 62, POV3SouthWest = 63,
+        };
+    }
+
     namespace KeyboardModifier
     {
         enum Enum
@@ -258,40 +285,12 @@ namespace orxonox
         unsigned int modifiers;
     };
 
-    //typedef OIS::MouseState MouseState;
-
-    /*class _CoreExport JoyStickState
-    {
-    public:
-        JoyStickState(const OIS::JoyStickState& state, int ID) : OIS::JoyStickState(state), mJoyStickID(ID) { }
-        JoyStickState() { clear(); }
-        int mJoyStickID;
-        JoyStickState() { clear(); }
-
-        std::vector<bool> mButtons;
-        int axes[16];
-        std::vector<Vector3> mVectors;
-    };*/
-
-    /**
-    @brief
-        Helper struct to determine which handlers of an object (can implement
-        multiple handlers) are active.
-    */
-    //struct HandlerState
-    //{
-    //    HandlerState() : keyboard(false), mouse(false) { }
-    //    bool keyboard;
-    //    bool mouse;
-    //    std::vector<bool> joySticks;
-    //};
 
     class _CoreExport InputTickable
     {
     public:
         virtual ~InputTickable() { }
         virtual void tickInput(float dt) = 0;
-        //virtual void tickInput(float dt, unsigned int device) = 0;
     };
 
     /**
@@ -305,7 +304,7 @@ namespace orxonox
         virtual void keyPressed (const KeyEvent& evt) = 0;
         virtual void keyReleased(const KeyEvent& evt) = 0;
         virtual void keyHeld    (const KeyEvent& evt) = 0;
-        virtual void tickKey    (float dt) { }
+        virtual void tickKey    (float dt) = 0;
     };
 
     /**
@@ -321,7 +320,7 @@ namespace orxonox
         virtual void mouseButtonHeld    (MouseButton::Enum id) = 0;
         virtual void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) = 0;
         virtual void mouseScrolled      (int abs, int rel)     = 0;
-        virtual void tickMouse          (float dt) { }
+        virtual void tickMouse          (float dt) = 0;
     };
 
 
@@ -333,19 +332,20 @@ namespace orxonox
     {
     public:
         virtual ~JoyStickHandler() { }
-        virtual void joyStickButtonPressed (unsigned int joyStickID, unsigned int button) = 0;
-        virtual void joyStickButtonReleased(unsigned int joyStickID, unsigned int button) = 0;
-        virtual void joyStickButtonHeld    (unsigned int joyStickID, unsigned int button) = 0;
+        virtual void joyStickButtonPressed (unsigned int joyStickID, JoyStickButton::Enum id) = 0;
+        virtual void joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id) = 0;
+        virtual void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButton::Enum id) = 0;
         virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
-        //virtual bool joyStickVector3Moved  (unsigned int joyStickID, unsigned int index /*, fill list*/) {return true;}
-        virtual void tickJoyStick          (float dt, unsigned int device) { }
+        virtual void tickJoyStick          (float dt, unsigned int joyStick) = 0;
     };
 
     class _CoreExport EmptyHandler : public KeyHandler, public MouseHandler, public JoyStickHandler
     {
     private:
         void tickInput(float dt) { }
-        void tickInput(float dt, unsigned int device) { }
+        void tickJoyStick(float dt, unsigned int joyStick) { }
+        void tickMouse(float dt) { }
+        void tickKey(float dt) { }
 
         void keyPressed (const KeyEvent& evt) { }
         void keyReleased(const KeyEvent& evt) { }
@@ -357,9 +357,9 @@ namespace orxonox
         void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) { }
         void mouseScrolled      (int abs, int rel) { }
 
-        void joyStickButtonPressed (unsigned int joyStickID, unsigned int button) { }
-        void joyStickButtonReleased(unsigned int joyStickID, unsigned int button) { }
-        void joyStickButtonHeld    (unsigned int joyStickID, unsigned int button) { }
+        void joyStickButtonPressed (unsigned int joyStickID, JoyStickButton::Enum id) { }
+        void joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id) { }
+        void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButton::Enum id) { }
         void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) { }
     };
 

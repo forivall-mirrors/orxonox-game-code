@@ -190,8 +190,9 @@ void OgreCEGUIRenderer::doRender(void)
     // The reason is that we don't want the HUD to be shown in the viewport of the
     // GUI (uses its own viewport to be able render on top of all viewports).
     // But since we don't use overlays in the GUI, it doesn't matter.
-    //if (d_render_sys->_getViewport()->getOverlaysEnabled() && !d_quadlist.empty())
-    if (!d_quadlist.empty())
+    // ORXONOX REVERT: Changes are not in place anymore, but might be in the future!
+    if (d_render_sys->_getViewport()->getOverlaysEnabled() && !d_quadlist.empty())
+    //if (!d_quadlist.empty())
     {
         /// Quad list needs to be sorted and thus the vertex buffer rebuilt. If not, we can
         /// reuse the vertex buffer resulting in a nice speed gain.
@@ -492,8 +493,9 @@ void OgreCEGUIRenderer::renderQuadDirect(const Rect& dest_rect, float z, const T
     // The reason is that we don't want the HUD to be shown in the viewport of the
     // GUI (uses its own viewport to be able render on top of all viewports).
     // But since we don't use overlays in the GUI, it doesn't matter.
-    //if (d_render_sys->_getViewport()->getOverlaysEnabled())
-    if (true)
+    // ORXONOX REVERT: Changes are not in place anymore, but might be in the future!
+    if (d_render_sys->_getViewport()->getOverlaysEnabled())
+    //if (true)
     {
         z = -1 + z;
 

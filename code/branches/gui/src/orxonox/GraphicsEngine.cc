@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Reto Grieder
+ *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
  *   Co-authors:
- *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007, Felix Schulthess
+ *      Felix Schulthess
  *
  */
 
@@ -88,6 +89,7 @@ namespace orxonox
     {
         RegisterObject(GraphicsEngine);
 
+        assert(singletonRef_s == 0);
         singletonRef_s = this;
 
         this->detailLevelParticle_ = 0;
@@ -304,10 +306,8 @@ namespace orxonox
         Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, this);
         //Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
-        // create a full screen viewport in which to render the scene and the loading screen
-        // The GUI uses its own one to be able to render on top of everything.
-        // That explains why the Z order here is only 1 and not 0 (top most)
-        this->viewport_ = this->renderWindow_->addViewport(0, 1);
+        // create a full screen viewport
+        this->viewport_ = this->renderWindow_->addViewport(0, 0);
 
         return true;
     }

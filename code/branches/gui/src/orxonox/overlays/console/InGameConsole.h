@@ -99,10 +99,6 @@ namespace orxonox
         Ogre::BorderPanelOverlayElement* consoleOverlayBorder_;
         Ogre::TextAreaOverlayElement** consoleOverlayTextAreas_;
 
-        Ogre::SceneManager* emptySceneManager_;     //!< dummy SceneManager to render overlays in empty windows
-        Ogre::Camera*       emptyCamera_;           //!< dummy camera to render overlays in empty windows
-        Ogre::Viewport*     viewport_;
-
         // config values
         float relativeWidth;
         float relativeHeight;

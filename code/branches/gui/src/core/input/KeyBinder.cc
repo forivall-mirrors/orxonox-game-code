@@ -373,7 +373,7 @@ namespace orxonox
         }
     }
 
-    void KeyBinder::tickJoyStick(float dt, int device)
+    void KeyBinder::tickJoyStick(float dt, unsigned int joyStick)
     {
         tickDevices(8, nHalfAxes_s);
     }
@@ -447,14 +447,14 @@ namespace orxonox
     { mouseButtons_[id].execute(KeybindMode::OnHold); }
 
 
-    void KeyBinder::joyStickButtonPressed (unsigned int joyStickID, unsigned int button)
-    { joyStickButtons_[button].execute(KeybindMode::OnPress); }
+    void KeyBinder::joyStickButtonPressed (unsigned int joyStickID, JoyStickButton::Enum id)
+    { joyStickButtons_[id].execute(KeybindMode::OnPress); }
 
-    void KeyBinder::joyStickButtonReleased(unsigned int joyStickID, unsigned int button)
-    { joyStickButtons_[button].execute(KeybindMode::OnRelease); }
+    void KeyBinder::joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id)
+    { joyStickButtons_[id].execute(KeybindMode::OnRelease); }
 
-    void KeyBinder::joyStickButtonHeld    (unsigned int joyStickID, unsigned int button)
-    { joyStickButtons_[button].execute(KeybindMode::OnHold); }
+    void KeyBinder::joyStickButtonHeld    (unsigned int joyStickID, JoyStickButton::Enum id)
+    { joyStickButtons_[id].execute(KeybindMode::OnHold); }
 
     /**
     @brief

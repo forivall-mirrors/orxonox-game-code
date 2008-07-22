@@ -299,7 +299,7 @@ namespace orxonox
       server_g->close();
   }
 
-  void Orxonox::loadGame(const std::string& name)
+  /*static*/ void Orxonox::loadGame(const std::string& name)
   {
       const GameMode& mode = Settings::getGameMode(name);
       if (mode.mode == GameMode::None)

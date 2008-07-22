@@ -170,7 +170,7 @@ namespace orxonox
             void processKey (const KeyEvent &e);
 
             void tickInput(float dt);
-            void tickInput(float dt, int device) { }
+            void tickKey(float dt) { }
 
             std::string buffer_;
             std::list<BaseInputBufferListenerTuple*> listeners_;

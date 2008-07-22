@@ -32,9 +32,6 @@
 #include "ConfigValueIncludes.h"
 #include "Core.h"
 #include "ConsoleCommand.h"
-#include "input/InputInterfaces.h"
-#include "input/SimpleInputState.h"
-#include "input/InputManager.h"
 
 #define SHELL_UPDATE_LISTENERS(function) \
     for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ) \
@@ -60,7 +57,6 @@ namespace orxonox
 
         this->inputBuffer_ = new InputBuffer();
         this->configureInputBuffer();
-        InputManager::createSimpleInputState("console", 40)->setKeyHandler(this->inputBuffer_);
 
         this->outputBuffer_.registerListener(this);
 
@@ -69,12 +65,8 @@ namespace orxonox
 
     Shell::~Shell()
     {
-        SimpleInputState * inputState = dynamic_cast<SimpleInputState*>(InputManager::getState("console"));
-        if (inputState)
-        {
-            inputState->removeAndDestroyAllHandlers();
-            InputManager::destroyState("console");
-        }
+        if (this->inputBuffer_)
+            delete this->inputBuffer_;
     }
 
     Shell& Shell::createShell()
