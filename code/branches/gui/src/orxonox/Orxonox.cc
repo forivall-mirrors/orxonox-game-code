@@ -467,8 +467,7 @@ namespace orxonox
 
     unsigned long frameCount = 0;
     
-    const unsigned long refreshTime = 50000.0f;
-    //const unsigned long refreshTime = debugRefreshTime_ * 1000000.0f;
+    const unsigned long refreshTime = (unsigned long)(debugRefreshTime_ * 1000000.0f);
     unsigned long refreshStartTime = 0;
     unsigned long tickTime = 0;
     unsigned long oldFrameCount = 0;

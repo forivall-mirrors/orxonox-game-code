@@ -58,7 +58,7 @@ SET( ORXONOX_SRC_FILES
 GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.cc
-  COMMAND ${TOLUA_EXE} -n orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg
+  COMMAND ${TOLUA_EXE} -n Orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg
   DEPENDS tolua
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
@@ -88,6 +88,7 @@ TARGET_LINK_LIBRARIES( orxonox
   ${OGRE_LIBRARIES}
   ${Lua_LIBRARIES}
   ${CEGUI_LIBRARIES}
+  ${CEGUI_SCRIPT_LIBRARIES}
   tinyxml
   tolualib
   ois_orxonox

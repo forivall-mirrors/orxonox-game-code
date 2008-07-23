@@ -125,8 +125,12 @@ namespace orxonox
             }
             catch (CEGUI::Exception& ex)
             {
+#if CEGUI_VERSION_MINOR < 6
+                throw GeneralException(ex.getMessage().c_str());
+#else
                 throw GeneralException(ex.getMessage().c_str(), ex.getLine(),
                     ex.getFileName().c_str(), ex.getName().c_str());
+#endif
             }
 
             state_ = Ready;
@@ -165,8 +169,12 @@ namespace orxonox
         }
         catch (CEGUI::Exception& ex)
         {
+#if CEGUI_VERSION_MINOR < 6
+            throw GeneralException(ex.getMessage().c_str());
+#else
             throw GeneralException(ex.getMessage().c_str(), ex.getLine(),
                 ex.getFileName().c_str(), ex.getName().c_str());
+#endif
         }
     }
 

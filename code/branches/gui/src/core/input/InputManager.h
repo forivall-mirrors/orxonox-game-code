@@ -84,9 +84,9 @@ namespace orxonox
         public OIS::KeyListener, public OIS::MouseListener, public OIS::JoyStickListener
     {
         // --> setConfigValues is private
-        friend ClassIdentifier<InputManager>;
+        friend class ClassIdentifier<InputManager>;
         // let Core class use tick(.)
-        friend Core;
+        friend class Core;
 
     public:
         InputManager ();

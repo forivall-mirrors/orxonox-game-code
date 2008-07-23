@@ -99,7 +99,7 @@ namespace orxonox
             //COUT(1) << this->getFullDescription() << std::endl;
         }
 
-        ~SpecificException() { }
+        ~SpecificException() throw() { }
 
         ExceptionType getType() const { return Type; }
         std::string getTypeName() const
@@ -132,8 +132,8 @@ namespace orxonox
     // define an assert macro that can display a message
 #ifndef NDEBUG
 #define OrxAssert(condition, errorMessage) \
-    condition ? ((void)0) : (orxonox::OutputHandler::getOutStream().setOutputLevel(ORX_ERROR) << errorMessage << std::endl); \
-    assert(condition);
+    condition ? ((void)0) : (void)(orxonox::OutputHandler::getOutStream().setOutputLevel(ORX_ERROR) << errorMessage << std::endl); \
+    assert(condition)
 #else
 #define OrxAssert(condition, errorMessage)  ((void)0)
 #endif

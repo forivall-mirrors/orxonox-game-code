@@ -85,8 +85,8 @@ namespace orxonox
         , stateDetector_(0)
         , stateCalibrator_(0)
         , stateEmpty_(0)
-        , keyboardModifiers_(0)
         , bCalibrating_(false)
+        , keyboardModifiers_(0)
     {
         RegisterRootObject(InputManager);
 

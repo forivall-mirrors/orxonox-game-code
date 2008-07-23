@@ -53,9 +53,9 @@ SET(CMAKE_SHARED_LINKER_FLAGS " --no-undefined")
 SET(CMAKE_MODULE_LINKER_FLAGS " --no-undefined")
 
 #use 'cmake -D make_verb:1 path' to get verbose make output when compiling
-IF (MAKE_VERB)
+#IF (MAKE_VERB)
  SET(CMAKE_VERBOSE_MAKEFILE TRUE)
-ENDIF (MAKE_VERB)
+#ENDIF (MAKE_VERB)
 
 
 ############### Library finding #################
