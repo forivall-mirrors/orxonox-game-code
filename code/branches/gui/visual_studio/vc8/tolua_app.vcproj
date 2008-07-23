@@ -160,8 +160,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generating tolua bind files..."
-						CommandLine="&quot;$(OutDir)\tolua_gen_d.exe&quot; -n tolua -o ../../src/tolua/toluabind_orxonox.cc -H ../../src/tolua/toluabind_orxonox.h ../../src/tolua/tolua.pkg"
-						Outputs="$(RootDir)\src\tolua\toluabind_orxonox.cc; $(RootDir)\src\tolua\toluabind_orxonox.h"
+						CommandLine="&quot;$(OutDir)\tolua_gen_d.exe&quot; -n tolua -o ../../src/tolua/toluabind_orxonox.c -H ../../src/tolua/toluabind_orxonox.h ../../src/tolua/tolua.pkg"
+						Outputs="$(RootDir)\src\tolua\toluabind_orxonox.c; $(RootDir)\src\tolua\toluabind_orxonox.h"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -170,13 +170,13 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Generating tolua bind files..."
-						CommandLine="&quot;$(OutDir)\tolua_gen.exe&quot; -n tolua -o ../../src/tolua/toluabind_orxonox.cc -H ../../src/tolua/toluabind_orxonox.h ../../src/tolua/tolua.pkg"
-						Outputs="$(RootDir)\src\tolua\toluabind_orxonox.cc; $(RootDir)\src\tolua\toluabind_orxonox.h"
+						CommandLine="&quot;$(OutDir)\tolua_gen.exe&quot; -n tolua -o ../../src/tolua/toluabind_orxonox.c -H ../../src/tolua/toluabind_orxonox.h ../../src/tolua/tolua.pkg"
+						Outputs="$(RootDir)\src\tolua\toluabind_orxonox.c; $(RootDir)\src\tolua\toluabind_orxonox.h"
 					/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\tolua\toluabind_orxonox.cc"
+				RelativePath="..\..\src\tolua\toluabind_orxonox.c"
 				>
 			</File>
 		</Filter>
