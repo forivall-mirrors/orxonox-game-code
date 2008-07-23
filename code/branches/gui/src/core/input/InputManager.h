@@ -85,52 +85,49 @@ namespace orxonox
     {
         // --> setConfigValues is private
         friend ClassIdentifier<InputManager>;
+        // let Core class use tick(.)
+        friend Core;
 
-    public: // static functions
-        static bool initialise(const size_t windowHnd, int windowWidth, int windowHeight,
+    public:
+        InputManager ();
+        ~InputManager();
+
+        bool initialise(const size_t windowHnd, int windowWidth, int windowHeight,
                                bool createKeyboard = true, bool createMouse = true, bool createJoySticks = false);
-        static int  numberOfKeyboards();
-        static int  numberOfMice();
-        static int  numberOfJoySticks();
 
-        static void destroy();
+        int  numberOfKeyboards() { return keyboard_ ? 1 : 0; }
+        int  numberOfMice()      { return mouse_    ? 1 : 0; }
+        int  numberOfJoySticks() { return joySticksSize_; }
 
-        //static bool isModifierDown(KeyboardModifier::Enum modifier);
-        //static bool isKeyDown(KeyCode::Enum key);
-        //static const MouseState getMouseState();
-        //static const JoyStickState getJoyStickState(unsigned int ID);
+        void setWindowExtents(const int width, const int height);
 
-        static void setWindowExtents(const int width, const int height);
+        SimpleInputState*   createSimpleInputState  (const std::string& name, int priority);
+        ExtendedInputState* createExtendedInputState(const std::string& name, int priority);
+        InputState*         createInputState(const std::string& type, const std::string &name, int priority);
+        bool destroyState          (const std::string& name);
+        InputState* getState       (const std::string& name);
+        InputState* getCurrentState();
+        bool requestEnterState     (const std::string& name);
+        bool requestLeaveState     (const std::string& name);
 
+        static InputManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; }
+        static InputManager* getInstancePtr() { return singletonRef_s; }
+
+    public: // console commands
         static void storeKeyStroke(const std::string& name);
         static void keyBind(const std::string& command);
-
         static void calibrate();
-
-        static void tick(float dt);
-
-        static SimpleInputState*   createSimpleInputState  (const std::string& name, int priority);
-        static ExtendedInputState* createExtendedInputState(const std::string& name, int priority);
-        static bool destroyState (const std::string& name);
-        static InputState* getState       (const std::string& name);
-        static InputState* getCurrentState();
-        static bool requestEnterState     (const std::string& name);
-        static bool requestLeaveState     (const std::string& name);
 
     private: // functions
         // don't mess with a Singleton
-        InputManager ();
         InputManager (const InputManager&);
-        ~InputManager();
 
         // Intenal methods
-        bool _initialise(const size_t, int, int, bool, bool, bool);
         bool _initialiseKeyboard();
         bool _initialiseMouse();
         bool _initialiseJoySticks();
         void _redimensionLists();
 
-        void _destroy();
         void _destroyKeyboard();
         void _destroyMouse();
         void _destroyJoySticks();
@@ -141,10 +138,10 @@ namespace orxonox
         void _fireAxis(unsigned int iJoyStick, int axis, int value);
         unsigned int _getJoystick(const OIS::JoyStickEvent& arg);
 
-        void _tick(float dt);
-
         void _updateActiveStates();
         bool _configureInputState(InputState* state, const std::string& name, int priority);
+
+        void tick(float dt);
 
         // input events
         bool mousePressed  (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
@@ -157,10 +154,10 @@ namespace orxonox
         bool axisMoved     (const OIS::JoyStickEvent &arg, int axis);
         bool sliderMoved   (const OIS::JoyStickEvent &arg, int id);
         bool povMoved      (const OIS::JoyStickEvent &arg, int id);
+        // don't remove that! Or else add OIS as dependency library to orxonox.
+        bool vector3Moved  (const OIS::JoyStickEvent &arg, int id) { return true; }
 
         void setConfigValues();
-
-        static InputManager& _getInstance();
 
     private: // variables
         OIS::InputManager*                  inputSystem_;          //!< OIS input manager
@@ -203,8 +200,8 @@ namespace orxonox
         std::vector<std::vector<JoyStickButton::Enum> >  joyStickButtonsDown_;
 
         static std::string                  bindingCommmandString_s;
+        static InputManager*                singletonRef_s;
     };
-
 }
 
 #endif /* _InputManager_H__ */

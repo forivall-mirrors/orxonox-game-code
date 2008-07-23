@@ -45,21 +45,23 @@ namespace orxonox
     class _OrxonoxExport InGameConsole : public TickableReal, public ShellListener, public WindowEventListener
     {
     public: // functions
+        InGameConsole();
+        ~InGameConsole();
+
         void initialise();
         void destroy();
         void setConfigValues();
 
         void tick(float dt);
 
-        static InGameConsole& getInstance();
+        static InGameConsole& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+        static InGameConsole* getInstancePtr() { return singletonRef_s; }
 
         static void openConsole();
         static void closeConsole();
 
     private: // functions
-        InGameConsole();
         InGameConsole(const InGameConsole& other) {}
-        ~InGameConsole();
 
         void activate();
         void deactivate();
@@ -106,6 +108,8 @@ namespace orxonox
         float scrollSpeed_;
         float noiseSize_;
         char cursorSymbol_;
+
+        static InGameConsole* singletonRef_s;
     };
 }
 

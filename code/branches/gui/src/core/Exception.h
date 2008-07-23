@@ -39,6 +39,7 @@
 
 #include <string>
 #include <exception>
+#include <cassert>
 #include "core/Debug.h"
 
 namespace orxonox
@@ -127,6 +128,15 @@ namespace orxonox
 
 #define ThrowException(type, description) \
     throw SpecificException<Exception::type>(description, __LINE__, __FILE__, __FUNCTIONNAME__)
+
+    // define an assert macro that can display a message
+#ifndef NDEBUG
+#define OrxAssert(condition, errorMessage) \
+    condition ? ((void)0) : (orxonox::OutputHandler::getOutStream().setOutputLevel(ORX_ERROR) << errorMessage << std::endl); \
+    assert(condition);
+#else
+#define OrxAssert(condition, errorMessage)  ((void)0)
+#endif
 
 }
 

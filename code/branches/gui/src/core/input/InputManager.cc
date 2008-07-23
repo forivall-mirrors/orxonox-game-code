@@ -61,12 +61,15 @@ namespace orxonox
     SetConsoleCommandShortcut(InputManager, storeKeyStroke);
     SetConsoleCommandShortcut(InputManager, calibrate);
 
+    std::string InputManager::bindingCommmandString_s = "";
+    InputManager* InputManager::singletonRef_s = 0;
+
     using namespace InputDevice;
 
-    // ###############################
-    // ###    Internal Methods     ###
-    // ###############################
-    // ###############################
+    // ############################################################
+    // #####                  Initialisation                  #####
+    // ##########                                        ##########
+    // ############################################################
 
     /**
     @brief
@@ -86,36 +89,10 @@ namespace orxonox
         , bCalibrating_(false)
     {
         RegisterRootObject(InputManager);
+
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
     }
-
-    /**
-    @brief
-        Destructor itself only called at the end of the program, after main.
-        Instance gets registered for destruction with atexit(.).
-    */
-    InputManager::~InputManager()
-    {
-        _destroy();
-    }
-
-    /**
-    @brief
-        The one instance of the InputManager is stored in this function.
-        Only for internal use. Public Interface ist static.
-    @return
-        A reference to the only instance of the InputManager
-    */
-    InputManager& InputManager::_getInstance()
-    {
-        static InputManager theOnlyInstance;
-        return theOnlyInstance;
-    }
-
-
-    // ############################################################
-    // #####                  Initialisation                  #####
-    // ##########                                        ##########
-    // ############################################################
 
     /**
     @brief
@@ -128,7 +105,7 @@ namespace orxonox
     @param windowHeight
         The height of the render window
     */
-    bool InputManager::_initialise(const size_t windowHnd, int windowWidth, int windowHeight,
+    bool InputManager::initialise(const size_t windowHnd, int windowWidth, int windowHeight,
                                    bool createKeyboard, bool createMouse, bool createJoySticks)
     {
         if (inputSystem_ == 0)
@@ -430,10 +407,9 @@ namespace orxonox
 
     /**
     @brief
-        Destroys all the created input devices. InputManager will be ready for a
-        new initialisation.
+        Destroys all the created input devices and states.
     */
-    void InputManager::_destroy()
+    InputManager::~InputManager()
     {
         if (inputSystem_)
         {
@@ -549,7 +525,7 @@ namespace orxonox
     @param dt
         Delta time
     */
-    void InputManager::_tick(float dt)
+    void InputManager::tick(float dt)
     {
         if (inputSystem_ == 0)
             return;
@@ -982,77 +958,9 @@ namespace orxonox
 
 
     // ############################################################
-    // #####            Static Interface Methods              #####
+    // #####         Other Public Interface Methods           #####
     // ##########                                        ##########
     // ############################################################
-
-    std::string InputManager::bindingCommmandString_s = "";
-
-    bool InputManager::initialise(const size_t windowHnd, int windowWidth, int windowHeight,
-        bool createKeyboard, bool createMouse, bool createJoySticks)
-    {
-        return _getInstance()._initialise(windowHnd, windowWidth, windowHeight,
-            createKeyboard, createMouse, createJoySticks);
-    }
-
-    int InputManager::numberOfKeyboards()
-    {
-        if (_getInstance().keyboard_ != 0)
-            return 1;
-        else
-            return 0;
-    }
-
-    int InputManager::numberOfMice()
-    {
-        if (_getInstance().mouse_ != 0)
-            return 1;
-        else
-            return 0;
-    }
-
-    int InputManager::numberOfJoySticks()
-    {
-        return _getInstance().joySticksSize_;
-    }
-
-    /*bool InputManager::isKeyDown(KeyCode::Enum key)
-    {
-    if (_getInstance().keyboard_)
-        return _getInstance().keyboard_->isKeyDown((OIS::KeyCode)key);
-    else
-        return false;
-    }*/
-
-    /*bool InputManager::isModifierDown(KeyboardModifier::Enum modifier)
-    {
-    if (_getInstance().keyboard_)
-        return isModifierDown(modifier);
-    else
-        return false;
-    }*/
-
-    /*const MouseState InputManager::getMouseState()
-    {
-    if (_getInstance().mouse_)
-        return _getInstance().mouse_->getMouseState();
-    else
-        return MouseState();
-    }*/
-
-    /*const JoyStickState InputManager::getJoyStickState(unsigned int ID)
-    {
-    if (ID < _getInstance().joySticksSize_)
-        return JoyStickState(_getInstance().joySticks_[ID]->getJoyStickState(), ID);
-    else
-        return JoyStickState();
-    }*/
-
-    void InputManager::destroy()
-    {
-        _getInstance()._destroy();
-    }
-
 
     /**
     @brief
@@ -1065,60 +973,14 @@ namespace orxonox
     */
     void InputManager::setWindowExtents(const int width, const int height)
     {
-        if (_getInstance().mouse_)
+        if (mouse_)
         {
             // Set mouse region (if window resizes, we should alter this to reflect as well)
-            const OIS::MouseState &mouseState = _getInstance().mouse_->getMouseState();
-            mouseState.width  = width;
-            mouseState.height = height;
+            mouse_->getMouseState().width  = width;
+            mouse_->getMouseState().height = height;
         }
     }
 
-    /**
-    @brief
-        Method for easily storing a string with the command executor. It is used by the
-        KeyDetector to get assign commands. The KeyDetector simply executes
-        the command 'storeKeyStroke myName' for each button/axis.
-    @remarks
-        This is only a temporary hack until we thourouhgly support multiple KeyBinders.
-    @param name
-        The name of the button/axis.
-    */
-    void InputManager::storeKeyStroke(const std::string& name)
-    {
-        requestLeaveState("detector");
-        COUT(0) << "Binding string \"" << bindingCommmandString_s << "\" on key '" << name << "'" << std::endl;
-        CommandExecutor::execute("config KeyBinder " + name + " " + bindingCommmandString_s, false);
-    }
-
-    /**
-    @brief
-        Assigns a command string to a key/button/axis. The name is determined via KeyDetector
-        and InputManager::storeKeyStroke(.).
-    @param command
-        Command string that can be executed by the CommandExecutor
-    */
-    void InputManager::keyBind(const std::string& command)
-    {
-        bindingCommmandString_s = command;
-        requestEnterState("detector");
-        COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
-    }
-
-    /**
-    @brief
-        Starts joy stick calibration.
-    */
-    void InputManager::calibrate()
-    {
-        _getInstance().bCalibrating_ = true;
-        requestEnterState("calibrator");
-    }
-
-    void InputManager::tick(float dt)
-    {
-        _getInstance()._tick(dt);
-    }
 
     // ###### InputStates ######
 
@@ -1138,13 +1000,15 @@ namespace orxonox
     {
         if (name == "")
             return false;
-        if (_getInstance().inputStatesByName_.find(name) == _getInstance().inputStatesByName_.end())
+        if (!state)
+            return false;
+        if (inputStatesByName_.find(name) == inputStatesByName_.end())
         {
-            if (_getInstance().inputStatesByPriority_.find(priority)
-                == _getInstance().inputStatesByPriority_.end())
+            if (inputStatesByPriority_.find(priority)
+                == inputStatesByPriority_.end())
             {
-                _getInstance().inputStatesByName_[name] = state;
-                _getInstance().inputStatesByPriority_[priority] = state;
+                inputStatesByName_[name] = state;
+                inputStatesByPriority_[priority] = state;
                 state->setNumOfJoySticks(numberOfJoySticks());
                 state->setName(name);
                 state->setPriority(priority);
@@ -1171,7 +1035,7 @@ namespace orxonox
     SimpleInputState* InputManager::createSimpleInputState(const std::string &name, int priority)
     {
         SimpleInputState* state = new SimpleInputState();
-        if (_getInstance()._configureInputState(state, name, priority))
+        if (_configureInputState(state, name, priority))
             return state;
         else
         {
@@ -1187,7 +1051,25 @@ namespace orxonox
     ExtendedInputState* InputManager::createExtendedInputState(const std::string &name, int priority)
     {
         ExtendedInputState* state = new ExtendedInputState();
-        if (_getInstance()._configureInputState(state, name, priority))
+        if (_configureInputState(state, name, priority))
+            return state;
+        else
+        {
+            delete state;
+            return 0;
+        }
+    }
+
+    /**
+    @brief
+        Returns a new InputState of type 'type' and configures it first.
+    @param type
+        String name of the class (used by the factory)
+    */
+    InputState* InputManager::createInputState(const std::string& type, const std::string &name, int priority)
+    {
+        InputState* state = dynamic_cast<InputState*>(Factory::getIdentifier(type)->fabricate());
+        if (_configureInputState(state, name, priority))
             return state;
         else
         {
@@ -1213,10 +1095,10 @@ namespace orxonox
             COUT(2) << "InputManager: Removing the '" << name << "' state is not allowed!" << std::endl;
             return false;
         }
-        std::map<std::string, InputState*>::iterator it = _getInstance().inputStatesByName_.find(name);
-        if (it != _getInstance().inputStatesByName_.end())
+        std::map<std::string, InputState*>::iterator it = inputStatesByName_.find(name);
+        if (it != inputStatesByName_.end())
         {
-            _getInstance()._destroyState((*it).second);
+            _destroyState((*it).second);
             return true;
         }
         return false;
@@ -1232,8 +1114,8 @@ namespace orxonox
     */
     InputState* InputManager::getState(const std::string& name)
     {
-        std::map<std::string, InputState*>::iterator it = _getInstance().inputStatesByName_.find(name);
-        if (it != _getInstance().inputStatesByName_.end())
+        std::map<std::string, InputState*>::iterator it = inputStatesByName_.find(name);
+        if (it != inputStatesByName_.end())
             return (*it).second;
         else
             return 0;
@@ -1247,7 +1129,7 @@ namespace orxonox
     */
     InputState* InputManager::getCurrentState()
     {
-        return (*_getInstance().activeStates_.rbegin()).second;
+        return (*activeStates_.rbegin()).second;
     }
 
     /**
@@ -1262,10 +1144,10 @@ namespace orxonox
     bool InputManager::requestEnterState(const std::string& name)
     {
         // get pointer from the map with all stored handlers
-        std::map<std::string, InputState*>::const_iterator it = _getInstance().inputStatesByName_.find(name);
-        if (it != _getInstance().inputStatesByName_.end())
+        std::map<std::string, InputState*>::const_iterator it = inputStatesByName_.find(name);
+        if (it != inputStatesByName_.end())
         {
-            _getInstance().stateEnterRequests_.push_back((*it).second);
+            stateEnterRequests_.push_back((*it).second);
             return true;
         }
         return false;
@@ -1282,12 +1164,59 @@ namespace orxonox
     bool InputManager::requestLeaveState(const std::string& name)
     {
         // get pointer from the map with all stored handlers
-        std::map<std::string, InputState*>::const_iterator it = _getInstance().inputStatesByName_.find(name);
-        if (it != _getInstance().inputStatesByName_.end())
+        std::map<std::string, InputState*>::const_iterator it = inputStatesByName_.find(name);
+        if (it != inputStatesByName_.end())
         {
-            _getInstance().stateLeaveRequests_.push_back((*it).second);
+            stateLeaveRequests_.push_back((*it).second);
             return true;
         }
         return false;
+    }
+
+
+    // ############################################################
+    // #####                Console Commands                  #####
+    // ##########                                        ##########
+    // ############################################################
+
+    /**
+    @brief
+        Method for easily storing a string with the command executor. It is used by the
+        KeyDetector to get assign commands. The KeyDetector simply executes
+        the command 'storeKeyStroke myName' for each button/axis.
+    @remarks
+        This is only a temporary hack until we thourouhgly support multiple KeyBinders.
+    @param name
+        The name of the button/axis.
+    */
+    void InputManager::storeKeyStroke(const std::string& name)
+    {
+        getInstance().requestLeaveState("detector");
+        COUT(0) << "Binding string \"" << bindingCommmandString_s << "\" on key '" << name << "'" << std::endl;
+        CommandExecutor::execute("config KeyBinder " + name + " " + bindingCommmandString_s, false);
+    }
+
+    /**
+    @brief
+        Assigns a command string to a key/button/axis. The name is determined via KeyDetector
+        and InputManager::storeKeyStroke(.).
+    @param command
+        Command string that can be executed by the CommandExecutor
+    */
+    void InputManager::keyBind(const std::string& command)
+    {
+        bindingCommmandString_s = command;
+        getInstance().requestEnterState("detector");
+        COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
+    }
+
+    /**
+    @brief
+        Starts joy stick calibration.
+    */
+    void InputManager::calibrate()
+    {
+        getInstance().bCalibrating_ = true;
+        getInstance().requestEnterState("calibrator");
     }
 }

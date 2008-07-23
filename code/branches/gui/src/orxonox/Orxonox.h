@@ -83,10 +83,8 @@ namespace orxonox
       void startRenderLoop();
 
     private:
-      GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
       Level*                startLevel_;    //!< current hard coded default level
       Level*                hud_;           //!< 'level' object fo the HUD
-      Radar*                radar_;         //!< represents the Radar (not the HUD part)
       //audio::AudioManager*  auMan_;         //!< audio manager
       Ogre::Timer*          timer_;         //!< Main loop timer
       bool                  bAbort_;        //!< aborts the render loop if true
@@ -98,6 +96,12 @@ namespace orxonox
 
       // config values
       float                 debugRefreshTime_;
+
+      // By Orxonox managed singleton pointers
+      GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
+      InputManager*         inputManager_;
+      Radar*                radar_;         //!< represents the Radar (not the HUD part)
+      InGameConsole*        console_;
 
       static Orxonox *singletonRef_s;
   };

@@ -36,10 +36,18 @@
 
 #include <assert.h>
 #include "core/Debug.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
+    CreateFactory(ExtendedInputState);
+
     using namespace InputDevice;
+
+    ExtendedInputState::ExtendedInputState()
+    {
+        RegisterObject(ExtendedInputState);
+    }
 
     void ExtendedInputState::numberOfJoySticksChanged(unsigned int n)
     {

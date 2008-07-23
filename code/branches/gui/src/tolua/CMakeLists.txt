@@ -14,7 +14,7 @@ TARGET_LINK_LIBRARIES (tolualib
 
 SET (TOLUAEXE_SRC_FILES
   tolua.c
-  toluabind.c
+  toluabind_orxonox.c
 )
 
 ADD_EXECUTABLE (tolua ${TOLUAEXE_SRC_FILES})

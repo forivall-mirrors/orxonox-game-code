@@ -195,7 +195,7 @@ namespace orxonox
     void Core::tick(float dt)
     {
         TclThreadManager::getInstance().tick(dt);
-        InputManager::tick(dt);
+        InputManager::getInstance().tick(dt);
     }
 }
 

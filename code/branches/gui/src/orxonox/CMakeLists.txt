@@ -7,6 +7,11 @@ SET( ORXONOX_SRC_FILES
   RadarViewable.cc
   Settings.cc
 
+  gui/GUIManager.cc
+  gui/OgreCEGUIRenderer.cpp
+  gui/OgreCEGUIResourceProvider.cpp
+  gui/OgreCEGUITexture.cpp
+
   overlays/OrxonoxOverlay.cc
   overlays/OverlayGroup.cc
   overlays/OverlayText.cc

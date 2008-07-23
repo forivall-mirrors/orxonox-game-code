@@ -37,9 +37,12 @@
 #include <assert.h>
 #include "core/Debug.h"
 #include "core/Executor.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
+    CreateFactory(SimpleInputState);
+
     using namespace InputDevice;
 
     SimpleInputState::SimpleInputState()
@@ -47,6 +50,7 @@ namespace orxonox
         , mouseHandler_(0)
         , joyStickHandlerAll_(0)
     {
+        RegisterObject(SimpleInputState);
     }
 
     void SimpleInputState::numberOfJoySticksChanged(unsigned int n)

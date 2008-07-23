@@ -42,10 +42,8 @@
 
 namespace orxonox
 {
-
     class _CoreExport SimpleInputState : public InputState
     {
-
     public:
         SimpleInputState();
         ~SimpleInputState() { }

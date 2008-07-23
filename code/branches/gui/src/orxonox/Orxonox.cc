@@ -103,20 +103,22 @@ namespace orxonox
    * Create a new instance of Orxonox. Avoid doing any actual work here.
    */
   Orxonox::Orxonox()
-    : ogre_(0)
-    , startLevel_(0)
+    : startLevel_(0)
     , hud_(0)
-    , radar_(0)
     //, auMan_(0)
     , timer_(0)
     , bAbort_(false)
     , timefactor_(1.0f)
     , mode_(GameMode::GM_Unspecified)
     , debugRefreshTime_(0.0f)
+    , ogre_(0)
+    , inputManager_(0)
+    , radar_(0)
   {
     RegisterRootObject(Orxonox);
 
-    assert(singletonRef_s == 0);
+    //assert(singletonRef_s == 0);
+    OrxAssert(singletonRef_s == 0, "asdfasdfasdfasdfblahblah");
     singletonRef_s = this;
   }
 
@@ -126,7 +128,10 @@ namespace orxonox
   Orxonox::~Orxonox()
   {
     // keep in mind: the order of deletion is very important!
-    Loader::unload();
+    if (this->timer_)
+      delete this->timer_;
+
+    Loader::unload(startLevel_);
     if (this->startLevel_)
       delete this->startLevel_;
 
@@ -137,13 +142,14 @@ namespace orxonox
     if (this->radar_)
       delete this->radar_;
 
-    Loader::close();
     //if (this->auMan_)
     //  delete this->auMan_;
-    InGameConsole::getInstance().destroy();
-    if (this->timer_)
-      delete this->timer_;
-    InputManager::destroy();
+
+    if (this->console_)
+      delete this->console_;
+
+    if (inputManager_)
+      delete inputManager_;
 
     if (this->ogre_)
       delete ogre_;
@@ -152,6 +158,12 @@ namespace orxonox
       network::Client::destroySingleton();
     if (server_g)
       delete network::Server::getSingleton();
+
+    // this call will delete every BaseObject!
+    // But currently this will call methods of objects that exist no more
+    // The only 'memory leak' is the ParticleSpawer. They would be deleted here
+    // and call a sceneNode method that has already been destroy by the corresponding space ship.
+    //Loader::close();
 
     singletonRef_s = 0;
   }
@@ -246,14 +258,16 @@ namespace orxonox
 
           // Calls the InputManager which sets up the input devices.
           // The render window width and height are used to set up the mouse movement.
-          InputManager::initialise(ogre_->getWindowHandle(),
+          inputManager_ = new InputManager();
+          inputManager_->initialise(ogre_->getWindowHandle(),
                 ogre_->getWindowWidth(), ogre_->getWindowHeight(), true, true, true);
           KeyBinder* keyBinder = new KeyBinder();
           keyBinder->loadBindings();
-          InputManager::createSimpleInputState("game", 20)->setHandler(keyBinder);
+          inputManager_->createSimpleInputState("game", 20)->setHandler(keyBinder);
 
           // Load the InGameConsole
-          InGameConsole::getInstance().initialise();
+          console_ = new InGameConsole();
+          console_->initialise();
 
           // load the CEGUI interface
           GUIManager::getInstance().initialise();
@@ -341,7 +355,7 @@ namespace orxonox
       
       if (success)
       {
-        InputManager::requestEnterState("game");
+        InputManager::getInstance().requestEnterState("game");
         this->mode_ = mode;
       }
 

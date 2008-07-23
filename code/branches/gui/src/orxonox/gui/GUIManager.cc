@@ -116,7 +116,7 @@ namespace orxonox
                 tolua_Orxonox_open(this->scriptModule_->getLuaState());
 
                 // register us as input handler
-                SimpleInputState* state = InputManager::createSimpleInputState("gui", 30);
+                SimpleInputState* state = InputManager::getInstance().createSimpleInputState("gui", 30);
                 state->setHandler(this);
                 state->setJoyStickHandler(new EmptyHandler());
 
@@ -202,7 +202,7 @@ namespace orxonox
 
                 this->scriptModule_->executeScriptGlobal("showMainMenu");
 
-                InputManager::requestEnterState("gui");
+                InputManager::getInstance().requestEnterState("gui");
 
                 this->state_ = OnDisplay;
             }
@@ -228,7 +228,7 @@ namespace orxonox
         //this->viewport_->setCamera(0);
         this->guiRenderer_->setTargetSceneManager(0);
         this->state_ = Ready;
-        InputManager::requestLeaveState("gui");
+        InputManager::getInstance().requestLeaveState("gui");
     }
 
     void GUIManager::mouseButtonPressed(MouseButton::Enum id)

@@ -39,16 +39,19 @@
 #include <string>
 #include <vector>
 #include "core/Executor.h"
+#include "core/BaseObject.h"
+#include "core/CoreIncludes.h"
 #include "InputInterfaces.h"
 
 namespace orxonox
 {
-    class _CoreExport InputState
+    class _CoreExport InputState : public BaseObject
     {
         friend class InputManager;
 
     public:
-        InputState() : priority_(0), executorOnEnter_(0), executorOnLeave_(0) { }
+        InputState() : priority_(0), executorOnEnter_(0), executorOnLeave_(0)
+        { RegisterObject(InputState); }
         virtual ~InputState() { }
 
         const std::string& getName() const { return name_; }

@@ -47,7 +47,7 @@ namespace orxonox
     class _CoreExport ExtendedInputState : public InputState
     {
     public:
-        ExtendedInputState() { }
+        ExtendedInputState();
         ~ExtendedInputState() { }
 
         bool addKeyHandler        (KeyHandler* handler);
