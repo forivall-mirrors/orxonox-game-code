@@ -117,6 +117,9 @@ namespace orxonox
     class OrxonoxOverlay;
     class OverlayGroup;
     class OverlayText;
+
+    //gui
+    class GUIManager;
 }
 
 namespace Ogre

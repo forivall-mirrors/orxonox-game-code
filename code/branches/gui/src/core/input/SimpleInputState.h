@@ -44,10 +44,10 @@ namespace orxonox
 {
     class _CoreExport SimpleInputState : public InputState
     {
-    public:
-        SimpleInputState();
-        ~SimpleInputState() { }
+        friend class InputManager;
+        friend class ClassFactory<SimpleInputState>;
 
+    public:
         void setKeyHandler        (KeyHandler* handler) { keyHandler_ = handler; update(); }
         void setMouseHandler      (MouseHandler* handler) { mouseHandler_ = handler; update(); }
         bool setJoyStickHandler   (JoyStickHandler* handler, unsigned int joyStickID);
@@ -56,6 +56,9 @@ namespace orxonox
         void removeAndDestroyAllHandlers();
 
     private:
+        SimpleInputState();
+        ~SimpleInputState() { }
+
         void tickInput(float dt);
         void tickInput(float dt, unsigned int device);
 

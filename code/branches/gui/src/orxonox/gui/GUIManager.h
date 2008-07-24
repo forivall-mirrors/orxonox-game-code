@@ -47,6 +47,7 @@ namespace CEGUI
     class OgreCEGUIRenderer;
     class LuaScriptModule;
 }
+struct lua_State;
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -67,6 +68,9 @@ namespace orxonox // tolua_export
             OnDisplay
         };
 
+        GUIManager();
+        ~GUIManager();
+
         bool initialise();
         void tick(float dt);
         void showGUI(const std::string& name, Ogre::SceneManager* sceneManager);// bool showBackground); // tolua_export
@@ -74,16 +78,16 @@ namespace orxonox // tolua_export
 
         Ogre::Camera* getCamera() { return this->backgroundCamera_; }
 
-        static GUIManager& getInstance(); // tolua_export
         static void showGUI_s(const std::string& name, Ogre::SceneManager* sceneManager)//bool showBackground)
         {
             getInstance().showGUI(name, sceneManager);
         }
 
+        static GUIManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; } // tolua_export
+        static GUIManager* getInstancePtr() { return singletonRef_s; }
+
     private:
-        GUIManager();
         GUIManager(const GUIManager& instance);
-        ~GUIManager();
 
         void keyPressed (const KeyEvent& evt)
         { guiSystem_->injectKeyDown(evt.key); guiSystem_->injectChar(evt.text); }
@@ -118,11 +122,13 @@ namespace orxonox // tolua_export
         CEGUI::LuaScriptModule*   scriptModule_;
         CEGUI::System*            guiSystem_;
         CEGUI::Imageset*          backgroundImage_;
+        lua_State*                luaState_;
 
         State state_;
 
-
         static CEGUI::MouseButton convertButton(MouseButton::Enum button);
+
+        static GUIManager*        singletonRef_s;
     }; // tolua_export
 
     inline void GUIManager::tick(float dt)

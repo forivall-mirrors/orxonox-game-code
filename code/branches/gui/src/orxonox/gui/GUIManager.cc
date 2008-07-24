@@ -57,6 +57,8 @@ namespace orxonox
 {
     SetConsoleCommandShortcut(GUIManager, showGUI_s).setKeybindMode(KeybindMode::OnPress);
 
+    GUIManager* GUIManager::singletonRef_s = 0;
+
     GUIManager::GUIManager()
         //: emptySceneManager_(0)
         : backgroundSceneManager_(0)
@@ -70,11 +72,41 @@ namespace orxonox
         , guiSystem_(0)
         , state_(Uninitialised)
     {
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
     }
 
     GUIManager::~GUIManager()
     {
-        // TODO: destruct at least something
+        if (backgroundCamera_)
+            backgroundSceneManager_->destroyCamera(backgroundCamera_);
+
+        if (backgroundSceneManager_)
+            Ogre::Root::getSingleton().destroySceneManager(backgroundSceneManager_);
+
+        InputManager::getInstance().destroyState("gui");
+
+        if (guiSystem_)
+            delete guiSystem_;
+
+        if (scriptModule_)
+        {
+            // destroy our own tolua interfaces
+	        //lua_pushnil(luaState_);
+	        //lua_setglobal(luaState_, "Orxonox");
+	        //lua_pushnil(luaState_);
+	        //lua_setglobal(luaState_, "Core");
+            // TODO: deleting the script module fails an assertation.
+            // However there is not much we can do about it since it occurs too when
+            // we don't open Core or Orxonox. Might be a CEGUI issue.
+            // The memory leak is not a problem anyway..
+            //delete scriptModule_;
+        }
+
+        if (guiRenderer_)
+            delete guiRenderer_;
+
+        singletonRef_s = 0;
     }
 
     bool GUIManager::initialise()
@@ -103,6 +135,7 @@ namespace orxonox
                 
                 // setup scripting
                 this->scriptModule_ = new LuaScriptModule();
+                this->luaState_ = this->scriptModule_->getLuaState();
 
                 // create the CEGUI system singleton
                 this->guiSystem_ = new System(this->guiRenderer_, this->resourceProvider_, 0, this->scriptModule_);
@@ -265,18 +298,6 @@ namespace orxonox
         }
     }
 
-
-    /**
-    @brief
-        Returns a unique instance of GUIManager.
-    @return
-        The instance
-    */
-    GUIManager& GUIManager::getInstance()
-    {
-        static GUIManager instance;
-        return instance;
-    }
 
     inline CEGUI::MouseButton GUIManager::convertButton(MouseButton::Enum button)
     {

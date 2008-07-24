@@ -428,8 +428,8 @@ namespace orxonox
                 {
                     (*rit).second->onLeave();
                 }
-                activeStates_.clear();
-                _updateActiveStates();
+                //activeStates_.clear();
+                //_updateActiveStates();
 
                 // destroy all input states
                 while (inputStatesByPriority_.size() > 0)
@@ -437,9 +437,9 @@ namespace orxonox
                     _destroyState((*inputStatesByPriority_.rbegin()).second);
                 }
 
-                stateEmpty_ = 0;
-                stateCalibrator_ = 0;
-                stateDetector_ = 0;
+                //stateEmpty_ = 0;
+                //stateCalibrator_ = 0;
+                //stateDetector_ = 0;
 
                 // destroy the devices
                 _destroyKeyboard();
@@ -447,10 +447,10 @@ namespace orxonox
                 _destroyJoySticks();
 
                 // 0 joy sticks now
-                _redimensionLists();
+                //_redimensionLists();
 
                 OIS::InputManager::destroyInputSystem(inputSystem_);
-                inputSystem_ = 0;
+                //inputSystem_ = 0;
 
                 CCOUT(3) << "Destroying done." << std::endl;
             }
@@ -508,6 +508,12 @@ namespace orxonox
     void InputManager::_destroyState(InputState* state)
     {
         assert(state);
+        std::map<int, InputState*>::iterator it = this->activeStates_.find(state->getPriority());
+        if (it != this->activeStates_.end())
+        {
+            this->activeStates_.erase(it);
+            _updateActiveStates();
+        }
         inputStatesByPriority_.erase(state->getPriority());
         inputStatesByName_.erase(state->getName());
         delete state;

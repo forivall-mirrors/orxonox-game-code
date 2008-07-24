@@ -102,6 +102,7 @@ namespace orxonox
       InputManager*         inputManager_;
       Radar*                radar_;         //!< represents the Radar (not the HUD part)
       InGameConsole*        console_;
+      GUIManager*           guiManager_;
 
       static Orxonox *singletonRef_s;
   };

@@ -114,6 +114,8 @@ namespace orxonox
     , ogre_(0)
     , inputManager_(0)
     , radar_(0)
+    , console_(0)
+    , guiManager_(0)
   {
     RegisterRootObject(Orxonox);
 
@@ -141,6 +143,9 @@ namespace orxonox
 
     if (this->radar_)
       delete this->radar_;
+
+    if (this->guiManager_)
+      delete guiManager_;
 
     //if (this->auMan_)
     //  delete this->auMan_;
@@ -270,7 +275,8 @@ namespace orxonox
           console_->initialise();
 
           // load the CEGUI interface
-          GUIManager::getInstance().initialise();
+          guiManager_ = new GUIManager();
+          guiManager_->initialise();
         }
 
         bool showGUI = true;

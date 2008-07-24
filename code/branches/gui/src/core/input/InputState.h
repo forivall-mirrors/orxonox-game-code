@@ -50,10 +50,6 @@ namespace orxonox
         friend class InputManager;
 
     public:
-        InputState() : priority_(0), executorOnEnter_(0), executorOnLeave_(0)
-        { RegisterObject(InputState); }
-        virtual ~InputState() { }
-
         const std::string& getName() const { return name_; }
         int getPriority()            const { return priority_; }
 
@@ -92,6 +88,10 @@ namespace orxonox
         virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
 
     protected:
+        InputState() : priority_(0), executorOnEnter_(0), executorOnLeave_(0)
+        { RegisterObject(InputState); }
+        virtual ~InputState() { }
+
         virtual void numberOfJoySticksChanged(unsigned int n) = 0;
         void setInputDeviceEnabled(unsigned int device, bool bEnabled)
         {
