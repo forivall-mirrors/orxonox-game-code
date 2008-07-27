@@ -204,6 +204,7 @@
 							Name="VCCustomBuildTool"
 							Description="Generating tolua bind files..."
 							CommandLine="&quot;$(OutDir)\tolua_app_d.exe&quot; -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg&#x0D;&#x0A;"
+							AdditionalDependencies="$(RootDir)\src\core\Script.h; $(RootDir)\src\core\CommandExecutor.h"
 							Outputs="$(RootDir)\src\core\tolua\tolua_bind.cc; $(RootDir)\src\core\tolua\tolua_bind.h"
 						/>
 					</FileConfiguration>
@@ -415,10 +416,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\Script.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Script_clean.h"
 				>
 			</File>
 			<File

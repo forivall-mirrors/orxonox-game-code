@@ -72,7 +72,11 @@ namespace orxonox // tolua_export
         ~GUIManager();
 
         bool initialise();
-        void tick(float dt);
+        void tick(float dt)
+        {
+            assert(guiSystem_);
+            guiSystem_->injectTimePulse(dt);
+        }
         void showGUI(const std::string& name, Ogre::SceneManager* sceneManager);// bool showBackground); // tolua_export
         void _hideGUI(); // tolua_export
 
@@ -130,12 +134,6 @@ namespace orxonox // tolua_export
 
         static GUIManager*        singletonRef_s;
     }; // tolua_export
-
-    inline void GUIManager::tick(float dt)
-    {
-        assert(guiSystem_);
-        guiSystem_->injectTimePulse(dt);
-    }
 } // tolua_export
 
 #endif /* _GUIManager_H__ */
