@@ -63,7 +63,7 @@ namespace orxonox
     Settings::Settings()
     {
         RegisterRootObject(Settings);
-        gameMode_ = GameMode::GM_Unspecified;
+        gameMode_ = GameMode::GM_None;
         setConfigValues();
     }
 

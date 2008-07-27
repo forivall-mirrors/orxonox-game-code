@@ -26,19 +26,20 @@ TARGET_LINK_LIBRARIES (toluagen
   m
 )
 
-IF (Lua_VERSION == 5.1)
-  SET (TOLUA_PACKAGE "../../src/tolua/tolua-5.1.pkg")
-ELSE
-  SET (TOLUA_PACKAGE "../../src/tolua/tolua-5.0.pkg")
-ENDIF (Lua_VERSION == 5.1)
 
+IF (Lua_VERSION EQUAL 5.0)
+  SET (TOLUA_PACKAGE "../../src/tolua/tolua-5.0.pkg")
+ELSE (Lua_VERSION EQUAL 5.0)
+  SET (TOLUA_PACKAGE "../../src/tolua/tolua-5.1.pkg")
+ENDIF (Lua_VERSION EQUAL 5.0)
+
+GET_TARGET_PROPERTY(TOLUAGEN_EXE toluagen LOCATION)
 ADD_CUSTOM_COMMAND(
-  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/toluabind_orxonox.cc
-  COMMAND toluagen -n tolua -o ../../src/tolua/toluabind_orxonox.cc -H ../../src/tolua/toluabind_orxonox.h TOLUA_PACKAGE
+  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/toluabind_orxonox.c
+  COMMAND ${TOLUAGEN_EXE} -n tolua -o ../../src/tolua/toluabind_orxonox.c -H ../../src/tolua/toluabind_orxonox.h ${TOLUA_PACKAGE}
   DEPENDS toluagen
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
-
 
 SET (TOLUAEXE_SRC_FILES
   tolua.c

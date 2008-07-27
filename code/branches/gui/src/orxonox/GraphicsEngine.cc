@@ -292,9 +292,10 @@ namespace orxonox
         {
             this->renderWindow_ = root_->initialise(true, "OrxonoxV2");
         }
-        catch (...)
+        catch (std::exception& ex)
         {
             COUT(2) << "Error: There was an exception when initialising Ogre Root." << std::endl;
+			COUT(1) << ex.what() << std::endl;
             return false;
         }
 
