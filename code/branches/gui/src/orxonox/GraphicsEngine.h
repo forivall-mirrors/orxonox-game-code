@@ -46,7 +46,6 @@
 #include <OgreWindowEventUtilities.h>
 #include "core/OrxonoxClass.h"
 
-
 namespace orxonox
 {
     /**
@@ -61,7 +60,7 @@ namespace orxonox
         void setConfigValues();
         void setup();
         void declareRessourceLocations();
-        bool loadRenderer();
+        void loadRenderer();
         bool initialiseResources();
         bool createNewScene();
 

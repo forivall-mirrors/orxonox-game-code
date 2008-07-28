@@ -29,45 +29,27 @@
 /**
  @file
  @brief
-    Functions for using sleep() and usleep() under windows.
+    Defines fixed with integers
  */
 
-#ifndef _Sleep_H__
-#define _Sleep_H__
+#ifndef _Integers_H__
+#define _Integers_H__
 
 #include "OrxonoxPlatform.h"
 
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
-
-#ifndef WIN32_LEAN_AND_MEAN
-# define WIN32_LEAN_AND_MEAN
-#endif
-#include <windows.h>
-
-inline void usleep(DWORD dwMicroseconds)
-{
-  Sleep(dwMicroseconds / 1000);
-}
-
-inline void msleep(DWORD dwMilliseconds)
-{
-  Sleep(dwMilliseconds);
-}
-
-inline void sleep(DWORD dwSeconds)
-{
-  Sleep(dwSeconds * 1000);
-}
-
-#else /* Linux/Apple */
-
-#include <unistd.h>
-
-inline void msleep(unsigned long msec)
-{
-  usleep(msec * 1000);
-}
-
+/* Define fixed with integers
+ * Note: This is not in a namespace to make it available everywhere!*/
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+typedef __int8            int8_t;
+typedef __int16           int16_t;
+typedef __int32           int32_t;
+typedef __int64           int64_t;
+typedef unsigned __int8   uint8_t;
+typedef unsigned __int16  uint16_t;
+typedef unsigned __int32  uint32_t;
+typedef unsigned __int64  uint64_t;
+#elif ORXONOX_COMPILER == ORXONOX_COMPILER_GCC
+# include "inttypes.h"
 #endif
 
-#endif /* _Sleep_H__ */
+#endif /* _Integers_H__ */

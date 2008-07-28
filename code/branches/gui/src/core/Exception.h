@@ -52,6 +52,7 @@ namespace orxonox
             General,
             FileNotFound,
             PluginsNotFound,
+            InitialisationFailed,
             NotImplemented
         };
 
@@ -113,6 +114,8 @@ namespace orxonox
                 return "FileNotFound";
             case Exception::PluginsNotFound:
                 return "PluginsNotFound";
+            case Exception::InitialisationFailed:
+                return "InitialisationFailed";
             case Exception::NotImplemented:
                 return "NotImplemented";
             default:
@@ -124,6 +127,7 @@ namespace orxonox
     typedef SpecificException<Exception::General> GeneralException;
     typedef SpecificException<Exception::FileNotFound> FileNotFoundException;
     typedef SpecificException<Exception::PluginsNotFound> PluginsNotFoundException;
+    typedef SpecificException<Exception::InitialisationFailed> InitialisationFailedException;
     typedef SpecificException<Exception::NotImplemented> NotImplementedException;
 
 #define ThrowException(type, description) \

@@ -266,7 +266,7 @@ namespace orxonox
         }
     }
 
-    bool GraphicsEngine::loadRenderer()
+    void GraphicsEngine::loadRenderer()
     {
         CCOUT(4) << "Configuring Renderer" << std::endl;
 
@@ -285,32 +285,18 @@ namespace orxonox
 
         if (!root_->restoreConfig())
             if (!root_->showConfigDialog())
-                return false;
+                ThrowException(InitialisationFailed, "Could not show Ogre configuration dialogue.");
 
         CCOUT(4) << "Creating render window" << std::endl;
-        try
-        {
-            this->renderWindow_ = root_->initialise(true, "OrxonoxV2");
-        }
-        catch (std::exception& ex)
-        {
-            COUT(2) << "Error: There was an exception when initialising Ogre Root." << std::endl;
-			COUT(1) << ex.what() << std::endl;
-            return false;
-        }
 
-        if (!root_->isInitialised())
-        {
-            CCOUT(2) << "Error: Initialising Ogre root object failed." << std::endl;
-            return false;
-        }
+        this->renderWindow_ = root_->initialise(true, "OrxonoxV2");
+
         Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, this);
+
         //Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
-        // create a full screen viewport
+        // create a full screen default viewport
         this->viewport_ = this->renderWindow_->addViewport(0, 0);
-
-        return true;
     }
 
     bool GraphicsEngine::initialiseResources()

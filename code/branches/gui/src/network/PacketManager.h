@@ -34,6 +34,7 @@
 #include <string>
 #include <enet/enet.h>
 
+#include "util/Integers.h"
 #include "core/CoreIncludes.h"
 
 #define CLIENTID_CLIENT -1
