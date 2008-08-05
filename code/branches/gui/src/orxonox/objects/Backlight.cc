@@ -57,8 +57,8 @@ namespace orxonox
         this->billboard_.setBillboardSet("Flares/backlightflare");
         this->attachObject(this->billboard_.getBillboardSet());
 
-        this->ribbonTrail_ = GraphicsEngine::getSingleton().getLevelSceneManager()->createRibbonTrail(this->getName() + "RibbonTrail");
-        this->ribbonTrailNode_ = GraphicsEngine::getSingleton().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName() + "RibbonTrailNode");
+        this->ribbonTrail_ = GraphicsEngine::getInstance().getLevelSceneManager()->createRibbonTrail(this->getName() + "RibbonTrail");
+        this->ribbonTrailNode_ = GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName() + "RibbonTrailNode");
         this->ribbonTrailNode_->attachObject(this->ribbonTrail_);
         this->ribbonTrail_->addNode(this->getNode());
 
@@ -75,8 +75,8 @@ namespace orxonox
         if (this->isInitialized())
         {
             this->detachObject(this->billboard_.getBillboardSet());
-            GraphicsEngine::getSingleton().getLevelSceneManager()->destroySceneNode(this->getName() + "RibbonTrailNode");
-            GraphicsEngine::getSingleton().getLevelSceneManager()->destroyRibbonTrail(this->ribbonTrail_);
+            GraphicsEngine::getInstance().getLevelSceneManager()->destroySceneNode(this->getName() + "RibbonTrailNode");
+            GraphicsEngine::getInstance().getLevelSceneManager()->destroyRibbonTrail(this->ribbonTrail_);
         }
     }
 

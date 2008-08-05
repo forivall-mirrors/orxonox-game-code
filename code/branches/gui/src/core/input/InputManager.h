@@ -101,9 +101,19 @@ namespace orxonox
 
         void setWindowExtents(const int width, const int height);
 
-        SimpleInputState*   createSimpleInputState  (const std::string& name, int priority);
-        ExtendedInputState* createExtendedInputState(const std::string& name, int priority);
-        InputState*         createInputState(const std::string& type, const std::string &name, int priority);
+        template <class T>
+        T* createInputState(const std::string& name, int priority)
+        {
+            T* state = new T;
+            if (_configureInputState(state, name, priority))
+                return state;
+            else
+            {
+                delete state;
+                return 0;
+            }
+        }
+
         bool destroyState          (const std::string& name);
         InputState* getState       (const std::string& name);
         InputState* getCurrentState();

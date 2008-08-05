@@ -64,7 +64,7 @@ namespace orxonox
     }
 
     bool Ambient::create(){
-      GraphicsEngine::getSingleton().getLevelSceneManager()->setAmbientLight(ambientLight_);
+      GraphicsEngine::getInstance().getLevelSceneManager()->setAmbientLight(ambientLight_);
       return Synchronisable::create();
     }
     
@@ -75,7 +75,7 @@ namespace orxonox
 
     void Ambient::setAmbientLight(const ColourValue& colour)
     {
-        GraphicsEngine::getSingleton().getLevelSceneManager()->setAmbientLight(colour);
+        GraphicsEngine::getInstance().getLevelSceneManager()->setAmbientLight(colour);
       ambientLight_=colour;	
     }
 

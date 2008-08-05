@@ -63,6 +63,8 @@
 
 namespace orxonox
 {
+    SetConsoleCommand(GraphicsEngine, printScreen, true).setKeybindMode(KeybindMode::OnPress);
+
     GraphicsEngine* GraphicsEngine::singletonRef_s = 0;
 
     /**
@@ -71,7 +73,7 @@ namespace orxonox
     @return
         The only instance of GraphicsEngine.
     */
-    /*static*/ GraphicsEngine& GraphicsEngine::getSingleton()
+    /*static*/ GraphicsEngine& GraphicsEngine::getInstance()
     {
         assert(singletonRef_s);
         return *singletonRef_s;
@@ -127,9 +129,6 @@ namespace orxonox
         Ogre::WindowEventUtilities::removeWindowEventListener(this->renderWindow_, this);
         if (this->root_)
             delete this->root_;
-        this->root_ = 0;
-        this->levelSceneManager_ = 0;
-        this->renderWindow_ = 0;
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
         // delete the ogre log and the logManager (since we have created it).
@@ -153,7 +152,7 @@ namespace orxonox
     {
         CCOUT(3) << "Setting up..." << std::endl;
 
-        // TODO: LogManager doesn't work on linux platform. The why is yet unknown.
+        // TODO: LogManager doesn't work on oli platform. The why is yet unknown.
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
         // create a new logManager
         Ogre::LogManager* logger = new Ogre::LogManager();
@@ -192,18 +191,20 @@ namespace orxonox
 
         root_ = new Ogre::Root(ogrePluginsFile_, ogreConfigFile_, ogreLogFile_);
 
-        if (!root_->getInstalledPlugins().size())
-        {
-            ThrowException(PluginsNotFound, "No Ogre plugins declared. Cannot load Ogre.");
-        }
+        // We don't need plugins for the dedicated..
+        //if (!root_->getInstalledPlugins().size() > 0)
+        //{
+        //    ThrowException(PluginsNotFound, "No Ogre plugins declared. Cannot load Ogre.");
+        //}
 
-#if 0 // Ogre 1.4.3 doesn't support setDebugOutputEnabled(.)
-//#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
+#if 0 // Ogre 1.4.3 doesn't yet support setDebugOutputEnabled(.)
+#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
         // tame the ogre ouput so we don't get all the mess in the console
         Ogre::Log* defaultLog = Ogre::LogManager::getSingleton().getDefaultLog();
         defaultLog->setDebugOutputEnabled(false);
         defaultLog->setLogDetail(Ogre::LL_BOREME);
         defaultLog->addListener(this);
+#endif
 #endif
 
         CCOUT(4) << "Creating Ogre Root done" << std::endl;
@@ -232,9 +233,9 @@ namespace orxonox
         {
             cf.load(Settings::getDataPath() + resourceFile_);
         }
-        catch (Ogre::Exception& ex)
+        catch (...)
         {
-            COUT(1) << ex.getFullDescription() << std::endl;
+            //COUT(1) << ex.getFullDescription() << std::endl;
             COUT(0) << "Have you forgotten to set the data path in orxnox.ini?" << std::endl;
             throw;
         }
@@ -299,7 +300,7 @@ namespace orxonox
         this->viewport_ = this->renderWindow_->addViewport(0, 0);
     }
 
-    bool GraphicsEngine::initialiseResources()
+    void GraphicsEngine::initialiseResources()
     {
         CCOUT(4) << "Initialising resources" << std::endl;
         //TODO: Do NOT load all the groups, why are we doing that? And do we really do that? initialise != load...
@@ -312,30 +313,26 @@ namespace orxonox
             Ogre::ResourceGroupManager::getSingleton().loadResourceGroup(str[i]);
             }*/
         }
-        catch (Ogre::Exception& e)
+        catch (...)
         {
-            CCOUT(2) << "Error: There was an Error when initialising the resources." << std::endl;
-            CCOUT(2) << "ErrorMessage: " << e.getFullDescription() << std::endl;
-            return false;
+            CCOUT(2) << "Error: There was a serious error when initialising the resources." << std::endl;
+            throw;
         }
-        return true;
     }
 
     /**
     @brief
         Creates the SceneManager
     */
-    bool GraphicsEngine::createNewScene()
+    void GraphicsEngine::createNewScene()
     {
         CCOUT(4) << "Creating new SceneManager..." << std::endl;
         if (levelSceneManager_)
         {
             CCOUT(2) << "SceneManager already exists! Skipping." << std::endl;
-            return false;
         }
         this->levelSceneManager_ = this->root_->createSceneManager(Ogre::ST_GENERIC, "LevelSceneManager");
-        CCOUT(3) << "Created SceneManager: " << levelSceneManager_ << std::endl;
-        return true;
+        CCOUT(3) << "Created SceneManager: " << levelSceneManager_->getName() << std::endl;
     }
 
     /**
@@ -486,4 +483,12 @@ namespace orxonox
         CommandExecutor::execute("exit", false);
     }
 
+
+    /*static*/ void GraphicsEngine::printScreen()
+    {
+        if (getInstance().renderWindow_)
+        {
+            getInstance().renderWindow_->writeContentsToTimestampedFile("shot_", ".jpg");
+        }
+    }
 }

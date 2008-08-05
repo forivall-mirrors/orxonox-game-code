@@ -41,14 +41,6 @@
 #include <CEGUISystem.h>
 #include "core/input/InputInterfaces.h"
 
-// forward declarations
-namespace CEGUI
-{
-    class OgreCEGUIRenderer;
-    class LuaScriptModule;
-}
-struct lua_State;
-
 namespace orxonox // tolua_export
 { // tolua_export
     /**

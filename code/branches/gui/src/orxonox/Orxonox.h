@@ -83,12 +83,12 @@ namespace orxonox
       void startRenderLoop();
 
     private:
-      Level*                startLevel_;    //!< current hard coded default level
-      Level*                hud_;           //!< 'level' object fo the HUD
-      //audio::AudioManager*  auMan_;         //!< audio manager
-      Ogre::Timer*          timer_;         //!< Main loop timer
-      bool                  bAbort_;        //!< aborts the render loop if true
-      float                 timefactor_;    //!< A factor to change the gamespeed
+      Level*                startLevel_;       //!< current hard coded default level
+      Level*                hud_;              //!< 'level' object fo the HUD
+      //audio::AudioManager*  auMan_;            //!< audio manager
+      Ogre::Timer*          timer_;            //!< Main loop timer
+      bool                  bAbort_;           //!< aborts the render loop if true
+      float                 timefactor_;       //!< A factor to change the gamespeed
 
       // this is used to identify the mode (server/client/...) we're in
       GameMode              mode_;
@@ -98,9 +98,9 @@ namespace orxonox
       float                 debugRefreshTime_;
 
       // By Orxonox managed singleton pointers
-      GraphicsEngine*       ogre_;          //!< our dearest graphics engine <3
+      GraphicsEngine*       graphicsEngine_;   //!< our dearest graphics engine <3
       InputManager*         inputManager_;
-      Radar*                radar_;         //!< represents the Radar (not the HUD part)
+      Radar*                radar_;            //!< represents the Radar (not the HUD part)
       InGameConsole*        console_;
       GUIManager*           guiManager_;
 

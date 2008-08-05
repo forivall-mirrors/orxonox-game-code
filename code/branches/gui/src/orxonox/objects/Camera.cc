@@ -51,7 +51,7 @@ namespace orxonox
   Camera::Camera(Ogre::SceneNode* node)
   {
     this->bHasFocus_ = false;
-    this->cameraNode_ = GraphicsEngine::getSingleton().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode(node->getName() + "Camera");
+    this->cameraNode_ = GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode(node->getName() + "Camera");
     if( node != NULL )
       this->setPositionNode(node);
   }
@@ -59,7 +59,7 @@ namespace orxonox
   Camera::~Camera()
   {
     CameraHandler::getInstance()->releaseFocus(this);
-    GraphicsEngine::getSingleton().getLevelSceneManager()->getRootSceneNode()->removeAndDestroyChild(cameraNode_->getName());
+    GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->removeAndDestroyChild(cameraNode_->getName());
   }
 
   void Camera::setPositionNode(Ogre::SceneNode* node)

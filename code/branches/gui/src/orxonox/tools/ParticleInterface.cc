@@ -54,10 +54,10 @@ namespace orxonox
     this->sceneNode_ = 0;
     this->bEnabled_ = true;
     this->detaillevel_ = (unsigned int)detaillevel;
-    this->particleSystem_ = GraphicsEngine::getSingleton().getLevelSceneManager()->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
+    this->particleSystem_ = GraphicsEngine::getInstance().getLevelSceneManager()->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
     this->particleSystem_->setSpeedFactor(Orxonox::getSingleton().getTimeFactor());
 
-    if (GraphicsEngine::getSingleton().getDetailLevelParticle() < (unsigned int)this->detaillevel_)
+    if (GraphicsEngine::getInstance().getDetailLevelParticle() < (unsigned int)this->detaillevel_)
     {
       this->bVisible_ = false;
       this->updateVisibility();
@@ -71,7 +71,7 @@ namespace orxonox
   ParticleInterface::~ParticleInterface()
   {
     this->particleSystem_->removeAllEmitters();
-    GraphicsEngine::getSingleton().getLevelSceneManager()->destroyParticleSystem(particleSystem_);
+    GraphicsEngine::getInstance().getLevelSceneManager()->destroyParticleSystem(particleSystem_);
   }
 
   void ParticleInterface::addToSceneNode(Ogre::SceneNode* sceneNode)

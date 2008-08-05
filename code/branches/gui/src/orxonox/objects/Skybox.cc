@@ -55,7 +55,7 @@ namespace orxonox
 
     void Skybox::setSkybox(const std::string& skyboxname)
     {
-        GraphicsEngine::getSingleton().getLevelSceneManager()->setSkyBox(true, skyboxname);
+        GraphicsEngine::getInstance().getLevelSceneManager()->setSkyBox(true, skyboxname);
     }
 
     void Skybox::setSkyboxSrc(const std::string& src)
@@ -91,6 +91,6 @@ namespace orxonox
     void Skybox::changedVisibility()
     {
         BaseObject::changedVisibility();
-        GraphicsEngine::getSingleton().getLevelSceneManager()->setSkyBox(this->isVisible(), this->skyboxSrc_);
+        GraphicsEngine::getInstance().getLevelSceneManager()->setSkyBox(this->isVisible(), this->skyboxSrc_);
     }
 }

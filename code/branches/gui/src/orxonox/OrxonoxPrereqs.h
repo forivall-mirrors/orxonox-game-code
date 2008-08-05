@@ -83,7 +83,6 @@ namespace orxonox
     class Ambient;
     class Backlight;
     class Camera;
-    class Fighter;
     class Model;
     class NPC;
     class ParticleSpawner;
@@ -129,5 +128,16 @@ namespace Ogre
     class PanelOverlayElement;
     class TextAreaOverlayElement;
 }
+
+namespace CEGUI
+{
+    class LuaScriptModule;
+
+    class OgreCEGUIRenderer;
+    class OgreCEGUIResourceProvider;
+    class OgreCEGUITexture;
+}
+
+struct lua_State;
 
 #endif /* _OrxonoxPrereqs_H__ */

@@ -39,13 +39,11 @@
 #include <string>
 #include <vector>
 #include "core/Executor.h"
-#include "core/BaseObject.h"
-#include "core/CoreIncludes.h"
 #include "InputInterfaces.h"
 
 namespace orxonox
 {
-    class _CoreExport InputState : public BaseObject
+    class _CoreExport InputState
     {
         friend class InputManager;
 
@@ -88,8 +86,7 @@ namespace orxonox
         virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
 
     protected:
-        InputState() : priority_(0), executorOnEnter_(0), executorOnLeave_(0)
-        { RegisterObject(InputState); }
+        InputState() : priority_(0), executorOnEnter_(0), executorOnLeave_(0) { }
         virtual ~InputState() { }
 
         virtual void numberOfJoySticksChanged(unsigned int n) = 0;

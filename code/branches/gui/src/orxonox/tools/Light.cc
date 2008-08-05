@@ -48,7 +48,7 @@ namespace orxonox
     {
         std::ostringstream name;
         name << (Light::lightCounter_s++);
-        this->light_ = GraphicsEngine::getSingleton().getLevelSceneManager()->createLight("Light" + name.str());
+        this->light_ = GraphicsEngine::getInstance().getLevelSceneManager()->createLight("Light" + name.str());
         this->light_->setType(type);
         this->light_->setDiffuseColour(diffuse);
         this->light_->setSpecularColour(specular);
@@ -57,6 +57,6 @@ namespace orxonox
     Light::~Light()
     {
         if (this->light_)
-            GraphicsEngine::getSingleton().getLevelSceneManager()->destroyLight(this->light_);
+            GraphicsEngine::getInstance().getLevelSceneManager()->destroyLight(this->light_);
     }
 }

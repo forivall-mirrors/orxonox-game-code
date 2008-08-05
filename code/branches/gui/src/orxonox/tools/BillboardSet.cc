@@ -49,7 +49,7 @@ namespace orxonox
     {
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = GraphicsEngine::getSingleton().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_ = GraphicsEngine::getInstance().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
         this->billboardSet_->createBillboard(Vector3::ZERO);
         this->billboardSet_->setMaterialName(file);
     }
@@ -58,7 +58,7 @@ namespace orxonox
     {
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = GraphicsEngine::getSingleton().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_ = GraphicsEngine::getInstance().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
         this->billboardSet_->createBillboard(Vector3::ZERO, colour);
         this->billboardSet_->setMaterialName(file);
     }
@@ -67,7 +67,7 @@ namespace orxonox
     {
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = GraphicsEngine::getSingleton().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_ = GraphicsEngine::getInstance().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
         this->billboardSet_->createBillboard(position);
         this->billboardSet_->setMaterialName(file);
     }
@@ -76,7 +76,7 @@ namespace orxonox
     {
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = GraphicsEngine::getSingleton().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_ = GraphicsEngine::getInstance().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
         this->billboardSet_->createBillboard(position, colour);
         this->billboardSet_->setMaterialName(file);
     }
@@ -84,6 +84,6 @@ namespace orxonox
     BillboardSet::~BillboardSet()
     {
         if (this->billboardSet_)
-            GraphicsEngine::getSingleton().getLevelSceneManager()->destroyBillboardSet(this->billboardSet_);
+            GraphicsEngine::getInstance().getLevelSceneManager()->destroyBillboardSet(this->billboardSet_);
     }
 }

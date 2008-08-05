@@ -114,8 +114,8 @@ namespace orxonox
 
             // We'll have to get the aspect ratio manually for the first time. Afterwards windowResized() gets
             // called automatically by the GraphicsEngine.
-            this->windowResized(GraphicsEngine::getSingleton().getWindowWidth(),
-                GraphicsEngine::getSingleton().getWindowHeight());
+            this->windowResized(GraphicsEngine::getInstance().getWindowWidth(),
+                GraphicsEngine::getInstance().getWindowHeight());
 
             this->changedVisibility();
         }

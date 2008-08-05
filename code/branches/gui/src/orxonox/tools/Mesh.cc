@@ -48,12 +48,12 @@ namespace orxonox
     {
         std::ostringstream name;
         name << (Mesh::meshCounter_s++);
-        this->entity_ = GraphicsEngine::getSingleton().getLevelSceneManager()->createEntity("Mesh" + name.str(), file);
+        this->entity_ = GraphicsEngine::getInstance().getLevelSceneManager()->createEntity("Mesh" + name.str(), file);
     }
 
     Mesh::~Mesh()
     {
         if (this->entity_)
-            GraphicsEngine::getSingleton().getLevelSceneManager()->destroyEntity(this->entity_);
+            GraphicsEngine::getInstance().getLevelSceneManager()->destroyEntity(this->entity_);
     }
 }

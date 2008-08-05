@@ -45,7 +45,6 @@ namespace orxonox
     class _CoreExport SimpleInputState : public InputState
     {
         friend class InputManager;
-        friend class ClassFactory<SimpleInputState>;
 
     public:
         void setKeyHandler        (KeyHandler* handler) { keyHandler_ = handler; update(); }

@@ -28,7 +28,8 @@
 
 /**
     @file
-    @brief Implementation of the GUIManager class.
+    @brief
+        Implementation of the GUIManager class.
 */
 
 #include "OrxonoxStableHeaders.h"
@@ -119,7 +120,7 @@ namespace orxonox
             try
             {
                 // get the render window
-                renderWindow_ = GraphicsEngine::getSingleton().getRenderWindow();
+                renderWindow_ = GraphicsEngine::getInstance().getRenderWindow();
 
                 // Full screen viewport with Z order = 0 (top most). Don't yet feed a camera (so nothing gets rendered)
                 //this->viewport_ = renderWindow_->addViewport(0, 3);
@@ -149,7 +150,7 @@ namespace orxonox
                 tolua_Orxonox_open(this->scriptModule_->getLuaState());
 
                 // register us as input handler
-                SimpleInputState* state = InputManager::getInstance().createSimpleInputState("gui", 30);
+                SimpleInputState* state = InputManager::getInstance().createInputState<SimpleInputState>("gui", 30);
                 state->setHandler(this);
                 state->setJoyStickHandler(new EmptyHandler());
 
@@ -158,7 +159,7 @@ namespace orxonox
             }
             catch (CEGUI::Exception& ex)
             {
-#if CEGUI_VERSION_MINOR < 6
+#if CEGUI_VERSION_MAJOR == 0 && CEGUI_VERSION_MINOR < 6
                 throw GeneralException(ex.getMessage().c_str());
 #else
                 throw GeneralException(ex.getMessage().c_str(), ex.getLine(),

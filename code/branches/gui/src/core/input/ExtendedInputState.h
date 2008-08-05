@@ -47,7 +47,6 @@ namespace orxonox
     class _CoreExport ExtendedInputState : public InputState
     {
         friend class InputManager;
-        friend class ClassFactory<ExtendedInputState>;
 
     public:
         bool addKeyHandler        (KeyHandler* handler);
@@ -67,7 +66,7 @@ namespace orxonox
         void removeAndDestroyAllHandlers();
 
     private:
-        ExtendedInputState();
+        ExtendedInputState() { }
         ~ExtendedInputState() { }
 
         void tickInput(float dt);

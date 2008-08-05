@@ -111,7 +111,7 @@ namespace orxonox
     , timefactor_(1.0f)
     , mode_(GameMode::GM_Unspecified)
     , debugRefreshTime_(0.0f)
-    , ogre_(0)
+    , graphicsEngine_(0)
     , inputManager_(0)
     , radar_(0)
     , console_(0)
@@ -156,8 +156,8 @@ namespace orxonox
     if (inputManager_)
       delete inputManager_;
 
-    if (this->ogre_)
-      delete ogre_;
+    if (this->graphicsEngine_)
+      delete graphicsEngine_;
 
     if (network::Client::getSingleton())
       network::Client::destroySingleton();
@@ -211,162 +211,171 @@ namespace orxonox
         it->setTimeFactor(Orxonox::getSingleton().getTimeFactor());
   }
 
-
-  /**
-   * Starts the whole Game.
-   * @param path path to config (in home dir or something)
-   */
-  void Orxonox::start()
-  {
-#ifdef _DEBUG
-    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox_d.ini");
+    /**
+    @brief
+        Starts the whole Game.
+    @param path
+        path to config (in home dir or something)
+    */
+    void Orxonox::start()
+    {
+#if ORXONOX_DEBUG_MODE == 1
+        ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox_d.ini");
 #else
-    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
+        ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
 #endif
-    Factory::createClassHierarchy();
 
-    setConfigValues();
+        // creates the class hierarchy for all classes with factories
+        Factory::createClassHierarchy();
 
-    const Settings::CommandLineArgument* mode = Settings::getCommandLineArgument("mode");
-    assert(mode);
-    if (!mode->bHasDefaultValue_)
-    {
-      Settings::setGameMode(mode->value_);
-      this->mode_ = Settings::getGameMode();
-    }
-    COUT(3) << "Orxonox: Game mode is " << mode_.name << "." << std::endl;
+        setConfigValues();
 
-    const Settings::CommandLineArgument* dataPath = Settings::getCommandLineArgument("dataPath");
-    assert(dataPath);
-    if (!dataPath->bHasDefaultValue_)
-    {
-      if (*dataPath->value_.getString().end() != '/' && *dataPath->value_.getString().end() != '\\')
-        Settings::tsetDataPath(dataPath->value_.getString() + "/");
-      else
-        Settings::tsetDataPath(dataPath->value_.getString());
-    }
-
-    try
-    {
-        // initialise TCL
-        TclBind::getInstance().setDataPath(Settings::getDataPath());
-
-        ogre_ = new GraphicsEngine();
-        ogre_->setup();       // creates ogre root and other essentials
-
-        if (mode_.showsGraphics)
+        const Settings::CommandLineArgument* mode = Settings::getCommandLineArgument("mode");
+        assert(mode);
+        if (!mode->bHasDefaultValue_)
         {
-          ogre_->loadRenderer();    // creates the render window
+            Settings::setGameMode(mode->value_);
+            this->mode_ = Settings::getGameMode();
+        }
+        COUT(3) << "Orxonox: Game mode is " << mode_.name << "." << std::endl;
 
-          // TODO: Spread this so that this call only initialises things needed for the Console and GUI
-          ogre_->initialiseResources();
-
-          // Calls the InputManager which sets up the input devices.
-          // The render window width and height are used to set up the mouse movement.
-          inputManager_ = new InputManager();
-          inputManager_->initialise(ogre_->getWindowHandle(),
-                ogre_->getWindowWidth(), ogre_->getWindowHeight(), true, true, true);
-          KeyBinder* keyBinder = new KeyBinder();
-          keyBinder->loadBindings();
-          inputManager_->createSimpleInputState("game", 20)->setHandler(keyBinder);
-
-          // Load the InGameConsole
-          console_ = new InGameConsole();
-          console_->initialise();
-
-          // load the CEGUI interface
-          guiManager_ = new GUIManager();
-          guiManager_->initialise();
+        const Settings::CommandLineArgument* dataPath = Settings::getCommandLineArgument("dataPath");
+        assert(dataPath);
+        if (!dataPath->bHasDefaultValue_)
+        {
+            if (*dataPath->value_.getString().end() != '/' && *dataPath->value_.getString().end() != '\\')
+                Settings::tsetDataPath(dataPath->value_.getString() + "/");
+            else
+                Settings::tsetDataPath(dataPath->value_.getString());
         }
 
-        bool showGUI = true;
-        if (mode_.mode != GameMode::Unspecified)
+        try
         {
-          showGUI = false;
-          // a game mode was specified with the command line
-          // we therefore load the game and level directly
+            // initialise TCL
+            TclBind::getInstance().setDataPath(Settings::getDataPath());
 
-          if (!loadLevel(this->mode_))
-          {
-            COUT(1) << "Loading with predefined mode failed. Showing main menu." << std::endl;
-            showGUI = true;
-            mode_ = GameMode::GM_Unspecified;
-          }
+            graphicsEngine_ = new GraphicsEngine();
+            graphicsEngine_->setup();       // creates ogre root and other essentials
+
+            if (mode_.showsGraphics)
+            {
+                graphicsEngine_->loadRenderer();    // creates the render window
+
+                // TODO: Spread this so that this call only initialises things needed for the Console and GUI
+                graphicsEngine_->initialiseResources();
+
+                // Calls the InputManager which sets up the input devices.
+                // The render window width and height are used to set up the mouse movement.
+                inputManager_ = new InputManager();
+                inputManager_->initialise(graphicsEngine_->getWindowHandle(),
+                    graphicsEngine_->getWindowWidth(), graphicsEngine_->getWindowHeight(), true, true, true);
+                KeyBinder* keyBinder = new KeyBinder();
+                keyBinder->loadBindings();
+                inputManager_->createInputState<SimpleInputState>("game", 20)->setHandler(keyBinder);
+
+                // Load the InGameConsole
+                console_ = new InGameConsole();
+                console_->initialise();
+
+                // load the CEGUI interface
+                guiManager_ = new GUIManager();
+                guiManager_->initialise();
+            }
+            else
+            {
+                // TODO: Initialise a not yet written console that operates in the shell we
+                // started the game from.
+                // We probably want to use std::cin to catch input (OIS uses DirectX or X server)
+            }
+
+            bool showGUI = true;
+            if (mode_.mode != GameMode::Unspecified)
+            {
+                showGUI = false;
+                // a game mode was specified with the command line
+                // we therefore load the game and level directly
+
+                if (!loadLevel(this->mode_))
+                {
+                    COUT(1) << "Loading with predefined mode failed. Showing main menu." << std::endl;
+                    showGUI = true;
+                    mode_ = GameMode::GM_Unspecified;
+                }
+            }
+
+            if (showGUI)
+            {
+                // show main menu
+                GUIManager::getInstance().showGUI("MainMenu", 0);
+                GraphicsEngine::getInstance().getViewport()->setCamera(GUIManager::getInstance().getCamera());
+            }
         }
-        
-        if (showGUI)
+        catch (std::exception& ex)
         {
-          // show main menu
-          GUIManager::getInstance().showGUI("MainMenu", 0);
-          GraphicsEngine::getSingleton().getViewport()->setCamera(GUIManager::getInstance().getCamera());
+            COUT(1) << ex.what() << std::endl;
+            COUT(1) << "Loading sequence aborted." << std::endl;
+            return;
         }
+
+        modeRequest_ = mode_;
+        // here happens the game
+        startRenderLoop();
+
+        if (mode_.mode == GameMode::Client)
+            network::Client::getSingleton()->closeConnection();
+
+        if (mode_.hasServer)
+            server_g->close();
     }
-    catch (std::exception& ex)
+
+    /*static*/ void Orxonox::loadGame(const std::string& name)
     {
-      COUT(1) << ex.what() << std::endl;
-      COUT(1) << "Loading sequence aborted." << std::endl;
-      return;
+        const GameMode& mode = Settings::getGameMode(name);
+        if (mode.mode == GameMode::None)
+            return;
+
+        getSingleton().modeRequest_ = mode;
     }
 
-    modeRequest_ = mode_;
-    // here happens the game
-    startRenderLoop();
+    bool Orxonox::loadLevel(const GameMode& mode)
+    {
+        bool success = true;
 
-    if (mode_.mode == GameMode::Client)
-      network::Client::getSingleton()->closeConnection();
+        if (mode.showsGraphics)
+        {
+            // create Ogre SceneManager for the level
+            graphicsEngine_->createNewScene();
 
-    if (mode_.hasServer)
-      server_g->close();
-  }
+            if (!loadPlayground())
+                return false;
+        }
 
-  /*static*/ void Orxonox::loadGame(const std::string& name)
-  {
-      const GameMode& mode = Settings::getGameMode(name);
-      if (mode.mode == GameMode::None)
-          return;
+        switch (mode.mode)
+        {
+        case GameMode::Server:
+            success &= serverLoad();
+            break;
+        case GameMode::Client:
+            success &= clientLoad();
+            break;
+        case GameMode::Dedicated:
+            success &= serverLoad();
+            break;
+        case GameMode::Standalone:
+            success &= standaloneLoad();
+            break;
+        default: // never happens
+            assert(false);
+        }
 
-      getSingleton().modeRequest_ = mode;
-  }
+        if (success)
+        {
+            InputManager::getInstance().requestEnterState("game");
+            this->mode_ = mode;
+        }
 
-  bool Orxonox::loadLevel(const GameMode& mode)
-  {
-      bool success = true;
-
-      if (mode.showsGraphics)
-      {
-        // create Ogre SceneManager for the level
-        ogre_->createNewScene();
-
-        if (!loadPlayground())
-            return false;
-      }
-
-      switch (mode.mode)
-      {
-      case GameMode::Server:
-        success &= serverLoad();
-        break;
-      case GameMode::Client:
-        success &= clientLoad();
-        break;
-      case GameMode::Dedicated:
-        success &= serverLoad();
-        break;
-      case GameMode::Standalone:
-        success &= standaloneLoad();
-        break;
-      default: // never happens
-          assert(false);
-      }
-      
-      if (success)
-      {
-        InputManager::getInstance().requestEnterState("game");
-        this->mode_ = mode;
-      }
-
-      return success;
-  }
+        return success;
+    }
 
   /**
    * Loads everything in the scene except for the actual objects.
@@ -527,10 +536,10 @@ namespace orxonox
         tickTime += timeAfterTick - timeBeforeTick;
         if (timeAfterTick > refreshStartTime + refreshTime)
         {
-          GraphicsEngine::getSingleton().setAverageTickTime(
+          GraphicsEngine::getInstance().setAverageTickTime(
               (float)tickTime * 0.001 / (frameCount - oldFrameCount));
           float avgFPS = (float)(frameCount - oldFrameCount) / (timeAfterTick - refreshStartTime) * 1000000.0;
-          GraphicsEngine::getSingleton().setAverageFramesPerSecond(avgFPS);
+          GraphicsEngine::getInstance().setAverageFramesPerSecond(avgFPS);
 
           oldFrameCount = frameCount;
           tickTime = 0;
@@ -551,7 +560,7 @@ namespace orxonox
           Ogre::WindowEventUtilities::messagePump();
           // make sure the window stays active even when not focused
           // (probably only necessary on windows)
-          GraphicsEngine::getSingleton().setWindowActivity(true);
+          GraphicsEngine::getInstance().setWindowActivity(true);
 
           // tick CEGUI
           GUIManager::getInstance().tick(dt);

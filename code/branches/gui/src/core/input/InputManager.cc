@@ -160,16 +160,16 @@ namespace orxonox
 
             setConfigValues();
 
-            stateEmpty_ = createSimpleInputState("empty", -1);
+            stateEmpty_ = createInputState<SimpleInputState>("empty", -1);
             stateEmpty_->setHandler(new EmptyHandler());
             activeStates_[stateEmpty_->getPriority()] = stateEmpty_;
 
-            stateDetector_ = createSimpleInputState("detector", 101);
+            stateDetector_ = createInputState<SimpleInputState>("detector", 101);
             KeyDetector* temp = new KeyDetector();
             temp->loadBindings("storeKeyStroke");
             stateDetector_->setHandler(temp);
 
-            stateCalibrator_ = createSimpleInputState("calibrator", 100);
+            stateCalibrator_ = createInputState<SimpleInputState>("calibrator", 100);
             stateCalibrator_->setHandler(new EmptyHandler());
             InputBuffer* buffer = new InputBuffer();
             buffer->registerListener(this, &InputManager::_completeCalibration, '\r', true);
@@ -1031,56 +1031,6 @@ namespace orxonox
         {
             COUT(2) << "Warning: Could not add an InputState with the same name '" << name << "'." << std::endl;
             return false;
-        }
-    }
-
-    /**
-    @brief
-        Returns a new SimpleInputState and configures it first.
-    */
-    SimpleInputState* InputManager::createSimpleInputState(const std::string &name, int priority)
-    {
-        SimpleInputState* state = new SimpleInputState();
-        if (_configureInputState(state, name, priority))
-            return state;
-        else
-        {
-            delete state;
-            return 0;
-        }
-    }
-
-    /**
-    @brief
-        Returns a new ExtendedInputState and configures it first.
-    */
-    ExtendedInputState* InputManager::createExtendedInputState(const std::string &name, int priority)
-    {
-        ExtendedInputState* state = new ExtendedInputState();
-        if (_configureInputState(state, name, priority))
-            return state;
-        else
-        {
-            delete state;
-            return 0;
-        }
-    }
-
-    /**
-    @brief
-        Returns a new InputState of type 'type' and configures it first.
-    @param type
-        String name of the class (used by the factory)
-    */
-    InputState* InputManager::createInputState(const std::string& type, const std::string &name, int priority)
-    {
-        InputState* state = dynamic_cast<InputState*>(Factory::getIdentifier(type)->fabricate());
-        if (_configureInputState(state, name, priority))
-            return state;
-        else
-        {
-            delete state;
-            return 0;
         }
     }
 

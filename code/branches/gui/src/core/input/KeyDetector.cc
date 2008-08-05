@@ -67,9 +67,9 @@ namespace orxonox
     */
     void KeyDetector::loadBindings(const std::string& command)
     {
+        this->command_ = command;
         clearBindings();
         setConfigValues();
-        this->command_ = command;
     }
 
     void KeyDetector::readTrigger(Button& button)

@@ -61,8 +61,8 @@ namespace orxonox
         void setup();
         void declareRessourceLocations();
         void loadRenderer();
-        bool initialiseResources();
-        bool createNewScene();
+        void initialiseResources();
+        void createNewScene();
 
         void setLevelSceneManager(Ogre::SceneManager* sceneMgr) { this->levelSceneManager_ = sceneMgr; }
         Ogre::SceneManager* getLevelSceneManager() { return levelSceneManager_; }
@@ -86,8 +86,11 @@ namespace orxonox
         inline unsigned int getDetailLevelParticle() const
         { return this->detailLevelParticle_; }
 
-        static GraphicsEngine& getSingleton();
-        static GraphicsEngine* getSingletonPtr() { return singletonRef_s; }
+        // console commands
+        static void printScreen();
+
+        static GraphicsEngine& getInstance();
+        static GraphicsEngine* getInstancePtr() { return singletonRef_s; }
 
     private:
         // don't mess with singletons

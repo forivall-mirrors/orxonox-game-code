@@ -48,12 +48,12 @@ namespace orxonox
     {
         RegisterObject(WorldEntity);
 
-        if (GraphicsEngine::getSingleton().getLevelSceneManager())
+        if (GraphicsEngine::getInstance().getLevelSceneManager())
         {
             std::ostringstream name;
             name << (WorldEntity::worldEntityCounter_s++);
             this->setName("WorldEntity" + name.str());
-            this->node_ = GraphicsEngine::getSingleton().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
+            this->node_ = GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName());
 
             registerAllVariables();
         }
@@ -76,7 +76,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             this->getNode()->removeAndDestroyAllChildren();
-            GraphicsEngine::getSingleton().getLevelSceneManager()->destroySceneNode(this->getName());
+            GraphicsEngine::getInstance().getLevelSceneManager()->destroySceneNode(this->getName());
         }
     }
 
@@ -177,13 +177,13 @@ namespace orxonox
 
     void WorldEntity::attachObject(const WorldEntity& obj) const
     {
-        GraphicsEngine::getSingleton().getLevelSceneManager()->getRootSceneNode()->removeChild(obj.getNode());
+        GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->removeChild(obj.getNode());
         this->getNode()->addChild(obj.getNode());
     }
 
     void WorldEntity::attachObject(WorldEntity* obj) const
     {
-        GraphicsEngine::getSingleton().getLevelSceneManager()->getRootSceneNode()->removeChild(obj->getNode());
+        GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->removeChild(obj->getNode());
         this->getNode()->addChild(obj->getNode());
     }
 }
