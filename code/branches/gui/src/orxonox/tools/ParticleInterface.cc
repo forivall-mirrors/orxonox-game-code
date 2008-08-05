@@ -55,7 +55,7 @@ namespace orxonox
     this->bEnabled_ = true;
     this->detaillevel_ = (unsigned int)detaillevel;
     this->particleSystem_ = GraphicsEngine::getInstance().getLevelSceneManager()->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
-    this->particleSystem_->setSpeedFactor(Orxonox::getSingleton().getTimeFactor());
+    this->particleSystem_->setSpeedFactor(Orxonox::getInstance().getTimeFactor());
 
     if (GraphicsEngine::getInstance().getDetailLevelParticle() < (unsigned int)this->detaillevel_)
     {
@@ -170,11 +170,11 @@ namespace orxonox
 
   void ParticleInterface::setSpeedFactor(float factor)
   {
-    this->particleSystem_->setSpeedFactor(Orxonox::getSingleton().getTimeFactor() * factor);
+    this->particleSystem_->setSpeedFactor(Orxonox::getInstance().getTimeFactor() * factor);
   }
   float ParticleInterface::getSpeedFactor() const
   {
-    return (this->particleSystem_->getSpeedFactor() / Orxonox::getSingleton().getTimeFactor());
+    return (this->particleSystem_->getSpeedFactor() / Orxonox::getInstance().getTimeFactor());
   }
 
   bool ParticleInterface::getKeepParticlesInLocalSpace() const

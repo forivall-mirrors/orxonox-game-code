@@ -61,12 +61,12 @@ namespace orxonox
 
       void abortRequest();
 
-      static Orxonox& getSingleton();
+      static Orxonox& getInstance();
 
       static void slomo(float factor) { Orxonox::setTimeFactor(factor); }
-      static float getTimeFactor()    { return Orxonox::getSingleton().timefactor_; }
+      static float getTimeFactor()    { return Orxonox::getInstance().timefactor_; }
       static void loadGame(const std::string& name);
-      static void exit()              { Orxonox::getSingleton().abortRequest(); }
+      static void exit()              { Orxonox::getInstance().abortRequest(); }
       static void setTimeFactor(float factor = 1.0);
 
    private:

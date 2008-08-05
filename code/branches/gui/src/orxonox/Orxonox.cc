@@ -191,7 +191,7 @@ namespace orxonox
   /**
    * @return singleton reference
    */
-  Orxonox& Orxonox::getSingleton()
+  Orxonox& Orxonox::getInstance()
   {
     assert(singletonRef_s);
     return *singletonRef_s;
@@ -202,13 +202,13 @@ namespace orxonox
   */
   void Orxonox::setTimeFactor(float factor)
   {
-    float change = factor / Orxonox::getSingleton().getTimeFactor();
-    Orxonox::getSingleton().timefactor_ = factor;
+    float change = factor / Orxonox::getInstance().getTimeFactor();
+    Orxonox::getInstance().timefactor_ = factor;
     for (Iterator<ParticleInterface> it = ObjectList<ParticleInterface>::begin(); it; ++it)
         it->setSpeedFactor(it->getSpeedFactor() * change);
 
     for (Iterator<Backlight> it = ObjectList<Backlight>::begin(); it; ++it)
-        it->setTimeFactor(Orxonox::getSingleton().getTimeFactor());
+        it->setTimeFactor(Orxonox::getInstance().getTimeFactor());
   }
 
     /**
@@ -334,7 +334,7 @@ namespace orxonox
         if (mode.mode == GameMode::None)
             return;
 
-        getSingleton().modeRequest_ = mode;
+        getInstance().modeRequest_ = mode;
     }
 
     bool Orxonox::loadLevel(const GameMode& mode)

@@ -67,7 +67,7 @@ namespace orxonox
         this->ribbonTrail_->setTrailLength(this->maxTraillength_);
         this->ribbonTrail_->setMaterialName("Trail/backlighttrail");
 
-        this->setTimeFactor(Orxonox::getSingleton().getTimeFactor());
+        this->setTimeFactor(Orxonox::getInstance().getTimeFactor());
     }
 
     Backlight::~Backlight()
