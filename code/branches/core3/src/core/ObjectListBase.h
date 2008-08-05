@@ -111,7 +111,7 @@ namespace orxonox
 
             inline std::list<void*>::iterator registerIterator(void* iterator) { return this->iterators_.insert(this->iterators_.begin(), iterator); }
             inline void unregisterIterator(const std::list<void*>::iterator& iterator) { this->iterators_.erase(iterator); }
-            inline std::list<void*>::iterator registerObjectListIterator(void* iterator) { return this->objectListIterators_.insert(this->iterators_.begin(), iterator); }
+            inline std::list<void*>::iterator registerObjectListIterator(void* iterator) { return this->objectListIterators_.insert(this->objectListIterators_.begin(), iterator); }
             inline void unregisterObjectListIterator(const std::list<void*>::iterator& iterator) { this->objectListIterators_.erase(iterator); }
             void notifyIterators(OrxonoxClass* object) const;
 
