@@ -54,7 +54,7 @@ namespace orxonox
     class POVStates
     {
     public:
-        int operator[](unsigned int index) { return povStates[index]; }
+        int& operator[](unsigned int index) { return povStates[index]; }
         int povStates[4];
     };
 
@@ -89,11 +89,22 @@ namespace orxonox
         friend class Core;
 
     public:
+        enum InputManagerState
+        {
+            Uninitialised    = 0,
+            Ready            = 1,
+            Ticking          = 2,
+            Calibrating      = 4,
+            ReloadRequest    = 8,
+            JoyStickSupport  = 16 // used with ReloadRequest to store a bool
+        };
+
         InputManager ();
         ~InputManager();
 
-        bool initialise(const size_t windowHnd, int windowWidth, int windowHeight,
-                               bool createKeyboard = true, bool createMouse = true, bool createJoySticks = false);
+        void initialise(size_t windowHnd, int windowWidth, int windowHeight, bool joyStickSupport = true);
+
+        void reloadInputSystem(bool joyStickSupport = true);
 
         int  numberOfKeyboards() { return keyboard_ ? 1 : 0; }
         int  numberOfMice()      { return mouse_    ? 1 : 0; }
@@ -133,15 +144,18 @@ namespace orxonox
         InputManager (const InputManager&);
 
         // Intenal methods
-        bool _initialiseKeyboard();
-        bool _initialiseMouse();
-        bool _initialiseJoySticks();
+        void _initialiseKeyboard();
+        void _initialiseMouse();
+        void _initialiseJoySticks();
         void _redimensionLists();
 
         void _destroyKeyboard();
         void _destroyMouse();
         void _destroyJoySticks();
         void _destroyState(InputState* state);
+        void _clearBuffers();
+
+        void _reload(bool joyStickSupport);
 
         void _completeCalibration();
 
@@ -176,6 +190,8 @@ namespace orxonox
         std::vector<OIS::JoyStick*>         joySticks_;            //!< OIS joy sticks
         unsigned int                        joySticksSize_;
         unsigned int                        devicesNum_;
+        size_t                              windowHnd_;            //!< Render window handle
+        InputManagerState                   internalState_;        //!< Current internal state
 
         // some internally handled states
         SimpleInputState*                   stateDetector_;        //!< KeyDetector instance

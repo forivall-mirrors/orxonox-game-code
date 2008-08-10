@@ -44,6 +44,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Debug.h"
+#include "core/Exception.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 
@@ -66,6 +67,25 @@ namespace orxonox
 
     using namespace InputDevice;
 
+    /**
+    @brief
+        Defines the |= operator for easier use.
+    */
+    inline InputManager::InputManagerState operator|=(InputManager::InputManagerState& lval,
+                                                      InputManager::InputManagerState rval)
+    {
+        return (lval = (InputManager::InputManagerState)(lval | rval));
+    }
+
+    /**
+    @brief
+        Defines the &= operator for easier use.
+    */
+    inline InputManager::InputManagerState operator&=(InputManager::InputManagerState& lval, int rval)
+    {
+        return (lval = (InputManager::InputManagerState)(lval & rval));
+    }
+
     // ############################################################
     // #####                  Initialisation                  #####
     // ##########                                        ##########
@@ -82,6 +102,8 @@ namespace orxonox
         , mouse_(0)
         , joySticksSize_(0)
         , devicesNum_(0)
+        , windowHnd_(0)
+        , internalState_(Uninitialised)
         , stateDetector_(0)
         , stateCalibrator_(0)
         , stateEmpty_(0)
@@ -104,20 +126,24 @@ namespace orxonox
         The width of the render window
     @param windowHeight
         The height of the render window
+    @param joyStickSupport
+        Whether or not to load the joy sticks as well
     */
-    bool InputManager::initialise(const size_t windowHnd, int windowWidth, int windowHeight,
-                                   bool createKeyboard, bool createMouse, bool createJoySticks)
+    void InputManager::initialise(size_t windowHnd, int windowWidth, int windowHeight, bool joyStickSupport)
     {
-        if (inputSystem_ == 0)
+        if (internalState_ == Uninitialised)
         {
             CCOUT(3) << "Initialising Input System..." << std::endl;
             CCOUT(4) << "Initialising OIS components..." << std::endl;
+
+            // store handle internally so we can reload OIS
+            windowHnd_ = windowHnd;
 
             OIS::ParamList paramList;
             std::ostringstream windowHndStr;
 
             // Fill parameter list
-            windowHndStr << (unsigned int)windowHnd;
+            windowHndStr << (unsigned int)windowHnd_;
             paramList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
             //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
             //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
@@ -125,36 +151,22 @@ namespace orxonox
             //paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
 //#endif
 
-            try
-            {
-                inputSystem_ = OIS::InputManager::createInputSystem(paramList);
-                CCOUT(ORX_DEBUG) << "Created OIS input system" << std::endl;
-            }
-            catch (OIS::Exception ex)
-            {
-                CCOUT(ORX_ERROR) << "Error: Failed creating an OIS input system."
-                    << "OIS message: \"" << ex.eText << "\"" << std::endl;
-                inputSystem_ = 0;
-                return false;
-            }
+            inputSystem_ = OIS::InputManager::createInputSystem(paramList);
+            CCOUT(ORX_DEBUG) << "Created OIS input system" << std::endl;
 
-            if (createKeyboard)
-                _initialiseKeyboard();
+            _initialiseKeyboard();
 
-            if (createMouse)
-                _initialiseMouse();
+            _initialiseMouse();
 
-            if (createJoySticks)
+            if (joyStickSupport)
                 _initialiseJoySticks();
-
-            // set all the std::vector list sizes now that the devices have been created
-            _redimensionLists();
 
             // Set mouse/joystick region
             if (mouse_)
-            {
                 setWindowExtents(windowWidth, windowHeight);
-            }
+
+            // clear all buffers
+            _clearBuffers();
 
             CCOUT(ORX_DEBUG) << "Initialising OIS components done." << std::endl;
 
@@ -177,13 +189,14 @@ namespace orxonox
 
             _updateActiveStates();
 
+            internalState_ = Ready;
+
             CCOUT(3) << "Initialising complete." << std::endl;
         }
         else
         {
             CCOUT(2) << "Warning: OIS compoments already initialised, skipping" << std::endl;
         }
-        return true;
     }
 
     /**
@@ -192,36 +205,24 @@ namespace orxonox
     @return
         False if keyboard stays uninitialised, true otherwise.
     */
-    bool InputManager::_initialiseKeyboard()
+    void InputManager::_initialiseKeyboard()
     {
         if (keyboard_ != 0)
         {
             CCOUT(2) << "Warning: Keyboard already initialised, skipping." << std::endl;
-            return true;
+            return;
         }
-        try
+        if (inputSystem_->getNumberOfDevices(OIS::OISKeyboard) > 0)
         {
-            if (inputSystem_->getNumberOfDevices(OIS::OISKeyboard) > 0)
-            {
-                keyboard_ = (OIS::Keyboard*)inputSystem_->createInputObject(OIS::OISKeyboard, true);
-                // register our listener in OIS.
-                keyboard_->setEventCallback(this);
-                // note: OIS will not detect keys that have already been down when the keyboard was created.
-                CCOUT(ORX_DEBUG) << "Created OIS keyboard" << std::endl;
-                return true;
-            }
-            else
-            {
-                CCOUT(ORX_WARNING) << "Warning: No keyboard found!" << std::endl;
-                return false;
-            }
+            keyboard_ = (OIS::Keyboard*)inputSystem_->createInputObject(OIS::OISKeyboard, true);
+            // register our listener in OIS.
+            keyboard_->setEventCallback(this);
+            // note: OIS will not detect keys that have already been down when the keyboard was created.
+            CCOUT(ORX_DEBUG) << "Created OIS keyboard" << std::endl;
         }
-        catch (OIS::Exception ex)
+        else
         {
-            CCOUT(ORX_WARNING) << "Warning: Failed to create an OIS keyboard\n"
-                << "OIS error message: \"" << ex.eText << "\"" << std::endl;
-            keyboard_ = 0;
-            return false;
+            ThrowException(InitialisationFailed, "No keyboard found!");
         }
     }
 
@@ -231,12 +232,12 @@ namespace orxonox
     @return
         False if mouse stays uninitialised, true otherwise.
     */
-    bool InputManager::_initialiseMouse()
+    void InputManager::_initialiseMouse()
     {
         if (mouse_ != 0)
         {
             CCOUT(2) << "Warning: Mouse already initialised, skipping." << std::endl;
-            return true;
+            return;
         }
         try
         {
@@ -246,12 +247,10 @@ namespace orxonox
                 // register our listener in OIS.
                 mouse_->setEventCallback(this);
                 CCOUT(ORX_DEBUG) << "Created OIS mouse" << std::endl;
-                return true;
             }
             else
             {
                 CCOUT(ORX_WARNING) << "Warning: No mouse found!" << std::endl;
-                return false;
             }
         }
         catch (OIS::Exception ex)
@@ -259,7 +258,6 @@ namespace orxonox
             CCOUT(ORX_WARNING) << "Warning: Failed to create an OIS mouse\n"
                 << "OIS error message: \"" << ex.eText << "\"" << std::endl;
             mouse_ = 0;
-            return false;
         }
     }
 
@@ -269,14 +267,13 @@ namespace orxonox
     @return
         False joy stick stay uninitialised, true otherwise.
     */
-    bool InputManager::_initialiseJoySticks()
+    void InputManager::_initialiseJoySticks()
     {
         if (joySticksSize_ > 0)
         {
             CCOUT(2) << "Warning: Joy sticks already initialised, skipping." << std::endl;
-            return true;
+            return;
         }
-        bool success = false;
         if (inputSystem_->getNumberOfDevices(OIS::OISJoyStick) > 0)
         {
             for (int i = 0; i < inputSystem_->getNumberOfDevices(OIS::OISJoyStick); i++)
@@ -289,7 +286,6 @@ namespace orxonox
                     joySticks_.push_back(stig);
                     // register our listener in OIS.
                     stig->setEventCallback(this);
-                    success = true;
                 }
                 catch (OIS::Exception ex)
                 {
@@ -300,10 +296,9 @@ namespace orxonox
         }
         else
         {
-            CCOUT(ORX_WARNING) << "Warning: Joy stick support requested, but no joy stick was found" << std::endl;
-            return false;
+            //CCOUT(ORX_WARNING) << "Warning: Joy stick support requested, but no joy stick was found" << std::endl;
         }
-        return success;
+        _redimensionLists();
     }
 
     /**
@@ -411,7 +406,7 @@ namespace orxonox
     */
     InputManager::~InputManager()
     {
-        if (inputSystem_)
+        if (internalState_ != Uninitialised)
         {
             try
             {
@@ -428,35 +423,24 @@ namespace orxonox
                 {
                     (*rit).second->onLeave();
                 }
-                //activeStates_.clear();
-                //_updateActiveStates();
 
                 // destroy all input states
                 while (inputStatesByPriority_.size() > 0)
-                {
                     _destroyState((*inputStatesByPriority_.rbegin()).second);
-                }
-
-                //stateEmpty_ = 0;
-                //stateCalibrator_ = 0;
-                //stateDetector_ = 0;
 
                 // destroy the devices
                 _destroyKeyboard();
                 _destroyMouse();
                 _destroyJoySticks();
 
-                // 0 joy sticks now
-                //_redimensionLists();
-
                 OIS::InputManager::destroyInputSystem(inputSystem_);
-                //inputSystem_ = 0;
 
                 CCOUT(3) << "Destroying done." << std::endl;
             }
             catch (OIS::Exception& ex)
             {
-                CCOUT(1) << "An exception has occured while destroying:\n" << ex.what() << std::endl;
+                CCOUT(1) << "An exception has occured while destroying:\n" << ex.what()
+                         << "This could lead to a possible memory/resource leak!" << std::endl;
             }
         }
     }
@@ -467,10 +451,10 @@ namespace orxonox
     */
     void InputManager::_destroyKeyboard()
     {
+        assert(inputSystem_);
         if (keyboard_)
             inputSystem_->destroyInputObject(keyboard_);
         keyboard_ = 0;
-        keysDown_.clear();
         CCOUT(4) << "Keyboard destroyed." << std::endl;
     }
 
@@ -480,10 +464,10 @@ namespace orxonox
     */
     void InputManager::_destroyMouse()
     {
+        assert(inputSystem_);
         if (mouse_)
             inputSystem_->destroyInputObject(mouse_);
         mouse_ = 0;
-        mouseButtonsDown_.clear();
         CCOUT(4) << "Mouse destroyed." << std::endl;
     }
 
@@ -495,7 +479,7 @@ namespace orxonox
     {
         if (joySticksSize_ > 0)
         {
-            // note: inputSystem_ can never be 0, or else the code is mistaken
+            assert(inputSystem_);
             for (unsigned int i = 0; i < joySticksSize_; i++)
                 if (joySticks_[i] != 0)
                     inputSystem_->destroyInputObject(joySticks_[i]);
@@ -519,6 +503,94 @@ namespace orxonox
         delete state;
     }
 
+    void InputManager::_clearBuffers()
+    {
+        keysDown_.clear();
+        keyboardModifiers_ = 0;
+        mouseButtonsDown_.clear();
+        for (unsigned int i = 0; i < joySticksSize_; ++i)
+        {
+            joyStickButtonsDown_[i].clear();
+            for (int j = 0; j < 4; ++j)
+            {
+                sliderStates_[i].sliderStates[j].x = 0;
+                sliderStates_[i].sliderStates[j].y = 0;
+                povStates_[i][j] = 0;
+            }
+        }
+    }
+
+
+    // ############################################################
+    // #####                     Reloading                    #####
+    // ##########                                        ##########
+    // ############################################################
+
+    /**
+    @brief
+        Public interface. Only reloads immediately if the call stack doesn't
+        include the tick() method.
+    @param joyStickSupport
+        Whether or not to initialise joy sticks as well.
+    */
+    void InputManager::reloadInputSystem(bool joyStickSupport)
+    {
+        if (internalState_ & Ticking)
+        {
+            // We cannot destroy OIS right now, because reload was probably
+            // caused by a user clicking on a GUI item. The backtrace would then
+            // include an OIS method. So it would be a very bad thing to destroy it..
+            internalState_ |= ReloadRequest;
+            // Misuse of internalState_: We can easily store the joyStickSupport bool.
+            // use Uninitialised as 0 value in order to use the overloaded |= operator
+            internalState_ |= joyStickSupport ? JoyStickSupport : Uninitialised;
+        }
+        else if (internalState_ == Ready)
+        {
+            _reload(joyStickSupport);
+        }
+        else
+        {
+            CCOUT(2) << "Warning: Cannot reload OIS. May not yet be initialised or"
+                     << "joy sticks are currently calibrating." << std::endl;
+        }
+    }
+
+    /**
+    @brief
+        Internal reload method. Destroys the OIS devices and loads them again.
+    */
+    void InputManager::_reload(bool joyStickSupport)
+    {
+        try
+        {
+            CCOUT(3) << "Reloading ..." << std::endl;
+
+            // Save mouse clipping size
+            int mouseWidth  = mouse_->getMouseState().width;
+            int mouseHeight = mouse_->getMouseState().height;
+
+            internalState_ = Uninitialised;
+            // destroy the devices
+            _destroyKeyboard();
+            _destroyMouse();
+            _destroyJoySticks();
+
+            OIS::InputManager::destroyInputSystem(inputSystem_);
+            inputSystem_ = 0;
+
+            // clear all buffers containing input information
+            _clearBuffers();
+
+            initialise(windowHnd_, mouseWidth, mouseHeight, joyStickSupport);
+
+            CCOUT(3) << "Reloading done." << std::endl;
+        }
+        catch (OIS::Exception& ex)
+        {
+            CCOUT(1) << "An exception has occured while reloading:\n" << ex.what() << std::endl;
+        }
+    }
 
     // ############################################################
     // #####                  Runtime Methods                 #####
@@ -533,8 +605,15 @@ namespace orxonox
     */
     void InputManager::tick(float dt)
     {
-        if (inputSystem_ == 0)
+        if (internalState_ == Uninitialised)
             return;
+        else if (internalState_ & ReloadRequest)
+        {
+            _reload(internalState_ & JoyStickSupport);
+            internalState_ &= ~ReloadRequest;
+            internalState_ &= ~JoyStickSupport;
+        }
+        internalState_ |= Ticking;
 
         // check for states to leave (don't use unsigned int!)
         for (int i = stateLeaveRequests_.size() - 1; i >= 0; --i)
@@ -593,6 +672,8 @@ namespace orxonox
             for (unsigned int i = 0; i < activeStatesTicked_.size(); ++i)
                 activeStatesTicked_[i]->tickInput(dt);
         }
+
+        internalState_ &= ~Ready;
     }
 
     /**

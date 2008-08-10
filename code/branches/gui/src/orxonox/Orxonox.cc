@@ -268,7 +268,7 @@ namespace orxonox
                 // The render window width and height are used to set up the mouse movement.
                 inputManager_ = new InputManager();
                 inputManager_->initialise(graphicsEngine_->getWindowHandle(),
-                    graphicsEngine_->getWindowWidth(), graphicsEngine_->getWindowHeight(), true, true, true);
+                    graphicsEngine_->getWindowWidth(), graphicsEngine_->getWindowHeight(), true);
                 KeyBinder* keyBinder = new KeyBinder();
                 keyBinder->loadBindings();
                 inputManager_->createInputState<SimpleInputState>("game", 20)->setHandler(keyBinder);
