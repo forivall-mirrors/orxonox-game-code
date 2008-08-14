@@ -91,12 +91,13 @@ namespace orxonox
     public:
         enum InputManagerState
         {
-            Uninitialised    = 0,
-            Ready            = 1,
-            Ticking          = 2,
-            Calibrating      = 4,
-            ReloadRequest    = 8,
-            JoyStickSupport  = 16 // used with ReloadRequest to store a bool
+            Uninitialised    = 0x00,
+            OISReady         = 0x01,
+            InternalsReady   = 0x02,
+            Ticking          = 0x04,
+            Calibrating      = 0x08,
+            ReloadRequest    = 0x10,
+            JoyStickSupport  = 0x20 // used with ReloadRequest to store a bool
         };
 
         InputManager ();
@@ -138,6 +139,7 @@ namespace orxonox
         static void storeKeyStroke(const std::string& name);
         static void keyBind(const std::string& command);
         static void calibrate();
+        static void reload(bool joyStickSupport = true);
 
     private: // functions
         // don't mess with a Singleton

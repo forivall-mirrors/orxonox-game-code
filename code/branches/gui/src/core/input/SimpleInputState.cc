@@ -54,7 +54,7 @@ namespace orxonox
         unsigned int oldSize = joyStickHandler_.size();
         joyStickHandler_.resize(n);
 
-        if (oldSize > n)
+        if (n > oldSize)
         {
             // we have to add the handler in joyStickHandlerAll_ to the joyStickHandler_[>n]
             for (unsigned int i = oldSize; i < n; ++i)

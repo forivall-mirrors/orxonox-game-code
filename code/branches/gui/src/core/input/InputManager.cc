@@ -58,9 +58,10 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcut(InputManager, keyBind);
-    SetConsoleCommandShortcut(InputManager, storeKeyStroke);
-    SetConsoleCommandShortcut(InputManager, calibrate);
+    SetConsoleCommand(InputManager, keyBind, true);
+    SetConsoleCommand(InputManager, storeKeyStroke, true);
+    SetConsoleCommand(InputManager, calibrate, true);
+    SetConsoleCommand(InputManager, reload, false);
 
     std::string InputManager::bindingCommmandString_s = "";
     InputManager* InputManager::singletonRef_s = 0;
@@ -131,9 +132,10 @@ namespace orxonox
     */
     void InputManager::initialise(size_t windowHnd, int windowWidth, int windowHeight, bool joyStickSupport)
     {
-        if (internalState_ == Uninitialised)
+        CCOUT(3) << "Initialising Input System..." << std::endl;
+
+        if (!(internalState_ & OISReady))
         {
-            CCOUT(3) << "Initialising Input System..." << std::endl;
             CCOUT(4) << "Initialising OIS components..." << std::endl;
 
             // store handle internally so we can reload OIS
@@ -168,9 +170,21 @@ namespace orxonox
             // clear all buffers
             _clearBuffers();
 
-            CCOUT(ORX_DEBUG) << "Initialising OIS components done." << std::endl;
-
+            // load joy stick calibration
             setConfigValues();
+
+            internalState_ |= OISReady;
+
+            CCOUT(ORX_DEBUG) << "Initialising OIS components done." << std::endl;
+        }
+        else
+        {
+            CCOUT(2) << "Warning: OIS compoments already initialised, skipping" << std::endl;
+        }
+
+        if (!(internalState_ & InternalsReady))
+        {
+            CCOUT(4) << "Initialising InputStates components..." << std::endl;
 
             stateEmpty_ = createInputState<SimpleInputState>("empty", -1);
             stateEmpty_->setHandler(new EmptyHandler());
@@ -187,16 +201,14 @@ namespace orxonox
             buffer->registerListener(this, &InputManager::_completeCalibration, '\r', true);
             stateCalibrator_->setKeyHandler(buffer);
 
-            _updateActiveStates();
+            internalState_ |= InternalsReady;
 
-            internalState_ = Ready;
+            CCOUT(4) << "Initialising InputStates complete." << std::endl;
+        }
 
-            CCOUT(3) << "Initialising complete." << std::endl;
-        }
-        else
-        {
-            CCOUT(2) << "Warning: OIS compoments already initialised, skipping" << std::endl;
-        }
+        _updateActiveStates();
+
+        CCOUT(3) << "Initialising complete." << std::endl;
     }
 
     /**
@@ -485,6 +497,7 @@ namespace orxonox
                     inputSystem_->destroyInputObject(joySticks_[i]);
 
             joySticks_.clear();
+            _redimensionLists();
         }
         CCOUT(4) << "Joy sticks destroyed." << std::endl;
     }
@@ -542,10 +555,10 @@ namespace orxonox
             // include an OIS method. So it would be a very bad thing to destroy it..
             internalState_ |= ReloadRequest;
             // Misuse of internalState_: We can easily store the joyStickSupport bool.
-            // use Uninitialised as 0 value in order to use the overloaded |= operator
+            // use Uninitialised as 0 value in order to make use of the overloaded |= operator
             internalState_ |= joyStickSupport ? JoyStickSupport : Uninitialised;
         }
-        else if (internalState_ == Ready)
+        else if (internalState_ & OISReady)
         {
             _reload(joyStickSupport);
         }
@@ -570,7 +583,8 @@ namespace orxonox
             int mouseWidth  = mouse_->getMouseState().width;
             int mouseHeight = mouse_->getMouseState().height;
 
-            internalState_ = Uninitialised;
+            internalState_ &= ~OISReady;
+
             // destroy the devices
             _destroyKeyboard();
             _destroyMouse();
@@ -673,7 +687,7 @@ namespace orxonox
                 activeStatesTicked_[i]->tickInput(dt);
         }
 
-        internalState_ &= ~Ready;
+        internalState_ &= ~Ticking;
     }
 
     /**
@@ -1255,5 +1269,14 @@ namespace orxonox
     {
         getInstance().bCalibrating_ = true;
         getInstance().requestEnterState("calibrator");
+    }
+
+    /**
+    @brief
+        Reloads the input system
+    */
+    void InputManager::reload(bool joyStickSupport)
+    {
+        getInstance().reloadInputSystem(joyStickSupport);
     }
 }

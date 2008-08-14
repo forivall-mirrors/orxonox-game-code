@@ -36,7 +36,6 @@
 #include "GUIManager.h"
 
 #include <OgreRenderWindow.h>
-#include <OgreCEGUIRenderer.h>
 #include <OgreRoot.h>
 #include <CEGUI.h>
 #include <CEGUILua.h>
@@ -48,6 +47,7 @@
 #include "core/Core.h"
 #include "tolua/tolua_bind.h"
 #include "GraphicsEngine.h"
+#include "OgreCEGUIRenderer.h"
 
 extern "C" {
 #include <lualib.h>
