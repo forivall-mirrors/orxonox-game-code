@@ -183,9 +183,9 @@ namespace orxonox
   bool Orxonox::init(int argc, char **argv)
   {
 #ifdef _DEBUG
-    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox_d.ini");
+    ConfigFileManager::getInstance()->setFile(CFT_Settings, "orxonox_d.ini");
 #else
-    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
+    ConfigFileManager::getInstance()->setFile(CFT_Settings, "orxonox.ini");
 #endif
     Factory::createClassHierarchy();
 

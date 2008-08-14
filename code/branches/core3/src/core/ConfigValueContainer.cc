@@ -81,7 +81,7 @@ namespace orxonox
 
         for (unsigned int i = 0; i < this->valueVector_.size(); i++)
         {
-            ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i].toString(), this->value_.isA(MT_string));
+            ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i].toString(), this->value_.isA(MT_string));
             this->defvalueStringVector_.push_back(this->valueVector_[i].toString());
         }
 
@@ -112,7 +112,7 @@ namespace orxonox
         {
             if (this->tset(input))
             {
-                ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, input.toString(), this->value_.isA(MT_string));
+                ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, input.toString(), this->value_.isA(MT_string));
                 return true;
             }
         }
@@ -131,7 +131,7 @@ namespace orxonox
         {
             if (this->tset(index, input))
             {
-                ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, index, input.toString(), this->value_.isA(MT_string));
+                ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, index, input.toString(), this->value_.isA(MT_string));
                 return true;
             }
         }
@@ -238,8 +238,8 @@ namespace orxonox
                 // Erase the entry from the vector, change (shift) all entries beginning with index in the config file, remove the last entry from the file
                 this->valueVector_.erase(this->valueVector_.begin() + index);
                 for (unsigned int i = index; i < this->valueVector_.size(); i++)
-                    ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isA(MT_string));
-                ConfigFileManager::getSingleton()->deleteVectorEntries(this->type_, this->sectionname_, this->varname_, this->valueVector_.size());
+                    ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isA(MT_string));
+                ConfigFileManager::getInstance()->deleteVectorEntries(this->type_, this->sectionname_, this->varname_, this->valueVector_.size());
 
                 return true;
             }
@@ -263,7 +263,7 @@ namespace orxonox
             for (unsigned int i = 0; i < this->defvalueStringVector_.size(); i++)
                 if (!this->set(i, this->defvalueStringVector_[i]))
                     success = false;
-            ConfigFileManager::getSingleton()->deleteVectorEntries(this->type_, this->sectionname_, this->varname_, this->defvalueStringVector_.size());
+            ConfigFileManager::getInstance()->deleteVectorEntries(this->type_, this->sectionname_, this->varname_, this->defvalueStringVector_.size());
             return success;
         }
     }
@@ -274,19 +274,19 @@ namespace orxonox
     void ConfigValueContainer::update()
     {
         if (!this->bIsVector_)
-            this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, this->defvalueString_, this->value_.isA(MT_string)));
+            this->value_.fromString(ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, this->defvalueString_, this->value_.isA(MT_string)));
         else
         {
             this->valueVector_.clear();
-            for (unsigned int i = 0; i < ConfigFileManager::getSingleton()->getVectorSize(this->type_, this->sectionname_, this->varname_); i++)
+            for (unsigned int i = 0; i < ConfigFileManager::getInstance()->getVectorSize(this->type_, this->sectionname_, this->varname_); i++)
             {
                 if (i < this->defvalueStringVector_.size())
                 {
-                    this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, this->defvalueStringVector_[i], this->value_.isA(MT_string)));
+                    this->value_.fromString(ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, this->defvalueStringVector_[i], this->value_.isA(MT_string)));
                 }
                 else
                 {
-                    this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, MultiTypeMath(), this->value_.isA(MT_string)));
+                    this->value_.fromString(ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, MultiTypeMath(), this->value_.isA(MT_string)));
                 }
 
                 this->valueVector_.push_back(this->value_);

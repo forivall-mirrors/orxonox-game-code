@@ -215,12 +215,12 @@ namespace orxonox
     infile.open("keybindings.ini");
     if (!infile)
     {
-      ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "def_keybindings.ini");
-      ConfigFileManager::getSingleton()->save(CFT_Keybindings, "keybindings.ini");
+      ConfigFileManager::getInstance()->setFile(CFT_Keybindings, "def_keybindings.ini");
+      ConfigFileManager::getInstance()->save(CFT_Keybindings, "keybindings.ini");
     }
     else
       infile.close();
-    ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
+    ConfigFileManager::getInstance()->setFile(CFT_Keybindings, "keybindings.ini");
 
     // parse key bindings
     setConfigValues();
