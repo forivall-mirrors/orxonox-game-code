@@ -42,6 +42,13 @@
 #include <cassert>
 #include "core/Debug.h"
 
+// Define some ugly macros to make things more clear
+#define CREATE_ORXONOX_EXCEPTION(name) typedef SpecificException<Exception::name> name##Exception;
+#define RETURN_EXCEPTION_CODE(name) \
+    case Exception::name:           \
+        return #name;
+
+
 namespace orxonox
 {
     class _CoreExport Exception : public std::exception
@@ -53,7 +60,8 @@ namespace orxonox
             FileNotFound,
             PluginsNotFound,
             InitialisationFailed,
-            NotImplemented
+            NotImplemented,
+            GameState
         };
 
         Exception(const std::string& description, int lineNumber,
@@ -105,30 +113,28 @@ namespace orxonox
         ExceptionType getType() const { return Type; }
         std::string getTypeName() const
         {
-            // note: break is not necessary due to the return. Keep in mind!
+            // note: break is not necessary due to the return in the macros.
             switch (Type)
             {
-            case Exception::General:
-                return "General";
-            case Exception::FileNotFound:
-                return "FileNotFound";
-            case Exception::PluginsNotFound:
-                return "PluginsNotFound";
-            case Exception::InitialisationFailed:
-                return "InitialisationFailed";
-            case Exception::NotImplemented:
-                return "NotImplemented";
+            RETURN_EXCEPTION_CODE(General)
+            RETURN_EXCEPTION_CODE(FileNotFound);
+            RETURN_EXCEPTION_CODE(PluginsNotFound);
+            RETURN_EXCEPTION_CODE(InitialisationFailed);
+            RETURN_EXCEPTION_CODE(NotImplemented);
+            RETURN_EXCEPTION_CODE(GameState);
             default:
                 return "";
             }
         }
     };
 
-    typedef SpecificException<Exception::General> GeneralException;
-    typedef SpecificException<Exception::FileNotFound> FileNotFoundException;
-    typedef SpecificException<Exception::PluginsNotFound> PluginsNotFoundException;
-    typedef SpecificException<Exception::InitialisationFailed> InitialisationFailedException;
-    typedef SpecificException<Exception::NotImplemented> NotImplementedException;
+    // define the template spcialisations
+    CREATE_ORXONOX_EXCEPTION(General);
+    CREATE_ORXONOX_EXCEPTION(FileNotFound);
+    CREATE_ORXONOX_EXCEPTION(PluginsNotFound);
+    CREATE_ORXONOX_EXCEPTION(InitialisationFailed);
+    CREATE_ORXONOX_EXCEPTION(NotImplemented);
+    CREATE_ORXONOX_EXCEPTION(GameState);
 
 #define ThrowException(type, description) \
     throw SpecificException<Exception::type>(description, __LINE__, __FILE__, __FUNCTIONNAME__)

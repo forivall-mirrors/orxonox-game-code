@@ -4,6 +4,7 @@ SET(CORE_SRC_FILES
   Core.cc
   Error.cc
   Exception.cc
+  GameState.cc
   Language.cc
   OrxonoxClass.cc
   OutputBuffer.cc

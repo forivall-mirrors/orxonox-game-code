@@ -109,6 +109,8 @@ bool parseCommandLine(int argc, char** argv)
     return true;
 }
 
+#include "core/GameState.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -124,6 +126,40 @@ int main(int argc, char** argv)
                 << "[--data PATH] [--ip IP] [--port PORT]" << std::endl;
         return 0;
     }
+
+
+    /*GameState* state1 = new GameState("state1");
+    GameState* state2 = new GameState("state2");
+    GameState* state3 = new GameState("state3");
+    GameState* state4 = new GameState("state4");
+    GameState* state5 = new GameState("state5");
+    GameState* state6 = new GameState("state6");
+
+    state1->addChild(state4);
+    state1->addChild(state6);
+    state2->addChild(state3);
+    state2->addChild(state5);
+    state3->addChild(state1);
+    state6->addChild(state2);
+
+    state5->requestState("state3");
+    COUT(2) << std::endl;
+    state2->requestState("state2");
+    COUT(2) << std::endl;
+    state2->requestState("state1");
+    COUT(2) << std::endl;
+    state4->requestState("state3");
+    COUT(2) << std::endl;
+    state1->requestState("state4");
+    COUT(2) << std::endl;
+    state1->requestState("state2");
+    COUT(2) << std::endl;
+    state1->requestState("stat");
+    COUT(2) << std::endl;
+    state1->requestState("state5");
+    COUT(2) << std::endl;*/
+
+
 
     Orxonox orxonoxInstance;
 

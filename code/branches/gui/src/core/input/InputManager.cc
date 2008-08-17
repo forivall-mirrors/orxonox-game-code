@@ -497,7 +497,10 @@ namespace orxonox
                     inputSystem_->destroyInputObject(joySticks_[i]);
 
             joySticks_.clear();
-            _redimensionLists();
+            // don't use _redimensionLists(), might mess with registered handler if
+            // downgrading from 2 to 1 joystick
+            //_redimensionLists();
+            joySticksSize_ = 0;
         }
         CCOUT(4) << "Joy sticks destroyed." << std::endl;
     }
