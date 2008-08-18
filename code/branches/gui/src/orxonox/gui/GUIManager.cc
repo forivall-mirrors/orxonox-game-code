@@ -83,7 +83,13 @@ namespace orxonox
             backgroundSceneManager_->destroyCamera(backgroundCamera_);
 
         if (backgroundSceneManager_)
+        {
+            // We have to make sure the SceneManager is not anymore referenced.
+            // For the case that the target SceneManager was yet another one, it
+            // wouldn't matter anyway since this is the destructor.
+            guiRenderer_->setTargetSceneManager(0);
             Ogre::Root::getSingleton().destroySceneManager(backgroundSceneManager_);
+        }
 
         InputManager::getInstance().destroyState("gui");
 
@@ -217,7 +223,7 @@ namespace orxonox
         if (state_ != Uninitialised)
         {
             if (state_ == OnDisplay)
-                _hideGUI();
+                hideGUI();
 
             COUT(3) << "Loading GUI " << name << std::endl;
             try
@@ -263,7 +269,7 @@ namespace orxonox
         }
     }
 
-    void GUIManager::_hideGUI()
+    void GUIManager::hideGUI()
     {
         if (this->state_ != OnDisplay)
             return;

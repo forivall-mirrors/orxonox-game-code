@@ -70,7 +70,7 @@ namespace orxonox // tolua_export
             guiSystem_->injectTimePulse(dt);
         }
         void showGUI(const std::string& name, Ogre::SceneManager* sceneManager);// bool showBackground); // tolua_export
-        void _hideGUI(); // tolua_export
+        void hideGUI(); // tolua_export
 
         Ogre::Camera* getCamera() { return this->backgroundCamera_; }
 

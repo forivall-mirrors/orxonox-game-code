@@ -45,6 +45,11 @@
 #include "Settings.h"
 #include "Orxonox.h"
 
+#include "gamestates/GSRoot.h"
+#include "gamestates/GSGraphics.h"
+#include "gamestates/GSLevel.h"
+#include "gamestates/GSGUI.h"
+
 using namespace orxonox;
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
@@ -139,8 +144,9 @@ int main(int argc, char** argv)
     state1->addChild(state6);
     state2->addChild(state3);
     state2->addChild(state5);
-    state3->addChild(state1);
     state6->addChild(state2);
+
+    state6->removeChild("state2");
 
     state5->requestState("state3");
     COUT(2) << std::endl;
@@ -160,6 +166,19 @@ int main(int argc, char** argv)
     COUT(2) << std::endl;*/
 
 
+    GSRoot root;
+    GSGraphics graphics;
+    GSLevel level;
+    GSGUI gui;
+
+    root.addChild(&graphics);
+    graphics.addChild(&level);
+    graphics.addChild(&gui);
+
+    root.requestState("gui");
+    root.tick(0.0f);
+    root.requestState("");
+
 
     Orxonox orxonoxInstance;
 
@@ -168,7 +187,7 @@ int main(int argc, char** argv)
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
         orxonoxInstance.start(macBundlePath());
 #else
-        orxonoxInstance.start();
+        //orxonoxInstance.start();
 #endif
     }
     catch (std::exception& ex)

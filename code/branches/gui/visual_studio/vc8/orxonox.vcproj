@@ -491,6 +491,26 @@
 					</FileConfiguration>
 				</File>
 			</Filter>
+			<Filter
+				Name="gamestates"
+				>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSGraphics.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSGUI.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSLevel.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSRoot.cc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -710,6 +730,26 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\gui\OgreCEGUITexture.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="gamestates"
+				>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSGraphics.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSGUI.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSLevel.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSRoot.h"
 					>
 				</File>
 			</Filter>

@@ -42,8 +42,6 @@
 
 //****** OGRE ******
 #include <OgreFrameListener.h>
-#include <OgreOverlay.h>
-#include <OgreOverlayManager.h>
 #include <OgreRoot.h>
 #include <OgreTimer.h>
 #include <OgreWindowEventUtilities.h>

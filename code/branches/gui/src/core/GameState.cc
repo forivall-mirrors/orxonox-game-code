@@ -55,6 +55,21 @@ namespace orxonox
 
     /**
     @brief
+        Destructor only checks that we don't delete an active state.
+    */
+    GameState::~GameState()
+    {
+        if (this->bActive_)
+        {
+            if (this->parent_)
+                this->requestState(this->parent_->getName());
+            else
+                this->requestState("");
+        }
+    }
+
+    /**
+    @brief
         Adds a child to the current tree. The Child can contain children of its own.
         But you cannot a state tree that already has an active state.
     @param state
@@ -107,6 +122,66 @@ namespace orxonox
 
     /**
     @brief
+        Removes a child by instance. This splits the tree in two parts,
+        each of them functional on its own.
+    @param state
+        GameState by instance pointer
+    */
+    void GameState::removeChild(GameState* state)
+    {
+        std::map<GameState*, GameState*>::iterator it = this->grandchildrenToChildren_.find(state);
+        if (it != this->grandchildrenToChildren_.end())
+        {
+            if (state->isActive())
+            {
+                ThrowException(GameState, "Cannot remove active game state child '"
+                    + state->getName() + "' from '" + name_ + "'.");
+                //COUT(2) << "Warning: Cannot remove active game state child '" << state->getName()
+                //    << "' from '" << name_ << "'." << std::endl;
+            }
+            else
+            {
+                for (std::map<GameState*, GameState*>::const_iterator it = state->grandchildrenToChildren_.begin();
+                    it != state->grandchildrenToChildren_.end(); ++it)
+                {
+                    this->grandchildRemoved(it->first);
+                }
+                this->grandchildRemoved(state);
+            }
+        }
+        else
+        {
+            ThrowException(GameState, "Game state '" + name_ + "' doesn't have a child named '"
+                + state->getName() + "'. Removal skipped.");
+            //COUT(2) << "Warning: Game state '" << name_ << "' doesn't have a child named '"
+            //    << state->getName() << "'. Removal skipped." << std::endl;
+        }
+    }
+
+    /**
+    @brief
+        Removes a child by name. This splits the tree in two parts,
+        each of them functional on its own.
+    @param state
+        GameState by name
+    */
+
+    void GameState::removeChild(const std::string& name)
+    {
+        GameState* state = checkState(name);
+        if (state)
+        {
+            removeChild(state);
+        }
+        else
+        {
+            ThrowException(GameState, "GameState '" + name + "' doesn't exist.");
+            //COUT(2) << "Warning: GameState '" << name << "' doesn't exist." << std::endl;
+        }
+    }
+
+    /**
+    @brief
         Tells a state that one of its children has added a child. This is necessary
         to fill the internal maps correctly.
     @param child
@@ -121,6 +196,24 @@ namespace orxonox
         this->grandchildrenToChildren_[grandchild] = child;
         if (this->parent_)
             this->parent_->grandchildAdded(this, grandchild);
+    }
+
+    /**
+    @brief
+        Tells a state that one of its children has removed a child. This is necessary
+        to fill the internal maps correctly.
+    @param child
+        The child who notices this state.
+    @param grandchild
+        The child that has been removed.
+    */
+    void GameState::grandchildRemoved(GameState* grandchild)
+    {
+        // adjust the two maps correctly.
+        this->allChildren_.erase(grandchild->getName());
+        this->grandchildrenToChildren_.erase(grandchild);
+        if (this->parent_)
+            this->parent_->grandchildRemoved(grandchild);
     }
 
     /**
@@ -190,26 +283,42 @@ namespace orxonox
     */
     void GameState::requestState(const std::string& name)
     {
-        GameState* request = checkState(name);
-        GameState* current = getCurrentState();
-        if (request)
+        if (name == "")
         {
+            // user would like to leave every state.
+            GameState* current = getCurrentState();
             if (current)
             {
-                // There is already an active state
-                current->makeTransition(request);
-            }
-            else
-            {
-                // no active state --> we have to activate the root node first.
+                // Deactivate all states but root
                 GameState* root = getRootNode();
-                root->activate();
-                root->makeTransition(request);
+                current->makeTransition(root);
+                // Kick root too
+                root->deactivate();
             }
         }
         else
         {
-            COUT(2) << "Warning: GameState '" << name << "' doesn't exist." << std::endl;
+            GameState* request = checkState(name);
+            GameState* current = getCurrentState();
+            if (request)
+            {
+                if (current)
+                {
+                    // There is already an active state
+                    current->makeTransition(request);
+                }
+                else
+                {
+                    // no active state --> we have to activate the root node first.
+                    GameState* root = getRootNode();
+                    root->activate();
+                    root->makeTransition(request);
+                }
+            }
+            else
+            {
+                COUT(2) << "Warning: GameState '" << name << "' doesn't exist." << std::endl;
+            }
         }
     }
 

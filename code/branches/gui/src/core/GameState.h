@@ -61,11 +61,13 @@ namespace orxonox
     {
     public:
         GameState(const std::string& name);
-        virtual ~GameState() { }
+        virtual ~GameState();
 
         const std::string& getName() const { return name_; }
 
         void addChild(GameState* state);
+        void removeChild(GameState* state);
+        void removeChild(const std::string& name);
         void requestState(const std::string& name);
 
         //! Determines whether the state is active.
@@ -75,16 +77,23 @@ namespace orxonox
         //! Determines whether the state is the current
         bool isCurrentState() { return this->bActive_ && !this->activeChild_; }
 
+        virtual bool tick(float dt) { return true; }
+
     protected:
+        //virtual void enter() = 0;
+        //virtual void leave() = 0;
+        //virtual void tick(float dt) = 0;
         virtual void enter() { }
         virtual void leave() { }
-        virtual void tick(float dt) { }
+
+        GameState* getActiveChild() { return this->activeChild_; }
 
     private:
         GameState* checkState(const std::string& name);
         GameState* getCurrentState();
         GameState* getRootNode();
         void grandchildAdded(GameState* child, GameState* grandchild);
+        void grandchildRemoved(GameState* grandchild);
         void makeTransition(GameState* state);
         void activate();
         void deactivate();
