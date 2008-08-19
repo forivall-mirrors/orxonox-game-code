@@ -29,13 +29,12 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSRoot.h"
 
-#include <cassert>
 #include "core/Factory.h"
 #include "core/ConfigFileManager.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/Debug.h"
-//#include "core/Exception.h"
+#include "core/Exception.h"
 #include "core/TclBind.h"
 #include "core/Core.h"
 #include "GraphicsEngine.h"
@@ -64,9 +63,6 @@ namespace orxonox
         // creates the class hierarchy for all classes with factories
         Factory::createClassHierarchy();
 
-        // TODO: config values
-        //setConfigValues();
-
         const Settings::CommandLineArgument* dataPath = Settings::getCommandLineArgument("dataPath");
         assert(dataPath);
         if (!dataPath->bHasDefaultValue_)
@@ -80,9 +76,14 @@ namespace orxonox
         // initialise TCL
         TclBind::getInstance().setDataPath(Settings::getDataPath());
 
+        // initialise graphics engine. Doesn't load the render window yet!
         graphicsEngine_ = new GraphicsEngine();
         graphicsEngine_->setup();       // creates ogre root and other essentials
 
+        // console commands
+        FunctorMember<GSRoot>* functor = createFunctor(&GSRoot::loadGame);
+        functor->setObject(this);
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "loadGame"));
     }
 
     void GSRoot::leave()
@@ -96,5 +97,14 @@ namespace orxonox
         if (this->getActiveChild())
             this->getActiveChild()->tick(dt);
         return true;
+    }
+
+    /**
+    @brief
+        Requests a state.
+    */
+    void GSRoot::loadGame(const std::string& name)
+    {
+        this->requestState(name);
     }
 }

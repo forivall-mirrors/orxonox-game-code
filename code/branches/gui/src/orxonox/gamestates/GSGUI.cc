@@ -32,8 +32,6 @@
 #include "GraphicsEngine.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
-#include "core/input/KeyBinder.h"
-#include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
 
 namespace orxonox

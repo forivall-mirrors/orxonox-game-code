@@ -162,6 +162,8 @@ namespace orxonox
 
                 // load the background scene
                 loadScenes();
+                //CEGUI::KeyEventArgs e;
+                //e.codepoint
             }
             catch (CEGUI::Exception& ex)
             {

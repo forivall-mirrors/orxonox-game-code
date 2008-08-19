@@ -87,10 +87,10 @@ static network::Server *server_g = 0;
 
 namespace orxonox
 {
-  SetConsoleCommand(Orxonox, exit, true).setKeybindMode(KeybindMode::OnPress);
-  SetConsoleCommand(Orxonox, slomo, true).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0).setAxisParamIndex(0).setIsAxisRelative(false);
-  SetConsoleCommand(Orxonox, setTimeFactor, true).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0);
-  SetConsoleCommand(Orxonox, loadGame, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, "standalone");
+  //SetConsoleCommand(Orxonox, exit, true).setKeybindMode(KeybindMode::OnPress);
+  //SetConsoleCommand(Orxonox, slomo, true).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0).setAxisParamIndex(0).setIsAxisRelative(false);
+  //SetConsoleCommand(Orxonox, setTimeFactor, true).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0);
+  //SetConsoleCommand(Orxonox, loadGame, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, "standalone");
 
   /**
     @brief Reference to the only instance of the class.

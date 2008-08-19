@@ -34,14 +34,13 @@
 #include <OgreTimer.h>
 #include <OgreWindowEventUtilities.h>
 
+#include "core/ConsoleCommand.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
-#include "core/input/KeyBinder.h"
 #include "core/Core.h"
-
-#include "GraphicsEngine.h"
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
@@ -87,29 +86,47 @@ namespace orxonox
         // load the CEGUI interface
         guiManager_ = new GUIManager();
         guiManager_->initialise();
+
+        // use the ogre timer class to measure time.
+        timer_ = new Ogre::Timer();
+
+        // add console commands
+        FunctorMember<GSGraphics>* functor = createFunctor(&GSGraphics::exitGame);
+        functor->setObject(this);
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "exit"));
     }
 
     void GSGraphics::leave()
     {
-        if (this->guiManager_)
-          delete guiManager_;
+        delete this->timer_;
 
-        if (this->console_)
-          delete this->console_;
+        delete this->guiManager_;
 
-        if (inputManager_)
-          delete inputManager_;
+        delete this->console_;
 
-        // TODO: deintialise graphics
+        delete this->inputManager_;
+
+        // TODO: destroy render window
     }
 
+    /**
+        Main loop of the orxonox game.
+        We use the Ogre::Timer to measure time since it uses the most precise
+        method an a platform (however the windows timer lacks time when under
+        heavy kernel load!).
+        There is a simple mechanism to measure the average time spent in our
+        ticks as it may indicate performance issues.
+        A note about the Ogre::FrameListener: Even though we don't use them,
+        they still get called. However, the delta times are not correct (except
+        for timeSinceLastFrame, which is the most important). A little research
+        as shown that there is probably only one FrameListener that doesn't even
+        need the time. So we shouldn't run into problems.
+    */
     bool GSGraphics::tick(float dt)
     {
-        Ogre::Root& ogreRoot = Ogre::Root::getSingleton();
+        // note: paramter 'dt' is of no meaning
 
-        // use the ogre timer class to measure time.
-        if (!timer_)
-            timer_ = new Ogre::Timer();
+        Ogre::Root& ogreRoot = Ogre::Root::getSingleton();
 
         unsigned long frameCount = 0;
 
@@ -144,6 +161,9 @@ namespace orxonox
                 // tick child state
                 if (this->getActiveChild())
                     this->getActiveChild()->tick(dt);
+
+                // tick console
+                this->console_->tick(dt);
 
                 // get current time once again
                 timeAfterTick = timer_->getMicroseconds();

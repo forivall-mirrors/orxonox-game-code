@@ -30,7 +30,7 @@
 
 namespace orxonox
 {
-    ConsoleCommand::ConsoleCommand(FunctorStatic* functor, const std::string& name) : ExecutorStatic(functor, name)
+    ConsoleCommand::ConsoleCommand(Functor* functor, const std::string& name) : Executor(functor, name)
     {
         this->accessLevel_ = AccessLevel::None;
         this->argumentCompleter_[0] = 0;

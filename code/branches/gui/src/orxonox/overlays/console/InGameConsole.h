@@ -36,13 +36,13 @@
 #include <OgreTextAreaOverlayElement.h>
 
 #include "core/Shell.h"
-#include "objects/Tickable.h"
+#include "core/OrxonoxClass.h"
 #include "tools/WindowEventListener.h"
 
 
 namespace orxonox
 {
-    class _OrxonoxExport InGameConsole : public TickableReal, public ShellListener, public WindowEventListener
+    class _OrxonoxExport InGameConsole : virtual public OrxonoxClass, public ShellListener, public WindowEventListener
     {
     public: // functions
         InGameConsole();

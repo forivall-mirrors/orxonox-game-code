@@ -69,29 +69,29 @@ namespace orxonox
         };
     }
 
-    class _CoreExport ConsoleCommand : public ExecutorStatic
+    class _CoreExport ConsoleCommand : public Executor
     {
         public:
-            ConsoleCommand(FunctorStatic* functor, const std::string& name = "");
+            ConsoleCommand(Functor* functor, const std::string& name = "");
 
             inline ConsoleCommand& setDescription(const std::string& description)
-                { this->ExecutorStatic::setDescription(description); return (*this); }
+                { this->Executor::setDescription(description); return (*this); }
             inline ConsoleCommand& setDescriptionParam(int param, const std::string& description)
-                { this->ExecutorStatic::setDescriptionParam(param, description); return (*this); }
+                { this->Executor::setDescriptionParam(param, description); return (*this); }
             inline ConsoleCommand& setDescriptionReturnvalue(const std::string& description)
-                { this->ExecutorStatic::setDescriptionReturnvalue(description); return (*this); }
+                { this->Executor::setDescriptionReturnvalue(description); return (*this); }
             inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1)
-                { this->ExecutorStatic::setDefaultValues(param1); return (*this); }
+                { this->Executor::setDefaultValues(param1); return (*this); }
             inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2)
-                { this->ExecutorStatic::setDefaultValues(param1, param2); return (*this); }
+                { this->Executor::setDefaultValues(param1, param2); return (*this); }
             inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3)
-                { this->ExecutorStatic::setDefaultValues(param1, param2, param3); return (*this); }
+                { this->Executor::setDefaultValues(param1, param2, param3); return (*this); }
             inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4)
-                { this->ExecutorStatic::setDefaultValues(param1, param2, param3, param4); return (*this); }
+                { this->Executor::setDefaultValues(param1, param2, param3, param4); return (*this); }
             inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5)
-                { this->ExecutorStatic::setDefaultValues(param1, param2, param3, param4, param5); return (*this); }
+                { this->Executor::setDefaultValues(param1, param2, param3, param4, param5); return (*this); }
             inline ConsoleCommand& setDefaultValue(unsigned int index, const MultiTypeMath& param)
-                { this->ExecutorStatic::setDefaultValue(index, param); return (*this); }
+                { this->Executor::setDefaultValue(index, param); return (*this); }
 
             inline ConsoleCommand& setAccessLevel(AccessLevel::Level level)
                 { this->accessLevel_ = level; return (*this); }
@@ -134,7 +134,7 @@ namespace orxonox
             bool bAxisRelative_;
     };
 
-    inline ConsoleCommand* createConsoleCommand(FunctorStatic* functor, const std::string& name = "")
+    inline ConsoleCommand* createConsoleCommand(Functor* functor, const std::string& name = "")
     {
         return new ConsoleCommand(functor, name);
     }

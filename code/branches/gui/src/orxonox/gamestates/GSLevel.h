@@ -48,7 +48,12 @@ namespace orxonox
 
         void setTimeFactor(float factor);
 
-        float                 timefactor_;       //!< A factor to change the gamespeed
+        float timefactor_;       //!< A factor to change the gamespeed
+
+        KeyBinder*            keyBinder_;        //!< tool that loads and manages the input bindings
+        Radar*                radar_;            //!< represents the Radar (not the HUD part)
+        Level*                startLevel_;       //!< current hard coded default level
+        Level*                hud_;              //!< 'level' object fo the HUD
     };
 }
 

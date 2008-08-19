@@ -41,6 +41,7 @@ namespace orxonox
         ~GSRoot();
 
         bool tick(float dt);
+        void loadGame(const std::string& name);
 
     private:
         void enter();

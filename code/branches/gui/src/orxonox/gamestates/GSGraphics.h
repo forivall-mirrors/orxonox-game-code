@@ -30,7 +30,9 @@
 #define _GSGraphics_H__
 
 #include "OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
 #include "core/GameState.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -42,6 +44,8 @@ namespace orxonox
 
         bool tick(float dt);
         void setConfigValues();
+
+        void exitGame() { this->bAbort_ = true; }
 
     private:
         void enter();
