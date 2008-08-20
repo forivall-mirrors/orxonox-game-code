@@ -101,6 +101,10 @@ namespace orxonox
   class ClassTreeMaskNode;
   class CommandEvaluation;
   class CommandExecutor;
+  class CommandLine;
+  class BaseCommandLineArgument;
+  template <class T>
+  class CommandLineArgument;
   class ConfigFile;
   class ConfigFileEntry;
   class ConfigFileEntryComment;

@@ -41,42 +41,20 @@
 
 namespace orxonox
 {
-
-// Using a macro makes the above list much more readable.
-// Settings::addGameMode adds the mode in a map, so we can access game modes by string.
-#define CreateGameMode(name, showsGraphics, isMaster, hasServer)                                        \
-    const GameMode GameMode::GM_##name = { GameMode::name, showsGraphics, isMaster, hasServer, #name }; \
-    bool temporaryVariable##name = Settings::addGameMode(&GameMode::GM_##name)
-
-    //                          showsGraphics  isMaster  hasServer
-    CreateGameMode(None,        false,         false,    false);
-    CreateGameMode(Unspecified, true,          false,    false);
-    CreateGameMode(Server,      true,          true,     true );
-    CreateGameMode(Client,      true,          false,    false);
-    CreateGameMode(Standalone,  true,          true,     false);
-    CreateGameMode(Dedicated,   false,         true,     true );
+    Settings* Settings::singletonRef_s = 0;
 
     /**
     @brief
         Constructor: Registers the object and sets the config-values.
     */
     Settings::Settings()
+        : bShowsGraphics_(false)
+        , bHasServer_(false)
     {
         RegisterRootObject(Settings);
-        gameMode_ = GameMode::GM_None;
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
         setConfigValues();
-    }
-
-    /**
-    @brief
-        Returns a unique instance of Core.
-    @return
-        The instance
-    */
-    Settings& Settings::getInstance()
-    {
-        static Settings instance;
-        return instance;
     }
 
     /**
@@ -107,48 +85,6 @@ namespace orxonox
     void Settings::_tsetDataPath(const std::string& path)
     {
         ModifyConfigValue(dataPath_, tset, path);
-    }
-
-    /**
-    @brief
-        Sets the game mode.
-    */
-    /*static*/ void Settings::setGameMode(const std::string& mode)
-    {
-        std::string modeL = getLowercase(mode);
-        std::map<std::string, const GameMode*>::const_iterator it = getInstance().gameModes_.find(modeL);
-        if (it != getInstance().gameModes_.end())
-            getInstance().gameMode_ = *(*it).second;
-        else
-        {
-            COUT(2) << "Warning: mode \"" << mode << "\" doesn't exist. "
-                    << "Defaulting to 'Standalone'" << std::endl;
-            getInstance().gameMode_ = GameMode::GM_Standalone;
-        }
-    }
-
-    /*static*/ bool Settings::addGameMode(const GameMode* mode)
-    {
-        getInstance().gameModes_[getLowercase(mode->name)] = mode;
-        return true;
-    }
-
-
-    /**
-    @brief
-        Gets an argument from the command line by name.
-    @return
-        Is 0 if name was not found.
-    */
-    /*static*/ const Settings::CommandLineArgument* Settings::getCommandLineArgument(const std::string &name)
-    {
-        std::map<std::string, CommandLineArgument>::const_iterator it = getInstance().commandArguments_.find(name);
-        if (it != getInstance().commandArguments_.end())
-        {
-            return &((*it).second);
-        }
-        else
-            return 0;
     }
 
 }

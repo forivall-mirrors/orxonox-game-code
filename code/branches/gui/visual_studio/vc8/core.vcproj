@@ -244,6 +244,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\CommandLine.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\ConsoleCommand.cc"
 					>
 				</File>
@@ -503,6 +507,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\CommandExecutor.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\CommandLine.h"
 					>
 				</File>
 				<File

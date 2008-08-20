@@ -73,7 +73,6 @@ namespace orxonox
       // don't mess with singletons
       Orxonox(Orxonox& instance);
 
-      bool loadLevel(const GameMode& mode);
       bool serverLoad();
       bool clientLoad();
       bool standaloneLoad();
@@ -89,10 +88,6 @@ namespace orxonox
       Ogre::Timer*          timer_;            //!< Main loop timer
       bool                  bAbort_;           //!< aborts the render loop if true
       float                 timefactor_;       //!< A factor to change the gamespeed
-
-      // this is used to identify the mode (server/client/...) we're in
-      GameMode              mode_;
-      GameMode              modeRequest_;
 
       // config values
       float                 debugRefreshTime_;

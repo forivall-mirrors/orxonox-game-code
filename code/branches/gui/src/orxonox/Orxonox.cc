@@ -107,7 +107,6 @@ namespace orxonox
     , timer_(0)
     , bAbort_(false)
     , timefactor_(1.0f)
-    , mode_(GameMode::GM_Unspecified)
     , debugRefreshTime_(0.0f)
     , graphicsEngine_(0)
     , inputManager_(0)
@@ -118,7 +117,7 @@ namespace orxonox
     RegisterRootObject(Orxonox);
 
     //assert(singletonRef_s == 0);
-    OrxAssert(singletonRef_s == 0, "asdfasdfasdfasdfblahblah");
+    OrxAssert(singletonRef_s == 0, "Cannot instantiate Orxonox class twice");
     singletonRef_s = this;
   }
 
@@ -228,24 +227,15 @@ namespace orxonox
 
         setConfigValues();
 
-        const Settings::CommandLineArgument* mode = Settings::getCommandLineArgument("mode");
-        assert(mode);
-        if (!mode->bHasDefaultValue_)
-        {
-            Settings::setGameMode(mode->value_);
-            this->mode_ = Settings::getGameMode();
-        }
-        COUT(3) << "Orxonox: Game mode is " << mode_.name << "." << std::endl;
-
-        const Settings::CommandLineArgument* dataPath = Settings::getCommandLineArgument("dataPath");
-        assert(dataPath);
-        if (!dataPath->bHasDefaultValue_)
-        {
-            if (*dataPath->value_.getString().end() != '/' && *dataPath->value_.getString().end() != '\\')
-                Settings::tsetDataPath(dataPath->value_.getString() + "/");
-            else
-                Settings::tsetDataPath(dataPath->value_.getString());
-        }
+        //const Settings::CommandLineArgument* dataPath = Settings::getCommandLineArgument("dataPath");
+        //assert(dataPath);
+        //if (!dataPath->bHasDefaultValue_)
+        //{
+        //    if (*dataPath->value_.getString().end() != '/' && *dataPath->value_.getString().end() != '\\')
+        //        Settings::tsetDataPath(dataPath->value_.getString() + "/");
+        //    else
+        //        Settings::tsetDataPath(dataPath->value_.getString());
+        //}
 
         try
         {
@@ -255,7 +245,7 @@ namespace orxonox
             graphicsEngine_ = new GraphicsEngine();
             graphicsEngine_->setup();       // creates ogre root and other essentials
 
-            if (mode_.showsGraphics)
+            if (Settings::showsGraphics())
             {
                 graphicsEngine_->loadRenderer();    // creates the render window
 
@@ -285,28 +275,6 @@ namespace orxonox
                 // started the game from.
                 // We probably want to use std::cin to catch input (OIS uses DirectX or X server)
             }
-
-            bool showGUI = true;
-            if (mode_.mode != GameMode::Unspecified)
-            {
-                showGUI = false;
-                // a game mode was specified with the command line
-                // we therefore load the game and level directly
-
-                if (!loadLevel(this->mode_))
-                {
-                    COUT(1) << "Loading with predefined mode failed. Showing main menu." << std::endl;
-                    showGUI = true;
-                    mode_ = GameMode::GM_Unspecified;
-                }
-            }
-
-            if (showGUI)
-            {
-                // show main menu
-                GUIManager::getInstance().showGUI("MainMenu", 0);
-                GraphicsEngine::getInstance().getViewport()->setCamera(GUIManager::getInstance().getCamera());
-            }
         }
         catch (std::exception& ex)
         {
@@ -315,64 +283,14 @@ namespace orxonox
             return;
         }
 
-        modeRequest_ = mode_;
         // here happens the game
         startRenderLoop();
 
-        if (mode_.mode == GameMode::Client)
-            network::Client::getSingleton()->closeConnection();
+        //if (mode_.mode == GameMode::Client)
+        //    network::Client::getSingleton()->closeConnection();
 
-        if (mode_.hasServer)
-            server_g->close();
-    }
-
-    /*static*/ void Orxonox::loadGame(const std::string& name)
-    {
-        const GameMode& mode = Settings::getGameMode(name);
-        if (mode.mode == GameMode::None)
-            return;
-
-        getInstance().modeRequest_ = mode;
-    }
-
-    bool Orxonox::loadLevel(const GameMode& mode)
-    {
-        bool success = true;
-
-        if (mode.showsGraphics)
-        {
-            // create Ogre SceneManager for the level
-            graphicsEngine_->createNewScene();
-
-            if (!loadPlayground())
-                return false;
-        }
-
-        switch (mode.mode)
-        {
-        case GameMode::Server:
-            success &= serverLoad();
-            break;
-        case GameMode::Client:
-            success &= clientLoad();
-            break;
-        case GameMode::Dedicated:
-            success &= serverLoad();
-            break;
-        case GameMode::Standalone:
-            success &= standaloneLoad();
-            break;
-        default: // never happens
-            assert(false);
-        }
-
-        if (success)
-        {
-            InputManager::getInstance().requestEnterState("game");
-            this->mode_ = mode;
-        }
-
-        return success;
+        //if (mode_.hasServer)
+        //    server_g->close();
     }
 
   /**
@@ -407,10 +325,10 @@ namespace orxonox
   {
     COUT(0) << "Loading level in server mode" << std::endl;
 
-    assert(Settings::getCommandLineArgument("port"));
-    int serverPort = Settings::getCommandLineArgument("port")->value_;
-    //server_g = new network::Server(serverPort_);
-    server_g = network::Server::createSingleton(serverPort);
+    //assert(Settings::getCommandLineArgument("port"));
+    //int serverPort = Settings::getCommandLineArgument("port")->value_;
+    ////server_g = new network::Server(serverPort_);
+    //server_g = network::Server::createSingleton(serverPort);
 
     if (!loadScene())
       return false;
@@ -427,15 +345,15 @@ namespace orxonox
   {
     COUT(0) << "Loading level in client mode" << std::endl;\
 
-    assert(Settings::getCommandLineArgument("port"));
-    assert(Settings::getCommandLineArgument("ip"));
-    int serverPort = Settings::getCommandLineArgument("port")->value_;
-    std::string serverIP = Settings::getCommandLineArgument("ip")->value_;
+    //assert(Settings::getCommandLineArgument("port"));
+    //assert(Settings::getCommandLineArgument("ip"));
+    //int serverPort = Settings::getCommandLineArgument("port")->value_;
+    //std::string serverIP = Settings::getCommandLineArgument("ip")->value_;
 
-    if (serverIP.compare("") == 0)
-      client_g = network::Client::createSingleton();
-    else
-      client_g = network::Client::createSingleton(serverIP, serverPort);
+    //if (serverIP.compare("") == 0)
+    //  client_g = network::Client::createSingleton();
+    //else
+    //  client_g = network::Client::createSingleton(serverIP, serverPort);
 
     if(!client_g->establishConnection())
       return false;
@@ -503,13 +421,6 @@ namespace orxonox
         timeBeforeTick    = timer_->getMicroseconds();
         float dt = (timeBeforeTick - timeBeforeTickOld) / 1000000.0;
 
-        // check whether we have to load a game
-        if (mode_.mode != modeRequest_.mode && mode_.mode == GameMode::Unspecified)
-        {
-            this->loadLevel(modeRequest_);
-            this->modeRequest_ = GameMode::GM_None;
-        }
-
 
         // tick the core (needs real time for input and tcl thread management)
         Core::tick(dt);
@@ -551,7 +462,7 @@ namespace orxonox
         evt.timeSinceLastEvent = dt; // note: same time, but shouldn't matter anyway
         ogreRoot._fireFrameStarted(evt);
 
-        if (mode_.showsGraphics)
+        if (Settings::showsGraphics())
         {
           // Pump messages in all registered RenderWindows
           // This calls the WindowEventListener objects.

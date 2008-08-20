@@ -37,13 +37,17 @@
 #include "core/Exception.h"
 #include "core/TclBind.h"
 #include "core/Core.h"
+#include "core/CommandLine.h"
 #include "GraphicsEngine.h"
 #include "Settings.h"
 
 namespace orxonox
 {
+    SetCommandLineArgument(dataPath, std::string("./"));
+
     GSRoot::GSRoot()
         : GameState("root")
+        , settings_(0)
         , graphicsEngine_(0)
     {
     }
@@ -63,14 +67,16 @@ namespace orxonox
         // creates the class hierarchy for all classes with factories
         Factory::createClassHierarchy();
 
-        const Settings::CommandLineArgument* dataPath = Settings::getCommandLineArgument("dataPath");
-        assert(dataPath);
-        if (!dataPath->bHasDefaultValue_)
+        // instantiate Settings class
+        this->settings_ = new Settings();
+
+        const CommandLineArgument<std::string>* dataPath = CommandLine::getCommandLineArgument<std::string>("dataPath");
+        if (!dataPath->hasDefaultValue())
         {
-            if (*dataPath->value_.getString().end() != '/' && *dataPath->value_.getString().end() != '\\')
-                Settings::tsetDataPath(dataPath->value_.getString() + "/");
+            if (*dataPath->getValue().end() != '/' && *dataPath->getValue().end() != '\\')
+                Settings::tsetDataPath(dataPath->getValue() + "/");
             else
-                Settings::tsetDataPath(dataPath->value_.getString());
+                Settings::tsetDataPath(dataPath->getValue());
         }
 
         // initialise TCL
@@ -88,8 +94,9 @@ namespace orxonox
 
     void GSRoot::leave()
     {
-        if (this->graphicsEngine_)
-            delete graphicsEngine_;
+        delete graphicsEngine_;
+
+        delete settings_;
     }
 
     bool GSRoot::tick(float dt)

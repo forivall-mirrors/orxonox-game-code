@@ -47,6 +47,7 @@ namespace orxonox
         void enter();
         void leave();
 
+        Settings*             settings_;
         GraphicsEngine*       graphicsEngine_;   //!< our dearest graphics engine <3
     };
 }

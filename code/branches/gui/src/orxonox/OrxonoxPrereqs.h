@@ -74,6 +74,7 @@ namespace orxonox
 
     class GraphicsEngine;
     class Orxonox;
+    class Settings;
 
     class RadarViewable;
     class Radar;

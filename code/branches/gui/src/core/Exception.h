@@ -58,6 +58,7 @@ namespace orxonox
         {
             General,
             FileNotFound,
+            Argument,
             PluginsNotFound,
             InitialisationFailed,
             NotImplemented,
@@ -118,6 +119,7 @@ namespace orxonox
             {
             RETURN_EXCEPTION_CODE(General)
             RETURN_EXCEPTION_CODE(FileNotFound);
+            RETURN_EXCEPTION_CODE(Argument);
             RETURN_EXCEPTION_CODE(PluginsNotFound);
             RETURN_EXCEPTION_CODE(InitialisationFailed);
             RETURN_EXCEPTION_CODE(NotImplemented);
@@ -131,6 +133,7 @@ namespace orxonox
     // define the template spcialisations
     CREATE_ORXONOX_EXCEPTION(General);
     CREATE_ORXONOX_EXCEPTION(FileNotFound);
+    CREATE_ORXONOX_EXCEPTION(Argument);
     CREATE_ORXONOX_EXCEPTION(PluginsNotFound);
     CREATE_ORXONOX_EXCEPTION(InitialisationFailed);
     CREATE_ORXONOX_EXCEPTION(NotImplemented);
@@ -141,9 +144,9 @@ namespace orxonox
 
     // define an assert macro that can display a message
 #ifndef NDEBUG
-#define OrxAssert(condition, errorMessage) \
-    condition ? ((void)0) : (void)(orxonox::OutputHandler::getOutStream().setOutputLevel(ORX_ERROR) << errorMessage << std::endl); \
-    assert(condition)
+#define OrxAssert(assertion, errorMessage) \
+    assertion ? ((void)0) : (void)(orxonox::OutputHandler::getOutStream().setOutputLevel(ORX_ERROR) << errorMessage << std::endl); \
+    assert(assertion)
 #else
 #define OrxAssert(condition, errorMessage)  ((void)0)
 #endif

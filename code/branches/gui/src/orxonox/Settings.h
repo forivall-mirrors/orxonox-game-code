@@ -46,147 +46,44 @@
 
 namespace orxonox
 {
-    /**
-    @brief
-        Defines a bit field structure that holds the mode as enum plus
-        the attributes as single named bits.
-        Every different GameMode is stored as static const, but if you wish to
-        compare two modes, you will have to use the 'mode' member variable.
-    */
-    struct GameMode
-    {
-        enum Mode
-        {
-            None,
-            Unspecified,
-            Server,
-            Client,
-            Standalone,
-            Dedicated,
-        };
-
-        Mode mode;
-        bool showsGraphics;
-        bool isMaster;
-        bool hasServer;
-        std::string name;
-
-        static const GameMode GM_None;
-        static const GameMode GM_Unspecified;
-        static const GameMode GM_Server;
-        static const GameMode GM_Client;
-        static const GameMode GM_Standalone;
-        static const GameMode GM_Dedicated;
-    };
-
-
     class _OrxonoxExport Settings : public OrxonoxClass
     {
+        friend class ClassIdentifier<Settings>;
+        friend class GSRoot;
+
     public:
-        struct CommandLineArgument
-        {
-            std::string name_;
-            MultiTypeMath value_;
-            bool bHasDefaultValue_;
-        };
+        static const std::string& getDataPath()
+        { assert(singletonRef_s); return singletonRef_s->dataPath_; }
+        static void tsetDataPath(const std::string& path)
+        { assert(singletonRef_s); singletonRef_s->_tsetDataPath(path); }
+
+        // an alternative to a global game mode variable
+        static bool showsGraphics() { assert(singletonRef_s); return singletonRef_s->bShowsGraphics_; }
+        static bool hasServer()     { assert(singletonRef_s); return singletonRef_s->bHasServer_; }
+
+
+    private:
+        // GSRoot has access to these
+        static void setShowsGraphics(bool val) { assert(singletonRef_s); singletonRef_s->bShowsGraphics_ = val; }
+        static void setHasServer    (bool val) { assert(singletonRef_s); singletonRef_s->bHasServer_     = val; }
+
+        Settings();
+        Settings(const Settings& instance);
+        ~Settings() { singletonRef_s = 0; }
+
+        static Settings& _getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+        void _tsetDataPath(const std::string& path);
 
         void setConfigValues();
 
-        static const std::string& getDataPath();
-        static void tsetDataPath(const std::string& path);
+        bool bShowsGraphics_;                                  //!< global variable that tells whether to show graphics
+        bool bHasServer_;                                      //!< global variable that tells whether this is a server
 
-        static const GameMode& getGameMode();
-        static const GameMode& getGameMode(const std::string& name);
-        static void setGameMode(const GameMode& mode);
-        static void setGameMode(const std::string& mode);
-        static bool addGameMode(const GameMode* mode);
+        std::string dataPath_;                                 //!< Path to the game data
 
-        static const CommandLineArgument* getCommandLineArgument(const std::string& name);
-        template <class T>
-        static bool addCommandLineArgument(const std::string &name, const std::string& valueStr, const T& defaultValue);
-
-    private:
-        Settings();
-        Settings(const Settings& instance);
-        ~Settings() { }
-        static Settings& getInstance();
-
-        void _tsetDataPath(const std::string& path);
-
-        std::string dataPath_;                                        //!< Path to the game data
-        GameMode gameMode_;                                           //!< Current game mode
-        std::map<std::string, const GameMode*> gameModes_;            //!< Holds all game modes for easy string access
-        //! holds all command line arguments (even if not given!)
-        std::map<std::string, CommandLineArgument> commandArguments_;
+        static Settings* singletonRef_s;                       //!< Static pointer to the only instance.
     };
 
-    /**
-    @brief
-        Returns the relative path to the game data.
-    */
-    inline const std::string& Settings::getDataPath()
-    {
-        return getInstance().dataPath_;
-    }
-
-    inline void Settings::tsetDataPath(const std::string& path)
-    {
-        getInstance()._tsetDataPath(path);
-    }
-
-    inline const GameMode& Settings::getGameMode()
-    {
-        return getInstance().gameMode_;
-    }
-
-    inline const GameMode& Settings::getGameMode(const std::string& name)
-    {
-        if (getInstance().gameModes_.find(name) != getInstance().gameModes_.end())
-            return *getInstance().gameModes_[name];
-        else
-        {
-            COUT(2) << "Warning: GameMode '" << name << "' doesn't exist." << std::endl;
-            return GameMode::GM_None;
-        }
-    }
-
-    inline void Settings::setGameMode(const GameMode& mode)
-    {
-        getInstance().gameMode_ = mode;
-    }
-
-    /**
-    @brief
-        Adds one argument of the command line to the map of command line arguments.
-    @param name
-        Name of the command line option.
-    @param valueStr
-        The value of the command line option as string
-    @param defaultValue
-        Default value for the option (marked when used).
-    @return
-        Dummy return value to enable code execution before main().
-    */
-    template <class T>
-    bool Settings::addCommandLineArgument(const std::string &name, const std::string& valueStr, const T& defaultValue)
-    {
-        T value;
-        bool useDefault = false;
-        if (valueStr == "")
-        {
-            // note: ArgReader only returns "" for not found arguments, " " otherwise for empty ones.
-            value = defaultValue;
-            useDefault = true;
-        }
-        else if (!convertValue(&value, valueStr))
-        {
-            COUT(1) << "Command Line: Couldn't read option '" << name << "'." << std::endl;
-            return false;
-        }
-        CommandLineArgument arg = { name, MultiTypeMath(value), useDefault };
-        getInstance().commandArguments_[name] = arg;
-        return true;
-    }
 }
 
 #endif /* _Settings_H__ */

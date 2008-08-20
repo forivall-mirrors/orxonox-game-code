@@ -34,6 +34,7 @@
 #include "core/input/SimpleInputState.h"
 #include "core/input/KeyBinder.h"
 #include "core/Loader.h"
+#include "core/CommandLine.h"
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
 #include "objects/Backlight.h"
@@ -44,6 +45,9 @@
 
 namespace orxonox
 {
+    SetCommandLineArgument(port, 55556).setShortcut("p");
+    SetCommandLineArgument(ip, std::string("127.0.0.0"));
+
     GSLevel::GSLevel()
         : GameState("level")
         , timefactor_(1.0f)

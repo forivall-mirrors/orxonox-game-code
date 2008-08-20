@@ -38,12 +38,10 @@
 #include <cassert>
 
 #include "util/OrxonoxPlatform.h"
-#include "util/ArgReader.h"
 #include "core/SignalHandler.h"
 #include "core/Debug.h"
-#include "network/ClientConnection.h"
-#include "Settings.h"
-#include "Orxonox.h"
+#include "core/CommandLine.h"
+//#include "Orxonox.h"
 
 #include "gamestates/GSRoot.h"
 #include "gamestates/GSGraphics.h"
@@ -79,42 +77,6 @@ using namespace orxonox;
 }
 #endif
 
-bool parseCommandLine(int argc, char** argv)
-{
-    ArgReader args;
-    std::string errorStr = args.parse(argc, argv);
-    if (errorStr != "")
-    {
-        COUT(1) << "Command Line: Parsing failed.\n" << errorStr << std::endl;
-        return false;
-    }
-
-    // Argument reader parses the command line to check syntax.
-    // Settings Singleton then stores the arguments. It always
-    // expects a default value.
-    bool success = true;
-    success &= Settings::addCommandLineArgument<std::string>
-        ("mode",     args.getArgument("mode"),     "standalone");
-    success &= Settings::addCommandLineArgument<std::string>
-        ("dataPath", args.getArgument("dataPath"), "./");
-    success &= Settings::addCommandLineArgument<std::string>
-        ("ip",       args.getArgument("ip"),       "127.0.0.0");
-    success &= Settings::addCommandLineArgument<int>
-        ("port",     args.getArgument("port"),     NETWORK_PORT);
-
-    if (!success)
-        return false;
-
-    if (!args.allChecked())
-    {
-        COUT(1) << "Command Line: Parsing failed.\nNot all arguments were matched." << std::endl;
-        return false;
-    }
-
-    return true;
-}
-
-#include "core/GameState.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -122,15 +84,21 @@ extern "C" {
 
 int main(int argc, char** argv)
 {
+    try
+    {
+        orxonox::CommandLine::parse(argc, argv);
+    }
+    catch (orxonox::ArgumentException& ex)
+    {
+        COUT(1) << ex.what() << std::endl;
+        COUT(0) << "Usage:" << std::endl << "orxonox [--mode client|server|dedicated|standalone] "
+                << "[--data PATH] [--ip IP] [--port PORT]" << std::endl;
+    }
+
+
     // create a signal handler (only works for linux)
     SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
 
-    if (!parseCommandLine(argc, argv))
-    {
-        COUT(0) << "Usage:" << std::endl << "orxonox [--mode client|server|dedicated|standalone] "
-                << "[--data PATH] [--ip IP] [--port PORT]" << std::endl;
-        return 0;
-    }
 
 
     /*GameState* state1 = new GameState("state1");
@@ -180,7 +148,7 @@ int main(int argc, char** argv)
     root.requestState("");
 
 
-    Orxonox orxonoxInstance;
+    //Orxonox orxonoxInstance;
 
     try
     {
