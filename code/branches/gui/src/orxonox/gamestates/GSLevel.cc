@@ -45,8 +45,8 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(port, 55556).setShortcut("p");
-    SetCommandLineArgument(ip, std::string("127.0.0.0"));
+    SetCommandLineArgument(port, 55556).setShortcut("p").setInformation("PORT");
+    SetCommandLineArgument(ip, "127.0.0.0").setInformation("#.#.#.#");
 
     GSLevel::GSLevel()
         : GameState("level")

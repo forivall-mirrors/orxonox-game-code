@@ -72,7 +72,7 @@ namespace orxonox
         /// Needed for  compatibility with std::exception (from Ogre::Exception)
         virtual ~Exception() throw() { }
 
-        virtual std::string        getFullDescription() const;
+        virtual const std::string& getFullDescription() const;
         virtual ExceptionType      getType()            const = 0;
         virtual std::string        getTypeName()        const = 0;
         virtual const std::string& getDescription()     const { return this->description_; }
@@ -87,6 +87,8 @@ namespace orxonox
         int lineNumber_;
         std::string functionName_;
         std::string fileName_;
+        // mutable because of "what()" is a const method
+        mutable std::string fullDescription_;
     };
 
 

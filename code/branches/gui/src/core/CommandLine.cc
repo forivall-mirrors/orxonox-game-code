@@ -30,6 +30,10 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+        Destructor destroys all CommandLineArguments with it.
+    */
     CommandLine::~CommandLine()
     {
         for (std::map<std::string, BaseCommandLineArgument*>::const_iterator it = cmdLineArgs_.begin();
@@ -38,15 +42,31 @@ namespace orxonox
             delete it->second;
         }
     }
-    
+
+    /**
+    @brief
+        Returns a unique instance (Meyers Singleton).
+    */
     CommandLine& CommandLine::_getInstance()
     {
         static CommandLine instance;
         return instance;
     }
 
-    void CommandLine::_parse(int argc, char** argv)
+    /**
+    @brief
+        Reads the command line parses the values of each argument.
+        It is then stored in the corresponding CommandLineArgument.
+    @note
+        The reason that you have to provide the string to be parsed as
+        space separted list is because of argc and argv. If you only have
+        a whole string, simply use getAllStrings() of SubString.
+    @param arguments
+        Vector of space separated strings.
+    */
+    void CommandLine::_parse(const std::vector<std::string>& arguments)
     {
+        // why this? See bFirstTimeParse_ declaration.
         if (bFirstTimeParse_)
         {
             // first shove all the shortcuts in a map
@@ -63,57 +83,94 @@ namespace orxonox
 
         std::string name;
         std::string shortcut;
-        std::string val;
-        for (int i = 1; i < argc; ++i)
+        std::string value;
+        for (unsigned int i = 0; i < arguments.size(); ++i)
         {
-            if (argv[i][0] == '-')
+            if (arguments[i].size() != 0)
             {
-                if (argv[i][1] <= 57 && argv[i][1] >= 48)
+                // sure not ""
+                if (arguments[i][0] == '-')
                 {
-                    // negative number as a value
-                    val += std::string(argv[i]) + " ";
-                }
-                else
-                {
-                    // save old data first
-                    if (name != "")
+                    // start with "-"
+                    if (arguments[i].size() == 1)
                     {
-                        checkFullArgument(name, val);
-                        name = "";
-                        assert(shortcut == "");
+                        // argument[i] is "-", probably a minus sign
+                        value += "- ";
                     }
-                    else if (shortcut != "")
+                    else if (arguments[i][1] <= 57 && arguments[i][1] >= 48)
                     {
-                        checkShortcut(shortcut, val);
-                        shortcut = "";
-                        assert(name == "");
-                    }
-
-                    if (argv[i][1] == '-')
-                    {
-                        // full name argument
-                        name = argv[i] + 2;
+                        // negative number as a value
+                        value += arguments[i] + " ";
                     }
                     else
                     {
-                        // short cut
-                        shortcut = argv[i] + 1;
-                    }
-                    val = "";
-                }
-            }
-            else // value
-            {
-                if (name == "" && shortcut == "")
-                {
-                    ThrowException(Argument, "Expected \"-\" or \"-\" in command line arguments.\n");
-                }
+                        // can be shortcut or full name argument
 
-                val += argv[i];
+                        // save old data first
+                        if (name != "")
+                        {
+                            checkFullArgument(name, value);
+                            name = "";
+                            assert(shortcut == "");
+                        }
+                        else if (shortcut != "")
+                        {
+                            checkShortcut(shortcut, value);
+                            shortcut = "";
+                            assert(name == "");
+                        }
+
+                        if (arguments[i][1] == '-')
+                        {
+                            // full name argument with "--name"
+                            name = arguments[i].substr(2);
+                        }
+                        else
+                        {
+                            // shortcut with "-s"
+                            shortcut = arguments[i].substr(1);
+                        }
+
+                        // reset value string
+                        value = "";
+                    }
+                }
+                else
+                {
+                    // value string
+
+                    if (name == "" && shortcut == "")
+                    {
+                        ThrowException(Argument, "Expected \"-\" or \"-\" in command line arguments.\n");
+                    }
+
+                    // Concatenate strings as long as there's no new argument by "-" or "--"
+                    value += arguments[i] + ' ';
+                }
             }
+        }
+
+        // parse last argument
+        if (name != "")
+        {
+            checkFullArgument(name, value);
+            assert(shortcut == "");
+        }
+        else if (shortcut != "")
+        {
+            checkShortcut(shortcut, value);
+            assert(name == "");
         }
     }
 
+    /**
+    @brief
+        Parses an argument based on its full name.
+    @param name
+        Full name of the argument
+    @param value
+        String containing the value
+    */
     void CommandLine::checkFullArgument(const std::string& name, const std::string& value)
     {
         std::map<std::string, BaseCommandLineArgument*>::const_iterator it = cmdLineArgs_.find(name);
@@ -123,6 +180,14 @@ namespace orxonox
         it->second->parse(value);
     }
 
+    /**
+    @brief
+        Parses an argument based on its shortcut.
+    @param shortcut
+        Shotcut to the argument
+    @param value
+        String containing the value
+    */
     void CommandLine::checkShortcut(const std::string& shortcut, const std::string& value)
     {
         std::map<std::string, BaseCommandLineArgument*>::const_iterator it = cmdLineArgsShortcut_.find(shortcut);
@@ -131,4 +196,17 @@ namespace orxonox
 
         it->second->parse(value);
     }
+
+    std::string CommandLine::getUsageInformation()
+    {
+        CommandLine* inst = &_getInstance();
+        std::string infoStr;
+        for (std::map<std::string, BaseCommandLineArgument*>::const_iterator it = inst->cmdLineArgs_.begin();
+            it != inst->cmdLineArgs_.end(); ++it)
+        {
+            infoStr += "[--" + it->second->getName() + " " + it->second->getInformation() + "] ";
+        }
+        return infoStr;
+    }
+
 }

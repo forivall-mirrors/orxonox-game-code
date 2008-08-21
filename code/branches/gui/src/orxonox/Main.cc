@@ -40,8 +40,6 @@
 #include "util/OrxonoxPlatform.h"
 #include "core/SignalHandler.h"
 #include "core/Debug.h"
-#include "core/CommandLine.h"
-//#include "Orxonox.h"
 
 #include "gamestates/GSRoot.h"
 #include "gamestates/GSGraphics.h"
@@ -84,21 +82,8 @@ extern "C" {
 
 int main(int argc, char** argv)
 {
-    try
-    {
-        orxonox::CommandLine::parse(argc, argv);
-    }
-    catch (orxonox::ArgumentException& ex)
-    {
-        COUT(1) << ex.what() << std::endl;
-        COUT(0) << "Usage:" << std::endl << "orxonox [--mode client|server|dedicated|standalone] "
-                << "[--data PATH] [--ip IP] [--port PORT]" << std::endl;
-    }
-
-
     // create a signal handler (only works for linux)
     SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
-
 
 
     /*GameState* state1 = new GameState("state1");
@@ -143,26 +128,10 @@ int main(int argc, char** argv)
     graphics.addChild(&level);
     graphics.addChild(&gui);
 
-    root.requestState("gui");
+    root.feedCommandLine(argc, argv);
+    root.requestState("root");
     root.tick(0.0f);
     root.requestState("");
-
-
-    //Orxonox orxonoxInstance;
-
-    try
-    {
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
-        orxonoxInstance.start(macBundlePath());
-#else
-        //orxonoxInstance.start();
-#endif
-    }
-    catch (std::exception& ex)
-    {
-        COUT(1) << ex.what() << std::endl;
-        COUT(1) << "Abort." << std::endl;
-    }
 
     return 0;
 }

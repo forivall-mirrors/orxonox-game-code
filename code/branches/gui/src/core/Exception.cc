@@ -51,29 +51,34 @@ namespace orxonox
         , fileName_("")
     { }
 
-    std::string Exception::getFullDescription() const
+    const std::string& Exception::getFullDescription() const
     {
-        std::ostringstream fullDesc;
-
-        fullDesc << this->getTypeName() << "_EXCEPTION";
-
-        if (this->fileName_ != "")
+        if (fullDescription_ == "")
         {
-            fullDesc << " in " << this->fileName_;
-            if (this->lineNumber_)
-                fullDesc << "(" << this->lineNumber_ << ")";
+            std::ostringstream fullDesc;
+
+            fullDesc << this->getTypeName() << "_EXCEPTION";
+
+            if (this->fileName_ != "")
+            {
+                fullDesc << " in " << this->fileName_;
+                if (this->lineNumber_)
+                    fullDesc << "(" << this->lineNumber_ << ")";
+            }
+
+            if (this->functionName_ != "")
+                fullDesc << " in function '" << this->functionName_ << "'";
+
+            fullDesc << ": ";
+            if (this->description_ != "")
+                fullDesc << this->description_;
+            else
+                fullDesc << "No description available.";
+
+            this->fullDescription_ = std::string(fullDesc.str());
         }
 
-        if (this->functionName_ != "")
-            fullDesc << " in function '" << this->functionName_ << "'";
-
-        fullDesc << ": ";
-        if (this->description_ != "")
-            fullDesc << this->description_;
-        else
-            fullDesc << "No description available.";
-
-        return fullDesc.str();
+        return fullDescription_;
     }
 
 

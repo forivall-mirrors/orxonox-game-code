@@ -40,6 +40,7 @@ namespace orxonox
         GSRoot();
         ~GSRoot();
 
+        void feedCommandLine(int argc, char** argv);
         bool tick(float dt);
         void loadGame(const std::string& name);
 

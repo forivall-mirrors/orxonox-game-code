@@ -689,6 +689,29 @@ struct ConverterSpecialized<std::string, orxonox::ColourValue, _Explicit_>
     }
 };
 
+
+///////////////////////////
+// Static type detection //
+///////////////////////////
+
+/**
+    Template class that determines whether type T converts implicitly to type U.
+@note
+    This allows to detect type conversion at compile time.
+    From 'Modern C++ Design' (Alexandrescu 2001).
+*/
+template <class T, class U>
+class StaticConversion
+{
+    class Small { char dummy[1]; };
+    class Big   { char dummy[1024]; };
+    static Small Test(U);
+    static Big   Test(...);
+    static T MakeT();
+public:
+    enum { exists = sizeof(Test(MakeT())) == sizeof(Small) };
+};
+
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
 #pragma warning(pop)
 #endif

@@ -29,10 +29,12 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSRoot.h"
 
+#include "util/SubString.h"
 #include "core/Factory.h"
 #include "core/ConfigFileManager.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
+#include "core/CommandLine.h"
 #include "core/Debug.h"
 #include "core/Exception.h"
 #include "core/TclBind.h"
@@ -43,7 +45,7 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(dataPath, std::string("./"));
+    SetCommandLineArgument(dataPath, "").setInformation("PATH");
 
     GSRoot::GSRoot()
         : GameState("root")
@@ -54,6 +56,33 @@ namespace orxonox
 
     GSRoot::~GSRoot()
     {
+    }
+
+    //SetCommandLineArgument(asdf1, "haha").setShortcut("a").setUsageInformation("1|2|3");
+    //SetCommandLineArgument(asdf2, 3).setShortcut("b");
+    //SetCommandLineArgument(asdf3, Vector2()).setShortcut("c");
+    //SetCommandLineArgument(adsf4, 1.4f).setShortcut("d");
+    //SetCommandLineSwitch(showGraphics).setShortcut("g");
+
+    void GSRoot::feedCommandLine(int argc, char** argv)
+    {
+        std::vector<std::string> args;
+        for (int i = 1; i < argc; ++i)
+            args.push_back(argv[i]);
+
+        //std::string line = "-a --asdf3 (3,3) -d -5 -b - 5.4";
+        //SubString tokens(line, " ", " ", false, 92, false, 34, true, 40, 41, false, 0);
+
+        try
+        {
+            orxonox::CommandLine::parse(args);
+            //CommandLine::parse(tokens.getAllStrings());
+        }
+        catch (orxonox::ArgumentException& ex)
+        {
+            COUT(1) << ex.what() << std::endl;
+            COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
+        }
     }
 
     void GSRoot::enter()
@@ -70,13 +99,14 @@ namespace orxonox
         // instantiate Settings class
         this->settings_ = new Settings();
 
-        const CommandLineArgument<std::string>* dataPath = CommandLine::getCommandLineArgument<std::string>("dataPath");
-        if (!dataPath->hasDefaultValue())
+        std::string dataPath;
+        CommandLine::getCommandLineValue("dataPath", &dataPath);
+        if (dataPath != "")
         {
-            if (*dataPath->getValue().end() != '/' && *dataPath->getValue().end() != '\\')
-                Settings::tsetDataPath(dataPath->getValue() + "/");
+            if (*dataPath.end() != '/' && *dataPath.end() != '\\')
+                Settings::tsetDataPath(dataPath + "/");
             else
-                Settings::tsetDataPath(dataPath->getValue());
+                Settings::tsetDataPath(dataPath);
         }
 
         // initialise TCL
@@ -90,6 +120,8 @@ namespace orxonox
         FunctorMember<GSRoot>* functor = createFunctor(&GSRoot::loadGame);
         functor->setObject(this);
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "loadGame"));
+
+        requestState("gui");
     }
 
     void GSRoot::leave()
