@@ -16,6 +16,7 @@ SET(CORE_SRC_FILES
   ArgumentCompletionFunctions.cc
   CommandEvaluation.cc
   CommandExecutor.cc
+  CommandLine.cc
   ConsoleCommand.cc
   ConsoleCommandCompilation.cc
   Executor.cc
