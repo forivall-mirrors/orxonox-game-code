@@ -31,7 +31,6 @@
 #include <string>
 
 #include "packet/Chat.h"
-#include "Node.h"
 
 namespace network {
 
