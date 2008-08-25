@@ -10,6 +10,13 @@ SET( NETWORK_SRC_FILES
   PacketGenerator.cc
   Server.cc
   Synchronisable.cc
+  Host.cc
+  packet/Packet.cc
+  packet/Chat.cc
+  packet/ClassID.cc
+  packet/Acknowledgement.cc
+  packet/Gamestate.cc
+  Host.cc
 )
 
 IF(WIN32)

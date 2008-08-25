@@ -52,9 +52,8 @@
 
 namespace network
 {
-  GameStateManager::GameStateManager(ClientInformation *head) {
+  GameStateManager::GameStateManager() {
     id_=0;
-    head_=head;
   }
 
   GameStateManager::~GameStateManager() {
@@ -129,7 +128,7 @@ namespace network
   GameStateCompressed *GameStateManager::popGameState(int clientID) {
     //why are we searching the same client's gamestate id as we searched in
     //Server::sendGameState?
-    int gID = head_->findClient(clientID)->getGamestateID();
+    int gID = ClientInformation::findClient(clientID)->getGamestateID();
     COUT(4) << "G.St.Man: popgamestate: sending gstate_id: " << id_ << " diffed from: " << gID << std::endl;
 //     COUT(3) << "gamestatemap: " << &gameStateMap << std::endl;
     //chose wheather the next gamestate is the first or not
@@ -466,7 +465,7 @@ namespace network
   
 
   void GameStateManager::ackGameState(int clientID, int gamestateID) {
-    ClientInformation *temp = head_->findClient(clientID);
+    ClientInformation *temp = ClientInformation::findClient(clientID);
     if(temp==0)
       return;
     int curid = temp->getGamestateID();
@@ -523,7 +522,7 @@ namespace network
       return;
     if(client->getGamestateID()>=0)
       gameStateUsed[client->getGamestateID()]--;
-    head_->removeClient(client->getID());
+    ClientInformation::removeClient(client->getID());
   }
 
 }

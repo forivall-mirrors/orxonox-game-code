@@ -47,43 +47,16 @@
 #include "PacketTypes.h"
 #include "GameStateManager.h"
 #include "ClientInformation.h"
-//#include "NetworkFrameListener.h"
 #include "util/Sleep.h"
 #include "objects/SpaceShip.h"
 #include "core/ConsoleCommand.h"
+#include "packet/Chat.h"
+#include "packet/Packet.h"
 
 namespace network
 {
   #define MAX_FAILURES 20;
   #define NETWORK_FREQUENCY 30
-  
-  Server *Server::instance_=0;
-  
-  Server *Server::createSingleton(){
-    if(!instance_)
-      instance_ = new Server();
-    return instance_;
-  }
-  Server *Server::createSingleton(int port){
-    if(!instance_)
-      instance_ = new Server(port);
-    return instance_;
-  }
-  Server *Server::createSingleton(int port, std::string bindAddress){
-    if(!instance_)
-      instance_ = new Server(port, bindAddress);
-    return instance_;
-  }
-  Server *Server::createSingleton(int port, const char *bindAddress){
-    if(!instance_)
-      instance_ = new Server(port, bindAddress);
-    return instance_;
-  }
-  
-  Server *Server::getSingleton(){
-    return instance_;
-  }
-  
   
   /**
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY
@@ -92,17 +65,15 @@ namespace network
   Server::Server() {
     timeSinceLastUpdate_=0;
     packet_gen = PacketGenerator();
-    clients = new ClientInformation(true);
-    connection = new ConnectionManager(clients);
-    gamestates = new GameStateManager(clients);
+    connection = new ConnectionManager();
+    gamestates = new GameStateManager();
   }
   
   Server::Server(int port){
     timeSinceLastUpdate_=0;
     packet_gen = PacketGenerator();
-    clients = new ClientInformation(true);
-    connection = new ConnectionManager(clients, port);
-    gamestates = new GameStateManager(clients);
+    connection = new ConnectionManager(port);
+    gamestates = new GameStateManager();
   }
 
   /**
@@ -113,9 +84,8 @@ namespace network
   Server::Server(int port, std::string bindAddress) {
     timeSinceLastUpdate_=0;
     packet_gen = PacketGenerator();
-    clients = new ClientInformation();
-    connection = new ConnectionManager(port, bindAddress, clients);
-    gamestates = new GameStateManager(clients);
+    connection = new ConnectionManager(port, bindAddress);
+    gamestates = new GameStateManager();
   }
 
   /**
@@ -126,9 +96,8 @@ namespace network
   Server::Server(int port, const char *bindAddress) {
     timeSinceLastUpdate_=0;
     packet_gen = PacketGenerator();
-    clients = new ClientInformation();
-    connection = new ConnectionManager(port, bindAddress, clients);
-    gamestates = new GameStateManager(clients);
+    connection = new ConnectionManager(port, bindAddress);
+    gamestates = new GameStateManager();
   }
 
   /**
@@ -147,13 +116,34 @@ namespace network
     return;
   }
 
+  bool Server::processChat(packet::Chat *message, unsigned int clientID){
+    ClientInformation *temp = ClientInformation::getBegin();
+    packet::Packet *pkt;
+    while(temp){
+      pkt = new packet::Packet(message);
+      pkt->setClientID(temp->getID());
+      if(!pkt->send())
+        COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
+    }
+    return message->process();
+  }
+  
   /**
   * This function sends out a message to all clients
   * @param msg message
   * @return true/false
   */
-  bool Server::sendChat(std::string msg) {
-    return sendChat(msg.c_str());
+  bool Server::sendChat(packet::Chat *chat) {
+    //TODO: change this (no informations about who wrote a message)
+    ClientInformation *temp = ClientInformation::getBegin();
+    packet::Packet *pkt;
+    while(temp){
+      pkt = new packet::Packet(chat);
+      pkt->setClientID(temp->getID());
+      if(!pkt->send())
+        COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
+    }
+    return chat->process();
   }
 
   /**
@@ -161,14 +151,14 @@ namespace network
   * @param msg message
   * @return true/false
   */
-  bool Server::sendChat(const char *msg) {
-    char *message = new char [strlen(msg)+10+1];
-    sprintf(message, "Player %d: %s", CLIENTID_SERVER, msg);
-    COUT(1) << message << std::endl;
-    ENetPacket *packet = packet_gen.chatMessage(message);
-    COUT(5) <<"Server: adding Packets" << std::endl;
-    return connection->addPacketAll(packet);
-  }
+//   bool Server::sendChat(const char *msg) {
+//     char *message = new char [strlen(msg)+10+1];
+//     sprintf(message, "Player %d: %s", CLIENTID_SERVER, msg);
+//     COUT(1) << message << std::endl;
+//     ENetPacket *packet = packet_gen.chatMessage(message);
+//     COUT(5) <<"Server: adding Packets" << std::endl;
+//     return connection->addPacketAll(packet);
+//   }
 
   /**
   * Run this function once every tick
@@ -190,6 +180,10 @@ namespace network
 //     usleep(5000); // TODO remove
     return;
   }
+  
+  bool Server::queuePacket(ENetPacket *packet, int clientID){
+    return connection->addPacket(packet, clientID);
+  }
 
   /**
   * processes all the packets waiting in the queue
@@ -210,12 +204,12 @@ namespace network
         addClient(event);
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
-        if(clients->findClient(&event->peer->address))
+        if(ClientInformation::findClient(&event->peer->address))
           disconnectClient(event);
         break;
       case ENET_EVENT_TYPE_RECEIVE:
-        if(clients->findClient(&event->peer->address)){
-          clientID = clients->findClient(&event->peer->address)->getID();
+        if(ClientInformation::findClient(&event->peer->address)){
+          clientID = ClientInformation::findClient(&event->peer->address)->getID();
           if( !elaborate(event->packet, clientID) ) 
             COUT(3) << "Server: could not elaborate" << std::endl;
         }
@@ -246,17 +240,14 @@ namespace network
   */
   bool Server::sendGameState() {
     COUT(5) << "Server: starting function sendGameState" << std::endl;
-    ClientInformation *temp = clients;
+    ClientInformation *temp = ClientInformation::getBegin();
     bool added=false;
     while(temp != NULL){
-      if(temp->getHead()){
-        temp=temp->next();
-        //think this works without continue
-        continue;
-      }
       if( !(temp->getSynched()) ){
         COUT(5) << "Server: not sending gamestate" << std::endl;
         temp=temp->next();
+        if(!temp)
+          break;
         //think this works without continue
         continue;
       }
@@ -319,23 +310,23 @@ namespace network
         clients->findClient(clientID)->resetFailures();*/
   }
   
-  void Server::processChat( chat *data, int clientId){
-    char *message = new char [strlen(data->message)+10+1];
-    sprintf(message, "Player %d: %s", clientId, data->message);
-    COUT(1) << message << std::endl;
-    ENetPacket *pck = packet_gen.chatMessage(message);
-    connection->addPacketAll(pck);
-    delete[] data->message;
-    delete data;
-  }
+//   void Server::processChat( chat *data, int clientId){
+//     char *message = new char [strlen(data->message)+10+1];
+//     sprintf(message, "Player %d: %s", clientId, data->message);
+//     COUT(1) << message << std::endl;
+//     ENetPacket *pck = packet_gen.chatMessage(message);
+//     connection->addPacketAll(pck);
+//     delete[] data->message;
+//     delete data;
+//   }
   
   bool Server::addClient(ENetEvent *event){
-    ClientInformation *temp = clients->insertBack(new ClientInformation);
+    ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
     if(!temp){
       COUT(2) << "Server: could not add client" << std::endl;
       return false;
     }
-    if(temp->prev()->getHead()) { //not good if you use anything else than insertBack
+    if(temp->prev()->getBegin()) { //not good if you use anything else than insertBack
       temp->prev()->setID(0); //bugfix: not necessary but usefull
       temp->setID(1);
     }
@@ -347,7 +338,7 @@ namespace network
   }
   
   bool Server::createClient(int clientID){
-    ClientInformation *temp = clients->findClient(clientID);
+    ClientInformation *temp = ClientInformation::findClient(clientID);
     if(!temp){
       COUT(2) << "Conn.Man. could not create client with id: " << clientID << std::endl;
       return false;
@@ -375,6 +366,8 @@ namespace network
       return false;
     }
     orxonox::SpaceShip *no = dynamic_cast<orxonox::SpaceShip *>(id->fabricate());
+    no->classID = id->getNetworkID();
+    client->setShipID(no->objectID);
     no->setPosition(orxonox::Vector3(0,0,80));
     no->setScale(10);
     //no->setYawPitchRoll(orxonox::Degree(-90),orxonox::Degree(-90),orxonox::Degree(0));
@@ -387,10 +380,9 @@ namespace network
     no->setTransDamp(75);
     no->setRotDamp(1.0);
     no->setCamera("cam_"+client->getID());
-    no->classID = id->getNetworkID();
     no->create();
+    no->setBacksync(true);
     
-    client->setShipID(no->objectID);
     return true;
   }
   
@@ -400,7 +392,7 @@ namespace network
     
     //boost::recursive_mutex::scoped_lock lock(head_->mutex_);
     orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::start();
-    ClientInformation *client = clients->findClient(&event->peer->address);
+    ClientInformation *client = ClientInformation::findClient(&event->peer->address);
     if(!client)
       return false;
     while(it){
@@ -411,13 +403,13 @@ namespace network
       orxonox::Iterator<orxonox::SpaceShip> temp=it;
       ++it;
       delete  *temp;
-      return clients->removeClient(event->peer);
+      return ClientInformation::removeClient(event->peer);
     }
     return false;
   }
 
   void Server::disconnectClient(int clientID){
-    ClientInformation *client = clients->findClient(clientID);
+    ClientInformation *client = ClientInformation::findClient(clientID);
     if(client)
       disconnectClient(client);
   }

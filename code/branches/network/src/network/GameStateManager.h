@@ -68,7 +68,7 @@ namespace network
   */
   class GameStateManager{
   public:
-    GameStateManager(ClientInformation *head);
+    GameStateManager();
     ~GameStateManager();
     
     void addGameState(GameStateCompressed *gs, int clientID);
@@ -95,7 +95,6 @@ namespace network
     std::map<int, int> gameStateUsed; // save the number of clients, that use the specific gamestate
     std::map<int, GameStateCompressed*> gameStateQueue;
     GameState *reference;
-    ClientInformation *head_;
     int id_;
     
     

@@ -39,46 +39,16 @@
 //
 
 #include "Client.h"
+#include "Host.h"
 #include "Synchronisable.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
-#include "Server.h"
+#include "packet/Packet.h"
 
 namespace network
 {
-  SetConsoleCommandShortcut(Client, Chat);
+//   SetConsoleCommandShortcut(Client, chat);
   
-  Client* Client::_sClient = 0;
-  
-  Client* Client::createSingleton(){
-    if(!_sClient){
-      _sClient = new Client();
-    }
-    return _sClient;
-  }
-  
-  Client* Client::createSingleton(std::string address, int port){
-    if(!_sClient)
-      _sClient = new Client(address, port);
-    return _sClient;
-  }
-  
-  Client* Client::createSingleton(const char *address, int port){
-    if(!_sClient)
-      _sClient = new Client(address, port);
-    return _sClient;
-  }
-  
-  void Client::destroySingleton(){
-    if(_sClient){
-      delete _sClient;
-      _sClient = 0;
-    }
-  }
-  
-  Client* Client::getSingleton(){
-    return _sClient; 
-  }
   
   /**
   * Constructor for the Client class
@@ -143,17 +113,19 @@ namespace network
     return client_connection.closeConnection();
   }
 
-  
-
-  void Client::Chat( std::string message ){
-    if(Client::getSingleton())
-      Client::getSingleton()->sendChat(message);
-    else if(Server::getSingleton())
-      Server::getSingleton()->sendChat(message);
-    else
-      COUT(1) << "do you want to monologize ??" << std::endl;
+  bool Client::queuePacket(ENetPacket *packet, int clientID){
+    return client_connection.addPacket(packet);
   }
   
+  bool Client::processChat(packet::Chat *message, unsigned int clientID){
+    return message->process();
+  }
+  
+  bool Client::sendChat(packet::Chat *chat){
+    chat->process();
+    packet::Packet *p = new packet::Packet(chat);
+    return p->send();
+  }
 
   /**
   * submits a chat message to the server
@@ -235,11 +207,11 @@ namespace network
     return;
   }
 
-  void Client::processChat( chat *data, int clientId){
-    COUT(1) << data->message << std::endl;
-    delete[] data->message;
-    delete data;
-  }
+//   void Client::processChat( chat *data, int clientId){
+//     COUT(1) << data->message << std::endl;
+//     delete[] data->message;
+//     delete data;
+//   }
   
   bool Client::processWelcome( welcome *w ){
     COUT(4) << "processing welcome message" << std::endl;

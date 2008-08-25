@@ -20,62 +20,35 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2007
+ *      Oliver Scheuss <scheusso [at] ee.ethz.ch>, (C) 2008
  *   Co-authors:
  *      ...
  *
  */
+ 
+#ifndef NETWORKNODE_H
+#define NETWORKNODE_H
 
-#include "Server.h"
+#include <assert.h>
+#include "packet/Chat.h"
 
-#include <iostream>
-
-#include "util/Sleep.h"
-#include "PacketManager.h"
-#include "PacketTypes.h"
-
-namespace network
-{
-
-  class dummyserver3 : public Server
+namespace network{
+  
+  class Node
   {
-  public:
-    dummyserver3();
-    ~dummyserver3();
-    void loop();
-  private:
-    void tick();
-    void processChat( chat *data, int clientId);
-
-
+    private:
+    protected:
+      
+      Node(){}
+      ~Node(){}
+    public:
+      virtual bool chat(packet::Chat *message)=0;
   };
-
-  dummyserver3::dummyserver3(){
-  }
-  dummyserver3::~dummyserver3(){
-  }
-
-  void dummyserver3::loop(){
-    open();
-    while(true){
-      tick();
-      usleep(100);
-    }
-  }
-
-  void dummyserver3::processChat( chat *data, int clientId){
-    std::cout << "Client " << clientId << " sent: " << data->message << std::endl;
-    sendMSG(data->message);
-  }
-
-  void dummyserver3::tick(){
-    processQueue();
-  }
-
+  
+  
+  
+  
 }
 
-int main(int argc, char **argv[]){
-  network::dummyserver3 server;
-  server.loop();
-  return 0;
-}
+
+#endif

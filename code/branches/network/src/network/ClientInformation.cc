@@ -45,43 +45,21 @@
 namespace network
 {
   
+  ClientInformation *ClientInformation::head_=0;
+  
   ClientInformation::ClientInformation() {
+    if(!head_)
+      head_=this;
     gamestateID_=GAMESTATEID_INITIAL;
     preve=0;
     nexte=0;
     partialGamestateID_=GAMESTATEID_INITIAL-1;
-    this->head_=false;
     synched_=false;
   }
-
-  ClientInformation::ClientInformation(bool head) {
-    gamestateID_=GAMESTATEID_INITIAL;
-    preve=0;
-    nexte=0;
-    partialGamestateID_=GAMESTATEID_INITIAL-1;
-    this->head_=head;
-    synched_=false;
-  }
-
-  // ClientInformation::ClientInformation(ClientInformation *prev) {
-  //   if(prev->next()!=0){
-  //     this->nexte=prev->next();
-  //     this->nexte->setPrev(this);
-  //   }
-  //   else
-  //     this->nexte = 0;
-  //   prev->setNext(this);
-  //   this->preve = pref;
-  // }
-  //
-  // ClientInformation::ClientInformation(ClientInformation *prev, ClientInformation *next){
-  //   this->nexte = next;
-  //   this->preve = prev;
-  //   this->preve->setNext(this);
-  //   this->nexte->setPrev(this);
-  // }
 
   ClientInformation::~ClientInformation() {
+    if(this==head_)
+      head_=next();
     if(prev()!=0)
       prev()->setNext(this->next());
     if(next()!=0)
@@ -102,10 +80,9 @@ namespace network
   }
 
   bool ClientInformation::setPrev(ClientInformation *prev) {
-    if(!head_)
-      this->preve = prev;
-    else
-      return false;
+    if(this==head_)
+      head_=prev;
+    this->preve = prev;
     return true;
   }
 
@@ -173,14 +150,6 @@ namespace network
       return NULL;
   }
   
-  bool ClientInformation::getHead(){
-    return head_;
-  }
-  
-  void ClientInformation::setHead(bool h){
-    head_=h;
-  }
-  
   int ClientInformation::getFailures(){
     return failures_;
   }
@@ -214,9 +183,10 @@ namespace network
   }
 
   ClientInformation *ClientInformation::insertBack(ClientInformation *ins) {
-    if(!this)
-      return NULL;
-    ClientInformation *temp = this;
+    ClientInformation *temp = head_;
+    if(temp==head_){
+      return head_;
+    }
     while(temp->next()!=0){
       temp = temp->next();
     }
@@ -226,9 +196,9 @@ namespace network
   }
 
   bool ClientInformation::removeClient(int clientID) {
-    if(!this || clientID==CLIENTID_UNKNOWN)
+    if(clientID==CLIENTID_UNKNOWN)
       return false;
-    ClientInformation *temp = this;
+    ClientInformation *temp = head_;
     while(temp!=0 && temp->getID()!=clientID)
       temp = temp->next();
     if(temp==0)
@@ -238,13 +208,12 @@ namespace network
   }
 
   bool ClientInformation::removeClient(ENetPeer *peer) {
-    if(!this || !peer)
+    if(!peer)
       return false;
-    ClientInformation *temp = this;
+    ClientInformation *temp = head_;
     while(temp!=0){
-      if(!temp->head_)
-        if(temp->getPeer()->address.host==peer->address.host && temp->getPeer()->address.port==peer->address.port)
-          break;
+      if(temp->getPeer()->address.host==peer->address.host && temp->getPeer()->address.port==peer->address.port)
+        break;
       temp = temp->next();
     }
     if(temp==0)
@@ -260,9 +229,7 @@ namespace network
   * @return pointer to the last element in the list or 0 if the search was unsuccessfull
   */
   ClientInformation *ClientInformation::findClient(int clientID, bool look_backwards) {
-    ClientInformation *temp = this;
-    if (temp->head_)
-      temp=temp->next();
+    ClientInformation *temp = head_;
     while(temp!=0 && temp->getID()!=clientID){
       temp = temp->next();
     }
@@ -277,12 +244,8 @@ namespace network
   * @return pointer to the element in the list
   */
   ClientInformation *ClientInformation::findClient(ENetAddress *address, bool look_backwards) {
-    ClientInformation *temp = this;
+    ClientInformation *temp = head_;
     while(temp!=0){
-      if(temp->head_){
-        temp = temp->next();
-        continue;
-      }
       if(temp->getPeer()->address.host==address->host && temp->getPeer()->address.port == address->port)
         break;
       temp = temp->next();

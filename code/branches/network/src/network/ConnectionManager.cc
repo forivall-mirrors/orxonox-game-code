@@ -38,6 +38,7 @@
 //
 
 #include <iostream>
+#include <assert.h>
 // boost.thread library for multithreading support
 #include <boost/bind.hpp>
 
@@ -64,35 +65,53 @@ namespace network
 {
   //boost::thread_group network_threads;
   
-  ConnectionManager::ConnectionManager():receiverThread_(0){}
-  boost::recursive_mutex ConnectionManager::enet_mutex_;
+  ConnectionManager *ConnectionManager::instance_=0;
   
-  ConnectionManager::ConnectionManager(ClientInformation *head) : receiverThread_(0) {
+  ConnectionManager::ConnectionManager():receiverThread_(0){
+    assert(instance_==0);
+    instance_=this;
     quit=false;
     bindAddress.host = ENET_HOST_ANY;
     bindAddress.port = NETWORK_PORT;
-    head_ = head;
   }
+  boost::recursive_mutex ConnectionManager::enet_mutex_;
   
-  ConnectionManager::ConnectionManager(ClientInformation *head, int port){
+//   ConnectionManager::ConnectionManager(ClientInformation *head) : receiverThread_(0) {
+//     assert(instance_==0);
+//     instance_=this;
+//     quit=false;
+//     bindAddress.host = ENET_HOST_ANY;
+//     bindAddress.port = NETWORK_PORT;
+//   }
+  
+  ConnectionManager::ConnectionManager(int port){
+    assert(instance_==0);
+    instance_=this;
     quit=false;
     bindAddress.host = ENET_HOST_ANY;
     bindAddress.port = port;
-    head_ = head;
   }
 
-  ConnectionManager::ConnectionManager(int port, std::string address, ClientInformation *head) :receiverThread_(0) {
+  ConnectionManager::ConnectionManager(int port, std::string address) :receiverThread_(0) {
+    assert(instance_==0);
+    instance_=this;
     quit=false;
     enet_address_set_host (& bindAddress, address.c_str());
     bindAddress.port = NETWORK_PORT;
-    head_ = head;
   }
 
-  ConnectionManager::ConnectionManager(int port, const char *address, ClientInformation *head) : receiverThread_(0) {
+  ConnectionManager::ConnectionManager(int port, const char *address) : receiverThread_(0) {
+    assert(instance_==0);
+    instance_=this;
     quit=false;
     enet_address_set_host (& bindAddress, address);
     bindAddress.port = NETWORK_PORT;
-    head_ = head;
+  }
+  
+  ConnectionManager::~ConnectionManager(){
+    instance_=0;
+    if(!quit)
+      quitListener();
   }
 
   /*ENetPacket *ConnectionManager::getPacket(ENetAddress &address) {
@@ -139,34 +158,39 @@ used by processQueue in Server.cc
     receiverThread_->join();
     return true;
   }
-
+  
+//   bool ConnectionManager::addPacket(Packet::Packet *packet){
+//     ClientInformation *temp = instance_->head_->findClient(packet->getClientID());
+//     if(!temp){
+//       COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
+//       return false;
+//     }
+//     ENetPacket *packet = new ENetPacket;
+//     //  TODO: finish implementation
+//   }
+//   
+  
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer) {
-    ClientInformation *temp = head_->findClient(&(peer->address));
-    if(!temp)
-      return false;
-    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
-    if(enet_peer_send(peer, (enet_uint8)temp->getID() , packet)!=0)
+    boost::recursive_mutex::scoped_lock lock(instance_->enet_mutex_);
+    if(enet_peer_send(peer, NETWORK_DEFAULT_CHANNEL, packet)!=0)
       return false;
     return true;
   }
 
   bool ConnectionManager::addPacket(ENetPacket *packet, int clientID) {
-    ClientInformation *temp = head_->findClient(clientID);
+    ClientInformation *temp = ClientInformation::findClient(clientID);
     if(!temp){
       COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
       return false;
     }
-    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
-    if(enet_peer_send(temp->getPeer(), 0, packet)!=0){
-      COUT(3) << "C.Man: addPacket enet_peer_send failed" << std::endl;
-      return false;
-    }
-    return true;
+    return addPacket(packet, temp->getPeer());
   }
 
   bool ConnectionManager::addPacketAll(ENetPacket *packet) {
-    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
-    for(ClientInformation *i=head_->next(); i!=0; i=i->next()){
+    if(!instance_)
+      return false;
+    boost::recursive_mutex::scoped_lock lock(instance_->enet_mutex_);
+    for(ClientInformation *i=ClientInformation::getBegin()->next(); i!=0; i=i->next()){
       COUT(3) << "adding broadcast packet for client: " << i->getID() << std::endl;
       if(enet_peer_send(i->getPeer(), 0, packet)!=0)
         return false;
@@ -176,7 +200,7 @@ used by processQueue in Server.cc
 
   // we actually dont need that function, because host_service does that for us
   bool ConnectionManager::sendPackets() {
-    if(server==NULL)
+    if(server==NULL || !instance_)
       return false;
     boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     enet_host_flush(server);
@@ -256,7 +280,7 @@ used by processQueue in Server.cc
   //### (trying to resolve that now)
   void ConnectionManager::disconnectClients() {
     ENetEvent event;
-    ClientInformation *temp = head_->next();
+    ClientInformation *temp = ClientInformation::getBegin()->next();
     while(temp!=0){
       {
         boost::recursive_mutex::scoped_lock lock(enet_mutex_);
@@ -266,7 +290,7 @@ used by processQueue in Server.cc
       temp = temp->next();
     }
     //bugfix: might be the reason why server crashes when clients disconnects
-    temp = head_->next();
+    temp = ClientInformation::getBegin()->next();
     boost::recursive_mutex::scoped_lock lock(enet_mutex_);
     while( temp!=0 && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) >= 0){
       switch (event.type)
@@ -278,8 +302,8 @@ used by processQueue in Server.cc
         break;
       case ENET_EVENT_TYPE_DISCONNECT:
         COUT(4) << "disconnecting all clients" << std::endl;
-        if(head_->findClient(&(event.peer->address)))
-          delete head_->findClient(&(event.peer->address));
+        if(ClientInformation::findClient(&(event.peer->address)))
+          delete ClientInformation::findClient(&(event.peer->address));
         //maybe needs bugfix: might also be a reason for the server to crash
         temp = temp->next();
         break;
@@ -301,11 +325,11 @@ used by processQueue in Server.cc
   }
 
   int ConnectionManager::getClientID(ENetAddress address) {
-    return head_->findClient(&address)->getID();
+    return ClientInformation::findClient(&address)->getID();
   }
 
   ENetPeer *ConnectionManager::getClientPeer(int clientID) {
-    return head_->findClient(clientID)->getPeer();
+    return ClientInformation::findClient(clientID)->getPeer();
   }
 
   void ConnectionManager::syncClassid(int clientID) {

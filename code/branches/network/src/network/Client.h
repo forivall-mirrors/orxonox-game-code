@@ -45,6 +45,8 @@
 
 #include <string>
 
+#include "Host.h"
+#include "packet/Chat.h"
 #include "ClientConnection.h"
 #include "PacketManager.h"
 #include "GameStateClient.h"
@@ -61,32 +63,27 @@ namespace network
   * It is the root class of the network module
   *
   */
-  class _NetworkExport Client : PacketDecoder{
+  class _NetworkExport Client : PacketDecoder, public Host{
   public:
-    
-    static Client* createSingleton();
-    static Client* createSingleton(std::string address, int port);
-    static Client* createSingleton(const char *address, int port);
-    static void destroySingleton();
-    static Client *getSingleton();
-    
-    bool establishConnection();
-    bool closeConnection();
-
-    static void Chat( std::string message );
-    
-    int getShipID(){return shipID_;}
-    int getClientID(){return clientID_;}
-
-    void tick(float time);
-
-  private:
     Client();
     Client(std::string address, int port);
     Client(const char *address, int port);
     ~Client();
     
-    static Client* _sClient;
+    bool establishConnection();
+    bool closeConnection();
+    bool queuePacket(ENetPacket *packet, int clientID);
+    bool processChat(packet::Chat *message, unsigned int clientID);
+    bool sendChat(packet::Chat *chat);
+    
+//    static void Chat( std::string message );
+    
+    int shipID(){return shipID_;}
+    int playerID(){return clientID_;}
+
+    void tick(float time);
+
+  private:
     
     ClientConnection client_connection;
     PacketGenerator pck_gen;
@@ -99,7 +96,7 @@ namespace network
     // implement data processing functions of PacketDecoder
     void processGamestate( GameStateCompressed *data, int clientID);
     void processClassid(classid *clid);
-    void processChat( chat *data, int clientId );
+//     void processChat( chat *data, int clientId );
     bool processWelcome( welcome *w );
     int clientID_;     // this is the id the server gave to us
     int shipID_;
