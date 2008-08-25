@@ -1,5 +1,6 @@
 SET(UTIL_SRC_FILES
   ArgReader.cc
+  Bytestream.cc
   Clipboard.cc
   ExprParser.cc
   Math.cc
