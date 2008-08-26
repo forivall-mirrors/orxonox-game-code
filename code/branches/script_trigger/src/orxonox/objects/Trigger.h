@@ -42,19 +42,16 @@ namespace orxonox {
 
   enum TriggerMode
   {
-    TM_EventTriggerAnd,
-    TM_EventTriggerOr,
-    TM_DelayTrigger,
-    TM_DistanceTrigger,
-    TM_DistanceEventTriggerAnd,
-    TM_DistanceEventTriggerOr,
+    TM_EventTriggerAND,
+    TM_EventTriggerOR,
+    TM_EventTriggerXOR,
+    TM_EventTriggerNOT
   };
 
   class _OrxonoxExport Trigger : public WorldEntity
   {
     public:
       Trigger();
-      Trigger(bool active) { bActive_ = active; }
       ~Trigger();
 
       bool isTriggered();
@@ -62,21 +59,22 @@ namespace orxonox {
       void addTrigger(Trigger* trig);
       void addTargets(std::string targets);
       void removeTargets(std::string targets);
+      void setVisibility(int bVisible);
       virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
       inline TriggerMode getMode() { return mode_; }
       inline void setMode(TriggerMode mode) { this->mode_ = mode; }
-      inline void tick(float dt) { if(bActive_) this->actualTime_ += dt; }
+      void tick(float dt);
       inline void reset(float time) { this->actualTime_ = 0; this->triggingTime_ = time; }
       inline void reset() { reset(triggingTime_); }
 
     private:
       bool checkAnd();
       bool checkOr();
-      bool checkDelay();
-      bool checkDistance();
+      bool checkXor();
+      bool checkNot();
 
     private:
-      std::set<Trigger*> subTriggers_;
+      std::set<Trigger*> children_;
       TriggerMode mode_;
       float triggingTime_;
       float actualTime_;

@@ -29,11 +29,16 @@
 #include "Trigger.h"
 
 #include "core/Debug.h"
+#include <OgreBillboard.h>
 
 #include "core/CoreIncludes.h"
+#include "core/ConsoleCommand.h"
 
 namespace orxonox
 {
+
+  ConsoleCommand(Trigger, setVisibility, AccessLevel::Debug, false).setDefaultValues(0);
+
   CreateFactory(Trigger);
 
   Trigger::Trigger()
@@ -42,11 +47,13 @@ namespace orxonox
 
     targetMask_.exclude(Class(BaseObject));
 
-    if (getSoftDebugLevel() >= ORX_DEBUG)
-    {
-      debugBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
-      this->getNode()->attachObject(debugBillboard_.getBillboardSet());
-    }
+    //testing
+    mode_ = TM_EventTriggerAND;
+    bActive_ = true;
+    triggingTime_ = 100;
+
+    debugBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
+    this->getNode()->attachObject(debugBillboard_.getBillboardSet());
   }
 
   Trigger::~Trigger()
@@ -58,38 +65,51 @@ namespace orxonox
     return this->isTriggered(this->mode_);
   }
 
+  void Trigger::setVisibility(int bVisible)
+  {
+    if(bVisible)
+      this->setScale(2,2,2);
+    else
+      this->setScale(0,0,0);
+  }
+
+  void Trigger::tick(float dt)
+  {
+    //COUT(0) << "Scale: " << this->getScale() << std::endl;
+    if(bActive_)
+    {
+      //this->actualTime_ += dt;
+      if(this->isTriggered())
+      {
+        this->debugBillboard_.getBillboardSet()->getBillboard(0)->setColour(ColourValue(0.0, 1.0, 0.0));
+      }
+    }
+  }
+
   bool Trigger::isTriggered(TriggerMode mode)
   {
-    switch(mode)
+    if( children_.size() != 0 )
     {
-      case TM_EventTriggerAnd:
-        return checkAnd();
-        break;
-      case TM_EventTriggerOr:
-        return checkOr();
-        break;
-      case TM_DelayTrigger:
-        return checkDelay();
-        break;
-      case TM_DistanceTrigger:
-        return checkDistance();
-        break;
-      case TM_DistanceEventTriggerAnd:
-        if (checkDistance() && checkAnd())
-          return true;
-        else
+      switch(mode)
+      {
+        case TM_EventTriggerAND:
+          return checkAnd();
+          break;
+        case TM_EventTriggerOR:
+          return checkOr();
+          break;
+        case TM_EventTriggerXOR:
+          return checkXor();
+          break;
+        case TM_EventTriggerNOT:
+          return checkNot();
+          break;
+        default:
           return false;
-        break;
-      case TM_DistanceEventTriggerOr:
-        if (checkDistance() && checkOr())
-          return true;
-        else
-          return false;
-        break;
-      default:
-        return false;
-        break;
+          break;
+      }
     }
+    return true;
   }
 
   void Trigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -100,7 +120,7 @@ namespace orxonox
   void Trigger::addTrigger(Trigger* trig)
   {
     if (this != trig)
-      this->subTriggers_.insert(trig);
+      this->children_.insert(trig);
   }
 
   void Trigger::addTargets(std::string targets)
@@ -120,7 +140,7 @@ namespace orxonox
   bool Trigger::checkAnd()
   {
     std::set<Trigger*>::iterator it;
-    for(it = this->subTriggers_.begin(); it != this->subTriggers_.end(); it++)
+    for(it = this->children_.begin(); it != this->children_.end(); it++)
     {
       if(!((*it)->isTriggered()))
         return false;
@@ -131,7 +151,7 @@ namespace orxonox
   bool Trigger::checkOr()
   {
     std::set<Trigger*>::iterator it;
-    for(it = this->subTriggers_.begin(); it != this->subTriggers_.end(); it++)
+    for(it = this->children_.begin(); it != this->children_.end(); it++)
     {
       if((*it)->isTriggered())
         return true;
@@ -139,7 +159,32 @@ namespace orxonox
     return false;
   }
 
-  bool Trigger::checkDelay()
+  bool Trigger::checkNot()
+  {
+    std::set<Trigger*>::iterator it;
+    for(it = this->children_.begin(); it != this->children_.end(); it++)
+    {
+      if((*it)->isTriggered())
+        return false;
+    }
+    return true;
+  }
+
+  bool Trigger::checkXor()
+  {
+    std::set<Trigger*>::iterator it;
+    bool test = false;
+    for(it = this->children_.begin(); it != this->children_.end(); it++)
+    {
+      if(test && (*it)->isTriggered())
+        return false;
+      if((*it)->isTriggered())
+        test = true;
+    }
+    return test;
+  }
+
+  /*bool Trigger::checkDelay()
   {
     if (triggingTime_ < actualTime_)
       return true;
@@ -158,6 +203,6 @@ namespace orxonox
     }
     return false;
 
-  }
+  }*/
 
 }
