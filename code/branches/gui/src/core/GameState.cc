@@ -46,11 +46,15 @@ namespace orxonox
     GameState::GameState(const std::string& name)
         : name_(name)
         , bPauseParent_(false)
-        , bActive_(false)
-        , bSuspended_(false)
+        //, bActive_(false)
+        //, bSuspended_(false)
+        //, bRunning_(false)
+        , scheduledTransition_(0)
         , parent_(0)
         , activeChild_(0)
     {
+        Operations temp = {false, false, false, false, false};
+        this->operation_ = temp;
     }
 
     /**
@@ -59,7 +63,7 @@ namespace orxonox
     */
     GameState::~GameState()
     {
-        if (this->bActive_)
+        if (this->operation_.active)
         {
             if (this->parent_)
                 this->requestState(this->parent_->getName());
@@ -132,7 +136,7 @@ namespace orxonox
         std::map<GameState*, GameState*>::iterator it = this->grandchildrenToChildren_.find(state);
         if (it != this->grandchildrenToChildren_.end())
         {
-            if (state->isActive())
+            if (state->getOperation().active)
             {
                 ThrowException(GameState, "Cannot remove active game state child '"
                     + state->getName() + "' from '" + name_ + "'.");
@@ -246,7 +250,7 @@ namespace orxonox
     */
     GameState* GameState::getCurrentState()
     {
-        if (this->bActive_)
+        if (this->operation_.active)
         {
             if (this->activeChild_)
                 return this->activeChild_->getCurrentState();
@@ -283,23 +287,30 @@ namespace orxonox
     */
     void GameState::requestState(const std::string& name)
     {
-        if (name == "")
+        GameState* current = getCurrentState();
+        if (current != 0 && (current->getOperation().entering || current->getOperation().leaving))
         {
-            // user would like to leave every state.
-            GameState* current = getCurrentState();
-            if (current)
-            {
-                // Deactivate all states but root
-                GameState* root = getRootNode();
-                current->makeTransition(root);
-                // Kick root too
-                root->deactivate();
-            }
+            ThrowException(GameState, "Making state transitions during enter()/leave() is forbidden.");
         }
+        //if (name == "")
+        //{
+        //    // user would like to leave every state.
+        //    if (current)
+        //    {
+        //        // Deactivate all states but root
+        //        GameState* root = getRootNode();
+        //        current->makeTransition(root);
+        //        //// Kick root too
+        //        //assert(!(root->getOperation().entering || root->getOperation().leaving));
+        //        //if (root->operation_.running)
+        //        //    root->scheduledTransition_ = 0;
+        //        //else
+        //        //    root->deactivate();
+        //    }
+        //}
         else
         {
             GameState* request = checkState(name);
-            GameState* current = getCurrentState();
             if (request)
             {
                 if (current)
@@ -330,7 +341,7 @@ namespace orxonox
     void GameState::makeTransition(GameState* state)
     {
         // we're always already active
-        assert(this->bActive_);
+        assert(this->operation_.active);
 
         if (state == this)
             return;
@@ -348,9 +359,18 @@ namespace orxonox
             // parent. We can be sure of this.
             assert(this->parent_ != 0);
 
-            // first, leave this state.
-            this->deactivate();
-            this->parent_->makeTransition(state);
+            // only do the transition if we're not currently running
+            if (this->operation_.running)
+            {
+                //this->bDeactivationScheduled_ = true;
+                this->scheduledTransition_ = state;
+            }
+            else
+            {
+                this->deactivate();
+                this->parent_->makeTransition(state);
+            }
+
         }
     }
 
@@ -360,10 +380,12 @@ namespace orxonox
     */
     void GameState::activate()
     {
-        this->bActive_ = true;
         if (this->parent_)
             this->parent_->activeChild_ = this;
+        this->operation_.active = true;
+        this->operation_.entering = true;
         this->enter();
+        this->operation_.entering = false;
     }
 
     /**
@@ -371,10 +393,36 @@ namespace orxonox
     */
     void GameState::deactivate()
     {
+        this->operation_.leaving = true;
         this->leave();
-        this->bActive_ = false;
+        this->operation_.leaving = false;
+        this->operation_.active = false;
         if (this->parent_)
             this->parent_->activeChild_ = 0;
+    }
+
+    /**
+    @brief
+        Update method that calls ticked() with enclosed bRunning_ = true
+        If there was a state transition request within ticked() then this
+        method will transition in the end.
+    @param dt Delta time
+    @note
+        This method is not virtual! You cannot override it therefore.
+    */
+    void GameState::tick(float dt)
+    {
+        this->operation_.running = true;
+        this->ticked(dt);
+        this->operation_.running = false;
+
+        if (this->scheduledTransition_)
+        {
+            // state was requested to be deactivated when ticked.
+            this->makeTransition(this->scheduledTransition_);
+            this->scheduledTransition_ = 0;
+            this->deactivate();
+        }
     }
 
 }

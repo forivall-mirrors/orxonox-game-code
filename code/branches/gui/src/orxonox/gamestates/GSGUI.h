@@ -43,7 +43,7 @@ namespace orxonox
     private:
         void enter();
         void leave();
-        bool tick(float dt);
+        void ticked(float dt);
 
     };
 }

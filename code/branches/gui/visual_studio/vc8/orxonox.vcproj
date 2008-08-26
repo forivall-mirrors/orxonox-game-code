@@ -495,6 +495,10 @@
 				Name="gamestates"
 				>
 				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSClient.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\gamestates\GSGraphics.cc"
 					>
 				</File>
@@ -503,11 +507,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSIO.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSIOConsole.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\gamestates\GSLevel.cc"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\gamestates\GSRoot.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSServer.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSStandalone.cc"
 					>
 				</File>
 			</Filter>
@@ -737,6 +757,10 @@
 				Name="gamestates"
 				>
 				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSClient.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\gamestates\GSGraphics.h"
 					>
 				</File>
@@ -745,11 +769,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSIO.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSIOConsole.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\gamestates\GSLevel.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\gamestates\GSRoot.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSServer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\gamestates\GSStandalone.h"
 					>
 				</File>
 			</Filter>

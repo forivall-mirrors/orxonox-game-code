@@ -87,7 +87,7 @@ namespace orxonox
         int lineNumber_;
         std::string functionName_;
         std::string fileName_;
-        // mutable because of "what()" is a const method
+        // mutable because "what()" is a const method
         mutable std::string fullDescription_;
     };
 
@@ -100,15 +100,15 @@ namespace orxonox
                   const char* fileName, const char* functionName)
                   : Exception(description, lineNumber, fileName, functionName)
         {
-            // let the catcher decide whether to display the message or not
-            //COUT(1) << this->getFullDescription() << std::endl;
+            // let the catcher decide whether to display the message below level 3
+            COUT(3) << this->getFullDescription() << std::endl;
         }
 
         SpecificException(const std::string& description)
             : Exception(description)
         {
-            // let the catcher decide whether to display the message or not
-            //COUT(1) << this->getFullDescription() << std::endl;
+            // let the catcher decide whether to display the message below level 3
+            COUT(3) << this->getFullDescription() << std::endl;
         }
 
         ~SpecificException() throw() { }

@@ -27,41 +27,43 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "GSGUI.h"
+#include "GSIOConsole.h"
 
+#include <iostream>
+#include <OgreFrameListener.h>
+#include <OgreRoot.h>
+#include <OgreTimer.h>
+
+#include "core/ConsoleCommand.h"
+#include "core/TclThreadManager.h"
 #include "GraphicsEngine.h"
-#include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
-#include "gui/GUIManager.h"
 
 namespace orxonox
 {
-    GSGUI::GSGUI()
-        : GameState("gui")
+    GSIOConsole::GSIOConsole()
+        : GameState("ioConsole")
     {
     }
 
-    GSGUI::~GSGUI()
+    GSIOConsole::~GSIOConsole()
     {
     }
 
-    void GSGUI::enter()
+    void GSIOConsole::enter()
     {
-        // show main menu
-        GUIManager::getInstance().showGUI("MainMenu", 0);
-        GraphicsEngine::getInstance().getViewport()->setCamera(GUIManager::getInstance().getCamera());
     }
 
-    void GSGUI::leave()
+    void GSIOConsole::leave()
     {
-        GUIManager::getInstance().hideGUI();
     }
 
-    void GSGUI::ticked(float dt)
+    void GSIOConsole::ticked(float dt)
     {
-        // tick CEGUI
-        GUIManager::getInstance().tick(dt);
-
-        this->tickChild(dt);
+        while (!this->hasScheduledTransition())
+        {
+            std::string command;
+            std::cin >> command;
+            CommandExecutor::execute(command, true);
+        }
     }
 }

@@ -41,15 +41,20 @@ namespace orxonox
         ~GSRoot();
 
         void feedCommandLine(int argc, char** argv);
-        bool tick(float dt);
         void loadGame(const std::string& name);
+
+        void exitGame()
+        { requestState("root"); }
+        bool isGameFinished() { return (this->getActiveChild() == 0); }
 
     private:
         void enter();
         void leave();
+        void ticked(float dt);
 
         Settings*             settings_;
         GraphicsEngine*       graphicsEngine_;   //!< our dearest graphics engine <3
+        bool                  bExit_;
     };
 }
 

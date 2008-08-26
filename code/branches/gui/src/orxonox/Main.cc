@@ -43,8 +43,12 @@
 
 #include "gamestates/GSRoot.h"
 #include "gamestates/GSGraphics.h"
-#include "gamestates/GSLevel.h"
+#include "gamestates/GSStandalone.h"
+#include "gamestates/GSServer.h"
+#include "gamestates/GSClient.h"
 #include "gamestates/GSGUI.h"
+#include "gamestates/GSIO.h"
+#include "gamestates/GSIOConsole.h"
 
 using namespace orxonox;
 
@@ -76,9 +80,9 @@ using namespace orxonox;
 #endif
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
 
 int main(int argc, char** argv)
 {
@@ -121,21 +125,30 @@ int main(int argc, char** argv)
 
     GSRoot root;
     GSGraphics graphics;
-    GSLevel level;
+    GSStandalone standalone;
+    GSServer server;
+    GSClient client;
     GSGUI gui;
+    GSIO io;
+    GSIOConsole ioConsole;
 
     root.addChild(&graphics);
-    graphics.addChild(&level);
+    graphics.addChild(&standalone);
+    graphics.addChild(&server);
+    graphics.addChild(&client);
     graphics.addChild(&gui);
 
+    root.addChild(&io);
+    io.addChild(&ioConsole);
+
     root.feedCommandLine(argc, argv);
-    root.requestState("root");
-    root.tick(0.0f);
-    root.requestState("");
+    root.requestState("ioConsole");
+    while (!root.isGameFinished())
+        root.tick(0.0f);
 
     return 0;
 }
 
-#ifdef __cplusplus
-}
-#endif
+//#ifdef __cplusplus
+//}
+//#endif

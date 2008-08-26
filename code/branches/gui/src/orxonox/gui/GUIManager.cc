@@ -91,7 +91,7 @@ namespace orxonox
             Ogre::Root::getSingleton().destroySceneManager(backgroundSceneManager_);
         }
 
-        InputManager::getInstance().destroyState("gui");
+        InputManager::getInstance().requestDestroyState("gui");
 
         if (guiSystem_)
             delete guiSystem_;

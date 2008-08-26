@@ -26,42 +26,28 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
-#include "GSGUI.h"
+#ifndef _GSIO_H__
+#define _GSIO_H__
 
-#include "GraphicsEngine.h"
-#include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
-#include "gui/GUIManager.h"
+#include "OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
+#include "core/GameState.h"
 
 namespace orxonox
 {
-    GSGUI::GSGUI()
-        : GameState("gui")
+    class _OrxonoxExport GSIO : public GameState
     {
-    }
+    public:
+        GSIO();
+        ~GSIO();
 
-    GSGUI::~GSGUI()
-    {
-    }
+    private:
+        void enter();
+        void leave();
+        void ticked(float dt);
 
-    void GSGUI::enter()
-    {
-        // show main menu
-        GUIManager::getInstance().showGUI("MainMenu", 0);
-        GraphicsEngine::getInstance().getViewport()->setCamera(GUIManager::getInstance().getCamera());
-    }
-
-    void GSGUI::leave()
-    {
-        GUIManager::getInstance().hideGUI();
-    }
-
-    void GSGUI::ticked(float dt)
-    {
-        // tick CEGUI
-        GUIManager::getInstance().tick(dt);
-
-        this->tickChild(dt);
-    }
+        //Ogre::Timer*          timer_;            //!< Main loop timer
+    };
 }
+
+#endif /* _GSIO_H__ */

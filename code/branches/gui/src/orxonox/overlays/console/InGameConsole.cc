@@ -94,7 +94,7 @@ namespace orxonox
         this->deactivate();
 
         // destroy the input state previously created (InputBuffer gets destroyed by the Shell)
-        InputManager::getInstance().destroyState("console");
+        InputManager::getInstance().requestDestroyState("console");
 
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
         if (ovMan)

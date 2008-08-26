@@ -48,6 +48,9 @@
 #include <Ogre.h>
 #include <CEGUI.h>
 #include <boost/thread/recursive_mutex.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/condition.hpp>
+#include <boost/thread/thread.hpp>
 
 //-----------------------------------------------------------------------
 // ORXONOX HEADERS

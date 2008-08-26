@@ -37,7 +37,8 @@
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/input/InputManager.h"
-#include "core/Core.h"
+#include "core/TclThreadManager.h"
+//#include "core/Core.h"
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
 #include "GraphicsEngine.h"
@@ -47,7 +48,6 @@ namespace orxonox
     GSGraphics::GSGraphics()
         : GameState("graphics")
         , timer_(0)
-        , bAbort_(false)
         , debugRefreshTime_(0.0f)
         , inputManager_(0)
         , console_(0)
@@ -89,11 +89,6 @@ namespace orxonox
 
         // use the ogre timer class to measure time.
         timer_ = new Ogre::Timer();
-
-        // add console commands
-        FunctorMember<GSGraphics>* functor = createFunctor(&GSGraphics::exitGame);
-        functor->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "exit"));
     }
 
     void GSGraphics::leave()
@@ -122,7 +117,7 @@ namespace orxonox
         as shown that there is probably only one FrameListener that doesn't even
         need the time. So we shouldn't run into problems.
     */
-    bool GSGraphics::tick(float dt)
+    void GSGraphics::ticked(float dt)
     {
         // note: paramter 'dt' is of no meaning
 
@@ -146,21 +141,17 @@ namespace orxonox
         try
         {
             timer_->reset();
-            while (!bAbort_)
+            while (!this->hasScheduledTransition())
             {
                 // get current time
                 timeBeforeTickOld = timeBeforeTick;
                 timeBeforeTick    = timer_->getMicroseconds();
                 float dt = (timeBeforeTick - timeBeforeTickOld) / 1000000.0;
 
+                this->inputManager_->tick(dt);
+                TclThreadManager::getInstance().tick(dt);
 
-                // tick the core (needs real time for input and tcl thread management)
-                // TODO: ticks of InputManager and tcl thread manager have to be separated.
-                Core::tick(dt);
-
-                // tick child state
-                if (this->getActiveChild())
-                    this->getActiveChild()->tick(dt);
+                this->tickChild(dt);
 
                 // tick console
                 this->console_->tick(dt);
@@ -209,6 +200,6 @@ namespace orxonox
             // something went wrong.
             COUT(1) << ex.what() << std::endl;
             COUT(1) << "Main loop was stopped by an unhandled exception. Shutting down." << std::endl;
-        }        return true;
+        }
     }
 }

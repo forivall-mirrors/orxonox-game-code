@@ -22,45 +22,56 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Fabian 'x3n' Landau
  *
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "GSGUI.h"
+#include "GSStandalone.h"
 
-#include "GraphicsEngine.h"
 #include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
-#include "gui/GUIManager.h"
+#include "core/ConsoleCommand.h"
 
 namespace orxonox
 {
-    GSGUI::GSGUI()
-        : GameState("gui")
+    GSStandalone::GSStandalone()
+        : GSLevel("standalone")
     {
     }
 
-    GSGUI::~GSGUI()
+    GSStandalone::~GSStandalone()
     {
     }
 
-    void GSGUI::enter()
+    void GSStandalone::enter()
     {
-        // show main menu
-        GUIManager::getInstance().showGUI("MainMenu", 0);
-        GraphicsEngine::getInstance().getViewport()->setCamera(GUIManager::getInstance().getCamera());
+        GSLevel::enter();
+
+        this->loadLevel();
+
+        // add console commands
+        FunctorMember<GSLevel>* functor = createFunctor(&GSLevel::setTimeFactor);
+        functor->setObject(this);
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "setTimeFactor"));
+
+        // level is loaded: we can start capturing the input
+        InputManager::getInstance().requestEnterState("game");
     }
 
-    void GSGUI::leave()
+    void GSStandalone::leave()
     {
-        GUIManager::getInstance().hideGUI();
+        InputManager::getInstance().requestLeaveState("game");
+
+        // TODO: Remove and destroy console command
+
+        this->unloadLevel();
+
+        GSLevel::leave();
     }
 
-    void GSGUI::ticked(float dt)
+    void GSStandalone::ticked(float dt)
     {
-        // tick CEGUI
-        GUIManager::getInstance().tick(dt);
+        GSLevel::ticked(dt);
 
         this->tickChild(dt);
     }

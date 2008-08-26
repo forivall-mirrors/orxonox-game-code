@@ -57,7 +57,7 @@ namespace orxonox
             static const std::string& getLanguage();
             static void resetLanguage();
 
-            static void tick(float dt);
+            //static void tick(float dt);
 
         private:
             void resetLanguageIntern();

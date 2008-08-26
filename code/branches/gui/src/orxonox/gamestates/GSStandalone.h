@@ -26,42 +26,26 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
-#include "GSGUI.h"
+#ifndef _GSStandalone_H__
+#define _GSStandalone_H__
 
-#include "GraphicsEngine.h"
-#include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
-#include "gui/GUIManager.h"
+#include "OrxonoxPrereqs.h"
+#include "GSLevel.h"
 
 namespace orxonox
 {
-    GSGUI::GSGUI()
-        : GameState("gui")
+    class _OrxonoxExport GSStandalone : public GSLevel
     {
-    }
+    public:
+        GSStandalone();
+        ~GSStandalone();
 
-    GSGUI::~GSGUI()
-    {
-    }
 
-    void GSGUI::enter()
-    {
-        // show main menu
-        GUIManager::getInstance().showGUI("MainMenu", 0);
-        GraphicsEngine::getInstance().getViewport()->setCamera(GUIManager::getInstance().getCamera());
-    }
-
-    void GSGUI::leave()
-    {
-        GUIManager::getInstance().hideGUI();
-    }
-
-    void GSGUI::ticked(float dt)
-    {
-        // tick CEGUI
-        GUIManager::getInstance().tick(dt);
-
-        this->tickChild(dt);
-    }
+    private:
+        void enter();
+        void leave();
+        void ticked(float dt);
+    };
 }
+
+#endif /* _GSStandalone_H__ */

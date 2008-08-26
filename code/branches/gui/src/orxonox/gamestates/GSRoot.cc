@@ -51,6 +51,7 @@ namespace orxonox
         : GameState("root")
         , settings_(0)
         , graphicsEngine_(0)
+        , bExit_(false)
     {
     }
 
@@ -100,7 +101,7 @@ namespace orxonox
         this->settings_ = new Settings();
 
         std::string dataPath;
-        CommandLine::getCommandLineValue("dataPath", &dataPath);
+        CommandLine::getValue("dataPath", &dataPath);
         if (dataPath != "")
         {
             if (*dataPath.end() != '/' && *dataPath.end() != '\\')
@@ -121,21 +122,23 @@ namespace orxonox
         functor->setObject(this);
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "loadGame"));
 
-        requestState("gui");
+        // add console commands
+        functor = createFunctor(&GSRoot::exitGame);
+        functor->setObject(this);
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "exit"));
     }
 
     void GSRoot::leave()
     {
         delete graphicsEngine_;
-
         delete settings_;
+
+        // TODO: remove and destroy console commands
     }
 
-    bool GSRoot::tick(float dt)
+    void GSRoot::ticked(float dt)
     {
-        if (this->getActiveChild())
-            this->getActiveChild()->tick(dt);
-        return true;
+        this->tickChild(dt);
     }
 
     /**

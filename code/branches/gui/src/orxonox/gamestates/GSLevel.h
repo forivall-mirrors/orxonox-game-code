@@ -37,20 +37,28 @@ namespace orxonox
     class _OrxonoxExport GSLevel : public GameState
     {
     public:
-        GSLevel();
-        ~GSLevel();
+        GSLevel(const std::string& name);
+        virtual ~GSLevel();
 
-        bool tick(float dt);
+        // this has to be public because proteced triggers a bug in msvc
+        // when taking the function address.
+        void setTimeFactor(float factor);
+        float getTimeFactor() { return this->timefactor_; }
+
+    protected:
+        virtual void enter();
+        virtual void leave();
+        virtual void ticked(float dt);
+
+        void loadLevel();
+        void unloadLevel();
 
     private:
-        void enter();
-        void leave();
-
-        void setTimeFactor(float factor);
 
         float timefactor_;       //!< A factor to change the gamespeed
 
         KeyBinder*            keyBinder_;        //!< tool that loads and manages the input bindings
+        SimpleInputState*     inputState_;
         Radar*                radar_;            //!< represents the Radar (not the HUD part)
         Level*                startLevel_;       //!< current hard coded default level
         Level*                hud_;              //!< 'level' object fo the HUD

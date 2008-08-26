@@ -126,11 +126,13 @@ namespace orxonox
             }
         }
 
-        bool destroyState          (const std::string& name);
         InputState* getState       (const std::string& name);
         InputState* getCurrentState();
+        bool requestDestroyState   (const std::string& name);
         bool requestEnterState     (const std::string& name);
         bool requestLeaveState     (const std::string& name);
+
+        void tick(float dt);
 
         static InputManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; }
         static InputManager* getInstancePtr() { return singletonRef_s; }
@@ -167,8 +169,6 @@ namespace orxonox
         void _updateActiveStates();
         bool _configureInputState(InputState* state, const std::string& name, int priority);
 
-        void tick(float dt);
-
         // input events
         bool mousePressed  (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
         bool mouseReleased (const OIS::MouseEvent    &arg, OIS::MouseButtonID id);
@@ -203,8 +203,9 @@ namespace orxonox
         std::map<std::string, InputState*>  inputStatesByName_;
         std::map<int, InputState*>          inputStatesByPriority_;
 
-        std::vector<InputState*>            stateEnterRequests_;   //!< Request to enter a new state
-        std::vector<InputState*>            stateLeaveRequests_;   //!< Request to leave the current state
+        std::set<InputState*>               stateEnterRequests_;   //!< Request to enter a new state
+        std::set<InputState*>               stateLeaveRequests_;   //!< Request to leave a running state
+        std::set<InputState*>               stateDestroyRequests_; //!< Request to destroy a state
 
         std::map<int, InputState*>          activeStates_;
         std::vector<InputState*>            activeStatesTop_;      //!< Current input states for joy stick events.

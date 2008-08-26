@@ -26,42 +26,29 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
-#include "GSGUI.h"
+#ifndef _GSClient_H__
+#define _GSClient_H__
 
-#include "GraphicsEngine.h"
-#include "core/input/InputManager.h"
-#include "core/input/SimpleInputState.h"
-#include "gui/GUIManager.h"
+#include "OrxonoxPrereqs.h"
+#include "network/NetworkPrereqs.h"
+#include "GSLevel.h"
 
 namespace orxonox
 {
-    GSGUI::GSGUI()
-        : GameState("gui")
+    class _OrxonoxExport GSClient : public GSLevel
     {
-    }
+    public:
+        GSClient();
+        ~GSClient();
 
-    GSGUI::~GSGUI()
-    {
-    }
 
-    void GSGUI::enter()
-    {
-        // show main menu
-        GUIManager::getInstance().showGUI("MainMenu", 0);
-        GraphicsEngine::getInstance().getViewport()->setCamera(GUIManager::getInstance().getCamera());
-    }
+    private:
+        void enter();
+        void leave();
+        void ticked(float dt);
 
-    void GSGUI::leave()
-    {
-        GUIManager::getInstance().hideGUI();
-    }
-
-    void GSGUI::ticked(float dt)
-    {
-        // tick CEGUI
-        GUIManager::getInstance().tick(dt);
-
-        this->tickChild(dt);
-    }
+        network::Client* client_;
+    };
 }
+
+#endif /* _GSClient_H__ */

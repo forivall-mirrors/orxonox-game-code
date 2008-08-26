@@ -148,6 +148,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\core\BaseGameState.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\ConfigFileManager.cc"
 				>
 			</File>
@@ -374,6 +378,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\src\core\BaseGameState.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\src\core\ConfigFileManager.h"
 				>

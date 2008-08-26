@@ -42,17 +42,14 @@ namespace orxonox
         GSGraphics();
         ~GSGraphics();
 
-        bool tick(float dt);
         void setConfigValues();
-
-        void exitGame() { this->bAbort_ = true; }
 
     private:
         void enter();
         void leave();
+        void ticked(float dt);
 
         Ogre::Timer*          timer_;            //!< Main loop timer
-        bool                  bAbort_;           //!< aborts the render loop if true
 
         // config values
         float                 debugRefreshTime_;

@@ -37,10 +37,10 @@
 
 #define SetCommandLineArgument(name, defaultValue) \
     BaseCommandLineArgument& CmdArgumentDummyBoolVar##name \
-    = orxonox::CommandLine::addCommandLineArgument(#name, defaultValue)
+    = orxonox::CommandLine::addArgument(#name, defaultValue)
 #define SetCommandLineSwitch(name) \
     BaseCommandLineArgument& CmdArgumentDummyBoolVar##name \
-    = orxonox::CommandLine::addCommandLineArgument(#name, false)
+    = orxonox::CommandLine::addArgument(#name, false)
 
 
 namespace orxonox
@@ -88,8 +88,8 @@ namespace orxonox
 
     protected:
         BaseCommandLineArgument(const std::string& name)
-            : name_(name)
-            , bHasDefaultValue_(true)
+            : bHasDefaultValue_(true)
+            , name_(name)
         { }
 
         //! Undefined copy constructor
@@ -215,13 +215,13 @@ namespace orxonox
         static std::string getUsageInformation();
 
         template <class T>
-        static const CommandLineArgument<T>* getCommandLineArgument(const std::string& name);
+        static const CommandLineArgument<T>* getArgument(const std::string& name);
         //! Writes the argument value in the given parameter.
         template <class T>
-        static void getCommandLineValue(const std::string& name, T* value)
-        { *value = getCommandLineArgument<T>(name)->getValue(); }
+        static void getValue(const std::string& name, T* value)
+        { *value = getArgument<T>(name)->getValue(); }
         template <class T>
-        static BaseCommandLineArgument& addCommandLineArgument(const std::string& name, T defaultValue);
+        static BaseCommandLineArgument& addArgument(const std::string& name, T defaultValue);
 
     private:
         //! Constructor initialises bFirstTimeParse_ with true.
@@ -263,7 +263,7 @@ namespace orxonox
         You shold of course not call this method before the command line has been parsed.
     */
     template <class T>
-    const CommandLineArgument<T>* CommandLine::getCommandLineArgument(const std::string& name)
+    const CommandLineArgument<T>* CommandLine::getArgument(const std::string& name)
     {
         std::map<std::string, BaseCommandLineArgument*>::const_iterator it = _getInstance().cmdLineArgs_.find(name);
         if (it == _getInstance().cmdLineArgs_.end())
@@ -301,7 +301,7 @@ namespace orxonox
         a CommandLineArgument<T> and the other CommandLineArgument<std::string>.
     */
     template <class T>
-    BaseCommandLineArgument& CommandLine::addCommandLineArgument(const std::string& name, T defaultValue)
+    BaseCommandLineArgument& CommandLine::addArgument(const std::string& name, T defaultValue)
     {
         std::map<std::string, BaseCommandLineArgument*>::const_iterator it = _getInstance().cmdLineArgs_.find(name);
         OrxAssert(it == _getInstance().cmdLineArgs_.end(),

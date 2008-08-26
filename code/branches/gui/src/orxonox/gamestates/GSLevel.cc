@@ -29,29 +29,23 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSLevel.h"
 
-#include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
 #include "core/input/KeyBinder.h"
 #include "core/Loader.h"
-#include "core/CommandLine.h"
-#include "overlays/console/InGameConsole.h"
-#include "gui/GUIManager.h"
 #include "objects/Backlight.h"
 #include "tools/ParticleInterface.h"
-#include "Radar.h"
 #include "Settings.h"
+#include "Radar.h"
 #include "GraphicsEngine.h"
 
 namespace orxonox
 {
-    SetCommandLineArgument(port, 55556).setShortcut("p").setInformation("PORT");
-    SetCommandLineArgument(ip, "127.0.0.0").setInformation("#.#.#.#");
-
-    GSLevel::GSLevel()
-        : GameState("level")
+    GSLevel::GSLevel(const std::string& name)
+        : GameState(name)
         , timefactor_(1.0f)
         , keyBinder_(0)
+        , inputState_(0)
         , radar_(0)
         , startLevel_(0)
         , hud_(0)
@@ -64,9 +58,10 @@ namespace orxonox
 
     void GSLevel::enter()
     {
+        inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game", 20);
         keyBinder_ = new KeyBinder();
         keyBinder_->loadBindings();
-        InputManager::getInstance().createInputState<SimpleInputState>("game", 20)->setHandler(keyBinder_);
+        inputState_->setHandler(keyBinder_);
 
         // create Ogre SceneManager for the level
         GraphicsEngine::getInstance().createNewScene();
@@ -78,30 +73,10 @@ namespace orxonox
         COUT(3) << "Orxonox: Loading HUD" << std::endl;
         hud_ = new Level(Settings::getDataPath() + "overlay/hud.oxo");
         Loader::load(hud_);
-
-        // call the loader
-        COUT(0) << "Loading level..." << std::endl;
-        startLevel_ = new Level(Settings::getDataPath() + "levels/sample.oxw");
-        Loader::open(startLevel_);
-
-        // add console commands
-        FunctorMember<GSLevel>* functor = createFunctor(&GSLevel::setTimeFactor);
-        functor->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "setTimeFactor"));
-
-        // level is loaded: we can start capturing the input
-        InputManager::getInstance().requestEnterState("game");
     }
 
     void GSLevel::leave()
     {
-        InputManager::getInstance().requestLeaveState("game");
-
-        // TODO: Remove and destroy console command
-
-        Loader::unload(startLevel_);
-        delete this->startLevel_;
-
         Loader::unload(hud_);
         delete this->hud_;
 
@@ -115,11 +90,12 @@ namespace orxonox
 
         // TODO: delete SceneManager
 
-        InputManager::getInstance().destroyState("game");
+        inputState_->setHandler(0);
+        InputManager::getInstance().requestDestroyState("game");
         delete this->keyBinder_;
     }
 
-    bool GSLevel::tick(float dt)
+    void GSLevel::ticked(float dt)
     {
         // Call those objects that need the real time
         for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
@@ -127,15 +103,6 @@ namespace orxonox
         // Call the scene objects
         for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
             it->tick(dt * this->timefactor_);
-
-        // TODO: split file into server/client/standalone
-        // call server/client with normal dt
-        //if (client_g)
-        //    client_g->tick(dt * this->timefactor_);
-        //if (server_g)
-        //    server_g->tick(dt * this->timefactor_);
-
-        return true;
     }
 
     /**
@@ -151,5 +118,19 @@ namespace orxonox
 
         for (Iterator<Backlight> it = ObjectList<Backlight>::begin(); it; ++it)
             it->setTimeFactor(timefactor_);
+    }
+
+    void GSLevel::loadLevel()
+    {
+        // call the loader
+        COUT(0) << "Loading level..." << std::endl;
+        startLevel_ = new Level(Settings::getDataPath() + "levels/sample.oxw");
+        Loader::open(startLevel_);
+    }
+
+    void GSLevel::unloadLevel()
+    {
+        Loader::unload(startLevel_);
+        delete this->startLevel_;
     }
 }

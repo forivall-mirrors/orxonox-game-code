@@ -347,7 +347,7 @@ namespace orxonox
         // inform all states
         for (std::map<int, InputState*>::const_iterator it = inputStatesByPriority_.begin();
             it != inputStatesByPriority_.end(); ++it)
-            (*it).second->setNumOfJoySticks(joySticksSize_);
+            it->second->setNumOfJoySticks(joySticksSize_);
     }
 
     /**
@@ -505,9 +505,15 @@ namespace orxonox
         CCOUT(4) << "Joy sticks destroyed." << std::endl;
     }
 
+    /**
+    @brief
+        Removes and destroys an InputState.
+    @return
+        True if state was removed immediately, false if postponed.
+    */
     void InputManager::_destroyState(InputState* state)
     {
-        assert(state);
+        assert(state && !(this->internalState_ & Ticking));
         std::map<int, InputState*>::iterator it = this->activeStates_.find(state->getPriority());
         if (it != this->activeStates_.end())
         {
@@ -632,29 +638,37 @@ namespace orxonox
         }
         internalState_ |= Ticking;
 
-        // check for states to leave (don't use unsigned int!)
-        for (int i = stateLeaveRequests_.size() - 1; i >= 0; --i)
+        // check for states to leave
+        for (std::set<InputState*>::reverse_iterator it = stateLeaveRequests_.rbegin();
+            it != stateLeaveRequests_.rend(); ++it)
         {
-            stateLeaveRequests_[i]->onLeave();
+            (*it)->onLeave();
             // just to be sure that the state actually is registered
-            assert(inputStatesByName_.find(stateLeaveRequests_[i]->getName()) != inputStatesByName_.end());
-            
-            activeStates_.erase(stateLeaveRequests_[i]->getPriority());
+            assert(inputStatesByName_.find((*it)->getName()) != inputStatesByName_.end());
+
+            activeStates_.erase((*it)->getPriority());
             _updateActiveStates();
-            stateLeaveRequests_.pop_back();
         }
+        stateLeaveRequests_.clear();
 
-
-        // check for states to enter (don't use unsigned int!)
-        for (int i = stateEnterRequests_.size() - 1; i >= 0; --i)
+        // check for states to enter
+        for (std::set<InputState*>::reverse_iterator it = stateEnterRequests_.rbegin();
+            it != stateEnterRequests_.rend(); ++it)
         {
             // just to be sure that the state actually is registered
-            assert(inputStatesByName_.find(stateEnterRequests_[i]->getName()) != inputStatesByName_.end());
-            
-            activeStates_[stateEnterRequests_[i]->getPriority()] = stateEnterRequests_[i];
+            assert(inputStatesByName_.find((*it)->getName()) != inputStatesByName_.end());
+
+            activeStates_[(*it)->getPriority()] = (*it);
             _updateActiveStates();
-            stateEnterRequests_[i]->onEnter();
-            stateEnterRequests_.pop_back();
+            (*it)->onEnter();
+        }
+        stateEnterRequests_.clear();
+
+        // check for states to destroy
+        for (std::set<InputState*>::reverse_iterator it = stateDestroyRequests_.rbegin();
+            it != stateDestroyRequests_.rend(); ++it)
+        {
+            _destroyState((*it));
         }
 
         // Capture all the input. This calls the event handlers in InputManager.
@@ -702,8 +716,8 @@ namespace orxonox
     {
         for (std::map<int, InputState*>::const_iterator it = activeStates_.begin(); it != activeStates_.end(); ++it)
             for (unsigned int i = 0; i < devicesNum_; ++i)
-                if ((*it).second->isInputDeviceEnabled(i))
-                    activeStatesTop_[i] = (*it).second;
+                if (it->second->isInputDeviceEnabled(i))
+                    activeStatesTop_[i] = it->second;
 
         // update tickables (every state will only appear once)
         // Using a std::set to avoid duplicates
@@ -1134,15 +1148,16 @@ namespace orxonox
 
     /**
     @brief
-        Removes an input state internally.
+        Removes and destroys an input state internally.
     @param name
         Name of the handler.
     @return
         True if removal was successful, false if name was not found.
     @remarks
         You can't remove the internal states "empty", "calibrator" and "detector".
+        The removal process is being postponed if InputManager::tick() is currently running.
     */
-    bool InputManager::destroyState(const std::string& name)
+    bool InputManager::requestDestroyState(const std::string& name)
     {
         if (name == "empty" || name == "calibrator" || name == "detector")
         {
@@ -1152,7 +1167,20 @@ namespace orxonox
         std::map<std::string, InputState*>::iterator it = inputStatesByName_.find(name);
         if (it != inputStatesByName_.end())
         {
-            _destroyState((*it).second);
+            if (activeStates_.find(it->second->getPriority()) != activeStates_.end())
+            {
+                // The state is still active. We have to postpone
+                stateLeaveRequests_.insert(it->second);
+                stateDestroyRequests_.insert(it->second);
+            }
+            else if (this->internalState_ & Ticking)
+            {
+                // cannot remove state while ticking
+                stateDestroyRequests_.insert(it->second);
+            }
+            else
+                _destroyState(it->second);
+
             return true;
         }
         return false;
@@ -1170,7 +1198,7 @@ namespace orxonox
     {
         std::map<std::string, InputState*>::iterator it = inputStatesByName_.find(name);
         if (it != inputStatesByName_.end())
-            return (*it).second;
+            return it->second;
         else
             return 0;
     }
@@ -1201,8 +1229,18 @@ namespace orxonox
         std::map<std::string, InputState*>::const_iterator it = inputStatesByName_.find(name);
         if (it != inputStatesByName_.end())
         {
-            stateEnterRequests_.push_back((*it).second);
-            return true;
+            // exists
+            if (activeStates_.find(it->second->getPriority()) == activeStates_.end())
+            {
+                // not active
+                if (stateDestroyRequests_.find(it->second) == stateDestroyRequests_.end())
+                {
+                    // not scheduled for destruction
+                    // set prevents a state being added multiple times
+                    stateEnterRequests_.insert(it->second);
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -1221,8 +1259,13 @@ namespace orxonox
         std::map<std::string, InputState*>::const_iterator it = inputStatesByName_.find(name);
         if (it != inputStatesByName_.end())
         {
-            stateLeaveRequests_.push_back((*it).second);
-            return true;
+            // exists
+            if (activeStates_.find(it->second->getPriority()) != activeStates_.end())
+            {
+                // active
+                stateLeaveRequests_.insert(it->second);
+                return true;
+            }
         }
         return false;
     }

@@ -35,8 +35,8 @@
 #include "Language.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
-#include "input/InputManager.h"
-#include "TclThreadManager.h"
+//#include "input/InputManager.h"
+//#include "TclThreadManager.h"
 
 namespace orxonox
 {
@@ -187,16 +187,16 @@ namespace orxonox
         ResetConfigValue(language_);
     }
 
-    /**
-        @brief Ticks every core class in a specified sequence. Has to be called
-               every Orxonox tick!
-        @param dt Delta Time
-    */
-    void Core::tick(float dt)
-    {
-        TclThreadManager::getInstance().tick(dt);
-        InputManager::getInstance().tick(dt);
-    }
+    ///**
+    //    @brief Ticks every core class in a specified sequence. Has to be called
+    //           every Orxonox tick!
+    //    @param dt Delta Time
+    //*/
+    //void Core::tick(float dt)
+    //{
+    //    TclThreadManager::getInstance().tick(dt);
+    //    InputManager::getInstance().tick(dt);
+    //}
 }
 
 /**

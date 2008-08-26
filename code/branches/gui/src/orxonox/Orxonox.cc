@@ -423,7 +423,7 @@ namespace orxonox
 
 
         // tick the core (needs real time for input and tcl thread management)
-        Core::tick(dt);
+        //Core::tick(dt);
 
         // Call those objects that need the real time
         for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)

@@ -60,6 +60,15 @@ namespace orxonox
     class _CoreExport GameState
     {
     public:
+        struct Operations
+        {
+            unsigned active    : 1;
+            unsigned entering  : 1;
+            unsigned leaving   : 1;
+            unsigned running   : 1;
+            unsigned suspended : 1;
+        };
+
         GameState(const std::string& name);
         virtual ~GameState();
 
@@ -70,23 +79,27 @@ namespace orxonox
         void removeChild(const std::string& name);
         void requestState(const std::string& name);
 
-        //! Determines whether the state is active.
-        bool isActive()       { return this->bActive_; }
-        //! Determines whether the state is suspended.
-        bool isSuspended()    { return this->bSuspended_; }
-        //! Determines whether the state is the current
-        bool isCurrentState() { return this->bActive_ && !this->activeChild_; }
+        ////! Determines whether the state is active.
+        //bool isActive()       { return this->bActive_; }
+        ////! Determines whether the state is suspended.
+        //bool isSuspended()    { return this->bSuspended_; }
+        ////! Determines whether the state is the current
+        //bool isCurrentState() { return this->bActive_ && !this->activeChild_; }
+        const Operations getOperation() { return this->operation_; }
 
-        virtual bool tick(float dt) { return true; }
+        void tick(float dt);
+        void tickChild(float dt) { if (this->activeChild_) this->activeChild_->tick(dt); }
 
     protected:
-        //virtual void enter() = 0;
-        //virtual void leave() = 0;
-        //virtual void tick(float dt) = 0;
-        virtual void enter() { }
-        virtual void leave() { }
+        virtual void enter() = 0;
+        virtual void leave() = 0;
+        virtual void ticked(float dt) = 0;
+        //virtual void enter() { }
+        //virtual void leave() { }
+        //virtual void ticked(float dt) { }
 
         GameState* getActiveChild() { return this->activeChild_; }
+        bool hasScheduledTransition() { return this->scheduledTransition_; }
 
     private:
         GameState* checkState(const std::string& name);
@@ -101,11 +114,11 @@ namespace orxonox
         const std::string                    name_;
         bool                                 bPauseParent_;
 
-        bool                                 bActive_;
-        bool                                 bSuspended_;
+        Operations                           operation_;
 
         GameState*                           parent_;
         GameState*                           activeChild_;
+        GameState*                           scheduledTransition_;
         std::map<std::string, GameState*>    allChildren_;
         std::map<GameState*, GameState*>     grandchildrenToChildren_;
     };
