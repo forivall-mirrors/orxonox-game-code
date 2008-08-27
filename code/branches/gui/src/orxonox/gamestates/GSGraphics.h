@@ -47,17 +47,29 @@ namespace orxonox
     private:
         void enter();
         void leave();
-        void ticked(float dt);
-
-        Ogre::Timer*          timer_;            //!< Main loop timer
+        void ticked(float dt, uint64_t time);
 
         // config values
         float                 debugRefreshTime_;
 
+        Ogre::Root*           ogreRoot_;
         GraphicsEngine*       graphicsEngine_;   //!< our dearest graphics engine <3
         InputManager*         inputManager_;
         InGameConsole*        console_;
         GUIManager*           guiManager_;
+
+
+        // variables for time statistics
+        unsigned long         frameCount_;
+
+        //const unsigned long refreshTime = (unsigned long)(debugRefreshTime_ * 1000000.0f);
+        //unsigned long refreshStartTime;
+        //unsigned long tickTime;
+        //unsigned long oldFrameCount;
+
+        //unsigned long timeBeforeTick;
+        //unsigned long timeBeforeTickOld;
+        //unsigned long timeAfterTick;
     };
 }
 

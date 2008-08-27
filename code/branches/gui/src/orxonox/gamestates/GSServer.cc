@@ -82,10 +82,10 @@ namespace orxonox
         GSLevel::leave();
     }
 
-    void GSServer::ticked(float dt)
+    void GSServer::ticked(float dt, uint64_t time)
     {
-        GSLevel::ticked(dt);
+        GSLevel::ticked(dt, time);
         server_->tick(dt);
-        this->tickChild(dt);
+        this->tickChild(dt, time);
     }
 }

@@ -77,11 +77,11 @@ namespace orxonox
         GSLevel::leave();
     }
 
-    void GSClient::ticked(float dt)
+    void GSClient::ticked(float dt, uint64_t time)
     {
-        GSLevel::ticked(dt);
+        GSLevel::ticked(dt, time);
         client_->tick(dt);
 
-        this->tickChild(dt);
+        this->tickChild(dt, time);
     }
 }

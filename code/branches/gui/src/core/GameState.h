@@ -40,6 +40,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "util/Integers.h"
 
 namespace orxonox
 {
@@ -59,7 +60,13 @@ namespace orxonox
     */
     class _CoreExport GameState
     {
+        friend class RootGameState;
+
     public:
+        /**
+        @brief
+            Gives information about what the GameState is currently doing
+        */
         struct Operations
         {
             unsigned active    : 1;
@@ -69,58 +76,53 @@ namespace orxonox
             unsigned suspended : 1;
         };
 
+    public:
         GameState(const std::string& name);
         virtual ~GameState();
 
         const std::string& getName() const { return name_; }
+        const Operations getOperation() const { return this->operation_; }
+        bool isInSubtree(GameState* state) const;
+
+        GameState* getState(const std::string& name);
+        GameState* getRoot();
+        GameState* getParent() const { return this->parent_; }
+        //! Returns the currently active game state
+        virtual GameState* getCurrentState();
+
+        virtual void requestState(const std::string& name);
 
         void addChild(GameState* state);
         void removeChild(GameState* state);
         void removeChild(const std::string& name);
-        void requestState(const std::string& name);
-
-        ////! Determines whether the state is active.
-        //bool isActive()       { return this->bActive_; }
-        ////! Determines whether the state is suspended.
-        //bool isSuspended()    { return this->bSuspended_; }
-        ////! Determines whether the state is the current
-        //bool isCurrentState() { return this->bActive_ && !this->activeChild_; }
-        const Operations getOperation() { return this->operation_; }
-
-        void tick(float dt);
-        void tickChild(float dt) { if (this->activeChild_) this->activeChild_->tick(dt); }
 
     protected:
         virtual void enter() = 0;
         virtual void leave() = 0;
-        virtual void ticked(float dt) = 0;
-        //virtual void enter() { }
-        //virtual void leave() { }
-        //virtual void ticked(float dt) { }
+        virtual void ticked(float dt, uint64_t time) = 0;
 
         GameState* getActiveChild() { return this->activeChild_; }
-        bool hasScheduledTransition() { return this->scheduledTransition_; }
+
+        void tickChild(float dt, uint64_t time) { if (this->getActiveChild()) this->getActiveChild()->tick(dt, time); }
 
     private:
-        GameState* checkState(const std::string& name);
-        GameState* getCurrentState();
-        GameState* getRootNode();
+        //! Performs a transition to 'destination'
+        virtual void makeTransition(GameState* source, GameState* destination);
+
         void grandchildAdded(GameState* child, GameState* grandchild);
         void grandchildRemoved(GameState* grandchild);
-        void makeTransition(GameState* state);
+
+        void tick(float dt, uint64_t time);
         void activate();
         void deactivate();
 
-        const std::string                    name_;
-        bool                                 bPauseParent_;
-
-        Operations                           operation_;
-
-        GameState*                           parent_;
-        GameState*                           activeChild_;
-        GameState*                           scheduledTransition_;
-        std::map<std::string, GameState*>    allChildren_;
-        std::map<GameState*, GameState*>     grandchildrenToChildren_;
+        const std::string                          name_;
+        Operations                                 operation_;
+        GameState*                             parent_;
+        GameState*                                 activeChild_;
+        //bool                                       bPauseParent_;
+        std::map<std::string, GameState*>      allChildren_;
+        std::map<GameState*, GameState*>   grandchildrenToChildren_;
     };
 }
 

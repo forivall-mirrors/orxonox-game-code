@@ -48,7 +48,7 @@ namespace orxonox
     protected:
         virtual void enter();
         virtual void leave();
-        virtual void ticked(float dt);
+        virtual void ticked(float dt, uint64_t time);
 
         void loadLevel();
         void unloadLevel();

@@ -45,13 +45,9 @@ namespace orxonox
     */
     GameState::GameState(const std::string& name)
         : name_(name)
-        , bPauseParent_(false)
-        //, bActive_(false)
-        //, bSuspended_(false)
-        //, bRunning_(false)
-        , scheduledTransition_(0)
         , parent_(0)
         , activeChild_(0)
+        //, bPauseParent_(false)
     {
         Operations temp = {false, false, false, false, false};
         this->operation_ = temp;
@@ -63,13 +59,7 @@ namespace orxonox
     */
     GameState::~GameState()
     {
-        if (this->operation_.active)
-        {
-            if (this->parent_)
-                this->requestState(this->parent_->getName());
-            else
-                this->requestState("");
-        }
+        OrxAssert(!isInSubtree(getCurrentState()), "Deleting an active GameState is a very bad idea..");
     }
 
     /**
@@ -87,13 +77,13 @@ namespace orxonox
         for (std::map<std::string, GameState*>::const_iterator it = state->allChildren_.begin();
             it != state->allChildren_.end(); ++it)
         {
-            if (this->checkState(it->second->getName()))
+            if (this->getState(it->second->getName()))
             {
                 ThrowException(GameState, "Cannot add a GameState to the hierarchy twice.");
                 return;
             }
         }
-        if (this->checkState(state->name_))
+        if (this->getState(state->name_))
         {
             ThrowException(GameState, "Cannot add a GameState to the hierarchy twice.");
             return;
@@ -108,17 +98,9 @@ namespace orxonox
         // merge the child's children into this tree
         for (std::map<std::string, GameState*>::const_iterator it = state->allChildren_.begin();
             it != state->allChildren_.end(); ++it)
-        {
-            this->allChildren_[it->second->getName()] = it->second;
-            this->grandchildrenToChildren_[it->second] = state;
-            if (this->parent_)
-                this->parent_->grandchildAdded(this, it->second);
-        }
+            this->grandchildAdded(state, it->second);
         // merge 'state' into this tree
-        this->allChildren_[state->name_] = state;
-        this->grandchildrenToChildren_[state] = state;
-        if (this->parent_)
-            this->parent_->grandchildAdded(this, state);
+        this->grandchildAdded(state, state);
 
         // mark us as parent
         state->parent_ = this;
@@ -136,27 +118,25 @@ namespace orxonox
         std::map<GameState*, GameState*>::iterator it = this->grandchildrenToChildren_.find(state);
         if (it != this->grandchildrenToChildren_.end())
         {
-            if (state->getOperation().active)
+            if (state->isInSubtree(getCurrentState()))
             {
-                ThrowException(GameState, "Cannot remove active game state child '"
+                ThrowException(GameState, "Cannot remove an active game state child '"
                     + state->getName() + "' from '" + name_ + "'.");
-                //COUT(2) << "Warning: Cannot remove active game state child '" << state->getName()
+                //COUT(2) << "Warning: Cannot remove an active game state child '" << state->getName()
                 //    << "' from '" << name_ << "'." << std::endl;
             }
             else
             {
                 for (std::map<GameState*, GameState*>::const_iterator it = state->grandchildrenToChildren_.begin();
                     it != state->grandchildrenToChildren_.end(); ++it)
-                {
                     this->grandchildRemoved(it->first);
-                }
                 this->grandchildRemoved(state);
             }
         }
         else
         {
             ThrowException(GameState, "Game state '" + name_ + "' doesn't have a child named '"
-                + state->getName() + "'. Removal skipped.");
+                + state->getName() + "'.");
             //COUT(2) << "Warning: Game state '" << name_ << "' doesn't have a child named '"
             //    << state->getName() << "'. Removal skipped." << std::endl;
         }
@@ -172,7 +152,7 @@ namespace orxonox
 
     void GameState::removeChild(const std::string& name)
     {
-        GameState* state = checkState(name);
+        GameState* state = getState(name);
         if (state)
         {
             removeChild(state);
@@ -193,7 +173,7 @@ namespace orxonox
     @param grandchild
         The child that has been added.
     */
-    void GameState::grandchildAdded(GameState* child, GameState* grandchild)
+    inline void GameState::grandchildAdded(GameState* child, GameState* grandchild)
     {
         // fill the two maps correctly.
         this->allChildren_[grandchild->getName()] = grandchild;
@@ -211,7 +191,7 @@ namespace orxonox
     @param grandchild
         The child that has been removed.
     */
-    void GameState::grandchildRemoved(GameState* grandchild)
+    inline void GameState::grandchildRemoved(GameState* grandchild)
     {
         // adjust the two maps correctly.
         this->allChildren_.erase(grandchild->getName());
@@ -226,10 +206,10 @@ namespace orxonox
     @remarks
         Remember that the every node has a map with all its child nodes.
     */
-    GameState* GameState::checkState(const std::string& name)
+    GameState* GameState::getState(const std::string& name)
     {
         if (this->parent_)
-            return this->parent_->checkState(name);
+            return this->parent_->getState(name);
         else
         {
             // The map only contains children, so check ourself first
@@ -239,6 +219,18 @@ namespace orxonox
             std::map<std::string, GameState*>::const_iterator it = this->allChildren_.find(name);
             return (it!= this->allChildren_.end() ? it->second : 0);
         }
+    }
+
+    /**
+    @brief
+        Returns the root node of the tree.
+    */
+    GameState* GameState::getRoot()
+    {
+        if (this->parent_)
+            return this->parent_->getRoot();
+        else
+            return this;
     }
 
     /**
@@ -259,8 +251,8 @@ namespace orxonox
         }
         else
         {
-            if (this->parent_)
-                return this->parent_->getCurrentState();
+            if (this->getParent())
+                return this->getParent()->getCurrentState();
             else
                 return 0;
         }
@@ -268,14 +260,12 @@ namespace orxonox
 
     /**
     @brief
-        Returns the root node of the tree.
+        Determines whether 'state' is in this subtree, including this node.
     */
-    GameState* GameState::getRootNode()
+    bool GameState::isInSubtree(GameState* state) const
     {
-        if (this->parent_)
-            return this->parent_->getRootNode();
-        else
-            return this;
+        return (grandchildrenToChildren_.find(state) != grandchildrenToChildren_.end()
+                || state == this);
     }
 
     /**
@@ -287,50 +277,8 @@ namespace orxonox
     */
     void GameState::requestState(const std::string& name)
     {
-        GameState* current = getCurrentState();
-        if (current != 0 && (current->getOperation().entering || current->getOperation().leaving))
-        {
-            ThrowException(GameState, "Making state transitions during enter()/leave() is forbidden.");
-        }
-        //if (name == "")
-        //{
-        //    // user would like to leave every state.
-        //    if (current)
-        //    {
-        //        // Deactivate all states but root
-        //        GameState* root = getRootNode();
-        //        current->makeTransition(root);
-        //        //// Kick root too
-        //        //assert(!(root->getOperation().entering || root->getOperation().leaving));
-        //        //if (root->operation_.running)
-        //        //    root->scheduledTransition_ = 0;
-        //        //else
-        //        //    root->deactivate();
-        //    }
-        //}
-        else
-        {
-            GameState* request = checkState(name);
-            if (request)
-            {
-                if (current)
-                {
-                    // There is already an active state
-                    current->makeTransition(request);
-                }
-                else
-                {
-                    // no active state --> we have to activate the root node first.
-                    GameState* root = getRootNode();
-                    root->activate();
-                    root->makeTransition(request);
-                }
-            }
-            else
-            {
-                COUT(2) << "Warning: GameState '" << name << "' doesn't exist." << std::endl;
-            }
-        }
+        assert(getRoot());
+        getRoot()->requestState(name);
     }
 
     /**
@@ -338,39 +286,43 @@ namespace orxonox
         Internal method that actually makes the state transition. Since it is internal,
         the method can assume certain things to be granted (like 'this' is always active).
     */
-    void GameState::makeTransition(GameState* state)
+    void GameState::makeTransition(GameState* source, GameState* destination)
     {
-        // we're always already active
-        assert(this->operation_.active);
+        if (source == this->getParent())
+        {
+            // call is from the parent
+            this->activate();
+        }
+        else if (source == 0)
+        {
+            // call was just started by root
+            // don't do anyting yet
+        }
+        else
+        {
+            // call is from a child
+            this->activeChild_ = 0;
+        }
 
-        if (state == this)
+        if (destination == this)
             return;
 
-        // Check for 'state' in the children map first
-        std::map<GameState*, GameState*>::const_iterator it = this->grandchildrenToChildren_.find(state);
+        // Check for 'destination' in the children map first
+        std::map<GameState*, GameState*>::const_iterator it
+            = this->grandchildrenToChildren_.find(destination);
         if (it != this->grandchildrenToChildren_.end())
         {
             // child state. Don't use 'state', might be a grandchild!
-            it->second->activate();
-            it->second->makeTransition(state);
+            this->activeChild_ = it->second;
+            it->second->makeTransition(this, destination);
         }
         else
         {
             // parent. We can be sure of this.
-            assert(this->parent_ != 0);
+            assert(this->getParent() != 0);
 
-            // only do the transition if we're not currently running
-            if (this->operation_.running)
-            {
-                //this->bDeactivationScheduled_ = true;
-                this->scheduledTransition_ = state;
-            }
-            else
-            {
-                this->deactivate();
-                this->parent_->makeTransition(state);
-            }
-
+            this->deactivate();
+            this->getParent()->makeTransition(this, destination);
         }
     }
 
@@ -380,8 +332,6 @@ namespace orxonox
     */
     void GameState::activate()
     {
-        if (this->parent_)
-            this->parent_->activeChild_ = this;
         this->operation_.active = true;
         this->operation_.entering = true;
         this->enter();
@@ -397,8 +347,6 @@ namespace orxonox
         this->leave();
         this->operation_.leaving = false;
         this->operation_.active = false;
-        if (this->parent_)
-            this->parent_->activeChild_ = 0;
     }
 
     /**
@@ -410,19 +358,10 @@ namespace orxonox
     @note
         This method is not virtual! You cannot override it therefore.
     */
-    void GameState::tick(float dt)
+    void GameState::tick(float dt, uint64_t time)
     {
         this->operation_.running = true;
-        this->ticked(dt);
+        this->ticked(dt, time);
         this->operation_.running = false;
-
-        if (this->scheduledTransition_)
-        {
-            // state was requested to be deactivated when ticked.
-            this->makeTransition(this->scheduledTransition_);
-            this->scheduledTransition_ = 0;
-            this->deactivate();
-        }
     }
-
 }

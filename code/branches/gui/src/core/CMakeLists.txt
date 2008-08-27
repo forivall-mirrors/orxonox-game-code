@@ -9,6 +9,7 @@ SET(CORE_SRC_FILES
   OrxonoxClass.cc
   OutputBuffer.cc
   OutputHandler.cc
+  RootGameState.cc
   Script.cc
   SignalHandler.cc
 

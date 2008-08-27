@@ -40,6 +40,7 @@
 #include "core/TclBind.h"
 #include "core/Core.h"
 #include "core/CommandLine.h"
+#include "core/TclThreadManager.h"
 #include "GraphicsEngine.h"
 #include "Settings.h"
 
@@ -48,10 +49,9 @@ namespace orxonox
     SetCommandLineArgument(dataPath, "").setInformation("PATH");
 
     GSRoot::GSRoot()
-        : GameState("root")
+        : RootGameState("root")
         , settings_(0)
         , graphicsEngine_(0)
-        , bExit_(false)
     {
     }
 
@@ -112,20 +112,21 @@ namespace orxonox
 
         // initialise TCL
         TclBind::getInstance().setDataPath(Settings::getDataPath());
+        TclThreadManager::getInstance();
 
         // initialise graphics engine. Doesn't load the render window yet!
         graphicsEngine_ = new GraphicsEngine();
         graphicsEngine_->setup();       // creates ogre root and other essentials
 
-        // console commands
-        FunctorMember<GSRoot>* functor = createFunctor(&GSRoot::loadGame);
-        functor->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "loadGame"));
+        // add console commands
+        FunctorMember<GSRoot>* functor1 = createFunctor(&GSRoot::exitGame);
+        functor1->setObject(this);
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor1, "exit"));
 
         // add console commands
-        functor = createFunctor(&GSRoot::exitGame);
-        functor->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "exit"));
+        FunctorMember01<GameState, const std::string&>* functor2 = createFunctor(&GameState::requestState);
+        functor2->setObject(this);
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor2, "selectGameState"));
     }
 
     void GSRoot::leave()
@@ -136,17 +137,10 @@ namespace orxonox
         // TODO: remove and destroy console commands
     }
 
-    void GSRoot::ticked(float dt)
+    void GSRoot::ticked(float dt, uint64_t time)
     {
-        this->tickChild(dt);
-    }
+        TclThreadManager::getInstance().tick(dt);
 
-    /**
-    @brief
-        Requests a state.
-    */
-    void GSRoot::loadGame(const std::string& name)
-    {
-        this->requestState(name);
+        this->tickChild(dt, time);
     }
 }

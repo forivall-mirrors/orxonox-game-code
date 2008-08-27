@@ -30,32 +30,29 @@
 #define _GSRoot_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/GameState.h"
+#include "core/RootGameState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSRoot : public GameState
+    class _OrxonoxExport GSRoot : public RootGameState
     {
     public:
         GSRoot();
         ~GSRoot();
 
         void feedCommandLine(int argc, char** argv);
-        void loadGame(const std::string& name);
 
         void exitGame()
         { requestState("root"); }
-        bool isGameFinished() { return (this->getActiveChild() == 0); }
 
     private:
         void enter();
         void leave();
-        void ticked(float dt);
+        void ticked(float dt, uint64_t time);
 
         Settings*             settings_;
-        GraphicsEngine*       graphicsEngine_;   //!< our dearest graphics engine <3
-        bool                  bExit_;
+        GraphicsEngine*       graphicsEngine_;   //!< Interface to Ogre
     };
 }
 
-#endif /* _GSGraphics_H__ */
+#endif /* _GSRoot_H__ */

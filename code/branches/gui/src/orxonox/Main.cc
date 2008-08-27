@@ -142,9 +142,7 @@ int main(int argc, char** argv)
     io.addChild(&ioConsole);
 
     root.feedCommandLine(argc, argv);
-    root.requestState("ioConsole");
-    while (!root.isGameFinished())
-        root.tick(0.0f);
+    root.start();
 
     return 0;
 }

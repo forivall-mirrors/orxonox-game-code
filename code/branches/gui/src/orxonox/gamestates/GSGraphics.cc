@@ -33,11 +33,11 @@
 #include <OgreRoot.h>
 #include <OgreTimer.h>
 #include <OgreWindowEventUtilities.h>
+#include <OgreRenderWindow.h>
 
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/input/InputManager.h"
-#include "core/TclThreadManager.h"
 //#include "core/Core.h"
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
@@ -47,11 +47,11 @@ namespace orxonox
 {
     GSGraphics::GSGraphics()
         : GameState("graphics")
-        , timer_(0)
         , debugRefreshTime_(0.0f)
         , inputManager_(0)
         , console_(0)
         , guiManager_(0)
+        , frameCount_(0)
     {
     }
 
@@ -66,6 +66,7 @@ namespace orxonox
 
     void GSGraphics::enter()
     {
+        this->ogreRoot_ = Ogre::Root::getSingletonPtr();
         this->graphicsEngine_ = GraphicsEngine::getInstancePtr();
 
         graphicsEngine_->loadRenderer();    // creates the render window
@@ -86,21 +87,19 @@ namespace orxonox
         // load the CEGUI interface
         guiManager_ = new GUIManager();
         guiManager_->initialise();
-
-        // use the ogre timer class to measure time.
-        timer_ = new Ogre::Timer();
     }
 
     void GSGraphics::leave()
     {
-        delete this->timer_;
-
         delete this->guiManager_;
 
         delete this->console_;
 
         delete this->inputManager_;
 
+        this->ogreRoot_->detachRenderTarget(GraphicsEngine::getInstance().getRenderWindow());
+        delete GraphicsEngine::getInstance().getRenderWindow();
+        this->ogreRoot_->shutdown
         // TODO: destroy render window
     }
 
@@ -117,89 +116,59 @@ namespace orxonox
         as shown that there is probably only one FrameListener that doesn't even
         need the time. So we shouldn't run into problems.
     */
-    void GSGraphics::ticked(float dt)
+    void GSGraphics::ticked(float dt, uint64_t time)
     {
-        // note: paramter 'dt' is of no meaning
+        this->inputManager_->tick(dt);
 
-        Ogre::Root& ogreRoot = Ogre::Root::getSingleton();
+        this->tickChild(dt, time);
 
-        unsigned long frameCount = 0;
+        // tick console
+        this->console_->tick(dt);
 
-        const unsigned long refreshTime = (unsigned long)(debugRefreshTime_ * 1000000.0f);
-        unsigned long refreshStartTime = 0;
-        unsigned long tickTime = 0;
-        unsigned long oldFrameCount = 0;
+        //// get current time once again
+        //timeAfterTick = timer_->getMicroseconds();
 
-        unsigned long timeBeforeTick = 0;
-        unsigned long timeBeforeTickOld = 0;
-        unsigned long timeAfterTick = 0;
+        //tickTime += timeAfterTick - timeBeforeTick;
+        //if (timeAfterTick > refreshStartTime + refreshTime)
+        //{
+        //    GraphicsEngine::getInstance().setAverageTickTime(
+        //        (float)tickTime * 0.001 / (frameCount - oldFrameCount));
+        //    float avgFPS = (float)(frameCount - oldFrameCount) / (timeAfterTick - refreshStartTime) * 1000000.0;
+        //    GraphicsEngine::getInstance().setAverageFramesPerSecond(avgFPS);
 
-        // TODO: Update time in seconds every 7 seconds to avoid any overflow (7 secs is very tight)
+        //    oldFrameCount = frameCount;
+        //    tickTime = 0;
+        //    refreshStartTime = timeAfterTick;
+        //}
 
-        COUT(3) << "Orxonox: Starting the main loop." << std::endl;
+        // don't forget to call _fireFrameStarted in ogre to make sure
+        // everything goes smoothly
+        Ogre::FrameEvent evt;
+        evt.timeSinceLastFrame = dt;
+        evt.timeSinceLastEvent = dt; // note: same time, but shouldn't matter anyway
+        ogreRoot_->_fireFrameStarted(evt);
 
-        try
-        {
-            timer_->reset();
-            while (!this->hasScheduledTransition())
-            {
-                // get current time
-                timeBeforeTickOld = timeBeforeTick;
-                timeBeforeTick    = timer_->getMicroseconds();
-                float dt = (timeBeforeTick - timeBeforeTickOld) / 1000000.0;
+        // Pump messages in all registered RenderWindows
+        // This calls the WindowEventListener objects.
+        Ogre::WindowEventUtilities::messagePump();
+        // make sure the window stays active even when not focused
+        // (probably only necessary on windows)
+        GraphicsEngine::getInstance().setWindowActivity(true);
 
-                this->inputManager_->tick(dt);
-                TclThreadManager::getInstance().tick(dt);
+        // render
+        ogreRoot_->_updateAllRenderTargets();
 
-                this->tickChild(dt);
+        // again, just to be sure ogre works fine
+        ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
 
-                // tick console
-                this->console_->tick(dt);
+        ++frameCount_;
 
-                // get current time once again
-                timeAfterTick = timer_->getMicroseconds();
-
-                tickTime += timeAfterTick - timeBeforeTick;
-                if (timeAfterTick > refreshStartTime + refreshTime)
-                {
-                    GraphicsEngine::getInstance().setAverageTickTime(
-                        (float)tickTime * 0.001 / (frameCount - oldFrameCount));
-                    float avgFPS = (float)(frameCount - oldFrameCount) / (timeAfterTick - refreshStartTime) * 1000000.0;
-                    GraphicsEngine::getInstance().setAverageFramesPerSecond(avgFPS);
-
-                    oldFrameCount = frameCount;
-                    tickTime = 0;
-                    refreshStartTime = timeAfterTick;
-                }
-
-                // don't forget to call _fireFrameStarted in ogre to make sure
-                // everything goes smoothly
-                Ogre::FrameEvent evt;
-                evt.timeSinceLastFrame = dt;
-                evt.timeSinceLastEvent = dt; // note: same time, but shouldn't matter anyway
-                ogreRoot._fireFrameStarted(evt);
-
-                // Pump messages in all registered RenderWindows
-                // This calls the WindowEventListener objects.
-                Ogre::WindowEventUtilities::messagePump();
-                // make sure the window stays active even when not focused
-                // (probably only necessary on windows)
-                GraphicsEngine::getInstance().setWindowActivity(true);
-
-                // render
-                ogreRoot._updateAllRenderTargets();
-
-                // again, just to be sure ogre works fine
-                ogreRoot._fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
-
-                ++frameCount;
-            }
-        }
-        catch (std::exception& ex)
-        {
-            // something went wrong.
-            COUT(1) << ex.what() << std::endl;
-            COUT(1) << "Main loop was stopped by an unhandled exception. Shutting down." << std::endl;
-        }
+        //}
+        //catch (std::exception& ex)
+        //{
+        //    // something went wrong.
+        //    COUT(1) << ex.what() << std::endl;
+        //    COUT(1) << "Main loop was stopped by an unhandled exception. Shutting down." << std::endl;
+        //}
     }
 }

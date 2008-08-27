@@ -7,10 +7,15 @@ SET( ORXONOX_SRC_FILES
   RadarViewable.cc
   Settings.cc
 
+  gamestates/GSClient.cc
   gamestates/GSGraphics.cc
   gamestates/GSGUI.cc
+  gamestates/GSIO.cc
+  gamestates/GSIOConsole.cc
   gamestates/GSLevel.cc
   gamestates/GSRoot.cc
+  gamestates/GSServer.cc
+  gamestates/GSStandalone.cc
 
   gui/GUIManager.cc
   gui/OgreCEGUIRenderer.cpp

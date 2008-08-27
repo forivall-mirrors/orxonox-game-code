@@ -95,7 +95,7 @@ namespace orxonox
         delete this->keyBinder_;
     }
 
-    void GSLevel::ticked(float dt)
+    void GSLevel::ticked(float dt, uint64_t time)
     {
         // Call those objects that need the real time
         for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)

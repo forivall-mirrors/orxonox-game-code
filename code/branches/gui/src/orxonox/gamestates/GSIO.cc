@@ -57,9 +57,9 @@ namespace orxonox
     {
     }
 
-    void GSIO::ticked(float dt)
+    void GSIO::ticked(float dt, uint64_t time)
     {
-        this->tickChild(dt);
+        this->tickChild(dt, time);
         //Ogre::Root& ogreRoot = Ogre::Root::getSingleton();
 
         //unsigned long frameCount = 0;

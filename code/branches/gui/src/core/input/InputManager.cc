@@ -639,36 +639,36 @@ namespace orxonox
         internalState_ |= Ticking;
 
         // check for states to leave
-        for (std::set<InputState*>::reverse_iterator it = stateLeaveRequests_.rbegin();
-            it != stateLeaveRequests_.rend(); ++it)
+        for (std::set<InputState*>::reverse_iterator rit = stateLeaveRequests_.rbegin();
+            rit != stateLeaveRequests_.rend(); ++rit)
         {
-            (*it)->onLeave();
+            (*rit)->onLeave();
             // just to be sure that the state actually is registered
-            assert(inputStatesByName_.find((*it)->getName()) != inputStatesByName_.end());
+            assert(inputStatesByName_.find((*rit)->getName()) != inputStatesByName_.end());
 
-            activeStates_.erase((*it)->getPriority());
+            activeStates_.erase((*rit)->getPriority());
             _updateActiveStates();
         }
         stateLeaveRequests_.clear();
 
         // check for states to enter
-        for (std::set<InputState*>::reverse_iterator it = stateEnterRequests_.rbegin();
-            it != stateEnterRequests_.rend(); ++it)
+        for (std::set<InputState*>::reverse_iterator rit = stateEnterRequests_.rbegin();
+            rit != stateEnterRequests_.rend(); ++rit)
         {
             // just to be sure that the state actually is registered
-            assert(inputStatesByName_.find((*it)->getName()) != inputStatesByName_.end());
+            assert(inputStatesByName_.find((*rit)->getName()) != inputStatesByName_.end());
 
-            activeStates_[(*it)->getPriority()] = (*it);
+            activeStates_[(*rit)->getPriority()] = (*rit);
             _updateActiveStates();
-            (*it)->onEnter();
+            (*rit)->onEnter();
         }
         stateEnterRequests_.clear();
 
         // check for states to destroy
-        for (std::set<InputState*>::reverse_iterator it = stateDestroyRequests_.rbegin();
-            it != stateDestroyRequests_.rend(); ++it)
+        for (std::set<InputState*>::reverse_iterator rit = stateDestroyRequests_.rbegin();
+            rit != stateDestroyRequests_.rend(); ++rit)
         {
-            _destroyState((*it));
+            _destroyState((*rit));
         }
 
         // Capture all the input. This calls the event handlers in InputManager.

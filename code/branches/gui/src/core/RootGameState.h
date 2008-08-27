@@ -26,28 +26,37 @@
  *
  */
 
-#ifndef _GSIO_H__
-#define _GSIO_H__
+#ifndef _RootGameState_H__
+#define _RootGameState_H__
 
-#include "OrxonoxPrereqs.h"
+#include "CorePrereqs.h"
 #include <OgrePrerequisites.h>
-#include "core/GameState.h"
+#include "GameState.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSIO : public GameState
+    class _CoreExport RootGameState : public GameState
     {
+        //friend class GameState;
+
     public:
-        GSIO();
-        ~GSIO();
+        RootGameState(const std::string& name);
+        ~RootGameState();
+
+        void requestState(const std::string& name);
+        void start();
+
+    protected:
+        //virtual void ticked(float dt) = 0;
+        //virtual void enter() = 0;
+        //virtual void leave() = 0;
 
     private:
-        void enter();
-        void leave();
-        void ticked(float dt, uint64_t time);
+        void makeTransition(GameState* source, GameState* destination);
+        void gotoState(const std::string& name);
 
-        //Ogre::Timer*          timer_;            //!< Main loop timer
+        std::string           stateRequest_;
     };
 }
 
-#endif /* _GSIO_H__ */
+#endif /* _RootGameState_H__ */
