@@ -99,7 +99,7 @@ namespace orxonox
 
         this->ogreRoot_->detachRenderTarget(GraphicsEngine::getInstance().getRenderWindow());
         delete GraphicsEngine::getInstance().getRenderWindow();
-        this->ogreRoot_->shutdown
+        //this->ogreRoot_->shutdown
         // TODO: destroy render window
     }
 

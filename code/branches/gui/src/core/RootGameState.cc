@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(state, "standalone").setShortcut("s");
+    SetCommandLineArgument(state, "gui").setShortcut("s");
 
     RootGameState::RootGameState(const std::string& name)
         : GameState(name)
