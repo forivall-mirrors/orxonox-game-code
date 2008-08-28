@@ -76,13 +76,14 @@ namespace orxonox
     {
         public:
             virtual void operator()(void* object) = 0;
+            virtual ~SuperFunctionCaller_testfunction() {}
     };
 
     template <class T>
     class SuperFunctionClassCaller_testfunction : public SuperFunctionCaller_testfunction
     {
         public:
-            inline virtual void operator()(void* object)
+            inline void operator()(void* object)
             {
                 ((T*)object)->T::testfunction();
             }
