@@ -160,10 +160,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\Orxonox.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\orxonox\PrecompiledHeaderFiles.cc"
 				>
 				<FileConfiguration
@@ -539,10 +535,6 @@
 			>
 			<File
 				RelativePath="..\..\src\orxonox\GraphicsEngine.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\Orxonox.h"
 				>
 			</File>
 			<File

@@ -1,7 +1,6 @@
 SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   Main.cc
-  Orxonox.cc
   Radar.cc
   RadarListener.cc
   RadarViewable.cc

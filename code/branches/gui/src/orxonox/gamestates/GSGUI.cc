@@ -57,11 +57,11 @@ namespace orxonox
         GUIManager::getInstance().hideGUI();
     }
 
-    void GSGUI::ticked(float dt, uint64_t time)
+    void GSGUI::ticked(const Clock& time)
     {
         // tick CEGUI
-        GUIManager::getInstance().tick(dt);
+        GUIManager::getInstance().tick(time.getDeltaTime());
 
-        this->tickChild(dt, time);
+        this->tickChild(time);
     }
 }

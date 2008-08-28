@@ -44,7 +44,7 @@ namespace orxonox
     private:
         void enter();
         void leave();
-        void ticked(float dt, uint64_t time);
+        void ticked(const Clock& time);
     };
 }
 

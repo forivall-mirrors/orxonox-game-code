@@ -161,7 +161,6 @@ namespace orxonox
   class XMLPortParamContainer;
 
   // game states
-  class BaseGameState;
   class GameState;
   class RootGameState;
 

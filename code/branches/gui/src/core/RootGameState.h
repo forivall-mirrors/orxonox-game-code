@@ -30,26 +30,18 @@
 #define _RootGameState_H__
 
 #include "CorePrereqs.h"
-#include <OgrePrerequisites.h>
 #include "GameState.h"
 
 namespace orxonox
 {
     class _CoreExport RootGameState : public GameState
     {
-        //friend class GameState;
-
     public:
         RootGameState(const std::string& name);
         ~RootGameState();
 
         void requestState(const std::string& name);
         void start();
-
-    protected:
-        //virtual void ticked(float dt) = 0;
-        //virtual void enter() = 0;
-        //virtual void leave() = 0;
 
     private:
         void makeTransition(GameState* source, GameState* destination);

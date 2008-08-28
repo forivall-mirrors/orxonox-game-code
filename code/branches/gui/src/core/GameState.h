@@ -41,6 +41,7 @@
 #include <vector>
 #include <map>
 #include "util/Integers.h"
+#include "Clock.h"
 
 namespace orxonox
 {
@@ -99,11 +100,11 @@ namespace orxonox
     protected:
         virtual void enter() = 0;
         virtual void leave() = 0;
-        virtual void ticked(float dt, uint64_t time) = 0;
+        virtual void ticked(const Clock& time) = 0;
 
         GameState* getActiveChild() { return this->activeChild_; }
 
-        void tickChild(float dt, uint64_t time) { if (this->getActiveChild()) this->getActiveChild()->tick(dt, time); }
+        void tickChild(const Clock& time) { if (this->getActiveChild()) this->getActiveChild()->tick(time); }
 
     private:
         //! Performs a transition to 'destination'
@@ -112,7 +113,7 @@ namespace orxonox
         void grandchildAdded(GameState* child, GameState* grandchild);
         void grandchildRemoved(GameState* grandchild);
 
-        void tick(float dt, uint64_t time);
+        void tick(const Clock& time);
         void activate();
         void deactivate();
 

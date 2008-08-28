@@ -57,12 +57,12 @@ namespace orxonox
     {
     }
 
-    void GSIOConsole::ticked(float dt, uint64_t time)
+    void GSIOConsole::ticked(const Clock& time)
     {
         std::string command;
         std::getline(std::cin, command);
         CommandExecutor::execute(command, true);
         
-        tickChild(dt, time);
+        tickChild(time);
     }
 }

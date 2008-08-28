@@ -69,10 +69,9 @@ namespace orxonox
         GSLevel::leave();
     }
 
-    void GSStandalone::ticked(float dt, uint64_t time)
+    void GSStandalone::ticked(const Clock& time)
     {
-        GSLevel::ticked(dt, time);
-
-        this->tickChild(dt, time);
+        GSLevel::ticked(time);
+        this->tickChild(time);
     }
 }

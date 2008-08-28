@@ -43,7 +43,7 @@ namespace orxonox
 {
     GSLevel::GSLevel(const std::string& name)
         : GameState(name)
-        , timefactor_(1.0f)
+        , timeFactor_(1.0f)
         , keyBinder_(0)
         , inputState_(0)
         , radar_(0)
@@ -73,6 +73,9 @@ namespace orxonox
         COUT(3) << "Orxonox: Loading HUD" << std::endl;
         hud_ = new Level(Settings::getDataPath() + "overlay/hud.oxo");
         Loader::load(hud_);
+
+        // reset game speed to normal
+        timeFactor_ = 1.0f;
     }
 
     void GSLevel::leave()
@@ -95,14 +98,14 @@ namespace orxonox
         delete this->keyBinder_;
     }
 
-    void GSLevel::ticked(float dt, uint64_t time)
+    void GSLevel::ticked(const Clock& time)
     {
         // Call those objects that need the real time
         for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
-            it->tick(dt);
+            it->tick(time.getDeltaTime());
         // Call the scene objects
         for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
-            it->tick(dt * this->timefactor_);
+            it->tick(time.getDeltaTime() * this->timeFactor_);
     }
 
     /**
@@ -111,13 +114,13 @@ namespace orxonox
     */
     void GSLevel::setTimeFactor(float factor)
     {
-        float change = factor / this->timefactor_;
-        this->timefactor_ = factor;
+        float change = factor / this->timeFactor_;
+        this->timeFactor_ = factor;
         for (Iterator<ParticleInterface> it = ObjectList<ParticleInterface>::begin(); it; ++it)
             it->setSpeedFactor(it->getSpeedFactor() * change);
 
         for (Iterator<Backlight> it = ObjectList<Backlight>::begin(); it; ++it)
-            it->setTimeFactor(timefactor_);
+            it->setTimeFactor(timeFactor_);
     }
 
     void GSLevel::loadLevel()

@@ -30,7 +30,6 @@
 #define _GSIO_H__
 
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
 #include "core/GameState.h"
 
 namespace orxonox
@@ -44,9 +43,7 @@ namespace orxonox
     private:
         void enter();
         void leave();
-        void ticked(float dt, uint64_t time);
-
-        //Ogre::Timer*          timer_;            //!< Main loop timer
+        void ticked(const Clock& time);
     };
 }
 

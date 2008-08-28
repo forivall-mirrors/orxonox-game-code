@@ -33,7 +33,6 @@
 */
 
 #include "GameState.h"
-#include <cassert>
 #include "Debug.h"
 #include "Exception.h"
 
@@ -358,10 +357,10 @@ namespace orxonox
     @note
         This method is not virtual! You cannot override it therefore.
     */
-    void GameState::tick(float dt, uint64_t time)
+    void GameState::tick(const Clock& time)
     {
         this->operation_.running = true;
-        this->ticked(dt, time);
+        this->ticked(time);
         this->operation_.running = false;
     }
 }

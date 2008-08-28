@@ -28,8 +28,7 @@
 
 #include "RootGameState.h"
 
-#include <OgreTimer.h>
-#include "util/Integers.h"
+#include "Clock.h"
 #include "Debug.h"
 #include "Exception.h"
 #include "CommandLine.h"
@@ -94,10 +93,6 @@ namespace orxonox
             GameState* current = getCurrentState();
             if (current)
             {
-                //OrxAssert(dynamic_cast<GameState*>(current),
-                //    "RootGameState: There was a RootGameState in the subtree of Root");
-                //GameState* currentGS = static_cast<GameState*>(current);
-                //currentGS->makeTransition(this, request);
                 current->makeTransition(0, request);
             }
             else
@@ -140,29 +135,12 @@ namespace orxonox
         CommandLine::getValue<std::string>("state", &initialState);
         gotoState(initialState);
 
-        Ogre::Timer timer;
-        uint64_t storedTime = 0;
-        unsigned long lastTimersTime = 1;
-        timer.reset();
+        Clock clock;
         while (this->activeChild_)
         {
-            // get current time
-            unsigned long timersTime = timer.getMicroseconds();
-            uint64_t realTime = storedTime + timersTime;
-            float dt = (float)(timersTime - lastTimersTime)/1000000.0f;
-            if (timersTime > 7000000)
-            {
-                // Under worst condition, the ogre timer will overflow right after 7 seconds
-                storedTime += timersTime;
-                lastTimersTime = 0;
-                timer.reset();
-            }
-            else
-            {
-                lastTimersTime = timersTime;
-            }
+            clock.capture();
 
-            this->tick(dt, realTime);
+            this->tick(clock);
 
             if (this->stateRequest_ != "")
                 gotoState(stateRequest_);

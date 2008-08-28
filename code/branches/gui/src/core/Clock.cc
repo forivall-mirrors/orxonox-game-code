@@ -26,30 +26,53 @@
  *
  */
 
-#include "OrxonoxStableHeaders.h"
-#include "GSIO.h"
+/**
+    @file
+    @brief
+*/
+
+#include "Clock.h"
+#include <OgreTimer.h>
 
 namespace orxonox
 {
-    GSIO::GSIO()
-        : GameState("io")
+    Clock::Clock()
+        : timer_(new Ogre::Timer())
+        , storedTime_(0)
+        , tickTime_(0)
+        , tickDt_(0)
+        , tickDtFloat_(0.0f)
+        , lastTimersTime_(0)
     {
     }
 
-    GSIO::~GSIO()
+    Clock::~Clock()
     {
+        delete timer_;
+    }
+    
+    void Clock::capture()
+    {
+        unsigned long timersTime = timer_->getMicroseconds();
+        tickTime_ = storedTime_ + timersTime;
+        tickDt_ = timersTime - lastTimersTime_;
+        tickDtFloat_ = (float)tickDt_ / 1000000.0f;
+
+        if (timersTime > 0x7FFFFFF0)
+        {
+            // Ogre timer will overflow at 2^32 microseconds if unsigned long is 32 bit
+            storedTime_ += timersTime;
+            lastTimersTime_ = 0;
+            timer_->reset();
+        }
+        else
+        {
+            lastTimersTime_ = timersTime;
+        }
     }
 
-    void GSIO::enter()
+    uint64_t Clock::getRealMicroseconds() const
     {
-    }
-
-    void GSIO::leave()
-    {
-    }
-
-    void GSIO::ticked(const Clock& time)
-    {
-        this->tickChild(time);
+        return this->timer_->getMicroseconds();
     }
 }

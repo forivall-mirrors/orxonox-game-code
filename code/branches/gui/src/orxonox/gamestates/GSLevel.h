@@ -43,19 +43,19 @@ namespace orxonox
         // this has to be public because proteced triggers a bug in msvc
         // when taking the function address.
         void setTimeFactor(float factor);
-        float getTimeFactor() { return this->timefactor_; }
+        float getTimeFactor() { return this->timeFactor_; }
 
     protected:
         virtual void enter();
         virtual void leave();
-        virtual void ticked(float dt, uint64_t time);
+        virtual void ticked(const Clock& time);
 
         void loadLevel();
         void unloadLevel();
 
     private:
 
-        float timefactor_;       //!< A factor to change the gamespeed
+        float timeFactor_;       //!< A factor to change the gamespeed
 
         KeyBinder*            keyBinder_;        //!< tool that loads and manages the input bindings
         SimpleInputState*     inputState_;

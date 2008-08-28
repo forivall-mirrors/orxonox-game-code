@@ -29,7 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSRoot.h"
 
-#include "util/SubString.h"
+//#include "util/SubString.h"
 #include "core/Factory.h"
 #include "core/ConfigFileManager.h"
 #include "core/ConfigValueIncludes.h"
@@ -38,11 +38,24 @@
 #include "core/Debug.h"
 #include "core/Exception.h"
 #include "core/TclBind.h"
-#include "core/Core.h"
-#include "core/CommandLine.h"
 #include "core/TclThreadManager.h"
 #include "GraphicsEngine.h"
 #include "Settings.h"
+
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 
+#  ifndef WIN32_LEAN_AND_MEAN
+#    define WIN32_LEAN_AND_MEAN
+#  endif
+#  include "windows.h"
+
+   //Get around Windows hackery
+#  ifdef max
+#    undef max
+#  endif
+#  ifdef min
+#    undef min
+#  endif
+#endif
 
 namespace orxonox
 {
@@ -118,6 +131,11 @@ namespace orxonox
         graphicsEngine_ = new GraphicsEngine();
         graphicsEngine_->setup();       // creates ogre root and other essentials
 
+        // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
+        // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
+        // the timer though).
+        setThreadAffinity();
+
         // add console commands
         FunctorMember<GSRoot>* functor1 = createFunctor(&GSRoot::exitGame);
         functor1->setObject(this);
@@ -137,10 +155,47 @@ namespace orxonox
         // TODO: remove and destroy console commands
     }
 
-    void GSRoot::ticked(float dt, uint64_t time)
+    void GSRoot::ticked(const Clock& time)
     {
-        TclThreadManager::getInstance().tick(dt);
+        TclThreadManager::getInstance().tick(time.getDeltaTime());
 
-        this->tickChild(dt, time);
+        this->tickChild(time);
+    }
+
+    /**
+    @note
+        The code of this function has been copied from OGRE, an open source graphics engine.
+            (Object-oriented Graphics Rendering Engine)
+        For the latest info, see http://www.ogre3d.org/
+
+        Copyright (c) 2000-2008 Torus Knot Software Ltd
+        
+        OGRE is licensed under the LGPL. For more info, see ogre license info.
+    */
+    void GSRoot::setThreadAffinity()
+    {
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+        // Get the current process core mask
+	    DWORD procMask;
+	    DWORD sysMask;
+#if _MSC_VER >= 1400 && defined (_M_X64)
+	    GetProcessAffinityMask(GetCurrentProcess(), (PDWORD_PTR)&procMask, (PDWORD_PTR)&sysMask);
+#else
+	    GetProcessAffinityMask(GetCurrentProcess(), &procMask, &sysMask);
+#endif
+
+	    // If procMask is 0, consider there is only one core available
+	    // (using 0 as procMask will cause an infinite loop below)
+	    if (procMask == 0)
+		    procMask = 1;
+
+	    // Find the lowest core that this process uses
+        DWORD threadMask = 1;
+	    while ((threadMask & procMask) == 0)
+		    threadMask <<= 1;
+
+	    // Set affinity to the first core
+	    SetThreadAffinityMask(GetCurrentThread(), threadMask);
+#endif
     }
 }

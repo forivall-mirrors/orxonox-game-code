@@ -73,8 +73,6 @@ namespace orxonox
     }
 
     class GraphicsEngine;
-    class Orxonox;
-    class RootGameState;
     class Settings;
 
     class RadarViewable;
