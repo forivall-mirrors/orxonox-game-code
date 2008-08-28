@@ -61,6 +61,8 @@
 
 #include "MetaObjectList.h"
 #include "Iterator.h"
+#undef SUPER_INTRUSIVE
+#include "Super.h"
 #include "util/Debug.h"
 #include "util/String.h"
 
@@ -223,20 +225,22 @@ namespace orxonox
             void initialize(std::set<const Identifier*>* parents);
             static Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
 
+            virtual void createSuperFunctionCaller() const = 0;
+
             /** @brief Returns the map that stores all Identifiers. @return The map */
             static std::map<std::string, Identifier*>& getIdentifierMapIntern();
             /** @brief Returns the map that stores all Identifiers with their names in lowercase. @return The map */
             static std::map<std::string, Identifier*>& getLowercaseIdentifierMapIntern();
 
-            bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
-            ObjectListBase* objects_;                                      //!< The list of all objects of this class
-
-        private:
             /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
             inline std::set<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
             /** @brief Returns the direct children of the class the Identifier belongs to. @return The list of all direct children */
             inline std::set<const Identifier*>& getDirectChildrenIntern() const { return (*this->directChildren_); }
 
+            bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
+            ObjectListBase* objects_;                                      //!< The list of all objects of this class
+
+        private:
             /**
                 @brief Increases the hierarchyCreatingCounter_s variable, causing all new objects to store their parents.
             */
@@ -294,6 +298,9 @@ namespace orxonox
     template <class T>
     class ClassIdentifier : public Identifier
     {
+        #define SUPER_INTRUSIVE_DECLARATION
+        #include "Super.h"
+
         public:
             static ClassIdentifier<T> *getIdentifier();
             static ClassIdentifier<T> *getIdentifier(const std::string& name);
@@ -310,7 +317,11 @@ namespace orxonox
             void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
 
         private:
-            ClassIdentifier() {}
+            ClassIdentifier()
+            {
+                #define SUPER_INTRUSIVE_CONSTRUCTOR
+                #include "Super.h"
+            }
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ~ClassIdentifier() {}                                       // don't delete
 

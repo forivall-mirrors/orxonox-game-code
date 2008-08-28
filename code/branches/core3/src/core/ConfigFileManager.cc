@@ -326,7 +326,7 @@ namespace orxonox
 
         file.close();
 
-        COUT(3) << "Loaded config file \"" << this->filename_ << "\"." << std::endl;
+        COUT(0) << "Loaded config file \"" << this->filename_ << "\"." << std::endl;
 
         // Save the file in case something changed (like stripped whitespaces)
         this->save();

@@ -144,6 +144,9 @@ namespace orxonox
             {
                 // Tell the parent we're one of it's direct children
                 (*it)->getDirectChildrenIntern().insert((*it)->getDirectChildrenIntern().end(), this);
+
+                // Create the super-function dependencies
+                (*it)->createSuperFunctionCaller();
             }
         }
     }

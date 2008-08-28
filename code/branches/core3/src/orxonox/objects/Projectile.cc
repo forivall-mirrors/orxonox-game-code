@@ -120,4 +120,6 @@ namespace orxonox
     {
         delete this;
     }
+
+    void Projectile::testfunction() { std::cout << "1 -> " << std::endl; }
 }
