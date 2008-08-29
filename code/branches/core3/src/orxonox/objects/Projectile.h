@@ -76,7 +76,7 @@ namespace orxonox
         {
             std::cout << "check superfunction \"testfunction\" in " << ClassIdentifier<T>::getIdentifier()->getName() << std::endl;
 
-            T* temp;
+            T* temp = 0;
             SuperFunctionCondition<0, 0, T>::apply(temp);
 
             std::cout << "done" << std::endl;

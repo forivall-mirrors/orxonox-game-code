@@ -353,6 +353,10 @@
 				RelativePath="..\..\src\core\Script_clean.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\core\Super.h"
+				>
+			</File>
 			<Filter
 				Name="input"
 				>
