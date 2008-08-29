@@ -207,11 +207,11 @@ namespace orxonox
             ConfigValueContainer* getConfigValueContainer(const std::string& varname);
             ConfigValueContainer* getLowercaseConfigValueContainer(const std::string& varname);
 
-            virtual void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container) = 0;
-            virtual XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname) = 0;
+            void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
+            XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
 
-            virtual void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container) = 0;
-            virtual XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname) = 0;
+            void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
+            XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
 
             ConsoleCommand& addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut);
             ConsoleCommand* getConsoleCommand(const std::string& name) const;
@@ -259,6 +259,8 @@ namespace orxonox
                 COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
+            static void destroyAllIdentifiers();
+
             std::set<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to
             std::set<const Identifier*>* children_;                        //!< The children of the class the Identifier belongs to
 
@@ -278,6 +280,9 @@ namespace orxonox
             bool bHasConsoleCommands_;                                     //!< True if this class has at least one assigned console command
             std::map<std::string, ConsoleCommand*> consoleCommands_;       //!< All console commands of this class
             std::map<std::string, ConsoleCommand*> consoleCommands_LC_;    //!< All console commands of this class with their names in lowercase
+
+            std::map<std::string, XMLPortParamContainer*> xmlportParamContainers_;     //!< All loadable parameters
+            std::map<std::string, XMLPortObjectContainer*> xmlportObjectContainers_;   //!< All attachable objects
     };
 
     _CoreExport std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list);
@@ -309,25 +314,35 @@ namespace orxonox
             void addObject(T* object);
 
             void updateConfigValues(bool updateChildren = true) const;
-
+/*
             XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
             void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
 
             XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
             void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
-
+*/
         private:
+            ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ClassIdentifier()
             {
                 #define SUPER_INTRUSIVE_CONSTRUCTOR
                 #include "Super.h"
             }
-            ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
-            ~ClassIdentifier() {}                                       // don't delete
-
+            ~ClassIdentifier()
+            {
+                #define SUPER_INTRUSIVE_DESTRUCTOR
+                #include "Super.h"
+/*
+                for (std::map<std::string, XMLPortParamContainer*>::iterator it = this->xmlportParamContainers_.begin(); it != this->xmlportParamContainers_.end(); ++it)
+                    delete (it->second);
+                for (std::map<std::string, XMLPortObjectContainer*>::iterator it = this->xmlportObjectContainers_.begin(); it != this->xmlportObjectContainers_.end(); ++it)
+                    delete (it->second);
+*/
+            }
+/*
             std::map<std::string, XMLPortClassParamContainer<class O>*> xmlportParamContainers_;              //!< All loadable parameters
             std::map<std::string, XMLPortClassObjectContainer<T, class O>*> xmlportObjectContainers_;   //!< All attachable objects
-
+*/
             static ClassIdentifier<T> *classIdentifier_s;
     };
 
@@ -452,7 +467,7 @@ namespace orxonox
         @brief Returns a XMLPortParamContainer that loads a parameter of this class.
         @param paramname The name of the parameter
         @return The container
-    */
+    *//*
     template <class T>
     XMLPortParamContainer* ClassIdentifier<T>::getXMLPortParamContainer(const std::string& paramname)
     {
@@ -461,24 +476,24 @@ namespace orxonox
             return (XMLPortParamContainer*)((*it).second);
         else
             return 0;
-    }
+    }*/
 
     /**
         @brief Adds a new XMLPortParamContainer that loads a parameter of this class.
         @param paramname The name of the parameter
         @param container The container
-    */
+    *//*
     template <class T>
     void ClassIdentifier<T>::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
     {
         this->xmlportParamContainers_[paramname] = (XMLPortClassParamContainer<class O>*)container;
-    }
+    }*/
 
     /**
         @brief Returns a XMLPortObjectContainer that attaches an object to this class.
         @param sectionname The name of the section that contains the attachable objects
         @return The container
-    */
+    *//*
     template <class T>
     XMLPortObjectContainer* ClassIdentifier<T>::getXMLPortObjectContainer(const std::string& sectionname)
     {
@@ -487,18 +502,18 @@ namespace orxonox
             return (XMLPortObjectContainer*)((*it).second);
         else
             return 0;
-    }
+    }*/
 
     /**
         @brief Adds a new XMLPortObjectContainer that attaches an object to this class.
         @param sectionname The name of the section that contains the attachable objects
         @param container The container
-    */
+    *//*
     template <class T>
     void ClassIdentifier<T>::addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container)
     {
         this->xmlportObjectContainers_[sectionname] = (XMLPortClassObjectContainer<T, class O>*)container;
-    }
+    }*/
 
 
     // ###############################

@@ -99,6 +99,15 @@ namespace orxonox
     }
 
     /**
+        @brief Destructor: Deletes all language entries.
+    */
+    Language::~Language()
+    {
+        for (std::map<std::string, LanguageEntry*>::iterator it = this->languageEntries_.begin(); it != this->languageEntries_.end(); ++it)
+            delete (it->second);
+    }
+
+    /**
         @brief Returns a reference to the only existing instance of the Language class and calls the setConfigValues() function.
         @return The reference to the only existing instance
     */

@@ -126,4 +126,16 @@ this->superFunctionCaller_testfunction_ = 0;
 
     #undef SUPER_INTRUSIVE_CONSTRUCTOR
   #endif /* SUPER_INTRUSIVE_CONSTRUCTOR */
+
+  #ifdef SUPER_INTRUSIVE_DESTRUCTOR
+
+////////////////////////////
+// Function-specific code //
+////////////////////////////
+
+if (this->superFunctionCaller_testfunction_)
+    delete this->superFunctionCaller_testfunction_;
+
+    #undef SUPER_INTRUSIVE_DESTRUCTOR
+  #endif /* SUPER_INTRUSIVE_DESTRUCTOR */
 #endif /* _Super_H__ */

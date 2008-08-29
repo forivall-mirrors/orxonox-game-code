@@ -71,6 +71,19 @@ namespace orxonox
 #endif
     }
 
+    TclThreadManager::~TclThreadManager()
+    {
+        unsigned int threadID;
+        {
+            boost::mutex::scoped_lock bundles_lock(this->bundlesMutex_);
+            if (this->interpreterBundles_.begin() == this->interpreterBundles_.end())
+                return;
+            else
+                threadID = this->interpreterBundles_.begin()->first;
+        }
+        this->destroy(threadID);
+    }
+
     TclThreadManager& TclThreadManager::getInstance()
     {
         static TclThreadManager instance;
