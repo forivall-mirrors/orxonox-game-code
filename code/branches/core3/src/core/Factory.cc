@@ -97,10 +97,6 @@ namespace orxonox
             delete temp;
         }
         (*getFactoryPointer()->identifierStringMap_.begin()).second->stopCreatingHierarchy();
-/*
-        for (it = Identifier::getIdentifierMapIntern().begin(); it != Identifier::getIdentifierMapIntern().end(); ++it)
-            (*it).second->createSuperFunctionCaller();
-*/
         COUT(3) << "*** Factory: Finished class-hierarchy creation" << std::endl;
     }
 

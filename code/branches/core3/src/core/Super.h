@@ -106,7 +106,6 @@ private:
         SuperFunctionCondition<0, 0, T>::check();
     }
 
-
 ////////////////////////////
 // Function-specific code //
 ////////////////////////////

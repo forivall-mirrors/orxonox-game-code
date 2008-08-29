@@ -314,13 +314,7 @@ namespace orxonox
             void addObject(T* object);
 
             void updateConfigValues(bool updateChildren = true) const;
-/*
-            XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
-            void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
 
-            XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
-            void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
-*/
         private:
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ClassIdentifier()
@@ -332,17 +326,8 @@ namespace orxonox
             {
                 #define SUPER_INTRUSIVE_DESTRUCTOR
                 #include "Super.h"
-/*
-                for (std::map<std::string, XMLPortParamContainer*>::iterator it = this->xmlportParamContainers_.begin(); it != this->xmlportParamContainers_.end(); ++it)
-                    delete (it->second);
-                for (std::map<std::string, XMLPortObjectContainer*>::iterator it = this->xmlportObjectContainers_.begin(); it != this->xmlportObjectContainers_.end(); ++it)
-                    delete (it->second);
-*/
             }
-/*
-            std::map<std::string, XMLPortClassParamContainer<class O>*> xmlportParamContainers_;              //!< All loadable parameters
-            std::map<std::string, XMLPortClassObjectContainer<T, class O>*> xmlportObjectContainers_;   //!< All attachable objects
-*/
+
             static ClassIdentifier<T> *classIdentifier_s;
     };
 
@@ -462,58 +447,6 @@ namespace orxonox
             for (std::set<const Identifier*>::const_iterator it = this->getChildrenBegin(); it != this->getChildrenEnd(); ++it)
                 (*it)->updateConfigValues(false);
     }
-
-    /**
-        @brief Returns a XMLPortParamContainer that loads a parameter of this class.
-        @param paramname The name of the parameter
-        @return The container
-    *//*
-    template <class T>
-    XMLPortParamContainer* ClassIdentifier<T>::getXMLPortParamContainer(const std::string& paramname)
-    {
-        typename std::map<std::string, XMLPortClassParamContainer<class O>*>::const_iterator it = xmlportParamContainers_.find(paramname);
-        if (it != xmlportParamContainers_.end())
-            return (XMLPortParamContainer*)((*it).second);
-        else
-            return 0;
-    }*/
-
-    /**
-        @brief Adds a new XMLPortParamContainer that loads a parameter of this class.
-        @param paramname The name of the parameter
-        @param container The container
-    *//*
-    template <class T>
-    void ClassIdentifier<T>::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
-    {
-        this->xmlportParamContainers_[paramname] = (XMLPortClassParamContainer<class O>*)container;
-    }*/
-
-    /**
-        @brief Returns a XMLPortObjectContainer that attaches an object to this class.
-        @param sectionname The name of the section that contains the attachable objects
-        @return The container
-    *//*
-    template <class T>
-    XMLPortObjectContainer* ClassIdentifier<T>::getXMLPortObjectContainer(const std::string& sectionname)
-    {
-        typename std::map<std::string, XMLPortClassObjectContainer<T, class O>*>::const_iterator it = xmlportObjectContainers_.find(sectionname);
-        if (it != xmlportObjectContainers_.end())
-            return (XMLPortObjectContainer*)((*it).second);
-        else
-            return 0;
-    }*/
-
-    /**
-        @brief Adds a new XMLPortObjectContainer that attaches an object to this class.
-        @param sectionname The name of the section that contains the attachable objects
-        @param container The container
-    *//*
-    template <class T>
-    void ClassIdentifier<T>::addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container)
-    {
-        this->xmlportObjectContainers_[sectionname] = (XMLPortClassObjectContainer<T, class O>*)container;
-    }*/
 
 
     // ###############################

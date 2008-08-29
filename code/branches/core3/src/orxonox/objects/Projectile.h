@@ -96,23 +96,12 @@ namespace orxonox
             std::cout << ClassIdentifier<T>::getIdentifier()->getName() << " is a Projectile" << std::endl;
             ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier();
 
-/*
-            SuperFunctionCaller_testfunction* superFunctionCaller = 0;
-            // Search for an existing caller within all direct children
-            for (std::set<const Identifier*>::iterator it = identifier->getDirectChildrenIntern().begin(); it != identifier->getDirectChildrenIntern().end(); ++it)
-                if (((ClassIdentifier<T>*)(*it))->superFunctionCaller_testfunction_)
-                    superFunctionCaller = ((ClassIdentifier<T>*)(*it))->superFunctionCaller_testfunction_;
-            // Check if we've found an existing caller - if not, create a new one
-            if (!superFunctionCaller)
-                superFunctionCaller = new SuperFunctionClassCaller_testfunction<T>;
-*/
             // Iterate through all children and assign the caller
             for (std::set<const Identifier*>::iterator it = identifier->getDirectChildrenIntern().begin(); it != identifier->getDirectChildrenIntern().end(); ++it)
             {
                 if (!((ClassIdentifier<T>*)(*it))->superFunctionCaller_testfunction_)
                 {
                     std::cout << "adding functionpointer to " << ((ClassIdentifier<T>*)(*it))->getName() << std::endl;
-//                    ((ClassIdentifier<T>*)(*it))->superFunctionCaller_testfunction_ = superFunctionCaller;
                     ((ClassIdentifier<T>*)(*it))->superFunctionCaller_testfunction_ = new SuperFunctionClassCaller_testfunction<T>;
                 }
             }
