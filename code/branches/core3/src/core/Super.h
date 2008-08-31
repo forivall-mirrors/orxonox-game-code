@@ -38,29 +38,21 @@
     This works only with virtual functions that return nothing (void) and belong to
     classes that have an Identifier. Arguments however are supported.
 
-    To add a new super-function, you have process 6 steps:
+    To add a new super-function, you have process 4 steps:
 
     1) Add a new SUPER macro
        This allows you to call the super-function in your code.
-       Location: This file (Super.h), marked with --> HERE <-- comments (1/5)
+       Location: This file (Super.h), marked with --> HERE <-- comments (1/3)
 
     2) Call the SUPER_FUNCTION_GLOBAL_DECLARATION_PART1/2 macros.
        This defines some global classes and templates, needed to create and call the super-functions.
-       Location: This file (Super.h), marked with --> HERE <-- comments (2/5)
+       Location: This file (Super.h), marked with --> HERE <-- comments (2/3)
 
     3) Call the SUPER_INTRUSIVE_DECLARATION macro.
        This will be included into the declaration of ClassIdentifier<T>.
-       Location: This file (Super.h), marked with --> HERE <-- comments (3/5)
+       Location: This file (Super.h), marked with --> HERE <-- comments (3/3)
 
-    4) Call the SUPER_INTRUSIVE_CONSTRUCTOR macro.
-       This will be included into the constructor of ClassIdentifier<T>.
-       Location: This file (Super.h), marked with --> HERE <-- comments (4/5)
-
-    5) Call the SUPER_INTRUSIVE_DESTRUCTOR macro.
-       This will be included into the destructor of ClassIdentifier<T>.
-       Location: This file (Super.h), marked with --> HERE <-- comments (5/5)
-
-    6) Call the SUPER_FUNCTION macro.
+    4) Call the SUPER_FUNCTION macro.
        This defines a partially specialized template that will decide if a class is "super" to another class.
        If the check returns true, a SuperFunctionCaller gets created, which will be used by the SUPER macro.
        You have to add this into the header-file of the baseclass of the super-function (the class that first
@@ -224,7 +216,7 @@
             SUPER_ARGS(classname, functionname, __VA_ARGS__)
     */
 
-    // (1/5) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
+    // (1/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
     #define SUPER_testfunction(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
 
@@ -239,7 +231,7 @@
 
     #define SUPER_changedVisibility(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
-    // (1/5) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
+    // (1/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 
 namespace orxonox
@@ -250,11 +242,32 @@ namespace orxonox
 
     //// Common code ////
 
-        // Base template
+        // Base templates
+        /**
+            @brief Creates the SuperFunctionCaller if T is a child of the super-functions baseclass.
+        */
         template <int functionnumber, class T, int templatehack1, int templatehack2>
         struct SuperFunctionCondition
         {
             static void check() {}
+        };
+
+        /**
+            @brief Initializes the SuperFunctionCaller-pointer with zero.
+        */
+        template <int functionnumber, class T>
+        struct SuperFunctionInitialization
+        {
+            static void initialize(ClassIdentifier<T>* identifier) {}
+        };
+
+        /**
+            @brief Deletes the SuperFunctionCaller.
+        */
+        template <int functionnumber, class T>
+        struct SuperFunctionDestruction
+        {
+            static void destroy(ClassIdentifier<T>* identifier) {}
         };
 
 
@@ -274,6 +287,27 @@ namespace orxonox
                 static void check() \
                 { \
                     SuperFunctionCondition<functionnumber + 1, T, templatehack1, templatehack2>::check(); \
+                } \
+            }; \
+            \
+            template <class T> \
+            struct SuperFunctionInitialization<functionnumber, T> \
+            { \
+                static void initialize(ClassIdentifier<T>* identifier) \
+                { \
+                    identifier->superFunctionCaller_##functionname##_ = 0; \
+                    SuperFunctionInitialization<functionnumber + 1, T>::initialize(identifier); \
+                } \
+            }; \
+            \
+            template <class T> \
+            struct SuperFunctionDestruction<functionnumber, T> \
+            { \
+                static void destroy(ClassIdentifier<T>* identifier) \
+                { \
+                    if (identifier->superFunctionCaller_##functionname##_) \
+                        delete identifier->superFunctionCaller_##functionname##_; \
+                    SuperFunctionDestruction<functionnumber + 1, T>::destroy(identifier); \
                 } \
             }; \
             \
@@ -330,6 +364,33 @@ namespace orxonox
             }
         };
 
+        // Initializes the SuperFunctionCaller-pointer with zero.
+        template <class T>
+        struct SuperFunctionInitialization<functionnumber, T>
+        {
+            static void initialize(ClassIdentifier<T>* identifier)
+            {
+                identifier->superFunctionCaller_##functionname##_ = 0;
+
+                // Calls the initialization of the next super-function (functionnumber + 1)
+                SuperFunctionInitialization<functionnumber + 1, T>::initialize(identifier);
+            }
+        };
+
+        // Deletes the SuperFunctionCaller.
+        template <class T>
+        struct SuperFunctionDestruction<functionnumber, T>
+        {
+            static void destroy(ClassIdentifier<T>* identifier)
+            {
+                if (identifier->superFunctionCaller_##functionname##_)
+                    delete identifier->superFunctionCaller_##functionname##_;
+
+                // Calls the destruction of the next super-function (functionnumber + 1)
+                SuperFunctionDestruction<functionnumber + 1, T>::destroy(identifier);
+            }
+        };
+
         // Baseclass of the super-function caller. The real call will be done by a
         // templatized subclass through the virtual () operator.
         class _CoreExport SuperFunctionCaller_##functionname
@@ -355,8 +416,10 @@ namespace orxonox
         }
     */
 
+
     //// Execute the code for each super-function ////
-        // (2/5) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
+
+        // (2/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(0, testfunction, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
@@ -376,7 +439,7 @@ namespace orxonox
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(4, changedVisibility, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
-        // (2/5) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
+        // (2/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 }
 
@@ -390,6 +453,7 @@ namespace orxonox
 //// Common code ////
 
     private:
+
         template <int functionnumber, class TT, int templatehack1, int templatehack2>
         friend struct SuperFunctionCondition;
 
@@ -415,76 +479,16 @@ namespace orxonox
 
 
 //// Execute the code for each super-function ////
-    // (3/5) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
+
+    // (3/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
     SUPER_INTRUSIVE_DECLARATION(testfunction);
     SUPER_INTRUSIVE_DECLARATION(XMLPort);
     SUPER_INTRUSIVE_DECLARATION(tick);
     SUPER_INTRUSIVE_DECLARATION(changedActivity);
     SUPER_INTRUSIVE_DECLARATION(changedVisibility);
-    // (3/5) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
+    // (3/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 
     #undef SUPER_INTRUSIVE_DECLARATION_INCLUDE
   #endif /* SUPER_INTRUSIVE_DECLARATION_INCLUDE */
-
-  #ifdef SUPER_INTRUSIVE_CONSTRUCTOR_INCLUDE
-
-//////////////////////////////////////////////////////////////////////////
-// This code gets included inside the constructor of ClassIdentifier<T> //
-//////////////////////////////////////////////////////////////////////////
-
-// Function-specific code //
-
-    /**
-        @brief Initializes the SuperFunctionCaller pointer with zero.
-        @param functionname The name of the super-function
-    */
-    #ifndef SUPER_INTRUSIVE_CONSTRUCTOR
-      #define SUPER_INTRUSIVE_CONSTRUCTOR(functionname) \
-        this->superFunctionCaller_##functionname##_ = 0
-    #endif
-
-
-//// Execute the code for each super-function ////
-    // (4/5) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
-    SUPER_INTRUSIVE_CONSTRUCTOR(testfunction);
-    SUPER_INTRUSIVE_CONSTRUCTOR(XMLPort);
-    SUPER_INTRUSIVE_CONSTRUCTOR(tick);
-    SUPER_INTRUSIVE_CONSTRUCTOR(changedActivity);
-    SUPER_INTRUSIVE_CONSTRUCTOR(changedVisibility);
-    // (4/5) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
-
-    #undef SUPER_INTRUSIVE_CONSTRUCTOR_INCLUDE
-  #endif /* SUPER_INTRUSIVE_CONSTRUCTOR_INCLUDE */
-
-  #ifdef SUPER_INTRUSIVE_DESTRUCTOR_INCLUDE
-
-/////////////////////////////////////////////////////////////////////////
-// This code gets included inside the destructor of ClassIdentifier<T> //
-/////////////////////////////////////////////////////////////////////////
-
-// Function-specific code //
-
-    /**
-        @brief Deletes the SuperFunctionCaller.
-        @param functionname The name of the super-function
-    */
-    #ifndef SUPER_INTRUSIVE_DESTRUCTOR
-      #define SUPER_INTRUSIVE_DESTRUCTOR(functionname) \
-        if (this->superFunctionCaller_##functionname##_) \
-          delete this->superFunctionCaller_##functionname##_
-    #endif
-
-
-//// Execute the code for each super-function ////
-    // (5/5) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
-    SUPER_INTRUSIVE_DESTRUCTOR(testfunction);
-    SUPER_INTRUSIVE_DESTRUCTOR(XMLPort);
-    SUPER_INTRUSIVE_DESTRUCTOR(tick);
-    SUPER_INTRUSIVE_DESTRUCTOR(changedActivity);
-    SUPER_INTRUSIVE_DESTRUCTOR(changedVisibility);
-    // (5/5) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
-
-    #undef SUPER_INTRUSIVE_DESTRUCTOR_INCLUDE
-  #endif /* SUPER_INTRUSIVE_DESTRUCTOR_INCLUDE */
 #endif /* _Super_H__ */

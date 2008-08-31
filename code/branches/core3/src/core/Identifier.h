@@ -318,13 +318,11 @@ namespace orxonox
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ClassIdentifier()
             {
-                #define SUPER_INTRUSIVE_CONSTRUCTOR_INCLUDE
-                #include "Super.h"
+                SuperFunctionInitialization<0, T>::initialize(this);
             }
             ~ClassIdentifier()
             {
-                #define SUPER_INTRUSIVE_DESTRUCTOR_INCLUDE
-                #include "Super.h"
+                SuperFunctionDestruction<0, T>::destroy(this);
             }
 
             static ClassIdentifier<T> *classIdentifier_s;
