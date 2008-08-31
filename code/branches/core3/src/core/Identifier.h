@@ -61,7 +61,6 @@
 
 #include "MetaObjectList.h"
 #include "Iterator.h"
-#undef SUPER_INTRUSIVE
 #include "Super.h"
 #include "util/Debug.h"
 #include "util/String.h"

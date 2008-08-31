@@ -54,7 +54,7 @@ namespace orxonox
         }
 
         this->setConfigValues();
-
+/*
         std::cout << "c:\n";
         SUPER(ParticleProjectile, testfunction);
         std::cout << "d:\n";
@@ -62,6 +62,7 @@ namespace orxonox
         std::cout << "e:\n";
         this->testfunction();
         std::cout << "f:\n";
+*/
     }
 
     ParticleProjectile::~ParticleProjectile()

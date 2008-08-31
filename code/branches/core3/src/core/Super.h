@@ -250,9 +250,6 @@ namespace orxonox
 
     //// Common code ////
 
-        // Dummy - only needed to cast Identifier* to ClassIdentifier<SuperDummy>* (the real class doesn't matter)
-        class SuperDummy {};
-
         // Base template
         template <int functionnumber, class T, int templatehack1, int templatehack2>
         struct SuperFunctionCondition

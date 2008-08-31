@@ -47,10 +47,11 @@ namespace orxonox
             this->attachObject(this->billboard_.getBillboardSet());
             this->scale(0.5);
         }
-
+/*
         std::cout << "a:\n";
         SUPER(BillboardProjectile, testfunction);
         std::cout << "b:\n";
+*/
     }
 
     BillboardProjectile::~BillboardProjectile()

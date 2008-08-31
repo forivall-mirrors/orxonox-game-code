@@ -37,49 +37,7 @@
 
 namespace orxonox
 {
-    class TESTTESTTEST12
-    {
-        public:
-            TESTTESTTEST12() { this->setMyValue(10); }
-
-        private:
-            void setMyValue(int value) { this->value1_ = value; }
-
-            int value1_;
-            int value2_;
-            Identifier* identifier_;
-    };
-
-    class TESTTESTTEST22
-    {
-        public:
-            TESTTESTTEST22() { this->setMyValue(10); }
-
-        private:
-            void setMyValue(int value) { this->value1_ = value; }
-
-            int value1_;
-            int value2_;
-            double value3_;
-            char value4_;
-            bool value5_;
-            Identifier* identifier1_;
-            Identifier* identifier2_;
-    };
-
-    class TESTTESTTEST32 : virtual public TESTTESTTEST12
-    {
-        public:
-            TESTTESTTEST32() { this->setMyOtherValue(10); }
-
-        private:
-            void setMyOtherValue(int value) { this->value3_ = value; }
-
-            int value3_;
-            TESTTESTTEST22* test_;
-    };
-
-    class _OrxonoxExport Projectile : public TESTTESTTEST22, public TESTTESTTEST32, virtual public TESTTESTTEST12, public WorldEntity
+    class _OrxonoxExport Projectile : public WorldEntity
     {
         public:
             virtual ~Projectile();
