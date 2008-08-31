@@ -60,11 +60,11 @@ namespace orxonox
         An example: Foo is a grandchildren of Bar and Foofoo is the Foo's parent.
         Then Bar stores Foo in map by its name. The other one then maps Foo to Foofoo.
     */
-    class _CoreExport GameState
+    class _CoreExport GameStateBase
     {
         friend class RootGameState;
         template <class ParentType>
-        friend class GameStateTyped;
+        friend class GameState;
 
     public:
         /**
@@ -81,21 +81,21 @@ namespace orxonox
         };
 
     public:
-        virtual ~GameState();
+        virtual ~GameStateBase();
 
         const std::string& getName() const { return name_; }
         const Operations getOperation() const { return this->operation_; }
-        bool isInSubtree(GameState* state) const;
+        bool isInSubtree(GameStateBase* state) const;
 
-        GameState* getState(const std::string& name);
-        GameState* getRoot();
+        GameStateBase* getState(const std::string& name);
+        GameStateBase* getRoot();
         //! Returns the currently active game state
-        virtual GameState* getCurrentState();
+        virtual GameStateBase* getCurrentState();
 
         virtual void requestState(const std::string& name);
 
-        void addChild(GameState* state);
-        void removeChild(GameState* state);
+        void addChild(GameStateBase* state);
+        void removeChild(GameStateBase* state);
         void removeChild(const std::string& name);
 
     protected:
@@ -103,48 +103,49 @@ namespace orxonox
         virtual void leave() = 0;
         virtual void ticked(const Clock& time) = 0;
 
-        GameState* getActiveChild() { return this->activeChild_; }
+        GameStateBase* getActiveChild() { return this->activeChild_; }
 
         void tickChild(const Clock& time) { if (this->getActiveChild()) this->getActiveChild()->tick(time); }
 
-        virtual GameState* getParent() const = 0;
-        virtual void setParent(GameState* state) = 0;
+        virtual GameStateBase* getParent() const = 0;
+        virtual void setParent(GameStateBase* state) = 0;
 
     private:
         // Making the constructor private ensures that game states
-        // are always derivates of GameStateTyped<T>. Note the friend declaration above.
-        GameState(const std::string& name);
+        // are always derivates of GameState<T>. Note the friend declaration above.
+        GameStateBase(const std::string& name);
 
         //! Performs a transition to 'destination'
-        virtual void makeTransition(GameState* source, GameState* destination);
+        virtual void makeTransition(GameStateBase* source, GameStateBase* destination);
 
-        void grandchildAdded(GameState* child, GameState* grandchild);
-        void grandchildRemoved(GameState* grandchild);
+        void grandchildAdded(GameStateBase* child, GameStateBase* grandchild);
+        void grandchildRemoved(GameStateBase* grandchild);
 
         void tick(const Clock& time);
         void activate();
         void deactivate();
 
-        const std::string                   name_;
-        Operations                          operation_;
-        GameState*                          activeChild_;
-        //bool                                bPauseParent_;
-        std::map<std::string, GameState*>   allChildren_;
-        std::map<GameState*, GameState*>    grandchildrenToChildren_;
+        const std::string                        name_;
+        Operations                               operation_;
+        GameStateBase*                           activeChild_;
+        //bool                                     bPauseParent_;
+        std::map<std::string, GameStateBase*>    allChildren_;
+        std::map<GameStateBase*, GameStateBase*> grandchildrenToChildren_;
     };
 
+
     template <class ParentType>
-    class GameStateTyped : public GameState
+    class GameState : public GameStateBase
     {
     public:
-        GameStateTyped(const std::string& name) : GameState(name) { }
-        virtual ~GameStateTyped() { }
+        GameState(const std::string& name) : GameStateBase(name) { }
+        virtual ~GameState() { }
 
         ParentType* getParent() const
             { return parent_; }
 
     protected:
-        void setParent(GameState* state)
+        void setParent(GameStateBase* state)
         {
             assert(dynamic_cast<ParentType*>(state) != 0);
             this->parent_ = dynamic_cast<ParentType*>(state);

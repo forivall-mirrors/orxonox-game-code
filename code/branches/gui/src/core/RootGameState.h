@@ -34,18 +34,20 @@
 
 namespace orxonox
 {
-    class _CoreExport RootGameState : public GameStateTyped<GameState>
+    class _CoreExport RootGameState : public GameState<GameStateBase>
     {
     public:
         RootGameState(const std::string& name);
         ~RootGameState();
 
         void requestState(const std::string& name);
-        void start();
+        void start(int argc, char** argv);
 
     private:
-        void makeTransition(GameState* source, GameState* destination);
+        void makeTransition(GameStateBase* source, GameStateBase* destination);
         void gotoState(const std::string& name);
+
+        void parseCommandLine(int argc, char** argv);
 
         std::string           stateRequest_;
     };

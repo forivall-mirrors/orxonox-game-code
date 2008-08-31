@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport GSGUI : public GameStateTyped<GSGraphics>
+    class _OrxonoxExport GSGUI : public GameState<GSGraphics>
     {
     public:
         GSGUI();

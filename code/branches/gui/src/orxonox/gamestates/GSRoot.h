@@ -43,8 +43,6 @@ namespace orxonox
         GSRoot();
         ~GSRoot();
 
-        void feedCommandLine(int argc, char** argv);
-
         void exitGame()
         { requestState("root"); }
 

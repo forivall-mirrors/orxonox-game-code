@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport GSGraphics : public GameStateTyped<GSRoot>, public OrxonoxClass, public Ogre::WindowEventListener
+    class _OrxonoxExport GSGraphics : public GameState<GSRoot>, public OrxonoxClass, public Ogre::WindowEventListener
     {
         friend class ClassIdentifier<GSGraphics>;
     public:

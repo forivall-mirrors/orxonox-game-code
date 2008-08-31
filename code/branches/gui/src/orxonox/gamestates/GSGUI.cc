@@ -38,7 +38,7 @@
 namespace orxonox
 {
     GSGUI::GSGUI()
-        : GameStateTyped<GSGraphics>("gui")
+        : GameState<GSGraphics>("gui")
     {
     }
 

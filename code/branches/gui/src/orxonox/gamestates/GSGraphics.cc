@@ -56,7 +56,7 @@
 namespace orxonox
 {
     GSGraphics::GSGraphics()
-        : GameStateTyped<GSRoot>("graphics")
+        : GameState<GSRoot>("graphics")
         , ogreRoot_(0)
         , inputManager_(0)
         , console_(0)

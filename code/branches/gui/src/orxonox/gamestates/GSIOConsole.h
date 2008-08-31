@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport GSIOConsole : public GameStateTyped<GSRoot>
+    class _OrxonoxExport GSIOConsole : public GameState<GSRoot>
     {
     public:
         GSIOConsole();

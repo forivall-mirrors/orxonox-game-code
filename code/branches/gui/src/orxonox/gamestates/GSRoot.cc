@@ -90,33 +90,6 @@ namespace orxonox
         SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
     }
 
-    //SetCommandLineArgument(asdf1, "haha").setShortcut("a").setUsageInformation("1|2|3");
-    //SetCommandLineArgument(asdf2, 3).setShortcut("b");
-    //SetCommandLineArgument(asdf3, Vector2()).setShortcut("c");
-    //SetCommandLineArgument(adsf4, 1.4f).setShortcut("d");
-    //SetCommandLineSwitch(showGraphics).setShortcut("g");
-
-    void GSRoot::feedCommandLine(int argc, char** argv)
-    {
-        std::vector<std::string> args;
-        for (int i = 1; i < argc; ++i)
-            args.push_back(argv[i]);
-
-        //std::string line = "-a --asdf3 (3,3) -d -5 -b - 5.4";
-        //SubString tokens(line, " ", " ", false, 92, false, 34, true, 40, 41, false, 0);
-
-        try
-        {
-            orxonox::CommandLine::parse(args);
-            //CommandLine::parse(tokens.getAllStrings());
-        }
-        catch (orxonox::ArgumentException& ex)
-        {
-            COUT(1) << ex.what() << std::endl;
-            COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
-        }
-    }
-
     void GSRoot::enter()
     {
 #if ORXONOX_DEBUG_MODE == 1
@@ -164,7 +137,7 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor1, "exit"));
 
         // add console commands
-        FunctorMember01<GameState, const std::string&>* functor2 = createFunctor(&GameState::requestState);
+        FunctorMember01<GameStateBase, const std::string&>* functor2 = createFunctor(&GameStateBase::requestState);
         functor2->setObject(this);
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor2, "selectGameState"));
     }

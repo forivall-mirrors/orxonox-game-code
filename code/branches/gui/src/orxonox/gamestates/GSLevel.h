@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport GSLevel : public GameStateTyped<GSGraphics>
+    class _OrxonoxExport GSLevel : public GameState<GSGraphics>
     {
     public:
         GSLevel(const std::string& name);

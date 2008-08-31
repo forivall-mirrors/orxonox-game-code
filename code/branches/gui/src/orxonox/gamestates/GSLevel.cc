@@ -44,7 +44,7 @@
 namespace orxonox
 {
     GSLevel::GSLevel(const std::string& name)
-        : GameStateTyped<GSGraphics>(name)
+        : GameState<GSGraphics>(name)
         , timeFactor_(1.0f)
         , sceneManager_(0)
         , keyBinder_(0)

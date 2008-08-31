@@ -38,7 +38,7 @@ namespace orxonox
     SetCommandLineArgument(state, "gui").setShortcut("s");
 
     RootGameState::RootGameState(const std::string& name)
-        : GameStateTyped<GameState>(name)
+        : GameState<GameStateBase>(name)
         , stateRequest_("")
     {
     }
@@ -52,7 +52,7 @@ namespace orxonox
         Internal method that actually makes the state transition. Since it is internal,
         the method can assume certain things to be granted (like 'this' is always active).
     */
-    void RootGameState::makeTransition(GameState* source, GameState* destination)
+    void RootGameState::makeTransition(GameStateBase* source, GameStateBase* destination)
     {
         if (source != 0)
         {
@@ -67,13 +67,13 @@ namespace orxonox
         }
 
         // Check for 'destination' in the children map first
-        std::map<GameState*, GameState*>::const_iterator it
+        std::map<GameStateBase*, GameStateBase*>::const_iterator it
             = this->grandchildrenToChildren_.find(destination);
         if (it != this->grandchildrenToChildren_.end())
         {
-            OrxAssert(dynamic_cast<GameState*>(it->second) != 0,
+            OrxAssert(dynamic_cast<GameStateBase*>(it->second) != 0,
                 "There was a mix with RootGameState and GameState, could not cast.");
-            GameState* child = static_cast<GameState*>(it->second);
+            GameStateBase* child = static_cast<GameStateBase*>(it->second);
             // child state. Don't use 'state', might be a grandchild!
             this->activeChild_ = child;
             child->makeTransition(this, destination);
@@ -87,10 +87,10 @@ namespace orxonox
 
     void RootGameState::gotoState(const std::string& name)
     {
-        GameState* request = getState(name);
+        GameStateBase* request = getState(name);
         if (request)
         {
-            GameState* current = getCurrentState();
+            GameStateBase* current = getCurrentState();
             if (current)
             {
                 current->makeTransition(0, request);
@@ -126,8 +126,10 @@ namespace orxonox
     @param name
         State to start with (usually main menu or specified by command line)
     */
-    void RootGameState::start()
+    void RootGameState::start(int argc, char** argv)
     {
+        parseCommandLine(argc, argv);
+
         this->activate();
 
         // get initial state from command line
@@ -147,5 +149,22 @@ namespace orxonox
         }
 
         this->deactivate();
+    }
+
+    void RootGameState::parseCommandLine(int argc, char** argv)
+    {
+        std::vector<std::string> args;
+        for (int i = 1; i < argc; ++i)
+            args.push_back(argv[i]);
+
+        try
+        {
+            orxonox::CommandLine::parse(args);
+        }
+        catch (orxonox::ArgumentException& ex)
+        {
+            COUT(1) << ex.what() << std::endl;
+            COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
+        }
     }
 }

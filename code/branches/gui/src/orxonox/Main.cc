@@ -47,7 +47,6 @@
 #include "gamestates/GSServer.h"
 #include "gamestates/GSClient.h"
 #include "gamestates/GSGUI.h"
-#include "gamestates/GSIO.h"
 #include "gamestates/GSIOConsole.h"
 
 using namespace orxonox;
@@ -89,40 +88,6 @@ int main(int argc, char** argv)
     // create a signal handler (only works for linux)
     SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
 
-
-    /*GameState* state1 = new GameState("state1");
-    GameState* state2 = new GameState("state2");
-    GameState* state3 = new GameState("state3");
-    GameState* state4 = new GameState("state4");
-    GameState* state5 = new GameState("state5");
-    GameState* state6 = new GameState("state6");
-
-    state1->addChild(state4);
-    state1->addChild(state6);
-    state2->addChild(state3);
-    state2->addChild(state5);
-    state6->addChild(state2);
-
-    state6->removeChild("state2");
-
-    state5->requestState("state3");
-    COUT(2) << std::endl;
-    state2->requestState("state2");
-    COUT(2) << std::endl;
-    state2->requestState("state1");
-    COUT(2) << std::endl;
-    state4->requestState("state3");
-    COUT(2) << std::endl;
-    state1->requestState("state4");
-    COUT(2) << std::endl;
-    state1->requestState("state2");
-    COUT(2) << std::endl;
-    state1->requestState("stat");
-    COUT(2) << std::endl;
-    state1->requestState("state5");
-    COUT(2) << std::endl;*/
-
-
     GSRoot root;
     GSGraphics graphics;
     GSStandalone standalone;
@@ -139,8 +104,7 @@ int main(int argc, char** argv)
 
     root.addChild(&ioConsole);
 
-    root.feedCommandLine(argc, argv);
-    root.start();
+    root.start(argc, argv);
 
     return 0;
 }

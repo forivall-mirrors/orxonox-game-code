@@ -29,7 +29,7 @@
 /**
 @file
 @brief
-    Implementation of GameState class.
+    Implementation of GameStateBase class.
 */
 
 #include "GameState.h"
@@ -42,7 +42,7 @@ namespace orxonox
     @brief
         Constructor only initialises variables and sets the name permanently.
     */
-    GameState::GameState(const std::string& name)
+    GameStateBase::GameStateBase(const std::string& name)
         : name_(name)
         //, parent_(0)
         , activeChild_(0)
@@ -56,7 +56,7 @@ namespace orxonox
     @brief
         Destructor only checks that we don't delete an active state.
     */
-    GameState::~GameState()
+    GameStateBase::~GameStateBase()
     {
         OrxAssert(!isInSubtree(getCurrentState()), "Deleting an active GameState is a very bad idea..");
     }
@@ -68,12 +68,12 @@ namespace orxonox
     @param state
         The state to be added.
     */
-    void GameState::addChild(GameState* state)
+    void GameStateBase::addChild(GameStateBase* state)
     {
         if (!state)
             return;
         // check if the state/tree to be added has states in it that already exist in this tree.
-        for (std::map<std::string, GameState*>::const_iterator it = state->allChildren_.begin();
+        for (std::map<std::string, GameStateBase*>::const_iterator it = state->allChildren_.begin();
             it != state->allChildren_.end(); ++it)
         {
             if (this->getState(it->second->getName()))
@@ -95,7 +95,7 @@ namespace orxonox
         }
 
         // merge the child's children into this tree
-        for (std::map<std::string, GameState*>::const_iterator it = state->allChildren_.begin();
+        for (std::map<std::string, GameStateBase*>::const_iterator it = state->allChildren_.begin();
             it != state->allChildren_.end(); ++it)
             this->grandchildAdded(state, it->second);
         // merge 'state' into this tree
@@ -112,9 +112,9 @@ namespace orxonox
     @param state
         GameState by instance pointer
     */
-    void GameState::removeChild(GameState* state)
+    void GameStateBase::removeChild(GameStateBase* state)
     {
-        std::map<GameState*, GameState*>::iterator it = this->grandchildrenToChildren_.find(state);
+        std::map<GameStateBase*, GameStateBase*>::iterator it = this->grandchildrenToChildren_.find(state);
         if (it != this->grandchildrenToChildren_.end())
         {
             if (state->isInSubtree(getCurrentState()))
@@ -126,7 +126,7 @@ namespace orxonox
             }
             else
             {
-                for (std::map<GameState*, GameState*>::const_iterator it = state->grandchildrenToChildren_.begin();
+                for (std::map<GameStateBase*, GameStateBase*>::const_iterator it = state->grandchildrenToChildren_.begin();
                     it != state->grandchildrenToChildren_.end(); ++it)
                     this->grandchildRemoved(it->first);
                 this->grandchildRemoved(state);
@@ -149,9 +149,9 @@ namespace orxonox
         GameState by name
     */
 
-    void GameState::removeChild(const std::string& name)
+    void GameStateBase::removeChild(const std::string& name)
     {
-        GameState* state = getState(name);
+        GameStateBase* state = getState(name);
         if (state)
         {
             removeChild(state);
@@ -172,7 +172,7 @@ namespace orxonox
     @param grandchild
         The child that has been added.
     */
-    inline void GameState::grandchildAdded(GameState* child, GameState* grandchild)
+    inline void GameStateBase::grandchildAdded(GameStateBase* child, GameStateBase* grandchild)
     {
         // fill the two maps correctly.
         this->allChildren_[grandchild->getName()] = grandchild;
@@ -190,7 +190,7 @@ namespace orxonox
     @param grandchild
         The child that has been removed.
     */
-    inline void GameState::grandchildRemoved(GameState* grandchild)
+    inline void GameStateBase::grandchildRemoved(GameStateBase* grandchild)
     {
         // adjust the two maps correctly.
         this->allChildren_.erase(grandchild->getName());
@@ -205,7 +205,7 @@ namespace orxonox
     @remarks
         Remember that the every node has a map with all its child nodes.
     */
-    GameState* GameState::getState(const std::string& name)
+    GameStateBase* GameStateBase::getState(const std::string& name)
     {
         if (this->getParent())
             return this->getParent()->getState(name);
@@ -215,7 +215,7 @@ namespace orxonox
             if (name == this->name_)
                 return this;
             // Search in the map. If there is no entry, we can be sure the state doesn't exist.
-            std::map<std::string, GameState*>::const_iterator it = this->allChildren_.find(name);
+            std::map<std::string, GameStateBase*>::const_iterator it = this->allChildren_.find(name);
             return (it!= this->allChildren_.end() ? it->second : 0);
         }
     }
@@ -224,7 +224,7 @@ namespace orxonox
     @brief
         Returns the root node of the tree.
     */
-    GameState* GameState::getRoot()
+    GameStateBase* GameStateBase::getRoot()
     {
         if (this->getParent())
             return this->getParent()->getRoot();
@@ -239,7 +239,7 @@ namespace orxonox
         Remember that the current active state is the one that does not
         have active children itself. Many states can be active at once.
     */
-    GameState* GameState::getCurrentState()
+    GameStateBase* GameStateBase::getCurrentState()
     {
         if (this->operation_.active)
         {
@@ -261,7 +261,7 @@ namespace orxonox
     @brief
         Determines whether 'state' is in this subtree, including this node.
     */
-    bool GameState::isInSubtree(GameState* state) const
+    bool GameStateBase::isInSubtree(GameStateBase* state) const
     {
         return (grandchildrenToChildren_.find(state) != grandchildrenToChildren_.end()
                 || state == this);
@@ -274,7 +274,7 @@ namespace orxonox
     @param state
         The state to be entered, has to exist in the tree.
     */
-    void GameState::requestState(const std::string& name)
+    void GameStateBase::requestState(const std::string& name)
     {
         assert(getRoot());
         getRoot()->requestState(name);
@@ -285,7 +285,7 @@ namespace orxonox
         Internal method that actually makes the state transition. Since it is internal,
         the method can assume certain things to be granted (like 'this' is always active).
     */
-    void GameState::makeTransition(GameState* source, GameState* destination)
+    void GameStateBase::makeTransition(GameStateBase* source, GameStateBase* destination)
     {
         if (source == this->getParent())
         {
@@ -307,7 +307,7 @@ namespace orxonox
             return;
 
         // Check for 'destination' in the children map first
-        std::map<GameState*, GameState*>::const_iterator it
+        std::map<GameStateBase*, GameStateBase*>::const_iterator it
             = this->grandchildrenToChildren_.find(destination);
         if (it != this->grandchildrenToChildren_.end())
         {
@@ -329,7 +329,7 @@ namespace orxonox
     @brief
         Activates the state. Only sets bActive_ to true and notifies the parent.
     */
-    void GameState::activate()
+    void GameStateBase::activate()
     {
         this->operation_.active = true;
         this->operation_.entering = true;
@@ -340,7 +340,7 @@ namespace orxonox
     /**
         Activates the state. Only sets bActive_ to false and notifies the parent.
     */
-    void GameState::deactivate()
+    void GameStateBase::deactivate()
     {
         this->operation_.leaving = true;
         this->leave();
@@ -357,7 +357,7 @@ namespace orxonox
     @note
         This method is not virtual! You cannot override it therefore.
     */
-    void GameState::tick(const Clock& time)
+    void GameStateBase::tick(const Clock& time)
     {
         this->operation_.running = true;
         this->ticked(time);
