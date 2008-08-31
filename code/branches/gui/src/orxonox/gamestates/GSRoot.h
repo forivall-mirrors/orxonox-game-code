@@ -48,6 +48,9 @@ namespace orxonox
         void exitGame()
         { requestState("root"); }
 
+        Ogre::Root* getOgreRoot() { return this->ogreRoot_; }
+        GraphicsEngine* getGraphicsEngine() { return this->graphicsEngine_; }
+
     private:
         void enter();
         void leave();

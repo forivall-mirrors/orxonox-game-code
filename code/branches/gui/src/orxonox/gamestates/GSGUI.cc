@@ -38,7 +38,7 @@
 namespace orxonox
 {
     GSGUI::GSGUI()
-        : GameState("gui")
+        : GameStateTyped<GSGraphics>("gui")
     {
     }
 
@@ -48,20 +48,22 @@ namespace orxonox
 
     void GSGUI::enter()
     {
+        guiManager_ = getParent()->getGUIManager();
+
         // show main menu
-        GUIManager::getInstance().showGUI("MainMenu", 0);
-        GraphicsEngine::getInstance().getViewport()->setCamera(GUIManager::getInstance().getCamera());
+        guiManager_->showGUI("MainMenu", 0);
+        getParent()->getViewport()->setCamera(guiManager_->getCamera());
     }
 
     void GSGUI::leave()
     {
-        GUIManager::getInstance().hideGUI();
+        guiManager_->hideGUI();
     }
 
     void GSGUI::ticked(const Clock& time)
     {
         // tick CEGUI
-        GUIManager::getInstance().tick(time.getDeltaTime());
+        guiManager_->tick(time.getDeltaTime());
 
         this->tickChild(time);
     }

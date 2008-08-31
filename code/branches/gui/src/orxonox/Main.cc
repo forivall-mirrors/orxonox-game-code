@@ -129,7 +129,6 @@ int main(int argc, char** argv)
     GSServer server;
     GSClient client;
     GSGUI gui;
-    GSIO io;
     GSIOConsole ioConsole;
 
     root.addChild(&graphics);
@@ -138,8 +137,7 @@ int main(int argc, char** argv)
     graphics.addChild(&client);
     graphics.addChild(&gui);
 
-    root.addChild(&io);
-    io.addChild(&ioConsole);
+    root.addChild(&ioConsole);
 
     root.feedCommandLine(argc, argv);
     root.start();

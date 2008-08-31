@@ -31,10 +31,11 @@
 
 #include "OrxonoxPrereqs.h"
 #include "core/GameState.h"
+#include "GSGraphics.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSGUI : public GameState
+    class _OrxonoxExport GSGUI : public GameStateTyped<GSGraphics>
     {
     public:
         GSGUI();
@@ -44,6 +45,8 @@ namespace orxonox
         void enter();
         void leave();
         void ticked(const Clock& time);
+
+        GUIManager* guiManager_;
     };
 }
 

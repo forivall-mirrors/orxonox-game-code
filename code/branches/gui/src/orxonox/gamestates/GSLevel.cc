@@ -44,7 +44,7 @@
 namespace orxonox
 {
     GSLevel::GSLevel(const std::string& name)
-        : GameState(name)
+        : GameStateTyped<GSGraphics>(name)
         , timeFactor_(1.0f)
         , sceneManager_(0)
         , keyBinder_(0)
@@ -67,9 +67,10 @@ namespace orxonox
         inputState_->setHandler(keyBinder_);
 
         // create Ogre SceneManager for the level
-        this->sceneManager_ = GraphicsEngine::getInstance().getOgreRoot()->
-            createSceneManager(Ogre::ST_GENERIC, "LevelSceneManager");
+        this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "LevelSceneManager");
         COUT(4) << "Created SceneManager: " << sceneManager_->getName() << std::endl;
+
+        // temporary hack
         GraphicsEngine::getInstance().setLevelSceneManager(this->sceneManager_);
 
         // Start the Radar
@@ -97,7 +98,7 @@ namespace orxonox
 
         delete this->radar_;
 
-        GraphicsEngine::getInstance().getOgreRoot()->destroySceneManager(this->sceneManager_);
+        Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
 
         inputState_->setHandler(0);
         InputManager::getInstance().requestDestroyState("game");

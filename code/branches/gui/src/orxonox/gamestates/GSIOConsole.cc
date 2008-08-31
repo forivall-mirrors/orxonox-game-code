@@ -41,7 +41,7 @@
 namespace orxonox
 {
     GSIOConsole::GSIOConsole()
-        : GameState("ioConsole")
+        : GameStateTyped<GSRoot>("ioConsole")
     {
     }
 

@@ -40,6 +40,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <cassert>
 #include "util/Integers.h"
 #include "Clock.h"
 
@@ -62,6 +63,8 @@ namespace orxonox
     class _CoreExport GameState
     {
         friend class RootGameState;
+        template <class ParentType>
+        friend class GameStateTyped;
 
     public:
         /**
@@ -78,7 +81,6 @@ namespace orxonox
         };
 
     public:
-        GameState(const std::string& name);
         virtual ~GameState();
 
         const std::string& getName() const { return name_; }
@@ -87,7 +89,6 @@ namespace orxonox
 
         GameState* getState(const std::string& name);
         GameState* getRoot();
-        GameState* getParent() const { return this->parent_; }
         //! Returns the currently active game state
         virtual GameState* getCurrentState();
 
@@ -106,7 +107,14 @@ namespace orxonox
 
         void tickChild(const Clock& time) { if (this->getActiveChild()) this->getActiveChild()->tick(time); }
 
+        virtual GameState* getParent() const = 0;
+        virtual void setParent(GameState* state) = 0;
+
     private:
+        // Making the constructor private ensures that game states
+        // are always derivates of GameStateTyped<T>. Note the friend declaration above.
+        GameState(const std::string& name);
+
         //! Performs a transition to 'destination'
         virtual void makeTransition(GameState* source, GameState* destination);
 
@@ -119,11 +127,31 @@ namespace orxonox
 
         const std::string                   name_;
         Operations                          operation_;
-        GameState*                          parent_;
         GameState*                          activeChild_;
         //bool                                bPauseParent_;
         std::map<std::string, GameState*>   allChildren_;
         std::map<GameState*, GameState*>    grandchildrenToChildren_;
+    };
+
+    template <class ParentType>
+    class GameStateTyped : public GameState
+    {
+    public:
+        GameStateTyped(const std::string& name) : GameState(name) { }
+        virtual ~GameStateTyped() { }
+
+        ParentType* getParent() const
+            { return parent_; }
+
+    protected:
+        void setParent(GameState* state)
+        {
+            assert(dynamic_cast<ParentType*>(state) != 0);
+            this->parent_ = dynamic_cast<ParentType*>(state);
+        }
+
+    private:
+        ParentType* parent_;
     };
 }
 

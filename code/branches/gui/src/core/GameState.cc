@@ -44,9 +44,9 @@ namespace orxonox
     */
     GameState::GameState(const std::string& name)
         : name_(name)
-        , parent_(0)
+        //, parent_(0)
         , activeChild_(0)
-        //, bPauseParent_(false)
+        //, bPausegetParent()(false)
     {
         Operations temp = {false, false, false, false, false};
         this->operation_ = temp;
@@ -102,7 +102,7 @@ namespace orxonox
         this->grandchildAdded(state, state);
 
         // mark us as parent
-        state->parent_ = this;
+        state->setParent(this);
     }
 
     /**
@@ -177,8 +177,8 @@ namespace orxonox
         // fill the two maps correctly.
         this->allChildren_[grandchild->getName()] = grandchild;
         this->grandchildrenToChildren_[grandchild] = child;
-        if (this->parent_)
-            this->parent_->grandchildAdded(this, grandchild);
+        if (this->getParent())
+            this->getParent()->grandchildAdded(this, grandchild);
     }
 
     /**
@@ -195,8 +195,8 @@ namespace orxonox
         // adjust the two maps correctly.
         this->allChildren_.erase(grandchild->getName());
         this->grandchildrenToChildren_.erase(grandchild);
-        if (this->parent_)
-            this->parent_->grandchildRemoved(grandchild);
+        if (this->getParent())
+            this->getParent()->grandchildRemoved(grandchild);
     }
 
     /**
@@ -207,8 +207,8 @@ namespace orxonox
     */
     GameState* GameState::getState(const std::string& name)
     {
-        if (this->parent_)
-            return this->parent_->getState(name);
+        if (this->getParent())
+            return this->getParent()->getState(name);
         else
         {
             // The map only contains children, so check ourself first
@@ -226,8 +226,8 @@ namespace orxonox
     */
     GameState* GameState::getRoot()
     {
-        if (this->parent_)
-            return this->parent_->getRoot();
+        if (this->getParent())
+            return this->getParent()->getRoot();
         else
             return this;
     }

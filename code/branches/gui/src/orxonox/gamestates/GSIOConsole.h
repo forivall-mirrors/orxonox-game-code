@@ -32,10 +32,11 @@
 #include "OrxonoxPrereqs.h"
 #include <OgrePrerequisites.h>
 #include "core/GameState.h"
+#include "GSRoot.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSIOConsole : public GameState
+    class _OrxonoxExport GSIOConsole : public GameStateTyped<GSRoot>
     {
     public:
         GSIOConsole();

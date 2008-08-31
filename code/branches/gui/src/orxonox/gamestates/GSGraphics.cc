@@ -56,7 +56,7 @@
 namespace orxonox
 {
     GSGraphics::GSGraphics()
-        : GameState("graphics")
+        : GameStateTyped<GSRoot>("graphics")
         , ogreRoot_(0)
         , inputManager_(0)
         , console_(0)
@@ -76,7 +76,7 @@ namespace orxonox
 
     void GSGraphics::setConfigValues()
     {
-        SetConfigValue(resourceFile_,    "resources.cfg").description("Location of the resources file in the data path.");
+        SetConfigValue(resourceFile_, "resources.cfg").description("Location of the resources file in the data path.");
         SetConfigValue(statisticsRefreshCycle_, 200000).description("Sets the time in microseconds interval at which average fps, etc. get updated.");
     }
 
@@ -84,7 +84,7 @@ namespace orxonox
     {
         setConfigValues();
 
-        this->ogreRoot_ = Ogre::Root::getSingletonPtr();
+        this->ogreRoot_ = getParent()->getOgreRoot();
 
         this->declareResources();
         this->loadRenderer();    // creates the render window
@@ -93,10 +93,10 @@ namespace orxonox
 
 
         // HACK: temporary:
-        GraphicsEngine& graphicsEngine = GraphicsEngine::getInstance();
-        graphicsEngine.renderWindow_ = this->renderWindow_;
-        graphicsEngine.root_ = this->ogreRoot_;
-        graphicsEngine.viewport_ = this->viewport_;
+        GraphicsEngine* graphicsEngine = getParent()->getGraphicsEngine();
+        graphicsEngine->renderWindow_  = this->renderWindow_;
+        graphicsEngine->root_          = this->ogreRoot_;
+        graphicsEngine->viewport_      = this->viewport_;
 
 
         // Calls the InputManager which sets up the input devices.

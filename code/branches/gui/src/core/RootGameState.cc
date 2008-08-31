@@ -38,7 +38,7 @@ namespace orxonox
     SetCommandLineArgument(state, "gui").setShortcut("s");
 
     RootGameState::RootGameState(const std::string& name)
-        : GameState(name)
+        : GameStateTyped<GameState>(name)
         , stateRequest_("")
     {
     }

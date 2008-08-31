@@ -34,7 +34,7 @@
 
 namespace orxonox
 {
-    class _CoreExport RootGameState : public GameState
+    class _CoreExport RootGameState : public GameStateTyped<GameState>
     {
     public:
         RootGameState(const std::string& name);

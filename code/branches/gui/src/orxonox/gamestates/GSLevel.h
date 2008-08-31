@@ -32,10 +32,11 @@
 #include "OrxonoxPrereqs.h"
 #include <OgrePrerequisites.h>
 #include "core/GameState.h"
+#include "GSGraphics.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSLevel : public GameState
+    class _OrxonoxExport GSLevel : public GameStateTyped<GSGraphics>
     {
     public:
         GSLevel(const std::string& name);

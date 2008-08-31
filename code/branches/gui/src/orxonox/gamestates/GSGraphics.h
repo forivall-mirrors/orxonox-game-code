@@ -34,15 +34,19 @@
 #include <OgreWindowEventUtilities.h>
 #include "core/GameState.h"
 #include "core/OrxonoxClass.h"
+#include "GSRoot.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSGraphics : public GameState, public OrxonoxClass, public Ogre::WindowEventListener
+    class _OrxonoxExport GSGraphics : public GameStateTyped<GSRoot>, public OrxonoxClass, public Ogre::WindowEventListener
     {
         friend class ClassIdentifier<GSGraphics>;
     public:
         GSGraphics();
         ~GSGraphics();
+
+        Ogre::Viewport* getViewport() { return this->viewport_; }
+        GUIManager* getGUIManager() { return this->guiManager_; }
 
     private:
         void enter();

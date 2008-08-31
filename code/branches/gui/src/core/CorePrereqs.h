@@ -162,6 +162,8 @@ namespace orxonox
 
   // game states
   class GameState;
+  template <class ParentType>
+  class GameStateTyped;
   class RootGameState;
 
   // input

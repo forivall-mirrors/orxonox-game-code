@@ -503,10 +503,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\gamestates\GSIO.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\gamestates\GSIOConsole.cc"
 					>
 				</File>
@@ -758,10 +754,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\gamestates\GSGUI.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\gamestates\GSIO.h"
 					>
 				</File>
 				<File
