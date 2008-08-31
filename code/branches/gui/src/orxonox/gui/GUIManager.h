@@ -63,7 +63,7 @@ namespace orxonox // tolua_export
         GUIManager();
         ~GUIManager();
 
-        bool initialise();
+        bool initialise(Ogre::RenderWindow* renderWindow);
         void tick(float dt)
         {
             assert(guiSystem_);

@@ -117,13 +117,13 @@ namespace orxonox
         void activate();
         void deactivate();
 
-        const std::string                          name_;
-        Operations                                 operation_;
-        GameState*                             parent_;
-        GameState*                                 activeChild_;
-        //bool                                       bPauseParent_;
-        std::map<std::string, GameState*>      allChildren_;
-        std::map<GameState*, GameState*>   grandchildrenToChildren_;
+        const std::string                   name_;
+        Operations                          operation_;
+        GameState*                          parent_;
+        GameState*                          activeChild_;
+        //bool                                bPauseParent_;
+        std::map<std::string, GameState*>   allChildren_;
+        std::map<GameState*, GameState*>    grandchildrenToChildren_;
     };
 }
 

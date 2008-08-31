@@ -30,6 +30,7 @@
 #define _GSLevel_H__
 
 #include "OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
 #include "core/GameState.h"
 
 namespace orxonox
@@ -57,6 +58,7 @@ namespace orxonox
 
         float timeFactor_;       //!< A factor to change the gamespeed
 
+        Ogre::SceneManager*   sceneManager_;
         KeyBinder*            keyBinder_;        //!< tool that loads and manages the input bindings
         SimpleInputState*     inputState_;
         Radar*                radar_;            //!< represents the Radar (not the HUD part)

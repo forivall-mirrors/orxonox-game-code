@@ -31,6 +31,7 @@
 
 #include <string>
 #include <sstream>
+#include <OgreSceneManager.h>
 
 #include "tinyxml/tinyxml.h"
 #include "util/SubString.h"

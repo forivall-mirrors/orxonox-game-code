@@ -29,6 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSGUI.h"
 
+#include <OgreViewport.h>
 #include "GraphicsEngine.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"

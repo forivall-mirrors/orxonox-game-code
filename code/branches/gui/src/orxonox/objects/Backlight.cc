@@ -31,6 +31,7 @@
 
 #include <OgreBillboard.h>
 #include <OgreRibbonTrail.h>
+#include <OgreSceneManager.h>
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"

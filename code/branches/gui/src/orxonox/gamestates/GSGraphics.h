@@ -31,26 +31,43 @@
 
 #include "OrxonoxPrereqs.h"
 #include <OgrePrerequisites.h>
+#include <OgreWindowEventUtilities.h>
 #include "core/GameState.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSGraphics : public GameState, public OrxonoxClass
+    class _OrxonoxExport GSGraphics : public GameState, public OrxonoxClass, public Ogre::WindowEventListener
     {
+        friend class ClassIdentifier<GSGraphics>;
     public:
         GSGraphics();
         ~GSGraphics();
-
-        void setConfigValues();
 
     private:
         void enter();
         void leave();
         void ticked(const Clock& time);
 
+        void setConfigValues();
+
+        void declareResources();
+        void loadRenderer();
+        void initialiseResources();
+
+        void printScreen();
+
+        // window events from Ogre::WindowEventListener
+        void windowMoved       (Ogre::RenderWindow* rw);
+        void windowResized     (Ogre::RenderWindow* rw);
+        void windowFocusChanged(Ogre::RenderWindow* rw);
+        void windowClosed      (Ogre::RenderWindow* rw);
+
         Ogre::Root*           ogreRoot_;
-        GraphicsEngine*       graphicsEngine_;   //!< pointer to GraphicsEngine instance
+        Ogre::RenderWindow*   renderWindow_;          //!< the current render window
+        Ogre::Viewport*       viewport_;              //!< default full size viewport
+
+        // managed singletons
         InputManager*         inputManager_;
         InGameConsole*        console_;
         GUIManager*           guiManager_;
@@ -61,6 +78,10 @@ namespace orxonox
         uint64_t              statisticsStartTime_;
         unsigned long         statisticsStartCount_;
         unsigned int          tickTime_;
+
+        // config values
+        std::string           resourceFile_;          //!< resources file name
+        unsigned int          detailLevelParticle_;   //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
     };
 }
 

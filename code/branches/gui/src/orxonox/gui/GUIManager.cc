@@ -116,7 +116,7 @@ namespace orxonox
         singletonRef_s = 0;
     }
 
-    bool GUIManager::initialise()
+    bool GUIManager::initialise(Ogre::RenderWindow* renderWindow)
     {
         using namespace CEGUI;
         if (state_ == Uninitialised)
@@ -125,8 +125,8 @@ namespace orxonox
 
             try
             {
-                // get the render window
-                renderWindow_ = GraphicsEngine::getInstance().getRenderWindow();
+                // save the render window
+                renderWindow_ = renderWindow;
 
                 // Full screen viewport with Z order = 0 (top most). Don't yet feed a camera (so nothing gets rendered)
                 //this->viewport_ = renderWindow_->addViewport(0, 3);

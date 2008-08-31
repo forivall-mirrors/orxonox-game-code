@@ -30,12 +30,15 @@
 #define _GSRoot_H__
 
 #include "OrxonoxPrereqs.h"
+#include <OgreLog.h>
 #include "core/RootGameState.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSRoot : public RootGameState
+    class _OrxonoxExport GSRoot : public RootGameState, public Ogre::LogListener, public OrxonoxClass
     {
+        friend class ClassIdentifier<GSRoot>;
     public:
         GSRoot();
         ~GSRoot();
@@ -50,10 +53,23 @@ namespace orxonox
         void leave();
         void ticked(const Clock& time);
 
+        void setConfigValues();
+        void messageLogged(const std::string& message, Ogre::LogMessageLevel lml,
+            bool maskDebug, const std::string& logName);
         void setThreadAffinity();
+        void setupOgre();
 
         Settings*             settings_;
+        Ogre::Root*           ogreRoot_;                  //!< Ogre's root
+        Ogre::LogManager*     ogreLogger_;
         GraphicsEngine*       graphicsEngine_;   //!< Interface to Ogre
+
+        std::string           ogreConfigFile_;        //!< ogre config file name
+        std::string           ogrePluginsFile_;       //!< ogre plugins file name
+        std::string           ogreLogFile_;           //!< log file name for Ogre log messages
+        int                   ogreLogLevelTrivial_;   //!< Corresponding Orxonx debug level for LL_TRIVIAL
+        int                   ogreLogLevelNormal_;    //!< Corresponding Orxonx debug level for LL_NORMAL
+        int                   ogreLogLevelCritical_;  //!< Corresponding Orxonx debug level for LL_CRITICAL
     };
 }
 

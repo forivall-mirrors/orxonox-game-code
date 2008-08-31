@@ -29,6 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "ParticleSpawner.h"
 
+#include <OgreSceneManager.h>
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "tools/ParticleInterface.h"

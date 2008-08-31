@@ -29,6 +29,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSLevel.h"
 
+#include <OgreSceneManager.h>
+#include <OgreRoot.h>
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
 #include "core/input/KeyBinder.h"
@@ -44,6 +46,7 @@ namespace orxonox
     GSLevel::GSLevel(const std::string& name)
         : GameState(name)
         , timeFactor_(1.0f)
+        , sceneManager_(0)
         , keyBinder_(0)
         , inputState_(0)
         , radar_(0)
@@ -64,7 +67,10 @@ namespace orxonox
         inputState_->setHandler(keyBinder_);
 
         // create Ogre SceneManager for the level
-        GraphicsEngine::getInstance().createNewScene();
+        this->sceneManager_ = GraphicsEngine::getInstance().getOgreRoot()->
+            createSceneManager(Ogre::ST_GENERIC, "LevelSceneManager");
+        COUT(4) << "Created SceneManager: " << sceneManager_->getName() << std::endl;
+        GraphicsEngine::getInstance().setLevelSceneManager(this->sceneManager_);
 
         // Start the Radar
         this->radar_ = new Radar();
@@ -91,7 +97,7 @@ namespace orxonox
 
         delete this->radar_;
 
-        // TODO: delete SceneManager
+        GraphicsEngine::getInstance().getOgreRoot()->destroySceneManager(this->sceneManager_);
 
         inputState_->setHandler(0);
         InputManager::getInstance().requestDestroyState("game");
