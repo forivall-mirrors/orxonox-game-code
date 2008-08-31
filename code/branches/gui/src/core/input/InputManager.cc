@@ -636,7 +636,6 @@ namespace orxonox
             internalState_ &= ~ReloadRequest;
             internalState_ &= ~JoyStickSupport;
         }
-        internalState_ |= Ticking;
 
         // check for states to leave
         for (std::set<InputState*>::reverse_iterator rit = stateLeaveRequests_.rbegin();
@@ -670,6 +669,10 @@ namespace orxonox
         {
             _destroyState((*rit));
         }
+        stateDestroyRequests_.clear();
+
+        // mark that we capture and distribute input
+        internalState_ |= Ticking;
 
         // Capture all the input. This calls the event handlers in InputManager.
         if (keyboard_)
@@ -729,6 +732,8 @@ namespace orxonox
         activeStatesTicked_.clear();
         for (std::set<InputState*>::const_iterator it = tempSet.begin();it != tempSet.end(); ++it)
             activeStatesTicked_.push_back(*it);
+
+        this->mouseButtonsDown_.clear();
     }
 
     /**
