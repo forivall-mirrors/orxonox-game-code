@@ -65,13 +65,26 @@ namespace orxonox
     */
     void Model::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        WorldEntity::XMLPort(xmlelement, mode);
+//        WorldEntity::XMLPort(xmlelement, mode);
+        SUPER(Model, XMLPort, xmlelement, mode);
 
         XMLPortParam(Model, "mesh", setMesh, getMesh, xmlelement, mode);
 
         Model::create();
     }
+/*
+    void Model::tick(float dt)
+    {
+        float i = dt * rnd(-100, 100);
+        float j = dt * rnd(-100, 100);
+        float k = dt * rnd(-100, 100);
 
+//        WorldEntity::tick(dt);
+        SUPER(Model, tick, dt);
+
+        this->setPosition(this->getPosition().x + i, this->getPosition().y + j, this->getPosition().z + k);
+    }
+*/
     bool Model::create(){
       if(!WorldEntity::create())
         return false;
@@ -93,7 +106,8 @@ namespace orxonox
 
     void Model::changedVisibility()
     {
-        WorldEntity::changedVisibility();
+//        WorldEntity::changedVisibility();
+        SUPER(Model, changedVisibility);
         this->mesh_.setVisible(this->isVisible());
     }
 }

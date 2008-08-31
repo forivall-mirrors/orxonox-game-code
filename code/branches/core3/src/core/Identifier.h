@@ -303,7 +303,7 @@ namespace orxonox
     template <class T>
     class ClassIdentifier : public Identifier
     {
-        #define SUPER_INTRUSIVE_DECLARATION
+        #define SUPER_INTRUSIVE_DECLARATION_INCLUDE
         #include "Super.h"
 
         public:
@@ -319,12 +319,12 @@ namespace orxonox
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
             ClassIdentifier()
             {
-                #define SUPER_INTRUSIVE_CONSTRUCTOR
+                #define SUPER_INTRUSIVE_CONSTRUCTOR_INCLUDE
                 #include "Super.h"
             }
             ~ClassIdentifier()
             {
-                #define SUPER_INTRUSIVE_DESTRUCTOR
+                #define SUPER_INTRUSIVE_DESTRUCTOR_INCLUDE
                 #include "Super.h"
             }
 

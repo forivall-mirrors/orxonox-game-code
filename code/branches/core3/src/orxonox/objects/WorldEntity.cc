@@ -109,7 +109,8 @@ namespace orxonox
     */
     void WorldEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlelement, mode);
+//        BaseObject::XMLPort(xmlelement, mode);
+        SUPER(WorldEntity, XMLPort, xmlelement, mode);
 
         XMLPortParamExternTemplate(WorldEntity, Ogre::Node, this->node_, "position", setPosition, getPosition, xmlelement, mode, Ogre::Node, const Vector3&);
         XMLPortParamLoadOnly(WorldEntity, "direction", setDirectionSimple, xmlelement, mode);

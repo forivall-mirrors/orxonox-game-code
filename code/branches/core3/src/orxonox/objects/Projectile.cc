@@ -85,7 +85,8 @@ namespace orxonox
 
     void Projectile::tick(float dt)
     {
-        WorldEntity::tick(dt);
+//        WorldEntity::tick(dt);
+        SUPER(Projectile, tick, dt);
 
         if (!this->isActive())
             return;

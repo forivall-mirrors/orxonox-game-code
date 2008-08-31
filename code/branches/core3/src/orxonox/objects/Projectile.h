@@ -31,14 +31,55 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "core/Super.h"
 #include "WorldEntity.h"
 #include "tools/Timer.h"
-#undef SUPER_INTRUSIVE
-#include "core/Super.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Projectile : public WorldEntity
+    class TESTTESTTEST12
+    {
+        public:
+            TESTTESTTEST12() { this->setMyValue(10); }
+
+        private:
+            void setMyValue(int value) { this->value1_ = value; }
+
+            int value1_;
+            int value2_;
+            Identifier* identifier_;
+    };
+
+    class TESTTESTTEST22
+    {
+        public:
+            TESTTESTTEST22() { this->setMyValue(10); }
+
+        private:
+            void setMyValue(int value) { this->value1_ = value; }
+
+            int value1_;
+            int value2_;
+            double value3_;
+            char value4_;
+            bool value5_;
+            Identifier* identifier1_;
+            Identifier* identifier2_;
+    };
+
+    class TESTTESTTEST32 : virtual public TESTTESTTEST12
+    {
+        public:
+            TESTTESTTEST32() { this->setMyOtherValue(10); }
+
+        private:
+            void setMyOtherValue(int value) { this->value3_ = value; }
+
+            int value3_;
+            TESTTESTTEST22* test_;
+    };
+
+    class _OrxonoxExport Projectile : public TESTTESTTEST22, public TESTTESTTEST32, virtual public TESTTESTTEST12, public WorldEntity
     {
         public:
             virtual ~Projectile();
@@ -67,46 +108,7 @@ namespace orxonox
             Timer<Projectile> destroyTimer_;
     };
 
-    // Partially specialized template (templatehack is now specialized too)
-    template <class T>
-    struct SuperFunctionCondition<0, 0, T>
-    {
-        // Checks if class U isA baseclass and sets the functionpointer if the check returned true
-        static void check()
-        {
-            std::cout << "check superfunction \"testfunction\" in " << ClassIdentifier<T>::getIdentifier()->getName() << std::endl;
-
-            T* temp = 0;
-            SuperFunctionCondition<0, 0, T>::apply(temp);
-
-            std::cout << "done" << std::endl;
-
-            // Calls the condition of the next super-function
-            SuperFunctionCondition<0 + 1, 0, T>::check();
-        }
-
-        static void apply(void* temp)
-        {
-            std::cout << ClassIdentifier<T>::getIdentifier()->getName() << " is not a Projectile" << std::endl;
-            // nop
-        }
-
-        static void apply(Projectile* temp)
-        {
-            std::cout << ClassIdentifier<T>::getIdentifier()->getName() << " is a Projectile" << std::endl;
-            ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier();
-
-            // Iterate through all children and assign the caller
-            for (std::set<const Identifier*>::iterator it = identifier->getDirectChildrenIntern().begin(); it != identifier->getDirectChildrenIntern().end(); ++it)
-            {
-                if (!((ClassIdentifier<T>*)(*it))->superFunctionCaller_testfunction_)
-                {
-                    std::cout << "adding functionpointer to " << ((ClassIdentifier<T>*)(*it))->getName() << std::endl;
-                    ((ClassIdentifier<T>*)(*it))->superFunctionCaller_testfunction_ = new SuperFunctionClassCaller_testfunction<T>;
-                }
-            }
-        }
-    };
+    SUPER_FUNCTION(0, Projectile, testfunction, false);
 }
 
 #endif /* _Projectile_H__ */

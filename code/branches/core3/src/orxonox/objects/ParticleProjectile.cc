@@ -32,41 +32,10 @@
 #include "SpaceShip.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-//#include "util/FastDelegate.h"
-//using namespace fastdelegate;
 
 namespace orxonox
 {
     CreateFactory(ParticleProjectile);
-
-    struct FunctionPointerViewer
-    {
-        void* ptr1_;
-        void* ptr2_;
-
-        void view()
-        {
-            std::cout << ptr1_ << "." << ptr2_ << std::endl;
-        }
-    };
-
-    union FunctionPointerViewer1
-    {
-        FunctionPointerViewer viewer_;
-        void (Projectile::*function_) ();
-    };
-
-    union FunctionPointerViewer2
-    {
-        FunctionPointerViewer viewer_;
-        void (BillboardProjectile::*function_) ();
-    };
-
-    union FunctionPointerViewer3
-    {
-        FunctionPointerViewer viewer_;
-        void (ParticleProjectile::*function_) ();
-    };
 
     ParticleProjectile::ParticleProjectile(SpaceShip* owner) : BillboardProjectile(owner)
     {
@@ -85,54 +54,7 @@ namespace orxonox
         }
 
         this->setConfigValues();
-/*
-        FunctionPointerViewer1 fpw1;
-        fpw1.function_ = &Projectile::testfunction;
-        FunctionPointerViewer2 fpw2;
-        fpw2.function_ = &BillboardProjectile::testfunction;
-        FunctionPointerViewer3 fpw3;
-        fpw3.function_ = &ParticleProjectile::testfunction;
 
-        std::cout << sizeof(void (Projectile::*) ()) << std::endl;
-        fpw1.viewer_.view();
-        fpw2.viewer_.view();
-        fpw3.viewer_.view();
-
-        {
-            std::cout << "1:" << std::endl;
-            FastDelegate0<> delegate1(this, &ParticleProjectile::testfunction);
-            delegate1();
-            FastDelegate0<> delegate2((BillboardProjectile*)this, &BillboardProjectile::testfunction);
-            delegate2();
-            FastDelegate0<> delegate3(this, &Projectile::testfunction);
-            delegate3();
-        }
-        {
-            std::cout << "2:" << std::endl;
-            BillboardProjectile temp;
-//            FastDelegate0<> delegate1(&temp, &ParticleProjectile::testfunction);
-//            delegate1();
-            FastDelegate0<> delegate2(&temp, &BillboardProjectile::testfunction);
-            delegate2();
-            FastDelegate0<> delegate3(&temp, &Projectile::testfunction);
-            delegate3();
-        }
-        std::cout << "done" << std::endl;
-
-        std::cout << "0:" << std::endl;
-        this->Projectile::testfunction();
-        this->BillboardProjectile::testfunction();
-        this->ParticleProjectile::testfunction();
-        this->testfunction();
-
-        std::cout << "1:" << std::endl;
-        (this->*fpw1.function_)();
-        std::cout << "2:" << std::endl;
-        (this->*fpw2.function_)();
-        std::cout << "3:" << std::endl;
-        (this->*fpw3.function_)();
-        std::cout << "done" << std::endl;
-*/
         std::cout << "c:\n";
         SUPER(ParticleProjectile, testfunction);
         std::cout << "d:\n";
@@ -140,8 +62,6 @@ namespace orxonox
         std::cout << "e:\n";
         this->testfunction();
         std::cout << "f:\n";
-
-//        (*((ClassIdentifier<SuperDummy>*)this->getIdentifier())->superFunctionCaller_testfunction_)(this);
     }
 
     ParticleProjectile::~ParticleProjectile()
@@ -157,7 +77,8 @@ namespace orxonox
 
     void ParticleProjectile::changedVisibility()
     {
-        BillboardProjectile::changedVisibility();
+//        BillboardProjectile::changedVisibility();
+        SUPER(ParticleProjectile, changedVisibility);
         this->particles_->setEnabled(this->isVisible());
     }
 

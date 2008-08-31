@@ -66,7 +66,8 @@ namespace orxonox
     */
     void Skybox::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlelement, mode);
+//        BaseObject::XMLPort(xmlelement, mode);
+        SUPER(Skybox, XMLPort, xmlelement, mode);
 
         XMLPortParam(Skybox, "src", setSkyboxSrc, getSkyboxSrc, xmlelement, mode);
         create();
@@ -85,7 +86,8 @@ namespace orxonox
 
     void Skybox::changedVisibility()
     {
-        BaseObject::changedVisibility();
+//        BaseObject::changedVisibility();
+        SUPER(Skybox, changedVisibility);
         GraphicsEngine::getSingleton().getSceneManager()->setSkyBox(this->isVisible(), this->skyboxSrc_);
     }
 }

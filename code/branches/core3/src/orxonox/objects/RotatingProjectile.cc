@@ -87,11 +87,13 @@ namespace orxonox
         }
 
         Projectile::tick(dt);
+//        SUPER(RotatingProjectile, tick, dt);
     }
 
     void RotatingProjectile::changedVisibility()
     {
-        BillboardProjectile::changedVisibility();
+//        BillboardProjectile::changedVisibility();
+        SUPER(RotatingProjectile, changedVisibility);
         this->rotatingBillboard1_.setVisible(this->isVisible());
         this->rotatingBillboard2_.setVisible(this->isVisible());
     }

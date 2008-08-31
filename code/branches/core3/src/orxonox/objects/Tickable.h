@@ -44,6 +44,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "core/OrxonoxClass.h"
+#include "core/Super.h"
 
 namespace orxonox
 {
@@ -60,6 +61,8 @@ namespace orxonox
         protected:
             Tickable();
     };
+
+    SUPER_FUNCTION(2, Tickable, tick, true);
 
     //! The Tickable interface provides a tick(dt) function, that gets called every frame.
     class _OrxonoxExport TickableReal : virtual public OrxonoxClass

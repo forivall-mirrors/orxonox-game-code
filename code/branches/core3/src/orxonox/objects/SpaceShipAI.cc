@@ -77,7 +77,8 @@ namespace orxonox
 
     void SpaceShipAI::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SpaceShip::XMLPort(xmlelement, mode);
+//        SpaceShip::XMLPort(xmlelement, mode);
+        SUPER(SpaceShipAI, XMLPort, xmlelement, mode);
 
         this->actionTimer_.setTimer(ACTION_INTERVAL, true, this, createExecutor(createFunctor(&SpaceShipAI::action)));
     }
@@ -228,7 +229,8 @@ namespace orxonox
         if (this->bShooting_ && this->isCloseAtTarget(2500) && this->isLookingAtTarget(Ogre::Math::PI / 20.0))
             this->doFire();
 
-        SpaceShip::tick(dt);
+//        SpaceShip::tick(dt);
+        SUPER(SpaceShipAI, tick, dt);
     }
 
     void SpaceShipAI::moveToTargetPosition(float dt)

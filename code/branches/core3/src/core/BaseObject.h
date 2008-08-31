@@ -38,8 +38,9 @@
 
 #include "CorePrereqs.h"
 
-#include "util/XMLIncludes.h"
+#include "Super.h"
 #include "OrxonoxClass.h"
+#include "util/XMLIncludes.h"
 
 namespace orxonox
 {
@@ -64,14 +65,14 @@ namespace orxonox
             virtual void changedName() {}
 
             /** @brief Sets the state of the objects activity. @param bActive True = active */
-            inline void setActivity(bool bActive) { this->bActive_ = bActive; this->changedActivity(); }
+            inline void setActive(bool bActive) { this->bActive_ = bActive; this->changedActivity(); }
             /** @brief Returns the state of the objects activity. @return The state of the activity */
             inline bool isActive() const { return this->bActive_; }
             /** @brief This function gets called if the activity of the object changes. */
             virtual void changedActivity() {}
 
             /** @brief Sets the state of the objects visibility. @param bVisible True = visible */
-            inline void setVisibility(bool bVisible) { this->bVisible_ = bVisible; this->changedVisibility(); }
+            inline void setVisible(bool bVisible) { this->bVisible_ = bVisible; this->changedVisibility(); }
             /** @brief Returns the state of the objects visibility. @return The state of the visibility */
             inline bool isVisible() const { return this->bVisible_; }
             /** @brief This function gets called if the visibility of the object changes. */
@@ -100,6 +101,10 @@ namespace orxonox
             std::string loaderIndentation_;             //!< Indentation of the debug output in the Loader
             Namespace* namespace_;
     };
+
+    SUPER_FUNCTION(1, BaseObject, XMLPort, false);
+    SUPER_FUNCTION(3, BaseObject, changedActivity, false);
+    SUPER_FUNCTION(4, BaseObject, changedVisibility, false);
 }
 
 #endif /* _BaseObject_H__ */
