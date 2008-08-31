@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(ip, "127.0.0.0").setInformation("#.#.#.#");
+    SetCommandLineArgument(ip, "127.0.0.1").setInformation("#.#.#.#");
 
     GSClient::GSClient()
         : GSLevel("client")

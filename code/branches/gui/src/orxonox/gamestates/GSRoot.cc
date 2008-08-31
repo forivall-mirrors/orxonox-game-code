@@ -64,6 +64,7 @@
 namespace orxonox
 {
     SetCommandLineArgument(dataPath, "").setInformation("PATH");
+    SetCommandLineArgument(limitToCPU, 1).setInformation("0: off | #cpu");
 
     GSRoot::GSRoot()
         : RootGameState("root")
@@ -129,7 +130,10 @@ namespace orxonox
         // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
         // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
         // the timer though).
-        setThreadAffinity();
+        int limitToCPU;
+        CommandLine::getValue("limitToCPU", &limitToCPU);
+        if (limitToCPU > 0)
+            setThreadAffinity((unsigned int)(limitToCPU - 1));
 
         // add console commands
         FunctorMember<GSRoot>* functor1 = createFunctor(&GSRoot::exitGame);
@@ -169,7 +173,7 @@ namespace orxonox
 
     /**
     @note
-        The code of this function has been copied from OGRE, an open source graphics engine.
+        The code of this function has been copied and adjusted from OGRE, an open source graphics engine.
             (Object-oriented Graphics Rendering Engine)
         For the latest info, see http://www.ogre3d.org/
 
@@ -177,7 +181,7 @@ namespace orxonox
         
         OGRE is licensed under the LGPL. For more info, see ogre license info.
     */
-    void GSRoot::setThreadAffinity()
+    void GSRoot::setThreadAffinity(unsigned int limitToCPU)
     {
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
         // Get the current process core mask
@@ -194,9 +198,13 @@ namespace orxonox
 	    if (procMask == 0)
 		    procMask = 1;
 
-	    // Find the lowest core that this process uses
+        // if the core specified with limitToCPU is not available, take the lowest one
+        if (!(procMask & (1 << limitToCPU)))
+            limitToCPU = 0;
+
+	    // Find the lowest core that this process uses and limitToCPU suggests
         DWORD threadMask = 1;
-	    while ((threadMask & procMask) == 0)
+	    while ((threadMask & procMask) == 0 || (threadMask < (1u << limitToCPU)))
 		    threadMask <<= 1;
 
 	    // Set affinity to the first core

@@ -57,7 +57,7 @@ namespace orxonox
         void setConfigValues();
         void messageLogged(const std::string& message, Ogre::LogMessageLevel lml,
             bool maskDebug, const std::string& logName);
-        void setThreadAffinity();
+        void setThreadAffinity(unsigned int limitToCPU);
         void setupOgre();
 
         Settings*             settings_;
