@@ -138,7 +138,10 @@ namespace orxonox
     class GameState : public GameStateBase
     {
     public:
-        GameState(const std::string& name) : GameStateBase(name) { }
+        GameState(const std::string& name)
+            : GameStateBase(name)
+            , parent_(0)
+        { }
         virtual ~GameState() { }
 
         ParentType* getParent() const

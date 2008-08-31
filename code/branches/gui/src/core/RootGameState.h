@@ -47,7 +47,7 @@ namespace orxonox
         void makeTransition(GameStateBase* source, GameStateBase* destination);
         void gotoState(const std::string& name);
 
-        void parseCommandLine(int argc, char** argv);
+        void parseArguments(int argc, char** argv);
 
         std::string           stateRequest_;
     };

@@ -28,6 +28,8 @@
 
 #include "RootGameState.h"
 
+#include "util/String.h"
+#include "util/SubString.h"
 #include "Clock.h"
 #include "Debug.h"
 #include "Exception.h"
@@ -128,7 +130,7 @@ namespace orxonox
     */
     void RootGameState::start(int argc, char** argv)
     {
-        parseCommandLine(argc, argv);
+        parseArguments(argc, argv);
 
         this->activate();
 
@@ -151,8 +153,13 @@ namespace orxonox
         this->deactivate();
     }
 
-    void RootGameState::parseCommandLine(int argc, char** argv)
+    /**
+    @brief
+        Parses both command line and start.ini for CommandLineArguments.
+    */
+    void RootGameState::parseArguments(int argc, char** argv)
     {
+        // parse command line first
         std::vector<std::string> args;
         for (int i = 1; i < argc; ++i)
             args.push_back(argv[i]);
@@ -163,6 +170,40 @@ namespace orxonox
         }
         catch (orxonox::ArgumentException& ex)
         {
+            COUT(1) << ex.what() << std::endl;
+            COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
+        }
+
+        // look for additional arguments in start.ini
+        std::ifstream file;
+        file.open("start.ini");
+        args.clear();
+        if (file)
+        {
+            while (!file.eof())
+            {
+                std::string line;
+                std::getline(file, line);
+                line = removeTrailingWhitespaces(line);
+                //if (!(line[0] == '#' || line[0] == '%'))
+                //{
+                SubString tokens(line, " ", " ", false, 92, false, 34, false, 40, 41, false, '#');
+                for (unsigned i = 0; i < tokens.size(); ++i)
+                    if (tokens[i][0] != '#')
+                        args.push_back(tokens[i]);
+                //args.insert(args.end(), tokens.getAllStrings().begin(), tokens.getAllStrings().end());
+                //}
+            }
+            file.close();
+        }
+
+        try
+        {
+            orxonox::CommandLine::parse(args);
+        }
+        catch (orxonox::ArgumentException& ex)
+        {
+            COUT(1) << "An Exception occured while parsing start.ini" << std::endl;
             COUT(1) << ex.what() << std::endl;
             COUT(0) << "Usage:" << std::endl << "orxonox " << CommandLine::getUsageInformation() << std::endl;
         }

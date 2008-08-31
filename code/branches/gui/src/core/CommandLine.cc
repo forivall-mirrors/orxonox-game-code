@@ -28,6 +28,8 @@
 
 #include "CommandLine.h"
 
+#include "util/String.h"
+
 namespace orxonox
 {
     /**
@@ -107,6 +109,7 @@ namespace orxonox
                         // can be shortcut or full name argument
 
                         // save old data first
+                        value = removeTrailingWhitespaces(value);
                         if (name != "")
                         {
                             checkFullArgument(name, value);
@@ -151,6 +154,7 @@ namespace orxonox
         }
 
         // parse last argument
+        value = removeTrailingWhitespaces(value);
         if (name != "")
         {
             checkFullArgument(name, value);

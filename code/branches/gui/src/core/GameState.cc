@@ -58,7 +58,7 @@ namespace orxonox
     */
     GameStateBase::~GameStateBase()
     {
-        OrxAssert(!isInSubtree(getCurrentState()), "Deleting an active GameState is a very bad idea..");
+        OrxAssert(this->operation_.active == false, "Deleting an active GameState is a very bad idea..");
     }
 
     /**
