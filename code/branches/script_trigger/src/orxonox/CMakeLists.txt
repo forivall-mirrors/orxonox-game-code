@@ -25,6 +25,7 @@ SET( ORXONOX_SRC_FILES
   objects/WorldEntity.cc
   objects/Script.cc
   objects/Trigger.cc
+  objects/DistanceTrigger.cc
 
 #  objects/weapon/AmmunitionDump.cc
 #  objects/weapon/BarrelGun.cc

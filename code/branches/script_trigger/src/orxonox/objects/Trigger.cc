@@ -33,6 +33,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
+#include "core/XMLPort.h"
 
 namespace orxonox
 {
@@ -45,12 +46,12 @@ namespace orxonox
   {
     RegisterObject(Trigger);
 
-    targetMask_.exclude(Class(BaseObject));
-
-    //testing
     mode_ = TM_EventTriggerAND;
-    bActive_ = true;
-    triggingTime_ = 100;
+    bActive_ = false;
+    bInvertMode_ = false;
+    delay_ = 0.0;
+    bTriggered_ = false;
+    bUpdating_ = false;
 
     debugBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
     this->getNode()->attachObject(debugBillboard_.getBillboardSet());
@@ -60,12 +61,13 @@ namespace orxonox
   {
   }
 
-  bool Trigger::isTriggered()
+  void Trigger::init()
   {
-    return this->isTriggered(this->mode_);
+    this->setVisibility(true);
+    timeSinceLastEvent_ = delay_;
   }
 
-  void Trigger::setVisibility(int bVisible)
+  void Trigger::setVisibility(bool bVisible)
   {
     if(bVisible)
       this->setScale(2,2,2);
@@ -75,46 +77,116 @@ namespace orxonox
 
   void Trigger::tick(float dt)
   {
-    //COUT(0) << "Scale: " << this->getScale() << std::endl;
-    if(bActive_)
+
+    bool newTriggered = this->isTriggered();
+
+
+    // check if new triggering event is really new
+    if(this->latestState_ % 2 != newTriggered)
     {
-      //this->actualTime_ += dt;
-      if(this->isTriggered())
+      // create new state
+      if(newTriggered)
       {
-        this->debugBillboard_.getBillboardSet()->getBillboard(0)->setColour(ColourValue(0.0, 1.0, 0.0));
+        latestState_ |= 0x1; // set trigger bit
+        latestState_ ^= 0x10; // toggle state bit
       }
+      else
+      {
+        latestState_ &= 0x11111110; // set trigger bit
+      }
+
+      // put state change into queue
+      this->stateChanges_.push(std::pair<float,char>(timeSinceLastEvent_, latestState_));
+      // reset time since last event
+      timeSinceLastEvent_ = 0.0;
+
+      if(this->stateChanges_.size() == 1)
+        remainingTime_ = stateChanges_.front().first;
     }
+
+    if(remainingTime_ > 0.0)
+    {
+      remainingTime_ -= dt;
+      // only increase when acctually waiting for a state in the queue
+      if(timeSinceLastEvent_ >= 0.0)
+        timeSinceLastEvent_ += dt;
+    }
+
+    while(remainingTime_ <= 0.0 && stateChanges_.size() > 0)
+    {
+      // time ran out, change state to new one
+      char newState = stateChanges_.front().second;
+      bTriggered_ = newState % 2;
+      bActive_ = newState>>1 % 2;
+      this->stateChanges_.pop();
+      if(stateChanges_.size() != 0)
+        remainingTime_ = stateChanges_.front().first;
+      else
+        timeSinceLastEvent_ = delay_;
+    }
+
+
+
+    if (bTriggered_ && bActive_)
+      this->setBillboardColour(ColourValue(0.5, 1.0, 0.0));
+    else if (!bTriggered_ && bActive_)
+      this->setBillboardColour(ColourValue(0.0, 1.0, 0.0));
+    else if (bTriggered_ && !bActive_)
+      this->setBillboardColour(ColourValue(1.0, 0.5, 0.0));
+    else
+      this->setBillboardColour(ColourValue(1.0, 0.0, 0.0));
+    bUpdating_ = false;
+  }
+
+  void Trigger::setBillboardColour(ColourValue colour)
+  {
+    this->debugBillboard_.getBillboardSet()->getBillboard(0)->setColour(colour);
   }
 
   bool Trigger::isTriggered(TriggerMode mode)
   {
+    if(bUpdating_)
+      return bTriggered_;
+
     if( children_.size() != 0 )
     {
+      bUpdating_ = true;
+      bool returnval = false;
       switch(mode)
       {
         case TM_EventTriggerAND:
-          return checkAnd();
+          returnval = checkAnd();
           break;
         case TM_EventTriggerOR:
-          return checkOr();
+          returnval = checkOr();
           break;
         case TM_EventTriggerXOR:
-          return checkXor();
-          break;
-        case TM_EventTriggerNOT:
-          return checkNot();
+          returnval = checkXor();
           break;
         default:
-          return false;
+          returnval = false;
           break;
       }
+      if(bInvertMode_)
+        return !returnval;
+      else
+        return returnval;
     }
     return true;
+  }
+
+  void Trigger::setDelay(float delay)
+  {
+    this->delay_ = delay;
   }
 
   void Trigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
   {
     WorldEntity::XMLPort(xmlelement, mode);
+
+    XMLPortParamLoadOnly(Trigger, "delay", setDelay, xmlelement, mode);
+
+    this->init();
   }
 
   void Trigger::addTrigger(Trigger* trig)
@@ -123,19 +195,18 @@ namespace orxonox
       this->children_.insert(trig);
   }
 
-  void Trigger::addTargets(std::string targets)
+  bool Trigger::switchState()
   {
-    Identifier* targetId = ID(targets);
-    targetMask_.include(targetId);
-    // trigger shouldn't react on itself or other triggers
-    targetMask_.exclude(Class(Trigger), true);
+    latestState_ ^= 0x10; // toggle state bit
+    // put state change into queue
+    this->stateChanges_.push(std::pair<float,char>(timeSinceLastEvent_, latestState_));
+    // reset time since last event
+    timeSinceLastEvent_ = 0.0;
+
+    if(this->stateChanges_.size() == 1)
+      remainingTime_ = stateChanges_.front().first;
   }
 
-  void Trigger::removeTargets(std::string targets)
-  {
-    Identifier* targetId = ID(targets);
-    targetMask_.exclude(targetId);
-  }
 
   bool Trigger::checkAnd()
   {
@@ -159,17 +230,6 @@ namespace orxonox
     return false;
   }
 
-  bool Trigger::checkNot()
-  {
-    std::set<Trigger*>::iterator it;
-    for(it = this->children_.begin(); it != this->children_.end(); it++)
-    {
-      if((*it)->isTriggered())
-        return false;
-    }
-    return true;
-  }
-
   bool Trigger::checkXor()
   {
     std::set<Trigger*>::iterator it;
@@ -183,26 +243,5 @@ namespace orxonox
     }
     return test;
   }
-
-  /*bool Trigger::checkDelay()
-  {
-    if (triggingTime_ < actualTime_)
-      return true;
-    else
-      return false;
-  }
-
-  bool Trigger::checkDistance()
-  {
-    // Iterate through all WorldEntities
-    for(Iterator<WorldEntity> it = ObjectList<WorldEntity>::begin(); it; it++)
-    {
-      Vector3 distanceVec = it->getNode()->getWorldPosition() - this->getNode()->getWorldPosition();
-      if (distanceVec.length() < radius_)
-        return true;
-    }
-    return false;
-
-  }*/
 
 }

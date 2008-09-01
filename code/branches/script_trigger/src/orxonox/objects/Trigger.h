@@ -30,12 +30,12 @@
 #define _Trigger_H__
 
 #include <set>
+#include <queue>
 
 #include "OrxonoxPrereqs.h"
 
 #include "WorldEntity.h"
-#include "core/BaseObject.h"
-#include "core/ClassTreeMask.h"
+
 #include "../tools/BillboardSet.h"
 
 namespace orxonox {
@@ -45,7 +45,6 @@ namespace orxonox {
     TM_EventTriggerAND,
     TM_EventTriggerOR,
     TM_EventTriggerXOR,
-    TM_EventTriggerNOT
   };
 
   class _OrxonoxExport Trigger : public WorldEntity
@@ -54,34 +53,37 @@ namespace orxonox {
       Trigger();
       ~Trigger();
 
-      bool isTriggered();
-      bool isTriggered(TriggerMode mode);
+      inline bool isTriggered() { return this->isTriggered(this->mode_); }
+      virtual bool isTriggered(TriggerMode mode);
       void addTrigger(Trigger* trig);
-      void addTargets(std::string targets);
-      void removeTargets(std::string targets);
-      void setVisibility(int bVisible);
+      void setVisibility(bool bVisible);
+      void setDelay(float delay);
+      bool switchState();
       virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
       inline TriggerMode getMode() { return mode_; }
       inline void setMode(TriggerMode mode) { this->mode_ = mode; }
       void tick(float dt);
-      inline void reset(float time) { this->actualTime_ = 0; this->triggingTime_ = time; }
-      inline void reset() { reset(triggingTime_); }
 
     private:
+      void init();
       bool checkAnd();
       bool checkOr();
       bool checkXor();
-      bool checkNot();
+      void setBillboardColour(ColourValue colour);
 
     private:
       std::set<Trigger*> children_;
+      std::queue<std::pair<float,char> > stateChanges_;
+      float remainingTime_;
+      float timeSinceLastEvent_;
       TriggerMode mode_;
-      float triggingTime_;
-      float actualTime_;
-      float radius_;
       bool bActive_;
-      ClassTreeMask targetMask_;
+      bool bInvertMode_;
+      bool bTriggered_;
+      bool bUpdating_;
       BillboardSet debugBillboard_;
+      float delay_;
+      char latestState_;
   };
 
 }
