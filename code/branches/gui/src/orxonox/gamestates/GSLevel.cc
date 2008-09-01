@@ -36,6 +36,7 @@
 #include "core/input/KeyBinder.h"
 #include "core/Loader.h"
 #include "objects/Backlight.h"
+#include "objects/Tickable.h"
 #include "tools/ParticleInterface.h"
 #include "Settings.h"
 #include "Radar.h"

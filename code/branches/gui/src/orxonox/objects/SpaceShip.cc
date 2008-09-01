@@ -48,6 +48,7 @@
 #include "tools/ParticleInterface.h"
 
 #include "GraphicsEngine.h"
+#include "Settings.h"
 #include "RotatingProjectile.h"
 #include "ParticleProjectile.h"
 #include "ParticleSpawner.h"
@@ -192,88 +193,91 @@ namespace orxonox
 
     void SpaceShip::init()
     {
-        // START CREATING THRUSTERS
-        this->tt1_ = new ParticleInterface("Orxonox/thruster1", LODParticle::low);
-        this->tt1_->createNewEmitter();
-        this->tt1_->getAllEmitters()->setDirection(-this->getInitialDir());
-        this->tt1_->getEmitter(0)->setPosition(Vector3(-15, 20, -1));
-        this->tt1_->getEmitter(1)->setPosition(Vector3(-15, -20, -1));
-        this->tt1_->setSpeedFactor(3.0);
-
-        Ogre::SceneNode* node2a = this->getNode()->createChildSceneNode(this->getName() + "particle2a");
-        node2a->setInheritScale(false);
-        node2a->setScale(1, 1, 1);
-        tt1_->addToSceneNode(node2a);
-
-        this->tt2_ = new ParticleInterface("Orxonox/thruster2", LODParticle::normal);
-        this->tt2_->createNewEmitter();
-        this->tt2_->getAllEmitters()->setDirection(Vector3(-1, 0, 0));
-        this->tt2_->getEmitter(0)->setPosition(Vector3(-30, 40, -2));
-        this->tt2_->getEmitter(1)->setPosition(Vector3(-30, -40, -2));
-
-        Ogre::SceneNode* node2b = this->getNode()->createChildSceneNode(this->getName() + "particle2b");
-        node2b->setInheritScale(false);
-        node2b->setScale(0.5, 0.5, 0.5);
-        tt2_->addToSceneNode(node2b);
-
-        this->leftThrusterFlare_.setBillboardSet("Flares/ThrusterFlare1", Vector3(-7.5, -10, -0.5));
-        this->rightThrusterFlare_.setBillboardSet("Flares/ThrusterFlare1", Vector3(-7.5, 10, -0.5));
-
-        Ogre::SceneNode* node2c = this->getNode()->createChildSceneNode(this->getName() + "particle2c");
-        node2c->setInheritScale(false);
-        node2c->setScale(2, 2, 2);
-        node2c->attachObject(this->leftThrusterFlare_.getBillboardSet());
-        node2c->attachObject(this->rightThrusterFlare_.getBillboardSet());
-        // END CREATING THRUSTERS
-
-        // START CREATING BLINKING LIGHTS
-        this->redBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
-        this->greenBillboard_.setBillboardSet("Examples/Flare", ColourValue(0.0, 1.0, 0.0), 1);
-
-        this->redNode_ = this->getNode()->createChildSceneNode(this->getName() + "red", Vector3(0.3, 4.0, -0.3));
-        this->redNode_->setInheritScale(false);
-        this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(0.3, -4.0, -0.3));
-        this->greenNode_->setInheritScale(false);
-
-        this->redNode_->attachObject(this->redBillboard_.getBillboardSet());
-        this->redNode_->setScale(0.3, 0.3, 0.3);
-
-        this->greenNode_->attachObject(this->greenBillboard_.getBillboardSet());
-        this->greenNode_->setScale(0.3, 0.3, 0.3);
-        // END CREATING BLINKING LIGHTS
-
-        // START CREATING ADDITIONAL EFFECTS
-        this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
-        this->attachObject(this->backlight_);
-        this->backlight_->setPosition(-2.35, 0, 0.2);
-        this->backlight_->setColour(this->getProjectileColour());
-
-        this->smoke_ = new ParticleSpawner();
-        this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
-        this->attachObject(this->smoke_);
-
-        this->fire_ = new ParticleSpawner();
-        this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
-        this->attachObject(this->fire_);
-        // END CREATING ADDITIONAL EFFECTS
-
-        if (this->isExactlyA(Class(SpaceShip)))
+        if (Settings::showsGraphics())
         {
-            // START of testing crosshair
-            this->crosshairNear_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
-            this->crosshairFar_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
+            // START CREATING THRUSTERS
+            this->tt1_ = new ParticleInterface("Orxonox/thruster1", LODParticle::low);
+            this->tt1_->createNewEmitter();
+            this->tt1_->getAllEmitters()->setDirection(-this->getInitialDir());
+            this->tt1_->getEmitter(0)->setPosition(Vector3(-15, 20, -1));
+            this->tt1_->getEmitter(1)->setPosition(Vector3(-15, -20, -1));
+            this->tt1_->setSpeedFactor(3.0);
 
-            this->chNearNode_ = this->getNode()->createChildSceneNode(this->getName() + "near", Vector3(50.0, 0.0, 0.0));
-            this->chNearNode_->setInheritScale(false);
-            this->chFarNode_ = this->getNode()->createChildSceneNode(this->getName() + "far", Vector3(200.0, 0.0, 0.0));
-            this->chFarNode_->setInheritScale(false);
+            Ogre::SceneNode* node2a = this->getNode()->createChildSceneNode(this->getName() + "particle2a");
+            node2a->setInheritScale(false);
+            node2a->setScale(1, 1, 1);
+            tt1_->addToSceneNode(node2a);
 
-            this->chNearNode_->attachObject(this->crosshairNear_.getBillboardSet());
-            this->chNearNode_->setScale(0.2, 0.2, 0.2);
+            this->tt2_ = new ParticleInterface("Orxonox/thruster2", LODParticle::normal);
+            this->tt2_->createNewEmitter();
+            this->tt2_->getAllEmitters()->setDirection(Vector3(-1, 0, 0));
+            this->tt2_->getEmitter(0)->setPosition(Vector3(-30, 40, -2));
+            this->tt2_->getEmitter(1)->setPosition(Vector3(-30, -40, -2));
 
-            this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
-            this->chFarNode_->setScale(0.4, 0.4, 0.4);
-            // END of testing crosshair
+            Ogre::SceneNode* node2b = this->getNode()->createChildSceneNode(this->getName() + "particle2b");
+            node2b->setInheritScale(false);
+            node2b->setScale(0.5, 0.5, 0.5);
+            tt2_->addToSceneNode(node2b);
+
+            this->leftThrusterFlare_.setBillboardSet("Flares/ThrusterFlare1", Vector3(-7.5, -10, -0.5));
+            this->rightThrusterFlare_.setBillboardSet("Flares/ThrusterFlare1", Vector3(-7.5, 10, -0.5));
+
+            Ogre::SceneNode* node2c = this->getNode()->createChildSceneNode(this->getName() + "particle2c");
+            node2c->setInheritScale(false);
+            node2c->setScale(2, 2, 2);
+            node2c->attachObject(this->leftThrusterFlare_.getBillboardSet());
+            node2c->attachObject(this->rightThrusterFlare_.getBillboardSet());
+            // END CREATING THRUSTERS
+
+            // START CREATING BLINKING LIGHTS
+            this->redBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
+            this->greenBillboard_.setBillboardSet("Examples/Flare", ColourValue(0.0, 1.0, 0.0), 1);
+
+            this->redNode_ = this->getNode()->createChildSceneNode(this->getName() + "red", Vector3(0.3, 4.0, -0.3));
+            this->redNode_->setInheritScale(false);
+            this->greenNode_ = this->getNode()->createChildSceneNode(this->getName() + "green", Vector3(0.3, -4.0, -0.3));
+            this->greenNode_->setInheritScale(false);
+
+            this->redNode_->attachObject(this->redBillboard_.getBillboardSet());
+            this->redNode_->setScale(0.3, 0.3, 0.3);
+
+            this->greenNode_->attachObject(this->greenBillboard_.getBillboardSet());
+            this->greenNode_->setScale(0.3, 0.3, 0.3);
+            // END CREATING BLINKING LIGHTS
+
+            // START CREATING ADDITIONAL EFFECTS
+            this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
+            this->attachObject(this->backlight_);
+            this->backlight_->setPosition(-2.35, 0, 0.2);
+            this->backlight_->setColour(this->getProjectileColour());
+
+            this->smoke_ = new ParticleSpawner();
+            this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
+            this->attachObject(this->smoke_);
+
+            this->fire_ = new ParticleSpawner();
+            this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
+            this->attachObject(this->fire_);
+            // END CREATING ADDITIONAL EFFECTS
+
+            if (this->isExactlyA(Class(SpaceShip)))
+            {
+                // START of testing crosshair
+                this->crosshairNear_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
+                this->crosshairFar_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
+
+                this->chNearNode_ = this->getNode()->createChildSceneNode(this->getName() + "near", Vector3(50.0, 0.0, 0.0));
+                this->chNearNode_->setInheritScale(false);
+                this->chFarNode_ = this->getNode()->createChildSceneNode(this->getName() + "far", Vector3(200.0, 0.0, 0.0));
+                this->chFarNode_->setInheritScale(false);
+
+                this->chNearNode_->attachObject(this->crosshairNear_.getBillboardSet());
+                this->chNearNode_->setScale(0.2, 0.2, 0.2);
+
+                this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
+                this->chFarNode_->setScale(0.4, 0.4, 0.4);
+                // END of testing crosshair
+            }
         }
 
         createCamera();
@@ -413,26 +417,29 @@ namespace orxonox
         if (this->cam_)
             this->cam_->tick(dt);
 
-        if (this->smoke_)
-            this->smoke_->setVisible(this->isVisible() && this->health_ < 40);
-        if (this->fire_)
-            this->fire_->setVisible(this->isVisible() && this->health_ < 20);
-
-        if (this->backlight_)
-        {   // (there's already fire ||                 we're to slow                 ||                  we're moving backwards                  )
-            if (this->health_ < 20   || this->getVelocity().squaredLength() < 150*150 || this->getVelocity().dotProduct(this->getInitialDir()) < 0)
-                this->backlight_->setActive(false);
-            else
-                this->backlight_->setActive(true);
-        }
-
-        if (this->redNode_ && this->greenNode_)
+        if (Settings::showsGraphics())
         {
-            this->blinkTime_ += dt;
-            float redScale = 0.15 + 0.15 * sin(this->blinkTime_ * 10.0);
-            float greenScale = 0.15 - 0.15 * sin(this->blinkTime_ * 10.0);
-            this->redNode_->setScale(redScale, redScale, redScale);
-            this->greenNode_->setScale(greenScale, greenScale, greenScale);
+            if (this->smoke_)
+                this->smoke_->setVisible(this->isVisible() && this->health_ < 40);
+            if (this->fire_)
+                this->fire_->setVisible(this->isVisible() && this->health_ < 20);
+
+            if (this->backlight_)
+            {   // (there's already fire ||                 we're to slow                 ||                  we're moving backwards                  )
+                if (this->health_ < 20   || this->getVelocity().squaredLength() < 150*150 || this->getVelocity().dotProduct(this->getInitialDir()) < 0)
+                    this->backlight_->setActive(false);
+                else
+                    this->backlight_->setActive(true);
+            }
+
+            if (this->redNode_ && this->greenNode_)
+            {
+                this->blinkTime_ += dt;
+                float redScale = 0.15 + 0.15 * sin(this->blinkTime_ * 10.0);
+                float greenScale = 0.15 - 0.15 * sin(this->blinkTime_ * 10.0);
+                this->redNode_->setScale(redScale, redScale, redScale);
+                this->greenNode_->setScale(greenScale, greenScale, greenScale);
+            }
         }
 
         if (this->timeToReload_ > 0)

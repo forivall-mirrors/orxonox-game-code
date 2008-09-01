@@ -46,6 +46,7 @@
 #include "gamestates/GSStandalone.h"
 #include "gamestates/GSServer.h"
 #include "gamestates/GSClient.h"
+#include "gamestates/GSDedicated.h"
 #include "gamestates/GSGUI.h"
 #include "gamestates/GSIOConsole.h"
 
@@ -93,6 +94,7 @@ int main(int argc, char** argv)
     GSStandalone standalone;
     GSServer server;
     GSClient client;
+    GSDedicated dedicated;
     GSGUI gui;
     GSIOConsole ioConsole;
 
@@ -103,6 +105,7 @@ int main(int argc, char** argv)
     graphics.addChild(&gui);
 
     root.addChild(&ioConsole);
+    root.addChild(&dedicated);
 
     root.start(argc, argv);
 

@@ -26,44 +26,37 @@
  *
  */
 
-#ifndef _GSLevel_H__
-#define _GSLevel_H__
+#ifndef _GSDedicated_H__
+#define _GSDedicated_H__
 
 #include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
-#include "core/GameState.h"
-#include "GSGraphics.h"
+#include "network/NetworkPrereqs.h"
+#include "GSRoot.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSLevel : public GameState<GSGraphics>
+    class _OrxonoxExport GSDedicated : public GameState<GSRoot>
     {
     public:
-        GSLevel(const std::string& name);
-        virtual ~GSLevel();
+        GSDedicated();
+        ~GSDedicated();
 
-        // this has to be public because proteced triggers a bug in msvc
-        // when taking the function address.
         void setTimeFactor(float factor);
         float getTimeFactor() { return this->timeFactor_; }
 
-    protected:
-        virtual void enter();
-        virtual void leave();
-        virtual void ticked(const Clock& time);
+    private:
+        void enter();
+        void leave();
+        void ticked(const Clock& time);
 
         void loadLevel();
         void unloadLevel();
 
-        float timeFactor_;       //!< A factor to change the gamespeed
-
+        float                 timeFactor_;       //!< A factor to change the gamespeed
+        network::Server*      server_;
         Ogre::SceneManager*   sceneManager_;
-        KeyBinder*            keyBinder_;        //!< tool that loads and manages the input bindings
-        SimpleInputState*     inputState_;
-        Radar*                radar_;            //!< represents the Radar (not the HUD part)
         Level*                startLevel_;       //!< current hard coded default level
-        Level*                hud_;              //!< 'level' object fo the HUD
     };
 }
 
-#endif /* _GSLevel_H__ */
+#endif /* _GSDedicated_H__ */
