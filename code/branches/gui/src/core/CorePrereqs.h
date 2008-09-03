@@ -99,6 +99,7 @@ namespace orxonox
   class ClassTreeMask;
   class ClassTreeMaskIterator;
   class ClassTreeMaskNode;
+  class Clock;
   class CommandEvaluation;
   class CommandExecutor;
   class CommandLine;

@@ -61,7 +61,8 @@
 #define _Timer_H__
 
 #include "OrxonoxPrereqs.h"
-#include "objects/Tickable.h"
+#include "util/Integers.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -71,7 +72,7 @@ namespace orxonox
     void executeDelayedCommand(StaticTimer* timer, const std::string& command);
 
     //! TimerBase is the parent of the Timer class.
-    class _OrxonoxExport TimerBase : public Tickable
+    class _OrxonoxExport TimerBase : public OrxonoxClass
     {
         public:
             ~TimerBase();
@@ -96,32 +97,32 @@ namespace orxonox
                 { return this->bActive_; }
             /** @brief Returns the remaining time until the Timer calls the function. @return The remaining time */
             inline float getRemainingTime() const
-                { return this->time_; }
+                { return (float)this->time_ / 1000000.0f; }
             /** @brief Gives the Timer some extra time. @param time The amount of extra time in seconds */
             inline void addTime(float time)
-                { this->time_ += time; }
+                { if (time > 0.0f) this->time_ += (uint64_t)(time * 1000000.0f); }
             /** @brief Decreases the remaining time of the Timer. @param time The amount of time to remove */
             inline void removeTime(float time)
-                { this->time_ -= time; }
+                { if (time > 0.0f) this->time_ -= (uint64_t)(time * 1000000.0f); }
             /** @brief Sets the interval of the Timer. @param interval The interval */
             inline void setInterval(float interval)
-                { this->interval_ = interval; }
+                { this->interval_ = (uint64_t)(interval * 1000000.0f); }
             /** @brief Sets bLoop to a given value. @param bLoop True = loop */
             inline void setLoop(bool bLoop)
                 { this->bLoop_ = bLoop; }
 
-            void tick(float dt);
+            void tick(const Clock& time);
 
         protected:
             TimerBase();
 
             Executor* executor_; //!< The executor of the function that should be called when the time expires
 
-            float interval_;     //!< The time-interval in seconds
+            uint64_t interval_;  //!< The time-interval in micro seconds
             bool bLoop_;         //!< If true, the function gets called every 'interval' seconds
             bool bActive_;       //!< If true, the Timer ticks and calls the function if the time's up
 
-            float time_;         //!< Internal variable, counting the time till the next function-call
+            uint64_t time_;      //!< Internal variable, counting the time till the next function-call
     };
 
     //! The Timer is a callback-object, calling a given function after a given time-interval.
@@ -154,13 +155,13 @@ namespace orxonox
             {
                 this->deleteExecutor();
 
-                this->interval_ = interval;
+                this->setInterval(interval);
                 this->bLoop_ = bLoop;
                 executor->setObject(object);
                 this->executor_ = (Executor*)executor;
                 this->bActive_ = true;
 
-                this->time_ = interval;
+                this->time_ = this->interval_;
             }
     };
 
@@ -192,12 +193,12 @@ namespace orxonox
             {
                 this->deleteExecutor();
 
-                this->interval_ = interval;
+                this->setInterval(interval);
                 this->bLoop_ = bLoop;
                 this->executor_ = (Executor*)executor;
                 this->bActive_ = true;
 
-                this->time_ = interval;
+                this->time_ = this->interval_;
             }
     };
 

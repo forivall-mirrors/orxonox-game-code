@@ -130,6 +130,9 @@ namespace orxonox
     */
     void RootGameState::start(int argc, char** argv)
     {
+        // start global orxonox time
+        Clock clock;
+
         parseArguments(argc, argv);
 
         this->activate();
@@ -139,7 +142,6 @@ namespace orxonox
         CommandLine::getValue<std::string>("state", &initialState);
         gotoState(initialState);
 
-        Clock clock;
         while (this->activeChild_)
         {
             clock.capture();
