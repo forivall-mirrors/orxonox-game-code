@@ -45,7 +45,7 @@ namespace orxonox
 {
     class _CoreExport Clock
     {
-        friend RootGameState;
+        friend class RootGameState;
 
     public:
         Clock();

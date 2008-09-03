@@ -29,6 +29,8 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSDedicated.h"
 
+#include <OgreRoot.h>
+#include <OgreSceneManager.h>
 #include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
 #include "core/Loader.h"

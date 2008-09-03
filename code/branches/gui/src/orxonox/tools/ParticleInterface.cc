@@ -38,7 +38,6 @@
 #include <OgreSceneManager.h>
 
 #include "GraphicsEngine.h"
-#include "Orxonox.h"
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
 

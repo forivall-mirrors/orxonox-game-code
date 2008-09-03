@@ -7,9 +7,9 @@ SET( ORXONOX_SRC_FILES
   Settings.cc
 
   gamestates/GSClient.cc
+  gamestates/GSDedicated.cc
   gamestates/GSGraphics.cc
   gamestates/GSGUI.cc
-  gamestates/GSIO.cc
   gamestates/GSIOConsole.cc
   gamestates/GSLevel.cc
   gamestates/GSRoot.cc

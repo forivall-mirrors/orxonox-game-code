@@ -1,4 +1,5 @@
 SET(CORE_SRC_FILES
+  Clock.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc
   Core.cc

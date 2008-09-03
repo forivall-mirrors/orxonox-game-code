@@ -38,7 +38,6 @@
 #include "core/Executor.h"
 #include "util/Math.h"
 #include "GraphicsEngine.h"
-#include "Orxonox.h"
 
 namespace orxonox
 {
