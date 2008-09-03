@@ -33,6 +33,7 @@
 #include "core/input/InputManager.h"
 #include "core/CommandLine.h"
 #include "network/Server.h"
+#include "Settings.h"
 
 namespace orxonox
 {
@@ -50,6 +51,8 @@ namespace orxonox
 
     void GSServer::enter()
     {
+        Settings::_getInstance().bHasServer_ = true;
+
         GSLevel::enter();
 
         int serverPort = CommandLine::getArgument<int>("port")->getValue();
@@ -80,6 +83,8 @@ namespace orxonox
         // TODO: destroy server
 
         GSLevel::leave();
+
+        Settings::_getInstance().bHasServer_ = false;
     }
 
     void GSServer::ticked(const Clock& time)

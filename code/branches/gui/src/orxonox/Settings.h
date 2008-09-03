@@ -50,6 +50,9 @@ namespace orxonox
     {
         friend class ClassIdentifier<Settings>;
         friend class GSRoot;
+        friend class GSGraphics;
+        friend class GSServer;
+        friend class GSDedicated;
 
     public:
         static const std::string& getDataPath()
@@ -60,7 +63,6 @@ namespace orxonox
         // an alternative to a global game mode variable
         static bool showsGraphics() { assert(singletonRef_s); return singletonRef_s->bShowsGraphics_; }
         static bool hasServer()     { assert(singletonRef_s); return singletonRef_s->bHasServer_; }
-
 
     private:
         // GSRoot has access to these

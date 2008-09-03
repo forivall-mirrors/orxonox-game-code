@@ -37,6 +37,7 @@
 #include "core/Loader.h"
 #include "objects/Backlight.h"
 #include "objects/Tickable.h"
+#include "tools/Timer.h"
 #include "tools/ParticleInterface.h"
 #include "Settings.h"
 #include "Radar.h"
@@ -114,6 +115,9 @@ namespace orxonox
         // Call the scene objects
         for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
             it->tick(time.getDeltaTime() * this->timeFactor_);
+
+        for (Iterator<TimerBase> it = ObjectList<TimerBase>::start(); it; ++it)
+            it->tick(time);
     }
 
     /**

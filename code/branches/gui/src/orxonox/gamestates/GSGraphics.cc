@@ -82,6 +82,8 @@ namespace orxonox
 
     void GSGraphics::enter()
     {
+        Settings::_getInstance().bShowsGraphics_ = true;
+
         setConfigValues();
 
         this->ogreRoot_ = getParent()->getOgreRoot();
@@ -138,6 +140,8 @@ namespace orxonox
         delete this->renderWindow_;
         //this->ogreRoot_->shutdown
         // TODO: destroy render window
+
+        Settings::_getInstance().bShowsGraphics_ = false;
     }
 
     /**

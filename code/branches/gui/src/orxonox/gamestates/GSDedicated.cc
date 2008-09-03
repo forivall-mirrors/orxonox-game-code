@@ -54,6 +54,8 @@ namespace orxonox
 
     void GSDedicated::enter()
     {
+        Settings::_getInstance().bHasServer_ = true;
+
         // create Ogre SceneManager for the level
         this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "LevelSceneManager");
         COUT(4) << "Created SceneManager: " << sceneManager_->getName() << std::endl;
@@ -91,6 +93,8 @@ namespace orxonox
         // TODO: destroy server
 
         Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
+
+        Settings::_getInstance().bHasServer_ = false;
     }
 
     void GSDedicated::ticked(const Clock& time)
