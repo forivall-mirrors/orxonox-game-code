@@ -264,9 +264,6 @@ namespace network
       if ( !packet.send() ){
         COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl; 
         temp->addFailure();
-        /*if(temp->getFailures() > 0 )
-          disconnectClient(temp);*/
-      //std::cout << "added gamestate" << std::endl;
       }else
         temp->resetFailures();
       added=true;

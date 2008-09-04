@@ -8,6 +8,7 @@
 #include "Acknowledgement.h"
 #include "Chat.h"
 #include "ClassID.h"
+#include "Gamestate.h"
 #include "network/Host.h"
 #include "core/CoreIncludes.h"
 
@@ -38,7 +39,7 @@ Packet::Packet(ENetPacket *packet, ENetPeer *peer){
   enetPacket_ = packet;
   clientID_ = ClientInformation::findClient(&peer->address)->getID();
   packetContent_ = createPacketContent(packet);
-  delete packet;
+  enet_packet_destroy(packet);
   delete peer;
 }
 
@@ -87,7 +88,7 @@ PacketContent *Packet::createPacketContent(ENetPacket *packet){
       break;
     case ENUM::Gamestate:
       // TODO: remove brackets
-      // packetContent_ = new Gamestate( data );
+      packetContent_ = new Gamestate( data, true, clientID_ );
       break;
     default:
       assert(0);

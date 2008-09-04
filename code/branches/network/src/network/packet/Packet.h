@@ -59,7 +59,7 @@ class Packet{
     Packet();
     Packet(PacketContent *content);
     Packet(ENetPacket *packet, ENetPeer *peer);
-    ~Packet();
+    virtual ~Packet();
     
     int getClientID(){ return clientID_; }
     PacketContent *getPacketContent(){ return packetContent_; }

@@ -1,5 +1,6 @@
 #include "Welcome.h"
 #include "Packet.h"
+#include <assert.h>
 
 namespace network {
 namespace packet {
@@ -13,9 +14,9 @@ namespace packet {
  : PacketContent()
 {
   flags_ = flags_ | PACKET_FLAGS_CLASSID;
+  assert(getSize());
   data_=new unsigned char[ getSize() ];
-  if(!data_)
-    return;
+  assert(data_);
   *(packet::ENUM::Type *)&data_[ _PACKETID ] = packet::ENUM::Welcome;
   *(unsigned int *)&data_[ _CLIENTID ] = clientID;
   *(unsigned int *)&data_[ _SHIPID ] = shipID;

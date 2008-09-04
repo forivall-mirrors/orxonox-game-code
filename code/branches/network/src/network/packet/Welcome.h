@@ -41,7 +41,7 @@ class Welcome : public PacketContent
 public:
   Welcome( unsigned int clientID, unsigned int shipID );
   Welcome( unsigned char* data, int clientID );
-  ~Welcome();
+  virtual ~Welcome();
   
   unsigned char *getData();
   inline unsigned int getSize() const;
