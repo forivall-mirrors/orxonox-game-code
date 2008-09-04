@@ -100,15 +100,15 @@ namespace orxonox
                   const char* fileName, const char* functionName)
                   : Exception(description, lineNumber, fileName, functionName)
         {
-            // let the catcher decide whether to display the message below level 3
-            COUT(3) << this->getFullDescription() << std::endl;
+            // let the catcher decide whether to display the message below level 4
+            COUT(4) << this->getFullDescription() << std::endl;
         }
 
         SpecificException(const std::string& description)
             : Exception(description)
         {
-            // let the catcher decide whether to display the message below level 3
-            COUT(3) << this->getFullDescription() << std::endl;
+            // let the catcher decide whether to display the message below level 4
+            COUT(4) << this->getFullDescription() << std::endl;
         }
 
         ~SpecificException() throw() { }
