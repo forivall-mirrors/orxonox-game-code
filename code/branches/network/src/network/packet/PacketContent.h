@@ -43,15 +43,24 @@ namespace packet{
 class PacketContent{
   public:
     virtual ~PacketContent()
-    { if(data_) delete[] data_; }
+    { 
+      if(data_) delete[] data_; 
+    }
     virtual unsigned char *getData()=0;
     virtual unsigned int getSize() const =0;
-    int getClientID(){return clientID_;}
+    int getClientID()
+    {
+      return clientID_;
+    }
     virtual bool process()=0;
-    enet_uint32 getFlags(){ return flags_; }
+    enet_uint32 getFlags()
+    { 
+      return flags_; 
+    }
   protected:
     PacketContent()
-        { flags_ = PACKET_FLAG_DEFAULT;
+        { 
+          flags_ = PACKET_FLAG_DEFAULT;
         data_=0; }
     PacketContent( unsigned char *data, int clientID )
         { flags_ = PACKET_FLAG_DEFAULT; data_=data; clientID_=clientID; }
