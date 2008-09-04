@@ -20,8 +20,7 @@ namespace packet {
   classNameLength_=className.length()+1;
   assert(getSize());
   data_=new unsigned char[ getSize() ];
-  if(!data_)
-    return;
+  assert(data_);
   *(packet::ENUM::Type *)&data_[ _PACKETID ] = packet::ENUM::ClassID;
   *(unsigned int *)&data_[ _CLASSID ] = classID;
   *(unsigned int *)&data_[ _CLASSNAMELENGTH ] = classNameLength_;
@@ -31,7 +30,7 @@ namespace packet {
 ClassID::ClassID( unsigned char *data, int clientID )
   : PacketContent(data, clientID)
 {
-  memcpy( (void *)&classNameLength_, &data[ sizeof(ENUM::Type) + sizeof(int) ], sizeof(classNameLength_) );
+  memcpy( (void *)&classNameLength_, &data[ _CLASSNAMELENGTH ], sizeof(classNameLength_) );
 }
 
 ClassID::~ClassID()
@@ -43,7 +42,7 @@ unsigned char *ClassID::getData(){
 }
 
 unsigned int ClassID::getSize() const{
-  return sizeof(network::packet::ENUM::Type) + sizeof(int) + classNameLength_;
+  return sizeof(network::packet::ENUM::Type) + 2*sizeof(unsigned int) + classNameLength_;
 }
 
 bool ClassID::process(){
