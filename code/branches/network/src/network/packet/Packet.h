@@ -46,7 +46,8 @@ namespace ENUM{
     Acknowledgement,
     Gamestate,
     ClassID,
-    Chat
+    Chat,
+    Welcome
   };
 }
   
@@ -64,7 +65,7 @@ class Packet{
     PacketContent *getPacketContent(){ return packetContent_; }
     
     void setClientID( int id ){ clientID_ = id; }
-    void setPacketContent(PacketContent *content){ packetContent_=content; }
+    void setPacketContent(PacketContent *content);
     
     bool send();
   protected:

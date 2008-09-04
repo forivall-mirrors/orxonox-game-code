@@ -2,7 +2,7 @@
 #include "Packet.h"
 #include "core/CoreIncludes.h"
 #include <string>
-
+#include <assert.h>
 
 namespace network {
 namespace packet {
@@ -18,6 +18,7 @@ namespace packet {
 {
   flags_ = flags_ | PACKET_FLAGS_CLASSID;
   classNameLength_=className.length()+1;
+  assert(getSize());
   data_=new unsigned char[ getSize() ];
   if(!data_)
     return;
@@ -27,8 +28,8 @@ namespace packet {
   memcpy( &data_[ _CLASSNAME ], (void *)className.c_str(), classNameLength_ );
 }
 
-ClassID::ClassID( unsigned char *data )
-  : PacketContent(data)
+ClassID::ClassID( unsigned char *data, int clientID )
+  : PacketContent(data, clientID)
 {
   memcpy( (void *)&classNameLength_, &data[ sizeof(ENUM::Type) + sizeof(int) ], sizeof(classNameLength_) );
 }

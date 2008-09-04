@@ -1,6 +1,7 @@
 #include "Acknowledgement.h"
 #include "Packet.h"
 #include "network/Host.h"
+#include "network/GamestateHandler.h"
 
 namespace network {
 namespace packet {
@@ -20,7 +21,7 @@ Acknowledgement::Acknowledgement( unsigned int id, int clientID )
 }
 
 Acknowledgement::Acknowledgement( unsigned char *data, int clientID )
-  : PacketContent(data)
+  : PacketContent(data, clientID)
 {
   clientID_=clientID;
 }
@@ -38,7 +39,7 @@ unsigned int Acknowledgement::getSize() const{
 }
 
 bool Acknowledgement::process(){
-  return Host::ackGamestate(data_[_ACKID], clientID_);
+  return GamestateHandler::ackGamestate(data_[_ACKID], clientID_);
 }
 
 unsigned int Acknowledgement::getAckID(){

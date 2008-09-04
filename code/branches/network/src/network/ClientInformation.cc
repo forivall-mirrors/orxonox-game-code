@@ -122,7 +122,7 @@ namespace network
     return true;
   }
 
-  bool ClientInformation::setGameStateID(int id){
+  bool ClientInformation::setGamestateID(int id){
     if(!this)
       return false;
     gamestateID_=id;

@@ -30,6 +30,7 @@
 
 #include <string>
 
+#include "NetworkPrereqs.h"
 #include "packet/Chat.h"
 
 namespace network {
@@ -43,16 +44,15 @@ class Host{
     virtual bool processChat(packet::Chat *message, unsigned int clientID)=0;
     virtual bool sendChat(packet::Chat *chat)=0;
     virtual bool queuePacket(ENetPacket *packet, int clientID)=0;
-    virtual bool ackGamestateID(int gamestateID, int clientID)=0;
     virtual unsigned int shipID()=0;
     virtual int playerID()=0;
     
-    static Host *instance_;
     
     
   protected:
     Host();
     ~Host();
+    static Host *instance_;
     
   public:
     static bool running(){return instance_!=0;}
@@ -61,7 +61,8 @@ class Host{
     static bool receiveChat(packet::Chat *message, unsigned int clientID);
     static int getPlayerID();
     static unsigned int getShipID();
-    static bool ackGamestate(int gamestateID, int clientID);
+    
+    // packet process functions
 };
 
 }

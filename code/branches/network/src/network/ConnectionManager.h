@@ -50,7 +50,6 @@
 #include <boost/thread/recursive_mutex.hpp>
 
 #include "PacketBuffer.h"
-#include "PacketManager.h"
 #include "packet/Packet.h"
 
 namespace std
@@ -72,7 +71,8 @@ namespace network
   };
 
   class ConnectionManager{
-  public:
+    public:
+    static boost::recursive_mutex enet_mutex;
     ConnectionManager();
     //ConnectionManager(ClientInformation *head);
     ConnectionManager(int port);
@@ -94,7 +94,6 @@ namespace network
     //bool createClient(int clientID);
     void disconnectClient(ClientInformation *client);
     void syncClassid(int clientID);
-    bool sendWelcome(int clientID, int shipID, bool allowed);
 
   private:
 //     bool clientDisconnect(ENetPeer *peer);
@@ -108,9 +107,7 @@ namespace network
     ENetPeer *getClientPeer(int clientID);
     //bool createShip(ClientInformation *client);
     bool removeShip(ClientInformation *client);
-    bool addFakeConnectRequest(ENetEvent *ev);
     PacketBuffer buffer;
-    PacketGenerator packet_gen;
 
     ENetHost *server;
     ENetAddress bindAddress;
@@ -118,7 +115,6 @@ namespace network
     bool quit; // quit-variable (communication with threads)
 
     boost::thread *receiverThread_;
-    static boost::recursive_mutex enet_mutex_;
     static ConnectionManager *instance_;
 
   };

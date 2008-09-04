@@ -46,14 +46,15 @@ class PacketContent{
     { if(data_) delete[] data_; }
     virtual unsigned char *getData()=0;
     virtual unsigned int getSize() const =0;
+    int getClientID(){return clientID_;}
     virtual bool process()=0;
     enet_uint32 getFlags(){ return flags_; }
   protected:
     PacketContent()
         { flags_ = PACKET_FLAG_DEFAULT;
         data_=0; }
-    PacketContent( unsigned char *data )
-        { flags_ = PACKET_FLAG_DEFAULT; data_=data; }
+    PacketContent( unsigned char *data, int clientID )
+        { flags_ = PACKET_FLAG_DEFAULT; data_=data; clientID_=clientID; }
     PacketContent(const PacketContent& p){
       flags_=p.flags_;
       if(p.data_){
@@ -65,6 +66,7 @@ class PacketContent{
     
     enet_uint32 flags_;
     unsigned char *data_;
+    int clientID_;
   private:
 };
 

@@ -65,28 +65,26 @@ namespace network
   class ClientFrameListener;
   class ClientInformation;
   class ConnectionManager;
-  class GameStateClient;
-  class GameStateManager;
+  class GamestateClient;
+  class GamestateManager;
+  class GamestateHandler;
   class PacketBuffer;
-  class PacketDecoder;
-  class PacketGenerator;
   class Server;
   class ServerFrameListener;
   class Synchronisable;
-  struct ack;
-  struct chat;
-  struct classid;
-  struct welcome;
-  struct connectRequest;
   struct ClientList;
-  struct GameState;
-  struct GameStateCompressed;
-  struct keyboard;
-  struct mouse;
   struct PacketEnvelope;
   struct QueueItem;
   struct syncData;
   struct synchronisableVariable;
+  namespace packet{
+    class Gamestate;
+    class Packet;
+    class PacketContent;
+    class Acknowledgement;
+    class ClassID;
+    class Welcome;
+  }
 }
 
 #endif /* _NetworkPrereqs_H__ */

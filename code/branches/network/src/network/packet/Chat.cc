@@ -22,10 +22,9 @@ Chat::Chat( std::string& message, int clientID )
 }
 
 Chat::Chat( unsigned char *data, int clientID )
-  : PacketContent(data)
+  : PacketContent(data, clientID)
 {
   messageLength_ = *(unsigned int *)&data[ _MESSAGELENGTH ];
-  clientID_ = clientID;
 }
 
 Chat::~Chat()

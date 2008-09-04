@@ -46,9 +46,7 @@
 #include <string>
 
 #include "Host.h"
-#include "PacketManager.h"
-
-
+#include "GamestateManager.h"
 
 namespace network
 {
@@ -58,7 +56,7 @@ namespace network
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
   */
-  class _NetworkExport Server : public PacketDecoder, public Host{
+  class _NetworkExport Server : public Host{
   public:
     Server();
     Server(int port);
@@ -84,17 +82,13 @@ namespace network
     bool disconnectClient(ENetEvent *event);
     void disconnectClient(int clientID);
     void disconnectClient( ClientInformation *client);
+    bool processPacket( ENetPacket *packet, ENetPeer *peer );
     bool sendGameState();
-    void processAck( ack *data, int clientID);
-    bool processConnectRequest( connectRequest *con, int clientID );
-    void processGamestate( GameStateCompressed *data, int clientID);
     
-    bool ackGamestateID(int gamestateID, int clientID);
     
     //void processChat( chat *data, int clientId);
     ConnectionManager *connection;
-    GameStateManager *gamestates;
-    PacketGenerator packet_gen;
+    GamestateManager *gamestates_;
 
     
     float timeSinceLastUpdate_;

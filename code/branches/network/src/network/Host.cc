@@ -53,8 +53,4 @@ unsigned int Host::getShipID(){
   return instance_->shipID();
 }
 
-bool Host::ackGamestate(int gamestateID, int clientID){
-  return instance_->ackGamestateID(gamestateID, clientID);
-}
-
 }//namespace network

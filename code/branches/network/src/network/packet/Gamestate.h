@@ -53,12 +53,17 @@ struct GamestateHeader{
 class Gamestate: public PacketContent{
   public:
     Gamestate();
-    Gamestate(unsigned char *data, bool compressed);
+    Gamestate(unsigned char *data, bool compressed, int clientID);
     
     ~Gamestate();
     
     bool collectData(int id, int mode=0x0);
     bool spreadData(int mode=0x0);
+    int getID();
+    Gamestate *diff(Gamestate *base);
+    Gamestate *undiff(Gamestate *base);
+    bool compressData();
+    bool decompressData();
     
     // PacketContent functions
     virtual unsigned char *getData();
@@ -67,12 +72,7 @@ class Gamestate: public PacketContent{
 
     
   private:
-    bool compressData();
-    bool decompressData();
-    Gamestate *diff(Gamestate *base);
-    Gamestate *undiff(Gamestate *base);
     unsigned int calcGamestateSize(int mode=0x0);
-    //unsigned char *getGs(){ return bs_->getData(); }
     void removeObject(orxonox::Iterator<Synchronisable> &it);
 
     

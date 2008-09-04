@@ -50,6 +50,7 @@
 #include "ClientInformation.h"
 #include "ConnectionManager.h"
 #include "Synchronisable.h"
+#include "packet/ClassID.h"
 
 namespace std
 {
@@ -74,7 +75,7 @@ namespace network
     bindAddress.host = ENET_HOST_ANY;
     bindAddress.port = NETWORK_PORT;
   }
-  boost::recursive_mutex ConnectionManager::enet_mutex_;
+  boost::recursive_mutex ConnectionManager::enet_mutex;
   
 //   ConnectionManager::ConnectionManager(ClientInformation *head) : receiverThread_(0) {
 //     assert(instance_==0);
@@ -171,7 +172,7 @@ used by processQueue in Server.cc
 //   
   
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer) {
-    boost::recursive_mutex::scoped_lock lock(instance_->enet_mutex_);
+    boost::recursive_mutex::scoped_lock lock(instance_->enet_mutex);
     if(enet_peer_send(peer, NETWORK_DEFAULT_CHANNEL, packet)!=0)
       return false;
     return true;
@@ -189,7 +190,7 @@ used by processQueue in Server.cc
   bool ConnectionManager::addPacketAll(ENetPacket *packet) {
     if(!instance_)
       return false;
-    boost::recursive_mutex::scoped_lock lock(instance_->enet_mutex_);
+    boost::recursive_mutex::scoped_lock lock(instance_->enet_mutex);
     for(ClientInformation *i=ClientInformation::getBegin()->next(); i!=0; i=i->next()){
       COUT(3) << "adding broadcast packet for client: " << i->getID() << std::endl;
       if(enet_peer_send(i->getPeer(), 0, packet)!=0)
@@ -202,7 +203,7 @@ used by processQueue in Server.cc
   bool ConnectionManager::sendPackets() {
     if(server==NULL || !instance_)
       return false;
-    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+    boost::recursive_mutex::scoped_lock lock(enet_mutex);
     enet_host_flush(server);
     lock.unlock();
     return true;
@@ -213,7 +214,7 @@ used by processQueue in Server.cc
     ENetEvent *event;
     atexit(enet_deinitialize);
     { //scope of the mutex
-      boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+      boost::recursive_mutex::scoped_lock lock(enet_mutex);
       enet_initialize();
       server = enet_host_create(&bindAddress, NETWORK_MAX_CONNECTIONS, 0, 0);
       lock.unlock();
@@ -227,7 +228,7 @@ used by processQueue in Server.cc
     event = new ENetEvent;
     while(!quit){
       { //mutex scope
-        boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+        boost::recursive_mutex::scoped_lock lock(enet_mutex);
         if(enet_host_service(server, event, NETWORK_WAIT_TIMEOUT)<0){
           // we should never reach this point
           quit=true;
@@ -269,7 +270,7 @@ used by processQueue in Server.cc
     disconnectClients();
     // if we're finishied, destroy server
     {
-      boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+      boost::recursive_mutex::scoped_lock lock(enet_mutex);
       enet_host_destroy(server);
       lock.unlock();
     }
@@ -283,7 +284,7 @@ used by processQueue in Server.cc
     ClientInformation *temp = ClientInformation::getBegin()->next();
     while(temp!=0){
       {
-        boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+        boost::recursive_mutex::scoped_lock lock(enet_mutex);
         enet_peer_disconnect(temp->getPeer(), 0);
         lock.unlock();
       }
@@ -291,7 +292,7 @@ used by processQueue in Server.cc
     }
     //bugfix: might be the reason why server crashes when clients disconnects
     temp = ClientInformation::getBegin()->next();
-    boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+    boost::recursive_mutex::scoped_lock lock(enet_mutex);
     while( temp!=0 && enet_host_service(server, &event, NETWORK_WAIT_TIMEOUT) >= 0){
       switch (event.type)
       {
@@ -336,6 +337,9 @@ used by processQueue in Server.cc
     unsigned int network_id=0, failures=0;
     std::string classname;
     orxonox::Identifier *id;
+    packet::Packet packet;
+    packet.setClientID(clientID);
+    packet::ClassID *classid;
     std::map<std::string, orxonox::Identifier*>::const_iterator it = orxonox::Factory::getFactoryBegin();
     while(it != orxonox::Factory::getFactoryEnd()){
       id = (*it).second;
@@ -347,11 +351,15 @@ used by processQueue in Server.cc
         COUT(3) << "we got a null class id: " << id->getName() << std::endl;
       COUT(4) << "Con.Man:syncClassid:\tnetwork_id: " << network_id << ", classname: " << classname << std::endl;
 
-      while(!addPacket(packet_gen.clid( (int)network_id, classname ), clientID) && failures < 10){
+      classid = new packet::ClassID(network_id, classname);
+      packet.setPacketContent(classid);
+      while(!packet.send() && failures < 10){
         failures++;
       }
+      delete classid;
       ++it;
     }
+    packet.setPacketContent(0);
     //sendPackets();
     COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
   }
@@ -369,30 +377,15 @@ used by processQueue in Server.cc
     return true;
   }
   
-  bool ConnectionManager::sendWelcome(int clientID, int shipID, bool allowed){
-    if(addPacket(packet_gen.generateWelcome(clientID, shipID, allowed),clientID)){
-      //sendPackets();
-      return true;
-    }else
-      return false;
-  }
   
   void ConnectionManager::disconnectClient(ClientInformation *client){
     {
-      boost::recursive_mutex::scoped_lock lock(enet_mutex_);
+      boost::recursive_mutex::scoped_lock lock(enet_mutex);
       enet_peer_disconnect(client->getPeer(), 0);
       lock.unlock();
     }
     removeShip(client);
   }
-  
-  bool ConnectionManager::addFakeConnectRequest(ENetEvent *ev){
-    ENetEvent event;
-    event.peer=ev->peer;
-    event.packet = packet_gen.generateConnectRequest();
-    return buffer.push(&event);
-  }
-  
   
 
 }

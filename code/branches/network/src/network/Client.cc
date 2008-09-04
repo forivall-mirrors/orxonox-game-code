@@ -44,6 +44,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "packet/Packet.h"
+#include "packet/Acknowledgement.h"
 
 namespace network
 {
@@ -126,6 +127,7 @@ namespace network
     packet::Packet *p = new packet::Packet(chat);
     return p->send();
   }
+  
 
   /**
   * submits a chat message to the server
@@ -136,10 +138,10 @@ namespace network
     // generate packet and add it to queue
     if(!isConnected)
       return false;
-    return client_connection.addPacket(pck_gen.chatMessage( message.c_str() ));
+    packet::Packet p(new packet::Chat(message, clientID_));
+    return p.send();
       //return client_connection.sendPackets();
     // send packets
-    return false;
   }
 
   /**
@@ -149,14 +151,13 @@ namespace network
 //     COUT(3) << ".";
     if(client_connection.isConnected() && isSynched_){
       COUT(4) << "popping partial gamestate: " << std::endl;
-      GameStateCompressed *gs = gamestate.popPartialGameState();
+      packet::Gamestate *gs = gamestate.getGamestate();
       if(gs){
         COUT(4) << "client tick: sending gs " << gs << std::endl;
-        ENetPacket *packet = pck_gen.gstate(gs);
-        if( packet == NULL || !client_connection.addPacket(packet))
+        packet::Packet p(gs);
+        if( !p.send() )
           COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
         // now delete it to save memory
-        delete[] gs->data;
         delete gs;
       }
     }
@@ -165,12 +166,14 @@ namespace network
     while(!(client_connection.queueEmpty())){
       event = client_connection.getEvent();
       COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
-      elaborate(event->packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
+      packet::Packet packet(event->packet, event->peer);
+      assert(packet.getPacketContent()->process());
     }
-    int gameStateID = gamestate.processGameState();
+    int gameStateID = gamestate.processGamestates();
     if(gameStateID==GAMESTATEID_INITIAL)
       if(gameStateFailure_){
-        if(!client_connection.addPacket(pck_gen.acknowledgement(GAMESTATEID_INITIAL)))
+        packet::Packet packet(new packet::Acknowledgement(GAMESTATEID_INITIAL, 0));
+        if(!packet.send())
           COUT(3) << "could not (negatively) ack gamestate" << std::endl;
         else 
           COUT(4) << "negatively acked a gamestate" << std::endl;
@@ -182,48 +185,12 @@ namespace network
       if(!isSynched_)
         isSynched_=true;
       gameStateFailure_=false;
-      if(!client_connection.addPacket(pck_gen.acknowledgement(gameStateID)))
+      packet::Packet packet(new packet::Acknowledgement(gameStateID, 0));
+      if(!packet.send())
         COUT(3) << "could not ack gamestate" << std::endl;
     }// otherwise we had no gamestate to load
     gamestate.cleanup();
-    /*if(!client_connection.sendPackets())
-      COUT(3) << "Problem sending packets to server" << std::endl;*/
     return;
-  }
-
-  void Client::processGamestate( GameStateCompressed *data, int clientID){
-    COUT(5) << "received gamestate id: " << data->id << std::endl;
-    gamestate.addGameState(data);
-  }
-
-  void Client::processClassid(classid *clid){
-    orxonox::Identifier *id;
-    id=ID(std::string(clid->message));
-    if(id!=NULL)
-      id->setNetworkID(clid->clid);
-    COUT(4) << "Client: received and set network id: " << clid->clid << "; classname: " << clid->message << std::endl;
-    COUT(4) << "id(classid)->getName " << ID((unsigned int)clid->clid)->getName() << std::endl;
-    delete clid;
-    return;
-  }
-  
-  bool Client::ackGamestateID(int gamestateID, int clientID){
-    return true;
-    //TODO: maybe change this (not needed at the moment)
-  }
-
-//   void Client::processChat( chat *data, int clientId){
-//     COUT(1) << data->message << std::endl;
-//     delete[] data->message;
-//     delete data;
-//   }
-  
-  bool Client::processWelcome( welcome *w ){
-    COUT(4) << "processing welcome message" << std::endl;
-    clientID_ = w->clientID;
-    shipID_ = w->shipID;
-    delete w;
-    return true;
   }
 
 }

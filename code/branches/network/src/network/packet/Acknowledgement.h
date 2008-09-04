@@ -49,7 +49,6 @@ public:
   
   unsigned int getAckID();
 private:
-  int clientID_;
 };
 
 } //namespace packet

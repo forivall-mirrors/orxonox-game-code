@@ -3,11 +3,10 @@ SET( NETWORK_SRC_FILES
   ClientConnection.cc
   ClientInformation.cc
   ConnectionManager.cc
-  GameStateManager.cc
-  GameStateClient.cc
+  GamestateManager.cc
+  GamestateClient.cc
+  GamestateHandler.cc
   PacketBuffer.cc
-  PacketDecoder.cc
-  PacketGenerator.cc
   Server.cc
   Synchronisable.cc
   Host.cc
@@ -16,6 +15,7 @@ SET( NETWORK_SRC_FILES
   packet/ClassID.cc
   packet/Acknowledgement.cc
   packet/Gamestate.cc
+  packet/Welcome.cc
   Host.cc
 )
 

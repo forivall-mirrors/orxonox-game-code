@@ -44,14 +44,14 @@
 
 
 #include "ConnectionManager.h"
-#include "PacketTypes.h"
-#include "GameStateManager.h"
+#include "GamestateManager.h"
 #include "ClientInformation.h"
 #include "util/Sleep.h"
 #include "objects/SpaceShip.h"
 #include "core/ConsoleCommand.h"
 #include "packet/Chat.h"
 #include "packet/Packet.h"
+#include "packet/Welcome.h"
 
 namespace network
 {
@@ -64,16 +64,14 @@ namespace network
   */
   Server::Server() {
     timeSinceLastUpdate_=0;
-    packet_gen = PacketGenerator();
     connection = new ConnectionManager();
-    gamestates = new GameStateManager();
+    gamestates_ = new GamestateManager();
   }
   
   Server::Server(int port){
     timeSinceLastUpdate_=0;
-    packet_gen = PacketGenerator();
     connection = new ConnectionManager(port);
-    gamestates = new GameStateManager();
+    gamestates_ = new GamestateManager();
   }
 
   /**
@@ -83,9 +81,8 @@ namespace network
   */
   Server::Server(int port, std::string bindAddress) {
     timeSinceLastUpdate_=0;
-    packet_gen = PacketGenerator();
     connection = new ConnectionManager(port, bindAddress);
-    gamestates = new GameStateManager();
+    gamestates_ = new GamestateManager();
   }
 
   /**
@@ -95,9 +92,8 @@ namespace network
   */
   Server::Server(int port, const char *bindAddress) {
     timeSinceLastUpdate_=0;
-    packet_gen = PacketGenerator();
     connection = new ConnectionManager(port, bindAddress);
-    gamestates = new GameStateManager();
+    gamestates_ = new GamestateManager();
   }
 
   /**
@@ -172,7 +168,7 @@ namespace network
     if(timeSinceLastUpdate_>=(1./NETWORK_FREQUENCY)){
       timeSinceLastUpdate_=(float)((int)(timeSinceLastUpdate_*NETWORK_FREQUENCY))/timeSinceLastUpdate_;
 //      timeSinceLastUpdate_-=1./NETWORK_FREQUENCY;
-      gamestates->processGameStates();
+      gamestates_->processGamestates();
       updateGamestate();
     }
     /*while(timeSinceLastUpdate_>1./NETWORK_FREQUENCY)
@@ -190,7 +186,6 @@ namespace network
   */
   void Server::processQueue() {
     ENetEvent *event;
-    int clientID=-1;
     while(!connection->queueEmpty()){
       //std::cout << "Client " << clientID << " sent: " << std::endl;
       //clientID here is a reference to grab clientID from ClientInformation
@@ -208,11 +203,8 @@ namespace network
           disconnectClient(event);
         break;
       case ENET_EVENT_TYPE_RECEIVE:
-        if(ClientInformation::findClient(&event->peer->address)){
-          clientID = ClientInformation::findClient(&event->peer->address)->getID();
-          if( !elaborate(event->packet, clientID) ) 
-            COUT(3) << "Server: could not elaborate" << std::endl;
-        }
+        if(!processPacket(event->packet, event->peer))
+          COUT(3) << "processing incoming packet failed" << std::endl;
         break;
       default:
         break;
@@ -226,7 +218,7 @@ namespace network
   * takes a new snapshot of the gamestate and sends it to the clients
   */
   void Server::updateGamestate() {
-    gamestates->update();
+    gamestates_->update();
     COUT(5) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
     //std::cout << "updated gamestate, sending it" << std::endl;
     //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
@@ -235,6 +227,11 @@ namespace network
     //std::cout << "sent gamestate" << std::endl;
   }
 
+  bool Server::processPacket( ENetPacket *packet, ENetPeer *peer ){
+    packet::Packet p = packet::Packet(packet, peer);
+    return p.getPacketContent()->process();
+  }
+  
   /**
   * sends the gamestate
   */
@@ -256,16 +253,15 @@ namespace network
       int gid = temp->getGamestateID(); //get gamestate id
       int cid = temp->getID(); //get client id
       COUT(5) << "Server: got acked (gamestate) ID from clientlist: " << gid << std::endl;
-      GameStateCompressed *gs = gamestates->popGameState(cid);
+      packet::Gamestate *gs = gamestates_->popGameState(cid);
       if(gs==NULL){
         COUT(2) << "Server: could not generate gamestate (NULL from compress)" << std::endl;
         continue;
       }
       //std::cout << "adding gamestate" << std::endl;
-      ENetPacket *packet = packet_gen.gstate(gs);
-      if(!packet)
-	continue;
-      if ( !(connection->addPacket(packet, cid)) ){
+      packet::Packet packet(gs);
+      packet.setClientID(cid);
+      if ( !packet.send() ){
         COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl; 
         temp->addFailure();
         /*if(temp->getFailures() > 0 )
@@ -276,7 +272,6 @@ namespace network
       added=true;
       temp=temp->next();
       // now delete gamestate
-      delete[] gs->data;
       delete gs;
     }
     /*if(added) {
@@ -285,34 +280,6 @@ namespace network
     }*/
     //COUT(5) << "Server: had no gamestates to send" << std::endl;
     return true;
-  }
-
-  void Server::processAck( ack *data, int clientID) {
-    COUT(4) << "Server: processing ack from client: " << clientID << "; ack-id: " << data->a << std::endl;
-    gamestates->ackGameState(clientID, data->a);
-    delete data;
-  }
-  
-  bool Server::processConnectRequest( connectRequest *con, int clientID ){
-    //(COUT(3) << "processing connectRequest " << std::endl;
-    //connection->addPacket(packet_gen.gstate(gamestates->popGameState(clientID)) , clientID);
-    //createClient(clientID);
-    delete con;
-    return true;
-  }
-  
-  bool Server::ackGamestateID(int gamestateID, int clientID){
-    gamestates->ackGameState(clientID, gamestateID);
-    return true;
-  }
-  
-  void Server::processGamestate( GameStateCompressed *data, int clientID){
-    COUT(4) << "processing partial gamestate from client " << clientID << std::endl;
-    gamestates->addGameState(data, clientID);
-        /*COUT(3) << "Could not push gamestate\t\t\t\t=====" << std::endl;
-    else
-      if(clients->findClient(clientID))
-        clients->findClient(clientID)->resetFailures();*/
   }
   
 //   void Server::processChat( chat *data, int clientId){
@@ -358,7 +325,8 @@ namespace network
       COUT(3) << "created spaceship" << std::endl;
     temp->setSynched(true);
     COUT(3) << "sending welcome" << std::endl;
-    connection->sendWelcome(temp->getID(), temp->getShipID(), true);
+    packet::Packet packet(new packet::Welcome(temp->getID(), temp->getShipID()));
+    assert(packet.send());
     return true;
   }
   
@@ -420,7 +388,7 @@ namespace network
   }
   void Server::disconnectClient( ClientInformation *client){
     connection->disconnectClient(client);
-    gamestates->removeClient(client);
+    gamestates_->removeClient(client);
   }
   
 }

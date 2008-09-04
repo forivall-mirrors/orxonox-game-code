@@ -1,6 +1,6 @@
 #include "Gamestate.h"
 #include "network/ClientInformation.h"
-
+#include "network/GamestateHandler.h"
 
 #include <zlib.h>
 #include <assert.h>
@@ -20,8 +20,8 @@ Gamestate::Gamestate()
 {
 }
 
-Gamestate::Gamestate(unsigned char *data, bool compressed):
-    PacketContent(data)
+Gamestate::Gamestate(unsigned char *data, bool compressed, int clientID):
+    PacketContent(data, clientID)
 {
   compressed_ = compressed;
   //GAMESTATE_HEADER = (GamestateHeader *)data;
@@ -132,6 +132,10 @@ bool Gamestate::spreadData(int mode)
   return true;
 }
 
+int Gamestate::getID(){
+  return HEADER->id;
+}
+
 unsigned char *Gamestate::getData()
 {
   assert(data_!=0);
@@ -145,15 +149,12 @@ unsigned int Gamestate::getSize() const
   else
   {
     return HEADER->normsize+sizeof(GamestateHeader);
-    //assert(bs_);
-    //return bs_->getSize();
   }
 }
 
 bool Gamestate::process()
 {
-  //FIXME: TODO: implement this function
-  return true;
+  return GamestateHandler::addGamestate(this, getClientID());
 }
 
 bool Gamestate::compressData()
@@ -181,7 +182,6 @@ bool Gamestate::compressData()
   HEADER->compsize = buffer;
   *GAMESTATE_HEADER(ndata) = *HEADER;
   //delete old data
-//  delete bs_;
   delete[] data_;
   //save new data
   data_ = ndata;
@@ -249,7 +249,7 @@ Gamestate *Gamestate::diff(Gamestate *base)
     }
   }
 
-  Gamestate *g = new Gamestate(ndata, false);
+  Gamestate *g = new Gamestate(ndata, false, 0);
   return g;
 }
 
@@ -281,7 +281,7 @@ Gamestate *Gamestate::undiff(Gamestate *base)
     }
   }
   
-  Gamestate *g = new Gamestate(ndata, false);
+  Gamestate *g = new Gamestate(ndata, false, 0);
   return g;
 }
 

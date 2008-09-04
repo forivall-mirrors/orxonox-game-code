@@ -48,8 +48,7 @@
 #include "Host.h"
 #include "packet/Chat.h"
 #include "ClientConnection.h"
-#include "PacketManager.h"
-#include "GameStateClient.h"
+#include "GamestateClient.h"
 //#include "NetworkFrameListener.h"
 
 
@@ -63,7 +62,7 @@ namespace network
   * It is the root class of the network module
   *
   */
-  class _NetworkExport Client : PacketDecoder, public Host{
+  class _NetworkExport Client : public Host{
   public:
     Client();
     Client(std::string address, int port);
@@ -80,25 +79,22 @@ namespace network
     
     unsigned int shipID(){return shipID_;}
     int playerID(){return clientID_;}
-
+    static void setShipID( unsigned int shipID){ dynamic_cast<Client *>(instance_)->shipID_=shipID; }
+    static void setClientID( unsigned int clientID){ dynamic_cast<Client *>(instance_)->clientID_=clientID; }
+    
     void tick(float time);
 
   private:
     
     ClientConnection client_connection;
-    PacketGenerator pck_gen;
-    GameStateClient gamestate;
+    GamestateClient gamestate;
     bool isConnected;
     bool isSynched_;
 
     bool sendChat( std::string message );
     
     // implement data processing functions of PacketDecoder
-    void processGamestate( GameStateCompressed *data, int clientID);
-    void processClassid(classid *clid);
-    bool ackGamestateID(int gamestateID, int clientID);
 //     void processChat( chat *data, int clientId );
-    bool processWelcome( welcome *w );
     int clientID_;     // this is the id the server gave to us
     int shipID_;
     bool gameStateFailure_;

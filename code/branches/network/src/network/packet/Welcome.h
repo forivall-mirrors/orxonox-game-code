@@ -25,10 +25,8 @@
  *      ...
  *
  */
-#ifndef NETWORKCLASSID_H
-#define NETWORKCLASSID_H
-
-#include <string>
+#ifndef NETWORKWELCOME_H
+#define NETWORKWELCOME_H
 
 #include "PacketContent.h"
 
@@ -38,22 +36,18 @@ namespace packet {
 /**
 	@author 
 */
-class ClassID : public PacketContent
+class Welcome : public PacketContent
 {
 public:
-  ClassID( unsigned int classID, std::string className );
-  ClassID( unsigned char* data, int clientID );
-  ~ClassID();
+  Welcome( unsigned int clientID, unsigned int shipID );
+  Welcome( unsigned char* data, int clientID );
+  ~Welcome();
   
   unsigned char *getData();
   inline unsigned int getSize() const;
   bool process();
   
-  unsigned int getClassID();
-  unsigned int getClassNameLength(){ return classNameLength_; }
-  unsigned char *getClassName();
 private:
-  unsigned int classNameLength_;
 };
 
 } //namespace packet
