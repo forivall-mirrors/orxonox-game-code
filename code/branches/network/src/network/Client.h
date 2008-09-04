@@ -78,7 +78,7 @@ namespace network
     
 //    static void Chat( std::string message );
     
-    int shipID(){return shipID_;}
+    unsigned int shipID(){return shipID_;}
     int playerID(){return clientID_;}
 
     void tick(float time);
@@ -96,6 +96,7 @@ namespace network
     // implement data processing functions of PacketDecoder
     void processGamestate( GameStateCompressed *data, int clientID);
     void processClassid(classid *clid);
+    bool ackGamestateID(int gamestateID, int clientID);
 //     void processChat( chat *data, int clientId );
     bool processWelcome( welcome *w );
     int clientID_;     // this is the id the server gave to us

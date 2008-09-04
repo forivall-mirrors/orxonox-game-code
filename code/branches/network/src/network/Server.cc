@@ -301,6 +301,11 @@ namespace network
     return true;
   }
   
+  bool Server::ackGamestateID(int gamestateID, int clientID){
+    gamestates->ackGameState(clientID, gamestateID);
+    return true;
+  }
+  
   void Server::processGamestate( GameStateCompressed *data, int clientID){
     COUT(4) << "processing partial gamestate from client " << clientID << std::endl;
     gamestates->addGameState(data, clientID);

@@ -43,7 +43,8 @@ class Host{
     virtual bool processChat(packet::Chat *message, unsigned int clientID)=0;
     virtual bool sendChat(packet::Chat *chat)=0;
     virtual bool queuePacket(ENetPacket *packet, int clientID)=0;
-    virtual int shipID()=0;
+    virtual bool ackGamestateID(int gamestateID, int clientID)=0;
+    virtual unsigned int shipID()=0;
     virtual int playerID()=0;
     
     static Host *instance_;
@@ -59,7 +60,8 @@ class Host{
     static bool chat(std::string& message);
     static bool receiveChat(packet::Chat *message, unsigned int clientID);
     static int getPlayerID();
-    static int getShipID();
+    static unsigned int getShipID();
+    static bool ackGamestate(int gamestateID, int clientID);
 };
 
 }

@@ -359,7 +359,7 @@ used by processQueue in Server.cc
   
   
   bool ConnectionManager::removeShip(ClientInformation *client){
-    int id=client->getShipID();
+    unsigned int id=client->getShipID();
     orxonox::Iterator<orxonox::SpaceShip> it;
     for(it = orxonox::ObjectList<orxonox::SpaceShip>::start(); it; ++it){
       if(it->objectID!=id)

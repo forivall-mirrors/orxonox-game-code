@@ -30,7 +30,7 @@ bool Host::addPacket(ENetPacket *packet, int clientID){
 bool Host::chat(std::string& message){
   if(!instance_)
     return false;
-  packet::Chat *c = new packet::Chat(message);
+  packet::Chat *c = new packet::Chat(message, getPlayerID());
   return instance_->sendChat(c);
 }
 
@@ -47,10 +47,14 @@ int Host::getPlayerID(){
   return instance_->playerID();
 }
 
-int Host::getShipID(){ 
+unsigned int Host::getShipID(){ 
   if(!instance_)
     return 0;
   return instance_->shipID();
+}
+
+bool Host::ackGamestate(int gamestateID, int clientID){
+  return instance_->ackGamestateID(gamestateID, clientID);
 }
 
 }//namespace network

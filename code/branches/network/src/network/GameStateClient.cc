@@ -33,7 +33,7 @@
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
 #include "Synchronisable.h"
-
+#include "packet/Gamestate.h"
 
 namespace network
 {
@@ -124,6 +124,15 @@ namespace network
     if(pushGameState(tempGameState_)){
       if(b)
         loadShipCache();
+      packet::Gamestate *g = new packet::Gamestate();
+      if(!g->collectData(1, 0x1))
+        COUT(3) << "problem testing data collecting" << std::endl;
+      else
+      {
+        if(!g->spreadData(0x1))
+          COUT(3) << "problem testing data spreading" << std::endl;
+        delete g;
+      }
       return id;
     }
     else

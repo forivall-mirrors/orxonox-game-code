@@ -206,6 +206,11 @@ namespace network
     delete clid;
     return;
   }
+  
+  bool Client::ackGamestateID(int gamestateID, int clientID){
+    return true;
+    //TODO: maybe change this (not needed at the moment)
+  }
 
 //   void Client::processChat( chat *data, int clientId){
 //     COUT(1) << data->message << std::endl;

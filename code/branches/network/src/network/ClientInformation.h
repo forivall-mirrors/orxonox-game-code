@@ -71,10 +71,10 @@ namespace network
     bool setPeer(ENetPeer *peer);
     bool setGameStateID(int id);
     bool setPartialGamestateID(int id);
-    inline void setShipID(int id){ShipID_=id;}
+    inline void setShipID(unsigned int id){ShipID_=id;}
     
     // get functions
-    inline int getShipID(){return ShipID_;}
+    inline unsigned int getShipID(){return ShipID_;}
     int getID();
     int getGamestateID();
     int getPartialGamestateID();
@@ -111,7 +111,7 @@ namespace network
     int clientID_;
     int gamestateID_;
     int partialGamestateID_;
-    int ShipID_;   // this is the unique objectID
+    unsigned int ShipID_;   // this is the unique objectID
     bool synched_;
     unsigned short failures_;
     

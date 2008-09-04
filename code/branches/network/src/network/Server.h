@@ -75,7 +75,7 @@ namespace network
     void processQueue();
     void updateGamestate();
   private:
-    int shipID(){return 0;}
+    unsigned int shipID(){return 0;}
     int playerID(){return 0;}
     
     bool addClient(ENetEvent *event);
@@ -88,6 +88,9 @@ namespace network
     void processAck( ack *data, int clientID);
     bool processConnectRequest( connectRequest *con, int clientID );
     void processGamestate( GameStateCompressed *data, int clientID);
+    
+    bool ackGamestateID(int gamestateID, int clientID);
+    
     //void processChat( chat *data, int clientId);
     ConnectionManager *connection;
     GameStateManager *gamestates;
