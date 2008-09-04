@@ -31,7 +31,6 @@
 #define DATA_TYPE unsigned char
 
 #include <string>
-
   
 /**
 	@author Oliver Scheuss <scheusso [at] ee.ethz.ch>
