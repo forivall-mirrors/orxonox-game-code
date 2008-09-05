@@ -28,7 +28,7 @@
 #ifndef NETWORKWELCOME_H
 #define NETWORKWELCOME_H
 
-#include "PacketContent.h"
+#include "Packet.h"
 
 namespace network {
 namespace packet {
@@ -36,7 +36,7 @@ namespace packet {
 /**
 	@author 
 */
-class Welcome : public PacketContent
+class Welcome : public Packet
 {
 public:
   Welcome( unsigned int clientID, unsigned int shipID );

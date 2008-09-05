@@ -337,9 +337,6 @@ used by processQueue in Server.cc
     unsigned int network_id=0, failures=0;
     std::string classname;
     orxonox::Identifier *id;
-    packet::Packet packet;
-    packet.setClientID(clientID);
-    packet::ClassID *classid;
     std::map<std::string, orxonox::Identifier*>::const_iterator it = orxonox::Factory::getFactoryBegin();
     while(it != orxonox::Factory::getFactoryEnd()){
       id = (*it).second;
@@ -351,12 +348,11 @@ used by processQueue in Server.cc
         COUT(3) << "we got a null class id: " << id->getName() << std::endl;
       COUT(4) << "Con.Man:syncClassid:\tnetwork_id: " << network_id << ", classname: " << classname << std::endl;
 
-      classid = new packet::ClassID(network_id, classname);
-      packet.setPacketContent(classid);
-      while(!packet.send() && failures < 10){
+      packet::ClassID classid( network_id, classname );
+      classid.setClientID(clientID);
+      while(!classid.send() && failures < 10){
         failures++;
       }
-      delete classid;
       ++it;
     }
     //sendPackets();

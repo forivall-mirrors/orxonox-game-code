@@ -28,7 +28,7 @@
 #ifndef NETWORKACKNOLEDGEMENT_H
 #define NETWORKACKNOLEDGEMENT_H
 
-#include "PacketContent.h"
+#include "Packet.h"
 
 
 namespace network {
@@ -36,14 +36,13 @@ namespace packet {
 /**
 	@author 
 */
-class Acknowledgement : public PacketContent
+class Acknowledgement : public Packet
 {
 public:
   Acknowledgement( unsigned int id, int clientID );
   Acknowledgement( unsigned char* data, int clientID );
   ~Acknowledgement();
   
-  unsigned char *getData();
   inline unsigned int getSize() const;
   bool process();
   

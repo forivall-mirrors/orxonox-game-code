@@ -80,10 +80,10 @@ namespace network
   namespace packet{
     class Gamestate;
     class Packet;
-    class PacketContent;
     class Acknowledgement;
     class ClassID;
     class Welcome;
+    class Chat;
   }
 }
 

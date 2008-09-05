@@ -73,7 +73,7 @@ namespace network
     bool closeConnection();
     bool queuePacket(ENetPacket *packet, int clientID);
     bool processChat(packet::Chat *message, unsigned int clientID);
-    bool sendChat(packet::Chat *chat);
+    //bool sendChat(packet::Chat *chat);
     
 //    static void Chat( std::string message );
     

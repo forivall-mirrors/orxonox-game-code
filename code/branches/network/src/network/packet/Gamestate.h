@@ -26,7 +26,6 @@
  *
  */
 
-#include "PacketContent.h"
 #include "Packet.h"
 #include "network/Synchronisable.h"
 //#include "util/Bytestream.h"
@@ -52,7 +51,7 @@ struct GamestateHeader{
 /**
 	@author 
 */
-class Gamestate: public PacketContent{
+class Gamestate: public Packet{
   public:
     Gamestate();
     Gamestate(unsigned char *data, bool compressed, int clientID);
@@ -67,8 +66,7 @@ class Gamestate: public PacketContent{
     bool compressData();
     bool decompressData();
     
-    // PacketContent functions
-    virtual unsigned char *getData();
+    // Packet functions
     virtual unsigned int getSize() const;
     virtual bool process();
 

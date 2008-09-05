@@ -28,8 +28,7 @@
 #ifndef NETWORKPACKET_H
 #define NETWORKPACKET_H
 
-#include "PacketContent.h"
-
+#include <map>
 #include <enet/enet.h>
 
 namespace network {
@@ -56,24 +55,31 @@ namespace ENUM{
 */
 class Packet{
   public:
-    Packet();
-    Packet(PacketContent *content);
-    Packet(ENetPacket *packet, ENetPeer *peer);
+    Packet(const Packet &p);
     virtual ~Packet();
+    static Packet *createPacket(ENetPacket *packet, ENetPeer *peer);
+    static void deletePacket(ENetPacket *packet);
     
-    int getClientID(){ return clientID_; }
-    PacketContent *getPacketContent(){ return packetContent_; }
-    
-    void setClientID( int id ){ clientID_ = id; }
-    void setPacketContent(PacketContent *content);
+    virtual unsigned char *getData(){ return data_; };
+    virtual unsigned int getSize() const =0;
+    virtual bool process()=0;
+    enet_uint32 getFlags()
+      { return flags_; }
+    int getClientID()
+      { return clientID_; }
+    void setClientID( int id )
+      { clientID_ = id; }
     
     bool send();
   protected:
-  private:
-    PacketContent *createPacketContent(ENetPacket *packet);
-    
+    Packet();
+    Packet(unsigned char *data, int clientID);
+    Packet(ENetPacket *packet, ENetPeer *peer);
+    enet_uint32 flags_;
     int clientID_;
-    PacketContent *packetContent_;
+    unsigned char *data_;
+  private:
+    static std::map<ENetPacket *, Packet *> packetMap_;
     ENetPacket *enetPacket_;
     ENUM::Direction packetDirection_;
 };

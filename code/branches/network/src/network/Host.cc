@@ -27,19 +27,19 @@ bool Host::addPacket(ENetPacket *packet, int clientID){
 }
 
 
-bool Host::chat(std::string& message){
-  if(!instance_)
-    return false;
-  packet::Chat *c = new packet::Chat(message, getPlayerID());
-  return instance_->sendChat(c);
-}
+// bool Host::chat(std::string& message){
+//   if(!instance_)
+//     return false;
+//   packet::Chat *c = new packet::Chat(message, getPlayerID());
+//   return instance_->sendChat(c);
+// }
 
-bool Host::receiveChat(network::packet::Chat *message, unsigned int clientID){
-  if(instance_)
-    return instance_->processChat(message, clientID);
-  else
-    return false;
-}
+// bool Host::receiveChat(network::packet::Chat *message, unsigned int clientID){
+//   if(instance_)
+//     return instance_->processChat(message, clientID);
+//   else
+//     return false;
+// }
 
 int Host::getPlayerID(){ 
   if(!instance_)

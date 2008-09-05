@@ -122,11 +122,11 @@ namespace network
     return message->process();
   }
   
-  bool Client::sendChat(packet::Chat *chat){
+  /*bool Client::sendChat(packet::Chat *chat){
     chat->process();
     packet::Packet *p = new packet::Packet(chat);
     return p->send();
-  }
+  }*/
   
 
   /**
@@ -138,9 +138,8 @@ namespace network
     // generate packet and add it to queue
     if(!isConnected)
       return false;
-    packet::Packet p(new packet::Chat(message, clientID_));
-    return p.send();
-      //return client_connection.sendPackets();
+    packet::Chat chat(message, 0);
+    return chat.send();
     // send packets
   }
 
@@ -154,11 +153,9 @@ namespace network
       packet::Gamestate *gs = gamestate.getGamestate();
       if(gs){
         COUT(4) << "client tick: sending gs " << gs << std::endl;
-        packet::Packet packet(gs);
-        if( !packet.send() )
+        if( !gs->send() )
           COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
-        // now delete it to save memory
-        delete gs;
+        // gs gets automatically deleted by enet callback
       }
     }
     ENetEvent *event;
@@ -166,15 +163,14 @@ namespace network
     while(!(client_connection.queueEmpty())){
       event = client_connection.getEvent();
       COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
-      packet::Packet packet(event->packet, event->peer);
-      assert(packet.getPacketContent()->process());
+      packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
+      assert(packet->process());
     }
     int gameStateID = gamestate.processGamestates();
     if(gameStateID==GAMESTATEID_INITIAL)
       if(gameStateFailure_){
         packet::Acknowledgement ack(GAMESTATEID_INITIAL, 0);
-        packet::Packet packet(&ack);
-        if(!packet.send())
+        if(!ack.send())
           COUT(3) << "could not (negatively) ack gamestate" << std::endl;
         else 
           COUT(4) << "negatively acked a gamestate" << std::endl;
@@ -187,8 +183,7 @@ namespace network
         isSynched_=true;
       gameStateFailure_=false;
       packet::Acknowledgement ack(gameStateID, 0);
-      packet::Packet packet(&ack);
-      if(!packet.send())
+      if(!ack.send())
         COUT(3) << "could not ack gamestate" << std::endl;
     }// otherwise we had no gamestate to load
     gamestate.cleanup();

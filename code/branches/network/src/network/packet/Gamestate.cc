@@ -1,3 +1,49 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Oliver Scheuss, (C) 2008
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 #include "Gamestate.h"
 #include "network/ClientInformation.h"
 #include "network/GamestateHandler.h"
@@ -21,12 +67,9 @@ Gamestate::Gamestate()
 }
 
 Gamestate::Gamestate(unsigned char *data, bool compressed, int clientID):
-    PacketContent(data, clientID)
+    Packet(data, clientID)
 {
   compressed_ = compressed;
-  //GAMESTATE_HEADER = (GamestateHeader *)data;
-  //if(!compressed)
-    //bs_ = new Bytestream(data+sizeof(GamestateHeader), GAMESTATE_HEADER->compsize);
 }
 
 
@@ -137,14 +180,9 @@ int Gamestate::getID(){
   return HEADER->id;
 }
 
-unsigned char *Gamestate::getData()
-{
-  assert(data_!=0);
-  return data_;
-}
-
 unsigned int Gamestate::getSize() const
 {
+  assert(data_);
   if(compressed_)
     return HEADER->compsize+sizeof(GamestateHeader);
   else

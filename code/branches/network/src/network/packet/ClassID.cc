@@ -1,5 +1,34 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Oliver Scheuss, (C) 2008
+ *   Co-authors:
+ *      ...
+ *
+ */
+
+
+
 #include "ClassID.h"
-#include "Packet.h"
 #include "core/CoreIncludes.h"
 #include <string>
 #include <assert.h>
@@ -14,7 +43,7 @@ namespace packet {
 #define _CLASSNAME            _CLASSNAMELENGTH + sizeof(classNameLength_)
   
   ClassID::ClassID( unsigned int classID, std::string className )
- : PacketContent()
+ : Packet()
 {
   flags_ = flags_ | PACKET_FLAGS_CLASSID;
   classNameLength_=className.length()+1;
@@ -28,17 +57,13 @@ namespace packet {
 }
 
 ClassID::ClassID( unsigned char *data, int clientID )
-  : PacketContent(data, clientID)
+  : Packet(data, clientID)
 {
   memcpy( (void *)&classNameLength_, &data[ _CLASSNAMELENGTH ], sizeof(classNameLength_) );
 }
 
 ClassID::~ClassID()
 {
-}
-
-unsigned char *ClassID::getData(){
-  return data_;
 }
 
 unsigned int ClassID::getSize() const{
@@ -50,16 +75,13 @@ bool ClassID::process(){
   if(id==NULL)
     return false;
   id->setNetworkID( getClassID() );
+  delete this;
   return true;
 }
 
 unsigned int ClassID::getClassID(){
   return *(unsigned int *)&data_[ _CLASSID ];
 }
-
-// unsigned int ClassID::getClassNameLength(){
-//   return *(unsigned int *)&data[ _CLASSNAMELENGTH ];
-// }
 
 } //namespace packet
 }//namespace network

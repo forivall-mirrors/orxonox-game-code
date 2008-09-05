@@ -41,8 +41,8 @@ namespace network {
 class Host{
   private:
     //TODO add theese functions or adequate
-    virtual bool processChat(packet::Chat *message, unsigned int clientID)=0;
-    virtual bool sendChat(packet::Chat *chat)=0;
+    //virtual bool processChat(packet::Chat *message, unsigned int clientID)=0;
+    //virtual bool sendChat(packet::Chat *chat)=0;
     virtual bool queuePacket(ENetPacket *packet, int clientID)=0;
     virtual unsigned int shipID()=0;
     virtual int playerID()=0;
@@ -57,12 +57,15 @@ class Host{
   public:
     static bool running(){return instance_!=0;}
     static bool addPacket(ENetPacket *packet, int clientID=0);
-    static bool chat(std::string& message);
-    static bool receiveChat(packet::Chat *message, unsigned int clientID);
+    //static bool chat(std::string& message);
+//     static bool receiveChat(packet::Chat *message, unsigned int clientID);
     static int getPlayerID();
     static unsigned int getShipID();
-    
-    // packet process functions
+    static void setClientID(unsigned int id){ instance_->clientID_ = id; }
+    static void setShipID(unsigned int id){ instance_->shipID_ = id; }
+  private:
+    unsigned int clientID_;
+    unsigned int shipID_;
 };
 
 }

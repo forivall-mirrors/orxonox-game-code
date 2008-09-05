@@ -1,5 +1,33 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Oliver Scheuss <scheusso [at] ee.ethz.ch>, (C) 2008
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 #include "Chat.h"
-#include "Packet.h"
+#include <assert.h>
 
 namespace network {
 namespace packet {
@@ -10,7 +38,7 @@ namespace packet {
 #define _MESSAGE          _MESSAGELENGTH + sizeof(unsigned int)
 
 Chat::Chat( std::string& message, int clientID )
- : PacketContent()
+ : Packet()
 {
   flags_ = flags_ | PACKET_FLAGS_CHAT;
   messageLength_ = message.length()+1;
@@ -22,7 +50,7 @@ Chat::Chat( std::string& message, int clientID )
 }
 
 Chat::Chat( unsigned char *data, int clientID )
-  : PacketContent(data, clientID)
+  : Packet(data, clientID)
 {
   messageLength_ = *(unsigned int *)&data[ _MESSAGELENGTH ];
 }
@@ -31,16 +59,14 @@ Chat::~Chat()
 {
 }
 
-unsigned char *Chat::getData(){
-  return data_;
-}
-
 unsigned int Chat::getSize() const{
   return _MESSAGE + messageLength_;
 }
 
 bool Chat::process(){
   //TODO: change this !!!
+  assert(0);
+  delete this;
   return true;
 }
 

@@ -114,13 +114,11 @@ namespace network
 
   bool Server::processChat(packet::Chat *message, unsigned int clientID){
     ClientInformation *temp = ClientInformation::getBegin();
-    packet::Packet *pkt;
     while(temp){
-      pkt = new packet::Packet(message);
-      pkt->setClientID(temp->getID());
-      if(!pkt->send())
+      message->setClientID(temp->getID());
+      if(!message->send())
         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
-      delete pkt;
+      temp = temp->next();
     }
     return message->process();
   }
@@ -133,11 +131,9 @@ namespace network
   bool Server::sendChat(packet::Chat *chat) {
     //TODO: change this (no informations about who wrote a message)
     ClientInformation *temp = ClientInformation::getBegin();
-    packet::Packet *pkt;
     while(temp){
-      pkt = new packet::Packet(chat);
-      pkt->setClientID(temp->getID());
-      if(!pkt->send())
+      chat->setClientID(temp->getID());
+      if(!chat->send())
         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
     }
     return chat->process();;
@@ -229,8 +225,8 @@ namespace network
   }
 
   bool Server::processPacket( ENetPacket *packet, ENetPeer *peer ){
-    packet::Packet p = packet::Packet(packet, peer);
-    return p.getPacketContent()->process();
+    packet::Packet *p = packet::Packet::createPacket(packet, peer);
+    return p->process();
   }
   
   /**
@@ -260,16 +256,15 @@ namespace network
         continue;
       }
       //std::cout << "adding gamestate" << std::endl;
-      packet::Packet packet(gs);
-      packet.setClientID(cid);
-      if ( !packet.send() ){
+      gs->setClientID(cid);
+      if ( !gs->send() ){
         COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl; 
         temp->addFailure();
       }else
         temp->resetFailures();
       added=true;
       temp=temp->next();
-      delete gs;
+      // gs gets automatically deleted by enet callback
     }
     /*if(added) {
       //std::cout << "send gamestates from server.cc in sendGameState" << std::endl;
@@ -323,8 +318,8 @@ namespace network
     temp->setSynched(true);
     COUT(3) << "sending welcome" << std::endl;
     packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
-    packet::Packet packet(w);
-    assert(packet.send());
+    w->setClientID(temp->getID());
+    assert(w->send());
     delete w;
     return true;
   }

@@ -30,7 +30,7 @@
 
 #include <string>
 
-#include "PacketContent.h"
+#include "Packet.h"
 
 namespace network {
 namespace packet {
@@ -38,14 +38,13 @@ namespace packet {
 /**
 	@author 
 */
-class ClassID : public PacketContent
+class ClassID : public Packet
 {
 public:
   ClassID( unsigned int classID, std::string className );
   ClassID( unsigned char* data, int clientID );
   ~ClassID();
   
-  unsigned char *getData();
   inline unsigned int getSize() const;
   bool process();
   
