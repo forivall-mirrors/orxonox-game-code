@@ -359,7 +359,6 @@ used by processQueue in Server.cc
       delete classid;
       ++it;
     }
-    packet.setPacketContent(0);
     //sendPackets();
     COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
   }

@@ -154,8 +154,8 @@ namespace network
       packet::Gamestate *gs = gamestate.getGamestate();
       if(gs){
         COUT(4) << "client tick: sending gs " << gs << std::endl;
-        packet::Packet p(gs);
-        if( !p.send() )
+        packet::Packet packet(gs);
+        if( !packet.send() )
           COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
         // now delete it to save memory
         delete gs;
@@ -172,7 +172,8 @@ namespace network
     int gameStateID = gamestate.processGamestates();
     if(gameStateID==GAMESTATEID_INITIAL)
       if(gameStateFailure_){
-        packet::Packet packet(new packet::Acknowledgement(GAMESTATEID_INITIAL, 0));
+        packet::Acknowledgement ack(GAMESTATEID_INITIAL, 0);
+        packet::Packet packet(&ack);
         if(!packet.send())
           COUT(3) << "could not (negatively) ack gamestate" << std::endl;
         else 
@@ -185,7 +186,8 @@ namespace network
       if(!isSynched_)
         isSynched_=true;
       gameStateFailure_=false;
-      packet::Packet packet(new packet::Acknowledgement(gameStateID, 0));
+      packet::Acknowledgement ack(gameStateID, 0);
+      packet::Packet packet(&ack);
       if(!packet.send())
         COUT(3) << "could not ack gamestate" << std::endl;
     }// otherwise we had no gamestate to load

@@ -40,12 +40,9 @@ Packet::Packet(ENetPacket *packet, ENetPeer *peer){
   clientID_ = ClientInformation::findClient(&peer->address)->getID();
   packetContent_ = createPacketContent(packet);
   enet_packet_destroy(packet);
-  delete peer;
 }
 
 Packet::~Packet(){
-  if(packetContent_)
-    delete packetContent_;
   if(enetPacket_){
     enet_packet_destroy(enetPacket_);
   }
@@ -65,7 +62,6 @@ bool Packet::send(){
   if(!enetPacket_){
     if(!packetContent_)
       return false;
-    COUT(3) << "creating packet with data: " << packetContent_->getData() << " size: " << packetContent_->getSize() << " and flags: " << packetContent_->getFlags() << std::endl;
     enetPacket_ = enet_packet_create(packetContent_->getData(), packetContent_->getSize(), packetContent_->getFlags());
   }
   network::Host::addPacket( enetPacket_, clientID_);
@@ -91,7 +87,8 @@ PacketContent *Packet::createPacketContent(ENetPacket *packet){
       packetContent_ = new Gamestate( data, true, clientID_ );
       break;
     default:
-      assert(0);
+      assert(0); //TODO: repair this
+      break;
   }
   return packetContent_;
 }

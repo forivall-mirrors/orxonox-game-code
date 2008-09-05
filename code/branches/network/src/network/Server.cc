@@ -120,6 +120,7 @@ namespace network
       pkt->setClientID(temp->getID());
       if(!pkt->send())
         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
+      delete pkt;
     }
     return message->process();
   }
@@ -139,7 +140,7 @@ namespace network
       if(!pkt->send())
         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
     }
-    return chat->process();
+    return chat->process();;
   }
 
   /**
@@ -268,7 +269,6 @@ namespace network
         temp->resetFailures();
       added=true;
       temp=temp->next();
-      // now delete gamestate
       delete gs;
     }
     /*if(added) {
@@ -322,8 +322,10 @@ namespace network
       COUT(3) << "created spaceship" << std::endl;
     temp->setSynched(true);
     COUT(3) << "sending welcome" << std::endl;
-    packet::Packet packet(new packet::Welcome(temp->getID(), temp->getShipID()));
+    packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
+    packet::Packet packet(w);
     assert(packet.send());
+    delete w;
     return true;
   }
   

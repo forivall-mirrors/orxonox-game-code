@@ -51,7 +51,7 @@ class GamestateHandler{
     ~GamestateHandler();
     
   public:
-    static bool addGamestate(packet::Gamestate *gs, int clientID){ return instance_->addGamestate(gs, clientID); }
+    static bool addGamestate(packet::Gamestate *gs, int clientID){ return instance_->add(gs, clientID); }
     static bool ackGamestate(int gamestateID, int clientID){ return instance_->ack(gamestateID, clientID); }
 };
 

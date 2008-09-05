@@ -27,6 +27,7 @@
  */
 
 #include "PacketContent.h"
+#include "Packet.h"
 #include "network/Synchronisable.h"
 //#include "util/Bytestream.h"
 #include "core/CoreIncludes.h"
@@ -39,6 +40,7 @@ namespace network {
 namespace packet {
   
 struct GamestateHeader{
+  ENUM::Type packetType;
   int id; // id of the gamestate
   unsigned int compsize;
   unsigned int normsize;
