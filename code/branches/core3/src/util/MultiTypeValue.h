@@ -36,10 +36,9 @@
 template <typename T>
 struct MT_Value : public MultiType::MT_ValueBase
 {
-    MT_Value() {}
-    MT_Value(const T& value) : value_(value) {}
+    MT_Value(const T& value, MT_Type type) : MT_ValueBase(type), value_(value) {}
 
-    inline MT_ValueBase* clone() const { return new MT_Value<T>(this->value_); }
+    inline MT_ValueBase* clone() const { return new MT_Value<T>(this->value_, this->type_); }
 
     inline void setValue(const char& value)                 { this->value_ = getConvertedValue<char,                 T>(value); }
     inline void setValue(const unsigned char& value)        { this->value_ = getConvertedValue<unsigned char,        T>(value); }

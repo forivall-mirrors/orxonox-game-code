@@ -86,7 +86,9 @@ void MultiType::setType(MT_Type type)
 
 std::string MultiType::getTypename() const
 {
-    switch (this->type_)
+    MT_Type type = (this->value_) ? this->value_->type_ : MT_null;
+
+    switch (type)
     {
         case MT_char:
             return "char"; break;
@@ -139,50 +141,50 @@ std::string MultiType::getTypename() const
     };
 }
 
-MultiType::operator char()                 const { return (this->type_ == MT_char       ) ? ((MT_Value<char>                *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator unsigned char()        const { return (this->type_ == MT_uchar      ) ? ((MT_Value<unsigned char>       *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator short()                const { return (this->type_ == MT_short      ) ? ((MT_Value<short>               *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator unsigned short()       const { return (this->type_ == MT_ushort     ) ? ((MT_Value<unsigned short>      *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator int()                  const { return (this->type_ == MT_int        ) ? ((MT_Value<int>                 *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator unsigned int()         const { return (this->type_ == MT_uint       ) ? ((MT_Value<unsigned int>        *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator long()                 const { return (this->type_ == MT_long       ) ? ((MT_Value<long>                *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator unsigned long()        const { return (this->type_ == MT_ulong      ) ? ((MT_Value<unsigned long>       *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator long long()            const { return (this->type_ == MT_longlong   ) ? ((MT_Value<long long>           *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator unsigned long long()   const { return (this->type_ == MT_ulonglong  ) ? ((MT_Value<unsigned long long>  *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator float()                const { return (this->type_ == MT_float      ) ? ((MT_Value<float>               *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator double()               const { return (this->type_ == MT_double     ) ? ((MT_Value<double>              *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator long double()          const { return (this->type_ == MT_longdouble ) ? ((MT_Value<long double>         *)this->value_)->value_ : (this->value_) ? (*this->value_) : 0;                      }
-MultiType::operator bool()                 const { return (this->type_ == MT_bool       ) ? ((MT_Value<bool>                *)this->value_)->value_ : (this->value_) ? (*this->value_) : false;                  }
-MultiType::operator void*()                const { return (this->type_ == MT_void       ) ? ((MT_Value<void*>               *)this->value_)->value_ : (this->value_) ? (*this->value_) : (void*)0;               }
-MultiType::operator std::string()          const { return (this->type_ == MT_string     ) ? ((MT_Value<std::string>         *)this->value_)->value_ : (this->value_) ? (*this->value_) : std::string();          }
-MultiType::operator orxonox::Vector2()     const { return (this->type_ == MT_vector2    ) ? ((MT_Value<orxonox::Vector2>    *)this->value_)->value_ : (this->value_) ? (*this->value_) : orxonox::Vector2();     }
-MultiType::operator orxonox::Vector3()     const { return (this->type_ == MT_vector3    ) ? ((MT_Value<orxonox::Vector3>    *)this->value_)->value_ : (this->value_) ? (*this->value_) : orxonox::Vector3();     }
-MultiType::operator orxonox::Vector4()     const { return (this->type_ == MT_vector4    ) ? ((MT_Value<orxonox::Vector4>    *)this->value_)->value_ : (this->value_) ? (*this->value_) : orxonox::Vector4();     }
-MultiType::operator orxonox::ColourValue() const { return (this->type_ == MT_colourvalue) ? ((MT_Value<orxonox::ColourValue>*)this->value_)->value_ : (this->value_) ? (*this->value_) : orxonox::ColourValue(); }
-MultiType::operator orxonox::Quaternion()  const { return (this->type_ == MT_quaternion ) ? ((MT_Value<orxonox::Quaternion> *)this->value_)->value_ : (this->value_) ? (*this->value_) : orxonox::Quaternion();  }
-MultiType::operator orxonox::Radian()      const { return (this->type_ == MT_radian     ) ? ((MT_Value<orxonox::Radian>     *)this->value_)->value_ : (this->value_) ? (*this->value_) : orxonox::Radian();      }
-MultiType::operator orxonox::Degree()      const { return (this->type_ == MT_degree     ) ? ((MT_Value<orxonox::Degree>     *)this->value_)->value_ : (this->value_) ? (*this->value_) : orxonox::Degree();      }
+MultiType::operator char()                 const { return (this->value_) ? ((this->value_->type_ == MT_char       ) ? ((MT_Value<char>                *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator unsigned char()        const { return (this->value_) ? ((this->value_->type_ == MT_uchar      ) ? ((MT_Value<unsigned char>       *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator short()                const { return (this->value_) ? ((this->value_->type_ == MT_short      ) ? ((MT_Value<short>               *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator unsigned short()       const { return (this->value_) ? ((this->value_->type_ == MT_ushort     ) ? ((MT_Value<unsigned short>      *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator int()                  const { return (this->value_) ? ((this->value_->type_ == MT_int        ) ? ((MT_Value<int>                 *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator unsigned int()         const { return (this->value_) ? ((this->value_->type_ == MT_uint       ) ? ((MT_Value<unsigned int>        *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator long()                 const { return (this->value_) ? ((this->value_->type_ == MT_long       ) ? ((MT_Value<long>                *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator unsigned long()        const { return (this->value_) ? ((this->value_->type_ == MT_ulong      ) ? ((MT_Value<unsigned long>       *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator long long()            const { return (this->value_) ? ((this->value_->type_ == MT_longlong   ) ? ((MT_Value<long long>           *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator unsigned long long()   const { return (this->value_) ? ((this->value_->type_ == MT_ulonglong  ) ? ((MT_Value<unsigned long long>  *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator float()                const { return (this->value_) ? ((this->value_->type_ == MT_float      ) ? ((MT_Value<float>               *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator double()               const { return (this->value_) ? ((this->value_->type_ == MT_double     ) ? ((MT_Value<double>              *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator long double()          const { return (this->value_) ? ((this->value_->type_ == MT_longdouble ) ? ((MT_Value<long double>         *)this->value_)->value_ : (*this->value_)) : 0;                      }
+MultiType::operator bool()                 const { return (this->value_) ? ((this->value_->type_ == MT_bool       ) ? ((MT_Value<bool>                *)this->value_)->value_ : (*this->value_)) : false;                  }
+MultiType::operator void*()                const { return (this->value_) ? ((this->value_->type_ == MT_void       ) ? ((MT_Value<void*>               *)this->value_)->value_ : (*this->value_)) : (void*)0;               }
+MultiType::operator std::string()          const { return (this->value_) ? ((this->value_->type_ == MT_string     ) ? ((MT_Value<std::string>         *)this->value_)->value_ : (*this->value_)) : std::string();          }
+MultiType::operator orxonox::Vector2()     const { return (this->value_) ? ((this->value_->type_ == MT_vector2    ) ? ((MT_Value<orxonox::Vector2>    *)this->value_)->value_ : (*this->value_)) : orxonox::Vector2();     }
+MultiType::operator orxonox::Vector3()     const { return (this->value_) ? ((this->value_->type_ == MT_vector3    ) ? ((MT_Value<orxonox::Vector3>    *)this->value_)->value_ : (*this->value_)) : orxonox::Vector3();     }
+MultiType::operator orxonox::Vector4()     const { return (this->value_) ? ((this->value_->type_ == MT_vector4    ) ? ((MT_Value<orxonox::Vector4>    *)this->value_)->value_ : (*this->value_)) : orxonox::Vector4();     }
+MultiType::operator orxonox::ColourValue() const { return (this->value_) ? ((this->value_->type_ == MT_colourvalue) ? ((MT_Value<orxonox::ColourValue>*)this->value_)->value_ : (*this->value_)) : orxonox::ColourValue(); }
+MultiType::operator orxonox::Quaternion()  const { return (this->value_) ? ((this->value_->type_ == MT_quaternion ) ? ((MT_Value<orxonox::Quaternion> *)this->value_)->value_ : (*this->value_)) : orxonox::Quaternion();  }
+MultiType::operator orxonox::Radian()      const { return (this->value_) ? ((this->value_->type_ == MT_radian     ) ? ((MT_Value<orxonox::Radian>     *)this->value_)->value_ : (*this->value_)) : orxonox::Radian();      }
+MultiType::operator orxonox::Degree()      const { return (this->value_) ? ((this->value_->type_ == MT_degree     ) ? ((MT_Value<orxonox::Degree>     *)this->value_)->value_ : (*this->value_)) : orxonox::Degree();      }
 
-template <> void MultiType::createNewValueContainer(const char& value)                 { this->value_ = new MT_Value<char>                (value); }
-template <> void MultiType::createNewValueContainer(const unsigned char& value)        { this->value_ = new MT_Value<unsigned char>       (value); }
-template <> void MultiType::createNewValueContainer(const short& value)                { this->value_ = new MT_Value<short>               (value); }
-template <> void MultiType::createNewValueContainer(const unsigned short& value)       { this->value_ = new MT_Value<unsigned short>      (value); }
-template <> void MultiType::createNewValueContainer(const int& value)                  { this->value_ = new MT_Value<int>                 (value); }
-template <> void MultiType::createNewValueContainer(const unsigned int& value)         { this->value_ = new MT_Value<unsigned int>        (value); }
-template <> void MultiType::createNewValueContainer(const long& value)                 { this->value_ = new MT_Value<long>                (value); }
-template <> void MultiType::createNewValueContainer(const unsigned long& value)        { this->value_ = new MT_Value<unsigned long>       (value); }
-template <> void MultiType::createNewValueContainer(const long long& value)            { this->value_ = new MT_Value<long long>           (value); }
-template <> void MultiType::createNewValueContainer(const unsigned long long& value)   { this->value_ = new MT_Value<unsigned long long>  (value); }
-template <> void MultiType::createNewValueContainer(const float& value)                { this->value_ = new MT_Value<float>               (value); }
-template <> void MultiType::createNewValueContainer(const double& value)               { this->value_ = new MT_Value<double>              (value); }
-template <> void MultiType::createNewValueContainer(const long double& value)          { this->value_ = new MT_Value<long double>         (value); }
-template <> void MultiType::createNewValueContainer(const bool& value)                 { this->value_ = new MT_Value<bool>                (value); }
-template <> void MultiType::createNewValueContainer(      void* const& value)          { this->value_ = new MT_Value<void*>               (value); }
-template <> void MultiType::createNewValueContainer(const std::string& value)          { this->value_ = new MT_Value<std::string>         (value); }
-template <> void MultiType::createNewValueContainer(const orxonox::Vector2& value)     { this->value_ = new MT_Value<orxonox::Vector2>    (value); }
-template <> void MultiType::createNewValueContainer(const orxonox::Vector3& value)     { this->value_ = new MT_Value<orxonox::Vector3>    (value); }
-template <> void MultiType::createNewValueContainer(const orxonox::Vector4& value)     { this->value_ = new MT_Value<orxonox::Vector4>    (value); }
-template <> void MultiType::createNewValueContainer(const orxonox::ColourValue& value) { this->value_ = new MT_Value<orxonox::ColourValue>(value); }
-template <> void MultiType::createNewValueContainer(const orxonox::Quaternion& value)  { this->value_ = new MT_Value<orxonox::Quaternion> (value); }
-template <> void MultiType::createNewValueContainer(const orxonox::Radian& value)      { this->value_ = new MT_Value<orxonox::Radian>     (value); }
-template <> void MultiType::createNewValueContainer(const orxonox::Degree& value)      { this->value_ = new MT_Value<orxonox::Degree>     (value); }
+template <> void MultiType::createNewValueContainer(const char& value)                 { this->value_ = new MT_Value<char>                (value, MT_char       ); }
+template <> void MultiType::createNewValueContainer(const unsigned char& value)        { this->value_ = new MT_Value<unsigned char>       (value, MT_uchar      ); }
+template <> void MultiType::createNewValueContainer(const short& value)                { this->value_ = new MT_Value<short>               (value, MT_short      ); }
+template <> void MultiType::createNewValueContainer(const unsigned short& value)       { this->value_ = new MT_Value<unsigned short>      (value, MT_ushort     ); }
+template <> void MultiType::createNewValueContainer(const int& value)                  { this->value_ = new MT_Value<int>                 (value, MT_int        ); }
+template <> void MultiType::createNewValueContainer(const unsigned int& value)         { this->value_ = new MT_Value<unsigned int>        (value, MT_uint       ); }
+template <> void MultiType::createNewValueContainer(const long& value)                 { this->value_ = new MT_Value<long>                (value, MT_long       ); }
+template <> void MultiType::createNewValueContainer(const unsigned long& value)        { this->value_ = new MT_Value<unsigned long>       (value, MT_ulong      ); }
+template <> void MultiType::createNewValueContainer(const long long& value)            { this->value_ = new MT_Value<long long>           (value, MT_longlong   ); }
+template <> void MultiType::createNewValueContainer(const unsigned long long& value)   { this->value_ = new MT_Value<unsigned long long>  (value, MT_ulonglong  ); }
+template <> void MultiType::createNewValueContainer(const float& value)                { this->value_ = new MT_Value<float>               (value, MT_float      ); }
+template <> void MultiType::createNewValueContainer(const double& value)               { this->value_ = new MT_Value<double>              (value, MT_double     ); }
+template <> void MultiType::createNewValueContainer(const long double& value)          { this->value_ = new MT_Value<long double>         (value, MT_longdouble ); }
+template <> void MultiType::createNewValueContainer(const bool& value)                 { this->value_ = new MT_Value<bool>                (value, MT_bool       ); }
+template <> void MultiType::createNewValueContainer(      void* const& value)          { this->value_ = new MT_Value<void*>               (value, MT_void       ); }
+template <> void MultiType::createNewValueContainer(const std::string& value)          { this->value_ = new MT_Value<std::string>         (value, MT_string     ); }
+template <> void MultiType::createNewValueContainer(const orxonox::Vector2& value)     { this->value_ = new MT_Value<orxonox::Vector2>    (value, MT_vector2    ); }
+template <> void MultiType::createNewValueContainer(const orxonox::Vector3& value)     { this->value_ = new MT_Value<orxonox::Vector3>    (value, MT_vector3    ); }
+template <> void MultiType::createNewValueContainer(const orxonox::Vector4& value)     { this->value_ = new MT_Value<orxonox::Vector4>    (value, MT_vector4    ); }
+template <> void MultiType::createNewValueContainer(const orxonox::ColourValue& value) { this->value_ = new MT_Value<orxonox::ColourValue>(value, MT_colourvalue); }
+template <> void MultiType::createNewValueContainer(const orxonox::Quaternion& value)  { this->value_ = new MT_Value<orxonox::Quaternion> (value, MT_quaternion ); }
+template <> void MultiType::createNewValueContainer(const orxonox::Radian& value)      { this->value_ = new MT_Value<orxonox::Radian>     (value, MT_radian     ); }
+template <> void MultiType::createNewValueContainer(const orxonox::Degree& value)      { this->value_ = new MT_Value<orxonox::Degree>     (value, MT_degree     ); }
