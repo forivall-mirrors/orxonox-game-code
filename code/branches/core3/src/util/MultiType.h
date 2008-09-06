@@ -41,7 +41,7 @@
 #pragma warning(disable:4522)
 #endif
 
-enum _UtilExport MT_Type
+enum MT_Type
 {
     MT_null,
     MT_char,
@@ -131,24 +131,66 @@ class _UtilExport MultiType
     };
 
     public:
-        inline                       MultiType()                       : value_(0), type_(MT_null) {}
-        template <typename V> inline MultiType(const V& value)         : value_(0), type_(MT_null) { this->assignValue(value); }
-        inline                       MultiType(const MultiType& other) : value_(0), type_(MT_null) { this->setValue(other); }
-        inline                       MultiType(MT_Type type)           : value_(0), type_(MT_null) { this->setType(type); }
+        inline                       MultiType()                                  : value_(0), type_(MT_null) {}
+//        template <typename V> inline MultiType(const V& value)                  : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const char& value)                 : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const unsigned char& value)        : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const short& value)                : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const unsigned short& value)       : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const int& value)                  : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const unsigned int& value)         : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const long& value)                 : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const unsigned long& value)        : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const long long& value)            : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const unsigned long long& value)   : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const float& value)                : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const double& value)               : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const long double& value)          : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const bool& value)                 : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const std::string& value)          : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const orxonox::Vector2& value)     : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const orxonox::Vector3& value)     : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const orxonox::Vector4& value)     : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const orxonox::ColourValue& value) : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const orxonox::Quaternion& value)  : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const orxonox::Radian& value)      : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const orxonox::Degree& value)      : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(const MultiType& other)            : value_(0), type_(MT_null) { this->setValue(other); }
+        inline                       MultiType(MT_Type type)                      : value_(0), type_(MT_null) { this->setType(type); }
         ~MultiType() { if (this->value_) { delete this->value_; } }
 
         template <typename V>             inline MultiType& operator=(const V& value)         { this->setValue(value);          return (*this); }
-        template <typename T, typename V> inline MultiType& operator=(const V& value)         { this->assignValue((T)value);    return (*this); }
         inline                                   MultiType& operator=(const MultiType& other) { this->setValue(other);          return (*this); }
         inline                                   MultiType& operator=(MT_Type type)           { this->setType(type);            return (*this); }
 
-        template <typename V> inline void             setValue(const V& value)         { if (this->value_) { this->value_->setValue(value); } else { this->createNewValueContainer(value); } }
-        template <typename V> inline void             setValue(V* value)               { if (this->value_) { this->value_->setValue((void*)value); } else { this->createNewValueContainer((void*)value); } }
+        inline void                                   setValue(const char& value);
+        inline void                                   setValue(const unsigned char& value);
+        inline void                                   setValue(const short& value);
+        inline void                                   setValue(const unsigned short& value);
+        inline void                                   setValue(const int& value);
+        inline void                                   setValue(const unsigned int& value);
+        inline void                                   setValue(const long& value);
+        inline void                                   setValue(const unsigned long& value);
+        inline void                                   setValue(const long long& value);
+        inline void                                   setValue(const unsigned long long& value);
+        inline void                                   setValue(const float& value);
+        inline void                                   setValue(const double& value);
+        inline void                                   setValue(const long double& value);
+        inline void                                   setValue(const bool& value);
+        inline void                                   setValue(const std::string& value);
+        inline void                                   setValue(const orxonox::Vector2& value);
+        inline void                                   setValue(const orxonox::Vector3& value);
+        inline void                                   setValue(const orxonox::Vector4& value);
+        inline void                                   setValue(const orxonox::ColourValue& value);
+        inline void                                   setValue(const orxonox::Quaternion& value);
+        inline void                                   setValue(const orxonox::Radian& value);
+        inline void                                   setValue(const orxonox::Degree& value);
+        template <typename V> inline void             setValue(V* value)                           { if (this->value_) { this->value_->setValue((void*)value); } else { this->assignValue((void*)value); } }
         inline void                                   setValue(const char* value);
-        inline void                                   setValue(const MultiType& other) { this->type_ = other.type_; this->value_ = (other.value_) ? other.value_->clone() : 0; }
-        template <typename T, typename V> inline void setValue(const V& value)         { this->assignValue((T)value); }
+        inline void                                   setValue(const MultiType& other)             { this->type_ = other.type_; this->value_ = (other.value_) ? other.value_->clone() : 0; }
+        template <typename T, typename V> inline void setValue(const V& value)                     { this->assignValue((T)value); }
 
-        template <typename T> inline void convert() { this->setValue<T>(this->operator T()); }
+        template <typename T> inline void convert() { this->setValue<T>((T)(*this)); }
 
         inline void                       reset() { if (this->value_) { delete this->value_; this->value_ = 0; } this->type_ = MT_null; }
 
@@ -269,6 +311,15 @@ template <> inline bool MultiType::isType<orxonox::Quaternion>()  const { return
 template <> inline bool MultiType::isType<orxonox::Radian>()      const { return (this->type_ == MT_radian);      }
 template <> inline bool MultiType::isType<orxonox::Degree>()      const { return (this->type_ == MT_degree);      }
 
+template <> inline void MultiType::convert<std::string>()          { this->setValue<std::string>         (this->operator std::string());          }
+template <> inline void MultiType::convert<orxonox::Vector2>()     { this->setValue<orxonox::Vector2>    (this->operator orxonox::Vector2());     }
+template <> inline void MultiType::convert<orxonox::Vector3>()     { this->setValue<orxonox::Vector3>    (this->operator orxonox::Vector3());     }
+template <> inline void MultiType::convert<orxonox::Vector4>()     { this->setValue<orxonox::Vector4>    (this->operator orxonox::Vector4());     }
+template <> inline void MultiType::convert<orxonox::ColourValue>() { this->setValue<orxonox::ColourValue>(this->operator orxonox::ColourValue()); }
+template <> inline void MultiType::convert<orxonox::Quaternion>()  { this->setValue<orxonox::Quaternion> (this->operator orxonox::Quaternion());  }
+template <> inline void MultiType::convert<orxonox::Radian>()      { this->setValue<orxonox::Radian>     (this->operator orxonox::Radian());      }
+template <> inline void MultiType::convert<orxonox::Degree>()      { this->setValue<orxonox::Degree>     (this->operator orxonox::Degree());      }
+
 template <> inline void MultiType::convert<const std::string&>()          { this->convert<std::string>();          }
 template <> inline void MultiType::convert<const orxonox::Vector2&>()     { this->convert<orxonox::Vector2>();     }
 template <> inline void MultiType::convert<const orxonox::Vector3&>()     { this->convert<orxonox::Vector3>();     }
@@ -302,7 +353,29 @@ template <> void MultiType::createNewValueContainer(const orxonox::Quaternion& v
 template <> void MultiType::createNewValueContainer(const orxonox::Radian& value);
 template <> void MultiType::createNewValueContainer(const orxonox::Degree& value);
 
-inline void MultiType::setValue(const char* value) { if (this->value_) { this->value_->setValue(std::string(value)); } else { this->createNewValueContainer(std::string(value)); } }
+inline void MultiType::setValue(const char& value)                  { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const unsigned char& value)         { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const short& value)                 { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const unsigned short& value)        { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const int& value)                   { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const unsigned int& value)          { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const long& value)                  { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const unsigned long& value)         { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const long long& value)             { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const unsigned long long& value)    { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const float& value)                 { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const double& value)                { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const long double& value)           { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const bool& value)                  { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const std::string& value)           { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const orxonox::Vector2& value)      { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const orxonox::Vector3& value)      { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const orxonox::Vector4& value)      { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const orxonox::ColourValue& value)  { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const orxonox::Quaternion& value)   { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const orxonox::Radian& value)       { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const orxonox::Degree& value)       { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
+inline void MultiType::setValue(const char* value) { if (this->value_) { this->value_->setValue(std::string(value)); } else { this->assignValue(std::string(value)); } }
 
 /*
 
