@@ -48,10 +48,9 @@ Gamestate::Gamestate()
 {
 }
 
-Gamestate::Gamestate(unsigned char *data, bool compressed, int clientID):
+Gamestate::Gamestate(unsigned char *data, int clientID):
     Packet(data, clientID)
 {
-  compressed_ = compressed;
 }
 
 
@@ -105,12 +104,12 @@ bool Gamestate::collectData(int id, int mode)
   
   //start write gamestate header
   HEADER->packetType = ENUM::Gamestate;
-  assert( *(ENUM::Type *)&data_[ 0 ] == ENUM::Gamestate); 
+  assert( *(ENUM::Type *)(data_) == ENUM::Gamestate); 
   HEADER->normsize = currentsize;
   HEADER->id = id;
   HEADER->diffed = false;
   HEADER->complete = true;
-  compressed_=false;
+  HEADER->compressed = false;
   //stop write gamestate header
   
   COUT(5) << "G.ST.Man: Gamestate size: " << currentsize << std::endl;
@@ -120,7 +119,7 @@ bool Gamestate::collectData(int id, int mode)
 
 bool Gamestate::spreadData(int mode)
 {
-  assert(data_ && !compressed_ && !HEADER->diffed);
+  assert(data_ && !HEADER->compressed && !HEADER->diffed);
   unsigned int size, objectID, classID;
   unsigned char *mem=data_+sizeof(GamestateHeader);
     // get the start of the Synchronisable list
@@ -166,7 +165,7 @@ int Gamestate::getID(){
 unsigned int Gamestate::getSize() const
 {
   assert(data_);
-  if(compressed_)
+  if(HEADER->compressed)
     return HEADER->compsize+sizeof(GamestateHeader);
   else
   {
@@ -202,17 +201,17 @@ bool Gamestate::compressData()
 
   //copy and modify header
   HEADER->compsize = buffer;
+  HEADER->compressed = true;
   *GAMESTATE_HEADER(ndata) = *HEADER;
   //delete old data
   delete[] data_;
   //save new data
   data_ = ndata;
-  compressed_ = true;
   return true;
 }
 bool Gamestate::decompressData()
 {
-  assert(compressed_);
+  assert(HEADER->compressed);
   //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
   int normsize = HEADER->normsize;
   int compsize = HEADER->compsize;
@@ -235,7 +234,7 @@ bool Gamestate::decompressData()
     case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return false;
   }
   
-  compressed_ = false;
+  HEADER->compressed = false;
   //copy over the header
   *GAMESTATE_HEADER(ndata) = *HEADER;
   //delete old (compressed data)
@@ -272,14 +271,16 @@ Gamestate *Gamestate::diff(Gamestate *base)
     }
   }
 
-  Gamestate *g = new Gamestate(ndata, false, 0);
+  *GAMESTATE_HEADER(ndata) = *HEADER;
+  GAMESTATE_HEADER(ndata)->diffed = true;
+  Gamestate *g = new Gamestate(ndata, 0);
   return g;
 }
 
 Gamestate *Gamestate::undiff(Gamestate *base)
 {
   assert(this && base);
-  assert(!this->compressed_ && !base->compressed_);
+  assert(!HEADER->compressed && !GAMESTATE_HEADER(base->data_)->compressed);
   //unsigned char *basep = base->getGs()/*, *gs = getGs()*/;
   unsigned char *basep = GAMESTATE_START(base->data_);
   unsigned char *gs = GAMESTATE_START(this->data_);
@@ -303,8 +304,9 @@ Gamestate *Gamestate::undiff(Gamestate *base)
       }
     }
   }
-  
-  Gamestate *g = new Gamestate(ndata, false, 0);
+  *GAMESTATE_HEADER(ndata) = *HEADER;
+  GAMESTATE_HEADER(ndata)->diffed = false;
+  Gamestate *g = new Gamestate(ndata, 0);
   return g;
 }
 

@@ -46,6 +46,7 @@ struct GamestateHeader{
   int base_id; // id of the base-gamestate diffed from
   bool diffed; // wheter diffed or not
   bool complete; // wheter it is a complete gamestate or only partial
+  bool compressed;
 };
 
 /**
@@ -54,7 +55,7 @@ struct GamestateHeader{
 class Gamestate: public Packet{
   public:
     Gamestate();
-    Gamestate(unsigned char *data, bool compressed, int clientID);
+    Gamestate(unsigned char *data, int clientID);
     
     ~Gamestate();
     
@@ -80,7 +81,6 @@ class Gamestate: public Packet{
     
     //Bytestream *bs_;
     //GamestateHeader *header_;
-    bool compressed_;
 };
 
 }

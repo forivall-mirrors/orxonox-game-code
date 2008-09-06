@@ -110,6 +110,19 @@ bool Packet::send(){
     enetPacket_->freeCallback = &blub;
     packetMap_[enetPacket_] = this;
   }
+  /*switch( *(ENUM::Type *)(data_ + _PACKETID) )
+  {
+    case ENUM::Acknowledgement:
+    case ENUM::Chat:
+    case ENUM::ClassID:
+    case ENUM::Gamestate:
+    case ENUM::Welcome:
+      COUT(3) << "welcome" << std::endl;
+      p = new Welcome( data, clientID );
+    default:
+      assert(0); //TODO: repair this
+      break;
+  }*/
   network::Host::addPacket( enetPacket_, clientID_);
   enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
   return true;
@@ -120,7 +133,7 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p;
   COUT(3) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;
-  switch( *(ENUM::Type *)&data[_PACKETID] )
+  switch( *(ENUM::Type *)(data + _PACKETID) )
   {
     case ENUM::Acknowledgement:
       COUT(3) << "ack" << std::endl;
@@ -137,11 +150,12 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
     case ENUM::Gamestate:
       COUT(3) << "gamestate" << std::endl;
       // TODO: remove brackets
-      p = new Gamestate( data, true, clientID );
+      p = new Gamestate( data, clientID );
       break;
     case ENUM::Welcome:
       COUT(3) << "welcome" << std::endl;
       p = new Welcome( data, clientID );
+      break;
     default:
       assert(0); //TODO: repair this
       break;
