@@ -72,8 +72,7 @@ enum MT_Type
 class _UtilExport MultiType
 {
     _UtilExport friend std::ostream& operator<<(std::ostream& outstream, const MultiType& mt);
-    template <typename T>
-    friend struct MT_Value;
+    template <typename T> friend struct MT_Value;
 
     struct _UtilExport MT_ValueBase
     {
@@ -134,7 +133,6 @@ class _UtilExport MultiType
 
     public:
         inline                       MultiType()                                  : value_(0), type_(MT_null) {}
-//        template <typename V> inline MultiType(const V& value)                  : value_(0), type_(MT_null) { this->assignValue(value); }
         inline                       MultiType(const char& value)                 : value_(0), type_(MT_null) { this->assignValue(value); }
         inline                       MultiType(const unsigned char& value)        : value_(0), type_(MT_null) { this->assignValue(value); }
         inline                       MultiType(const short& value)                : value_(0), type_(MT_null) { this->assignValue(value); }
@@ -149,6 +147,7 @@ class _UtilExport MultiType
         inline                       MultiType(const double& value)               : value_(0), type_(MT_null) { this->assignValue(value); }
         inline                       MultiType(const long double& value)          : value_(0), type_(MT_null) { this->assignValue(value); }
         inline                       MultiType(const bool& value)                 : value_(0), type_(MT_null) { this->assignValue(value); }
+        inline                       MultiType(      void* const& value)          : value_(0), type_(MT_null) { this->assignValue(value); }
         inline                       MultiType(const std::string& value)          : value_(0), type_(MT_null) { this->assignValue(value); }
         inline                       MultiType(const orxonox::Vector2& value)     : value_(0), type_(MT_null) { this->assignValue(value); }
         inline                       MultiType(const orxonox::Vector3& value)     : value_(0), type_(MT_null) { this->assignValue(value); }
@@ -179,6 +178,7 @@ class _UtilExport MultiType
         inline void                                   setValue(const double& value);
         inline void                                   setValue(const long double& value);
         inline void                                   setValue(const bool& value);
+        inline void                                   setValue(      void* const& value);
         inline void                                   setValue(const std::string& value);
         inline void                                   setValue(const orxonox::Vector2& value);
         inline void                                   setValue(const orxonox::Vector3& value);
@@ -280,6 +280,7 @@ class _UtilExport MultiType
         inline void assignValue(const orxonox::Quaternion& value)  { if (this->value_ && this->type_ == MT_quaternion)  { this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Quaternion>(value);  this->type_ = MT_quaternion;  } }
         inline void assignValue(const orxonox::Radian& value)      { if (this->value_ && this->type_ == MT_radian)      { this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Radian>(value);      this->type_ = MT_radian;      } }
         inline void assignValue(const orxonox::Degree& value)      { if (this->value_ && this->type_ == MT_degree)      { this->value_->setValue(value); } else { this->changeValueContainer<orxonox::Degree>(value);      this->type_ = MT_degree;      } }
+
         template <typename T> inline void changeValueContainer(const T& value) { if (this->value_) { delete this->value_; } this->createNewValueContainer<T>(value); }
         template <typename T>        void createNewValueContainer(const T& value) { BOOST_STATIC_ASSERT(sizeof(T) == 0); }
 
@@ -379,33 +380,6 @@ inline void MultiType::setValue(const orxonox::Radian& value)       { if (this->
 inline void MultiType::setValue(const orxonox::Degree& value)       { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
 inline void MultiType::setValue(const char* value) { if (this->value_) { this->value_->setValue(std::string(value)); } else { this->assignValue(std::string(value)); } }
 
-/*
-
-(*) = funktion 2x:
-function(...) : bezieht sich auf aktuellen type
-function<T>(...) : bezieht sich auf type T
-
-constructor(V value) : zuweisung
-(*) operator=(V value) : zuweisung
-(*) setValue(V value) : zuweisung
-
-(*) == != > < <= >= : template
-
-(*) reset() : zurück auf 0 (bzw "")
-setType<T>() : setzt type und macht reset
-convert<T>() : setzt type und konvertiert
-
-(T) : return konvertiert
-
-isType<T>() : return bool
-getType() : return MT_Type
-getTypename() : return string
-
-toString() : return string
-(*) fromString(string value) : konvertiert string
-operator<< : toString()
-
-*/
 
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
 #pragma warning(pop)

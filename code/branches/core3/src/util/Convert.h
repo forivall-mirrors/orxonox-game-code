@@ -42,7 +42,6 @@
 #include "Math.h"
 #include "Debug.h"
 #include "SubString.h"
-//#include "MultiTypeMath.h"
 
 // disable annoying warning about forcing value to boolean
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
@@ -319,90 +318,6 @@ struct ConverterSpecialized<std::string, ToType, _FromType_>
 };
 
 
-////////////////
-// MULTITYPES //
-////////////////
-/*
-// convert from MultiTypePrimitive
-template <class ToType>
-struct ConverterSpecialized<MultiTypePrimitive, ToType, _FromType_>
-{
-    enum { specialized = true };
-    static bool convert(ToType* output, const MultiTypePrimitive& input)
-    {
-        if (input.getType() == MT_void)
-            return ConvertValue(output, input.getVoid());
-        else if (input.getType() == MT_int)
-            return ConvertValue(output, input.getInt());
-        else if (input.getType() == MT_uint)
-            return ConvertValue(output, input.getUnsignedInt());
-        else if (input.getType() == MT_char)
-            return ConvertValue(output, input.getChar());
-        else if (input.getType() == MT_uchar)
-            return ConvertValue(output, input.getUnsignedChar());
-        else if (input.getType() == MT_short)
-            return ConvertValue(output, input.getShort());
-        else if (input.getType() == MT_ushort)
-            return ConvertValue(output, input.getUnsignedShort());
-        else if (input.getType() == MT_long)
-            return ConvertValue(output, input.getLong());
-        else if (input.getType() == MT_ulong)
-            return ConvertValue(output, input.getUnsignedLong());
-        else if (input.getType() == MT_float)
-            return ConvertValue(output, input.getFloat());
-        else if (input.getType() == MT_double)
-            return ConvertValue(output, input.getDouble());
-        else if (input.getType() == MT_longdouble)
-            return ConvertValue(output, input.getLongDouble());
-        else if (input.getType() == MT_bool)
-            return ConvertValue(output, input.getBool());
-        else
-            return false;
-    }
-};
-
-// convert from MultiTypeString
-template <class ToType>
-struct ConverterSpecialized<MultiTypeString, ToType, _FromType_>
-{
-    enum { specialized = true };
-    static bool convert(ToType* output, const MultiTypeString& input)
-    {
-        if (input.getType() == MT_constchar)
-            return ConvertValue(output, input.getConstChar());
-        else if (input.getType() == MT_string)
-            return ConvertValue(output, input.getString());
-        else
-            return ConvertValue(output, (MultiTypePrimitive)input);
-    }
-};
-
-// convert from MultiTypeMath
-template <class ToType>
-struct ConverterSpecialized<MultiTypeMath, ToType, _FromType_>
-{
-    enum { specialized = true };
-    static bool convert(ToType* output, const MultiTypeMath& input)
-    {
-        if (input.getType() == MT_vector2)
-            return ConvertValue(output, input.getVector2());
-        else if (input.getType() == MT_vector3)
-            return ConvertValue(output, input.getVector3());
-        else if (input.getType() == MT_vector4)
-            return ConvertValue(output, input.getVector4());
-        else if (input.getType() == MT_quaternion)
-            return ConvertValue(output, input.getQuaternion());
-        else if (input.getType() == MT_colourvalue)
-            return ConvertValue(output, input.getColourValue());
-        else if (input.getType() == MT_radian)
-            return ConvertValue(output, input.getRadian());
-        else if (input.getType() == MT_degree)
-            return ConvertValue(output, input.getDegree());
-        else
-            return ConvertValue(output, (MultiTypeString)input);
-    }
-};
-*/
 
 ////////////////////
 // MATH TO STRING //

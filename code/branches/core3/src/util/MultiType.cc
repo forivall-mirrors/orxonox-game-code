@@ -28,23 +28,7 @@
 
 #include "MultiType.h"
 #include "MultiTypeValue.h"
-/*
-int test()
-{
-    MultiType test1(10);
 
-//    test1.setValue(true);
-//    test1.setValue(10);
-//    test1.setValue<float>(10);
-
-//    orxonox::Vector3 test2;
-//    test1 = test2;
-
-    return 0;
-}
-
-int temp = test();
-*/
 void MultiType::setType(MT_Type type)
 {
     switch (type)

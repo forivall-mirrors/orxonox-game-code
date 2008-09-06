@@ -152,21 +152,17 @@ namespace orxonox
         if (this->bIsVector_)
         {
             return this->callFunctionWithIndex(&ConfigValueContainer::tset, input);
+            return false;
         }
         else
         {
-//            MultiType temp = this->value_;
-//            if (temp.assimilate(input))
-//            {
-//                this->value_ = temp;
-                this->value_ = input;
-                if (this->identifier_)
-                    this->identifier_->updateConfigValues();
+            this->value_ = input;
 
-                return true;
-//            }
+            if (this->identifier_)
+                this->identifier_->updateConfigValues();
+
+            return true;
         }
-        return false;
     }
 
     /**
@@ -193,23 +189,18 @@ namespace orxonox
                 }
             }
 
-//            MultiType temp = this->value_;
-//            if (temp.assimilate(input))
-//            {
-//                this->valueVector_[index] = temp;
-                this->valueVector_[index] = input;
+            this->valueVector_[index] = input;
 
-                if (this->identifier_)
-                    this->identifier_->updateConfigValues();
+            if (this->identifier_)
+                this->identifier_->updateConfigValues();
 
-                return true;
-//            }
+            return true;
         }
         else
         {
             COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
+            return false;
         }
-        return false;
     }
 
     /**

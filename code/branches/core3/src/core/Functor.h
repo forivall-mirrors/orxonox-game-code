@@ -279,30 +279,7 @@ namespace orxonox
 #define FUNCTOR_STORE_RETURNVALUE1(functioncall) this->returnedValue_ = functioncall
 
 
-/*
-#define FUNCTOR_EVALUATE_PARAM(numparams) FUNCTOR_EVALUATE_PARAM##numparams
-#define FUNCTOR_EVALUATE_PARAM0
-#define FUNCTOR_EVALUATE_PARAM1 \
-    if (index == 0) { P1 temp = param; param = temp; }
-#define FUNCTOR_EVALUATE_PARAM2 \
-    if (index == 0) { P1 temp = param; param = temp; } \
-    else if (index == 1) { P2 temp = param; param = temp; }
-#define FUNCTOR_EVALUATE_PARAM3 \
-    if (index == 0) { P1 temp = param; param = temp; } \
-    else if (index == 1) { P2 temp = param; param = temp; } \
-    else if (index == 2) { P3 temp = param; param = temp; }
-#define FUNCTOR_EVALUATE_PARAM4 \
-    if (index == 0) { P1 temp = param; param = temp; } \
-    else if (index == 1) { P2 temp = param; param = temp; } \
-    else if (index == 2) { P3 temp = param; param = temp; } \
-    else if (index == 3) { P4 temp = param; param = temp; }
-#define FUNCTOR_EVALUATE_PARAM5 \
-    if (index == 0) { P1 temp = param; param = temp; } \
-    else if (index == 1) { P2 temp = param; param = temp; } \
-    else if (index == 2) { P3 temp = param; param = temp; } \
-    else if (index == 3) { P4 temp = param; param = temp; } \
-    else if (index == 4) { P5 temp = param; param = temp; }
-*/
+
 #define FUNCTOR_EVALUATE_PARAM(numparams) FUNCTOR_EVALUATE_PARAM##numparams
 #define FUNCTOR_EVALUATE_PARAM0
 #define FUNCTOR_EVALUATE_PARAM1 \
@@ -325,6 +302,7 @@ namespace orxonox
     else if (index == 2) { param.convert<P3>(); } \
     else if (index == 3) { param.convert<P4>(); } \
     else if (index == 4) { param.convert<P5>(); }
+
 
 
 

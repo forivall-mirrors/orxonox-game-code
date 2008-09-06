@@ -36,81 +36,11 @@
 template <typename T>
 struct MT_Value : public MultiType::MT_ValueBase
 {
-/*
-    template <class A, class B, class Btest = B>
-    class StaticConversion
-    {
-        private:
-            template <class V, bool convertable> struct Convert
-            {   static inline A convert(const V& value) { return A(); }   };
-            template <class V>                   struct Convert<V, true>
-            {   static inline A convert(const V& value) { return ((A)value); }   };
-
-            template <typename V, bool convertable> struct Compare
-            {
-                static inline bool compare_equal       (const A& value, const V& other) { return false; }
-                static inline bool compare_notequal    (const A& value, const V& other) { return true;  }
-                static inline bool compare_smaller     (const A& value, const V& other) { return false; }
-                static inline bool compare_smallerequal(const A& value, const V& other) { return false; }
-                static inline bool compare_greater     (const A& value, const V& other) { return false; }
-                static inline bool compare_greaterequal(const A& value, const V& other) { return false; }
-            };
-            template <typename V>                   struct Compare<V, true>
-            {
-                static inline bool compare_equal       (const A& value, const V& other) { return (value == other); }
-                static inline bool compare_notequal    (const A& value, const V& other) { return (value != other); }
-                static inline bool compare_smaller     (const A& value, const V& other) { return (value <  other); }
-                static inline bool compare_smallerequal(const A& value, const V& other) { return (value <= other); }
-                static inline bool compare_greater     (const A& value, const V& other) { return (value >  other); }
-                static inline bool compare_greaterequal(const A& value, const V& other) { return (value >= other); }
-            };
-
-            class Small { char dummy[1]; };
-            class Big   { char dummy[1024]; };
-            static Small Test(A);
-            static Big   Test(...);
-            static Btest MakeB();
-            enum { exists = sizeof(Test(MakeB())) == sizeof(Small) };
-
-        public:
-            static inline A    convert(const B& value)                              { return Convert<B, exists>::convert(value); }
-            static inline bool compare_equal       (const B& value, const A& other) { return Compare<B, exists>::compare_equal       (value, other); }
-            static inline bool compare_notequal    (const B& value, const A& other) { return Compare<B, exists>::compare_notequal    (value, other); }
-            static inline bool compare_smaller     (const B& value, const A& other) { return Compare<B, exists>::compare_smaller     (value, other); }
-            static inline bool compare_smallerequal(const B& value, const A& other) { return Compare<B, exists>::compare_smallerequal(value, other); }
-            static inline bool compare_greater     (const B& value, const A& other) { return Compare<B, exists>::compare_greater     (value, other); }
-            static inline bool compare_greaterequal(const B& value, const A& other) { return Compare<B, exists>::compare_greaterequal(value, other); }
-    };
-*/
     MT_Value() {}
     MT_Value(const T& value) : value_(value) {}
 
     inline MT_ValueBase* clone() const { return new MT_Value<T>(this->value_); }
-/*
-    inline void setValue(const char& value)                 { this->value_ = StaticConversion<T, char>::convert(value);                 }
-    inline void setValue(const unsigned char& value)        { this->value_ = StaticConversion<T, unsigned char>::convert(value);        }
-    inline void setValue(const short& value)                { this->value_ = StaticConversion<T, short>::convert(value);                }
-    inline void setValue(const unsigned short& value)       { this->value_ = StaticConversion<T, unsigned short>::convert(value);       }
-    inline void setValue(const int& value)                  { this->value_ = StaticConversion<T, int>::convert(value);                  }
-    inline void setValue(const unsigned int& value)         { this->value_ = StaticConversion<T, unsigned int>::convert(value);         }
-    inline void setValue(const long& value)                 { this->value_ = StaticConversion<T, long>::convert(value);                 }
-    inline void setValue(const unsigned long& value)        { this->value_ = StaticConversion<T, unsigned long>::convert(value);        }
-    inline void setValue(const long long& value)            { this->value_ = StaticConversion<T, long long>::convert(value);            }
-    inline void setValue(const unsigned long long& value)   { this->value_ = StaticConversion<T, unsigned long long>::convert(value);   }
-    inline void setValue(const float& value)                { this->value_ = StaticConversion<T, float, int>::convert(value);           }
-    inline void setValue(const double& value)               { this->value_ = StaticConversion<T, double, int>::convert(value);          }
-    inline void setValue(const long double& value)          { this->value_ = StaticConversion<T, long double, int>::convert(value);     }
-    inline void setValue(const bool& value)                 { this->value_ = StaticConversion<T, bool>::convert(value);                 }
-    inline void setValue(      void* const& value)          { this->value_ = StaticConversion<T, void*>::convert(value);                }
-    inline void setValue(const std::string& value)          { this->value_ = StaticConversion<T, std::string>::convert(value);          }
-    inline void setValue(const orxonox::Vector2& value)     { this->value_ = StaticConversion<T, orxonox::Vector2>::convert(value);     }
-    inline void setValue(const orxonox::Vector3& value)     { this->value_ = StaticConversion<T, orxonox::Vector3>::convert(value);     }
-    inline void setValue(const orxonox::Vector4& value)     { this->value_ = StaticConversion<T, orxonox::Vector4>::convert(value);     }
-    inline void setValue(const orxonox::ColourValue& value) { this->value_ = StaticConversion<T, orxonox::ColourValue>::convert(value); }
-    inline void setValue(const orxonox::Quaternion& value)  { this->value_ = StaticConversion<T, orxonox::Quaternion>::convert(value);  }
-    inline void setValue(const orxonox::Radian& value)      { this->value_ = StaticConversion<T, orxonox::Radian>::convert(value);      }
-    inline void setValue(const orxonox::Degree& value)      { this->value_ = StaticConversion<T, orxonox::Degree>::convert(value);      }
-*/
+
     inline void setValue(const char& value)                 { this->value_ = getConvertedValue<char,                 T>(value); }
     inline void setValue(const unsigned char& value)        { this->value_ = getConvertedValue<unsigned char,        T>(value); }
     inline void setValue(const short& value)                { this->value_ = getConvertedValue<short,                T>(value); }
