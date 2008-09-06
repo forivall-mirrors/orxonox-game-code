@@ -96,22 +96,24 @@ struct ConverterSpecialized<BothTypes, BothTypes, _Explicit_>
 #define __high__ 2 // Everything that doesn't fullfill the lowerlevel-requirements and therefore needs specialized conversions
 
 // Defines the levels of all types: Default is __high__ so you don't have to define every high-level type
-template <class T> struct ConverterLevel           { enum { level = __high__ }; };
-template <> struct ConverterLevel<std::string>     { enum { level = __mid__ }; };
-template <> struct ConverterLevel<orxonox::Radian> { enum { level = __mid__ }; };
-template <> struct ConverterLevel<orxonox::Degree> { enum { level = __mid__ }; };
-template <> struct ConverterLevel<int>             { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned int>    { enum { level = __low__ }; };
-template <> struct ConverterLevel<char>            { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned char>   { enum { level = __low__ }; };
-template <> struct ConverterLevel<short>           { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned short>  { enum { level = __low__ }; };
-template <> struct ConverterLevel<long>            { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned long>   { enum { level = __low__ }; };
-template <> struct ConverterLevel<float>           { enum { level = __low__ }; };
-template <> struct ConverterLevel<double>          { enum { level = __low__ }; };
-template <> struct ConverterLevel<long double>     { enum { level = __low__ }; };
-template <> struct ConverterLevel<bool>            { enum { level = __low__ }; };
+template <class T> struct ConverterLevel              { enum { level = __high__ }; };
+template <> struct ConverterLevel<std::string>        { enum { level = __mid__ }; };
+template <> struct ConverterLevel<orxonox::Radian>    { enum { level = __mid__ }; };
+template <> struct ConverterLevel<orxonox::Degree>    { enum { level = __mid__ }; };
+template <> struct ConverterLevel<int>                { enum { level = __low__ }; };
+template <> struct ConverterLevel<unsigned int>       { enum { level = __low__ }; };
+template <> struct ConverterLevel<char>               { enum { level = __low__ }; };
+template <> struct ConverterLevel<unsigned char>      { enum { level = __low__ }; };
+template <> struct ConverterLevel<short>              { enum { level = __low__ }; };
+template <> struct ConverterLevel<unsigned short>     { enum { level = __low__ }; };
+template <> struct ConverterLevel<long>               { enum { level = __low__ }; };
+template <> struct ConverterLevel<unsigned long>      { enum { level = __low__ }; };
+template <> struct ConverterLevel<long long>          { enum { level = __low__ }; };
+template <> struct ConverterLevel<unsigned long long> { enum { level = __low__ }; };
+template <> struct ConverterLevel<float>              { enum { level = __low__ }; };
+template <> struct ConverterLevel<double>             { enum { level = __low__ }; };
+template <> struct ConverterLevel<long double>        { enum { level = __low__ }; };
+template <> struct ConverterLevel<bool>               { enum { level = __low__ }; };
 
 
 // Calculates the preference based on the levels of FromType and ToType
