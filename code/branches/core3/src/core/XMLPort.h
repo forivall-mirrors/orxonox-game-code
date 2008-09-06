@@ -33,7 +33,7 @@
 
 #include "util/Debug.h"
 #include "util/XMLIncludes.h"
-#include "util/MultiTypeMath.h"
+#include "util/MultiType.h"
 #include "tinyxml/ticpp.h"
 #include "Executor.h"
 #include "CoreIncludes.h"
@@ -106,12 +106,12 @@ namespace orxonox
             virtual XMLPortParamContainer& description(const std::string description) = 0;
             virtual const std::string& getDescription() = 0;
 
-            virtual XMLPortParamContainer& defaultValue(unsigned int index, const MultiTypeMath& param) = 0;
-            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1) = 0;
-            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2) = 0;
-            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3) = 0;
-            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4) = 0;
-            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5) = 0;
+            virtual XMLPortParamContainer& defaultValue(unsigned int index, const MultiType& param) = 0;
+            virtual XMLPortParamContainer& defaultValues(const MultiType& param1) = 0;
+            virtual XMLPortParamContainer& defaultValues(const MultiType& param1, const MultiType& param2) = 0;
+            virtual XMLPortParamContainer& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3) = 0;
+            virtual XMLPortParamContainer& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4) = 0;
+            virtual XMLPortParamContainer& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5) = 0;
 
         protected:
             std::string paramname_;
@@ -196,37 +196,37 @@ namespace orxonox
             virtual const std::string& getDescription()
                 { return this->loadexecutor_->getDescription(); }
 
-            virtual XMLPortParamContainer& defaultValue(unsigned int index, const MultiTypeMath& param)
+            virtual XMLPortParamContainer& defaultValue(unsigned int index, const MultiType& param)
             {
                 if (!this->loadexecutor_->defaultValueSet(index))
                     this->loadexecutor_->setDefaultValue(index, param);
                 return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
             }
-            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1)
+            virtual XMLPortParamContainer& defaultValues(const MultiType& param1)
             {
                 if (!this->loadexecutor_->defaultValueSet(0))
                     this->loadexecutor_->setDefaultValues(param1);
                 return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
             }
-            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2)
+            virtual XMLPortParamContainer& defaultValues(const MultiType& param1, const MultiType& param2)
             {
                 if ((!this->loadexecutor_->defaultValueSet(0)) || (!this->loadexecutor_->defaultValueSet(1)))
                     this->loadexecutor_->setDefaultValues(param1, param2);
                 return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
             }
-            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3)
+            virtual XMLPortParamContainer& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
             {
                 if ((!this->loadexecutor_->defaultValueSet(0)) || (!this->loadexecutor_->defaultValueSet(1)) || (!this->loadexecutor_->defaultValueSet(2)))
                     this->loadexecutor_->setDefaultValues(param1, param2, param3);
                 return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
             }
-            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4)
+            virtual XMLPortParamContainer& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
             {
                 if ((!this->loadexecutor_->defaultValueSet(0)) || (!this->loadexecutor_->defaultValueSet(1)) || (!this->loadexecutor_->defaultValueSet(2)) || (!this->loadexecutor_->defaultValueSet(3)))
                     this->loadexecutor_->setDefaultValues(param1, param2, param3, param4);
                 return this->portIfWaitingForDefaultValues(this->parseResult_, this->parseParams_);
             }
-            virtual XMLPortParamContainer& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5)
+            virtual XMLPortParamContainer& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
             {
                 if ((!this->loadexecutor_->defaultValueSet(0)) || (!this->loadexecutor_->defaultValueSet(1)) || (!this->loadexecutor_->defaultValueSet(2)) || (!this->loadexecutor_->defaultValueSet(3)) || (!this->loadexecutor_->defaultValueSet(4)))
                     this->loadexecutor_->setDefaultValues(param1, param2, param3, param4, param5);

@@ -65,7 +65,7 @@ namespace orxonox
             template <const OutputBuffer&>
             inline OutputBuffer& operator<<(const OutputBuffer& object)
             {
-                this->stream_ << object.stream_;
+                this->stream_ << object.stream_.rdbuf();
                 this->callListeners();
                 return *this;
             }

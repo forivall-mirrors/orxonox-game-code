@@ -49,7 +49,7 @@
 #include <vector>
 
 #include "util/Math.h"
-#include "util/MultiTypeMath.h"
+#include "util/MultiType.h"
 #include "ConfigFileManager.h"
 
 namespace orxonox
@@ -123,7 +123,7 @@ namespace orxonox
 
                 this->value_ = V();
                 for (unsigned int i = 0; i < defvalue.size(); i++)
-                    this->valueVector_.push_back(MultiTypeMath(defvalue[i]));
+                    this->valueVector_.push_back(MultiType(defvalue[i]));
 
                 this->initVector();
             }
@@ -246,12 +246,12 @@ namespace orxonox
                 return (*this);
             }
 
-            bool set(const MultiTypeMath& input);
-            bool tset(const MultiTypeMath& input);
+            bool set(const MultiType& input);
+            bool tset(const MultiType& input);
 
-            bool set(unsigned int index, const MultiTypeMath& input);
-            bool tset(unsigned int index, const MultiTypeMath& input);
-            bool add(const MultiTypeMath& input);
+            bool set(unsigned int index, const MultiType& input);
+            bool tset(unsigned int index, const MultiType& input);
+            bool add(const MultiType& input);
             bool remove(unsigned int index);
 
             bool reset();
@@ -259,16 +259,16 @@ namespace orxonox
 
             /** @brief Converts the config-value to a string. @return The string */
             inline std::string toString() const
-                { return this->value_.toString(); }
+                { return this->value_; }
             /** @brief Returns the typename of the assigned config-value. @return The typename */
             inline std::string getTypename() const
                 { return this->value_.getTypename(); }
 
         private:
             void init(ConfigFileType type, Identifier* identifier, const std::string& varname);
-            void initValue(const MultiTypeMath& defvalue);
+            void initValue(const MultiType& defvalue);
             void initVector();
-            bool callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiTypeMath&), const std::string& input);
+            bool callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiType&), const std::string& input);
 
             bool                       bIsVector_;                  //!< True if the container contains a std::vector
 
@@ -279,8 +279,8 @@ namespace orxonox
             std::string                defvalueString_;             //!< The string of the default-value
             std::vector<std::string>   defvalueStringVector_;       //!< A vector, containg the strings of the default-values in case we're storing a vector
 
-            MultiTypeMath              value_;                      //!< The value
-            std::vector<MultiTypeMath> valueVector_;                //!< A vector, containg the values in case we're storing a vector
+            MultiType                  value_;                      //!< The value
+            std::vector<MultiType>     valueVector_;                //!< A vector, containg the values in case we're storing a vector
 
             bool                       bAddedDescription_;          //!< True if a description was added
             LanguageEntryLabel         description_;                //!< The description

@@ -4,9 +4,7 @@ SET(UTIL_SRC_FILES
   Error.cc
   ExprParser.cc
   Math.cc
-  MultiTypePrimitive.cc
-  MultiTypeString.cc
-  MultiTypeMath.cc
+  MultiType.cc
   OutputBuffer.cc
   OutputHandler.cc
   String.cc

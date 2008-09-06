@@ -63,7 +63,7 @@ namespace orxonox
     /**
         @brief Does some special initialization for single config-values.
     */
-    void ConfigValueContainer::initValue(const MultiTypeMath& defvalue)
+    void ConfigValueContainer::initValue(const MultiType& defvalue)
     {
         this->value_ = defvalue;
         this->bIsVector_ = false;
@@ -81,8 +81,8 @@ namespace orxonox
 
         for (unsigned int i = 0; i < this->valueVector_.size(); i++)
         {
-            ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i].toString(), this->value_.isA(MT_string));
-            this->defvalueStringVector_.push_back(this->valueVector_[i].toString());
+            ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isType(MT_string));
+            this->defvalueStringVector_.push_back(this->valueVector_[i]);
         }
 
         this->update();
@@ -102,17 +102,17 @@ namespace orxonox
         @param input The new value
         @return True if the new value was successfully assigned
     */
-    bool ConfigValueContainer::set(const MultiTypeMath& input)
+    bool ConfigValueContainer::set(const MultiType& input)
     {
         if (this->bIsVector_)
         {
-            return this->callFunctionWithIndex(&ConfigValueContainer::set, input.toString());
+            return this->callFunctionWithIndex(&ConfigValueContainer::set, input);
         }
         else
         {
             if (this->tset(input))
             {
-                ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, input.toString(), this->value_.isA(MT_string));
+                ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, input, this->value_.isType(MT_string));
                 return true;
             }
         }
@@ -125,13 +125,13 @@ namespace orxonox
         @param input The new value
         @return True if the new value was successfully assigned
     */
-    bool ConfigValueContainer::set(unsigned int index, const MultiTypeMath& input)
+    bool ConfigValueContainer::set(unsigned int index, const MultiType& input)
     {
         if (this->bIsVector_)
         {
             if (this->tset(index, input))
             {
-                ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, index, input.toString(), this->value_.isA(MT_string));
+                ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, index, input, this->value_.isType(MT_string));
                 return true;
             }
         }
@@ -147,23 +147,24 @@ namespace orxonox
         @param input The new value. If bIsVector_ then write "index value"
         @return True if the new value was successfully assigned
     */
-    bool ConfigValueContainer::tset(const MultiTypeMath& input)
+    bool ConfigValueContainer::tset(const MultiType& input)
     {
         if (this->bIsVector_)
         {
-            return this->callFunctionWithIndex(&ConfigValueContainer::tset, input.toString());
+            return this->callFunctionWithIndex(&ConfigValueContainer::tset, input);
         }
         else
         {
-            MultiTypeMath temp = this->value_;
-            if (temp.assimilate(input))
-            {
-                this->value_ = temp;
+//            MultiType temp = this->value_;
+//            if (temp.assimilate(input))
+//            {
+//                this->value_ = temp;
+                this->value_ = input;
                 if (this->identifier_)
                     this->identifier_->updateConfigValues();
 
                 return true;
-            }
+//            }
         }
         return false;
     }
@@ -174,7 +175,7 @@ namespace orxonox
         @param input The new value
         @return True if the new value was successfully assigned
     */
-    bool ConfigValueContainer::tset(unsigned int index, const MultiTypeMath& input)
+    bool ConfigValueContainer::tset(unsigned int index, const MultiType& input)
     {
         if (this->bIsVector_)
         {
@@ -188,20 +189,21 @@ namespace orxonox
             {
                 for (unsigned int i = this->valueVector_.size(); i <= index; i++)
                 {
-                    this->valueVector_.push_back(MultiTypeMath());
+                    this->valueVector_.push_back(MultiType());
                 }
             }
 
-            MultiTypeMath temp = this->value_;
-            if (temp.assimilate(input))
-            {
-                this->valueVector_[index] = temp;
+//            MultiType temp = this->value_;
+//            if (temp.assimilate(input))
+//            {
+//                this->valueVector_[index] = temp;
+                this->valueVector_[index] = input;
 
                 if (this->identifier_)
                     this->identifier_->updateConfigValues();
 
                 return true;
-            }
+//            }
         }
         else
         {
@@ -215,7 +217,7 @@ namespace orxonox
         @param input The new entry
         @return True if the new entry was successfully added
     */
-    bool ConfigValueContainer::add(const MultiTypeMath& input)
+    bool ConfigValueContainer::add(const MultiType& input)
     {
         if (this->bIsVector_)
             return this->set(this->valueVector_.size(), input);
@@ -238,7 +240,7 @@ namespace orxonox
                 // Erase the entry from the vector, change (shift) all entries beginning with index in the config file, remove the last entry from the file
                 this->valueVector_.erase(this->valueVector_.begin() + index);
                 for (unsigned int i = index; i < this->valueVector_.size(); i++)
-                    ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isA(MT_string));
+                    ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isType(MT_string));
                 ConfigFileManager::getInstance()->deleteVectorEntries(this->type_, this->sectionname_, this->varname_, this->valueVector_.size());
 
                 return true;
@@ -274,7 +276,7 @@ namespace orxonox
     void ConfigValueContainer::update()
     {
         if (!this->bIsVector_)
-            this->value_.fromString(ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, this->defvalueString_, this->value_.isA(MT_string)));
+            this->value_ = ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, this->defvalueString_, this->value_.isType(MT_string));
         else
         {
             this->valueVector_.clear();
@@ -282,11 +284,11 @@ namespace orxonox
             {
                 if (i < this->defvalueStringVector_.size())
                 {
-                    this->value_.fromString(ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, this->defvalueStringVector_[i], this->value_.isA(MT_string)));
+                    this->value_ = ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, this->defvalueStringVector_[i], this->value_.isType(MT_string));
                 }
                 else
                 {
-                    this->value_.fromString(ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, MultiTypeMath(), this->value_.isA(MT_string)));
+                    this->value_ = ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, MultiType(), this->value_.isType(MT_string));
                 }
 
                 this->valueVector_.push_back(this->value_);
@@ -300,7 +302,7 @@ namespace orxonox
         @param input The input string
         @return The returnvalue of the functioncall
     */
-    bool ConfigValueContainer::callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiTypeMath&), const std::string& input)
+    bool ConfigValueContainer::callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiType&), const std::string& input)
     {
         SubString token(input, " ", SubString::WhiteSpaces, true, '\\', false, '"', false, '(', ')', false, '\0');
         int index = -1;

@@ -62,9 +62,7 @@
 class ArgReader;
 class Convert;
 class ExprParser;
-class MultiTypePrimitive;
-class MultiTypeString;
-class MultiTypeMath;
+class MultiType;
 class SubString;
 
 namespace orxonox

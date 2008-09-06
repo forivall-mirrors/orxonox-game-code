@@ -42,7 +42,7 @@
 #include "Math.h"
 #include "Debug.h"
 #include "SubString.h"
-#include "MultiTypeMath.h"
+//#include "MultiTypeMath.h"
 
 // disable annoying warning about forcing value to boolean
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
@@ -322,7 +322,7 @@ struct ConverterSpecialized<std::string, ToType, _FromType_>
 ////////////////
 // MULTITYPES //
 ////////////////
-
+/*
 // convert from MultiTypePrimitive
 template <class ToType>
 struct ConverterSpecialized<MultiTypePrimitive, ToType, _FromType_>
@@ -402,7 +402,7 @@ struct ConverterSpecialized<MultiTypeMath, ToType, _FromType_>
             return ConvertValue(output, (MultiTypeString)input);
     }
 };
-
+*/
 
 ////////////////////
 // MATH TO STRING //

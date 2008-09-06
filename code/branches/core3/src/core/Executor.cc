@@ -64,7 +64,7 @@ namespace orxonox
         EXECUTOR_PARSE(normal);
     }
 
-    bool Executor::evaluate(const std::string& params, MultiTypeMath param[5], const std::string& delimiter) const
+    bool Executor::evaluate(const std::string& params, MultiType param[5], const std::string& delimiter) const
     {
         unsigned int paramCount = this->functor_->getParamCount();
 
@@ -170,7 +170,7 @@ namespace orxonox
         return GetLocalisation(this->descriptionReturnvalue_);
     }
 
-    Executor& Executor::setDefaultValues(const MultiTypeMath& param1)
+    Executor& Executor::setDefaultValues(const MultiType& param1)
     {
         this->defaultValue_[0] = param1;
         this->bAddedDefaultValue_[0] = true;
@@ -178,7 +178,7 @@ namespace orxonox
         return (*this);
     }
 
-    Executor& Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2)
+    Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2)
     {
         this->defaultValue_[0] = param1;
         this->bAddedDefaultValue_[0] = true;
@@ -188,7 +188,7 @@ namespace orxonox
         return (*this);
     }
 
-    Executor& Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3)
+    Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
     {
         this->defaultValue_[0] = param1;
         this->bAddedDefaultValue_[0] = true;
@@ -200,7 +200,7 @@ namespace orxonox
         return (*this);
     }
 
-    Executor& Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4)
+    Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
     {
         this->defaultValue_[0] = param1;
         this->bAddedDefaultValue_[0] = true;
@@ -214,7 +214,7 @@ namespace orxonox
         return (*this);
     }
 
-    Executor& Executor::setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5)
+    Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
     {
         this->defaultValue_[0] = param1;
         this->bAddedDefaultValue_[0] = true;
@@ -230,7 +230,7 @@ namespace orxonox
         return (*this);
     }
 
-    Executor& Executor::setDefaultValue(unsigned int index, const MultiTypeMath& param)
+    Executor& Executor::setDefaultValue(unsigned int index, const MultiType& param)
     {
         if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
         {

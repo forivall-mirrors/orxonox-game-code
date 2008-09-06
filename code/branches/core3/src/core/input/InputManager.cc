@@ -320,9 +320,9 @@ namespace orxonox
   {
     if (joySticksSize_)
     {
-      std::vector<MultiTypeMath> coeffPos;
-      std::vector<MultiTypeMath> coeffNeg;
-      std::vector<MultiTypeMath> zero;
+      std::vector<double> coeffPos;
+      std::vector<double> coeffNeg;
+      std::vector<int> zero;
       coeffPos.resize(24);
       coeffNeg.resize(24);
       zero.resize(24);

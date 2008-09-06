@@ -92,17 +92,17 @@ namespace orxonox
                 { this->ExecutorStatic::setDescriptionParam(param, description); return (*this); }
             inline ConsoleCommand& descriptionReturnvalue(const std::string& description)
                 { this->ExecutorStatic::setDescriptionReturnvalue(description); return (*this); }
-            inline ConsoleCommand& defaultValues(const MultiTypeMath& param1)
+            inline ConsoleCommand& defaultValues(const MultiType& param1)
                 { this->ExecutorStatic::setDefaultValues(param1); return (*this); }
-            inline ConsoleCommand& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2)
+            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2)
                 { this->ExecutorStatic::setDefaultValues(param1, param2); return (*this); }
-            inline ConsoleCommand& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3)
+            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
                 { this->ExecutorStatic::setDefaultValues(param1, param2, param3); return (*this); }
-            inline ConsoleCommand& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4)
+            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
                 { this->ExecutorStatic::setDefaultValues(param1, param2, param3, param4); return (*this); }
-            inline ConsoleCommand& defaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5)
+            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
                 { this->ExecutorStatic::setDefaultValues(param1, param2, param3, param4, param5); return (*this); }
-            inline ConsoleCommand& defaultValue(unsigned int index, const MultiTypeMath& param)
+            inline ConsoleCommand& defaultValue(unsigned int index, const MultiType& param)
                 { this->ExecutorStatic::setDefaultValue(index, param); return (*this); }
 
             inline ConsoleCommand& accessLevel(AccessLevel::Level level)
