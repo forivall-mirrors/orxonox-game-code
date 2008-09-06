@@ -41,7 +41,6 @@
 #include <vector>
 #include <map>
 #include <cassert>
-#include "util/Integers.h"
 #include "Clock.h"
 
 namespace orxonox

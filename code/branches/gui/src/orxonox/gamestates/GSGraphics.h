@@ -79,7 +79,7 @@ namespace orxonox
         // variables for time statistics
         unsigned long         frameCount_;
         unsigned int          statisticsRefreshCycle_;
-        uint64_t              statisticsStartTime_;
+        unsigned long long    statisticsStartTime_;
         unsigned long         statisticsStartCount_;
         unsigned int          tickTime_;
 

@@ -44,6 +44,6 @@
 	/>
 	<UserMacro
 		Name="LibDir"
-		Value="$(RootDir)..\lib_src\"
+		Value="$(RootDir)..\lib_precompiled\include\"
 	/>
 </VisualStudioPropertySheet>

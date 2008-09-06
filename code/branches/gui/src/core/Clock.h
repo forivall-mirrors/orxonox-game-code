@@ -39,7 +39,6 @@
 
 #include "CorePrereqs.h"
 #include <OgrePrerequisites.h>
-#include "util/Integers.h"
 
 namespace orxonox
 {
@@ -51,26 +50,26 @@ namespace orxonox
         Clock();
         ~Clock();
 
-        uint64_t getMicroseconds()   const { return tickTime_; }
-        uint64_t getMilliseconds()   const { return tickTime_ / 1000; }
-        int      getSeconds()        const { return tickTime_ / 1000000; }
-        float    getSecondsPrecise() const { return (float)tickTime_ / 1000000.0f; }
+        unsigned long long getMicroseconds()   const { return tickTime_; }
+        unsigned long long getMilliseconds()   const { return tickTime_ / 1000; }
+        int                getSeconds()        const { return tickTime_ / 1000000; }
+        float              getSecondsPrecise() const { return (float)tickTime_ / 1000000.0f; }
 
-        float    getDeltaTime()      const { return tickDtFloat_; }
-        int      getDeltaTimeMicroseconds() const { return tickDt_; }
+        float              getDeltaTime()      const { return tickDtFloat_; }
+        int                getDeltaTimeMicroseconds() const { return tickDt_; }
 
-        uint64_t getRealMicroseconds() const;
+        unsigned long long getRealMicroseconds() const;
 
     private:
         Clock(const Clock& instance);
         void capture();
 
-        Ogre::Timer*  timer_;
-        uint64_t      storedTime_;
-        uint64_t      tickTime_;
-        int           tickDt_;
-        float         tickDtFloat_;
-        unsigned long lastTimersTime_;
+        Ogre::Timer*       timer_;
+        unsigned long long storedTime_;
+        unsigned long long tickTime_;
+        int                tickDt_;
+        float              tickDtFloat_;
+        unsigned long      lastTimersTime_;
     };
 }
 

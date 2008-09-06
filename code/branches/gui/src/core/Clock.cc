@@ -71,7 +71,7 @@ namespace orxonox
         }
     }
 
-    uint64_t Clock::getRealMicroseconds() const
+    unsigned long long Clock::getRealMicroseconds() const
     {
         return this->timer_->getMicroseconds();
     }

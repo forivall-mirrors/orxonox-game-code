@@ -159,7 +159,7 @@ namespace orxonox
     */
     void GSGraphics::ticked(const Clock& time)
     {
-        uint64_t timeBeforeTick = time.getRealMicroseconds();
+        unsigned long long timeBeforeTick = time.getRealMicroseconds();
         float dt = time.getDeltaTime();
 
         this->inputManager_->tick(dt);
@@ -167,7 +167,7 @@ namespace orxonox
         this->console_->tick(dt);
         this->tickChild(time);
         
-        uint64_t timeAfterTick = time.getRealMicroseconds();
+        unsigned long long timeAfterTick = time.getRealMicroseconds();
 
         tickTime_ += (unsigned int)(timeAfterTick - timeBeforeTick);
         if (timeAfterTick > statisticsStartTime_ + statisticsRefreshCycle_)

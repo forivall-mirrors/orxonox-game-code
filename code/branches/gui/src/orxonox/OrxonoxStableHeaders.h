@@ -27,8 +27,8 @@
  */
 
 /**
- @file  OrxonoxStableHeaders.h
- @brief Contains the bigger (or smaller) header files in order to precompile them with MSVC
+ @file
+ @brief Contains the frequently used header files of our own writing
  */
 
 #ifndef _OrxonoxStableHeaders_H__
@@ -36,7 +36,7 @@
 
 #include "util/OrxonoxPlatform.h"
 
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH)
 
 // including std headers here is useless since they're already precompiled
 
@@ -44,7 +44,6 @@
 // prevent Ogre from including winsock.h that messes with winsock2.h from enet
 #  define WIN32_LEAN_AND_MEAN
 #endif
-
 #include <Ogre.h>
 #include <CEGUI.h>
 #include <boost/thread/recursive_mutex.hpp>
@@ -52,12 +51,14 @@
 #include <boost/thread/condition.hpp>
 #include <boost/thread/thread.hpp>
 
-//-----------------------------------------------------------------------
-// ORXONOX HEADERS
-//-----------------------------------------------------------------------
-
 #include "tinyxml/ticpp.h"
 #include "tinyxml/tinyxml.h"
+
+
+//----------- Our files ----------
+//--------------------------------
+// only include when not debugging so that we may find issues with missing headers quicker
+#if defined(NDEBUG)
 
 #include "util/Convert.h"
 #include "util/Math.h"
@@ -87,6 +88,8 @@
 //#include "objects/Tickable.h"
 //#include "objects/WorldEntity.h"
 
-#endif /* Compiler MSVC */
+#endif /* ifdef NDEBUG */
+
+#endif /* ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH) */
 
 #endif /* _OrxonoxStableHeaders_H__ */

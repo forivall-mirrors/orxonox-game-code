@@ -61,7 +61,6 @@
 #define _Timer_H__
 
 #include "OrxonoxPrereqs.h"
-#include "util/Integers.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
@@ -100,13 +99,13 @@ namespace orxonox
                 { return (float)this->time_ / 1000000.0f; }
             /** @brief Gives the Timer some extra time. @param time The amount of extra time in seconds */
             inline void addTime(float time)
-                { if (time > 0.0f) this->time_ += (int64_t)(time * 1000000.0f); }
+                { if (time > 0.0f) this->time_ += (long long)(time * 1000000.0f); }
             /** @brief Decreases the remaining time of the Timer. @param time The amount of time to remove */
             inline void removeTime(float time)
-                { if (time > 0.0f) this->time_ -= (int64_t)(time * 1000000.0f); }
+                { if (time > 0.0f) this->time_ -= (long long)(time * 1000000.0f); }
             /** @brief Sets the interval of the Timer. @param interval The interval */
             inline void setInterval(float interval)
-                { this->interval_ = (int64_t)(interval * 1000000.0f); }
+                { this->interval_ = (long long)(interval * 1000000.0f); }
             /** @brief Sets bLoop to a given value. @param bLoop True = loop */
             inline void setLoop(bool bLoop)
                 { this->bLoop_ = bLoop; }
@@ -118,11 +117,11 @@ namespace orxonox
 
             Executor* executor_; //!< The executor of the function that should be called when the time expires
 
-            int64_t interval_;  //!< The time-interval in micro seconds
+            long long interval_; //!< The time-interval in micro seconds
             bool bLoop_;         //!< If true, the function gets called every 'interval' seconds
             bool bActive_;       //!< If true, the Timer ticks and calls the function if the time's up
 
-            int64_t time_;      //!< Internal variable, counting the time till the next function-call
+            long long time_;     //!< Internal variable, counting the time till the next function-call
     };
 
     //! The Timer is a callback-object, calling a given function after a given time-interval.
