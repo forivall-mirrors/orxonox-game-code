@@ -68,6 +68,8 @@ namespace orxonox
     CreateTypeToStringTemplate(unsigned short);
     CreateTypeToStringTemplate(long);
     CreateTypeToStringTemplate(unsigned long);
+    CreateTypeToStringTemplate(long long);
+    CreateTypeToStringTemplate(unsigned long long);
     CreateTypeToStringTemplate(float);
     CreateTypeToStringTemplate(double);
     CreateTypeToStringTemplate(long double);

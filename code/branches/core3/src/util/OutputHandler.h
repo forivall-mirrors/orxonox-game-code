@@ -106,29 +106,33 @@ namespace orxonox
             OutputHandler& output(const T& output);
 
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(unsigned char val)   { return this->output(val); }
+            inline OutputHandler& operator<<(unsigned char val)      { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(short val)           { return this->output(val); }
+            inline OutputHandler& operator<<(short val)              { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(unsigned short val)  { return this->output(val); }
+            inline OutputHandler& operator<<(unsigned short val)     { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(int val)             { return this->output(val); }
+            inline OutputHandler& operator<<(int val)                { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(unsigned int val)    { return this->output(val); }
+            inline OutputHandler& operator<<(unsigned int val)       { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(long val)            { return this->output(val); }
+            inline OutputHandler& operator<<(long val)               { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(unsigned long val)   { return this->output(val); }
+            inline OutputHandler& operator<<(unsigned long val)      { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(float val)           { return this->output(val); }
+            inline OutputHandler& operator<<(long long val)          { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(double val)          { return this->output(val); }
+            inline OutputHandler& operator<<(unsigned long long val) { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(long double val)     { return this->output(val); }
+            inline OutputHandler& operator<<(float val)              { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(const void* val)     { return this->output(val); }
+            inline OutputHandler& operator<<(double val)             { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(bool val)            { return this->output(val); }
+            inline OutputHandler& operator<<(long double val)        { return this->output(val); }
+            /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
+            inline OutputHandler& operator<<(const void* val)        { return this->output(val); }
+            /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
+            inline OutputHandler& operator<<(bool val)               { return this->output(val); }
 
             OutputHandler& operator<<(std::streambuf* sb);
 
