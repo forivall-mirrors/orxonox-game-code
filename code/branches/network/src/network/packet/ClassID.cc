@@ -71,8 +71,8 @@ unsigned int ClassID::getSize() const{
 }
 
 bool ClassID::process(){
-  COUT(3) << "processing classid: " << getClassID() << " name: " << &data_[ sizeof(network::packet::ENUM::Type) ] << std::endl;
-  orxonox::Identifier *id=ID( std::string((const char*)&data_[ sizeof(network::packet::ENUM::Type) ]) );
+  COUT(3) << "processing classid: " << getClassID() << " name: " << (const char*)(data_+_CLASSNAME) << std::endl;
+  orxonox::Identifier *id=ID( std::string((const char*)(data_+_CLASSNAME) ));
   if(id==NULL)
     return false;
   id->setNetworkID( getClassID() );
