@@ -93,7 +93,7 @@ namespace network
     bool sendPackets();
     //bool createClient(int clientID);
     void disconnectClient(ClientInformation *client);
-    void syncClassid(int clientID);
+    void syncClassid(unsigned int clientID);
 
   private:
 //     bool clientDisconnect(ENetPeer *peer);

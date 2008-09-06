@@ -50,10 +50,10 @@ namespace packet {
   assert(getSize());
   data_=new unsigned char[ getSize() ];
   assert(data_);
-  *(ENUM::Type *)&data_[ _PACKETID ] = ENUM::ClassID;
-  *(unsigned int *)&data_[ _CLASSID ] = classID;
-  *(unsigned int *)&data_[ _CLASSNAMELENGTH ] = classNameLength_;
-  memcpy( &data_[ _CLASSNAME ], (void *)className.c_str(), classNameLength_ );
+  *(ENUM::Type *)(data_ + _PACKETID ) = ENUM::ClassID;
+  *(unsigned int *)(data_ + _CLASSID ) = classID;
+  *(unsigned int *)(data_ + _CLASSNAMELENGTH ) = classNameLength_;
+  memcpy( data_+_CLASSNAME, (void *)className.c_str(), classNameLength_ );
 }
 
 ClassID::ClassID( unsigned char *data, int clientID )
@@ -71,6 +71,7 @@ unsigned int ClassID::getSize() const{
 }
 
 bool ClassID::process(){
+  COUT(3) << "processing classid: " << getClassID() << " name: " << &data_[ sizeof(network::packet::ENUM::Type) ] << std::endl;
   orxonox::Identifier *id=ID( std::string((const char*)&data_[ sizeof(network::packet::ENUM::Type) ]) );
   if(id==NULL)
     return false;

@@ -60,23 +60,23 @@ Packet::Packet(){
 }
 
 void blub(ENetPacket *packet){
-  COUT(0) << "blubb" << std::endl;
+  COUT(4) << "blubb" << std::endl;
 }
 
 Packet::Packet(unsigned char *data, int clientID){
   flags_ = PACKET_FLAG_DEFAULT;
-  packetDirection_ = ENUM::Outgoing;
+  packetDirection_ = ENUM::Incoming;
   clientID_=clientID;
   data_=data;
   enetPacket_=0;
 }
 
-Packet::Packet(ENetPacket *packet, ENetPeer *peer){
+/*Packet::Packet(ENetPacket *packet, ENetPeer *peer){
   packetDirection_ = ENUM::Incoming;
   enetPacket_ = packet;
   clientID_ = ClientInformation::findClient(&peer->address)->getID();
   data_ = packet->data;
-}
+}*/
 
 Packet::Packet(const Packet &p){
   enetPacket_=p.enetPacket_;
@@ -106,6 +106,7 @@ bool Packet::send(){
       return false;
     }
     enetPacket_ = enet_packet_create(getData(), getSize(), getFlags());
+    //enetPacket_->freeCallback = &Packet::deletePacket;
     enetPacket_->freeCallback = &blub;
     packetMap_[enetPacket_] = this;
   }
@@ -118,22 +119,28 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   unsigned char *data = packet->data;
   unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p;
+  COUT(3) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;
   switch( *(ENUM::Type *)&data[_PACKETID] )
   {
     case ENUM::Acknowledgement:
+      COUT(3) << "ack" << std::endl;
       p = new Acknowledgement( data, clientID );
       break;
     case ENUM::Chat:
+      COUT(3) << "chat" << std::endl;
       p = new Chat( data, clientID );
       break;
     case ENUM::ClassID:
+      COUT(3) << "classid" << std::endl;
       p = new ClassID( data, clientID );
       break;
     case ENUM::Gamestate:
+      COUT(3) << "gamestate" << std::endl;
       // TODO: remove brackets
       p = new Gamestate( data, true, clientID );
       break;
     case ENUM::Welcome:
+      COUT(3) << "welcome" << std::endl;
       p = new Welcome( data, clientID );
     default:
       assert(0); //TODO: repair this

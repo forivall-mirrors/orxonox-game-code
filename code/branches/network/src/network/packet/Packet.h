@@ -74,7 +74,7 @@ class Packet{
   protected:
     Packet();
     Packet(unsigned char *data, int clientID);
-    Packet(ENetPacket *packet, ENetPeer *peer);
+//    Packet(ENetPacket *packet, ENetPeer *peer);
     enet_uint32 flags_;
     int clientID_;
     unsigned char *data_;

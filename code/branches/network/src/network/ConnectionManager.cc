@@ -333,7 +333,11 @@ used by processQueue in Server.cc
     return ClientInformation::findClient(clientID)->getPeer();
   }
 
-  void ConnectionManager::syncClassid(int clientID) {
+  /**
+   * 
+   * @param clientID 
+   */
+  void ConnectionManager::syncClassid(unsigned int clientID) {
     unsigned int network_id=0, failures=0;
     std::string classname;
     orxonox::Identifier *id;
@@ -348,9 +352,9 @@ used by processQueue in Server.cc
         COUT(3) << "we got a null class id: " << id->getName() << std::endl;
       COUT(4) << "Con.Man:syncClassid:\tnetwork_id: " << network_id << ", classname: " << classname << std::endl;
 
-      packet::ClassID classid( network_id, classname );
-      classid.setClientID(clientID);
-      while(!classid.send() && failures < 10){
+      packet::ClassID *classid = new packet::ClassID( network_id, classname );
+      classid->setClientID(clientID);
+      while(!classid->send() && failures < 10){
         failures++;
       }
       ++it;

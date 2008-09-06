@@ -48,7 +48,7 @@ namespace packet {
   assert(getSize());
   data_=new unsigned char[ getSize() ];
   assert(data_);
-  *(packet::ENUM::Type *)&data_[ _PACKETID ] = packet::ENUM::Welcome;
+  *(packet::ENUM::Type *)(data_ + _PACKETID ) = packet::ENUM::Welcome;
   *(unsigned int *)&data_[ _CLIENTID ] = clientID;
   *(unsigned int *)&data_[ _SHIPID ] = shipID;
 }

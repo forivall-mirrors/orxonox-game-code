@@ -105,7 +105,7 @@ bool Gamestate::collectData(int id, int mode)
   
   //start write gamestate header
   HEADER->packetType = ENUM::Gamestate;
-  assert( *(ENUM::Type *)&data_[ 0 ] == ENUM::Gamestate);
+  assert( *(ENUM::Type *)&data_[ 0 ] == ENUM::Gamestate); 
   HEADER->normsize = currentsize;
   HEADER->id = id;
   HEADER->diffed = false;

@@ -43,7 +43,7 @@ Acknowledgement::Acknowledgement( unsigned int id, int clientID )
 {
   flags_ = flags_ | PACKET_FLAGS_ACK;
   data_=new unsigned char[ getSize() ];
-  *(ENUM::Type *)&data_[ _PACKETID ] = ENUM::Acknowledgement;
+  *(ENUM::Type *)(data_ + _PACKETID ) = ENUM::Acknowledgement;
   *(unsigned int *)&data_[ _ACKID ] = id;
   clientID_=clientID;
 }
