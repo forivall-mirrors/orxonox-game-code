@@ -168,15 +168,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiTypeMath.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\MultiTypePrimitive.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\MultiTypeString.cc"
+				RelativePath="..\..\src\util\MultiType.cc"
 				>
 			</File>
 			<File
@@ -234,15 +226,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiTypeMath.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\MultiTypePrimitive.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\MultiTypeString.h"
+				RelativePath="..\..\src\util\MultiTypeValue.h"
 				>
 			</File>
 			<File
