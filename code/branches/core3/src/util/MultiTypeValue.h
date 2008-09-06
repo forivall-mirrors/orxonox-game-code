@@ -31,6 +31,7 @@
 
 #include "UtilPrereqs.h"
 #include "Convert.h"
+#include "MultiType.h"
 
 template <typename T>
 struct MT_Value : public MultiType::MT_ValueBase

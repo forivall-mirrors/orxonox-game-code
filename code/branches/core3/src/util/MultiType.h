@@ -71,7 +71,9 @@ enum MT_Type
 
 class _UtilExport MultiType
 {
-    friend std::ostream& operator<<(std::ostream& outstream, const MultiType& mt);
+    _UtilExport friend std::ostream& operator<<(std::ostream& outstream, const MultiType& mt);
+    template <typename T>
+    friend struct MT_Value;
 
     struct _UtilExport MT_ValueBase
     {
