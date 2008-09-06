@@ -59,6 +59,10 @@ Packet::Packet(){
   enetPacket_=0;
 }
 
+void blub(ENetPacket *packet){
+  COUT(0) << "blubb" << std::endl;
+}
+
 Packet::Packet(unsigned char *data, int clientID){
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = ENUM::Outgoing;
@@ -72,10 +76,10 @@ Packet::Packet(ENetPacket *packet, ENetPeer *peer){
   enetPacket_ = packet;
   clientID_ = ClientInformation::findClient(&peer->address)->getID();
   data_ = packet->data;
-  enet_packet_destroy(packet);
 }
 
 Packet::Packet(const Packet &p){
+  enetPacket_=p.enetPacket_;
   flags_=p.flags_;
   if(p.data_){
     data_ = new unsigned char[p.getSize()];
@@ -92,13 +96,17 @@ Packet::~Packet(){
 }
 
 bool Packet::send(){
-  if(packetDirection_ != ENUM::Outgoing && packetDirection_ != ENUM::Bidirectional )
+  /*if(packetDirection_ != ENUM::Outgoing && packetDirection_ != ENUM::Bidirectional ){
+    assert(0);
     return false;
+  }*/
   if(!enetPacket_){
-    if(!data_)
+    if(!data_){
+      assert(0);
       return false;
+    }
     enetPacket_ = enet_packet_create(getData(), getSize(), getFlags());
-    enetPacket_->freeCallback = &Packet::deletePacket;
+    enetPacket_->freeCallback = &blub;
     packetMap_[enetPacket_] = this;
   }
   network::Host::addPacket( enetPacket_, clientID_);

@@ -1,21 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
  *                    > www.orxonox.net <
@@ -123,6 +105,7 @@ bool Gamestate::collectData(int id, int mode)
   
   //start write gamestate header
   HEADER->packetType = ENUM::Gamestate;
+  assert( *(ENUM::Type *)&data_[ 0 ] == ENUM::Gamestate);
   HEADER->normsize = currentsize;
   HEADER->id = id;
   HEADER->diffed = false;
@@ -229,6 +212,7 @@ bool Gamestate::compressData()
 }
 bool Gamestate::decompressData()
 {
+  assert(compressed_);
   //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
   int normsize = HEADER->normsize;
   int compsize = HEADER->compsize;
@@ -255,7 +239,7 @@ bool Gamestate::decompressData()
   //copy over the header
   *GAMESTATE_HEADER(ndata) = *HEADER;
   //delete old (compressed data)
-  delete []data_;
+  delete[] data_;
   //set new pointers and create bytestream
   data_ = ndata;
   //bs_ = new Bytestream(getGs(), GAMESTATE_HEADER->normsize);
@@ -348,6 +332,13 @@ unsigned int Gamestate::calcGamestateSize(int mode)
     delete  *temp;
   }
 
+  bool Gamestate::isDiffed(){
+    return HEADER->diffed;
+  }
+  
+  int Gamestate::getBaseID(){
+    return HEADER->base_id;
+  }
 }
 
 }

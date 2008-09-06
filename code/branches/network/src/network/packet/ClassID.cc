@@ -50,7 +50,7 @@ namespace packet {
   assert(getSize());
   data_=new unsigned char[ getSize() ];
   assert(data_);
-  *(packet::ENUM::Type *)&data_[ _PACKETID ] = packet::ENUM::ClassID;
+  *(ENUM::Type *)&data_[ _PACKETID ] = ENUM::ClassID;
   *(unsigned int *)&data_[ _CLASSID ] = classID;
   *(unsigned int *)&data_[ _CLASSNAMELENGTH ] = classNameLength_;
   memcpy( &data_[ _CLASSNAME ], (void *)className.c_str(), classNameLength_ );

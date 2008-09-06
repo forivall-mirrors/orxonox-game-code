@@ -73,7 +73,7 @@ namespace network
       return 0;
     int id = GAMESTATEID_INITIAL;
     bool b = saveShipCache();
-    if(tempGamestate_->spreadData()){
+    if(processGamestate(tempGamestate_)){
       if(b)
         loadShipCache();
       id = tempGamestate_->getID();
@@ -150,6 +150,12 @@ namespace network
       return false;
   }
 
+  bool GamestateClient::processGamestate(packet::Gamestate *gs){
+    assert(gs->decompressData());
+    if(gs->isDiffed())
+      assert(gs->undiff(gamestateMap_[gs->getBaseID()]));
+    return gs->spreadData();
+  }
 
 }
 

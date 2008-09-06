@@ -130,6 +130,7 @@ namespace network
   */
   bool Server::sendChat(packet::Chat *chat) {
     //TODO: change this (no informations about who wrote a message)
+    assert(0);
     ClientInformation *temp = ClientInformation::getBegin();
     while(temp){
       chat->setClientID(temp->getID());
@@ -320,7 +321,6 @@ namespace network
     packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
     w->setClientID(temp->getID());
     assert(w->send());
-    delete w;
     return true;
   }
   

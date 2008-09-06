@@ -43,7 +43,7 @@ Chat::Chat( std::string& message, int clientID )
   flags_ = flags_ | PACKET_FLAGS_CHAT;
   messageLength_ = message.length()+1;
   data_=new unsigned char[ getSize() ];
-  *(ENUM::Type *)&data_[ _PACKETID ] = packet::ENUM::Chat;
+  *(ENUM::Type *)&data_[ _PACKETID ] = ENUM::Chat;
   *(unsigned int *)&data_[ _MESSAGELENGTH ] = messageLength_;
   memcpy( &data_[ _MESSAGE ], (void *)message.c_str(), messageLength_ );
   clientID_=clientID;

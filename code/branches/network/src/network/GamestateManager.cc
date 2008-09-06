@@ -80,7 +80,7 @@ namespace network
     std::map<int, packet::Gamestate*>::iterator it;
     // now push only the most recent gamestates we received (ignore obsolete ones)
     for(it = gamestateQueue.begin(); it!=gamestateQueue.end(); it++){
-      it->second->spreadData();
+      assert(processGamestate(it->second));
       delete it->second;
     }
     // now clear the queue
@@ -195,6 +195,12 @@ namespace network
     if(client->getGamestateID()>=0)
       gamestateUsed[client->getGamestateID()]--;
     ClientInformation::removeClient(client->getID());
+  }
+  
+  bool GamestateManager::processGamestate(packet::Gamestate *gs){
+    assert(gs->decompressData());
+    assert(!gs->isDiffed());
+    return gs->spreadData();
   }
 
 }

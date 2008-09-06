@@ -81,7 +81,8 @@ namespace network
     void removeClient(ClientInformation *client);
     private:
     void cleanup(); // "garbage handler"
-
+    bool processGamestate(packet::Gamestate *gs);
+    
     std::map<int, packet::Gamestate*> gamestateMap; //map gsID to gamestate*
     std::map<int, int> gamestateUsed; // save the number of clients, that use the specific gamestate
     std::map<int, packet::Gamestate*> gamestateQueue;
