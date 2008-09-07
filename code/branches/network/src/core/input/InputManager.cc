@@ -117,9 +117,9 @@ namespace orxonox
       paramList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
       //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
       //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
-//#if defined OIS_LINUX_PLATFORM
-//      paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
-//#endif
+#if defined OIS_LINUX_PLATFORM
+      paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+#endif
 
       try
       {
@@ -722,6 +722,8 @@ namespace orxonox
       iKey++;
     if (iKey == keysDown_.size())
       keysDown_.push_back(Key(e));
+    else
+      return true;
 
     // update modifiers
     if(e.key == OIS::KC_RMENU    || e.key == OIS::KC_LMENU)
