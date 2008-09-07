@@ -40,7 +40,7 @@ struct MT_Value : public MultiType::MT_ValueBase
 
     inline MT_ValueBase* clone() const { return new MT_Value<T>(this->value_, this->type_); }
     inline void reset() { this->value_ = T(); }
-    inline void assimilate(const MultiType& other) { if (other.value_) { this->value_ = other.operator T(); } else { this->value_ = T(); } }
+    inline void assimilate(const MultiType& other) { if (other.value_) { T temp; other.getValue(&temp); this->value_ = temp; } else { this->value_ = T(); } }
 
     inline void setValue(const char& value)                 { this->value_ = getConvertedValue<char,                 T>(value); }
     inline void setValue(const unsigned char& value)        { this->value_ = getConvertedValue<unsigned char,        T>(value); }
