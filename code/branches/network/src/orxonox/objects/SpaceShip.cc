@@ -162,7 +162,7 @@ namespace orxonox
         if(network::Host::running() && objectID == network::Host::getShipID())
           myShip_=true;
         else
-          HUD::getSingleton().addRadarObject(this, this->getProjectileColour());
+          HUD::getSingleton().addRadarObject(dynamic_cast<WorldEntity *>(this), this->getProjectileColour());
       }
       assert(Model::create());
       this->init();
