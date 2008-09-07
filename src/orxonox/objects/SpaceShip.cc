@@ -42,8 +42,7 @@
 #include "core/Debug.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
-
-#include "network/Client.h"
+#include "network/Host.h"
 
 #include "tools/ParticleInterface.h"
 
@@ -79,7 +78,7 @@ namespace orxonox
         if( (it)->myShip_ )
           return *it;
       }
-      return NULL;
+      return 0;
     }
 
     SpaceShip::SpaceShip()
@@ -164,15 +163,15 @@ namespace orxonox
 
     bool SpaceShip::create(){
       if(!myShip_){
-        if(network::Client::getSingleton() && objectID == network::Client::getSingleton()->getShipID())
+        if(network::Host::running())
+          COUT(3) << "this id: " << this->objectID << " myShipID: " << network::Host::getShipID() << std::endl;
+        if(network::Host::running() && objectID == network::Host::getShipID())
           myShip_=true;
         else
           this->setRadarObjectColour(this->getProjectileColour());
       }
-      if(Model::create())
-        this->init();
-      else
-        return false;
+      assert(Model::create());
+      this->init();
       return true;
     }
 
@@ -275,6 +274,7 @@ namespace orxonox
             this->chFarNode_->setScale(0.4, 0.4, 0.4);
             // END of testing crosshair
         }
+        // END of testing crosshair
 
         createCamera();
     }
@@ -319,14 +319,14 @@ namespace orxonox
 
     void SpaceShip::setCamera(const std::string& camera)
     {
-      myShip_=true; // TODO: this is only a hack
       camName_=camera;
       // change camera attributes here, if you want to ;)
     }
 
     void SpaceShip::getFocus(){
-      COUT(4) << "requesting focus" << std::endl;
-      if(network::Client::getSingleton()==0 || network::Client::getSingleton()->getShipID()==objectID)
+      COUT(3) << "requesting focus" << std::endl;
+      //if(!network::Host::running() || network::Host::getShipID()==objectID)
+      if(myShip_)
         CameraHandler::getInstance()->requestFocus(cam_);
 
     }
@@ -338,7 +338,7 @@ namespace orxonox
     void SpaceShip::createCamera(){
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);
-      COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
+      COUT(3) << "position: (this)" << this->getNode()->getPosition() << std::endl;
       this->camNode_->setPosition(Vector3(-25,0,5));
 //      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
 //      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
@@ -348,13 +348,24 @@ namespace orxonox
 
       cam_->setTargetNode(this->getNode());
 //        cam->setPosition(Vector3(0,-350,0));
+//      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,0,1));
+//      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,1,0));
       Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
       Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(1,0,0));
-      this->camNode_->setOrientation(q2*q1);
-      if(network::Client::getSingleton()!=0 && network::Client::getSingleton()->getShipID()==objectID){
+
+       this->camNode_->setOrientation(q2*q1);
+      //if(!network::Host::running() || network::Host::getShipID()==objectID){ //TODO: check this
+      if(myShip_){
+        COUT(3) << "requesting focus for camera" << std::endl;
         this->setBacksync(true);
-        CameraHandler::getInstance()->requestFocus(cam_);
-      }
+        //CameraHandler::getInstance()->requestFocus(cam_);
+        if(this->isExactlyA(Class(SpaceShip))){
+          getFocus();
+          COUT(3) << "getting focus for obj id: " << objectID << std::endl;
+        }else
+          COUT(3) << "not getting focus (not exactly spaceship) for obj id: " << objectID << std::endl;
+      }else
+        COUT(3) << "not getting focus (not my ship) for obj id: " << objectID << std::endl;
     }
 
     void SpaceShip::setMaxSpeed(float value)
@@ -391,9 +402,10 @@ namespace orxonox
         XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, mode);
         XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, mode);
 
+        myShip_=true; //TODO: this is a hack
         SpaceShip::create();
-        if (this->isExactlyA(Class(SpaceShip)))
-            getFocus();
+        /*if (this->isExactlyA(Class(SpaceShip)))
+            getFocus();*/
     }
 
     std::string SpaceShip::whereAmI() {

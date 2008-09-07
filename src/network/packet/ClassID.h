@@ -20,62 +20,42 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss, (C) 2007
+ *      Oliver Scheuss <scheusso [at] ee.ethz.ch>, (C) 2008
  *   Co-authors:
  *      ...
  *
  */
+#ifndef NETWORKCLASSID_H
+#define NETWORKCLASSID_H
 
-#include "Server.h"
+#include <string>
 
-#include <iostream>
+#include "Packet.h"
 
-#include "util/Sleep.h"
-#include "PacketManager.h"
-#include "PacketTypes.h"
+namespace network {
+namespace packet {
 
-namespace network
+/**
+	@author 
+*/
+class ClassID : public Packet
 {
+public:
+  ClassID( unsigned int classID, std::string className );
+  ClassID( unsigned char* data, int clientID );
+  ~ClassID();
+  
+  inline unsigned int getSize() const;
+  bool process();
+  
+  unsigned int getClassID();
+  unsigned int getClassNameLength(){ return classNameLength_; }
+  unsigned char *getClassName();
+private:
+  unsigned int classNameLength_;
+};
 
-  class dummyserver3 : public Server
-  {
-  public:
-    dummyserver3();
-    ~dummyserver3();
-    void loop();
-  private:
-    void tick();
-    void processChat( chat *data, int clientId);
+} //namespace packet
+} //namespace network
 
-
-  };
-
-  dummyserver3::dummyserver3(){
-  }
-  dummyserver3::~dummyserver3(){
-  }
-
-  void dummyserver3::loop(){
-    open();
-    while(true){
-      tick();
-      usleep(100);
-    }
-  }
-
-  void dummyserver3::processChat( chat *data, int clientId){
-    std::cout << "Client " << clientId << " sent: " << data->message << std::endl;
-    sendMSG(data->message);
-  }
-
-  void dummyserver3::tick(){
-    processQueue();
-  }
-
-}
-
-int main(int argc, char **argv[]){
-  network::dummyserver3 server;
-  server.loop();
-  return 0;
-}
+#endif

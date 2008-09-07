@@ -20,42 +20,37 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Oliver Scheuss <scheusso [at] ee.ethz.ch>, (C) 2008
  *   Co-authors:
  *      ...
  *
  */
+#ifndef NETWORKWELCOME_H
+#define NETWORKWELCOME_H
 
-#ifndef _Ambient_H__
-#define _Ambient_H__
+#include "Packet.h"
 
-#include "OrxonoxPrereqs.h"
+namespace network {
+namespace packet {
 
-#include "util/Math.h"
-#include "core/BaseObject.h"
-#include "network/Synchronisable.h"
-
-namespace orxonox
+/**
+	@author 
+*/
+class Welcome : public Packet
 {
-    class _OrxonoxExport Ambient : public BaseObject, public network::Synchronisable
-    {
-        public:
-            Ambient();
-            virtual ~Ambient();
+public:
+  Welcome( unsigned int clientID, unsigned int shipID );
+  Welcome( unsigned char* data, int clientID );
+  virtual ~Welcome();
+  
+  unsigned char *getData();
+  inline unsigned int getSize() const;
+  bool process();
+  
+private:
+};
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void setAmbientLight(const ColourValue& colour);
-            virtual bool create();
-            void registerAllVariables();
+} //namespace packet
+} //namespace network
 
-            static void setAmbientLightTest(const ColourValue& colour)
-                { Ambient::instance_s->setAmbientLight(colour); }
-
-        private:
-            static Ambient* instance_s;
-            ColourValue ambientLight_;
-
-    };
-}
-
-#endif /* _Ambient_H__ */
+#endif

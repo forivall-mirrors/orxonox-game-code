@@ -43,14 +43,14 @@ namespace network
   };
 
   struct syncData{
-    int length;
-    int objectID;
-    int classID;
+    unsigned int length;
+    unsigned int objectID;
+    unsigned int classID;
     unsigned char *data;
   };
 
   typedef struct synchronisableVariable{
-    int size;
+    unsigned int size;
     int mode; // this determines in which direction the variable gets synchronised
     void *var;
     variableType type;
@@ -68,19 +68,26 @@ namespace network
   public:
 
     virtual ~Synchronisable();
-    int objectID;
-    int classID;
+    unsigned int objectID;
+    unsigned int classID;
 
     void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
     //  syncData getData();
     syncData getData(unsigned char *mem, int mode=0x0);
+    bool getData2(unsigned char*& men, int mode=0x0);
+    //bool getData(Bytestream& bs, int mode=0x0);
     int getSize(int mode=0x0);
+    int getSize2(int mode=0x0);
     bool updateData(syncData vars, int mode=0x0);
+    bool updateData(unsigned char*& mem, int mode=0x0);
+    bool isMyData(unsigned char* mem);
     void setBacksync(bool sync);
     bool getBacksync();
     virtual void registerAllVariables()=0;
     virtual bool create();
     static void setClient(bool b);
+    
+    static bool fabricate(unsigned char*& mem, int mode=0x0);
   protected:
     Synchronisable();
   private:
