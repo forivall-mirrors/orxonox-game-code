@@ -146,11 +146,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\network\GameStateClient.cc"
+				RelativePath="..\..\src\network\GamestateClient.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\network\GameStateManager.cc"
+				RelativePath="..\..\src\network\GamestateHandler.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\GamestateManager.cc"
 				>
 			</File>
 			<File
@@ -159,14 +163,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\network\PacketBuffer.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\network\PacketDecoder.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\network\PacketGenerator.cc"
 				>
 			</File>
 			<File
@@ -200,6 +196,10 @@
 					RelativePath="..\..\src\network\packet\Packet.cc"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\network\packet\Welcome.cc"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -224,15 +224,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\network\GameStateClient.h"
+				RelativePath="..\..\src\network\GamestateClient.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\network\GameStateManager.h"
+				RelativePath="..\..\src\network\GamestateHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\GamestateManager.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\network\Host.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\NetworkCallback.h"
 				>
 			</File>
 			<File
@@ -241,14 +249,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\network\PacketBuffer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\network\PacketManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\network\PacketTypes.h"
 				>
 			</File>
 			<File
@@ -283,7 +283,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\network\packet\PacketContent.h"
+					RelativePath="..\..\src\network\packet\Welcome.h"
 					>
 				</File>
 			</Filter>
