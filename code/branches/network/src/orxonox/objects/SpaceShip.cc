@@ -243,9 +243,9 @@ namespace orxonox
             this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
             this->chFarNode_->setScale(0.4, 0.4, 0.4);
         }
+        // END of testing crosshair
 
         createCamera();
-        // END of testing crosshair
     }
 
     void SpaceShip::setConfigValues()
@@ -321,9 +321,13 @@ namespace orxonox
         COUT(3) << "requesting focus for camera" << std::endl;
         this->setBacksync(true);
         //CameraHandler::getInstance()->requestFocus(cam_);
-        if(this->isExactlyA(Class(SpaceShip)))
+        if(this->isExactlyA(Class(SpaceShip))){
           getFocus();
-      }
+          COUT(3) << "getting focus for obj id: " << objectID << std::endl;
+        }else
+          COUT(3) << "not getting focus (not exactly spaceship) for obj id: " << objectID << std::endl;
+      }else
+        COUT(3) << "not getting focus (not my ship) for obj id: " << objectID << std::endl;
 
     }
 

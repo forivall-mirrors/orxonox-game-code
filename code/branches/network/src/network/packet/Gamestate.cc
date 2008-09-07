@@ -127,11 +127,11 @@ bool Gamestate::spreadData(int mode)
   
   while(mem < data_+sizeof(GamestateHeader)+HEADER->normsize){
       // extract synchronisable header
-    size = *(int *)mem;
-    objectID = *(int*)(mem+sizeof(int));
-    classID = *(int*)(mem+2*sizeof(int));
+    size = *(unsigned int *)mem;
+    objectID = *(unsigned int*)(mem+sizeof(unsigned int));
+    classID = *(unsigned int*)(mem+2*sizeof(unsigned int));
 
-    if(!it || it->objectID!=objectID){
+    if(!it || it->objectID!=objectID || it->classID!=classID){
         // bad luck ;)
         // delete the synchronisable (obviously seems to be deleted on the server)
       while(it && it->objectID!=objectID)
@@ -140,7 +140,7 @@ bool Gamestate::spreadData(int mode)
       if(!it){
         //fabricate the new synchronisable
         if(!Synchronisable::fabricate(mem, mode))
-          return false;
+          /*return false*/;
         it=orxonox::ObjectList<Synchronisable>::end();
       }
     } else 
@@ -207,6 +207,8 @@ bool Gamestate::compressData()
   delete[] data_;
   //save new data
   data_ = ndata;
+  assert(HEADER->compressed);
+  COUT(3) << "gamestate compress normsize: " << HEADER->normsize << " compsize: " << HEADER->compsize << std::endl;
   return true;
 }
 bool Gamestate::decompressData()

@@ -81,6 +81,8 @@ Packet::Packet(unsigned char *data, int clientID){
 Packet::Packet(const Packet &p){
   enetPacket_=p.enetPacket_;
   flags_=p.flags_;
+  packetDirection_ = p.packetDirection_;
+  clientID_ = p.clientID_;
   if(p.data_){
     data_ = new unsigned char[p.getSize()];
     memcpy(data_, p.data_, p.getSize());
@@ -96,10 +98,10 @@ Packet::~Packet(){
 }
 
 bool Packet::send(){
-  /*if(packetDirection_ != ENUM::Outgoing && packetDirection_ != ENUM::Bidirectional ){
+  if(packetDirection_ != ENUM::Outgoing && packetDirection_ != ENUM::Bidirectional ){
     assert(0);
     return false;
-  }*/
+  }
   if(!enetPacket_){
     if(!data_){
       assert(0);

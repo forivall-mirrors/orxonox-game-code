@@ -61,8 +61,7 @@ namespace network
 
   bool GamestateManager::update(){
     cleanup();
-    getSnapshot();
-    return true;
+    return getSnapshot();
   }
   
   bool GamestateManager::add(packet::Gamestate *gs, int clientID){

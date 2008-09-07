@@ -150,13 +150,13 @@ namespace network
 //     COUT(3) << ".";
     if(client_connection.isConnected() && isSynched_){
       COUT(4) << "popping partial gamestate: " << std::endl;
-      packet::Gamestate *gs = gamestate.getGamestate();
+      /*packet::Gamestate *gs = gamestate.getGamestate();
       if(gs){
         COUT(4) << "client tick: sending gs " << gs << std::endl;
         if( !gs->send() )
           COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
         // gs gets automatically deleted by enet callback
-      }
+      }*/
     }
     ENetEvent *event;
     // stop if the packet queue is empty
@@ -167,7 +167,7 @@ namespace network
       assert(packet->process());
     }
     int gameStateID = gamestate.processGamestates();
-    if(gameStateID==GAMESTATEID_INITIAL)
+    /*if(gameStateID==GAMESTATEID_INITIAL)
       if(gameStateFailure_){
         packet::Acknowledgement ack(GAMESTATEID_INITIAL, 0);
         if(!ack.send())
@@ -185,7 +185,7 @@ namespace network
       packet::Acknowledgement ack(gameStateID, 0);
       if(!ack.send())
         COUT(3) << "could not ack gamestate" << std::endl;
-    }// otherwise we had no gamestate to load
+    }*/// otherwise we had no gamestate to load
     gamestate.cleanup();
     return;
   }

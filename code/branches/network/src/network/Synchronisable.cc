@@ -89,23 +89,22 @@ namespace network
   
   bool Synchronisable::fabricate(unsigned char*& mem, int mode)
   {
-    int size, objectID, classID;
-    size = *(int *)mem;
-    objectID = *(int*)(mem+sizeof(int));
-    classID = *(int*)(mem+2*sizeof(int));
+    unsigned int size, objectID, classID;
+    size = *(unsigned int *)mem;
+    objectID = *(unsigned int*)(mem+sizeof(unsigned int));
+    classID = *(unsigned int*)(mem+2*sizeof(unsigned int));
     
-    orxonox::Identifier* id = ID((unsigned int)classID);
+    orxonox::Identifier* id = ID(classID);
     if(!id){
       COUT(3) << "We could not identify a new object; classid: " << classID << " uint: " << (unsigned int)classID << " objectID: " << objectID << " size: " << size << std::endl;
       return false; // most probably the gamestate is corrupted
     }
-    Synchronisable *no = dynamic_cast<Synchronisable *>(id->fabricate());
-    if(!no){
-      COUT(2) << "coudl not frabricate classid: " << classID << " objectID: " << objectID << " identifier: " << id << std::endl;
-      return false;
-    }
+    orxonox::BaseObject *bo = id->fabricate();
+    Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
+    assert(no);
     no->objectID=objectID;
     no->classID=classID;
+    COUT(3) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
     if( !no->updateData(mem, mode) ){
       COUT(1) << "We couldn't update the object: " << objectID << std::endl;

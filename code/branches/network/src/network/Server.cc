@@ -258,6 +258,7 @@ namespace network
       }
       //std::cout << "adding gamestate" << std::endl;
       gs->setClientID(cid);
+      assert(gs->compressData());
       if ( !gs->send() ){
         COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl; 
         temp->addFailure();
