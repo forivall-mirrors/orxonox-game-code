@@ -60,7 +60,7 @@ class Host{
     //static bool chat(std::string& message);
 //     static bool receiveChat(packet::Chat *message, unsigned int clientID);
     static int getPlayerID();
-    static unsigned int getShipID();
+    static unsigned int getShipID(){return instance_->shipID_;}
     static void setClientID(unsigned int id){ instance_->clientID_ = id; }
     static void setShipID(unsigned int id){ instance_->shipID_ = id; }
   private:

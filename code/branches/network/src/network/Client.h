@@ -79,7 +79,7 @@ namespace network
     
     unsigned int shipID(){return shipID_;}
     int playerID(){return clientID_;}
-    static void setShipID( unsigned int shipID){ dynamic_cast<Client *>(instance_)->shipID_=shipID; }
+    //static void setShipID( unsigned int shipID){ dynamic_cast<Client *>(instance_)->shipID_=shipID; }
     static void setClientID( unsigned int clientID){ dynamic_cast<Client *>(instance_)->clientID_=clientID; }
     
     void tick(float time);

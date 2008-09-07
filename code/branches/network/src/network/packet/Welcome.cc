@@ -31,6 +31,7 @@
 
 #include "Welcome.h"
 #include "network/Host.h"
+#include "core/CoreIncludes.h"
 #include <assert.h>
 
 namespace network {
@@ -76,6 +77,7 @@ bool Welcome::process(){
   shipID = *(unsigned int *)&data_[ _SHIPID ];
   Host::setClientID(clientID);
   Host::setShipID(shipID);
+  COUT(3) << "Welcome set clientId: " << clientID << " shipID: " << shipID << std::endl;
   delete this;
   return true;
 }

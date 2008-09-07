@@ -47,10 +47,10 @@ int Host::getPlayerID(){
   return instance_->playerID();
 }
 
-unsigned int Host::getShipID(){ 
-  if(!instance_)
-    return 0;
-  return instance_->shipID();
-}
+// unsigned int Host::getShipID(){ 
+//   if(!instance_)
+//     assert(0);
+//   return instance_->shipID();
+// }
 
 }//namespace network

@@ -75,7 +75,7 @@ namespace orxonox
         if( (it)->myShip_ )
           return *it;
       }
-      return NULL;
+      return 0;
     }
 
     SpaceShip::SpaceShip()
@@ -157,15 +157,15 @@ namespace orxonox
 
     bool SpaceShip::create(){
       if(!myShip_){
+        if(network::Host::running())
+          COUT(3) << "this id: " << this->objectID << " myShipID: " << network::Host::getShipID() << std::endl;
         if(network::Host::running() && objectID == network::Host::getShipID())
           myShip_=true;
         else
           HUD::getSingleton().addRadarObject(this, this->getProjectileColour());
       }
-      if(Model::create())
-        this->init();
-      else
-        return false;
+      assert(Model::create());
+      this->init();
       return true;
     }
 
@@ -286,7 +286,7 @@ namespace orxonox
     }
 
     void SpaceShip::getFocus(){
-      COUT(4) << "requesting focus" << std::endl;
+      COUT(3) << "requesting focus" << std::endl;
       //if(!network::Host::running() || network::Host::getShipID()==objectID)
       if(myShip_)
         CameraHandler::getInstance()->requestFocus(cam_);
@@ -300,7 +300,7 @@ namespace orxonox
     void SpaceShip::createCamera(){
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);
-      COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
+      COUT(3) << "position: (this)" << this->getNode()->getPosition() << std::endl;
       this->camNode_->setPosition(Vector3(-25,0,5));
 //      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
 //      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));

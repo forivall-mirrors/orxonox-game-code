@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Ambient : public BaseObject, network::Synchronisable
+    class _OrxonoxExport Ambient : public BaseObject, public network::Synchronisable
     {
         public:
             Ambient();
