@@ -213,6 +213,11 @@ class _UtilExport MultiType
         inline void                       setType(const MultiType& other) { this->setType(other.getType());     }
         inline void                       setType(MT_Type type)           { this->reset(); this->convert(type); }
 
+        inline MT_Type                    getType()                 const { return (this->value_) ? this->value_->type_ : MT_null; }
+        inline bool                       isType(MT_Type type)      const { return (this->value_) ? (this->value_->type_ == type) : (type == MT_null); }
+        template <typename T> inline bool isType()                  const { return false; }
+        std::string                       getTypename()             const;
+
         operator char()                  const;
         operator unsigned char()         const;
         operator short()                 const;
@@ -262,12 +267,30 @@ class _UtilExport MultiType
         inline void getValue(orxonox::Radian*      value) const { if (this->value_) { (*value) = this->value_->operator orxonox::Radian();      } }
         inline void getValue(orxonox::Degree*      value) const { if (this->value_) { (*value) = this->value_->operator orxonox::Degree();      } }
 
-        inline MT_Type                    getType()            const { return (this->value_) ? this->value_->type_ : MT_null; }
-        inline bool                       isType(MT_Type type) const { return (this->value_) ? (this->value_->type_ == type) : (type == MT_null); }
-        template <typename T> inline bool isType()             const { return false; }
-        std::string                       getTypename()        const;
-
-        inline std::string toString() const { return this->operator std::string(); }
+        inline char                     getChar()             const { return this->operator char();                 }
+        inline unsigned char            getUnsignedChar()     const { return this->operator unsigned char();        }
+        inline short                    getShort()            const { return this->operator short();                }
+        inline unsigned short           getUnsignedShort()    const { return this->operator unsigned short();       }
+        inline int                      getInt()              const { return this->operator int();                  }
+        inline unsigned int             getUnsignedInt()      const { return this->operator unsigned int();         }
+        inline long                     getLong()             const { return this->operator long();                 }
+        inline unsigned long            getUnsignedLong()     const { return this->operator unsigned long();        }
+        inline long long                getLongLong()         const { return this->operator long long();            }
+        inline unsigned long long       getUnsignedLongLong() const { return this->operator unsigned long long();   }
+        inline float                    getFloat()            const { return this->operator float();                }
+        inline double                   getDouble()           const { return this->operator double();               }
+        inline long double              getLongDouble()       const { return this->operator long double();          }
+        inline bool                     getBool()             const { return this->operator bool();                 }
+        inline void*                    getVoid()             const { return this->operator void*();                }
+        inline std::string              getString()           const { return this->operator std::string();          }
+        inline orxonox::Vector2         getVector2()          const { return this->operator orxonox::Vector2();     }
+        inline orxonox::Vector3         getVector3()          const { return this->operator orxonox::Vector3();     }
+        inline orxonox::Vector4         getVector4()          const { return this->operator orxonox::Vector4();     }
+        inline orxonox::ColourValue     getColourValue()      const { return this->operator orxonox::ColourValue(); }
+        inline orxonox::Quaternion      getQuaternion()       const { return this->operator orxonox::Quaternion();  }
+        inline orxonox::Radian          getRadian()           const { return this->operator orxonox::Radian();      }
+        inline orxonox::Degree          getDegree()           const { return this->operator orxonox::Degree();      }
+        template <typename T> inline T* getPointer()          const { return ((T*)this->getVoid());                 }
 
     private:
         inline void assignValue(const char& value)                 { if (this->value_ && this->value_->type_ == MT_char)        { this->value_->setValue(value); } else { this->changeValueContainer<char>(value);                 } }

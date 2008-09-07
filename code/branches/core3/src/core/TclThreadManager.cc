@@ -518,7 +518,7 @@ namespace orxonox
                     this->error("Error: Can't execute command \"" + command + "\"!");
 
                 if (CommandExecutor::getLastEvaluation().hasReturnvalue())
-                    output = CommandExecutor::getLastEvaluation().getReturnvalue().toString();
+                    output = CommandExecutor::getLastEvaluation().getReturnvalue().getString();
             }
 
             boost::mutex::scoped_lock queriers_lock(this->orxonoxInterpreterBundle_.queriersMutex_);

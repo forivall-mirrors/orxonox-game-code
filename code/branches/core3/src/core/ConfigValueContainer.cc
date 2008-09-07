@@ -68,7 +68,7 @@ namespace orxonox
         this->value_ = defvalue;
         this->bIsVector_ = false;
 
-        this->defvalueString_ = this->value_.toString();
+        this->defvalueString_ = this->value_.getString();
         this->update();
     }
 

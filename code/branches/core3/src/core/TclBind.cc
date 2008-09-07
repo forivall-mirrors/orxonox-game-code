@@ -114,7 +114,7 @@ namespace orxonox
         }
 
         if (CommandExecutor::getLastEvaluation().hasReturnvalue())
-            return CommandExecutor::getLastEvaluation().getReturnvalue().toString();
+            return CommandExecutor::getLastEvaluation().getReturnvalue().getString();
 
         return "";
     }

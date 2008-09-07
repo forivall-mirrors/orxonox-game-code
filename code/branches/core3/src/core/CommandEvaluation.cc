@@ -303,7 +303,7 @@ namespace orxonox
             output += command->getTypenameParam(i);
 
             if (command->defaultValueSet(i))
-                output += "=" + command->getDefaultValue(i).toString() + "]";
+                output += "=" + command->getDefaultValue(i).getString() + "]";
             else
                 output += "}";
         }
