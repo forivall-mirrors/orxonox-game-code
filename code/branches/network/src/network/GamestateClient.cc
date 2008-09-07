@@ -72,12 +72,17 @@ namespace network
     if(tempGamestate_==NULL)
       return 0;
     int id = GAMESTATEID_INITIAL;
-    bool b = saveShipCache();
-    if(processGamestate(tempGamestate_)){
-      if(b)
-        loadShipCache();
-      id = tempGamestate_->getID();
-    }
+    //bool b = saveShipCache();
+    packet::Gamestate *processed = processGamestate(tempGamestate_);
+    assert(processed);
+    //successfully loaded data from gamestate. now save gamestate for diff and delete the old gs
+    tempGamestate_=0;
+    gamestateMap_[processed->getID()]=processed;
+    last_diff_ = processed->getBaseID();
+    last_gamestate_ = processed->getID();
+    //if(b)
+      //loadShipCache();
+    id = processed->getID();
     cleanup();
     return id;
   }
@@ -150,11 +155,21 @@ namespace network
       return false;
   }
 
-  bool GamestateClient::processGamestate(packet::Gamestate *gs){
-    assert(gs->decompressData());
-    if(gs->isDiffed())
-      assert(gs->undiff(gamestateMap_[gs->getBaseID()]));
-    return gs->spreadData();
+  packet::Gamestate *GamestateClient::processGamestate(packet::Gamestate *gs){
+    if(gs->isCompressed())
+      assert(gs->decompressData());
+    if(gs->isDiffed()){
+      packet::Gamestate *base = gamestateMap_[gs->getBaseID()];
+      assert(base);
+      packet::Gamestate *undiffed = gs->undiff(base);
+      delete gs;
+      gs=undiffed;
+      COUT(3) << "successfully undiffed gamestate id: " << undiffed->getID() << std::endl;
+    }
+    if(gs->spreadData())
+      return gs;
+    else
+      return NULL;
   }
 
 }

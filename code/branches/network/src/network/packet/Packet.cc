@@ -112,19 +112,20 @@ bool Packet::send(){
     enetPacket_->freeCallback = &blub;
     packetMap_[enetPacket_] = this;
   }
-  /*switch( *(ENUM::Type *)(data_ + _PACKETID) )
+#ifndef NDEBUG
+  switch( *(ENUM::Type *)(data_ + _PACKETID) )
   {
     case ENUM::Acknowledgement:
     case ENUM::Chat:
     case ENUM::ClassID:
     case ENUM::Gamestate:
     case ENUM::Welcome:
-      COUT(3) << "welcome" << std::endl;
-      p = new Welcome( data, clientID );
+      break;
     default:
       assert(0); //TODO: repair this
       break;
-  }*/
+  }
+#endif
   network::Host::addPacket( enetPacket_, clientID_);
   enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
   return true;

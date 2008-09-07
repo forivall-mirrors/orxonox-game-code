@@ -77,11 +77,11 @@ class Packet{
 //    Packet(ENetPacket *packet, ENetPeer *peer);
     enet_uint32 flags_;
     int clientID_;
+    ENUM::Direction packetDirection_;
     unsigned char *data_;
   private:
     static std::map<ENetPacket *, Packet *> packetMap_;
     ENetPacket *enetPacket_;
-    ENUM::Direction packetDirection_;
 };
 
 } //namespace packet

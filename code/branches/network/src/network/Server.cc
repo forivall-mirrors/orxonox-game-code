@@ -52,6 +52,7 @@
 #include "packet/Chat.h"
 #include "packet/Packet.h"
 #include "packet/Welcome.h"
+#include <util/Convert.h>
 
 namespace network
 {
@@ -66,12 +67,14 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager();
     gamestates_ = new GamestateManager();
+    isServer_ = true;
   }
   
   Server::Server(int port){
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port);
     gamestates_ = new GamestateManager();
+    isServer_ = true;
   }
 
   /**
@@ -83,6 +86,7 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port, bindAddress);
     gamestates_ = new GamestateManager();
+    isServer_ = true;
   }
 
   /**
@@ -94,6 +98,7 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port, bindAddress);
     gamestates_ = new GamestateManager();
+    isServer_ = true;
   }
 
   /**
@@ -347,7 +352,7 @@ namespace network
     no->setRotAcc(3.0);
     no->setTransDamp(75);
     no->setRotDamp(1.0);
-    no->setCamera("cam_"+client->getID());
+    no->setCamera(std::string("cam_") + convertToString(client->getID()));
     no->create();
     no->setBacksync(true);
     
@@ -363,6 +368,7 @@ namespace network
     ClientInformation *client = ClientInformation::findClient(&event->peer->address);
     if(!client)
       return false;
+    gamestates_->removeClient(client);
     while(it){
       if(it->objectID!=client->getShipID()){
         ++it;

@@ -193,11 +193,11 @@ namespace network
       return;
     if(client->getGamestateID()>=0)
       gamestateUsed[client->getGamestateID()]--;
-    ClientInformation::removeClient(client->getID());
   }
   
   bool GamestateManager::processGamestate(packet::Gamestate *gs){
-    assert(gs->decompressData());
+    if(gs->isCompressed())
+       assert(gs->decompressData());
     assert(!gs->isDiffed());
     return gs->spreadData();
   }

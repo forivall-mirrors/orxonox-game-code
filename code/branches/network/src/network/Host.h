@@ -53,6 +53,7 @@ class Host{
     Host();
     ~Host();
     static Host *instance_;
+    bool isServer_;	
     
   public:
     static bool running(){return instance_!=0;}
@@ -63,6 +64,7 @@ class Host{
     static unsigned int getShipID(){return instance_->shipID_;}
     static void setClientID(unsigned int id){ instance_->clientID_ = id; }
     static void setShipID(unsigned int id){ instance_->shipID_ = id; }
+    static bool isServer(){ return instance_->isServer_; }		
   private:
     unsigned int clientID_;
     unsigned int shipID_;

@@ -119,7 +119,9 @@ bool Gamestate::collectData(int id, int mode)
 
 bool Gamestate::spreadData(int mode)
 {
-  assert(data_ && !HEADER->compressed && !HEADER->diffed);
+  assert(data_);
+  assert(!HEADER->compressed);
+  assert(!HEADER->diffed);
   unsigned int size, objectID, classID;
   unsigned char *mem=data_+sizeof(GamestateHeader);
     // get the start of the Synchronisable list
@@ -140,7 +142,7 @@ bool Gamestate::spreadData(int mode)
       if(!it){
         //fabricate the new synchronisable
         if(!Synchronisable::fabricate(mem, mode))
-          /*return false*/;
+          return false;
         it=orxonox::ObjectList<Synchronisable>::end();
       }
     } else 
@@ -275,7 +277,11 @@ Gamestate *Gamestate::diff(Gamestate *base)
 
   *GAMESTATE_HEADER(ndata) = *HEADER;
   GAMESTATE_HEADER(ndata)->diffed = true;
+  GAMESTATE_HEADER(ndata)->base_id = base->getID();
   Gamestate *g = new Gamestate(ndata, 0);
+  g->flags_=flags_;
+  g->packetDirection_ = packetDirection_;
+  g->clientID_ = clientID_;
   return g;
 }
 
@@ -309,6 +315,11 @@ Gamestate *Gamestate::undiff(Gamestate *base)
   *GAMESTATE_HEADER(ndata) = *HEADER;
   GAMESTATE_HEADER(ndata)->diffed = false;
   Gamestate *g = new Gamestate(ndata, 0);
+  g->flags_=flags_;
+  g->packetDirection_ = packetDirection_;
+  g->clientID_ = clientID_;
+  assert(!g->isDiffed());
+  assert(!g->isCompressed());
   return g;
 }
 
@@ -338,6 +349,10 @@ unsigned int Gamestate::calcGamestateSize(int mode)
 
   bool Gamestate::isDiffed(){
     return HEADER->diffed;
+  }
+  
+  bool Gamestate::isCompressed(){
+    return HEADER->compressed;
   }
   
   int Gamestate::getBaseID(){

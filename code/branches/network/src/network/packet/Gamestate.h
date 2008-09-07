@@ -63,6 +63,7 @@ class Gamestate: public Packet{
     bool spreadData(int mode=0x0);
     int getID();
     bool isDiffed();
+    bool isCompressed();
     int getBaseID();
     Gamestate *diff(Gamestate *base);
     Gamestate *undiff(Gamestate *base);
