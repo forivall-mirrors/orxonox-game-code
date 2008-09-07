@@ -29,56 +29,56 @@
 #include "MultiType.h"
 #include "MultiTypeValue.h"
 
-void MultiType::setType(MT_Type type)
+void MultiType::convert(MT_Type type)
 {
     switch (type)
     {
         case MT_char:
-            this->setType<char>(); break;
+            this->convert<char>(); break;
         case MT_uchar:
-            this->setType<unsigned char>(); break;
+            this->convert<unsigned char>(); break;
         case MT_short:
-            this->setType<short>(); break;
+            this->convert<short>(); break;
         case MT_ushort:
-            this->setType<unsigned short>(); break;
+            this->convert<unsigned short>(); break;
         case MT_int:
-            this->setType<int>(); break;
+            this->convert<int>(); break;
         case MT_uint:
-            this->setType<unsigned int>(); break;
+            this->convert<unsigned int>(); break;
         case MT_long:
-            this->setType<long>(); break;
+            this->convert<long>(); break;
         case MT_ulong:
-            this->setType<unsigned long>(); break;
+            this->convert<unsigned long>(); break;
         case MT_longlong:
-            this->setType<long long>(); break;
+            this->convert<long long>(); break;
         case MT_ulonglong:
-            this->setType<unsigned long long>(); break;
+            this->convert<unsigned long long>(); break;
         case MT_float:
-            this->setType<float>(); break;
+            this->convert<float>(); break;
         case MT_double:
-            this->setType<double>(); break;
+            this->convert<double>(); break;
         case MT_longdouble:
-            this->setType<long double>(); break;
+            this->convert<long double>(); break;
         case MT_bool:
-            this->setType<bool>(); break;
+            this->convert<bool>(); break;
         case MT_void:
-            this->setType<void*>(); break;
+            this->convert<void*>(); break;
         case MT_string:
-            this->setType<std::string>(); break;
+            this->convert<std::string>(); break;
         case MT_vector2:
-            this->setType<orxonox::Vector2>(); break;
+            this->convert<orxonox::Vector2>(); break;
         case MT_vector3:
-            this->setType<orxonox::Vector3>(); break;
+            this->convert<orxonox::Vector3>(); break;
         case MT_vector4:
-            this->setType<orxonox::Vector4>(); break;
+            this->convert<orxonox::Vector4>(); break;
         case MT_colourvalue:
-            this->setType<orxonox::ColourValue>(); break;
+            this->convert<orxonox::ColourValue>(); break;
         case MT_quaternion:
-            this->setType<orxonox::Quaternion>(); break;
+            this->convert<orxonox::Quaternion>(); break;
         case MT_radian:
-            this->setType<orxonox::Radian>(); break;
+            this->convert<orxonox::Radian>(); break;
         case MT_degree:
-            this->setType<orxonox::Degree>(); break;
+            this->convert<orxonox::Degree>(); break;
         default:
             this->reset(); break;
     };
