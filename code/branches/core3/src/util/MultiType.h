@@ -35,12 +35,6 @@
 
 #include "Math.h"
 
-// disable annoying warning about multiple assignment operators
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
-#pragma warning(push)
-#pragma warning(disable:4522)
-#endif
-
 enum MT_Type
 {
     MT_null,
@@ -416,10 +410,5 @@ inline void MultiType::setValue(const orxonox::Radian& value)       { if (this->
 inline void MultiType::setValue(const orxonox::Degree& value)       { if (this->value_) { this->value_->setValue(value); } else { this->assignValue(value); } }
 
 inline void MultiType::setValue(const char* value)                  { if (this->value_) { this->value_->setValue(std::string(value)); } else { this->assignValue(std::string(value)); } }
-
-
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
-#pragma warning(pop)
-#endif
 
 #endif /* _MultiType_H__ */
