@@ -20,42 +20,41 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Oliver Scheuss <scheusso [at] ee.ethz.ch>, (C) 2008
  *   Co-authors:
  *      ...
  *
  */
+#ifndef NETWORKGAMESTATEHANDLER_H
+#define NETWORKGAMESTATEHANDLER_H
 
-#ifndef _Ambient_H__
-#define _Ambient_H__
+#include <string>
 
-#include "OrxonoxPrereqs.h"
+#include "NetworkPrereqs.h"
+#include "packet/Chat.h"
 
-#include "util/Math.h"
-#include "core/BaseObject.h"
-#include "network/Synchronisable.h"
+namespace network {
 
-namespace orxonox
-{
-    class _OrxonoxExport Ambient : public BaseObject, public network::Synchronisable
-    {
-        public:
-            Ambient();
-            virtual ~Ambient();
+/**
+	@author Oliver Scheuss
+*/
+class GamestateHandler{
+  private:
+    virtual bool add(packet::Gamestate *gs, int clientID)=0;
+    virtual bool ack(int gamestateID, int clientID)=0;
+    
+    static GamestateHandler *instance_;
+    
+    
+  protected:
+    GamestateHandler();
+    ~GamestateHandler();
+    
+  public:
+    static bool addGamestate(packet::Gamestate *gs, int clientID){ return instance_->add(gs, clientID); }
+    static bool ackGamestate(int gamestateID, int clientID){ return instance_->ack(gamestateID, clientID); }
+};
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void setAmbientLight(const ColourValue& colour);
-            virtual bool create();
-            void registerAllVariables();
-
-            static void setAmbientLightTest(const ColourValue& colour)
-                { Ambient::instance_s->setAmbientLight(colour); }
-
-        private:
-            static Ambient* instance_s;
-            ColourValue ambientLight_;
-
-    };
 }
 
-#endif /* _Ambient_H__ */
+#endif

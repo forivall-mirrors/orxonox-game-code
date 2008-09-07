@@ -45,9 +45,8 @@
 
 #include <string>
 
-#include "PacketManager.h"
-
-
+#include "Host.h"
+#include "GamestateManager.h"
 
 namespace network
 {
@@ -57,30 +56,25 @@ namespace network
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
   */
-  class _NetworkExport Server : public PacketDecoder{
+  class _NetworkExport Server : public Host{
   public:
-    static Server *createSingleton();
-    static Server *createSingleton(int port);
-    static Server *createSingleton(int port, std::string bindAddress);
-    static Server *createSingleton(int port, const char *bindAddress);
-    
-    static Server *getSingleton();
-    
-    void open();
-    void close();
-    bool sendChat(std::string msg);
-    bool sendChat(const char *msg);
-    void tick(float time);
-  protected:
-    void processQueue();
-    void updateGamestate();
-  private:
     Server();
     Server(int port);
     Server(int port, std::string bindAddress);
     Server(int port, const char *bindAddress);
     
-    static Server *instance_;
+    void open();
+    void close();
+    bool processChat(packet::Chat *message, unsigned int clientID);
+    bool sendChat(packet::Chat *chat);
+    bool queuePacket(ENetPacket *packet, int clientID);
+    void tick(float time);
+  protected:
+    void processQueue();
+    void updateGamestate();
+  private:
+    unsigned int shipID(){return 0;}
+    int playerID(){return 0;}
     
     bool addClient(ENetEvent *event);
     bool createClient(int clientID);
@@ -88,16 +82,15 @@ namespace network
     bool disconnectClient(ENetEvent *event);
     void disconnectClient(int clientID);
     void disconnectClient( ClientInformation *client);
+    bool processPacket( ENetPacket *packet, ENetPeer *peer );
     bool sendGameState();
-    void processAck( ack *data, int clientID);
-    bool processConnectRequest( connectRequest *con, int clientID );
-    void processGamestate( GameStateCompressed *data, int clientID);
-    void processChat( chat *data, int clientId);
+    
+    
+    //void processChat( chat *data, int clientId);
     ConnectionManager *connection;
-    GameStateManager *gamestates;
-    PacketGenerator packet_gen;
+    GamestateManager *gamestates_;
 
-    ClientInformation *clients;
+    
     float timeSinceLastUpdate_;
   };
 

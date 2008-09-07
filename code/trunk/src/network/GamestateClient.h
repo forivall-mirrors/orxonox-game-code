@@ -37,64 +37,49 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef _GameStateClient_H__
-#define _GameStateClient_H__
+#ifndef _GamestateClient_H__
+#define _GamestateClient_H__
 
 #include <map>
 // 
 #include "NetworkPrereqs.h"
-#include "OrxonoxPrereqs.h"
 #include "core/CorePrereqs.h"
-#include "PacketTypes.h"
-#include "Synchronisable.h"
-
+#include "packet/Gamestate.h"
+#include "objects/SpaceShip.h"
+#include "GamestateHandler.h"
 
 #define GAMESTATEID_INITIAL -1
 
-
 namespace network
 {
-  class GameStateClient
+  class GamestateClient: public GamestateHandler
   {
   public:
-    GameStateClient();
-    ~GameStateClient();
+    GamestateClient();
+    ~GamestateClient();
     
-    void addGameState(GameStateCompressed *gs);
-    int processGameState();
-    GameStateCompressed *popPartialGameState();
+    bool add(packet::Gamestate *gs, int clientID);
+    bool ack(int gamestateID, int clientID);
+    
+    int processGamestates();
+    packet::Gamestate *getGamestate();
     void cleanup();
   private:
-    bool pushGameState(GameStateCompressed *compstate);
-    bool loadSnapshot(GameState *state);
-    GameState *getPartialSnapshot();
-    GameState *undiff(GameState *old, GameState *diff);
-    GameStateCompressed *compress_(GameState *a);
-    GameState *decompress(GameStateCompressed *a);
-    GameState *decode(GameState *old, GameStateCompressed *diff);
-    GameState *decode(GameStateCompressed *x);
+    bool processGamestate(packet::Gamestate *gs);
     void removeObject(orxonox::Iterator<Synchronisable> &it);
-    void printGameStateMap();
+    void printGamestateMap();
     bool saveShipCache();
     bool loadShipCache();
 
     int           last_diff_;
     int           last_gamestate_;
-    std::map<int, GameState *> gameStateMap;
-    GameStateCompressed *tempGameState_; // we save the received gamestates here during processQueue
+    std::map<int, packet::Gamestate *> gamestateMap_;
+    packet::Gamestate *tempGamestate_; // we save the received gamestates here during processQueue
     orxonox::SpaceShip *myShip_;
-    syncData shipCache_;
+    unsigned char *shipCache_;
     
-    
-    
-    
-  public:
-    //#### ADDED FOR TESTING PURPOSE ####
-    GameState* testDecompress( GameStateCompressed* gc );
-    GameState* testUndiff( GameState* g_old, GameState* g_diffed );
-    //#### END TESTING PURPOSE ####
   };
 
 }
 
-#endif /* _GameStateClient_H__ */
+#endif /* _GamestateClient_H__ */

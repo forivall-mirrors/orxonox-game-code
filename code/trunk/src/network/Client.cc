@@ -39,46 +39,17 @@
 //
 
 #include "Client.h"
+#include "Host.h"
 #include "Synchronisable.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
-#include "Server.h"
+#include "packet/Packet.h"
+#include "packet/Acknowledgement.h"
 
 namespace network
 {
-  SetConsoleCommandShortcut(Client, Chat);
+//   SetConsoleCommandShortcut(Client, chat);
   
-  Client* Client::_sClient = 0;
-  
-  Client* Client::createSingleton(){
-    if(!_sClient){
-      _sClient = new Client();
-    }
-    return _sClient;
-  }
-  
-  Client* Client::createSingleton(std::string address, int port){
-    if(!_sClient)
-      _sClient = new Client(address, port);
-    return _sClient;
-  }
-  
-  Client* Client::createSingleton(const char *address, int port){
-    if(!_sClient)
-      _sClient = new Client(address, port);
-    return _sClient;
-  }
-  
-  void Client::destroySingleton(){
-    if(_sClient){
-      delete _sClient;
-      _sClient = 0;
-    }
-  }
-  
-  Client* Client::getSingleton(){
-    return _sClient; 
-  }
   
   /**
   * Constructor for the Client class
@@ -143,16 +114,19 @@ namespace network
     return client_connection.closeConnection();
   }
 
-  
-
-  void Client::Chat( std::string message ){
-    if(Client::getSingleton())
-      Client::getSingleton()->sendChat(message);
-    else if(Server::getSingleton())
-      Server::getSingleton()->sendChat(message);
-    else
-      COUT(1) << "do you want to monologize ??" << std::endl;
+  bool Client::queuePacket(ENetPacket *packet, int clientID){
+    return client_connection.addPacket(packet);
   }
+  
+  bool Client::processChat(packet::Chat *message, unsigned int clientID){
+    return message->process();
+  }
+  
+  /*bool Client::sendChat(packet::Chat *chat){
+    chat->process();
+    packet::Packet *p = new packet::Packet(chat);
+    return p->send();
+  }*/
   
 
   /**
@@ -164,10 +138,9 @@ namespace network
     // generate packet and add it to queue
     if(!isConnected)
       return false;
-    return client_connection.addPacket(pck_gen.chatMessage( message.c_str() ));
-      //return client_connection.sendPackets();
+    packet::Chat chat(message, 0);
+    return chat.send();
     // send packets
-    return false;
   }
 
   /**
@@ -177,28 +150,27 @@ namespace network
 //     COUT(3) << ".";
     if(client_connection.isConnected() && isSynched_){
       COUT(4) << "popping partial gamestate: " << std::endl;
-      GameStateCompressed *gs = gamestate.popPartialGameState();
+      /*packet::Gamestate *gs = gamestate.getGamestate();
       if(gs){
         COUT(4) << "client tick: sending gs " << gs << std::endl;
-        ENetPacket *packet = pck_gen.gstate(gs);
-        if( packet == NULL || !client_connection.addPacket(packet))
+        if( !gs->send() )
           COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
-        // now delete it to save memory
-        delete[] gs->data;
-        delete gs;
-      }
+        // gs gets automatically deleted by enet callback
+      }*/
     }
     ENetEvent *event;
     // stop if the packet queue is empty
     while(!(client_connection.queueEmpty())){
       event = client_connection.getEvent();
       COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
-      elaborate(event->packet, 0); // ================= i guess we got to change this .... (client_ID is always same = server)
+      packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
+      assert(packet->process());
     }
-    int gameStateID = gamestate.processGameState();
-    if(gameStateID==GAMESTATEID_INITIAL)
+    int gameStateID = gamestate.processGamestates();
+    /*if(gameStateID==GAMESTATEID_INITIAL)
       if(gameStateFailure_){
-        if(!client_connection.addPacket(pck_gen.acknowledgement(GAMESTATEID_INITIAL)))
+        packet::Acknowledgement ack(GAMESTATEID_INITIAL, 0);
+        if(!ack.send())
           COUT(3) << "could not (negatively) ack gamestate" << std::endl;
         else 
           COUT(4) << "negatively acked a gamestate" << std::endl;
@@ -210,43 +182,12 @@ namespace network
       if(!isSynched_)
         isSynched_=true;
       gameStateFailure_=false;
-      if(!client_connection.addPacket(pck_gen.acknowledgement(gameStateID)))
+      packet::Acknowledgement ack(gameStateID, 0);
+      if(!ack.send())
         COUT(3) << "could not ack gamestate" << std::endl;
-    }// otherwise we had no gamestate to load
+    }*/// otherwise we had no gamestate to load
     gamestate.cleanup();
-    /*if(!client_connection.sendPackets())
-      COUT(3) << "Problem sending packets to server" << std::endl;*/
     return;
-  }
-
-  void Client::processGamestate( GameStateCompressed *data, int clientID){
-    COUT(5) << "received gamestate id: " << data->id << std::endl;
-    gamestate.addGameState(data);
-  }
-
-  void Client::processClassid(classid *clid){
-    orxonox::Identifier *id;
-    id=ID(std::string(clid->message));
-    if(id!=NULL)
-      id->setNetworkID(clid->clid);
-    COUT(4) << "Client: received and set network id: " << clid->clid << "; classname: " << clid->message << std::endl;
-    COUT(4) << "id(classid)->getName " << ID((unsigned int)clid->clid)->getName() << std::endl;
-    delete clid;
-    return;
-  }
-
-  void Client::processChat( chat *data, int clientId){
-    COUT(1) << data->message << std::endl;
-    delete[] data->message;
-    delete data;
-  }
-  
-  bool Client::processWelcome( welcome *w ){
-    COUT(4) << "processing welcome message" << std::endl;
-    clientID_ = w->clientID;
-    shipID_ = w->shipID;
-    delete w;
-    return true;
   }
 
 }

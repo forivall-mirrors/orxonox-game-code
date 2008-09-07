@@ -45,9 +45,10 @@
 
 #include <string>
 
+#include "Host.h"
+#include "packet/Chat.h"
 #include "ClientConnection.h"
-#include "PacketManager.h"
-#include "GameStateClient.h"
+#include "GamestateClient.h"
 //#include "NetworkFrameListener.h"
 
 
@@ -61,46 +62,39 @@ namespace network
   * It is the root class of the network module
   *
   */
-  class _NetworkExport Client : PacketDecoder{
+  class _NetworkExport Client : public Host{
   public:
-    
-    static Client* createSingleton();
-    static Client* createSingleton(std::string address, int port);
-    static Client* createSingleton(const char *address, int port);
-    static void destroySingleton();
-    static Client *getSingleton();
-    
-    bool establishConnection();
-    bool closeConnection();
-
-    static void Chat( std::string message );
-    
-    int getShipID(){return shipID_;}
-    int getClientID(){return clientID_;}
-
-    void tick(float time);
-
-  private:
     Client();
     Client(std::string address, int port);
     Client(const char *address, int port);
     ~Client();
     
-    static Client* _sClient;
+    bool establishConnection();
+    bool closeConnection();
+    bool queuePacket(ENetPacket *packet, int clientID);
+    bool processChat(packet::Chat *message, unsigned int clientID);
+    //bool sendChat(packet::Chat *chat);
+    
+//    static void Chat( std::string message );
+    
+    unsigned int shipID(){return shipID_;}
+    int playerID(){return clientID_;}
+    //static void setShipID( unsigned int shipID){ dynamic_cast<Client *>(instance_)->shipID_=shipID; }
+    static void setClientID( unsigned int clientID){ dynamic_cast<Client *>(instance_)->clientID_=clientID; }
+    
+    void tick(float time);
+
+  private:
     
     ClientConnection client_connection;
-    PacketGenerator pck_gen;
-    GameStateClient gamestate;
+    GamestateClient gamestate;
     bool isConnected;
     bool isSynched_;
 
     bool sendChat( std::string message );
     
     // implement data processing functions of PacketDecoder
-    void processGamestate( GameStateCompressed *data, int clientID);
-    void processClassid(classid *clid);
-    void processChat( chat *data, int clientId );
-    bool processWelcome( welcome *w );
+//     void processChat( chat *data, int clientId );
     int clientID_;     // this is the id the server gave to us
     int shipID_;
     bool gameStateFailure_;

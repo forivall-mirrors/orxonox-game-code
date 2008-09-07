@@ -137,10 +137,10 @@ namespace orxonox
     InputManager::destroy();
     GraphicsEngine::getSingleton().destroy();
 
-    if (network::Client::getSingleton())
-      network::Client::destroySingleton();
+    if (client_g)
+      delete client_g;
     if (server_g)
-      delete network::Server::getSingleton();
+      delete server_g;
   }
 
 
@@ -362,9 +362,8 @@ namespace orxonox
   {
     COUT(0) << "Loading level in server mode" << std::endl;
 
-    //server_g = new network::Server(serverPort_);
-    server_g = network::Server::createSingleton(serverPort_);
-
+    server_g = new network::Server(serverPort_);
+    COUT(0) << "Loading scene in server mode" << std::endl;
     if (!loadScene())
       return false;
 
@@ -381,10 +380,10 @@ namespace orxonox
     COUT(0) << "Loading level in client mode" << std::endl;\
 
     if (serverIp_.compare("") == 0)
-      client_g = network::Client::createSingleton();
+      client_g = new network::Client();
     else
 
-      client_g = network::Client::createSingleton(serverIp_, serverPort_);
+      client_g = new network::Client(serverIp_, serverPort_);
 
     if(!client_g->establishConnection())
       return false;
@@ -524,7 +523,7 @@ namespace orxonox
     }
 
     if (mode_ == CLIENT)
-      network::Client::getSingleton()->closeConnection();
+      client_g->closeConnection();
     else if (mode_ == SERVER)
       server_g->close();
 

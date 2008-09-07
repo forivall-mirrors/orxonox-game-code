@@ -27,7 +27,7 @@
  */
 
 //
-// C++ Interface: GameStateManager
+// C++ Interface: GamestateManager
 //
 // Description:
 //
@@ -37,14 +37,14 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef _GameStateManager_H__
-#define _GameStateManager_H__
+#ifndef _GamestateManager_H__
+#define _GamestateManager_H__
 
 #include "NetworkPrereqs.h"
-
+#include "GamestateHandler.h"
 #include <map>
 
-#include "PacketTypes.h"
+#include "packet/Gamestate.h"
 
 namespace network
 {
@@ -55,8 +55,7 @@ namespace network
   * This Class implements a manager for gamestates:
   * - creating snapshots of gamestates
   * - writing gamestates to universe
-  * - diffing gamestates ?
-  *
+  * - diffing gamestates
   * EN/DECODATION:
   * a: last Gamestate a client has received
   * b: new Gamestate
@@ -66,46 +65,29 @@ namespace network
   * diff(a,diff(a,x))=x (hope this is correct)
   * @author Oliver Scheuss
   */
-  class GameStateManager{
+  class GamestateManager: public GamestateHandler{
   public:
-    GameStateManager(ClientInformation *head);
-    ~GameStateManager();
+    GamestateManager();
+    ~GamestateManager();
     
-    void addGameState(GameStateCompressed *gs, int clientID);
-    void processGameStates();
+    bool add(packet::Gamestate *gs, int clientID);
+    bool processGamestates();
+    bool update();
+    packet::Gamestate *popGameState(int clientID);
+
+    bool getSnapshot();
     
-    void update();
-    GameStateCompressed *popGameState(int clientID);
-    void ackGameState(int clientID, int gamestateID);
+    bool ack(int gamestateID, int clientID);
     void removeClient(ClientInformation *client);
     private:
-    bool pushGameState(GameStateCompressed *gs, int clientID);
     void cleanup(); // "garbage handler"
-    GameState *getSnapshot();
-    bool loadPartialSnapshot(GameState *state, int clientID);
-    GameStateCompressed *encode(GameState *a, GameState *b);
-    GameStateCompressed *encode(GameState *a);
-    GameState *diff(GameState *alt, GameState *neu);
-    GameStateCompressed *compress_(GameState *a);
-    GameState *decompress(GameStateCompressed *a);
-    bool printGameStates();
-    bool checkAccess(int clientID, int objectID);
-
-    std::map<int, GameState*> gameStateMap; //map gsID to gamestate*
-    std::map<int, int> gameStateUsed; // save the number of clients, that use the specific gamestate
-    std::map<int, GameStateCompressed*> gameStateQueue;
-    GameState *reference;
-    ClientInformation *head_;
+    bool processGamestate(packet::Gamestate *gs);
+    
+    std::map<int, packet::Gamestate*> gamestateMap; //map gsID to gamestate*
+    std::map<int, int> gamestateUsed; // save the number of clients, that use the specific gamestate
+    std::map<int, packet::Gamestate*> gamestateQueue;
+    packet::Gamestate *reference;
     int id_;
-    
-    
-    
-    
-  public:
-    //#### ADDED FOR TESTING PURPOSE ####
-    GameStateCompressed* testCompress( GameState* g );
-    GameState* testDiff( GameState* a, GameState* b );
-  //#### END TESTING PURPOSE ####
   };
 
 }

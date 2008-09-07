@@ -60,11 +60,11 @@
 // Forward declarations
 //-----------------------------------------------------------------------
 class ArgReader;
+class Convert;
 class MultiTypePrimitive;
 class MultiTypeString;
 class MultiTypeMath;
 template <class T>
 class String2Number;
 class SubString;
-
 #endif /* _UtilPrereqs_H__ */

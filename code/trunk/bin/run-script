@@ -21,5 +21,6 @@ if [[ ! -f plugins.cfg ]] ; then
                 cp plugins.cfg-init plugins.cfg
 	fi
 fi
-trap "xset r" EXIT HUP INT TERM ABRT KILL
-exec ./orxonox $@
+
+trap "xset r && echo 'resetting autorepeat'" HUP INT TERM QUIT ABRT KILL ALRM
+./orxonox $@

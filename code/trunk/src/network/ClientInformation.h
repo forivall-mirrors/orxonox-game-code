@@ -59,29 +59,26 @@ namespace network
   class ClientInformation{
   public:
     ClientInformation();
-    ClientInformation(bool head);
     //   ClientInformation(ClientInformation *prev, ClientInformation *next);
     //   ClientInformation(ClientInformation *prev);
     ~ClientInformation();
     ClientInformation *next();
     ClientInformation *prev();
-    ClientInformation *insertBack(ClientInformation *ins);
+    static ClientInformation *insertBack(ClientInformation *ins);
     
     // set functions
     void setID(int clientID);
     bool setPeer(ENetPeer *peer);
-    bool setGameStateID(int id);
+    bool setGamestateID(int id);
     bool setPartialGamestateID(int id);
-    inline void setShipID(int id){ShipID_=id;}
+    inline void setShipID(unsigned int id){ShipID_=id;}
     
     // get functions
-    inline int getShipID(){return ShipID_;}
+    inline unsigned int getShipID(){return ShipID_;}
     int getID();
     int getGamestateID();
     int getPartialGamestateID();
     ENetPeer *getPeer();
-    bool getHead();
-    void setHead(bool h);
     
     int getFailures();
     void addFailure();
@@ -89,20 +86,21 @@ namespace network
     enet_uint32 getRTT();
     enet_uint32 getPacketLoss();
     
-    bool removeClient(int clientID);
-    bool removeClient(ENetPeer *peer);
-    //## add bool mask-function eventually
-    ClientInformation *findClient(int clientID, bool look_backwards=false);
-    //## add bool mask-function eventually
-    ClientInformation *findClient(ENetAddress *address, bool look_backwards=false);
+    static bool removeClient(int clientID);
+    static bool removeClient(ENetPeer *peer);
+    static ClientInformation *findClient(int clientID, bool look_backwards=false);
+    static ClientInformation *findClient(ENetAddress *address, bool look_backwards=false);
+    static ClientInformation *getBegin(){return head_;}
 
     bool setSynched(bool s);
     bool getSynched();
 
 
-    private:
-      bool setNext(ClientInformation *next);
-      bool setPrev(ClientInformation *prev);
+  private:
+    static ClientInformation *head_;
+    
+    bool setNext(ClientInformation *next);
+    bool setPrev(ClientInformation *prev);
     ClientInformation *insertAfter(ClientInformation *ins);
     ClientInformation *insertBefore(ClientInformation *ins);
     
@@ -113,9 +111,8 @@ namespace network
     int clientID_;
     int gamestateID_;
     int partialGamestateID_;
-    int ShipID_;   // this is the unique objectID
+    unsigned int ShipID_;   // this is the unique objectID
     bool synched_;
-    bool head_;
     unsigned short failures_;
     
   };

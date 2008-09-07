@@ -146,123 +146,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\network\dummyclient.cc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\network\dummyclient2.cc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\network\dummyclient3.cc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\network\dummyserver.cc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\network\dummyserver3.cc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\network\GameStateClient.cc"
+				RelativePath="..\..\src\network\GamestateClient.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\network\GameStateManager.cc"
+				RelativePath="..\..\src\network\GamestateHandler.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\GamestateManager.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\Host.cc"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\network\PacketBuffer.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\network\PacketDecoder.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\network\PacketGenerator.cc"
 				>
 			</File>
 			<File
@@ -273,6 +173,34 @@
 				RelativePath="..\..\src\network\Synchronisable.cc"
 				>
 			</File>
+			<Filter
+				Name="packet"
+				>
+				<File
+					RelativePath="..\..\src\network\packet\Acknowledgement.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\packet\Chat.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\packet\ClassID.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\packet\Gamestate.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\packet\Packet.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\packet\Welcome.cc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -296,11 +224,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\network\GameStateClient.h"
+				RelativePath="..\..\src\network\GamestateClient.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\network\GameStateManager.h"
+				RelativePath="..\..\src\network\GamestateHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\GamestateManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\Host.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\NetworkCallback.h"
 				>
 			</File>
 			<File
@@ -312,14 +252,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\network\PacketManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\network\PacketTypes.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\network\Server.h"
 				>
 			</File>
@@ -327,6 +259,34 @@
 				RelativePath="..\..\src\network\Synchronisable.h"
 				>
 			</File>
+			<Filter
+				Name="packet"
+				>
+				<File
+					RelativePath="..\..\src\network\packet\Acknowledgement.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\packet\Chat.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\packet\ClassID.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\packet\Gamestate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\packet\Packet.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\packet\Welcome.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>
