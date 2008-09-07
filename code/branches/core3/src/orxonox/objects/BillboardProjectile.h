@@ -45,7 +45,6 @@ namespace orxonox
 
             virtual void setColour(const ColourValue& colour);
             virtual void changedVisibility();
-            virtual void testfunction();
 
         private:
             BillboardSet billboard_;

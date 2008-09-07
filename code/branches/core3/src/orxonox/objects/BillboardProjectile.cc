@@ -47,11 +47,6 @@ namespace orxonox
             this->attachObject(this->billboard_.getBillboardSet());
             this->scale(0.5);
         }
-/*
-        std::cout << "a:\n";
-        SUPER(BillboardProjectile, testfunction);
-        std::cout << "b:\n";
-*/
     }
 
     BillboardProjectile::~BillboardProjectile()
@@ -67,10 +62,7 @@ namespace orxonox
 
     void BillboardProjectile::changedVisibility()
     {
-//        Projectile::changedVisibility();
         SUPER(BillboardProjectile, changedVisibility);
         this->billboard_.setVisible(this->isVisible());
     }
-
-    void BillboardProjectile::testfunction() { SUPER(BillboardProjectile, testfunction); std::cout << "2 -> " << std::endl; }
 }

@@ -54,15 +54,6 @@ namespace orxonox
         }
 
         this->setConfigValues();
-/*
-        std::cout << "c:\n";
-        SUPER(ParticleProjectile, testfunction);
-        std::cout << "d:\n";
-
-        std::cout << "e:\n";
-        this->testfunction();
-        std::cout << "f:\n";
-*/
     }
 
     ParticleProjectile::~ParticleProjectile()
@@ -78,10 +69,7 @@ namespace orxonox
 
     void ParticleProjectile::changedVisibility()
     {
-//        BillboardProjectile::changedVisibility();
         SUPER(ParticleProjectile, changedVisibility);
         this->particles_->setEnabled(this->isVisible());
     }
-
-    void ParticleProjectile::testfunction() { SUPER(ParticleProjectile, testfunction); std::cout << "3 -> " << std::endl; }
 }

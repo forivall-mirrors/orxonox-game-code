@@ -62,7 +62,7 @@ namespace orxonox
             Tickable();
     };
 
-    SUPER_FUNCTION(2, Tickable, tick, true);
+    SUPER_FUNCTION(1, Tickable, tick, true);
 
     //! The Tickable interface provides a tick(dt) function, that gets called every frame.
     class _OrxonoxExport TickableReal : virtual public OrxonoxClass

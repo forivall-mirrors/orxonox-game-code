@@ -88,7 +88,6 @@ namespace orxonox
     */
     void Ambient::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-//        BaseObject::XMLPort(xmlelement, mode);
         SUPER(Ambient, XMLPort, xmlelement, mode);
 
         XMLPortParam(Ambient, "colourvalue", setAmbientLight, getAmbienetLight, xmlelement, mode);

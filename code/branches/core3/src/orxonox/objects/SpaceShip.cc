@@ -258,7 +258,6 @@ namespace orxonox
 
     void SpaceShip::changedVisibility()
     {
-//        Model::changedVisibility();
         SUPER(SpaceShip, changedVisibility);
 
         this->tt1_->setEnabled(this->isVisible());
@@ -271,7 +270,6 @@ namespace orxonox
 
     void SpaceShip::changedActivity()
     {
-//        Model::changedActivity();
         SUPER(SpaceShip, changedActivity);
 
         this->tt1_->setEnabled(this->isVisible());
@@ -346,7 +344,6 @@ namespace orxonox
     */
     void SpaceShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-//        Model::XMLPort(xmlelement, mode);
         SUPER(SpaceShip, XMLPort, xmlelement, mode);
 
         XMLPortParam(SpaceShip, "camera", setCamera, getCamera, xmlelement, mode);
@@ -484,7 +481,6 @@ namespace orxonox
         }
 
 
-//        WorldEntity::tick(dt);
         SUPER(SpaceShip, tick, dt);
 
         this->roll(this->mouseXRotation_ * dt);

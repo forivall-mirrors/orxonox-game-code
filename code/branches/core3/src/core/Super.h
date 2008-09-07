@@ -104,7 +104,7 @@
                 { \
                     if (!((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_) \
                     { \
-                        COUT(0) << "Added SuperFunctionCaller for " << #functionname << ": " << ClassIdentifier<T>::getIdentifier()->getName() << " <- " << ((ClassIdentifier<T>*)(*it))->getName() << std::endl; \
+                        COUT(5) << "Added SuperFunctionCaller for " << #functionname << ": " << ClassIdentifier<T>::getIdentifier()->getName() << " <- " << ((ClassIdentifier<T>*)(*it))->getName() << std::endl; \
                         ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_ = new SuperFunctionClassCaller_##functionname <T>; \
                     } \
                 } \
@@ -217,9 +217,6 @@
     */
 
     // (1/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
-    #define SUPER_testfunction(classname, functionname, ...) \
-        SUPER_NOARGS(classname, functionname)
-
     #define SUPER_XMLPort(classname, functionname, ...) \
         SUPER_ARGS(classname, functionname, __VA_ARGS__)
 
@@ -420,23 +417,19 @@ namespace orxonox
     //// Execute the code for each super-function ////
 
         // (2/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(0, testfunction, false)
-            ()
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
-
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(1, XMLPort, true, Element& xmlelement, XMLPort::Mode mode)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(0, XMLPort, true, Element& xmlelement, XMLPort::Mode mode)
             (xmlelement, mode)
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(2, tick, true, float dt)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(1, tick, true, float dt)
             (dt)
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(3, changedActivity, false)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(2, changedActivity, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
-        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(4, changedVisibility, false)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(3, changedVisibility, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
         // (2/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
@@ -481,7 +474,6 @@ namespace orxonox
 //// Execute the code for each super-function ////
 
     // (3/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
-    SUPER_INTRUSIVE_DECLARATION(testfunction);
     SUPER_INTRUSIVE_DECLARATION(XMLPort);
     SUPER_INTRUSIVE_DECLARATION(tick);
     SUPER_INTRUSIVE_DECLARATION(changedActivity);

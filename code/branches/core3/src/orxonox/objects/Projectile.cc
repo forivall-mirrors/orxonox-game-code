@@ -85,7 +85,6 @@ namespace orxonox
 
     void Projectile::tick(float dt)
     {
-//        WorldEntity::tick(dt);
         SUPER(Projectile, tick, dt);
 
         if (!this->isActive())
@@ -121,6 +120,4 @@ namespace orxonox
     {
         delete this;
     }
-
-    void Projectile::testfunction() { std::cout << "1 -> " << std::endl; }
 }

@@ -102,9 +102,9 @@ namespace orxonox
             Namespace* namespace_;
     };
 
-    SUPER_FUNCTION(1, BaseObject, XMLPort, false);
-    SUPER_FUNCTION(3, BaseObject, changedActivity, false);
-    SUPER_FUNCTION(4, BaseObject, changedVisibility, false);
+    SUPER_FUNCTION(0, BaseObject, XMLPort, false);
+    SUPER_FUNCTION(2, BaseObject, changedActivity, false);
+    SUPER_FUNCTION(3, BaseObject, changedVisibility, false);
 }
 
 #endif /* _BaseObject_H__ */

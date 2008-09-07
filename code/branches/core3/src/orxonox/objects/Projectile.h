@@ -31,7 +31,6 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/Super.h"
 #include "WorldEntity.h"
 #include "tools/Timer.h"
 
@@ -45,7 +44,6 @@ namespace orxonox
             void speedChanged();
             void destroyObject();
             virtual void tick(float dt);
-            virtual void testfunction();
 
             static float getSpeed()
                 { return Projectile::speed_s; }
@@ -65,8 +63,6 @@ namespace orxonox
             float damage_;
             Timer<Projectile> destroyTimer_;
     };
-
-    SUPER_FUNCTION(0, Projectile, testfunction, false);
 }
 
 #endif /* _Projectile_H__ */
