@@ -16,7 +16,6 @@ SET( NETWORK_SRC_FILES
   packet/Acknowledgement.cc
   packet/Gamestate.cc
   packet/Welcome.cc
-  Host.cc
 )
 
 IF(WIN32)

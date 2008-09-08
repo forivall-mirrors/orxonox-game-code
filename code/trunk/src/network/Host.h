@@ -46,14 +46,14 @@ class Host{
     virtual bool queuePacket(ENetPacket *packet, int clientID)=0;
     virtual unsigned int shipID()=0;
     virtual int playerID()=0;
-    
-    
-    
+
+
+
   protected:
     Host();
-    ~Host();
+    virtual ~Host();
     static Host *instance_;
-    
+
   public:
     static bool running(){return instance_!=0;}
     static bool addPacket(ENetPacket *packet, int clientID=0);

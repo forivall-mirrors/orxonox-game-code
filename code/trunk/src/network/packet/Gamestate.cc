@@ -38,12 +38,12 @@
 namespace network {
 
 namespace packet {
-  
+
 
 #define GAMESTATE_START(data) data + sizeof(GamestateHeader)
 #define GAMESTATE_HEADER(data) ((GamestateHeader *)data)
 #define HEADER GAMESTATE_HEADER(data_)
-  
+
 Gamestate::Gamestate()
 {
 }
@@ -63,7 +63,7 @@ bool Gamestate::collectData(int id, int mode)
   int tempsize=0, currentsize=0;
   assert(data_==0 /*&& bs_==0*/);
   int size = calcGamestateSize(mode);
-  
+
   COUT(4) << "G.ST.Man: producing gamestate with id: " << id << std::endl;
     //retval->data = (unsigned char*)malloc(size);
   if(size==0)
@@ -81,7 +81,7 @@ bool Gamestate::collectData(int id, int mode)
   orxonox::Iterator<Synchronisable> it;
   for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
     tempsize=it->getSize2(mode);
-    
+
     if(currentsize+tempsize > size){
       // start allocate additional memory
       COUT(3) << "G.St.Man: need additional memory" << std::endl;
@@ -100,18 +100,18 @@ bool Gamestate::collectData(int id, int mode)
     // increase size counter by size of current synchronisable
     currentsize+=tempsize;
   }
-  
-  
+
+
   //start write gamestate header
   HEADER->packetType = ENUM::Gamestate;
-  assert( *(ENUM::Type *)(data_) == ENUM::Gamestate); 
+  assert( *(ENUM::Type *)(data_) == ENUM::Gamestate);
   HEADER->normsize = currentsize;
   HEADER->id = id;
   HEADER->diffed = false;
   HEADER->complete = true;
   HEADER->compressed = false;
   //stop write gamestate header
-  
+
   COUT(5) << "G.ST.Man: Gamestate size: " << currentsize << std::endl;
   COUT(5) << "G.ST.Man: 'estimated' (and corrected) Gamestate size: " << size << std::endl;
   return true;
@@ -124,7 +124,7 @@ bool Gamestate::spreadData(int mode)
   unsigned char *mem=data_+sizeof(GamestateHeader);
     // get the start of the Synchronisable list
   orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::start();
-  
+
   while(mem < data_+sizeof(GamestateHeader)+HEADER->normsize){
       // extract synchronisable header
     size = *(unsigned int *)mem;
@@ -143,7 +143,7 @@ bool Gamestate::spreadData(int mode)
           /*return false*/;
         it=orxonox::ObjectList<Synchronisable>::end();
       }
-    } else 
+    } else
     {
         // we have our object
       if(! it->updateData(mem, mode))
@@ -184,14 +184,14 @@ bool Gamestate::compressData()
   uLongf buffer = (uLongf)((HEADER->normsize + 12)*1.01)+1;
   if(buffer==0)
     return false;
-  
+
   unsigned char *ndata = new unsigned char[buffer+sizeof(GamestateHeader)];
   unsigned char *dest = GAMESTATE_START(ndata);
   int retval;
   retval = compress( dest, &buffer, GAMESTATE_START(data_), (uLong)(HEADER->normsize) );
   switch ( retval ) {
     case Z_OK: COUT(5) << "G.St.Man: compress: successfully compressed" << std::endl; break;
-    case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl; 
+    case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl;
     return false;
     case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl;
     return false;
@@ -223,7 +223,7 @@ bool Gamestate::decompressData()
   else
     bufsize = normsize;
   if(bufsize==0)
-    return NULL;
+    return false;
   unsigned char *ndata = new unsigned char[bufsize + sizeof(GamestateHeader)];
   unsigned char *dest = ndata + sizeof(GamestateHeader);
   int retval;
@@ -235,7 +235,7 @@ bool Gamestate::decompressData()
     case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer" << std::endl; return false;
     case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return false;
   }
-  
+
   HEADER->compressed = false;
   //copy over the header
   *GAMESTATE_HEADER(ndata) = *HEADER;
@@ -244,7 +244,7 @@ bool Gamestate::decompressData()
   //set new pointers and create bytestream
   data_ = ndata;
   //bs_ = new Bytestream(getGs(), GAMESTATE_HEADER->normsize);
-  
+
   return true;
 }
 
@@ -339,7 +339,7 @@ unsigned int Gamestate::calcGamestateSize(int mode)
   bool Gamestate::isDiffed(){
     return HEADER->diffed;
   }
-  
+
   int Gamestate::getBaseID(){
     return HEADER->base_id;
   }
