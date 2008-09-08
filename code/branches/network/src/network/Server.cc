@@ -263,7 +263,6 @@ namespace network
       }
       //std::cout << "adding gamestate" << std::endl;
       gs->setClientID(cid);
-      assert(gs->compressData());
       if ( !gs->send() ){
         COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl; 
         temp->addFailure();
@@ -297,8 +296,7 @@ namespace network
       COUT(2) << "Server: could not add client" << std::endl;
       return false;
     }
-    if(temp->prev()->getBegin()) { //not good if you use anything else than insertBack
-      temp->prev()->setID(0); //bugfix: not necessary but usefull
+    if(temp==ClientInformation::getBegin()) { //not good if you use anything else than insertBack
       temp->setID(1);
     }
     else

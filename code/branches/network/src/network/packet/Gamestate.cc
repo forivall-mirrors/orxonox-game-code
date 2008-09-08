@@ -61,15 +61,13 @@ Gamestate::~Gamestate()
 bool Gamestate::collectData(int id, int mode)
 {
   int tempsize=0, currentsize=0;
-  assert(data_==0 /*&& bs_==0*/);
-  int size = calcGamestateSize(mode);
+  assert(data_==0);
+  int size = calcGamestateSize(id, mode);
   
   COUT(4) << "G.ST.Man: producing gamestate with id: " << id << std::endl;
-    //retval->data = (unsigned char*)malloc(size);
   if(size==0)
     return false;
   data_ = new unsigned char[size + sizeof(GamestateHeader)];
-  //bs_ = new Bytestream(data_+sizeof(GamestateHeader), size);
   if(!data_){
     COUT(2) << "GameStateManager: could not allocate memory" << std::endl;
     return false;
@@ -80,7 +78,7 @@ bool Gamestate::collectData(int id, int mode)
   mem+=sizeof(GamestateHeader);
   orxonox::Iterator<Synchronisable> it;
   for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
-    tempsize=it->getSize2(mode);
+    tempsize=it->getSize2(id, mode);
     
     if(currentsize+tempsize > size){
       // start allocate additional memory
@@ -88,14 +86,14 @@ bool Gamestate::collectData(int id, int mode)
       orxonox::Iterator<Synchronisable> temp = it;
       int addsize=tempsize;
       while(++temp)
-        addsize+=temp->getSize2(mode);
+        addsize+=temp->getSize2(id, mode);
       data_ = (unsigned char *)realloc(data_, sizeof(GamestateHeader) + currentsize + addsize);
       if(!data_)
         return false;
       size = currentsize+addsize;
     }// stop allocate additional memory
 
-    if(!it->getData2(mem, mode))
+    if(!it->getData(mem, id, mode))
       return false; // mem pointer gets automatically increased because of call by reference
     // increase size counter by size of current synchronisable
     currentsize+=tempsize;
@@ -198,6 +196,7 @@ bool Gamestate::process()
 bool Gamestate::compressData()
 {
   assert(HEADER);
+  assert(!HEADER->compressed);
   uLongf buffer = (uLongf)(((HEADER->normsize + 12)*1.01)+1);
   if(buffer==0)
     return false;
@@ -227,6 +226,9 @@ bool Gamestate::compressData()
 #endif
 
   //copy and modify header
+#ifndef NDEBUG
+  HEADER->crc32 = calcCRC(data_+sizeof(GamestateHeader), HEADER->normsize);
+#endif
   *GAMESTATE_HEADER(ndata) = *HEADER;
   //delete old data
   delete[] data_;
@@ -240,6 +242,7 @@ bool Gamestate::compressData()
 }
 bool Gamestate::decompressData()
 {
+  assert(HEADER);
   assert(HEADER->compressed);
   COUT(3) << "GameStateClient: uncompressing gamestate. id: " << HEADER->id << ", baseid: " << HEADER->base_id << ", normsize: " << HEADER->normsize << ", compsize: " << HEADER->compsize << std::endl;
   unsigned int normsize = HEADER->normsize;
@@ -260,6 +263,9 @@ bool Gamestate::decompressData()
     case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer" << std::endl; return false;
     case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return false;
   }
+#ifndef NDEBUG
+  assert(HEADER->crc32==calcCRC(ndata+sizeof(GamestateHeader), HEADER->normsize));
+#endif
   
   //copy over the header
   *GAMESTATE_HEADER(ndata) = *HEADER;
@@ -275,6 +281,9 @@ bool Gamestate::decompressData()
 
 Gamestate *Gamestate::diff(Gamestate *base)
 {
+  assert(HEADER);
+  assert(!HEADER->compressed);
+  assert(!HEADER->diffed);
   //unsigned char *basep = base->getGs()/*, *gs = getGs()*/;
   unsigned char *basep = GAMESTATE_START(base->data_), *gs = GAMESTATE_START(this->data_);
   unsigned int of=0; // pointers offset
@@ -309,7 +318,8 @@ Gamestate *Gamestate::diff(Gamestate *base)
 
 Gamestate *Gamestate::undiff(Gamestate *base)
 {
-  assert(this && base);
+  assert(this && base);assert(HEADER);
+  assert(HEADER->diffed);
   assert(!HEADER->compressed && !GAMESTATE_HEADER(base->data_)->compressed);
   //unsigned char *basep = base->getGs()/*, *gs = getGs()*/;
   unsigned char *basep = GAMESTATE_START(base->data_);
@@ -345,14 +355,14 @@ Gamestate *Gamestate::undiff(Gamestate *base)
 }
 
 
-unsigned int Gamestate::calcGamestateSize(int mode)
+unsigned int Gamestate::calcGamestateSize(unsigned int id, int mode)
 {
   int size=0;
     // get the start of the Synchronisable list
   orxonox::Iterator<Synchronisable> it;
     // get total size of gamestate
   for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it)
-    size+=it->getSize2(mode); // size of the actual data of the synchronisable
+    size+=it->getSize2(id, mode); // size of the actual data of the synchronisable
 //  size+=sizeof(GamestateHeader);
   return size;
 }

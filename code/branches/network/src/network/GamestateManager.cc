@@ -130,8 +130,7 @@ namespace network
     //Server::sendGameState?
     packet::Gamestate *gs;
     int gID = ClientInformation::findClient(clientID)->getGamestateID();
-    COUT(4) << "G.St.Man: popgamestate: sending gstate_id: " << id_ << " diffed from: " << gID << std::endl;
-//     COUT(3) << "gamestatemap: " << &gameStateMap << std::endl;
+    //COUT(4) << "G.St.Man: popgamestate: sending gstate_id: " << id_ << " diffed from: " << gID << std::endl;
     //chose wheather the next gamestate is the first or not
     if(gID != GAMESTATEID_INITIAL){
       packet::Gamestate *client=NULL;
@@ -146,13 +145,6 @@ namespace network
       COUT(4) << "we got a GAMESTATEID_INITIAL for clientID: " << clientID << std::endl;
       gs = new packet::Gamestate(*reference);
     }
-#ifndef NDEBUG
-    packet::Gamestate *ns = new packet::Gamestate(*gs);
-    ns->compressData();
-    ns->decompressData();
-    assert(*gs==*ns);
-    delete ns;
-#endif
     assert(gs->compressData());
     return gs;
   }

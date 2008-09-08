@@ -28,7 +28,9 @@
 
 #include "Packet.h"
 #include "network/Synchronisable.h"
-//#include "util/Bytestream.h"
+#ifndef NDEBUG
+#include "util/CRC32.h"
+#endif
 #include "core/CoreIncludes.h"
 
 #ifndef NETWORK_PACKETGAMESTATE_H
@@ -47,6 +49,9 @@ struct GamestateHeader{
   bool diffed; // wheter diffed or not
   bool complete; // wheter it is a complete gamestate or only partial
   bool compressed;
+#ifndef NDEBUG
+  uint32_t crc32;
+#endif
 };
 
 /**
@@ -76,7 +81,7 @@ class Gamestate: public Packet{
 
     bool operator ==(packet::Gamestate gs);
   private:
-    unsigned int calcGamestateSize(int mode=0x0);
+    unsigned int calcGamestateSize(unsigned int id, int mode=0x0);
     void removeObject(orxonox::Iterator<Synchronisable> &it);
 
     

@@ -1,6 +1,7 @@
 SET(UTIL_SRC_FILES
   ArgReader.cc
   Clipboard.cc
+  CRC32.cc
   ExprParser.cc
   Math.cc
   MultiTypePrimitive.cc
