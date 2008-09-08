@@ -232,3 +232,4 @@ bool explicitConversion(orxonox::ColourValue* output, const std::string& input)
     }
     return false;
 }
+

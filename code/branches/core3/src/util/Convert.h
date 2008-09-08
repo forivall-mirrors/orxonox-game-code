@@ -152,16 +152,16 @@ namespace conversionTests
         static void test();
     };
 
-    template <int asdf>
-    class ExplicitConversion<float, int, asdf>
-    {
-    private:
-        static float objectFromType; // helper object to handle private c'tor and d'tor
-        static int   objectToType;   // helper object to handle private c'tor and d'tor
-    public:
-        enum { exists = sizeof(explicitConversion(&objectToType, objectFromType)) == sizeof(VerySmallStruct) };
-        static void test() { TemplateDebugger<sizeof(explicitConversion(&objectToType, objectFromType)), sizeof(VerySmallStruct)>::debug(1,2); }
-    };
+    //template <int asdf>
+    //class ExplicitConversion<float, int, asdf>
+    //{
+    //private:
+    //    static float objectFromType; // helper object to handle private c'tor and d'tor
+    //    static int   objectToType;   // helper object to handle private c'tor and d'tor
+    //public:
+    //    enum { exists = sizeof(explicitConversion(&objectToType, objectFromType)) == sizeof(VerySmallStruct) };
+    //    static void test() { TemplateDebugger<sizeof(explicitConversion(&objectToType, objectFromType)), sizeof(VerySmallStruct)>::debug(1,2); }
+    //};
 
     // checks for conversion via istringstream
     template <class Type>
@@ -238,18 +238,6 @@ namespace conversion
 //Explicit Conversion//
 ///////////////////////
 
-// template that is used when no explicit template specialisation is available
-template <class ToType, class FromType>
-struct ConverterSpecialised
-{
-    static bool convert(ToType* output, const FromType& input)
-    {
-        // check for explicit conversion via function overloading
-        return conversion::convert(output, input,
-            conversion::ExplicitPossible<ExplicitConversion<FromType, ToType>::exists>());
-    }
-};
-
 namespace conversion
 {
     // We can cast explicitely via function overloading, this overwrites any other possible cast
@@ -270,8 +258,22 @@ namespace conversion
         return convert(output, input, ImplicitPossible<ImplicitConversion<FromType, ToType>::exists>());
         //return ConverterSpecialised<ToType, FromType>::convert(output, input);
     }
+}
 
+// template that is used when no explicit template specialisation is available
+template <class ToType, class FromType>
+struct ConverterSpecialised
+{
+    static bool convert(ToType* output, const FromType& input)
+    {
+        // check for explicit conversion via function overloading
+        return conversion::convert(output, input,
+            conversion::ExplicitPossible<ExplicitConversion<FromType, ToType>::exists>());
+    }
+};
 
+namespace conversion
+{
     /////////////////
     //Implicit Cast//
     /////////////////
