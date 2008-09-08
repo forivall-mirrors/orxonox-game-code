@@ -112,7 +112,7 @@ bool Packet::send(){
     enetPacket_->freeCallback = &blub;
     packetMap_[enetPacket_] = this;
   }
-#ifndef NDEBUG
+#ifndef NDEBUG 
   switch( *(ENUM::Type *)(data_ + _PACKETID) )
   {
     case ENUM::Acknowledgement:
@@ -122,7 +122,7 @@ bool Packet::send(){
     case ENUM::Welcome:
       break;
     default:
-      assert(0); //TODO: repair this
+      assert(0); //there was some error, if this is the case
       break;
   }
 #endif

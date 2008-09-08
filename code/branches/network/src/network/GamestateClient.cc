@@ -156,8 +156,10 @@ namespace network
   }
 
   packet::Gamestate *GamestateClient::processGamestate(packet::Gamestate *gs){
-    if(gs->isCompressed())
-      assert(gs->decompressData());
+    if(gs->isCompressed()){
+      bool b = gs->decompressData();
+      assert(b);
+    }
     if(gs->isDiffed()){
       packet::Gamestate *base = gamestateMap_[gs->getBaseID()];
       assert(base);

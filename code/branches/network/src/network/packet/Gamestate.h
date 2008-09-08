@@ -74,7 +74,7 @@ class Gamestate: public Packet{
     virtual unsigned int getSize() const;
     virtual bool process();
 
-    
+    bool operator ==(packet::Gamestate gs);
   private:
     unsigned int calcGamestateSize(int mode=0x0);
     void removeObject(orxonox::Iterator<Synchronisable> &it);

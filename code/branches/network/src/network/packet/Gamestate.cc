@@ -40,7 +40,7 @@ namespace network {
 namespace packet {
   
 
-#define GAMESTATE_START(data) data + sizeof(GamestateHeader)
+#define GAMESTATE_START(data) (data + sizeof(GamestateHeader))
 #define GAMESTATE_HEADER(data) ((GamestateHeader *)data)
 #define HEADER GAMESTATE_HEADER(data_)
   
@@ -175,6 +175,21 @@ unsigned int Gamestate::getSize() const
   }
 }
 
+bool Gamestate::operator==(packet::Gamestate gs){
+  unsigned char *d1 = data_+sizeof(GamestateHeader);
+  unsigned char *d2 = gs.data_+sizeof(GamestateHeader);
+  assert(!isCompressed());
+  assert(!gs.isCompressed());
+  while(d1<data_+HEADER->normsize)
+  {
+    if(*d1!=*d2)
+      return false;
+    d1++;
+    d2++;
+  }
+  return true;
+}
+
 bool Gamestate::process()
 {
   return GamestateHandler::addGamestate(this, getClientID());
@@ -183,32 +198,42 @@ bool Gamestate::process()
 bool Gamestate::compressData()
 {
   assert(HEADER);
-  uLongf buffer = (uLongf)((HEADER->normsize + 12)*1.01)+1;
+  uLongf buffer = (uLongf)(((HEADER->normsize + 12)*1.01)+1);
   if(buffer==0)
     return false;
   
   unsigned char *ndata = new unsigned char[buffer+sizeof(GamestateHeader)];
   unsigned char *dest = GAMESTATE_START(ndata);
+  //unsigned char *dest = new unsigned char[buffer];
+  unsigned char *source = GAMESTATE_START(data_);
   int retval;
-  retval = compress( dest, &buffer, GAMESTATE_START(data_), (uLong)(HEADER->normsize) );
+  retval = compress( dest, &buffer, source, (uLong)(HEADER->normsize) );
   switch ( retval ) {
     case Z_OK: COUT(5) << "G.St.Man: compress: successfully compressed" << std::endl; break;
-    case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl; 
-    return false;
-    case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl;
-    return false;
-    case Z_DATA_ERROR: COUT(2) << "G.St.Man: compress: data corrupted in gamestate.compress" << std::endl;
-    return false;
+    case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl; return false;
+    case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl; return false;
+    case Z_DATA_ERROR: COUT(2) << "G.St.Man: compress: data corrupted in gamestate.compress" << std::endl; return false;
   }
+#ifndef NDEBUG
+  //decompress and compare the start and the decompressed data
+  unsigned char *rdata = new unsigned char[HEADER->normsize+sizeof(GamestateHeader)];
+  unsigned char *d2 = GAMESTATE_START(rdata);
+  uLongf length2 = HEADER->normsize;
+  uncompress(d2, &length2, dest, buffer);
+  for(unsigned int i=0; i<HEADER->normsize; i++){
+    assert(*(source+i)==*(d2+i));
+  }
+  delete[] rdata;
+#endif
 
   //copy and modify header
-  HEADER->compsize = buffer;
-  HEADER->compressed = true;
   *GAMESTATE_HEADER(ndata) = *HEADER;
   //delete old data
   delete[] data_;
   //save new data
   data_ = ndata;
+  HEADER->compsize = buffer;
+  HEADER->compressed = true;
   assert(HEADER->compressed);
   COUT(3) << "gamestate compress normsize: " << HEADER->normsize << " compsize: " << HEADER->compsize << std::endl;
   return true;
@@ -216,21 +241,19 @@ bool Gamestate::compressData()
 bool Gamestate::decompressData()
 {
   assert(HEADER->compressed);
-  //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
-  int normsize = HEADER->normsize;
-  int compsize = HEADER->compsize;
-  int bufsize;
-  if(normsize < compsize)
-    bufsize = compsize;
-  else
-    bufsize = normsize;
-  if(bufsize==0)
-    return NULL;
+  COUT(3) << "GameStateClient: uncompressing gamestate. id: " << HEADER->id << ", baseid: " << HEADER->base_id << ", normsize: " << HEADER->normsize << ", compsize: " << HEADER->compsize << std::endl;
+  unsigned int normsize = HEADER->normsize;
+  unsigned int compsize = HEADER->compsize;
+  unsigned int bufsize;
+  assert(compsize<=normsize);
+  bufsize = normsize;
+  assert(bufsize!=0);
   unsigned char *ndata = new unsigned char[bufsize + sizeof(GamestateHeader)];
   unsigned char *dest = ndata + sizeof(GamestateHeader);
+  unsigned char *source = data_ + sizeof(GamestateHeader);
   int retval;
-  uLongf length=normsize;
-  retval = uncompress( dest, &length, data_+sizeof(GamestateHeader), (uLong)compsize );
+  uLongf length=bufsize;
+  retval = uncompress( dest, &length, source, (uLong)compsize );
   switch ( retval ) {
     case Z_OK: COUT(5) << "successfully decompressed" << std::endl; break;
     case Z_MEM_ERROR: COUT(1) << "not enough memory available" << std::endl; return false;
@@ -238,15 +261,15 @@ bool Gamestate::decompressData()
     case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return false;
   }
   
-  HEADER->compressed = false;
   //copy over the header
   *GAMESTATE_HEADER(ndata) = *HEADER;
   //delete old (compressed data)
   delete[] data_;
-  //set new pointers and create bytestream
+  //set new pointers
   data_ = ndata;
-  //bs_ = new Bytestream(getGs(), GAMESTATE_HEADER->normsize);
-  
+  HEADER->compressed = false;
+  assert(HEADER->normsize==normsize);
+  assert(HEADER->compsize==compsize);
   return true;
 }
 
@@ -278,10 +301,9 @@ Gamestate *Gamestate::diff(Gamestate *base)
   *GAMESTATE_HEADER(ndata) = *HEADER;
   GAMESTATE_HEADER(ndata)->diffed = true;
   GAMESTATE_HEADER(ndata)->base_id = base->getID();
-  Gamestate *g = new Gamestate(ndata, 0);
+  Gamestate *g = new Gamestate(ndata, getClientID());
   g->flags_=flags_;
   g->packetDirection_ = packetDirection_;
-  g->clientID_ = clientID_;
   return g;
 }
 
@@ -314,10 +336,9 @@ Gamestate *Gamestate::undiff(Gamestate *base)
   }
   *GAMESTATE_HEADER(ndata) = *HEADER;
   GAMESTATE_HEADER(ndata)->diffed = false;
-  Gamestate *g = new Gamestate(ndata, 0);
+  Gamestate *g = new Gamestate(ndata, getClientID());
   g->flags_=flags_;
   g->packetDirection_ = packetDirection_;
-  g->clientID_ = clientID_;
   assert(!g->isDiffed());
   assert(!g->isCompressed());
   return g;

@@ -97,6 +97,7 @@ namespace network
     orxonox::Identifier* id = ID(classID);
     if(!id){
       COUT(3) << "We could not identify a new object; classid: " << classID << " uint: " << (unsigned int)classID << " objectID: " << objectID << " size: " << size << std::endl;
+      assert(0);
       return false; // most probably the gamestate is corrupted
     }
     orxonox::BaseObject *bo = id->fabricate();
@@ -222,7 +223,6 @@ namespace network
     mem+=sizeof(unsigned int);
     tempsize+=12;
     // end copy header
-    
     
     COUT(5) << "Synchronisable getting data from objectID: " << objectID << " classID: " << classID << " length: " << size << std::endl;
     // copy to location
