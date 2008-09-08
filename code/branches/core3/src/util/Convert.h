@@ -76,7 +76,7 @@ inline bool explicitConversion(unsigned char* output, const std::string input)
 template <int a, int b>
 struct TemplateDebugger
 {
-    static int debug(int c, int d) { BOOST_STATIC_ASSERT(0); }
+    static int debug(int c, int d) { return 0; } //BOOST_STATIC_ASSERT(0); }
 };
 
 namespace conversionTests
@@ -99,7 +99,8 @@ namespace generalFunctionTemplate
         // The function is exposed globally because of the "using namespace" in conversionTests.
         // We have to make sure noboy uses it, so a good compiler error would be nice.
         *output = (AnyToType)input; // Do not use this function!
-        BOOST_STATIC_ASSERT(0); // just to be sure
+        //BOOST_STATIC_ASSERT(0); // just to be sure
+		return *(new conversionTests::VeryBigStruct());
     }
 }
 
@@ -117,7 +118,8 @@ namespace conversionTests
     {
     private:
         static VerySmallStruct test(ToType); // only accepts ToType, but is preferred over '...'
-        static VeryBigStruct   test(...);    // accepts anything
+		template <class AnyType>
+        static VeryBigStruct   test(const AnyType anything);    // accepts anything
         static FromType object; // helper object to handle private c'tor and d'tor
     public:
         enum { exists = sizeof(test(object)) == sizeof(VerySmallStruct) };
@@ -356,7 +358,7 @@ namespace conversion
     {
         // convert from const char* via std::string
         static bool convert(ToType* output, const char* input)
-        { return Converter<ToType, std::string>::convert(output, input); }
+        { return Converter<ToType, std::string, Dummy>::convert(output, input); }
     };
 #if 0
     // conversion char to std::string leads to ambiguous operator <<
