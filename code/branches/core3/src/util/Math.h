@@ -40,6 +40,7 @@
 #include <OgreMatrix3.h>
 #include <OgreQuaternion.h>
 #include <OgreColourValue.h>
+#include "SubString.h"
 
 namespace orxonox
 {
@@ -62,6 +63,81 @@ _UtilExport float getAngle(const orxonox::Vector3& myposition, const orxonox::Ve
 _UtilExport orxonox::Vector2 get2DViewdirection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition);
 _UtilExport orxonox::Vector2 get2DViewcoordinates(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition);
 _UtilExport orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposition, float projectilespeed, const orxonox::Vector3& targetposition, const orxonox::Vector3& targetvelocity);
+
+/////////////////////////////////////
+// Conversion Functions of our own //
+/////////////////////////////////////
+
+// Vector2 to std::string
+inline bool explicitConversion(std::string* output, const orxonox::Vector2& input)
+{
+    std::ostringstream ostream;
+    if (ostream << input.x << "," << input.y)
+    {
+        (*output) = ostream.str();
+        return true;
+    }
+    return false;
+}
+
+// Vector3 to std::string
+inline bool explicitConversion(std::string* output, const orxonox::Vector3& input)
+{
+    std::ostringstream ostream;
+    if (ostream << input.x << "," << input.y << "," << input.z)
+    {
+        (*output) = ostream.str();
+        return true;
+    }
+    return false;
+}
+
+// Vector4 to std::string
+inline bool explicitConversion(std::string* output, const orxonox::Vector4& input)
+{
+    std::ostringstream ostream;
+    if (ostream << input.x << "," << input.y << "," << input.z << "," << input.w)
+    {
+        (*output) = ostream.str();
+        return true;
+    }
+    return false;
+}
+
+// Quaternion to std::string
+inline bool explicitConversion(std::string* output, const orxonox::Quaternion& input)
+{
+    std::ostringstream ostream;
+    if (ostream << input.w << "," << input.x << "," << input.y << "," << input.z)
+    {
+        (*output) = ostream.str();
+        return true;
+    }
+    return false;
+}
+
+// ColourValue to std::string
+inline bool explicitConversion(std::string* output, const orxonox::ColourValue& input)
+{
+    std::ostringstream ostream;
+    if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
+    {
+        (*output) = ostream.str();
+        return true;
+    }
+    return false;
+}
+
+// std::string to Vector2
+_UtilExport bool explicitConversion(orxonox::Vector2* output, const std::string& input);
+// std::string to Vector3
+_UtilExport bool explicitConversion(orxonox::Vector3* output, const std::string& input);
+// std::string to Vector4
+_UtilExport bool explicitConversion(orxonox::Vector4* output, const std::string& input);
+// std::string to Quaternion
+_UtilExport bool explicitConversion(orxonox::Quaternion* output, const std::string& input);
+// std::string to ColourValue
+_UtilExport bool explicitConversion(orxonox::ColourValue* output, const std::string& input);
 
 template <typename T>
 inline T sgn(T x)

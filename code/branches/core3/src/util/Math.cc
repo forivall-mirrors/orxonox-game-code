@@ -29,6 +29,7 @@
 #include <OgrePlane.h>
 
 #include "Math.h"
+#include "Convert.h"
 
 /**
     @brief Function for writing to a stream.
@@ -121,4 +122,113 @@ orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposition, float 
     temp = sqrt(temp);
     float time = (temp + a) / (2 * (squaredProjectilespeed - b));
     return (targetposition + targetvelocity * time);
+}
+
+// std::string to Vector2
+bool explicitConversion(orxonox::Vector2* output, const std::string& input)
+{
+    unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
+    if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
+
+    SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
+    if (tokens.size() >= 2)
+    {
+        if (!ConvertValue(&(output->x), tokens[0]))
+            return false;
+        if (!ConvertValue(&(output->y), tokens[1]))
+            return false;
+
+        return true;
+    }
+    return false;
+}
+
+// std::string to Vector3
+bool explicitConversion(orxonox::Vector3* output, const std::string& input)
+{
+    unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
+    if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
+
+    SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
+    if (tokens.size() >= 3)
+    {
+        if (!ConvertValue(&(output->x), tokens[0]))
+            return false;
+        if (!ConvertValue(&(output->y), tokens[1]))
+            return false;
+        if (!ConvertValue(&(output->z), tokens[2]))
+            return false;
+
+        return true;
+    }
+    return false;
+}
+
+// std::string to Vector4
+bool explicitConversion(orxonox::Vector4* output, const std::string& input)
+{
+    unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
+    if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
+
+    SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
+    if (tokens.size() >= 4)
+    {
+        if (!ConvertValue(&(output->x), tokens[0]))
+            return false;
+        if (!ConvertValue(&(output->y), tokens[1]))
+            return false;
+        if (!ConvertValue(&(output->z), tokens[2]))
+            return false;
+        if (!ConvertValue(&(output->w), tokens[3]))
+            return false;
+
+        return true;
+    }
+    return false;
+}
+
+// std::string to Quaternion
+bool explicitConversion(orxonox::Quaternion* output, const std::string& input)
+{
+    unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
+    if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
+
+    SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
+    if (tokens.size() >= 4)
+    {
+        if (!ConvertValue(&(output->w), tokens[0]))
+            return false;
+        if (!ConvertValue(&(output->x), tokens[1]))
+            return false;
+        if (!ConvertValue(&(output->y), tokens[2]))
+            return false;
+        if (!ConvertValue(&(output->z), tokens[3]))
+            return false;
+
+        return true;
+    }
+    return false;
+}
+
+// std::string to ColourValue
+bool explicitConversion(orxonox::ColourValue* output, const std::string& input)
+{
+    unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
+    if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
+
+    SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
+    if (tokens.size() >= 4)
+    {
+        if (!ConvertValue(&(output->r), tokens[0]))
+            return false;
+        if (!ConvertValue(&(output->g), tokens[1]))
+            return false;
+        if (!ConvertValue(&(output->b), tokens[2]))
+            return false;
+        if (!ConvertValue(&(output->a), tokens[3]))
+            return false;
+
+        return true;
+    }
+    return false;
 }
