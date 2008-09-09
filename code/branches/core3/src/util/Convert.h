@@ -383,31 +383,29 @@ namespace conversion
         const bool probe = ImplicitConversion<FromType, ToType>::exists;
         return convert(output, input, ImplicitPossible<probe>());
     }
-
-    // template that is used when no explicit template specialisation is available
-    // try explicitConversion() function next.
-    template <class ToType, class FromType>
-    struct ConverterExplicit
-    {
-        static bool convert(ToType* output, const FromType& input)
-        {
-            // check for explicit conversion via function overloading
-            const bool probe = ExplicitConversion<FromType, ToType>::exists;
-            // why conversion:: ? --> below is a 'using' directive, so this template usually
-            // gets instantiated in global namespace
-            return conversion::convert(output, input, ExplicitPossible<probe>());
-        }
-    };
 }
+
+// We usually don't have a namespace in util/ but it would still be desirable to lock
+// everything internal away in namespace conversion.
+// However this template can be specialised everywhere.
+
+// Template that is used when no explicit template specialisation is available
+// try explicitConversion() function next.
+template <class ToType, class FromType>
+struct ConverterExplicit
+{
+    static bool convert(ToType* output, const FromType& input)
+    {
+        // check for explicit conversion via function overloading
+        const bool probe = ExplicitConversion<FromType, ToType>::exists;
+        return conversion::convert(output, input, conversion::ExplicitPossible<probe>());
+    }
+};
 
 
 //////////////////////
 // Public Functions //
 //////////////////////
-
-// We usually don't have a namespace in util/ but it would still be desirable to lock
-// everything internal away in namespace conversion.
-using conversion::ConverterExplicit;
 
 /**
 @brief
@@ -455,7 +453,7 @@ inline ToType getConvertedValue(const FromType& input)
 template<class FromType, class ToType>
 inline ToType getConvertedValue(const FromType& input, const ToType& fallback)
 {
-    ToType output = fallback;
+    ToType output;
     ConvertValue(&output, input, fallback);
     return output;
 }
@@ -474,7 +472,7 @@ inline ToType conversion_cast(const FromType& input)
 template<class ToType, class FromType>
 inline ToType conversion_cast(const FromType& input, const ToType& fallback)
 {
-    ToType output = fallback;
+    ToType output;
     ConvertValue(&output, input, fallback);
     return output;
 }
