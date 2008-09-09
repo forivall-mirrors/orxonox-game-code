@@ -49,8 +49,8 @@
 namespace network
 {
 //   SetConsoleCommandShortcut(Client, chat);
-  
-  
+
+
   /**
   * Constructor for the Client class
   * initializes the address and the port to default localhost:NETWORK_PORT
@@ -91,7 +91,7 @@ namespace network
     if(isConnected)
       closeConnection();
   }
-  
+
   /**
   * Establish the Connection to the Server
   * @return true/false
@@ -120,17 +120,17 @@ namespace network
   bool Client::queuePacket(ENetPacket *packet, int clientID){
     return client_connection.addPacket(packet);
   }
-  
+
   bool Client::processChat(packet::Chat *message, unsigned int clientID){
     return message->process();
   }
-  
+
   /*bool Client::sendChat(packet::Chat *chat){
     chat->process();
     packet::Packet *p = new packet::Packet(chat);
     return p->send();
   }*/
-  
+
 
   /**
   * submits a chat message to the server
@@ -172,10 +172,10 @@ namespace network
     int gameStateID = gamestate.processGamestates();
     if(gameStateID==GAMESTATEID_INITIAL)
       if(gameStateFailure_){
-        packet::Acknowledgement *ack = new packet::Acknowledgement(GAMESTATEID_INITIAL, 0);
+        packet::Acknowledgement *ack = new packet::Acknowledgement((unsigned int)GAMESTATEID_INITIAL, 0);
         if(!ack->send())
           COUT(3) << "could not (negatively) ack gamestate" << std::endl;
-        else 
+        else
           COUT(4) << "negatively acked a gamestate" << std::endl;
         }
       else
