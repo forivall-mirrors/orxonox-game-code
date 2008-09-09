@@ -77,9 +77,9 @@
 
 namespace orxonox
 {
-    // ###############################
-    // ###    ClassTreeMaskNode    ###
-    // ###############################
+    // ###################################
+    // ###      ClassTreeMaskNode      ###
+    // ###################################
     //! The ClassTreeMaskNode is a node in the internal tree of the ClassTreeMask, containing the rules of the mask.
     /**
         The ClassTreeMaskNode is used to store the rule (included or excluded) for a given
@@ -115,9 +115,9 @@ namespace orxonox
     };
 
 
-    // ###############################
-    // ###  ClassTreeMaskIterator  ###
-    // ###############################
+    // ###################################
+    // ###    ClassTreeMaskIterator    ###
+    // ###################################
     //! The ClassTreeMaskIterator moves through all ClassTreeMaskNodes of the internal tree of a ClassTreeMask, containing the rules.
     /**
         Because of the complicated shape of the internal rule-tree of ClassTreeMask, an
@@ -145,9 +145,9 @@ namespace orxonox
     };
 
 
-    // ###############################
-    // ###      ClassTreeMask      ###
-    // ###############################
+    // ###################################
+    // ###        ClassTreeMask        ###
+    // ###################################
     //! The ClassTreeMask is a set of rules, containing the information for each class whether it's included or not.
     /**
         With a ClassTreeMask, you can include or exclude subtrees of the class-tree, starting
@@ -212,6 +212,18 @@ namespace orxonox
             bool nodeExists(const Identifier* subclass);
 
             ClassTreeMaskNode* root_;   //!< The root-node of the internal rule-tree, usually BaseObject
+    };
+
+
+    // ###################################
+    // ### ClassTreeMaskObjectIterator ###
+    // ###################################
+    //! ...
+    /**
+        ...
+    */
+    class _CoreExport ClassTreeMaskObjectIterator
+    {
     };
 }
 

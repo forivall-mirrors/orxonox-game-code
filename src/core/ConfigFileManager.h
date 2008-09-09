@@ -257,7 +257,7 @@ namespace orxonox
     class _CoreExport ConfigFileManager
     {
         public:
-            static ConfigFileManager* getSingleton();
+            static ConfigFileManager* getInstance();
 
             void setFile(ConfigFileType type, const std::string& filename, bool bCreateIfNotExisting = true);
 

@@ -36,8 +36,7 @@
 #include <fstream>
 
 #include "Core.h"
-
-#include "Debug.h"
+#include "util/Debug.h"
 
 namespace orxonox
 {
@@ -97,6 +96,15 @@ namespace orxonox
 
         // Read the default language file to create all known LanguageEntry objects
         this->readDefaultLanguageFile();
+    }
+
+    /**
+        @brief Destructor: Deletes all language entries.
+    */
+    Language::~Language()
+    {
+        for (std::map<std::string, LanguageEntry*>::iterator it = this->languageEntries_.begin(); it != this->languageEntries_.end(); ++it)
+            delete (it->second);
     }
 
     /**

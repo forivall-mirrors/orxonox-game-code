@@ -6,6 +6,7 @@ SET( ORXONOX_SRC_FILES
   RadarListener.cc
   RadarViewable.cc
   Settings.cc
+  SignalHandler.cc
 
   overlays/OrxonoxOverlay.cc
   overlays/OverlayGroup.cc

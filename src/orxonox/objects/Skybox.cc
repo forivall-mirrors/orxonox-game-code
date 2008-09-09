@@ -36,8 +36,8 @@
 #include "tinyxml/tinyxml.h"
 #include "GraphicsEngine.h"
 #include "core/CoreIncludes.h"
-#include "core/Debug.h"
 #include "core/XMLPort.h"
+#include "util/Debug.h"
 
 namespace orxonox
 {
@@ -58,11 +58,6 @@ namespace orxonox
     	GraphicsEngine::getSingleton().getSceneManager()->setSkyBox(true, skyboxname);
     }
 
-    void Skybox::setSkyboxSrc(const std::string& src)
-    {
-        this->skyboxSrc_ = src;
-    }
-
     /**
         @brief XML loading and saving.
         @param xmlelement The XML-element
@@ -71,9 +66,9 @@ namespace orxonox
     */
     void Skybox::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlelement, mode);
+        SUPER(Skybox, XMLPort, xmlelement, mode);
 
-        XMLPortParamLoadOnly(Skybox, "src", setSkyboxSrc, xmlelement, mode);
+        XMLPortParam(Skybox, "src", setSkyboxSrc, getSkyboxSrc, xmlelement, mode);
         create();
     }
 
@@ -90,7 +85,7 @@ namespace orxonox
 
     void Skybox::changedVisibility()
     {
-        BaseObject::changedVisibility();
+        SUPER(Skybox, changedVisibility);
         GraphicsEngine::getSingleton().getSceneManager()->setSkyBox(this->isVisible(), this->skyboxSrc_);
     }
 }

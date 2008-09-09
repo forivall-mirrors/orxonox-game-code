@@ -28,7 +28,7 @@
 
 #include "OrxonoxStableHeaders.h"
 #include "RadarViewable.h"
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "objects/WorldEntity.h"
 #include "Radar.h"

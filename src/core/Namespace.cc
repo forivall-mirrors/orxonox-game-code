@@ -59,7 +59,7 @@ namespace orxonox
     */
     void Namespace::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlelement, mode);
+        SUPER(Namespace, XMLPort, xmlelement, mode);
 
         std::string name = this->getName();
         unsigned int pos = 0;

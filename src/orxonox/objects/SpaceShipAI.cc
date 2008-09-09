@@ -43,8 +43,8 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(SpaceShipAI, createEnemy, true).setDefaultValue(0, 1);
-    SetConsoleCommand(SpaceShipAI, killEnemies, true).setDefaultValue(0, 0);
+    SetConsoleCommand(SpaceShipAI, createEnemy, true).defaultValue(0, 1);
+    SetConsoleCommand(SpaceShipAI, killEnemies, true).defaultValue(0, 0);
 
     CreateFactory(SpaceShipAI);
 
@@ -71,13 +71,13 @@ namespace orxonox
 
     SpaceShipAI::~SpaceShipAI()
     {
-        for (Iterator<SpaceShipAI> it = ObjectList<SpaceShipAI>::begin(); it; ++it)
+        for (ObjectList<SpaceShipAI>::iterator it = ObjectList<SpaceShipAI>::begin(); it; ++it)
             it->shipDied(this);
     }
 
     void SpaceShipAI::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SpaceShip::XMLPort(xmlelement, mode);
+        SUPER(SpaceShipAI, XMLPort, xmlelement, mode);
 
         this->actionTimer_.setTimer(ACTION_INTERVAL, true, this, createExecutor(createFunctor(&SpaceShipAI::action)));
     }
@@ -110,7 +110,7 @@ namespace orxonox
     void SpaceShipAI::killEnemies(int num)
     {
         int i = 0;
-        for (Iterator<SpaceShipAI> it = ObjectList<SpaceShipAI>::begin(); it; )
+        for (ObjectList<SpaceShipAI>::iterator it = ObjectList<SpaceShipAI>::begin(); it; )
         {
             (it++)->kill();
             if (num && i >= num)
@@ -228,7 +228,7 @@ namespace orxonox
         if (this->bShooting_ && this->isCloseAtTarget(2500) && this->isLookingAtTarget(Ogre::Math::PI / 20.0))
             this->doFire();
 
-        SpaceShip::tick(dt);
+        SUPER(SpaceShipAI, tick, dt);
     }
 
     void SpaceShipAI::moveToTargetPosition(float dt)
@@ -262,7 +262,7 @@ namespace orxonox
         this->targetPosition_ = this->getPosition();
         this->forgetTarget();
 
-        for (Iterator<SpaceShip> it = ObjectList<SpaceShip>::begin(); it; ++it)
+        for (ObjectList<SpaceShip>::iterator it = ObjectList<SpaceShip>::begin(); it; ++it)
         {
             if (it->getTeamNr() != this->getTeamNr())
             {

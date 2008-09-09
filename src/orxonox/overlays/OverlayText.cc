@@ -56,7 +56,7 @@ namespace orxonox
 
     void OverlayText::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        OrxonoxOverlay::XMLPort(xmlElement, mode);
+        SUPER(OverlayText, XMLPort, xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {

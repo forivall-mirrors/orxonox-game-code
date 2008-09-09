@@ -38,22 +38,23 @@ namespace orxonox
 {
 	Error::Error(std::string errorMsg, int errorCode)
 	{
-		COUT(1) << "############################ "<< std::endl
-							<< "#         Error "<<errorCode<< "          #"<< std::endl
-							<< "############################ "<< std::endl
-							<< "An error occured in Orxonox: "<< std::endl;
+		COUT(1) << "############################ " << std::endl
+					  << "#         Error " << errorCode << "          #" << std::endl
+						<< "############################ " << std::endl
+						<< "An error occured in Orxonox: " << std::endl;
 
-		if (errorMsg=="")
+		if (errorMsg == "")
 		{
 			switch (errorCode)
 			{
 				case 1:
 					errorMsg = "Some error!";
 					break;
+
 				default:
 					errorMsg = "Unknown error!";
 			}
 		}
-		COUT(1) << errorMsg << std::endl<< std::endl;
+		COUT(1) << errorMsg << std::endl << std::endl;
 	}
 }

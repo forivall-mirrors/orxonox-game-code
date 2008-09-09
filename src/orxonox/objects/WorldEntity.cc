@@ -94,7 +94,6 @@ namespace orxonox
         }
     }
 
-
     void WorldEntity::setYawPitchRoll(const Degree& yaw, const Degree& pitch, const Degree& roll)
     {
         this->yaw(yaw);
@@ -110,13 +109,13 @@ namespace orxonox
     */
     void WorldEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlelement, mode);
+        SUPER(WorldEntity, XMLPort, xmlelement, mode);
 
-        XMLPortParam(WorldEntity, "position", setPositionLoader2, getPosition, xmlelement, mode);
-        XMLPortParamLoadOnly(WorldEntity, "direction", setDirectionLoader, xmlelement, mode);
+        XMLPortParamExternTemplate(WorldEntity, Ogre::Node, this->node_, "position", setPosition, getPosition, xmlelement, mode, Ogre::Node, const Vector3&);
+        XMLPortParamLoadOnly(WorldEntity, "direction", setDirectionSimple, xmlelement, mode);
         XMLPortParamLoadOnly(WorldEntity, "yawpitchroll", setYawPitchRoll, xmlelement, mode);
-        XMLPortParam(WorldEntity, "scale", setTotalScale, getScale, xmlelement, mode);
-        XMLPortParam(WorldEntity, "rotationAxis", setRotationAxisLoader, getRotationAxis, xmlelement, mode);
+        XMLPortParam(WorldEntity, "scale", setScale, getScale, xmlelement, mode);
+        XMLPortParamTemplate(WorldEntity, "rotationAxis", setRotationAxis, getRotationAxis, xmlelement, mode, WorldEntity, const Vector3&);
         XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, mode);
 
         XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, mode, false, true);
@@ -149,9 +148,9 @@ namespace orxonox
       registerVar( (void*) &(this->getRotationAxis().y), sizeof(this->getRotationAxis().y), network::DATA, 0x3);
       registerVar( (void*) &(this->getRotationAxis().z), sizeof(this->getRotationAxis().z), network::DATA, 0x3);
       // register scale of node
-      registerVar( (void*) &(this->getScale().x), sizeof(this->getScale().x), network::DATA, 0x3);
-      registerVar( (void*) &(this->getScale().y), sizeof(this->getScale().y), network::DATA, 0x3);
-      registerVar( (void*) &(this->getScale().z), sizeof(this->getScale().z), network::DATA, 0x3);
+      registerVar( (void*) &(this->getScale3D().x), sizeof(this->getScale3D().x), network::DATA, 0x3);
+      registerVar( (void*) &(this->getScale3D().y), sizeof(this->getScale3D().y), network::DATA, 0x3);
+      registerVar( (void*) &(this->getScale3D().z), sizeof(this->getScale3D().z), network::DATA, 0x3);
       //register staticity
       registerVar( (void*) &(this->bStatic_), sizeof(this->bStatic_), network::DATA, 0x3);
       //register acceleration & momentum

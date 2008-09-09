@@ -64,10 +64,6 @@ namespace orxonox
 
             inline void setPosition(const Vector3& pos)
                 { this->node_->setPosition(pos); }
-            inline void setPositionLoader1(const Vector3& pos)
-                { this->node_->setPosition(pos); }
-            inline void setPositionLoader2(Real x, Real y, Real z)
-                { this->node_->setPosition(x, y, z); }
             inline void setPosition(Real x, Real y, Real z)
                 { this->node_->setPosition(x, y, z); }
             inline const Vector3& getPosition() const
@@ -107,7 +103,7 @@ namespace orxonox
               { this->node_->setOrientation(quat); }
             inline void rotate(const Vector3& axis, const Radian& angle, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL)
               { this->node_->rotate(axis, angle, relativeTo); }
-            inline void setDirectionLoader(Real x, Real y, Real z)
+            inline void setDirectionSimple(Real x, Real y, Real z)
               { this->setDirection(x, y, z); }
             inline void setDirection(Real x, Real y, Real z, Ogre::Node::TransformSpace relativeTo=Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
               { this->node_->setDirection(x, y, z, relativeTo, localDirectionVector); }
@@ -116,19 +112,19 @@ namespace orxonox
             inline void lookAt(const Vector3& targetPoint, Ogre::Node::TransformSpace relativeTo, const Vector3& localDirectionVector=Vector3::NEGATIVE_UNIT_Z)
               { this->node_->lookAt(targetPoint, relativeTo, localDirectionVector); }
 
-            inline void setScale(const Vector3& scale)
+            inline void setScale3D(const Vector3 &scale)
               { this->node_->setScale(scale); }
-            inline void setScale(Real x, Real y, Real z)
+            inline void setScale3D(Real x, Real y, Real z)
               { this->node_->setScale(x, y, z); }
-            inline void setScale(Real scale)
-              { this->node_->setScale(scale, scale, scale); }
-            inline void setTotalScale(Real scale)
-              { this->node_->setScale(scale, scale, scale); }
-            inline const Vector3& getScale(void) const
+            inline const Vector3& getScale3D(void) const
               { return this->node_->getScale(); }
-            inline void scale(const Vector3& scale)
+            inline void setScale(float scale)
+              { this->node_->setScale(scale, scale, scale); }
+            inline float getScale() const
+              { Vector3 scale = this->getScale3D(); return (scale.x == scale.y && scale.x == scale.z) ? scale.x : 1; }
+            inline void scale3D(const Vector3 &scale)
               { this->node_->scale(scale); }
-            inline void scale(Real x, Real y, Real z)
+            inline void scale3D(Real x, Real y, Real z)
               { this->node_->scale(x, y, z); }
             inline void scale(Real scale)
               { this->node_->scale(scale, scale, scale); }
@@ -158,10 +154,8 @@ namespace orxonox
             inline const Vector3& getAcceleration() const
                 { return this->acceleration_; }
 
-            inline void setRotationAxisLoader(const Vector3& axis)
-                { this->rotationAxis_ = axis; rotationAxis_.normalise(); }
             inline void setRotationAxis(const Vector3& axis)
-                { this->rotationAxis_ = axis; rotationAxis_.normalise(); }
+                { this->rotationAxis_ = axis; this->rotationAxis_.normalise(); }
             inline void setRotationAxis(Real x, Real y, Real z)
                 { this->rotationAxis_.x = x; this->rotationAxis_.y = y; this->rotationAxis_.z = z; rotationAxis_.normalise(); }
             inline const Vector3& getRotationAxis() const

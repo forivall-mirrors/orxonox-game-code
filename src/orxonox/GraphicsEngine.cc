@@ -46,9 +46,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Debug.h"
+#include "core/Iterator.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
+#include "util/Debug.h"
 
 #include "overlays/console/InGameConsole.h"
 #include "overlays/OverlayGroup.h"
@@ -96,12 +97,13 @@ namespace orxonox
     SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
     SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
 
-    unsigned int old = this->detailLevelParticle_;
-    SetConfigValue(detailLevelParticle_, 2).description("O: off, 1: low, 2: normal, 3: high");
+    SetConfigValue(detailLevelParticle_, 2).description("O: off, 1: low, 2: normal, 3: high").callback(this, &GraphicsEngine::detailLevelParticleChanged);
+  }
 
-    if (this->detailLevelParticle_ != old)
-      for (Iterator<ParticleInterface> it = ObjectList<ParticleInterface>::begin(); it; ++it)
-        it->detailLevelChanged(this->detailLevelParticle_);
+  void GraphicsEngine::detailLevelParticleChanged()
+  {
+    for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it; ++it)
+      it->detailLevelChanged(this->detailLevelParticle_);
   }
 
   /**
@@ -440,7 +442,7 @@ namespace orxonox
   */
   void GraphicsEngine::windowMoved(Ogre::RenderWindow *rw)
   {
-    for (Iterator<orxonox::WindowEventListener> it = ObjectList<orxonox::WindowEventListener>::start(); it; ++it)
+    for (ObjectList<orxonox::WindowEventListener>::iterator it = ObjectList<orxonox::WindowEventListener>::begin(); it; ++it)
       it->windowMoved();
   }
 
@@ -452,7 +454,7 @@ namespace orxonox
   */
   void GraphicsEngine::windowResized(Ogre::RenderWindow *rw)
   {
-    for (Iterator<orxonox::WindowEventListener> it = ObjectList<orxonox::WindowEventListener>::start(); it; ++it)
+    for (ObjectList<orxonox::WindowEventListener>::iterator it = ObjectList<orxonox::WindowEventListener>::begin(); it; ++it)
       it->windowResized(this->renderWindow_->getWidth(), this->renderWindow_->getHeight());
   }
 
@@ -462,7 +464,7 @@ namespace orxonox
   */
   void GraphicsEngine::windowFocusChanged(Ogre::RenderWindow *rw)
   {
-    for (Iterator<orxonox::WindowEventListener> it = ObjectList<orxonox::WindowEventListener>::start(); it; ++it)
+    for (ObjectList<orxonox::WindowEventListener>::iterator it = ObjectList<orxonox::WindowEventListener>::begin(); it; ++it)
       it->windowFocusChanged();
   }
 

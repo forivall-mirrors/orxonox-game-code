@@ -13,6 +13,7 @@ namespace orxonox
             RotatingProjectile(SpaceShip* owner = 0);
             virtual ~RotatingProjectile();
             void setConfigValues();
+            void colourChanged();
             virtual void tick(float dt);
             virtual void changedVisibility();
 

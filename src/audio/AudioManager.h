@@ -57,9 +57,6 @@ namespace audio
 		// upwards the listener)
 		void setOri(std::vector<float> at, std::vector<float> up);
 
-		// Parses given xml string
-		void loadParams();
-
 		// Update
 		void tick(float dt);
 

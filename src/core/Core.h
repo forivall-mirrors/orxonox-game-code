@@ -40,7 +40,7 @@
 #include "CorePrereqs.h"
 
 #include "OrxonoxClass.h"
-#include "OutputHandler.h"
+#include "util/OutputHandler.h"
 
 namespace orxonox
 {
@@ -51,6 +51,8 @@ namespace orxonox
             static Core& getInstance();
             static bool& isCreatingCoreSettings();
             void setConfigValues();
+            void debugLevelChanged();
+            void languageChanged();
 
             static int getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
             static void setSoftDebugLevel(OutputHandler::OutputDevice device, int level);

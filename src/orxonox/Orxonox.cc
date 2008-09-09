@@ -53,12 +53,13 @@
 
 // core
 #include "core/ConfigFileManager.h"
+#include "core/Iterator.h"
 #include "core/ConsoleCommand.h"
-#include "core/Debug.h"
 #include "core/Loader.h"
 #include "core/input/InputManager.h"
 #include "core/TclBind.h"
 #include "core/Core.h"
+#include "util/Debug.h"
 
 // audio
 #include "audio/AudioManager.h"
@@ -84,9 +85,9 @@ static network::Server *server_g = 0;
 
 namespace orxonox
 {
-  SetConsoleCommandShortcut(Orxonox, exit).setKeybindMode(KeybindMode::OnPress);
-  SetConsoleCommandShortcut(Orxonox, slomo).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0).setAxisParamIndex(0).setIsAxisRelative(false);
-  SetConsoleCommandShortcut(Orxonox, setTimeFactor).setAccessLevel(AccessLevel::Offline).setDefaultValue(0, 1.0);
+  SetConsoleCommandShortcut(Orxonox, exit).keybindMode(KeybindMode::OnPress);
+  SetConsoleCommandShortcut(Orxonox, slomo).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0).axisParamIndex(0).isAxisRelative(false);
+  SetConsoleCommandShortcut(Orxonox, setTimeFactor).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);
 
   /**
     @brief Reference to the only instance of the class.
@@ -180,7 +181,7 @@ namespace orxonox
   {
     float change = factor / Orxonox::getSingleton()->getTimeFactor();
     Orxonox::getSingleton()->timefactor_ = factor;
-    for (Iterator<ParticleInterface> it = ObjectList<ParticleInterface>::begin(); it; ++it)
+    for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it; ++it)
         it->setSpeedFactor(it->getSpeedFactor() * change);
 
     for (Iterator<Backlight> it = ObjectList<Backlight>::begin(); it; ++it)
@@ -196,9 +197,9 @@ namespace orxonox
   bool Orxonox::init(int argc, char **argv)
   {
 #ifdef _DEBUG
-    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox_d.ini");
+    ConfigFileManager::getInstance()->setFile(CFT_Settings, "orxonox_d.ini");
 #else
-    ConfigFileManager::getSingleton()->setFile(CFT_Settings, "orxonox.ini");
+    ConfigFileManager::getInstance()->setFile(CFT_Settings, "orxonox.ini");
 #endif
     Factory::createClassHierarchy();
 
@@ -441,7 +442,7 @@ namespace orxonox
       timer_ = new Ogre::Timer();
 
     unsigned long frameCount = 0;
-    
+
     // TODO: this would very well fit into a configValue
     const unsigned long refreshTime = 200000;
     unsigned long refreshStartTime = 0;
@@ -467,10 +468,10 @@ namespace orxonox
       Core::tick(dt);
 
       // Call those objects that need the real time
-      for (Iterator<TickableReal> it = ObjectList<TickableReal>::start(); it; ++it)
+      for (ObjectList<TickableReal>::iterator it = ObjectList<TickableReal>::begin(); it; ++it)
         it->tick(dt);
       // Call the scene objects
-      for (Iterator<Tickable> it = ObjectList<Tickable>::start(); it; ++it)
+      for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
         it->tick(dt * this->timefactor_);
 
       // call server/client with normal dt

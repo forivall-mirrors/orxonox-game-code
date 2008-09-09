@@ -36,8 +36,10 @@
 #include <ostream>
 
 #include "Factory.h"
+#include "ConfigValueContainer.h"
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
+#include "XMLPort.h"
 
 namespace orxonox
 {
@@ -51,7 +53,10 @@ namespace orxonox
     */
     Identifier::Identifier()
     {
+        this->objects_ = new ObjectListBase(this);
+
         this->bCreatedOneObject_ = false;
+        this->bSetName_ = false;
         this->factory_ = 0;
 
         this->bHasConfigValues_ = false;
@@ -72,6 +77,19 @@ namespace orxonox
     {
         delete this->children_;
         delete this->directChildren_;
+        delete this->objects_;
+
+        if (this->factory_)
+            delete this->factory_;
+
+        for (std::map<std::string, ConsoleCommand*>::iterator it = this->consoleCommands_.begin(); it != this->consoleCommands_.end(); ++it)
+            delete (it->second);
+        for (std::map<std::string, ConfigValueContainer*>::iterator it = this->configValues_.begin(); it != this->configValues_.end(); ++it)
+            delete (it->second);
+        for (std::map<std::string, XMLPortParamContainer*>::iterator it = this->xmlportParamContainers_.begin(); it != this->xmlportParamContainers_.end(); ++it)
+            delete (it->second);
+        for (std::map<std::string, XMLPortObjectContainer*>::iterator it = this->xmlportObjectContainers_.begin(); it != this->xmlportObjectContainers_.end(); ++it)
+            delete (it->second);
     }
 
     /**
@@ -80,21 +98,23 @@ namespace orxonox
         @param proposal A pointer to a newly created identifier for the case of non existance in the map
         @return The identifier (unique instance)
     */
-    Identifier *Identifier::getIdentifier(std::string &name, Identifier *proposal)
+    Identifier* Identifier::getIdentifierSingleton(const std::string& name, Identifier* proposal)
     {
         static std::map<std::string, Identifier*> identifiers;    //!< The map to store all Identifiers.
         std::map<std::string, Identifier*>::const_iterator it = identifiers.find(name);
-        if (it == identifiers.end())
+
+        if (it != identifiers.end())
         {
-            // there isn't an entry yet, put the proposal in it
-            identifiers[name] = proposal;
+            // There is already an entry: return it and delete the proposal
+            delete proposal;
+            return (*it).second;
         }
         else
         {
-            // this happens when a template exists twice --> delete the proposal
-            delete proposal;
+            // There is no entry: put the proposal into the map and return it
+            identifiers[name] = proposal;
+            return proposal;
         }
-        return identifiers[name];
     }
 
     /**
@@ -138,7 +158,34 @@ namespace orxonox
             {
                 // Tell the parent we're one of it's direct children
                 (*it)->getDirectChildrenIntern().insert((*it)->getDirectChildrenIntern().end(), this);
+
+                // Create the super-function dependencies
+                (*it)->createSuperFunctionCaller();
             }
+        }
+    }
+
+    /**
+        @brief Destroys all Identifiers. Called when exiting the program.
+    */
+    void Identifier::destroyAllIdentifiers()
+    {
+        for (std::map<std::string, Identifier*>::iterator it = Identifier::getIdentifierMapIntern().begin(); it != Identifier::getIdentifierMapIntern().end(); ++it)
+            delete (it->second);
+    }
+
+    /**
+        @brief Sets the name of the class.
+        @param name The name
+    */
+    void Identifier::setName(const std::string& name)
+    {
+        if (!this->bSetName_)
+        {
+            this->name_ = name;
+            this->bSetName_ = true;
+            Identifier::getIdentifierMapIntern()[name] = this;
+            Identifier::getLowercaseIdentifierMapIntern()[getLowercase(name)] = this;
         }
     }
 
@@ -257,6 +304,7 @@ namespace orxonox
         if (it != this->configValues_.end())
         {
             COUT(2) << "Warning: Overwriting config-value with name " << varname << " in class " << this->getName() << "." << std::endl;
+            delete (it->second);
         }
 
         this->bHasConfigValues_ = true;
@@ -304,6 +352,7 @@ namespace orxonox
         if (it != this->consoleCommands_.end())
         {
             COUT(2) << "Warning: Overwriting console-command with name " << command->getName() << " in class " << this->getName() << "." << std::endl;
+            delete (it->second);
         }
 
         this->bHasConsoleCommands_ = true;
@@ -342,6 +391,54 @@ namespace orxonox
             return (*it).second;
         else
             return 0;
+    }
+
+    /**
+        @brief Returns a XMLPortParamContainer that loads a parameter of this class.
+        @param paramname The name of the parameter
+        @return The container
+    */
+    XMLPortParamContainer* Identifier::getXMLPortParamContainer(const std::string& paramname)
+    {
+        std::map<std::string, XMLPortParamContainer*>::const_iterator it = xmlportParamContainers_.find(paramname);
+        if (it != xmlportParamContainers_.end())
+            return ((*it).second);
+        else
+            return 0;
+    }
+
+    /**
+        @brief Adds a new XMLPortParamContainer that loads a parameter of this class.
+        @param paramname The name of the parameter
+        @param container The container
+    */
+    void Identifier::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
+    {
+        this->xmlportParamContainers_[paramname] = container;
+    }
+
+    /**
+        @brief Returns a XMLPortObjectContainer that attaches an object to this class.
+        @param sectionname The name of the section that contains the attachable objects
+        @return The container
+    */
+    XMLPortObjectContainer* Identifier::getXMLPortObjectContainer(const std::string& sectionname)
+    {
+        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = xmlportObjectContainers_.find(sectionname);
+        if (it != xmlportObjectContainers_.end())
+            return ((*it).second);
+        else
+            return 0;
+    }
+
+    /**
+        @brief Adds a new XMLPortObjectContainer that attaches an object to this class.
+        @param sectionname The name of the section that contains the attachable objects
+        @param container The container
+    */
+    void Identifier::addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container)
+    {
+        this->xmlportObjectContainers_[sectionname] = container;
     }
 
     /**

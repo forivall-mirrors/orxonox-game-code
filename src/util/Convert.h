@@ -40,8 +40,8 @@
 #include <sstream>
 
 #include "Math.h"
+#include "Debug.h"
 #include "SubString.h"
-#include "MultiTypeMath.h"
 #include "String.h"
 
 // disable annoying warning about forcing value to boolean
@@ -74,7 +74,10 @@ struct ConverterSpecialized
 {
     enum { specialized = false };
     static bool convert(ToType* output, const FromType& input)
-    { return false; }
+    {
+        COUT(2) << "Warning: Couldn't convert a value: From \"" << typeid(FromType).name() << "\" to \"" << typeid(ToType).name() << "\"" << std::endl;
+        return false;
+    }
 };
 
 
@@ -94,22 +97,24 @@ struct ConverterSpecialized<BothTypes, BothTypes, _Explicit_>
 #define __high__ 2 // Everything that doesn't fullfill the lowerlevel-requirements and therefore needs specialized conversions
 
 // Defines the levels of all types: Default is __high__ so you don't have to define every high-level type
-template <class T> struct ConverterLevel           { enum { level = __high__ }; };
-template <> struct ConverterLevel<std::string>     { enum { level = __mid__ }; };
-template <> struct ConverterLevel<orxonox::Radian> { enum { level = __mid__ }; };
-template <> struct ConverterLevel<orxonox::Degree> { enum { level = __mid__ }; };
-template <> struct ConverterLevel<int>             { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned int>    { enum { level = __low__ }; };
-template <> struct ConverterLevel<char>            { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned char>   { enum { level = __low__ }; };
-template <> struct ConverterLevel<short>           { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned short>  { enum { level = __low__ }; };
-template <> struct ConverterLevel<long>            { enum { level = __low__ }; };
-template <> struct ConverterLevel<unsigned long>   { enum { level = __low__ }; };
-template <> struct ConverterLevel<float>           { enum { level = __low__ }; };
-template <> struct ConverterLevel<double>          { enum { level = __low__ }; };
-template <> struct ConverterLevel<long double>     { enum { level = __low__ }; };
-template <> struct ConverterLevel<bool>            { enum { level = __low__ }; };
+template <class T> struct ConverterLevel              { enum { level = __high__ }; };
+template <> struct ConverterLevel<std::string>        { enum { level = __mid__ }; };
+template <> struct ConverterLevel<orxonox::Radian>    { enum { level = __mid__ }; };
+template <> struct ConverterLevel<orxonox::Degree>    { enum { level = __mid__ }; };
+template <> struct ConverterLevel<int>                { enum { level = __low__ }; };
+template <> struct ConverterLevel<unsigned int>       { enum { level = __low__ }; };
+template <> struct ConverterLevel<char>               { enum { level = __low__ }; };
+template <> struct ConverterLevel<unsigned char>      { enum { level = __low__ }; };
+template <> struct ConverterLevel<short>              { enum { level = __low__ }; };
+template <> struct ConverterLevel<unsigned short>     { enum { level = __low__ }; };
+template <> struct ConverterLevel<long>               { enum { level = __low__ }; };
+template <> struct ConverterLevel<unsigned long>      { enum { level = __low__ }; };
+template <> struct ConverterLevel<long long>          { enum { level = __low__ }; };
+template <> struct ConverterLevel<unsigned long long> { enum { level = __low__ }; };
+template <> struct ConverterLevel<float>              { enum { level = __low__ }; };
+template <> struct ConverterLevel<double>             { enum { level = __low__ }; };
+template <> struct ConverterLevel<long double>        { enum { level = __low__ }; };
+template <> struct ConverterLevel<bool>               { enum { level = __low__ }; };
 
 
 // Calculates the preference based on the levels of FromType and ToType
@@ -139,6 +144,7 @@ struct ConverterDefault
 {
     static bool convert(ToType* output, const FromType& input)
     {
+        COUT(2) << "Warning: Couldn't convert a value: From \"" << typeid(FromType).name() << "\" to \"" << typeid(ToType).name() << "\"" << std::endl;
         return false;
     }
 };
@@ -329,87 +335,34 @@ ToType convertFromString(std::string str)
 }
 
 
-////////////////
-// MULTITYPES //
-////////////////
-
-// convert from MultiTypePrimitive
-template <class ToType>
-struct ConverterSpecialized<MultiTypePrimitive, ToType, _FromType_>
+//////////
+// MATH //
+//////////
+// convert everything to Degree
+template <class FromType>
+struct ConverterSpecialized<FromType, Ogre::Degree, _ToType_>
 {
     enum { specialized = true };
-    static bool convert(ToType* output, const MultiTypePrimitive& input)
+    static bool convert(Ogre::Degree* output, const FromType& input)
     {
-        if (input.getType() == MT_void)
-            return ConvertValue(output, input.getVoid());
-        else if (input.getType() == MT_int)
-            return ConvertValue(output, input.getInt());
-        else if (input.getType() == MT_uint)
-            return ConvertValue(output, input.getUnsignedInt());
-        else if (input.getType() == MT_char)
-            return ConvertValue(output, input.getChar());
-        else if (input.getType() == MT_uchar)
-            return ConvertValue(output, input.getUnsignedChar());
-        else if (input.getType() == MT_short)
-            return ConvertValue(output, input.getShort());
-        else if (input.getType() == MT_ushort)
-            return ConvertValue(output, input.getUnsignedShort());
-        else if (input.getType() == MT_long)
-            return ConvertValue(output, input.getLong());
-        else if (input.getType() == MT_ulong)
-            return ConvertValue(output, input.getUnsignedLong());
-        else if (input.getType() == MT_float)
-            return ConvertValue(output, input.getFloat());
-        else if (input.getType() == MT_double)
-            return ConvertValue(output, input.getDouble());
-        else if (input.getType() == MT_longdouble)
-            return ConvertValue(output, input.getLongDouble());
-        else if (input.getType() == MT_bool)
-            return ConvertValue(output, input.getBool());
-        else
-            return false;
+        float angle = 0;
+        bool success = ConvertValue<FromType, float>(&angle, input);
+        (*output) = angle;
+        return success;
     }
 };
 
-// convert from MultiTypeString
-template <class ToType>
-struct ConverterSpecialized<MultiTypeString, ToType, _FromType_>
+// convert everything to Radian
+template <class FromType>
+struct ConverterSpecialized<FromType, Ogre::Radian, _ToType_>
 {
     enum { specialized = true };
-    static bool convert(ToType* output, const MultiTypeString& input)
+    static bool convert(Ogre::Radian* output, const FromType& input)
     {
-        if (input.getType() == MT_constchar)
-            return ConvertValue(output, input.getConstChar());
-        else if (input.getType() == MT_string)
-            return ConvertValue(output, input.getString());
-        else
-            return ConvertValue(output, (MultiTypePrimitive)input);
-    }
-};
-
-// convert from MultiTypeMath
-template <class ToType>
-struct ConverterSpecialized<MultiTypeMath, ToType, _FromType_>
-{
-    enum { specialized = true };
-    static bool convert(ToType* output, const MultiTypeMath& input)
-    {
-        if (input.getType() == MT_vector2)
-            return ConvertValue(output, input.getVector2());
-        else if (input.getType() == MT_vector3)
-            return ConvertValue(output, input.getVector3());
-        else if (input.getType() == MT_vector4)
-            return ConvertValue(output, input.getVector4());
-        else if (input.getType() == MT_quaternion)
-            return ConvertValue(output, input.getQuaternion());
-        else if (input.getType() == MT_colourvalue)
-            return ConvertValue(output, input.getColourValue());
-        else if (input.getType() == MT_radian)
-            return ConvertValue(output, input.getRadian());
-        else if (input.getType() == MT_degree)
-            return ConvertValue(output, input.getDegree());
-        else
-            return ConvertValue(output, (MultiTypeString)input);
+        float angle = 0;
+        bool success = ConvertValue<FromType, float>(&angle, input);
+        (*output) = angle;
+        return success;
     }
 };
 

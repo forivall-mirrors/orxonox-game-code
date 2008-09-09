@@ -46,57 +46,55 @@
 namespace orxonox
 {
     /**
-        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets the intern value variable.
-        @param type The type of the corresponding config-file
-        @param identifier The identifier of the class the variable belongs to
-        @param varname The name of the variable
-        @param defvalue The default-value
+        @brief Initializes the ConfigValueContainer with defaultvalues.
     */
-    ConfigValueContainer::ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const MultiTypeMath& defvalue)
+    void ConfigValueContainer::init(ConfigFileType type, Identifier* identifier, const std::string& varname)
     {
         this->type_ = type;
         this->identifier_ = identifier;
         this->sectionname_ = identifier->getName();
         this->varname_ = varname;
-
-        this->value_ = defvalue;
+        this->callback_ = 0;
+        this->bContainerIsNew_ = true;
+        this->bDoInitialCallback_ = false;
         this->bAddedDescription_ = false;
+    }
+
+    /**
+        @brief Does some special initialization for single config-values.
+    */
+    void ConfigValueContainer::initValue(const MultiType& defvalue)
+    {
+        this->value_ = defvalue;
         this->bIsVector_ = false;
 
-        this->defvalueString_ = defvalue.toString();
+        this->defvalueString_ = this->value_.getString();
         this->update();
     }
 
     /**
-        @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets the intern value variable.
-        @param type The type of the corresponding config-file
-        @param identifier The identifier of the class the variable belongs to
-        @param varname The name of the variable
-        @param defvalue The default-value
+        @brief Does some special initialization for vector config-values.
     */
-    ConfigValueContainer::ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const std::vector<MultiTypeMath>& defvalue)
+    void ConfigValueContainer::initVector()
     {
-        this->type_ = type;
-        this->identifier_ = identifier;
-        this->sectionname_ = identifier->getName();
-        this->varname_ = varname;
-
-        this->valueVector_ = defvalue;
-        this->bAddedDescription_ = false;
         this->bIsVector_ = true;
 
-        if (defvalue.size() > 0)
+        for (unsigned int i = 0; i < this->valueVector_.size(); i++)
         {
-                this->value_ = defvalue[0];
-
-            for (unsigned int i = 0; i < defvalue.size(); i++)
-            {
-                ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, defvalue[i].toString(), this->value_.isA(MT_string));
-                this->defvalueStringVector_.push_back(defvalue[i].toString());
-            }
-
-            this->update();
+            ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isType(MT_string));
+            this->defvalueStringVector_.push_back(this->valueVector_[i]);
         }
+
+        this->update();
+    }
+
+    /**
+        @brief Destructor: Deletes the callback object if necessary.
+    */
+    ConfigValueContainer::~ConfigValueContainer()
+    {
+        if (this->callback_)
+            delete this->callback_;
     }
 
     /**
@@ -104,17 +102,17 @@ namespace orxonox
         @param input The new value
         @return True if the new value was successfully assigned
     */
-    bool ConfigValueContainer::set(const MultiTypeMath& input)
+    bool ConfigValueContainer::set(const MultiType& input)
     {
         if (this->bIsVector_)
         {
-            return this->callFunctionWithIndex(&ConfigValueContainer::set, input.toString());
+            return this->callFunctionWithIndex(&ConfigValueContainer::set, input);
         }
         else
         {
             if (this->tset(input))
             {
-                ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, input.toString(), this->value_.isA(MT_string));
+                ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, input, this->value_.isType(MT_string));
                 return true;
             }
         }
@@ -127,13 +125,13 @@ namespace orxonox
         @param input The new value
         @return True if the new value was successfully assigned
     */
-    bool ConfigValueContainer::set(unsigned int index, const MultiTypeMath& input)
+    bool ConfigValueContainer::set(unsigned int index, const MultiType& input)
     {
         if (this->bIsVector_)
         {
             if (this->tset(index, input))
             {
-                ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, index, input.toString(), this->value_.isA(MT_string));
+                ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, index, input, this->value_.isType(MT_string));
                 return true;
             }
         }
@@ -149,25 +147,22 @@ namespace orxonox
         @param input The new value. If bIsVector_ then write "index value"
         @return True if the new value was successfully assigned
     */
-    bool ConfigValueContainer::tset(const MultiTypeMath& input)
+    bool ConfigValueContainer::tset(const MultiType& input)
     {
         if (this->bIsVector_)
         {
-            return this->callFunctionWithIndex(&ConfigValueContainer::tset, input.toString());
+            return this->callFunctionWithIndex(&ConfigValueContainer::tset, input);
+            return false;
         }
         else
         {
-            MultiTypeMath temp = this->value_;
-            if (temp.assimilate(input))
-            {
-                this->value_ = temp;
-                if (this->identifier_)
-                    this->identifier_->updateConfigValues();
+            this->value_ = input;
 
-                return true;
-            }
+            if (this->identifier_)
+                this->identifier_->updateConfigValues();
+
+            return true;
         }
-        return false;
     }
 
     /**
@@ -176,7 +171,7 @@ namespace orxonox
         @param input The new value
         @return True if the new value was successfully assigned
     */
-    bool ConfigValueContainer::tset(unsigned int index, const MultiTypeMath& input)
+    bool ConfigValueContainer::tset(unsigned int index, const MultiType& input)
     {
         if (this->bIsVector_)
         {
@@ -190,26 +185,22 @@ namespace orxonox
             {
                 for (unsigned int i = this->valueVector_.size(); i <= index; i++)
                 {
-                    this->valueVector_.push_back(MultiTypeMath());
+                    this->valueVector_.push_back(MultiType());
                 }
             }
 
-            MultiTypeMath temp = this->value_;
-            if (temp.assimilate(input))
-            {
-                this->valueVector_[index] = temp;
+            this->valueVector_[index] = input;
 
-                if (this->identifier_)
-                    this->identifier_->updateConfigValues();
+            if (this->identifier_)
+                this->identifier_->updateConfigValues();
 
-                return true;
-            }
+            return true;
         }
         else
         {
             COUT(1) << "Error: Config-value '" << this->varname_ << "' in " << this->sectionname_ << " is not a vector." << std::endl;
+            return false;
         }
-        return false;
     }
 
     /**
@@ -217,7 +208,7 @@ namespace orxonox
         @param input The new entry
         @return True if the new entry was successfully added
     */
-    bool ConfigValueContainer::add(const MultiTypeMath& input)
+    bool ConfigValueContainer::add(const MultiType& input)
     {
         if (this->bIsVector_)
             return this->set(this->valueVector_.size(), input);
@@ -240,8 +231,8 @@ namespace orxonox
                 // Erase the entry from the vector, change (shift) all entries beginning with index in the config file, remove the last entry from the file
                 this->valueVector_.erase(this->valueVector_.begin() + index);
                 for (unsigned int i = index; i < this->valueVector_.size(); i++)
-                    ConfigFileManager::getSingleton()->setValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isA(MT_string));
-                ConfigFileManager::getSingleton()->deleteVectorEntries(this->type_, this->sectionname_, this->varname_, this->valueVector_.size());
+                    ConfigFileManager::getInstance()->setValue(this->type_, this->sectionname_, this->varname_, i, this->valueVector_[i], this->value_.isType(MT_string));
+                ConfigFileManager::getInstance()->deleteVectorEntries(this->type_, this->sectionname_, this->varname_, this->valueVector_.size());
 
                 return true;
             }
@@ -265,7 +256,7 @@ namespace orxonox
             for (unsigned int i = 0; i < this->defvalueStringVector_.size(); i++)
                 if (!this->set(i, this->defvalueStringVector_[i]))
                     success = false;
-            ConfigFileManager::getSingleton()->deleteVectorEntries(this->type_, this->sectionname_, this->varname_, this->defvalueStringVector_.size());
+            ConfigFileManager::getInstance()->deleteVectorEntries(this->type_, this->sectionname_, this->varname_, this->defvalueStringVector_.size());
             return success;
         }
     }
@@ -276,19 +267,19 @@ namespace orxonox
     void ConfigValueContainer::update()
     {
         if (!this->bIsVector_)
-            this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, this->defvalueString_, this->value_.isA(MT_string)));
+            this->value_ = ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, this->defvalueString_, this->value_.isType(MT_string));
         else
         {
             this->valueVector_.clear();
-            for (unsigned int i = 0; i < ConfigFileManager::getSingleton()->getVectorSize(this->type_, this->sectionname_, this->varname_); i++)
+            for (unsigned int i = 0; i < ConfigFileManager::getInstance()->getVectorSize(this->type_, this->sectionname_, this->varname_); i++)
             {
                 if (i < this->defvalueStringVector_.size())
                 {
-                    this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, this->defvalueStringVector_[i], this->value_.isA(MT_string)));
+                    this->value_ = ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, this->defvalueStringVector_[i], this->value_.isType(MT_string));
                 }
                 else
                 {
-                    this->value_.fromString(ConfigFileManager::getSingleton()->getValue(this->type_, this->sectionname_, this->varname_, i, MultiTypeMath(), this->value_.isA(MT_string)));
+                    this->value_ = ConfigFileManager::getInstance()->getValue(this->type_, this->sectionname_, this->varname_, i, MultiType(), this->value_.isType(MT_string));
                 }
 
                 this->valueVector_.push_back(this->value_);
@@ -302,7 +293,7 @@ namespace orxonox
         @param input The input string
         @return The returnvalue of the functioncall
     */
-    bool ConfigValueContainer::callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiTypeMath&), const std::string& input)
+    bool ConfigValueContainer::callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiType&), const std::string& input)
     {
         SubString token(input, " ", SubString::WhiteSpaces, true, '\\', false, '"', false, '(', ')', false, '\0');
         int index = -1;
@@ -334,7 +325,7 @@ namespace orxonox
         @brief Adds a description to the config-value.
         @param description The description
     */
-    void ConfigValueContainer::description(const std::string& description)
+    ConfigValueContainer& ConfigValueContainer::description(const std::string& description)
     {
         if (!this->bAddedDescription_)
         {
@@ -342,6 +333,7 @@ namespace orxonox
             AddLanguageEntry(this->description_, description);
             this->bAddedDescription_ = true;
         }
+        return (*this);
     }
 
     /**

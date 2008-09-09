@@ -37,12 +37,12 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutExtern(config).setArgumentCompleter(0, autocompletion::configvalueclasses()).setArgumentCompleter(1, autocompletion::configvalues()).setArgumentCompleter(2, autocompletion::configvalue());
-    SetConsoleCommandShortcutExtern(tconfig).setArgumentCompleter(0, autocompletion::configvalueclasses()).setArgumentCompleter(1, autocompletion::configvalues()).setArgumentCompleter(2, autocompletion::configvalue());
+    SetConsoleCommandShortcutExtern(config).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
+    SetConsoleCommandShortcutExtern(tconfig).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
     SetConsoleCommandShortcutExtern(reloadConfig);
     SetConsoleCommandShortcutExtern(cleanConfig);
-    SetConsoleCommandShortcutExtern(loadSettings).setArgumentCompleter(0, autocompletion::files());
-    SetConsoleCommandShortcutExtern(loadKeybindings).setArgumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(loadSettings).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(loadKeybindings).argumentCompleter(0, autocompletion::files());
 
     bool config(const std::string& classname, const std::string& varname, const std::string& value)
     {
@@ -70,22 +70,22 @@ namespace orxonox
 
     void reloadConfig()
     {
-        ConfigFileManager::getSingleton()->load();
+        ConfigFileManager::getInstance()->load();
     }
 
     void cleanConfig()
     {
-        ConfigFileManager::getSingleton()->clean(false);
+        ConfigFileManager::getInstance()->clean(false);
     }
 
     void loadSettings(const std::string& filename)
     {
-        ConfigFileManager::getSingleton()->setFile(CFT_Settings, filename, false);
+        ConfigFileManager::getInstance()->setFile(CFT_Settings, filename, false);
     }
 
     void loadKeybindings(const std::string& filename)
     {
-        ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, filename);
+        ConfigFileManager::getInstance()->setFile(CFT_Keybindings, filename);
     }
 
 
@@ -326,7 +326,7 @@ namespace orxonox
 
         file.close();
 
-        COUT(3) << "Loaded config file \"" << this->filename_ << "\"." << std::endl;
+        COUT(0) << "Loaded config file \"" << this->filename_ << "\"." << std::endl;
 
         // Save the file in case something changed (like stripped whitespaces)
         this->save();
@@ -458,7 +458,7 @@ namespace orxonox
             delete (*(it++)).second;
     }
 
-    ConfigFileManager* ConfigFileManager::getSingleton()
+    ConfigFileManager* ConfigFileManager::getInstance()
     {
         static ConfigFileManager instance;
         return (&instance);

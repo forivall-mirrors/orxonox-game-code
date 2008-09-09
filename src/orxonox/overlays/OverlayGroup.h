@@ -57,11 +57,13 @@ namespace orxonox
         //! Empty destructor.
         ~OverlayGroup() { }
 
-        void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
         static void toggleVisibility(const std::string& name);
         static void scaleGroup(const std::string& name, float scale);
         static void scrollGroup(const std::string& name, const Vector2& scroll);
+
+        void changedVisibility();
 
     private:
         //! Scales each OrxonoxOverlay individually by scale.
@@ -78,8 +80,6 @@ namespace orxonox
 
         void addElement(OrxonoxOverlay* element);
         OrxonoxOverlay* getElement(unsigned int index);
-
-        void changedVisibility();
 
         std::map<std::string, OrxonoxOverlay*> hudElements_;    //!< Contains all the OrxonoxOverlays of the this group.
         Vector2 scale_;                                         //!< Current scale (independant of the elements).

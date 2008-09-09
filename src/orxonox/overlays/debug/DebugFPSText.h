@@ -42,10 +42,7 @@ namespace orxonox
         DebugFPSText();
         ~DebugFPSText();
 
-    private:
-        void tick(float dt);
-
-    private:
+        virtual void tick(float dt);
     };
 }
 #endif /* _DebugFPSText_H__ */

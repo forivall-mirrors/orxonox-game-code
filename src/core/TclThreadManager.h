@@ -68,6 +68,9 @@ namespace orxonox
 
     class _CoreExport TclThreadManager : public OrxonoxClass
     {
+        friend class IRC;
+        friend class TclBind;
+
         public:
             static TclThreadManager& getInstance();
 
@@ -80,6 +83,18 @@ namespace orxonox
             static void dump(unsigned int threadID);
             static void flush(unsigned int threadID);
 
+            void error(const std::string& error);
+            void debug(const std::string& error);
+
+            virtual void tick(float dt);
+
+            std::list<unsigned int> getThreadList() const;
+
+        private:
+            TclThreadManager();
+            TclThreadManager(const TclThreadManager& other);
+            ~TclThreadManager();
+
             static void tcl_execute(Tcl::object const &args);
             static std::string tcl_query(int querierID, Tcl::object const &args);
             static std::string tcl_crossquery(int querierID, int threadID, Tcl::object const &args);
@@ -88,8 +103,6 @@ namespace orxonox
             Tcl::interpreter* createNewTclInterpreter(const std::string& threadID);
             TclInterpreterBundle* getInterpreterBundle(unsigned int threadID);
             std::string dumpList(const std::list<unsigned int>& list);
-            void error(const std::string& error);
-            void debug(const std::string& error);
 
             void pushCommandToQueue(const std::string& command);
             void forceCommandToFrontOfQueue(const std::string& command);
@@ -104,15 +117,6 @@ namespace orxonox
 
             std::string evalQuery(unsigned int querierID, const std::string& command);
             std::string evalQuery(unsigned int querierID, unsigned int threadID, const std::string& command);
-
-            virtual void tick(float dt);
-
-            std::list<unsigned int> getThreadList() const;
-
-        private:
-            TclThreadManager();
-            TclThreadManager(const TclThreadManager& other);
-            ~TclThreadManager() {}
 
             unsigned int threadCounter_;
             TclInterpreterBundle orxonoxInterpreterBundle_;

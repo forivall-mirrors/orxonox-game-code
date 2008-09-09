@@ -36,7 +36,7 @@
 
 #include "OrxonoxClass.h"
 #include "input/InputBuffer.h"
-#include "OutputBuffer.h"
+#include "util/OutputBuffer.h"
 
 namespace orxonox
 {
@@ -66,6 +66,8 @@ namespace orxonox
             static void history();
 
             virtual void setConfigValues();
+            void commandHistoryOffsetChanged();
+            void commandHistoryLengthChanged();
 
             void registerListener(ShellListener* listener);
             void unregisterListener(ShellListener* listener);

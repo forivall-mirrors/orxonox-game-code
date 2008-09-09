@@ -30,6 +30,7 @@
 #include "NPC.h"
 
 #include "core/CoreIncludes.h"
+#include "core/Iterator.h"
 
 namespace orxonox {
 
@@ -55,12 +56,12 @@ namespace orxonox {
     this->translate(location);
     movable_ = movable;
   }
-  
+
   void NPC::registerAllVariables(){
     Model::registerAllVariables();
     registerVar(&movable_, sizeof(movable_), network::DATA);
   }
-  
+
 
   /**
    * calculates the distance between the element and an other point given by temp
@@ -111,7 +112,7 @@ namespace orxonox {
     Vector3 inverseDistance = Vector3(0,0,0);  //vector pointing away from possible collisions
     int numberOfNeighbour = 0;  //number of observed neighbours
     float distance = 0;  // distance to the actual element
-    for(Iterator<WorldEntity> it = ObjectList<WorldEntity>::start(); it; ++it) {  //go through all elements
+    for(ObjectList<WorldEntity>::iterator it = ObjectList<WorldEntity>::begin(); it; ++it) {  //go through all elements
       distance = getDistance(*it);  //get distance between this and actual
       if ((distance > 0) && (distance < SEPERATIONDISTANCE)) {  //do only if actual is inside detectionradius
         inverseDistance = Vector3(0,0,0);
@@ -138,7 +139,7 @@ namespace orxonox {
     int numberOfNeighbour = 0;  //number of observed neighbours
     //float distance = 0;
     //go through all elements
-    for(Iterator<NPC> it = ObjectList<NPC>::start(); it; ++it) {  //just working with 3 elements at the moment
+    for(ObjectList<NPC>::iterator it = ObjectList<NPC>::begin(); it; ++it) {  //just working with 3 elements at the moment
       float distance = getDistance(*it);  //get distance between this and actual
       if ((distance > 0) && (distance < ALIGNMENTDISTANCE)) {  //check if actual element is inside detectionradius
         steering = steering + it->getVelocity();  //add up all speedvectors inside the detectionradius
@@ -158,7 +159,7 @@ namespace orxonox {
     int numberOfNeighbour = 0;  //number of observed neighbours
     //float distance = 0;
     //go through all elements
-    for(Iterator<NPC> it = ObjectList<NPC>::start(); it; ++it) {  //just working with 3 elements at the moment
+    for(ObjectList<NPC>::iterator it = ObjectList<NPC>::begin(); it; ++it) {  //just working with 3 elements at the moment
       float distance = getDistance(*it);  //get distance between this and actual
       if ((distance > 0) && (distance < COHESIONDISTANCE)) {  //check if actual element is inside detectionradius
         steering = steering + it->getPosition();  //add up all locations of elements inside the detectionradius

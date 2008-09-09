@@ -29,7 +29,7 @@
 #include "CommandEvaluation.h"
 #include "ConsoleCommand.h"
 #include "Identifier.h"
-#include "Debug.h"
+#include "util/Debug.h"
 #include "util/String.h"
 
 namespace orxonox
@@ -217,13 +217,13 @@ namespace orxonox
         }
     }
 
-    void CommandEvaluation::setEvaluatedParameter(unsigned int index, MultiTypeMath param)
+    void CommandEvaluation::setEvaluatedParameter(unsigned int index, MultiType param)
     {
         if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
             this->param_[index] = param;
     }
 
-    MultiTypeMath CommandEvaluation::getEvaluatedParameter(unsigned int index) const
+    MultiType CommandEvaluation::getEvaluatedParameter(unsigned int index) const
     {
         if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
             return this->param_[index];
@@ -239,12 +239,12 @@ namespace orxonox
         return MT_null;
     }
 
-    MultiTypeMath CommandEvaluation::getReturnvalue() const
+    MultiType CommandEvaluation::getReturnvalue() const
     {
         if (this->function_)
             return this->function_->getReturnvalue();
 
-        return MultiTypeMath();
+        return MultiType();
     }
 
 
@@ -303,7 +303,7 @@ namespace orxonox
             output += command->getTypenameParam(i);
 
             if (command->defaultValueSet(i))
-                output += "=" + command->getDefaultValue(i).toString() + "]";
+                output += "=" + command->getDefaultValue(i).getString() + "]";
             else
                 output += "}";
         }

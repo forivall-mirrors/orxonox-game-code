@@ -46,6 +46,7 @@ namespace orxonox
             virtual ~SpaceShipAI();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void tick(float dt);
             static void createEnemy(int num);
             static void killEnemies(int num);
             void shipDied(SpaceShipAI* ship);
@@ -53,7 +54,6 @@ namespace orxonox
             void kill();
 
         private:
-            virtual void tick(float dt);
             virtual ColourValue getProjectileColour() const;
 
             void action();

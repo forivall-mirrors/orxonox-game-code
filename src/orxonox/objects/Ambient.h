@@ -44,9 +44,12 @@ namespace orxonox
             virtual ~Ambient();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void setAmbientLight(const ColourValue& colour);
             virtual bool create();
             void registerAllVariables();
+
+            void setAmbientLight(const ColourValue& colour);
+            inline const ColourValue& getAmbienetLight() const
+                { return this->ambientLight_; }
 
             static void setAmbientLightTest(const ColourValue& colour)
                 { Ambient::instance_s->setAmbientLight(colour); }

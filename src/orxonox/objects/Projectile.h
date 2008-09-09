@@ -41,11 +41,12 @@ namespace orxonox
         public:
             virtual ~Projectile();
             void setConfigValues();
+            void speedChanged();
             void destroyObject();
             virtual void tick(float dt);
 
             static float getSpeed()
-                { return Projectile::speed_; }
+                { return Projectile::speed_s; }
 
         protected:
             Projectile(SpaceShip* owner = 0);
@@ -54,7 +55,10 @@ namespace orxonox
         private:
             std::string explosionTemplateName_;
             std::string smokeTemplateName_;
-            static float speed_;
+        protected:
+            static float speed_s;
+            float speed_;
+        private:
             float lifetime_;
             float damage_;
             Timer<Projectile> destroyTimer_;

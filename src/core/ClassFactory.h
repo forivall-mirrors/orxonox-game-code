@@ -42,7 +42,7 @@
 
 #include "Factory.h"
 #include "Identifier.h"
-#include "Debug.h"
+#include "util/Debug.h"
 
 namespace orxonox
 {
@@ -73,7 +73,7 @@ namespace orxonox
     bool ClassFactory<T>::create(const std::string& name)
     {
         COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
-        ClassIdentifier<T>::getIdentifier()->addFactory(new ClassFactory<T>);
+        ClassIdentifier<T>::getIdentifier(name)->addFactory(new ClassFactory<T>);
         Factory::add(name, ClassIdentifier<T>::getIdentifier());
 
         return true;

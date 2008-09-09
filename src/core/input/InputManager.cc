@@ -38,10 +38,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Debug.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 #include "core/Shell.h"               // hack!
+#include "util/Debug.h"
 
 #include "InputBuffer.h"
 #include "KeyBinder.h"
@@ -320,9 +320,9 @@ namespace orxonox
   {
     if (joySticksSize_)
     {
-      std::vector<MultiTypeMath> coeffPos;
-      std::vector<MultiTypeMath> coeffNeg;
-      std::vector<MultiTypeMath> zero;
+      std::vector<double> coeffPos;
+      std::vector<double> coeffNeg;
+      std::vector<int> zero;
       coeffPos.resize(24);
       coeffNeg.resize(24);
       zero.resize(24);
@@ -339,7 +339,7 @@ namespace orxonox
           cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "CoeffPos", coeffPos);
           getIdentifier()->addConfigValueContainer("CoeffPos", cont);
       }
-      cont->getValue(&coeffPos);
+      cont->getValue(&coeffPos, this);
 
       cont = getIdentifier()->getConfigValueContainer("CoeffNeg");
       if (!cont)
@@ -347,7 +347,7 @@ namespace orxonox
           cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "CoeffNeg", coeffNeg);
           getIdentifier()->addConfigValueContainer("CoeffNeg", cont);
       }
-      cont->getValue(&coeffNeg);
+      cont->getValue(&coeffNeg, this);
 
       cont = getIdentifier()->getConfigValueContainer("Zero");
       if (!cont)
@@ -355,7 +355,7 @@ namespace orxonox
           cont = new ConfigValueContainer(CFT_Keybindings, getIdentifier(), "Zero", zero);
           getIdentifier()->addConfigValueContainer("Zero", cont);
       }
-      cont->getValue(&zero);
+      cont->getValue(&zero, this);
 
       // copy values to our own variables
       for (unsigned int i = 0; i < 24; i++)

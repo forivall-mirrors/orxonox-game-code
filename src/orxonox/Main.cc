@@ -36,7 +36,7 @@
 #include <exception>
 
 #include "util/OrxonoxPlatform.h"
-#include "core/SignalHandler.h"
+#include "SignalHandler.h"
 #include "Orxonox.h"
 
 using namespace orxonox;

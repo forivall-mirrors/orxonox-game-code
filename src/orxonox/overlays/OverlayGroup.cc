@@ -34,9 +34,10 @@
 #include "OrxonoxStableHeaders.h"
 #include "OverlayGroup.h"
 
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
+#include "core/Iterator.h"
 #include "core/XMLPort.h"
 #include "OrxonoxOverlay.h"
 
@@ -44,9 +45,9 @@ namespace orxonox
 {
     CreateFactory(OverlayGroup);
 
-    SetConsoleCommand(OverlayGroup, toggleVisibility, false).setAccessLevel(AccessLevel::User);
-    SetConsoleCommand(OverlayGroup, scaleGroup, false).setAccessLevel(AccessLevel::User);
-    SetConsoleCommand(OverlayGroup, scrollGroup, false).setAccessLevel(AccessLevel::User);
+    SetConsoleCommand(OverlayGroup, toggleVisibility, false).accessLevel(AccessLevel::User);
+    SetConsoleCommand(OverlayGroup, scaleGroup, false).accessLevel(AccessLevel::User);
+    SetConsoleCommand(OverlayGroup, scrollGroup, false).accessLevel(AccessLevel::User);
 
     OverlayGroup::OverlayGroup()
     {
@@ -61,7 +62,7 @@ namespace orxonox
     */
     void OverlayGroup::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlElement, mode);
+        SUPER(OverlayGroup, XMLPort, xmlElement, mode);
 
         XMLPortParam(OverlayGroup, "scale",  setScale,  getScale,  xmlElement, mode).defaultValues(Vector2(1.0, 1.0));
         XMLPortParam(OverlayGroup, "scroll", setScroll, getScroll, xmlElement, mode).defaultValues(Vector2(0.0, 0.0));
@@ -134,7 +135,7 @@ namespace orxonox
     */
     /*static*/ void OverlayGroup::toggleVisibility(const std::string& name)
     {
-        for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
+        for (ObjectList<OverlayGroup>::iterator it = ObjectList<OverlayGroup>::begin(); it; ++it)
         {
             if ((*it)->getName() == name)
                 (*it)->setVisible(!((*it)->isVisible()));
@@ -150,7 +151,7 @@ namespace orxonox
     */
     /*static*/ void OverlayGroup::scaleGroup(const std::string& name, float scale)
     {
-        for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
+        for (ObjectList<OverlayGroup>::iterator it = ObjectList<OverlayGroup>::begin(); it; ++it)
         {
             if ((*it)->getName() == name)
                 (*it)->scale(Vector2(scale, scale));
@@ -166,7 +167,7 @@ namespace orxonox
     */
     /*static*/ void OverlayGroup::scrollGroup(const std::string& name, const Vector2& scroll)
     {
-        for (Iterator<OverlayGroup> it = ObjectList<OverlayGroup>::begin(); it; ++it)
+        for (ObjectList<OverlayGroup>::iterator it = ObjectList<OverlayGroup>::begin(); it; ++it)
         {
             if ((*it)->getName() == name)
                 (*it)->scroll(scroll);

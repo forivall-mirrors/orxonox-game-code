@@ -50,9 +50,9 @@ namespace orxonox
     unsigned int OrxonoxOverlay::hudOverlayCounter_s = 0;
     std::map<std::string, OrxonoxOverlay*> OrxonoxOverlay::overlays_s;
 
-    SetConsoleCommand(OrxonoxOverlay, scaleOverlay, false).setAccessLevel(AccessLevel::User);
-    SetConsoleCommand(OrxonoxOverlay, scrollOverlay, false).setAccessLevel(AccessLevel::User);
-    SetConsoleCommand(OrxonoxOverlay, rotateOverlay, false).setAccessLevel(AccessLevel::User);
+    SetConsoleCommand(OrxonoxOverlay, scaleOverlay, false).accessLevel(AccessLevel::User);
+    SetConsoleCommand(OrxonoxOverlay, scrollOverlay, false).accessLevel(AccessLevel::User);
+    SetConsoleCommand(OrxonoxOverlay, rotateOverlay, false).accessLevel(AccessLevel::User);
 
     OrxonoxOverlay::OrxonoxOverlay()
         : overlay_(0)
@@ -83,7 +83,7 @@ namespace orxonox
     /**
     @brief
         Loads the OrxonoxOverlay.
-        
+
         This has to be called before usage, otherwise strange behaviour is
         guaranteed! (there should be no segfaults however).
     @copydoc
@@ -91,7 +91,7 @@ namespace orxonox
     */
     void OrxonoxOverlay::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlElement, mode);
+        SUPER(OrxonoxOverlay, XMLPort, xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {
@@ -266,7 +266,7 @@ namespace orxonox
         angle -= Ogre::Math::PI * (int)(angle / (Ogre::Math::PI));
         if (angle > Ogre::Math::PI * 0.5)
             angle = Ogre::Math::PI - angle;
-        
+
         // do some mathematical fiddling for a bounding box
         Vector2 actualSize = size_ * sizeCorrection_;
         float radius = actualSize.length();

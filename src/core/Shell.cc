@@ -33,6 +33,7 @@
 #include "Core.h"
 #include "ConsoleCommand.h"
 #include "input/InputInterfaces.h"
+#include "util/OutputHandler.h"
 
 #define SHELL_UPDATE_LISTENERS(function) \
     for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ) \
@@ -42,6 +43,12 @@ namespace orxonox
 {
     SetConsoleCommand(Shell, clearShell, true);
     SetConsoleCommand(Shell, history, true);
+
+    SetConsoleCommandShortcut(OutputHandler, log);
+    SetConsoleCommandShortcut(OutputHandler, error);
+    SetConsoleCommandShortcut(OutputHandler, warning);
+    SetConsoleCommandShortcut(OutputHandler, info);
+    SetConsoleCommandShortcut(OutputHandler, debug);
 
     Shell::Shell()
     {
@@ -60,6 +67,7 @@ namespace orxonox
         this->setInputBuffer(new InputBuffer());
 
         this->outputBuffer_.registerListener(this);
+        OutputHandler::getOutStream().setOutputBuffer(this->outputBuffer_);
 
         this->setConfigValues();
     }
@@ -81,12 +89,20 @@ namespace orxonox
 
     void Shell::setConfigValues()
     {
-        SetConfigValue(maxHistoryLength_, 100);
-        SetConfigValue(historyOffset_, 0);
+        SetConfigValue(maxHistoryLength_, 100).callback(this, &Shell::commandHistoryLengthChanged);
+        SetConfigValue(historyOffset_, 0).callback(this, &Shell::commandHistoryOffsetChanged);
         SetConfigValueVector(commandHistory_, std::vector<std::string>());
+    }
 
+    void Shell::commandHistoryOffsetChanged()
+    {
         if (this->historyOffset_ >= this->maxHistoryLength_)
             this->historyOffset_ = 0;
+    }
+
+    void Shell::commandHistoryLengthChanged()
+    {
+        this->commandHistoryOffsetChanged();
 
         while (this->commandHistory_.size() > this->maxHistoryLength_)
         {

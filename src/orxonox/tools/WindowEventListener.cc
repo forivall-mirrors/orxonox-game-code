@@ -37,6 +37,6 @@ namespace orxonox
     */
     WindowEventListener::WindowEventListener()
     {
-        RegisterObject(WindowEventListener);
+        RegisterRootObject(WindowEventListener);
     }
 }

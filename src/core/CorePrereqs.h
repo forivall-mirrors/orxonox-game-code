@@ -61,8 +61,6 @@
 //-----------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------
-class SignalHandler;
-
 namespace orxonox
 {
   namespace XMLPort
@@ -110,7 +108,6 @@ namespace orxonox
   class ConfigValueContainer;
   class ConsoleCommand;
   class Core;
-  class Error;
   class Executor;
   template <class T>
   class ExecutorMember;
@@ -124,23 +121,24 @@ namespace orxonox
   class IRC;
   template <class T>
   class Iterator;
+  class IteratorBase;
   class Language;
   class LanguageEntry;
   class Level;
   class Loader;
   class MetaObjectList;
-  template <class T>
   class MetaObjectListElement;
   class Namespace;
   class NamespaceNode;
   template <class T>
   class ObjectList;
+  class ObjectListBase;
+  class ObjectListBaseElement;
   template <class T>
   class ObjectListElement;
+  template <class T>
+  class ObjectListIterator;
   class OrxonoxClass;
-  class OutputBuffer;
-  class OutputBufferListener;
-  class OutputHandler;
   class Shell;
   class ShellListener;
   template <class T>

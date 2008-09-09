@@ -160,6 +160,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\util\Error.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\util\ExprParser.cc"
 				>
 			</File>
@@ -168,15 +172,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiTypeMath.cc"
+				RelativePath="..\..\src\util\MultiType.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiTypePrimitive.cc"
+				RelativePath="..\..\src\util\OutputBuffer.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiTypeString.cc"
+				RelativePath="..\..\src\util\OutputHandler.cc"
 				>
 			</File>
 			<File
@@ -210,6 +214,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\util\Debug.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\Error.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\util\ExprParser.h"
 				>
 			</File>
@@ -222,19 +234,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\MultiTypeMath.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\MultiTypePrimitive.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\MultiTypeString.h"
+				RelativePath="..\..\src\util\MultiTypeValue.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\util\OrxonoxPlatform.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\OutputBuffer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\OutputHandler.h"
 				>
 			</File>
 			<File

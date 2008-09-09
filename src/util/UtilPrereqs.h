@@ -61,10 +61,15 @@
 //-----------------------------------------------------------------------
 class ArgReader;
 class Convert;
-class MultiTypePrimitive;
-class MultiTypeString;
-class MultiTypeMath;
-template <class T>
-class String2Number;
+class ExprParser;
+class MultiType;
 class SubString;
+namespace orxonox
+{
+    class OutputBuffer;
+    class OutputBufferListener;
+    class Error;
+    class OutputHandler;
+}
+
 #endif /* _UtilPrereqs_H__ */

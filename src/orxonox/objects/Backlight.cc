@@ -102,7 +102,7 @@ namespace orxonox
 
     void Backlight::tick(float dt)
     {
-        WorldEntity::tick(dt);
+        SUPER(Backlight, tick, dt);
 
         if (this->isActive())
         {
@@ -146,7 +146,7 @@ namespace orxonox
 
     void Backlight::changedVisibility()
     {
-        WorldEntity::changedVisibility();
+        SUPER(Backlight, changedVisibility);
 
         this->billboard_.setVisible(this->isVisible());
         this->ribbonTrail_->setVisible(this->isVisible());

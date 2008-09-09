@@ -44,7 +44,7 @@
 #include <boost/bind.hpp>
 
 #include "util/Sleep.h"
-#include "core/Debug.h"
+#include "util/Debug.h"
 
 namespace network
 {
@@ -90,7 +90,7 @@ namespace network
     ENetAddress address; //sems that address is not needed
     return getPacket(address);
   }*/
-  
+
   ENetEvent *ClientConnection::getEvent(){
     if(!buffer.isEmpty())
       return buffer.pop();

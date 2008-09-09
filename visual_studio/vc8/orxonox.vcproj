@@ -188,6 +188,12 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\SignalHandler.cc"
+				>
+			</File>
+			<Filter
+				Name="hud"
+			<File
 				RelativePath="..\..\src\orxonox\RadarListener.cc"
 				>
 			</File>
@@ -557,6 +563,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\Settings.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\orxonox\SignalHandler.h"
 				>
 			</File>
 			<Filter

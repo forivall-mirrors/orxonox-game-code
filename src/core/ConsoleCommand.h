@@ -37,18 +37,30 @@
 #include "ArgumentCompletionFunctions.h"
 
 
-#define SetConsoleCommand(classname, function,  bCreateShortcut) \
-    SetConsoleCommandGeneric(classname##function##consolecommand__, classname, orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), #function), bCreateShortcut)
+#define SetConsoleCommand(classname, function, bCreateShortcut) \
+    SetConsoleCommandAliasMulti(classname, function, #function, 0, bCreateShortcut)
+#define SetConsoleCommandAlias(classname, function, name, bCreateShortcut) \
+    SetConsoleCommandAliasMulti(classname, function, name, 0, bCreateShortcut)
+#define SetConsoleCommandAliasMulti(classname, function, name, number, bCreateShortcut) \
+    SetConsoleCommandGeneric(classname##function##consolecommand__##number, classname, orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), name), bCreateShortcut)
 
 #define SetConsoleCommandGeneric(fakevariable, classname, command, bCreateShortcut) \
-    orxonox::ConsoleCommand& fakevariable = orxonox::ClassIdentifier<classname>::getIdentifier()->addConsoleCommand(command, bCreateShortcut)
+    orxonox::ConsoleCommand& fakevariable = orxonox::ClassIdentifier<classname>::getIdentifier(#classname)->addConsoleCommand(command, bCreateShortcut)
 
 
 #define SetConsoleCommandShortcut(classname, function) \
-    SetConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), #function))
+    SetConsoleCommandShortcutAliasMulti(classname, function, #function, 0)
+#define SetConsoleCommandShortcutAlias(classname, function, name) \
+    SetConsoleCommandShortcutAliasMulti(classname, function, name, 0)
+#define SetConsoleCommandShortcutAliasMulti(classname, function, name, number) \
+    SetConsoleCommandShortcutGeneric(function##consolecommand__##number, orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), name))
 
 #define SetConsoleCommandShortcutExtern(function) \
-    SetConsoleCommandShortcutGeneric(function##consolecommand__, orxonox::createConsoleCommand(orxonox::createFunctor(&function), #function))
+    SetConsoleCommandShortcutExternAliasMulti(function, #function, 0)
+#define SetConsoleCommandShortcutExternAlias(function, name) \
+    SetConsoleCommandShortcutExternAliasMulti(function, name, 0)
+#define SetConsoleCommandShortcutExternAliasMulti(function, name, number) \
+    SetConsoleCommandShortcutGeneric(function##consolecommand__##number, orxonox::createConsoleCommand(orxonox::createFunctor(&function), name))
 
 #define SetConsoleCommandShortcutGeneric(fakevariable, command) \
     orxonox::ConsoleCommand& fakevariable = orxonox::CommandExecutor::addConsoleCommandShortcut(command)
@@ -74,31 +86,31 @@ namespace orxonox
         public:
             ConsoleCommand(FunctorStatic* functor, const std::string& name = "");
 
-            inline ConsoleCommand& setDescription(const std::string& description)
+            inline ConsoleCommand& description(const std::string& description)
                 { this->ExecutorStatic::setDescription(description); return (*this); }
-            inline ConsoleCommand& setDescriptionParam(int param, const std::string& description)
+            inline ConsoleCommand& descriptionParam(int param, const std::string& description)
                 { this->ExecutorStatic::setDescriptionParam(param, description); return (*this); }
-            inline ConsoleCommand& setDescriptionReturnvalue(const std::string& description)
+            inline ConsoleCommand& descriptionReturnvalue(const std::string& description)
                 { this->ExecutorStatic::setDescriptionReturnvalue(description); return (*this); }
-            inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1)
+            inline ConsoleCommand& defaultValues(const MultiType& param1)
                 { this->ExecutorStatic::setDefaultValues(param1); return (*this); }
-            inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2)
+            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2)
                 { this->ExecutorStatic::setDefaultValues(param1, param2); return (*this); }
-            inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3)
+            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
                 { this->ExecutorStatic::setDefaultValues(param1, param2, param3); return (*this); }
-            inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4)
+            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
                 { this->ExecutorStatic::setDefaultValues(param1, param2, param3, param4); return (*this); }
-            inline ConsoleCommand& setDefaultValues(const MultiTypeMath& param1, const MultiTypeMath& param2, const MultiTypeMath& param3, const MultiTypeMath& param4, const MultiTypeMath& param5)
+            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
                 { this->ExecutorStatic::setDefaultValues(param1, param2, param3, param4, param5); return (*this); }
-            inline ConsoleCommand& setDefaultValue(unsigned int index, const MultiTypeMath& param)
+            inline ConsoleCommand& defaultValue(unsigned int index, const MultiType& param)
                 { this->ExecutorStatic::setDefaultValue(index, param); return (*this); }
 
-            inline ConsoleCommand& setAccessLevel(AccessLevel::Level level)
+            inline ConsoleCommand& accessLevel(AccessLevel::Level level)
                 { this->accessLevel_ = level; return (*this); }
             inline AccessLevel::Level getAccessLevel() const
                 { return this->accessLevel_; }
 
-            ConsoleCommand& setArgumentCompleter(unsigned int param, ArgumentCompleter* completer);
+            ConsoleCommand& argumentCompleter(unsigned int param, ArgumentCompleter* completer);
             ArgumentCompleter* getArgumentCompleter(unsigned int param) const;
 
             void createArgumentCompletionList(unsigned int param, const std::string& param1 = "", const std::string& param2 = "", const std::string& param3 = "", const std::string& param4 = "", const std::string& param5 = "");
@@ -109,17 +121,17 @@ namespace orxonox
             ArgumentCompletionList::const_iterator getArgumentCompletionListEnd() const
                 { return this->argumentList_.end(); }
 
-            inline ConsoleCommand& setKeybindMode(KeybindMode::Enum mode)
+            inline ConsoleCommand& keybindMode(KeybindMode::Enum mode)
                 { this->keybindMode_ = mode; return *this; }
             inline KeybindMode::Enum getKeybindMode() const
                 { return this->keybindMode_; }
 
-            inline ConsoleCommand& setAxisParamIndex(int index)
+            inline ConsoleCommand& axisParamIndex(int index)
                 { this->axisParamIndex_ = index; return *this; }
             inline int getAxisParamIndex() const
                 { return this->axisParamIndex_; }
 
-            inline ConsoleCommand& setIsAxisRelative(bool val)
+            inline ConsoleCommand& isAxisRelative(bool val)
                 { this->bAxisRelative_ = val; return *this; }
             inline int getIsAxisRelative() const
                 { return this->bAxisRelative_; }

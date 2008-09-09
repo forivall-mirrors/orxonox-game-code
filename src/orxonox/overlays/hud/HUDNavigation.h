@@ -43,14 +43,13 @@ namespace orxonox
         HUDNavigation();
         ~HUDNavigation();
 
-        void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void tick(float dt);
 
     private:
         void sizeChanged();
         void angleChanged() { }
         void positionChanged() { }
-
-        void tick(float dt);
 
         // XMLPort accessors
         void setNavMarkerSize(float size) { this->navMarkerSize_ = size; this->sizeChanged(); }

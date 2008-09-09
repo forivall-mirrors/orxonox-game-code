@@ -49,6 +49,7 @@
 #include "util/Sleep.h"
 #include "objects/SpaceShip.h"
 #include "core/ConsoleCommand.h"
+#include "core/Iterator.h"
 #include "packet/Chat.h"
 #include "packet/Packet.h"
 #include "packet/Welcome.h"
@@ -57,7 +58,7 @@ namespace network
 {
   #define MAX_FAILURES 20;
   #define NETWORK_FREQUENCY 30
-  
+
   /**
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY
   *
@@ -67,7 +68,7 @@ namespace network
     connection = new ConnectionManager();
     gamestates_ = new GamestateManager();
   }
-  
+
   Server::Server(int port){
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port);
@@ -122,7 +123,7 @@ namespace network
     }
     return message->process();
   }
-  
+
   /**
   * This function sends out a message to all clients
   * @param msg message
@@ -174,7 +175,7 @@ namespace network
 //     usleep(5000); // TODO remove
     return;
   }
-  
+
   bool Server::queuePacket(ENetPacket *packet, int clientID){
     return connection->addPacket(packet, clientID);
   }
@@ -229,7 +230,7 @@ namespace network
     packet::Packet *p = packet::Packet::createPacket(packet, peer);
     return p->process();
   }
-  
+
   /**
   * sends the gamestate
   */
@@ -260,7 +261,7 @@ namespace network
       gs->setClientID(cid);
       assert(gs->compressData());
       if ( !gs->send() ){
-        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl; 
+        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl;
         temp->addFailure();
       }else
         temp->resetFailures();
@@ -275,7 +276,7 @@ namespace network
     //COUT(5) << "Server: had no gamestates to send" << std::endl;
     return true;
   }
-  
+
 //   void Server::processChat( chat *data, int clientId){
 //     char *message = new char [strlen(data->message)+10+1];
 //     sprintf(message, "Player %d: %s", clientId, data->message);
@@ -285,7 +286,7 @@ namespace network
 //     delete[] data->message;
 //     delete data;
 //   }
-  
+
   bool Server::addClient(ENetEvent *event){
     ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
     if(!temp){
@@ -302,7 +303,7 @@ namespace network
     COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
     return createClient(temp->getID());
   }
-  
+
   bool Server::createClient(int clientID){
     ClientInformation *temp = ClientInformation::findClient(clientID);
     if(!temp){
@@ -324,7 +325,7 @@ namespace network
     assert(w->send());
     return true;
   }
-  
+
   bool Server::createShip(ClientInformation *client){
     if(!client)
       return false;
@@ -350,16 +351,16 @@ namespace network
     no->setCamera("cam_"+client->getID());
     no->create();
     no->setBacksync(true);
-    
+
     return true;
   }
-  
+
   bool Server::disconnectClient(ENetEvent *event){
     COUT(4) << "removing client from list" << std::endl;
     //return removeClient(head_->findClient(&(peer->address))->getID());
-    
+
     //boost::recursive_mutex::scoped_lock lock(head_->mutex_);
-    orxonox::Iterator<orxonox::SpaceShip> it = orxonox::ObjectList<orxonox::SpaceShip>::start();
+    orxonox::ObjectList<orxonox::SpaceShip>::iterator it = orxonox::ObjectList<orxonox::SpaceShip>::begin();
     ClientInformation *client = ClientInformation::findClient(&event->peer->address);
     if(!client)
       return false;
@@ -368,7 +369,7 @@ namespace network
         ++it;
         continue;
       }
-      orxonox::Iterator<orxonox::SpaceShip> temp=it;
+      orxonox::ObjectList<orxonox::SpaceShip>::iterator temp=it;
       ++it;
       delete  *temp;
       return ClientInformation::removeClient(event->peer);
@@ -385,5 +386,5 @@ namespace network
     connection->disconnectClient(client);
     gamestates_->removeClient(client);
   }
-  
+
 }

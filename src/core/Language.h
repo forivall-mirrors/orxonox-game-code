@@ -122,7 +122,7 @@ namespace orxonox
         private:
             Language();
             Language(const Language& language);     // don't copy
-            virtual ~Language() {};                 // don't delete
+            virtual ~Language();
 
             void readDefaultLanguageFile();
             void readTranslatedLanguageFile();

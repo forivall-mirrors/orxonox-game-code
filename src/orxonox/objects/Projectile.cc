@@ -34,6 +34,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/Iterator.h"
 #include "tools/ParticleInterface.h"
 
 #include "SpaceShipAI.h"
@@ -42,7 +43,7 @@
 
 namespace orxonox
 {
-    float Projectile::speed_ = 5000;
+    float Projectile::speed_s = 5000;
 
     Projectile::Projectile(SpaceShip* owner) : owner_(owner)
     {
@@ -72,25 +73,29 @@ namespace orxonox
     {
         SetConfigValue(damage_, 15.0).description("The damage caused by the projectile");
         SetConfigValue(lifetime_, 4.0).description("The time in seconds a projectile stays alive");
-        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second");
+        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback(this, &Projectile::speedChanged);
+    }
 
-	if(this->owner_)
-          this->setVelocity(this->owner_->getInitialDir() * this->speed_);
+    void Projectile::speedChanged()
+    {
+        Projectile::speed_s = this->speed_;
+        if (this->owner_)
+            this->setVelocity(this->owner_->getInitialDir() * this->speed_);
     }
 
     void Projectile::tick(float dt)
     {
-        WorldEntity::tick(dt);
+        SUPER(Projectile, tick, dt);
 
         if (!this->isActive())
             return;
 
         float radius;
-        for (Iterator<Model> it = ObjectList<Model>::start(); it; ++it)
+        for (ObjectList<Model>::iterator it = ObjectList<Model>::begin(); it; ++it)
         {
             if ((*it) != this->owner_)
             {
-                radius = it->getScale().x * 3.0;
+                radius = it->getScale3D().x * 3.0;
 
                 if (this->getPosition().squaredDistance(it->getPosition()) <= (radius*radius))
                 {

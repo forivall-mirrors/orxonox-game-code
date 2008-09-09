@@ -47,6 +47,7 @@ namespace orxonox
   {
     public:
       void setConfigValues();
+      void dataPathChanged();
 
       static const std::string& getDataPath();
 

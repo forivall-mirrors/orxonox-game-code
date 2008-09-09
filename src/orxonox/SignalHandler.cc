@@ -31,18 +31,16 @@
     @brief Implementation of the SignalHandler class.
 */
 
+#include "OrxonoxStableHeaders.h"
 #include "SignalHandler.h"
+#include "util/Debug.h"
 
 #include <assert.h>
 #include <iostream>
-#include <cstdlib>
-#include <string.h>
-
-#include "Debug.h"
 
 SignalHandler * SignalHandler::singletonRef = NULL;
 
-#ifndef __WIN32__
+#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
 
 #include <wait.h>
 #include <X11/Xlib.h>
@@ -159,7 +157,7 @@ void SignalHandler::sigHandler( int sig )
     }
   }
 
-  PRINTF(0)( "recieved signal %s\ntry to write backtrace to file orxonox.log\n", sigName.c_str() );
+  COUT(0) << "recieved signal " << sigName.c_str() << std::endl << "try to write backtrace to file orxonox.log" << std::endl;
 
   int sigPipe[2];
   if ( pipe(sigPipe) == -1 )
@@ -187,7 +185,7 @@ void SignalHandler::sigHandler( int sig )
 
     if ( someData != 0x12345678 )
     {
-      PRINTF(0)("something went wrong :(\n");
+      COUT(0) << "something went wrong :(" << std::endl;
     }
 
     return;
@@ -336,7 +334,7 @@ void SignalHandler::sigHandler( int sig )
 
   if ( fwrite( bt.c_str(), 1, bt.length(), f ) != bt.length() )
   {
-    PRINTF(0)( ( std::string("could not write %d byte to ") + getInstance()->fileName ).c_str(), bt.length());
+    COUT(0) << "could not write " << bt.length() << " byte to " << getInstance()->fileName << std::endl;
     exit(EXIT_FAILURE);
   }
 
@@ -352,4 +350,4 @@ void SignalHandler::registerCallback( SignalCallback cb, void * someData )
   callbackList.push_back(rec);
 }
 
-#endif /* __WIN32__ */
+#endif /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */

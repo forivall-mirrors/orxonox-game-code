@@ -31,10 +31,11 @@
 #include "BaseObject.h"
 #include "Identifier.h"
 #include "Iterator.h"
-#include "Debug.h"
+#include "ObjectList.h"
 #include "CoreIncludes.h"
 #include "Script.h"
 #include "Namespace.h"
+#include "util/Debug.h"
 
 #include "tinyxml/ticpp.h"
 
@@ -90,7 +91,7 @@ namespace orxonox
 
     void Loader::unload(const ClassTreeMask& mask)
     {
-        for (Iterator<BaseObject> it = ObjectList<BaseObject>::begin(); it; )
+        for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); )
         {
             if (mask.isIncluded(it->getIdentifier()))
                 delete (*(it++));
@@ -164,7 +165,7 @@ namespace orxonox
 
     void Loader::unload(const Level* level, const ClassTreeMask& mask)
     {
-        for (Iterator<BaseObject> it = ObjectList<BaseObject>::begin(); it; )
+        for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it; )
         {
             if ((it->getLevel() == level) && mask.isIncluded(it->getIdentifier()))
                 delete (*(it++));
