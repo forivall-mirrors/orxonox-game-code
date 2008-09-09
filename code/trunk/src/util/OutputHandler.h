@@ -37,7 +37,7 @@
 #ifndef _OutputHandler_H__
 #define _OutputHandler_H__
 
-#include "CorePrereqs.h"
+#include "UtilPrereqs.h"
 
 #include <iostream>
 #include <fstream>
@@ -48,15 +48,15 @@
 namespace orxonox
 {
     //! The OutputHandler acts like std::cout, but redirects output to the console AND the logfile.
-    class _CoreExport OutputHandler
+    class _UtilExport OutputHandler
     {
         public:
             enum OutputDevice
             {
-                LD_All,
-                LD_Console,
-                LD_Logfile,
-                LD_Shell
+                LD_All = 0,
+                LD_Console = 1,
+                LD_Logfile = 2,
+                LD_Shell = 3
             };
 
             static OutputHandler& getOutStream();
@@ -85,6 +85,10 @@ namespace orxonox
             inline std::ofstream& getLogfile()
                 { return this->logfile_; }
 
+            /** @brief Returns a pointer to the OutputBuffer. @return The OutputBuffer */
+            inline OutputBuffer* getOutputBuffer()
+                { return this->outputBuffer_; }
+
             /** @brief Sets the level of the incoming output. @param level The level of the incoming output @return The OutputHandler itself */
             inline OutputHandler& setOutputLevel(int level)
                 { this->outputLevel_ = level; return *this; }
@@ -93,37 +97,42 @@ namespace orxonox
             inline int getOutputLevel() const
                 { return this->outputLevel_; }
 
-            static int getSoftDebugLevel(OutputHandler::OutputDevice device);
+            static void setSoftDebugLevel(OutputHandler::OutputDevice device, int level);
+            static int getSoftDebugLevel(OutputHandler::OutputDevice device = OutputHandler::LD_All);
 
-            OutputBuffer& getShellOutputBuffer();
+            void setOutputBuffer(OutputBuffer& buffer);
 
             template <class T>
             OutputHandler& output(const T& output);
 
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(unsigned char val)   { return this->output(val); }
+            inline OutputHandler& operator<<(unsigned char val)      { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(short val)           { return this->output(val); }
+            inline OutputHandler& operator<<(short val)              { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(unsigned short val)  { return this->output(val); }
+            inline OutputHandler& operator<<(unsigned short val)     { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(int val)             { return this->output(val); }
+            inline OutputHandler& operator<<(int val)                { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(unsigned int val)    { return this->output(val); }
+            inline OutputHandler& operator<<(unsigned int val)       { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(long val)            { return this->output(val); }
+            inline OutputHandler& operator<<(long val)               { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(unsigned long val)   { return this->output(val); }
+            inline OutputHandler& operator<<(unsigned long val)      { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(float val)           { return this->output(val); }
+            inline OutputHandler& operator<<(long long val)          { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(double val)          { return this->output(val); }
+            inline OutputHandler& operator<<(unsigned long long val) { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(long double val)     { return this->output(val); }
+            inline OutputHandler& operator<<(float val)              { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(const void* val)     { return this->output(val); }
+            inline OutputHandler& operator<<(double val)             { return this->output(val); }
             /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
-            inline OutputHandler& operator<<(bool val)            { return this->output(val); }
+            inline OutputHandler& operator<<(long double val)        { return this->output(val); }
+            /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
+            inline OutputHandler& operator<<(const void* val)        { return this->output(val); }
+            /** @brief Overloaded << operator, redirects the output to the console and the logfile. @param val The value that should be shown in the console @return A reference to the OutputHandler itself */
+            inline OutputHandler& operator<<(bool val)               { return this->output(val); }
 
             OutputHandler& operator<<(std::streambuf* sb);
 
@@ -135,9 +144,13 @@ namespace orxonox
             explicit OutputHandler(const std::string& logfilename);
             OutputHandler(const OutputHandler& oh);  // don't copy
             virtual ~OutputHandler();
-            std::ofstream logfile_;     //!< The logfile where the output is logged
-            std::string logfilename_;   //!< The name of the logfile
-            int outputLevel_;           //!< The level of the incoming output
+
+            std::ofstream logfile_;              //!< The logfile where the output is logged
+            std::string logfilename_;            //!< The name of the logfile
+            OutputBuffer fallbackBuffer_;        //!< The OutputBuffer that gets used if there is no other OutputBuffer
+            OutputBuffer* outputBuffer_;         //!< The OutputBuffer to put output in (usually used by the Shell)
+            int outputLevel_;                    //!< The level of the incoming output
+            int softDebugLevel_[4];              //!< The soft debug level for each OutputDevice - the configurable maximal output level
     };
 
     /**
@@ -158,7 +171,7 @@ namespace orxonox
         }
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= this->outputLevel_)
-            OutputHandler::getOutStream().getShellOutputBuffer() << output;
+            (*this->outputBuffer_) << output;
 
         return *this;
     }
@@ -182,11 +195,10 @@ namespace orxonox
         }
 
         if (OutputHandler::getSoftDebugLevel(OutputHandler::LD_Shell) >= out.getOutputLevel())
-            OutputHandler::getOutStream().getShellOutputBuffer() << output;
+            (*out.getOutputBuffer()) << output;
 
         return out;
     }
-
 }
 
 #endif /* _OutputHandler_H__ */

@@ -36,7 +36,7 @@
 
 #include "ArgumentCompletionListElement.h"
 #include "util/SubString.h"
-#include "util/MultiTypeMath.h"
+#include "util/MultiType.h"
 
 namespace orxonox
 {
@@ -80,11 +80,11 @@ namespace orxonox
             inline std::string getAdditionalParameter() const
                 { return (this->additionalParameter_ != "") ? (" " + this->additionalParameter_) : ""; }
 
-            void setEvaluatedParameter(unsigned int index, MultiTypeMath param);
-            MultiTypeMath getEvaluatedParameter(unsigned int index) const;
+            void setEvaluatedParameter(unsigned int index, MultiType param);
+            MultiType getEvaluatedParameter(unsigned int index) const;
 
             bool hasReturnvalue() const;
-            MultiTypeMath getReturnvalue() const;
+            MultiType getReturnvalue() const;
 
         private:
             unsigned int getStartindex() const;
@@ -114,7 +114,7 @@ namespace orxonox
             CommandState state_;
 
             bool bEvaluatedParams_;
-            MultiTypeMath param_[5];
+            MultiType param_[5];
     };
 }
 

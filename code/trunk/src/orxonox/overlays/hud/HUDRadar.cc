@@ -65,7 +65,7 @@ namespace orxonox
 
     void HUDRadar::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        OrxonoxOverlay::XMLPort(xmlElement, mode);
+        SUPER(HUDRadar, XMLPort, xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {

@@ -29,6 +29,7 @@
 #include "Gamestate.h"
 #include "network/ClientInformation.h"
 #include "network/GamestateHandler.h"
+#include "core/Iterator.h"
 
 #include <zlib.h>
 #include <assert.h>
@@ -78,14 +79,14 @@ bool Gamestate::collectData(int id, int mode)
   //start collect data synchronisable by synchronisable
   unsigned char *mem=data_;
   mem+=sizeof(GamestateHeader);
-  orxonox::Iterator<Synchronisable> it;
-  for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it){
+  orxonox::ObjectList<Synchronisable>::iterator it;
+  for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it){
     tempsize=it->getSize2(mode);
 
     if(currentsize+tempsize > size){
       // start allocate additional memory
       COUT(3) << "G.St.Man: need additional memory" << std::endl;
-      orxonox::Iterator<Synchronisable> temp = it;
+      orxonox::ObjectList<Synchronisable>::iterator temp = it;
       int addsize=tempsize;
       while(++temp)
         addsize+=temp->getSize2(mode);
@@ -123,7 +124,7 @@ bool Gamestate::spreadData(int mode)
   unsigned int size, objectID, classID;
   unsigned char *mem=data_+sizeof(GamestateHeader);
     // get the start of the Synchronisable list
-  orxonox::Iterator<Synchronisable> it=orxonox::ObjectList<Synchronisable>::start();
+  orxonox::ObjectList<Synchronisable>::iterator it=orxonox::ObjectList<Synchronisable>::begin();
 
   while(mem < data_+sizeof(GamestateHeader)+HEADER->normsize){
       // extract synchronisable header
@@ -317,9 +318,9 @@ unsigned int Gamestate::calcGamestateSize(int mode)
 {
   int size=0;
     // get the start of the Synchronisable list
-  orxonox::Iterator<Synchronisable> it;
+  orxonox::ObjectList<Synchronisable>::iterator it;
     // get total size of gamestate
-  for(it = orxonox::ObjectList<Synchronisable>::start(); it; ++it)
+  for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it)
     size+=it->getSize2(mode); // size of the actual data of the synchronisable
 //  size+=sizeof(GamestateHeader);
   return size;
@@ -330,8 +331,8 @@ unsigned int Gamestate::calcGamestateSize(int mode)
  * @param it iterator of the list pointing to the object
  * @return iterator pointing to the next object in the list
  */
-  void Gamestate::removeObject(orxonox::Iterator<Synchronisable> &it) {
-    orxonox::Iterator<Synchronisable> temp=it;
+  void Gamestate::removeObject(orxonox::ObjectList<Synchronisable>::iterator &it) {
+    orxonox::ObjectList<Synchronisable>::iterator temp=it;
     ++it;
     delete  *temp;
   }

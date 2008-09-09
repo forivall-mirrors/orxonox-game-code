@@ -33,11 +33,11 @@
 #include <sstream>
 #include <iostream>
 
-#include "CorePrereqs.h"
+#include "UtilPrereqs.h"
 
 namespace orxonox
 {
-    class _CoreExport OutputBufferListener
+    class _UtilExport OutputBufferListener
     {
         friend class OutputBuffer;
 
@@ -48,7 +48,7 @@ namespace orxonox
             virtual void outputChanged() = 0;
     };
 
-    class _CoreExport OutputBuffer
+    class _UtilExport OutputBuffer
     {
         public:
             OutputBuffer() {}
@@ -58,6 +58,14 @@ namespace orxonox
             inline OutputBuffer& operator<<(T object)
             {
                 this->stream_ << object;
+                this->callListeners();
+                return *this;
+            }
+
+            template <const OutputBuffer&>
+            inline OutputBuffer& operator<<(const OutputBuffer& object)
+            {
+                this->stream_ << object.stream_.rdbuf();
                 this->callListeners();
                 return *this;
             }
@@ -95,6 +103,9 @@ namespace orxonox
 
             void registerListener(OutputBufferListener* listener);
             void unregisterListener(OutputBufferListener* listener);
+
+            inline std::stringstream& getStream()
+                { return this->stream_; }
 
         private:
             void callListeners();

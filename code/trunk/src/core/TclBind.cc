@@ -31,15 +31,15 @@
 
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
-#include "Debug.h"
 #include "TclThreadManager.h"
 #include "TclBind.h"
+#include "util/Debug.h"
 #include "util/String.h"
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutGeneric(tcl, createConsoleCommand(createFunctor(&TclBind::tcl), "tcl"));
-    SetConsoleCommandShortcutGeneric(bgerror, createConsoleCommand(createFunctor(&TclBind::bgerror), "bgerror"));
+    SetConsoleCommandShortcut(TclBind, tcl);
+    SetConsoleCommandShortcut(TclBind, bgerror);
 
     TclBind::TclBind()
     {
@@ -114,7 +114,7 @@ namespace orxonox
         }
 
         if (CommandExecutor::getLastEvaluation().hasReturnvalue())
-            return CommandExecutor::getLastEvaluation().getReturnvalue().toString();
+            return CommandExecutor::getLastEvaluation().getReturnvalue().getString();
 
         return "";
     }

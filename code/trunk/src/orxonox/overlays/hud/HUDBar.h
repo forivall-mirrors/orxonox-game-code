@@ -46,7 +46,7 @@ namespace orxonox
         BarColour();
         ~BarColour() { }
 
-        void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
         void setColour(const ColourValue& colour) { this->colour_ = colour; }
         const ColourValue& getColour() const { return this->colour_; }

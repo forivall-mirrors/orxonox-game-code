@@ -62,7 +62,7 @@ namespace orxonox
 
     void BillboardProjectile::changedVisibility()
     {
-        Projectile::changedVisibility();
+        SUPER(BillboardProjectile, changedVisibility);
         this->billboard_.setVisible(this->isVisible());
     }
 }

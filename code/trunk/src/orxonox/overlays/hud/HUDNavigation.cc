@@ -68,7 +68,7 @@ namespace orxonox
 
     void HUDNavigation::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        OrxonoxOverlay::XMLPort(xmlElement, mode);
+        SUPER(HUDNavigation, XMLPort, xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {
@@ -86,7 +86,7 @@ namespace orxonox
             aimMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
                 .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberStr()));
             aimMarker_->setMaterialName("Orxonox/NavCrosshair");
-            
+
             background_->addChild(navMarker_);
             background_->addChild(aimMarker_);
             background_->addChild(navText_);

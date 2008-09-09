@@ -38,12 +38,13 @@
 #include "objects/SpaceShip.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
+#include "core/Iterator.h"
 #include "RadarListener.h"
 
 namespace orxonox
 {
-    SetConsoleCommand(Radar, cycleNavigationFocus, true).setAccessLevel(AccessLevel::User);
-    SetConsoleCommand(Radar, releaseNavigationFocus, true).setAccessLevel(AccessLevel::User);
+    SetConsoleCommand(Radar, cycleNavigationFocus, true).accessLevel(AccessLevel::User);
+    SetConsoleCommand(Radar, releaseNavigationFocus, true).accessLevel(AccessLevel::User);
 
     Radar* Radar::instance_s = 0;
 
@@ -105,11 +106,11 @@ namespace orxonox
             this->itFocus_ = 0;
         }
 
-        for (Iterator<RadarListener> itListener = ObjectList<RadarListener>::begin(); itListener; ++itListener)
+        for (ObjectList<RadarListener>::iterator itListener = ObjectList<RadarListener>::begin(); itListener; ++itListener)
         {
             (*itListener)->radarTick(dt);
 
-            for (Iterator<RadarViewable> itElement = ObjectList<RadarViewable>::begin(); itElement; ++itElement)
+            for (ObjectList<RadarViewable>::iterator itElement = ObjectList<RadarViewable>::begin(); itElement; ++itElement)
             {
                 if ((*itElement) != SpaceShip::getLocalShip() && (*itListener)->getRadarSensitivity() > (*itElement)->getRadarObjectCamouflage())
                     (*itListener)->displayObject(*itElement, *itElement == this->focus_);
@@ -119,7 +120,7 @@ namespace orxonox
 
     void Radar::cycleFocus()
     {
-        if (*(ObjectList<RadarViewable>::begin()) == 0)
+        if (ObjectList<RadarViewable>::begin() == 0)
         {
             // list is empty
             this->itFocus_ = 0;
@@ -136,9 +137,9 @@ namespace orxonox
             float currentDistance = localPosition.squaredDistance(targetPosition);
             float nextDistance = FLT_MAX;
             float minimumDistance = FLT_MAX;
-            Iterator<RadarViewable> itFallback = 0;
+            ObjectList<RadarViewable>::iterator itFallback = 0;
 
-            for (Iterator<RadarViewable> it = ObjectList<RadarViewable>::begin(); it; ++it)
+            for (ObjectList<RadarViewable>::iterator it = ObjectList<RadarViewable>::begin(); it; ++it)
             {
                 if (*it == SpaceShip::getLocalShip())
                     continue;
@@ -180,7 +181,7 @@ namespace orxonox
         COUT(3) << "List of RadarObjects:\n";
         // iterate through all Radar Objects
         unsigned int i = 0;
-        for (Iterator<RadarViewable> it = ObjectList<RadarViewable>::start(); it; ++it, ++i)
+        for (ObjectList<RadarViewable>::iterator it = ObjectList<RadarViewable>::begin(); it; ++it, ++i)
         {
             COUT(3) << i++ << ": " << (*it)->getWorldPosition() << std::endl;
         }

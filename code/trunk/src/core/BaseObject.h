@@ -38,8 +38,9 @@
 
 #include "CorePrereqs.h"
 
-#include "util/XMLIncludes.h"
+#include "Super.h"
 #include "OrxonoxClass.h"
+#include "util/XMLIncludes.h"
 
 namespace orxonox
 {
@@ -100,6 +101,10 @@ namespace orxonox
             std::string loaderIndentation_;             //!< Indentation of the debug output in the Loader
             Namespace* namespace_;
     };
+
+    SUPER_FUNCTION(0, BaseObject, XMLPort, false);
+    SUPER_FUNCTION(2, BaseObject, changedActivity, false);
+    SUPER_FUNCTION(3, BaseObject, changedVisibility, false);
 }
 
 #endif /* _BaseObject_H__ */

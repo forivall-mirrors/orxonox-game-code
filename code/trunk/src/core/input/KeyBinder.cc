@@ -35,7 +35,7 @@
 #include <fstream>
 #include <string>
 #include "util/Convert.h"
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "InputCommands.h"
@@ -215,12 +215,12 @@ namespace orxonox
     infile.open("keybindings.ini");
     if (!infile)
     {
-      ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "def_keybindings.ini");
-      ConfigFileManager::getSingleton()->save(CFT_Keybindings, "keybindings.ini");
+      ConfigFileManager::getInstance()->setFile(CFT_Keybindings, "def_keybindings.ini");
+      ConfigFileManager::getInstance()->save(CFT_Keybindings, "keybindings.ini");
     }
     else
       infile.close();
-    ConfigFileManager::getSingleton()->setFile(CFT_Keybindings, "keybindings.ini");
+    ConfigFileManager::getInstance()->setFile(CFT_Keybindings, "keybindings.ini");
 
     // parse key bindings
     setConfigValues();
@@ -233,15 +233,15 @@ namespace orxonox
   */
   void KeyBinder::setConfigValues()
   {
-    SetConfigValueGeneric(KeyBinder, analogThreshold_, 0.05f)  .description("Threshold for analog axes until which the state is 0.");
-    SetConfigValueGeneric(KeyBinder, mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
-    SetConfigValueGeneric(KeyBinder, bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
-    SetConfigValueGeneric(KeyBinder, derivePeriod_, 0.05f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
-    SetConfigValueGeneric(KeyBinder, mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
-    SetConfigValueGeneric(KeyBinder, bClipMouse_, true).description("Whether or not to clip absolute value of mouse in non derive mode.");
+    SetConfigValue(analogThreshold_, 0.05f)  .description("Threshold for analog axes until which the state is 0.");
+    SetConfigValue(mouseSensitivity_, 1.0f)  .description("Mouse sensitivity.");
+    SetConfigValue(bDeriveMouseInput_, false).description("Whether or not to derive moues movement for the absolute value.");
+    SetConfigValue(derivePeriod_, 0.05f).description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
+    SetConfigValue(mouseSensitivityDerived_, 1.0f).description("Mouse sensitivity if mouse input is derived.");
+    SetConfigValue(bClipMouse_, true).description("Whether or not to clip absolute value of mouse in non derive mode.");
 
     float oldThresh = buttonThreshold_;
-    SetConfigValueGeneric(KeyBinder, buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
+    SetConfigValue(buttonThreshold_, 0.80f).description("Threshold for analog axes until which the button is not pressed.");
     if (oldThresh != buttonThreshold_)
       for (unsigned int i = 0; i < nHalfAxes_s; i++)
         if (halfAxes_[i].buttonThreshold_ == oldThresh)
@@ -267,11 +267,11 @@ namespace orxonox
     ConfigValueContainer* cont = ClassIdentifier<KeyBinder>::getIdentifier()->getConfigValueContainer(button.name_);
     if (!cont)
     {
-      cont = new ConfigValueContainer(CFT_Keybindings, ClassIdentifier<KeyBinder>::getIdentifier(), button.name_, "");
+      cont = new ConfigValueContainer(CFT_Keybindings, ClassIdentifier<KeyBinder>::getIdentifier(), button.name_, "", button.name_);
       ClassIdentifier<KeyBinder>::getIdentifier()->addConfigValueContainer(button.name_, cont);
     }
     std::string old = button.bindingString_;
-    cont->getValue(&button.bindingString_);
+    cont->getValue(&button.bindingString_, this);
 
     // keybinder stuff
     if (old != button.bindingString_)

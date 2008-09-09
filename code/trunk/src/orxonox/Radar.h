@@ -54,12 +54,14 @@ namespace orxonox
         friend class Radar;
         RadarBase() { }
     };
- 
+
     class _OrxonoxExport Radar : public Tickable, private virtual RadarBase
     {
     public:
         Radar();
         ~Radar();
+
+        virtual void tick(float dt);
 
         const RadarViewable* getFocus();
         RadarViewable::Shape addObjectDescription(const std::string name);
@@ -74,16 +76,15 @@ namespace orxonox
 
     private:
         Radar(Radar& instance);
-        void tick(float dt);
 
         void releaseFocus();
         void updateFocus();
         void cycleFocus();
 
-        Iterator<RadarViewable> itFocus_;
+        ObjectListIterator<RadarViewable> itFocus_;
         RadarViewable* focus_;
         std::map<std::string, RadarViewable::Shape> objectTypes_;
-        int objectTypeCounter_; 
+        int objectTypeCounter_;
 
         static Radar* instance_s;
     };

@@ -46,47 +46,38 @@
     @param varname The name of the variable
     @param defvalue The default-value of the variable
 */
-#define SetConfigValue(varname, defvalue) \
-    orxonox::ConfigValueContainer* container##varname = this->getIdentifier()->getConfigValueContainer(#varname); \
+#define SetConfigValueGeneric(type, varname, defvalue) \
+    static orxonox::Identifier* identifier##varname = this->getIdentifier(); \
+    orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, this->getIdentifier(), #varname, varname = defvalue); \
-        this->getIdentifier()->addConfigValueContainer(#varname, container##varname); \
+        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, identifier##varname, #varname, defvalue, varname); \
+        identifier##varname->addConfigValueContainer(#varname, container##varname); \
     } \
-    container##varname->getValue(&varname)
+    container##varname->getValue(&varname, this)
 
-/**
-    @brief Assigns the value, defined in the config-file, to the variable (or the default-value, if there is no entry in the file).
-    @param classname name in which the config value should be stored
-    @param varname The name of the variable
-    @param defvalue The default-value of the variable
-*/
-#define SetConfigValueGeneric(classname, varname, defvalue) \
-    orxonox::ConfigValueContainer* container##varname = ClassIdentifier<classname>::getIdentifier()->getConfigValueContainer(#varname); \
-    if (!container##varname) \
-    { \
-        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, ClassIdentifier<classname>::getIdentifier(), #varname, varname = defvalue); \
-        ClassIdentifier<classname>::getIdentifier()->addConfigValueContainer(#varname, container##varname); \
-    } \
-    container##varname->getValue(&varname)
+#define SetConfigValue(varname, defvalue) SetConfigValueGeneric(CFT_Settings, varname, defvalue)
+#define SetKeybindingValue(varname, defvalue) SetConfigValueGeneric(CFT_Keybindings, varname, defvalue)
+
 
 /**
     @brief Assigns the vector-values, defined in the config-file, to the vector (or the default-value, if there are no entries in the file).
     @param varname The name of the std::vector
     @param defvalue The default-value
 */
-#define SetConfigValueVector(varname, defvalue) \
-    orxonox::ConfigValueContainer* container##varname = this->getIdentifier()->getConfigValueContainer(#varname); \
+#define SetConfigValueVectorGeneric(type, varname, defvalue) \
+    static orxonox::Identifier* identifier##varname = this->getIdentifier(); \
+    orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        std::vector<MultiTypeMath> temp; \
-        for (unsigned int i = 0; i < defvalue.size(); i++) \
-            temp.push_back(MultiTypeMath(defvalue[i])); \
-        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, this->getIdentifier(), #varname, temp); \
-        container##varname->setVectorType(varname); \
-        this->getIdentifier()->addConfigValueContainer(#varname, container##varname); \
+        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, identifier##varname, #varname, defvalue); \
+        identifier##varname->addConfigValueContainer(#varname, container##varname); \
     } \
-    container##varname->getValue(&varname)
+    container##varname->getValue(&varname, this)
+
+#define SetConfigValueVector(varname, defvalue) SetConfigValueVectorGeneric(CFT_Settings, varname, defvalue)
+#define SetKeybindingValueVector(varname, defvalue) SetConfigValueVectorGeneric(CFT_Keybindings, varname, defvalue)
+
 
 /**
     @brief Sets the variable and the config-file entry back to the previously defined default-value.
@@ -97,12 +88,13 @@
     if (container##varname##reset) \
     { \
         container##varname##reset->reset(); \
-        container##varname##reset->getValue(&varname); \
+        container##varname##reset->getValue(&varname, this); \
     } \
     else \
     { \
         COUT(2) << "Warning: Couldn't reset config-value '" << #varname << "', corresponding container doesn't exist." << std::endl; \
     }
+
 
 /**
     @brief Modifies a config-value by using a modifier and some arguments.
@@ -114,7 +106,7 @@
     if (container##varname##modify##modifier) \
     { \
         container##varname##modify##modifier->modifier(__VA_ARGS__); \
-        container##varname##modify##modifier->getValue(&varname); \
+        container##varname##modify##modifier->getValue(&varname, this); \
     } \
     else \
     { \

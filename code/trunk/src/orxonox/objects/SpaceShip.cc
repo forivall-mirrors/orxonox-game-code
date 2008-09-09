@@ -36,36 +36,35 @@
 
 #include "util/Convert.h"
 #include "util/Math.h"
-
+#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Debug.h"
+#include "core/Iterator.h"
+#include "core/input/InputManager.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
-#include "network/Host.h"
-
 #include "tools/ParticleInterface.h"
-
-#include "GraphicsEngine.h"
-#include "RotatingProjectile.h"
-#include "ParticleProjectile.h"
-#include "ParticleSpawner.h"
+#include "network/Client.h"
 #include "Backlight.h"
 #include "CameraHandler.h"
+#include "ParticleSpawner.h"
+#include "RotatingProjectile.h"
+#include "ParticleProjectile.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
-    SetConsoleCommand(SpaceShip, setMaxSpeedTest, false).setAccessLevel(AccessLevel::Debug);
-    SetConsoleCommand(SpaceShip, whereAmI, true).setAccessLevel(AccessLevel::User);
-    SetConsoleCommand(SpaceShip, moveLongitudinal, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(SpaceShip, moveLateral, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(SpaceShip, moveYaw, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(SpaceShip, movePitch, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(SpaceShip, moveRoll, true).setAccessLevel(AccessLevel::User).setDefaultValue(0, 1.0f).setAxisParamIndex(0).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(SpaceShip, fire, true).setAccessLevel(AccessLevel::User).setKeybindMode(KeybindMode::OnHold);
-    SetConsoleCommandGeneric(test1, SpaceShip, createConsoleCommand(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxSpeed"), false).setAccessLevel(AccessLevel::Debug);
-    SetConsoleCommandGeneric(test2, SpaceShip, createConsoleCommand(createFunctor(&SpaceShip::setMaxSpeedTest), "setMaxBlubber"), false).setAccessLevel(AccessLevel::Debug);
-    SetConsoleCommandGeneric(test3, SpaceShip, createConsoleCommand(createFunctor(&SpaceShip::setMaxSpeedTest), "setRofl"), false).setAccessLevel(AccessLevel::Debug);
+    SetConsoleCommand(SpaceShip, setMaxSpeedTest, false).accessLevel(AccessLevel::Debug);
+    SetConsoleCommand(SpaceShip, whereAmI, true).accessLevel(AccessLevel::User);
+    SetConsoleCommand(SpaceShip, moveLongitudinal, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(SpaceShip, moveLateral, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(SpaceShip, moveYaw, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(SpaceShip, movePitch, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(SpaceShip, moveRoll, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(SpaceShip, fire, true).accessLevel(AccessLevel::User).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommandAliasMulti(SpaceShip, setMaxSpeedTest, "setMaxSpeed", 1, false).accessLevel(AccessLevel::Debug);
+    SetConsoleCommandAliasMulti(SpaceShip, setMaxSpeedTest, "setMaxBlubber", 2, false).accessLevel(AccessLevel::Debug);
+    SetConsoleCommandAliasMulti(SpaceShip, setMaxSpeedTest, "setRofl", 3, false).accessLevel(AccessLevel::Debug);
 
     CreateFactory(SpaceShip);
 
@@ -73,8 +72,8 @@ namespace orxonox
 
 
     SpaceShip *SpaceShip::getLocalShip(){
-      Iterator<SpaceShip> it;
-      for(it = ObjectList<SpaceShip>::start(); it; ++it){
+      ObjectList<SpaceShip>::iterator it;
+      for(it = ObjectList<SpaceShip>::begin(); it; ++it){
         if( (it)->myShip_ )
           return *it;
       }
@@ -288,7 +287,7 @@ namespace orxonox
 
     void SpaceShip::changedVisibility()
     {
-        Model::changedVisibility();
+        SUPER(SpaceShip, changedVisibility);
 
         this->tt1_->setEnabled(this->isVisible());
         this->tt2_->setEnabled(this->isVisible());
@@ -305,7 +304,7 @@ namespace orxonox
 
     void SpaceShip::changedActivity()
     {
-        Model::changedActivity();
+        SUPER(SpaceShip, changedActivity);
 
         this->tt1_->setEnabled(this->isVisible());
         this->tt2_->setEnabled(this->isVisible());
@@ -391,16 +390,16 @@ namespace orxonox
     */
     void SpaceShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        Model::XMLPort(xmlelement, mode);
+        SUPER(SpaceShip, XMLPort, xmlelement, mode);
 
-        XMLPortParamLoadOnly(SpaceShip, "camera", setCamera, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "maxSpeed", setMaxSpeed, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "maxSideAndBackSpeed", setMaxSideAndBackSpeed, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "maxRotation", setMaxRotation, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "transAcc", setTransAcc, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "rotAcc", setRotAcc, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "transDamp", setTransDamp, xmlelement, mode);
-        XMLPortParamLoadOnly(SpaceShip, "rotDamp", setRotDamp, xmlelement, mode);
+        XMLPortParam(SpaceShip, "camera", setCamera, getCamera, xmlelement, mode);
+        XMLPortParam(SpaceShip, "maxSpeed", setMaxSpeed, getMaxSpeed, xmlelement, mode);
+        XMLPortParam(SpaceShip, "maxSideAndBackSpeed", setMaxSideAndBackSpeed, getMaxSideAndBackSpeed, xmlelement, mode);
+        XMLPortParam(SpaceShip, "maxRotation", setMaxRotation, getMaxRotation, xmlelement, mode);
+        XMLPortParam(SpaceShip, "transAcc", setTransAcc, getTransAcc, xmlelement, mode);
+        XMLPortParam(SpaceShip, "rotAcc", setRotAcc, getRotAcc, xmlelement, mode);
+        XMLPortParam(SpaceShip, "transDamp", setTransDamp, getTransDamp, xmlelement, mode);
+        XMLPortParam(SpaceShip, "rotDamp", setRotDamp, getRotDamp, xmlelement, mode);
 
         myShip_=true; //TODO: this is a hack
         SpaceShip::create();
@@ -534,7 +533,7 @@ namespace orxonox
         }
 
 
-        WorldEntity::tick(dt);
+        SUPER(SpaceShip, tick, dt);
 
         this->roll(this->mouseXRotation_ * dt);
         if (this->bInvertYAxis_)

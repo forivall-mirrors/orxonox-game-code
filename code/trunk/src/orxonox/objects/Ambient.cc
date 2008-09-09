@@ -38,15 +38,15 @@
 #include "util/SubString.h"
 #include "util/Convert.h"
 #include "util/Math.h"
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "core/CoreIncludes.h"
-#include "GraphicsEngine.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
-    SetConsoleCommand(Ambient, setAmbientLightTest, false).setDefaultValues(ColourValue(1, 1, 1, 1)).setAccessLevel(AccessLevel::Offline);
+    SetConsoleCommandAlias(Ambient, setAmbientLightTest, "setAmbientLight", false).defaultValues(ColourValue(1, 1, 1, 1)).accessLevel(AccessLevel::Offline);
 
     CreateFactory(Ambient);
 
@@ -63,20 +63,21 @@ namespace orxonox
     {
     }
 
-    bool Ambient::create(){
-      GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(ambientLight_);
-      return Synchronisable::create();
+    bool Ambient::create()
+    {
+        GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(ambientLight_);
+        return Synchronisable::create();
     }
-    
-    void Ambient::registerAllVariables(){
-      registerVar(&ambientLight_, sizeof(ColourValue), network::DATA);
-      
+
+    void Ambient::registerAllVariables()
+    {
+        registerVar(&ambientLight_, sizeof(ColourValue), network::DATA);
     }
 
     void Ambient::setAmbientLight(const ColourValue& colour)
     {
-	    GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(colour);
-      ambientLight_=colour;	
+        GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(colour);
+        ambientLight_=colour;
     }
 
     /**
@@ -87,9 +88,9 @@ namespace orxonox
     */
     void Ambient::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlelement, mode);
+        SUPER(Ambient, XMLPort, xmlelement, mode);
 
-        XMLPortParamLoadOnly(Ambient, "colourvalue", setAmbientLight, xmlelement, mode);
+        XMLPortParam(Ambient, "colourvalue", setAmbientLight, getAmbienetLight, xmlelement, mode);
         create();
     }
 }

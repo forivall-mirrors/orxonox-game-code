@@ -61,10 +61,10 @@
 #include <typeinfo>
 #include <stdlib.h>
 
-#include "ObjectList.h"
-#include "Debug.h"
-#include "Iterator.h"
 #include "MetaObjectList.h"
+#include "Iterator.h"
+#include "Super.h"
+#include "util/Debug.h"
 #include "util/String.h"
 
 namespace orxonox
@@ -90,9 +90,6 @@ namespace orxonox
     class _CoreExport Identifier
     {
         template <class T>
-        friend class ClassIdentifier;
-
-        template <class T>
         friend class SubclassIdentifier;
 
         friend class Factory;
@@ -109,13 +106,15 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier) const;
             bool isDirectParentOf(const Identifier* identifier) const;
 
-            virtual const ObjectList<BaseObject>* getObjectList() const = 0;
-
-            virtual void updateConfigValues() const = 0;
+            /** @brief Returns the list of all existing objects of this class. @return The list */
+            inline ObjectListBase* getObjects() const
+                { return this->objects_; }
 
             /** @brief Returns the name of the class the Identifier belongs to. @return The name */
             inline const std::string& getName() const { return this->name_; }
+            void setName(const std::string& name);
 
+            virtual void updateConfigValues(bool updateChildren = true) const = 0;
 
             /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
             inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
@@ -209,33 +208,40 @@ namespace orxonox
             ConfigValueContainer* getConfigValueContainer(const std::string& varname);
             ConfigValueContainer* getLowercaseConfigValueContainer(const std::string& varname);
 
-            virtual void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container) = 0;
-            virtual XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname) = 0;
+            void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
+            XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
 
-            virtual void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container) = 0;
-            virtual XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname) = 0;
+            void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
+            XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
 
             ConsoleCommand& addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut);
             ConsoleCommand* getConsoleCommand(const std::string& name) const;
             ConsoleCommand* getLowercaseConsoleCommand(const std::string& name) const;
 
         protected:
+            Identifier();
+            Identifier(const Identifier& identifier); // don't copy
+            virtual ~Identifier();
+
+            void initialize(std::set<const Identifier*>* parents);
+            static Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
+
+            virtual void createSuperFunctionCaller() const = 0;
+
             /** @brief Returns the map that stores all Identifiers. @return The map */
             static std::map<std::string, Identifier*>& getIdentifierMapIntern();
             /** @brief Returns the map that stores all Identifiers with their names in lowercase. @return The map */
             static std::map<std::string, Identifier*>& getLowercaseIdentifierMapIntern();
-
-        private:
-            Identifier();
-            Identifier(const Identifier& identifier); // don't copy
-            virtual ~Identifier();
-            void initialize(std::set<const Identifier*>* parents);
 
             /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
             inline std::set<const Identifier*>& getChildrenIntern() const { return (*this->children_); }
             /** @brief Returns the direct children of the class the Identifier belongs to. @return The list of all direct children */
             inline std::set<const Identifier*>& getDirectChildrenIntern() const { return (*this->directChildren_); }
 
+            bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
+            ObjectListBase* objects_;                                      //!< The list of all objects of this class
+
+        private:
             /**
                 @brief Increases the hierarchyCreatingCounter_s variable, causing all new objects to store their parents.
             */
@@ -254,7 +260,7 @@ namespace orxonox
                 COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
-            static Identifier* getIdentifier(std::string &name, Identifier *proposal);
+            static void destroyAllIdentifiers();
 
             std::set<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to
             std::set<const Identifier*>* children_;                        //!< The children of the class the Identifier belongs to
@@ -262,10 +268,9 @@ namespace orxonox
             std::set<const Identifier*> directParents_;                    //!< The direct parents of the class the Identifier belongs to
             std::set<const Identifier*>* directChildren_;                  //!< The direct children of the class the Identifier belongs to
 
+            bool bSetName_;                                                //!< True if the name is set
             std::string name_;                                             //!< The name of the class the Identifier belongs to
-
             BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
-            bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
             static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)
             unsigned int classID_;                                         //!< The network ID to identify a class through the network
 
@@ -276,6 +281,9 @@ namespace orxonox
             bool bHasConsoleCommands_;                                     //!< True if this class has at least one assigned console command
             std::map<std::string, ConsoleCommand*> consoleCommands_;       //!< All console commands of this class
             std::map<std::string, ConsoleCommand*> consoleCommands_LC_;    //!< All console commands of this class with their names in lowercase
+
+            std::map<std::string, XMLPortParamContainer*> xmlportParamContainers_;     //!< All loadable parameters
+            std::map<std::string, XMLPortObjectContainer*> xmlportObjectContainers_;   //!< All attachable objects
     };
 
     _CoreExport std::ostream& operator<<(std::ostream& out, const std::set<const Identifier*>& list);
@@ -296,34 +304,28 @@ namespace orxonox
     template <class T>
     class ClassIdentifier : public Identifier
     {
+        #define SUPER_INTRUSIVE_DECLARATION_INCLUDE
+        #include "Super.h"
+
         public:
-            ClassIdentifier<T>* registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass);
-            void addObject(T* object);
-            void setName(const std::string& name);
-            /** @brief Returns the list of all existing objects of this class. @return The list */
-            inline ObjectList<T>* getObjects() const { return this->objects_; }
-            /** @brief Returns a list of all existing objects of this class. @return The list */
-            inline ObjectList<BaseObject>* getObjectList() const { return (ObjectList<BaseObject>*)this->objects_; }
-
-            void updateConfigValues() const;
-
-            XMLPortParamContainer* getXMLPortParamContainer(const std::string& paramname);
-            void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
-
-            XMLPortObjectContainer* getXMLPortObjectContainer(const std::string& sectionname);
-            void addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container);
-
             static ClassIdentifier<T> *getIdentifier();
+            static ClassIdentifier<T> *getIdentifier(const std::string& name);
+            void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
+            static bool isFirstCall();
+            void addObject(T* object);
+
+            void updateConfigValues(bool updateChildren = true) const;
 
         private:
-            ClassIdentifier();
             ClassIdentifier(const ClassIdentifier<T>& identifier) {}    // don't copy
-            ~ClassIdentifier() {}                                       // don't delete
-
-            ObjectList<T>* objects_;                                                                    //!< The ObjectList, containing all objects of type T
-            bool bSetName_;                                                                             //!< True if the name is set
-            std::map<std::string, XMLPortClassParamContainer<T>*> xmlportParamContainers_;              //!< All loadable parameters
-            std::map<std::string, XMLPortClassObjectContainer<T, class O>*> xmlportObjectContainers_;   //!< All attachable objects
+            ClassIdentifier()
+            {
+                SuperFunctionInitialization<0, T>::initialize(this);
+            }
+            ~ClassIdentifier()
+            {
+                SuperFunctionDestruction<0, T>::destroy(this);
+            }
 
             static ClassIdentifier<T> *classIdentifier_s;
     };
@@ -332,60 +334,72 @@ namespace orxonox
     ClassIdentifier<T> *ClassIdentifier<T>::classIdentifier_s = 0;
 
     /**
-        @brief Constructor: Creates the ObjectList.
-    */
-    template <class T>
-    ClassIdentifier<T>::ClassIdentifier()
-    {
-//        this->objects_ = ObjectList<T>::getList();
-        this->objects_ = new ObjectList<T>();
-        this->bSetName_ = false;
-    }
-
-    /**
         @brief Registers a class, which means that the name and the parents get stored.
         @param parents A list, containing the Identifiers of all parents of the class
-        @param name A string, containing exactly the name of the class
         @param bRootClass True if the class is either an Interface or the BaseObject itself
-        @return The ClassIdentifier itself
     */
     template <class T>
-    ClassIdentifier<T>* ClassIdentifier<T>::registerClass(std::set<const Identifier*>* parents, const std::string& name, bool bRootClass)
+    void ClassIdentifier<T>::initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass)
     {
-        this->setName(name);
-
         // Check if at least one object of the given type was created
         if (!this->bCreatedOneObject_ && Identifier::isCreatingHierarchy())
         {
             // If no: We have to store the informations and initialize the Identifier
-            COUT(4) << "*** ClassIdentifier: Register Class in " << name << "-Singleton -> Initialize Singleton." << std::endl;
+            COUT(4) << "*** ClassIdentifier: Register Class in " << this->getName() << "-Singleton -> Initialize Singleton." << std::endl;
             if (bRootClass)
-                this->initialize(NULL); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
+                this->initialize(0); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
             else
                 this->initialize(parents);
         }
-
-        return this;
     }
 
     /**
-        @brief Creates the only instance of this class for the template class T and retrieves a unique Identifier for the given name.
+        @brief Returns true if the function gets called the first time, false otherwise.
+        @return True if this function got called the first time.
+    */
+    template <class T>
+    bool ClassIdentifier<T>::isFirstCall()
+    {
+        static bool bFirstCall = true;
+
+        if (bFirstCall)
+        {
+            bFirstCall = false;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+        @brief Returns the only instance of this class.
         @return The unique Identifier
     */
     template <class T>
     ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier()
     {
         // check if the static field has already been filled
-        if (ClassIdentifier<T>::classIdentifier_s == 0)
+        if (ClassIdentifier<T>::isFirstCall())
         {
             // Get the name of the class
             std::string name = typeid(T).name();
 
             // create a new identifier anyway. Will be deleted in Identifier::getIdentifier if not used.
-            ClassIdentifier<T> *proposal = new ClassIdentifier<T>();
+            ClassIdentifier<T>* proposal = new ClassIdentifier<T>();
 
             // Get the entry from the map
-            ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)Identifier::getIdentifier(name, proposal);
+            ClassIdentifier<T>::classIdentifier_s = (ClassIdentifier<T>*)Identifier::getIdentifierSingleton(name, proposal);
+
+            if (ClassIdentifier<T>::classIdentifier_s == proposal)
+            {
+                COUT(4) << "*** Identifier: Requested Identifier for " << name << " was not yet existing and got created." << std::endl;
+            }
+            else
+            {
+                COUT(4) << "*** Identifier: Requested Identifier for " << name << " was already existing and got assigned." << std::endl;
+            }
         }
 
         // Finally return the unique ClassIdentifier
@@ -393,19 +407,16 @@ namespace orxonox
     }
 
     /**
-        @brief Sets the name of the class.
-        @param name The name
+        @brief Does the same as getIdentifier() but sets the name if this wasn't done yet.
+        @param name The name of this Identifier
+        @return The Identifier
     */
     template <class T>
-    void ClassIdentifier<T>::setName(const std::string& name)
+    ClassIdentifier<T>* ClassIdentifier<T>::getIdentifier(const std::string& name)
     {
-        if (!this->bSetName_)
-        {
-            this->name_ = name;
-            this->bSetName_ = true;
-            Identifier::getIdentifierMapIntern()[name] = this;
-            Identifier::getLowercaseIdentifierMapIntern()[getLowercase(name)] = this;
-        }
+        ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier();
+        identifier->setName(name);
+        return identifier;
     }
 
     /**
@@ -416,69 +427,24 @@ namespace orxonox
     void ClassIdentifier<T>::addObject(T* object)
     {
         COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
-        object->getMetaList().add(this->objects_, this->objects_->add(object));
+        object->getMetaList().add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
     }
 
     /**
         @brief Updates the config-values of all existing objects of this class by calling their setConfigValues() function.
     */
     template <class T>
-    void ClassIdentifier<T>::updateConfigValues() const
+    void ClassIdentifier<T>::updateConfigValues(bool updateChildren) const
     {
-        for (Iterator<T> it = this->objects_->start(); it; ++it)
-            ((T*)*it)->setConfigValues();
-    }
+        if (!this->hasConfigValues())
+            return;
 
-    /**
-        @brief Returns a XMLPortParamContainer that loads a parameter of this class.
-        @param paramname The name of the parameter
-        @return The container
-    */
-    template <class T>
-    XMLPortParamContainer* ClassIdentifier<T>::getXMLPortParamContainer(const std::string& paramname)
-    {
-        typename std::map<std::string, XMLPortClassParamContainer<T>*>::const_iterator it = xmlportParamContainers_.find(paramname);
-        if (it != xmlportParamContainers_.end())
-            return (XMLPortParamContainer*)((*it).second);
-        else
-            return 0;
-    }
+        for (ObjectListIterator<T> it = ObjectList<T>::begin(); it; ++it)
+            it->setConfigValues();
 
-    /**
-        @brief Adds a new XMLPortParamContainer that loads a parameter of this class.
-        @param paramname The name of the parameter
-        @param container The container
-    */
-    template <class T>
-    void ClassIdentifier<T>::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
-    {
-        this->xmlportParamContainers_[paramname] = (XMLPortClassParamContainer<T>*)container;
-    }
-
-    /**
-        @brief Returns a XMLPortObjectContainer that attaches an object to this class.
-        @param sectionname The name of the section that contains the attachable objects
-        @return The container
-    */
-    template <class T>
-    XMLPortObjectContainer* ClassIdentifier<T>::getXMLPortObjectContainer(const std::string& sectionname)
-    {
-        typename std::map<std::string, XMLPortClassObjectContainer<T, class O>*>::const_iterator it = xmlportObjectContainers_.find(sectionname);
-        if (it != xmlportObjectContainers_.end())
-            return (XMLPortObjectContainer*)((*it).second);
-        else
-            return 0;
-    }
-
-    /**
-        @brief Adds a new XMLPortObjectContainer that attaches an object to this class.
-        @param sectionname The name of the section that contains the attachable objects
-        @param container The container
-    */
-    template <class T>
-    void ClassIdentifier<T>::addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container)
-    {
-        this->xmlportObjectContainers_[sectionname] = (XMLPortClassObjectContainer<T, class O>*)container;
+        if (updateChildren)
+            for (std::set<const Identifier*>::const_iterator it = this->getChildrenBegin(); it != this->getChildrenEnd(); ++it)
+                (*it)->updateConfigValues(false);
     }
 
 

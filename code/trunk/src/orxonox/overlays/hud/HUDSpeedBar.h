@@ -43,8 +43,7 @@ namespace orxonox
         HUDSpeedBar();
         ~HUDSpeedBar();
 
-    private:
-        void tick(float dt);
+        virtual void tick(float dt);
     };
 }
 #endif /* _HUDSpeedBar_H__ */

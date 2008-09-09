@@ -42,8 +42,7 @@ namespace orxonox
         DebugRTRText();
         ~DebugRTRText();
 
-    private:
-        void tick(float dt);
+        virtual void tick(float dt);
     };
 }
 #endif /* _DebugRTRText_H__ */

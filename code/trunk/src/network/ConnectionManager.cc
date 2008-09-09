@@ -44,6 +44,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
+#include "core/Iterator.h"
 #include "objects/SpaceShip.h"
 #include "util/Math.h"
 #include "util/Sleep.h"
@@ -65,9 +66,9 @@ namespace std
 namespace network
 {
   //boost::thread_group network_threads;
-  
+
   ConnectionManager *ConnectionManager::instance_=0;
-  
+
   ConnectionManager::ConnectionManager():receiverThread_(0){
     assert(instance_==0);
     instance_=this;
@@ -76,7 +77,7 @@ namespace network
     bindAddress.port = NETWORK_PORT;
   }
   boost::recursive_mutex ConnectionManager::enet_mutex;
-  
+
 //   ConnectionManager::ConnectionManager(ClientInformation *head) : receiverThread_(0) {
 //     assert(instance_==0);
 //     instance_=this;
@@ -84,7 +85,7 @@ namespace network
 //     bindAddress.host = ENET_HOST_ANY;
 //     bindAddress.port = NETWORK_PORT;
 //   }
-  
+
   ConnectionManager::ConnectionManager(int port){
     assert(instance_==0);
     instance_=this;
@@ -108,7 +109,7 @@ namespace network
     enet_address_set_host (& bindAddress, address);
     bindAddress.port = NETWORK_PORT;
   }
-  
+
   ConnectionManager::~ConnectionManager(){
     instance_=0;
     if(!quit)
@@ -134,7 +135,7 @@ used by processQueue in Server.cc
     clientID=temp->getID();
     return packet;
   }*/
-  
+
   ENetEvent *ConnectionManager::getEvent(){
     if(!buffer.isEmpty())
       return buffer.pop();
@@ -159,7 +160,7 @@ used by processQueue in Server.cc
     receiverThread_->join();
     return true;
   }
-  
+
 //   bool ConnectionManager::addPacket(Packet::Packet *packet){
 //     ClientInformation *temp = instance_->head_->findClient(packet->getClientID());
 //     if(!temp){
@@ -169,8 +170,8 @@ used by processQueue in Server.cc
 //     ENetPacket *packet = new ENetPacket;
 //     //  TODO: finish implementation
 //   }
-//   
-  
+//
+
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer) {
     boost::recursive_mutex::scoped_lock lock(instance_->enet_mutex);
     if(enet_peer_send(peer, NETWORK_DEFAULT_CHANNEL, packet)!=0)
@@ -275,7 +276,7 @@ used by processQueue in Server.cc
       lock.unlock();
     }
   }
-  
+
   //### added some bugfixes here, but we cannot test them because
   //### the server crashes everytime because of some gamestates
   //### (trying to resolve that now)
@@ -334,8 +335,8 @@ used by processQueue in Server.cc
   }
 
   /**
-   * 
-   * @param clientID 
+   *
+   * @param clientID
    */
   void ConnectionManager::syncClassid(unsigned int clientID) {
     unsigned int network_id=0, failures=0;
@@ -363,20 +364,20 @@ used by processQueue in Server.cc
     COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
   }
 
-  
-  
+
+
   bool ConnectionManager::removeShip(ClientInformation *client){
     unsigned int id=client->getShipID();
-    orxonox::Iterator<orxonox::SpaceShip> it;
-    for(it = orxonox::ObjectList<orxonox::SpaceShip>::start(); it; ++it){
+    orxonox::ObjectList<orxonox::SpaceShip>::iterator it;
+    for(it = orxonox::ObjectList<orxonox::SpaceShip>::begin(); it; ++it){
       if(it->objectID!=id)
         continue;
       delete *it;
     }
     return true;
   }
-  
-  
+
+
   void ConnectionManager::disconnectClient(ClientInformation *client){
     {
       boost::recursive_mutex::scoped_lock lock(enet_mutex);
@@ -385,6 +386,6 @@ used by processQueue in Server.cc
     }
     removeShip(client);
   }
-  
+
 
 }

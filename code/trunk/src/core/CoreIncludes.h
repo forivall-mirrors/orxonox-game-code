@@ -45,7 +45,7 @@
 #include "Identifier.h"
 #include "Factory.h"
 #include "ClassFactory.h"
-#include "Debug.h"
+#include "util/Debug.h"
 
 
 /**
@@ -54,12 +54,18 @@
     @param bRootClass True if the class is directly derived from OrxonoxClass
 */
 #define InternRegisterObject(ClassName, bRootClass) \
-    this->setIdentifier(orxonox::ClassIdentifier<ClassName>::getIdentifier()->registerClass(this->getParents(), #ClassName, bRootClass)); \
-    if (orxonox::Identifier::isCreatingHierarchy() && this->getParents()) \
-        this->getParents()->insert(this->getParents()->end(), this->getIdentifier()); \
-    orxonox::ClassIdentifier<ClassName>::getIdentifier()->addObject(this); \
+    this->setIdentifier(orxonox::ClassIdentifier<ClassName>::getIdentifier(#ClassName)); \
     if (orxonox::Identifier::isCreatingHierarchy()) \
-      return
+    { \
+        if (this->getParents()) \
+        { \
+            orxonox::ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initializeClassHierarchy(this->getParents(), bRootClass); \
+            this->getParents()->insert(this->getParents()->end(), this->getIdentifier()); \
+        } \
+        this->setConfigValues(); \
+        return; \
+    } \
+    orxonox::ClassIdentifier<ClassName>::getIdentifier()->addObject(this)
 
 /**
     @brief Intern macro, containing the specific part of RegisterRootObject.

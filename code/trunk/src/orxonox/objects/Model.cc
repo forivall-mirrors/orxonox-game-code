@@ -64,16 +64,11 @@ namespace orxonox
     */
     void Model::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        WorldEntity::XMLPort(xmlelement, mode);
+        SUPER(Model, XMLPort, xmlelement, mode);
 
-        XMLPortParamLoadOnly(Model, "mesh", setMesh, xmlelement, mode);
+        XMLPortParam(Model, "mesh", setMesh, getMesh, xmlelement, mode);
 
         Model::create();
-    }
-
-    void Model::setMesh(const std::string& meshname)
-    {
-        this->meshSrc_ = meshname;
     }
 
     bool Model::create(){
@@ -97,7 +92,7 @@ namespace orxonox
 
     void Model::changedVisibility()
     {
-        WorldEntity::changedVisibility();
+        SUPER(Model, changedVisibility);
         if (this->isInitialized())
             this->mesh_.setVisible(this->isVisible());
     }

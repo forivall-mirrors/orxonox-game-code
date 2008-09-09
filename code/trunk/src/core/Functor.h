@@ -32,8 +32,8 @@
 
 #include "CorePrereqs.h"
 
-#include "util/MultiTypeMath.h"
-#include "Debug.h"
+#include "util/MultiType.h"
+#include "util/Debug.h"
 
 #define MAX_FUNCTOR_ARGUMENTS 5
 
@@ -68,6 +68,8 @@ namespace orxonox
     CreateTypeToStringTemplate(unsigned short);
     CreateTypeToStringTemplate(long);
     CreateTypeToStringTemplate(unsigned long);
+    CreateTypeToStringTemplate(long long);
+    CreateTypeToStringTemplate(unsigned long long);
     CreateTypeToStringTemplate(float);
     CreateTypeToStringTemplate(double);
     CreateTypeToStringTemplate(long double);
@@ -79,13 +81,13 @@ namespace orxonox
     CreateTypeToStringTemplate(Radian);
     CreateTypeToStringTemplate(Degree);
 
-    template <> \
-    inline std::string typeToString<std::string>() { return "string"; } \
-    template <> \
-    inline std::string typeToString<std::string&>() { return "string"; } \
-    template <> \
-    inline std::string typeToString<const std::string>() { return "string"; } \
-    template <> \
+    template <>
+    inline std::string typeToString<std::string>() { return "string"; }
+    template <>
+    inline std::string typeToString<std::string&>() { return "string"; }
+    template <>
+    inline std::string typeToString<const std::string>() { return "string"; }
+    template <>
     inline std::string typeToString<const std::string&>() { return "string"; }
 
     class _CoreExport Functor
@@ -94,23 +96,23 @@ namespace orxonox
             Functor() {}
             virtual ~Functor() {}
 
-            virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
+            virtual void operator()(const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) = 0;
 
             inline unsigned int getParamCount() const { return this->numParams_; }
             inline bool hasReturnvalue() const { return this->hasReturnValue_; }
             inline FunctionType getType() const { return this->type_; }
-            inline MultiTypeMath getReturnvalue() const { return this->returnedValue_; }
+            inline MultiType getReturnvalue() const { return this->returnedValue_; }
 
             std::string getTypenameParam(unsigned int param) const { return (param >= 0 && param < 5) ? this->typeParam_[param] : ""; }
             std::string getTypenameReturnvalue() const { return this->typeReturnvalue_; }
 
-            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const = 0;
+            virtual void evaluateParam(unsigned int index, MultiType& param) const = 0;
 
         protected:
             unsigned int numParams_;
             bool hasReturnValue_;
             FunctionType type_;
-            MultiTypeMath returnedValue_;
+            MultiType returnedValue_;
 
             std::string typeReturnvalue_;
             std::string typeParam_[MAX_FUNCTOR_ARGUMENTS];
@@ -120,7 +122,7 @@ namespace orxonox
     {
         public:
             virtual ~FunctorStatic() {}
-            virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
+            virtual void operator()(const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) = 0;
     };
 
     template <class T>
@@ -135,10 +137,10 @@ namespace orxonox
             }
             virtual ~FunctorMember() {}
 
-            virtual void operator()(T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
-            virtual void operator()(const T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) = 0;
+            virtual void operator()(T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) = 0;
+            virtual void operator()(const T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) = 0;
 
-            virtual void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null)
+            virtual void operator()(const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null)
             {
                 if (this->bConstObject_)
                 {
@@ -283,25 +285,25 @@ namespace orxonox
 #define FUNCTOR_EVALUATE_PARAM(numparams) FUNCTOR_EVALUATE_PARAM##numparams
 #define FUNCTOR_EVALUATE_PARAM0
 #define FUNCTOR_EVALUATE_PARAM1 \
-    if (index == 0) { P1 temp = param; param = temp; }
+    if (index == 0) { param.convert<P1>(); }
 #define FUNCTOR_EVALUATE_PARAM2 \
-    if (index == 0) { P1 temp = param; param = temp; } \
-    else if (index == 1) { P2 temp = param; param = temp; }
+    if (index == 0) { param.convert<P1>(); } \
+    else if (index == 1) { param.convert<P2>(); }
 #define FUNCTOR_EVALUATE_PARAM3 \
-    if (index == 0) { P1 temp = param; param = temp; } \
-    else if (index == 1) { P2 temp = param; param = temp; } \
-    else if (index == 2) { P3 temp = param; param = temp; }
+    if (index == 0) { param.convert<P1>(); } \
+    else if (index == 1) { param.convert<P2>(); } \
+    else if (index == 2) { param.convert<P3>(); }
 #define FUNCTOR_EVALUATE_PARAM4 \
-    if (index == 0) { P1 temp = param; param = temp; } \
-    else if (index == 1) { P2 temp = param; param = temp; } \
-    else if (index == 2) { P3 temp = param; param = temp; } \
-    else if (index == 3) { P4 temp = param; param = temp; }
+    if (index == 0) { param.convert<P1>(); } \
+    else if (index == 1) { param.convert<P2>(); } \
+    else if (index == 2) { param.convert<P3>(); } \
+    else if (index == 3) { param.convert<P4>(); }
 #define FUNCTOR_EVALUATE_PARAM5 \
-    if (index == 0) { P1 temp = param; param = temp; } \
-    else if (index == 1) { P2 temp = param; param = temp; } \
-    else if (index == 2) { P3 temp = param; param = temp; } \
-    else if (index == 3) { P4 temp = param; param = temp; } \
-    else if (index == 4) { P5 temp = param; param = temp; }
+    if (index == 0) { param.convert<P1>(); } \
+    else if (index == 1) { param.convert<P2>(); } \
+    else if (index == 2) { param.convert<P3>(); } \
+    else if (index == 3) { param.convert<P4>(); } \
+    else if (index == 4) { param.convert<P5>(); }
 
 
 
@@ -323,12 +325,12 @@ namespace orxonox
                 FUNCTOR_TYPENAME_RETURN(returnvalue); \
             } \
     \
-            void operator()(const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) \
+            void operator()(const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
             } \
     \
-            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const \
+            virtual void evaluateParam(unsigned int index, MultiType& param) const \
             { \
                 FUNCTOR_EVALUATE_PARAM(numparams); \
             } \
@@ -361,18 +363,18 @@ namespace orxonox
                 this->functionPointer_ = functionPointer; \
             } \
     \
-            void operator()(T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) \
+            void operator()(T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*object.*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
             } \
     \
-            void operator()(const T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) \
+            void operator()(const T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) \
             { \
                 COUT(1) << "An error occurred in Functor.h:" << std::endl; \
                 COUT(1) << "Error: Function is not const." << std::endl; \
             } \
     \
-            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const \
+            virtual void evaluateParam(unsigned int index, MultiType& param) const \
             { \
                 FUNCTOR_EVALUATE_PARAM(numparams); \
             } \
@@ -394,17 +396,17 @@ namespace orxonox
                 this->functionPointer_ = functionPointer; \
             } \
     \
-            void operator()(T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) \
+            void operator()(T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*object.*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
             } \
     \
-            void operator()(const T* object, const MultiTypeMath& param1 = MT_null, const MultiTypeMath& param2 = MT_null, const MultiTypeMath& param3 = MT_null, const MultiTypeMath& param4 = MT_null, const MultiTypeMath& param5 = MT_null) \
+            void operator()(const T* object, const MultiType& param1 = MT_null, const MultiType& param2 = MT_null, const MultiType& param3 = MT_null, const MultiType& param4 = MT_null, const MultiType& param5 = MT_null) \
             { \
                 FUNCTOR_STORE_RETURNVALUE(returnvalue, (*object.*this->functionPointer_)(FUNCTOR_FUNCTION_CALL(numparams))); \
             } \
     \
-            virtual void evaluateParam(unsigned int index, MultiTypeMath& param) const \
+            virtual void evaluateParam(unsigned int index, MultiType& param) const \
             { \
                 FUNCTOR_EVALUATE_PARAM(numparams); \
             } \

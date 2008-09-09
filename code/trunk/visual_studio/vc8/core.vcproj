@@ -160,10 +160,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Error.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\Language.cc"
 				>
 			</File>
@@ -172,19 +168,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\OutputBuffer.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\OutputHandler.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\Script.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\SignalHandler.cc"
 				>
 			</File>
 			<Filter
@@ -250,6 +234,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\MetaObjectList.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ObjectListBase.cc"
 					>
 				</File>
 			</Filter>
@@ -364,27 +352,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Debug.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Error.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\Language.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\core\OrxonoxClass.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\OutputBuffer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\OutputHandler.h"
 				>
 			</File>
 			<File
@@ -396,7 +368,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\SignalHandler.h"
+				RelativePath="..\..\src\core\Super.h"
 				>
 			</File>
 			<Filter
@@ -523,11 +495,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\IteratorBase.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\MetaObjectList.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\core\ObjectList.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\ObjectListBase.h"
 					>
 				</File>
 			</Filter>

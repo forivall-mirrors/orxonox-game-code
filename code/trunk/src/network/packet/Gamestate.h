@@ -37,7 +37,7 @@
 namespace network {
 
 namespace packet {
-  
+
 struct GamestateHeader{
   ENUM::Type packetType;
   int id; // id of the gamestate
@@ -50,15 +50,15 @@ struct GamestateHeader{
 };
 
 /**
-	@author 
+	@author
 */
 class Gamestate: public Packet{
   public:
     Gamestate();
     Gamestate(unsigned char *data, int clientID);
-    
+
     ~Gamestate();
-    
+
     bool collectData(int id, int mode=0x0);
     bool spreadData(int mode=0x0);
     int getID();
@@ -68,17 +68,17 @@ class Gamestate: public Packet{
     Gamestate *undiff(Gamestate *base);
     bool compressData();
     bool decompressData();
-    
+
     // Packet functions
     virtual unsigned int getSize() const;
     virtual bool process();
 
-    
+
   private:
     unsigned int calcGamestateSize(int mode=0x0);
-    void removeObject(orxonox::Iterator<Synchronisable> &it);
+    void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
 
-    
+
     //Bytestream *bs_;
     //GamestateHeader *header_;
 };

@@ -47,7 +47,7 @@ namespace orxonox
         HUDRadar();
         ~HUDRadar();
 
-        void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
     private:
         // XML accessors

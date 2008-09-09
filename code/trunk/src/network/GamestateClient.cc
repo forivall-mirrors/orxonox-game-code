@@ -32,6 +32,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"
+#include "core/Iterator.h"
 #include "Synchronisable.h"
 
 
@@ -67,7 +68,7 @@ namespace network
     tempGamestate_=gs;
     return true;
   }
-  
+
   int GamestateClient::processGamestates(){
     if(tempGamestate_==NULL)
       return 0;
@@ -88,8 +89,8 @@ namespace network
   * @param it iterator of the list pointing to the object
   * @return iterator pointing to the next object in the list
   */
-  void GamestateClient::removeObject(orxonox::Iterator<Synchronisable> &it) {
-    orxonox::Iterator<Synchronisable> temp=it;
+  void GamestateClient::removeObject(orxonox::ObjectList<Synchronisable>::iterator &it) {
+    orxonox::ObjectList<Synchronisable>::iterator temp=it;
     ++it;
     delete  *temp;
   }

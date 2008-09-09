@@ -49,7 +49,7 @@ namespace orxonox
             void destroy();
             void setConfigValues();
 
-            void tick(float dt);
+            virtual void tick(float dt);
 
             static InGameConsole& getInstance();
 

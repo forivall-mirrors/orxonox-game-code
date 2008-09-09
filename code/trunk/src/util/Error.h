@@ -34,13 +34,13 @@
 #ifndef _Error_H__
 #define _Error_H__
 
-#include "CorePrereqs.h"
+#include "UtilPrereqs.h"
 
 #include <string>
 
 namespace orxonox
 {
-	class _CoreExport Error
+	class _UtilExport Error
 	{
 	public:
 		Error(std::string errorMsg = "", int errorCode = 0);

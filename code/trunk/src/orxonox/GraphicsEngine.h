@@ -55,6 +55,7 @@ namespace orxonox
     {
         public:
             void setConfigValues();
+            void detailLevelParticleChanged();
             bool setup();
             bool declareRessourceLocations();
             bool loadRenderer();

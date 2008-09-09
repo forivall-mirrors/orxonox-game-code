@@ -52,7 +52,7 @@ namespace orxonox
 
     void BarColour::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlElement, mode);
+        SUPER(BarColour, XMLPort, xmlElement, mode);
 
         XMLPortParam(BarColour, "colour", setColour, getColour, xmlElement, mode)
             .defaultValues(ColourValue(1.0, 1.0, 1.0, 1.0));
@@ -77,7 +77,7 @@ namespace orxonox
 
     void HUDBar::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        OrxonoxOverlay::XMLPort(xmlElement, mode);
+        SUPER(HUDBar, XMLPort, xmlElement, mode);
 
         if (mode == XMLPort::LoadObject)
         {

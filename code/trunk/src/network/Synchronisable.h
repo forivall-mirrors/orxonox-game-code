@@ -91,7 +91,7 @@ namespace network
   protected:
     Synchronisable();
   private:
-    /*  bool removeObject(Iterator<Synchronisable> it);*/
+    /*  bool removeObject(ObjectList<Synchronisable>::iterator it);*/
 
     std::list<synchronisableVariable *> *syncList;
     int datasize;

@@ -64,10 +64,16 @@ namespace orxonox
 
     void RotatingProjectile::setConfigValues()
     {
-        SetConfigValue(colour_, ColourValue(1.0, 0.0, 0.0));
+        SetConfigValue(colour_, ColourValue(1.0, 0.0, 0.0)).callback(this, &RotatingProjectile::colourChanged);
+    }
 
-        this->rotatingBillboard1_.getBillboardSet()->getBillboard(0)->setColour(this->colour_);
-        this->rotatingBillboard2_.getBillboardSet()->getBillboard(0)->setColour(this->colour_);
+    void RotatingProjectile::colourChanged()
+    {
+        if (this->isInitialized())
+        {
+            this->rotatingBillboard1_.getBillboardSet()->getBillboard(0)->setColour(this->colour_);
+            this->rotatingBillboard2_.getBillboardSet()->getBillboard(0)->setColour(this->colour_);
+        }
     }
 
     void RotatingProjectile::tick(float dt)
@@ -80,12 +86,12 @@ namespace orxonox
             this->rotatingNode2_->setPosition(0, -50 * sin(this->time_ * 20), -50 * cos(this->time_ * 20));
         }
 
-        Projectile::tick(dt);
+        SUPER(RotatingProjectile, tick, dt);
     }
 
     void RotatingProjectile::changedVisibility()
     {
-        BillboardProjectile::changedVisibility();
+        SUPER(RotatingProjectile, changedVisibility);
         this->rotatingBillboard1_.setVisible(this->isVisible());
         this->rotatingBillboard2_.setVisible(this->isVisible());
     }

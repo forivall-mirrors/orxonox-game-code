@@ -31,6 +31,7 @@
 
 #include "SpaceShip.h"
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 
 namespace orxonox
 {
@@ -51,6 +52,8 @@ namespace orxonox
         {
             this->particles_ = 0;
         }
+
+        this->setConfigValues();
     }
 
     ParticleProjectile::~ParticleProjectile()
@@ -59,9 +62,14 @@ namespace orxonox
             delete this->particles_;
     }
 
+    void ParticleProjectile::setConfigValues()
+    {
+        SetConfigValue(speed_, 5000.0).description("The speed of a projectile in units per second").callback((Projectile*)this, &ParticleProjectile::speedChanged);
+    }
+
     void ParticleProjectile::changedVisibility()
     {
-        BillboardProjectile::changedVisibility();
+        SUPER(ParticleProjectile, changedVisibility);
         this->particles_->setEnabled(this->isVisible());
     }
 }

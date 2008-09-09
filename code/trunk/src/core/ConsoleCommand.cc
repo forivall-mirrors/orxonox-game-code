@@ -44,7 +44,7 @@ namespace orxonox
         this->bAxisRelative_ = false;
     }
 
-    ConsoleCommand& ConsoleCommand::setArgumentCompleter(unsigned int param, ArgumentCompleter* completer)
+    ConsoleCommand& ConsoleCommand::argumentCompleter(unsigned int param, ArgumentCompleter* completer)
     {
         if (param < 5)
             this->argumentCompleter_[param] = completer;

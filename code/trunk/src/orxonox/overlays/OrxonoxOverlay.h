@@ -149,8 +149,9 @@ namespace orxonox
         //! ConsoleCommand: Accesses the overlay by its name and rotates it.
         static void rotateOverlay(const std::string& name, const Degree& angle);
 
-    protected:
         virtual void changedVisibility();
+
+    protected:
         virtual void angleChanged();
         virtual void sizeCorrectionChanged();
         virtual void sizeChanged();

@@ -44,7 +44,10 @@ namespace orxonox
             virtual ~Model();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void changedVisibility();
-            void setMesh(const std::string& meshname);
+            inline void setMesh(const std::string& meshname)
+                { this->meshSrc_ = meshname; }
+            inline const std::string& getMesh() const
+                { return this->meshSrc_; }
             virtual bool create();
 
         protected:

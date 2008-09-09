@@ -28,18 +28,18 @@
 
 #include "ConsoleCommandCompilation.h"
 #include "ConsoleCommand.h"
-#include "Debug.h"
+#include "util/Debug.h"
 #include "util/ExprParser.h"
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutExtern(source).setArgumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(source).argumentCompleter(0, autocompletion::files());
     SetConsoleCommandShortcutExtern(echo);
     SetConsoleCommandShortcutExtern(puts);
 
-    SetConsoleCommandShortcutExtern(read).setArgumentCompleter(0, autocompletion::files());
-    SetConsoleCommandShortcutExtern(append).setArgumentCompleter(0, autocompletion::files());
-    SetConsoleCommandShortcutExtern(write).setArgumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(read).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(append).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommandShortcutExtern(write).argumentCompleter(0, autocompletion::files());
 
     SetConsoleCommandShortcutExtern(calculate);
 
