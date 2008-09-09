@@ -63,6 +63,7 @@ namespace network
     static int idCounter=0;
     datasize=0;
     objectFrequency_=1;
+    objectMode_=0x1; // by default do not send data to servere
     objectID=idCounter++;
     syncList = new std::list<synchronisableVariable *>;
     //registerAllVariables();
@@ -81,6 +82,7 @@ namespace network
     return true;
   }
 
+  
   void Synchronisable::setClient(bool b){
     if(b) // client
       state_=0x2;
@@ -313,9 +315,14 @@ namespace network
     return sizeof(synchronisableHeader) + getSize( id, mode );
   }
   
+  /**
+   * 
+   * @param id 
+   * @return 
+   */
   bool Synchronisable::isMyTick(unsigned int id){
 //     return true;
-    return id==0 || id%objectFrequency_==objectID%objectFrequency_;
+    return ( id==0 || id%objectFrequency_==objectID%objectFrequency_ ) && ((objectMode_&state_)!=0);
   }
   
   bool Synchronisable::isMyData(unsigned char* mem)
@@ -332,12 +339,10 @@ namespace network
     return (objectID == this->objectID);
   }
   
-  void Synchronisable::setBacksync(bool sync){
-    backsync_=sync;
+  void Synchronisable::setObjectMode(int mode){
+    assert(mode==0x1 || mode==0x2 || mode==0x3);
+    objectMode_=mode;
   }
 
-  bool Synchronisable::getBacksync(){
-    return backsync_;
-  }
 
 }

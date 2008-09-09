@@ -165,8 +165,10 @@ namespace orxonox
       if(!myShip_){
         if(network::Host::running())
           COUT(3) << "this id: " << this->objectID << " myShipID: " << network::Host::getShipID() << std::endl;
-        if(network::Host::running() && objectID == network::Host::getShipID())
+        if(network::Host::running() && objectID == network::Host::getShipID()){
+          setObjectMode(0x3);
           myShip_=true;
+        }
         else
           this->setRadarObjectColour(this->getProjectileColour());
       }
@@ -359,7 +361,6 @@ namespace orxonox
       //if(!network::Host::running() || network::Host::getShipID()==objectID){ //TODO: check this
       if(myShip_){
         COUT(3) << "requesting focus for camera" << std::endl;
-        this->setBacksync(true);
         //CameraHandler::getInstance()->requestFocus(cam_);
         if(this->isExactlyA(Class(SpaceShip))){
           getFocus();
@@ -465,7 +466,7 @@ namespace orxonox
               COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
             }
 
-            projectile->setBacksync(true);
+            projectile->setObjectMode(0x3);
             this->timeToReload_ = this->reloadTime_;
         }
 

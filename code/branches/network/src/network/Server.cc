@@ -325,6 +325,11 @@ namespace network
     packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
     w->setClientID(temp->getID());
     assert(w->send());
+    packet::Gamestate *g = new packet::Gamestate();
+    g->setClientID(temp->getID());
+    assert(g->collectData(0));
+    assert(g->compressData());
+    assert(g->send());
     return true;
   }
   
@@ -352,7 +357,6 @@ namespace network
     no->setRotDamp(1.0);
     no->setCamera(std::string("cam_") + convertToString(client->getID()));
     no->create();
-    no->setBacksync(true);
     
     return true;
   }
