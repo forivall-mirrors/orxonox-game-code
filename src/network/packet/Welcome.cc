@@ -31,6 +31,7 @@
 
 #include "Welcome.h"
 #include "network/Host.h"
+#include "network/Synchronisable.h"
 #include "core/CoreIncludes.h"
 #include <assert.h>
 
@@ -78,6 +79,7 @@ bool Welcome::process(){
   Host::setClientID(clientID);
   Host::setShipID(shipID);
   COUT(3) << "Welcome set clientId: " << clientID << " shipID: " << shipID << std::endl;
+  Synchronisable::setClient(true);
   delete this;
   return true;
 }

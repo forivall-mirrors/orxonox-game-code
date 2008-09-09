@@ -40,8 +40,7 @@ namespace network {
 
 namespace packet {
 
-
-#define GAMESTATE_START(data) data + sizeof(GamestateHeader)
+#define GAMESTATE_START(data) (data + sizeof(GamestateHeader))
 #define GAMESTATE_HEADER(data) ((GamestateHeader *)data)
 #define HEADER GAMESTATE_HEADER(data_)
 
@@ -62,15 +61,13 @@ Gamestate::~Gamestate()
 bool Gamestate::collectData(int id, int mode)
 {
   int tempsize=0, currentsize=0;
-  assert(data_==0 /*&& bs_==0*/);
-  int size = calcGamestateSize(mode);
+  assert(data_==0);
+  int size = calcGamestateSize(id, mode);
 
   COUT(4) << "G.ST.Man: producing gamestate with id: " << id << std::endl;
-    //retval->data = (unsigned char*)malloc(size);
   if(size==0)
     return false;
   data_ = new unsigned char[size + sizeof(GamestateHeader)];
-  //bs_ = new Bytestream(data_+sizeof(GamestateHeader), size);
   if(!data_){
     COUT(2) << "GameStateManager: could not allocate memory" << std::endl;
     return false;
@@ -81,7 +78,7 @@ bool Gamestate::collectData(int id, int mode)
   mem+=sizeof(GamestateHeader);
   orxonox::ObjectList<Synchronisable>::iterator it;
   for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it){
-    tempsize=it->getSize2(mode);
+    tempsize=it->getSize2(id, mode);
 
     if(currentsize+tempsize > size){
       // start allocate additional memory
@@ -89,14 +86,14 @@ bool Gamestate::collectData(int id, int mode)
       orxonox::ObjectList<Synchronisable>::iterator temp = it;
       int addsize=tempsize;
       while(++temp)
-        addsize+=temp->getSize2(mode);
+        addsize+=temp->getSize2(id, mode);
       data_ = (unsigned char *)realloc(data_, sizeof(GamestateHeader) + currentsize + addsize);
       if(!data_)
         return false;
       size = currentsize+addsize;
     }// stop allocate additional memory
 
-    if(!it->getData2(mem, mode))
+    if(!it->getData(mem, id, mode))
       return false; // mem pointer gets automatically increased because of call by reference
     // increase size counter by size of current synchronisable
     currentsize+=tempsize;
@@ -120,7 +117,9 @@ bool Gamestate::collectData(int id, int mode)
 
 bool Gamestate::spreadData(int mode)
 {
-  assert(data_ && !HEADER->compressed && !HEADER->diffed);
+  assert(data_);
+  assert(!HEADER->compressed);
+  assert(!HEADER->diffed);
   unsigned int size, objectID, classID;
   unsigned char *mem=data_+sizeof(GamestateHeader);
     // get the start of the Synchronisable list
@@ -141,7 +140,7 @@ bool Gamestate::spreadData(int mode)
       if(!it){
         //fabricate the new synchronisable
         if(!Synchronisable::fabricate(mem, mode))
-          /*return false*/;
+          return false;
         it=orxonox::ObjectList<Synchronisable>::end();
       }
     } else
@@ -174,6 +173,21 @@ unsigned int Gamestate::getSize() const
   }
 }
 
+bool Gamestate::operator==(packet::Gamestate gs){
+  unsigned char *d1 = data_+sizeof(GamestateHeader);
+  unsigned char *d2 = gs.data_+sizeof(GamestateHeader);
+  assert(!isCompressed());
+  assert(!gs.isCompressed());
+  while(d1<data_+HEADER->normsize)
+  {
+    if(*d1!=*d2)
+      return false;
+    d1++;
+    d2++;
+  }
+  return true;
+}
+
 bool Gamestate::process()
 {
   return GamestateHandler::addGamestate(this, getClientID());
@@ -182,75 +196,94 @@ bool Gamestate::process()
 bool Gamestate::compressData()
 {
   assert(HEADER);
-  uLongf buffer = (uLongf)((HEADER->normsize + 12)*1.01)+1;
+  assert(!HEADER->compressed);
+  uLongf buffer = (uLongf)(((HEADER->normsize + 12)*1.01)+1);
   if(buffer==0)
     return false;
 
   unsigned char *ndata = new unsigned char[buffer+sizeof(GamestateHeader)];
   unsigned char *dest = GAMESTATE_START(ndata);
+  //unsigned char *dest = new unsigned char[buffer];
+  unsigned char *source = GAMESTATE_START(data_);
   int retval;
-  retval = compress( dest, &buffer, GAMESTATE_START(data_), (uLong)(HEADER->normsize) );
+  retval = compress( dest, &buffer, source, (uLong)(HEADER->normsize) );
   switch ( retval ) {
     case Z_OK: COUT(5) << "G.St.Man: compress: successfully compressed" << std::endl; break;
-    case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl;
-    return false;
-    case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl;
-    return false;
-    case Z_DATA_ERROR: COUT(2) << "G.St.Man: compress: data corrupted in gamestate.compress" << std::endl;
-    return false;
+    case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl; return false;
+    case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl; return false;
+    case Z_DATA_ERROR: COUT(2) << "G.St.Man: compress: data corrupted in gamestate.compress" << std::endl; return false;
   }
+#ifndef NDEBUG
+  //decompress and compare the start and the decompressed data
+  unsigned char *rdata = new unsigned char[HEADER->normsize+sizeof(GamestateHeader)];
+  unsigned char *d2 = GAMESTATE_START(rdata);
+  uLongf length2 = HEADER->normsize;
+  uncompress(d2, &length2, dest, buffer);
+  for(unsigned int i=0; i<HEADER->normsize; i++){
+    assert(*(source+i)==*(d2+i));
+  }
+  delete[] rdata;
+#endif
 
   //copy and modify header
-  HEADER->compsize = buffer;
-  HEADER->compressed = true;
+#ifndef NDEBUG
+  HEADER->crc32 = calcCRC(data_+sizeof(GamestateHeader), HEADER->normsize);
+#endif
   *GAMESTATE_HEADER(ndata) = *HEADER;
   //delete old data
   delete[] data_;
   //save new data
   data_ = ndata;
+  HEADER->compsize = buffer;
+  HEADER->compressed = true;
   assert(HEADER->compressed);
   COUT(3) << "gamestate compress normsize: " << HEADER->normsize << " compsize: " << HEADER->compsize << std::endl;
   return true;
 }
 bool Gamestate::decompressData()
 {
+  assert(HEADER);
   assert(HEADER->compressed);
-  //COUT(4) << "GameStateClient: uncompressing gamestate. id: " << a->id << ", baseid: " << a->base_id << ", normsize: " << a->normsize << ", compsize: " << a->compsize << std::endl;
-  int normsize = HEADER->normsize;
-  int compsize = HEADER->compsize;
-  int bufsize;
-  if(normsize < compsize)
-    bufsize = compsize;
-  else
-    bufsize = normsize;
-  if(bufsize==0)
-    return false;
+  COUT(3) << "GameStateClient: uncompressing gamestate. id: " << HEADER->id << ", baseid: " << HEADER->base_id << ", normsize: " << HEADER->normsize << ", compsize: " << HEADER->compsize << std::endl;
+  unsigned int normsize = HEADER->normsize;
+  unsigned int compsize = HEADER->compsize;
+  unsigned int bufsize;
+  assert(compsize<=normsize);
+  bufsize = normsize;
+  assert(bufsize!=0);
   unsigned char *ndata = new unsigned char[bufsize + sizeof(GamestateHeader)];
   unsigned char *dest = ndata + sizeof(GamestateHeader);
+  unsigned char *source = data_ + sizeof(GamestateHeader);
   int retval;
-  uLongf length=normsize;
-  retval = uncompress( dest, &length, data_+sizeof(GamestateHeader), (uLong)compsize );
+  uLongf length=bufsize;
+  retval = uncompress( dest, &length, source, (uLong)compsize );
   switch ( retval ) {
     case Z_OK: COUT(5) << "successfully decompressed" << std::endl; break;
     case Z_MEM_ERROR: COUT(1) << "not enough memory available" << std::endl; return false;
     case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer" << std::endl; return false;
     case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return false;
   }
-
-  HEADER->compressed = false;
+#ifndef NDEBUG
+  assert(HEADER->crc32==calcCRC(ndata+sizeof(GamestateHeader), HEADER->normsize));
+#endif
+  
   //copy over the header
   *GAMESTATE_HEADER(ndata) = *HEADER;
   //delete old (compressed data)
   delete[] data_;
-  //set new pointers and create bytestream
+  //set new pointers
   data_ = ndata;
-  //bs_ = new Bytestream(getGs(), GAMESTATE_HEADER->normsize);
-
+  HEADER->compressed = false;
+  assert(HEADER->normsize==normsize);
+  assert(HEADER->compsize==compsize);
   return true;
 }
 
 Gamestate *Gamestate::diff(Gamestate *base)
 {
+  assert(HEADER);
+  assert(!HEADER->compressed);
+  assert(!HEADER->diffed);
   //unsigned char *basep = base->getGs()/*, *gs = getGs()*/;
   unsigned char *basep = GAMESTATE_START(base->data_), *gs = GAMESTATE_START(this->data_);
   unsigned int of=0; // pointers offset
@@ -276,13 +309,17 @@ Gamestate *Gamestate::diff(Gamestate *base)
 
   *GAMESTATE_HEADER(ndata) = *HEADER;
   GAMESTATE_HEADER(ndata)->diffed = true;
-  Gamestate *g = new Gamestate(ndata, 0);
+  GAMESTATE_HEADER(ndata)->base_id = base->getID();
+  Gamestate *g = new Gamestate(ndata, getClientID());
+  g->flags_=flags_;
+  g->packetDirection_ = packetDirection_;
   return g;
 }
 
 Gamestate *Gamestate::undiff(Gamestate *base)
 {
-  assert(this && base);
+  assert(this && base);assert(HEADER);
+  assert(HEADER->diffed);
   assert(!HEADER->compressed && !GAMESTATE_HEADER(base->data_)->compressed);
   //unsigned char *basep = base->getGs()/*, *gs = getGs()*/;
   unsigned char *basep = GAMESTATE_START(base->data_);
@@ -309,19 +346,23 @@ Gamestate *Gamestate::undiff(Gamestate *base)
   }
   *GAMESTATE_HEADER(ndata) = *HEADER;
   GAMESTATE_HEADER(ndata)->diffed = false;
-  Gamestate *g = new Gamestate(ndata, 0);
+  Gamestate *g = new Gamestate(ndata, getClientID());
+  g->flags_=flags_;
+  g->packetDirection_ = packetDirection_;
+  assert(!g->isDiffed());
+  assert(!g->isCompressed());
   return g;
 }
 
 
-unsigned int Gamestate::calcGamestateSize(int mode)
+unsigned int Gamestate::calcGamestateSize(unsigned int id, int mode)
 {
   int size=0;
     // get the start of the Synchronisable list
   orxonox::ObjectList<Synchronisable>::iterator it;
     // get total size of gamestate
   for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it)
-    size+=it->getSize2(mode); // size of the actual data of the synchronisable
+    size+=it->getSize2(id, mode); // size of the actual data of the synchronisable
 //  size+=sizeof(GamestateHeader);
   return size;
 }
@@ -341,6 +382,10 @@ unsigned int Gamestate::calcGamestateSize(int mode)
     return HEADER->diffed;
   }
 
+  bool Gamestate::isCompressed(){
+    return HEADER->compressed;
+  }
+  
   int Gamestate::getBaseID(){
     return HEADER->base_id;
   }

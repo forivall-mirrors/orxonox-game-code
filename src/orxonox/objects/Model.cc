@@ -44,10 +44,15 @@ namespace orxonox
 {
     CreateFactory(Model);
 
+    /**
+     * 
+     */
     Model::Model()
     {
         RegisterObject(Model);
         registerAllVariables();
+        if(this->isExactlyA(Class(Model)))
+           setObjectFrequency(1);
     }
 
     Model::~Model()

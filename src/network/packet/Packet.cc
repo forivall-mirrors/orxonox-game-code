@@ -91,8 +91,10 @@ Packet::Packet(const Packet &p){
 }
 
 Packet::~Packet(){
-  if(enetPacket_)
+  if(enetPacket_){
+    assert(enetPacket_->freeCallback==0);
     enet_packet_destroy(enetPacket_);
+  }
   if(data_)
     delete[] data_;
 }
@@ -108,25 +110,27 @@ bool Packet::send(){
       return false;
     }
     enetPacket_ = enet_packet_create(getData(), getSize(), getFlags());
-    //enetPacket_->freeCallback = &Packet::deletePacket;
-    enetPacket_->freeCallback = &blub;
+    enetPacket_->freeCallback = &Packet::deletePacket;
+//     enetPacket_->freeCallback = &blub;
     packetMap_[enetPacket_] = this;
   }
-  /*switch( *(ENUM::Type *)(data_ + _PACKETID) )
+#ifndef NDEBUG 
+  switch( *(ENUM::Type *)(data_ + _PACKETID) )
   {
     case ENUM::Acknowledgement:
     case ENUM::Chat:
     case ENUM::ClassID:
     case ENUM::Gamestate:
     case ENUM::Welcome:
-      COUT(3) << "welcome" << std::endl;
-      p = new Welcome( data, clientID );
-    default:
-      assert(0); //TODO: repair this
       break;
-  }*/
-  network::Host::addPacket( enetPacket_, clientID_);
+    default:
+      assert(0); //there was some error, if this is the case
+      break;
+  }
+#endif
+  ENetPacket *temp = enetPacket_;
   enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
+  network::Host::addPacket( temp, clientID_);
   return true;
 }
 
@@ -167,6 +171,7 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
 
 void Packet::deletePacket(ENetPacket *packet){
   assert(packetMap_[packet]);
+  assert(packetMap_[packet]->enetPacket_==0);
   delete packetMap_[packet];
 }
 

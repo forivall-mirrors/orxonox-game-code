@@ -74,11 +74,16 @@ namespace network
       return 0;
     int id = GAMESTATEID_INITIAL;
     bool b = saveShipCache();
-    if(processGamestate(tempGamestate_)){
-      if(b)
-        loadShipCache();
-      id = tempGamestate_->getID();
-    }
+    packet::Gamestate *processed = processGamestate(tempGamestate_);
+    assert(processed);
+    //successfully loaded data from gamestate. now save gamestate for diff and delete the old gs
+    tempGamestate_=0;
+    gamestateMap_[processed->getID()]=processed;
+    last_diff_ = processed->getBaseID();
+    last_gamestate_ = processed->getID();
+    if(b)
+      loadShipCache();
+    id = processed->getID();
     cleanup();
     return id;
   }
@@ -129,12 +134,12 @@ namespace network
       myShip_ = orxonox::SpaceShip::getLocalShip();
     if(myShip_){
       //      unsigned char *data = new unsigned char[myShip_->getSize()];
-      int size=myShip_->getSize(0x1);
+      int size=myShip_->getSize2(0, 0x1);
       if(size==0)
         return false;
       shipCache_ = new unsigned char [size];
       unsigned char *temp = shipCache_;
-      if(!myShip_->getData2(temp, 0x1))
+      if(!myShip_->getData(temp, 0, 0x1))
         COUT(3) << "could not save shipCache" << std::endl;
       return true;
     }else
@@ -151,11 +156,21 @@ namespace network
       return false;
   }
 
-  bool GamestateClient::processGamestate(packet::Gamestate *gs){
-    assert(gs->decompressData());
-    if(gs->isDiffed())
-      assert(gs->undiff(gamestateMap_[gs->getBaseID()]));
-    return gs->spreadData();
+  packet::Gamestate *GamestateClient::processGamestate(packet::Gamestate *gs){
+    if(gs->isCompressed())
+      assert(gs->decompressData());
+    if(gs->isDiffed()){
+      packet::Gamestate *base = gamestateMap_[gs->getBaseID()];
+      assert(base);
+      packet::Gamestate *undiffed = gs->undiff(base);
+      delete gs;
+      gs=undiffed;
+      COUT(3) << "successfully undiffed gamestate id: " << undiffed->getID() << std::endl;
+    }
+    if(gs->spreadData())
+      return gs;
+    else
+      return NULL;
   }
 
 }

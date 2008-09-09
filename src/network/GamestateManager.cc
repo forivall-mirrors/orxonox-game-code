@@ -128,29 +128,25 @@ namespace network
   packet::Gamestate *GamestateManager::popGameState(int clientID) {
     //why are we searching the same client's gamestate id as we searched in
     //Server::sendGameState?
+    packet::Gamestate *gs;
     int gID = ClientInformation::findClient(clientID)->getGamestateID();
-    COUT(4) << "G.St.Man: popgamestate: sending gstate_id: " << id_ << " diffed from: " << gID << std::endl;
-//     COUT(3) << "gamestatemap: " << &gameStateMap << std::endl;
+    //COUT(4) << "G.St.Man: popgamestate: sending gstate_id: " << id_ << " diffed from: " << gID << std::endl;
     //chose wheather the next gamestate is the first or not
     if(gID != GAMESTATEID_INITIAL){
-      // TODO something with the gamestatemap is wrong
       packet::Gamestate *client=NULL;
       std::map<int, packet::Gamestate*>::iterator it = gamestateMap.find(gID);
       if(it!=gamestateMap.end())
         client = it->second;
-      packet::Gamestate *gs;
       if(client)
         gs = reference->diff(client);
       else
         gs = new packet::Gamestate(*reference);
-      gs->compressData();
-      return gs;
     } else {
       COUT(4) << "we got a GAMESTATEID_INITIAL for clientID: " << clientID << std::endl;
-//       ackGameState(clientID, reference->id);
-      return new packet::Gamestate(*reference);
-      // return an undiffed gamestate and set appropriate flags
+      gs = new packet::Gamestate(*reference);
     }
+    assert(gs->compressData());
+    return gs;
   }
   
   
@@ -193,11 +189,11 @@ namespace network
       return;
     if(client->getGamestateID()>=0)
       gamestateUsed[client->getGamestateID()]--;
-    ClientInformation::removeClient(client->getID());
   }
   
   bool GamestateManager::processGamestate(packet::Gamestate *gs){
-    assert(gs->decompressData());
+    if(gs->isCompressed())
+       assert(gs->decompressData());
     assert(!gs->isDiffed());
     return gs->spreadData();
   }

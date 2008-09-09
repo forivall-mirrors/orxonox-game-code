@@ -2,6 +2,7 @@ SET(UTIL_SRC_FILES
   ArgReader.cc
   Clipboard.cc
   Error.cc
+  CRC32.cc
   ExprParser.cc
   Math.cc
   MultiType.cc
