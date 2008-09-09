@@ -27,33 +27,47 @@
  */
 
 /**
- @file  Sleep.h
- @brief Macros for using sleep() and usleep() under windows
+ @file
+ @brief
+    Functions for using sleep() and usleep() under windows.
  */
 
-#include "UtilPrereqs.h"
+#ifndef _Sleep_H__
+#define _Sleep_H__
+
+#include "OrxonoxPlatform.h"
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
-#  ifndef WIN32_LEAN_AND_MEAN
-#    define WIN32_LEAN_AND_MEAN
-#  endif
-#  include <windows.h>
+
+#ifndef WIN32_LEAN_AND_MEAN
+# define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+
 inline void usleep(DWORD dwMicroseconds)
 {
   Sleep(dwMicroseconds / 1000);
 }
+
 inline void msleep(DWORD dwMilliseconds)
 {
   Sleep(dwMilliseconds);
 }
+
 inline void sleep(DWORD dwSeconds)
 {
   Sleep(dwSeconds * 1000);
 }
-#else
-#  include <unistd.h>
+
+#else /* Linux/Apple */
+
+#include <unistd.h>
+
 inline void msleep(unsigned long msec)
 {
   usleep(msec * 1000);
 }
+
 #endif
+
+#endif /* _Sleep_H__ */

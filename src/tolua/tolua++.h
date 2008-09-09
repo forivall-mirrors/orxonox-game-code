@@ -16,9 +16,34 @@
 #ifndef TOLUA_H
 #define TOLUA_H
 
+/* original code */
+/*
 #ifndef TOLUA_API
 #define TOLUA_API extern
 #endif
+*/
+
+/********************************
+******* ORXONOX CHANGES *********
+********************************/
+
+#if (defined( __WIN32__ ) || defined( _WIN32 )) && !defined( TOLUA_STATIC_BUILD )
+#  ifdef TOLUA_SHARED_BUILD
+#    define TOLUA_API __declspec(dllexport)
+#  else
+#    if defined( __MINGW32__ )
+#      define TOLUA_API
+#    else
+#      define TOLUA_API __declspec(dllimport)
+#    endif
+#  endif
+#else
+#  define TOLUA_API extern
+#endif
+
+/********************************
+****** END ORXONOX CHANGES ******
+********************************/
 
 #define TOLUA_VERSION "tolua++-1.0.92"
 

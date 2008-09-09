@@ -35,6 +35,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/CommandExecutor.h"
+#include "core/Clock.h"
 
 namespace orxonox
 {
@@ -124,12 +125,12 @@ namespace orxonox
     /**
         @brief Updates the timer before the frames are rendered.
     */
-    void TimerBase::tick(float dt)
+    void TimerBase::tick(const Clock& time)
     {
         if (this->bActive_)
         {
             // If active: Decrease the timer by the duration of the last frame
-            this->time_ -= dt;
+            this->time_ -= time.getDeltaTimeMicroseconds();
 
             if (this->time_ <= 0)
             {

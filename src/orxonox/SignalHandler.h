@@ -28,7 +28,7 @@
 
 /**
     @file SignalHandler.h
-    @brief Definition of the SignalHandler class.
+    @brief Declaration of the SignalHandler class.
 */
 
 #ifndef _SignalHandler_H__

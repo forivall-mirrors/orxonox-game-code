@@ -27,9 +27,10 @@
  */
 
 /**
- @file
- @brief Different definitions of input processing.
- */
+@file
+@brief
+    Different definitions of input processing.
+*/
 
 #ifndef _InputCommands_H__
 #define _InputCommands_H__
@@ -39,43 +40,43 @@
 
 namespace orxonox
 {
-  class _CoreExport BufferedParamCommand
-  {
-  public:
-    BufferedParamCommand() : value_(0.0f), nValuesAdded_(0), paramIndex_(-1) { }
-    bool execute();
+    class _CoreExport BufferedParamCommand
+    {
+    public:
+        BufferedParamCommand() : value_(0.0f), nValuesAdded_(0), paramIndex_(-1) { }
+        bool execute();
 
-    float value_;
-    unsigned int nValuesAdded_;
-    int paramIndex_;
-    CommandEvaluation evaluation_;
-  };
+        float value_;
+        unsigned int nValuesAdded_;
+        int paramIndex_;
+        CommandEvaluation evaluation_;
+    };
 
-  class _CoreExport BaseCommand
-  {
-  public:
-    virtual ~BaseCommand() { }
-    virtual bool execute(float abs = 1.0f, float rel = 1.0f) = 0;
-  };
+    class _CoreExport BaseCommand
+    {
+    public:
+        virtual ~BaseCommand() { }
+        virtual bool execute(float abs = 1.0f, float rel = 1.0f) = 0;
+    };
 
-  class _CoreExport SimpleCommand : public BaseCommand
-  {
-  public:
-    bool execute(float abs = 1.0f, float rel = 1.0f);
+    class _CoreExport SimpleCommand : public BaseCommand
+    {
+    public:
+        bool execute(float abs = 1.0f, float rel = 1.0f);
 
-    CommandEvaluation evaluation_;
-  };
+        CommandEvaluation evaluation_;
+    };
 
-  class _CoreExport ParamCommand : public BaseCommand
-  {
-  public:
-    ParamCommand() : bRelative_(false), paramModifier_(1.0f), paramCommand_(0) { }
-    bool execute(float abs = 1.0f, float rel = 1.0f);
+    class _CoreExport ParamCommand : public BaseCommand
+    {
+    public:
+        ParamCommand() : bRelative_(false), paramModifier_(1.0f), paramCommand_(0) { }
+        bool execute(float abs = 1.0f, float rel = 1.0f);
 
-    bool bRelative_;
-    float paramModifier_;
-    BufferedParamCommand* paramCommand_;
-  };
+        bool bRelative_;
+        float paramModifier_;
+        BufferedParamCommand* paramCommand_;
+    };
 }
 
 #endif /* _InputCommands_H__ */

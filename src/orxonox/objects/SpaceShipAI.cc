@@ -38,6 +38,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/XMLPort.h"
 #include "tools/ParticleInterface.h"
+#include "Settings.h"
 
 #define ACTION_INTERVAL 1.0f
 
@@ -101,9 +102,12 @@ namespace orxonox
             Element xmlelement;
             newenemy->XMLPort(xmlelement, XMLPort::LoadObject);
 
-            ParticleSpawner* spawneffect = new ParticleSpawner("Orxonox/fairytwirl", LODParticle::normal, 2.0, 0, 0, newenemy->getOrth());
-            spawneffect->setPosition(newenemy->getPosition() - newenemy->getOrth() * 50);
-            spawneffect->create();
+            if (Settings::showsGraphics())
+            {
+                ParticleSpawner* spawneffect = new ParticleSpawner("Orxonox/fairytwirl", LODParticle::normal, 2.0, 0, 0, newenemy->getOrth());
+                spawneffect->setPosition(newenemy->getPosition() - newenemy->getOrth() * 50);
+                spawneffect->create();
+            }
         }
     }
 
@@ -181,35 +185,38 @@ namespace orxonox
 
     void SpaceShipAI::kill()
     {
-        ParticleSpawner* explosion = new ParticleSpawner("Orxonox/BigExplosion1part1", LODParticle::low, 3.0);
-        explosion->setPosition(this->getPosition());
-        explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
-        explosion->setScale(4);
-        explosion->create();
+        if (Settings::showsGraphics())
+        {
+            ParticleSpawner* explosion = new ParticleSpawner("Orxonox/BigExplosion1part1", LODParticle::low, 3.0);
+            explosion->setPosition(this->getPosition());
+            explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
+            explosion->setScale(4);
+            explosion->create();
 
-        explosion = new ParticleSpawner("Orxonox/BigExplosion1part2", LODParticle::normal, 3.0);
-        explosion->setPosition(this->getPosition());
-        explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
-        explosion->setScale(4);
-        explosion->create();
-        explosion = new ParticleSpawner("Orxonox/BigExplosion1part2", LODParticle::high, 3.0);
-        explosion->setPosition(this->getPosition());
-        explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
-        explosion->setScale(4);
-        explosion->create();
+            explosion = new ParticleSpawner("Orxonox/BigExplosion1part2", LODParticle::normal, 3.0);
+            explosion->setPosition(this->getPosition());
+            explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
+            explosion->setScale(4);
+            explosion->create();
+            explosion = new ParticleSpawner("Orxonox/BigExplosion1part2", LODParticle::high, 3.0);
+            explosion->setPosition(this->getPosition());
+            explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
+            explosion->setScale(4);
+            explosion->create();
 
-        Vector3 ringdirection = Vector3(rnd(), rnd(), rnd());
-        ringdirection.normalise();
-        explosion = new ParticleSpawner("Orxonox/BigExplosion1part3", LODParticle::normal, 3.0, 0.5, 0, ringdirection);
-        explosion->setPosition(this->getPosition());
-        explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
-        explosion->setScale(4);
-        explosion->create();
-        explosion = new ParticleSpawner("Orxonox/BigExplosion1part3", LODParticle::high, 3.0, 0.5, 0, ringdirection);
-        explosion->setPosition(this->getPosition());
-        explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
-        explosion->setScale(4);
-        explosion->create();
+            Vector3 ringdirection = Vector3(rnd(), rnd(), rnd());
+            ringdirection.normalise();
+            explosion = new ParticleSpawner("Orxonox/BigExplosion1part3", LODParticle::normal, 3.0, 0.5, 0, ringdirection);
+            explosion->setPosition(this->getPosition());
+            explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
+            explosion->setScale(4);
+            explosion->create();
+            explosion = new ParticleSpawner("Orxonox/BigExplosion1part3", LODParticle::high, 3.0, 0.5, 0, ringdirection);
+            explosion->setPosition(this->getPosition());
+            explosion->getParticleInterface()->setKeepParticlesInLocalSpace(true);
+            explosion->setScale(4);
+            explosion->create();
+        }
 
         delete this;
     }

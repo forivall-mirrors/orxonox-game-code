@@ -21,8 +21,9 @@
  *
  *   Author:
  *      Reto Grieder
+ *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
  *   Co-authors:
- *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007, Felix Schulthess
+ *      Felix Schulthess
  *
  */
 
@@ -40,81 +41,63 @@
 #include <string>
 
 #include <OgrePrerequisites.h>
-#include <OgreLog.h>
-#include <OgreRenderWindow.h>
-#include <OgreWindowEventUtilities.h>
 #include "core/OrxonoxClass.h"
-
 
 namespace orxonox
 {
     /**
     @brief Graphics engine manager class
     */
-    class _OrxonoxExport GraphicsEngine : public Ogre::WindowEventListener, public Ogre::LogListener, public OrxonoxClass
+    class _OrxonoxExport GraphicsEngine : public OrxonoxClass
     {
-        public:
-            void setConfigValues();
-            void detailLevelParticleChanged();
-            bool setup();
-            bool declareRessourceLocations();
-            bool loadRenderer();
-            bool initialiseResources();
-            bool createNewScene();
+        // HACK: temporary means
+        friend class GSGraphics;
 
-            void destroy();
+    public:
+        GraphicsEngine();
+        ~GraphicsEngine();
 
-            Ogre::SceneManager* getSceneManager() { return scene_; }
+        void setConfigValues();
+        void detailLevelParticleChanged();
 
-            // several window properties
-            Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
-            size_t getWindowHandle();
-            int getWindowWidth() const;
-            int getWindowHeight() const;
-            float getWindowAspectRatio() const;
-            float getAverageFramesPerSecond() const { return this->avgFramesPerSecond_; }
-            float getAverageTickTime() const { return this->avgTickTime_; }
-            void setAverageTickTime(float tickTime) { this->avgTickTime_ = tickTime; }
-            void setAverageFramesPerSecond(float fps) { this->avgFramesPerSecond_ = fps; }
+        void setLevelSceneManager(Ogre::SceneManager* sceneMgr) { this->levelSceneManager_ = sceneMgr; }
+        Ogre::SceneManager* getLevelSceneManager() { return levelSceneManager_; }
 
-            void setWindowActivity(bool activity)
-            { if (this->renderWindow_) this->renderWindow_->setActive(activity); }
+        Ogre::Viewport* getViewport() { return this->viewport_; }
+        Ogre::Root*     getOgreRoot() { return this->root_; }
 
-            void windowMoved       (Ogre::RenderWindow* rw);
-            void windowResized     (Ogre::RenderWindow* rw);
-            void windowFocusChanged(Ogre::RenderWindow* rw);
-            void windowClosed      (Ogre::RenderWindow* rw);
+        // several window properties
+        int getWindowWidth() const;
+        int getWindowHeight() const;
+        float getWindowAspectRatio() const;
+        float getAverageFramesPerSecond() const   { return this->avgFramesPerSecond_; }
+        float getAverageTickTime() const          { return this->avgTickTime_; }
+        void setAverageTickTime(float tickTime)   { this->avgTickTime_ = tickTime; }
+        void setAverageFramesPerSecond(float fps) { this->avgFramesPerSecond_ = fps; }
 
-            inline unsigned int getDetailLevelParticle() const
-              { return this->detailLevelParticle_; }
+        inline unsigned int getDetailLevelParticle() const
+        { return this->detailLevelParticle_; }
 
-            static GraphicsEngine& getSingleton();
-            static GraphicsEngine* getSingletonPtr() { return &getSingleton(); }
+        static GraphicsEngine& getInstance();
+        static GraphicsEngine* getInstancePtr() { return singletonRef_s; }
 
+    private:
+        // don't mess with singletons
+        GraphicsEngine(GraphicsEngine&);
 
-        private:
-            // don't mess with singletons
-            GraphicsEngine();
-            ~GraphicsEngine();
-            GraphicsEngine(GraphicsEngine&) { }
+        Ogre::Root*         root_;                  //!< Ogre's root
+        Ogre::RenderWindow* renderWindow_;          //!< the current render window
+        Ogre::SceneManager* levelSceneManager_;     //!< scene manager of the game
+        Ogre::Viewport*     viewport_;              //!< default full size viewport
 
-            //! Method called by the LogListener from Ogre
-            void messageLogged(const std::string&, Ogre::LogMessageLevel,
-                             bool, const std::string&);
+        // stats
+        float               avgTickTime_;           //!< time in ms to tick() one frame
+        float               avgFramesPerSecond_;    //!< number of frames processed in one second
 
-            Ogre::Root*         root_;                  //!< Ogre's root
-            Ogre::SceneManager* scene_;                 //!< scene manager of the game
-            Ogre::RenderWindow* renderWindow_;          //!< the current render window
-            std::string         resourceFile_;          //!< resources file name
-            std::string         ogreConfigFile_;        //!< ogre config file name
-            std::string         ogrePluginsFile_;       //!< ogre plugins file name
-            std::string         ogreLogFile_;           //!< log file name for Ogre log messages
-            int                 ogreLogLevelTrivial_;   //!< Corresponding Orxonx debug level for LL_TRIVIAL
-            int                 ogreLogLevelNormal_;    //!< Corresponding Orxonx debug level for LL_NORMAL
-            int                 ogreLogLevelCritical_;  //!< Corresponding Orxonx debug level for LL_CRITICAL
-            unsigned int        detailLevelParticle_;   //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
-            float               avgTickTime_;           //!< time in ms to tick() one frame
-            float               avgFramesPerSecond_;    //!< number of frames processed in one second
+        // config values
+        unsigned int        detailLevelParticle_;   //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
+
+        static GraphicsEngine* singletonRef_s;      //!< Pointer to the Singleton
     };
 }
 

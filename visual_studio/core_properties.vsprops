@@ -12,6 +12,6 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CSS).lib lua-5.1.3$(CS).lib tcl85t.lib"
+		AdditionalDependencies="OgreMain$(CSS).lib tcl85t.lib lua-5.1.3$(CS).lib"
 	/>
 </VisualStudioPropertySheet>

@@ -30,10 +30,9 @@
 #include "Mesh.h"
 
 #include <sstream>
-
 #include <OgreSceneManager.h>
-
 #include "GraphicsEngine.h"
+#include "Settings.h"
 
 namespace orxonox
 {
@@ -48,12 +47,13 @@ namespace orxonox
     {
         std::ostringstream name;
         name << (Mesh::meshCounter_s++);
-        this->entity_ = GraphicsEngine::getSingleton().getSceneManager()->createEntity("Mesh" + name.str(), file);
+        if (Settings::showsGraphics())
+            this->entity_ = GraphicsEngine::getInstance().getLevelSceneManager()->createEntity("Mesh" + name.str(), file);
     }
 
     Mesh::~Mesh()
     {
-        if (this->entity_)
-            GraphicsEngine::getSingleton().getSceneManager()->destroyEntity(this->entity_);
+        if (this->entity_ && Settings::showsGraphics())
+            GraphicsEngine::getInstance().getLevelSceneManager()->destroyEntity(this->entity_);
     }
 }

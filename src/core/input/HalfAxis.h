@@ -27,9 +27,10 @@
  */
 
 /**
- @file
- @brief Different definitions of input processing.
- */
+@file
+@brief
+    Different definitions of input processing.
+*/
 
 #ifndef _HalfAxis_H__
 #define _HalfAxis_H__
@@ -39,26 +40,32 @@
 
 namespace orxonox
 {
-  class _CoreExport HalfAxis : public Button
-  {
-  public:
-    HalfAxis() : relVal_(0.0f), absVal_(0.0f), paramCommands_(0), nParamCommands_(0),
-                 wasDown_(false), hasChanged_(false) { }
-    using Button::execute;
-    bool execute();
-    bool addParamCommand(ParamCommand* command);
-    void clear();
+    class _CoreExport HalfAxis : public Button
+    {
+    public:
+        HalfAxis()
+            : relVal_(0.0f)
+            , absVal_(0.0f)
+            , paramCommands_(0)
+            , nParamCommands_(0)
+            , wasDown_(false)
+            , hasChanged_(false)
+        { }
+        using Button::execute;
+        bool execute();
+        bool addParamCommand(ParamCommand* command);
+        void clear();
 
-    // axis related
-    float relVal_;
-    float absVal_;
-    ParamCommand** paramCommands_;
-    unsigned int nParamCommands_;
+        // axis related
+        float relVal_;
+        float absVal_;
+        ParamCommand** paramCommands_;
+        unsigned int nParamCommands_;
 
-    // button related
-    bool wasDown_;
-    bool hasChanged_;
-  };
+        // button related
+        bool wasDown_;
+        bool hasChanged_;
+    };
 }
 
 #endif /* _HalfAxis_H__ */

@@ -130,6 +130,8 @@ public:
   inline const std::string& operator[](unsigned int i) const { return this->strings[i]; };
   /** @brief Returns the i'th string from the subset of Strings @param i the i'th String */
   inline const std::string& getString(unsigned int i) const { return (*this)[i]; };
+  /** @brief Returns all Strings as std::vector */
+  inline const std::vector<std::string>& getAllStrings() const { return this->strings; }
   /** @brief Returns true if the token is in safemode. @param i the i'th token */
   inline bool isInSafemode(unsigned int i) const { return this->bInSafemode[i]; }
   /** @brief Returns the front of the StringList. */

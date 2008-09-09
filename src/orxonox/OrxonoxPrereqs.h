@@ -73,7 +73,7 @@ namespace orxonox
     }
 
     class GraphicsEngine;
-    class Orxonox;
+    class Settings;
 
     class RadarViewable;
     class Radar;
@@ -83,7 +83,6 @@ namespace orxonox
     class Ambient;
     class Backlight;
     class Camera;
-    class Fighter;
     class Model;
     class NPC;
     class ParticleSpawner;
@@ -117,6 +116,20 @@ namespace orxonox
     class OrxonoxOverlay;
     class OverlayGroup;
     class OverlayText;
+
+    //gui
+    class GUIManager;
+
+    // game states
+    class GSRoot;
+    class GSGraphics;
+    class GSIO;
+    class GSIOConsole;
+    class GSLevel;
+    class GSStandalone;
+    class GSServer;
+    class GSClient;
+    class GSGUI;
 }
 
 namespace Ogre
@@ -126,5 +139,16 @@ namespace Ogre
     class PanelOverlayElement;
     class TextAreaOverlayElement;
 }
+
+namespace CEGUI
+{
+    class LuaScriptModule;
+
+    class OgreCEGUIRenderer;
+    class OgreCEGUIResourceProvider;
+    class OgreCEGUITexture;
+}
+
+struct lua_State;
 
 #endif /* _OrxonoxPrereqs_H__ */

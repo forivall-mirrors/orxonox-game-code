@@ -1,12 +1,26 @@
 SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   Main.cc
-  Orxonox.cc
   Radar.cc
   RadarListener.cc
   RadarViewable.cc
   Settings.cc
   SignalHandler.cc
+
+  gamestates/GSClient.cc
+  gamestates/GSDedicated.cc
+  gamestates/GSGraphics.cc
+  gamestates/GSGUI.cc
+  gamestates/GSIOConsole.cc
+  gamestates/GSLevel.cc
+  gamestates/GSRoot.cc
+  gamestates/GSServer.cc
+  gamestates/GSStandalone.cc
+
+  gui/GUIManager.cc
+  gui/OgreCEGUIRenderer.cpp
+  gui/OgreCEGUIResourceProvider.cpp
+  gui/OgreCEGUITexture.cpp
 
   overlays/OrxonoxOverlay.cc
   overlays/OverlayGroup.cc
@@ -54,8 +68,8 @@ SET( ORXONOX_SRC_FILES
 GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.cc
-  COMMAND ${TOLUA_EXE} -n orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg
-  DEPENDS tolua
+  COMMAND ${TOLUA_EXE} -n Orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg
+  DEPENDS tolua ${CMAKE_SOURCE_DIR}/src/orxonox/tolua/tolua.pkg
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
 	
@@ -83,6 +97,8 @@ ENDIF(NETWORKTRAFFIC_TESTING_ENABLED)
 TARGET_LINK_LIBRARIES( orxonox
   ${OGRE_LIBRARIES}
   ${Lua_LIBRARIES}
+  ${CEGUI_LIBRARIES}
+  ${CEGUI_SCRIPT_LIBRARIES}
   tinyxml
   tolualib
   ois_orxonox

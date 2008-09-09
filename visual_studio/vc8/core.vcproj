@@ -148,6 +148,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\core\Clock.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\ConfigFileManager.cc"
 				>
 			</File>
@@ -160,11 +164,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Exception.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\GameState.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\Language.cc"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\core\OrxonoxClass.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\RootGameState.cc"
 				>
 			</File>
 			<File
@@ -178,12 +194,23 @@
 					RelativePath="..\..\src\core\tolua\tolua.pkg"
 					>
 					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Generating tolua bind files..."
+							CommandLine="&quot;$(OutDir)\tolua_app_d.exe&quot; -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg&#x0D;&#x0A;"
+							AdditionalDependencies="$(RootDir)\src\core\Script.h; $(RootDir)\src\core\CommandExecutor.h"
+							Outputs="$(RootDir)\src\core\tolua\tolua_bind.cc; $(RootDir)\src\core\tolua\tolua_bind.h"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Generating tolua bind files..."
-							CommandLine="&quot;$(OutDir)\tolua_app.exe&quot; -n core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg"
+							CommandLine="&quot;$(OutDir)\tolua_app.exe&quot; -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg&#x0D;&#x0A;"
 							Outputs="$(RootDir)\src\core\tolua\tolua_bind.cc; $(RootDir)\src\core\tolua\tolua_bind.h"
 						/>
 					</FileConfiguration>
@@ -206,6 +233,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\CommandExecutor.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\CommandLine.cc"
 					>
 				</File>
 				<File
@@ -281,6 +312,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\input\ExtendedInputState.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\input\HalfAxis.cc"
 					>
 				</File>
@@ -302,6 +337,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\input\KeyDetector.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\SimpleInputState.cc"
 					>
 				</File>
 			</Filter>
@@ -332,6 +371,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\..\src\core\Clock.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\ConfigFileManager.h"
 				>
 			</File>
@@ -352,6 +395,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Exception.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\GameState.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\Language.h"
 				>
 			</File>
@@ -360,11 +411,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Script.h"
+				RelativePath="..\..\src\core\RootGameState.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Script_clean.h"
+				RelativePath="..\..\src\core\Script.h"
 				>
 			</File>
 			<File
@@ -380,6 +431,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\input\CalibratorCallback.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\ExtendedInputState.h"
 					>
 				</File>
 				<File
@@ -403,11 +458,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\input\InputState.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\input\KeyBinder.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\core\input\KeyDetector.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\SimpleInputState.h"
 					>
 				</File>
 			</Filter>
@@ -432,6 +495,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\CommandExecutor.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\CommandLine.h"
 					>
 				</File>
 				<File

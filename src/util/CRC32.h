@@ -29,13 +29,15 @@
 #ifndef _Util_CRC_H__
 #define _Util_CRC_H__
 
+#include "UtilPrereqs.h"
 #include <iostream>
+#include "Integers.h"
 
 #define UTIL_CRC32POLY 0x04C11DB7 /* CRC-32 Polynom */
 
-void calcCRCBit(uint32_t &crc32, int bit);
+_UtilExport void calcCRCBit(uint32_t &crc32, int bit);
 
-uint32_t calcCRC(unsigned char *data, unsigned int dataLength);
+_UtilExport uint32_t calcCRC(unsigned char *data, unsigned int dataLength);
 
 
 #endif /* _Util_CRC_H__ */

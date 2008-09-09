@@ -27,9 +27,10 @@
  */
 
 /**
- @file
- @brief Implementation of the different input handlers.
- */
+@file
+@brief
+    Implementation of the different input handlers.
+*/
 
 #include "HalfAxis.h"
 #include "core/CommandEvaluation.h"
@@ -37,41 +38,41 @@
 
 namespace orxonox
 {
-  void HalfAxis::clear()
-  {
-    Button::clear();
-    if (nParamCommands_)
+    void HalfAxis::clear()
     {
-      // delete all commands and the command pointer array
-      for (unsigned int i = 0; i < nParamCommands_; i++)
-        delete paramCommands_[i];
-      delete[] paramCommands_;
-      nParamCommands_ = 0;
+        Button::clear();
+        if (nParamCommands_)
+        {
+            // delete all commands and the command pointer array
+            for (unsigned int i = 0; i < nParamCommands_; i++)
+                delete paramCommands_[i];
+            delete[] paramCommands_;
+            nParamCommands_ = 0;
+        }
+        else
+        {
+            nParamCommands_ = 0; nParamCommands_ = 0;
+        }
     }
-    else
+
+    bool HalfAxis::addParamCommand(ParamCommand* command)
     {
-      nParamCommands_ = 0; nParamCommands_ = 0;
+        ParamCommand** cmds = paramCommands_;
+        paramCommands_ = new ParamCommand*[++nParamCommands_];
+        unsigned int i;
+        for (i = 0; i < nParamCommands_ - 1; i++)
+            paramCommands_[i] = cmds[i];
+        paramCommands_[i] = command;
+        if (nParamCommands_ > 1)
+            delete[] cmds;
+        return true;
     }
-  }
 
-  bool HalfAxis::addParamCommand(ParamCommand* command)
-  {
-    ParamCommand** cmds = paramCommands_;
-    paramCommands_ = new ParamCommand*[++nParamCommands_];
-    unsigned int i;
-    for (i = 0; i < nParamCommands_ - 1; i++)
-      paramCommands_[i] = cmds[i];
-    paramCommands_[i] = command;
-    if (nParamCommands_ > 1)
-      delete[] cmds;
-    return true;
-  }
-
-  bool HalfAxis::execute()
-  {
-    bool success = true;
-    for (unsigned int i = 0; i < nParamCommands_; i++)
-      success = success && paramCommands_[i]->execute(absVal_, relVal_);
-    return success;
-  }
+    bool HalfAxis::execute()
+    {
+        bool success = true;
+        for (unsigned int i = 0; i < nParamCommands_; i++)
+            success = success && paramCommands_[i]->execute(absVal_, relVal_);
+        return success;
+    }
 }

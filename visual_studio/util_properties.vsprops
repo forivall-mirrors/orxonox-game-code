@@ -7,6 +7,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
+		AdditionalOptions="/MP2"
 		PreprocessorDefinitions="UTIL_SHARED_BUILD"
 	/>
 	<Tool

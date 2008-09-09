@@ -44,9 +44,10 @@
 
 #include <string>
 #include <enet/enet.h>
-#include <boost/thread/thread.hpp>
-
+#include <boost/thread/recursive_mutex.hpp>
 #include "PacketBuffer.h"
+
+namespace boost { class thread; }
 
 namespace network
 {

@@ -64,11 +64,15 @@ namespace orxonox
 
     void Loader::add(const Level* level, const ClassTreeMask& mask)
     {
+        if (!level)
+            return;
         Loader::levels_s.insert(Loader::levels_s.end(), std::pair<const Level*, ClassTreeMask>(level, mask));
     }
 
     void Loader::remove(const Level* level)
     {
+        if (!level)
+            return;
         for (std::vector<std::pair<const Level*, ClassTreeMask> >::iterator it = Loader::levels_s.begin(); it != Loader::levels_s.end(); ++it)
         {
             if ((*it).first == level)
@@ -108,6 +112,9 @@ namespace orxonox
 
     bool Loader::load(const Level* level, const ClassTreeMask& mask)
     {
+        if (!level)
+            return false;
+
         Loader::currentMask_s = level->getMask() * mask;
 
         // let Lua work this out:
@@ -165,6 +172,8 @@ namespace orxonox
 
     void Loader::unload(const Level* level, const ClassTreeMask& mask)
     {
+        if (!level)
+            return;
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it; )
         {
             if ((it->getLevel() == level) && mask.isIncluded(it->getIdentifier()))

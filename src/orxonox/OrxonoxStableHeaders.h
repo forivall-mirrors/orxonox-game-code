@@ -27,8 +27,8 @@
  */
 
 /**
- @file  OrxonoxStableHeaders.h
- @brief Contains the bigger (or smaller) header files in order to precompile them with MSVC
+ @file
+ @brief Contains the frequently used header files of our own writing
  */
 
 #ifndef _OrxonoxStableHeaders_H__
@@ -36,7 +36,7 @@
 
 #include "util/OrxonoxPlatform.h"
 
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH)
 
 // including std headers here is useless since they're already precompiled
 
@@ -44,51 +44,21 @@
 // prevent Ogre from including winsock.h that messes with winsock2.h from enet
 #  define WIN32_LEAN_AND_MEAN
 #endif
-// not including the entire Ogre.h doesn't exceed the default heap size for pch
-//#include <Ogre.h>
-#include <OgreBillboardSet.h>
-#include <OgreCamera.h>
-#include <OgreColourValue.h>
-#include <OgreConfigFile.h>
-#include <OgreEntity.h>
-#include <OgreException.h>
-#include <OgreFrameListener.h>
-#include <OgreLight.h>
-#include <OgreLog.h>
-#include <OgreLogManager.h>
-#include <OgreMath.h>
-#include <OgreMatrix3.h>
-#include <OgreMatrix4.h>
-#include <OgreMesh.h>
-#include <OgreOverlay.h>
-#include <OgreOverlayElement.h>
-#include <OgreOverlayManager.h>
-#include <OgreParticleEmitter.h>
-#include <OgreParticleSystem.h>
-#include <OgreQuaternion.h>
-#include <OgreResourceGroupManager.h>
-#include <OgreRenderWindow.h>
-#include <OgreRoot.h>
-#include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
-#include <OgreString.h>
-#include <OgreStringConverter.h>
-#include <OgreTextureManager.h>
-#include <OgreTimer.h>
-#include <OgreVector2.h>
-#include <OgreVector3.h>
-#include <OgreVector3.h>
-#include <OgreViewport.h>
-#include <OgreWindowEventUtilities.h>
+#include <Ogre.h>
+#include <CEGUI.h>
+#include <boost/thread/recursive_mutex.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/condition.hpp>
+#include <boost/thread/thread.hpp>
 
-//-----------------------------------------------------------------------
-// ORXONOX HEADERS
-//-----------------------------------------------------------------------
-
-#include "ois/OIS.h"
-#include "cpptcl/CppTcl.h"
 #include "tinyxml/ticpp.h"
 #include "tinyxml/tinyxml.h"
+
+
+//----------- Our files ----------
+//--------------------------------
+// only include when not debugging so that we may find issues with missing headers quicker
+#if defined(NDEBUG)
 
 #include "util/Convert.h"
 #include "util/Debug.h"
@@ -105,6 +75,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/CommandExecutor.h"
 #include "core/Executor.h"
 #include "core/XMLPort.h"
 
@@ -116,6 +87,8 @@
 //#include "objects/Tickable.h"
 //#include "objects/WorldEntity.h"
 
-#endif /* Compiler MSVC */
+#endif /* ifdef NDEBUG */
+
+#endif /* ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH) */
 
 #endif /* _OrxonoxStableHeaders_H__ */

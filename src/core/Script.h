@@ -27,7 +27,7 @@
  */
 
 /**
- @file  script.h
+ @file
  @brief Representation of an interface to lua
  @author Benjamin Knecht <beni_at_orxonox.net>
  */
@@ -46,9 +46,11 @@ extern "C" {
 
 namespace orxonox // tolua_export
 { // tolua_export
-
-  class _CoreExport Script // tolua_export
-  { // tolua_export
+  class _CoreExport Script
+  /*
+  class Script { // tolua_export
+  */
+  {
     struct LoadS {
       const char *s;
       size_t size;
