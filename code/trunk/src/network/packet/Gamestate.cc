@@ -29,6 +29,7 @@
 #include "Gamestate.h"
 #include "network/ClientInformation.h"
 #include "network/GamestateHandler.h"
+#include "core/CoreIncludes.h"
 #include "core/Iterator.h"
 
 #include <zlib.h>
@@ -266,7 +267,7 @@ bool Gamestate::decompressData()
 #ifndef NDEBUG
   assert(HEADER->crc32==calcCRC(ndata+sizeof(GamestateHeader), HEADER->normsize));
 #endif
-  
+
   //copy over the header
   *GAMESTATE_HEADER(ndata) = *HEADER;
   //delete old (compressed data)
@@ -385,7 +386,7 @@ unsigned int Gamestate::calcGamestateSize(unsigned int id, int mode)
   bool Gamestate::isCompressed(){
     return HEADER->compressed;
   }
-  
+
   int Gamestate::getBaseID(){
     return HEADER->base_id;
   }

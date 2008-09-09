@@ -31,7 +31,6 @@
 #ifndef NDEBUG
 #include "util/CRC32.h"
 #endif
-#include "core/CoreIncludes.h"
 
 #ifndef NETWORK_PACKETGAMESTATE_H
 #define NETWORK_PACKETGAMESTATE_H
@@ -82,7 +81,7 @@ class Gamestate: public Packet{
     bool operator ==(packet::Gamestate gs);
   private:
     unsigned int calcGamestateSize(unsigned int id, int mode=0x0);
-    void removeObject(orxonox::ObjectList<Synchronisable>::iterator &it);
+    void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
 
 
     //Bytestream *bs_;

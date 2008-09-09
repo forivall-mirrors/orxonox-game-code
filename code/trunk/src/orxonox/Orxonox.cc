@@ -53,6 +53,7 @@
 
 // core
 #include "core/ConfigFileManager.h"
+#include "core/CoreIncludes.h"
 #include "core/Iterator.h"
 #include "core/ConsoleCommand.h"
 #include "core/Loader.h"
@@ -184,7 +185,7 @@ namespace orxonox
     for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it; ++it)
         it->setSpeedFactor(it->getSpeedFactor() * change);
 
-    for (Iterator<Backlight> it = ObjectList<Backlight>::begin(); it; ++it)
+    for (ObjectList<Backlight>::iterator it = ObjectList<Backlight>::begin(); it; ++it)
         it->setTimeFactor(Orxonox::getSingleton()->getTimeFactor());
   }
 
