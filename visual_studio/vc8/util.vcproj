@@ -152,10 +152,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\Bytestream.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\util\Clipboard.cc"
 				>
 			</File>
@@ -199,10 +195,6 @@
 			>
 			<File
 				RelativePath="..\..\src\util\ArgReader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\Bytestream.h"
 				>
 			</File>
 			<File
