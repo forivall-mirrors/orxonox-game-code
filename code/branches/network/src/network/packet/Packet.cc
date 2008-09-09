@@ -91,8 +91,10 @@ Packet::Packet(const Packet &p){
 }
 
 Packet::~Packet(){
-  if(enetPacket_)
+  if(enetPacket_){
+    assert(enetPacket_->freeCallback==0);
     enet_packet_destroy(enetPacket_);
+  }
   if(data_)
     delete[] data_;
 }
@@ -108,8 +110,8 @@ bool Packet::send(){
       return false;
     }
     enetPacket_ = enet_packet_create(getData(), getSize(), getFlags());
-    //enetPacket_->freeCallback = &Packet::deletePacket;
-    enetPacket_->freeCallback = &blub;
+    enetPacket_->freeCallback = &Packet::deletePacket;
+//     enetPacket_->freeCallback = &blub;
     packetMap_[enetPacket_] = this;
   }
 #ifndef NDEBUG 
@@ -126,8 +128,9 @@ bool Packet::send(){
       break;
   }
 #endif
-  network::Host::addPacket( enetPacket_, clientID_);
+  ENetPacket *temp = enetPacket_;
   enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
+  network::Host::addPacket( temp, clientID_);
   return true;
 }
 
@@ -168,6 +171,7 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
 
 void Packet::deletePacket(ENetPacket *packet){
   assert(packetMap_[packet]);
+  assert(packetMap_[packet]->enetPacket_==0);
   delete packetMap_[packet];
 }
 
