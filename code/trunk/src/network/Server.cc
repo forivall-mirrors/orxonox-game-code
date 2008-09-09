@@ -53,6 +53,7 @@
 #include "packet/Chat.h"
 #include "packet/Packet.h"
 #include "packet/Welcome.h"
+#include <util/Convert.h>
 
 namespace network
 {
@@ -67,12 +68,14 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager();
     gamestates_ = new GamestateManager();
+    isServer_ = true;
   }
 
   Server::Server(int port){
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port);
     gamestates_ = new GamestateManager();
+    isServer_ = true;
   }
 
   /**
@@ -84,6 +87,7 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port, bindAddress);
     gamestates_ = new GamestateManager();
+    isServer_ = true;
   }
 
   /**
@@ -95,6 +99,7 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port, bindAddress);
     gamestates_ = new GamestateManager();
+    isServer_ = true;
   }
 
   /**
@@ -259,7 +264,6 @@ namespace network
       }
       //std::cout << "adding gamestate" << std::endl;
       gs->setClientID(cid);
-      assert(gs->compressData());
       if ( !gs->send() ){
         COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl;
         temp->addFailure();
@@ -293,8 +297,7 @@ namespace network
       COUT(2) << "Server: could not add client" << std::endl;
       return false;
     }
-    if(temp->prev()->getBegin()) { //not good if you use anything else than insertBack
-      temp->prev()->setID(0); //bugfix: not necessary but usefull
+    if(temp==ClientInformation::getBegin()) { //not good if you use anything else than insertBack
       temp->setID(1);
     }
     else
@@ -323,6 +326,11 @@ namespace network
     packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
     w->setClientID(temp->getID());
     assert(w->send());
+    packet::Gamestate *g = new packet::Gamestate();
+    g->setClientID(temp->getID());
+    assert(g->collectData(0));
+    assert(g->compressData());
+    assert(g->send());
     return true;
   }
 
@@ -348,9 +356,8 @@ namespace network
     no->setRotAcc(3.0);
     no->setTransDamp(75);
     no->setRotDamp(1.0);
-    no->setCamera("cam_"+client->getID());
+    no->setCamera(std::string("cam_") + convertToString(client->getID()));
     no->create();
-    no->setBacksync(true);
 
     return true;
   }
@@ -364,6 +371,7 @@ namespace network
     ClientInformation *client = ClientInformation::findClient(&event->peer->address);
     if(!client)
       return false;
+    gamestates_->removeClient(client);
     while(it){
       if(it->objectID!=client->getShipID()){
         ++it;

@@ -65,8 +65,8 @@ namespace network
     packet::Gamestate *getGamestate();
     void cleanup();
   private:
-    bool processGamestate(packet::Gamestate *gs);
-    void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
+    packet::Gamestate *processGamestate(packet::Gamestate *gs);
+    void removeObject(orxonox::ObjectList<Synchronisable>::iterator &it);
     void printGamestateMap();
     bool saveShipCache();
     bool loadShipCache();

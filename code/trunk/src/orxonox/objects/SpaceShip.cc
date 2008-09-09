@@ -77,7 +77,7 @@ namespace orxonox
         if( (it)->myShip_ )
           return *it;
       }
-      return 0;
+      assert(0);
     }
 
     SpaceShip::SpaceShip()
@@ -164,8 +164,11 @@ namespace orxonox
       if(!myShip_){
         if(network::Host::running())
           COUT(3) << "this id: " << this->objectID << " myShipID: " << network::Host::getShipID() << std::endl;
-        if(network::Host::running() && objectID == network::Host::getShipID())
+        if(network::Host::running() && objectID == network::Host::getShipID()){
+          if(!network::Host::isServer())
+ 	    setObjectMode(0x3);
           myShip_=true;
+        }
         else
           this->setRadarObjectColour(this->getProjectileColour());
       }
@@ -241,18 +244,20 @@ namespace orxonox
         // END CREATING BLINKING LIGHTS
 
         // START CREATING ADDITIONAL EFFECTS
-        this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
-        this->attachObject(this->backlight_);
-        this->backlight_->setPosition(-2.35, 0, 0.2);
-        this->backlight_->setColour(this->getProjectileColour());
-
-        this->smoke_ = new ParticleSpawner();
-        this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
-        this->attachObject(this->smoke_);
-
-        this->fire_ = new ParticleSpawner();
-        this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
-        this->attachObject(this->fire_);
+        /*if(!network::Host::running() || network::Host::isServer()){
+          this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
+          this->attachObject(this->backlight_);
+          this->backlight_->setPosition(-2.35, 0, 0.2);
+          this->backlight_->setColour(this->getProjectileColour());
+    
+          this->smoke_ = new ParticleSpawner();
+          this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
+          this->attachObject(this->smoke_);
+    
+          this->fire_ = new ParticleSpawner();
+          this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
+          this->attachObject(this->fire_);
+        }*/
         // END CREATING ADDITIONAL EFFECTS
 
         if (this->isExactlyA(Class(SpaceShip)))
@@ -356,7 +361,6 @@ namespace orxonox
       //if(!network::Host::running() || network::Host::getShipID()==objectID){ //TODO: check this
       if(myShip_){
         COUT(3) << "requesting focus for camera" << std::endl;
-        this->setBacksync(true);
         //CameraHandler::getInstance()->requestFocus(cam_);
         if(this->isExactlyA(Class(SpaceShip))){
           getFocus();
@@ -462,7 +466,7 @@ namespace orxonox
               COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
             }
 
-            projectile->setBacksync(true);
+            projectile->setObjectMode(0x3);
             this->timeToReload_ = this->reloadTime_;
         }
 

@@ -33,6 +33,7 @@
 
 #include <list>
 #include "core/OrxonoxClass.h"
+#include "util/XMLIncludes.h"
 #include "NetworkCallback.h"
 
 namespace network
@@ -42,11 +43,10 @@ namespace network
     STRING,
   };
 
-  struct syncData{
-    unsigned int length;
+  struct synchronisableHeader{
+    unsigned int size;
     unsigned int objectID;
     unsigned int classID;
-    unsigned char *data;
   };
 
   typedef struct synchronisableVariable{
@@ -66,23 +66,19 @@ namespace network
   */
   class _NetworkExport Synchronisable : virtual public orxonox::OrxonoxClass{
   public:
-
+    
     virtual ~Synchronisable();
     unsigned int objectID;
     unsigned int classID;
 
     void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
-    //  syncData getData();
-    syncData getData(unsigned char *mem, int mode=0x0);
-    bool getData2(unsigned char*& men, int mode=0x0);
-    //bool getData(Bytestream& bs, int mode=0x0);
-    int getSize(int mode=0x0);
-    int getSize2(int mode=0x0);
-    bool updateData(syncData vars, int mode=0x0);
+    bool getData(unsigned char*& men, unsigned int id, int mode=0x0);
+    int getSize2(unsigned int id, int mode=0x0);
     bool updateData(unsigned char*& mem, int mode=0x0);
     bool isMyData(unsigned char* mem);
-    void setBacksync(bool sync);
-    bool getBacksync();
+    void setObjectMode(int mode);
+    void setObjectFrequency(unsigned int freq){ objectFrequency_ = freq; }
+    
     virtual void registerAllVariables()=0;
     virtual bool create();
     static void setClient(bool b);
@@ -91,12 +87,14 @@ namespace network
   protected:
     Synchronisable();
   private:
-    /*  bool removeObject(ObjectList<Synchronisable>::iterator it);*/
-
+    int getSize(unsigned int id, int mode=0x0);
+    bool isMyTick(unsigned int id);
     std::list<synchronisableVariable *> *syncList;
     int datasize;
     static int state_; // detemines wheter we are server (default) or client
     bool backsync_; // if true the variables with mode > 1 will be synchronised to server (client -> server)
+    unsigned int objectFrequency_;
+    int objectMode_;
   };
 }
 

@@ -62,6 +62,8 @@ namespace network
     RegisterRootObject(Synchronisable);
     static int idCounter=0;
     datasize=0;
+    objectFrequency_=1;
+    objectMode_=0x1; // by default do not send data to servere
     objectID=idCounter++;
     syncList = new std::list<synchronisableVariable *>;
     //registerAllVariables();
@@ -80,6 +82,7 @@ namespace network
     return true;
   }
 
+  
   void Synchronisable::setClient(bool b){
     if(b) // client
       state_=0x2;
@@ -94,9 +97,13 @@ namespace network
     objectID = *(unsigned int*)(mem+sizeof(unsigned int));
     classID = *(unsigned int*)(mem+2*sizeof(unsigned int));
     
+    if(size==3*sizeof(unsigned int)) //not our turn, dont do anything
+      return true;
+    
     orxonox::Identifier* id = ID(classID);
     if(!id){
       COUT(3) << "We could not identify a new object; classid: " << classID << " uint: " << (unsigned int)classID << " objectID: " << objectID << " size: " << size << std::endl;
+      assert(0);
       return false; // most probably the gamestate is corrupted
     }
     orxonox::BaseObject *bo = id->fabricate();
@@ -139,79 +146,28 @@ namespace network
     COUT(5) << "Syncronisable::objectID: " << objectID << " this: " << this << " name: " << this->getIdentifier()->getName() << " networkID: " << this->getIdentifier()->getNetworkID() << std::endl;
     syncList->push_back(temp);
   }
-
-
-  /**
-  * This function takes all SynchronisableVariables out of the Synchronisable and saves it into a syncData struct
-  * Difference to the above function:
-  * takes a pointer to already allocated memory (must have at least getSize bytes length)
-  * structure of the bitstream:
-  * (var1_size,var1,var2_size,var2,...)
-  * varx_size: size = sizeof(int)
-  * varx: size = varx_size
-  * @return data containing all variables and their sizes
-  */
-  syncData Synchronisable::getData(unsigned char *mem, int mode){
-    //std::cout << "inside getData" << std::endl;
-    if(mode==0x0)
-      mode=state_;
-    if(classID==0)
-      COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
-    this->classID=this->getIdentifier()->getNetworkID();
-    std::list<synchronisableVariable *>::iterator i;
-    syncData retVal;
-    retVal.objectID=this->objectID;
-    retVal.classID=this->classID;
-    retVal.length=getSize();
-    COUT(5) << "Synchronisable getting data from objectID: " << retVal.objectID << " classID: " << retVal.classID << " length: " << retVal.length << std::endl;
-    retVal.data=mem;
-    // copy to location
-    int n=0; //offset
-    for(i=syncList->begin(); n<datasize && i!=syncList->end(); ++i){
-      //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
-      if( ((*i)->mode & mode) == 0 ){
-        COUT(5) << "not getting data: " << std::endl;
-        continue;  // this variable should only be received
-      }
-      switch((*i)->type){
-      case DATA:
-        memcpy( (void *)(retVal.data+n), (void*)((*i)->var), (*i)->size);
-        n+=(*i)->size;
-        break;
-      case STRING:
-        memcpy( (void *)(retVal.data+n), (void *)&((*i)->size), sizeof(int) );
-        n+=sizeof(int);
-        const char *data = ( ( *(std::string *) (*i)->var).c_str());
-        memcpy( retVal.data+n, (void*)data, (*i)->size);
-        COUT(5) << "synchronisable: char: " << (const char *)(retVal.data+n) << " data: " << data << " string: " << *(std::string *)((*i)->var) << std::endl;
-        n+=(*i)->size;
-        break;
-      }
-    }
-    return retVal;
-  }
   
   /**
    * This function takes all SynchronisableVariables out of the Synchronisable and saves it into a syncData struct
-  * Difference to the above function:
+   * Difference to the above function:
    * takes a pointer to already allocated memory (must have at least getSize bytes length)
-  * structure of the bitstream:
+   * structure of the bitstream:
    * (var1_size,var1,var2_size,var2,...)
    * varx_size: size = sizeof(int)
    * varx: size = varx_size
    * @return data containing all variables and their sizes
    */
-  bool Synchronisable::getData2(unsigned char*& mem, int mode){
+  bool Synchronisable::getData(unsigned char*& mem, unsigned int id, int mode){
     //std::cout << "inside getData" << std::endl;
     unsigned int tempsize = 0;
     if(mode==0x0)
       mode=state_;
     if(classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
-    this->classID=this->getIdentifier()->getNetworkID();
+    this->classID=this->getIdentifier()->getNetworkID(); // TODO: correct this
     std::list<synchronisableVariable *>::iterator i;
     unsigned int size;
-    size=getSize2(mode);
+    size=getSize2(id, mode);
     
     // start copy header
     memcpy(mem, &size, sizeof(unsigned int));
@@ -223,6 +179,9 @@ namespace network
     tempsize+=12;
     // end copy header
     
+    //if this tick is we dont synchronise, then abort now
+    if(!isMyTick(id))
+      return true;
     
     COUT(5) << "Synchronisable getting data from objectID: " << objectID << " classID: " << classID << " length: " << size << std::endl;
     // copy to location
@@ -253,93 +212,6 @@ namespace network
     return true;
   }
 
-  /*bool Synchronisable::getData(Bytestream& bs, int mode)
-  {
-    //std::cout << "inside getData" << std::endl;
-    if(mode==0x0)
-      mode=state_;
-    if(classID==0)
-      COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
-    this->classID=this->getIdentifier()->getNetworkID();
-    std::list<synchronisableVariable *>::iterator i;
-    bs << this->getSize();
-    bs << this->objectID;
-    bs << this->classID;
-    // copy to location
-    for(i=syncList->begin(); i!=syncList->end(); ++i){
-      if( ((*i)->mode & mode) == 0 ){
-        COUT(5) << "not getting data: " << std::endl;
-        continue;  // this variable should only be received
-      }
-      switch((*i)->type){
-        case DATA:
-          bs << *(*i)->var;
-          //std::memcpy( (void *)(retVal.data+n), (void*)((*i)->var), (*i)->size);
-          //n+=(*i)->size;
-          break;
-        case STRING:
-          bs << *(String *)((*i)->var);
-          //memcpy( (void *)(retVal.data+n), (void *)&((*i)->size), sizeof(int) );
-          //n+=sizeof(int);
-          //const char *data = ( ( *(std::string *) (*i)->var).c_str());
-          //std::memcpy( retVal.data+n, (void*)data, (*i)->size);
-          //COUT(5) << "synchronisable: char: " << (const char *)(retVal.data+n) << " data: " << data << " string: " << *(std::string *)((*i)->var) << std::endl;
-          //n+=(*i)->size;
-          break;
-      }
-    }
-    return true;
-  }*/
-
-  
-  /**
-  * This function takes a syncData struct and takes it to update the variables
-  * @param vars data of the variables
-  * @return true/false
-  */
-  bool Synchronisable::updateData(syncData vars, int mode){
-    if(mode==0x0)
-      mode=state_;
-    unsigned char *data=vars.data;
-    std::list<synchronisableVariable *>::iterator i;
-    if(syncList->empty()){
-      COUT(4) << "Synchronisable::updateData syncList is empty" << std::endl;
-      return false;
-    }
-    COUT(5) << "Synchronisable: objectID " << vars.objectID << ", classID " << vars.classID << " size: " << vars.length << " synchronising data" << std::endl;
-    for(i=syncList->begin(); i!=syncList->end(); i++){
-      if( ((*i)->mode ^ mode) == 0 ){
-        COUT(5) << "synchronisable: not updating variable " << std::endl;
-        continue;  // this variable should only be set
-      }
-      COUT(5) << "Synchronisable: element size: " << (*i)->size << " type: " << (*i)->type << std::endl;
-      bool callback=false;
-      switch((*i)->type){
-      case DATA:
-        if((*i)->callback) // check whether this variable changed (but only if callback was set)
-          if(strncmp((char *)(*i)->var, (char *)data, (*i)->size)!=0)
-            callback=true;
-        memcpy((void*)(*i)->var, data, (*i)->size);
-        data+=(*i)->size;
-        break;
-      case STRING:
-        (*i)->size = *(int *)data;
-        COUT(5) << "string size: " << (*i)->size << std::endl;
-        data+=sizeof(int);
-        if((*i)->callback) // check whether this string changed
-          if( *(std::string *)((*i)->var) != std::string((char *)data) )
-            callback=true;
-        *((std::string *)((*i)->var)) = std::string((const char*)data);
-        COUT(5) << "synchronisable: char: " << (const char*)data << " string: " << std::string((const char*)data) << std::endl;
-        data += (*i)->size;
-        break;
-      }
-      // call the callback function, if defined
-      if(callback && (*i)->callback)
-        (*i)->callback->call();
-    }
-    return true;
-  }
   
   /**
    * This function takes a syncData struct and takes it to update the variables
@@ -367,6 +239,9 @@ namespace network
     // stop extract header
     assert(this->objectID==objectID);
     assert(this->classID==classID);
+    if(size==3*sizeof(unsigned int)) //if true, only the header is available
+      return true;
+      //assert(0);
     
     COUT(5) << "Synchronisable: objectID " << objectID << ", classID " << classID << " size: " << size << " synchronising data" << std::endl;
     for(i=syncList->begin(); i!=syncList->end() && mem <= data+size; i++){
@@ -407,7 +282,9 @@ namespace network
   * This function returns the total amount of bytes needed by getData to save the whole content of the variables
   * @return amount of bytes
   */
-  int Synchronisable::getSize(int mode){
+  int Synchronisable::getSize(unsigned int id, int mode){
+    if(!isMyTick(id))
+      return 0;
     int tsize=0;
     if(mode==0x0)
       mode=state_;
@@ -434,8 +311,18 @@ namespace network
    * This function returns the total amount of bytes needed by getData to save the whole content of the variables
    * @return amount of bytes
    */
-  int Synchronisable::getSize2(int mode){
-    return 3*sizeof(unsigned int) + getSize( mode );
+  int Synchronisable::getSize2(unsigned int id, int mode){
+    return sizeof(synchronisableHeader) + getSize( id, mode );
+  }
+  
+  /**
+   * 
+   * @param id 
+   * @return 
+   */
+  bool Synchronisable::isMyTick(unsigned int id){
+//     return true;
+    return ( id==0 || id%objectFrequency_==objectID%objectFrequency_ ) && ((objectMode_&state_)!=0);
   }
   
   bool Synchronisable::isMyData(unsigned char* mem)
@@ -452,12 +339,10 @@ namespace network
     return (objectID == this->objectID);
   }
   
-  void Synchronisable::setBacksync(bool sync){
-    backsync_=sync;
+  void Synchronisable::setObjectMode(int mode){
+    assert(mode==0x1 || mode==0x2 || mode==0x3);
+    objectMode_=mode;
   }
 
-  bool Synchronisable::getBacksync(){
-    return backsync_;
-  }
 
 }
