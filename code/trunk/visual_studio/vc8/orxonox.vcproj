@@ -191,8 +191,6 @@
 				RelativePath="..\..\src\orxonox\SignalHandler.cc"
 				>
 			</File>
-			<Filter
-				Name="hud"
 			<File
 				RelativePath="..\..\src\orxonox\RadarListener.cc"
 				>
