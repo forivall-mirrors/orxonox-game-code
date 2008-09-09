@@ -59,7 +59,7 @@ namespace orxonox
     luaopen_io(luaState_);
     luaopen_debug(luaState_);
 #endif
-    tolua_core_open(luaState_);
+    tolua_Core_open(luaState_);
     output_ = "";
   }
 
@@ -197,7 +197,7 @@ namespace orxonox
       bool expectedValue = true;
       for (std::map<unsigned int, bool>::iterator it = luaTags.begin(); it != luaTags.end(); ++it)
       {
-        if ((*it).second == expectedValue)
+        if (it->second == expectedValue)
           expectedValue = !expectedValue;
         else
         {

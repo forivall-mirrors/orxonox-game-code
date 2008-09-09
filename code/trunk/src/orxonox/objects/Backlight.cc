@@ -31,13 +31,13 @@
 
 #include <OgreBillboard.h>
 #include <OgreRibbonTrail.h>
+#include <OgreSceneManager.h>
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Executor.h"
 #include "util/Math.h"
 #include "GraphicsEngine.h"
-#include "Orxonox.h"
 
 namespace orxonox
 {
@@ -57,8 +57,8 @@ namespace orxonox
         this->billboard_.setBillboardSet("Flares/backlightflare");
         this->attachObject(this->billboard_.getBillboardSet());
 
-        this->ribbonTrail_ = GraphicsEngine::getSingleton().getSceneManager()->createRibbonTrail(this->getName() + "RibbonTrail");
-        this->ribbonTrailNode_ = GraphicsEngine::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName() + "RibbonTrailNode");
+        this->ribbonTrail_ = GraphicsEngine::getInstance().getLevelSceneManager()->createRibbonTrail(this->getName() + "RibbonTrail");
+        this->ribbonTrailNode_ = GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode(this->getName() + "RibbonTrailNode");
         this->ribbonTrailNode_->attachObject(this->ribbonTrail_);
         this->ribbonTrail_->addNode(this->getNode());
 
@@ -67,7 +67,8 @@ namespace orxonox
         this->ribbonTrail_->setTrailLength(this->maxTraillength_);
         this->ribbonTrail_->setMaterialName("Trail/backlighttrail");
 
-        this->setTimeFactor(Orxonox::getSingleton()->getTimeFactor());
+        //this->setTimeFactor(Orxonox::getInstance().getTimeFactor());
+        this->setTimeFactor(1.0f);
     }
 
     Backlight::~Backlight()
@@ -75,8 +76,8 @@ namespace orxonox
         if (this->isInitialized())
         {
             this->detachObject(this->billboard_.getBillboardSet());
-            GraphicsEngine::getSingleton().getSceneManager()->destroySceneNode(this->getName() + "RibbonTrailNode");
-            GraphicsEngine::getSingleton().getSceneManager()->destroyRibbonTrail(this->ribbonTrail_);
+            GraphicsEngine::getInstance().getLevelSceneManager()->destroySceneNode(this->getName() + "RibbonTrailNode");
+            GraphicsEngine::getInstance().getLevelSceneManager()->destroyRibbonTrail(this->ribbonTrail_);
         }
     }
 

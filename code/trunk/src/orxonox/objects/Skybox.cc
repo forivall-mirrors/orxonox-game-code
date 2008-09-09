@@ -38,6 +38,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Debug.h"
+#include "Settings.h"
 
 namespace orxonox
 {
@@ -55,7 +56,8 @@ namespace orxonox
 
     void Skybox::setSkybox(const std::string& skyboxname)
     {
-    	GraphicsEngine::getSingleton().getSceneManager()->setSkyBox(true, skyboxname);
+        if (Settings::showsGraphics())
+            GraphicsEngine::getInstance().getLevelSceneManager()->setSkyBox(true, skyboxname);
     }
 
     /**
@@ -86,6 +88,7 @@ namespace orxonox
     void Skybox::changedVisibility()
     {
         SUPER(Skybox, changedVisibility);
-        GraphicsEngine::getSingleton().getSceneManager()->setSkyBox(this->isVisible(), this->skyboxSrc_);
+        if (Settings::showsGraphics())
+            GraphicsEngine::getInstance().getLevelSceneManager()->setSkyBox(this->isVisible(), this->skyboxSrc_);
     }
 }

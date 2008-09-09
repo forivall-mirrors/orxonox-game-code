@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Benjamin Knecht <beni_at_orxonox.net>, (C) 2007
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
@@ -34,12 +35,23 @@
 #include "OrxonoxStableHeaders.h"
 
 #include <exception>
+#include <cassert>
 
 #include "util/OrxonoxPlatform.h"
 #include "SignalHandler.h"
-#include "Orxonox.h"
+#include "util/Debug.h"
+
+#include "gamestates/GSRoot.h"
+#include "gamestates/GSGraphics.h"
+#include "gamestates/GSStandalone.h"
+#include "gamestates/GSServer.h"
+#include "gamestates/GSClient.h"
+#include "gamestates/GSDedicated.h"
+#include "gamestates/GSGUI.h"
+#include "gamestates/GSIOConsole.h"
 
 using namespace orxonox;
+
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
 #include <CoreFoundation/CoreFoundation.h>
 
@@ -48,56 +60,58 @@ using namespace orxonox;
 // for locating your configuration files and resources.
              std::string macBundlePath()
 {
-  char path[1024];
-  CFBundleRef mainBundle = CFBundleGetMainBundle();
-  assert(mainBundle);
+    char path[1024];
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    assert(mainBundle);
 
-  CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
-  assert(mainBundleURL);
+    CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
+    assert(mainBundleURL);
 
-  CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
-  assert(cfStringRef);
+    CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
+    assert(cfStringRef);
 
-  CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
+    CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
 
-  CFRelease(mainBundleURL);
-  CFRelease(cfStringRef);
+    CFRelease(mainBundleURL);
+    CFRelease(cfStringRef);
 
-  return std::string(path);
+    return std::string(path);
 }
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
-int main(int argc, char **argv)
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
+
+int main(int argc, char** argv)
 {
-  //try {
+    // create a signal handler (only works for linux)
     SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
-    Orxonox* orx = Orxonox::getSingleton();
 
-    bool res = false;
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_APPLE
-    res = orx->init(argc, argv, macBundlePath());
-#else
-    res = orx->init(argc, argv);
-#endif
+    GSRoot root;
+    GSGraphics graphics;
+    GSStandalone standalone;
+    GSServer server;
+    GSClient client;
+    GSDedicated dedicated;
+    GSGUI gui;
+    GSIOConsole ioConsole;
 
-    if (res)
-      orx->start();
-    orx->destroySingleton();
-  /*}
-  catch (std::exception &ex)
-  {
-    std::cerr << "Exception:\n";
-    std::cerr << ex.what() << "\n";
-    return 1;
-  }*/
+    root.addChild(&graphics);
+    graphics.addChild(&standalone);
+    graphics.addChild(&server);
+    graphics.addChild(&client);
+    graphics.addChild(&gui);
 
-  return 0;
+    root.addChild(&ioConsole);
+    root.addChild(&dedicated);
+
+    root.start(argc, argv);
+
+    return 0;
 }
 
-#ifdef __cplusplus
-}
-#endif
+//#ifdef __cplusplus
+//}
+//#endif

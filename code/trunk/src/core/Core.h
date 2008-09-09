@@ -22,13 +22,13 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Reto Grieder
  *
  */
 
 /**
     @file Core.h
-    @brief Definition of the Core class.
+    @brief Declaration of the Core class.
 
     The Core class is a singleton, only used to configure some variables
     in the core through the config-file.
@@ -59,7 +59,7 @@ namespace orxonox
             static const std::string& getLanguage();
             static void resetLanguage();
 
-            static void tick(float dt);
+            //static void tick(float dt);
 
         private:
             void resetLanguageIntern();

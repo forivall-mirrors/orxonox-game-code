@@ -28,7 +28,7 @@
 
 /**
     @file Core.h
-    @brief Definition of the Settings class.
+    @brief Declaration of the Settings class.
 
     The static Settings class is only used to configure some variables
     through the config-file.
@@ -40,29 +40,53 @@
 #include "OrxonoxPrereqs.h"
 #include <string>
 #include "core/OrxonoxClass.h"
+#include "util/Debug.h"
+#include "util/MultiType.h"
+#include "util/Convert.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport Settings : public OrxonoxClass
-  {
+    class _OrxonoxExport Settings : public OrxonoxClass
+    {
+        friend class ClassIdentifier<Settings>;
+        friend class GSRoot;
+        friend class GSGraphics;
+        friend class GSServer;
+        friend class GSDedicated;
+
     public:
-      void setConfigValues();
-      void dataPathChanged();
+        static const std::string& getDataPath()
+        { assert(singletonRef_s); return singletonRef_s->dataPath_; }
+        static void tsetDataPath(const std::string& path)
+        { assert(singletonRef_s); singletonRef_s->_tsetDataPath(path); }
 
-      static const std::string& getDataPath();
-
-      static void tsetDataPath(const std::string& path);
+        // an alternative to a global game mode variable
+        static bool showsGraphics() { assert(singletonRef_s); return singletonRef_s->bShowsGraphics_; }
+        static bool hasServer()     { assert(singletonRef_s); return singletonRef_s->bHasServer_; }
 
     private:
-      Settings();
-      Settings(const Settings& instance);
-      ~Settings();
-      static Settings& getSingleton();
+        // GSRoot has access to these
+        static void setShowsGraphics(bool val) { assert(singletonRef_s); singletonRef_s->bShowsGraphics_ = val; }
+        static void setHasServer    (bool val) { assert(singletonRef_s); singletonRef_s->bHasServer_     = val; }
 
-      void _tsetDataPath(const std::string& path);
+        Settings();
+        Settings(const Settings& instance);
+        ~Settings() { singletonRef_s = 0; }
 
-      std::string dataPath_;               //!< Path to the game data
-  };
+        static Settings& _getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+        void _tsetDataPath(const std::string& path);
+        void dataPathChanged();
+
+        void setConfigValues();
+
+        bool bShowsGraphics_;                                  //!< global variable that tells whether to show graphics
+        bool bHasServer_;                                      //!< global variable that tells whether this is a server
+
+        std::string dataPath_;                                 //!< Path to the game data
+
+        static Settings* singletonRef_s;                       //!< Static pointer to the only instance.
+    };
+
 }
 
 #endif /* _Settings_H__ */

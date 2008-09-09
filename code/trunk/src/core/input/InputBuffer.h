@@ -169,7 +169,8 @@ namespace orxonox
             void keyHeld    (const KeyEvent& evt);
             void processKey (const KeyEvent &e);
 
-            void tickInput(float dt, const HandlerState& state);
+            void tickInput(float dt);
+            void tickKey(float dt) { }
 
             std::string buffer_;
             std::list<BaseInputBufferListenerTuple*> listeners_;

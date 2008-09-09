@@ -45,6 +45,8 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
+#include "core/input/SimpleInputState.h"
+#include "core/input/InputBuffer.h"
 #include "GraphicsEngine.h"
 
 #define LINES 30
@@ -55,15 +57,23 @@ namespace orxonox
     SetConsoleCommand(InGameConsole, openConsole, true);
     SetConsoleCommand(InGameConsole, closeConsole, true);
 
+    InGameConsole* InGameConsole::singletonRef_s = 0;
+
     /**
         @brief Constructor: Creates and initializes the InGameConsole.
     */
-    InGameConsole::InGameConsole() :
-        consoleOverlay_(0), consoleOverlayContainer_(0),
-        consoleOverlayNoise_(0), consoleOverlayCursor_(0), consoleOverlayBorder_(0),
-        consoleOverlayTextAreas_(0)
+    InGameConsole::InGameConsole()
+        : consoleOverlay_(0)
+        , consoleOverlayContainer_(0)
+        , consoleOverlayNoise_(0)
+        , consoleOverlayCursor_(0)
+        , consoleOverlayBorder_(0)
+        , consoleOverlayTextAreas_(0)
     {
         RegisterObject(InGameConsole);
+
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
 
         this->bActive_ = false;
         this->cursor_ = 0.0f;
@@ -81,16 +91,40 @@ namespace orxonox
     */
     InGameConsole::~InGameConsole(void)
     {
-        this->destroy();
-    }
+        this->deactivate();
 
-    /**
-        @brief Returns a reference to the only existing instance of InGameConsole.
-    */
-    InGameConsole& InGameConsole::getInstance()
-    {
-        static InGameConsole instance;
-        return instance;
+        // destroy the input state previously created (InputBuffer gets destroyed by the Shell)
+        InputManager::getInstance().requestDestroyState("console");
+
+        Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
+        if (ovMan)
+        {
+            if (this->consoleOverlayNoise_)
+                Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayNoise_);
+            if (this->consoleOverlayCursor_)
+                Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayCursor_);
+            if (this->consoleOverlayBorder_)
+                Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayBorder_);
+            if (this->consoleOverlayTextAreas_)
+            {
+                for (int i = 0; i < LINES; i++)
+                {
+                    if (this->consoleOverlayTextAreas_[i])
+                      Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayTextAreas_[i]);
+                    this->consoleOverlayTextAreas_[i] = 0;
+                }
+
+            }
+            if (this->consoleOverlayContainer_)
+                Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayContainer_);
+        }
+        if (this->consoleOverlayTextAreas_)
+        {
+            delete[] this->consoleOverlayTextAreas_;
+            this->consoleOverlayTextAreas_ = 0;
+        }
+
+        singletonRef_s = 0;
     }
 
     /**
@@ -111,6 +145,10 @@ namespace orxonox
     */
     void InGameConsole::initialise()
     {
+        // create the corresponding input state
+        InputManager::getInstance().createInputState<SimpleInputState>("console", 40)
+            ->setKeyHandler(Shell::getInstance().getInputBuffer());
+
         // create overlay and elements
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
 
@@ -180,7 +218,7 @@ namespace orxonox
         // comment following line to disable noise
         this->consoleOverlayContainer_->addChild(this->consoleOverlayNoise_);
 
-        this->windowResized(GraphicsEngine::getSingleton().getWindowWidth(), GraphicsEngine::getSingleton().getWindowHeight());
+        this->windowResized(GraphicsEngine::getInstance().getWindowWidth(), GraphicsEngine::getInstance().getWindowHeight());
 
         // move overlay "above" the top edge of the screen
         // we take -1.2 because the border makes the panel bigger
@@ -189,40 +227,6 @@ namespace orxonox
         Shell::getInstance().addOutputLevel(true);
 
         COUT(4) << "Info: InGameConsole initialized" << std::endl;
-    }
-
-    /**
-        @brief Destroys all the elements if necessary.
-    */
-    void InGameConsole::destroy()
-    {
-        Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
-        if (ovMan)
-        {
-            if (this->consoleOverlayNoise_)
-                Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayNoise_);
-            if (this->consoleOverlayCursor_)
-                Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayCursor_);
-            if (this->consoleOverlayBorder_)
-                Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayBorder_);
-            if (this->consoleOverlayTextAreas_)
-            {
-                for (int i = 0; i < LINES; i++)
-                {
-                    if (this->consoleOverlayTextAreas_[i])
-                      Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayTextAreas_[i]);
-                    this->consoleOverlayTextAreas_[i] = 0;
-                }
-
-            }
-            if (this->consoleOverlayContainer_)
-                Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayContainer_);
-        }
-        if (this->consoleOverlayTextAreas_)
-        {
-            delete[] this->consoleOverlayTextAreas_;
-            this->consoleOverlayTextAreas_ = 0;
-        }
     }
 
     // ###############################
@@ -452,10 +456,10 @@ namespace orxonox
             {
                 if (output.size() > this->maxCharsPerLine_)
                 {
-                    if (Shell::getInstance().getInputBuffer().getCursorPosition() < this->inputWindowStart_)
-                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer().getCursorPosition();
-                    else if (Shell::getInstance().getInputBuffer().getCursorPosition() >= (this->inputWindowStart_ + this->maxCharsPerLine_ - 1))
-                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer().getCursorPosition() - this->maxCharsPerLine_ + 1;
+                    if (Shell::getInstance().getInputBuffer()->getCursorPosition() < this->inputWindowStart_)
+                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer()->getCursorPosition();
+                    else if (Shell::getInstance().getInputBuffer()->getCursorPosition() >= (this->inputWindowStart_ + this->maxCharsPerLine_ - 1))
+                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer()->getCursorPosition() - this->maxCharsPerLine_ + 1;
 
                     output = output.substr(this->inputWindowStart_, this->maxCharsPerLine_);
                 }
@@ -475,7 +479,7 @@ namespace orxonox
         if (!this->bActive_)
         {
             this->bActive_ = true;
-            InputManager::setInputState(InputManager::IS_CONSOLE);
+            InputManager::getInstance().requestEnterState("console");
             Shell::getInstance().registerListener(this);
 
             this->windowResized(this->windowW_, this->windowH_);
@@ -497,7 +501,7 @@ namespace orxonox
         if (this->bActive_)
         {
             this->bActive_ = false;
-            InputManager::setInputState(InputManager::IS_NORMAL);
+            InputManager::getInstance().requestLeaveState("console");
             Shell::getInstance().unregisterListener(this);
 
             // scroll up

@@ -43,8 +43,9 @@ namespace orxonox {
 
   CameraHandler::CameraHandler()
   {
-    this->cam_ = GraphicsEngine::getSingleton().getSceneManager()->createCamera("Cam");
-    GraphicsEngine::getSingleton().getRenderWindow()->addViewport(this->cam_);
+    this->cam_ = GraphicsEngine::getInstance().getLevelSceneManager()->createCamera("Cam");
+    GraphicsEngine::getInstance().getViewport()->setCamera(this->cam_);
+    //GraphicsEngine::getInstance().getRenderWindow()->addViewport(this->cam_, 2, 0.4, 0.4, 0.2, 0.2);
     /*this->activeCamera_ = *ObjectList<Camera>::begin();
     this->activeCamera_->cam_ = this->cam_;*/
   }

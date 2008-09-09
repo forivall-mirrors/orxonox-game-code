@@ -27,86 +27,72 @@
  */
 
 /**
-    @file
-    @brief Implementation of the Settings class.
+@file
+@brief
+    Implementation of the Settings class.
 */
 
 #include "OrxonoxStableHeaders.h"
 #include "Settings.h"
 
+#include "util/String.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 
 namespace orxonox
 {
-  /**
-    @brief Constructor: Registers the object and sets the config-values.
-  */
-  Settings::Settings()
-  {
-    RegisterRootObject(Settings);
-    setConfigValues();
-  }
+    Settings* Settings::singletonRef_s = 0;
 
-  Settings::~Settings()
-  {
-  }
-
-  /**
-    @brief Returns a unique instance of Core.
-    @return The instance
-  */
-  Settings& Settings::getSingleton()
-  {
-    static Settings instance;
-    return instance;
-  }
-
-  /**
-    @brief Function to collect the SetConfigValue-macro calls.
-  */
-  void Settings::setConfigValues()
-  {
-    SetConfigValue(dataPath_, "../../Media/").description("Relative path to the game data.").callback(this, &Settings::dataPathChanged);
-  }
-
-  /**
-    @brief Callback function if the datapath has changed.
-  */
-  void Settings::dataPathChanged()
-  {
-    if (dataPath_ != "" && dataPath_[dataPath_.size() - 1] != '/')
+    /**
+    @brief
+        Constructor: Registers the object and sets the config-values.
+    */
+    Settings::Settings()
+        : bShowsGraphics_(false)
+        , bHasServer_(false)
     {
-      ModifyConfigValue(dataPath_, set, dataPath_ + "/");
+        RegisterRootObject(Settings);
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
+        setConfigValues();
     }
 
-    if (dataPath_ == "")
+    /**
+    @brief
+        Function to collect the SetConfigValue-macro calls.
+    */
+    void Settings::setConfigValues()
     {
-      ModifyConfigValue(dataPath_, set, "/");
-      COUT(2) << "Warning: Data path set to \"/\", is that really correct?" << std::endl;
+        SetConfigValue(dataPath_, "../../Media/").description("Relative path to the game data.").callback(this, &Settings::dataPathChanged);
     }
-  }
 
-  /**
-    @brief Temporary sets the data path
-    @param path The new data path
-  */
-  void Settings::_tsetDataPath(const std::string& path)
-  {
-    ModifyConfigValue(dataPath_, tset, path);
-  }
+    /**
+    @brief
+        Callback function if the datapath has changed.
+    */
+    void Settings::dataPathChanged()
+    {
+        if (dataPath_ != "" && dataPath_[dataPath_.size() - 1] != '/')
+        {
+            ModifyConfigValue(dataPath_, set, dataPath_ + "/");
+        }
 
-  /*static*/ void Settings::tsetDataPath(const std::string& path)
-  {
-    getSingleton()._tsetDataPath(path);
-  }
+        if (dataPath_ == "")
+        {
+            ModifyConfigValue(dataPath_, set, "/");
+            COUT(2) << "Warning: Data path set to \"/\", is that really correct?" << std::endl;
+        }
+    }
 
-  /**
-    @brief Returns the relative path to the game data.
-    @return The path to the game data
-  */
-  /*static*/ const std::string& Settings::getDataPath()
-  {
-    return getSingleton().dataPath_;
-  }
+    /**
+    @brief
+        Temporary sets the data path
+    @param path
+        The new data path
+    */
+    void Settings::_tsetDataPath(const std::string& path)
+    {
+        ModifyConfigValue(dataPath_, tset, path);
+    }
+
 }

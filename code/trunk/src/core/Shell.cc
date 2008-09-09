@@ -32,7 +32,6 @@
 #include "ConfigValueIncludes.h"
 #include "Core.h"
 #include "ConsoleCommand.h"
-#include "input/InputInterfaces.h"
 #include "util/OutputHandler.h"
 
 #define SHELL_UPDATE_LISTENERS(function) \
@@ -63,13 +62,19 @@ namespace orxonox
 
         this->clearLines();
 
-        this->inputBuffer_ = 0;
-        this->setInputBuffer(new InputBuffer());
+        this->inputBuffer_ = new InputBuffer();
+        this->configureInputBuffer();
 
         this->outputBuffer_.registerListener(this);
         OutputHandler::getOutStream().setOutputBuffer(this->outputBuffer_);
 
         this->setConfigValues();
+    }
+
+    Shell::~Shell()
+    {
+        if (this->inputBuffer_)
+            delete this->inputBuffer_;
     }
 
     Shell& Shell::createShell()
@@ -112,16 +117,8 @@ namespace orxonox
         }
     }
 
-    void Shell::setInputBuffer(InputBuffer* buffer)
+    void Shell::configureInputBuffer()
     {
-        if (this->inputBuffer_)
-        {
-            this->inputBuffer_->unregisterListener(this);
-            // TODO: may be very dangerous. InputManager already deletes InputBuffer instance!!!
-            delete this->inputBuffer_;
-        }
-
-        this->inputBuffer_ = buffer;
         this->inputBuffer_->registerListener(this, &Shell::inputChanged, true);
         this->inputBuffer_->registerListener(this, &Shell::execute, '\r', false);
         this->inputBuffer_->registerListener(this, &Shell::hintandcomplete, '\t', true);

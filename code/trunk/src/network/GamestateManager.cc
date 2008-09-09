@@ -43,7 +43,7 @@
 #include <utility>
 #include <iostream>
 #include <zlib.h>
-#include <assert.h>
+#include <cassert>
 
 #include "core/CoreIncludes.h"
 #include "core/BaseObject.h"

@@ -97,8 +97,13 @@ namespace orxonox
   class ClassTreeMask;
   class ClassTreeMaskIterator;
   class ClassTreeMaskNode;
+  class Clock;
   class CommandEvaluation;
   class CommandExecutor;
+  class CommandLine;
+  class BaseCommandLineArgument;
+  template <class T>
+  class CommandLineArgument;
   class ConfigFile;
   class ConfigFileEntry;
   class ConfigFileEntryComment;
@@ -154,15 +159,22 @@ namespace orxonox
   class XMLPortObjectContainer;
   class XMLPortParamContainer;
 
+  // game states
+  class GameStateBase;
+  template <class ParentType>
+  class GameState;
+  class RootGameState;
+
   // input
-  //class GUIInputHandler;
   class BaseCommand;
   class BufferedParamCommand;
   class Button;
   class CalibratorCallback;
+  class ExtendedInputState;
   class HalfAxis;
   class InputBuffer;
   class InputManager;
+  class InputState;
   class JoyStickHandler;
   class MouseHandler;
   class KeyBinder;
@@ -170,6 +182,7 @@ namespace orxonox
   class KeyHandler;
   class ParamCommand;
   class SimpleCommand;
+  class SimpleInputState;
 }
 
 #endif /* _CorePrereqs_H__ */

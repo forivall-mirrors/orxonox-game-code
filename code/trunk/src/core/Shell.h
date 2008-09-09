@@ -72,9 +72,8 @@ namespace orxonox
             void registerListener(ShellListener* listener);
             void unregisterListener(ShellListener* listener);
 
-            void setInputBuffer(InputBuffer* buffer);
-            inline InputBuffer& getInputBuffer()
-                { return (*this->inputBuffer_); }
+            inline InputBuffer* getInputBuffer()
+                { return this->inputBuffer_; }
             inline OutputBuffer& getOutputBuffer()
                 { return this->outputBuffer_; }
 
@@ -106,7 +105,9 @@ namespace orxonox
         private:
             Shell();
             Shell(const Shell& other);
-            virtual ~Shell() {}
+            virtual ~Shell();
+
+            void configureInputBuffer();
 
             void addToHistory(const std::string& command);
             std::string getFromHistory() const;

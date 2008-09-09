@@ -42,6 +42,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
+#include "Settings.h"
 #include "GraphicsEngine.h"
 
 namespace orxonox
@@ -65,7 +66,8 @@ namespace orxonox
 
     bool Ambient::create()
     {
-        GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(ambientLight_);
+        if (Settings::showsGraphics())
+            GraphicsEngine::getInstance().getLevelSceneManager()->setAmbientLight(ambientLight_);
         return Synchronisable::create();
     }
 
@@ -76,15 +78,20 @@ namespace orxonox
 
     void Ambient::setAmbientLight(const ColourValue& colour)
     {
-        GraphicsEngine::getSingleton().getSceneManager()->setAmbientLight(colour);
-        ambientLight_=colour;
+        if (Settings::showsGraphics())
+            GraphicsEngine::getInstance().getLevelSceneManager()->setAmbientLight(colour);
+        ambientLight_ = colour;
     }
 
     /**
-        @brief XML loading and saving.
-        @param xmlelement The XML-element
-        @param loading Loading (true) or saving (false)
-        @return The XML-element
+    @brief
+        XML loading and saving.
+    @param
+        xmlelement The XML-element
+    @param
+        loading Loading (true) or saving (false)
+    @return
+        The XML-element
     */
     void Ambient::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {

@@ -40,6 +40,7 @@
 #include <iostream>
 #include <assert.h>
 // boost.thread library for multithreading support
+#include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
 #include "core/CoreIncludes.h"

@@ -27,20 +27,21 @@
  */
 
 /**
- @file
- @brief Implementation of the different input handlers.
- */
+@file
+@brief
+    Implementation of the different input handlers.
+*/
 
 #include "CalibratorCallback.h"
 #include "InputManager.h"
 
 namespace orxonox
 {
-  void CalibratorCallback::keyPressed(const orxonox::KeyEvent &evt)
-  {
-    if (evt.key == KeyCode::Return)
+    void CalibratorCallback::keyPressed(const orxonox::KeyEvent &evt)
     {
-      InputManager::setInputState(InputManager::IS_NOCALIBRATE);
+        if (evt.key == KeyCode::Return)
+        {
+            //InputManager::setInputState(InputManager::IS_NOCALIBRATE);
+        }
     }
-  }
 }

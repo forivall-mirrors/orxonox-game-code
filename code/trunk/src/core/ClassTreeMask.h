@@ -59,7 +59,7 @@
     back and iterates to the second subclass. If there are no more subclasses, it steps another
     step back, and so on.
 
-    Example: A and B are childs of BaseObject, A1 and A2 are childs of A, B1 and B2 are childs of B.
+    Example: A and B are children of BaseObject, A1 and A2 are children of A, B1 and B2 are children of B.
     The ClassTreeMaskIterator would move trough the tree in the following order:
     BaseObject, A, A1, A2, B, B1, B2.
 

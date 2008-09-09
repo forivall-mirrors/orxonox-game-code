@@ -297,7 +297,7 @@ namespace orxonox
                         {
                             for (ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++)
                             {
-                                Identifier* identifier = ID(child->Value());
+                                Identifier* identifier = GetIdentifier(child->Value());
                                 if (identifier)
                                 {
                                     if (identifier->isA(Class(O)))

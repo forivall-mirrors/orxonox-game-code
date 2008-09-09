@@ -100,7 +100,7 @@ namespace network
     if(size==3*sizeof(unsigned int)) //not our turn, dont do anything
       return true;
     
-    orxonox::Identifier* id = ID(classID);
+    orxonox::Identifier* id = GetIdentifier(classID);
     if(!id){
       COUT(3) << "We could not identify a new object; classid: " << classID << " uint: " << (unsigned int)classID << " objectID: " << objectID << " size: " << size << std::endl;
       assert(0);

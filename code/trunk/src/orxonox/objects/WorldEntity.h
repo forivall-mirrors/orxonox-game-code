@@ -30,10 +30,9 @@
 #define _WorldEntity_H__
 
 #include "OrxonoxPrereqs.h"
+#include <OgrePrerequisites.h>
 
-#include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
-
 #include "util/Math.h"
 #include "util/XMLIncludes.h"
 #include "network/Synchronisable.h"

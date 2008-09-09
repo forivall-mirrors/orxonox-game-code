@@ -1,16 +1,21 @@
 SET(CORE_SRC_FILES
+  Clock.cc
   ConfigFileManager.cc
   ConfigValueContainer.cc
   Core.cc
+  Exception.cc
+  GameState.cc
   Language.cc
   ObjectListBase.cc
   OrxonoxClass.cc
+  RootGameState.cc
   Script.cc
 
   # command
   ArgumentCompletionFunctions.cc
   CommandEvaluation.cc
   CommandExecutor.cc
+  CommandLine.cc
   ConsoleCommand.cc
   ConsoleCommandCompilation.cc
   Executor.cc
@@ -37,12 +42,14 @@ SET(CORE_SRC_FILES
   # input
   input/Button.cc
   input/CalibratorCallback.cc
+  input/ExtendedInputState.cc
   input/HalfAxis.cc
   input/InputBuffer.cc
   input/InputCommands.cc
   input/InputManager.cc
   input/KeyBinder.cc
   input/KeyDetector.cc
+  input/SimpleInputState.cc
 
   tolua/tolua_bind.cc
 )
@@ -50,7 +57,7 @@ SET(CORE_SRC_FILES
 GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.cc
-  COMMAND ${TOLUA_EXE} -n core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg
+  COMMAND ${TOLUA_EXE} -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg
   DEPENDS tolua
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )

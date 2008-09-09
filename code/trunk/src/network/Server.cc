@@ -41,6 +41,7 @@
 #include "Server.h"
 
 #include <iostream>
+#include <cassert>
 
 
 #include "ConnectionManager.h"
@@ -338,7 +339,7 @@ namespace network
   bool Server::createShip(ClientInformation *client){
     if(!client)
       return false;
-    orxonox::Identifier* id = ID("SpaceShip");
+    orxonox::Identifier* id = GetIdentifier("SpaceShip");
     if(!id){
       COUT(4) << "We could not create the SpaceShip for client: " << client->getID() << std::endl;
       return false;
