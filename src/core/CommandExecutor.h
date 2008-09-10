@@ -43,7 +43,7 @@ namespace orxonox // tolua_export
     */
     {
         public:
-            static bool execute(const std::string& command, bool useTcl = true); // tolua_export
+            static bool execute(const std::string& command, bool useTcl = false); // tolua_export
             static std::string complete(const std::string& command);
             static std::string hint(const std::string& command);
 
