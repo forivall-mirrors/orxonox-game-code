@@ -130,8 +130,11 @@ namespace network
   }
 
   bool GamestateClient::saveShipCache(){
-    if(myShip_==NULL)
+    if(myShip_==NULL){
       myShip_ = orxonox::SpaceShip::getLocalShip();
+      if(!myShip_)
+	return false;
+    }
     if(myShip_){
       //      unsigned char *data = new unsigned char[myShip_->getSize()];
       int size=myShip_->getSize2(0, 0x1);

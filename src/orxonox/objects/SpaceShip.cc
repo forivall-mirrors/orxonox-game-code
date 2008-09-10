@@ -75,10 +75,11 @@ namespace orxonox
     SpaceShip *SpaceShip::getLocalShip(){
       ObjectList<SpaceShip>::iterator it;
       for(it = ObjectList<SpaceShip>::begin(); it; ++it){
-        if( (it)->myShip_ )
+	assert(it->isA(Class(SpaceShip)));
+        if( (it)->myShip_ || (network::Host::running() && network::Host::getShipID()==(it)->objectID) )
           return *it;
       }
-      assert(0);
+      return 0;
       return 0;
     }
 
