@@ -101,33 +101,6 @@ namespace orxonox
     }
 
     /**
-        @brief Tells if the rule is "included" or not.
-        @return The rule: true = included, false = excluded
-    */
-    bool ClassTreeMaskNode::isIncluded() const
-    {
-        return this->bIncluded_;
-    }
-
-    /**
-        @brief Tells if the rule is "excluded" or not.
-        @return The inverted rule: true = excluded, false = included
-    */
-    bool ClassTreeMaskNode::isExcluded() const
-    {
-        return (!this->bIncluded_);
-    }
-
-    /**
-        @brief Returns the Identifier of the class the rule refers to.
-        @return The Identifier representing the class
-    */
-    const Identifier* ClassTreeMaskNode::getClass() const
-    {
-        return this->subclass_;
-    }
-
-    /**
         @brief Deletes all subnodes of this node.
     */
     void ClassTreeMaskNode::deleteAllSubnodes()
@@ -168,7 +141,7 @@ namespace orxonox
         @brief Iterates through the rule-tree.
         @return A reference to the iterator itself
     */
-    ClassTreeMaskIterator& ClassTreeMaskIterator::operator++()
+    const ClassTreeMaskIterator& ClassTreeMaskIterator::operator++()
     {
         // Check if the actual node has subnodes
         if ((*this->nodes_.top().first)->subnodes_.begin() != (*this->nodes_.top().first)->subnodes_.end())
@@ -225,7 +198,7 @@ namespace orxonox
         @brief Returns true if the stack is empty, meaning we've reached the end of the tree.
         @return True if we've reached the end of the tree
     */
-    ClassTreeMaskIterator::operator bool()
+    ClassTreeMaskIterator::operator bool() const
     {
         return (!this->nodes_.empty());
     }
@@ -235,7 +208,7 @@ namespace orxonox
         @param compare The node to compare with
         @return The result of the comparison (true if they match)
     */
-    bool ClassTreeMaskIterator::operator==(ClassTreeMaskNode* compare)
+    bool ClassTreeMaskIterator::operator==(ClassTreeMaskNode* compare) const
     {
         if (!this->nodes_.empty())
             return ((*this->nodes_.top().first) == compare);
@@ -248,7 +221,7 @@ namespace orxonox
         @param compare The node to compare with
         @return The result of the comparison (true if they don't match)
     */
-    bool ClassTreeMaskIterator::operator!=(ClassTreeMaskNode* compare)
+    bool ClassTreeMaskIterator::operator!=(ClassTreeMaskNode* compare) const
     {
         if (!this->nodes_.empty())
             return ((*this->nodes_.top().first) != compare);
@@ -544,7 +517,7 @@ namespace orxonox
         @param other The other mask
         @return A reference to the mask itself
     */
-    ClassTreeMask& ClassTreeMask::operator=(const ClassTreeMask& other)
+    const ClassTreeMask& ClassTreeMask::operator=(const ClassTreeMask& other)
     {
         // Make a copy to avoid troubles with self-assignments (like A = A).
         ClassTreeMask temp(other);
@@ -597,7 +570,7 @@ namespace orxonox
         @brief Prefix operator + does nothing.
         @return A reference to the mask itself
     */
-    ClassTreeMask& ClassTreeMask::operator+()
+    const ClassTreeMask& ClassTreeMask::operator+() const
     {
         return (*this);
     }
@@ -708,7 +681,7 @@ namespace orxonox
         @param other The other mask
         @return A reference to the mask itself
     */
-    ClassTreeMask& ClassTreeMask::operator+=(const ClassTreeMask& other)
+    const ClassTreeMask& ClassTreeMask::operator+=(const ClassTreeMask& other)
     {
         (*this) = (*this) + other;
         return (*this);
@@ -719,7 +692,7 @@ namespace orxonox
         @param other The other mask
         @return A reference to the mask itself
     */
-    ClassTreeMask& ClassTreeMask::operator*=(const ClassTreeMask& other)
+    const ClassTreeMask& ClassTreeMask::operator*=(const ClassTreeMask& other)
     {
         (*this) = (*this) * other;
         return (*this);
@@ -730,7 +703,7 @@ namespace orxonox
         @param other The other mask
         @return A reference to the mask itself
     */
-    ClassTreeMask& ClassTreeMask::operator-=(const ClassTreeMask& other)
+    const ClassTreeMask& ClassTreeMask::operator-=(const ClassTreeMask& other)
     {
         (*this) = (*this) - other;
         return (*this);
@@ -801,7 +774,7 @@ namespace orxonox
         @param other The other mask
         @return A reference to the mask itself
     */
-    ClassTreeMask& ClassTreeMask::operator&=(const ClassTreeMask& other)
+    const ClassTreeMask& ClassTreeMask::operator&=(const ClassTreeMask& other)
     {
         (*this) = (*this) & other;
         return (*this);
@@ -812,7 +785,7 @@ namespace orxonox
         @param other The other mask
         @return A reference to the mask itself
     */
-    ClassTreeMask& ClassTreeMask::operator|=(const ClassTreeMask& other)
+    const ClassTreeMask& ClassTreeMask::operator|=(const ClassTreeMask& other)
     {
         (*this) = (*this) | other;
         return (*this);
@@ -823,7 +796,7 @@ namespace orxonox
         @param other The other mask
         @return A reference to the mask itself
     */
-    ClassTreeMask& ClassTreeMask::operator^=(const ClassTreeMask& other)
+    const ClassTreeMask& ClassTreeMask::operator^=(const ClassTreeMask& other)
     {
         (*this) = (*this) ^ other;
         return (*this);
@@ -851,5 +824,141 @@ namespace orxonox
         }
 
         return out;
+    }
+
+
+    // ###################################
+    // ### ClassTreeMaskObjectIterator ###
+    // ###################################
+    /**
+        @brief Initializes the iterator from a given ClassTreeMask.
+        @param mask The mask
+    */
+    const ClassTreeMaskObjectIterator& ClassTreeMaskObjectIterator::operator=(const ClassTreeMask& mask)
+    {
+        // Clear everything, use a cleaned copy of the mask
+        this->subclasses_.clear();
+        ClassTreeMask temp = mask;
+        temp.clean();
+
+        // Create the subclass-list by going through the mask-tree, starting with the root-node
+        this->create(temp.root_);
+
+        // Move the subclass-iterator to the beginning of the subclass-list
+        this->subclassIterator_ = this->subclasses_.begin();
+
+        // If there is a first subclass, move the object-iterator to the first object of this class. Else go to the end
+        if (this->subclassIterator_ != this->subclasses_.end())
+            this->objectIterator_ = (*this->subclassIterator_).first->getObjects()->begin();
+        else
+            this->objectIterator_ = ObjectList<BaseObject>::end();
+
+        // Check if the iterator points on a valid object. If not, go to the next object by calling ++
+        if (!this->objectIterator_ || ((*this->subclassIterator_).second && !this->objectIterator_->isExactlyA((*this->subclassIterator_).first)))
+            this->operator++();
+
+        return (*this);
+    }
+
+    /**
+        @brief Iterate to the next object (if any).
+        @return The iterator itself
+    */
+    const ClassTreeMaskObjectIterator& ClassTreeMaskObjectIterator::operator++()
+    {
+        if (this->objectIterator_)
+        {
+            // The iterator points on a valid object, therefore we also have a valid subclass-iterator at the moment
+            do
+            {
+                // Go to the next object
+                ++this->objectIterator_;
+
+                while (!this->objectIterator_)
+                {
+                    // We reached the end of the current objectlist - go to the next class
+                    ++this->subclassIterator_;
+
+                    // Check if there really is a next class. If yes, move the object-iterator to the first object
+                    if (this->subclassIterator_ != this->subclasses_.end())
+                        this->objectIterator_ = (*this->subclassIterator_).first->getObjects()->begin();
+                    else
+                        return (*this);
+                }
+
+            // Repeat this until we reach a valid object or the end
+            } while ((*this->subclassIterator_).second && !this->objectIterator_->isExactlyA((*this->subclassIterator_).first));
+        }
+        return (*this);
+    }
+
+    /**
+        @brief Recursive function to create the Iterators subclass-list by going through the node-tree of the mask.
+        @param node The current node
+    */
+    void ClassTreeMaskObjectIterator::create(ClassTreeMaskNode* node)
+    {
+        // Add the class of this node to the list, if the class is included
+        if (node->isIncluded())
+        {
+            // If there are some subnodes, the bool is "true", meaning we have to check for the exact clss when iterating
+            if (node->hasSubnodes())
+                this->subclasses_.insert(this->subclasses_.end(), std::pair<const Identifier*, bool>(node->getClass(), true));
+            else
+                this->subclasses_.insert(this->subclasses_.end(), std::pair<const Identifier*, bool>(node->getClass(), false));
+        }
+
+        // Now check if the node has subnodes
+        if (node->hasSubnodes())
+        {
+            // Get all _direct_ children of the nodes class
+            std::set<const Identifier*> directChildren = node->getClass()->getDirectChildren();
+
+            // Iterate through all subnodes
+            for (std::list<ClassTreeMaskNode*>::iterator it1 = node->subnodes_.begin(); it1 != node->subnodes_.end(); ++it1)
+            {
+                // Recursive call to this function with the subnode
+                this->create(*it1);
+
+                // Only execute the following code if the current node is included, meaning some of the subnodes might be included too
+                if (node->isIncluded())
+                {
+                    scanChildren: // This is a label for goto
+
+                    // Iterate through all direct children
+                    for (std::set<const Identifier*>::iterator it2 = directChildren.begin(); it2 != directChildren.end(); ++it2)
+                    {
+                        // Check if the subnode (it1) is a child of the directChild (it2)
+                        if ((*it1)->getClass()->isA(*it2))
+                        {
+                            // Yes it is - remove the directChild (it2) from the list, because it will already be handled by a recursive call to the create() function
+                            directChildren.erase(it2);
+
+                            // Check if the removed directChild was exactly the subnode
+                            if (!(*it1)->getClass()->isExactlyA(*it2))
+                            {
+                                // No, it wasn't exactly the subnode - therefore there are some classes between
+
+                                // Add the previously removed directChild (it2) to the subclass-list
+                                this->subclasses_.insert(this->subclasses_.end(), std::pair<const Identifier*, bool>(*it2, true));
+
+                                // Insert all directChildren of the directChild
+                                directChildren.insert((*it2)->getDirectChildrenBegin(), (*it2)->getDirectChildrenEnd());
+
+                                // Restart the scan with the expanded set of directChildren
+                                goto scanChildren;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Now add all directChildren which don't have subnodes on their own to the subclass-list
+            // The bool is "false", meaning they have no subnodes and therefore need no further checks
+            if (node->isIncluded())
+                for (std::set<const Identifier*>::iterator it = directChildren.begin(); it != directChildren.end(); ++it)
+                    this->subclasses_.insert(this->subclasses_.end(), std::pair<const Identifier*, bool>(*it, false));
+        }
     }
 }
