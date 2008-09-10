@@ -97,8 +97,10 @@ namespace network
     objectID = *(unsigned int*)(mem+sizeof(unsigned int));
     classID = *(unsigned int*)(mem+2*sizeof(unsigned int));
     
-    if(size==3*sizeof(unsigned int)) //not our turn, dont do anything
+    if(size==3*sizeof(unsigned int)){ //not our turn, dont do anything
+      mem+=3*sizeof(unsigned int);
       return true;
+    }
     
     orxonox::Identifier* id = GetIdentifier(classID);
     if(!id){

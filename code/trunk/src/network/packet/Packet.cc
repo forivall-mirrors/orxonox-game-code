@@ -29,6 +29,7 @@
 
 #include <enet/enet.h>
 #include <boost/bind.hpp>
+#include <assert.h>
 
 #include "Packet.h"
 #include "network/ConnectionManager.h"
