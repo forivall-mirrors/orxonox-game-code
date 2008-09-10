@@ -34,7 +34,7 @@
 #ifndef _OrxonoxStableHeaders_H__
 #define _OrxonoxStableHeaders_H__
 
-#include "util/OrxonoxPlatform.h"
+#include "OrxonoxPrereqs.h"
 
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
 

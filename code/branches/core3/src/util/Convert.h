@@ -482,14 +482,13 @@ inline ToType conversion_cast(const FromType& input, const ToType& fallback)
 // Explicit Template Specialisations //
 ///////////////////////////////////////
 
-// delegate conversion from const char* via std::string
+// delegate conversion from const char* to std::string
 template <class ToType>
 struct ConverterExplicit<ToType, const char*>
 {
-    // convert from const char* via std::string
     static bool convert(ToType* output, const char* input)
     {
-        return conversion::ConverterSS<ToType, std::string, 0>::convert(output, input);
+        return ConverterExplicit<ToType, std::string>::convert(output, input);
     }
 };
 
@@ -498,7 +497,7 @@ template <> struct ConverterExplicit<std::string, char>
 {
     static bool convert(std::string* output, const char input)
     {
-        *output = std::string(input, 1);
+        *output = std::string(1, input);
         return true;
     }
 };
@@ -506,7 +505,7 @@ template <> struct ConverterExplicit<std::string, unsigned char>
 {
     static bool convert(std::string* output, const unsigned char input)
     {
-        *output = std::string(input, 1);
+        *output = std::string(1, input);
         return true;
     }
 };

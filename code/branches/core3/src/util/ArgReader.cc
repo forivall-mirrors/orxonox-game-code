@@ -33,12 +33,69 @@
 
 #include "ArgReader.h"
 #include "SubString.h"
+#include <ostream>
+#include <iostream>
+
+class FooBar
+{
+    //friend class ArgReader;
+public:
+    operator long long() const
+    {
+        return 0;
+    }
+    float float_;
+    static FooBar& createFooBar();
+private:
+    //FooBar();
+    //FooBar(const FooBar& instance);
+    //~FooBar();
+};
+
+inline std::ostream& operator<<(std::ostream& outstream, const FooBar& fb)
+{
+    return outstream << fb.float_;
+}
+inline std::istream& operator>>(std::istream& instream,  const FooBar& fb);
+//inline bool explicitConversion(const char** output, const FooBar input)
+//{
+//    return true;
+//}
+
+#include "Convert.h"
+
+template<>
+struct ConverterExplicit<const char*, FooBar>
+{
+    static bool convert(const char** output, const FooBar input)
+    {
+        return true;
+    }
+};
+
+#include "MultiType.h"
 
 ArgReader::ArgReader(int argc, char **argv)
 {
   failure_ = false;
   errorString_ = "";
   CmdLineArg arg;
+
+  int a = ImplicitConversion<FooBar, const char*>::exists;
+  int val1;
+  long long val2 = conversion_cast<long long>(val1);
+  //val2 = val1;
+  //convertValue(&val2, val1);
+  //explicitConversion(&FooBar(), val1);
+
+  //using namespace1::fooBar1;
+  //fooBar1();
+  //int val1;
+  //char val2;
+  //explicitConversion(&val1, val2);
+
+  std::istringstream asdf;
+  //asdf >> val2;
 
   int i = 1;
   while (i < argc)

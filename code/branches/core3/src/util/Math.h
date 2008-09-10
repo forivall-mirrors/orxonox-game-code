@@ -54,7 +54,7 @@ namespace orxonox
   typedef Ogre::ColourValue ColourValue;
 }
 
-_UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Radian& radian);
+_UtilExport std::ostream& operator<<(std::ostream& out, const Ogre::Radian& radian);
 _UtilExport std::istream& operator>>(std::istream& in, orxonox::Radian& radian);
 _UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Degree& degree);
 _UtilExport std::istream& operator>>(std::istream& in, orxonox::Degree& degree);
@@ -127,6 +127,18 @@ inline bool explicitConversion(std::string* output, const orxonox::ColourValue& 
     }
     return false;
 }
+
+//// ColourValue to std::string
+//inline bool explicitConversion(std::string* output, const orxonox::ColourValue& input)
+//{
+//    std::ostringstream ostream;
+//    if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
+//    {
+//        (*output) = ostream.str();
+//        return true;
+//    }
+//    return false;
+//}
 
 // std::string to Vector2
 _UtilExport bool explicitConversion(orxonox::Vector2* output, const std::string& input);

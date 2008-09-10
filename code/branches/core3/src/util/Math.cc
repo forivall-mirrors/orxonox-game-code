@@ -26,9 +26,9 @@
  *
  */
 
-#include <OgrePlane.h>
-
 #include "Math.h"
+
+#include <OgrePlane.h>
 #include "Convert.h"
 
 /**

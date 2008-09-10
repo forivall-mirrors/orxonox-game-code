@@ -200,5 +200,22 @@ namespace orxonox
         return out;
     }
 }
+//template<class T>
+//orxonox::OutputHandler& operator<<(orxonox::OutputHandler& out, const T& output)
+//{
+//    if (orxonox::OutputHandler::getSoftDebugLevel(orxonox::OutputHandler::LD_Console) >= out.getOutputLevel())
+//        std::cout << output;
+//
+//    if (orxonox::OutputHandler::getSoftDebugLevel(orxonox::OutputHandler::LD_Logfile) >= out.getOutputLevel())
+//    {
+//        out.getLogfile() << output;
+//        out.getLogfile().flush();
+//    }
+//
+//    if (orxonox::OutputHandler::getSoftDebugLevel(orxonox::OutputHandler::LD_Shell) >= out.getOutputLevel())
+//        (*out.getOutputBuffer()) << output;
+//
+//    return out;
+//}
 
 #endif /* _OutputHandler_H__ */

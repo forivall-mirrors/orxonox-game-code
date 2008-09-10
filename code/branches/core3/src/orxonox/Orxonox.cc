@@ -76,6 +76,24 @@
 #include "GraphicsEngine.h"
 #include "Settings.h"
 
+#define TestConv(nr, Type1, var1, Type2, res) \
+    Type1 var##nr##1##var1; \
+    Type2 var##nr##2; \
+    assert(ConvertValue(&var##nr##2, var##nr##1)); \
+    COUT(0) << "Converting " << #var1 << " (" << #Type1 << ") to " << var##nr##2 << " (" #Type2 << ")." << std::endl; \
+    assert(res == var##nr##2)
+
+template <>
+struct ConverterExplicit<orxonox::Radian, const char*>
+{
+    static bool convert(orxonox::Radian* output, const char* input)
+    {
+        float temp;
+        convertValue(&temp, input);
+        *output = temp;
+    }
+};
+
 
 // FIXME: is this really file scope?
 // globals for the server or client
@@ -188,6 +206,36 @@ namespace orxonox
     ConfigFileManager::getInstance()->setFile(CFT_Settings, "orxonox.ini");
 #endif
     Factory::createClassHierarchy();
+
+    Radian nmbr;
+    float res;
+    //const char* nmbr;
+    //const char* str;
+    convertValue(&res, nmbr);
+    //const unsigned int blah = 4;
+    //convertValue(nmbr, blah);
+    //convertValue(&str, 4.0f);
+
+
+    using ::operator<<;
+    using std::string;
+    int a = 3;
+    Radian asdf;
+    COUT(3) << asdf;
+
+    TestConv(1, int, (3), float, 3.0);
+    TestConv(2, int, (3), string, "3");
+    TestConv(3, string, ("3.0"), float, 3.0f);
+    TestConv(4, char, ('a'), string, "a");
+    TestConv(5, string, ("df"), char, 'd');
+    TestConv(6, Vector2, (3,4), string, "3,4");
+    TestConv(7, const char*, ("4.3"), float, 4.3f);
+    TestConv(8, const char*, ("4,3"), Vector2, Vector2(4,3));
+    TestConv(9, const char*, ("4.4"), Radian, Radian(4.4));
+    TestConv(100, int, (3), const char*, "3");
+    TestConv(101, Vector3, (1, 2, 3), float, 3.0);
+
+    std::ostringstream out;
 
     std::string mode;
     std::string tempDataPath;
