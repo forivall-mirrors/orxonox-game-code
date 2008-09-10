@@ -164,10 +164,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Exception.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\core\GameState.cc"
 				>
 			</File>
@@ -392,10 +388,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\CorePrereqs.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Exception.h"
 				>
 			</File>
 			<File

@@ -35,12 +35,12 @@
 #ifndef _Exception_H__
 #define _Exception_H__
 
-#include "CorePrereqs.h"
+#include "UtilPrereqs.h"
 
 #include <string>
 #include <exception>
 #include <cassert>
-#include "util/Debug.h"
+#include "Debug.h"
 
 // Define some ugly macros to make things more clear
 #define CREATE_ORXONOX_EXCEPTION(name) typedef SpecificException<Exception::name> name##Exception;
@@ -51,7 +51,7 @@
 
 namespace orxonox
 {
-    class _CoreExport Exception : public std::exception
+    class _UtilExport Exception : public std::exception
     {
     public:
         enum ExceptionType

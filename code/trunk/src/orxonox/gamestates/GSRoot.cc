@@ -33,14 +33,14 @@
 #include <OgreRoot.h>
 
 //#include "util/SubString.h"
+#include "util/Exception.h"
+#include "util/Debug.h"
 #include "core/Factory.h"
 #include "core/ConfigFileManager.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
-#include "util/Debug.h"
-#include "core/Exception.h"
 #include "core/TclBind.h"
 #include "core/TclThreadManager.h"
 #include "GraphicsEngine.h"

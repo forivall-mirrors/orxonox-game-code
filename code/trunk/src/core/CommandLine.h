@@ -33,7 +33,7 @@
 #include <map>
 #include "util/Convert.h"
 #include "util/Debug.h"
-#include "Exception.h"
+#include "util/Exception.h"
 
 #define SetCommandLineArgument(name, defaultValue) \
     BaseCommandLineArgument& CmdArgumentDummyBoolVar##name \
