@@ -32,7 +32,6 @@
 #include <cassert>
 #include <enet/enet.h>
 #include <boost/bind.hpp>
-#include <assert.h>
 
 #include "network/ConnectionManager.h"
 #include "network/ClientInformation.h"
