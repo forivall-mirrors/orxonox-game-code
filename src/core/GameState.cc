@@ -34,7 +34,7 @@
 
 #include "GameState.h"
 #include "util/Debug.h"
-#include "Exception.h"
+#include "util/Exception.h"
 
 namespace orxonox
 {

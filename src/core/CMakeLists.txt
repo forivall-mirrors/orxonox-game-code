@@ -3,7 +3,6 @@ SET(CORE_SRC_FILES
   ConfigFileManager.cc
   ConfigValueContainer.cc
   Core.cc
-  Exception.cc
   GameState.cc
   Language.cc
   ObjectListBase.cc

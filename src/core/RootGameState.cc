@@ -31,9 +31,9 @@
 #include "util/String.h"
 #include "util/SubString.h"
 #include "util/Debug.h"
+#include "util/Exception.h"
 #include "Core.h"
 #include "Clock.h"
-#include "Exception.h"
 #include "CommandLine.h"
 
 namespace orxonox

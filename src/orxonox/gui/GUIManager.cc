@@ -39,11 +39,11 @@
 #include <OgreRoot.h>
 #include <CEGUI.h>
 #include <CEGUILua.h>
+#include "util/Exception.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
 #include "core/tolua/tolua_bind.h"
 #include "core/ConsoleCommand.h"
-#include "core/Exception.h"
 #include "core/Core.h"
 #include "tolua/tolua_bind.h"
 #include "GraphicsEngine.h"

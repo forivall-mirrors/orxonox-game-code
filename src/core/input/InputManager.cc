@@ -41,9 +41,9 @@
 #include "ois/OISException.h"
 #include "ois/OISInputManager.h"
 
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Exception.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 #include "util/Debug.h"

@@ -40,11 +40,11 @@
 #include <OgreWindowEventUtilities.h>
 
 #include "util/Debug.h"
+#include "util/Exception.h"
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/input/InputManager.h"
-#include "core/Exception.h"
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
 #include "tools/WindowEventListener.h"
