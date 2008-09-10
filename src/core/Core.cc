@@ -32,6 +32,7 @@
 */
 
 #include "Core.h"
+#include <cassert>
 #include "Language.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
@@ -79,14 +80,14 @@ namespace orxonox
     */
     Core& Core::getInstance()
     {
-        static Core instance = Core();
+        static Core instance;
 
         // If bCreatingSoftDebugLevelObject is true, we're just about to create an instance of the DebugLevel class
-        if (Core::isCreatingCoreSettings())
-        {
-            isCreatingCoreSettings() = false;
-            instance.setConfigValues();
-        }
+        //if (Core::isCreatingCoreSettings())
+        //{
+        //    isCreatingCoreSettings() = false;
+        //    instance.setConfigValues();
+        //}
         return instance;
     }
 
@@ -137,14 +138,19 @@ namespace orxonox
     {
         if (!Core::isCreatingCoreSettings())
         {
-            if (device == OutputHandler::LD_All)
+            switch (device)
+            {
+            case OutputHandler::LD_All:
                 return Core::getInstance().softDebugLevel_;
-            else if (device == OutputHandler::LD_Console)
+            case OutputHandler::LD_Console:
                 return Core::getInstance().softDebugLevelConsole_;
-            else if (device == OutputHandler::LD_Logfile)
+            case OutputHandler::LD_Logfile:
                 return Core::getInstance().softDebugLevelLogfile_;
-            else if (device == OutputHandler::LD_Shell)
+            case OutputHandler::LD_Shell:
                 return Core::getInstance().softDebugLevelShell_;
+            default:
+                assert(0);
+            }
         }
 
         // Return a constant value while we're creating the object

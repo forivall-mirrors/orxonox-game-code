@@ -134,6 +134,9 @@ namespace orxonox
         // start global orxonox time
         Clock clock;
 
+        // create the Core settings to configure the output level
+        Core::getInstance();
+
         parseArguments(argc, argv);
 
         this->activate();
