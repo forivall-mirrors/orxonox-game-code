@@ -75,6 +75,8 @@
 #include <list>
 #include <stack>
 
+#include "Iterator.h"
+
 namespace orxonox
 {
     // ###################################
@@ -90,6 +92,7 @@ namespace orxonox
     {
         friend class ClassTreeMask;
         friend class ClassTreeMaskIterator;
+        friend class ClassTreeMaskObjectIterator;
 
         public:
             ClassTreeMaskNode(const Identifier* subclass, bool bIncluded = true);
@@ -101,10 +104,16 @@ namespace orxonox
 
             void addSubnode(ClassTreeMaskNode* subnode);
 
-            bool isIncluded() const;
-            bool isExcluded() const;
+            /** @brief Tells if the rule is "included" or not. @return The rule: true = included, false = excluded */
+            inline bool isIncluded() const { return this->bIncluded_; }
+            /** @brief Tells if the rule is "excluded" or not. @return The inverted rule: true = excluded, false = included */
+            inline bool isExcluded() const { return (!this->bIncluded_); }
 
-            const Identifier* getClass() const;
+            /** @brief Returns the Identifier of the class the rule refers to. @return The Identifier representing the class */
+            inline const Identifier* getClass() const { return this->subclass_; }
+
+            /** @brief Returns true if the Node has some subnodes. */
+            inline bool hasSubnodes() const { return !this->subnodes_.empty(); }
 
         private:
             void deleteAllSubnodes();
@@ -132,12 +141,12 @@ namespace orxonox
             ClassTreeMaskIterator(ClassTreeMaskNode* node);
             ~ClassTreeMaskIterator();
 
-            ClassTreeMaskIterator& operator++();
+            const ClassTreeMaskIterator& operator++();
             ClassTreeMaskNode* operator*() const;
             ClassTreeMaskNode* operator->() const;
-            operator bool();
-            bool operator==(ClassTreeMaskNode* compare);
-            bool operator!=(ClassTreeMaskNode* compare);
+            operator bool() const;
+            bool operator==(ClassTreeMaskNode* compare) const;
+            bool operator!=(ClassTreeMaskNode* compare) const;
 
         private:
             std::stack<std::pair<std::list<ClassTreeMaskNode*>::iterator, std::list<ClassTreeMaskNode*>::iterator> > nodes_;    //!< A stack to store list-iterators
@@ -158,6 +167,8 @@ namespace orxonox
     */
     class _CoreExport ClassTreeMask
     {
+        friend class ClassTreeMaskObjectIterator;
+
         public:
             ClassTreeMask();
             ClassTreeMask(const ClassTreeMask& other);
@@ -177,12 +188,17 @@ namespace orxonox
             bool isIncluded(const Identifier* subclass) const;
             bool isExcluded(const Identifier* subclass) const;
 
-            ClassTreeMask& operator=(const ClassTreeMask& other);
+            /** @brief Begin of the ClassTreeMaskObjectIterator. */
+            inline const ClassTreeMask& begin() const { return (*this); }
+            /** @brief End of the ClassTreeMaskObjectIterator. */
+            inline BaseObject*          end()   const { return 0; }
+
+            const ClassTreeMask& operator=(const ClassTreeMask& other);
 
             bool operator==(const ClassTreeMask& other) const;
             bool operator!=(const ClassTreeMask& other) const;
 
-            ClassTreeMask& operator+();
+            const ClassTreeMask& operator+() const;
             ClassTreeMask operator-() const;
 
             ClassTreeMask operator+(const ClassTreeMask& other) const;
@@ -190,18 +206,18 @@ namespace orxonox
             ClassTreeMask operator-(const ClassTreeMask& other) const;
             ClassTreeMask operator!() const;
 
-            ClassTreeMask& operator+=(const ClassTreeMask& other);
-            ClassTreeMask& operator*=(const ClassTreeMask& other);
-            ClassTreeMask& operator-=(const ClassTreeMask& other);
+            const ClassTreeMask& operator+=(const ClassTreeMask& other);
+            const ClassTreeMask& operator*=(const ClassTreeMask& other);
+            const ClassTreeMask& operator-=(const ClassTreeMask& other);
 
             ClassTreeMask operator&(const ClassTreeMask& other) const;
             ClassTreeMask operator|(const ClassTreeMask& other) const;
             ClassTreeMask operator^(const ClassTreeMask& other) const;
             ClassTreeMask operator~() const;
 
-            ClassTreeMask& operator&=(const ClassTreeMask& other);
-            ClassTreeMask& operator|=(const ClassTreeMask& other);
-            ClassTreeMask& operator^=(const ClassTreeMask& other);
+            const ClassTreeMask& operator&=(const ClassTreeMask& other);
+            const ClassTreeMask& operator|=(const ClassTreeMask& other);
+            const ClassTreeMask& operator^=(const ClassTreeMask& other);
 
             friend std::ostream& operator<<(std::ostream& out, const ClassTreeMask& mask);
 
@@ -218,12 +234,52 @@ namespace orxonox
     // ###################################
     // ### ClassTreeMaskObjectIterator ###
     // ###################################
-    //! ...
+    //! The ClassTreeMaskObjectIterator iterates through all objects of all classes, included by a ClassTreeMask.
     /**
-        ...
+        The ClassTreeMaskObjectIterator iterates through all objects of all classes,
+        included by a ClassTreeMask. This is done the following way:
+
+        ClassTreeMask mask;
+        for (ClassTreeMaskObjectIterator it = mask.begin(); it != mask.end(); ++it)
+            it->doSomething();
+
+        Note: The ClassTreeMaskObjectIterator handles all objects as BaseObjects. If
+              you want to use another class, you should use a dynamic_cast.
+
+        Performance of ClassTreeMaskObjectIterator is good as long as you don't exclude
+        subclasses of included classes. Of course you can still exlucde subclasses, but
+        if this is done more often, we need a new implementation using a second ObjectList
+        in the Identifier, containing all objects of exactly one class.
     */
     class _CoreExport ClassTreeMaskObjectIterator
     {
+        public:
+            /** @brief Defaultconstructor: Does nothing. */
+            inline ClassTreeMaskObjectIterator() {}
+            /** @brief Constructor: Initializes the iterator from a given ClassTreeMask. @param mask The mask */
+            inline ClassTreeMaskObjectIterator(const ClassTreeMask& mask) { (*this) = mask; }
+
+            const ClassTreeMaskObjectIterator& operator=(const ClassTreeMask& mask);
+
+            const ClassTreeMaskObjectIterator& operator++();
+
+            /** @brief Returns true if the ClassTreeMaskObjectIterator points at the given object. @param pointer The pointer of the object */
+            inline bool operator==(BaseObject* pointer) const { return ((*this->objectIterator_) == pointer); }
+            /** @brief Returns true if the ClassTreeMaskObjectIterator doesn't point at the given object. @param pointer The pointer of the object */
+            inline bool operator!=(BaseObject* pointer) const { return ((*this->objectIterator_) != pointer); }
+            /** @brief Returns true if the ClassTreeMaskObjectIterator hasn't already reached the end. */
+            inline operator bool() const { return (this->objectIterator_); }
+            /** @brief Returns the object the ClassTreeMaskObjectIterator currently points at. */
+            inline BaseObject* operator*() const { return (*this->objectIterator_); }
+            /** @brief Returns the object the ClassTreeMaskObjectIterator currently points at. */
+            inline BaseObject* operator->() const { return (*this->objectIterator_); }
+
+        private:
+            void create(ClassTreeMaskNode* node);
+
+            std::list<std::pair<const Identifier*, bool> >           subclasses_;       //!< A list of all Identifiers through which objects the iterator should iterate
+            std::list<std::pair<const Identifier*, bool> >::iterator subclassIterator_; //!< The current class of the iterator
+            Iterator<BaseObject>                                     objectIterator_;   //!< The current object of the iterator
     };
 }
 

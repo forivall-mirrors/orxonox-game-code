@@ -163,9 +163,9 @@ class _UtilExport MultiType
 
         inline ~MultiType() { if (this->value_) { delete this->value_; } }
 
-        template <typename V> inline MultiType& operator=(const V& value)         { this->setValue(value); return (*this); }
-        inline                       MultiType& operator=(const MultiType& other) { this->setValue(other); return (*this); }
-        inline                       MultiType& operator=(MT_Type type)           { this->setType(type);   return (*this); }
+        template <typename V> inline const MultiType& operator=(const V& value)         { this->setValue(value); return (*this); }
+        inline                       const MultiType& operator=(const MultiType& other) { this->setValue(other); return (*this); }
+        inline                       const MultiType& operator=(MT_Type type)           { this->setType(type);   return (*this); }
 
         inline void                                   setValue(const char& value);
         inline void                                   setValue(const unsigned char& value);
