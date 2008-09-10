@@ -49,6 +49,7 @@ namespace orxonox
     {
         RegisterRootObject(Core);
         this->setConfigValues();
+        isCreatingCoreSettings() = false;
     }
 
     /**
@@ -65,12 +66,6 @@ namespace orxonox
     bool& Core::isCreatingCoreSettings()
     {
         static bool bCreatingCoreSettings = true;
-        static bool bFirstTime = true;
-        if (bFirstTime)
-        {
-            bFirstTime = false;
-            Core::getInstance();
-        }
         return bCreatingCoreSettings;
     }
 
@@ -80,14 +75,18 @@ namespace orxonox
     */
     Core& Core::getInstance()
     {
-        static Core instance;
-
         // If bCreatingSoftDebugLevelObject is true, we're just about to create an instance of the DebugLevel class
         //if (Core::isCreatingCoreSettings())
         //{
         //    isCreatingCoreSettings() = false;
-        //    instance.setConfigValues();
+        //    //instance.setConfigValues();
         //}
+
+        static bool firstTime = true;
+        if (firstTime)
+            isCreatingCoreSettings() = true;
+
+        static Core instance;
         return instance;
     }
 
