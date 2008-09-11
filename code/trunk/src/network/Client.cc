@@ -44,7 +44,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "packet/Packet.h"
-#include "packet/Acknowledgement.h"
+// #include "packet/Acknowledgement.h"
 
 namespace network
 {
@@ -165,26 +165,12 @@ namespace network
       packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
       assert(packet->process());
     }
-    int gameStateID = gamestate.processGamestates();
-    if(gameStateID==GAMESTATEID_INITIAL)
-      if(gameStateFailure_){
-        packet::Acknowledgement *ack = new packet::Acknowledgement((unsigned int)GAMESTATEID_INITIAL, 0);
-        if(!ack->send())
-          COUT(3) << "could not (negatively) ack gamestate" << std::endl;
-        else
-          COUT(4) << "negatively acked a gamestate" << std::endl;
-        }
-      else
-        gameStateFailure_=true;
-    else if(gameStateID!=0){
-      // ack gamestate and set synched
+    if(gamestate.processGamestates())
+    {
       if(!isSynched_)
         isSynched_=true;
-      gameStateFailure_=false;
-      packet::Acknowledgement *ack = new packet::Acknowledgement(gameStateID, 0);
-      if(!ack->send())
-        COUT(3) << "could not ack gamestate" << std::endl;
-    }// otherwise we had no gamestate to load
+    }else
+      COUT(3) << "gamestate has not been processed sucessfully" << std::endl;
     gamestate.cleanup();
     return;
   }

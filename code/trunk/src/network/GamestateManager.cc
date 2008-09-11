@@ -156,17 +156,18 @@ namespace network
       return false;
     int curid = temp->getGamestateID();
     
-    if(gamestateID == GAMESTATEID_INITIAL){
+    if(gamestateID == 0){
       temp->setGamestateID(GAMESTATEID_INITIAL);
       if(curid!=GAMESTATEID_INITIAL){
         assert(gamestateUsed.find(curid)!=gamestateUsed.end());
         --(gamestateUsed.find(curid)->second);
       }
-      return false;
-    }
-    if(curid > gamestateID)
-      // the network packets got messed up 
       return true;
+    }
+    //if(curid > gamestateID)
+    assert(curid<gamestateID);
+      // the network packets got messed up 
+      //return true;
     COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
     // decrease usage of gamestate and save it
 //     deleteUnusedGameState(curid);

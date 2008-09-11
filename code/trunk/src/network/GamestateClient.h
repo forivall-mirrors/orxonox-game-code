@@ -61,13 +61,14 @@ namespace network
     bool add(packet::Gamestate *gs, int clientID);
     bool ack(int gamestateID, int clientID);
 
-    int processGamestates();
+    bool processGamestates();
     packet::Gamestate *getGamestate();
     void cleanup();
   private:
     packet::Gamestate *processGamestate(packet::Gamestate *gs);
     void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
     void printGamestateMap();
+    bool sendAck(unsigned int gamestateID);
     bool saveShipCache();
     bool loadShipCache();
 
