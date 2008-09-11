@@ -88,11 +88,15 @@ struct ConverterExplicit<orxonox::Radian, const char*>
 {
     static bool convert(orxonox::Radian* output, const char* input)
     {
+        //std::string asdf("asfd");
+        //std::cout << asdf;
         float temp;
         convertValue(&temp, input);
         *output = temp;
     }
 };
+
+class FooBar { };
 
 
 // FIXME: is this really file scope?
@@ -216,12 +220,14 @@ namespace orxonox
     //convertValue(nmbr, blah);
     //convertValue(&str, 4.0f);
 
-
-    using ::operator<<;
+    //using ::operator<<;
     using std::string;
     int a = 3;
-    Radian asdf;
-    COUT(3) << asdf;
+    FooBar asdf;
+    std::string asdf2;
+    std::cout << asdf2;
+    ConvertValue(&asdf2, asdf);
+    //COUT(3) << asdf;
 
     TestConv(1, int, (3), float, 3.0);
     TestConv(2, int, (3), string, "3");
@@ -231,7 +237,7 @@ namespace orxonox
     TestConv(6, Vector2, (3,4), string, "3,4");
     TestConv(7, const char*, ("4.3"), float, 4.3f);
     TestConv(8, const char*, ("4,3"), Vector2, Vector2(4,3));
-    TestConv(9, const char*, ("4.4"), Radian, Radian(4.4));
+    //TestConv(9, const char*, ("4.4"), Radian, Radian(4.4));
     TestConv(100, int, (3), const char*, "3");
     TestConv(101, Vector3, (1, 2, 3), float, 3.0);
 

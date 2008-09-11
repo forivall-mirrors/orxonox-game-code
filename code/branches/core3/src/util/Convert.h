@@ -49,11 +49,6 @@
 #  pragma GCC system_header
 #endif
 
-///////////////////////////////////
-// Explicit Conversion Functions //
-///////////////////////////////////
-
-
 ///////////////////////////////////////////////
 // Static detection for conversion functions //
 ///////////////////////////////////////////////
@@ -95,12 +90,6 @@ namespace separate_namespace
         // gcc does some syntax checking anyway. So return a correct value that is not a temporary.
 	    return *(new conversionTests::VeryBigStruct());
     }
-}
-
-namespace conversionTests
-{
-    // Part of the msvc hack. See above in the namespace for more explanations.
-    using namespace separate_namespace;
 
     // These operators simply accept anything but have lower priority than specialisations
     // or exact-match non-template functions.
@@ -110,6 +99,12 @@ namespace conversionTests
     conversionTests::VeryBigStruct operator<<(std::ostream& outstream, const Any anything);
     template <class Any>
     conversionTests::VeryBigStruct operator>>(std::istream& instream,  const Any anything);
+}
+
+namespace conversionTests
+{
+    // Part of the msvc hack. See above in the namespace for more explanations.
+    using namespace separate_namespace;
 
     template <class FromType, class ToType>
     class ImplicitConversion
@@ -143,7 +138,7 @@ namespace conversionTests
     class IStringStreamOperator
     {
         IStringStreamOperator(); IStringStreamOperator(const IStringStreamOperator&); ~IStringStreamOperator();
-        static std::istringstream istream_; // helper object to perform the '>>' operation
+        static std::istream istream_; // helper object to perform the '>>' operation
         static Type object;                 // helper object to handle private c'tor and d'tor
     public:
         enum { exists = !(sizeof(istream_ >> object) == sizeof(VeryBigStruct)) };
@@ -153,7 +148,7 @@ namespace conversionTests
     class OStringStreamOperator
     {
         OStringStreamOperator(); OStringStreamOperator(const OStringStreamOperator&); ~OStringStreamOperator();
-        static std::ostringstream ostream_; // helper object to perform the '<<' operation
+        static std::ostream ostream_; // helper object to perform the '<<' operation
         static Type object;                 // helper object to handle private c'tor and d'tor
     public:
         enum { exists = !(sizeof(ostream_ << object) == sizeof(VeryBigStruct)) };
@@ -168,9 +163,9 @@ namespace conversionTests
     This also works for user defined conversion operators.
     Usage: ImplicitConversion<FromType, ToType>::exists
 */
-template <class FromType, class ToType>
-struct ImplicitConversion
-{ enum { exists = conversionTests::ImplicitConversion<FromType, ToType>::exists }; };
+//template <class FromType, class ToType>
+//struct ImplicitConversion
+//{ enum { exists = conversionTests::asdf::ImplicitConversion<FromType, ToType>::exists }; };
 
 /**
 @brief
@@ -178,9 +173,9 @@ struct ImplicitConversion
     There has to e an exact type match for a success!
     Usage: ExplicitConversion<FromType, ToType>::exists
 */
-template <class FromType, class ToType>
-struct ExplicitConversion
-{ enum { exists = conversionTests::ExplicitConversion<FromType, ToType>::exists }; };
+//template <class FromType, class ToType>
+//struct ExplicitConversion
+//{ enum { exists = conversionTests::asdf::ExplicitConversion<FromType, ToType>::exists }; };
 
 /**
 @brief
@@ -188,9 +183,9 @@ struct ExplicitConversion
     There has to e an exact type match for a success!
     Usage: IStringStreamConversion<FromType, ToType>::exists
 */
-template <class Type>
-struct IStringStreamOperator
-{ enum { exists = conversionTests::IStringStreamOperator<Type>::exists }; };
+//template <class Type>
+//struct IStringStreamOperator
+//{ enum { exists = conversionTests::asdf::IStringStreamOperator<Type>::exists }; };
 
 /**
 @brief
@@ -198,9 +193,9 @@ struct IStringStreamOperator
     There has to e an exact type match for a success!
     Usage: OStringStreamConversion<FromType, ToType>::exists
 */
-template <class Type>
-struct OStringStreamOperator
-{ enum { exists = conversionTests::OStringStreamOperator<Type>::exists }; };
+//template <class Type>
+//struct OStringStreamOperator
+//{ enum { exists = conversionTests::asdf::OStringStreamOperator<Type>::exists }; };
 
 
 
@@ -285,7 +280,7 @@ namespace conversion
         // probe for '<<' stringstream operator
         static bool convert(std::string* output, const FromType& input)
         {
-            const bool probe = OStringStreamOperator<FromType>::exists;
+            const bool probe = conversionTests::OStringStreamOperator<FromType>::exists;
             return convert(output, input, StringStreamPossible<probe>());
         }
         // Conversion with ostringstream possible
@@ -327,7 +322,7 @@ namespace conversion
         // probe for '>>' stringstream operator
         static bool convert(ToType* output, const std::string& input)
         {
-            const bool probe = IStringStreamOperator<ToType>::exists;
+            const bool probe = conversionTests::IStringStreamOperator<ToType>::exists;
             return convert(output, input, StringStreamPossible<probe>());
         }
         // Conversion with istringstream possible
@@ -380,7 +375,7 @@ namespace conversion
     template <class ToType, class FromType>
     inline bool convert(ToType* output, const FromType& input, ExplicitPossible<false>)
     {
-        const bool probe = ImplicitConversion<FromType, ToType>::exists;
+        const bool probe = conversionTests::ImplicitConversion<FromType, ToType>::exists;
         return convert(output, input, ImplicitPossible<probe>());
     }
 }
@@ -397,7 +392,7 @@ struct ConverterExplicit
     static bool convert(ToType* output, const FromType& input)
     {
         // check for explicit conversion via function overloading
-        const bool probe = ExplicitConversion<FromType, ToType>::exists;
+        const bool probe = conversionTests::ExplicitConversion<FromType, ToType>::exists;
         return conversion::convert(output, input, conversion::ExplicitPossible<probe>());
     }
 };

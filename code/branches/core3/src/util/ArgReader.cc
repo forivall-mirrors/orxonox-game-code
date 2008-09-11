@@ -81,7 +81,9 @@ ArgReader::ArgReader(int argc, char **argv)
   errorString_ = "";
   CmdLineArg arg;
 
-  int a = ImplicitConversion<FooBar, const char*>::exists;
+  //std::cout << errorString_;
+
+  int a = conversionTests::ImplicitConversion<FooBar, const char*>::exists;
   int val1;
   long long val2 = conversion_cast<long long>(val1);
   //val2 = val1;

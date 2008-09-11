@@ -90,7 +90,8 @@ struct MT_Value : public MultiType::MT_ValueBase
     inline operator orxonox::Radian()      const { return getConvertedValue<T, orxonox::Radian>     (this->value_); }
     inline operator orxonox::Degree()      const { return getConvertedValue<T, orxonox::Degree>     (this->value_); }
 
-    inline void toString(std::ostream& outstream) const { outstream << this->value_; }
+    inline void toString(std::ostream& outstream) const { std::operator <<(outstream, conversion_cast<std::string>(this->value_)); }
+    //inline friend std::ostream& operator <<(std::ostream& outstream, const MT_Value& mtv) { outstream << conversion_cast<std::string>(this->value_); return outsream; }
 
     T value_;
 };

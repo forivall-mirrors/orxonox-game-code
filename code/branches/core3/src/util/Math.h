@@ -69,16 +69,16 @@ _UtilExport orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposi
 /////////////////////////////////////
 
 // Vector2 to std::string
-inline bool explicitConversion(std::string* output, const orxonox::Vector2& input)
-{
-    std::ostringstream ostream;
-    if (ostream << input.x << "," << input.y)
-    {
-        (*output) = ostream.str();
-        return true;
-    }
-    return false;
-}
+//inline bool explicitConversion(std::string* output, const orxonox::Vector2& input)
+//{
+//    std::ostringstream ostream;
+//    if (ostream << input.x << "," << input.y)
+//    {
+//        (*output) = ostream.str();
+//        return true;
+//    }
+//    return false;
+//}
 
 // Vector3 to std::string
 inline bool explicitConversion(std::string* output, const orxonox::Vector3& input)
