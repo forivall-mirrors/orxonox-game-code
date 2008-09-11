@@ -52,6 +52,7 @@
 #include "RotatingProjectile.h"
 #include "ParticleProjectile.h"
 #include "GraphicsEngine.h"
+#include "SpaceShipAI.h"
 
 namespace orxonox
 {
@@ -144,6 +145,9 @@ namespace orxonox
 
     SpaceShip::~SpaceShip()
     {
+        for (ObjectList<SpaceShipAI>::iterator it = ObjectList<SpaceShipAI>::begin(); it; ++it)
+            it->shipDied(this);
+      
         if (this->isInitialized())
         {
             if (this->tt1_)

@@ -49,7 +49,7 @@ namespace orxonox
             virtual void tick(float dt);
             static void createEnemy(int num);
             static void killEnemies(int num);
-            void shipDied(SpaceShipAI* ship);
+            void shipDied(SpaceShip* ship);
             void damage(float damage);
             void kill();
 
