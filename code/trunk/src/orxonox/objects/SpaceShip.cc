@@ -76,10 +76,11 @@ namespace orxonox
       ObjectList<SpaceShip>::iterator it;
       for(it = ObjectList<SpaceShip>::begin(); it; ++it){
 	assert(it->isA(Class(SpaceShip)));
-        if( (it)->myShip_ || (network::Host::running() && network::Host::getShipID()==(it)->objectID) )
+        if( (it)->myShip_ || (network::Host::running() && network::Host::getShipID()==(it)->objectID) ){
+//	  COUT(1) << "^^^^^^^^^^ myShip_:" << *it << " classname: " << (*it)->getIdentifier()->getName() << " objectid: " << (*it)->objectID << std::endl;
           return *it;
+	}
       }
-      return 0;
       return 0;
     }
 
@@ -166,7 +167,7 @@ namespace orxonox
     bool SpaceShip::create(){
       if(!myShip_){
         if(network::Host::running())
-          COUT(3) << "this id: " << this->objectID << " myShipID: " << network::Host::getShipID() << std::endl;
+//          COUT(3) << "this id: " << this->objectID << " myShipID: " << network::Host::getShipID() << std::endl;
         if(network::Host::running() && objectID == network::Host::getShipID()){
           if(!network::Host::isServer())
  	    setObjectMode(0x3);

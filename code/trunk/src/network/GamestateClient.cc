@@ -75,12 +75,13 @@ namespace network
     int id = GAMESTATEID_INITIAL;
     bool b = saveShipCache();
     packet::Gamestate *processed = processGamestate(tempGamestate_);
-    assert(processed);
+    if(!processed)
+      return GAMESTATEID_INITIAL;
+//    assert(processed);
     //successfully loaded data from gamestate. now save gamestate for diff and delete the old gs
     tempGamestate_=0;
     gamestateMap_[processed->getID()]=processed;
-    last_diff_ = processed->getBaseID();
-    last_gamestate_ = processed->getID();
+    last_diff_ = processed->getID();
     if(b)
       loadShipCache();
     id = processed->getID();
@@ -102,7 +103,7 @@ namespace network
 
   packet::Gamestate *GamestateClient::getGamestate(){
     packet::Gamestate *gs = new packet::Gamestate();
-    gs->collectData(GAMESTATEID_INITIAL);
+    gs->collectData(0);
     return gs;
   }
 
@@ -132,6 +133,7 @@ namespace network
   bool GamestateClient::saveShipCache(){
     if(myShip_==NULL){
       myShip_ = orxonox::SpaceShip::getLocalShip();
+//      COUT(2) << "myShip_: " << myShip_ << " getLocalShip(): " << orxonox::SpaceShip::getLocalShip() << std::endl;
       if(!myShip_)
 	return false;
     }
@@ -150,7 +152,9 @@ namespace network
   }
 
   bool GamestateClient::loadShipCache(){
+    myShip_=orxonox::SpaceShip::getLocalShip(); //TODO: remove this (only a hack)
     if(myShip_ && shipCache_){
+      assert(myShip_->getIdentifier());
       unsigned char *temp = shipCache_;
       myShip_->updateData(temp, 0x2);
       delete shipCache_;
@@ -164,7 +168,9 @@ namespace network
       assert(gs->decompressData());
     if(gs->isDiffed()){
       packet::Gamestate *base = gamestateMap_[gs->getBaseID()];
-      assert(base);
+      if(!base)
+        return 0;
+//      assert(base); //TODO: fix this
       packet::Gamestate *undiffed = gs->undiff(base);
       delete gs;
       gs=undiffed;
