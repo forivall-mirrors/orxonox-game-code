@@ -455,6 +455,7 @@ namespace orxonox
                          << "This could lead to a possible memory/resource leak!" << std::endl;
             }
         }
+	singletonRef_s = 0;
     }
 
     /**
