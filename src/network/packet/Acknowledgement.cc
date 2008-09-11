@@ -30,6 +30,7 @@
 #include "Acknowledgement.h"
 #include "network/Host.h"
 #include "network/GamestateHandler.h"
+#include "core/CoreIncludes.h"
 
 namespace network {
 namespace packet {
@@ -62,13 +63,13 @@ unsigned int Acknowledgement::getSize() const{
 }
 
 bool Acknowledgement::process(){
-  bool b = GamestateHandler::ackGamestate(data_[_ACKID], clientID_);
+  bool b = GamestateHandler::ackGamestate(getAckID(), clientID_);
   delete this;
   return b;
 }
 
 unsigned int Acknowledgement::getAckID(){
-  return *(unsigned int *)&data_[ _ACKID ];
+  return *(unsigned int *)(data_ + _ACKID);
 }
 
 } //namespace packet

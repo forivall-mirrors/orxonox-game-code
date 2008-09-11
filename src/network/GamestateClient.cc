@@ -34,6 +34,7 @@
 #include "core/BaseObject.h"
 #include "core/Iterator.h"
 #include "Synchronisable.h"
+#include "packet/Acknowledgement.h"
 
 
 namespace network
@@ -69,24 +70,27 @@ namespace network
     return true;
   }
 
-  int GamestateClient::processGamestates(){
+  bool GamestateClient::processGamestates(){
     if(tempGamestate_==NULL)
-      return 0;
+      return false;
     int id = GAMESTATEID_INITIAL;
     bool b = saveShipCache();
     packet::Gamestate *processed = processGamestate(tempGamestate_);
-    if(!processed)
-      return GAMESTATEID_INITIAL;
+    if(!processed){
+      if(b)
+        loadShipCache();
+      return false;
+    }
 //    assert(processed);
     //successfully loaded data from gamestate. now save gamestate for diff and delete the old gs
-    tempGamestate_=0;
+    tempGamestate_=NULL;
     gamestateMap_[processed->getID()]=processed;
     last_diff_ = processed->getID();
     if(b)
       loadShipCache();
     id = processed->getID();
-    cleanup();
-    return id;
+    sendAck(id);
+    return true;
   }
 
 
@@ -129,6 +133,18 @@ namespace network
     COUT(4) << std::endl;
 
   }
+  
+  bool GamestateClient::sendAck(unsigned int gamestateID){
+    packet::Acknowledgement *ack = new packet::Acknowledgement(gamestateID, 0);
+    if(!ack->send()){
+      COUT(3) << "could not ack gamestate: " << gamestateID << std::endl;
+      return false;
+    }
+    else{
+      COUT(3) << "acked a gamestate: " << gamestateID << std::endl;
+      return true;
+    }
+  }
 
   bool GamestateClient::saveShipCache(){
     if(myShip_==NULL){
@@ -168,8 +184,10 @@ namespace network
       assert(gs->decompressData());
     if(gs->isDiffed()){
       packet::Gamestate *base = gamestateMap_[gs->getBaseID()];
-      if(!base)
+      if(!base){
+        delete gs;
         return 0;
+      }
 //      assert(base); //TODO: fix this
       packet::Gamestate *undiffed = gs->undiff(base);
       delete gs;
