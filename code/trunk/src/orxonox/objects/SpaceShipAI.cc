@@ -72,8 +72,6 @@ namespace orxonox
 
     SpaceShipAI::~SpaceShipAI()
     {
-        for (ObjectList<SpaceShipAI>::iterator it = ObjectList<SpaceShipAI>::begin(); it; ++it)
-            it->shipDied(this);
     }
 
     void SpaceShipAI::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -314,7 +312,7 @@ namespace orxonox
         return (getAngle(this->getPosition(), this->getDir(), this->targetPosition_) < angle);
     }
 
-    void SpaceShipAI::shipDied(SpaceShipAI* ship)
+    void SpaceShipAI::shipDied(SpaceShip* ship)
     {
         if (ship == this->target_)
         {
