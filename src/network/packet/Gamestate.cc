@@ -143,6 +143,12 @@ bool Gamestate::spreadData(int mode)
         if(!Synchronisable::fabricate(mem, mode))
           return false;
         it=orxonox::ObjectList<Synchronisable>::end();
+      }else{
+	if(! it->updateData(mem, mode))
+        {
+          COUT(1) << "We couldn't update objectID: " \
+            << objectID << "; classID: " << classID << std::endl;
+        }
       }
     } else
     {

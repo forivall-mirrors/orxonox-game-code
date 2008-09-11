@@ -99,11 +99,7 @@ namespace network
   bool Client::establishConnection(){
     Synchronisable::setClient(true);
     isConnected=client_connection.createConnection();
-    if(isConnected){
-//       COUT(3) << "sending connectrequest" << std::endl;
-//       if(!client_connection.addPacket(pck_gen.generateConnectRequest()) || !client_connection.sendPackets())
-//         COUT(1) << "could not send connection request !!!!!!!!!" << std::endl;
-    }else
+    if(!isConnected)
       COUT(1) << "could not create connection laber" << std::endl;
     return isConnected;
   }
