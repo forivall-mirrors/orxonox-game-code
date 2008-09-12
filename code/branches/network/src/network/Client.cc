@@ -169,8 +169,7 @@ namespace network
     {
       if(!isSynched_)
         isSynched_=true;
-    }else
-      COUT(3) << "gamestate has not been processed sucessfully" << std::endl;
+    }
     gamestate.cleanup();
     return;
   }

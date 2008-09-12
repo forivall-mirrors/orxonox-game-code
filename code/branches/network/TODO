@@ -1,2 +1,5 @@
-- should we use enet_peer_ping to test if a client is still alive ?
-- enet_host_broadcast ? (to all peers)
+todo: 
+	!!! check that enet does not cause a packet traffic jam when a reliable packet gets missed !!!
+	spaceship of client vanishes on server
+	new gamestate concept
+

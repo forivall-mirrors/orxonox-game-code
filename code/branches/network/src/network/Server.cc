@@ -55,6 +55,7 @@
 #include "packet/Chat.h"
 #include "packet/Packet.h"
 #include "packet/Welcome.h"
+#include "packet/DeleteObjects.h"
 #include <util/Convert.h>
 
 namespace network
@@ -228,6 +229,7 @@ namespace network
     COUT(5) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
     //std::cout << "updated gamestate, sending it" << std::endl;
     //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
+    sendObjectDeletes();
     sendGameState();
     COUT(5) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
     //std::cout << "sent gamestate" << std::endl;
@@ -275,14 +277,32 @@ namespace network
       temp=temp->next();
       // gs gets automatically deleted by enet callback
     }
-    /*if(added) {
-      //std::cout << "send gamestates from server.cc in sendGameState" << std::endl;
-      return connection->sendPackets();
-    }*/
-    //COUT(5) << "Server: had no gamestates to send" << std::endl;
     return true;
   }
 
+  bool Server::sendObjectDeletes(){
+    ClientInformation *temp = ClientInformation::getBegin();
+    packet::DeleteObjects *del = new packet::DeleteObjects();
+    if(!del->fetchIDs())
+      return true;  //everything ok (no deletes this tick)
+    while(temp != NULL){
+      if( !(temp->getSynched()) ){
+        COUT(5) << "Server: not sending gamestate" << std::endl;
+        temp=temp->next();
+        continue;
+      }
+      int cid = temp->getID(); //get client id
+      packet::DeleteObjects *cd = new packet::DeleteObjects(*del);
+      assert(cd);
+      cd->setClientID(cid);
+      if ( !cd->send() )
+        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl;
+      temp=temp->next();
+      // gs gets automatically deleted by enet callback
+    }
+    return true;
+  }
+  
 //   void Server::processChat( chat *data, int clientId){
 //     char *message = new char [strlen(data->message)+10+1];
 //     sprintf(message, "Player %d: %s", clientId, data->message);

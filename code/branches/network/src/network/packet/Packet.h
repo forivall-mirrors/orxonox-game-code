@@ -46,7 +46,8 @@ namespace ENUM{
     Gamestate,
     ClassID,
     Chat,
-    Welcome
+    Welcome,
+    DeleteObjects
   };
 }
   

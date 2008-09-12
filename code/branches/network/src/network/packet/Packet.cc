@@ -41,6 +41,7 @@
 #include "ClassID.h"
 #include "Gamestate.h"
 #include "Welcome.h"
+#include "DeleteObjects.h"
 #include "network/Host.h"
 #include "core/CoreIncludes.h"
 
@@ -140,29 +141,33 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   unsigned char *data = packet->data;
   unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p;
-  COUT(3) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;
+  COUT(5) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;
   switch( *(ENUM::Type *)(data + _PACKETID) )
   {
     case ENUM::Acknowledgement:
-      COUT(3) << "ack" << std::endl;
+      COUT(4) << "ack" << std::endl;
       p = new Acknowledgement( data, clientID );
       break;
     case ENUM::Chat:
-      COUT(3) << "chat" << std::endl;
+      COUT(4) << "chat" << std::endl;
       p = new Chat( data, clientID );
       break;
     case ENUM::ClassID:
-      COUT(3) << "classid" << std::endl;
+      COUT(4) << "classid" << std::endl;
       p = new ClassID( data, clientID );
       break;
     case ENUM::Gamestate:
-      COUT(3) << "gamestate" << std::endl;
+      COUT(4) << "gamestate" << std::endl;
       // TODO: remove brackets
       p = new Gamestate( data, clientID );
       break;
     case ENUM::Welcome:
-      COUT(3) << "welcome" << std::endl;
+      COUT(4) << "welcome" << std::endl;
       p = new Welcome( data, clientID );
+      break;
+    case ENUM::DeleteObjects:
+      COUT(4) << "deleteobjects" << std::endl;
+      p = new DeleteObjects( data, clientID );
       break;
     default:
       assert(0); //TODO: repair this

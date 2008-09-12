@@ -84,7 +84,7 @@ namespace network
     void disconnectClient( ClientInformation *client);
     bool processPacket( ENetPacket *packet, ENetPeer *peer );
     bool sendGameState();
-    
+    bool sendObjectDeletes();
     
     //void processChat( chat *data, int clientId);
     ConnectionManager *connection;

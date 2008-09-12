@@ -32,6 +32,7 @@
 #include "util/CRC32.h"
 #endif
 
+
 #ifndef NETWORK_PACKETGAMESTATE_H
 #define NETWORK_PACKETGAMESTATE_H
 
@@ -43,7 +44,7 @@ struct GamestateHeader{
   ENUM::Type packetType;
   int id; // id of the gamestate
   unsigned int compsize;
-  unsigned int normsize;
+  unsigned int datasize;
   int base_id; // id of the base-gamestate diffed from
   bool diffed; // wheter diffed or not
   bool complete; // wheter it is a complete gamestate or only partial
@@ -54,7 +55,7 @@ struct GamestateHeader{
 };
 
 /**
-	@author
+	@author Oliver Scheuss
 */
 class Gamestate: public Packet{
   public:
@@ -83,9 +84,7 @@ class Gamestate: public Packet{
     unsigned int calcGamestateSize(unsigned int id, int mode=0x0);
     void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
 
-
-    //Bytestream *bs_;
-    //GamestateHeader *header_;
+  private:
 };
 
 }

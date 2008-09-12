@@ -32,6 +32,8 @@
 #include "NetworkPrereqs.h"
 
 #include <list>
+#include <map>
+#include <queue>
 #include "core/OrxonoxClass.h"
 #include "util/XMLIncludes.h"
 #include "NetworkCallback.h"
@@ -73,7 +75,7 @@ namespace network
 
     void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
     bool getData(unsigned char*& men, unsigned int id, int mode=0x0);
-    int getSize2(unsigned int id, int mode=0x0);
+    int getSize(unsigned int id, int mode=0x0);
     bool updateData(unsigned char*& mem, int mode=0x0);
     bool isMyData(unsigned char* mem);
     void setObjectMode(int mode);
@@ -83,11 +85,16 @@ namespace network
     virtual bool create();
     static void setClient(bool b);
     
-    static bool fabricate(unsigned char*& mem, int mode=0x0);
+    static Synchronisable *fabricate(unsigned char*& mem, int mode=0x0);
+    static bool deleteObject(unsigned int objectID);
+    static Synchronisable *getSynchronisable(unsigned int objectID);
+    static unsigned int getNumberOfDeletedObject(){ return deletedObjects_.size(); }
+    static unsigned int popDeletedObject(){ unsigned int i = deletedObjects_.front(); deletedObjects_.pop(); return i; }
+    
+    
   protected:
     Synchronisable();
   private:
-    int getSize(unsigned int id, int mode=0x0);
     bool isMyTick(unsigned int id);
     std::list<synchronisableVariable *> *syncList;
     int datasize;
@@ -95,6 +102,8 @@ namespace network
     bool backsync_; // if true the variables with mode > 1 will be synchronised to server (client -> server)
     unsigned int objectFrequency_;
     int objectMode_;
+    static std::map<unsigned int, Synchronisable *> objectMap_;
+    static std::queue<unsigned int> deletedObjects_;
   };
 }
 

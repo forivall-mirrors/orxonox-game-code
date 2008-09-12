@@ -155,7 +155,7 @@ namespace network
     }
     if(myShip_){
       //      unsigned char *data = new unsigned char[myShip_->getSize()];
-      int size=myShip_->getSize2(0, 0x1);
+      int size=myShip_->getSize(0, 0x1);
       if(size==0)
         return false;
       shipCache_ = new unsigned char [size];
