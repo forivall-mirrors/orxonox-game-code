@@ -121,7 +121,7 @@ namespace orxonox
         using namespace CEGUI;
         if (state_ == Uninitialised)
         {
-            COUT(3) << "Intialising CEGUI." << std::endl;
+            COUT(3) << "Initialising CEGUI." << std::endl;
 
             try
             {
@@ -139,18 +139,18 @@ namespace orxonox
                 this->guiRenderer_ = new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_MAIN, true, 3000);
                 this->resourceProvider_ = guiRenderer_->createResourceProvider();
                 this->resourceProvider_->setDefaultResourceGroup("GUI");
-                
+
                 // setup scripting
                 this->scriptModule_ = new LuaScriptModule();
                 this->luaState_ = this->scriptModule_->getLuaState();
 
                 // create the CEGUI system singleton
                 this->guiSystem_ = new System(this->guiRenderer_, this->resourceProvider_, 0, this->scriptModule_);
-                
+
                 // set the log level according to ours (translate by subtracting 1)
                 Logger::getSingleton().setLoggingLevel(
                     (LoggingLevel)(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
-                
+
                 // do this after 'new CEGUI::Sytem' because that creates the lua state in the first place
                 tolua_Core_open(this->scriptModule_->getLuaState());
                 tolua_Orxonox_open(this->scriptModule_->getLuaState());
@@ -177,7 +177,7 @@ namespace orxonox
 
             state_ = Ready;
         }
-        
+
         return true;
     }
 

@@ -1,4 +1,4 @@
 title Orxonox
-path lib;%path%
+path lib;..\..\libs;%path%
 orxonox.exe
 pause

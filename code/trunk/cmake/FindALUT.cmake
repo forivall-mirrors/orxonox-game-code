@@ -15,6 +15,14 @@
 # Tiger will include OpenAL as part of the System.
 # But for now, we have to look around.
 # Other (Unix) systems should be able to utilize the non-framework paths.
+#
+# Several changes and additions by Fabian 'x3n' Landau
+#                 > www.orxonox.net <
+
+IF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
+  SET (ALUT_FIND_QUIETLY TRUE)
+ENDIF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
+
 FIND_PATH(ALUT_INCLUDE_DIR AL/alut.h
   $ENV{ALUTDIR}/include
   ~/Library/Frameworks/OpenAL.framework/Headers
@@ -41,6 +49,7 @@ FIND_PATH(ALUT_INCLUDE_DIR AL/alut.h
   /opt/include
   ../libs/freealut-1.1.0/include
   )
+
 # I'm not sure if I should do a special casing for Apple. It is
 # unlikely that other Unix systems will find the framework path.
 # But if they do ([Next|Open|GNU]Step?),
@@ -81,10 +90,24 @@ ELSE(${ALUT_INCLUDE_DIR} MATCHES ".framework")
     )
 ENDIF(${ALUT_INCLUDE_DIR} MATCHES ".framework")
 
-SET(ALUT_FOUND "NO")
-IF(ALUT_LIBRARY)
-  SET(ALUT_FOUND "YES")
-	MESSAGE(STATUS "FreeAlut was found")
-ENDIF(ALUT_LIBRARY)
+SET (ALUT_FOUND "NO")
+IF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
+  SET (ALUT_FOUND "YES")
+  IF (NOT ALUT_FIND_QUIETLY)
+    MESSAGE (STATUS "FreeAlut was found.")
+    IF (VERBOSE_FIND)
+      MESSAGE (STATUS "  include path: ${ALUT_INCLUDE_DIR}")
+      MESSAGE (STATUS "  library path: ${ALUT_LIBRARY}")
+      MESSAGE (STATUS "  libraries:    alut")
+    ENDIF (VERBOSE_FIND)
+  ENDIF (NOT ALUT_FIND_QUIETLY)
+ELSE (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
+  IF (NOT ALUT_INCLUDE_DIR)
+    MESSAGE (SEND_ERROR "FreeAlut include path was not found.")
+  ENDIF (NOT ALUT_INCLUDE_DIR)
+  IF (NOT ALUT_LIBRARY)
+    MESSAGE (SEND_ERROR "FreeAlut library was not found.")
+  ENDIF (NOT ALUT_LIBRARY)
+ENDIF (ALUT_LIBRARY AND ALUT_INCLUDE_DIR)
 
 
