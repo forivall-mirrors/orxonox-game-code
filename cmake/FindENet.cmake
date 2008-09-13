@@ -9,6 +9,8 @@
 #  Borrowed from The Mana World
 #  http://themanaworld.org/
 #
+# Several changes and additions by Fabian 'x3n' Landau
+#                 > www.orxonox.net <
 
 IF (ENet_INCLUDE_DIR AND ENet_LIBRARY)
    SET(ENet_FIND_QUIETLY TRUE)
@@ -27,27 +29,35 @@ FIND_LIBRARY(ENet_LIBRARY
     ../libs/enet-1.1
     )
 
-IF(WIN32)
-  SET(WINDOWS_ENET_DEPENDENCIES "ws2_32;winmm")
-  SET(ENet_LIBRARY ${ENet_LIBRARY} ${WINDOWS_ENET_DEPENDENCIES})
-ENDIF(WIN32)
-
+SET(ENET_FOUND FALSE)
 IF (ENet_INCLUDE_DIR AND ENet_LIBRARY)
     SET(ENET_FOUND TRUE)
     SET(ENET_INCLUDE_DIR ${ENet_INCLUDE_DIR})
+
+    IF(WIN32)
+        SET(WINDOWS_ENET_DEPENDENCIES "ws2_32;winmm")
+        SET(ENet_LIBRARY ${ENet_LIBRARY} ${WINDOWS_ENET_DEPENDENCIES})
+    ENDIF(WIN32)
+
     SET(ENET_LIBRARIES ${ENet_LIBRARY})
-ELSE (ENet_INCLUDE_DIR AND ENet_LIBRARY)
-    SET(ENET_FOUND FALSE)
 ENDIF (ENet_INCLUDE_DIR AND ENet_LIBRARY)
 
 IF (ENET_FOUND)
     IF (NOT ENet_FIND_QUIETLY)
-        MESSAGE(STATUS "Found enet: ${ENet_LIBRARY}")
+        MESSAGE(STATUS "ENet was found.")
+        IF (VERBOSE_FIND)
+            MESSAGE (STATUS "  include path: ${ENet_INCLUDE_DIR}")
+            MESSAGE (STATUS "  library path: ${ENet_LIBRARY}")
+            MESSAGE (STATUS "  libraries:    enet")
+        ENDIF (VERBOSE_FIND)
     ENDIF (NOT ENet_FIND_QUIETLY)
 ELSE (ENET_FOUND)
-    IF (ENet_FIND_REQUIRED)
-        MESSAGE(FATAL_ERROR "Could NOT find enet")
-    ENDIF (ENet_FIND_REQUIRED)
+    IF (NOT ENet_INCLUDE_DIR)
+        MESSAGE(SEND_ERROR "ENet include path was not found.")
+    ENDIF (NOT ENet_INCLUDE_DIR)
+    IF (NOT ENet_LIBRARY)
+        MESSAGE(SEND_ERROR "ENet library was not found.")
+    ENDIF (NOT ENet_LIBRARY)
 ENDIF (ENET_FOUND)
 
 MARK_AS_ADVANCED(ENet_INCLUDE_DIR ENet_LIBRARY)

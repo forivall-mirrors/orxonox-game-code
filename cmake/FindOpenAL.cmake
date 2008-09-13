@@ -8,6 +8,12 @@
 # correspond to the ./configure --prefix=$OPENALDIR
 # used in building OpenAL.
 #
+# Several changes and additions by Fabian 'x3n' Landau
+#                 > www.orxonox.net <
+
+IF (OPENAL_LIBRARY AND OPENAL_INCLUDE_DIR)
+  SET(OPENAL_FIND_QUIETLY TRUE)
+ENDIF (OPENAL_LIBRARY AND OPENAL_INCLUDE_DIR)
 
 # Created by Eric Wing. This was influenced by the FindSDL.cmake module.
 # On OSX, this will prefer the Framework version (if found) over others.
@@ -81,10 +87,25 @@ ELSE(${OPENAL_INCLUDE_DIR} MATCHES ".framework")
     )
 ENDIF(${OPENAL_INCLUDE_DIR} MATCHES ".framework")
 
-SET(OPENAL_FOUND "NO")
-IF(OPENAL_LIBRARY)
-  SET(OPENAL_FOUND "YES")
-	MESSAGE(STATUS "OpenAL was found.")
-ENDIF(OPENAL_LIBRARY)
+SET (OPENAL_FOUND "NO")
+
+IF (OPENAL_LIBRARY AND OPENAL_INCLUDE_DIR)
+  SET (OPENAL_FOUND "YES")
+  IF (NOT OPENAL_FIND_QUIETLY)
+    MESSAGE (STATUS "OpenAL was found.")
+    IF (VERBOSE_FIND)
+      MESSAGE (STATUS "  include path: ${OPENAL_INCLUDE_DIR}")
+      MESSAGE (STATUS "  library path: ${OPENAL_LIBRARY}")
+      MESSAGE (STATUS "  libraries:    openal al OpenAL32")
+    ENDIF (VERBOSE_FIND)
+  ENDIF (NOT OPENAL_FIND_QUIETLY)
+ELSE (OPENAL_LIBRARY AND OPENAL_INCLUDE_DIR)
+  IF (NOT OPENAL_INCLUDE_DIR)
+    MESSAGE (SEND_ERROR "OpenAL include path was not found.")
+  ENDIF (NOT OPENAL_INCLUDE_DIR)
+  IF (NOT OPENAL_LIBRARY)
+    MESSAGE (SEND_ERROR "OpenAL library was not found.")
+  ENDIF (NOT OPENAL_LIBRARY)
+ENDIF (OPENAL_LIBRARY AND OPENAL_INCLUDE_DIR)
 
 

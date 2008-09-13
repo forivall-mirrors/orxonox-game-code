@@ -2,6 +2,9 @@
 # use with cation
 # Nicolas Schlumberger <nico AT orxonx DOT net> (C) 2007
 #
+# Several changes and additions by Fabian 'x3n' Landau
+#                 > www.orxonox.net <
+#
 # - Find the Boost includes and libraries.
 # The following variables are set if Boost is found.  If Boost is not
 # found, Boost_FOUND is set to false.
@@ -49,9 +52,6 @@
 # ...
 # INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 # LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-#
-# In Windows, we make the assumption that, if the Boost files are installed, the default directory
-# will be C:\boost.
 
 #
 # TODO:
@@ -59,6 +59,10 @@
 # 1) Automatically find the Boost library files and eliminate the need
 #    to use Link Directories.
 #
+
+IF (Boost_INCLUDE_DIR)
+  SET (Boost_INCLUDE_FIND_QUIETLY TRUE)
+ENDIF (Boost_INCLUDE_DIR)
 
 IF(WIN32)
 # In windows, automatic linking is performed, so you do not have to specify the libraries.
@@ -74,13 +78,13 @@ IF(WIN32)
 # If you want to observe which libraries are being linked against then defining
 # BOOST_LIB_DIAGNOSTIC will cause the auto-linking code to emit a #pragma message each time
 # a library is selected for linking.
-  SET(Boost_LIB_DIAGNOSTIC_DEFINITIONS "-DBOOST_LIB_DIAGNOSTIC")
+#  SET(Boost_LIB_DIAGNOSTIC_DEFINITIONS "-DBOOST_LIB_DIAGNOSTIC")
 #  SET(Boost_LIB_PREFIX "lib")
 #  SET(Boost_LIB_SUFFIX "gcc-mt-1_33_1.lib")
 ENDIF(WIN32)
 
 
-SET(BOOST_INCLUDE_PATH_DESCRIPTION "directory containing the boost include files. E.g /usr/local/include/boost-1_33_1 or c:\\boost\\include\\boost-1_33_1")
+SET(BOOST_INCLUDE_PATH_DESCRIPTION "directory containing the boost include files.")
 
 SET(BOOST_DIR_MESSAGE "Set the Boost_INCLUDE_DIR cmake cache entry to the ${BOOST_INCLUDE_PATH_DESCRIPTION}")
 
@@ -89,14 +93,6 @@ IF(BOOST_DIR_SEARCH)
   FILE(TO_CMAKE_PATH ${BOOST_DIR_SEARCH} BOOST_DIR_SEARCH)
   SET(BOOST_DIR_SEARCH ${BOOST_DIR_SEARCH}/include)
 ENDIF(BOOST_DIR_SEARCH)
-
-IF(WIN32)
-  SET(BOOST_DIR_SEARCH
-    ${BOOST_DIR_SEARCH}
-    C:/boost/include
-    D:/boost/include
-  )
-ENDIF(WIN32)
 
 # Add in some path suffixes. These will have to be updated whenever a new Boost version comes out.
 SET(SUFFIX_FOR_PATH
@@ -113,22 +109,18 @@ SET(SUFFIX_FOR_PATH
 #
 # Look for an installation.
 #
-IF(WIN32)
-  SET(Boost_INCLUDE_DIR
-#    ../libs/boost_1_33_1
-    ../libs/boost_1_34_1
-#    ../libs/boost_1_35_0
-  )
-ELSE(WIN32)
-  FIND_PATH(Boost_INCLUDE_DIR NAMES boost/config.hpp PATH_SUFFIXES ${SUFFIX_FOR_PATH} PATHS
+FIND_PATH(Boost_INCLUDE_DIR NAMES boost/config.hpp PATH_SUFFIXES ${SUFFIX_FOR_PATH} PATHS
 
 # Look in other places.
-    ${BOOST_DIR_SEARCH}
+  ${BOOST_DIR_SEARCH}
+
+#    ../libs/boost_1_33_1
+    ../libs/boost_1_34_1
+#    ../libs/boost-1_35_0
 
 # Help the user find it if we cannot.
-    DOC "The ${BOOST_INCLUDE_PATH_DESCRIPTION}"
-  )
-ENDIF(WIN32)
+  DOC "The ${BOOST_INCLUDE_PATH_DESCRIPTION}"
+)
 
 # Assume we didn't find it.
 SET(Boost_FOUND 0)
@@ -174,7 +166,6 @@ IF(Boost_INCLUDE_DIR)
     SET(Boost_FOUND 1)
     MARK_AS_ADVANCED(Boost_INCLUDE_DIR)
   ENDIF(EXISTS "${Boost_INCLUDE_DIR}")
-
   IF(Boost_LIBRARY_DIR AND EXISTS "${Boost_LIBRARY_DIR}")
     SET(Boost_LIBRARY_DIRS ${Boost_LIBRARY_DIR})
   ENDIF(Boost_LIBRARY_DIR AND EXISTS "${Boost_LIBRARY_DIR}")
@@ -259,9 +250,8 @@ MACRO(BOOST_FIND_LIBRARY name)
     SET(Boost_${name}_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
     MARK_AS_ADVANCED(Boost_${name}_LIBRARY Boost_${name}_LIBRARY_DEBUG)
   ELSE(Boost_${name}_LIBRARY)
-    MESSAGE(STATUS "sdfds")
     IF(NOT Boost_FIND_QUIETLY)
-      MESSAGE(STATUS "Boost ${name} library was not found.")
+      MESSAGE(SEND_ERROR "Boost ${name} library was not found.")
     ELSE(NOT Boost_FIND_QUIETLY)
       IF(Boost_FIND_REQUIRED_${name})
         MESSAGE(FATAL_ERROR "Could NOT find required Boost ${name} library.")
@@ -283,20 +273,39 @@ IF(Boost_LIBRARY_DIRS)
 
   SET(Boost_LIBRARIES)
   FOREACH(library ${Boost_FIND_LIBRARIES})
+    IF (Boost_${library}_LIBRARY)
+      SET (Boost_${name}_LIBRARY_FIND_QUIETLY TRUE)
+    ENDIF (Boost_${library}_LIBRARY)
+
     BOOST_FIND_LIBRARY(${library})
     IF(Boost_${library}_FOUND)
       SET(Boost_LIBRARIES ${Boost_LIBRARIES} ${Boost_${library}_LIBRARIES})
-      MESSAGE(STATUS "Found BoostLibrary: ${library}")
+      IF (NOT Boost_${name}_LIBRARY_FIND_QUIETLY)
+        MESSAGE(STATUS "Found BoostLibrary: ${library}")
+        IF (VERBOSE_FIND)
+          MESSAGE (STATUS "  library path: ${Boost_${library}_LIBRARIES}")
+        ENDIF (VERBOSE_FIND)
+      ENDIF (NOT Boost_${name}_LIBRARY_FIND_QUIETLY)
     ENDIF(Boost_${library}_FOUND)
   ENDFOREACH(library)
+ELSE(Boost_LIBRARY_DIRS)
+  MESSAGE(SEND_ERROR "Boost libraries not found: ${Boost_FIND_COMPONENTS}")
 ENDIF(Boost_LIBRARY_DIRS)
 
 IF(NOT Boost_FOUND)
   IF(NOT Boost_FIND_QUIETLY)
-    MESSAGE(STATUS "Boost was not found. ${BOOST_DIR_MESSAGE}")
+    MESSAGE(SEND_ERROR "Boost was not found. ${BOOST_DIR_MESSAGE}")
   ELSE(NOT Boost_FIND_QUIETLY)
     IF(Boost_FIND_REQUIRED)
-      MESSAGE(FATAL_ERROR "Boost was not found. ${BOOST_DIR_MESSAGE}")
+      MESSAGE(SEND_ERROR "Boost was not found. ${BOOST_DIR_MESSAGE}")
     ENDIF(Boost_FIND_REQUIRED)
   ENDIF(NOT Boost_FIND_QUIETLY)
+ELSE(NOT Boost_FOUND)
+  IF (NOT Boost_INCLUDE_FIND_QUIETLY)
+    MESSAGE(STATUS "Boost include path was found.")
+    IF (VERBOSE_FIND)
+      MESSAGE (STATUS "  include path: ${Boost_INCLUDE_DIR}")
+    ENDIF (VERBOSE_FIND)
+  ENDIF (NOT Boost_INCLUDE_FIND_QUIETLY)
 ENDIF(NOT Boost_FOUND)
+
