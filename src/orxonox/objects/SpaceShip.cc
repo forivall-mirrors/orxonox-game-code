@@ -168,35 +168,38 @@ namespace orxonox
         }
     }
 
-    bool SpaceShip::create(){
-      if(!myShip_){
-        if(network::Host::running())
-//          COUT(3) << "this id: " << this->objectID << " myShipID: " << network::Host::getShipID() << std::endl;
-        if(network::Host::running() && objectID == network::Host::getShipID()){
-          if(!network::Host::isServer())
- 	    setObjectMode(0x3);
-          myShip_=true;
+    bool SpaceShip::create()
+    {
+        if (!myShip_)
+        {
+            if (network::Host::running())
+                //COUT(3) << "this id: " << this->objectID << " myShipID: " << network::Host::getShipID() << std::endl;
+                if (network::Host::running() && objectID == network::Host::getShipID())
+                {
+                    if (!network::Host::isServer())
+                        setObjectMode(0x3);
+                    myShip_ = true;
+                }
         }
         else
-          this->setRadarObjectColour(this->getProjectileColour());
-      }
-      assert(Model::create());
-      this->init();
-      return true;
+            this->setRadarObjectColour(this->getProjectileColour());
+        assert(Model::create());
+        this->init();
+        return true;
     }
 
-    void SpaceShip::registerAllVariables(){
-      registerVar( &camName_, camName_.length()+1, network::STRING, 0x1 );
-      registerVar( &maxSpeed_, sizeof(maxSpeed_), network::DATA, 0x1);
-      registerVar( &maxSideAndBackSpeed_, sizeof(maxSideAndBackSpeed_), network::DATA, 0x1);
-      registerVar( &maxRotation_, sizeof(maxRotation_), network::DATA, 0x1);
-      registerVar( &translationAcceleration_, sizeof(translationAcceleration_), network::DATA, 0x1);
-      registerVar( &rotationAcceleration_, sizeof(rotationAcceleration_), network::DATA, 0x1);
-      registerVar( &rotationAccelerationRadian_, sizeof(rotationAccelerationRadian_), network::DATA, 0x1);
-      registerVar( &translationDamping_, sizeof(translationDamping_), network::DATA, 0x1);
-      registerVar( &rotationDamping_, sizeof(rotationDamping_), network::DATA, 0x1);
-      registerVar( &rotationDampingRadian_, sizeof(rotationDampingRadian_), network::DATA, 0x1);
-
+    void SpaceShip::registerAllVariables()
+    {
+        registerVar( &camName_, camName_.length()+1, network::STRING, 0x1 );
+        registerVar( &maxSpeed_, sizeof(maxSpeed_), network::DATA, 0x1);
+        registerVar( &maxSideAndBackSpeed_, sizeof(maxSideAndBackSpeed_), network::DATA, 0x1);
+        registerVar( &maxRotation_, sizeof(maxRotation_), network::DATA, 0x1);
+        registerVar( &translationAcceleration_, sizeof(translationAcceleration_), network::DATA, 0x1);
+        registerVar( &rotationAcceleration_, sizeof(rotationAcceleration_), network::DATA, 0x1);
+        registerVar( &rotationAccelerationRadian_, sizeof(rotationAccelerationRadian_), network::DATA, 0x1);
+        registerVar( &translationDamping_, sizeof(translationDamping_), network::DATA, 0x1);
+        registerVar( &rotationDamping_, sizeof(rotationDamping_), network::DATA, 0x1);
+        registerVar( &rotationDampingRadian_, sizeof(rotationDampingRadian_), network::DATA, 0x1);
     }
 
     void SpaceShip::init()

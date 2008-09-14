@@ -36,7 +36,7 @@
 
 #include "util/OrxonoxPlatform.h"
 
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH)
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH) && 0
 
 // including std headers here is useless since they're already precompiled
 
@@ -54,6 +54,15 @@
 #include "tinyxml/ticpp.h"
 #include "tinyxml/tinyxml.h"
 
+//Get around Windows hackery (windows.h is included by Ogre)
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 
+#  ifdef max
+#    undef max
+#  endif
+#  ifdef min
+#    undef min
+#  endif
+#endif
 
 //----------- Our files ----------
 //--------------------------------
