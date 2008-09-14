@@ -64,14 +64,14 @@ inline std::istream& operator>>(std::istream& instream,  const FooBar& fb);
 
 #include "Convert.h"
 
-template<>
-struct ConverterExplicit<const char*, FooBar>
-{
-    static bool convert(const char** output, const FooBar input)
-    {
-        return true;
-    }
-};
+//template<>
+//struct ConverterExplicit<const char*, FooBar>
+//{
+//    static bool convert(const char** output, const FooBar input)
+//    {
+//        return true;
+//    }
+//};
 
 #include "MultiType.h"
 
@@ -89,13 +89,13 @@ ArgReader::ArgReader(int argc, char **argv)
   //long long val2 = 4LL;//conversion_cast<long long>(val1);
   //val2 = val1;
   //convertValue(&val2, val1);
-  //explicitConversion(&FooBar(), val1);
+  //convertValue(&FooBar(), val1);
 
   //using namespace1::fooBar1;
   //fooBar1();
   //int val1;
   //char val2;
-  //explicitConversion(&val1, val2);
+  //convertValue(&val1, val2);
 
   //std::istringstream asdf;
   //asdf >> val2;

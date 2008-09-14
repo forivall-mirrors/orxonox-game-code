@@ -26,9 +26,10 @@
  *      ...
  */
 
-/*!
+/**
     @file
-    @brief Actual conversion functions.
+    @brief
+        Math conversion functions. Definitions are in Math.cc
 */
 
 #ifndef _MathConvert_H__
@@ -37,9 +38,6 @@
 #include "UtilPrereqs.h"
 #include "Convert.h"
 #include "Math.h"
-
-// Note: explicitConversion function is used whenever possible prior to
-//       template specialisations to allow for manual calls and overwrites.
 
 
 ////////////////////
@@ -112,15 +110,15 @@ inline bool explicitConversion(std::string* output, const orxonox::ColourValue& 
 ////////////////////
 
 // std::string to Vector2
-_UtilExport bool explicitConversion(orxonox::Vector2* output, const std::string& input);
+_UtilExport bool fallbackConversion(orxonox::Vector2* output, const std::string& input);
 // std::string to Vector3
-_UtilExport bool explicitConversion(orxonox::Vector3* output, const std::string& input);
+_UtilExport bool fallbackConversion(orxonox::Vector3* output, const std::string& input);
 // std::string to Vector4
-_UtilExport bool explicitConversion(orxonox::Vector4* output, const std::string& input);
+_UtilExport bool fallbackConversion(orxonox::Vector4* output, const std::string& input);
 // std::string to Quaternion
-_UtilExport bool explicitConversion(orxonox::Quaternion* output, const std::string& input);
+_UtilExport bool fallbackConversion(orxonox::Quaternion* output, const std::string& input);
 // std::string to ColourValue
-_UtilExport bool explicitConversion(orxonox::ColourValue* output, const std::string& input);
+_UtilExport bool fallbackConversion(orxonox::ColourValue* output, const std::string& input);
 
 
 ///////////////////////////////
@@ -129,21 +127,21 @@ _UtilExport bool explicitConversion(orxonox::ColourValue* output, const std::str
 
 // From Radian
 template <class ToType>
-inline bool explicitConversion(ToType* output, const orxonox::Radian input)
+inline bool fallbackConversion(ToType* output, const orxonox::Radian input)
 {
     return convertValue<ToType, Ogre::Real>(output, input.valueRadians()); 
 }
 
 // From Degree
 template <class ToType>
-inline bool explicitConversion(ToType* output, const orxonox::Degree input)
+inline bool fallbackConversion(ToType* output, const orxonox::Degree input)
 {
     return convertValue<ToType, Ogre::Real>(output, input.valueDegrees()); 
 }
 
 // To Radian
 template <class FromType>
-inline bool explicitConversion(orxonox::Radian* output, const FromType input)
+inline bool fallbackConversion(orxonox::Radian* output, const FromType input)
 {
     float temp;
     if (convertValue(&temp, input))
@@ -157,7 +155,7 @@ inline bool explicitConversion(orxonox::Radian* output, const FromType input)
 
 // To Degree
 template <class FromType>
-inline bool explicitConversion(orxonox::Degree* output, const FromType input)
+inline bool fallbackConversion(orxonox::Degree* output, const FromType input)
 {
     float temp;
     if (convertValue(&temp, input))
@@ -168,78 +166,5 @@ inline bool explicitConversion(orxonox::Degree* output, const FromType input)
     else
         return false;
 }
-// Radian to Radian
-inline bool explicitConversion(orxonox::Radian* output, const orxonox::Radian input)
-{ *output = input; return true; }
-// Degree to Degree
-inline bool explicitConversion(orxonox::Degree* output, const orxonox::Degree input)
-{ *output = input; return true; }
-// Radian to Degree
-inline bool explicitConversion(orxonox::Degree* output, const orxonox::Radian input)
-{ *output = input; return true; }
-// Degree to Radian
-inline bool explicitConversion(orxonox::Radian* output, const orxonox::Degree input)
-{ *output = input; return true; }
-
-//template <class ToType>
-//struct ConverterExplicit<ToType, Ogre::Radian>
-//{
-//    static bool convert(ToType* output, const Ogre::Radian input)
-//    {
-//        return ConverterExplicit<ToType, Ogre::Real>::convert(output, input.valueRadians());
-//    }
-//};
-
-//// Conversion from Ogre::Radian
-//template <class ToType>
-//struct ConverterExplicit<ToType, const Ogre::Radian>
-//{
-//    static bool convert(ToType* output, const Ogre::Radian input)
-//    {
-//        return ConverterExplicit<ToType, Ogre::Real>::convert(output, input.getValueRadian());
-//    }
-//};
-
-//template <class ToType>
-//inline bool explicitConversion(ToType* output, const Ogre::Radian& input)
-//{
-//    return ConvertValue(output, ;
-//}
-
-//// Conversion from Ogre::Degrees
-//inline bool explicitConversion(std::string* output, const orxonox::ColourValue& input)
-//{
-//    std::ostringstream ostream;
-//    if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
-//    {
-//        (*output) = ostream.str();
-//        return true;
-//    }
-//    return false;
-//}
-//
-//// Conversion to Ogre::Radian
-//inline bool explicitConversion(std::string* output, const orxonox::ColourValue& input)
-//{
-//    std::ostringstream ostream;
-//    if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
-//    {
-//        (*output) = ostream.str();
-//        return true;
-//    }
-//    return false;
-//}
-//
-//// Conversion to Ogre::Degrees
-//inline bool explicitConversion(std::string* output, const orxonox::ColourValue& input)
-//{
-//    std::ostringstream ostream;
-//    if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
-//    {
-//        (*output) = ostream.str();
-//        return true;
-//    }
-//    return false;
-//}
 
 #endif /* _MathConvert_H__ */

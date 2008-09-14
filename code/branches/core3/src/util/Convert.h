@@ -57,6 +57,12 @@
 /* The idea to use the sizeof() operator on return functions to determine function existance
    is described in 'Moder C++ design' by Alexandrescu (2001). */
 
+// disable warnings about possible loss of data
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
+#  pragma warning(push)
+#  pragma warning(disable:4244)
+#endif
+
 namespace conversionTests
 {
     // A struct that is guaranteed to be larger than any return type of our conversion functions.
@@ -64,34 +70,8 @@ namespace conversionTests
     struct VeryBigStruct
     {
         char intSize[sizeof(int)];
-        char issSize[sizeof(std::istringstream)];
-        char ossSize[sizeof(std::ostringstream)];
-        char boolSize[sizeof(bool)];
         char addingMore[4096]; // just to be sure ;)
     };
-}
-
-namespace conversion_another_namespace
-{
-    // We want to keep the templates for the convert functions out of global namespace so that there
-    // are no ambiguities. These templates are never used anyway, they only serve to detect whether
-    // there is a global funciton for a specific conversion or not.
-    // Why the seperate namespace? --> see 'using' statement at the end of conversionTests::
-    //template <class AnyToType, class AnyFromType>
-    //conversionTests::VeryBigStruct explicitConversion(AnyToType* output, const AnyFromType input);
-    //template <class Any, int Dummy>
-    //conversionTests::VeryBigStruct operator<<(std::ostream& outstream, const Any& anything);
-    //template <class Any, int Dummy>
-    //conversionTests::VeryBigStruct operator>>(std::istream& instream,  const Any& anything);
-}
-
-namespace conversionTests
-{
-// disable warnings about possible loss of data
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
-#  pragma warning(push)
-#  pragma warning(disable:4244)
-#endif
 
     template <class FromType, class ToType>
     class ImplicitConversion
@@ -109,49 +89,11 @@ namespace conversionTests
         // test(object) only has 'VerySmallStruct' return type iff the compiler doesn't choose test(...)
         enum { exists = !(sizeof(test(object)) == sizeof(VeryBigStruct)) };
     };
+}
 
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
 #  pragma warning(pop)
 #endif
-
-    //template <class FromType, class ToType>
-    //class ExplicitConversion
-    //{
-    //private:
-    //    ExplicitConversion(); ExplicitConversion(const ExplicitConversion&); ~ExplicitConversion();
-    //    static FromType objectFromType; // helper object to handle private c'tor and d'tor
-    //    static ToType   objectToType;   // helper object to handle private c'tor and d'tor
-    //public:
-    //    enum { exists = !(sizeof(explicitConversion(&objectToType, objectFromType)) == sizeof(VeryBigStruct)) };
-    //};
-
-    //template <class Type>
-    //class IStreamOperator
-    //{
-    //    IStreamOperator(); IStreamOperator(const IStreamOperator&); ~IStreamOperator();
-    //    static std::istream istream_; // helper object to perform the '>>' operation
-    //    static Type object;           // helper object to handle private c'tor and d'tor
-    //public:
-    //    enum { exists = !(sizeof(istream_ >> object) == sizeof(VeryBigStruct)) };
-    //};
-
-    //template <class Type>
-    //class OStreamOperator
-    //{
-    //    OStreamOperator(); OStreamOperator(const OStreamOperator&); ~OStreamOperator();
-    //    static std::ostream ostream_; // helper object to perform the '<<' operation
-    //    static Type object;           // helper object to handle private c'tor and d'tor
-    //public:
-    //    enum { exists = !(sizeof(ostream_ << object) == sizeof(VeryBigStruct)) };
-    //};
-
-    // Somehow msvc and gcc don't like it when using function arguments that have a type
-    // in a third namespace. The global namespace functions then get overridden by the
-    // templates above. So we simply put the generic ones in a another namespace.
-    // Note: DON'T place this statement before a class template. That would trigger
-    //       a heavy bug (namespace leakage) in msvc 2005.
-    //using namespace conversion_another_namespace;
-}
 
 
 ////////////////////////////////////
@@ -161,7 +103,7 @@ namespace conversionTests
     There is a distinct priority when choosing the right conversion function:
     Overwrites:
     1. (Partial) template specialisation of ConverterExplicit::convert
-    2. Global functions explicitConversion(ToType* output, const FromType input)
+    2. Global functions convertValue(ToType* output, const FromType input)
     Fallbacks:
     3. Any possible implicit conversion. This includes FooBar --> int if FooBar defines operator float().
     4. Global or member operators for stringstream when converting from or to std::string (or FROM const char*)
@@ -170,7 +112,7 @@ namespace conversionTests
     A note: There has to be an exact type match (or according to the rules of template spec.) except for 3.
 
     There are obviously a lot of ways to specifiy a user defined conversion. What should I use?
-    When using any non-template function based conversion (implicit conversion, explicitConversion, << or >>)
+    When using any non-template function based conversion (implicit conversion, convertValue, << or >>)
     then you should consider that this function has to be defined prior to including this file.
     If you do not whish do do that, you will have to spcecialsize the ConverterExplicit template.
     There is a not so obvious advantage of the other way (non-template): You could declare each conversion function
@@ -192,20 +134,40 @@ namespace
 // No Conversion //
 ///////////////////
 
-namespace conversion
+// Default template for fallbackConvert, no conversion possible
+template <class ToType, class FromType>
+inline bool fallbackConversion(ToType* output, FromType input)
 {
-    // Default template for stringtream, no Conversion possible
-    template <class ToType, class FromType>
-    struct ConverterSS
-    {
-        static bool convert(ToType* output, FromType input)
-        {
-            COUT(2) << "Could not convert value of type " << typeid(FromType).name()
-                    << " to type " << typeid(ToType).name() << std::endl;
-            return false;
-        }
-    };
+    COUT(2) << "Could not convert value of type " << typeid(FromType).name()
+            << " to type " << typeid(ToType).name() << std::endl;
+    return false;
 }
+
+
+/////////////////////
+// fallbackConvert //
+/////////////////////
+
+// Class template used when << or >> was not available with string conversions
+// It is required to call not yet declared fallbackConvert functions.
+template <class ToType, class FromType>
+struct ConverterFallbackTemplate
+{
+    static bool convert(ToType* output, const FromType& input)
+    {
+        return fallbackConversion(output, input);
+    }
+};
+
+// Default template for stringstream
+template <class ToType, class FromType>
+struct ConverterStringStream
+{
+    static bool convert(ToType* output, const FromType& input)
+    {
+        return fallbackConversion(output, input);
+    }
+};
 
 
 /////////////
@@ -214,37 +176,37 @@ namespace conversion
 
 namespace fallbackTemplates
 {
-    template <class Any>
-    bool operator <<(std::ostream& outstream,  const Any& anything)
+    template <class FromType>
+    inline bool operator <<(std::ostream& outstream,  const FromType& input)
     {
-        COUT(2) << "Could not convert value of type " << typeid(Any).name()
-                << " to std::string" << std::endl;
-        return false;
+        std::string temp;
+        if (ConverterFallbackTemplate<std::string, FromType>::convert(&temp, input))
+        {
+            std::operator <<(outstream, temp);
+            return true;
+        }
+        else
+            return false;
     }
 }
 
-namespace conversion
+// template that evaluates whether OStringStream is possible for conversions to std::string
+template <class FromType>
+struct ConverterStringStream<std::string, FromType>
 {
-    //using namespace fallbackTemplates;
-    // template that evaluates whether OStringStream is possible for conversions to std::string
-    template <class FromType>
-    struct ConverterSS<std::string, FromType>
+    static bool convert(std::string* output, const FromType& input)
     {
-        // probe for '<<' ostream operator
-        static bool convert(std::string* output, const FromType& input)
+        using namespace fallbackTemplates;
+        std::ostringstream oss;
+        if (oss << input)
         {
-            std::ostringstream oss;
-            if (oss << input)
-            {
-                (*output) = oss.str();
-                return true;
-            }
-            else
-                return false;
+            (*output) = oss.str();
+            return true;
         }
-    };
-
-}
+        else
+            return false;
+    }
+};
 
 
 /////////////
@@ -253,34 +215,30 @@ namespace conversion
 
 namespace fallbackTemplates
 {
-    template <class Any>
-    bool operator >>(std::istream& instream,  const Any& anything)
+    template <class ToType>
+    inline bool operator >>(std::istream& instream, ToType& output)
     {
-        COUT(2) << "Could not convert std::string value to type " << typeid(ToType).name() << std::endl;
-        return false;
+        return ConverterFallbackTemplate<ToType, std::string>
+            ::convert(&output, static_cast<std::istringstream&>(instream).str());
     }
 }
 
-namespace conversion
+// template that evaluates whether IStringStream is possible for conversions from std::string
+template <class ToType>
+struct ConverterStringStream<ToType, std::string>
 {
-    // template that evaluates whether IStringStream is possible for conversions from std::string
-    template <class ToType>
-    struct ConverterSS<ToType, std::string>
+    static bool convert(ToType* output, const std::string& input)
     {
-        static bool convert(ToType* output, const std::string& input)
+        using namespace fallbackTemplates;
+        std::istringstream iss(input);
+        if (iss >> (*output))
         {
-            std::istringstream iss(input);
-            if (iss >> (*output))
-            {
-                return true;
-            }
-            else
-                return false;
+            return true;
         }
-    };
-
-    using namespace fallbackTemplates;
-}
+        else
+            return false;
+    }
+};
 
 
 ///////////////////
@@ -294,48 +252,34 @@ inline bool convertImplicitely(ToType* output, const FromType& input, ::Int2Type
     (*output) = static_cast<ToType>(input);
     return true;
 }
+
 // static cast no possible, try stringstream conversion next
 template <class ToType, class FromType>
 inline bool convertImplicitely(ToType* output, const FromType& input, ::Int2Type<false>)
 {
-    return conversion::ConverterSS<ToType, FromType>::convert(output, input);
+    return ConverterStringStream<ToType, FromType>::convert(output, input);
 }
 
 
-/////////////////////////
-// Explicit conversion //
-/////////////////////////
+///////////////////////
+// Explicit Fallback //
+///////////////////////
 
-namespace fallbackTemplates
-{
-    // We want to keep the templates for the convert functions out of global namespace so that there
-    // are no ambiguities. These templates are never used anyway, they only serve to detect whether
-    // there is a global funciton for a specific conversion or not.
-    // Note: Don't put these functions in a separate namespace and add a 'using' directive here.
-    // For MS sake, just don't!
-    template <class ToType, class FromType>
-    bool explicitConversion(ToType* output, const FromType input)
-    {
-        // try implict conversion by probing first because we use '...' instead of a template
-        const bool probe = conversionTests::ImplicitConversion<FromType, ToType>::exists;
-        //using namespace conversion;
-        return convertImplicitely(output, input, ::Int2Type<probe>());
-    }
-}
-
-
-/////////////////////
-// Local Overwrite //
-/////////////////////
-
-// Template that is used when no explicit template specialisation is available.
-// Try explicitConversion() function next.
 template <class ToType, class FromType>
-struct ConverterExplicit
+inline bool explicitConversion(ToType* output, const FromType& input)
+{
+    // try implict conversion by probing first because we use '...' instead of a template
+    const bool probe = conversionTests::ImplicitConversion<FromType, ToType>::exists;
+    return convertImplicitely(output, input, ::Int2Type<probe>());
+}
+
+
+// Indirect calls over a class template so we can call functions not yet declared.
+template <class ToType, class FromType>
+struct ConverterExplicitTemplate
 {
     static bool convert(ToType* output, const FromType& input)
     {
-        using namespace fallbackTemplates;
         return explicitConversion(output, input);
     }
 };
@@ -347,16 +291,17 @@ struct ConverterExplicit
 
 /**
 @brief
-    Converts any value to any other as long as there exits a conversion.
+    Converts any value to any other as long as there exists a conversion.
     Otherwise, the conversion will generate a runtime warning.
     For information about the different conversion methods (user defined too), see the section
     'Actual conversion sequence' in this file above.
+@note
+    This function is only a fallback if there is no appropriate 'convertValue' function.
 */
 template <class ToType, class FromType>
 inline bool convertValue(ToType* output, const FromType& input)
 {
-    // check whether we can convert one type to the other explicitely via explicit template specialisations
-    return ConverterExplicit<ToType, FromType>::convert(output, input);
+    return ConverterExplicitTemplate<ToType, FromType>::convert(output, input);
 }
 
 // For compatibility reasons. The same, but with capital ConvertValue
@@ -424,7 +369,7 @@ inline ToType conversion_cast(const FromType& input, const ToType& fallback)
 template <class ToType>
 inline bool explicitConversion(ToType* output, const char* input)
 {
-    return ConverterExplicit<ToType, std::string>::convert(output, input);
+    return convertValue<ToType, std::string>(output, input);
 }
 
 // These conversions would exhibit ambiguous << or >> operators when using stringstream

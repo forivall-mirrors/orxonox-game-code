@@ -124,8 +124,12 @@ orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposition, float 
     return (targetposition + targetvelocity * time);
 }
 
+//////////////////////////
+// Conversion functions //
+//////////////////////////
+
 // std::string to Vector2
-bool explicitConversion(orxonox::Vector2* output, const std::string& input)
+bool fallbackConversion(orxonox::Vector2* output, const std::string& input)
 {
     unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
     if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
@@ -144,7 +148,7 @@ bool explicitConversion(orxonox::Vector2* output, const std::string& input)
 }
 
 // std::string to Vector3
-bool explicitConversion(orxonox::Vector3* output, const std::string& input)
+bool fallbackConversion(orxonox::Vector3* output, const std::string& input)
 {
     unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
     if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
@@ -165,7 +169,7 @@ bool explicitConversion(orxonox::Vector3* output, const std::string& input)
 }
 
 // std::string to Vector4
-bool explicitConversion(orxonox::Vector4* output, const std::string& input)
+bool fallbackConversion(orxonox::Vector4* output, const std::string& input)
 {
     unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
     if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
@@ -188,7 +192,7 @@ bool explicitConversion(orxonox::Vector4* output, const std::string& input)
 }
 
 // std::string to Quaternion
-bool explicitConversion(orxonox::Quaternion* output, const std::string& input)
+bool fallbackConversion(orxonox::Quaternion* output, const std::string& input)
 {
     unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
     if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
@@ -211,7 +215,7 @@ bool explicitConversion(orxonox::Quaternion* output, const std::string& input)
 }
 
 // std::string to ColourValue
-bool explicitConversion(orxonox::ColourValue* output, const std::string& input)
+bool fallbackConversion(orxonox::ColourValue* output, const std::string& input)
 {
     unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
     if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }

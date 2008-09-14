@@ -85,18 +85,18 @@
     COUT(0) << "Converting " << #var1 << " (" << #Type1 << ") to " << var##nr##2 << " (" #Type2 << ")." << std::endl; \
     assert(res == var##nr##2)
 
-template <>
-struct ConverterExplicit<orxonox::Radian, const char*>
-{
-    static bool convert(orxonox::Radian* output, const char* input)
-    {
-        //std::string asdf("asfd");
-        //std::cout << asdf;
-        float temp;
-        convertValue(&temp, input);
-        *output = temp;
-    }
-};
+//template <>
+//struct ConverterExplicit<orxonox::Radian, const char*>
+//{
+//    static bool convert(orxonox::Radian* output, const char* input)
+//    {
+//        //std::string asdf("asfd");
+//        //std::cout << asdf;
+//        float temp;
+//        convertValue(&temp, input);
+//        *output = temp;
+//    }
+//};
 
 class FooBar { };
 
