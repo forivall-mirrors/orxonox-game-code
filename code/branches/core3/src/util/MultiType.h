@@ -128,8 +128,6 @@ class _UtilExport MultiType
         virtual operator orxonox::Degree()      const = 0;
 
         virtual void toString(std::ostream& outstream) const = 0;
-        //virtual void toString(std::ostream& outstream) const = 0;
-        //inline friend virtual std::ostream& operator <<(std::ostream& outstream, const MT_ValueBase& mtb);
 
         MT_Type type_;
     };
@@ -239,8 +237,6 @@ class _UtilExport MultiType
         operator orxonox::Degree()       const;
         template <class T> operator T*() const { return ((T*)this->operator void*()); }
 
-        inline friend std::ostream& operator<<(std::ostream& outstream, const MultiType& mt) { if (mt.value_) { mt.value_->toString(outstream); } return outstream; }
-
         inline void getValue(char*                 value) const { if (this->value_) { (*value) = (*this->value_); } }
         inline void getValue(unsigned char*        value) const { if (this->value_) { (*value) = (*this->value_); } }
         inline void getValue(short*                value) const { if (this->value_) { (*value) = (*this->value_); } }
@@ -321,7 +317,7 @@ class _UtilExport MultiType
         MT_ValueBase* value_;
 };
 
-//_UtilExport inline std::ostream& operator<<(std::ostream& outstream, const MultiType& mt) { if (mt.value_) { mt.value_->toString(outstream); } return outstream; }
+_UtilExport inline std::ostream& operator<<(std::ostream& outstream, const MultiType& mt) { if (mt.value_) { mt.value_->toString(outstream); } return outstream; }
 
 template <> inline bool MultiType::isType<char>()                 const { return (this->value_ && this->value_->type_ == MT_char);        }
 template <> inline bool MultiType::isType<unsigned char>()        const { return (this->value_ && this->value_->type_ == MT_uchar);       }
