@@ -45,64 +45,84 @@
 ////////////////////
 
 // Vector2 to std::string
-inline bool explicitConversion(std::string* output, const orxonox::Vector2& input)
+template <>
+struct ConverterExplicit<std::string, orxonox::Vector2>
 {
-    std::ostringstream ostream;
-    if (ostream << input.x << "," << input.y)
+    static bool convert(std::string* output, const orxonox::Vector2& input)
     {
-        (*output) = ostream.str();
-        return true;
+        std::ostringstream ostream;
+        if (ostream << input.x << "," << input.y)
+        {
+            (*output) = ostream.str();
+            return true;
+        }
+        return false;
     }
-    return false;
-}
+};
 
 // Vector3 to std::string
-inline bool explicitConversion(std::string* output, const orxonox::Vector3& input)
+template <>
+struct ConverterExplicit<std::string, orxonox::Vector3>
 {
-    std::ostringstream ostream;
-    if (ostream << input.x << "," << input.y << "," << input.z)
+    static bool convert(std::string* output, const orxonox::Vector3& input)
     {
-        (*output) = ostream.str();
-        return true;
+        std::ostringstream ostream;
+        if (ostream << input.x << "," << input.y << "," << input.z)
+        {
+            (*output) = ostream.str();
+            return true;
+        }
+        return false;
     }
-    return false;
-}
+};
 
 // Vector4 to std::string
-inline bool explicitConversion(std::string* output, const orxonox::Vector4& input)
+template <>
+struct ConverterExplicit<std::string, orxonox::Vector4>
 {
-    std::ostringstream ostream;
-    if (ostream << input.x << "," << input.y << "," << input.z << "," << input.w)
+    static bool convert(std::string* output, const orxonox::Vector4& input)
     {
-        (*output) = ostream.str();
-        return true;
+        std::ostringstream ostream;
+        if (ostream << input.x << "," << input.y << "," << input.z << "," << input.w)
+        {
+            (*output) = ostream.str();
+            return true;
+        }
+        return false;
     }
-    return false;
-}
+};
 
 // Quaternion to std::string
-inline bool explicitConversion(std::string* output, const orxonox::Quaternion& input)
+template <>
+struct ConverterExplicit<std::string, orxonox::Quaternion>
 {
-    std::ostringstream ostream;
-    if (ostream << input.w << "," << input.x << "," << input.y << "," << input.z)
+    static bool convert(std::string* output, const orxonox::Quaternion& input)
     {
-        (*output) = ostream.str();
-        return true;
+        std::ostringstream ostream;
+        if (ostream << input.w << "," << input.x << "," << input.y << "," << input.z)
+        {
+            (*output) = ostream.str();
+            return true;
+        }
+        return false;
     }
-    return false;
-}
+};
 
 // ColourValue to std::string
-inline bool explicitConversion(std::string* output, const orxonox::ColourValue& input)
+template <>
+struct ConverterExplicit<std::string, orxonox::ColourValue>
 {
-    std::ostringstream ostream;
-    if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
+    static bool convert(std::string* output, const orxonox::ColourValue& input)
     {
-        (*output) = ostream.str();
-        return true;
+        std::ostringstream ostream;
+        if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
+        {
+            (*output) = ostream.str();
+            return true;
+        }
+        return false;
     }
-    return false;
-}
+};
 
 
 ////////////////////
@@ -110,15 +130,20 @@ inline bool explicitConversion(std::string* output, const orxonox::ColourValue& 
 ////////////////////
 
 // std::string to Vector2
-_UtilExport bool fallbackConversion(orxonox::Vector2* output, const std::string& input);
+template <> struct _UtilExport ConverterFallback<orxonox::Vector2,     std::string>
+{ static bool convert(orxonox::Vector2*     output, const std::string& input); };
 // std::string to Vector3
-_UtilExport bool fallbackConversion(orxonox::Vector3* output, const std::string& input);
+template <> struct _UtilExport ConverterFallback<orxonox::Vector3,     std::string>
+{ static bool convert(orxonox::Vector3*     output, const std::string& input); };
 // std::string to Vector4
-_UtilExport bool fallbackConversion(orxonox::Vector4* output, const std::string& input);
+template <> struct _UtilExport ConverterFallback<orxonox::Vector4,     std::string>
+{ static bool convert(orxonox::Vector4*     output, const std::string& input); };
 // std::string to Quaternion
-_UtilExport bool fallbackConversion(orxonox::Quaternion* output, const std::string& input);
+template <> struct _UtilExport ConverterFallback<orxonox::Quaternion,  std::string>
+{ static bool convert(orxonox::Quaternion*  output, const std::string& input); };
 // std::string to ColourValue
-_UtilExport bool fallbackConversion(orxonox::ColourValue* output, const std::string& input);
+template <> struct _UtilExport ConverterFallback<orxonox::ColourValue, std::string>
+{ static bool convert(orxonox::ColourValue* output, const std::string& input); };
 
 
 ///////////////////////////////

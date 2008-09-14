@@ -134,30 +134,22 @@ namespace
 // No Conversion //
 ///////////////////
 
-// Default template for fallbackConvert, no conversion possible
+// Default template. No conversion available at all.
 template <class ToType, class FromType>
-inline bool fallbackConversion(ToType* output, FromType input)
-{
-    COUT(2) << "Could not convert value of type " << typeid(FromType).name()
-            << " to type " << typeid(ToType).name() << std::endl;
-    return false;
-}
-
-
-/////////////////////
-// fallbackConvert //
-/////////////////////
-
-// Class template used when << or >> was not available with string conversions
-// It is required to call not yet declared fallbackConvert functions.
-template <class ToType, class FromType>
-struct ConverterFallbackTemplate
+struct ConverterFallback
 {
     static bool convert(ToType* output, const FromType& input)
     {
-        return fallbackConversion(output, input);
+        COUT(2) << "Could not convert value of type " << typeid(FromType).name()
+                << " to type " << typeid(ToType).name() << std::endl;
+        return false;
     }
 };
+
+
+///////////////////////
+// ConverterFallback //
+///////////////////////
 
 // Default template for stringstream
 template <class ToType, class FromType>
@@ -165,7 +157,7 @@ struct ConverterStringStream
 {
     static bool convert(ToType* output, const FromType& input)
     {
-        return fallbackConversion(output, input);
+        return ConverterFallback<ToType, FromType>::convert(output, input);
     }
 };
 
@@ -180,7 +172,7 @@ namespace fallbackTemplates
     inline bool operator <<(std::ostream& outstream,  const FromType& input)
     {
         std::string temp;
-        if (ConverterFallbackTemplate<std::string, FromType>::convert(&temp, input))
+        if (ConverterFallback<std::string, FromType>::convert(&temp, input))
         {
             std::operator <<(outstream, temp);
             return true;
@@ -218,7 +210,7 @@ namespace fallbackTemplates
     template <class ToType>
     inline bool operator >>(std::istream& instream, ToType& output)
     {
-        return ConverterFallbackTemplate<ToType, std::string>
+        return ConverterFallback<ToType, std::string>
             ::convert(&output, static_cast<std::istringstream&>(instream).str());
     }
 }
@@ -245,6 +237,13 @@ struct ConverterStringStream<ToType, std::string>
 // Implicit Cast //
 ///////////////////
 
+// static cast no possible, try stringstream conversion next
+template <class ToType, class FromType>
+inline bool convertImplicitely(ToType* output, const FromType& input, ::Int2Type<false>)
+{
+    return ConverterStringStream<ToType, FromType>::convert(output, input);
+}
+
 // We can cast implicitely
 template <class ToType, class FromType>
 inline bool convertImplicitely(ToType* output, const FromType& input, ::Int2Type<true>)
@@ -253,34 +252,20 @@ inline bool convertImplicitely(ToType* output, const FromType& input, ::Int2Type
     return true;
 }
 
-// static cast no possible, try stringstream conversion next
-template <class ToType, class FromType>
-inline bool convertImplicitely(ToType* output, const FromType& input, ::Int2Type<false>)
-{
-    return ConverterStringStream<ToType, FromType>::convert(output, input);
-}
-
 
 ///////////////////////
 // Explicit Fallback //
 ///////////////////////
 
+// Default template if no specialisation is available
 template <class ToType, class FromType>
-inline bool explicitConversion(ToType* output, const FromType& input)
-{
-    // try implict conversion by probing first because we use '...' instead of a template
-    const bool probe = conversionTests::ImplicitConversion<FromType, ToType>::exists;
-    return convertImplicitely(output, input, ::Int2Type<probe>());
-}
-
-
-// Indirect calls over a class template so we can call functions not yet declared.
-template <class ToType, class FromType>
-struct ConverterExplicitTemplate
+struct ConverterExplicit
 {
     static bool convert(ToType* output, const FromType& input)
     {
-        return explicitConversion(output, input);
+        // try implict conversion by probing first because we use '...' instead of a template
+        const bool probe = conversionTests::ImplicitConversion<FromType, ToType>::exists;
+        return convertImplicitely(output, input, ::Int2Type<probe>());
     }
 };
 
@@ -301,7 +286,7 @@ struct ConverterExplicitTemplate
 template <class ToType, class FromType>
 inline bool convertValue(ToType* output, const FromType& input)
 {
-    return ConverterExplicitTemplate<ToType, FromType>::convert(output, input);
+    return ConverterExplicit<ToType, FromType>::convert(output, input);
 }
 
 // For compatibility reasons. The same, but with capital ConvertValue
@@ -367,37 +352,56 @@ inline ToType conversion_cast(const FromType& input, const ToType& fallback)
 
 // delegate conversion from const char* to std::string
 template <class ToType>
-inline bool explicitConversion(ToType* output, const char* input)
+struct ConverterExplicit<ToType, const char*>
 {
-    return convertValue<ToType, std::string>(output, input);
-}
+    static bool convert(ToType* output, const char* input)
+    {
+        return convertValue<ToType, std::string>(output, input);
+    }
+};
 
 // These conversions would exhibit ambiguous << or >> operators when using stringstream
-inline bool explicitConversion(std::string* output, const char input)
+template <>
+struct ConverterExplicit<std::string, char>
 {
-    *output = std::string(1, input);
-    return true;
-}
-inline bool explicitConversion(std::string* output, const unsigned char input)
+    static bool convert(std::string* output, const char input)
+    {
+        *output = std::string(1, input);
+        return true;
+    }
+};
+template <>
+struct ConverterExplicit<std::string, unsigned char>
 {
-    *output = std::string(1, input);
-    return true;
-}
-inline bool explicitConversion(char* output, const std::string input)
+    static bool convert(std::string* output, const unsigned char input)
+    {
+        *output = std::string(1, input);
+        return true;
+    }
+};
+template <>
+struct ConverterExplicit<char, std::string>
 {
-    if (input != "")
-        *output = input[0];
-    else
-        *output = '\0';
-    return true;
-}
-inline bool explicitConversion(unsigned char* output, const std::string input)
+    static bool convert(char* output, const std::string input)
+    {
+        if (input != "")
+            *output = input[0];
+        else
+            *output = '\0';
+        return true;
+    }
+};
+template <>
+struct ConverterExplicit<unsigned char, std::string>
 {
-    if (input != "")
-        *output = input[0];
-    else
-        *output = '\0';
-    return true;
-}
+    static bool convert(unsigned char* output, const std::string input)
+    {
+        if (input != "")
+            *output = input[0];
+        else
+            *output = '\0';
+        return true;
+    }
+};
 
 #endif /* _Convert_H__ */

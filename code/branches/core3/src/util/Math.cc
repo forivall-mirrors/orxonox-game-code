@@ -129,12 +129,16 @@ orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposition, float 
 //////////////////////////
 
 // std::string to Vector2
-bool fallbackConversion(orxonox::Vector2* output, const std::string& input)
+bool ConverterFallback<orxonox::Vector2, std::string>::convert(orxonox::Vector2* output, const std::string& input)
 {
     unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
-    if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
+    if ((opening_parenthesis = input.find('(')) == std::string::npos)
+        opening_parenthesis = 0;
+    else
+        opening_parenthesis++;
 
-    SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
+    SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis),
+                     ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
     if (tokens.size() >= 2)
     {
         if (!ConvertValue(&(output->x), tokens[0]))
@@ -148,12 +152,16 @@ bool fallbackConversion(orxonox::Vector2* output, const std::string& input)
 }
 
 // std::string to Vector3
-bool fallbackConversion(orxonox::Vector3* output, const std::string& input)
+bool ConverterFallback<orxonox::Vector3, std::string>::convert(orxonox::Vector3* output, const std::string& input)
 {
     unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
-    if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
+    if ((opening_parenthesis = input.find('(')) == std::string::npos)
+        opening_parenthesis = 0;
+    else
+        opening_parenthesis++;
 
-    SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
+    SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis),
+                     ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
     if (tokens.size() >= 3)
     {
         if (!ConvertValue(&(output->x), tokens[0]))
@@ -169,12 +177,16 @@ bool fallbackConversion(orxonox::Vector3* output, const std::string& input)
 }
 
 // std::string to Vector4
-bool fallbackConversion(orxonox::Vector4* output, const std::string& input)
+bool ConverterFallback<orxonox::Vector4, std::string>::convert(orxonox::Vector4* output, const std::string& input)
 {
     unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
-    if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
+    if ((opening_parenthesis = input.find('(')) == std::string::npos)
+        opening_parenthesis = 0;
+    else
+        opening_parenthesis++;
 
-    SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
+    SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis),
+                     ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
     if (tokens.size() >= 4)
     {
         if (!ConvertValue(&(output->x), tokens[0]))
@@ -192,7 +204,7 @@ bool fallbackConversion(orxonox::Vector4* output, const std::string& input)
 }
 
 // std::string to Quaternion
-bool fallbackConversion(orxonox::Quaternion* output, const std::string& input)
+bool ConverterFallback<orxonox::Quaternion, std::string>::convert(orxonox::Quaternion* output, const std::string& input)
 {
     unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
     if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
@@ -215,7 +227,7 @@ bool fallbackConversion(orxonox::Quaternion* output, const std::string& input)
 }
 
 // std::string to ColourValue
-bool fallbackConversion(orxonox::ColourValue* output, const std::string& input)
+bool ConverterFallback<orxonox::ColourValue, std::string>::convert(orxonox::ColourValue* output, const std::string& input)
 {
     unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
     if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
