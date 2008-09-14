@@ -83,9 +83,10 @@ ArgReader::ArgReader(int argc, char **argv)
 
   //std::cout << errorString_;
 
-  int a = conversionTests::ImplicitConversion<FooBar, const char*>::exists;
-  int val1;
-  long long val2 = conversion_cast<long long>(val1);
+  //const int a = conversionTests::ExplicitConversion<FooBar, const char*>::exists;
+  //BOOST_STATIC_ASSERT(a == 0);
+  //int val1;
+  //long long val2 = 4LL;//conversion_cast<long long>(val1);
   //val2 = val1;
   //convertValue(&val2, val1);
   //explicitConversion(&FooBar(), val1);
@@ -96,7 +97,7 @@ ArgReader::ArgReader(int argc, char **argv)
   //char val2;
   //explicitConversion(&val1, val2);
 
-  std::istringstream asdf;
+  //std::istringstream asdf;
   //asdf >> val2;
 
   int i = 1;

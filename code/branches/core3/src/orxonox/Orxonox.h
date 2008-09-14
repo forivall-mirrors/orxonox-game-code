@@ -34,11 +34,6 @@
 
 #ifndef _Orxonox_H__
 #define _Orxonox_H__
-inline bool explicitConversion(float* output, const double input)
-{
-    *output = 2*input;
-    return true;
-}
 
 #include "OrxonoxPrereqs.h"
 

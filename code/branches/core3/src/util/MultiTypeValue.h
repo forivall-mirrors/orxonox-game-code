@@ -30,7 +30,7 @@
 #define _MultiTypeValue_H__
 
 #include "UtilPrereqs.h"
-#include "Convert.h"
+#include "MathConvert.h"
 #include "MultiType.h"
 
 template <typename T>

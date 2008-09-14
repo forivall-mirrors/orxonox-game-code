@@ -29,7 +29,7 @@
 #include "Math.h"
 
 #include <OgrePlane.h>
-#include "Convert.h"
+#include "MathConvert.h"
 
 /**
     @brief Function for writing to a stream.

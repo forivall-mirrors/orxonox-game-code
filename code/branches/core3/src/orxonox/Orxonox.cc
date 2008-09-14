@@ -33,6 +33,7 @@
 
 // Precompiled Headers
 #include "OrxonoxStableHeaders.h"
+#include "util/MathConvert.h"
 #include "Orxonox.h"
 
 //****** STD *******
@@ -76,6 +77,7 @@
 #include "GraphicsEngine.h"
 #include "Settings.h"
 
+
 #define TestConv(nr, Type1, var1, Type2, res) \
     Type1 var##nr##1##var1; \
     Type2 var##nr##2; \
@@ -97,6 +99,23 @@ struct ConverterExplicit<orxonox::Radian, const char*>
 };
 
 class FooBar { };
+
+inline bool explicitConversion(FooBar* output, std::string input)
+{
+    return true;
+}
+
+//inline bool explicitConversion(std::string* output, const orxonox::Vector3& input)
+//{
+//    std::ostringstream ostream;
+//    if (ostream << input.x << "," << input.y << "," << input.z)
+//    {
+//        (*output) = ostream.str();
+//        return true;
+//    }
+//    return false;
+//}
+
 
 
 // FIXME: is this really file scope?
@@ -211,11 +230,11 @@ namespace orxonox
 #endif
     Factory::createClassHierarchy();
 
-    Radian nmbr;
-    float res;
+    std::string nmbr;
+    char res('a');
     //const char* nmbr;
     //const char* str;
-    convertValue(&res, nmbr);
+    convertValue(&nmbr, res);
     //const unsigned int blah = 4;
     //convertValue(nmbr, blah);
     //convertValue(&str, 4.0f);
@@ -225,8 +244,13 @@ namespace orxonox
     int a = 3;
     FooBar asdf;
     std::string asdf2;
+    std::ostringstream oss;
+    char blah(' ');
+    oss << blah;
     std::cout << asdf2;
     ConvertValue(&asdf2, asdf);
+    //if (conversionTests::OStreamOperator<FooBar>::exists)
+    //    int asdfasdfasdf = 7;
     //COUT(3) << asdf;
 
     TestConv(1, int, (3), float, 3.0);
