@@ -66,6 +66,16 @@ _UtilExport orxonox::Vector2 get2DViewdirection(const orxonox::Vector3& mypositi
 _UtilExport orxonox::Vector2 get2DViewcoordinates(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition);
 _UtilExport orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposition, float projectilespeed, const orxonox::Vector3& targetposition, const orxonox::Vector3& targetvelocity);
 
+//Get around Windows hackery
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 
+#  ifdef max
+#    undef max
+#  endif
+#  ifdef min
+#    undef min
+#  endif
+#endif
+
 template <typename T>
 inline T sgn(T x)
 {
