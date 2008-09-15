@@ -40,12 +40,4 @@ namespace orxonox
     {
         RegisterRootObject(Tickable);
     }
-
-    /**
-        @brief Constructor: Registers the object in the TickableReal-list
-    */
-    TickableReal::TickableReal()
-    {
-        RegisterRootObject(TickableReal);
-    }
 }
