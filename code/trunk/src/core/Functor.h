@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    const int MAX_FUNCTOR_ARGUMENTS = 5;
+    const unsigned int MAX_FUNCTOR_ARGUMENTS = 5;
 
     enum FunctionType
     {

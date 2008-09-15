@@ -129,7 +129,7 @@ namespace orxonox
         return GetLocalisation(this->description_);
     }
 
-    Executor& Executor::setDescriptionParam(int param, const std::string& description)
+    Executor& Executor::setDescriptionParam(unsigned int param, const std::string& description)
     {
         if (param >= 0 && param < MAX_FUNCTOR_ARGUMENTS)
         {
@@ -147,7 +147,7 @@ namespace orxonox
         return (*this);
     }
 
-    const std::string& Executor::getDescriptionParam(int param) const
+    const std::string& Executor::getDescriptionParam(unsigned int param) const
     {
         if (param >= 0 && param < MAX_FUNCTOR_ARGUMENTS)
             return GetLocalisation(this->descriptionParam_[param]);
