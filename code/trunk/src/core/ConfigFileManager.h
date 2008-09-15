@@ -38,8 +38,6 @@
 
 #include "util/Math.h"
 
-#define DEFAULT_CONFIG_FILE "default.ini"
-
 namespace orxonox
 {
     enum _CoreExport ConfigFileType

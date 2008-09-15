@@ -30,29 +30,29 @@
 
 namespace audio
 {
-	AudioBuffer::AudioBuffer(std::string fileName)
-	{
-		// Load wav data into buffers.
-		alGenBuffers(1, &buffer);
+    AudioBuffer::AudioBuffer(std::string fileName)
+    {
+        // Load wav data into buffers.
+        alGenBuffers(1, &buffer);
 
-		if(alGetError() != AL_NO_ERROR)
-			loaded=AL_FALSE;
+        if (alGetError() != AL_NO_ERROR)
+            loaded=AL_FALSE;
 
-    //FIXME deprecated; seems unneeded
-// 		alutLoadWAVFile((ALbyte*)fileName.c_str(), &format, &data, &size, &freq, &loop);
-		alBufferData(buffer, format, data, size, freq);
-    //FIXME deprecated; seems unneeded
-// 		alutUnloadWAV(format, data, size, freq);
+        //FIXME deprecated; seems unneeded
+//        alutLoadWAVFile((ALbyte*)fileName.c_str(), &format, &data, &size, &freq, &loop);
+        alBufferData(buffer, format, data, size, freq);
+        //FIXME deprecated; seems unneeded
+//        alutUnloadWAV(format, data, size, freq);
 
-		// Do another error check and return.
-		if(alGetError() != AL_NO_ERROR)
-			loaded=AL_FALSE;
-    else
-		  loaded=AL_TRUE;
-	}
+        // Do another error check and return.
+        if (alGetError() != AL_NO_ERROR)
+            loaded=AL_FALSE;
+        else
+              loaded=AL_TRUE;
+    }
 
-	AudioBuffer::~AudioBuffer()
-	{
+    AudioBuffer::~AudioBuffer()
+    {
 
-	}
+    }
 }

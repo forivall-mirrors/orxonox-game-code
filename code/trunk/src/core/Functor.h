@@ -35,10 +35,11 @@
 #include "util/MultiType.h"
 #include "util/Debug.h"
 
-#define MAX_FUNCTOR_ARGUMENTS 5
 
 namespace orxonox
 {
+    const int MAX_FUNCTOR_ARGUMENTS = 5;
+
     enum FunctionType
     {
         FT_MEMBER,

@@ -23,8 +23,8 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *************************************************************************/
-#ifndef _OgreCEGUITexture_h_
-#define _OgreCEGUITexture_h_
+#ifndef _OgreCEGUITexture_H__
+#define _OgreCEGUITexture_H__
 
 #include <CEGUIBase.h>
 #include <CEGUIRenderer.h>
@@ -176,4 +176,4 @@ private:
 } // End of  CEGUI namespace section
 
 
-#endif	// end of guard _OgreCEGUITexture_h_
+#endif	// end of guard _OgreCEGUITexture_H__

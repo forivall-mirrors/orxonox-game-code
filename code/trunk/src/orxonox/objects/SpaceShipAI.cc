@@ -40,10 +40,11 @@
 #include "tools/ParticleInterface.h"
 #include "Settings.h"
 
-#define ACTION_INTERVAL 1.0f
 
 namespace orxonox
 {
+    const float ACTION_INTERVAL = 1.0f;
+
     SetConsoleCommand(SpaceShipAI, createEnemy, true).defaultValue(0, 1);
     SetConsoleCommand(SpaceShipAI, killEnemies, true).defaultValue(0, 0);
 

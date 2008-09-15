@@ -42,7 +42,6 @@
 #include "core/OrxonoxClass.h"
 #include "util/Debug.h"
 #include "util/MultiType.h"
-#include "util/Convert.h"
 
 namespace orxonox
 {

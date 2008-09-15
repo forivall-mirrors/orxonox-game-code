@@ -42,11 +42,12 @@
 #include "util/Debug.h"
 #include "util/Convert.h"
 
-#define TCLTHREADMANAGER_MAX_QUEUE_LENGTH 100
-#define TCLTHREADMANAGER_MAX_CPU_USAGE 0.50
 
 namespace orxonox
 {
+    const int TCLTHREADMANAGER_MAX_QUEUE_LENGTH = 100;
+    const int TCLTHREADMANAGER_MAX_CPU_USAGE    = 0.50;
+
     SetConsoleCommandShortcutAlias(TclThreadManager, execute, "tclexecute").argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommandShortcutAlias(TclThreadManager, query,   "tclquery"  ).argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand(TclThreadManager, create,  false);

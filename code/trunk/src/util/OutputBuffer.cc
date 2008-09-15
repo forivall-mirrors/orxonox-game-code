@@ -28,10 +28,11 @@
 
 #include "OutputBuffer.h"
 
-#define OUTPUTBUFFER_MAX_LINE_LENGTH 16384
 
 namespace orxonox
 {
+    const int OUTPUTBUFFER_MAX_LINE_LENGTH = 16384;
+
     void OutputBuffer::registerListener(OutputBufferListener* listener)
     {
         this->listeners_.insert(this->listeners_.end(), listener);

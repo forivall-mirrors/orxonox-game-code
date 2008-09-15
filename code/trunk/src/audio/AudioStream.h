@@ -33,46 +33,46 @@
 
 #include <string>
 #include <iostream>
-
 #include <AL/al.h>
 #include <vorbis/vorbisfile.h>
 #include <vorbis/codec.h>
 
+
 namespace audio
 {
-  #define BUFFER_SIZE (4096 * 4)
+    const int BUFFER_SIZE = 4096 * 4;
 
-  class _AudioExport AudioStream
-  {
+    class _AudioExport AudioStream
+    {
     public:
-      AudioStream(std::string path);
-      void open();
-      void release();
-      void display();
-      bool playback();
-      bool playing();
-      bool update();
-      inline bool isLoaded() { return loaded; }
+        AudioStream(std::string path);
+        void open();
+        void release();
+        void display();
+        bool playback();
+        bool playing();
+        bool update();
+        inline bool isLoaded() { return loaded; }
 
     protected:
-      bool stream(ALuint buffer);
-      void empty();
-      void check();
-      std::string errorString(int code);
+        bool stream(ALuint buffer);
+        void empty();
+        void check();
+        std::string errorString(int code);
 
     private:
-      std::string path;
+        std::string path;
 
-      FILE*           oggFile;
-      OggVorbis_File  oggStream;
-      vorbis_info*    vorbisInfo;
-      vorbis_comment* vorbisComment;
-      bool loaded;
+        FILE*           oggFile;
+        OggVorbis_File  oggStream;
+        vorbis_info*    vorbisInfo;
+        vorbis_comment* vorbisComment;
+        bool loaded;
 
-      ALuint buffers[2];
-      ALuint source;
-      ALenum format;
-  };
+        ALuint buffers[2];
+        ALuint source;
+        ALenum format;
+    };
 }
 
 #endif /* _AudioStream_H__ */

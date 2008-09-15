@@ -55,8 +55,8 @@
  * As you can see, the useless spaces around ',' were removed.
  */
 
-#ifndef __SUBSTRING_H__
-#define __SUBSTRING_H__
+#ifndef __SubString_H__
+#define __SubString_H__
 
 #include "UtilPrereqs.h"
 
@@ -170,4 +170,4 @@ private:
   std::vector<bool>         bInSafemode;
 };
 
-#endif /* __SUBSTRING_H__ */
+#endif /* __SubString_H__ */

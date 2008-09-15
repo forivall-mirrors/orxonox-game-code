@@ -33,14 +33,14 @@
 
 namespace audio
 {
-	class _AudioExport AudioSource
-	{
-	public:
-		AudioSource();
-		~AudioSource();
-	private:
+    class _AudioExport AudioSource
+    {
+    public:
+        AudioSource();
+        ~AudioSource();
 
-	};
+    private:
+    };
 }
 
 #endif /* _AudioSource_H__ */

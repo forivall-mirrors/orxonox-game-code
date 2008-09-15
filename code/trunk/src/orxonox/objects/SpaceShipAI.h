@@ -35,10 +35,11 @@
 #include "tools/Timer.h"
 #include "util/Math.h"
 
-#define NUM_AI_TEAMS 3
 
 namespace orxonox
 {
+    const int NUM_AI_TEAMS = 3;
+
     class SpaceShipAI : public SpaceShip
     {
         public:
