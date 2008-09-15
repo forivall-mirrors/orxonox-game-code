@@ -45,6 +45,8 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/input/InputManager.h"
+#include "core/input/KeyBinder.h"
+#include "core/input/ExtendedInputState.h"
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
 #include "tools/WindowEventListener.h"
@@ -61,6 +63,7 @@ namespace orxonox
         , inputManager_(0)
         , console_(0)
         , guiManager_(0)
+        , masterKeyBinder_(0)
         , frameCount_(0)
         , statisticsRefreshCycle_(0)
         , statisticsStartTime_(0)
@@ -107,6 +110,9 @@ namespace orxonox
         size_t windowHnd = 0;
         this->renderWindow_->getCustomAttribute("WINDOW", &windowHnd);
         inputManager_->initialise(windowHnd, renderWindow_->getWidth(), renderWindow_->getHeight(), true);
+        // Configure master input state with a KeyBinder
+        //masterKeyBinder_ = new KeyBinder();
+        //inputManager_->getMasterInputState()->addKeyHandler(masterKeyBinder_);
 
         // Load the InGameConsole
         console_ = new InGameConsole();
@@ -134,6 +140,8 @@ namespace orxonox
 
         delete this->console_;
 
+        //inputManager_->getMasterInputState()->removeKeyHandler(this->masterKeyBinder_);
+        //delete this->masterKeyBinder_;
         delete this->inputManager_;
 
         this->ogreRoot_->detachRenderTarget(this->renderWindow_);
