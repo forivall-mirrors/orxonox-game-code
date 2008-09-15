@@ -50,7 +50,7 @@
 
 namespace network
 {
-  #define CLIENTID_SERVER 0
+  const int CLIENTID_SERVER = 0;
   
   /**
   * This class is the root class of the network module for a server.
