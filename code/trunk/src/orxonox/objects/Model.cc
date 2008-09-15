@@ -84,7 +84,7 @@ namespace orxonox
 
         COUT(4) << "Loader (Model.cc): Created model" << std::endl;
       }
-      if(this->isExactlyA(GetClassIdentifier(Model)))
+      if(this->isExactlyA(Class(Model)))
         setObjectFrequency(300); //sync all 10 seconds (this only applies to asteroids and other isExactlyA(Model)
       return true;
     }

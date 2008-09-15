@@ -76,7 +76,7 @@ namespace orxonox
     SpaceShip *SpaceShip::getLocalShip(){
       ObjectList<SpaceShip>::iterator it;
       for(it = ObjectList<SpaceShip>::begin(); it; ++it){
-	assert(it->isA(GetClassIdentifier(SpaceShip)));
+	assert(it->isA(Class(SpaceShip)));
         if( (it)->myShip_ || (network::Host::running() && network::Host::getShipID()==(it)->objectID) ){
 //	  COUT(1) << "^^^^^^^^^^ myShip_:" << *it << " classname: " << (*it)->getIdentifier()->getName() << " objectid: " << (*it)->objectID << std::endl;
           return *it;
@@ -272,7 +272,7 @@ namespace orxonox
             */
             // END CREATING ADDITIONAL EFFECTS
 
-            if (this->isExactlyA(GetClassIdentifier(SpaceShip)))
+            if (this->isExactlyA(Class(SpaceShip)))
             {
                 // START of testing crosshair
                 this->crosshairNear_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
@@ -375,7 +375,7 @@ namespace orxonox
       if(myShip_){
         COUT(4) << "requesting focus for camera" << std::endl;
         //CameraHandler::getInstance()->requestFocus(cam_);
-        if(this->isExactlyA(GetClassIdentifier(SpaceShip))){
+        if(this->isExactlyA(Class(SpaceShip))){
           getFocus();
           COUT(4) << "getting focus for obj id: " << objectID << std::endl;
         }else
@@ -420,7 +420,7 @@ namespace orxonox
 
         myShip_=true; //TODO: this is a hack
         SpaceShip::create();
-        /*if (this->isExactlyA(GetClassIdentifier(SpaceShip)))
+        /*if (this->isExactlyA(Class(SpaceShip)))
             getFocus();*/
     }
 

@@ -96,7 +96,7 @@
     @brief Returns the Identifier of the given class.
     @param ClassName The name of the class
 */
-#define GetClassIdentifier(ClassName) \
+#define Class(ClassName) \
     ClassIdentifier<ClassName>::getIdentifier()
 
 /**
