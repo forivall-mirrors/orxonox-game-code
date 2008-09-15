@@ -59,8 +59,8 @@
 
 namespace network
 {
-  #define MAX_FAILURES 20;
-  #define NETWORK_FREQUENCY 30
+  const int MAX_FAILURES = 20;
+  const int NETWORK_FREQUENCY = 30;
 
   /**
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY

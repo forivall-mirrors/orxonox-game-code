@@ -52,11 +52,11 @@ namespace boost { class thread; }
 namespace network
 {
 
-#define NETWORK_PORT 55556
-#define NETWORK_CLIENT_MAX_CONNECTIONS 5
-#define NETWORK_CLIENT_WAIT_TIME 1
-#define NETWORK_CLIENT_CONNECT_TIMEOUT 3000 // miliseconds
-#define NETWORK_CLIENT_CHANNELS 2
+    const int NETWORK_PORT = 55556;
+    const int NETWORK_CLIENT_MAX_CONNECTIONS = 5;
+    const int NETWORK_CLIENT_WAIT_TIME = 1;
+    const int NETWORK_CLIENT_CONNECT_TIMEOUT = 3000; // miliseconds
+    const int NETWORK_CLIENT_CHANNELS = 2;
 
 
   class ClientConnection{
