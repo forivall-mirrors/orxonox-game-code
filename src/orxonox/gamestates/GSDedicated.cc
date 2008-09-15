@@ -101,9 +101,6 @@ namespace orxonox
 
     void GSDedicated::ticked(const Clock& time)
     {
-        // Call those objects that need the real time
-        for (ObjectList<TickableReal>::iterator it = ObjectList<TickableReal>::begin(); it; ++it)
-            it->tick(time.getDeltaTime());
         // Call the scene objects
         for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
             it->tick(time.getDeltaTime() * this->timeFactor_);
