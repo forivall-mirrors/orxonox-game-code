@@ -300,7 +300,7 @@ namespace orxonox
                                 Identifier* identifier = GetIdentifier(child->Value());
                                 if (identifier)
                                 {
-                                    if (identifier->isA(GetClassIdentifier(O)))
+                                    if (identifier->isA(Class(O)))
                                     {
                                         if (this->identifierIsIncludedInLoaderMask(identifier))
                                         {
@@ -332,7 +332,7 @@ namespace orxonox
                                     }
                                     else
                                     {
-                                        COUT(2) << ((BaseObject*)object)->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a '" << GetClassIdentifier(O)->getName() << "'." << std::endl;
+                                        COUT(2) << ((BaseObject*)object)->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a '" << Class(O)->getName() << "'." << std::endl;
                                     }
                                 }
                                 else
@@ -345,7 +345,7 @@ namespace orxonox
                     catch (ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << GetClassIdentifier(O)->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << ((BaseObject*)object)->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << Class(O)->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << ((BaseObject*)object)->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
