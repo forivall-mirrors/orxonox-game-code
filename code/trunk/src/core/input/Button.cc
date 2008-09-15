@@ -219,12 +219,12 @@ namespace orxonox
     {
         if (serious)
         {
-            COUT(2) << "Error while parsing binding for button/axis" << this->name_ << ". "
+            COUT(2) << "Error while parsing binding for button/axis " << this->name_ << ". "
                 << message << std::endl;
         }
         else
         {
-            COUT(3) << "Warning while parsing binding for button/axis" << this->name_ << ". "
+            COUT(3) << "Warning while parsing binding for button/axis " << this->name_ << ". "
                 << message << std::endl;
         }
     }

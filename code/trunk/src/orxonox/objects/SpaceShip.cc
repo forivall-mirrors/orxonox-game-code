@@ -341,7 +341,7 @@ namespace orxonox
     }
 
     void SpaceShip::getFocus(){
-      COUT(3) << "requesting focus" << std::endl;
+      COUT(4) << "requesting focus" << std::endl;
       //if(!network::Host::running() || network::Host::getShipID()==objectID)
       if(myShip_)
         CameraHandler::getInstance()->requestFocus(cam_);
@@ -355,7 +355,7 @@ namespace orxonox
     void SpaceShip::createCamera(){
 //       COUT(4) << "begin camera creation" << std::endl;
       this->camNode_ = this->getNode()->createChildSceneNode(camName_);
-      COUT(3) << "position: (this)" << this->getNode()->getPosition() << std::endl;
+      COUT(4) << "position: (this)" << this->getNode()->getPosition() << std::endl;
       this->camNode_->setPosition(Vector3(-25,0,5));
 //      Quaternion q1 = Quaternion(Radian(Degree(90)),Vector3(0,-1,0));
 //      Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(0,0,-1));
@@ -373,15 +373,15 @@ namespace orxonox
        this->camNode_->setOrientation(q2*q1);
       //if(!network::Host::running() || network::Host::getShipID()==objectID){ //TODO: check this
       if(myShip_){
-        COUT(3) << "requesting focus for camera" << std::endl;
+        COUT(4) << "requesting focus for camera" << std::endl;
         //CameraHandler::getInstance()->requestFocus(cam_);
         if(this->isExactlyA(Class(SpaceShip))){
           getFocus();
-          COUT(3) << "getting focus for obj id: " << objectID << std::endl;
+          COUT(4) << "getting focus for obj id: " << objectID << std::endl;
         }else
-          COUT(3) << "not getting focus (not exactly spaceship) for obj id: " << objectID << std::endl;
+          COUT(4) << "not getting focus (not exactly spaceship) for obj id: " << objectID << std::endl;
       }else
-        COUT(3) << "not getting focus (not my ship) for obj id: " << objectID << std::endl;
+        COUT(4) << "not getting focus (not my ship) for obj id: " << objectID << std::endl;
     }
 
     void SpaceShip::setMaxSpeed(float value)
