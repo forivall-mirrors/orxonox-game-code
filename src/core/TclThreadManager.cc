@@ -45,8 +45,8 @@
 
 namespace orxonox
 {
-    const int TCLTHREADMANAGER_MAX_QUEUE_LENGTH = 100;
-    const int TCLTHREADMANAGER_MAX_CPU_USAGE    = 0.50;
+    const unsigned int TCLTHREADMANAGER_MAX_QUEUE_LENGTH = 100;
+    const float TCLTHREADMANAGER_MAX_CPU_USAGE = 0.50f;
 
     SetConsoleCommandShortcutAlias(TclThreadManager, execute, "tclexecute").argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommandShortcutAlias(TclThreadManager, query,   "tclquery"  ).argumentCompleter(0, autocompletion::tclthreads());

@@ -162,8 +162,8 @@ namespace orxonox
             Executor& setDescription(const std::string& description);
             const std::string& getDescription() const;
 
-            Executor& setDescriptionParam(int param, const std::string& description);
-            const std::string& getDescriptionParam(int param) const;
+            Executor& setDescriptionParam(unsigned int param, const std::string& description);
+            const std::string& getDescriptionParam(unsigned int param) const;
 
             Executor& setDescriptionReturnvalue(const std::string& description);
             const std::string& getDescriptionReturnvalue(int param) const;

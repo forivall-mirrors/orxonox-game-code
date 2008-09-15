@@ -282,7 +282,7 @@ unsigned int UTF8ToUTF32(unsigned char* buf)
 		val = FirstChar & 0x01;
 	}
 
-	for(int i = 1; i < len; i++)
+	for(unsigned int i = 1; i < len; i++)
 		val = (val << 6) | (buf[i] & 0x3F);
 
 	return val;
