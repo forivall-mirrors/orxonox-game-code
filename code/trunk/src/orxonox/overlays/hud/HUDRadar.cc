@@ -92,8 +92,8 @@ namespace orxonox
     {
         const WorldEntity* wePointer = object->getWorldEntity();
 
-        // Just to be sure that we actually have a WorldEntity
-        // We could do a dynamic_cast, but that's a lot slower
+        // Just to be sure that we actually have a WorldEntity.
+        // We could do a dynamic_cast, but that would be a lot slower.
         if (!wePointer)
         {
             CCOUT(4) << "Cannot display a non-WorldEntitiy on the radar" << std::endl;
@@ -124,6 +124,7 @@ namespace orxonox
             if (materialName != panel->getMaterialName())
                 panel->setMaterialName(materialName);
         }
+        panel->show();
 
         // set size to fit distance...
         float distance = (wePointer->getWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length();
@@ -146,6 +147,8 @@ namespace orxonox
 
     void HUDRadar::radarTick(float dt)
     {
+        for (itRadarDots_ = radarDots_.begin(); itRadarDots_ != radarDots_.end(); ++itRadarDots_)
+            (*itRadarDots_)->hide();
         this->itRadarDots_ = this->radarDots_.begin();
         this->marker_->hide();
     }
