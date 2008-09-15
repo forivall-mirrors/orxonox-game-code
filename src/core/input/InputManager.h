@@ -128,6 +128,7 @@ namespace orxonox
 
         InputState* getState       (const std::string& name);
         InputState* getCurrentState();
+        ExtendedInputState* getMasterInputState() { return this->stateMaster_; }
         bool requestDestroyState   (const std::string& name);
         bool requestEnterState     (const std::string& name);
         bool requestLeaveState     (const std::string& name);
@@ -199,6 +200,7 @@ namespace orxonox
         SimpleInputState*                   stateDetector_;        //!< KeyDetector instance
         SimpleInputState*                   stateCalibrator_;
         SimpleInputState*                   stateEmpty_;
+        ExtendedInputState*                 stateMaster_;          //!< Always active master input state
 
         std::map<std::string, InputState*>  inputStatesByName_;
         std::map<int, InputState*>          inputStatesByPriority_;

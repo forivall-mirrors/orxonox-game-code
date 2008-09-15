@@ -76,6 +76,8 @@ namespace orxonox
         InGameConsole*        console_;
         GUIManager*           guiManager_;
 
+        KeyBinder*            masterKeyBinder_;
+
         // variables for time statistics
         unsigned long         frameCount_;
         unsigned int          statisticsRefreshCycle_;

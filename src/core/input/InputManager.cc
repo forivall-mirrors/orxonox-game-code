@@ -108,6 +108,7 @@ namespace orxonox
         , stateDetector_(0)
         , stateCalibrator_(0)
         , stateEmpty_(0)
+        , stateMaster_(0)
         , bCalibrating_(false)
         , keyboardModifiers_(0)
     {
@@ -200,6 +201,9 @@ namespace orxonox
             InputBuffer* buffer = new InputBuffer();
             buffer->registerListener(this, &InputManager::_completeCalibration, '\r', true);
             stateCalibrator_->setKeyHandler(buffer);
+
+            stateMaster_ = new ExtendedInputState();
+            stateMaster_->setName("master");
 
             internalState_ |= InternalsReady;
 
@@ -439,6 +443,10 @@ namespace orxonox
                 // destroy all input states
                 while (inputStatesByPriority_.size() > 0)
                     _destroyState((*inputStatesByPriority_.rbegin()).second);
+
+                // destroy the master input state. This might trigger a memory leak
+                // because the user has forgotten to destroy the KeyBinder or any Handler!
+                delete stateMaster_;
 
                 // destroy the devices
                 _destroyKeyboard();
@@ -687,25 +695,40 @@ namespace orxonox
         {
             // call all the handlers for the held key events
             for (unsigned int iKey = 0; iKey < keysDown_.size(); iKey++)
-                activeStatesTop_[Keyboard]->keyHeld(KeyEvent(keysDown_[iKey], keyboardModifiers_));
+            {
+                KeyEvent kEvt(keysDown_[iKey], keyboardModifiers_);
+                activeStatesTop_[Keyboard]->keyHeld(kEvt);
+                stateMaster_->keyHeld(kEvt);
+            }
 
             // call all the handlers for the held mouse button events
             for (unsigned int iButton = 0; iButton < mouseButtonsDown_.size(); iButton++)
+            {
                 activeStatesTop_[Mouse]->mouseButtonHeld(mouseButtonsDown_[iButton]);
+                stateMaster_->mouseButtonHeld(mouseButtonsDown_[iButton]);
+            }
 
             // call all the handlers for the held joy stick button events
             for (unsigned int iJoyStick  = 0; iJoyStick < joySticksSize_; iJoyStick++)
                 for (unsigned int iButton   = 0; iButton   < joyStickButtonsDown_[iJoyStick].size(); iButton++)
+                {
                     activeStatesTop_[JoyStick0 + iJoyStick]
                         ->joyStickButtonHeld(iJoyStick, joyStickButtonsDown_[iJoyStick][iButton]);
+                    stateMaster_->joyStickButtonHeld(iJoyStick, joyStickButtonsDown_[iJoyStick][iButton]);
+                }
 
             // tick the handlers for each active handler
             for (unsigned int i = 0; i < devicesNum_; ++i)
+            {
                 activeStatesTop_[i]->tickInput(dt, i);
+                if (stateMaster_->isInputDeviceEnabled(i))
+                    stateMaster_->tickInput(dt, i);
+            }
 
             // tick the handler with a general tick afterwards
             for (unsigned int i = 0; i < activeStatesTicked_.size(); ++i)
                 activeStatesTicked_[i]->tickInput(dt);
+            stateMaster_->tickInput(dt);
         }
 
         internalState_ &= ~Ticking;
@@ -827,7 +850,11 @@ namespace orxonox
         if (iKey == keysDown_.size())
             keysDown_.push_back(Key(e));
         else
+        {
+            // This happens when XAutoRepeat is set under linux. The KeyPressed event gets then sent
+            // continuously.
             return true;
+        }
 
         // update modifiers
         if(e.key == OIS::KC_RMENU    || e.key == OIS::KC_LMENU)
@@ -837,7 +864,9 @@ namespace orxonox
         if(e.key == OIS::KC_RSHIFT   || e.key == OIS::KC_LSHIFT)
             keyboardModifiers_ |= KeyboardModifier::Shift; // shift key
 
-        activeStatesTop_[Keyboard]->keyPressed(KeyEvent(e, keyboardModifiers_));
+        KeyEvent kEvt(e, keyboardModifiers_);
+        activeStatesTop_[Keyboard]->keyPressed(kEvt);
+        stateMaster_->keyPressed(kEvt);
 
         return true;
     }
@@ -868,7 +897,9 @@ namespace orxonox
         if(e.key == OIS::KC_RSHIFT   || e.key == OIS::KC_LSHIFT)
             keyboardModifiers_ &= ~KeyboardModifier::Shift; // shift key
 
-        activeStatesTop_[Keyboard]->keyReleased(KeyEvent(e, keyboardModifiers_));
+        KeyEvent kEvt(e, keyboardModifiers_);
+        activeStatesTop_[Keyboard]->keyReleased(kEvt);
+        stateMaster_->keyReleased(kEvt);
 
         return true;
     }
@@ -887,14 +918,18 @@ namespace orxonox
         // check for actual moved event
         if (e.state.X.rel != 0 || e.state.Y.rel != 0)
         {
-            activeStatesTop_[Mouse]->mouseMoved(IntVector2(e.state.X.abs, e.state.Y.abs),
-                    IntVector2(e.state.X.rel, e.state.Y.rel), IntVector2(e.state.width, e.state.height));
+            IntVector2 abs(e.state.X.abs, e.state.Y.abs);
+            IntVector2 rel(e.state.X.rel, e.state.Y.rel);
+            IntVector2 clippingSize(e.state.width, e.state.height);
+            activeStatesTop_[Mouse]->mouseMoved(abs, rel, clippingSize);
+            stateMaster_->mouseMoved(abs, rel, clippingSize);
         }
 
         // check for mouse scrolled event
         if (e.state.Z.rel != 0)
         {
             activeStatesTop_[Mouse]->mouseScrolled(e.state.Z.abs, e.state.Z.rel);
+            stateMaster_->mouseScrolled(e.state.Z.abs, e.state.Z.rel);
         }
 
         return true;
@@ -918,6 +953,7 @@ namespace orxonox
             mouseButtonsDown_.push_back((MouseButton::Enum)id);
 
         activeStatesTop_[Mouse]->mouseButtonPressed((MouseButton::Enum)id);
+        stateMaster_->mouseButtonPressed((MouseButton::Enum)id);
 
         return true;
     }
@@ -943,6 +979,7 @@ namespace orxonox
         }
 
         activeStatesTop_[Mouse]->mouseButtonReleased((MouseButton::Enum)id);
+        stateMaster_->mouseButtonReleased((MouseButton::Enum)id);
 
         return true;
     }
@@ -979,6 +1016,7 @@ namespace orxonox
             buttonsDown.push_back((JoyStickButton::Enum)button);
 
         activeStatesTop_[2 + iJoyStick]->joyStickButtonPressed(iJoyStick, (JoyStickButton::Enum)button);
+        stateMaster_->joyStickButtonPressed(iJoyStick, (JoyStickButton::Enum)button);
 
         return true;
     }
@@ -999,6 +1037,7 @@ namespace orxonox
         }
 
         activeStatesTop_[2 + iJoyStick]->joyStickButtonReleased(iJoyStick, (JoyStickButton::Enum)button);
+        stateMaster_->joyStickButtonReleased(iJoyStick, (JoyStickButton::Enum)button);
 
         return true;
     }
@@ -1026,6 +1065,7 @@ namespace orxonox
                 fValue *= joySticksCalibration_[iJoyStick].negativeCoeff[axis];
 
             activeStatesTop_[2 + iJoyStick]->joyStickAxisMoved(iJoyStick, axis, fValue);
+            stateMaster_->joyStickAxisMoved(iJoyStick, axis, fValue);
         }
     }
 
