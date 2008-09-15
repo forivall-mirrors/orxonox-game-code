@@ -100,7 +100,7 @@ namespace orxonox
                 if (this->getPosition().squaredDistance(it->getPosition()) <= (radius*radius))
                 {
                     // hit
-                    if (it->isA(Class(SpaceShipAI)))
+                    if (it->isA(GetClassIdentifier(SpaceShipAI)))
                         ((SpaceShipAI*)(*it))->damage(this->damage_);
                     ParticleSpawner* explosion = new ParticleSpawner(this->explosionTemplateName_, LODParticle::low, 2.0);
                     explosion->setPosition(this->getPosition());
