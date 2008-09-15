@@ -34,12 +34,13 @@
 #include <string>
 #include <list>
 
-#define ACL_MODE_NORMAL    1
-#define ACL_MODE_LOWERCASE 2
-#define ACL_MODE_DISPLAY   4
 
 namespace orxonox
 {
+    const int ACL_MODE_NORMAL    = 1;
+    const int ACL_MODE_LOWERCASE = 2;
+    const int ACL_MODE_DISPLAY   = 4;
+
     typedef std::list<ArgumentCompletionListElement> ArgumentCompletionList;
 
     class _CoreExport ArgumentCompletionListElement

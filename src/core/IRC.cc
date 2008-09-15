@@ -34,10 +34,11 @@
 #include "CoreIncludes.h"
 #include "util/Convert.h"
 
-#define IRC_TCL_THREADID 1421421421
 
 namespace orxonox
 {
+    static const unsigned int IRC_TCL_THREADID  = 1421421421;
+
     SetConsoleCommand(IRC, say,  true).accessLevel(AccessLevel::User);
     SetConsoleCommand(IRC, msg,  false).accessLevel(AccessLevel::User);
     SetConsoleCommand(IRC, nick, false).accessLevel(AccessLevel::User);

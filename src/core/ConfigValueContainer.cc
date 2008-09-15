@@ -40,11 +40,12 @@
 #include "Language.h"
 #include "Identifier.h"
 
-#define MAX_VECTOR_INDEX 255 // to avoid up to 4*10^9 vector entries in the config file after accidentally using a wrong argument
 
 
 namespace orxonox
 {
+    const int MAX_VECTOR_INDEX  = 255; // to avoid up to 4*10^9 vector entries in the config file after accidentally using a wrong argument
+
     /**
         @brief Initializes the ConfigValueContainer with defaultvalues.
     */

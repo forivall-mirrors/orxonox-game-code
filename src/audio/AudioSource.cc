@@ -30,13 +30,13 @@
 
 namespace audio
 {
-	AudioSource::AudioSource()
-	{
+    AudioSource::AudioSource()
+    {
 
-	}
+    }
 
-	AudioSource::~AudioSource()
-	{
+    AudioSource::~AudioSource()
+    {
 
-	}
+    }
 }

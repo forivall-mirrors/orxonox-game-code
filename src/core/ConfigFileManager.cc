@@ -33,10 +33,12 @@
 #include "util/Convert.h"
 #include "util/String.h"
 
-#define CONFIG_FILE_MAX_LINELENGHT 1024
 
 namespace orxonox
 {
+    const int CONFIG_FILE_MAX_LINELENGHT  = 1024;
+    const char* const DEFAULT_CONFIG_FILE = "default.ini";
+
     SetConsoleCommandShortcutExtern(config).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
     SetConsoleCommandShortcutExtern(tconfig).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
     SetConsoleCommandShortcutExtern(reloadConfig);

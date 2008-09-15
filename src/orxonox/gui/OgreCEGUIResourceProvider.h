@@ -23,8 +23,8 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *************************************************************************/
-#ifndef _OgreCEGUIResourceProvider_h_
-#define _OgreCEGUIResourceProvider_h_
+#ifndef _OgreCEGUIResourceProvider_H__
+#define _OgreCEGUIResourceProvider_H__
 
 #include <CEGUIResourceProvider.h>
 #include "OgreCEGUIRenderer.h"
@@ -49,4 +49,4 @@ public:
 
 } // End of  CEGUI namespace section
 
-#endif	// end of guard _OgreCEGUIResourceProvider_h_
+#endif	// end of guard _OgreCEGUIResourceProvider_H__

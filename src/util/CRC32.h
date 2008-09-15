@@ -33,7 +33,7 @@
 #include <iostream>
 #include "Integers.h"
 
-#define UTIL_CRC32POLY 0x04C11DB7 /* CRC-32 Polynom */
+const unsigned int UTIL_CRC32POLY = 0x04C11DB7; /* CRC-32 Polynom */
 
 _UtilExport void calcCRCBit(uint32_t &crc32, int bit);
 

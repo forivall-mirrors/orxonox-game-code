@@ -26,8 +26,8 @@
 /*************************************************************************
     This file contains code that is specific to Ogre (http://www.ogre3d.org)
 *************************************************************************/
-#ifndef _OgreCEGUIRenderer_h_
-#define _OgreCEGUIRenderer_h_
+#ifndef _OgreCEGUIRenderer_H__
+#define _OgreCEGUIRenderer_H__
 
 #include <CEGUIBase.h>
 #include <CEGUIRenderer.h>
@@ -461,4 +461,4 @@ private:
 } // End of  CEGUI namespace section
 
 
-#endif	// end of guard _OgreCEGUIRenderer_h_
+#endif	// end of guard _OgreCEGUIRenderer_H__

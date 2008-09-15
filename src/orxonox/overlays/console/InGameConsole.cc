@@ -49,11 +49,11 @@
 #include "core/input/InputBuffer.h"
 #include "GraphicsEngine.h"
 
-#define LINES 30
-#define CHAR_WIDTH 7.45 // fix this please - determine the char-width dynamically
-
 namespace orxonox
 {
+    const int LINES = 30;
+    const float CHAR_WIDTH = 7.45f; // fix this please - determine the char-width dynamically
+
     SetConsoleCommand(InGameConsole, openConsole, true);
     SetConsoleCommand(InGameConsole, closeConsole, true);
 

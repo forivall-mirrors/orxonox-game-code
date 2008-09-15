@@ -25,254 +25,248 @@
  *      ...
  *
  */
-#include "AudioStream.h"
 
+#include "AudioStream.h"
 #include "util/Debug.h"
-#include "util/Error.h"
 
 namespace audio
 {
-  AudioStream::AudioStream(std::string path)
-	{
-		this->path = path;
-		loaded = false;
-	}
+    AudioStream::AudioStream(std::string path)
+    {
+        this->path = path;
+        loaded = false;
+    }
+
+    void AudioStream::open()
+    {
+        int result;
+
+        oggFile = fopen(path.c_str(), "rb");
+        if (!oggFile)
+        {
+            COUT(2) << "AudioStream: Could not open Ogg file " << path << std::endl;
+            return;
+        }
 
-	void AudioStream::open()
-	{
-	    int result;
+        if ((result = ov_open(oggFile, &oggStream, NULL, 0)) < 0)
+        {
+            fclose(oggFile);
+            COUT(2) << "AudioStream: Could not open Ogg stream. " << errorString(result) << std::endl;
+            return;
+        }
 
-      oggFile = fopen(path.c_str(), "rb");
-	    if(!oggFile)
-			{
-	    	orxonox::Error("Could not open Ogg file "+path);
-				return;
-			}
+        loaded = true;
+
+        vorbisInfo = ov_info(&oggStream, -1);
+        vorbisComment = ov_comment(&oggStream, -1);
 
-	    if((result = ov_open(oggFile, &oggStream, NULL, 0)) < 0)
-	    {
-        fclose(oggFile);
-	      orxonox::Error("Could not open Ogg stream. " + errorString(result));
-				return;
-	    }
+        if (vorbisInfo->channels == 1)
+            format = AL_FORMAT_MONO16;
+        else
+            format = AL_FORMAT_STEREO16;
 
-			loaded = true;
 
-	    vorbisInfo = ov_info(&oggStream, -1);
-	    vorbisComment = ov_comment(&oggStream, -1);
+        alGenBuffers(2, buffers);
+        check();
+        alGenSources(1, &source);
+        check();
 
-	    if(vorbisInfo->channels == 1)
-	        format = AL_FORMAT_MONO16;
-	    else
-	        format = AL_FORMAT_STEREO16;
+        alSource3f(source, AL_POSITION,        0.0, 0.0, 0.0);
+        alSource3f(source, AL_VELOCITY,        0.0, 0.0, 0.0);
+        alSource3f(source, AL_DIRECTION,       0.0, 0.0, 0.0);
+        alSourcef (source, AL_ROLLOFF_FACTOR,  0.0          );
+        alSourcei (source, AL_SOURCE_RELATIVE, AL_FALSE     );
+    }
 
 
-	    alGenBuffers(2, buffers);
-	    check();
-	    alGenSources(1, &source);
-	    check();
 
-	    alSource3f(source, AL_POSITION,        0.0, 0.0, 0.0);
-	    alSource3f(source, AL_VELOCITY,        0.0, 0.0, 0.0);
-	    alSource3f(source, AL_DIRECTION,       0.0, 0.0, 0.0);
-	    alSourcef (source, AL_ROLLOFF_FACTOR,  0.0          );
-	    alSourcei (source, AL_SOURCE_RELATIVE, AL_FALSE      );
-	}
+    void AudioStream::release()
+    {
+        alSourceStop(source);
+        empty();
+        alDeleteSources(1, &source);
+        check();
+        alDeleteBuffers(1, buffers);
+        check();
 
+        ov_clear(&oggStream);
+        loaded = false;
+    }
 
 
 
-	void AudioStream::release()
-	{
+    void AudioStream::display()
+    {
+        if (loaded)
+        {
+            COUT(3)
+                << "version         " << vorbisInfo->version         << std::endl
+                << "channels        " << vorbisInfo->channels        << std::endl
+                << "rate (hz)       " << vorbisInfo->rate            << std::endl
+                << "bitrate upper   " << vorbisInfo->bitrate_upper   << std::endl
+                << "bitrate nominal " << vorbisInfo->bitrate_nominal << std::endl
+                << "bitrate lower   " << vorbisInfo->bitrate_lower   << std::endl
+                << "bitrate window  " << vorbisInfo->bitrate_window  << std::endl
+                << std::endl
+                << "vendor " << vorbisComment->vendor << std::endl;
 
-	    alSourceStop(source);
-	    empty();
-	    alDeleteSources(1, &source);
-	    check();
-	    alDeleteBuffers(1, buffers);
-	    check();
+            for (int i = 0; i < vorbisComment->comments; i++)
+            {
+                COUT(3) << "   " << vorbisComment->user_comments[i] << std::endl;
+            }
 
-	    ov_clear(&oggStream);
-			loaded = false;
+            COUT(3) << std::endl;
+        }
+    }
 
-	}
 
 
+    bool AudioStream::playback()
+    {
+        if (!loaded)
+        {
+            return false;
+        }
 
+        if (playing())
+            return true;
 
-	void AudioStream::display()
-	{
-		if (loaded)
-		{
-	    COUT(3)
-	        << "version         " << vorbisInfo->version         << std::endl
-	        << "channels        " << vorbisInfo->channels        << std::endl
-	        << "rate (hz)       " << vorbisInfo->rate            << std::endl
-	        << "bitrate upper   " << vorbisInfo->bitrate_upper   << std::endl
-	        << "bitrate nominal " << vorbisInfo->bitrate_nominal << std::endl
-	        << "bitrate lower   " << vorbisInfo->bitrate_lower   << std::endl
-	        << "bitrate window  " << vorbisInfo->bitrate_window  << std::endl
-	        << std::endl
-	        << "vendor " << vorbisComment->vendor << std::endl;
+        if (!stream(buffers[0]))
+            return false;
 
-	    for(int i = 0; i < vorbisComment->comments; i++)
-	    {
-	        COUT(3) << "   " << vorbisComment->user_comments[i] << std::endl;
-	    }
+        if (!stream(buffers[1]))
+            return false;
 
-	    COUT(3) << std::endl;
-		}
-	}
+        alSourceQueueBuffers(source, 2, buffers);
+        alSourcePlay(source);
 
+        return true;
+    }
 
 
 
-	bool AudioStream::playback()
-	{
-		if (!loaded)
-		{
-			return false;
-		}
 
-	    if(playing())
-	        return true;
+    bool AudioStream::playing()
+    {
+        if (!loaded)
+        {
+            return false;
+        }
 
-	    if(!stream(buffers[0]))
-	        return false;
+        ALenum state;
+        alGetSourcei(source, AL_SOURCE_STATE, &state);
+        return (state == AL_PLAYING);
+    }
 
-	    if(!stream(buffers[1]))
-	        return false;
 
-	    alSourceQueueBuffers(source, 2, buffers);
-	    alSourcePlay(source);
 
-	    return true;
-	}
 
+    bool AudioStream::update()
+    {
+        int processed;
+        bool active = true;
 
+        alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
 
+        while (processed--)
+        {
+            ALuint buffer;
 
-	bool AudioStream::playing()
-	{
-		if (!loaded)
-		{
-			return false;
-		}
+            alSourceUnqueueBuffers(source, 1, &buffer);
+            check();
 
-	    ALenum state;
-	    alGetSourcei(source, AL_SOURCE_STATE, &state);
-	    return (state == AL_PLAYING);
-	}
+            active = stream(buffer);
 
+            alSourceQueueBuffers(source, 1, &buffer);
+            check();
+        }
 
+        if (active==false)
+        {
+            loaded = false;
+        }
+        return active;
+    }
 
 
-	bool AudioStream::update()
-	{
-	    int processed;
-	    bool active = true;
 
-	    alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
 
-	    while(processed--)
-	    {
-	        ALuint buffer;
+    bool AudioStream::stream(ALuint buffer)
+    {
+        char pcm[BUFFER_SIZE];
+        int  size = 0;
+        int  section;
+        int  result;
 
-	        alSourceUnqueueBuffers(source, 1, &buffer);
-	        check();
+        while (size < BUFFER_SIZE)
+        {
+            result = ov_read(&oggStream, pcm + size, BUFFER_SIZE - size, 0, 2, 1, &section);
 
-	        active = stream(buffer);
+            if (result > 0)
+                size += result;
+            else
+                if (result < 0)
+                    COUT(2) << "AudioStream: " << errorString(result) << std::endl;
+                else
+                    break;
+        }
 
-	        alSourceQueueBuffers(source, 1, &buffer);
-	        check();
-	    }
+        if (size == 0)
+            return false;
 
-			if (active==false)
-			{
-				loaded = false;
-			}
-	    return active;
-	}
+        alBufferData(buffer, format, pcm, size, vorbisInfo->rate);
+        check();
 
+        return true;
+    }
 
 
 
-	bool AudioStream::stream(ALuint buffer)
-	{
-	    char pcm[BUFFER_SIZE];
-	    int  size = 0;
-	    int  section;
-	    int  result;
+    void AudioStream::empty()
+    {
+        int queued;
 
-	    while(size < BUFFER_SIZE)
-	    {
-	        result = ov_read(&oggStream, pcm + size, BUFFER_SIZE - size, 0, 2, 1, &section);
+        alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
 
-	        if(result > 0)
-	            size += result;
-	        else
-	            if(result < 0)
-	                orxonox::Error(errorString(result));
-	            else
-	                break;
-	    }
+        while (queued--)
+        {
+            ALuint buffer;
 
-	    if(size == 0)
-	        return false;
+            alSourceUnqueueBuffers(source, 1, &buffer);
+            check();
+        }
+    }
 
-	    alBufferData(buffer, format, pcm, size, vorbisInfo->rate);
-	    check();
 
-	    return true;
-	}
 
 
+    void AudioStream::check()
+    {
+        int error = alGetError();
 
-	void AudioStream::empty()
-	{
-	    int queued;
+        if (error != AL_NO_ERROR)
+            COUT(2) << "AudioStream: OpenAL error was raised." << std::endl;
+    }
 
-	    alGetSourcei(source, AL_BUFFERS_QUEUED, &queued);
 
-	    while(queued--)
-	    {
-	        ALuint buffer;
 
-	        alSourceUnqueueBuffers(source, 1, &buffer);
-	        check();
-	    }
-	}
-
-
-
-
-	void AudioStream::check()
-	{
-		int error = alGetError();
-
-		if(error != AL_NO_ERROR)
-			orxonox::Error("OpenAL error was raised.");
-	}
-
-
-
-	std::string AudioStream::errorString(int code)
-	{
-	    switch(code)
-	    {
-	        case OV_EREAD:
-	            return std::string("Read from media.");
-	        case OV_ENOTVORBIS:
-	            return std::string("Not Vorbis data.");
-	        case OV_EVERSION:
-	            return std::string("Vorbis version mismatch.");
-	        case OV_EBADHEADER:
-	            return std::string("Invalid Vorbis header.");
-	        case OV_EFAULT:
-	            return std::string("Internal logic fault (bug or heap/stack corruption.");
-	        default:
-	            return std::string("Unknown Ogg error.");
-	    }
-	}
+    std::string AudioStream::errorString(int code)
+    {
+        switch (code)
+        {
+            case OV_EREAD:
+                return std::string("Read from media.");
+            case OV_ENOTVORBIS:
+                return std::string("Not Vorbis data.");
+            case OV_EVERSION:
+                return std::string("Vorbis version mismatch.");
+            case OV_EBADHEADER:
+                return std::string("Invalid Vorbis header.");
+            case OV_EFAULT:
+                return std::string("Internal logic fault (bug or heap/stack corruption.");
+            default:
+                return std::string("Unknown Ogg error.");
+        }
+    }
 }
 

@@ -36,7 +36,6 @@
 
 #include "tinyxml/tinyxml.h"
 #include "util/SubString.h"
-#include "util/Convert.h"
 #include "util/Math.h"
 #include "util/Debug.h"
 #include "core/CoreIncludes.h"
