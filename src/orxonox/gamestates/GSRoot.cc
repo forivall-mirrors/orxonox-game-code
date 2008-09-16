@@ -32,7 +32,6 @@
 #include <OgreLogManager.h>
 #include <OgreRoot.h>
 
-//#include "util/SubString.h"
 #include "util/Exception.h"
 #include "util/Debug.h"
 #include "core/Factory.h"
@@ -41,6 +40,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
+#include "core/Shell.h"
 #include "core/TclBind.h"
 #include "core/TclThreadManager.h"
 #include "GraphicsEngine.h"
@@ -72,6 +72,9 @@ namespace orxonox
         , ogreRoot_(0)
         , ogreLogger_(0)
         , graphicsEngine_(0)
+        , tclBind_(0)
+        , tclThreadManager_(0)
+        , shell_(0)
     {
         RegisterRootObject(GSRoot);
     }
@@ -119,8 +122,11 @@ namespace orxonox
         }
 
         // initialise TCL
-        TclBind::getInstance().setDataPath(Settings::getDataPath());
-        TclThreadManager::getInstance();
+        this->tclBind_ = new TclBind(Settings::getDataPath());
+        this->tclThreadManager_ = new TclThreadManager(tclBind_->getTclInterpreter());
+
+        // create a shell
+        this->shell_ = new Shell();
 
         setupOgre();
 
@@ -148,6 +154,8 @@ namespace orxonox
 
     void GSRoot::leave()
     {
+        // TODO: remove and destroy console commands
+
         delete graphicsEngine_;
 
         delete this->ogreRoot_;
@@ -159,9 +167,12 @@ namespace orxonox
         delete this->ogreLogger_;
 #endif
 
+        delete this->shell_;
+        delete this->tclThreadManager_;
+        delete this->tclBind_;
+
         delete settings_;
 
-        // TODO: remove and destroy console commands
     }
 
     void GSRoot::ticked(const Clock& time)

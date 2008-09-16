@@ -29,10 +29,10 @@
 #ifndef _Shell_H__
 #define _Shell_H__
 
+#include "CorePrereqs.h"
+
 #include <list>
 #include <vector>
-
-#include "CorePrereqs.h"
 
 #include "OrxonoxClass.h"
 #include "input/InputBuffer.h"
@@ -59,8 +59,10 @@ namespace orxonox
     class _CoreExport Shell : virtual public OrxonoxClass, public OutputBufferListener
     {
         public:
-            static Shell& getInstance();
-            static Shell& createShell();
+            Shell();
+            virtual ~Shell();
+
+            static Shell& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
             static void clearShell();
             static void history();
@@ -103,9 +105,7 @@ namespace orxonox
                 { this->bAddOutputLevel_ = bAddOutputLevel; }
 
         private:
-            Shell();
             Shell(const Shell& other);
-            virtual ~Shell();
 
             void configureInputBuffer();
 
@@ -141,6 +141,8 @@ namespace orxonox
             unsigned int historyPosition_;
             unsigned int historyOffset_;
             bool bAddOutputLevel_;
+
+            static Shell* singletonRef_s;
     };
 }
 

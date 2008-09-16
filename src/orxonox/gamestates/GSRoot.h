@@ -64,6 +64,9 @@ namespace orxonox
         Ogre::Root*           ogreRoot_;                  //!< Ogre's root
         Ogre::LogManager*     ogreLogger_;
         GraphicsEngine*       graphicsEngine_;   //!< Interface to Ogre
+        TclBind*              tclBind_;
+        TclThreadManager*     tclThreadManager_;
+        Shell*                shell_;
 
         std::string           ogreConfigFile_;        //!< ogre config file name
         std::string           ogrePluginsFile_;       //!< ogre plugins file name

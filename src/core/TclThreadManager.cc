@@ -26,19 +26,18 @@
  *
  */
 
+#include "TclThreadManager.h"
+
 #include <iostream>
 #include <string>
-
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
-
 #include <OgreTimer.h>
 
 #include "CoreIncludes.h"
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
 #include "TclBind.h"
-#include "TclThreadManager.h"
 #include "util/Debug.h"
 #include "util/Convert.h"
 
@@ -58,13 +57,18 @@ namespace orxonox
     SetConsoleCommand(TclThreadManager, dump,    false).argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand(TclThreadManager, flush,   false).argumentCompleter(0, autocompletion::tclthreads());
 
-    TclThreadManager::TclThreadManager()
+    TclThreadManager* TclThreadManager::singletonRef_s = 0;
+
+    TclThreadManager::TclThreadManager(Tcl::interpreter* interpreter)
     {
         RegisterRootObject(TclThreadManager);
 
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
+
         this->threadCounter_ = 0;
         this->orxonoxInterpreterBundle_.id_ = 0;
-        this->orxonoxInterpreterBundle_.interpreter_ = TclBind::getInstance().getTclInterpreter();
+        this->orxonoxInterpreterBundle_.interpreter_ = interpreter;
 #if (BOOST_VERSION >= 103500)
         this->threadID_ = boost::this_thread::get_id();
 #else
@@ -83,12 +87,8 @@ namespace orxonox
                 threadID = this->interpreterBundles_.begin()->first;
         }
         this->destroy(threadID);
-    }
 
-    TclThreadManager& TclThreadManager::getInstance()
-    {
-        static TclThreadManager instance;
-        return instance;
+        singletonRef_s = 0;
     }
 
     unsigned int TclThreadManager::create()
