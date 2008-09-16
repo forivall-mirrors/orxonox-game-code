@@ -26,9 +26,9 @@
  *
  */
 
-#include <boost/thread/thread.hpp>
-
 #include "IRC.h"
+
+#include <boost/thread/thread.hpp>
 #include "ConsoleCommand.h"
 #include "TclThreadManager.h"
 #include "CoreIncludes.h"

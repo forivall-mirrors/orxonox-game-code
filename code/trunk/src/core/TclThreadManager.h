@@ -72,7 +72,10 @@ namespace orxonox
         friend class TclBind;
 
         public:
-            static TclThreadManager& getInstance();
+            TclThreadManager(Tcl::interpreter* interpreter);
+            ~TclThreadManager();
+
+            static TclThreadManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
             static unsigned int create();
             static unsigned int createID(unsigned int threadID);
@@ -91,9 +94,7 @@ namespace orxonox
             std::list<unsigned int> getThreadList() const;
 
         private:
-            TclThreadManager();
             TclThreadManager(const TclThreadManager& other);
-            ~TclThreadManager();
 
             static void tcl_execute(Tcl::object const &args);
             static std::string tcl_query(int querierID, Tcl::object const &args);
@@ -129,6 +130,8 @@ namespace orxonox
 #else
             boost::thread threadID_;
 #endif
+
+            static TclThreadManager* singletonRef_s;
     };
 
     _CoreExport void tclThread(TclInterpreterBundle* interpreterBundle, std::string command);

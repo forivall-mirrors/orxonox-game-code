@@ -38,7 +38,10 @@ namespace orxonox
     class _CoreExport TclBind
     {
         public:
-            static TclBind& getInstance();
+            TclBind(const std::string& datapath);
+            ~TclBind();
+
+            static TclBind& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
             static std::string tcl(const std::string& tclcode);
             static void bgerror(std::string error);
@@ -55,13 +58,13 @@ namespace orxonox
             static bool eval(const std::string& tclcode);
 
         private:
-            TclBind();
             TclBind(const TclBind& other);
-            ~TclBind();
 
             Tcl::interpreter* interpreter_;
             std::string tclLibPath_;
             bool bSetTclLibPath_;
+
+            static TclBind* singletonRef_s;
     };
 }
 

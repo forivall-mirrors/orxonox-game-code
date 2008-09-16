@@ -26,13 +26,13 @@
  *
  */
 
+#include "TclBind.h"
+
 #include <iostream>
 #include <string>
-
 #include "ConsoleCommand.h"
 #include "CommandExecutor.h"
 #include "TclThreadManager.h"
-#include "TclBind.h"
 #include "util/Debug.h"
 #include "util/String.h"
 
@@ -41,22 +41,22 @@ namespace orxonox
     SetConsoleCommandShortcut(TclBind, tcl);
     SetConsoleCommandShortcut(TclBind, bgerror);
 
-    TclBind::TclBind()
+    TclBind* TclBind::singletonRef_s = 0;
+
+    TclBind::TclBind(const std::string& datapath)
     {
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
         this->interpreter_ = 0;
         this->bSetTclLibPath_ = false;
+        this->setDataPath(datapath);
     }
 
     TclBind::~TclBind()
     {
         if (this->interpreter_)
             delete this->interpreter_;
-    }
-
-    TclBind& TclBind::getInstance()
-    {
-        static TclBind instance;
-        return instance;
+        singletonRef_s = 0;
     }
 
     void TclBind::setDataPath(const std::string& datapath)
