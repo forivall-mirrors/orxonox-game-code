@@ -26,18 +26,30 @@
  *
  */
 
-#include "OutputBuffer.h"
+/**
+    @file OutputBuffer.cc
+    @brief Implementation of the OutputBuffer.
+*/
 
+#include "OutputBuffer.h"
 
 namespace orxonox
 {
-    const int OUTPUTBUFFER_MAX_LINE_LENGTH = 16384;
+    const int OUTPUTBUFFER_MAX_LINE_LENGTH = 16384; //! The maximal number of lines that can be stored within the OutputBuffer.
 
+    /**
+        @brief Adds a new listener to the list.
+        @param listener The new listener
+    */
     void OutputBuffer::registerListener(OutputBufferListener* listener)
     {
         this->listeners_.insert(this->listeners_.end(), listener);
     }
 
+    /**
+        @brief Removes a listener from the list.
+        @param listener The listener
+    */
     void OutputBuffer::unregisterListener(OutputBufferListener* listener)
     {
         for (std::list<OutputBufferListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
@@ -49,6 +61,10 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Puts a stream manipulator to the stream.
+        @param manipulator The manipulator
+    */
     OutputBuffer& OutputBuffer::operator<<(std::ostream& (*manipulator)(std::ostream&))
     {
                 this->stream_ << manipulator;
@@ -56,6 +72,10 @@ namespace orxonox
                 return *this;
     }
 
+    /**
+        @brief Puts a stream manipulator to the stream.
+        @param manipulator The manipulator
+    */
     OutputBuffer& OutputBuffer::operator<<(std::ios& (*manipulator)(std::ios&))
     {
                 this->stream_ << manipulator;
@@ -63,6 +83,10 @@ namespace orxonox
                 return *this;
     }
 
+    /**
+        @brief Puts a stream manipulator to the stream.
+        @param manipulator The manipulator
+    */
     OutputBuffer& OutputBuffer::operator<<(std::ios_base& (*manipulator)(std::ios_base&))
     {
                 this->stream_ << manipulator;
@@ -70,6 +94,14 @@ namespace orxonox
                 return *this;
     }
 
+    /**
+        @brief Removes the first line from the stream and assigns it to a given string object.
+        @param output The string object to assign the first line
+        @return True if there was at least one line in the stream and this line was successfully assigned
+
+        It's important to know the returned line will be removed from the stream. If there are more than one
+        listener, they have to cooperate to avoid conflicts.
+    */
     bool OutputBuffer::getLine(std::string* output)
     {
         char line[OUTPUTBUFFER_MAX_LINE_LENGTH];
@@ -89,6 +121,9 @@ namespace orxonox
         return (!eof && !fail);
     }
 
+    /**
+        @brief Calls the outputChanged() function of all registered listeners.
+    */
     void OutputBuffer::callListeners()
     {
         for (std::list<OutputBufferListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)

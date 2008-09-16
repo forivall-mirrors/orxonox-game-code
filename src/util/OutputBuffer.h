@@ -26,6 +26,19 @@
  *
  */
 
+/**
+    @file OutputBuffer.h
+    @brief Declaration of the OutputBuffer class.
+
+    The OutputBuffer acts almost like std::ostream. You can put text and other values to the
+    OutputBuffer by using the << operator. The OutputBuffer stores the text and calls registerd
+    listeners if new text gets assigned.
+    The listeners are then able to retrieve the text line by line.
+
+    It's important to know that getLine actually removes the line from the OutputBuffer, so it's
+    better to only have one "active" listener.
+*/
+
 #ifndef _OutputBuffer_H__
 #define _OutputBuffer_H__
 
@@ -37,6 +50,13 @@
 
 namespace orxonox
 {
+    /**
+        @brief A pure virtual baseclass for classes that want to register as listener to an OutputBuffer.
+
+        This class is pure virtual, so an inheriting class has to implement the function on it's own.
+        The function get's called, if an instance of the inheriting class registers as a listener at
+        an OutputBuffer and this buffer changes.
+    */
     class _UtilExport OutputBufferListener
     {
         friend class OutputBuffer;
@@ -48,12 +68,25 @@ namespace orxonox
             virtual void outputChanged() = 0;
     };
 
+    /**
+        @brief The OutputBuffer acts almost like std::ostream and stores the assigned text.
+
+        If text gets assigned by using the << operator or another function, the OutputBuffer
+        calls it's listeners, allowing them to retrieve the text line by line.
+
+        It's important to know that getLine actually removes the line from the OutputBuffer, so it's
+        better to only have one "active" listener.
+    */
     class _UtilExport OutputBuffer
     {
         public:
             OutputBuffer() {}
             ~OutputBuffer() {}
 
+            /**
+                @brief Puts some object/value to the OutputBuffer. The text gets assigned and the OutputBuffer calls it's listeners.
+                @param object The object/value to assign
+            */
             template <class T>
             inline OutputBuffer& operator<<(T object)
             {
@@ -62,6 +95,10 @@ namespace orxonox
                 return *this;
             }
 
+            /**
+                @brief Reads the stored text of the other OutputBuffer and calls the listeners.
+                @param object The other OutputBuffer
+            */
             template <const OutputBuffer&>
             inline OutputBuffer& operator<<(const OutputBuffer& object)
             {
@@ -74,6 +111,10 @@ namespace orxonox
             OutputBuffer& operator<<(std::ios& (*manipulator)(std::ios&));
             OutputBuffer& operator<<(std::ios_base& (*manipulator)(std::ios_base&));
 
+            /**
+                @brief Does the same like operator<<: Assigns the object to the stream and calls the listeners.
+                @param object The object/value
+            */
             template <class T>
             inline void add(T object)
             {
@@ -81,6 +122,10 @@ namespace orxonox
                 this->callListeners();
             }
 
+            /**
+                @brief Assigns an object/value and adds std::endl.
+                @param object The object/value
+            */
             template <class T>
             inline void addLine(T object)
             {
@@ -88,12 +133,18 @@ namespace orxonox
                 this->callListeners();
             }
 
+            /**
+                @brief Puts std::endl to the stream and calls the listeners.
+            */
             inline void newline()
             {
                 this->stream_ << std::endl;
                 this->callListeners();
             }
 
+            /**
+                @brief Flushes the stored text (~empties the OutputBuffer).
+            */
             inline void flush()
             {
                 this->stream_.flush();
@@ -104,14 +155,19 @@ namespace orxonox
             void registerListener(OutputBufferListener* listener);
             void unregisterListener(OutputBufferListener* listener);
 
+            /**
+                @brief Returns the internal stringstream object.
+            */
             inline std::stringstream& getStream()
-                { return this->stream_; }
+            {
+                return this->stream_;
+            }
 
         private:
             void callListeners();
 
-            std::stringstream stream_;
-            std::list<OutputBufferListener*> listeners_;
+            std::stringstream stream_;                   //! The stringstream that stores the assigned text
+            std::list<OutputBufferListener*> listeners_; //! A list of all listeners
     };
 }
 

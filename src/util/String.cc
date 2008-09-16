@@ -26,14 +26,18 @@
  *
  */
 
+/**
+    @file String.cc
+    @brief Implementation of several string manipulation functions.
+*/
+
 #include "String.h"
 
 #include <cctype>
 #include <iostream>
 
 /**
-    @brief Blank string as variable so you can use const std::string& even
-           if you have to return "".
+    @brief Blank string as variable so you can use const std::string& even if you have to return "".
 */
 std::string blankString = "";
 
@@ -272,6 +276,11 @@ bool isNumeric(const std::string& str)
     return true;
 }
 
+/**
+    @brief Adds backslashes to the given string which makes special chars visible. Existing slashes will be doubled.
+    @param str The string to manipulate
+    @return The string with added slashes
+*/
 std::string addSlashes(const std::string& str)
 {
     std::string output = str;
@@ -290,6 +299,11 @@ std::string addSlashes(const std::string& str)
     return output;
 }
 
+/**
+    @brief Removes backslashes from the given string. Double backslashes are interpreted as one backslash.
+    @param str The string to manipulate
+    @return The string with removed slashes
+*/
 std::string removeSlashes(const std::string& str)
 {
     if (str.size() <= 1)

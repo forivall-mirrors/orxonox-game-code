@@ -26,13 +26,18 @@
  *
  */
 
+/**
+    @file Math.cc
+    @brief Implementation of several math-functions.
+*/
+
 #include <OgrePlane.h>
 
 #include "Math.h"
 #include "Convert.h"
 
 /**
-    @brief Function for writing to a stream.
+    @brief Function for writing a Radian to a stream.
 */
 std::ostream& operator<<(std::ostream& out, const orxonox::Radian& radian)
 {
@@ -41,7 +46,7 @@ std::ostream& operator<<(std::ostream& out, const orxonox::Radian& radian)
 }
 
 /**
-    @brief Function for reading from a stream.
+    @brief Function for reading a Radian from a stream.
 */
 std::istream& operator>>(std::istream& in, orxonox::Radian& radian)
 {
@@ -52,7 +57,7 @@ std::istream& operator>>(std::istream& in, orxonox::Radian& radian)
 }
 
 /**
-    @brief Function for writing to a stream.
+    @brief Function for writing a Degree to a stream.
 */
 std::ostream& operator<<(std::ostream& out, const orxonox::Degree& degree)
 {
@@ -61,7 +66,7 @@ std::ostream& operator<<(std::ostream& out, const orxonox::Degree& degree)
 }
 
 /**
-    @brief Function for reading from a stream.
+    @brief Function for reading a Degree from a stream.
 */
 std::istream& operator>>(std::istream& in, orxonox::Degree& degree)
 {
@@ -72,6 +77,18 @@ std::istream& operator>>(std::istream& in, orxonox::Degree& degree)
 }
 
 
+/**
+    @brief Gets the angle between my viewing direction and the direction to the position of the other object.
+    @param myposition My position
+    @param mydirection My viewing direction
+    @param otherposition The position of the other object
+    @return The angle
+
+    @example
+    If the other object is exactly in front of me, the function returns 0.
+    If the other object is exactly behind me, the function returns pi.
+    If the other object is exactly right/left to me (or above/below), the function returns pi/2.
+*/
 float getAngle(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& otherposition)
 {
     orxonox::Vector3 distance = otherposition - myposition;
@@ -82,6 +99,21 @@ float getAngle(const orxonox::Vector3& myposition, const orxonox::Vector3& mydir
         return acos(clamp<float>(mydirection.dotProduct(distance) / distancelength, -1, 1));
 }
 
+/**
+    @brief Gets the 2D viewing direction (up/down, left/right) to the position of the other object.
+    @param myposition My position
+    @param mydirection My viewing direction
+    @param myorthonormal My orthonormalvector (pointing upwards through my head)
+    @param otherposition The position of the other object
+    @return The viewing direction
+
+    @example
+    If the other object is exactly in front of me, the function returns Vector2(0, 0).
+    If the other object is exactly at my left, the function returns Vector2(-1, 0).
+    If the other object is exactly at my right, the function returns Vector2(1, 0).
+    If the other object is only a bit at my right, the function still returns Vector2(1, 0).
+    If the other object is exactly above me, the function returns Vector2(0, 1).
+*/
 orxonox::Vector2 get2DViewdirection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition)
 {
     orxonox::Vector3 distance = otherposition - myposition;
@@ -99,6 +131,21 @@ orxonox::Vector2 get2DViewdirection(const orxonox::Vector3& myposition, const or
         return orxonox::Vector2(-sin(angle), cos(angle));
 }
 
+/**
+    @brief Gets the 2D viewing direction (up/down, left/right) to the position of the other object, multiplied with the viewing distance to the object (0° = 0, 180° = 1).
+    @param myposition My position
+    @param mydirection My viewing direction
+    @param myorthonormal My orthonormalvector (pointing upwards through my head)
+    @param otherposition The position of the other object
+    @return The viewing direction
+
+    @example
+    If the other object is exactly in front of me, the function returns Vector2(0, 0).
+    If the other object is exactly at my left, the function returns Vector2(-0.5, 0).
+    If the other object is exactly at my right, the function returns Vector2(0.5, 0).
+    If the other object is only a bit at my right, the function still returns Vector2(0.01, 0).
+    If the other object is exactly above me, the function returns Vector2(0, 0.5).
+*/
 orxonox::Vector2 get2DViewcoordinates(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition)
 {
     orxonox::Vector3 distance = otherposition - myposition;
@@ -120,6 +167,16 @@ orxonox::Vector2 get2DViewcoordinates(const orxonox::Vector3& myposition, const 
         return orxonox::Vector2(-sin(angle) * radius, cos(angle) * radius);
 }
 
+/**
+    @brief Returns the predicted position I have to aim at, if I want to hit a moving target with a moving projectile.
+    @param myposition My position
+    @param projectilespeed The speed of my projectile
+    @param targetposition The position of my target
+    @param targetvelocity The velocity of my target
+    @return The predicted position
+
+    The function predicts the position based on a linear velocity of the target. If the target changes speed or direction, the projectile will miss.
+*/
 orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposition, float projectilespeed, const orxonox::Vector3& targetposition, const orxonox::Vector3& targetvelocity)
 {
     float squaredProjectilespeed = projectilespeed * projectilespeed;

@@ -45,7 +45,7 @@ namespace orxonox
         this->softDebugLevel_[0] = this->softDebugLevel_[1] = this->softDebugLevel_[2] = this->softDebugLevel_[3] = 2;
         this->logfilename_ = logfilename;
         this->logfile_.open(this->logfilename_.c_str(), std::fstream::out);
-        this->logfile_ << "Started log at yyyy/mm/dd hh:mm:ss" << std::endl;
+        this->logfile_ << "Started log at yyyy/mm/dd hh:mm:ss" << std::endl; // Todo: Get date and time
         this->logfile_.flush();
     }
 
@@ -121,7 +121,7 @@ namespace orxonox
     }
 
     /**
-        @brief Overloaded << operator, redirects the output to the console and the logfile.
+        @brief Overloaded << operator, redirects the output to the console, the logfile and the ingame shell.
         @param manipulator A function, manipulating the outstream.
         @return A reference to the OutputHandler itself
     */
@@ -143,7 +143,7 @@ namespace orxonox
     }
 
     /**
-        @brief Overloaded << operator, redirects the output to the console and the logfile.
+        @brief Overloaded << operator, redirects the output to the console, the logfile and the ingame shell.
         @param manipulator A function, manipulating the outstream.
         @return A reference to the OutputHandler itself
     */
@@ -165,7 +165,7 @@ namespace orxonox
     }
 
     /**
-        @brief Overloaded << operator, redirects the output to the console and the logfile.
+        @brief Overloaded << operator, redirects the output to the console, the logfile and the ingame shell.
         @param manipulator A function, manipulating the outstream.
         @return A reference to the OutputHandler itself
     */

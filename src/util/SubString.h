@@ -33,7 +33,7 @@
 //  Version 1.0
 //  Copyright (c) 2005 Clemens Wacha. All rights reserved.
 
- * Extended by Fabian 'x3n' Landau with the SL_PARENTHESES mode.
+ *   Extended by Fabian 'x3n' Landau by the SL_PARENTHESES mode.
  */
 
  /*!

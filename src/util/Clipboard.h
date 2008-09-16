@@ -26,6 +26,18 @@
  *
  */
 
+/**
+    @file Clipboard.h
+    @brief Some functions to exchange text between the OS clipboard and Orxonox.
+
+    Use fromClipboard() to get text from the clipboard (if there is any text) and
+    toClipboard(text) to put text into the clipboard.
+
+    Those functions can only work properly if there's an OS-specific implementation.
+    If an OS isn't supported, the clipboard only works within Orxonox, but exchange
+    with other programs isn't possible.
+*/
+
 #ifndef _Clipboard_H__
 #define _Clipboard_H__
 
@@ -34,7 +46,7 @@
 #include <string>
 
 
-_UtilExport bool toClipboard(std::string text);
+_UtilExport bool toClipboard(const std::string& text);
 _UtilExport std::string fromClipboard();
 
 

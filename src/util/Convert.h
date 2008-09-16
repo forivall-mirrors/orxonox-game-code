@@ -20,8 +20,8 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Benjamin Grauer
  *      Fabian 'x3n' Landau
+ *      Benjamin Grauer
  *   Co-authors:
  *      ...
  */

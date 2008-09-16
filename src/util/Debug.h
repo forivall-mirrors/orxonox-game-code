@@ -27,10 +27,34 @@
  */
 
 /**
- * @file Debug.h
- * @brief Handles the output for different verbose-modes.
- *
- * There are two modes: HARD and SOFT. HARD is precessed during compiletime, while SOFT is for runtime.
+    @file Debug.h
+    @brief Handles different output-levels of errors, warnings, infos and debug informations.
+
+    The COUT(level) macro acts like std::cout, but the output is only performed if the given
+    level is <= the soft debug level.
+
+    There are two used values in this file:
+     - The hard debug level is used during compiletime. It describes the highest allowed output level.
+     - The soft debug level is used during runtime and is the maximum of the three configurable
+       output-levels for console, logfile and ingame shell.
+
+    The separation between the three devices is done by the OutputHandler.
+
+    Possible levels are:
+     0: Very important output
+     1: Errors
+     2: Warnings
+     3: Informations
+     4: Debug information
+     5: More debug information
+     6: Crazy debug informations
+
+    @example
+    COUT(0) << "Very important output" << std::endl;
+    COUT(1) << "Error: Something went wrong!" << std::endl;
+    COUT(2) << "Warning: There might be a problem." << std::endl;
+    COUT(3) << "Info: It's monday" << std::endl;
+    COUT(4) << "Debug: x is 1.23456" << std::endl;
  */
 
 #ifndef _Debug_H__

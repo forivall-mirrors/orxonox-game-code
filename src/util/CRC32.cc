@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      ...
  *   Co-authors:
  *      ...
  *
@@ -31,7 +31,7 @@
 
 void calcCRCBit(uint32_t &crc32, int bit){
     int hbit;
- 
+
     hbit=(crc32 & 0x80000000) ? 1 : 0;
     if (hbit != bit)
       crc32=(crc32<<1) ^ UTIL_CRC32POLY;
