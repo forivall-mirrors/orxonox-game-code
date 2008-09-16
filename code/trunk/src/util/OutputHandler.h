@@ -31,7 +31,7 @@
     @brief Definition of the OutputHandler class.
 
     The OutputHandler acts like std::cout, but output isn't only shown in the console,
-    but also written to the logfile.
+    but also written to the logfile and the ingame shell.
 */
 
 #ifndef _OutputHandler_H__
@@ -47,7 +47,7 @@
 
 namespace orxonox
 {
-    //! The OutputHandler acts like std::cout, but redirects output to the console AND the logfile.
+    //! The OutputHandler acts like std::cout, but redirects output to the console, the logfile and the ingame shell.
     class _UtilExport OutputHandler
     {
         public:

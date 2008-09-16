@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file Math.h
+    @brief Declaration and implementation of several math-functions, typedefs of some Ogre::Math classes to the orxonox namespace.
+*/
+
 #ifndef _Util_Math_H__
 #define _Util_Math_H__
 
@@ -67,7 +72,7 @@ _UtilExport orxonox::Vector2 get2DViewcoordinates(const orxonox::Vector3& myposi
 _UtilExport orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposition, float projectilespeed, const orxonox::Vector3& targetposition, const orxonox::Vector3& targetvelocity);
 
 //Get around Windows hackery
-#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
 #  ifdef max
 #    undef max
 #  endif
@@ -76,24 +81,41 @@ _UtilExport orxonox::Vector3 getPredictedPosition(const orxonox::Vector3& myposi
 #  endif
 #endif
 
+/**
+    @brief Returns the sign of the given value.
+    @param x The value
+    @return 1 if the value is positive or zero, -1 if the value is negative
+*/
 template <typename T>
 inline T sgn(T x)
 {
     return (x >= 0) ? 1 : -1;
 }
 
+/**
+    @brief Returns the smaller of two values.
+*/
 template <typename T>
 inline T min(T a, T b)
 {
     return (a <= b) ? a : b;
 }
 
+/**
+    @brief Returns the greater of two values.
+*/
 template <typename T>
 inline T max(T a, T b)
 {
     return (a >= b) ? a : b;
 }
 
+/**
+    @brief Keeps a value between a lower and an upper limit.
+    @param x The value
+    @param min The lower limit
+    @param max The upper limit
+*/
 template <typename T>
 inline T clamp(T x, T min, T max)
 {
@@ -106,24 +128,36 @@ inline T clamp(T x, T min, T max)
     return x;
 }
 
+/**
+    @brief Returns the square value (x^2).
+*/
 template <typename T>
 inline T square(T x)
 {
     return x*x;
 }
 
+/**
+    @brief Returns the cube value (x^3).
+*/
 template <typename T>
 inline T cube(T x)
 {
     return x*x*x;
 }
 
+/**
+    @brief Rounds the value down.
+*/
 template <typename T>
 inline int floor(T x)
 {
     return (int)(x);
 }
 
+/**
+    @brief Rounds the value up.
+*/
 template <typename T>
 inline int ceil(T x)
 {
@@ -131,12 +165,20 @@ inline int ceil(T x)
     return (temp != x) ? (temp + 1) : temp;
 }
 
+/**
+    @brief Rounds the value.
+*/
 template <typename T>
 inline int round(T x)
 {
     return (int)(x + 0.5);
 }
 
+/**
+    @brief The modulo operation, enhanced to work properly with negative values.
+    @param x The value
+    @param max The operand
+*/
 template <typename T>
 inline int mod(T x, int max)
 {
@@ -146,28 +188,54 @@ inline int mod(T x, int max)
         return ((x % max) + max);
 }
 
+/**
+    @brief Interpolates between two values for a time between 0 and 1.
+    @param time The time is a value between 0 and 1 - the function returns start if time is 0 and end if time is 1 and interpolates if time is between 0 and 1.
+    @param start The value at time = 0
+    @param end The value at time = 1
+    @return The interpolation at a given time
+*/
 template <typename T>
 T interpolate(float time, const T& start, const T& end)
 {
     return time * (end - start) + start;
 }
 
+/**
+    @brief Interpolates smoothly between two values for a time between 0 and 1. The function starts slowly, increases faster and stops slowly again.
+    @param time The time is a value between 0 and 1 - the function returns start if time is 0 and end if time is 1 and interpolates if time is between 0 and 1.
+    @param start The value at time = 0
+    @param end The value at time = 1
+    @return The smoothed interpolation at a given time
+*/
 template <typename T>
 T interpolateSmooth(float time, const T& start, const T& end)
 {
     return (-2 * (end - start) * cube(time)) + (3 * (end - start) * square(time)) + start;
 }
 
+/**
+    @brief Returns a random number between 0 and 1.
+*/
 inline _UtilExport float rnd()
 {
     return ((float)rand() / RAND_MAX);
 }
 
+/**
+    @brief Returns a random number between 0 and max.
+    @param max The maximum
+*/
 inline _UtilExport float rnd(float max)
 {
     return rnd() * max;
 }
 
+/**
+    @brief Returns a random number between min and max.
+    @param min The minimum
+    @param max The maximum
+*/
 inline _UtilExport float rnd(float min, float max)
 {
     return rnd(max - min) + min;

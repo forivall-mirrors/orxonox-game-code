@@ -20,11 +20,16 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
+
+/**
+    @file XMLIncludes.h
+    @brief Forward declarations of some XML classes.
+*/
 
 #include "UtilPrereqs.h"
 

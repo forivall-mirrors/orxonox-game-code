@@ -22,9 +22,14 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      Benjamin Grauer
+ *      ...
  *
  */
+
+/**
+    @file String.h
+    @brief Declaration of several string manipulation functions, used in many parts of the game.
+*/
 
 #ifndef _Util_String_H__
 #define _Util_String_H__

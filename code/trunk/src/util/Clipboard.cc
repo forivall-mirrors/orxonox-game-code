@@ -28,12 +28,26 @@
  *      http://www.loria.fr/~szathmar/off/projects/C/CopyTextToClipboard/index.php
  */
 
+/**
+    @file Clipboard.cc
+    @brief OS-specific implementations of the clipboard functions.
+*/
+
 #include "Clipboard.h"
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+    /////////////
+    // Windows //
+    /////////////
     #include <windows.h>
+    #include "Debug.h"
 
-    bool toClipboard(std::string text)
+    /**
+        @brief Puts text into the windows-clipboard
+        @param text The text
+        @return True if the action was successful
+    */
+    bool toClipboard(const std::string& text)
     {
         try
         {
@@ -52,10 +66,16 @@
         }
         catch (...)
         {
+            COUT(1) << "Error: Unable to copy the following text to the clipboard:" << std::endl;
+            COUT(1) << "       \"" << text << "\"" << std::endl;
         }
         return false;
     }
 
+    /**
+        @brief Gets text from the windows-clipboard if there is any text.
+        @return The retrieved text
+    */
     std::string fromClipboard()
     {
         try
@@ -72,18 +92,32 @@
         }
         catch (...)
         {
+            COUT(1) << "Error: Unable to retrieve text from the clipboard." << std::endl;
         }
         return "";
     }
 #else
-    std::string clipboard = "";
+    /////////////
+    // Default //
+    /////////////
 
-    bool toClipboard(std::string text)
+    std::string clipboard = ""; //!< Keeps the text of our internal clipboard
+
+    /**
+        @brief Default implementation if there is no OS-specific implementation or no clipboard. Copies the text into an internal clipboard.
+        @param text The text
+        @return True
+    */
+    bool toClipboard(const std::string& text)
     {
         clipboard = text;
         return true;
     }
 
+    /**
+        @brief Default implementation if there is no OS-specific implementation or no clipboard. Gets the text from the internal clipboard.
+        @return The text
+    */
     std::string fromClipboard()
     {
         return clipboard;
