@@ -188,6 +188,13 @@ namespace network
     //std::cout << "push temp to syncList (at the bottom) " << datasize << std::endl;
     COUT(5) << "Syncronisable::objectID: " << objectID << " this: " << this << " name: " << this->getIdentifier()->getName() << " networkID: " << this->getIdentifier()->getNetworkID() << std::endl;
     syncList->push_back(temp);
+#ifndef NDEBUG
+    std::list<synchronisableVariable *>::iterator it = syncList->begin();
+    while(it!=syncList->end()){
+      assert(*it!=var);
+      it++;
+    }
+#endif
   }
   
   /**
