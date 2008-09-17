@@ -97,9 +97,9 @@ namespace orxonox
     void GSRoot::enter()
     {
 #if ORXONOX_DEBUG_MODE == 1
-        ConfigFileManager::getInstance()->setFile(CFT_Settings, "orxonox_d.ini");
+        ConfigFileManager::getInstance().setFile(CFT_Settings, "orxonox_d.ini");
 #else
-        ConfigFileManager::getInstance()->setFile(CFT_Settings, "orxonox.ini");
+        ConfigFileManager::getInstance().setFile(CFT_Settings, "orxonox.ini");
 #endif
 
         // do this after the previous call..

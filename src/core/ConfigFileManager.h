@@ -43,7 +43,9 @@ namespace orxonox
     enum _CoreExport ConfigFileType
     {
         CFT_Settings,
-        CFT_Keybindings
+        CFT_Keybindings,
+        CFT_JoyStickCalibration,
+        CFT_KeyNames
     };
 
 
@@ -255,7 +257,7 @@ namespace orxonox
     class _CoreExport ConfigFileManager
     {
         public:
-            static ConfigFileManager* getInstance();
+            static ConfigFileManager& getInstance();
 
             void setFile(ConfigFileType type, const std::string& filename, bool bCreateIfNotExisting = true);
 
