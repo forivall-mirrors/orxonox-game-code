@@ -38,6 +38,7 @@
 #include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
+#include "core/ConfigFileManager.h"
 #include "InputCommands.h"
 
 namespace orxonox
@@ -221,12 +222,12 @@ namespace orxonox
         infile.open("keybindings.ini");
         if (!infile)
         {
-            ConfigFileManager::getInstance()->setFile(CFT_Keybindings, "def_keybindings.ini");
-            ConfigFileManager::getInstance()->save(CFT_Keybindings, "keybindings.ini");
+            ConfigFileManager::getInstance().setFile(CFT_Keybindings, "def_keybindings.ini");
+            ConfigFileManager::getInstance().save(CFT_Keybindings, "keybindings.ini");
         }
         else
             infile.close();
-        ConfigFileManager::getInstance()->setFile(CFT_Keybindings, "keybindings.ini");
+        ConfigFileManager::getInstance().setFile(CFT_Keybindings, "keybindings.ini");
 
         // parse key bindings
         setConfigValues();

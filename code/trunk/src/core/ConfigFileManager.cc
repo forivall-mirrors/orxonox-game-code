@@ -72,22 +72,22 @@ namespace orxonox
 
     void reloadConfig()
     {
-        ConfigFileManager::getInstance()->load();
+        ConfigFileManager::getInstance().load();
     }
 
     void cleanConfig()
     {
-        ConfigFileManager::getInstance()->clean(false);
+        ConfigFileManager::getInstance().clean(false);
     }
 
     void loadSettings(const std::string& filename)
     {
-        ConfigFileManager::getInstance()->setFile(CFT_Settings, filename, false);
+        ConfigFileManager::getInstance().setFile(CFT_Settings, filename, false);
     }
 
     void loadKeybindings(const std::string& filename)
     {
-        ConfigFileManager::getInstance()->setFile(CFT_Keybindings, filename);
+        ConfigFileManager::getInstance().setFile(CFT_Keybindings, filename);
     }
 
 
@@ -460,10 +460,10 @@ namespace orxonox
             delete (*(it++)).second;
     }
 
-    ConfigFileManager* ConfigFileManager::getInstance()
+    ConfigFileManager& ConfigFileManager::getInstance()
     {
         static ConfigFileManager instance;
-        return (&instance);
+        return instance;
     }
 
     void ConfigFileManager::setFile(ConfigFileType type, const std::string& filename, bool bCreateIfNotExisting)
