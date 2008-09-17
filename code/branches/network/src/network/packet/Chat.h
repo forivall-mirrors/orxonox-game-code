@@ -14,7 +14,7 @@ namespace packet {
 class Chat : public Packet
 {
 public:
-  Chat( std::string& message, int clientID );
+  Chat( std::string message, unsigned int playerID );
   Chat( unsigned char* data, int clientID );
   ~Chat();
   

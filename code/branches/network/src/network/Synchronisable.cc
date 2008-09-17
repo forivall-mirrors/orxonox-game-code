@@ -50,6 +50,7 @@
 
 namespace network
 {
+  
 
   std::map<unsigned int, Synchronisable *> Synchronisable::objectMap_;
   std::queue<unsigned int> Synchronisable::deletedObjects_;
@@ -58,7 +59,7 @@ namespace network
 
   /**
   * Constructor:
-  * calls registarAllVariables, that has to be implemented by the inheriting classID
+  * Initializes all Variables and sets the right objectID
   */
   Synchronisable::Synchronisable(){
     RegisterRootObject(Synchronisable);
@@ -70,6 +71,10 @@ namespace network
     syncList = new std::list<synchronisableVariable *>;
   }
 
+  /**
+   * Destructor: 
+   * Delete all callback objects and remove objectID from the objectMap_
+   */
   Synchronisable::~Synchronisable(){
     // delete callback function objects
     if(!orxonox::Identifier::isCreatingHierarchy()){
@@ -80,6 +85,11 @@ namespace network
     }
   }
 
+  /**
+   * This function gets called after all neccessary data has been passed to the object
+   * Overload this function and recall the create function of the parent class
+   * @return true/false
+   */
   bool Synchronisable::create(){
     objectMap_[objectID]=this;
     assert(objectMap_[objectID]==this);
@@ -89,6 +99,10 @@ namespace network
   }
 
   
+  /**
+   * This function sets the internal mode for synchronisation
+   * @param b true if this object is located on a client or on a server
+   */
   void Synchronisable::setClient(bool b){
     if(b) // client
       state_=0x2;
@@ -96,6 +110,13 @@ namespace network
       state_=0x1;
   }
   
+  /**
+   * This function fabricated a new synchrnisable (and children of it), sets calls updateData and create
+   * After calling this function the mem pointer will be increased by the size of the needed data
+   * @param mem pointer to where the appropriate data is located
+   * @param mode defines the mode, how the data should be loaded
+   * @return pointer to the newly created synchronisable
+   */
   Synchronisable *Synchronisable::fabricate(unsigned char*& mem, int mode)
   {
     unsigned int size, objectID, classID;
@@ -118,6 +139,11 @@ namespace network
   }
 
   
+  /**
+   * Finds and deletes the Synchronisable with the appropriate objectID
+   * @param objectID objectID of the Synchronisable
+   * @return true/false
+   */
   bool Synchronisable::deleteObject(unsigned int objectID){
     assert(getSynchronisable(objectID));
     assert(getSynchronisable(objectID)->objectID==objectID);
@@ -125,6 +151,11 @@ namespace network
     return true;
   }
   
+  /**
+   * This function looks up the objectID in the objectMap_ and returns a pointer to the right Synchronisable
+   * @param objectID objectID of the Synchronisable
+   * @return pointer to the Synchronisable with the objectID
+   */
   Synchronisable* Synchronisable::getSynchronisable(unsigned int objectID){
     std::map<unsigned int, Synchronisable *>::iterator i = objectMap_.find(objectID);
     if(i==objectMap_.end())
@@ -139,6 +170,9 @@ namespace network
   * also counts the total datasize needed to save the variables
   * @param var pointer to the variable
   * @param size size of the datatype the variable consists of
+  * @param t the type of the variable (network::DATA or network::STRING
+  * @param mode same as in getData
+  * @param cb callback object that should get called, if the value of the variable changes
   */
   void Synchronisable::registerVar(void *var, int size, variableType t, int mode, NetworkCallbackBase *cb){
     // create temporary synch.Var struct
@@ -157,14 +191,18 @@ namespace network
   }
   
   /**
-   * This function takes all SynchronisableVariables out of the Synchronisable and saves it into a syncData struct
-   * Difference to the above function:
+   * This function takes all SynchronisableVariables out of the Synchronisable and saves them together with the size, objectID and classID to the given memory
    * takes a pointer to already allocated memory (must have at least getSize bytes length)
    * structure of the bitstream:
-   * (var1_size,var1,var2_size,var2,...)
-   * varx_size: size = sizeof(int)
-   * varx: size = varx_size
-   * @return data containing all variables and their sizes
+   * |totalsize,objectID,classID,var1,var2,string1_length,string1,var3,...|
+   * length of varx: size saved int syncvarlist
+   * @param mem pointer to allocated memory with enough size
+   * @param id gamestateid of the gamestate to be saved (important for priorities)
+   * @param mode defines the direction in which the data will be send/received
+   *             0x1: server->client
+   *             0x2: client->server (not recommended)
+   *             0x3: bidirectional
+   * @return true: if !isMyTick or if everything was successfully saved
    */
   bool Synchronisable::getData(unsigned char*& mem, unsigned int id, int mode){
     //if this tick is we dont synchronise, then abort now
@@ -223,8 +261,9 @@ namespace network
 
   
   /**
-   * This function takes a syncData struct and takes it to update the variables
-   * @param vars data of the variables
+   * This function takes a bytestream and loads the data into the registered variables
+   * @param mem pointer to the bytestream
+   * @param mode same as in getData
    * @return true/false
    */
   bool Synchronisable::updateData(unsigned char*& mem, int mode){
@@ -287,6 +326,8 @@ namespace network
 
   /**
   * This function returns the total amount of bytes needed by getData to save the whole content of the variables
+  * @param id id of the gamestate
+  * @param mode same as getData
   * @return amount of bytes
   */
   int Synchronisable::getSize(unsigned int id, int mode){
@@ -315,15 +356,19 @@ namespace network
   }
 
   /**
-   * 
-   * @param id 
-   * @return 
+   * This function determines, wheter the object should be saved to the bytestream (according to its syncfrequency)
+   * @param id gamestate id
+   * @return true/false
    */
   bool Synchronisable::isMyTick(unsigned int id){
 //     return true;
     return ( id==0 || id%objectFrequency_==objectID%objectFrequency_ ) && ((objectMode_&state_)!=0);
   }
   
+  /**
+   * This function looks at the header located in the bytestream and checks wheter objectID and classID match with the Synchronisables ones
+   * @param mem pointer to the bytestream
+   */
   bool Synchronisable::isMyData(unsigned char* mem)
   {
     unsigned int objectID, classID, size;
@@ -338,6 +383,13 @@ namespace network
     return (objectID == this->objectID);
   }
   
+  /**
+   * This function sets the synchronisation mode of the object
+   * If set to 0x1 variables will only be synchronised to the client
+   * If set to 0x2 variables will only be synchronised to the server
+   * If set to 0x3 variables will be synchronised bidirectionally (only if set so in registerVar)
+   * @param mode same as in registerVar
+   */
   void Synchronisable::setObjectMode(int mode){
     assert(mode==0x1 || mode==0x2 || mode==0x3);
     objectMode_=mode;

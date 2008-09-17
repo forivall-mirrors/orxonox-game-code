@@ -121,47 +121,20 @@ namespace network
     return;
   }
 
-  bool Server::processChat(packet::Chat *message, unsigned int clientID){
+  bool Server::processChat(std::string message, unsigned int playerID){
     ClientInformation *temp = ClientInformation::getBegin();
+    packet::Chat *chat;
     while(temp){
-      message->setClientID(temp->getID());
-      if(!message->send())
-        COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
-      temp = temp->next();
-    }
-    return message->process();
-  }
-
-  /**
-  * This function sends out a message to all clients
-  * @param msg message
-  * @return true/false
-  */
-  bool Server::sendChat(packet::Chat *chat) {
-    //TODO: change this (no informations about who wrote a message)
-    assert(0);
-    ClientInformation *temp = ClientInformation::getBegin();
-    while(temp){
+      chat = new packet::Chat(message, playerID);
       chat->setClientID(temp->getID());
       if(!chat->send())
         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
+      temp = temp->next();
     }
-    return chat->process();;
+    COUT(1) << "Player " << playerID << ": " << message << std::endl;
+    return true;
   }
 
-  /**
-  * This function sends out a message to all clients
-  * @param msg message
-  * @return true/false
-  */
-//   bool Server::sendChat(const char *msg) {
-//     char *message = new char [strlen(msg)+10+1];
-//     sprintf(message, "Player %d: %s", CLIENTID_SERVER, msg);
-//     COUT(1) << message << std::endl;
-//     ENetPacket *packet = packet_gen.chatMessage(message);
-//     COUT(5) <<"Server: adding Packets" << std::endl;
-//     return connection->addPacketAll(packet);
-//   }
 
   /**
   * Run this function once every tick
@@ -174,14 +147,9 @@ namespace network
     timeSinceLastUpdate_+=time;
     if(timeSinceLastUpdate_>=(1./NETWORK_FREQUENCY)){
       timeSinceLastUpdate_=(float)((int)(timeSinceLastUpdate_*NETWORK_FREQUENCY))/timeSinceLastUpdate_;
-//      timeSinceLastUpdate_-=1./NETWORK_FREQUENCY;
       gamestates_->processGamestates();
       updateGamestate();
     }
-    /*while(timeSinceLastUpdate_>1./NETWORK_FREQUENCY)
-      timeSinceLastUpdate_-=1./NETWORK_FREQUENCY;*/
-//     usleep(5000); // TODO remove
-    return;
   }
 
   bool Server::queuePacket(ENetPacket *packet, int clientID){
@@ -302,16 +270,7 @@ namespace network
     }
     return true;
   }
-  
-//   void Server::processChat( chat *data, int clientId){
-//     char *message = new char [strlen(data->message)+10+1];
-//     sprintf(message, "Player %d: %s", clientId, data->message);
-//     COUT(1) << message << std::endl;
-//     ENetPacket *pck = packet_gen.chatMessage(message);
-//     connection->addPacketAll(pck);
-//     delete[] data->message;
-//     delete data;
-//   }
+
 
   bool Server::addClient(ENetEvent *event){
     ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
@@ -415,6 +374,20 @@ namespace network
   void Server::disconnectClient( ClientInformation *client){
     connection->disconnectClient(client);
     gamestates_->removeClient(client);
+  }
+  
+  bool Server::chat(std::string message){
+    ClientInformation *temp = ClientInformation::getBegin();
+    packet::Chat *chat;
+    while(temp){
+      chat = new packet::Chat(message, Host::getPlayerID());
+      chat->setClientID(temp->getID());
+      if(!chat->send())
+        COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
+      temp = temp->next();
+    }
+    COUT(1) << "Player " << Host::getPlayerID() << ": " << message << std::endl;
+    return true;
   }
 
 }

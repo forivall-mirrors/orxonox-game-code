@@ -72,13 +72,12 @@ namespace network
     bool establishConnection();
     bool closeConnection();
     bool queuePacket(ENetPacket *packet, int clientID);
-    bool processChat(packet::Chat *message, unsigned int clientID);
+    bool processChat(std::string message, unsigned int playerID);
+    virtual bool chat(std::string message);
     //bool sendChat(packet::Chat *chat);
     
 //    static void Chat( std::string message );
     
-    unsigned int shipID(){return shipID_;}
-    int playerID(){return clientID_;}
     //static void setShipID( unsigned int shipID){ dynamic_cast<Client *>(instance_)->shipID_=shipID; }
     static void setClientID( unsigned int clientID){ dynamic_cast<Client *>(instance_)->clientID_=clientID; }
     
@@ -90,13 +89,7 @@ namespace network
     GamestateClient gamestate;
     bool isConnected;
     bool isSynched_;
-
-    bool sendChat( std::string message );
     
-    // implement data processing functions of PacketDecoder
-//     void processChat( chat *data, int clientId );
-    int clientID_;     // this is the id the server gave to us
-    int shipID_;
     bool gameStateFailure_;
   };
 

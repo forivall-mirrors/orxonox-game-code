@@ -28,25 +28,27 @@
 
 #include "Chat.h"
 #include <assert.h>
+#include "network/Host.h"
 
 namespace network {
 namespace packet {
   
-#define PACKET_FLAGS_CHAT ENET_PACKET_FLAG_RELIABLE
-#define _PACKETID         0
-#define _MESSAGELENGTH    _PACKETID + sizeof(ENUM::Type)
-#define _MESSAGE          _MESSAGELENGTH + sizeof(unsigned int)
+#define   PACKET_FLAGS_CHAT ENET_PACKET_FLAG_RELIABLE
+#define   _PACKETID         0
+const int _PLAYERID     =   _PACKETID + sizeof(ENUM::Type);
+#define   _MESSAGELENGTH    _PLAYERID + sizeof(unsigned int)
+#define   _MESSAGE          _MESSAGELENGTH + sizeof(unsigned int)
 
-Chat::Chat( std::string& message, int clientID )
+Chat::Chat( std::string message, unsigned int playerID )
  : Packet()
 {
   flags_ = flags_ | PACKET_FLAGS_CHAT;
   messageLength_ = message.length()+1;
   data_=new unsigned char[ getSize() ];
-  *(ENUM::Type *)&data_[ _PACKETID ] = ENUM::Chat;
-  *(unsigned int *)&data_[ _MESSAGELENGTH ] = messageLength_;
-  memcpy( &data_[ _MESSAGE ], (void *)message.c_str(), messageLength_ );
-  clientID_=clientID;
+  *(ENUM::Type *)(data_ + _PACKETID ) = ENUM::Chat;
+  *(unsigned int *)(data_ + _PLAYERID ) = playerID;
+  *(unsigned int *)(data_ + _MESSAGELENGTH ) = messageLength_;
+  memcpy( data_+_MESSAGE, (void *)message.c_str(), messageLength_ );
 }
 
 Chat::Chat( unsigned char *data, int clientID )
@@ -64,14 +66,13 @@ unsigned int Chat::getSize() const{
 }
 
 bool Chat::process(){
-  //TODO: change this !!!
-  assert(0);
+  bool b = Host::incomingChat(std::string((const char*)data_+_MESSAGE), *(unsigned int *)(data_+_PLAYERID));
   delete this;
-  return true;
+  return b;
 }
 
 unsigned char *Chat::getMessage(){
-  return &data_[ _MESSAGE ];
+  return data_ + _MESSAGE;
 }
 
 } //namespace packet

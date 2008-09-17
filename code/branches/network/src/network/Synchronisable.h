@@ -38,8 +38,22 @@
 #include "util/XMLIncludes.h"
 #include "NetworkCallback.h"
 
+#define REGISTERDATA(varname) registerVar(&varname, sizeof(varname), network::DATA)
+#define REGISTERDATA_WITHDIR(varname, mode) registerVar(&varname, sizeof(varname), network::DATA, mode)
+#define REGISTERSTRING(stringname) registerVar(&stringname, stringname.length()+1, network::STRING)
+#define REGISTERSTRING_WITHDIR(stringname, mode) registerVar(&stringname, stringname.length()+1, network::STRING, mode)
+
 namespace network
 {
+  namespace direction{
+    enum syncdirection{
+      toclient=0x1,
+      toserver=0x2,
+      bidirectional=0x3
+    };
+    
+  }
+  
   enum variableType{
     DATA,
     STRING,
@@ -62,8 +76,7 @@ namespace network
 
   /**
   * This class is the base class of all the Objects in the universe that need to be synchronised over the network
-   * Every class, t
-  int mode;hat inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list. Additionally it also has to provide a Constructor, that takes exactly the variables in this linked list.
+   * Every class, that inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list.
   * @author Oliver Scheuss
   */
   class _NetworkExport Synchronisable : virtual public orxonox::OrxonoxClass{
@@ -73,7 +86,6 @@ namespace network
     unsigned int objectID;
     unsigned int classID;
 
-    void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
     bool getData(unsigned char*& men, unsigned int id, int mode=0x0);
     int getSize(unsigned int id, int mode=0x0);
     bool updateData(unsigned char*& mem, int mode=0x0);
@@ -94,6 +106,7 @@ namespace network
     
   protected:
     Synchronisable();
+    void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
   private:
     bool isMyTick(unsigned int id);
     std::list<synchronisableVariable *> *syncList;

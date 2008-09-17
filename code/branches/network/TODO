@@ -1,5 +1,6 @@
 todo: 
 	!!! check that enet does not cause a packet traffic jam when a reliable packet gets missed !!!
-	spaceship of client vanishes on server
-	new gamestate concept
+	[implemented] new gamestate concept
+	check Projectiles
+	check that we dont have to much registervar because of virtual function calls
 

@@ -65,8 +65,7 @@ namespace network
     
     void open();
     void close();
-    bool processChat(packet::Chat *message, unsigned int clientID);
-    bool sendChat(packet::Chat *chat);
+    bool processChat(std::string message, unsigned int playerID);
     bool queuePacket(ENetPacket *packet, int clientID);
     void tick(float time);
   protected:
@@ -74,7 +73,7 @@ namespace network
     void updateGamestate();
   private:
     unsigned int shipID(){return 0;}
-    int playerID(){return 0;}
+    unsigned int playerID(){return 0;}
     
     bool addClient(ENetEvent *event);
     bool createClient(int clientID);
@@ -85,6 +84,7 @@ namespace network
     bool processPacket( ENetPacket *packet, ENetPeer *peer );
     bool sendGameState();
     bool sendObjectDeletes();
+    virtual bool chat(std::string message);
     
     //void processChat( chat *data, int clientId);
     ConnectionManager *connection;
