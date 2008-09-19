@@ -28,6 +28,7 @@
 
 #include "Packet.h"
 #include "network/Synchronisable.h"
+#include <map>
 #ifndef NDEBUG
 #include "util/CRC32.h"
 #endif
@@ -61,6 +62,7 @@ class Gamestate: public Packet{
   public:
     Gamestate();
     Gamestate(unsigned char *data, int clientID);
+    Gamestate(unsigned char *data);
 
     ~Gamestate();
 
@@ -71,11 +73,13 @@ class Gamestate: public Packet{
     bool isCompressed();
     int getBaseID();
     Gamestate *diff(Gamestate *base);
+    Gamestate* doSelection(unsigned int clientID);
     Gamestate *undiff(Gamestate *base);
     bool compressData();
     bool decompressData();
 
     // Packet functions
+  private:
     virtual unsigned int getSize() const;
     virtual bool process();
 
@@ -83,8 +87,7 @@ class Gamestate: public Packet{
   private:
     unsigned int calcGamestateSize(unsigned int id, int mode=0x0);
     void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
-
-  private:
+    std::map<Synchronisable *, unsigned char *> dataMap_;
 };
 
 }

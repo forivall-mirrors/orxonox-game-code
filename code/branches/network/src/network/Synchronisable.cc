@@ -363,12 +363,15 @@ namespace network
   }
 
   /**
-   * This function determines, wheter the object should be saved to the bytestream (according to its syncfrequency)
+   * This function determines, wheter the object should be saved to the bytestream (according to its syncmode/direction)
    * @param id gamestate id
    * @return true/false
    */
   bool Synchronisable::isMyTick(unsigned int id){
-//     return true;
+    return ( (objectMode_&state_)!=0 );
+  }
+  
+  bool Synchronisable::doSelection(unsigned int id){
     return ( id==0 || id%objectFrequency_==objectID%objectFrequency_ ) && ((objectMode_&state_)!=0);
   }
   

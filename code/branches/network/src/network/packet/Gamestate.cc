@@ -55,6 +55,11 @@ Gamestate::Gamestate(unsigned char *data, int clientID):
 {
 }
 
+Gamestate::Gamestate(unsigned char *data)
+{
+  data_=data;
+}
+
 
 Gamestate::~Gamestate()
 {
@@ -95,6 +100,8 @@ bool Gamestate::collectData(int id, int mode)
       size = currentsize+addsize;
     }// stop allocate additional memory
 
+    if(it->doSelection(id))
+      dataMap_[*it]=mem;  // save the mem location of the synchronisable data
     if(!it->getData(mem, id, mode))
       return false; // mem pointer gets automatically increased because of call by reference
     // increase size counter by size of current synchronisable
@@ -309,6 +316,33 @@ Gamestate *Gamestate::diff(Gamestate *base)
   g->flags_=flags_;
   g->packetDirection_ = packetDirection_;
   return g;
+}
+
+Gamestate* Gamestate::doSelection(unsigned int clientID){
+  assert(data_);
+  std::map<Synchronisable *, unsigned char *>::iterator it;
+  unsigned char *ndata, *tdata;
+  unsigned int nsize=0;
+  // calculate the size of the new gamestate
+  for(it=dataMap_.begin(); it!=dataMap_.end(); it++){
+    if(it->first->doSelection(HEADER->id))
+      nsize+=*(unsigned int*)it->second;
+  }
+  ndata = new unsigned char[nsize+sizeof(GamestateHeader)];
+  tdata = ndata;
+  tdata += sizeof(GamestateHeader);
+  for(it=dataMap_.begin(); it!=dataMap_.end(); it++){
+    if(it->first->doSelection(HEADER->id)){
+      memcpy(tdata, it->second, *(unsigned int*)it->second); // copy over the saved data of the synchronisable
+      tdata += *(unsigned int*)it->second;
+    }
+  }
+  COUT(3) << "oldsize: " << HEADER->datasize << " newsize: " << nsize << std::endl;
+  *(GamestateHeader *)ndata = *HEADER; //copy over the header
+  GAMESTATE_HEADER(ndata)->datasize = nsize;
+  Gamestate *gs = new Gamestate(ndata);
+  assert(HEADER->datasize>=nsize);
+  return gs;
 }
 
 Gamestate *Gamestate::undiff(Gamestate *base)

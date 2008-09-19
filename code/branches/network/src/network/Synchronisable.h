@@ -90,6 +90,7 @@ namespace network
     int getSize(unsigned int id, int mode=0x0);
     bool updateData(unsigned char*& mem, int mode=0x0);
     bool isMyData(unsigned char* mem);
+    bool doSelection(unsigned int id);
     void setObjectMode(int mode);
     void setObjectFrequency(unsigned int freq){ objectFrequency_ = freq; }
     

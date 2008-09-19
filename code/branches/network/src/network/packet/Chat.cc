@@ -54,7 +54,7 @@ Chat::Chat( std::string message, unsigned int playerID )
 Chat::Chat( unsigned char *data, int clientID )
   : Packet(data, clientID)
 {
-  messageLength_ = *(unsigned int *)&data[ _MESSAGELENGTH ];
+  messageLength_ = *(unsigned int *)(data + _MESSAGELENGTH );
 }
 
 Chat::~Chat()
