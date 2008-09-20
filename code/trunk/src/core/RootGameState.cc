@@ -131,32 +131,49 @@ namespace orxonox
     */
     void RootGameState::start(int argc, char** argv)
     {
-        // start global orxonox time
-        Clock clock;
-
-        // create the Core settings to configure the output level
-        Core::getInstance();
-
-        parseArguments(argc, argv);
-
-        this->activate();
-
-        // get initial state from command line
-        std::string initialState;
-        CommandLine::getValue<std::string>("state", &initialState);
-        gotoState(initialState);
-
-        while (this->activeChild_)
+        try
         {
-            clock.capture();
+            // start global orxonox time
+            Clock clock;
 
-            this->tick(clock);
+            // create the Core settings to configure the output level
+            Core::getInstance();
 
-            if (this->stateRequest_ != "")
-                gotoState(stateRequest_);
+            parseArguments(argc, argv);
+
+            this->activate();
+
+            // get initial state from command line
+            std::string initialState;
+            CommandLine::getValue<std::string>("state", &initialState);
+            gotoState(initialState);
+
+            while (this->activeChild_)
+            {
+                clock.capture();
+
+                this->tick(clock);
+
+                if (this->stateRequest_ != "")
+                    gotoState(stateRequest_);
+            }
+
+            this->deactivate();
         }
-
-        this->deactivate();
+        // Note: These are all unhandled exceptions that should not have made its way here!
+        // almost complete game catch block to display the messages appropriately.
+        catch (std::exception& ex)
+        {
+            COUT(1) << ex.what() << std::endl;
+            COUT(1) << "Program aborted." << std::endl;
+            abort();
+        }
+        // anything that doesn't inherit from std::exception
+        catch (...)
+        {
+            COUT(1) << "An unidentifiable exception has occured. Program aborted." << std::endl;
+            abort();
+        }
     }
 
     /**
