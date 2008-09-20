@@ -1,0 +1,29 @@
+$lfile "../../src/tolua/lua/compat.lua"
+$lfile "../../src/tolua/lua/basic.lua"
+$lfile "../../src/tolua/lua/feature.lua"
+$lfile "../../src/tolua/lua/verbatim.lua"
+$lfile "../../src/tolua/lua/code.lua"
+$lfile "../../src/tolua/lua/typedef.lua"
+$lfile "../../src/tolua/lua/container.lua"
+$lfile "../../src/tolua/lua/package.lua"
+$lfile "../../src/tolua/lua/module.lua"
+$lfile "../../src/tolua/lua/namespace.lua"
+$lfile "../../src/tolua/lua/define.lua"
+$lfile "../../src/tolua/lua/enumerate.lua"
+$lfile "../../src/tolua/lua/declaration.lua"
+$lfile "../../src/tolua/lua/variable.lua"
+$lfile "../../src/tolua/lua/array.lua"
+$lfile "../../src/tolua/lua/function.lua"
+$lfile "../../src/tolua/lua/operator.lua"
+$lfile "../../src/tolua/lua/class.lua"
+$lfile "../../src/tolua/lua/clean.lua"
+$lfile "../../src/tolua/lua/doit.lua"
+
+$[
+local err,msg = pcall(doit)
+if not err then
+ local _,_,label,msg = strfind(msg,"(.-:.-:%s*)(.*)")
+ tolua_error(msg,label)
+ print(debug.traceback())
+end
+$]
