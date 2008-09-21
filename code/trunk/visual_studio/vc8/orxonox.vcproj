@@ -180,41 +180,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\Radar.cc"
+				RelativePath="..\..\src\orxonox\Settings.cc"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\orxonox\SignalHandler.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\RadarListener.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\RadarViewable.cc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\Settings.cc"
 				>
 			</File>
 			<Filter
@@ -258,6 +228,54 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\Projectile.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\Radar.cc"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\RadarListener.cc"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\RadarViewable.cc"
 					>
 				</File>
 				<File
@@ -554,18 +572,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\Radar.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\RadarListener.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\orxonox\RadarViewable.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\orxonox\Settings.h"
 				>
 			</File>
@@ -614,6 +620,18 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\Projectile.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\Radar.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\RadarListener.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\RadarViewable.h"
 					>
 				</File>
 				<File
