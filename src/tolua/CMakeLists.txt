@@ -34,13 +34,14 @@ ADD_CUSTOM_COMMAND(
   COMMAND ${TOLUAGEN_EXE} -n tolua -o ../../src/tolua/toluabind_orxonox.c -H ../../src/tolua/toluabind_orxonox.h ${TOLUA_PACKAGE}
   DEPENDS
     toluagen_orxonox
+	tolua-5.1.pkg
     lua/compat-5.1.lua
     lua/compat.lua
     lua/basic.lua
     lua/feature.lua
     lua/verbatim.lua
     lua/code.lua
-    lua/ypedef.lua
+    lua/typedef.lua
     lua/container.lua
     lua/package.lua
     lua/module.lua
