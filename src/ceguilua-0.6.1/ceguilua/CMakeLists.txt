@@ -7,6 +7,6 @@ SET( CEGUILUA_SRC_FILES
   required.cpp
 )
 
-ADD_LIBRARY( ceguilua_orxonox SHARED ${LUA_SRC_FILES} )
+ADD_LIBRARY( ceguilua_orxonox SHARED ${CEGUILUA_SRC_FILES} )
 
 TARGET_LINK_LIBRARIES( ceguilua_orxonox lua_orxonox )
