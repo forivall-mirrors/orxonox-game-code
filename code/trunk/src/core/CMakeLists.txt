@@ -57,7 +57,11 @@ GET_TARGET_PROPERTY(TOLUA_EXE tolua_orxonox LOCATION)
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.cc
   COMMAND ${TOLUA_EXE} -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg
-  DEPENDS tolua_orxonox tolua/tolua.pkg
+  DEPENDS
+    tolua_orxonox
+    tolua/tolua.pkg
+    Script.h
+    CommandExecutor.h
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
 

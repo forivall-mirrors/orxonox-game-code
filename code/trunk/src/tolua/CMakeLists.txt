@@ -34,7 +34,7 @@ ADD_CUSTOM_COMMAND(
   COMMAND ${TOLUAGEN_EXE} -n tolua -o ../../src/tolua/toluabind_orxonox.c -H ../../src/tolua/toluabind_orxonox.h ${TOLUA_PACKAGE}
   DEPENDS
     toluagen_orxonox
-	tolua-5.1.pkg
+    tolua-5.1.pkg
     lua/compat-5.1.lua
     lua/compat.lua
     lua/basic.lua
