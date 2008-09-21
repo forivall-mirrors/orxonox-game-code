@@ -13,3 +13,7 @@ ADD_SUBDIRECTORY(core)
 ADD_SUBDIRECTORY(audio)
 ADD_SUBDIRECTORY(network)
 ADD_SUBDIRECTORY(orxonox)
+
+# This section deals with Lua version problems because CEGUILua scripting
+# module for CEGUI also uses Lua, but maybe with a different version.
+# So first, find out what CEGUI version we have.
