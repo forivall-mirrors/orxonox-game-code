@@ -1,19 +1,27 @@
 INCLUDE_DIRECTORIES(.)
 INCLUDE_DIRECTORIES(..)
 INCLUDE_DIRECTORIES(orxonox)
-#INCLUDE_DIRECTORIES(tolua)
 
 ADD_SUBDIRECTORY(cpptcl)
 ADD_SUBDIRECTORY(ois)
 ADD_SUBDIRECTORY(tinyxml)
-
-# This section deals with Lua version problems because CEGUILua scripting
-# module for CEGUI also uses Lua, but maybe with a different version.
-# So first, find out what CEGUI version we have.
-
-
+ADD_SUBDIRECTORY(lua)
 ADD_SUBDIRECTORY(tolua)
 
+# Some people may not have CEGUILua installed, espc. with version 0.5
+# And we don't know what lua version it was linked against, so we compile
+# it ourselves.
+# So first, find out what CEGUI version we have.
+IF (${CEGUI_VERSION} LESS 0.6.0)
+    ADD_SUBDIRECTORY(ceguilua-0.5.0b)
+    INCLUDE_DIRECTORIES(ceguilua-0.5.0b)
+ELSE (${CEGUI_VERSION} LESS 0.6.0)
+    ADD_SUBDIRECTORY(ceguilua-0.6.1)
+    INCLUDE_DIRECTORIES(ceguilua-0.6.1)
+ENDIF (${CEGUI_VERSION} LESS 0.6.0)
+
+
+# Our own libraries
 ADD_SUBDIRECTORY(util)
 ADD_SUBDIRECTORY(core)
 ADD_SUBDIRECTORY(audio)

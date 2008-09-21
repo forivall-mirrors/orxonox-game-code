@@ -53,7 +53,7 @@ SET(CORE_SRC_FILES
   tolua/tolua_bind.cc
 )
 
-GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
+GET_TARGET_PROPERTY(TOLUA_EXE tolua_orxonox LOCATION)
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.cc
   COMMAND ${TOLUA_EXE} -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg
