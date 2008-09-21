@@ -34,11 +34,8 @@
 #include <vector>
 
 // include Lua libs and tolua++
-extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-}
+#include "lua/lua.hpp"
+#include "tolua/tolua++.h"
 
 #include "tolua++.h"
 
@@ -55,21 +52,34 @@ namespace CEGUI
 *************************************************************************/
 LuaScriptModule::LuaScriptModule()
 {
-	// create a lua state
-	d_ownsState = true;
-	d_state = lua_open();
+    static const luaL_Reg lualibs[] = {
+        {"", luaopen_base},
+        {LUA_LOADLIBNAME, luaopen_package},
+        {LUA_TABLIBNAME, luaopen_table},
+        {LUA_IOLIBNAME, luaopen_io},
+        {LUA_OSLIBNAME, luaopen_os},
+        {LUA_STRLIBNAME, luaopen_string},
+        {LUA_MATHLIBNAME, luaopen_math},
+    #if defined(DEBUG) || defined (_DEBUG)
+        {LUA_DBLIBNAME, luaopen_debug},
+    #endif
+        {0, 0}
+    };
 
-	// init all standard libraries
-	luaopen_base(d_state);
-	luaopen_io(d_state);
-	luaopen_string(d_state);
-	luaopen_table(d_state);
-	luaopen_math(d_state);
-#if defined(DEBUG) || defined (_DEBUG)
-	luaopen_debug(d_state);
-#endif
+    // create a lua state
+    d_ownsState = true;
+    d_state = lua_open();
 
-	setModuleIdentifierString();
+    // init all standard libraries
+    const luaL_Reg *lib = lualibs;
+    for (; lib->func; lib++)
+    {
+        lua_pushcfunction(d_state, lib->func);
+        lua_pushstring(d_state, lib->name);
+        lua_call(d_state, 1, 0);
+    }
+
+    setModuleIdentifierString();
 }
 
 
