@@ -7,8 +7,8 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="&quot;$(RootDir)&quot;;&quot;$(RootDir)src&quot;;&quot;$(RootDir)src\orxonox&quot;;&quot;$(RootDir)src\tolua&quot;;&quot;$(RootDir)src\ois&quot;;&quot;$(LibDir)ogre-1.4.9\OgreMain\include&quot;;&quot;$(LibDir)boost-1.35.0&quot;;&quot;$(LibDir)cegui-0.6.1\include&quot;;&quot;$(LibDir)cegui-0.6.1\ScriptingModules\CEGUILua\LuaScriptModule\include&quot;;&quot;$(LibDir)enet-1.2\include&quot;;&quot;$(LibDir)libogg-1.1.3\include&quot;;&quot;$(LibDir)libvorbis-1.2.0\include&quot;;&quot;$(LibDir)lua-5.1.3\src&quot;;&quot;$(LibDir)openal-1.1\include&quot;;&quot;$(LibDir)openal-1.1\alut\include&quot;;&quot;$(LibDir)tcl-8.5.\generic&quot;;&quot;$(LibDir)zlib-1.2.3&quot;"
-		PreprocessorDefinitions="WIN32;__WIN32__;_WIN32;BOOST_ALL_DYN_LINK;OIS_DYNAMIC_LIB; ZLIB_WINAPI"
+		AdditionalIncludeDirectories="&quot;$(RootDir)&quot;;&quot;$(RootDir)src&quot;;&quot;$(RootDir)src\orxonox&quot;;&quot;$(RootDir)src\lua-5.1.3&quot;;&quot;$(RootDir)src\ceguilua-0.6.1&quot;;&quot;$(LibDir)ogre-1.4.9\OgreMain\include&quot;;&quot;$(LibDir)boost-1.35.0&quot;;&quot;$(LibDir)cegui-0.6.1\include&quot;;&quot;$(LibDir)enet-1.2\include&quot;;&quot;$(LibDir)libogg-1.1.3\include&quot;;&quot;$(LibDir)libvorbis-1.2.0\include&quot;;&quot;$(LibDir)openal-1.1\include&quot;;&quot;$(LibDir)openal-1.1\alut\include&quot;;&quot;$(LibDir)tcl-8.5.\generic&quot;;&quot;$(LibDir)zlib-1.2.3&quot;"
+		PreprocessorDefinitions="WIN32;__WIN32__;_WIN32;_WINDOWS;BOOST_ALL_DYN_LINK;OIS_DYNAMIC_LIB;ZLIB_WINAPI;LUA_BUILD_AS_DLL"
 		WarningLevel="3"
 		DisableSpecificWarnings="4522;4251;4800"
 	/>

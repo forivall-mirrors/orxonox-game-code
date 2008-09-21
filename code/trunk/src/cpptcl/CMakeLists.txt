@@ -1,5 +1,5 @@
-ADD_LIBRARY(cpptcl SHARED CppTcl.cc)
+ADD_LIBRARY(cpptcl_orxonox SHARED CppTcl.cc)
 
-TARGET_LINK_LIBRARIES(cpptcl
+TARGET_LINK_LIBRARIES(cpptcl_orxonox
   ${TCL_LIBRARY}
 )
