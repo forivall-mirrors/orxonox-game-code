@@ -32,7 +32,29 @@ GET_TARGET_PROPERTY(TOLUAGEN_EXE toluagen_orxonox LOCATION)
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/toluabind_orxonox.c
   COMMAND ${TOLUAGEN_EXE} -n tolua -o ../../src/tolua/toluabind_orxonox.c -H ../../src/tolua/toluabind_orxonox.h ${TOLUA_PACKAGE}
-  DEPENDS toluagen_orxonox
+  DEPENDS
+    toluagen_orxonox
+    compat-5.1.lua
+    compat.lua
+    basic.lua
+    feature.lua
+    verbatim.lua
+    code.lua
+    ypedef.lua
+    container.lua
+    package.lua
+    module.lua
+    namespace.lua
+    define.lua
+    enumerate.lua
+    declaration.lua
+    variable.lua
+    array.lua
+    function.lua
+    operator.lua
+    class.lua
+    clean.lua
+    doit.lua
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
 
