@@ -6,4 +6,4 @@ SET( TINYXML_SRC_FILES
   tinyxmlparser.cc
 )
 
-ADD_LIBRARY(tinyxml SHARED ${TINYXML_SRC_FILES})
+ADD_LIBRARY(tinyxml_orxonox SHARED ${TINYXML_SRC_FILES})

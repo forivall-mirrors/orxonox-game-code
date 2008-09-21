@@ -14,8 +14,8 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CSS).lib tcl85t.lib enet-1.2$(CS).lib zlib-1.2.3$(CS).lib CEGUILua$(CS).lib CEGUIBase$(CS).lib lua-5.1.3$(CS).lib"
+		AdditionalDependencies="OgreMain$(CSS).lib tcl85t.lib enet-1.2$(CS).lib zlib-1.2.3$(CS).lib CEGUIBase$(CS).lib"
 		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
-		IgnoreDefaultLibraryNames="LIBCMT;LIBCMTD"
+		IgnoreDefaultLibraryNames=""
 	/>
 </VisualStudioPropertySheet>

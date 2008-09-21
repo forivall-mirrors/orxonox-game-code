@@ -33,10 +33,7 @@
 
 #include "CoreIncludes.h"
 
-extern "C" {
-#include <lualib.h>
-#include <lauxlib.h>
-}
+#include "lua/lua.hpp"
 
 #include "tolua/tolua++.h"
 #include "tolua/tolua_bind.h"

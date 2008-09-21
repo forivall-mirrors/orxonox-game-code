@@ -36,7 +36,7 @@
 
 #include "util/OrxonoxPlatform.h"
 
-#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH) && 0
+#if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC && !defined(ORXONOX_DISABLE_PCH)
 
 // including std headers here is useless since they're already precompiled
 

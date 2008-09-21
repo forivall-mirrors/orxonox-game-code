@@ -65,7 +65,7 @@ SET( ORXONOX_SRC_FILES
   objects/ParticleProjectile.cc
 )
 
-GET_TARGET_PROPERTY(TOLUA_EXE tolua LOCATION)
+GET_TARGET_PROPERTY(TOLUA_EXE tolua_orxonox LOCATION)
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.cc
   COMMAND ${TOLUA_EXE} -n Orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg
@@ -96,11 +96,11 @@ ENDIF(NETWORKTRAFFIC_TESTING_ENABLED)
 
 TARGET_LINK_LIBRARIES( orxonox
   ${OGRE_LIBRARIES}
-  ${Lua_LIBRARIES}
   ${CEGUI_LIBRARIES}
-  ${CEGUI_SCRIPT_LIBRARIES}
-  tinyxml
-  tolualib
+  lua_orxonox
+  ceguilua_orxonox
+  tinyxml_orxonox
+  tolualib_orxonox
   ois_orxonox
   util
   core
