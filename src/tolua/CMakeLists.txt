@@ -34,27 +34,27 @@ ADD_CUSTOM_COMMAND(
   COMMAND ${TOLUAGEN_EXE} -n tolua -o ../../src/tolua/toluabind_orxonox.c -H ../../src/tolua/toluabind_orxonox.h ${TOLUA_PACKAGE}
   DEPENDS
     toluagen_orxonox
-    compat-5.1.lua
-    compat.lua
-    basic.lua
-    feature.lua
-    verbatim.lua
-    code.lua
-    ypedef.lua
-    container.lua
-    package.lua
-    module.lua
-    namespace.lua
-    define.lua
-    enumerate.lua
-    declaration.lua
-    variable.lua
-    array.lua
-    function.lua
-    operator.lua
-    class.lua
-    clean.lua
-    doit.lua
+    lua/compat-5.1.lua
+    lua/compat.lua
+    lua/basic.lua
+    lua/feature.lua
+    lua/verbatim.lua
+    lua/code.lua
+    lua/ypedef.lua
+    lua/container.lua
+    lua/package.lua
+    lua/module.lua
+    lua/namespace.lua
+    lua/define.lua
+    lua/enumerate.lua
+    lua/declaration.lua
+    lua/variable.lua
+    lua/array.lua
+    lua/function.lua
+    lua/operator.lua
+    lua/class.lua
+    lua/clean.lua
+    lua/doit.lua
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
 
