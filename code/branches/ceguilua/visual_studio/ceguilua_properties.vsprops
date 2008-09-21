@@ -2,16 +2,16 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tolua_app_properties"
+	Name="ceguilua_properties"
 	InheritedPropertySheets=".\directory_properties.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		PreprocessorDefinitions="TOLUA_STATIC_BUILD"
-		CompileAs="1"
+		PreprocessorDefinitions="CEGUILUA_EXPORTS"
+		DisableSpecificWarnings="4996"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
+		AdditionalDependencies="CEGUIBase$(CS).lib"
 	/>
 </VisualStudioPropertySheet>

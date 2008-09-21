@@ -64,12 +64,12 @@ ADD_CUSTOM_COMMAND(
 ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
 
 TARGET_LINK_LIBRARIES(core
-  ${Lua_LIBRARIES}
   ${OGRE_LIBRARIES}
-  cpptcl
+  lua_orxonox
+  cpptcl_orxonox
   ois_orxonox
-  tinyxml
-  tolualib
+  tinyxml_orxonox
+  tolualib_orxonox
   util
   ${Boost_thread_LIBRARIES}
   ${Boost_filesystem_LIBRARIES}
