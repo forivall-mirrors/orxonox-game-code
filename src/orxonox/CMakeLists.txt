@@ -1,9 +1,6 @@
 SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
   Main.cc
-  Radar.cc
-  RadarListener.cc
-  RadarViewable.cc
   Settings.cc
   SignalHandler.cc
 
@@ -53,6 +50,9 @@ SET( ORXONOX_SRC_FILES
   objects/Model.cc
   objects/NPC.cc
   objects/ParticleSpawner.cc
+  objects/Radar.cc
+  objects/RadarListener.cc
+  objects/RadarViewable.cc
   objects/Skybox.cc
   objects/SpaceShip.cc
   objects/SpaceShipAI.cc
