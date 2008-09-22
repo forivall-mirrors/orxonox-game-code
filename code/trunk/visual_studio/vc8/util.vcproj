@@ -156,10 +156,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\util\Error.cc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\util\Exception.cc"
 				>
 			</File>
@@ -211,10 +207,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\util\Debug.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\Error.h"
 				>
 			</File>
 			<File
