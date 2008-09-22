@@ -103,6 +103,7 @@ namespace orxonox
                 Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayNoise_);
             if (this->consoleOverlayCursor_)
                 Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayCursor_);
+            Ogre::FontManager::getSingleton().remove("MonofurConsole");
             if (this->consoleOverlayBorder_)
                 Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayBorder_);
             if (this->consoleOverlayTextAreas_)
@@ -123,6 +124,9 @@ namespace orxonox
             delete[] this->consoleOverlayTextAreas_;
             this->consoleOverlayTextAreas_ = 0;
         }
+
+        if (this->consoleOverlay_)
+            Ogre::OverlayManager::getSingleton().destroy(consoleOverlay_);
 
         singletonRef_s = 0;
     }

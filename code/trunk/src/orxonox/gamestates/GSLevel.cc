@@ -37,10 +37,10 @@
 #include "core/Loader.h"
 #include "objects/Backlight.h"
 #include "objects/Tickable.h"
+#include "objects/Radar.h"
 #include "tools/Timer.h"
 #include "tools/ParticleInterface.h"
 #include "Settings.h"
-#include "Radar.h"
 #include "GraphicsEngine.h"
 
 namespace orxonox
