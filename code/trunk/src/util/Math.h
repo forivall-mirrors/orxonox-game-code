@@ -215,15 +215,15 @@ T interpolateSmooth(float time, const T& start, const T& end)
 }
 
 /**
-    @brief Returns a random number between 0 and 1.
+    @brief Returns a random number between 0 and almost 1: 0 <= rnd < 1.
 */
 inline _UtilExport float rnd()
 {
-    return ((float)rand() / RAND_MAX);
+    return ((float)rand() / (RAND_MAX + 1));
 }
 
 /**
-    @brief Returns a random number between 0 and max.
+    @brief Returns a random number between 0 and almost max: 0 <= rnd < max.
     @param max The maximum
 */
 inline _UtilExport float rnd(float max)
@@ -232,7 +232,7 @@ inline _UtilExport float rnd(float max)
 }
 
 /**
-    @brief Returns a random number between min and max.
+    @brief Returns a random number between min and almost max: min <= rnd < max.
     @param min The minimum
     @param max The maximum
 */
