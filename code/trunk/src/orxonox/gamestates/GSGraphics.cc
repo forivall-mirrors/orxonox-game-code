@@ -280,7 +280,7 @@ namespace orxonox
 
         Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, this);
 
-        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 
         // create a full screen default viewport
         this->viewport_ = this->renderWindow_->addViewport(0, 0);
