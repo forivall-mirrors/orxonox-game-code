@@ -61,6 +61,7 @@ namespace network
 
   struct synchronisableHeader{
     unsigned int size;
+    bool dataAvailable;
     unsigned int objectID;
     unsigned int classID;
   };

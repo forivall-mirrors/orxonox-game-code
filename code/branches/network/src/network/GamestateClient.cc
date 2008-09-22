@@ -188,7 +188,7 @@ namespace network
         delete gs;
         return 0;
       }
-//      assert(base); //TODO: fix this
+//       assert(base); //TODO: fix this
       packet::Gamestate *undiffed = gs->undiff(base);
       delete gs;
       gs=undiffed;

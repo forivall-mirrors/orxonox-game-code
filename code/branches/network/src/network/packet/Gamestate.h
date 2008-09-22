@@ -73,8 +73,10 @@ class Gamestate: public Packet{
     bool isCompressed();
     int getBaseID();
     Gamestate *diff(Gamestate *base);
-    Gamestate* doSelection(unsigned int clientID);
+    Gamestate* intelligentDiff(Gamestate *base, unsigned int clientID);
     Gamestate *undiff(Gamestate *base);
+    Gamestate* intelligentUnDiff(Gamestate *base);
+    Gamestate* doSelection(unsigned int clientID);
     bool compressData();
     bool decompressData();
 
@@ -87,7 +89,7 @@ class Gamestate: public Packet{
   private:
     unsigned int calcGamestateSize(unsigned int id, int mode=0x0);
     void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
-    std::map<Synchronisable *, unsigned char *> dataMap_;
+    std::map<unsigned int, Synchronisable*> dataMap_;
 };
 
 }

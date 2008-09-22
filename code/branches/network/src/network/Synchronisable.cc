@@ -119,18 +119,15 @@ namespace network
    */
   Synchronisable *Synchronisable::fabricate(unsigned char*& mem, int mode)
   {
-    unsigned int size, objectID, classID;
-    size = *(unsigned int *)mem;
-    objectID = *(unsigned int*)(mem+sizeof(unsigned int));
-    classID = *(unsigned int*)(mem+2*sizeof(unsigned int));
+    synchronisableHeader *header = (synchronisableHeader *)mem;
     
-    orxonox::Identifier* id = GetIdentifier(classID);
+    orxonox::Identifier* id = GetIdentifier(header->classID);
     assert(id);
     orxonox::BaseObject *bo = id->fabricate();
     Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
     assert(no);
-    no->objectID=objectID;
-    no->classID=classID;
+    no->objectID=header->objectID;
+    no->classID=header->classID;
     COUT(3) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
     assert(no->updateData(mem, mode));
@@ -227,20 +224,19 @@ namespace network
     size=getSize(id, mode);
     
     // start copy header
-    memcpy(mem, &size, sizeof(unsigned int));
-    mem+=sizeof(unsigned int);
-    memcpy(mem, &(this->objectID), sizeof(unsigned int));
-    mem+=sizeof(unsigned int);
-    memcpy(mem, &(this->classID), sizeof(unsigned int));
-    mem+=sizeof(unsigned int);
-    tempsize+=12;
+    synchronisableHeader *header = (synchronisableHeader *)mem;
+    header->size = size;
+    header->objectID = this->objectID;
+    header->classID = this->classID;
+    header->dataAvailable = true;
+    tempsize+=sizeof(synchronisableHeader);
+    mem+=sizeof(synchronisableHeader);
     // end copy header
     
     
     COUT(5) << "Synchronisable getting data from objectID: " << objectID << " classID: " << classID << " length: " << size << std::endl;
     // copy to location
     for(i=syncList->begin(); i!=syncList->end(); ++i){
-      //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
       if( ((*i)->mode & mode) == 0 ){
         COUT(5) << "not getting data: " << std::endl;
         continue;  // this variable should only be received
@@ -283,21 +279,20 @@ namespace network
     }
     unsigned char *data=mem;
     // start extract header
-    if(!isMyData(mem))
+    synchronisableHeader *syncHeader = (synchronisableHeader *)mem;
+    assert(syncHeader->objectID==this->objectID);
+    if(syncHeader->dataAvailable==false){
+      mem+=syncHeader->size;
       return true;
-    unsigned int objectID, classID, size;
-    size = *(int *)mem;
-    mem+=sizeof(size);
-    objectID = *(int *)mem;
-    mem+=sizeof(objectID);
-    classID = *(int *)mem;
-    mem+=sizeof(classID);
-    // stop extract header
-    assert(this->objectID==objectID);
-    assert(this->classID==classID);
+    }
     
-    COUT(5) << "Synchronisable: objectID " << objectID << ", classID " << classID << " size: " << size << " synchronising data" << std::endl;
-    for(i=syncList->begin(); i!=syncList->end() && mem <= data+size; i++){
+    mem+=sizeof(synchronisableHeader);
+    // stop extract header
+    assert(this->objectID==syncHeader->objectID);
+//    assert(this->classID==syncHeader->classID); //TODO: fix this!!! maybe a problem with the identifier ?
+    
+    COUT(5) << "Synchronisable: objectID " << syncHeader->objectID << ", classID " << syncHeader->classID << " size: " << syncHeader->size << " synchronising data" << std::endl;
+    for(i=syncList->begin(); i!=syncList->end() && mem <= data+syncHeader->size; i++){
       if( ((*i)->mode ^ mode) == 0 ){
         COUT(5) << "synchronisable: not updating variable " << std::endl;
         continue;  // this variable should only be set
@@ -381,16 +376,9 @@ namespace network
    */
   bool Synchronisable::isMyData(unsigned char* mem)
   {
-    unsigned int objectID, classID, size;
-    size = *(int *)mem;
-    mem+=sizeof(size);
-    objectID = *(int *)mem;
-    mem+=sizeof(objectID);
-    classID = *(int *)mem;
-    mem+=sizeof(classID);
-    
-    assert(classID == this->classID);
-    return (objectID == this->objectID);
+    synchronisableHeader *header = (synchronisableHeader *)mem;
+    assert(header->objectID==this->objectID);
+    return header->dataAvailable;
   }
   
   /**

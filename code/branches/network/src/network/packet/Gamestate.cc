@@ -100,8 +100,8 @@ bool Gamestate::collectData(int id, int mode)
       size = currentsize+addsize;
     }// stop allocate additional memory
 
-    if(it->doSelection(id))
-      dataMap_[*it]=mem;  // save the mem location of the synchronisable data
+    //if(it->doSelection(id))
+    dataMap_[mem-data_]=(*it);  // save the mem location of the synchronisable data
     if(!it->getData(mem, id, mode))
       return false; // mem pointer gets automatically increased because of call by reference
     // increase size counter by size of current synchronisable
@@ -129,7 +129,6 @@ bool Gamestate::spreadData(int mode)
   assert(data_);
   assert(!HEADER->compressed);
   assert(!HEADER->diffed);
-  unsigned int size, objectID, classID;
   unsigned char *mem=data_+sizeof(GamestateHeader);
     // get the start of the Synchronisable list
   //orxonox::ObjectList<Synchronisable>::iterator it=orxonox::ObjectList<Synchronisable>::begin();
@@ -137,11 +136,9 @@ bool Gamestate::spreadData(int mode)
 
   // update the data of the objects we received
   while(mem < data_+sizeof(GamestateHeader)+HEADER->datasize){
-    size = *(unsigned int *)mem;
-    objectID = *(unsigned int*)(mem+sizeof(unsigned int));
-    classID = *(unsigned int*)(mem+2*sizeof(unsigned int));
+    synchronisableHeader *objectheader = (synchronisableHeader*)mem;
 
-    s = Synchronisable::getSynchronisable( objectID );
+    s = Synchronisable::getSynchronisable( objectheader->objectID );
     if(!s)
     {
       s = Synchronisable::fabricate(mem, mode);
@@ -194,6 +191,8 @@ bool Gamestate::process()
 {
   return GamestateHandler::addGamestate(this, getClientID());
 }
+
+
 
 bool Gamestate::compressData()
 {
@@ -320,28 +319,167 @@ Gamestate *Gamestate::diff(Gamestate *base)
 
 Gamestate* Gamestate::doSelection(unsigned int clientID){
   assert(data_);
-  std::map<Synchronisable *, unsigned char *>::iterator it;
-  unsigned char *ndata, *tdata;
-  unsigned int nsize=0;
-  // calculate the size of the new gamestate
+  std::map<unsigned int, Synchronisable *>::iterator it;
+  
+  Gamestate *gs = new Gamestate(*this);
+  unsigned char *ndata = gs->data_ + sizeof(GamestateHeader);
+  synchronisableHeader *objectheader;
+  unsigned int objectOffset;
+  
+  //copy in the zeros
   for(it=dataMap_.begin(); it!=dataMap_.end(); it++){
-    if(it->first->doSelection(HEADER->id))
-      nsize+=*(unsigned int*)it->second;
-  }
-  ndata = new unsigned char[nsize+sizeof(GamestateHeader)];
-  tdata = ndata;
-  tdata += sizeof(GamestateHeader);
-  for(it=dataMap_.begin(); it!=dataMap_.end(); it++){
-    if(it->first->doSelection(HEADER->id)){
-      memcpy(tdata, it->second, *(unsigned int*)it->second); // copy over the saved data of the synchronisable
-      tdata += *(unsigned int*)it->second;
+    objectheader = (synchronisableHeader*)ndata;
+    unsigned int objectsize = objectheader->size;
+    assert(it->second->objectID==objectheader->objectID);
+    objectOffset=sizeof(unsigned int)+sizeof(bool); //skip the size and the availableDate variables in the objectheader
+    if(!it->second->doSelection(HEADER->id)){
+      while(objectOffset<objectsize){
+        objectheader->dataAvailable=false;
+        *(ndata+objectOffset)=0;    // set to 0
+        objectOffset++;
+      }
+      assert(objectOffset==objectsize);
     }
+    ndata+=objectsize;
   }
-  COUT(3) << "oldsize: " << HEADER->datasize << " newsize: " << nsize << std::endl;
+  return gs;
+}
+
+
+Gamestate* Gamestate::intelligentDiff(Gamestate *base, unsigned int clientID){
+  // asserts
+  assert(data_);
+  assert(base->data_);
+  assert(!GAMESTATE_HEADER(base->data_)->diffed);
+  assert(!GAMESTATE_HEADER(base->data_)->compressed);
+  assert(!HEADER->compressed);
+  assert(!HEADER->diffed);
+  
+  //preparations
+  std::map<unsigned int, Synchronisable *>::iterator it;
+  unsigned char *origdata, *basedata, *destdata, *ndata;
+  unsigned int objectOffset, streamOffset=0;    //data offset
+  unsigned int minsize = (HEADER->datasize < GAMESTATE_HEADER(base->data_)->datasize) ? HEADER->datasize : GAMESTATE_HEADER(base->data_)->datasize; 
+  synchronisableHeader *origheader;
+  synchronisableHeader *destheader;
+  
+  origdata = GAMESTATE_START(this->data_);
+  basedata = GAMESTATE_START(base->data_);
+  ndata = new unsigned char[HEADER->datasize + sizeof(GamestateHeader)];
+  destdata = ndata + sizeof(GamestateHeader);
+  
+  // do the diff
+  for(it=dataMap_.begin(); it!=dataMap_.end(); it++){
+    assert(streamOffset<HEADER->datasize);
+    bool sendData = it->second->doSelection(HEADER->id);
+    origheader = (synchronisableHeader *)(origdata+streamOffset);
+    destheader = (synchronisableHeader *)(destdata+streamOffset);
+    
+    //copy and partially diff the object header
+    assert(sizeof(synchronisableHeader)==3*sizeof(unsigned int)+sizeof(bool));
+    *(unsigned int*)destdata = *(unsigned int*)origdata; //size (do not diff)
+    *(bool*)(destdata+sizeof(unsigned int)) = sendData;
+    if(sendData){
+      *(unsigned int*)(destdata+sizeof(unsigned int)+sizeof(bool)) = *(unsigned int*)(basedata+sizeof(unsigned int)+sizeof(bool)) ^ *(unsigned int*)(origdata+sizeof(unsigned int)+sizeof(bool)); //objectid (diff it)
+      *(unsigned int*)(destdata+2*sizeof(unsigned int)+sizeof(bool)) = *(unsigned int*)(basedata+2*sizeof(unsigned int)+sizeof(bool)) ^ *(unsigned int*)(origdata+2*sizeof(unsigned int)+sizeof(bool)); //classid (diff it)
+    }else{
+      *(unsigned int*)(destdata+sizeof(unsigned int)+sizeof(bool)) = 0;
+      *(unsigned int*)(destdata+2*sizeof(unsigned int)+sizeof(bool)) = 0; 
+    }
+    objectOffset=sizeof(synchronisableHeader);
+    streamOffset+=sizeof(synchronisableHeader);
+    
+    //now handle the object data or fill with zeros
+    while(objectOffset<origheader->size ){
+      
+      if(sendData && streamOffset<minsize)
+        *(destdata+objectOffset)=*(basedata+objectOffset)^*(origdata+objectOffset); // do the xor
+      else if(sendData)
+        *(destdata+objectOffset)=((unsigned char)0)^*(origdata+objectOffset); // xor with 0 (basestream is too short)
+      else
+        *(destdata+objectOffset)=0; // set to 0 because this object should not be transfered
+      
+      objectOffset++;
+      streamOffset++;
+    }
+    destdata+=objectOffset;
+    origdata+=objectOffset;
+    basedata+=objectOffset;
+  }
+  
+  //copy over the gamestate header and set the diffed flag
   *(GamestateHeader *)ndata = *HEADER; //copy over the header
-  GAMESTATE_HEADER(ndata)->datasize = nsize;
   Gamestate *gs = new Gamestate(ndata);
-  assert(HEADER->datasize>=nsize);
+  GAMESTATE_HEADER(ndata)->diffed=true;
+  return gs;
+}
+
+Gamestate* Gamestate::intelligentUnDiff(Gamestate *base){
+  // asserts
+  assert(data_);
+  assert(base->data_);
+  assert(!GAMESTATE_HEADER(base->data_)->diffed);
+  assert(!GAMESTATE_HEADER(base->data_)->compressed);
+  assert(!HEADER->compressed);
+  assert(HEADER->diffed);
+  
+  //preparations
+  std::map<unsigned int, Synchronisable *>::iterator it;
+  unsigned char *origdata, *basedata, *destdata, *ndata;
+  unsigned int objectOffset, streamOffset=0;    //data offset
+  unsigned int minsize = (HEADER->datasize < GAMESTATE_HEADER(base->data_)->datasize) ? HEADER->datasize : GAMESTATE_HEADER(base->data_)->datasize; 
+  synchronisableHeader *origheader;
+  synchronisableHeader *destheader;
+  
+  origdata = GAMESTATE_START(this->data_);
+  basedata = GAMESTATE_START(base->data_);
+  ndata = new unsigned char[HEADER->datasize + sizeof(GamestateHeader)];
+  destdata = ndata + sizeof(GamestateHeader);
+  
+  // do the undiff
+  for(it=dataMap_.begin(); it!=dataMap_.end(); it++){
+    assert(streamOffset<HEADER->datasize);
+    origheader = (synchronisableHeader *)(origdata+streamOffset);
+    destheader = (synchronisableHeader *)(destdata+streamOffset);
+    bool sendData;
+    
+    //copy and partially diff the object header
+    assert(sizeof(synchronisableHeader)==3*sizeof(unsigned int)+sizeof(bool));
+    *(unsigned int*)destdata = *(unsigned int*)origdata; //size (do not diff)
+    *(bool*)(destdata+sizeof(unsigned int)) = *(bool*)(origdata+sizeof(unsigned int));
+    sendData = *(bool*)(origdata+sizeof(unsigned int));
+    if(sendData){
+      *(unsigned int*)(destdata+sizeof(unsigned int)+sizeof(bool)) = *(unsigned int*)(basedata+sizeof(unsigned int)+sizeof(bool)) ^ *(unsigned int*)(origdata+sizeof(unsigned int)+sizeof(bool)); //objectid (diff it)
+      *(unsigned int*)(destdata+2*sizeof(unsigned int)+sizeof(bool)) = *(unsigned int*)(basedata+2*sizeof(unsigned int)+sizeof(bool)) ^ *(unsigned int*)(origdata+2*sizeof(unsigned int)+sizeof(bool)); //classid (diff it)
+    }else{
+      *(unsigned int*)(destdata+sizeof(unsigned int)+sizeof(bool)) = 0;
+      *(unsigned int*)(destdata+2*sizeof(unsigned int)+sizeof(bool)) = 0; 
+    }
+    objectOffset=sizeof(synchronisableHeader);
+    streamOffset+=sizeof(synchronisableHeader);
+    
+    //now handle the object data or fill with zeros
+    while(objectOffset<origheader->size ){
+      
+      if(sendData && streamOffset<minsize)
+        *(destdata+objectOffset)=*(basedata+objectOffset)^*(origdata+objectOffset); // do the xor
+      else if(sendData)
+        *(destdata+objectOffset)=((unsigned char)0)^*(origdata+objectOffset); // xor with 0 (basestream is too short)
+      else
+        *(destdata+objectOffset)=0; // set to 0 because this object should not be transfered
+      
+      objectOffset++;
+      streamOffset++;
+    }
+    destdata+=objectOffset;
+    origdata+=objectOffset;
+    basedata+=objectOffset;
+  }
+  
+  //copy over the gamestate header and set the diffed flag
+  *(GamestateHeader *)ndata = *HEADER; //copy over the header
+  Gamestate *gs = new Gamestate(ndata);
+  GAMESTATE_HEADER(ndata)->diffed=false;
   return gs;
 }
 
