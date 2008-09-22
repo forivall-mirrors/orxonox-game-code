@@ -39,8 +39,8 @@
 #include "core/XMLPort.h"
 #include "objects/SpaceShip.h"
 #include "objects/WorldEntity.h"
+#include "objects/Radar.h"
 #include "tools/TextureGenerator.h"
-#include "Radar.h"
 
 namespace orxonox
 {

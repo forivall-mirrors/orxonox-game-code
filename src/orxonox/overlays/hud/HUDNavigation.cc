@@ -39,10 +39,10 @@
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "objects/Radar.h"
 #include "objects/SpaceShip.h"
 #include "objects/Projectile.h"
 #include "objects/CameraHandler.h"
-#include "Radar.h"
 
 namespace orxonox
 {

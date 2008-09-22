@@ -36,8 +36,8 @@
 #include <map>
 #include <OgrePrerequisites.h>
 #include "overlays/OrxonoxOverlay.h"
-#include "RadarListener.h"
-#include "RadarViewable.h"
+#include "objects/RadarListener.h"
+#include "objects/RadarViewable.h"
 
 namespace orxonox
 {
