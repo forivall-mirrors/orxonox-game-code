@@ -136,6 +136,8 @@ namespace orxonox
 
     void GSGraphics::leave()
     {
+        using namespace Ogre;
+
         delete this->guiManager_;
 
         delete this->console_;
@@ -144,10 +146,26 @@ namespace orxonox
         //delete this->masterKeyBinder_;
         delete this->inputManager_;
 
-        this->ogreRoot_->detachRenderTarget(this->renderWindow_);
-        delete this->renderWindow_;
-        //this->ogreRoot_->shutdown
-        // TODO: destroy render window
+        // destroy render window
+        this->renderWindow_->removeAllViewports();
+        this->renderWindow_->removeAllListeners();
+        RenderSystem* renderer = this->ogreRoot_->getRenderSystem();
+        renderer->destroyRenderWindow("Orxonox");
+
+        // Does the opposite of initialise()
+        ogreRoot_->shutdown();
+
+        // Remove all resources and resource groups
+        StringVector groups = ResourceGroupManager::getSingleton().getResourceGroups();
+        for (StringVector::iterator it = groups.begin(); it != groups.end(); ++it)
+        {
+            ResourceGroupManager::getSingleton().destroyResourceGroup(*it);
+        }
+
+        ParticleSystemManager::getSingleton().removeAllTemplates();
+
+        // Shutdown the render system
+        this->ogreRoot_->setRenderSystem(0);
 
         Settings::_getInstance().bShowsGraphics_ = false;
     }
@@ -276,7 +294,7 @@ namespace orxonox
 
         CCOUT(4) << "Creating render window" << std::endl;
 
-        this->renderWindow_ = ogreRoot_->initialise(true, "OrxonoxV2");
+        this->renderWindow_ = ogreRoot_->initialise(true, "Orxonox");
 
         Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, this);
 
@@ -290,20 +308,20 @@ namespace orxonox
     {
         CCOUT(4) << "Initialising resources" << std::endl;
         //TODO: Do NOT load all the groups, why are we doing that? And do we really do that? initialise != load...
-        try
-        {
+        //try
+        //{
             Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
             /*Ogre::StringVector str = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
             for (unsigned int i = 0; i < str.size(); i++)
             {
             Ogre::ResourceGroupManager::getSingleton().loadResourceGroup(str[i]);
             }*/
-        }
-        catch (...)
-        {
-            CCOUT(2) << "Error: There was a serious error when initialising the resources." << std::endl;
-            throw;
-        }
+        //}
+        //catch (...)
+        //{
+        //    CCOUT(2) << "Error: There was a serious error when initialising the resources." << std::endl;
+        //    throw;
+        //}
     }
 
 

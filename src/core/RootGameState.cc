@@ -131,8 +131,10 @@ namespace orxonox
     */
     void RootGameState::start(int argc, char** argv)
     {
+#ifdef NDEBUG
         try
         {
+#endif
             // start global orxonox time
             Clock clock;
 
@@ -159,6 +161,7 @@ namespace orxonox
             }
 
             this->deactivate();
+#ifdef NDEBUG
         }
         // Note: These are all unhandled exceptions that should not have made its way here!
         // almost complete game catch block to display the messages appropriately.
@@ -174,6 +177,7 @@ namespace orxonox
             COUT(1) << "An unidentifiable exception has occured. Program aborted." << std::endl;
             abort();
         }
+#endif
     }
 
     /**
