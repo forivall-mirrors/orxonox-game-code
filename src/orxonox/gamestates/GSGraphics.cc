@@ -156,16 +156,16 @@ namespace orxonox
         ogreRoot_->shutdown();
 
         // Remove all resources and resource groups
-        StringVector groups = ResourceGroupManager::getSingleton().getResourceGroups();
-        for (StringVector::iterator it = groups.begin(); it != groups.end(); ++it)
-        {
-            ResourceGroupManager::getSingleton().destroyResourceGroup(*it);
-        }
+        //StringVector groups = ResourceGroupManager::getSingleton().getResourceGroups();
+        //for (StringVector::iterator it = groups.begin(); it != groups.end(); ++it)
+        //{
+        //    ResourceGroupManager::getSingleton().destroyResourceGroup(*it);
+        //}
 
-        ParticleSystemManager::getSingleton().removeAllTemplates();
+        //ParticleSystemManager::getSingleton().removeAllTemplates();
 
         // Shutdown the render system
-        this->ogreRoot_->setRenderSystem(0);
+        //this->ogreRoot_->setRenderSystem(0);
 
         Settings::_getInstance().bShowsGraphics_ = false;
     }
