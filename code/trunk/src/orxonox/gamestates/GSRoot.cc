@@ -43,6 +43,7 @@
 #include "core/Shell.h"
 #include "core/TclBind.h"
 #include "core/TclThreadManager.h"
+#include "tools/Timer.h"
 #include "GraphicsEngine.h"
 #include "Settings.h"
 
@@ -178,6 +179,9 @@ namespace orxonox
     void GSRoot::ticked(const Clock& time)
     {
         TclThreadManager::getInstance().tick(time.getDeltaTime());
+
+        for (ObjectList<TimerBase>::iterator it = ObjectList<TimerBase>::begin(); it; ++it)
+            it->tick(time);
 
         this->tickChild(time);
     }
