@@ -1,6 +1,5 @@
 SET(UTIL_SRC_FILES
   Clipboard.cc
-  Error.cc
   CRC32.cc
   Exception.cc
   ExprParser.cc
