@@ -32,7 +32,7 @@
 	/>
 	<UserMacro
 		Name="DependencyDir"
-		Value="$(RootDir)..\lib_precompiled\"
+		Value="$(RootDir)..\dependencies\"
 	/>
 	<UserMacro
 		Name="CS"
@@ -44,6 +44,6 @@
 	/>
 	<UserMacro
 		Name="LibDir"
-		Value="$(RootDir)..\lib_precompiled\include\"
+		Value="$(DependencyDir)include\"
 	/>
 </VisualStudioPropertySheet>
