@@ -35,6 +35,7 @@
 #include <OgreRoot.h>
 #include <OgreException.h>
 #include <OgreRenderWindow.h>
+#include <OgreRenderSystem.h>
 #include <OgreTextureManager.h>
 #include <OgreViewport.h>
 #include <OgreWindowEventUtilities.h>
