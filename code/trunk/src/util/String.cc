@@ -52,6 +52,8 @@ void strip(std::string* str)
         (*str).erase(pos, 1);
     while ((pos = (*str).find("\t")) < (*str).length())
         (*str).erase(pos, 1);
+    while ((pos = (*str).find("\n")) < (*str).length())
+        (*str).erase(pos, 1);
 }
 
 /**
@@ -120,6 +122,8 @@ bool isBetweenQuotes(const std::string& str, unsigned int pos)
     unsigned int quote = (unsigned int)-1;
     while ((quote = getNextQuote(str, quote + 1)) < pos)
     {
+        if (quote == pos)
+            return false;
         quotecount++;
     }
 
@@ -130,7 +134,7 @@ bool isBetweenQuotes(const std::string& str, unsigned int pos)
 }
 
 /**
-    @brief Returns true if the string contains something like '..."between quotes"...'
+    @brief Returns true if the string contains something like '..."between quotes"...'.
     @param The string
     @return True if there is something between quotes
 */
@@ -157,7 +161,7 @@ std::string getStringBetweenQuotes(const std::string& str)
 }
 
 /**
-    @brief Removes enclosing quotes if available.
+    @brief Removes enclosing quotes if available (including whitespaces at the outside of the quotes).
     @brief str The string to strip
     @return The string with removed quotes
 */
@@ -197,7 +201,7 @@ std::string stripEnclosingQuotes(const std::string& str)
 }
 
 /**
-    @brief Removes enclosing {braces}.
+    @brief Removes enclosing {braces} (braces must be exactly on the beginning and the end of the string).
     @param str The string to strip
     @return The striped string
 */
@@ -212,7 +216,7 @@ std::string stripEnclosingBraces(const std::string& str)
 }
 
 /**
-    @brief Determines if a string in is a comment.
+    @brief Determines if a string is a comment (starts with a comment-symbol).
     @param str The string to check
     @return True = it's a comment
 
@@ -383,9 +387,9 @@ std::string getUppercase(const std::string& str)
 }
 
 /**
-    @brief compares two strings without ignoring the case
-    @param s1 first string
-    @param s2 second string
+    @brief Compares two strings ignoring different casing.
+    @param s1 First string
+    @param s2 Second string
 */
 int nocaseCmp(const std::string& s1, const std::string& s2)
 {
@@ -411,10 +415,10 @@ int nocaseCmp(const std::string& s1, const std::string& s2)
 
 
 /**
-    @brief compares two strings without ignoring the case
-    @param s1 first string
-    @param s2 second string
-    @param len how far from the beginning to start.
+    @brief Compares the first 'len' chars of two strings ignoring different casing.
+    @param s1 First string
+    @param s2 Second string
+    @param len Maximal number of chars to compare
 */
 int nocaseCmp(const std::string& s1, const std::string& s2, unsigned int len)
 {
