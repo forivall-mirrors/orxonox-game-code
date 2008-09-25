@@ -325,7 +325,7 @@ namespace network
     }
     orxonox::SpaceShip *no = dynamic_cast<orxonox::SpaceShip *>(id->fabricate());
     no->classID = id->getNetworkID();
-    client->setShipID(no->objectID);
+    client->setShipID(no->getObjectID());
     no->setPosition(orxonox::Vector3(0,0,80));
     no->setScale(10);
     //no->setYawPitchRoll(orxonox::Degree(-90),orxonox::Degree(-90),orxonox::Degree(0));
@@ -354,7 +354,7 @@ namespace network
       return false;
     gamestates_->removeClient(client);
     while(it){
-      if(it->objectID!=client->getShipID()){
+      if(it->getObjectID()!=client->getShipID()){
         ++it;
         continue;
       }

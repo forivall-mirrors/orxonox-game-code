@@ -53,12 +53,13 @@ namespace orxonox
         this->explosionTemplateName_ = "Orxonox/explosion3";
         this->smokeTemplateName_ = "Orxonox/smoke4";
 
+        this->setStatic(false);
+        this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
+        
         if (this->owner_)
         {
-            this->setStatic(false);
             this->setOrientation(this->owner_->getOrientation());
             this->setPosition(this->owner_->getPosition());
-            this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
             this->setVelocity(this->owner_->getInitialDir() * this->speed_);
         }
 
@@ -119,5 +120,9 @@ namespace orxonox
     void Projectile::destroyObject()
     {
         delete this;
+    }
+    
+    bool Projectile::create(){
+      return WorldEntity::create();
     }
 }

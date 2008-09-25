@@ -44,6 +44,8 @@ namespace orxonox
             void speedChanged();
             void destroyObject();
             virtual void tick(float dt);
+            
+            virtual bool create();
 
             static float getSpeed()
                 { return Projectile::speed_s; }

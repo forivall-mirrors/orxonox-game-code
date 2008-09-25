@@ -43,6 +43,11 @@
 #define REGISTERSTRING(stringname) registerVar(&stringname, stringname.length()+1, network::STRING)
 #define REGISTERSTRING_WITHDIR(stringname, mode) registerVar(&stringname, stringname.length()+1, network::STRING, mode)
 
+//TODO: this is only a very ugly hack ...
+namespace orxonox{
+class SpaceShip;
+}
+
 namespace network
 {
   namespace direction{
@@ -74,7 +79,6 @@ namespace network
     NetworkCallbackBase *callback;
   }SYNCVAR;
 
-
   /**
   * This class is the base class of all the Objects in the universe that need to be synchronised over the network
    * Every class, that inherits from this class has to link the DATA THAT NEEDS TO BE SYNCHRONISED into the linked list.
@@ -82,20 +86,13 @@ namespace network
   */
   class _NetworkExport Synchronisable : virtual public orxonox::OrxonoxClass{
   public:
-    
+    friend class packet::Gamestate;
+    friend class GamestateClient;
+    friend class Server;
+    friend class orxonox::SpaceShip;
     virtual ~Synchronisable();
-    unsigned int objectID;
-    unsigned int classID;
 
-    bool getData(unsigned char*& men, unsigned int id, int mode=0x0);
-    int getSize(unsigned int id, int mode=0x0);
-    bool updateData(unsigned char*& mem, int mode=0x0);
-    bool isMyData(unsigned char* mem);
-    bool doSelection(unsigned int id);
-    void setObjectMode(int mode);
-    void setObjectFrequency(unsigned int freq){ objectFrequency_ = freq; }
     
-    virtual void registerAllVariables()=0;
     virtual bool create();
     static void setClient(bool b);
     
@@ -105,14 +102,28 @@ namespace network
     static unsigned int getNumberOfDeletedObject(){ return deletedObjects_.size(); }
     static unsigned int popDeletedObject(){ unsigned int i = deletedObjects_.front(); deletedObjects_.pop(); return i; }
     
-    
+    inline unsigned int getObjectID(){return objectID;}
+    inline unsigned int getClassID(){return classID;}
   protected:
     Synchronisable();
     void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
+    void setObjectMode(int mode);
+    void setObjectFrequency(unsigned int freq){ objectFrequency_ = freq; }
+    virtual void registerAllVariables()=0;
+    
+    
   private:
+    bool getData(unsigned char*& men, unsigned int id, int mode=0x0);
+    int getSize(unsigned int id, int mode=0x0);
+    bool updateData(unsigned char*& mem, int mode=0x0);
+    bool isMyData(unsigned char* mem);
+    bool doSelection(unsigned int id);
     bool isMyTick(unsigned int id);
+    
+    unsigned int objectID;
+    unsigned int classID;
+    
     std::list<synchronisableVariable *> *syncList;
-    int datasize;
     static int state_; // detemines wheter we are server (default) or client
     bool backsync_; // if true the variables with mode > 1 will be synchronised to server (client -> server)
     unsigned int objectFrequency_;

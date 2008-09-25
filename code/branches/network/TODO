@@ -4,3 +4,9 @@ todo:
 	check Projectiles
 	check that we dont have to much registervar because of virtual function calls
 
+	setvariable mode
+	objectmode
+	friend classes
+	priorities
+	static (sync once)
+	triggerSync

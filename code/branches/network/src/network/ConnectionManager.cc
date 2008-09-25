@@ -371,7 +371,7 @@ used by processQueue in Server.cc
     unsigned int id=client->getShipID();
     orxonox::ObjectList<orxonox::SpaceShip>::iterator it;
     for(it = orxonox::ObjectList<orxonox::SpaceShip>::begin(); it; ++it){
-      if(it->objectID!=id)
+      if(it->getObjectID()!=id)
         continue;
       delete *it;
     }

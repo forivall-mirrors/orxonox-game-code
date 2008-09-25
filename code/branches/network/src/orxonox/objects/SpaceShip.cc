@@ -77,7 +77,7 @@ namespace orxonox
       ObjectList<SpaceShip>::iterator it;
       for(it = ObjectList<SpaceShip>::begin(); it; ++it){
 	assert(it->isA(Class(SpaceShip)));
-        if( (it)->myShip_ || (network::Host::running() && network::Host::getShipID()==(it)->objectID) ){
+        if( (it)->myShip_ || (network::Host::running() && network::Host::getShipID()==(it)->getObjectID()) ){
 //	  COUT(1) << "^^^^^^^^^^ myShip_:" << *it << " classname: " << (*it)->getIdentifier()->getName() << " objectid: " << (*it)->objectID << std::endl;
           return *it;
 	}
@@ -172,7 +172,7 @@ namespace orxonox
       if(!myShip_){
         if(network::Host::running())
 //          COUT(3) << "this id: " << this->objectID << " myShipID: " << network::Host::getShipID() << std::endl;
-        if(network::Host::running() && objectID == network::Host::getShipID()){
+        if(network::Host::running() && getObjectID() == network::Host::getShipID()){
           if(!network::Host::isServer())
  	    setObjectMode(0x3);
           myShip_=true;
@@ -374,11 +374,11 @@ namespace orxonox
         //CameraHandler::getInstance()->requestFocus(cam_);
         if(this->isExactlyA(Class(SpaceShip))){
           getFocus();
-          COUT(3) << "getting focus for obj id: " << objectID << std::endl;
+          COUT(3) << "getting focus for obj id: " << getObjectID() << std::endl;
         }else
-          COUT(3) << "not getting focus (not exactly spaceship) for obj id: " << objectID << std::endl;
+          COUT(3) << "not getting focus (not exactly spaceship) for obj id: " << getObjectID() << std::endl;
       }else
-        COUT(3) << "not getting focus (not my ship) for obj id: " << objectID << std::endl;
+        COUT(3) << "not getting focus (not my ship) for obj id: " << getObjectID() << std::endl;
     }
 
     void SpaceShip::setMaxSpeed(float value)
@@ -474,7 +474,7 @@ namespace orxonox
             BillboardProjectile* projectile = new ParticleProjectile(this);
             projectile->setColour(this->getProjectileColour());
             projectile->create();
-            if (projectile->classID == 0)
+            if (projectile->getClassID() == 0)
             {
               COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
             }
@@ -569,7 +569,7 @@ namespace orxonox
             this->tt2_->setEnabled(false);
         }
 
-        COUT(5) << "steering our ship: " << objectID << std::endl;
+        COUT(5) << "steering our ship: " << getObjectID() << std::endl;
         this->acceleration_.x = 0;
         this->acceleration_.y = 0;
         this->momentum_ = 0;

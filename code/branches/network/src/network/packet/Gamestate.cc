@@ -79,7 +79,11 @@ bool Gamestate::collectData(int id, int mode)
     COUT(2) << "GameStateManager: could not allocate memory" << std::endl;
     return false;
   }
-
+  
+#ifndef NDEBUG
+  std::list<Synchronisable*> slist;
+  std::list<Synchronisable*>::iterator iit;
+#endif
   //start collect data synchronisable by synchronisable
   unsigned char *mem=data_;
   mem+=sizeof(GamestateHeader);
@@ -100,6 +104,12 @@ bool Gamestate::collectData(int id, int mode)
       size = currentsize+addsize;
     }// stop allocate additional memory
 
+#ifndef NDEBUG
+    for(iit=slist.begin(); iit!=slist.end(); iit++)
+      assert((*iit)!=*it);
+    slist.push_back(*it);
+#endif
+    
     //if(it->doSelection(id))
     dataMap_[mem-data_]=(*it);  // save the mem location of the synchronisable data
     if(!it->getData(mem, id, mode))
@@ -142,13 +152,15 @@ bool Gamestate::spreadData(int mode)
     if(!s)
     {
       s = Synchronisable::fabricate(mem, mode);
-      if(!s)
-        return false;
+      assert(s);
+//       if(!s)
+//         return false;
     }
     else
     {
-      if(!s->updateData(mem, mode))
-        return false;
+      assert(s->updateData(mem, mode));
+      //if(!s->updateData(mem, mode))
+        //return false;
     }
   }
 

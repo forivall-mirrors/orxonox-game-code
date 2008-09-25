@@ -64,10 +64,10 @@ namespace network
   Synchronisable::Synchronisable(){
     RegisterRootObject(Synchronisable);
     static unsigned int idCounter=0;
-    datasize=0;
     objectFrequency_=1;
-    objectMode_=0x1; // by default do not send data to servere
+    objectMode_=0x1; // by default do not send data to server
     objectID=idCounter++;
+//     COUT(3) << " bump +++" << objectID << " | " << &objectMap_ << std::endl;
     syncList = new std::list<synchronisableVariable *>;
   }
 
@@ -80,8 +80,9 @@ namespace network
     if(!orxonox::Identifier::isCreatingHierarchy()){
       for(std::list<synchronisableVariable *>::iterator it = syncList->begin(); it!=syncList->end(); it++)
         delete (*it)->callback;
-      assert(objectMap_[objectID]->objectID==objectID);
-      objectMap_.erase(objectID);
+//       COUT(3) << " bump ---" << objectID << " | " << &objectMap_ << std::endl;
+//       assert(objectMap_[objectID]->objectID==objectID);
+//       objectMap_.erase(objectID);
     }
   }
 
@@ -91,10 +92,12 @@ namespace network
    * @return true/false
    */
   bool Synchronisable::create(){
-    objectMap_[objectID]=this;
-    assert(objectMap_[objectID]==this);
     this->classID = this->getIdentifier()->getNetworkID();
     COUT(4) << "creating synchronisable: setting classid from " << this->getIdentifier()->getName() << " to: " << classID << std::endl;
+    
+//     objectMap_[objectID]=this;
+//     assert(objectMap_[objectID]==this);
+//     assert(objectMap_[objectID]->objectID==objectID);
     return true;
   }
 
@@ -144,7 +147,12 @@ namespace network
   bool Synchronisable::deleteObject(unsigned int objectID){
     assert(getSynchronisable(objectID));
     assert(getSynchronisable(objectID)->objectID==objectID);
-    delete objectMap_[objectID];
+//     delete objectMap_[objectID];
+    Synchronisable *s = getSynchronisable(objectID);
+    if(s)
+      delete s;
+    else
+      return false;
     return true;
   }
   
@@ -154,11 +162,18 @@ namespace network
    * @return pointer to the Synchronisable with the objectID
    */
   Synchronisable* Synchronisable::getSynchronisable(unsigned int objectID){
-    std::map<unsigned int, Synchronisable *>::iterator i = objectMap_.find(objectID);
-    if(i==objectMap_.end())
-      return NULL;
-    assert(i->second->objectID==objectID);
-    return (*i).second;
+    orxonox::ObjectList<Synchronisable>::iterator it;
+    for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it){
+      if( it->getObjectID()==objectID )
+           return *it;
+    }
+    return NULL;
+
+//     std::map<unsigned int, Synchronisable *>::iterator i = objectMap_.find(objectID);
+//     if(i==objectMap_.end())
+//       return NULL;
+//     assert(i->second->objectID==objectID);
+//     return (*i).second;
   }
 
   
@@ -180,8 +195,6 @@ namespace network
     temp->type = t;
     temp->callback = cb;
     COUT(5) << "Syncronisable::registering var with size: " << temp->size << " and type: " << temp->type << std::endl;
-    // increase datasize
-    datasize+=sizeof(int)+size;
     //std::cout << "push temp to syncList (at the bottom) " << datasize << std::endl;
     COUT(5) << "Syncronisable::objectID: " << objectID << " this: " << this << " name: " << this->getIdentifier()->getName() << " networkID: " << this->getIdentifier()->getNetworkID() << std::endl;
     syncList->push_back(temp);
