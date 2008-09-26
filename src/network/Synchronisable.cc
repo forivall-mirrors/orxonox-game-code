@@ -40,7 +40,7 @@
 
 #include "Synchronisable.h"
 
-#include <string>
+#include <cstring>
 #include <iostream>
 #include <assert.h>
 

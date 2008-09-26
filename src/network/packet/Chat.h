@@ -3,6 +3,7 @@
 #define NETWORKCHAT_H
 
 #include <string>
+#include <cstring>
 
 #include "Packet.h"
 
