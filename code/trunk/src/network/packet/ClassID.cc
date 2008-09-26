@@ -30,7 +30,7 @@
 
 #include "ClassID.h"
 #include "core/CoreIncludes.h"
-#include <string>
+#include <cstring>
 #include <assert.h>
 
 namespace network {
