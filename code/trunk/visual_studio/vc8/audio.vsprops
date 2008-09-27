@@ -2,8 +2,8 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="audio_properties"
-	InheritedPropertySheets=".\directory_properties.vsprops"
+	Name="audio"
+	InheritedPropertySheets=".\directories.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"

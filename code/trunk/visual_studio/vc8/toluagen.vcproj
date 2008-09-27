@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tolua_app"
+	Name="toluagen"
 	ProjectGUID="{A0724246-CB7C-420B-BCF0-68EF205AFE34}"
-	RootNamespace="FICN"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(SolutionDir)base_debug.vsprops;..\tolua_app.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;..\toluagen.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -79,7 +79,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(SolutionDir)base_release.vsprops;..\tolua_app.vsprops"
+			InheritedPropertySheets=".\release.vsprops;..\toluagen.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

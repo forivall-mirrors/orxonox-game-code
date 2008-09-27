@@ -4,7 +4,7 @@
 	Version="8.00"
 	Name="ois"
 	ProjectGUID="{9CC704CB-4956-4479-BDEC-57CBC03F700E}"
-	RootNamespace="OIS"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -21,7 +21,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="..\directory_properties.vsprops"
+			InheritedPropertySheets=".\directories.vsprops"
 			CharacterSet="2"
 			WholeProgramOptimization="0"
 			>
@@ -108,7 +108,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="..\directory_properties.vsprops"
+			InheritedPropertySheets=".\directory.vsprops"
 			CharacterSet="2"
 			>
 			<Tool

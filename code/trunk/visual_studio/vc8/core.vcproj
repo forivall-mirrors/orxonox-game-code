@@ -4,7 +4,7 @@
 	Version="8.00"
 	Name="core"
 	ProjectGUID="{271715F3-5B90-4110-A552-70C788084A86}"
-	RootNamespace="FICN"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_debug.vsprops;..\core.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\core.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -79,7 +79,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_release.vsprops;..\core.vsprops"
+			InheritedPropertySheets=".\release.vsprops;.\core.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

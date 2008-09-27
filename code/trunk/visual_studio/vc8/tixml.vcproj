@@ -4,7 +4,7 @@
 	Version="8.00"
 	Name="tixml"
 	ProjectGUID="{F101C2F0-1CB9-4A57-827B-6C399A99B28F}"
-	RootNamespace="FICN"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(SolutionDir)base_debug.vsprops;..\tixml.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\tixml.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -70,7 +70,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(SolutionDir)base_release.vsprops;..\tixml.vsprops"
+			InheritedPropertySheets=".\release.vsprops;.\tixml.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

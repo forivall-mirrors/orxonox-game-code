@@ -8,6 +8,6 @@
 	>
 	<UserMacro
 		Name="RootDir"
-		Value="$(SolutionDir)..\"
+		Value="$(SolutionDir)..\..\"
 	/>
 </VisualStudioPropertySheet>

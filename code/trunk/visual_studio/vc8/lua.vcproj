@@ -4,7 +4,7 @@
 	Version="8.00"
 	Name="lua"
 	ProjectGUID="{63B3E57A-4382-42F3-85EC-E869CFCCA88F}"
-	RootNamespace="FICN"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\lua_properties.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\lua.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -79,7 +79,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\lua_properties.vsprops"
+			InheritedPropertySheets=".\release.vsprops;.\lua.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

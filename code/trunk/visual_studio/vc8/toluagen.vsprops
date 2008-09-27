@@ -2,8 +2,8 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tolua_app_properties"
-	InheritedPropertySheets=".\directory_properties.vsprops"
+	Name="toluagen"
+	InheritedPropertySheets=".\directories.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"

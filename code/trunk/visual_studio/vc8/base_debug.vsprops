@@ -2,8 +2,8 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="base_properties_debug"
-	InheritedPropertySheets="$(SolutionDir)base_properties.vsprops"
+	Name="debug"
+	InheritedPropertySheets="base.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
