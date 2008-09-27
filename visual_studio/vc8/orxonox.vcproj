@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\orxonox_properties.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_debug.vsprops;..\orxonox.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -81,7 +81,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\orxonox_properties.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_release.vsprops;..\orxonox.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

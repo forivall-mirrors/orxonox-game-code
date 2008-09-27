@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\tolua_properties.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_debug.vsprops;..\tolua.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -79,7 +79,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\tolua_properties.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_release.vsprops;..\tolua.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\ceguilua_properties.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_debug.vsprops;..\ceguilua.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -79,7 +79,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\ceguilua_properties.vsprops"
+			InheritedPropertySheets="$(SolutionDir)base_release.vsprops;..\ceguilua.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>
