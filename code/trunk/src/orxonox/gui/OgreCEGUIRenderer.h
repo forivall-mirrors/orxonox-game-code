@@ -37,8 +37,9 @@
 #include <OgreSceneManagerEnumerator.h>
 #include <OgreTextureUnitState.h>
 
-#if (OGRE_PLATFORM == OGRE_PLATFORM_WIN32) && !defined(OGRE_STATIC_LIB)
-#   ifdef OGRE_GUIRENDERER_EXPORTS
+/** CHANGES MADE BY ORXONOX TO FIT DLL IMPORT/EXPORT **/
+#if (OGRE_PLATFORM == OGRE_PLATFORM_WIN32) && !(defined(ORXONOX_STATIC_BUILD) || defined(ORXONOX_NO_EXPORTS))
+#   ifdef ORXONOX_SHARED_BUILD
 #       define OGRE_GUIRENDERER_API __declspec(dllexport)
 #   else
 #       if defined(__MINGW32__)

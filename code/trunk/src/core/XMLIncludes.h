@@ -31,7 +31,7 @@
     @brief Forward declarations of some XML classes.
 */
 
-#include "UtilPrereqs.h"
+#include "CorePrereqs.h"
 
 //-----------------------------------------------------------------------
 // Forward declarations

@@ -71,7 +71,7 @@
 #include "CorePrereqs.h"
 
 #include "util/Debug.h"
-#include "util/XMLIncludes.h"
+#include "XMLIncludes.h"
 
 ///////////////////////
 // Macro definitions //

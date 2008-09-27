@@ -34,11 +34,11 @@
 
 #include <OgreSceneNode.h>
 #include "util/Math.h"
-#include "util/XMLIncludes.h"
 #include "network/Synchronisable.h"
+#include "core/XMLIncludes.h"
 #include "core/BaseObject.h"
 #include "Tickable.h"
-#include "../tools/Mesh.h"
+#include "tools/Mesh.h"
 
 namespace orxonox
 {
