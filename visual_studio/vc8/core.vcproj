@@ -415,6 +415,10 @@
 				RelativePath="..\..\src\core\Super.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\core\XMLIncludes.h"
+				>
+			</File>
 			<Filter
 				Name="input"
 				>

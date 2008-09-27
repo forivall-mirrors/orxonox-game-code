@@ -33,7 +33,7 @@
 
 #include <list>
 #include "core/OrxonoxClass.h"
-#include "util/XMLIncludes.h"
+#include "core/XMLIncludes.h"
 #include "NetworkCallback.h"
 
 namespace network

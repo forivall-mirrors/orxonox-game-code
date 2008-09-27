@@ -78,7 +78,6 @@
 #include "util/Sleep.h"
 #include "util/String.h"
 #include "util/SubString.h"
-#include "util/XMLIncludes.h"
 
 #include "core/BaseObject.h"
 #include "core/ConsoleCommand.h"
@@ -86,6 +85,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/CommandExecutor.h"
 #include "core/Executor.h"
+#include "core/XMLIncludes.h"
 #include "core/XMLPort.h"
 
 #include "network/Synchronisable.h"

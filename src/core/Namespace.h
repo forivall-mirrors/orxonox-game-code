@@ -33,7 +33,7 @@
 
 #include <map>
 
-#include "util/XMLIncludes.h"
+#include "XMLIncludes.h"
 #include "BaseObject.h"
 
 namespace orxonox
