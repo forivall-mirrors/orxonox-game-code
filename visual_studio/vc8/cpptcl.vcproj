@@ -4,7 +4,7 @@
 	Version="8.00"
 	Name="cpptcl"
 	ProjectGUID="{53C56131-E2AA-4A27-B460-7AC05D61A0E6}"
-	RootNamespace="FICN"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(SolutionDir)base_debug.vsprops;..\cpptcl.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\cpptcl.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -70,7 +70,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(SolutionDir)base_release.vsprops;..\cpptcl.vsprops"
+			InheritedPropertySheets=".\release.vsprops;.\cpptcl.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

@@ -4,7 +4,7 @@
 	Version="8.00"
 	Name="tolua_gen"
 	ProjectGUID="{71FC0211-5EB5-4637-BE8A-A48EC3CC27D0}"
-	RootNamespace="FICN"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(SolutionDir)base_debug.vsprops;..\tolua_gen.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\toluagen_orxonox.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -79,7 +79,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(SolutionDir)base_release.vsprops;..\tolua_gen.vsprops"
+			InheritedPropertySheets=".\release.vsprops;..\toluagen_orxonox.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

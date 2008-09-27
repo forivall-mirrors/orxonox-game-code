@@ -4,7 +4,7 @@
 	Version="8.00"
 	Name="orxonox"
 	ProjectGUID="{0B6C5CFD-F91B-432A-80A3-2610F61E060B}"
-	RootNamespace="FICN"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(SolutionDir)base_debug.vsprops;..\orxonox.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\orxonox.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -81,7 +81,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(SolutionDir)base_release.vsprops;..\orxonox.vsprops"
+			InheritedPropertySheets=".\release.vsprops;.\orxonox.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

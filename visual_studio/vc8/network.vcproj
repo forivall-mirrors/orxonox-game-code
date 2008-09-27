@@ -4,7 +4,7 @@
 	Version="8.00"
 	Name="network"
 	ProjectGUID="{35575B59-E1AE-40E8-89C4-2862B5B09B68}"
-	RootNamespace="FICN"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\network_properties.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\network.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -70,7 +70,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\network_properties.vsprops"
+			InheritedPropertySheets=".\release.vsprops;..\network.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>
