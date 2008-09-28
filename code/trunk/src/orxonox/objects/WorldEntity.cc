@@ -119,7 +119,7 @@ namespace orxonox
         XMLPortParamTemplate(WorldEntity, "rotationAxis", setRotationAxis, getRotationAxis, xmlelement, mode, WorldEntity, const Vector3&);
         XMLPortParam(WorldEntity, "rotationRate", setRotationRate, getRotationRate, xmlelement, mode);
 
-        XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, mode, false, true);
+        XMLPortObject(WorldEntity, WorldEntity, "attached", attachWorldEntity, getAttachedWorldEntity, xmlelement, mode);
 
         WorldEntity::create();
     }

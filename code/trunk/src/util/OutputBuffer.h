@@ -166,8 +166,8 @@ namespace orxonox
         private:
             void callListeners();
 
-            std::stringstream stream_;                   //! The stringstream that stores the assigned text
-            std::list<OutputBufferListener*> listeners_; //! A list of all listeners
+            std::stringstream stream_;                   //!< The stringstream that stores the assigned text
+            std::list<OutputBufferListener*> listeners_; //!< A list of all listeners
     };
 }
 

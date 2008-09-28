@@ -188,7 +188,7 @@ class _UtilExport MultiType
 
         virtual void toString(std::ostream& outstream) const = 0;
 
-        MT_Type type_; //! The type of the current value
+        MT_Type type_; //!< The type of the current value
     };
 
     public:
@@ -387,7 +387,7 @@ class _UtilExport MultiType
         /** @brief Creates a new value container (works only with specialized types). */
         template <typename T>        void createNewValueContainer(const T& value) { BOOST_STATIC_ASSERT(sizeof(T) == 0); }
 
-        MT_ValueBase* value_; //! A pointer to the value container
+        MT_ValueBase* value_; //!< A pointer to the value container
 };
 
 /** @brief Puts the MultiType on a stream by using the native << operator of the current type. */

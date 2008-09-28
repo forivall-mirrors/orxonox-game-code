@@ -100,7 +100,7 @@ namespace orxonox
             }
         }
 
-        XMLPortObject(Namespace, BaseObject, "", loadObjects, saveObjects, xmlelement, mode, true, false);
+        XMLPortObjectExtended(Namespace, BaseObject, "", loadObjects, saveObjects, xmlelement, mode, true, false);
     }
 
     void Namespace::loadObjects(BaseObject* object)

@@ -70,7 +70,7 @@ namespace orxonox
     class ObjectListElement : public ObjectListBaseElement
     {
         public:
-            ObjectListElement(T* object) : ObjectListBaseElement(object), object_(object) {}
+            ObjectListElement(T* object) : ObjectListBaseElement((OrxonoxClass*)object), object_(object) {}
             T* object_;              //!< The object
     };
 

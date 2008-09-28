@@ -12,13 +12,19 @@ ADD_SUBDIRECTORY(tolua)
 # And we don't know what lua version it was linked against, so we compile
 # it ourselves.
 # So first, find out what CEGUI version we have.
-IF (${CEGUI_VERSION} LESS 0.6.0)
-    ADD_SUBDIRECTORY(ceguilua-0.5.0b)
-    INCLUDE_DIRECTORIES(ceguilua-0.5.0b)
-ELSE (${CEGUI_VERSION} LESS 0.6.0)
-    ADD_SUBDIRECTORY(ceguilua-0.6.1)
+
+IF (WIN32)
+    ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
     INCLUDE_DIRECTORIES(ceguilua-0.6.1)
-ENDIF (${CEGUI_VERSION} LESS 0.6.0)
+ELSE (WIN32)
+    IF (${CEGUI_VERSION} LESS 0.6.0)
+        ADD_SUBDIRECTORY(ceguilua-0.5.0b/ceguilua)
+        INCLUDE_DIRECTORIES(ceguilua-0.5.0b)
+    ELSE (${CEGUI_VERSION} LESS 0.6.0)
+        ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
+        INCLUDE_DIRECTORIES(ceguilua-0.6.1)
+    ENDIF (${CEGUI_VERSION} LESS 0.6.0)
+ENDIF (WIN32)
 
 
 # Our own libraries

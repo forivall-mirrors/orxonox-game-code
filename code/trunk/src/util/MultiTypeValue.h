@@ -109,7 +109,7 @@ struct MT_Value : public MultiType::MT_ValueBase
     /** @brief Puts the current value on the stream */
     inline void toString(std::ostream& outstream) const { outstream << this->value_; }
 
-    T value_; //! The stored value
+    T value_; //!< The stored value
 };
 
 #endif /* _MultiTypeValue_H__ */

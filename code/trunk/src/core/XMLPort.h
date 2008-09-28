@@ -26,6 +26,17 @@
  *
  */
 
+/**
+    @file XMLPort.h
+    @brief Declaration of the XMLPort helper classes and macros.
+
+    XMLPort is a virtual function of every BaseObject. Every object can change this function.
+    The XMLPort function gets called with an XMLElement, containing all attributes and
+    subclasses the object gets from the levelfile.
+
+    This file declares classes and macros to simplify XML-parsing.
+*/
+
 #ifndef _XMLPort_H__
 #define _XMLPort_H__
 
@@ -39,22 +50,98 @@
 #include "CoreIncludes.h"
 #include "BaseObject.h"
 
+// ------------
+// XMLPortParam
 
+/**
+    @brief Declares an XML attribute with a name, which will be set through load- and savefunctions.
+    @param classname The name of the class owning this param
+    @param paramname The name of the attribute
+    @param loadfunction A function to set the param in the object with a given value (~a set-function)
+    @param savefunction A function to get the value of the param from the object (~a get-function)
+    @param xmlelement The XMLElement, you get this from the XMLPort function
+    @param mode The mode (load or save), you get this from the XMLPort function
+
+    In the XML file, a param or attribute will be set like this:
+    <classname paramname="value" />
+
+    The macro will then call loadfunction(value) to set the given value (or call savefunction() to
+    write an existing value to an XML file).
+*/
 #define XMLPortParam(classname, paramname, loadfunction, savefunction, xmlelement, mode) \
     XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode)
+/**
+    @brief This is the same as XMLPortParam, but you can set the template arguments needed to store the loadfunction.
+
+    Sometimes the name of the loadfunction is ambiguous (example: setPosition(Vector3) or
+    setPosition(float, float, float)). In this case, you can choose the right function by
+    telling the types of the functionparams. In our example, this would be either
+    > XMLPortParamTemplate(classname, paramname, loadfunction, savefunction, xmlelement, mode, Vector3);
+    or
+    > XMLPortParamTemplate(classname, paramname, loadfunction, savefunction, xmlelement, mode, float, float, float);
+    You don't have to use this, if there exist only one function with the given name.
+*/
 #define XMLPortParamTemplate(classname, paramname, loadfunction, savefunction, xmlelement, mode, ...) \
     XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode)
 
+// --------------------
+// XMLPortParamLoadOnly
+
+/**
+    @brief Declares an XML attribute with a name, which can be set through a loadfunction.
+
+    This is the same as XMLPortParam, but you don't need a savefunction (get-function). Therefore,
+    this param won't be saved in an XML file, but you can add the attribute manually an it will be
+    loaded.
+
+    This might be helpful in cases, when you have several options to set a value, for example the
+    rotation. You can set the rotation with a quaternion, but you could also use three angles.
+    When saving the object, only one of both options has to be saved; this is, where this macro helps.
+*/
 #define XMLPortParamLoadOnly(classname, paramname, loadfunction, xmlelement, mode) \
     XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), 0, xmlelement, mode)
+/**
+    @brief This is the same as XMLPortParamTemplate, but for load-only attributes (see XMLPortParamLoadOnly).
+*/
 #define XMLPortParamLoadOnlyTemplate(classname, paramname, loadfunction, xmlelement, mode, ...) \
     XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), 0, xmlelement, mode)
 
+// ------------------
+// XMLPortParamExtern
+
+/**
+    @brief This is the same as XMLPortParam, but for attributes in an extern class.
+    @param classname The name of the class owning the object owning the attribute
+    @param externclass The name of the extern class (the objects class)
+    @param object The name of the object of the extern class (a member of the main class)
+    @param paramname The name of the attribute
+    @param loadfunction The function to set the attribute inside of the member object.
+    @param loadfunction The function to get the attribute from the member object
+
+    Sometimes you'll have a member object in your class, which has it's own load- and savefunctions.
+    With this macro, you can simply use them instead of writing your own functions.
+
+    @example
+    Your class is called SpaceShip and this class has an object (myPilot_) of class Pilot. Pilot has a name
+    and two functions, setName(name) and getName(). Now you want an attribute "pilotname" in your
+    SpaceShip class. Instead of writing wrapper functions, you can simply use the XMLPortParamExtern
+    macro:
+    > XMLPortParamExtern(SpaceShip, Pilot, myPilot_, "pilotname", setName, getName, xmlelement, mode);
+*/
 #define XMLPortParamExtern(classname, externclass, object, paramname, loadfunction, savefunction, xmlelement, mode) \
     XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, externclass, object, paramname, orxonox::createExecutor(orxonox::createFunctor(&externclass::loadfunction), std::string( #externclass ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&externclass::savefunction), std::string( #externclass ) + "::" + #savefunction), xmlelement, mode);
+/**
+    @brief This is the same as XMLPortParamTemplate, but for extern attributes (see XMLPortParamExtern).
+*/
 #define XMLPortParamExternTemplate(classname, externclass, object, paramname, loadfunction, savefunction, xmlelement, mode, ...) \
     XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, externclass, object, paramname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&externclass::loadfunction), std::string( #externclass ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&externclass::savefunction), std::string( #externclass ) + "::" + #savefunction), xmlelement, mode);
 
+// -------------------
+// XMLPortParamGeneric
+
+/**
+    @brief This is the generic XMLPort param macro, which is used by all six specialized macros above.
+*/
 #define XMLPortParamGeneric(containername, classname, objectclass, object, paramname, loadexecutor, saveexecutor, xmlelement, mode) \
     orxonox::XMLPortClassParamContainer<objectclass>* containername = (orxonox::XMLPortClassParamContainer<objectclass>*)(ClassIdentifier<classname>::getIdentifier()->getXMLPortParamContainer(paramname)); \
     if (!containername) \
@@ -64,12 +151,95 @@
     } \
     containername->port((BaseObject*)this, object, xmlelement, mode)
 
+// --------------------
+// XMLPortObjectExtended
 
-#define XMLPortObject(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore) \
+/**
+    @brief Declares a possible sub-object that can be added in the XML file.
+    @param classname The name of the class that uses this macro
+    @param objectclass The baseclass of objects that can be added
+    @param sectionname The name of the subsection in the XML file that encloses the sub-objects ("" means no subsection)
+    @param loadfunction The function to add a new object to the class
+    @param loadfunction The function to get all added objects from the class
+    @param xmlelement The XMLElement (recieved through the XMLPort function)
+    @param mode The mode (load/save) (received through the XMLPort function)
+    @param bApplyLoaderMask If this is true, an added sub-object only gets loaded if it's class is included in the Loaders ClassTreeMask (this is usually false)
+    @param bLoadBefore If this is true, the sub-cobject gets loaded (through XMLPort) BEFORE it gets added to the main class (this is usually true)
+
+    bApplyLoaderMask is usually false for the following reason:
+    If the loaders mask says, for example, "load only SpaceShips" and you added weapons to the
+    SpaceShips, then the Weapons will still be loaded (which is most probably what you want).
+    Of course, if there are "standalone" weapons in the level, they wont be loaded.
+
+    If bLoadBefore, an added object already has all attributes set (like it's name). This is most
+    likely the best option, so this is usually true.
+
+    @note
+    The load- and savefunctions have to follow an exactly defined protocol.
+    Loadfunction:
+      The loadfunction gets a pointer to the object.
+      > void loadfunction(objectclass* pointer);
+
+    Savefunction:
+      The savefunction gets an index, starting with 0. For every returnvalue != 0, the savefunction
+      gets called again, but with index + 1. It's the functions responsibility to do something smart
+      with the index and to return 0 if all objects were returned.
+      > objectclass* savefunction(unsigned int index) const;
+
+      Possible implementation:
+        objectclass* savefunction(unsigned int index) const
+        {
+          if (index < number_of_added_objects_)
+            return my_added_objects[index];
+          else
+            return 0;
+        }
+
+    @example
+    Possible usage of the macro:
+    > XMLPortObject(SpaceShip, Weapon, "weapons", addWeapon, getWeapon, xmlelement, mode, false, true);
+
+    Now you can add weapons through the XML file:
+    <SpaceShip someattribute="..." ...>
+      <weapons>
+        <Weapon someattribute="..." ... />
+        <Weapon someattribute="..." ... />
+        <Weapon someattribute="..." ... />
+      </weapons>
+    </SpaceShip>
+
+    Note that "weapons" is the subsection. This allows you to add more types of sub-objects. In our example,
+    you could add pilots, blinking lights or other stuff. If you don't want a subsection, just use "" (an
+    empty string). The you can add sub-objects directly into the mainclass.
+*/
+#define XMLPortObjectExtended(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore) \
     XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
-#define XMLPortObjectTemplate(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore, ...) \
+/**
+    @brief This is the same as XMLPortObjectExtended, but you can specify the loadfunction by adding the param types. See XMLPortParamTemplate for more details about the types.
+*/
+#define XMLPortObjectExtendedTemplate(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore, ...) \
     XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
 
+// -------------
+// XMLPortObject
+
+/**
+    @brief This is the same as XMLPortObjectExtended, but bApplyLoaderMask is false and bLoadBefore is true by default.
+*/
+#define XMLPortObject(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode) \
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, false, true)
+/**
+    @brief This is the same as XMLPortObject, but you can specify the loadfunction by adding the param types. See XMLPortParamTemplate for more details about the types.
+*/
+#define XMLPortObjectTemplate(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, ...) \
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, false, true)
+
+// --------------------
+// XMLPortObjectGeneric
+
+/**
+    @brief Generic XMLPortObject macro, that gets called by all other XMLPortObject macros above.
+*/
 #define XMLPortObjectGeneric(containername, classname, objectclass, sectionname, loadexecutor, saveexecutor, xmlelement, mode, bApplyLoaderMask, bLoadBefore) \
     orxonox::XMLPortClassObjectContainer<classname, objectclass>* containername = (orxonox::XMLPortClassObjectContainer<classname, objectclass>*)(ClassIdentifier<classname>::getIdentifier()->getXMLPortObjectContainer(sectionname)); \
     if (!containername) \

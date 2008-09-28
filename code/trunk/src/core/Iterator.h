@@ -34,7 +34,7 @@
     this list are casted to the template argument of the Iterator.
 
     Usage:
-    for (Iterator<myClass> it = anyidentifier->getObjects().begin(); it != anyidentifier->getObjects().end(); ++it)
+    for (Iterator<myClass> it = anyidentifier->getObjects()->begin(); it != anyidentifier->getObjects()->end(); ++it)
     {
         it->someFunction(...);
         myClass* myObject = *it;
