@@ -28,11 +28,11 @@
 	/>
 	<UserMacro
 		Name="LibOutDir"
-		Value="$(RootDir)lib\"
+		Value="$(RootDir)build\"
 	/>
 	<UserMacro
 		Name="LibDir"
-		Value="$(RootDir)..\libs\"
+		Value="$(RootDir)..\lib_dist\"
 	/>
 	<UserMacro
 		Name="CS"

@@ -12,6 +12,6 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="vorbisfile$(CSS).lib alut$(CS).lib OpenAL32$(CS).lib"
+		AdditionalDependencies="vorbisfile$(CS).lib alut$(CS).lib OpenAL32$(CS).lib"
 	/>
 </VisualStudioPropertySheet>

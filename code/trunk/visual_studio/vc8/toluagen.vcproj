@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="toluagen"
-	ProjectGUID="{A0724246-CB7C-420B-BCF0-68EF205AFE34}"
+	ProjectGUID="{71FC0211-5EB5-4637-BE8A-A48EC3CC27D0}"
 	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets=".\debug.vsprops;..\toluagen.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\toluagen.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -79,7 +79,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets=".\release.vsprops;..\toluagen.vsprops"
+			InheritedPropertySheets=".\release.vsprops;.\toluagen.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

@@ -70,7 +70,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets=".\release.vsprops;..\network.vsprops"
+			InheritedPropertySheets=".\release.vsprops;.\network.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>
