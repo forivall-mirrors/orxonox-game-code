@@ -52,6 +52,9 @@ namespace orxonox
     delay_ = 0.0;
     bTriggered_ = false;
     bUpdating_ = false;
+    remainingActivations_ = -1;
+    bStayTriggered_ = false;
+    latestState_ = 0x0;
 
     debugBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
     this->getNode()->attachObject(debugBillboard_.getBillboardSet());
@@ -78,31 +81,28 @@ namespace orxonox
   void Trigger::tick(float dt)
   {
 
-    bool newTriggered = this->isTriggered();
+    bool newTriggered;
+    if (latestState_ % 2 == 1 && this->bStayTriggered_)
+      newTriggered = true;
+    else
+      newTriggered = this->isTriggered();
 
 
-    // check if new triggering event is really new
-    if(this->latestState_ % 2 != newTriggered)
-    {
-      // create new state
-      if(newTriggered)
+      // check if new triggering event is really new
+      if(this->latestState_ % 2 != newTriggered)
       {
-        latestState_ |= 0x1; // set trigger bit
-        latestState_ ^= 0x10; // toggle state bit
+        // create new state
+        if(newTriggered)
+        {
+          latestState_ |= 1; // set trigger bit
+          this->switchState();
+        }
+        else
+        {
+          latestState_ &= 0xFE; // set trigger bit
+          this->storeState();
+        }
       }
-      else
-      {
-        latestState_ &= 0x11111110; // set trigger bit
-      }
-
-      // put state change into queue
-      this->stateChanges_.push(std::pair<float,char>(timeSinceLastEvent_, latestState_));
-      // reset time since last event
-      timeSinceLastEvent_ = 0.0;
-
-      if(this->stateChanges_.size() == 1)
-        remainingTime_ = stateChanges_.front().first;
-    }
 
     if(remainingTime_ > 0.0)
     {
@@ -117,7 +117,7 @@ namespace orxonox
       // time ran out, change state to new one
       char newState = stateChanges_.front().second;
       bTriggered_ = newState % 2;
-      bActive_ = newState>>1 % 2;
+      bActive_ = newState & 2;
       this->stateChanges_.pop();
       if(stateChanges_.size() != 0)
         remainingTime_ = stateChanges_.front().first;
@@ -141,6 +141,17 @@ namespace orxonox
   void Trigger::setBillboardColour(ColourValue colour)
   {
     this->debugBillboard_.getBillboardSet()->getBillboard(0)->setColour(colour);
+  }
+
+  void Trigger::storeState()
+  {
+    // put state change into queue
+    this->stateChanges_.push(std::pair<float,char>(timeSinceLastEvent_, latestState_));
+    // reset time since last event
+    timeSinceLastEvent_ = 0.0;
+
+    if(this->stateChanges_.size() == 1)
+      remainingTime_ = stateChanges_.front().first;
   }
 
   bool Trigger::isTriggered(TriggerMode mode)
@@ -185,6 +196,8 @@ namespace orxonox
     WorldEntity::XMLPort(xmlelement, mode);
 
     XMLPortParamLoadOnly(Trigger, "delay", setDelay, xmlelement, mode);
+    XMLPortParamLoadOnly(Trigger, "stayTriggered", setStayTriggered, xmlelement, mode);
+    XMLPortParamLoadOnly(Trigger, "activations", setActivations, xmlelement, mode);
 
     this->init();
   }
@@ -197,14 +210,16 @@ namespace orxonox
 
   bool Trigger::switchState()
   {
-    latestState_ ^= 0x10; // toggle state bit
-    // put state change into queue
-    this->stateChanges_.push(std::pair<float,char>(timeSinceLastEvent_, latestState_));
-    // reset time since last event
-    timeSinceLastEvent_ = 0.0;
+    if ( remainingActivations_ == -1 || this->latestState_ & 2 || remainingActivations_ > 0)
+    {
+      this->latestState_ ^= 2; // toggle state bit
+      // increase activation count
+      if (this->latestState_ & 2) remainingActivations_--;
+      this->storeState();
 
-    if(this->stateChanges_.size() == 1)
-      remainingTime_ = stateChanges_.front().first;
+      return true;
+    }
+    return false;
   }
 
 
@@ -213,7 +228,7 @@ namespace orxonox
     std::set<Trigger*>::iterator it;
     for(it = this->children_.begin(); it != this->children_.end(); it++)
     {
-      if(!((*it)->isTriggered()))
+      if(!((*it)->isActive()))
         return false;
     }
     return true;
@@ -224,7 +239,7 @@ namespace orxonox
     std::set<Trigger*>::iterator it;
     for(it = this->children_.begin(); it != this->children_.end(); it++)
     {
-      if((*it)->isTriggered())
+      if((*it)->isActive())
         return true;
     }
     return false;
@@ -236,9 +251,9 @@ namespace orxonox
     bool test = false;
     for(it = this->children_.begin(); it != this->children_.end(); it++)
     {
-      if(test && (*it)->isTriggered())
+      if(test && (*it)->isActive())
         return false;
-      if((*it)->isTriggered())
+      if((*it)->isActive())
         test = true;
     }
     return test;

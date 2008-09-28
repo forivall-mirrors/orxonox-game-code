@@ -27,13 +27,13 @@
  */
 
 /**
- @file  script.h
+ @file  LuaBind.h
  @brief Representation of an interface to lua
  @author Benjamin Knecht <beni_at_orxonox.net>
  */
 
-#ifndef _Script_H__
-#define _Script_H__
+#ifndef _LuaBind_H__
+#define _LuaBind_H__
 
 #include "CorePrereqs.h"
 
@@ -47,25 +47,21 @@ extern "C" {
 namespace orxonox // tolua_export
 { // tolua_export
 
-  class _CoreExport Script // tolua_export
+  class  LuaBind // tolua_export
   { // tolua_export
-    struct LoadS {
-      const char *s;
-      size_t size;
-    };
-
     public:
-      inline static Script* getInstance() { if (!Script::singletonRef) Script::singletonRef = new Script(); return Script::singletonRef; } // tolua_export
-      inline ~Script() { Script::singletonRef = NULL; };
+      inline static LuaBind* getInstance() { if (!LuaBind::singletonRef) LuaBind::singletonRef = new LuaBind(); return LuaBind::singletonRef; } // tolua_export
+      inline ~LuaBind() { LuaBind::singletonRef = NULL; };
 
     void loadFile(std::string filename, bool luaTags);
+    void loadString(std::string code);
     //void init(lua_State *state_);
     //void xmlToLua();
     void run();
     void luaPrint(std::string str); // tolua_export
 
 #if LUA_VERSION_NUM != 501
-    static const char * lua_Chunkreader(lua_State *L, void *data, size_t *size);
+    inline static const char * lua_Chunkreader(lua_State *L, void *data, size_t *size) { return NULL;};
 #endif
 
     inline lua_State* getLuaState() { return luaState_; };
@@ -73,16 +69,17 @@ namespace orxonox // tolua_export
     //inline std::string* getFileString() { return &fileString_; };
 
     unsigned int getNextQuote(const std::string& text, unsigned int start);
-    std::string replaceLuaTags(const std::string& text);
+    std::string replaceLuaTags(const std::string& text); // tolua_export
 
     private:
-      Script();
-      static Script* singletonRef;
+      LuaBind();
+      static LuaBind* singletonRef;
 
       std::string luaSource_;
       std::string output_;
       lua_State* luaState_;
+      bool isRunning_;
 
   }; // tolua_export
 } // tolua_export
-#endif /* _Script_H__ */
+#endif /* _LuaBind_H__ */

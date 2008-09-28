@@ -53,8 +53,7 @@ namespace orxonox {
       Trigger();
       ~Trigger();
 
-      inline bool isTriggered() { return this->isTriggered(this->mode_); }
-      virtual bool isTriggered(TriggerMode mode);
+      inline bool isActive() { return bActive_; }
       void addTrigger(Trigger* trig);
       void setVisibility(bool bVisible);
       void setDelay(float delay);
@@ -62,6 +61,8 @@ namespace orxonox {
       virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
       inline TriggerMode getMode() { return mode_; }
       inline void setMode(TriggerMode mode) { this->mode_ = mode; }
+      inline void setStayTriggered(float stayTriggered) { if (stayTriggered == 1.0) this->bStayTriggered_ = true; else this->bStayTriggered_ = false; }
+      inline void setActivations(int activations) { this->remainingActivations_ = activations; }
       void tick(float dt);
 
     private:
@@ -70,6 +71,11 @@ namespace orxonox {
       bool checkOr();
       bool checkXor();
       void setBillboardColour(ColourValue colour);
+      void storeState();
+
+    protected:
+      inline bool isTriggered() { return this->isTriggered(this->mode_); }
+      virtual bool isTriggered(TriggerMode mode);
 
     private:
       std::set<Trigger*> children_;
@@ -83,6 +89,8 @@ namespace orxonox {
       bool bUpdating_;
       BillboardSet debugBillboard_;
       float delay_;
+      int remainingActivations_;
+      bool bStayTriggered_;
       char latestState_;
   };
 

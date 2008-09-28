@@ -51,8 +51,10 @@ namespace orxonox {
       void removeTargets(std::string targets);
       void setDistance(float dist);
       virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-      bool isTriggered(TriggerMode mode);
       bool checkDistance();
+
+    protected:
+      bool isTriggered(TriggerMode mode);
 
     private:
       ClassTreeMask targetMask_;
