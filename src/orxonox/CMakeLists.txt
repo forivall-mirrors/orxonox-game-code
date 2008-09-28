@@ -33,8 +33,6 @@ SET( ORXONOX_SRC_FILES
   overlays/hud/HUDRadar.cc
   overlays/hud/HUDSpeedBar.cc
 
-  tolua/tolua_bind.cc
-
   tools/BillboardSet.cc
   tools/Light.cc
   tools/Mesh.cc
@@ -63,6 +61,8 @@ SET( ORXONOX_SRC_FILES
   objects/BillboardProjectile.cc
   objects/RotatingProjectile.cc
   objects/ParticleProjectile.cc
+
+  tolua/tolua_bind.cc
 )
 
 GET_TARGET_PROPERTY(TOLUA_EXE tolua_orxonox LOCATION)
@@ -104,7 +104,6 @@ TARGET_LINK_LIBRARIES( orxonox
   ceguilua_orxonox
   tinyxml_orxonox
   tolualib_orxonox
-  ois_orxonox
   util
   core
   audio
