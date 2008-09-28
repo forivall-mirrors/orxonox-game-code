@@ -69,12 +69,12 @@ ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
 
 TARGET_LINK_LIBRARIES(core
   ${OGRE_LIBRARIES}
+  ${Boost_thread_LIBRARIES}
+  ${Boost_filesystem_LIBRARIES}
   lua_orxonox
   cpptcl_orxonox
   ois_orxonox
   tinyxml_orxonox
   tolualib_orxonox
   util
-  ${Boost_thread_LIBRARIES}
-  ${Boost_filesystem_LIBRARIES}
 )
