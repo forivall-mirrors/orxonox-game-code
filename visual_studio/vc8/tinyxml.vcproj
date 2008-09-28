@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tixml"
+	Name="tinyxml"
 	ProjectGUID="{F101C2F0-1CB9-4A57-827B-6C399A99B28F}"
 	RootNamespace="orxonox"
 	Keyword="Win32Proj"
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets=".\debug.vsprops;.\tixml.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\tinyxml.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -70,7 +70,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="4"
-			InheritedPropertySheets=".\release.vsprops;.\tixml.vsprops"
+			InheritedPropertySheets=".\release.vsprops;.\tinyxml.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

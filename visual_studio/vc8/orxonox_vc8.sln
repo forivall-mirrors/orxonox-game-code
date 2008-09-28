@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpptcl", "cpptcl.vcproj", "{53C56131-E2AA-4A27-B460-7AC05D61A0E6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tixml", "tixml.vcproj", "{F101C2F0-1CB9-4A57-827B-6C399A99B28F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml", "tinyxml.vcproj", "{F101C2F0-1CB9-4A57-827B-6C399A99B28F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tolua", "tolua.vcproj", "{35E36A06-0A5C-4A0D-9AB6-5A05EAA87626}"
 	ProjectSection(ProjectDependencies) = postProject
