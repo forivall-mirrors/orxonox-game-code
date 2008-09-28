@@ -37,6 +37,8 @@
 
 #include <assert.h>
 #include <iostream>
+#include <cstdlib>
+#include <cstring>
 
 SignalHandler * SignalHandler::singletonRef = NULL;
 

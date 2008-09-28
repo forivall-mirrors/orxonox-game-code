@@ -2,16 +2,16 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="ceguilua_properties"
-	InheritedPropertySheets=".\directory_properties.vsprops"
+	Name="audio"
+	InheritedPropertySheets=".\directories.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		PreprocessorDefinitions="CEGUILUA_EXPORTS"
-		DisableSpecificWarnings="4996"
+		PreprocessorDefinitions="AUDIO_SHARED_BUILD"
+		DisableSpecificWarnings="4244"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="CEGUIBase$(CS).lib"
+		AdditionalDependencies="vorbisfile$(CS).lib alut$(CS).lib OpenAL32$(CS).lib"
 	/>
 </VisualStudioPropertySheet>

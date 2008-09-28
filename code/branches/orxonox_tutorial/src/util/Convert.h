@@ -38,6 +38,7 @@
 
 #include <string>
 #include <sstream>
+#include <typeinfo>
 
 #include "Math.h"
 #include "Debug.h"

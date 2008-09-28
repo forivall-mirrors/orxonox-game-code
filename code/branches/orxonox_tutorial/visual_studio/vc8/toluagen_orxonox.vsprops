@@ -2,12 +2,15 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="lua_properties"
-	InheritedPropertySheets=".\directory_properties.vsprops"
+	Name="toluagen_orxonox"
+	InheritedPropertySheets=".\directories.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
 		CompileAs="1"
-		DisableSpecificWarnings="4996"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
 	/>
 </VisualStudioPropertySheet>

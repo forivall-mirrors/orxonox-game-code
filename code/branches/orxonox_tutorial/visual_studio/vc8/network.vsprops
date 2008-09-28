@@ -2,16 +2,17 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="core_properties"
-	InheritedPropertySheets=".\directory_properties.vsprops"
+	Name="network"
+	InheritedPropertySheets=".\directories.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalOptions="/MP2"
-		PreprocessorDefinitions="CORE_SHARED_BUILD"
+		PreprocessorDefinitions="ORXONOX_NO_EXPORTS;NETWORK_STATIC_BUILD"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CSS).lib tcl85t.lib"
+		AdditionalDependencies="enet$(CS).lib zlib$(CS).lib"
+		IgnoreDefaultLibraryNames="LIBCMT;LIBCMTD"
 	/>
 </VisualStudioPropertySheet>

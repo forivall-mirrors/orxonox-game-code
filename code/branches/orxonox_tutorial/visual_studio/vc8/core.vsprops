@@ -2,16 +2,16 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="util_properties"
-	InheritedPropertySheets=".\directory_properties.vsprops"
+	Name="core"
+	InheritedPropertySheets=".\directories.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalOptions="/MP2"
-		PreprocessorDefinitions="UTIL_SHARED_BUILD"
+		PreprocessorDefinitions="CORE_SHARED_BUILD"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CSS).lib"
+		AdditionalDependencies="OgreMain$(CS).lib tcl85t.lib"
 	/>
 </VisualStudioPropertySheet>

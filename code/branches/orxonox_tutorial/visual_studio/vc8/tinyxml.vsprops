@@ -2,7 +2,7 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tixml_properties"
-	InheritedPropertySheets=".\directory_properties.vsprops"
+	Name="tinyxml"
+	InheritedPropertySheets=".\directories.vsprops"
 	>
 </VisualStudioPropertySheet>

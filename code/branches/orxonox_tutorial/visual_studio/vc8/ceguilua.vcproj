@@ -4,7 +4,7 @@
 	Version="8.00"
 	Name="ceguilua"
 	ProjectGUID="{4BBBB49F-3203-4BB4-AAE3-48BCA96FCB4F}"
-	RootNamespace="FICN"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\ceguilua_properties.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\ceguilua.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -79,7 +79,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\ceguilua_properties.vsprops"
+			InheritedPropertySheets=".\release.vsprops;.\ceguilua.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

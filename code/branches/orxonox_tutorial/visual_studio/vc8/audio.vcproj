@@ -4,7 +4,7 @@
 	Version="8.00"
 	Name="audio"
 	ProjectGUID="{4733BD1A-E04C-458D-8BFB-5010250EA497}"
-	RootNamespace="FICN"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\audio_properties.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\audio.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -79,7 +79,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\audio_properties.vsprops"
+			InheritedPropertySheets=".\release.vsprops;.\audio.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>

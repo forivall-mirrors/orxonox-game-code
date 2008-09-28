@@ -2,19 +2,19 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="orxonox_properties"
-	InheritedPropertySheets=".\directory_properties.vsprops"
+	Name="orxonox"
+	InheritedPropertySheets=".\directories.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalOptions="/MP2"
-		PreprocessorDefinitions="ORXONOX_NO_EXPORTS;NETWORK_STATIC_BUILD;OGRE_GUIRENDERER_EXPORTS"
+		PreprocessorDefinitions="ORXONOX_NO_EXPORTS;NETWORK_STATIC_BUILD"
 		UsePrecompiledHeader="2"
 		PrecompiledHeaderThrough="OrxonoxStableHeaders.h"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CSS).lib tcl85t.lib enet-1.2$(CS).lib zlib-1.2.3$(CS).lib CEGUIBase$(CS).lib"
+		AdditionalDependencies="OgreMain$(CS).lib tcl85t.lib enet$(CS).lib zlib$(CS).lib CEGUIBase$(CS).lib"
 		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
 		IgnoreDefaultLibraryNames=""
 	/>

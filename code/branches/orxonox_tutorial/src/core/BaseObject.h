@@ -40,7 +40,7 @@
 
 #include "Super.h"
 #include "OrxonoxClass.h"
-#include "util/XMLIncludes.h"
+#include "XMLIncludes.h"
 
 namespace orxonox
 {

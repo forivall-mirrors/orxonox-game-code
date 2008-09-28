@@ -37,6 +37,8 @@
 // Author:  Oliver Scheuss
 //
 
+#include "ConnectionManager.h"
+
 #include <iostream>
 #include <assert.h>
 // boost.thread library for multithreading support
@@ -50,7 +52,6 @@
 #include "util/Math.h"
 #include "util/Sleep.h"
 #include "ClientInformation.h"
-#include "ConnectionManager.h"
 #include "Synchronisable.h"
 #include "packet/ClassID.h"
 

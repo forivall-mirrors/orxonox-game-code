@@ -4,7 +4,7 @@
 	Version="8.00"
 	Name="util"
 	ProjectGUID="{2240ECD7-2F48-4431-8E1B-25466A384CCC}"
-	RootNamespace="FICN"
+	RootNamespace="orxonox"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_debug.vsprops;..\util_properties.vsprops"
+			InheritedPropertySheets=".\debug.vsprops;.\util.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -79,7 +79,7 @@
 		<Configuration
 			Name="Release|Win32"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(SolutionDir)base_properties_release.vsprops;..\util_properties.vsprops"
+			InheritedPropertySheets=".\release.vsprops;.\util.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>
@@ -259,10 +259,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\util\UtilPrereqs.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\util\XMLIncludes.h"
 				>
 			</File>
 		</Filter>

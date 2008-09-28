@@ -2,13 +2,16 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tolua_properties"
-	InheritedPropertySheets=".\directory_properties.vsprops"
+	Name="toluagen"
+	InheritedPropertySheets=".\directories.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		PreprocessorDefinitions="TOLUA_SHARED_BUILD"
+		PreprocessorDefinitions="TOLUA_STATIC_BUILD"
 		CompileAs="1"
-		DisableSpecificWarnings="4996"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
 	/>
 </VisualStudioPropertySheet>
