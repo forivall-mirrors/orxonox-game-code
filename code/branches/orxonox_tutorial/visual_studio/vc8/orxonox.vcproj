@@ -291,11 +291,35 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\SpaceShip_backend.cc"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\SpaceShipAI.cc"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\Tickable.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\TutorialShip.cc"
 					>
 				</File>
 				<File
@@ -652,6 +676,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\Tickable.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\TutorialShip.h"
 					>
 				</File>
 				<File
