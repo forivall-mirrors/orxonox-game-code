@@ -89,6 +89,7 @@ namespace orxonox
     class Skybox;
     class SpaceShip;
     class SpaceShipAI;
+    class TutorialShip;
     class WorldEntity;
 
     class Projectile;

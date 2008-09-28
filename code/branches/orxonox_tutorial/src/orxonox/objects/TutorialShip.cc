@@ -44,13 +44,19 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(TutorialShip, fire, true);
+    SetConsoleCommand(TutorialShip, fire, true).keybindMode(KeybindMode::OnHold);
+
+    CreateFactory(TutorialShip);
 
     TutorialShip::TutorialShip()
     {
         RegisterObject(TutorialShip);
 
         // reset variables
+        this->hasSpecialEffects_ = false;
+
+        // set config values
+        this->setConfigValues();
     }
 
     bool TutorialShip::create()
@@ -64,14 +70,12 @@ namespace orxonox
     
     void TutorialShip::setConfigValues()
     {
-        //SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
-        //SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
-        //SetConfigValue(testvector_, Vector3()).description("asdfblah");
+        SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
     }
 
-    void TutorialShip::registerAllVariables()
-    {
-    }
+    //void TutorialShip::registerAllVariables()
+    //{
+    //}
     
     /**
         @brief XML loading and saving.
@@ -81,9 +85,28 @@ namespace orxonox
     */
     void TutorialShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(TutorialShip, XMLPort, xmlelement, mode);
+        XMLPortParam(TutorialShip, "specialEffects", setSpecialEffects, hasSpecialEffects, xmlelement, mode);
 
-        //XMLPortParam(SpaceShip, "camera", setCamera, getCamera, xmlelement, mode);
+        // Calls SpaceShip::XMLPort
+        SUPER(TutorialShip, XMLPort, xmlelement, mode);
+    }
+
+    bool TutorialShip::hasSpecialEffects()
+    {
+        return this->hasSpecialEffects_;
+    }
+
+    void TutorialShip::setSpecialEffects(bool value)
+    {
+        this->hasSpecialEffects_ = value;
+    }
+
+    /**
+        @brief Returns the weapon reload time. Used virtually by the base class.
+    */
+    float TutorialShip::getReloadTime()
+    {
+        return this->reloadTime_;
     }
 
     
@@ -94,5 +117,6 @@ namespace orxonox
 
     void TutorialShip::fire()
     {
+        SpaceShip::getLocalShip()->doFire();
     }
 }

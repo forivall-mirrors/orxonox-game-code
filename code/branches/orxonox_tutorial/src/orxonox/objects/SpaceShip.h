@@ -97,6 +97,9 @@ namespace orxonox
             void setMoveLongitudinal(float value);
             void setMoveLateral(float value);
             void doFire();
+            
+            virtual float getReloadTime() { return this->reloadTime_; }
+            virtual bool hasSpecialEffects() { return false; }
 
             inline const Vector3& getDir() const
                 { return this->currentDir_; }

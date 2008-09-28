@@ -49,15 +49,22 @@ namespace orxonox
             ~TutorialShip();
 
             bool create();
-            void registerAllVariables();
+            //void registerAllVariables();
             void setConfigValues();
             void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void tick(float dt);
+            float getReloadTime();
+
+            // XML parameter loading
+            bool hasSpecialEffects();
+            void setSpecialEffects(bool value);
 
             // Methods for console commands
             static void fire();
 
         private:
+            float reloadTime_;
+            bool hasSpecialEffects_;
     };
 }
 

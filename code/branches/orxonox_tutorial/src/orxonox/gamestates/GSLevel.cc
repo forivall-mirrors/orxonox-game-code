@@ -135,7 +135,7 @@ namespace orxonox
     {
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
-        startLevel_ = new Level(Settings::getDataPath() + "levels/sample.oxw");
+        startLevel_ = new Level(Settings::getDataPath() + "levels/tutorial.oxw");
         Loader::open(startLevel_);
     }
 

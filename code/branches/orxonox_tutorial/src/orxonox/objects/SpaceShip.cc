@@ -63,7 +63,7 @@ namespace orxonox
     SetConsoleCommand(SpaceShip, moveYaw, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
     SetConsoleCommand(SpaceShip, movePitch, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
     SetConsoleCommand(SpaceShip, moveRoll, true).accessLevel(AccessLevel::User).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(SpaceShip, fire, true).accessLevel(AccessLevel::User).keybindMode(KeybindMode::OnHold);
+    //SetConsoleCommand(SpaceShip, fire, true).accessLevel(AccessLevel::User).keybindMode(KeybindMode::OnHold);
     SetConsoleCommandAliasMulti(SpaceShip, setMaxSpeedTest, "setMaxSpeed", 1, false).accessLevel(AccessLevel::Debug);
     SetConsoleCommandAliasMulti(SpaceShip, setMaxSpeedTest, "setMaxBlubber", 2, false).accessLevel(AccessLevel::Debug);
     SetConsoleCommandAliasMulti(SpaceShip, setMaxSpeedTest, "setRofl", 3, false).accessLevel(AccessLevel::Debug);
@@ -257,22 +257,24 @@ namespace orxonox
             // END CREATING BLINKING LIGHTS
 
             // START CREATING ADDITIONAL EFFECTS
-            /*this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
-            this->attachObject(this->backlight_);
-            this->backlight_->setPosition(-2.35, 0, 0.2);
-            this->backlight_->setColour(this->getProjectileColour());
+            if (this->hasSpecialEffects())
+            {
+                this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
+                this->attachObject(this->backlight_);
+                this->backlight_->setPosition(-2.35, 0, 0.2);
+                this->backlight_->setColour(this->getProjectileColour());
 
-            this->smoke_ = new ParticleSpawner();
-            this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
-            this->attachObject(this->smoke_);
+                this->smoke_ = new ParticleSpawner();
+                this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
+                this->attachObject(this->smoke_);
 
-            this->fire_ = new ParticleSpawner();
-            this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
-            this->attachObject(this->fire_);
-            */
+                this->fire_ = new ParticleSpawner();
+                this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
+                this->attachObject(this->fire_);
+            }
             // END CREATING ADDITIONAL EFFECTS
 
-            if (this->isExactlyA(Class(SpaceShip)))
+            if (!this->isExactlyA(Class(SpaceShipAI)))
             {
                 // START of testing crosshair
                 this->crosshairNear_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
@@ -299,7 +301,8 @@ namespace orxonox
     void SpaceShip::setConfigValues()
     {
         SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
-        SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
+        //SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
+        reloadTime_ = 9999999.9f;
         SetConfigValue(testvector_, Vector3()).description("asdfblah");
     }
 
@@ -375,7 +378,7 @@ namespace orxonox
       if(myShip_){
         COUT(4) << "requesting focus for camera" << std::endl;
         //CameraHandler::getInstance()->requestFocus(cam_);
-        if(this->isExactlyA(Class(SpaceShip))){
+        if(!this->isExactlyA(Class(SpaceShipAI))){
           getFocus();
           COUT(4) << "getting focus for obj id: " << objectID << std::endl;
         }else
@@ -483,7 +486,7 @@ namespace orxonox
             }
 
             projectile->setObjectMode(0x3);
-            this->timeToReload_ = this->reloadTime_;
+            this->timeToReload_ = this->getReloadTime();
         }
 
 
