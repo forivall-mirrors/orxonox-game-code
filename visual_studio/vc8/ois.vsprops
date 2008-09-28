@@ -2,16 +2,17 @@
 <VisualStudioPropertySheet
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="util"
+	Name="ois"
 	InheritedPropertySheets=".\directories.vsprops"
 	>
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalOptions="/MP2"
-		PreprocessorDefinitions="UTIL_SHARED_BUILD"
+		AdditionalIncludeDirectories="$(RootDir)src\ois"
+		PreprocessorDefinitions="OIS_NONCLIENT_BUILD;OIS_DYNAMIC_LIB"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		AdditionalDependencies="OgreMain$(CS).lib"
+		AdditionalDependencies="dxguid.lib dinput8.lib"
 	/>
 </VisualStudioPropertySheet>
