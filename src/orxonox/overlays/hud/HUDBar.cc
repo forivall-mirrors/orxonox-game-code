@@ -99,7 +99,7 @@ namespace orxonox
         XMLPortParam(HUDBar, "initialValue", setValue,       getValue,       xmlElement, mode).defaultValues(0.4567654f);
         XMLPortParam(HUDBar, "rightToLeft",  setRightToLeft, getRightToLeft, xmlElement, mode).defaultValues(false);
         XMLPortParam(HUDBar, "autoColour",   setAutoColour,  getAutoColour,  xmlElement, mode).defaultValues(true);
-        XMLPortObject(HUDBar, BarColour, "", addColour, getColour, xmlElement, mode, false, true);
+        XMLPortObject(HUDBar, BarColour, "", addColour, getColour, xmlElement, mode);
     }
 
     void HUDBar::valueChanged()
