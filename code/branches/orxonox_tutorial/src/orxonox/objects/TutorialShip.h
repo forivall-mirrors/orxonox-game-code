@@ -28,15 +28,17 @@
 
 #ifndef _TutorialShip_H__
 #define _TutorialShip_H__
-#include <string>
-#include "OrxonoxPrereqs.h"
-#include <OgrePrerequisites.h>
 
+#include "OrxonoxPrereqs.h"
+
+#include <OgrePrerequisites.h>
+#include <string>
 #include "util/Math.h"
 #include "Camera.h"
 #include "Model.h"
 #include "RadarViewable.h"
 #include "tools/BillboardSet.h"
+#include "SpaceShip.h"
 
 namespace orxonox
 {
@@ -46,7 +48,6 @@ namespace orxonox
             TutorialShip();
             ~TutorialShip();
 
-        private:
             bool create();
             void registerAllVariables();
             void setConfigValues();
@@ -55,6 +56,8 @@ namespace orxonox
 
             // Methods for console commands
             static void fire();
+
+        private:
     };
 }
 

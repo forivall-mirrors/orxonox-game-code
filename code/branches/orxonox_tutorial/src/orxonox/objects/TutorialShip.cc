@@ -53,18 +53,25 @@ namespace orxonox
         // reset variables
     }
 
+    bool TutorialShip::create()
+    {
+        return true;
+    }
+
     TutorialShip::~TutorialShip()
     {
     }
-
     
-    void SpaceShip::setConfigValues()
+    void TutorialShip::setConfigValues()
     {
         //SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
         //SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
         //SetConfigValue(testvector_, Vector3()).description("asdfblah");
     }
 
+    void TutorialShip::registerAllVariables()
+    {
+    }
     
     /**
         @brief XML loading and saving.
@@ -72,7 +79,7 @@ namespace orxonox
         @param loading Loading (true) or saving (false)
         @return The XML-element
     */
-    void SpaceShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void TutorialShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(TutorialShip, XMLPort, xmlelement, mode);
 
@@ -80,9 +87,12 @@ namespace orxonox
     }
 
     
-    void SpaceShip::tick(float dt)
+    void TutorialShip::tick(float dt)
     {
         SUPER(TutorialShip, tick, dt);
     }
 
+    void TutorialShip::fire()
+    {
+    }
 }
