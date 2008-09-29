@@ -48,7 +48,6 @@ namespace orxonox
             TutorialShip();
             ~TutorialShip();
 
-            bool create();
             //void registerAllVariables();
             void setConfigValues();
             void XMLPort(Element& xmlelement, XMLPort::Mode mode);

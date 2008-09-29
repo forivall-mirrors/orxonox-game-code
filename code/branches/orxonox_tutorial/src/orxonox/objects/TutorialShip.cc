@@ -28,11 +28,11 @@
 
 // for precompiled header files. Has to be first!
 #include "OrxonoxStableHeaders.h"
-// always include this class's header file first so that it compiles on its own too.
+// always include this class's header file first so that
+// it compiles on its own too.
 #include "TutorialShip.h"
 
 // Additional includes
-#include <OgreSceneNode.h>
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/Math.h"
@@ -44,10 +44,15 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(TutorialShip, fire, true).keybindMode(KeybindMode::OnHold);
+    // Specify a console command that can be used in
+    // the shell or as key binding.
+    SetConsoleCommand(TutorialShip, fire, true)
+        .keybindMode(KeybindMode::OnHold);
 
+    // Make sure we can create an object of this class by XML
     CreateFactory(TutorialShip);
 
+    // Constructor
     TutorialShip::TutorialShip()
     {
         RegisterObject(TutorialShip);
@@ -59,62 +64,62 @@ namespace orxonox
         this->setConfigValues();
     }
 
-    bool TutorialShip::create()
-    {
-        return true;
-    }
-
+    // Destructor
     TutorialShip::~TutorialShip()
     {
     }
-    
+
+    // Sets the configurable member variables.
+    // They can be found later in orxonox.ini directly.
     void TutorialShip::setConfigValues()
     {
-        SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
+        SetConfigValue(reloadTime_, 0.125)
+            .description("The reload time of the weapon in seconds");
     }
-
-    //void TutorialShip::registerAllVariables()
-    //{
-    //}
     
-    /**
-        @brief XML loading and saving.
-        @param xmlelement The XML-element
-        @param loading Loading (true) or saving (false)
-        @return The XML-element
-    */
+    // Called when loading an object of this class with XML
+    // You don't have to know what exactly xmlelement is.
+    // And mode is not important yet (load/save).
     void TutorialShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        XMLPortParam(TutorialShip, "specialEffects", setSpecialEffects, hasSpecialEffects, xmlelement, mode);
+        // Load our parameter "specialEffects". Case sensitive!
+        XMLPortParam(TutorialShip, "specialEffects", setSpecialEffects,
+            hasSpecialEffects, xmlelement, mode);
 
-        // Calls SpaceShip::XMLPort
+        // Calls SpaceShip::XMLPort so that the SpaceShip XML parameters
+        // are loaded too.
         SUPER(TutorialShip, XMLPort, xmlelement, mode);
     }
 
+    // XML save function. Also used by back end class SpaceShip
+    // to show or hide the special effects.
     bool TutorialShip::hasSpecialEffects()
     {
         return this->hasSpecialEffects_;
     }
 
+    // XML load function. Called by the XML macro above.
     void TutorialShip::setSpecialEffects(bool value)
     {
         this->hasSpecialEffects_ = value;
     }
 
-    /**
-        @brief Returns the weapon reload time. Used virtually by the base class.
-    */
+    // virtual function used by back end class SpaceShip.
     float TutorialShip::getReloadTime()
     {
         return this->reloadTime_;
     }
 
-    
+    // run time update method. Gets called every frame with the delta time that
+    // has passed since the last frame.
     void TutorialShip::tick(float dt)
     {
+        // Also call the tick() method of the base clas.
         SUPER(TutorialShip, tick, dt);
     }
 
+    // Fire a projectile. Delegated to the back end class SpaceShip.
+    // Function content is insignificant for the tutorial.
     void TutorialShip::fire()
     {
         SpaceShip::getLocalShip()->doFire();
