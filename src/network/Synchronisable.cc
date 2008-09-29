@@ -82,27 +82,27 @@ namespace network
     return true;
   }
 
-  
+
   void Synchronisable::setClient(bool b){
     if(b) // client
       state_=0x2;
     else  // server
       state_=0x1;
   }
-  
+
   bool Synchronisable::fabricate(unsigned char*& mem, int mode)
   {
     unsigned int size, objectID, classID;
     size = *(unsigned int *)mem;
     objectID = *(unsigned int*)(mem+sizeof(unsigned int));
     classID = *(unsigned int*)(mem+2*sizeof(unsigned int));
-    
+
     if(size==3*sizeof(unsigned int)){ //not our turn, dont do anything
       mem+=3*sizeof(unsigned int);
       return true;
     }
-    
-    orxonox::Identifier* id = GetIdentifier(classID);
+
+    orxonox::Identifier* id = ClassByID(classID);
     if(!id){
       COUT(3) << "We could not identify a new object; classid: " << classID << " uint: " << (unsigned int)classID << " objectID: " << objectID << " size: " << size << std::endl;
       assert(0);
@@ -148,7 +148,7 @@ namespace network
     COUT(5) << "Syncronisable::objectID: " << objectID << " this: " << this << " name: " << this->getIdentifier()->getName() << " networkID: " << this->getIdentifier()->getNetworkID() << std::endl;
     syncList->push_back(temp);
   }
-  
+
   /**
    * This function takes all SynchronisableVariables out of the Synchronisable and saves it into a syncData struct
    * Difference to the above function:
@@ -170,7 +170,7 @@ namespace network
     std::list<synchronisableVariable *>::iterator i;
     unsigned int size;
     size=getSize2(id, mode);
-    
+
     // start copy header
     memcpy(mem, &size, sizeof(unsigned int));
     mem+=sizeof(unsigned int);
@@ -180,11 +180,11 @@ namespace network
     mem+=sizeof(unsigned int);
     tempsize+=12;
     // end copy header
-    
+
     //if this tick is we dont synchronise, then abort now
     if(!isMyTick(id))
       return true;
-    
+
     COUT(5) << "Synchronisable getting data from objectID: " << objectID << " classID: " << classID << " length: " << size << std::endl;
     // copy to location
     for(i=syncList->begin(); i!=syncList->end(); ++i){
@@ -214,7 +214,7 @@ namespace network
     return true;
   }
 
-  
+
   /**
    * This function takes a syncData struct and takes it to update the variables
    * @param vars data of the variables
@@ -229,7 +229,7 @@ namespace network
       COUT(4) << "Synchronisable::updateData syncList is empty" << std::endl;
       return false;
     }
-    
+
     // start extract header
     unsigned int objectID, classID, size;
     size = *(int *)mem;
@@ -244,7 +244,7 @@ namespace network
     if(size==3*sizeof(unsigned int)) //if true, only the header is available
       return true;
       //assert(0);
-    
+
     COUT(5) << "Synchronisable: objectID " << objectID << ", classID " << classID << " size: " << size << " synchronising data" << std::endl;
     for(i=syncList->begin(); i!=syncList->end() && mem <= data+size; i++){
       if( ((*i)->mode ^ mode) == 0 ){
@@ -316,17 +316,17 @@ namespace network
   int Synchronisable::getSize2(unsigned int id, int mode){
     return sizeof(synchronisableHeader) + getSize( id, mode );
   }
-  
+
   /**
-   * 
-   * @param id 
-   * @return 
+   *
+   * @param id
+   * @return
    */
   bool Synchronisable::isMyTick(unsigned int id){
 //     return true;
     return ( id==0 || id%objectFrequency_==objectID%objectFrequency_ ) && ((objectMode_&state_)!=0);
   }
-  
+
   bool Synchronisable::isMyData(unsigned char* mem)
   {
     unsigned int objectID, classID, size;
@@ -336,11 +336,11 @@ namespace network
     mem+=sizeof(objectID);
     classID = *(int *)mem;
     mem+=sizeof(classID);
-    
+
     assert(classID == this->classID);
     return (objectID == this->objectID);
   }
-  
+
   void Synchronisable::setObjectMode(int mode){
     assert(mode==0x1 || mode==0x2 || mode==0x3);
     objectMode_=mode;

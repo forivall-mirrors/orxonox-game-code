@@ -65,8 +65,16 @@ namespace orxonox
             static void createClassHierarchy();
 
             static Factory* getFactoryPointer();    // avoid overriding order problem in the static intialisation process
-            static std::map<std::string, Identifier*>::const_iterator getFactoryBegin();
-            static std::map<std::string, Identifier*>::const_iterator getFactoryEnd();
+
+            /** @brief Returns the factory-map. */
+            static const std::map<std::string, Identifier*>& getFacbtoryMap()
+                { return Factory::getFactoryPointer()->identifierStringMap_; }
+            /** @brief Returns the begin-iterator of the factory-map. */
+            static std::map<std::string, Identifier*>::const_iterator getFactoryMapBegin()
+                { return Factory::getFactoryPointer()->identifierStringMap_.begin(); }
+            /** @brief Returns the end-iterator of the factory-map. */
+            static std::map<std::string, Identifier*>::const_iterator getFactoryMapEnd()
+                { return Factory::getFactoryPointer()->identifierStringMap_.end(); }
 
         private:
             Factory() {}                            // don't create

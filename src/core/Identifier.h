@@ -189,6 +189,19 @@ namespace orxonox
             /** @brief Returns a const_iterator to the end of the map that stores all console commands with their names in lowercase. @return The const_iterator */
             inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapEnd() const { return this->consoleCommands_LC_.end(); }
 
+            /** @brief Returns the map that stores all XMLPort params. @return The const_iterator */
+            inline const std::map<std::string, XMLPortParamContainer*>& getXMLPortParamMap() const { return this->xmlportParamContainers_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all XMLPort params. @return The const_iterator */
+            inline std::map<std::string, XMLPortParamContainer*>::const_iterator getXMLPortParamMapBegin() const { return this->xmlportParamContainers_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all XMLPort params. @return The const_iterator */
+            inline std::map<std::string, XMLPortParamContainer*>::const_iterator getXMLPortParamMapEnd() const { return this->xmlportParamContainers_.end(); }
+
+            /** @brief Returns the map that stores all XMLPort objects. @return The const_iterator */
+            inline const std::map<std::string, XMLPortObjectContainer*>& getXMLPortObjectMap() const { return this->xmlportObjectContainers_; }
+            /** @brief Returns a const_iterator to the beginning of the map that stores all XMLPort objects. @return The const_iterator */
+            inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortObjectMapBegin() const { return this->xmlportObjectContainers_.begin(); }
+            /** @brief Returns a const_iterator to the end of the map that stores all XMLPort objects. @return The const_iterator */
+            inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortObjectMapEnd() const { return this->xmlportObjectContainers_.end(); }
 
             /** @brief Returns true if this class has at least one config value. @return True if this class has at least one config value */
             inline bool hasConfigValues() const { return this->bHasConfigValues_; }
@@ -218,14 +231,14 @@ namespace orxonox
             ConsoleCommand* getConsoleCommand(const std::string& name) const;
             ConsoleCommand* getLowercaseConsoleCommand(const std::string& name) const;
 
+            void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
+
         protected:
             Identifier();
             Identifier(const Identifier& identifier); // don't copy
             virtual ~Identifier();
 
-            void initialize(std::set<const Identifier*>* parents);
             static Identifier* getIdentifierSingleton(const std::string& name, Identifier* proposal);
-
             virtual void createSuperFunctionCaller() const = 0;
 
             /** @brief Returns the map that stores all Identifiers. @return The map */
@@ -238,7 +251,6 @@ namespace orxonox
             /** @brief Returns the direct children of the class the Identifier belongs to. @return The list of all direct children */
             inline std::set<const Identifier*>& getDirectChildrenIntern() const { return (*this->directChildren_); }
 
-            bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
             ObjectListBase* objects_;                                      //!< The list of all objects of this class
 
         private:
@@ -260,6 +272,8 @@ namespace orxonox
                 COUT(4) << "*** Identifier: Decreased Hierarchy-Creating-Counter to " << hierarchyCreatingCounter_s << std::endl;
             }
 
+            void initialize(std::set<const Identifier*>* parents);
+
             static void destroyAllIdentifiers();
 
             std::set<const Identifier*> parents_;                          //!< The parents of the class the Identifier belongs to
@@ -268,6 +282,7 @@ namespace orxonox
             std::set<const Identifier*> directParents_;                    //!< The direct parents of the class the Identifier belongs to
             std::set<const Identifier*>* directChildren_;                  //!< The direct children of the class the Identifier belongs to
 
+            bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
             bool bSetName_;                                                //!< True if the name is set
             std::string name_;                                             //!< The name of the class the Identifier belongs to
             BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
@@ -310,9 +325,8 @@ namespace orxonox
         public:
             static ClassIdentifier<T> *getIdentifier();
             static ClassIdentifier<T> *getIdentifier(const std::string& name);
-            void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
-            static bool isFirstCall();
             void addObject(T* object);
+            static bool isFirstCall();
 
             void updateConfigValues(bool updateChildren = true) const;
 
@@ -327,31 +341,11 @@ namespace orxonox
                 SuperFunctionDestruction<0, T>::destroy(this);
             }
 
-            static ClassIdentifier<T> *classIdentifier_s;
+            static ClassIdentifier<T>* classIdentifier_s;
     };
 
     template <class T>
-    ClassIdentifier<T> *ClassIdentifier<T>::classIdentifier_s = 0;
-
-    /**
-        @brief Registers a class, which means that the name and the parents get stored.
-        @param parents A list, containing the Identifiers of all parents of the class
-        @param bRootClass True if the class is either an Interface or the BaseObject itself
-    */
-    template <class T>
-    void ClassIdentifier<T>::initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass)
-    {
-        // Check if at least one object of the given type was created
-        if (!this->bCreatedOneObject_ && Identifier::isCreatingHierarchy())
-        {
-            // If no: We have to store the informations and initialize the Identifier
-            COUT(4) << "*** ClassIdentifier: Register Class in " << this->getName() << "-Singleton -> Initialize Singleton." << std::endl;
-            if (bRootClass)
-                this->initialize(0); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
-            else
-                this->initialize(parents);
-        }
-    }
+    ClassIdentifier<T>* ClassIdentifier<T>::classIdentifier_s;
 
     /**
         @brief Returns true if the function gets called the first time, false otherwise.
@@ -475,7 +469,7 @@ namespace orxonox
             */
             SubclassIdentifier(Identifier* identifier)
             {
-                this->identifier_ = identifier;
+                this->operator=(identifier);
             }
 
             /**
@@ -499,18 +493,24 @@ namespace orxonox
 
             /**
                 @brief Overloading of the * operator: returns the assigned identifier.
-                @return The assigned identifier
             */
-            Identifier* operator*()
+            inline Identifier* operator*()
             {
                 return this->identifier_;
             }
 
             /**
                 @brief Overloading of the -> operator: returns the assigned identifier.
-                @return The assigned identifier
             */
-            Identifier* operator->() const
+            inline Identifier* operator->() const
+            {
+                return this->identifier_;
+            }
+
+            /**
+                @brief Returns the assigned identifier. This allows you to assign a SubclassIdentifier to a normal Identifier*.
+            */
+            inline operator Identifier*() const
             {
                 return this->identifier_;
             }
@@ -526,8 +526,7 @@ namespace orxonox
                 // Check if the creation was successful
                 if (newObject)
                 {
-                    // Do a dynamic_cast, because an object of type T is much better than of type BaseObject
-                    return (T*)(newObject);
+                    return dynamic_cast<T*>(newObject);
                 }
                 else
                 {
@@ -551,32 +550,32 @@ namespace orxonox
             }
 
             /** @brief Returns the assigned identifier. @return The identifier */
-            inline const Identifier* getIdentifier() const
+            inline Identifier* getIdentifier() const
                 { return this->identifier_; }
 
-            /** @brief Returns true, if the assigned identifier is at least of the given type. @param identifier The identifier to compare with */
-            inline bool isA(const Identifier* identifier) const
-                { return this->identifier_->isA(identifier); }
-
-            /** @brief Returns true, if the assigned identifier is exactly of the given type. @param identifier The identifier to compare with */
-            inline bool isExactlyA(const Identifier* identifier) const
-                { return this->identifier_->isExactlyA(identifier); }
-
-            /** @brief Returns true, if the assigned identifier is a child of the given identifier. @param identifier The identifier to compare with */
-            inline bool isChildOf(const Identifier* identifier) const
-                { return this->identifier_->isChildOf(identifier); }
-
-            /** @brief Returns true, if the assigned identifier is a direct child of the given identifier. @param identifier The identifier to compare with */
-            inline bool isDirectChildOf(const Identifier* identifier) const
-                { return this->identifier_->isDirectChildOf(identifier); }
-
-            /** @brief Returns true, if the assigned identifier is a parent of the given identifier. @param identifier The identifier to compare with */
-            inline bool isParentOf(const Identifier* identifier) const
-                { return this->identifier_->isParentOf(identifier); }
-
-            /** @brief Returns true, if the assigned identifier is a direct parent of the given identifier. @param identifier The identifier to compare with */
-            inline bool isDirectParentOf(const Identifier* identifier) const
-                { return this->identifier_->isDirectParentOf(identifier); }
+//            /** @brief Returns true, if the assigned identifier is at least of the given type. @param identifier The identifier to compare with */
+//            inline bool isA(const Identifier* identifier) const
+//                { return this->identifier_->isA(identifier); }
+//
+//            /** @brief Returns true, if the assigned identifier is exactly of the given type. @param identifier The identifier to compare with */
+//            inline bool isExactlyA(const Identifier* identifier) const
+//                { return this->identifier_->isExactlyA(identifier); }
+//
+//            /** @brief Returns true, if the assigned identifier is a child of the given identifier. @param identifier The identifier to compare with */
+//            inline bool isChildOf(const Identifier* identifier) const
+//                { return this->identifier_->isChildOf(identifier); }
+//
+//            /** @brief Returns true, if the assigned identifier is a direct child of the given identifier. @param identifier The identifier to compare with */
+//            inline bool isDirectChildOf(const Identifier* identifier) const
+//                { return this->identifier_->isDirectChildOf(identifier); }
+//
+//            /** @brief Returns true, if the assigned identifier is a parent of the given identifier. @param identifier The identifier to compare with */
+//            inline bool isParentOf(const Identifier* identifier) const
+//                { return this->identifier_->isParentOf(identifier); }
+//
+//            /** @brief Returns true, if the assigned identifier is a direct parent of the given identifier. @param identifier The identifier to compare with */
+//            inline bool isDirectParentOf(const Identifier* identifier) const
+//                { return this->identifier_->isDirectParentOf(identifier); }
 
         private:
             Identifier* identifier_;            //!< The assigned identifier

@@ -344,8 +344,8 @@ used by processQueue in Server.cc
     unsigned int network_id=0, failures=0;
     std::string classname;
     orxonox::Identifier *id;
-    std::map<std::string, orxonox::Identifier*>::const_iterator it = orxonox::Factory::getFactoryBegin();
-    while(it != orxonox::Factory::getFactoryEnd()){
+    std::map<std::string, orxonox::Identifier*>::const_iterator it = orxonox::Factory::getFactoryMapBegin();
+    while(it != orxonox::Factory::getFactoryMapEnd()){
       id = (*it).second;
       if(id == NULL)
         continue;

@@ -339,7 +339,7 @@ namespace network
   bool Server::createShip(ClientInformation *client){
     if(!client)
       return false;
-    orxonox::Identifier* id = GetIdentifier("SpaceShip");
+    orxonox::Identifier* id = ClassByName("SpaceShip");
     if(!id){
       COUT(4) << "We could not create the SpaceShip for client: " << client->getID() << std::endl;
       return false;
