@@ -93,13 +93,6 @@
     InternRegisterRootObject(ClassName)
 
 /**
-    @brief Returns the Identifier of the given class.
-    @param ClassName The name of the class
-*/
-#define Class(ClassName) \
-    ClassIdentifier<ClassName>::getIdentifier()
-
-/**
     @brief Creates the entry in the Factory.
     @param ClassName The name of the class
 */
@@ -107,10 +100,24 @@
     bool bCreated##ClassName##Factory = orxonox::ClassFactory<ClassName>::create(#ClassName)
 
 /**
-    @brief Returns the Identifier with either a given name or a given network ID through the factory.
-    @param StringOrInt The name or the network ID of the class
+    @brief Returns the Identifier of the given class.
+    @param ClassName The name of the class
 */
-#define GetIdentifier(StringOrInt) \
-    orxonox::Factory::getIdentifier(StringOrInt)
+#define Class(ClassName) \
+    ClassIdentifier<ClassName>::getIdentifier()
+
+/**
+    @brief Returns the Identifier with a given name through the factory.
+    @param String The name of the class
+*/
+#define ClassByName(String) \
+    orxonox::Factory::getIdentifier(String)
+
+/**
+    @brief Returns the Identifier with a given network ID through the factory.
+    @param networkID The network ID of the class
+*/
+#define ClassByID(networkID) \
+    orxonox::Factory::getIdentifier(networkID)
 
 #endif /* _CoreIncludes_H__ */

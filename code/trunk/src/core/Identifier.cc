@@ -118,6 +118,25 @@ namespace orxonox
     }
 
     /**
+        @brief Registers a class, which means that the name and the parents get stored.
+        @param parents A list, containing the Identifiers of all parents of the class
+        @param bRootClass True if the class is either an Interface or the BaseObject itself
+    */
+    void Identifier::initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass)
+    {
+        // Check if at least one object of the given type was created
+        if (!this->bCreatedOneObject_ && Identifier::isCreatingHierarchy())
+        {
+            // If no: We have to store the informations and initialize the Identifier
+            COUT(4) << "*** ClassIdentifier: Register Class in " << this->getName() << "-Singleton -> Initialize Singleton." << std::endl;
+            if (bRootClass)
+                this->initialize(0); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
+            else
+                this->initialize(parents);
+        }
+    }
+
+    /**
         @brief Initializes the Identifier with a list containing all parents of the class the Identifier belongs to.
         @param parents A list containing all parents
     */
