@@ -204,7 +204,7 @@ namespace orxonox
 
     void SpaceShip::init()
     {
-        if (Settings::showsGraphics())
+        if (this->hasSpecialEffects())
         {
             // START CREATING THRUSTERS
             this->tt1_ = new ParticleInterface("Orxonox/thruster1", LODParticle::low);
@@ -257,43 +257,39 @@ namespace orxonox
             // END CREATING BLINKING LIGHTS
 
             // START CREATING ADDITIONAL EFFECTS
-            if (this->hasSpecialEffects())
-            {
-                this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
-                this->attachObject(this->backlight_);
-                this->backlight_->setPosition(-2.35, 0, 0.2);
-                this->backlight_->setColour(this->getProjectileColour());
+            this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
+            this->attachObject(this->backlight_);
+            this->backlight_->setPosition(-2.35, 0, 0.2);
+            this->backlight_->setColour(this->getProjectileColour());
 
-                this->smoke_ = new ParticleSpawner();
-                this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
-                this->attachObject(this->smoke_);
+            this->smoke_ = new ParticleSpawner();
+            this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
+            this->attachObject(this->smoke_);
 
-                this->fire_ = new ParticleSpawner();
-                this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
-                this->attachObject(this->fire_);
-            }
+            this->fire_ = new ParticleSpawner();
+            this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
+            this->attachObject(this->fire_);
             // END CREATING ADDITIONAL EFFECTS
-
-            if (!this->isExactlyA(Class(SpaceShipAI)))
-            {
-                // START of testing crosshair
-                this->crosshairNear_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
-                this->crosshairFar_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
-
-                this->chNearNode_ = this->getNode()->createChildSceneNode(this->getName() + "near", Vector3(50.0, 0.0, 0.0));
-                this->chNearNode_->setInheritScale(false);
-                this->chFarNode_ = this->getNode()->createChildSceneNode(this->getName() + "far", Vector3(200.0, 0.0, 0.0));
-                this->chFarNode_->setInheritScale(false);
-
-                this->chNearNode_->attachObject(this->crosshairNear_.getBillboardSet());
-                this->chNearNode_->setScale(0.2, 0.2, 0.2);
-
-                this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
-                this->chFarNode_->setScale(0.4, 0.4, 0.4);
-                // END of testing crosshair
-            }
         }
-        // END of testing crosshair
+
+        if (!this->isExactlyA(Class(SpaceShipAI)))
+        {
+            // START of testing crosshair
+            this->crosshairNear_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
+            this->crosshairFar_.setBillboardSet("Orxonox/Crosshair", ColourValue(1.0, 1.0, 0.0), 1);
+
+            this->chNearNode_ = this->getNode()->createChildSceneNode(this->getName() + "near", Vector3(50.0, 0.0, 0.0));
+            this->chNearNode_->setInheritScale(false);
+            this->chFarNode_ = this->getNode()->createChildSceneNode(this->getName() + "far", Vector3(200.0, 0.0, 0.0));
+            this->chFarNode_->setInheritScale(false);
+
+            this->chNearNode_->attachObject(this->crosshairNear_.getBillboardSet());
+            this->chNearNode_->setScale(0.2, 0.2, 0.2);
+
+            this->chFarNode_->attachObject(this->crosshairFar_.getBillboardSet());
+            this->chFarNode_->setScale(0.4, 0.4, 0.4);
+            // END of testing crosshair
+        }
 
         createCamera();
     }
@@ -310,31 +306,37 @@ namespace orxonox
     {
         SUPER(SpaceShip, changedVisibility);
 
-        this->tt1_->setEnabled(this->isVisible());
-        this->tt2_->setEnabled(this->isVisible());
-        this->redBillboard_.setVisible(this->isVisible());
-        this->greenBillboard_.setVisible(this->isVisible());
+        if (this->hasSpecialEffects())
+        {
+            this->tt1_->setEnabled(this->isVisible());
+            this->tt2_->setEnabled(this->isVisible());
+            this->redBillboard_.setVisible(this->isVisible());
+            this->greenBillboard_.setVisible(this->isVisible());
+            this->rightThrusterFlare_.setVisible(this->isVisible());
+            this->leftThrusterFlare_.setVisible(this->isVisible());
+            this->smoke_->setVisible(this->isVisible());
+            this->fire_->setVisible(this->isVisible());
+            this->backlight_->setVisible(this->isVisible());
+        }
         this->crosshairNear_.setVisible(this->isVisible());
         this->crosshairFar_.setVisible(this->isVisible());
-        this->rightThrusterFlare_.setVisible(this->isVisible());
-        this->leftThrusterFlare_.setVisible(this->isVisible());
-        this->smoke_->setVisible(this->isVisible());
-        this->fire_->setVisible(this->isVisible());
-        this->backlight_->setVisible(this->isVisible());
     }
 
     void SpaceShip::changedActivity()
     {
         SUPER(SpaceShip, changedActivity);
 
-        this->tt1_->setEnabled(this->isVisible());
-        this->tt2_->setEnabled(this->isVisible());
-        this->redBillboard_.setVisible(this->isVisible());
-        this->greenBillboard_.setVisible(this->isVisible());
+        if (this->hasSpecialEffects())
+        {
+            this->tt1_->setEnabled(this->isVisible());
+            this->tt2_->setEnabled(this->isVisible());
+            this->redBillboard_.setVisible(this->isVisible());
+            this->greenBillboard_.setVisible(this->isVisible());
+            this->rightThrusterFlare_.setVisible(this->isVisible());
+            this->leftThrusterFlare_.setVisible(this->isVisible());
+        }
         this->crosshairNear_.setVisible(this->isVisible());
         this->crosshairFar_.setVisible(this->isVisible());
-        this->rightThrusterFlare_.setVisible(this->isVisible());
-        this->leftThrusterFlare_.setVisible(this->isVisible());
     }
 
     void SpaceShip::setCamera(const std::string& camera)
@@ -444,7 +446,7 @@ namespace orxonox
         if (this->cam_)
             this->cam_->tick(dt);
 
-        if (Settings::showsGraphics())
+        if (this->hasSpecialEffects())
         {
             if (this->smoke_)
                 this->smoke_->setVisible(this->isVisible() && this->health_ < 40);
@@ -564,15 +566,18 @@ namespace orxonox
         else
             this->yaw(Radian(this->mouseYRotation_ * dt));
 
-        if (this->acceleration_.x > 0)
+        if (this->hasSpecialEffects())
         {
-            this->tt1_->setEnabled(true);
-            this->tt2_->setEnabled(true);
-        }
-        else
-        {
-            this->tt1_->setEnabled(false);
-            this->tt2_->setEnabled(false);
+            if (this->acceleration_.x > 0)
+            {
+                this->tt1_->setEnabled(true);
+                this->tt2_->setEnabled(true);
+            }
+            else
+            {
+                this->tt1_->setEnabled(false);
+                this->tt2_->setEnabled(false);
+            }
         }
 
         COUT(5) << "steering our ship: " << objectID << std::endl;

@@ -2,28 +2,7 @@
  *   ORXONOX - the hottest 3D action shooter ever to exist
  *                    > www.orxonox.net <
  *
- *
- *   License notice:
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation; either version 2
- *   of the License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- *   Author:
- *      Oliver 'greenman' Scheuss, Reto '1337' Grieder
- *   Co-authors:
- *      ...
- *
+ *                         TUTORIAL
  */
 
 // for precompiled header files. Has to be first!
@@ -35,7 +14,6 @@
 // Additional includes
 #include "util/Convert.h"
 #include "util/Debug.h"
-#include "util/Math.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
@@ -89,6 +67,9 @@ namespace orxonox
         // Calls SpaceShip::XMLPort so that the SpaceShip XML parameters
         // are loaded too.
         SUPER(TutorialShip, XMLPort, xmlelement, mode);
+
+        // Display a message in shell/logfile/console
+        COUT(3) << "TutorialShip was loaded." << std::endl;
     }
 
     // XML save function. Also used by back end class SpaceShip
@@ -104,11 +85,7 @@ namespace orxonox
         this->hasSpecialEffects_ = value;
     }
 
-    // virtual function used by back end class SpaceShip.
-    float TutorialShip::getReloadTime()
-    {
-        return this->reloadTime_;
-    }
+    /*** NOT SO IMPORTATANT... ***/
 
     // run time update method. Gets called every frame with the delta time that
     // has passed since the last frame.
@@ -116,6 +93,12 @@ namespace orxonox
     {
         // Also call the tick() method of the base clas.
         SUPER(TutorialShip, tick, dt);
+    }
+
+    // virtual function used by back end class SpaceShip.
+    float TutorialShip::getReloadTime()
+    {
+        return this->reloadTime_;
     }
 
     // Fire a projectile. Delegated to the back end class SpaceShip.
