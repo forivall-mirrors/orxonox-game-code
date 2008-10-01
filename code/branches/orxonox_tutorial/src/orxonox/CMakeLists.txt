@@ -55,7 +55,6 @@ SET( ORXONOX_SRC_FILES
   objects/SpaceShip.cc
   objects/SpaceShipAI.cc
   objects/Tickable.cc
-  objects/TutorialShip.cc
   objects/WorldEntity.cc
 
   objects/Projectile.cc
