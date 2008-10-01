@@ -29,8 +29,7 @@ namespace orxonox
 {
     // Specify a console command that can be used in
     // the shell or as key binding.
-    SetConsoleCommand(TutorialShip, fire, true)
-        .keybindMode(KeybindMode::OnHold);
+    /* INSERT CODE */
 
     // Make sure we can create an object of this class by XML
     CreateFactory(TutorialShip);
@@ -38,7 +37,7 @@ namespace orxonox
     // Constructor
     TutorialShip::TutorialShip()
     {
-        RegisterObject(TutorialShip);
+        /* INSERT CODE */
 
         // reset variables
         this->hasSpecialEffects_ = false;
@@ -56,8 +55,7 @@ namespace orxonox
     // They can be found later in orxonox.ini directly.
     void TutorialShip::setConfigValues()
     {
-        SetConfigValue(reloadTime_, 0.125)
-            .description("The reload time of the weapon in seconds");
+        /* INSERT CODE */
     }
     
     // Called when loading an object of this class with XML
@@ -66,15 +64,14 @@ namespace orxonox
     void TutorialShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         // Load our parameter "specialEffects". Case sensitive!
-        XMLPortParam(TutorialShip, "specialEffects", setSpecialEffects,
-            hasSpecialEffects, xmlelement, mode);
+        /* INSERT CODE */
 
         // Calls SpaceShip::XMLPort so that the SpaceShip XML parameters
         // are loaded too.
         SUPER(TutorialShip, XMLPort, xmlelement, mode);
 
         // Display a message in shell/logfile/console
-        COUT(3) << "TutorialShip was loaded." << std::endl;
+        /* INSERT CODE */
 
         // Additional tutorial expedition
         //Ogre::SceneNode* shipNode = this->getNode();
