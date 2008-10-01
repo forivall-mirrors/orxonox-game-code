@@ -32,7 +32,7 @@
 	/>
 	<UserMacro
 		Name="LibDir"
-		Value="$(RootDir)..\lib_dist\"
+		Value="$(RootDir)..\lib_dist\dependencies\"
 	/>
 	<UserMacro
 		Name="CS"

@@ -12,6 +12,10 @@
 #include "TutorialShip.h"
 
 // Additional includes
+#include <OgreEntity.h>
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
+#include <OgreLight.h>
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "core/ConfigValueIncludes.h"
@@ -19,6 +23,7 @@
 #include "core/CoreIncludes.h"
 #include "core/input/InputManager.h"
 #include "core/XMLPort.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
@@ -70,6 +75,17 @@ namespace orxonox
 
         // Display a message in shell/logfile/console
         COUT(3) << "TutorialShip was loaded." << std::endl;
+
+        // Additional tutorial expedition
+        //Ogre::SceneNode* shipNode = this->getNode();
+        //Ogre::SceneManager* mgr = GraphicsEngine::getInstance().getLevelSceneManager();
+        //Ogre::SceneNode* newNode = shipNode->createChildSceneNode("newNode");
+        //Ogre::BillboardSet* bbset = mgr->createBillboardSet("TutBBS");
+        //bbset->createBillboard(Vector3(0,0,0), ColourValue(1,1,1));
+        //bbset->setMaterialName("Examples/Flare");
+        //newNode->setPosition(Vector3(30,0,0));
+        //newNode->scale(Vector3(0.1));
+        //newNode->attachObject(bbset);
     }
 
     // XML save function. Also used by back end class SpaceShip
