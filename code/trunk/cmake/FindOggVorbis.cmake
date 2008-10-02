@@ -28,6 +28,7 @@ FIND_PATH(OGG_INCLUDE_DIR ogg/ogg.h
   /opt/csw/include
   /opt/include
   ../libs/libogg-1.1.3/include
+  ${DEPENDENCY_DIR}/libogg-1.1.3/include
   )
 
 FIND_PATH(VORBIS_INCLUDE_DIR vorbis/codec.h
@@ -40,6 +41,7 @@ FIND_PATH(VORBIS_INCLUDE_DIR vorbis/codec.h
   /opt/csw/include
   /opt/include
   ../libs/libvorbis-1.2.0/include
+  ${DEPENDENCY_DIR}/libvorbis-1.2.0/include
   )
 
 #
@@ -57,6 +59,7 @@ FIND_LIBRARY(OGG_LIBRARY
   /opt/csw/lib
   /opt/lib
   ../libs/libogg-1.1.3/src/.libs
+  ${DEPENDENCY_DIR}/libogg-1.1.3/lib
   )
 
 FIND_LIBRARY(VORBIS_LIBRARY
@@ -70,20 +73,21 @@ FIND_LIBRARY(VORBIS_LIBRARY
   /opt/csw/lib
   /opt/lib
   ../libs/libvorbis-1.2.0/lib/.libs
+  ${DEPENDENCY_DIR}/libvorbis-1.2.0/lib
   )
 
-FIND_LIBRARY(VORBISENC_LIBRARY
-  NAMES vorbisenc
-  PATHS
-  /usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
-  /usr/local/lib
-  /usr/lib
-  /sw/lib
-  /opt/local/lib
-  /opt/csw/lib
-  /opt/lib
-  ../libs/libvorbis-1.2.0/lib/.libs
-  )
+#FIND_LIBRARY(VORBISENC_LIBRARY
+#  NAMES vorbisenc
+#  PATHS
+#  /usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.1/lib
+#  /usr/local/lib
+#  /usr/lib
+#  /sw/lib
+#  /opt/local/lib
+#  /opt/csw/lib
+#  /opt/lib
+#  ../libs/libvorbis-1.2.0/lib/.libs
+#  )
 
 FIND_LIBRARY(VORBISFILE_LIBRARY
   NAMES vorbisfile
@@ -96,6 +100,7 @@ FIND_LIBRARY(VORBISFILE_LIBRARY
   /opt/csw/lib
   /opt/lib
   ../libs/libvorbis-1.2.0/lib/.libs
+  ${DEPENDENCY_DIR}/libvorbis-1.2.0/lib
   )
 
 SET (OGG_FOUND "NO")
@@ -122,28 +127,28 @@ ENDIF (OGG_INCLUDE_DIR AND OGG_LIBRARY)
 
 SET (VORBIS_FOUND "NO")
 
-IF (VORBIS_INCLUDE_DIR AND VORBIS_LIBRARY AND VORBISENC_LIBRARY AND VORBISFILE_LIBRARY)
+IF (VORBIS_INCLUDE_DIR AND VORBIS_LIBRARY AND VORBISFILE_LIBRARY)# AND VORBISENC_LIBRARY)
   SET (VORBIS_FOUND "YES")
   IF (NOT VORBIS_FIND_QUIETLY)
     MESSAGE (STATUS "Vorbis was found.")
     IF (VERBOSE_FIND)
       MESSAGE (STATUS "  include path: ${VORBIS_INCLUDE_DIR}")
       MESSAGE (STATUS "  library path: ${VORBIS_LIBRARY}")
-      MESSAGE (STATUS "  library path: ${VORBISENC_LIBRARY}")
+      #MESSAGE (STATUS "  library path: ${VORBISENC_LIBRARY}")
       MESSAGE (STATUS "  library path: ${VORBISFILE_LIBRARY}")
       MESSAGE (STATUS "  libraries:    vorbis vorbisenc vorbisfile")
     ENDIF (VERBOSE_FIND)
   ENDIF (NOT VORBIS_FIND_QUIETLY)
-ELSE (VORBIS_INCLUDE_DIR AND VORBIS_LIBRARY AND VORBISENC_LIBRARY AND VORBISFILE_LIBRARY)
+ELSE (VORBIS_INCLUDE_DIR AND VORBIS_LIBRARY AND VORBISFILE_LIBRARY)# AND VORBISENC_LIBRARY)
   IF (NOT VORBIS_INCLUDE_DIR)
     MESSAGE (SEND_ERROR "Vorbis include path was not found.")
   ENDIF (NOT VORBIS_INCLUDE_DIR)
   IF (NOT VORBIS_LIBRARY)
     MESSAGE (SEND_ERROR "Vorbis library \"vorbis\" was not found.")
   ENDIF (NOT VORBIS_LIBRARY)
-  IF (NOT VORBISENC_LIBRARY)
-    MESSAGE (SEND_ERROR "Vorbis library \"vorbisenc\" was not found.")
-  ENDIF (NOT VORBISENC_LIBRARY)
+  #IF (NOT VORBISENC_LIBRARY)
+  #  MESSAGE (SEND_ERROR "Vorbis library \"vorbisenc\" was not found.")
+  #ENDIF (NOT VORBISENC_LIBRARY)
   IF (NOT VORBISFILE_LIBRARY)
     MESSAGE (SEND_ERROR "Vorbis library \"vorbisfile\" was not found.")
   ENDIF (NOT VORBISFILE_LIBRARY)

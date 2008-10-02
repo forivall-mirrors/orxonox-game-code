@@ -1,5 +1,5 @@
 # THIS FILE HAS BEEN MODIFIED TO WORK ON THE TARDIS INFRASTURUCTURE of THE ETH.
-# use with cation
+# use with caution
 # Nicolas Schlumberger <nico AT orxonx DOT net> (C) 2007
 #
 # Several changes and additions by Fabian 'x3n' Landau
@@ -117,6 +117,7 @@ FIND_PATH(Boost_INCLUDE_DIR NAMES boost/config.hpp PATH_SUFFIXES ${SUFFIX_FOR_PA
 #    ../libs/boost_1_33_1
     ../libs/boost_1_34_1
 #    ../libs/boost-1_35_0
+    ${DEPENDENCY_DIR}/boost-1.35.0/include
 
 # Help the user find it if we cannot.
   DOC "The ${BOOST_INCLUDE_PATH_DESCRIPTION}"
@@ -186,6 +187,8 @@ SET(BOOST_SUFFIX_SEARCH
   gcc-mt-1_33_1
   mgw34-mt-1_34_1
   mgw34-mt-1_35
+  vc80-mt-1_35
+  vc80-mt-gd-1_35
 )
 
 # List of all boost libraries
@@ -224,7 +227,9 @@ MACRO(BOOST_FIND_LIBRARY name)
 
 # For MSVC builds find debug library
   IF(WIN32 AND MSVC AND Boost_${name}_LIBRARY)
-    FIND_LIBRARY(Boost_${name}_LIBRARY_DEBUG ${Boost_LIB_PREFIX}boost_${name}-${Boost_LIB_SUFFIX_DEBUG})
+    FIND_LIBRARY(Boost_${name}_LIBRARY_DEBUG
+      NAMES ${Boost_LIB_PREFIX}boost_${name}-${Boost_LIB_SUFFIX_DEBUG}
+      PATHS ${Boost_LIBRARY_DIRS})
 
     IF(MSVC_IDE)
       IF(Boost_${name}_LIBRARY AND Boost_${name}_LIBRARY_DEBUG)

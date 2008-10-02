@@ -21,11 +21,13 @@ ENDIF (OGRE_LIBRARIES AND OGRE_INCLUDE_DIR AND OGRE_LIB_DIR)
 IF (WIN32) #Windows
     FIND_PATH(OGRE_INCLUDE_DIR Ogre.h
         ../libs/ogre/OgreMain/include
+        ${DEPENDENCY_DIR}/ogre-1.4.9/include
     )
 
     SET(OGRE_LIBRARIES debug OgreMain_d optimized OgreMain)
     FIND_LIBRARY(OGRE_LIBDIR NAMES ${OGRE_LIBRARIES} PATHS
         ../libs/ogre/Samples/Common/bin/Release
+        ${DEPENDENCY_DIR}/ogre-1.4.9/lib
     )
 
     # Strip the filename from the path
