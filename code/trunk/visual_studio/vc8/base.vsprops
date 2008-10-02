@@ -27,14 +27,6 @@
 		TargetMachine="1"
 	/>
 	<UserMacro
-		Name="LibOutDir"
-		Value="$(RootDir)build\"
-	/>
-	<UserMacro
-		Name="LibDir"
-		Value="$(RootDir)..\lib_dist\"
-	/>
-	<UserMacro
 		Name="CS"
 		Value=""
 	/>
