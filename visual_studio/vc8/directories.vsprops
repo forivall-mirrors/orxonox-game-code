@@ -10,4 +10,12 @@
 		Name="RootDir"
 		Value="$(SolutionDir)..\..\"
 	/>
+	<UserMacro
+		Name="LibDir"
+		Value="$(RootDir)dependencies\"
+	/>
+	<UserMacro
+		Name="LibOutDir"
+		Value="$(RootDir)build\"
+	/>
 </VisualStudioPropertySheet>

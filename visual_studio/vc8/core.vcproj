@@ -195,7 +195,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Generating tolua bind files..."
-							CommandLine="&quot;$(OutDir)\tolua_app_d.exe&quot; -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg&#x0D;&#x0A;"
+							CommandLine="&quot;$(OutDir)\toluagen_orxonox$(CS).exe&quot; -n Core -o $(RootDir)/src/core/tolua/tolua_bind.cc -H $(RootDir)/src/core/tolua/tolua_bind.h $(RootDir)/src/core/tolua/tolua.pkg&#x0D;&#x0A;"
 							AdditionalDependencies="$(RootDir)\src\core\Script.h;$(RootDir)\src\core\CommandExecutor.h"
 							Outputs="$(RootDir)\src\core\tolua\tolua_bind.cc; $(RootDir)\src\core\tolua\tolua_bind.h"
 						/>
@@ -206,7 +206,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Generating tolua bind files..."
-							CommandLine="&quot;$(OutDir)\tolua_app.exe&quot; -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg&#x0D;&#x0A;"
+							CommandLine="&quot;$(OutDir)\toluagen_orxonox$(CS).exe&quot; -n Core -o $(RootDir)/src/core/tolua/tolua_bind.cc -H $(RootDir)/src/core/tolua/tolua_bind.h $(RootDir)/src/core/tolua/tolua.pkg&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="$(RootDir)\src\core\tolua\tolua_bind.cc; $(RootDir)\src\core\tolua\tolua_bind.h"
 						/>

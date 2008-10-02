@@ -7,7 +7,6 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		PreprocessorDefinitions="TOLUA_STATIC_BUILD"
 		CompileAs="1"
 	/>
 	<Tool
