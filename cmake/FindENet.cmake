@@ -21,12 +21,14 @@ FIND_PATH(ENet_INCLUDE_DIR enet/enet.h
     /usr/local/include
     /usr/pack/enet-2007-sd/include
     ../libs/enet-1.1/include
+    ${DEPENDENCY_DIR}/enet-1.2/include
     )
 
 FIND_LIBRARY(ENet_LIBRARY
     NAMES enet
     PATHS /usr/lib /usr/local/lib /usr/pack/enet-2007-sd/i686-debian-linux3.1/lib/
     ../libs/enet-1.1
+    ${DEPENDENCY_DIR}/enet-1.2/lib
     )
 
 SET(ENET_FOUND FALSE)

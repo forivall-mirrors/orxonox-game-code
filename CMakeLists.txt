@@ -6,6 +6,9 @@ IF (COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
 
+# Allow for simple IF constructs (makes code a lot more readable)
+#SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
+
 # This sets where to look for modules (e.g. "Find*.cmake" files)
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -66,6 +69,19 @@ ENDIF (MAKE_VERB)
 # Alternatively use the "-D VERBOSE_FIND:BOOL=true" option when executing cmake
 
 # SET (VERBOSE_FIND true)
+
+# Set the library directory when using precompiled tarballs for the dependencies under windows
+IF (WIN32)
+  IF (MSVC)
+    IF ($ENV{ORXONOX_DEV})
+      SET (DEPENDENCY_DIR ${CMAKE_SOURCE_DIR}/../lib_dist/dependencies/)
+    ELSE ($ENV{ORXONOX_DEV})
+      SET (DEPENDENCY_DIR ${CMAKE_SOURCE_DIR}/dependencies/)
+    ENDIF ($ENV{ORXONOX_DEV})
+    SET(Boost_LIB_SUFFIX_DEBUG vc80-mt-gd-1_35)
+  ENDIF (MSVC)
+ENDIF (WIN32)
+MESSAGE(STATUS ${DEPENDENCY_DIR})
 
 # Performs the search and sets the variables
 FIND_PACKAGE(OGRE)

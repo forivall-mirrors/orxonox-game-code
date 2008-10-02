@@ -25,11 +25,13 @@ ENDIF (CEGUI_LIBRARIES AND CEGUI_INCLUDE_DIR AND CEGUI_LIB_DIR)# AND CEGUI_SCRIP
 IF (WIN32) #Windows
     FIND_PATH(CEGUI_INCLUDE_DIR CEGUI.h
         ../libs/cegui-0.6.1/include
+        ${DEPENDENCY_DIR}/cegui-0.6.1/include
     )
 
     SET(CEGUI_LIBRARIES debug CEGUIBase_d optimized CEGUIBase)
     FIND_LIBRARY(CEGUI_LIBDIR NAMES ${CEGUI_LIBRARIES} PATHS
         ../libs/cegui-0.6.1/bin
+        ${DEPENDENCY_DIR}/cegui-0.6.1/lib
     )
 
     # Strip the filename from the path

@@ -29,10 +29,11 @@ SET (TCLTK_POSSIBLE_LIB_PATHS
   ../libs/tcl8.5.2/win
   ../libs/tcl8.5.2/unix
   ../libs/tcl8.5.2/macosx
+  ${DEPENDENCY_DIR}/tcl-8.5.2/lib
 )
 
 FIND_LIBRARY(TCL_LIBRARY
-  NAMES tcl tcl85 tcl8.5 tcl84 tcl8.4
+  NAMES tcl tcl85 tcl8.5 tcl84 tcl8.4 tcl85t
   PATHS ${TCLTK_POSSIBLE_LIB_PATHS}
 )
 
@@ -56,6 +57,7 @@ SET (TCLTK_POSSIBLE_INCLUDE_PATHS
   /usr/include/tcl8.5
   /usr/include/tcl8.4
   ../libs/tcl8.5.2/generic
+  ${DEPENDENCY_DIR}/tcl-8.5.2/include
 )
 
 FIND_PATH(TCL_INCLUDE_PATH tcl.h

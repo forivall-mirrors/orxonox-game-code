@@ -16,11 +16,13 @@ IF(WIN32)
 
   FIND_PATH(DirectX_INCLUDE_DIR "dinput.h"
     C:/DXSDK/Include
+    $ENV{DXSDK_DIR}/Include
   )
 
   FIND_PATH(DirectX_LIB_DIR "dinput8.lib"
     C:/DXSDK/Lib
     C:/DXSDK/Lib/x86
+    $ENV{DXSDK_DIR}/lib/x86
   )
 
   IF (DirectX_INCLUDE_DIR AND DirectX_LIB_DIR)

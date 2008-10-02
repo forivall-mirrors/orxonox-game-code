@@ -36,11 +36,13 @@ IF(WIN32)
 
   FIND_PATH(ZLIB_INCLUDE_DIR zlib.h
     ../libs/zlib/include
+    ${DEPENDENCY_DIR}/zlib-1.2.3/include
   )
 
   FIND_LIBRARY(ZLIB_LIBRARY
     NAMES zlib
     PATHS ${ZLIB_LIBRARY_DIR}
+    ${DEPENDENCY_DIR}/zlib-1.2.3/lib
   )
 ENDIF(WIN32)
 

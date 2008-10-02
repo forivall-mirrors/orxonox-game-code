@@ -48,6 +48,7 @@ FIND_PATH(ALUT_INCLUDE_DIR AL/alut.h
   /opt/include/OpenAL
   /opt/include
   ../libs/freealut-1.1.0/include
+  ${DEPENDENCY_DIR}/freealut-1.1.0/include
   )
 
 # I'm not sure if I should do a special casing for Apple. It is
@@ -87,6 +88,7 @@ ELSE(${ALUT_INCLUDE_DIR} MATCHES ".framework")
     /opt/lib
     ../libs/freealut-1.1.0/src/.libs
     ../libs/freealut-1.1.0/lib
+    ${DEPENDENCY_DIR}/freealut-1.1.0/lib
     )
 ENDIF(${ALUT_INCLUDE_DIR} MATCHES ".framework")
 
