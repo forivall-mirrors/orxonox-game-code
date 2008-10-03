@@ -59,6 +59,9 @@ namespace orxonox
                 return false;
         }
 
+        bool handlersChanged() { return this->bHandlersChanged_; }
+        void resetHandlersChanged() { bHandlersChanged_ = false; }
+
         virtual void onEnter() { if (executorOnEnter_) (*executorOnEnter_)(); }
         virtual void onLeave() { if (executorOnLeave_) (*executorOnLeave_)(); }
 
@@ -86,7 +89,7 @@ namespace orxonox
         virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
 
     protected:
-        InputState() : priority_(0), executorOnEnter_(0), executorOnLeave_(0) { }
+        InputState() : priority_(0), bHandlersChanged_(false), executorOnEnter_(0), executorOnLeave_(0) { }
         virtual ~InputState() { }
 
         virtual void numberOfJoySticksChanged(unsigned int n) = 0;
@@ -95,6 +98,8 @@ namespace orxonox
             if (device < bInputDeviceEnabled_.size())
                 bInputDeviceEnabled_[device] = bEnabled;
         }
+
+        bool bHandlersChanged_;
 
     private:
         void setNumOfJoySticks(unsigned int n)

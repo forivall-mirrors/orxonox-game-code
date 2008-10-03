@@ -51,8 +51,8 @@ namespace orxonox
         void setMouseHandler      (MouseHandler* handler) { mouseHandler_ = handler; update(); }
         bool setJoyStickHandler   (JoyStickHandler* handler, unsigned int joyStickID);
         bool setJoyStickHandler   (JoyStickHandler* handler);
-        bool setHandler(InputTickable* handler);
-        void removeAndDestroyAllHandlers();
+        bool setHandler(InputHandler* handler);
+        //void removeAndDestroyAllHandlers();
 
     private:
         SimpleInputState();
@@ -83,7 +83,7 @@ namespace orxonox
         MouseHandler*                 mouseHandler_;
         std::vector<JoyStickHandler*> joyStickHandler_;
         JoyStickHandler*              joyStickHandlerAll_;
-        std::vector<InputTickable*>   allHandlers_;
+        std::vector<InputHandler*>   allHandlers_;
     };
 }
 

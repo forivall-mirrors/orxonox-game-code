@@ -107,6 +107,8 @@ namespace orxonox
 
         void reloadInputSystem(bool joyStickSupport = true);
 
+        void clearBuffers();
+
         int  numberOfKeyboards() { return keyboard_ ? 1 : 0; }
         int  numberOfMice()      { return mouse_    ? 1 : 0; }
         int  numberOfJoySticks() { return joySticksSize_; }
@@ -114,17 +116,7 @@ namespace orxonox
         void setWindowExtents(const int width, const int height);
 
         template <class T>
-        T* createInputState(const std::string& name, int priority)
-        {
-            T* state = new T;
-            if (_configureInputState(state, name, priority))
-                return state;
-            else
-            {
-                delete state;
-                return 0;
-            }
-        }
+        T* createInputState(const std::string& name, int priority);
 
         InputState* getState       (const std::string& name);
         InputState* getCurrentState();
@@ -138,11 +130,14 @@ namespace orxonox
         static InputManager& getInstance()    { assert(singletonRef_s); return *singletonRef_s; }
         static InputManager* getInstancePtr() { return singletonRef_s; }
 
-    public: // console commands
+        // console commands
         static void storeKeyStroke(const std::string& name);
         static void keyBind(const std::string& command);
         static void calibrate();
         static void reload(bool joyStickSupport = true);
+
+    public: // variables
+        static EmptyHandler                 EMPTY_HANDLER;
 
     private: // functions
         // don't mess with a Singleton
@@ -196,7 +191,7 @@ namespace orxonox
         size_t                              windowHnd_;            //!< Render window handle
         InputManagerState                   internalState_;        //!< Current internal state
 
-        // some internally handled states
+        // some internally handled states and handlers
         SimpleInputState*                   stateDetector_;        //!< KeyDetector instance
         SimpleInputState*                   stateCalibrator_;
         SimpleInputState*                   stateEmpty_;
@@ -233,6 +228,34 @@ namespace orxonox
         static std::string                  bindingCommmandString_s;
         static InputManager*                singletonRef_s;
     };
+
+    /**
+    @brief
+        Creates a new InputState by type, name and priority.
+        
+        You will have to use this method because the
+        c'tors and d'tors are private.
+    @remarks
+        The InputManager will take care of the state completely. That also
+        means it gets deleted when the InputManager is destroyed!
+    @param name
+        Name of the InputState when referenced as string
+    @param priority
+        Priority matters when multiple states are active. You can specify any
+        number, but 1 - 99 is preferred (99 means high).
+    */
+    template <class T>
+    T* InputManager::createInputState(const std::string& name, int priority)
+    {
+        T* state = new T;
+        if (_configureInputState(state, name, priority))
+            return state;
+        else
+        {
+            delete state;
+            return 0;
+        }
+    }
 }
 
 #endif /* _InputManager_H__ */

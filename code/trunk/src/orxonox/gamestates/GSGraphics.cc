@@ -139,6 +139,9 @@ namespace orxonox
     {
         using namespace Ogre;
 
+        // remove our WindowEventListener first to avoid bad calls in the procedures
+        Ogre::WindowEventUtilities::removeWindowEventListener(this->renderWindow_, this);
+
         delete this->guiManager_;
 
         delete this->console_;
@@ -148,8 +151,6 @@ namespace orxonox
         delete this->inputManager_;
 
         // destroy render window
-        this->renderWindow_->removeAllViewports();
-        this->renderWindow_->removeAllListeners();
         RenderSystem* renderer = this->ogreRoot_->getRenderSystem();
         renderer->destroyRenderWindow("Orxonox");
 
@@ -359,10 +360,13 @@ namespace orxonox
     @param rw
         The render window it occured in
     */
-    void GSGraphics::windowFocusChanged(Ogre::RenderWindow *rw)
+    void GSGraphics::windowFocusChange(Ogre::RenderWindow *rw)
     {
         for (ObjectList<orxonox::WindowEventListener>::iterator it = ObjectList<orxonox::WindowEventListener>::begin(); it; ++it)
             it->windowFocusChanged();
+
+        // instruct InputManager to clear the buffers (core library so we cannot use the interface)
+        InputManager::getInstance().clearBuffers();
     }
 
     /**

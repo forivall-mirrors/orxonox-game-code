@@ -155,7 +155,7 @@ namespace orxonox
                 // register us as input handler
                 SimpleInputState* state = InputManager::getInstance().createInputState<SimpleInputState>("gui", 30);
                 state->setHandler(this);
-                state->setJoyStickHandler(new EmptyHandler());
+                state->setJoyStickHandler(&InputManager::EMPTY_HANDLER);
 
                 // load the background scene
                 loadScenes();

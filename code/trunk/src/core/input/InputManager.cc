@@ -64,6 +64,7 @@ namespace orxonox
     SetConsoleCommand(InputManager, reload, false);
 
     std::string InputManager::bindingCommmandString_s = "";
+    EmptyHandler InputManager::EMPTY_HANDLER;
     InputManager* InputManager::singletonRef_s = 0;
 
     using namespace InputDevice;
@@ -188,7 +189,7 @@ namespace orxonox
             CCOUT(4) << "Initialising InputStates components..." << std::endl;
 
             stateEmpty_ = createInputState<SimpleInputState>("empty", -1);
-            stateEmpty_->setHandler(new EmptyHandler());
+            stateEmpty_->setHandler(&EMPTY_HANDLER);
             activeStates_[stateEmpty_->getPriority()] = stateEmpty_;
 
             stateDetector_ = createInputState<SimpleInputState>("detector", 101);
@@ -197,7 +198,7 @@ namespace orxonox
             stateDetector_->setHandler(temp);
 
             stateCalibrator_ = createInputState<SimpleInputState>("calibrator", 100);
-            stateCalibrator_->setHandler(new EmptyHandler());
+            stateCalibrator_->setHandler(&EMPTY_HANDLER);
             InputBuffer* buffer = new InputBuffer();
             buffer->registerListener(this, &InputManager::_completeCalibration, '\r', true);
             stateCalibrator_->setKeyHandler(buffer);
@@ -429,9 +430,10 @@ namespace orxonox
                 CCOUT(3) << "Destroying ..." << std::endl;
 
                 // clear our own states
-                stateEmpty_->removeAndDestroyAllHandlers();
-                stateCalibrator_->removeAndDestroyAllHandlers();
-                stateDetector_->removeAndDestroyAllHandlers();
+                //stateEmpty_->removeAndDestroyAllHandlers();
+                //stateCalibrator_->removeAndDestroyAllHandlers();
+                //stateDetector_->removeAndDestroyAllHandlers();
+                // TODO: Memory Leak when not deleting the handlers!!!
 
                 // kick all active states 'nicely'
                 for (std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin();
@@ -680,6 +682,19 @@ namespace orxonox
         }
         stateDestroyRequests_.clear();
 
+        // check whether a state has changed its EMPTY_HANDLER situation
+        bool bUpdateRequired = false;
+        for (std::map<int, InputState*>::iterator it = activeStates_.begin(); it != activeStates_.end(); ++it)
+        {
+            if (it->second->handlersChanged())
+            {
+                it->second->resetHandlersChanged();
+                bUpdateRequired = true;
+            }
+        }
+        if (bUpdateRequired)
+            _updateActiveStates();
+
         // mark that we capture and distribute input
         internalState_ |= Ticking;
 
@@ -825,6 +840,14 @@ namespace orxonox
         // restore old input state
         requestLeaveState("calibrator");
         bCalibrating_ = false;
+    }
+
+    void InputManager::clearBuffers()
+    {
+        this->keysDown_.clear();
+        this->mouseButtonsDown_.clear();
+        for (unsigned int i = 0; i < this->joySticksSize_; ++i)
+            this->joyStickButtonsDown_[i].clear();
     }
 
 

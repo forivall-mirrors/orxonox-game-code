@@ -286,10 +286,10 @@ namespace orxonox
     };
 
 
-    class _CoreExport InputTickable
+    class _CoreExport InputHandler
     {
     public:
-        virtual ~InputTickable() { }
+        virtual ~InputHandler() { }
         virtual void tickInput(float dt) = 0;
     };
 
@@ -297,7 +297,7 @@ namespace orxonox
     @brief
         Interface class used for key input listeners.
     */
-    class _CoreExport KeyHandler : virtual public InputTickable
+    class _CoreExport KeyHandler : virtual public InputHandler
     {
     public:
         virtual ~KeyHandler() { }
@@ -311,7 +311,7 @@ namespace orxonox
     @brief
         Interface class used for mouse input listeners.
     */
-    class _CoreExport MouseHandler : virtual public InputTickable
+    class _CoreExport MouseHandler : virtual public InputHandler
     {
     public:
         virtual ~MouseHandler() { }
@@ -328,7 +328,7 @@ namespace orxonox
     @brief
         Interface class used for joy stick input listeners.
     */
-    class _CoreExport JoyStickHandler : virtual public InputTickable
+    class _CoreExport JoyStickHandler : virtual public InputHandler
     {
     public:
         virtual ~JoyStickHandler() { }
@@ -341,7 +341,12 @@ namespace orxonox
 
     class _CoreExport EmptyHandler : public KeyHandler, public MouseHandler, public JoyStickHandler
     {
+        friend class InputManager;
     private:
+        EmptyHandler() { }
+        EmptyHandler(EmptyHandler&);
+        virtual ~EmptyHandler() { }
+
         void tickInput(float dt) { }
         void tickJoyStick(float dt, unsigned int joyStick) { }
         void tickMouse(float dt) { }
