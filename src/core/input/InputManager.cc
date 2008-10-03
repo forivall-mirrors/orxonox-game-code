@@ -106,10 +106,10 @@ namespace orxonox
         , devicesNum_(0)
         , windowHnd_(0)
         , internalState_(Uninitialised)
-        , stateDetector_(0)
-        , stateCalibrator_(0)
         , stateEmpty_(0)
         , stateMaster_(0)
+        , keyDetector_(0)
+        , calibratorCallbackBuffer_(0)
         , bCalibrating_(false)
         , keyboardModifiers_(0)
     {
@@ -188,23 +188,27 @@ namespace orxonox
         {
             CCOUT(4) << "Initialising InputStates components..." << std::endl;
 
+            // Lowest priority empty InputState
             stateEmpty_ = createInputState<SimpleInputState>("empty", -1);
             stateEmpty_->setHandler(&EMPTY_HANDLER);
             activeStates_[stateEmpty_->getPriority()] = stateEmpty_;
 
-            stateDetector_ = createInputState<SimpleInputState>("detector", 101);
-            KeyDetector* temp = new KeyDetector();
-            temp->loadBindings("storeKeyStroke");
-            stateDetector_->setHandler(temp);
-
-            stateCalibrator_ = createInputState<SimpleInputState>("calibrator", 100);
-            stateCalibrator_->setHandler(&EMPTY_HANDLER);
-            InputBuffer* buffer = new InputBuffer();
-            buffer->registerListener(this, &InputManager::_completeCalibration, '\r', true);
-            stateCalibrator_->setKeyHandler(buffer);
-
+            // Always active master InputState
             stateMaster_ = new ExtendedInputState();
             stateMaster_->setName("master");
+
+            // KeyDetector to evaluate a pressed key's name
+            SimpleInputState* detector = createInputState<SimpleInputState>("detector", 101);
+            keyDetector_ = new KeyDetector();
+            keyDetector_->loadBindings("storeKeyStroke");
+            detector->setHandler(keyDetector_);
+
+            // Joy stick calibration helper callback
+            SimpleInputState* calibrator = createInputState<SimpleInputState>("calibrator", 100);
+            calibrator->setHandler(&EMPTY_HANDLER);
+            calibratorCallbackBuffer_ = new InputBuffer();
+            calibratorCallbackBuffer_->registerListener(this, &InputManager::_completeCalibration, '\r', true);
+            calibrator->setKeyHandler(calibratorCallbackBuffer_);
 
             internalState_ |= InternalsReady;
 
@@ -429,12 +433,6 @@ namespace orxonox
             {
                 CCOUT(3) << "Destroying ..." << std::endl;
 
-                // clear our own states
-                //stateEmpty_->removeAndDestroyAllHandlers();
-                //stateCalibrator_->removeAndDestroyAllHandlers();
-                //stateDetector_->removeAndDestroyAllHandlers();
-                // TODO: Memory Leak when not deleting the handlers!!!
-
                 // kick all active states 'nicely'
                 for (std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin();
                     rit != activeStates_.rend(); ++rit)
@@ -442,13 +440,21 @@ namespace orxonox
                     (*rit).second->onLeave();
                 }
 
-                // destroy all input states
-                while (inputStatesByPriority_.size() > 0)
-                    _destroyState((*inputStatesByPriority_.rbegin()).second);
-
+                // Destroy calibrator helper handler and state
+                delete keyDetector_;
+                requestDestroyState("calibrator");
+                // Destroy KeyDetector and state
+                delete calibratorCallbackBuffer_;
+                requestDestroyState("detector");
+                // destroy the empty InputState
+                _destroyState(this->stateEmpty_);
                 // destroy the master input state. This might trigger a memory leak
                 // because the user has forgotten to destroy the KeyBinder or any Handler!
                 delete stateMaster_;
+
+                // destroy all user InputStates
+                while (inputStatesByPriority_.size() > 0)
+                    _destroyState((*inputStatesByPriority_.rbegin()).second);
 
                 // destroy the devices
                 _destroyKeyboard();
@@ -1230,9 +1236,9 @@ namespace orxonox
     */
     bool InputManager::requestDestroyState(const std::string& name)
     {
-        if (name == "empty" || name == "calibrator" || name == "detector")
+        if (name == "empty")
         {
-            COUT(2) << "InputManager: Removing the '" << name << "' state is not allowed!" << std::endl;
+            COUT(2) << "InputManager: Removing the empty state is not allowed!" << std::endl;
             return false;
         }
         std::map<std::string, InputState*>::iterator it = inputStatesByName_.find(name);

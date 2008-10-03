@@ -363,21 +363,6 @@ namespace orxonox
         return success;
     }
 
-    void ExtendedInputState::removeAndDestroyAllHandlers()
-    {
-        for (std::vector<InputHandler*>::iterator it = allHandlers_.begin();
-            it != allHandlers_.end(); ++it)
-            delete *it;
-
-        allHandlers_.clear();
-        keyHandlers_.clear();
-        mouseHandlers_.clear();
-        joyStickHandlersAll_.clear();
-        for (unsigned int iJoyStick = 0; iJoyStick < joyStickHandlers_.size(); ++iJoyStick)
-            joyStickHandlers_[iJoyStick].clear();
-        update();
-    }
-
     /**
     @brief
         Adds a handler of any kind. dynamic_cast determines to which list it is added.
