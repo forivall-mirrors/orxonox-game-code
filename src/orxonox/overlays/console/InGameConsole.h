@@ -80,6 +80,9 @@ namespace orxonox
 
         void windowResized(int newWidth, int newHeight);
 
+        // config value related
+        void bHidesAllInputChanged();
+
         static Ogre::UTFString convert2UTF(std::string s);
 
     private: // variables
@@ -101,6 +104,9 @@ namespace orxonox
         Ogre::BorderPanelOverlayElement* consoleOverlayBorder_;
         Ogre::TextAreaOverlayElement** consoleOverlayTextAreas_;
 
+        // input related
+        SimpleInputState* inputState_;
+
         // config values
         float relativeWidth;
         float relativeHeight;
@@ -108,6 +114,7 @@ namespace orxonox
         float scrollSpeed_;
         float noiseSize_;
         char cursorSymbol_;
+        bool bHidesAllInput_;
 
         static InGameConsole* singletonRef_s;
     };

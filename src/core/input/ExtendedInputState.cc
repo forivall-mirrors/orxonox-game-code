@@ -365,7 +365,7 @@ namespace orxonox
 
     void ExtendedInputState::removeAndDestroyAllHandlers()
     {
-        for (std::vector<InputTickable*>::iterator it = allHandlers_.begin();
+        for (std::vector<InputHandler*>::iterator it = allHandlers_.begin();
             it != allHandlers_.end(); ++it)
             delete *it;
 
@@ -386,7 +386,7 @@ namespace orxonox
     @return
         True if added, false if handler already existed.
     */
-    bool ExtendedInputState::addHandler(InputTickable* handler)
+    bool ExtendedInputState::addHandler(InputHandler* handler)
     {
         bool success = false;
 
@@ -405,7 +405,7 @@ namespace orxonox
     @return
         True if removal was successful, false if handler was not found.
     */
-    bool ExtendedInputState::removeHandler(InputTickable* handler)
+    bool ExtendedInputState::removeHandler(InputHandler* handler)
     {
         bool success = false;
 
@@ -448,7 +448,7 @@ namespace orxonox
     void ExtendedInputState::update()
     {
         // we can use a set to have a list of unique pointers (an object can implement all 3 handlers)
-        std::set<InputTickable*> tempSet;
+        std::set<InputHandler*> tempSet;
         for (unsigned int iHandler = 0; iHandler < keyHandlers_.size(); iHandler++)
             tempSet.insert(keyHandlers_[iHandler]);
         for (unsigned int iHandler = 0; iHandler < mouseHandlers_.size(); iHandler++)
@@ -459,7 +459,7 @@ namespace orxonox
 
         // copy the content of the map back to the actual vector
         allHandlers_.clear();
-        for (std::set<InputTickable*>::const_iterator itHandler = tempSet.begin();
+        for (std::set<InputHandler*>::const_iterator itHandler = tempSet.begin();
             itHandler != tempSet.end(); itHandler++)
             allHandlers_.push_back(*itHandler);
 
@@ -468,5 +468,7 @@ namespace orxonox
         setInputDeviceEnabled(Mouse, (mouseHandlers_.size() != 0));
         for (unsigned int i = 0; i < joyStickHandlers_.size(); ++i)
             setInputDeviceEnabled(2 + i, (joyStickHandlers_[i].size() != 0));
+
+        this->bHandlersChanged_ = true;
     }
 }

@@ -183,21 +183,21 @@ namespace orxonox
         return true;
     }
 
-    void SimpleInputState::removeAndDestroyAllHandlers()
-    {
-        for (std::vector<InputTickable*>::iterator it = allHandlers_.begin();
-            it != allHandlers_.end(); ++it)
-            delete *it;
+    //void SimpleInputState::removeAndDestroyAllHandlers()
+    //{
+    //    for (std::vector<InputHandler*>::iterator it = allHandlers_.begin();
+    //        it != allHandlers_.end(); ++it)
+    //        delete *it;
 
-        allHandlers_.clear();
-        keyHandler_ = 0;
-        mouseHandler_ = 0;
-        joyStickHandlerAll_ = 0;
-        for (unsigned int iJoyStick = 0; iJoyStick < joyStickHandler_.size(); ++iJoyStick)
-            joyStickHandler_[iJoyStick] = 0;
+    //    allHandlers_.clear();
+    //    keyHandler_ = 0;
+    //    mouseHandler_ = 0;
+    //    joyStickHandlerAll_ = 0;
+    //    for (unsigned int iJoyStick = 0; iJoyStick < joyStickHandler_.size(); ++iJoyStick)
+    //        joyStickHandler_[iJoyStick] = 0;
 
-        update();
-    }
+    //    update();
+    //}
 
     /**
     @brief
@@ -207,7 +207,7 @@ namespace orxonox
     @return
         True if added, false if handler already existed.
     */
-    bool SimpleInputState::setHandler(InputTickable* handler)
+    bool SimpleInputState::setHandler(InputHandler* handler)
     {
         setKeyHandler(dynamic_cast<KeyHandler*>(handler));
         setMouseHandler(dynamic_cast<MouseHandler*>(handler));
@@ -246,7 +246,7 @@ namespace orxonox
     void SimpleInputState::update()
     {
         // we can use a set to have a list of unique pointers (an object can implement all 3 handlers)
-        std::set<InputTickable*> tempSet;
+        std::set<InputHandler*> tempSet;
         if (keyHandler_)
             tempSet.insert(keyHandler_);
         if (mouseHandler_)
@@ -257,7 +257,7 @@ namespace orxonox
 
         // copy the content of the map back to the actual vector
         allHandlers_.clear();
-        for (std::set<InputTickable*>::const_iterator itHandler = tempSet.begin();
+        for (std::set<InputHandler*>::const_iterator itHandler = tempSet.begin();
             itHandler != tempSet.end(); itHandler++)
             allHandlers_.push_back(*itHandler);
 
@@ -266,5 +266,8 @@ namespace orxonox
         setInputDeviceEnabled(Mouse, (mouseHandler_ != 0));
         for (unsigned int i = 0; i < joyStickHandler_.size(); ++i)
             setInputDeviceEnabled(2 + i, (joyStickHandler_[i] != 0));
+
+        // inform InputManager that there might be changes in EMPTY_HANDLER situation
+        bHandlersChanged_ = true;
     }
 }

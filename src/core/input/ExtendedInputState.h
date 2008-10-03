@@ -60,8 +60,8 @@ namespace orxonox
         bool addJoyStickHandler   (JoyStickHandler* handler);
         bool removeJoyStickHandler(JoyStickHandler* handler);
 
-        bool addHandler(InputTickable* handler);
-        bool removeHandler(InputTickable* handler);
+        bool addHandler(InputHandler* handler);
+        bool removeHandler(InputHandler* handler);
 
         void removeAndDestroyAllHandlers();
 
@@ -95,7 +95,7 @@ namespace orxonox
         std::vector<std::vector<JoyStickHandler*> > joyStickHandlers_;
         std::vector<JoyStickHandler*>               joyStickHandlersAll_;
 
-        std::vector<InputTickable*> allHandlers_;
+        std::vector<InputHandler*> allHandlers_;
     };
 }
 

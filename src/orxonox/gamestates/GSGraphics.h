@@ -64,7 +64,7 @@ namespace orxonox
         // window events from Ogre::WindowEventListener
         void windowMoved       (Ogre::RenderWindow* rw);
         void windowResized     (Ogre::RenderWindow* rw);
-        void windowFocusChanged(Ogre::RenderWindow* rw);
+        void windowFocusChange (Ogre::RenderWindow* rw);
         void windowClosed      (Ogre::RenderWindow* rw);
 
         Ogre::Root*           ogreRoot_;

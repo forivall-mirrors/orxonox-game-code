@@ -69,6 +69,7 @@ namespace orxonox
         , consoleOverlayCursor_(0)
         , consoleOverlayBorder_(0)
         , consoleOverlayTextAreas_(0)
+        , inputState_(0)
     {
         RegisterObject(InGameConsole);
 
@@ -142,6 +143,27 @@ namespace orxonox
         SetConfigValue(scrollSpeed_, 3.0f);
         SetConfigValue(noiseSize_, 1.0f);
         SetConfigValue(cursorSymbol_, '|');
+        SetConfigValue(bHidesAllInput_, false).callback(this, &InGameConsole::bHidesAllInputChanged);
+    }
+
+    /**
+        @brief Called whenever bHidesAllInput_ changes.
+    */
+    void InGameConsole::bHidesAllInputChanged()
+    {
+        if (inputState_)
+        {
+            if (bHidesAllInput_)
+            {
+                inputState_->setMouseHandler(&InputManager::EMPTY_HANDLER);
+                inputState_->setJoyStickHandler(&InputManager::EMPTY_HANDLER);
+            }
+            else
+            {
+                inputState_->setMouseHandler(0);
+                inputState_->setJoyStickHandler(0);
+            }
+        }
     }
 
     /**
@@ -150,8 +172,9 @@ namespace orxonox
     void InGameConsole::initialise()
     {
         // create the corresponding input state
-        InputManager::getInstance().createInputState<SimpleInputState>("console", 40)
-            ->setKeyHandler(Shell::getInstance().getInputBuffer());
+        inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("console", 40);
+        inputState_->setKeyHandler(Shell::getInstance().getInputBuffer());
+        bHidesAllInputChanged();
 
         // create overlay and elements
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
