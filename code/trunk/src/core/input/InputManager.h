@@ -192,10 +192,10 @@ namespace orxonox
         InputManagerState                   internalState_;        //!< Current internal state
 
         // some internally handled states and handlers
-        SimpleInputState*                   stateDetector_;        //!< KeyDetector instance
-        SimpleInputState*                   stateCalibrator_;
         SimpleInputState*                   stateEmpty_;
         ExtendedInputState*                 stateMaster_;          //!< Always active master input state
+        KeyDetector*                        keyDetector_;        //!< KeyDetector instance
+        InputBuffer*                        calibratorCallbackBuffer_;
 
         std::map<std::string, InputState*>  inputStatesByName_;
         std::map<int, InputState*>          inputStatesByPriority_;

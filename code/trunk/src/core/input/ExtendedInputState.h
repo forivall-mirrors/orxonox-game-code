@@ -63,8 +63,6 @@ namespace orxonox
         bool addHandler(InputHandler* handler);
         bool removeHandler(InputHandler* handler);
 
-        void removeAndDestroyAllHandlers();
-
     private:
         ExtendedInputState() { }
         ~ExtendedInputState() { }

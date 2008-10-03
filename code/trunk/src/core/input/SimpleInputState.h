@@ -52,7 +52,6 @@ namespace orxonox
         bool setJoyStickHandler   (JoyStickHandler* handler, unsigned int joyStickID);
         bool setJoyStickHandler   (JoyStickHandler* handler);
         bool setHandler(InputHandler* handler);
-        //void removeAndDestroyAllHandlers();
 
     private:
         SimpleInputState();
