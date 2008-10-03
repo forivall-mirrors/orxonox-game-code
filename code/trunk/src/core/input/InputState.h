@@ -89,7 +89,7 @@ namespace orxonox
         virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
 
     protected:
-        InputState() : priority_(0), bHandlersChanged_(false), executorOnEnter_(0), executorOnLeave_(0) { }
+        InputState() : bHandlersChanged_(false), priority_(0), executorOnEnter_(0), executorOnLeave_(0) { }
         virtual ~InputState() { }
 
         virtual void numberOfJoySticksChanged(unsigned int n) = 0;
