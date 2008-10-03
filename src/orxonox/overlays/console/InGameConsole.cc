@@ -327,8 +327,6 @@ namespace orxonox
         unsigned int pos = Shell::getInstance().getCursorPosition() - inputWindowStart_;
         if (pos > maxCharsPerLine_)
             pos = maxCharsPerLine_;
-        else if (pos < 0)
-            pos = 0;
 
         this->consoleOverlayCursor_->setCaption(std::string(pos,' ') + cursorSymbol_);
         this->consoleOverlayCursor_->setTop((int) this->windowH_ * this->relativeHeight - 24);

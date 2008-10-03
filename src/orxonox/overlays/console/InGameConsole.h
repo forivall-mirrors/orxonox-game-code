@@ -61,7 +61,7 @@ namespace orxonox
         static void closeConsole();
 
     private: // functions
-        InGameConsole(const InGameConsole& other) {}
+        InGameConsole(const InGameConsole& other);
 
         void activate();
         void deactivate();
