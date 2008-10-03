@@ -219,13 +219,13 @@ namespace orxonox
 
     void CommandEvaluation::setEvaluatedParameter(unsigned int index, MultiType param)
     {
-        if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+        if (index < MAX_FUNCTOR_ARGUMENTS)
             this->param_[index] = param;
     }
 
     MultiType CommandEvaluation::getEvaluatedParameter(unsigned int index) const
     {
-        if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+        if (index < MAX_FUNCTOR_ARGUMENTS)
             return this->param_[index];
 
         return MT_null;

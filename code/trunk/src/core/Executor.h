@@ -197,7 +197,7 @@ namespace orxonox
 
             inline MultiType getDefaultValue(unsigned int index) const
             {
-                if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+                if (index < MAX_FUNCTOR_ARGUMENTS)
                     return this->defaultValue_[index];
 
                 return MT_null;
@@ -206,7 +206,7 @@ namespace orxonox
             bool allDefaultValuesSet() const;
             inline bool defaultValueSet(unsigned int index) const
             {
-                if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+                if (index < MAX_FUNCTOR_ARGUMENTS)
                     return this->bAddedDefaultValue_[index];
 
                 return false;

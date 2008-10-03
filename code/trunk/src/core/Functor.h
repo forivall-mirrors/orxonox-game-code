@@ -104,7 +104,7 @@ namespace orxonox
             inline FunctionType getType() const { return this->type_; }
             inline MultiType getReturnvalue() const { return this->returnedValue_; }
 
-            std::string getTypenameParam(unsigned int param) const { return (param >= 0 && param < 5) ? this->typeParam_[param] : ""; }
+            std::string getTypenameParam(unsigned int param) const { return (param < 5) ? this->typeParam_[param] : ""; }
             std::string getTypenameReturnvalue() const { return this->typeReturnvalue_; }
 
             virtual void evaluateParam(unsigned int index, MultiType& param) const = 0;

@@ -131,7 +131,7 @@ namespace orxonox
 
     Executor& Executor::setDescriptionParam(unsigned int param, const std::string& description)
     {
-        if (param >= 0 && param < MAX_FUNCTOR_ARGUMENTS)
+        if (param < MAX_FUNCTOR_ARGUMENTS)
         {
             if (!this->bAddedDescriptionParam_[param])
             {
@@ -149,7 +149,7 @@ namespace orxonox
 
     const std::string& Executor::getDescriptionParam(unsigned int param) const
     {
-        if (param >= 0 && param < MAX_FUNCTOR_ARGUMENTS)
+        if (param < MAX_FUNCTOR_ARGUMENTS)
             return GetLocalisation(this->descriptionParam_[param]);
 
         return this->descriptionParam_[0];
@@ -233,7 +233,7 @@ namespace orxonox
 
     Executor& Executor::setDefaultValue(unsigned int index, const MultiType& param)
     {
-        if (index >= 0 && index < MAX_FUNCTOR_ARGUMENTS)
+        if (index < MAX_FUNCTOR_ARGUMENTS)
         {
             this->defaultValue_[index] = param;
             this->bAddedDefaultValue_[index] = true;
