@@ -61,21 +61,17 @@ SET( ORXONOX_SRC_FILES
   objects/BillboardProjectile.cc
   objects/RotatingProjectile.cc
   objects/ParticleProjectile.cc
-
-  tolua/tolua_bind.cc
 )
 
-GET_TARGET_PROPERTY(TOLUA_EXE tolua_orxonox LOCATION)
-ADD_CUSTOM_COMMAND(
-  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.cc ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.h
-  COMMAND ${TOLUA_EXE} -n Orxonox -o ../../src/orxonox/tolua/tolua_bind.cc -H ../../src/orxonox/tolua/tolua_bind.h ../../src/orxonox/tolua/tolua.pkg
-  DEPENDS
-    tolua_orxonox
-    tolua/tolua.pkg
-    gui/GUIManager.h
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
-)
-	
+INCLUDE(UseTolua)
+TOLUA(Orxonox ORXONOX_SRC_FILES INPUTFILES gui/GUIManager.h)
+
+SET(CORE_SUBDIR src/core)
+SET(CORE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/${CORE_SUBDIR}")
+SET(CORE_BINARY_DIR "${CMAKE_BINARY_DIR}/${CORE_SUBDIR}")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -iquote ${CORE_SOURCE_DIR} -iquote ${CORE_BINARY_DIR}")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -iquote ${CORE_SOURCE_DIR} -iquote ${CORE_BINARY_DIR}")
+
 ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
 
 IF(NETWORKTRAFFIC_TESTING_ENABLED)
@@ -109,4 +105,3 @@ TARGET_LINK_LIBRARIES( orxonox
   audio
   network
 )
-

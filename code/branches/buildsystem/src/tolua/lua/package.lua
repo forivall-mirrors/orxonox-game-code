@@ -212,7 +212,7 @@ function classPackage:header ()
  output('*/\n\n')
 
  if not flags.h then
-  output('#include "../'..self.name..'Prereqs.h"\n')
+  output('#include "'..self.name..'Prereqs.h"\n')
   output('/* Exported function */')
   output('_'..self.name..'Export int  tolua_'..self.name..'_open (lua_State* tolua_S);')
   output('\n')

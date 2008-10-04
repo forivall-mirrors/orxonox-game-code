@@ -35,8 +35,8 @@
 
 #include "lua/lua.hpp"
 
-#include "tolua/tolua++.h"
-#include "tolua/tolua_bind.h"
+#include "tolua++.h"
+#include "tolua_bind.h"
 
 namespace orxonox
 {

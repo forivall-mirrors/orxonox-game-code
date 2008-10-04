@@ -49,21 +49,10 @@ SET(CORE_SRC_FILES
   input/KeyBinder.cc
   input/KeyDetector.cc
   input/SimpleInputState.cc
-
-  tolua/tolua_bind.cc
 )
 
-GET_TARGET_PROPERTY(TOLUA_EXE tolua_orxonox LOCATION)
-ADD_CUSTOM_COMMAND(
-  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.cc ${CMAKE_CURRENT_SOURCE_DIR}/tolua/tolua_bind.h
-  COMMAND ${TOLUA_EXE} -n Core -o ../../src/core/tolua/tolua_bind.cc -H ../../src/core/tolua/tolua_bind.h ../../src/core/tolua/tolua.pkg
-  DEPENDS
-    tolua_orxonox
-    tolua/tolua.pkg
-    Script.h
-    CommandExecutor.h
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
-)
+INCLUDE(UseTolua)
+TOLUA(Core CORE_SRC_FILES INPUTFILES Script.h CommandExecutor.h)
 
 ADD_LIBRARY(core SHARED ${CORE_SRC_FILES})
 
