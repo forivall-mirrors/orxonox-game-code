@@ -511,7 +511,7 @@ struct ConverterSpecialized<std::string, orxonox::Vector2, _Explicit_>
     enum { specialized = true };
     static bool convert(orxonox::Vector2* output, const std::string& input)
     {
-        unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
+        size_t opening_parenthesis, closing_parenthesis = input.find(')');
         if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
         SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
@@ -535,7 +535,7 @@ struct ConverterSpecialized<std::string, orxonox::Vector3, _Explicit_>
     enum { specialized = true };
     static bool convert(orxonox::Vector3* output, const std::string& input)
     {
-        unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
+        size_t opening_parenthesis, closing_parenthesis = input.find(')');
         if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
         SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
@@ -561,7 +561,7 @@ struct ConverterSpecialized<std::string, orxonox::Vector4, _Explicit_>
     enum { specialized = true };
     static bool convert(orxonox::Vector4* output, const std::string& input)
     {
-        unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
+        size_t opening_parenthesis, closing_parenthesis = input.find(')');
         if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
         SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
@@ -589,7 +589,7 @@ struct ConverterSpecialized<std::string, orxonox::Quaternion, _Explicit_>
     enum { specialized = true };
     static bool convert(orxonox::Quaternion* output, const std::string& input)
     {
-        unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
+        size_t opening_parenthesis, closing_parenthesis = input.find(')');
         if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
         SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
@@ -617,7 +617,7 @@ struct ConverterSpecialized<std::string, orxonox::ColourValue, _Explicit_>
     enum { specialized = true };
     static bool convert(orxonox::ColourValue* output, const std::string& input)
     {
-        unsigned int opening_parenthesis, closing_parenthesis = input.find(')');
+        size_t opening_parenthesis, closing_parenthesis = input.find(')');
         if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
 
         SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');

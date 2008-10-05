@@ -47,7 +47,7 @@ std::string blankString = "";
 */
 void strip(std::string* str)
 {
-    unsigned int pos;
+    size_t pos;
     while ((pos = (*str).find(" ")) < (*str).length())
         (*str).erase(pos, 1);
     while ((pos = (*str).find("\t")) < (*str).length())
@@ -75,10 +75,10 @@ std::string getStripped(const std::string& str)
 */
 std::string removeTrailingWhitespaces(const std::string& str)
 {
-    unsigned int pos1 = 0;
+    size_t pos1 = 0;
     int pos2 = str.size() - 1;
     for (; pos1 < str.size() && (str[pos1] == ' ' || str[pos1] == '\t' || str[pos1] == '\n'); pos1++);
-    for (; pos2 > 0          && (str[pos2] == ' ' || str[pos2] == '\t' || str[pos2] == '\n'); pos2--);
+    for (; pos2 != 0         && (str[pos2] == ' ' || str[pos2] == '\t' || str[pos2] == '\n'); pos2--);
     return str.substr(pos1, pos2 - pos1 + 1);
 }
 
@@ -88,14 +88,14 @@ std::string removeTrailingWhitespaces(const std::string& str)
     @param start The startposition
     @return The position of the next quote (std::string::npos if there is no next quote)
 */
-unsigned int getNextQuote(const std::string& str, unsigned int start)
+size_t getNextQuote(const std::string& str, size_t start)
 {
-    unsigned int quote = start - 1;
+    size_t quote = start - 1;
 
     while ((quote = str.find('\"', quote + 1)) != std::string::npos)
     {
-        unsigned int backslash = quote;
-        unsigned int numbackslashes = 0;
+        size_t backslash = quote;
+        size_t numbackslashes = 0;
         for (; backslash > 0; backslash--, numbackslashes++)
             if (str[backslash - 1] != '\\')
                 break;
@@ -113,13 +113,13 @@ unsigned int getNextQuote(const std::string& str, unsigned int start)
     @param pos The position to check
     @return True if pos is between two quotes
 */
-bool isBetweenQuotes(const std::string& str, unsigned int pos)
+bool isBetweenQuotes(const std::string& str, size_t pos)
 {
     if (pos == std::string::npos)
         return false;
 
-    unsigned int quotecount = 0;
-    unsigned int quote = (unsigned int)-1;
+    size_t quotecount = 0;
+    size_t quote = (size_t)-1;
     while ((quote = getNextQuote(str, quote + 1)) < pos)
     {
         if (quote == pos)
@@ -140,8 +140,8 @@ bool isBetweenQuotes(const std::string& str, unsigned int pos)
 */
 bool hasStringBetweenQuotes(const std::string& str)
 {
-    unsigned int pos1 = getNextQuote(str, 0);
-    unsigned int pos2 = getNextQuote(str, pos1 + 1);
+    size_t pos1 = getNextQuote(str, 0);
+    size_t pos2 = getNextQuote(str, pos1 + 1);
     return (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1 + 1);
 }
 
@@ -152,8 +152,8 @@ bool hasStringBetweenQuotes(const std::string& str)
 */
 std::string getStringBetweenQuotes(const std::string& str)
 {
-    unsigned int pos1 = getNextQuote(str, 0);
-    unsigned int pos2 = getNextQuote(str, pos1 + 1);
+    size_t pos1 = getNextQuote(str, 0);
+    size_t pos2 = getNextQuote(str, pos1 + 1);
     if (pos1 != std::string::npos && pos2 != std::string::npos)
         return str.substr(pos1, pos2 - pos1 + 1);
     else
@@ -167,10 +167,10 @@ std::string getStringBetweenQuotes(const std::string& str)
 */
 std::string stripEnclosingQuotes(const std::string& str)
 {
-    unsigned int start = std::string::npos;
-    unsigned int end = 0;
+    size_t start = std::string::npos;
+    size_t end = 0;
 
-    for (unsigned int pos = 0; (pos < str.size()) && (pos < std::string::npos); pos++)
+    for (size_t pos = 0; (pos < str.size()) && (pos < std::string::npos); pos++)
     {
         if (str[pos] == '"')
         {
@@ -182,7 +182,7 @@ std::string stripEnclosingQuotes(const std::string& str)
             return str;
     }
 
-    for (unsigned int pos = str.size() - 1; pos < std::string::npos; pos--)
+    for (size_t pos = str.size() - 1; pos < std::string::npos; pos--)
     {
         if (str[pos] == '"')
         {
@@ -289,16 +289,16 @@ std::string addSlashes(const std::string& str)
 {
     std::string output = str;
 
-    for (unsigned int pos = 0; (pos = output.find('\\', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\\\"); }
-    for (unsigned int pos = 0; (pos = output.find('\n', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\n"); }
-    for (unsigned int pos = 0; (pos = output.find('\t', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\t"); }
-    for (unsigned int pos = 0; (pos = output.find('\v', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\v"); }
-    for (unsigned int pos = 0; (pos = output.find('\b', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\b"); }
-    for (unsigned int pos = 0; (pos = output.find('\r', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\r"); }
-    for (unsigned int pos = 0; (pos = output.find('\f', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\f"); }
-    for (unsigned int pos = 0; (pos = output.find('\a', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\a"); }
-    for (unsigned int pos = 0; (pos = output.find('"', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\\""); }
-    for (unsigned int pos = 0; (pos = output.find('\0', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\0"); }
+    for (size_t pos = 0; (pos = output.find('\\', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\\\"); }
+    for (size_t pos = 0; (pos = output.find('\n', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\n"); }
+    for (size_t pos = 0; (pos = output.find('\t', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\t"); }
+    for (size_t pos = 0; (pos = output.find('\v', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\v"); }
+    for (size_t pos = 0; (pos = output.find('\b', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\b"); }
+    for (size_t pos = 0; (pos = output.find('\r', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\r"); }
+    for (size_t pos = 0; (pos = output.find('\f', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\f"); }
+    for (size_t pos = 0; (pos = output.find('\a', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\a"); }
+    for (size_t pos = 0; (pos = output.find('"', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\\""); }
+    for (size_t pos = 0; (pos = output.find('\0', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\0"); }
 
     return output;
 }
@@ -314,7 +314,7 @@ std::string removeSlashes(const std::string& str)
         return str;
 
     std::string output = "";
-    for (unsigned int pos = 0; pos < str.size() - 1; )
+    for (size_t pos = 0; pos < str.size() - 1; )
     {
         if (str[pos] == '\\')
         {
@@ -344,7 +344,7 @@ std::string removeSlashes(const std::string& str)
 */
 void lowercase(std::string* str)
 {
-    for (unsigned int i = 0; i < str->size(); ++i)
+    for (size_t i = 0; i < str->size(); ++i)
     {
         (*str)[i] = (char)tolower((*str)[i]);
     }
@@ -368,7 +368,7 @@ std::string getLowercase(const std::string& str)
 */
 void uppercase(std::string* str)
 {
-    for (unsigned int i = 0; i < str->size(); ++i)
+    for (size_t i = 0; i < str->size(); ++i)
     {
         (*str)[i] = (char)toupper((*str)[i]);
     }
@@ -420,7 +420,7 @@ int nocaseCmp(const std::string& s1, const std::string& s2)
     @param s2 Second string
     @param len Maximal number of chars to compare
 */
-int nocaseCmp(const std::string& s1, const std::string& s2, unsigned int len)
+int nocaseCmp(const std::string& s1, const std::string& s2, size_t len)
 {
     if (len == 0)
         return 0;
@@ -465,7 +465,7 @@ std::string getComment(const std::string& str)
     @param str The string
     @return The position
 */
-unsigned int getCommentPosition(const std::string& str)
+size_t getCommentPosition(const std::string& str)
 {
     return getNextCommentPosition(str, 0);
 }
@@ -476,9 +476,9 @@ unsigned int getCommentPosition(const std::string& str)
     @param start The startposition
     @return The position
 */
-unsigned int getNextCommentPosition(const std::string& str, unsigned int start)
+size_t getNextCommentPosition(const std::string& str, size_t start)
 {
-    for (unsigned int i = start; i < str.size(); i++)
+    for (size_t i = start; i < str.size(); i++)
         if (isComment(str.substr(i)))
             return i;
 

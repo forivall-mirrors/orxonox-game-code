@@ -55,7 +55,7 @@ namespace orxonox
         }
         else
         {
-            unsigned int pos = name.find("::");
+            size_t pos = name.find("::");
             std::string firstPart = name;
             std::string secondPart;
 
