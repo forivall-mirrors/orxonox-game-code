@@ -100,7 +100,7 @@ namespace orxonox
         //! Actual key bindings for keys on the keyboard
         Button keys_            [KeyCode::numberOfKeys];
         //! Number of mouse buttons in KeyBinder (+4)
-        static const int numberOfMouseButtons_ = MouseButtonCode::numberOfButtons + 4;
+        static const unsigned int numberOfMouseButtons_ = MouseButtonCode::numberOfButtons + 4;
         //! Actual key bindings for mouse buttons including the wheel(s)
         Button mouseButtons_    [numberOfMouseButtons_];
         //! Actual key bindings for mouse axes
