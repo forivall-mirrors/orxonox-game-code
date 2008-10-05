@@ -1,5 +1,3 @@
-INCLUDE_DIRECTORIES(.)
-
 SET( LUA_SRC_FILES
   lapi.c
   lauxlib.c
