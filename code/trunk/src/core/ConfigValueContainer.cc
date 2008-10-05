@@ -49,11 +49,11 @@ namespace orxonox
     /**
         @brief Initializes the ConfigValueContainer with defaultvalues.
     */
-    void ConfigValueContainer::init(ConfigFileType type, Identifier* identifier, const std::string& varname)
+    void ConfigValueContainer::init(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname)
     {
         this->type_ = type;
         this->identifier_ = identifier;
-        this->sectionname_ = identifier->getName();
+        this->sectionname_ = sectionname;
         this->varname_ = varname;
         this->callback_ = 0;
         this->bContainerIsNew_ = true;
@@ -330,7 +330,7 @@ namespace orxonox
     {
         if (!this->bAddedDescription_)
         {
-            this->description_ = std::string("ConfigValueDescription::" + this->identifier_->getName() + "::" + this->varname_);
+            this->description_ = std::string("ConfigValueDescription::" + this->sectionname_ + "::" + this->varname_);
             AddLanguageEntry(this->description_, description);
             this->bAddedDescription_ = true;
         }

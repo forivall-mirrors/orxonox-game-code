@@ -44,8 +44,7 @@ namespace orxonox
     {
         CFT_Settings,
         CFT_Keybindings,
-        CFT_JoyStickCalibration,
-        CFT_KeyNames
+        CFT_JoyStickCalibration
     };
 
 

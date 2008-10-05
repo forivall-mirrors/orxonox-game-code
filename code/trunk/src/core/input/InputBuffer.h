@@ -43,7 +43,7 @@ namespace orxonox
     {
     public:
         BaseInputBufferListenerTuple(bool bListenToAllChanges, bool bOnlySingleInput,
-            bool trueKeyFalseChar, char _char, KeyCode::Enum key)
+            bool trueKeyFalseChar, char _char, KeyCode::ByEnum key)
             : bListenToAllChanges_(bListenToAllChanges), bOnlySingleInput_(bOnlySingleInput),
               trueKeyFalseChar_(trueKeyFalseChar), char_(_char), key_(key)
         { }
@@ -53,7 +53,7 @@ namespace orxonox
         bool bOnlySingleInput_;
         bool trueKeyFalseChar_;
         char char_;
-        KeyCode::Enum key_;
+        KeyCode::ByEnum key_;
     };
 
     template <class T>
@@ -61,7 +61,7 @@ namespace orxonox
     {
     public:
         InputBufferListenerTuple(T* listener, void (T::*function)(), bool bListenToAllChanges,
-            bool bOnlySingleInput, bool trueKeyFalseChar, char _char, KeyCode::Enum key)
+            bool bOnlySingleInput, bool trueKeyFalseChar, char _char, KeyCode::ByEnum key)
             : BaseInputBufferListenerTuple(bListenToAllChanges, bOnlySingleInput, trueKeyFalseChar, _char, key),
               listener_(listener), function_(function)
         { }
@@ -108,13 +108,13 @@ namespace orxonox
             }
 
             template <class T>
-            void registerListener(T* listener, void (T::*function)(), KeyCode::Enum key)
+            void registerListener(T* listener, void (T::*function)(), KeyCode::ByEnum key)
             {
                 InputBufferListenerTuple<T>* newTuple = new InputBufferListenerTuple<T>(listener, (void (T::*)())function, false, true, true, '\0', key);
                 this->listeners_.insert(this->listeners_.end(), newTuple);
             }
             template <class T>
-            void registerListener(T* listener, void (T::*function)() const, KeyCode::Enum key)
+            void registerListener(T* listener, void (T::*function)() const, KeyCode::ByEnum key)
             {
                 InputBufferListenerTuple<T>* newTuple = new InputBufferListenerTuple<T>(listener, (void (T::*)())function, false, true, true, '\0', key);
                 this->listeners_.insert(this->listeners_.end(), newTuple);
@@ -177,7 +177,7 @@ namespace orxonox
             std::string allowedChars_;
             unsigned int cursor_;
 
-            KeyCode::Enum lastKey_;
+            KeyCode::ByEnum lastKey_;
             float timeSinceKeyPressed_;
             float timeSinceKeyRepeated_;
             int keysToRepeat_;

@@ -113,6 +113,7 @@ namespace orxonox
         inputManager_->initialise(windowHnd, renderWindow_->getWidth(), renderWindow_->getHeight(), true);
         // Configure master input state with a KeyBinder
         //masterKeyBinder_ = new KeyBinder();
+        //masterKeyBinder_->loadBindings("master_keybindings.ini");
         //inputManager_->getMasterInputState()->addKeyHandler(masterKeyBinder_);
 
         // Load the InGameConsole

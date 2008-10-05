@@ -39,23 +39,29 @@
 
 #include <string>
 #include <vector>
+#include "InputCommands.h"
 
 namespace orxonox
 {
     class _CoreExport Button
     {
     public:
-        Button() { nCommands_[0]=0; nCommands_[1]=0; nCommands_[2]=0; clear(); }
+        Button();
         virtual ~Button() { clear(); }
         virtual void clear();
         virtual bool addParamCommand(ParamCommand* command) { return false; }
-        void parse(std::vector<BufferedParamCommand*>& paramCommandBuffer);
+        void parse();
+        void readConfigValue();
         bool execute(KeybindMode::Enum mode, float abs = 1.0f, float rel = 1.0f);
 
+        //! Container to allow for better configValue support
+        ConfigValueContainer* configContainer_;
         //! The configured string value
         std::string bindingString_;
         //! Name of the trigger as strings
         std::string name_;
+        //! Name of the group of input triggers
+        std::string groupName_;
         //! Basic commands for OnPress, OnHold and OnRelease
         BaseCommand** commands_[3];
         //! Number of basic commands
@@ -63,10 +69,22 @@ namespace orxonox
         //! Says how much it takes for an analog axis to trigger a button
         //! Note: This variable is here to have only one parse() function.
         float buttonThreshold_;
+        bool bButtonThresholdUser_;
+        //! Pointer to the list of parametrised commands
+        std::vector<BufferedParamCommand*>* paramCommandBuffer_;
 
     private:
         void parseError(std::string message, bool serious);
     };
+
+    inline bool Button::execute(KeybindMode::Enum mode, float abs, float rel)
+    {
+        // execute all the parsed commands in the string
+        for (unsigned int iCommand = 0; iCommand < nCommands_[mode]; iCommand++)
+            commands_[mode][iCommand]->execute(abs, rel);
+        return true;
+    }
+
 }
 
 #endif /* _Button_H__ */

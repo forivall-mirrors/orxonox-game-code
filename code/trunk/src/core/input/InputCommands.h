@@ -67,6 +67,17 @@ namespace orxonox
         CommandEvaluation evaluation_;
     };
 
+    /**
+    @brief
+        Executes a simple command with no additional paramters.
+    @return 
+        True if command execution was successful, false otherwise.
+    */
+    inline bool SimpleCommand::execute(float abs, float rel)
+    {
+        return evaluation_.execute();
+    }
+
     class _CoreExport ParamCommand : public BaseCommand
     {
     public:

@@ -33,6 +33,7 @@
 */
 
 #include "Button.h"
+
 #include "util/Convert.h"
 #include "util/SubString.h"
 #include "util/String.h"
@@ -40,10 +41,26 @@
 #include "core/ConsoleCommand.h"
 #include "core/CommandEvaluation.h"
 #include "core/CommandExecutor.h"
-#include "InputCommands.h"
+#include "core/ConfigValueContainer.h"
 
 namespace orxonox
 {
+    /**
+    @note
+        bButtonThresholdUser_: We set it to true so that setConfigValues in KeyBinder sets the value
+        correctly the first time. It is then set to false first and changed later in Button::parse().
+    */
+    Button::Button()
+        : configContainer_(0)
+        , bButtonThresholdUser_(false)
+        , paramCommandBuffer_(0)
+    {
+        nCommands_[0]=0;
+        nCommands_[1]=0;
+        nCommands_[2]=0;
+        clear();
+    }
+
     void Button::clear()
     {
         for (unsigned int j = 0; j < 3; j++)
@@ -64,17 +81,30 @@ namespace orxonox
         }
     }
 
-    void Button::parse(std::vector<BufferedParamCommand*>& paramCommandBuffer)
+    void Button::readConfigValue()
     {
-        if (isEmpty(bindingString_))
+        // create/get ConfigValueContainer
+        if (!configContainer_)
         {
-            clear();
-            return;
+            configContainer_ = new ConfigValueContainer(CFT_Keybindings, 0, groupName_, name_, "", name_);
+            configContainer_->callback(this, &Button::parse);
         }
+        configContainer_->getValue(&bindingString_, this);
+    }
+
+    void Button::parse()
+    {
+        // delete all commands
+        clear();
+
+        if (isEmpty(bindingString_))
+            return;
+
+        // reset this to false first when parsing (was true before when parsing for the first time)
+        bButtonThresholdUser_ = false;
 
         // use std::vector for a temporary dynamic array
         std::vector<BaseCommand*> commands[3];
-
 
         // separate the commands
         SubString commandStrings(bindingString_, "|", SubString::WhiteSpaces, false,
@@ -111,6 +141,8 @@ namespace orxonox
                         if (!convertValue(&buttonThreshold_, tokens[iToken + 1]))
                             parseError("Could not parse 'ButtonThreshold' argument. \
                                 Switching to default value.", true);
+                        else
+                            this->bButtonThresholdUser_ = true;
                     }
                     else if (token == "scale")
                     {
@@ -151,20 +183,20 @@ namespace orxonox
                     cmd->bRelative_ = eval.getConsoleCommand()->getIsAxisRelative();
 
                     // add command to the buffer if not yet existing
-                    for (unsigned int iParamCmd = 0; iParamCmd < paramCommandBuffer.size(); iParamCmd++)
+                    for (unsigned int iParamCmd = 0; iParamCmd < paramCommandBuffer_->size(); iParamCmd++)
                     {
-                        if (getLowercase(paramCommandBuffer[iParamCmd]->evaluation_.getOriginalCommand())
+                        if (getLowercase((*paramCommandBuffer_)[iParamCmd]->evaluation_.getOriginalCommand())
                             == getLowercase(commandStr))
                         {
                             // already in list
-                            cmd->paramCommand_ = paramCommandBuffer[iParamCmd];
+                            cmd->paramCommand_ = (*paramCommandBuffer_)[iParamCmd];
                             break;
                         }
                     }
                     if (cmd->paramCommand_ == 0)
                     {
                         cmd->paramCommand_ = new BufferedParamCommand();
-                        paramCommandBuffer.push_back(cmd->paramCommand_);
+                        paramCommandBuffer_->push_back(cmd->paramCommand_);
                         cmd->paramCommand_->evaluation_ = eval;
                         cmd->paramCommand_->paramIndex_ = paramIndex;
                     }
@@ -205,14 +237,6 @@ namespace orxonox
             else
                 commands_[j] = 0;
         }
-    }
-
-    bool Button::execute(KeybindMode::Enum mode, float abs, float rel)
-    {
-        // execute all the parsed commands in the string
-        for (unsigned int iCommand = 0; iCommand < nCommands_[mode]; iCommand++)
-            commands_[mode][iCommand]->execute(abs, rel);
-        return true;
     }
 
     inline void Button::parseError(std::string message, bool serious)

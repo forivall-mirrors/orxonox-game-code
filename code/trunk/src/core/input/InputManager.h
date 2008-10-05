@@ -109,11 +109,12 @@ namespace orxonox
 
         void clearBuffers();
 
-        int  numberOfKeyboards() { return keyboard_ ? 1 : 0; }
-        int  numberOfMice()      { return mouse_    ? 1 : 0; }
-        int  numberOfJoySticks() { return joySticksSize_; }
+        unsigned int  numberOfKeyboards() { return keyboard_ ? 1 : 0; }
+        unsigned int  numberOfMice()      { return mouse_    ? 1 : 0; }
+        unsigned int  numberOfJoySticks() { return joySticksSize_; }
 
         void setWindowExtents(const int width, const int height);
+        void setKeyDetectorCallback(const std::string& command);
 
         template <class T>
         T* createInputState(const std::string& name, int priority);
@@ -131,8 +132,6 @@ namespace orxonox
         static InputManager* getInstancePtr() { return singletonRef_s; }
 
         // console commands
-        static void storeKeyStroke(const std::string& name);
-        static void keyBind(const std::string& command);
         static void calibrate();
         static void reload(bool joyStickSupport = true);
 
@@ -147,7 +146,7 @@ namespace orxonox
         void _initialiseKeyboard();
         void _initialiseMouse();
         void _initialiseJoySticks();
-        void _redimensionLists();
+        void _configureNumberOfJoySticks();
 
         void _destroyKeyboard();
         void _destroyMouse();
@@ -222,8 +221,8 @@ namespace orxonox
         std::vector<JoyStickCalibration>    joySticksCalibration_; 
 
         std::vector<Key>                    keysDown_;
-        std::vector<MouseButton::Enum>      mouseButtonsDown_;
-        std::vector<std::vector<JoyStickButton::Enum> >  joyStickButtonsDown_;
+        std::vector<MouseButtonCode::ByEnum>      mouseButtonsDown_;
+        std::vector<std::vector<JoyStickButtonCode::ByEnum> >  joyStickButtonsDown_;
 
         static std::string                  bindingCommmandString_s;
         static InputManager*                singletonRef_s;

@@ -64,21 +64,6 @@ namespace orxonox
     }
 
     // ###############################
-    // #####    SimpleCommand    #####
-    // ###############################
-
-    /**
-    @brief
-        Executes a simple command with no additional paramters.
-    @return 
-        True if command execution was successful, false otherwise.
-    */
-    bool SimpleCommand::execute(float abs, float rel)
-    {
-        return evaluation_.execute();
-    }
-
-    // ###############################
     // #####    ParamCommand     #####
     // ###############################
 

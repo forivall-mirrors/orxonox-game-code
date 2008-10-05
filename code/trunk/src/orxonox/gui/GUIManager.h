@@ -92,9 +92,9 @@ namespace orxonox // tolua_export
         void keyHeld    (const KeyEvent& evt)
         { }
 
-        void mouseButtonPressed (MouseButton::Enum id);
-        void mouseButtonReleased(MouseButton::Enum id);
-        void mouseButtonHeld    (MouseButton::Enum id)
+        void mouseButtonPressed (MouseButtonCode::ByEnum id);
+        void mouseButtonReleased(MouseButtonCode::ByEnum id);
+        void mouseButtonHeld    (MouseButtonCode::ByEnum id)
         { }
         void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
         { guiSystem_->injectMouseMove(rel.x, rel.y); }
@@ -122,7 +122,7 @@ namespace orxonox // tolua_export
 
         State state_;
 
-        static CEGUI::MouseButton convertButton(MouseButton::Enum button);
+        static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
 
         static GUIManager*        singletonRef_s;
     }; // tolua_export

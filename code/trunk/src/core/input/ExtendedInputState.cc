@@ -91,19 +91,19 @@ namespace orxonox
             mouseHandlers_[i]->mouseScrolled(abs, rel);
     }
 
-    void ExtendedInputState::mouseButtonPressed(MouseButton::Enum id)
+    void ExtendedInputState::mouseButtonPressed(MouseButtonCode::ByEnum id)
     {
         for (unsigned int i = 0; i < mouseHandlers_.size(); i++)
             mouseHandlers_[i]->mouseButtonPressed(id);
     }
 
-    void ExtendedInputState::mouseButtonReleased(MouseButton::Enum id)
+    void ExtendedInputState::mouseButtonReleased(MouseButtonCode::ByEnum id)
     {
         for (unsigned int i = 0; i < mouseHandlers_.size(); i++)
             mouseHandlers_[i]->mouseButtonReleased(id);
     }
 
-    void ExtendedInputState::mouseButtonHeld(MouseButton::Enum id)
+    void ExtendedInputState::mouseButtonHeld(MouseButtonCode::ByEnum id)
     {
         for (unsigned int i = 0; i < mouseHandlers_.size(); i++)
             mouseHandlers_[i]->mouseButtonHeld(id);
@@ -117,21 +117,21 @@ namespace orxonox
             joyStickHandlers_[joyStickID][i]->joyStickAxisMoved(joyStickID, axis, value);
     }
 
-    void ExtendedInputState::joyStickButtonPressed(unsigned int joyStickID, JoyStickButton::Enum id)
+    void ExtendedInputState::joyStickButtonPressed(unsigned int joyStickID, JoyStickButtonCode::ByEnum id)
     {
         assert(joyStickID < joyStickHandlers_.size());
         for (unsigned int i = 0; i < joyStickHandlers_[joyStickID].size(); i++)
             joyStickHandlers_[joyStickID][i]->joyStickButtonPressed(joyStickID, id);
     }
 
-    void ExtendedInputState::joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id)
+    void ExtendedInputState::joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id)
     {
         assert(joyStickID < joyStickHandlers_.size());
         for (unsigned int i = 0; i < joyStickHandlers_[joyStickID].size(); i++)
             joyStickHandlers_[joyStickID][i]->joyStickButtonReleased(joyStickID, id);
     }
 
-    void ExtendedInputState::joyStickButtonHeld(unsigned int joyStickID, JoyStickButton::Enum id)
+    void ExtendedInputState::joyStickButtonHeld(unsigned int joyStickID, JoyStickButtonCode::ByEnum id)
     {
         assert(joyStickID < joyStickHandlers_.size());
         for (unsigned int i = 0; i < joyStickHandlers_[joyStickID].size(); i++)

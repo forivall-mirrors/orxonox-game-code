@@ -37,6 +37,7 @@
 #include "core/CorePrereqs.h"
 
 #include <vector>
+#include <cassert>
 #include "InputInterfaces.h"
 #include "InputState.h"
 
@@ -64,15 +65,15 @@ namespace orxonox
         void keyReleased(const KeyEvent& evt);
         void keyHeld    (const KeyEvent& evt);
 
-        void mouseButtonPressed (MouseButton::Enum id);
-        void mouseButtonReleased(MouseButton::Enum id);
-        void mouseButtonHeld    (MouseButton::Enum id);
+        void mouseButtonPressed (MouseButtonCode::ByEnum id);
+        void mouseButtonReleased(MouseButtonCode::ByEnum id);
+        void mouseButtonHeld    (MouseButtonCode::ByEnum id);
         void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
         void mouseScrolled      (int abs, int rel);
 
-        void joyStickButtonPressed (unsigned int joyStickID, JoyStickButton::Enum id);
-        void joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id);
-        void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButton::Enum id);
+        void joyStickButtonPressed (unsigned int joyStickID, JoyStickButtonCode::ByEnum id);
+        void joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id);
+        void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id);
         void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value);
 
         void update();
@@ -82,8 +83,107 @@ namespace orxonox
         MouseHandler*                 mouseHandler_;
         std::vector<JoyStickHandler*> joyStickHandler_;
         JoyStickHandler*              joyStickHandlerAll_;
-        std::vector<InputHandler*>   allHandlers_;
+        std::vector<InputHandler*>    allHandlers_;
     };
+
+    inline void SimpleInputState::tickInput(float dt)
+    {
+        for (unsigned int i = 0; i < allHandlers_.size(); ++i)
+        {
+            allHandlers_[i]->tickInput(dt);
+        }
+    }
+
+    inline void SimpleInputState::tickInput(float dt, unsigned int device)
+    {
+        switch (device)
+        {
+        case InputDevice::Keyboard:
+            if (keyHandler_)
+                keyHandler_->tickKey(dt);
+            break;
+
+        case InputDevice::Mouse:
+            if (mouseHandler_)
+                mouseHandler_->tickMouse(dt);
+            break;
+
+        default: // joy sticks
+            if (joyStickHandler_[device - 2])
+                joyStickHandler_[device - 2]->tickJoyStick(dt, device - 2);
+            break;
+        }
+    }
+
+    inline void SimpleInputState::keyReleased(const KeyEvent& evt)
+    {
+        if (keyHandler_)
+            keyHandler_->keyReleased(evt);
+    }
+
+    inline void SimpleInputState::keyHeld(const KeyEvent& evt)
+    {
+        if (keyHandler_)
+            keyHandler_->keyHeld(evt);
+    }
+
+    inline void SimpleInputState::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
+    {
+        if (mouseHandler_)
+            mouseHandler_->mouseMoved(abs, rel, clippingSize);
+    }
+
+    inline void SimpleInputState::mouseScrolled(int abs, int rel)
+    {
+        if (mouseHandler_)
+            mouseHandler_->mouseScrolled(abs, rel);
+    }
+
+    inline void SimpleInputState::mouseButtonPressed(MouseButtonCode::ByEnum id)
+    {
+        if (mouseHandler_)
+            mouseHandler_->mouseButtonPressed(id);
+    }
+
+    inline void SimpleInputState::mouseButtonReleased(MouseButtonCode::ByEnum id)
+    {
+        if (mouseHandler_)
+            mouseHandler_->mouseButtonReleased(id);
+    }
+
+    inline void SimpleInputState::mouseButtonHeld(MouseButtonCode::ByEnum id)
+    {
+        if (mouseHandler_)
+            mouseHandler_->mouseButtonHeld(id);
+    }
+
+    inline void SimpleInputState::joyStickAxisMoved(unsigned int joyStickID, unsigned int axis, float value)
+    {
+        assert(joyStickID < joyStickHandler_.size());
+        if (joyStickHandler_[joyStickID])
+            joyStickHandler_[joyStickID]->joyStickAxisMoved(joyStickID, axis, value);
+    }
+
+    inline void SimpleInputState::joyStickButtonPressed(unsigned int joyStickID, JoyStickButtonCode::ByEnum id)
+    {
+        assert(joyStickID < joyStickHandler_.size());
+        if (joyStickHandler_[joyStickID])
+            joyStickHandler_[joyStickID]->joyStickButtonPressed(joyStickID, id);
+    }
+
+    inline void SimpleInputState::joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id)
+    {
+        assert(joyStickID < joyStickHandler_.size());
+        if (joyStickHandler_[joyStickID])
+            joyStickHandler_[joyStickID]->joyStickButtonReleased(joyStickID, id);
+    }
+
+    inline void SimpleInputState::joyStickButtonHeld(unsigned int joyStickID, JoyStickButtonCode::ByEnum id)
+    {
+        assert(joyStickID < joyStickHandler_.size());
+        if (joyStickHandler_[joyStickID])
+            joyStickHandler_[joyStickID]->joyStickButtonHeld(joyStickID, id);
+    }
 }
 
 #endif /* _SimpleInputState_H__ */
