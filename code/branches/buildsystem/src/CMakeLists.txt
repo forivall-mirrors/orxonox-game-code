@@ -1,5 +1,6 @@
 INCLUDE_DIRECTORIES(.)
 INCLUDE_DIRECTORIES(..)
+INCLUDE_DIRECTORIES(ois) # for ois library subfolders
 INCLUDE_DIRECTORIES(orxonox)
 INCLUDE_DIRECTORIES(lua) # for tolua library and generator
 
