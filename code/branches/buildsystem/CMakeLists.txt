@@ -46,6 +46,12 @@ ENDIF(IS_TARDIS)
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR}/bin/lib)
 
+# Set PATH on Windows, so it finds the DLLs
+IF(CMAKE_HOST_WIN32)
+  FILE(TO_NATIVE_PATH "${LIBRARY_OUTPUT_PATH}" _native_library_path)
+  SET(ENV{PATH} "$ENV{PATH}:${_native_library_path}")
+ENDIF(CMAKE_HOST_WIN32)
+
 # Global compiler/linker flags. force -O2!
 SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O0 -Wall -g -ggdb")
 SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
@@ -128,4 +134,3 @@ INCLUDE_DIRECTORIES(
 
 # Add main source dir
 ADD_SUBDIRECTORY(src)
-
