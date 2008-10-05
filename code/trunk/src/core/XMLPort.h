@@ -82,7 +82,7 @@
     You don't have to use this, if there exist only one function with the given name.
 */
 #define XMLPortParamTemplate(classname, paramname, loadfunction, savefunction, xmlelement, mode, ...) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode)
+    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode)
 
 // --------------------
 // XMLPortParamLoadOnly
@@ -104,7 +104,7 @@
     @brief This is the same as XMLPortParamTemplate, but for load-only attributes (see XMLPortParamLoadOnly).
 */
 #define XMLPortParamLoadOnlyTemplate(classname, paramname, loadfunction, xmlelement, mode, ...) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), 0, xmlelement, mode)
+    XMLPortParamGeneric(xmlcontainer##loadfunction##0, classname, classname, this, paramname, orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), 0, xmlelement, mode)
 
 // ------------------
 // XMLPortParamExtern
@@ -134,7 +134,7 @@
     @brief This is the same as XMLPortParamTemplate, but for extern attributes (see XMLPortParamExtern).
 */
 #define XMLPortParamExternTemplate(classname, externclass, object, paramname, loadfunction, savefunction, xmlelement, mode, ...) \
-    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, externclass, object, paramname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&externclass::loadfunction), std::string( #externclass ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&externclass::savefunction), std::string( #externclass ) + "::" + #savefunction), xmlelement, mode);
+    XMLPortParamGeneric(xmlcontainer##loadfunction##savefunction, classname, externclass, object, paramname, orxonox::createExecutor(orxonox::createFunctor<externclass, __VA_ARGS__ >(&externclass::loadfunction), std::string( #externclass ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&externclass::savefunction), std::string( #externclass ) + "::" + #savefunction), xmlelement, mode);
 
 // -------------------
 // XMLPortParamGeneric

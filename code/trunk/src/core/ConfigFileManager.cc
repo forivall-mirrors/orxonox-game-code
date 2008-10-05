@@ -254,9 +254,9 @@ namespace orxonox
             std::string temp = getStripped(line);
             if (!isEmpty(temp) && !isComment(temp))
             {
-                unsigned int   pos1 = temp.find('[');
+                size_t   pos1 = temp.find('[');
                 if (pos1 == 0) pos1 = line.find('['); else pos1 = std::string::npos;
-                unsigned int   pos2 = line.find(']');
+                size_t   pos2 = line.find(']');
 
                 if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1 + 1)
                 {
@@ -281,14 +281,14 @@ namespace orxonox
                 }
                 else
                 {
-                    unsigned int pos1 = line.find('=');
+                    size_t pos1 = line.find('=');
 
                     if (pos1 != std::string::npos && pos1 > 0)
                     {
                         // New entry
-                        unsigned int pos2 = line.find('[');
-                        unsigned int pos3 = line.find(']');
-                        unsigned int commentposition = getNextCommentPosition(line, pos1 + 1);
+                        size_t pos2 = line.find('[');
+                        size_t pos3 = line.find(']');
+                        size_t commentposition = getNextCommentPosition(line, pos1 + 1);
                         while (isBetweenQuotes(line, commentposition))
                         {
                             commentposition = getNextCommentPosition(line, commentposition + 1);
