@@ -51,7 +51,7 @@
     orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, identifier##varname, #varname, defvalue, varname); \
+        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, identifier##varname, identifier##varname->getName(), #varname, defvalue, varname); \
         identifier##varname->addConfigValueContainer(#varname, container##varname); \
     } \
     container##varname->getValue(&varname, this)
@@ -70,7 +70,7 @@
     orxonox::ConfigValueContainer* container##varname = identifier##varname->getConfigValueContainer(#varname); \
     if (!container##varname) \
     { \
-        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, identifier##varname, #varname, defvalue); \
+        container##varname = new orxonox::ConfigValueContainer(CFT_Settings, identifier##varname, identifier##varname->getName(), #varname, defvalue); \
         identifier##varname->addConfigValueContainer(#varname, container##varname); \
     } \
     container##varname->getValue(&varname, this)

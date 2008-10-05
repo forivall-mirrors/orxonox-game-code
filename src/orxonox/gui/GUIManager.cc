@@ -278,7 +278,7 @@ namespace orxonox
         InputManager::getInstance().requestLeaveState("gui");
     }
 
-    void GUIManager::mouseButtonPressed(MouseButton::Enum id)
+    void GUIManager::mouseButtonPressed(MouseButtonCode::ByEnum id)
     {
         try
         {
@@ -291,7 +291,7 @@ namespace orxonox
         }
     }
 
-    void GUIManager::mouseButtonReleased(MouseButton::Enum id)
+    void GUIManager::mouseButtonReleased(MouseButtonCode::ByEnum id)
     {
         try
         {
@@ -305,23 +305,23 @@ namespace orxonox
     }
 
 
-    inline CEGUI::MouseButton GUIManager::convertButton(MouseButton::Enum button)
+    inline CEGUI::MouseButton GUIManager::convertButton(MouseButtonCode::ByEnum button)
     {
         switch (button)
         {
-        case MouseButton::Left:
+        case MouseButtonCode::Left:
             return CEGUI::LeftButton;
 
-        case MouseButton::Right:
+        case MouseButtonCode::Right:
             return CEGUI::RightButton;
 
-        case MouseButton::Middle:
+        case MouseButtonCode::Middle:
             return CEGUI::MiddleButton;
 
-        case MouseButton::Button3:
+        case MouseButtonCode::Button3:
             return CEGUI::X1Button;
 
-        case MouseButton::Button4:
+        case MouseButtonCode::Button4:
             return CEGUI::X2Button;
 
         default:

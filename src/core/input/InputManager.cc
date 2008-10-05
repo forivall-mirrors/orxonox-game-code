@@ -55,11 +55,10 @@
 #include "InputState.h"
 #include "SimpleInputState.h"
 #include "ExtendedInputState.h"
+#include "JoyStickDeviceNumberListener.h"
 
 namespace orxonox
 {
-    SetConsoleCommand(InputManager, keyBind, true);
-    SetConsoleCommand(InputManager, storeKeyStroke, true);
     SetConsoleCommand(InputManager, calibrate, true);
     SetConsoleCommand(InputManager, reload, false);
 
@@ -164,6 +163,8 @@ namespace orxonox
 
             if (joyStickSupport)
                 _initialiseJoySticks();
+            // Do this anyway to also inform everyone if a joystick was detached.
+            _configureNumberOfJoySticks();
 
             // Set mouse/joystick region
             if (mouse_)
@@ -196,11 +197,11 @@ namespace orxonox
             // Always active master InputState
             stateMaster_ = new ExtendedInputState();
             stateMaster_->setName("master");
+            stateMaster_->setNumOfJoySticks(joySticksSize_);
 
             // KeyDetector to evaluate a pressed key's name
             SimpleInputState* detector = createInputState<SimpleInputState>("detector", 101);
             keyDetector_ = new KeyDetector();
-            keyDetector_->loadBindings("storeKeyStroke");
             detector->setHandler(keyDetector_);
 
             // Joy stick calibration helper callback
@@ -319,7 +320,6 @@ namespace orxonox
         {
             //CCOUT(ORX_WARNING) << "Warning: Joy stick support requested, but no joy stick was found" << std::endl;
         }
-        _redimensionLists();
     }
 
     /**
@@ -330,7 +330,7 @@ namespace orxonox
         No matter whether there are a mouse and/or keyboard, they will always
         occupy 2 places in the device number dependent lists.
     */
-    void InputManager::_redimensionLists()
+    void InputManager::_configureNumberOfJoySticks()
     {
         joySticksSize_ = joySticks_.size();
         devicesNum_ = 2 + joySticksSize_;
@@ -356,7 +356,17 @@ namespace orxonox
         // inform all states
         for (std::map<int, InputState*>::const_iterator it = inputStatesByPriority_.begin();
             it != inputStatesByPriority_.end(); ++it)
+        {
             it->second->setNumOfJoySticks(joySticksSize_);
+        }
+        // inform master state
+        if (stateMaster_)
+            this->stateMaster_->setNumOfJoySticks(joySticksSize_);
+
+        // inform all JoyStick Device Number Listeners
+        for (ObjectList<JoyStickDeviceNumberListener>::iterator it = ObjectList<JoyStickDeviceNumberListener>::begin(); it; ++it)
+            it->JoyStickDeviceNumberChanged(joySticksSize_);
+
     }
 
     /**
@@ -384,7 +394,7 @@ namespace orxonox
             ConfigValueContainer* cont = getIdentifier()->getConfigValueContainer("CoeffPos");
             if (!cont)
             {
-                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), "CoeffPos", coeffPos);
+                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), getIdentifier()->getName(), "CoeffPos", coeffPos);
                 getIdentifier()->addConfigValueContainer("CoeffPos", cont);
             }
             cont->getValue(&coeffPos, this);
@@ -392,7 +402,7 @@ namespace orxonox
             cont = getIdentifier()->getConfigValueContainer("CoeffNeg");
             if (!cont)
             {
-                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), "CoeffNeg", coeffNeg);
+                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), getIdentifier()->getName(), "CoeffNeg", coeffNeg);
                 getIdentifier()->addConfigValueContainer("CoeffNeg", cont);
             }
             cont->getValue(&coeffNeg, this);
@@ -400,7 +410,7 @@ namespace orxonox
             cont = getIdentifier()->getConfigValueContainer("Zero");
             if (!cont)
             {
-                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), "Zero", zero);
+                cont = new ConfigValueContainer(CFT_Settings, getIdentifier(), getIdentifier()->getName(), "Zero", zero);
                 getIdentifier()->addConfigValueContainer("Zero", cont);
             }
             cont->getValue(&zero, this);
@@ -514,9 +524,9 @@ namespace orxonox
                     inputSystem_->destroyInputObject(joySticks_[i]);
 
             joySticks_.clear();
-            // don't use _redimensionLists(), might mess with registered handler if
+            // don't use _configureNumberOfJoySticks(), might mess with registered handler if
             // downgrading from 2 to 1 joystick
-            //_redimensionLists();
+            //_configureNumberOfJoySticks();
             joySticksSize_ = 0;
         }
         CCOUT(4) << "Joy sticks destroyed." << std::endl;
@@ -874,7 +884,7 @@ namespace orxonox
     {
         // check whether the key already is in the list (can happen when focus was lost)
         unsigned int iKey = 0;
-        while (iKey < keysDown_.size() && keysDown_[iKey].key != (KeyCode::Enum)e.key)
+        while (iKey < keysDown_.size() && keysDown_[iKey].key != (KeyCode::ByEnum)e.key)
             iKey++;
         if (iKey == keysDown_.size())
             keysDown_.push_back(Key(e));
@@ -911,7 +921,7 @@ namespace orxonox
         // remove the key from the keysDown_ list
         for (unsigned int iKey = 0; iKey < keysDown_.size(); iKey++)
         {
-            if (keysDown_[iKey].key == (KeyCode::Enum)e.key)
+            if (keysDown_[iKey].key == (KeyCode::ByEnum)e.key)
             {
                 keysDown_.erase(keysDown_.begin() + iKey);
                 break;
@@ -976,13 +986,13 @@ namespace orxonox
     {
         // check whether the button already is in the list (can happen when focus was lost)
         unsigned int iButton = 0;
-        while (iButton < mouseButtonsDown_.size() && mouseButtonsDown_[iButton] != (MouseButton::Enum)id)
+        while (iButton < mouseButtonsDown_.size() && mouseButtonsDown_[iButton] != (MouseButtonCode::ByEnum)id)
             iButton++;
         if (iButton == mouseButtonsDown_.size())
-            mouseButtonsDown_.push_back((MouseButton::Enum)id);
+            mouseButtonsDown_.push_back((MouseButtonCode::ByEnum)id);
 
-        activeStatesTop_[Mouse]->mouseButtonPressed((MouseButton::Enum)id);
-        stateMaster_->mouseButtonPressed((MouseButton::Enum)id);
+        activeStatesTop_[Mouse]->mouseButtonPressed((MouseButtonCode::ByEnum)id);
+        stateMaster_->mouseButtonPressed((MouseButtonCode::ByEnum)id);
 
         return true;
     }
@@ -1000,15 +1010,15 @@ namespace orxonox
         // remove the button from the keysDown_ list
         for (unsigned int iButton = 0; iButton < mouseButtonsDown_.size(); iButton++)
         {
-            if (mouseButtonsDown_[iButton] == (MouseButton::Enum)id)
+            if (mouseButtonsDown_[iButton] == (MouseButtonCode::ByEnum)id)
             {
                 mouseButtonsDown_.erase(mouseButtonsDown_.begin() + iButton);
                 break;
             }
         }
 
-        activeStatesTop_[Mouse]->mouseButtonReleased((MouseButton::Enum)id);
-        stateMaster_->mouseButtonReleased((MouseButton::Enum)id);
+        activeStatesTop_[Mouse]->mouseButtonReleased((MouseButtonCode::ByEnum)id);
+        stateMaster_->mouseButtonReleased((MouseButtonCode::ByEnum)id);
 
         return true;
     }
@@ -1037,15 +1047,15 @@ namespace orxonox
         unsigned int iJoyStick = _getJoystick(arg);
 
         // check whether the button already is in the list (can happen when focus was lost)
-        std::vector<JoyStickButton::Enum>& buttonsDown = joyStickButtonsDown_[iJoyStick];
+        std::vector<JoyStickButtonCode::ByEnum>& buttonsDown = joyStickButtonsDown_[iJoyStick];
         unsigned int iButton = 0;
         while (iButton < buttonsDown.size() && buttonsDown[iButton] != button)
             iButton++;
         if (iButton == buttonsDown.size())
-            buttonsDown.push_back((JoyStickButton::Enum)button);
+            buttonsDown.push_back((JoyStickButtonCode::ByEnum)button);
 
-        activeStatesTop_[2 + iJoyStick]->joyStickButtonPressed(iJoyStick, (JoyStickButton::Enum)button);
-        stateMaster_->joyStickButtonPressed(iJoyStick, (JoyStickButton::Enum)button);
+        activeStatesTop_[2 + iJoyStick]->joyStickButtonPressed(iJoyStick, (JoyStickButtonCode::ByEnum)button);
+        stateMaster_->joyStickButtonPressed(iJoyStick, (JoyStickButtonCode::ByEnum)button);
 
         return true;
     }
@@ -1055,7 +1065,7 @@ namespace orxonox
         unsigned int iJoyStick = _getJoystick(arg);
 
         // remove the button from the joyStickButtonsDown_ list
-        std::vector<JoyStickButton::Enum>& buttonsDown = joyStickButtonsDown_[iJoyStick];
+        std::vector<JoyStickButtonCode::ByEnum>& buttonsDown = joyStickButtonsDown_[iJoyStick];
         for (unsigned int iButton = 0; iButton < buttonsDown.size(); iButton++)
         {
             if (buttonsDown[iButton] == button)
@@ -1065,8 +1075,8 @@ namespace orxonox
             }
         }
 
-        activeStatesTop_[2 + iJoyStick]->joyStickButtonReleased(iJoyStick, (JoyStickButton::Enum)button);
-        stateMaster_->joyStickButtonReleased(iJoyStick, (JoyStickButton::Enum)button);
+        activeStatesTop_[2 + iJoyStick]->joyStickButtonReleased(iJoyStick, (JoyStickButtonCode::ByEnum)button);
+        stateMaster_->joyStickButtonReleased(iJoyStick, (JoyStickButtonCode::ByEnum)button);
 
         return true;
     }
@@ -1176,6 +1186,16 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Sets the the name of the command used by the KeyDetector as callback.
+    @param command
+        Command name as string
+    */
+    void InputManager::setKeyDetectorCallback(const std::string& command)
+    {
+        this->keyDetector_->setCallbackCommand(command);
+    }
 
     // ###### InputStates ######
 
@@ -1352,37 +1372,6 @@ namespace orxonox
     // #####                Console Commands                  #####
     // ##########                                        ##########
     // ############################################################
-
-    /**
-    @brief
-        Method for easily storing a string with the command executor. It is used by the
-        KeyDetector to get assign commands. The KeyDetector simply executes
-        the command 'storeKeyStroke myName' for each button/axis.
-    @remarks
-        This is only a temporary hack until we thourouhgly support multiple KeyBinders.
-    @param name
-        The name of the button/axis.
-    */
-    void InputManager::storeKeyStroke(const std::string& name)
-    {
-        getInstance().requestLeaveState("detector");
-        COUT(0) << "Binding string \"" << bindingCommmandString_s << "\" on key '" << name << "'" << std::endl;
-        CommandExecutor::execute("config KeyBinder " + name + " " + bindingCommmandString_s, false);
-    }
-
-    /**
-    @brief
-        Assigns a command string to a key/button/axis. The name is determined via KeyDetector
-        and InputManager::storeKeyStroke(.).
-    @param command
-        Command string that can be executed by the CommandExecutor
-    */
-    void InputManager::keyBind(const std::string& command)
-    {
-        bindingCommmandString_s = command;
-        getInstance().requestEnterState("detector");
-        COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
-    }
 
     /**
     @brief

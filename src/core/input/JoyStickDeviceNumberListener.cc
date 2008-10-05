@@ -29,41 +29,16 @@
 /**
 @file
 @brief
-    Implementation of the different input handlers.
+    Implementation of the JoyStickDeviceNumberListener class.
 */
 
-#include "HalfAxis.h"
-#include "core/CommandEvaluation.h"
+#include "JoyStickDeviceNumberListener.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-    void HalfAxis::clear()
+    JoyStickDeviceNumberListener::JoyStickDeviceNumberListener()
     {
-        Button::clear();
-        if (nParamCommands_)
-        {
-            // delete all commands and the command pointer array
-            for (unsigned int i = 0; i < nParamCommands_; i++)
-                delete paramCommands_[i];
-            delete[] paramCommands_;
-            nParamCommands_ = 0;
-        }
-        else
-        {
-            nParamCommands_ = 0; nParamCommands_ = 0;
-        }
-    }
-
-    bool HalfAxis::addParamCommand(ParamCommand* command)
-    {
-        ParamCommand** cmds = paramCommands_;
-        paramCommands_ = new ParamCommand*[++nParamCommands_];
-        unsigned int i;
-        for (i = 0; i < nParamCommands_ - 1; i++)
-            paramCommands_[i] = cmds[i];
-        paramCommands_[i] = command;
-        if (nParamCommands_ > 1)
-            delete[] cmds;
-        return true;
+        RegisterObject(JoyStickDeviceNumberListener);
     }
 }

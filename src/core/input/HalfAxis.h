@@ -37,6 +37,7 @@
 
 #include "core/CorePrereqs.h"
 #include "Button.h"
+#include "InputCommands.h"
 
 namespace orxonox
 {
@@ -66,6 +67,14 @@ namespace orxonox
         bool wasDown_;
         bool hasChanged_;
     };
+
+    inline bool HalfAxis::execute()
+    {
+        bool success = true;
+        for (unsigned int i = 0; i < nParamCommands_; i++)
+            success = paramCommands_[i]->execute(absVal_, relVal_) && success;
+        return success;
+    }
 }
 
 #endif /* _HalfAxis_H__ */

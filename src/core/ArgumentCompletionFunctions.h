@@ -34,7 +34,7 @@
 
 
 #define ARGUMENT_COMPLETION_FUNCTION_DECLARATION(functionname) \
-    ArgumentCompleter* functionname(); \
+    _CoreExport ArgumentCompleter* functionname(); \
     _CoreExport ArgumentCompletionList acf_##functionname
 
 #define ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(functionname) \

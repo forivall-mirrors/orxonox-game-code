@@ -35,6 +35,10 @@
 #include "core/input/SimpleInputState.h"
 #include "core/input/KeyBinder.h"
 #include "core/Loader.h"
+#include "core/CommandExecutor.h"
+#include "core/ConsoleCommand.h"
+#include "core/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
 #include "objects/Backlight.h"
 #include "objects/Tickable.h"
 #include "objects/Radar.h"
@@ -54,17 +58,24 @@ namespace orxonox
         , startLevel_(0)
         , hud_(0)
     {
+        RegisterObject(GSLevel);
+        setConfigValues();
     }
 
     GSLevel::~GSLevel()
     {
     }
 
+    void GSLevel::setConfigValues()
+    {
+        SetConfigValue(keyDetectorCallbackCode_, "KeybindBindingStringKeyName=");
+    }
+
     void GSLevel::enter()
     {
         inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("game", 20);
         keyBinder_ = new KeyBinder();
-        keyBinder_->loadBindings();
+        keyBinder_->loadBindings("keybindings.ini");
         inputState_->setHandler(keyBinder_);
 
         // create Ogre SceneManager for the level
@@ -87,6 +98,16 @@ namespace orxonox
 
         // TODO: insert slomo console command with
         // .accessLevel(AccessLevel::Offline).defaultValue(0, 1.0).axisParamIndex(0).isAxisRelative(false);
+
+        // keybind console command
+        FunctorMember<GSLevel>* functor1 = createFunctor(&GSLevel::keybind);
+        functor1->setObject(this);
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor1, "keybind"));
+        FunctorMember<GSLevel>* functor2 = createFunctor(&GSLevel::tkeybind);
+        functor2->setObject(this);
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor2, "tkeybind"));
+        // set our console command as callback for the key detector
+        InputManager::getInstance().setKeyDetectorCallback(std::string("keybind ") + keyDetectorCallbackCode_);
     }
 
     void GSLevel::leave()
@@ -143,5 +164,57 @@ namespace orxonox
     {
         Loader::unload(startLevel_);
         delete this->startLevel_;
+    }
+
+    void GSLevel::keybind(const std::string &command)
+    {
+        this->keybindInternal(command, false);
+    }
+
+    void GSLevel::tkeybind(const std::string &command)
+    {
+        this->keybindInternal(command, true);
+    }
+
+    /**
+    @brief
+        Assigns a command string to a key/button/axis. The name is determined via KeyDetector.
+    @param command
+        Command string that can be executed by the CommandExecutor
+        OR: Internal string "KeybindBindingStringKeyName=" used for the second call to identify
+        the key/button/axis that has been activated. This is configured above in enter().
+    */
+    void GSLevel::keybindInternal(const std::string& command, bool bTemporary)
+    {
+        static std::string bindingString = "";
+        static bool bTemporarySaved = false;
+        static bool bound = true;
+        // note: We use a long name to make 'sure' that the user doesn't use it accidentally.
+        // Howerver there will be no real issue if it happens anyway.
+        if (command.find(keyDetectorCallbackCode_) != 0)
+        {
+            if (bound)
+            {
+                COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
+                InputManager::getInstance().requestEnterState("detector");
+                bindingString = command;
+                bTemporarySaved = bTemporary;
+                bound = false;
+            }
+            //else:  We're still in a keybind command. ignore this call.
+        }
+        else
+        {
+            if (!bound)
+            {
+                // user has pressed the key
+                std::string name = command.substr(this->keyDetectorCallbackCode_.size());
+                COUT(0) << "Binding string \"" << bindingString << "\" on key '" << name << "'" << std::endl;
+                this->keyBinder_->setBinding(bindingString, name, bTemporarySaved);
+                InputManager::getInstance().requestLeaveState("detector");
+                bound = true;
+            }
+            // else: A key was pressed within the same tick, ignore it.
+        }
     }
 }

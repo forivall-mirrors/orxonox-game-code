@@ -61,23 +61,22 @@ namespace orxonox
 
     /**
     @brief
-        Loads the key and button bindings.
-    @return
-        True if loading succeeded.
+        Assigns all the buttons 'command' plus the button's name.
     */
-    void KeyDetector::loadBindings(const std::string& command)
+    void KeyDetector::setCallbackCommand(const std::string& command)
     {
-        this->command_ = command;
+        callbackCommand_ = command;
         clearBindings();
-        setConfigValues();
+        for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
+        {
+            it->second->bindingString_ = callbackCommand_ + it->second->name_;
+            it->second->parse();
+        }
     }
 
-    void KeyDetector::readTrigger(Button& button)
+    void KeyDetector::JoyStickDeviceNumberChanged(unsigned int value)
     {
-        SimpleCommand* cmd = new SimpleCommand();
-        cmd->evaluation_ = CommandExecutor::evaluate(this->command_ + " " + button.name_);
-        button.commands_[KeybindMode::OnPress] = new BaseCommand*[1];
-        button.commands_[KeybindMode::OnPress][0] = cmd;
-        button.nCommands_[KeybindMode::OnPress] = 1;
+        KeyBinder::JoyStickDeviceNumberChanged(value);
+        setCallbackCommand(callbackCommand_);
     }
 }

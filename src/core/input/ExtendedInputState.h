@@ -74,15 +74,15 @@ namespace orxonox
         void keyReleased(const KeyEvent& evt);
         void keyHeld    (const KeyEvent& evt);
 
-        void mouseButtonPressed (MouseButton::Enum id);
-        void mouseButtonReleased(MouseButton::Enum id);
-        void mouseButtonHeld    (MouseButton::Enum id);
+        void mouseButtonPressed (MouseButtonCode::ByEnum id);
+        void mouseButtonReleased(MouseButtonCode::ByEnum id);
+        void mouseButtonHeld    (MouseButtonCode::ByEnum id);
         void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
         void mouseScrolled      (int abs, int rel);
 
-        void joyStickButtonPressed (unsigned int joyStickID, JoyStickButton::Enum id);
-        void joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id);
-        void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButton::Enum id);
+        void joyStickButtonPressed (unsigned int joyStickID, JoyStickButtonCode::ByEnum id);
+        void joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id);
+        void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id);
         void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value);        void updateTickables();
 
         void numberOfJoySticksChanged(unsigned int n);

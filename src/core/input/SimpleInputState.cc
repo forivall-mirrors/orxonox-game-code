@@ -34,14 +34,8 @@
 
 #include "SimpleInputState.h"
 
-#include <assert.h>
-#include "util/Debug.h"
-#include "core/Executor.h"
-
 namespace orxonox
 {
-    using namespace InputDevice;
-
     SimpleInputState::SimpleInputState()
         : keyHandler_(0)
         , mouseHandler_(0)
@@ -69,78 +63,6 @@ namespace orxonox
     {
         if (keyHandler_)
             keyHandler_->keyPressed(evt);
-    }
-
-    void SimpleInputState::keyReleased(const KeyEvent& evt)
-    {
-        if (keyHandler_)
-            keyHandler_->keyReleased(evt);
-    }
-
-    void SimpleInputState::keyHeld(const KeyEvent& evt)
-    {
-        if (keyHandler_)
-            keyHandler_->keyHeld(evt);
-    }
-
-
-    void SimpleInputState::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
-    {
-        if (mouseHandler_)
-            mouseHandler_->mouseMoved(abs, rel, clippingSize);
-    }
-
-    void SimpleInputState::mouseScrolled(int abs, int rel)
-    {
-        if (mouseHandler_)
-            mouseHandler_->mouseScrolled(abs, rel);
-    }
-
-    void SimpleInputState::mouseButtonPressed(MouseButton::Enum id)
-    {
-        if (mouseHandler_)
-            mouseHandler_->mouseButtonPressed(id);
-    }
-
-    void SimpleInputState::mouseButtonReleased(MouseButton::Enum id)
-    {
-        if (mouseHandler_)
-            mouseHandler_->mouseButtonReleased(id);
-    }
-
-    void SimpleInputState::mouseButtonHeld(MouseButton::Enum id)
-    {
-        if (mouseHandler_)
-            mouseHandler_->mouseButtonHeld(id);
-    }
-
-
-    void SimpleInputState::joyStickAxisMoved(unsigned int joyStickID, unsigned int axis, float value)
-    {
-        assert(joyStickID < joyStickHandler_.size());
-        if (joyStickHandler_[joyStickID])
-            joyStickHandler_[joyStickID]->joyStickAxisMoved(joyStickID, axis, value);
-    }
-
-    void SimpleInputState::joyStickButtonPressed(unsigned int joyStickID, JoyStickButton::Enum id)
-    {
-        assert(joyStickID < joyStickHandler_.size());
-        if (joyStickHandler_[joyStickID])
-            joyStickHandler_[joyStickID]->joyStickButtonPressed(joyStickID, id);
-    }
-
-    void SimpleInputState::joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id)
-    {
-        assert(joyStickID < joyStickHandler_.size());
-        if (joyStickHandler_[joyStickID])
-            joyStickHandler_[joyStickID]->joyStickButtonReleased(joyStickID, id);
-    }
-
-    void SimpleInputState::joyStickButtonHeld(unsigned int joyStickID, JoyStickButton::Enum id)
-    {
-        assert(joyStickID < joyStickHandler_.size());
-        if (joyStickHandler_[joyStickID])
-            joyStickHandler_[joyStickID]->joyStickButtonHeld(joyStickID, id);
     }
 
     /**
@@ -198,35 +120,6 @@ namespace orxonox
         return setJoyStickHandler(dynamic_cast<JoyStickHandler*>(handler));
     }
 
-    void SimpleInputState::tickInput(float dt)
-    {
-        for (unsigned int i = 0; i < allHandlers_.size(); ++i)
-        {
-            allHandlers_[i]->tickInput(dt);
-        }
-    }
-
-    void SimpleInputState::tickInput(float dt, unsigned int device)
-    {
-        switch (device)
-        {
-        case Keyboard:
-            if (keyHandler_)
-                keyHandler_->tickKey(dt);
-            break;
-
-        case Mouse:
-            if (mouseHandler_)
-                mouseHandler_->tickMouse(dt);
-            break;
-
-        default: // joy sticks
-            if (joyStickHandler_[device - 2])
-                joyStickHandler_[device - 2]->tickJoyStick(dt, device - 2);
-            break;
-        }
-    }
-
     void SimpleInputState::update()
     {
         // we can use a set to have a list of unique pointers (an object can implement all 3 handlers)
@@ -246,8 +139,8 @@ namespace orxonox
             allHandlers_.push_back(*itHandler);
 
         // update the deviceEnabled options
-        setInputDeviceEnabled(Keyboard, (keyHandler_ != 0));
-        setInputDeviceEnabled(Mouse, (mouseHandler_ != 0));
+        setInputDeviceEnabled(InputDevice::Keyboard, (keyHandler_ != 0));
+        setInputDeviceEnabled(InputDevice::Mouse, (mouseHandler_ != 0));
         for (unsigned int i = 0; i < joyStickHandler_.size(); ++i)
             setInputDeviceEnabled(2 + i, (joyStickHandler_[i] != 0));
 

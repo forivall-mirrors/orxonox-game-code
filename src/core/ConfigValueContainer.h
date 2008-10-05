@@ -98,14 +98,15 @@ namespace orxonox
                 @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets the intern value variable.
                 @param type The type of the corresponding config-file
                 @param identifier The identifier of the class the variable belongs to
+                @param sectionname Name of the section the configValue should be put in.
                 @param varname The name of the variable
                 @param defvalue The default-value
                 @param value Only needed do determine the right type.
             */
             template <class D, class V>
-            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const D& defvalue, const V& value)
+            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const D& defvalue, const V& value)
             {
-                this->init(type, identifier, varname);
+                this->init(type, identifier, sectionname, varname);
                 this->initValue((V)defvalue);
             }
 
@@ -117,9 +118,9 @@ namespace orxonox
                 @param defvalue The default-value
             */
             template <class V>
-            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& varname, const std::vector<V>& defvalue)
+            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const std::vector<V>& defvalue)
             {
-                this->init(type, identifier, varname);
+                this->init(type, identifier, sectionname, varname);
 
                 this->value_ = V();
                 for (unsigned int i = 0; i < defvalue.size(); i++)
@@ -265,7 +266,7 @@ namespace orxonox
                 { return this->value_.getTypename(); }
 
         private:
-            void init(ConfigFileType type, Identifier* identifier, const std::string& varname);
+            void init(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname);
             void initValue(const MultiType& defvalue);
             void initVector();
             bool callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiType&), const std::string& input);

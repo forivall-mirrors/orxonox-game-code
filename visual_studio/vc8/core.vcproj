@@ -329,6 +329,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\input\JoyStickDeviceNumberListener.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\input\KeyBinder.cc"
 					>
 				</File>
@@ -456,6 +460,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\input\InputState.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\input\JoyStickDeviceNumberListener.h"
 					>
 				</File>
 				<File

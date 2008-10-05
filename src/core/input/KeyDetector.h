@@ -46,13 +46,11 @@ namespace orxonox
     public:
         KeyDetector();
         ~KeyDetector();
-        void loadBindings(const std::string& command);
-
-    protected:
-        void readTrigger(Button& button);
+        void setCallbackCommand(const std::string& command);
+        void JoyStickDeviceNumberChanged(unsigned int value);
 
     private:
-        std::string command_;
+        std::string callbackCommand_;
     };
 }
 

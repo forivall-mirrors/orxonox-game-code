@@ -46,6 +46,7 @@ SET(CORE_SRC_FILES
   input/InputBuffer.cc
   input/InputCommands.cc
   input/InputManager.cc
+  input/JoyStickDeviceNumberListener.cc
   input/KeyBinder.cc
   input/KeyDetector.cc
   input/SimpleInputState.cc

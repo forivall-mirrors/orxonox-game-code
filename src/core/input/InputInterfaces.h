@@ -46,8 +46,10 @@ namespace orxonox
 {
     namespace KeyCode
     {
+        const unsigned int numberOfKeys = 0xEE; // 238
+
         // note: KeyCode comments were directly copied from OISKeyboard.h
-        enum Enum
+        enum ByEnum
         {
             Unassigned    = OIS::KC_UNASSIGNED,
             Escape        = OIS::KC_ESCAPE,
@@ -118,8 +120,8 @@ namespace orxonox
             F8            = OIS::KC_F8,
             F9            = OIS::KC_F9,
             F10           = OIS::KC_F10,
-            Numlock       = OIS::KC_NUMLOCK,
-            Scrolllock    = OIS::KC_SCROLL,          // Scroll Lock
+            NumLock       = OIS::KC_NUMLOCK,
+            ScrollLock    = OIS::KC_SCROLL,          // Scroll Lock
             Numpad7       = OIS::KC_NUMPAD7,
             Numpad8       = OIS::KC_NUMPAD8,
             Numpad9       = OIS::KC_NUMPAD9,
@@ -166,7 +168,7 @@ namespace orxonox
             WebHome       = OIS::KC_WEBHOME,         // Web home
             NumpadComma   = OIS::KC_NUMPADCOMMA,     // , on numeric keypad (NEC PC98)
             Divide        = OIS::KC_DIVIDE,          // / on numeric keypad
-            SYSRQ         = OIS::KC_SYSRQ,
+            SystemRequest = OIS::KC_SYSRQ,
             RightAlt      = OIS::KC_RMENU,           // right Alt
             Pause         = OIS::KC_PAUSE,           // Pause
             Home          = OIS::KC_HOME,            // Home on arrow keypad
@@ -195,11 +197,112 @@ namespace orxonox
             Mail          = OIS::KC_MAIL,            // Mail
             MediaSelect   = OIS::KC_MEDIASELECT      // Media Select
         };
+        
+        // Names as string. Has no real linkage!
+        const char* const ByString[] =
+        {
+            "Unassigned",
+            "Escape",
+            "NumRow1", "NumRow2", "NumRow3", "NumRow4", "NumRow5",
+            "NumRow6", "NumRow7", "NumRow8", "NumRow9", "NumRow0",
+            "Minus", "Equals", "Back", "Tab",
+            "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
+            "LeftBracket", "RightBracket",
+            "Return", "LeftControl",
+            "A", "S", "D", "F", "G", "H", "J", "K", "L",
+            "Semicolon", "Apostrophe", "Grave",
+            "LeftShift", "Backslash",
+            "Z", "X", "C", "V", "B", "N", "M",
+            "Comma", "Period", "Slash",
+            "RightShift",
+            "Multiply",
+            "LeftAlt",
+            "Space",
+            "CapsLock",
+            "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10",
+            "NumLock", "ScrollLock",
+            "Numpad7", "Numpad8", "Numpad9",
+            "NumpadSubtract",
+            "Numpad4", "Numpad5", "Numpad6",
+            "NumpadAdd",
+            "Numpad1", "Numpad2", "Numpad3", "Numpad0",
+            "NumpadPeriod",
+            "","",
+            "LessThan",
+            "F11", "F12",
+            "","","","","","","","","","","",
+            "F13", "F14", "F15",
+            "","","","","","","","","","",
+            "Kana",
+            "","",
+            "ABNT_C1",
+            "","","","","",
+            "Convert",
+            "",
+            "NoConvert",
+            "",
+            "Yen",
+            "ABNT_C2",
+            "","","","","","","","","","","","","","",
+            "NumpadEquals",
+            "","",
+            "PreviousTrack",
+            "AT",
+            "Colon", "Underline",
+            "Kanji",
+            "Stop",
+            "AX",
+            "Unlabeled",
+            "NextTrack",
+            "","",
+            "NumpadEnter",
+            "RightControl",
+            "","",
+            "Mute",
+            "Calculator",
+            "PlayPause",
+            "",
+            "MediaStop",
+            "","","","","","","","","",
+            "VolumeDown",
+            "",
+            "VolumeUp",
+            "",
+            "WebHome",
+            "NumpadComma",
+            "",
+            "Divide",
+            "",
+            "SystemRequest",
+            "RightAlt",
+            "","","","","","","","","","","","",
+            "Pause",
+            "",
+            "Home",
+            "UP",
+            "PageUp",
+            "",
+            "Left",
+            "",
+            "Right",
+            "",
+            "End", "Down", "PageDown", "Insert", "Delete",
+            "","","","","","","",
+            "LeftWindows", "RightWindows", "Apps",
+            "Power", "Sleep",
+            "","","",
+            "Wake",
+            "",
+            "WebSearch", "WebFavorites", "WebRefresh", "WebStop", "WebForward", "WebBack",
+            "MyComputer", "Mail", "MediaSelect"
+        };
     }
 
-    namespace MouseButton
+    namespace MouseButtonCode
     {
-        enum Enum
+        const unsigned int numberOfButtons = 8;
+
+        enum ByEnum
         {
             Left    = OIS::MB_Left,
             Right   = OIS::MB_Right,
@@ -208,13 +311,46 @@ namespace orxonox
             Button4 = OIS::MB_Button4,
             Button5 = OIS::MB_Button5,
             Button6 = OIS::MB_Button6,
-            Button7 = OIS::MB_Button7
+            Button7 = OIS::MB_Button7,
+        };
+
+        // Names as string. Has no real linkage!
+        const char* const ByString[] =
+        {
+            "Left",
+            "Right",
+            "Middle",
+            "Button3",
+            "Button4",
+            "Button5",
+            "Button6",
+            "Button7",
         };
     }
 
-    namespace JoyStickButton
+    namespace MouseAxisCode
     {
-        enum Enum
+        const unsigned int numberOfAxes = 2;
+
+        enum ByEnum
+        {
+            X,
+            Y
+        };
+
+        // Names as string. Has no real linkage!
+        const char* const ByString[] =
+        {
+            "X",
+            "Y"
+        };
+    }
+
+    namespace JoyStickButtonCode
+    {
+        const unsigned int numberOfButtons = 64;
+
+        enum ByEnum
         {
             Button0       =  0, Button1       =  1, Button2       =  2, Button3       =  3,
             Button4       =  4, Button5       =  5, Button6       =  6, Button7       =  7,
@@ -237,6 +373,53 @@ namespace orxonox
             POV3North     = 56, POV3South     = 57, POV3East      = 58, POV3West      = 59,
             POV3NorthEast = 60, POV3SouthEast = 61, POV3NorthWest = 62, POV3SouthWest = 63,
         };
+
+        // Names as string. Has no real linkage!
+        const char* const ByString[] =
+        {
+            "Button0",       "Button1",       "Button2",       "Button3",
+            "Button4",       "Button5",       "Button6",       "Button7",
+            "Button8",       "Button9",       "Button10",      "Button11",
+            "Button12",      "Button13",      "Button14",      "Button15",
+            "Button16",      "Button17",      "Button18",      "Button19",
+            "Button20",      "Button21",      "Button22",      "Button23",
+            "Button24",      "Button25",      "Button26",      "Button27",
+            "Button28",      "Button29",      "Button30",      "Button31",
+            "POV0North",     "POV0South",     "POV0East",      "POV0West",
+            "POV0NorthEast", "POV0SouthEast", "POV0NorthWest", "POV0SouthWest",
+            "POV1North",     "POV1South",     "POV1East",      "POV1West",
+            "POV1NorthEast", "POV1SouthEast", "POV1NorthWest", "POV1SouthWest",
+            "POV2North",     "POV2South",     "POV2East",      "POV2West",
+            "POV2NorthEast", "POV2SouthEast", "POV2NorthWest", "POV2SouthWest",
+            "POV3North",     "POV3South",     "POV3East",      "POV3West",
+            "POV3NorthEast", "POV3SouthEast", "POV3NorthWest", "POV3SouthWest"
+        };
+    }
+
+    namespace JoyStickAxisCode
+    {
+        const unsigned int numberOfAxes = 24;
+
+        enum ByEnum
+        {
+            Slider0 =  0, Slider1 =  1, Slider2 =  2, Slider3 =  3,
+            Slider4 =  4, Slider5 =  5, Slider6 =  6, Slider7 =  7,
+            Axis0   =  8, Axis1   =  9, Axis2   = 10, Axis3   = 11,
+            Axis4   = 12, Axis5   = 13, Axis6   = 14, Axis7   = 15,
+            Axis8   = 16, Axis9   = 17, Axis10  = 18, Axis11  = 19,
+            Axis12  = 20, Axis13  = 21, Axis14  = 22, Axis15  = 23
+        };
+
+        // Names as string. Has no real linkage!
+        const char* const ByString[] =
+        {
+            "Slider0", "Slider1", "Slider2", "Slider3",
+            "Slider4", "Slider5", "Slider6", "Slider7",
+            "Axis0",   "Axis1",   "Axis2",   "Axis3",
+            "Axis4",   "Axis5",   "Axis6",   "Axis7",
+            "Axis8",   "Axis9",   "Axis10",  "Axis11",
+            "Axis12",  "Axis13",  "Axis14",  "Axis15"
+        };
     }
 
     namespace KeyboardModifier
@@ -258,29 +441,29 @@ namespace orxonox
             JoyStick0,
             JoyStick1,
             JoyStick2,
-            JoyStick3,
+            JoyStick3
             // note: No problem if there are more joy sticks. This enum is just for convenience.
         };
     }
 
     struct _CoreExport Key
     {
-        Key(const OIS::KeyEvent& evt) : key((KeyCode::Enum)evt.key), text(evt.text) { }
-        KeyCode::Enum key;
+        Key(const OIS::KeyEvent& evt) : key((KeyCode::ByEnum)evt.key), text(evt.text) { }
+        KeyCode::ByEnum key;
         unsigned int text;
     };
 
     class _CoreExport KeyEvent
     {
     public:
-        KeyEvent(KeyCode::Enum key, unsigned int text) : key(key), text(text) { }
+        KeyEvent(KeyCode::ByEnum key, unsigned int text) : key(key), text(text) { }
         KeyEvent(const OIS::KeyEvent& evt, unsigned int mod)
-            : key((KeyCode::Enum)evt.key), text(evt.text), modifiers(mod) { }
+            : key((KeyCode::ByEnum)evt.key), text(evt.text), modifiers(mod) { }
         KeyEvent(const Key& key, unsigned int mod) : key(key.key), text(key.text), modifiers(mod) { }
         bool isModifierDown(KeyboardModifier::Enum modifier) const
             { return (KeyboardModifier::Enum)modifier&modifiers; }
 
-        const KeyCode::Enum key;
+        const KeyCode::ByEnum key;
         unsigned int text;
         unsigned int modifiers;
     };
@@ -315,9 +498,9 @@ namespace orxonox
     {
     public:
         virtual ~MouseHandler() { }
-        virtual void mouseButtonPressed (MouseButton::Enum id) = 0;
-        virtual void mouseButtonReleased(MouseButton::Enum id) = 0;
-        virtual void mouseButtonHeld    (MouseButton::Enum id) = 0;
+        virtual void mouseButtonPressed (MouseButtonCode::ByEnum id) = 0;
+        virtual void mouseButtonReleased(MouseButtonCode::ByEnum id) = 0;
+        virtual void mouseButtonHeld    (MouseButtonCode::ByEnum id) = 0;
         virtual void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) = 0;
         virtual void mouseScrolled      (int abs, int rel)     = 0;
         virtual void tickMouse          (float dt) = 0;
@@ -332,9 +515,9 @@ namespace orxonox
     {
     public:
         virtual ~JoyStickHandler() { }
-        virtual void joyStickButtonPressed (unsigned int joyStickID, JoyStickButton::Enum id) = 0;
-        virtual void joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id) = 0;
-        virtual void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButton::Enum id) = 0;
+        virtual void joyStickButtonPressed (unsigned int joyStickID, JoyStickButtonCode::ByEnum id) = 0;
+        virtual void joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id) = 0;
+        virtual void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id) = 0;
         virtual void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) = 0;
         virtual void tickJoyStick          (float dt, unsigned int joyStick) = 0;
     };
@@ -356,15 +539,15 @@ namespace orxonox
         void keyReleased(const KeyEvent& evt) { }
         void keyHeld    (const KeyEvent& evt) { }
 
-        void mouseButtonPressed (MouseButton::Enum id) { }
-        void mouseButtonReleased(MouseButton::Enum id) { }
-        void mouseButtonHeld    (MouseButton::Enum id) { }
+        void mouseButtonPressed (MouseButtonCode::ByEnum id) { }
+        void mouseButtonReleased(MouseButtonCode::ByEnum id) { }
+        void mouseButtonHeld    (MouseButtonCode::ByEnum id) { }
         void mouseMoved         (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize) { }
         void mouseScrolled      (int abs, int rel) { }
 
-        void joyStickButtonPressed (unsigned int joyStickID, JoyStickButton::Enum id) { }
-        void joyStickButtonReleased(unsigned int joyStickID, JoyStickButton::Enum id) { }
-        void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButton::Enum id) { }
+        void joyStickButtonPressed (unsigned int joyStickID, JoyStickButtonCode::ByEnum id) { }
+        void joyStickButtonReleased(unsigned int joyStickID, JoyStickButtonCode::ByEnum id) { }
+        void joyStickButtonHeld    (unsigned int joyStickID, JoyStickButtonCode::ByEnum id) { }
         void joyStickAxisMoved     (unsigned int joyStickID, unsigned int axis, float value) { }
     };
 

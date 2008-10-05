@@ -36,8 +36,9 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport GSLevel : public GameState<GSGraphics>
+    class _OrxonoxExport GSLevel : public GameState<GSGraphics>, public OrxonoxClass
     {
+        friend class ClassIdentifier<GSLevel>;
     public:
         GSLevel(const std::string& name);
         virtual ~GSLevel();
@@ -57,12 +58,24 @@ namespace orxonox
 
         float timeFactor_;       //!< A factor to change the gamespeed
 
+        // console commands
+        void keybind(const std::string& command);
+        void tkeybind(const std::string& command);
+        void keybindInternal(const std::string& command, bool bTemporary);
+
         Ogre::SceneManager*   sceneManager_;
         KeyBinder*            keyBinder_;        //!< tool that loads and manages the input bindings
         SimpleInputState*     inputState_;
         Radar*                radar_;            //!< represents the Radar (not the HUD part)
         Level*                startLevel_;       //!< current hard coded default level
         Level*                hud_;              //!< 'level' object fo the HUD
+
+        // config values
+        std::string           keyDetectorCallbackCode_;
+        
+    private:
+        void setConfigValues();
+
     };
 }
 
