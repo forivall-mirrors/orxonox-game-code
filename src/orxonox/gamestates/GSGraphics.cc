@@ -33,6 +33,7 @@
 #include <OgreConfigFile.h>
 #include <OgreFrameListener.h>
 #include <OgreRoot.h>
+#include <OgreLogManager.h>
 #include <OgreException.h>
 #include <OgreRenderWindow.h>
 #include <OgreRenderSystem.h>
@@ -60,10 +61,14 @@ namespace orxonox
 {
     GSGraphics::GSGraphics()
         : GameState<GSRoot>("graphics")
-        , ogreRoot_(0)
+        , renderWindow_(0)
+        , viewport_(0)
         , inputManager_(0)
         , console_(0)
         , guiManager_(0)
+        , ogreRoot_(0)
+        , ogreLogger_(0)
+        , graphicsEngine_(0)
         , masterKeyBinder_(0)
         , frameCount_(0)
         , statisticsRefreshCycle_(0)
@@ -72,6 +77,7 @@ namespace orxonox
         , tickTime_(0)
     {
         RegisterRootObject(GSGraphics);
+        setConfigValues();
     }
 
     GSGraphics::~GSGraphics()
@@ -81,17 +87,26 @@ namespace orxonox
     void GSGraphics::setConfigValues()
     {
         SetConfigValue(resourceFile_, "resources.cfg").description("Location of the resources file in the data path.");
-        SetConfigValue(statisticsRefreshCycle_, 200000).description("Sets the time in microseconds interval at which average fps, etc. get updated.");
+        SetConfigValue(ogreConfigFile_,  "ogre.cfg").description("Location of the Ogre config file");
+        SetConfigValue(ogrePluginsFile_, "plugins.cfg").description("Location of the Ogre plugins file");
+        SetConfigValue(ogreLogFile_,     "ogre.log").description("Logfile for messages from Ogre. \
+                                                                 Use \"\" to suppress log file creation.");
+        SetConfigValue(ogreLogLevelTrivial_ , 5).description("Corresponding orxonox debug level for ogre Trivial");
+        SetConfigValue(ogreLogLevelNormal_  , 4).description("Corresponding orxonox debug level for ogre Normal");
+        SetConfigValue(ogreLogLevelCritical_, 2).description("Corresponding orxonox debug level for ogre Critical");
+        SetConfigValue(statisticsRefreshCycle_, 200000).description("Sets the time in microseconds interval at \
+                                                                    which average fps, etc. get updated.");
     }
 
     void GSGraphics::enter()
     {
         Settings::_getInstance().bShowsGraphics_ = true;
 
-        setConfigValues();
+        // initialise graphics engine. Doesn't load the render window yet!
+        graphicsEngine_ = new GraphicsEngine();
 
-        this->ogreRoot_ = getParent()->getOgreRoot();
-
+        // Ogre setup procedure
+        setupOgre();
         this->declareResources();
         this->loadRenderer();    // creates the render window
         // TODO: Spread this so that this call only initialises things needed for the Console and GUI
@@ -99,10 +114,9 @@ namespace orxonox
 
 
         // HACK: temporary:
-        GraphicsEngine* graphicsEngine = getParent()->getGraphicsEngine();
-        graphicsEngine->renderWindow_  = this->renderWindow_;
-        graphicsEngine->root_          = this->ogreRoot_;
-        graphicsEngine->viewport_      = this->viewport_;
+        graphicsEngine_->renderWindow_  = this->renderWindow_;
+        graphicsEngine_->root_          = this->ogreRoot_;
+        graphicsEngine_->viewport_      = this->viewport_;
 
 
         // Calls the InputManager which sets up the input devices.
@@ -140,7 +154,7 @@ namespace orxonox
     {
         using namespace Ogre;
 
-        // remove our WindowEventListener first to avoid bad calls in the procedures
+        // remove our WindowEventListener first to avoid bad calls after the window has been destroyed
         Ogre::WindowEventUtilities::removeWindowEventListener(this->renderWindow_, this);
 
         delete this->guiManager_;
@@ -155,9 +169,9 @@ namespace orxonox
         RenderSystem* renderer = this->ogreRoot_->getRenderSystem();
         renderer->destroyRenderWindow("Orxonox");
 
+        /*** CODE SNIPPET, UNUSED ***/
         // Does the opposite of initialise()
-        ogreRoot_->shutdown();
-
+        //ogreRoot_->shutdown();
         // Remove all resources and resource groups
         //StringVector groups = ResourceGroupManager::getSingleton().getResourceGroups();
         //for (StringVector::iterator it = groups.begin(); it != groups.end(); ++it)
@@ -169,6 +183,17 @@ namespace orxonox
 
         // Shutdown the render system
         //this->ogreRoot_->setRenderSystem(0);
+
+        delete this->ogreRoot_;
+
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+        // delete the ogre log and the logManager (since we have created it).
+        this->ogreLogger_->getDefaultLog()->removeListener(this);
+        this->ogreLogger_->destroyLog(Ogre::LogManager::getSingleton().getDefaultLog());
+        delete this->ogreLogger_;
+#endif
+
+        delete graphicsEngine_;
 
         Settings::_getInstance().bShowsGraphics_ = false;
     }
@@ -233,6 +258,79 @@ namespace orxonox
         ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
 
         ++frameCount_;
+    }
+
+    /**
+    @brief
+        Creates the Ogre Root object and sets up the ogre log.
+    */
+    void GSGraphics::setupOgre()
+    {
+        COUT(3) << "Setting up Ogre..." << std::endl;
+
+        // TODO: LogManager doesn't work on oli platform. The why is yet unknown.
+#if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32
+        // create a new logManager
+        ogreLogger_ = new Ogre::LogManager();
+        COUT(4) << "Ogre LogManager created" << std::endl;
+
+        // create our own log that we can listen to
+        Ogre::Log *myLog;
+        if (this->ogreLogFile_ == "")
+            myLog = ogreLogger_->createLog("ogre.log", true, false, true);
+        else
+            myLog = ogreLogger_->createLog(this->ogreLogFile_, true, false, false);
+        COUT(4) << "Ogre Log created" << std::endl;
+
+        myLog->setLogDetail(Ogre::LL_BOREME);
+        myLog->addListener(this);
+#endif
+
+        // Root will detect that we've already created a Log
+        COUT(4) << "Creating Ogre Root..." << std::endl;
+
+        if (ogrePluginsFile_ == "")
+        {
+            COUT(2) << "Warning: Ogre plugins file set to \"\". Defaulting to plugins.cfg" << std::endl;
+            ModifyConfigValue(ogrePluginsFile_, tset, "plugins.cfg");
+        }
+        if (ogreConfigFile_ == "")
+        {
+            COUT(2) << "Warning: Ogre config file set to \"\". Defaulting to config.cfg" << std::endl;
+            ModifyConfigValue(ogreConfigFile_, tset, "config.cfg");
+        }
+        if (ogreLogFile_ == "")
+        {
+            COUT(2) << "Warning: Ogre log file set to \"\". Defaulting to ogre.log" << std::endl;
+            ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
+        }
+
+        // check for config file existence because Ogre displays (caught) exceptions if not
+        std::ifstream probe;
+        probe.open(ogreConfigFile_.c_str());
+        if (!probe)
+        {
+            // create a zero sized file
+            std::ofstream creator;
+            creator.open(ogreConfigFile_.c_str());
+            creator.close();
+        }
+        else
+            probe.close();
+
+        ogreRoot_ = new Ogre::Root(ogrePluginsFile_, ogreConfigFile_, ogreLogFile_);
+
+#if 0 // Ogre 1.4.3 doesn't yet support setDebugOutputEnabled(.)
+#if ORXONOX_PLATFORM != ORXONOX_PLATFORM_WIN32
+        // tame the ogre ouput so we don't get all the mess in the console
+        Ogre::Log* defaultLog = Ogre::LogManager::getSingleton().getDefaultLog();
+        defaultLog->setDebugOutputEnabled(false);
+        defaultLog->setLogDetail(Ogre::LL_BOREME);
+        defaultLog->addListener(this);
+#endif
+#endif
+
+        COUT(3) << "Ogre set up done." << std::endl;
     }
 
     void GSGraphics::declareResources()
@@ -327,6 +425,41 @@ namespace orxonox
         //}
     }
 
+    /**
+    @brief
+        Method called by the LogListener interface from Ogre.
+        We use it to capture Ogre log messages and handle it ourselves.
+    @param message
+        The message to be logged
+    @param lml
+        The message level the log is using
+    @param maskDebug
+        If we are printing to the console or not
+    @param logName
+        The name of this log (so you can have several listeners
+        for different logs, and identify them)
+    */
+    void GSGraphics::messageLogged(const std::string& message,
+        Ogre::LogMessageLevel lml, bool maskDebug, const std::string& logName)
+    {
+        int orxonoxLevel;
+        switch (lml)
+        {
+        case Ogre::LML_TRIVIAL:
+            orxonoxLevel = this->ogreLogLevelTrivial_;
+            break;
+        case Ogre::LML_NORMAL:
+            orxonoxLevel = this->ogreLogLevelNormal_;
+            break;
+        case Ogre::LML_CRITICAL:
+            orxonoxLevel = this->ogreLogLevelCritical_;
+            break;
+        default:
+            orxonoxLevel = 0;
+        }
+        OutputHandler::getOutStream().setOutputLevel(orxonoxLevel)
+            << "Ogre: " << message << std::endl;
+    }
 
     /**
     @brief

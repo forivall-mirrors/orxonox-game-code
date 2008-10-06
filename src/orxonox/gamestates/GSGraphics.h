@@ -38,28 +38,37 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport GSGraphics : public GameState<GSRoot>, public OrxonoxClass, public Ogre::WindowEventListener
+    class _OrxonoxExport GSGraphics : public GameState<GSRoot>, public OrxonoxClass,
+                                      public Ogre::WindowEventListener, public Ogre::LogListener
     {
         friend class ClassIdentifier<GSGraphics>;
+
     public:
         GSGraphics();
         ~GSGraphics();
 
-        Ogre::Viewport* getViewport() { return this->viewport_; }
-        GUIManager* getGUIManager() { return this->guiManager_; }
+        Ogre::Root*     getOgreRoot()   { return this->ogreRoot_  ; }
+        Ogre::Viewport* getViewport()   { return this->viewport_  ; }
+        GUIManager*     getGUIManager() { return this->guiManager_; }
 
-    private:
+    private: // functions
         void enter();
         void leave();
         void ticked(const Clock& time);
 
         void setConfigValues();
 
+        void setupOgre();
         void declareResources();
         void loadRenderer();
         void initialiseResources();
 
+        // console commands
         void printScreen();
+
+        // event from Ogre::LogListener
+        void messageLogged(const std::string& message, Ogre::LogMessageLevel lml,
+            bool maskDebug, const std::string& logName);
 
         // window events from Ogre::WindowEventListener
         void windowMoved       (Ogre::RenderWindow* rw);
@@ -67,7 +76,7 @@ namespace orxonox
         void windowFocusChange (Ogre::RenderWindow* rw);
         void windowClosed      (Ogre::RenderWindow* rw);
 
-        Ogre::Root*           ogreRoot_;
+    private: // variables
         Ogre::RenderWindow*   renderWindow_;          //!< the current render window
         Ogre::Viewport*       viewport_;              //!< default full size viewport
 
@@ -75,6 +84,9 @@ namespace orxonox
         InputManager*         inputManager_;
         InGameConsole*        console_;
         GUIManager*           guiManager_;
+        Ogre::Root*           ogreRoot_;                  //!< Ogre's root
+        Ogre::LogManager*     ogreLogger_;
+        GraphicsEngine*       graphicsEngine_;   //!< Interface to Ogre
 
         KeyBinder*            masterKeyBinder_;
 
@@ -87,6 +99,12 @@ namespace orxonox
 
         // config values
         std::string           resourceFile_;          //!< resources file name
+        std::string           ogreConfigFile_;        //!< ogre config file name
+        std::string           ogrePluginsFile_;       //!< ogre plugins file name
+        std::string           ogreLogFile_;           //!< log file name for Ogre log messages
+        int                   ogreLogLevelTrivial_;   //!< Corresponding Orxonx debug level for LL_TRIVIAL
+        int                   ogreLogLevelNormal_;    //!< Corresponding Orxonx debug level for LL_NORMAL
+        int                   ogreLogLevelCritical_;  //!< Corresponding Orxonx debug level for LL_CRITICAL
         unsigned int          detailLevelParticle_;   //!< Detail level of particle effects (0: off, 1: low, 2: normal, 3: high)
     };
 }

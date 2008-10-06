@@ -560,10 +560,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\orxonox\OrxonoxLibraryHeaders.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\orxonox\OrxonoxPrereqs.h"
 				>
 			</File>
