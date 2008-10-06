@@ -38,8 +38,9 @@
 #include <cassert>
 
 #include "util/OrxonoxPlatform.h"
-#include "SignalHandler.h"
 #include "util/Debug.h"
+#include "core/ConfigFileManager.h"
+#include "SignalHandler.h"
 
 #include "gamestates/GSRoot.h"
 #include "gamestates/GSGraphics.h"
@@ -89,6 +90,15 @@ int main(int argc, char** argv)
     // create a signal handler (only works for linux)
     SignalHandler::getInstance()->doCatch(argv[0], "orxonox.log");
 
+    // Specifiy config file before creating the GameStates in order to have
+    // setConfigValues() in the constructor (required).
+#if ORXONOX_DEBUG_MODE == 1
+        ConfigFileManager::getInstance().setFile(CFT_Settings, "orxonox_d.ini");
+#else
+        ConfigFileManager::getInstance().setFile(CFT_Settings, "orxonox.ini");
+#endif
+
+    // create the gamestates
     GSRoot root;
     GSGraphics graphics;
     GSStandalone standalone;
@@ -98,15 +108,16 @@ int main(int argc, char** argv)
     GSGUI gui;
     GSIOConsole ioConsole;
 
+    // make the hierarchy
     root.addChild(&graphics);
     graphics.addChild(&standalone);
     graphics.addChild(&server);
     graphics.addChild(&client);
     graphics.addChild(&gui);
-
     root.addChild(&ioConsole);
     root.addChild(&dedicated);
 
+    // Here happens the game
     root.start(argc, argv);
 
     return 0;
