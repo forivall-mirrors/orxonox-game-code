@@ -42,7 +42,7 @@ class ClassID : public Packet
 {
 public:
   ClassID( unsigned int classID, std::string className );
-  ClassID( unsigned char* data, int clientID );
+  ClassID( uint8_t* data, unsigned int clientID );
   ~ClassID();
   
   inline unsigned int getSize() const;
@@ -52,7 +52,7 @@ public:
   unsigned int getClassNameLength(){ return classNameLength_; }
   unsigned char *getClassName();
 private:
-  unsigned int classNameLength_;
+  uint32_t classNameLength_;
 };
 
 } //namespace packet

@@ -15,7 +15,7 @@ class Chat : public Packet
 {
 public:
   Chat( std::string message, unsigned int playerID );
-  Chat( unsigned char* data, int clientID );
+  Chat( uint8_t* data, unsigned int clientID );
   ~Chat();
   
   inline unsigned int getSize() const;
@@ -24,8 +24,8 @@ public:
   unsigned int getMessageLength(){ return messageLength_; };
   unsigned char *getMessage();
 private:
-  unsigned int messageLength_;
-  int clientID_;
+  uint32_t messageLength_;
+  unsigned int clientID_;
 };
 
 } //namespace packet

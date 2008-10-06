@@ -36,8 +36,8 @@ namespace packet {
 #define   PACKET_FLAGS_CHAT ENET_PACKET_FLAG_RELIABLE
 #define   _PACKETID         0
 const int _PLAYERID     =   _PACKETID + sizeof(ENUM::Type);
-#define   _MESSAGELENGTH    _PLAYERID + sizeof(unsigned int)
-#define   _MESSAGE          _MESSAGELENGTH + sizeof(unsigned int)
+#define   _MESSAGELENGTH    _PLAYERID + sizeof(uint32_t)
+#define   _MESSAGE          _MESSAGELENGTH + sizeof(uint32_t)
 
 Chat::Chat( std::string message, unsigned int playerID )
  : Packet()
@@ -51,10 +51,10 @@ Chat::Chat( std::string message, unsigned int playerID )
   memcpy( data_+_MESSAGE, (void *)message.c_str(), messageLength_ );
 }
 
-Chat::Chat( unsigned char *data, int clientID )
+Chat::Chat( uint8_t* data, unsigned int clientID )
   : Packet(data, clientID)
 {
-  messageLength_ = *(unsigned int *)(data + _MESSAGELENGTH );
+  messageLength_ = *(uint32_t *)(data + _MESSAGELENGTH );
 }
 
 Chat::~Chat()
@@ -66,7 +66,7 @@ unsigned int Chat::getSize() const{
 }
 
 bool Chat::process(){
-  bool b = Host::incomingChat(std::string((const char*)data_+_MESSAGE), *(unsigned int *)(data_+_PLAYERID));
+  bool b = Host::incomingChat(std::string((const char*)data_+_MESSAGE), *(uint32_t *)(data_+_PLAYERID));
   delete this;
   return b;
 }

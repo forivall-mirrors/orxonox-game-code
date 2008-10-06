@@ -40,7 +40,7 @@ class DeleteObjects : public Packet
 {
 public:
   DeleteObjects( );
-  DeleteObjects( unsigned char* data, int clientID );
+  DeleteObjects( uint8_t* data, unsigned int clientID );
   ~DeleteObjects();
   
   bool fetchIDs();

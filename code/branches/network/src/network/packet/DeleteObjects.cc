@@ -39,7 +39,7 @@ namespace packet {
 #define PACKET_FLAGS_DELETE    ENET_PACKET_FLAG_RELIABLE
 #define _PACKETID           0
 #define _QUANTITY           _PACKETID + sizeof(ENUM::Type)
-#define _OBJECTIDS          _QUANTITY + sizeof(unsigned int)
+#define _OBJECTIDS          _QUANTITY + sizeof(uint32_t)
   
 DeleteObjects::DeleteObjects()
  : Packet()
@@ -47,7 +47,7 @@ DeleteObjects::DeleteObjects()
   flags_ = flags_ | PACKET_FLAGS_DELETE;
 }
 
-DeleteObjects::DeleteObjects( unsigned char *data, int clientID )
+DeleteObjects::DeleteObjects( uint8_t *data, unsigned int clientID )
   : Packet(data, clientID)
 {
 }
@@ -60,25 +60,25 @@ bool DeleteObjects::fetchIDs(){
   unsigned int number = Synchronisable::getNumberOfDeletedObject();
   if(number==0)
     return false;
-  unsigned int size = sizeof(ENUM::Type) + sizeof(unsigned int)*number;
-  data_ = new unsigned char[size];
+  unsigned int size = sizeof(ENUM::Type) + sizeof(uint32_t)*(number+1);
+  data_ = new uint8_t[size];
   *(ENUM::Type *)(data_ + _PACKETID ) = ENUM::DeleteObjects;
-  *(unsigned int *)(data_ + _QUANTITY) = number;
+  *(uint32_t *)(data_ + _QUANTITY) = number;
   for(unsigned int i=0; i<number; i++){
-    *(unsigned int *)(data_ + sizeof(ENUM::Type) + i*sizeof(unsigned int)) = Synchronisable::popDeletedObject();
+    *(uint32_t *)(data_ + sizeof(ENUM::Type) + (i+1)*sizeof(uint32_t)) = Synchronisable::popDeletedObject();
   }
   return true;
 }
 
 unsigned int DeleteObjects::getSize() const{
   assert(data_);
-  return _OBJECTIDS + sizeof(unsigned int) + *(unsigned int*)(data_+_QUANTITY);
+  return _OBJECTIDS + *(uint32_t*)(data_+_QUANTITY)*sizeof(uint32_t);
 }
 
 bool DeleteObjects::process(){
   for(unsigned int i=0; i<*(unsigned int *)(data_+_QUANTITY); i++){
-    COUT(3) << "deleting object with id: " << *(unsigned int*)(data_+_OBJECTIDS+i*sizeof(unsigned int)) << std::endl;
-    Synchronisable::deleteObject( *(unsigned int*)(data_+_OBJECTIDS+i*sizeof(unsigned int)) );
+    COUT(3) << "deleting object with id: " << *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) << std::endl;
+    Synchronisable::deleteObject( *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) );
   }
   return true;
 }

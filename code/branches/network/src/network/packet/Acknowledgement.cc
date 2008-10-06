@@ -39,17 +39,17 @@ namespace packet {
 #define _PACKETID           0
 #define _ACKID              _PACKETID + sizeof(network::packet::ENUM::Type)
   
-Acknowledgement::Acknowledgement( unsigned int id, int clientID )
+Acknowledgement::Acknowledgement( unsigned int id, unsigned int clientID )
  : Packet()
 {
   flags_ = flags_ | PACKET_FLAGS_ACK;
-  data_=new unsigned char[ getSize() ];
+  data_=new uint8_t[ getSize() ];
   *(ENUM::Type *)(data_ + _PACKETID ) = ENUM::Acknowledgement;
-  *(unsigned int *)(data_ + _ACKID ) = id;
+  *(uint32_t *)(data_ + _ACKID ) = id;
   clientID_=clientID;
 }
 
-Acknowledgement::Acknowledgement( unsigned char *data, int clientID )
+Acknowledgement::Acknowledgement( uint8_t *data, unsigned int clientID )
   : Packet(data, clientID)
 {
 }
@@ -59,7 +59,7 @@ Acknowledgement::~Acknowledgement()
 }
 
 unsigned int Acknowledgement::getSize() const{
-  return _ACKID + sizeof(unsigned int);
+  return _ACKID + sizeof(uint32_t);
 }
 
 bool Acknowledgement::process(){
@@ -69,7 +69,7 @@ bool Acknowledgement::process(){
 }
 
 unsigned int Acknowledgement::getAckID(){
-  return *(unsigned int *)(data_ + _ACKID);
+  return *(uint32_t *)(data_ + _ACKID);
 }
 
 } //namespace packet

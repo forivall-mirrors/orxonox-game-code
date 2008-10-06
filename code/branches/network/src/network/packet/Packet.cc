@@ -66,7 +66,7 @@ void blub(ENetPacket *packet){
   COUT(4) << "blubb" << std::endl;
 }
 
-Packet::Packet(unsigned char *data, int clientID){
+Packet::Packet(uint8_t *data, unsigned int clientID){
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = ENUM::Incoming;
   clientID_=clientID;
@@ -74,12 +74,6 @@ Packet::Packet(unsigned char *data, int clientID){
   enetPacket_=0;
 }
 
-/*Packet::Packet(ENetPacket *packet, ENetPeer *peer){
-  packetDirection_ = ENUM::Incoming;
-  enetPacket_ = packet;
-  clientID_ = ClientInformation::findClient(&peer->address)->getID();
-  data_ = packet->data;
-}*/
 
 Packet::Packet(const Packet &p){
   enetPacket_=p.enetPacket_;
@@ -87,7 +81,7 @@ Packet::Packet(const Packet &p){
   packetDirection_ = p.packetDirection_;
   clientID_ = p.clientID_;
   if(p.data_){
-    data_ = new unsigned char[p.getSize()];
+    data_ = new uint8_t[p.getSize()];
     memcpy(data_, p.data_, p.getSize());
   }else
     data_=0;
@@ -138,7 +132,7 @@ bool Packet::send(){
 }
 
 Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
-  unsigned char *data = packet->data;
+  uint8_t *data = packet->data;
   unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p;
   COUT(5) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;
