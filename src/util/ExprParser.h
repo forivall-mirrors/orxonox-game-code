@@ -40,60 +40,60 @@
 class _UtilExport ExprParser
 {
 public:
-  enum binary_operator
-  {
-    b_plus,
-    b_minus,
-    mal,
-    durch,
-    modulo,
-    hoch,
-    undef,
-    oder,
-    und,
-    gleich,
-    b_nicht,
-    kleiner,
-    groesser,
-    ungleich,
-    kleinergleich,
-    groessergleich
-  };
+    enum binary_operator
+    {
+        b_plus,
+        b_minus,
+        mal,
+        durch,
+        modulo,
+        hoch,
+        undef,
+        oder,
+        und,
+        gleich,
+        b_nicht,
+        kleiner,
+        groesser,
+        ungleich,
+        kleinergleich,
+        groessergleich
+    };
 
-  enum unary_operator
-  {
-    u_plus,
-    u_minus,
-    u_nicht
-  };
+    enum unary_operator
+    {
+        u_plus,
+        u_minus,
+        u_nicht
+    };
 
 
-  ExprParser(const std::string& str);
-  std::string& getRemains() { return  this->remains_; }
-  double       getResult()  { return  this->result_; }
-  bool         getSuccess() { return !this->failed_; }
+    ExprParser(const std::string& str);
+    std::string& getRemains() { return  this->remains_; }
+    double       getResult()  { return  this->result_; }
+    bool         getSuccess() { return !this->failed_; }
 
 private:
-  double parse_expr_1();
-  double parse_expr_2();
-  double parse_expr_3();
-  double parse_expr_4();
-  double parse_expr_5();
-  double parse_expr_6();
-  double parse_expr_7();
-  double parse_expr_8();
-  char* parse_word(char* str);
-  binary_operator parse_binary_operator();
-  unary_operator parse_unary_operator();
+    double parse_expr_1();
+    double parse_expr_2();
+    double parse_expr_3();
+    double parse_expr_4();
+    double parse_expr_5();
+    double parse_expr_6();
+    double parse_expr_7();
+    double parse_expr_8();
+    char* parse_word(char* str);
+    binary_operator parse_binary_operator();
+    unary_operator parse_unary_operator();
 
-  double parse_argument();
-  double parse_last_argument();
+    double parse_argument();
+    double parse_last_argument();
 
-  binary_operator op;
-  const char* reading_stream;
-  bool failed_;
-  double result_;
-  std::string remains_;
+    binary_operator op;
+    const char* reading_stream;
+    bool failed_;
+    double result_;
+    std::string remains_;
 
 };
 
