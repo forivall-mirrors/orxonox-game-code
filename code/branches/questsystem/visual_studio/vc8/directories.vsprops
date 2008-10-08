@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="directories"
+	OutputDirectory="$(RootDir)bin\"
+	IntermediateDirectory="$(RootDir)obj\$(ProjectName)\$(ConfigurationName)"
+	>
+	<UserMacro
+		Name="RootDir"
+		Value="$(SolutionDir)..\..\"
+	/>
+	<UserMacro
+		Name="LibDir"
+		Value="$(RootDir)dependencies\"
+	/>
+	<UserMacro
+		Name="LibOutDir"
+		Value="$(RootDir)build\"
+	/>
+</VisualStudioPropertySheet>
