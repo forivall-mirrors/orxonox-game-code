@@ -347,7 +347,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Generating tolua bind files..."
-							CommandLine="&quot;$(OutDir)\toluagen_orxonox$(CS).exe&quot; -n Orxonox -o $(RootDir)/src/orxonox/tolua/tolua_bind.cc -H $(RootDir)/src/orxonox/tolua/tolua_bind.h $(RootDir)/src/orxonox/tolua/tolua.pkg&#x0D;&#x0A;"
+							CommandLine="&quot;$(RootDir)\build\$(SolutionName)\$(ConfigurationName)\toluagen_orxonox\toluagen_orxonox$(CS).exe&quot; -n Orxonox -o $(RootDir)/src/orxonox/tolua/tolua_bind.cc -H $(RootDir)/src/orxonox/tolua/tolua_bind.h $(RootDir)/src/orxonox/tolua/tolua.pkg&#x0D;&#x0A;"
 							AdditionalDependencies="$(RootDir)\src\orxonox\gui\GUIManager.h"
 							Outputs="$(RootDir)\src\orxonox\tolua\tolua_bind.cc; $(RootDir)\src\orxonox\tolua\tolua_bind.h"
 						/>
@@ -358,7 +358,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Generating tolua bind files..."
-							CommandLine="&quot;$(OutDir)\toluagen_orxonox$(CS).exe&quot; -n Orxonox -o $(RootDir)/src/orxonox/tolua/tolua_bind.cc -H $(RootDir)/src/orxonox/tolua/tolua_bind.h $(RootDir)/src/orxonox/tolua/tolua.pkg&#x0D;&#x0A;"
+							CommandLine="&quot;$(RootDir)\build\$(SolutionName)\$(ConfigurationName)\toluagen_orxonox\toluagen_orxonox$(CS).exe&quot; -n Orxonox -o $(RootDir)/src/orxonox/tolua/tolua_bind.cc -H $(RootDir)/src/orxonox/tolua/tolua_bind.h $(RootDir)/src/orxonox/tolua/tolua.pkg&#x0D;&#x0A;"
 							AdditionalDependencies="$(RootDir)\src\orxonox\gui\GUIManager.h"
 							Outputs="$(RootDir)\src\orxonox\tolua\tolua_bind.cc; $(RootDir)\src\orxonox\tolua\tolua_bind.h"
 						/>

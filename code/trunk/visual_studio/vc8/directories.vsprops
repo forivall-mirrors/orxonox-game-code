@@ -3,8 +3,8 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="directories"
-	OutputDirectory="$(RootDir)bin\"
-	IntermediateDirectory="$(RootDir)obj\$(ProjectName)\$(ConfigurationName)"
+	OutputDirectory="$(RootDir)bin\$(SolutionName)\$(ConfigurationName)\"
+	IntermediateDirectory="$(RootDir)build\$(SolutionName)\$(ConfigurationName)\$(ProjectName)\"
 	>
 	<UserMacro
 		Name="RootDir"
@@ -12,7 +12,7 @@
 	/>
 	<UserMacro
 		Name="LibDir"
-		Value="$(RootDir)dependencies\"
+		Value="$(RootDir)\dependencies\"
 	/>
 	<UserMacro
 		Name="LibOutDir"

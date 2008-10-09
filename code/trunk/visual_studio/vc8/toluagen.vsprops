@@ -7,10 +7,11 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
+		PreprocessorDefinitions="TOLUA_STATIC_BUILD"
 		CompileAs="1"
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
+		OutputFile="$(IntDir)$(ProjectName)$(CS).exe"
 	/>
 </VisualStudioPropertySheet>

@@ -92,11 +92,7 @@ int main(int argc, char** argv)
 
     // Specifiy config file before creating the GameStates in order to have
     // setConfigValues() in the constructor (required).
-#if ORXONOX_DEBUG_MODE == 1
-        ConfigFileManager::getInstance().setFile(CFT_Settings, "orxonox_d.ini");
-#else
-        ConfigFileManager::getInstance().setFile(CFT_Settings, "orxonox.ini");
-#endif
+    ConfigFileManager::getInstance().setFile(CFT_Settings, "orxonox.ini");
 
     // create the gamestates
     GSRoot root;
