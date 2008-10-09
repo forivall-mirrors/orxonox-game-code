@@ -12,6 +12,6 @@
 	/>
 	<Tool
 		Name="VCLinkerTool"
-		OutputFile="$(OutDir)$(ProjectName)$(CS).exe"
+		OutputFile="$(IntDir)$(ProjectName)$(CS).exe"
 	/>
 </VisualStudioPropertySheet>
