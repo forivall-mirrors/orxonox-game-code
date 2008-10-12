@@ -189,6 +189,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\network\packet\DeleteObjects.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\network\packet\Gamestate.cc"
 					>
 				</File>
@@ -272,6 +276,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\network\packet\ClassID.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\network\packet\DeleteObjects.h"
 					>
 				</File>
 				<File
