@@ -12,10 +12,6 @@
 	/>
 	<UserMacro
 		Name="LibDir"
-		Value="$(RootDir)\dependencies\"
-	/>
-	<UserMacro
-		Name="LibOutDir"
-		Value="$(RootDir)build\"
+		Value="$(RootDir)\dependencies\$(SolutionName)\"
 	/>
 </VisualStudioPropertySheet>
