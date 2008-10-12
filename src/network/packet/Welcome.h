@@ -40,10 +40,10 @@ class Welcome : public Packet
 {
 public:
   Welcome( unsigned int clientID, unsigned int shipID );
-  Welcome( unsigned char* data, int clientID );
+  Welcome( uint8_t* data, unsigned int clientID );
   virtual ~Welcome();
   
-  unsigned char *getData();
+  uint8_t *getData();
   inline unsigned int getSize() const;
   bool process();
   

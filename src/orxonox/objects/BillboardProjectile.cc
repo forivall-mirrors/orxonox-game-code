@@ -41,12 +41,9 @@ namespace orxonox
     {
         RegisterObject(BillboardProjectile);
 
-        if (this->owner_)
-        {
-            this->billboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
-            this->attachObject(this->billboard_.getBillboardSet());
-            this->scale(0.5);
-        }
+        this->billboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 1.0, 0.5), 1);
+        this->attachObject(this->billboard_.getBillboardSet());
+        this->scale(0.5);
     }
 
     BillboardProjectile::~BillboardProjectile()

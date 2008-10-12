@@ -41,6 +41,7 @@
 #include "ClassID.h"
 #include "Gamestate.h"
 #include "Welcome.h"
+#include "DeleteObjects.h"
 #include "network/Host.h"
 #include "core/CoreIncludes.h"
 
@@ -65,7 +66,7 @@ void blub(ENetPacket *packet){
   COUT(4) << "blubb" << std::endl;
 }
 
-Packet::Packet(unsigned char *data, int clientID){
+Packet::Packet(uint8_t *data, unsigned int clientID){
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = ENUM::Incoming;
   clientID_=clientID;
@@ -73,12 +74,6 @@ Packet::Packet(unsigned char *data, int clientID){
   enetPacket_=0;
 }
 
-/*Packet::Packet(ENetPacket *packet, ENetPeer *peer){
-  packetDirection_ = ENUM::Incoming;
-  enetPacket_ = packet;
-  clientID_ = ClientInformation::findClient(&peer->address)->getID();
-  data_ = packet->data;
-}*/
 
 Packet::Packet(const Packet &p){
   enetPacket_=p.enetPacket_;
@@ -86,7 +81,7 @@ Packet::Packet(const Packet &p){
   packetDirection_ = p.packetDirection_;
   clientID_ = p.clientID_;
   if(p.data_){
-    data_ = new unsigned char[p.getSize()];
+    data_ = new uint8_t[p.getSize()];
     memcpy(data_, p.data_, p.getSize());
   }else
     data_=0;
@@ -124,6 +119,7 @@ bool Packet::send(){
     case ENUM::ClassID:
     case ENUM::Gamestate:
     case ENUM::Welcome:
+    case ENUM::DeleteObjects:
       break;
     default:
       assert(0); //there was some error, if this is the case
@@ -137,32 +133,36 @@ bool Packet::send(){
 }
 
 Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
-  unsigned char *data = packet->data;
+  uint8_t *data = packet->data;
   unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p;
-  COUT(3) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;
+  COUT(5) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;
   switch( *(ENUM::Type *)(data + _PACKETID) )
   {
     case ENUM::Acknowledgement:
-      COUT(3) << "ack" << std::endl;
+      COUT(4) << "ack" << std::endl;
       p = new Acknowledgement( data, clientID );
       break;
     case ENUM::Chat:
-      COUT(3) << "chat" << std::endl;
+      COUT(4) << "chat" << std::endl;
       p = new Chat( data, clientID );
       break;
     case ENUM::ClassID:
-      COUT(3) << "classid" << std::endl;
+      COUT(4) << "classid" << std::endl;
       p = new ClassID( data, clientID );
       break;
     case ENUM::Gamestate:
-      COUT(3) << "gamestate" << std::endl;
+      COUT(4) << "gamestate" << std::endl;
       // TODO: remove brackets
       p = new Gamestate( data, clientID );
       break;
     case ENUM::Welcome:
-      COUT(3) << "welcome" << std::endl;
+      COUT(4) << "welcome" << std::endl;
       p = new Welcome( data, clientID );
+      break;
+    case ENUM::DeleteObjects:
+      COUT(4) << "deleteobjects" << std::endl;
+      p = new DeleteObjects( data, clientID );
       break;
     default:
       assert(0); //TODO: repair this

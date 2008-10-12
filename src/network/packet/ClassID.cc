@@ -39,7 +39,7 @@ namespace packet {
 #define PACKET_FLAGS_CLASSID  ENET_PACKET_FLAG_RELIABLE
 #define _PACKETID             0
 #define _CLASSID              _PACKETID + sizeof(ENUM::Type)
-#define _CLASSNAMELENGTH      _CLASSID + sizeof(unsigned int)
+#define _CLASSNAMELENGTH      _CLASSID + sizeof(uint32_t)
 #define _CLASSNAME            _CLASSNAMELENGTH + sizeof(classNameLength_)
 
   ClassID::ClassID( unsigned int classID, std::string className )
@@ -56,7 +56,7 @@ namespace packet {
   memcpy( data_+_CLASSNAME, (void *)className.c_str(), classNameLength_ );
 }
 
-ClassID::ClassID( unsigned char *data, int clientID )
+ClassID::ClassID( uint8_t* data, unsigned int clientID )
   : Packet(data, clientID)
 {
   memcpy( (void *)&classNameLength_, &data[ _CLASSNAMELENGTH ], sizeof(classNameLength_) );
@@ -67,7 +67,7 @@ ClassID::~ClassID()
 }
 
 unsigned int ClassID::getSize() const{
-  return sizeof(network::packet::ENUM::Type) + 2*sizeof(unsigned int) + classNameLength_;
+  return sizeof(network::packet::ENUM::Type) + 2*sizeof(uint32_t) + classNameLength_;
 }
 
 bool ClassID::process(){
@@ -81,7 +81,7 @@ bool ClassID::process(){
 }
 
 unsigned int ClassID::getClassID(){
-  return *(unsigned int *)&data_[ _CLASSID ];
+  return *(uint32_t *)(data_ + _CLASSID);
 }
 
 } //namespace packet

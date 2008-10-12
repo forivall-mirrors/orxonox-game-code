@@ -32,6 +32,7 @@
 #include "core/input/InputManager.h"
 #include "core/CommandLine.h"
 #include "network/Client.h"
+#include "Settings.h"
 
 namespace orxonox
 {
@@ -49,6 +50,8 @@ namespace orxonox
 
     void GSClient::enter()
     {
+        Settings::_getInstance().bIsClient_ = true;
+
         GSLevel::enter();
 
         int serverPort = CommandLine::getArgument<int>("port")->getValue();
@@ -76,6 +79,8 @@ namespace orxonox
         delete this->client_;
 
         GSLevel::leave();
+
+        Settings::_getInstance().bIsClient_ = false;
     }
 
     void GSClient::ticked(const Clock& time)

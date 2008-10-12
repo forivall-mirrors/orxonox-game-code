@@ -55,6 +55,7 @@
 #include "packet/Chat.h"
 #include "packet/Packet.h"
 #include "packet/Welcome.h"
+#include "packet/DeleteObjects.h"
 #include <util/Convert.h>
 
 namespace network
@@ -70,14 +71,12 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager();
     gamestates_ = new GamestateManager();
-    isServer_ = true;
   }
 
   Server::Server(int port){
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port);
     gamestates_ = new GamestateManager();
-    isServer_ = true;
   }
 
   /**
@@ -89,7 +88,6 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port, bindAddress);
     gamestates_ = new GamestateManager();
-    isServer_ = true;
   }
 
   /**
@@ -101,7 +99,16 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port, bindAddress);
     gamestates_ = new GamestateManager();
-    isServer_ = true;
+  }
+  
+  /**
+  * @brief Destructor
+  */
+  Server::~Server(){
+    if(connection)
+      delete connection;
+    if(gamestates_)
+      delete gamestates_;
   }
 
   /**
@@ -120,47 +127,20 @@ namespace network
     return;
   }
 
-  bool Server::processChat(packet::Chat *message, unsigned int clientID){
+  bool Server::processChat(std::string message, unsigned int playerID){
     ClientInformation *temp = ClientInformation::getBegin();
+    packet::Chat *chat;
     while(temp){
-      message->setClientID(temp->getID());
-      if(!message->send())
-        COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
-      temp = temp->next();
-    }
-    return message->process();
-  }
-
-  /**
-  * This function sends out a message to all clients
-  * @param msg message
-  * @return true/false
-  */
-  bool Server::sendChat(packet::Chat *chat) {
-    //TODO: change this (no informations about who wrote a message)
-    assert(0);
-    ClientInformation *temp = ClientInformation::getBegin();
-    while(temp){
+      chat = new packet::Chat(message, playerID);
       chat->setClientID(temp->getID());
       if(!chat->send())
         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
+      temp = temp->next();
     }
-    return chat->process();;
+    COUT(1) << "Player " << playerID << ": " << message << std::endl;
+    return true;
   }
 
-  /**
-  * This function sends out a message to all clients
-  * @param msg message
-  * @return true/false
-  */
-//   bool Server::sendChat(const char *msg) {
-//     char *message = new char [strlen(msg)+10+1];
-//     sprintf(message, "Player %d: %s", CLIENTID_SERVER, msg);
-//     COUT(1) << message << std::endl;
-//     ENetPacket *packet = packet_gen.chatMessage(message);
-//     COUT(5) <<"Server: adding Packets" << std::endl;
-//     return connection->addPacketAll(packet);
-//   }
 
   /**
   * Run this function once every tick
@@ -173,14 +153,9 @@ namespace network
     timeSinceLastUpdate_+=time;
     if(timeSinceLastUpdate_>=(1./NETWORK_FREQUENCY)){
       timeSinceLastUpdate_=(float)((int)(timeSinceLastUpdate_*NETWORK_FREQUENCY))/timeSinceLastUpdate_;
-//      timeSinceLastUpdate_-=1./NETWORK_FREQUENCY;
       gamestates_->processGamestates();
       updateGamestate();
     }
-    /*while(timeSinceLastUpdate_>1./NETWORK_FREQUENCY)
-      timeSinceLastUpdate_-=1./NETWORK_FREQUENCY;*/
-//     usleep(5000); // TODO remove
-    return;
   }
 
   bool Server::queuePacket(ENetPacket *packet, int clientID){
@@ -229,6 +204,7 @@ namespace network
     //std::cout << "updated gamestate, sending it" << std::endl;
     //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
     sendGameState();
+    sendObjectDeletes();
     COUT(5) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
     //std::cout << "sent gamestate" << std::endl;
   }
@@ -275,23 +251,33 @@ namespace network
       temp=temp->next();
       // gs gets automatically deleted by enet callback
     }
-    /*if(added) {
-      //std::cout << "send gamestates from server.cc in sendGameState" << std::endl;
-      return connection->sendPackets();
-    }*/
-    //COUT(5) << "Server: had no gamestates to send" << std::endl;
     return true;
   }
 
-//   void Server::processChat( chat *data, int clientId){
-//     char *message = new char [strlen(data->message)+10+1];
-//     sprintf(message, "Player %d: %s", clientId, data->message);
-//     COUT(1) << message << std::endl;
-//     ENetPacket *pck = packet_gen.chatMessage(message);
-//     connection->addPacketAll(pck);
-//     delete[] data->message;
-//     delete data;
-//   }
+  bool Server::sendObjectDeletes(){
+    ClientInformation *temp = ClientInformation::getBegin();
+    packet::DeleteObjects *del = new packet::DeleteObjects();
+    if(!del->fetchIDs())
+      return true;  //everything ok (no deletes this tick)
+//     COUT(3) << "sending DeleteObjects" << std::endl;
+    while(temp != NULL){
+      if( !(temp->getSynched()) ){
+        COUT(5) << "Server: not sending gamestate" << std::endl;
+        temp=temp->next();
+        continue;
+      }
+      int cid = temp->getID(); //get client id
+      packet::DeleteObjects *cd = new packet::DeleteObjects(*del);
+      assert(cd);
+      cd->setClientID(cid);
+      if ( !cd->send() )
+        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl;
+      temp=temp->next();
+      // gs gets automatically deleted by enet callback
+    }
+    return true;
+  }
+
 
   bool Server::addClient(ENetEvent *event){
     ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
@@ -327,12 +313,16 @@ namespace network
     COUT(3) << "sending welcome" << std::endl;
     packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
     w->setClientID(temp->getID());
-    assert(w->send());
+    bool b = w->send();
+    assert(b);
     packet::Gamestate *g = new packet::Gamestate();
     g->setClientID(temp->getID());
-    assert(g->collectData(0));
-    assert(g->compressData());
-    assert(g->send());
+    b = g->collectData(0);
+    assert(b);
+    b = g->compressData();
+    assert(b);
+    b = g->send();
+    assert(b);
     return true;
   }
 
@@ -346,7 +336,7 @@ namespace network
     }
     orxonox::SpaceShip *no = dynamic_cast<orxonox::SpaceShip *>(id->fabricate());
     no->classID = id->getNetworkID();
-    client->setShipID(no->objectID);
+    client->setShipID(no->getObjectID());
     no->setPosition(orxonox::Vector3(0,0,80));
     no->setScale(10);
     //no->setYawPitchRoll(orxonox::Degree(-90),orxonox::Degree(-90),orxonox::Degree(0));
@@ -375,7 +365,7 @@ namespace network
       return false;
     gamestates_->removeClient(client);
     while(it){
-      if(it->objectID!=client->getShipID()){
+      if(it->getObjectID()!=client->getShipID()){
         ++it;
         continue;
       }
@@ -395,6 +385,20 @@ namespace network
   void Server::disconnectClient( ClientInformation *client){
     connection->disconnectClient(client);
     gamestates_->removeClient(client);
+  }
+  
+  bool Server::chat(std::string message){
+    ClientInformation *temp = ClientInformation::getBegin();
+    packet::Chat *chat;
+    while(temp){
+      chat = new packet::Chat(message, Host::getPlayerID());
+      chat->setClientID(temp->getID());
+      if(!chat->send())
+        COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
+      temp = temp->next();
+    }
+    COUT(1) << "Player " << Host::getPlayerID() << ": " << message << std::endl;
+    return true;
   }
 
 }

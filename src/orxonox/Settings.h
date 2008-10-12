@@ -51,6 +51,7 @@ namespace orxonox
         friend class GSRoot;
         friend class GSGraphics;
         friend class GSServer;
+        friend class GSClient;
         friend class GSDedicated;
 
     public:
@@ -62,11 +63,13 @@ namespace orxonox
         // an alternative to a global game mode variable
         static bool showsGraphics() { assert(singletonRef_s); return singletonRef_s->bShowsGraphics_; }
         static bool hasServer()     { assert(singletonRef_s); return singletonRef_s->bHasServer_; }
+        static bool isClient()      { assert(singletonRef_s); return singletonRef_s->bIsClient_; }
 
     private:
         // GSRoot has access to these
         static void setShowsGraphics(bool val) { assert(singletonRef_s); singletonRef_s->bShowsGraphics_ = val; }
         static void setHasServer    (bool val) { assert(singletonRef_s); singletonRef_s->bHasServer_     = val; }
+        static void setIsClient     (bool val) { assert(singletonRef_s); singletonRef_s->bIsClient_      = val; }
 
         Settings();
         Settings(const Settings& instance);
@@ -80,6 +83,7 @@ namespace orxonox
 
         bool bShowsGraphics_;                                  //!< global variable that tells whether to show graphics
         bool bHasServer_;                                      //!< global variable that tells whether this is a server
+        bool bIsClient_;
 
         std::string dataPath_;                                 //!< Path to the game data
 

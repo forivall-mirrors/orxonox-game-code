@@ -36,7 +36,12 @@
 namespace network {
 
 /**
-	@author Oliver Scheuss
+*       @brief Base class of Server and Client
+*       This is the Base class of the Server and Client classes
+*       - Makes server and client a singleton
+*       - defines static functions available on both server and client
+*       - is the interface to be used when communicating with the network
+*	@author Oliver Scheuss
 */
 class Host{
   private:
@@ -44,8 +49,9 @@ class Host{
     //virtual bool processChat(packet::Chat *message, unsigned int clientID)=0;
     //virtual bool sendChat(packet::Chat *chat)=0;
     virtual bool queuePacket(ENetPacket *packet, int clientID)=0;
-    virtual unsigned int shipID()=0;
-    virtual int playerID()=0;
+    virtual bool chat(std::string message)=0;
+    virtual bool processChat(std::string message, unsigned int playerID)=0;
+    virtual bool isServer_()=0;
 
 
 
@@ -53,21 +59,22 @@ class Host{
     Host();
     virtual ~Host();
     static Host *instance_;
-    bool isServer_;	
+    unsigned int clientID_;
+    unsigned int shipID_;
 
   public:
     static bool running(){return instance_!=0;}
     static bool addPacket(ENetPacket *packet, int clientID=0);
     //static bool chat(std::string& message);
 //     static bool receiveChat(packet::Chat *message, unsigned int clientID);
-    static int getPlayerID();
+    static unsigned int getPlayerID();
     static unsigned int getShipID(){return instance_->shipID_;}
     static void setClientID(unsigned int id){ instance_->clientID_ = id; }
     static void setShipID(unsigned int id){ instance_->shipID_ = id; }
-    static bool isServer(){ return instance_->isServer_; }		
+    static bool isServer(){ return instance_->isServer_(); }		
+    static bool Chat(std::string message);
+    static bool incomingChat(std::string message, unsigned int playerID);
   private:
-    unsigned int clientID_;
-    unsigned int shipID_;
 };
 
 }

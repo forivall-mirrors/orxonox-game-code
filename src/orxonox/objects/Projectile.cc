@@ -40,6 +40,7 @@
 #include "SpaceShipAI.h"
 #include "ParticleSpawner.h"
 #include "Model.h"
+#include "Settings.h"
 
 namespace orxonox
 {
@@ -55,15 +56,16 @@ namespace orxonox
 
         this->setStatic(false);
         this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
-
+        
         if (this->owner_)
         {
-            this->setPosition(this->owner_->getPosition());
             this->setOrientation(this->owner_->getOrientation());
+            this->setPosition(this->owner_->getPosition());
             this->setVelocity(this->owner_->getInitialDir() * this->speed_);
         }
 
-        this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
+        if(!orxonox::Settings::isClient()) //only if not on client
+          this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
     }
 
     Projectile::~Projectile()
@@ -120,5 +122,9 @@ namespace orxonox
     void Projectile::destroyObject()
     {
         delete this;
+    }
+    
+    bool Projectile::create(){
+      return WorldEntity::create();
     }
 }

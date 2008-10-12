@@ -31,6 +31,8 @@
 #include <map>
 #include <enet/enet.h>
 
+#include "util/Integers.h"
+
 namespace network {
 
 namespace packet{
@@ -46,7 +48,8 @@ namespace ENUM{
     Gamestate,
     ClassID,
     Chat,
-    Welcome
+    Welcome,
+    DeleteObjects
   };
 }
   
@@ -73,12 +76,12 @@ class Packet{
     bool send();
   protected:
     Packet();
-    Packet(unsigned char *data, int clientID);
+    Packet(uint8_t *data, unsigned int clientID);
 //    Packet(ENetPacket *packet, ENetPeer *peer);
     enet_uint32 flags_;
-    int clientID_;
+    unsigned int clientID_;
     ENUM::Direction packetDirection_;
-    unsigned char *data_;
+    uint8_t *data_;
   private:
     static std::map<ENetPacket *, Packet *> packetMap_;
     ENetPacket *enetPacket_;

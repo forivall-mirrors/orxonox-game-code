@@ -50,6 +50,7 @@ namespace orxonox
     Settings::Settings()
         : bShowsGraphics_(false)
         , bHasServer_(false)
+        , bIsClient_(false)
     {
         RegisterRootObject(Settings);
         assert(singletonRef_s == 0);

@@ -39,8 +39,8 @@ namespace packet {
 class Acknowledgement : public Packet
 {
 public:
-  Acknowledgement( unsigned int id, int clientID );
-  Acknowledgement( unsigned char* data, int clientID );
+  Acknowledgement( unsigned int id, unsigned int clientID );
+  Acknowledgement( uint8_t* data, unsigned int clientID );
   ~Acknowledgement();
   
   inline unsigned int getSize() const;

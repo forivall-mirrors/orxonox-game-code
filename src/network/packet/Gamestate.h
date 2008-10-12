@@ -28,9 +28,11 @@
 
 #include "Packet.h"
 #include "network/Synchronisable.h"
+#include <map>
 #ifndef NDEBUG
 #include "util/CRC32.h"
 #endif
+
 
 #ifndef NETWORK_PACKETGAMESTATE_H
 #define NETWORK_PACKETGAMESTATE_H
@@ -41,25 +43,26 @@ namespace packet {
 
 struct GamestateHeader{
   ENUM::Type packetType;
-  int id; // id of the gamestate
-  unsigned int compsize;
-  unsigned int normsize;
-  int base_id; // id of the base-gamestate diffed from
-  bool diffed; // wheter diffed or not
-  bool complete; // wheter it is a complete gamestate or only partial
-  bool compressed;
+  int32_t id; // id of the gamestate
+  uint32_t compsize;
+  uint32_t datasize;
+  int32_t base_id; // id of the base-gamestate diffed from
+  bool diffed:1; // wheter diffed or not
+  bool complete:1; // wheter it is a complete gamestate or only partial
+  bool compressed:1;
 #ifndef NDEBUG
   uint32_t crc32;
 #endif
 };
 
 /**
-	@author
+	@author Oliver Scheuss
 */
 class Gamestate: public Packet{
   public:
     Gamestate();
-    Gamestate(unsigned char *data, int clientID);
+    Gamestate(uint8_t *data, unsigned int clientID);
+    Gamestate(uint8_t *data);
 
     ~Gamestate();
 
@@ -70,11 +73,15 @@ class Gamestate: public Packet{
     bool isCompressed();
     int getBaseID();
     Gamestate *diff(Gamestate *base);
+    Gamestate* intelligentDiff(Gamestate *base, unsigned int clientID);
     Gamestate *undiff(Gamestate *base);
+    Gamestate* intelligentUnDiff(Gamestate *base);
+    Gamestate* doSelection(unsigned int clientID);
     bool compressData();
     bool decompressData();
 
     // Packet functions
+  private:
     virtual unsigned int getSize() const;
     virtual bool process();
 
@@ -82,10 +89,7 @@ class Gamestate: public Packet{
   private:
     unsigned int calcGamestateSize(unsigned int id, int mode=0x0);
     void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
-
-
-    //Bytestream *bs_;
-    //GamestateHeader *header_;
+    std::map<unsigned int, Synchronisable*> dataMap_;
 };
 
 }

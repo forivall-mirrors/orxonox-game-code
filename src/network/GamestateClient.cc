@@ -155,7 +155,7 @@ namespace network
     }
     if(myShip_){
       //      unsigned char *data = new unsigned char[myShip_->getSize()];
-      int size=myShip_->getSize2(0, 0x1);
+      int size=myShip_->getSize(0, 0x1);
       if(size==0)
         return false;
       shipCache_ = new unsigned char [size];
@@ -181,14 +181,17 @@ namespace network
 
   packet::Gamestate *GamestateClient::processGamestate(packet::Gamestate *gs){
     if(gs->isCompressed())
-      assert(gs->decompressData());
+    {
+      bool b = gs->decompressData();
+      assert(b);
+    }
     if(gs->isDiffed()){
       packet::Gamestate *base = gamestateMap_[gs->getBaseID()];
       if(!base){
         delete gs;
         return 0;
       }
-//      assert(base); //TODO: fix this
+//       assert(base); //TODO: fix this
       packet::Gamestate *undiffed = gs->undiff(base);
       delete gs;
       gs=undiffed;
