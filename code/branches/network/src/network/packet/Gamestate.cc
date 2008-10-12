@@ -339,26 +339,43 @@ Gamestate* Gamestate::doSelection(unsigned int clientID){
   assert(data_);
   std::map<unsigned int, Synchronisable *>::iterator it;
   
-  Gamestate *gs = new Gamestate(*this);
-  uint8_t *ndata = gs->data_ + sizeof(GamestateHeader);
-  synchronisableHeader *objectheader;
+  // allocate memory for new data
+  uint8_t *gdata = new uint8_t[HEADER->datasize+sizeof(GamestateHeader)];
+  // create a gamestate out of it
+  Gamestate *gs = new Gamestate(gdata);
+  uint8_t *newdata = gdata + sizeof(GamestateHeader);
+  uint8_t *origdata = GAMESTATE_START(data_);
+  
+  //copy the GamestateHeader
+  *(GamestateHeader*)gdata = *HEADER;
+  
+  synchronisableHeader *oldobjectheader, *newobjectheader;
   unsigned int objectOffset;
   
   //copy in the zeros
   for(it=dataMap_.begin(); it!=dataMap_.end(); it++){
-    objectheader = (synchronisableHeader*)ndata;
-    unsigned int objectsize = objectheader->size;
-    assert(it->second->objectID==objectheader->objectID);
+    oldobjectheader = (synchronisableHeader*)origdata;
+    newobjectheader = (synchronisableHeader*)newdata;
+    unsigned int objectsize = oldobjectheader->size;
+    assert(it->second->objectID==oldobjectheader->objectID);
+    *newobjectheader = *oldobjectheader;
     objectOffset=sizeof(uint8_t)+sizeof(bool); //skip the size and the availableDate variables in the objectheader
-    if(!it->second->doSelection(HEADER->id)){
+    if(it->second->doSelection(HEADER->id)){
+      newobjectheader->dataAvailable=true; //TODO: probably not neccessary
       while(objectOffset<objectsize){
-        objectheader->dataAvailable=false;
-        *(ndata+objectOffset)=0;    // set to 0
+        *(newdata + objectOffset)=*(origdata + objectOffset);    // copy the data
+        objectOffset++;
+      }
+    }else{
+      newobjectheader->dataAvailable=false;
+      while(objectOffset<objectsize){
+        *(newdata+objectOffset)=0;    // set to 0
         objectOffset++;
       }
       assert(objectOffset==objectsize);
     }
-    ndata+=objectsize;
+    newdata += objectsize;
+    origdata += objectsize;
   }
   return gs;
 }
