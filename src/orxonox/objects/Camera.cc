@@ -84,7 +84,7 @@ namespace orxonox
 
       this->cameraNode_->translate(coeff * offset);
 
-      this->cameraNode_->setOrientation(Quaternion::Slerp(7.0f * dt, this->positionNode_->getWorldOrientation(), this->cameraNode_->getWorldOrientation(), false));
+      this->cameraNode_->setOrientation(Quaternion::Slerp(1-coeff, this->positionNode_->getWorldOrientation(), this->cameraNode_->getWorldOrientation(), false));
     }
   }
 
