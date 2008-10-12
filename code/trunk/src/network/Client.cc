@@ -42,7 +42,6 @@
 #include "Host.h"
 #include "Synchronisable.h"
 #include "core/CoreIncludes.h"
-#include "core/ConsoleCommand.h"
 #include "packet/Packet.h"
 // #include "packet/Acknowledgement.h"
 
@@ -60,7 +59,6 @@ namespace network
     isConnected=false;
     isSynched_=false;
     gameStateFailure_=false;
-    isServer_ = false;
   }
 
   /**
@@ -72,7 +70,6 @@ namespace network
     isConnected=false;
     isSynched_=false;
     gameStateFailure_=false;
-    isServer_ = false;
   }
 
   /**
@@ -84,7 +81,6 @@ namespace network
     isConnected=false;
     isSynched_=false;
     gameStateFailure_=false;
-    isServer_ = false;
   }
 
   Client::~Client(){
@@ -117,34 +113,26 @@ namespace network
     return client_connection.addPacket(packet);
   }
 
-  bool Client::processChat(packet::Chat *message, unsigned int clientID){
-    return message->process();
+  bool Client::processChat(std::string message, unsigned int playerID){
+    COUT(1) << "Player " << playerID << ": " << message << std::endl;
+    return true;
   }
-
-  /*bool Client::sendChat(packet::Chat *chat){
-    chat->process();
-    packet::Packet *p = new packet::Packet(chat);
-    return p->send();
-  }*/
+  
+  /**
+   * This function implements the method of sending a chat message to the server
+   * @param message message to be sent 
+   * @return result(true/false)
+   */
+  bool Client::chat(std::string message){
+    packet::Chat *m = new packet::Chat(message, Host::getPlayerID());
+    return m->send();
+  }
 
 
   /**
-  * submits a chat message to the server
-  * @param message message to send
-  * @return true/false
-  */
-  bool Client::sendChat( std::string message ){
-    // generate packet and add it to queue
-    if(!isConnected)
-      return false;
-    packet::Chat chat(message, 0);
-    return chat.send();
-    // send packets
-  }
-
-  /**
-  * Performs a GameState update
-  */
+   * Processes incoming packets, sends a gamestate to the server and does the cleanup
+   * @param time 
+   */
   void Client::tick(float time){
 //     COUT(3) << ".";
     if(client_connection.isConnected() && isSynched_){
@@ -163,14 +151,14 @@ namespace network
       event = client_connection.getEvent();
       COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
       packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
-      assert(packet->process());
+      bool b = packet->process();
+      assert(b);
     }
     if(gamestate.processGamestates())
     {
       if(!isSynched_)
         isSynched_=true;
-    }else
-      COUT(3) << "gamestate has not been processed sucessfully" << std::endl;
+    }
     gamestate.cleanup();
     return;
   }

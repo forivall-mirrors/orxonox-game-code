@@ -62,19 +62,20 @@ namespace network
     Server(int port);
     Server(int port, std::string bindAddress);
     Server(int port, const char *bindAddress);
+    ~Server();
     
     void open();
     void close();
-    bool processChat(packet::Chat *message, unsigned int clientID);
-    bool sendChat(packet::Chat *chat);
+    bool processChat(std::string message, unsigned int playerID);
     bool queuePacket(ENetPacket *packet, int clientID);
     void tick(float time);
   protected:
     void processQueue();
     void updateGamestate();
   private:
+    virtual bool isServer_(){return true;}
     unsigned int shipID(){return 0;}
-    int playerID(){return 0;}
+    unsigned int playerID(){return 0;}
     
     bool addClient(ENetEvent *event);
     bool createClient(int clientID);
@@ -84,7 +85,8 @@ namespace network
     void disconnectClient( ClientInformation *client);
     bool processPacket( ENetPacket *packet, ENetPeer *peer );
     bool sendGameState();
-    
+    bool sendObjectDeletes();
+    virtual bool chat(std::string message);
     
     //void processChat( chat *data, int clientId);
     ConnectionManager *connection;

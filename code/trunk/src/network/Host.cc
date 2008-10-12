@@ -29,24 +29,40 @@
 #include <assert.h>
 
 #include "Host.h"
+#include "core/ConsoleCommand.h"
 #include "packet/Packet.h"
 
 namespace network {
 
+SetConsoleCommandShortcut(Host, Chat);
+
 Host *Host::instance_=0;
   
+/**
+ * @brief Constructor: assures that only one reference will be created and sets the pointer
+ */
 Host::Host()
 {
+  clientID_=0;
   assert(instance_==0);
   instance_=this;
 }
 
 
+/**
+ * @brief Destructor: resets the instance pointer to 0
+ */
 Host::~Host()
 {
   instance_=0;
 }
 
+/**
+ * This function is used to add an enetpacket to be sent to another peer
+ * @param packet Packet to be added
+ * @param clientID ID of the client the packet should be sent to
+ * @return success?
+ */
 bool Host::addPacket(ENetPacket *packet, int clientID){
   if(instance_)
     return instance_->queuePacket(packet, clientID);
@@ -69,16 +85,24 @@ bool Host::addPacket(ENetPacket *packet, int clientID){
 //     return false;
 // }
 
-int Host::getPlayerID(){ 
+/**
+ * This function returns the ID of the player
+ * @return playerID
+ */
+unsigned int Host::getPlayerID(){ 
   if(!instance_)
     return 0;
-  return instance_->playerID();
+  return instance_->clientID_;
 }
 
-// unsigned int Host::getShipID(){ 
-//   if(!instance_)
-//     assert(0);
-//   return instance_->shipID();
-// }
+bool Host::Chat(std::string message){
+  if(!instance_)
+    return false;
+  return instance_->chat(message);
+}
+
+bool Host::incomingChat(std::string message, unsigned int playerID){
+  return instance_->processChat(message, playerID);
+}
 
 }//namespace network

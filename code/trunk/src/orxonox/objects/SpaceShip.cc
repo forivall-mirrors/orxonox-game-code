@@ -77,7 +77,7 @@ namespace orxonox
       ObjectList<SpaceShip>::iterator it;
       for(it = ObjectList<SpaceShip>::begin(); it; ++it){
 	assert(it->isA(Class(SpaceShip)));
-        if( (it)->myShip_ || (network::Host::running() && network::Host::getShipID()==(it)->objectID) ){
+        if( (it)->myShip_ || (network::Host::running() && network::Host::getShipID()==(it)->getObjectID()) ){
 //	  COUT(1) << "^^^^^^^^^^ myShip_:" << *it << " classname: " << (*it)->getIdentifier()->getName() << " objectid: " << (*it)->objectID << std::endl;
           return *it;
 	}
@@ -172,20 +172,18 @@ namespace orxonox
     {
         if (!myShip_)
         {
-            if (network::Host::running())
-                //COUT(3) << "this id: " << this->objectID << " myShipID: " << network::Host::getShipID() << std::endl;
-                if (network::Host::running() && objectID == network::Host::getShipID())
-                {
-                    if (!network::Host::isServer())
-                        setObjectMode(0x3);
-                    myShip_ = true;
-                }
-        }
-        else
-            this->setRadarObjectColour(this->getProjectileColour());
-        assert(Model::create());
-        this->init();
-        return true;
+            if (network::Host::running() && getObjectID() == network::Host::getShipID())
+            {
+                if (!network::Host::isServer())
+                    setObjectMode(0x3);
+                myShip_ = true;
+            }
+            else
+                this->setRadarObjectColour(this->getProjectileColour());
+      }
+      Model::create();
+      this->init();
+      return true;
     }
 
     void SpaceShip::registerAllVariables()
@@ -257,19 +255,22 @@ namespace orxonox
             // END CREATING BLINKING LIGHTS
 
             // START CREATING ADDITIONAL EFFECTS
-            /*this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
-            this->attachObject(this->backlight_);
-            this->backlight_->setPosition(-2.35, 0, 0.2);
-            this->backlight_->setColour(this->getProjectileColour());
-
-            this->smoke_ = new ParticleSpawner();
-            this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
-            this->attachObject(this->smoke_);
-
-            this->fire_ = new ParticleSpawner();
-            this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
-            this->attachObject(this->fire_);
-            */
+            if(!network::Host::running()){
+              this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
+              this->backlight_->create();
+              this->attachObject(this->backlight_);
+              this->backlight_->setPosition(-2.35, 0, 0.2);
+              this->backlight_->setColour(this->getProjectileColour());
+  
+              this->smoke_ = new ParticleSpawner();
+              this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
+              this->attachObject(this->smoke_);
+  
+              this->fire_ = new ParticleSpawner();
+              this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
+              this->attachObject(this->fire_);
+            }
+            
             // END CREATING ADDITIONAL EFFECTS
 
             if (this->isExactlyA(Class(SpaceShip)))
@@ -373,15 +374,15 @@ namespace orxonox
        this->camNode_->setOrientation(q2*q1);
       //if(!network::Host::running() || network::Host::getShipID()==objectID){ //TODO: check this
       if(myShip_){
-        COUT(4) << "requesting focus for camera" << std::endl;
+        COUT(5) << "requesting focus for camera" << std::endl;
         //CameraHandler::getInstance()->requestFocus(cam_);
         if(this->isExactlyA(Class(SpaceShip))){
           getFocus();
-          COUT(4) << "getting focus for obj id: " << objectID << std::endl;
+          COUT(4) << "getting focus for obj id: " << getObjectID() << std::endl;
         }else
-          COUT(4) << "not getting focus (not exactly spaceship) for obj id: " << objectID << std::endl;
+          COUT(5) << "not getting focus (not exactly spaceship) for obj id: " << getObjectID() << std::endl;
       }else
-        COUT(4) << "not getting focus (not my ship) for obj id: " << objectID << std::endl;
+        COUT(5) << "not getting focus (not my ship) for obj id: " << getObjectID() << std::endl;
     }
 
     void SpaceShip::setMaxSpeed(float value)
@@ -477,7 +478,7 @@ namespace orxonox
             BillboardProjectile* projectile = new ParticleProjectile(this);
             projectile->setColour(this->getProjectileColour());
             projectile->create();
-            if (projectile->classID == 0)
+            if (projectile->getClassID() == 0)
             {
               COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
             }
@@ -572,7 +573,7 @@ namespace orxonox
             this->tt2_->setEnabled(false);
         }
 
-        COUT(5) << "steering our ship: " << objectID << std::endl;
+        COUT(5) << "steering our ship: " << getObjectID() << std::endl;
         this->acceleration_.x = 0;
         this->acceleration_.y = 0;
         this->momentum_ = 0;

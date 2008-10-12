@@ -50,39 +50,64 @@
 
 namespace network
 {
+  
 
+  std::map<unsigned int, Synchronisable *> Synchronisable::objectMap_;
+  std::queue<unsigned int> Synchronisable::deletedObjects_;
 
   int Synchronisable::state_=0x1; // detemines wheter we are server (default) or client
 
   /**
   * Constructor:
-  * calls registarAllVariables, that has to be implemented by the inheriting classID
+  * Initializes all Variables and sets the right objectID
   */
   Synchronisable::Synchronisable(){
     RegisterRootObject(Synchronisable);
-    static int idCounter=0;
-    datasize=0;
+    static uint32_t idCounter=0;
     objectFrequency_=1;
-    objectMode_=0x1; // by default do not send data to servere
+    objectMode_=0x1; // by default do not send data to server
     objectID=idCounter++;
     syncList = new std::list<synchronisableVariable *>;
-    //registerAllVariables();
   }
 
+  /**
+   * Destructor: 
+   * Delete all callback objects and remove objectID from the objectMap_
+   */
   Synchronisable::~Synchronisable(){
     // delete callback function objects
-    if(!orxonox::Identifier::isCreatingHierarchy())
+    if(!orxonox::Identifier::isCreatingHierarchy()){
       for(std::list<synchronisableVariable *>::iterator it = syncList->begin(); it!=syncList->end(); it++)
         delete (*it)->callback;
+      deletedObjects_.push(objectID);
+//       COUT(3) << "destruct synchronisable +++" << objectID << " | " << classID << std::endl;
+//       COUT(3) << " bump ---" << objectID << " | " << &objectMap_ << std::endl;
+//       assert(objectMap_[objectID]->objectID==objectID);
+//       objectMap_.erase(objectID);
+    }
   }
 
+  /**
+   * This function gets called after all neccessary data has been passed to the object
+   * Overload this function and recall the create function of the parent class
+   * @return true/false
+   */
   bool Synchronisable::create(){
     this->classID = this->getIdentifier()->getNetworkID();
-    COUT(4) << "creating synchronisable: setting classid from " << this->getIdentifier()->getName() << " to: " << classID << std::endl;
+//     COUT(4) << "creating synchronisable: setting classid from " << this->getIdentifier()->getName() << " to: " << classID << std::endl;
+    
+//     COUT(3) << "construct synchronisable +++" << objectID << " | " << classID << std::endl;
+//     objectMap_[objectID]=this;
+//     assert(objectMap_[objectID]==this);
+//     assert(objectMap_[objectID]->objectID==objectID);
     return true;
   }
 
 
+  /**
+   * This function sets the internal mode for synchronisation
+   * @param b true if this object is located on a client or on a server
+   */
   void Synchronisable::setClient(bool b){
     if(b) // client
       state_=0x2;
@@ -90,48 +115,84 @@ namespace network
       state_=0x1;
   }
 
-  bool Synchronisable::fabricate(unsigned char*& mem, int mode)
+  /**
+   * This function fabricated a new synchrnisable (and children of it), sets calls updateData and create
+   * After calling this function the mem pointer will be increased by the size of the needed data
+   * @param mem pointer to where the appropriate data is located
+   * @param mode defines the mode, how the data should be loaded
+   * @return pointer to the newly created synchronisable
+   */
+  Synchronisable *Synchronisable::fabricate(uint8_t*& mem, int mode)
   {
-    unsigned int size, objectID, classID;
-    size = *(unsigned int *)mem;
-    objectID = *(unsigned int*)(mem+sizeof(unsigned int));
-    classID = *(unsigned int*)(mem+2*sizeof(unsigned int));
+    synchronisableHeader *header = (synchronisableHeader *)mem;
 
-    if(size==3*sizeof(unsigned int)){ //not our turn, dont do anything
-      mem+=3*sizeof(unsigned int);
-      return true;
-    }
+    COUT(3) << "fabricating object with id: " << header->objectID << std::endl;
 
-    orxonox::Identifier* id = ClassByID(classID);
-    if(!id){
-      COUT(3) << "We could not identify a new object; classid: " << classID << " uint: " << (unsigned int)classID << " objectID: " << objectID << " size: " << size << std::endl;
-      assert(0);
-      return false; // most probably the gamestate is corrupted
-    }
+    orxonox::Identifier* id = ClassByID(header->classID);
+    assert(id);
     orxonox::BaseObject *bo = id->fabricate();
     Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
     assert(no);
-    no->objectID=objectID;
-    no->classID=classID;
+    no->objectID=header->objectID;
+    no->classID=header->classID;
     COUT(3) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
-    if( !no->updateData(mem, mode) ){
-      COUT(1) << "We couldn't update the object: " << objectID << std::endl;
-      return false;
-    }
-    if( !no->create() )
-    {
-      COUT(1) << "We couldn't manifest (create() ) the object: " << objectID << std::endl;
-      return false;
-    }
-    return true;
+    bool b = no->updateData(mem, mode);
+    assert(b);
+    b = no->create();
+    assert(b);
+    return no;
   }
 
+  
+  /**
+   * Finds and deletes the Synchronisable with the appropriate objectID
+   * @param objectID objectID of the Synchronisable
+   * @return true/false
+   */
+  bool Synchronisable::deleteObject(unsigned int objectID){
+//     assert(getSynchronisable(objectID));
+    if(!getSynchronisable(objectID))
+      return false;
+    assert(getSynchronisable(objectID)->objectID==objectID);
+//     delete objectMap_[objectID];
+    Synchronisable *s = getSynchronisable(objectID);
+    if(s)
+      delete s;
+    else
+      return false;
+    return true;
+  }
+  
+  /**
+   * This function looks up the objectID in the objectMap_ and returns a pointer to the right Synchronisable
+   * @param objectID objectID of the Synchronisable
+   * @return pointer to the Synchronisable with the objectID
+   */
+  Synchronisable* Synchronisable::getSynchronisable(unsigned int objectID){
+    orxonox::ObjectList<Synchronisable>::iterator it;
+    for(it = orxonox::ObjectList<Synchronisable>::begin(); it; ++it){
+      if( it->getObjectID()==objectID )
+           return *it;
+    }
+    return NULL;
+
+//     std::map<unsigned int, Synchronisable *>::iterator i = objectMap_.find(objectID);
+//     if(i==objectMap_.end())
+//       return NULL;
+//     assert(i->second->objectID==objectID);
+//     return (*i).second;
+  }
+
+  
   /**
   * This function is used to register a variable to be synchronized
   * also counts the total datasize needed to save the variables
   * @param var pointer to the variable
   * @param size size of the datatype the variable consists of
+  * @param t the type of the variable (network::DATA or network::STRING
+  * @param mode same as in getData
+  * @param cb callback object that should get called, if the value of the variable changes
   */
   void Synchronisable::registerVar(void *var, int size, variableType t, int mode, NetworkCallbackBase *cb){
     // create temporary synch.Var struct
@@ -142,53 +203,62 @@ namespace network
     temp->type = t;
     temp->callback = cb;
     COUT(5) << "Syncronisable::registering var with size: " << temp->size << " and type: " << temp->type << std::endl;
-    // increase datasize
-    datasize+=sizeof(int)+size;
     //std::cout << "push temp to syncList (at the bottom) " << datasize << std::endl;
     COUT(5) << "Syncronisable::objectID: " << objectID << " this: " << this << " name: " << this->getIdentifier()->getName() << " networkID: " << this->getIdentifier()->getNetworkID() << std::endl;
     syncList->push_back(temp);
+#ifndef NDEBUG
+    std::list<synchronisableVariable *>::iterator it = syncList->begin();
+    while(it!=syncList->end()){
+      assert(*it!=var);
+      it++;
+    }
+#endif
   }
 
   /**
-   * This function takes all SynchronisableVariables out of the Synchronisable and saves it into a syncData struct
-   * Difference to the above function:
+   * This function takes all SynchronisableVariables out of the Synchronisable and saves them together with the size, objectID and classID to the given memory
    * takes a pointer to already allocated memory (must have at least getSize bytes length)
    * structure of the bitstream:
-   * (var1_size,var1,var2_size,var2,...)
-   * varx_size: size = sizeof(int)
-   * varx: size = varx_size
-   * @return data containing all variables and their sizes
+   * |totalsize,objectID,classID,var1,var2,string1_length,string1,var3,...|
+   * length of varx: size saved int syncvarlist
+   * @param mem pointer to allocated memory with enough size
+   * @param id gamestateid of the gamestate to be saved (important for priorities)
+   * @param mode defines the direction in which the data will be send/received
+   *             0x1: server->client
+   *             0x2: client->server (not recommended)
+   *             0x3: bidirectional
+   * @return true: if !isMyTick or if everything was successfully saved
    */
-  bool Synchronisable::getData(unsigned char*& mem, unsigned int id, int mode){
+  bool Synchronisable::getData(uint8_t*& mem, unsigned int id, int mode){
+    //if this tick is we dont synchronise, then abort now
+    if(!isMyTick(id))
+      return true;
     //std::cout << "inside getData" << std::endl;
     unsigned int tempsize = 0;
     if(mode==0x0)
       mode=state_;
     if(classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
-    this->classID=this->getIdentifier()->getNetworkID(); // TODO: correct this
+    assert(this->classID==this->getIdentifier()->getNetworkID());
+//     this->classID=this->getIdentifier()->getNetworkID(); // TODO: correct this
     std::list<synchronisableVariable *>::iterator i;
     unsigned int size;
-    size=getSize2(id, mode);
+    size=getSize(id, mode);
 
     // start copy header
-    memcpy(mem, &size, sizeof(unsigned int));
-    mem+=sizeof(unsigned int);
-    memcpy(mem, &(this->objectID), sizeof(unsigned int));
-    mem+=sizeof(unsigned int);
-    memcpy(mem, &(this->classID), sizeof(unsigned int));
-    mem+=sizeof(unsigned int);
-    tempsize+=12;
+    synchronisableHeader *header = (synchronisableHeader *)mem;
+    header->size = size;
+    header->objectID = this->objectID;
+    header->classID = this->classID;
+    header->dataAvailable = true;
+    tempsize+=sizeof(synchronisableHeader);
+    mem+=sizeof(synchronisableHeader);
     // end copy header
 
-    //if this tick is we dont synchronise, then abort now
-    if(!isMyTick(id))
-      return true;
 
     COUT(5) << "Synchronisable getting data from objectID: " << objectID << " classID: " << classID << " length: " << size << std::endl;
     // copy to location
     for(i=syncList->begin(); i!=syncList->end(); ++i){
-      //(std::memcpy(retVal.data+n, (const void*)(&(i->size)), sizeof(int));
       if( ((*i)->mode & mode) == 0 ){
         COUT(5) << "not getting data: " << std::endl;
         continue;  // this variable should only be received
@@ -216,12 +286,12 @@ namespace network
 
 
   /**
-   * This function takes a syncData struct and takes it to update the variables
-   * @param vars data of the variables
+   * This function takes a bytestream and loads the data into the registered variables
+   * @param mem pointer to the bytestream
+   * @param mode same as in getData
    * @return true/false
    */
-  bool Synchronisable::updateData(unsigned char*& mem, int mode){
-    unsigned char *data = mem;
+  bool Synchronisable::updateData(uint8_t*& mem, int mode){
     if(mode==0x0)
       mode=state_;
     std::list<synchronisableVariable *>::iterator i;
@@ -230,23 +300,22 @@ namespace network
       return false;
     }
 
+    uint8_t *data=mem;
     // start extract header
-    unsigned int objectID, classID, size;
-    size = *(int *)mem;
-    mem+=sizeof(size);
-    objectID = *(int *)mem;
-    mem+=sizeof(objectID);
-    classID = *(int *)mem;
-    mem+=sizeof(classID);
-    // stop extract header
-    assert(this->objectID==objectID);
-    assert(this->classID==classID);
-    if(size==3*sizeof(unsigned int)) //if true, only the header is available
+    synchronisableHeader *syncHeader = (synchronisableHeader *)mem;
+    assert(syncHeader->objectID==this->objectID);
+    if(syncHeader->dataAvailable==false){
+      mem+=syncHeader->size;
       return true;
-      //assert(0);
+    }
 
-    COUT(5) << "Synchronisable: objectID " << objectID << ", classID " << classID << " size: " << size << " synchronising data" << std::endl;
-    for(i=syncList->begin(); i!=syncList->end() && mem <= data+size; i++){
+    mem+=sizeof(synchronisableHeader);
+    // stop extract header
+    assert(this->objectID==syncHeader->objectID);
+//    assert(this->classID==syncHeader->classID); //TODO: fix this!!! maybe a problem with the identifier ?
+    
+    COUT(5) << "Synchronisable: objectID " << syncHeader->objectID << ", classID " << syncHeader->classID << " size: " << syncHeader->size << " synchronising data" << std::endl;
+    for(i=syncList->begin(); i!=syncList->end() && mem <= data+syncHeader->size; i++){
       if( ((*i)->mode ^ mode) == 0 ){
         COUT(5) << "synchronisable: not updating variable " << std::endl;
         continue;  // this variable should only be set
@@ -262,7 +331,7 @@ namespace network
           mem+=(*i)->size;
           break;
         case STRING:
-          (*i)->size = *(int *)mem;
+          (*i)->size = *(uint32_t *)mem;
           COUT(5) << "string size: " << (*i)->size << std::endl;
           mem+=sizeof(int);
           if((*i)->callback) // check whether this string changed
@@ -282,12 +351,14 @@ namespace network
 
   /**
   * This function returns the total amount of bytes needed by getData to save the whole content of the variables
+  * @param id id of the gamestate
+  * @param mode same as getData
   * @return amount of bytes
   */
-  int Synchronisable::getSize(unsigned int id, int mode){
+  uint32_t Synchronisable::getSize(unsigned int id, int mode){
     if(!isMyTick(id))
       return 0;
-    int tsize=0;
+    int tsize=sizeof(synchronisableHeader);
     if(mode==0x0)
       mode=state_;
     std::list<synchronisableVariable *>::iterator i;
@@ -310,37 +381,36 @@ namespace network
   }
 
   /**
-   * This function returns the total amount of bytes needed by getData to save the whole content of the variables
-   * @return amount of bytes
-   */
-  int Synchronisable::getSize2(unsigned int id, int mode){
-    return sizeof(synchronisableHeader) + getSize( id, mode );
-  }
-
-  /**
-   *
-   * @param id
-   * @return
+   * This function determines, wheter the object should be saved to the bytestream (according to its syncmode/direction)
+   * @param id gamestate id
+   * @return true/false
    */
   bool Synchronisable::isMyTick(unsigned int id){
-//     return true;
+    return ( (objectMode_&state_)!=0 );
+  }
+
+  bool Synchronisable::doSelection(unsigned int id){
     return ( id==0 || id%objectFrequency_==objectID%objectFrequency_ ) && ((objectMode_&state_)!=0);
   }
 
-  bool Synchronisable::isMyData(unsigned char* mem)
+  /**
+   * This function looks at the header located in the bytestream and checks wheter objectID and classID match with the Synchronisables ones
+   * @param mem pointer to the bytestream
+   */
+  bool Synchronisable::isMyData(uint8_t* mem)
   {
-    unsigned int objectID, classID, size;
-    size = *(int *)mem;
-    mem+=sizeof(size);
-    objectID = *(int *)mem;
-    mem+=sizeof(objectID);
-    classID = *(int *)mem;
-    mem+=sizeof(classID);
-
-    assert(classID == this->classID);
-    return (objectID == this->objectID);
+    synchronisableHeader *header = (synchronisableHeader *)mem;
+    assert(header->objectID==this->objectID);
+    return header->dataAvailable;
   }
 
+  /**
+   * This function sets the synchronisation mode of the object
+   * If set to 0x1 variables will only be synchronised to the client
+   * If set to 0x2 variables will only be synchronised to the server
+   * If set to 0x3 variables will be synchronised bidirectionally (only if set so in registerVar)
+   * @param mode same as in registerVar
+   */
   void Synchronisable::setObjectMode(int mode){
     assert(mode==0x1 || mode==0x2 || mode==0x3);
     objectMode_=mode;

@@ -25,34 +25,30 @@
  *      ...
  *
  */
-#ifndef NETWORKCLASSID_H
-#define NETWORKCLASSID_H
-
-#include <string>
+#ifndef NETWORKPACKETDELETEOBJECTS_H
+#define NETWORKPACKETDELETEOBJECTS_H
 
 #include "Packet.h"
 
+
 namespace network {
 namespace packet {
-
 /**
 	@author 
 */
-class ClassID : public Packet
+class DeleteObjects : public Packet
 {
 public:
-  ClassID( unsigned int classID, std::string className );
-  ClassID( uint8_t* data, unsigned int clientID );
-  ~ClassID();
+  DeleteObjects( );
+  DeleteObjects( uint8_t* data, unsigned int clientID );
+  ~DeleteObjects();
+  
+  bool fetchIDs();
   
   inline unsigned int getSize() const;
   bool process();
   
-  unsigned int getClassID();
-  unsigned int getClassNameLength(){ return classNameLength_; }
-  unsigned char *getClassName();
 private:
-  uint32_t classNameLength_;
 };
 
 } //namespace packet

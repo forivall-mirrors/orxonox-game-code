@@ -45,7 +45,7 @@ namespace orxonox
     CreateFactory(Model);
 
     /**
-     * 
+     * @brief Constructor
      */
     Model::Model()
     {
@@ -53,6 +53,9 @@ namespace orxonox
         registerAllVariables();
     }
 
+    /**
+     * @brief Destructor
+     */
     Model::~Model()
     {
         if (this->isInitialized() && (this->meshSrc_ != "") && (this->meshSrc_.size() > 0))
@@ -85,7 +88,7 @@ namespace orxonox
         COUT(4) << "Loader (Model.cc): Created model" << std::endl;
       }
       if(this->isExactlyA(Class(Model)))
-        setObjectFrequency(300); //sync all 10 seconds (this only applies to asteroids and other isExactlyA(Model)
+        setObjectFrequency(300); //sync all 10 seconds (this only applies to asteroids and other isExactlyA(Model)'s
       return true;
     }
 
