@@ -82,9 +82,10 @@ namespace orxonox
 
         this->server_->close();
         delete this->server_;
-        Settings::_getInstance().bHasServer_ = false;
 
         GSLevel::leave();
+	
+        Settings::_getInstance().bHasServer_ = false;
     }
 
     void GSServer::ticked(const Clock& time)

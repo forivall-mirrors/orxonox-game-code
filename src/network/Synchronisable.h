@@ -38,6 +38,7 @@
 #include "core/OrxonoxClass.h"
 #include "core/XMLIncludes.h"
 #include "NetworkCallback.h"
+#include "util/Integers.h"
 
 #define REGISTERDATA(varname) registerVar(&varname, sizeof(varname), network::DATA)
 #define REGISTERDATA_WITHDIR(varname, mode) registerVar(&varname, sizeof(varname), network::DATA, mode)
