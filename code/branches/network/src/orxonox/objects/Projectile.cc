@@ -40,6 +40,7 @@
 #include "SpaceShipAI.h"
 #include "ParticleSpawner.h"
 #include "Model.h"
+#include "Settings.h"
 
 namespace orxonox
 {
@@ -63,7 +64,8 @@ namespace orxonox
             this->setVelocity(this->owner_->getInitialDir() * this->speed_);
         }
 
-        this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
+        if(!orxonox::Settings::isClient()) //only if not on client
+          this->destroyTimer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&Projectile::destroyObject)));
     }
 
     Projectile::~Projectile()

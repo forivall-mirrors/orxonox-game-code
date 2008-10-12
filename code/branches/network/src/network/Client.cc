@@ -59,7 +59,6 @@ namespace network
     isConnected=false;
     isSynched_=false;
     gameStateFailure_=false;
-    isServer_ = false;
   }
 
   /**
@@ -71,7 +70,6 @@ namespace network
     isConnected=false;
     isSynched_=false;
     gameStateFailure_=false;
-    isServer_ = false;
   }
 
   /**
@@ -83,7 +81,6 @@ namespace network
     isConnected=false;
     isSynched_=false;
     gameStateFailure_=false;
-    isServer_ = false;
   }
 
   Client::~Client(){
@@ -154,7 +151,8 @@ namespace network
       event = client_connection.getEvent();
       COUT(5) << "tick packet size " << event->packet->dataLength << std::endl;
       packet::Packet *packet = packet::Packet::createPacket(event->packet, event->peer);
-      assert(packet->process());
+      bool b = packet->process();
+      assert(b);
     }
     if(gamestate.processGamestates())
     {

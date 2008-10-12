@@ -77,6 +77,7 @@ namespace orxonox
         InputManager::getInstance().requestLeaveState("game");
 
         // TODO: Remove and destroy console command
+        Settings::_getInstance().bHasServer_ = false;
 
         this->unloadLevel();
 

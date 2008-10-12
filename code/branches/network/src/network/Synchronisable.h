@@ -56,7 +56,13 @@ namespace network
       toserver=0x2,
       bidirectional=0x3
     };
-    
+  }
+  
+  namespace syncmode{
+    enum mode{
+      one=0,
+      always=1
+    };
   }
   
   enum variableType{
@@ -65,10 +71,10 @@ namespace network
   };
 
   struct synchronisableHeader{
-    unsigned int size;
-    bool dataAvailable;
-    unsigned int objectID;
-    unsigned int classID;
+    uint32_t size:31;
+    bool dataAvailable:1;
+    uint32_t objectID;
+    uint32_t classID;
   };
 
   typedef struct synchronisableVariable{
@@ -96,7 +102,7 @@ namespace network
     virtual bool create();
     static void setClient(bool b);
     
-    static Synchronisable *fabricate(unsigned char*& mem, int mode=0x0);
+    static Synchronisable *fabricate(uint8_t*& mem, int mode=0x0);
     static bool deleteObject(unsigned int objectID);
     static Synchronisable *getSynchronisable(unsigned int objectID);
     static unsigned int getNumberOfDeletedObject(){ return deletedObjects_.size(); }
@@ -113,10 +119,10 @@ namespace network
     
     
   private:
-    bool getData(unsigned char*& men, unsigned int id, int mode=0x0);
-    int getSize(unsigned int id, int mode=0x0);
-    bool updateData(unsigned char*& mem, int mode=0x0);
-    bool isMyData(unsigned char* mem);
+    bool getData(uint8_t*& men, unsigned int id, int mode=0x0);
+    uint32_t getSize(unsigned int id, int mode=0x0);
+    bool updateData(uint8_t*& mem, int mode=0x0);
+    bool isMyData(uint8_t* mem);
     bool doSelection(unsigned int id);
     bool isMyTick(unsigned int id);
     

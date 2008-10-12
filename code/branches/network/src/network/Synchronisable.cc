@@ -63,11 +63,10 @@ namespace network
   */
   Synchronisable::Synchronisable(){
     RegisterRootObject(Synchronisable);
-    static unsigned int idCounter=0;
+    static uint32_t idCounter=0;
     objectFrequency_=1;
     objectMode_=0x1; // by default do not send data to server
     objectID=idCounter++;
-//     COUT(3) << " bump +++" << objectID << " | " << &objectMap_ << std::endl;
     syncList = new std::list<synchronisableVariable *>;
   }
 
@@ -80,6 +79,8 @@ namespace network
     if(!orxonox::Identifier::isCreatingHierarchy()){
       for(std::list<synchronisableVariable *>::iterator it = syncList->begin(); it!=syncList->end(); it++)
         delete (*it)->callback;
+      deletedObjects_.push(objectID);
+//       COUT(3) << "destruct synchronisable +++" << objectID << " | " << classID << std::endl;
 //       COUT(3) << " bump ---" << objectID << " | " << &objectMap_ << std::endl;
 //       assert(objectMap_[objectID]->objectID==objectID);
 //       objectMap_.erase(objectID);
@@ -93,8 +94,9 @@ namespace network
    */
   bool Synchronisable::create(){
     this->classID = this->getIdentifier()->getNetworkID();
-    COUT(4) << "creating synchronisable: setting classid from " << this->getIdentifier()->getName() << " to: " << classID << std::endl;
+//     COUT(4) << "creating synchronisable: setting classid from " << this->getIdentifier()->getName() << " to: " << classID << std::endl;
     
+//     COUT(3) << "construct synchronisable +++" << objectID << " | " << classID << std::endl;
 //     objectMap_[objectID]=this;
 //     assert(objectMap_[objectID]==this);
 //     assert(objectMap_[objectID]->objectID==objectID);
@@ -120,9 +122,11 @@ namespace network
    * @param mode defines the mode, how the data should be loaded
    * @return pointer to the newly created synchronisable
    */
-  Synchronisable *Synchronisable::fabricate(unsigned char*& mem, int mode)
+  Synchronisable *Synchronisable::fabricate(uint8_t*& mem, int mode)
   {
     synchronisableHeader *header = (synchronisableHeader *)mem;
+    
+    COUT(3) << "fabricating object with id: " << header->objectID << std::endl;
     
     orxonox::Identifier* id = GetIdentifier(header->classID);
     assert(id);
@@ -133,8 +137,10 @@ namespace network
     no->classID=header->classID;
     COUT(3) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
-    assert(no->updateData(mem, mode));
-    assert( no->create() );
+    bool b = no->updateData(mem, mode);
+    assert(b);
+    b = no->create();
+    assert(b);
     return no;
   }
 
@@ -145,7 +151,9 @@ namespace network
    * @return true/false
    */
   bool Synchronisable::deleteObject(unsigned int objectID){
-    assert(getSynchronisable(objectID));
+//     assert(getSynchronisable(objectID));
+    if(!getSynchronisable(objectID))
+      return false;
     assert(getSynchronisable(objectID)->objectID==objectID);
 //     delete objectMap_[objectID];
     Synchronisable *s = getSynchronisable(objectID);
@@ -221,7 +229,7 @@ namespace network
    *             0x3: bidirectional
    * @return true: if !isMyTick or if everything was successfully saved
    */
-  bool Synchronisable::getData(unsigned char*& mem, unsigned int id, int mode){
+  bool Synchronisable::getData(uint8_t*& mem, unsigned int id, int mode){
     //if this tick is we dont synchronise, then abort now
     if(!isMyTick(id))
       return true;
@@ -231,7 +239,8 @@ namespace network
       mode=state_;
     if(classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
-    this->classID=this->getIdentifier()->getNetworkID(); // TODO: correct this
+    assert(this->classID==this->getIdentifier()->getNetworkID());
+//     this->classID=this->getIdentifier()->getNetworkID(); // TODO: correct this
     std::list<synchronisableVariable *>::iterator i;
     unsigned int size;
     size=getSize(id, mode);
@@ -282,7 +291,7 @@ namespace network
    * @param mode same as in getData
    * @return true/false
    */
-  bool Synchronisable::updateData(unsigned char*& mem, int mode){
+  bool Synchronisable::updateData(uint8_t*& mem, int mode){
     if(mode==0x0)
       mode=state_;
     std::list<synchronisableVariable *>::iterator i;
@@ -290,7 +299,7 @@ namespace network
       COUT(4) << "Synchronisable::updateData syncList is empty" << std::endl;
       return false;
     }
-    unsigned char *data=mem;
+    uint8_t *data=mem;
     // start extract header
     synchronisableHeader *syncHeader = (synchronisableHeader *)mem;
     assert(syncHeader->objectID==this->objectID);
@@ -321,7 +330,7 @@ namespace network
           mem+=(*i)->size;
           break;
         case STRING:
-          (*i)->size = *(int *)mem;
+          (*i)->size = *(uint32_t *)mem;
           COUT(5) << "string size: " << (*i)->size << std::endl;
           mem+=sizeof(int);
           if((*i)->callback) // check whether this string changed
@@ -345,7 +354,7 @@ namespace network
   * @param mode same as getData
   * @return amount of bytes
   */
-  int Synchronisable::getSize(unsigned int id, int mode){
+  uint32_t Synchronisable::getSize(unsigned int id, int mode){
     if(!isMyTick(id))
       return 0;
     int tsize=sizeof(synchronisableHeader);
@@ -387,7 +396,7 @@ namespace network
    * This function looks at the header located in the bytestream and checks wheter objectID and classID match with the Synchronisables ones
    * @param mem pointer to the bytestream
    */
-  bool Synchronisable::isMyData(unsigned char* mem)
+  bool Synchronisable::isMyData(uint8_t* mem)
   {
     synchronisableHeader *header = (synchronisableHeader *)mem;
     assert(header->objectID==this->objectID);

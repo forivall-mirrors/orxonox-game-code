@@ -52,8 +52,8 @@ namespace orxonox
         friend class GSRoot;
         friend class GSGraphics;
         friend class GSServer;
-        friend class GSDedicated;
         friend class GSClient;
+        friend class GSDedicated;
 
     public:
         static const std::string& getDataPath()

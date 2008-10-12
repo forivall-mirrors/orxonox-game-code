@@ -76,21 +76,10 @@ namespace network
     return established;
   }
 
-
-  /*ENetPacket *ClientConnection::getPacket(ENetAddress &address) {
-    if(!buffer.isEmpty()) {
-      //std::cout << "###BUFFER IS NOT EMPTY###" << std::endl;
-      return buffer.pop(address);
-    }
-    else{
-      return NULL;
-    }
+  ClientConnection::~ClientConnection(){
+    if(established)
+      closeConnection();
   }
-
-  ENetPacket *ClientConnection::getPacket() {
-    ENetAddress address; //sems that address is not needed
-    return getPacket(address);
-  }*/
 
   ENetEvent *ClientConnection::getEvent(){
     if(!buffer.isEmpty())

@@ -44,8 +44,10 @@ namespace orxonox
             virtual ~Backlight();
 
             void setConfigValues();
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
             virtual void changedVisibility();
+            virtual bool create();
 
             void setColour(const ColourValue& colour);
             void setTimeFactor(float factor);

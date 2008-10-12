@@ -71,14 +71,12 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager();
     gamestates_ = new GamestateManager();
-    isServer_ = true;
   }
 
   Server::Server(int port){
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port);
     gamestates_ = new GamestateManager();
-    isServer_ = true;
   }
 
   /**
@@ -90,7 +88,6 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port, bindAddress);
     gamestates_ = new GamestateManager();
-    isServer_ = true;
   }
 
   /**
@@ -102,7 +99,16 @@ namespace network
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port, bindAddress);
     gamestates_ = new GamestateManager();
-    isServer_ = true;
+  }
+  
+  /**
+  * @brief Destructor
+  */
+  Server::~Server(){
+    if(connection)
+      delete connection;
+    if(gamestates_)
+      delete gamestates_;
   }
 
   /**
@@ -197,8 +203,8 @@ namespace network
     COUT(5) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
     //std::cout << "updated gamestate, sending it" << std::endl;
     //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
-    sendObjectDeletes();
     sendGameState();
+    sendObjectDeletes();
     COUT(5) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
     //std::cout << "sent gamestate" << std::endl;
   }
@@ -253,6 +259,7 @@ namespace network
     packet::DeleteObjects *del = new packet::DeleteObjects();
     if(!del->fetchIDs())
       return true;  //everything ok (no deletes this tick)
+//     COUT(3) << "sending DeleteObjects" << std::endl;
     while(temp != NULL){
       if( !(temp->getSynched()) ){
         COUT(5) << "Server: not sending gamestate" << std::endl;
@@ -306,12 +313,16 @@ namespace network
     COUT(3) << "sending welcome" << std::endl;
     packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
     w->setClientID(temp->getID());
-    assert(w->send());
+    bool b = w->send();
+    assert(b);
     packet::Gamestate *g = new packet::Gamestate();
     g->setClientID(temp->getID());
-    assert(g->collectData(0));
-    assert(g->compressData());
-    assert(g->send());
+    b = g->collectData(0);
+    assert(b);
+    b = g->compressData();
+    assert(b);
+    b = g->send();
+    assert(b);
     return true;
   }
 

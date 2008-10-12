@@ -84,6 +84,7 @@ namespace network
     void tick(float time);
 
   private:
+    virtual bool isServer_(){return false;}
     
     ClientConnection client_connection;
     GamestateClient gamestate;

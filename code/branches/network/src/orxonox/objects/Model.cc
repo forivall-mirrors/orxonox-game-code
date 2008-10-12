@@ -45,7 +45,7 @@ namespace orxonox
     CreateFactory(Model);
 
     /**
-     * 
+     * @brief Constructor
      */
     Model::Model()
     {
@@ -53,6 +53,9 @@ namespace orxonox
         registerAllVariables();
     }
 
+    /**
+     * @brief Destructor
+     */
     Model::~Model()
     {
         if (this->isInitialized() && (this->meshSrc_ != "") && (this->meshSrc_.size() > 0))

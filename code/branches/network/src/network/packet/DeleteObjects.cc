@@ -36,7 +36,7 @@
 namespace network {
 namespace packet {
 
-#define PACKET_FLAGS_DELETE    ENET_PACKET_FLAG_RELIABLE
+#define PACKET_FLAG_DELETE  ENET_PACKET_FLAG_RELIABLE
 #define _PACKETID           0
 #define _QUANTITY           _PACKETID + sizeof(ENUM::Type)
 #define _OBJECTIDS          _QUANTITY + sizeof(uint32_t)
@@ -44,7 +44,7 @@ namespace packet {
 DeleteObjects::DeleteObjects()
  : Packet()
 {
-  flags_ = flags_ | PACKET_FLAGS_DELETE;
+  flags_ = flags_ | PACKET_FLAG_DELETE;
 }
 
 DeleteObjects::DeleteObjects( uint8_t *data, unsigned int clientID )
@@ -60,13 +60,22 @@ bool DeleteObjects::fetchIDs(){
   unsigned int number = Synchronisable::getNumberOfDeletedObject();
   if(number==0)
     return false;
+  COUT(3) << "sending DeleteObjects: ";
   unsigned int size = sizeof(ENUM::Type) + sizeof(uint32_t)*(number+1);
   data_ = new uint8_t[size];
-  *(ENUM::Type *)(data_ + _PACKETID ) = ENUM::DeleteObjects;
-  *(uint32_t *)(data_ + _QUANTITY) = number;
+  uint8_t *tdata = data_;
+  *(ENUM::Type *)(tdata) = ENUM::DeleteObjects;
+  tdata += sizeof(ENUM::Type);
+  *(uint32_t *)tdata = number;
+  tdata += sizeof(uint32_t);
   for(unsigned int i=0; i<number; i++){
-    *(uint32_t *)(data_ + sizeof(ENUM::Type) + (i+1)*sizeof(uint32_t)) = Synchronisable::popDeletedObject();
+    unsigned int temp = Synchronisable::popDeletedObject();
+//     assert(temp<10000); //ugly hack
+    *(uint32_t *)(tdata) = temp;
+    COUT(3) << temp << " ";
+    tdata += sizeof(uint32_t);
   }
+  COUT(3) << std::endl;
   return true;
 }
 

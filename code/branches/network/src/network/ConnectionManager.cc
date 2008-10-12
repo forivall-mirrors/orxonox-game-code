@@ -79,14 +79,6 @@ namespace network
   }
   boost::recursive_mutex ConnectionManager::enet_mutex;
 
-//   ConnectionManager::ConnectionManager(ClientInformation *head) : receiverThread_(0) {
-//     assert(instance_==0);
-//     instance_=this;
-//     quit=false;
-//     bindAddress.host = ENET_HOST_ANY;
-//     bindAddress.port = NETWORK_PORT;
-//   }
-
   ConnectionManager::ConnectionManager(int port){
     assert(instance_==0);
     instance_=this;
@@ -112,30 +104,11 @@ namespace network
   }
 
   ConnectionManager::~ConnectionManager(){
-    instance_=0;
     if(!quit)
       quitListener();
+    instance_=0;
   }
 
-  /*ENetPacket *ConnectionManager::getPacket(ENetAddress &address) {
-    if(!buffer.isEmpty())
-      return buffer.pop(address);
-    else
-      return NULL;
-  }*/
-/**
-This function only pops the first element in PacketBuffer (first in first out)
-used by processQueue in Server.cc
-*/
-  /*ENetPacket *ConnectionManager::getPacket(int &clientID) {
-    ENetAddress address;
-    ENetPacket *packet=getPacket(address);
-    ClientInformation *temp =head_->findClient(&address);
-    if(!temp)
-      return NULL;
-    clientID=temp->getID();
-    return packet;
-  }*/
 
   ENetEvent *ConnectionManager::getEvent(){
     if(!buffer.isEmpty())
@@ -162,16 +135,6 @@ used by processQueue in Server.cc
     return true;
   }
 
-//   bool ConnectionManager::addPacket(Packet::Packet *packet){
-//     ClientInformation *temp = instance_->head_->findClient(packet->getClientID());
-//     if(!temp){
-//       COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
-//       return false;
-//     }
-//     ENetPacket *packet = new ENetPacket;
-//     //  TODO: finish implementation
-//   }
-//
 
   bool ConnectionManager::addPacket(ENetPacket *packet, ENetPeer *peer) {
     boost::recursive_mutex::scoped_lock lock(instance_->enet_mutex);

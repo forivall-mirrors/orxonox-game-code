@@ -43,13 +43,13 @@ namespace packet {
 
 struct GamestateHeader{
   ENUM::Type packetType;
-  int id; // id of the gamestate
-  unsigned int compsize;
-  unsigned int datasize;
-  int base_id; // id of the base-gamestate diffed from
-  bool diffed; // wheter diffed or not
-  bool complete; // wheter it is a complete gamestate or only partial
-  bool compressed;
+  int32_t id; // id of the gamestate
+  uint32_t compsize;
+  uint32_t datasize;
+  int32_t base_id; // id of the base-gamestate diffed from
+  bool diffed:1; // wheter diffed or not
+  bool complete:1; // wheter it is a complete gamestate or only partial
+  bool compressed:1;
 #ifndef NDEBUG
   uint32_t crc32;
 #endif
@@ -61,8 +61,8 @@ struct GamestateHeader{
 class Gamestate: public Packet{
   public:
     Gamestate();
-    Gamestate(unsigned char *data, int clientID);
-    Gamestate(unsigned char *data);
+    Gamestate(uint8_t *data, unsigned int clientID);
+    Gamestate(uint8_t *data);
 
     ~Gamestate();
 

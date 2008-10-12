@@ -153,7 +153,8 @@ namespace network
 //       COUT(3) << "not diffing" << std::endl;
       gs = new packet::Gamestate(*gs);
     }
-    assert(gs->compressData());
+    bool b = gs->compressData();
+    assert(b);
     return gs;
   }
   
@@ -193,7 +194,10 @@ namespace network
   
   bool GamestateManager::processGamestate(packet::Gamestate *gs){
     if(gs->isCompressed())
-       assert(gs->decompressData());
+    {
+       bool b = gs->decompressData();
+       assert(b);
+    }
     assert(!gs->isDiffed());
     return gs->spreadData();
   }
