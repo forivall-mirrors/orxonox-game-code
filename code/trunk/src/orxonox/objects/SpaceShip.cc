@@ -372,7 +372,6 @@ namespace orxonox
       Quaternion q2 = Quaternion(Radian(Degree(90)),Vector3(1,0,0));
 
        this->camNode_->setOrientation(q2*q1);
-      //if(!network::Host::running() || network::Host::getShipID()==objectID){ //TODO: check this
       if(myShip_){
         COUT(5) << "requesting focus for camera" << std::endl;
         //CameraHandler::getInstance()->requestFocus(cam_);
