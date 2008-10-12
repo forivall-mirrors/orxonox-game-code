@@ -26,6 +26,7 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
 #include "DistanceTrigger.h"
 
 #include "core/CoreIncludes.h"

@@ -26,11 +26,11 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
 #include "Trigger.h"
 
-#include "core/Debug.h"
 #include <OgreBillboard.h>
-
+#include "core/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/XMLPort.h"
