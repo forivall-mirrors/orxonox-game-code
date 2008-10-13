@@ -38,6 +38,8 @@
 //
 //
 
+#include <cassert>
+
 #include "Client.h"
 #include "Host.h"
 #include "Synchronisable.h"

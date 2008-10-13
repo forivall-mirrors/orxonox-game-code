@@ -28,6 +28,7 @@
 
 #include "GamestateClient.h"
 
+#include <cassert>
 #include <zlib.h>
 
 #include "core/CoreIncludes.h"
