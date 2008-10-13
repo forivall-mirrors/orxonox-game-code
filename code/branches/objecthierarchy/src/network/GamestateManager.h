@@ -65,7 +65,7 @@ namespace network
   * diff(a,diff(a,x))=x (hope this is correct)
   * @author Oliver Scheuss
   */
-  class GamestateManager: public GamestateHandler{
+  class _NetworkExport GamestateManager: public GamestateHandler{
   public:
     GamestateManager();
     ~GamestateManager();

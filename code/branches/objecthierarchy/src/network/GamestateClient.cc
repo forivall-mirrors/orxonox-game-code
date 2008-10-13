@@ -39,7 +39,7 @@
 
 namespace network
 {
-  struct GameStateItem{
+  struct _NetworkExport GameStateItem{
     packet::Gamestate *state;
     int id;
   };
@@ -49,7 +49,6 @@ namespace network
     last_diff_=0;
     last_gamestate_=GAMESTATEID_INITIAL-1;
     tempGamestate_=NULL;
-    myShip_=NULL;
   }
 
   GamestateClient::~GamestateClient() {
@@ -74,20 +73,12 @@ namespace network
     if(tempGamestate_==NULL)
       return false;
     int id = GAMESTATEID_INITIAL;
-    bool b = saveShipCache();
     packet::Gamestate *processed = processGamestate(tempGamestate_);
-    if(!processed){
-      if(b)
-        loadShipCache();
-      return false;
-    }
 //    assert(processed);
     //successfully loaded data from gamestate. now save gamestate for diff and delete the old gs
     tempGamestate_=NULL;
     gamestateMap_[processed->getID()]=processed;
     last_diff_ = processed->getID();
-    if(b)
-      loadShipCache();
     id = processed->getID();
     sendAck(id);
     return true;
@@ -133,7 +124,7 @@ namespace network
     COUT(4) << std::endl;
 
   }
-  
+
   bool GamestateClient::sendAck(unsigned int gamestateID){
     packet::Acknowledgement *ack = new packet::Acknowledgement(gamestateID, 0);
     if(!ack->send()){
@@ -144,39 +135,6 @@ namespace network
       COUT(3) << "acked a gamestate: " << gamestateID << std::endl;
       return true;
     }
-  }
-
-  bool GamestateClient::saveShipCache(){
-    if(myShip_==NULL){
-      myShip_ = orxonox::SpaceShip::getLocalShip();
-//      COUT(2) << "myShip_: " << myShip_ << " getLocalShip(): " << orxonox::SpaceShip::getLocalShip() << std::endl;
-      if(!myShip_)
-	return false;
-    }
-    if(myShip_){
-      //      unsigned char *data = new unsigned char[myShip_->getSize()];
-      int size=myShip_->getSize(0, 0x1);
-      if(size==0)
-        return false;
-      shipCache_ = new unsigned char [size];
-      unsigned char *temp = shipCache_;
-      if(!myShip_->getData(temp, 0, 0x1))
-        COUT(3) << "could not save shipCache" << std::endl;
-      return true;
-    }else
-      return false;
-  }
-
-  bool GamestateClient::loadShipCache(){
-    myShip_=orxonox::SpaceShip::getLocalShip(); //TODO: remove this (only a hack)
-    if(myShip_ && shipCache_){
-      assert(myShip_->getIdentifier());
-      unsigned char *temp = shipCache_;
-      myShip_->updateData(temp, 0x2);
-      delete shipCache_;
-      return true;
-    }else
-      return false;
   }
 
   packet::Gamestate *GamestateClient::processGamestate(packet::Gamestate *gs){

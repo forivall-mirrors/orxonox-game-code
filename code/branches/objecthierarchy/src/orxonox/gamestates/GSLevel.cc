@@ -39,10 +39,10 @@
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
-#include "objects/Backlight.h"
+//#include "objects/Backlight.h"
 #include "objects/Tickable.h"
 #include "objects/Radar.h"
-#include "tools/ParticleInterface.h"
+//#include "tools/ParticleInterface.h"
 #include "Settings.h"
 #include "GraphicsEngine.h"
 
@@ -145,11 +145,13 @@ namespace orxonox
     {
         float change = factor / this->timeFactor_;
         this->timeFactor_ = factor;
+/*
         for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it; ++it)
             it->setSpeedFactor(it->getSpeedFactor() * change);
 
         for (ObjectList<Backlight>::iterator it = ObjectList<Backlight>::begin(); it; ++it)
             it->setTimeFactor(timeFactor_);
+*/
     }
 
     void GSLevel::loadLevel()

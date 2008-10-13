@@ -30,7 +30,6 @@
 #include "OrxonoxStableHeaders.h"
 #include "HUDSpeedBar.h"
 #include "core/CoreIncludes.h"
-#include "objects/SpaceShip.h"
 
 namespace orxonox
 {
@@ -48,6 +47,7 @@ namespace orxonox
 
     void HUDSpeedBar::tick(float dt)
     {
+/*
         SpaceShip* ship = SpaceShip::getLocalShip();
         if (ship)
         {
@@ -56,5 +56,6 @@ namespace orxonox
             if (value != this->getValue())
                 this->setValue(value);
         }
+*/
     }
 }

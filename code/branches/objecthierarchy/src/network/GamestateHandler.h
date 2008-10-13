@@ -38,7 +38,7 @@ namespace network {
 /**
 	@author Oliver Scheuss
 */
-class GamestateHandler{
+class _NetworkExport GamestateHandler{
   private:
     virtual bool add(packet::Gamestate *gs, int clientID)=0;
     virtual bool ack(int gamestateID, int clientID)=0;

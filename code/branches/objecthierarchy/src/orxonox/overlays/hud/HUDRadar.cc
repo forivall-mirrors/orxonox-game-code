@@ -37,8 +37,6 @@
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "objects/SpaceShip.h"
-#include "objects/WorldEntity.h"
 #include "objects/Radar.h"
 #include "tools/TextureGenerator.h"
 
@@ -90,6 +88,7 @@ namespace orxonox
 
     void HUDRadar::displayObject(RadarViewable* object, bool bIsMarked)
     {
+/*
         const WorldEntity* wePointer = object->getWorldEntity();
 
         // Just to be sure that we actually have a WorldEntity.
@@ -99,7 +98,7 @@ namespace orxonox
             CCOUT(4) << "Cannot display a non-WorldEntitiy on the radar" << std::endl;
             return;
         }
-
+*/
         // try to find a panel already created
         Ogre::PanelOverlayElement* panel;
         //std::map<RadarViewable*, Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.find(object);
@@ -125,7 +124,7 @@ namespace orxonox
                 panel->setMaterialName(materialName);
         }
         panel->show();
-
+/*
         // set size to fit distance...
         float distance = (wePointer->getWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length();
         // calculate the size with 1/distance dependency for simplicity (instead of exp(-distance * lambda)
@@ -143,6 +142,7 @@ namespace orxonox
             this->marker_->setDimensions(size * 1.5, size * 1.5);
             this->marker_->setPosition((1.0 + coord.x - size * 1.5) * 0.5, (1.0 - coord.y - size * 1.5) * 0.5);
         }
+*/
     }
 
     void HUDRadar::radarTick(float dt)

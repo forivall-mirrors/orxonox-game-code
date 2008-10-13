@@ -41,26 +41,14 @@ SET( ORXONOX_SRC_FILES
   tools/Timer.cc
   tools/WindowEventListener.cc
 
-  objects/Ambient.cc
-  objects/Backlight.cc
+#  objects/Backlight.cc
   objects/Camera.cc
   objects/CameraHandler.cc
-  objects/Model.cc
-  objects/NPC.cc
-  objects/ParticleSpawner.cc
+#  objects/ParticleSpawner.cc
   objects/Radar.cc
   objects/RadarListener.cc
   objects/RadarViewable.cc
-  objects/Skybox.cc
-  objects/SpaceShip.cc
-  objects/SpaceShipAI.cc
   objects/Tickable.cc
-  objects/WorldEntity.cc
-
-  objects/Projectile.cc
-  objects/BillboardProjectile.cc
-  objects/RotatingProjectile.cc
-  objects/ParticleProjectile.cc
 
   tolua/tolua_bind.cc
 )
@@ -82,16 +70,8 @@ IF(NETWORKTRAFFIC_TESTING_ENABLED)
 
   SET( ORXONOXS_SRC_FILES
     GraphicsEngine.cc
-    objects/Ambient.cc
     objects/Camera.cc
     objects/CameraHandler.cc
-    objects/Explosion.cc
-    objects/Model.cc
-    objects/NPC.cc
-    objects/Projectile.cc
-    objects/Skybox.cc
-    objects/SpaceShip.cc
-    objects/WorldEntity.cc
   )
 
   ADD_LIBRARY(orxonoxs SHARED ${ORXONOX_SRC_FILES})

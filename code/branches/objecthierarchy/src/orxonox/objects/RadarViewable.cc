@@ -30,7 +30,7 @@
 #include "RadarViewable.h"
 #include "util/Debug.h"
 #include "core/CoreIncludes.h"
-#include "objects/WorldEntity.h"
+//#include "objects/WorldEntity.h"
 #include "Radar.h"
 
 namespace orxonox
@@ -62,12 +62,12 @@ namespace orxonox
     const Vector3& RadarViewable::getWorldPosition() const
     {
         validate();
-        return this->radarObject_->getWorldPosition();
+        return Vector3::ZERO;//this->radarObject_->getWorldPosition();
     }
 
     Vector3 RadarViewable::getOrientedVelocity() const
     {
         validate();
-        return this->radarObject_->getOrientation() * this->radarObject_->getVelocity();
+        return Vector3::ZERO;//this->radarObject_->getOrientation() * this->radarObject_->getVelocity();
     }
 }

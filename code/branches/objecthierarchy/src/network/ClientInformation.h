@@ -56,7 +56,7 @@ namespace network
   * This class implements a list for client informations
   * @author Oliver Scheuss
   */
-  class ClientInformation{
+  class _NetworkExport ClientInformation{
   public:
     ClientInformation();
     //   ClientInformation(ClientInformation *prev, ClientInformation *next);
@@ -65,27 +65,27 @@ namespace network
     ClientInformation *next();
     ClientInformation *prev();
     static ClientInformation *insertBack(ClientInformation *ins);
-    
+
     // set functions
     void setID(int clientID);
     bool setPeer(ENetPeer *peer);
     bool setGamestateID(int id);
     bool setPartialGamestateID(int id);
     inline void setShipID(unsigned int id){ShipID_=id;}
-    
+
     // get functions
     inline unsigned int getShipID(){return ShipID_;}
     int getID();
     int getGamestateID();
     int getPartialGamestateID();
     ENetPeer *getPeer();
-    
+
     int getFailures();
     void addFailure();
     void resetFailures();
     enet_uint32 getRTT();
     enet_uint32 getPacketLoss();
-    
+
     static bool removeClient(int clientID);
     static bool removeClient(ENetPeer *peer);
     static ClientInformation *findClient(int clientID, bool look_backwards=false);
@@ -98,12 +98,12 @@ namespace network
 
   private:
     static ClientInformation *head_;
-    
+
     bool setNext(ClientInformation *next);
     bool setPrev(ClientInformation *prev);
     ClientInformation *insertAfter(ClientInformation *ins);
     ClientInformation *insertBefore(ClientInformation *ins);
-    
+
     ClientInformation *preve;
     ClientInformation *nexte;
     //actual information:
@@ -114,7 +114,7 @@ namespace network
     unsigned int ShipID_;   // this is the unique objectID
     bool synched_;
     unsigned short failures_;
-    
+
   };
 
 }

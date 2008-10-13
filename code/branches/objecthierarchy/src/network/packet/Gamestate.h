@@ -26,6 +26,12 @@
  *
  */
 
+
+#ifndef NETWORK_PACKETGAMESTATE_H
+#define NETWORK_PACKETGAMESTATE_H
+
+#include "../NetworkPrereqs.h"
+
 #include "Packet.h"
 #include "network/Synchronisable.h"
 #include <map>
@@ -33,15 +39,11 @@
 #include "util/CRC32.h"
 #endif
 
-
-#ifndef NETWORK_PACKETGAMESTATE_H
-#define NETWORK_PACKETGAMESTATE_H
-
 namespace network {
 
 namespace packet {
 
-struct GamestateHeader{
+struct _NetworkExport GamestateHeader{
   ENUM::Type packetType;
   int32_t id; // id of the gamestate
   uint32_t compsize;
@@ -58,7 +60,7 @@ struct GamestateHeader{
 /**
 	@author Oliver Scheuss
 */
-class Gamestate: public Packet{
+class _NetworkExport Gamestate: public Packet{
   public:
     Gamestate();
     Gamestate(uint8_t *data, unsigned int clientID);

@@ -40,8 +40,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Radar.h"
-#include "objects/SpaceShip.h"
-#include "objects/Projectile.h"
 #include "objects/CameraHandler.h"
 
 namespace orxonox
@@ -148,10 +146,12 @@ namespace orxonox
         navText_->setCaption(convertToString(dist));
         float textLength = convertToString(dist).size() * navText_->getCharHeight() * 0.3;
 
+/*
         Ogre::Camera* navCam = SpaceShip::getLocalShip()->getCamera()->cam_;
         Matrix4 transformationMatrix = navCam->getProjectionMatrix() * navCam->getViewMatrix();
+*/
         // transform to screen coordinates
-        Vector3 pos = transformationMatrix * Radar::getInstance().getFocus()->getWorldPosition();
+        Vector3 pos = /*transformationMatrix * */Radar::getInstance().getFocus()->getWorldPosition();
 
         bool outOfView;
         if (pos.z > 1.0)
@@ -223,10 +223,10 @@ namespace orxonox
         else
         {
             // object is in view
-
+/*
             Vector3 aimpos = transformationMatrix * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(),
                     Projectile::getSpeed(), Radar::getInstance().getFocus()->getWorldPosition(), Radar::getInstance().getFocus()->getOrientedVelocity());
-
+*/
             if (wasOutOfView_)
             {
                 navMarker_->setMaterialName("Orxonox/NavTDC");
@@ -239,9 +239,10 @@ namespace orxonox
             navMarker_->setTop((-pos.y + 1.0 - navMarker_->getHeight()) * 0.5);
 
             aimMarker_->show();
+/*
             aimMarker_->setLeft((aimpos.x + 1.0 - aimMarker_->getWidth()) * 0.5);
             aimMarker_->setTop((-aimpos.y + 1.0 - aimMarker_->getHeight()) * 0.5);
-
+*/
             navText_->setLeft((pos.x + 1.0 + navMarker_->getWidth()) * 0.5);
             navText_->setTop((-pos.y + 1.0 + navMarker_->getHeight()) * 0.5);
         }
@@ -249,9 +250,11 @@ namespace orxonox
 
     float HUDNavigation::getDist2Focus() const
     {
+/*
         if (Radar::getInstance().getFocus())
             return (Radar::getInstance().getFocus()->getWorldPosition() - SpaceShip::getLocalShip()->getPosition()).length();
         else
+*/
             return 0;
     }
 

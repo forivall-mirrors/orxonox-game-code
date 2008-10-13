@@ -45,14 +45,13 @@
 #include "NetworkPrereqs.h"
 #include "core/CorePrereqs.h"
 #include "packet/Gamestate.h"
-#include "objects/SpaceShip.h"
 #include "GamestateHandler.h"
 
 #define GAMESTATEID_INITIAL -1
 
 namespace network
 {
-  class GamestateClient: public GamestateHandler
+  class _NetworkExport GamestateClient: public GamestateHandler
   {
   public:
     GamestateClient();
@@ -69,14 +68,11 @@ namespace network
     void removeObject(orxonox::ObjectListIterator<Synchronisable> &it);
     void printGamestateMap();
     bool sendAck(unsigned int gamestateID);
-    bool saveShipCache();
-    bool loadShipCache();
 
     int           last_diff_;
     int           last_gamestate_;
     std::map<int, packet::Gamestate *> gamestateMap_;
     packet::Gamestate *tempGamestate_; // we save the received gamestates here during processQueue
-    orxonox::SpaceShip *myShip_;
     unsigned char *shipCache_;
 
   };

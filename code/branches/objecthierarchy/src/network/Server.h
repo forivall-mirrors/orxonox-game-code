@@ -51,7 +51,7 @@
 namespace network
 {
   const int CLIENTID_SERVER = 0;
-  
+
   /**
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
@@ -63,7 +63,7 @@ namespace network
     Server(int port, std::string bindAddress);
     Server(int port, const char *bindAddress);
     ~Server();
-    
+
     void open();
     void close();
     bool processChat(std::string message, unsigned int playerID);
@@ -76,10 +76,9 @@ namespace network
     virtual bool isServer_(){return true;}
     unsigned int shipID(){return 0;}
     unsigned int playerID(){return 0;}
-    
+
     bool addClient(ENetEvent *event);
     bool createClient(int clientID);
-    bool createShip(ClientInformation *client);
     bool disconnectClient(ENetEvent *event);
     void disconnectClient(int clientID);
     void disconnectClient( ClientInformation *client);
@@ -87,12 +86,12 @@ namespace network
     bool sendGameState();
     bool sendObjectDeletes();
     virtual bool chat(std::string message);
-    
+
     //void processChat( chat *data, int clientId);
     ConnectionManager *connection;
     GamestateManager *gamestates_;
 
-    
+
     float timeSinceLastUpdate_;
   };
 

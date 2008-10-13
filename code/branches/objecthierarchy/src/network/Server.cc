@@ -48,7 +48,6 @@
 #include "GamestateManager.h"
 #include "ClientInformation.h"
 #include "util/Sleep.h"
-#include "objects/SpaceShip.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/Iterator.h"
@@ -100,7 +99,7 @@ namespace network
     connection = new ConnectionManager(port, bindAddress);
     gamestates_ = new GamestateManager();
   }
-  
+
   /**
   * @brief Destructor
   */
@@ -303,12 +302,6 @@ namespace network
     }
     COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
     connection->syncClassid(temp->getID());
-    COUT(5) << "creating spaceship for clientid: " << temp->getID() << std::endl;
-    // TODO: this is only a hack, untill we have a possibility to define default player-join actions
-    if(!createShip(temp))
-      COUT(2) << "Con.Man. could not create ship for clientid: " << clientID << std::endl;
-    else
-      COUT(3) << "created spaceship" << std::endl;
     temp->setSynched(true);
     COUT(3) << "sending welcome" << std::endl;
     packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
@@ -326,55 +319,16 @@ namespace network
     return true;
   }
 
-  bool Server::createShip(ClientInformation *client){
-    if(!client)
-      return false;
-    orxonox::Identifier* id = ClassByName("SpaceShip");
-    if(!id){
-      COUT(4) << "We could not create the SpaceShip for client: " << client->getID() << std::endl;
-      return false;
-    }
-    orxonox::SpaceShip *no = dynamic_cast<orxonox::SpaceShip *>(id->fabricate());
-    no->classID = id->getNetworkID();
-    client->setShipID(no->getObjectID());
-    no->setPosition(orxonox::Vector3(0,0,80));
-    no->setScale(10);
-    //no->setYawPitchRoll(orxonox::Degree(-90),orxonox::Degree(-90),orxonox::Degree(0));
-    no->setMesh("assff.mesh");
-    no->setMaxSpeed(500);
-    no->setMaxSideAndBackSpeed(50);
-    no->setMaxRotation(1.0);
-    no->setTransAcc(200);
-    no->setRotAcc(3.0);
-    no->setTransDamp(75);
-    no->setRotDamp(1.0);
-    no->setCamera(std::string("cam_") + convertToString(client->getID()));
-    no->create();
-
-    return true;
-  }
-
   bool Server::disconnectClient(ENetEvent *event){
     COUT(4) << "removing client from list" << std::endl;
     //return removeClient(head_->findClient(&(peer->address))->getID());
 
     //boost::recursive_mutex::scoped_lock lock(head_->mutex_);
-    orxonox::ObjectList<orxonox::SpaceShip>::iterator it = orxonox::ObjectList<orxonox::SpaceShip>::begin();
     ClientInformation *client = ClientInformation::findClient(&event->peer->address);
     if(!client)
       return false;
     gamestates_->removeClient(client);
-    while(it){
-      if(it->getObjectID()!=client->getShipID()){
-        ++it;
-        continue;
-      }
-      orxonox::ObjectList<orxonox::SpaceShip>::iterator temp=it;
-      ++it;
-      delete  *temp;
-      return ClientInformation::removeClient(event->peer);
-    }
-    return false;
+    return ClientInformation::removeClient(event->peer);
   }
 
   void Server::disconnectClient(int clientID){
@@ -386,7 +340,7 @@ namespace network
     connection->disconnectClient(client);
     gamestates_->removeClient(client);
   }
-  
+
   bool Server::chat(std::string message){
     ClientInformation *temp = ClientInformation::getBegin();
     packet::Chat *chat;

@@ -80,21 +80,9 @@ namespace orxonox
     class RadarListener;
 
     // objects
-    class Ambient;
     class Backlight;
     class Camera;
-    class Model;
-    class NPC;
     class ParticleSpawner;
-    class Skybox;
-    class SpaceShip;
-    class SpaceShipAI;
-    class WorldEntity;
-
-    class Projectile;
-    class BillboardProjectile;
-    class RotatingProjectile;
-    class ParticleProjectile;
 
     // tools
     class BillboardSet;
