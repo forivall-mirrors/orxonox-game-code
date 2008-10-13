@@ -191,18 +191,6 @@
 				Name="objects"
 				>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Ambient.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\Backlight.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\BillboardProjectile.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\Camera.cc"
 					>
 				</File>
@@ -211,95 +199,19 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Model.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\NPC.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\ParticleProjectile.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\ParticleSpawner.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\Projectile.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\Radar.cc"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\RadarListener.cc"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\RadarViewable.cc"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\RotatingProjectile.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\Skybox.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\SpaceShip.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\SpaceShipAI.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\Tickable.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\WorldEntity.cc"
 					>
 				</File>
 			</Filter>
@@ -579,43 +491,11 @@
 				Name="objects"
 				>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Ambient.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\Backlight.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\BillboardProjectile.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\Camera.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\CameraHandler.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\Model.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\NPC.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\ParticleProjectile.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\ParticleSpawner.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\Projectile.h"
 					>
 				</File>
 				<File
@@ -631,27 +511,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\RotatingProjectile.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\Skybox.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\SpaceShip.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\SpaceShipAI.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\orxonox\objects\Tickable.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\WorldEntity.h"
 					>
 				</File>
 			</Filter>
