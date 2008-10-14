@@ -48,6 +48,7 @@ SET( ORXONOX_SRC_FILES
   objects/Model.cc
   objects/NPC.cc
   objects/ParticleSpawner.cc
+  objects/PhysicsTest.cc
   objects/Radar.cc
   objects/RadarListener.cc
   objects/RadarViewable.cc

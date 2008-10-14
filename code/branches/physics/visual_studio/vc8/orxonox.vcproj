@@ -227,6 +227,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\PhysicsTest.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Projectile.cc"
 					>
 				</File>
@@ -612,6 +616,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\ParticleSpawner.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\PhysicsTest.h"
 					>
 				</File>
 				<File
