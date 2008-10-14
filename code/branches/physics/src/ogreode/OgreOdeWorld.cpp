@@ -1,12 +1,12 @@
-
 #include "OgreOdePrecompiledHeaders.h"
-
 #include "OgreOdeWorld.h"
+
+#include <OgreSceneNode.h>
+#include <OgreMovableObject.h>
+
 #include "OgreOdeBody.h"
-#include "OgreOdeJoint.h"
 #include "OgreOdeGeometry.h"
 #include "OgreOdeSpace.h"
-#include "OgreOdeDebugObject.h"
 
 using namespace OgreOde;
 using namespace Ogre;

@@ -3,6 +3,8 @@
 
 #include "OgreOdePreReqs.h"
 
+#include <OgreMatrix3.h>
+
 namespace OgreOde 
 {
 	class _OgreOdeExport EigenSolver

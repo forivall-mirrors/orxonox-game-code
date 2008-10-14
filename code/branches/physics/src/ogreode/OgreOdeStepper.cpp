@@ -1,11 +1,11 @@
-
 #include "OgreOdePrecompiledHeaders.h"
+#include "OgreOdeStepper.h"
+
+#include <OgreRoot.h>
 
 #include "OgreOdeGeometry.h"
 #include "OgreOdeBody.h"
-#include "OgreOdeWorld.h"
 #include "OgreOdeSpace.h"
-#include "OgreOdeStepper.h"
 
 using namespace OgreOde;
 using namespace Ogre;

@@ -11,6 +11,10 @@
 #define __include_OgreOdeDebugContact_H__
 
 #include "OgreOdePreReqs.h"
+
+#include <OgreMovableObject.h>
+#include <OgreRenderable.h>
+#include <OgreAxisAlignedBox.h>
 #include "OgreOdeDebugObject.h"
 
 namespace OgreOde 

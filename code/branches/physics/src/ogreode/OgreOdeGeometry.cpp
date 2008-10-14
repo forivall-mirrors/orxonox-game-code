@@ -1,7 +1,10 @@
-
 #include "OgreOdePrecompiledHeaders.h"
-
 #include "OgreOdeGeometry.h"
+
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
+#include <OgreStringConverter.h>
+
 #include "OgreOdeWorld.h"
 #include "OgreOdeSpace.h"
 #include "OgreOdeBody.h"

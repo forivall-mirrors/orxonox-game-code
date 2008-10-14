@@ -1,6 +1,4 @@
-
 #include "OgreOdePrecompiledHeaders.h"
-
 #include "OgreOdeUtility.h"
 
 using namespace OgreOde;

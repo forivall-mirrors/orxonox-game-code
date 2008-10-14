@@ -2,6 +2,8 @@
 #define _OGREODEENTITYINFORMER_H_
 
 #include "OgreOdePreReqs.h"
+
+#include <OgreMesh.h>
 #include "OgreOdeTriangleMeshData.h"
 
 namespace OgreOde 

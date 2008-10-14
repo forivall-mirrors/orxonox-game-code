@@ -2,6 +2,7 @@
 #define _OGREODECOLLISION_H_
 
 #include "OgreOdePreReqs.h"
+#include <OgreVector3.h>
 
 namespace OgreOde 
 {

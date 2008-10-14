@@ -2,6 +2,11 @@
 #define _OGREODEBODY_H_
 
 #include "OgreOdePreReqs.h"
+#include <OgreUserDefinedObject.h>
+#include <OgreMovableObject.h>
+#include <OgreAxisAlignedBox.h>
+#include <OgreSceneQuery.h>
+#include <OgreSceneNode.h>
 
 namespace OgreOde 
 {

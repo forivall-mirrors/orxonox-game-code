@@ -2,8 +2,10 @@
 #define _OGREODEGEOMETRY_H_
 
 #include "OgreOdePreReqs.h"
-#include "OgreOdeMaintainedList.h"
 
+#include <OgreUserDefinedObject.h>
+#include <OgreMovableObject.h>
+#include <OgreSceneQuery.h>
 #include "OgreOdeTriangleMeshData.h"
 
 namespace OgreOde 

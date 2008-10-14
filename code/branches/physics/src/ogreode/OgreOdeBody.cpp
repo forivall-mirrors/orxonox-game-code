@@ -1,8 +1,10 @@
-
 #include "OgreOdePrecompiledHeaders.h"
+#include "OgreOdeBody.h"
+
+#include <OgreStringConverter.h>
+#include <OgreSceneManager.h>
 
 #include "OgreOdeWorld.h"
-#include "OgreOdeBody.h"
 #include "OgreOdeMass.h"
 #include "OgreOdeDebugObject.h"
 #include "OgreOdeGeometry.h"

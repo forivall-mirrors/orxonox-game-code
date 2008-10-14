@@ -1,8 +1,9 @@
-
 #include "OgreOdePrecompiledHeaders.h"
-
-#include "OgreOdePreReqs.h"
 #include "OgreOdeMass.h"
+
+#include <OgreMatrix3.h>
+#include <OgreVector3.h>
+#include <OgreQuaternion.h>
 
 using namespace OgreOde;
 using namespace Ogre;

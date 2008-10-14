@@ -1,11 +1,9 @@
-
 #include "OgreOdePrecompiledHeaders.h"
+#include "OgreOdeJoint.h"
 
-#include "OgreOdeGeometry.h"
 #include "OgreOdeWorld.h"
 #include "OgreOdeBody.h"
 #include "OgreOdeGeometry.h"
-#include "OgreOdeJoint.h"
 
 using namespace OgreOde;
 using namespace Ogre;

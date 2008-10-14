@@ -2,10 +2,15 @@
 #define _OGREODEWORLD_H_
 
 #include "OgreOdePreReqs.h"
-#include "OgreOdeMaintainedList.h"
-#include "OgreSingleton.h"
 
 #include <map>
+#include <OgreVector3.h>
+
+#include "OgreOdeMaintainedList.h"
+#include "OgreOdeBody.h"
+#include "OgreOdeJoint.h"
+#include "OgreOdeGeometry.h"
+#include "OgreOdeSpace.h"
 
 namespace OgreOde 
 {

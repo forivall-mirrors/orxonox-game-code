@@ -1,11 +1,11 @@
-
 #include "OgreOdePrecompiledHeaders.h"
+#include "OgreOdeSpace.h"
+
+#include <OgreSceneManager.h>
 
 #include "OgreOdeBody.h"
-#include "OgreOdeSpace.h"
 #include "OgreOdeGeometry.h"
 #include "OgreOdeWorld.h"
-
 #include "OgreOdeCollision.h"
 
 using namespace OgreOde;

@@ -1,29 +1,27 @@
 #ifndef _OGREODEPREREQS_H_
 #define _OGREODEPREREQS_H_
 
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+// we have to include the entire ode.h because the config file can either be
+// config.h or odeconfig.h and it takes these files to determine the version
+// in the first place.
 #include "ode/ode.h"
-#include "OgreMemoryMacros.h"
+#include <OgrePrerequisites.h>
 
-
-namespace OgreOde 
-{
-    #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    #   if defined( OGREODE_EXPORTS )
-    #       define _OgreOdeExport __declspec( dllexport )
-    #   else
-    #       if defined( __MINGW32__ )
-    #           define _OgreOdeExport
-    #       else
-    #           define _OgreOdeExport __declspec(dllimport)
-    #       endif
-    #   endif
-    #elif defined ( OGRE_GCC_VISIBILITY )
-    #   define _OgreOdeExport  __attribute__ ((visibility("default")))
-    #else
-    #   define _OgreOdeExport
-    #endif
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#   if defined( OGREODE_EXPORTS )
+#       define _OgreOdeExport __declspec( dllexport )
+#   else
+#       if defined( __MINGW32__ )
+#           define _OgreOdeExport
+#       else
+#           define _OgreOdeExport __declspec(dllimport)
+#       endif
+#   endif
+#elif defined ( OGRE_GCC_VISIBILITY )
+#   define _OgreOdeExport  __attribute__ ((visibility("default")))
+#else
+#   define _OgreOdeExport
+#endif
 
 // determine ODE version. In 0.10 and following, ODE uses odeconfig.h in the headers and
 // out-"sourced" config.h to hide it from the include folder. So there is a new macro for the
@@ -35,16 +33,24 @@ namespace OgreOde
 #endif
 
 
+namespace OgreOde 
+{
 #if ODE_VERSION_MINOR < 10
 #  ifndef dTriIndex
 #    if dTRIMESH_16BIT_INDICES
 #      if dTRIMESH_GIMPACT
-	     typedef uint32 dTriIndex;
+
+    typedef uint32 dTriIndex;
+
 #      else // dTRIMESH_GIMPACT
-	     typedef uint16 dTriIndex;
+
+    typedef uint16 dTriIndex;
+
 #      endif // dTRIMESH_GIMPACT
 #    else // dTRIMESH_16BIT_INDICES
-	   typedef int dTriIndex;
+
+    typedef int dTriIndex;
+
 #    endif // dTRIMESH_16BIT_INDICES
 #  endif
 #endif

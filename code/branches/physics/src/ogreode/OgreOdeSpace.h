@@ -2,7 +2,7 @@
 #define _OGREODESPACE_H_
 
 #include "OgreOdePreReqs.h"
-#include "OgreOdeMaintainedList.h"
+#include <OgreAxisAlignedBox.h>
 
 namespace OgreOde 
 {

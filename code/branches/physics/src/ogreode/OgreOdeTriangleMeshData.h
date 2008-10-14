@@ -1,12 +1,10 @@
 #ifndef __OgreOdeTriangleMeshData_H__
 #define __OgreOdeTriangleMeshData_H__
 
-#include <Ogre.h>
-
 #include "OgreOdePreReqs.h"
-#include "OgreOdeMaintainedList.h"
 
-using namespace std;
+#include <OgreSharedPtr.h>
+#include <OgreVector3.h>
 
 namespace OgreOde
 {

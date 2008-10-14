@@ -1,26 +1,19 @@
 #include "OgreOdePrecompiledHeaders.h"
-
 #include "OgreOdeEntityInformer.h"
-#include "OgreOdeMaintainedList.h"
+
+#include <OgreEntity.h>
+#include <OgreSubEntity.h>
+#include <OgreSceneNode.h>
+#include <OgreSubMesh.h>
+#include <OgreLogManager.h>
+#include <OgreSkeletonInstance.h>
+#include <OgreBone.h>
+
 #include "OgreOdeBody.h"
 #include "OgreOdeGeometry.h"
 #include "OgreOdeMass.h"
 #include "OgreOdeEigenSolver.h"
-
 #include "OgreOdeTriangleMeshDataManager.h"
-
-using namespace OgreOde;
-using namespace Ogre;
-
-
-#include "OgreOdePrecompiledHeaders.h"
-
-#include "OgreOdeEntityInformer.h"
-#include "OgreOdeMaintainedList.h"
-#include "OgreOdeBody.h"
-#include "OgreOdeGeometry.h"
-#include "OgreOdeMass.h"
-#include "OgreOdeEigenSolver.h"
 
 using namespace OgreOde;
 using namespace Ogre;

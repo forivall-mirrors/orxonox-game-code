@@ -3,6 +3,8 @@
 
 #include "OgreOdePreReqs.h"
 
+#include <OgreSimpleRenderable.h>
+
 namespace OgreOde
 {
     //------------------------------------------------------------------------------------------------

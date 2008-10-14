@@ -1,6 +1,4 @@
-
 #include "OgreOdePrecompiledHeaders.h"
-
 #include "OgreOdeEigenSolver.h"
 
 using namespace OgreOde;

@@ -1,6 +1,7 @@
 #include "OgreOdePrecompiledHeaders.h"
-
 #include "OgreOdeTriangleMeshDataManager.h"
+
+#include "OgreOdeTriangleMeshData.h"
 
 using namespace Ogre;
 using namespace OgreOde;

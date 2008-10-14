@@ -1,12 +1,11 @@
 #ifndef __OgreOdeTriangleMeshDataManager_H__
 #define __OgreOdeTriangleMeshDataManager_H__
 
-#include <Ogre.h>
-
 #include "OgreOdePreReqs.h"
-#include "OgreOdeTriangleMeshData.h"
 
-using namespace std;
+#include <map>
+#include <OgreSingleton.h>
+#include <OgreVector3.h>
 
 namespace OgreOde
 {
@@ -32,7 +31,7 @@ namespace OgreOde
 		
 	public:
 	
-		typedef map<Ogre::String, map<Ogre::Vector3, TriangleMeshDataPtr, vectorLess > > TriangleMeshDataPtrMap;
+        typedef std::map<Ogre::String, std::map<Ogre::Vector3, TriangleMeshDataPtr, vectorLess > > TriangleMeshDataPtrMap;
 
 		/** 
 		*/

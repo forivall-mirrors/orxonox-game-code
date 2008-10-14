@@ -3,6 +3,9 @@
 
 #include "OgreOdePreReqs.h"
 
+#include <OgreFrameListener.h>
+#include "OgreOdeWorld.h"
+
 namespace OgreOde 
 {
     //------------------------------------------------------------------------------------------------

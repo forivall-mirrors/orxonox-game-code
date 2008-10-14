@@ -1,14 +1,4 @@
-
 #include "OgreOdePrecompiledHeaders.h"
-
-#include "OgreOdeGeometry.h"
-#include "OgreOdeWorld.h"
-#include "OgreOdeSpace.h"
-#include "OgreOdeBody.h"
-#include "OgreOdeCollision.h"
-#include "OgreOdeDebugObject.h"
-#include "OgreOdeDebugContact.h"
-
 #include "OgreOdeTriangleMeshData.h"
 
 #include "OgreOdeTriangleMeshDataManager.h"

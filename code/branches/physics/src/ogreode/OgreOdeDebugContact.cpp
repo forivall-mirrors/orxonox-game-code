@@ -8,14 +8,16 @@
 */
 
 #include "OgreOdePrecompiledHeaders.h"
-
-#include "Ogre.h"
-#include "OgreFontManager.h"
-
 #include "OgreOdeDebugContact.h"
+
+#include <OgreFontManager.h>
+#include <OgreEntity.h>
+#include <OgreSceneNode.h>
+#include <OgreMaterialManager.h>
+#include <OgreCamera.h>
+#include <OgreRoot.h>
+
 #include "OgreOdeCollision.h"
-#include "OgreOdeGeometry.h"
-#include "OgreOdeBody.h"
 #include "OgreOdeWorld.h"
 
 using namespace Ogre;

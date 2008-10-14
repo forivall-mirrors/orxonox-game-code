@@ -1,7 +1,10 @@
-
 #include "OgreOdePrecompiledHeaders.h"
-
 #include "OgreOdeDebugObject.h"
+
+#include <OgreMaterialManager.h>
+#include <OgreTechnique.h>
+#include <OgreCamera.h>
+#include <OgreHardwareBufferManager.h>
 
 using namespace OgreOde;
 using namespace Ogre;
