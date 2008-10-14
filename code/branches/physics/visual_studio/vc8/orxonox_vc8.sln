@@ -141,12 +141,22 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua_static", "lua_static.vc
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogreode", "ogreode.vcproj", "{BBA88DC2-CD78-4C00-814B-183899090F3E}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Debug|Win32.Build.0 = Debug|Win32
+		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Release|Win32.ActiveCfg = Release|Win32
+		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Release|Win32.Build.0 = Release|Win32
 		{53C56131-E2AA-4A27-B460-7AC05D61A0E6}.Debug|Win32.ActiveCfg = Debug|Win32
 		{53C56131-E2AA-4A27-B460-7AC05D61A0E6}.Debug|Win32.Build.0 = Debug|Win32
 		{53C56131-E2AA-4A27-B460-7AC05D61A0E6}.Release|Win32.ActiveCfg = Release|Win32
@@ -183,10 +193,6 @@ Global
 		{35575B59-E1AE-40E8-89C4-2862B5B09B68}.Debug|Win32.Build.0 = Debug|Win32
 		{35575B59-E1AE-40E8-89C4-2862B5B09B68}.Release|Win32.ActiveCfg = Release|Win32
 		{35575B59-E1AE-40E8-89C4-2862B5B09B68}.Release|Win32.Build.0 = Release|Win32
-		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Debug|Win32.ActiveCfg = Debug|Win32
-		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Debug|Win32.Build.0 = Debug|Win32
-		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Release|Win32.ActiveCfg = Release|Win32
-		{0B6C5CFD-F91B-432A-80A3-2610F61E060B}.Release|Win32.Build.0 = Release|Win32
 		{63B3E57A-4382-42F3-85EC-E869CFCCA88F}.Debug|Win32.ActiveCfg = Debug|Win32
 		{63B3E57A-4382-42F3-85EC-E869CFCCA88F}.Debug|Win32.Build.0 = Debug|Win32
 		{63B3E57A-4382-42F3-85EC-E869CFCCA88F}.Release|Win32.ActiveCfg = Release|Win32
@@ -207,6 +213,10 @@ Global
 		{8F5B7ED0-D380-4B4F-A744-3A568718176C}.Debug|Win32.Build.0 = Debug|Win32
 		{8F5B7ED0-D380-4B4F-A744-3A568718176C}.Release|Win32.ActiveCfg = Release|Win32
 		{8F5B7ED0-D380-4B4F-A744-3A568718176C}.Release|Win32.Build.0 = Release|Win32
+		{BBA88DC2-CD78-4C00-814B-183899090F3E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BBA88DC2-CD78-4C00-814B-183899090F3E}.Debug|Win32.Build.0 = Debug|Win32
+		{BBA88DC2-CD78-4C00-814B-183899090F3E}.Release|Win32.ActiveCfg = Release|Win32
+		{BBA88DC2-CD78-4C00-814B-183899090F3E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -222,5 +232,6 @@ Global
 		{53C56131-E2AA-4A27-B460-7AC05D61A0E6} = {B9D56701-B4DB-43F8-9920-241CA418C1CE}
 		{C6692661-9160-49E6-B109-A155F9485402} = {B9D56701-B4DB-43F8-9920-241CA418C1CE}
 		{8F5B7ED0-D380-4B4F-A744-3A568718176C} = {B9D56701-B4DB-43F8-9920-241CA418C1CE}
+		{BBA88DC2-CD78-4C00-814B-183899090F3E} = {B9D56701-B4DB-43F8-9920-241CA418C1CE}
 	EndGlobalSection
 EndGlobal
