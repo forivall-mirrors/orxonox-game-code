@@ -20,9 +20,9 @@ StepHandler::StepHandler(World *world,
                  const Ogre::Real time_scale) :
     _world  (world),
     _paused (false),
-    _listener (0),
     _auto_pre (false),
     _auto_post (false), 
+    _listener (0),
     _root  (0),
     _step_size (step_size),
     _total_time (Ogre::Real(0.0)),
@@ -266,8 +266,8 @@ ForwardFixedInterpolatedStepHandler::ForwardFixedInterpolatedStepHandler(World *
     const Ogre::Real time_scale):
         StepHandler(world, stepModeType, step_size, max_interval, time_scale),
         _dbl_step_size(step_size * 2),
-        _frame_rate (frame_rate),
-        _inv_step_size(1.0 / frame_rate)
+        _inv_step_size(1.0 / frame_rate),
+        _frame_rate (frame_rate)
 {
     if (frame_rate == Ogre::Real(0))
     {
@@ -277,7 +277,7 @@ ForwardFixedInterpolatedStepHandler::ForwardFixedInterpolatedStepHandler(World *
     else
     {
         _fixed_frame_rate = true;
-        _next_frame_step_count = _frame_rate / (_step_size * _time_scale);
+        _next_frame_step_count = (unsigned int)(_frame_rate / (_step_size * _time_scale));
         if (_next_frame_step_count == 0)
             _next_frame_step_count = 1;
     }

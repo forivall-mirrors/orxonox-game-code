@@ -160,6 +160,10 @@ void DebugObject::setMode(DebugObject::Mode mode)
 			case DebugObject::Mode_Static:
 				setMaterial("OgreOdeDebugLines/Static");
 			break;
+
+			case DebugObject::Mode_Unknown:
+				// don't do anything. Not handled.
+			break;
 		}
 	}
 }

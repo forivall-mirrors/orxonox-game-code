@@ -90,8 +90,8 @@ Body::Body(World *world, const Ogre::String& name):
     MovableObject(),
     //UserDefinedObject(),
     _name(name), 
-    _world(world),
-	_modify_parent_orientation(true)
+	_modify_parent_orientation(true),
+    _world(world)
 { 
 	_body_count++;
 	_body = dBodyCreate(_world->getWorldID()); 
@@ -817,8 +817,9 @@ bool Body::collidePlaneBounds(void* data, Ogre::SceneQuery::WorldFragment *wf)
         // Hack, simply collide against planes which is facing towards center
         // We can't do this properly without mesh collision
         geom = *proxy;
-        Ogre::Real maxdist = -1.0f;
-        const Ogre::Plane* bestPlane = 0;
+		// Two unused variables
+        //Ogre::Real maxdist = -1.0f;
+        //const Ogre::Plane* bestPlane = 0;
         for (pi = wf->planes->begin(); pi != piend; ++pi)
         {
             const Ogre::Plane * const boundPlane = &(*pi);
@@ -852,3 +853,4 @@ bool Body::collidePlaneBounds(void* data, Ogre::SceneQuery::WorldFragment *wf)
     }
     return collided;
 }
+

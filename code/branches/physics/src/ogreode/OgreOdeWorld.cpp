@@ -157,7 +157,7 @@ void World::setAutoSleepAverageSamplesCount(unsigned int time)
 //------------------------------------------------------------------------------------------------
 size_t World::getAutoSleepAverageSamplesCount()
 {
-    return (Real)dWorldGetAutoDisableAverageSamplesCount(_world);
+    return dWorldGetAutoDisableAverageSamplesCount(_world);
 }
 //------------------------------------------------------------------------------------------------
 void World::setContactCorrectionVelocity(Real velocity)

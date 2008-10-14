@@ -19,17 +19,17 @@ const Ogre::String Geometry::MovableType = "OgreOde_Geometry";
 //------------------------------------------------------------------------------------------------
 Geometry::Geometry(World *world, Space* space):
     UserDefinedObject(),
+	_geom (0),
+	_max_contacts (32),
 	_contact_high_water_mark (0),
     _last_contact_num(0),
-	_max_contacts (32),
-    _debug_contacts (0),
 	_contacts (0),
-	_encapsulator (0),
 	_debug_obj (0),
 	_debug_node (0),
+    _debug_contacts (0),
+	_encapsulator (0),
 	_user_data (0),
 	_user_object (0),
-	_geom (0),
     _world(world)
 {
 	mName = "";
@@ -1210,12 +1210,12 @@ TerrainGeometry::TerrainGeometry(World *world, Space* space,
 								bool centered,
                                 Ogre::Real thickness) :
                         Geometry(world, space),
+                        _max_height (scale.y),
                         _sample_width(scale.x),
                         _sample_height(scale.z),
-                        _max_height (scale.y),
+                        _centered(centered),
                         _halfWorldSizeX(worldSizeX * 0.5),
-                        _halfWorldSizeZ(worldSizeZ * 0.5),
-                        _centered(centered)
+                        _halfWorldSizeZ(worldSizeZ * 0.5)
 {
 	dHeightfieldDataID heightid = dGeomHeightfieldDataCreate();
 	dGeomHeightfieldDataBuildCallback(	heightid, //getSpaceID(space), 

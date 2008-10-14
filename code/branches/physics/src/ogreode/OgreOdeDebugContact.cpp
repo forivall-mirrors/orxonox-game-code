@@ -27,9 +27,9 @@ namespace OgreOde
 {
     //------------------------------------------------------------------------------------------------
     DebugContact::DebugContact(const String &name, World *world) : 
+        _enabled(false),
         _name(name), 
-        _world(world),
-        _enabled(false)
+        _world(world)
     {
         // scene node 
         _node = _world->getSceneManager()->getRootSceneNode ()->createChildSceneNode ();
@@ -114,22 +114,22 @@ namespace OgreOde
                                 const String &fontName, 
                                 int charHeight, 
                                 const ColourValue &color)
-        : mpCam(NULL)
-        , mpWin(NULL)
-        , mpFont(NULL)
+        : mFontName(fontName)
+        , mType("DebugContact")
         , mName(name)
         , mCaption(caption)
-        , mFontName(fontName)
-        , mCharHeight(charHeight)
+        , mHorizontalAlignment(H_LEFT)
+        , mVerticalAlignment(V_BELOW)
         , mColor(color)
-        , mType("DebugContact")
-        , mTimeUntilNextToggle(0)
+        , mCharHeight(charHeight)
         , mSpaceWidth(0)
         , mUpdateColors(true)
         , mOnTop(false)
-        , mHorizontalAlignment(H_LEFT)
-        , mVerticalAlignment(V_BELOW)
+        , mTimeUntilNextToggle(0)
         , mAdditionalHeight(0.0)
+        , mpCam(NULL)
+        , mpWin(NULL)
+        , mpFont(NULL)
         , mNode(node)
 
     {
@@ -316,7 +316,8 @@ namespace OgreOde
             HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY);
         bind->setBinding(COLOUR_BINDING, cbuf);
 
-        size_t charlen = mCaption.size();
+		// Unused variable
+        //size_t charlen = mCaption.size();
         Real *pPCBuff = static_cast<Real*>(ptbuf->lock(HardwareBuffer::HBL_DISCARD));
 
         float largestWidth = 0;
@@ -325,7 +326,7 @@ namespace OgreOde
 
         // Derive space width from a capital A
         if (mSpaceWidth == 0)
-            mSpaceWidth = mpFont->getGlyphAspectRatio('A') * mCharHeight * 2.0;
+            mSpaceWidth = (unsigned int)(mpFont->getGlyphAspectRatio('A') * mCharHeight * 2.0);
 
         // for calculation of AABB
         Ogre::Vector3 min, max, currPos;

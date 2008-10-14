@@ -13,8 +13,8 @@ using namespace Ogre;
 
 //------------------------------------------------------------------------------------------------
 Space::Space(World *world, const Space* space) :
-    _world(world),
-    _internal_collisions (true)
+    _internal_collisions (true),
+    _world(world)
 {
 }
 //------------------------------------------------------------------------------------------------

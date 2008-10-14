@@ -394,7 +394,7 @@ namespace OgreOde
 		
 		void changeTriangleMeshData(TriangleMeshDataPtr dataPtr);
 		
-		TriangleMeshDataPtr TriangleMeshGeometry::getTriangleMeshData(){ return _dataPtr; }
+		TriangleMeshDataPtr getTriangleMeshData(){ return _dataPtr; }
 		
 		~TriangleMeshGeometry();
 

@@ -261,26 +261,26 @@ void EntityInformer::addMesh(const MeshPtr &mesh, const Matrix4 &transform)
 }
 //------------------------------------------------------------------------------------------------
 EntityInformer::EntityInformer(Entity *entity,const Matrix4 &transform) :
+	_radius (-1),
+	_size (Vector3(-1,-1,-1)),
+	_center (Vector3(-1,-1,-1)),
 	_vertices (0),
 	_indices (0),
 	_vertex_count (0),
 	_index_count (0),
-	_size (Vector3(-1,-1,-1)),
-	_center (Vector3(-1,-1,-1)),
-	_radius (-1),
 	_bone_mapping (0)
 {
 	addEntity(entity, transform);	
 }
 //------------------------------------------------------------------------------------------------
 EntityInformer::EntityInformer() :
+		_radius (-1),
+		_size (Vector3(-1,-1,-1)),
+		_center (Vector3(-1,-1,-1)),
 		_vertices (0),
 		_indices (0),
 		_vertex_count (0),
 		_index_count (0),
-		_size (Vector3(-1,-1,-1)),
-		_center (Vector3(-1,-1,-1)),
-		_radius (-1),
         _bone_mapping (0)
 {
 	 

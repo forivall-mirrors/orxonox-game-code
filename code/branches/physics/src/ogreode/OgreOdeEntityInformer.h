@@ -76,7 +76,7 @@ namespace OgreOde
 		EntityInformerReuse(Ogre::Entity *entity, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE, bool forceRecreate = false);
 		EntityInformerReuse(const Ogre::MeshPtr &mesh, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE, bool forceRecreate = false);
 		
-		~EntityInformerReuse();
+		virtual ~EntityInformerReuse();
 		
 		/** Creates TriangleMeshGeometry using TriangleMeshDataPtr 
 		*/
