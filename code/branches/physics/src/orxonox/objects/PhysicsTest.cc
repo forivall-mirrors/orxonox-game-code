@@ -31,7 +31,8 @@
 
 #include <OgreStaticGeometry.h>
 #include <OgreSceneManager.h>
-#include "OgreOde/OgreOde_Core.h"
+#include <OgreEntity.h>
+#include "ogreode/OgreOde_Core.h"
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"

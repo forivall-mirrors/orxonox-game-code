@@ -105,6 +105,7 @@ TARGET_LINK_LIBRARIES( orxonox
   ceguilua_orxonox
   tinyxml_orxonox
   tolualib_orxonox
+  ogreode_orxonox
   util
   core
   audio
