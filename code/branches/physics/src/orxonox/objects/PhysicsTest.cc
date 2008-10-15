@@ -33,6 +33,7 @@
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 #include "ogreode/OgreOde_Core.h"
+#include "ogreode/OgreOdeGeometry.h"
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
@@ -98,7 +99,7 @@ namespace orxonox
 
         // set up stepper
 
-        const Ogre::Real _time_step = 0.5;
+        const Ogre::Real _time_step = 0.5;http://isg.ee.ethz.ch/
         const Ogre::Real time_scale = Ogre::Real(1.7);
         const Ogre::Real max_frame_time = Ogre::Real(1.0 / 4);
         odeStepper_ = new OgreOde::StepHandler(odeWorld_, OgreOde::StepHandler::QuickStep,_time_step,
@@ -109,6 +110,11 @@ namespace orxonox
 
         odeGround_ = new OgreOde::InfinitePlaneGeometry(Ogre::Plane(Ogre::Vector3(0,1,0),0),
             odeWorld_, odeWorld_->getDefaultSpace());
+
+	CollidingObject* collidingObject = new CollidingObject();
+       
+	odeGround_->setUserObject(static_cast<CollisionTestedObject*>(collidingObject));
+
         // Use a load of meshes to represent the floor
         int i = 0;
         Ogre::StaticGeometry* floor;
@@ -127,7 +133,8 @@ namespace orxonox
                 entity->setCastShadows(false);
                 floor->addEntity(entity, Ogre::Vector3(x,0,z));
             }
-        }
+        }       
+
         floor->build();
 
 
@@ -155,6 +162,8 @@ namespace orxonox
         odeBody_->setMass(odeMass_);
         odeGeom_->setBody(odeBody_);
         entity_->setUserObject(odeGeom_);
+        odeGeom_->setUserObject(static_cast<CollisionTestedObject*>(this));
+
 
         odeBody_->setOrientation(Quaternion(Degree(30.0), Vector3(0,0,0)));
         odeBody_->setPosition(Vector3(0,120,-20));
@@ -167,4 +176,51 @@ namespace orxonox
         if (this->bRunning_ && odeStepper_->step(dt))
             odeWorld_->synchronise();
     }
+
+    bool PhysicsTest::collision(OgreOde::Contact *Contact)
+    {
+    	// Check for collisions between things that are connected and ignore them
+       	OgreOde::Geometry * const g1 = Contact->getFirstGeometry();
+       	OgreOde::Geometry * const g2 = Contact->getSecondGeometry();
+
+       	if (g1 && g2)
+       	{
+       		const OgreOde::Body * const b1 = g2->getBody();
+       		const OgreOde::Body * const  b2 = g1->getBody();
+       		if (b1 && b2 && OgreOde::Joint::areConnected(b1, b2)) 
+                  return false; 
+       	}
+       
+       	//set contact parameters:
+       	Contact->setBouncyness(1.0);
+       	Contact->setCoulombFriction(OgreOde::Utility::Infinity);
+       	Contact->setForceDependentSlip(1.0);
+       	Contact->setAdditionalFDS(1.0);
+       
+       	/*we have 2 collidable objects from our object system, if one of the Collide function returns false, e return false in this method, too, else we return true, so ode computes a normal collision.
+        true means ode will treat this like a normal collison => rigid body behavior
+        false means ode will not treat this collision at all => objects ignore each other*/
+        	
+        bool Return = true;
+        	
+        if (g1->getUserObject())
+        	if (!static_cast<CollisionTestedObject*>(g1->getUserObject())->Collide(true, Contact))
+        		Return = false;
+        
+        if (g2->getUserObject())
+        	if (!static_cast<CollisionTestedObject*>(g2->getUserObject())->Collide(false, Contact))
+        		Return = false;
+        
+        return Return;
+    }
+
+        bool CollidingObject::Collide(bool MineIsFirst, OgreOde::Contact *Contact)
+        {
+        	Contact->setForceDependentSlip(Contact->getForceDependentSlip() * ForceDependentSlip);
+        	Contact->setAdditionalFDS(Contact->getForceDependentSlip2() * ForceDependentSlip);
+        	Contact->setCoulombFriction(Contact->getCoulombFrictionMu() * Friction);
+        	Contact->setBouncyness(Contact->getBouncyness() * Bouncyness, Contact->getBouncynessVelocity() * BounceVelocity);
+        	return true;
+        }
+
 }

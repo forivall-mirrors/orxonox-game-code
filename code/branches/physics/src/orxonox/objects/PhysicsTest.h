@@ -63,6 +63,51 @@ namespace orxonox
 
         bool                            bRunning_;
     };
+
+
+   class _OrxonoxExport CollisionTestedObject
+   {
+        public:
+        	CollisionTestedObject(void);
+        	virtual ~CollisionTestedObject(void);
+        	virtual bool Collide(bool MineIsFirst, OgreOde::Contact *Contact) = 0;
+   };
+
+   class _OrxonoxExport CollidingObject : public virtual CollisionTestedObject
+   {
+        protected:
+               float Friction;
+        	float Bouncyness;
+        	float BounceVelocity;
+        	float ForceDependentSlip;
+        
+        public:
+        	CollidingObject(void);
+        	virtual ~CollidingObject(void);
+        
+        //	bool virtual WriteToIni(IniFile& Ini)	const;
+        //	bool virtual LoadFromIni(const std::basic_string<wchar_t>& ObjectID, IniFile& Ini);
+        
+        	float GetFriction(void)			const	{return Friction;}
+        	float GetBouncyness(void)		const	{return Bouncyness;}
+        	float GetBounceVelocity(void)		const	{return BounceVelocity;}
+        	float GetFDS(void)			const	{return ForceDependentSlip;}
+        
+        	virtual bool Collide(bool MineIsFirst, OgreOde::Contact *Contact);
+        
+        private:
+        	static const wchar_t* KEY_FRICTION;
+        	static const float DEF_FRICTION;
+        	static const wchar_t* KEY_BOUNCYNESS;
+        	static const float DEF_BOUNCYNESS;
+        	static const wchar_t* KEY_FDS;
+        	static const float DEF_FDS;
+        	static const wchar_t* KEY_BOUNCE_VELO;
+        	static const float DEF_BOUNCE_VELO;
+   };
+
 }
+
+
 
 #endif /* _PhysicsTest_H__ */
