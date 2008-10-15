@@ -1,0 +1,497 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Reto Grieder
+ *   Co-authors:
+ *      ...
+ *
+ */
+
+/**
+ @file
+ @brief Implementation of the different input handlers.
+ */
+
+#include "KeyBinder.h"
+#include <fstream>
+#include <string>
+#include "util/Convert.h"
+#include "util/Debug.h"
+#include "core/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
+#include "core/ConfigFileManager.h"
+#include "InputCommands.h"
+#include "InputManager.h"
+
+namespace orxonox
+{
+    /**
+    @brief
+        Constructor that does as little as necessary.
+    */
+    KeyBinder::KeyBinder()
+        : numberOfJoySticks_(0)
+        , deriveTime_(0.0f)
+    {
+        mouseRelative_[0] = 0;
+        mouseRelative_[1] = 0;
+        mousePosition_[0] = 0;
+        mousePosition_[1] = 0;
+
+        RegisterRootObject(KeyBinder);
+
+        // intialise all buttons and half axes to avoid creating everything with 'new'
+        // keys
+        for (unsigned int i = 0; i < KeyCode::numberOfKeys; i++)
+        {
+            std::string keyname = KeyCode::ByString[i];
+            if (!keyname.empty())
+            {
+                keys_[i].name_ = std::string("Key") + keyname;
+            }
+            else
+            {
+                // some keys have name "" because the code is not occupied by OIS
+                // Use "Key_" plus the number as name to put it at the end of the config file section
+                std::string number = convertToString(i);
+                if (i < 100)
+                    number.insert(0, "0");
+                keys_[i].name_ = std::string("Key_") + number;
+            }
+            keys_[i].paramCommandBuffer_ = &paramCommandBuffer_;
+            keys_[i].groupName_ = "Keys";
+        }
+        // mouse buttons plus 4 mouse wheel buttons only 'generated' by KeyBinder
+        const char* const mouseWheelNames[] = { "Wheel1Down", "Wheel1Up", "Wheel2Down", "Wheel2Up" };
+        for (unsigned int i = 0; i < numberOfMouseButtons_; i++)
+        {
+            std::string nameSuffix;
+            if (i < MouseButtonCode::numberOfButtons)
+                nameSuffix = MouseButtonCode::ByString[i];
+            else
+                nameSuffix = mouseWheelNames[i - MouseButtonCode::numberOfButtons];
+            mouseButtons_[i].name_ = std::string("Mouse") + nameSuffix;
+            mouseButtons_[i].paramCommandBuffer_ = &paramCommandBuffer_;
+            mouseButtons_[i].groupName_ = "MouseButtons";
+        }
+        // mouse axes
+        for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
+        {
+            mouseAxes_[i].name_ = std::string("Mouse") + MouseAxisCode::ByString[i >> 1];
+            if (i & 1)
+                mouseAxes_[i].name_ += "Pos";
+            else
+                mouseAxes_[i].name_ += "Neg";
+            mouseAxes_[i].paramCommandBuffer_ = &paramCommandBuffer_;
+            mouseAxes_[i].groupName_ = "MouseAxes";
+        }
+
+        // initialise joy sticks separatly to allow for reloading
+        numberOfJoySticks_ = InputManager::getInstance().numberOfJoySticks();
+        initialiseJoyStickBindings();
+
+        // collect all Buttons and HalfAxes
+        compilePointerLists();
+
+        // set them here to use allHalfAxes_
+        setConfigValues();
+    }
+
+    /**
+    @brief
+        Destructor
+    */
+    KeyBinder::~KeyBinder()
+    {
+        // almost no destructors required because most of the arrays are static.
+        clearBindings(); // does some destruction work
+    }
+
+    /**
+    @brief
+        Loader for the key bindings, managed by config values.
+    */
+    void KeyBinder::setConfigValues()
+    {
+        SetConfigValue(defaultKeybindings_, "def_keybindings.ini")
+            .description("Filename of default keybindings.");
+        SetConfigValue(analogThreshold_, 0.05f)
+            .description("Threshold for analog axes until which the state is 0.");
+        SetConfigValue(mouseSensitivity_, 1.0f)
+            .description("Mouse sensitivity.");
+        SetConfigValue(bDeriveMouseInput_, false)
+            .description("Whether or not to derive moues movement for the absolute value.");
+        SetConfigValue(derivePeriod_, 0.05f)
+            .description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
+        SetConfigValue(mouseSensitivityDerived_, 1.0f)
+            .description("Mouse sensitivity if mouse input is derived.");
+        SetConfigValue(mouseWheelStepSize_, 120.0f)
+            .description("Equals one step of the mousewheel.");
+        SetConfigValue(buttonThreshold_, 0.80f)
+            .description("Threshold for analog axes until which the button is not pressed.")
+            .callback(this, &KeyBinder::buttonThresholdChanged);
+    }
+
+    void KeyBinder::buttonThresholdChanged()
+    {
+        for (unsigned int i = 0; i < allHalfAxes_.size(); i++)
+            if (!allHalfAxes_[i]->bButtonThresholdUser_)
+                allHalfAxes_[i]->buttonThreshold_ = this->buttonThreshold_;
+    }
+
+    void KeyBinder::JoyStickDeviceNumberChanged(unsigned int value)
+    {
+        unsigned int oldValue = numberOfJoySticks_;
+        numberOfJoySticks_ = value;
+
+        // initialise joy stick bindings
+        initialiseJoyStickBindings();
+
+        // collect all Buttons and HalfAxes again
+        compilePointerLists();
+
+        // load the bindings if required
+        if (!configFile_.empty())
+        {
+            for (unsigned int iDev = oldValue; iDev < numberOfJoySticks_; ++iDev)
+            {
+                for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; ++i)
+                    joyStickButtons_[iDev][i].readConfigValue();
+                for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; ++i)
+                    joyStickAxes_[iDev][i].readConfigValue();
+            }
+        }
+
+        // Set the button threshold for potential new axes
+        buttonThresholdChanged();
+    }
+
+    void KeyBinder::initialiseJoyStickBindings()
+    {
+        this->joyStickAxes_.resize(numberOfJoySticks_);
+        this->joyStickButtons_.resize(numberOfJoySticks_);
+
+        // reinitialise all joy stick binings (doesn't overwrite the old ones)
+        for (unsigned int iDev = 0; iDev < numberOfJoySticks_; iDev++)
+        {
+            std::string deviceNumber = convertToString(iDev);
+            // joy stick buttons
+            for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
+            {
+                joyStickButtons_[iDev][i].name_ = std::string("JoyStick") + deviceNumber + JoyStickButtonCode::ByString[i];
+                joyStickButtons_[iDev][i].paramCommandBuffer_ = &paramCommandBuffer_;
+                joyStickButtons_[iDev][i].groupName_ = std::string("JoyStick") + deviceNumber + "Buttons";
+            }
+            // joy stick axes
+            for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
+            {
+                joyStickAxes_[iDev][i].name_ = std::string("JoyStick") + deviceNumber + JoyStickAxisCode::ByString[i >> 1];
+                if (i & 1)
+                    joyStickAxes_[iDev][i].name_ += "Pos";
+                else
+                    joyStickAxes_[iDev][i].name_ += "Neg";
+                joyStickAxes_[iDev][i].paramCommandBuffer_ = &paramCommandBuffer_;
+                joyStickAxes_[iDev][i].groupName_ = std::string("JoyStick") + deviceNumber + "Axes";
+            }
+        }
+    }
+
+    void KeyBinder::compilePointerLists()
+    {
+        allButtons_.clear();
+        allHalfAxes_.clear();
+
+        for (unsigned int i = 0; i < KeyCode::numberOfKeys; i++)
+            allButtons_[keys_[i].name_] = keys_ + i;
+        for (unsigned int i = 0; i < numberOfMouseButtons_; i++)
+            allButtons_[mouseButtons_[i].name_] = mouseButtons_ + i;
+        for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
+        {
+            allButtons_[mouseAxes_[i].name_] = mouseAxes_ + i;
+            allHalfAxes_.push_back(mouseAxes_ + i);
+        }
+        for (unsigned int iDev = 0; iDev < numberOfJoySticks_; iDev++)
+        {
+            for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
+                allButtons_[joyStickButtons_[iDev][i].name_] = &(joyStickButtons_[iDev][i]);
+            for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
+            {
+                allButtons_[joyStickAxes_[iDev][i].name_] = &(joyStickAxes_[iDev][i]);
+                allHalfAxes_.push_back(&(joyStickAxes_[iDev][i]));
+            }
+        }
+    }
+
+    /**
+    @brief
+        Loads the key and button bindings.
+    @return
+        True if loading succeeded.
+    */
+    void KeyBinder::loadBindings(const std::string& filename)
+    {
+        COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
+
+        configFile_ = filename;
+        if (configFile_.empty())
+            return;
+
+        // get bindings from default file if filename doesn't exist.
+        std::ifstream infile;
+        infile.open(configFile_.c_str());
+        if (!infile)
+        {
+            ConfigFileManager::getInstance().setFile(CFT_Keybindings, defaultKeybindings_);
+            ConfigFileManager::getInstance().save(CFT_Keybindings, configFile_);
+        }
+        else
+            infile.close();
+        ConfigFileManager::getInstance().setFile(CFT_Keybindings, configFile_);
+
+        // Parse bindings and create the ConfigValueContainers if necessary
+        clearBindings();
+        for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
+            it->second->readConfigValue();
+
+        COUT(3) << "KeyBinder: Loading key bindings done." << std::endl;
+    }
+
+    bool KeyBinder::setBinding(const std::string& binding, const std::string& name, bool bTemporary)
+    {
+        std::map<std::string, Button*>::iterator it = allButtons_.find(name);
+        if (it != allButtons_.end())
+        {
+            if (bTemporary)
+                it->second->configContainer_->tset(binding);
+            else
+                it->second->configContainer_->set(binding);
+            it->second->configContainer_->getValue(&(it->second->bindingString_), it->second);
+            return true;
+        }
+        else
+        {
+            COUT(2) << "Could not find key/button/axis with name '" << name << "'." << std::endl;
+            return false;
+        }
+    }
+
+    /**
+    @brief
+        Overwrites all bindings with ""
+    */
+    void KeyBinder::clearBindings()
+    {
+        for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
+            it->second->clear();
+
+        for (unsigned int i = 0; i < paramCommandBuffer_.size(); i++)
+            delete paramCommandBuffer_[i];
+        paramCommandBuffer_.clear();
+    }
+
+    void KeyBinder::resetJoyStickAxes()
+    {
+        for (unsigned int iDev = 0; iDev < numberOfJoySticks_; ++iDev)
+        {
+            for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
+            {
+                joyStickAxes_[iDev][i].absVal_ = 0.0f;
+                joyStickAxes_[iDev][i].relVal_ = 0.0f;
+            }
+        }
+    }
+
+    void KeyBinder::tickMouse(float dt)
+    {
+        tickDevices(mouseAxes_, mouseAxes_ + MouseAxisCode::numberOfAxes * 2);
+
+        if (bDeriveMouseInput_)
+        {
+            if (deriveTime_ > derivePeriod_)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    if (mouseRelative_[i] > 0)
+                    {
+                        mouseAxes_[2*i + 0].absVal_
+                            =  mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
+                        mouseAxes_[2*i + 1].absVal_ = 0.0f;
+                    }
+                    else if (mouseRelative_[i] < 0)
+                    {
+                        mouseAxes_[2*i + 0].absVal_ = 0.0f;
+                        mouseAxes_[2*i + 1].absVal_
+                            = -mouseRelative_[i] / deriveTime_ * 0.0005 * mouseSensitivityDerived_;
+                    }
+                    else
+                    {
+                        mouseAxes_[2*i + 0].absVal_ = 0.0f;
+                        mouseAxes_[2*i + 1].absVal_ = 0.0f;
+                    }
+                    mouseRelative_[i] = 0;
+                    mouseAxes_[2*i + 0].hasChanged_ = true;
+                    mouseAxes_[2*i + 1].hasChanged_ = true;
+                }
+                deriveTime_ = 0.0f;
+            }
+            else
+                deriveTime_ += dt;
+        }
+    }
+
+    void KeyBinder::tickDevices(HalfAxis* begin, HalfAxis* end)
+    {
+        for (HalfAxis* current = begin; current < end; ++current) // pointer arithmetic
+        {
+            // button mode
+            // TODO: optimize out all the half axes that don't act as a button at the moment
+            if (current->hasChanged_)
+            {
+                if (!current->wasDown_ && current->absVal_ > current->buttonThreshold_)
+                {
+                    current->wasDown_ = true;
+                    if (current->nCommands_[KeybindMode::OnPress])
+                        current->execute(KeybindMode::OnPress);
+                }
+                else if (current->wasDown_ && current->absVal_ < current->buttonThreshold_)
+                {
+                    current->wasDown_ = false;
+                    if (current->nCommands_[KeybindMode::OnRelease])
+                        current->execute(KeybindMode::OnRelease);
+                }
+                current->hasChanged_ = false;
+            }
+
+            if (current->wasDown_)
+            {
+                if (current->nCommands_[KeybindMode::OnHold])
+                    current->execute(KeybindMode::OnHold);
+            }
+
+            // these are the actually useful axis bindings for analog input
+            if (current->relVal_ > analogThreshold_ || current->absVal_ > analogThreshold_)
+            {
+                current->execute();
+            }
+        }
+    }
+
+    /**
+    @brief
+        Event handler for the mouseMoved Event.
+    @param e
+        Mouse state information
+    */
+    void KeyBinder::mouseMoved(IntVector2 abs_, IntVector2 rel_, IntVector2 clippingSize)
+    {
+        // y axis of mouse input is inverted
+        int rel[] = { rel_.x, -rel_.y };
+
+        if (!bDeriveMouseInput_)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                if (rel[i]) // performance opt. if rel[i] == 0
+                {
+                    // write absolute values
+                    mouseAxes_[2*i + 0].hasChanged_ = true;
+                    mouseAxes_[2*i + 1].hasChanged_ = true;
+                    mousePosition_[i] += rel[i];
+
+                    // clip absolute position
+                    if (mousePosition_[i] > mouseClippingSize_)
+                        mousePosition_[i] =  mouseClippingSize_;
+                    if (mousePosition_[i] < -mouseClippingSize_)
+                        mousePosition_[i] = -mouseClippingSize_;
+
+                    if (mousePosition_[i] >= 0)
+                    {
+                        mouseAxes_[2*i + 0].absVal_ =   mousePosition_[i]/(float)mouseClippingSize_ * mouseSensitivity_;
+                        mouseAxes_[2*i + 1].absVal_ =  0.0f;
+                    }
+                    else
+                    {
+                        mouseAxes_[2*i + 0].absVal_ =  0.0f;
+                        mouseAxes_[2*i + 1].absVal_ =  -mousePosition_[i]/(float)mouseClippingSize_ * mouseSensitivity_;
+                    }
+                }
+            }
+        }
+        else
+        {
+            mouseRelative_[0] += rel[0];
+            mouseRelative_[1] += rel[1];
+        }
+
+        // relative
+        for (int i = 0; i < 2; i++)
+        {
+            if (rel[i] > 0)
+                mouseAxes_[0 + 2*i].relVal_ =  ((float)rel[i])/(float)mouseClippingSize_ * mouseSensitivity_;
+            else
+                mouseAxes_[1 + 2*i].relVal_ = -((float)rel[i])/(float)mouseClippingSize_ * mouseSensitivity_;
+        }
+    }
+
+    /**
+    @brief Event handler for the mouseScrolled Event.
+    @param e Mouse state information
+    */
+    void KeyBinder::mouseScrolled(int abs, int rel)
+    {
+        if (rel > 0)
+            for (int i = 0; i < rel/mouseWheelStepSize_; i++)
+                mouseButtons_[8].execute(KeybindMode::OnPress, ((float)abs)/mouseWheelStepSize_);
+        else
+            for (int i = 0; i < -rel/mouseWheelStepSize_; i++)
+                mouseButtons_[9].execute(KeybindMode::OnPress, ((float)abs)/mouseWheelStepSize_);
+    }
+
+    void KeyBinder::joyStickAxisMoved(unsigned int joyStickID, unsigned int axis, float value)
+    {
+        int i = axis * 2;
+        if (value >= 0)
+        {
+            joyStickAxes_[joyStickID][i].absVal_ = value;
+            joyStickAxes_[joyStickID][i].relVal_ = value;
+            joyStickAxes_[joyStickID][i].hasChanged_ = true;
+            if (joyStickAxes_[joyStickID][i + 1].absVal_ > 0.0f)
+            {
+                joyStickAxes_[joyStickID][i + 1].absVal_ = -0.0f;
+                joyStickAxes_[joyStickID][i + 1].relVal_ = -0.0f;
+                joyStickAxes_[joyStickID][i + 1].hasChanged_ = true;
+            }
+        }
+        else
+        {
+            joyStickAxes_[joyStickID][i + 1].absVal_ = -value;
+            joyStickAxes_[joyStickID][i + 1].relVal_ = -value;
+            joyStickAxes_[joyStickID][i + 1].hasChanged_ = true;
+            if (joyStickAxes_[joyStickID][i].absVal_ > 0.0f)
+            {
+                joyStickAxes_[joyStickID][i].absVal_ = -0.0f;
+                joyStickAxes_[joyStickID][i].relVal_ = -0.0f;
+                joyStickAxes_[joyStickID][i].hasChanged_ = true;
+            }
+        }
+    }
+}
