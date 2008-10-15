@@ -178,12 +178,12 @@ namespace orxonox
                     setObjectMode(0x3);
                 myShip_ = true;
             }
-            else
-                this->setRadarObjectColour(this->getProjectileColour());
-      }
-      Model::create();
-      this->init();
-      return true;
+        }
+        else
+            this->setRadarObjectColour(this->getProjectileColour());
+        Model::create();
+        this->init();
+        return true;
     }
 
     void SpaceShip::registerAllVariables()
@@ -257,9 +257,9 @@ namespace orxonox
             // START CREATING ADDITIONAL EFFECTS
             if(!network::Host::running()){
               this->backlight_ = new Backlight(this->maxSpeed_, 0.8);
-              this->backlight_->create();
               this->attachObject(this->backlight_);
               this->backlight_->setPosition(-2.35, 0, 0.2);
+              this->backlight_->create();
               this->backlight_->setColour(this->getProjectileColour());
   
               this->smoke_ = new ParticleSpawner();
