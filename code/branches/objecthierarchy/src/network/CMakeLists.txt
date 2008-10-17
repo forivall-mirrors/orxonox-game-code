@@ -2,6 +2,7 @@ SET( NETWORK_SRC_FILES
   Client.cc
   ClientConnection.cc
   ClientInformation.cc
+  ClientConnectionListener.cc
   ConnectionManager.cc
   GamestateManager.cc
   GamestateClient.cc
