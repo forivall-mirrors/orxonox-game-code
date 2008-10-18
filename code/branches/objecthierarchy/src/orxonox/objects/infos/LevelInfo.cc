@@ -62,9 +62,9 @@ namespace orxonox
 
     void LevelInfo::registerVariables()
     {
-        REGISTERDATA(name_,         network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::changedName));
-        REGISTERDATA(description_,  network::direction::toclient);
-        REGISTERDATA(skybox_,       network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applySkybox));
+        REGISTERSTRING(name_,         network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::changedName));
+        REGISTERSTRING(description_,  network::direction::toclient);
+        REGISTERSTRING(skybox_,       network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applySkybox));
         REGISTERDATA(ambientLight_, network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applyAmbientLight));
     }
 

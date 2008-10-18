@@ -76,7 +76,7 @@ namespace orxonox
     {
         this->setObjectMode(network::direction::bidirectional);
 
-        REGISTERDATA(name_,                 network::direction::bidirectional, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
+        REGISTERSTRING(name_,               network::direction::bidirectional, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
         REGISTERDATA(clientID_,             network::direction::toclient,      new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::checkClientID));
         REGISTERDATA(ping_,                 network::direction::toclient);
         REGISTERDATA(bHumanPlayer_,         network::direction::toclient);
