@@ -45,6 +45,7 @@
 
 
 #include "ConnectionManager.h"
+#include "ClientConnectionListener.h"
 #include "GamestateManager.h"
 #include "ClientInformation.h"
 #include "util/Sleep.h"
@@ -279,20 +280,30 @@ namespace network
 
 
   bool Server::addClient(ENetEvent *event){
+    unsigned int newid=0;
+    
     ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
     if(!temp){
       COUT(2) << "Server: could not add client" << std::endl;
       return false;
     }
     if(temp==ClientInformation::getBegin()) { //not good if you use anything else than insertBack
-      temp->setID(1);
+      newid=1;
     }
     else
-      temp->setID(temp->prev()->getID()+1);
+      newid=temp->prev()->getID()+1;
+    temp->setID(newid);
     temp->setPeer(event->peer);
+    
+    // inform all the listeners
+    orxonox::ObjectList<ClientConnectionListener>::iterator listener = orxonox::ObjectList<ClientConnectionListener>::begin();
+    while(listener){
+      listener->clientConnected(newid);
+    }
+    
     COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
-    return createClient(temp->getID());
-  }
+    return createClient(temp->getID());  
+}
 
   bool Server::createClient(int clientID){
     ClientInformation *temp = ClientInformation::findClient(clientID);
@@ -328,6 +339,13 @@ namespace network
     if(!client)
       return false;
     gamestates_->removeClient(client);
+
+// inform all the listeners
+    orxonox::ObjectList<ClientConnectionListener>::iterator listener = orxonox::ObjectList<ClientConnectionListener>::begin();
+    while(listener){
+      listener->clientDisconnected(client->getID());
+    }
+
     return ClientInformation::removeClient(event->peer);
   }
 

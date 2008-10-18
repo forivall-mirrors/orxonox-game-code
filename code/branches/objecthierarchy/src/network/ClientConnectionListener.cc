@@ -1,5 +1,6 @@
 #include "ClientConnectionListener.h"
 #include "core/CoreIncludes.h"
+#include "Settings.h"
 
 namespace network{
 
@@ -9,7 +10,8 @@ namespace network{
   }
 
   void ClientConnectionListener::getConnectedClients(){
-    this->clientConnected(0); //server client id
+    if(orxonox::Settings::showsGraphics())
+      this->clientConnected(0); //server client id
     ClientInformation *client = ClientInformation::getBegin();
     while(client){
       this->clientConnected(client->getID());

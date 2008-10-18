@@ -9,6 +9,7 @@ namespace network{
 
   class _NetworkExport ClientConnectionListener : public orxonox::OrxonoxClass
   {
+  public:
     ClientConnectionListener();
 
     void getConnectedClients();
