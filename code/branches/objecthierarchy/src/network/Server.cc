@@ -281,7 +281,7 @@ namespace network
 
   bool Server::addClient(ENetEvent *event){
     unsigned int newid=0;
-    
+
     ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
     if(!temp){
       COUT(2) << "Server: could not add client" << std::endl;
@@ -294,16 +294,16 @@ namespace network
       newid=temp->prev()->getID()+1;
     temp->setID(newid);
     temp->setPeer(event->peer);
-    
+
     // inform all the listeners
     orxonox::ObjectList<ClientConnectionListener>::iterator listener = orxonox::ObjectList<ClientConnectionListener>::begin();
     while(listener){
       listener->clientConnected(newid);
       listener++;
     }
-    
+
     COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
-    return createClient(temp->getID());  
+    return createClient(temp->getID());
 }
 
   bool Server::createClient(int clientID){
@@ -345,6 +345,7 @@ namespace network
     orxonox::ObjectList<ClientConnectionListener>::iterator listener = orxonox::ObjectList<ClientConnectionListener>::begin();
     while(listener){
       listener->clientDisconnected(client->getID());
+      listener++;
     }
 
     return ClientInformation::removeClient(event->peer);
