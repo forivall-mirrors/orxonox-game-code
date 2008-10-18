@@ -299,6 +299,7 @@ namespace network
     orxonox::ObjectList<ClientConnectionListener>::iterator listener = orxonox::ObjectList<ClientConnectionListener>::begin();
     while(listener){
       listener->clientConnected(newid);
+      listener++;
     }
     
     COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
