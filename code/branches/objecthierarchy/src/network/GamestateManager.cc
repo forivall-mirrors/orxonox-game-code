@@ -90,10 +90,10 @@ namespace network
   
   bool GamestateManager::getSnapshot(){
     reference = new packet::Gamestate();
-    reference->collectData(++id_);
-    //COUT(4) << "inserting gamestate: " << reference << std::endl;
-    //gamestateMap_.insert(std::pair<int, packet::Gamestate*>(id_, reference));
-//     gamestateUsed[id_]=0;
+    if(!reference->collectData(++id_)){ //we have no data to send
+      delete reference;
+      reference=0;
+    }
     return true;
   }
   
@@ -130,6 +130,8 @@ namespace network
     //Server::sendGameState?
     packet::Gamestate *gs;
     int gID = ClientInformation::findClient(clientID)->getGamestateID();
+    if(!reference)
+      return 0;
     gs = reference->doSelection(clientID);
 //     gs = new packet::Gamestate(*reference);
 //     gs = new packet::Gamestate(*reference);

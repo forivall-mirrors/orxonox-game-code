@@ -238,6 +238,7 @@ namespace network
       packet::Gamestate *gs = gamestates_->popGameState(cid);
       if(gs==NULL){
         COUT(2) << "Server: could not generate gamestate (NULL from compress)" << std::endl;
+        temp = temp->next();
         continue;
       }
       //std::cout << "adding gamestate" << std::endl;
@@ -323,7 +324,8 @@ namespace network
     packet::Gamestate *g = new packet::Gamestate();
     g->setClientID(temp->getID());
     b = g->collectData(0);
-    assert(b);
+    if(!b)
+      return false; //no data for the client
     b = g->compressData();
     assert(b);
     b = g->send();

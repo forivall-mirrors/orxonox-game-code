@@ -101,7 +101,10 @@ namespace network
 
   packet::Gamestate *GamestateClient::getGamestate(){
     packet::Gamestate *gs = new packet::Gamestate();
-    gs->collectData(0);
+    if(!gs->collectData(0)){
+      delete gs;
+      return 0;
+    }
     return gs;
   }
 
