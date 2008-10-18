@@ -53,6 +53,7 @@ namespace orxonox
         friend class GSServer;
         friend class GSClient;
         friend class GSDedicated;
+        friend class GSStandalone;
 
     public:
         static const std::string& getDataPath()
@@ -64,12 +65,16 @@ namespace orxonox
         static bool showsGraphics() { assert(singletonRef_s); return singletonRef_s->bShowsGraphics_; }
         static bool hasServer()     { assert(singletonRef_s); return singletonRef_s->bHasServer_; }
         static bool isClient()      { assert(singletonRef_s); return singletonRef_s->bIsClient_; }
+        static bool isStandalone()  { assert(singletonRef_s); return singletonRef_s->bIsStandalone_; }
+        static bool isMaster()      { assert(singletonRef_s); return singletonRef_s->bIsMaster_; }
 
     private:
         // GSRoot has access to these
-        static void setShowsGraphics(bool val) { assert(singletonRef_s); singletonRef_s->bShowsGraphics_ = val; }
-        static void setHasServer    (bool val) { assert(singletonRef_s); singletonRef_s->bHasServer_     = val; }
-        static void setIsClient     (bool val) { assert(singletonRef_s); singletonRef_s->bIsClient_      = val; }
+        static void setShowsGraphics(bool val) { assert(singletonRef_s); singletonRef_s->bShowsGraphics_ = val; singletonRef_s->updateIsMaster(); }
+        static void setHasServer    (bool val) { assert(singletonRef_s); singletonRef_s->bHasServer_     = val; singletonRef_s->updateIsMaster(); }
+        static void setIsClient     (bool val) { assert(singletonRef_s); singletonRef_s->bIsClient_      = val; singletonRef_s->updateIsMaster(); }
+        static void setIsStandalone (bool val) { assert(singletonRef_s); singletonRef_s->bIsStandalone_  = val; singletonRef_s->updateIsMaster(); }
+        static void updateIsMaster  ()         { assert(singletonRef_s); singletonRef_s->bIsMaster_ = (singletonRef_s->bHasServer_ || singletonRef_s->bIsStandalone_); }
 
         Settings();
         Settings(const Settings& instance);
@@ -84,6 +89,8 @@ namespace orxonox
         bool bShowsGraphics_;                                  //!< global variable that tells whether to show graphics
         bool bHasServer_;                                      //!< global variable that tells whether this is a server
         bool bIsClient_;
+        bool bIsStandalone_;
+        bool bIsMaster_;
 
         std::string dataPath_;                                 //!< Path to the game data
 

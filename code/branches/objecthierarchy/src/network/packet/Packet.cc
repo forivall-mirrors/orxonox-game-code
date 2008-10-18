@@ -48,12 +48,12 @@
 namespace network{
 
 namespace packet{
-  
+
 #define PACKET_FLAG_DEFAULT ENET_PACKET_FLAG_NO_ALLOCATE
 #define _PACKETID           0
-  
+
 std::map<ENetPacket *, Packet *> Packet::packetMap_;
-  
+
 Packet::Packet(){
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = ENUM::Outgoing;
@@ -111,7 +111,7 @@ bool Packet::send(){
 //     enetPacket_->freeCallback = &blub;
     packetMap_[enetPacket_] = this;
   }
-#ifndef NDEBUG 
+#ifndef NDEBUG
   switch( *(ENUM::Type *)(data_ + _PACKETID) )
   {
     case ENUM::Acknowledgement:

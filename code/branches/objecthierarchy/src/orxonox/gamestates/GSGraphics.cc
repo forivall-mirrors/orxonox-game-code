@@ -100,7 +100,7 @@ namespace orxonox
 
     void GSGraphics::enter()
     {
-        Settings::_getInstance().bShowsGraphics_ = true;
+        Settings::_getInstance().setShowsGraphics(true);
 
         // initialise graphics engine. Doesn't load the render window yet!
         graphicsEngine_ = new GraphicsEngine();
@@ -195,7 +195,7 @@ namespace orxonox
 
         delete graphicsEngine_;
 
-        Settings::_getInstance().bShowsGraphics_ = false;
+        Settings::_getInstance().setShowsGraphics(false);
     }
 
     /**
@@ -220,7 +220,7 @@ namespace orxonox
         // tick console
         this->console_->tick(dt);
         this->tickChild(time);
-        
+
         unsigned long long timeAfterTick = time.getRealMicroseconds();
 
         tickTime_ += (unsigned int)(timeAfterTick - timeBeforeTick);

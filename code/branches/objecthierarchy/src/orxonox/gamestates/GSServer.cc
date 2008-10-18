@@ -51,7 +51,7 @@ namespace orxonox
 
     void GSServer::enter()
     {
-        Settings::_getInstance().bHasServer_ = true;
+        Settings::_getInstance().setHasServer(true);
 
         GSLevel::enter();
 
@@ -84,8 +84,8 @@ namespace orxonox
         delete this->server_;
 
         GSLevel::leave();
-	
-        Settings::_getInstance().bHasServer_ = false;
+
+        Settings::_getInstance().setHasServer(false);
     }
 
     void GSServer::ticked(const Clock& time)

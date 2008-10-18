@@ -97,7 +97,14 @@
     @param ClassName The name of the class
 */
 #define CreateFactory(ClassName) \
-    bool bCreated##ClassName##Factory = orxonox::ClassFactory<ClassName>::create(#ClassName)
+    bool bCreated##ClassName##Factory = orxonox::ClassFactory<ClassName>::create(#ClassName, true)
+
+/**
+    @brief Creates the entry in the Factory for classes which should not be loaded through XML.
+    @param ClassName The name of the class
+*/
+#define CreateUnloadableFactory(ClassName) \
+    bool bCreated##ClassName##Factory = orxonox::ClassFactory<ClassName>::create(#ClassName, false)
 
 /**
     @brief Returns the Identifier of the given class.
@@ -110,7 +117,7 @@
     @brief Returns the Identifier with a given name through the factory.
     @param String The name of the class
 */
-#define ClassByName(String) \
+#define ClassByString(String) \
     orxonox::Factory::getIdentifier(String)
 
 /**

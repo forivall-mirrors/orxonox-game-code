@@ -106,6 +106,11 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier) const;
             bool isDirectParentOf(const Identifier* identifier) const;
 
+            /** @brief Returns true if the class can be loaded through XML. */
+            inline bool isLoadable() const { return this->bLoadable_; }
+            /** @brief Set the class to be loadable through XML or not. */
+            inline void setLoadable(bool bLoadable) { this->bLoadable_ = bLoadable; }
+
             /** @brief Returns the list of all existing objects of this class. @return The list */
             inline ObjectListBase* getObjects() const
                 { return this->objects_; }
@@ -284,6 +289,7 @@ namespace orxonox
 
             bool bCreatedOneObject_;                                       //!< True if at least one object of the given type was created (used to determine the need of storing the parents)
             bool bSetName_;                                                //!< True if the name is set
+            bool bLoadable_;                                               //!< False = it's not permitted to load the object through XML
             std::string name_;                                             //!< The name of the class the Identifier belongs to
             BaseFactory* factory_;                                         //!< The Factory, able to create new objects of the given class (if available)
             static int hierarchyCreatingCounter_s;                         //!< Bigger than zero if at least one Identifier stores its parents (its an int instead of a bool to avoid conflicts with multithreading)

@@ -50,7 +50,7 @@ namespace orxonox
 
     void GSClient::enter()
     {
-        Settings::_getInstance().bIsClient_ = true;
+        Settings::_getInstance().setIsClient(true);
 
         GSLevel::enter();
 
@@ -80,7 +80,7 @@ namespace orxonox
 
         GSLevel::leave();
 
-        Settings::_getInstance().bIsClient_ = false;
+        Settings::_getInstance().setIsClient(false);
     }
 
     void GSClient::ticked(const Clock& time)

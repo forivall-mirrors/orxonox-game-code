@@ -58,6 +58,7 @@ namespace orxonox
         this->bCreatedOneObject_ = false;
         this->bSetName_ = false;
         this->factory_ = 0;
+        this->bLoadable_ = true;
 
         this->bHasConfigValues_ = false;
         this->bHasConsoleCommands_ = false;

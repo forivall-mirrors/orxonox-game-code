@@ -80,9 +80,20 @@ namespace orxonox
     class RadarListener;
 
     // objects
+    class WorldEntity;
+    class PositionableEntity;
+    class MovableEntity;
+    class ControllableEntity;
+
     class Backlight;
     class Camera;
     class ParticleSpawner;
+
+    class Info;
+    class LevelInfo;
+    class PlayerInfo;
+
+    class Gametype;
 
     // tools
     class BillboardSet;

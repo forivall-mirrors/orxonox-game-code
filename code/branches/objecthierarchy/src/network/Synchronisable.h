@@ -40,10 +40,10 @@
 #include "NetworkCallback.h"
 #include "util/Integers.h"
 
-#define REGISTERDATA(varname) registerVar(&varname, sizeof(varname), network::DATA)
-#define REGISTERDATA_WITHDIR(varname, mode) registerVar(&varname, sizeof(varname), network::DATA, mode)
-#define REGISTERSTRING(stringname) registerVar(&stringname, stringname.length()+1, network::STRING)
-#define REGISTERSTRING_WITHDIR(stringname, mode) registerVar(&stringname, stringname.length()+1, network::STRING, mode)
+#define REGISTERDATA(varname, ...) \
+    registerVar((void*)&varname, sizeof(varname), network::DATA, __VA_ARGS__)
+#define REGISTERSTRING(stringname, ...) \
+    registerVar(&stringname, stringname.length()+1, network::STRING, __VA_ARGS__)
 
 namespace network
 {
@@ -111,7 +111,6 @@ namespace network
     void registerVar(void *var, int size, variableType t, int mode=1, NetworkCallbackBase *cb=0);
     void setObjectMode(int mode);
     void setObjectFrequency(unsigned int freq){ objectFrequency_ = freq; }
-    virtual void registerAllVariables()=0;
 
 
   private:

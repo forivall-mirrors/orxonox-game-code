@@ -50,7 +50,7 @@
 
 namespace network
 {
-  
+
 
   std::map<unsigned int, Synchronisable *> Synchronisable::objectMap_;
   std::queue<unsigned int> Synchronisable::deletedObjects_;
@@ -67,11 +67,12 @@ namespace network
     objectFrequency_=1;
     objectMode_=0x1; // by default do not send data to server
     objectID=idCounter++;
+    classID = (unsigned int)-1;
     syncList = new std::list<synchronisableVariable *>;
   }
 
   /**
-   * Destructor: 
+   * Destructor:
    * Delete all callback objects and remove objectID from the objectMap_
    */
   Synchronisable::~Synchronisable(){
@@ -95,7 +96,7 @@ namespace network
   bool Synchronisable::create(){
     this->classID = this->getIdentifier()->getNetworkID();
 //     COUT(4) << "creating synchronisable: setting classid from " << this->getIdentifier()->getName() << " to: " << classID << std::endl;
-    
+
 //     COUT(3) << "construct synchronisable +++" << objectID << " | " << classID << std::endl;
 //     objectMap_[objectID]=this;
 //     assert(objectMap_[objectID]==this);
@@ -144,7 +145,7 @@ namespace network
     return no;
   }
 
-  
+
   /**
    * Finds and deletes the Synchronisable with the appropriate objectID
    * @param objectID objectID of the Synchronisable
@@ -163,7 +164,7 @@ namespace network
       return false;
     return true;
   }
-  
+
   /**
    * This function looks up the objectID in the objectMap_ and returns a pointer to the right Synchronisable
    * @param objectID objectID of the Synchronisable
@@ -184,7 +185,7 @@ namespace network
 //     return (*i).second;
   }
 
-  
+
   /**
   * This function is used to register a variable to be synchronized
   * also counts the total datasize needed to save the variables
@@ -239,6 +240,10 @@ namespace network
       mode=state_;
     if(classID==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
+
+    if (this->classID == (unsigned int)-1)
+        this->classID = this->getIdentifier()->getNetworkID();
+
     assert(this->classID==this->getIdentifier()->getNetworkID());
 //     this->classID=this->getIdentifier()->getNetworkID(); // TODO: correct this
     std::list<synchronisableVariable *>::iterator i;
@@ -313,7 +318,7 @@ namespace network
     // stop extract header
     assert(this->objectID==syncHeader->objectID);
 //    assert(this->classID==syncHeader->classID); //TODO: fix this!!! maybe a problem with the identifier ?
-    
+
     COUT(5) << "Synchronisable: objectID " << syncHeader->objectID << ", classID " << syncHeader->classID << " size: " << syncHeader->size << " synchronising data" << std::endl;
     for(i=syncList->begin(); i!=syncList->end() && mem <= data+syncHeader->size; i++){
       if( ((*i)->mode ^ mode) == 0 ){

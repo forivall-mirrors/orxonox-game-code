@@ -41,6 +41,8 @@ SET( ORXONOX_SRC_FILES
   tools/Timer.cc
   tools/WindowEventListener.cc
 
+  objects/worldentities/WorldEntity.cc
+  objects/worldentities/PositionableEntity.cc
 #  objects/Backlight.cc
   objects/Camera.cc
   objects/CameraHandler.cc
@@ -49,6 +51,12 @@ SET( ORXONOX_SRC_FILES
   objects/RadarListener.cc
   objects/RadarViewable.cc
   objects/Tickable.cc
+
+  objects/infos/Info.cc
+  objects/infos/LevelInfo.cc
+  objects/infos/PlayerInfo.cc
+
+  objects/gametypes/Gametype.cc
 
   tolua/tolua_bind.cc
 )

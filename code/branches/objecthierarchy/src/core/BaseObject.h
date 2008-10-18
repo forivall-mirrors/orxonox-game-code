@@ -92,11 +92,13 @@ namespace orxonox
             /** @brief Returns the indentation of the debug output in the Loader. @return The indentation */
             inline const std::string& getLoaderIndentation() const { return this->loaderIndentation_; }
 
-        private:
+        protected:
             std::string name_;                          //!< The name of the object
-            bool bInitialized_;                         //!< True if the object was initialized (passed the object registration)
             bool bActive_;                              //!< True = the object is active
             bool bVisible_;                             //!< True = the object is visible
+
+        private:
+            bool bInitialized_;                         //!< True if the object was initialized (passed the object registration)
             const Level* level_;                        //!< The level that loaded this object
             std::string loaderIndentation_;             //!< Indentation of the debug output in the Loader
             Namespace* namespace_;
