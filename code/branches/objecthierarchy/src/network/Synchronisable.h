@@ -116,7 +116,7 @@ namespace network
   private:
     bool getData(uint8_t*& men, unsigned int id, int mode=0x0);
     uint32_t getSize(unsigned int id, int mode=0x0);
-    bool updateData(uint8_t*& mem, int mode=0x0);
+    bool updateData(uint8_t*& mem, int mode=0x0, bool forceCallback=false);
     bool isMyData(uint8_t* mem);
     bool doSelection(unsigned int id);
     bool isMyTick(unsigned int id);

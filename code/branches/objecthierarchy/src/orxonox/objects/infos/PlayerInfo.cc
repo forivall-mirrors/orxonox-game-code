@@ -72,6 +72,13 @@ namespace orxonox
         SetConfigValue(playerName_, "Player").callback(this, &PlayerInfo::checkName);
     }
 
+    void PlayerInfo::checkName()
+    {
+std::cout << "# PlayerInfo: checkName: " << this->bLocalPlayer_ << std::endl;
+        if (this->bLocalPlayer_)
+            this->setName(this->playerName_);
+    }
+
     void PlayerInfo::registerVariables()
     {
         this->setObjectMode(network::direction::bidirectional);
@@ -83,23 +90,21 @@ namespace orxonox
         REGISTERDATA(bFinishedSetup_,       network::direction::bidirectional, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::finishedSetup));
     }
 
-    void PlayerInfo::checkName()
-    {
-        if (this->bLocalPlayer_)
-            this->setName(this->playerName_);
-    }
-
     void PlayerInfo::checkClientID()
     {
+std::cout << "# PlayerInfo: checkClientID" << std::endl;
         this->bHumanPlayer_ = true;
 
         if (this->clientID_ == network::Host::getPlayerID())
         {
+std::cout << "#             it's the client's ID" << std::endl;
             this->bLocalPlayer_ = true;
             this->setName(this->playerName_);
+std::cout << "#             " << this->getName() << std::endl;
 
             if (!Settings::isClient())
             {
+std::cout << "#             not client: finish setup" << std::endl;
                 this->bFinishedSetup_ = true;
                 this->finishedSetup();
             }
@@ -108,13 +113,22 @@ namespace orxonox
 
     void PlayerInfo::finishedSetup()
     {
+std::cout << "# PlayerInfo: finishedSetup: " << this->bFinishedSetup_ << std::endl;
         if (Settings::isClient())
+        {
+std::cout << "#             client: set to true" << std::endl;
             this->bFinishedSetup_ = true;
+        }
         else if (this->bFinishedSetup_)
         {
+std::cout << "#             not client but finished: add player" << std::endl;
             Gametype* gametype = Gametype::getCurrentGametype();
             if (gametype)
                 gametype->addPlayer(this);
+        }
+        else
+        {
+std::cout << "#             not client and not finished" << std::endl;
         }
     }
 }

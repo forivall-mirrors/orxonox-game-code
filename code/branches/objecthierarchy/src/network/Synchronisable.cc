@@ -138,7 +138,7 @@ namespace network
     no->classID=header->classID;
     COUT(3) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
-    bool b = no->updateData(mem, mode);
+    bool b = no->updateData(mem, mode, true);
     assert(b);
     b = no->create();
     assert(b);
@@ -296,7 +296,7 @@ namespace network
    * @param mode same as in getData
    * @return true/false
    */
-  bool Synchronisable::updateData(uint8_t*& mem, int mode){
+  bool Synchronisable::updateData(uint8_t*& mem, int mode, bool forceCallback){
     if(mode==0x0)
       mode=state_;
     std::list<synchronisableVariable *>::iterator i;
@@ -348,7 +348,7 @@ namespace network
           break;
       }
       // call the callback function, if defined
-      if(callback && (*i)->callback)
+      if((callback || forceCallback) && (*i)->callback)
         (*i)->callback->call();
     }
     return true;
