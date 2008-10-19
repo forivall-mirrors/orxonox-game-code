@@ -53,7 +53,7 @@ namespace orxonox
     bTriggered_ = false;
     bUpdating_ = false;
     remainingActivations_ = -1;
-    bStayTriggered_ = false;
+    bStayOn_ = false;
     latestState_ = 0x0;
 
     debugBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
@@ -78,31 +78,45 @@ namespace orxonox
       this->setScale(0,0,0);
   }
 
+  const Trigger* Trigger::getTrigger(unsigned int index) const
+  {
+    if (children_.size() <= index)
+      return NULL;
+
+    std::set<Trigger*>::iterator it;
+    it = children_.begin();
+
+    for ( unsigned int i = 0; i != index; i++ )
+    {
+      it++;
+    }
+    return *it;
+  }
+
   void Trigger::tick(float dt)
   {
 
     bool newTriggered;
-    if (latestState_ % 2 == 1 && this->bStayTriggered_)
-      newTriggered = true;
-    else
-      newTriggered = this->isTriggered();
+    newTriggered = this->isTriggered();
 
-
-      // check if new triggering event is really new
-      if(this->latestState_ % 2 != newTriggered)
+    // check if new triggering event is really new
+    if((this->latestState_ & 0x1) != newTriggered)
+    {
+      // create new state
+      if(newTriggered)
       {
-        // create new state
-        if(newTriggered)
-        {
-          latestState_ |= 1; // set trigger bit
-          this->switchState();
-        }
-        else
-        {
-          latestState_ &= 0xFE; // set trigger bit
-          this->storeState();
-        }
+        latestState_ |= 1; // set trigger bit
+        this->switchState();
       }
+      else
+      {
+        latestState_ &= 0xFE; // set trigger bit
+        if (this->bStayOn_)
+          this->storeState();
+        else
+          this->switchState();
+      }
+    }
 
     if(remainingTime_ > 0.0)
     {
@@ -116,7 +130,7 @@ namespace orxonox
     {
       // time ran out, change state to new one
       char newState = stateChanges_.front().second;
-      bTriggered_ = newState % 2;
+      bTriggered_ = (newState & 0x1);
       bActive_ = newState & 2;
       this->stateChanges_.pop();
       if(stateChanges_.size() != 0)
@@ -191,13 +205,26 @@ namespace orxonox
     this->delay_ = delay;
   }
 
+  void Trigger::setMode(std::string modeName)
+  {
+    if (modeName == "and")
+      setMode(TM_EventTriggerAND);
+    else if (modeName == "or")
+      setMode(TM_EventTriggerOR);
+    else if (modeName == "xor")
+      setMode(TM_EventTriggerXOR);
+  }
+
   void Trigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
   {
     WorldEntity::XMLPort(xmlelement, mode);
 
     XMLPortParamLoadOnly(Trigger, "delay", setDelay, xmlelement, mode);
-    XMLPortParamLoadOnly(Trigger, "stayTriggered", setStayTriggered, xmlelement, mode);
+    XMLPortParamLoadOnly(Trigger, "stayOn", setStayOn, xmlelement, mode);
     XMLPortParamLoadOnly(Trigger, "activations", setActivations, xmlelement, mode);
+    //XMLPortParamLoadOnlyTemplate(Trigger, "mode", setMode, xmlelement, mode, std::string);
+
+    XMLPortObject(Trigger, Trigger, "", addTrigger, getTrigger, xmlelement, mode, false, true);
 
     this->init();
   }
@@ -210,7 +237,7 @@ namespace orxonox
 
   bool Trigger::switchState()
   {
-    if ( remainingActivations_ == -1 || this->latestState_ & 2 || remainingActivations_ > 0)
+    if ( remainingActivations_ <= -1 || this->latestState_ & 2 || remainingActivations_ > 0)
     {
       this->latestState_ ^= 2; // toggle state bit
       // increase activation count

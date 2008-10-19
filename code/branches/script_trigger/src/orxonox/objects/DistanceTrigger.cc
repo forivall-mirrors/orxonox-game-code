@@ -93,7 +93,9 @@ namespace orxonox {
       {
         Vector3 distanceVec = it->getNode()->getWorldPosition() - this->getNode()->getWorldPosition();
         if (distanceVec.length() < this->distance_)
+        {
           return true;
+        }
       }
     }
     return false;
