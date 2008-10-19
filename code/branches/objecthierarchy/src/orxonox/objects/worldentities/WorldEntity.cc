@@ -26,6 +26,7 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
 #include "WorldEntity.h"
 
 #include <OgreSceneManager.h>

@@ -26,6 +26,7 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
 #include "LevelInfo.h"
 
 #include <OgreSceneManager.h>

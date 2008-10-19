@@ -26,6 +26,7 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
 #include "Gametype.h"
 
 #include "core/CoreIncludes.h"

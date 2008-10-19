@@ -551,7 +551,8 @@ namespace orxonox
                         COUT(1) << "Aborting..." << std::endl;
                     }
 
-                    abort();
+                    assert(false);
+                    return 0;
                 }
             }
 

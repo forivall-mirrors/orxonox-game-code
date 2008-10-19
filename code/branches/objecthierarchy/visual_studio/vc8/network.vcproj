@@ -156,6 +156,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\network\ClientConnectionListener.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\network\ClientInformation.cc"
 				>
 			</File>
@@ -235,6 +239,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\network\ClientConnection.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\network\ClientConnectionListener.h"
 				>
 			</File>
 			<File

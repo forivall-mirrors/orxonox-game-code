@@ -12,7 +12,7 @@ namespace network{
   };
 
   template <class T>
-  class _NetworkExport NetworkCallback: public NetworkCallbackBase
+  class NetworkCallback: public NetworkCallbackBase
   {
     public:
       NetworkCallback(T* object, void (T::*function) (void)) : object_(object), function_(function) {}

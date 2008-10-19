@@ -214,6 +214,42 @@
 					RelativePath="..\..\src\orxonox\objects\Tickable.cc"
 					>
 				</File>
+				<Filter
+					Name="worldentities"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\WorldEntity.cc"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="gametypes"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\gametypes\Gametype.cc"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="infos"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\Info.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\LevelInfo.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\PlayerInfo.cc"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="tools"
@@ -514,6 +550,42 @@
 					RelativePath="..\..\src\orxonox\objects\Tickable.h"
 					>
 				</File>
+				<Filter
+					Name="worldentities"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\WorldEntity.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="gametypes"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\gametypes\Gametype.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="infos"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\Info.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\LevelInfo.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\PlayerInfo.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="tools"
