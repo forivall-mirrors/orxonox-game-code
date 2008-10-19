@@ -32,8 +32,8 @@
 #include "core/ConsoleCommand.h"
 #include "core/input/InputManager.h"
 #include "core/CommandLine.h"
+#include "core/Core.h"
 #include "network/Server.h"
-#include "Settings.h"
 
 namespace orxonox
 {
@@ -51,7 +51,7 @@ namespace orxonox
 
     void GSServer::enter()
     {
-        Settings::_getInstance().setHasServer(true);
+        Core::setHasServer(true);
 
         GSLevel::enter();
 
@@ -85,7 +85,7 @@ namespace orxonox
 
         GSLevel::leave();
 
-        Settings::_getInstance().setHasServer(false);
+        Core::setHasServer(false);
     }
 
     void GSServer::ticked(const Clock& time)

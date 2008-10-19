@@ -36,11 +36,15 @@
 #include "Language.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
-//#include "input/InputManager.h"
-//#include "TclThreadManager.h"
 
 namespace orxonox
 {
+    bool Core::bShowsGraphics_s = false;
+    bool Core::bHasServer_s     = false;
+    bool Core::bIsClient_s      = false;
+    bool Core::bIsStandalone_s  = false;
+    bool Core::bIsMaster_s      = false;
+
     /**
         @brief Constructor: Registers the object and sets the config-values.
         @param A reference to a global variable, used to avoid an infinite recursion in getSoftDebugLevel()
@@ -204,15 +208,4 @@ namespace orxonox
     {
         ResetConfigValue(language_);
     }
-
-    ///**
-    //    @brief Ticks every core class in a specified sequence. Has to be called
-    //           every Orxonox tick!
-    //    @param dt Delta Time
-    //*/
-    //void Core::tick(float dt)
-    //{
-    //    TclThreadManager::getInstance().tick(dt);
-    //    InputManager::getInstance().tick(dt);
-    //}
 }

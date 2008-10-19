@@ -34,10 +34,11 @@
 #include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
 #include "core/Loader.h"
+#include "core/Core.h"
 #include "network/Server.h"
 #include "objects/Tickable.h"
-#include "GraphicsEngine.h"
 #include "Settings.h"
+#include "GraphicsEngine.h"
 
 namespace orxonox
 {
@@ -56,7 +57,7 @@ namespace orxonox
 
     void GSDedicated::enter()
     {
-        Settings::_getInstance().setHasServer(true);
+        Core::setHasServer(true);
 
         // create Ogre SceneManager for the level
         this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "LevelSceneManager");
@@ -96,7 +97,7 @@ namespace orxonox
 
         Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
 
-        Settings::_getInstance().setHasServer(false);
+        Core::setHasServer(false);
     }
 
     void GSDedicated::ticked(const Clock& time)

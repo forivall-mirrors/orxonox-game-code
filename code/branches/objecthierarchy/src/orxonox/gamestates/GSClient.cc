@@ -31,8 +31,8 @@
 
 #include "core/input/InputManager.h"
 #include "core/CommandLine.h"
+#include "core/Core.h"
 #include "network/Client.h"
-#include "Settings.h"
 
 namespace orxonox
 {
@@ -50,7 +50,7 @@ namespace orxonox
 
     void GSClient::enter()
     {
-        Settings::_getInstance().setIsClient(true);
+        Core::setIsClient(true);
 
         GSLevel::enter();
 
@@ -80,7 +80,7 @@ namespace orxonox
 
         GSLevel::leave();
 
-        Settings::_getInstance().setIsClient(false);
+        Core::setIsClient(false);
     }
 
     void GSClient::ticked(const Clock& time)

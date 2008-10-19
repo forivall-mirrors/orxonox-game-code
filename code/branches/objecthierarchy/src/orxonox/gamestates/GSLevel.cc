@@ -43,8 +43,8 @@
 #include "objects/Tickable.h"
 #include "objects/Radar.h"
 //#include "tools/ParticleInterface.h"
-#include "Settings.h"
 #include "GraphicsEngine.h"
+#include "Settings.h"
 
 namespace orxonox
 {

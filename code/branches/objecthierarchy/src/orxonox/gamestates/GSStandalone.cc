@@ -31,7 +31,7 @@
 
 #include "core/input/InputManager.h"
 #include "core/ConsoleCommand.h"
-#include "Settings.h"
+#include "core/Core.h"
 
 namespace orxonox
 {
@@ -58,7 +58,7 @@ namespace orxonox
         // level is loaded: we can start capturing the input
         InputManager::getInstance().requestEnterState("game");
 
-        Settings::_getInstance().setIsStandalone(true);
+        Core::setIsStandalone(true);
     }
 
     void GSStandalone::leave()
@@ -71,7 +71,7 @@ namespace orxonox
 
         GSLevel::leave();
 
-        Settings::_getInstance().setIsStandalone(false);
+        Core::setIsStandalone(false);
     }
 
     void GSStandalone::ticked(const Clock& time)

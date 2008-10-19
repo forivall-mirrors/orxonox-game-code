@@ -48,11 +48,6 @@ namespace orxonox
         Constructor: Registers the object and sets the config-values.
     */
     Settings::Settings()
-        : bShowsGraphics_(false)
-        , bHasServer_(false)
-        , bIsClient_(false)
-        , bIsStandalone_(false)
-        , bIsMaster_(false)
     {
         RegisterRootObject(Settings);
         assert(singletonRef_s == 0);

@@ -34,10 +34,10 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/XMLPort.h"
+#include "core/Core.h"
 
 #include "network/Host.h"
 
-#include "Settings.h"
 #include "GraphicsEngine.h"
 #include "objects/gametypes/Gametype.h"
 
@@ -50,7 +50,7 @@ namespace orxonox
         RegisterObject(PlayerInfo);
 
         this->ping_ = -1;
-        this->bLocalPlayer_ = Settings::isStandalone();
+        this->bLocalPlayer_ = Core::isStandalone();
         this->bLocalPlayer_ = false;
         this->bHumanPlayer_ = false;
         this->bFinishedSetup_ = false;
@@ -77,7 +77,7 @@ namespace orxonox
     void PlayerInfo::checkName()
     {
 std::cout << "# PI(" << this->getObjectID() << "): checkName: " << this->bLocalPlayer_ << std::endl;
-        if (this->bLocalPlayer_ && Settings::isMaster())
+        if (this->bLocalPlayer_ && Core::isMaster())
             this->setName(this->playerName_);
     }
 
@@ -113,7 +113,7 @@ std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): it's the cli
             this->bLocalPlayer_ = true;
 //std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): name: " << this->getName() << std::endl;
 
-            if (Settings::isClient())
+            if (Core::isClient())
             {
 std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): we're on a client: set object mode to bidirectional" << std::endl;
                 this->setObjectMode(network::direction::bidirectional);
@@ -133,7 +133,7 @@ std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): we're not on
     void PlayerInfo::finishedSetup()
     {
 std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): " << this->bFinishedSetup_ << std::endl;
-        if (Settings::isClient())
+        if (Core::isClient())
         {
 std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): we're a client: finish setup" << std::endl;
             this->bFinishedSetup_ = true;

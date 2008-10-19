@@ -33,8 +33,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "core/Core.h"
 
-#include "Settings.h"
 #include "GraphicsEngine.h"
 
 namespace orxonox
@@ -71,7 +71,7 @@ namespace orxonox
 
     void LevelInfo::setSkybox(const std::string& skybox)
     {
-        if (Settings::showsGraphics())
+        if (Core::showsGraphics())
             if (GraphicsEngine::getInstance().getLevelSceneManager())
                 GraphicsEngine::getInstance().getLevelSceneManager()->setSkyBox(true, skybox);
 
@@ -80,7 +80,7 @@ namespace orxonox
 
     void LevelInfo::setAmbientLight(const ColourValue& colour)
     {
-        if (Settings::showsGraphics())
+        if (Core::showsGraphics())
             GraphicsEngine::getInstance().getLevelSceneManager()->setAmbientLight(colour);
 
         this->ambientLight_ = colour;

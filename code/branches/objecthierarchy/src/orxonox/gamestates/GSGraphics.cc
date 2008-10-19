@@ -46,6 +46,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
+#include "core/Core.h"
 #include "core/input/InputManager.h"
 #include "core/input/KeyBinder.h"
 #include "core/input/ExtendedInputState.h"
@@ -100,7 +101,7 @@ namespace orxonox
 
     void GSGraphics::enter()
     {
-        Settings::_getInstance().setShowsGraphics(true);
+        Core::setShowsGraphics(true);
 
         // initialise graphics engine. Doesn't load the render window yet!
         graphicsEngine_ = new GraphicsEngine();
@@ -195,7 +196,7 @@ namespace orxonox
 
         delete graphicsEngine_;
 
-        Settings::_getInstance().setShowsGraphics(false);
+        Core::setShowsGraphics(false);
     }
 
     /**
