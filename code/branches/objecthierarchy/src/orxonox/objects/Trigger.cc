@@ -225,8 +225,6 @@ namespace orxonox
     XMLPortParamLoadOnly(Trigger, "invert", setInvert, xmlelement, mode);
     //XMLPortParamLoadOnlyTemplate(Trigger, "mode", setMode, xmlelement, mode, std::string);
 
-    // what are those last two parameters?
-    //XMLPortObject(Trigger, Trigger, "", addTrigger, getTrigger, xmlelement, mode, false, true);
     XMLPortObject(Trigger, Trigger, "", addTrigger, getTrigger, xmlelement, mode);
 
     this->init();

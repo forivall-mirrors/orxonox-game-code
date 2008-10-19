@@ -129,7 +129,7 @@ namespace network
     //why are we searching the same client's gamestate id as we searched in
     //Server::sendGameState?
     packet::Gamestate *gs;
-    int gID = ClientInformation::findClient(clientID)->getGamestateID();
+    unsigned int gID = ClientInformation::findClient(clientID)->getGamestateID();
     if(!reference)
       return 0;
     gs = reference->doSelection(clientID);

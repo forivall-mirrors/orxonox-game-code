@@ -143,7 +143,9 @@ namespace orxonox
     */
     void GSLevel::setTimeFactor(float factor)
     {
+/*
         float change = factor / this->timeFactor_;
+*/
         this->timeFactor_ = factor;
 /*
         for (ObjectList<ParticleInterface>::iterator it = ObjectList<ParticleInterface>::begin(); it; ++it)
