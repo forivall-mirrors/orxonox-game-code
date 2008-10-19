@@ -116,7 +116,7 @@ namespace orxonox
 
     WorldEntity* WorldEntity::getAttachedObject(unsigned int index) const
     {
-        unsigned int i;
+        unsigned int i = 0;
         for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); ++it)
         {
             if (i == index)
