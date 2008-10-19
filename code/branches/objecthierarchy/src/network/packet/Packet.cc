@@ -134,7 +134,7 @@ bool Packet::send(){
 
 Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   uint8_t *data = packet->data;
-  assert(ClientInformation::findClient(&peer->address)->getID()!=-2 || !Host::isServer());
+  assert(ClientInformation::findClient(&peer->address)->getID() != (unsigned int)-2 || !Host::isServer());
   unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p;
   COUT(5) << "packet type: " << *(ENUM::Type *)&data[_PACKETID] << std::endl;

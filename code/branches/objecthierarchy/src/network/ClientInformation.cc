@@ -172,14 +172,14 @@ namespace network
     if(this)
       return gamestateID_;
     else
-      return -1;
+      return (unsigned int)-1;
   }
 
   unsigned int ClientInformation::getPartialGamestateID() {
     if(this)
       return partialGamestateID_;
     else
-      return -1;
+      return (unsigned int)-1;
   }
 
   ClientInformation *ClientInformation::insertBack(ClientInformation *ins) {

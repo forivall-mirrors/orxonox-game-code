@@ -45,12 +45,11 @@
 #include <enet/enet.h>
 #include <boost/thread/recursive_mutex.hpp>
 
-#define GAMESTATEID_INITIAL -1
-
 // WATCH OUT: THE CLIENTINFORMATION LIST IS NOT THREADSAFE ANYMORE
 
 namespace network
 {
+  static const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
   static const unsigned int CLIENTID_UNKNOWN = (unsigned int)-2;
 
   /**

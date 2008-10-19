@@ -39,8 +39,6 @@ namespace orxonox
         RegisterObject(PositionableEntity);
 
         this->registerVariables();
-
-        std::cout << "##### created pos-entity" << std::endl;
     }
 
     PositionableEntity::~PositionableEntity()

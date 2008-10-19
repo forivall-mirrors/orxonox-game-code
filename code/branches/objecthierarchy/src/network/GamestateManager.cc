@@ -63,7 +63,7 @@ namespace network
 //     cleanup();
     return getSnapshot();
   }
-  
+
   bool GamestateManager::add(packet::Gamestate *gs, int clientID){
     assert(gs);
     std::map<int, packet::Gamestate*>::iterator it = gamestateQueue.find(clientID);
@@ -74,7 +74,7 @@ namespace network
     gamestateQueue[clientID] = gs;
     return true;
   }
-  
+
   bool GamestateManager::processGamestates(){
     std::map<int, packet::Gamestate*>::iterator it;
     // now push only the most recent gamestates we received (ignore obsolete ones)
@@ -86,8 +86,8 @@ namespace network
     gamestateQueue.clear();
     return true;
   }
-  
-  
+
+
   bool GamestateManager::getSnapshot(){
     reference = new packet::Gamestate();
     if(!reference->collectData(++id_)){ //we have no data to send
@@ -96,12 +96,12 @@ namespace network
     }
     return true;
   }
-  
+
   /**
    * this function is used to keep the memory usage low
    * it tries to delete all the unused gamestates
-   * 
-   * 
+   *
+   *
    */
 /*  void GamestateManager::cleanup(){
     std::map<int,int>::iterator it = gamestateUsed.begin();
@@ -159,18 +159,18 @@ namespace network
     assert(b);
     return gs;
   }
-  
-  
+
+
   bool GamestateManager::ack(int gamestateID, int clientID) {
     ClientInformation *temp = ClientInformation::findClient(clientID);
     assert(temp);
     int curid = temp->getGamestateID();
-    
+
     if(gamestateID == 0){
       temp->setGamestateID(GAMESTATEID_INITIAL);
       return true;
     }
-    
+
     assert(curid<gamestateID);
     COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
     std::map<int, packet::Gamestate*>::iterator it, tempit;
@@ -193,7 +193,7 @@ namespace network
     // now delete the clients gamestatemap
     gamestateMap_.erase(clientMap);
   }
-  
+
   bool GamestateManager::processGamestate(packet::Gamestate *gs){
     if(gs->isCompressed())
     {
