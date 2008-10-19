@@ -88,11 +88,9 @@ namespace orxonox
 
     void LevelInfo::setGametype(const std::string& gametype)
     {
-        std::cout << "0: " << gametype << std::endl;
         Identifier* identifier = ClassByString(gametype);
         if (identifier)
         {
-            std::cout << "1: " << identifier->getName() << std::endl;
             this->gametype_ = gametype;
             this->gametypeIdentifier_ = identifier;
             this->gametypeInstance_ = this->gametypeIdentifier_.fabricate();

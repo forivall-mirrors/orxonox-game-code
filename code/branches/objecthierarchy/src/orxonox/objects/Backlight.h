@@ -32,7 +32,6 @@
 #include "OrxonoxPrereqs.h"
 
 #include "WorldEntity.h"
-#include "tools/Timer.h"
 #include "tools/BillboardSet.h"
 
 namespace orxonox

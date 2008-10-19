@@ -89,20 +89,15 @@ namespace orxonox
         this->messages_.push_back(InGameConsole::convert2UTF(text));
         COUT(0) << "Chat: " << text << std::endl;
 
-        Timer<ChatOverlay>* timer = new Timer<ChatOverlay>;
-        ExecutorMember<ChatOverlay>* executor = createExecutor(createFunctor(&ChatOverlay::dropMessage));
-        executor->setDefaultValues(timer);
-        timer->setTimer(this->displayTime_, false, this, executor);
+        new Timer<ChatOverlay>(this->displayTime_, false, this, createExecutor(createFunctor(&ChatOverlay::dropMessage)), true);
 
         this->updateOverlayText();
     }
 
-    void ChatOverlay::dropMessage(Timer<ChatOverlay>* timer)
+    void ChatOverlay::dropMessage()
     {
         this->messages_.pop_front();
         this->updateOverlayText();
-
-        delete timer;
     }
 
     void ChatOverlay::updateOverlayText()

@@ -44,6 +44,7 @@ SET( ORXONOX_SRC_FILES
 
   objects/worldentities/WorldEntity.cc
   objects/worldentities/PositionableEntity.cc
+  objects/worldentities/MovableEntity.cc
 #  objects/Backlight.cc
   objects/Camera.cc
   objects/CameraHandler.cc

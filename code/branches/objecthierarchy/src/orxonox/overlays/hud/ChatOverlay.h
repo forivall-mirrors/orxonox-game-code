@@ -53,7 +53,7 @@ namespace orxonox
 
         private:
             void updateOverlayText();
-            void dropMessage(Timer<ChatOverlay>* timer);
+            void dropMessage();
 
             float displayTime_;
     };

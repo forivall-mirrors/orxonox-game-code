@@ -42,6 +42,13 @@ namespace orxonox
 
             void registerVariables();
 
+            using WorldEntity::setPosition;
+            using WorldEntity::translate;
+            using WorldEntity::setOrientation;
+            using WorldEntity::rotate;
+            using WorldEntity::lookAt;
+            using WorldEntity::setDirection;
+
             inline void setPosition(const Vector3& position)
                 { this->node_->setPosition(position); }
             inline void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)

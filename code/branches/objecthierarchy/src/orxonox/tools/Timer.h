@@ -115,13 +115,14 @@ namespace orxonox
         protected:
             TimerBase();
 
-            Executor* executor_; //!< The executor of the function that should be called when the time expires
+            Executor* executor_;  //!< The executor of the function that should be called when the time expires
 
-            long long interval_; //!< The time-interval in micro seconds
-            bool bLoop_;         //!< If true, the function gets called every 'interval' seconds
-            bool bActive_;       //!< If true, the Timer ticks and calls the function if the time's up
+            long long interval_;  //!< The time-interval in micro seconds
+            bool bLoop_;          //!< If true, the function gets called every 'interval' seconds
+            bool bActive_;        //!< If true, the Timer ticks and calls the function if the time's up
+            bool bKillAfterCall_; //!< If true the timer gets deleted after it called the function
 
-            long long time_;     //!< Internal variable, counting the time till the next function-call
+            long long time_;      //!< Internal variable, counting the time till the next function-call
     };
 
     //! The Timer is a callback-object, calling a given function after a given time-interval.
@@ -138,9 +139,9 @@ namespace orxonox
                 @param object The object owning the timer and the function
                 @param exeuctor A executor of the function to call
             */
-            Timer(float interval, bool bLoop, T* object, ExecutorMember<T>* exeuctor)
+            Timer(float interval, bool bLoop, T* object, ExecutorMember<T>* exeuctor, bool bKillAfterCall = false)
             {
-                this->setTimer(interval, bLoop, object, exeuctor);
+                this->setTimer(interval, bLoop, object, exeuctor, bKillAfterCall);
             }
 
             /**
@@ -150,7 +151,7 @@ namespace orxonox
                 @param object The object owning the timer and the function
                 @param exeuctor A executor of the function to call
             */
-            void setTimer(float interval, bool bLoop, T* object, ExecutorMember<T>* executor)
+            void setTimer(float interval, bool bLoop, T* object, ExecutorMember<T>* executor, bool bKillAfterCall = false)
             {
                 this->deleteExecutor();
 
@@ -161,6 +162,7 @@ namespace orxonox
                 this->bActive_ = true;
 
                 this->time_ = this->interval_;
+                this->bKillAfterCall_ = bKillAfterCall;
             }
     };
 
@@ -176,9 +178,9 @@ namespace orxonox
                 @param bLoop If true, the function gets called every 'interval' seconds
                 @param exeuctor A executor of the function to call
             */
-            StaticTimer(float interval, bool bLoop, ExecutorStatic* executor)
+            StaticTimer(float interval, bool bLoop, ExecutorStatic* executor, bool bKillAfterCall = false)
             {
-                this->setTimer(interval, bLoop, executor);
+                this->setTimer(interval, bLoop, executor, bKillAfterCall);
             }
 
             /**
@@ -188,7 +190,7 @@ namespace orxonox
                 @param object The object owning the timer and the function
                 @param executor A executor of the function to call
             */
-            void setTimer(float interval, bool bLoop, ExecutorStatic* executor)
+            void setTimer(float interval, bool bLoop, ExecutorStatic* executor, bool bKillAfterCall = false)
             {
                 this->deleteExecutor();
 
@@ -198,6 +200,7 @@ namespace orxonox
                 this->bActive_ = true;
 
                 this->time_ = this->interval_;
+                this->bKillAfterCall_ = bKillAfterCall;
             }
     };
 
