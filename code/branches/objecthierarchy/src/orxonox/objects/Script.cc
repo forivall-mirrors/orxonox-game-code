@@ -29,10 +29,10 @@
 #include "OrxonoxStableHeaders.h"
 #include "Script.h"
 
+#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/LuaBind.h"
-#include "core/Debug.h"
 
 namespace orxonox
 {

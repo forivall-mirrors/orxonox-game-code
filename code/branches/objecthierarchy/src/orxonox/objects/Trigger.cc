@@ -30,7 +30,7 @@
 #include "Trigger.h"
 
 #include <OgreBillboard.h>
-#include "core/Debug.h"
+#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/XMLPort.h"
@@ -38,7 +38,7 @@
 namespace orxonox
 {
 
-  ConsoleCommand(Trigger, setVisibility, AccessLevel::Debug, false).setDefaultValues(0);
+  SetConsoleCommand(Trigger, setVisibility, false).accessLevel(AccessLevel::User).defaultValues(0);
 
   CreateFactory(Trigger);
 
@@ -73,9 +73,9 @@ namespace orxonox
   void Trigger::setVisibility(bool bVisible)
   {
     if(bVisible)
-      this->setScale(2,2,2);
+      this->setScale(2);
     else
-      this->setScale(0,0,0);
+      this->setScale(0);
   }
 
   const Trigger* Trigger::getTrigger(unsigned int index) const
@@ -83,7 +83,7 @@ namespace orxonox
     if (children_.size() <= index)
       return NULL;
 
-    std::set<Trigger*>::iterator it;
+    std::set<Trigger*>::const_iterator it;
     it = children_.begin();
 
     for ( unsigned int i = 0; i != index; i++ )
@@ -225,7 +225,9 @@ namespace orxonox
     XMLPortParamLoadOnly(Trigger, "invert", setInvert, xmlelement, mode);
     //XMLPortParamLoadOnlyTemplate(Trigger, "mode", setMode, xmlelement, mode, std::string);
 
-    XMLPortObject(Trigger, Trigger, "", addTrigger, getTrigger, xmlelement, mode, false, true);
+    // what are those last two parameters?
+    //XMLPortObject(Trigger, Trigger, "", addTrigger, getTrigger, xmlelement, mode, false, true);
+    XMLPortObject(Trigger, Trigger, "", addTrigger, getTrigger, xmlelement, mode);
 
     this->init();
   }

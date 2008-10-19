@@ -199,6 +199,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\DistanceTrigger.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Radar.cc"
 					>
 				</File>
@@ -211,7 +215,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\Script.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Tickable.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\Trigger.cc"
 					>
 				</File>
 				<Filter
@@ -535,6 +547,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\DistanceTrigger.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Radar.h"
 					>
 				</File>
@@ -547,7 +563,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\Script.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Tickable.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\Trigger.h"
 					>
 				</File>
 				<Filter

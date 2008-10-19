@@ -34,7 +34,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "WorldEntity.h"
+#include "worldentities/PositionableEntity.h"
 
 #include "../tools/BillboardSet.h"
 
@@ -47,7 +47,7 @@ namespace orxonox {
     TM_EventTriggerXOR,
   };
 
-  class _OrxonoxExport Trigger : public WorldEntity
+  class _OrxonoxExport Trigger : public PositionableEntity
   {
     public:
       Trigger();

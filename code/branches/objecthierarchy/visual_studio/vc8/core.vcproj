@@ -172,15 +172,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\LuaBind.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\OrxonoxClass.cc"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\core\RootGameState.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Script.cc"
 				>
 			</File>
 			<Filter
@@ -404,15 +404,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\LuaBind.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\OrxonoxClass.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\core\RootGameState.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\core\Script.h"
 				>
 			</File>
 			<File

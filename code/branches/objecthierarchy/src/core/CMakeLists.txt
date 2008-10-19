@@ -5,7 +5,7 @@ SET(CORE_SRC_FILES
   Core.cc
   GameState.cc
   Language.cc
-  Luabind.cc
+  LuaBind.cc
   ObjectListBase.cc
   OrxonoxClass.cc
   RootGameState.cc

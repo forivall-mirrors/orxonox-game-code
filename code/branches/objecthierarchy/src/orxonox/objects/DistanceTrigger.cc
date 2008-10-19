@@ -70,7 +70,7 @@ namespace orxonox {
 
   void DistanceTrigger::addTargets(std::string targets)
   {
-    Identifier* targetId = ID(targets);
+    Identifier* targetId = ClassByString(targets);
     targetMask_.include(targetId);
     // trigger shouldn't react on itself or other triggers
     targetMask_.exclude(Class(Trigger), true);
@@ -79,7 +79,7 @@ namespace orxonox {
 
   void DistanceTrigger::removeTargets(std::string targets)
   {
-    Identifier* targetId = ID(targets);
+    Identifier* targetId = ClassByString(targets);
     targetMask_.exclude(targetId);
   }
 

@@ -214,7 +214,7 @@ namespace orxonox
       std::map<size_t, bool>::iterator it = luaTags.begin();
       bool bInPrintFunction = true;
       size_t start = 0;
-      size_tend = 0;
+      size_t end = 0;
 
       do
       {
