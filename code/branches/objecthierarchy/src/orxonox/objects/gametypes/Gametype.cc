@@ -30,10 +30,13 @@
 #include "Gametype.h"
 
 #include "core/CoreIncludes.h"
+#include "core/ConsoleCommand.h"
 #include "objects/infos/PlayerInfo.h"
 
 namespace orxonox
 {
+    SetConsoleCommand(Gametype, listPlayers, true);
+
     CreateUnloadableFactory(Gametype);
 
     Gametype::Gametype()
@@ -53,17 +56,45 @@ namespace orxonox
         return 0;
     }
 
+    void Gametype::listPlayers()
+    {
+        Gametype* gametype = Gametype::getCurrentGametype();
+
+        if (gametype)
+        {
+            for (std::set<PlayerInfo*>::const_iterator it = gametype->players_.begin(); it != gametype->players_.end(); ++it)
+                COUT(0) << "ID: " << (*it)->getClientID() << ", Name: " << (*it)->getName() << std::endl;
+        }
+        else
+        {
+            for (ObjectList<PlayerInfo>::iterator it = ObjectList<PlayerInfo>::begin(); it != ObjectList<PlayerInfo>::end(); ++it)
+                COUT(0) << "ID: " << (*it)->getClientID() << ", Name: " << (*it)->getName() << std::endl;
+        }
+    }
+
     void Gametype::clientConnected(unsigned int clientID)
     {
         COUT(0) << "client connected" << std::endl;
 
+        // create new PlayerInfo instance
         PlayerInfo* player = new PlayerInfo();
         player->setClientID(clientID);
+
+        // add to clients-map
+        assert(!this->clients_[clientID]);
+        this->clients_[clientID] = player;
     }
 
     void Gametype::clientDisconnected(unsigned int clientID)
     {
         COUT(0) << "client disconnected" << std::endl;
+
+        // remove from clients-map
+        PlayerInfo* player = this->clients_[clientID];
+        this->clients_.erase(clientID);
+
+        // delete PlayerInfo instance
+        delete player;
     }
 
     void Gametype::addPlayer(PlayerInfo* player)
@@ -86,5 +117,16 @@ namespace orxonox
     void Gametype::playerLeft(PlayerInfo* player)
     {
         COUT(0) << "player " << player->getName() << " left" << std::endl;
+    }
+
+    void Gametype::playerChangedName(PlayerInfo* player)
+    {
+        if (this->players_.find(player) != this->players_.end())
+        {
+            if (player->getName() != player->getOldName())
+            {
+                COUT(0) << "player " << player->getOldName() << " changed name to " << player->getName() << std::endl;
+            }
+        }
     }
 }

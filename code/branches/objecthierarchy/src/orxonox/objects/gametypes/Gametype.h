@@ -31,6 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <map>
+
 #include "core/BaseObject.h"
 #include "network/ClientConnectionListener.h"
 
@@ -38,13 +40,14 @@ namespace orxonox
 {
     class _OrxonoxExport Gametype : public BaseObject, public network::ClientConnectionListener
     {
+        friend class PlayerInfo;
+
         public:
             Gametype();
             virtual ~Gametype() {}
 
             static Gametype* getCurrentGametype();
-            void addPlayer(PlayerInfo* player);
-            void removePlayer(PlayerInfo* player);
+            static void listPlayers();
 
         protected:
             virtual void clientConnected(unsigned int clientID);
@@ -53,8 +56,14 @@ namespace orxonox
             virtual void playerJoined(PlayerInfo* player);
             virtual void playerLeft(PlayerInfo* player);
 
+            virtual void playerChangedName(PlayerInfo* player);
+
         private:
+            void addPlayer(PlayerInfo* player);
+            void removePlayer(PlayerInfo* player);
+
             std::set<PlayerInfo*> players_;
+            std::map<unsigned int, PlayerInfo*> clients_;
     };
 }
 

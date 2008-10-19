@@ -43,7 +43,7 @@ namespace orxonox
             void registerVariables();
 
             inline void setPosition(const Vector3& position)
-                { this->node_->setPosition(position); std::cout << "set position to " << position << std::endl; }
+                { this->node_->setPosition(position); }
             inline void translate(const Vector3& distance, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
                 { this->node_->translate(distance, relativeTo); }
             inline void setOrientation(const Quaternion& orientation)

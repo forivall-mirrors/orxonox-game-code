@@ -58,9 +58,11 @@ namespace orxonox
             inline bool isInitialized() const { return this->bInitialized_; }
 
             /** @brief Sets the name of the object. @param name The name */
-            inline void setName(const std::string& name) { this->name_ = name; this->changedName(); }
-            /** @brief Returns the name of the object. @return The name */
+            inline void setName(const std::string& name) { this->oldName_ = this->name_; this->name_ = name; this->changedName(); }
+            /** @brief Returns the name of the object. */
             inline const std::string& getName() const { return this->name_; }
+            /** @brief Returns the old name of the object. */
+            inline const std::string& getOldName() const { return this->oldName_; }
             /** @brief This function gets called if the name of the object changes. */
             virtual void changedName() {}
 
@@ -94,6 +96,7 @@ namespace orxonox
 
         protected:
             std::string name_;                          //!< The name of the object
+            std::string oldName_;                       //!< The old name of the object
             bool bActive_;                              //!< True = the object is active
             bool bVisible_;                             //!< True = the object is visible
 

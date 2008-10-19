@@ -50,6 +50,7 @@ namespace orxonox
         RegisterObject(PlayerInfo);
 
         this->ping_ = -1;
+        this->clientID_ = (unsigned int)-1;
         this->bLocalPlayer_ = Core::isStandalone();
         this->bLocalPlayer_ = false;
         this->bHumanPlayer_ = false;
@@ -84,6 +85,9 @@ std::cout << "# PI(" << this->getObjectID() << "): checkName: " << this->bLocalP
     void PlayerInfo::changedName()
     {
 std::cout << "# PI(" << this->getObjectID() << "): changedName to " << this->getName() << std::endl;
+        Gametype* gametype = Gametype::getCurrentGametype();
+        if (gametype)
+            gametype->playerChangedName(this);
     }
 
     void PlayerInfo::registerVariables()
