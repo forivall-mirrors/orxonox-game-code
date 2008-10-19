@@ -52,6 +52,7 @@ SET( ORXONOX_SRC_FILES
   objects/RadarListener.cc
   objects/RadarViewable.cc
   objects/Tickable.cc
+  objects/Test.cc
 
   objects/infos/Info.cc
   objects/infos/LevelInfo.cc
