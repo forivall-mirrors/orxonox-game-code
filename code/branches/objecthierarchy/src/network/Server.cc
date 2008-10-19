@@ -281,18 +281,19 @@ namespace network
 
 
   bool Server::addClient(ENetEvent *event){
-    unsigned int newid=0;
+    static unsigned int newid=1;
 
+    COUT(2) << "Server: adding client" << std::endl;
     ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
     if(!temp){
       COUT(2) << "Server: could not add client" << std::endl;
       return false;
     }
-    if(temp==ClientInformation::getBegin()) { //not good if you use anything else than insertBack
+    /*if(temp==ClientInformation::getBegin()) { //not good if you use anything else than insertBack
       newid=1;
     }
     else
-      newid=temp->prev()->getID()+1;
+      newid=temp->prev()->getID()+1;*/
     temp->setID(newid);
     temp->setPeer(event->peer);
 
@@ -302,6 +303,8 @@ namespace network
       listener->clientConnected(newid);
       listener++;
     }
+    
+    newid++;
 
     COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
     return createClient(temp->getID());

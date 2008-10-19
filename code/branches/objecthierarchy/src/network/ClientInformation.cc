@@ -184,7 +184,7 @@ namespace network
 
   ClientInformation *ClientInformation::insertBack(ClientInformation *ins) {
     ClientInformation *temp = head_;
-    if(temp==head_){
+    if(temp==ins){
       return head_;
     }
     while(temp->next()!=0){

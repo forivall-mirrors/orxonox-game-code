@@ -60,6 +60,7 @@
 #include <utility>
 #include <typeinfo>
 #include <stdlib.h>
+#include <cassert>
 
 #include "MetaObjectList.h"
 #include "Iterator.h"
