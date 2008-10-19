@@ -53,7 +53,7 @@ namespace network
 
   boost::recursive_mutex ClientConnection::enet_mutex_;
 
-  ClientConnection::ClientConnection(int port, std::string address) {
+  ClientConnection::ClientConnection(int port, const std::string& address) {
     quit=false;
     server=NULL;
     enet_address_set_host(&serverAddress, address.c_str());

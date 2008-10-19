@@ -49,6 +49,12 @@ namespace orxonox
             static Gametype* getCurrentGametype();
             static void listPlayers();
 
+            inline const std::map<unsigned int, PlayerInfo*>& getClients() const
+                { return this->clients_; }
+            inline const std::set<PlayerInfo*>& getPlayers() const
+                { return this->players_; }
+            static PlayerInfo* getClient(unsigned int clientID);
+
         protected:
             virtual void clientConnected(unsigned int clientID);
             virtual void clientDisconnected(unsigned int clientID);

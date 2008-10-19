@@ -46,12 +46,13 @@
 #include <boost/thread/recursive_mutex.hpp>
 
 #define GAMESTATEID_INITIAL -1
-#define CLIENTID_UNKNOWN -2
 
 // WATCH OUT: THE CLIENTINFORMATION LIST IS NOT THREADSAFE ANYMORE
 
 namespace network
 {
+  static const unsigned int CLIENTID_UNKNOWN = (unsigned int)-2;
+
   /**
   * This class implements a list for client informations
   * @author Oliver Scheuss

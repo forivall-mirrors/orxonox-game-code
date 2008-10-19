@@ -26,51 +26,36 @@
  *
  */
 
-#ifndef _PlayerInfo_H__
-#define _PlayerInfo_H__
+#ifndef _ChatOverlay_H__
+#define _ChatOverlay_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "Info.h"
+#include <OgreTextAreaOverlayElement.h>
+
+#include "network/ChatListener.h"
+#include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PlayerInfo : public Info
+    class _OrxonoxExport ChatOverlay : public OverlayText, public network::ChatListener
     {
         public:
-            PlayerInfo();
-            virtual ~PlayerInfo();
+            ChatOverlay();
+            ~ChatOverlay();
 
             void setConfigValues();
-            void registerVariables();
 
-            virtual void changedName();
+        protected:
+            virtual void incomingChat(const std::string& message, unsigned int senderID);
 
-            inline void setClientID(unsigned int clientID)
-                { this->clientID_ = clientID; this->checkClientID(); }
-            inline unsigned int getClientID() const
-                { return this->clientID_; }
-
-            inline void setHumanPlayer(bool bHumanPlayer)
-                { this->bHumanPlayer_ = bHumanPlayer; }
-            inline bool isHumanPlayer() const
-                { return this->bHumanPlayer_; }
+            std::list<Ogre::UTFString> messages_;
 
         private:
-            void checkClientID();
-            void finishedSetup();
-            void checkNick();
-            void clientChangedName();
+            void updateOverlayText();
+            void dropMessage(Timer<ChatOverlay>* timer);
 
-            unsigned int clientID_;
-            float ping_;
-            bool bLocalPlayer_;
-            bool bHumanPlayer_;
-            bool bFinishedSetup_;
-
-            std::string playerName_;
-            std::string nick_;
+            float displayTime_;
     };
 }
-
-#endif /* _PlayerInfo_H__ */
+#endif /* _DebugFPSText_H__ */

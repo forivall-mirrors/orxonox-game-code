@@ -60,13 +60,13 @@ namespace network
   public:
     Server();
     Server(int port);
-    Server(int port, std::string bindAddress);
+    Server(int port, const std::string& bindAddress);
     Server(int port, const char *bindAddress);
     ~Server();
 
     void open();
     void close();
-    bool processChat(std::string message, unsigned int playerID);
+    bool processChat(const std::string& message, unsigned int playerID);
     bool queuePacket(ENetPacket *packet, int clientID);
     void tick(float time);
   protected:
@@ -85,7 +85,9 @@ namespace network
     bool processPacket( ENetPacket *packet, ENetPeer *peer );
     bool sendGameState();
     bool sendObjectDeletes();
-    virtual bool chat(std::string message);
+    virtual bool chat(const std::string& message);
+    virtual bool broadcast(const std::string& message);
+    bool sendChat(const std::string& message, unsigned int clientID);
 
     //void processChat( chat *data, int clientId);
     ConnectionManager *connection;

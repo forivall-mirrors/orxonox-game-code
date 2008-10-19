@@ -61,7 +61,7 @@ namespace network
 
   class _NetworkExport ClientConnection{
   public:
-    ClientConnection(int port, std::string address);
+    ClientConnection(int port, const std::string& address);
     ClientConnection(int port, const char* address);
     ~ClientConnection();
     ENetEvent *getEvent();

@@ -87,7 +87,7 @@ namespace network
     bindAddress.port = port;
   }
 
-  ConnectionManager::ConnectionManager(int port, std::string address) :receiverThread_(0) {
+  ConnectionManager::ConnectionManager(int port, const std::string& address) :receiverThread_(0) {
     assert(instance_==0);
     instance_=this;
     quit=false;

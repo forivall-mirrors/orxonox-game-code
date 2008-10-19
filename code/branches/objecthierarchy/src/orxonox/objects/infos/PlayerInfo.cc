@@ -50,7 +50,7 @@ namespace orxonox
         RegisterObject(PlayerInfo);
 
         this->ping_ = -1;
-        this->clientID_ = (unsigned int)-1;
+        this->clientID_ = network::CLIENTID_UNKNOWN;
         this->bLocalPlayer_ = Core::isStandalone();
         this->bLocalPlayer_ = false;
         this->bHumanPlayer_ = false;
@@ -59,7 +59,7 @@ namespace orxonox
         this->setConfigValues();
         this->registerVariables();
 
-        COUT(0) << "created PlayerInfo (" << this->getObjectID() << ")" << std::endl;
+//COUT(0) << "created PlayerInfo (" << this->getObjectID() << ")" << std::endl;
     }
 
     PlayerInfo::~PlayerInfo()
@@ -67,24 +67,29 @@ namespace orxonox
         Gametype* gametype = Gametype::getCurrentGametype();
         if (gametype)
             gametype->removePlayer(this);
-        COUT(0) << "destroyed PlayerInfo (" << this->getObjectID() << ")" << std::endl;
+//COUT(0) << "destroyed PlayerInfo (" << this->getObjectID() << ")" << std::endl;
     }
 
     void PlayerInfo::setConfigValues()
     {
-        SetConfigValue(playerName_, "Player").callback(this, &PlayerInfo::checkName);
+        SetConfigValue(nick_, "Player").callback(this, &PlayerInfo::checkNick);
     }
 
-    void PlayerInfo::checkName()
+    void PlayerInfo::checkNick()
     {
-std::cout << "# PI(" << this->getObjectID() << "): checkName: " << this->bLocalPlayer_ << std::endl;
-        if (this->bLocalPlayer_ && Core::isMaster())
-            this->setName(this->playerName_);
+//std::cout << "# PI(" << this->getObjectID() << "): checkName: " << this->bLocalPlayer_ << std::endl;
+        if (this->bLocalPlayer_)
+        {
+            this->playerName_ = this->nick_;
+
+            if (Core::isMaster())
+                this->setName(this->playerName_);
+        }
     }
 
     void PlayerInfo::changedName()
     {
-std::cout << "# PI(" << this->getObjectID() << "): changedName to " << this->getName() << std::endl;
+//std::cout << "# PI(" << this->getObjectID() << "): changedName to " << this->getName() << std::endl;
         Gametype* gametype = Gametype::getCurrentGametype();
         if (gametype)
             gametype->playerChangedName(this);
@@ -102,31 +107,31 @@ std::cout << "# PI(" << this->getObjectID() << "): changedName to " << this->get
 
     void PlayerInfo::clientChangedName()
     {
-std::cout << "# PI(" << this->getObjectID() << "): clientChangedName() to " << this->playerName_ << std::endl;
+//std::cout << "# PI(" << this->getObjectID() << "): clientChangedName() from " << this->getName() << " to " << this->playerName_ << std::endl;
         this->setName(this->playerName_);
     }
 
     void PlayerInfo::checkClientID()
     {
-std::cout << "# PI(" << this->getObjectID() << "): checkClientID()" << std::endl;
+//std::cout << "# PI(" << this->getObjectID() << "): checkClientID()" << std::endl;
         this->bHumanPlayer_ = true;
 
         if (this->clientID_ == network::Host::getPlayerID())
         {
-std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): it's the client's ID" << std::endl;
+//std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): it's the client's ID" << std::endl;
             this->bLocalPlayer_ = true;
+            this->playerName_ = this->nick_;
 //std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): name: " << this->getName() << std::endl;
 
             if (Core::isClient())
             {
-std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): we're on a client: set object mode to bidirectional" << std::endl;
+//std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): we're on a client: set object mode to bidirectional" << std::endl;
                 this->setObjectMode(network::direction::bidirectional);
-                this->playerName_ += "blub";
-std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): proposed name: " << this->playerName_ << std::endl;
+//std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): proposed name: " << this->playerName_ << std::endl;
             }
             else
             {
-std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): we're not on a client: finish setup" << std::endl;
+//std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): we're not on a client: finish setup" << std::endl;
                 this->clientChangedName();
                 this->bFinishedSetup_ = true;
                 this->finishedSetup();
@@ -136,22 +141,22 @@ std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): we're not on
 
     void PlayerInfo::finishedSetup()
     {
-std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): " << this->bFinishedSetup_ << std::endl;
+//std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): " << this->bFinishedSetup_ << std::endl;
         if (Core::isClient())
         {
-std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): we're a client: finish setup" << std::endl;
+//std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): we're a client: finish setup" << std::endl;
             this->bFinishedSetup_ = true;
         }
         else if (this->bFinishedSetup_)
         {
-std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): we're a server: add player" << std::endl;
+//std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): we're a server: add player" << std::endl;
             Gametype* gametype = Gametype::getCurrentGametype();
             if (gametype)
                 gametype->addPlayer(this);
         }
         else
         {
-std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): we're a server: client not yet finished" << std::endl;
+//std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): we're a server: client not yet finished" << std::endl;
         }
     }
 }

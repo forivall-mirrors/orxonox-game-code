@@ -1,4 +1,5 @@
 SET( NETWORK_SRC_FILES
+  ChatListener.cc
   Client.cc
   ClientConnection.cc
   ClientInformation.cc

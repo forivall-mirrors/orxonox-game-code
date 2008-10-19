@@ -78,7 +78,7 @@ namespace network
     //ConnectionManager(ClientInformation *head);
     ConnectionManager(int port);
     ConnectionManager(int port, const char *address);
-    ConnectionManager(int port, std::string address);
+    ConnectionManager(int port, const std::string& address);
     ~ConnectionManager();
     //ENetPacket *getPacket(ENetAddress &address); // thread1
     //ENetPacket *getPacket(int &clientID);

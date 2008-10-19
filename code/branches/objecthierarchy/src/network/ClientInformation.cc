@@ -44,9 +44,9 @@
 
 namespace network
 {
-  
+
   ClientInformation *ClientInformation::head_=0;
-  
+
   ClientInformation::ClientInformation() {
     if(!head_)
       head_=this;
@@ -128,7 +128,7 @@ namespace network
     gamestateID_=id;
     return true;
   }
-  
+
   bool ClientInformation::setPartialGamestateID(int id){
     if(!this)
       return false;
@@ -149,7 +149,7 @@ namespace network
     else
       return NULL;
   }
-  
+
   int ClientInformation::getFailures(){
     return failures_;
   }
@@ -159,11 +159,11 @@ namespace network
   void ClientInformation::resetFailures(){
     failures_=0;
   }
-  
+
   enet_uint32 ClientInformation::getRTT(){
     return peer_->roundTripTime;
   }
-  
+
   enet_uint32 ClientInformation::getPacketLoss(){
     return peer_->packetLoss;
   }
@@ -174,7 +174,7 @@ namespace network
     else
       return -1;
   }
-  
+
   int ClientInformation::getPartialGamestateID() {
     if(this)
       return partialGamestateID_;
@@ -196,7 +196,7 @@ namespace network
   }
 
   bool ClientInformation::removeClient(int clientID) {
-    if(clientID==CLIENTID_UNKNOWN)
+    if((unsigned int)clientID==CLIENTID_UNKNOWN)
       return false;
     ClientInformation *temp = head_;
     while(temp!=0 && temp->getID()!=clientID)

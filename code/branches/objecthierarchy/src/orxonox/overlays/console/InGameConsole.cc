@@ -612,13 +612,13 @@ namespace orxonox
         @param s The string to convert
         @return The converted string
     */
-    /*static*/ Ogre::UTFString InGameConsole::convert2UTF(std::string s)
+    /*static*/ Ogre::UTFString InGameConsole::convert2UTF(const std::string& text)
     {
         Ogre::UTFString utf;
         Ogre::UTFString::code_point cp;
-        for (unsigned int i = 0; i < s.size(); ++i)
+        for (unsigned int i = 0; i < text.size(); ++i)
         {
-          cp = s[i];
+          cp = text[i];
           cp &= 0xFF;
           utf.append(1, cp);
         }

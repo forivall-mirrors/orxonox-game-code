@@ -32,6 +32,7 @@ SET( ORXONOX_SRC_FILES
   overlays/hud/HUDNavigation.cc
   overlays/hud/HUDRadar.cc
   overlays/hud/HUDSpeedBar.cc
+  overlays/hud/ChatOverlay.cc
 
   tools/BillboardSet.cc
   tools/Light.cc

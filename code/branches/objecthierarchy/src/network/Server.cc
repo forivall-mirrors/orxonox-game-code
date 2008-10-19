@@ -57,6 +57,7 @@
 #include "packet/Welcome.h"
 #include "packet/DeleteObjects.h"
 #include <util/Convert.h>
+#include "ChatListener.h"
 
 namespace network
 {
@@ -84,7 +85,7 @@ namespace network
   * @param port Port to listen on
   * @param bindAddress Address to listen on
   */
-  Server::Server(int port, std::string bindAddress) {
+  Server::Server(int port, const std::string& bindAddress) {
     timeSinceLastUpdate_=0;
     connection = new ConnectionManager(port, bindAddress);
     gamestates_ = new GamestateManager();
@@ -127,7 +128,7 @@ namespace network
     return;
   }
 
-  bool Server::processChat(std::string message, unsigned int playerID){
+  bool Server::processChat(const std::string& message, unsigned int playerID){
     ClientInformation *temp = ClientInformation::getBegin();
     packet::Chat *chat;
     while(temp){
@@ -137,7 +138,7 @@ namespace network
         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
       temp = temp->next();
     }
-    COUT(1) << "Player " << playerID << ": " << message << std::endl;
+//    COUT(1) << "Player " << playerID << ": " << message << std::endl;
     return true;
   }
 
@@ -303,7 +304,7 @@ namespace network
       listener->clientConnected(newid);
       listener++;
     }
-    
+
     newid++;
 
     COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
@@ -366,17 +367,28 @@ namespace network
     gamestates_->removeClient(client);
   }
 
-  bool Server::chat(std::string message){
+  bool Server::chat(const std::string& message){
+      return this->sendChat(message, Host::getPlayerID());
+  }
+
+  bool Server::broadcast(const std::string& message){
+      return this->sendChat(message, CLIENTID_UNKNOWN);
+  }
+
+  bool Server::sendChat(const std::string& message, unsigned int clientID){
     ClientInformation *temp = ClientInformation::getBegin();
     packet::Chat *chat;
     while(temp){
-      chat = new packet::Chat(message, Host::getPlayerID());
+      chat = new packet::Chat(message, clientID);
       chat->setClientID(temp->getID());
       if(!chat->send())
         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
       temp = temp->next();
     }
-    COUT(1) << "Player " << Host::getPlayerID() << ": " << message << std::endl;
+//    COUT(1) << "Player " << Host::getPlayerID() << ": " << message << std::endl;
+    for (orxonox::ObjectList<ChatListener>::iterator it = orxonox::ObjectList<ChatListener>::begin(); it != orxonox::ObjectList<ChatListener>::end(); ++it)
+      it->incomingChat(message, clientID);
+
     return true;
   }
 
