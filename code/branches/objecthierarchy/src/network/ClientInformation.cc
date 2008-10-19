@@ -136,7 +136,7 @@ namespace network
     return true;
   }
 
-  int ClientInformation::getID() {
+  unsigned int ClientInformation::getID() {
     if(!this)
       return CLIENTID_UNKNOWN;
     else
@@ -168,14 +168,14 @@ namespace network
     return peer_->packetLoss;
   }
 
-  int ClientInformation::getGamestateID() {
+  unsigned int ClientInformation::getGamestateID() {
     if(this)
       return gamestateID_;
     else
       return -1;
   }
 
-  int ClientInformation::getPartialGamestateID() {
+  unsigned int ClientInformation::getPartialGamestateID() {
     if(this)
       return partialGamestateID_;
     else
@@ -195,7 +195,7 @@ namespace network
     return ins;
   }
 
-  bool ClientInformation::removeClient(int clientID) {
+  bool ClientInformation::removeClient(unsigned int clientID) {
     if((unsigned int)clientID==CLIENTID_UNKNOWN)
       return false;
     ClientInformation *temp = head_;
@@ -228,7 +228,7 @@ namespace network
   * @param clientID id to look for
   * @return pointer to the last element in the list or 0 if the search was unsuccessfull
   */
-  ClientInformation *ClientInformation::findClient(int clientID, bool look_backwards) {
+  ClientInformation *ClientInformation::findClient(unsigned int clientID, bool look_backwards) {
     ClientInformation *temp = head_;
     while(temp!=0 && temp->getID()!=clientID){
       temp = temp->next();

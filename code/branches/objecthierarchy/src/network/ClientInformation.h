@@ -76,9 +76,9 @@ namespace network
 
     // get functions
     inline unsigned int getShipID(){return ShipID_;}
-    int getID();
-    int getGamestateID();
-    int getPartialGamestateID();
+    unsigned int getID();
+    unsigned int getGamestateID();
+    unsigned int getPartialGamestateID();
     ENetPeer *getPeer();
 
     int getFailures();
@@ -87,9 +87,9 @@ namespace network
     enet_uint32 getRTT();
     enet_uint32 getPacketLoss();
 
-    static bool removeClient(int clientID);
+    static bool removeClient(unsigned int clientID);
     static bool removeClient(ENetPeer *peer);
-    static ClientInformation *findClient(int clientID, bool look_backwards=false);
+    static ClientInformation *findClient(unsigned int clientID, bool look_backwards=false);
     static ClientInformation *findClient(ENetAddress *address, bool look_backwards=false);
     static ClientInformation *getBegin(){return head_;}
 
@@ -109,9 +109,9 @@ namespace network
     ClientInformation *nexte;
     //actual information:
     ENetPeer *peer_;
-    int clientID_;
-    int gamestateID_;
-    int partialGamestateID_;
+    unsigned int clientID_;
+    unsigned int gamestateID_;
+    unsigned int partialGamestateID_;
     unsigned int ShipID_;   // this is the unique objectID
     bool synched_;
     unsigned short failures_;
