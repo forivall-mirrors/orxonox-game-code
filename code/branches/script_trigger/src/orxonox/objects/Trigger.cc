@@ -222,6 +222,7 @@ namespace orxonox
     XMLPortParamLoadOnly(Trigger, "delay", setDelay, xmlelement, mode);
     XMLPortParamLoadOnly(Trigger, "stayOn", setStayOn, xmlelement, mode);
     XMLPortParamLoadOnly(Trigger, "activations", setActivations, xmlelement, mode);
+    XMLPortParamLoadOnly(Trigger, "invert", setInvert, xmlelement, mode);
     //XMLPortParamLoadOnlyTemplate(Trigger, "mode", setMode, xmlelement, mode, std::string);
 
     XMLPortObject(Trigger, Trigger, "", addTrigger, getTrigger, xmlelement, mode, false, true);

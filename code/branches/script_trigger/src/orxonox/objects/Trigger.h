@@ -55,6 +55,7 @@ namespace orxonox {
 
       inline bool isActive() { return bActive_; }
       void addTrigger(Trigger* trig);
+      void setInvert(int invert) { bInvertMode_ = invert; }
       const Trigger* getTrigger(unsigned int index) const;
       void setVisibility(bool bVisible);
       void setDelay(float delay);
