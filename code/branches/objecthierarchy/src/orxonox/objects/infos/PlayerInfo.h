@@ -44,6 +44,8 @@ namespace orxonox
             void setConfigValues();
             void registerVariables();
 
+            virtual void changedName();
+
             inline void setClientID(unsigned int clientID)
                 { this->clientID_ = clientID; this->checkClientID(); }
             inline unsigned int getClientID() const
@@ -58,6 +60,7 @@ namespace orxonox
             void checkClientID();
             void finishedSetup();
             void checkName();
+            void clientChangedName();
 
             unsigned int clientID_;
             float ping_;
