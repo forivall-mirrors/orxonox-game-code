@@ -26,25 +26,22 @@
  *
  */
 
-#include "Script.h"
+#include "LuaBind.h"
 
 #include <fstream>
 #include <map>
 
-#include "CoreIncludes.h"
-
-#include "util/String.h"
-
 #include "lua/lua.hpp"
-
 #include "tolua/tolua++.h"
 #include "tolua/tolua_bind.h"
+#include "util/String.h"
+#include "CoreIncludes.h"
 
 namespace orxonox
 {
-  Script* Script::singletonRef = NULL;
+  LuaBind* LuaBind::singletonRef = NULL;
 
-  Script::Script()
+  LuaBind::LuaBind()
   {
     luaState_ = lua_open();
     luaSource_ = "";
@@ -60,9 +57,10 @@ namespace orxonox
 #endif
     tolua_Core_open(luaState_);
     output_ = "";
+    isRunning_ = false;
   }
 
-  void Script::luaPrint(std::string str)
+  void LuaBind::luaPrint(std::string str)
   {
     output_ += str;
 //    COUT(4) << "Lua_output!:" << std::endl << str << std::endl << "***" << std::endl;
@@ -74,8 +72,9 @@ namespace orxonox
       @param filename The filename of the file
       @param luaTags if true, the loaded file gets stripped off luaTags
   */
-  void Script::loadFile(std::string filename, bool luaTags)
+  void LuaBind::loadFile(std::string filename, bool luaTags)
   {
+    output_ = "";
     std::ifstream file;
     file.open(filename.c_str(), std::fstream::in);
 
@@ -101,8 +100,14 @@ namespace orxonox
     COUT(5) << "ParsedSourceCode: " << luaSource_ << std::endl;
   }
 
+  void LuaBind::loadString(std::string code)
+  {
+    luaSource_ = code;
+    output_ = "";
+  }
+
 #if LUA_VERSION_NUM != 501
-  const char * Script::lua_Chunkreader(lua_State *L, void *data, size_t *size)
+  const char * LuaBind::lua_Chunkreader(lua_State *L, void *data, size_t *size)
   {
     LoadS* ls = ((LoadS*)data);
     if (ls->size == 0) return NULL;
@@ -111,28 +116,39 @@ namespace orxonox
     return ls->s;
   }
 #endif
-  void Script::run()
+  void LuaBind::run()
   {
-    int error = 0;
-    std::string init = "local scr = orxonox.Script:getInstance()\nprint = function(s)\nscr:luaPrint(s)\nend\n";
-    init += luaSource_;
-#if LUA_VERSION_NUM == 501
-    error = luaL_loadstring(luaState_, init.c_str());
-#else
-    LoadS ls;
-    ls.s = init.c_str();
-    ls.size = init.size();
-    error = lua_load(luaState_, &orxonox::Script::lua_Chunkreader, &ls, init.c_str());
-#endif
-    if (error == 0)
-      error = lua_pcall(luaState_, 0, 0, 0);
-    if (error != 0)
+    if (!isRunning_)
     {
-      COUT(2) << "Error in Lua-script: " << lua_tostring(luaState_, -1) << std::endl;
+      isRunning_ = true;
+      int error = 0;
+      std::string init = "local scr = orxonox.LuaBind:getInstance()\nlocal debug = print\nprint = function(s)\nscr:luaPrint(s)\nend\ninclude = function(f)\nfile = io.open(f)\ncontent = file:read(\"*a\")\nfile:close()\nsource = scr:replaceLuaTags(content)\ndebug(source)\nassert(loadstring(source))()\nend\n";
+      init += luaSource_;
+  #if LUA_VERSION_NUM == 501
+      error = luaL_loadstring(luaState_, init.c_str());
+  #else
+      LoadS ls;
+      ls.s = init.c_str();
+      ls.size = init.size();
+      error = lua_load(luaState_, &orxonox::LuaBind::lua_Chunkreader, &ls, init.c_str());
+  #endif
+      if (error == 0)
+      {
+        error = lua_pcall(luaState_, 0, 0, 0);
+      }
+      if (error != 0)
+      {
+        COUT(2) << "Error in Lua-script: " << lua_tostring(luaState_, -1) << std::endl;
+      }
+      isRunning_ = false;
+    }
+    else
+    {
+      COUT(2) << "Warning: Lua's run is called while running!" << std::endl;
     }
   }
 
-  std::string Script::replaceLuaTags(const std::string& text)
+  std::string LuaBind::replaceLuaTags(const std::string& text)
   {
     // chreate map with all Lua tags
     std::map<size_t, bool> luaTags;
@@ -186,6 +202,7 @@ namespace orxonox
         }
       }
       if (!expectedValue) {
+        COUT(2) << "Warning: Error in level file" << std::endl;
         // todo: errorhandling
         return "";
       }
@@ -197,7 +214,7 @@ namespace orxonox
       std::map<size_t, bool>::iterator it = luaTags.begin();
       bool bInPrintFunction = true;
       size_t start = 0;
-      size_t end = 0;
+      size_tend = 0;
 
       do
       {

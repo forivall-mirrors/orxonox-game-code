@@ -33,7 +33,7 @@
 #include "Iterator.h"
 #include "ObjectList.h"
 #include "CoreIncludes.h"
-#include "Script.h"
+#include "LuaBind.h"
 #include "Namespace.h"
 #include "util/Debug.h"
 
@@ -118,11 +118,7 @@ namespace orxonox
         Loader::currentMask_s = level->getMask() * mask;
 
         // let Lua work this out:
-        //Script* lua;
-        /*Script::loadFile(level->getFile(), true);
-        Script::init(Script::getLuaState());
-        Script::run();*/
-        Script* lua = Script::getInstance();
+        LuaBind* lua = LuaBind::getInstance();
         lua->clearLuaOutput();
         lua->loadFile(level->getFile(), true);
         lua->run();

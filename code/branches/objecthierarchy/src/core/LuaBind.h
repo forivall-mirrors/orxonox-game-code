@@ -32,13 +32,13 @@
  @author Benjamin Knecht <beni_at_orxonox.net>
  */
 
-#ifndef _Script_H__
-#define _Script_H__
+#ifndef _LuaBind_H__
+#define _LuaBind_H__
 
 #include "CorePrereqs.h"
 
 extern "C" {
-#include "lua/lua.h"
+#include <lua/lua.h>
 }
 
 #include <list>
@@ -46,21 +46,22 @@ extern "C" {
 
 namespace orxonox // tolua_export
 { // tolua_export
-  class _CoreExport Script
-  /*
-  class Script { // tolua_export
-  */
+  class _CoreExport LuaBind
   {
+  /*
+  class LuaBind { // tolua_export
+  */
     struct LoadS {
       const char *s;
       size_t size;
     };
 
     public:
-      inline static Script* getInstance() { if (!Script::singletonRef) Script::singletonRef = new Script(); return Script::singletonRef; } // tolua_export
-      inline ~Script() { Script::singletonRef = NULL; };
+      inline static LuaBind* getInstance() { if (!LuaBind::singletonRef) LuaBind::singletonRef = new LuaBind(); return LuaBind::singletonRef; } // tolua_export
+      inline ~LuaBind() { LuaBind::singletonRef = NULL; };
 
     void loadFile(std::string filename, bool luaTags);
+    void loadString(std::string code);
     //void init(lua_State *state_);
     //void xmlToLua();
     void run();
@@ -75,16 +76,17 @@ namespace orxonox // tolua_export
     //inline std::string* getFileString() { return &fileString_; };
     inline void clearLuaOutput() { output_ = ""; }
 
-    std::string replaceLuaTags(const std::string& text);
+    std::string replaceLuaTags(const std::string& text); // tolua_export
 
     private:
-      Script();
-      static Script* singletonRef;
+      LuaBind();
+      static LuaBind* singletonRef;
 
       std::string luaSource_;
       std::string output_;
       lua_State* luaState_;
+      bool isRunning_;
 
   }; // tolua_export
 } // tolua_export
-#endif /* _Script_H__ */
+#endif /* _LuaBind_H__ */

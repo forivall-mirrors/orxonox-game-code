@@ -53,6 +53,9 @@ SET( ORXONOX_SRC_FILES
   objects/RadarViewable.cc
   objects/Tickable.cc
   objects/Test.cc
+  objects/Script.cc
+  objects/Trigger.cc
+  objects/DistanceTrigger.cc
 
   objects/infos/Info.cc
   objects/infos/LevelInfo.cc
@@ -73,7 +76,8 @@ ADD_CUSTOM_COMMAND(
     gui/GUIManager.h
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/lib
 )
-	
+
+
 ADD_EXECUTABLE( orxonox ${ORXONOX_SRC_FILES} )
 
 IF(NETWORKTRAFFIC_TESTING_ENABLED)
