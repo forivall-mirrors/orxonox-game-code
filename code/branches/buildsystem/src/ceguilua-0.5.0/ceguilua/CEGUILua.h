@@ -31,19 +31,14 @@
 #define _CEGUILua_h_
 
 
-/*** CHANGES BY ORXONOX TEAM FOR MINGW32 ***/
 /*************************************************************************
 	Import / Export control macros
 *************************************************************************/
-#if (defined( __WIN32__ ) || defined( _WIN32 )) && !defined(CEGUI_STATIC)
+#if defined( __WIN32__ ) || defined( _WIN32 )
 #   ifdef CEGUILUA_EXPORTS
 #       define CEGUILUA_API __declspec(dllexport)
 #   else
-#      if defined( __MINGW32__ )
-#          define CEGUILUA_API
-#      else
-#          define CEGUILUA_API __declspec(dllimport)
-#      endif
+#       define CEGUILUA_API __declspec(dllimport)
 #   endif
 #else
 #   define CEGUILUA_API
