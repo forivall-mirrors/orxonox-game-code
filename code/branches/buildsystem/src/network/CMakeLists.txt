@@ -27,7 +27,7 @@ ENDIF(WIN32)
 TARGET_LINK_LIBRARIES( network
   ${ZLIB_LIBRARY}
   ${ENet_LIBRARY}
-  ${Boost_thread_LIBRARIES}
+  ${Boost_THREAD_LIBRARY}
   core
 )
 

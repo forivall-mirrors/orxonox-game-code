@@ -34,5 +34,8 @@ MARK_AS_ADVANCED(IS_TARDIS)
 
 IF (IS_TARDIS)
   MESSAGE(STATUS "Running on D-ITET isg.ee Tardis Computer. Using customized paths.")
+  SET(CMAKE_C_COMPILER "gcc-4.1.1")
+  SET(CMAKE_CXX_COMPILER "g++-4.1.1")
+  SET(BOOST_ROOT "/usr/pack/boost-1.34.1-sd/i686-debian-linux3.1")
   SET($ENV{LUA_DIR} "/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib")
 ENDIF (IS_TARDIS)

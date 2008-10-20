@@ -97,6 +97,7 @@ TARGET_LINK_LIBRARIES( orxonox
   ${OGRE_LIBRARIES}
   ${CEGUI_LIBRARIES}
   ${LUA_LIBRARIES}
+  # TODO: write include file for this
   CEGUILuaScriptModule
   tinyxml_orxonox
   tolualib_orxonox

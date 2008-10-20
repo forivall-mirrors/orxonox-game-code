@@ -1,9 +1,38 @@
-INCLUDE_DIRECTORIES(.)
-INCLUDE_DIRECTORIES(..)
-INCLUDE_DIRECTORIES(ois) # for ois library subfolders
-INCLUDE_DIRECTORIES(orxonox)
-#INCLUDE_DIRECTORIES(lua) # for tolua library and generator
-INCLUDE_DIRECTORIES(${LUA_INCLUDE_DIR})
+# Set the search paths for include files
+INCLUDE_DIRECTORIES(
+  ${OGRE_INCLUDE_DIR}
+  ${CEGUI_INCLUDE_DIR}
+#  ${CEGUI_OGRE_INCLUDE_DIR}
+  ${ENet_INCLUDE_DIR}
+  ${Boost_INCLUDE_DIRS}
+  ${OPENAL_INCLUDE_DIR}
+  ${ALUT_INCLUDE_DIR}
+  ${VORBIS_INCLUDE_DIR}
+  ${OGG_INCLUDE_DIR}
+  ${LUA_INCLUDE_DIR}
+  ${TCL_INCLUDE_PATH}
+  ${DirectX_INCLUDE_DIR}
+  ${ZLIB_INCLUDE_DIR}
+)
+
+# Set the search paths for the linking
+LINK_DIRECTORIES(
+  ${OGRE_LIB_DIR}
+  ${CEGUI_LIB_DIR}
+#  ${CEGUI_SCRIPT_LIB_DIR}
+#  ${CEGUI_OGRE_LIB_DIR}
+  ${ENet_LIBRARY}
+  ${Boost_LIBRARY_DIRS}
+  ${Zlib_LIBRARY_DIR}
+  ${TCL_LIBRARY}
+)
+
+INCLUDE_DIRECTORIES(
+  .
+  ..
+  ois
+  orxonox
+)
 
 ADD_SUBDIRECTORY(cpptcl)
 ADD_SUBDIRECTORY(ois)
@@ -11,6 +40,7 @@ ADD_SUBDIRECTORY(tinyxml)
 #ADD_SUBDIRECTORY(lua)
 ADD_SUBDIRECTORY(tolua)
 
+# TODO: write include file for this stuff
 # Some people may not have CEGUILua installed, espc. with version 0.5
 # And we don't know what lua version it was linked against, so we compile
 # it ourselves.
