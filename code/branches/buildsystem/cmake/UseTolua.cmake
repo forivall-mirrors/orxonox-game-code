@@ -18,8 +18,12 @@
 SET(_tolua_executable_name tolua_orxonox)
 GET_TARGET_PROPERTY(TOLUA_EXECUTABLE "${_tolua_executable_name}" LOCATION)
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -iquote ${CMAKE_CURRENT_SOURCE_DIR} -iquote ${CMAKE_CURRENT_BINARY_DIR}")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -iquote ${CMAKE_CURRENT_SOURCE_DIR} -iquote ${CMAKE_CURRENT_BINARY_DIR}")
+MACRO(INCLUDE_DIRECTORIES_QUOTES)
+  FOREACH(_tolua_quote_dir ${ARGN})
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -iquote ${_tolua_quote_dir}")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -iquote ${_tolua_quote_dir}")
+  ENDFOREACH(_tolua_quote_dir)
+ENDMACRO(INCLUDE_DIRECTORIES_QUOTES)
 
 MACRO(TOLUA _tolua_package _tolua_srcfiles_varname)
   # TODO: cleaner arguments handling
