@@ -29,3 +29,10 @@ IF (UNIX)
   ENDIF ("${UNAME_OV}" MATCHES "tardis")
 
 ENDIF (UNIX)
+
+MARK_AS_ADVANCED(IS_TARDIS)
+
+IF (IS_TARDIS)
+  MESSAGE(STATUS "Running on D-ITET isg.ee Tardis Computer. Using customized paths.")
+  SET($ENV{LUA_DIR} "/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1/lib")
+ENDIF (IS_TARDIS)
