@@ -38,7 +38,7 @@
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
 #include <CEGUI.h>
-#include "ceguilua/CEGUILua.h"
+#include <CEGUILua.h>
 #include "util/Exception.h"
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
@@ -49,7 +49,9 @@
 #include "GraphicsEngine.h"
 #include "OgreCEGUIRenderer.h"
 
-#include "lua/lua.hpp"
+extern "C" {
+#include "lua.h"
+}
 
 namespace orxonox
 {

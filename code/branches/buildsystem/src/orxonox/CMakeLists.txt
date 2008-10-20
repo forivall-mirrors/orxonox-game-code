@@ -96,8 +96,8 @@ ENDIF(NETWORKTRAFFIC_TESTING_ENABLED)
 TARGET_LINK_LIBRARIES( orxonox
   ${OGRE_LIBRARIES}
   ${CEGUI_LIBRARIES}
-  lua_orxonox
-  ceguilua_orxonox
+  ${LUA_LIBRARIES}
+  CEGUILuaScriptModule
   tinyxml_orxonox
   tolualib_orxonox
   util

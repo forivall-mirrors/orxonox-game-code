@@ -38,7 +38,7 @@
 #include "CorePrereqs.h"
 
 extern "C" {
-#include "lua/lua.h"
+#include "lua.h"
 }
 
 #include <list>

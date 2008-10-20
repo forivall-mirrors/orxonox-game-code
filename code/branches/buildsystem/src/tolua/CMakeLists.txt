@@ -1,3 +1,5 @@
+# TODO: only build the object files once
+
 SET (TOLUALIB_SRC_FILES
   tolua_event.c
   tolua_is.c
@@ -7,25 +9,15 @@ SET (TOLUALIB_SRC_FILES
 )
 
 ADD_LIBRARY (tolualib_orxonox SHARED ${TOLUALIB_SRC_FILES})
-
-TARGET_LINK_LIBRARIES (tolualib_orxonox
-  lua_orxonox
-)
-
+TARGET_LINK_LIBRARIES (tolualib_orxonox ${LUA_LIBRARIES})
 
 SET (TOLUAGEN_SRC_FILES
   tolua.c
   toluabind.c
 )
 
-ADD_EXECUTABLE (toluagen_orxonox ${TOLUAGEN_SRC_FILES})
-
-TARGET_LINK_LIBRARIES (toluagen_orxonox
-  lua_orxonox
-  tolualib_orxonox
-  m
-)
-
+ADD_EXECUTABLE (toluagen_orxonox ${TOLUAGEN_SRC_FILES} ${TOLUALIB_SRC_FILES})
+TARGET_LINK_LIBRARIES (toluagen_orxonox ${LUA_LIBRARIES})
 
 SET (TOLUA_PACKAGE "${CMAKE_CURRENT_SOURCE_DIR}/tolua-5.1.pkg")
 GET_TARGET_PROPERTY(TOLUAGEN_EXE toluagen_orxonox LOCATION)
@@ -64,10 +56,5 @@ SET (TOLUAEXE_SRC_FILES
   toluabind_orxonox.c
 )
 
-ADD_EXECUTABLE (tolua_orxonox ${TOLUAEXE_SRC_FILES})
-
-TARGET_LINK_LIBRARIES (tolua_orxonox
-  lua_orxonox
-  tolualib_orxonox
-  m
-)
+ADD_EXECUTABLE (tolua_orxonox ${TOLUAEXE_SRC_FILES} ${TOLUALIB_SRC_FILES})
+TARGET_LINK_LIBRARIES (tolua_orxonox ${LUA_LIBRARIES})

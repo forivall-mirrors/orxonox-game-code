@@ -60,7 +60,7 @@ TARGET_LINK_LIBRARIES(core
   ${OGRE_LIBRARIES}
   ${Boost_thread_LIBRARIES}
   ${Boost_filesystem_LIBRARIES}
-  lua_orxonox
+  ${LUA_LIBRARIES}
   cpptcl_orxonox
   ois_orxonox
   tinyxml_orxonox
