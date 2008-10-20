@@ -34,8 +34,8 @@
 #include <vector>
 
 // include Lua libs and tolua++
-#include "lua/lua.hpp"
-#include "tolua/tolua++.h"
+#include "lua.hpp"
+#include "tolua++.h"
 
 // prototype for bindings initialisation function
 int tolua_CEGUI_open(lua_State* tolua_S);

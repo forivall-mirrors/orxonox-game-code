@@ -33,8 +33,8 @@
 #include "CEGUIPropertyHelper.h"
 
 // include Lua libs and tolua++
-#include "lua/lua.hpp"
-#include "tolua/tolua++.h"
+#include "lua.hpp"
+#include "tolua++.h"
 
 // Start of CEGUI namespace section
 namespace CEGUI

@@ -32,6 +32,7 @@ INCLUDE_DIRECTORIES(
   ..
   ois
   orxonox
+  tolua
 )
 
 ADD_SUBDIRECTORY(cpptcl)
@@ -46,18 +47,18 @@ ADD_SUBDIRECTORY(tolua)
 # it ourselves.
 # So first, find out what CEGUI version we have.
 
-#IF (WIN32)
-#    ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
-#    INCLUDE_DIRECTORIES(ceguilua-0.6.1)
-#ELSE (WIN32)
-#    IF (${CEGUI_VERSION} LESS 0.6.0)
-#        ADD_SUBDIRECTORY(ceguilua-0.5.0b/ceguilua)
-#        INCLUDE_DIRECTORIES(ceguilua-0.5.0b)
-#    ELSE (${CEGUI_VERSION} LESS 0.6.0)
-#        ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
-#        INCLUDE_DIRECTORIES(ceguilua-0.6.1)
-#    ENDIF (${CEGUI_VERSION} LESS 0.6.0)
-#ENDIF (WIN32)
+IF (WIN32)
+    ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
+    INCLUDE_DIRECTORIES(ceguilua-0.6.1)
+ELSE (WIN32)
+    IF (${CEGUI_VERSION} LESS 0.6.0)
+        ADD_SUBDIRECTORY(ceguilua-0.5.0b/ceguilua)
+        INCLUDE_DIRECTORIES(ceguilua-0.5.0b)
+    ELSE (${CEGUI_VERSION} LESS 0.6.0)
+        ADD_SUBDIRECTORY(ceguilua-0.6.1/ceguilua)
+        INCLUDE_DIRECTORIES(ceguilua-0.6.1)
+    ENDIF (${CEGUI_VERSION} LESS 0.6.0)
+ENDIF (WIN32)
 
 # Our own libraries
 ADD_SUBDIRECTORY(util)

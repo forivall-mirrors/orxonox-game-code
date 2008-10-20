@@ -8,7 +8,7 @@ SET( CEGUILUA_SRC_FILES
 ADD_LIBRARY( ceguilua_orxonox SHARED ${CEGUILUA_SRC_FILES} )
 
 TARGET_LINK_LIBRARIES(ceguilua_orxonox
-  lua_orxonox
   tolualib_orxonox
+  ${LUA_LIBRARIES}
   ${CEGUI_LIBRARIES}
 )
