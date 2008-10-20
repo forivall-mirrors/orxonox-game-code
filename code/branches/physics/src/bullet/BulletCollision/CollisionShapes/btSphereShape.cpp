@@ -18,6 +18,14 @@ subject to the following restrictions:
 
 #include "LinearMath/btQuaternion.h"
 
+
+btSphereShape ::btSphereShape (btScalar radius) : btConvexInternalShape ()
+{
+	m_shapeType = SPHERE_SHAPE_PROXYTYPE;
+	m_implicitShapeDimensions.setX(radius);
+	m_collisionMargin = radius;
+}
+
 btVector3	btSphereShape::localGetSupportingVertexWithoutMargin(const btVector3& vec)const
 {
 	(void)vec;

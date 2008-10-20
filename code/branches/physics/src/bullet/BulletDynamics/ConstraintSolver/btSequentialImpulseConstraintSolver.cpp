@@ -718,19 +718,11 @@ btScalar btSequentialImpulseConstraintSolver::solveGroupCacheFriendlySetup(btCol
 							//solverConstraint.m_penetration = cp.getDistance();
 
 							solverConstraint.m_friction = cp.m_combinedFriction;
-
-							
-							if (cp.m_lifeTime>infoGlobal.m_restingContactRestitutionThreshold)
+							solverConstraint.m_restitution =  restitutionCurve(rel_vel, cp.m_combinedRestitution);
+							if (solverConstraint.m_restitution <= btScalar(0.))
 							{
 								solverConstraint.m_restitution = 0.f;
-							} else
-							{
-								solverConstraint.m_restitution =  restitutionCurve(rel_vel, cp.m_combinedRestitution);
-								if (solverConstraint.m_restitution <= btScalar(0.))
-								{
-									solverConstraint.m_restitution = 0.f;
-								};
-							}
+							};
 
 							
 							btScalar penVel = -solverConstraint.m_penetration/infoGlobal.m_timeStep;
@@ -993,7 +985,7 @@ btScalar btSequentialImpulseConstraintSolver::solveGroupCacheFriendly(btCollisio
 		btAssert(pt);
 		pt->m_appliedImpulse = solveManifold.m_appliedImpulse;
 		pt->m_appliedImpulseLateral1 = m_tmpSolverFrictionConstraintPool[solveManifold.m_frictionIndex].m_appliedImpulse;
-		pt->m_appliedImpulseLateral2 = m_tmpSolverFrictionConstraintPool[solveManifold.m_frictionIndex+1].m_appliedImpulse;
+		pt->m_appliedImpulseLateral1 = m_tmpSolverFrictionConstraintPool[solveManifold.m_frictionIndex+1].m_appliedImpulse;
 
 		//do a callback here?
 
@@ -1228,17 +1220,12 @@ void	btSequentialImpulseConstraintSolver::prepareConstraints(btPersistentManifol
 				
 				cpd->m_penetration = cp.getDistance();///btScalar(info.m_numIterations);
 				cpd->m_friction = cp.m_combinedFriction;
-				if (cp.m_lifeTime>info.m_restingContactRestitutionThreshold)
+				cpd->m_restitution = restitutionCurve(rel_vel, combinedRestitution);
+				if (cpd->m_restitution <= btScalar(0.))
 				{
-					cpd->m_restitution = 0.f;
-				} else
-				{
-					cpd->m_restitution = restitutionCurve(rel_vel, combinedRestitution);
-					if (cpd->m_restitution <= btScalar(0.))
-					{
-						cpd->m_restitution = btScalar(0.0);
-					};
-				}
+					cpd->m_restitution = btScalar(0.0);
+
+				};
 				
 				//restitution and penetration work in same direction so
 				//rel_vel 

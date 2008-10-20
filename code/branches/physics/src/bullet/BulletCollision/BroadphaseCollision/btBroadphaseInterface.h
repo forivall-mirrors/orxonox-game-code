@@ -23,12 +23,6 @@ class btDispatcher;
 #include "btBroadphaseProxy.h"
 class btOverlappingPairCache;
 
-struct	btBroadphaseRayCallback
-{
-	virtual ~btBroadphaseRayCallback() {}
-	virtual bool	process(const btBroadphaseProxy* proxy) = 0;
-};
-
 #include "LinearMath/btVector3.h"
 
 ///The btBroadphaseInterface class provides an interface to detect aabb-overlapping object pairs.
@@ -42,10 +36,7 @@ public:
 	virtual btBroadphaseProxy*	createProxy(  const btVector3& aabbMin,  const btVector3& aabbMax,int shapeType,void* userPtr, short int collisionFilterGroup,short int collisionFilterMask, btDispatcher* dispatcher,void* multiSapProxy) =0;
 	virtual void	destroyProxy(btBroadphaseProxy* proxy,btDispatcher* dispatcher)=0;
 	virtual void	setAabb(btBroadphaseProxy* proxy,const btVector3& aabbMin,const btVector3& aabbMax, btDispatcher* dispatcher)=0;
-	virtual void	getAabb(btBroadphaseProxy* proxy,btVector3& aabbMin, btVector3& aabbMax ) const =0;
-
-	virtual void	rayTest(const btVector3& rayFrom,const btVector3& rayTo, btBroadphaseRayCallback& rayCallback) = 0;
-
+	
 	///calculateOverlappingPairs is optional: incremental algorithms (sweep and prune) might do it during the set aabb
 	virtual void	calculateOverlappingPairs(btDispatcher* dispatcher)=0;
 

@@ -237,12 +237,12 @@ public:
 	}
 
 
-	SIMD_FORCE_INLINE btBroadphaseProxy*	getBroadphaseHandle()
+	btBroadphaseProxy*	getBroadphaseHandle()
 	{
 		return m_broadphaseHandle;
 	}
 
-	SIMD_FORCE_INLINE const btBroadphaseProxy*	getBroadphaseHandle() const
+	const btBroadphaseProxy*	getBroadphaseHandle() const
 	{
 		return m_broadphaseHandle;
 	}

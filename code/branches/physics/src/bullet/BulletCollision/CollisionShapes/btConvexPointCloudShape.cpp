@@ -17,13 +17,30 @@ subject to the following restrictions:
 
 #include "LinearMath/btQuaternion.h"
 
+btConvexPointCloudShape::btConvexPointCloudShape (btVector3* points,int numPoints) : btPolyhedralConvexShape ()
+{
+	m_shapeType = CONVEX_POINT_CLOUD_SHAPE_PROXYTYPE;
+	m_points = points;
+	m_numPoints = numPoints;
+
+	recalcLocalAabb();
+}
+
+void btConvexPointCloudShape::setPoints (btVector3* points, int numPoints)
+{
+	m_points = points;
+	m_numPoints = numPoints;
+
+	recalcLocalAabb();
+}
+
+
 void btConvexPointCloudShape::setLocalScaling(const btVector3& scaling)
 {
 	m_localScaling = scaling;
 	recalcLocalAabb();
 }
 
-#ifndef __SPU__
 btVector3	btConvexPointCloudShape::localGetSupportingVertexWithoutMargin(const btVector3& vec0)const
 {
 	btVector3 supVec(btScalar(0.),btScalar(0.),btScalar(0.));
@@ -107,7 +124,7 @@ btVector3	btConvexPointCloudShape::localGetSupportingVertex(const btVector3& vec
 }
 
 
-#endif
+
 
 
 

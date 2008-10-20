@@ -32,9 +32,6 @@ subject to the following restrictions:
 #include "LinearMath/btQuickprof.h"
 #include "LinearMath/btStackAlloc.h"
 
-//#define USE_BRUTEFORCE_RAYBROADPHASE 1
-//RECALCULATE_AABB is slower, but benefit is that you don't need to call 'stepSimulation'  or 'updateAabbs' before using a rayTest
-//#define RECALCULATE_AABB_RAYCAST 1
 
 //When the user doesn't provide dispatcher or broadphase, create basic versions (and delete them in destructor)
 #include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
@@ -229,7 +226,6 @@ void	btCollisionWorld::rayTestSingle(const btTransform& rayFromTrans,const btTra
 
 	if (collisionShape->isConvex())
 	{
-		BT_PROFILE("rayTestConvex");
 		btConvexCast::CastResult castResult;
 		castResult.m_fraction = resultCallback.m_closestHitFraction;
 
@@ -273,7 +269,6 @@ void	btCollisionWorld::rayTestSingle(const btTransform& rayFromTrans,const btTra
 	} else {
 		if (collisionShape->isConcave())
 		{
-			BT_PROFILE("rayTestConcave");
 			if (collisionShape->getShapeType()==TRIANGLE_MESH_SHAPE_PROXYTYPE)
 			{
 				///optimized version for btBvhTriangleMeshShape
@@ -379,7 +374,6 @@ void	btCollisionWorld::rayTestSingle(const btTransform& rayFromTrans,const btTra
 				triangleMesh->processAllTriangles(&rcb,rayAabbMinLocal,rayAabbMaxLocal);
 			}
 		} else {
-			BT_PROFILE("rayTestCompound");
 			//todo: use AABB tree or other BVH acceleration structure!
 			if (collisionShape->isCompound())
 			{
@@ -602,81 +596,46 @@ void	btCollisionWorld::objectQuerySingle(const btConvexShape* castShape,const bt
 	}
 }
 
-
-struct btSingleRayCallback : public btBroadphaseRayCallback
+void	btCollisionWorld::rayTest(const btVector3& rayFromWorld, const btVector3& rayToWorld, RayResultCallback& resultCallback) const
 {
 
-	btVector3	m_rayFromWorld;
-	btVector3	m_rayToWorld;
-	const btCollisionWorld*	m_world;
-	btCollisionWorld::RayResultCallback&	m_resultCallback;
 
-	btSingleRayCallback(const btVector3& rayFromWorld,const btVector3& rayToWorld,const btCollisionWorld* world,btCollisionWorld::RayResultCallback& resultCallback)
-	:m_rayFromWorld(rayFromWorld),
-	m_rayToWorld(rayToWorld),
-	m_world(world),
-	m_resultCallback(resultCallback)
-	{
+	btTransform	rayFromTrans,rayToTrans;
+	rayFromTrans.setIdentity();
+	rayFromTrans.setOrigin(rayFromWorld);
+	rayToTrans.setIdentity();
 
-	}
+	rayToTrans.setOrigin(rayToWorld);
 
-	virtual bool	process(const btBroadphaseProxy* proxy)
+	/// go over all objects, and if the ray intersects their aabb, do a ray-shape query using convexCaster (CCD)
+
+	int i;
+	for (i=0;i<m_collisionObjects.size();i++)
 	{
 		///terminate further ray tests, once the closestHitFraction reached zero
-		if (m_resultCallback.m_closestHitFraction == btScalar(0.f))
-			return false;
+		if (resultCallback.m_closestHitFraction == btScalar(0.f))
+			break;
 
-		btCollisionObject*	collisionObject = (btCollisionObject*)proxy->m_clientObject;
-
+		btCollisionObject*	collisionObject= m_collisionObjects[i];
 		//only perform raycast if filterMask matches
-		if(m_resultCallback.needsCollision(collisionObject->getBroadphaseHandle())) 
-		{
+		if(resultCallback.needsCollision(collisionObject->getBroadphaseHandle())) {
 			//RigidcollisionObject* collisionObject = ctrl->GetRigidcollisionObject();
-			//btVector3 collisionObjectAabbMin,collisionObjectAabbMax;
-			
-#ifdef RECALCULATE_AABB
 			btVector3 collisionObjectAabbMin,collisionObjectAabbMax;
 			collisionObject->getCollisionShape()->getAabb(collisionObject->getWorldTransform(),collisionObjectAabbMin,collisionObjectAabbMax);
-#else
-			//getBroadphase()->getAabb(collisionObject->getBroadphaseHandle(),collisionObjectAabbMin,collisionObjectAabbMax);
-			btVector3& collisionObjectAabbMin = collisionObject->getBroadphaseHandle()->m_aabbMin;
-			btVector3& collisionObjectAabbMax = collisionObject->getBroadphaseHandle()->m_aabbMax;
-#endif
-			btScalar hitLambda = m_resultCallback.m_closestHitFraction;
-			btVector3 hitNormal;
-			if (btRayAabb(m_rayFromWorld,m_rayToWorld,collisionObjectAabbMin,collisionObjectAabbMax,hitLambda,hitNormal))
-			{
-				btTransform	rayFromTrans,rayToTrans;
-				rayFromTrans.setIdentity();
-				rayFromTrans.setOrigin(m_rayFromWorld);
-				rayToTrans.setIdentity();
-				rayToTrans.setOrigin(m_rayToWorld);
 
-				m_world->rayTestSingle(rayFromTrans,rayToTrans,
+			btScalar hitLambda = resultCallback.m_closestHitFraction;
+			btVector3 hitNormal;
+			if (btRayAabb(rayFromWorld,rayToWorld,collisionObjectAabbMin,collisionObjectAabbMax,hitLambda,hitNormal))
+			{
+				rayTestSingle(rayFromTrans,rayToTrans,
 					collisionObject,
 						collisionObject->getCollisionShape(),
 						collisionObject->getWorldTransform(),
-						m_resultCallback);
+						resultCallback);
 			}
 		}
-		return true;
+
 	}
-};
-
-void	btCollisionWorld::rayTest(const btVector3& rayFromWorld, const btVector3& rayToWorld, RayResultCallback& resultCallback) const
-{
-	BT_PROFILE("rayTest");
-	/// go over all objects, and if the ray intersects their aabb, do a ray-shape query using convexCaster (CCD)
-	btSingleRayCallback rayCB(rayFromWorld,rayToWorld,this,resultCallback);
-
-#ifndef USE_BRUTEFORCE_RAYBROADPHASE
-	m_broadphasePairCache->rayTest(rayFromWorld,rayToWorld,rayCB);
-#else
-	for (int i=0;i<this->getNumCollisionObjects();i++)
-	{
-		rayCB.process(m_collisionObjects[i]->getBroadphaseHandle());
-	}	
-#endif //USE_BRUTEFORCE_RAYBROADPHASE
 
 }
 
