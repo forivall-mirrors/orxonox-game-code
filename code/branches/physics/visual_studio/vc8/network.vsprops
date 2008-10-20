@@ -8,6 +8,7 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalOptions="/MP2"
+		AdditionalIncludeDirectories="$(RootDir)src\orxonox"
 		PreprocessorDefinitions="ORXONOX_NO_EXPORTS;NETWORK_STATIC_BUILD"
 	/>
 	<Tool

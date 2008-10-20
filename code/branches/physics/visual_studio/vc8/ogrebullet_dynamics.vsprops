@@ -7,7 +7,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalOptions="/MP2 /Zm200"
+		AdditionalOptions="/Zm200"
 		AdditionalIncludeDirectories="$(RootDir)src\bullet;$(RootDir)src\ogrebullet\Collisions;$(RootDir)src\ogrebullet\Dynamics"
 		PreprocessorDefinitions="_PRECOMP"
 		UsePrecompiledHeader="2"
