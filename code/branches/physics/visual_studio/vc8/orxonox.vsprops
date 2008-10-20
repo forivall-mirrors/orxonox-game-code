@@ -8,6 +8,7 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalOptions="/MP2 /Zm200"
+		AdditionalIncludeDirectories="$(RootDir)src\orxonox"
 		PreprocessorDefinitions="ORXONOX_NO_EXPORTS;NETWORK_STATIC_BUILD;LUA_BUILD_AS_DLL"
 		UsePrecompiledHeader="2"
 		PrecompiledHeaderThrough="OrxonoxStableHeaders.h"
