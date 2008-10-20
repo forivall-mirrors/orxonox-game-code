@@ -5,7 +5,7 @@ SET( OGREBULLET_SRC_FILES
   OgreBulletCollisionsShape.cpp
   OgreBulletCollisionsWorld.cpp
   
-  Debug/OgreBulletCollisionsDebugContanct.cpp
+  Debug/OgreBulletCollisionsDebugContact.cpp
   Debug/OgreBulletCollisionsDebugDrawer.cpp
   Debug/OgreBulletCollisionsDebugLines.cpp
   Debug/OgreBulletCollisionsDebugShape.cpp
@@ -34,15 +34,16 @@ SET( OGREBULLET_SRC_FILES
   OgreBulletDynamicsRigidBody.cpp
   OgreBulletDynamicsWorld.cpp
   
-  Contraints/OgreBulletDynamics6DofContraints.cpp
-  Contraints/OgreBulletDynamicsConeTwistContraint.cpp
-  Contraints/OgreBulletDynamicsHingeConstraint.cpp
-  Contraints/OgreBulletDynamicsPoint2pointContraint.cpp
-  Contraints/OgreBulletDynamicsRaycastVehicle.cpp
+  Constraints/OgreBulletDynamics6DofConstraint.cpp
+  Constraints/OgreBulletDynamicsConeTwistConstraint.cpp
+  Constraints/OgreBulletDynamicsHingeConstraint.cpp
+  Constraints/OgreBulletDynamicsPoint2pointConstraint.cpp
+  Constraints/OgreBulletDynamicsRaycastVehicle.cpp
   
   Prefab/OgreBulletDynamicsRagDoll.cpp
 )
 
 INCLUDE_DIRECTORIES(.)
+INCLUDE_DIRECTORIES(../bullet)
 
 ADD_LIBRARY(ogrebullet_orxonox STATIC ${OGREBULLET_SRC_FILES})
