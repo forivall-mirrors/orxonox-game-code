@@ -80,6 +80,8 @@ namespace orxonox
     class RadarListener;
 
     // objects
+    class Template;
+
     class WorldEntity;
     class PositionableEntity;
     class MovableEntity;

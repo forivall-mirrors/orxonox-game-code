@@ -42,6 +42,8 @@ SET( ORXONOX_SRC_FILES
   tools/Timer.cc
   tools/WindowEventListener.cc
 
+  objects/Template.cc
+
   objects/worldentities/WorldEntity.cc
   objects/worldentities/PositionableEntity.cc
   objects/worldentities/MovableEntity.cc
