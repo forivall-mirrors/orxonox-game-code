@@ -13,6 +13,4 @@ SET( OGREBULLET_DYNAMICS_SRC_FILES
   Prefab/OgreBulletDynamicsRagDoll.cpp
 )
 
-INCLUDE_DIRECTORIES(.)
-
 ADD_LIBRARY(ogrebullet_dynamics_orxonox STATIC ${OGREBULLET_DYNAMICS_SRC_FILES})

@@ -27,6 +27,4 @@ SET( OGREBULLET_COLLISIONS_SRC_FILES
   Utils/OgreBulletCollisionsMeshToShapeConverter.cpp
 )
 
-INCLUDE_DIRECTORIES(.)
-
 ADD_LIBRARY(ogrebullet_collisions_orxonox STATIC ${OGREBULLET_COLLISIONS_SRC_FILES})
