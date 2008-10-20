@@ -53,20 +53,32 @@ namespace orxonox {
       Trigger();
       ~Trigger();
 
-      inline bool isActive() { return bActive_; }
+      virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+      virtual void tick(float dt);
+
+      inline bool isActive() const
+        { return bActive_; }
+
       void addTrigger(Trigger* trig);
-      void setInvert(int invert) { bInvertMode_ = invert; }
       const Trigger* getTrigger(unsigned int index) const;
-      void setVisibility(bool bVisible);
+
+      inline TriggerMode getMode() const
+        { return mode_; }
+      inline void setMode(TriggerMode mode)
+        { this->mode_ = mode; }
+      void setMode(const std::string& modeName);
+
+      inline void setInvert(int invert)
+        { bInvertMode_ = invert; }
+      inline void setStayOn(int stayOn)
+        { this->bStayOn_ = (stayOn == 1) ? true : false; }
+      inline void setActivations(int activations)
+        { this->remainingActivations_ = activations; }
       void setDelay(float delay);
       bool switchState();
-      virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-      inline TriggerMode getMode() { return mode_; }
-      inline void setMode(TriggerMode mode) { this->mode_ = mode; }
-      void setMode(std::string modeName);
-      inline void setStayOn(int stayOn) { if (stayOn == 1) this->bStayOn_ = true; else this->bStayOn_ = false; }
-      inline void setActivations(int activations) { this->remainingActivations_ = activations; }
-      void tick(float dt);
+
+      static void debugFlares(bool bVisible);
+      virtual void changedVisibility();
 
     private:
       void init();

@@ -68,7 +68,7 @@ namespace orxonox {
     }
   }
 
-  void DistanceTrigger::addTargets(std::string targets)
+  void DistanceTrigger::addTargets(const std::string& targets)
   {
     Identifier* targetId = ClassByString(targets);
     targetMask_.include(targetId);
@@ -77,7 +77,7 @@ namespace orxonox {
 
   }
 
-  void DistanceTrigger::removeTargets(std::string targets)
+  void DistanceTrigger::removeTargets(const std::string& targets)
   {
     Identifier* targetId = ClassByString(targets);
     targetMask_.exclude(targetId);

@@ -47,8 +47,8 @@ namespace orxonox {
       ~DistanceTrigger();
       void addTarget(Ogre::Node* targetNode);
       void removeTarget(Ogre::Node* targetNode);
-      void addTargets(std::string targets);
-      void removeTargets(std::string targets);
+      void addTargets(const std::string& targets);
+      void removeTargets(const std::string& targets);
       void setDistance(float dist);
       virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
       bool checkDistance();

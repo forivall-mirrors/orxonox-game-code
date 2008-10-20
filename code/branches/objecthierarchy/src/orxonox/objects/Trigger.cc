@@ -38,7 +38,7 @@
 namespace orxonox
 {
 
-  SetConsoleCommand(Trigger, setVisibility, false).accessLevel(AccessLevel::User).defaultValues(0);
+  SetConsoleCommand(Trigger, debugFlares, false).defaultValues(false);
 
   CreateFactory(Trigger);
 
@@ -57,6 +57,8 @@ namespace orxonox
     latestState_ = 0x0;
 
     debugBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
+    debugBillboard_.setVisible(false);
+
     this->getNode()->attachObject(debugBillboard_.getBillboardSet());
   }
 
@@ -66,16 +68,18 @@ namespace orxonox
 
   void Trigger::init()
   {
-    this->setVisibility(true);
     timeSinceLastEvent_ = delay_;
   }
 
-  void Trigger::setVisibility(bool bVisible)
+  void Trigger::debugFlares(bool bVisible)
   {
-    if(bVisible)
-      this->setScale(2);
-    else
-      this->setScale(0);
+    for (ObjectList<Trigger>::iterator it = ObjectList<Trigger>::begin(); it != ObjectList<Trigger>::end(); ++it)
+      it->setVisible(bVisible);
+  }
+
+  void Trigger::changedVisibility()
+  {
+    debugBillboard_.setVisible(this->isVisible());
   }
 
   const Trigger* Trigger::getTrigger(unsigned int index) const
@@ -205,7 +209,7 @@ namespace orxonox
     this->delay_ = delay;
   }
 
-  void Trigger::setMode(std::string modeName)
+  void Trigger::setMode(const std::string& modeName)
   {
     if (modeName == "and")
       setMode(TM_EventTriggerAND);
@@ -223,7 +227,7 @@ namespace orxonox
     XMLPortParamLoadOnly(Trigger, "stayOn", setStayOn, xmlelement, mode);
     XMLPortParamLoadOnly(Trigger, "activations", setActivations, xmlelement, mode);
     XMLPortParamLoadOnly(Trigger, "invert", setInvert, xmlelement, mode);
-    //XMLPortParamLoadOnlyTemplate(Trigger, "mode", setMode, xmlelement, mode, std::string);
+    XMLPortParamLoadOnlyTemplate(Trigger, "mode", setMode, xmlelement, mode, const std::string&);
 
     XMLPortObject(Trigger, Trigger, "", addTrigger, getTrigger, xmlelement, mode);
 
