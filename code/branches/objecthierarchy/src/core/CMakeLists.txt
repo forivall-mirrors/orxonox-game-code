@@ -30,6 +30,7 @@ SET(CORE_SRC_FILES
   Loader.cc
   Namespace.cc
   NamespaceNode.cc
+  Template.cc
   XMLPort.cc
 
   # shell

@@ -80,7 +80,8 @@ namespace network
     if(!orxonox::Identifier::isCreatingHierarchy()){
       for(std::list<synchronisableVariable *>::iterator it = syncList->begin(); it!=syncList->end(); it++)
         delete (*it)->callback;
-      deletedObjects_.push(objectID);
+      if (this->objectMode_ != 0x0)
+        deletedObjects_.push(objectID);
 //       COUT(3) << "destruct synchronisable +++" << objectID << " | " << classID << std::endl;
 //       COUT(3) << " bump ---" << objectID << " | " << &objectMap_ << std::endl;
 //       assert(objectMap_[objectID]->objectID==objectID);
@@ -417,7 +418,7 @@ namespace network
    * @param mode same as in registerVar
    */
   void Synchronisable::setObjectMode(int mode){
-    assert(mode==0x1 || mode==0x2 || mode==0x3);
+    assert(mode==0x0 || mode==0x1 || mode==0x2 || mode==0x3);
     objectMode_=mode;
   }
 

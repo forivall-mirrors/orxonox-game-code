@@ -121,10 +121,14 @@ namespace orxonox
     {
         this->players_.insert(player);
         this->playerJoined(player);
+
+        ControllableEntity* newpawn = this->defaultPawn_.fabricate();
+        player->startControl(newpawn);
     }
 
     void Gametype::removePlayer(PlayerInfo* player)
     {
+        player->stopControl();
         this->players_.erase(player);
         this->playerLeft(player);
     }

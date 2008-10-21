@@ -86,6 +86,12 @@ namespace orxonox
             inline const Level* getLevel() const { return this->level_; }
             const std::string& getLevelfile() const;
 
+            void addTemplate(const std::string& name);
+            void addTemplate(Template* temp);
+            /** @brief Returns the set of all aplied templates. */
+            inline const std::set<Template*>& getTemplates() const
+                { return this->templates_; }
+
             virtual inline void setNamespace(Namespace* ns) { this->namespace_ = ns; }
             inline Namespace* getNamespace() const { return this->namespace_; }
 
@@ -101,10 +107,13 @@ namespace orxonox
             bool bVisible_;                             //!< True = the object is visible
 
         private:
+            Template* getTemplate(unsigned int index) const;
+
             bool bInitialized_;                         //!< True if the object was initialized (passed the object registration)
             const Level* level_;                        //!< The level that loaded this object
             std::string loaderIndentation_;             //!< Indentation of the debug output in the Loader
             Namespace* namespace_;
+            std::set<Template*> templates_;
     };
 
     SUPER_FUNCTION(0, BaseObject, XMLPort, false);

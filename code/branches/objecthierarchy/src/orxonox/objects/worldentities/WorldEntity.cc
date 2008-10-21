@@ -38,6 +38,13 @@
 
 namespace orxonox
 {
+    const Vector3 WorldEntity::FRONT = Vector3::NEGATIVE_UNIT_Z;
+    const Vector3 WorldEntity::BACK  = Vector3::UNIT_Z;
+    const Vector3 WorldEntity::LEFT  = Vector3::NEGATIVE_UNIT_X;
+    const Vector3 WorldEntity::RIGHT = Vector3::UNIT_X;
+    const Vector3 WorldEntity::DOWN  = Vector3::NEGATIVE_UNIT_Y;
+    const Vector3 WorldEntity::UP    = Vector3::UNIT_Y;
+
     WorldEntity::WorldEntity()
     {
         RegisterObject(WorldEntity);
@@ -45,6 +52,9 @@ namespace orxonox
         this->node_ = GraphicsEngine::getInstance().getLevelSceneManager()->createSceneNode();
         this->parent_ = 0;
         this->parentID_ = (unsigned int)-1;
+
+        this->node_->setPosition(Vector3::ZERO);
+        this->node_->setOrientation(Quaternion::IDENTITY);
 
         this->registerVariables();
     }

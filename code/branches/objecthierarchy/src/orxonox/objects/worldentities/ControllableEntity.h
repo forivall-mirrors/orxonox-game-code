@@ -26,27 +26,50 @@
  *
  */
 
-#ifndef _MovableEntity_H__
-#define _MovableEntity_H__
+#ifndef _ControllableEntity_H__
+#define _ControllableEntity_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include "WorldEntity.h"
 #include "objects/Tickable.h"
-#include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport MovableEntity : public WorldEntity, public Tickable, public network::ClientConnectionListener
+    class _OrxonoxExport ControllableEntity : public WorldEntity, public Tickable
     {
         public:
-            MovableEntity();
-            virtual ~MovableEntity();
+            ControllableEntity();
+            virtual ~ControllableEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
             void registerVariables();
 
+            virtual void setPlayer(PlayerInfo* player);
+            virtual void removePlayer();
+            inline PlayerInfo* getPlayer() const
+                { return this->player_; }
+
+            virtual void startLocalControl();
+            virtual void stopLocalControl();
+
+            virtual void moveFrontBack(float value) {}
+            virtual void moveRightLeft(float value) {}
+            virtual void moveUpDown(float value) {}
+
+            virtual void rotateYaw(float value) {}
+            virtual void rotatePitch(float value) {}
+            virtual void rotateRoll(float value) {}
+
+            virtual void fire() {}
+            virtual void altFire() {}
+
+            virtual void greet() {}
+            virtual void use() {}
+            virtual void switchCamera() {}
+
+        protected:
             using WorldEntity::setPosition;
             using WorldEntity::translate;
             using WorldEntity::setOrientation;
@@ -64,8 +87,7 @@ namespace orxonox
             void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
             void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z);
 
-            inline void setVelocity(const Vector3& velocity)
-                { this->velocity_ = velocity; }
+            void setVelocity(const Vector3& velocity);
             inline void setVelocity(float x, float y, float z)
                 { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
             inline const Vector3& getVelocity() const
@@ -78,44 +100,45 @@ namespace orxonox
             inline const Vector3& getAcceleration() const
                 { return this->acceleration_; }
 
-            inline void setRotationAxis(const Vector3& axis)
-                { this->rotationAxis_ = axis; this->rotationAxis_.normalise(); }
-            inline void setRotationAxis(float x, float y, float z)
-                { this->rotationAxis_.x = x; this->rotationAxis_.y = y; this->rotationAxis_.z = z; rotationAxis_.normalise(); }
-            inline const Vector3& getRotationAxis() const
-                { return this->rotationAxis_; }
-
-            inline void setRotationRate(const Degree& angle)
-                { this->rotationRate_ = angle; }
-            inline void setRotationRate(const Radian& angle)
-                { this->rotationRate_ = angle; }
-            inline const Degree& getRotationRate() const
-                { return this->rotationRate_; }
-
-            inline void setMomentum(const Degree& angle)
-                { this->momentum_ = angle; }
-            inline void setMomentum(const Radian& angle)
-                { this->momentum_ = angle; }
-            inline const Degree& getMomentum() const
-                { return this->momentum_; }
-
         private:
-            void clientConnected(unsigned int clientID);
-            void clientDisconnected(unsigned int clientID);
-            void resynchronize();
+            inline void setHudTemplate(const std::string& name)
+                { this->hudtemplate_ = name; }
+            inline const std::string& getHudTemplate() const
+                { return this->hudtemplate_; }
 
-            void overwritePosition();
-            void overwriteOrientation();
+            void overwrite();
+            void processOverwrite();
+
+            void processServerPosition();
+            void processServerVelocity();
+            void processServerOrientation();
+
+            void processClientPosition();
+            void processClientVelocity();
+            void processClientOrientation();
+
+            void updatePlayer();
+
+            unsigned int server_overwrite_;
+            unsigned int client_overwrite_;
 
             Vector3 velocity_;
             Vector3 acceleration_;
-            Vector3 rotationAxis_;
-            Degree rotationRate_;
-            Degree momentum_;
 
-            Vector3 overwrite_position_;
-            Quaternion overwrite_orientation_;
+            bool bControlled_;
+            Vector3 server_position_;
+            Vector3 client_position_;
+            Vector3 server_velocity_;
+            Vector3 client_velocity_;
+            Quaternion server_orientation_;
+            Quaternion client_orientation_;
+
+            PlayerInfo* player_;
+            unsigned int playerID_;
+            std::string hudtemplate_;
+            OverlayGroup* hud_;
+            Camera* camera_;
     };
 }
 
-#endif /* _MovableEntity_H__ */
+#endif /* _ControllableEntity_H__ */

@@ -36,6 +36,7 @@
 #include "CoreIncludes.h"
 #include "XMLPort.h"
 #include "Level.h"
+#include "Template.h"
 
 namespace orxonox
 {
@@ -75,6 +76,8 @@ namespace orxonox
         XMLPortParam(BaseObject, "name", setName, getName, xmlelement, mode);
         XMLPortParam(BaseObject, "visible", setVisible, isVisible, xmlelement, mode);
         XMLPortParam(BaseObject, "active", setActive, isActive, xmlelement, mode);
+
+        XMLPortObjectTemplate(BaseObject, Template, "templates", addTemplate, getTemplate, xmlelement, mode, const std::string&);
     }
 
     /**
@@ -84,5 +87,44 @@ namespace orxonox
     const std::string& BaseObject::getLevelfile() const
     {
         return this->level_->getFile();
+    }
+
+    /**
+        @brief Adds a Template to the object.
+        @param name The name of the Template
+    */
+    void BaseObject::addTemplate(const std::string& name)
+    {
+        Template* temp = Template::getTemplate(name);
+        if (temp)
+            this->addTemplate(temp);
+        else
+            COUT(1) << "Error: \"" << name << "\" is not a valid Template name (in class: " << this->getIdentifier()->getName() << ", name: " << this->getName() << ")." << std::endl;
+    }
+
+    /**
+        @brief Adds a Template to the object.
+        @param temp The Template
+    */
+    void BaseObject::addTemplate(Template* temp)
+    {
+        this->templates_.insert(temp);
+        temp->applyOn(this);
+    }
+
+    /**
+        @brief Returns the Template with the given index.
+        @param index The index
+    */
+    Template* BaseObject::getTemplate(unsigned int index) const
+    {
+        unsigned int i = 0;
+        for (std::set<Template*>::const_iterator it = this->templates_.begin(); it != this->templates_.end(); ++it)
+        {
+            if (i == index)
+                return (*it);
+            i++;
+        }
+        return 0;
     }
 }

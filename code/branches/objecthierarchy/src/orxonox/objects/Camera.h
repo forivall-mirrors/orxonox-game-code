@@ -34,37 +34,38 @@
 #include <OgreCamera.h>
 
 #include "OrxonoxPrereqs.h"
+#include "objects/worldentities/PositionableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Camera
+    class _OrxonoxExport Camera : public PositionableEntity
     {
       friend class CameraHandler;
       public:
-        Camera(Ogre::SceneNode* node = NULL);
+        Camera();
         virtual ~Camera();
-
-        void setPositionNode(Ogre::SceneNode* node);
-        inline Ogre::SceneNode* getCameraNode() { return this->positionNode_; }
-        // maybe also BaseObject
-        void setTargetNode(Ogre::SceneNode* obj);
-
-        Ogre::Camera* cam_;
 
         void tick(float dt);
         void update();
-        inline bool hasFocus() { return this->bHasFocus_; }
+
+        void requestFocus();
+        inline bool hasFocus()
+            { return this->bHasFocus_; }
+
+        inline void setDrag(bool bDrag)
+            { this->bDrag_ = bDrag; }
+        inline bool getDrag() const
+            { return this->bDrag_; }
 
       private:
         void removeFocus();
         void setFocus(Ogre::Camera* ogreCam);
 
-      private:
-        Ogre::SceneNode* targetNode_;
-        Ogre::SceneNode* positionNode_;
+        Ogre::Camera* cam_;
         Ogre::SceneNode* cameraNode_;
         Ogre::Vector3 oldPos;
         bool bHasFocus_;
+        bool bDrag_;
     };
 }
 

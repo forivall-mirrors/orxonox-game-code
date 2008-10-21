@@ -218,7 +218,7 @@
     @brief This is the same as XMLPortObjectExtended, but you can specify the loadfunction by adding the param types. See XMLPortParamTemplate for more details about the types.
 */
 #define XMLPortObjectExtendedTemplate(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, bApplyLoaderMask, bLoadBefore, ...) \
-    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, bApplyLoaderMask, bLoadBefore)
 
 // -------------
 // XMLPortObject
@@ -232,7 +232,7 @@
     @brief This is the same as XMLPortObject, but you can specify the loadfunction by adding the param types. See XMLPortParamTemplate for more details about the types.
 */
 #define XMLPortObjectTemplate(classname, objectclass, sectionname, loadfunction, savefunction, xmlelement, mode, ...) \
-    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor< __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, false, true)
+    XMLPortObjectGeneric(xmlcontainer##loadfunction##savefunction, classname, objectclass, sectionname, orxonox::createExecutor(orxonox::createFunctor<classname, __VA_ARGS__ >(&classname::loadfunction), std::string( #classname ) + "::" + #loadfunction), orxonox::createExecutor(orxonox::createFunctor(&classname::savefunction), std::string( #classname ) + "::" + #savefunction), xmlelement, mode, false, true)
 
 // --------------------
 // XMLPortObjectGeneric

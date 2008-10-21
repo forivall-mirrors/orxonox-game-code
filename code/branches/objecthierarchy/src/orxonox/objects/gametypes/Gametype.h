@@ -34,7 +34,9 @@
 #include <map>
 
 #include "core/BaseObject.h"
+#include "core/Identifier.h"
 #include "network/ClientConnectionListener.h"
+#include "objects/worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
@@ -70,6 +72,7 @@ namespace orxonox
 
             std::set<PlayerInfo*> players_;
             std::map<unsigned int, PlayerInfo*> clients_;
+            SubclassIdentifier<ControllableEntity> defaultPawn_;
     };
 }
 

@@ -31,19 +31,21 @@
 
 #include <map>
 
-#include "OrxonoxPrereqs.h"
-#include "core/BaseObject.h"
+#include "CorePrereqs.h"
+
+#include "BaseObject.h"
 #include "tinyxml/ticpp.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Template : public BaseObject
+    class _CoreExport Template : public BaseObject
     {
         public:
             Template();
             virtual ~Template();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void changedName();
 
             inline void setLink(const std::string& link)
                 { this->link_ = link; this->bIsLink_ = (link != ""); }

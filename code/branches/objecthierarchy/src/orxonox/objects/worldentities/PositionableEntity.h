@@ -57,11 +57,11 @@ namespace orxonox
                 { this->node_->setOrientation(orientation); }
             inline void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
                 { this->node_->rotate(rotation, relativeTo); }
-            inline void yaw(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
+            inline void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
                 { this->node_->yaw(angle, relativeTo); }
-            inline void pitch(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
+            inline void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
                 { this->node_->pitch(angle, relativeTo); }
-            inline void roll(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
+            inline void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
                 { this->node_->roll(angle, relativeTo); }
             inline void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z)
                 { this->node_->lookAt(target, relativeTo, localDirectionVector); }

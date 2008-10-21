@@ -43,6 +43,15 @@ namespace orxonox
     {
         RegisterObject(MovableEntity);
 
+        this->velocity_ = Vector3::ZERO;
+        this->acceleration_ = Vector3::ZERO;
+        this->rotationAxis_ = Vector3::ZERO;
+        this->rotationRate_ = 0;
+        this->momentum_ = 0;
+
+        this->overwrite_position_ = Vector3::ZERO;
+        this->overwrite_orientation_ = Quaternion::IDENTITY;
+
         this->registerVariables();
     }
 
@@ -56,7 +65,7 @@ namespace orxonox
 
         XMLPortParamTemplate(MovableEntity, "velocity", setVelocity, getVelocity, xmlelement, mode, const Vector3&);
         XMLPortParamTemplate(MovableEntity, "rotationaxis", setRotationAxis, getRotationAxis, xmlelement, mode, const Vector3&);
-        XMLPortParamTemplate(MovableEntity, "rotationrate", setRotationRate, getRotationRate, xmlelement, mode, const Radian&);
+        XMLPortParamTemplate(MovableEntity, "rotationrate", setRotationRate, getRotationRate, xmlelement, mode, const Degree&);
     }
 
     void MovableEntity::tick(float dt)
@@ -138,19 +147,19 @@ namespace orxonox
         this->overwrite_orientation_ = this->node_->getOrientation();
     }
 
-    void MovableEntity::yaw(const Radian& angle, Ogre::Node::TransformSpace relativeTo)
+    void MovableEntity::yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
         this->node_->yaw(angle, relativeTo);
         this->overwrite_orientation_ = this->node_->getOrientation();
     }
 
-    void MovableEntity::pitch(const Radian& angle, Ogre::Node::TransformSpace relativeTo)
+    void MovableEntity::pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
         this->node_->pitch(angle, relativeTo);
         this->overwrite_orientation_ = this->node_->getOrientation();
     }
 
-    void MovableEntity::roll(const Radian& angle, Ogre::Node::TransformSpace relativeTo)
+    void MovableEntity::roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo)
     {
         this->node_->roll(angle, relativeTo);
         this->overwrite_orientation_ = this->node_->getOrientation();

@@ -47,6 +47,8 @@
 
 namespace network
 {
+  static const unsigned int OBJECTID_UNKNOWN = (unsigned int)-1;
+
   namespace direction{
     enum syncdirection{
       toclient=0x1,

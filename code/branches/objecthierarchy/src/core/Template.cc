@@ -48,6 +48,7 @@ namespace orxonox
 
     Template::~Template()
     {
+        Template::getTemplateMap().erase(this->getName());
     }
 
     void Template::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -58,6 +59,23 @@ namespace orxonox
         XMLPortParam(Template, "baseclass", setBaseclass, getBaseclass, xmlelement, mode);
 
         this->setXMLElement(*xmlelement.FirstChildElement(false));
+    }
+
+    void Template::changedName()
+    {
+        if (this->getName() != "")
+        {
+            std::map<std::string, Template*>::iterator it;
+            it = Template::getTemplateMap().find(this->getOldName());
+            if (it != Template::getTemplateMap().end())
+                Template::getTemplateMap().erase(it);
+
+            it = Template::getTemplateMap().find(this->getName());
+            if (it != Template::getTemplateMap().end())
+                COUT(2) << "Warning: Template with name \"" << this->getName() << "\" already exists." << std::endl;
+            else
+                Template::getTemplateMap()[this->getName()] = this;
+        }
     }
 
     const Element& Template::getXMLElement() const

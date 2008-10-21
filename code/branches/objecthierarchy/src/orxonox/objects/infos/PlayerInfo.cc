@@ -40,6 +40,7 @@
 
 #include "GraphicsEngine.h"
 #include "objects/gametypes/Gametype.h"
+#include "objects/worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
@@ -55,6 +56,9 @@ namespace orxonox
         this->bLocalPlayer_ = false;
         this->bHumanPlayer_ = false;
         this->bFinishedSetup_ = false;
+
+        this->pawn_ = 0;
+        this->pawnID_ = network::OBJECTID_UNKNOWN;
 
         this->setConfigValues();
         this->registerVariables();
@@ -102,6 +106,7 @@ namespace orxonox
         REGISTERDATA(clientID_,       network::direction::toclient, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::checkClientID));
         REGISTERDATA(ping_,           network::direction::toclient);
         REGISTERDATA(bHumanPlayer_,   network::direction::toclient);
+        REGISTERDATA(pawnID_,         network::direction::toclient, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::updatePawn));
         REGISTERDATA(bFinishedSetup_, network::direction::bidirectional, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::finishedSetup));
     }
 
@@ -158,5 +163,26 @@ namespace orxonox
         {
 //std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): we're a server: client not yet finished" << std::endl;
         }
+    }
+
+    void PlayerInfo::startControl(ControllableEntity* pawn)
+    {
+        pawn->setPlayer(this);
+        this->pawn_ = pawn;
+        this->pawnID_ = pawn->getObjectID();
+    }
+
+    void PlayerInfo::stopControl()
+    {
+        this->pawn_->removePlayer();
+        this->pawn_ = 0;
+        this->pawnID_ = network::OBJECTID_UNKNOWN;
+    }
+
+    void PlayerInfo::updatePawn()
+    {
+        this->pawn_ = dynamic_cast<ControllableEntity*>(network::Synchronisable::getSynchronisable(this->pawnID_));
+        if (this->pawn_ && (this->pawn_->getPlayer() != this))
+            this->pawn_->setPlayer(this);
     }
 }

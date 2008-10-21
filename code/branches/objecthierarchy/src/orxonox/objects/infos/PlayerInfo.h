@@ -51,16 +51,24 @@ namespace orxonox
             inline unsigned int getClientID() const
                 { return this->clientID_; }
 
-            inline void setHumanPlayer(bool bHumanPlayer)
-                { this->bHumanPlayer_ = bHumanPlayer; }
             inline bool isHumanPlayer() const
                 { return this->bHumanPlayer_; }
+
+            inline bool isLocalPlayer() const
+                { return this->bLocalPlayer_; }
+
+            void startControl(ControllableEntity* pawn);
+            void stopControl();
+
+            inline ControllableEntity* getPawn() const
+                { return this->pawn_; }
 
         private:
             void checkClientID();
             void finishedSetup();
             void checkNick();
             void clientChangedName();
+            void updatePawn();
 
             unsigned int clientID_;
             float ping_;
@@ -70,6 +78,9 @@ namespace orxonox
 
             std::string playerName_;
             std::string nick_;
+
+            ControllableEntity* pawn_;
+            unsigned int pawnID_;
     };
 }
 

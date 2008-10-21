@@ -48,6 +48,7 @@ namespace orxonox
     {
         GSLevel::enter();
 
+        Core::setIsStandalone(true);
         this->loadLevel();
 
         // add console commands
@@ -57,8 +58,6 @@ namespace orxonox
 
         // level is loaded: we can start capturing the input
         InputManager::getInstance().requestEnterState("game");
-
-        Core::setIsStandalone(true);
     }
 
     void GSStandalone::leave()

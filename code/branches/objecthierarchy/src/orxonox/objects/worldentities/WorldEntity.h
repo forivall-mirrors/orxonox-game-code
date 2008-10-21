@@ -53,6 +53,13 @@ namespace orxonox
             inline Ogre::SceneNode* getNode() const
                 { return this->node_; }
 
+            static const Vector3 FRONT;
+            static const Vector3 BACK;
+            static const Vector3 LEFT;
+            static const Vector3 RIGHT;
+            static const Vector3 DOWN;
+            static const Vector3 UP;
+
             virtual void setPosition(const Vector3& position) = 0;
             inline void setPosition(float x, float y, float z)
                 { this->setPosition(Vector3(x, y, z)); }
@@ -70,18 +77,28 @@ namespace orxonox
                 { this->setOrientation(Quaternion(w, x, y, z)); }
             inline void setOrientation(const Vector3& axis, const Radian& angle)
                 { this->setOrientation(Quaternion(angle, axis)); }
+            inline void setOrientation(const Vector3& axis, const Degree& angle)
+                { this->setOrientation(Quaternion(angle, axis)); }
             inline const Quaternion& getOrientation() const
                 { return this->node_->getOrientation(); }
             inline const Quaternion& getWorldOrientation() const
                 { return this->node_->getWorldOrientation(); }
 
             virtual void rotate(const Quaternion& rotation, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
+            inline void rotate(const Vector3& axis, const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
+                { this->rotate(Quaternion(angle, axis), relativeTo); }
             inline void rotate(const Vector3& axis, const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
                 { this->rotate(Quaternion(angle, axis), relativeTo); }
 
-            virtual void yaw(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            virtual void pitch(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
-            virtual void roll(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
+            virtual void yaw(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
+            inline void yaw(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
+                { this->yaw(Degree(angle), relativeTo); }
+            virtual void pitch(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
+            inline void pitch(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
+                { this->pitch(Degree(angle), relativeTo); }
+            virtual void roll(const Degree& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL) = 0;
+            inline void roll(const Radian& angle, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL)
+                { this->roll(Degree(angle), relativeTo); }
 
             virtual void lookAt(const Vector3& target, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z) = 0;
             virtual void setDirection(const Vector3& direction, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_LOCAL, const Vector3& localDirectionVector = Vector3::NEGATIVE_UNIT_Z) = 0;
@@ -130,11 +147,11 @@ namespace orxonox
                 { this->lookAt(target); }
             inline void setDirection_xmlport(const Vector3& direction)
                 { this->setDirection(direction); }
-            inline void yaw_xmlport(const Radian& angle)
+            inline void yaw_xmlport(const Degree& angle)
                 { this->yaw(angle); }
-            inline void pitch_xmlport(const Radian& angle)
+            inline void pitch_xmlport(const Degree& angle)
                 { this->pitch(angle); }
-            inline void roll_xmlport(const Radian& angle)
+            inline void roll_xmlport(const Degree& angle)
                 { this->roll(angle); }
 
             WorldEntity* parent_;

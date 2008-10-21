@@ -46,46 +46,34 @@
 
 namespace orxonox
 {
-
-  Camera::Camera(Ogre::SceneNode* node)
+  Camera::Camera()
   {
+    RegisterObject(Camera);
+
     this->bHasFocus_ = false;
-    this->cameraNode_ = GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode(node->getName() + "Camera");
-    if( node != NULL )
-      this->setPositionNode(node);
+    this->bDrag_ = false;
+    this->cameraNode_ = GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode();
+    this->setObjectMode(0x0);
   }
 
   Camera::~Camera()
   {
-    CameraHandler::getInstance()->releaseFocus(this);
-    GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->removeAndDestroyChild(cameraNode_->getName());
-  }
-
-  void Camera::setPositionNode(Ogre::SceneNode* node)
-  {
-    this->positionNode_ = node;
-    // set camera to node values according to camera mode
-  }
-
-  void Camera::setTargetNode(Ogre::SceneNode* obj)
-  {
-    this->targetNode_ = obj;
+    if (this->isInitialized())
+    {
+      CameraHandler::getInstance()->releaseFocus(this);
+      GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->removeAndDestroyChild(this->cameraNode_->getName());
+    }
   }
 
   void Camera::tick(float dt)
   {
-    if (this->positionNode_ != NULL)
-    {
       // this stuff here may need some adjustments
-      Vector3 offset = this->positionNode_->getWorldPosition() - this->cameraNode_->getWorldPosition();
-      float coeff = 15.0f * dt;
-      if (coeff > 1.0f)
-        coeff = 1.0f;
+      float coeff = (this->bDrag_) ? min(1.0f, 15.0f * dt) : (1.0f);
 
+      Vector3 offset = this->getNode()->getWorldPosition() - this->cameraNode_->getWorldPosition();
       this->cameraNode_->translate(coeff * offset);
 
-      this->cameraNode_->setOrientation(Quaternion::Slerp(1-coeff, this->positionNode_->getWorldOrientation(), this->cameraNode_->getWorldOrientation(), false));
-    }
+      this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->getWorldOrientation(), this->getWorldOrientation(), false));
   }
 
   /**
@@ -94,11 +82,8 @@ namespace orxonox
   */
   void Camera::update()
   {
-    if(this->positionNode_ != NULL)
-    {
-      this->cameraNode_->setPosition(this->positionNode_->getWorldPosition());
-      this->cameraNode_->setOrientation(this->positionNode_->getWorldOrientation());
-    }
+      this->cameraNode_->setPosition(this->getWorldPosition());
+      this->cameraNode_->setOrientation(this->getWorldOrientation());
   }
 
   /**
@@ -117,5 +102,10 @@ namespace orxonox
     this->cam_ = ogreCam;
     this->cam_->setOrientation(this->cameraNode_->getWorldOrientation());
     this->cameraNode_->attachObject(this->cam_);
+  }
+
+  void Camera::requestFocus()
+  {
+    CameraHandler::getInstance()->requestFocus(this);
   }
 }
