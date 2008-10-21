@@ -47,7 +47,7 @@
 #include "packet/Gamestate.h"
 #include "GamestateHandler.h"
 
-#define GAMESTATEID_INITIAL -1
+const unsigned int GAMESTATEID_INITIAL=-1;
 
 namespace network
 {
@@ -57,8 +57,8 @@ namespace network
     GamestateClient();
     ~GamestateClient();
 
-    bool add(packet::Gamestate *gs, int clientID);
-    bool ack(int gamestateID, int clientID);
+    bool add(packet::Gamestate *gs, unsigned int clientID);
+    bool ack(unsigned int gamestateID, unsigned int clientID);
 
     bool processGamestates();
     packet::Gamestate *getGamestate();
@@ -69,9 +69,9 @@ namespace network
     void printGamestateMap();
     bool sendAck(unsigned int gamestateID);
 
-    int           last_diff_;
-    int           last_gamestate_;
-    std::map<int, packet::Gamestate *> gamestateMap_;
+    unsigned int           last_diff_;
+    unsigned int           last_gamestate_;
+    std::map<unsigned int, packet::Gamestate *> gamestateMap_;
     packet::Gamestate *tempGamestate_; // we save the received gamestates here during processQueue
     unsigned char *shipCache_;
 

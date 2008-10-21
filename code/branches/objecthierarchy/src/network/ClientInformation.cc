@@ -58,12 +58,12 @@ namespace network
   }
 
   ClientInformation::~ClientInformation() {
-    if(this==head_)
-      head_=next();
     if(prev()!=0)
       prev()->setNext(this->next());
     if(next()!=0)
       next()->setPrev(this->prev());
+    if(this==head_)
+      head_=next();
   }
 
   ClientInformation *ClientInformation::next() {

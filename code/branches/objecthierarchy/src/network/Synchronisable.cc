@@ -229,11 +229,11 @@ namespace network
    *             0x1: server->client
    *             0x2: client->server (not recommended)
    *             0x3: bidirectional
-   * @return true: if !isMyTick or if everything was successfully saved
+   * @return true: if !doSync or if everything was successfully saved
    */
   bool Synchronisable::getData(uint8_t*& mem, unsigned int id, int mode){
     //if this tick is we dont synchronise, then abort now
-    if(!isMyTick(id))
+    if(!doSync(id))
       return true;
     //std::cout << "inside getData" << std::endl;
     unsigned int tempsize = 0;
@@ -362,7 +362,7 @@ namespace network
   * @return amount of bytes
   */
   uint32_t Synchronisable::getSize(unsigned int id, int mode){
-    if(!isMyTick(id))
+    if(!doSync(id))
       return 0;
     int tsize=sizeof(synchronisableHeader);
     if(mode==0x0)
@@ -391,7 +391,7 @@ namespace network
    * @param id gamestate id
    * @return true/false
    */
-  bool Synchronisable::isMyTick(unsigned int id){
+  bool Synchronisable::doSync(unsigned int id){
     return ( (objectMode_&state_)!=0 );
   }
 

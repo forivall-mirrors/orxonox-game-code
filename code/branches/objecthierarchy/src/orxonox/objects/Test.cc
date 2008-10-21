@@ -64,15 +64,15 @@ namespace orxonox
 	}
 
         void Test::checkV1(){
-          COUT(1) << "V1 changed: " << v1 << std::endl;
+                COUT(1) << "V1 changed: " << v1 << std::endl;
         }
 
         void Test::checkV2(){
-          COUT(1) << "V2 changed: " << v2 << std::endl;
+                COUT(1) << "V2 changed: " << v2 << std::endl;
         }
 
         void Test::checkV3(){
-          COUT(1) << "V3 changed: " << v3 << std::endl;
+                COUT(1) << "V3 changed: " << v3 << std::endl;
         }
 
 

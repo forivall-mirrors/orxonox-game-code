@@ -267,7 +267,7 @@ bool Gamestate::decompressData()
   unsigned int datasize = HEADER->datasize;
   unsigned int compsize = HEADER->compsize;
   unsigned int bufsize;
-  assert(compsize<=datasize);
+//  assert(compsize<=datasize);
   bufsize = datasize;
   assert(bufsize!=0);
   uint8_t *ndata = new uint8_t[bufsize + sizeof(GamestateHeader)];

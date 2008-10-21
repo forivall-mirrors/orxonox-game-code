@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport Test: public BaseObject, virtual public network::Synchronisable
+  class _OrxonoxExport Test: public BaseObject, public network::Synchronisable
   {
     public:
       Test();
@@ -59,4 +59,4 @@ namespace orxonox
   };
 }
 
-#endif /* _PlayerInfo_H__ */
+#endif /* _Test_H__ */

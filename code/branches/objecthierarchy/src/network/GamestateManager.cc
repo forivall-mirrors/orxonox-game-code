@@ -64,9 +64,9 @@ namespace network
     return getSnapshot();
   }
 
-  bool GamestateManager::add(packet::Gamestate *gs, int clientID){
+  bool GamestateManager::add(packet::Gamestate *gs, unsigned int clientID){
     assert(gs);
-    std::map<int, packet::Gamestate*>::iterator it = gamestateQueue.find(clientID);
+    std::map<unsigned int, packet::Gamestate*>::iterator it = gamestateQueue.find(clientID);
     if(it!=gamestateQueue.end()){
       // delete obsolete gamestate
       delete it->second;
@@ -76,7 +76,7 @@ namespace network
   }
 
   bool GamestateManager::processGamestates(){
-    std::map<int, packet::Gamestate*>::iterator it;
+    std::map<unsigned int, packet::Gamestate*>::iterator it;
     // now push only the most recent gamestates we received (ignore obsolete ones)
     for(it = gamestateQueue.begin(); it!=gamestateQueue.end(); it++){
       assert(processGamestate(it->second));
@@ -125,7 +125,7 @@ namespace network
     }
   }*/
 
-  packet::Gamestate *GamestateManager::popGameState(int clientID) {
+  packet::Gamestate *GamestateManager::popGameState(unsigned int clientID) {
     //why are we searching the same client's gamestate id as we searched in
     //Server::sendGameState?
     packet::Gamestate *gs;
@@ -140,9 +140,9 @@ namespace network
     //chose wheather the next gamestate is the first or not
     packet::Gamestate *client=NULL;
     if(gID != GAMESTATEID_INITIAL){
-      std::map<unsigned int, std::map<int, packet::Gamestate*> >::iterator clientMap = gamestateMap_.find(clientID);
+      std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> >::iterator clientMap = gamestateMap_.find(clientID);
       if(clientMap!=gamestateMap_.end()){
-        std::map<int, packet::Gamestate*>::iterator it = clientMap->second.find(gID);
+        std::map<unsigned int, packet::Gamestate*>::iterator it = clientMap->second.find(gID);
         if(it!=clientMap->second.end())
           client = it->second;
       }
@@ -161,7 +161,7 @@ namespace network
   }
 
 
-  bool GamestateManager::ack(int gamestateID, int clientID) {
+  bool GamestateManager::ack(unsigned int gamestateID, unsigned int clientID) {
     ClientInformation *temp = ClientInformation::findClient(clientID);
     assert(temp);
     int curid = temp->getGamestateID();
@@ -171,9 +171,9 @@ namespace network
       return true;
     }
 
-    assert(curid<gamestateID);
+    assert(curid==(unsigned int)GAMESTATEID_INITIAL || curid<gamestateID);
     COUT(4) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
-    std::map<int, packet::Gamestate*>::iterator it, tempit;
+    std::map<unsigned int, packet::Gamestate*>::iterator it, tempit;
     for(it = gamestateMap_[clientID].begin(); it!=gamestateMap_[clientID].end() && it->first<gamestateID; it++){
       delete it->second;
       tempit=it++;
@@ -185,9 +185,9 @@ namespace network
 
   void GamestateManager::removeClient(ClientInformation* client){
     assert(client);
-    std::map<unsigned int, std::map<int, packet::Gamestate*> >::iterator clientMap = gamestateMap_.find(client->getID());
+    std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> >::iterator clientMap = gamestateMap_.find(client->getID());
     // first delete all remained gamestates
-    std::map<int, packet::Gamestate*>::iterator it;
+    std::map<unsigned int, packet::Gamestate*>::iterator it;
     for(it=clientMap->second.begin(); it!=clientMap->second.end(); it++)
       delete it->second;
     // now delete the clients gamestatemap

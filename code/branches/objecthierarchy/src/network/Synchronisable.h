@@ -121,7 +121,7 @@ namespace network
     bool updateData(uint8_t*& mem, int mode=0x0, bool forceCallback=false);
     bool isMyData(uint8_t* mem);
     bool doSelection(unsigned int id);
-    bool isMyTick(unsigned int id);
+    bool doSync(unsigned int id);
 
     unsigned int objectID;
     unsigned int classID;

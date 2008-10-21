@@ -42,7 +42,7 @@ namespace network
 {
   struct _NetworkExport GameStateItem{
     packet::Gamestate *state;
-    int id;
+    unsigned int id;
   };
 
   GamestateClient::GamestateClient() {
@@ -55,11 +55,11 @@ namespace network
   GamestateClient::~GamestateClient() {
   }
 
-  bool GamestateClient::ack(int gamestateID, int clientID){
+  bool GamestateClient::ack(unsigned int gamestateID, unsigned int clientID){
     return true;
   }
 
-  bool GamestateClient::add(packet::Gamestate *gs, int clientID){
+  bool GamestateClient::add(packet::Gamestate *gs, unsigned int clientID){
     if(tempGamestate_!=NULL){
       //delete the obsolete gamestate
       if(tempGamestate_->getID()>gs->getID())
@@ -109,7 +109,7 @@ namespace network
   }
 
   void GamestateClient::cleanup(){
-    std::map<int, packet::Gamestate*>::iterator temp, it = gamestateMap_.begin();
+    std::map<unsigned int, packet::Gamestate*>::iterator temp, it = gamestateMap_.begin();
     while(it!=gamestateMap_.end()){
       if(it->first>=last_diff_)
         break;
@@ -122,7 +122,7 @@ namespace network
   }
 
   void GamestateClient::printGamestateMap(){
-    std::map<int, packet::Gamestate*>::iterator it;
+    std::map<unsigned int, packet::Gamestate*>::iterator it;
     COUT(4) << "gamestates: ";
     for(it=gamestateMap_.begin(); it!=gamestateMap_.end(); it++){
       COUT(4) << it->first << ":" << it->second << "|";
