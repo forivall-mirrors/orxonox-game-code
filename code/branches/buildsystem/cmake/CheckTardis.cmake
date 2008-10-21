@@ -5,7 +5,6 @@
 
 # only run this test on a lunix/unix machine
 IF (UNIX)
-
   FIND_PROGRAM(UNAME_CMD "uname"
   PATHS "/usr/bin /bin")
   IF(NOT UNAME_CMD)
@@ -40,4 +39,5 @@ IF (IS_TARDIS)
   SET(BOOST_INCLUDEDIR "/usr/pack/boost-1.36.0-sd/include/boost-1_36/boost")
   SET(BOOST_LIBRARYDIR "/usr/pack/boost-1.36.0-sd/i686-debian-linux4.0/lib")
   SET(ENV{LUA_DIR} "/usr/pack/lua-5.0.3-sd;/usr/pack/lua-5.0.3-sd/i686-debian-linux3.1")
+  SET(ENV{ALUTDIR} "/usr/pack/openal-0.0.8-cl;/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1")
 ENDIF (IS_TARDIS)
