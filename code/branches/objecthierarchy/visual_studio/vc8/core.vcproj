@@ -183,6 +183,10 @@
 				RelativePath="..\..\src\core\RootGameState.cc"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\core\Template.cc"
+				>
+			</File>
 			<Filter
 				Name="tolua"
 				>
@@ -417,6 +421,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\Super.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\Template.h"
 				>
 			</File>
 			<File

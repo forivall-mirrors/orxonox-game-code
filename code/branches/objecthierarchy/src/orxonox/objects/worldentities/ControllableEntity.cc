@@ -26,6 +26,7 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
 #include "ControllableEntity.h"
 
 #include "core/CoreIncludes.h"

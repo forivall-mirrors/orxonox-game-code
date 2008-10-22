@@ -26,6 +26,7 @@
  *
  */
 
+#include "OrxonoxStableHeaders.h"
 #include "Spectator.h"
 
 #include "core/CoreIncludes.h"
