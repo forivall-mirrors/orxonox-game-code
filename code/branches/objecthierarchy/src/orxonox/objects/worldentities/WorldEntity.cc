@@ -33,6 +33,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "util/Convert.h"
 
 #include "GraphicsEngine.h"
 
@@ -109,6 +110,12 @@ namespace orxonox
     {
         if (object->getParent())
             object->detachFromParent();
+        else
+        {
+            Ogre::Node* parent = object->node_->getParent();
+            if (parent)
+                parent->removeChild(object->node_);
+        }
 
         this->node_->addChild(object->node_);
         this->children_.insert(object);
@@ -122,6 +129,8 @@ namespace orxonox
         this->children_.erase(object);
         object->parent_ = 0;
         object->parentID_ = (unsigned int)-1;
+
+        GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->addChild(object->node_);
     }
 
     WorldEntity* WorldEntity::getAttachedObject(unsigned int index) const

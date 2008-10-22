@@ -51,6 +51,11 @@ namespace orxonox
             inline PlayerInfo* getPlayer() const
                 { return this->player_; }
 
+            inline void setDestroyWhenPlayerLeft(bool bDestroy)
+                { this->bDestroyWhenPlayerLeft_ = bDestroy; }
+            inline bool getDestroyWhenPlayerLeft() const
+                { return this->bDestroyWhenPlayerLeft_; }
+
             virtual void startLocalControl();
             virtual void stopLocalControl();
 
@@ -69,11 +74,21 @@ namespace orxonox
             virtual void use() {}
             virtual void switchCamera() {}
 
+            inline const Vector3& getVelocity() const
+                { return this->velocity_; }
+            inline const Vector3& getAcceleration() const
+                { return this->acceleration_; }
+            inline const std::string& getHudTemplate() const
+                { return this->hudtemplate_; }
+
         protected:
             using WorldEntity::setPosition;
             using WorldEntity::translate;
             using WorldEntity::setOrientation;
             using WorldEntity::rotate;
+            using WorldEntity::yaw;
+            using WorldEntity::pitch;
+            using WorldEntity::roll;
             using WorldEntity::lookAt;
             using WorldEntity::setDirection;
 
@@ -90,22 +105,16 @@ namespace orxonox
             void setVelocity(const Vector3& velocity);
             inline void setVelocity(float x, float y, float z)
                 { this->velocity_.x = x; this->velocity_.y = y; this->velocity_.z = z; }
-            inline const Vector3& getVelocity() const
-                { return this->velocity_; }
 
             inline void setAcceleration(const Vector3& acceleration)
                 { this->acceleration_ = acceleration; }
             inline void setAcceleration(float x, float y, float z)
                 { this->acceleration_.x = x; this->acceleration_.y = y; this->acceleration_.z = z; }
-            inline const Vector3& getAcceleration() const
-                { return this->acceleration_; }
 
-        private:
             inline void setHudTemplate(const std::string& name)
                 { this->hudtemplate_ = name; }
-            inline const std::string& getHudTemplate() const
-                { return this->hudtemplate_; }
 
+        private:
             void overwrite();
             void processOverwrite();
 
@@ -138,6 +147,7 @@ namespace orxonox
             std::string hudtemplate_;
             OverlayGroup* hud_;
             Camera* camera_;
+            bool bDestroyWhenPlayerLeft_;
     };
 }
 

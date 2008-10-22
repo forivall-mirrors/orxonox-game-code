@@ -46,6 +46,9 @@ SET( ORXONOX_SRC_FILES
   objects/worldentities/PositionableEntity.cc
   objects/worldentities/MovableEntity.cc
   objects/worldentities/ControllableEntity.cc
+
+  objects/worldentities/Model.cc
+
 #  objects/Backlight.cc
   objects/Camera.cc
   objects/CameraHandler.cc
@@ -58,6 +61,11 @@ SET( ORXONOX_SRC_FILES
   objects/Script.cc
   objects/Trigger.cc
   objects/DistanceTrigger.cc
+
+  objects/worldentities/pawns/Spectator.cc
+
+  objects/controllers/Controller.cc
+  objects/controllers/HumanController.cc
 
   objects/infos/Info.cc
   objects/infos/LevelInfo.cc

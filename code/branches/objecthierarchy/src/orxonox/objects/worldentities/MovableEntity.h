@@ -51,6 +51,9 @@ namespace orxonox
             using WorldEntity::translate;
             using WorldEntity::setOrientation;
             using WorldEntity::rotate;
+            using WorldEntity::yaw;
+            using WorldEntity::pitch;
+            using WorldEntity::roll;
             using WorldEntity::lookAt;
             using WorldEntity::setDirection;
 

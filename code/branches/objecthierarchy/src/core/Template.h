@@ -34,7 +34,7 @@
 #include "CorePrereqs.h"
 
 #include "BaseObject.h"
-#include "tinyxml/ticpp.h"
+#include "tinyxml/tinyxml.h"
 
 namespace orxonox
 {
@@ -52,9 +52,9 @@ namespace orxonox
             inline const std::string& getLink() const
                 { return this->link_; }
 
-            inline void setXMLElement(const Element& xmlelement)
+            inline void setXMLElement(const TiXmlElement& xmlelement)
                 { this->xmlelement_ = xmlelement; }
-            const Element& getXMLElement() const;
+            const TiXmlElement& getXMLElement() const;
 
             void setBaseclass(const std::string& baseclass);
             inline const std::string& getBaseclass() const
@@ -69,7 +69,7 @@ namespace orxonox
             static void apply(const std::string& name, BaseObject* object);
 
         private:
-            Element xmlelement_;
+            TiXmlElement xmlelement_;
             std::string link_;
             std::string baseclass_;
             Identifier* baseclassIdentifier_;

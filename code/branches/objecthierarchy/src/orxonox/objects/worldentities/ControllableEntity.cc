@@ -52,7 +52,7 @@ namespace orxonox
         this->playerID_ = network::OBJECTID_UNKNOWN;
         this->hud_ = 0;
         this->camera_ = 0;
-
+        this->bDestroyWhenPlayerLeft_ = false;
 
         this->velocity_ = Vector3::ZERO;
         this->acceleration_ = Vector3::ZERO;
@@ -93,7 +93,10 @@ namespace orxonox
         this->bControlled_ = player->isLocalPlayer();
 
         if (this->bControlled_)
+        {
             this->startLocalControl();
+            this->setObjectMode(network::direction::bidirectional);
+        }
     }
 
     void ControllableEntity::removePlayer()
@@ -104,26 +107,40 @@ namespace orxonox
         this->player_ = 0;
         this->playerID_ = network::OBJECTID_UNKNOWN;
         this->bControlled_ = false;
+        this->setObjectMode(network::direction::toclient);
+
+        if (this->bDestroyWhenPlayerLeft_)
+            delete this;
     }
 
     void ControllableEntity::updatePlayer()
     {
-        this->player_ = dynamic_cast<PlayerInfo*>(network::Synchronisable::getSynchronisable(this->playerID_));
-        if (this->player_ && (this->player_->getPawn() != this))
-            this->player_->startControl(this);
+        if (this->playerID_ != network::OBJECTID_UNKNOWN)
+        {
+            this->player_ = dynamic_cast<PlayerInfo*>(network::Synchronisable::getSynchronisable(this->playerID_));
+            if (this->player_ && (this->player_->getPawn() != this))
+                this->player_->startControl(this);
+        }
     }
 
     void ControllableEntity::startLocalControl()
     {
+        std::cout << "###### start local control" << std::endl;
         this->camera_ = new Camera();
         this->camera_->requestFocus();
+        this->attach(this->camera_);
 
-        this->hud_ = new OverlayGroup();
-        this->hud_->addTemplate(this->hudtemplate_);
+        if (this->hudtemplate_ != "")
+        {
+            this->hud_ = new OverlayGroup();
+            this->hud_->addTemplate(this->hudtemplate_);
+        }
     }
 
     void ControllableEntity::stopLocalControl()
     {
+        std::cout << "###### stop local control" << std::endl;
+        this->detach(this->camera_);
         delete this->camera_;
         this->camera_ = 0;
 
@@ -136,7 +153,7 @@ namespace orxonox
         if (this->isActive())
         {
             this->velocity_ += (dt * this->acceleration_);
-            this->node_->translate(dt * this->velocity_);
+            this->node_->translate(dt * this->velocity_, Ogre::Node::TS_PARENT);
 
             if (Core::isMaster())
             {
@@ -149,8 +166,6 @@ namespace orxonox
                 this->client_position_ = this->node_->getPosition();
             }
         }
-
-//        std::cout << this->getPosition() << std::endl;
     }
 
     void ControllableEntity::registerVariables()

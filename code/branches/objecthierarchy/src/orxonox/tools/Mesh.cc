@@ -31,29 +31,56 @@
 
 #include <sstream>
 #include <OgreSceneManager.h>
+
 #include "core/Core.h"
 #include "GraphicsEngine.h"
+#include "util/Convert.h"
+#include "util/String.h"
 
 namespace orxonox
 {
     unsigned int Mesh::meshCounter_s = 0;
 
-    Mesh::Mesh() :
-      entity_(0)
+    Mesh::Mesh()
     {
-    }
-
-    void Mesh::setMesh(const std::string& file)
-    {
-        std::ostringstream name;
-        name << (Mesh::meshCounter_s++);
-        if (Core::showsGraphics())
-            this->entity_ = GraphicsEngine::getInstance().getLevelSceneManager()->createEntity("Mesh" + name.str(), file);
+        this->entity_ = 0;
     }
 
     Mesh::~Mesh()
     {
         if (this->entity_ && Core::showsGraphics())
             GraphicsEngine::getInstance().getLevelSceneManager()->destroyEntity(this->entity_);
+    }
+
+    void Mesh::setMeshSource(const std::string& meshsource)
+    {
+        if (Core::showsGraphics())
+        {
+            if (this->entity_)
+                GraphicsEngine::getInstance().getLevelSceneManager()->destroyEntity(this->entity_);
+            this->entity_ = GraphicsEngine::getInstance().getLevelSceneManager()->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
+        }
+    }
+
+    const std::string& Mesh::getName() const
+    {
+        if (this->entity_)
+            return this->entity_->getName();
+        else
+            return blankString;
+    }
+
+    void Mesh::setVisible(bool bVisible)
+    {
+        if (this->entity_)
+            this->entity_->setVisible(bVisible);
+    }
+
+    bool Mesh::isVisible() const
+    {
+        if (this->entity_)
+            return this->entity_->getVisible();
+        else
+            return false;
     }
 }

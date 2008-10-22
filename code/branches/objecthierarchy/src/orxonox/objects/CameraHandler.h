@@ -43,8 +43,6 @@
 
 #include "core/BaseObject.h"
 
-#include "Camera.h"
-
 namespace orxonox
 {
   class _OrxonoxExport CameraHandler

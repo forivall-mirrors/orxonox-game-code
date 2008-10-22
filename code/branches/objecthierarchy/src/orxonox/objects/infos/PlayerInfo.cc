@@ -41,6 +41,7 @@
 #include "GraphicsEngine.h"
 #include "objects/gametypes/Gametype.h"
 #include "objects/worldentities/ControllableEntity.h"
+#include "objects/controllers/HumanController.h"
 
 namespace orxonox
 {
@@ -52,26 +53,33 @@ namespace orxonox
 
         this->ping_ = -1;
         this->clientID_ = network::CLIENTID_UNKNOWN;
-        this->bLocalPlayer_ = Core::isStandalone();
         this->bLocalPlayer_ = false;
         this->bHumanPlayer_ = false;
         this->bFinishedSetup_ = false;
 
         this->pawn_ = 0;
         this->pawnID_ = network::OBJECTID_UNKNOWN;
+        this->controller_ = 0;
+        this->setDefaultController(Class(HumanController));
 
         this->setConfigValues();
         this->registerVariables();
-
-//COUT(0) << "created PlayerInfo (" << this->getObjectID() << ")" << std::endl;
     }
 
     PlayerInfo::~PlayerInfo()
     {
-        Gametype* gametype = Gametype::getCurrentGametype();
-        if (gametype)
-            gametype->removePlayer(this);
-//COUT(0) << "destroyed PlayerInfo (" << this->getObjectID() << ")" << std::endl;
+        if (this->isInitialized())
+        {
+            Gametype* gametype = Gametype::getCurrentGametype();
+            if (gametype)
+                gametype->removePlayer(this);
+
+            if (this->controller_)
+                delete this->controller_;
+
+            if (this->pawn_)
+                this->pawn_->removePlayer();
+        }
     }
 
     void PlayerInfo::setConfigValues()
@@ -81,7 +89,6 @@ namespace orxonox
 
     void PlayerInfo::checkNick()
     {
-//std::cout << "# PI(" << this->getObjectID() << "): checkName: " << this->bLocalPlayer_ << std::endl;
         if (this->bLocalPlayer_)
         {
             this->playerName_ = this->nick_;
@@ -93,7 +100,6 @@ namespace orxonox
 
     void PlayerInfo::changedName()
     {
-//std::cout << "# PI(" << this->getObjectID() << "): changedName to " << this->getName() << std::endl;
         Gametype* gametype = Gametype::getCurrentGametype();
         if (gametype)
             gametype->playerChangedName(this);
@@ -112,31 +118,21 @@ namespace orxonox
 
     void PlayerInfo::clientChangedName()
     {
-//std::cout << "# PI(" << this->getObjectID() << "): clientChangedName() from " << this->getName() << " to " << this->playerName_ << std::endl;
         this->setName(this->playerName_);
     }
 
     void PlayerInfo::checkClientID()
     {
-//std::cout << "# PI(" << this->getObjectID() << "): checkClientID()" << std::endl;
         this->bHumanPlayer_ = true;
 
         if (this->clientID_ == network::Host::getPlayerID())
         {
-//std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): it's the client's ID" << std::endl;
-            this->bLocalPlayer_ = true;
-            this->playerName_ = this->nick_;
-//std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): name: " << this->getName() << std::endl;
+            this->takeLocalControl();
 
             if (Core::isClient())
-            {
-//std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): we're on a client: set object mode to bidirectional" << std::endl;
                 this->setObjectMode(network::direction::bidirectional);
-//std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): proposed name: " << this->playerName_ << std::endl;
-            }
             else
             {
-//std::cout << "# PI(" << this->getObjectID() << "): checkClientID(): we're not on a client: finish setup" << std::endl;
                 this->clientChangedName();
                 this->bFinishedSetup_ = true;
                 this->finishedSetup();
@@ -146,22 +142,13 @@ namespace orxonox
 
     void PlayerInfo::finishedSetup()
     {
-//std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): " << this->bFinishedSetup_ << std::endl;
         if (Core::isClient())
-        {
-//std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): we're a client: finish setup" << std::endl;
             this->bFinishedSetup_ = true;
-        }
         else if (this->bFinishedSetup_)
         {
-//std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): we're a server: add player" << std::endl;
             Gametype* gametype = Gametype::getCurrentGametype();
             if (gametype)
                 gametype->addPlayer(this);
-        }
-        else
-        {
-//std::cout << "# PI(" << this->getObjectID() << "): finishedSetup(): we're a server: client not yet finished" << std::endl;
         }
     }
 
@@ -170,6 +157,9 @@ namespace orxonox
         pawn->setPlayer(this);
         this->pawn_ = pawn;
         this->pawnID_ = pawn->getObjectID();
+
+        if (this->controller_)
+            this->controller_->setPawn(this->pawn_);
     }
 
     void PlayerInfo::stopControl()
@@ -177,6 +167,19 @@ namespace orxonox
         this->pawn_->removePlayer();
         this->pawn_ = 0;
         this->pawnID_ = network::OBJECTID_UNKNOWN;
+    }
+
+    void PlayerInfo::takeLocalControl()
+    {
+        this->bLocalPlayer_ = true;
+        this->playerName_ = this->nick_;
+        this->createController();
+    }
+
+    void PlayerInfo::createController()
+    {
+        this->controller_ = this->defaultController_.fabricate();
+        this->controller_->setPawn(this->pawn_);
     }
 
     void PlayerInfo::updatePawn()

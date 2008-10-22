@@ -78,8 +78,6 @@ namespace orxonox
             this->rotationRate_ += (dt * this->momentum_);
             this->node_->rotate(this->rotationAxis_, this->rotationRate_  * dt);
         }
-
-        std::cout << this->getPosition() << std::endl;
     }
 
     void MovableEntity::registerVariables()

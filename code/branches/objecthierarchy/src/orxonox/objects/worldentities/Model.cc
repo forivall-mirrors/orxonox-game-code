@@ -27,40 +27,54 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "PositionableEntity.h"
+
+#include "Model.h"
 #include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 
 namespace orxonox
 {
-    CreateFactory(PositionableEntity);
+    CreateFactory(Model);
 
-    PositionableEntity::PositionableEntity()
+    Model::Model()
     {
-        RegisterObject(PositionableEntity);
+        RegisterObject(Model);
 
         this->registerVariables();
     }
 
-    PositionableEntity::~PositionableEntity()
+    Model::~Model()
     {
+        if (this->isInitialized() && this->mesh_.getEntity())
+            this->getNode()->detachObject(this->mesh_.getEntity());
     }
 
-    void PositionableEntity::registerVariables()
+    void Model::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        REGISTERDATA(this->getPosition().x, network::direction::toclient);
-        REGISTERDATA(this->getPosition().y, network::direction::toclient);
-        REGISTERDATA(this->getPosition().z, network::direction::toclient);
+        SUPER(Model, XMLPort, xmlelement, mode);
 
-        REGISTERDATA(this->getOrientation().w, network::direction::toclient);
-        REGISTERDATA(this->getOrientation().x, network::direction::toclient);
-        REGISTERDATA(this->getOrientation().y, network::direction::toclient);
-        REGISTERDATA(this->getOrientation().z, network::direction::toclient);
+        XMLPortParam(Model, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
     }
 
-    void PositionableEntity::tick(float dt)
+    void Model::registerVariables()
     {
-        // I don't know why but this has to be done to update the position if attached to another Entity
-        this->node_->translate(Vector3::ZERO);
-        std::cout << this->getWorldPosition() << std::endl;
+        REGISTERSTRING(this->meshSrc_, network::direction::toclient, new network::NetworkCallback<Model>(this, &Model::changedMesh));
+    }
+
+    void Model::changedMesh()
+    {
+        if (this->mesh_.getEntity())
+            this->getNode()->detachObject(this->mesh_.getEntity());
+
+        this->mesh_.setMeshSource(this->meshSrc_);
+        if (this->mesh_.getEntity())
+            this->getNode()->attachObject(this->mesh_.getEntity());
+    }
+
+    void Model::changedVisibility()
+    {
+        SUPER(Model, changedVisibility);
+
+        this->mesh_.setVisible(this->isVisible());
     }
 }

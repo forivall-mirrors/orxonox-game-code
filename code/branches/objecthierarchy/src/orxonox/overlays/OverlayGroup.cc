@@ -99,7 +99,10 @@ namespace orxonox
             COUT(1) << "Ambiguous names encountered while load the HUD overlays" << std::endl;
         }
         else
+        {
             hudElements_[element->getName()] = element;
+            element->setVisible(this->isVisible());
+        }
     }
 
     //! Returns a different element as long as index < hudElements_.size().

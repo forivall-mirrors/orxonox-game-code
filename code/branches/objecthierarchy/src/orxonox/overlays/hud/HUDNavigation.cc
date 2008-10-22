@@ -40,7 +40,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "objects/Radar.h"
-#include "objects/CameraHandler.h"
 
 namespace orxonox
 {

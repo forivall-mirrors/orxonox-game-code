@@ -32,12 +32,13 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/Debug.h"
+#include "tinyxml/ticpp.h"
 
 namespace orxonox
 {
     CreateFactory(Template);
 
-    Template::Template()
+    Template::Template() : xmlelement_("")
     {
         RegisterObject(Template);
 
@@ -58,7 +59,7 @@ namespace orxonox
         XMLPortParam(Template, "link", setLink, getLink, xmlelement, mode);
         XMLPortParam(Template, "baseclass", setBaseclass, getBaseclass, xmlelement, mode);
 
-        this->setXMLElement(*xmlelement.FirstChildElement(false));
+        this->setXMLElement(*dynamic_cast<TiXmlElement*>(xmlelement.FirstChildElement(false)->GetTiXmlPointer()));
     }
 
     void Template::changedName()
@@ -78,7 +79,7 @@ namespace orxonox
         }
     }
 
-    const Element& Template::getXMLElement() const
+    const TiXmlElement& Template::getXMLElement() const
     {
         if (this->bIsLink_)
         {
@@ -88,7 +89,7 @@ namespace orxonox
                 if (!temp->bIsReturningXMLElement_)
                 {
                     this->bIsReturningXMLElement_ = true;
-                    const Element& element = temp->getXMLElement();
+                    const TiXmlElement& element = temp->getXMLElement();
                     this->bIsReturningXMLElement_ = false;
                     return element;
                 }
@@ -126,7 +127,7 @@ namespace orxonox
 
         COUT(4) << object->getLoaderIndentation() << " aplying Template \"" << this->getName() << "\"..." << std::endl;
 
-        Element temp = this->getXMLElement();
+        Element temp = ((TiXmlElement*)&this->getXMLElement());
         object->XMLPort(temp, XMLPort::LoadObject);
     }
 

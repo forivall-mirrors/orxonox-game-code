@@ -31,21 +31,26 @@
 
 #include "OrxonoxPrereqs.h"
 #include "WorldEntity.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PositionableEntity : public WorldEntity
+    class _OrxonoxExport PositionableEntity : public WorldEntity, public Tickable
     {
         public:
             PositionableEntity();
             virtual ~PositionableEntity();
 
             void registerVariables();
+            virtual void tick(float dt);
 
             using WorldEntity::setPosition;
             using WorldEntity::translate;
             using WorldEntity::setOrientation;
             using WorldEntity::rotate;
+            using WorldEntity::yaw;
+            using WorldEntity::pitch;
+            using WorldEntity::roll;
             using WorldEntity::lookAt;
             using WorldEntity::setDirection;
 

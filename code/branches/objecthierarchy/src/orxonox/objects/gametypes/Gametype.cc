@@ -32,6 +32,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "objects/infos/PlayerInfo.h"
+#include "objects/worldentities/pawns/Spectator.h"
 
 #include "network/Host.h"
 
@@ -45,6 +46,7 @@ namespace orxonox
     {
         RegisterObject(Gametype);
 
+        this->defaultPawn_ = Class(Spectator);
         this->getConnectedClients();
 
         COUT(0) << "created Gametype" << std::endl;

@@ -85,6 +85,13 @@ namespace orxonox
     class MovableEntity;
     class ControllableEntity;
 
+    class Model;
+
+    class Spectator;
+
+    class Controller;
+    class HumanController;
+
     class Backlight;
     class Camera;
     class ParticleSpawner;

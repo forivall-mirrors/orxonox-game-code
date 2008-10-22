@@ -35,17 +35,19 @@
 
 #include "OrxonoxPrereqs.h"
 #include "objects/worldentities/PositionableEntity.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Camera : public PositionableEntity
+    class _OrxonoxExport Camera : public PositionableEntity//, public Tickable
     {
       friend class CameraHandler;
+
       public:
         Camera();
         virtual ~Camera();
 
-        void tick(float dt);
+        virtual void tick(float dt);
         void update();
 
         void requestFocus();

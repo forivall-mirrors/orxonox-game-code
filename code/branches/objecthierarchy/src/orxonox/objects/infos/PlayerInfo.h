@@ -32,6 +32,8 @@
 #include "OrxonoxPrereqs.h"
 
 #include "Info.h"
+#include "core/Identifier.h"
+#include "objects/controllers/Controller.h"
 
 namespace orxonox
 {
@@ -57,13 +59,25 @@ namespace orxonox
             inline bool isLocalPlayer() const
                 { return this->bLocalPlayer_; }
 
-            void startControl(ControllableEntity* pawn);
-            void stopControl();
+            virtual void startControl(ControllableEntity* pawn);
+            virtual void stopControl();
 
             inline ControllableEntity* getPawn() const
                 { return this->pawn_; }
+/*
+            inline void setController(Controller* controller)
+                { this->controller_ = controller; }
+            inline Controller* getController() const
+                { return this->controller_; }
+*/
+        protected:
+            inline void setDefaultController(Identifier* identifier)
+                { this->defaultController_ = identifier; }
 
         private:
+            virtual void createController();
+            virtual void takeLocalControl();
+
             void checkClientID();
             void finishedSetup();
             void checkNick();
@@ -81,6 +95,8 @@ namespace orxonox
 
             ControllableEntity* pawn_;
             unsigned int pawnID_;
+            Controller* controller_;
+            SubclassIdentifier<Controller> defaultController_;
     };
 }
 

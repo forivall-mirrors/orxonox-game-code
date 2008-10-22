@@ -37,6 +37,7 @@
 #include "XMLPort.h"
 #include "Level.h"
 #include "Template.h"
+#include "util/String.h"
 
 namespace orxonox
 {
@@ -86,7 +87,10 @@ namespace orxonox
     */
     const std::string& BaseObject::getLevelfile() const
     {
-        return this->level_->getFile();
+        if (this->level_)
+            return this->level_->getFile();
+        else
+            return blankString;
     }
 
     /**

@@ -33,6 +33,7 @@
 
 #include <string>
 #include <OgrePrerequisites.h>
+#include <OgreTextAreaOverlayElement.h>
 #include "OrxonoxOverlay.h"
 
 namespace orxonox
@@ -48,11 +49,18 @@ namespace orxonox
     protected:
         virtual void sizeChanged();
 
-        void setCaption(const std::string& caption) { this->caption_ = caption; }
+        void setCaption(const std::string& caption);
         const std::string& getCaption() const       { return this->caption_; }
 
         void setFont(const std::string& font);
         const std::string& getFont() const;
+
+        void setColour(const ColourValue& colour);
+        const ColourValue& getColour() const;
+
+        void setAlignment(Ogre::TextAreaOverlayElement::Alignment alignment);
+        void setAlignment(const std::string& alignment);
+        std::string getAlignment() const;
 
         void setTextSize(float size) { this->setSize(Vector2(size, size)); }
         float getTextSize() const    { return this->getSize().y; }
