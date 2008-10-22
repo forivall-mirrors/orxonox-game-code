@@ -57,21 +57,33 @@ namespace orxonox {
         
     }
     
+    /**
+    @brief
+        Checks whether the hint is active for a specific player.
+    @param player
+        The player.
+    @return
+        Returns 
+    */
     bool QuestHint::isActive(const Player & player) const
     {
-        //TDO: Implement.
+        std::map<Player*, questHintStatus::Enum>::iterator it = this->playerStatus_.find(&player);
+	if (it != this->playerStatus_.end())
+	{
+	    return it->second;
+	}
+	return questStatus::inactive;
     }
     
-    void QuestHint::activate(const Player & player)
+    bool QuestHint::activate(const Player & player)
     {
-        if(this->quest_->isActive(player))
+        if(this->quest_->isActive(player) && !this->isActive())
         {
-            //TDO: Implement.
+            this->playerStatus_[&player] = questHintStatus::active;
+            return true;
         }
-        else
-        {
-            COUT(2) << "A hint of a non-active quest was trying to get activated." << std::endl;
-        }
+	COUT(2) << "A hint of a non-active quest was trying to get activated." << std::endl;
+	return false;
     }
 
     void QuestHint::setQuest(Quest* quest)

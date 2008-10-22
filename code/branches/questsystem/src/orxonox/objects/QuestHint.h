@@ -29,9 +29,10 @@
 #ifndef _QuestHint_H__
 #define _QuestHint_H__
 
+#include <map>
 #include <string>
 
-#include "orxonox/quests/QuestDescription.h"
+#include "QuestDescription.h"
 #include "Quest.h"
 #include "QuestItem.h"
 
@@ -54,14 +55,14 @@ namespace orxonox
 	    
 	    bool isActive(const Player & player) const; //!< Returns true if the hint is active for the input player.
 	    
-	    void activate(const Player & player); //!< Activates the hint for the input player.
+	    bool activate(const Player & player); //!< Activates the hint for the input player.
 	    
 	    void setQuest(Quest* quest); //!< Sets the quest the hint belongs to.
 	    
         private: 
             
             Quest* quest_;
-            //TDO: questHint statuslist.
+            std::map<Player*, questHintStatus::Enum> playerStatus_;
     
     };
 

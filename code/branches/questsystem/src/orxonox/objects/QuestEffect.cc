@@ -60,7 +60,7 @@ namespace orxonox {
     @param effects
         A list of all the effects to be invoked.
     */
-    static void QuestEffect::invokeEffects(Player & player, std::list<QuestEffect> & effects)
+    void QuestEffect::invokeEffects(Player & player, std::list<QuestEffect> & effects)
     {
         if ( effects == NULL )
         {

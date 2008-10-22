@@ -80,7 +80,7 @@ namespace orxonox {
     @param player
         The player.
     */
-    virtual void AddReward::invoke(Player & player)
+    void AddReward::invoke(Player & player)
     {
         if ( this->rewards_ == NULL )
         {

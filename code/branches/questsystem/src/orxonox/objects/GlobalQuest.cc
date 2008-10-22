@@ -57,6 +57,45 @@ namespace orxonox {
     {
         
     }
+    
+    /**
+    @brief
+        Checks whether the quest can be started.
+    @param player
+        The player for whom is to be checked.
+    @return
+        Returns true if the quest can be started, false if not.
+    */
+    bool GlobalQuest::isStartable(const Player & player) const
+    {
+        return this->isInactive(player) || this->isActive(player);
+    }
+    
+    /**
+    @brief
+        Checks whether the quest can be failed.
+    @param player
+        The player for whom is to be checked.
+    @return
+        Returns true if the quest can be failed, false if not.
+    */
+    bool GlobalQuest::isFailable(const Player & player) const
+    {
+        return this->isActive(player);
+    }
+    
+    /**
+    @brief
+        Checks whether the quest can be completed.
+    @param player
+        The player for whom is to be checked.
+    @return
+        Returns true if the quest can be completed, false if not.
+    */
+    bool GlobalQuest::isCompletable(const Player & player) const
+    {
+        return this->isActive(player);
+    }
 
     /**
     @brief
@@ -64,7 +103,7 @@ namespace orxonox {
     @param player
         The player.
     */
-    virtual questStatus::Enum getStatus(const Player & player) const
+    questStatus::Enum getStatus(const Player & player) const
     {
         //TDO: Does this really work???
         if (this->players_.find(&player) != this->players_.end())
@@ -86,9 +125,14 @@ namespace orxonox {
     @param status
         The status to be set.
     */
-    virtual void setStatus(const Player & player, const questStatus::Enum & status)
+    void setStatus(const Player & player, const questStatus::Enum & status)
     {
-        //TDO: Implement.
+        if (this->players_.find(&player) == this->players_.end()) //!< Player is not yet in the list.
+	{
+	    this->players_.insert(&player);
+	}
+	this->status_ = status;
     }
+
 
 }

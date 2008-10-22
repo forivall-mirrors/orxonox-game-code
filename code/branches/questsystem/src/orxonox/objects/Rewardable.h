@@ -26,20 +26,30 @@
  *
  */
 
-#include "core/CoreIncludes.h"
-#include "Rewardable.h"
+#ifndef _Rewardable_H__
+#define _Rewardable_H__
+
+#include "core/BaseObject.h"
 
 namespace orxonox {
 
-    Rewardable::Rewardable() : OrxonoxClass(), BaseObject()
+    /**
+    @brief
+        Rewardable is an Interface, that can be implemented by any object to enable it to be given as reward to a player through QuestEffects.
+    @author
+        Damian 'Mozork' Frick
+    */
+    class Rewardable : public BaseObject
     {
-        RegisterRootObject(Rewardable);
-    }
     
+	public:
+	    Rewardable();
+	    virtual ~Rewardable();
+	    
+	    virtual bool reward(Player & player) = 0; //!<Method to transcribe a rewardable object to the player.
     
-    Rewardable::~Rewardable()
-    {
-    }
-
+    };
 
 }
+
+#endif /* _Rewardable_H__ */

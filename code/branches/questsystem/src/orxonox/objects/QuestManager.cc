@@ -31,9 +31,12 @@
 
 namespace orxonox {
 
-    QuestManager::QuestManager() : OrxonoxClass()
+    std::map<std::string, Quest> QuestManager::questMap_;
+    std::map<std::string, QuestHint> QuestManager::hintMap_;
+
+    QuestManager::QuestManager() : BaseObject()
     {
-        RegisterRootObject(QuestManager);
+        RegisterObject(QuestManager);
     }
     
     
@@ -45,23 +48,29 @@ namespace orxonox {
     /**
     @brief
         Registers a quest with the QuestManager to make it globally accessable.
-    @param
+    @param quest
         The quest that is to be registered.
+    @return
+        Returns true if successful, false if not.
     */
-    static void QuestManager::registerQuest(Quest & quest)
+    bool QuestManager::registerQuest(Quest & quest)
     {
         this->questMap_.insert ( pair<std::string,Quest>(quest.getId(),quest) );
+        return true;
     }
     
     /**
     @brief
         Registers a QuestHint with the QuestManager to make it globally accessable.
-    @param
+    @param hint
         The QuestHint to be registered.
+    @return
+        Returns true if successful, false if not.
     */
-    static void QuestManager::registerHint(QuestHint & hint)
+    bool QuestManager::registerHint(QuestHint & hint)
     {
         this->hintMap_.insert ( pair<std::string,Hint>(hint.getId(),hint) );
+        return true;
     }
     
     /**
@@ -71,8 +80,10 @@ namespace orxonox {
         The id of the quest sought for.
     @return
         Returns a reference to the quest with the input id.
+    @todo
+        Throw exceptions in case of errors.
     */
-    static Quest & QuestManager::findQuest(const std::string & questId) const
+    Quest & QuestManager::findQuest(const std::string & questId) const
     {
         Quest* quest;
         std::map<std::string, Quest>::iterator it = this->questMap_.find(questId);
@@ -82,7 +93,6 @@ namespace orxonox {
 	}
 	else
 	{
-	   //TDO: Exception???
 	   quest = NULL;
 	   COUT(2) << "The quest with id {" << questId << "} is nowhere to be found." << std::endl;
 	}
@@ -98,8 +108,10 @@ namespace orxonox {
         The id of the hint sought for.
     @return
         Returns a reference to the hint with the input id.
+    @todo
+        Throw exceptopns in case of errors.
     */
-    static QuestHint & QuestManager::findHint(const std::string & hintId) const
+    QuestHint & QuestManager::findHint(const std::string & hintId) const
     {
         QuestHint* hint;
         std::map<std::string, QuestHint>::iterator it = this->hintMap_.find(hintId);
@@ -109,7 +121,6 @@ namespace orxonox {
 	}
 	else
 	{
-	   //TDO: Exception???
 	   hint = NULL;
 	   COUT(2) << "The hint with id {" << hintId << "} is nowhere to be found." << std::endl;
 	}

@@ -60,13 +60,59 @@ namespace orxonox {
     
     /**
     @brief
+        Checks whether the quest can be started.
+    @param player
+        The player for whom is to be checked.
+    @return
+        Returns true if the quest can be started, false if not.
+    */
+    bool LocalQuest::isStartable(const Player & player) const
+    {
+        return this->isInactive(player);
+    }
+    
+    /**
+    @brief
+        Checks whether the quest can be failed.
+    @param player
+        The player for whom is to be checked.
+    @return
+        Returns true if the quest can be failed, false if not.
+    */
+    bool LocalQuest::isFailable(const Player & player) const
+    {
+        return this->isActive(player);
+    }
+    
+    /**
+    @brief
+        Checks whether the quest can be completed.
+    @param player
+        The player for whom is to be checked.
+    @return
+        Returns true if the quest can be completed, false if not.
+    */
+    bool LocalQuest::isCompletable(const Player & player) const
+    {
+        return this->isActive(player);
+    }
+    
+    /**
+    @brief
         Returns the status of the quest for a specific player.
     @param player
-        The player 
+        The player.
+    @return
+        Returns the status of the quest for the input player.
     */
-    virtual int LocalQuest::getStatus(const Player & player) const
+    virtual questStatus::Enum LocalQuest::getStatus(const Player & player) const
     {
-        //TDO: Implenet.
+        std::map<Player*, questStatus::Enum>::iterator it = this->playerStatus_.find(&player);
+	if (it != this->playerStatus_.end())
+	{
+	    return it->second;
+	}
+	return questStatus::inactive;
     }
     
     /**
@@ -79,7 +125,7 @@ namespace orxonox {
     */
     virtual void LocalQuest::setStatus(const Player & player, const questStatus::Enum & status)
     {
-        //TDO: Implement.
+        this->playerStatus[&player] = status;
     }
 
 }

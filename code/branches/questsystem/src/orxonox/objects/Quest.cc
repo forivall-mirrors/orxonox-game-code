@@ -70,6 +70,30 @@ namespace orxonox {
 
     /**
     @brief
+        Sets the parent quest of the quest.
+    @param quest
+        A pointer to the quest to be set as parent quest.
+    */
+    bool setParentQuest(Quest* quest)
+    {
+        this->parentQuest_ = quest;
+        return true;
+    }
+    
+    /**
+    @brief
+        Adds a sub quest to the quest.
+    @param quest
+        A pointer to the quest to be set as sub quest.
+    */
+    bool addSubQuest(Quest & quest)
+    {
+        this->subQuests_.push_back = quest;
+        return true;
+    }
+
+    /**
+    @brief
         Adds a Hint to the list of hints 
     @param hint
         The hint that should be added to the list of hints.
@@ -92,17 +116,18 @@ namespace orxonox {
         Starts the quest.
     @param player
         The player.
+    @return
+        Returns true if the quest could be started, false if not.
     */
-    void Quest::start(const Player & player)
+    bool Quest::start(const Player & player)
     {
-        if(this->isInactive(player))
+        if(this->isStartable(player))
         {
             this->setStatus(player, questStatus::active);
+            return true;
         }
-        else
-        {
-            COUT(2) << "A non-inactive quest was trying to be started." << std::endl;
-        }
+        COUT(2) << "A non-startable quest was trying to be started." << std::endl;
+        return false;
     }
     
     /**
@@ -110,18 +135,19 @@ namespace orxonox {
         Fails the quest.
     @param player
         The player.
+    @return
+        Returns true if the quest could be failed, false if not.
     */
     void Quest::fail(Player & player)
     {
-        if(this->isActive(player))
+        if(this->isFailable(player))
         {
             this->setStatus(player, questStatus::failed);
             QuestEffect::invokeEffects(player, this->failEffects_);
+            return true;
         }
-        else
-        {
-            COUT(2) << "A non-pending quest was trying to be failed." << std::endl;
-        }
+        COUT(2) << "A non-failable quest was trying to be failed." << std::endl;
+        return false;
     }
     
     /**
@@ -129,18 +155,19 @@ namespace orxonox {
         Completes the quest.
     @param player
         The player.
+    @return
+        Returns true if the quest could be completed, false if not.
     */
     void Quest::complete(Player & player)
     {
-        if(this->isActive(player))
+        if(this->isCompletable(player))
         {
             this->setStatus(player, questStatus::completed);
             QuestEffect::invokeEffects(player, this->completeEffects_);
+            return true;
         }
-        else
-        {
-            COUT(2) << "A non-pending quest was trying to be completed." << std::endl;
-        }
+        COUT(2) << "A non-completable quest was trying to be completed." << std::endl;
+        return false;
     }
 
 }

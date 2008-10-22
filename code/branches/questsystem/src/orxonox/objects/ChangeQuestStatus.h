@@ -45,7 +45,7 @@ namespace orxonox {
     {
 	public:
 	    ChangeQuestStatus(std::string questId);
-	    ~ChangeQuestStatus();
+	    virtual ~ChangeQuestStatus();
 	    
 	    virtual void invoke(Player & player) = 0; //!< Invokes the effect.
 	    

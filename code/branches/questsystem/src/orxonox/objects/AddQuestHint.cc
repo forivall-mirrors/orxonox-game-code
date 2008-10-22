@@ -59,7 +59,7 @@ namespace orxonox {
     @param player
         The player.
     */
-    virtual void invoke(Player & player)
+    void invoke(Player & player)
     {
         QuestHint hint = QuestManager::findHint(this->hintId_);
         hint.activate(player);

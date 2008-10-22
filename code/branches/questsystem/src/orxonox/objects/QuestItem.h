@@ -49,7 +49,7 @@ namespace orxonox {
     
 	public:
 	    QuestItem(std::string id, std::string title = "", std::string description = "");
-	    ~QuestItem();
+	    virtual ~QuestItem();
 	    
 	    inline std::string getId(void) const //!< Returns the id of this quest.
                 { return this->id_; }

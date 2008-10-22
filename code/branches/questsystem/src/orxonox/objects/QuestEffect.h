@@ -45,7 +45,7 @@ namespace orxonox {
     {
 	public:
             QuestEffect();
-	    ~QuestEffect();
+	    virtual ~QuestEffect();
 	    
 	    virtual void invoke(Player & player) = 0; //!< Invokes the effect.
 	    static void invokeEffects(Player & player, std::list<QuestEffect> & effects); //!< Invokes all effects in the list.

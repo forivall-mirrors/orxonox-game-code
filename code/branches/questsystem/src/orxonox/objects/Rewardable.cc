@@ -26,32 +26,21 @@
  *
  */
 
-#include "core/CoreInculdes.h"
-#include "QuestDescription.h"
+#include "core/CoreIncludes.h"
+#include "Rewardable.h"
 
 namespace orxonox {
 
-    CreateFactory(QuestDescription);
-    
-    QuestDescription(std::string title, std::string description = "") : OrxonoxClass()
+    CreateFactory(Rewardable);
+
+    Rewardable::Rewardable() : BaseObject()
     {
-        initialize();
-        this->title_ = title;
-        this->description_ = description;
+        RegisterObject(Rewardable);
     }
     
-    QuestDescription::~QuestDescription()
-    {
-        
-    }
     
-    /**
-    @brief
-        Initializes the object. Has to be called first in every constructor of this class.
-    */
-    void QuestDescription::initialize(void)
+    Rewardable::~Rewardable()
     {
-        RegisterRootObject(QuestDescription);
     }
 
 

@@ -26,46 +26,41 @@
  *
  */
 
-#ifndef _QuestManager_H__
-#define _QuestManager_H__
+#ifndef _QuestDescription_H__
+#define _QuestDescription_H__
 
-#include <map>
 #include <string>
 
-#include "core/OrxonoxClass.h"
-#include "orxonox/objects/Quest.h"
-#include "orxonox/objects/QuestHint.h"
+#include "core/BaseObject.h"
 
 namespace orxonox {
 
-
-    //TDO: Needs to somehow be static.
-    
     /**
     @brief
-        Manages quest, by making them globally accessable.
+        This class is a description of a QuestItem.
+        It holds a title and a description.
     @author
         Damian 'Mozork' Frick
     */
-    class QuestManager : virtual public OrxonoxClass
-    {
+    class QuestDescription : public BaseObject {
     
 	public:
-	    QuestManager();
-	    ~QuestManager();
+	    QuestDescription(std::string title, std::string description = "");
+	    ~QuestDescription();
 	    
-	    static void registerQuest(Quest & quest); //!< Registers a quest in the QuestManager.
-	    static void registerHint(QuestHint & quest); //!< Registers a QuestHint in the QuestManager.
+	    inline const std::string & getTitle(void) const //!< Returns the title.
+                { return this->title_; }
+	    inline const std::string & getDescription(void) const //!< Returns the description text.
+                { return this->description_; }
 	    
-	    static Quest & findQuest(const std::string & questId) const; //!< Returns the quest with the input id.
-	    static QuestHint & findHint(const std::string & hintId) const; //!< Returns the QuestHint with the input id.
-	    	    
 	private:
-	    std::map<std::string, Quest> questMap_;
-	    std::map<std::string, QuestHint> hintMap_;
+            void initialize(void);
+		
+            std::string title_;
+            std::string description_;
     
     };
 
 }
 
-#endif /* _QuestManager_H__ */
+#endif /* _QuestDescription_H__ */

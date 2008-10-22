@@ -29,6 +29,7 @@
 #ifndef _LocalQuest_H__
 #define _LocalQuest_H__
 
+#include <map>
 #include <string>
 
 #include "Quest.h"
@@ -45,17 +46,21 @@ namespace orxonox {
     {
 	public:
 	    LocalQuest(std::string id, std::string title = "", std::string description = "");
-	    ~LocalQuest();
+	    virtual ~LocalQuest();
 	    
 	protected:
+            virtual bool isStartable(const Player & player) const; //!< Checks whether the quest can be started.
+            virtual bool isFailable(const Player & player) const; //!< Checks whether the quest can be failed.
+            virtual bool isCompletable(const Player & player) const; //!< Checks whether the quest can be completed.
+	
             virtual questStatus::Enum getStatus(const Player & player) const; //!< Returns the status of the quest for a specific player.
             virtual void setStatus(const Player & player, const questStatus::Enum & status); //!< Sets the status for a specific player.
                 
 	private:
-            //TDO: List of Players and the status of the quest fo them.
-            questStatus::Enum status_; //!< The status of the quest.
+            std::map<Player*, questStatus::Enum> playerStatus_;
     
     };
+    
 
 }
 

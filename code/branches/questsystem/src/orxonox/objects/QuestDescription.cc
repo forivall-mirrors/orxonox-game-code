@@ -26,30 +26,33 @@
  *
  */
 
-#ifndef _Rewardable_H__
-#define _Rewardable_H__
-
-#include "core/OrxonoxClass.h"
+#include "core/CoreIncludes.h"
+#include "QuestDescription.h"
 
 namespace orxonox {
 
+    CreateFactory(QuestDescription);
+    
+    QuestDescription(std::string title, std::string description = "") : BaseObject()
+    {
+        initialize();
+        this->title_ = title;
+        this->description_ = description;
+    }
+    
+    QuestDescription::~QuestDescription()
+    {
+        
+    }
+    
     /**
     @brief
-        Rewardable is an Interface, that can be implemented by any object to enable it to be given as reward to a player through QuestEffects.
-    @author
-        Damian 'Mozork' Frick
+        Initializes the object. Has to be called first in every constructor of this class.
     */
-    class Rewardable : virtual public OrxonoxClass, public BaseObject
+    void QuestDescription::initialize(void)
     {
-    
-	public:
-	    Rewardable();
-	    ~Rewardable();
-	    
-	    virtual void reward(Player & player) = 0; //!<Method to transcribe a rewardable object to the player.
-    
-    };
+        RegisterObject(QuestDescription);
+    }
+
 
 }
-
-#endif /* _Rewardable_H__ */

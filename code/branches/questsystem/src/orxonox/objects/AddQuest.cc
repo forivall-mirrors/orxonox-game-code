@@ -58,7 +58,7 @@ namespace orxonox {
     @param player
         The player the effect is invoked on.
     */
-    virtual void AddQuest::invoke(Player & player)
+    void AddQuest::invoke(Player & player)
     {
         Quest quest = QuestManager::findQuest(this->getQuestId());
         quest.start(player);
