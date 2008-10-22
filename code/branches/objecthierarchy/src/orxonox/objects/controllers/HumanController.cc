@@ -35,14 +35,14 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(HumanController, moveFrontBack, true).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(HumanController, moveRightLeft, true).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(HumanController, moveUpDown,    true).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(HumanController, rotateYaw,     true).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(HumanController, rotatePitch,   true).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(HumanController, rotateRoll,    true).defaultValue(0, 1.0f).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(HumanController, fire,          true).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(HumanController, altFire,       true).axisParamIndex(0).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(HumanController, moveFrontBack, true).setAsInputCommand();
+    SetConsoleCommand(HumanController, moveRightLeft, true).setAsInputCommand();
+    SetConsoleCommand(HumanController, moveUpDown,    true).setAsInputCommand();
+    SetConsoleCommand(HumanController, rotateYaw,     true).setAsInputCommand();
+    SetConsoleCommand(HumanController, rotatePitch,   true).setAsInputCommand();
+    SetConsoleCommand(HumanController, rotateRoll,    true).setAsInputCommand();
+    SetConsoleCommand(HumanController, fire,          true).keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand(HumanController, altFire,       true).keybindMode(KeybindMode::OnHold);
     SetConsoleCommand(HumanController, greet,         true);
     SetConsoleCommand(HumanController, use,           true);
     SetConsoleCommand(HumanController, switchCamera,  true);
@@ -63,40 +63,40 @@ namespace orxonox
         HumanController::localController_s = 0;
     }
 
-    void HumanController::moveFrontBack(float value)
+    void HumanController::moveFrontBack(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->moveFrontBack(value);
+            HumanController::localController_s->pawn_->moveFrontBack(value.y);
     }
 
-    void HumanController::moveRightLeft(float value)
+    void HumanController::moveRightLeft(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->moveRightLeft(value);
+            HumanController::localController_s->pawn_->moveRightLeft(value.y);
     }
 
-    void HumanController::moveUpDown(float value)
+    void HumanController::moveUpDown(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->moveUpDown(value);
+            HumanController::localController_s->pawn_->moveUpDown(value.y);
     }
 
-    void HumanController::rotateYaw(float value)
+    void HumanController::rotateYaw(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->rotateYaw(value);
+            HumanController::localController_s->pawn_->rotateYaw(value.y);
     }
 
-    void HumanController::rotatePitch(float value)
+    void HumanController::rotatePitch(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->rotatePitch(value);
+            HumanController::localController_s->pawn_->rotatePitch(value.y);
     }
 
-    void HumanController::rotateRoll(float value)
+    void HumanController::rotateRoll(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->rotateRoll(value);
+            HumanController::localController_s->pawn_->rotateRoll(value.y);
     }
 
     void HumanController::fire()

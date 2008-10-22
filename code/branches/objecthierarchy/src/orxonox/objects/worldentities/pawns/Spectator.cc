@@ -65,9 +65,10 @@ namespace orxonox
         velocity.normalise();
         this->setVelocity(velocity * this->speed_);
 
-        this->yaw(Radian(this->yaw_ * dt * this->rotationSpeed_));
-        this->pitch(Radian(this->pitch_ * dt * this->rotationSpeed_));
-        this->roll(Radian(this->roll_ * dt * this->rotationSpeed_));
+        // TODO: Check why I have removed *dt (1337)
+        this->yaw(Radian(this->yaw_ * this->rotationSpeed_));
+        this->pitch(Radian(this->pitch_ * this->rotationSpeed_));
+        this->roll(Radian(this->roll_ * this->rotationSpeed_));
 
         this->yaw_ = this->pitch_ = this->roll_ = 0;
 

@@ -31,6 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "util/Math.h"
 #include "Controller.h"
 
 namespace orxonox
@@ -41,13 +42,13 @@ namespace orxonox
             HumanController();
             virtual ~HumanController();
 
-            static void moveFrontBack(float value);
-            static void moveRightLeft(float value);
-            static void moveUpDown(float value);
+            static void moveFrontBack(const Vector2& value);
+            static void moveRightLeft(const Vector2& value);
+            static void moveUpDown(const Vector2& value);
 
-            static void rotateYaw(float value);
-            static void rotatePitch(float value);
-            static void rotateRoll(float value);
+            static void rotateYaw(const Vector2& value);
+            static void rotatePitch(const Vector2& value);
+            static void rotateRoll(const Vector2& value);
 
             static void fire();
             static void altFire();

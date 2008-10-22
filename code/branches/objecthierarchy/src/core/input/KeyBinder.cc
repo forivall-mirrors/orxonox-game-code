@@ -136,6 +136,8 @@ namespace orxonox
             .description("Filename of default keybindings.");
         SetConfigValue(analogThreshold_, 0.05f)
             .description("Threshold for analog axes until which the state is 0.");
+        SetConfigValue(bFilterAnalogNoise_, false)
+            .description("Specifies whether to filter small analog values like joy stick fluctuations.");
         SetConfigValue(mouseSensitivity_, 1.0f)
             .description("Mouse sensitivity.");
         SetConfigValue(bDeriveMouseInput_, false)
@@ -144,7 +146,7 @@ namespace orxonox
             .description("Accuracy of the mouse input deriver. The higher the more precise, but laggier.");
         SetConfigValue(mouseSensitivityDerived_, 1.0f)
             .description("Mouse sensitivity if mouse input is derived.");
-        SetConfigValue(mouseWheelStepSize_, 120.0f)
+        SetConfigValue(mouseWheelStepSize_, 120)
             .description("Equals one step of the mousewheel.");
         SetConfigValue(buttonThreshold_, 0.80f)
             .description("Threshold for analog axes until which the button is not pressed.")
@@ -322,10 +324,9 @@ namespace orxonox
 
     void KeyBinder::tickMouse(float dt)
     {
-        tickDevices(mouseAxes_, mouseAxes_ + MouseAxisCode::numberOfAxes * 2);
-
         if (bDeriveMouseInput_)
         {
+            // only update when derive dt has passed
             if (deriveTime_ > derivePeriod_)
             {
                 for (int i = 0; i < 2; i++)
@@ -356,42 +357,66 @@ namespace orxonox
             else
                 deriveTime_ += dt;
         }
+
+        for (int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
+        {
+            // Why dividing relative value by dt? The reason lies in the simple fact, that when you
+            // press a button that has relative movement, that value has to be multiplied by dt to be
+            // frame rate independant. This can easily (and only) be done in tickInput(float).
+            // Hence we need to divide by dt here for the mouse to compensate, because the relative
+            // move movements have nothing to do with dt.
+            if (dt != 0.0f)
+            {
+                // just ignore if dt == 0.0 because we have multiplied by 0.0 anyway..
+                mouseAxes_[i].relVal_ /= dt;
+            }
+
+            tickHalfAxis(mouseAxes_[i]);
+        }
     }
 
-    void KeyBinder::tickDevices(HalfAxis* begin, HalfAxis* end)
+    void KeyBinder::tickJoyStick(float dt, unsigned int joyStick)
     {
-        for (HalfAxis* current = begin; current < end; ++current) // pointer arithmetic
+        for (int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
         {
-            // button mode
-            // TODO: optimize out all the half axes that don't act as a button at the moment
-            if (current->hasChanged_)
-            {
-                if (!current->wasDown_ && current->absVal_ > current->buttonThreshold_)
-                {
-                    current->wasDown_ = true;
-                    if (current->nCommands_[KeybindMode::OnPress])
-                        current->execute(KeybindMode::OnPress);
-                }
-                else if (current->wasDown_ && current->absVal_ < current->buttonThreshold_)
-                {
-                    current->wasDown_ = false;
-                    if (current->nCommands_[KeybindMode::OnRelease])
-                        current->execute(KeybindMode::OnRelease);
-                }
-                current->hasChanged_ = false;
-            }
+            tickHalfAxis(joyStickAxes_[joyStick][i]);
+        }
+    }
 
-            if (current->wasDown_)
+    void KeyBinder::tickHalfAxis(HalfAxis& halfAxis)
+    {
+        // button mode
+        // TODO: optimize out all the half axes that don't act as a button at the moment
+        if (halfAxis.hasChanged_)
+        {
+            if (!halfAxis.pressed_ && halfAxis.absVal_ > halfAxis.buttonThreshold_)
             {
-                if (current->nCommands_[KeybindMode::OnHold])
-                    current->execute(KeybindMode::OnHold);
+                // key pressed event
+                halfAxis.pressed_ = true;
+                if (halfAxis.nCommands_[KeybindMode::OnPress])
+                    halfAxis.execute(KeybindMode::OnPress);
             }
+            else if (halfAxis.pressed_ && halfAxis.absVal_ < halfAxis.buttonThreshold_)
+            {
+                // key released event
+                halfAxis.pressed_ = false;
+                if (halfAxis.nCommands_[KeybindMode::OnRelease])
+                    halfAxis.execute(KeybindMode::OnRelease);
+            }
+            halfAxis.hasChanged_ = false;
+        }
 
-            // these are the actually useful axis bindings for analog input
-            if (current->relVal_ > analogThreshold_ || current->absVal_ > analogThreshold_)
-            {
-                current->execute();
-            }
+        if (halfAxis.pressed_)
+        {
+            // key held event
+            if (halfAxis.nCommands_[KeybindMode::OnHold])
+                halfAxis.execute(KeybindMode::OnHold);
+        }
+
+        // these are the actually useful axis bindings for analog input
+        if (!bFilterAnalogNoise_ || halfAxis.relVal_ > analogThreshold_ || halfAxis.absVal_ > analogThreshold_)
+        {
+            halfAxis.execute();
         }
     }
 
@@ -406,7 +431,12 @@ namespace orxonox
         // y axis of mouse input is inverted
         int rel[] = { rel_.x, -rel_.y };
 
-        if (!bDeriveMouseInput_)
+        if (bDeriveMouseInput_)
+        {
+            mouseRelative_[0] += rel[0];
+            mouseRelative_[1] += rel[1];
+        }
+        else
         {
             for (int i = 0; i < 2; i++)
             {
@@ -435,11 +465,6 @@ namespace orxonox
                     }
                 }
             }
-        }
-        else
-        {
-            mouseRelative_[0] += rel[0];
-            mouseRelative_[1] += rel[1];
         }
 
         // relative
