@@ -19,7 +19,7 @@ ENDIF (ENet_INCLUDE_DIR AND ENet_LIBRARY)
 FIND_PATH(ENet_INCLUDE_DIR enet/enet.h
     /usr/include
     /usr/local/include
-    /usr/pack/enet-2007-sd/include
+    /usr/pack/enet-2007-sd/include # Tardis specific hack
     ../libs/enet-1.1/include
     ${DEPENDENCY_DIR}/enet-1.2/include
     )
