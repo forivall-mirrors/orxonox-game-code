@@ -48,20 +48,6 @@ namespace orxonox
 {
     /**
     @brief
-        Template struct which creates a distinct type for every integer constant.
-    @note
-        This allows to select a different function depending on a boolean value
-        when creating a new CommandLineArgument.
-        From 'Modern C++ Design' (Alexandrescu 2001).
-    */
-    template <int v>
-    struct Int2Type
-    {
-        enum { value = v };
-    };
-
-    /**
-    @brief
         Container class for a command line argument of any type supported by MultiType.
         
         Whenever you want to have an option specified by a command line switch,
@@ -208,8 +194,7 @@ namespace orxonox
     template <class T>
     CommandLineArgument& CommandLine::addArgument(const std::string& name, T defaultValue)
     {
-        std::map<std::string, CommandLineArgument*>::const_iterator it = _getInstance().cmdLineArgs_.find(name);
-        OrxAssert(it == _getInstance().cmdLineArgs_.end(),
+        OrxAssert(!_getInstance().existsArgument(name),
             "Cannot add a command line argument with name '" + name + "' twice.");
 
         return *(_getInstance().cmdLineArgs_[name] = new CommandLineArgument(name, defaultValue));
