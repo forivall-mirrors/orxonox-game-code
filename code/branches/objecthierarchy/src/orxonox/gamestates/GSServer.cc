@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(port, 55556).setShortcut("p").setInformation("0-65535");
+    SetCommandLineArgument(port, 55556).shortcut("p").information("0-65535");
 
     GSServer::GSServer()
         : GSLevel("server")
@@ -55,8 +55,7 @@ namespace orxonox
 
         GSLevel::enter();
 
-        int serverPort = CommandLine::getArgument<int>("port")->getValue();
-        this->server_ = new network::Server(serverPort);
+        this->server_ = new network::Server(CommandLine::getValue("port"));
         COUT(0) << "Loading scene in server mode" << std::endl;
 
         this->loadLevel();

@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(ip, "127.0.0.1").setInformation("#.#.#.#");
+    SetCommandLineArgument(ip, "127.0.0.1").information("#.#.#.#");
 
     GSClient::GSClient()
         : GSLevel("client")
@@ -54,9 +54,7 @@ namespace orxonox
 
         GSLevel::enter();
 
-        int serverPort = CommandLine::getArgument<int>("port")->getValue();
-        std::string serverIP = CommandLine::getArgument<std::string>("ip")->getValue();
-        this->client_ = new network::Client(serverIP, serverPort);
+        this->client_ = new network::Client((std::string)CommandLine::getValue("ip"), CommandLine::getValue("port"));
 
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");

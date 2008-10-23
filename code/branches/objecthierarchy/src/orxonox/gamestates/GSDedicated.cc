@@ -69,8 +69,7 @@ namespace orxonox
         // reset game speed to normal
         timeFactor_ = 1.0f;
 
-        int serverPort = CommandLine::getArgument<int>("port")->getValue();
-        this->server_ = new network::Server(serverPort);
+        this->server_ = new network::Server(CommandLine::getValue("port"));
 
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
