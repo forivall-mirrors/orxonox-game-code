@@ -54,7 +54,7 @@ namespace orxonox
 
         GSLevel::enter();
 
-        this->client_ = new network::Client((std::string)CommandLine::getValue("ip"), CommandLine::getValue("port"));
+        this->client_ = new network::Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
 
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");

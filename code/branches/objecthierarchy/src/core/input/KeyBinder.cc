@@ -358,7 +358,7 @@ namespace orxonox
                 deriveTime_ += dt;
         }
 
-        for (int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
+        for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
         {
             // Why dividing relative value by dt? The reason lies in the simple fact, that when you
             // press a button that has relative movement, that value has to be multiplied by dt to be
@@ -377,7 +377,7 @@ namespace orxonox
 
     void KeyBinder::tickJoyStick(float dt, unsigned int joyStick)
     {
-        for (int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
+        for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
         {
             tickHalfAxis(joyStickAxes_[joyStick][i]);
         }
