@@ -38,6 +38,7 @@
 
 #include <ostream>
 #include <string>
+#include <boost/static_assert.hpp>
 
 #include <OgreMath.h>
 #include <OgreVector2.h>
@@ -187,6 +188,37 @@ inline int mod(T x, int max)
     else
         return ((x % max) + max);
 }
+
+template <typename T>
+inline T zeroise()
+{
+    BOOST_STATIC_ASSERT(sizeof(T) == 0);
+    return T();
+}
+
+template <> inline char                 zeroise<char>()                 { return 0; }
+template <> inline unsigned char        zeroise<unsigned char>()        { return 0; }
+template <> inline short                zeroise<short>()                { return 0; }
+template <> inline unsigned short       zeroise<unsigned short>()       { return 0; }
+template <> inline int                  zeroise<int>()                  { return 0; }
+template <> inline unsigned int         zeroise<unsigned int>()         { return 0; }
+template <> inline long                 zeroise<long>()                 { return 0; }
+template <> inline unsigned long        zeroise<unsigned long>()        { return 0; }
+template <> inline long long            zeroise<long long>()            { return 0; }
+template <> inline unsigned long long   zeroise<unsigned long long>()   { return 0; }
+template <> inline float                zeroise<float>()                { return 0; }
+template <> inline double               zeroise<double>()               { return 0; }
+template <> inline long double          zeroise<long double>()          { return 0; }
+template <> inline bool                 zeroise<bool>()                 { return 0; }
+template <> inline void*                zeroise<void*>()                { return 0; }
+template <> inline std::string          zeroise<std::string>()          { return ""; }
+template <> inline orxonox::Radian      zeroise<orxonox::Radian>()      { return orxonox::Radian(0.0f); }
+template <> inline orxonox::Degree      zeroise<orxonox::Degree>()      { return orxonox::Degree(0.0f); }
+template <> inline orxonox::Vector2     zeroise<orxonox::Vector2>()     { return orxonox::Vector2    (0, 0)      ; }
+template <> inline orxonox::Vector3     zeroise<orxonox::Vector3>()     { return orxonox::Vector3    (0, 0, 0)   ; }
+template <> inline orxonox::Vector4     zeroise<orxonox::Vector4>()     { return orxonox::Vector4    (0, 0, 0, 0); }
+template <> inline orxonox::ColourValue zeroise<orxonox::ColourValue>() { return orxonox::ColourValue(0, 0, 0, 0); }
+template <> inline orxonox::Quaternion  zeroise<orxonox::Quaternion>()  { return orxonox::Quaternion (0, 0, 0, 0); }
 
 /**
     @brief Interpolates between two values for a time between 0 and 1.
