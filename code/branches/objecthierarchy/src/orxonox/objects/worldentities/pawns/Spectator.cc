@@ -30,7 +30,9 @@
 #include "Spectator.h"
 
 #include "core/CoreIncludes.h"
+#include "core/Core.h"
 #include "objects/worldentities/Model.h"
+#include "tools/BillboardSet.h"
 
 namespace orxonox
 {
@@ -50,38 +52,96 @@ namespace orxonox
 
         this->setDestroyWhenPlayerLeft(true);
 
-        Model* temp = new Model;
-        temp->setMeshSource("assff.mesh");
-        this->attach(temp);
+        // test test test
+        {
+            this->testmesh_ = new Mesh();
+            this->testnode_ = this->getNode()->createChildSceneNode();
+            this->testmesh_->setMeshSource("assff.mesh");
+            if (this->testmesh_->getEntity())
+                this->testnode_->attachObject(this->testmesh_->getEntity());
+            this->testnode_->pitch(Degree(-90));
+            this->testnode_->roll(Degree(+90));
+            this->testnode_->scale(10, 10, 10);
+        }
+        // test test test
+
+        this->greetingFlare_ = new BillboardSet();
+        this->greetingFlare_->setBillboardSet("Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
+        this->getNode()->attachObject(this->greetingFlare_->getBillboardSet());
+        this->greetingFlare_->setVisible(false);
+        this->bGreetingFlareVisible_ = false;
+        this->bGreeting_ = false;
+
+        this->registerVariables();
     }
 
     Spectator::~Spectator()
     {
+        if (this->isInitialized())
+        {
+            delete this->greetingFlare_;
+
+            // test test test
+            {
+                delete this->testmesh_;
+                delete this->testnode_;
+            }
+            // test test test
+        }
+    }
+
+    void Spectator::registerVariables()
+    {
+        REGISTERDATA(this->bGreetingFlareVisible_, network::direction::toclient, new network::NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
+        REGISTERDATA(this->bGreeting_,             network::direction::toserver, new network::NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
+    }
+
+    void Spectator::changedGreeting()
+    {
+        this->bGreetingFlareVisible_ = this->bGreeting_;
+        this->changedFlareVisibility();
+    }
+
+    void Spectator::changedFlareVisibility()
+    {
+        this->greetingFlare_->setVisible(this->bGreetingFlareVisible_);
     }
 
     void Spectator::tick(float dt)
     {
-        Vector3 velocity = this->getVelocity();
-        velocity.normalise();
-        this->setVelocity(velocity * this->speed_);
+        if (this->isLocallyControlled())
+        {
+            Vector3 velocity = this->getVelocity();
+            velocity.normalise();
+            this->setVelocity(velocity * this->speed_);
 
-        // TODO: Check why I have removed *dt (1337)
-        this->yaw(Radian(this->yaw_ * this->rotationSpeed_));
-        this->pitch(Radian(this->pitch_ * this->rotationSpeed_));
-        this->roll(Radian(this->roll_ * this->rotationSpeed_));
+            this->yaw(Radian(this->yaw_ * this->rotationSpeed_));
+            this->pitch(Radian(this->pitch_ * this->rotationSpeed_));
+            this->roll(Radian(this->roll_ * this->rotationSpeed_));
 
-        this->yaw_ = this->pitch_ = this->roll_ = 0;
+            this->yaw_ = this->pitch_ = this->roll_ = 0;
+        }
 
         SUPER(Spectator, tick, dt);
 
-        this->setVelocity(Vector3::ZERO);
+        if (this->isLocallyControlled())
+        {
+            this->setVelocity(Vector3::ZERO);
+        }
     }
 
     void Spectator::setPlayer(PlayerInfo* player)
     {
         ControllableEntity::setPlayer(player);
 
-        this->setObjectMode(network::direction::toclient);
+//        this->setObjectMode(network::direction::toclient);
+    }
+
+    void Spectator::startLocalControl()
+    {
+        ControllableEntity::startLocalControl();
+        if (this->isLocallyControlled())
+            this->testmesh_->setVisible(false);
     }
 
     void Spectator::moveFrontBack(float value)
@@ -116,5 +176,16 @@ namespace orxonox
 
     void Spectator::fire()
     {
+    }
+
+    void Spectator::greet()
+    {
+        this->bGreeting_ = !this->bGreeting_;
+
+        if (Core::isMaster())
+        {
+            this->bGreetingFlareVisible_ = this->bGreeting_;
+            this->changedFlareVisibility();
+        }
     }
 }

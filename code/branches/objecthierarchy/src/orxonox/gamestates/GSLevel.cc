@@ -56,7 +56,6 @@ namespace orxonox
         , inputState_(0)
         , radar_(0)
         , startLevel_(0)
-        , hud_(0)
     {
         RegisterObject(GSLevel);
         setConfigValues();
@@ -82,16 +81,13 @@ namespace orxonox
         this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "LevelSceneManager");
         COUT(4) << "Created SceneManager: " << sceneManager_->getName() << std::endl;
 
+        this->sceneManager_->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+
         // temporary hack
         GraphicsEngine::getInstance().setLevelSceneManager(this->sceneManager_);
 
         // Start the Radar
         this->radar_ = new Radar();
-
-        // Load the HUD
-        COUT(3) << "Orxonox: Loading HUD" << std::endl;
-        hud_ = new Level(Settings::getDataPath() + "overlay/hud.oxo");
-        Loader::load(hud_);
 
         // reset game speed to normal
         timeFactor_ = 1.0f;
@@ -112,9 +108,6 @@ namespace orxonox
 
     void GSLevel::leave()
     {
-        Loader::unload(hud_);
-        delete this->hud_;
-
         // this call will delete every BaseObject!
         // But currently this will call methods of objects that exist no more
         // The only 'memory leak' is the ParticleSpawer. They would be deleted here

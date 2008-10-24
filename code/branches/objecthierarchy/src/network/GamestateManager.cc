@@ -164,7 +164,7 @@ namespace network
   bool GamestateManager::ack(unsigned int gamestateID, unsigned int clientID) {
     ClientInformation *temp = ClientInformation::findClient(clientID);
     assert(temp);
-    int curid = temp->getGamestateID();
+    unsigned int curid = temp->getGamestateID();
 
     if(gamestateID == 0){
       temp->setGamestateID(GAMESTATEID_INITIAL);

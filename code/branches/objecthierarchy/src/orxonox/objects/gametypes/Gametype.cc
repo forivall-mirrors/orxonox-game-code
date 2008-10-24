@@ -30,7 +30,6 @@
 #include "Gametype.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ConsoleCommand.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/pawns/Spectator.h"
 
@@ -38,8 +37,6 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(Gametype, listPlayers, true);
-
     CreateUnloadableFactory(Gametype);
 
     Gametype::Gametype()
@@ -47,76 +44,8 @@ namespace orxonox
         RegisterObject(Gametype);
 
         this->defaultPawn_ = Class(Spectator);
-        this->getConnectedClients();
 
         COUT(0) << "created Gametype" << std::endl;
-    }
-
-    Gametype* Gametype::getCurrentGametype()
-    {
-        for (ObjectList<Gametype>::iterator it = ObjectList<Gametype>::begin(); it != ObjectList<Gametype>::end(); ++it)
-            return (*it);
-
-        return 0;
-    }
-
-    PlayerInfo* Gametype::getClient(unsigned int clientID)
-    {
-        Gametype* gametype = Gametype::getCurrentGametype();
-        if (gametype)
-        {
-            std::map<unsigned int, PlayerInfo*>::const_iterator it = gametype->clients_.find(clientID);
-            if (it != gametype->clients_.end())
-                return it->second;
-        }
-        else
-        {
-            for (ObjectList<PlayerInfo>::iterator it = ObjectList<PlayerInfo>::begin(); it != ObjectList<PlayerInfo>::end(); ++it)
-                if (it->getClientID() == clientID)
-                    return (*it);
-        }
-        return 0;
-    }
-
-    void Gametype::listPlayers()
-    {
-        Gametype* gametype = Gametype::getCurrentGametype();
-
-        if (gametype)
-        {
-            for (std::set<PlayerInfo*>::const_iterator it = gametype->players_.begin(); it != gametype->players_.end(); ++it)
-                COUT(0) << "ID: " << (*it)->getClientID() << ", Name: " << (*it)->getName() << std::endl;
-        }
-        else
-        {
-            for (ObjectList<PlayerInfo>::iterator it = ObjectList<PlayerInfo>::begin(); it != ObjectList<PlayerInfo>::end(); ++it)
-                COUT(0) << "ID: " << (*it)->getClientID() << ", Name: " << (*it)->getName() << std::endl;
-        }
-    }
-
-    void Gametype::clientConnected(unsigned int clientID)
-    {
-        COUT(0) << "client connected" << std::endl;
-
-        // create new PlayerInfo instance
-        PlayerInfo* player = new PlayerInfo();
-        player->setClientID(clientID);
-
-        // add to clients-map
-        assert(!this->clients_[clientID]);
-        this->clients_[clientID] = player;
-    }
-
-    void Gametype::clientDisconnected(unsigned int clientID)
-    {
-        COUT(0) << "client disconnected" << std::endl;
-
-        // remove from clients-map
-        PlayerInfo* player = this->clients_[clientID];
-        this->clients_.erase(clientID);
-
-        // delete PlayerInfo instance
-        delete player;
     }
 
     void Gametype::addPlayer(PlayerInfo* player)
@@ -130,9 +59,12 @@ namespace orxonox
 
     void Gametype::removePlayer(PlayerInfo* player)
     {
-        player->stopControl();
-        this->players_.erase(player);
-        this->playerLeft(player);
+        if (this->players_.find(player) != this->players_.end())
+        {
+            player->stopControl();
+            this->players_.erase(player);
+            this->playerLeft(player);
+        }
     }
 
     void Gametype::playerJoined(PlayerInfo* player)

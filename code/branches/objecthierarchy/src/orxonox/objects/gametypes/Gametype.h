@@ -35,12 +35,11 @@
 
 #include "core/BaseObject.h"
 #include "core/Identifier.h"
-#include "network/ClientConnectionListener.h"
 #include "objects/worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Gametype : public BaseObject, public network::ClientConnectionListener
+    class _OrxonoxExport Gametype : public BaseObject
     {
         friend class PlayerInfo;
 
@@ -48,19 +47,10 @@ namespace orxonox
             Gametype();
             virtual ~Gametype() {}
 
-            static Gametype* getCurrentGametype();
-            static void listPlayers();
-
-            inline const std::map<unsigned int, PlayerInfo*>& getClients() const
-                { return this->clients_; }
             inline const std::set<PlayerInfo*>& getPlayers() const
                 { return this->players_; }
-            static PlayerInfo* getClient(unsigned int clientID);
 
         protected:
-            virtual void clientConnected(unsigned int clientID);
-            virtual void clientDisconnected(unsigned int clientID);
-
             virtual void playerJoined(PlayerInfo* player);
             virtual void playerLeft(PlayerInfo* player);
 
@@ -71,7 +61,6 @@ namespace orxonox
             void removePlayer(PlayerInfo* player);
 
             std::set<PlayerInfo*> players_;
-            std::map<unsigned int, PlayerInfo*> clients_;
             SubclassIdentifier<ControllableEntity> defaultPawn_;
     };
 }

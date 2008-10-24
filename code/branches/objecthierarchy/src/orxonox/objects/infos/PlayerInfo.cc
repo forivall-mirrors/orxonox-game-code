@@ -37,6 +37,7 @@
 #include "core/Core.h"
 
 #include "network/Host.h"
+#include "network/ClientInformation.h"
 
 #include "GraphicsEngine.h"
 #include "objects/gametypes/Gametype.h"
@@ -56,6 +57,7 @@ namespace orxonox
         this->bLocalPlayer_ = false;
         this->bHumanPlayer_ = false;
         this->bFinishedSetup_ = false;
+        this->gametype_ = 0;
 
         this->pawn_ = 0;
         this->pawnID_ = network::OBJECTID_UNKNOWN;
@@ -70,9 +72,8 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            Gametype* gametype = Gametype::getCurrentGametype();
-            if (gametype)
-                gametype->removePlayer(this);
+            if (this->gametype_)
+                this->gametype_->removePlayer(this);
 
             if (this->controller_)
                 delete this->controller_;
@@ -100,9 +101,8 @@ namespace orxonox
 
     void PlayerInfo::changedName()
     {
-        Gametype* gametype = Gametype::getCurrentGametype();
-        if (gametype)
-            gametype->playerChangedName(this);
+        if (this->gametype_)
+            this->gametype_->playerChangedName(this);
     }
 
     void PlayerInfo::registerVariables()
@@ -146,9 +146,8 @@ namespace orxonox
             this->bFinishedSetup_ = true;
         else if (this->bFinishedSetup_)
         {
-            Gametype* gametype = Gametype::getCurrentGametype();
-            if (gametype)
-                gametype->addPlayer(this);
+            if (this->gametype_)
+                this->gametype_->addPlayer(this);
         }
     }
 
@@ -164,7 +163,8 @@ namespace orxonox
 
     void PlayerInfo::stopControl()
     {
-        this->pawn_->removePlayer();
+        if (this->pawn_)
+            this->pawn_->removePlayer();
         this->pawn_ = 0;
         this->pawnID_ = network::OBJECTID_UNKNOWN;
     }

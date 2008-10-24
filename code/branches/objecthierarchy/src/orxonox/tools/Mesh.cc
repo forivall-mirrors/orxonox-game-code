@@ -44,6 +44,7 @@ namespace orxonox
     Mesh::Mesh()
     {
         this->entity_ = 0;
+        this->bCastShadows_ = true;
     }
 
     Mesh::~Mesh()
@@ -58,8 +59,24 @@ namespace orxonox
         {
             if (this->entity_)
                 GraphicsEngine::getInstance().getLevelSceneManager()->destroyEntity(this->entity_);
-            this->entity_ = GraphicsEngine::getInstance().getLevelSceneManager()->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
+
+            try
+            {
+                this->entity_ = GraphicsEngine::getInstance().getLevelSceneManager()->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
+                this->entity_->setCastShadows(this->bCastShadows_);
+            }
+            catch (...)
+            {
+                COUT(1) << "Error: Couln't load mesh \"" << meshsource << "\"" << std::endl;
+            }
         }
+    }
+
+    void Mesh::setCastShadows(bool bCastShadows)
+    {
+        this->bCastShadows_ = bCastShadows;
+        if (this->entity_)
+            this->entity_->setCastShadows(this->bCastShadows_);
     }
 
     const std::string& Mesh::getName() const

@@ -53,11 +53,18 @@ namespace orxonox
             inline const Mesh& getMesh() const
                 { return this->mesh_; }
 
+            inline void setCastShadows(bool bCastShadows)
+                { this->bCastShadows_ = bCastShadows; this->changedShadows(); }
+            inline bool getCastShadows() const
+                { return this->bCastShadows_; }
+
         private:
             void changedMesh();
+            void changedShadows();
 
             std::string meshSrc_;
             Mesh mesh_;
+            bool bCastShadows_;
     };
 }
 

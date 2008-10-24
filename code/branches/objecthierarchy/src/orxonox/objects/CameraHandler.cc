@@ -45,6 +45,7 @@ namespace orxonox {
   {
     this->cam_ = GraphicsEngine::getInstance().getLevelSceneManager()->createCamera("Cam");
     GraphicsEngine::getInstance().getViewport()->setCamera(this->cam_);
+    this->cam_->setNearClipDistance(1);
     //GraphicsEngine::getInstance().getRenderWindow()->addViewport(this->cam_, 2, 0.4, 0.4, 0.2, 0.2);
     /*this->activeCamera_ = *ObjectList<Camera>::begin();
     this->activeCamera_->cam_ = this->cam_;*/

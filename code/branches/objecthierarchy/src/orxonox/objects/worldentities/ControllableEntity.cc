@@ -126,7 +126,7 @@ namespace orxonox
 
     void ControllableEntity::startLocalControl()
     {
-        std::cout << "###### start local control" << std::endl;
+        std::cout << this->getObjectID() << " ###### start local control" << std::endl;
         this->camera_ = new Camera();
         this->camera_->requestFocus();
         this->attach(this->camera_);
@@ -154,7 +154,7 @@ namespace orxonox
         if (this->isActive())
         {
             this->velocity_ += (dt * this->acceleration_);
-            this->node_->translate(dt * this->velocity_, Ogre::Node::TS_PARENT);
+            this->node_->translate(dt * this->velocity_, Ogre::Node::TS_LOCAL);
 
             if (Core::isMaster())
             {

@@ -36,10 +36,11 @@
 #include "core/Identifier.h"
 
 #include "objects/gametypes/Gametype.h"
+#include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport LevelInfo : public Info
+    class _OrxonoxExport LevelInfo : public Info, public network::ClientConnectionListener
     {
         public:
             LevelInfo();
@@ -47,6 +48,9 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void registerVariables();
+
+            inline const std::map<unsigned int, PlayerInfo*>& getClients() const
+                { return this->clients_; }
 
             inline void setDescription(const std::string& description)
                 { this->description_ = description; }
@@ -61,22 +65,35 @@ namespace orxonox
             inline const ColourValue& getAmbientLight() const
                 { return this->ambientLight_; }
 
-            void setGametype(const std::string& gametype);
-            inline const std::string& getGametype() const
+            void setGametypeString(const std::string& gametype);
+            inline const std::string& getGametypeString() const
                 { return this->gametype_; }
+            inline Gametype* getGametype() const
+                { return this->rootGametype_; }
+
+            static LevelInfo* getActiveLevelInfo();
+            static void listPlayers();
+            static PlayerInfo* getClient(unsigned int clientID);
 
         private:
+            virtual void clientConnected(unsigned int clientID);
+            virtual void clientDisconnected(unsigned int clientID);
+
+            void applyLevel();
+
             void applySkybox()
                 { this->setSkybox(this->skybox_); }
             void applyAmbientLight()
                 { this->setAmbientLight(this->ambientLight_); }
 
+            std::map<unsigned int, PlayerInfo*> clients_;
             std::string description_;
             std::string skybox_;
             ColourValue ambientLight_;
             std::string gametype_;
             SubclassIdentifier<Gametype> gametypeIdentifier_;
-            Gametype* gametypeInstance_;
+            Gametype* rootGametype_;
+            std::string levelfile_;
     };
 }
 

@@ -70,6 +70,11 @@ namespace orxonox
             inline Controller* getController() const
                 { return this->controller_; }
 */
+            inline void setGametype(Gametype* gametype)
+                { this->gametype_ = gametype; }
+            inline Gametype* getGametype() const
+                { return this->gametype_; }
+
         protected:
             inline void setDefaultController(Identifier* identifier)
                 { this->defaultController_ = identifier; }
@@ -97,6 +102,7 @@ namespace orxonox
             unsigned int pawnID_;
             Controller* controller_;
             SubclassIdentifier<Controller> defaultController_;
+            Gametype* gametype_;
     };
 }
 

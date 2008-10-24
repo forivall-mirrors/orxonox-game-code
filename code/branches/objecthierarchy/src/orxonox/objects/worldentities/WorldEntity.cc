@@ -50,7 +50,7 @@ namespace orxonox
     {
         RegisterObject(WorldEntity);
 
-        this->node_ = GraphicsEngine::getInstance().getLevelSceneManager()->createSceneNode();
+        this->node_ = GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode();
         this->parent_ = 0;
         this->parentID_ = (unsigned int)-1;
 

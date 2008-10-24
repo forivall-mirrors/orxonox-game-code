@@ -69,8 +69,6 @@ namespace orxonox
 
   void Camera::tick(float dt)
   {
-      SUPER(Camera, tick, dt);
-
       // this stuff here may need some adjustments
       float coeff = (this->bDrag_) ? min(1.0f, 15.0f * dt) : (1.0f);
 

@@ -52,9 +52,14 @@ namespace orxonox
             void setVisible(bool bVisible);
             bool isVisible() const;
 
+            void setCastShadows(bool bCastShadows);
+            inline bool getCastShadows() const
+                { return this->bCastShadows_; }
+
         private:
             static unsigned int meshCounter_s;
             Ogre::Entity* entity_;
+            bool bCastShadows_;
     };
 }
 

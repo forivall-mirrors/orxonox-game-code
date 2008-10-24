@@ -56,11 +56,4 @@ namespace orxonox
         REGISTERDATA(this->getOrientation().y, network::direction::toclient);
         REGISTERDATA(this->getOrientation().z, network::direction::toclient);
     }
-
-    void PositionableEntity::tick(float dt)
-    {
-        // I don't know why but this has to be done to update the position if attached to another Entity
-        this->node_->translate(Vector3::ZERO);
-        std::cout << this->getWorldPosition() << std::endl;
-    }
 }

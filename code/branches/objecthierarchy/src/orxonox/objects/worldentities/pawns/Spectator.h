@@ -41,9 +41,11 @@ namespace orxonox
             Spectator();
             virtual ~Spectator();
 
+            void registerVariables();
             virtual void tick(float dt);
 
             virtual void setPlayer(PlayerInfo* player);
+            virtual void startLocalControl();
 
             virtual void moveFrontBack(float value);
             virtual void moveRightLeft(float value);
@@ -54,14 +56,27 @@ namespace orxonox
             virtual void rotateRoll(float value);
 
             virtual void fire();
+            virtual void greet();
 
         private:
+            void changedGreeting();
+            void changedFlareVisibility();
+
+            BillboardSet* greetingFlare_;
+            bool bGreetingFlareVisible_;
+            bool bGreeting_;
+
             float speed_;
             float rotationSpeed_;
 
             float yaw_;
             float pitch_;
             float roll_;
+
+            // test test test
+            Mesh* testmesh_;
+            Ogre::SceneNode* testnode_;
+            // test test test
     };
 }
 

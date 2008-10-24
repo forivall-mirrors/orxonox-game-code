@@ -114,6 +114,9 @@ namespace orxonox
             inline void setHudTemplate(const std::string& name)
                 { this->hudtemplate_ = name; }
 
+            inline bool isLocallyControlled() const
+                { return this->bControlled_; }
+
         private:
             void overwrite();
             void processOverwrite();

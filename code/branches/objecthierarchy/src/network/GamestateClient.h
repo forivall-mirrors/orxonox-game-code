@@ -47,7 +47,7 @@
 #include "packet/Gamestate.h"
 #include "GamestateHandler.h"
 
-const unsigned int GAMESTATEID_INITIAL=-1;
+const unsigned int GAMESTATEID_INITIAL = (unsigned int)-1;
 
 namespace network
 {

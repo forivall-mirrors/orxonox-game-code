@@ -54,11 +54,13 @@ namespace orxonox
         SUPER(Model, XMLPort, xmlelement, mode);
 
         XMLPortParam(Model, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
+        XMLPortParam(Model, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
     }
 
     void Model::registerVariables()
     {
-        REGISTERSTRING(this->meshSrc_, network::direction::toclient, new network::NetworkCallback<Model>(this, &Model::changedMesh));
+        REGISTERSTRING(this->meshSrc_,    network::direction::toclient, new network::NetworkCallback<Model>(this, &Model::changedMesh));
+        REGISTERDATA(this->bCastShadows_, network::direction::toclient, new network::NetworkCallback<Model>(this, &Model::changedShadows));
     }
 
     void Model::changedMesh()
@@ -67,8 +69,17 @@ namespace orxonox
             this->getNode()->detachObject(this->mesh_.getEntity());
 
         this->mesh_.setMeshSource(this->meshSrc_);
+
         if (this->mesh_.getEntity())
+        {
             this->getNode()->attachObject(this->mesh_.getEntity());
+            this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
+        }
+    }
+
+    void Model::changedShadows()
+    {
+        this->mesh_.setCastShadows(this->bCastShadows_);
     }
 
     void Model::changedVisibility()
