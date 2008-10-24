@@ -487,6 +487,10 @@ namespace orxonox
     {
         for (ObjectList<orxonox::WindowEventListener>::iterator it = ObjectList<orxonox::WindowEventListener>::begin(); it; ++it)
             it->windowResized(this->renderWindow_->getWidth(), this->renderWindow_->getHeight());
+
+		// OIS needs this under linux even if we only use relative input measurement.
+		if (this->inputManager_)
+            this->inputManager_->setWindowExtents(renderWindow_->getWidth(), renderWindow_->getHeight());
     }
 
     /**
@@ -501,7 +505,8 @@ namespace orxonox
             it->windowFocusChanged();
 
         // instruct InputManager to clear the buffers (core library so we cannot use the interface)
-        InputManager::getInstance().clearBuffers();
+		if (this->inputManager_)
+            this->inputManager_->clearBuffers();
     }
 
     /**
