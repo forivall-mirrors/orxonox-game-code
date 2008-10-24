@@ -1,4 +1,9 @@
 todo: 
+
+	getPing() in Host (eigentlich nur server)
+	bidirectional
+
+
 	!!! check that enet does not cause a packet traffic jam when a reliable packet gets missed !!!
 	[implemented] new gamestate concept
 
