@@ -162,7 +162,23 @@ namespace network
   bool Server::queuePacket(ENetPacket *packet, int clientID){
     return connection->addPacket(packet, clientID);
   }
+  
+  /**
+   * @brief: returns ping time to client in milliseconds 
+   */
+  unsigned int Server::getPing(unsigned int clientID){
+    assert(ClientInformation::findClient(clientID));
+    return ClientInformation::findClient(clientID)->getRTT();
+  }
 
+  /**
+   * @brief: return packet loss ratio to client (scales from 0 to 1)
+   */
+  double Server::getPacketLoss(unsigned int clientID){
+    assert(ClientInformation::findClient(clientID));
+    return ClientInformation::findClient(clientID)->getPacketLoss();
+  }
+  
   /**
   * processes all the packets waiting in the queue
   */

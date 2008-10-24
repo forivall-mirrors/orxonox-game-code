@@ -161,11 +161,11 @@ namespace network
   }
 
   enet_uint32 ClientInformation::getRTT(){
-    return peer_->roundTripTime;
+    return this->peer_->roundTripTime;
   }
 
-  enet_uint32 ClientInformation::getPacketLoss(){
-    return peer_->packetLoss;
+  double ClientInformation::getPacketLoss(){
+    return ((double)this->peer_->packetLoss)/ENET_PEER_PACKET_LOSS_SCALE;
   }
 
   unsigned int ClientInformation::getGamestateID() {

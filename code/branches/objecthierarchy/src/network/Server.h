@@ -69,6 +69,8 @@ namespace network
     bool processChat(const std::string& message, unsigned int playerID);
     bool queuePacket(ENetPacket *packet, int clientID);
     void tick(float time);
+    unsigned int getPing(unsigned int clientID);
+    double getPacketLoss(unsigned int clientID);
   protected:
     void processQueue();
     void updateGamestate();
