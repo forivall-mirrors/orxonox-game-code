@@ -97,7 +97,7 @@ namespace orxonox
     class ParticleSpawner;
 
     class Info;
-    class LevelInfo;
+    class Level;
     class PlayerInfo;
 
     class Gametype;

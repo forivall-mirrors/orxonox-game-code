@@ -68,7 +68,7 @@ SET( ORXONOX_SRC_FILES
   objects/controllers/HumanController.cc
 
   objects/infos/Info.cc
-  objects/infos/LevelInfo.cc
+  objects/infos/Level.cc
   objects/infos/PlayerInfo.cc
 
   objects/gametypes/Gametype.cc

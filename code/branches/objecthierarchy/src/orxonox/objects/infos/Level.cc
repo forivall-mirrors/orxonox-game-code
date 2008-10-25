@@ -27,7 +27,7 @@
  */
 
 #include "OrxonoxStableHeaders.h"
-#include "LevelInfo.h"
+#include "Level.h"
 
 #include <OgreSceneManager.h>
 #include <OgreLight.h>
@@ -48,13 +48,13 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(LevelInfo, listPlayers, true);
+    SetConsoleCommand(Level, listPlayers, true);
 
-    CreateFactory(LevelInfo);
+    CreateFactory(Level);
 
-    LevelInfo::LevelInfo()
+    Level::Level()
     {
-        RegisterObject(LevelInfo);
+        RegisterObject(Level);
 
         this->rootGametype_ = 0;
         this->registerVariables();
@@ -70,26 +70,26 @@ namespace orxonox
         }
         // test test test
 
-        COUT(0) << "created LevelInfo" << std::endl;
+        COUT(0) << "created Level" << std::endl;
     }
 
-    LevelInfo* LevelInfo::getActiveLevelInfo()
+    Level* Level::getActiveLevel()
     {
-        for (ObjectList<LevelInfo>::iterator it = ObjectList<LevelInfo>::begin(); it != ObjectList<LevelInfo>::end(); ++it)
+        for (ObjectList<Level>::iterator it = ObjectList<Level>::begin(); it != ObjectList<Level>::end(); ++it)
             if (it->isActive())
                 return (*it);
 
         return 0;
     }
 
-    PlayerInfo* LevelInfo::getClient(unsigned int clientID)
+    PlayerInfo* Level::getClient(unsigned int clientID)
     {
-        LevelInfo* levelinfo = LevelInfo::getActiveLevelInfo();
+        Level* level = Level::getActiveLevel();
 
-        if (levelinfo)
+        if (level)
         {
-            std::map<unsigned int, PlayerInfo*>::const_iterator it = levelinfo->clients_.find(clientID);
-            if (it != levelinfo->clients_.end())
+            std::map<unsigned int, PlayerInfo*>::const_iterator it = level->clients_.find(clientID);
+            if (it != level->clients_.end())
                 return it->second;
         }
         else
@@ -101,13 +101,13 @@ namespace orxonox
         return 0;
     }
 
-    void LevelInfo::listPlayers()
+    void Level::listPlayers()
     {
-        LevelInfo* levelinfo = LevelInfo::getActiveLevelInfo();
+        Level* level = Level::getActiveLevel();
 
-        if (levelinfo->getGametype())
+        if (level->getGametype())
         {
-            for (std::set<PlayerInfo*>::const_iterator it = levelinfo->getGametype()->getPlayers().begin(); it != levelinfo->getGametype()->getPlayers().end(); ++it)
+            for (std::set<PlayerInfo*>::const_iterator it = level->getGametype()->getPlayers().begin(); it != level->getGametype()->getPlayers().end(); ++it)
                 COUT(0) << "ID: " << (*it)->getClientID() << ", Name: " << (*it)->getName() << std::endl;
         }
         else
@@ -117,7 +117,7 @@ namespace orxonox
         }
     }
 
-    void LevelInfo::clientConnected(unsigned int clientID)
+    void Level::clientConnected(unsigned int clientID)
     {
         COUT(0) << "client connected" << std::endl;
 
@@ -131,7 +131,7 @@ namespace orxonox
         this->clients_[clientID] = player;
     }
 
-    void LevelInfo::clientDisconnected(unsigned int clientID)
+    void Level::clientDisconnected(unsigned int clientID)
     {
         COUT(0) << "client disconnected" << std::endl;
 
@@ -143,28 +143,28 @@ namespace orxonox
         delete player;
     }
 
-    void LevelInfo::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void Level::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(LevelInfo, XMLPort, xmlelement, mode);
+        SUPER(Level, XMLPort, xmlelement, mode);
 
-        XMLPortParam(LevelInfo, "description", setDescription, getDescription, xmlelement, mode);
-        XMLPortParam(LevelInfo, "gametype", setGametypeString, getGametypeString, xmlelement, mode).defaultValues("Gametype");
-        XMLPortParam(LevelInfo, "skybox", setSkybox, getSkybox, xmlelement, mode);
-        XMLPortParam(LevelInfo, "ambientlight", setAmbientLight, getAmbientLight, xmlelement, mode).defaultValues(ColourValue(0.2, 0.2, 0.2, 1));
+        XMLPortParam(Level, "description", setDescription, getDescription, xmlelement, mode);
+        XMLPortParam(Level, "gametype", setGametypeString, getGametypeString, xmlelement, mode).defaultValues("Gametype");
+        XMLPortParam(Level, "skybox", setSkybox, getSkybox, xmlelement, mode);
+        XMLPortParam(Level, "ambientlight", setAmbientLight, getAmbientLight, xmlelement, mode).defaultValues(ColourValue(0.2, 0.2, 0.2, 1));
 
         this->xmlfile_ = this->getFilename();
     }
 
-    void LevelInfo::registerVariables()
+    void Level::registerVariables()
     {
-        REGISTERSTRING(this->xmlfile_,     network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applyXMLFile));
-        REGISTERSTRING(this->name_,        network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::changedName));
+        REGISTERSTRING(this->xmlfile_,     network::direction::toclient, new network::NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
+        REGISTERSTRING(this->name_,        network::direction::toclient, new network::NetworkCallback<Level>(this, &Level::changedName));
         REGISTERSTRING(this->description_, network::direction::toclient);
-        REGISTERSTRING(this->skybox_,      network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applySkybox));
-        REGISTERDATA(this->ambientLight_,  network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applyAmbientLight));
+        REGISTERSTRING(this->skybox_,      network::direction::toclient, new network::NetworkCallback<Level>(this, &Level::networkcallback_applySkybox));
+        REGISTERDATA(this->ambientLight_,  network::direction::toclient, new network::NetworkCallback<Level>(this, &Level::networkcallback_applyAmbientLight));
     }
 
-    void LevelInfo::applyXMLFile()
+    void Level::networkcallback_applyXMLFile()
     {
         COUT(0) << "Loading level \"" << this->xmlfile_ << "\"..." << std::endl;
 
@@ -177,7 +177,7 @@ namespace orxonox
         Loader::open(file);
     }
 
-    void LevelInfo::setSkybox(const std::string& skybox)
+    void Level::setSkybox(const std::string& skybox)
     {
         if (Core::showsGraphics())
             if (GraphicsEngine::getInstance().getLevelSceneManager())
@@ -186,7 +186,7 @@ namespace orxonox
         this->skybox_ = skybox;
     }
 
-    void LevelInfo::setAmbientLight(const ColourValue& colour)
+    void Level::setAmbientLight(const ColourValue& colour)
     {
         if (Core::showsGraphics())
             GraphicsEngine::getInstance().getLevelSceneManager()->setAmbientLight(colour);
@@ -194,7 +194,7 @@ namespace orxonox
         this->ambientLight_ = colour;
     }
 
-    void LevelInfo::setGametypeString(const std::string& gametype)
+    void Level::setGametypeString(const std::string& gametype)
     {
         Identifier* identifier = ClassByString(gametype);
         if (identifier)

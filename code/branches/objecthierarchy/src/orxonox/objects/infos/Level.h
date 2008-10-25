@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _LevelInfo_H__
-#define _LevelInfo_H__
+#ifndef _Level_H__
+#define _Level_H__
 
 #include "OrxonoxPrereqs.h"
 
@@ -40,11 +40,11 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport LevelInfo : public Info, public network::ClientConnectionListener
+    class _OrxonoxExport Level : public Info, public network::ClientConnectionListener
     {
         public:
-            LevelInfo();
-            virtual ~LevelInfo() {}
+            Level();
+            virtual ~Level() {}
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void registerVariables();
@@ -71,7 +71,7 @@ namespace orxonox
             inline Gametype* getGametype() const
                 { return this->rootGametype_; }
 
-            static LevelInfo* getActiveLevelInfo();
+            static Level* getActiveLevel();
             static void listPlayers();
             static PlayerInfo* getClient(unsigned int clientID);
 
@@ -79,11 +79,11 @@ namespace orxonox
             virtual void clientConnected(unsigned int clientID);
             virtual void clientDisconnected(unsigned int clientID);
 
-            void applyXMLFile();
+            void networkcallback_applyXMLFile();
 
-            void applySkybox()
+            void networkcallback_applySkybox()
                 { this->setSkybox(this->skybox_); }
-            void applyAmbientLight()
+            void networkcallback_applyAmbientLight()
                 { this->setAmbientLight(this->ambientLight_); }
 
             std::map<unsigned int, PlayerInfo*> clients_;
@@ -97,4 +97,4 @@ namespace orxonox
     };
 }
 
-#endif /* _LevelInfo_H__ */
+#endif /* _Level_H__ */
