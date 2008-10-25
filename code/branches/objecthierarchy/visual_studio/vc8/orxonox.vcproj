@@ -38,7 +38,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Zm200"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -102,7 +101,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Zm200"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -274,7 +272,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\infos\LevelInfo.cc"
+						RelativePath="..\..\src\orxonox\objects\infos\Level.cc"
 						>
 					</File>
 					<File
@@ -404,6 +402,10 @@
 					Name="hud"
 					>
 					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\ChatOverlay.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDBar.cc"
 						>
 					</File>
@@ -443,62 +445,14 @@
 				<File
 					RelativePath="..\..\src\orxonox\gui\OgreCEGUIRenderer.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\gui\OgreCEGUIResourceProvider.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\src\orxonox\gui\OgreCEGUITexture.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
@@ -654,7 +608,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\orxonox\objects\infos\LevelInfo.h"
+						RelativePath="..\..\src\orxonox\objects\infos\Level.h"
 						>
 					</File>
 					<File
@@ -733,6 +687,10 @@
 				<Filter
 					Name="hud"
 					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\hud\ChatOverlay.h"
+						>
+					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\hud\HUDBar.h"
 						>

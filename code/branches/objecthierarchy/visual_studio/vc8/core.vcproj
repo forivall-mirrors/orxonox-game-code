@@ -603,10 +603,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\core\Level.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\core\Loader.h"
 					>
 				</File>
@@ -616,6 +612,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\core\NamespaceNode.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\core\XMLFile.h"
 					>
 				</File>
 				<File

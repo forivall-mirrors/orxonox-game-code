@@ -35,8 +35,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "worldentities/PositionableEntity.h"
-
-#include "../tools/BillboardSet.h"
+#include "tools/BillboardSet.h"
 
 namespace orxonox {
 
