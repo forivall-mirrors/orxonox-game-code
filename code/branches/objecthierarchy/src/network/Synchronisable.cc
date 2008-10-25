@@ -41,6 +41,7 @@
 #include "Synchronisable.h"
 
 #include <cstring>
+#include <string>
 #include <iostream>
 #include <assert.h>
 
@@ -197,6 +198,7 @@ namespace network
   * @param cb callback object that should get called, if the value of the variable changes
   */
   void Synchronisable::registerVar(void *var, int size, variableType t, int mode, NetworkCallbackBase *cb){
+    assert( mode==direction::toclient || mode==direction::toserver || mode==direction::serverMaster || mode==direction::clientMaster);
     // create temporary synch.Var struct
     synchronisableVariable *temp = new synchronisableVariable;
     temp->size = size;
@@ -204,6 +206,12 @@ namespace network
     temp->mode = mode;
     temp->type = t;
     temp->callback = cb;
+    if( ( mode & direction::bidirectional ) )
+    {
+      temp->varBuffer = new uint8_t[size];
+      memcpy(temp->varBuffer, temp->var, size); //now fill the buffer for the first time
+      temp->varReference = 0;
+    }
     COUT(5) << "Syncronisable::registering var with size: " << temp->size << " and type: " << temp->type << std::endl;
     //std::cout << "push temp to syncList (at the bottom) " << datasize << std::endl;
     COUT(5) << "Syncronisable::objectID: " << objectID << " this: " << this << " name: " << this->getIdentifier()->getName() << " networkID: " << this->getIdentifier()->getNetworkID() << std::endl;
@@ -269,20 +277,26 @@ namespace network
         COUT(5) << "not getting data: " << std::endl;
         continue;  // this variable should only be received
       }
+      // if the variable gets synchronised bidirectional, then add the reference to the bytestream
+      if( ( (*i)->mode & direction::bidirectional ) )
+      {
+        *(uint8_t*)mem = (*i)->varReference;
+        mem += sizeof( (*i)->varReference );
+      }
       switch((*i)->type){
         case DATA:
           memcpy( (void *)(mem), (void*)((*i)->var), (*i)->size);
           mem+=(*i)->size;
-          tempsize+=(*i)->size;
+          tempsize+=(*i)->size + sizeof( (*i)->varReference );
           break;
         case STRING:
-          memcpy( (void *)(mem), (void *)&((*i)->size), sizeof(int) );
-          mem+=sizeof(int);
+          memcpy( (void *)(mem), (void *)&((*i)->size), sizeof(size_t) );
+          mem+=sizeof(size_t);
           const char *data = ( ( *(std::string *) (*i)->var).c_str());
           memcpy( mem, (void*)data, (*i)->size);
           COUT(5) << "synchronisable: char: " << (const char *)(mem) << " data: " << data << " string: " << *(std::string *)((*i)->var) << std::endl;
           mem+=(*i)->size;
-          tempsize+=(*i)->size + 4;
+          tempsize+=(*i)->size + sizeof( (*i)->varReference ) + sizeof(size_t);
           break;
       }
     }
@@ -330,6 +344,24 @@ namespace network
       bool callback=false;
       switch((*i)->type){
         case DATA:
+          if( ( (*i)->mode & direction::bidirectional ) )
+          {
+            if( ( mode == 0x1 && (*i)->mode == direction::serverMaster ) || \
+                  ( mode == 0x2 && (*i)->mode == direction::clientMaster ) )    // if true we are master on this variable
+            {
+              uint8_t refNr = *(uint8_t *)mem;
+              if( refNr != (*i)->varReference )
+              {
+                mem += sizeof((*i)->varReference) + (*i)->size; // the reference for this variable is not recent, discard data
+                break;
+              }
+            }
+            else //we are slave for this variable
+            {
+              (*i)->varReference = *(uint8_t *)mem; //copy the reference value for this variable
+            }
+            mem += sizeof((*i)->varReference);
+          }
           if((*i)->callback) // check whether this variable changed (but only if callback was set)
             if(strncmp((char *)(*i)->var, (char *)mem, (*i)->size)!=0)
               callback=true;
@@ -337,9 +369,27 @@ namespace network
           mem+=(*i)->size;
           break;
         case STRING:
-          (*i)->size = *(uint32_t *)mem;
+          if( ( (*i)->mode & direction::bidirectional ) )
+          {
+            if( ( mode == 0x1 && (*i)->mode == direction::serverMaster ) || \
+                  ( mode == 0x2 && (*i)->mode == direction::clientMaster ) )    // if true we are master for this variable
+            {
+              uint8_t refNr = *(uint8_t *)mem;
+              mem += sizeof( (*i)->varReference );
+              if( refNr != (*i)->varReference ){
+                mem += sizeof(size_t) + *(size_t *)mem; // the reference for this variable is not recent, discard data
+                break;
+              }
+            }
+            else //we are slave for this variable
+            {
+              (*i)->varReference = *(uint8_t *)mem; //copy the reference value for this variable
+            }
+            mem += sizeof( (*i)->varReference );
+          }
+          (*i)->size = *(size_t *)mem;
           COUT(5) << "string size: " << (*i)->size << std::endl;
-          mem+=sizeof(int);
+          mem += sizeof(size_t);
           if((*i)->callback) // check whether this string changed
             if( *(std::string *)((*i)->var) != std::string((char *)mem) )
               callback=true;
@@ -381,6 +431,10 @@ namespace network
         COUT(5) << "String size: " << (*i)->size << std::endl;
         tsize+=(*i)->size;
         break;
+      }
+      if( ( (*i)->mode & direction::bidirectional ) != 0)
+      {
+        tsize+=sizeof( (*i)->varReference );
       }
     }
     return tsize;

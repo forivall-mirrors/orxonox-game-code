@@ -53,7 +53,9 @@ namespace network
     enum syncdirection{
       toclient=0x1,
       toserver=0x2,
-      bidirectional=0x3
+      bidirectional=0x3,
+      serverMaster=0x3,
+      clientMaster=0x7
     };
   }
 
@@ -76,13 +78,15 @@ namespace network
     uint32_t classID;
   };
 
-  typedef struct _NetworkExport synchronisableVariable{
+  struct _NetworkExport synchronisableVariable{
     unsigned int size;
     int mode; // this determines in which direction the variable gets synchronised
     void *var;
     variableType type;
     NetworkCallbackBase *callback;
-  }SYNCVAR;
+    void *varBuffer;
+    uint8_t varReference;
+  };
 
   /**
   * This class is the base class of all the Objects in the universe that need to be synchronised over the network
