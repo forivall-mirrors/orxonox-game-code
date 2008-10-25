@@ -37,6 +37,7 @@
 #include "core/Core.h"
 #include "core/ConsoleCommand.h"
 #include "core/Loader.h"
+#include "core/XMLFile.h"
 #include "core/Template.h"
 
 #include "GraphicsEngine.h"
@@ -151,29 +152,29 @@ namespace orxonox
         XMLPortParam(LevelInfo, "skybox", setSkybox, getSkybox, xmlelement, mode);
         XMLPortParam(LevelInfo, "ambientlight", setAmbientLight, getAmbientLight, xmlelement, mode).defaultValues(ColourValue(0.2, 0.2, 0.2, 1));
 
-        this->levelfile_ = this->getLevelfile();
+        this->xmlfile_ = this->getFilename();
     }
 
     void LevelInfo::registerVariables()
     {
-        REGISTERSTRING(this->levelfile_,    network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applyLevel));
-        REGISTERSTRING(this->name_,         network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::changedName));
-        REGISTERSTRING(this->description_,  network::direction::toclient);
-        REGISTERSTRING(this->skybox_,       network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applySkybox));
-        REGISTERDATA(this->ambientLight_, network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applyAmbientLight));
+        REGISTERSTRING(this->xmlfile_,     network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applyXMLFile));
+        REGISTERSTRING(this->name_,        network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::changedName));
+        REGISTERSTRING(this->description_, network::direction::toclient);
+        REGISTERSTRING(this->skybox_,      network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applySkybox));
+        REGISTERDATA(this->ambientLight_,  network::direction::toclient, new network::NetworkCallback<LevelInfo>(this, &LevelInfo::applyAmbientLight));
     }
 
-    void LevelInfo::applyLevel()
+    void LevelInfo::applyXMLFile()
     {
-        COUT(0) << "Loading level \"" << this->levelfile_ << "\"..." << std::endl;
+        COUT(0) << "Loading level \"" << this->xmlfile_ << "\"..." << std::endl;
 
         ClassTreeMask mask;
         mask.exclude(Class(BaseObject));
         mask.include(Class(Template));
 
-        Level* level = new Level(Settings::getDataPath() + this->levelfile_, mask);
+        XMLFile* file = new XMLFile(Settings::getDataPath() + this->xmlfile_, mask);
 
-        Loader::open(level);
+        Loader::open(file);
     }
 
     void LevelInfo::setSkybox(const std::string& skybox)

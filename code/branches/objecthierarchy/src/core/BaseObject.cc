@@ -35,7 +35,7 @@
 #include "tinyxml/tinyxml.h"
 #include "CoreIncludes.h"
 #include "XMLPort.h"
-#include "Level.h"
+#include "XMLFile.h"
 #include "Template.h"
 #include "util/String.h"
 
@@ -55,7 +55,7 @@ namespace orxonox
         this->bActive_ = true;
         this->bVisible_ = true;
 
-        this->level_ = 0;
+        this->file_ = 0;
         this->namespace_ = 0;
     }
 
@@ -85,10 +85,10 @@ namespace orxonox
         @brief Returns the levelfile that loaded this object.
         @return The levelfile
     */
-    const std::string& BaseObject::getLevelfile() const
+    const std::string& BaseObject::getFilename() const
     {
-        if (this->level_)
-            return this->level_->getFile();
+        if (this->file_)
+            return this->file_->getFilename();
         else
             return blankString;
     }

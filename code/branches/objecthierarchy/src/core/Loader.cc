@@ -27,7 +27,7 @@
  */
 
 #include "Loader.h"
-#include "Level.h"
+#include "XMLFile.h"
 #include "BaseObject.h"
 #include "Identifier.h"
 #include "Iterator.h"
@@ -41,43 +41,43 @@
 
 namespace orxonox
 {
-    std::vector<std::pair<const Level*, ClassTreeMask> > Loader::levels_s;
+    std::vector<std::pair<const XMLFile*, ClassTreeMask> > Loader::files_s;
     ClassTreeMask Loader::currentMask_s;
 
-    bool Loader::open(const Level* level, const ClassTreeMask& mask)
+    bool Loader::open(const XMLFile* file, const ClassTreeMask& mask)
     {
-        Loader::add(level, mask);
-        return Loader::load(level, mask);
+        Loader::add(file, mask);
+        return Loader::load(file, mask);
     }
 
     void Loader::close()
     {
         Loader::unload();
-        Loader::levels_s.clear();
+        Loader::files_s.clear();
     }
 
-    void Loader::close(const Level* level)
+    void Loader::close(const XMLFile* file)
     {
-        Loader::unload(level);
-        Loader::remove(level);
+        Loader::unload(file);
+        Loader::remove(file);
     }
 
-    void Loader::add(const Level* level, const ClassTreeMask& mask)
+    void Loader::add(const XMLFile* file, const ClassTreeMask& mask)
     {
-        if (!level)
+        if (!file)
             return;
-        Loader::levels_s.insert(Loader::levels_s.end(), std::pair<const Level*, ClassTreeMask>(level, mask));
+        Loader::files_s.insert(Loader::files_s.end(), std::pair<const XMLFile*, ClassTreeMask>(file, mask));
     }
 
-    void Loader::remove(const Level* level)
+    void Loader::remove(const XMLFile* file)
     {
-        if (!level)
+        if (!file)
             return;
-        for (std::vector<std::pair<const Level*, ClassTreeMask> >::iterator it = Loader::levels_s.begin(); it != Loader::levels_s.end(); ++it)
+        for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = Loader::files_s.begin(); it != Loader::files_s.end(); ++it)
         {
-            if ((*it).first == level)
+            if ((*it).first == file)
             {
-                Loader::levels_s.erase(it);
+                Loader::files_s.erase(it);
                 break;
             }
         }
@@ -86,7 +86,7 @@ namespace orxonox
     bool Loader::load(const ClassTreeMask& mask)
     {
         bool success = true;
-        for (std::vector<std::pair<const Level*, ClassTreeMask> >::iterator it = Loader::levels_s.begin(); it != Loader::levels_s.end(); ++it)
+        for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = Loader::files_s.begin(); it != Loader::files_s.end(); ++it)
             if (!Loader::load((*it).first, (*it).second * mask))
                 success = false;
 
@@ -110,25 +110,25 @@ namespace orxonox
         return Loader::load(mask);
     }
 
-    bool Loader::load(const Level* level, const ClassTreeMask& mask)
+    bool Loader::load(const XMLFile* file, const ClassTreeMask& mask)
     {
-        if (!level)
+        if (!file)
             return false;
 
-        Loader::currentMask_s = level->getMask() * mask;
+        Loader::currentMask_s = file->getMask() * mask;
 
         // let Lua work this out:
         LuaBind* lua = LuaBind::getInstance();
         lua->clearLuaOutput();
-        lua->loadFile(level->getFile(), true);
+        lua->loadFile(file->getFilename(), true);
         lua->run();
 
         try
         {
-            COUT(0) << "Start loading " << level->getFile() << "..." << std::endl;
+            COUT(0) << "Start loading " << file->getFilename() << "..." << std::endl;
             COUT(3) << "Mask: " << Loader::currentMask_s << std::endl;
 
-            //ticpp::Document xmlfile(level->getFile());
+            //ticpp::Document xmlfile(file->getFilename());
             //xmlfile.LoadFile();
             //ticpp::Element myelement(*Script::getFileString());
             ticpp::Document xmlfile;
@@ -145,12 +145,12 @@ namespace orxonox
             COUT(4) << "  creating root-namespace..." << std::endl;
             Namespace* rootNamespace = new Namespace();
             rootNamespace->setLoaderIndentation("    ");
-            rootNamespace->setLevel(level);
+            rootNamespace->setFile(file);
             rootNamespace->setNamespace(rootNamespace);
             rootNamespace->setRoot(true);
             rootNamespace->XMLPort(rootElement, XMLPort::LoadObject);
 
-            COUT(0) << "Finished loading " << level->getFile() << "." << std::endl;
+            COUT(0) << "Finished loading " << file->getFilename() << "." << std::endl;
 
             COUT(4) << "Namespace-tree:" << std::endl << rootNamespace->toString("  ") << std::endl;
 
@@ -159,29 +159,29 @@ namespace orxonox
         catch(ticpp::Exception& ex)
         {
             COUT(1) << std::endl;
-            COUT(1) << "An error occurred in Loader.cc while loading " << level->getFile() << ":" << std::endl;
+            COUT(1) << "An error occurred in Loader.cc while loading " << file->getFilename() << ":" << std::endl;
             COUT(1) << ex.what() << std::endl;
             COUT(1) << "Loading aborted." << std::endl;
             return false;
         }
     }
 
-    void Loader::unload(const Level* level, const ClassTreeMask& mask)
+    void Loader::unload(const XMLFile* file, const ClassTreeMask& mask)
     {
-        if (!level)
+        if (!file)
             return;
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it; )
         {
-            if ((it->getLevel() == level) && mask.isIncluded(it->getIdentifier()))
+            if ((it->getFile() == file) && mask.isIncluded(it->getIdentifier()))
                 delete (*(it++));
             else
                 ++it;
         }
     }
 
-    bool Loader::reload(const Level* level, const ClassTreeMask& mask)
+    bool Loader::reload(const XMLFile* file, const ClassTreeMask& mask)
     {
-        Loader::unload(level, mask);
-        return Loader::load(level, mask);
+        Loader::unload(file, mask);
+        return Loader::load(file, mask);
     }
 }

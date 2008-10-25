@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _Level_H__
-#define _Level_H__
+#ifndef _XMLFile_H__
+#define _XMLFile_H__
 
 #include "CorePrereqs.h"
 
@@ -37,19 +37,19 @@
 
 namespace orxonox
 {
-    class _CoreExport Level
+    class _CoreExport XMLFile
     {
         public:
-            Level(const std::string& file) : file_(file) {}
-            Level(const std::string& file, const ClassTreeMask& mask) : file_(file), mask_(mask) {};
+            XMLFile(const std::string& filename) : filename_(filename) {}
+            XMLFile(const std::string& filename, const ClassTreeMask& mask) : filename_(filename), mask_(mask) {};
 
-            const std::string& getFile() const { return this->file_; }
+            const std::string& getFilename() const { return this->filename_; }
             const ClassTreeMask& getMask() const { return this->mask_; }
 
         private:
-            std::string file_;
+            std::string filename_;
             ClassTreeMask mask_;
     };
 }
 
-#endif /* _Level_H__ */
+#endif /* _XMLFile_H__ */

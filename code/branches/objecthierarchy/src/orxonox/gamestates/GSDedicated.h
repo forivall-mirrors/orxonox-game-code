@@ -55,7 +55,7 @@ namespace orxonox
         float                 timeFactor_;       //!< A factor to change the gamespeed
         network::Server*      server_;
         Ogre::SceneManager*   sceneManager_;
-        Level*                startLevel_;       //!< current hard coded default level
+        XMLFile*              startFile_;        //!< current hard coded default level
     };
 }
 

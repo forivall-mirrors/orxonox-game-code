@@ -335,7 +335,7 @@ namespace orxonox
                     catch (ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << this->owner_->getName() << ") in " << this->owner_->getLevelfile() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << this->owner_->getName() << ") in " << this->owner_->getFilename() << ":" << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
@@ -480,7 +480,7 @@ namespace orxonox
 
                                                 BaseObject* newObject = identifier->fabricate();
                                                 newObject->setLoaderIndentation(((BaseObject*)object)->getLoaderIndentation() + "  ");
-                                                newObject->setLevel(((BaseObject*)object)->getLevel());
+                                                newObject->setFile(((BaseObject*)object)->getFile());
                                                 newObject->setNamespace(((BaseObject*)object)->getNamespace());
 
                                                 if (this->bLoadBefore_)
@@ -522,7 +522,7 @@ namespace orxonox
                     catch (ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << Class(O)->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << ((BaseObject*)object)->getName() << ") in " << object->getLevelfile() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << Class(O)->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << ((BaseObject*)object)->getName() << ") in " << object->getFilename() << ":" << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }

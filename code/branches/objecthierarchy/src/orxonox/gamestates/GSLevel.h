@@ -67,7 +67,7 @@ namespace orxonox
         KeyBinder*            keyBinder_;        //!< tool that loads and manages the input bindings
         SimpleInputState*     inputState_;
         Radar*                radar_;            //!< represents the Radar (not the HUD part)
-        Level*                startLevel_;       //!< current hard coded default level
+        XMLFile*              startFile_;        //!< current hard coded default level
 
         // config values
         std::string           keyDetectorCallbackCode_;

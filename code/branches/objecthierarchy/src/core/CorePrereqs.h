@@ -128,7 +128,6 @@ namespace orxonox
   class IteratorBase;
   class Language;
   class LanguageEntry;
-  class Level;
   class Loader;
   class MetaObjectList;
   class MetaObjectListElement;
@@ -152,6 +151,7 @@ namespace orxonox
   class TclThreadManager;
   class Template;
   class Tickable;
+  class XMLFile;
   template <class T, class O>
   class XMLPortClassObjectContainer;
   template <class T>

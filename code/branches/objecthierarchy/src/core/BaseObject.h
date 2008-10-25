@@ -80,11 +80,11 @@ namespace orxonox
             /** @brief This function gets called if the visibility of the object changes. */
             virtual void changedVisibility() {}
 
-            /** @brief Sets a pointer to the level that loaded this object. @param level The pointer to the level */
-            inline void setLevel(const Level* level) { this->level_ = level; }
-            /** @brief Returns a pointer to the level that loaded this object. @return The level */
-            inline const Level* getLevel() const { return this->level_; }
-            const std::string& getLevelfile() const;
+            /** @brief Sets a pointer to the xml file that loaded this object. @param file The pointer to the XMLFile */
+            inline void setFile(const XMLFile* file) { this->file_ = file; }
+            /** @brief Returns a pointer to the XMLFile that loaded this object. @return The XMLFile */
+            inline const XMLFile* getFile() const { return this->file_; }
+            const std::string& getFilename() const;
 
             void addTemplate(const std::string& name);
             void addTemplate(Template* temp);
@@ -110,7 +110,7 @@ namespace orxonox
             Template* getTemplate(unsigned int index) const;
 
             bool bInitialized_;                         //!< True if the object was initialized (passed the object registration)
-            const Level* level_;                        //!< The level that loaded this object
+            const XMLFile* file_;                       //!< The XMLFile that loaded this object
             std::string loaderIndentation_;             //!< Indentation of the debug output in the Loader
             Namespace* namespace_;
             std::set<Template*> templates_;

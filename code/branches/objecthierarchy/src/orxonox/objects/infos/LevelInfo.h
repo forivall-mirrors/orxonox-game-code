@@ -79,7 +79,7 @@ namespace orxonox
             virtual void clientConnected(unsigned int clientID);
             virtual void clientDisconnected(unsigned int clientID);
 
-            void applyLevel();
+            void applyXMLFile();
 
             void applySkybox()
                 { this->setSkybox(this->skybox_); }
@@ -93,7 +93,7 @@ namespace orxonox
             std::string gametype_;
             SubclassIdentifier<Gametype> gametypeIdentifier_;
             Gametype* rootGametype_;
-            std::string levelfile_;
+            std::string xmlfile_;
     };
 }
 

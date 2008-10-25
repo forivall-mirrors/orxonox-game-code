@@ -34,6 +34,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/CommandLine.h"
 #include "core/Loader.h"
+#include "core/XMLFile.h"
 #include "core/Core.h"
 #include "network/Server.h"
 #include "objects/Tickable.h"
@@ -47,7 +48,7 @@ namespace orxonox
         , timeFactor_(0)
         , server_(0)
         , sceneManager_(0)
-        , startLevel_(0)
+        , startFile_(0)
     {
     }
 
@@ -73,8 +74,8 @@ namespace orxonox
 
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
-        startLevel_ = new Level(Settings::getDataPath() + "levels/sample.oxw");
-        Loader::open(startLevel_);
+        startFile_ = new XMLFile(Settings::getDataPath() + "levels/sample.oxw");
+        Loader::open(startFile_);
 
         server_->open();
 
@@ -88,8 +89,8 @@ namespace orxonox
     {
         // TODO: Remove and destroy console command
 
-        Loader::unload(startLevel_);
-        delete this->startLevel_;
+        Loader::unload(startFile_);
+        delete this->startFile_;
 
         this->server_->close();
         delete this->server_;

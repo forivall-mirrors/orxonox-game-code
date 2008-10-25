@@ -35,6 +35,7 @@
 #include "core/input/SimpleInputState.h"
 #include "core/input/KeyBinder.h"
 #include "core/Loader.h"
+#include "core/XMLFile.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
@@ -55,7 +56,7 @@ namespace orxonox
         , keyBinder_(0)
         , inputState_(0)
         , radar_(0)
-        , startLevel_(0)
+        , startFile_(0)
     {
         RegisterObject(GSLevel);
         setConfigValues();
@@ -153,14 +154,14 @@ namespace orxonox
     {
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
-        startLevel_ = new Level(Settings::getDataPath() + "levels/sample2.oxw");
-        Loader::open(startLevel_);
+        startFile_ = new XMLFile(Settings::getDataPath() + "levels/sample2.oxw");
+        Loader::open(startFile_);
     }
 
     void GSLevel::unloadLevel()
     {
-        Loader::unload(startLevel_);
-        delete this->startLevel_;
+        Loader::unload(startFile_);
+        delete this->startFile_;
     }
 
     void GSLevel::keybind(const std::string &command)
