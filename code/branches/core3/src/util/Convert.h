@@ -133,8 +133,8 @@ struct ConverterFallback
 {
     static bool convert(ToType* output, const FromType& input)
     {
-        //COUT(2) << "Could not convert value of type " << typeid(FromType).name()
-        //        << " to type " << typeid(ToType).name() << std::endl;
+        COUT(2) << "Could not convert value of type " << typeid(FromType).name()
+                << " to type " << typeid(ToType).name() << std::endl;
         return false;
     }
 };
