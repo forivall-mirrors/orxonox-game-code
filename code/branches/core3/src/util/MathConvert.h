@@ -36,8 +36,8 @@
 #define _MathConvert_H__
 
 #include "UtilPrereqs.h"
-#include "Convert.h"
 #include "Math.h"
+#include "Convert.h"
 
 
 ////////////////////
@@ -152,44 +152,56 @@ template <> struct _UtilExport ConverterFallback<orxonox::ColourValue, std::stri
 
 // From Radian
 template <class ToType>
-inline bool fallbackConversion(ToType* output, const orxonox::Radian input)
+struct ConverterFallback<ToType, orxonox::Radian>
 {
-    return convertValue<ToType, Ogre::Real>(output, input.valueRadians()); 
-}
+    static bool convert(ToType* output, const orxonox::Radian& input)
+    {
+        return convertValue<ToType, Ogre::Real>(output, input.valueRadians());
+    }
+};
 
 // From Degree
 template <class ToType>
-inline bool fallbackConversion(ToType* output, const orxonox::Degree input)
+struct ConverterFallback<ToType, orxonox::Degree>
 {
-    return convertValue<ToType, Ogre::Real>(output, input.valueDegrees()); 
-}
+    static bool convert(ToType* output, const orxonox::Degree& input)
+    {
+        return convertValue<ToType, Ogre::Real>(output, input.valueDegrees());
+    }
+};
 
 // To Radian
 template <class FromType>
-inline bool fallbackConversion(orxonox::Radian* output, const FromType input)
+struct ConverterFallback<orxonox::Radian, FromType>
 {
-    float temp;
-    if (convertValue(&temp, input))
+    static bool convert(orxonox::Radian* output, const FromType& input)
     {
-        *output = temp;
-        return true;
+        float temp;
+        if (convertValue(&temp, input))
+        {
+            *output = temp;
+            return true;
+        }
+        else
+            return false;
     }
-    else
-        return false;
-}
+};
 
 // To Degree
 template <class FromType>
-inline bool fallbackConversion(orxonox::Degree* output, const FromType input)
+struct ConverterFallback<orxonox::Degree, FromType>
 {
-    float temp;
-    if (convertValue(&temp, input))
+    static bool convert(orxonox::Degree* output, const FromType& input)
     {
-        *output = temp;
-        return true;
+        float temp;
+        if (convertValue(&temp, input))
+        {
+            *output = temp;
+            return true;
+        }
+        else
+            return false;
     }
-    else
-        return false;
-}
+};
 
 #endif /* _MathConvert_H__ */

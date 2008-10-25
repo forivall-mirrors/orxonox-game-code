@@ -230,42 +230,56 @@ namespace orxonox
 #endif
     Factory::createClassHierarchy();
 
-    std::string nmbr;
-    char res('a');
-    //const char* nmbr;
-    //const char* str;
-    convertValue(&nmbr, res);
-    //const unsigned int blah = 4;
-    //convertValue(nmbr, blah);
-    //convertValue(&str, 4.0f);
+#include "convert_test.cc"
 
-    //using ::operator<<;
-    using std::string;
-    int a = 3;
-    FooBar asdf;
-    std::string asdf2;
-    std::ostringstream oss;
-    char blah(' ');
-    oss << blah;
-    std::cout << asdf2;
-    ConvertValue(&asdf2, asdf);
-    //if (conversionTests::OStreamOperator<FooBar>::exists)
-    //    int asdfasdfasdf = 7;
-    //COUT(3) << asdf;
+    // some special string conversions
+    const char* myCString = "84.0";
+    COUT(0) << conversion_cast<std::string>(myCString) << std::endl;
+    COUT(0) << conversion_cast<float>(myCString) << std::endl;
+    COUT(0) << conversion_cast<Vector2>(myCString) << std::endl;
+    COUT(0) << conversion_cast<std::string>(conversion_cast<Radian>(myCString)) << std::endl;
+    COUT(0) << std::endl;
 
-    TestConv(1, int, (3), float, 3.0);
-    TestConv(2, int, (3), string, "3");
-    TestConv(3, string, ("3.0"), float, 3.0f);
-    TestConv(4, char, ('a'), string, "a");
-    TestConv(5, string, ("df"), char, 'd');
-    TestConv(6, Vector2, (3,4), string, "3,4");
-    TestConv(7, const char*, ("4.3"), float, 4.3f);
-    TestConv(8, const char*, ("4,3"), Vector2, Vector2(4,3));
-    //TestConv(9, const char*, ("4.4"), Radian, Radian(4.4));
-    TestConv(100, int, (3), const char*, "3");
-    TestConv(101, Vector3, (1, 2, 3), float, 3.0);
+    std::string myString = "3,4,1";
+    COUT(0) << conversion_cast<Vector3>(myString) << std::endl;
+    
 
-    std::ostringstream out;
+    //std::string nmbr;
+    //char res('a');
+    ////const char* nmbr;
+    ////const char* str;
+    //convertValue(&nmbr, res);
+    ////const unsigned int blah = 4;
+    ////convertValue(nmbr, blah);
+    ////convertValue(&str, 4.0f);
+
+    ////using ::operator<<;
+    //using std::string;
+    //int a = 3;
+    //FooBar asdf;
+    //std::string asdf2;
+    //std::ostringstream oss;
+    //char blah(' ');
+    //oss << blah;
+    //std::cout << asdf2;
+    //ConvertValue(&asdf2, asdf);
+    ////if (conversionTests::OStreamOperator<FooBar>::exists)
+    ////    int asdfasdfasdf = 7;
+    ////COUT(3) << asdf;
+
+    //TestConv(1, int, (3), float, 3.0);
+    //TestConv(2, int, (3), string, "3");
+    //TestConv(3, string, ("3.0"), float, 3.0f);
+    //TestConv(4, char, ('a'), string, "a");
+    //TestConv(5, string, ("df"), char, 'd');
+    //TestConv(6, Vector2, (3,4), string, "3,4");
+    //TestConv(7, const char*, ("4.3"), float, 4.3f);
+    //TestConv(8, const char*, ("4,3"), Vector2, Vector2(4,3));
+    ////TestConv(9, const char*, ("4.4"), Radian, Radian(4.4));
+    //TestConv(100, int, (3), const char*, "3");
+    //TestConv(101, Vector3, (1, 2, 3), float, 3.0);
+
+    //std::ostringstream out;
 
     std::string mode;
     std::string tempDataPath;

@@ -22,7 +22,7 @@
  *   Author:
  *      Benjamin Grauer
  *      Fabian 'x3n' Landau
- *      Reto Grieder (direct conversion tests)
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  */
@@ -44,18 +44,20 @@
 
 #include "Debug.h"
 
-// Gcc generates warnings when implicitely casting from float to int for instance.
-// This is however exactly what convertValue does, so we need to suppress the warnings.
-// They only occur in when using the ImplicitConversion template.
+// GCC generates warnings when implicitely casting from float to int for instance.
+// This is however exactly what convertValue does, so we need to suppress these warnings.
+// They only occur when using the ImplicitConversion template.
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_GNUC
 #  pragma GCC system_header
 #endif
 
+
 ///////////////////////////////////////////////
 // Static detection for conversion functions //
 ///////////////////////////////////////////////
+
 /* The idea to use the sizeof() operator on return functions to determine function existance
-   is described in 'Moder C++ design' by Alexandrescu (2001). */
+   is described in 'Modern C++ design' by Alexandrescu (2001). */
 
 // disable warnings about possible loss of data
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
@@ -63,33 +65,22 @@
 #  pragma warning(disable:4244)
 #endif
 
-namespace conversionTests
+template <class FromType, class ToType>
+class ImplicitConversion
 {
-    // A struct that is guaranteed to be larger than any return type of our conversion functions.
-    // So we simply add all the sizes of the return types plus a little bit more.
-    struct VeryBigStruct
-    {
-        char intSize[sizeof(int)];
-        char addingMore[4096]; // just to be sure ;)
-    };
-
-    template <class FromType, class ToType>
-    class ImplicitConversion
-    {
-    private:
-        ImplicitConversion(); ImplicitConversion(const ImplicitConversion&); ~ImplicitConversion();
-        // Gets chosen only if there is an implicit conversion from FromType to ToType.
-        static int test(ToType);
-        // Accepts any argument. Why do we not use a template? The reason is that with templates,
-        // the function above is only taken iff it is an exact type match. But since we want to
-        // check for implicit conversion, we have to use the ellipsis.
-        static VeryBigStruct   test(...);
-        static FromType object; // helper object to handle private c'tor and d'tor
-    public:
-        // test(object) only has 'VerySmallStruct' return type iff the compiler doesn't choose test(...)
-        enum { exists = !(sizeof(test(object)) == sizeof(VeryBigStruct)) };
-    };
-}
+private:
+    ImplicitConversion(); ImplicitConversion(const ImplicitConversion&); ~ImplicitConversion();
+    // Gets chosen only if there is an implicit conversion from FromType to ToType.
+    static char test(ToType);
+    // Accepts any argument. Why do we not use a template? The reason is that with templates,
+    // the function above is only taken iff it is an exact type match. But since we want to
+    // check for implicit conversion, we have to use the ellipsis.
+    static long long test(...);
+    static FromType object; // helper object to handle private c'tor and d'tor
+public:
+    // test(object) only has 'long long' return type iff the compiler doesn't choose test(...)
+    enum { exists = (sizeof(test(object)) == sizeof(char)) };
+};
 
 #if ORXONOX_COMPILER == ORXONOX_COMPILER_MSVC
 #  pragma warning(pop)
@@ -101,30 +92,32 @@ namespace conversionTests
 ////////////////////////////////////
 /*
     There is a distinct priority when choosing the right conversion function:
-    Overwrites:
-    1. (Partial) template specialisation of ConverterExplicit::convert
-    2. Global functions convertValue(ToType* output, const FromType input)
+    Overwrite:
+    1. (Partial) template specialisation of ConverterExplicit::convert()
     Fallbacks:
-    3. Any possible implicit conversion. This includes FooBar --> int if FooBar defines operator float().
-    4. Global or member operators for stringstream when converting from or to std::string (or FROM const char*)
-    5. Function that simply displays "Could not convert value" with information obtained from typeid().
+    2. Any possible implicit conversion. This includes 'FooBar' --> 'int' if FooBar defines operator float().
+    3. Global or member operators for stringstream when converting from or to std::string (or FROM const char*)
+    4. (Partial) template specialisation of ConverterFallback::convert()
+    5. Function that simply displays "Could not convert value" with type information obtained from typeid().
 
-    A note: There has to be an exact type match (or according to the rules of template spec.) except for 3.
+    Notes:
+    There has to be an exact type match when using template specialisations.
+    Template specialisations can be defined after including this file. Any implicit cast function or iostream
+    operator has to be declared BEFORE this file gets parsed.
 
-    There are obviously a lot of ways to specifiy a user defined conversion. What should I use?
-    When using any non-template function based conversion (implicit conversion, convertValue, << or >>)
-    then you should consider that this function has to be defined prior to including this file.
-    If you do not whish do do that, you will have to spcecialsize the ConverterExplicit template.
-    There is a not so obvious advantage of the other way (non-template): You could declare each conversion function
-    in the Prereqs file of the corresponding library. Then you can use the conversion everywhere.
-    This is not possible with template specialisations even when defining them in this file (You would create
-    a circular dependency when using a class from Core for instance, because complete template specialisations
-    get compiled anyway (there is no template parameter)).
+    Defining your own functions:
+    There are obviously 4 ways to specifiy a user defined conversion. What should I use?
+
+    Usually, ConverterFallback fits quite well. You won't have to deal with the conversion from
+    'MyClass' to 'MyClass' by using another explicit template specialisation to avoid ambiguities.
+
+    However if you want to overwrite an implicit conversion or an iostream operator, you really need to
+    make use of ConverterExplicit.
 */
 
 namespace
 {
-    // little template that maps to ints to entire types (Alexandrescu 2001)
+    //! Little template that maps integers to entire types (Alexandrescu 2001)
     template <int I>
     struct Int2Type { };
 }
@@ -140,8 +133,8 @@ struct ConverterFallback
 {
     static bool convert(ToType* output, const FromType& input)
     {
-        COUT(2) << "Could not convert value of type " << typeid(FromType).name()
-                << " to type " << typeid(ToType).name() << std::endl;
+        //COUT(2) << "Could not convert value of type " << typeid(FromType).name()
+        //        << " to type " << typeid(ToType).name() << std::endl;
         return false;
     }
 };
@@ -182,13 +175,14 @@ namespace fallbackTemplates
     }
 }
 
-// template that evaluates whether OStringStream is possible for conversions to std::string
+// template that evaluates whether we can convert to std::string via ostringstream
 template <class FromType>
 struct ConverterStringStream<std::string, FromType>
 {
     static bool convert(std::string* output, const FromType& input)
     {
         using namespace fallbackTemplates;
+        // this operator call only chooses fallbackTemplates::operator<< if there's no other fitting function
         std::ostringstream oss;
         if (oss << input)
         {
@@ -215,7 +209,7 @@ namespace fallbackTemplates
     }
 }
 
-// template that evaluates whether IStringStream is possible for conversions from std::string
+// template that evaluates whether we can convert from std::string via ostringstream
 template <class ToType>
 struct ConverterStringStream<ToType, std::string>
 {
@@ -223,6 +217,7 @@ struct ConverterStringStream<ToType, std::string>
     {
         using namespace fallbackTemplates;
         std::istringstream iss(input);
+        // this operator call only chooses fallbackTemplates::operator>> if there's no other fitting function
         if (iss >> (*output))
         {
             return true;
@@ -237,7 +232,7 @@ struct ConverterStringStream<ToType, std::string>
 // Implicit Cast //
 ///////////////////
 
-// static cast no possible, try stringstream conversion next
+// implicit cast not possible, try stringstream conversion next
 template <class ToType, class FromType>
 inline bool convertImplicitely(ToType* output, const FromType& input, ::Int2Type<false>)
 {
@@ -253,9 +248,9 @@ inline bool convertImplicitely(ToType* output, const FromType& input, ::Int2Type
 }
 
 
-///////////////////////
-// Explicit Fallback //
-///////////////////////
+////////////////////////////////
+// ConverterExplicit Fallback //
+////////////////////////////////
 
 // Default template if no specialisation is available
 template <class ToType, class FromType>
@@ -263,8 +258,9 @@ struct ConverterExplicit
 {
     static bool convert(ToType* output, const FromType& input)
     {
-        // try implict conversion by probing first because we use '...' instead of a template
-        const bool probe = conversionTests::ImplicitConversion<FromType, ToType>::exists;
+        // Try implict cast and probe first. If a simple cast is not possible, it will not compile
+        // We therefore have to out source it into another template function
+        const bool probe = ImplicitConversion<FromType, ToType>::exists;
         return convertImplicitely(output, input, ::Int2Type<probe>());
     }
 };
@@ -277,11 +273,9 @@ struct ConverterExplicit
 /**
 @brief
     Converts any value to any other as long as there exists a conversion.
-    Otherwise, the conversion will generate a runtime warning.
+    Otherwise, the conversion will generate a runtime warning and return false.
     For information about the different conversion methods (user defined too), see the section
     'Actual conversion sequence' in this file above.
-@note
-    This function is only a fallback if there is no appropriate 'convertValue' function.
 */
 template <class ToType, class FromType>
 inline bool convertValue(ToType* output, const FromType& input)
@@ -298,14 +292,33 @@ inline bool ConvertValue(ToType* output, const FromType& input)
 
 // Calls convertValue and returns true if the conversion was successful.
 // Otherwise the fallback is used.
+/**
+@brief
+    Converts any value to any other as long as there exists a conversion.
+    Otherwise, the conversion will generate a runtime warning and return false.
+    For information about the different conversion methods (user defined too), see the section
+    'Actual conversion sequence' in this file above.
+    If the conversion doesn't succeed, 'fallback' is written to '*output'.
+@param fallback
+    A default value that gets written to '*output' if there is no conversion.
+*/
 template<class FromType, class ToType>
-inline bool ConvertValue(ToType* output, const FromType& input, const ToType& fallback)
+inline bool convertValue(ToType* output, const FromType& input, const ToType& fallback)
 {
     if (convertValue(output, input))
         return true;
+    else
+    {
+        (*output) = fallback;
+        return false;
+    }
+}
 
-    (*output) = fallback;
-    return false;
+// for compatibility reason. (capital 'c' in ConvertValue)
+template<class FromType, class ToType>
+inline bool ConvertValue(ToType* output, const FromType& input, const ToType& fallback)
+{
+    return convertValue(output, input, fallback);
 }
 
 // Directly returns the converted value, even if the conversion was not successful.
@@ -313,7 +326,7 @@ template<class FromType, class ToType>
 inline ToType getConvertedValue(const FromType& input)
 {
     ToType output;
-    ConvertValue(&output, input);
+    convertValue(&output, input);
     return output;
 }
 
@@ -322,7 +335,7 @@ template<class FromType, class ToType>
 inline ToType getConvertedValue(const FromType& input, const ToType& fallback)
 {
     ToType output;
-    ConvertValue(&output, input, fallback);
+    convertValue(&output, input, fallback);
     return output;
 }
 
@@ -332,16 +345,7 @@ template<class ToType, class FromType>
 inline ToType conversion_cast(const FromType& input)
 {
     ToType output;
-    ConvertValue(&output, input);
-    return output;
-}
-
-// Like conversion_cast above, but uses a fallback on failure.
-template<class ToType, class FromType>
-inline ToType conversion_cast(const FromType& input, const ToType& fallback)
-{
-    ToType output;
-    ConvertValue(&output, input, fallback);
+    convertValue(&output, input);
     return output;
 }
 
@@ -350,7 +354,7 @@ inline ToType conversion_cast(const FromType& input, const ToType& fallback)
 // Special string conversions //
 ////////////////////////////////
 
-// delegate conversion from const char* to std::string
+// Delegate conversion from const char* to std::string
 template <class ToType>
 struct ConverterExplicit<ToType, const char*>
 {
