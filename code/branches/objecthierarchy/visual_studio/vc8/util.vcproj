@@ -226,6 +226,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\util\MathConvert.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\util\MultiType.h"
 				>
 			</File>
