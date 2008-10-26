@@ -141,6 +141,23 @@ struct ConverterFallback
     }
 };
 
+// If all else fails, try a dynamic_cast for pointer types.
+template <class FromType, class ToType>
+struct ConverterFallback<FromType*, ToType*>
+{
+    static bool convert(ToType** output, FromType* const input)
+    {
+        ToType* temp = dynamic_cast<ToType*>(input);
+        if (temp)
+        {
+            *output = temp;
+            return true;
+        }
+        else
+            return false;
+    }
+};
+
 
 ///////////////////////
 // ConverterFallback //
@@ -344,7 +361,7 @@ inline ToType getConvertedValue(const FromType& input, const ToType& fallback)
 // Like getConvertedValue, but the template argument order is in reverse.
 // That means you can call it exactly like static_cast<ToType>(fromTypeValue).
 template<class ToType, class FromType>
-inline ToType conversion_cast(const FromType& input)
+inline ToType omni_cast(const FromType& input)
 {
     ToType output;
     convertValue(&output, input);
@@ -353,14 +370,14 @@ inline ToType conversion_cast(const FromType& input)
 
 // convert to string Shortcut
 template <class FromType>
-std::string convertToString(FromType value)
+inline std::string convertToString(FromType value)
 {
   return getConvertedValue<FromType, std::string>(value);
 }
 
 // convert from string Shortcut
 template <class ToType>
-ToType convertFromString(std::string str)
+inline ToType convertFromString(std::string str)
 {
   return getConvertedValue<std::string, ToType>(str);
 }
