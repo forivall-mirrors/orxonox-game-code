@@ -56,7 +56,7 @@ namespace orxonox {
     */
     bool QuestManager::registerQuest(Quest* quest)
     {
-        this->questMap_.insert ( pair<std::string,Quest>(quest->getId(),quest) );
+        questMap_.insert( std::pair<std::string,Quest*>(quest->getId(),quest) );
         return true;
     }
     
@@ -70,7 +70,7 @@ namespace orxonox {
     */
     bool QuestManager::registerHint(QuestHint* hint)
     {
-        this->hintMap_.insert ( pair<std::string,Hint>(hint->getId(),hint) );
+        hintMap_.insert ( std::pair<std::string,QuestHint*>(hint->getId(),hint) );
         return true;
     }
     
@@ -87,10 +87,10 @@ namespace orxonox {
     Quest* QuestManager::findQuest(const std::string & questId)
     {
         Quest* quest;
-        std::map<std::string, Quest*>::iterator it = this->questMap_.find(questId);
-	if (it != this->questMap_.end())
+        std::map<std::string, Quest*>::iterator it = questMap_.find(questId);
+	if (it != questMap_.end())
 	{
-	    quest = &(it->second);
+	    quest = it->second;
 	}
 	else
 	{
@@ -112,13 +112,13 @@ namespace orxonox {
     @todo
         Throw exceptopns in case of errors.
     */
-    QuestHint* QuestManager::findHint(const std::string & hintId) const
+    QuestHint* QuestManager::findHint(const std::string & hintId)
     {
         QuestHint* hint;
-        std::map<std::string, QuestHint*>::iterator it = this->hintMap_.find(hintId);
-	if (it != this->hintMap_.end())
+        std::map<std::string, QuestHint*>::iterator it = hintMap_.find(hintId);
+	if (it != hintMap_.end())
 	{
-	    hint = &(it->second);
+	    hint = it->second;
 	}
 	else
 	{
