@@ -30,7 +30,7 @@
 #include "BillboardSet.h"
 
 #include <sstream>
-
+#include <cassert>
 #include <OgreSceneManager.h>
 
 #include "GraphicsEngine.h"
@@ -45,45 +45,61 @@ namespace orxonox
         this->billboardSet_ = 0;
     }
 
-    void BillboardSet::setBillboardSet(const std::string& file, int count)
+    void BillboardSet::setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, int count)
     {
+        assert(scenemanager);
+
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = GraphicsEngine::getInstance().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + name.str(), count);
         this->billboardSet_->createBillboard(Vector3::ZERO);
         this->billboardSet_->setMaterialName(file);
+
+        this->scenemanager_ = scenemanager;
     }
 
-    void BillboardSet::setBillboardSet(const std::string& file, const ColourValue& colour, int count)
+    void BillboardSet::setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const ColourValue& colour, int count)
     {
+        assert(scenemanager);
+
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = GraphicsEngine::getInstance().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + name.str(), count);
         this->billboardSet_->createBillboard(Vector3::ZERO, colour);
         this->billboardSet_->setMaterialName(file);
+
+        this->scenemanager_ = scenemanager;
     }
 
-    void BillboardSet::setBillboardSet(const std::string& file, const Vector3& position, int count)
+    void BillboardSet::setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const Vector3& position, int count)
     {
+        assert(scenemanager);
+
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = GraphicsEngine::getInstance().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + name.str(), count);
         this->billboardSet_->createBillboard(position);
         this->billboardSet_->setMaterialName(file);
+
+        this->scenemanager_ = scenemanager;
     }
 
-    void BillboardSet::setBillboardSet(const std::string& file, const ColourValue& colour, const Vector3& position, int count)
+    void BillboardSet::setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const ColourValue& colour, const Vector3& position, int count)
     {
+        assert(scenemanager);
+
         std::ostringstream name;
         name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = GraphicsEngine::getInstance().getLevelSceneManager()->createBillboardSet("Billboard" + name.str(), count);
+        this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + name.str(), count);
         this->billboardSet_->createBillboard(position, colour);
         this->billboardSet_->setMaterialName(file);
+
+        this->scenemanager_ = scenemanager;
     }
 
     BillboardSet::~BillboardSet()
     {
-        if (this->billboardSet_)
-            GraphicsEngine::getInstance().getLevelSceneManager()->destroyBillboardSet(this->billboardSet_);
+        if (this->billboardSet_ && this->scenemanager_)
+            this->scenemanager_->destroyBillboardSet(this->billboardSet_);
     }
 }

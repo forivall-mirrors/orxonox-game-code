@@ -34,6 +34,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/XMLPort.h"
+#include "objects/Scene.h"
 
 namespace orxonox
 {
@@ -42,7 +43,7 @@ namespace orxonox
 
   CreateFactory(Trigger);
 
-  Trigger::Trigger()
+  Trigger::Trigger(BaseObject* creator) : PositionableEntity(creator)
   {
     RegisterObject(Trigger);
 
@@ -56,8 +57,11 @@ namespace orxonox
     bStayOn_ = false;
     latestState_ = 0x0;
 
-    debugBillboard_.setBillboardSet("Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
-    debugBillboard_.setVisible(false);
+    if (this->getScene() && this->getScene()->getSceneManager())
+    {
+      debugBillboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 0.0, 0.0), 1);
+      debugBillboard_.setVisible(false);
+    }
 
     this->getNode()->attachObject(debugBillboard_.getBillboardSet());
   }

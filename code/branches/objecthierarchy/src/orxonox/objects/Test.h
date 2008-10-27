@@ -38,16 +38,16 @@ namespace orxonox
   class _OrxonoxExport Test: public BaseObject, public network::Synchronisable
   {
     public:
-      Test();
+      Test(BaseObject* creator);
       virtual ~Test();
 
       void setConfigValues();
       void registerVariables();
-      
+
       void setV1(unsigned int value){ v1 = value; }
       void setV2(unsigned int value){ v2 = value; }
       void setV3(unsigned int value){ v3 = value; }
-      
+
       void checkV1();
       void checkV2();
       void checkV3();

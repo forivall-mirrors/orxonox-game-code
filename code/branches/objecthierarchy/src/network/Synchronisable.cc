@@ -133,7 +133,7 @@ namespace network
 
     orxonox::Identifier* id = ClassByID(header->classID);
     assert(id);
-    orxonox::BaseObject *bo = id->fabricate();
+    orxonox::BaseObject *bo = id->fabricate(0); // TODO: get creator
     Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
     assert(no);
     no->objectID=header->objectID;

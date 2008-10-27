@@ -26,35 +26,44 @@
  *
  */
 
-#ifndef _Controller_H__
-#define _Controller_H__
+#ifndef _HumanPlayer_H__
+#define _HumanPlayer_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
+#include "PlayerInfo.h"
+#include "core/Identifier.h"
+#include "objects/controllers/Controller.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Controller : public BaseObject
+    class _OrxonoxExport HumanPlayer : public PlayerInfo
     {
         public:
-            Controller(BaseObject* creator);
-            virtual ~Controller();
+            HumanPlayer(BaseObject* creator);
+            virtual ~HumanPlayer();
 
-            inline void setPlayer(PlayerInfo* player)
-                { this->player_ = player; }
-            inline PlayerInfo* getPlayer() const
-                { return this->player_; }
+            void registerVariables();
+            void setConfigValues();
 
-            virtual inline void setControllableEntity(ControllableEntity* entity)
-                { this->controllableEntity_ = entity; }
-            virtual inline ControllableEntity* getControllableEntity() const
-                { return this->controllableEntity_; }
+            bool isReady() const;
+            float getPing() const;
+            float getPacketLossRatio() const;
+
+            void setClientID(unsigned int clientID);
 
         protected:
-            PlayerInfo* player_;
-            ControllableEntity* controllableEntity_;
+            void configvaluecallback_changednick();
+            void networkcallback_changednick();
+            void networkcallback_clientIDchanged();
+            void networkcallback_server_ready();
+            void networkcallback_client_ready();
+
+            std::string nick_;
+            std::string synchronize_nick_;
+            bool server_ready_;
+            bool client_ready_;
     };
 }
 
-#endif /* _Controller_H__ */
+#endif /* _HumanPlayer_H__ */

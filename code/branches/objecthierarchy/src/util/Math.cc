@@ -201,11 +201,6 @@ unsigned long getUniqueNumber()
     return aNumber++;
 }
 
-std::string getUniqueNumberStr()
-{
-    return convertToString(getUniqueNumber());
-}
-
 
 //////////////////////////
 // Conversion functions //

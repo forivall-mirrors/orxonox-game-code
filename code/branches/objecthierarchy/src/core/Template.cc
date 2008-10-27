@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(Template);
 
-    Template::Template() : xmlelement_("")
+    Template::Template(BaseObject* creator) : BaseObject(creator), xmlelement_("")
     {
         RegisterObject(Template);
 
@@ -58,7 +58,13 @@ namespace orxonox
         XMLPortParam(Template, "link", setLink, getLink, xmlelement, mode);
         XMLPortParam(Template, "baseclass", setBaseclass, getBaseclass, xmlelement, mode);
 
-        this->setXMLElement(*dynamic_cast<TiXmlElement*>(xmlelement.FirstChildElement(false)->GetTiXmlPointer()));
+        Element* element = xmlelement.FirstChildElement(false);
+        if (element)
+        {
+            TiXmlElement* tixmlelement = dynamic_cast<TiXmlElement*>(element->GetTiXmlPointer());
+            if (tixmlelement)
+                this->setXMLElement(*tixmlelement);
+        }
     }
 
     void Template::changedName()

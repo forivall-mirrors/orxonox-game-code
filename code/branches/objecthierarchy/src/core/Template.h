@@ -41,7 +41,7 @@ namespace orxonox
     class _CoreExport Template : public BaseObject
     {
         public:
-            Template();
+            Template(BaseObject* creator);
             virtual ~Template();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

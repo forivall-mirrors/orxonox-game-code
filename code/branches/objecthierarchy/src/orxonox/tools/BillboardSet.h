@@ -43,10 +43,10 @@ namespace orxonox
         public:
             BillboardSet();
             ~BillboardSet();
-            void setBillboardSet(const std::string& file, int count = 1);
-            void setBillboardSet(const std::string& file, const ColourValue& colour, int count = 1);
-            void setBillboardSet(const std::string& file, const Vector3& position, int count = 1);
-            void setBillboardSet(const std::string& file, const ColourValue& colour, const Vector3& position, int count = 1);
+            void setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, int count = 1);
+            void setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const ColourValue& colour, int count = 1);
+            void setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const Vector3& position, int count = 1);
+            void setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const ColourValue& colour, const Vector3& position, int count = 1);
 
             inline Ogre::BillboardSet* getBillboardSet()
                 { return this->billboardSet_; }
@@ -62,6 +62,7 @@ namespace orxonox
         private:
             static unsigned int billboardSetCounter_s;
             Ogre::BillboardSet* billboardSet_;
+            Ogre::SceneManager* scenemanager_;
     };
 }
 

@@ -29,6 +29,7 @@
 #include "OrxonoxStableHeaders.h"
 #include "WorldEntity.h"
 
+#include <cassert>
 #include <OgreSceneManager.h>
 
 #include "core/CoreIncludes.h"
@@ -36,6 +37,7 @@
 #include "util/Convert.h"
 
 #include "GraphicsEngine.h"
+#include "objects/Scene.h"
 
 namespace orxonox
 {
@@ -46,11 +48,15 @@ namespace orxonox
     const Vector3 WorldEntity::DOWN  = Vector3::NEGATIVE_UNIT_Y;
     const Vector3 WorldEntity::UP    = Vector3::UNIT_Y;
 
-    WorldEntity::WorldEntity()
+    WorldEntity::WorldEntity(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(WorldEntity);
 
-        this->node_ = GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode();
+        assert(this->getScene());
+        assert(this->getScene()->getRootSceneNode());
+
+        this->node_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
+
         this->parent_ = 0;
         this->parentID_ = (unsigned int)-1;
 
@@ -65,10 +71,10 @@ namespace orxonox
         if (this->isInitialized())
         {
             this->node_->detachAllObjects();
-            GraphicsEngine::getInstance().getLevelSceneManager()->destroySceneNode(this->node_->getName());
+            if (this->getScene()->getSceneManager())
+                this->getScene()->getSceneManager()->destroySceneNode(this->node_->getName());
         }
     }
-
 
     void WorldEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
@@ -130,7 +136,7 @@ namespace orxonox
         object->parent_ = 0;
         object->parentID_ = (unsigned int)-1;
 
-        GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->addChild(object->node_);
+        this->getScene()->getRootSceneNode()->addChild(object->node_);
     }
 
     WorldEntity* WorldEntity::getAttachedObject(unsigned int index) const

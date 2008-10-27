@@ -143,7 +143,7 @@ namespace orxonox
                 rootElement.InsertEndChild(*child);
 
             COUT(4) << "  creating root-namespace..." << std::endl;
-            Namespace* rootNamespace = new Namespace();
+            Namespace* rootNamespace = new Namespace(0);
             rootNamespace->setLoaderIndentation("    ");
             rootNamespace->setFile(file);
             rootNamespace->setNamespace(rootNamespace);

@@ -36,31 +36,52 @@
 #include "core/BaseObject.h"
 #include "core/Identifier.h"
 #include "objects/worldentities/ControllableEntity.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Gametype : public BaseObject
+    class _OrxonoxExport Gametype : public BaseObject, public Tickable
     {
         friend class PlayerInfo;
 
         public:
-            Gametype();
+            Gametype(BaseObject* creator);
             virtual ~Gametype() {}
+
+            virtual void tick(float dt);
+
+            virtual void start();
+            virtual void end();
+            virtual void playerEntered(PlayerInfo* player);
+            virtual void playerLeft(PlayerInfo* player);
+            virtual void playerSwitched(PlayerInfo* player, Gametype* newgametype);
+            virtual void playerSwitchedBack(PlayerInfo* player, Gametype* oldgametype);
+            virtual void playerChangedName(PlayerInfo* player);
+            virtual void playerSpawned(PlayerInfo* player);
+            virtual void playerDied(PlayerInfo* player);
+            virtual void playerScored(PlayerInfo* player);
 
             inline const std::set<PlayerInfo*>& getPlayers() const
                 { return this->players_; }
 
-        protected:
-            virtual void playerJoined(PlayerInfo* player);
-            virtual void playerLeft(PlayerInfo* player);
-
-            virtual void playerChangedName(PlayerInfo* player);
+            inline void registerSpawnPoint(SpawnPoint* spawnpoint)
+                { this->spawnpoints_.insert(spawnpoint); }
 
         private:
+            virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
+
             void addPlayer(PlayerInfo* player);
             void removePlayer(PlayerInfo* player);
 
+            void assignDefaultPawnsIfNeeded() const;
+            void checkStart();
+            void spawnPlayer(PlayerInfo* player);
+
+            bool bStarted_;
+            bool bEnded_;
+            bool bAutoStart_;
             std::set<PlayerInfo*> players_;
+            std::set<SpawnPoint*> spawnpoints_;
             SubclassIdentifier<ControllableEntity> defaultPawn_;
     };
 }

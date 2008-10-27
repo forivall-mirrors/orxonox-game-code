@@ -30,6 +30,7 @@
 #include "Light.h"
 
 #include <sstream>
+#include <cassert>
 
 #include <OgreSceneManager.h>
 
@@ -44,19 +45,23 @@ namespace orxonox
         this->light_ = 0;
     }
 
-    void Light::setLight(Ogre::Light::LightTypes type, const ColourValue& diffuse, const ColourValue& specular)
+    void Light::setLight(Ogre::SceneManager* scenemanager, Ogre::Light::LightTypes type, const ColourValue& diffuse, const ColourValue& specular)
     {
+        assert(scenemanager);
+
         std::ostringstream name;
         name << (Light::lightCounter_s++);
-        this->light_ = GraphicsEngine::getInstance().getLevelSceneManager()->createLight("Light" + name.str());
+        this->light_ = scenemanager->createLight("Light" + name.str());
         this->light_->setType(type);
         this->light_->setDiffuseColour(diffuse);
         this->light_->setSpecularColour(specular);
+
+        this->scenemanager_ = scenemanager;
     }
 
     Light::~Light()
     {
-        if (this->light_)
-            GraphicsEngine::getInstance().getLevelSceneManager()->destroyLight(this->light_);
+        if (this->light_ && this->scenemanager_)
+            this->scenemanager_->destroyLight(this->light_);
     }
 }

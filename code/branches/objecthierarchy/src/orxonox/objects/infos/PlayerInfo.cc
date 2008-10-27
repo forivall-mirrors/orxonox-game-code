@@ -26,45 +26,29 @@
  *
  */
 
+#include <cassert>
+
 #include "OrxonoxStableHeaders.h"
 #include "PlayerInfo.h"
 
-#include <OgreSceneManager.h>
-
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
-#include "core/XMLPort.h"
-#include "core/Core.h"
-
-#include "network/Host.h"
 #include "network/ClientInformation.h"
-
-#include "GraphicsEngine.h"
 #include "objects/gametypes/Gametype.h"
-#include "objects/worldentities/ControllableEntity.h"
-#include "objects/controllers/HumanController.h"
 
 namespace orxonox
 {
-    CreateUnloadableFactory(PlayerInfo);
-
-    PlayerInfo::PlayerInfo()
+    PlayerInfo::PlayerInfo(BaseObject* creator) : Info(creator)
     {
         RegisterObject(PlayerInfo);
 
-        this->ping_ = -1;
         this->clientID_ = network::CLIENTID_UNKNOWN;
-        this->bLocalPlayer_ = false;
         this->bHumanPlayer_ = false;
-        this->bFinishedSetup_ = false;
-        this->gametype_ = 0;
-
-        this->pawn_ = 0;
-        this->pawnID_ = network::OBJECTID_UNKNOWN;
+        this->bLocalPlayer_ = false;
+        this->bReadyToSpawn_ = false;
         this->controller_ = 0;
-        this->setDefaultController(Class(HumanController));
+        this->controllableEntity_ = 0;
+        this->controllableEntityID_ = network::CLIENTID_UNKNOWN;
 
-        this->setConfigValues();
         this->registerVariables();
     }
 
@@ -72,120 +56,106 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            if (this->gametype_)
-                this->gametype_->removePlayer(this);
+            this->stopControl(this->controllableEntity_);
 
             if (this->controller_)
-                delete this->controller_;
-
-            if (this->pawn_)
-                this->pawn_->removePlayer();
-        }
-    }
-
-    void PlayerInfo::setConfigValues()
-    {
-        SetConfigValue(nick_, "Player").callback(this, &PlayerInfo::checkNick);
-    }
-
-    void PlayerInfo::checkNick()
-    {
-        if (this->bLocalPlayer_)
-        {
-            this->playerName_ = this->nick_;
-
-            if (Core::isMaster())
-                this->setName(this->playerName_);
-        }
-    }
-
-    void PlayerInfo::changedName()
-    {
-        if (this->gametype_)
-            this->gametype_->playerChangedName(this);
-    }
-
-    void PlayerInfo::registerVariables()
-    {
-        REGISTERSTRING(name_,         network::direction::toclient, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
-        REGISTERSTRING(playerName_,   network::direction::toserver, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::clientChangedName));
-        REGISTERDATA(clientID_,       network::direction::toclient, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::checkClientID));
-        REGISTERDATA(ping_,           network::direction::toclient);
-        REGISTERDATA(bHumanPlayer_,   network::direction::toclient);
-        REGISTERDATA(pawnID_,         network::direction::toclient, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::updatePawn));
-        REGISTERDATA(bFinishedSetup_, network::direction::bidirectional, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::finishedSetup));
-    }
-
-    void PlayerInfo::clientChangedName()
-    {
-        this->setName(this->playerName_);
-    }
-
-    void PlayerInfo::checkClientID()
-    {
-        this->bHumanPlayer_ = true;
-
-        if (this->clientID_ == network::Host::getPlayerID())
-        {
-            this->takeLocalControl();
-
-            if (Core::isClient())
-                this->setObjectMode(network::direction::bidirectional);
-            else
             {
-                this->clientChangedName();
-                this->bFinishedSetup_ = true;
-                this->finishedSetup();
+                delete this->controller_;
+                this->controller_ = 0;
             }
         }
     }
 
-    void PlayerInfo::finishedSetup()
+    void PlayerInfo::registerVariables()
     {
-        if (Core::isClient())
-            this->bFinishedSetup_ = true;
-        else if (this->bFinishedSetup_)
+        REGISTERSTRING(this->name_,                 network::direction::toclient, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
+        REGISTERDATA  (this->controllableEntityID_, network::direction::toclient, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedcontrollableentityID));
+    }
+
+    void PlayerInfo::changedName()
+    {
+        if (this->isReady() && this->getGametype())
+            this->getGametype()->playerChangedName(this);
+    }
+
+    void PlayerInfo::changedGametype()
+    {
+        if (this->isReady())
         {
-            if (this->gametype_)
-                this->gametype_->addPlayer(this);
+            if (this->getOldGametype())
+            {
+                if (this->getGametype())
+                    this->getOldGametype()->playerSwitched(this, this->getGametype());
+                else
+                    this->getOldGametype()->playerLeft(this);
+            }
+
+            if (this->getGametype())
+            {
+                if (this->getOldGametype())
+                    this->getGametype()->playerSwitchedBack(this, this->getOldGametype());
+                else
+                    this->getGametype()->playerEntered(this);
+            }
         }
-    }
-
-    void PlayerInfo::startControl(ControllableEntity* pawn)
-    {
-        pawn->setPlayer(this);
-        this->pawn_ = pawn;
-        this->pawnID_ = pawn->getObjectID();
-
-        if (this->controller_)
-            this->controller_->setPawn(this->pawn_);
-    }
-
-    void PlayerInfo::stopControl()
-    {
-        if (this->pawn_)
-            this->pawn_->removePlayer();
-        this->pawn_ = 0;
-        this->pawnID_ = network::OBJECTID_UNKNOWN;
-    }
-
-    void PlayerInfo::takeLocalControl()
-    {
-        this->bLocalPlayer_ = true;
-        this->playerName_ = this->nick_;
-        this->createController();
     }
 
     void PlayerInfo::createController()
     {
-        this->controller_ = this->defaultController_.fabricate();
-        this->controller_->setPawn(this->pawn_);
+        this->controller_ = this->defaultController_.fabricate(this);
+        assert(this->controller_);
+        this->controller_->setPlayer(this);
+        if (this->controllableEntity_)
+            this->controller_->setControllableEntity(this->controllableEntity_);
     }
 
-    void PlayerInfo::updatePawn()
+    void PlayerInfo::startControl(ControllableEntity* entity)
     {
-        this->pawn_ = dynamic_cast<ControllableEntity*>(network::Synchronisable::getSynchronisable(this->pawnID_));
-        if (this->pawn_ && (this->pawn_->getPlayer() != this))
-            this->pawn_->setPlayer(this);
+        if (this->controllableEntity_)
+            this->stopControl(this->controllableEntity_);
+
+        this->controllableEntity_ = entity;
+
+        if (entity)
+        {
+            this->controllableEntityID_ = entity->getObjectID();
+            entity->setPlayer(this);
+        }
+        else
+        {
+            this->controllableEntityID_ = network::OBJECTID_UNKNOWN;
+        }
+
+        if (this->controller_)
+            this->controller_->setControllableEntity(entity);
+    }
+
+    void PlayerInfo::stopControl(ControllableEntity* entity)
+    {
+        if (entity && this->controllableEntity_ == entity)
+        {
+            this->controllableEntity_ = 0;
+            this->controllableEntityID_ = network::OBJECTID_UNKNOWN;
+
+            if (this->controller_)
+                this->controller_->setControllableEntity(0);
+
+            entity->removePlayer();
+        }
+    }
+
+    void PlayerInfo::networkcallback_changedcontrollableentityID()
+    {
+        if (this->controllableEntityID_ != network::OBJECTID_UNKNOWN)
+        {
+            Synchronisable* temp = Synchronisable::getSynchronisable(this->controllableEntityID_);
+            ControllableEntity* entity = dynamic_cast<ControllableEntity*>(temp);
+
+            this->startControl(entity);
+        }
+        else
+        {
+            this->stopControl(this->controllableEntity_);
+        }
     }
 }

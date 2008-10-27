@@ -44,7 +44,7 @@ namespace orxonox
     class _OrxonoxExport WorldEntity : public BaseObject, public network::Synchronisable
     {
         public:
-            WorldEntity();
+            WorldEntity(BaseObject* creator);
             virtual ~WorldEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

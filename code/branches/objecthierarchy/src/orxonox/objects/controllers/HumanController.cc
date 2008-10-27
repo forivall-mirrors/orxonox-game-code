@@ -51,7 +51,7 @@ namespace orxonox
 
     HumanController* HumanController::localController_s = 0;
 
-    HumanController::HumanController()
+    HumanController::HumanController(BaseObject* creator) : Controller(creator)
     {
         RegisterObject(HumanController);
 
@@ -65,67 +65,67 @@ namespace orxonox
 
     void HumanController::moveFrontBack(const Vector2& value)
     {
-        if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->moveFrontBack(value.y);
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->moveFrontBack(value.y);
     }
 
     void HumanController::moveRightLeft(const Vector2& value)
     {
-        if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->moveRightLeft(value.y);
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->moveRightLeft(value.y);
     }
 
     void HumanController::moveUpDown(const Vector2& value)
     {
-        if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->moveUpDown(value.y);
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->moveUpDown(value.y);
     }
 
     void HumanController::rotateYaw(const Vector2& value)
     {
-        if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->rotateYaw(value.y);
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->rotateYaw(value.y);
     }
 
     void HumanController::rotatePitch(const Vector2& value)
     {
-        if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->rotatePitch(value.y);
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->rotatePitch(value.y);
     }
 
     void HumanController::rotateRoll(const Vector2& value)
     {
-        if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->rotateRoll(value.y);
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->rotateRoll(value.y);
     }
 
     void HumanController::fire()
     {
-        if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->fire();
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->fire();
     }
 
     void HumanController::altFire()
     {
-        if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->altFire();
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->altFire();
     }
 
     void HumanController::greet()
     {
-        if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->greet();
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->greet();
     }
 
     void HumanController::use()
     {
-        if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->use();
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->use();
     }
 
     void HumanController::switchCamera()
     {
-        if (HumanController::localController_s && HumanController::localController_s->pawn_)
-            HumanController::localController_s->pawn_->switchCamera();
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+            HumanController::localController_s->controllableEntity_->switchCamera();
     }
 }

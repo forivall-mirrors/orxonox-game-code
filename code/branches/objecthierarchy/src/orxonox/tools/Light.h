@@ -44,7 +44,7 @@ namespace orxonox
         public:
             Light();
             ~Light();
-            void setLight(Ogre::Light::LightTypes type = Ogre::Light::LT_POINT, const ColourValue& diffuse = ColourValue(1.0, 1.0, 1.0), const ColourValue& specular = ColourValue(1.0, 1.0, 1.0));
+            void setLight(Ogre::SceneManager* scenemanager, Ogre::Light::LightTypes type = Ogre::Light::LT_POINT, const ColourValue& diffuse = ColourValue(1.0, 1.0, 1.0), const ColourValue& specular = ColourValue(1.0, 1.0, 1.0));
 
             inline Ogre::Light* getLight()
                 { return this->light_; }
@@ -55,6 +55,7 @@ namespace orxonox
         private:
             static unsigned int lightCounter_s;
             Ogre::Light* light_;
+            Ogre::SceneManager* scenemanager_;
     };
 }
 

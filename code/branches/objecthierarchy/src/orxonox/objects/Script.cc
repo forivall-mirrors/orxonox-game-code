@@ -38,7 +38,7 @@ namespace orxonox
 {
   CreateFactory(Script);
 
-  Script::Script()
+  Script::Script(BaseObject* creator) : BaseObject(creator)
   {
     RegisterObject(Script);
 

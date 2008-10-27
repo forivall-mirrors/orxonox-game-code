@@ -40,7 +40,7 @@ namespace orxonox
 
     CreateFactory(MovableEntity);
 
-    MovableEntity::MovableEntity()
+    MovableEntity::MovableEntity(BaseObject* creator) : WorldEntity(creator)
     {
         RegisterObject(MovableEntity);
 

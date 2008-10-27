@@ -55,14 +55,14 @@ namespace orxonox
     {
         public:
             static bool create(const std::string& name, bool bLoadable = true);
-            BaseObject* fabricate();
+            BaseObject* fabricate(BaseObject* creator);
 
         private:
             ClassFactory() {}                               // Don't create
             ClassFactory(const ClassFactory& factory) {}    // Don't copy
             virtual ~ClassFactory() {}                      // Don't delete
 
-            static T* createNewObject();
+            static T* createNewObject(BaseObject* creator);
     };
 
     /**
@@ -87,9 +87,9 @@ namespace orxonox
         @return The new object
     */
     template <class T>
-    BaseObject* ClassFactory<T>::fabricate()
+    BaseObject* ClassFactory<T>::fabricate(BaseObject* creator)
     {
-        return ClassFactory<T>::createNewObject();
+        return ClassFactory<T>::createNewObject(creator);
     }
 
     /**
@@ -97,9 +97,9 @@ namespace orxonox
         @return The new object
     */
     template <class T>
-    T* ClassFactory<T>::createNewObject()
+    T* ClassFactory<T>::createNewObject(BaseObject* creator)
     {
-        return new T;
+        return new T(creator);
     }
 }
 

@@ -40,8 +40,7 @@ namespace orxonox
 {
     CreateFactory(OverlayText);
 
-    OverlayText::OverlayText()
-        : text_(0)
+    OverlayText::OverlayText(BaseObject* creator) : OrxonoxOverlay(creator), text_(0)
     {
         RegisterObject(OverlayText);
     }
@@ -59,7 +58,7 @@ namespace orxonox
         if (mode == XMLPort::LoadObject)
         {
             this->text_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("TextArea", "OverlayText_text_" + getUniqueNumberStr()));
+                .createOverlayElement("TextArea", "OverlayText_text_" + getUniqueNumberString()));
             this->text_->setCharHeight(1.0);
 
             this->background_->addChild(this->text_);
@@ -83,7 +82,7 @@ namespace orxonox
         if (this->text_)
             return this->text_->getFontName();
         else
-            return blankString;
+            return BLANKSTRING;
     }
 
     void OverlayText::setColour(const ColourValue& colour)

@@ -32,68 +32,41 @@
 #include "OrxonoxPrereqs.h"
 
 #include "Info.h"
-#include "util/Math.h"
-#include "core/Identifier.h"
-
-#include "objects/gametypes/Gametype.h"
-#include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Level : public Info, public network::ClientConnectionListener
+    class _OrxonoxExport Level : public Info
     {
         public:
-            Level();
-            virtual ~Level() {}
+            Level(BaseObject* creator);
+            virtual ~Level();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void registerVariables();
-
-            inline const std::map<unsigned int, PlayerInfo*>& getClients() const
-                { return this->clients_; }
 
             inline void setDescription(const std::string& description)
                 { this->description_ = description; }
             inline const std::string& getDescription() const
                 { return this->description_; }
 
-            void setSkybox(const std::string& skybox);
-            inline const std::string& getSkybox() const
-                { return this->skybox_; }
+            void playerEntered(PlayerInfo* player);
+            void playerLeft(PlayerInfo* player);
 
-            void setAmbientLight(const ColourValue& colour);
-            inline const ColourValue& getAmbientLight() const
-                { return this->ambientLight_; }
+        private:
+            void addObject(BaseObject* object);
+            BaseObject* getObject(unsigned int index) const;
 
             void setGametypeString(const std::string& gametype);
             inline const std::string& getGametypeString() const
                 { return this->gametype_; }
-            inline Gametype* getGametype() const
-                { return this->rootGametype_; }
-
-            static Level* getActiveLevel();
-            static void listPlayers();
-            static PlayerInfo* getClient(unsigned int clientID);
-
-        private:
-            virtual void clientConnected(unsigned int clientID);
-            virtual void clientDisconnected(unsigned int clientID);
 
             void networkcallback_applyXMLFile();
 
-            void networkcallback_applySkybox()
-                { this->setSkybox(this->skybox_); }
-            void networkcallback_applyAmbientLight()
-                { this->setAmbientLight(this->ambientLight_); }
-
-            std::map<unsigned int, PlayerInfo*> clients_;
-            std::string description_;
-            std::string skybox_;
-            ColourValue ambientLight_;
-            std::string gametype_;
-            SubclassIdentifier<Gametype> gametypeIdentifier_;
-            Gametype* rootGametype_;
-            std::string xmlfile_;
+            std::string            description_;
+            std::string            gametype_;
+            std::string            xmlfilename_;
+            XMLFile*               xmlfile_;
+            std::list<BaseObject*> objects_;
     };
 }
 

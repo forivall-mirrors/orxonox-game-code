@@ -42,6 +42,9 @@ SET( ORXONOX_SRC_FILES
   tools/Timer.cc
   tools/WindowEventListener.cc
 
+  LevelManager.cc
+
+  objects/Scene.cc
   objects/worldentities/WorldEntity.cc
   objects/worldentities/PositionableEntity.cc
   objects/worldentities/MovableEntity.cc
@@ -62,6 +65,8 @@ SET( ORXONOX_SRC_FILES
   objects/Trigger.cc
   objects/DistanceTrigger.cc
 
+  objects/worldentities/SpawnPoint.cc
+
   objects/worldentities/pawns/Spectator.cc
 
   objects/controllers/Controller.cc
@@ -70,6 +75,7 @@ SET( ORXONOX_SRC_FILES
   objects/infos/Info.cc
   objects/infos/Level.cc
   objects/infos/PlayerInfo.cc
+  objects/infos/HumanPlayer.cc
 
   objects/gametypes/Gametype.cc
 

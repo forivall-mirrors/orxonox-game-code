@@ -31,6 +31,7 @@
 #include "CameraHandler.h"
 
 #include <string>
+#include <cassert>
 
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
@@ -40,74 +41,92 @@
 #include "tinyxml/tinyxml.h"
 #include "util/SubString.h"
 #include "util/Math.h"
+#include "util/String.h"
 #include "util/Debug.h"
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "GraphicsEngine.h"
+#include "objects/Scene.h"
 
 namespace orxonox
 {
-  CreateUnloadableFactory(Camera);
+    CreateFactory(Camera);
 
-  Camera::Camera()
-  {
-    RegisterObject(Camera);
-
-    this->bHasFocus_ = false;
-    this->bDrag_ = false;
-    this->cameraNode_ = GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->createChildSceneNode();
-    this->setObjectMode(0x0);
-  }
-
-  Camera::~Camera()
-  {
-    if (this->isInitialized())
+    Camera::Camera(BaseObject* creator) : PositionableEntity(creator)
     {
-      CameraHandler::getInstance()->releaseFocus(this);
-      GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->removeAndDestroyChild(this->cameraNode_->getName());
+        RegisterObject(Camera);
+
+        assert(this->getScene());
+        assert(this->getScene()->getSceneManager());
+
+        this->camera_ = this->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
+        this->getNode()->attachObject(this->camera_);
+
+        this->bHasFocus_ = false;
+        this->bDrag_ = false;
+        this->nearClipDistance_ = 1;
+
+        this->setObjectMode(0x0);
+
+        this->setConfigValues();
+        this->configvaluecallback_changedNearClipDistance();
+
+        this->requestFocus(); // ! HACK ! REMOVE THIS !
     }
-  }
 
-  void Camera::tick(float dt)
-  {
-      // this stuff here may need some adjustments
-      float coeff = (this->bDrag_) ? min(1.0f, 15.0f * dt) : (1.0f);
+    Camera::~Camera()
+    {
+        if (this->isInitialized())
+        {
+            this->releaseFocus();
+        }
+    }
 
-      Vector3 offset = this->getNode()->getWorldPosition() - this->cameraNode_->getWorldPosition();
-      this->cameraNode_->translate(coeff * offset);
+    void Camera::setConfigValues()
+    {
+        SetConfigValue(nearClipDistance_, 1.0f).callback(this, &Camera::configvaluecallback_changedNearClipDistance);
+    }
 
-      this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->getWorldOrientation(), this->getWorldOrientation(), false));
-  }
+    void Camera::configvaluecallback_changedNearClipDistance()
+    {
+        this->camera_->setNearClipDistance(this->nearClipDistance_);
+    }
 
-  /**
-    don't move anything before here! here the Ogre camera is set to values of this camera
-    always call update after changes
-  */
-  void Camera::update()
-  {
-      this->cameraNode_->setPosition(this->getWorldPosition());
-      this->cameraNode_->setOrientation(this->getWorldOrientation());
-  }
+    void Camera::tick(float dt)
+    {
+/*
+        // this stuff here may need some adjustments
+        float coeff = (this->bDrag_) ? min(1.0f, 15.0f * dt) : (1.0f);
 
-  /**
-    what to do when camera loses focus (do not request focus in this function!!)
-    this is called by the CameraHandler singleton class to notify the camera
-  */
-  void Camera::removeFocus()
-  {
-    this->bHasFocus_ = false;
-    this->cameraNode_->detachObject(this->cam_);
-  }
+        Vector3 offset = this->getNode()->getWorldPosition() - this->cameraNode_->getWorldPosition();
+        this->cameraNode_->translate(coeff * offset);
 
-  void Camera::setFocus(Ogre::Camera* ogreCam)
-  {
-    this->bHasFocus_ = true;
-    this->cam_ = ogreCam;
-    this->cam_->setOrientation(this->cameraNode_->getWorldOrientation());
-    this->cameraNode_->attachObject(this->cam_);
-  }
+        this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->getWorldOrientation(), this->getWorldOrientation(), false));
+*/
+    }
 
-  void Camera::requestFocus()
-  {
-    CameraHandler::getInstance()->requestFocus(this);
-  }
+    void Camera::requestFocus()
+    {
+        CameraHandler::getInstance().requestFocus(this);
+    }
+
+    void Camera::releaseFocus()
+    {
+        CameraHandler::getInstance().releaseFocus(this);
+    }
+
+    /**
+        what to do when camera loses focus (do not request focus in this function!!)
+        this is called by the CameraHandler singleton class to notify the camera
+    */
+    void Camera::removeFocus()
+    {
+        this->bHasFocus_ = false;
+    }
+
+    void Camera::setFocus(Ogre::Viewport* viewport)
+    {
+        this->bHasFocus_ = true;
+        viewport->setCamera(this->camera_);
+    }
 }

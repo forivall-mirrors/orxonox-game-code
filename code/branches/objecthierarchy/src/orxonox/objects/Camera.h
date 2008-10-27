@@ -41,33 +41,35 @@ namespace orxonox
 {
     class _OrxonoxExport Camera : public PositionableEntity, public Tickable
     {
-      friend class CameraHandler;
+        friend class CameraHandler;
 
-      public:
-        Camera();
-        virtual ~Camera();
+        public:
+            Camera(BaseObject* creator);
+            virtual ~Camera();
 
-        virtual void tick(float dt);
-        void update();
+            void setConfigValues();
+            virtual void tick(float dt);
 
-        void requestFocus();
-        inline bool hasFocus()
-            { return this->bHasFocus_; }
+            void requestFocus();
+            void releaseFocus();
 
-        inline void setDrag(bool bDrag)
-            { this->bDrag_ = bDrag; }
-        inline bool getDrag() const
-            { return this->bDrag_; }
+            inline bool hasFocus()
+                { return this->bHasFocus_; }
 
-      private:
-        void removeFocus();
-        void setFocus(Ogre::Camera* ogreCam);
+            inline void setDrag(bool bDrag)
+                { this->bDrag_ = bDrag; }
+            inline bool getDrag() const
+                { return this->bDrag_; }
 
-        Ogre::Camera* cam_;
-        Ogre::SceneNode* cameraNode_;
-        Ogre::Vector3 oldPos;
-        bool bHasFocus_;
-        bool bDrag_;
+        private:
+            void removeFocus();
+            void setFocus(Ogre::Viewport* viewport);
+            void configvaluecallback_changedNearClipDistance();
+
+            Ogre::Camera*   camera_;
+            float           nearClipDistance_;
+            bool            bHasFocus_;
+            bool            bDrag_;
     };
 }
 

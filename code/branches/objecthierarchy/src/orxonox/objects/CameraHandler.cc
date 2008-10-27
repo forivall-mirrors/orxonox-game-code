@@ -32,66 +32,65 @@
 #include <OgreRenderWindow.h>
 
 #include "core/ObjectList.h"
+#include "core/Core.h"
 #include "Camera.h"
 #include "GraphicsEngine.h"
 
 #include <OgreCamera.h>
 
-namespace orxonox {
-
-  CameraHandler* CameraHandler::singletonRef = NULL;
-
-  CameraHandler::CameraHandler()
-  {
-    this->cam_ = GraphicsEngine::getInstance().getLevelSceneManager()->createCamera("Cam");
-    GraphicsEngine::getInstance().getViewport()->setCamera(this->cam_);
-    this->cam_->setNearClipDistance(1);
-    //GraphicsEngine::getInstance().getRenderWindow()->addViewport(this->cam_, 2, 0.4, 0.4, 0.2, 0.2);
-    /*this->activeCamera_ = *ObjectList<Camera>::begin();
-    this->activeCamera_->cam_ = this->cam_;*/
-  }
-
-  void CameraHandler::requestFocus(Camera* requestCam)
-  {
-    // notify old camera (if it exists)
-    if(focusList_.size() > 0)
-      focusList_.back()->removeFocus();
-    // add to list
-    focusList_.push_back(requestCam);
-    // set focus to new camera and update (if necessary)
-    if(!requestCam->hasFocus()) {
-      requestCam->setFocus(this->cam_);
-      requestCam->update();
-    }
-    // delete dublicates
-    focusList_.unique();
-  }
-
-  void CameraHandler::releaseFocus(Camera* cam)
-  {
-    // notify the cam of releasing the focus
-    if(cam->hasFocus())
-      cam->removeFocus();
-    // delete camera from list
-    focusList_.remove(cam);
-    // set new focus if necessary
-    if(focusList_.size() > 0 && !(focusList_.back()->hasFocus()))
-      focusList_.back()->setFocus(this->cam_);
-  }
-/*
-  void CameraHandler::changeActiveCamera(Camera* setCam)
-  {
-    cam_->getParentSceneNode()->detachObject(cam_);
-    //setCam->attachCamera(cam_);
-    activeCamera_ = setCam;
-  }
-*/
-/*  bool isInVector(Camera* cam)
-  {
-    for(std::vector<Camera*>::iterator it = cams_.begin(); it != cams_.end(); it++)
+namespace orxonox
+{
+    CameraHandler::CameraHandler()
     {
-      if (*it == cam) return true;
+//        GraphicsEngine::getInstance().getViewport()->setCamera(this->cam_);
     }
-    return false;
-  }*/
+
+    CameraHandler& CameraHandler::getInstance()
+    {
+        static CameraHandler instance;
+        return instance;
+    }
+
+    Camera* CameraHandler::getActiveCamera() const
+    {
+        if (this->cameraList_.size() > 0)
+            return this->cameraList_.front();
+        else
+            return 0;
+    }
+
+    void CameraHandler::requestFocus(Camera* camera)
+    {
+        if (!Core::showsGraphics())
+            return;
+
+        // notify old camera (if it exists)
+        if (this->cameraList_.size() > 0)
+            this->cameraList_.front()->removeFocus();
+
+        // add to list
+        this->cameraList_.push_front(camera);
+        camera->setFocus(GraphicsEngine::getInstance().getViewport());
+    }
+
+    void CameraHandler::releaseFocus(Camera* camera)
+    {
+        if (!Core::showsGraphics())
+            return;
+
+        // notify the cam of releasing the focus
+        if (this->cameraList_.front() == camera)
+        {
+            camera->removeFocus();
+            this->cameraList_.pop_front();
+
+            // set new focus if necessary
+            if (cameraList_.size() > 0)
+                cameraList_.front()->setFocus(GraphicsEngine::getInstance().getViewport());
+        }
+        else
+        {
+            this->cameraList_.remove(camera);
+        }
+    }
 }

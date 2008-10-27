@@ -39,7 +39,8 @@
 #include <string>
 #include <sstream>
 
-extern _UtilExport std::string blankString;
+_UtilExport static const std::string BLANKSTRING = "";
+_UtilExport std::string getUniqueNumberString();
 
 _UtilExport void        strip(std::string* str);
 _UtilExport std::string getStripped(const std::string& str);

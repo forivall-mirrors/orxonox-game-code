@@ -35,39 +35,31 @@
 #ifndef _Camera_Handler_H__
 #define _Camera_Handler_H__
 
-#include <list>
-
-#include <OgreCamera.h>
-
 #include "OrxonoxPrereqs.h"
+
+#include <list>
+#include <OgreCamera.h>
 
 #include "core/BaseObject.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport CameraHandler
-  {
+    class _OrxonoxExport CameraHandler
+    {
+        public:
+            static CameraHandler& getInstance();
 
-    public:
-      inline static CameraHandler* getInstance() { if (!CameraHandler::singletonRef) CameraHandler::singletonRef = new CameraHandler(); return CameraHandler::singletonRef; }
-      inline ~CameraHandler() { CameraHandler::singletonRef = NULL; }
-      inline Camera* getActiveCamera() { return this->focusList_.back(); }
-      /*void registerCamera(Camera* newCam);
-      void changeActiveCamera(Camera* setCam);*/
-      void requestFocus(Camera* requestCam);
-      void releaseFocus(Camera* cam);
+            Camera* getActiveCamera() const;
 
-    private:
-      CameraHandler();
-      //bool isInVector(Camera* cam);
+            void requestFocus(Camera* camera);
+            void releaseFocus(Camera* camera);
 
-    private:
-      static CameraHandler* singletonRef;
-      Ogre::Camera* cam_;
-      std::list<Camera*> focusList_;
-      //std::vector<Camera*> cams_;
+        private:
+            CameraHandler();
+            ~CameraHandler() {}
 
-  };
+            std::list<Camera*> cameraList_;
+    };
 }
 
 #endif /* _Camera_Handler_H__ */

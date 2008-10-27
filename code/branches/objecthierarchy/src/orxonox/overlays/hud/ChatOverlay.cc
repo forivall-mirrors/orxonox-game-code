@@ -38,7 +38,7 @@
 #include "network/ClientInformation.h"
 
 #include "GraphicsEngine.h"
-#include "objects/infos/Level.h"
+#include "LevelManager.h"
 #include "objects/infos/PlayerInfo.h"
 #include "overlays/console/InGameConsole.h"
 #include "tools/Timer.h"
@@ -49,7 +49,7 @@ namespace orxonox
 {
     CreateFactory(ChatOverlay);
 
-    ChatOverlay::ChatOverlay()
+    ChatOverlay::ChatOverlay(BaseObject* creator) : OverlayText(creator)
     {
         RegisterObject(ChatOverlay);
 
@@ -75,7 +75,7 @@ namespace orxonox
         {
             std::string name = "unknown";
 
-            PlayerInfo* player = Level::getClient(senderID);
+            PlayerInfo* player = LevelManager::getInstance().getClient(senderID);
             if (player)
                 name = player->getName();
 

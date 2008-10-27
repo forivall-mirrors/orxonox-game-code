@@ -34,6 +34,7 @@
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Math.h"
+#include "util/String.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -44,8 +45,7 @@ namespace orxonox
 {
     CreateFactory(HUDRadar);
 
-    HUDRadar::HUDRadar()
-        : marker_(0)
+    HUDRadar::HUDRadar(BaseObject* creator) : OrxonoxOverlay(creator), marker_(0)
     {
         RegisterObject(HUDRadar);
     }
@@ -68,7 +68,7 @@ namespace orxonox
         if (mode == XMLPort::LoadObject)
         {
             marker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDRadar_marker_" + getUniqueNumberStr()));
+                .createOverlayElement("Panel", "HUDRadar_marker_" + getUniqueNumberString()));
             marker_->setMaterialName("Orxonox/RadarMarker");
             overlay_->add2D(marker_);
             marker_->hide();
@@ -106,7 +106,7 @@ namespace orxonox
         {
             // we have to create a new entry
             panel = static_cast<Ogre::PanelOverlayElement*>(
-                Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarDot" + getUniqueNumberStr()));
+                Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarDot" + getUniqueNumberString()));
             radarDots_.push_back(panel);
             // get right material
             panel->setMaterialName(TextureGenerator::getMaterialName(

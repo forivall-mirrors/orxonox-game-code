@@ -41,7 +41,7 @@ namespace orxonox
     class _OrxonoxExport ChatOverlay : public OverlayText, public network::ChatListener
     {
         public:
-            ChatOverlay();
+            ChatOverlay(BaseObject* creator);
             ~ChatOverlay();
 
             void setConfigValues();

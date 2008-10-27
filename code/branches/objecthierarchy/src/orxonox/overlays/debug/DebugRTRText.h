@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport DebugRTRText : public OverlayText, public Tickable
     {
     public:
-        DebugRTRText();
+        DebugRTRText(BaseObject* creator);
         ~DebugRTRText();
 
         virtual void tick(float dt);

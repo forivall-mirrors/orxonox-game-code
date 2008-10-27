@@ -35,7 +35,7 @@ namespace orxonox
 {
 	CreateFactory ( Test );
 
-	Test::Test()
+	Test::Test(BaseObject* creator) : BaseObject(creator)
 	{
 		RegisterObject ( Test );
                 setConfigValues();

@@ -38,7 +38,7 @@ namespace orxonox
   class _OrxonoxExport Script : public BaseObject
   {
     public:
-      Script();
+      Script(BaseObject* creator);
       ~Script();
       void XMLPort(Element& xmlelement, XMLPort::Mode mode);
       void execute();

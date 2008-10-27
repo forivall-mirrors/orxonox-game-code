@@ -44,13 +44,16 @@
 
 namespace orxonox
 {
+    class Scene;
+    class Gametype;
+
     //! The BaseObject is the parent of all classes representing an instance in the game.
     class _CoreExport BaseObject : virtual public OrxonoxClass
     {
         friend class WorldEntity;
 
         public:
-            BaseObject();
+            BaseObject(BaseObject* creator);
             virtual ~BaseObject();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
@@ -95,6 +98,17 @@ namespace orxonox
             virtual inline void setNamespace(Namespace* ns) { this->namespace_ = ns; }
             inline Namespace* getNamespace() const { return this->namespace_; }
 
+            inline void setCreator(BaseObject* creator) { this->creator_ = creator; }
+            inline BaseObject* getCreator() const { return this->creator_; }
+
+            inline void setScene(Scene* scene) { this->scene_ = scene; }
+            inline Scene* getScene() const { return this->scene_; }
+
+            inline void setGametype(Gametype* gametype) { this->oldGametype_ = this->gametype_; this->gametype_ = gametype; this->changedGametype(); }
+            inline Gametype* getGametype() const { return this->gametype_; }
+            inline Gametype* getOldGametype() const { return this->oldGametype_; }
+            virtual inline void changedGametype() {}
+
             /** @brief Sets the indentation of the debug output in the Loader. @param indentation The indentation */
             inline void setLoaderIndentation(const std::string& indentation) { this->loaderIndentation_ = indentation; }
             /** @brief Returns the indentation of the debug output in the Loader. @return The indentation */
@@ -109,10 +123,14 @@ namespace orxonox
         private:
             Template* getTemplate(unsigned int index) const;
 
-            bool bInitialized_;                         //!< True if the object was initialized (passed the object registration)
-            const XMLFile* file_;                       //!< The XMLFile that loaded this object
-            std::string loaderIndentation_;             //!< Indentation of the debug output in the Loader
-            Namespace* namespace_;
+            bool                bInitialized_;         //!< True if the object was initialized (passed the object registration)
+            const XMLFile*      file_;                 //!< The XMLFile that loaded this object
+            std::string         loaderIndentation_;    //!< Indentation of the debug output in the Loader
+            Namespace*          namespace_;
+            BaseObject*         creator_;
+            Scene*              scene_;
+            Gametype*           gametype_;
+            Gametype*           oldGametype_;
             std::set<Template*> templates_;
     };
 

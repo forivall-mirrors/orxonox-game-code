@@ -37,7 +37,7 @@ namespace orxonox
     class _OrxonoxExport PositionableEntity : public WorldEntity
     {
         public:
-            PositionableEntity();
+            PositionableEntity(BaseObject* creator);
             virtual ~PositionableEntity();
 
             void registerVariables();

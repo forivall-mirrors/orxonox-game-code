@@ -26,35 +26,43 @@
  *
  */
 
-#ifndef _Controller_H__
-#define _Controller_H__
+#ifndef _LevelManager_H__
+#define _LevelManager_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
+#include <list>
+#include <map>
+
+#include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Controller : public BaseObject
+    class _OrxonoxExport LevelManager : public network::ClientConnectionListener
     {
         public:
-            Controller(BaseObject* creator);
-            virtual ~Controller();
+            static LevelManager& getInstance();
 
-            inline void setPlayer(PlayerInfo* player)
-                { this->player_ = player; }
-            inline PlayerInfo* getPlayer() const
-                { return this->player_; }
+            void requestActivity(Level* level);
+            void releaseActivity(Level* level);
+            Level* getActiveLevel();
 
-            virtual inline void setControllableEntity(ControllableEntity* entity)
-                { this->controllableEntity_ = entity; }
-            virtual inline ControllableEntity* getControllableEntity() const
-                { return this->controllableEntity_; }
+            PlayerInfo* getClient(unsigned int clientID) const;
+            inline const std::map<unsigned int, PlayerInfo*>& getClients() const
+                { return this->clients_; }
 
-        protected:
-            PlayerInfo* player_;
-            ControllableEntity* controllableEntity_;
+        private:
+            LevelManager();
+            virtual ~LevelManager() {}
+
+            void clientConnected(unsigned int clientID);
+            void clientDisconnected(unsigned int clientID);
+
+            void activateNextLevel();
+
+            std::list<Level*> levels_s;
+            std::map<unsigned int, PlayerInfo*> clients_;
     };
 }
 
-#endif /* _Controller_H__ */
+#endif /* _LevelManager_H__ */

@@ -31,12 +31,13 @@
 #include "Model.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "objects/Scene.h"
 
 namespace orxonox
 {
     CreateFactory(Model);
 
-    Model::Model()
+    Model::Model(BaseObject* creator) : PositionableEntity(creator)
     {
         RegisterObject(Model);
 
@@ -68,7 +69,7 @@ namespace orxonox
         if (this->mesh_.getEntity())
             this->getNode()->detachObject(this->mesh_.getEntity());
 
-        this->mesh_.setMeshSource(this->meshSrc_);
+        this->mesh_.setMeshSource(this->getScene()->getSceneManager(), this->meshSrc_);
 
         if (this->mesh_.getEntity())
         {

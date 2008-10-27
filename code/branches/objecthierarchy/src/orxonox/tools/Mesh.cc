@@ -31,6 +31,7 @@
 
 #include <sstream>
 #include <OgreSceneManager.h>
+#include <cassert>
 
 #include "core/Core.h"
 #include "GraphicsEngine.h"
@@ -49,26 +50,27 @@ namespace orxonox
 
     Mesh::~Mesh()
     {
-        if (this->entity_ && Core::showsGraphics())
-            GraphicsEngine::getInstance().getLevelSceneManager()->destroyEntity(this->entity_);
+        if (this->entity_ && this->scenemanager_)
+            this->scenemanager_->destroyEntity(this->entity_);
     }
 
-    void Mesh::setMeshSource(const std::string& meshsource)
+    void Mesh::setMeshSource(Ogre::SceneManager* scenemanager, const std::string& meshsource)
     {
-        if (Core::showsGraphics())
-        {
-            if (this->entity_)
-                GraphicsEngine::getInstance().getLevelSceneManager()->destroyEntity(this->entity_);
+        assert(scenemanager);
 
-            try
-            {
-                this->entity_ = GraphicsEngine::getInstance().getLevelSceneManager()->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
-                this->entity_->setCastShadows(this->bCastShadows_);
-            }
-            catch (...)
-            {
-                COUT(1) << "Error: Couln't load mesh \"" << meshsource << "\"" << std::endl;
-            }
+        this->scenemanager_ = scenemanager;
+
+        if (this->entity_)
+            this->scenemanager_->destroyEntity(this->entity_);
+
+        try
+        {
+            this->entity_ = this->scenemanager_->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
+            this->entity_->setCastShadows(this->bCastShadows_);
+        }
+        catch (...)
+        {
+            COUT(1) << "Error: Couln't load mesh \"" << meshsource << "\"" << std::endl;
         }
     }
 
@@ -84,7 +86,7 @@ namespace orxonox
         if (this->entity_)
             return this->entity_->getName();
         else
-            return blankString;
+            return BLANKSTRING;
     }
 
     void Mesh::setVisible(bool bVisible)

@@ -36,6 +36,7 @@
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
 #include <OgreSceneManager.h>
+#include <cassert>
 
 #include "GraphicsEngine.h"
 #include "core/CoreIncludes.h"
@@ -46,14 +47,17 @@ namespace orxonox
   unsigned int ParticleInterface::counter_s = 0;
   ParticleInterface* ParticleInterface::currentParticleInterface_s = 0;
 
-  ParticleInterface::ParticleInterface(const std::string& templateName, LODParticle::LOD detaillevel)
+  ParticleInterface::ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::LOD detaillevel)
   {
     RegisterRootObject(ParticleInterface);
 
+    assert(scenemanager);
+
+    this->scenemanager_ = scenemanager;
     this->sceneNode_ = 0;
     this->bEnabled_ = true;
     this->detaillevel_ = (unsigned int)detaillevel;
-    this->particleSystem_ = GraphicsEngine::getInstance().getLevelSceneManager()->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
+    this->particleSystem_ = this->scenemanager_->createParticleSystem("particles" + getConvertedValue<unsigned int, std::string>(ParticleInterface::counter_s++), templateName);
     //this->particleSystem_->setSpeedFactor(Orxonox::getInstance().getTimeFactor());
     this->particleSystem_->setSpeedFactor(1.0f);
 
@@ -71,7 +75,7 @@ namespace orxonox
   ParticleInterface::~ParticleInterface()
   {
     this->particleSystem_->removeAllEmitters();
-    GraphicsEngine::getInstance().getLevelSceneManager()->destroyParticleSystem(particleSystem_);
+    this->scenemanager_->destroyParticleSystem(particleSystem_);
   }
 
   void ParticleInterface::addToSceneNode(Ogre::SceneNode* sceneNode)

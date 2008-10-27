@@ -41,7 +41,7 @@ namespace orxonox
     class _OrxonoxExport OverlayText : public OrxonoxOverlay
     {
     public:
-        OverlayText();
+        OverlayText(BaseObject* creator);
         virtual ~OverlayText();
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);

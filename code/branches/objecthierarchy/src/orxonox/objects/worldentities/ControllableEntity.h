@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport ControllableEntity : public WorldEntity, public Tickable
     {
         public:
-            ControllableEntity();
+            ControllableEntity(BaseObject* creator);
             virtual ~ControllableEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
@@ -55,9 +55,6 @@ namespace orxonox
                 { this->bDestroyWhenPlayerLeft_ = bDestroy; }
             inline bool getDestroyWhenPlayerLeft() const
                 { return this->bDestroyWhenPlayerLeft_; }
-
-            virtual void startLocalControl();
-            virtual void stopLocalControl();
 
             virtual void moveFrontBack(float value) {}
             virtual void moveRightLeft(float value) {}
@@ -81,7 +78,6 @@ namespace orxonox
             inline const std::string& getHudTemplate() const
                 { return this->hudtemplate_; }
 
-        protected:
             using WorldEntity::setPosition;
             using WorldEntity::translate;
             using WorldEntity::setOrientation;
@@ -111,6 +107,10 @@ namespace orxonox
             inline void setAcceleration(float x, float y, float z)
                 { this->acceleration_.x = x; this->acceleration_.y = y; this->acceleration_.z = z; }
 
+        protected:
+            virtual void startLocalControl();
+            virtual void stopLocalControl();
+
             inline void setHudTemplate(const std::string& name)
                 { this->hudtemplate_ = name; }
 
@@ -129,7 +129,7 @@ namespace orxonox
             void processClientVelocity();
             void processClientOrientation();
 
-            void updatePlayer();
+            void networkcallback_changedplayerID();
 
             unsigned int server_overwrite_;
             unsigned int client_overwrite_;

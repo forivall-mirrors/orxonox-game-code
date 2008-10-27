@@ -40,7 +40,7 @@ namespace orxonox
     class _OrxonoxExport MovableEntity : public WorldEntity, public Tickable, public network::ClientConnectionListener
     {
         public:
-            MovableEntity();
+            MovableEntity(BaseObject* creator);
             virtual ~MovableEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

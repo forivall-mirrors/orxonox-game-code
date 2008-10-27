@@ -36,10 +36,13 @@
 #include <cctype>
 #include <iostream>
 
-/**
-    @brief Blank string as variable so you can use const std::string& even if you have to return "".
-*/
-std::string blankString = "";
+#include "Convert.h"
+#include "Math.h"
+
+std::string getUniqueNumberString()
+{
+    return convertToString(getUniqueNumber());
+}
 
 /**
     @brief Removes all whitespaces from a string.

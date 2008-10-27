@@ -29,9 +29,13 @@
 #include "OrxonoxStableHeaders.h"
 #include "Gametype.h"
 
+#include <cstdlib>
+#include <ctime>
+
 #include "core/CoreIncludes.h"
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/pawns/Spectator.h"
+#include "objects/worldentities/SpawnPoint.h"
 
 #include "network/Host.h"
 
@@ -39,36 +43,45 @@ namespace orxonox
 {
     CreateUnloadableFactory(Gametype);
 
-    Gametype::Gametype()
+    Gametype::Gametype(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Gametype);
 
         this->defaultPawn_ = Class(Spectator);
+        this->bStarted_ = false;
+        this->bEnded_ = false;
+        this->bAutoStart_ = false;
 
         COUT(0) << "created Gametype" << std::endl;
     }
 
-    void Gametype::addPlayer(PlayerInfo* player)
+    void Gametype::tick(float dt)
+    {
+        if (!this->bStarted_)
+            this->checkStart();
+
+        this->assignDefaultPawnsIfNeeded();
+    }
+
+    void Gametype::start()
+    {
+        COUT(0) << "game started" << std::endl;
+        this->bStarted_ = true;
+
+        for (std::set<PlayerInfo*>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            this->spawnPlayer(*it);
+    }
+
+    void Gametype::end()
+    {
+        COUT(0) << "game ended" << std::endl;
+        this->bEnded_ = true;
+    }
+
+    void Gametype::playerEntered(PlayerInfo* player)
     {
         this->players_.insert(player);
-        this->playerJoined(player);
 
-        ControllableEntity* newpawn = this->defaultPawn_.fabricate();
-        player->startControl(newpawn);
-    }
-
-    void Gametype::removePlayer(PlayerInfo* player)
-    {
-        if (this->players_.find(player) != this->players_.end())
-        {
-            player->stopControl();
-            this->players_.erase(player);
-            this->playerLeft(player);
-        }
-    }
-
-    void Gametype::playerJoined(PlayerInfo* player)
-    {
         std::string message = player->getName() + " entered the game";
         COUT(0) << message << std::endl;
         network::Host::Broadcast(message);
@@ -76,9 +89,23 @@ namespace orxonox
 
     void Gametype::playerLeft(PlayerInfo* player)
     {
-        std::string message = player->getName() + " left the game";
-        COUT(0) << message << std::endl;
-        network::Host::Broadcast(message);
+        std::set<PlayerInfo*>::iterator it = this->players_.find(player);
+        if (it != this->players_.end())
+        {
+            this->players_.erase(it);
+
+            std::string message = player->getName() + " left the game";
+            COUT(0) << message << std::endl;
+            network::Host::Broadcast(message);
+        }
+    }
+
+    void Gametype::playerSwitched(PlayerInfo* player, Gametype* newgametype)
+    {
+    }
+
+    void Gametype::playerSwitchedBack(PlayerInfo* player, Gametype* oldgametype)
+    {
     }
 
     void Gametype::playerChangedName(PlayerInfo* player)
@@ -90,6 +117,103 @@ namespace orxonox
                 std::string message = player->getOldName() + " changed name to " + player->getName();
                 COUT(0) << message << std::endl;
                 network::Host::Broadcast(message);
+            }
+        }
+    }
+
+    void Gametype::playerSpawned(PlayerInfo* player)
+    {
+    }
+
+    void Gametype::playerDied(PlayerInfo* player)
+    {
+    }
+
+    void Gametype::playerScored(PlayerInfo* player)
+    {
+    }
+
+    SpawnPoint* Gametype::getBestSpawnPoint(PlayerInfo* player) const
+    {
+        if (this->spawnpoints_.size() > 0)
+        {
+            srand(time(0));
+            rnd();
+
+            unsigned int randomspawn = (unsigned int)rnd(this->spawnpoints_.size());
+            unsigned int index = 0;
+            for (std::set<SpawnPoint*>::iterator it = this->spawnpoints_.begin(); it != this->spawnpoints_.end(); ++it)
+            {
+                if (index == randomspawn)
+                    return (*it);
+
+                ++index;
+            }
+        }
+        return 0;
+    }
+
+    void Gametype::assignDefaultPawnsIfNeeded() const
+    {
+        for (std::set<PlayerInfo*>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        {
+            if (!(*it)->getControllableEntity() && (!(*it)->isReadyToSpawn() || !this->bStarted_))
+            {
+                SpawnPoint* spawn = this->getBestSpawnPoint(*it);
+                if (spawn)
+                {
+                    // force spawn at spawnpoint with default pawn
+                    ControllableEntity* newpawn = this->defaultPawn_.fabricate(spawn);
+                    spawn->spawn(newpawn);
+                    (*it)->startControl(newpawn);
+                }
+                else
+                {
+                    COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
+                    abort();
+                }
+            }
+        }
+    }
+
+    void Gametype::checkStart()
+    {
+        if (!this->bStarted_)
+        {
+            if (this->players_.size() > 0)
+            {
+                if (this->bAutoStart_)
+                {
+                    this->start();
+                }
+                else
+                {
+                    bool allplayersready = true;
+                    for (std::set<PlayerInfo*>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+                    {
+                        if (!(*it)->isReadyToSpawn())
+                            allplayersready = false;
+                    }
+                    if (allplayersready)
+                        this->start();
+                }
+            }
+        }
+    }
+
+    void Gametype::spawnPlayer(PlayerInfo* player)
+    {
+        if (player->isReadyToSpawn())
+        {
+            SpawnPoint* spawnpoint = this->getBestSpawnPoint(player);
+            if (spawnpoint)
+            {
+                player->startControl(spawnpoint->spawn());
+            }
+            else
+            {
+                COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
+                abort();
             }
         }
     }

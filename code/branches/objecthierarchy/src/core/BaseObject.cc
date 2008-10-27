@@ -46,7 +46,7 @@ namespace orxonox
     /**
         @brief Constructor: Registers the object in the BaseObject-list.
     */
-    BaseObject::BaseObject() : bInitialized_(false)
+    BaseObject::BaseObject(BaseObject* creator) : bInitialized_(false)
     {
         RegisterRootObject(BaseObject);
 
@@ -54,9 +54,23 @@ namespace orxonox
 
         this->bActive_ = true;
         this->bVisible_ = true;
+        this->oldGametype_ = 0;
 
-        this->file_ = 0;
-        this->namespace_ = 0;
+        this->setCreator(creator);
+        if (this->creator_)
+        {
+            this->setFile(this->creator_->getFile());
+            this->setNamespace(this->creator_->getNamespace());
+            this->setScene(this->creator_->getScene());
+            this->setGametype(this->creator_->getGametype());
+        }
+        else
+        {
+            this->file_ = 0;
+            this->namespace_ = 0;
+            this->scene_ = 0;
+            this->gametype_ = 0;
+        }
     }
 
     /**
@@ -78,7 +92,7 @@ namespace orxonox
         XMLPortParam(BaseObject, "visible", setVisible, isVisible, xmlelement, mode);
         XMLPortParam(BaseObject, "active", setActive, isActive, xmlelement, mode);
 
-        XMLPortObjectTemplate(BaseObject, Template, "templates", addTemplate, getTemplate, xmlelement, mode, const std::string&);
+        XMLPortObjectTemplate(BaseObject, Template, "templates", addTemplate, getTemplate, xmlelement, mode, Template*);
     }
 
     /**
@@ -90,7 +104,7 @@ namespace orxonox
         if (this->file_)
             return this->file_->getFilename();
         else
-            return blankString;
+            return BLANKSTRING;
     }
 
     /**

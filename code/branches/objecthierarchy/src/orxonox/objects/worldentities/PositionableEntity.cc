@@ -34,7 +34,7 @@ namespace orxonox
 {
     CreateFactory(PositionableEntity);
 
-    PositionableEntity::PositionableEntity()
+    PositionableEntity::PositionableEntity(BaseObject* creator) : WorldEntity(creator)
     {
         RegisterObject(PositionableEntity);
 

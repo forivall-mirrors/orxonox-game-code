@@ -42,7 +42,7 @@ namespace orxonox
             Mesh();
             ~Mesh();
 
-            void setMeshSource(const std::string& file);
+            void setMeshSource(Ogre::SceneManager* scenemanager, const std::string& file);
 
             inline Ogre::Entity* getEntity()
                 { return this->entity_; }
@@ -60,6 +60,7 @@ namespace orxonox
             static unsigned int meshCounter_s;
             Ogre::Entity* entity_;
             bool bCastShadows_;
+            Ogre::SceneManager* scenemanager_;
     };
 }
 

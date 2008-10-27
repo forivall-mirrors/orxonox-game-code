@@ -478,10 +478,10 @@ namespace orxonox
                                             {
                                                 COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
 
-                                                BaseObject* newObject = identifier->fabricate();
+                                                BaseObject* newObject = identifier->fabricate((BaseObject*)object);
                                                 newObject->setLoaderIndentation(((BaseObject*)object)->getLoaderIndentation() + "  ");
-                                                newObject->setFile(((BaseObject*)object)->getFile());
-                                                newObject->setNamespace(((BaseObject*)object)->getNamespace());
+//                                                newObject->setFile(((BaseObject*)object)->getFile());
+//                                                newObject->setNamespace(((BaseObject*)object)->getNamespace());
 
                                                 if (this->bLoadBefore_)
                                                 {
@@ -514,7 +514,14 @@ namespace orxonox
                                 }
                                 else
                                 {
-                                    COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a valid classname." << std::endl;
+                                    if (this->sectionname_ != "")
+                                    {
+                                        COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a valid classname." << std::endl;
+                                    }
+                                    else
+                                    {
+                                        // It's probably just another subsection
+                                    }
                                 }
                             }
                         }

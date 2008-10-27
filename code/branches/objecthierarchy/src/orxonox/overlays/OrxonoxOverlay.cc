@@ -54,8 +54,9 @@ namespace orxonox
     SetConsoleCommand(OrxonoxOverlay, scrollOverlay, false).accessLevel(AccessLevel::User);
     SetConsoleCommand(OrxonoxOverlay, rotateOverlay, false).accessLevel(AccessLevel::User);
 
-    OrxonoxOverlay::OrxonoxOverlay()
-        : overlay_(0)
+    OrxonoxOverlay::OrxonoxOverlay(BaseObject* creator)
+        : BaseObject(creator)
+        , overlay_(0)
         , background_(0)
     {
         RegisterObject(OrxonoxOverlay);
@@ -147,7 +148,7 @@ namespace orxonox
         if (this->background_)
             return this->background_->getMaterialName();
         else
-            return blankString;
+            return BLANKSTRING;
     }
 
     //! Called by BaseObject when visibility has changed.

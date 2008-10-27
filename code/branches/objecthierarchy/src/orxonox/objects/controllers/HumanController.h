@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport HumanController : public Controller
     {
         public:
-            HumanController();
+            HumanController(BaseObject* creator);
             virtual ~HumanController();
 
             static void moveFrontBack(const Vector2& value);

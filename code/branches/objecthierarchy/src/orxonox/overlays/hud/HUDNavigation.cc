@@ -45,8 +45,9 @@ namespace orxonox
 {
     CreateFactory(HUDNavigation);
 
-    HUDNavigation::HUDNavigation()
-        : navMarker_(0)
+    HUDNavigation::HUDNavigation(BaseObject* creator)
+        : OrxonoxOverlay(creator)
+        , navMarker_(0)
         , aimMarker_(0)
         , navText_(0)
     {
@@ -71,17 +72,17 @@ namespace orxonox
         {
             // create nav text
             navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberStr()));
+                .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
 
             // create nav marker
             navMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberStr()));
+                .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
             navMarker_->setMaterialName("Orxonox/NavArrows");
             wasOutOfView_ = true; // just to ensure the material is changed right the first time..
 
             // create aim marker
             aimMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberStr()));
+                .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberString()));
             aimMarker_->setMaterialName("Orxonox/NavCrosshair");
 
             background_->addChild(navMarker_);
@@ -111,7 +112,7 @@ namespace orxonox
         if (this->navText_)
             return this->navText_->getFontName();
         else
-            return blankString;
+            return BLANKSTRING;
     }
 
     void HUDNavigation::setTextSize(float size)

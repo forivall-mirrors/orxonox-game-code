@@ -32,13 +32,15 @@
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
 #include "objects/worldentities/Model.h"
+#include "objects/Scene.h"
+#include "objects/infos/PlayerInfo.h"
 #include "tools/BillboardSet.h"
 
 namespace orxonox
 {
     CreateFactory(Spectator);
 
-    Spectator::Spectator()
+    Spectator::Spectator(BaseObject* creator) : ControllableEntity(creator)
     {
         RegisterObject(Spectator);
 
@@ -53,20 +55,26 @@ namespace orxonox
         this->setDestroyWhenPlayerLeft(true);
 
         // test test test
+        if (this->getScene()->getSceneManager())
         {
             this->testmesh_ = new Mesh();
             this->testnode_ = this->getNode()->createChildSceneNode();
-            this->testmesh_->setMeshSource("assff.mesh");
+            this->testmesh_->setMeshSource(this->getScene()->getSceneManager(), "assff.mesh");
             if (this->testmesh_->getEntity())
                 this->testnode_->attachObject(this->testmesh_->getEntity());
             this->testnode_->pitch(Degree(-90));
             this->testnode_->roll(Degree(+90));
             this->testnode_->scale(10, 10, 10);
         }
+        else
+        {
+            this->testmesh_ = 0;
+            this->testnode_ = 0;
+        }
         // test test test
 
         this->greetingFlare_ = new BillboardSet();
-        this->greetingFlare_->setBillboardSet("Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
+        this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
         this->getNode()->attachObject(this->greetingFlare_->getBillboardSet());
         this->greetingFlare_->setVisible(false);
         this->bGreetingFlareVisible_ = false;
@@ -79,12 +87,22 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            delete this->greetingFlare_;
+            if (this->greetingFlare_)
+            {
+                this->getNode()->detachObject(this->greetingFlare_->getBillboardSet());
+                delete this->greetingFlare_;
+            }
 
             // test test test
             {
-                delete this->testmesh_;
-                delete this->testnode_;
+                if (this->testmesh_ && this->testnode_)
+                    this->testnode_->detachObject(this->testmesh_->getEntity());
+
+                if (this->testmesh_)
+                    delete this->testmesh_;
+
+                if (this->testnode_)
+                    this->getNode()->removeAndDestroyChild(this->testnode_->getName());
             }
             // test test test
         }
@@ -176,6 +194,8 @@ namespace orxonox
 
     void Spectator::fire()
     {
+        if (this->getPlayer())
+            this->getPlayer()->setReadyToSpawn(true);
     }
 
     void Spectator::greet()

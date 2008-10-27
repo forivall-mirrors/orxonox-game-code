@@ -38,7 +38,7 @@ namespace orxonox
     class _OrxonoxExport Model : public PositionableEntity
     {
         public:
-            Model();
+            Model(BaseObject* creator);
             virtual ~Model();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

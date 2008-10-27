@@ -37,6 +37,7 @@
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Convert.h"
+#include "util/String.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
@@ -44,8 +45,7 @@ namespace orxonox
 {
     CreateFactory(BarColour);
 
-    BarColour::BarColour()
-        : position_(0.0)
+    BarColour::BarColour(BaseObject* creator) : BaseObject(creator), position_(0.0)
     {
         RegisterObject(BarColour);
     }
@@ -62,9 +62,7 @@ namespace orxonox
 
     unsigned int HUDBar::materialcount_s = 0;
 
-    HUDBar::HUDBar()
-        : bar_(0)
-        , textureUnitState_(0)
+    HUDBar::HUDBar(BaseObject* creator) : OrxonoxOverlay(creator), bar_(0), textureUnitState_(0)
     {
         RegisterObject(HUDBar);
     }
@@ -91,7 +89,7 @@ namespace orxonox
             this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2, 0.7, 0.2));
 
             this->bar_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDBar_bar_" + getUniqueNumberStr()));
+                .createOverlayElement("Panel", "HUDBar_bar_" + getUniqueNumberString()));
             this->bar_->setMaterialName(materialname);
             this->background_->addChild(bar_);
         }

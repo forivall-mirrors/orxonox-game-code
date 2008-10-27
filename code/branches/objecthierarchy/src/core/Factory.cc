@@ -103,7 +103,7 @@ std::cout << identifier->getName() << ": " << oldID << " -> " << newID << std::e
         for (it = getFactoryPointer()->identifierStringMap_.begin(); it != getFactoryPointer()->identifierStringMap_.end(); ++it)
         {
             // To create the new branch of the class-hierarchy, we create a new object and delete it afterwards.
-            BaseObject* temp = (*it).second->fabricate();
+            BaseObject* temp = (*it).second->fabricate(0);
             delete temp;
         }
         (*getFactoryPointer()->identifierStringMap_.begin()).second->stopCreatingHierarchy();

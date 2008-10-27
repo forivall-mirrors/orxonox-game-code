@@ -43,7 +43,7 @@ namespace orxonox {
   class _OrxonoxExport DistanceTrigger : public Trigger
   {
     public:
-      DistanceTrigger();
+      DistanceTrigger(BaseObject* creator);
       ~DistanceTrigger();
       void addTarget(Ogre::Node* targetNode);
       void removeTarget(Ogre::Node* targetNode);

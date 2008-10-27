@@ -47,7 +47,7 @@ namespace orxonox
   class _OrxonoxExport ParticleInterface : public OrxonoxClass
   {
     public:
-      ParticleInterface(const std::string& templateName, LODParticle::LOD detaillevel);
+      ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::LOD detaillevel);
       ~ParticleInterface();
 
       inline Ogre::ParticleSystem* getParticleSystem() const
@@ -91,6 +91,7 @@ namespace orxonox
       bool bVisible_;
       bool bEnabled_;
       unsigned int detaillevel_;                            //!< Detail level of this particle effect (0: off, 1: low, 2: normal, 3: high)
+      Ogre::SceneManager* scenemanager_;
   };
 }
 

@@ -29,118 +29,42 @@
 #include "OrxonoxStableHeaders.h"
 #include "Level.h"
 
-#include <OgreSceneManager.h>
-#include <OgreLight.h>
-
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "core/Core.h"
-#include "core/ConsoleCommand.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
 #include "core/Template.h"
 
-#include "GraphicsEngine.h"
 #include "Settings.h"
+#include "LevelManager.h"
 #include "PlayerInfo.h"
+#include "objects/gametypes/Gametype.h"
 
 #include "util/Math.h"
 
 namespace orxonox
 {
-    SetConsoleCommand(Level, listPlayers, true);
-
     CreateFactory(Level);
 
-    Level::Level()
+    Level::Level(BaseObject* creator) : Info(creator)
     {
         RegisterObject(Level);
 
-        this->rootGametype_ = 0;
         this->registerVariables();
-
-        // test test test
-        {
-            Ogre::Light* light;
-            light = GraphicsEngine::getInstance().getLevelSceneManager()->createLight("Light0");
-            light->setType(Ogre::Light::LT_DIRECTIONAL);
-            light->setDiffuseColour(ColourValue(1.0, 0.9, 0.6, 1.0));
-            light->setSpecularColour(ColourValue(1.0, 0.9, 0.6, 1.0));
-            light->setDirection(1, -0.2, 0.2);
-        }
-        // test test test
+        this->xmlfilename_ = this->getFilename();
 
         COUT(0) << "created Level" << std::endl;
     }
 
-    Level* Level::getActiveLevel()
+    Level::~Level()
     {
-        for (ObjectList<Level>::iterator it = ObjectList<Level>::begin(); it != ObjectList<Level>::end(); ++it)
-            if (it->isActive())
-                return (*it);
-
-        return 0;
-    }
-
-    PlayerInfo* Level::getClient(unsigned int clientID)
-    {
-        Level* level = Level::getActiveLevel();
-
-        if (level)
+        if (this->isInitialized())
         {
-            std::map<unsigned int, PlayerInfo*>::const_iterator it = level->clients_.find(clientID);
-            if (it != level->clients_.end())
-                return it->second;
+            LevelManager::getInstance().releaseActivity(this);
+
+            if (this->xmlfile_)
+                Loader::unload(this->xmlfile_);
         }
-        else
-        {
-            for (ObjectList<PlayerInfo>::iterator it = ObjectList<PlayerInfo>::begin(); it != ObjectList<PlayerInfo>::end(); ++it)
-                if (it->getClientID() == clientID)
-                    return (*it);
-        }
-        return 0;
-    }
-
-    void Level::listPlayers()
-    {
-        Level* level = Level::getActiveLevel();
-
-        if (level->getGametype())
-        {
-            for (std::set<PlayerInfo*>::const_iterator it = level->getGametype()->getPlayers().begin(); it != level->getGametype()->getPlayers().end(); ++it)
-                COUT(0) << "ID: " << (*it)->getClientID() << ", Name: " << (*it)->getName() << std::endl;
-        }
-        else
-        {
-            for (ObjectList<PlayerInfo>::iterator it = ObjectList<PlayerInfo>::begin(); it != ObjectList<PlayerInfo>::end(); ++it)
-                COUT(0) << "ID: " << (*it)->getClientID() << ", Name: " << (*it)->getName() << std::endl;
-        }
-    }
-
-    void Level::clientConnected(unsigned int clientID)
-    {
-        COUT(0) << "client connected" << std::endl;
-
-        // create new PlayerInfo instance
-        PlayerInfo* player = new PlayerInfo();
-        player->setGametype(this->getGametype());
-        player->setClientID(clientID);
-
-        // add to clients-map
-        assert(!this->clients_[clientID]);
-        this->clients_[clientID] = player;
-    }
-
-    void Level::clientDisconnected(unsigned int clientID)
-    {
-        COUT(0) << "client disconnected" << std::endl;
-
-        // remove from clients-map
-        PlayerInfo* player = this->clients_[clientID];
-        this->clients_.erase(clientID);
-
-        // delete PlayerInfo instance
-        delete player;
     }
 
     void Level::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -149,60 +73,74 @@ namespace orxonox
 
         XMLPortParam(Level, "description", setDescription, getDescription, xmlelement, mode);
         XMLPortParam(Level, "gametype", setGametypeString, getGametypeString, xmlelement, mode).defaultValues("Gametype");
-        XMLPortParam(Level, "skybox", setSkybox, getSkybox, xmlelement, mode);
-        XMLPortParam(Level, "ambientlight", setAmbientLight, getAmbientLight, xmlelement, mode).defaultValues(ColourValue(0.2, 0.2, 0.2, 1));
 
-        this->xmlfile_ = this->getFilename();
+        XMLPortObjectExtended(Level, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
     }
 
     void Level::registerVariables()
     {
-        REGISTERSTRING(this->xmlfile_,     network::direction::toclient, new network::NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
+        REGISTERSTRING(this->xmlfilename_, network::direction::toclient, new network::NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
         REGISTERSTRING(this->name_,        network::direction::toclient, new network::NetworkCallback<Level>(this, &Level::changedName));
         REGISTERSTRING(this->description_, network::direction::toclient);
-        REGISTERSTRING(this->skybox_,      network::direction::toclient, new network::NetworkCallback<Level>(this, &Level::networkcallback_applySkybox));
-        REGISTERDATA(this->ambientLight_,  network::direction::toclient, new network::NetworkCallback<Level>(this, &Level::networkcallback_applyAmbientLight));
     }
 
     void Level::networkcallback_applyXMLFile()
     {
-        COUT(0) << "Loading level \"" << this->xmlfile_ << "\"..." << std::endl;
+        COUT(0) << "Loading level \"" << this->xmlfilename_ << "\"..." << std::endl;
 
         ClassTreeMask mask;
         mask.exclude(Class(BaseObject));
         mask.include(Class(Template));
 
-        XMLFile* file = new XMLFile(Settings::getDataPath() + this->xmlfile_, mask);
+        this->xmlfile_ = new XMLFile(Settings::getDataPath() + this->xmlfilename_, mask);
 
-        Loader::open(file);
-    }
-
-    void Level::setSkybox(const std::string& skybox)
-    {
-        if (Core::showsGraphics())
-            if (GraphicsEngine::getInstance().getLevelSceneManager())
-                GraphicsEngine::getInstance().getLevelSceneManager()->setSkyBox(true, skybox);
-
-        this->skybox_ = skybox;
-    }
-
-    void Level::setAmbientLight(const ColourValue& colour)
-    {
-        if (Core::showsGraphics())
-            GraphicsEngine::getInstance().getLevelSceneManager()->setAmbientLight(colour);
-
-        this->ambientLight_ = colour;
+        Loader::open(this->xmlfile_);
     }
 
     void Level::setGametypeString(const std::string& gametype)
     {
         Identifier* identifier = ClassByString(gametype);
-        if (identifier)
+        if (identifier && identifier->isA(Class(Gametype)))
         {
             this->gametype_ = gametype;
-            this->gametypeIdentifier_ = identifier;
-            this->rootGametype_ = this->gametypeIdentifier_.fabricate();
-            this->getConnectedClients();
+
+            Gametype* rootgametype = dynamic_cast<Gametype*>(identifier->fabricate(this));
+            this->setGametype(rootgametype);
+
+            for (std::list<BaseObject*>::iterator it = this->objects_.begin(); it != this->objects_.end(); ++it)
+                (*it)->setGametype(rootgametype);
+
+            LevelManager::getInstance().requestActivity(this);
         }
+    }
+
+
+    void Level::addObject(BaseObject* object)
+    {
+        this->objects_.push_back(object);
+        object->setGametype(this->getGametype());
+    }
+
+    BaseObject* Level::getObject(unsigned int index) const
+    {
+        unsigned int i = 0;
+        for (std::list<BaseObject*>::const_iterator it = this->objects_.begin(); it != this->objects_.end(); ++it)
+        {
+            if (i == index)
+                return (*it);
+            ++i;
+        }
+        return 0;
+    }
+
+    void Level::playerEntered(PlayerInfo* player)
+    {
+        COUT(0) << "player entered level" << std::endl;
+        player->setGametype(this->getGametype());
+    }
+
+    void Level::playerLeft(PlayerInfo* player)
+    {
+        player->setGametype(0);
     }
 }

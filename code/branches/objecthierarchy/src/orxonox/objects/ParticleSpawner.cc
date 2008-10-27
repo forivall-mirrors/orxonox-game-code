@@ -79,7 +79,7 @@ namespace orxonox
     {
         this->setPosition(this->getNode()->getParent()->getPosition());
         this->getNode()->getParent()->removeChild(this->getNode());
-        GraphicsEngine::getInstance().getLevelSceneManager()->getRootSceneNode()->addChild(this->getNode());
+        this->detachFromParent();
         if (this->particle_)
             this->particle_->setEnabled(false);
         if (!this->timer_.isActive() || this->timer_.getRemainingTime() > this->destroydelay_)

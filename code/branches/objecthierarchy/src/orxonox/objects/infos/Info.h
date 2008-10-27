@@ -39,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport Info : public BaseObject, public network::Synchronisable
     {
         public:
-            Info();
+            Info(BaseObject* creator);
             virtual ~Info() {}
     };
 }

@@ -99,7 +99,7 @@ namespace orxonox
             /** @brief Sets the Factory. @param factory The factory to assign */
             inline void addFactory(BaseFactory* factory) { this->factory_ = factory; }
 
-            BaseObject* fabricate();
+            BaseObject* fabricate(BaseObject* creator);
             bool isA(const Identifier* identifier) const;
             bool isExactlyA(const Identifier* identifier) const;
             bool isChildOf(const Identifier* identifier) const;
@@ -501,7 +501,7 @@ namespace orxonox
             /**
                 @brief Overloading of the * operator: returns the assigned identifier.
             */
-            inline Identifier* operator*()
+            inline Identifier* operator*() const
             {
                 return this->identifier_;
             }
@@ -526,9 +526,9 @@ namespace orxonox
                 @brief Creates a new object of the type of the assigned Identifier and dynamic_casts it to the minimal type given by T.
                 @return The new object
             */
-            T* fabricate()
+            T* fabricate(BaseObject* creator) const
             {
-                BaseObject* newObject = this->identifier_->fabricate();
+                BaseObject* newObject = this->identifier_->fabricate(creator);
 
                 // Check if the creation was successful
                 if (newObject)

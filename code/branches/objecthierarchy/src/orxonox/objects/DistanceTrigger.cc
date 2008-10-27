@@ -36,7 +36,7 @@ namespace orxonox {
 
   CreateFactory(DistanceTrigger);
 
-  DistanceTrigger::DistanceTrigger()
+  DistanceTrigger::DistanceTrigger(BaseObject* creator) : Trigger(creator)
   {
     RegisterObject(DistanceTrigger);
 

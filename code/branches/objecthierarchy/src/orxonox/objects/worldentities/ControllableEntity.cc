@@ -42,7 +42,7 @@ namespace orxonox
 {
     CreateFactory(ControllableEntity);
 
-    ControllableEntity::ControllableEntity()
+    ControllableEntity::ControllableEntity(BaseObject* creator) : WorldEntity(creator)
     {
         RegisterObject(ControllableEntity);
 
@@ -70,8 +70,17 @@ namespace orxonox
 
     ControllableEntity::~ControllableEntity()
     {
-        if (this->isInitialized() && this->bControlled_)
-            this->stopLocalControl();
+        if (this->isInitialized())
+        {
+            if (this->bControlled_)
+                this->stopLocalControl();
+
+            if (this->hud_)
+                delete this->hud_;
+
+            if (this->camera_)
+                delete this->camera_;
+        }
     }
 
     void ControllableEntity::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -91,12 +100,14 @@ namespace orxonox
 
         this->player_ = player;
         this->playerID_ = player->getObjectID();
-        this->bControlled_ = player->isLocalPlayer();
+        this->bControlled_ = (player->isLocalPlayer() && player->isHumanPlayer());
 
         if (this->bControlled_)
         {
             this->startLocalControl();
-            this->setObjectMode(network::direction::bidirectional);
+
+            if (!Core::isMaster())
+                this->setObjectMode(network::direction::bidirectional);
         }
     }
 
@@ -114,12 +125,13 @@ namespace orxonox
             delete this;
     }
 
-    void ControllableEntity::updatePlayer()
+    void ControllableEntity::networkcallback_changedplayerID()
     {
+        // just do this in case the entity wasn't yet synchronized when the corresponding PlayerInfo got our objectID
         if (this->playerID_ != network::OBJECTID_UNKNOWN)
         {
             this->player_ = dynamic_cast<PlayerInfo*>(network::Synchronisable::getSynchronisable(this->playerID_));
-            if (this->player_ && (this->player_->getPawn() != this))
+            if (this->player_ && (this->player_->getControllableEntity() != this))
                 this->player_->startControl(this);
         }
     }
@@ -127,13 +139,13 @@ namespace orxonox
     void ControllableEntity::startLocalControl()
     {
         std::cout << this->getObjectID() << " ###### start local control" << std::endl;
-        this->camera_ = new Camera();
+        this->camera_ = new Camera(this);
         this->camera_->requestFocus();
         this->attach(this->camera_);
 
         if (this->hudtemplate_ != "")
         {
-            this->hud_ = new OverlayGroup();
+            this->hud_ = new OverlayGroup(this);
             this->hud_->addTemplate(this->hudtemplate_);
         }
     }
@@ -183,7 +195,7 @@ namespace orxonox
 
         REGISTERDATA(this->client_overwrite_,   network::direction::toserver);
 
-        REGISTERDATA(this->playerID_, network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::updatePlayer));
+        REGISTERDATA(this->playerID_, network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::networkcallback_changedplayerID));
     }
 
     void ControllableEntity::processServerPosition()

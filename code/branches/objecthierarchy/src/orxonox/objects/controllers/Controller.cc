@@ -35,12 +35,12 @@ namespace orxonox
 {
     CreateUnloadableFactory(Controller);
 
-    Controller::Controller()
+    Controller::Controller(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Controller);
 
         this->player_ = 0;
-        this->pawn_ = 0;
+        this->controllableEntity_ = 0;
     }
 
     Controller::~Controller()

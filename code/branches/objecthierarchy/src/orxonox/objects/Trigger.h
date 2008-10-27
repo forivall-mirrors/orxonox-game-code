@@ -49,7 +49,7 @@ namespace orxonox {
   class _OrxonoxExport Trigger : public PositionableEntity
   {
     public:
-      Trigger();
+      Trigger(BaseObject* creator);
       ~Trigger();
 
       virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

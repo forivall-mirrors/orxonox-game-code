@@ -79,28 +79,43 @@ namespace orxonox
     class Radar;
     class RadarListener;
 
+    class LevelManager;
+
     // objects
+    class Scene;
+
     class WorldEntity;
     class PositionableEntity;
     class MovableEntity;
     class ControllableEntity;
+    class Sublevel;
 
     class Model;
+    class Billboard;
+    class Light;
+    class DirectionalLight;
+
+    class Camera;
+    class SpawnPoint;
 
     class Spectator;
+    class Pawn;
+    class SpaceShip;
 
     class Controller;
     class HumanController;
 
     class Backlight;
-    class Camera;
     class ParticleSpawner;
 
     class Info;
     class Level;
     class PlayerInfo;
+    class HumanPlayer;
 
     class Gametype;
+
+    class Scores;
 
     // tools
     class BillboardSet;

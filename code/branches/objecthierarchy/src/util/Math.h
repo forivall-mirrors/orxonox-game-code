@@ -274,7 +274,6 @@ inline _UtilExport float rnd(float min, float max)
 }
 
 _UtilExport unsigned long getUniqueNumber();
-_UtilExport std::string getUniqueNumberStr();
 
 class _UtilExport IntVector2
 {

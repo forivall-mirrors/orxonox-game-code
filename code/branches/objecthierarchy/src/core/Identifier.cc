@@ -213,11 +213,11 @@ namespace orxonox
         @brief Creates an object of the type the Identifier belongs to.
         @return The new object
     */
-    BaseObject* Identifier::fabricate()
+    BaseObject* Identifier::fabricate(BaseObject* creator)
     {
         if (this->factory_)
         {
-            return this->factory_->fabricate(); // We have to return a BaseObject, because we don't know the exact type.
+            return this->factory_->fabricate(creator); // We have to return a BaseObject, because we don't know the exact type.
         }
         else
         {

@@ -49,7 +49,7 @@ namespace orxonox
     SetConsoleCommand(OverlayGroup, scaleGroup, false).accessLevel(AccessLevel::User);
     SetConsoleCommand(OverlayGroup, scrollGroup, false).accessLevel(AccessLevel::User);
 
-    OverlayGroup::OverlayGroup()
+    OverlayGroup::OverlayGroup(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(OverlayGroup);
     }

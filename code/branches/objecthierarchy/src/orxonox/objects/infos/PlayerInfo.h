@@ -40,69 +40,48 @@ namespace orxonox
     class _OrxonoxExport PlayerInfo : public Info
     {
         public:
-            PlayerInfo();
+            PlayerInfo(BaseObject* creator);
             virtual ~PlayerInfo();
 
-            void setConfigValues();
             void registerVariables();
 
             virtual void changedName();
-
-            inline void setClientID(unsigned int clientID)
-                { this->clientID_ = clientID; this->checkClientID(); }
-            inline unsigned int getClientID() const
-                { return this->clientID_; }
+            virtual void changedGametype();
 
             inline bool isHumanPlayer() const
                 { return this->bHumanPlayer_; }
-
             inline bool isLocalPlayer() const
                 { return this->bLocalPlayer_; }
+            inline unsigned int getClientID() const
+                { return this->clientID_; }
+            inline bool isReadyToSpawn() const
+                { return this->bReadyToSpawn_; }
 
-            virtual void startControl(ControllableEntity* pawn);
-            virtual void stopControl();
+            virtual bool isReady() const = 0;
+            virtual float getPing() const = 0;
+            virtual float getPacketLossRatio() const = 0;
 
-            inline ControllableEntity* getPawn() const
-                { return this->pawn_; }
-/*
-            inline void setController(Controller* controller)
-                { this->controller_ = controller; }
-            inline Controller* getController() const
-                { return this->controller_; }
-*/
-            inline void setGametype(Gametype* gametype)
-                { this->gametype_ = gametype; }
-            inline Gametype* getGametype() const
-                { return this->gametype_; }
+            inline void setReadyToSpawn(bool bReady)
+                { this->bReadyToSpawn_ = bReady; }
+
+            void startControl(ControllableEntity* entity);
+            void stopControl(ControllableEntity* entity);
+
+            inline ControllableEntity* getControllableEntity() const
+                { return this->controllableEntity_; }
 
         protected:
-            inline void setDefaultController(Identifier* identifier)
-                { this->defaultController_ = identifier; }
+            void createController();
+            void networkcallback_changedcontrollableentityID();
 
-        private:
-            virtual void createController();
-            virtual void takeLocalControl();
-
-            void checkClientID();
-            void finishedSetup();
-            void checkNick();
-            void clientChangedName();
-            void updatePawn();
-
-            unsigned int clientID_;
-            float ping_;
-            bool bLocalPlayer_;
             bool bHumanPlayer_;
-            bool bFinishedSetup_;
-
-            std::string playerName_;
-            std::string nick_;
-
-            ControllableEntity* pawn_;
-            unsigned int pawnID_;
-            Controller* controller_;
+            bool bLocalPlayer_;
+            bool bReadyToSpawn_;
             SubclassIdentifier<Controller> defaultController_;
-            Gametype* gametype_;
+            Controller* controller_;
+            ControllableEntity* controllableEntity_;
+            unsigned int controllableEntityID_;
+            unsigned int clientID_;
     };
 }
 

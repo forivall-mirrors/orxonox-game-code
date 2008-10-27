@@ -53,7 +53,7 @@ namespace orxonox
     class _OrxonoxExport OverlayGroup : public BaseObject
     {
     public:
-        OverlayGroup();
+        OverlayGroup(BaseObject* creator);
         //! Empty destructor.
         ~OverlayGroup() { }
 
