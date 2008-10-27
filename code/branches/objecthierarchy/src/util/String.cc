@@ -39,6 +39,8 @@
 #include "Convert.h"
 #include "Math.h"
 
+std::string BLANKSTRING("");
+
 std::string getUniqueNumberString()
 {
     return convertToString(getUniqueNumber());

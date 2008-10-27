@@ -154,6 +154,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\LevelManager.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\Main.cc"
 				>
 			</File>
@@ -213,6 +217,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\Scene.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Script.cc"
 					>
 				</File>
@@ -244,6 +252,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\WorldEntity.cc"
 						>
 					</File>
@@ -267,6 +279,10 @@
 				<Filter
 					Name="infos"
 					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\infos\HumanPlayer.cc"
+						>
+					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\infos\Info.cc"
 						>
@@ -506,6 +522,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\orxonox\LevelManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\OrxonoxPrereqs.h"
 				>
 			</File>
@@ -549,6 +569,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\orxonox\objects\Scene.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\orxonox\objects\Script.h"
 					>
 				</File>
@@ -577,6 +601,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\SpawnPoint.h"
 						>
 					</File>
 					<File

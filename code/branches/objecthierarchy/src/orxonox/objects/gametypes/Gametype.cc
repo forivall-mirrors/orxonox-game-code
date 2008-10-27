@@ -142,7 +142,7 @@ namespace orxonox
 
             unsigned int randomspawn = (unsigned int)rnd(this->spawnpoints_.size());
             unsigned int index = 0;
-            for (std::set<SpawnPoint*>::iterator it = this->spawnpoints_.begin(); it != this->spawnpoints_.end(); ++it)
+            for (std::set<SpawnPoint*>::const_iterator it = this->spawnpoints_.begin(); it != this->spawnpoints_.end(); ++it)
             {
                 if (index == randomspawn)
                     return (*it);
@@ -155,7 +155,7 @@ namespace orxonox
 
     void Gametype::assignDefaultPawnsIfNeeded() const
     {
-        for (std::set<PlayerInfo*>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        for (std::set<PlayerInfo*>::const_iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
             if (!(*it)->getControllableEntity() && (!(*it)->isReadyToSpawn() || !this->bStarted_))
             {
