@@ -35,6 +35,8 @@
 
 namespace orxonox {
 
+    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
+
     /**
     @brief
         Global quests are quests, that have the same status for all players.
@@ -45,16 +47,17 @@ namespace orxonox {
     class GlobalQuest : public Quest
     {
 	public:
+            GlobalQuest();
 	    GlobalQuest(std::string id, std::string title = "", std::string description = "");
-	    virtual ~GlobalQuest();
+	    ~GlobalQuest();
 	    
 	protected:
-            virtual bool isStartable(const Player & player) const; //!< Checks whether the quest can be started.
-            virtual bool isFailable(const Player & player) const; //!< Checks whether the quest can be failed.
-            virtual bool isCompletable(const Player & player) const; //!< Checks whether the quest can be completed.
+            virtual bool isStartable(Player* player); //!< Checks whether the quest can be started.
+            virtual bool isFailable(Player* player); //!< Checks whether the quest can be failed.
+            virtual bool isCompletable(Player* player); //!< Checks whether the quest can be completed.
 	
-	    virtual questStatus::Enum getStatus(const Player & player) const; //!< Returns the status of the quest for a specific player.
-	    virtual bool setStatus(const Player & player, const questStatus::Enum & status); //!< Sets the status for a specific player.
+	    virtual questStatus::Enum getStatus(const Player* player); //!< Returns the status of the quest for a specific player.
+	    virtual bool setStatus(Player* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
 	    
 	private:
             std::set<Player*> players_; //!< The set of players which possess this quest.

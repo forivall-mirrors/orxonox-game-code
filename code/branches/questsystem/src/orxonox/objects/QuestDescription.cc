@@ -27,13 +27,19 @@
  */
 
 #include "core/CoreIncludes.h"
+
 #include "QuestDescription.h"
 
 namespace orxonox {
 
     CreateFactory(QuestDescription);
     
-    QuestDescription(std::string title, std::string description = "") : BaseObject()
+    QuestDescription::QuestDescription() : BaseObject()
+    {
+        
+    }
+        
+    QuestDescription::QuestDescription(std::string title, std::string description) : BaseObject()
     {
         initialize();
         this->title_ = title;

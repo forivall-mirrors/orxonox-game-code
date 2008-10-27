@@ -35,6 +35,8 @@
 
 namespace orxonox {
 
+    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
+
     /**
     @brief
         Completes a quest.
@@ -44,10 +46,11 @@ namespace orxonox {
     class CompleteQuest : public ChangeQuestStatus
     {
 	public:
+            CompleteQuest();
 	    CompleteQuest(std::string questId);
 	    ~CompleteQuest();
 	    
-	    virtual void invoke(Player & player); //!< Invokes the effect.
+	    virtual void invoke(Player* player); //!< Invokes the effect.
     
     };
 

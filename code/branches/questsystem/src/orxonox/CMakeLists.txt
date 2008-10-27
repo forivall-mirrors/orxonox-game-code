@@ -61,6 +61,20 @@ SET( ORXONOX_SRC_FILES
   objects/BillboardProjectile.cc
   objects/RotatingProjectile.cc
   objects/ParticleProjectile.cc
+  
+  objects/AddQuest.cc
+  objects/AddQuestHint.cc
+  objects/AddReward.cc
+  objects/ChangeQuestStatus.cc
+  objects/CompleteQuest.cc
+  objects/FailQuest.cc
+  objects/GlobalQuest.cc
+  objects/LocalQuest.cc
+  objects/Quest.cc
+  objects/QuestDescription.cc
+  objects/QuestEffect.cc
+  objects/QuestHint.cc
+  objects/QuestItem.cc
 
   tolua/tolua_bind.cc
 )

@@ -34,6 +34,11 @@ namespace orxonox {
 
     CreateFactory(GlobalQuest);
 
+    GlobalQuest::GlobalQuest() : Quest()
+    {
+        
+    }
+
     /**
     @brief
         Constructor.
@@ -44,7 +49,7 @@ namespace orxonox {
     @param description
         The description of the quest.
     */
-    GlobalQuest::GlobalQuest(std::string id, std::string title = "", std::string description = "") : Quest(id, title, description)
+    GlobalQuest::GlobalQuest(std::string id, std::string title, std::string description) : Quest(id, title, description)
     {
         RegisterObject(GlobalQuest);
     }
@@ -66,7 +71,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be started, false if not.
     */
-    bool GlobalQuest::isStartable(const Player & player) const
+    bool GlobalQuest::isStartable(Player* player)
     {
         return this->isInactive(player) || this->isActive(player);
     }
@@ -79,7 +84,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be failed, false if not.
     */
-    bool GlobalQuest::isFailable(const Player & player) const
+    bool GlobalQuest::isFailable(Player* player)
     {
         return this->isActive(player);
     }
@@ -92,7 +97,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be completed, false if not.
     */
-    bool GlobalQuest::isCompletable(const Player & player) const
+    bool GlobalQuest::isCompletable(Player* player)
     {
         return this->isActive(player);
     }
@@ -103,10 +108,11 @@ namespace orxonox {
     @param player
         The player.
     */
-    questStatus::Enum getStatus(const Player & player) const
+    questStatus::Enum GlobalQuest::getStatus(const Player* player)
     {
         //TDO: Does this really work???
-        if (this->players_.find(&player) != this->players_.end())
+        std::set<Player*>::const_iterator it = this->players_.find((Player*)(void*)player);
+        if (it != this->players_.end())
 	{
 	    return this->status_;
 	}
@@ -125,13 +131,15 @@ namespace orxonox {
     @param status
         The status to be set.
     */
-    void setStatus(const Player & player, const questStatus::Enum & status)
+    bool GlobalQuest::setStatus(Player* player, const questStatus::Enum & status)
     {
-        if (this->players_.find(&player) == this->players_.end()) //!< Player is not yet in the list.
+        std::set<Player*>::const_iterator it = this->players_.find(player);
+        if (it == this->players_.end()) //!< Player is not yet in the list.
 	{
-	    this->players_.insert(&player);
+	    this->players_.insert(player);
 	}
 	this->status_ = status;
+	return true;
     }
 
 

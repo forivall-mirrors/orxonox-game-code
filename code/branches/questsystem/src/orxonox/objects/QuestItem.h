@@ -31,8 +31,8 @@
 
 #include <string>
 
-#include "orxonox/quests/QuestDescription.h"
-#include "BaseObject.h"
+#include "QuestDescription.h"
+#include "core/BaseObject.h"
 
 namespace orxonox {
 
@@ -48,6 +48,7 @@ namespace orxonox {
     {
     
 	public:
+            QuestItem();
 	    QuestItem(std::string id, std::string title = "", std::string description = "");
 	    virtual ~QuestItem();
 	    

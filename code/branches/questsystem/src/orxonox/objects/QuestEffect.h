@@ -31,9 +31,11 @@
 
 #include <list>
 
-#include "BaseObject.h"
+#include "core/BaseObject.h"
 
 namespace orxonox {
+
+    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
 
     /**
     @brief
@@ -47,8 +49,8 @@ namespace orxonox {
             QuestEffect();
 	    virtual ~QuestEffect();
 	    
-	    virtual void invoke(Player & player) = 0; //!< Invokes the effect.
-	    static void invokeEffects(Player & player, std::list<QuestEffect> & effects); //!< Invokes all effects in the list.
+	    virtual void invoke(Player* player) = 0; //!< Invokes the effect.
+	    static void invokeEffects(Player* player, std::list<QuestEffect*> & effects); //!< Invokes all effects in the list.
 	    
 	
     };

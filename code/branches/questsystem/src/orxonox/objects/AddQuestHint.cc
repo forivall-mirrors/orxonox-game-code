@@ -27,11 +27,18 @@
  */
 
 #include "core/CoreIncludes.h"
+
+#include "QuestManager.h"
 #include "AddQuestHint.h"
 
 namespace orxonox {
 
     CreateFactory(AddQuestHint);
+
+    AddQuestHint::AddQuestHint() : QuestEffect()
+    {
+        
+    }
 
     /**
     @brief
@@ -59,9 +66,9 @@ namespace orxonox {
     @param player
         The player.
     */
-    void invoke(Player & player)
+    void AddQuestHint::invoke(Player* player)
     {
-        QuestHint hint = QuestManager::findHint(this->hintId_);
-        hint.activate(player);
+        QuestHint* hint = QuestManager::findHint(this->hintId_);
+        hint->activate(player);
     }
 }

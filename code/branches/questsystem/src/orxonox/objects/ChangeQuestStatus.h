@@ -35,6 +35,8 @@
 
 namespace orxonox {
 
+    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
+
     /**
     @brief
         An effect which changes a quests status.
@@ -44,10 +46,11 @@ namespace orxonox {
     class ChangeQuestStatus : public QuestEffect
     {
 	public:
+            ChangeQuestStatus();
 	    ChangeQuestStatus(std::string questId);
 	    virtual ~ChangeQuestStatus();
 	    
-	    virtual void invoke(Player & player) = 0; //!< Invokes the effect.
+	    virtual void invoke(Player* player) = 0; //!< Invokes the effect.
 	    
 	protected:
             inline std::string getQuestId(void) //!< Returns the quest id.

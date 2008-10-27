@@ -26,12 +26,23 @@
  *
  */
 
+#include <string>
+
 #include "core/CoreIncludes.h"
+
+#include "QuestManager.h"
+#include "Quest.h"
 #include "AddQuest.h"
 
 namespace orxonox {
 
     CreateFactory(AddQuest);
+
+
+    AddQuest::AddQuest() : ChangeQuestStatus()
+    {
+        
+    }
 
     /**
     @brief
@@ -58,10 +69,10 @@ namespace orxonox {
     @param player
         The player the effect is invoked on.
     */
-    void AddQuest::invoke(Player & player)
+    void AddQuest::invoke(Player* player)
     {
-        Quest quest = QuestManager::findQuest(this->getQuestId());
-        quest.start(player);
+        Quest* quest = QuestManager::findQuest(this->getQuestId());
+        quest->start(player);
     }
 
 

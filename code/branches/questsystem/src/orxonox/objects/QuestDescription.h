@@ -45,6 +45,7 @@ namespace orxonox {
     class QuestDescription : public BaseObject {
     
 	public:
+            QuestDescription();
 	    QuestDescription(std::string title, std::string description = "");
 	    ~QuestDescription();
 	    

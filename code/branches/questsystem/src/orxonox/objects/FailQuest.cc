@@ -26,12 +26,20 @@
  *
  */
 
-#include "core/CoreIncludes";
+#include "core/CoreIncludes.h"
+
+#include "QuestManager.h"
+#include "Quest.h"
 #include "FailQuest.h"
 
 namespace orxonox {
 
     CreateFactory(FailQuest);
+
+    FailQuest::FailQuest() : ChangeQuestStatus()
+    {
+        
+    }
 
     /**
     @brief
@@ -58,10 +66,10 @@ namespace orxonox {
     @param player
         The player the effect is invoked on.
     */
-    void FailQuest::invoke(Player & player)
+    void FailQuest::invoke(Player* player)
     {
-        Quest quest = QuestManager::findQuest(this->getQuestId());
-        quest.fail(player);
+        Quest* quest = QuestManager::findQuest(this->getQuestId());
+        quest->fail(player);
     }
 
 

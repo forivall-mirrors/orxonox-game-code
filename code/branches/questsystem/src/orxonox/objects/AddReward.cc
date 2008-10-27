@@ -27,11 +27,17 @@
  */
 
 #include "core/CoreIncludes.h"
+
 #include "AddReward.h"
 
 namespace orxonox {
     
     CreateFactory(AddReward);
+    
+    AddReward::AddReward() : QuestEffect()
+    {
+        
+    }
     
     /**
     @brief
@@ -39,7 +45,7 @@ namespace orxonox {
     @param reward
         A reward.
     */
-    AddReward::AddReward(Rewardable & reward)
+    AddReward::AddReward(Rewardable* reward) : QuestEffect()
     {
         this->initialize();
         this->addRewardable(reward);
@@ -51,7 +57,7 @@ namespace orxonox {
     @param rewards
         A list of rewards.
     */
-    AddReward::AddReward(std::list<Rewardable> & rewards)
+    AddReward::AddReward(std::list<Rewardable*>* rewards) : QuestEffect()
     {
         this->initialize();
         this->rewards_ = rewards;
@@ -80,16 +86,16 @@ namespace orxonox {
     @param player
         The player.
     */
-    void AddReward::invoke(Player & player)
+    void AddReward::invoke(Player* player)
     {
         if ( this->rewards_ == NULL )
         {
             COUT(2) << "NULL-Rewards list encountered." << std::endl;
             return;
 	}
-        for ( std::list<Rewardable>::iterator = this->rewards_.begin(); reward != this->rewards_.end(); ++reward )
+        for ( std::list<Rewardable*>::iterator reward = this->rewards_->begin(); reward != this->rewards_->end(); ++reward )
 	{
-	    reward.reward(player);
+	    (*reward)->reward(player);
 	}
     }
 

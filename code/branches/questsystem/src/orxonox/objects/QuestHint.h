@@ -33,11 +33,24 @@
 #include <string>
 
 #include "QuestDescription.h"
-#include "Quest.h"
 #include "QuestItem.h"
+
+namespace questHintStatus
+{
+
+    enum Enum
+    {
+        inactive,
+        active
+    };
+
+}
 
 namespace orxonox
 {
+
+    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
+    class Quest; //To avoid circual includes.
 
     /**
     @brief
@@ -50,31 +63,21 @@ namespace orxonox
     {
     
 	public:
+            QuestHint();
 	    QuestHint(std::string id, std::string title = "", std::string description = "");
 	    ~QuestHint();
 	    
-	    bool isActive(const Player & player) const; //!< Returns true if the hint is active for the input player.
+	    bool isActive(Player* player); //!< Returns true if the hint is active for the input player.
 	    
-	    bool activate(const Player & player); //!< Activates the hint for the input player.
+	    bool activate(Player* player); //!< Activates the hint for the input player.
 	    
 	    void setQuest(Quest* quest); //!< Sets the quest the hint belongs to.
 	    
-        private: 
+        private:
             
             Quest* quest_;
             std::map<Player*, questHintStatus::Enum> playerStatus_;
     
-    };
-
-}
-
-namespace questHintStatus
-{
-
-    enum Enum
-    {
-        inactive,
-        active
     };
 
 }

@@ -34,6 +34,11 @@ namespace orxonox {
 
     CreateFactory(QuestItem);
     
+    QuestItem::QuestItem() : BaseObject()
+    {
+        
+    }
+    
     /**
     @brief
         Constructor. Needs as input a unique identifier to be able to identify different instances of this class (and subclasses).
@@ -44,7 +49,7 @@ namespace orxonox {
     @param description
         The description of this QuestItem. Has an empty string as default.
     */
-    QuestItem::QuestItem(std::string id, std::string title = "", std::string description = "") : BaseObject()
+    QuestItem::QuestItem(std::string id, std::string title, std::string description) : BaseObject()
     {
         this->initialize();
         

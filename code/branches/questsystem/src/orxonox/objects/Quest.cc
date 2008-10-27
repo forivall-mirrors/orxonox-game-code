@@ -27,11 +27,15 @@
  */
 
 #include "core/CoreIncludes.h"
+
 #include "Quest.h"
 
 namespace orxonox {
 
-    CreateFactory(Quest);
+    Quest::Quest() : QuestItem()
+    {
+        
+    }
 
     /**
     @brief
@@ -43,7 +47,7 @@ namespace orxonox {
     @param description
         The description of the quest.
     */
-    Quest::Quest(std::string id, std::string title = "", std::string description = "") : QuestItem(id, title, description)
+    Quest::Quest(std::string id, std::string title, std::string description) : QuestItem(id, title, description)
     {
         initialize();
     }
@@ -74,7 +78,7 @@ namespace orxonox {
     @param quest
         A pointer to the quest to be set as parent quest.
     */
-    bool setParentQuest(Quest* quest)
+    bool Quest::setParentQuest(Quest* quest)
     {
         this->parentQuest_ = quest;
         return true;
@@ -86,9 +90,9 @@ namespace orxonox {
     @param quest
         A pointer to the quest to be set as sub quest.
     */
-    bool addSubQuest(Quest & quest)
+    bool Quest::addSubQuest(Quest* quest)
     {
-        this->subQuests_.push_back = quest;
+        this->subQuests_.push_back(quest);
         return true;
     }
 
@@ -98,12 +102,12 @@ namespace orxonox {
     @param hint
         The hint that should be added to the list of hints.
     */
-    void Quest::addHint(QuestHint & hint)
+    void Quest::addHint(QuestHint* hint)
     {
         if ( hint != NULL )
         {
             this->hints_.push_back(hint);
-            hint.setQuest(this);
+            hint->setQuest(this);
 	}
         else
         {
@@ -119,7 +123,7 @@ namespace orxonox {
     @return
         Returns true if the quest could be started, false if not.
     */
-    bool Quest::start(const Player & player)
+    bool Quest::start(Player* player)
     {
         if(this->isStartable(player))
         {
@@ -138,7 +142,7 @@ namespace orxonox {
     @return
         Returns true if the quest could be failed, false if not.
     */
-    void Quest::fail(Player & player)
+    bool Quest::fail(Player* player)
     {
         if(this->isFailable(player))
         {
@@ -158,7 +162,7 @@ namespace orxonox {
     @return
         Returns true if the quest could be completed, false if not.
     */
-    void Quest::complete(Player & player)
+    bool Quest::complete(Player* player)
     {
         if(this->isCompletable(player))
         {

@@ -35,6 +35,8 @@
 
 namespace orxonox {
 
+    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
+
     /**
     @brief
         Fails a quest.
@@ -44,10 +46,11 @@ namespace orxonox {
     class FailQuest : public ChangeQuestStatus
     {
 	public:
+            FailQuest();
 	    FailQuest(std::string questId);
 	    ~FailQuest();
 	    
-	    virtual void invoke(Player & player); //!< Invokes the effect.
+	    virtual void invoke(Player* player); //!< Invokes the effect.
     
     };
 

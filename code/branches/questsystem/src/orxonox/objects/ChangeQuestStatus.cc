@@ -27,11 +27,15 @@
  */
 
 #include "core/CoreIncludes.h"
+
 #include "ChangeQuestStatus.h"
 
 namespace orxonox {
 
-    CreateFactory(ChangeQuestStatus);
+    ChangeQuestStatus::ChangeQuestStatus() : QuestEffect()
+    {
+        
+    }
 
     /**
     @brief

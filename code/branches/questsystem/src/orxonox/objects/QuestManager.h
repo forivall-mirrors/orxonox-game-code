@@ -51,15 +51,15 @@ namespace orxonox {
 	    QuestManager();
 	    ~QuestManager();
 	    
-	    static bool registerQuest(Quest & quest); //!< Registers a quest in the QuestManager.
-	    static bool registerHint(QuestHint & quest); //!< Registers a QuestHint in the QuestManager.
+	    static bool registerQuest(Quest* quest); //!< Registers a quest in the QuestManager.
+	    static bool registerHint(QuestHint* quest); //!< Registers a QuestHint in the QuestManager.
 	    
-	    static Quest & findQuest(const std::string & questId) const; //!< Returns the quest with the input id.
-	    static QuestHint & findHint(const std::string & hintId) const; //!< Returns the QuestHint with the input id.
+	    static Quest* findQuest(const std::string & questId); //!< Returns the quest with the input id.
+	    static QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.
 	    	    
 	private:
-	    static std::map<std::string, Quest> questMap_;
-	    static std::map<std::string, QuestHint> hintMap_;
+	    static std::map<std::string, Quest*> questMap_;
+	    static std::map<std::string, QuestHint*> hintMap_;
     
     };
 

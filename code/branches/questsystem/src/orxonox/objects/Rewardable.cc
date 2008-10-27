@@ -27,6 +27,7 @@
  */
 
 #include "core/CoreIncludes.h"
+
 #include "Rewardable.h"
 
 namespace orxonox {

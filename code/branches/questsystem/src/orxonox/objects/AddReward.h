@@ -31,10 +31,12 @@
 
 #include <list>
 
-#include "orxonox/quests/Rewardable.h"
+#include "Rewardable.h"
 #include "QuestEffect.h"
 
 namespace orxonox {
+
+    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
 
     /**
     @brief
@@ -45,20 +47,20 @@ namespace orxonox {
     class AddReward : public QuestEffect
     {
 	public:
-	    AddReward(Rewardable & reward);
-	    AddReward(std::list<Rewardable> & rewards);
+            AddReward();
+	    AddReward(Rewardable* reward);
+	    AddReward(std::list<Rewardable*>* rewards);
 	    ~AddReward();
 	    
-	    virtual void invoke(Player & player); //!< Invokes the effect.
+	    virtual void invoke(Player* player); //!< Invokes the effect.
 	    
 	private:
-	
-            std::list<Rewardable> rewards_;
+            std::list<Rewardable*>* rewards_;
 	
             void initialize(void); //!< Initializes the object.
 	
-            inline void addRewardable(const Rewardable & reward)
-                { this->rewards_.push_back(reward); }
+            inline void addRewardable(Rewardable* reward)
+                { this->rewards_->push_back(reward); }
     
     };
 

@@ -27,12 +27,13 @@
  */
 
 #include "core/CoreIncludes.h"
+
 #include "QuestManager.h"
 
 namespace orxonox {
 
-    std::map<std::string, Quest> QuestManager::questMap_;
-    std::map<std::string, QuestHint> QuestManager::hintMap_;
+    std::map<std::string, Quest*> QuestManager::questMap_;
+    std::map<std::string, QuestHint*> QuestManager::hintMap_;
 
     QuestManager::QuestManager() : BaseObject()
     {
@@ -53,9 +54,9 @@ namespace orxonox {
     @return
         Returns true if successful, false if not.
     */
-    bool QuestManager::registerQuest(Quest & quest)
+    bool QuestManager::registerQuest(Quest* quest)
     {
-        this->questMap_.insert ( pair<std::string,Quest>(quest.getId(),quest) );
+        this->questMap_.insert ( pair<std::string,Quest>(quest->getId(),quest) );
         return true;
     }
     
@@ -67,9 +68,9 @@ namespace orxonox {
     @return
         Returns true if successful, false if not.
     */
-    bool QuestManager::registerHint(QuestHint & hint)
+    bool QuestManager::registerHint(QuestHint* hint)
     {
-        this->hintMap_.insert ( pair<std::string,Hint>(hint.getId(),hint) );
+        this->hintMap_.insert ( pair<std::string,Hint>(hint->getId(),hint) );
         return true;
     }
     
@@ -83,10 +84,10 @@ namespace orxonox {
     @todo
         Throw exceptions in case of errors.
     */
-    Quest & QuestManager::findQuest(const std::string & questId) const
+    Quest* QuestManager::findQuest(const std::string & questId)
     {
         Quest* quest;
-        std::map<std::string, Quest>::iterator it = this->questMap_.find(questId);
+        std::map<std::string, Quest*>::iterator it = this->questMap_.find(questId);
 	if (it != this->questMap_.end())
 	{
 	    quest = &(it->second);
@@ -97,7 +98,7 @@ namespace orxonox {
 	   COUT(2) << "The quest with id {" << questId << "} is nowhere to be found." << std::endl;
 	}
 	
-	return *quest;
+	return quest;
 
     }
     
@@ -111,10 +112,10 @@ namespace orxonox {
     @todo
         Throw exceptopns in case of errors.
     */
-    QuestHint & QuestManager::findHint(const std::string & hintId) const
+    QuestHint* QuestManager::findHint(const std::string & hintId) const
     {
         QuestHint* hint;
-        std::map<std::string, QuestHint>::iterator it = this->hintMap_.find(hintId);
+        std::map<std::string, QuestHint*>::iterator it = this->hintMap_.find(hintId);
 	if (it != this->hintMap_.end())
 	{
 	    hint = &(it->second);

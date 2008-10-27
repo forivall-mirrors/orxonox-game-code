@@ -27,11 +27,10 @@
  */
 
 #include "core/CoreIncludes.h"
+
 #include "QuestEffect.h"
 
 namespace orxonox {
-
-    CreateFactory(QuestEffect);
 
     /**
     @brief
@@ -60,16 +59,11 @@ namespace orxonox {
     @param effects
         A list of all the effects to be invoked.
     */
-    void QuestEffect::invokeEffects(Player & player, std::list<QuestEffect> & effects)
+    void QuestEffect::invokeEffects(Player* player, std::list<QuestEffect*> & effects)
     {
-        if ( effects == NULL )
-        {
-            COUT(5) << "NULL-QuestEffect list encountered." << std::endl;
-            return;
-	}
-        for ( std::list<QuestEffect>::iterator = effects.begin(); effect != effects.end(); ++effect )
+        for (std::list<QuestEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
 	{
-	    effect.invoke(player);
+	    (*effect)->invoke(player);
 	}
     }
 

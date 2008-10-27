@@ -35,6 +35,8 @@
 
 namespace orxonox {
 
+    class Player; //Forward declaration, remove when fully integrated into the objecthirarchy.
+
     /**
     @brief
 	Adds a QuestHint, resp. Activates the QuestHint.
@@ -44,10 +46,11 @@ namespace orxonox {
     class AddQuestHint : public QuestEffect
     {
 	public:
+            AddQuestHint();
 	    AddQuestHint(std::string hintId);
 	    ~AddQuestHint();
 	    
-	    virtual void invoke(Player & player); //!< Invokes the effect.
+	    virtual void invoke(Player* player); //!< Invokes the effect.
 	    
 	private:
             std::string hintId_;

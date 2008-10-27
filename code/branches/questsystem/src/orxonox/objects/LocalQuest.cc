@@ -34,6 +34,11 @@ namespace orxonox {
 
     CreateFactory(LocalQuest);
 
+    LocalQuest::LocalQuest() : Quest()
+    {
+        
+    }
+
     /**
     @brief
         Constructor.
@@ -44,7 +49,7 @@ namespace orxonox {
     @param description
         The description of the quest.
     */
-    LocalQuest::LocalQuest(std::string id, std::string title = "", std::string description = "") : Quest(id, title, description)
+    LocalQuest::LocalQuest(std::string id, std::string title, std::string description) : Quest(id, title, description)
     {
         RegisterObject(LocalQuest);
     }
@@ -66,7 +71,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be started, false if not.
     */
-    bool LocalQuest::isStartable(const Player & player) const
+    bool LocalQuest::isStartable(Player* player)
     {
         return this->isInactive(player);
     }
@@ -79,7 +84,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be failed, false if not.
     */
-    bool LocalQuest::isFailable(const Player & player) const
+    bool LocalQuest::isFailable(Player* player)
     {
         return this->isActive(player);
     }
@@ -92,7 +97,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be completed, false if not.
     */
-    bool LocalQuest::isCompletable(const Player & player) const
+    bool LocalQuest::isCompletable(Player* player)
     {
         return this->isActive(player);
     }
@@ -105,9 +110,9 @@ namespace orxonox {
     @return
         Returns the status of the quest for the input player.
     */
-    virtual questStatus::Enum LocalQuest::getStatus(const Player & player) const
+    questStatus::Enum LocalQuest::getStatus(const Player* player)
     {
-        std::map<Player*, questStatus::Enum>::iterator it = this->playerStatus_.find(&player);
+        std::map<Player*, questStatus::Enum>::const_iterator it = this->playerStatus_.find((Player*)(void*)player); //Thx. to x3n for the (Player*)(void*) 'hack'.
 	if (it != this->playerStatus_.end())
 	{
 	    return it->second;
@@ -123,9 +128,10 @@ namespace orxonox {
     @param status
         The status.
     */
-    virtual void LocalQuest::setStatus(const Player & player, const questStatus::Enum & status)
+    bool LocalQuest::setStatus(Player* player, const questStatus::Enum & status)
     {
-        this->playerStatus[&player] = status;
+        this->playerStatus_[player] = status;
+        return true;
     }
 
 }

@@ -27,12 +27,20 @@
  */
 
 #include "core/CoreIncludes.h"
+
+#include "QuestManager.h"
+#include "Quest.h"
 #include "CompleteQuest.h"
 
 namespace orxonox {
 
     CreateFactory(CompleteQuest);
 
+    CompleteQuest::CompleteQuest() : ChangeQuestStatus()
+    {
+        
+    }
+    
     /**
     @brief
         Constructor.
@@ -58,10 +66,10 @@ namespace orxonox {
     @param player
         The player the effect is invoked on.
     */
-    void CompleteQuest::invoke(Player & player)
+    void CompleteQuest::invoke(Player* player)
     {
-        Quest quest = QuestManager::findQuest(this->getQuestId());
-        quest.complete(player);
+        Quest* quest = QuestManager::findQuest(this->getQuestId());
+        quest->complete(player);
     }
 
 

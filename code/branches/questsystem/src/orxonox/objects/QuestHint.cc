@@ -27,11 +27,18 @@
  */
 
 #include "core/CoreIncludes.h"
+
+#include "Quest.h"
 #include "QuestHint.h"
 
 namespace orxonox {
 
     CreateFactory(QuestHint);
+
+    QuestHint::QuestHint() : QuestItem()
+    {
+        
+    }
 
     /**
     @brief
@@ -43,7 +50,7 @@ namespace orxonox {
     @param description
         The description of the hint, resp. the hint itself.
     */
-    QuestHint::QuestHint(std::string id, std::string title = "", std::string description = "") : QuestItem(id, title, description)
+    QuestHint::QuestHint(std::string id, std::string title, std::string description) : QuestItem(id, title, description)
     {
         RegisterObject(QuestHint);
     }
@@ -65,9 +72,9 @@ namespace orxonox {
     @return
         Returns 
     */
-    bool QuestHint::isActive(const Player & player) const
+    bool QuestHint::isActive(Player* player)
     {
-        std::map<Player*, questHintStatus::Enum>::iterator it = this->playerStatus_.find(&player);
+        std::map<Player*, questHintStatus::Enum>::iterator it = this->playerStatus_.find(player);
 	if (it != this->playerStatus_.end())
 	{
 	    return it->second;
@@ -75,17 +82,27 @@ namespace orxonox {
 	return questStatus::inactive;
     }
     
-    bool QuestHint::activate(const Player & player)
+    /**
+    @brief
+    @param player
+    @return
+    */
+    bool QuestHint::activate(Player* player)
     {
-        if(this->quest_->isActive(player) && !this->isActive())
+        if(this->quest_->isActive(player) && !(this->isActive(player)))
         {
-            this->playerStatus_[&player] = questHintStatus::active;
+            this->playerStatus_[player] = questHintStatus::active;
             return true;
         }
 	COUT(2) << "A hint of a non-active quest was trying to get activated." << std::endl;
 	return false;
     }
 
+    /**
+    @brief
+    @param quest
+    @return
+    */
     void QuestHint::setQuest(Quest* quest)
     {
         this->quest_ = quest;
