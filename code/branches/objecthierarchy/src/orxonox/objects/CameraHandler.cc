@@ -28,27 +28,27 @@
 #include "OrxonoxStableHeaders.h"
 #include "CameraHandler.h"
 
-#include <OgreSceneManager.h>
-#include <OgreRenderWindow.h>
+#include <OgreViewport.h>
 
-#include "core/ObjectList.h"
 #include "core/Core.h"
 #include "Camera.h"
-#include "GraphicsEngine.h"
 
-#include <OgreCamera.h>
 
 namespace orxonox
 {
-    CameraHandler::CameraHandler()
+    CameraHandler* CameraHandler::singletonRef_s = 0;
+
+    CameraHandler::CameraHandler(Ogre::Viewport* viewport)
+        : viewport_(viewport)
     {
-//        GraphicsEngine::getInstance().getViewport()->setCamera(this->cam_);
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
     }
 
-    CameraHandler& CameraHandler::getInstance()
+    CameraHandler::~CameraHandler()
     {
-        static CameraHandler instance;
-        return instance;
+        assert(singletonRef_s != 0);
+        singletonRef_s = 0;
     }
 
     Camera* CameraHandler::getActiveCamera() const
@@ -70,7 +70,7 @@ namespace orxonox
 
         // add to list
         this->cameraList_.push_front(camera);
-        camera->setFocus(GraphicsEngine::getInstance().getViewport());
+        camera->setFocus(this->viewport_);
     }
 
     void CameraHandler::releaseFocus(Camera* camera)
@@ -86,7 +86,7 @@ namespace orxonox
 
             // set new focus if necessary
             if (cameraList_.size() > 0)
-                cameraList_.front()->setFocus(GraphicsEngine::getInstance().getViewport());
+                cameraList_.front()->setFocus(this->viewport_);
         }
         else
         {

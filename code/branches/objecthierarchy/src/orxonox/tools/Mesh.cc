@@ -34,7 +34,6 @@
 #include <cassert>
 
 #include "core/Core.h"
-#include "GraphicsEngine.h"
 #include "util/Convert.h"
 #include "util/String.h"
 
@@ -63,14 +62,17 @@ namespace orxonox
         if (this->entity_)
             this->scenemanager_->destroyEntity(this->entity_);
 
-        try
+        if (Core::showsGraphics())
         {
-            this->entity_ = this->scenemanager_->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
-            this->entity_->setCastShadows(this->bCastShadows_);
-        }
-        catch (...)
-        {
-            COUT(1) << "Error: Couln't load mesh \"" << meshsource << "\"" << std::endl;
+            try
+            {
+                this->entity_ = this->scenemanager_->createEntity("Mesh" + convertToString(Mesh::meshCounter_s++), meshsource);
+                this->entity_->setCastShadows(this->bCastShadows_);
+            }
+            catch (...)
+            {
+                COUT(1) << "Error: Couln't load mesh \"" << meshsource << "\"" << std::endl;
+            }
         }
     }
 

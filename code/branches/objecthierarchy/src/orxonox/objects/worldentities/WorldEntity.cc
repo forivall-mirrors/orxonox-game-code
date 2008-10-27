@@ -36,7 +36,6 @@
 #include "core/XMLPort.h"
 #include "util/Convert.h"
 
-#include "GraphicsEngine.h"
 #include "objects/Scene.h"
 
 namespace orxonox

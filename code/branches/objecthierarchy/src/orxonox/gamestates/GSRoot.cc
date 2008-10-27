@@ -40,7 +40,6 @@
 #include "core/TclBind.h"
 #include "core/TclThreadManager.h"
 #include "tools/Timer.h"
-#include "GraphicsEngine.h"
 #include "Settings.h"
 
 #if ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 

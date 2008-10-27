@@ -35,7 +35,6 @@
 #include <OgreTimer.h>
 
 #include "core/ConsoleCommand.h"
-#include "GraphicsEngine.h"
 
 namespace orxonox
 {

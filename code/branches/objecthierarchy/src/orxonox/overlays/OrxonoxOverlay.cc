@@ -43,7 +43,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
-#include "GraphicsEngine.h"
 
 namespace orxonox
 {
@@ -114,9 +113,11 @@ namespace orxonox
             this->overlay_->add2D(this->background_);
 
             // We'll have to get the aspect ratio manually for the first time. Afterwards windowResized() gets
-            // called automatically by the GraphicsEngine.
-            this->windowResized(GraphicsEngine::getInstance().getWindowWidth(),
-                GraphicsEngine::getInstance().getWindowHeight());
+            // called automatically by GSGraphics.
+            //this->windowResized(GraphicsEngine::getInstance().getWindowWidth(),
+            //    GraphicsEngine::getInstance().getWindowHeight());
+            this->windowAspectRatio_ = Ogre::OverlayManager::getSingleton().getViewportAspectRatio();
+            this->sizeCorrectionChanged();
 
             this->changedVisibility();
         }

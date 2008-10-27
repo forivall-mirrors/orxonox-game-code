@@ -28,25 +28,19 @@
 
 #include "OrxonoxStableHeaders.h"
 #include "Camera.h"
-#include "CameraHandler.h"
 
 #include <string>
 #include <cassert>
 
+#include <OgreCamera.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
-#include <OgreRenderWindow.h>
 #include <OgreViewport.h>
 
-#include "tinyxml/tinyxml.h"
-#include "util/SubString.h"
-#include "util/Math.h"
-#include "util/String.h"
-#include "util/Debug.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "GraphicsEngine.h"
 #include "objects/Scene.h"
+#include "objects/CameraHandler.h"
 
 namespace orxonox
 {

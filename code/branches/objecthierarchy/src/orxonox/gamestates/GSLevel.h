@@ -36,12 +36,12 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport GSLevel : public GameState<GSGraphics>, public OrxonoxClass
+    class _OrxonoxExport GSLevel : public OrxonoxClass //,public GameState<GSGraphics>
     {
         friend class ClassIdentifier<GSLevel>;
     public:
-        GSLevel(const std::string& name);
-        virtual ~GSLevel();
+        GSLevel();
+        ~GSLevel();
 
         // this has to be public because proteced triggers a bug in msvc
         // when taking the function address.
@@ -49,25 +49,26 @@ namespace orxonox
         float getTimeFactor() { return this->timeFactor_; }
 
     protected:
-        virtual void enter();
-        virtual void leave();
-        virtual void ticked(const Clock& time);
+        void enter(Ogre::Viewport* viewport);
+        void leave();
+        void ticked(const Clock& time);
 
         void loadLevel();
         void unloadLevel();
 
-        float timeFactor_;       //!< A factor to change the gamespeed
+        float timeFactor_;       //!< A factor that sets the gamespeed. 1 is normal.
 
         // console commands
         void keybind(const std::string& command);
         void tkeybind(const std::string& command);
         void keybindInternal(const std::string& command, bool bTemporary);
 
-        Ogre::SceneManager*   sceneManager_;
         KeyBinder*            keyBinder_;        //!< tool that loads and manages the input bindings
         SimpleInputState*     inputState_;
         Radar*                radar_;            //!< represents the Radar (not the HUD part)
         XMLFile*              startFile_;        //!< current hard coded default level
+        CameraHandler*        cameraHandler_;
+        LevelManager*         levelManager_;
 
         // config values
         std::string           keyDetectorCallbackCode_;

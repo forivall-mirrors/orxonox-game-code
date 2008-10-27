@@ -79,6 +79,7 @@ namespace orxonox
     class Radar;
     class RadarListener;
 
+    class CameraHandler;
     class LevelManager;
 
     // objects

@@ -48,7 +48,7 @@ namespace orxonox
         InGameConsole();
         ~InGameConsole();
 
-        void initialise();
+        void initialise(int windowWidth, int windowHeight);
         void destroy();
         void setConfigValues();
 

@@ -115,9 +115,9 @@ namespace orxonox
 
 
         // HACK: temporary:
-        graphicsEngine_->renderWindow_  = this->renderWindow_;
-        graphicsEngine_->root_          = this->ogreRoot_;
-        graphicsEngine_->viewport_      = this->viewport_;
+        //graphicsEngine_->renderWindow_  = this->renderWindow_;
+        //graphicsEngine_->root_          = this->ogreRoot_;
+        //graphicsEngine_->viewport_      = this->viewport_;
 
 
         // Calls the InputManager which sets up the input devices.
@@ -133,7 +133,7 @@ namespace orxonox
 
         // Load the InGameConsole
         console_ = new InGameConsole();
-        console_->initialise();
+        console_->initialise(this->renderWindow_->getWidth(), this->renderWindow_->getHeight());
 
         // load the CEGUI interface
         guiManager_ = new GUIManager();

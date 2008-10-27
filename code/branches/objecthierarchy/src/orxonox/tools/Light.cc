@@ -34,8 +34,6 @@
 
 #include <OgreSceneManager.h>
 
-#include "GraphicsEngine.h"
-
 namespace orxonox
 {
     unsigned int Light::lightCounter_s = 0;

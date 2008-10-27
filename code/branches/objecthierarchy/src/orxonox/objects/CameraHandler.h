@@ -37,28 +37,32 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <cassert>
 #include <list>
-#include <OgreCamera.h>
-
-#include "core/BaseObject.h"
+#include <OgrePrerequisites.h>
 
 namespace orxonox
 {
     class _OrxonoxExport CameraHandler
     {
         public:
-            static CameraHandler& getInstance();
+            CameraHandler(Ogre::Viewport* viewport);
+            ~CameraHandler();
 
             Camera* getActiveCamera() const;
 
             void requestFocus(Camera* camera);
             void releaseFocus(Camera* camera);
 
+            static CameraHandler& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+
         private:
-            CameraHandler();
-            ~CameraHandler() {}
+            CameraHandler(const CameraHandler&);
 
             std::list<Camera*> cameraList_;
+            Ogre::Viewport* viewport_;
+
+            static CameraHandler* singletonRef_s;
     };
 }
 

@@ -33,7 +33,6 @@
 #include <cassert>
 #include <OgreSceneManager.h>
 
-#include "GraphicsEngine.h"
 #include "util/Math.h"
 
 namespace orxonox

@@ -33,6 +33,7 @@
 
 #include <list>
 #include <map>
+#include <cassert>
 
 #include "network/ClientConnectionListener.h"
 
@@ -41,7 +42,8 @@ namespace orxonox
     class _OrxonoxExport LevelManager : public network::ClientConnectionListener
     {
         public:
-            static LevelManager& getInstance();
+            LevelManager();
+            virtual ~LevelManager();
 
             void requestActivity(Level* level);
             void releaseActivity(Level* level);
@@ -51,9 +53,10 @@ namespace orxonox
             inline const std::map<unsigned int, PlayerInfo*>& getClients() const
                 { return this->clients_; }
 
+            static LevelManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+
         private:
-            LevelManager();
-            virtual ~LevelManager() {}
+            LevelManager(const LevelManager&);
 
             void clientConnected(unsigned int clientID);
             void clientDisconnected(unsigned int clientID);
@@ -62,6 +65,8 @@ namespace orxonox
 
             std::list<Level*> levels_s;
             std::map<unsigned int, PlayerInfo*> clients_;
+
+            static LevelManager* singletonRef_s;
     };
 }
 

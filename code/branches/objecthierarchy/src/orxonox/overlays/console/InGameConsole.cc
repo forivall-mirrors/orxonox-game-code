@@ -47,7 +47,6 @@
 #include "core/input/InputManager.h"
 #include "core/input/SimpleInputState.h"
 #include "core/input/InputBuffer.h"
-#include "GraphicsEngine.h"
 
 namespace orxonox
 {
@@ -169,7 +168,7 @@ namespace orxonox
     /**
         @brief Initializes the InGameConsole.
     */
-    void InGameConsole::initialise()
+    void InGameConsole::initialise(int windowWidth, int windowHeight)
     {
         // create the corresponding input state
         inputState_ = InputManager::getInstance().createInputState<SimpleInputState>("console", 40);
@@ -245,7 +244,7 @@ namespace orxonox
         // comment following line to disable noise
         this->consoleOverlayContainer_->addChild(this->consoleOverlayNoise_);
 
-        this->windowResized(GraphicsEngine::getInstance().getWindowWidth(), GraphicsEngine::getInstance().getWindowHeight());
+        this->windowResized(windowWidth, windowHeight);
 
         // move overlay "above" the top edge of the screen
         // we take -1.2 because the border makes the panel bigger

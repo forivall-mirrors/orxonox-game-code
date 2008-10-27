@@ -29,11 +29,9 @@
 #ifndef _Camera_H__
 #define _Camera_H__
 
-#include <OgrePrerequisites.h>
-#include <OgreSceneNode.h>
-#include <OgreCamera.h>
-
 #include "OrxonoxPrereqs.h"
+
+#include <OgrePrerequisites.h>
 #include "objects/worldentities/PositionableEntity.h"
 #include "objects/Tickable.h"
 

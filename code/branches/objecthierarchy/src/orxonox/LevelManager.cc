@@ -37,17 +37,22 @@
 
 namespace orxonox
 {
+    LevelManager* LevelManager::singletonRef_s = 0;
+
     LevelManager::LevelManager()
     {
         RegisterRootObject(LevelManager);
 
+        assert(singletonRef_s == 0);
+        singletonRef_s = this;
+
         this->getConnectedClients();
     }
 
-    LevelManager& LevelManager::getInstance()
+    LevelManager::~LevelManager()
     {
-        static LevelManager instance;
-        return instance;
+        assert(singletonRef_s != 0);
+        singletonRef_s = 0;
     }
 
     void LevelManager::requestActivity(Level* level)

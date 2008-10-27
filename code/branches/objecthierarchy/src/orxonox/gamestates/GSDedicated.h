@@ -31,31 +31,23 @@
 
 #include "OrxonoxPrereqs.h"
 #include "network/NetworkPrereqs.h"
+#include "GSLevel.h"
 #include "GSRoot.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSDedicated : public GameState<GSRoot>
+    class _OrxonoxExport GSDedicated : public GameState<GSRoot>, public GSLevel
     {
     public:
         GSDedicated();
         ~GSDedicated();
-
-        void setTimeFactor(float factor);
-        float getTimeFactor() { return this->timeFactor_; }
 
     private:
         void enter();
         void leave();
         void ticked(const Clock& time);
 
-        void loadLevel();
-        void unloadLevel();
-
-        float                 timeFactor_;       //!< A factor to change the gamespeed
         network::Server*      server_;
-        Ogre::SceneManager*   sceneManager_;
-        XMLFile*              startFile_;        //!< current hard coded default level
     };
 }
 

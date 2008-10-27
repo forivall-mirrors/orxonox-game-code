@@ -29,8 +29,6 @@
 #include "OrxonoxStableHeaders.h"
 #include "GSServer.h"
 
-#include "core/ConsoleCommand.h"
-#include "core/input/InputManager.h"
 #include "core/CommandLine.h"
 #include "core/Core.h"
 #include "network/Server.h"
@@ -40,7 +38,7 @@ namespace orxonox
     SetCommandLineArgument(port, 55556).shortcut("p").information("0-65535");
 
     GSServer::GSServer()
-        : GSLevel("server")
+        : GameState<GSGraphics>("server")
         , server_(0)
     {
     }
@@ -53,36 +51,20 @@ namespace orxonox
     {
         Core::setHasServer(true);
 
-        GSLevel::enter();
-
         this->server_ = new network::Server(CommandLine::getValue("port"));
         COUT(0) << "Loading scene in server mode" << std::endl;
 
-        this->loadLevel();
+        GSLevel::enter(this->getParent()->getViewport());
 
         server_->open();
-
-        // add console commands
-        FunctorMember<GSLevel>* functor = createFunctor(&GSLevel::setTimeFactor);
-        functor->setObject(this);
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(functor, "setTimeFactor")).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);;
-
-        // level is loaded: we can start capturing the input
-        InputManager::getInstance().requestEnterState("game");
     }
 
     void GSServer::leave()
     {
-        InputManager::getInstance().requestLeaveState("game");
-
-        // TODO: Remove and destroy console command
-
-        this->unloadLevel();
+        GSLevel::leave();
 
         this->server_->close();
         delete this->server_;
-
-        GSLevel::leave();
 
         Core::setHasServer(false);
     }

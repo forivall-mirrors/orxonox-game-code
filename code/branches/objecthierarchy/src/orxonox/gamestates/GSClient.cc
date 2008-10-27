@@ -39,7 +39,7 @@ namespace orxonox
     SetCommandLineArgument(ip, "127.0.0.1").information("#.#.#.#");
 
     GSClient::GSClient()
-        : GSLevel("client")
+        : GameState<GSGraphics>("client")
         , client_(0)
     {
     }
@@ -52,31 +52,24 @@ namespace orxonox
     {
         Core::setIsClient(true);
 
-        GSLevel::enter();
-
         this->client_ = new network::Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
 
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");
 
-        client_->tick(0);
+        GSLevel::enter(this->getParent()->getViewport());
 
-        // level is loaded: we can start capturing the input
-        InputManager::getInstance().requestEnterState("game");
+        client_->tick(0);
     }
 
     void GSClient::leave()
     {
-        InputManager::getInstance().requestLeaveState("game");
-
-        // TODO: How do we unload the level in client mode?
+        GSLevel::leave();
 
         client_->closeConnection();
 
         // destroy client
         delete this->client_;
-
-        GSLevel::leave();
 
         Core::setIsClient(false);
     }

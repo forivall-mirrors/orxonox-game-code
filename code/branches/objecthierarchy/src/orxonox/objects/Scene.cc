@@ -30,11 +30,12 @@
 #include "Scene.h"
 
 #include <OgreRoot.h>
-#include <OgreSceneManager.h>
+#include <OgreSceneManagerEnumerator.h>
 #include <OgreSceneNode.h>
 #include <OgreLight.h>
 
 #include "core/CoreIncludes.h"
+#include "core/Core.h"
 #include "core/XMLPort.h"
 
 namespace orxonox
@@ -48,19 +49,28 @@ namespace orxonox
         this->setScene(this);
         this->bShadows_ = false;
 
-        if (Ogre::Root::getSingletonPtr())
+        if (Core::showsGraphics())
         {
-            this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC);
-            this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
+            if (Ogre::Root::getSingletonPtr())
+            {
+                this->sceneManager_ = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC);
+                this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
+            }
+            else
+            {
+                this->sceneManager_ = 0;
+                this->rootSceneNode_ = 0;
+            }
         }
         else
         {
-            this->sceneManager_ = 0;
-            this->rootSceneNode_ = 0;
+            // create a dummy SceneManager of our own since we don't have Ogre::Root.
+            this->sceneManager_ = new Ogre::DefaultSceneManager("");
+            this->rootSceneNode_ = this->sceneManager_->getRootSceneNode();
         }
 
         // test test test
-        if (this->sceneManager_)
+        if (Core::showsGraphics() && this->sceneManager_)
         {
             Ogre::Light* light;
             light = this->sceneManager_->createLight("Light0");
@@ -79,8 +89,9 @@ namespace orxonox
 //            this->sceneManager_->destroySceneNode(this->rootSceneNode_->getName()); // TODO: remove getName() for newer versions of Ogre
             Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
         }
-        else
+        else if (!Core::showsGraphics())
         {
+            delete this->sceneManager_;
         }
     }
 
@@ -103,7 +114,7 @@ namespace orxonox
 
     void Scene::setSkybox(const std::string& skybox)
     {
-        if (this->sceneManager_)
+        if (Core::showsGraphics() && this->sceneManager_)
             this->sceneManager_->setSkyBox(true, skybox);
 
         this->skybox_ = skybox;
@@ -111,7 +122,7 @@ namespace orxonox
 
     void Scene::setAmbientLight(const ColourValue& colour)
     {
-        if (this->sceneManager_)
+        if (Core::showsGraphics() && this->sceneManager_)
             this->sceneManager_->setAmbientLight(colour);
 
         this->ambientLight_ = colour;
@@ -119,7 +130,7 @@ namespace orxonox
 
     void Scene::setShadow(bool bShadow)
     {
-        if (this->sceneManager_)
+        if (Core::showsGraphics() && this->sceneManager_)
         {
             if (bShadow)
                 this->sceneManager_->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);

@@ -37,7 +37,6 @@
 
 #include "network/ClientInformation.h"
 
-#include "GraphicsEngine.h"
 #include "LevelManager.h"
 #include "objects/infos/PlayerInfo.h"
 #include "overlays/console/InGameConsole.h"
