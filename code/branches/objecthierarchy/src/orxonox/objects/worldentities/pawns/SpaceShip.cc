@@ -106,26 +106,25 @@ namespace orxonox
         if (velocity.z < -this->maxSpeed_)
             velocity.z = -this->maxSpeed_;
 
-#define normalize_acc_and_vel(dimension)                                 \
-        if (this->acceleration_.dimension == 0)                          \
-        {                                                                \
-            if (velocity.dimension > 0)                                  \
-            {                                                            \
-                velocity.dimension -= (this->translationDamping_ * dt);  \
-                if (velocity.dimension < 0)                              \
-                    velocity.dimension = 0;                              \
-            }                                                            \
-            else if (velocity.dimension < 0)                             \
-            {                                                            \
-                velocity.dimension += (this->translationDamping_ * dt);  \
-                if (velocity.dimension > 0)                              \
-                    velocity.dimension = 0;                              \
-            }                                                            \
+        // normalize velocity and acceleration
+        for (size_t dimension = 0; dimension < 3; ++dimension)
+        {
+            if (this->acceleration_[dimension] == 0)
+            {
+                if (velocity[dimension] > 0)
+                {
+                    velocity[dimension] -= (this->translationDamping_ * dt);
+                    if (velocity[dimension] < 0)
+                        velocity[dimension] = 0;
+                }
+                else if (velocity[dimension] < 0)
+                {
+                    velocity[dimension] += (this->translationDamping_ * dt);
+                    if (velocity[dimension] > 0)
+                        velocity[dimension] = 0;
+                }
+            }
         }
-
-        normalize_acc_and_vel(x)
-        normalize_acc_and_vel(y)
-        normalize_acc_and_vel(z)
 
         this->setVelocity(velocity);
 
