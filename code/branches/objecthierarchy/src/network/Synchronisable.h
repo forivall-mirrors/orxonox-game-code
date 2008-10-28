@@ -75,6 +75,7 @@ namespace network
     uint32_t size:31;
     bool dataAvailable:1;
     uint32_t objectID;
+    uint32_t creatorID;
     uint32_t classID;
   };
 
@@ -128,6 +129,7 @@ namespace network
     bool doSync(unsigned int id);
 
     unsigned int objectID;
+    unsigned int creatorID;
     unsigned int classID;
 
     std::list<synchronisableVariable *> *syncList;

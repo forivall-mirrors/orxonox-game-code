@@ -133,7 +133,7 @@ namespace network
 
     orxonox::Identifier* id = ClassByID(header->classID);
     assert(id);
-    orxonox::BaseObject *bo = id->fabricate(0); // TODO: get creator
+    orxonox::BaseObject *bo = id->fabricate(0); //TODO: get BaseObject* from header->creatorID here
     Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
     assert(no);
     no->objectID=header->objectID;
@@ -263,6 +263,7 @@ namespace network
     synchronisableHeader *header = (synchronisableHeader *)mem;
     header->size = size;
     header->objectID = this->objectID;
+    header->creatorID = this->creatorID;
     header->classID = this->classID;
     header->dataAvailable = true;
     tempsize+=sizeof(synchronisableHeader);
@@ -324,6 +325,7 @@ namespace network
     // start extract header
     synchronisableHeader *syncHeader = (synchronisableHeader *)mem;
     assert(syncHeader->objectID==this->objectID);
+    assert(syncHeader->creatorID==this->creatorID);
     if(syncHeader->dataAvailable==false){
       mem+=syncHeader->size;
       return true;
