@@ -137,6 +137,7 @@ namespace network
     Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
     assert(no);
     no->objectID=header->objectID;
+    no->creatorID=header->creatorID; //TODO: remove this
     no->classID=header->classID;
     COUT(3) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
@@ -451,7 +452,7 @@ namespace network
    * @return true/false
    */
   bool Synchronisable::doSync(unsigned int id){
-    return ( (objectMode_&state_)!=0 );
+    return ( (objectMode_&state_)!=0 && (!syncList->empty() ) );
   }
 
   bool Synchronisable::doSelection(unsigned int id){

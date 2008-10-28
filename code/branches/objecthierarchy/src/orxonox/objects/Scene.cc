@@ -80,6 +80,8 @@ namespace orxonox
             light->setDirection(1, -0.2, 0.2);
         }
         // test test test
+        
+        this->registerVariables();
     }
 
     Scene::~Scene()
