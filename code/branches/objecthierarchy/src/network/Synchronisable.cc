@@ -328,7 +328,7 @@ namespace network
     // start extract header
     synchronisableHeader *syncHeader = (synchronisableHeader *)mem;
     assert(syncHeader->objectID==this->objectID);
-    assert(syncHeader->creatorID==this->creatorID);
+//    assert(syncHeader->creatorID==this->creatorID);
     if(syncHeader->dataAvailable==false){
       mem+=syncHeader->size;
       return true;
