@@ -141,9 +141,12 @@ namespace network
     COUT(3) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
     bool b = no->updateData(mem, mode, true);
-    assert(b);
-    b = no->create();
-    assert(b);
+//    assert(b);
+    if (b)
+    {
+        b = no->create();
+        assert(b);
+    }
     return no;
   }
 

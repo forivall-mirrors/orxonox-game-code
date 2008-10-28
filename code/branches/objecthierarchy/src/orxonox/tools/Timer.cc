@@ -111,9 +111,11 @@ namespace orxonox
     */
     void TimerBase::run() const
     {
+        bool temp = this->bKillAfterCall_; // to avoid errors with bKillAfterCall_=false and an exutors which destroy the timer
+
         (*this->executor_)();
 
-        if (this->bKillAfterCall_)
+        if (temp)
             delete this;
     }
 

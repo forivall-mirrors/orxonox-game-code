@@ -68,6 +68,7 @@ namespace orxonox
     }
 
     this->getNode()->attachObject(this->debugBillboard_.getBillboardSet());
+    this->setObjectMode(0x0);
   }
 
   Trigger::~Trigger()

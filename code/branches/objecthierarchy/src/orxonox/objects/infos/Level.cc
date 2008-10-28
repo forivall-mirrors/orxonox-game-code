@@ -51,7 +51,7 @@ namespace orxonox
         RegisterObject(Level);
 
         this->registerVariables();
-        this->xmlfilename_ = this->getFilename();
+        this->xmlfilename_ = this->getFilename().substr(Settings::getDataPath().length());
 
         COUT(0) << "created Level" << std::endl;
     }
