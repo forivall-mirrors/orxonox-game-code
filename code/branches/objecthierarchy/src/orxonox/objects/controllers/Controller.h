@@ -47,7 +47,7 @@ namespace orxonox
                 { return this->player_; }
 
             virtual inline void setControllableEntity(ControllableEntity* entity)
-                { this->controllableEntity_ = entity; }
+                { COUT(0) << "HC: start controlling entity" << std::endl; this->controllableEntity_ = entity; }
             virtual inline ControllableEntity* getControllableEntity() const
                 { return this->controllableEntity_; }
 

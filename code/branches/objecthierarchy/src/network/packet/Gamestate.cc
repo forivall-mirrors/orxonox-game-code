@@ -253,14 +253,14 @@ bool Gamestate::compressData()
   HEADER->compsize = buffer;
   HEADER->compressed = true;
   assert(HEADER->compressed);
-  COUT(3) << "gamestate compress datasize: " << HEADER->datasize << " compsize: " << HEADER->compsize << std::endl;
+  COUT(4) << "gamestate compress datasize: " << HEADER->datasize << " compsize: " << HEADER->compsize << std::endl;
   return true;
 }
 bool Gamestate::decompressData()
 {
   assert(HEADER);
   assert(HEADER->compressed);
-  COUT(3) << "GameStateClient: uncompressing gamestate. id: " << HEADER->id << ", baseid: " << HEADER->base_id << ", datasize: " << HEADER->datasize << ", compsize: " << HEADER->compsize << std::endl;
+  COUT(4) << "GameStateClient: uncompressing gamestate. id: " << HEADER->id << ", baseid: " << HEADER->base_id << ", datasize: " << HEADER->datasize << ", compsize: " << HEADER->compsize << std::endl;
   unsigned int datasize = HEADER->datasize;
   unsigned int compsize = HEADER->compsize;
   unsigned int bufsize;

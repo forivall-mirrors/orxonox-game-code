@@ -57,6 +57,8 @@ namespace orxonox
 
         this->bInvertYAxis_ = false;
 
+        this->setDestroyWhenPlayerLeft(true);
+
         this->setConfigValues();
         this->registerVariables();
     }
@@ -79,6 +81,12 @@ namespace orxonox
 
     void SpaceShip::registerVariables()
     {
+        REGISTERDATA(this->maxSpeed_,                network::direction::toclient);
+        REGISTERDATA(this->maxSecondarySpeed_,       network::direction::toclient);
+        REGISTERDATA(this->maxRotation_,             network::direction::toclient);
+        REGISTERDATA(this->translationAcceleration_, network::direction::toclient);
+        REGISTERDATA(this->rotationAcceleration_,    network::direction::toclient);
+        REGISTERDATA(this->translationDamping_,      network::direction::toclient);
     }
 
     void SpaceShip::setConfigValues()
@@ -88,64 +96,70 @@ namespace orxonox
 
     void SpaceShip::tick(float dt)
     {
-        // #####################################
-        // ############# STEERING ##############
-        // #####################################
-
-        Vector3 velocity = this->getVelocity();
-        if (velocity.x > this->maxSecondarySpeed_)
-            velocity.x = this->maxSecondarySpeed_;
-        if (velocity.x < -this->maxSecondarySpeed_)
-            velocity.x = -this->maxSecondarySpeed_;
-        if (velocity.y > this->maxSecondarySpeed_)
-            velocity.y = this->maxSecondarySpeed_;
-        if (velocity.y < -this->maxSecondarySpeed_)
-            velocity.y = -this->maxSecondarySpeed_;
-        if (velocity.z > this->maxSecondarySpeed_)
-            velocity.z = this->maxSecondarySpeed_;
-        if (velocity.z < -this->maxSpeed_)
-            velocity.z = -this->maxSpeed_;
-
-        // normalize velocity and acceleration
-        for (size_t dimension = 0; dimension < 3; ++dimension)
+        if (this->isLocallyControlled())
         {
-            if (this->acceleration_[dimension] == 0)
+            // #####################################
+            // ############# STEERING ##############
+            // #####################################
+
+            Vector3 velocity = this->getVelocity();
+            if (velocity.x > this->maxSecondarySpeed_)
+                velocity.x = this->maxSecondarySpeed_;
+            if (velocity.x < -this->maxSecondarySpeed_)
+                velocity.x = -this->maxSecondarySpeed_;
+            if (velocity.y > this->maxSecondarySpeed_)
+                velocity.y = this->maxSecondarySpeed_;
+            if (velocity.y < -this->maxSecondarySpeed_)
+                velocity.y = -this->maxSecondarySpeed_;
+            if (velocity.z > this->maxSecondarySpeed_)
+                velocity.z = this->maxSecondarySpeed_;
+            if (velocity.z < -this->maxSpeed_)
+                velocity.z = -this->maxSpeed_;
+
+            // normalize velocity and acceleration
+            for (size_t dimension = 0; dimension < 3; ++dimension)
             {
-                if (velocity[dimension] > 0)
+                if (this->acceleration_[dimension] == 0)
                 {
-                    velocity[dimension] -= (this->translationDamping_ * dt);
-                    if (velocity[dimension] < 0)
-                        velocity[dimension] = 0;
-                }
-                else if (velocity[dimension] < 0)
-                {
-                    velocity[dimension] += (this->translationDamping_ * dt);
                     if (velocity[dimension] > 0)
-                        velocity[dimension] = 0;
+                    {
+                        velocity[dimension] -= (this->translationDamping_ * dt);
+                        if (velocity[dimension] < 0)
+                            velocity[dimension] = 0;
+                    }
+                    else if (velocity[dimension] < 0)
+                    {
+                        velocity[dimension] += (this->translationDamping_ * dt);
+                        if (velocity[dimension] > 0)
+                            velocity[dimension] = 0;
+                    }
                 }
             }
-        }
 
-        this->setVelocity(velocity);
+            this->setVelocity(velocity);
+        }
 
 
         SUPER(SpaceShip, tick, dt);
 
 
-        this->yaw(this->yawRotation_ * dt);
-        if (this->bInvertYAxis_)
-            this->pitch(Degree(-this->pitchRotation_ * dt));
-        else
-            this->pitch(Degree( this->pitchRotation_ * dt));
-        this->roll(this->rollRotation_ * dt);
+        if (this->isLocallyControlled())
+        {
+            this->yaw(this->yawRotation_ * dt);
+            if (this->bInvertYAxis_)
+                this->pitch(Degree(-this->pitchRotation_ * dt));
+            else
+                this->pitch(Degree( this->pitchRotation_ * dt));
+            this->roll(this->rollRotation_ * dt);
 
-        this->acceleration_.x = 0;
-        this->acceleration_.y = 0;
-        this->acceleration_.z = 0;
+            this->acceleration_.x = 0;
+            this->acceleration_.y = 0;
+            this->acceleration_.z = 0;
 
-        this->yawRotation_   = this->zeroDegree_;
-        this->pitchRotation_ = this->zeroDegree_;
-        this->rollRotation_  = this->zeroDegree_;
+            this->yawRotation_   = this->zeroDegree_;
+            this->pitchRotation_ = this->zeroDegree_;
+            this->rollRotation_  = this->zeroDegree_;
+        }
     }
 
     void SpaceShip::moveFrontBack(const Vector2& value)

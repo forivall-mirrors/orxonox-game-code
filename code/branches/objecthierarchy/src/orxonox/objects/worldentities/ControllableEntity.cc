@@ -80,6 +80,9 @@ namespace orxonox
 
             if (this->camera_)
                 delete this->camera_;
+
+            if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
+                this->getPlayer()->stopControl(this, false);
         }
     }
 

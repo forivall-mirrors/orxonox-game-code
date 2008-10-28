@@ -111,6 +111,9 @@ namespace orxonox
         // add to clients-map
         assert(!this->clients_[clientID]);
         this->clients_[clientID] = player;
+
+        if (this->getActiveLevel())
+            this->getActiveLevel()->playerEntered(player);
     }
 
     void LevelManager::clientDisconnected(unsigned int clientID)
@@ -120,6 +123,9 @@ namespace orxonox
         // remove from clients-map
         PlayerInfo* player = this->clients_[clientID];
         this->clients_.erase(clientID);
+
+        if (this->getActiveLevel())
+            this->getActiveLevel()->playerLeft(player);
 
         // delete PlayerInfo instance
         if (player)

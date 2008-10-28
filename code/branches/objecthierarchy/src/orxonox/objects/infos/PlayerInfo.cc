@@ -70,6 +70,7 @@ namespace orxonox
     {
         REGISTERSTRING(this->name_,                 network::direction::toclient, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::changedName));
         REGISTERDATA  (this->controllableEntityID_, network::direction::toclient, new network::NetworkCallback<PlayerInfo>(this, &PlayerInfo::networkcallback_changedcontrollableentityID));
+        REGISTERDATA  (this->bReadyToSpawn_,        network::direction::toserver);
     }
 
     void PlayerInfo::changedName()
@@ -126,12 +127,12 @@ namespace orxonox
         {
             this->controllableEntityID_ = network::OBJECTID_UNKNOWN;
         }
-
+COUT(0) << this->getObjectID() << ": PI: start control" << std::endl;
         if (this->controller_)
             this->controller_->setControllableEntity(entity);
     }
 
-    void PlayerInfo::stopControl(ControllableEntity* entity)
+    void PlayerInfo::stopControl(ControllableEntity* entity, bool callback)
     {
         if (entity && this->controllableEntity_ == entity)
         {
@@ -141,7 +142,8 @@ namespace orxonox
             if (this->controller_)
                 this->controller_->setControllableEntity(0);
 
-            entity->removePlayer();
+            if (callback)
+                entity->removePlayer();
         }
     }
 

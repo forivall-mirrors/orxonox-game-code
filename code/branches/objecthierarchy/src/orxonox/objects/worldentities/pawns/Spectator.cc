@@ -55,6 +55,7 @@ namespace orxonox
         this->pitch_ = 0;
         this->roll_ = 0;
         this->setHudTemplate("spectatorhud");
+        this->hudmode_ = 0;
 
         this->setDestroyWhenPlayerLeft(true);
 
@@ -84,6 +85,7 @@ namespace orxonox
     {
         REGISTERDATA(this->bGreetingFlareVisible_, network::direction::toclient, new network::NetworkCallback<Spectator>(this, &Spectator::changedFlareVisibility));
         REGISTERDATA(this->bGreeting_,             network::direction::toserver, new network::NetworkCallback<Spectator>(this, &Spectator::changedGreeting));
+        REGISTERDATA(this->hudmode_,               network::direction::toclient);
     }
 
     void Spectator::changedGreeting()
@@ -99,10 +101,10 @@ namespace orxonox
 
     void Spectator::tick(float dt)
     {
+        this->updateHUD();
+
         if (this->isLocallyControlled())
         {
-            this->updateHUD();
-
             Vector3 velocity = this->getVelocity();
             velocity.normalise();
             this->setVelocity(velocity * this->speed_);
@@ -186,38 +188,54 @@ namespace orxonox
     void Spectator::updateHUD()
     {
         // <hack>
-        if (this->getHUD())
+        if (Core::isMaster())
         {
-            std::string text;
-
             if (this->getPlayer() && this->getGametype())
             {
                 if (!this->getGametype()->hasStarted() && !this->getGametype()->isStartCountdownRunning())
                 {
                     if (!this->getPlayer()->isReadyToSpawn())
-                        text = "Press [Fire] to start the match";
+                        this->hudmode_ = 0;
                     else
-                        text = "Waiting for other players";
+                        this->hudmode_ = 1;
                 }
                 else if (!this->getGametype()->hasEnded())
                 {
                     if (this->getGametype()->isStartCountdownRunning())
-                    {
-                        text = convertToString(ceil(this->getGametype()->getStartCountdown()));
-                    }
+                        this->hudmode_ = 2 + 10*ceil(this->getGametype()->getStartCountdown());
                     else
-                    {
-                        text = "Press [Fire] to respawn";
-                    }
+                        this->hudmode_ = 3;
                 }
                 else
-                {
-                    text = "Game has ended";
-                }
+                    this->hudmode_ = 4;
             }
             else
-            {
                 return;
+        }
+
+        if (this->getHUD())
+        {
+            std::string text;
+            int hudmode = this->hudmode_ % 10;
+
+            switch (hudmode)
+            {
+                case 0:
+                    text = "Press [Fire] to start the match";
+                    break;
+                case 1:
+                    text = "Waiting for other players";
+                    break;
+                case 2:
+                    text = convertToString((this->hudmode_ - 2) / 10);
+                    break;
+                case 3:
+                    text = "Press [Fire] to respawn";
+                    break;
+                case 4:
+                    text = "Game has ended";
+                    break;
+                default:;
             }
 
             std::map<std::string, OrxonoxOverlay*>::const_iterator it = this->getHUD()->getOverlays().begin();

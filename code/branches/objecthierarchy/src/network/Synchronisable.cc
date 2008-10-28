@@ -76,9 +76,9 @@ namespace network
     searchcreatorID:
     if (creator)
     {
-        if (creator->isA(Class(Synchronisable)))
+        Synchronisable* synchronisable_creator = dynamic_cast<Synchronisable*>(creator);
+        if (synchronisable_creator && synchronisable_creator->objectMode_)
         {
-            Synchronisable* synchronisable_creator = dynamic_cast<Synchronisable*>(creator);
             this->creatorID = synchronisable_creator->getObjectID();
         }
         else if (creator != creator->getCreator())
@@ -146,7 +146,7 @@ namespace network
   {
     synchronisableHeader *header = (synchronisableHeader *)mem;
 
-    COUT(3) << "fabricating object with id: " << header->objectID << std::endl;
+    COUT(4) << "fabricating object with id: " << header->objectID << std::endl;
 
     orxonox::Identifier* id = ClassByID(header->classID);
     assert(id);
@@ -169,7 +169,7 @@ namespace network
     no->objectID=header->objectID;
     no->creatorID=header->creatorID; //TODO: remove this
     no->classID=header->classID;
-    COUT(3) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
+    COUT(4) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
     bool b = no->updateData(mem, mode, true);
     assert(b);
