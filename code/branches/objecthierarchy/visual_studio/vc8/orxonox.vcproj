@@ -307,6 +307,18 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="triggers"
+						>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\DistanceTrigger.cc"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\Trigger.cc"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="gametypes"
@@ -664,6 +676,18 @@
 						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\pawns\Spectator.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="triggers"
+						>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\DistanceTrigger.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\Trigger.h"
 							>
 						</File>
 					</Filter>
