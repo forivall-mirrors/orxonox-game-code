@@ -62,7 +62,7 @@ namespace network
   * Constructor:
   * Initializes all Variables and sets the right objectID
   */
-  Synchronisable::Synchronisable(){
+  Synchronisable::Synchronisable(orxonox::BaseObject* creator){
     RegisterRootObject(Synchronisable);
     static uint32_t idCounter=0;
     objectFrequency_=1;
@@ -70,6 +70,23 @@ namespace network
     objectID=idCounter++;
     classID = (unsigned int)-1;
     syncList = new std::list<synchronisableVariable *>;
+
+    this->creatorID = OBJECTID_UNKNOWN;
+
+    searchcreatorID:
+    if (creator)
+    {
+        if (creator->isA(Class(Synchronisable)))
+        {
+            Synchronisable* synchronisable_creator = dynamic_cast<Synchronisable*>(creator);
+            this->creatorID = synchronisable_creator->getObjectID();
+        }
+        else if (creator != creator->getCreator())
+        {
+            creator = creator->getCreator();
+            goto searchcreatorID;
+        }
+    }
   }
 
   /**
@@ -133,7 +150,17 @@ namespace network
 
     orxonox::Identifier* id = ClassByID(header->classID);
     assert(id);
-    orxonox::BaseObject *bo = id->fabricate(0); //TODO: get BaseObject* from header->creatorID here
+    orxonox::BaseObject* creator = 0;
+    if (header->creatorID != OBJECTID_UNKNOWN)
+    {
+        Synchronisable* synchronisable_creator = Synchronisable::getSynchronisable(header->creatorID);
+        if (!synchronisable_creator)
+            return 0;
+        else
+            creator = dynamic_cast<orxonox::BaseObject*>(synchronisable_creator);
+    }
+    orxonox::BaseObject *bo = id->fabricate(creator);
+    assert(bo);
     Synchronisable *no = dynamic_cast<Synchronisable *>(bo);
     assert(no);
     no->objectID=header->objectID;

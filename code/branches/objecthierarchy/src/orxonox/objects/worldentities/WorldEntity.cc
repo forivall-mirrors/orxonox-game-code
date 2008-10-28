@@ -47,7 +47,7 @@ namespace orxonox
     const Vector3 WorldEntity::DOWN  = Vector3::NEGATIVE_UNIT_Y;
     const Vector3 WorldEntity::UP    = Vector3::UNIT_Y;
 
-    WorldEntity::WorldEntity(BaseObject* creator) : BaseObject(creator)
+    WorldEntity::WorldEntity(BaseObject* creator) : BaseObject(creator), network::Synchronisable(creator)
     {
         RegisterObject(WorldEntity);
 

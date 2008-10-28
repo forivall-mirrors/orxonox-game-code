@@ -157,7 +157,7 @@ bool Gamestate::spreadData(int mode)
     if(!s)
     {
       s = Synchronisable::fabricate(mem, mode);
-      assert(s);
+      return false;
 //       if(!s)
 //         return false;
     }

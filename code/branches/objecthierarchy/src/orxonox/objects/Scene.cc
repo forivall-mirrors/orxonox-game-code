@@ -42,7 +42,7 @@ namespace orxonox
 {
     CreateFactory(Scene);
 
-    Scene::Scene(BaseObject* creator) : BaseObject(creator)
+    Scene::Scene(BaseObject* creator) : BaseObject(creator), network::Synchronisable(creator)
     {
         RegisterObject(Scene);
 
@@ -80,7 +80,7 @@ namespace orxonox
             light->setDirection(1, -0.2, 0.2);
         }
         // test test test
-        
+
         this->registerVariables();
     }
 

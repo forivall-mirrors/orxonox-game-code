@@ -79,7 +79,8 @@ namespace network
     std::map<unsigned int, packet::Gamestate*>::iterator it;
     // now push only the most recent gamestates we received (ignore obsolete ones)
     for(it = gamestateQueue.begin(); it!=gamestateQueue.end(); it++){
-      assert(processGamestate(it->second));
+      bool b = processGamestate(it->second);
+//      assert(b);
       delete it->second;
     }
     // now clear the queue

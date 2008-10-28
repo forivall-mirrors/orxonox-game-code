@@ -111,7 +111,7 @@
     @param ClassName The name of the class
 */
 #define Class(ClassName) \
-    ClassIdentifier<ClassName>::getIdentifier()
+    orxonox::ClassIdentifier<ClassName>::getIdentifier()
 
 /**
     @brief Returns the Identifier with a given name through the factory.

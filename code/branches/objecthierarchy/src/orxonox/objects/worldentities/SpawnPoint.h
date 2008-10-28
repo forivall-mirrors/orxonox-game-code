@@ -59,7 +59,7 @@ namespace orxonox
             Pawn* spawn();
             void spawn(ControllableEntity* entity);
 
-        public:
+        private:
             void setSpawnClassName(const std::string& name);
             inline const std::string& getSpawnClassName() const
                 { return this->spawnclassname_; }
