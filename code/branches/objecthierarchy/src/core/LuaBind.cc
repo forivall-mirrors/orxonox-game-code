@@ -122,7 +122,7 @@ namespace orxonox
     {
       isRunning_ = true;
       int error = 0;
-      std::string init = "local scr = orxonox.LuaBind:getInstance()\nlocal debug = print\nprint = function(s)\nscr:luaPrint(s)\nend\ninclude = function(f)\nfile = io.open(f)\ncontent = file:read(\"*a\")\nfile:close()\nsource = scr:replaceLuaTags(content)\ndebug(source)\nassert(loadstring(source))()\nend\n";
+      std::string init = "local scr = orxonox.LuaBind:getInstance()\nlocal debug = print\nprint = function(s)\nscr:luaPrint(s)\nend\ninclude = function(f)\nfile = assert(io.open(\"" + this->includePath_ + "\"..\"/\"..f))\ncontent = file:read(\"*a\")\nfile:close()\nsource = scr:replaceLuaTags(content)\nassert(loadstring(source))()\nend\n";
       init += luaSource_;
   #if LUA_VERSION_NUM == 501
       error = luaL_loadstring(luaState_, init.c_str());

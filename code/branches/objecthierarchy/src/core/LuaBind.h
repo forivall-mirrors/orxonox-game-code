@@ -78,6 +78,9 @@ namespace orxonox // tolua_export
 
     std::string replaceLuaTags(const std::string& text); // tolua_export
 
+    inline void setIncludePath(const std::string& includepath)
+        { this->includePath_ = includepath; }
+
     private:
       LuaBind();
       static LuaBind* singletonRef;
@@ -86,6 +89,7 @@ namespace orxonox // tolua_export
       std::string output_;
       lua_State* luaState_;
       bool isRunning_;
+      std::string includePath_;
 
   }; // tolua_export
 } // tolua_export

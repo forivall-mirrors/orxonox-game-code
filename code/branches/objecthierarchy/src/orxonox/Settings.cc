@@ -38,6 +38,7 @@
 #include "util/String.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/LuaBind.h"
 
 namespace orxonox
 {
@@ -80,6 +81,8 @@ namespace orxonox
             ModifyConfigValue(dataPath_, set, "/");
             COUT(2) << "Warning: Data path set to \"/\", is that really correct?" << std::endl;
         }
+
+        LuaBind::getInstance()->setIncludePath(this->dataPath_);
     }
 
     /**
