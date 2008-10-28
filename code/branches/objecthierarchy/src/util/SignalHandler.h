@@ -27,14 +27,14 @@
  */
 
 /**
-    @file SignalHandler.h
+    @file
     @brief Declaration of the SignalHandler class.
 */
 
 #ifndef _SignalHandler_H__
 #define _SignalHandler_H__
 
-#include "OrxonoxPrereqs.h"
+#include "UtilPrereqs.h"
 
 #include <list>
 #include <string>
@@ -92,7 +92,7 @@ class SignalHandler
 
 #else /* ORXONOX_PLATFORM == ORXONOX_PLATFORM_WIN32 */
 
-class _OrxonoxExport SignalHandler
+class _UtilExport SignalHandler
 {
   public:
     inline static SignalHandler* getInstance() { if (!SignalHandler::singletonRef) SignalHandler::singletonRef = new SignalHandler(); return SignalHandler::singletonRef; };

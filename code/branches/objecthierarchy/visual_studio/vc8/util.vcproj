@@ -180,6 +180,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\util\SignalHandler.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\util\String.cc"
 				>
 			</File>
@@ -247,6 +251,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\util\OutputHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\util\SignalHandler.h"
 				>
 			</File>
 			<File

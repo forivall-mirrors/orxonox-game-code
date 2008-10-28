@@ -150,6 +150,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\orxonox\CameraHandler.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\GraphicsEngine.cc"
 				>
 			</File>
@@ -185,25 +189,9 @@
 				RelativePath="..\..\src\orxonox\Settings.cc"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\orxonox\SignalHandler.cc"
-				>
-			</File>
 			<Filter
 				Name="objects"
 				>
-				<File
-					RelativePath="..\..\src\orxonox\objects\Camera.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\CameraHandler.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\DistanceTrigger.cc"
-					>
-				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\Radar.cc"
 					>
@@ -225,16 +213,40 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Tickable.cc"
+					RelativePath="..\..\src\orxonox\objects\Test.cc"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Trigger.cc"
+					RelativePath="..\..\src\orxonox\objects\Tickable.cc"
 					>
 				</File>
 				<Filter
 					Name="worldentities"
 					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\Backlight.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\Camera.cc"
+						>
+					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\ControllableEntity.cc"
 						>
@@ -246,6 +258,26 @@
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\MovableEntity.cc"
 						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\ParticleSpawner.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.cc"
@@ -262,6 +294,14 @@
 					<Filter
 						Name="pawns"
 						>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\pawns\Pawn.cc"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\pawns\SpaceShip.cc"
+							>
+						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\pawns\Spectator.cc"
 							>
@@ -518,6 +558,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\..\src\orxonox\CameraHandler.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\orxonox\GraphicsEngine.h"
 				>
 			</File>
@@ -537,25 +581,9 @@
 				RelativePath="..\..\src\orxonox\Settings.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\orxonox\SignalHandler.h"
-				>
-			</File>
 			<Filter
 				Name="objects"
 				>
-				<File
-					RelativePath="..\..\src\orxonox\objects\Camera.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\CameraHandler.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\objects\DistanceTrigger.h"
-					>
-				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\Radar.h"
 					>
@@ -577,16 +605,24 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Tickable.h"
+					RelativePath="..\..\src\orxonox\objects\Test.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\orxonox\objects\Trigger.h"
+					RelativePath="..\..\src\orxonox\objects\Tickable.h"
 					>
 				</File>
 				<Filter
 					Name="worldentities"
 					>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\Backlight.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\Camera.h"
+						>
+					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\ControllableEntity.h"
 						>
@@ -597,6 +633,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\MovableEntity.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\ParticleSpawner.h"
 						>
 					</File>
 					<File
@@ -614,6 +654,14 @@
 					<Filter
 						Name="pawns"
 						>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\pawns\Pawn.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\pawns\SpaceShip.h"
+							>
+						</File>
 						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\pawns\Spectator.h"
 							>

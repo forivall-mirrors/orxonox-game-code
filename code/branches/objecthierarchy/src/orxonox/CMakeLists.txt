@@ -1,9 +1,9 @@
 SET( ORXONOX_SRC_FILES
+  CameraHandler.cc
   GraphicsEngine.cc
   LevelManager.cc
   Main.cc
   Settings.cc
-  SignalHandler.cc
 
   gamestates/GSClient.cc
   gamestates/GSDedicated.cc
@@ -43,7 +43,6 @@ SET( ORXONOX_SRC_FILES
   tools/Timer.cc
   tools/WindowEventListener.cc
 
-  objects/CameraHandler.cc
   objects/Radar.cc
   objects/RadarListener.cc
   objects/RadarViewable.cc

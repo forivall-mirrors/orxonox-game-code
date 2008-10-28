@@ -27,15 +27,14 @@
  */
 
 /**
-    @file SignalHandler.cc
+    @file
     @brief Implementation of the SignalHandler class.
 */
 
-#include "OrxonoxStableHeaders.h"
 #include "SignalHandler.h"
-#include "util/Debug.h"
+#include "Debug.h"
 
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <cstdlib>
 #include <cstring>

@@ -40,7 +40,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "objects/Scene.h"
-#include "objects/CameraHandler.h"
+#include "CameraHandler.h"
 
 namespace orxonox
 {

@@ -7,6 +7,7 @@ SET(UTIL_SRC_FILES
   MultiType.cc
   OutputBuffer.cc
   OutputHandler.cc
+  SignalHandler.cc
   String.cc
   SubString.cc
 )

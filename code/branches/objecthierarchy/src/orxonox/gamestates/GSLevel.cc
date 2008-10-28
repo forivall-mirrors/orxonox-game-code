@@ -40,10 +40,10 @@
 #include "core/CoreIncludes.h"
 #include "core/Core.h"
 //#include "objects/Backlight.h"
-#include "objects/CameraHandler.h"
 #include "objects/Tickable.h"
 #include "objects/Radar.h"
 //#include "tools/ParticleInterface.h"
+#include "CameraHandler.h"
 #include "LevelManager.h"
 #include "Settings.h"
 
