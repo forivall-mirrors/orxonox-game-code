@@ -35,7 +35,7 @@
 #include "core/Template.h"
 
 #include "objects/infos/PlayerInfo.h"
-#include "objects/Camera.h"
+#include "objects/worldentities/Camera.h"
 #include "overlays/OverlayGroup.h"
 
 namespace orxonox

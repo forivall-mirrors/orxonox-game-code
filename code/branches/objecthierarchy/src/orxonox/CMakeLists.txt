@@ -1,5 +1,6 @@
 SET( ORXONOX_SRC_FILES
   GraphicsEngine.cc
+  LevelManager.cc
   Main.cc
   Settings.cc
   SignalHandler.cc
@@ -42,30 +43,27 @@ SET( ORXONOX_SRC_FILES
   tools/Timer.cc
   tools/WindowEventListener.cc
 
-  LevelManager.cc
-
-  objects/Scene.cc
-  objects/worldentities/WorldEntity.cc
-  objects/worldentities/PositionableEntity.cc
-  objects/worldentities/MovableEntity.cc
-  objects/worldentities/ControllableEntity.cc
-
-  objects/worldentities/Model.cc
-
-#  objects/Backlight.cc
-  objects/Camera.cc
   objects/CameraHandler.cc
-#  objects/ParticleSpawner.cc
   objects/Radar.cc
   objects/RadarListener.cc
   objects/RadarViewable.cc
   objects/Tickable.cc
   objects/Test.cc
   objects/Script.cc
-  objects/Trigger.cc
-  objects/DistanceTrigger.cc
 
+  objects/Scene.cc
+  objects/worldentities/WorldEntity.cc
+  objects/worldentities/PositionableEntity.cc
+  objects/worldentities/MovableEntity.cc
+  objects/worldentities/ControllableEntity.cc
+  objects/worldentities/Model.cc
+  objects/worldentities/Camera.cc
   objects/worldentities/SpawnPoint.cc
+#  objects/worldentities/Backlight.cc
+#  objects/worldentities/ParticleSpawner.cc
+
+  objects/worldentities/triggers/Trigger.cc
+  objects/worldentities/triggers/DistanceTrigger.cc
 
   objects/worldentities/pawns/Spectator.cc
   objects/worldentities/pawns/Pawn.cc

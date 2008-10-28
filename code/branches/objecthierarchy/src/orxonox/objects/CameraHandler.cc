@@ -31,7 +31,7 @@
 #include <OgreViewport.h>
 
 #include "core/Core.h"
-#include "Camera.h"
+#include "objects/worldentities/Camera.h"
 
 
 namespace orxonox
