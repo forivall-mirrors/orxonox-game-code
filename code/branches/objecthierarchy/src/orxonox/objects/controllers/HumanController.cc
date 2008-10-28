@@ -66,37 +66,37 @@ namespace orxonox
     void HumanController::moveFrontBack(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->moveFrontBack(value.y);
+            HumanController::localController_s->controllableEntity_->moveFrontBack(value);
     }
 
     void HumanController::moveRightLeft(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->moveRightLeft(value.y);
+            HumanController::localController_s->controllableEntity_->moveRightLeft(value);
     }
 
     void HumanController::moveUpDown(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->moveUpDown(value.y);
+            HumanController::localController_s->controllableEntity_->moveUpDown(value);
     }
 
     void HumanController::rotateYaw(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->rotateYaw(value.y);
+            HumanController::localController_s->controllableEntity_->rotateYaw(value);
     }
 
     void HumanController::rotatePitch(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->rotatePitch(value.y);
+            HumanController::localController_s->controllableEntity_->rotatePitch(value);
     }
 
     void HumanController::rotateRoll(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->rotateRoll(value.y);
+            HumanController::localController_s->controllableEntity_->rotateRoll(value);
     }
 
     void HumanController::fire()

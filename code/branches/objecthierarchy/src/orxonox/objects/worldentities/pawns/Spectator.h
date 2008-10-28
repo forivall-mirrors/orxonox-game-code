@@ -47,13 +47,13 @@ namespace orxonox
             virtual void setPlayer(PlayerInfo* player);
             virtual void startLocalControl();
 
-            virtual void moveFrontBack(float value);
-            virtual void moveRightLeft(float value);
-            virtual void moveUpDown(float value);
+            virtual void moveFrontBack(const Vector2& value);
+            virtual void moveRightLeft(const Vector2& value);
+            virtual void moveUpDown(const Vector2& value);
 
-            virtual void rotateYaw(float value);
-            virtual void rotatePitch(float value);
-            virtual void rotateRoll(float value);
+            virtual void rotateYaw(const Vector2& value);
+            virtual void rotatePitch(const Vector2& value);
+            virtual void rotateRoll(const Vector2& value);
 
             virtual void fire();
             virtual void greet();
@@ -61,6 +61,7 @@ namespace orxonox
         private:
             void changedGreeting();
             void changedFlareVisibility();
+            void updateHUD();
 
             BillboardSet* greetingFlare_;
             bool bGreetingFlareVisible_;
@@ -72,11 +73,6 @@ namespace orxonox
             float yaw_;
             float pitch_;
             float roll_;
-
-            // test test test
-            Mesh* testmesh_;
-            Ogre::SceneNode* testnode_;
-            // test test test
     };
 }
 

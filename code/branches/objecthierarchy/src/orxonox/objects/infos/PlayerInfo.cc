@@ -120,6 +120,7 @@ namespace orxonox
         {
             this->controllableEntityID_ = entity->getObjectID();
             entity->setPlayer(this);
+            this->bReadyToSpawn_ = false;
         }
         else
         {

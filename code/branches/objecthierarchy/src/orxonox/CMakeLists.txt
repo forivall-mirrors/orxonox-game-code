@@ -68,6 +68,8 @@ SET( ORXONOX_SRC_FILES
   objects/worldentities/SpawnPoint.cc
 
   objects/worldentities/pawns/Spectator.cc
+  objects/worldentities/pawns/Pawn.cc
+  objects/worldentities/pawns/SpaceShip.cc
 
   objects/controllers/Controller.cc
   objects/controllers/HumanController.cc

@@ -34,7 +34,11 @@
 #include "objects/worldentities/Model.h"
 #include "objects/Scene.h"
 #include "objects/infos/PlayerInfo.h"
+#include "objects/gametypes/Gametype.h"
 #include "tools/BillboardSet.h"
+#include "overlays/OverlayText.h"
+#include "overlays/OverlayGroup.h"
+#include "util/Convert.h"
 
 namespace orxonox
 {
@@ -53,25 +57,6 @@ namespace orxonox
         this->setHudTemplate("spectatorhud");
 
         this->setDestroyWhenPlayerLeft(true);
-
-        // test test test
-        if (this->getScene()->getSceneManager())
-        {
-            this->testmesh_ = new Mesh();
-            this->testnode_ = this->getNode()->createChildSceneNode();
-            this->testmesh_->setMeshSource(this->getScene()->getSceneManager(), "assff.mesh");
-            if (this->testmesh_->getEntity())
-                this->testnode_->attachObject(this->testmesh_->getEntity());
-            this->testnode_->pitch(Degree(-90));
-            this->testnode_->roll(Degree(+90));
-            this->testnode_->scale(10, 10, 10);
-        }
-        else
-        {
-            this->testmesh_ = 0;
-            this->testnode_ = 0;
-        }
-        // test test test
 
         this->greetingFlare_ = new BillboardSet();
         this->greetingFlare_->setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(1.0, 1.0, 0.8), Vector3(0, 20, 0), 1);
@@ -92,19 +77,6 @@ namespace orxonox
                 this->getNode()->detachObject(this->greetingFlare_->getBillboardSet());
                 delete this->greetingFlare_;
             }
-
-            // test test test
-            {
-                if (this->testmesh_ && this->testnode_)
-                    this->testnode_->detachObject(this->testmesh_->getEntity());
-
-                if (this->testmesh_)
-                    delete this->testmesh_;
-
-                if (this->testnode_)
-                    this->getNode()->removeAndDestroyChild(this->testnode_->getName());
-            }
-            // test test test
         }
     }
 
@@ -129,6 +101,8 @@ namespace orxonox
     {
         if (this->isLocallyControlled())
         {
+            this->updateHUD();
+
             Vector3 velocity = this->getVelocity();
             velocity.normalise();
             this->setVelocity(velocity * this->speed_);
@@ -158,38 +132,38 @@ namespace orxonox
     void Spectator::startLocalControl()
     {
         ControllableEntity::startLocalControl();
-        if (this->isLocallyControlled())
-            this->testmesh_->setVisible(false);
+//        if (this->isLocallyControlled())
+//            this->testmesh_->setVisible(false);
     }
 
-    void Spectator::moveFrontBack(float value)
+    void Spectator::moveFrontBack(const Vector2& value)
     {
-        this->setVelocity(this->getVelocity() + value * this->speed_ * WorldEntity::FRONT);
+        this->setVelocity(this->getVelocity() + value.y * this->speed_ * WorldEntity::FRONT);
     }
 
-    void Spectator::moveRightLeft(float value)
+    void Spectator::moveRightLeft(const Vector2& value)
     {
-        this->setVelocity(this->getVelocity() + value * this->speed_ * WorldEntity::RIGHT);
+        this->setVelocity(this->getVelocity() + value.y * this->speed_ * WorldEntity::RIGHT);
     }
 
-    void Spectator::moveUpDown(float value)
+    void Spectator::moveUpDown(const Vector2& value)
     {
-        this->setVelocity(this->getVelocity() + value * this->speed_ * WorldEntity::UP);
+        this->setVelocity(this->getVelocity() + value.y * this->speed_ * WorldEntity::UP);
     }
 
-    void Spectator::rotateYaw(float value)
+    void Spectator::rotateYaw(const Vector2& value)
     {
-        this->yaw_ = value;
+        this->yaw_ = value.y;
     }
 
-    void Spectator::rotatePitch(float value)
+    void Spectator::rotatePitch(const Vector2& value)
     {
-        this->pitch_ = value;
+        this->pitch_ = value.y;
     }
 
-    void Spectator::rotateRoll(float value)
+    void Spectator::rotateRoll(const Vector2& value)
     {
-        this->roll_ = value;
+        this->roll_ = value.y;
     }
 
     void Spectator::fire()
@@ -207,5 +181,57 @@ namespace orxonox
             this->bGreetingFlareVisible_ = this->bGreeting_;
             this->changedFlareVisibility();
         }
+    }
+
+    void Spectator::updateHUD()
+    {
+        // <hack>
+        if (this->getHUD())
+        {
+            std::string text;
+
+            if (this->getPlayer() && this->getGametype())
+            {
+                if (!this->getGametype()->hasStarted() && !this->getGametype()->isStartCountdownRunning())
+                {
+                    if (!this->getPlayer()->isReadyToSpawn())
+                        text = "Press [Fire] to start the match";
+                    else
+                        text = "Waiting for other players";
+                }
+                else if (!this->getGametype()->hasEnded())
+                {
+                    if (this->getGametype()->isStartCountdownRunning())
+                    {
+                        text = convertToString(ceil(this->getGametype()->getStartCountdown()));
+                    }
+                    else
+                    {
+                        text = "Press [Fire] to respawn";
+                    }
+                }
+                else
+                {
+                    text = "Game has ended";
+                }
+            }
+            else
+            {
+                return;
+            }
+
+            std::map<std::string, OrxonoxOverlay*>::const_iterator it = this->getHUD()->getOverlays().begin();
+            for (; it != this->getHUD()->getOverlays().end(); ++it)
+            {
+                if (it->second->isA(Class(OverlayText)) && it->second->getName() == "state")
+                {
+                    OverlayText* overlay = dynamic_cast<OverlayText*>(it->second);
+                    if (overlay)
+                        overlay->setCaption(text);
+                    break;
+                }
+            }
+        }
+        // </hack>
     }
 }

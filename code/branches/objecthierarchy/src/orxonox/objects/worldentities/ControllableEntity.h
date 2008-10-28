@@ -56,13 +56,13 @@ namespace orxonox
             inline bool getDestroyWhenPlayerLeft() const
                 { return this->bDestroyWhenPlayerLeft_; }
 
-            virtual void moveFrontBack(float value) {}
-            virtual void moveRightLeft(float value) {}
-            virtual void moveUpDown(float value) {}
+            virtual void moveFrontBack(const Vector2& value) {}
+            virtual void moveRightLeft(const Vector2& value) {}
+            virtual void moveUpDown(const Vector2& value) {}
 
-            virtual void rotateYaw(float value) {}
-            virtual void rotatePitch(float value) {}
-            virtual void rotateRoll(float value) {}
+            virtual void rotateYaw(const Vector2& value) {}
+            virtual void rotatePitch(const Vector2& value) {}
+            virtual void rotateRoll(const Vector2& value) {}
 
             virtual void fire() {}
             virtual void altFire() {}
@@ -107,6 +107,11 @@ namespace orxonox
             inline void setAcceleration(float x, float y, float z)
                 { this->acceleration_.x = x; this->acceleration_.y = y; this->acceleration_.z = z; }
 
+            inline Camera* getCamera() const
+                { return this->camera_; }
+            inline OverlayGroup* getHUD() const
+                { return this->hud_; }
+
         protected:
             virtual void startLocalControl();
             virtual void stopLocalControl();
@@ -116,6 +121,8 @@ namespace orxonox
 
             inline bool isLocallyControlled() const
                 { return this->bControlled_; }
+
+            Vector3 acceleration_;
 
         private:
             void overwrite();
@@ -135,7 +142,6 @@ namespace orxonox
             unsigned int client_overwrite_;
 
             Vector3 velocity_;
-            Vector3 acceleration_;
 
             bool bControlled_;
             Vector3 server_position_;

@@ -34,7 +34,7 @@
 #include "core/Identifier.h"
 #include "core/Template.h"
 #include "PositionableEntity.h"
-#include "ControllableEntity.h"
+#include "objects/worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -56,7 +56,7 @@ namespace orxonox
             inline Template* getTemplate() const
                 { return this->template_; }
 
-            ControllableEntity* spawn();
+            Pawn* spawn();
             void spawn(ControllableEntity* entity);
 
         public:
@@ -68,7 +68,7 @@ namespace orxonox
             inline const std::string& getTemplateName() const
                 { return this->templatename_; }
 
-            SubclassIdentifier<ControllableEntity> spawnclass_;
+            SubclassIdentifier<Pawn> spawnclass_;
             std::string spawnclassname_;
             Template* template_;
             std::string templatename_;

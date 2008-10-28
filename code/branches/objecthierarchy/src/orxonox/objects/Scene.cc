@@ -84,14 +84,17 @@ namespace orxonox
 
     Scene::~Scene()
     {
-        if (Ogre::Root::getSingletonPtr())
+        if (this->isInitialized())
         {
-//            this->sceneManager_->destroySceneNode(this->rootSceneNode_->getName()); // TODO: remove getName() for newer versions of Ogre
-            Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
-        }
-        else if (!Core::showsGraphics())
-        {
-            delete this->sceneManager_;
+            if (Ogre::Root::getSingletonPtr())
+            {
+//                this->sceneManager_->destroySceneNode(this->rootSceneNode_->getName()); // TODO: remove getName() for newer versions of Ogre
+                Ogre::Root::getSingleton().destroySceneManager(this->sceneManager_);
+            }
+            else if (!Core::showsGraphics())
+            {
+                delete this->sceneManager_;
+            }
         }
     }
 

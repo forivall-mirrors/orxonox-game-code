@@ -56,7 +56,7 @@ namespace orxonox
         SUPER(SpawnPoint, XMLPort, xmlelement, mode);
 
         XMLPortParam(SpawnPoint, "spawnclass", setSpawnClassName, getSpawnClassName, xmlelement, mode);
-        XMLPortParam(SpawnPoint, "design", setTemplateName, getTemplateName, xmlelement, mode);
+        XMLPortParam(SpawnPoint, "pawndesign", setTemplateName, getTemplateName, xmlelement, mode);
     }
 
     void SpawnPoint::setSpawnClassName(const std::string& name)
@@ -71,14 +71,17 @@ namespace orxonox
         this->template_ = Template::getTemplate(name);
     }
 
-    ControllableEntity* SpawnPoint::spawn()
+    Pawn* SpawnPoint::spawn()
     {
-        ControllableEntity* entity = this->spawnclass_.fabricate(this);
+        Pawn* entity = this->spawnclass_.fabricate(this);
         if (entity)
         {
+            this->getGametype()->pawnPreSpawn(entity);
             this->spawn(entity);
             if (this->template_)
                 entity->addTemplate(this->template_);
+            entity->postSpawn();
+            this->getGametype()->pawnPostSpawn(entity);
         }
         return entity;
     }

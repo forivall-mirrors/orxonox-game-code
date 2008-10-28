@@ -50,6 +50,11 @@ namespace orxonox
 
             virtual void tick(float dt);
 
+            inline bool hasStarted() const
+                { return this->bStarted_; }
+            inline bool hasEnded() const
+                { return this->bEnded_; }
+
             virtual void start();
             virtual void end();
             virtual void playerEntered(PlayerInfo* player);
@@ -57,15 +62,23 @@ namespace orxonox
             virtual void playerSwitched(PlayerInfo* player, Gametype* newgametype);
             virtual void playerSwitchedBack(PlayerInfo* player, Gametype* oldgametype);
             virtual void playerChangedName(PlayerInfo* player);
-            virtual void playerSpawned(PlayerInfo* player);
-            virtual void playerDied(PlayerInfo* player);
+
             virtual void playerScored(PlayerInfo* player);
+
+            virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
+            virtual void pawnPreSpawn(Pawn* pawn);
+            virtual void pawnPostSpawn(Pawn* pawn);
 
             inline const std::set<PlayerInfo*>& getPlayers() const
                 { return this->players_; }
 
             inline void registerSpawnPoint(SpawnPoint* spawnpoint)
                 { this->spawnpoints_.insert(spawnpoint); }
+
+            inline bool isStartCountdownRunning() const
+                { return this->bStartCountdownRunning_; }
+            inline float getStartCountdown() const
+                { return this->startCountdown_; }
 
         private:
             virtual SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
@@ -76,13 +89,21 @@ namespace orxonox
             void assignDefaultPawnsIfNeeded() const;
             void checkStart();
             void spawnPlayer(PlayerInfo* player);
+            void spawnPlayersIfRequested();
+            void spawnDeadPlayersIfRequested();
 
             bool bStarted_;
             bool bEnded_;
             bool bAutoStart_;
+            bool bForceSpawn_;
+
+            float initialStartCountdown_;
+            float startCountdown_;
+            bool bStartCountdownRunning_;
+
             std::set<PlayerInfo*> players_;
             std::set<SpawnPoint*> spawnpoints_;
-            SubclassIdentifier<ControllableEntity> defaultPawn_;
+            SubclassIdentifier<ControllableEntity> defaultControllableEntity_;
     };
 }
 

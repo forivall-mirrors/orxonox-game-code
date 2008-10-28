@@ -148,7 +148,10 @@ namespace orxonox
         if (it != Template::getTemplateMap().end())
             return it->second;
         else
+        {
+            COUT(2) << "Warning: Template with name " << name << " doesn't exist." << std::endl;
             return 0;
+        }
     }
 
     void Template::apply(const std::string& name, BaseObject* object)

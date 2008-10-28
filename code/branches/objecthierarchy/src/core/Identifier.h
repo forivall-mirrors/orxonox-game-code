@@ -486,15 +486,23 @@ namespace orxonox
             */
             SubclassIdentifier<T>& operator=(Identifier* identifier)
             {
-                if (!identifier->isA(ClassIdentifier<T>::getIdentifier()))
+                if (!identifier || !identifier->isA(ClassIdentifier<T>::getIdentifier()))
                 {
                     COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
-                    COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!" << std::endl;
-                    COUT(1) << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
-                    COUT(1) << "Aborting..." << std::endl;
-                    abort();
+                    if (identifier)
+                    {
+                        COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!" << std::endl;
+                        COUT(1) << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
+                    }
+                    else
+                    {
+                        COUT(1) << "Error: Can't assign NULL identifier" << std::endl;
+                    }
                 }
-                this->identifier_ = identifier;
+                else
+                {
+                    this->identifier_ = identifier;
+                }
                 return *this;
             }
 

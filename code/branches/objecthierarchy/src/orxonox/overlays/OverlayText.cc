@@ -64,11 +64,11 @@ namespace orxonox
             this->background_->addChild(this->text_);
         }
 
-        XMLPortParam(OverlayText, "font",     setFont,     getFont,     xmlElement, mode).defaultValues("Monofur");
-        XMLPortParam(OverlayText, "colour",   setColour,   getColour,   xmlElement, mode).defaultValues(ColourValue(1.0, 1.0, 1.0, 1.0));
-        XMLPortParam(OverlayText, "caption",  setCaption,  getCaption,  xmlElement, mode).defaultValues("");
-        XMLPortParam(OverlayText, "textSize", setTextSize, getTextSize, xmlElement, mode).defaultValues(1.0f);
-        XMLPortParamTemplate(OverlayText, "align", setAlignment, getAlignment, xmlElement, mode, const std::string&).defaultValues("left");
+        XMLPortParam(OverlayText, "font",     setFont,            getFont,            xmlElement, mode).defaultValues("Monofur");
+        XMLPortParam(OverlayText, "colour",   setColour,          getColour,          xmlElement, mode).defaultValues(ColourValue(1.0, 1.0, 1.0, 1.0));
+        XMLPortParam(OverlayText, "caption",  setCaption,         getCaption,         xmlElement, mode).defaultValues("");
+        XMLPortParam(OverlayText, "textSize", setTextSize,        getTextSize,        xmlElement, mode).defaultValues(1.0f);
+        XMLPortParam(OverlayText, "align",    setAlignmentString, getAlignmentString, xmlElement, mode).defaultValues("left");
     }
 
     void OverlayText::setFont(const std::string& font)
@@ -105,7 +105,15 @@ namespace orxonox
             this->text_->setAlignment(alignment);
     }
 
-    void OverlayText::setAlignment(const std::string& alignment)
+    Ogre::TextAreaOverlayElement::Alignment OverlayText::getAlignment() const
+    {
+        if (this->text_)
+            return this->text_->getAlignment();
+        else
+            return Ogre::TextAreaOverlayElement::Left;
+    }
+
+    void OverlayText::setAlignmentString(const std::string& alignment)
     {
         if (alignment == "right")
             this->setAlignment(Ogre::TextAreaOverlayElement::Right);
@@ -115,7 +123,7 @@ namespace orxonox
             this->setAlignment(Ogre::TextAreaOverlayElement::Left);
     }
 
-    std::string OverlayText::getAlignment() const
+    std::string OverlayText::getAlignmentString() const
     {
         if (this->text_)
         {

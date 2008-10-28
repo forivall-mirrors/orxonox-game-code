@@ -54,6 +54,12 @@ namespace orxonox
         RegisterObject(OverlayGroup);
     }
 
+    OverlayGroup::~OverlayGroup()
+    {
+        for (std::map<std::string, OrxonoxOverlay*>::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
+            delete it->second;
+    }
+
     /**
     @brief
         Loads the group and all its children OrxonoxOverlays.
