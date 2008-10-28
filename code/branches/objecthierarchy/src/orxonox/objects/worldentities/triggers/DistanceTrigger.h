@@ -45,12 +45,19 @@ namespace orxonox {
     public:
       DistanceTrigger(BaseObject* creator);
       ~DistanceTrigger();
-      void addTarget(Ogre::Node* targetNode);
-      void removeTarget(Ogre::Node* targetNode);
-      void addTargets(const std::string& targets);
-      void removeTargets(const std::string& targets);
-      void setDistance(float dist);
+
       virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+
+      void addTarget(Ogre::Node* targetNode);
+      void addTargets(const std::string& targets);
+      void removeTarget(Ogre::Node* targetNode);
+      void removeTargets(const std::string& targets);
+
+      inline void setDistance(float distance)
+        { this->distance_ = distance; }
+      inline float getDistance() const
+        { return this->distance_; }
+
       bool checkDistance();
 
     protected:

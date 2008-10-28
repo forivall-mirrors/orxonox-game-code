@@ -40,11 +40,20 @@ namespace orxonox {
   {
     RegisterObject(DistanceTrigger);
 
-    targetMask_.exclude(Class(BaseObject));
+    this->distance_ = 100;
+    this->targetMask_.exclude(Class(BaseObject));
   }
 
   DistanceTrigger::~DistanceTrigger()
   {
+  }
+
+  void DistanceTrigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+  {
+    SUPER(DistanceTrigger, XMLPort, xmlelement, mode);
+
+    XMLPortParam(DistanceTrigger, "distance", setDistance, getDistance, xmlelement, mode).defaultValues(100.0f);
+    XMLPortParamLoadOnly(DistanceTrigger, "target", addTargets, xmlelement, mode);
   }
 
   void DistanceTrigger::addTarget(Ogre::Node* targetNode)
@@ -60,7 +69,7 @@ namespace orxonox {
       COUT(2) << "Warning: Node " << targetNode << " did not exist in targetSet of trigger " << this << " !" << std::endl;
       COUT(4) << "Content of targetSet of trigger " << this << " :" << std::endl;
       std::set<Ogre::Node*>::iterator it;
-      for(it = this->targetSet_.begin(); it != this->targetSet_.end(); it++)
+      for (it = this->targetSet_.begin(); it != this->targetSet_.end(); ++it)
       {
         COUT(4) << *it << std::endl;
       }
@@ -86,38 +95,23 @@ namespace orxonox {
   bool DistanceTrigger::checkDistance()
   {
     // Iterate through all WorldEntities
-    for(Iterator<WorldEntity> it = ObjectList<WorldEntity>::begin(); it; it++)
+    for (Iterator<WorldEntity> it = ObjectList<WorldEntity>::begin(); it; ++it)
     {
       // check if WorldEntity is a target
-      if(targetMask_.isIncluded(it->getIdentifier()))
+      if (targetMask_.isIncluded(it->getIdentifier()))
       {
         Vector3 distanceVec = it->getNode()->getWorldPosition() - this->getNode()->getWorldPosition();
         if (distanceVec.length() < this->distance_)
-        {
           return true;
-        }
       }
     }
     return false;
 
   }
 
-  void DistanceTrigger::setDistance(float dist)
-  {
-    this->distance_ = dist;
-  }
-
-  void DistanceTrigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
-  {
-    Trigger::XMLPort(xmlelement, mode);
-
-    XMLPortParamLoadOnly(DistanceTrigger, "distance", setDistance, xmlelement, mode);
-    XMLPortParamLoadOnly(DistanceTrigger, "target", addTargets, xmlelement, mode);
-  }
-
   bool DistanceTrigger::isTriggered(TriggerMode mode)
   {
-    if(Trigger::isTriggered(mode))
+    if (Trigger::isTriggered(mode))
       return checkDistance();
     else
       return false;

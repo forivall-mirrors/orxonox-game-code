@@ -37,8 +37,8 @@
 #include "objects/worldentities/PositionableEntity.h"
 #include "tools/BillboardSet.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
   enum TriggerMode
   {
     TM_EventTriggerAND,
@@ -58,54 +58,75 @@ namespace orxonox {
       inline bool isActive() const
         { return bActive_; }
 
-      void addTrigger(Trigger* trig);
+      void addTrigger(Trigger* trigger);
       const Trigger* getTrigger(unsigned int index) const;
 
-      inline TriggerMode getMode() const
-        { return mode_; }
+      void setMode(const std::string& modeName);
       inline void setMode(TriggerMode mode)
         { this->mode_ = mode; }
-      void setMode(const std::string& modeName);
+      inline TriggerMode getMode() const
+        { return mode_; }
 
-      inline void setInvert(int invert)
-        { bInvertMode_ = invert; }
-      inline void setStayOn(int stayOn)
-        { this->bStayOn_ = (stayOn == 1) ? true : false; }
+      inline void setInvert(bool bInvert)
+        { this->bInvertMode_ = bInvert; }
+      inline bool getInvert() const
+        { return this->bInvertMode_; }
+
+      inline void setSwitch(bool bSwitch)
+        { this->bSwitch_ = bSwitch; }
+      inline bool getSwitch() const
+        { return this->bSwitch_; }
+
+      inline void setStayActive(bool bStayActive)
+        { this->bStayActive_ = bStayActive; }
+      inline bool getStayActive() const
+        { return this->bStayActive_; }
+
       inline void setActivations(int activations)
         { this->remainingActivations_ = activations; }
+      inline int getActivations() const
+        { return this->remainingActivations_; }
+
       void setDelay(float delay);
+      inline float getDelay() const
+        { return this->delay_; }
+
       bool switchState();
 
       static void debugFlares(bool bVisible);
       virtual void changedVisibility();
-
-    private:
-      void init();
-      bool checkAnd();
-      bool checkOr();
-      bool checkXor();
-      void setBillboardColour(ColourValue colour);
-      void storeState();
 
     protected:
       inline bool isTriggered() { return this->isTriggered(this->mode_); }
       virtual bool isTriggered(TriggerMode mode);
 
     private:
-      std::set<Trigger*> children_;
-      std::queue<std::pair<float,char> > stateChanges_;
-      float remainingTime_;
-      float timeSinceLastEvent_;
-      TriggerMode mode_;
+      bool checkAnd();
+      bool checkOr();
+      bool checkXor();
+      void setBillboardColour(const ColourValue& colour);
+      void storeState();
+      std::string getModeString() const;
+
       bool bActive_;
-      bool bInvertMode_;
       bool bTriggered_;
-      bool bUpdating_;
-      BillboardSet debugBillboard_;
+
+      TriggerMode mode_;
+      bool bInvertMode_;
+      bool bSwitch_;
+      bool bStayActive_;
       float delay_;
       int remainingActivations_;
-      bool bStayOn_;
+
       char latestState_;
+      float remainingTime_;
+      float timeSinceLastEvent_;
+
+//      bool bUpdating_;
+      BillboardSet debugBillboard_;
+
+      std::set<Trigger*> children_;
+      std::queue<std::pair<float, char> > stateChanges_;
   };
 
 }
