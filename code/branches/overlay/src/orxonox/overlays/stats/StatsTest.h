@@ -26,41 +26,23 @@
  *
  */
 
-#ifndef _OverlayText_H__
-#define _OverlayText_H__
+#ifndef _StatsTest_H__
+#define _StatsTest_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include <string>
-#include <OgrePrerequisites.h>
-#include <OgreTextAreaOverlayElement.h>
-#include "OrxonoxOverlay.h"
+#include "overlays/OrxonoxOverlay.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport OverlayText : public OrxonoxOverlay
+    class _OrxonoxExport StatsTest : public OrxonoxOverlay, public Tickable
     {
     public:
-        OverlayText();
-        virtual ~OverlayText();
+        StatsTest();
+        ~StatsTest();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-
-        void setCaption(const std::string& caption) { this->text_->setCaption(caption); }
-        std::string getCaption() const              { return this->text_->getCaption(); }
-
-        void setFont(const std::string& font);
-        const std::string& getFont() const;
-
-        void setTextSize(float size) { this->setSize(Vector2(size, size)); }
-        float getTextSize() const    { return this->getSize().y; }
-
-    protected:
-        virtual void sizeChanged();
-
-    private:
-
-        Ogre::TextAreaOverlayElement* text_;
+        virtual void tick(float dt);
     };
 }
-#endif /* _OverlayText_H__ */
+#endif /* _StatsTest_H__ */

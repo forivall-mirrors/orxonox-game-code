@@ -59,6 +59,30 @@ namespace orxonox
         , background_(0)
     {
         RegisterObject(OrxonoxOverlay);
+
+        // add this overlay to the static map of OrxonoxOverlays
+        if (overlays_s.find(this->getName()) != overlays_s.end())
+        {
+            COUT(1) << "Overlay names should be unique or you cannnot access them via console." << std::endl;
+        }
+        overlays_s[this->getName()] = this;
+
+        // create the Ogre::Overlay
+        overlay_ = Ogre::OverlayManager::getSingleton().create("OrxonoxOverlay_overlay_"
+            + convertToString(hudOverlayCounter_s++));
+
+        // create background panel (can be used to show any picture)
+        this->background_ = static_cast<Ogre::PanelOverlayElement*>(
+            Ogre::OverlayManager::getSingleton().createOverlayElement("Panel",
+            "OrxonoxOverlay_background_" + convertToString(hudOverlayCounter_s++)));
+        this->overlay_->add2D(this->background_);
+
+        // We'll have to get the aspect ratio manually for the first time. Afterwards windowResized() gets
+        // called automatically by the GraphicsEngine.
+        this->windowResized(GraphicsEngine::getInstance().getWindowWidth(),
+            GraphicsEngine::getInstance().getWindowHeight());
+
+        this->changedVisibility();
     }
 
     /**
@@ -92,33 +116,6 @@ namespace orxonox
     void OrxonoxOverlay::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         SUPER(OrxonoxOverlay, XMLPort, xmlElement, mode);
-
-        if (mode == XMLPort::LoadObject)
-        {
-            // add this overlay to the static map of OrxonoxOverlays
-            if (overlays_s.find(this->getName()) != overlays_s.end())
-            {
-                COUT(1) << "Overlay names should be unique or you cannnot access them via console." << std::endl;
-            }
-            overlays_s[this->getName()] = this;
-
-            // create the Ogre::Overlay
-            overlay_ = Ogre::OverlayManager::getSingleton().create("OrxonoxOverlay_overlay_"
-                + convertToString(hudOverlayCounter_s++));
-
-            // create background panel (can be used to show any picture)
-            this->background_ = static_cast<Ogre::PanelOverlayElement*>(
-                Ogre::OverlayManager::getSingleton().createOverlayElement("Panel",
-                "OrxonoxOverlay_background_" + convertToString(hudOverlayCounter_s++)));
-            this->overlay_->add2D(this->background_);
-
-            // We'll have to get the aspect ratio manually for the first time. Afterwards windowResized() gets
-            // called automatically by the GraphicsEngine.
-            this->windowResized(GraphicsEngine::getInstance().getWindowWidth(),
-                GraphicsEngine::getInstance().getWindowHeight());
-
-            this->changedVisibility();
-        }
 
         XMLPortParam(OrxonoxOverlay, "size",      setSize,      getSize,      xmlElement, mode)
             .defaultValues(Vector2(1.0f, 1.0f));

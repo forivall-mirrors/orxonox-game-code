@@ -69,6 +69,7 @@ namespace orxonox
         Radar*                radar_;            //!< represents the Radar (not the HUD part)
         Level*                startLevel_;       //!< current hard coded default level
         Level*                hud_;              //!< 'level' object fo the HUD
+        Level*                stats_;            //!< 'level' object fo the stats overlay
 
         // config values
         std::string           keyDetectorCallbackCode_;

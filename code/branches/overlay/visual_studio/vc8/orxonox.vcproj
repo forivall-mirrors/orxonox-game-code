@@ -440,6 +440,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="stats"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\StatsTest.cc"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="gui"
@@ -747,6 +755,14 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\overlays\debug\DebugRTRText.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="stats"
+					>
+					<File
+						RelativePath="..\..\src\orxonox\overlays\stats\StatsTest.h"
 						>
 					</File>
 				</Filter>

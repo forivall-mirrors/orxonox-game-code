@@ -30,7 +30,6 @@
 #include "OverlayText.h"
 
 #include <OgreOverlayManager.h>
-#include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
 
 #include "util/String.h"
@@ -45,26 +44,23 @@ namespace orxonox
         : text_(0)
     {
         RegisterObject(OverlayText);
+
+        this->text_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("TextArea", "OverlayText_text_" + getUniqueNumberStr()));
+        this->text_->setCharHeight(1.0);
+
+        this->background_->addChild(this->text_);
     }
 
     OverlayText::~OverlayText()
     {
-        if (this->text_)
+        if (this->isInitialized())
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->text_);
     }
 
     void OverlayText::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         SUPER(OverlayText, XMLPort, xmlElement, mode);
-
-        if (mode == XMLPort::LoadObject)
-        {
-            this->text_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("TextArea", "OverlayText_text_" + getUniqueNumberStr()));
-            this->text_->setCharHeight(1.0);
-
-            this->background_->addChild(this->text_);
-        }
 
         XMLPortParam(OverlayText, "font",     setFont,     getFont,     xmlElement, mode).defaultValues("Monofur");
         XMLPortParam(OverlayText, "caption",  setCaption,  getCaption,  xmlElement, mode).defaultValues("");
@@ -73,16 +69,13 @@ namespace orxonox
 
     void OverlayText::setFont(const std::string& font)
     {
-        if (this->text_ && font != "")
+        if (font != "")
             this->text_->setFontName(font);
     }
 
     const std::string& OverlayText::getFont() const
     {
-        if (this->text_)
-            return this->text_->getFontName();
-        else
-            return blankString;
+        return this->text_->getFontName();
     }
 
     void OverlayText::sizeChanged()

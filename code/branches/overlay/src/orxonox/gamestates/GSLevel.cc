@@ -57,6 +57,7 @@ namespace orxonox
         , radar_(0)
         , startLevel_(0)
         , hud_(0)
+        , stats_(0)
     {
         RegisterObject(GSLevel);
         setConfigValues();
@@ -93,6 +94,11 @@ namespace orxonox
         hud_ = new Level(Settings::getDataPath() + "overlay/hud.oxo");
         Loader::load(hud_);
 
+        // Load statistics
+        COUT(3) << "Orxonox: Loading statistics overlay" << std::endl;
+        stats_ = new Level(Settings::getDataPath() + "overlay/stats.oxo");
+        Loader::load(stats_);
+
         // reset game speed to normal
         timeFactor_ = 1.0f;
 
@@ -114,6 +120,9 @@ namespace orxonox
     {
         Loader::unload(hud_);
         delete this->hud_;
+
+        Loader::unload(stats_);
+        delete this->stats_;
 
         // this call will delete every BaseObject!
         // But currently this will call methods of objects that exist no more
