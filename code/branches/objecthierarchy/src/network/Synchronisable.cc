@@ -153,11 +153,14 @@ namespace network
     orxonox::BaseObject* creator = 0;
     if (header->creatorID != OBJECTID_UNKNOWN)
     {
-        Synchronisable* synchronisable_creator = Synchronisable::getSynchronisable(header->creatorID);
-        if (!synchronisable_creator)
-            return 0;
-        else
-            creator = dynamic_cast<orxonox::BaseObject*>(synchronisable_creator);
+      Synchronisable* synchronisable_creator = Synchronisable::getSynchronisable(header->creatorID);
+      if (!synchronisable_creator)
+      {
+        mem += header->size; //.TODO: this suckz.... remove size from header
+        return 0;
+      }
+      else
+        creator = dynamic_cast<orxonox::BaseObject*>(synchronisable_creator);
     }
     orxonox::BaseObject *bo = id->fabricate(creator);
     assert(bo);
@@ -169,7 +172,7 @@ namespace network
     COUT(3) << "fabricate objectID: " << no->objectID << " classID: " << no->classID << std::endl;
           // update data and create object/entity...
     bool b = no->updateData(mem, mode, true);
-//    assert(b);
+    assert(b);
     if (b)
     {
         b = no->create();

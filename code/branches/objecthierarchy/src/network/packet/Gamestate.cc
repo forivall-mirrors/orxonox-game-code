@@ -156,15 +156,12 @@ bool Gamestate::spreadData(int mode)
     s = Synchronisable::getSynchronisable( objectheader->objectID );
     if(!s)
     {
-      s = Synchronisable::fabricate(mem, mode);
-      return false;
-//       if(!s)
-//         return false;
+      Synchronisable::fabricate(mem, mode);
     }
     else
     {
       bool b = s->updateData(mem, mode);
-//      assert(b);
+      assert(b);
       //if(!s->updateData(mem, mode))
         //return false;
     }
