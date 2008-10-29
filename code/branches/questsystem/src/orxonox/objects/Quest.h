@@ -79,13 +79,13 @@ namespace orxonox {
 	    bool setParentQuest(Quest* quest); //!< Sets the parent quest of the quest.
 	    bool addSubQuest(Quest* quest); //!< Adds a sub quest to the quest.
 	    
-	    inline bool isInactive(Player* player) //!< Returns true if the quest status for the specific player is 'inactive'.
+	    inline bool isInactive(const Player* player) const //!< Returns true if the quest status for the specific player is 'inactive'.
 	       { return this->getStatus(player) == questStatus::inactive; }
-	    inline bool isActive(Player* player) //!< Returns true if the quest status for the specific player is 'active'.
+	    inline bool isActive(const Player* player) const //!< Returns true if the quest status for the specific player is 'active'.
 	       { return this->getStatus(player) == questStatus::active; }
-	    inline bool isFailed(Player* player) //!< Returns true if the quest status for the specific player is 'failed'.
+	    inline bool isFailed(const Player* player) const //!< Returns true if the quest status for the specific player is 'failed'.
 	       { return this->getStatus(player) == questStatus::failed; }
-	    inline bool isCompleted(Player* player) //!< Returns true if the quest status for the specific player is 'completed'.
+	    inline bool isCompleted(const Player* player) const //!< Returns true if the quest status for the specific player is 'completed'.
 	       { return this->getStatus(player) == questStatus::completed; }
                 
 	    bool start(Player* player); //!< Sets a quest to active.
@@ -97,12 +97,12 @@ namespace orxonox {
         protected:
             void initialize(void); //!< Initialized the object.
             
-            virtual bool isStartable(Player* player) = 0; //!< Checks whether the quest can be started.
-            virtual bool isFailable(Player* player) = 0; //!< Checks whether the quest can be failed.
-            virtual bool isCompletable(Player* player) = 0; //!< Checks whether the quest can be completed.
+            virtual bool isStartable(const Player* player) const = 0; //!< Checks whether the quest can be started.
+            virtual bool isFailable(const Player* player) const = 0; //!< Checks whether the quest can be failed.
+            virtual bool isCompletable(const Player* player) const = 0; //!< Checks whether the quest can be completed.
             
             //TDO: Get the parameter const...
-            virtual questStatus::Enum getStatus(const Player* player) = 0; //!< Returns the status of the quest for a specific player.
+            virtual questStatus::Enum getStatus(const Player* player) const = 0; //!< Returns the status of the quest for a specific player.
             virtual bool setStatus(Player* player, const questStatus::Enum & status) = 0; //!< Changes the status for a specific player.
             
             Quest* parentQuest_; //!< Pointer to the parent quest.

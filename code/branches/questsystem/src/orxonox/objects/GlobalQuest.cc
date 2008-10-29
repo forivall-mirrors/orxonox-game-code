@@ -71,7 +71,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be started, false if not.
     */
-    bool GlobalQuest::isStartable(Player* player)
+    bool GlobalQuest::isStartable(const Player* player) const
     {
         return this->isInactive(player) || this->isActive(player);
     }
@@ -84,7 +84,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be failed, false if not.
     */
-    bool GlobalQuest::isFailable(Player* player)
+    bool GlobalQuest::isFailable(const Player* player) const
     {
         return this->isActive(player);
     }
@@ -97,7 +97,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be completed, false if not.
     */
-    bool GlobalQuest::isCompletable(Player* player)
+    bool GlobalQuest::isCompletable(const Player* player) const
     {
         return this->isActive(player);
     }
@@ -108,7 +108,7 @@ namespace orxonox {
     @param player
         The player.
     */
-    questStatus::Enum GlobalQuest::getStatus(const Player* player)
+    questStatus::Enum GlobalQuest::getStatus(const Player* player) const
     {
         //TDO: Does this really work???
         std::set<Player*>::const_iterator it = this->players_.find((Player*)(void*)player);

@@ -76,6 +76,7 @@ SET( ORXONOX_SRC_FILES
   objects/QuestHint.cc
   objects/QuestItem.cc
   objects/QuestManager.cc
+  objects/Rewardable.cc
 
   tolua/tolua_bind.cc
 )

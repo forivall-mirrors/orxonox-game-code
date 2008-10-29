@@ -71,7 +71,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be started, false if not.
     */
-    bool LocalQuest::isStartable(Player* player)
+    bool LocalQuest::isStartable(const Player* player) const
     {
         return this->isInactive(player);
     }
@@ -84,7 +84,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be failed, false if not.
     */
-    bool LocalQuest::isFailable(Player* player)
+    bool LocalQuest::isFailable(const Player* player) const
     {
         return this->isActive(player);
     }
@@ -97,7 +97,7 @@ namespace orxonox {
     @return
         Returns true if the quest can be completed, false if not.
     */
-    bool LocalQuest::isCompletable(Player* player)
+    bool LocalQuest::isCompletable(const Player* player) const
     {
         return this->isActive(player);
     }
@@ -110,7 +110,7 @@ namespace orxonox {
     @return
         Returns the status of the quest for the input player.
     */
-    questStatus::Enum LocalQuest::getStatus(const Player* player)
+    questStatus::Enum LocalQuest::getStatus(const Player* player) const
     {
         std::map<Player*, questStatus::Enum>::const_iterator it = this->playerStatus_.find((Player*)(void*)player); //Thx. to x3n for the (Player*)(void*) 'hack'.
 	if (it != this->playerStatus_.end())

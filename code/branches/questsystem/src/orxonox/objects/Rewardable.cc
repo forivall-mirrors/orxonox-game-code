@@ -32,8 +32,6 @@
 
 namespace orxonox {
 
-    CreateFactory(Rewardable);
-
     Rewardable::Rewardable() : BaseObject()
     {
         RegisterObject(Rewardable);
