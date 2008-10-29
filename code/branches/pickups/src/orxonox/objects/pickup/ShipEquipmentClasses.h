@@ -21,16 +21,18 @@ namespaces orxonox{
 	
 	class _OrxonoxExport ShipEquipment{
 	public:
-		void AddItem(Shipitem toAddItem);
-		void RemoveItem(Shipitem toRemoveItem);
-		bool CheckifValid(Shipitem toBeChecked);
-		int 
+		void AddItem(Shipitem* toAddItem);
+		void RemoveItem(Shipitem* toRemoveItem);
+		bool CheckifValid(Shipitem* toBeChecked);
+		bool CheckifSpace();
 	private:
-		std::map<std::string, Item*> Shipitems;
-		
-				
+		multimap<std::string, ShipItem*> Equipment;
+		multimap<std::string, ShipItem*> Usable;
+		multimap<std::string, ShipItem*> Trunk;
 	
 
+
+}
 
 
 

@@ -19,9 +19,11 @@ Class _OrxonoxExport ShipItem{
 
 	public:
 		itemType CheckType();
+		virtual
 
 	private:
 		itemType type;
+		string itemname;
 	};
 
 
@@ -40,10 +42,10 @@ Class _OrxonoxExport Useable : public ShipItem{
 			};
 
 			public:
-				subItemTypeUseable CheckSubType();
+				//subItemTypeUseable CheckSubType();
 
 			private:
-				subItemTypeUseable subtype;
+				subItemTypeUseable subtype_usable;
 };
 
 /* Permanents are Items, that effect the Player or his Ship from the instance he picks them up
@@ -60,13 +62,13 @@ Class _OrxonoxExport Permanent : public ShipItem{
 				subItemTypePermanent CheckSubType();
 
 			private:
-				subItemTypePermanent subtype;
+				subItemTypePermanent subtype_permanent;
 };
 
 // Powerups effect the Player right after he picks them up for a certain Duration /or permanently.
 Class _OrxonoxExport Powerups : public ShipItem{
 
-	enum subItemTypePowerups{ //Diffrent Types of Items of the Type Powerups
+	enum subItem TypePowerups{ //Diffrent Types of Items of the Type Powerups
 			Weapon,
 			Boosters,
 			Shields,
@@ -75,10 +77,10 @@ Class _OrxonoxExport Powerups : public ShipItem{
 			Trigger
 			};
 			public:
-			subItemTypePowerups CheckSubType();
+			//subItemTypePowerups CheckSubType();
 
 			private:
-			subItemTypePowerups subtype;
+			subItemTypePowerups subtype_powerups;
 };
 
 }
