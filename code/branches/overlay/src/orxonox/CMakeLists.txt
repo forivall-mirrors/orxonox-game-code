@@ -33,6 +33,8 @@ SET( ORXONOX_SRC_FILES
   overlays/hud/HUDRadar.cc
   overlays/hud/HUDSpeedBar.cc
 
+  overlays/stats/Stats.cc
+
   tools/BillboardSet.cc
   tools/Light.cc
   tools/Mesh.cc
