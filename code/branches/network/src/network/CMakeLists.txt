@@ -11,6 +11,7 @@ SET( NETWORK_SRC_FILES
   PacketBuffer.cc
   Server.cc
   Synchronisable.cc
+  TrafficControl.cc
   Host.cc
   packet/Packet.cc
   packet/Chat.cc
