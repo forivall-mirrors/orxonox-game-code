@@ -49,6 +49,22 @@ namespace orxonox
     {
  	   RegisterObject(HelloBullet);
   	   COUT(0) << "HelloBullet loaded" << std::endl ;
+           int maxProxies = 1024
+
+
+ 	   btVector3 worldAabbMin(-10000,-10000,-10000);
+	   btVector3 worldAabbMax(10000,10000,10000);
+    	   btAxisSweep3* broadphase = new btAxisSweep3(worldAabbMin,worldAabbMax,maxProxies);
+
+	    // Set up the collision configuration and dispatcher
+            btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+            btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+
+            // The actual physics solver
+            btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+
+            // The world.
+            btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
     }
 
     HelloBullet::~HelloBullet()
