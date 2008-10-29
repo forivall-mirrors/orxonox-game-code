@@ -237,6 +237,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             }
             else if (this->bControlled_)
             {
+                COUT(2) << "setting client position" << endl;
                 this->client_velocity_ = this->velocity_;
                 this->client_position_ = this->node_->getPosition();
             }
@@ -296,6 +297,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
+            COUT(2) << "callback: setting client position" << endl;
             this->node_->setPosition(this->client_position_);
             this->server_position_ = this->client_position_;
         }

@@ -61,8 +61,9 @@
 
 namespace network
 {
-  const int MAX_FAILURES = 20;
-  const int NETWORK_FREQUENCY = 30;
+  const unsigned int MAX_FAILURES = 20;
+  const unsigned int NETWORK_FREQUENCY = 25;
+  const float NETWORK_PERIOD = (float)1/NETWORK_FREQUENCY;
 
   /**
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY
@@ -152,8 +153,8 @@ namespace network
     processQueue();
     //this steers our network frequency
     timeSinceLastUpdate_+=time;
-    if(timeSinceLastUpdate_>=(1./NETWORK_FREQUENCY)){
-      timeSinceLastUpdate_=(float)((int)(timeSinceLastUpdate_*NETWORK_FREQUENCY))/timeSinceLastUpdate_;
+    if(timeSinceLastUpdate_>=NETWORK_PERIOD){
+      timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
       gamestates_->processGamestates();
       updateGamestate();
     }
