@@ -244,11 +244,27 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\Billboard.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\BlinkingBillboard.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Camera.cc"
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\CameraPosition.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\ControllableEntity.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\Light.cc"
 						>
 					</File>
 					<File
@@ -366,10 +382,6 @@
 				>
 				<File
 					RelativePath="..\..\src\orxonox\tools\BillboardSet.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\tools\Light.cc"
 					>
 				</File>
 				<File
@@ -632,11 +644,27 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\Billboard.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\BlinkingBillboard.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\Camera.h"
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\CameraPosition.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\ControllableEntity.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\Light.h"
 						>
 					</File>
 					<File
@@ -734,10 +762,6 @@
 				>
 				<File
 					RelativePath="..\..\src\orxonox\tools\BillboardSet.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\orxonox\tools\Light.h"
 					>
 				</File>
 				<File
