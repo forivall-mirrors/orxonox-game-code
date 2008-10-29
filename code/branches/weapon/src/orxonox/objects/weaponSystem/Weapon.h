@@ -45,10 +45,10 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void addMunition();
-            void fire();
+            virtual void fire();
 
         private:
-                        int loadingTime;
+            int loadingTime;
             Munition *munition_;
 
 

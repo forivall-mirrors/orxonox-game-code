@@ -42,13 +42,15 @@ namespace orxonox
     class _OrxonoxExport WeaponSet : public BaseObject
     {
         public:
-            WeaponSet();
+            WeaponSet(int k);
             virtual ~WeaponSet();
 
             virtual void WeaponSet::XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void WeaponSet::attachWeaponSlot(WeaponSlot *wSlot);
             void WeaponSet::fire();
+            WeaponSlot * getWeaponSlotPointer(int n);
+
             inline void WeaponSet::setParentWeaponSystem(WeaponSystem *parentWeaponSystem)
                 { parentWeaponSystem_=parentWeaponSystem; }
             inline WeaponSystem * getParentWeaponSystem()

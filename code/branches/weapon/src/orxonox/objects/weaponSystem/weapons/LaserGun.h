@@ -34,6 +34,7 @@
 #include "core/BaseObject.h"
 
 #include "LaserGunMunition.h"
+#include "../tools/BillboardSet.h"
 
 namespace orxonox
 {
@@ -45,9 +46,10 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-
+            ColourValue LaserGun::getProjectileColour();
 
         private:
+            ColorValue projectileColor_;
 
 
 

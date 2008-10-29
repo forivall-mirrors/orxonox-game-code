@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(ParticleProjectile);
 
-    ParticleProjectile::ParticleProjectile(SpaceShip* owner) : BillboardProjectile(owner)
+    ParticleProjectile::ParticleProjectile(Weapon* owner) : BillboardProjectile(owner)
     {
         RegisterObject(ParticleProjectile);
 
@@ -71,7 +71,7 @@ namespace orxonox
         SUPER(ParticleProjectile, changedVisibility);
         this->particles_->setEnabled(this->isVisible());
     }
-    
+
     bool ParticleProjectile::create(){
       if(!Projectile::create())
         return false;

@@ -44,14 +44,14 @@ namespace orxonox
             void speedChanged();
             void destroyObject();
             virtual void tick(float dt);
-            
+
             virtual bool create();
 
             static float getSpeed()
                 { return Projectile::speed_s; }
 
         protected:
-            Projectile(SpaceShip* owner = 0);
+            Projectile(Weapon* owner = 0);
             SpaceShip* owner_;
 
         private:

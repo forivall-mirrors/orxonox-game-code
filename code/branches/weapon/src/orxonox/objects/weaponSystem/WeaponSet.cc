@@ -37,9 +37,15 @@
 
 namespace orxonox
 {
-    WeaponSet::WeaponSet()
+    WeaponSet::WeaponSet(int k)
     {
         RegisterObject(WeaponSet);
+
+        for (int i=0;i<k;i++)
+        {
+            this->wSlotNew = new WeaponSlot();
+            attachWeaponSlot(wSlotNew);
+        }
     }
 
     WeaponSet::~WeaponSet()
@@ -61,6 +67,12 @@ namespace orxonox
             this->weaponSlots_[i]->fire();
         }
     }
+
+    WeaponSlot * getWeaponSlotPointer(int n)
+    {
+        return this->weaponSlots_[n];
+    }
+
 
     void WeaponSet::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {

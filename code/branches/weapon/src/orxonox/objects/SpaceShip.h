@@ -38,6 +38,8 @@
 #include "RadarViewable.h"
 #include "tools/BillboardSet.h"
 
+#include "WeaponSystem.h"
+
 namespace orxonox
 {
     class _OrxonoxExport SpaceShip : public Model, public RadarViewable
@@ -179,6 +181,9 @@ namespace orxonox
 
             float mouseX_;
             float mouseY_;
+
+            //WeaponSystem
+            WeaponSystem * weaponSystem_;
 
         protected:
             bool myShip_;

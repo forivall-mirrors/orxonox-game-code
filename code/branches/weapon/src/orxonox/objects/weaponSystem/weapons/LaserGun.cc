@@ -39,15 +39,30 @@ namespace orxonox
     LaserGun::LaserGun()
     {
         RegisterObject(LaserGun);
+
+        projectileColor_ = ColourValue(1.0, 1.0, 0.5)
     }
 
     LaserGun::~LaserGun()
     {
     }
 
+    LaserGun::fire()
+    {
+            BillboardProjectile* projectile = new ParticleProjectile(this);
+            projectile->setColour(this->projectileColor_);
+            projectile->create();
+            if (projectile->getClassID() == 0)
+            {
+              COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
+            }
+
+            projectile->setObjectMode(0x3);
+    }
+
     LaserGun::addMunition()
     {
-        this->munition_ =
+        //this->munition_ = ;
     }
 
     void LaserGun::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -55,4 +70,8 @@ namespace orxonox
 
     }
 
+    ColorValue LaserGun::getProjectileColor()
+    {
+        return projectileColor_;
+    }
 }

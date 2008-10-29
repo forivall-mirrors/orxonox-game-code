@@ -46,7 +46,7 @@ namespace orxonox
 {
     float Projectile::speed_s = 5000;
 
-    Projectile::Projectile(SpaceShip* owner) : owner_(owner)
+    Projectile::Projectile(Weapon* owner) : owner_(owner)
     {
         RegisterObject(Projectile);
 
@@ -56,7 +56,7 @@ namespace orxonox
 
         this->setStatic(false);
         this->translate(Vector3(55, 0, 0), Ogre::Node::TS_LOCAL);
-        
+
         if (this->owner_)
         {
             this->setOrientation(this->owner_->getOrientation());
@@ -123,7 +123,7 @@ namespace orxonox
     {
         delete this;
     }
-    
+
     bool Projectile::create(){
       return WorldEntity::create();
     }

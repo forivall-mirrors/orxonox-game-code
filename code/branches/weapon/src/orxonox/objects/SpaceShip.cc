@@ -141,6 +141,13 @@ namespace orxonox
         this->health_ = 100;
 
         this->radarObject_ = static_cast<WorldEntity*>(this);
+
+        //WeaponSystem
+        weaponSystem_ = new WeaponSystem();
+        WeaponSet * weaponSet1 = new WeaponSet(1);
+        this->weaponSystem_->attachWeaponSet(weaponSet1);
+        this->weaponSystem_->getWeaponSetPointer(0)->getWeaponSlotPointer(0)->setAmmoType(true);
+
     }
 
     SpaceShip::~SpaceShip()
@@ -473,16 +480,7 @@ namespace orxonox
 
         if (this->bLMousePressed_ && this->timeToReload_ <= 0)
         {
-
-            BillboardProjectile* projectile = new ParticleProjectile(this);
-            projectile->setColour(this->getProjectileColour());
-            projectile->create();
-            if (projectile->getClassID() == 0)
-            {
-              COUT(3) << "generated projectile with classid 0" <<  std::endl; // TODO: remove this output
-            }
-
-            projectile->setObjectMode(0x3);
+            this->weaponSystem_->fire(0);
             this->timeToReload_ = this->reloadTime_;
         }
 

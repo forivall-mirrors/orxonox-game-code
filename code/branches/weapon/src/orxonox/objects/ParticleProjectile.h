@@ -40,11 +40,11 @@ namespace orxonox
     class _OrxonoxExport ParticleProjectile : public BillboardProjectile
     {
         public:
-            ParticleProjectile(SpaceShip* owner = 0);
+            ParticleProjectile(Weapon* owner = 0);
             virtual ~ParticleProjectile();
             virtual void changedVisibility();
             void setConfigValues();
-            
+
             virtual bool create();
 
         private:

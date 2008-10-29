@@ -58,9 +58,7 @@ namespace orxonox
      */
     void WeaponSlot::setAmmoType(bool isUnlimited)
     {
-        if (isUnlimited == true)
-            unlimitedAmmo_ = true;
-        else unlimitedAmmo_ = false;
+        unlimitedAmmo_ = isUnlimited;
     }
 
     void WeaponSlot::fire()

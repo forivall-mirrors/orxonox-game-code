@@ -76,6 +76,11 @@ namespace orxonox
             this->weaponSets_[n]->fire();
     }
 
+    WeaponSet * getWeaponSetPointer(int n)
+    {
+        return this->weaponSets_[n];
+    }
+
     void WeaponSystem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
 
