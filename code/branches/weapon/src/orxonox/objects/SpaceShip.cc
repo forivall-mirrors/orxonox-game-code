@@ -147,7 +147,7 @@ namespace orxonox
     {
         for (ObjectList<SpaceShipAI>::iterator it = ObjectList<SpaceShipAI>::begin(); it; ++it)
             it->shipDied(this);
-      
+
         if (this->isInitialized())
         {
             if (this->tt1_)
@@ -261,16 +261,16 @@ namespace orxonox
               this->attachObject(this->backlight_);
               this->backlight_->setPosition(-2.35, 0, 0.2);
               this->backlight_->setColour(this->getProjectileColour());
-  
+
               this->smoke_ = new ParticleSpawner();
               this->smoke_->setParticle("Orxonox/smoke5", LODParticle::normal, 0, 0, 3);
               this->attachObject(this->smoke_);
-  
+
               this->fire_ = new ParticleSpawner();
               this->fire_->setParticle("Orxonox/fire3", LODParticle::normal, 0, 0, 1);
               this->attachObject(this->fire_);
             }
-            
+
             // END CREATING ADDITIONAL EFFECTS
 
             if (this->isExactlyA(Class(SpaceShip)))
@@ -299,7 +299,7 @@ namespace orxonox
 
     void SpaceShip::setConfigValues()
     {
-        SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
+        SetConfigValue(bInvertYAxis_, false).description("Set this to true for joys-like mouse behaviour (mouse up = ship down).");
         SetConfigValue(reloadTime_, 0.125).description("The reload time of the weapon in seconds");
         SetConfigValue(testvector_, Vector3()).description("asdfblah");
     }

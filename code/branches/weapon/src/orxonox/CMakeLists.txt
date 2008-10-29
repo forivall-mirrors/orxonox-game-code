@@ -62,6 +62,13 @@ SET( ORXONOX_SRC_FILES
   objects/RotatingProjectile.cc
   objects/ParticleProjectile.cc
 
+  objects/WeaponSystem.cc
+  objects/weaponSystem/WeaponSet.cc
+  objects/weaponSystem/WeaponSlot.cc
+  objects/weaponSystem/Weapon.cc
+  objects/weaponSystem/Munition.cc
+
+
   tolua/tolua_bind.cc
 )
 

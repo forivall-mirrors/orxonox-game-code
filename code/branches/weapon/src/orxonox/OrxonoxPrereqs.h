@@ -96,6 +96,12 @@ namespace orxonox
     class RotatingProjectile;
     class ParticleProjectile;
 
+    class WeaponSystem;
+    class WeaponSet;
+    class WeaponSlot;
+    class Weapon;
+    class Munition;
+
     // tools
     class BillboardSet;
     class Light;
