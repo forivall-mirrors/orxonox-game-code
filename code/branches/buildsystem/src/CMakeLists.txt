@@ -16,15 +16,10 @@ INCLUDE_DIRECTORIES(
 )
 
 # Set the search paths for the linking
+# TODO: remove this after the CMake Modules have been fixed and use absolut paths
 LINK_DIRECTORIES(
   ${OGRE_LIB_DIR}
   ${CEGUI_LIB_DIR}
-#  ${CEGUI_SCRIPT_LIB_DIR}
-#  ${CEGUI_OGRE_LIB_DIR}
-  ${ENet_LIBRARY}
-  ${Boost_LIBRARY_DIRS}
-  ${Zlib_LIBRARY_DIR}
-  ${TCL_LIBRARY}
 )
 
 INCLUDE_DIRECTORIES(

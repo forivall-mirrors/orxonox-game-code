@@ -26,7 +26,7 @@ ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES( network
   ${ZLIB_LIBRARY}
-  ${ENet_LIBRARY}
+  ${ENet_LIBRARIES}
   ${Boost_THREAD_LIBRARY}
   core
 )
@@ -42,9 +42,8 @@ IF(NETWORK_TESTING_ENABLED)
   TARGET_LINK_LIBRARIES( networktest
     ${OGRE_LIBRARIES}
     network
-    ${ENet_LIBRARY}
+    ${ENet_LIBRARIES}
     ${ZLIB_LIBRARY}
-    ${WINDOWS_ENET_DEPENDENCIES}
   )
   ##### end test for gamestate stuff #####
 ENDIF(NETWORK_TESTING_ENABLED)
