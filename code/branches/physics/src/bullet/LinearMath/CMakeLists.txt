@@ -1,4 +1,4 @@
-ADD_LIBRARY(LibLinearMath
+ADD_LIBRARY(LibLinearMath SHARED
 		btAlignedObjectArray.h
 		btList.h
 		btPoolAllocator.h

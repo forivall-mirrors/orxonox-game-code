@@ -1,4 +1,4 @@
-ADD_LIBRARY(LibBulletSoftBody
+ADD_LIBRARY(LibBulletSoftBody SHARED
 	btSoftBody.cpp
 	btSoftBody.h
 	btSoftBodyHelpers.cpp

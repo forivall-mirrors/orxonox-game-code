@@ -50,7 +50,10 @@ namespace orxonox
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
     private:
-
+        Ogre::SceneNode*                sceneNode_;
+        Ogre::Entity*                   entity_;
+	btRigidBody* fallRigidBody;
+  	btDiscreteDynamicsWorld* dynamicsWorld;
     };
 
 
