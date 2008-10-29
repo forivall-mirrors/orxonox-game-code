@@ -45,19 +45,36 @@ namespace orxonox
 {
     CreateFactory(HUDRadar);
 
-    HUDRadar::HUDRadar(BaseObject* creator) : OrxonoxOverlay(creator), marker_(0)
+    HUDRadar::HUDRadar(BaseObject* creator)
+        : OrxonoxOverlay(creator)
     {
         RegisterObject(HUDRadar);
+
+        marker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("Panel", "HUDRadar_marker_" + getUniqueNumberString()));
+        marker_->setMaterialName("Orxonox/RadarMarker");
+        overlay_->add2D(marker_);
+        marker_->hide();
+
+        setRadarSensitivity(1.0f);
+        setHalfDotSizeDistance(3000.0f);
+        setMaximumDotSize(0.1f);
+
+        shapeMaterials_[RadarViewable::Dot]      = "RadarSquare.tga";
+        shapeMaterials_[RadarViewable::Triangle] = "RadarSquare.tga";
+        shapeMaterials_[RadarViewable::Square]   = "RadarSquare.tga";
     }
 
     HUDRadar::~HUDRadar()
     {
-        if (this->marker_)
-            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->marker_);
-        for (std::vector<Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.begin();
-            it != this->radarDots_.end(); ++it)
+        if (this->isInitialized())
         {
-            Ogre::OverlayManager::getSingleton().destroyOverlayElement(*it);
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->marker_);
+            for (std::vector<Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.begin();
+                it != this->radarDots_.end(); ++it)
+            {
+                Ogre::OverlayManager::getSingleton().destroyOverlayElement(*it);
+            }
         }
     }
 
@@ -65,25 +82,9 @@ namespace orxonox
     {
         SUPER(HUDRadar, XMLPort, xmlElement, mode);
 
-        if (mode == XMLPort::LoadObject)
-        {
-            marker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDRadar_marker_" + getUniqueNumberString()));
-            marker_->setMaterialName("Orxonox/RadarMarker");
-            overlay_->add2D(marker_);
-            marker_->hide();
-        }
-
-        XMLPortParam(HUDRadar, "sensitivity", setRadarSensitivity, getRadarSensitivity, xmlElement, mode)
-            .defaultValues(1.0f);
-        XMLPortParam(HUDRadar, "halfDotSizeDistance", setHalfDotSizeDistance, getHalfDotSizeDistance,
-            xmlElement, mode).defaultValues(3000.0f);
-        XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlElement, mode)
-            .defaultValues(0.1f);
-
-        shapeMaterials_[RadarViewable::Dot]      = "RadarSquare.tga";
-        shapeMaterials_[RadarViewable::Triangle] = "RadarSquare.tga";
-        shapeMaterials_[RadarViewable::Square]   = "RadarSquare.tga";
+        XMLPortParam(HUDRadar, "sensitivity", setRadarSensitivity, getRadarSensitivity, xmlElement, mode);
+        XMLPortParam(HUDRadar, "halfDotSizeDistance", setHalfDotSizeDistance, getHalfDotSizeDistance, xmlElement, mode);
+        XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlElement, mode);
     }
 
     void HUDRadar::displayObject(RadarViewable* object, bool bIsMarked)

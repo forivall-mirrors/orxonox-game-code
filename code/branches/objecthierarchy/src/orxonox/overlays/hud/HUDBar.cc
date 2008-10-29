@@ -45,31 +45,54 @@ namespace orxonox
 {
     CreateFactory(BarColour);
 
-    BarColour::BarColour(BaseObject* creator) : BaseObject(creator), position_(0.0)
+    BarColour::BarColour(BaseObject* creator)
+        : BaseObject(creator)
     {
         RegisterObject(BarColour);
+
+        setColour(ColourValue(1.0, 1.0, 1.0, 1.0));
+        setPosition(0.0);
     }
 
     void BarColour::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         SUPER(BarColour, XMLPort, xmlElement, mode);
 
-        XMLPortParam(BarColour, "colour", setColour, getColour, xmlElement, mode)
-            .defaultValues(ColourValue(1.0, 1.0, 1.0, 1.0));
-        XMLPortParam(BarColour, "position", setPosition, getPosition, xmlElement, mode).defaultValues(0.0f);
+        XMLPortParam(BarColour, "colour", setColour, getColour, xmlElement, mode);
+        XMLPortParam(BarColour, "position", setPosition, getPosition, xmlElement, mode);
     }
 
 
     unsigned int HUDBar::materialcount_s = 0;
 
-    HUDBar::HUDBar(BaseObject* creator) : OrxonoxOverlay(creator), bar_(0), textureUnitState_(0)
+    HUDBar::HUDBar(BaseObject* creator)
+        : OrxonoxOverlay(creator)
     {
         RegisterObject(HUDBar);
+
+        // create new material
+        std::string materialname = "barmaterial" + getConvertedValue<unsigned int, std::string>(materialcount_s++);
+        Ogre::MaterialPtr material = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().create(materialname, "General");
+        material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+        this->textureUnitState_ = material->getTechnique(0)->getPass(0)->createTextureUnitState();
+        this->textureUnitState_->setTextureName("bar2.tga");
+        // use the default colour
+        this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2, 0.7, 0.2));
+
+        this->bar_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("Panel", "HUDBar_bar_" + getUniqueNumberString()));
+        this->bar_->setMaterialName(materialname);
+
+        setValue(0.4567654f);
+        setRightToLeft(false);
+        setAutoColour(true);
+
+        this->background_->addChild(bar_);
     }
 
     HUDBar::~HUDBar()
     {
-        if (this->bar_)
+        if (this->isInitialized())
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->bar_);
     }
 
@@ -77,26 +100,9 @@ namespace orxonox
     {
         SUPER(HUDBar, XMLPort, xmlElement, mode);
 
-        if (mode == XMLPort::LoadObject)
-        {
-            // create new material
-            std::string materialname = "barmaterial" + getConvertedValue<unsigned int, std::string>(materialcount_s++);
-            Ogre::MaterialPtr material = (Ogre::MaterialPtr)Ogre::MaterialManager::getSingleton().create(materialname, "General");
-            material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-            this->textureUnitState_ = material->getTechnique(0)->getPass(0)->createTextureUnitState();
-            this->textureUnitState_->setTextureName("bar2.tga");
-            // use the default colour
-            this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2, 0.7, 0.2));
-
-            this->bar_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDBar_bar_" + getUniqueNumberString()));
-            this->bar_->setMaterialName(materialname);
-            this->background_->addChild(bar_);
-        }
-
-        XMLPortParam(HUDBar, "initialValue", setValue,       getValue,       xmlElement, mode).defaultValues(0.4567654f);
-        XMLPortParam(HUDBar, "rightToLeft",  setRightToLeft, getRightToLeft, xmlElement, mode).defaultValues(false);
-        XMLPortParam(HUDBar, "autoColour",   setAutoColour,  getAutoColour,  xmlElement, mode).defaultValues(true);
+        XMLPortParam(HUDBar, "initialValue", setValue,       getValue,       xmlElement, mode);
+        XMLPortParam(HUDBar, "rightToLeft",  setRightToLeft, getRightToLeft, xmlElement, mode);
+        XMLPortParam(HUDBar, "autoColour",   setAutoColour,  getAutoColour,  xmlElement, mode);
         XMLPortObject(HUDBar, BarColour, "", addColour, getColour, xmlElement, mode);
     }
 

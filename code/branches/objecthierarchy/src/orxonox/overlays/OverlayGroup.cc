@@ -49,9 +49,13 @@ namespace orxonox
     SetConsoleCommand(OverlayGroup, scaleGroup, false).accessLevel(AccessLevel::User);
     SetConsoleCommand(OverlayGroup, scrollGroup, false).accessLevel(AccessLevel::User);
 
-    OverlayGroup::OverlayGroup(BaseObject* creator) : BaseObject(creator)
+    OverlayGroup::OverlayGroup(BaseObject* creator)
+        : BaseObject(creator)
     {
         RegisterObject(OverlayGroup);
+
+        setScale(Vector2(1.0, 1.0));
+        setScroll(Vector2(0.0, 0.0));
     }
 
     OverlayGroup::~OverlayGroup()
@@ -70,8 +74,8 @@ namespace orxonox
     {
         SUPER(OverlayGroup, XMLPort, xmlElement, mode);
 
-        XMLPortParam(OverlayGroup, "scale",  setScale,  getScale,  xmlElement, mode).defaultValues(Vector2(1.0, 1.0));
-        XMLPortParam(OverlayGroup, "scroll", setScroll, getScroll, xmlElement, mode).defaultValues(Vector2(0.0, 0.0));
+        XMLPortParam(OverlayGroup, "scale",  setScale,  getScale,  xmlElement, mode);
+        XMLPortParam(OverlayGroup, "scroll", setScroll, getScroll, xmlElement, mode);
         // loads all the child elements
         XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlElement, mode);
     }

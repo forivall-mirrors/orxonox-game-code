@@ -47,58 +47,55 @@ namespace orxonox
 
     HUDNavigation::HUDNavigation(BaseObject* creator)
         : OrxonoxOverlay(creator)
-        , navMarker_(0)
-        , aimMarker_(0)
-        , navText_(0)
     {
         RegisterObject(HUDNavigation);
+
+        // create nav text
+        navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
+
+        // create nav marker
+        navMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
+        navMarker_->setMaterialName("Orxonox/NavArrows");
+
+        // create aim marker
+        aimMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberString()));
+        aimMarker_->setMaterialName("Orxonox/NavCrosshair");
+        this->wasOutOfView_ = true; // Ensure the material is changed right the first time..
+
+        setFont("Monofur");
+        setTextSize(0.05f);
+        setNavMarkerSize(0.05f);
+        setAimMarkerSize(0.04f);
+
+        background_->addChild(navMarker_);
+        background_->addChild(aimMarker_);
+        background_->addChild(navText_);
+
+        // hide at first
+        this->setVisible(false);
     }
 
     HUDNavigation::~HUDNavigation()
     {
-        if (this->navMarker_)
+        if (this->isInitialized())
+        {
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->navMarker_);
-        if (this->navText_)
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->navText_);
-        if (this->aimMarker_)
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->aimMarker_);
+        }
     }
 
     void HUDNavigation::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
         SUPER(HUDNavigation, XMLPort, xmlElement, mode);
 
-        if (mode == XMLPort::LoadObject)
-        {
-            // create nav text
-            navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
-
-            // create nav marker
-            navMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
-            navMarker_->setMaterialName("Orxonox/NavArrows");
-            wasOutOfView_ = true; // just to ensure the material is changed right the first time..
-
-            // create aim marker
-            aimMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberString()));
-            aimMarker_->setMaterialName("Orxonox/NavCrosshair");
-
-            background_->addChild(navMarker_);
-            background_->addChild(aimMarker_);
-            background_->addChild(navText_);
-
-            // hide at first
-            this->setVisible(false);
-        }
-
-        XMLPortParam(HUDNavigation, "font",     setFont,     getFont,     xmlElement, mode).defaultValues("Monofur");
-        XMLPortParam(HUDNavigation, "textSize", setTextSize, getTextSize, xmlElement, mode).defaultValues(0.05f);
-        XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode)
-            .defaultValues(0.05f);
-        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode)
-            .defaultValues(0.04f);
+        XMLPortParam(HUDNavigation, "font",     setFont,     getFont,     xmlElement, mode);
+        XMLPortParam(HUDNavigation, "textSize", setTextSize, getTextSize, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
     }
 
     void HUDNavigation::setFont(const std::string& font)

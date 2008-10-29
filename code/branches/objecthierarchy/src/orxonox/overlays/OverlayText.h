@@ -46,17 +46,17 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
-        void setCaption(const std::string& caption);
-        const std::string& getCaption() const       { return this->caption_; }
+        void setCaption(const std::string& caption) { this->text_->setCaption(caption); }
+        std::string getCaption() const              { return this->text_->getCaption(); }
 
         void setFont(const std::string& font);
-        const std::string& getFont() const;
+        const std::string& getFont() const { return this->text_->getFontName(); }
 
-        void setColour(const ColourValue& colour);
-        const ColourValue& getColour() const;
+        void setColour(const ColourValue& colour) { this->text_->setColour(colour); }
+        const ColourValue& getColour() const      { return this->text_->getColour(); }
 
-        void setAlignment(Ogre::TextAreaOverlayElement::Alignment alignment);
-        Ogre::TextAreaOverlayElement::Alignment getAlignment() const;
+        void setAlignment(Ogre::TextAreaOverlayElement::Alignment alignment) { this->text_->setAlignment(alignment); }
+        Ogre::TextAreaOverlayElement::Alignment getAlignment() const         { return this->text_->getAlignment(); }
 
     protected:
         virtual void sizeChanged();
@@ -68,9 +68,6 @@ namespace orxonox
         float getTextSize() const    { return this->getSize().y; }
 
         Ogre::TextAreaOverlayElement* text_;
-
-    private:
-        std::string caption_;
     };
 }
 #endif /* _OverlayText_H__ */

@@ -40,14 +40,27 @@ namespace orxonox
 {
     CreateFactory(OverlayText);
 
-    OverlayText::OverlayText(BaseObject* creator) : OrxonoxOverlay(creator), text_(0)
+    OverlayText::OverlayText(BaseObject* creator)
+        : OrxonoxOverlay(creator)
     {
         RegisterObject(OverlayText);
+
+        this->text_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("TextArea", "OverlayText_text_" + getUniqueNumberString()));
+        this->text_->setCharHeight(1.0);
+
+        setFont("Monofur");
+        setColour(ColourValue(1.0, 1.0, 1.0, 1.0));
+        setCaption("");
+        setTextSize(1.0f);
+        setAlignmentString("left");
+
+        this->background_->addChild(this->text_);
     }
 
     OverlayText::~OverlayText()
     {
-        if (this->text_)
+        if (this->isInitialized())
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->text_);
     }
 
@@ -55,62 +68,17 @@ namespace orxonox
     {
         SUPER(OverlayText, XMLPort, xmlElement, mode);
 
-        if (mode == XMLPort::LoadObject)
-        {
-            this->text_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("TextArea", "OverlayText_text_" + getUniqueNumberString()));
-            this->text_->setCharHeight(1.0);
-
-            this->background_->addChild(this->text_);
-        }
-
-        XMLPortParam(OverlayText, "font",     setFont,            getFont,            xmlElement, mode).defaultValues("Monofur");
-        XMLPortParam(OverlayText, "colour",   setColour,          getColour,          xmlElement, mode).defaultValues(ColourValue(1.0, 1.0, 1.0, 1.0));
-        XMLPortParam(OverlayText, "caption",  setCaption,         getCaption,         xmlElement, mode).defaultValues("");
-        XMLPortParam(OverlayText, "textSize", setTextSize,        getTextSize,        xmlElement, mode).defaultValues(1.0f);
-        XMLPortParam(OverlayText, "align",    setAlignmentString, getAlignmentString, xmlElement, mode).defaultValues("left");
+        XMLPortParam(OverlayText, "font",     setFont,            getFont,            xmlElement, mode);
+        XMLPortParam(OverlayText, "colour",   setColour,          getColour,          xmlElement, mode);
+        XMLPortParam(OverlayText, "caption",  setCaption,         getCaption,         xmlElement, mode);
+        XMLPortParam(OverlayText, "textSize", setTextSize,        getTextSize,        xmlElement, mode);
+        XMLPortParam(OverlayText, "align",    setAlignmentString, getAlignmentString, xmlElement, mode);
     }
 
     void OverlayText::setFont(const std::string& font)
     {
-        if (this->text_ && font != "")
+        if (font != "")
             this->text_->setFontName(font);
-    }
-
-    const std::string& OverlayText::getFont() const
-    {
-        if (this->text_)
-            return this->text_->getFontName();
-        else
-            return BLANKSTRING;
-    }
-
-    void OverlayText::setColour(const ColourValue& colour)
-    {
-        if (this->text_)
-            this->text_->setColour(colour);
-    }
-
-    const ColourValue& OverlayText::getColour() const
-    {
-        if (this->text_)
-            return this->text_->getColour();
-        else
-            return ColourValue::White;
-    }
-
-    void OverlayText::setAlignment(Ogre::TextAreaOverlayElement::Alignment alignment)
-    {
-        if (this->text_)
-            this->text_->setAlignment(alignment);
-    }
-
-    Ogre::TextAreaOverlayElement::Alignment OverlayText::getAlignment() const
-    {
-        if (this->text_)
-            return this->text_->getAlignment();
-        else
-            return Ogre::TextAreaOverlayElement::Left;
     }
 
     void OverlayText::setAlignmentString(const std::string& alignment)
@@ -125,34 +93,23 @@ namespace orxonox
 
     std::string OverlayText::getAlignmentString() const
     {
-        if (this->text_)
+        Ogre::TextAreaOverlayElement::Alignment alignment = this->text_->getAlignment();
+
+        switch (alignment)
         {
-            Ogre::TextAreaOverlayElement::Alignment alignment = this->text_->getAlignment();
-
-            switch (alignment)
-            {
-                case Ogre::TextAreaOverlayElement::Right:
-                    return "right";
-                case Ogre::TextAreaOverlayElement::Center:
-                    return "center";
-                case Ogre::TextAreaOverlayElement::Left:
-                default:;
-            }
+            case Ogre::TextAreaOverlayElement::Right:
+                return "right";
+            case Ogre::TextAreaOverlayElement::Center:
+                return "center";
+            case Ogre::TextAreaOverlayElement::Left:
+                return "left";
+            default:
+                assert(false); return "";
         }
-        return "left";
-    }
-
-    void OverlayText::setCaption(const std::string& caption)
-    {
-        this->caption_ = caption;
-        this->text_->setCaption(caption);
     }
 
     void OverlayText::sizeChanged()
     {
-        if (!this->overlay_)
-            return;
-
         if (this->rotState_ == Horizontal)
             this->overlay_->setScale(size_.y * sizeCorrection_.y, size_.y * sizeCorrection_.y);
         else if (this->rotState_ == Vertical)

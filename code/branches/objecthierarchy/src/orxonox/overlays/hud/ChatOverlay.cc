@@ -48,11 +48,12 @@ namespace orxonox
 {
     CreateFactory(ChatOverlay);
 
-    ChatOverlay::ChatOverlay(BaseObject* creator) : OverlayText(creator)
+    ChatOverlay::ChatOverlay(BaseObject* creator)
+        : OverlayText(creator)
     {
         RegisterObject(ChatOverlay);
 
-        this->displayTime_ = 0;
+        this->displayTime_ = 0.0;
 
         this->setConfigValues();
     }
