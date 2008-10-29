@@ -146,6 +146,12 @@ namespace network
   {
     synchronisableHeader *header = (synchronisableHeader *)mem;
 
+    if(!header->dataAvailable)
+    {
+      mem += header->size;
+      return 0;
+    }
+    
     COUT(4) << "fabricating object with id: " << header->objectID << std::endl;
 
     orxonox::Identifier* id = ClassByID(header->classID);
@@ -313,16 +319,17 @@ namespace network
         continue;  // this variable should only be received
       }
       // if the variable gets synchronised bidirectional, then add the reference to the bytestream
-      if( ( (*i)->mode & direction::bidirectional ) )
+      if( ( (*i)->mode & direction::bidirectional ) == direction::bidirectional )
       {
         *(uint8_t*)mem = (*i)->varReference;
         mem += sizeof( (*i)->varReference );
+        tempsize += sizeof( (*i)->varReference );
       }
       switch((*i)->type){
         case DATA:
           memcpy( (void *)(mem), (void*)((*i)->var), (*i)->size);
           mem+=(*i)->size;
-          tempsize+=(*i)->size + sizeof( (*i)->varReference );
+          tempsize+=(*i)->size;
           break;
         case STRING:
           memcpy( (void *)(mem), (void *)&((*i)->size), sizeof(size_t) );
@@ -331,7 +338,7 @@ namespace network
           memcpy( mem, (void*)data, (*i)->size);
           COUT(5) << "synchronisable: char: " << (const char *)(mem) << " data: " << data << " string: " << *(std::string *)((*i)->var) << std::endl;
           mem+=(*i)->size;
-          tempsize+=(*i)->size + sizeof( (*i)->varReference ) + sizeof(size_t);
+          tempsize+=(*i)->size + sizeof(size_t);
           break;
       }
     }
@@ -380,7 +387,7 @@ namespace network
       bool callback=false;
       switch((*i)->type){
         case DATA:
-          if( ( (*i)->mode & direction::bidirectional ) )
+          if( ( (*i)->mode & direction::bidirectional ) == direction::bidirectional )
           {
             if( ( mode == 0x1 && (*i)->mode == direction::serverMaster ) || \
                   ( mode == 0x2 && (*i)->mode == direction::clientMaster ) )    // if true we are master on this variable
@@ -405,7 +412,7 @@ namespace network
           mem+=(*i)->size;
           break;
         case STRING:
-          if( ( (*i)->mode & direction::bidirectional ) )
+          if( ( (*i)->mode & direction::bidirectional ) == direction::bidirectional )
           {
             if( ( mode == 0x1 && (*i)->mode == direction::serverMaster ) || \
                   ( mode == 0x2 && (*i)->mode == direction::clientMaster ) )    // if true we are master for this variable
@@ -468,7 +475,7 @@ namespace network
         tsize+=(*i)->size;
         break;
       }
-      if( ( (*i)->mode & direction::bidirectional ) != 0)
+      if( ( (*i)->mode & direction::bidirectional ) == direction::bidirectional )
       {
         tsize+=sizeof( (*i)->varReference );
       }

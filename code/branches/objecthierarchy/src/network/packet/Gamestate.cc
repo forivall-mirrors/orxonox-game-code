@@ -356,7 +356,7 @@ Gamestate* Gamestate::doSelection(unsigned int clientID){
     unsigned int objectsize = oldobjectheader->size;
     assert(it->second->objectID==oldobjectheader->objectID);
     *newobjectheader = *oldobjectheader;
-    objectOffset=sizeof(uint8_t)+sizeof(bool); //skip the size and the availableDate variables in the objectheader
+    objectOffset=sizeof(uint8_t)+sizeof(bool); //skip the size and the availableData variables in the objectheader
     if(it->second->doSelection(HEADER->id)){
       newobjectheader->dataAvailable=true; //TODO: probably not neccessary
       while(objectOffset<objectsize){
