@@ -46,6 +46,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
+#include "core/CommandLine.h"
 #include "util/Debug.h"
 
 #include "InputBuffer.h"
@@ -61,6 +62,7 @@ namespace orxonox
 {
     SetConsoleCommand(InputManager, calibrate, true);
     SetConsoleCommand(InputManager, reload, false);
+    SetCommandLineSwitch(keyboard_no_grab);
 
     std::string InputManager::bindingCommmandString_s = "";
     EmptyHandler InputManager::EMPTY_HANDLER;
@@ -152,6 +154,14 @@ namespace orxonox
             //paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
 #if defined OIS_LINUX_PLATFORM
             paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+            paramList.insert(std::make_pair(std::string("x11_mouse_grab"), "true"));
+            paramList.insert(std::make_pair(std::string("x11_mouse_hide"), "true"));
+            bool kbNoGrab;
+            CommandLine::getValue("keyboard_no_grab", &kbNoGrab);
+            if (kbNoGrab)
+                paramList.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
+            else
+                paramList.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("true")));
 #endif
 
             inputSystem_ = OIS::InputManager::createInputSystem(paramList);

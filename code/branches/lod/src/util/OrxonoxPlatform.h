@@ -136,6 +136,17 @@ namespace orxonox
 #endif
 }
 
+//-----------------------------------------------------------------------
+// Version Information
+//-----------------------------------------------------------------------
+
+#define ORXONOX_VERSION_MAJOR 0
+#define ORXONOX_VERSION_MINOR 1
+#define ORXONOX_VERSION_PATCH 2
+#define ORXONOX_VERSION_SUFFIX ""
+#define ORXONOX_VERSION_NAME "Bellatrix"
+
+#define ORXONOX_VERSION ((ORXONOX_VERSION_MAJOR << 16) | (ORXONOX_VERSION_MINOR << 8) | ORXONOX_VERSION_PATCH)
 
 
 /*---------------------------------

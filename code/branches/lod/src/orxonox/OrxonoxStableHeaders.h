@@ -45,7 +45,6 @@
 #  define WIN32_LEAN_AND_MEAN
 #endif
 #include <Ogre.h>
-#include <OgreProgressiveMesh.h>
 #include <CEGUI.h>
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/thread/mutex.hpp>
