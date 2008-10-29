@@ -37,7 +37,6 @@
 #include "core/Loader.h"
 #include "core/CommandExecutor.h"
 #include "core/ConsoleCommand.h"
-#include "core/CommandLine.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "objects/Backlight.h"
@@ -49,8 +48,6 @@
 
 namespace orxonox
 {
-    SetCommandLineArgument(level, "sample.oxw").setShortcut("l");
-
     GSLevel::GSLevel(const std::string& name)
         : GameState<GSGraphics>(name)
         , timeFactor_(1.0f)
@@ -159,9 +156,7 @@ namespace orxonox
     {
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
-        std::string levelName;
-        CommandLine::getValue("level", &levelName);
-        startLevel_ = new Level(Settings::getDataPath() + std::string("levels/") + levelName);
+        startLevel_ = new Level(Settings::getDataPath() + "levels/sample.oxw");
         Loader::open(startLevel_);
     }
 

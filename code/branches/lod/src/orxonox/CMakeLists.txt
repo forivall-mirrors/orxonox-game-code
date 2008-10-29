@@ -56,6 +56,7 @@ SET( ORXONOX_SRC_FILES
   objects/SpaceShipAI.cc
   objects/Tickable.cc
   objects/WorldEntity.cc
+  objects/Planet.cc
 
   objects/Projectile.cc
   objects/BillboardProjectile.cc
@@ -92,6 +93,7 @@ IF(NETWORKTRAFFIC_TESTING_ENABLED)
     objects/Skybox.cc
     objects/SpaceShip.cc
     objects/WorldEntity.cc
+    objects/Planet.cc
   )
 
   ADD_LIBRARY(orxonoxs SHARED ${ORXONOX_SRC_FILES})

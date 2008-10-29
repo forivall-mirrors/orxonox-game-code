@@ -467,6 +467,7 @@ namespace orxonox
                         {
                             for (ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++)
                             {
+                                COUT(2) << child->Value() << std::endl;
                                 Identifier* identifier = ClassByName(child->Value());
                                 if (identifier)
                                 {

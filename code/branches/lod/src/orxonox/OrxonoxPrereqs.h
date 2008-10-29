@@ -90,6 +90,7 @@ namespace orxonox
     class SpaceShip;
     class SpaceShipAI;
     class WorldEntity;
+    class Planet;
 
     class Projectile;
     class BillboardProjectile;
