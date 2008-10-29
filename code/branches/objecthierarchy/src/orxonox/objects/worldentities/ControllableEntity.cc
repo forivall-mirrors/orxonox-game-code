@@ -36,6 +36,7 @@
 
 #include "objects/infos/PlayerInfo.h"
 #include "objects/worldentities/Camera.h"
+#include "objects/worldentities/CameraPosition.h"
 #include "overlays/OverlayGroup.h"
 
 namespace orxonox
@@ -91,6 +92,57 @@ namespace orxonox
         SUPER(ControllableEntity, XMLPort, xmlelement, mode);
 
         XMLPortParam(ControllableEntity, "hudtemplate", setHudTemplate, getHudTemplate, xmlelement, mode);
+        XMLPortParam(ControllableEntity, "camerapositiontemplate", setCameraPositionTemplate, getCameraPositionTemkplate, xmlelement, mode);
+
+        XMLPortObject(ControllableEntity, WorldEntity, "camerapositions", addCameraPosition, getCameraPosition, xmlelement, mode);
+    }
+
+    void ControllableEntity::addCameraPosition(CameraPosition* position)
+    {
+        this->attach(position);
+        this->cameraPositions_.push_back(position);
+    }
+
+    CameraPosition* ControllableEntity::getCameraPosition(unsigned int index) const
+    {
+        unsigned int i = 0;
+        for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+        {
+            if (i == index)
+                return (*it);
+            ++i;
+        }
+        return 0;
+    }
+
+    void ControllableEntity::switchCamera()
+    {
+        if (this->camera_)
+        {
+            if (this->camera_->getParent() == this && this->cameraPositions_.size() > 0)
+            {
+                this->cameraPositions_.front()->attachCamera(this->camera_);
+            }
+            else if (this->cameraPositions_.size() > 0)
+            {
+                for (std::list<CameraPosition*>::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+                {
+                    if ((*it) == this->camera_->getParent())
+                    {
+                        ++it;
+                        if (it != this->cameraPositions_.end())
+                            (*it)->attachCamera(this->camera_);
+                        else
+                            (*this->cameraPositions_.begin())->attachCamera(this->camera_);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                this->attach(this->camera_);
+            }
+        }
     }
 
     void ControllableEntity::setPlayer(PlayerInfo* player)
@@ -104,13 +156,15 @@ namespace orxonox
         this->player_ = player;
         this->playerID_ = player->getObjectID();
         this->bControlled_ = (player->isLocalPlayer() && player->isHumanPlayer());
-
         if (this->bControlled_)
         {
             this->startLocalControl();
 
             if (!Core::isMaster())
+            {
+COUT(0) << "CE: bidirectional synchronization" << std::endl;
                 this->setObjectMode(network::direction::bidirectional);
+            }
         }
     }
 
@@ -144,7 +198,12 @@ namespace orxonox
         std::cout << this->getObjectID() << " ###### start local control" << std::endl;
         this->camera_ = new Camera(this);
         this->camera_->requestFocus();
-        this->attach(this->camera_);
+        if (this->cameraPositionTemplate_ != "")
+            this->addTemplate(this->cameraPositionTemplate_);
+        if (this->cameraPositions_.size() > 0)
+            this->cameraPositions_.front()->attachCamera(this->camera_);
+        else
+            this->attach(this->camera_);
 
         if (this->hudtemplate_ != "")
         {
@@ -156,7 +215,7 @@ namespace orxonox
     void ControllableEntity::stopLocalControl()
     {
         std::cout << "###### stop local control" << std::endl;
-        this->detach(this->camera_);
+        this->camera_->detachFromParent();
         delete this->camera_;
         this->camera_ = 0;
 
@@ -186,6 +245,8 @@ namespace orxonox
 
     void ControllableEntity::registerVariables()
     {
+        REGISTERSTRING(this->cameraPositionTemplate_, network::direction::toclient);
+
         REGISTERDATA(this->server_position_,    network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
         REGISTERDATA(this->server_velocity_,    network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerVelocity));
         REGISTERDATA(this->server_orientation_, network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));

@@ -26,35 +26,33 @@
  *
  */
 
-#ifndef _Controller_H__
-#define _Controller_H__
+#ifndef _CameraPosition_H__
+#define _CameraPosition_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
+#include "objects/worldentities/PositionableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Controller : public BaseObject
+    class _OrxonoxExport CameraPosition : public PositionableEntity
     {
         public:
-            Controller(BaseObject* creator);
-            virtual ~Controller();
+            CameraPosition(BaseObject* creator);
+            virtual ~CameraPosition();
 
-            inline void setPlayer(PlayerInfo* player)
-                { this->player_ = player; }
-            inline PlayerInfo* getPlayer() const
-                { return this->player_; }
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            virtual inline void setControllableEntity(ControllableEntity* entity)
-                { this->controllableEntity_ = entity; }
-            virtual inline ControllableEntity* getControllableEntity() const
-                { return this->controllableEntity_; }
+            inline void setDrag(bool bDrag)
+                { this->bDrag_ = bDrag; }
+            inline bool getDrag() const
+                { return this->bDrag_; }
 
-        protected:
-            PlayerInfo* player_;
-            ControllableEntity* controllableEntity_;
+            void attachCamera(Camera* camera);
+
+        private:
+            bool bDrag_;
     };
 }
 
-#endif /* _Controller_H__ */
+#endif /* _CameraPosition_H__ */

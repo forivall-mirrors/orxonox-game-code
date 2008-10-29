@@ -127,7 +127,7 @@ namespace orxonox
         {
             this->controllableEntityID_ = network::OBJECTID_UNKNOWN;
         }
-COUT(0) << this->getObjectID() << ": PI: start control" << std::endl;
+
         if (this->controller_)
             this->controller_->setControllableEntity(entity);
     }

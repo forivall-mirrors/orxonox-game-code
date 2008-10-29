@@ -95,7 +95,8 @@ namespace orxonox
 
     void ChatOverlay::dropMessage()
     {
-        this->messages_.pop_front();
+        if (this->messages_.size() > 0)
+            this->messages_.pop_front();
         this->updateOverlayText();
     }
 

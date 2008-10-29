@@ -69,7 +69,7 @@ namespace orxonox
 
             virtual void greet() {}
             virtual void use() {}
-            virtual void switchCamera() {}
+            virtual void switchCamera();
 
             inline const Vector3& getVelocity() const
                 { return this->velocity_; }
@@ -111,6 +111,16 @@ namespace orxonox
                 { return this->camera_; }
             inline OverlayGroup* getHUD() const
                 { return this->hud_; }
+
+            void addCameraPosition(CameraPosition* position);
+            CameraPosition* getCameraPosition(unsigned int index) const;
+            inline const std::list<CameraPosition*>& getCameraPositions() const
+                { return this->cameraPositions_; }
+
+            inline void setCameraPositionTemplate(const std::string& name)
+                { this->cameraPositionTemplate_ = name; }
+            inline const std::string& getCameraPositionTemkplate() const
+                { return this->cameraPositionTemplate_; }
 
         protected:
             virtual void startLocalControl();
@@ -157,6 +167,9 @@ namespace orxonox
             OverlayGroup* hud_;
             Camera* camera_;
             bool bDestroyWhenPlayerLeft_;
+
+            std::list<CameraPosition*> cameraPositions_;
+            std::string cameraPositionTemplate_;
     };
 }
 

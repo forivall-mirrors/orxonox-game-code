@@ -53,38 +53,10 @@ namespace orxonox
 
         this->setConfigValues();
         this->registerVariables();
-
-COUT(0) << this->getObjectID() << ": HumanPlayer created" << std::endl;
-        network::Synchronisable* temp = dynamic_cast<network::Synchronisable*>(creator);
-        if (temp)
-        {
-COUT(0) << this->getObjectID() << ": CreatorID: " << temp->getObjectID() << std::endl;
-        }
-        else
-        {
-COUT(0) << this->getObjectID() << ": Creator is no Synchronisable" << std::endl;
-        }
-    unsigned int creatorID = network::OBJECTID_UNKNOWN;
-    searchcreatorID:
-    if (creator)
-    {
-        if (creator->isA(Class(Synchronisable)))
-        {
-            Synchronisable* synchronisable_creator = dynamic_cast<Synchronisable*>(creator);
-            creatorID = synchronisable_creator->getObjectID();
-        }
-        else if (creator != creator->getCreator())
-        {
-            creator = creator->getCreator();
-            goto searchcreatorID;
-        }
-    }
-COUT(0) << this->getObjectID() << ": ### tranmitted creatorID: " << creatorID << std::endl;
     }
 
     HumanPlayer::~HumanPlayer()
     {
-COUT(0) << this->getObjectID() << ": HumanPlayer destroyed" << std::endl;
     }
 
     void HumanPlayer::setConfigValues()
@@ -119,19 +91,14 @@ COUT(0) << this->getObjectID() << ": HumanPlayer destroyed" << std::endl;
 
     void HumanPlayer::networkcallback_clientIDchanged()
     {
-COUT(0) << this->getObjectID() << ": PI: clientID changed to " << this->clientID_ << std::endl;
         if (this->clientID_ == network::Host::getPlayerID())
         {
-COUT(0) << this->getObjectID() << ": PI: it's my clientID" << std::endl;
             this->bLocalPlayer_ = true;
             this->synchronize_nick_ = this->nick_;
             this->client_ready_ = true;
 
             if (!Core::isMaster())
-            {
                 this->setObjectMode(network::direction::bidirectional);
-COUT(0) << this->getObjectID() << ": PI: set objectmode to bidirectional" << std::endl;
-            }
             else
                 this->setName(this->nick_);
 
@@ -142,17 +109,12 @@ COUT(0) << this->getObjectID() << ": PI: set objectmode to bidirectional" << std
     void HumanPlayer::networkcallback_server_ready()
     {
         this->client_ready_ = true;
-COUT(0) << this->getObjectID() << ": PI: server ready, client set ready too" << std::endl;
     }
 
     void HumanPlayer::networkcallback_client_ready()
     {
-COUT(0) << this->getObjectID() << ": PI: client ready" << std::endl;
         if (this->getGametype())
-        {
-COUT(0) << this->getObjectID() << ": PI: adding client to gametype" << std::endl;
             this->getGametype()->playerEntered(this);
-        }
     }
 
     bool HumanPlayer::isReady() const
@@ -172,7 +134,6 @@ COUT(0) << this->getObjectID() << ": PI: adding client to gametype" << std::endl
 
     void HumanPlayer::setClientID(unsigned int clientID)
     {
-COUT(0) << this->getObjectID() << ": PI: set clientID to " << clientID << std::endl;
         this->clientID_ = clientID;
         this->networkcallback_clientIDchanged();
     }

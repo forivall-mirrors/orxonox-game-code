@@ -135,7 +135,7 @@ namespace orxonox
         object->parent_ = 0;
         object->parentID_ = (unsigned int)-1;
 
-        this->getScene()->getRootSceneNode()->addChild(object->node_);
+//        this->getScene()->getRootSceneNode()->addChild(object->node_);
     }
 
     WorldEntity* WorldEntity::getAttachedObject(unsigned int index) const

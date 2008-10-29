@@ -26,35 +26,40 @@
  *
  */
 
-#ifndef _Controller_H__
-#define _Controller_H__
+#include "OrxonoxStableHeaders.h"
+#include "CameraPosition.h"
 
-#include "OrxonoxPrereqs.h"
-
-#include "core/BaseObject.h"
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
+#include "Camera.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Controller : public BaseObject
+    CreateFactory(CameraPosition);
+
+    CameraPosition::CameraPosition(BaseObject* creator) : PositionableEntity(creator)
     {
-        public:
-            Controller(BaseObject* creator);
-            virtual ~Controller();
+        RegisterObject(CameraPosition);
 
-            inline void setPlayer(PlayerInfo* player)
-                { this->player_ = player; }
-            inline PlayerInfo* getPlayer() const
-                { return this->player_; }
+        this->bDrag_ = false;
 
-            virtual inline void setControllableEntity(ControllableEntity* entity)
-                { this->controllableEntity_ = entity; }
-            virtual inline ControllableEntity* getControllableEntity() const
-                { return this->controllableEntity_; }
+        this->setObjectMode(0x0);
+    }
 
-        protected:
-            PlayerInfo* player_;
-            ControllableEntity* controllableEntity_;
-    };
+    CameraPosition::~CameraPosition()
+    {
+    }
+
+    void CameraPosition::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(CameraPosition, XMLPort, xmlelement, mode);
+
+        XMLPortParam(CameraPosition, "drag", setDrag, getDrag, xmlelement, mode).defaultValues(false);
+    }
+
+    void CameraPosition::attachCamera(Camera* camera)
+    {
+        camera->setDrag(this->bDrag_);
+        this->attach(camera);
+    }
 }
-
-#endif /* _Controller_H__ */

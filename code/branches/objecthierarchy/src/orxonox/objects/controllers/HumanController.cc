@@ -56,8 +56,6 @@ namespace orxonox
         RegisterObject(HumanController);
 
         HumanController::localController_s = this;
-
-        COUT(0) << "HumanController created" << std::endl;
     }
 
     HumanController::~HumanController()

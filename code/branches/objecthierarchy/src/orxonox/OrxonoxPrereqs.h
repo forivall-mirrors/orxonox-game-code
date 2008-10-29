@@ -97,6 +97,7 @@ namespace orxonox
     class DirectionalLight;
 
     class Camera;
+    class CameraPosition;
     class SpawnPoint;
 
     class Spectator;
