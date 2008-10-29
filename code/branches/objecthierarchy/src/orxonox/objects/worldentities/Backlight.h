@@ -31,12 +31,12 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "WorldEntity.h"
+#include "PositionableEntity.h"
 #include "tools/BillboardSet.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Backlight : public WorldEntity
+    class _OrxonoxExport Backlight : public PositionableEntity
     {
         public:
             Backlight(float maxspeed = 1.0, float brakingtime = 1.0, float scale = 1.0);

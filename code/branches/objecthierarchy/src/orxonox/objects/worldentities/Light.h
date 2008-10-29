@@ -26,47 +26,58 @@
  *
  */
 
-#ifndef _Model_H__
-#define _Model_H__
+#ifndef _Light_H__
+#define _Light_H__
 
 #include "OrxonoxPrereqs.h"
 #include "PositionableEntity.h"
-#include "tools/Mesh.h"
+
+#include <string>
+#include <OgreLight.h>
+
+#include "util/Math.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Model : public PositionableEntity
+    class _OrxonoxExport Light : public PositionableEntity
     {
         public:
-            Model(BaseObject* creator);
-            virtual ~Model();
+            Light(BaseObject* creator);
+            virtual ~Light();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void registerVariables();
 
-            virtual void changedVisibility();
+            inline Ogre::Light* getLight()
+                { return this->light_; }
 
-            inline const Mesh& getMesh() const
-                { return this->mesh_; }
+            const std::string& getName() const;
 
-            inline void setMeshSource(const std::string& meshname)
-                { this->meshSrc_ = meshname; this->changedMesh(); }
-            inline const std::string& getMeshSource() const
-                { return this->meshSrc_; }
+            inline void setType(Ogre::Light::LightTypes type)
+                { this->type_ = type; this->changedType(); }
+            Ogre::Light::LightTypes getType() const
+                { return this->type_; }
 
-            inline void setCastShadows(bool bCastShadows)
-                { this->bCastShadows_ = bCastShadows; this->changedShadows(); }
-            inline bool getCastShadows() const
-                { return this->bCastShadows_; }
+            void setDiffuseColour(const ColourValue& colour);
+            const ColourValue& getDiffuseColour() const;
+
+            void setSpecularColour(const ColourValue& colour);
+            const ColourValue& getSpecularColour() const;
+
+            void setDirection(const Vector3& direction);
+            const Vector3& getDirection() const;
 
         private:
-            void changedMesh();
-            void changedShadows();
+            void setTypeString(const std::string& type);
+            std::string getTypeString() const;
 
-            std::string meshSrc_;
-            Mesh mesh_;
-            bool bCastShadows_;
+            void changedType();
+
+            static unsigned int lightCounter_s;
+            Ogre::Light* light_;
+            Ogre::Light::LightTypes type_;
+
     };
 }
 
-#endif /* _PositionableEntity_H__ */
+#endif /* _Light_H__ */

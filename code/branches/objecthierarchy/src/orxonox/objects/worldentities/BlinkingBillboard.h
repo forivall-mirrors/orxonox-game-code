@@ -26,47 +26,47 @@
  *
  */
 
-#ifndef _Model_H__
-#define _Model_H__
+#ifndef _BlinkingBillboard_H__
+#define _BlinkingBillboard_H__
 
 #include "OrxonoxPrereqs.h"
-#include "PositionableEntity.h"
-#include "tools/Mesh.h"
+#include "Billboard.h"
+#include "objects/Tickable.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Model : public PositionableEntity
+    class _OrxonoxExport BlinkingBillboard : public Billboard, public Tickable
     {
         public:
-            Model(BaseObject* creator);
-            virtual ~Model();
+            BlinkingBillboard(BaseObject* creator);
+            virtual ~BlinkingBillboard();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void registerVariables();
 
-            virtual void changedVisibility();
+            virtual void tick(float dt);
 
-            inline const Mesh& getMesh() const
-                { return this->mesh_; }
+            inline void setAmplitude(float amplitude)
+                { this->amplitude_ = amplitude; }
+            inline float getAmplitude() const
+                { return this->amplitude_; }
 
-            inline void setMeshSource(const std::string& meshname)
-                { this->meshSrc_ = meshname; this->changedMesh(); }
-            inline const std::string& getMeshSource() const
-                { return this->meshSrc_; }
+            inline void setFrequency(float frequency)
+                { this->frequency_ = frequency; }
+            inline float getFrequency() const
+                { return this->frequency_; }
 
-            inline void setCastShadows(bool bCastShadows)
-                { this->bCastShadows_ = bCastShadows; this->changedShadows(); }
-            inline bool getCastShadows() const
-                { return this->bCastShadows_; }
+            inline void setPhase(float phase)
+                { this->phase_ = phase; }
+            inline float getPhase() const
+                { return this->phase_; }
 
         private:
-            void changedMesh();
-            void changedShadows();
-
-            std::string meshSrc_;
-            Mesh mesh_;
-            bool bCastShadows_;
+            float amplitude_;
+            float frequency_;
+            float phase_;
+            long double time_;
     };
 }
 
-#endif /* _PositionableEntity_H__ */
+#endif /* _BlinkingBillboard_H__ */

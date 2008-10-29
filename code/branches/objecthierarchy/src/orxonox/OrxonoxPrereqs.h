@@ -93,8 +93,8 @@ namespace orxonox
 
     class Model;
     class Billboard;
+    class BlinkingBillboard;
     class Light;
-    class DirectionalLight;
 
     class Camera;
     class CameraPosition;

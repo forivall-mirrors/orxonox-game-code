@@ -36,7 +36,6 @@ SET( ORXONOX_SRC_FILES
   overlays/hud/ChatOverlay.cc
 
   tools/BillboardSet.cc
-  tools/Light.cc
   tools/Mesh.cc
   tools/ParticleInterface.cc
   tools/TextureGenerator.cc
@@ -56,6 +55,9 @@ SET( ORXONOX_SRC_FILES
   objects/worldentities/MovableEntity.cc
   objects/worldentities/ControllableEntity.cc
   objects/worldentities/Model.cc
+  objects/worldentities/Billboard.cc
+  objects/worldentities/BlinkingBillboard.cc
+  objects/worldentities/Light.cc
   objects/worldentities/Camera.cc
   objects/worldentities/CameraPosition.cc
   objects/worldentities/SpawnPoint.cc

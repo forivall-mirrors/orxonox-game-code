@@ -26,47 +26,48 @@
  *
  */
 
-#ifndef _Model_H__
-#define _Model_H__
+#ifndef _Billboard_H__
+#define _Billboard_H__
 
 #include "OrxonoxPrereqs.h"
 #include "PositionableEntity.h"
-#include "tools/Mesh.h"
+#include "util/Math.h"
+#include "tools/BillboardSet.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Model : public PositionableEntity
+    class _OrxonoxExport Billboard : public PositionableEntity
     {
         public:
-            Model(BaseObject* creator);
-            virtual ~Model();
+            Billboard(BaseObject* creator);
+            virtual ~Billboard();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void registerVariables();
 
             virtual void changedVisibility();
 
-            inline const Mesh& getMesh() const
-                { return this->mesh_; }
+            inline const BillboardSet& getBillboardSet() const
+                { return this->billboard_; }
 
-            inline void setMeshSource(const std::string& meshname)
-                { this->meshSrc_ = meshname; this->changedMesh(); }
-            inline const std::string& getMeshSource() const
-                { return this->meshSrc_; }
+            inline void setMaterial(const std::string& material)
+                { this->material_ = material; this->changedMaterial(); }
+            inline const std::string& getMaterial() const
+                { return this->material_; }
 
-            inline void setCastShadows(bool bCastShadows)
-                { this->bCastShadows_ = bCastShadows; this->changedShadows(); }
-            inline bool getCastShadows() const
-                { return this->bCastShadows_; }
+            inline void setColour(const ColourValue& colour)
+                { this->colour_ = colour; this->changedColour(); }
+            inline const ColourValue& getColour() const
+                { return this->colour_; }
 
         private:
-            void changedMesh();
-            void changedShadows();
+            void changedMaterial();
+            void changedColour();
 
-            std::string meshSrc_;
-            Mesh mesh_;
-            bool bCastShadows_;
+            BillboardSet billboard_;
+            std::string material_;
+            ColourValue colour_;
     };
 }
 
-#endif /* _PositionableEntity_H__ */
+#endif /* _Billboard_H__ */

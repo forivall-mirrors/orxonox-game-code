@@ -31,12 +31,12 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "WorldEntity.h"
+#include "PositionableEntity.h"
 #include "tools/Timer.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ParticleSpawner : public WorldEntity
+    class _OrxonoxExport ParticleSpawner : public PositionableEntity
     {
         public:
             ParticleSpawner();

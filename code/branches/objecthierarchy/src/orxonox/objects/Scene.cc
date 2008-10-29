@@ -73,11 +73,11 @@ namespace orxonox
         if (Core::showsGraphics() && this->sceneManager_)
         {
             Ogre::Light* light;
-            light = this->sceneManager_->createLight("Light0");
+            light = this->sceneManager_->createLight("Light-1");
             light->setType(Ogre::Light::LT_DIRECTIONAL);
             light->setDiffuseColour(ColourValue(1.0, 0.9, 0.6, 1.0));
             light->setSpecularColour(ColourValue(1.0, 0.9, 0.6, 1.0));
-            light->setDirection(1, -0.2, 0.2);
+            light->setDirection(1, -0.3, 0.3);
         }
         // test test test
 

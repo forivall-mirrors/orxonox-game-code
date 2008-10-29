@@ -31,9 +31,12 @@
 
 #include <sstream>
 #include <cassert>
-#include <OgreSceneManager.h>
 
-#include "util/Math.h"
+#include <OgreSceneManager.h>
+#include <OgreBillboard.h>
+
+#include "util/Convert.h"
+#include "util/String.h"
 
 namespace orxonox
 {
@@ -44,41 +47,36 @@ namespace orxonox
         this->billboardSet_ = 0;
     }
 
+    BillboardSet::~BillboardSet()
+    {
+        this->destroyBillboardSet();
+    }
+
     void BillboardSet::setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, int count)
     {
-        assert(scenemanager);
-
-        std::ostringstream name;
-        name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + name.str(), count);
-        this->billboardSet_->createBillboard(Vector3::ZERO);
-        this->billboardSet_->setMaterialName(file);
-
-        this->scenemanager_ = scenemanager;
+        this->setBillboardSet(scenemanager, file, Vector3::ZERO, count);
     }
 
     void BillboardSet::setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const ColourValue& colour, int count)
     {
-        assert(scenemanager);
-
-        std::ostringstream name;
-        name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + name.str(), count);
-        this->billboardSet_->createBillboard(Vector3::ZERO, colour);
-        this->billboardSet_->setMaterialName(file);
-
-        this->scenemanager_ = scenemanager;
+        this->setBillboardSet(scenemanager, file, colour, Vector3::ZERO, count);
     }
 
     void BillboardSet::setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const Vector3& position, int count)
     {
         assert(scenemanager);
+        this->destroyBillboardSet();
 
-        std::ostringstream name;
-        name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + name.str(), count);
-        this->billboardSet_->createBillboard(position);
-        this->billboardSet_->setMaterialName(file);
+        try
+        {
+            this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + convertToString(BillboardSet::billboardSetCounter_s++), count);
+            this->billboardSet_->createBillboard(position);
+            this->billboardSet_->setMaterialName(file);
+        }
+        catch (...)
+        {
+            COUT(1) << "Error: Couln't load billboard \"" << file << "\"" << std::endl;
+        }
 
         this->scenemanager_ = scenemanager;
     }
@@ -86,19 +84,80 @@ namespace orxonox
     void BillboardSet::setBillboardSet(Ogre::SceneManager* scenemanager, const std::string& file, const ColourValue& colour, const Vector3& position, int count)
     {
         assert(scenemanager);
+        this->destroyBillboardSet();
 
-        std::ostringstream name;
-        name << (BillboardSet::billboardSetCounter_s++);
-        this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + name.str(), count);
-        this->billboardSet_->createBillboard(position, colour);
-        this->billboardSet_->setMaterialName(file);
+        try
+        {
+            this->billboardSet_ = scenemanager->createBillboardSet("Billboard" + convertToString(BillboardSet::billboardSetCounter_s++), count);
+            this->billboardSet_->createBillboard(position, colour);
+            this->billboardSet_->setMaterialName(file);
+        }
+        catch (...)
+        {
+            COUT(1) << "Error: Couln't load billboard \"" << file << "\"" << std::endl;
+        }
 
         this->scenemanager_ = scenemanager;
     }
 
-    BillboardSet::~BillboardSet()
+    void BillboardSet::destroyBillboardSet()
     {
         if (this->billboardSet_ && this->scenemanager_)
             this->scenemanager_->destroyBillboardSet(this->billboardSet_);
+    }
+
+    const std::string& BillboardSet::getName() const
+    {
+        if (this->billboardSet_)
+            return this->billboardSet_->getName();
+        else
+            return BLANKSTRING;
+    }
+
+    void BillboardSet::setVisible(bool visible)
+    {
+        if (this->billboardSet_)
+            this->billboardSet_->setVisible(visible);
+    }
+
+    bool BillboardSet::getVisible() const
+    {
+        if (this->billboardSet_)
+            return this->billboardSet_->getVisible();
+        else
+            return false;
+    }
+
+    void BillboardSet::setColour(const ColourValue& colour)
+    {
+        if (this->billboardSet_)
+        {
+            for (int i = 0; i < this->billboardSet_->getNumBillboards(); ++i)
+                this->billboardSet_->getBillboard(i)->setColour(colour);
+        }
+    }
+
+    const ColourValue& BillboardSet::getColour() const
+    {
+        if (this->billboardSet_ && this->billboardSet_->getNumBillboards() > 0)
+        {
+            return this->billboardSet_->getBillboard(0)->getColour();
+        }
+        else
+            return ColourValue::White;
+    }
+
+    void BillboardSet::setMaterial(const std::string& material)
+    {
+        if (this->billboardSet_)
+            this->billboardSet_->setMaterialName(material);
+    }
+
+    const std::string& BillboardSet::getMaterial() const
+    {
+        if (this->billboardSet_)
+            return this->billboardSet_->getMaterialName();
+        else
+            return BLANKSTRING;
     }
 }
