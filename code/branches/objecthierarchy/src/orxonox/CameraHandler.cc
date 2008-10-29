@@ -68,9 +68,16 @@ namespace orxonox
         if (this->cameraList_.size() > 0)
             this->cameraList_.front()->removeFocus();
 
-        // add to list
-        this->cameraList_.push_front(camera);
         camera->setFocus(this->viewport_);
+
+        // add to list
+        std::list<Camera*>::iterator it;
+        for (it = this->cameraList_.begin(); it != this->cameraList_.end(); ++it)
+        {
+            if ((*it) == camera)
+                return; // make sure we don't add it twice
+        }
+        this->cameraList_.push_front(camera);
     }
 
     void CameraHandler::releaseFocus(Camera* camera)
