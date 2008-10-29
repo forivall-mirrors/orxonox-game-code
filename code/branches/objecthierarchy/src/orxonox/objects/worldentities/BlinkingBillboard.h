@@ -56,15 +56,15 @@ namespace orxonox
             inline float getFrequency() const
                 { return this->frequency_; }
 
-            inline void setPhase(float phase)
+            inline void setPhase(const Degree& phase)
                 { this->phase_ = phase; }
-            inline float getPhase() const
+            inline const Degree& getPhase() const
                 { return this->phase_; }
 
         private:
             float amplitude_;
             float frequency_;
-            float phase_;
+            Degree phase_;
             long double time_;
     };
 }

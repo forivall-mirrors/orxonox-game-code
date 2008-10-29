@@ -42,7 +42,7 @@ namespace orxonox
 
         this->amplitude_ = 1.0f;
         this->frequency_ = 1.0f;
-        this->phase_ = 0.0f;
+        this->phase_ = 0;
         this->time_ = 0;
 
         this->registerVariables();
@@ -58,7 +58,7 @@ namespace orxonox
 
         XMLPortParam(BlinkingBillboard, "amplitude", setAmplitude, getAmplitude, xmlelement, mode).defaultValues(1.0f);
         XMLPortParam(BlinkingBillboard, "frequency", setFrequency, getFrequency, xmlelement, mode).defaultValues(1.0f);
-        XMLPortParam(BlinkingBillboard, "phase",     setPhase,     getPhase,     xmlelement, mode).defaultValues(0.0f);
+        XMLPortParam(BlinkingBillboard, "phase",     setPhase,     getPhase,     xmlelement, mode).defaultValues(Degree(0));
     }
 
     void BlinkingBillboard::registerVariables()
@@ -71,6 +71,6 @@ namespace orxonox
     void BlinkingBillboard::tick(float dt)
     {
         this->time_ += dt;
-        this->setScale(this->amplitude_ * sin((6.2831853 + this->phase_) * this->frequency_ * this->time_));
+        this->setScale(this->amplitude_ * sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_));
     }
 }

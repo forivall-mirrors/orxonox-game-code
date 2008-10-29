@@ -41,6 +41,7 @@
 #include "Super.h"
 #include "OrxonoxClass.h"
 #include "XMLIncludes.h"
+#include "Event.h"
 
 namespace orxonox
 {
@@ -109,6 +110,17 @@ namespace orxonox
             inline Gametype* getOldGametype() const { return this->oldGametype_; }
             virtual inline void changedGametype() {}
 
+            void fireEvent();
+            void fireEvent(bool activate);
+
+            virtual void processEvent(Event& event);
+
+            void addEvent(BaseObject* event, const std::string& sectionname);
+            BaseObject* getEvent(unsigned int index) const;
+
+            void addEventContainer(const std::string& sectionname, EventContainer* container);
+            EventContainer* getEventContainer(const std::string& sectionname) const;
+
             /** @brief Sets the indentation of the debug output in the Loader. @param indentation The indentation */
             inline void setLoaderIndentation(const std::string& indentation) { this->loaderIndentation_ = indentation; }
             /** @brief Returns the indentation of the debug output in the Loader. @return The indentation */
@@ -123,20 +135,23 @@ namespace orxonox
         private:
             Template* getTemplate(unsigned int index) const;
 
-            bool                bInitialized_;         //!< True if the object was initialized (passed the object registration)
-            const XMLFile*      file_;                 //!< The XMLFile that loaded this object
-            std::string         loaderIndentation_;    //!< Indentation of the debug output in the Loader
-            Namespace*          namespace_;
-            BaseObject*         creator_;
-            Scene*              scene_;
-            Gametype*           gametype_;
-            Gametype*           oldGametype_;
-            std::set<Template*> templates_;
+            bool                  bInitialized_;         //!< True if the object was initialized (passed the object registration)
+            const XMLFile*        file_;                 //!< The XMLFile that loaded this object
+            std::string           loaderIndentation_;    //!< Indentation of the debug output in the Loader
+            Namespace*            namespace_;
+            BaseObject*           creator_;
+            Scene*                scene_;
+            Gametype*             gametype_;
+            Gametype*             oldGametype_;
+            std::set<Template*>   templates_;
+            std::set<std::pair<std::string, BaseObject*> > eventListeners_;
+            std::map<std::string, EventContainer*> eventContainers_;
     };
 
     SUPER_FUNCTION(0, BaseObject, XMLPort, false);
     SUPER_FUNCTION(2, BaseObject, changedActivity, false);
     SUPER_FUNCTION(3, BaseObject, changedVisibility, false);
+    SUPER_FUNCTION(4, BaseObject, processEvent, false);
 }
 
 #endif /* _BaseObject_H__ */

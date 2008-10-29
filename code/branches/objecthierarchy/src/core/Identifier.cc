@@ -420,8 +420,8 @@ namespace orxonox
     */
     XMLPortParamContainer* Identifier::getXMLPortParamContainer(const std::string& paramname)
     {
-        std::map<std::string, XMLPortParamContainer*>::const_iterator it = xmlportParamContainers_.find(paramname);
-        if (it != xmlportParamContainers_.end())
+        std::map<std::string, XMLPortParamContainer*>::const_iterator it = this->xmlportParamContainers_.find(paramname);
+        if (it != this->xmlportParamContainers_.end())
             return ((*it).second);
         else
             return 0;
@@ -434,6 +434,13 @@ namespace orxonox
     */
     void Identifier::addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container)
     {
+        std::map<std::string, XMLPortParamContainer*>::const_iterator it = this->xmlportParamContainers_.find(paramname);
+        if (it != this->xmlportParamContainers_.end())
+        {
+            COUT(2) << "Warning: Overwriting XMLPortParamContainer in class " << this->getName() << "." << std::endl;
+            delete (it->second);
+        }
+
         this->xmlportParamContainers_[paramname] = container;
     }
 
@@ -444,8 +451,8 @@ namespace orxonox
     */
     XMLPortObjectContainer* Identifier::getXMLPortObjectContainer(const std::string& sectionname)
     {
-        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = xmlportObjectContainers_.find(sectionname);
-        if (it != xmlportObjectContainers_.end())
+        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportObjectContainers_.find(sectionname);
+        if (it != this->xmlportObjectContainers_.end())
             return ((*it).second);
         else
             return 0;
@@ -458,7 +465,45 @@ namespace orxonox
     */
     void Identifier::addXMLPortObjectContainer(const std::string& sectionname, XMLPortObjectContainer* container)
     {
+        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportObjectContainers_.find(sectionname);
+        if (it != this->xmlportObjectContainers_.end())
+        {
+            COUT(2) << "Warning: Overwriting XMLPortObjectContainer in class " << this->getName() << "." << std::endl;
+            delete (it->second);
+        }
+
         this->xmlportObjectContainers_[sectionname] = container;
+    }
+
+    /**
+        @brief Returns a XMLPortEventContainer that attaches an event to this class.
+        @param sectionname The name of the section that contains the event
+        @return The container
+    */
+    XMLPortObjectContainer* Identifier::getXMLPortEventContainer(const std::string& eventname)
+    {
+        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportEventContainers_.find(eventname);
+        if (it != this->xmlportEventContainers_.end())
+            return ((*it).second);
+        else
+            return 0;
+    }
+
+    /**
+        @brief Adds a new XMLPortEventContainer that attaches an event to this class.
+        @param sectionname The name of the section that contains the event
+        @param container The container
+    */
+    void Identifier::addXMLPortEventContainer(const std::string& eventname, XMLPortObjectContainer* container)
+    {
+        std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportEventContainers_.find(eventname);
+        if (it != this->xmlportEventContainers_.end())
+        {
+            COUT(2) << "Warning: Overwriting XMLPortEventContainer in class " << this->getName() << "." << std::endl;
+            delete (it->second);
+        }
+
+        this->xmlportEventContainers_[eventname] = container;
     }
 
     /**

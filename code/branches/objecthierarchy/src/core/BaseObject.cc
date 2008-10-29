@@ -93,6 +93,41 @@ namespace orxonox
         XMLPortParam(BaseObject, "active", setActive, isActive, xmlelement, mode);
 
         XMLPortObjectTemplate(BaseObject, Template, "templates", addTemplate, getTemplate, xmlelement, mode, Template*);
+
+        Element* events = xmlelement.FirstChildElement("events", false);
+
+        if (events)
+        {
+            std::list<std::string> eventnames;
+
+            if (mode == XMLPort::LoadObject)
+            {
+                for (ticpp::Iterator<ticpp::Element> child = events->FirstChildElement(false); child != child.end(); child++)
+                    eventnames.push_back(child->Value());
+            }
+            else if (mode == XMLPort::SaveObject)
+            {
+                for (std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->getIdentifier()->getXMLPortEventMapBegin(); it != this->getIdentifier()->getXMLPortEventMapEnd(); ++it)
+                    eventnames.push_back(it->first);
+            }
+
+            for (std::list<std::string>::iterator it = eventnames.begin(); it != eventnames.end(); ++it)
+            {
+                std::string sectionname = (*it);
+                ExecutorMember<BaseObject>* loadexecutor = createExecutor(createFunctor(&BaseObject::addEvent), std::string( "BaseObject" ) + "::" + "addEvent");
+                ExecutorMember<BaseObject>* saveexecutor = createExecutor(createFunctor(&BaseObject::getEvent), std::string( "BaseObject" ) + "::" + "getEvent");
+                loadexecutor->setDefaultValue(1, sectionname);
+
+                XMLPortClassObjectContainer<BaseObject, BaseObject>* container = 0;
+                container = (XMLPortClassObjectContainer<BaseObject, BaseObject>*)(this->getIdentifier()->getXMLPortEventContainer(sectionname));
+                if (!container)
+                {
+                    container = new XMLPortClassObjectContainer<BaseObject, BaseObject>(sectionname, this->getIdentifier(), loadexecutor, saveexecutor, false, true);
+                    this->getIdentifier()->addXMLPortEventContainer(sectionname, container);
+                }
+                container->port(this, *events, mode);
+            }
+        }
     }
 
     /**
@@ -144,5 +179,66 @@ namespace orxonox
             i++;
         }
         return 0;
+    }
+
+    void BaseObject::addEvent(BaseObject* event, const std::string& sectionname)
+    {
+        this->eventListeners_.insert(std::pair<std::string, BaseObject*>(sectionname, event));
+    }
+
+    BaseObject* BaseObject::getEvent(unsigned int index) const
+    {
+        unsigned int i = 0;
+        for (std::set<std::pair<std::string, BaseObject*> >::const_iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
+        {
+            if (i == index)
+                return (*it).second;
+            ++i;
+        }
+        return 0;
+    }
+
+    void BaseObject::addEventContainer(const std::string& sectionname, EventContainer* container)
+    {
+        std::map<std::string, EventContainer*>::const_iterator it = this->eventContainers_.find(sectionname);
+        if (it != this->eventContainers_.end())
+        {
+            COUT(2) << "Warning: Overwriting EventContainer in class " << this->getIdentifier()->getName() << "." << std::endl;
+            delete (it->second);
+        }
+
+        this->eventContainers_[sectionname] = container;
+    }
+
+    EventContainer* BaseObject::getEventContainer(const std::string& sectionname) const
+    {
+        std::map<std::string, EventContainer*>::const_iterator it = this->eventContainers_.begin();
+        if (it != this->eventContainers_.end())
+            return ((*it).second);
+        else
+            return 0;
+    }
+
+    void BaseObject::fireEvent()
+    {
+        this->fireEvent(true);
+        this->fireEvent(false);
+    }
+
+    void BaseObject::fireEvent(bool activate)
+    {
+        Event event(activate, this);
+
+        for (std::set<std::pair<std::string, BaseObject*> >::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
+        {
+            event.sectionname_ = (*it).first;
+            (*it).second->processEvent(event);
+        }
+    }
+
+    void BaseObject::processEvent(Event& event)
+    {
+        SetEvent(BaseObject, "activity", setActive, event);
+        SetEvent(BaseObject, "visibility", setVisible, event);
     }
 }

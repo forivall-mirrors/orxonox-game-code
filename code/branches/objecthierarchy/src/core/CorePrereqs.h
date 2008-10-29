@@ -112,6 +112,8 @@ namespace orxonox
   class ConfigValueContainer;
   class ConsoleCommand;
   class Core;
+  struct Event;
+  class EventContainer;
   class Executor;
   template <class T>
   class ExecutorMember;

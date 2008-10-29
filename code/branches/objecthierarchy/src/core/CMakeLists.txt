@@ -3,6 +3,7 @@ SET(CORE_SRC_FILES
   ConfigFileManager.cc
   ConfigValueContainer.cc
   Core.cc
+  Event.cc
   GameState.cc
   Language.cc
   LuaBind.cc

@@ -138,7 +138,7 @@ namespace network
       return false;
     }
     else{
-      COUT(3) << "acked a gamestate: " << gamestateID << std::endl;
+      COUT(5) << "acked a gamestate: " << gamestateID << std::endl;
       return true;
     }
   }
@@ -159,7 +159,7 @@ namespace network
       packet::Gamestate *undiffed = gs->undiff(base);
       delete gs;
       gs=undiffed;
-      COUT(3) << "successfully undiffed gamestate id: " << undiffed->getID() << std::endl;
+      COUT(5) << "successfully undiffed gamestate id: " << undiffed->getID() << std::endl;
     }
     if(gs->spreadData())
       return gs;
