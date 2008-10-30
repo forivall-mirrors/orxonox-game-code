@@ -91,7 +91,7 @@ namespace orxonox
         if (!this->particles_)
             return;
 
-        this->particles_->setEnabled(false);
+        this->setActive(false);
 
         if (this->bForceDestroy_ || this->bSuppressStart_)
             return;
@@ -101,14 +101,14 @@ namespace orxonox
 
     void ParticleSpawner::fireParticleSpawner()
     {
-        this->particles_->setEnabled(true);
+        this->setActive(true);
         if (this->lifetime_ != 0)
             this->timer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&ParticleSpawner::stopParticleSpawner)));
     }
 
     void ParticleSpawner::stopParticleSpawner()
     {
-        this->particles_->setEnabled(false);
+        this->setActive(false);
 
         if (this->bAutoDestroy_ || this->bForceDestroy_)
         {
