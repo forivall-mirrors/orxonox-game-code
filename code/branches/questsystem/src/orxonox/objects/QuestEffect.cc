@@ -58,13 +58,18 @@ namespace orxonox {
         The player the effects are invoked on.
     @param effects
         A list of all the effects to be invoked.
+    @return
+        Returns false if there was an error, view console of log for further detail.
     */
-    void QuestEffect::invokeEffects(Player* player, std::list<QuestEffect*> & effects)
+    bool QuestEffect::invokeEffects(Player* player, std::list<QuestEffect*> & effects)
     {
+        bool check = true;
+        
         for (std::list<QuestEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
 	{
-	    (*effect)->invoke(player);
+	    check = check && (*effect)->invoke(player);
 	}
+	return check;
     }
 
 }

@@ -29,12 +29,13 @@
 #include "core/CoreIncludes.h"
 
 #include "Quest.h"
+#include "QuestManager.h"
 
 namespace orxonox {
 
     Quest::Quest() : QuestItem()
     {
-        
+        this->initialize();
     }
 
     /**
@@ -47,9 +48,9 @@ namespace orxonox {
     @param description
         The description of the quest.
     */
-    Quest::Quest(std::string id, std::string title, std::string description) : QuestItem(id, title, description)
+    Quest::Quest(std::string id) : QuestItem(id)
     {
-        initialize();
+        this->initialize();
     }
     
     /**
@@ -58,7 +59,7 @@ namespace orxonox {
     */
     Quest::~Quest()
     {
-        //TDO: Unload lists...
+        
     }
     
     /**
@@ -69,7 +70,8 @@ namespace orxonox {
     {
         RegisterObject(Quest);
         
-        this->parentQuest_ = 0;
+        this->parentQuest_ = NULL;
+        QuestManager::registerQuest(this); //Registers the quest with the QuestManager.
     }
 
     /**
@@ -77,9 +79,17 @@ namespace orxonox {
         Sets the parent quest of the quest.
     @param quest
         A pointer to the quest to be set as parent quest.
+    @return
+        Returns true if the parentQuest could be set.
     */
     bool Quest::setParentQuest(Quest* quest)
     {
+        if(quest == NULL)
+        {
+            COUT(2) << "The parentquest to be added to quest {" << this->getId() << "} was NULL." << std::endl;
+            return false;
+        }
+        
         this->parentQuest_ = quest;
         return true;
     }
@@ -89,11 +99,80 @@ namespace orxonox {
         Adds a sub quest to the quest.
     @param quest
         A pointer to the quest to be set as sub quest.
+    @return
+        Returns true if the subQuest vould be set.
     */
     bool Quest::addSubQuest(Quest* quest)
     {
+        if(quest == NULL)
+        {
+            COUT(2) << "The subquest to be added to quest {" << this->getId() << "} was NULL." << std::endl;
+            return false;
+        }
+        
         this->subQuests_.push_back(quest);
         return true;
+    }
+    
+    /**
+    @brief
+        Returns true if the quest status for the specific player is 'inactive'.
+    @param player
+        The player.
+    @return
+        Returns true if the quest status for the specific player is 'inactive'.
+    @throws
+        Throws an exception if getStatus throws one.
+    */
+    bool Quest::isInactive(const Player* player) const
+    {
+        return this->getStatus(player) == questStatus::inactive;
+    }
+    
+    /**
+    @brief
+        Returns true if the quest status for the specific player is 'active'.
+    @param player
+        The player.
+    @return
+        Returns true if the quest status for the specific player is 'active'.
+    @throws
+        Throws an exception if getStatus throws one.
+    */
+    bool Quest::isActive(const Player* player) const
+    {
+
+        return this->getStatus(player) == questStatus::active;
+    }
+    
+    /**
+    @brief
+        Returns true if the quest status for the specific player is 'failed'.
+    @param player
+        The player.
+    @return
+        Returns true if the quest status for the specific player is 'failed'.
+    @throws
+        Throws an exception if getStatus throws one.
+    */
+    bool Quest::isFailed(const Player* player) const
+    {
+        return this->getStatus(player) == questStatus::failed;
+    }
+    
+    /**
+    @brief
+        Returns true if the quest status for the specific player is 'completed'.
+    @param player
+        The player.
+    @return
+        Returns true if the quest status for the specific player is 'completed'.
+    @throws
+        Throws an exception if getStatus throws one.
+    */
+    bool Quest::isCompleted(const Player* player) const
+    {
+        return this->getStatus(player) == questStatus::completed;
     }
 
     /**
@@ -101,18 +180,20 @@ namespace orxonox {
         Adds a Hint to the list of hints 
     @param hint
         The hint that should be added to the list of hints.
+    @return
+        Returns true if the hint was successfully added.
     */
-    void Quest::addHint(QuestHint* hint)
+    bool Quest::addHint(QuestHint* hint)
     {
-        if ( hint != NULL )
-        {
-            this->hints_.push_back(hint);
-            hint->setQuest(this);
-	}
-        else
+        if(hint == NULL)
         {
             COUT(2) << "A NULL-QuestHint was trying to be added." << std::endl;
-	}
+            return false;
+        }
+        
+	this->hints_.push_back(hint);
+	hint->setQuest(this);
+	return true;
     }
     
     /**

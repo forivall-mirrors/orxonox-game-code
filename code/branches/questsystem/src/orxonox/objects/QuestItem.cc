@@ -36,7 +36,7 @@ namespace orxonox {
     
     QuestItem::QuestItem() : BaseObject()
     {
-        
+        this->initialize();
     }
     
     /**
@@ -44,17 +44,12 @@ namespace orxonox {
         Constructor. Needs as input a unique identifier to be able to identify different instances of this class (and subclasses).
     @param id
         The unique identifier. Should be of GUID form: http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure
-    @param title
-        The title of this QuestItem. Has an empty string as default.
-    @param description
-        The description of this QuestItem. Has an empty string as default.
     */
-    QuestItem::QuestItem(std::string id, std::string title, std::string description) : BaseObject()
+    QuestItem::QuestItem(std::string id) : BaseObject()
     {
         this->initialize();
         
         this->id_ = id;
-        this->description_ = QuestDescription(title, description);
     }
     
     /**
@@ -66,6 +61,18 @@ namespace orxonox {
         
     }
     
+    void QuestItem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(QuestItem, XMLPort, xmlelement, mode);
+        
+        XMLPortParam(QuestItem, "id", setId, getId, xmlelement, mode);
+        //Doesn't getDescription have to be of type getDescription(unsigned int) ?
+        //XMLPortObjectTemplate(QuestItem, QuestDescription, "", setDescription, getDescription, xmlelement, mode, unsigned int);
+        XMLPortObject(QuestItem, QuestDescription, "", setDescription, getDescription, xmlelement, mode);
+
+    }
+
+    
     /**
     @brief
         Initializes the object.
@@ -76,6 +83,28 @@ namespace orxonox {
         RegisterObject(QuestItem);
         
         this->id_ = "";
+    }
+    
+    //const QuestDescription* QuestItem::getDescription(unsigned int index) const //!< Returns the description of the QuestItem.
+    //{
+    //    if(index != 0)
+    //        return NULL;
+    //    return this->description_;
+    //}
+    
+    /**
+    @brief
+        Checks whether an input id is of the required form.
+    @param id
+	The id to be checked.
+    @return
+        Returns true if the string is likely to be of the required form.
+    @todo
+        Clarify form, more vigorous checks.
+    */
+    bool QuestItem::isId(const std::string & id)
+    {
+        return id.size() >= 32;
     }
 
 }

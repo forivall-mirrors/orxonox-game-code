@@ -32,6 +32,7 @@
 #include <map>
 #include <string>
 
+#include "core/XMLPort.h"
 #include "QuestDescription.h"
 #include "QuestItem.h"
 
@@ -55,7 +56,8 @@ namespace orxonox
     /**
     @brief
         Represents a hint in the game towards completing a Quest.
-        Consists of title and description in textual form.
+        Consists of title and description in textual form and must belong to a quest.
+        A QuestHit has a defined status (inactive or active, where inactive is default) for each player, which means each QuestHint exists only once for all players, it doesn't belong to a player, it just has different stati for each of them.
     @author
         Damian 'Mozork' Frick
     */
@@ -64,19 +66,26 @@ namespace orxonox
     
 	public:
             QuestHint();
-	    QuestHint(std::string id, std::string title = "", std::string description = "");
+	    QuestHint(std::string id);
 	    ~QuestHint();
+	    
+	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 	    
 	    bool isActive(Player* player); //!< Returns true if the hint is active for the input player.
 	    
 	    bool activate(Player* player); //!< Activates the hint for the input player.
 	    
-	    void setQuest(Quest* quest); //!< Sets the quest the hint belongs to.
+	    bool setQuest(Quest* quest); //!< Sets the quest the hint belongs to.
+	    
+	    inline Quest* getQuest(void)
+	       { return this->quest_; }
 	    
         private:
             
-            Quest* quest_;
-            std::map<Player*, questHintStatus::Enum> playerStatus_;
+            void initialize(void);
+            
+            Quest* quest_; //!< The quest the hint belongs to.
+            std::map<Player*, questHintStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
     
     };
 

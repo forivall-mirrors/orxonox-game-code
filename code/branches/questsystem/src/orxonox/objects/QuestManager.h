@@ -41,6 +41,7 @@ namespace orxonox {
     /**
     @brief
         Manages quests, by making them globally accessable.
+        Quests (and Hints) are registered in the QuestManager trough their id, and can be accessed in the same way.
     @author
         Damian 'Mozork' Frick
     */
@@ -58,8 +59,8 @@ namespace orxonox {
 	    static QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.
 	    	    
 	private:
-	    static std::map<std::string, Quest*> questMap_;
-	    static std::map<std::string, QuestHint*> hintMap_;
+	    static std::map<std::string, Quest*> questMap_; //!< All quests registered by their id's.
+	    static std::map<std::string, QuestHint*> hintMap_; //!< All hints registered by their id's.
     
     };
 

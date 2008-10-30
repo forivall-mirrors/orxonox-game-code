@@ -27,6 +27,7 @@
  */
 
 #include "core/CoreIncludes.h"
+#include "util/Exception.h"
 
 #include "Quest.h"
 #include "QuestHint.h"
@@ -35,9 +36,13 @@ namespace orxonox {
 
     CreateFactory(QuestHint);
 
+    /**
+    @brief
+        Constructor.
+    */
     QuestHint::QuestHint() : QuestItem()
     {
-        
+        this->initialize();
     }
 
     /**
@@ -50,9 +55,9 @@ namespace orxonox {
     @param description
         The description of the hint, resp. the hint itself.
     */
-    QuestHint::QuestHint(std::string id, std::string title, std::string description) : QuestItem(id, title, description)
+    QuestHint::QuestHint(std::string id) : QuestItem(id)
     {
-        RegisterObject(QuestHint);
+        this->initialize();
     }
     
     /**
@@ -64,16 +69,35 @@ namespace orxonox {
         
     }
     
+    void QuestHint::initialize(void)
+    {
+        RegisterObject(QuestHint);
+    }
+    
+    void QuestHint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+	SUPER(QuestHint, XMLPort, xmlelement, mode);
+    }
+
+    
     /**
     @brief
         Checks whether the hint is active for a specific player.
     @param player
         The player.
+    @throws
+        Throws an Argument Exception if the input Player-pointer is NULL.
     @return
-        Returns 
+        Returns true if the hint is active for the specified player.
     */
     bool QuestHint::isActive(Player* player)
     {
+        if(player == NULL)
+        {
+            ThrowException(Argument, "The input Player* is NULL.");
+            return false;
+        }
+        
         std::map<Player*, questHintStatus::Enum>::iterator it = this->playerStatus_.find(player);
 	if (it != this->playerStatus_.end())
 	{
@@ -84,15 +108,26 @@ namespace orxonox {
     
     /**
     @brief
+        Activates a QuestHint for a given player.
     @param player
+        The player.
     @return
+        Returns true if the activation was successful, false if there were problems.
     */
     bool QuestHint::activate(Player* player)
     {
-        if(this->quest_->isActive(player) && !(this->isActive(player)))
+        if(this->quest_->isActive(player))
         {
-            this->playerStatus_[player] = questHintStatus::active;
-            return true;
+	    if(!(this->isActive(player)))
+	    {
+		this->playerStatus_[player] = questHintStatus::active;
+		return true;
+	    }
+	    else
+	    {
+                COUT(2) << "An already active questHint was trying to get activated." << std::endl;
+                return false;
+	    }
         }
 	COUT(2) << "A hint of a non-active quest was trying to get activated." << std::endl;
 	return false;
@@ -100,12 +135,20 @@ namespace orxonox {
 
     /**
     @brief
+        Sets the quest the QuestHitn belongs to.
     @param quest
     @return
     */
-    void QuestHint::setQuest(Quest* quest)
+    bool QuestHint::setQuest(Quest* quest)
     {
+        if(quest == NULL)
+        {
+            COUT(2) << "The input Quest* is NULL." << std::endl;
+            return false;
+        }
+        
         this->quest_ = quest;
+        return true;
     }
 
 }

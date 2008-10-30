@@ -85,18 +85,24 @@ namespace orxonox {
         Invokes the effect.
     @param player
         The player.
+    @return
+        Returns true if the effect was invoked successfully.
     */
-    void AddReward::invoke(Player* player)
+    bool AddReward::invoke(Player* player)
     {
         if ( this->rewards_ == NULL )
         {
             COUT(2) << "NULL-Rewards list encountered." << std::endl;
-            return;
+            return false;
 	}
+	
+	bool check = true;
         for ( std::list<Rewardable*>::iterator reward = this->rewards_->begin(); reward != this->rewards_->end(); ++reward )
 	{
-	    (*reward)->reward(player);
+	    check = check && (*reward)->reward(player);
 	}
+	
+	return check;
     }
 
 }

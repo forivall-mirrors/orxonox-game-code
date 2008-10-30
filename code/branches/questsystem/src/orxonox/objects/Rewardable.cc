@@ -32,6 +32,7 @@
 
 namespace orxonox {
 
+    
     Rewardable::Rewardable() : BaseObject()
     {
         RegisterObject(Rewardable);

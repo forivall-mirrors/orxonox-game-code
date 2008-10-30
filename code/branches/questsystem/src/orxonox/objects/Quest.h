@@ -57,8 +57,8 @@ namespace orxonox {
     /**
     @brief
         Represents a quest in the game.
-        A quest has a sub
-        
+        A quest has a list of subquests and a parentquest (if it is not a rootquest).
+        Each quest exists only once but it has a different status (inactive, active, failed or completed) for each player.
     @author
         Damian 'Mozork' Frick
     */
@@ -66,7 +66,7 @@ namespace orxonox {
     {
 	public:
             Quest();
-            Quest(std::string id, std::string title = "", std::string description = "");
+            Quest(std::string id);
 	    virtual ~Quest();
     
             inline Quest* getParentQuest(void) const //!< Returns the parent quest of the quest.
@@ -74,25 +74,16 @@ namespace orxonox {
 	    inline const std::list<Quest*> & getSubQuest(void) const //!< Returns the list of sub quests.
                 { return this->subQuests_; }
 	    
-	    //TDO: Necessary? Shouldn't this be decided whilest creating the object?
-	    //     Yes it absolutely should and will. Add these methods to protected then?
-	    bool setParentQuest(Quest* quest); //!< Sets the parent quest of the quest.
-	    bool addSubQuest(Quest* quest); //!< Adds a sub quest to the quest.
-	    
-	    inline bool isInactive(const Player* player) const //!< Returns true if the quest status for the specific player is 'inactive'.
-	       { return this->getStatus(player) == questStatus::inactive; }
-	    inline bool isActive(const Player* player) const //!< Returns true if the quest status for the specific player is 'active'.
-	       { return this->getStatus(player) == questStatus::active; }
-	    inline bool isFailed(const Player* player) const //!< Returns true if the quest status for the specific player is 'failed'.
-	       { return this->getStatus(player) == questStatus::failed; }
-	    inline bool isCompleted(const Player* player) const //!< Returns true if the quest status for the specific player is 'completed'.
-	       { return this->getStatus(player) == questStatus::completed; }
+	    bool isInactive(const Player* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
+	    bool isActive(const Player* player) const; //!< Returns true if the quest status for the specific player is 'active'.
+	    bool isFailed(const Player* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
+	    bool isCompleted(const Player* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
                 
 	    bool start(Player* player); //!< Sets a quest to active.
 	    bool fail(Player* player); //!< Fails the quest.
 	    bool complete(Player* player); //!< Completes the quest.
                 
-            void addHint(QuestHint* hint); //!< Add a hint to the list of hints.
+            bool addHint(QuestHint* hint); //!< Add a hint to the list of hints.
 	    
         protected:
             void initialize(void); //!< Initialized the object.
@@ -101,7 +92,9 @@ namespace orxonox {
             virtual bool isFailable(const Player* player) const = 0; //!< Checks whether the quest can be failed.
             virtual bool isCompletable(const Player* player) const = 0; //!< Checks whether the quest can be completed.
             
-            //TDO: Get the parameter const...
+            bool setParentQuest(Quest* quest); //!< Sets the parent quest of the quest.
+	    bool addSubQuest(Quest* quest); //!< Adds a sub quest to the quest.
+            
             virtual questStatus::Enum getStatus(const Player* player) const = 0; //!< Returns the status of the quest for a specific player.
             virtual bool setStatus(Player* player, const questStatus::Enum & status) = 0; //!< Changes the status for a specific player.
             

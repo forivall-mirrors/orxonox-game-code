@@ -36,12 +36,18 @@ namespace orxonox {
     
     QuestDescription::QuestDescription() : BaseObject()
     {
-        
+        this->initialize();
     }
         
+    /**
+    @brief
+        Constructor. Creates a new QuestDescription object and adds a title and description.
+    @param title
+    @param description
+    */
     QuestDescription::QuestDescription(std::string title, std::string description) : BaseObject()
     {
-        initialize();
+        this->initialize();
         this->title_ = title;
         this->description_ = description;
     }
@@ -49,6 +55,16 @@ namespace orxonox {
     QuestDescription::~QuestDescription()
     {
         
+    }
+    
+    void QuestDescription::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(QuestDescription, XMLPort, xmlelement, mode);
+    
+        XMLPortParam(QuestDescription, "title", setTitle, getTitle, xmlelement, mode);
+        XMLPortParam(QuestDescription, "description", setDescription, getDescription, xmlelement, mode);
+        
+        COUT(1) << "QuestDescription created!" << std::endl;
     }
     
     /**

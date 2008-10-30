@@ -50,7 +50,7 @@ namespace orxonox {
 	    AddQuestHint(std::string hintId);
 	    ~AddQuestHint();
 	    
-	    virtual void invoke(Player* player); //!< Invokes the effect.
+	    virtual bool invoke(Player* player); //!< Invokes the effect.
 	    
 	private:
             std::string hintId_;

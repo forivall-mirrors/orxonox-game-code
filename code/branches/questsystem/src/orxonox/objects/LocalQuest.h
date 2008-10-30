@@ -48,7 +48,7 @@ namespace orxonox {
     {
 	public:
             LocalQuest();
-	    LocalQuest(std::string id, std::string title = "", std::string description = "");
+	    LocalQuest(std::string id);
 	    ~LocalQuest();
 	    
 	protected:
@@ -60,7 +60,9 @@ namespace orxonox {
             virtual bool setStatus(Player* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
                 
 	private:
-            std::map<Player*, questStatus::Enum> playerStatus_;
+            std::map<Player*, questStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
+            
+            void initialize(void);
     
     };
     

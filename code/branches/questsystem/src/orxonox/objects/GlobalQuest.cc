@@ -27,6 +27,7 @@
  */
 
 #include "core/CoreIncludes.h"
+#include "util/Exception.h"
 
 #include "GlobalQuest.h"
 
@@ -34,9 +35,13 @@ namespace orxonox {
 
     CreateFactory(GlobalQuest);
 
+    /**
+    @brief
+        Constructor.
+    */
     GlobalQuest::GlobalQuest() : Quest()
     {
-        
+        this->initialize();
     }
 
     /**
@@ -49,9 +54,9 @@ namespace orxonox {
     @param description
         The description of the quest.
     */
-    GlobalQuest::GlobalQuest(std::string id, std::string title, std::string description) : Quest(id, title, description)
+    GlobalQuest::GlobalQuest(std::string id) : Quest(id)
     {
-        RegisterObject(GlobalQuest);
+        this->initialize();
     }
     
     /**
@@ -63,6 +68,11 @@ namespace orxonox {
         
     }
     
+    void GlobalQuest::initialize(void)
+    {
+        RegisterObject(GlobalQuest);
+    }
+    
     /**
     @brief
         Checks whether the quest can be started.
@@ -70,10 +80,12 @@ namespace orxonox {
         The player for whom is to be checked.
     @return
         Returns true if the quest can be started, false if not.
+    @throws
+        Throws an exception if either isInactive() of isActive() throws one.
     */
     bool GlobalQuest::isStartable(const Player* player) const
     {
-        return this->isInactive(player) || this->isActive(player);
+        return this->isInactive(player) ||  this->isActive(player);
     }
     
     /**
@@ -83,10 +95,13 @@ namespace orxonox {
         The player for whom is to be checked.
     @return
         Returns true if the quest can be failed, false if not.
+    @throws
+        Throws an Exception if isActive() throws one.
     */
     bool GlobalQuest::isFailable(const Player* player) const
     {
         return this->isActive(player);
+
     }
     
     /**
@@ -96,6 +111,8 @@ namespace orxonox {
         The player for whom is to be checked.
     @return
         Returns true if the quest can be completed, false if not.
+    @throws
+        Throws an Exception if isActive() throws one.
     */
     bool GlobalQuest::isCompletable(const Player* player) const
     {
@@ -107,9 +124,16 @@ namespace orxonox {
         Returns the status of the quest for a specific player.
     @param player
         The player.
+    @throws
+        Throws an Exception if player is NULL.
     */
     questStatus::Enum GlobalQuest::getStatus(const Player* player) const
     {
+        if(player == NULL)
+        {
+            ThrowException(Argument, "The input Player* is NULL.");
+        }
+        
         //TDO: Does this really work???
         std::set<Player*>::const_iterator it = this->players_.find((Player*)(void*)player);
         if (it != this->players_.end())
@@ -126,13 +150,21 @@ namespace orxonox {
     /**
     @brief
         Sets the status for a specific player.
+	But be careful wit this one, the status will just be set without checking for its validity. You have to know what you're doing.
     @param player
         The player.
     @param status
         The status to be set.
+    @return
+        Returns false if player is NULL.
     */
     bool GlobalQuest::setStatus(Player* player, const questStatus::Enum & status)
     {
+        if(player == NULL)
+        {
+            return false;
+	}
+        
         std::set<Player*>::const_iterator it = this->players_.find(player);
         if (it == this->players_.end()) //!< Player is not yet in the list.
 	{

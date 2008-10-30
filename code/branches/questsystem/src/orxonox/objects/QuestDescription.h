@@ -32,6 +32,7 @@
 #include <string>
 
 #include "core/BaseObject.h"
+#include "core/XMLPort.h"
 
 namespace orxonox {
 
@@ -49,6 +50,8 @@ namespace orxonox {
 	    QuestDescription(std::string title, std::string description = "");
 	    ~QuestDescription();
 	    
+	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+	    
 	    inline const std::string & getTitle(void) const //!< Returns the title.
                 { return this->title_; }
 	    inline const std::string & getDescription(void) const //!< Returns the description text.
@@ -56,9 +59,14 @@ namespace orxonox {
 	    
 	private:
             void initialize(void);
+            
+            inline void setTitle(const std::string & title) //!< Sets the title.
+                { this->title_ = title; }
+	    inline void setDescription(const std::string & description) //!< Sets the description text.
+                { this->description_ = description; }
 		
-            std::string title_;
-            std::string description_;
+            std::string title_; //!< The title.
+            std::string description_; //!< The description.
     
     };
 

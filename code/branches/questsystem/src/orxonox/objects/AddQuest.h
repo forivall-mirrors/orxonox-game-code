@@ -50,7 +50,7 @@ namespace orxonox {
 	    AddQuest(std::string questId);
 	    ~AddQuest();
 	    
-	    virtual void invoke(Player* player); //!< Invokes the effect.
+	    virtual bool invoke(Player* player); //!< Invokes the effect.
     
     };
 

@@ -52,7 +52,7 @@ namespace orxonox {
 	    AddReward(std::list<Rewardable*>* rewards);
 	    ~AddReward();
 	    
-	    virtual void invoke(Player* player); //!< Invokes the effect.
+	    virtual bool invoke(Player* player); //!< Invokes the effect.
 	    
 	private:
             std::list<Rewardable*>* rewards_;

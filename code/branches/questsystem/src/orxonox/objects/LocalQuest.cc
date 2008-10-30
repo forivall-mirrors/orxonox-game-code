@@ -27,6 +27,7 @@
  */
 
 #include "core/CoreIncludes.h"
+#include "util/Exception.h"
 
 #include "LocalQuest.h"
 
@@ -36,7 +37,7 @@ namespace orxonox {
 
     LocalQuest::LocalQuest() : Quest()
     {
-        
+        this->initialize();
     }
 
     /**
@@ -44,14 +45,10 @@ namespace orxonox {
         Constructor.
     @param id
         The unique identifier.
-    @param title
-        The title of the quest.
-    @param description
-        The description of the quest.
     */
-    LocalQuest::LocalQuest(std::string id, std::string title, std::string description) : Quest(id, title, description)
+    LocalQuest::LocalQuest(std::string id) : Quest(id)
     {
-        RegisterObject(LocalQuest);
+        this->initialize();
     }
     
     /**
@@ -63,6 +60,11 @@ namespace orxonox {
         
     }
     
+    void LocalQuest::initialize(void)
+    {
+        RegisterObject(LocalQuest);
+    }
+    
     /**
     @brief
         Checks whether the quest can be started.
@@ -70,6 +72,8 @@ namespace orxonox {
         The player for whom is to be checked.
     @return
         Returns true if the quest can be started, false if not.
+    @throws
+        Throws an exception if isInactive(Player*) throws one.
     */
     bool LocalQuest::isStartable(const Player* player) const
     {
@@ -83,6 +87,8 @@ namespace orxonox {
         The player for whom is to be checked.
     @return
         Returns true if the quest can be failed, false if not.
+    @throws
+        Throws an exception if isActive(Player*) throws one.
     */
     bool LocalQuest::isFailable(const Player* player) const
     {
@@ -96,6 +102,8 @@ namespace orxonox {
         The player for whom is to be checked.
     @return
         Returns true if the quest can be completed, false if not.
+    @throws
+        Throws an exception if isInactive(Player*) throws one.
     */
     bool LocalQuest::isCompletable(const Player* player) const
     {
@@ -109,9 +117,16 @@ namespace orxonox {
         The player.
     @return
         Returns the status of the quest for the input player.
+    @throws
+        Throws an Exception if player is NULL.
     */
     questStatus::Enum LocalQuest::getStatus(const Player* player) const
     {
+        if(player == NULL)
+        {
+            ThrowException(Argument, "The input Player* is NULL.");
+        }
+        
         std::map<Player*, questStatus::Enum>::const_iterator it = this->playerStatus_.find((Player*)(void*)player); //Thx. to x3n for the (Player*)(void*) 'hack'.
 	if (it != this->playerStatus_.end())
 	{
@@ -123,13 +138,20 @@ namespace orxonox {
     /**
     @brief
         Sets the status for a specific player.
+        But be careful wit this one, the status will just be set without checking for its validity. You have to know what you're doing.
     @param player
         The player.
     @param status
         The status.
+    @return
+        Returns false if player is NULL.
     */
     bool LocalQuest::setStatus(Player* player, const questStatus::Enum & status)
     {
+        if(player == NULL)
+        {
+            return false;
+	}
         this->playerStatus_[player] = status;
         return true;
     }

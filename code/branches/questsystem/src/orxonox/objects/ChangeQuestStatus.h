@@ -50,7 +50,7 @@ namespace orxonox {
 	    ChangeQuestStatus(std::string questId);
 	    virtual ~ChangeQuestStatus();
 	    
-	    virtual void invoke(Player* player) = 0; //!< Invokes the effect.
+	    virtual bool invoke(Player* player) = 0; //!< Invokes the effect.
 	    
 	protected:
             inline std::string getQuestId(void) //!< Returns the quest id.

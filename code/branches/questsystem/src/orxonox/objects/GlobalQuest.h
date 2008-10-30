@@ -48,7 +48,7 @@ namespace orxonox {
     {
 	public:
             GlobalQuest();
-	    GlobalQuest(std::string id, std::string title = "", std::string description = "");
+	    GlobalQuest(std::string id);
 	    ~GlobalQuest();
 	    
 	protected:
@@ -62,6 +62,8 @@ namespace orxonox {
 	private:
             std::set<Player*> players_; //!< The set of players which possess this quest.
             questStatus::Enum status_; //!< The status of this quest.
+            
+            void initialize(void);
     
     };
 

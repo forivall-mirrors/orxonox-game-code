@@ -27,6 +27,7 @@
  */
 
 #include "core/CoreIncludes.h"
+#include "util/Exception.h"
 
 #include "QuestManager.h"
 #include "Quest.h"
@@ -65,11 +66,32 @@ namespace orxonox {
         Invokes the effect.
     @param player
         The player the effect is invoked on.
+    @return
+        Returns true if the effect was invoked successfully.
     */
-    void FailQuest::invoke(Player* player)
+    bool FailQuest::invoke(Player* player)
     {
-        Quest* quest = QuestManager::findQuest(this->getQuestId());
-        quest->fail(player);
+        if(player == NULL)
+        {
+            COUT(2) << "Input player is NULL." << std::endl;
+            return false;
+        }
+    
+        try
+        {
+	    Quest* quest = QuestManager::findQuest(this->getQuestId());
+	    if(!quest->fail(player))
+	    {
+	       return false;
+	    }
+	}
+	catch(const Exception& e)
+	{
+            COUT(2) << e.getFullDescription() << std::endl;
+            return false;
+	}
+	
+	return true;
     }
 
 
