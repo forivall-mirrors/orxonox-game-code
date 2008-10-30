@@ -285,8 +285,18 @@ bool Gamestate::decompressData()
 
   //copy over the header
   *GAMESTATE_HEADER(ndata) = *HEADER;
-  //delete old (compressed data)
-  delete[] data_;
+
+  if (this->bDataENetAllocated_){
+    // Memory was allocated by ENet. --> We let it be since enet_packet_destroy will
+    // deallocated it anyway. So data and packet stay together.
+    this->bDataENetAllocated_ = false;
+  }
+  else{
+    // We allocated the memory in the first place (unlikely). So we destroy the old data
+    // and overwrite it with the new decompressed data.
+    delete[] this->data_;
+  }
+
   //set new pointers
   data_ = ndata;
   HEADER->compressed = false;

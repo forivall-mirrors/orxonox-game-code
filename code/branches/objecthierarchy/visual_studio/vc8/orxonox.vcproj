@@ -276,11 +276,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\ParticleEmitter.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\ParticleSpawner.cc"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
-							ExcludedFromBuild="true"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -288,7 +291,6 @@
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32"
-							ExcludedFromBuild="true"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -673,6 +675,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\MovableEntity.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\orxonox\objects\worldentities\ParticleEmitter.h"
 						>
 					</File>
 					<File

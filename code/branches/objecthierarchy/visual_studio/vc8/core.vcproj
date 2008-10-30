@@ -164,6 +164,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\Event.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\GameState.cc"
 				>
 			</File>
@@ -397,6 +401,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\CorePrereqs.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\Event.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\EventIncludes.h"
 				>
 			</File>
 			<File

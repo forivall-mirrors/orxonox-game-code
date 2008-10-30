@@ -83,7 +83,13 @@ class _NetworkExport Packet{
     enet_uint32 flags_;
     unsigned int clientID_;
     ENUM::Direction packetDirection_;
+    /** Pointer to the data. Be careful when deleting it because it might
+        point to a location that was allocated by ENet.
+        See bDataENetAllocated_ */
     uint8_t *data_;
+    /** Tells whether data_ was allocated by ENet or ourselves.
+        data_ might no correlate with enetPacket_->data. */
+    bool bDataENetAllocated_;
   private:
     static std::map<ENetPacket *, Packet *> packetMap_;
     ENetPacket *enetPacket_;
