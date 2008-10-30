@@ -67,6 +67,7 @@ SET( ORXONOX_SRC_FILES
 
   objects/worldentities/triggers/Trigger.cc
   objects/worldentities/triggers/DistanceTrigger.cc
+  objects/worldentities/triggers/EventTrigger.cc
 
   objects/worldentities/pawns/Spectator.cc
   objects/worldentities/pawns/Pawn.cc

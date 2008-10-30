@@ -51,7 +51,7 @@ namespace orxonox
   {
     public:
       Trigger(BaseObject* creator);
-      ~Trigger();
+      virtual ~Trigger();
 
       virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
       virtual void tick(float dt);

@@ -57,7 +57,9 @@ namespace orxonox
     this->bInvertMode_ = false;
     this->bSwitch_ = false;
     this->bStayActive_ = false;
-    this->delay_ = 0.0;
+    this->delay_ = 0.0f;
+    this->remainingTime_ = 0.0f;
+    this->timeSinceLastEvent_ = 0.0f;
     this->remainingActivations_ = -1;
 
 //    this->bUpdating_ = false;
@@ -97,6 +99,10 @@ namespace orxonox
       this->bFirstTick_ = false;
       this->fireEvent(false);
     }
+
+    // Check if the object is active (this is NOT Trigger::isActive()!)
+    if (!this->BaseObject::isActive())
+        return;
 
     bool newTriggered = this->isTriggered() ^ this->bInvertMode_;
 

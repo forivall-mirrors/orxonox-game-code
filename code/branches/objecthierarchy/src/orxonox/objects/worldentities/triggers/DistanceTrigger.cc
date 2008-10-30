@@ -29,11 +29,13 @@
 #include "OrxonoxStableHeaders.h"
 #include "DistanceTrigger.h"
 
+#include <OgreNode.h>
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-namespace orxonox {
-
+namespace orxonox
+{
   CreateFactory(DistanceTrigger);
 
   DistanceTrigger::DistanceTrigger(BaseObject* creator) : Trigger(creator)
@@ -81,7 +83,10 @@ namespace orxonox {
   {
     Identifier* targetId = ClassByString(targets);
     if (!targetId)
+    {
+        COUT(1) << "Error: \"" << targets << "\" is not a valid class name to include in ClassTreeMask (in " << this->getName() << ", class " << this->getIdentifier()->getName() << ")" << std::endl;
         return;
+    }
 
     this->targetMask_.include(targetId);
 

@@ -20,52 +20,39 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Benjamin Knecht
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _DistanceTrigger_H__
-#define _DistanceTrigger_H__
+#ifndef _EventTrigger_H__
+#define _EventTrigger_H__
 
 #include "Trigger.h"
-
-#include <set>
 
 #include "core/ClassTreeMask.h"
 #include "core/BaseObject.h"
 
 namespace orxonox
 {
-  class _OrxonoxExport DistanceTrigger : public Trigger
-  {
-    public:
-      DistanceTrigger(BaseObject* creator);
-      virtual ~DistanceTrigger();
+    class _OrxonoxExport EventTrigger : public Trigger
+    {
+        public:
+            EventTrigger(BaseObject* creator);
+            virtual ~EventTrigger();
 
-      virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void processEvent(Event& event);
 
-      void addTarget(Ogre::Node* targetNode);
-      void addTargets(const std::string& targets);
-      void removeTarget(Ogre::Node* targetNode);
-      void removeTargets(const std::string& targets);
+            inline void trigger(bool bTriggered)
+                { this->bEventTriggered_ = bTriggered; this->tick(0); }
 
-      inline void setDistance(float distance)
-        { this->distance_ = distance; }
-      inline float getDistance() const
-        { return this->distance_; }
+        protected:
+            virtual bool isTriggered(TriggerMode mode);
 
-      bool checkDistance();
-
-    protected:
-      virtual bool isTriggered(TriggerMode mode);
-
-    private:
-      ClassTreeMask targetMask_;
-      std::set<Ogre::Node*> targetSet_;
-      float distance_;
-  };
+        private:
+            bool bEventTriggered_;
+    };
 }
 
-#endif /* _DistanceTrigger_H__ */
+#endif /* _EventTrigger_H__ */
