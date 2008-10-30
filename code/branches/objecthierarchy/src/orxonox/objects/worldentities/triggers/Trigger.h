@@ -34,6 +34,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include "objects/Tickable.h"
 #include "objects/worldentities/PositionableEntity.h"
 #include "tools/BillboardSet.h"
 
@@ -46,7 +47,7 @@ namespace orxonox
     TM_EventTriggerXOR,
   };
 
-  class _OrxonoxExport Trigger : public PositionableEntity
+  class _OrxonoxExport Trigger : public PositionableEntity, public Tickable
   {
     public:
       Trigger(BaseObject* creator);
@@ -110,6 +111,7 @@ namespace orxonox
 
       bool bActive_;
       bool bTriggered_;
+      bool bFirstTick_;
 
       TriggerMode mode_;
       bool bInvertMode_;

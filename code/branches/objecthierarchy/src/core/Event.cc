@@ -37,7 +37,7 @@ namespace orxonox
         delete this->eventfunction_;
     }
 
-    void EventContainer::process(BaseObject* object, const Event& event)
+    void EventContainer::process(void* object, const Event& event)
     {
         if (this->eventname_ == event.sectionname_)
         {
@@ -46,16 +46,21 @@ namespace orxonox
                 if (event.activate_)
                     ++this->activeEvents_;
                 else
+                {
                     --this->activeEvents_;
 
+                    if (this->activeEvents_ < 0)
+                        this->activeEvents_ = 0;
+                }
+
                 if (this->eventfunction_->getParamCount() == 0 && event.activate_)
-                    (*this->eventfunction_)(object);
+                    (*this->eventfunction_)();
                 else if ((this->activeEvents_ == 1 && event.activate_) || (this->activeEvents_ == 0 && !event.activate_))
                 {
                     if (this->eventfunction_->getParamCount() == 1)
-                        (*this->eventfunction_)(object, this->activeEvents_);
+                        (*this->eventfunction_)(this->activeEvents_);
                     else if (this->eventfunction_->getParamCount() >= 2 && event.castedOriginator_)
-                        (*this->eventfunction_)(object, this->activeEvents_, event.castedOriginator_);
+                        (*this->eventfunction_)(this->activeEvents_, event.castedOriginator_);
                 }
             }
         }

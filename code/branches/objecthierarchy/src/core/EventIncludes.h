@@ -48,7 +48,7 @@
     orxonox::EventContainer* containername = this->getEventContainer(eventname); \
     if (!containername) \
     { \
-        containername = new orxonox::EventContainer(std::string(eventname), executor, orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
+        containername = new orxonox::ClassEventContainer<classname>(std::string(eventname), executor, orxonox::ClassIdentifier<subclassname>::getIdentifier()); \
         this->addEventContainer(eventname, containername); \
     } \
     event.castedOriginator_ = dynamic_cast<subclassname*>(event.originator_); \

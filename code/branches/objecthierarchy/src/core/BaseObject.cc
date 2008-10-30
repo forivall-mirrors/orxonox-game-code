@@ -216,7 +216,7 @@ namespace orxonox
 
     EventContainer* BaseObject::getEventContainer(const std::string& sectionname) const
     {
-        std::map<std::string, EventContainer*>::const_iterator it = this->eventContainers_.begin();
+        std::map<std::string, EventContainer*>::const_iterator it = this->eventContainers_.find(sectionname);
         if (it != this->eventContainers_.end())
             return ((*it).second);
         else

@@ -53,7 +53,7 @@ namespace orxonox {
     SUPER(DistanceTrigger, XMLPort, xmlelement, mode);
 
     XMLPortParam(DistanceTrigger, "distance", setDistance, getDistance, xmlelement, mode).defaultValues(100.0f);
-    XMLPortParamLoadOnly(DistanceTrigger, "target", addTargets, xmlelement, mode);
+    XMLPortParamLoadOnly(DistanceTrigger, "target", addTargets, xmlelement, mode).defaultValues("ControllableEntity");
   }
 
   void DistanceTrigger::addTarget(Ogre::Node* targetNode)
@@ -80,30 +80,38 @@ namespace orxonox {
   void DistanceTrigger::addTargets(const std::string& targets)
   {
     Identifier* targetId = ClassByString(targets);
-    targetMask_.include(targetId);
-    // trigger shouldn't react on itself or other triggers
-    targetMask_.exclude(Class(Trigger), true);
+    if (!targetId)
+        return;
 
+    this->targetMask_.include(targetId);
+
+    // trigger shouldn't react on itself or other triggers
+    this->targetMask_.exclude(Class(Trigger), true);
+
+    // we only want WorldEntities
+    ClassTreeMask WEMask;
+    WEMask.include(Class(WorldEntity));
+    this->targetMask_ *= WEMask;
   }
 
   void DistanceTrigger::removeTargets(const std::string& targets)
   {
     Identifier* targetId = ClassByString(targets);
-    targetMask_.exclude(targetId);
+    this->targetMask_.exclude(targetId);
   }
 
   bool DistanceTrigger::checkDistance()
   {
-    // Iterate through all WorldEntities
-    for (Iterator<WorldEntity> it = ObjectList<WorldEntity>::begin(); it; ++it)
+    // Iterate through all objects
+    for (ClassTreeMaskObjectIterator it = this->targetMask_.begin(); it != this->targetMask_.end(); ++it)
     {
-      // check if WorldEntity is a target
-      if (targetMask_.isIncluded(it->getIdentifier()))
-      {
-        Vector3 distanceVec = it->getNode()->getWorldPosition() - this->getNode()->getWorldPosition();
-        if (distanceVec.length() < this->distance_)
-          return true;
-      }
+      WorldEntity* entity = dynamic_cast<WorldEntity*>(*it);
+      if (!entity)
+        continue;
+
+      Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
+      if (distanceVec.length() < this->distance_)
+        return true;
     }
     return false;
 

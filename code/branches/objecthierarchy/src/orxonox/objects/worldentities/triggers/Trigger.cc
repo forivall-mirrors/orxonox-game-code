@@ -49,6 +49,7 @@ namespace orxonox
 
     this->mode_ = TM_EventTriggerAND;
 
+    this->bFirstTick_ = true;
     this->bActive_ = false;
     this->bTriggered_ = false;
     this->latestState_ = 0x0;
@@ -91,8 +92,13 @@ namespace orxonox
 
   void Trigger::tick(float dt)
   {
+    if (this->bFirstTick_)
+    {
+      this->bFirstTick_ = false;
+      this->fireEvent(false);
+    }
 
-    bool newTriggered = this->isTriggered();
+    bool newTriggered = this->isTriggered() ^ this->bInvertMode_;
 
     // check if new triggering event is really new
     if ((this->latestState_ & 0x1) != newTriggered)
@@ -172,10 +178,7 @@ namespace orxonox
       }
 //      this->bUpdating_ = false;
 
-      if (this->bInvertMode_)
-        return !returnval;
-      else
-        return returnval;
+      return returnval;
     }
     return true;
   }

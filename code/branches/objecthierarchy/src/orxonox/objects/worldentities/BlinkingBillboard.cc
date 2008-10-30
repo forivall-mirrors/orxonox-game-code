@@ -74,7 +74,7 @@ namespace orxonox
 
     void BlinkingBillboard::tick(float dt)
     {
-        if (Core::isMaster())
+        if (Core::isMaster() && this->isActive())
         {
             this->time_ += dt;
             if (this->bQuadratic_)
