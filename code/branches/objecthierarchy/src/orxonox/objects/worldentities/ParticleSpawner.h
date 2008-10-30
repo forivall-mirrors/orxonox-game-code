@@ -31,31 +31,72 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "PositionableEntity.h"
+#include "ParticleEmitter.h"
 #include "tools/Timer.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport ParticleSpawner : public PositionableEntity
+    class _OrxonoxExport ParticleSpawner : public ParticleEmitter
     {
         public:
-            ParticleSpawner();
-            ParticleSpawner(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime = 0, float startdelay = 0, float destroydelay = 0, const Vector3& direction = Vector3::ZERO);
+            ParticleSpawner(BaseObject* creator);
             virtual ~ParticleSpawner();
-            void destroy();
 
-            void setParticle(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime = 0, float startdelay = 0, float destroydelay = 0, const Vector3& direction = Vector3::ZERO);
-            inline ParticleInterface* getParticleInterface() const
-                { return this->particle_; }
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void processEvent(Event& event);
 
-            void setVisible(bool visible);
+            inline void destroy()
+                { this->bForceDestroy_ = true; this->stopParticleSpawner(); }
+            inline void spawn()
+                { this->bSuppressStart_ = false; this->startParticleSpawner(); }
+
+            void configure(float lifetime = 0, float startdelay = 0, float destroydelay = 0, bool autodestroy = true);
+
+            inline void setAutoStart(bool autostart)
+                { this->bAutostart_ = autostart; this->bSuppressStart_ = !autostart; }
+            inline bool getAutoStart() const
+                { return this->bAutostart_; }
+
+            inline void setDestroyAfterLife(bool destroy)
+                { this->bAutoDestroy_ = destroy; }
+            inline bool getDestroyAfterLife() const
+                { return this->bAutoDestroy_; }
+
+            inline void setLoop(bool loop)
+                { this->bLoop_ = loop; }
+            inline bool getLoop() const
+                { return this->bLoop_; }
+
+            inline void setLifetime(float lifetime)
+                { this->lifetime_ = lifetime; this->startParticleSpawner(); }
+            inline float getLifetime() const
+                { return this->lifetime_; }
+
+            inline void setStartdelay(float startdelay)
+                { this->startdelay_ = startdelay; this->startParticleSpawner(); }
+            inline float getStartdelay() const
+                { return this->startdelay_; }
+
+            inline void setDestroydelay(float destroydelay)
+                { this->destroydelay_ = destroydelay; this->startParticleSpawner(); }
+            inline float getDestroydelay() const
+                { return this->destroydelay_; }
 
         private:
-            void createParticleSpawner(float lifetime);
+            void startParticleSpawner();
+            void fireParticleSpawner();
+            void stopParticleSpawner();
             void destroyParticleSpawner();
 
             Timer<ParticleSpawner> timer_;
-            ParticleInterface* particle_;
+
+            bool  bSuppressStart_;
+            bool  bAutostart_;
+            bool  bForceDestroy_;
+            bool  bAutoDestroy_;
+            bool  bLoop_;
+            float startdelay_;
+            float lifetime_;
             float destroydelay_;
     };
 }

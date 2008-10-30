@@ -75,6 +75,7 @@ namespace orxonox
         {
             this->getNode()->attachObject(this->mesh_.getEntity());
             this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
+            this->mesh_.setVisible(this->isVisible());
         }
     }
 

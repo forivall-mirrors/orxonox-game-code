@@ -48,6 +48,8 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void registerVariables();
 
+            virtual void changedVisibility();
+
             inline Ogre::Light* getLight()
                 { return this->light_; }
 

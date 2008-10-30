@@ -28,9 +28,15 @@
 
 #include "Event.h"
 #include "BaseObject.h"
+#include "Executor.h"
 
 namespace orxonox
 {
+    EventContainer::~EventContainer()
+    {
+        delete this->eventfunction_;
+    }
+
     void EventContainer::process(BaseObject* object, const Event& event)
     {
         if (this->eventname_ == event.sectionname_)

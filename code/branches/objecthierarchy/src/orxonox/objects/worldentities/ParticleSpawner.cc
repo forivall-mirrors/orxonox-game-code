@@ -29,78 +29,103 @@
 #include "OrxonoxStableHeaders.h"
 #include "ParticleSpawner.h"
 
-#include <OgreSceneManager.h>
 #include "core/CoreIncludes.h"
+#include "core/EventIncludes.h"
 #include "core/Executor.h"
+#include "core/XMLPort.h"
 #include "tools/ParticleInterface.h"
-#include "GraphicsEngine.h"
 
 namespace orxonox
 {
     CreateFactory(ParticleSpawner);
 
-    ParticleSpawner::ParticleSpawner()
+    ParticleSpawner::ParticleSpawner(BaseObject* creator) : ParticleEmitter(creator)
     {
         RegisterObject(ParticleSpawner);
-        this->particle_ = 0;
-    }
 
-    ParticleSpawner::ParticleSpawner(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float startdelay, float destroydelay, const Vector3& direction)
-    {
-        RegisterObject(ParticleSpawner);
-        this->setParticle(templateName, detaillevel, lifetime, startdelay, destroydelay, direction);
-    }
+        this->bAutostart_ = true;
+        this->bSuppressStart_ = false;
+        this->bAutoDestroy_ = true;
+        this->bForceDestroy_ = false;
+        this->bLoop_ = false;
+        this->startdelay_ = 0;
+        this->lifetime_ = 0;
+        this->destroydelay_ = 0;
 
-    void ParticleSpawner::setParticle(const std::string& templateName, LODParticle::LOD detaillevel, float lifetime, float startdelay, float destroydelay, const Vector3& direction)
-    {
-        ExecutorMember<ParticleSpawner>* executor = createExecutor(createFunctor(&ParticleSpawner::createParticleSpawner));
-        this->destroydelay_ = destroydelay;
-        executor->setDefaultValues(lifetime);
-        this->timer_.setTimer(startdelay, false, this, executor);
-        this->particle_ = new ParticleInterface(templateName, detaillevel);
-        this->particle_->addToSceneNode(this->getNode());
-        this->particle_->setEnabled(false);
-        if (direction != Vector3::ZERO)
-        {
-            this->particle_->getAllEmitters()->setDirection(direction);
-        }
+        this->startParticleSpawner();
     }
 
     ParticleSpawner::~ParticleSpawner()
     {
-        if (this->isInitialized() && this->particle_)
-        {
-            this->particle_->detachFromSceneNode();
-            delete this->particle_;
-        }
-    };
-
-    void ParticleSpawner::destroy()
-    {
-        this->setPosition(this->getNode()->getParent()->getPosition());
-        this->getNode()->getParent()->removeChild(this->getNode());
-        this->detachFromParent();
-        if (this->particle_)
-            this->particle_->setEnabled(false);
-        if (!this->timer_.isActive() || this->timer_.getRemainingTime() > this->destroydelay_)
-            this->timer_.setTimer(this->destroydelay_, false, this, createExecutor(createFunctor(&ParticleSpawner::destroyParticleSpawner)));
     }
 
-    void ParticleSpawner::createParticleSpawner(float lifetime)
+    void ParticleSpawner::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        this->particle_->setEnabled(true);
-        if (lifetime != 0)
-            this->timer_.setTimer(lifetime, false, this, createExecutor(createFunctor(&ParticleSpawner::destroyParticleSpawner)));
+        SUPER(ParticleSpawner, XMLPort, xmlelement, mode);
+
+        XMLPortParam(ParticleSpawner, "autostart",    setAutoStart,        getAutoStart,        xmlelement, mode).defaultValues(true);
+        XMLPortParam(ParticleSpawner, "autodestroy",  setDestroyAfterLife, getDestroyAfterLife, xmlelement, mode).defaultValues(false);
+        XMLPortParam(ParticleSpawner, "loop",         setLoop,             getLoop,             xmlelement, mode).defaultValues(false);
+        XMLPortParam(ParticleSpawner, "lifetime",     setLifetime,         getLifetime,         xmlelement, mode).defaultValues(0.0f);
+        XMLPortParam(ParticleSpawner, "startdelay",   setStartdelay,       getStartdelay,       xmlelement, mode).defaultValues(0.0f);
+        XMLPortParam(ParticleSpawner, "destroydelay", setDestroydelay,     getDestroydelay,     xmlelement, mode).defaultValues(0.0f);
+    }
+
+    void ParticleSpawner::processEvent(Event& event)
+    {
+        SUPER(ParticleSpawner, processEvent, event);
+
+        SetEvent(ParticleSpawner, "spawn", spawn, event);
+    }
+
+    void ParticleSpawner::configure(float lifetime, float startdelay, float destroydelay, bool autodestroy)
+    {
+        this->bAutoDestroy_ = autodestroy;
+        this->startdelay_ = startdelay;
+        this->lifetime_ = lifetime;
+        this->destroydelay_ = destroydelay;
+    }
+
+    void ParticleSpawner::startParticleSpawner()
+    {
+        if (!this->particles_)
+            return;
+
+        this->particles_->setEnabled(false);
+
+        if (this->bForceDestroy_ || this->bSuppressStart_)
+            return;
+
+        this->timer_.setTimer(this->startdelay_, false, this, createExecutor(createFunctor(&ParticleSpawner::fireParticleSpawner)));
+    }
+
+    void ParticleSpawner::fireParticleSpawner()
+    {
+        this->particles_->setEnabled(true);
+        if (this->lifetime_ != 0)
+            this->timer_.setTimer(this->lifetime_, false, this, createExecutor(createFunctor(&ParticleSpawner::stopParticleSpawner)));
+    }
+
+    void ParticleSpawner::stopParticleSpawner()
+    {
+        this->particles_->setEnabled(false);
+
+        if (this->bAutoDestroy_ || this->bForceDestroy_)
+        {
+            this->setPosition(this->getWorldPosition());
+            this->detachFromParent();
+
+            if (!this->timer_.isActive() || this->timer_.getRemainingTime() > this->destroydelay_)
+                this->timer_.setTimer(this->destroydelay_, false, this, createExecutor(createFunctor(&ParticleSpawner::destroyParticleSpawner)));
+        }
+        else if (this->bLoop_)
+        {
+            this->timer_.setTimer(this->destroydelay_, false, this, createExecutor(createFunctor(&ParticleSpawner::startParticleSpawner)));
+        }
     }
 
     void ParticleSpawner::destroyParticleSpawner()
     {
         delete this;
-    }
-
-    void ParticleSpawner::setVisible(bool visible)
-    {
-        if (this->particle_)
-            this->particle_->setEnabled(visible);
     }
 }

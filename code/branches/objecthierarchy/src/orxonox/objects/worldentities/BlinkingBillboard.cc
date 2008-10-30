@@ -29,8 +29,10 @@
 #include "OrxonoxStableHeaders.h"
 #include "BlinkingBillboard.h"
 
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
@@ -43,6 +45,7 @@ namespace orxonox
         this->amplitude_ = 1.0f;
         this->frequency_ = 1.0f;
         this->phase_ = 0;
+        this->bQuadratic_ = false;
         this->time_ = 0;
 
         this->registerVariables();
@@ -59,18 +62,25 @@ namespace orxonox
         XMLPortParam(BlinkingBillboard, "amplitude", setAmplitude, getAmplitude, xmlelement, mode).defaultValues(1.0f);
         XMLPortParam(BlinkingBillboard, "frequency", setFrequency, getFrequency, xmlelement, mode).defaultValues(1.0f);
         XMLPortParam(BlinkingBillboard, "phase",     setPhase,     getPhase,     xmlelement, mode).defaultValues(Degree(0));
+        XMLPortParam(BlinkingBillboard, "quadratic", setQuadratic, isQuadratic,  xmlelement, mode).defaultValues(false);
     }
 
     void BlinkingBillboard::registerVariables()
     {
-        REGISTERDATA(this->amplitude_, network::direction::toclient);
-        REGISTERDATA(this->frequency_, network::direction::toclient);
-        REGISTERDATA(this->phase_,     network::direction::toclient);
+//        REGISTERDATA(this->amplitude_, network::direction::toclient);
+//        REGISTERDATA(this->frequency_, network::direction::toclient);
+//        REGISTERDATA(this->phase_,     network::direction::toclient);
     }
 
     void BlinkingBillboard::tick(float dt)
     {
-        this->time_ += dt;
-        this->setScale(this->amplitude_ * sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_));
+        if (Core::isMaster())
+        {
+            this->time_ += dt;
+            if (this->bQuadratic_)
+                this->setScale(this->amplitude_ * square(sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_)));
+            else
+                this->setScale(this->amplitude_ * sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_));
+        }
     }
 }

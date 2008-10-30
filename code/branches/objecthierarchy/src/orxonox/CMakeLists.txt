@@ -61,8 +61,9 @@ SET( ORXONOX_SRC_FILES
   objects/worldentities/Camera.cc
   objects/worldentities/CameraPosition.cc
   objects/worldentities/SpawnPoint.cc
+  objects/worldentities/ParticleEmitter.cc
+  objects/worldentities/ParticleSpawner.cc
 #  objects/worldentities/Backlight.cc
-#  objects/worldentities/ParticleSpawner.cc
 
   objects/worldentities/triggers/Trigger.cc
   objects/worldentities/triggers/DistanceTrigger.cc

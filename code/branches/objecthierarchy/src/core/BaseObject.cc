@@ -34,6 +34,7 @@
 #include "BaseObject.h"
 #include "tinyxml/tinyxml.h"
 #include "CoreIncludes.h"
+#include "EventIncludes.h"
 #include "XMLPort.h"
 #include "XMLFile.h"
 #include "Template.h"
@@ -78,6 +79,8 @@ namespace orxonox
     */
     BaseObject::~BaseObject()
     {
+        for (std::list<BaseObject*>::const_iterator it = this->events_.begin(); it != this->events_.end(); ++it)
+            (*it)->eventListeners_.erase(this);
     }
 
     /**
@@ -183,16 +186,17 @@ namespace orxonox
 
     void BaseObject::addEvent(BaseObject* event, const std::string& sectionname)
     {
-        this->eventListeners_.insert(std::pair<std::string, BaseObject*>(sectionname, event));
+        event->eventListeners_[this] = sectionname;
+        this->events_.push_back(event);
     }
 
     BaseObject* BaseObject::getEvent(unsigned int index) const
     {
         unsigned int i = 0;
-        for (std::set<std::pair<std::string, BaseObject*> >::const_iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
+        for (std::list<BaseObject*>::const_iterator it = this->events_.begin(); it != this->events_.end(); ++it)
         {
             if (i == index)
-                return (*it).second;
+                return (*it);
             ++i;
         }
         return 0;
@@ -229,10 +233,10 @@ namespace orxonox
     {
         Event event(activate, this);
 
-        for (std::set<std::pair<std::string, BaseObject*> >::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
+        for (std::map<BaseObject*, std::string>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
         {
-            event.sectionname_ = (*it).first;
-            (*it).second->processEvent(event);
+            event.sectionname_ = it->second;
+            it->first->processEvent(event);
         }
     }
 

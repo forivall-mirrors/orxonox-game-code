@@ -36,6 +36,8 @@
 #ifndef _BaseObject_H__
 #define _BaseObject_H__
 
+#include <map>
+
 #include "CorePrereqs.h"
 
 #include "Super.h"
@@ -144,7 +146,8 @@ namespace orxonox
             Gametype*             gametype_;
             Gametype*             oldGametype_;
             std::set<Template*>   templates_;
-            std::set<std::pair<std::string, BaseObject*> > eventListeners_;
+            std::map<BaseObject*, std::string> eventListeners_;
+            std::list<BaseObject*> events_;
             std::map<std::string, EventContainer*> eventContainers_;
     };
 

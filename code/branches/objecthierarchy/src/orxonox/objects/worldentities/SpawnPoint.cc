@@ -77,11 +77,17 @@ namespace orxonox
         if (entity)
         {
             this->getGametype()->pawnPreSpawn(entity);
+
             this->spawn(entity);
+
             if (this->template_)
                 entity->addTemplate(this->template_);
+
             entity->postSpawn();
+
             this->getGametype()->pawnPostSpawn(entity);
+
+            this->fireEvent();
         }
         return entity;
     }

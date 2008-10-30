@@ -479,9 +479,11 @@ namespace orxonox
                                                 COUT(4) << ((BaseObject*)object)->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
 
                                                 BaseObject* newObject = identifier->fabricate((BaseObject*)object);
+                                                assert(newObject);
                                                 newObject->setLoaderIndentation(((BaseObject*)object)->getLoaderIndentation() + "  ");
-//                                                newObject->setFile(((BaseObject*)object)->getFile());
-//                                                newObject->setNamespace(((BaseObject*)object)->getNamespace());
+
+                                                O* castedObject = dynamic_cast<O*>(newObject);
+                                                assert(castedObject);
 
                                                 if (this->bLoadBefore_)
                                                 {
@@ -494,7 +496,7 @@ namespace orxonox
                                                 }
 
                                                 COUT(5) << ((BaseObject*)object)->getLoaderIndentation();
-                                                (*this->loadexecutor_)(object, newObject);
+                                                (*this->loadexecutor_)(object, castedObject);
 
                                                 if (!this->bLoadBefore_)
                                                     newObject->XMLPort(*child, XMLPort::LoadObject);

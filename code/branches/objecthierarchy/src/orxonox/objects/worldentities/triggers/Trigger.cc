@@ -127,6 +127,7 @@ namespace orxonox
       char newState = this->stateChanges_.front().second;
       this->bTriggered_ = (newState & 0x1);
       this->bActive_ = newState & 2;
+      this->fireEvent(this->bActive_);
       this->stateChanges_.pop();
       if (this->stateChanges_.size() != 0)
         this->remainingTime_ = this->stateChanges_.front().first;

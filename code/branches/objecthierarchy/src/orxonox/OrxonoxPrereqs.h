@@ -95,6 +95,9 @@ namespace orxonox
     class Billboard;
     class BlinkingBillboard;
     class Light;
+    class Backlight;
+    class ParticleEmitter;
+    class ParticleSpawner;
 
     class Camera;
     class CameraPosition;
@@ -106,9 +109,6 @@ namespace orxonox
 
     class Controller;
     class HumanController;
-
-    class Backlight;
-    class ParticleSpawner;
 
     class Info;
     class Level;

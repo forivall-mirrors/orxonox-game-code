@@ -164,4 +164,11 @@ namespace orxonox
     {
         this->light_->setType(this->type_);
     }
+
+    void Light::changedVisibility()
+    {
+        SUPER(Light, changedVisibility);
+
+        this->light_->setVisible(this->isVisible());
+    }
 }

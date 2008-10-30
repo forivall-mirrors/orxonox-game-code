@@ -61,10 +61,16 @@ namespace orxonox
             inline const Degree& getPhase() const
                 { return this->phase_; }
 
+            inline void setQuadratic(bool bQuadratic)
+                { this->bQuadratic_ = bQuadratic; }
+            inline bool isQuadratic() const
+                { return this->bQuadratic_; }
+
         private:
             float amplitude_;
             float frequency_;
             Degree phase_;
+            bool bQuadratic_;
             long double time_;
     };
 }

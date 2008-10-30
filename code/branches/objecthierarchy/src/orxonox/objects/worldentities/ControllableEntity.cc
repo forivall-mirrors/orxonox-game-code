@@ -94,7 +94,7 @@ namespace orxonox
         XMLPortParam(ControllableEntity, "hudtemplate", setHudTemplate, getHudTemplate, xmlelement, mode);
         XMLPortParam(ControllableEntity, "camerapositiontemplate", setCameraPositionTemplate, getCameraPositionTemkplate, xmlelement, mode);
 
-        XMLPortObject(ControllableEntity, WorldEntity, "camerapositions", addCameraPosition, getCameraPosition, xmlelement, mode);
+        XMLPortObject(ControllableEntity, CameraPosition, "camerapositions", addCameraPosition, getCameraPosition, xmlelement, mode);
     }
 
     void ControllableEntity::addCameraPosition(CameraPosition* position)
@@ -238,7 +238,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
             }
             else if (this->bControlled_)
             {
-                COUT(2) << "setting client position" << endl;
+//                COUT(2) << "setting client position" << endl;
                 this->client_velocity_ = this->velocity_;
                 this->client_position_ = this->node_->getPosition();
             }
@@ -248,15 +248,13 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     void ControllableEntity::registerVariables()
     {
         REGISTERSTRING(this->cameraPositionTemplate_, network::direction::toclient);
-        
-        
-        REGISTERDATA(this->client_overwrite_,   network::direction::toserver);
-        REGISTERDATA(this->server_overwrite_,   network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
 
         REGISTERDATA(this->server_position_,    network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerPosition));
         REGISTERDATA(this->server_velocity_,    network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerVelocity));
         REGISTERDATA(this->server_orientation_, network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processServerOrientation));
 
+        REGISTERDATA(this->server_overwrite_,   network::direction::toclient, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processOverwrite));
+        REGISTERDATA(this->client_overwrite_,   network::direction::toserver);
 
         REGISTERDATA(this->client_position_,    network::direction::toserver, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientPosition));
         REGISTERDATA(this->client_velocity_,    network::direction::toserver, new network::NetworkCallback<ControllableEntity>(this, &ControllableEntity::processClientVelocity));
@@ -300,12 +298,12 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
     {
         if (this->server_overwrite_ == this->client_overwrite_)
         {
-            COUT(2) << "callback: setting client position" << endl;
+//            COUT(2) << "callback: setting client position" << endl;
             this->node_->setPosition(this->client_position_);
             this->server_position_ = this->client_position_;
         }
-        else
-          COUT(2) << "callback: not setting client position" << endl;
+//        else
+//          COUT(2) << "callback: not setting client position" << endl;
     }
 
     void ControllableEntity::processClientVelocity()
@@ -457,7 +455,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
         }
         else if (this->bControlled_)
         {
-//             this->node_->lookAt(target, relativeTo, localDirectionVector);
+            this->node_->lookAt(target, relativeTo, localDirectionVector);
             this->client_orientation_ = this->node_->getOrientation();
         }
     }

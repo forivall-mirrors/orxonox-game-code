@@ -133,7 +133,7 @@ namespace orxonox
             inline void attachToParent(WorldEntity* parent)
                 { parent->attach(this); }
             inline void detachFromParent()
-                { this->parent_->detach(this); }
+                { if (this->parent_) { this->parent_->detach(this); } }
             inline WorldEntity* getParent() const
                 { return this->parent_; }
 

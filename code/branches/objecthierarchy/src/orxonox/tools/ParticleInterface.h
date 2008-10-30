@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
@@ -44,55 +44,65 @@
 
 namespace orxonox
 {
-  class _OrxonoxExport ParticleInterface : public OrxonoxClass
-  {
-    public:
-      ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::LOD detaillevel);
-      ~ParticleInterface();
+    class _OrxonoxExport ParticleInterface : public OrxonoxClass
+    {
+        public:
+            ParticleInterface(Ogre::SceneManager* scenemanager, const std::string& templateName, LODParticle::LOD detaillevel);
+            virtual ~ParticleInterface();
 
-      inline Ogre::ParticleSystem* getParticleSystem() const
-        { return this->particleSystem_; }
+            inline Ogre::ParticleSystem* getParticleSystem() const
+                { return this->particleSystem_; }
 
-      void addToSceneNode(Ogre::SceneNode* sceneNode);
-      void detachFromSceneNode();
+            void addToSceneNode(Ogre::SceneNode* sceneNode);
+            void detachFromSceneNode();
 
-      Ogre::ParticleEmitter* createNewEmitter();
-      Ogre::ParticleEmitter* getEmitter(unsigned int emitterNr) const;
-      void removeEmitter(unsigned int emitterNr);
-      void removeAllEmitters();
-      unsigned int getNumEmitters() const;
+            Ogre::ParticleEmitter* createNewEmitter();
+            Ogre::ParticleEmitter* getEmitter(unsigned int emitterNr) const;
+            void removeEmitter(unsigned int emitterNr);
+            void removeAllEmitters();
+            unsigned int getNumEmitters() const;
 
-      Ogre::ParticleAffector* addAffector(const std::string& name);
-      Ogre::ParticleAffector* getAffector(unsigned int affectorNr) const;
-      void removeAffector(unsigned int affectorNr);
-      void removeAllAffectors();
-      unsigned int getNumAffectors() const;
+            Ogre::ParticleAffector* addAffector(const std::string& name);
+            Ogre::ParticleAffector* getAffector(unsigned int affectorNr) const;
+            void removeAffector(unsigned int affectorNr);
+            void removeAllAffectors();
+            unsigned int getNumAffectors() const;
 
-      float getSpeedFactor() const;
-      void setSpeedFactor(float factor);
-      bool getKeepParticlesInLocalSpace() const;
-      void setKeepParticlesInLocalSpace(bool keep);
+            float getSpeedFactor() const;
+            void setSpeedFactor(float factor);
+            bool getKeepParticlesInLocalSpace() const;
+            void setKeepParticlesInLocalSpace(bool keep);
 
-      void setEnabled(bool enable);
-      void detailLevelChanged(unsigned int newlevel);
+            void setEnabled(bool enable);
+            inline bool isEnabled() const
+                { return this->bEnabled_; }
 
-      inline void storeThisAsCurrentParticleInterface()
-        { ParticleInterface::currentParticleInterface_s = this; }
-      inline static ParticleInterface* getCurrentParticleInterface()
-        { return ParticleInterface::currentParticleInterface_s; }
+            void setVisible(bool visible);
+            inline bool isVisible() const
+                { return this->bVisible_; }
 
-    private:
-      void updateVisibility();
+            void detailLevelChanged(unsigned int newlevel);
+            void setDetailLevel(unsigned int level);
 
-      static ParticleInterface* currentParticleInterface_s;
-      static unsigned int counter_s;
-      Ogre::SceneNode* sceneNode_;
-      Ogre::ParticleSystem* particleSystem_;
-      bool bVisible_;
-      bool bEnabled_;
-      unsigned int detaillevel_;                            //!< Detail level of this particle effect (0: off, 1: low, 2: normal, 3: high)
-      Ogre::SceneManager* scenemanager_;
-  };
+            inline void storeThisAsCurrentParticleInterface()
+                { ParticleInterface::currentParticleInterface_s = this; }
+            inline static ParticleInterface* getCurrentParticleInterface()
+                { return ParticleInterface::currentParticleInterface_s; }
+
+        private:
+            void updateVisibility();
+
+            static ParticleInterface* currentParticleInterface_s;
+            static unsigned int       counter_s;
+
+            Ogre::SceneNode*          sceneNode_;
+            Ogre::ParticleSystem*     particleSystem_;
+            bool                      bVisible_;
+            bool                      bEnabled_;
+            bool                      bAllowedByLOD_;
+            unsigned int              detaillevel_;     //!< Detail level of this particle effect (0: off, 1: low, 2: normal, 3: high)
+            Ogre::SceneManager*       scenemanager_;
+    };
 }
 
 #endif /* _ParticleInterface_H__ */
