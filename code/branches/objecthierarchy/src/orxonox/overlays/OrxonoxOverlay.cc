@@ -61,7 +61,7 @@ namespace orxonox
         // add this overlay to the static map of OrxonoxOverlays
         if (overlays_s.find(this->getName()) != overlays_s.end())
         {
-            COUT(1) << "Overlay names should be unique or you cannnot access them via console." << std::endl;
+            COUT(1) << "Overlay names should be unique or you cannnot access them via console. Name: \"" << this->getName() << "\"" << std::endl;
         }
         overlays_s[this->getName()] = this;
 
@@ -129,6 +129,16 @@ namespace orxonox
         XMLPortParam(OrxonoxOverlay, "rotation",  setRotation,  getRotation,  xmlElement, mode);
         XMLPortParam(OrxonoxOverlay, "correctAspect", setAspectCorrection,   getAspectCorrection,   xmlElement, mode);
         XMLPortParam(OrxonoxOverlay, "background",    setBackgroundMaterial, getBackgroundMaterial, xmlElement, mode);
+    }
+
+    void OrxonoxOverlay::changedName()
+    {
+        OrxonoxOverlay::overlays_s.erase(this->getOldName());
+
+        if (OrxonoxOverlay::overlays_s.find(this->getName()) != OrxonoxOverlay::overlays_s.end())
+            COUT(1) << "Overlay names should be unique or you cannnot access them via console. Name: \"" << this->getName() << "\"" << std::endl;
+
+        OrxonoxOverlay::overlays_s[this->getName()] = this;
     }
 
     //! Only sets the background material name if not ""

@@ -88,6 +88,8 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
 
+        virtual void changedName();
+
         //! Shows the overlay with an detour to BaseObject::visibility_
         void show() { this->setVisible(true); }
         //! Hides the overlay with an detour to BaseObject::visibility_
