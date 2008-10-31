@@ -150,7 +150,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\orxonox\CameraHandler.cc"
+				RelativePath="..\..\src\orxonox\CameraManager.cc"
 				>
 			</File>
 			<File
@@ -192,6 +192,18 @@
 			<Filter
 				Name="objects"
 				>
+				<File
+					RelativePath="..\..\src\orxonox\objects\EventDispatcher.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\EventListener.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\EventTarget.cc"
+					>
+				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\Radar.cc"
 					>
@@ -282,20 +294,6 @@
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\ParticleSpawner.cc"
 						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\src\orxonox\objects\worldentities\PositionableEntity.cc"
@@ -330,6 +328,10 @@
 						>
 						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\DistanceTrigger.cc"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\EventTrigger.cc"
 							>
 						</File>
 						<File
@@ -584,7 +586,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\src\orxonox\CameraHandler.h"
+				RelativePath="..\..\src\orxonox\CameraManager.h"
 				>
 			</File>
 			<File
@@ -610,6 +612,18 @@
 			<Filter
 				Name="objects"
 				>
+				<File
+					RelativePath="..\..\src\orxonox\objects\EventDispatcher.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\EventListener.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\orxonox\objects\EventTarget.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\src\orxonox\objects\Radar.h"
 					>
@@ -718,6 +732,10 @@
 						>
 						<File
 							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\DistanceTrigger.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\orxonox\objects\worldentities\triggers\EventTrigger.h"
 							>
 						</File>
 						<File

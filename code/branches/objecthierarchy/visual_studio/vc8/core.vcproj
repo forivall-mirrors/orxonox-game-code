@@ -191,6 +191,10 @@
 				RelativePath="..\..\src\core\Template.cc"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\core\XMLNameListener.cc"
+				>
+			</File>
 			<Filter
 				Name="tolua"
 				>
@@ -441,6 +445,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\core\XMLIncludes.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\XMLNameListener.h"
 				>
 			</File>
 			<Filter

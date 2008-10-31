@@ -53,8 +53,6 @@ namespace orxonox
     //! The BaseObject is the parent of all classes representing an instance in the game.
     class _CoreExport BaseObject : virtual public OrxonoxClass
     {
-        friend class WorldEntity;
-
         public:
             BaseObject(BaseObject* creator);
             virtual ~BaseObject();

@@ -153,7 +153,7 @@ namespace orxonox
 
         Copyright (c) 2000-2008 Torus Knot Software Ltd
         
-        OGRE is licensed under the LGPL. For more info, see ogre license info.
+        OGRE is licensed under the LGPL. For more info, see OGRE license.
     */
     void GSRoot::setThreadAffinity(unsigned int limitToCPU)
     {
