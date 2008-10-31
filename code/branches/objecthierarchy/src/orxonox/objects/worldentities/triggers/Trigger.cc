@@ -118,9 +118,7 @@ namespace orxonox
       else
       {
         this->latestState_ &= 0xFE; // set trigger bit to 0
-        if (this->bSwitch_)
-          this->storeState();
-        else
+        if (!this->bSwitch_)
           this->switchState();
       }
     }
