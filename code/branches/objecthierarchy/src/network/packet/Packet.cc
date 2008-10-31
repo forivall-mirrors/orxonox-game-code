@@ -212,7 +212,7 @@ void Packet::deletePacket(ENetPacket *enetPacket){
   // Make sure we don't delete it again in the destructor
   it->second->enetPacket_ = 0;
   delete it->second;
-  packetMap_.erase(it);
+  //packetMap_.erase(it);
 }
 
 } // namespace packet
