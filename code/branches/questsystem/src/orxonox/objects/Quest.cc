@@ -37,21 +37,6 @@ namespace orxonox {
     {
         this->initialize();
     }
-
-    /**
-    @brief
-        Constructor. Creates a quest with a given id, title and description.
-    @param id
-        The unique identifier of the quest.
-    @param title
-        The title of the quest.
-    @param description
-        The description of the quest.
-    */
-    Quest::Quest(std::string id) : QuestItem(id)
-    {
-        this->initialize();
-    }
     
     /**
     @brief
@@ -60,6 +45,18 @@ namespace orxonox {
     Quest::~Quest()
     {
         
+    }
+    
+    void Quest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(Quest, XMLPort, xmlelement, mode);
+        
+        XMLPortObject(Quest, Quest, "", addSubQuest, getSubQuests, xmlelement, mode);
+        XMLPortObject(Quest, QuestHint, "", addHint, getHints, xmlelement, mode);
+        XMLPortObject(Quest, QuestEffect, "fail-effects", addFailEffect, getFailEffects, xmlelement, mode);
+        XMLPortObject(Quest, QuestEffect, "complete-effects", addCompleteEffect, getCompleteEffects, xmlelement, mode);
+        
+        QuestManager::registerQuest(this); //Registers the quest with the QuestManager.
     }
     
     /**
@@ -71,7 +68,6 @@ namespace orxonox {
         RegisterObject(Quest);
         
         this->parentQuest_ = NULL;
-        QuestManager::registerQuest(this); //Registers the quest with the QuestManager.
     }
 
     /**
@@ -110,8 +106,144 @@ namespace orxonox {
             return false;
         }
         
+        quest->setParentQuest(this);
         this->subQuests_.push_back(quest);
         return true;
+    }
+    
+    
+    /**
+    @brief
+        Adds a Hint to the list of hints 
+    @param hint
+        The hint that should be added to the list of hints.
+    @return
+        Returns true if the hint was successfully added.
+    */
+    bool Quest::addHint(QuestHint* hint)
+    {
+        if(hint == NULL)
+        {
+            COUT(2) << "A NULL-QuestHint was trying to be added." << std::endl;
+            return false;
+        }
+        
+	this->hints_.push_back(hint);
+	hint->setQuest(this);
+	return true;
+    }
+    
+    /**
+    @brief
+        
+    */
+    bool Quest::addFailEffect(QuestEffect* effect)
+    {
+        if(effect == NULL)
+        {
+            COUT(2) << "A NULL-QuestEffect was trying to be added" << std::endl;
+            return false;
+        }
+        
+        this->failEffects_.push_back(effect);
+        return true;
+    }
+    
+    /**
+    @brief
+        
+    */
+    bool Quest::addCompleteEffect(QuestEffect* effect)
+    {
+        if(effect == NULL)
+        {
+            COUT(2) << "A NULL-QuestEffect was trying to be added" << std::endl;
+            return false;
+        }
+        
+        this->completeEffects_.push_back(effect);
+        return true;
+    }
+    
+    /**
+    @brief
+        
+    */
+    const Quest* Quest::getParentQuest(void)
+    {
+        return this->parentQuest_;
+    }
+    
+    /**
+    @brief
+        
+    */
+    const Quest* Quest::getSubQuests(unsigned int index) const
+    {
+        int i = index;
+        for (std::list<Quest*>::const_iterator subQuest = this->subQuests_.begin(); subQuest != this->subQuests_.end(); ++subQuest)
+	{
+	    if(i == 0)
+	    {
+	       return *subQuest;
+	    }
+	    i--;
+	}
+        return NULL;
+    }
+    
+    /**
+    @brief
+        
+    */
+    const QuestHint* Quest::getHints(unsigned int index) const
+    {
+        int i = index;
+        for (std::list<QuestHint*>::const_iterator hint = this->hints_.begin(); hint != this->hints_.end(); ++hint)
+	{
+	    if(i == 0)
+	    {
+	       return *hint;
+	    }
+	    i--;
+	}
+        return NULL;
+    }
+    
+    /**
+    @brief
+        
+    */
+    const QuestEffect* Quest::getFailEffects(unsigned int index) const
+    {
+        int i = index;
+        for (std::list<QuestEffect*>::const_iterator effect = this->failEffects_.begin(); effect != this->failEffects_.end(); ++effect)
+	{
+	    if(i == 0)
+	    {
+	       return *effect;
+	    }
+	    i--;
+	}
+        return NULL;
+    }
+    
+    /**
+    @brief
+        
+    */
+    const QuestEffect* Quest::getCompleteEffects(unsigned int index) const
+    {
+        int i = index;
+        for (std::list<QuestEffect*>::const_iterator effect = this->completeEffects_.begin(); effect != this->completeEffects_.end(); ++effect)
+	{
+	    if(i == 0)
+	    {
+	       return *effect;
+	    }
+	    i--;
+	}
+        return NULL;
     }
     
     /**
@@ -173,27 +305,6 @@ namespace orxonox {
     bool Quest::isCompleted(const Player* player) const
     {
         return this->getStatus(player) == questStatus::completed;
-    }
-
-    /**
-    @brief
-        Adds a Hint to the list of hints 
-    @param hint
-        The hint that should be added to the list of hints.
-    @return
-        Returns true if the hint was successfully added.
-    */
-    bool Quest::addHint(QuestHint* hint)
-    {
-        if(hint == NULL)
-        {
-            COUT(2) << "A NULL-QuestHint was trying to be added." << std::endl;
-            return false;
-        }
-        
-	this->hints_.push_back(hint);
-	hint->setQuest(this);
-	return true;
     }
     
     /**

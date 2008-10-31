@@ -31,6 +31,7 @@
 
 #include <string>
 
+#include "core/XMLPort.h"
 #include "ChangeQuestStatus.h"
 
 namespace orxonox {
@@ -47,8 +48,9 @@ namespace orxonox {
     {
 	public:
             FailQuest();
-	    FailQuest(std::string questId);
 	    ~FailQuest();
+	    
+	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 	    
 	    virtual bool invoke(Player* player); //!< Invokes the effect.
     

@@ -50,7 +50,6 @@ namespace orxonox {
     
 	public:
             QuestItem();
-	    QuestItem(std::string id);
 	    virtual ~QuestItem();
 	    
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

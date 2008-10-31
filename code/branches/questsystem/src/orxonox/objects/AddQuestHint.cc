@@ -40,18 +40,6 @@ namespace orxonox {
     {
         
     }
-
-    /**
-    @brief
-        Constructor.
-    @param hintId
-        The id of the hint to be set to active.
-    */
-    AddQuestHint::AddQuestHint(std::string hintId) : QuestEffect()
-    {
-        RegisterObject(AddQuestHint);
-        this->hintId_ = hintId;
-    }
     
     /**
     @brief
@@ -59,6 +47,14 @@ namespace orxonox {
     */
     AddQuestHint::~AddQuestHint()
     {
+    }
+    
+    void AddQuestHint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(AddQuestHint, XMLPort, xmlelement, mode);
+        
+        XMLPortParam(AddQuestHint, "hintId", setHintId, getHintId, xmlelement, mode);
+        
     }
 
     /**

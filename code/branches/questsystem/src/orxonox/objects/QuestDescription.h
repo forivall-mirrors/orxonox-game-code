@@ -47,7 +47,6 @@ namespace orxonox {
     
 	public:
             QuestDescription();
-	    QuestDescription(std::string title, std::string description = "");
 	    ~QuestDescription();
 	    
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

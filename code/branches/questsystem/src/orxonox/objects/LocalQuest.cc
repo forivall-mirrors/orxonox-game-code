@@ -39,17 +39,6 @@ namespace orxonox {
     {
         this->initialize();
     }
-
-    /**
-    @brief
-        Constructor.
-    @param id
-        The unique identifier.
-    */
-    LocalQuest::LocalQuest(std::string id) : Quest(id)
-    {
-        this->initialize();
-    }
     
     /**
     @brief
@@ -58,6 +47,13 @@ namespace orxonox {
     LocalQuest::~LocalQuest()
     {
         
+    }
+    
+    void LocalQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(LocalQuest, XMLPort, xmlelement, mode);
+
+        COUT(1) << "New LocalQuest {" << this->getId() << "} created." << std::endl;
     }
     
     void LocalQuest::initialize(void)

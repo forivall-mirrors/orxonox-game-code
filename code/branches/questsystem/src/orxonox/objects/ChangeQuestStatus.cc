@@ -34,27 +34,22 @@ namespace orxonox {
 
     ChangeQuestStatus::ChangeQuestStatus() : QuestEffect()
     {
-        
+        RegisterObject(ChangeQuestStatus);
     }
 
-    /**
-    @brief
-        Constructor.
-    @param questId
-        The id of the quest the status should be changed of.
-    */
-    ChangeQuestStatus::ChangeQuestStatus(std::string questId) : QuestEffect()
-    {
-        RegisterObject(ChangeQuestStatus);
-        this->questId_ = questId;
-    }
-    
     /**
     @brief
         Destructor.
     */
     ChangeQuestStatus::~ChangeQuestStatus()
     {
+    }
+    
+    void ChangeQuestStatus::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(ChangeQuestStatus, XMLPort, xmlelement, mode);
+        
+        XMLPortParam(ChangeQuestStatus, "questId", setQuestId, getQuestId, xmlelement, mode);
     }
 
 }

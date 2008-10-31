@@ -42,17 +42,6 @@ namespace orxonox {
 
     AddQuest::AddQuest() : ChangeQuestStatus()
     {
-        
-    }
-
-    /**
-    @brief
-        Constructor.
-    @param questId
-        The id of the quest to be added.
-    */
-    AddQuest::AddQuest(std::string questId) : ChangeQuestStatus(questId)
-    {
         RegisterObject(AddQuest);
     }
     
@@ -62,6 +51,12 @@ namespace orxonox {
     */ 
     AddQuest::~AddQuest()
     {
+    }
+    
+    void AddQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(AddQuest, XMLPort, xmlelement, mode);
+        
     }
     
     /**

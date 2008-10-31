@@ -39,17 +39,6 @@ namespace orxonox {
 
     CompleteQuest::CompleteQuest() : ChangeQuestStatus()
     {
-        
-    }
-    
-    /**
-    @brief
-        Constructor.
-    @param questId
-        The id of the quest to be completed.
-    */
-    CompleteQuest::CompleteQuest(std::string questId) : ChangeQuestStatus(questId)
-    {
         RegisterObject(CompleteQuest);
     }
     
@@ -59,6 +48,11 @@ namespace orxonox {
     */
     CompleteQuest::~CompleteQuest()
     {
+    }
+    
+    void CompleteQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(CompleteQuest, XMLPort, xmlelement, mode);
     }
     
     /**

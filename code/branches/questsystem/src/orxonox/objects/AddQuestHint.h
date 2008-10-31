@@ -47,13 +47,19 @@ namespace orxonox {
     {
 	public:
             AddQuestHint();
-	    AddQuestHint(std::string hintId);
 	    ~AddQuestHint();
+	    
+	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 	    
 	    virtual bool invoke(Player* player); //!< Invokes the effect.
 	    
 	private:
             std::string hintId_;
+            
+            inline const std::string & getHintId(void) const
+                { return this->hintId_; }
+	    inline void setHintId(const std::string & id)
+                { this->hintId_ = id; }
     
     };
 

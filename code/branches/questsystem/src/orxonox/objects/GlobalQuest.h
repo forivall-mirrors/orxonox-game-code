@@ -31,6 +31,7 @@
 
 #include <set>
 
+#include "core/XMLPort.h"
 #include "Quest.h"
 
 namespace orxonox {
@@ -48,8 +49,9 @@ namespace orxonox {
     {
 	public:
             GlobalQuest();
-	    GlobalQuest(std::string id);
 	    ~GlobalQuest();
+	    
+	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 	    
 	protected:
             virtual bool isStartable(const Player* player) const; //!< Checks whether the quest can be started.

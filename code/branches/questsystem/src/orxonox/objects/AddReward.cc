@@ -36,31 +36,7 @@ namespace orxonox {
     
     AddReward::AddReward() : QuestEffect()
     {
-        
-    }
-    
-    /**
-    @brief
-        Constructor. Creates a new AddReward effect with an input reward.
-    @param reward
-        A reward.
-    */
-    AddReward::AddReward(Rewardable* reward) : QuestEffect()
-    {
         this->initialize();
-        this->addRewardable(reward);
-    }
-    
-    /**
-    @brief
-        Constructor. Creates a new AddReward effect with an input list of rewards.
-    @param rewards
-        A list of rewards.
-    */
-    AddReward::AddReward(std::list<Rewardable*>* rewards) : QuestEffect()
-    {
-        this->initialize();
-        this->rewards_ = rewards;
     }
     
     /**
@@ -71,6 +47,14 @@ namespace orxonox {
     {
     }
 
+    void AddReward::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(AddReward, XMLPort, xmlelement, mode);
+        
+        XMLPortObject(AddReward, Rewardable, "", addRewardable, getRewardables, xmlelement, mode);
+        
+    }
+
     /**
     @brief
         Initializes the object. Needs to be called first by every constructor of this class.
@@ -78,6 +62,20 @@ namespace orxonox {
     void AddReward::initialize(void)
     {
         RegisterObject(AddReward);
+    }
+    
+    const Rewardable* AddReward::getRewardables(unsigned int index) const
+    {
+        int i = index;
+        for (std::list<Rewardable*>::const_iterator reward = this->rewards_.begin(); reward != this->rewards_.end(); ++reward)
+	{
+	    if(i == 0)
+	    {
+	       return *reward;
+	    }
+	    i--;
+	}
+        return NULL;
     }
 
     /**
@@ -90,14 +88,8 @@ namespace orxonox {
     */
     bool AddReward::invoke(Player* player)
     {
-        if ( this->rewards_ == NULL )
-        {
-            COUT(2) << "NULL-Rewards list encountered." << std::endl;
-            return false;
-	}
-	
 	bool check = true;
-        for ( std::list<Rewardable*>::iterator reward = this->rewards_->begin(); reward != this->rewards_->end(); ++reward )
+        for ( std::list<Rewardable*>::iterator reward = this->rewards_.begin(); reward != this->rewards_.end(); ++reward )
 	{
 	    check = check && (*reward)->reward(player);
 	}

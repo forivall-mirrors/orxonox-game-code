@@ -31,25 +31,10 @@
 #include "QuestItem.h"
 
 namespace orxonox {
-
-    CreateFactory(QuestItem);
     
     QuestItem::QuestItem() : BaseObject()
     {
         this->initialize();
-    }
-    
-    /**
-    @brief
-        Constructor. Needs as input a unique identifier to be able to identify different instances of this class (and subclasses).
-    @param id
-        The unique identifier. Should be of GUID form: http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure
-    */
-    QuestItem::QuestItem(std::string id) : BaseObject()
-    {
-        this->initialize();
-        
-        this->id_ = id;
     }
     
     /**

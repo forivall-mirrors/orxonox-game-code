@@ -32,6 +32,7 @@
 #include <map>
 #include <string>
 
+#include "core/XMLPort.h"
 #include "Quest.h"
 
 namespace orxonox {
@@ -48,8 +49,9 @@ namespace orxonox {
     {
 	public:
             LocalQuest();
-	    LocalQuest(std::string id);
 	    ~LocalQuest();
+	    
+	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 	    
 	protected:
             virtual bool isStartable(const Player* player) const; //!< Checks whether the quest can be started.

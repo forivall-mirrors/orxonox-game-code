@@ -44,21 +44,6 @@ namespace orxonox {
     {
         this->initialize();
     }
-
-    /**
-    @brief
-        Constructor.  Needs as input a unique identifier to be able to identify different instances of this class (and subclasses).
-    @param id
-        The unique identifier.
-    @param title
-        The title of the hint.
-    @param description
-        The description of the hint, resp. the hint itself.
-    */
-    QuestHint::QuestHint(std::string id) : QuestItem(id)
-    {
-        this->initialize();
-    }
     
     /**
     @brief
@@ -77,6 +62,8 @@ namespace orxonox {
     void QuestHint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
 	SUPER(QuestHint, XMLPort, xmlelement, mode);
+	
+	COUT(1) << "New QuestHint {" << this->getId() << "} created." << std::endl;
     }
 
     

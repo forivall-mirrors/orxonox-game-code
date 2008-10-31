@@ -39,17 +39,6 @@ namespace orxonox {
 
     FailQuest::FailQuest() : ChangeQuestStatus()
     {
-        
-    }
-
-    /**
-    @brief
-        Constructor.
-    @param questId
-	The id of the quest to be failed.
-    */
-    FailQuest::FailQuest(std::string questId) : ChangeQuestStatus(questId)
-    {
         RegisterObject(FailQuest);
     }
     
@@ -59,6 +48,11 @@ namespace orxonox {
     */
     FailQuest::~FailQuest()
     {
+    }
+    
+    void FailQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(FailQuest, XMLPort, xmlelement, mode);
     }
     
     /**

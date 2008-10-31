@@ -66,7 +66,6 @@ namespace orxonox
     
 	public:
             QuestHint();
-	    QuestHint(std::string id);
 	    ~QuestHint();
 	    
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

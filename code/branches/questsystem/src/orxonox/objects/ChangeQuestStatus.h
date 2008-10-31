@@ -31,6 +31,7 @@
 
 #include <string>
 
+#include "core/XMLPort.h"
 #include "QuestEffect.h"
 
 namespace orxonox {
@@ -47,16 +48,21 @@ namespace orxonox {
     {
 	public:
             ChangeQuestStatus();
-	    ChangeQuestStatus(std::string questId);
 	    virtual ~ChangeQuestStatus();
+	    
+	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 	    
 	    virtual bool invoke(Player* player) = 0; //!< Invokes the effect.
 	    
 	protected:
-            inline std::string getQuestId(void) //!< Returns the quest id.
-                { return questId_; }
+            inline const std::string & getQuestId(void) const //!< Returns the quest id.
+                { return this->questId_; }
 	
             std::string questId_; //!< The id of the quest the status should be changed of.
+            
+	private:
+            inline void setQuestId(const std::string & id)
+                { this->questId_ = id; }
 
     };
 

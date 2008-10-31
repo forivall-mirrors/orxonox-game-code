@@ -43,21 +43,6 @@ namespace orxonox {
     {
         this->initialize();
     }
-
-    /**
-    @brief
-        Constructor.
-    @param id
-        The unique identifier.
-    @param title
-        The title of the quest.
-    @param description
-        The description of the quest.
-    */
-    GlobalQuest::GlobalQuest(std::string id) : Quest(id)
-    {
-        this->initialize();
-    }
     
     /**
     @brief
@@ -66,6 +51,13 @@ namespace orxonox {
     GlobalQuest::~GlobalQuest()
     {
         
+    }
+    
+    void GlobalQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(GlobalQuest, XMLPort, xmlelement, mode);
+
+        COUT(1) << "New GlobalQuest {" << this->getId() << "} created." << std::endl;
     }
     
     void GlobalQuest::initialize(void)

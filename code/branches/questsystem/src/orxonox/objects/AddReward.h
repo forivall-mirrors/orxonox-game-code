@@ -31,6 +31,7 @@
 
 #include <list>
 
+#include "core/XMLPort.h"
 #include "Rewardable.h"
 #include "QuestEffect.h"
 
@@ -48,19 +49,20 @@ namespace orxonox {
     {
 	public:
             AddReward();
-	    AddReward(Rewardable* reward);
-	    AddReward(std::list<Rewardable*>* rewards);
 	    ~AddReward();
+	    
+	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 	    
 	    virtual bool invoke(Player* player); //!< Invokes the effect.
 	    
 	private:
-            std::list<Rewardable*>* rewards_;
+            std::list<Rewardable*> rewards_;
 	
             void initialize(void); //!< Initializes the object.
 	
             inline void addRewardable(Rewardable* reward)
-                { this->rewards_->push_back(reward); }
+                { this->rewards_.push_back(reward); }
+	    const Rewardable* getRewardables(unsigned int index) const;
     
     };
 
