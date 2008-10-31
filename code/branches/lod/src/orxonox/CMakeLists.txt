@@ -93,7 +93,6 @@ IF(NETWORKTRAFFIC_TESTING_ENABLED)
     objects/Skybox.cc
     objects/SpaceShip.cc
     objects/WorldEntity.cc
-    objects/Planet.cc
   )
 
   ADD_LIBRARY(orxonoxs SHARED ${ORXONOX_SRC_FILES})
