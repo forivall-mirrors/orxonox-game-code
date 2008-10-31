@@ -42,6 +42,9 @@ SET( ORXONOX_SRC_FILES
   tools/Timer.cc
   tools/WindowEventListener.cc
 
+  objects/EventListener.cc
+  objects/EventDispatcher.cc
+  objects/EventTarget.cc
   objects/Radar.cc
   objects/RadarListener.cc
   objects/RadarViewable.cc

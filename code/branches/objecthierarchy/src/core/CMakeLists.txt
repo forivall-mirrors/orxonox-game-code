@@ -33,6 +33,7 @@ SET(CORE_SRC_FILES
   NamespaceNode.cc
   Template.cc
   XMLPort.cc
+  XMLNameListener.cc
 
   # shell
   IRC.cc

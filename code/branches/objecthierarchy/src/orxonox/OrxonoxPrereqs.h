@@ -111,6 +111,10 @@ namespace orxonox
     class DistanceTrigger;
     class EventTrigger;
 
+    class EventListener;
+    class EventDispatcher;
+    class EventTarget;
+
     class Controller;
     class HumanController;
 

@@ -37,6 +37,7 @@
 #include "EventIncludes.h"
 #include "XMLPort.h"
 #include "XMLFile.h"
+#include "XMLNameListener.h"
 #include "Template.h"
 #include "util/String.h"
 
@@ -80,7 +81,10 @@ namespace orxonox
     BaseObject::~BaseObject()
     {
         for (std::list<BaseObject*>::const_iterator it = this->events_.begin(); it != this->events_.end(); ++it)
-            (*it)->eventListeners_.erase(this);
+            (*it)->unregisterEventListener(this);
+
+        for (std::map<BaseObject*, std::string>::const_iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
+            it->first->removeEvent(this);
     }
 
     /**
@@ -91,7 +95,7 @@ namespace orxonox
     */
     void BaseObject::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        XMLPortParam(BaseObject, "name", setName, getName, xmlelement, mode);
+        XMLPortParam(BaseObject, "name", setXMLName, getName, xmlelement, mode);
         XMLPortParam(BaseObject, "visible", setVisible, isVisible, xmlelement, mode);
         XMLPortParam(BaseObject, "active", setActive, isActive, xmlelement, mode);
 
@@ -131,6 +135,18 @@ namespace orxonox
                 container->port(this, *events, mode);
             }
         }
+    }
+
+    /**
+        @brief Loads the name of the object through XML and calls all XMLNameListener.
+        @param name The name of the object
+    */
+    void BaseObject::setXMLName(const std::string& name)
+    {
+        this->setName(name);
+
+        for (ObjectList<XMLNameListener>::iterator it = ObjectList<XMLNameListener>::begin(); it != ObjectList<XMLNameListener>::end(); ++it)
+            it->loadedNewXMLName(this);
     }
 
     /**
@@ -186,8 +202,13 @@ namespace orxonox
 
     void BaseObject::addEvent(BaseObject* event, const std::string& sectionname)
     {
-        event->eventListeners_[this] = sectionname;
+        event->registerEventListener(this, sectionname);
         this->events_.push_back(event);
+    }
+
+    void BaseObject::removeEvent(BaseObject* event)
+    {
+        this->events_.remove(event);
     }
 
     BaseObject* BaseObject::getEvent(unsigned int index) const
@@ -231,13 +252,24 @@ namespace orxonox
 
     void BaseObject::fireEvent(bool activate)
     {
-        Event event(activate, this);
+        this->fireEvent(activate, this);
+    }
+
+    void BaseObject::fireEvent(bool activate, BaseObject* originator)
+    {
+        Event event(activate, originator);
 
         for (std::map<BaseObject*, std::string>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
         {
             event.sectionname_ = it->second;
             it->first->processEvent(event);
         }
+    }
+
+    void BaseObject::fireEvent(Event& event)
+    {
+        for (std::map<BaseObject*, std::string>::iterator it = this->eventListeners_.begin(); it != this->eventListeners_.end(); ++it)
+            it->first->processEvent(event);
     }
 
     void BaseObject::processEvent(Event& event)

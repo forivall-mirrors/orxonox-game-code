@@ -154,6 +154,7 @@ namespace orxonox
   class Template;
   class Tickable;
   class XMLFile;
+  class XMLNameListener;
   template <class T, class O>
   class XMLPortClassObjectContainer;
   template <class T>

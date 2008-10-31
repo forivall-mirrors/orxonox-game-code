@@ -114,10 +114,18 @@ namespace orxonox
 
             void fireEvent();
             void fireEvent(bool activate);
+            void fireEvent(bool activate, BaseObject* originator);
+            void fireEvent(Event& event);
 
             virtual void processEvent(Event& event);
 
+            inline void registerEventListener(BaseObject* object, const std::string& sectionname)
+                { this->eventListeners_[object] = sectionname; }
+            inline void unregisterEventListener(BaseObject* object)
+                { this->eventListeners_.erase(object); }
+
             void addEvent(BaseObject* event, const std::string& sectionname);
+            void removeEvent(BaseObject* event);
             BaseObject* getEvent(unsigned int index) const;
 
             void addEventContainer(const std::string& sectionname, EventContainer* container);
@@ -135,6 +143,7 @@ namespace orxonox
             bool bVisible_;                             //!< True = the object is visible
 
         private:
+            void setXMLName(const std::string& name);
             Template* getTemplate(unsigned int index) const;
 
             bool                  bInitialized_;         //!< True if the object was initialized (passed the object registration)
