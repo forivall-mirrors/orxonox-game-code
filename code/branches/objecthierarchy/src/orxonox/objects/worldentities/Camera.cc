@@ -40,7 +40,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "objects/Scene.h"
-#include "CameraHandler.h"
+#include "CameraManager.h"
 
 namespace orxonox
 {
@@ -101,17 +101,17 @@ namespace orxonox
 
     void Camera::requestFocus()
     {
-        CameraHandler::getInstance().requestFocus(this);
+        CameraManager::getInstance().requestFocus(this);
     }
 
     void Camera::releaseFocus()
     {
-        CameraHandler::getInstance().releaseFocus(this);
+        CameraManager::getInstance().releaseFocus(this);
     }
 
     /**
         what to do when camera loses focus (do not request focus in this function!!)
-        this is called by the CameraHandler singleton class to notify the camera
+        this is called by the CameraManager singleton class to notify the camera
     */
     void Camera::removeFocus()
     {

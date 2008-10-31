@@ -39,7 +39,7 @@ namespace orxonox
 {
     class _OrxonoxExport Camera : public PositionableEntity, public Tickable
     {
-        friend class CameraHandler;
+        friend class CameraManager;
 
         public:
             Camera(BaseObject* creator);

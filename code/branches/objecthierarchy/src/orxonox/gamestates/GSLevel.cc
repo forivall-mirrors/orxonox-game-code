@@ -43,7 +43,7 @@
 #include "objects/Tickable.h"
 #include "objects/Radar.h"
 //#include "tools/ParticleInterface.h"
-#include "CameraHandler.h"
+#include "CameraManager.h"
 #include "LevelManager.h"
 #include "Settings.h"
 
@@ -56,7 +56,7 @@ namespace orxonox
         , inputState_(0)
         , radar_(0)
         , startFile_(0)
-        , cameraHandler_(0)
+        , cameraManager_(0)
         , levelManager_(0)
     {
         RegisterObject(GSLevel);
@@ -81,9 +81,9 @@ namespace orxonox
             keyBinder_->loadBindings("keybindings.ini");
             inputState_->setHandler(keyBinder_);
 
-            // create the global CameraHandler
+            // create the global CameraManager
             assert(viewport);
-            this->cameraHandler_ = new CameraHandler(viewport);
+            this->cameraManager_ = new CameraManager(viewport);
 
             // Start the Radar
             this->radar_ = new Radar();
@@ -145,8 +145,8 @@ namespace orxonox
         if (this->radar_)
             delete this->radar_;
 
-        if (this->cameraHandler_)
-            delete this->cameraHandler_;
+        if (this->cameraManager_)
+            delete this->cameraManager_;
 
         if (this->levelManager_)
             delete this->levelManager_;

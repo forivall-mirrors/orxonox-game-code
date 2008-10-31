@@ -22,11 +22,11 @@
  *   Author:
  *      Benjamin Knecht
  *   Co-authors:
- *      ...
+ *      Fabian 'x3n' Landau
  *
  */
 #include "OrxonoxStableHeaders.h"
-#include "CameraHandler.h"
+#include "CameraManager.h"
 
 #include <OgreViewport.h>
 
@@ -36,22 +36,22 @@
 
 namespace orxonox
 {
-    CameraHandler* CameraHandler::singletonRef_s = 0;
+    CameraManager* CameraManager::singletonRef_s = 0;
 
-    CameraHandler::CameraHandler(Ogre::Viewport* viewport)
+    CameraManager::CameraManager(Ogre::Viewport* viewport)
         : viewport_(viewport)
     {
         assert(singletonRef_s == 0);
         singletonRef_s = this;
     }
 
-    CameraHandler::~CameraHandler()
+    CameraManager::~CameraManager()
     {
         assert(singletonRef_s != 0);
         singletonRef_s = 0;
     }
 
-    Camera* CameraHandler::getActiveCamera() const
+    Camera* CameraManager::getActiveCamera() const
     {
         if (this->cameraList_.size() > 0)
             return this->cameraList_.front();
@@ -59,7 +59,7 @@ namespace orxonox
             return 0;
     }
 
-    void CameraHandler::requestFocus(Camera* camera)
+    void CameraManager::requestFocus(Camera* camera)
     {
         if (!Core::showsGraphics())
             return;
@@ -80,7 +80,7 @@ namespace orxonox
         this->cameraList_.push_front(camera);
     }
 
-    void CameraHandler::releaseFocus(Camera* camera)
+    void CameraManager::releaseFocus(Camera* camera)
     {
         if (!Core::showsGraphics())
             return;

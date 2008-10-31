@@ -22,18 +22,18 @@
  *   Author:
  *      Benjamin Knecht
  *   Co-authors:
- *      ...
+ *      Fabian 'x3n' Landau
  *
  */
 
  /**
- @file  CameraHandler.h
+ @file  CameraManager.h
  @brief Handles the instances of Camera class
  @author Benjamin Knecht <beni_at_orxonox.net>
   */
 
-#ifndef _Camera_Handler_H__
-#define _Camera_Handler_H__
+#ifndef _CameraManager_H__
+#define _CameraManager_H__
 
 #include "OrxonoxPrereqs.h"
 
@@ -43,27 +43,27 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport CameraHandler
+    class _OrxonoxExport CameraManager
     {
         public:
-            CameraHandler(Ogre::Viewport* viewport);
-            ~CameraHandler();
+            CameraManager(Ogre::Viewport* viewport);
+            ~CameraManager();
 
             Camera* getActiveCamera() const;
 
             void requestFocus(Camera* camera);
             void releaseFocus(Camera* camera);
 
-            static CameraHandler& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
+            static CameraManager& getInstance() { assert(singletonRef_s); return *singletonRef_s; }
 
         private:
-            CameraHandler(const CameraHandler&);
+            CameraManager(const CameraManager&);
 
             std::list<Camera*> cameraList_;
             Ogre::Viewport* viewport_;
 
-            static CameraHandler* singletonRef_s;
+            static CameraManager* singletonRef_s;
     };
 }
 
-#endif /* _Camera_Handler_H__ */
+#endif /* _CameraManager_H__ */

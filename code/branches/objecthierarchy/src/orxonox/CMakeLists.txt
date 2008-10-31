@@ -1,5 +1,5 @@
 SET( ORXONOX_SRC_FILES
-  CameraHandler.cc
+  CameraManager.cc
   GraphicsEngine.cc
   LevelManager.cc
   Main.cc
@@ -105,7 +105,7 @@ IF(NETWORKTRAFFIC_TESTING_ENABLED)
   SET( ORXONOXS_SRC_FILES
     GraphicsEngine.cc
     objects/Camera.cc
-    objects/CameraHandler.cc
+    CameraManager.cc
   )
 
   ADD_LIBRARY(orxonoxs SHARED ${ORXONOX_SRC_FILES})

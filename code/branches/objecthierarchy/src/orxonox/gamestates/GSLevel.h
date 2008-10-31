@@ -67,7 +67,7 @@ namespace orxonox
         SimpleInputState*     inputState_;
         Radar*                radar_;            //!< represents the Radar (not the HUD part)
         XMLFile*              startFile_;        //!< current hard coded default level
-        CameraHandler*        cameraHandler_;
+        CameraManager*        cameraManager_;
         LevelManager*         levelManager_;
 
         // config values

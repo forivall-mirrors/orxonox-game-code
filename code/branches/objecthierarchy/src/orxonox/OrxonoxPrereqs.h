@@ -79,7 +79,7 @@ namespace orxonox
     class Radar;
     class RadarListener;
 
-    class CameraHandler;
+    class CameraManager;
     class LevelManager;
 
     // objects
@@ -106,6 +106,10 @@ namespace orxonox
     class Spectator;
     class Pawn;
     class SpaceShip;
+
+    class Trigger;
+    class DistanceTrigger;
+    class EventTrigger;
 
     class Controller;
     class HumanController;
