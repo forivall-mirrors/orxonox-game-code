@@ -37,9 +37,8 @@
 #include "core/Iterator.h"
 #include "tools/ParticleInterface.h"
 
-#include "SpaceShipAI.h"
-#include "ParticleSpawner.h"
-#include "Model.h"
+#include "objects/worldentities/Model.h"
+#include "objects/worldentities/ParticleSpawner.h"
 #include "Settings.h"
 
 namespace orxonox
@@ -96,15 +95,13 @@ namespace orxonox
         float radius;
         for (ObjectList<Model>::iterator it = ObjectList<Model>::begin(); it; ++it)
         {
-            if ((*it) != this->owner_)
+//            if ((*it) != this->owner_)
             {
                 radius = it->getScale3D().x * 3.0;
 
                 if (this->getPosition().squaredDistance(it->getPosition()) <= (radius*radius))
                 {
                     // hit
-                    if (it->isA(Class(SpaceShipAI)))
-                        ((SpaceShipAI*)(*it))->damage(this->damage_);
                     ParticleSpawner* explosion = new ParticleSpawner(this->explosionTemplateName_, LODParticle::low, 2.0);
                     explosion->setPosition(this->getPosition());
                     explosion->create();
