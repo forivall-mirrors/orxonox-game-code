@@ -39,32 +39,34 @@ namespace orxonox {
     @brief
         Constructor.
     */
-    GlobalQuest::GlobalQuest() : Quest()
+    GlobalQuest::GlobalQuest(BaseObject* creator) : Quest(creator)
     {
+        RegisterObject(GlobalQuest);
+
         this->initialize();
     }
-    
+
     /**
     @brief
         Destructor.
     */
     GlobalQuest::~GlobalQuest()
     {
-        
+
     }
-    
+
     void GlobalQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(GlobalQuest, XMLPort, xmlelement, mode);
 
         COUT(3) << "New GlobalQuest {" << this->getId() << "} created." << std::endl;
     }
-    
+
     void GlobalQuest::initialize(void)
     {
         RegisterObject(GlobalQuest);
     }
-    
+
     /**
     @brief
         Checks whether the quest can be started.
@@ -79,7 +81,7 @@ namespace orxonox {
     {
         return this->isInactive(player) ||  this->isActive(player);
     }
-    
+
     /**
     @brief
         Checks whether the quest can be failed.
@@ -95,7 +97,7 @@ namespace orxonox {
         return this->isActive(player);
 
     }
-    
+
     /**
     @brief
         Checks whether the quest can be completed.
@@ -125,7 +127,7 @@ namespace orxonox {
         {
             ThrowException(Argument, "The input Player* is NULL.");
         }
-        
+
         //TDO: Does this really work???
         std::set<Player*>::const_iterator it = this->players_.find((Player*)(void*)player);
         if (it != this->players_.end())
@@ -138,7 +140,7 @@ namespace orxonox {
 	}
 
     }
-    
+
     /**
     @brief
         Sets the status for a specific player.
@@ -156,7 +158,7 @@ namespace orxonox {
         {
             return false;
 	}
-        
+
         std::set<Player*>::const_iterator it = this->players_.find(player);
         if (it == this->players_.end()) //!< Player is not yet in the list.
 	{

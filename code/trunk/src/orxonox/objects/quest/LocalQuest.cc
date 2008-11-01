@@ -35,32 +35,34 @@ namespace orxonox {
 
     CreateFactory(LocalQuest);
 
-    LocalQuest::LocalQuest() : Quest()
+    LocalQuest::LocalQuest(BaseObject* creator) : Quest(creator)
     {
+        RegisterObject(LocalQuest);
+
         this->initialize();
     }
-    
+
     /**
     @brief
         Destructor.
     */
     LocalQuest::~LocalQuest()
     {
-        
+
     }
-    
+
     void LocalQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(LocalQuest, XMLPort, xmlelement, mode);
 
         COUT(3) << "New LocalQuest {" << this->getId() << "} created." << std::endl;
     }
-    
+
     void LocalQuest::initialize(void)
     {
         RegisterObject(LocalQuest);
     }
-    
+
     /**
     @brief
         Checks whether the quest can be started.
@@ -75,7 +77,7 @@ namespace orxonox {
     {
         return this->isInactive(player);
     }
-    
+
     /**
     @brief
         Checks whether the quest can be failed.
@@ -90,7 +92,7 @@ namespace orxonox {
     {
         return this->isActive(player);
     }
-    
+
     /**
     @brief
         Checks whether the quest can be completed.
@@ -105,7 +107,7 @@ namespace orxonox {
     {
         return this->isActive(player);
     }
-    
+
     /**
     @brief
         Returns the status of the quest for a specific player.
@@ -122,7 +124,7 @@ namespace orxonox {
         {
             ThrowException(Argument, "The input Player* is NULL.");
         }
-        
+
         std::map<Player*, questStatus::Enum>::const_iterator it = this->playerStatus_.find((Player*)(void*)player); //Thx. to x3n for the (Player*)(void*) 'hack'.
 	if (it != this->playerStatus_.end())
 	{
@@ -130,7 +132,7 @@ namespace orxonox {
 	}
 	return questStatus::inactive;
     }
-    
+
     /**
     @brief
         Sets the status for a specific player.

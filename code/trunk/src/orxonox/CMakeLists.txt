@@ -67,6 +67,22 @@ SET( ORXONOX_SRC_FILES
   objects/worldentities/ParticleEmitter.cc
   objects/worldentities/ParticleSpawner.cc
 #  objects/worldentities/Backlight.cc
+  
+  objects/quest/AddQuest.cc
+  objects/quest/AddQuestHint.cc
+  objects/quest/AddReward.cc
+  objects/quest/ChangeQuestStatus.cc
+  objects/quest/CompleteQuest.cc
+  objects/quest/FailQuest.cc
+  objects/quest/GlobalQuest.cc
+  objects/quest/LocalQuest.cc
+  objects/quest/Quest.cc
+  objects/quest/QuestDescription.cc
+  objects/quest/QuestEffect.cc
+  objects/quest/QuestHint.cc
+  objects/quest/QuestItem.cc
+  objects/quest/QuestManager.cc
+  objects/quest/Rewardable.cc
 
   objects/worldentities/triggers/Trigger.cc
   objects/worldentities/triggers/DistanceTrigger.cc

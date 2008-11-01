@@ -31,25 +31,27 @@
 #include "QuestItem.h"
 
 namespace orxonox {
-    
-    QuestItem::QuestItem() : BaseObject()
+
+    QuestItem::QuestItem(BaseObject* creator) : BaseObject(creator)
     {
+        RegisterObject(QuestItem);
+
         this->initialize();
     }
-    
+
     /**
     @brief
         Destructor.
     */
     QuestItem::~QuestItem()
     {
-        
+
     }
-    
+
     void QuestItem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(QuestItem, XMLPort, xmlelement, mode);
-        
+
         XMLPortParam(QuestItem, "id", setId, getId, xmlelement, mode);
         //Doesn't getDescription have to be of type getDescription(unsigned int) ?
         //XMLPortObjectTemplate(QuestItem, QuestDescription, "", setDescription, getDescription, xmlelement, mode, unsigned int);
@@ -57,7 +59,7 @@ namespace orxonox {
 
     }
 
-    
+
     /**
     @brief
         Initializes the object.
@@ -66,10 +68,10 @@ namespace orxonox {
     void QuestItem::initialize(void)
     {
         RegisterObject(QuestItem);
-        
+
         this->id_ = "";
     }
-    
+
     void QuestItem::setId(const std::string & id)
     {
         if(!isId(id))
@@ -79,14 +81,14 @@ namespace orxonox {
         }
         this->id_ = id;
     }
-    
+
     //const QuestDescription* QuestItem::getDescription(unsigned int index) const //!< Returns the description of the QuestItem.
     //{
     //    if(index != 0)
     //        return NULL;
     //    return this->description_;
     //}
-    
+
     /**
     @brief
         Checks whether an input id is of the required form.

@@ -47,19 +47,19 @@ namespace orxonox {
     class ChangeQuestStatus : public QuestEffect
     {
 	public:
-            ChangeQuestStatus();
+            ChangeQuestStatus(BaseObject* creator);
 	    virtual ~ChangeQuestStatus();
-	    
+
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-	    
+
 	    virtual bool invoke(Player* player) = 0; //!< Invokes the effect.
-	    
+
 	protected:
             inline const std::string & getQuestId(void) const //!< Returns the quest id.
                 { return this->questId_; }
-	
+
             std::string questId_; //!< The id of the quest the status should be changed of.
-            
+
 	private:
 	    void setQuestId(const std::string & id);
 

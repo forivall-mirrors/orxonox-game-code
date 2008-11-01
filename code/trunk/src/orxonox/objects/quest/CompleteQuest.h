@@ -47,13 +47,13 @@ namespace orxonox {
     class CompleteQuest : public ChangeQuestStatus
     {
 	public:
-            CompleteQuest();
-	    ~CompleteQuest();
-	    
+            CompleteQuest(BaseObject* creator);
+	    virtual ~CompleteQuest();
+
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-	    
+
 	    virtual bool invoke(Player* player); //!< Invokes the effect.
-    
+
     };
 
 }

@@ -48,26 +48,26 @@ namespace orxonox {
     class LocalQuest : public Quest
     {
 	public:
-            LocalQuest();
-	    ~LocalQuest();
-	    
+            LocalQuest(BaseObject* creator);
+	    virtual ~LocalQuest();
+
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-	    
+
 	protected:
             virtual bool isStartable(const Player* player) const; //!< Checks whether the quest can be started.
             virtual bool isFailable(const Player* player) const; //!< Checks whether the quest can be failed.
             virtual bool isCompletable(const Player* player) const; //!< Checks whether the quest can be completed.
-	
+
             virtual questStatus::Enum getStatus(const Player* player) const; //!< Returns the status of the quest for a specific player.
             virtual bool setStatus(Player* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
-                
+
 	private:
             std::map<Player*, questStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
-            
+
             void initialize(void);
-    
+
     };
-    
+
 
 }
 

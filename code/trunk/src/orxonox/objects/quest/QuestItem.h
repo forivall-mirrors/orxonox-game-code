@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 #ifndef _QuestItem_H__
 #define _QuestItem_H__
 
@@ -37,7 +37,7 @@
 
 namespace orxonox {
 
-    
+
     /**
     @brief
 	Functions as a base class for Quest classes such as Quest or QuestHint.
@@ -47,32 +47,32 @@ namespace orxonox {
     */
     class QuestItem : public BaseObject
     {
-    
+
 	public:
-            QuestItem();
+            QuestItem(BaseObject* creator);
 	    virtual ~QuestItem();
-	    
+
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-	    
+
 	    inline const std::string & getId(void) const //!< Returns the id of this quest.
                 { return this->id_; }
 	    inline const QuestDescription* getDescription(void) const //!< Returns the description of the QuestItem.
                 { return this->description_; }
 	    //const QuestDescription* getDescription(unsigned int index) const; //!< Returns the description of the QuestItem.
-                
+
 	    static bool isId(const std::string & id); //!< Checks whether a given id is valid.
-	    
+
 	protected:
 	    void setId(const std::string & id);
 	    inline void setDescription(QuestDescription* description)
                 { this->description_ = description; }
-	    
+
 	private:
 	    std::string id_; //!< Identifier. Should be of GUID form: http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure
 	    QuestDescription* description_; //!< The description of the QuestItem.
-	    
+
 	    void initialize(void); //!< Initializes the object.
-    
+
     };
 
 }

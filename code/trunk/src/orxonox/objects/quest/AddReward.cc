@@ -31,14 +31,16 @@
 #include "AddReward.h"
 
 namespace orxonox {
-    
+
     CreateFactory(AddReward);
-    
-    AddReward::AddReward() : QuestEffect()
+
+    AddReward::AddReward(BaseObject* creator) : QuestEffect(creator)
     {
+        RegisterObject(AddReward);
+
         this->initialize();
     }
-    
+
     /**
     @brief
         Destructor.
@@ -50,9 +52,9 @@ namespace orxonox {
     void AddReward::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AddReward, XMLPort, xmlelement, mode);
-        
+
         XMLPortObject(AddReward, Rewardable, "", addRewardable, getRewardables, xmlelement, mode);
-        
+
     }
 
     /**
@@ -63,7 +65,7 @@ namespace orxonox {
     {
         RegisterObject(AddReward);
     }
-    
+
     const Rewardable* AddReward::getRewardables(unsigned int index) const
     {
         int i = index;
@@ -93,7 +95,7 @@ namespace orxonox {
 	{
 	    check = check && (*reward)->reward(player);
 	}
-	
+
 	return check;
     }
 

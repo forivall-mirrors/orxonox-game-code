@@ -36,15 +36,15 @@ namespace orxonox {
     std::map<std::string, Quest*> QuestManager::questMap_;
     std::map<std::string, QuestHint*> QuestManager::hintMap_;
 
-    QuestManager::QuestManager() : BaseObject()
+    QuestManager::QuestManager(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(QuestManager);
     }
-    
-    
+
+
     QuestManager::~QuestManager()
     {
-        
+
     }
 
     /**
@@ -62,10 +62,10 @@ namespace orxonox {
             COUT(2) << "Registration of Quest in QuestManager failed, because inserted Quest-pointer was NULL." << std::endl;
             return false;
 	}
-	
+
         std::pair<std::map<std::string, Quest*>::iterator,bool> ret;
         ret = questMap_.insert( std::pair<std::string,Quest*>(quest->getId(),quest) );
-        
+
         if(ret.second)
         {
             COUT(3) << "Quest with questId {" << quest->getId() << "} successfully inserted." << std::endl;
@@ -77,7 +77,7 @@ namespace orxonox {
 	   return false;
 	}
     }
-    
+
     /**
     @brief
         Registers a QuestHint with the QuestManager to make it globally accessable.
@@ -93,10 +93,10 @@ namespace orxonox {
             COUT(2) << "Registration of QuestHint in QuestManager failed, because inserted QuestHint-pointer was NULL." << std::endl;
             return false;
         }
-        
+
         std::pair<std::map<std::string, QuestHint*>::iterator,bool> ret;
         ret = hintMap_.insert ( std::pair<std::string,QuestHint*>(hint->getId(),hint) );
-        
+
         if(ret.second)
         {
             COUT(3) << "QuestHint with hintId {" << hint->getId() << "} successfully inserted." << std::endl;
@@ -108,7 +108,7 @@ namespace orxonox {
 	   return false;
 	}
     }
-    
+
     /**
     @brief
         Finds a quest with the given id.
@@ -126,7 +126,7 @@ namespace orxonox {
 	{
             ThrowException(Argument, "Invalid questId.");
 	}
-	
+
         Quest* quest;
         std::map<std::string, Quest*>::iterator it = questMap_.find(questId);
 	if (it != questMap_.end())
@@ -138,11 +138,11 @@ namespace orxonox {
 	   quest = NULL;
 	   COUT(2) << "The quest with id {" << questId << "} is nowhere to be found." << std::endl;
 	}
-	
+
 	return quest;
 
     }
-    
+
     /**
     @brief
         Finds a hint with the given id.
@@ -160,7 +160,7 @@ namespace orxonox {
 	{
             ThrowException(Argument, "Invalid hintId.");
 	}
-	
+
         QuestHint* hint;
         std::map<std::string, QuestHint*>::iterator it = hintMap_.find(hintId);
 	if (it != hintMap_.end())
@@ -172,10 +172,10 @@ namespace orxonox {
 	   hint = NULL;
 	   COUT(2) << "The hint with id {" << hintId << "} is nowhere to be found." << std::endl;
 	}
-	
+
 	return hint;
 
     }
-    
+
 
 }

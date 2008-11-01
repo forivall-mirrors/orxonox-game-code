@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 #ifndef _QuestHint_H__
 #define _QuestHint_H__
 
@@ -63,29 +63,29 @@ namespace orxonox
     */
     class QuestHint : public QuestItem
     {
-    
+
 	public:
-            QuestHint();
-	    ~QuestHint();
-	    
+            QuestHint(BaseObject* creator);
+	    virtual ~QuestHint();
+
 	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-	    
+
 	    bool isActive(Player* player); //!< Returns true if the hint is active for the input player.
-	    
+
 	    bool activate(Player* player); //!< Activates the hint for the input player.
-	    
+
 	    bool setQuest(Quest* quest); //!< Sets the quest the hint belongs to.
-	    
+
 	    inline Quest* getQuest(void)
 	       { return this->quest_; }
-	    
+
         private:
-            
+
             void initialize(void);
-            
+
             Quest* quest_; //!< The quest the hint belongs to.
             std::map<Player*, questHintStatus::Enum> playerStatus_; //!< List of the status for each player, with the Player-pointer as key.
-    
+
     };
 
 }

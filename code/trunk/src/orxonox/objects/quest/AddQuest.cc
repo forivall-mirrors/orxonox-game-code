@@ -40,25 +40,25 @@ namespace orxonox {
     CreateFactory(AddQuest);
 
 
-    AddQuest::AddQuest() : ChangeQuestStatus()
+    AddQuest::AddQuest(BaseObject* creator) : ChangeQuestStatus(creator)
     {
         RegisterObject(AddQuest);
     }
-    
+
     /**
     @brief
         Destructor.
-    */ 
+    */
     AddQuest::~AddQuest()
     {
     }
-    
+
     void AddQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AddQuest, XMLPort, xmlelement, mode);
-        
+
     }
-    
+
     /**
     @brief
         Invokes the effect.
@@ -74,7 +74,7 @@ namespace orxonox {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;
         }
-    
+
         try
         {
 	    Quest* quest = QuestManager::findQuest(this->getQuestId());
@@ -88,7 +88,7 @@ namespace orxonox {
             COUT(2) << ex.getFullDescription() << std::endl;
             return false;
 	}
-	
+
 	return true;
     }
 
