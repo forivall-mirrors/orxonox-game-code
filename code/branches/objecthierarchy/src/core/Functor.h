@@ -166,16 +166,18 @@ namespace orxonox
                 }
             }
 
-            void setObject(T* object)
+            FunctorMember* setObject(T* object)
             {
                 this->bConstObject_ = false;
                 this->object_ = object;
+                return this;
             }
 
-            void setObject(const T* object)
+            FunctorMember* setObject(const T* object)
             {
                 this->bConstObject_ = true;
                 this->constObject_ = object;
+                return this;
             }
 
         private:

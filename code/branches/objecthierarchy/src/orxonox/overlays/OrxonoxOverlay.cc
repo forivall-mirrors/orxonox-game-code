@@ -75,9 +75,9 @@ namespace orxonox
             "OrxonoxOverlay_background_" + convertToString(hudOverlayCounter_s++)));
         this->overlay_->add2D(this->background_);
 
-        // We'll have to get the aspect ratio manually for the first time. Afterwards windowResized() gets
-        // called automatically by GSGraphics.
-        this->windowAspectRatio_ = Ogre::OverlayManager::getSingleton().getViewportAspectRatio();
+        // We'll have to set the aspect ratio to a default value first.
+        // GSGraphics gets informed about our construction here and can update us in the next tick.
+        this->windowAspectRatio_ = 1.0;
         this->sizeCorrectionChanged();
 
         this->changedVisibility();

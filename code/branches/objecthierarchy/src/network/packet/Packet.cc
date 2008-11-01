@@ -213,6 +213,7 @@ void Packet::deletePacket(ENetPacket *enetPacket){
   it->second->enetPacket_ = 0;
   delete it->second;
   //packetMap_.erase(it);
+  COUT(4) << "PacketMap size: " << packetMap_.size() << std::endl;
 }
 
 } // namespace packet

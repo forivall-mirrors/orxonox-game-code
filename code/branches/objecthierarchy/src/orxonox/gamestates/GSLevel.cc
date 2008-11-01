@@ -162,9 +162,10 @@ namespace orxonox
 
     void GSLevel::ticked(const Clock& time)
     {
-        // Call the scene objects
-        for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
-            it->tick(time.getDeltaTime() * this->timeFactor_);
+        // Commented by 1337: Temporarily moved to GSGraphics.
+        //// Call the scene objects
+        //for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
+        //    it->tick(time.getDeltaTime() * this->timeFactor_);
     }
 
     /**

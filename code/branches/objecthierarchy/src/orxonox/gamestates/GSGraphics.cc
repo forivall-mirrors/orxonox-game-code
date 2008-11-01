@@ -50,9 +50,12 @@
 #include "core/input/InputManager.h"
 #include "core/input/KeyBinder.h"
 #include "core/input/ExtendedInputState.h"
+#include "core/Loader.h"
+#include "core/XMLFile.h"
 #include "overlays/console/InGameConsole.h"
 #include "gui/GUIManager.h"
 #include "tools/WindowEventListener.h"
+#include "objects/Tickable.h"
 #include "Settings.h"
 
 // for compatibility
@@ -64,6 +67,7 @@ namespace orxonox
         : GameState<GSRoot>("graphics")
         , renderWindow_(0)
         , viewport_(0)
+        , bWindowEventListenerUpdateRequired_(false)
         , inputManager_(0)
         , console_(0)
         , guiManager_(0)
@@ -76,6 +80,7 @@ namespace orxonox
         , statisticsStartTime_(0)
         , statisticsStartCount_(0)
         , tickTime_(0)
+        , debugOverlay_(0)
     {
         RegisterRootObject(GSGraphics);
         setConfigValues();
@@ -113,12 +118,15 @@ namespace orxonox
         // TODO: Spread this so that this call only initialises things needed for the Console and GUI
         this->initialiseResources();
 
+        // We want to get informed whenever an object of type WindowEventListener is created
+        // in order to later update the window size.
+        bWindowEventListenerUpdateRequired_ = false;
+        RegisterConstructionCallback(GSGraphics, orxonox::WindowEventListener, requestWindowEventListenerUpdate);
 
-        // HACK: temporary:
-        //graphicsEngine_->renderWindow_  = this->renderWindow_;
-        //graphicsEngine_->root_          = this->ogreRoot_;
-        //graphicsEngine_->viewport_      = this->viewport_;
-
+        // load debug overlay
+        COUT(3) << "Loading Debug Overlay..." << std::endl;
+        this->debugOverlay_ = new XMLFile(Settings::getDataPath() + "overlay/debug.oxo");
+        Loader::open(debugOverlay_);
 
         // Calls the InputManager which sets up the input devices.
         // The render window width and height are used to set up the mouse movement.
@@ -165,6 +173,9 @@ namespace orxonox
         //inputManager_->getMasterInputState()->removeKeyHandler(this->masterKeyBinder_);
         //delete this->masterKeyBinder_;
         delete this->inputManager_;
+
+        Loader::unload(this->debugOverlay_);
+        delete this->debugOverlay_;
 
         // destroy render window
         RenderSystem* renderer = this->ogreRoot_->getRenderSystem();
@@ -221,6 +232,19 @@ namespace orxonox
         // tick console
         this->console_->tick(dt);
         this->tickChild(time);
+
+        /*** HACK *** HACK ***/
+        // Call the Tickable objects
+        for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; ++it)
+            it->tick(time.getDeltaTime());
+        /*** HACK *** HACK ***/
+
+        if (this->bWindowEventListenerUpdateRequired_)
+        {
+            // Update all WindowEventListeners for the case a new one was created.
+            this->windowResized(this->renderWindow_);
+            this->bWindowEventListenerUpdateRequired_ = false;
+        }
 
         unsigned long long timeAfterTick = time.getRealMicroseconds();
 
