@@ -45,23 +45,23 @@ namespace orxonox {
     */
     class QuestDescription : public BaseObject {
 
-	public:
+        public:
             QuestDescription(BaseObject* creator);
-	    virtual ~QuestDescription();
+            virtual ~QuestDescription();
 
-	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-	    inline const std::string & getTitle(void) const //!< Returns the title.
+            inline const std::string & getTitle(void) const //!< Returns the title.
                 { return this->title_; }
-	    inline const std::string & getDescription(void) const //!< Returns the description text.
+            inline const std::string & getDescription(void) const //!< Returns the description text.
                 { return this->description_; }
 
-	private:
+        private:
             void initialize(void);
 
             inline void setTitle(const std::string & title) //!< Sets the title.
                 { this->title_ = title; }
-	    inline void setDescription(const std::string & description) //!< Sets the description text.
+            inline void setDescription(const std::string & description) //!< Sets the description text.
                 { this->description_ = description; }
 
             std::string title_; //!< The title.

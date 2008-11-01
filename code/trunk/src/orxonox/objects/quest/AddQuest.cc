@@ -77,19 +77,19 @@ namespace orxonox {
 
         try
         {
-	    Quest* quest = QuestManager::findQuest(this->getQuestId());
-	    if(!quest->start(player))
-	    {
-	       return false;
-	    }
-	}
-	catch(const orxonox::Exception& ex)
-	{
+            Quest* quest = QuestManager::findQuest(this->getQuestId());
+            if(!quest->start(player))
+            {
+               return false;
+            }
+        }
+        catch(const orxonox::Exception& ex)
+        {
             COUT(2) << ex.getFullDescription() << std::endl;
             return false;
-	}
+        }
 
-	return true;
+        return true;
     }
 
 

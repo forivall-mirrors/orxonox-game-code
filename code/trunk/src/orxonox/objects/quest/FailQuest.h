@@ -42,17 +42,17 @@ namespace orxonox {
     @brief
         Fails a quest.
     @author
-	Damian 'Mozork' Frick
+        Damian 'Mozork' Frick
     */
     class FailQuest : public ChangeQuestStatus
     {
-	public:
+        public:
             FailQuest(BaseObject* creator);
-	    virtual ~FailQuest();
+            virtual ~FailQuest();
 
-	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-	    virtual bool invoke(Player* player); //!< Invokes the effect.
+            virtual bool invoke(Player* player); //!< Invokes the effect.
 
     };
 

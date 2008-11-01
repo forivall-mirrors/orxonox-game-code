@@ -126,11 +126,11 @@ namespace orxonox {
         }
 
         std::map<Player*, questStatus::Enum>::const_iterator it = this->playerStatus_.find((Player*)(void*)player); //Thx. to x3n for the (Player*)(void*) 'hack'.
-	if (it != this->playerStatus_.end())
-	{
-	    return it->second;
-	}
-	return questStatus::inactive;
+        if (it != this->playerStatus_.end())
+        {
+            return it->second;
+        }
+        return questStatus::inactive;
     }
 
     /**
@@ -149,7 +149,7 @@ namespace orxonox {
         if(player == NULL)
         {
             return false;
-	}
+        }
         this->playerStatus_[player] = status;
         return true;
     }

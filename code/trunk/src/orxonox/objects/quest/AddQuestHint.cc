@@ -87,18 +87,18 @@ namespace orxonox {
         try
         {
             QuestHint* hint = QuestManager::findHint(this->hintId_);
-	    if(!hint->activate(player))
-	    {
-		return false;
-	    }
-	}
-	catch(const Exception& e)
-	{
-	   COUT(2) << e.getFullDescription() << std::endl;
-	   return false;
-	}
+            if(!hint->activate(player))
+            {
+                return false;
+            }
+        }
+        catch(const Exception& e)
+        {
+           COUT(2) << e.getFullDescription() << std::endl;
+           return false;
+        }
 
-	return true;
+        return true;
 
     }
 }

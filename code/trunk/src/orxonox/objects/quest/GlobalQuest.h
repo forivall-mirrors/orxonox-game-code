@@ -47,21 +47,21 @@ namespace orxonox {
     */
     class GlobalQuest : public Quest
     {
-	public:
+        public:
             GlobalQuest(BaseObject* creator);
-	    virtual ~GlobalQuest();
+            virtual ~GlobalQuest();
 
-	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-	protected:
+        protected:
             virtual bool isStartable(const Player* player) const; //!< Checks whether the quest can be started.
             virtual bool isFailable(const Player* player) const; //!< Checks whether the quest can be failed.
             virtual bool isCompletable(const Player* player) const; //!< Checks whether the quest can be completed.
 
-	    virtual questStatus::Enum getStatus(const Player* player) const; //!< Returns the status of the quest for a specific player.
-	    virtual bool setStatus(Player* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
+            virtual questStatus::Enum getStatus(const Player* player) const; //!< Returns the status of the quest for a specific player.
+            virtual bool setStatus(Player* player, const questStatus::Enum & status); //!< Sets the status for a specific player.
 
-	private:
+        private:
             std::set<Player*> players_; //!< The set of players which possess this quest.
             questStatus::Enum status_; //!< The status of this quest.
 

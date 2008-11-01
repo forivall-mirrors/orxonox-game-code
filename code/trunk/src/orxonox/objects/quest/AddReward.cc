@@ -70,13 +70,13 @@ namespace orxonox {
     {
         int i = index;
         for (std::list<Rewardable*>::const_iterator reward = this->rewards_.begin(); reward != this->rewards_.end(); ++reward)
-	{
-	    if(i == 0)
-	    {
-	       return *reward;
-	    }
-	    i--;
-	}
+        {
+            if(i == 0)
+            {
+               return *reward;
+            }
+            i--;
+        }
         return NULL;
     }
 
@@ -90,13 +90,13 @@ namespace orxonox {
     */
     bool AddReward::invoke(Player* player)
     {
-	bool check = true;
+        bool check = true;
         for ( std::list<Rewardable*>::iterator reward = this->rewards_.begin(); reward != this->rewards_.end(); ++reward )
-	{
-	    check = check && (*reward)->reward(player);
-	}
+        {
+            check = check && (*reward)->reward(player);
+        }
 
-	return check;
+        return check;
     }
 
 }

@@ -63,9 +63,9 @@ namespace orxonox {
 
     void QuestHint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-	SUPER(QuestHint, XMLPort, xmlelement, mode);
+        SUPER(QuestHint, XMLPort, xmlelement, mode);
 
-	COUT(3) << "New QuestHint {" << this->getId() << "} created." << std::endl;
+        COUT(3) << "New QuestHint {" << this->getId() << "} created." << std::endl;
     }
 
 
@@ -88,11 +88,11 @@ namespace orxonox {
         }
 
         std::map<Player*, questHintStatus::Enum>::iterator it = this->playerStatus_.find(player);
-	if (it != this->playerStatus_.end())
-	{
-	    return it->second;
-	}
-	return questStatus::inactive;
+        if (it != this->playerStatus_.end())
+        {
+            return it->second;
+        }
+        return questStatus::inactive;
     }
 
     /**
@@ -107,19 +107,19 @@ namespace orxonox {
     {
         if(this->quest_->isActive(player))
         {
-	    if(!(this->isActive(player)))
-	    {
-		this->playerStatus_[player] = questHintStatus::active;
-		return true;
-	    }
-	    else
-	    {
+            if(!(this->isActive(player)))
+            {
+                this->playerStatus_[player] = questHintStatus::active;
+                return true;
+            }
+            else
+            {
                 COUT(2) << "An already active questHint was trying to get activated." << std::endl;
                 return false;
-	    }
+            }
         }
-	COUT(2) << "A hint of a non-active quest was trying to get activated." << std::endl;
-	return false;
+        COUT(2) << "A hint of a non-active quest was trying to get activated." << std::endl;
+        return false;
     }
 
     /**

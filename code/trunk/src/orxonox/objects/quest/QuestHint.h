@@ -64,20 +64,20 @@ namespace orxonox
     class QuestHint : public QuestItem
     {
 
-	public:
+        public:
             QuestHint(BaseObject* creator);
-	    virtual ~QuestHint();
+            virtual ~QuestHint();
 
-	    virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-	    bool isActive(Player* player); //!< Returns true if the hint is active for the input player.
+            bool isActive(Player* player); //!< Returns true if the hint is active for the input player.
 
-	    bool activate(Player* player); //!< Activates the hint for the input player.
+            bool activate(Player* player); //!< Activates the hint for the input player.
 
-	    bool setQuest(Quest* quest); //!< Sets the quest the hint belongs to.
+            bool setQuest(Quest* quest); //!< Sets the quest the hint belongs to.
 
-	    inline Quest* getQuest(void)
-	       { return this->quest_; }
+            inline Quest* getQuest(void)
+               { return this->quest_; }
 
         private:
 
