@@ -196,7 +196,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
 
     void ControllableEntity::startLocalControl()
     {
-        std::cout << this->getObjectID() << " ###### start local control" << std::endl;
+//        std::cout << this->getObjectID() << " ###### start local control" << std::endl;
         this->camera_ = new Camera(this);
         this->camera_->requestFocus();
         if (this->cameraPositionTemplate_ != "")
@@ -215,7 +215,7 @@ COUT(0) << "CE: bidirectional synchronization" << std::endl;
 
     void ControllableEntity::stopLocalControl()
     {
-        std::cout << "###### stop local control" << std::endl;
+//        std::cout << "###### stop local control" << std::endl;
         this->camera_->detachFromParent();
         delete this->camera_;
         this->camera_ = 0;

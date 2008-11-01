@@ -57,8 +57,6 @@ namespace orxonox
         this->initialStartCountdown_ = 3;
         this->startCountdown_ = 0;
         this->bStartCountdownRunning_ = false;
-
-        COUT(0) << "created Gametype" << std::endl;
     }
 
     void Gametype::tick(float dt)

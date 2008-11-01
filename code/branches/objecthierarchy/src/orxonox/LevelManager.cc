@@ -102,7 +102,7 @@ namespace orxonox
 
     void LevelManager::clientConnected(unsigned int clientID)
     {
-        COUT(0) << "client connected" << std::endl;
+        COUT(3) << "client connected" << std::endl;
 
         // create new HumanPlayer instance
         HumanPlayer* player = new HumanPlayer(0);
@@ -118,7 +118,7 @@ namespace orxonox
 
     void LevelManager::clientDisconnected(unsigned int clientID)
     {
-        COUT(0) << "client disconnected" << std::endl;
+        COUT(3) << "client disconnected" << std::endl;
 
         // remove from clients-map
         PlayerInfo* player = this->clients_[clientID];

@@ -55,8 +55,6 @@ namespace orxonox
 
         if (this->xmlfilename_.length() >= Settings::getDataPath().length())
             this->xmlfilename_ = this->xmlfilename_.substr(Settings::getDataPath().length());
-
-        COUT(0) << "created Level" << std::endl;
     }
 
     Level::~Level()
@@ -138,12 +136,13 @@ namespace orxonox
 
     void Level::playerEntered(PlayerInfo* player)
     {
-        COUT(0) << "player entered level" << std::endl;
+        COUT(3) << "player entered level" << std::endl;
         player->setGametype(this->getGametype());
     }
 
     void Level::playerLeft(PlayerInfo* player)
     {
+        COUT(3) << "player left level" << std::endl;
         player->setGametype(0);
     }
 }
